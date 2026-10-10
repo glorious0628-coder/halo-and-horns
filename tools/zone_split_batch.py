@@ -18,6 +18,7 @@ numbers -> art/review/imgdev/<zone>_split/<name>.jpg; overview art/review/imgdev
 Work files: art/models/tripo/split_<zone>/ (regenerated from the sources). Blender path from AGENTS.md.
 """
 import argparse
+import glob
 import io
 import json
 import os
@@ -40,6 +41,9 @@ ZONES = {
         "bundle_dir": "build/import_all/7_crossroads",
         "prefix": "X",
         "bundle_mb": 60,
+        # 이미지 생성 1 + 검수 10/10: the crossroads kits' bright orange wood / fruit / fire read as gold at hue 20-30
+        "gold_hue_min": 34.0,
+        "gold_v_min": 0.55,  # 이미지 생성 1 10/10: the API kit's darker gold (value 0.56-0.70)
         "models": {
             # split: 4096 sources (all on the remake list too - this is the interim sharpness step)
             "X_GuildHall": (T + "X_GuildHall_raw.glb", "tripo", 24.0, 3, "split", "tex"),
@@ -211,6 +215,71 @@ def save_sa_maps(work, n, npath, zone):
     return out
 
 
+def img1_maps(work, n, own_normal, gold_boost, hue_min=20.0, v_min=0.72):
+    """maps mode, recipe of 이미지 생성 1 (tools/pbr_from_color.py, e710700: gold 0.9 / 0.28 + gold boost, per-material
+    detail normal whiteout-blended over the mesh's own normal) at 1024, the size the Halo tiles use. A model without its
+    own normal gets a flat one, so every model ends up with the same four maps."""
+    d = os.path.join(work, "v3")
+    os.makedirs(d, exist_ok=True)
+    col = Image.open(os.path.join(work, n + "_color.png")).convert("RGB").resize((1024, 1024), Image.LANCZOS)
+    cpath = os.path.join(d, n + "_src.png")
+    col.save(cpath)
+    nin = os.path.join(d, n + "_normal_in.png")
+    if own_normal:
+        Image.open(own_normal).convert("RGB").resize((1024, 1024), Image.LANCZOS).save(nin)
+    else:
+        Image.new("RGB", (1024, 1024), (128, 128, 255)).save(nin)
+    cmd = [sys.executable, os.path.join(ROOT, "tools", "pbr_from_color.py"), cpath, d, "--name", n, "--size", "1024",
+           "--normal-in", nin]
+    if gold_boost > 0:
+        cmd += ["--gold-boost", str(gold_boost)]
+    cmd += ["--gold-hue-min", str(hue_min), "--gold-v-min", str(v_min)]
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        raise SystemExit(f"pbr_from_color failed for {n}: {r.stderr[-1500:]}")
+    color = os.path.join(d, n + "_color.png") if gold_boost > 0 else cpath
+    return {"C": color, "N": os.path.join(d, n + "_normal.png"), "M": os.path.join(d, n + "_metal.png"),
+            "R": os.path.join(d, n + "_rough.png")}, r.stdout.strip().splitlines()[-1] if r.stdout.strip() else ""
+
+
+def tile_pbr(tiles, tn, gold_boost, hue_min=20.0, v_min=0.72):
+    """one 1024 tile of a split model: pbr_from_color on <tn>.png (+ <tn>_n.png or flat) -> <tn>_pbr_{color,normal,mr}.png"""
+    d = os.path.join(tiles, "pbr")
+    os.makedirs(d, exist_ok=True)
+    nin = os.path.join(tiles, tn + "_n.png")
+    if not os.path.isfile(nin):
+        nin = os.path.join(d, tn + "_flat.png")
+        Image.new("RGB", (1024, 1024), (128, 128, 255)).save(nin)
+    cmd = [sys.executable, os.path.join(ROOT, "tools", "pbr_from_color.py"), os.path.join(tiles, tn + ".png"), d, "--name", tn,
+           "--size", "1024", "--normal-in", nin]
+    if gold_boost > 0:
+        cmd += ["--gold-boost", str(gold_boost)]
+    cmd += ["--gold-hue-min", str(hue_min), "--gold-v-min", str(v_min)]
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if r.returncode != 0:
+        raise SystemExit(f"pbr_from_color failed for {tn}: {r.stderr[-1500:]}")
+    metal = np.asarray(Image.open(os.path.join(d, tn + "_metal.png")).convert("L"))
+    rough = np.asarray(Image.open(os.path.join(d, tn + "_rough.png")).convert("L"))
+    Image.fromarray(np.stack([np.zeros_like(rough), rough, metal], -1), "RGB").save(os.path.join(tiles, tn + "_pbr_mr.png"))
+    col = os.path.join(d, tn + "_color.png") if gold_boost > 0 else os.path.join(tiles, tn + ".png")
+    Image.open(col).convert("RGB").save(os.path.join(tiles, tn + "_pbr_color.png"))
+    Image.open(os.path.join(d, tn + "_normal.png")).convert("RGB").save(os.path.join(tiles, tn + "_pbr_normal.png"))
+
+
+def save_sa_files(files, n, zone):
+    d = os.path.join(ROOT, "art", "ui", f"sa_{zone}")
+    os.makedirs(d, exist_ok=True)
+    out = {}
+    for tag, p in files.items():
+        im = Image.open(p).convert("L" if tag in "MR" else "RGB")
+        if im.size != (1024, 1024):
+            im = im.resize((1024, 1024), Image.LANCZOS)
+        dst = os.path.join(d, f"{n}_{tag}.png")
+        im.save(dst, optimize=True)
+        out[tag] = os.path.relpath(dst, ROOT).replace("\\", "/")
+    return out
+
+
 def blender(script, *args):
     r = subprocess.run([BLENDER, "--background", "--factory-startup", "--python-exit-code", "1", "--python", script, "--", *args],
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
@@ -230,11 +299,18 @@ def main():
     ap.add_argument("--skip-shots", action="store_true", help="reuse the renders in shots/ (sheets only)")
     ap.add_argument("--skip-sheet", action="store_true")
     ap.add_argument("--no-gen-normal", action="store_true", help="no brightness normal where the model has none")
+    ap.add_argument("--recipe", choices=["imgdev", "img1"], default="imgdev",
+                    help="img1 = maps mode through 이미지 생성 1's tools/pbr_from_color.py (e710700) at 1024")
+    ap.add_argument("--gold-boost", type=float, default=0.0, help="이미지 생성 1 / 검수 10/10: 0 (the colour map stays the game's)")
+    ap.add_argument("--gold-hue-min", type=float, default=None, help="pbr_from_color gold hue floor (default: the zone's)")
+    ap.add_argument("--gold-v-min", type=float, default=None, help="pbr_from_color gold value floor (default: the zone's)")
     a = ap.parse_args()
     z = ZONES[a.zone]
     work = os.path.join(ROOT, "art", "models", "tripo", f"split_{a.zone}")
     os.makedirs(work, exist_ok=True)
     names = [n for n in z["models"] if not a.only or n in a.only.split(",")]
+    hue_min = a.gold_hue_min if a.gold_hue_min is not None else z.get("gold_hue_min", 20.0)
+    v_min = a.gold_v_min if a.gold_v_min is not None else z.get("gold_v_min", 0.72)
     rp = os.path.join(work, "split_report.json")
     report = {}
     if os.path.isfile(rp):
@@ -244,12 +320,32 @@ def main():
         for n in names:
             src, kind, fit, grid, mode, before = z["models"][n]
             cpath, own_n, size, tris = extract(os.path.join(ROOT, src), work, n)
-            m, stats = pbr_maps(work, n)
-            cpbr = os.path.join(work, n + "_color_pbr.png")
-            npath, how = normal_map(cpbr, own_n, m, os.path.join(work, n + "_normal.png"), gen=not a.no_gen_normal)
+            stats, npath, how, cpbr = None, None, "", None
+            if a.recipe != "img1":  # the img1 recipe makes its own maps at 1024 (maps mode and every split tile)
+                m, stats = pbr_maps(work, n)
+                cpbr = os.path.join(work, n + "_color_pbr.png")
+                npath, how = normal_map(cpbr, own_n, m, os.path.join(work, n + "_normal.png"), gen=not a.no_gen_normal)
             r = {"source": src, "source_px": size, "tris": tris, "grid": grid, "mode": mode, "before": before,
                  "masks": stats, "normal": how}
-            if mode == "split":
+            if mode == "split" and a.recipe == "img1":
+                # like the Halo town: split the plain colour (+ the mesh's own normal), then 이미지 생성 1's recipe on every
+                # 1024 tile (the same grain size as the Halo tiles), then the tiles' materials take the new maps
+                out = os.path.join(work, n + "_split.glb")
+                args = [os.path.join(ROOT, "tools", "split_uv_tiles.py"), os.path.join(ROOT, src), out, n, "--grid", str(grid),
+                        "--kind", kind, "--fit", "max", str(fit), "--tex", cpath]
+                if own_n:
+                    args += ["--normal", own_n]
+                log = blender(*args)
+                tiles = os.path.splitext(out)[0] + "_tiles"
+                for tp in sorted(glob.glob(os.path.join(tiles, n + "_t[0-9][0-9].png"))):
+                    tn = os.path.splitext(os.path.basename(tp))[0]
+                    tile_pbr(tiles, tn, a.gold_boost, hue_min, v_min)
+                blender(os.path.join(ROOT, "tools", "zone_split_bundle.py"), "retile", out, tiles)
+                r["glb"] = os.path.relpath(out, ROOT).replace("\\", "/")
+                r["log"] = log.splitlines()[-1] if log else ""
+                r["recipe"] = f"img1 pbr_from_color per 1024 tile, gold-boost {a.gold_boost}, gold hue >= {hue_min}, value >= {v_min}"
+                r["normal"] = ("own (Tripo)" if own_n else "flat") + " + per-material detail (img1 recipe, per tile)"
+            elif mode == "split":
                 out = os.path.join(work, n + "_split.glb")
                 args = [os.path.join(ROOT, "tools", "split_uv_tiles.py"), os.path.join(ROOT, src), out, n, "--grid", str(grid),
                         "--kind", kind, "--fit", "max", str(fit), "--tex", cpbr, "--mr", os.path.join(work, n + "_mr.png")]
@@ -258,6 +354,12 @@ def main():
                 log = blender(*args)
                 r["glb"] = os.path.relpath(out, ROOT).replace("\\", "/")
                 r["log"] = log.splitlines()[-1] if log else ""
+            elif a.recipe == "img1":
+                files, log = img1_maps(work, n, own_n, a.gold_boost, hue_min, v_min)
+                r["sa_files"] = save_sa_files(files, n, a.zone)
+                r["recipe"] = f"img1 pbr_from_color gold-boost {a.gold_boost}, gold hue >= {hue_min}, value >= {v_min}"
+                r["normal"] = ("own (Tripo)" if own_n else "flat") + " + per-material detail (img1 recipe)"
+                r["log"] = log
             else:
                 r["sa_files"] = save_sa_maps(work, n, npath, a.zone)
             r.pop("rows", None)
