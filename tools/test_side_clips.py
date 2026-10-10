@@ -22,7 +22,8 @@ FX = ROOT / "src/StarterPlayer/StarterPlayerScripts/Fx.luau"
 CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.json"
 JOINTS = {"Waist", "Neck", "RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow", "LeftWrist"}
-STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST_DELAY", "Mage")}
+STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST_DELAY", "Mage"),
+          "PaladinRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "LightMageRelease": ("RELEASE_CONTACT.Mage", "Mage")}
 
 
 def clip(fx: str, name: str):
@@ -47,10 +48,14 @@ def num(src: str, pat: str):
 def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
     out = []
     side = fx[fx.find("\tSIDE_CLIPS = {"):fx.find("\tCLASS_CLIPS = {")]
-    rows = re.findall(r"(\w+_\w+) = \{ Swing = \"(\w+)\" \}", side)
+    rows = []
+    for key, body in re.findall(r"(\w+_\w+) = \{ ([^}]*) \}", side):
+        for move, name in re.findall(r"(Swing|Release) = \"(\w+)\"", body):
+            rows.append((key, name))
     grips = cfg[cfg.find("Config.ClassGrips = {"):cfg.find("function Config.ClassGripKey")]
     out.append(("Halo's Paladin and Light Mage have their own swing", ("Warrior_Halo", "PaladinSwing") in rows
                 and ("Mage_Halo", "LightMageSwing") in rows))
+    out.append(("... and their own Q (release)", ("Warrior_Halo", "PaladinRelease") in rows and ("Mage_Halo", "LightMageRelease") in rows))
     fit = num(fx, r"SWING_FIT = ([\d.]+)")
     for key, name in rows:
         out.append((f"{key} is a ClassGrips row", f"\t{key} = {{" in grips))
@@ -62,8 +67,11 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
         cls = key.split("_")[0]
         block = cfg[cfg.find(f"\t{cls} = {{", cfg.find("Config.Classes = {")):]
         interval = num(block, r"SwingInterval = ([\d.]+)")
-        out.append((f"{name} fits the {cls} swing (<= SwingInterval x SWING_FIT)", interval is not None and fit is not None
-                    and length <= interval * fit + 1e-9))
+        limit = (interval * fit) if interval is not None and fit is not None else None
+        if name.endswith("Release"):
+            limit = 0.8  # a release clip is sped up to RELEASE_ANIM_TIME (0.75 s); keep its own length near that
+        out.append((f"{name} fits its move (swing <= SwingInterval x SWING_FIT, release <= 0.8 s)", limit is not None
+                    and length <= limit + 1e-9))
         times = [t for t, _, _ in keys]
         out.append((f"{name}: keys in time order from 0 to Len", times == sorted(times) and times[0] == 0 and abs(times[-1] - length) < 1e-9))
         out.append((f"{name}: real R15 joints only", all(j in JOINTS for _, _, js in keys for j in js)))
@@ -76,7 +84,11 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
         out.append((f"{name}: neighbouring keys < 180 degrees apart", ok))
         const, _ = STRIKE.get(name, (None, None))
         if const:
-            t = num(fx, const + r" = ([\d.]+)")
+            if "." in const:
+                tbl, cls2 = const.split(".")
+                t = num(fx, tbl + r" = \{[^}]*?" + cls2 + r" = ([\d.]+)")
+            else:
+                t = num(fx, const + r" = ([\d.]+)")
             strike = [kt for kt, ease, _ in keys if ease == "In"]
             out.append((f"{name}: the strike key on {const}", t is not None and len(strike) == 1 and abs(strike[0] - t) < 1e-9))
     out += [
@@ -92,7 +104,8 @@ MUTATIONS = [
     ("the Paladin strikes late", '\t\t\t{ 0.23, "In", { Waist = { -12, 6, 0 }', '\t\t\t{ 0.3, "In", { Waist = { -12, 6, 0 }'),
     ("a key flips past 180", "RightShoulder = { 158, -6, 12 }", "RightShoulder = { 158, -6, 212 }"),
     ("the Light Mage clip too long", "LightMageSwing = { Len = 0.68,", "LightMageSwing = { Len = 1.68,"),
-    ("a row for no class", "\t\tMage_Halo = { Swing = \"LightMageSwing\" },", "\t\tMage_Sky = { Swing = \"LightMageSwing\" },"),
+    ("a row for no class", "\t\tMage_Halo = { Swing = \"LightMageSwing\",", "\t\tMage_Sky = { Swing = \"LightMageSwing\","),
+    ("the Light Mage's Q strikes early", '\t\t\t{ 0.35, "In", { Waist = { -18, 0, 0 }', '\t\t\t{ 0.3, "In", { Waist = { -18, 0, 0 }'),
 ]
 
 

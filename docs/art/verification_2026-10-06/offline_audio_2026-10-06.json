@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 425,
-  "namedChecks": 340,
+  "checks": 426,
+  "namedChecks": 341,
   "failing": [],
   "mutations": {
     "total": 161,
@@ -141,8 +141,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: StampPress stops the QuestDone that just started"
         ]
       },
@@ -230,21 +228,14 @@
         ]
       },
       {
-        "mutation": "pets: no level up",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "sound_gaps 10/10 :: my pet's level up = PetLevelUp"
-        ]
-      },
-      {
         "mutation": "pets: put away silent",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 :: the follower put away = PetStow"
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall",
+          "sound_gaps 10/10 :: the follower put away = PetStow",
+          "sound_gaps 10/10 :: the same follower again is quiet"
         ]
       },
       {
@@ -253,8 +244,20 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)",
-          "sound_gaps 10/10 :: the join list only PetWindow saw: the follow right after it = PetCall"
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall",
+          "sound_gaps 10/10 :: the same follower again is quiet"
+        ]
+      },
+      {
+        "mutation": "pets: the join value sounds",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall",
+          "sound_gaps 10/10 :: the follower put away = PetStow",
+          "sound_gaps 10/10 :: the follower that came with the join is quiet",
+          "sound_gaps 10/10 :: the same follower again is quiet"
         ]
       },
       {
@@ -263,9 +266,17 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 :: my pet's level up = PetLevelUp",
-          "sound_gaps 10/10 :: pet XP alone is quiet",
           "sound_gaps 10/10 :: the same follower again is quiet"
+        ]
+      },
+      {
+        "mutation": "pets: no level up",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a new pet's first Lv is quiet",
+          "sound_gaps 10/10 :: my pet's level up = PetLevelUp"
         ]
       },
       {
@@ -285,8 +296,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet"
         ]
       },
@@ -349,16 +358,6 @@
         "crashed": false,
         "newFailingChecks": [
           "sound_gaps 10/10 :: rain starts its loop from silence in the Sound effects group, fading in"
-        ]
-      },
-      {
-        "mutation": "pets: the first list sounds",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "sound_gaps 10/10 :: a list with no follower before or now is quiet",
-          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)"
         ]
       },
       {
@@ -766,6 +765,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "swing :: Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)",
           "swing :: Horns mage: SwingMageHorns"
         ]
@@ -843,6 +844,7 @@
         "crashed": false,
         "newFailingChecks": [
           "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)",
+          "runtime :: the same event inside its cooldown is skipped",
           "world listeners :: a later weapon -> Equip"
         ]
       },
@@ -861,7 +863,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -1659,9 +1660,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "637c004230ba2bba72f96ab96c1ed0562fe2bcfba7d49460328ae85c98680de7",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "dcf2ae9b62e62edea9aaa4fabb6ac55b56de054daa609f60d669f73fb1c18819",
-    "tools/fixtures/audio_offline.luau": "dd1573a2d8ddd9b0358c287b4d30c921187080fa77b2c8f8983245b56b655faa"
+    "src/ReplicatedStorage/Shared/Config.luau": "0dd45cace376b04919e99bceab063f1d803b7f70c5449025e0ed1388e175f8d7",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "66c5a92399b07e2b118095497bcfeb057712e08f575fe9c540a7cf6feb427d51",
+    "tools/fixtures/audio_offline.luau": "f244b63cf051a4bec4557b7b2dc79679d3d20b0b220d7c56786e8891605b0b21"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

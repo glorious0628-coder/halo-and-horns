@@ -313,6 +313,25 @@ local MOTION = {
 			{ 0.5, "InOut", { Waist = { 0, 2, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { -35, 0, 0 }, LeftShoulder = { 30, 0, -12 }, LeftElbow = { 50, 0, 0 } } },
 			{ 0.68, "InOut", {} },
 		} },
+		-- A23-108 ⑤ Q (Shockwave) for the Paladin: both hands on the hilt, the sword raised high over the head, then
+		-- driven down into the ground in front (the light ring) on RELEASE_CONTACT.Warrior (0.24)
+		PaladinRelease = { Len = 0.7, Keys = {
+			{ 0, "Out", {} },
+			{ 0.16, "Out", { Waist = { 16, 0, 0 }, Neck = { -10, 0, 0 }, RightShoulder = { 170, 0, 6 }, RightElbow = { 70, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 168, 0, -6 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 62, 0, -14 }, RightElbow = { 8, 0, 0 }, RightWrist = { -88, 0, 0 }, LeftShoulder = { 60, 0, 14 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -88, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -28, 0, 0 }, Neck = { 14, 0, 0 }, RightShoulder = { 54, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 52, 0, 12 }, LeftElbow = { 12, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.7, "InOut", {} },
+		} },
+		-- A23-108 ⑤ Q (Meteor) for the Light Mage: the staff lifted to the sky (calling the light), then brought down
+		-- toward the target on RELEASE_CONTACT.Mage / RELEASE_LAUNCH.Mage (0.35); the left palm opens up then forward
+		LightMageRelease = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.15, "Out", { Waist = { 14, -6, 0 }, Neck = { 18, 4, 0 }, RightShoulder = { 150, -6, 18 }, RightElbow = { 30, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 70, 0, -30 }, LeftElbow = { 60, 0, 0 }, LeftWrist = { -60, 0, -10 } } },
+			{ 0.33, "InOut", { Waist = { 18, -8, 0 }, Neck = { 22, 6, 0 }, RightShoulder = { 168, -6, 16 }, RightElbow = { 18, 0, 0 }, RightWrist = { -24, 0, 0 }, LeftShoulder = { 96, 0, -26 }, LeftElbow = { 40, 0, 0 }, LeftWrist = { -70, 0, -10 } } },
+			{ 0.35, "In", { Waist = { -18, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 44, 0, 6 }, RightElbow = { 4, 0, 0 }, RightWrist = { -120, 0, 0 }, LeftShoulder = { 84, 0, -8 }, LeftElbow = { 6, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.55, "Out", { Waist = { -14, 0, 0 }, Neck = { 5, 0, 0 }, RightShoulder = { 60, 0, 6 }, RightElbow = { 6, 0, 0 }, LeftShoulder = { 64, 0, -8 }, LeftElbow = { 8, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
 		-- A23-34 bare hands: guard up, a straight right jab with the torso turning into it, back to rest (~0.45 s)
 		PunchSwing = { Len = 0.45, Keys = {
 			{ 0, "Out", {} },
@@ -339,8 +358,8 @@ local MOTION = {
 	-- CLASS_CLIPS; a move it has none for stays the class's. Halo first (the town now): the Ranger keeps the upright
 	-- ArcherSwing draw (its bow solve), the others follow in their zones' turns
 	SIDE_CLIPS = {
-		Warrior_Halo = { Swing = "PaladinSwing" },
-		Mage_Halo = { Swing = "LightMageSwing" },
+		Warrior_Halo = { Swing = "PaladinSwing", Release = "PaladinRelease" },
+		Mage_Halo = { Swing = "LightMageSwing", Release = "LightMageRelease" },
 	},
 	CLASS_CLIPS = {
 		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },

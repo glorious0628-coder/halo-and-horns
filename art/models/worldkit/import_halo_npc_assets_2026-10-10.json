@@ -1,0 +1,90 @@
+{
+ "note": "2026-10-10 이미지 생성 1: Halo town NPC decor models (Tripo HD multi-view of 이미지 생성 2's approved 4-view art), imported in WorldKit (H6_HaloNPC). Heights 5.4-6.2 studs (avatar 5.5). Static statues of the quest NPCs (no rig yet); SA = Tripo color/normal/metal/rough.",
+ "items": [
+  {
+   "name": "NPC_HaloBakerGranny",
+   "meshId": "rbxassetid://80752015058632",
+   "textureId": "",
+   "size_studs": [
+    3.196,
+    5.6,
+    1.768
+   ],
+   "sa": {
+    "color": "rbxassetid://132331448540800",
+    "rough": "rbxassetid://92525590340747",
+    "normal": "rbxassetid://71415690024388",
+    "metal": "rbxassetid://134993891694733"
+   },
+   "metal": true
+  },
+  {
+   "name": "NPC_HaloBright",
+   "meshId": "rbxassetid://105742297084243",
+   "textureId": "",
+   "size_studs": [
+    3.197,
+    5.8,
+    1.801
+   ],
+   "sa": {
+    "color": "rbxassetid://116517476110703",
+    "rough": "rbxassetid://127093910057173",
+    "normal": "rbxassetid://130890858518504",
+    "metal": "rbxassetid://120548820209145"
+   },
+   "metal": true
+  },
+  {
+   "name": "NPC_HaloFlowerGirl",
+   "meshId": "rbxassetid://104233426079477",
+   "textureId": "",
+   "size_studs": [
+    2.812,
+    5.4,
+    1.804
+   ],
+   "sa": {
+    "color": "rbxassetid://115190085254376",
+    "rough": "rbxassetid://80122617800253",
+    "normal": "rbxassetid://78620056665039",
+    "metal": "rbxassetid://113540475209785"
+   },
+   "metal": true
+  },
+  {
+   "name": "NPC_HaloJuiceMan",
+   "meshId": "rbxassetid://120204676992798",
+   "textureId": "",
+   "size_studs": [
+    3.435,
+    5.9,
+    2.333
+   ],
+   "sa": {
+    "color": "rbxassetid://136718210898594",
+    "rough": "rbxassetid://135210721612291",
+    "normal": "rbxassetid://74673480644822",
+    "metal": "rbxassetid://82481801858798"
+   },
+   "metal": true
+  },
+  {
+   "name": "NPC_HaloSirGleam",
+   "meshId": "rbxassetid://132348636600306",
+   "textureId": "",
+   "size_studs": [
+    3.994,
+    6.2,
+    2.008
+   ],
+   "sa": {
+    "color": "rbxassetid://85751308281064",
+    "rough": "rbxassetid://100736718207295",
+    "normal": "rbxassetid://81350846387026",
+    "metal": "rbxassetid://131847556037121"
+   },
+   "metal": true
+  }
+ ]
+}
