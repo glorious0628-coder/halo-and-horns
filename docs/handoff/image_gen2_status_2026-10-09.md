@@ -108,3 +108,6 @@
 ## 10/10 밤 추가 13
 - 검수 10/10 선택(Q 6) → High 12장(5크레딧×12) → 6장 골라 누끼: `art/out/s2/skills_final/Skill_{Warrior,Mage,Archer}_Q_{Halo,Horns}.png`(512 RGBA), 원본 `art/out/s2/skills_hq/`, 확인 `art/review/s2/skill_q_hq_check.jpg`·`skill_q_final_cut_check.jpg`. approved.json `SkillQ_Icons`, 프롬프트 `art/prompts/SkillQ_Icons_HQ.txt`. 누끼 도구 `tools/_img2_circle_cut2.py`는 안 쓰고 cutout_flat 사용(배지 밖으로 나온 후광·칼자루 보존).
 - 다음: 이미지 개발이 업로드·`Skill_<Class>_Q_<Faction>` 교체, 나는 Z·X 12개(같은 틀).
+
+## 10/10 밤 추가 14
+- 스킬 Z·X 아이콘 12종 중간 후보 24장(A/B): `art/out/s2/skills_zx/SkillZX_<WarriorZ|WarriorX|HornsWarriorZ|HornsWarriorX|MageZ|MageX|HornsMageZ|HornsMageX|ArcherZ|ArcherX|HornsArcherZ|HornsArcherX>_{A,B}.png`, 시트 `art/review/s2/skill_zx_icon_candidates.jpg`(줄마다 두 스킬, 각 A·B). 검수 선택 대기 → 고급 → 누끼 → 이미지 개발. (새·박쥐는 점 눈 + 미소 — 문서대로.)
