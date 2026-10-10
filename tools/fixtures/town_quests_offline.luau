@@ -2107,7 +2107,7 @@ runGroup("a23-64 town pick", function()
 	end
 	local base = { M1_1 = true, M1_2 = true, M1_3 = true, M1_4 = true, Lunch1 = true }
 	-- a Halo player at H2's card (the lantern is back): the pick sets TownPick and the save
-	local p, d = joinAt(6411, "Halo", 9, { H2 = { St = 3, P = 0, T = {}, Claim = false } }, table.clone(base))
+	local p, d = joinAt(6411, "Halo", 9, { H2 = { St = 4, P = 0, T = {}, Claim = false } }, table.clone(base))
 	check(p:GetAttribute("TownPick") == "", "no town pick yet: TownPick = ''", tostring(p:GetAttribute("TownPick")))
 	w:Act(p, "H2", "Choose", "Good")
 	check(d.Story.Pick.H2 == "Good" and d.Story.TownLast == "H2" and p:GetAttribute("TownPick") == "H2:Good",
