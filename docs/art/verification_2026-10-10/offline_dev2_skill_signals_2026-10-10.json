@@ -1,0 +1,1065 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 88,
+  "failedChecks": 0,
+  "namedChecks": 88,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "healed on Q",
+      "check": "Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "a full-HP ally, a Horn, a Neutral and an ally 20 away get nothing (so they are not listed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "a Halo cast steals nothing: Stole 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "Released.Healed unchanged: the OTHER players healed, as Player objects (not me)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "Released.Healed still lists all 7 others (no cap there)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Q",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "an ally 13 away and a Horn 5 away: not healed, not listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "Halo X (Guardian Roar): Fx Skill Healed = who really got HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "Sun Circle's first tick (Fx Skill): Healed = me + the friend 5 away (the friend in the circle 22 away: no)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "every SkillTick: Healed = exactly who really got HP that tick (some tick heals)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "healed on Z and X",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "Horns Q: Stole 3 = the HP really gained (3% of 100)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "a Horns cast heals nobody: Healed {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "Z 0.5 s later, inside the 3 s cap: Stole 0 and nothing gained",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "at full HP: Stole 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "1 HP missing: Stole 1 (what really came in, not 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "the artisan: Healed {}, Stole 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "Hex Circle's first tick (Fx Skill): Stole = the HP gained",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "every SkillTick: Stole = the HP gained that tick; 0 while the 3 s cap is used up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stole",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fields on every packet",
+      "check": "a whiffed Q: Healed {}, Stole 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fields on every packet",
+      "check": "a whiffed Z: Healed {}, Stole 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fields on every packet",
+      "check": "every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fields on every packet",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fields on every packet",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Kit.Motion(Q): the Release row (Warrior 0.24, Mage 0.35 / 0.35, Archer 0.4 / 0.18, PetDash 0.35)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Kit.Motion: nothing for a swing, an unknown class or a style without a row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Warrior Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Warrior Halo: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Warrior Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Warrior Horns: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Mage Halo: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Mage Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Mage Horns: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Archer Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Archer Halo: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Archer Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Archer Horns: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Warrior Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Warrior Neutral: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Mage Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Mage Neutral: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Archer Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "Archer Neutral: Z / X carry the same times as its Q (Fx Release) for now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "timing on the skill packet",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Halo Z: the damage and Released at the press, no pull yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Halo Z: no pull 0.2 s after the press (ContactDelay 0.24)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Halo Z: at 0.25 s both hit monsters are pulled 5 toward where I stood",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Horns Z: the damage and Released at the press, no pull yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Horns Z: no pull 0.2 s after the press (ContactDelay 0.24)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Horns Z: at 0.25 s both hit monsters are pulled 5 toward where I stood",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "the pet tamer's Slime Roll pushes at 0.35 s (PetDash)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "a monster that died / was removed before the contact: no pull (the living one: yes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "the caster left before the contact: no pull",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "a Displace error at the contact time is caught and warned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "Birdie Bounce / Sun Circle move nobody",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "displace at contact",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "setup: the baseline world runs the sources before A23-116 (no Kit.Motion there)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Halo: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Horns: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Halo: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Horns: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Halo: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Horns: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Warrior Neutral: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Mage Neutral: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "Archer Neutral: the scene really hits (10+ hits, 6+ casts) and pulls / pushes (not the Mage kits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same numbers as before",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 12,
+  "staticFailures": [],
+  "mutations": {
+    "total": 36,
+    "applied": 36,
+    "caught": 36,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the pull / push at once (no contact wait)",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: Halo Z: no pull 0.2 s after the press (ContactDelay 0.24)",
+          "displace at contact :: Halo Z: the damage and Released at the press, no pull yet",
+          "displace at contact :: Horns Z: no pull 0.2 s after the press (ContactDelay 0.24)",
+          "displace at contact :: Horns Z: the damage and Released at the press, no pull yet"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the slide waits a fixed 0.24 s",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: the pet tamer's Slime Roll pushes at 0.35 s (PetDash)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a dead monster still slides",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: a monster that died / was removed before the contact: no pull (the living one: yes)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a removed monster still slides",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: a monster that died / was removed before the contact: no pull (the living one: yes)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a caster who left still pulls",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: the caster left before the contact: no pull"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a Displace error escapes",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: a Displace error at the contact time is caught and warned"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the push one stud longer",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: Archer X: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "displace at contact :: Archer Z: the push waits for 0.4 s (none at 0.35, one at 0.41)",
+          "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no ContactDelay on Fx Skill",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Archer Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Halo: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Archer Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Horns: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Archer Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Neutral: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "no LaunchDelay on Fx Skill",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Archer Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Halo: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Archer Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Horns: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Halo: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the field's Fx Skill without times",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Halo: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Mage Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Horns: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Mage Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Neutral: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the pet tamer on the archer times",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "displace at contact :: the pet tamer's Slime Roll pushes at 0.35 s (PetDash)",
+          "timing on the skill packet :: Archer Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Neutral: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Healed on Fx Skill",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: a whiffed Z: Healed {}, Stole 0",
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
+          "healed on Z and X :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no Stole on Fx Skill",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: a whiffed Z: Healed {}, Stole 0",
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Z and X :: Halo X (Guardian Roar): Fx Skill Healed = who really got HP",
+          "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
+          "stole :: Z 0.5 s later, inside the 3 s cap: Stole 0 and nothing gained"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no Healed on Fx SkillTick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Z and X :: group ran to the end without a Lua error",
+          "stole :: every SkillTick: Stole = the HP gained that tick; 0 while the 3 s cap is used up"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Stole on Fx SkillTick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Z and X :: every SkillTick: Healed = exactly who really got HP that tick (some tick heals)",
+          "stole :: every SkillTick: Stole = the HP gained that tick; 0 while the 3 s cap is used up"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the field's Fx Skill without the signals",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Z and X :: Sun Circle's first tick (Fx Skill): Healed = me + the friend 5 away (the friend in the circle 22 away: no)",
+          "stole :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Z damage one more",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "a field tick one more",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Q damage one more",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Archer Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Horns: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116",
+          "same numbers as before :: Mage Neutral: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Healed lists a full-HP ally",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
+          "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Healed without the caster",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
+          "healed on Z and X :: Halo X (Guardian Roar): Fx Skill Healed = who really got HP",
+          "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
+          "healed on Z and X :: Sun Circle's first tick (Fx Skill): Healed = me + the friend 5 away (the friend in the circle 22 away: no)",
+          "healed on Z and X :: every SkillTick: Healed = exactly who really got HP that tick (some tick heals)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Healed farthest first",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
+          "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
+          "healed on Z and X :: Halo X (Guardian Roar): Fx Skill Healed = who really got HP",
+          "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
+          "healed on Z and X :: Sun Circle's first tick (Fx Skill): Healed = me + the friend 5 away (the friend in the circle 22 away: no)",
+          "healed on Z and X :: every SkillTick: Healed = exactly who really got HP that tick (some tick heals)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Healed in join order",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Healed keeps everyone",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Healed keeps 4",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the heal for any side",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
+          "healed on Q :: Released.Healed unchanged: the OTHER players healed, as Player objects (not me)",
+          "healed on Q :: a full-HP ally, a Horn, a Neutral and an ally 20 away get nothing (so they are not listed)",
+          "healed on Z and X :: Halo Z (Glow Lasso): Fx Skill Healed = { me, the ally 8 away }, Stole 0",
+          "healed on Z and X :: an ally 13 away and a Horn 5 away: not healed, not listed",
+          "same numbers as before :: Archer Halo: damage, heal, steal, MP, pull / push and statuses identical to the sources before A23-116"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Released.Healed gets the UserIds",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "healed on Q :: Released.Healed still lists all 7 others (no cap there)",
+          "healed on Q :: Released.Healed unchanged: the OTHER players healed, as Player objects (not me)",
+          "same numbers as before :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Healed on Fx Release",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: a whiffed Q: Healed {}, Stole 0",
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Q :: 7 allies healed: Healed = the nearest 5 (1, 2, 3, 4, 5 away), nearest first; me at full HP is not listed",
+          "healed on Q :: Halo Q: Fx Release Healed = { me (0), the ally 3 away, the ally 5 away }: who really got HP, nearest first",
+          "stole :: a Horns cast heals nobody: Healed {}",
+          "stole :: the artisan: Healed {}, Stole 0"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no Stole on Fx Release",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fields on every packet :: a whiffed Q: Healed {}, Stole 0",
+          "fields on every packet :: every Fx Release / Skill / SkillTick carries Healed (a table) and Stole (a number)",
+          "healed on Q :: a Halo cast steals nothing: Stole 0",
+          "stole :: 1 HP missing: Stole 1 (what really came in, not 3)",
+          "stole :: Horns Q: Stole 3 = the HP really gained (3% of 100)",
+          "stole :: at full HP: Stole 0"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Stole = the HP asked, not gained",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stole :: 1 HP missing: Stole 1 (what really came in, not 3)",
+          "stole :: at full HP: Stole 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Kit.Motion: Q without its Release row",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Kit.Motion(Q): the Release row (Warrior 0.24, Mage 0.35 / 0.35, Archer 0.4 / 0.18, PetDash 0.35)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Kit.Motion for any row (a swing)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Kit.Motion: nothing for a swing, an unknown class or a style without a row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Kit.Motion without the launch",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Archer Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Halo: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Archer Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Horns: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Kit.Motion(Q): the Release row (Warrior 0.24, Mage 0.35 / 0.35, Archer 0.4 / 0.18, PetDash 0.35)",
+          "timing on the skill packet :: Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "the Z row's archer contact 0.37",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Archer Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Halo: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Archer Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Horns: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the X row's mage launch 0.24",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Mage Halo: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Halo: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Mage Horns: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Horns: Z / X carry the same times as its Q (Fx Release) for now",
+          "timing on the skill packet :: Mage Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Mage Neutral: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the X row without the pet",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "timing on the skill packet :: Archer Neutral: Fx Skill Z / X ContactDelay / LaunchDelay = its row",
+          "timing on the skill packet :: Archer Neutral: Z / X carry the same times as its Q (Fx Release) for now"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "31bf696a9f3d1ceaffb9c1e37ec356d13e6be3d145fe545c7911c5b938fea850",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/CombatService.luau": "530f0ae6da12865b444770c19bd4f517f5384ea0e57ea05ad5838a1dd1673b50",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
+    "src/ServerScriptService/StoryQuestService.luau": "f981f07d4b8f2ae28a30f0a2e2c5b74a7fffb7fac3e49e9033266536576b66c7",
+    "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
+    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479",
+    "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
+    "src/ServerScriptService/SkillService.luau": "58ec9a26625efaeed4a0bf5d995dde2e93c17939c8c09fa74fc3ddea623f5fc2",
+    "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391"
+  },
+  "fixtureSHA256": "51505f1b0721e3ea162f24bb29005b753461a02456acfa635c80520959da01b1",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-116 server part (skills18 §0, game dev 2): Fx Release (Q), Fx Skill (Z / X, also a field's first tick) and Fx SkillTick carry Healed = { UserId } (the Halo players whose HP this cast's heal really raised, the caster too, the nearest 5 to the heal centre first, ties by the lower id; {} = nobody) and Stole = number (the HP SKILL.Steal really gave the Horns caster; 0 at full HP, at the 3 s cap, for Halo / Neutral). Released.Healed is unchanged (the OTHER players healed, Player objects, no cap). Fx Skill carries ContactDelay / LaunchDelay from CombatService TUNE.MOTION.Z / .X (Kit.Motion(slot, class, style); for now the Q values: Warrior 0.24 / -, Mage 0.35 / 0.35, Archer 0.4 / 0.18, the pet tamer PetDash 0.35 / -). A pull / push (MonsterService.Displace) starts at that ContactDelay (task.delay; the damage, Released and the Fx stay at the press), skipped for a monster that died / was removed or a caster who left, errors pcall + warn. Damage, heal, steal, MP, MP steal, pull / push distance, taunt, slow and Guard numbers are identical to the sources at a1a74b45 (9 kits, manual + auto, PvP on).",
+  "limitations": "The client side (SkillFx hearts / sparkles, the clip times) is game dev 1's; the real slide (Displace's CFrame loop) and the monster's walk during the 0.24-0.4 s wait are not run offline. The 'same numbers' baseline is pinned at a1a74b45 (git show): re-pin BASE when that code changes on purpose."
+}

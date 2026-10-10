@@ -304,6 +304,7 @@ runGroup("line", function()
 	check(info and info.MonstersHit == 2 and info.Auto == false and info.Slot == "Z" and info.PlayersHit == 0
 		and info.Total == 2 * dealt and info.Stacks == 0 and info.Perfect == false,
 		"Released { Slot Z, MonstersHit 2, Auto false, Total }", show(info and { info.Slot, info.MonstersHit, info.Total, dealt }))
+	w:Advance(0.25) -- A23-116: the pull starts at the Warrior's ContactDelay (0.24 s)
 	local pulls = {}
 	for _, d in w.Displaced do table.insert(pulls, d.Mode .. d.Studs) end
 	check(#w.Displaced == 2 and w.Displaced[1].Mode == "Pull" and w.Displaced[1].Studs == 5 and w.Displaced[1].P == p
@@ -339,6 +340,7 @@ runGroup("line", function()
 	local ad = zDealt(a, archer, 9)
 	check(hitOf(a, near) == ad and hitOf(a, deep) == ad and hitOf(a, off) == 0, "Pierce Shot: the whole 40 x 4 line at D x 9",
 		show({ hitOf(a, near), hitOf(a, deep), hitOf(a, off), ad }))
+	a:Advance(0.41) -- A23-116: the push starts at the Archer's ContactDelay (0.4 s)
 	check(#a.Displaced == 2 and a.Displaced[1].Mode == "Push" and a.Displaced[1].Studs == 3, "Pierce Shot pushes 3 studs", #a.Displaced)
 	-- the pet tamer: the archer table (Slime Roll), its own kit name
 	local t = skillWorld({ Z = true })
@@ -370,6 +372,7 @@ runGroup("chain", function()
 	local fx = w:FxOf("Skill", f0)[1]
 	check(fx and fx.Data.Shape == "Chain" and #fx.Data.Points == 4 and fx.Data.Points[2].Z == -28 and fx.Data.Radius == 10,
 		"Fx 'Skill' Chain with the 4 points in order", show(fx and #fx.Data.Points))
+	w:Advance(1) -- A23-116: past any contact time
 	check(#w.Displaced == 0, "the chain moves nobody", #w.Displaced)
 	-- 12 studs is too far to jump
 	local wj = skillWorld({ Z = true })
@@ -514,6 +517,7 @@ runGroup("auto", function()
 	w:AutoTick()
 	check(w:Count("Q") == 0, "the next tick: Q waits for the 0.5 s gap", w:Count("Q"))
 	w:Advance(0.5)
+	check(#w.Displaced == 0, "the auto Earth Cleave never pulls (also after its contact time)", #w.Displaced)
 	w:AutoTick()
 	check(w:Count("Q") == 1 and w:Count("Z") == 1, "after the gap: Q (Z on its cooldown)", show({ w:Count("Q"), w:Count("Z") }))
 	check(#w:FxOf("SkillPress", 0) == 0, "auto casts never send the press answer", #w:FxOf("SkillPress", 0))

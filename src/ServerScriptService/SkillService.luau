@@ -26,6 +26,11 @@
 --   a manual cast with Config.Skills.PvPZX on (CombatService.ComputePvPHit x Mult through DamageWindow, like Q). Pull
 --   (manual only) / Push through MonsterService.Displace. Halo heals allies within HealRadius of the caster, Horns steal
 --   life (both through DamageWindow, CombatService.Kit). CombatService.Released fires with Slot / MonstersHit / Auto.
+--   A23-116 (docs/design/skills18_2026-10-10.md §0): the Fx "Skill" carries ContactDelay / LaunchDelay (s from the
+--   press, CombatService Kit.Motion: the slot's row of TUNE.MOTION; the pet tamer = Config.Tamer.SkillStyle); a pull /
+--   push starts at ContactDelay (the damage stays at the press; skipped for a monster that died / was removed or a
+--   caster who left). Fx "Skill" and "SkillTick" carry Healed (the UserIds whose HP the cast's heal really raised, the
+--   caster too, the nearest 5 first; {} = nobody) and Stole (the HP the Horns life steal really gave; 0 = none).
 --   Slots (saved SkillSlots 0..3, mirrored, never lowered): none at the start, Q at Unlock.Q (Lv5), Z at Unlock.Z
 --   (Lv15), X at Unlock.X (Lv25) (A23-71), all three after a rebirth (Config.SkillSlotsFor); an old save catches up at
 --   PlayerReady. Z / X work only while Config.Skills.ZEnabled / XEnabled (Studio tests until the 10/20 decision); a
@@ -381,9 +386,21 @@ local function move(ctx, rec)
 	elseif num(def.Push) > 0 then
 		mode, studs = "Push", num(def.Push)
 	end
-	if mode then
-		local ok, err = pcall(ms.Displace, rec, mode, ctx.Pos, studs, ctx.Player)
+	if not mode then return end
+	local player, from = ctx.Player, ctx.Pos
+	local function go()
+		-- the monster died / was removed or the caster left meanwhile: no slide
+		if player.Parent == nil or not rec.Alive or not (rec.Root and rec.Root.Parent) then return end
+		local ok, err = pcall(ms.Displace, rec, mode, from, studs, player)
 		if not ok then Util.Warn(TAG, "displace: " .. tostring(err)) end
+	end
+	-- A23-116: the slide starts when the rope / arrow / wind reaches the monster (the slot's ContactDelay, the same for
+	-- both sides); the damage was dealt at the press
+	local wait = math.clamp(num(ctx.Contact), 0, 1)
+	if wait > 0 then
+		task.delay(wait, go)
+	else
+		go()
 	end
 end
 
@@ -441,8 +458,8 @@ local function resolve(ctx, plan)
 		end
 	end
 	if playersHit > 0 then S.PvPService.BreakProtection(player) end
-	local healed = kit.Heal(player, ctx.Pos, TUNE.HealRadius, total)
-	kit.Steal(player, total)
+	local healed, healedIds = kit.Heal(player, ctx.Pos, TUNE.HealRadius, total) -- A23-116: healedIds = Fx Healed
+	local stole = kit.Steal(player, total) -- A23-116: Fx Stole
 	local statuses = (def.Shape == "Roar" or def.Shape == "Hop") and xEffects(ctx, plan, monstersHit) or {}
 	if not ctx.Auto then S.PlayerService.MarkActive(player) end
 	local extent = math.max(num(plan.Len), num(def.Range), num(plan.Radius), num(def.TauntRadius), num(plan.Hop))
@@ -469,6 +486,10 @@ local function resolve(ctx, plan)
 		Total = shown,
 		Hits = hits,
 		Statuses = statuses, -- SKL-3: Guard { { V = UserId, Pct, Sec } }, Taunted (monsters), MP (gained)
+		ContactDelay = ctx.Contact, -- A23-116: s from the press (CombatService Kit.Motion)
+		LaunchDelay = ctx.Launch,
+		Healed = healedIds, -- A23-116: UserIds whose HP really went up (the caster too, nearest 5 first)
+		Stole = stole, -- A23-116: HP the Horns life steal really gave the caster (0 = none)
 	})
 	CS.Released:Fire(player, {
 		Slot = ctx.Slot,
@@ -515,7 +536,8 @@ end
 
 -- one tick: every monster in the circle takes D x mult (one hit a cast: castId) and is slowed for slowSec; the Halo
 -- friends inside are guarded for guardSec; Horns steal MPStealTick per monster hit; the caster's heal / life steal
--- like every skill. Returns the Fx hits, the shown total, the real total, the monsters hit and the statuses
+-- like every skill. Returns the Fx hits, the shown total, the real total, the monsters hit, the statuses and (A23-116)
+-- the tick's signals { Healed = UserIds, Stole = HP }
 local function fieldHit(f, mult, slowSec, guardSec)
 	local player, def = f.Player, f.Ctx.Def
 	local CS = S.CombatService
@@ -546,9 +568,10 @@ local function fieldHit(f, mult, slowSec, guardSec)
 	guardFriends(f.Ctx, f.Center, f.Radius, guardSec, st)
 	if num(def.MPStealTick) > 0 and n > 0 then st.MP = stealMP(f.Ctx, num(def.MPStealTick) * n) end
 	local root = Util.GetRoot(player)
-	f.Healed = kit.Heal(player, root and root.Position or f.Center, TUNE.HealRadius, total)
-	kit.Steal(player, total)
-	return hits, shown, total, n, st
+	local sig = {}
+	f.Healed, sig.Healed = kit.Heal(player, root and root.Position or f.Center, TUNE.HealRadius, total)
+	sig.Stole = kit.Steal(player, total)
+	return hits, shown, total, n, st, sig
 end
 
 -- CombatService.Released for a field (the quests, the board, the kaiju and the funnel read it): right after the first
@@ -573,9 +596,10 @@ local function fieldTick(player, f)
 		endField(player, "Stop")
 		return
 	end
-	local hits, shown, total, n, st = fieldHit(f, num(f.Ctx.Def.TickMult, 1.5), f.Tick + TUNE.SlowPad, f.Tick + 0.1)
+	local hits, shown, total, n, st, sig = fieldHit(f, num(f.Ctx.Def.TickMult, 1.5), f.Tick + TUNE.SlowPad, f.Tick + 0.1)
 	local ok, err = pcall(S.CombatService.Kit.FxNear, player, "SkillTick", f.Center, f.Radius,
-		{ UserId = player.UserId, Slot = "X", Center = f.Center, Radius = f.Radius, Hits = hits, Total = shown, Statuses = st })
+		{ UserId = player.UserId, Slot = "X", Center = f.Center, Radius = f.Radius, Hits = hits, Total = shown, Statuses = st,
+			Healed = sig.Healed, Stole = sig.Stole }) -- A23-116 signals of this tick
 	if not ok then Util.Warn(TAG, "field tick: " .. tostring(err)) end
 	if f.Late then f.Best, f.Sum = math.max(f.Best, n), f.Sum + total end
 	f.Left -= 1
@@ -601,13 +625,15 @@ local function startField(ctx, plan)
 		Zone = zoneOf(player), Class = ctx.Class.Id, Faction = ctx.Faction, Character = Util.GetCharacter(player) }
 	local mult = num(def.TickMult, 1.5) * (burst and count or 1)
 	local slowSec = burst and TUNE.BurstSlow or tick + TUNE.SlowPad
-	local hits, shown, total, n, st = fieldHit(f, mult, slowSec, burst and TUNE.BurstSlow or tick + 0.1)
+	local hits, shown, total, n, st, sig = fieldHit(f, mult, slowSec, burst and TUNE.BurstSlow or tick + 0.1)
 	if not ctx.Auto then S.PlayerService.MarkActive(player) end
 	CS.Kit.FxNear(player, "Skill", plan.Center, plan.Radius + num(def.Range), {
 		UserId = player.UserId, Character = Util.GetCharacter(player), Class = ctx.Class.Id, Kit = def.Kit,
 		Faction = ctx.Faction, Slot = ctx.Slot, Shape = def.Shape, From = ctx.Pos, Center = plan.Center,
 		Radius = plan.Radius, Craft = def.Craft, Life = burst and TUNE.FxLife or count * tick, Tick = tick,
 		Auto = ctx.Auto, Total = shown, Hits = hits, Statuses = st,
+		ContactDelay = ctx.Contact, LaunchDelay = ctx.Launch, -- A23-116: like a Z / X resolve
+		Healed = sig.Healed, Stole = sig.Stole, -- A23-116: the first tick's signals
 	})
 	f.Late, f.Best, f.Sum = n == 0 and not burst, 0, 0 -- a burst is all its ticks at once: nothing comes later
 	fieldReleased(f, total, n)
@@ -662,6 +688,10 @@ local function castZX(player, s, slot, isAuto)
 	end
 	local ctx = { Player = player, Class = c, Faction = fac, Def = def, Slot = slot, Auto = isAuto, Root = root,
 		Pos = root.Position, PvP = not isAuto and K.PvPZX == true and PVP[fac] == true }
+	-- A23-116: the slot's contact / launch times (the same table as Q; the pet tamer's pet does its Z / X like its Q)
+	if type(kit.Motion) == "function" then
+		ctx.Contact, ctx.Launch = kit.Motion(slot, c.Id, Config.IsTamer(c.Id, fac) and Config.Tamer.SkillStyle or nil)
+	end
 	local plan, why = shape(ctx)
 	if not plan then
 		if not isAuto and why then press(player, slot, why) end
