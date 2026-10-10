@@ -46,3 +46,8 @@ King 착지 뒤 플레이어는 멀쩡하다(무손실 KO). `VitalsService`는 H
 ## 시험 (`tools/test_first_ko.py` + `tools/test_potions.py`)
 - first_ko: 정의(다섯 줄·보상·알림 없음·짧은 이름), 누구에게(Lv8/9·M1_2 전·물약 스톡·산/마신 저장·끝낸 저장, 진영 셋, 알림·팝업 없음), 흐름(Event 하나씩·남의 줄 안 움직임·클라이언트가 못 움직임·보상 한 번), TopUp(0/30/10+20/49/50/50은행/500, 한 번만, 곧바로 지나갈 줄엔 안 줌), 앞서가기(이른 구매·이른 슬롯·이른 마시기·옛 KO, 옛 저장의 채워진 칸 `"HP,MP,"`/`",MP,"`/`",,"`/없음/글자 아님), 개인 처치 규칙, `PotionSip` 켜짐/꺼짐. 변이 71개 모두 잡힘.
 - potions: BuyPotion 성공/거절별 이벤트, 진짜 마시기 이벤트, 풀HP 연습 한 모금(물약·쿨다운 안 씀, 줄 있음/없음, 다른 일 기다릴 때 안 셈, 물약 없을 때 안 셈). 변이 +9.
+
+## 개인 King을 끌 때 (10/10, 개발 2의 FirstKOService 검증 중)
+- `Config.FirstKOKing.Enabled = false`(King을 아예 안 부름)이면 5번 재대결 줄을 끝낼 길이 없다. 그래서 KO1은 `Requires.KingOn = true`: King이 꺼져 있으면 **새로 안 열리고**, 이미 시작한 사람의 KO1은 **조용히 사라진다**(끝난 걸로 치지 않고 보상도 없음). King이 다시 켜지면 첫 줄부터 다시 열린다. `Config.FirstKOKing` 표 자체가 없는 트리(개발 2 서비스가 아직 없는 main)는 '켜짐'으로 본다.
+- 1번 줄(KO)은 King이 꺼져도 막히지 않는다(FirstKOService가 'Tell'로 `Event FirstKO`를 다시 보냄). 이 규칙은 그 앞 줄이 아니라 '끝낼 수 없는 5번 줄' 때문에 만든 것이다.
+- 시험: `tools/test_first_ko.py` 그룹 "the personal King switch"(225 체크, 변이 88/88).

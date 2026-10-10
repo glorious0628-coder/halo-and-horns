@@ -561,4 +561,40 @@ runGroup("a brand-new Studio save keeps the slot step", function()
 	check(qd.QuickSlots == "HP,MP," and w:Track(qd, "KO1").St == 4, "a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes", show({ qd.QuickSlots, w:Track(qd, "KO1").St }))
 end)
 
+------------------------------------------------------------------ the personal King switch (game dev 2's Config.FirstKOKing.Enabled)
+-- the rematch row (step 5) can only be finished by the personal King: with the King off the quest is not offered, and a started
+-- quest leaves (it starts again, from its first row, when the King is back)
+runGroup("the personal King switch", function()
+	local w = koWorld()
+	check(KO.Requires.KingOn == true, "KO1 asks for the King (Requires.KingOn)", show(KO.Requires))
+	-- no FirstKOKing table at all (a tree without game dev 2's service) = on
+	w.Config.FirstKOKing = nil
+	local a, ad = joinKO(w, 1800, "Halo")
+	check(w:Track(ad, "KO1") ~= nil and w:Track(ad, "KO1").St == 1, "no FirstKOKing table: the quest is offered", show(w:Track(ad, "KO1")))
+	-- off: a new player is not offered it, with no row and no toast
+	w.Config.FirstKOKing = { Enabled = false }
+	local n0 = #w.Notices
+	local b, bd = joinKO(w, 1801, "Horns")
+	check(w:Track(bd, "KO1") == nil and rowOf(w, b, bd, "KO1") == nil and noticeAbout(w, b, n0, { "king", "potion", "hop" }) == nil,
+		"King off: a new player is not offered the quest (no row, no toast)", show(w:Track(bd, "KO1")))
+	-- on again: offered at the next look
+	w.Config.FirstKOKing.Enabled = true
+	w.Story.Refresh(b)
+	check(w:Track(bd, "KO1") ~= nil and w:Track(bd, "KO1").St == 1, "King on again: offered", show(w:Track(bd, "KO1")))
+	-- a started quest that is past its first row leaves when the King goes off, and starts again from row 1 when it is back
+	check(w.Story.Event(b, "FirstKO") == true and w:Track(bd, "KO1").St == 2, "row 2 reached", show(w:Track(bd, "KO1")))
+	w.Config.FirstKOKing.Enabled = false
+	w.Story.Refresh(b)
+	check(w:Track(bd, "KO1") == nil and bd.Story.Done.KO1 == nil, "King off: the started quest leaves (it is not done, no reward)", show({ w:Track(bd, "KO1"), bd.Story.Done.KO1 }))
+	for _ = 1, 3 do w.Story.Refresh(b) end
+	check(w:Track(bd, "KO1") == nil, "... and stays away while the King is off", "")
+	w.Config.FirstKOKing.Enabled = true
+	w.Story.Refresh(b)
+	check(w:Track(bd, "KO1") ~= nil and w:Track(bd, "KO1").St == 1, "King on again: the quest starts again at row 1", show(w:Track(bd, "KO1")))
+	-- Enabled = nil / true is on; only an explicit false is off
+	w.Config.FirstKOKing = { Kind = "SlimeKing" }
+	local c, cd = joinKO(w, 1802, "Neutral")
+	check(w:Track(cd, "KO1") ~= nil, "a table without Enabled: on", show(w:Track(cd, "KO1")))
+end)
+
 finish()
