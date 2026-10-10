@@ -1,0 +1,73 @@
+-- kaiju_town_offline.luau : 빛 마을 점검 #41 (user 2026-10-10, (b)): a Halo player standing inside a faction town (Halo
+-- Citadel / Horns Den) can no longer hit the Active kaiju outside it; the Crossroads fight and fights outside the towns
+-- stay as they were (the kaiju exception: rookies allowed, protection ignored). tools/test_kaiju_town.py runs the real
+-- PvPService on tools/fixtures/dev2_world.luau (rankWorld); w.ZoneIdOf[p] picks the zone the ZoneService double
+-- answers (GetZone / IsTown / IsPvPZone follow it).
+
+local Z = C0.Zones
+
+local function place(w, p, zoneId)
+	w.ZoneIdOf[p] = zoneId
+	w.InTown[p] = Z[zoneId] ~= nil and Z[zoneId].Town == true
+end
+
+local function pair(w, id, opts)
+	opts = opts or {}
+	local halo = w:Join(id, "Halo", { Level = opts.Level, Playtime = opts.Playtime })
+	local kaiju = w:Join(id + 1, "Horns")
+	kaiju:SetAttribute("KaijuState", opts.State or "Active")
+	return halo, kaiju
+end
+
+------------------------------------------------------------------ 1. the zones the rule reads
+runGroup("zones", function()
+	check(Z.HaloTown.Town == true and Z.HaloTown.Faction == "Halo" and Z.HornsTown.Town == true and Z.HornsTown.Faction == "Horns",
+		"Halo Citadel / Horns Den: towns with a faction", show({ Z.HaloTown.Faction, Z.HornsTown.Faction }))
+	check(Z.Crossroads.Town == true and Z.Crossroads.Faction == nil, "the Crossroads: a town without a faction", show(Z.Crossroads))
+end)
+
+------------------------------------------------------------------ 2. where the Halo player stands
+runGroup("kaiju exception", function()
+	local w = rankWorld()
+	local h, k = pair(w, 101)
+	place(w, k, "SlimeMeadow")
+	place(w, h, "SlimeMeadow")
+	check(w.PvP.CanAttack(h, k) == true, "meadow -> kaiju in the meadow: allowed (as before)")
+	place(w, h, "Crossroads")
+	check(w.PvP.CanAttack(h, k) == true, "Crossroads -> kaiju outside: allowed (the Crossroads fight stays)")
+	place(w, h, "HaloTown")
+	local ok, why = w.PvP.CanAttack(h, k)
+	check(ok == false and why == "SafeZone", "Halo Citadel -> kaiju outside: blocked (SafeZone, #41)", show({ ok, why }))
+	place(w, h, "HornsTown")
+	ok, why = w.PvP.CanAttack(h, k)
+	check(ok == false, "Horns Den -> kaiju outside: blocked too (any faction town)", show({ ok, why }))
+	place(w, h, "SlimeMeadow")
+	place(w, k, "HaloTown")
+	check(w.PvP.CanAttack(h, k) == true, "outside -> a kaiju standing in Halo Citadel: allowed (only the attacker's town counts)")
+end)
+
+------------------------------------------------------------------ 3. what the exception still covers outside the towns
+runGroup("rookies and others", function()
+	local w = rankWorld()
+	-- a rookie (low level, little playtime) may still hit the Active kaiju outside the towns
+	local h, k = pair(w, 201, { Level = 3, Playtime = 60 })
+	place(w, h, "SlimeMeadow")
+	place(w, k, "SlimeMeadow")
+	check(w.PvP.CanAttack(h, k) == true, "a rookie Halo in the meadow: the kaiju exception still lets them hit")
+	place(w, h, "HaloTown")
+	check(w.PvP.CanAttack(h, k) ~= true, "a rookie Halo in Halo Citadel: blocked")
+	-- a kaiju that is only queued is no exception anywhere: the normal rules (a town is a safe zone)
+	local q, s = pair(w, 203, { State = "Queued" })
+	place(w, q, "Crossroads")
+	place(w, s, "SlimeMeadow")
+	check(w.PvP.CanAttack(q, s) ~= true, "a queued kaiju from the Crossroads: the normal safe-zone rule")
+	-- Horns never had the exception: unchanged
+	local r = w:Join(205, "Horns")
+	local hk = w:Join(206, "Halo")
+	hk:SetAttribute("KaijuState", "Active")
+	place(w, r, "Crossroads")
+	place(w, hk, "SlimeMeadow")
+	check(w.PvP.CanAttack(r, hk) ~= true, "a Horns player in the Crossroads vs an Active Halo body: no exception (Halo only)")
+end)
+
+finish()

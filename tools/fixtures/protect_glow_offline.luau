@@ -121,4 +121,30 @@ runGroup("rebuilt-body", function()
 	check(glowOf(p) == nil and fieldOf(p) == nil, "10 s after the spawn: gone (the swap did not add time)")
 end)
 
+------------------------------------------------------------------ 5. no outline in a town (빛 마을 점검 #42)
+runGroup("town", function()
+	local w = rankWorld({ PvPLoop = true })
+	for _, case in { { 401, "Halo" }, { 402, "Horns" } } do
+		local p = w:Join(case[1], case[2])
+		w.InTown[p] = true -- a respawn in the town's spawn plaza
+		spawnBody(w, p)
+		check(fieldOf(p) ~= nil and p:GetAttribute("Protected") == true and glowOf(p) == nil,
+			case[2] .. ": spawned in town: the 10 s shield runs, no outline (nothing can hit you there)",
+			show({ fieldOf(p) ~= nil, glowOf(p) ~= nil }))
+		w:PvPTick(1)
+		check(glowOf(p) == nil, case[2] .. ": the loop adds none while in town")
+		w.InTown[p] = false -- walks out while still protected
+		w:PvPTick(1)
+		local h = glowOf(p)
+		check(h ~= nil and sameColor(h.OutlineColor, C0.Factions[case[2]].Color), case[2] .. ": out of town: the outline comes on",
+			show(h and h.OutlineColor))
+		w.InTown[p] = true -- back inside
+		w:PvPTick(1)
+		check(glowOf(p) == nil and fieldOf(p) ~= nil and p:GetAttribute("Protected") == true,
+			case[2] .. ": back in town: the outline goes, the shield stays", show({ glowOf(p) ~= nil, fieldOf(p) ~= nil }))
+		for _ = 1, 8 do w:PvPTick(1) end
+		check(fieldOf(p) == nil and p:GetAttribute("Protected") == false, case[2] .. ": the shield still ends on time (10 s)")
+	end
+end)
+
 finish()
