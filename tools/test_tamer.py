@@ -155,7 +155,9 @@ MUTATIONS = [
     ("corrupted levels kept", PE, "Lv = math.clamp(math.floor(num(p.Lv, 1)), 1, PETS.MaxLv),", "Lv = num(p.Lv, 1),"),
     ("two pets equipped", PE, "if #equipped < 1 and type(uid)", "if #equipped < 2 and type(uid)"),
     # --- CharacterVisuals
-    ("the tamer still holds a bow", V, 'local kind = (Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon',
+    # A23-108 (game dev 1): the weapon comes from Config.ClassGrips first (Archer_Neutral = Baton), the old rule after it
+    ("the tamer still holds a bow", V, 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)\n'
+     '\t\tor ((Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon)',
      "local kind = classDef.Weapon"),
     # --- PetService.PublishModels (PET-3 models for the clients)
     ("the pet models are never published", PE, "\tlocal ok, err = pcall(PetService.PublishModels)\n", "\tlocal ok, err = true, nil\n"),
