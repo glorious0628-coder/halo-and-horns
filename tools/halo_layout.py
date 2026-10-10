@@ -62,7 +62,7 @@ KIND = {
     "DomeHouseB": dict(w=14, d=9.5, h=17.3, coll="solid"),
     "Shop": dict(w=12, d=7.5, h=14.3, coll="solid"),
     "Statue": dict(w=6.7, d=5.5, h=13, coll="player"),
-    "ArchBridge": dict(w=21.7, d=30, h=14.9, coll="solid"),  # measured on Halo_ArchBridge_HD_LOD (fit h 30): width 21.7 incl. lantern posts, deck top at 0.59 of the height
+    "ArchBridge": dict(w=30, d=21.7, h=14.9, coll="solid"),  # 10/10 검수: the span (30) runs along the model's local X, the deck width (21.7) along local Z  # measured on Halo_ArchBridge_HD_LOD (fit h 30): width 21.7 incl. lantern posts, deck top at 0.59 of the height
     "Stairs": dict(w=20, d=20, h=15.2, coll="solid"),
     "Balustrade": dict(w=8, d=1.64, h=4.5, coll="player"),
     "Lantern": dict(w=1.3, d=1.3, h=7, coll="player"),
@@ -141,8 +141,16 @@ def ok_ground(kind, x, z, yaw, s=1.0, need=WALK, flat=FLAT):
     return True
 
 
+# 10/10 검수 ③: kept empty for the two travel pads (Map.Pads Pad_Halo_SlimeMeadow / Pad_Halo_GoblinWoods, 메인 반영 1): flat tier-1 grass
+# beside the hero road, off the spawn corridor, between the statue pairs; nothing is planned on these squares
+PADS = [(-24, -357), (24, -357)]
+RESERVE = [corners(px, pz, 12, 12, 0) for px, pz in PADS]
+
+
 def free(kind, x, z, yaw, s, pad=0.4, ignore=()):
     fp = foot(kind, x, z, yaw, s, pad)
+    if any(sat(fp, r) for r in RESERVE):
+        return False
     for q in P:
         if q["kind"] in ignore or q.get("backdrop"):
             continue
@@ -179,42 +187,7 @@ def face(dx, dz):
 
 SOUTH = 180.0  # front toward +Z (the gate / Crossroads side)
 
-# ---------------------------------------------------------------- the big pieces
-# gate: its front edge stands on z -330 (the bridge end / island edge), centre z -345.8; the invisible Lintel PrimaryPart sits at the front edge (0, 19, -330) so MapBuilder.placeGate does not slide it; the arch opening is ~14 wide at scale 1.2 (Halo_Gate fit h 50.4)
-P.append(dict(kind="Gate", x=0, z=-345.8, y=0.2, yaw=SOUTH, s=1.0, lintel=[0, 19, -330], towers=[[-16.15, 22, -1.7], [16.15, 22, -1.7]], tower_size=[18.2, 44, 17.0]))
-# cathedral on the far terrace, front toward the road
-cat = put("Cathedral", 0, -655.5, SOUTH, 0.9, flat=1.5)  # 63 x 63: the tier-4 ramp ends at z -621 and the terrace at -692
-# fountain on the plaza terrace
-fnt = put("Fountain", 0, -565, 0, 1.0)
-# stairs models on the three axis ramps (the collision is the terrain ramp; the model is only the look)
-# stairs model rise = 8.2 studs over a 20 deep run at scale 1 (measured on the LOD mesh): stretch it to the ramp (28 wide, 22 long, rise of that tier)
-for zb, yb, rise in ((-444, 0.2, 8.8), (-524, 9.0, 11.0), (-606, 20.0, 13.0)):  # ramps are 30 long now (halo_terrain RampLen)
-    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=0.0, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.5], ramp=True))
-
-# hero statues (face the road axis): tier 1 pairs, one pair on tier 2
-for z in (-384, -408, -466, -492):
-    for sx in (-1, 1):
-        put("Statue", sx * (24 if z > -440 else 28), z, face(-sx, 0), 1.0)
-
-# shops on the plaza terrace: four, facing the fountain axis (bakery / juice / flowers / toys, decor only: 검수 #49 #51)
-SHOPKIND = {(-1, -546): "Bakery", (1, -546): "Juice", (-1, -584): "Flower", (1, -584): "Potion"}  # Potion = the real potion merchant (검수 #34); signs = HaloSign* (이미지 개발)
-for z in (-546, -584):
-    for sx in (-1, 1):
-        put("Shop", sx * 44, z, face(-sx, 0), 1.9, shopkind=SHOPKIND[(sx, z)])
-
-# towers: plaza terrace corners and cathedral terrace corners
-for sx in (-1, 1):
-    for x, z in ((66, -542), (66, -592), (86, -624), (86, -680)):
-        put("Tower", sx * x, z, face(-sx, 0), 1.0)
-
-# wing houses, mirrored: A on the canal side, B further out, front toward the spine axis (the hero road side)
-HOUSES = [("WA", -392, 106, 150), ("WB", -494, 112, 156), ("WC", -582, 124, 168)]
-for name, z, xa, xb in HOUSES:
-    for sx in (-1, 1):
-        put("DomeHouseA", sx * xa, z, face(-sx, 0), 1.9)  # x1.9: the door (3.2 studs at scale 1) becomes avatar size
-        put("DomeHouseB", sx * xb, z, face(-sx, 0), 2.0)
-
-# ---------------------------------------------------------------- bridges
+# ---------------------------------------------------------------- bridges (10/10 검수: placed first so the houses / shops keep off the landings)
 # (name, centre x, centre z, axis "x" = span along x, deck Y at the low / high end)
 BR = [("BA", 0, -385, "x", 0.2, 3), ("BB", 0, -492, "x", 9, 12), ("BC", 0, -582, "x", 20, 22), ("BD", 0, -662, "x", 33, 33),
       ("BAB", 130, -442, "z", 3, 12), ("BBC", 150, -544, "z", 12, 22), ("BCD", 150, -620, "z", 22, 33)]
@@ -268,7 +241,7 @@ def bridge_spots():
 
 for b in bridge_spots():
     span = b["span"] + 8  # 4 studs of landing each side
-    s = span / KIND["ArchBridge"]["d"]
+    s = span / KIND["ArchBridge"]["w"]
     s = max(0.7, min(1.4, s))
     yaw = 90.0 if b["axis"] == "x" else 0.0  # model span runs along its local X: yaw 0 -> span along x ; yaw 90 -> along z
     yaw = 0.0 if b["axis"] == "x" else 90.0
@@ -277,6 +250,41 @@ for b in bridge_spots():
              name=b["name"] + ("W" if b["side"] < 0 else "E"), span=b["span"], y0=b["y0"], y1=b["y1"], axis=b["axis"])
     P.append(e)
     BRIDGES.append(e)
+
+# ---------------------------------------------------------------- the big pieces
+# gate: its front edge stands on z -330 (the bridge end / island edge), centre z -345.8; the invisible Lintel PrimaryPart sits at the front edge (0, 19, -330) so MapBuilder.placeGate does not slide it; the arch opening is ~14 wide at scale 1.2 (Halo_Gate fit h 50.4)
+P.append(dict(kind="Gate", x=0, z=-345.8, y=0.2, yaw=SOUTH, s=1.0, lintel=[0, 19, -330], towers=[[-16.15, 22, -1.7], [16.15, 22, -1.7]], tower_size=[18.2, 44, 17.0]))
+# cathedral on the far terrace, front toward the road
+cat = put("Cathedral", 0, -655.5, SOUTH, 0.9, flat=1.5)  # 63 x 63: the tier-4 ramp ends at z -621 and the terrace at -692
+# fountain on the plaza terrace
+fnt = put("Fountain", 0, -565, 0, 1.0)
+# stairs models on the three axis ramps (the collision is the terrain ramp; the model is only the look)
+# stairs model rise = 8.2 studs over a 20 deep run at scale 1 (measured on the LOD mesh): stretch it to the ramp (28 wide, 22 long, rise of that tier)
+for zb, yb, rise in ((-444, 0.2, 8.8), (-524, 9.0, 11.0), (-606, 20.0, 13.0)):  # ramps are 30 long now (halo_terrain RampLen)
+    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=0.0, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.5], ramp=True))
+
+# hero statues (face the road axis): tier 1 pairs, one pair on tier 2
+for z in (-384, -408, -466, -492):
+    for sx in (-1, 1):
+        put("Statue", sx * (24 if z > -440 else 28), z, face(-sx, 0), 1.0)
+
+# shops on the plaza terrace: four, facing the fountain axis (bakery / juice / flowers / toys, decor only: 검수 #49 #51)
+SHOPKIND = {(-1, -546): "Bakery", (1, -546): "Juice", (-1, -584): "Flower", (1, -584): "Potion"}  # Potion = the real potion merchant (검수 #34); signs = HaloSign* (이미지 개발)
+for z in (-546, -584):
+    for sx in (-1, 1):
+        put("Shop", sx * 44, z, face(-sx, 0), 1.9, shopkind=SHOPKIND[(sx, z)])
+
+# towers: plaza terrace corners and cathedral terrace corners
+for sx in (-1, 1):
+    for x, z in ((66, -542), (66, -592), (86, -624), (86, -680)):
+        put("Tower", sx * x, z, face(-sx, 0), 1.0)
+
+# wing houses, mirrored: A on the canal side, B further out, front toward the spine axis (the hero road side)
+HOUSES = [("WA", -392, 106, 150), ("WB", -494, 112, 156), ("WC", -582, 131, 170)]  # 10/10: A moved out to clear the BC bridge landing (span 40 along x)
+for name, z, xa, xb in HOUSES:
+    for sx in (-1, 1):
+        put("DomeHouseA", sx * xa, z, face(-sx, 0), 1.9)  # x1.9: the door (3.2 studs at scale 1) becomes avatar size
+        put("DomeHouseB", sx * xb, z, face(-sx, 0), 2.0)
 
 # ---------------------------------------------------------------- small props
 def spine_edge_x(z):
@@ -420,8 +428,8 @@ blk = solid_blocked()
 bridge_cells = set()
 for b in BRIDGES:
     k = KIND["ArchBridge"]
-    L = k["d"] * b["s"]
-    W = k["w"] * b["s"]
+    L = k["w"] * b["s"]  # span
+    W = k["d"] * b["s"]  # deck width
     for t in range(int(-L / 2), int(L / 2) + 1, 2):
         for u in range(int(-W / 2), int(W / 2) + 1, 2):
             if b["axis"] == "x":
@@ -456,7 +464,7 @@ WALKTAG = ("plaza", "top")
 bridge_rects = []
 for b in BRIDGES:
     k = KIND["ArchBridge"]
-    L, W = k["d"] * b["s"], k["w"] * b["s"]
+    L, W = k["w"] * b["s"], k["d"] * b["s"]  # span, deck width
     if b["axis"] == "x":
         bridge_rects.append((b["x"] - L / 2 - 2, b["x"] + L / 2 + 2, b["z"] - W / 2 - 3, b["z"] + W / 2 + 3))
     else:
