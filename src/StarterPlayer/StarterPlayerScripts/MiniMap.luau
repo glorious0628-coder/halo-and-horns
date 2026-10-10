@@ -1094,7 +1094,7 @@ local function townPads()
 	S.padMarks = S.padMarks or {}
 	local used = 0
 	for _, p in (pads and pads:GetChildren() or {}) do
-		local part = p:IsA("BasePart") and p or (p:IsA("Model") and (p.PrimaryPart or p:FindFirstChildWhichIsA("BasePart", true))) or nil
+		local part = p:IsA("BasePart") and p or nil -- 검수 10/10: BaseParts only (ZoneService connects only those)
 		local zone = part and type(p:GetAttribute("TravelTo")) == "string" and Config.ZoneAt(part.Position) or nil
 		if zone and zone.Id ~= "Crossroads" and used < T.MaxPads then
 			used += 1

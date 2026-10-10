@@ -1,0 +1,39 @@
+{
+  "checks": 7,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "every light stays on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "my own lights are capped too",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a server-off light comes back on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "lights never come back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the farthest kept (no sort)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "LightCap (게임성 개발 1, 빛 마을 점검 #61, 2026-10-10), offline.\n\nRuns, in the official Luau CLI, the CURRENT LightCap.luau in tools/fixtures/light_cap_offline.luau. Checks: the nearest\n6 other characters (by distance to the camera) keep their lights; the rest go dark on this screen only; my own lights\nare never touched; coming near brings back only the lights this module turned off (one the server turned off stays\noff); going far turns them off. Static: ClientMain loads LightCap. Mutations: each must be caught.",
+  "studioCalls": 0
+}

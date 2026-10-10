@@ -188,7 +188,7 @@ Config.Data = {
 		-- camera); Follow stays in Settings for whoever wants it. Settings V3 (검수 10/09): a save from before V3 gets Cam = Free
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
-		Settings = { V = 4, Keys = {}, Sfx = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
+		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
 			Cam = "Follow", PvPCards = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
@@ -3371,6 +3371,40 @@ Config.StoryQuests.Defs.EG14 = {
 }
 for _, id in { "EG01", "EG02", "EG03", "EG04", "EG14" } do table.insert(Config.StoryQuests.Subs, id) end
 
+-- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
+-- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
+-- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
+--   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
+--   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
+--   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
+-- Halo Citadel spots (halo_layout.py: the spine's tier 2 starts at z -444 (Y 5), the plaza terrace is z -524..-606, the fountain
+-- (0,-565), the shop stalls x +-44, z -546 / -584): Bright at the foot of the plaza stairs, Sir Gleam beside the gate road.
+Config.TownNpcs = {
+	Enabled = true,
+	PromptDistance = 10, -- studs (< Config.StoryQuests.NpcRange 16: a trigger is always near enough for the story's own check)
+	RayTop = 150, -- the ground ray starts this high and goes RayTop + RayDepth down
+	RayDepth = 60,
+	MaxCoord = 3000,
+	List = {
+		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
+			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
+		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
+			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546),
+			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584),
+			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(34, 0, -584), Look = Vector3.new(44, 0, -584),
+			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565),
+			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false,
+			At = Vector3.new(-34, 0, -546), Look = Vector3.new(0, 0, -546) },
+		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
+			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
+	},
+}
+
 -- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
 -- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
 -- role. A card is taken as [Kind] or [Sneaky]: only the side is counted (data.Story.N), no honor / infamy / ranking.
@@ -3925,7 +3959,8 @@ Config.Analytics = {
 	Steps = { "IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "FirstWeapon", "MeadowArrive",
 		"FirstHit", "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10" },
 	UiIds = { "Menu", "Items", "Bag", "Skills", "Character", "Ranking", "Journal", "Board", "Settings", "Help", "News",
-		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback" },
+		"Travel", "WorldMap", "WeaponShop", "PotionShop", "Shop", "Rebirth", "Altar", "Class", "PlayerList", "Feedback", "Pet",
+		"Diary" },
 	AwayAfter = 300,
 	EnhanceFailLeave = 300,
 	SameKindStreak = 30,
@@ -4147,9 +4182,10 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eight values, Seq)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the nine values incl. Music, Seq)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
+		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
 		Shake = { Type = "Bool" },
 		DmgNum = { Type = "Enum", Options = { "All", "Off" } },
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
@@ -4160,9 +4196,10 @@ Config.Settings = {
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
-	Order = { "Sfx", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
+	Order = { "Sfx", "Music", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
+		Music = "Music", MusicEn = "Music",
 		Shake = "Screen shake", ShakeEn = "Screen shake",
 		DmgNum = "Damage numbers", DmgNumEn = "Damage numbers",
 		Tags = "Other players' name tags", TagsEn = "Other players' name tags",
@@ -4634,6 +4671,10 @@ Config.Loot = {
 -- game dev 1 sent (2026-10-09)
 Config.Nudges = {
 	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
+	-- A23-99 추가 (user 2026-10-10 photo: "이거 없애달라니까 ㅋㅋ 위에 메인 퀘스트 관련한 내용 있잖아 이미"): the head line
+	-- 'Quests (N) ▼' over the quest lines / tracker is gone (with its ▼); the quest window still opens with Q, the menu
+	-- and a press on a quest line (phones: the block); the lines stay as many as before
+	QuestHead = false,
 	-- 검수 10/09 decision (docs/design/nudge_list_2026-10-09.md): client
 	WarIntro = false, -- "Crown War: win points for your side!" when the war bar first shows (HUD.ApplyFold)
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
@@ -4952,6 +4993,42 @@ Config.Audio = {
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },
+}
+
+-- A23-100 배경 음악 (소리 만들기 2026-10-10, art/sfx/asset_ids.json "bgm"; mono loops, -24 LUFS): Audio.luau plays the
+-- track of the zone I stand in (Tracks[ZoneId], from TimePosition 0) in the "Music" SoundGroup at Volume (under Settings
+-- "Music"), crossfading over Fade s when my ZoneId changes; a zone without a track (Outskirts, the sea, the bridges) is
+-- quiet. The big moments (Duck.By) lower it to DuckMul. Boss[zone] = the boss layer (sample-for-sample the zone track's
+-- length, -27 LUFS): while GameState[Active] is true and I am in that zone it plays with the track at the track's
+-- TimePosition (fading in / out with the same Fade)
+Config.Audio.Music = {
+	Volume = 0.5, Fade = 1.5, DuckMul = 0.5,
+	Tracks = {
+		HaloTown = "rbxassetid://108661141883977", -- 88.646 s loop
+		HornsTown = "rbxassetid://123430641290441", -- 63.264 s loop
+		Crossroads = "rbxassetid://89489494811803", -- 82.244 s
+		SlimeMeadow = "rbxassetid://107428223386912", -- 69.634 s
+		GoblinWoods = "rbxassetid://114854716063832", -- 77.515 s
+		SkeletonRuins = "rbxassetid://70596551890083", -- 64.779 s
+		PumpkinPatch = "rbxassetid://97391238692429", -- 68.961 s
+		HauntedHollow = "rbxassetid://103556459915929", -- 69.017 s
+	},
+	Boss = {
+		SlimeMeadow = { Id = "rbxassetid://98188790457804", Active = "SlimeKingActive" }, -- King Slime
+		PumpkinPatch = { Id = "rbxassetid://113774483516470", Active = "PumpkinKingActive" }, -- Pumpkin King
+		HauntedHollow = { Id = "rbxassetid://97981769754135", Active = "GhostKingActive" }, -- Ghost King
+		SkeletonRuins = { Id = "rbxassetid://88486401685380", Active = "ClatterActive" }, -- Captain Clatter
+	},
+}
+-- 점검표 sound 60 (소리 만들기 2026-10-10; 20 s loops, -30 LUFS): 3D water by the fountains (FountainFx -> Audio.Ambient)
+-- and the waterfalls (Map.Decor models named *Waterfall, + Spots for terrain-only falls: the Halo town's six =
+-- tools/worldkit/halo_terrain.luau FALLS x WINGS, x = +-the wing's outer edge, y = half its drop to the sea). Outside the
+-- MaxPlaying pools; the Sound effects setting scales them
+Config.Audio.Ambient = {
+	Fountain = { Id = "rbxassetid://136139057502455", Volume = 0.5, MinDistance = 6, MaxDistance = 40 },
+	Waterfall = { Id = "rbxassetid://85234404217631", Volume = 0.5, MinDistance = 8, MaxDistance = 40,
+		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
+			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
 
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }
@@ -5410,7 +5487,13 @@ Config.UIArt = {
 		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
 		FacMascotHaloA = { Id = "rbxassetid://98817628227692", Size = Vector2.new(617, 1024) },
 		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
-		IconDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
+		-- Halo town shop signs (이미지 생성 2, 검수 OK 10/10; wall arm + chains + round plate, no words): the shop models' sign
+		-- SurfaceGui (메인 반영 1 / 이미지 생성 1). The potion sign only at Halo town's real potion merchant
+		HaloSignPotion = { Id = "rbxassetid://122788599616130", Size = Vector2.new(1024, 1024) },
+		HaloSignBakery = { Id = "rbxassetid://77116902671887", Size = Vector2.new(1024, 1024) },
+		HaloSignJuice = { Id = "rbxassetid://133684891699718", Size = Vector2.new(1024, 1024) },
+		HaloSignFlower = { Id = "rbxassetid://93642542767036", Size = Vector2.new(1024, 1024) },
+		IconDiary ={ Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- 검수 10/08: the menu square / Diary window = the same King Diary book
 		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
 		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
 		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
@@ -5834,7 +5917,6 @@ Config.Text = {
 	SwitchCooldown = "You can switch sides again in %s.",
 	NoTicket = "You have no change ticket. Get one at Menu > Ticket Shop.",
 	TicketSaving = "Saving your ticket purchase. Please tap again in a moment.", -- CR-L25: UseTicket returned "Pending"
-	ClassChosen = "Your class is now %s!",
 	ClassChangedFree = "You changed your class to %s! You start again from Lv 1.", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "You changed your class to %s! (Level kept: under Lv%d)", -- A23-14 (className, FreeKeepLevelBelow)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
@@ -6631,6 +6713,61 @@ Config.ChoiceCard.Kinds.ApprenticeScratch = {
 	Title = "The apprentice scratched the hilt a little.",
 	Good = { Label = "It's fine. Thank you!", Reward = { Item = "Enh70", N = 1 }, Points = 1, Done = "Otto's apprentice beams." },
 	Evil = { Label = "Fix it AND give me a discount!", Reward = { GoldMin = 2 }, Points = 1, Done = "A discount, just for you." },
+}
+-- #45 Lost & Found (content_beyond_10min C; 게임성 개발 3, 2026-10-10; docs/design/lost_found_server_2026-10-10.md,
+-- LostFoundService). A monster in a zone that has an item sometimes drops what somebody lost: the player's own kills
+-- are counted (nothing below From, rising evenly to sure at Sure, then the count starts again), one thing is held at a time,
+-- DayCap finds a KST day. A find opens the item's ChoiceCard (Good = give it back, Evil = the finder's fee, or - for what is
+-- not a child's - keep it as a trophy); the card pays nothing, its points go through Deeds. The pick sends the player to the
+-- Lost & Found bench (Bench) or to the own town (the vault); arriving pays RewardMinutes of hunting at the player's level:
+-- Good = that much XP + Reward.Good.Give (+ one FirstScroll on the first find of a day), Evil = that much gold (all of it never
+-- 2x). The numbers are PROPOSED (검수 decides). OFF until the quest window draws the Kind "Find" row (game dev 1) and the
+-- four item icons are in (image session 2); switched on through Config.LostFound.Enabled (or the live switchboard).
+Config.Data.Defaults.LostFound = { Day = 0, N = 0, K = 0 }
+Config.LostFound = {
+	Enabled = false,
+	From = 60, -- kills before the first chance (about 5 minutes at 12 a minute)
+	Sure = 100, -- the kill that surely drops it (about 8 minutes)
+	DayCap = 3,
+	RewardMinutes = 2,
+	Bench = { Zone = "Crossroads", Spot = "KidsBench", Range = 10 },
+	Order = { "Teddy", "ClubBadge", "GuardMedal", "CandyBag" },
+	Items = {
+		Teddy = { Name = "Lost Teddy", Zone = "SlimeMeadow", Owner = "Kid", Card = "LostTeddy" },
+		ClubBadge = { Name = "Grab Club Badge", Zone = "GoblinWoods", Owner = "Goblin", Card = "LostBadge" },
+		GuardMedal = { Name = "Old Guard Medal", Zone = "SkeletonRuins", Owner = "Guard", Card = "LostMedal" },
+		CandyBag = { Name = "Lost Candy Bag", Zone = "PumpkinPatch", Owner = "Kid", Card = "LostCandy", Season = "Halloween" },
+	},
+	Reward = { Good = { Give = { HP = 2, MP = 2 }, FirstScroll = "Enh70" } },
+	Text = {
+		GoodDone = "Thank you for the %s! Here is a little gift.",
+		FeeDone = "Cheeky! Here's a coin for the %s.",
+		TrophyDone = "The %s is in your vault now.",
+		RowBench = "Bring the %s to the Lost & Found · Crossroads",
+		RowVault = "Put the %s in your vault · your town",
+		ShortBench = "Lost & Found",
+		ShortVault = "Trophy vault",
+	},
+}
+Config.ChoiceCard.Kinds.LostTeddy = {
+	Title = "A lost teddy! Someone must miss it.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Finder's fee!", Points = 1, Done = "Sneaky! Ask for a fee at the Lost & Found." },
+}
+Config.ChoiceCard.Kinds.LostCandy = {
+	Title = "A candy bag! Someone is looking for it.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Finder's fee!", Points = 1, Done = "Sneaky! Ask for a fee at the Lost & Found." },
+}
+Config.ChoiceCard.Kinds.LostBadge = {
+	Title = "A Grab Club badge! A big goblin must be sad.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Keep it as a trophy", Points = 1, Done = "A fine trophy! Stash it in your vault." },
+}
+Config.ChoiceCard.Kinds.LostMedal = {
+	Title = "An old guard medal! It still shines.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Keep it as a trophy", Points = 1, Done = "A fine trophy! Stash it in your vault." },
 }
 -- A23-86 Sprout Oath titles (stat-free; the oath's pick decides which: Good = Guardian Cadet, Evil = Rascal Cadet)
 Config.TitleDefs.GuardianCadet = { Name = "Guardian Cadet", NameEn = "Guardian Cadet", Color = Color3.fromRGB(255, 225, 120) }

@@ -1,12 +1,137 @@
 {
   "status": "passed",
-  "checks": 290,
-  "namedChecks": 224,
+  "checks": 316,
+  "namedChecks": 250,
   "failing": [],
   "mutations": {
-    "total": 99,
-    "caught": 99,
+    "total": 112,
+    "caught": 112,
     "results": [
+      {
+        "mutation": "music: no crossfade (a jump)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: ... fading in (half way at half the fade)",
+          "music :: into the Horns town: a crossfade (the old down, the new up)"
+        ]
+      },
+      {
+        "mutation": "music: the old track keeps playing",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: ... the old track stops and goes",
+          "music :: a zone without a track (the outskirts): quiet (the last one faded out)",
+          "music :: into the Horns town: a crossfade (the old down, the new up)",
+          "music :: leaving the meadow during the boss: track and layer both fade out"
+        ]
+      },
+      {
+        "mutation": "music: no dip at a big moment",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: a big moment (Duck.By) dips the music too"
+        ]
+      },
+      {
+        "mutation": "music: the Music setting ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: ... and it comes back to the Music setting",
+          "music :: a big moment (Duck.By) dips the music too",
+          "music :: the Music setting is the group's volume"
+        ]
+      },
+      {
+        "mutation": "music: a zone change ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": []
+      },
+      {
+        "mutation": "music: a second copy of the same track",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: the same zone again: no second track"
+        ]
+      },
+      {
+        "mutation": "water: not under the Sound effects setting",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: ... the Sound effects setting turns it down"
+        ]
+      },
+      {
+        "mutation": "water: the Halo waterfall spots ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: a waterfall sound at each of the six Halo spots"
+        ]
+      },
+      {
+        "mutation": "boss layer: from the start, out of step with the track",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: King Slime out: his layer starts at the track's TimePosition, looped, in the Music group, from silence"
+        ]
+      },
+      {
+        "mutation": "boss layer: never stops",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: King Slime gone: the layer fades out and stops, the track stays",
+          "music :: leaving the meadow during the boss: track and layer both fade out"
+        ]
+      },
+      {
+        "mutation": "boss layer: plays without the boss",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: BossLayer: the layer only while its boss is out",
+          "music :: King Slime gone: the layer fades out and stops, the track stays",
+          "music :: King Slime out: his layer starts at the track's TimePosition, looped, in the Music group, from silence",
+          "music :: the meadow track, no layer while King Slime is away"
+        ]
+      },
+      {
+        "mutation": "boss layer: never fades in",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: ... fading in to the music volume"
+        ]
+      },
+      {
+        "mutation": "water: heard from anywhere",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: a fountain's water: looped, 3D 40 studs, at its volume x Sound effects"
+        ]
+      },
       {
         "mutation": "every drop rings (materials too)",
         "applied": true,
@@ -143,7 +268,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: the same event inside its cooldown is skipped",
           "swing :: Archer: 2+ targets = a second arrow 0.068 s later at 1.10x and 0.85 volume (§4-2 5)"
         ]
       },
@@ -268,7 +392,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -996,9 +1119,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3cf86f66979133d7c4705a91a57408477ba9a1340e038ec68a67406deaed7a2c",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "fe19f90766778c1dfca3b660eedf7528da426c458d1228a8f2f946f8c887a63b",
-    "tools/fixtures/audio_offline.luau": "6d5601d786ec6fb7bff9e352d6f76e358b322fb998794ce1f2e6f7464b2c088d"
+    "src/ReplicatedStorage/Shared/Config.luau": "146ebf2e1fc052d247069f3686f0d9ebe73280c8fe7d15741e41536c6206f863",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "ed68250ee9de2678dd35b79b388ecd46108261879d0f223233eb7d8661107c8e",
+    "tools/fixtures/audio_offline.luau": "ae81fdad5cbb65b06e7b49e5880fc08e3e55d14082b70dead5cc5ef56781ea6f"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

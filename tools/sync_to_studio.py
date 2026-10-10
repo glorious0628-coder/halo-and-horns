@@ -4,7 +4,7 @@ src/ 폴더의 스크립트를 열려 있는 Roblox Studio 창에 그대로 밀�
   py tools/sync_to_studio.py               -> 동기화 (플레이 중이면 아무것도 안 하고 끝냄: 사용자 플레이일 수 있음)
   py tools/sync_to_studio.py --stop-play   -> 플레이 중이면 정지 후 동기화 (사용자에게 먼저 알린 뒤에만)
 
-- 대상 창: 이름에 STUDIO_NAME(기본 "GoodEvil")이 들어간 스튜디오
+- 대상 창: 이름에 STUDIO_NAME이 들어간 스튜디오 (STUDIO_NAME·STUDIO_ID가 없으면 오류; 메인 Studio는 HH_MAIN_STUDIO=1 이 있을 때만, 메인 반영 1 전용 — tools/studio_mcp.py)
 - 내용이 바뀐 스크립트만 지우고 다시 만든다 (스크립트 생성은 MCP multi_edit 도구로만 가능)
 - 관리 대상(ServerScriptService, ReplicatedStorage, StarterPlayerScripts, StarterCharacterScripts) 안에서
   src에 없는 스크립트와 빈 폴더는 지운다

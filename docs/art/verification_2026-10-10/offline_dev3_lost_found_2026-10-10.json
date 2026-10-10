@@ -1,0 +1,2081 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 155,
+  "failedChecks": 0,
+  "namedChecks": 155,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "config: OFF by default, 60..100 kills, 3 a day, 2 minutes of hunting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "four items in order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "teddy: meadow, badge: woods, medal: ruins, candy bag: pumpkin patch (Halloween only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the child's things are the teddy and the candy bag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostCandy (CandyBag): a saved card, 1 point each way, no reward of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostCandy: a child's thing asks a fee, anything else is kept as a trophy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostTeddy (Teddy): a saved card, 1 point each way, no reward of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostTeddy: a child's thing asks a fee, anything else is kept as a trophy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostMedal (GuardMedal): a saved card, 1 point each way, no reward of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostMedal: a child's thing asks a fee, anything else is kept as a trophy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostBadge (ClubBadge): a saved card, 1 point each way, no reward of its own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "card LostBadge: a child's thing asks a fee, anything else is kept as a trophy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save default LostFound { Day 0, N 0, K 0 } (the data version stays 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the bench: the Crossroads kids' bench, 10 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every line is plain English (the one bullet is ·)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "short names fit 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "below 60 kills: no chance",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "60: 1/41, 80: 21/41, 99: 40/41 (evenly rising)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "100 kills and more: sure",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "the chance only rises",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "From = Sure: sure at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the beat (Chance)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off: nothing counts",
+      "check": "Config.LostFound.Enabled = false: 300 kills, no count, no find, no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off: nothing counts",
+      "check": "no row, no delivery",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off: nothing counts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off: nothing counts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "59 kills: counted, no chance, no draw used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "the 60th kill draws once (a roll of 0.999 is no find)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "each later kill draws once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "kill 80, roll 0.52: no find",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "kill 80, roll 0.5: the teddy, the count starts again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "even with the worst rolls the 100th kill finds it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kills count; a find at the right kill",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "a find",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "holding the teddy, phase Choose, the day's first, 1 find today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "the card of the teddy opened (Give it back / Finder's fee!)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "it is a saved card (it waits for the player; Ctx.Item = Teddy)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "no row while the card is still unanswered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "the badge's card, an unanswered card and another card's answer start no walk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "while one is held: 150 kills, no count, no second find, no second card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what a find does",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "kills outside the four item zones count nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "the woods: the Grab Club badge, its own card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "the ruins: the old guard medal, its own card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "the pumpkin patch outside Halloween: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "the pumpkin patch in Halloween: the lost candy bag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "town kills in between are not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "the woods count on from the meadow's 50 (one count per player)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "zones and items",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who counts",
+      "check": "a free rider's small share (Minor) counts nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who counts",
+      "check": "a kill with no player, no info or no zone counts nothing (and breaks nothing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who counts",
+      "check": "a player who left counts nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who counts",
+      "check": "a player who is not ready yet counts nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who counts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who counts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "find 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "delivered 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "find 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "delivered 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "find 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "delivered 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "three finds today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "the fourth does not come: nothing counts today either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "the next KST day: the count starts, finds are 1 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "and it is the new day's first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "three a day, then the next KST day",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "Give it back: carrying it to the bench, Honor +1 (a Halo deed), the quest list refreshed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "the row: bring the teddy to the bench (guide: the fountain)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "a Good walk shows XP, no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "Finder's fee!: the same bench, Infamy +1 (a Horns deed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "an Evil walk shows gold, no XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "Keep it as a trophy: the vault leg (a Halo's Evil deed has nothing to lose at 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "the vault row: the badge, guide OwnTown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "Give back the medal: the bench",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "a Lost card with no find behind it starts no walk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the pick: Good / the fee / the trophy",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "in the meadow: not there yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "11 studs from the bench: not there yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "the bench's coordinates in another zone: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "exactly 10 studs: the 1 s loop pays by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "the quest list is refreshed (the row goes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "XP = 2 minutes of hunting at Lv5 (120), no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "the line says what it paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "the row is gone; Delivered says what was paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "nothing is paid twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "the day's second find is not the first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "the second turn-in: potions only, no scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the bench",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "the fee at the bench",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "Cheeky! Here's a coin",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "a Halo player in the Horns town: no vault",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "the bench is not the vault",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "the Halo town: the trophy is stashed, 2 minutes of gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "the vault line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "a Horns player in the Halo town: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "the Horns town is the Horns player's vault",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "the 2x XP pass does not double it (the amount is its own cap)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the walk's end: the fee and the vault",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "a full scroll bag: paid anyway, nothing breaks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "a failing item grant: the XP still comes, nothing is paid twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "a failing gold payment: the turn-in is done, the record is cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "and it is never tried again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a full bag, failures",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switched off on the way",
+      "check": "off: no row, no payment, the record waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switched off on the way",
+      "check": "on again: the walk ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switched off on the way",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switched off on the way",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "a find while a flower card is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "the find is held; no second card opens over the first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "still waiting while the flower card is open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "the next kill after the flower card: the teddy's card opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "and it opens once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "still the same find",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "another card is open: the find waits for its card",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save: a thing on its way survives the next join",
+      "check": "a new join: the walk goes on and ends at the bench",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save: a thing on its way survives the next join",
+      "check": "a saved Choose-phase card is in the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save: a thing on its way survives the next join",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the save: a thing on its way survives the next join",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 1: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 2: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 3: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 4: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 5: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 6: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a broken save 7: repaired, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "today's finds and the count are capped (1000 / 1,000,000)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "a good record is kept (First becomes a boolean)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken save is repaired",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugFind in a town: the first item",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "one at a time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugClear wipes the record",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugFind: the item of the zone, a real card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "an id names the item",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "an unknown id falls back to the zone's / first item",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaving",
+      "check": "a player who left is not paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaving",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leaving",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 16,
+  "staticFailures": [],
+  "mutations": {
+    "total": 85,
+    "applied": 85,
+    "caught": 85,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: OFF by default, 60..100 kills, 3 a day, 2 minutes of hunting",
+          "off: nothing counts :: Config.LostFound.Enabled = false: 300 kills, no count, no find, no card"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: the chance starts at 50 kills",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: OFF by default, 60..100 kills, 3 a day, 2 minutes of hunting",
+          "kills count; a find at the right kill :: 59 kills: counted, no chance, no draw used",
+          "kills count; a find at the right kill :: kill 80, roll 0.52: no find",
+          "kills count; a find at the right kill :: the 60th kill draws once (a roll of 0.999 is no find)",
+          "the beat (Chance) :: 60: 1/41, 80: 21/41, 99: 40/41 (evenly rising)",
+          "the beat (Chance) :: below 60 kills: no chance"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: sure at 99 kills",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: OFF by default, 60..100 kills, 3 a day, 2 minutes of hunting",
+          "kills count; a find at the right kill :: kill 80, roll 0.52: no find",
+          "the beat (Chance) :: 60: 1/41, 80: 21/41, 99: 40/41 (evenly rising)",
+          "the beat (Chance) :: the chance only rises"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: four a day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: OFF by default, 60..100 kills, 3 a day, 2 minutes of hunting",
+          "three a day, then the next KST day :: and it is the new day's first",
+          "three a day, then the next KST day :: the fourth does not come: nothing counts today either",
+          "three a day, then the next KST day :: the next KST day: the count starts, finds are 1 again"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: 3 minutes of hunting",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: config: OFF by default, 60..100 kills, 3 a day, 2 minutes of hunting",
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: the row is gone; Delivered says what was paid",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: the bench range is 20",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the bench: the Crossroads kids' bench, 10 studs",
+          "the walk's end: the bench :: 11 studs from the bench: not there yet",
+          "the walk's end: the bench :: the quest list is refreshed (the row goes)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: the bench is in the meadow",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "a full bag, failures :: a failing item grant: the XP still comes, nothing is paid twice",
+          "a full bag, failures :: a full scroll bag: paid anyway, nothing breaks",
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+          "config :: the bench: the Crossroads kids' bench, 10 studs",
+          "switched off on the way :: on again: the walk ends"
+        ],
+        "newFailingCount": 22
+      },
+      {
+        "mutation": "config: the teddy drops in the woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: group ran to the end without a Lua error",
+          "another card is open: the find waits for its card :: a find while a flower card is open",
+          "another card is open: the find waits for its card :: group ran to the end without a Lua error",
+          "config :: teddy: meadow, badge: woods, medal: ruins, candy bag: pumpkin patch (Halloween only)",
+          "debug aids :: DebugFind: the item of the zone, a real card",
+          "kills count; a find at the right kill :: 59 kills: counted, no chance, no draw used"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "config: the badge belongs to a child",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: card LostBadge: a child's thing asks a fee, anything else is kept as a trophy",
+          "config :: the child's things are the teddy and the candy bag",
+          "the pick: Good / the fee / the trophy :: Keep it as a trophy: the vault leg (a Halo's Evil deed has nothing to lose at 0)",
+          "the pick: Good / the fee / the trophy :: the vault row: the badge, guide OwnTown",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
+          "the walk's end: the fee and the vault :: the bench is not the vault"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "config: the teddy is not a child's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "config :: card LostTeddy: a child's thing asks a fee, anything else is kept as a trophy",
+          "config :: the child's things are the teddy and the candy bag",
+          "the pick: Good / the fee / the trophy :: Finder's fee!: the same bench, Infamy +1 (a Horns deed)",
+          "the pick: Good / the fee / the trophy :: an Evil walk shows gold, no XP",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "config: the candy bag has no season",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: teddy: meadow, badge: woods, medal: ruins, candy bag: pumpkin patch (Halloween only)",
+          "zones and items :: the pumpkin patch outside Halloween: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: no save default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a timed teddy card",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: card LostTeddy (Teddy): a saved card, 1 point each way, no reward of its own",
+          "the save: a thing on its way survives the next join :: group ran to the end without a Lua error",
+          "what a find does :: it is a saved card (it waits for the player; Ctx.Item = Teddy)",
+          "what a find does :: the card of the teddy opened (Give it back / Finder's fee!)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: the teddy card pays itself",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "a full bag, failures :: and it is never tried again",
+          "config :: card LostTeddy (Teddy): a saved card, 1 point each way, no reward of its own",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: the badge card asks a fee",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: card LostBadge: a child's thing asks a fee, anything else is kept as a trophy"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a long short name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: short names fit 14 letters",
+          "the pick: Good / the fee / the trophy :: the row: bring the teddy to the bench (guide: the fountain)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "beat: nothing is ever sure",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the beat (Chance) :: 100 kills and more: sure"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "beat: the chance never rises",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kills count; a find at the right kill :: kill 80, roll 0.5: the teddy, the count starts again",
+          "the beat (Chance) :: 60: 1/41, 80: 21/41, 99: 40/41 (evenly rising)",
+          "the beat (Chance) :: the chance only rises"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "beat: the chance rises from 0",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kills count; a find at the right kill :: each later kill draws once",
+          "kills count; a find at the right kill :: kill 80, roll 0.5: the teddy, the count starts again",
+          "kills count; a find at the right kill :: the 60th kill draws once (a roll of 0.999 is no find)",
+          "the beat (Chance) :: 60: 1/41, 80: 21/41, 99: 40/41 (evenly rising)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "beat: any roll finds",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kills count; a find at the right kill :: each later kill draws once",
+          "kills count; a find at the right kill :: kill 80, roll 0.52: no find",
+          "kills count; a find at the right kill :: the 60th kill draws once (a roll of 0.999 is no find)",
+          "zones and items :: the woods count on from the meadow's 50 (one count per player)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "beat: a kill is not counted",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: group ran to the end without a Lua error",
+          "another card is open: the find waits for its card :: a find while a flower card is open",
+          "another card is open: the find waits for its card :: group ran to the end without a Lua error",
+          "kills count; a find at the right kill :: 59 kills: counted, no chance, no draw used",
+          "kills count; a find at the right kill :: each later kill draws once",
+          "kills count; a find at the right kill :: even with the worst rolls the 100th kill finds it"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "beat: the count survives a find",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kills count; a find at the right kill :: even with the worst rolls the 100th kill finds it",
+          "kills count; a find at the right kill :: kill 80, roll 0.5: the teddy, the count starts again",
+          "three a day, then the next KST day :: the fourth does not come: nothing counts today either",
+          "what a find does :: holding the teddy, phase Choose, the day's first, 1 find today",
+          "what a find does :: while one is held: 150 kills, no count, no second find, no second card"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "beat: no daily cap",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "three a day, then the next KST day :: and it is the new day's first",
+          "three a day, then the next KST day :: the fourth does not come: nothing counts today either",
+          "three a day, then the next KST day :: the next KST day: the count starts, finds are 1 again"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "beat: a free rider counts",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who counts :: a free rider's small share (Minor) counts nothing",
+          "who counts :: a player who is not ready yet counts nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "beat: a player who is not ready counts",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who counts :: a player who is not ready yet counts nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "beat: off still counts",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off: nothing counts :: Config.LostFound.Enabled = false: 300 kills, no count, no find, no card",
+          "switched off on the way :: off: no row, no payment, the record waits"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "beat: holding one keeps counting",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what a find does :: while one is held: 150 kills, no count, no second find, no second card"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "beat: a held find is never offered again",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "another card is open: the find waits for its card :: and it opens once",
+          "another card is open: the find waits for its card :: the next kill after the flower card: the teddy's card opens"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "beat: a zone with no item counts",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "who counts :: a kill with no player, no info or no zone counts nothing (and breaks nothing)",
+          "zones and items :: kills outside the four item zones count nothing",
+          "zones and items :: the pumpkin patch outside Halloween: nothing",
+          "zones and items :: the woods count on from the meadow's 50 (one count per player)",
+          "zones and items :: town kills in between are not counted"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "beat: any zone has the item",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: DebugFind: the item of the zone, a real card",
+          "the pick: Good / the fee / the trophy :: Keep it as a trophy: the vault leg (a Halo's Evil deed has nothing to lose at 0)",
+          "the pick: Good / the fee / the trophy :: the vault row: the badge, guide OwnTown",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
+          "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault",
+          "the walk's end: the fee and the vault :: the bench is not the vault"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "beat: out of season",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "zones and items :: the pumpkin patch outside Halloween: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "find: not the day's first",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: the day's second find is not the first",
+          "the walk's end: the bench :: the second turn-in: potions only, no scroll"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "find: no card",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: group ran to the end without a Lua error",
+          "debug aids :: group ran to the end without a Lua error",
+          "leaving :: group ran to the end without a Lua error",
+          "switched off on the way :: group ran to the end without a Lua error",
+          "the pick: Good / the fee / the trophy :: group ran to the end without a Lua error",
+          "the save: a thing on its way survives the next join :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "find: nobody is told",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "another card is open: the find waits for its card :: a find while a flower card is open",
+          "kills count; a find at the right kill :: even with the worst rolls the 100th kill finds it",
+          "kills count; a find at the right kill :: kill 80, roll 0.5: the teddy, the count starts again",
+          "three a day, then the next KST day :: find 1",
+          "three a day, then the next KST day :: find 2",
+          "three a day, then the next KST day :: find 3"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "find: the card knows no item",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what a find does :: it is a saved card (it waits for the player; Ctx.Item = Teddy)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pick: any answer starts the walk",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what a find does :: the badge's card, an unanswered card and another card's answer start no walk",
+          "what a find does :: while one is held: 150 kills, no count, no second find, no second card"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pick: another card's answer starts it",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what a find does :: the badge's card, an unanswered card and another card's answer start no walk"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pick: the walk never starts",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "a full bag, failures :: a failing item grant: the XP still comes, nothing is paid twice",
+          "a full bag, failures :: a full scroll bag: paid anyway, nothing breaks",
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+          "switched off on the way :: on again: the walk ends",
+          "the pick: Good / the fee / the trophy :: Give it back: carrying it to the bench, Honor +1 (a Halo deed), the quest list refreshed"
+        ],
+        "newFailingCount": 30
+      },
+      {
+        "mutation": "pick: the child's fee goes to the vault",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "the pick: Good / the fee / the trophy :: Finder's fee!: the same bench, Infamy +1 (a Horns deed)",
+          "the pick: Good / the fee / the trophy :: an Evil walk shows gold, no XP",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
+          "the walk's end: the fee and the vault :: Cheeky! Here's a coin",
+          "the walk's end: the fee and the vault :: the fee at the bench"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "pick: the trophy goes to the bench",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: Keep it as a trophy: the vault leg (a Halo's Evil deed has nothing to lose at 0)",
+          "the pick: Good / the fee / the trophy :: the vault row: the badge, guide OwnTown",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
+          "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault",
+          "the walk's end: the fee and the vault :: the bench is not the vault",
+          "the walk's end: the fee and the vault :: the vault line"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "pick: no loop for the walker",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switched off on the way :: on again: the walk ends",
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
+          "the walk's end: the bench :: exactly 10 studs: the 1 s loop pays by itself",
+          "the walk's end: the bench :: nothing is paid twice",
+          "the walk's end: the bench :: the line says what it paid"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "pick: the quest list is not refreshed",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: Give it back: carrying it to the bench, Honor +1 (a Halo deed), the quest list refreshed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walk: any town is the vault",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the fee and the vault :: a Halo player in the Horns town: no vault",
+          "the walk's end: the fee and the vault :: a Horns player in the Halo town: no",
+          "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "walk: the vault is anywhere",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the fee and the vault :: a Halo player in the Horns town: no vault",
+          "the walk's end: the fee and the vault :: a Horns player in the Halo town: no",
+          "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "walk: the bench is in any zone",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: the bench's coordinates in another zone: no",
+          "the walk's end: the bench :: the quest list is refreshed (the row goes)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "walk: the bench range is exclusive",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
+          "the walk's end: the bench :: exactly 10 studs: the 1 s loop pays by itself",
+          "the walk's end: the bench :: nothing is paid twice",
+          "the walk's end: the bench :: the day's second find is not the first",
+          "the walk's end: the bench :: the line says what it paid"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "walk: the whole zone is the bench",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: 11 studs from the bench: not there yet",
+          "the walk's end: the bench :: the quest list is refreshed (the row goes)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "walk: not ready for the leg",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: in the meadow: not there yet",
+          "the walk's end: the bench :: the quest list is refreshed (the row goes)",
+          "the walk's end: the fee and the vault :: a Halo player in the Horns town: no vault",
+          "the walk's end: the fee and the vault :: a Horns player in the Halo town: no",
+          "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "walk: off still pays",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switched off on the way :: off: no row, no payment, the record waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walk: the record stays after the payment",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "a full bag, failures :: a failing item grant: the XP still comes, nothing is paid twice",
+          "a full bag, failures :: a full scroll bag: paid anyway, nothing breaks",
+          "a full bag, failures :: and it is never tried again",
+          "switched off on the way :: on again: the walk ends",
+          "the save: a thing on its way survives the next join :: a new join: the walk goes on and ends at the bench"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "walk: no refresh after the payment",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: the quest list is refreshed (the row goes)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walk: nobody is told",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switched off on the way :: on again: the walk ends",
+          "the save: a thing on its way survives the next join :: a new join: the walk goes on and ends at the bench",
+          "the walk's end: the bench :: exactly 10 studs: the 1 s loop pays by itself",
+          "the walk's end: the bench :: group ran to the end without a Lua error",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "walk: the wrong thank-you",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the fee and the vault :: Cheeky! Here's a coin",
+          "the walk's end: the fee and the vault :: the vault line"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "walk: the loop never pays",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switched off on the way :: on again: the walk ends",
+          "the save: a thing on its way survives the next join :: a new join: the walk goes on and ends at the bench",
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
+          "the walk's end: the bench :: exactly 10 studs: the 1 s loop pays by itself",
+          "the walk's end: the bench :: nothing is paid twice"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "walk: the join forgets the walk",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the save: a thing on its way survives the next join :: a new join: the walk goes on and ends at the bench"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: 1 minute of hunting",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: the row is gone; Delivered says what was paid",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pay: level 1 hunting",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pay: a good turn-in pays no XP",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing item grant: the XP still comes, nothing is paid twice",
+          "the pick: Good / the fee / the trophy :: a Good walk shows XP, no gold",
+          "the save: a thing on its way survives the next join :: a new join: the walk goes on and ends at the bench",
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: nothing is paid twice",
+          "the walk's end: the bench :: the line says what it paid"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "pay: the fee pays XP too",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: an Evil walk shows gold, no XP",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pay: a good turn-in pays gold too",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+          "the pick: Good / the fee / the trophy :: a Good walk shows XP, no gold",
+          "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
+          "the walk's end: the bench :: the row is gone; Delivered says what was paid"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pay: no potions",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+          "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
+          "the walk's end: the bench :: the line says what it paid",
+          "the walk's end: the bench :: the second turn-in: potions only, no scroll"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pay: no scroll",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: a scroll every time",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the bench :: the second turn-in: potions only, no scroll"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: gold from the wrong source",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+          "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "pay: XP doubled by the pass",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the walk's end: the fee and the vault :: the 2x XP pass does not double it (the amount is its own cap)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: a full bag pays nothing",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: a failing item grant stops everything",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: a failing gold payment stops everything",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "row: shown while off",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switched off on the way :: off: no row, no payment, the record waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "row: shown before the pick",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what a find does :: no row while the card is still unanswered"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "row: the wrong kind",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: the row: bring the teddy to the bench (guide: the fountain)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "row: the guides are swapped",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: the row: bring the teddy to the bench (guide: the fountain)",
+          "the pick: Good / the fee / the trophy :: the vault row: the badge, guide OwnTown"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "row: the bench text for the vault",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: the vault row: the badge, guide OwnTown"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "row: no gold shown",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the pick: Good / the fee / the trophy :: an Evil walk shows gold, no XP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "save: a new day keeps the finds",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "three a day, then the next KST day :: and it is the new day's first",
+          "three a day, then the next KST day :: the next KST day: the count starts, finds are 1 again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "save: a walk with no side is kept",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: a broken save 3: repaired, no row",
+          "a broken save is repaired :: a broken save 4: repaired, no row"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "save: a broken holding is kept",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: a broken save 1: repaired, no row",
+          "a broken save is repaired :: a broken save 2: repaired, no row",
+          "a broken save is repaired :: a broken save 3: repaired, no row",
+          "a broken save is repaired :: a broken save 4: repaired, no row",
+          "a broken save is repaired :: a broken save 5: repaired, no row",
+          "a broken save is repaired :: a broken save 6: repaired, no row"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "save: any phase is kept",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: a broken save 5: repaired, no row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "save: an unknown item is kept",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: a broken save 2: repaired, no row",
+          "a broken save is repaired :: a broken save 6: repaired, no row"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "save: the finds today are not capped",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: today's finds and the count are capped (1000 / 1,000,000)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "save: the count is not capped",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: a broken save 1: repaired, no row",
+          "a broken save is repaired :: a broken save 2: repaired, no row",
+          "a broken save is repaired :: today's finds and the count are capped (1000 / 1,000,000)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "save: First is not a boolean",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken save is repaired :: a good record is kept (First becomes a boolean)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hook: no kill signal",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: group ran to the end without a Lua error",
+          "another card is open: the find waits for its card :: a find while a flower card is open",
+          "another card is open: the find waits for its card :: group ran to the end without a Lua error",
+          "kills count; a find at the right kill :: 59 kills: counted, no chance, no draw used",
+          "kills count; a find at the right kill :: each later kill draws once",
+          "kills count; a find at the right kill :: even with the worst rolls the 100th kill finds it"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "hook: no pick signal",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a full bag, failures :: a failing gold payment: the turn-in is done, the record is cleared",
+          "a full bag, failures :: a failing item grant: the XP still comes, nothing is paid twice",
+          "a full bag, failures :: a full scroll bag: paid anyway, nothing breaks",
+          "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
+          "switched off on the way :: on again: the walk ends",
+          "the pick: Good / the fee / the trophy :: Give it back: carrying it to the bench, Honor +1 (a Halo deed), the quest list refreshed"
+        ],
+        "newFailingCount": 30
+      },
+      {
+        "mutation": "debug: a second find while holding",
+        "file": "src/ServerScriptService/LostFoundService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: one at a time"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3456c6d00326bb58e520b0dfe7ab84ac2326975c21a8b9622d511578f3c51811",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
+    "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f",
+    "src/ServerScriptService/LostFoundService.luau": "87ef8287bdc7bd17021c689bf0e33265797a4ef45c73fe2f89c0390fb1b9becb"
+  },
+  "fixtureSHA256": "d067d674a17092b6502555e47e373ca514d4e4d2e9430c83e04156dac452072c",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "#45: a per-player kill beat (nothing below 60 kills in a zone that has an item, rising evenly to sure at 100, then it starts again, no counting while holding, 3 finds a KST day, a free rider counts nothing); a find holds ONE thing (data.LostFound { Day, N, K, Holding }) and opens the item's saved ChoiceCard (no reward of its own, points via Deeds); the pick starts the walk: Good and a child's Evil to the Lost & Found bench (Crossroads, 10 studs of the kids' bench), a non-child's Evil to the player's own town (the vault); arriving (a 1 s loop) pays 2 minutes of hunting at the player's level: Good = XP + 2 HP + 2 MP potions + the day's first scroll, Evil = gold; gold source Choice, XP capped by itself (never 2x); a full bag, a failing grant or payment pays nothing twice; the quest-list row Kind 'Find' with a guide; a broken save is repaired; OFF by default (Config.LostFound.Enabled).",
+  "limitations": "The row's Kind 'Find' and its guide tap are client work (game dev 1); the four item icons are image session 2's. The numbers are PROPOSED (검수 decides). OFF until the quest window draws the row."
+}

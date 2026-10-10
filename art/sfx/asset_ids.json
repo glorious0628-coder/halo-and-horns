@@ -72,7 +72,10 @@
     "CandyPlop": "rbxassetid://71630733199634",
     "KingHelpHome": "rbxassetid://129647790058754",
     "KingTickleCoins": "rbxassetid://90219483742298",
-    "TipDing": "rbxassetid://111120758241059"
+    "TipDing": "rbxassetid://111120758241059",
+    "Warp": "rbxassetid://132227699974979",
+    "WarpIn": "rbxassetid://127997176687568",
+    "SecretFound": "rbxassetid://121833019298027"
   },
   "pending": [],
   "kept": {
@@ -120,7 +123,7 @@
     }
   },
   "bgm": {
-    "about": "Background music + ambient loops (A23-100). Firefly Generate Soundtrack / own synthesis. Mono 48 kHz wav, Looped=true, uploaded 2026-10-10 as Darugi_S2 (Restricted). Tracks are -24 LUFS; Boss layers (art/sfx/bgm/cand/BossLayer_*.wav, same length to the sample as their track, -27 LUFS) are not uploaded yet.",
+    "about": "Background music + ambient loops (A23-100). Firefly Generate Soundtrack / own synthesis. Mono 48 kHz wav, Looped=true, uploaded 2026-10-10 as Darugi_S2 (Restricted). Tracks are -24 LUFS;",
     "tracks": {
       "HaloTown": {
         "id": "rbxassetid://108661141883977",
@@ -135,6 +138,48 @@
         "bpm": 121.4,
         "file": "art/sfx/bgm/HornsTown.wav",
         "zone": "HornsTown"
+      },
+      "Crossroads": {
+        "id": "rbxassetid://89489494811803",
+        "seconds": 82.244,
+        "bpm": 93.4,
+        "file": "art/sfx/bgm/Crossroads.wav (git 밖)",
+        "zone": "Crossroads"
+      },
+      "Meadow": {
+        "id": "rbxassetid://107428223386912",
+        "seconds": 69.634,
+        "bpm": 110.3,
+        "file": "art/sfx/bgm/Meadow.wav (git 밖)",
+        "zone": "SlimeMeadow"
+      },
+      "Pumpkin": {
+        "id": "rbxassetid://97391238692429",
+        "seconds": 68.961,
+        "bpm": 111.4,
+        "file": "art/sfx/bgm/Pumpkin.wav (git 밖)",
+        "zone": "PumpkinPatch"
+      },
+      "Haunted": {
+        "id": "rbxassetid://103556459915929",
+        "seconds": 69.017,
+        "bpm": 111.3,
+        "file": "art/sfx/bgm/Haunted.wav (git 밖)",
+        "zone": "HauntedHollow"
+      },
+      "Woods": {
+        "id": "rbxassetid://114854716063832",
+        "seconds": 77.515,
+        "bpm": 99.1,
+        "file": "art/sfx/bgm/Woods.wav (git 밖)",
+        "zone": "GoblinWoods"
+      },
+      "Ruins": {
+        "id": "rbxassetid://70596551890083",
+        "seconds": 64.779,
+        "bpm": 118.6,
+        "file": "art/sfx/bgm/Ruins.wav (git 밖)",
+        "zone": "SkeletonRuins"
       }
     },
     "ambient": {
@@ -149,6 +194,78 @@
         "seconds": 20,
         "lufs": -30,
         "note": "3D, RollOffMaxDistance ~40, outside the MaxPlaying pool"
+      },
+      "Rain": {
+        "id": "rbxassetid://126445007194331",
+        "seconds": 25,
+        "lufs": -28,
+        "note": "global weather ambience, Volume 0.35, 1.5 s fade on weather change; Rain_b"
+      },
+      "Night": {
+        "id": "rbxassetid://99972569683856",
+        "seconds": 25,
+        "lufs": -31,
+        "note": "global night ambience, Volume 0.3, 1.5 s fade; Night_b crickets gap +-15 %"
+      },
+      "WinterWind": {
+        "id": "rbxassetid://113002054407080",
+        "seconds": 25,
+        "lufs": -29,
+        "note": "global snow-time wind (December), Volume 0.35, 1.5 s fade; WinterWind_a"
+      },
+      "HaloDay": {
+        "id": "rbxassetid://76688623617177",
+        "seconds": 25,
+        "lufs": -32,
+        "note": "Halo Citadel daytime ambience (birds + tiny wind chime), Volume 0.25; HaloDay_a"
+      },
+      "HornsDen": {
+        "id": "rbxassetid://112972652651947",
+        "seconds": 25,
+        "lufs": -30,
+        "note": "Horns Den ambience (lava bubbling + campfire crackle), Volume 0.25; HornsDen_a"
+      }
+    },
+    "boss": {
+      "about": "Boss layers (own synthesis: kick/wood tap/eighth-note bass + tom fills), exactly the same length as their zone track to the sample, mono, -27 LUFS. Play with the zone track at the same TimePosition, Looped = true, start/stop at the boss spawn/death. Only zones with a boss have one.",
+      "SlimeMeadow": {
+        "id": "rbxassetid://98188790457804",
+        "seconds": 69.634,
+        "boss": "SlimeKing",
+        "pairsWith": "Meadow"
+      },
+      "PumpkinPatch": {
+        "id": "rbxassetid://113774483516470",
+        "seconds": 68.961,
+        "boss": "PumpkinKing",
+        "pairsWith": "Pumpkin"
+      },
+      "HauntedHollow": {
+        "id": "rbxassetid://97981769754135",
+        "seconds": 69.017,
+        "boss": "GhostKing",
+        "pairsWith": "Haunted"
+      },
+      "SkeletonRuins": {
+        "id": "rbxassetid://88486401685380",
+        "seconds": 64.779,
+        "boss": "CaptainClatter",
+        "pairsWith": "Ruins"
+      }
+    },
+    "blips": {
+      "about": "NPC talk blips for the TalkToNpc window opening (no voice, 0.19-0.25 s, Volume 0.3). NpcId Bright -> BlipBright, Gleam (Sir Gleam) -> BlipGleam, TownFolk -> BlipFolk. Horns-town NPC blips come with the Horns zone.",
+      "BlipBright": {
+        "id": "rbxassetid://126796215784360",
+        "seconds": 0.19
+      },
+      "BlipGleam": {
+        "id": "rbxassetid://103851146620116",
+        "seconds": 0.245
+      },
+      "BlipFolk": {
+        "id": "rbxassetid://98476528780032",
+        "seconds": 0.205
       }
     }
   }

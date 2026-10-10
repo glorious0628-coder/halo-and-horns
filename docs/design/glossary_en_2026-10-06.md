@@ -78,3 +78,11 @@
 | 첫 임무 줄(대장간 가기) | **Go to Otto's Forge in the Crossroads** (phone: To the Forge) | 대장간이 마을 밖 교차로에 있다는 것을 줄에서 알려 줌(#44). 새 알림·이름표는 안 만듦 |
 | 빛 마을 영웅 동상(H6) | **Look at the hero statues in Halo Citadel** | 장소를 줄에 넣음(#55) |
 | 안내자 첫 대화(진영마다 2쪽) | page 1 = 임무 카드 "First, get a weapon from Otto the Blacksmith! / Then beat 5 slimes to free the supply road.", page 2 = 안내자 말버릇 | 4쪽 → 2쪽(A23-99 덜 친절하게). **Hallie의 "Hallie here! Now you know my name."는 고정 말버릇이라 그대로**(M1_4 첫 줄, M3_5 "So now I give mine."의 짝) |
+
+## 잃어버린 물건 (#45, 10/10)
+| 한국어 | English | 메모 |
+|---|---|---|
+| 잃어버린 물건 센터(교차로 벤치) | **Lost & Found** | 줄 "Bring the %s to the Lost & Found · Crossroads" (폰: Lost & Found) |
+| 돌려주기 / 사례금 / 전리품 | **Give it back** / **Finder's fee!** / **Keep it as a trophy** | 카드 버튼. 아이 물건은 사례금, 아이 것이 아닌 물건은 전리품 |
+| 금고 줄 | **Put the %s in your vault · your town** (폰: Trophy vault) | 내 마을에 들어가면 끝 |
+| 분실물 이름 | Lost Teddy · Grab Club Badge · Old Guard Medal · Lost Candy Bag | |

@@ -45,6 +45,21 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_audio_2026-10-06.json"
 
 # (name, exact text in Audio.luau, replacement): each must match exactly once
 MUTATIONS = [
+    # A23-100 music + 점검표 sound 60 water (게임성 개발 1 2026-10-10)
+    ("music: no crossfade (a jump)", "\tlocal d = full / math.max(0.05, num(M.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)\n",
+     "\tlocal d = full\n"),
+    ("music: the old track keeps playing", "\tif MUSIC.Current then table.insert(MUSIC.Fading, MUSIC.Current) end\n", ""),
+    ("music: no dip at a big moment", "\t\tS.MusicDuck = true -- A23-100: the music dips with them\n", ""),
+    ("music: the Music setting ignored", "S.Groups.Music.Volume = musicSetting() *", "S.Groups.Music.Volume = 1 *"),
+    ("music: a zone change ignored", "\t\twatch(LocalPlayer, \"ZoneId\", function(_, zone) Audio.SetZoneMusic(zone) end)\n", ""),
+    ("music: a second copy of the same track", "\tif id == MUSIC.Id then\n\t\tAudio.RefreshBossLayer()\n\t\treturn false\n\tend\n", ""),
+    ("water: not under the Sound effects setting", "else a.Sound.Volume = a.Base * mult end", "else a.Sound.Volume = a.Base end"),
+    ("water: the Halo waterfall spots ignored", "\t\tif typeof(pos) == \"Vector3\" then anchor(pos) end\n", ""),
+    ("boss layer: from the start, out of step with the track", "\t\t\ts.TimePosition = MUSIC.Current.TimePosition\n", ""),
+    ("boss layer: never stops", "\tif MUSIC.Layer then table.insert(MUSIC.Fading, MUSIC.Layer) end\n", ""),
+    ("boss layer: plays without the boss", "\treturn (ok and on == true) and def.Id or nil\n", "\treturn def.Id\n"),
+    ("boss layer: never fades in", "\tfor _, cur in { MUSIC.Current, MUSIC.Layer } do\n", "\tfor _, cur in { MUSIC.Current } do\n"),
+    ("water: heard from anywhere", "\ts.RollOffMaxDistance = num(def.MaxDistance, 40)\n", "\ts.RollOffMaxDistance = 10000\n"),
     ("every drop rings (materials too)", 'if type(def) == "table" and T.LootKinds[def.Kind] then scroll = true end', "scroll = true"),
     ("the weapon drop at full pitch", 'add(out, "Loot", 0, { Speed = T.LootWeaponSpeed })', 'add(out, "Loot", 0)'),
     ("the thief hears the victim's sound", "\t\t\telseif data.Thief == me then\n\t\t\t\tadd(out, \"GoldPickup\", 0)",

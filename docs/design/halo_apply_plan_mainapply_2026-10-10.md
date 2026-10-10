@@ -16,6 +16,8 @@
 5. 충돌 (#48): `decor_collision` 다시 실행(또는 T.Tree에 Topiary 추가). 종류별: Gate·Cathedral·Towers·Houses·Shops·Stairs·ArchBridges = 보통 충돌 + CanQuery; Balustrade·Lantern·Planter·BannerPole·KnightStatue = DecorPlayerOnly; Topiary·RoundTree = 줄기 기둥; CloudBush = BlockPost; PotFlowers = 통과.
 6. 동상 줄 가운데에 `Config.StoryQuests.Landmarks.HeroStatue` 맞추기(#29, 평면 거리라 단 높이 무관; 개발 1이 코드 쪽 먼저).
 
+6. 가게 간판(#49·#51): 이미지 개발이 올린 4종 — HaloSignBakery `rbxassetid://77116902671887`, HaloSignJuice `133684891699718`, HaloSignFlower `93642542767036`, HaloSignPotion `122788599616130`(빛 마을 진짜 물약 상인 자리에만). 1024×1024 투명, 글자 없음. 가게 모델 간판 SurfaceGui의 ImageLabel(ScaleType Fit, 배경 투명)에 넣고, 대장간·모루 간판은 안 넣는다(`Config.UIArt.Parts` id와 같은지 확인).
+
 ## 2. 절대 규칙
 - **`Map.Decor.Bridge_Halo`는 치우지 않는다** (#3·#8): zone_swap에 Bridge_* 건너뛰기 규칙이 들어가기 전에는 `zone_swap`을 빛 마을에 다시 돌리지 않는다. 새 다리 모양은 같은 모델 안에 넣거나 손으로 교체(상판 Y 0.2, 폭 22, z -150..-330, Precise 충돌, 이름 Bridge_Halo 그대로, 교차로 쪽 끝 (0,0,-150) 근처).
 - 문: 새 Gate는 `Map.Gates.Gate_HaloTown`, 피벗 = 바닥 가운데 (0,0.2,-330), PrimaryPart = 메시 또는 아치 꼭대기 보이지 않는 `Lintel` 파트(#14). 옛 파트는 같은 편집에서 치움. PreciseConvexDecomposition 충돌 유지(아치 걸어 지남).

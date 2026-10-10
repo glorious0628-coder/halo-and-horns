@@ -17,6 +17,9 @@ env = dict(os.environ)
 if "--studio" in sys.argv:
     env["STUDIO_NAME"] = sys.argv[sys.argv.index("--studio") + 1]
 code = Path(ROOT / tool).read_text(encoding="utf-8").replace("__MODE__", mode)
+if env.get("STUDIO_NAME") and "GoodEvil" not in env["STUDIO_NAME"] and "81671223175574" not in env["STUDIO_NAME"]:
+    # practice Studio only: refuse to run if the connection landed in the main place (2026-10-10 safety rule from 검수)
+    code = 'if game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil") then error("WRONG STUDIO: main") end\n' + code
 if "--zone" in sys.argv:  # zone_swap.luau: halo | horns | ruins | pumpkin | hollow
     code = code.replace("__ZONE__", sys.argv[sys.argv.index("--zone") + 1])
 out = ROOT / "build" / f"_run_{Path(tool).stem}.json"

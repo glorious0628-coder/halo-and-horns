@@ -1,0 +1,539 @@
+{
+ "bar": {
+  "Tiles": [
+   {
+    "Square": [
+     783,
+     581,
+     52,
+     52
+    ],
+    "Label": [
+     813,
+     611,
+     26,
+     19
+    ],
+    "Button": "HPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     841,
+     581,
+     52,
+     52
+    ],
+    "Label": [
+     871,
+     611,
+     26,
+     19
+    ],
+    "Button": "MPPotion",
+    "Text": "0",
+    "Fits": true,
+    "Bounds": [
+     10,
+     17
+    ]
+   },
+   {
+    "Square": [
+     14,
+     384,
+     300,
+     19
+    ],
+    "Label": [
+     14,
+     384,
+     72,
+     19
+    ],
+    "Button": "QuestHead",
+    "Text": "Quests (1)",
+    "Fits": true,
+    "Bounds": [
+     72,
+     18
+    ]
+   },
+   {
+    "Square": [
+     14,
+     237,
+     300,
+     143
+    ],
+    "Label": [
+     14,
+     286,
+     300,
+     56
+    ],
+    "Button": "QuestTracker",
+    "Text": "Go to Otto's Forge in the Crossroads.",
+    "Fits": true,
+    "Bounds": [
+     275.5,
+     54
+    ]
+   },
+   {
+    "Square": [
+     1186,
+     561,
+     80,
+     80
+    ],
+    "Label": [
+     1201,
+     614,
+     50,
+     16
+    ],
+    "Button": "Attack",
+    "Text": "Attack",
+    "Fits": true,
+    "Bounds": [
+     33.5,
+     15
+    ]
+   },
+   {
+    "Square": [
+     444,
+     582,
+     52,
+     52
+    ],
+    "Label": [
+     447,
+     616,
+     47,
+     16
+    ],
+    "Button": "TileCharacter",
+    "Text": "Hero",
+    "Fits": true,
+    "Bounds": [
+     23.5,
+     11
+    ]
+   },
+   {
+    "Square": [
+     500,
+     582,
+     52,
+     52
+    ],
+    "Label": [
+     502,
+     616,
+     47,
+     16
+    ],
+    "Button": "TileBag",
+    "Text": "Bag",
+    "Fits": true,
+    "Bounds": [
+     19.5,
+     11
+    ]
+   },
+   {
+    "Square": [
+     555,
+     582,
+     52,
+     52
+    ],
+    "Label": [
+     557,
+     616,
+     47,
+     16
+    ],
+    "Button": "TileSkills",
+    "Text": "Skills",
+    "Fits": true,
+    "Bounds": [
+     26,
+     11
+    ]
+   },
+   {
+    "Square": [
+     609,
+     582,
+     52,
+     52
+    ],
+    "Label": [
+     612,
+     616,
+     47,
+     16
+    ],
+    "Button": "TileMap",
+    "Text": "Map",
+    "Fits": true,
+    "Bounds": [
+     21.5,
+     11
+    ]
+   },
+   {
+    "Square": [
+     664,
+     582,
+     52,
+     52
+    ],
+    "Label": [
+     667,
+     616,
+     47,
+     16
+    ],
+    "Button": "TileRanking",
+    "Text": "Ranking",
+    "Fits": true,
+    "Bounds": [
+     41.5,
+     11
+    ]
+   },
+   {
+    "Square": [
+     720,
+     582,
+     52,
+     52
+    ],
+    "Label": [
+     722,
+     616,
+     47,
+     16
+    ],
+    "Button": "TilePet",
+    "Text": "Pet",
+    "Fits": true,
+    "Bounds": [
+     17,
+     11
+    ]
+   },
+   {
+    "Square": [
+     1224,
+     -46,
+     43,
+     43
+    ],
+    "Label": [
+     1226,
+     -18,
+     38,
+     13
+    ],
+    "Button": "TileMenu",
+    "Text": "Menu",
+    "Fits": true,
+    "Bounds": [
+     28,
+     11
+    ]
+   }
+  ],
+  "UIScale": 0.800000011920929,
+  "War": [
+   495,
+   -45,
+   288,
+   42
+  ],
+  "WarParts": [
+   {
+    "Class": "ImageLabel",
+    "Name": "Plate",
+    "Rect": [
+     495,
+     -48,
+     288,
+     47
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Bar",
+    "Rect": [
+     527,
+     -39,
+     224,
+     18
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "Inner",
+    "Rect": [
+     531,
+     -35,
+     216,
+     9
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HaloFill",
+    "Rect": [
+     531,
+     -35,
+     108,
+     9
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "HornsFill",
+    "Rect": [
+     639,
+     -35,
+     108,
+     9
+    ]
+   },
+   {
+    "Class": "Frame",
+    "Name": "Divider",
+    "Rect": [
+     638,
+     -36,
+     2,
+     12
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "Crown",
+    "Rect": [
+     623,
+     -54,
+     32,
+     32
+    ]
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHalo",
+    "Rect": [
+     492,
+     -51,
+     42,
+     42
+    ]
+   },
+   {
+    "Rect": [
+     502,
+     -39,
+     21,
+     20
+    ],
+    "Name": "HaloScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     10,
+     17
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "ShieldHorns",
+    "Rect": [
+     745,
+     -51,
+     42,
+     42
+    ]
+   },
+   {
+    "Rect": [
+     752,
+     -43,
+     27,
+     25
+    ],
+    "Name": "HornsScore",
+    "Class": "TextLabel",
+    "Bounds": [
+     10,
+     17
+    ],
+    "Text": "0"
+   },
+   {
+    "Class": "Frame",
+    "Name": "Info",
+    "Rect": [
+     527,
+     -19,
+     224,
+     15
+    ]
+   },
+   {
+    "Rect": [
+     527,
+     -19,
+     224,
+     15
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     177.5,
+     15
+    ],
+    "Text": "<font color=\"#ff9628\">Crown War</font> · 9:31 · My pts 0"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "NewTag",
+    "Rect": [
+     754,
+     -16,
+     41,
+     17
+    ]
+   },
+   {
+    "Rect": [
+     758,
+     -15,
+     34,
+     14
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     27.5,
+     15
+    ],
+    "Text": "NEW!"
+   },
+   {
+    "Class": "ImageLabel",
+    "Name": "NewTag",
+    "Rect": [
+     747,
+     -54,
+     41,
+     17
+    ]
+   },
+   {
+    "Rect": [
+     750,
+     -52,
+     34,
+     14
+    ],
+    "Name": "Text",
+    "Class": "TextLabel",
+    "Bounds": [
+     27.5,
+     15
+    ],
+    "Text": "NEW!"
+   }
+  ],
+  "Inset": 58,
+  "Viewport": [
+   1280,
+   720
+  ],
+  "Goal": {
+   "Tracker": [
+    300,
+    143.1999969482422
+   ],
+   "Title": {
+    "Auto": "Enum.AutomaticSize.None",
+    "Truncate": "Enum.TextTruncate.AtEnd",
+    "Abs": [
+     251.1999969482422,
+     47.20000076293945
+    ],
+    "Text": "To the Forge",
+    "Min": 20,
+    "Bounds": [
+     160,
+     37
+    ],
+    "Max": 100,
+    "Scaled": false,
+    "Fits": true,
+    "Wrapped": false,
+    "TextSize": 47,
+    "Size": "{1, -61}, {1, 0}"
+   },
+   "UIScale": 0.800000011920929,
+   "Viewport": [
+    1280,
+    720
+   ],
+   "Nums": {
+    "Auto": "Enum.AutomaticSize.X",
+    "Truncate": "Enum.TextTruncate.None",
+    "Abs": [
+     16,
+     36.79999923706055
+    ],
+    "Text": "()",
+    "Min": 15,
+    "Bounds": [
+     15,
+     27
+    ],
+    "Max": 100,
+    "Scaled": false,
+    "Fits": true,
+    "Wrapped": false,
+    "TextSize": 34,
+    "Size": "{0, 0}, {1, 0}"
+   },
+   "Step": 3,
+   "Goal": {
+    "Auto": "Enum.AutomaticSize.None",
+    "Truncate": "Enum.TextTruncate.None",
+    "Abs": [
+     300,
+     56
+    ],
+    "Text": "Go to Otto's Forge in the Crossroads.",
+    "Min": 18,
+    "Bounds": [
+     275.5,
+     54
+    ],
+    "Max": 100,
+    "Scaled": false,
+    "Fits": true,
+    "Wrapped": true,
+    "TextSize": 34,
+    "Size": "{1, 0}, {0, 70}"
+   }
+  }
+ }
+}

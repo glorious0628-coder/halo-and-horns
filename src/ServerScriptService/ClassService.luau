@@ -95,7 +95,7 @@ local function onChooseClass(player, classId, gender)
 	S.PlayerService.SetStat(player, "ClassChosen", true)
 	S.PlayerService.RefreshCharacter(player, true)
 	ClassService.ClassChanged:Fire(player, classId, old) -- also when equal, so visuals / charge refresh
-	notify(player, "ClassChosen", "good", Config.ClassName(classId, faction))
+	-- no "Your class is now ..." notice: the player just picked it (user 2026-10-10, A23-99: no repeating what they just did)
 end
 
 local function onChangeClass(player, classId, useTicket, gender)

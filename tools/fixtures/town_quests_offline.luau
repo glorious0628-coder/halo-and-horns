@@ -36,6 +36,8 @@ local function townWorld(o)
 			return out
 		end }
 	end
+	-- zone_check_halo #22 / #25 / #30: the NPCs' "Talk" prompts come through the ProximityPromptService (only when asked for)
+	if o.Prompts then w.Services.ProximityPromptService = { PromptTriggered = Signal.new() } end
 	w.Story.Start()
 	w.Spawned = {}
 	-- the client's OpenPanel "Story" pops (a quest NPC step must never pop by itself)
@@ -1825,6 +1827,79 @@ runGroup("easter-eggs", function()
 	local inDone = false
 	for _, id in w.Story.BookRows(pp, pd).Done do if id == "story:EG02" then inDone = true end end
 	check(inDone, "a found egg is listed in the quest book's Done", show(w.Story.BookRows(pp, pd).Done))
+end)
+
+------------------------------------------------------------------ 15. zone_check_halo #22 / #25 / #30: the town NPC's "Talk" prompt
+-- (TownNpcs: attribute StoryNpcId) opens the dialogue of the quest step that is talked through that NPC
+runGroup("npc-talk", function()
+	local w = townWorld({ Prompts = true })
+	local panels = panelsOf(w)
+	w:Npc("Bright", vec(0, 0, -400))
+	local p, d = joinAfterM23(w, 980, "Halo", { Pos = vec(2, 0, -398) })
+	check(w:Track(d, "H1") and w:Track(d, "H1").St == 1, "H1 waits at Bright (its first card)", show(w:Track(d, "H1")))
+	local before = #panels
+	check(#panels == before, "a step talked through an NPC never pops up by itself", "")
+	check(w.Story.TalkToNpc(p, "Bright") == "H1" and #panels == before + 1 and panels[#panels].Arg.Id == "H1" and panels[#panels].Arg.St == 1,
+		"talking to Bright opens H1's card", show(panels[#panels] and panels[#panels].Arg))
+	-- far from her, another id, bad arguments: nothing
+	w:MoveTo(p, vec(80, 0, -400))
+	check(w.Story.TalkToNpc(p, "Bright") == nil and #panels == before + 1, "80 studs away: nothing opens", "")
+	w:MoveTo(p, vec(2, 0, -398))
+	check(w.Story.TalkToNpc(p, "Smokey") == nil and w.Story.TalkToNpc(p, "Nobody") == nil and w.Story.TalkToNpc(p, 5) == nil
+		and w.Story.TalkToNpc(p, nil) == nil and w.Story.TalkToNpc(nil, "Bright") == nil and w.Story.TalkToNpc("p", "Bright") == nil and #panels == before + 1,
+		"another NPC, a bad id or a bad player: nothing", "")
+	-- a player who has not chosen a class / is not ready
+	local fresh = joinAfterM23(w, 981, "Halo", { Pos = vec(2, 0, -398) })
+	local b1 = #panels
+	check(w.Story.TalkToNpc(fresh, "Bright") == "H1", "(the same player with a class: H1 opens)", "")
+	fresh:SetAttribute("ClassChosen", false)
+	check(w.Story.TalkToNpc(fresh, "Bright") == nil and #panels == b1 + 1, "a player who has not chosen a class: nothing", "")
+	before = #panels - 1 -- (the card above is the base: before + 1 = what is open now)
+	-- the prompt itself
+	local prompt = newInstance("ProximityPrompt", w)
+	prompt:SetAttribute("StoryNpcId", "Bright")
+	local PP = w.Services.ProximityPromptService.PromptTriggered
+	w:Advance(1)
+	PP:Fire(prompt, p)
+	check(#panels == before + 2 and panels[#panels].Arg.Id == "H1", "the prompt's trigger opens the card", tostring(#panels - before))
+	PP:Fire(prompt, p)
+	check(#panels == before + 2, "a second trigger within 0.4 s is ignored (rate limit)", tostring(#panels - before))
+	w:Advance(1)
+	local shop = newInstance("ProximityPrompt", w)
+	PP:Fire(shop, p)
+	local other = newInstance("ProximityPrompt", w)
+	other:SetAttribute("StoryNpcId", 5)
+	PP:Fire(other, p)
+	PP:Fire(prompt, nil)
+	PP:Fire("text", p)
+	check(#panels == before + 2, "a prompt without a StoryNpcId, a bad id, no player: nothing", tostring(#panels - before))
+	-- after the card is done the step moves on: nothing left to say
+	w:Act(p, "H1", "Talk")
+	check(w:Track(d, "H1").St == 2 and w.Story.TalkToNpc(p, "Bright") == nil, "H1 moved on (no more card at Bright): nothing opens", show(w:Track(d, "H1")))
+	-- two quests wait at Bright: the newest sub first
+	local talk = function(who) return { Text = "Talk", Panel = true, Npc = "Bright", Obj = { Type = "Talk" }, Lines = { All = { who } } } end
+	addSub(w, "TX_NA", { Requires = { Done = { "M2_3" } }, Steps = { talk("a") } })
+	addSub(w, "TX_NB", { Requires = { Done = { "M2_3" } }, Steps = { talk("b") } })
+	local q, qd = joinAfterM23(w, 982, "Halo", { Pos = vec(2, 0, -398) })
+	local b2 = #panels
+	check(w.Story.TalkToNpc(q, "Bright") == "TX_NB" and #panels == b2 + 1 and panels[#panels].Arg.Id == "TX_NB", "two cards wait at Bright: the newest quest (last in Subs) first", show(panels[#panels] and panels[#panels].Arg))
+	w:Act(q, "TX_NB", "Talk")
+	check(w.Story.TalkToNpc(q, "Bright") == "H1" or w.Story.TalkToNpc(q, "Bright") == "TX_NA", "then the next one waiting", "")
+	-- a finished quest waiting for [Claim] is never opened
+	local c, cd = joinAfterM23(w, 983, "Halo", { Pos = vec(2, 0, -398) })
+	cd.Story.Subs.H1, cd.Story.Subs.TX_NB = nil, nil
+	cd.Story.Subs.TX_NA.Claim = true
+	local b3 = #panels
+	check(w.Story.TalkToNpc(c, "Bright") == nil and #panels == b3, "a quest waiting for [Claim] is skipped", "")
+	-- a dialogue that has no NPC is never opened by a nil / missing NPC id
+	addSub(w, "TX_NN", { Requires = { Done = { "M2_3" } }, Steps = { { Text = "Talk", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "n" } } } } })
+	local nn, nnd = joinAfterM23(w, 984, "Halo", { Pos = vec(2, 0, -398) })
+	local b4 = #panels
+	check(w:Track(nnd, "TX_NN") and w.Story.TalkToNpc(nn, nil) == nil and w.Story.TalkToNpc(nn, 5) == nil and w.Story.TalkToNpc(nn, true) == nil and #panels == b4,
+		"a nil / non-string NPC id never opens a dialogue that names no NPC", "")
+	-- no talker present in the world at all: the old fallback (anywhere) is kept for NPC ids that have no body
+	w:Npc("Tiny", vec(0, 0, 0))
+	check(w.Story.TalkToNpc(c, "Smokey") == nil, "an NPC id nobody waits at: nothing", "")
 end)
 
 finish()

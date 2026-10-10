@@ -28,6 +28,14 @@
       "ok": true
     },
     {
+      "check": "검수 10/10: a waiting story (B15) on a More row stays on the HUD (its row to tap and pulse)",
+      "ok": true
+    },
+    {
+      "check": "검수 10/10: the head count and the claim count cover every row (the window's More rows too)",
+      "ok": true
+    },
+    {
       "check": "#19: a More row (no HUD row) is claimed straight from the window",
       "ok": true
     },
@@ -448,8 +456,8 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "1def77fcbea18dc892c95c0ec9e69b8ca3035eb00f6291699c8e62591f5b8a09",
-    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "2f8581f332c545b697ac6f10d7a0ab0974ce68e0335df4e124a3f042b96739f9",
+    "src/ReplicatedStorage/Shared/Config.luau": "5e7e6661e44ba20c175b6c2e40018fb61fafaa826f112127acfca08feed57479",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "e35b5ed01fdb659687dfab9a040b28f093c604cd8de552d5cccb960383e16251",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "342bcc7b0eea5f666c66fff6caaa59685097441fdb30073dc682f8e2a1f5cfd0"
   },
   "fixtureSHA256": "f53d518aff0ec2395a218c71e7c1533c795a5b634132ee270df2f6ca131f1821",

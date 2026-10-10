@@ -1,0 +1,1478 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 122,
+  "failedChecks": 0,
+  "namedChecks": 90,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "on; the prompt range is inside the story's NpcRange",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Gleam: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Gleam stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk1: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk1 stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk2: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk2 stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk3: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk3 stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk4: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Folk4 stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PotionHalo: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PotionHalo stands inside Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Otto: a unique id and model name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the ids the plan names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Bright is named by quest steps and has a body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Halo potion seller stays off until ShopService accepts more than one seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "8 entries queued, 7 bodies made (the potion seller is switched off)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "ctx.pieces counts the 7 new bodies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "no body for the switched-off seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Bright: a model with its root as PrimaryPart",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Bright: tagged StoryNpc with NpcId, ours, the temporary look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Bright: a 'Talk' prompt (G, tap, 10 studs) that names her",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "... facing the spawn side (0, -420) at her own height",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "no default script is kept",
+      "pass": 18,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "a part is anchored, no collide / touch / query",
+      "pass": 16,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "all 16 R15 parts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "the humanoid cannot move or turn and shows no name plate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "a HumanoidDescription R15 body",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Bright's colours; long sleeves; trousers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Sir Gleam: a talker too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk1: a townsperson, tagged TownFolk, no prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk1: feet on the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk2: a townsperson, tagged TownFolk, no prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk2: feet on the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk3: a townsperson, tagged TownFolk, no prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk3: feet on the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk4: a townsperson, tagged TownFolk, no prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Folk4: feet on the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "... facing the Crossroads middle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "Otto is decorative: no prompt (the anvil keeps the shop prompt)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "the ray starts 150 up and goes 210 down",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "the NPC folder is excluded from the ray",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "switched on: a body for the seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "tagged PotionMerchant like the Crossroads seller, not a story NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "the shop prompt (the Crossroads seller's name and range), no StoryNpcId",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "at the potion stall (-34, -546), feet on the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "facing the plaza axis",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "the same default colours as the Crossroads seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the potion seller (switched on)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "a rebuild changes nothing: no second body, no new pieces",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "a deleted prompt is made again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "a non-prompt under the prompt's name is replaced",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "the same spot: the body is not moved again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "a new Config spot moves the body (no new body)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "a failing body is a warning; the next ones are still repaired / moved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "Config.TownNpcs.Enabled = false: prompts off, bodies stay, nothing new",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "switched on again: the prompt is back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "an entry with Enabled = false: its prompt is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a second build",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "no ground: no body, a warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a steep surface under a spot is not ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a slope of exactly 0.7 is still ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "each body takes its own terrace height (0.2 / 5 / 11)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "the avatar call failing: nothing left half-built, a warning each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a body without a root part is thrown away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "no ground at the placing: the made body is destroyed, a warning each",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a model that appeared meanwhile is kept; the new body is dropped (never two under one name)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "an 'Anvil' that is not a part: no Otto",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a foreign model under the name is left alone (a warning), the rest is built",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a non-model under the name is left alone too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "no anvil in the map: no Otto, the rest is built",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "no Config.TownNpcs: nothing, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "a player's character is excluded from the ground ray (it would be 'ground')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "Build only queues the work (bodies come after it returns)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "the queued task builds them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failures",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 7,
+  "staticFailures": [],
+  "mutations": {
+    "total": 74,
+    "applied": 74,
+    "caught": 74,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "Config: Bright is not a story NPC",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: group ran to the end without a Lua error",
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her",
+          "build :: Bright: tagged StoryNpc with NpcId, ours, the temporary look",
+          "config :: Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto",
+          "config :: Bright is named by quest steps and has a body"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: Bright has another NpcId",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a deleted prompt is made again",
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her",
+          "build :: Bright: tagged StoryNpc with NpcId, ours, the temporary look",
+          "config :: Bright is named by quest steps and has a body"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Config: Bright outside the town",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
+          "config :: Bright stands inside Halo Citadel",
+          "failures :: each body takes its own terrace height (0.2 / 5 / 11)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: the prompt range is 40",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her",
+          "config :: on; the prompt range is inside the story's NpcRange"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: the seller is switched on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
+          "build :: ctx.pieces counts the 7 new bodies",
+          "build :: no body for the switched-off seller",
+          "config :: the Halo potion seller stays off until ShopService accepts more than one seller",
+          "failures :: Build only queues the work (bodies come after it returns)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "Config: a fifth townsperson",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
+          "build :: ctx.pieces counts the 7 new bodies",
+          "config :: Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto",
+          "failures :: Build only queues the work (bodies come after it returns)",
+          "failures :: a model that appeared meanwhile is kept; the new body is dropped (never two under one name)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "Config: a duplicate model name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "a second build :: group ran to the end without a Lua error",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
+          "build :: Folk2: a townsperson, tagged TownFolk, no prompt",
+          "build :: ctx.pieces counts the 7 new bodies",
+          "build :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "Config: Otto is not behind the anvil",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "a second build :: group ran to the end without a Lua error",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
+          "build :: Bright: a model with its root as PrimaryPart",
+          "build :: ctx.pieces counts the 7 new bodies",
+          "build :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "Config: the ray is shorter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the ray starts 150 up and goes 210 down"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: any surface is ground",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a steep surface under a spot is not ground"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: only a flat surface",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a slope of exactly 0.7 is still ground"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: a miss is the zone's height",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: no ground at the placing: the made body is destroyed, a warning each",
+          "failures :: no ground: no body, a warning"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ground: characters are not excluded",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a player's character is excluded from the ground ray (it would be 'ground')"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ground: the folder is not excluded",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the NPC folder is excluded from the ray",
+          "failures :: a player's character is excluded from the ground ray (it would be 'ground')"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ground: the ray points up",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the ray starts 150 up and goes 210 down"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: a NaN spot passes",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: a far spot passes",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: Otto in front of the anvil",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: Otto looks away",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: ... facing the Crossroads middle"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spot: no anvil still builds Otto",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: an 'Anvil' that is not a part: no Otto",
+          "failures :: no anvil in the map: no Otto, the rest is built"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "spot: a part named Anvil anywhere",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: an 'Anvil' that is not a part: no Otto"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: the head colour is the torso's",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright's colours; long sleeves; trousers",
+          "the potion seller (switched on) :: the same default colours as the Crossroads seller"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "body: bare arms",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright's colours; long sleeves; trousers"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: no trousers colour",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: group ran to the end without a Lua error",
+          "the potion seller (switched on) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "body: scripts kept",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: no default script is kept"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: parts not anchored",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: a part is anchored, no collide / touch / query"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: parts collide",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: a part is anchored, no collide / touch / query"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: the humanoid walks",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the humanoid cannot move or turn and shows no name plate"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: a name plate",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the humanoid cannot move or turn and shows no name plate"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "body: no primary part",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "a second build :: group ran to the end without a Lua error",
+          "build :: Bright: a model with its root as PrimaryPart",
+          "build :: group ran to the end without a Lua error",
+          "failures :: a slope of exactly 0.7 is still ground",
+          "failures :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "body: another rig",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: a HumanoidDescription R15 body"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "place: feet in the ground",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
+          "build :: Folk1: feet on the ground",
+          "build :: Folk2: feet on the ground",
+          "build :: Folk3: feet on the ground",
+          "build :: Folk4: feet on the ground",
+          "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "place: feet offset forgotten the wrong way",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)",
+          "build :: Folk1: feet on the ground",
+          "build :: Folk2: feet on the ground",
+          "build :: Folk3: feet on the ground",
+          "build :: Folk4: feet on the ground",
+          "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "place: no facing",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: group ran to the end without a Lua error",
+          "the potion seller (switched on) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "place: looks up or down",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: ... facing the spawn side (0, -420) at her own height"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "place: the signature is never stored",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a new Config spot moves the body (no new body)",
+          "a second build :: the same spot: the body is not moved again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "mark: no NPC tag",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: tagged StoryNpc with NpcId, ours, the temporary look",
+          "build :: Otto is decorative: no prompt (the anvil keeps the shop prompt)",
+          "the potion seller (switched on) :: tagged PotionMerchant like the Crossroads seller, not a story NPC"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "mark: a story NPC without the tag",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: tagged StoryNpc with NpcId, ours, the temporary look",
+          "build :: Sir Gleam: a talker too"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "mark: no NpcId",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: tagged StoryNpc with NpcId, ours, the temporary look",
+          "build :: Sir Gleam: a talker too"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "mark: the townsfolk are story NPCs too",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Folk1: a townsperson, tagged TownFolk, no prompt",
+          "build :: Folk2: a townsperson, tagged TownFolk, no prompt",
+          "build :: Folk3: a townsperson, tagged TownFolk, no prompt",
+          "build :: Folk4: a townsperson, tagged TownFolk, no prompt"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "mark: the seller without its tag",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the potion seller (switched on) :: tagged PotionMerchant like the Crossroads seller, not a story NPC"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mark: the seller without its marker",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the potion seller (switched on) :: tagged PotionMerchant like the Crossroads seller, not a story NPC"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mark: no ownership",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a deleted prompt is made again",
+          "a second build :: a failing body is a warning; the next ones are still repaired / moved",
+          "a second build :: a new Config spot moves the body (no new body)",
+          "a second build :: a non-prompt under the prompt's name is replaced",
+          "a second build :: group ran to the end without a Lua error",
+          "build :: Bright: tagged StoryNpc with NpcId, ours, the temporary look"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "prompt: the wrong key",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her",
+          "the potion seller (switched on) :: the shop prompt (the Crossroads seller's name and range), no StoryNpcId"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "prompt: a hold",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her",
+          "the potion seller (switched on) :: the shop prompt (the Crossroads seller's name and range), no StoryNpcId"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "prompt: needs line of sight",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prompt: always on",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: an entry with Enabled = false: its prompt is off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prompt: not a conversation",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prompt: no StoryNpcId",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a deleted prompt is made again",
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "prompt: another range",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Bright: a 'Talk' prompt (G, tap, 10 studs) that names her"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prompt: the label is the id",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Sir Gleam: a talker too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prompt: the seller's name changed",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the potion seller (switched on) :: the shop prompt (the Crossroads seller's name and range), no StoryNpcId"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "prompt: the townsfolk talk",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: Folk1: a townsperson, tagged TownFolk, no prompt",
+          "build :: Folk2: a townsperson, tagged TownFolk, no prompt",
+          "build :: Folk3: a townsperson, tagged TownFolk, no prompt",
+          "build :: Folk4: a townsperson, tagged TownFolk, no prompt",
+          "build :: Otto is decorative: no prompt (the anvil keeps the shop prompt)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "prompt: a foreign object under the name is kept",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a non-prompt under the prompt's name is replaced"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: a switched-off entry is built",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
+          "build :: no body for the switched-off seller",
+          "failures :: a model that appeared meanwhile is kept; the new body is dropped (never two under one name)",
+          "failures :: a slope of exactly 0.7 is still ground",
+          "failures :: duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "build: a foreign model is taken over",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a foreign model under the name is left alone (a warning), the rest is built"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: a rebuilt body",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a deleted prompt is made again",
+          "a second build :: a failing body is a warning; the next ones are still repaired / moved",
+          "a second build :: a new Config spot moves the body (no new body)",
+          "a second build :: a non-prompt under the prompt's name is replaced",
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "a second build :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "build: never moved",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a failing body is a warning; the next ones are still repaired / moved",
+          "a second build :: a new Config spot moves the body (no new body)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "build: always moved",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: the same spot: the body is not moved again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: a built-meanwhile body is added twice",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a model that appeared meanwhile is kept; the new body is dropped (never two under one name)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: a failed body stays",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: a body without a root part is thrown away",
+          "failures :: no ground at the placing: the made body is destroyed, a warning each"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "build: no warning for a failed body",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: the avatar call failing: nothing left half-built, a warning each"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: a placed body without ground",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: no ground at the placing: the made body is destroyed, a warning each"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ensure: pieces not counted",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: ctx.pieces counts the 7 new bodies",
+          "failures :: Build only queues the work (bodies come after it returns)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ensure: pieces counted for every entry",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: a rebuild changes nothing: no second body, no new pieces",
+          "build :: ctx.pieces counts the 7 new bodies",
+          "failures :: Build only queues the work (bodies come after it returns)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "ensure: built while Build runs",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: group ran to the end without a Lua error",
+          "build :: group ran to the end without a Lua error",
+          "failures :: group ran to the end without a Lua error",
+          "the potion seller (switched on) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "ensure: a bad row stops the others",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ensure: the switch is ignored",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: Config.TownNpcs.Enabled = false: prompts off, bodies stay, nothing new"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ensure: prompts stay on when switched off",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a second build :: Config.TownNpcs.Enabled = false: prompts off, bodies stay, nothing new"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "entries: duplicate ids pass",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "entries: duplicate names pass",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: duplicate ids, nameless and junk rows are dropped; NaN / huge / infinite / missing spots are refused at build (a warning each)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "entries: a nameless row passes",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "entries: a non-table row passes",
+        "file": "src/ServerScriptService/TownNpcs.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failures :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "736fb66ff61e70946105c3c6506e4154c3ca30277b67684ae9e7d71a5c351cc8",
+    "src/ServerScriptService/TownNpcs.luau": "84e9d2f9722493b776de99119a8a6c6bba1c7912fcf84bdd8ebb48a644691c62"
+  },
+  "fixtureSHA256": "0e7f6f48f2f83b02b0c3f06107fdf9a3bc266f31b5003ad871ee3e1c496406d9",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Config.TownNpcs.List: Bright + Sir Gleam (tag StoryNpc, NpcId, 'Talk' prompt with StoryNpcId, G, tap, 10 studs), four townsfolk (tag TownFolk, no prompt), the Halo potion seller (tag PotionMerchant + the shop prompt, off until ShopService accepts more than one seller), Otto 4 studs behind the Crossroads anvil (decorative). Temporary default R15 bodies from a HumanoidDescription (sleeves, trousers), anchored, no collision, no scripts; the height comes from a ground ray (floor-like hits only, never the NPC folder or a player's character), feet on the ground, facing the Look point; reused / repaired / moved when they exist, a foreign model under the name is never touched, a missing ground skips only that body; built after MapBuilder.Build returns.",
+  "limitations": "The real avatar call, the real ray and the Studio tree are doubles. The look of the bodies and the spots on the final Halo layout are checked by eye in the main Studio (메인 반영 1)."
+}

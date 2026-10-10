@@ -612,5 +612,9 @@
   "Mon_KingSlime_smooth_Normal_2048": "rbxassetid://93520326212789",
   "FactionBgA": "rbxassetid://128364866807552",
   "FacMascotHaloA": "rbxassetid://98817628227692",
-  "FacMascotHornsA": "rbxassetid://91053337808874"
+  "FacMascotHornsA": "rbxassetid://91053337808874",
+  "HaloSignPotion": "rbxassetid://122788599616130",
+  "HaloSignBakery": "rbxassetid://77116902671887",
+  "HaloSignJuice": "rbxassetid://133684891699718",
+  "HaloSignFlower": "rbxassetid://93642542767036"
 }

@@ -920,6 +920,15 @@ local function ensurePotionMerchant(ctx, folder)
 	end)
 end
 
+-- zone_check_halo #22..#34 (검수 2026-10-10): the town people's bodies (Bright, Sir Gleam, the townsfolk, the Halo potion seller,
+-- Otto) from Config.TownNpcs, built by the TownNpcs module like the potion seller above (one task after Build returns).
+local function ensureStoryNpcs(ctx, folder)
+	local mod = script.Parent:FindFirstChild("TownNpcs")
+	if not mod or not mod:IsA("ModuleScript") then return end
+	local ok, err = pcall(function() return require(mod).Ensure(ctx, folder) end)
+	if not ok then Util.Warn(TAG, "TownNpcs: " .. tostring(err)) end
+end
+
 ------------------------------------------------------------------ public API
 -- ENSURE: reuse workspace.Map if present, create only what is missing. No S, no yields, idempotent.
 -- A reused map never gets ground or decor (its world is Terrain); a fresh one gets the A11-R3 minimal ground.
@@ -1316,6 +1325,7 @@ function MapBuilder.Build()
 	ensureLandmarks(ctx, folders.Landmarks)
 	ensureJobBoards(ctx, folders.Landmarks)
 	ensurePotionMerchant(ctx, folders.NPCs)
+	ensureStoryNpcs(ctx, folders.NPCs)
 	local okRoads, errRoads = pcall(MapBuilder.FitRoads, folders.Decor) -- 검수 10/09 (Config.Map.RoadLook)
 	if not okRoads then Util.Warn(TAG, "RoadLook: " .. tostring(errRoads)) end
 	local okPatch, errPatch = pcall(PATCH.ensure, ctx, folders) -- A23-30

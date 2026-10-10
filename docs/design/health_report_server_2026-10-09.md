@@ -45,5 +45,12 @@ game.ServerScriptService.DebugCommand:Invoke("Player1", "Health", "live:48") -- 
 - 경보가 없으면 `Alerts: none`.
 
 ## 시험
-`py tools/test_health.py` — 검사 147, 정적 31, 변이 121/121. 기록 하나하나(골드·XP·띠 경계·거위·털기·패스·키 청소·상한), 합치기(다른 서버가 먼저 씀·Peak·실패 후 재시도·쓰는 중 사건·두 번 더해지지 않음), 저장소 이름(Studio/Beta/Live/Dev), 루프 대기(0.5~1.5배)·닫힐 때 저장·스위치, 읽기(시간 수 상한·live는 진짜 이름·깨진 문서 청소·읽다 실패해도 앞 줄 유지), 경보 경계(정확히 2배·3개 앞 시간·60분·75%·10판), 글. 진짜 `ProgressionService.AddXP`가 `XPEarned`를 쏘는지, 진짜 `GooseService`가 `GooseRewarded`를 쏘는지(`py tools/test_a23_14.py`, 변이 48/48).
+`py tools/test_health.py` — 검사 158, 정적 36, 변이 129/129 (10/10 고침 뒤). 기록 하나하나(골드·XP·띠 경계·거위·털기·패스·키 청소·상한), 합치기(다른 서버가 먼저 씀·Peak·실패 후 재시도·쓰는 중 사건·두 번 더해지지 않음), 저장소 이름(Studio/Beta/Live/Dev), 루프 대기(0.5~1.5배)·닫힐 때 저장·스위치, 읽기(시간 수 상한·live는 진짜 이름·깨진 문서 청소·읽다 실패해도 앞 줄 유지), 경보 경계(정확히 2배·3개 앞 시간·60분·75%·10판), 글. 진짜 `ProgressionService.AddXP`가 `XPEarned`를 쏘는지, 진짜 `GooseService`가 `GooseRewarded`를 쏘는지(`py tools/test_a23_14.py`, 변이 48/48).
 한계: 진짜 DataStore 한도·분석 대시보드는 안 건드림(시간당 서버당 쓰기 1~2번이라 한도의 한참 아래). 경보 숫자는 시작 값.
+
+## 10/10 검수 확인 뒤 작은 고침 5개
+- 치장(Look): 클라는 'Look', 구매는 치장의 진짜 id로 보내서 퍼널이 두 줄로 갈렸다 → `OnPass`가 Config.Looks의 id를 모두 'Look' 한 줄로 모은다.
+- `OnClientMetric`: 받은 호출마다 세던 것 → (사람, 단계, 패스)마다 한 시간에 한 번만(사람 객체 키의 약한 표). 구매(Bought)는 서버가 본 사실이라 제한 없음.
+- 거위 `GooseRewarded.Mode`: 실패한 협동도 'Versus'였다 → `finish()`가 판정한 `judged`("Coop"/"Versus")를 `rewardPlayer`에 넘긴다.
+- Studio `DebugCommand`: 읽기 전용 키(Errors·Health·StoryDump·DataDump·LootRoll)는 저장을 DebugTainted로 만들지 않는다(나머지 키는 그대로 표시).
+- `Config.Analytics.UiIds`에 'Pet'·'Diary' 추가(분석 이름 수는 test_beta_metrics가 100 아래인지 확인).

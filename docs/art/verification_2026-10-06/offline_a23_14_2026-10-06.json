@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3947,
+  "checks": 3955,
   "failedChecks": 0,
-  "namedChecks": 203,
+  "namedChecks": 211,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -909,6 +909,12 @@
     },
     {
       "group": "goose-coop-rules",
+      "check": "a failed co-op round still pays with Mode Coop (HealthService counts it as co-op)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "goose-coop-rules",
       "check": "failed co-op gives +1 cheer star each",
       "pass": 1,
       "fail": 0
@@ -1082,6 +1088,48 @@
       "fail": 0
     },
     {
+      "group": "class-first-pick",
+      "check": "the first pick sets the class and ClassChosen",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-first-pick",
+      "check": "ClassChanged fires once, the character refreshes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-first-pick",
+      "check": "no notice after the first pick (and no text left for it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-first-pick",
+      "check": "a second pick is ignored, silently",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-first-pick",
+      "check": "an unknown class changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-first-pick",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "class-first-pick",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "class-change",
       "check": "Config.ClassChange.FreeKeepLevelBelow = 5",
       "pass": 1,
@@ -1235,9 +1283,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 48,
-    "applied": 48,
-    "caught": 48,
+    "total": 51,
+    "applied": 51,
+    "caught": 51,
     "results": [
       {
         "mutation": "A23-71: a skill daily before the first skill",
@@ -1519,6 +1567,29 @@
         "newFailingCount": 6
       },
       {
+        "mutation": "the first class pick says it again",
+        "file": "src/ServerScriptService/ClassService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-first-pick :: a second pick is ignored, silently",
+          "class-first-pick :: no notice after the first pick (and no text left for it)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the class pick text is back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class-first-pick :: no notice after the first pick (and no text left for it)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "the pay is not reported (HealthService)",
         "file": "src/ServerScriptService/GooseService.luau",
         "applied": true,
@@ -1526,9 +1597,10 @@
         "crashed": false,
         "newFailingChecks": [
           "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
+          "goose-coop-rules :: a failed co-op round still pays with Mode Coop (HealthService counts it as co-op)",
           "goose-modes :: GooseRewarded in a versus round: the winner won, the loser did not, both with their pay"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "the pay report says Versus for co-op",
@@ -1537,7 +1609,19 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop"
+          "goose-coop :: GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
+          "goose-coop-rules :: a failed co-op round still pays with Mode Coop (HealthService counts it as co-op)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the pay report calls a failed co-op Versus",
+        "file": "src/ServerScriptService/GooseService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "goose-coop-rules :: a failed co-op round still pays with Mode Coop (HealthService counts it as co-op)"
         ],
         "newFailingCount": 1
       },
@@ -1616,7 +1700,7 @@
           "goose-coop :: co-op result line announced",
           "goose-coop :: co-op start line announced (Halo: 함께 구조)"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 24
       },
       {
         "mutation": "rival-left tug is a forced tie again",
@@ -1882,14 +1966,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6d46d070aec1ac9b2ef1b65d002a3c0fe8b5aebf027c9f4be26fbd1f7f3735bf",
+    "src/ReplicatedStorage/Shared/Config.luau": "65dafc97198aa9fc876b7f0e273039f474da4ea9e8750a23e2ba60e9b42cefb2",
     "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/QuestService.luau": "ae446675bd824b5750eb5198827e97becced66388ee5187b83bbc41e25d28fcf",
-    "src/ServerScriptService/GooseService.luau": "a256d44b3346a44f1e058de0f6ee6e55d582b7462fc9cfe74643883eb450a585",
-    "src/ServerScriptService/ClassService.luau": "df9d3a987bb1d6d389fa2dd4ab9764a41744848d00e704fe738370959627a005"
+    "src/ServerScriptService/QuestService.luau": "e8359a5ce0bdf83de1ac0c19143354a51fe0d94f1c1fe1671d9bf243edaaf0bb",
+    "src/ServerScriptService/GooseService.luau": "4f7593b4c7e070e23ad97f74647a6cdd29029a7752267452b35bf6e17eb8465f",
+    "src/ServerScriptService/ClassService.luau": "6d4735d865cdcd48702a083b4ac84eb4374ee4c7377ee0f494d0075698222448"
   },
-  "fixtureSHA256": "6919ecb26d457dc07c12bf90b27ab2996c54735be533cee938489b377b5b1b99",
+  "fixtureSHA256": "7438df061ad3c29c6af4c8bbaeff9e06f22e885950d48a9951e924d5d8b68f2f",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
