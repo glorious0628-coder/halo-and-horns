@@ -7219,6 +7219,24 @@ Config.RateLimits.CandyTrade = 1
 ----------------------------------------------------------------- A23-81 quest window book (게임성 개발 3, 2026-10-08)
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
+-- 검수 10/10 (조사 '피할 것 6'): what my drop rows are multiplied by now (LootService: the bully / outlaw penalty x the
+-- weekly top 3 reward; never the jackpot rule), with short reasons. s = { BullyStacks, Outlaw, RankReward } (player
+-- attributes). x1 = no line in the bag's 'What Monsters Drop'. Pure
+function Config.DropsNow(s)
+	s = type(s) == "table" and s or {}
+	local mult, why = 1, {}
+	local pen = type(Config.Bully) == "table" and Config.Bully.Penalty or nil
+	if type(pen) == "table" and ((tonumber(s.BullyStacks) or 0) >= 1 or s.Outlaw == true) then
+		mult *= tonumber(pen.DropMult) or 1
+		table.insert(why, s.Outlaw == true and "Outlaw" or "Bully")
+	end
+	if type(s.RankReward) == "string" and s.RankReward ~= "" and type(Config.Ranking) == "table" then
+		mult *= tonumber(Config.Ranking.RewardMult) or 1
+		table.insert(why, "Top 3 this week")
+	end
+	return mult, why
+end
+
 Config.QuestBook = {
 	DoneMax = 80, -- every main (19) + every sub (~45) of a finished save still fits (검수 2026-10-08; 60 -> 80 with the daily intro, A23-104)
 	AvailableMax = 10,
