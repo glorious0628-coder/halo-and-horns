@@ -2994,10 +2994,15 @@ local function buildButtons(root)
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
-		local btn, label = tileButton(def, function()
+		local btn, label, icon = tileButton(def, function()
 			L.TileTap(def)
 		end)
-		ui.tiles[i] = { Def = def, Button = btn, Label = label }
+		ui.tiles[i] = { Def = def, Button = btn, Label = label, Icon = icon }
+		-- A23-113 ③: the lock look (이미지 개발 UIKit.TileLock); L.RefreshLocks decides when
+		if type(UIKit.TileLock) == "function" and Config.HudReveal.Tiles[def.Id] then
+			local ok, lock = pcall(UIKit.TileLock, btn, icon, label)
+			if ok then ui.tiles[i].Lock = lock end
+		end
 		if def.Id == "Bag" then ui.bagGlow = makeGlow(btn, UDim.new(0, 10)) end -- B14 scroll hint
 	end
 	L.BuildMenu(names)
@@ -5502,6 +5507,10 @@ end
 -- a tile press: 지도 = the world map toggle, window tiles open their window (the same tile closes it; another window
 -- switches)
 function L.TileTap(def)
+	if L.TileLocked(def.Id) then
+		L.TileWiggle(def.Id) -- A23-113 ③: locked = a small wiggle only (no window, no notice)
+		return
+	end
 	if def.Invite then
 		local inv = C and C.Invite
 		if type(inv) == "table" and type(inv.Prompt) == "function" then task.spawn(inv.Prompt, "Menu") end
@@ -5715,15 +5724,10 @@ function L.PickTiles()
 	if not ui.tiles then return false end
 	-- 검수 2026-10-07 (user: "이렇게 하라고" with the reference row): A23-40's six tiles are always on the row; a window
 	-- that is not built yet answers on press (L.TileTap); only the row's room (Count) decides what overflows to [메뉴]
-	-- A23-113 ③: only the tiles that are needed by now (Config.HudReveal.TileShows); one that comes in pops in once
-	local ready = L.RevealReady() -- every pick (even one that changes nothing) so the join timer starts with my data
-	local want = {}
-	local st = L.RevealState()
-	for _, t in ui.tiles do
-		-- once shown it stays this session (a level or a pet list that blinks never takes a tile away)
-		if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows(t.Def.Id, st) then table.insert(want, t) end
-	end
-	-- the tiles that have come (before the row's Count trims them): only these may fold out of [메뉴] (L.FoldEntries)
+	-- A23-113 ③ 고침 (user 10/10 "처음부터 다 보이고, 그 자물쇠 해놓자"): every tile is on the row from the start; one not
+	-- open yet is locked (L.RefreshLocks), never hidden
+	L.RefreshLocks()
+	local want = table.clone(ui.tiles)
 	local came, cameKey = {}, "|"
 	for _, t in want do
 		came[t.Def.Id] = true
@@ -5751,17 +5755,59 @@ function L.PickTiles()
 	local shown = {}
 	for _, t in want do shown[t] = true end
 	local underFold = IS_TOUCH and ui.foldOpen == true
-	for _, t in ui.tiles do
-		local was = L.TileSeen[t.Def.Id]
-		t.Button.Visible = shown[t] == true and not underFold
-		if shown[t] and was == false and ready then L.TilePop(t.Button) end -- new in play (not at the join)
-		if shown[t] then L.TileSeen[t.Def.Id] = true elseif was == nil then L.TileSeen[t.Def.Id] = false end
-	end
+	for _, t in ui.tiles do t.Button.Visible = shown[t] == true and not underFold end
 	return true
 end
 
--- A23-113 ③: tile id -> true once shown, false = hidden at the first pick (its first showing later pops)
+-- A23-113 ③: tile id -> true once open (stays open this session), false = locked at the first check (its opening pops)
 L.TileSeen = {}
+
+-- lock / unlock each tile by the rule (Config.HudReveal.TileShows); the lock pops away when one opens in play
+function L.RefreshLocks()
+	if not ui.tiles then return end
+	local ready = L.RevealReady() -- every check (even one that changes nothing) so the join timer starts with my data
+	local st = L.RevealState()
+	for _, t in ui.tiles do
+		local id = t.Def.Id
+		local was = L.TileSeen[id]
+		local open = was == true or Config.HudReveal.TileShows(id, st)
+		if open then
+			if was == false and ready then L.TilePop(t.Button) end -- opened in play (not at the join)
+			L.TileSeen[id] = true
+		elseif was == nil then
+			L.TileSeen[id] = false
+		end
+		if t.Lock and t.Lock.Locked ~= not open then pcall(t.Lock.Set, not open, Config.HudReveal.TileWord(id)) end
+	end
+end
+
+-- is this tile locked right now (no lock look = never locked)
+function L.TileLocked(id)
+	for _, t in ui.tiles or {} do
+		if t.Def.Id == id then return t.Lock ~= nil and t.Lock.Locked == true end
+	end
+	return false
+end
+
+-- a locked tile's press: a quick small wiggle (nothing with reduced motion)
+function L.TileWiggle(id)
+	if UIKit.ReducedMotion() then return end
+	for _, t in ui.tiles or {} do
+		if t.Def.Id == id and not t.Wiggling then
+			t.Wiggling = true
+			local btn = t.Button
+			task.spawn(function()
+				for _, r in { 7, -6, 4, -2, 0 } do
+					local tw = TweenService:Create(btn, TweenInfo.new(0.05, Enum.EasingStyle.Sine), { Rotation = r })
+					tw:Play()
+					tw.Completed:Wait()
+				end
+				btn.Rotation = 0
+				t.Wiggling = false
+			end)
+		end
+	end
+end
 
 -- pops only a few seconds after my data loaded (the quest book and the pet list come in just after the join)
 function L.RevealReady()
@@ -6287,11 +6333,9 @@ function HUD.Start()
 		refreshQuests()
 	end)
 	L.ApplyFold(false)
-	-- A23-113 ③: a level up, a new skill or a pet brings its menu tile in at once (the 1 s refresh also catches it)
+	-- A23-113 ③: a level up, a new skill or a pet unlocks its menu tile at once (the 1 s refresh also catches it)
 	for _, name in { "Level", "SkillSlots", "EquippedPet" } do
-		LocalPlayer:GetAttributeChangedSignal(name):Connect(function()
-			if L.PickTiles() then requestLayout() end
-		end)
+		LocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)
 	end
 	-- Studio-only check hook (UiSandbox captures of A23-68 #2): the local attribute HintPreview = "Attack" / "Q" shows
 	-- that hint, any other value clears them; never read outside Studio

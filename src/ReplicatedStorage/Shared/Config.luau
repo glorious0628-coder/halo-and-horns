@@ -1513,13 +1513,25 @@ function Config.HudReveal.Shows(kind, s)
 	return true
 end
 
--- A23-113 ③ (user 2026-10-10 "마감 전 넣자"): the bottom menu tiles show when they are needed - the bag and the map
--- from the start, the hero (stats) after the first level up, the skills at the first skill (Config.Skills.Unlock.Q),
--- the pet once I have a pet, the ranking once the first chapter's main quests are done (FirstChapterLast). A tile that
--- comes in during play pops in once (no pop with reduced motion), never with a text notice. The quick slots always
--- show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
+-- A23-113 ③ (user 2026-10-10 "마감 전 넣자", 고침 same day "처음부터 다 보이고, 그 자물쇠 해놓자"): every bottom menu
+-- tile shows from the start; one not open yet is LOCKED (UIKit.TileLock: dark + lock + the small word TileWords[id];
+-- a press only wiggles it, no window, no notice). The bag and the map are always open; the hero opens at the first level
+-- up, the skills at the first skill (Config.Skills.Unlock.Q), the pet once I have a pet, the ranking once the first
+-- chapter's main quests are done (FirstChapterLast). The lock pops away when it opens (no pop with reduced motion). The
+-- quick slots always show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
 Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet", Ranking = "Chapter" }
 Config.HudReveal.FirstChapterLast = "M1_4"
+-- the locked tile's word (short, under the icon; %d = the level)
+Config.HudReveal.TileWords = { Character = "Lv 2", Skills = "Lv %d", Pet = "Get pet", Ranking = "Story 1" }
+function Config.HudReveal.TileWord(id)
+	local w = Config.HudReveal.TileWords[id]
+	if type(w) ~= "string" then return "" end
+	if string.find(w, "%%d") then
+		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
+		return string.format(w, q)
+	end
+	return w
+end
 function Config.HudReveal.TileShows(id, s)
 	s = type(s) == "table" and s or {}
 	local rule = Config.HudReveal.Tiles[id]
