@@ -49,6 +49,7 @@ Credits: no per-batch report to the user; 검수 tells the user only when a bala
 - Pet menu button (now the Baby Slime pet icon) and the 2x XP pass tile (now the faction XP +30% icon): own icons.
 - Top bar (A23-81, fdb3b7c8) reuses old approved parts (PanelCard, LevelBadgeHalo/Horns, WarCrownPip) → its own plate + Halo badge + Horns badge, no lettering (검수 2026-10-10). 이미지 생성 2 after the Halo NPCs; 이미지 개발 uploads and swaps.
 - Speech bubbles: Captain Clatter, Flower Slime, Slingshot Goblin, Skeleton Archer get their own (now family bubbles).
+- Quick slots 1·2·3 (A23-109, 30f5442c / c3f1d90f): now the menu tile square (MenuTile) → their own slot frame (a little darker, an empty-slot look, room for the number top-left and the count bottom-right), no lettering — part of the Halo HUD art bundle (검수 10/10: after 이미지 생성 2's Halo buildings and weapons); 이미지 개발 uploads and swaps (VitalsUI square slots + HUD QuickSlot3).
 - World map pond slimes are pasted concept cutouts → goes away with the minimap/big-map tile set (A23-95, MapTilesFull).
 
 ## P6 — sharpness redo (SPEC A23-107, user 10/10: "지금까지 그렇게 한 것들 없으면 싹 다 다시 해. 크레딧 많이 들어도 상관 없음")
