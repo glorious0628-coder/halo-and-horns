@@ -246,9 +246,14 @@ end
 -- the side ("Good" | "Evil") of a saved pick of quest `id`: the quest's Choice step names its picks (Good.Pick or
 -- "Good", Evil.Pick or "Evil"); Neutral A / B count as Good / Evil like StoryQuestService's own SIDE table
 local function sideOf(id, pick)
+	local def = Config.StoryQuests and Config.StoryQuests.Defs and Config.StoryQuests.Defs[id]
+	for _, step in type(def) == "table" and def.Steps or {} do
+		local joke = step.Obj
+		-- a joke pick (the Terms of Fate egg: Choice MyWay = false) never counts for My Way, whatever it saved
+		if type(joke) == "table" and joke.Type == "Choice" and joke.MyWay == false then return nil end
+	end
 	if pick == "A" then return "Good" end
 	if pick == "B" then return "Evil" end
-	local def = Config.StoryQuests and Config.StoryQuests.Defs and Config.StoryQuests.Defs[id]
 	for _, step in type(def) == "table" and def.Steps or {} do
 		local obj = step.Obj
 		if type(obj) == "table" and obj.Type == "Choice" then

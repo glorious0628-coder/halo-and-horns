@@ -1728,6 +1728,20 @@ runGroup("easter-eggs", function()
 	local pick = SQ0.Defs.EG01.Steps[2].Obj
 	check(pick.Type == "Choice" and pick.Good.Label == "Read it all" and pick.Evil.Label == "I agree" and pick.Neutral.A == "Read it all"
 		and pick.Neutral.B == "I agree" and pick.Good.Points == 0 and pick.Evil.Points == 0, "EG01: the card's labels (a Neutral save too), 0 points", show(pick))
+	check(pick.MyWay == false and SQ0.Defs.EG04.Steps[2].Obj.MyWay == nil, "EG01: the joke pick is marked MyWay = false (only that one)", show(pick))
+	check(SQ0.Defs.EG01.Speaker == "Scroll" and SQ0.Defs.EG02.Speaker == "Notice" and SQ0.Defs.EG03.Speaker == "Goose"
+		and SQ0.Defs.EG04.Speaker == "Shard" and SQ0.Defs.EG14.Speaker == "Notice"
+		and SQ0.Speakers.Scroll == "Terms of Fate" and SQ0.Speakers.Notice == "Notice" and SQ0.Speakers.Goose == "Golden Goose"
+		and SQ0.Speakers.Shard == "Crown Shard", "every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face",
+		show({ SQ0.Defs.EG01.Speaker, SQ0.Defs.EG02.Speaker, SQ0.Defs.EG03.Speaker, SQ0.Defs.EG04.Speaker, SQ0.Defs.EG14.Speaker }))
+	check(SQ0.Portraits.Scroll == nil and SQ0.Portraits.Notice == nil and SQ0.Portraits.Goose == nil and SQ0.Portraits.Shard == "PTR_CrownShard",
+		"the scroll, the note and the goose get no face; the Crown Shard keeps hers", show({ SQ0.Portraits.Scroll, SQ0.Portraits.Notice, SQ0.Portraits.Goose, SQ0.Portraits.Shard }))
+	check(SQ0.Defs.EG04.Steps[2].Lines.All[1] == "Stop staring. I'm broken, not famous.", "EG04: the Shard's line has no 'Sky Crown:' label (the speaker says it)", SQ0.Defs.EG04.Steps[2].Lines.All[1])
+	local speakerOk = true
+	for id, def in SQ0.Defs do
+		if def.Speaker ~= nil and SQ0.Speakers[def.Speaker] == nil then speakerOk = false end
+	end
+	check(speakerOk, "every quest's Speaker names a Speakers entry", "")
 	check(SQ0.Landmarks.TermsScroll.Z > C0.Map.AltarPosition.Z and SQ0.Landmarks.PatchNote.X > C0.Map.BoardPosition.X
 		and SQ0.Landmarks.GooseNest.X == C0.Goose.Position.X and SQ0.Landmarks.GooseNest.Z == C0.Goose.Position.Z,
 		"the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch", "")

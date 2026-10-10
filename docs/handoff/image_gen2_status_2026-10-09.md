@@ -25,3 +25,9 @@
 - 뿔 마을: 앞면 22 + 성채 1(고급) → `art/out/s2/horns/HornsProp_<이름>_front_HQ_src.png`(+ v2: RockColumnB·C·Pine), 건물 9개 + 성채 뒤·좌·우 30장 → `..._{back,left,right}_HQ_src.png`, 시트 `art/review/s2/horns_*`. 도구 `tools/_horns_prop_prompts.py`, `_horns_prop_mv_prompts.py`, `_img2_sheet_horns.py`. StallSmith는 앞면만(뒤·좌·우 건너뜀, 검수 결정 대기).
 - 방법 메모(10/10): 숨김 창에서도 프롬프트 입력·생성은 돌아감(새로고침 금지). Adobe 참조 링크(at.adobe.com)는 몇 시간 뒤 403 → 다시 올림. 새 asset_search는 이미지 mediaType 필터 + 시각 순서로 매핑.
 - 크레딧(10/10 아침까지 고급): 간판 6 + 뿔 앞면 18+3 + 성채 1 + 뒤·좌·우 30 + 빛 소품 v2 등 = 약 300(어젯밤 분 제외). 화면 잔액은 다음에 확인.
+
+## 10/10 오전 추가
+- 빛 마을 NPC 5명 뒤·좌·우 15장(고급): `art/out/s2/npc/NPC_Halo<이름>_{back,left,right}_HQ_src.png`, 시트 `art/review/s2/halo_npc_mv_sheet.jpg`. approved.json에 NPC_Halo*·HaloSign_* 키(승인 2026-10-10).
+- 새 탑(사람 키 문, 땅 높이): `art/out/s2/halo/HaloProp_Tower_v2_{front,back,left,right}_HQ_src.png`, 시트 `art/review/s2/halo_tower_v2_sheet.jpg`.
+- 바닥 메달리온(후보 A 월계수 + 후광 고리 고름, B·C는 후보): `art/out/s2/halo/HaloFloor_Medallion_A_HQ_src.png`(원본), `..._HQ_cut.png`(1024² 투명 원형 PNG, `tools/_img2_circle_cut.py`), 시트 `halo_medallion_cut_check.jpg`, 후보 시트 `halo_tower_medallion_sheet.jpg`.
+- 남은 큐(사용 한도 때문에 초기화 뒤): 깨진 왕관 새 그림(후보 중간 3 → 검수가 고름 → 4면), StallSnack(앞 + 뒤·좌·우), A23-106 건물 실내 시안(대성당·돔집·물약·빵집·주스·꽃).

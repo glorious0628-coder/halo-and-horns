@@ -2375,7 +2375,8 @@ Config.StoryQuests = {
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
 		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
-		Gleam = "Sir Gleam", Rex = "Rascal Rex" }, -- story_depth §4 (beta: names only)
+		Gleam = "Sir Gleam", Rex = "Rascal Rex", -- story_depth §4 (beta: names only)
+		Scroll = "Terms of Fate", Notice = "Notice", Goose = "Golden Goose" }, -- the Easter eggs' speakers (no portrait: the card shows no face)
 	-- 검수 2026-10-07: the Story window shows the speaker's face (a Config.UIArt.Parts key) in the PortraitFrame left of
 	-- the words. Halo / Horns / Guild = no Speaker, my faction's guide; the crown shard and the fountain shard share
 	-- PTR_CrownShard (94207f5). A speaker missing here or whose art id is empty (Kids, the goblins, Gleam, Rex) gets no
@@ -3316,11 +3317,12 @@ Config.StoryQuests.Landmarks.TermsScroll = Vector3.new(0, 0, 51)
 Config.StoryQuests.Landmarks.PatchNote = Vector3.new(-52, 0, 0)
 Config.StoryQuests.Landmarks.GooseNest = Vector3.new(-30, 0, 30)
 Config.StoryQuests.Defs.EG01 = {
-	Kind = "Sub", Title = "Terms of Fate", ShortName = "Terms of Fate", Hidden = true, Requires = { Done = { "M2_3" } },
+	Kind = "Sub", Title = "Terms of Fate", ShortName = "Terms of Fate", Hidden = true, Speaker = "Scroll", Requires = { Done = { "M2_3" } },
 	Steps = {
 		{ Text = "Read the scroll", Obj = { Type = "Near", Spot = "TermsScroll", Radius = 6 } },
 		{ Text = "TERMS OF FATE", Panel = true, Lines = { All = { "TERMS OF FATE (page 1 of 4,000)" } },
-			Obj = { Type = "Choice", Good = { Label = "Read it all", Points = 0 }, Evil = { Label = "I agree", Points = 0 },
+			-- MyWay = false: a joke, not a choice of heart (the pick only picks the lines and the title; My Way never counts it)
+			Obj = { Type = "Choice", MyWay = false, Good = { Label = "Read it all", Points = 0 }, Evil = { Label = "I agree", Points = 0 },
 				Neutral = { A = "Read it all", B = "I agree" } } },
 		{ Text = "The fine print", Panel = true, Obj = { Type = "Talk" },
 			Lines = { All = { "Thanks! You agreed to… something. Not even Fate knows what." } },
@@ -3333,7 +3335,7 @@ Config.StoryQuests.Defs.EG01 = {
 	Reward = { TitleBy = { Good = "ActuallyReadIt", Evil = "DidntReadIt" } },
 }
 Config.StoryQuests.Defs.EG02 = {
-	Kind = "Sub", Title = "Patch Note", ShortName = "Patch Note", Hidden = true, Requires = { Done = { "M2_3" } },
+	Kind = "Sub", Title = "Patch Note", ShortName = "Patch Note", Hidden = true, Speaker = "Notice", Requires = { Done = { "M2_3" } },
 	Steps = {
 		{ Text = "Read the note", Obj = { Type = "Near", Spot = "PatchNote", Radius = 6 } },
 		{ Text = "Patch Note", Panel = true, Obj = { Type = "Talk" },
@@ -3342,7 +3344,7 @@ Config.StoryQuests.Defs.EG02 = {
 	Reward = { Title = "BugReporter" },
 }
 Config.StoryQuests.Defs.EG03 = {
-	Kind = "Sub", Title = "Goose Fan", ShortName = "Goose Fan", Hidden = true, Requires = { Done = { "M2_3" } },
+	Kind = "Sub", Title = "Goose Fan", ShortName = "Goose Fan", Hidden = true, Speaker = "Goose", Requires = { Done = { "M2_3" } },
 	Steps = {
 		{ Text = "Visit the goose", Obj = { Type = "Near", Spot = "GooseNest", Radius = 6 } },
 		{ Text = "Goose Fan", Panel = true, Obj = { Type = "Talk" },
@@ -3352,16 +3354,16 @@ Config.StoryQuests.Defs.EG03 = {
 	Reward = { Title = "GooseFan" },
 }
 Config.StoryQuests.Defs.EG04 = {
-	Kind = "Sub", Title = "Sky Watcher", ShortName = "Sky Watcher", Hidden = true, Requires = { Done = { "M2_3" } },
+	Kind = "Sub", Title = "Sky Watcher", ShortName = "Sky Watcher", Hidden = true, Speaker = "Shard", Requires = { Done = { "M2_3" } },
 	Steps = {
 		{ Text = "Look up %d/%d s", Obj = { Type = "Near", Spot = "Fountain", Radius = 12, Stay = 30 } },
 		{ Text = "Sky Watcher", Panel = true, Obj = { Type = "Talk" },
-			Lines = { All = { "Sky Crown: Stop staring. I'm broken, not famous." } } },
+			Lines = { All = { "Stop staring. I'm broken, not famous." } } },
 	},
 	Reward = { Title = "SkyWatcher" },
 }
 Config.StoryQuests.Defs.EG14 = {
-	Kind = "Sub", Title = "Bench Detective", ShortName = "Bench clue", Hidden = true, Requires = { Done = { "M2_3" } },
+	Kind = "Sub", Title = "Bench Detective", ShortName = "Bench clue", Hidden = true, Speaker = "Notice", Requires = { Done = { "M2_3" } },
 	Steps = {
 		{ Text = "Look under the bench", Obj = { Type = "Near", Spot = "KidsBench", Radius = 6 } },
 		{ Text = "Bench Detective", Panel = true, Obj = { Type = "Talk" },
