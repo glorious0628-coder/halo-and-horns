@@ -3934,6 +3934,7 @@ Config.RateLimits = {
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
+	SetQuickSlot = 0.2, -- A23-109: one quick-slot fill / empty / swap (QuickSlotService)
 }
 
 ----------------------------------------------------------------- king finisher card (게임성 개발 2, 2026-10-08)
