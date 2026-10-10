@@ -63,7 +63,7 @@
     },
     {
       "group": "environments",
-      "check": "the listed switches",
+      "check": "the listed switches (A23-105 added DayCycle and Weather)",
       "pass": 1,
       "fail": 0
     },
@@ -809,7 +809,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "environments :: the listed switches"
+          "environments :: the listed switches (A23-105 added DayCycle and Weather)"
         ],
         "newFailingCount": 1
       },
@@ -1446,12 +1446,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6d46d070aec1ac9b2ef1b65d002a3c0fe8b5aebf027c9f4be26fbd1f7f3735bf",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Config.luau": "b2576cbf39f7d536b92b96c0b49b4af7feb2c9296382e13402dfff5929f5e9b8",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/ServerErrorService.luau": "949a1c27e960cdc487fd3052516331dfa045b3add44f853221b335b177aa2e6a",
     "src/ServerScriptService/SwitchService.luau": "1a268a27b6f5e78c8f6090fef432cccbe26be42064abb339fbe017195c889395"
   },
-  "fixtureSHA256": "ac371388ca7c5050ad08e1c6b91596643387f3696a896dda99c23544e489994a",
+  "fixtureSHA256": "f965e1a7a4eb5232b730350c163bf93ab79d9029efe9f69fece4c79de0b5ca42",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
