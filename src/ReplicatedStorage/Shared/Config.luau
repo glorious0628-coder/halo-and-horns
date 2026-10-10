@@ -4365,6 +4365,8 @@ Config.Switches = {
 		Halloween = { Type = "Bool", Default = true }, -- Config.Halloween.Enabled follows it
 		CrownWar = { Type = "Bool", Default = true }, -- war points and rounds
 		Goose = { Type = "Bool", Default = true }, -- no new goose
+		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
+		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
 	},
 }
 
