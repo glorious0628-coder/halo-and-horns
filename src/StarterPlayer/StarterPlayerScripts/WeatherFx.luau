@@ -66,9 +66,13 @@ local TEX = {
 -- a darker blue-grey by day, the pale glowing streak at Dusk / Night (light emission per phase too)
 local COL = {
 	Rain = Color3.fromRGB(196, 214, 236),
-	RainDay = Color3.fromRGB(128, 146, 176),
+	RainDay = Color3.fromRGB(104, 122, 156), -- UiSandbox 10/10 5th: (128,146,176) at 35% see-through was still faint
 	Snow = Color3.fromRGB(255, 255, 255),
 	RainGlow = { Day = 0, Night = 0.2 },
+	RainSeeNight = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.08, 0.2),
+		NumberSequenceKeypoint.new(1, 0.35) }),
+	RainSeeDay = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.08, 0.05),
+		NumberSequenceKeypoint.new(1, 0.15) }),
 }
 
 local S = {
@@ -301,6 +305,10 @@ local function apply()
 	local night = plan.Lamps == true -- Dusk / Night
 	S.Rain.Color = ColorSequence.new(night and COL.Rain or COL.RainDay)
 	S.Rain.LightEmission = night and COL.RainGlow.Night or COL.RainGlow.Day
+	-- by day the streak is less see-through, a little longer and only half lit (the sun washed it out)
+	S.Rain.LightInfluence = night and 1 or 0.5
+	S.Rain.Transparency = night and COL.RainSeeNight or COL.RainSeeDay
+	S.Rain.Size = NumberSequence.new(night and T.Rain.Size or T.Rain.Size * 1.25)
 	S.Snow.Rate, S.Snow.Enabled = plan.Snow, plan.Snow > 0
 	if not old or old.Tint ~= plan.Tint then easeTint(plan.Tint) end
 end
