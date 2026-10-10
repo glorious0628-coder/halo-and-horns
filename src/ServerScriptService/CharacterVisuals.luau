@@ -600,6 +600,14 @@ local function gripCFrame(hand, left)
 	return CFrame.new(pos) * rotation
 end
 
+-- A23-108 고침 (검수 grip sheet 2026-10-10, user "검 말고는 다 이상한데"): every held weapon passes THROUGH the fist like
+-- the sword - its long axis is the hand's -Z (the knuckle line), never the forearm (+Y, which ran staffs, hammers and
+-- bows along the arm and turned them upside down in the Hold poses). With the forearm forward (ClassGrips Hold ~90
+-- degrees) the axis points up. Hand = the share of the length below the hand (staffs 0.4, hammer / baton 0.3).
+local function fist(grip)
+	return grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y = the hand's -Z, +Z = towards the elbow (the body)
+end
+
 local function buildSword(grip, sc, w, color)
 	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward
 	local handleLen = 1.2
@@ -622,22 +630,23 @@ end
 
 local function buildStaff(grip, sc, w, color, tier)
 	local shaftLen = w.Length + 1.5
-	local base = grip -- the shaft centreline must pass through the actual hand grip
+	local base = fist(grip) -- the shaft centreline passes through the actual hand grip
+	local low = shaftLen * 0.4 -- the hand a little below the middle; the foot near the ground
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.3, shaftLen, 0.3) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR,
-		CFrame = base * CFrame.new(0, (shaftLen / 2 - 1.0) * sc, 0),
+		CFrame = base * CFrame.new(0, (shaftLen / 2 - low) * sc, 0),
 	})
 	local collar = accPart({
 		Name = "Collar", Size = Vector3.new(0.45, 0.3, 0.45) * sc,
 		Material = w.Material, Color = color,
-		CFrame = base * CFrame.new(0, (shaftLen - 1.05) * sc, 0),
+		CFrame = base * CFrame.new(0, (shaftLen - low - 0.05) * sc, 0),
 	})
 	local d = 0.7 + 0.1 * tier
 	local tip = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,
-		CFrame = base * CFrame.new(0, (shaftLen - 1.0 + d * 0.35) * sc, 0),
+		CFrame = base * CFrame.new(0, (shaftLen - low + d * 0.35) * sc, 0),
 	})
 	addLight(tip, color, 8 * sc, 1.5)
 	return { shaft, collar, tip }, tip
@@ -650,7 +659,8 @@ local function buildBow(grip, sc, w, color, scale, tilt)
 	local sag = R * (1 - math.cos(half))
 	-- The centre/grip stays in the hand at every tier; lifting a long bow moved its arrow rest
 	-- above the grip, so no arm pose could align the string hand, face and launch axis together.
-	local base = grip * CFrame.new(0, 0, -0.1 * sc) * CFrame.Angles(0, 0, math.rad(tonumber(tilt) or 0))
+	-- A23-108 고침: the riser through the fist (limbs up with the forearm forward), the string on the body side (+Z)
+	local base = fist(grip) * CFrame.Angles(0, 0, math.rad(tonumber(tilt) or 0))
 	local segLen = math.max(0.9, 2 * R * math.sin(math.rad(10)) * 1.08)
 	local parts = {}
 	local main
@@ -695,16 +705,17 @@ end
 -- A23-39 pet tamer: a short taming baton in the right hand (code shape until the baton model is made)
 local function buildBaton(grip, sc, w, color, tier)
 	local shaftLen = 1.8
+	local base, low = fist(grip), shaftLen * 0.3
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.22, shaftLen, 0.22) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR,
-		CFrame = grip * CFrame.new(0, (shaftLen / 2 - 0.5) * sc, 0),
+		CFrame = base * CFrame.new(0, (shaftLen / 2 - low) * sc, 0),
 	})
 	local d = 0.35 + 0.04 * tier
 	local tip = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = w.Material, Color = color,
-		CFrame = grip * CFrame.new(0, (shaftLen - 0.5 + d * 0.3) * sc, 0),
+		CFrame = base * CFrame.new(0, (shaftLen - low + d * 0.3) * sc, 0),
 	})
 	return { shaft, tip }, tip
 end
@@ -738,17 +749,18 @@ end
 -- Blacksmith: a short smithing hammer (a wooden handle, a heavy metal head with a band in the tier colour)
 function SHAPES.Hammer(grip, sc, w, color)
 	local handleLen = 1.9
+	local base, low = fist(grip), handleLen * 0.3 -- the hand on the lower third, the head up
 	local handle = accPart({
 		Name = "Handle", Size = Vector3.new(0.26, handleLen, 0.26) * sc,
-		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = grip * CFrame.new(0, (handleLen / 2 - 0.4) * sc, 0),
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = base * CFrame.new(0, (handleLen / 2 - low) * sc, 0),
 	})
 	local head = accPart({
 		Name = "Head", Size = Vector3.new(1.1, 0.6, 0.6) * sc,
-		Material = Enum.Material.Metal, Color = DARK_METAL, CFrame = grip * CFrame.new(0, (handleLen - 0.4) * sc, 0),
+		Material = Enum.Material.Metal, Color = DARK_METAL, CFrame = base * CFrame.new(0, (handleLen - low) * sc, 0),
 	})
 	local band = accPart({
 		Name = "Band", Size = Vector3.new(0.3, 0.64, 0.64) * sc,
-		Material = w.Material, Color = color, CFrame = grip * CFrame.new(0, (handleLen - 0.4) * sc, 0),
+		Material = w.Material, Color = color, CFrame = base * CFrame.new(0, (handleLen - low) * sc, 0),
 	})
 	return { handle, head, band }, head
 end
@@ -756,12 +768,13 @@ end
 -- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
 function SHAPES.CrookStaff(grip, sc, w, color, tier)
 	local shaftLen = w.Length + 1.5
+	local base, low = fist(grip), shaftLen * 0.4
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.28, shaftLen, 0.28) * sc,
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
-		CFrame = grip * CFrame.new(0, (shaftLen / 2 - 1.0) * sc, 0),
+		CFrame = base * CFrame.new(0, (shaftLen / 2 - low) * sc, 0),
 	})
-	local top = grip * CFrame.new(0, (shaftLen - 1.0) * sc, 0)
+	local top = base * CFrame.new(0, (shaftLen - low) * sc, 0)
 	local hook = accPart({
 		Name = "Hook", Size = Vector3.new(0.24, 0.9, 0.24) * sc,
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
@@ -780,19 +793,20 @@ end
 -- Alchemist: a round flask in the right hand (glass, a neck and a cork; the brew in the tier colour)
 function SHAPES.Flask(grip, sc, w, color, tier)
 	local d = 0.75 + 0.04 * tier
+	local base = fist(grip) -- upright on the fist: the round body on the hand, the neck and cork above
 	local ball = accPart({
 		Name = "Flask", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Glass, Color = color, Transparency = 0.25,
-		CFrame = grip * CFrame.new(0, (d / 2 + 0.05) * sc, 0),
+		CFrame = base * CFrame.new(0, (d / 2 + 0.05) * sc, 0),
 	})
 	local neck = accPart({
 		Name = "Neck", Size = Vector3.new(0.22, 0.35, 0.22) * sc,
 		Material = Enum.Material.Glass, Color = Color3.fromRGB(220, 235, 240), Transparency = 0.3,
-		CFrame = grip * CFrame.new(0, (d + 0.2) * sc, 0),
+		CFrame = base * CFrame.new(0, (d + 0.2) * sc, 0),
 	})
 	local cork = accPart({
 		Name = "Cork", Size = Vector3.new(0.26, 0.14, 0.26) * sc,
-		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = grip * CFrame.new(0, (d + 0.42) * sc, 0),
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = base * CFrame.new(0, (d + 0.42) * sc, 0),
 	})
 	addLight(ball, color, 6 * sc, 1)
 	return { ball, neck, cork }, ball
@@ -800,7 +814,7 @@ end
 
 -- Shadow Hunter: the bow smaller and held tilted
 function SHAPES.ShortBow(grip, sc, w, color)
-	return buildBow(grip, sc, w, color, 0.75, 30)
+	return buildBow(grip, sc, w, color, 0.75, 15)
 end
 
 local function buildWeapon(player, character)

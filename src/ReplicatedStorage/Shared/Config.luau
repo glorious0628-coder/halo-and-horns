@@ -5408,33 +5408,35 @@ Config.QuickSlots = {
 -- a class alone without a side). Weapon = what the hand holds (CharacterVisuals proposal, game dev 3 checks); Hold =
 -- the standing pose WeaponPose.luau adds over Roblox's idle / walk while the weapon is out and no attack plays
 -- (degrees in joint space like Fx MOTION.CLIPS: +rx raises an arm forward / leans back, +rz swings an arm to the
--- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows)
+-- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows).
+-- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
+-- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
 	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 22, 0, 8 }, RightElbow = { 38, 0, 0 },
-		RightWrist = { -30, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 20, 0, 4 }, RightElbow = { 44, 0, 0 },
+		RightWrist = { -12, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
 	-- Berserker: the great sword rests on the right shoulder, a low stance
 	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 72, 0, 26 },
 		RightElbow = { 112, 0, 0 }, RightWrist = { -18, 0, 0 }, LeftShoulder = { 12, 0, -8 } } },
-	-- Blacksmith: the hammer on the right shoulder, the left hand on the hip
-	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 62, 0, 20 }, RightElbow = { 104, 0, 0 },
+	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
-	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 12, 0, 10 }, RightElbow = { 22, 0, 0 },
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -20, 0, 0 } } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
-		RightShoulder = { 32, 0, 6 }, RightElbow = { 26, 0, 0 }, RightWrist = { -36, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
+		RightShoulder = { 14, 0, 6 }, RightElbow = { 56, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 42, 0, 10 }, RightElbow = { 82, 0, 0 },
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 16, 0, 10 }, RightElbow = { 74, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } } },
-	-- Ranger: the long bow upright in the left hand at the side
-	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 20, 0, -10 }, LeftElbow = { 26, 0, 0 },
+	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
+	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },
-	-- Shadow Hunter: low and quiet, the short bow hanging down
+	-- Shadow Hunter: low and quiet, the short bow upright and a little tilted in front
 	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },
-		LeftShoulder = { 6, 0, -8 }, RightShoulder = { 10, 0, 6 } } },
+		LeftShoulder = { 30, 0, -10 }, LeftElbow = { 55, 0, 0 }, RightShoulder = { 10, 0, 6 } } },
 	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
 	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
 		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },

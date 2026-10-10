@@ -3,7 +3,7 @@
 Reads the CURRENT Config.luau (Config.ClassGrips) and CharacterVisuals.luau. Checks: every ClassGrips Weapon has a shape
 (a SHAPES builder or the old Sword / Staff / Bow / Baton), buildWeapon takes the weapon from ClassGrips first and the old
 rule (tamer baton, the class's weapon) without a row, both bows go in the left hand with the arrow muzzle, the short bow
-is the bow at 0.75 size tilted 30 degrees, the shapes are plain Parts (no store assets). Mutations on in-memory copies:
+is the bow at 0.75 size tilted 15 degrees, the shapes are plain Parts (no store assets). Mutations on in-memory copies:
 each must be caught. The look is checked in Studio photos (메인 반영 1, 9 classes).
 
 Usage: py tools/test_class_grips_server.py
@@ -40,7 +40,7 @@ def checks(cv: str, cfg: str) -> list[tuple[str, bool]]:
         ("both bows get the arrow muzzle", 'if kind == "Bow" or kind == "ShortBow" then' in cv),
         ("both bows publish the bow rest the archer pose reads (HandBowRest)", 'if kind == "Bow" or kind == "ShortBow" then -- both bows' in cv
          and 'model:SetAttribute("HandBowRest"' in cv),
-        ("the short bow = the bow at 0.75, tilted 30 degrees", "return buildBow(grip, sc, w, color, 0.75, 30)" in cv
+        ("the short bow = the bow at 0.75, tilted 15 degrees", "return buildBow(grip, sc, w, color, 0.75, 15)" in cv
          and "local H = w.Length * (tonumber(scale) or 1)" in cv and "CFrame.Angles(0, 0, math.rad(tonumber(tilt) or 0))" in cv),
         ("the shapes are plain parts (no store asset ids)", "rbxassetid" not in cv[cv.find("local SHAPES = {}"):cv.find("local function buildWeapon(")]),
     ]
@@ -52,7 +52,7 @@ MUTATIONS = [
     ("ClassGrips ignored", 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)', "local kind = (false)"),
     ("the short bow in the right hand", 'local left = kind == "Bow" or kind == "ShortBow"', 'local left = kind == "Bow"'),
     ("the short bow has no bow rest", 'if kind == "Bow" or kind == "ShortBow" then -- both bows', 'if kind == "Bow" then -- both bows'),
-    ("the short bow full size", "return buildBow(grip, sc, w, color, 0.75, 30)", "return buildBow(grip, sc, w, color)"),
+    ("the short bow full size", "return buildBow(grip, sc, w, color, 0.75, 15)", "return buildBow(grip, sc, w, color)"),
 ]
 
 
