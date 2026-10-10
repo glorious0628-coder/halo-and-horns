@@ -18,8 +18,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UI = os.path.join(ROOT, "art", "ui")
 OUT = os.path.join(UI, "sa_halodeco")
 WORK = os.path.join(ROOT, "build", "deco_sa")
-DEFAULT = ["ShieldEmblem", "DoorHalo", "RoundWindow"]
-GOLD_BOOST = 0.12
+DEFAULT = ["ShieldEmblem", "DoorHalo", "RoundWindow", "BannerPlain", "BannerEmblem", "AwningStripes"]
+# 이미지 생성 1 (10/10): no gold boost - a new colour map greys the whole SurfaceAppearance while it waits for moderation,
+# so the plate keeps its uploaded HaloDeco_* image as ColorMap; C here is that same image (for the previews)
+GOLD_BOOST = 0.0
 
 
 def fill_gold(name):
@@ -77,7 +79,7 @@ def one(name):
     nin = os.path.join(WORK, name + "_flat.png")
     Image.new("RGB", (1024, 1024), (128, 128, 255)).save(nin)
     r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "pbr_from_color.py"), cpath, WORK, "--name", name,
-                        "--size", "1024", "--normal-in", nin, "--gold-boost", str(GOLD_BOOST)],
+                        "--size", "1024", "--normal-in", nin] + (["--gold-boost", str(GOLD_BOOST)] if GOLD_BOOST > 0 else []),
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.returncode != 0:
         raise SystemExit(r.stderr[-1500:])
@@ -86,7 +88,8 @@ def one(name):
     box = (round(ox * k), round(oy * k), round((ox + w) * k), round((oy + h) * k))
     os.makedirs(OUT, exist_ok=True)
     files = {}
-    for tag, fn, mode in (("C", "_color.png", "RGB"), ("N", "_normal.png", "RGB"), ("M", "_metal.png", "L"), ("R", "_rough.png", "L")):
+    cfn = "_color.png" if GOLD_BOOST > 0 else "_sq.png"
+    for tag, fn, mode in (("C", cfn, "RGB"), ("N", "_normal.png", "RGB"), ("M", "_metal.png", "L"), ("R", "_rough.png", "L")):
         im = Image.open(os.path.join(WORK, name + fn)).convert(mode).crop(box).resize((w, h), Image.LANCZOS)
         if tag == "C":
             im = im.convert("RGBA")
