@@ -362,15 +362,15 @@ for _, case in CASES do
 			-- its right end), centred unless it had to step aside, always clear of the cluster and inside the left margin
 			check(g, "attack in corner", W - (out.attack.X + out.attack.W) <= 30 and H - (out.attack.Y + out.attack.H) <= 30,
 				fmt(out.attack))
+			-- A23-109: the face + bars + tiles block is centred; the quick slots (= the potions) ride on its right
 			local minX, maxX = math.huge, -math.huge
-			local group = table.clone(FACE)
-			for _, id in POTIONS do table.insert(group, id) end
-			if out.quick then table.insert(group, "quick") end -- A23-109: quick slot 3 ends the row
-			for _, id in group do
+			for _, id in FACE do
 				local r = out[id]
 				minX, maxX = math.min(minX, r.X), math.max(maxX, r.X + r.W)
 				check(g, "face group at the bottom " .. id, r.Y + r.H / 2 >= 0.6 * H, fmt(r))
 			end
+			for _, id in POTIONS do check(g, "face group at the bottom " .. id, out[id].Y + out[id].H / 2 >= 0.6 * H, fmt(out[id])) end
+			local rightEnd = out.quick and out.quick.Cells and (out.quick.Cells[3].X + out.quick.Cells[3].W) or maxX
 			-- the potions (keys 1 · 2) right of the icon row, side by side, Gap apart
 			check(g, "PC potions side by side", math.abs(hp.Y - mp.Y) <= 0.01 and math.abs(mp.X - (hp.X + hp.W) - pg) <= 0.01,
 				fmt(hp) .. " " .. fmt(mp) .. (" gap %.2f"):format(pg))
@@ -379,7 +379,7 @@ for _, case in CASES do
 			for _, id in CLUSTER do clusterLeft = math.min(clusterLeft, out[id].X) end
 			local centred = math.abs((minX + maxX) / 2 - W / 2) <= 1
 			-- stepped aside = pushed left by the cluster: its right end a GAP before the cluster (or at the left margin)
-			local aside = maxX <= clusterLeft - 8 + 0.01 and (maxX >= clusterLeft - 8 - 0.5 or minX <= 8 + 0.5)
+			local aside = rightEnd <= clusterLeft - 8 + 0.01 and (rightEnd >= clusterLeft - 8 - 0.5 or minX <= 8 + 0.5)
 			check(g, "face group centred or stepped aside", centred or aside,
 				("group %.1f..%.1f W/2 %.1f cluster %.1f"):format(minX, maxX, W / 2, clusterLeft))
 			check(g, "face group left margin", minX >= 8 - 0.01, ("group %.1f..%.1f"):format(minX, maxX))
@@ -450,10 +450,14 @@ for _, case in CASES do
 					fmt(c3) .. (" cluster %.1f"):format(clusterLeft))
 				check(g, "PC quick slots >= 38 real px", hp.H * s >= 38 - 0.01, ("%.1f px"):format(hp.H * s))
 				check(g, "PC quick slots bottom = tiles bottom", math.abs((hp.Y + hp.H) - (t.Y + t.H)) <= 0.01, fmt(hp) .. " " .. fmt(t))
-				local rowMid = (t.X + c3.X + c3.W) / 2
+				-- user 10/10 drawing: bars as wide as the tile row right above it, the quick slots outside the bars' right end
 				local xp = out.xp_bar
-				check(g, "PC row centred under the bars or stepped aside", math.abs(rowMid - (xp.X + xp.W / 2)) <= 0.5
-					or c3.X + c3.W >= clusterLeft - 8 - 0.5, ("row mid %.1f bars mid %.1f"):format(rowMid, xp.X + xp.W / 2))
+				check(g, "PC tiles as wide as the bars, under them", math.abs(t.X - xp.X) <= 0.5 and math.abs(t.W - xp.W) <= 0.5
+					and math.abs(out.power_line.W - xp.W) <= 0.5 and t.Y >= xp.Y + xp.H - 0.01, fmt(t) .. " " .. fmt(xp))
+				check(g, "PC quick slots right of the bars' end", hp.X >= xp.X + xp.W + MIN_PRESS_GAP - 0.01
+					and hp.X - (xp.X + xp.W) <= 20.5, fmt(hp) .. " " .. fmt(xp))
+				check(g, "PC HP and MP halves fill the bars", math.abs(out.mp_bar.X + out.mp_bar.W - (xp.X + xp.W)) <= 0.5
+					and math.abs(out.hp_bar.X - xp.X) <= 0.5, fmt(out.hp_bar) .. " " .. fmt(out.mp_bar))
 			end
 			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 20.5,
 				fmt(hp) .. " " .. fmt(t))

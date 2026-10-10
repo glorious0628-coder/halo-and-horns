@@ -106,6 +106,14 @@ EXCEPTIONS = [
      "4-inch phone (568x320 px): the 58 px top bar holds Roblox's buttons (164 px), the war meter (240du = 180 px) and "
      "[메뉴] (45 px), which leaves room for 3 thumb-size fold squares beside [메뉴]; the 4th wraps to the line right "
      "under the bar."),
+    # A23-109 (user 10/10): the PC bars are as wide as the six tiles and the quick slots sit right of the bars' end, so
+    # the narrowest windows give a tile to [메뉴] (the tiles shrink to 40 px first)
+    ("pc_700x720_narrow", "at least 6 tiles on every PC",
+     "A narrow desktop window (700x720 px, UIScale 0.8): face, bars / tiles and the quick slots right of them do not fit "
+     "between the left margin and the corner cluster even with 40 px tiles, so the row keeps 5 tiles; the sixth folds out "
+     "of [메뉴]."),
+    ("pc_573x354_small", "at least 6 tiles on every PC",
+     "A 573x354 desktop window (UIScale 0.5): the same as 700x720 - 5 tiles of 40 px fit before the quick slots."),
     # 2026-10-07 phone layout: the bottom row is as wide as the room right of 0.4 W (centred between the thumbstick's
     # rest at 0.2 W and the thumb ring, which never shrinks its smallest button below a thumb)
     ("phone_568x320", "tiles at least 2 on phones",
@@ -142,8 +150,8 @@ MUTATIONS = [
     ("PC quick slots left out of the bottom group",
      'local BC_GROUP_PC = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles", "quick" }',
      'local BC_GROUP_PC = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" }'),
-    ("PC quick slots left behind when the block's right end comes in", "\t\t\t\tqk.X -= cut\n", ""),
-    ("PC bars keep their length when the block's right end comes in", "\t\t\t\tout.power_line.W -= cut\n", ""),
+    ("PC quick slots left behind when the block's right end comes in", "\t\t\t\tqk.X -= maxX - limit\n", ""),
+    ("PC bars keep their length when the block's right end comes in", "\t\t\t\tbarsTo(out, tiles.W)\n", ""),
     ("potions box not published", "Cells = { HP = ph, MP = pm }", "Cells = { HP = pm, MP = ph }"),
     # 2026-10-08 small PC windows: real-px floors for the quest lines and the HP / MP bars
     ("PC quest lines keep the sheet width on small windows", "local qw = math.max(q.W, PC_FLOOR.QuestW / s)",
@@ -193,9 +201,9 @@ MUTATIONS = [
      'if id ~= "combo" then w, h = r[3] * kc, r[4] * kc end', ""),
     ("combo line grows with the thumb cluster", 'if id ~= "combo" then w, h', 'if true then w, h'),
     ("desktop attack rect drifted", 'attack = { "BR", { 1186, 620, 80, 80 }', 'attack = { "BR", { 1186, 626, 80, 80 }'),
-    ("desktop tiles rect drifted", 'tiles = { "BC", { 364, 634, 375, 60 }', 'tiles = { "BC", { 364, 640, 375, 60 }'),
-    ("PC row wider than its six tiles (the potions drift off)", 'tiles = { "BC", { 364, 634, 375, 60 }',
-     'tiles = { "BC", { 364, 634, 470, 60 }'),
+    ("desktop tiles rect drifted", 'tiles = { "BC", { 482, 634, 375, 60 }', 'tiles = { "BC", { 482, 640, 375, 60 }'),
+    ("PC row wider than its six tiles (the potions drift off)", 'tiles = { "BC", { 482, 634, 375, 60 }',
+     'tiles = { "BC", { 482, 634, 470, 60 }'),
     ("phone skill Q rect drifted", "{ 523, 204, 54, 54 }", "{ 523, 214, 54, 54 }"),
     # A23-49: the X skill button
     ("phone X skill rect drifted", "{ 633, 215, 54, 54 }", "{ 633, 201, 54, 54 }"),
@@ -205,6 +213,9 @@ MUTATIONS = [
     ("quick slot gap drifted", "local QUICK = { N = 3, Gap = 5, Sep = 16 }", "local QUICK = { N = 3, Gap = 2, Sep = 16 }"),
     ("PC tile floor gone", "Tile = 46, Quick = 40", "Tile = 1, Quick = 40"),
     ("PC row not centred", "local dx = W / 2 - (g0 + g1) / 2", "local dx = 0"),
+    ("PC quick slots under the MP bar", "qk.X = out.xp_bar.X + out.xp_bar.W + QUICK.Sep * k",
+     "qk.X = out.xp_bar.X + out.xp_bar.W - 60"),
+    ("PC bars wider than the tile row", "\t\tbarsTo(out, tl.W)\n", "\t\tbarsTo(out, tl.W + 40)\n"),
     # A23-40 정정: [메뉴] top-right + its fold-out room
     ("menu not at the bar's right end", "menu.X = bar.X1 - TOPBAR.Edge / s - mSize", "menu.X = bar.X1 - 40 / s - mSize"),
     ("menu under the bar", "menu.Y = barMid - mSize / 2", "menu.Y = bar.Y1 + 4 / s"),

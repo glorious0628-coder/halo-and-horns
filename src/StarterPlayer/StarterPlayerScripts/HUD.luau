@@ -948,8 +948,9 @@ end
 
 -- A23-109 (user 10/10 "1·2·3은 가로로"): PC quick slots 1 · 2 · 3 right of the icon tiles (HudLayout quick row). Slots 1
 -- and 2 are VitalsUI's square potion slots (HP, MP) until 개발 1's quick slots take items; slot 3 starts empty. Every
--- slot: Icon, Count, Key ('1' / '2' / '3' top-left), the slot number as attribute QuickSlot. HUD.QuickSlots() lists them,
--- HUD.OnQuickSlot(fn) gets slot 3's clicks (fn(3)); 개발 1 wires items, use and keys
+-- slot: Icon, Count, Key ('1' / '2' / '3' top-left), Cooldown (fills up from the bottom), Status, the slot number as
+-- attribute QuickSlot. HUD.QuickSlots() lists them; after HUD.OnQuickSlot(fn) every slot's click calls only fn(i) and
+-- VitalsUI stops filling slots 1 / 2 (개발 1's QuickSlots.luau fills icons, counts, keys and cooldowns)
 function L.BuildQuick(root)
 	local btn = UIKit.ArtButton("MenuTile", {
 		Name = "QuickSlot3",
@@ -971,6 +972,10 @@ function L.BuildQuick(root)
 		AnchorPoint = Vector2.new(0, 0), Position = UDim2.fromScale(0.06, 0.04), Size = UDim2.fromOffset(15, 15),
 		AutomaticSize = Enum.AutomaticSize.X })
 	L.FitText(key, L.QuickKeyPx + 1, true, L.QuickKeyPx, true)
+	C.VitalsUI.QuickCooldown(btn)
+	UIKit.LightText({ Name = "Status", Parent = btn, Text = "", AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.86, 0.3), TextScaled = true, Title = true,
+		MaxTextSize = 14, ZIndex = 6, Visible = false })
 	ui.quick3 = btn
 end
 
@@ -980,14 +985,19 @@ function HUD.QuickSlots()
 		ui.quick3 } do
 		if b then
 			out[i] = { Button = b, Icon = b:FindFirstChild("Icon"), Count = b:FindFirstChild("Count"), Key = b:FindFirstChild("Key"),
-				Status = b:FindFirstChild("Status") }
+				Status = b:FindFirstChild("Status"), Cooldown = b:FindFirstChild("Cooldown") }
 		end
 	end
 	return out
 end
 
+-- once fn is set every slot (1 and 2 too, VitalsUI) calls only fn(i); VitalsUI stops filling slots 1 / 2
 function HUD.OnQuickSlot(fn)
 	L.QuickHandler = type(fn) == "function" and fn or nil
+end
+
+function HUD.QuickHandler()
+	return L.QuickHandler
 end
 
 -- faction-shaped level badge (bundle 6): Halo ivory centre with a dark number, Horns / Artisan / none navy with light

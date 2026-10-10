@@ -1,18 +1,32 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 12885,
+  "checks": 12900,
   "failedChecks": 0,
-  "namedChecks": 11937,
+  "namedChecks": 11952,
   "namedChecksFailing": 0,
   "failing": [],
   "exceptions": [
+    {
+      "screen": "pc_700x720_narrow",
+      "check": "at least 6 tiles on every PC",
+      "reason": "A narrow desktop window (700x720 px, UIScale 0.8): face, bars / tiles and the quick slots right of them do not fit between the left margin and the corner cluster even with 40 px tiles, so the row keeps 5 tiles; the sixth folds out of [메뉴].",
+      "measuredDu": 5,
+      "neededDu": 6
+    },
     {
       "screen": "pc_700x720_narrow",
       "check": "PC notify column at least 288 px wide",
       "reason": "A 700x720 desktop window (UIScale 0.8): the minimap level with it leaves 275 px around the centre column's middle.",
       "measuredDu": 275.2,
       "neededDu": 288
+    },
+    {
+      "screen": "pc_573x354_small",
+      "check": "at least 6 tiles on every PC",
+      "reason": "A 573x354 desktop window (UIScale 0.5): the same as 700x720 - 5 tiles of 40 px fit before the quick slots.",
+      "measuredDu": 5,
+      "neededDu": 6
     },
     {
       "screen": "pc_573x354_small",
@@ -749,9 +763,9 @@
     "DesktopScaleMax": 1.0
   },
   "mutations": {
-    "total": 61,
-    "applied": 61,
-    "caught": 61,
+    "total": 63,
+    "applied": 63,
+    "caught": 63,
     "results": [
       {
         "mutation": "PC quick slots left out of the bottom group",
@@ -760,11 +774,11 @@
         "crashed": false,
         "newFailingChecks": [
           "pc_1024x600 :: PC potions follow the icon row",
-          "pc_1024x600 :: PC potions right of the icon row",
-          "pc_1024x600 :: PC row centred under the bars or stepped aside",
-          "pc_1024x600 :: face group centred or stepped aside",
-          "pc_1024x600 :: no overlap tiles/potion_hp",
-          "pc_1024x600 :: press gap tiles/potion_hp"
+          "pc_1024x600 :: PC quick slots clear of the corner cluster",
+          "pc_1024x600 :: PC quick slots right of the bars' end",
+          "pc_1024x768 :: PC potions follow the icon row",
+          "pc_1024x768 :: PC quick slots clear of the corner cluster",
+          "pc_1024x768 :: PC quick slots right of the bars' end"
         ],
         "newFailingCount": 92
       },
@@ -775,13 +789,13 @@
         "crashed": false,
         "newFailingChecks": [
           "pc_573x354_small :: PC quick slots clear of the corner cluster",
+          "pc_573x354_small :: exception still needed: at least 6 tiles on every PC",
           "pc_573x354_small :: face group centred or stepped aside",
           "pc_700x720_narrow :: PC quick slots clear of the corner cluster",
-          "pc_700x720_narrow :: face group centred or stepped aside",
-          "pc_700x720_narrow :: no overlap potion_mp/ghost",
-          "pc_700x720_narrow :: press gap potion_mp/ghost"
+          "pc_700x720_narrow :: exception still needed: at least 6 tiles on every PC",
+          "pc_700x720_narrow :: face group centred or stepped aside"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 14
       },
       {
         "mutation": "PC bars keep their length when the block's right end comes in",
@@ -789,9 +803,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "pc_700x720_narrow :: face group centred or stepped aside"
+          "pc_573x354_small :: PC quick slots right of the bars' end",
+          "pc_573x354_small :: PC tiles as wide as the bars, under them",
+          "pc_700x720_narrow :: PC quick slots right of the bars' end",
+          "pc_700x720_narrow :: PC tiles as wide as the bars, under them",
+          "pc_800x720_narrow :: PC quick slots right of the bars' end",
+          "pc_800x720_narrow :: PC tiles as wide as the bars, under them"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 6
       },
       {
         "mutation": "potions box not published",
@@ -883,7 +902,7 @@
           "pc_573x354_small :: PC quick slots 1 2 = the potions",
           "pc_573x354_small :: PC tiles >= 38 real px (names under the icons)"
         ],
-        "newFailingCount": 41
+        "newFailingCount": 40
       },
       {
         "mutation": "touch targets may shrink to 30",
@@ -972,7 +991,7 @@
           "pc_1280x720 :: matches sheet hp_bar",
           "pc_1280x720 :: matches sheet mp_bar"
         ],
-        "newFailingCount": 35
+        "newFailingCount": 36
       },
       {
         "mutation": "touch quest lines may shrink below a thumb",
@@ -1123,14 +1142,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_1024x600 :: PC quick slots clear of the corner cluster",
+          "pc_1024x600 :: face group centred or stepped aside",
           "pc_1024x768 :: PC quick slots clear of the corner cluster",
           "pc_1024x768 :: face group centred or stepped aside",
           "pc_1280x1024 :: PC quick slots clear of the corner cluster",
-          "pc_1280x720_unibar_wide :: in the top bar war_meter",
-          "pc_573x354_small :: PC quest lines fill the room before their neighbour",
-          "pc_573x354_small :: PC quick slots clear of the corner cluster"
+          "pc_1280x1024 :: face group centred or stepped aside"
         ],
-        "newFailingCount": 52
+        "newFailingCount": 58
       },
       {
         "mutation": "PC face group never steps aside",
@@ -1138,14 +1157,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_1024x600 :: PC quick slots clear of the corner cluster",
           "pc_1024x768 :: PC quick slots clear of the corner cluster",
-          "pc_1280x1024 :: PC quick slots clear of the corner cluster",
-          "pc_573x354_small :: PC quick slots clear of the corner cluster",
-          "pc_573x354_small :: no overlap potion_mp/ghost",
-          "pc_573x354_small :: press gap potion_mp/ghost",
-          "pc_655x340_small :: PC quick slots clear of the corner cluster"
+          "pc_1024x768 :: no overlap potion_hp/ghost",
+          "pc_1024x768 :: no overlap potion_mp/auto",
+          "pc_1024x768 :: no overlap potion_mp/ghost",
+          "pc_1024x768 :: press gap potion_hp/ghost"
         ],
-        "newFailingCount": 18
+        "newFailingCount": 77
       },
       {
         "mutation": "PC face group ignores the left margin",
@@ -1153,14 +1172,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "pc_573x354_small :: exception still needed: at least 6 tiles on every PC",
           "pc_573x354_small :: face group left margin",
-          "pc_700x720_narrow :: PC potions follow the icon row",
-          "pc_700x720_narrow :: PC potions right of the icon row",
-          "pc_700x720_narrow :: face group left margin",
-          "pc_700x720_narrow :: no overlap hp_bar/mp_bar",
-          "pc_700x720_narrow :: no overlap portrait/hp_bar"
+          "pc_573x354_small :: no overlap portrait/hp_bar",
+          "pc_573x354_small :: no overlap portrait/power_line",
+          "pc_573x354_small :: no overlap portrait/xp_bar",
+          "pc_700x720_narrow :: PC HP and MP halves fill the bars"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 23
       },
       {
         "mutation": "touch cluster ignores the jump button",
@@ -1334,8 +1353,8 @@
         "crashed": false,
         "newFailingChecks": [
           "pc_1280x720 :: matches sheet potion gap",
-          "pc_1280x720 :: matches sheet potion_hp",
-          "pc_1280x720 :: matches sheet tiles"
+          "pc_1280x720 :: matches sheet potion_mp",
+          "pc_573x354_small :: exception still needed: at least 6 tiles on every PC"
         ],
         "newFailingCount": 3
       },
@@ -1346,11 +1365,12 @@
         "crashed": false,
         "newFailingChecks": [
           "pc_573x354_small :: PC tiles >= 38 real px (names under the icons)",
+          "pc_573x354_small :: exception still needed: at least 6 tiles on every PC",
           "pc_655x340_small :: PC tiles >= 38 real px (names under the icons)",
           "pc_700x450_small :: PC tiles >= 38 real px (names under the icons)",
           "pc_991x451_studio :: PC tiles >= 38 real px (names under the icons)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "PC row not centred",
@@ -1361,6 +1381,36 @@
           "pc_991x451_studio :: face group centred or stepped aside"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "PC quick slots under the MP bar",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: PC potions follow the icon row",
+          "pc_1024x600 :: PC potions right of the icon row",
+          "pc_1024x600 :: PC quick slots right of the bars' end",
+          "pc_1024x600 :: no overlap tiles/potion_hp",
+          "pc_1024x600 :: press gap tiles/potion_hp",
+          "pc_1024x768 :: PC potions follow the icon row"
+        ],
+        "newFailingCount": 73
+      },
+      {
+        "mutation": "PC bars wider than the tile row",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pc_1024x600 :: PC potions follow the icon row",
+          "pc_1024x600 :: PC tiles as wide as the bars, under them",
+          "pc_1024x768 :: PC potions follow the icon row",
+          "pc_1024x768 :: PC tiles as wide as the bars, under them",
+          "pc_1280x1024 :: PC potions follow the icon row",
+          "pc_1280x1024 :: PC tiles as wide as the bars, under them"
+        ],
+        "newFailingCount": 32
       },
       {
         "mutation": "menu not at the bar's right end",
@@ -1675,8 +1725,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 489.875,
+        "W": 230,
+        "X": 544.25,
         "Y": 737.5
       },
       "menu": {
@@ -1693,8 +1743,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 774.875,
+        "W": 230,
+        "X": 783,
         "Y": 737.5
       },
       "notify": {
@@ -1706,32 +1756,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 417.375,
+        "X": 471.75,
         "Y": 722.5
       },
       "potion_hp": {
         "H": 65,
         "W": 65,
-        "X": 911.125,
+        "X": 1033,
         "Y": 802.5
       },
       "potion_mp": {
         "H": 65,
         "W": 65,
-        "X": 982.375,
+        "X": 1104.25,
         "Y": 802.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 65,
         "W": 136.25,
-        "X": 911.125,
+        "X": 1033,
         "Y": 802.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 489.875,
+        "W": 468.75,
+        "X": 544.25,
         "Y": 712.5
       },
       "q": {
@@ -1750,7 +1800,7 @@
         "Gap": 6.25,
         "H": 65,
         "W": 207.5,
-        "X": 911.125,
+        "X": 1033,
         "Y": 802.5
       },
       "tiles": {
@@ -1759,7 +1809,7 @@
         "H": 75,
         "Size": 75,
         "W": 468.75,
-        "X": 422.375,
+        "X": 544.25,
         "Y": 792.5
       },
       "war_meter": {
@@ -1776,8 +1826,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 489.875,
+        "W": 468.75,
+        "X": 544.25,
         "Y": 767.5
       },
       "z": {
@@ -1853,8 +1903,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 275.75,
+        "W": 230,
+        "X": 208.25,
         "Y": 737.5
       },
       "menu": {
@@ -1871,8 +1921,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 560.75,
+        "W": 230,
+        "X": 447,
         "Y": 737.5
       },
       "notify": {
@@ -1884,7 +1934,7 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 203.25,
+        "X": 135.75,
         "Y": 722.5
       },
       "potion_hp": {
@@ -1908,8 +1958,8 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 275.75,
+        "W": 468.75,
+        "X": 208.25,
         "Y": 712.5
       },
       "q": {
@@ -1954,8 +2004,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 275.75,
+        "W": 468.75,
+        "X": 208.25,
         "Y": 767.5
       },
       "z": {
@@ -2031,8 +2081,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 355.75,
+        "W": 230,
+        "X": 288.25,
         "Y": 861.5
       },
       "menu": {
@@ -2049,8 +2099,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 640.75,
+        "W": 230,
+        "X": 527,
         "Y": 861.5
       },
       "notify": {
@@ -2062,7 +2112,7 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 283.25,
+        "X": 215.75,
         "Y": 846.5
       },
       "potion_hp": {
@@ -2086,8 +2136,8 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 355.75,
+        "W": 468.75,
+        "X": 288.25,
         "Y": 836.5
       },
       "q": {
@@ -2132,8 +2182,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 355.75,
+        "W": 468.75,
+        "X": 288.25,
         "Y": 891.5
       },
       "z": {
@@ -2209,8 +2259,8 @@
       },
       "hp_bar": {
         "H": 28,
-        "W": 275,
-        "X": 999.375,
+        "W": 281,
+        "X": 1030.875,
         "Y": 297.5
       },
       "menu": {
@@ -2227,8 +2277,8 @@
       },
       "mp_bar": {
         "H": 28,
-        "W": 276.25,
-        "X": 1284.375,
+        "W": 281,
+        "X": 1320.625,
         "Y": 297.5
       },
       "notify": {
@@ -2240,32 +2290,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 926.875,
+        "X": 958.375,
         "Y": 282.5
       },
       "potion_hp": {
         "H": 80,
         "W": 80,
-        "X": 1449.125,
+        "X": 1621.625,
         "Y": 367.5
       },
       "potion_mp": {
         "H": 80,
         "W": 80,
-        "X": 1535.375,
+        "X": 1707.875,
         "Y": 367.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 80,
         "W": 166.25,
-        "X": 1449.125,
+        "X": 1621.625,
         "Y": 367.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 999.375,
+        "W": 570.75,
+        "X": 1030.875,
         "Y": 272.5
       },
       "q": {
@@ -2284,7 +2334,7 @@
         "Gap": 6.25,
         "H": 80,
         "W": 252.5,
-        "X": 1449.125,
+        "X": 1621.625,
         "Y": 367.5
       },
       "tiles": {
@@ -2293,7 +2343,7 @@
         "H": 92,
         "Size": 92,
         "W": 570.75,
-        "X": 858.375,
+        "X": 1030.875,
         "Y": 355.5
       },
       "war_meter": {
@@ -2310,8 +2360,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 999.375,
+        "W": 570.75,
+        "X": 1030.875,
         "Y": 330.5
       },
       "z": {
@@ -2387,8 +2437,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 521.875,
+        "W": 230,
+        "X": 601.875,
         "Y": 737.5
       },
       "menu": {
@@ -2405,8 +2455,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 806.875,
+        "W": 230,
+        "X": 840.625,
         "Y": 737.5
       },
       "notify": {
@@ -2418,32 +2468,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 449.375,
+        "X": 529.375,
         "Y": 722.5
       },
       "potion_hp": {
         "H": 65,
         "W": 65,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "potion_mp": {
         "H": 65,
         "W": 65,
-        "X": 1014.375,
+        "X": 1161.875,
         "Y": 802.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 65,
         "W": 136.25,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 521.875,
+        "W": 468.75,
+        "X": 601.875,
         "Y": 712.5
       },
       "q": {
@@ -2462,7 +2512,7 @@
         "Gap": 6.25,
         "H": 65,
         "W": 207.5,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "tiles": {
@@ -2471,7 +2521,7 @@
         "H": 75,
         "Size": 75,
         "W": 468.75,
-        "X": 454.375,
+        "X": 601.875,
         "Y": 792.5
       },
       "war_meter": {
@@ -2488,8 +2538,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 521.875,
+        "W": 468.75,
+        "X": 601.875,
         "Y": 767.5
       },
       "z": {
@@ -2565,8 +2615,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 521.875,
+        "W": 230,
+        "X": 601.875,
         "Y": 737.5
       },
       "menu": {
@@ -2583,8 +2633,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 806.875,
+        "W": 230,
+        "X": 840.625,
         "Y": 737.5
       },
       "notify": {
@@ -2596,32 +2646,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 449.375,
+        "X": 529.375,
         "Y": 722.5
       },
       "potion_hp": {
         "H": 65,
         "W": 65,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "potion_mp": {
         "H": 65,
         "W": 65,
-        "X": 1014.375,
+        "X": 1161.875,
         "Y": 802.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 65,
         "W": 136.25,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 521.875,
+        "W": 468.75,
+        "X": 601.875,
         "Y": 712.5
       },
       "q": {
@@ -2640,7 +2690,7 @@
         "Gap": 6.25,
         "H": 65,
         "W": 207.5,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "tiles": {
@@ -2649,7 +2699,7 @@
         "H": 75,
         "Size": 75,
         "W": 468.75,
-        "X": 454.375,
+        "X": 601.875,
         "Y": 792.5
       },
       "war_meter": {
@@ -2666,8 +2716,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 521.875,
+        "W": 468.75,
+        "X": 601.875,
         "Y": 767.5
       },
       "z": {
@@ -2743,8 +2793,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 521.875,
+        "W": 230,
+        "X": 601.875,
         "Y": 737.5
       },
       "menu": {
@@ -2761,8 +2811,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 806.875,
+        "W": 230,
+        "X": 840.625,
         "Y": 737.5
       },
       "notify": {
@@ -2774,32 +2824,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 449.375,
+        "X": 529.375,
         "Y": 722.5
       },
       "potion_hp": {
         "H": 65,
         "W": 65,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "potion_mp": {
         "H": 65,
         "W": 65,
-        "X": 1014.375,
+        "X": 1161.875,
         "Y": 802.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 65,
         "W": 136.25,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 521.875,
+        "W": 468.75,
+        "X": 601.875,
         "Y": 712.5
       },
       "q": {
@@ -2818,7 +2868,7 @@
         "Gap": 6.25,
         "H": 65,
         "W": 207.5,
-        "X": 943.125,
+        "X": 1090.625,
         "Y": 802.5
       },
       "tiles": {
@@ -2827,7 +2877,7 @@
         "H": 75,
         "Size": 75,
         "W": 468.75,
-        "X": 454.375,
+        "X": 601.875,
         "Y": 792.5
       },
       "war_meter": {
@@ -2844,8 +2894,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 521.875,
+        "W": 468.75,
+        "X": 601.875,
         "Y": 767.5
       },
       "z": {
@@ -2921,8 +2971,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 522.2656,
+        "W": 230,
+        "X": 602.2656,
         "Y": 737.5
       },
       "menu": {
@@ -2939,8 +2989,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 807.2656,
+        "W": 230,
+        "X": 841.0156,
         "Y": 737.5
       },
       "notify": {
@@ -2952,32 +3002,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 449.7656,
+        "X": 529.7656,
         "Y": 722.5
       },
       "potion_hp": {
         "H": 65,
         "W": 65,
-        "X": 943.5156,
+        "X": 1091.0156,
         "Y": 802.5
       },
       "potion_mp": {
         "H": 65,
         "W": 65,
-        "X": 1014.7656,
+        "X": 1162.2656,
         "Y": 802.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 65,
         "W": 136.25,
-        "X": 943.5156,
+        "X": 1091.0156,
         "Y": 802.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 522.2656,
+        "W": 468.75,
+        "X": 602.2656,
         "Y": 712.5
       },
       "q": {
@@ -2996,7 +3046,7 @@
         "Gap": 6.25,
         "H": 65,
         "W": 207.5,
-        "X": 943.5156,
+        "X": 1091.0156,
         "Y": 802.5
       },
       "tiles": {
@@ -3005,7 +3055,7 @@
         "H": 75,
         "Size": 75,
         "W": 468.75,
-        "X": 454.7656,
+        "X": 602.2656,
         "Y": 792.5
       },
       "war_meter": {
@@ -3022,8 +3072,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 522.2656,
+        "W": 468.75,
+        "X": 602.2656,
         "Y": 767.5
       },
       "z": {
@@ -3099,8 +3149,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 681.875,
+        "W": 230,
+        "X": 761.875,
         "Y": 917.5
       },
       "menu": {
@@ -3117,8 +3167,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 966.875,
+        "W": 230,
+        "X": 1000.625,
         "Y": 917.5
       },
       "notify": {
@@ -3130,32 +3180,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 609.375,
+        "X": 689.375,
         "Y": 902.5
       },
       "potion_hp": {
         "H": 65,
         "W": 65,
-        "X": 1103.125,
+        "X": 1250.625,
         "Y": 982.5
       },
       "potion_mp": {
         "H": 65,
         "W": 65,
-        "X": 1174.375,
+        "X": 1321.875,
         "Y": 982.5
       },
       "potions": {
         "Gap": 6.25,
         "H": 65,
         "W": 136.25,
-        "X": 1103.125,
+        "X": 1250.625,
         "Y": 982.5
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 681.875,
+        "W": 468.75,
+        "X": 761.875,
         "Y": 892.5
       },
       "q": {
@@ -3174,7 +3224,7 @@
         "Gap": 6.25,
         "H": 65,
         "W": 207.5,
-        "X": 1103.125,
+        "X": 1250.625,
         "Y": 982.5
       },
       "tiles": {
@@ -3183,7 +3233,7 @@
         "H": 75,
         "Size": 75,
         "W": 468.75,
-        "X": 614.375,
+        "X": 761.875,
         "Y": 972.5
       },
       "war_meter": {
@@ -3200,8 +3250,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 681.875,
+        "W": 468.75,
+        "X": 761.875,
         "Y": 947.5
       },
       "z": {
@@ -3277,8 +3327,8 @@
       },
       "hp_bar": {
         "H": 28,
-        "W": 275.625,
-        "X": 149,
+        "W": 244.375,
+        "X": 80.5,
         "Y": 525.5
       },
       "menu": {
@@ -3295,8 +3345,8 @@
       },
       "mp_bar": {
         "H": 28,
-        "W": 275.625,
-        "X": 434.625,
+        "W": 244.375,
+        "X": 333.625,
         "Y": 525.5
       },
       "notify": {
@@ -3308,7 +3358,7 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 76.5,
+        "X": 8,
         "Y": 510.5
       },
       "potion_hp": {
@@ -3332,8 +3382,8 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 149,
+        "W": 497.5,
+        "X": 80.5,
         "Y": 500.5
       },
       "q": {
@@ -3356,13 +3406,13 @@
         "Y": 595.5
       },
       "tiles": {
-        "Count": 6,
+        "Count": 5,
         "Gap": 3.75,
-        "H": 91.875,
-        "Size": 91.875,
-        "W": 570,
-        "X": 8,
-        "Y": 583.625
+        "H": 80,
+        "Size": 80,
+        "W": 497.5,
+        "X": 80.5,
+        "Y": 595.5
       },
       "war_meter": {
         "H": 84,
@@ -3378,8 +3428,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 149,
+        "W": 497.5,
+        "X": 80.5,
         "Y": 558.5
       },
       "z": {
@@ -3455,8 +3505,8 @@
       },
       "hp_bar": {
         "H": 28,
-        "W": 275,
-        "X": 354.25,
+        "W": 239,
+        "X": 255.25,
         "Y": 511.5
       },
       "menu": {
@@ -3473,8 +3523,8 @@
       },
       "mp_bar": {
         "H": 28,
-        "W": 276.25,
-        "X": 639.25,
+        "W": 239,
+        "X": 503,
         "Y": 511.5
       },
       "notify": {
@@ -3486,7 +3536,7 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 281.75,
+        "X": 182.75,
         "Y": 496.5
       },
       "potion_hp": {
@@ -3510,8 +3560,8 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 354.25,
+        "W": 486.75,
+        "X": 255.25,
         "Y": 486.5
       },
       "q": {
@@ -3556,8 +3606,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 354.25,
+        "W": 486.75,
+        "X": 255.25,
         "Y": 544.5
       },
       "z": {
@@ -3633,8 +3683,8 @@
       },
       "hp_bar": {
         "H": 28,
-        "W": 275,
-        "X": 402.25,
+        "W": 281,
+        "X": 261.25,
         "Y": 717.5
       },
       "menu": {
@@ -3651,8 +3701,8 @@
       },
       "mp_bar": {
         "H": 28,
-        "W": 276.25,
-        "X": 687.25,
+        "W": 281,
+        "X": 551,
         "Y": 717.5
       },
       "notify": {
@@ -3664,7 +3714,7 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 329.75,
+        "X": 188.75,
         "Y": 702.5
       },
       "potion_hp": {
@@ -3688,8 +3738,8 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 402.25,
+        "W": 570.75,
+        "X": 261.25,
         "Y": 692.5
       },
       "q": {
@@ -3734,8 +3784,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 402.25,
+        "W": 570.75,
+        "X": 261.25,
         "Y": 750.5
       },
       "z": {
@@ -3811,7 +3861,7 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 244.5,
+        "W": 131.375,
         "X": 80.5,
         "Y": 737.5
       },
@@ -3829,8 +3879,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 244.5,
-        "X": 335,
+        "W": 131.375,
+        "X": 220.625,
         "Y": 737.5
       },
       "notify": {
@@ -3866,7 +3916,7 @@
       },
       "power_line": {
         "H": 20,
-        "W": 499,
+        "W": 271.5,
         "X": 80.5,
         "Y": 712.5
       },
@@ -3890,13 +3940,13 @@
         "Y": 802.5
       },
       "tiles": {
-        "Count": 6,
+        "Count": 5,
         "Gap": 3.75,
-        "H": 53.375,
-        "Size": 53.375,
-        "W": 339,
-        "X": 13,
-        "Y": 814.125
+        "H": 50,
+        "Size": 50,
+        "W": 271.5,
+        "X": 80.5,
+        "Y": 817.5
       },
       "war_meter": {
         "H": 52.5,
@@ -3912,7 +3962,7 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 499,
+        "W": 271.5,
         "X": 80.5,
         "Y": 767.5
       },
@@ -3989,8 +4039,8 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275,
-        "X": 275.75,
+        "W": 230,
+        "X": 208.25,
         "Y": 737.5
       },
       "menu": {
@@ -4007,8 +4057,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 276.25,
-        "X": 560.75,
+        "W": 230,
+        "X": 447,
         "Y": 737.5
       },
       "notify": {
@@ -4020,7 +4070,7 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 203.25,
+        "X": 135.75,
         "Y": 722.5
       },
       "potion_hp": {
@@ -4044,8 +4094,8 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 275.75,
+        "W": 468.75,
+        "X": 208.25,
         "Y": 712.5
       },
       "q": {
@@ -4090,8 +4140,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 275.75,
+        "W": 468.75,
+        "X": 208.25,
         "Y": 767.5
       },
       "z": {
@@ -4167,7 +4217,7 @@
       },
       "hp_bar": {
         "H": 25,
-        "W": 275.625,
+        "W": 193.875,
         "X": 80.5,
         "Y": 737.5
       },
@@ -4185,8 +4235,8 @@
       },
       "mp_bar": {
         "H": 25,
-        "W": 275.625,
-        "X": 366.125,
+        "W": 193.875,
+        "X": 283.125,
         "Y": 737.5
       },
       "notify": {
@@ -4222,7 +4272,7 @@
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
+        "W": 396.5,
         "X": 80.5,
         "Y": 712.5
       },
@@ -4248,11 +4298,11 @@
       "tiles": {
         "Count": 6,
         "Gap": 3.75,
-        "H": 74.2083,
-        "Size": 74.2083,
-        "W": 464,
-        "X": 13,
-        "Y": 793.2917
+        "H": 62.9583,
+        "Size": 62.9583,
+        "W": 396.5,
+        "X": 80.5,
+        "Y": 804.5417
       },
       "war_meter": {
         "H": 52.5,
@@ -4268,7 +4318,7 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
+        "W": 396.5,
         "X": 80.5,
         "Y": 767.5
       },
@@ -4345,8 +4395,8 @@
       },
       "hp_bar": {
         "H": 27.9379,
-        "W": 275,
-        "X": 708.1777,
+        "W": 280.388,
+        "X": 740.2896,
         "Y": 717.7661
       },
       "menu": {
@@ -4363,8 +4413,8 @@
       },
       "mp_bar": {
         "H": 27.9379,
-        "W": 276.25,
-        "X": 993.1777,
+        "W": 280.388,
+        "X": 1029.4277,
         "Y": 717.7661
       },
       "notify": {
@@ -4376,32 +4426,32 @@
       "portrait": {
         "H": 62.5,
         "W": 62.5,
-        "X": 635.6777,
+        "X": 667.7896,
         "Y": 702.7661
       },
       "potion_hp": {
         "H": 79.8226,
         "W": 79.8226,
-        "X": 1157.5818,
+        "X": 1329.8157,
         "Y": 787.6774
       },
       "potion_mp": {
         "H": 79.8226,
         "W": 79.8226,
-        "X": 1243.6544,
+        "X": 1415.8883,
         "Y": 787.6774
       },
       "potions": {
         "Gap": 6.25,
         "H": 79.8226,
         "W": 165.8952,
-        "X": 1157.5818,
+        "X": 1329.8157,
         "Y": 787.6774
       },
       "power_line": {
         "H": 20,
-        "W": 561.25,
-        "X": 708.1777,
+        "W": 569.5261,
+        "X": 740.2896,
         "Y": 692.7661
       },
       "q": {
@@ -4420,7 +4470,7 @@
         "Gap": 6.25,
         "H": 79.8226,
         "W": 251.9678,
-        "X": 1157.5818,
+        "X": 1329.8157,
         "Y": 787.6774
       },
       "tiles": {
@@ -4429,7 +4479,7 @@
         "H": 91.796,
         "Size": 91.796,
         "W": 569.5261,
-        "X": 568.0557,
+        "X": 740.2896,
         "Y": 775.704
       },
       "war_meter": {
@@ -4446,8 +4496,8 @@
       },
       "xp_bar": {
         "H": 10,
-        "W": 561.25,
-        "X": 708.1777,
+        "W": 569.5261,
+        "X": 740.2896,
         "Y": 750.704
       },
       "z": {
@@ -6061,10 +6111,10 @@
     }
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "9f3b0ac874cf88e2439086b36fb4fe4e4463b3ed4d2b450d357422d886bb2aa5",
-    "tools/fixtures/hud_layout_offline.luau": "ae1d1cb839166dd317527b866ef460b2b279bc87f2572a39a35b26406f7491cb",
-    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "382c175bfeb53adce529e6bf4fe5cb2b174776c26218fbd48211dbff5e873fbc",
-    "src/ReplicatedStorage/Shared/Config.luau": "36e17fae7aed6abdf16af9e8eaa3cd18a98e4febf1109e1b47350eff3cf299aa"
+    "src/StarterPlayer/StarterPlayerScripts/HudLayout.luau": "2f62b84fa8a18b1259abf1c18fb42269ebc53005038bd8c7c0bfa2b838d1e2a3",
+    "tools/fixtures/hud_layout_offline.luau": "948a6a00b6e1111fc172d00952d047e47fb9194578287652e13bbac4921fcc92",
+    "docs/design/hud_layout_B_imgdev_2026-10-06.json": "4e17974c9a4cd459c7ca8bc7be66942eefd7ef1d72058e0dc9e266f9fcf02612",
+    "src/ReplicatedStorage/Shared/Config.luau": "916d4ad0e26bfc07c249a2eb51df6f20c9492a9128ed245db24bbfebde03d8a3"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

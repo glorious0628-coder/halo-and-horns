@@ -148,9 +148,16 @@ function VitalsUI.BuildPotions(parent, touch)
 	for i, kind in { "HP", "MP" } do
 		local button = UIKit.ArtButton(square and "MenuTile" or "BtnPotion", { Name = kind .. "Potion", Parent = row,
 			AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(72, 72),
-			ImageTransparency = square and 0.15 or nil }, function() requestPotion(kind) end, -- 0.15 = HUD L.TileTint
+			ImageTransparency = square and 0.15 or nil }, function() -- 0.15 = HUD L.TileTint
+			-- A23-109: once 개발 1's quick slots registered (HUD.OnQuickSlot), slots 1 and 2 belong to them
+			local own = square and VitalsUI.QuickOwner()
+			if own then own(i) else requestPotion(kind) end
+		end,
 			{ CornerRadius = square and UDim.new(0, 8) or UDim.new(0.5, 0), BackgroundTransparency = square and 0.25 or nil })
-		if square then button:SetAttribute("QuickSlot", i) end
+		if square then
+			button:SetAttribute("QuickSlot", i)
+			VitalsUI.QuickCooldown(button)
+		end
 		local icon = UIKit.ArtImage("IconPotion" .. kind, { Name = "Icon", Parent = button,
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = square and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.48, 0.47),
 			Size = square and UDim2.fromScale(0.66, 0.66) or UDim2.fromScale(0.56, 0.56), ZIndex = 3 })
@@ -189,6 +196,22 @@ function VitalsUI.BuildPotions(parent, touch)
 	VitalsUI.RefreshKeys()
 	if ui.Refresh then ui.Refresh() end
 	return row
+end
+
+-- A23-109 quick slots: the handler 개발 1 registered with HUD.OnQuickSlot (nil = slots 1 / 2 are still the potions)
+function VitalsUI.QuickOwner()
+	local hud = C and C.HUD
+	local get = type(hud) == "table" and hud.QuickHandler or nil
+	return type(get) == "function" and get() or nil
+end
+
+-- A23-109: the cooldown cover of a quick slot - a dark Frame filling up from the bottom (개발 1 sets Size.Y / Visible)
+function VitalsUI.QuickCooldown(button)
+	local f = UIKit.Create("Frame", { Name = "Cooldown", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1),
+		Size = UDim2.fromScale(1, 0), BackgroundColor3 = Color3.fromRGB(10, 14, 30), BackgroundTransparency = 0.45,
+		BorderSizePixel = 0, Visible = false, ZIndex = 4, Parent = button })
+	UIKit.Create("UICorner", { CornerRadius = UDim.new(0, 8), Parent = f })
+	return f
 end
 
 -- HUD v2: the pair on Rects.potions (logical units). rect.Cells = { HP = rect, MP = rect } (HudLayout 2026-10-07: each
@@ -269,6 +292,7 @@ local function refresh()
 			bar.Text.Text = string.format("%d/%d", math.ceil(values[1]), math.ceil(values[2]))
 		end
 		local potion = ui.Potions[kind]
+		if potion and potion.Slot and VitalsUI.QuickOwner() then potion = nil end -- 개발 1's quick slots fill it
 		if potion then
 			local count, status, available = potionState(kind)
 			potion.Count.Text = tostring(count)
