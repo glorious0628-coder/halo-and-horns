@@ -1,8 +1,8 @@
 -- DeathScreen.luau (게임성 개발 1, BB14 + SPEC A23-110 "짧게: KO!·쓰러뜨린 것·3-2-1, 팁 없음", 검수 2026-10-10): the knock-out
 -- screen on this client. The server sends my own Fx "KO" { By = "Player" | "Kaiju" | "Monster" | "Fall" | "Other", Name,
 -- Lost, Sack, RespawnIn, Tip? } (CombatService); this shows, over a dim screen: "KO!", who knocked me out
--- (Config.Death.Text: "Knocked out by King Slime" / "You fell"), what I lost when I lost something (pouch gold / the
--- Grudge Sack; nothing lost = no line) and "Back in 3 s" counting down. No tip line, no fun tip (A23-99: the KO is
+-- (Config.Death.Text: "Knocked out by King Slime" / "You fell"), what I lost (pouch gold / the Grudge Sack; else
+-- "Nothing lost" - 검수 10/10, the first KO costs nothing) and "Back in 3 s" counting down. No tip line, no fun tip (A23-99: the KO is
 -- information, not advice; the next step comes as a quest row - A23-110 "Buy a potion"). Not modal: input goes through
 -- (the game ignores a dead character anyway); it closes when my next character comes, or RespawnIn + Linger s after it
 -- opened. Presentation only.
@@ -60,6 +60,8 @@ function DeathScreen.Lines(data, left)
 	elseif lost >= 1 then
 		local f = txt("Lost")
 		out.Lost = f and string.format(f, Util.FormatNumber(math.floor(lost))) or nil
+	else
+		out.Lost = txt("LostNone") -- 검수 10/10: the first KO (A23-110) says it cost nothing
 	end
 	if type(left) == "number" and left > 0 then
 		local f = txt("Respawn")

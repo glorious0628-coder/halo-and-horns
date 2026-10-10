@@ -99,7 +99,7 @@ QS.Init({
 
 local function show(t) return table.concat(t, ",") end
 -- pure
-check(show(QS.Parse(nil)) == "HP,MP,", "no saved slots: the default (1 HP, 2 MP, 3 empty)", show(QS.Parse(nil)))
+check(show(QS.Parse(nil)) == ",,", "no saved slots: all empty (검수 10/10: the quest row says to put a potion in)", show(QS.Parse(nil)))
 check(show(QS.Parse("MP,,HP")) == "MP,,HP", "a saved 'MP,,HP' reads as it is", show(QS.Parse("MP,,HP")))
 check(show(QS.Parse("Bogus,HP")) == ",HP,", "an unknown item or a missing entry is empty", show(QS.Parse("Bogus,HP")))
 -- what a slot shows

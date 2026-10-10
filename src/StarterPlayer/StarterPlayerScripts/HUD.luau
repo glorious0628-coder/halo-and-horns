@@ -5297,6 +5297,16 @@ function L.StoryTap(st, zone, panels)
 		doUpgrade()
 		return
 	end
+	-- A23-110 (dev3 KO1): "Buy a potion" -> the way to the potion seller; the quick slot steps -> the bag (its Quick slots)
+	if g == "PotionShop" or g == "QuickSlot" then
+		local vitals = C and C.VitalsUI
+		if g == "QuickSlot" then
+			if panels and panels.Open then panels.Open("Items") end
+		elseif type(vitals) == "table" and type(vitals.ShowShopWay) == "function" then
+			pcall(vitals.ShowShopWay)
+		end
+		return
+	end
 	local target = g
 	if g == "OwnTown" then target = Config.HomeZoneId(getFaction()) end
 	if g == "SlimePond" then target = "SlimeMeadow" end

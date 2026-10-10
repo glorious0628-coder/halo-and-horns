@@ -1351,8 +1351,13 @@ do
 	check(q, "a plain new quest is still QuestNew", last2() == "QuestNew", tostring(last2()))
 	-- my pets
 	clear2()
-	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } })
-	check(q, "the first pet list is quiet", #asked2 == 0, encode(asked2))
+	-- 메인 반영 10/10: the join list (pet put away) reached only PetWindow; the first list here is the follow
+	local joinList = { Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } }
+	local followList = { Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } }
+	C.PetWindow = { Lists = function() return followList, joinList end }
+	REMOTES.PetList.OnClientEvent:Fire(followList)
+	check(q, "the join list only PetWindow saw: the follow right after it = PetCall", last2() == "PetCall" and #asked2 == 1, encode(asked2))
+	clear2()
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2, XP = 5 } } })
 	check(q, "pet XP alone is quiet", #asked2 == 0, encode(asked2))
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })

@@ -5178,7 +5178,9 @@ Config.Audio.Ambient = {
 -- Stock / ReadyAt (the owner's attributes), Cooldown (s) }; Order = the bag's quick items rows
 Config.QuickSlots = {
 	Count = 3,
-	Default = { "HP", "MP", "" },
+	-- 검수 10/10 (user: "물약 사서 슬롯에 장착하는 퀘스트"): a new player starts with empty slots (the quest row says what to
+	-- do); an old save gets HP / MP from the server
+	Default = { "", "", "" },
 	Attr = "QuickSlots",
 	Remote = "SetQuickSlot",
 	Order = { "HP", "MP" },

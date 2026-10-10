@@ -8,7 +8,12 @@
       "caught": true
     },
     {
-      "name": "nothing lost still says so",
+      "name": "pouch gold lost reads as nothing lost",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "nothing lost: no line",
       "applied": true,
       "caught": true
     },

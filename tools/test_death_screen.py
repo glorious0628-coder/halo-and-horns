@@ -98,7 +98,7 @@ SPAWN = false
 local L = DS.Lines({ By = "Monster", Name = "King Slime", Lost = 0, RespawnIn = 3, Tip = "Tip: slimes are 90% jelly" }, 3)
 check(L.Title == "KO!" and L.Cause == "Knocked out by King Slime" and L.Back == "Back in 3 s", "a monster KO: KO!, who, Back in 3 s",
 	tostring(L.Cause) .. " / " .. tostring(L.Back))
-check(L.Lost == nil, "nothing lost: no line about it", tostring(L.Lost))
+check(L.Lost == "Nothing lost", "nothing lost: it says so (the first KO, 검수 10/10)", tostring(L.Lost))
 local seen = false
 for _, v in L do if type(v) == "string" and string.find(v, "Tip", 1, true) then seen = true end end
 check(not seen, "no tip line, not even the server's fun tip (A23-99 / A23-110)", "")
@@ -120,7 +120,7 @@ check(DS.IsOpen() and frame and frame.Name == "DeathScreen" and frame.Active == 
 local box = frame and frame.Children[1]
 local texts = {}
 for _, c in box and box.Children or {} do if c.ClassName == "TextLabel" and c.Visible then texts[c.Name] = c.Text end end
-check(texts.Title == "KO!" and texts.Cause == "Knocked out by King Slime" and texts.Back == "Back in 3 s" and texts.Lost == nil,
+check(texts.Title == "KO!" and texts.Cause == "Knocked out by King Slime" and texts.Back == "Back in 3 s" and texts.Lost == "Nothing lost",
 	"it reads KO! / Knocked out by King Slime / Back in 3 s", tostring(texts.Cause))
 check(frame and frame.ZIndex < 100, "under the opening and the pickers", frame and frame.ZIndex)
 ME.CharacterAdded:Fire({})
@@ -130,7 +130,8 @@ print(("DEATH_SUMMARY checks=%d failed=%d"):format(checks, failed))
 
 MUTATIONS = [
     ("DS", "the fun tip shown", "\tif type(left) == \"number\" and left > 0 then\n", "\tout.Tip = data.Tip\n\tif type(left) == \"number\" and left > 0 then\n"),
-    ("DS", "nothing lost still says so", "\telseif lost >= 1 then\n", "\telse\n"),
+    ("DS", "pouch gold lost reads as nothing lost", "\telseif lost >= 1 then\n", "\telseif false then\n"),
+    ("DS", "nothing lost: no line", "\t\tout.Lost = txt(\"LostNone\")", "\t\tout.Lost = nil"),
     ("DS", "no name for a monster", "local f = txt(by)\n\t\tout.Cause = f and string.format(f, name) or nil", "out.Cause = txt(\"Other\")"),
     ("DS", "the countdown never ends", "\tif type(left) == \"number\" and left > 0 then\n", "\tif type(left) == \"number\" then\n"),
     ("DS", "everyone's KO shows", "data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return false end",

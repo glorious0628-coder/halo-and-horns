@@ -141,6 +141,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: StampPress stops the QuestDone that just started"
         ]
       },
@@ -251,7 +253,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)"
+          "sound_gaps 10/10 :: a pet starting to follow = PetCall (its first Lv is quiet)",
+          "sound_gaps 10/10 :: the join list only PetWindow saw: the follow right after it = PetCall"
         ]
       },
       {
@@ -282,6 +285,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet"
         ]
       },
@@ -1654,9 +1659,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "61fde1043688d17756317afa4ce2c040ad17f8c03e21fdd65fbdcebed7d45ac7",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "c30203953cfba2ea68908670648603e2f0e2ed234ef07e84513bdd4e5eac4634",
-    "tools/fixtures/audio_offline.luau": "dc651eed279ea0e54449c1fcf1a3e85ab10d316edff53254da12e86deb929dea"
+    "src/ReplicatedStorage/Shared/Config.luau": "637c004230ba2bba72f96ab96c1ed0562fe2bcfba7d49460328ae85c98680de7",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "dcf2ae9b62e62edea9aaa4fabb6ac55b56de054daa609f60d669f73fb1c18819",
+    "tools/fixtures/audio_offline.luau": "dd1573a2d8ddd9b0358c287b4d30c921187080fa77b2c8f8983245b56b655faa"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

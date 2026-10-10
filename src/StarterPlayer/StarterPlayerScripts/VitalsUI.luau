@@ -351,6 +351,13 @@ function VitalsUI.Init(registry)
 	C, UIKit = registry, registry.UIKit
 end
 
+-- A23-110 (dev3 KO1 "Buy a potion" row tap, HUD L.StoryTap): the way to the potion seller now
+function VitalsUI.ShowShopWay()
+	WAY.At = -math.huge
+	WAY.Show()
+	return true
+end
+
 -- A23-109: a quick slot's potion (QuickSlots.Use) - the same request as the potion button (the server checks)
 function VitalsUI.Request(kind)
 	if kind ~= "HP" and kind ~= "MP" then return false end

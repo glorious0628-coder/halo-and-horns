@@ -1234,8 +1234,34 @@ end
 
 -- my pets ("PetList", owner only, at join / grant / equip / pet XP): a pet's Lv going up -> PetLevelUp, the follower put
 -- away (Equipped uid -> "") -> PetStow, a pet starting to follow (Equipped -> another uid) -> PetCall; the first list is quiet
+local function petSig(p)
+	if type(p) ~= "table" or type(p.List) ~= "table" then return nil end
+	local parts = { tostring(p.Equipped or "") }
+	for _, e in p.List do
+		if type(e) == "table" then table.insert(parts, tostring(e.Uid) .. ":" .. tostring(e.Lv)) end
+	end
+	table.sort(parts)
+	return table.concat(parts, "|")
+end
+
 function Audio.OnPetList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return end
+	-- 메인 반영 10/10 (no PetCall after joining): the join list reached only PetWindow (a remote fired before a second
+	-- listener connects goes to the first one) - the first list this module sees starts from PetWindow's older one
+	local pw = C and C.PetWindow
+	if S.PetEq == nil and type(pw) == "table" and type(pw.Lists) == "function" then
+		local okL, last, prev = pcall(pw.Lists)
+		local mine = petSig(payload)
+		local older = okL and ((last ~= payload and petSig(last) ~= mine) and last or prev) or nil
+		if type(older) == "table" and older ~= payload and petSig(older) ~= mine then
+			S.PetLv, S.PetEq = {}, ""
+			for _, e in type(older.List) == "table" and older.List or {} do
+				if type(e) == "table" and e.Uid ~= nil then S.PetLv[tostring(e.Uid)] = num(e.Lv, 0) end
+			end
+			local q = older.Equipped
+			S.PetEq = (q == nil or q == "") and "" or tostring(q)
+		end
+	end
 	local lv, up = {}, false
 	for _, p in payload.List do
 		if type(p) == "table" and p.Uid ~= nil then
