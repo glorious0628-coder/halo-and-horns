@@ -191,7 +191,7 @@ runGroup("Captain Clatter's card", function()
 	local p = w:Hero(151, { Faction = "Halo", Data = { Items = { Enh70 = cap } } })
 	local boss = w:King({ Kind = "CaptainClatter" })
 	-- A23-27: 3 own hits and the damage share (two hits and 500 damage before this swing)
-	boss._hits[p], boss._dmg[p], boss._contributors[p] = 2, 500, os.clock()
+	boss._hits[p], boss._dmg[p], boss._contributors[p] = 2, 500, w.Clock
 	w:Swing(p)
 	check(boss.Alive == false, "(a manual swing finished Captain Clatter)")
 	local cards = w:Cards(p)
@@ -208,7 +208,7 @@ runGroup("Captain Clatter's card", function()
 	-- room in the bag: the scroll itself
 	local q = w:Hero(152, { Faction = "Horns" })
 	local b2 = w:King({ Kind = "CaptainClatter" })
-	b2._hits[q], b2._dmg[q], b2._contributors[q] = 2, 500, os.clock()
+	b2._hits[q], b2._dmg[q], b2._contributors[q] = 2, 500, w.Clock
 	w:Swing(q)
 	local c2 = w:Cards(q)[1]
 	w:Pick(q, c2.Id, "Tickle")
@@ -228,9 +228,9 @@ runGroup("free riders", function()
 	local r = w:Hero(173, { Faction = "Horns" })
 	local boss = w:King({ Kind = "CaptainClatter" })
 	local need = def.RewardMinDamageFrac * boss.MaxHP
-	boss._hits[p], boss._dmg[p], boss._contributors[p] = 2, need + 100, os.clock() -- the finisher (2% and more)
-	boss._hits[q], boss._dmg[q], boss._contributors[q] = 3, need - 1, os.clock() -- 3 hits, just under 2%
-	boss._hits[r], boss._dmg[r], boss._contributors[r] = 2, 50, os.clock() -- 2 hits only: nothing
+	boss._hits[p], boss._dmg[p], boss._contributors[p] = 2, need + 100, w.Clock -- the finisher (2% and more); the world's clock (MonsterService's os.clock)
+	boss._hits[q], boss._dmg[q], boss._contributors[q] = 3, need - 1, w.Clock -- 3 hits, just under 2%
+	boss._hits[r], boss._dmg[r], boss._contributors[r] = 2, 50, w.Clock -- 2 hits only: nothing
 	w:Swing(p)
 	check(boss.Alive == false, "(the swing finished him)")
 	local byP = {}

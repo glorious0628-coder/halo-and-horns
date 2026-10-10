@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 3955,
+  "checks": 3975,
   "failedChecks": 0,
-  "namedChecks": 211,
+  "namedChecks": 231,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1088,6 +1088,126 @@
       "fail": 0
     },
     {
+      "group": "daily-intro (A23-104)",
+      "check": "config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "D0: a sub for everyone after the first chapter (M1_4), one dialogue, in the list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "a new save: no daily jobs yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "the quest list has no daily job and says DailyLocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "kills, gold, skills, a rebirth, a faction change and 3 days away make no daily job, no vacation, no pay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "claim / reroll of a job that does not exist: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "the day loop's check makes no set for a locked player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "another quest's end opens nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "D0 done: the daily jobs open, the day's set is made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "three Daily jobs, published, no DailyLocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "no vacation reward for the days before (nothing was owed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "a second signal changes nothing (the set stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "a kill counts for the Kill job now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "a stray job of a locked save: not shown, not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "an old save with DailyDay > 0: open, the intro quest is marked done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "and its list has the three jobs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "IntroGate = false: a new save has its jobs at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "no data: false, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily-intro (A23-104)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "class-first-pick",
       "check": "the first pick sets the class and ClassChosen",
       "pass": 1,
@@ -1283,9 +1403,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 51,
-    "applied": 51,
-    "caught": 51,
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
     "results": [
       {
         "mutation": "A23-71: a skill daily before the first skill",
@@ -1298,9 +1418,10 @@
           "a23-71 skill dailies :: Lv1-4 without a skill: three dailies, none of them 'Skill hits'",
           "a23-71 skill dailies :: an unfinished skill daily without a skill: remade at join, the reward kept",
           "a23-71 skill dailies :: the remade daily is the King Slime row (S9: slimes and gold are taken)",
-          "a23-71 skill dailies :: the remade daily is what the list shows"
+          "a23-71 skill dailies :: the remade daily is what the list shows",
+          "daily-intro (A23-104) :: a kill counts for the Kill job now"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "A23-71: an old skill daily is kept at join",
@@ -1495,7 +1616,7 @@
           "dailies-progress :: group ran to the end without a Lua error",
           "dailies-woods :: Lv10-24: three different dailies"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "S9: the third rookie row may repeat the King Slime",
@@ -1565,6 +1686,291 @@
           "goose-modes :: rival left: 70%, no war points"
         ],
         "newFailingCount": 6
+      },
+      {
+        "mutation": "daily gate: the jobs are always open",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "board-switch :: group ran to the end without a Lua error",
+          "dailies-day-change :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error",
+          "dailies-reroll-band :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "daily gate: the intro flag does not open them",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: Lv1-4 without a skill: King Slime 3 + Slime 12-15 + Gold (S9)",
+          "a23-71 skill dailies :: Lv1-4 without a skill: three dailies, none of them 'Skill hits'",
+          "a23-71 skill dailies :: Lv5: kill / skill / gold again",
+          "a23-71 skill dailies :: a Lv3 who kept Q: kill / skill / gold",
+          "board-switch :: group ran to the end without a Lua error",
+          "dailies-generate :: DailyLevel / DailyDay record the generation band"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "daily gate: an old save is locked",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: an old save with DailyDay > 0: open, the intro quest is marked done",
+          "daily-intro (A23-104) :: and its list has the three jobs"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "daily gate: a new save is open",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: a kill counts for the Kill job now",
+          "daily-intro (A23-104) :: a new save: no daily jobs yet",
+          "daily-intro (A23-104) :: a stray job of a locked save: not shown, not counted",
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: claim / reroll of a job that does not exist: nothing"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "daily gate: join makes the set anyway",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: a new save: no daily jobs yet",
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: claim / reroll of a job that does not exist: nothing",
+          "daily-intro (A23-104) :: kills, gold, skills, a rebirth, a faction change and 3 days away make no daily job, no vacation, no pay",
+          "daily-intro (A23-104) :: the day loop's check makes no set for a locked player"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "daily gate: the day check makes sets anyway",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: a kill counts for the Kill job now",
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: the day loop's check makes no set for a locked player"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "daily gate: locked kills count",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: a stray job of a locked save: not shown, not counted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily gate: a rebirth makes extras",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: claim / reroll of a job that does not exist: nothing",
+          "daily-intro (A23-104) :: kills, gold, skills, a rebirth, a faction change and 3 days away make no daily job, no vacation, no pay",
+          "daily-intro (A23-104) :: the day loop's check makes no set for a locked player"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "daily gate: the list is not locked",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: the quest list has no daily job and says DailyLocked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily gate: the list shows locked jobs",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: a stray job of a locked save: not shown, not counted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily gate: a locked player rerolls an extra",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: claim / reroll of a job that does not exist: nothing",
+          "daily-intro (A23-104) :: the day loop's check makes no set for a locked player"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "daily gate: the absence hook opens them",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: a kill counts for the Kill job now",
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: claim / reroll of a job that does not exist: nothing",
+          "daily-intro (A23-104) :: kills, gold, skills, a rebirth, a faction change and 3 days away make no daily job, no vacation, no pay",
+          "daily-intro (A23-104) :: no vacation reward for the days before (nothing was owed)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "daily gate: the intro opens nothing",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: a kill counts for the Kill job now",
+          "daily-intro (A23-104) :: a second signal changes nothing (the set stays)",
+          "daily-intro (A23-104) :: three Daily jobs, published, no DailyLocked"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "daily gate: the intro makes no set",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: three Daily jobs, published, no DailyLocked"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "daily gate: the intro signal is not heard",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: no service warnings (pcall-swallowed handler errors)",
+          "board-switch :: no service warnings (pcall-swallowed handler errors)",
+          "dailies-day-change :: no service warnings (pcall-swallowed handler errors)",
+          "dailies-generate :: no service warnings (pcall-swallowed handler errors)",
+          "dailies-progress :: no service warnings (pcall-swallowed handler errors)",
+          "dailies-reroll-band :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "daily gate: any quest opens them",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: another quest's end opens nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily gate: an old save gets the intro quest",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: IntroGate = false: a new save has its jobs at once",
+          "daily-intro (A23-104) :: an old save with DailyDay > 0: open, the intro quest is marked done"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "daily gate: config off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: a kill counts for the Kill job now",
+          "daily-intro (A23-104) :: a new save: no daily jobs yet",
+          "daily-intro (A23-104) :: a stray job of a locked save: not shown, not counted",
+          "daily-intro (A23-104) :: another quest's end opens nothing",
+          "daily-intro (A23-104) :: claim / reroll of a job that does not exist: nothing"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "daily gate: another intro quest",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0 done: the daily jobs open, the day's set is made",
+          "daily-intro (A23-104) :: IntroGate = false: a new save has its jobs at once",
+          "daily-intro (A23-104) :: a second signal changes nothing (the set stays)",
+          "daily-intro (A23-104) :: an old save with DailyDay > 0: open, the intro quest is marked done",
+          "daily-intro (A23-104) :: config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 3)",
+          "daily-intro (A23-104) :: three Daily jobs, published, no DailyLocked"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "daily gate: no save default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: a new save: no daily jobs yet",
+          "daily-intro (A23-104) :: config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 3)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "daily gate: D0 opens after the second chapter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily-intro (A23-104) :: D0: a sub for everyone after the first chapter (M1_4), one dialogue, in the list"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "the first class pick says it again",
@@ -1890,7 +2296,7 @@
           "dailies-generate :: both kill variants occur (king slime 3 more often than 12-15 slimes)",
           "dailies-progress :: a claimed daily slot becomes an extra quest"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 10
       },
       {
         "mutation": "board on: a claimed daily still becomes an extra",
@@ -1966,14 +2372,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "65dafc97198aa9fc876b7f0e273039f474da4ea9e8750a23e2ba60e9b42cefb2",
+    "src/ReplicatedStorage/Shared/Config.luau": "f6b36db4cfe51f9aeb9e112bc8d66295fed04588f82fe32b36e0eb4db68e4926",
     "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/QuestService.luau": "e8359a5ce0bdf83de1ac0c19143354a51fe0d94f1c1fe1671d9bf243edaaf0bb",
+    "src/ServerScriptService/QuestService.luau": "79230111318f47d572419b94a7aa253e286429c0d275948536b9655ff86320c2",
     "src/ServerScriptService/GooseService.luau": "4f7593b4c7e070e23ad97f74647a6cdd29029a7752267452b35bf6e17eb8465f",
     "src/ServerScriptService/ClassService.luau": "6d4735d865cdcd48702a083b4ac84eb4374ee4c7377ee0f494d0075698222448"
   },
-  "fixtureSHA256": "7438df061ad3c29c6af4c8bbaeff9e06f22e885950d48a9951e924d5d8b68f2f",
+  "fixtureSHA256": "5b35ec15ce63de8868698be1af35f25a68fc9f7353160f5d17fa26fa618d16c3",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

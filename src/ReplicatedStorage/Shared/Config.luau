@@ -2394,8 +2394,9 @@ Config.Tutorial = {
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	-- zone_check_halo #19: true = every active sub is sent, the ones past MaxSubs marked More = true (the HUD must draw only the
-	-- rows without More; the quest window lists all). Off until game dev 1's HUD skips More rows (then: true).
-	SendAllSubs = false,
+	-- rows without More; the quest window lists all). On since 2026-10-10 (game dev 1's HUD skips More rows, b9a0d16b / cce87d8d:
+	-- the quest window's In progress lists them, a More row's [Claim] goes straight to ClaimQuest).
+	SendAllSubs = true,
 	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
 	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
@@ -2412,6 +2413,9 @@ Config.StoryQuests = {
 		Horns = "PortraitGuideHorns", Shard = "PTR_CrownShard", Fountain = "PTR_CrownShard" },
 	NpcTag = "StoryNpc",
 	NpcRange = 16, -- studs between the player and a quest NPC for Talk / Choose / Open
+	-- 빛 마을 점검 #2: a workspace instance with this tag and the attribute Spot = a Landmarks key moves that spot to it
+	-- (StoryQuestService; e.g. the hero statue pair's centre, Spot = "HeroStatue"). Without one the spot below stays.
+	LandmarkTag = "StoryLandmark",
 	Badge = { Main = "Main", Sub = "Side" },
 	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
 		"M3_1", "M3_2", "M3_3", "M3_4", "M3_6", "M3_7", "M3_8" }, -- A23-86: M3_5 (graduation) is a side line now
@@ -2836,7 +2840,7 @@ Config.StoryQuests = {
 		-- A23-46 town people "they're up to something" (docs/design/town_npc_quests_2026-10-06.md + story_depth §3 / §5-⑥,
 		-- 검수 decisions): open after M2_3 for the town's own side, once each. The rumor turns out to be harmless (the
 		-- twist); the last pick is A (angel, Good) or B (devil, Evil) with the same size of reward in a different kind
-		-- (A: one 70% scroll, B: 3 HP potions + 60 gold) on top of 120 gold + half a level bar of XP. No weekly ranking
+		-- (A: one 70% scroll, B: 3 HP potions + 220 gold, 검수 2026-10-10 #71) on top of 120 gold + half a level bar of XP. No weekly ranking
 		-- points (A23-23 D1). The last line asks a question (story_depth §1).
 		H1 = {
 			Kind = "Sub", Title = "The Horns Are Up to Something", ShortName = "Spy on Horns", Speaker = "Bright", Factions = { Halo = true },
@@ -2849,7 +2853,7 @@ Config.StoryQuests = {
 						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
-				{ Text = "Slime Princes near the woods %d/%d", Guide = "SlimeMeadow",
+				{ Text = "Slime Princes in the meadow %d/%d", Guide = "SlimeMeadow",
 					Start = "A sack fell open… and Slime Princes gobbled what was inside!",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } },
 				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
@@ -2859,7 +2863,7 @@ Config.StoryQuests = {
 						"So what do we tell everyone?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Bright: So who started the rumor? …Does anyone remember?",
@@ -2886,7 +2890,7 @@ Config.StoryQuests = {
 						"So what do we tell everyone?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Tell everyone the truth", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Smokey: So who started the rumor? …Does anyone remember?",
@@ -2910,7 +2914,7 @@ Config.StoryQuests = {
 						"Noted. …Is selling to both sides a side too?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Send both sides a peace letter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Sell more spy glasses to both!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },
+						Evil = { Label = "Sell more spy glasses to both!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Send both sides a peace letter", B = "Sell more spy glasses to both!" } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
@@ -2928,16 +2932,17 @@ Config.StoryQuests = {
 			},
 			Reward = { Item = "Enh70", N = 1 },
 		},
-		-- A23-86 Sprout Oath (content_beyond_10min G): while the Sprout Shield is still on (Requires.Sprout) at Lv15 after M3_4,
-		-- a small training that shows the player's graduation role (Halo: guard + catch, Horns: raid) and ends with an oath.
-		-- Same steps count and walking for both sides' rewards: a stat-free title and 2 points (A23-58: the other side -2).
+		-- A23-86 Sprout Oath (content_beyond_10min G): at Lv15 after M3_4 (검수 2026-10-10 #54: with or without the Sprout
+		-- Shield), a small training that shows the player's graduation role (Halo: guard + catch, Horns: raid) and ends with an
+		-- oath. Same steps count and walking for both sides' rewards: a stat-free title, 2 points (A23-58: the other side -2)
+		-- and the woods-type reward (2 minutes of hunting gold + XP, like the other woods subs).
 		OathH = {
 			Kind = "Sub", Title = "The Sprout Promise", ShortName = "Sprout promise", Speaker = "Bright", Factions = { Halo = true },
-			Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },
-			Start = "Bright has a last lesson before your Sprout Shield ends.",
+			Requires = { Done = { "M3_4" }, Level = 15 },
+			Start = "Bright has one more lesson for you.",
 			Steps = {
 				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Bright: Almost a graduate! Soon you can catch Wanted villains.",
+					Lines = { All = { "Bright: A real Halo guard catches Wanted villains!",
 						"Bright: First, guard the woods bridge. Then face a Goblin Brute!" } } },
 				{ Text = "Guard the woods bridge %d/%d s", Guide = "WoodsGate", Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 15 } },
 				{ Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
@@ -2946,16 +2951,16 @@ Config.StoryQuests = {
 					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
 						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
 			},
-			Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
-			Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",
+			Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
+			Finish = "Promise made! Keep it close, wherever you go.",
 		},
 		OathR = {
 			Kind = "Sub", Title = "The Sprout Promise", ShortName = "Sprout promise", Speaker = "Smokey", Factions = { Horns = true },
-			Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },
-			Start = "Smokey has a last lesson before your Sprout Shield ends.",
+			Requires = { Done = { "M3_4" }, Level = 15 },
+			Start = "Smokey has one more lesson for you.",
 			Steps = {
 				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Smokey: Almost a graduate! When the shield ends, you can raid knights.",
+					Lines = { All = { "Smokey: A real Horn raids knights in the woods!",
 						"Smokey: Hold the sack for 45 seconds and it's yours!",
 						"Smokey: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only!" } } },
 				{ Text = "Find the first goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
@@ -2966,8 +2971,8 @@ Config.StoryQuests = {
 					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
 						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
 			},
-			Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
-			Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",
+			Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },
+			Finish = "Promise made! Keep it close, wherever you go.",
 		},
 		-- A23-86 Call of the Woods (content_beyond_10min A): the first time a Lv10 hunter stands on the woods bridge, one
 		-- small card. Same size, fixed reward: A (angel) one 70% scroll / B (devil) 3 HP potions + 1 minute of hunting gold at
@@ -2991,7 +2996,7 @@ Config.StoryQuests = {
 		},
 		-- quest_volume §3-2 (A23-56, 검수 2026-10-06): 12 new subs + 6 pulled from story_depth §3 / town_npc_quests, each once,
 		-- ending in an A (angel) / B (devil) pick with the same size of reward in a different kind (A23-58 scores the pick).
-		-- Town-type (Lv5-10): 120 gold + half a level bar, A one 70% scroll / B 3 HP potions + 60 gold. Woods-type (Lv10+):
+		-- Town-type (Lv5-10): 120 gold + half a level bar, A one 70% scroll / B 3 HP potions + 220 gold (#71). Woods-type (Lv10+):
 		-- 2 minutes of hunting gold + XP, A one 70% scroll / B 3 HP potions + 192 gold (HuntValue 1 minute of Lv10-24).
 		-- They open after M1_4 at Lv5+ (the first ten minutes stay as they are). No weekly ranking points (A23-23 D1).
 		S6 = {
@@ -3006,9 +3011,9 @@ Config.StoryQuests = {
 					Lines = { Halo = { "New kids walk this path. Keep it safe!", "The new kids keep asking for help…" },
 						Horns = { "A Horn Legion pouch must be FAT!", "So. What will you do with all that gold?" } },
 					Obj = { Type = "Choice", Good = { Label = "Help them find the slimes", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Make them say \"Thanks, boss!\"", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } },
+						Evil = { Label = "Make them say \"Thanks, boss!\"", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } },
 					Horns = { Obj = { Type = "Choice", Good = { Label = "Share snacks with the den", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Count it twice. Mine!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } } },
+						Evil = { Label = "Count it twice. Mine!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Who walks this path next?",
@@ -3023,7 +3028,7 @@ Config.StoryQuests = {
 				{ Text = "Bring the bear to Tiny", Guide = "Crossroads", Npc = "Tiny", Panel = true,
 					Lines = { All = { "Tiny: A bit sticky. Still very soft.", "Tiny: So. What now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Return it to its owner", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Sell it at the counter", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } },
+						Evil = { Label = "Sell it at the counter", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Return it to its owner", B = "Sell it at the counter" } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
@@ -3034,14 +3039,16 @@ Config.StoryQuests = {
 			Requires = { Done = { "M1_4" }, Level = 8 },
 			Start = "Bright: The town lantern is gone! Did a slime eat it?",
 			Steps = {
-				{ Text = "Look around the fountain", Guide = "Crossroads",
+				{ Text = "Look around the fountain", Guide = "Fountain",
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Start = "Glowing jelly tracks lead to the meadow!",
 					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 5 } },
-				{ Text = "The lantern is back!", Panel = true,
+				{ Text = "Bring the lantern home", Guide = "HaloTown", Start = "The lantern! Take it home to Halo Citadel.",
+					Obj = { Type = "Enter", Zone = "HaloTown" } },
+				{ Text = "The lantern is back!", Guide = "HaloTown", Panel = true,
 					Lines = { All = { "Found it! Still warm. Still glowing.", "Inside the lamp: a tiny 'B.' scratched in.\nWhose is it now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Give it back to the town", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+						Evil = { Label = "Hang it in my house", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Bright: Who was the first to carry it, I wonder?",
@@ -3056,7 +3063,7 @@ Config.StoryQuests = {
 				{ Text = "The sack is free!", Panel = true,
 					Lines = { All = { "A sack! A bit slimy. Smokey's name is on it.", "So whose sack is it now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Give it back to Smokey", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Finders keepers!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 60 } } } },
+						Evil = { Label = "Finders keepers!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Smokey: Did the slime look good in it, at least?",
@@ -3085,11 +3092,13 @@ Config.StoryQuests = {
 		H3 = {
 			Kind = "Sub", Title = "Day 40: Cat in Tree", ShortName = "Cat in a tree", Speaker = "Gleam", Factions = { Halo = true },
 			Requires = { Done = { "M2_7" }, Level = 12 },
+			Start = "Sir Gleam needs help in Halo Citadel!",
 			Steps = {
 				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: Each rescue is a heart. 10,001 hearts!\nClear the slimes so I can reach it." } } },
 				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
-				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Panel = true,
+				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Obj = { Type = "Enter", Zone = "HaloTown" } },
+				{ Text = "Talk with Sir Gleam", Guide = "HaloTown", Panel = true,
 					Lines = { All = { "Sir Gleam: The cat is down! …It is already climbing again.", "Sir Gleam: What should we do?" } },
 					Obj = { Type = "Choice", Good = { Label = "Let the cat be. Help someone new.", Points = 1, Reward = { Item = "Enh70", N = 1 } },
 						Evil = { Label = "Put it back up. More hearts!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
@@ -3149,6 +3158,7 @@ Config.StoryQuests = {
 		H5 = {
 			Kind = "Sub", Title = "Form H-2", ShortName = "Form H-2", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M2_7" }, Level = 15 },
+			Start = "Bright needs a form signed. Find her in Halo Citadel!",
 			Steps = {
 				{ Text = "Talk to Bright", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Bright: I need Form H-2 to fight a Brute.", "Bright: Who made these forms?! …Oh. Us." } } },
@@ -3249,7 +3259,8 @@ Config.StoryQuests = {
 				{ Text = "Look at the hero statues in Halo Citadel %d/%d s", Guide = "HeroStatue",
 					Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16, Stay = 10 } },
 				{ Text = "Goblins %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 8 } },
-				{ Text = "Back to the statues", Guide = "HaloTown", Panel = true,
+				{ Text = "Back to the statues", Guide = "HeroStatue", Obj = { Type = "Near", Spot = "HeroStatue", Radius = 16 } },
+				{ Text = "The statues shine again!", Guide = "HeroStatue", Panel = true,
 					Lines = { All = { "Bright: The statues are shiny again!", "Bright: What should the road show next?" } },
 					Obj = { Type = "Choice", Good = { Label = "Add a statue of a sprout too", Points = 1, Reward = { Item = "Enh70", N = 1 } },
 						Evil = { Label = "Make OUR statue bigger", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
@@ -3389,6 +3400,20 @@ Config.StoryQuests.Defs.EG14 = {
 }
 for _, id in { "EG01", "EG02", "EG03", "EG04", "EG14" } do table.insert(Config.StoryQuests.Subs, id) end
 
+-- A23-104: the intro of the daily jobs (QuestService opens them when this quest ends: Config.Daily.IntroQuest). It starts by
+-- itself at the end of the first chapter (M1_4), one short dialogue from my side's guide, a small reward like a woods sub's.
+Config.StoryQuests.Defs.D0 = {
+	Kind = "Sub", Title = "Daily Jobs", ShortName = "Daily jobs", Requires = { Done = { "M1_4" } },
+	Steps = {
+		{ Text = "Hear about the daily jobs", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!",
+				"Look in your Quests window. New jobs come every morning." } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+	Finish = "Daily jobs are open!",
+}
+table.insert(Config.StoryQuests.Subs, "D0")
+
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
 -- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
@@ -3503,6 +3528,7 @@ Config.QuestTabs = {
 		["story:H1"] = "Faction", ["story:H2"] = "Faction", ["story:H3"] = "Faction", ["story:H5"] = "Faction",
 		["story:H6"] = "Faction", ["story:R1"] = "Faction", ["story:R3"] = "Faction", ["story:R5"] = "Faction",
 		["story:R6"] = "Faction", ["story:R7"] = "Faction", ["story:N1"] = "Faction", ["story:N2"] = "Faction",
+		["story:OathH"] = "Faction", ["story:OathR"] = "Faction", -- 빛 마을 점검 #40
 	},
 	Default = "Side",
 	HudLines = 3,
@@ -3603,7 +3629,14 @@ Config.Daily = {
 	VacationRate = 0.7,
 	VacationMaxDays = 3,
 	CheckInterval = 30, -- seconds between day-rollover checks for online players
+	-- A23-104 (user 2026-10-10): a new player is told about the daily jobs by a short quest (the sub IntroQuest, after the
+	-- first chapter) before any is made; until then QuestService makes, shows and counts none and says DailyLocked. A save that
+	-- already ran its dailies (DailyDay > 0) is open. IntroGate = false: always open (the old rule).
+	IntroGate = true,
+	IntroQuest = "D0",
 }
+-- A23-104: set when the intro quest is done (the daily jobs are open); additive save field (the data version stays 3)
+Config.Data.Defaults.DailyIntro = false
 
 function Config.DayIndex(unixTime)
 	return math.floor((unixTime + Config.Daily.TimezoneOffset) / 86400)
@@ -4925,6 +4958,24 @@ Config.Audio = {
 		Plunder = "rbxassetid://74602898707411",
 		JackpotOther = "rbxassetid://99814762304779",
 		Loot = "rbxassetid://114739645345413",
+		-- batch 8 + C (소리 만들기 2026-10-10, docs/design/sound_gaps_2026-10-10.md A / C; art/sfx/asset_ids.json): wired in
+		-- Audio.luau (the event table above its Public API)
+		QuestOpen = "rbxassetid://132431286215692",
+		QuestTab = "rbxassetid://80849245770259",
+		StampPress = "rbxassetid://76569480136584",
+		Chest7Open = "rbxassetid://137266411071976",
+		WelcomeBack = "rbxassetid://86644525324244",
+		DiaryPage = "rbxassetid://75472701527108",
+		CandyPlop = "rbxassetid://71630733199634",
+		KingHelpHome = "rbxassetid://129647790058754",
+		KingTickleCoins = "rbxassetid://90219483742298",
+		TipDing = "rbxassetid://111120758241059",
+		Warp = "rbxassetid://132227699974979",
+		WarpIn = "rbxassetid://127997176687568",
+		SecretFound = "rbxassetid://121833019298027",
+		BlipBright = "rbxassetid://126796215784360",
+		BlipGleam = "rbxassetid://103851146620116",
+		BlipFolk = "rbxassetid://98476528780032",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -4997,6 +5048,27 @@ Config.Audio = {
 		Plunder = { File = "Plunder", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B2 my sack / pocket is taken (the victim only; the taker hears GoldPickup)
 		JackpotOther = { File = "JackpotOther", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B10 someone else's Jackpot / FirstMax line (not RareWeapon)
 		Loot = { File = "Loot", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- B14 Fx Loot with a scroll or a weapon (weapon SpeedMul 0.92); materials / potions silent
+		-- sound_gaps 2026-10-10 A (batch 8): windows and moments that had no sound of their own
+		QuestOpen = { File = "QuestOpen", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- the quest window "Journal" opening (instead of WindowOpen)
+		QuestTab = { File = "QuestTab", Volume = 0.40, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.08 }, -- its tabs (the tab buttons have no Click)
+		StampPress = { File = "StampPress", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- Fx Attendance (the claim's QuestDone line gives way)
+		Chest7Open = { File = "Chest7Open", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the 7-day box (Attendance Box), BoxAfter s after the stamp
+		WelcomeBack = { File = "WelcomeBack", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the "Welcome back!" card opening (PauseCard "Back")
+		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip"); the KO screen's fun tip (EG05)
+		DiaryPage = { File = "DiaryPage", Volume = 0.45, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.3 }, -- the King Diary opening on a page ([Read])
+		CandyPlop = { File = "CandyPlop", Volume = 0.35, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.12 }, -- my drop with candy (Fx Loot)
+		KingHelpHome = { File = "KingHelpHome", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Help"
+		KingTickleCoins = { File = "KingTickleCoins", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Tickle"
+		-- sound_gaps 2026-10-10 B / C
+		Warp = { File = "Warp", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- I am moved far at once (pad, map travel, [Go]; not a respawn)
+		WarpIn = { File = "WarpIn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- ... and land: WarpInAfter s later
+		SecretFound = { File = "SecretFound", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- a hidden quest's row first shows (an easter egg found; instead of QuestNew)
+		PetLevelUp = { File = "LevelUp", Volume = 0.42, Speed = { 1.2, 1.2 }, Max = 1, Gap = 2 }, -- one of my pets' Lv going up (PetList): a small, higher LevelUp
+		MarkerMove = { File = "Tap", Volume = 0.20, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- the quest marker's goal changing while it is on screen
+		-- NPC blips (asset_ids 'blips'): the story page of a speaker in Blips opens with that speaker's blip (instead of WindowOpen)
+		BlipBright = { File = "BlipBright", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
+		BlipGleam = { File = "BlipGleam", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
+		BlipFolk = { File = "BlipFolk", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
 	},
 	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed); SwingFaction picks the
 	-- caster's faction file when it is uploaded (sound_gaps A2: Halo / Horns mages)
@@ -5010,6 +5082,15 @@ Config.Audio = {
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },
+	-- story Speaker -> the blip its page opens with (the Horns town's NPCs get theirs with the Horns zone; BlipFolk waits for
+	-- a townsperson who talks)
+	Blips = { Bright = "BlipBright", Gleam = "BlipGleam" },
+	BoxAfter = 0.35, -- s after StampPress: the 7-day box opens
+	KOTipAfter = 0.9, -- s after KO: the fun tip's ding (EG05)
+	WarpInAfter = 0.45, -- s after Warp: WarpIn
+	-- a move of more than Jump studs in one frame that my speed cannot explain (+ Slack studs) = a warp
+	Warp = { Jump = 40, Slack = 10 },
+	ReplaceWithin = 0.3, -- s: a sound with Replace stops that event's copies started this recently (StampPress -> QuestDone)
 }
 
 -- A23-100 배경 음악 (소리 만들기 2026-10-10, art/sfx/asset_ids.json "bgm"; mono loops, -24 LUFS): Audio.luau plays the
@@ -5041,6 +5122,15 @@ Config.Audio.Music = {
 -- and the waterfalls (Map.Decor models named *Waterfall, + Spots for terrain-only falls: the Halo town's six =
 -- tools/worldkit/halo_terrain.luau FALLS x WINGS, x = +-the wing's outer edge, y = half its drop to the sea). Outside the
 -- MaxPlaying pools; the Sound effects setting scales them
+-- the town's own air (soundboard 2026-10-10 'ambience' HaloDay / HornsDen, 25 s loops): a 2D loop in the zone, at Volume
+-- x the Sound effects setting, crossfading with the zone like the music (Fade s)
+Config.Audio.ZoneAmbient = {
+	Volume = 0.25, Fade = 1.5,
+	Tracks = {
+		HaloTown = "rbxassetid://76688623617177", -- birds + a tiny wind chime
+		HornsTown = "rbxassetid://112972652651947", -- lava bubbling + campfire crackle
+	},
+}
 Config.Audio.Ambient = {
 	Fountain = { Id = "rbxassetid://136139057502455", Volume = 0.5, MinDistance = 6, MaxDistance = 40 },
 	Waterfall = { Id = "rbxassetid://85234404217631", Volume = 0.5, MinDistance = 8, MaxDistance = 40,
@@ -6794,7 +6884,7 @@ Config.RateLimits.CandyTrade = 1
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
 Config.QuestBook = {
-	DoneMax = 60, -- every main (19) + every sub (~35) of a finished save still fits (검수 2026-10-08)
+	DoneMax = 80, -- every main (19) + every sub (~45) of a finished save still fits (검수 2026-10-08; 60 -> 80 with the daily intro, A23-104)
 	AvailableMax = 10,
 	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
 }

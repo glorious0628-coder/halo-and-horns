@@ -49,6 +49,8 @@ def row(it):
         extra += ", sa = {%s}" % ", ".join('%s = "%s"' % (k, v) for k, v in sa.items())
     if it.get("group"):
         extra += ', group = "%s", offset = Vector3.new(%s, %s, %s)' % (it["group"], *it["offset"])
+    if it.get("metal"):
+        extra += ", metal = true"
     return ('  {name = "%s", mesh = "%s", tex = "%s", size = Vector3.new(%s, %s, %s), col = Enum.CollisionFidelity.%s%s}'
             % (it["name"], it["meshId"], it.get("textureId", ""), *it["size_studs"],
                fidelity(it.get("group") or it["name"]), extra))
@@ -104,7 +106,9 @@ for _, it in ipairs(items) do
       if it.sa.color then sa.ColorMap = it.sa.color end
       if it.sa.normal then sa.NormalMap = it.sa.normal end
       -- 2026-10-08 검수: Tripo's imported metalness maps render the whole model chrome-grey (notice board, nest, houses);
-      -- stylized props look right without one, so the metal map is never applied
+      -- stylized props look right without one, so the metal map is not applied unless the item says metal = true
+      -- (2026-10-10 A23-107 재질: split tiles keep their Tripo PBR metal so gold reads as metal; checked per model by eye)
+      if it.metal and it.sa.metal then sa.MetalnessMap = it.sa.metal end
 
       if it.sa.rough then sa.RoughnessMap = it.sa.rough end
     end)

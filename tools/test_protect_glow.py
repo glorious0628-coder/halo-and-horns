@@ -32,12 +32,20 @@ MUTATIONS = [
     ("a hard outline", P, "\th.OutlineTransparency = Config.PvP.ProtectGlow.OutlineTransparency\n",
      "\th.OutlineTransparency = 0\n"),
     ("a second outline on a second Protect", P,
-     "or character:FindFirstChild(PROTECT_GLOW) or not (f and f.Color) then", "or not (f and f.Color) then"),
-    ("a rebuilt body stays bare", P, "\telseif pu and pu > 0 then\n\t\taddProtectGlow(p)\n\tend\n", "\tend\n"),
-    ("the loop dresses unprotected bodies", P, "\telseif pu and pu > 0 then\n\t\taddProtectGlow(p)\n",
-     "\telse\n\t\taddProtectGlow(p)\n"),
+     "or character:FindFirstChild(PROTECT_GLOW) or not (f and f.Color) or inTown(p) then", "or not (f and f.Color) or inTown(p) then"),
+    ("a rebuilt body stays bare", P,
+     "\telseif pu and pu > 0 then\n\t\tif inTown(p) then removeProtectGlow(p) else addProtectGlow(p) end\n\tend\n", "\tend\n"),
+    ("the loop dresses unprotected bodies", P, "\telseif pu and pu > 0 then\n\t\tif inTown(p)",
+     "\telse\n\t\tif inTown(p)"),
     ("the shield stays after a hit", P, "\tprotectedUntil[player] = 0\n\tdestroyForceFields(player)\n",
      "\tprotectedUntil[player] = 0\n"),
+    # 빛 마을 점검 #42: no outline in a town
+    ("#42 an outline in town", P, " or not (f and f.Color) or inTown(p) then", " or not (f and f.Color) then"),
+    ("#42 the loop keeps the town outline", P, "\t\tif inTown(p) then removeProtectGlow(p) else addProtectGlow(p) end\n",
+     "\t\taddProtectGlow(p)\n"),
+    ("#42 town takes the shield too", P, "\t\tif inTown(p) then removeProtectGlow(p) else addProtectGlow(p) end\n",
+     "\t\tif inTown(p) then destroyForceFields(p) else addProtectGlow(p) end\n"),
+    ("#42 never an outline", P, "\treturn ok and town == true\nend", "\treturn true\nend"),
     ("a solid outline in Config", C, "ProtectGlow = { OutlineTransparency = 0.35 },", "ProtectGlow = { OutlineTransparency = 0 },"),
 ]
 
@@ -80,7 +88,9 @@ SUITE = Suite(
              "outline. The outline goes with the shield (BreakProtection after the protected player's hit, the expiry in "
              "the 1 s loop); while protected the loop puts it back on a rebuilt body (an appearance swap moves the "
              "ForceField, not the outline), and a cosmetic spawn never renews the time. The Protected attribute (the "
-             "'Revive Shield' chip) is unchanged.",
+             "'Revive Shield' chip) is unchanged. 빛 마을 점검 #42: no outline while the protected player stands in a town "
+             "(ZoneService.IsTown: no PvP there); the loop puts it on once they walk out and takes it off back inside; "
+             "the shield and its 10 s are unchanged.",
     limitations="The real look (outline width, how it reads on avatars at a distance, phone) needs a Studio check by game "
                 "dev 1. Roblox draws at most 31 Highlights at once per client; spawn shields last 10 s, so only a few "
                 "exist at a time. A body that also wears the 3-star WantedGlow shows both Highlights.",

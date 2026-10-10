@@ -29,9 +29,10 @@
    "sa": {
     "color": "rbxassetid://131991616970566",
     "normal": "rbxassetid://80539883947516",
-    "metal": "rbxassetid://130029131096120",
-    "rough": "rbxassetid://105684703806393"
-   }
+    "metal": "rbxassetid://110628892229485",
+    "rough": "rbxassetid://126511124181991"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Islet",
@@ -45,9 +46,10 @@
    "sa": {
     "color": "rbxassetid://74090535369855",
     "normal": "rbxassetid://90039953611815",
-    "metal": "rbxassetid://119454479279394",
-    "rough": "rbxassetid://105693687459134"
-   }
+    "metal": "rbxassetid://73924762937026",
+    "rough": "rbxassetid://128574618276921"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Stairs",
@@ -61,9 +63,10 @@
    "sa": {
     "color": "rbxassetid://101053895816557",
     "normal": "rbxassetid://85032602541647",
-    "metal": "rbxassetid://136403989349756",
-    "rough": "rbxassetid://104168024588562"
-   }
+    "metal": "rbxassetid://90744443900559",
+    "rough": "rbxassetid://74473196968497"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Statue",
@@ -93,9 +96,10 @@
    "sa": {
     "color": "rbxassetid://79548513788959",
     "normal": "rbxassetid://83224045286025",
-    "metal": "rbxassetid://91702862140950",
-    "rough": "rbxassetid://105271993875725"
-   }
+    "metal": "rbxassetid://70602923831284",
+    "rough": "rbxassetid://96377042358637"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Balustrade",
@@ -109,9 +113,10 @@
    "sa": {
     "color": "rbxassetid://132394755589072",
     "normal": "rbxassetid://110099723914534",
-    "metal": "rbxassetid://82482470073936",
-    "rough": "rbxassetid://98239420203657"
-   }
+    "metal": "rbxassetid://127352031802959",
+    "rough": "rbxassetid://92617663594075"
+   },
+   "metal": true
   },
   {
    "name": "Halo_BannerPole",
@@ -125,9 +130,10 @@
    "sa": {
     "color": "rbxassetid://86267414910150",
     "normal": "rbxassetid://83851118628509",
-    "metal": "rbxassetid://72604746401131",
-    "rough": "rbxassetid://120254328765258"
-   }
+    "metal": "rbxassetid://93889695171872",
+    "rough": "rbxassetid://71312265054231"
+   },
+   "metal": true
   },
   {
    "name": "Halo_CloudBush",
@@ -141,9 +147,10 @@
    "sa": {
     "color": "rbxassetid://121241027045188",
     "normal": "rbxassetid://89110469677729",
-    "metal": "rbxassetid://133182915398279",
-    "rough": "rbxassetid://99413153599450"
-   }
+    "metal": "rbxassetid://87489921567476",
+    "rough": "rbxassetid://100888487778266"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Lantern",
@@ -157,9 +164,10 @@
    "sa": {
     "color": "rbxassetid://125904437603321",
     "normal": "rbxassetid://81049621057907",
-    "metal": "rbxassetid://108897347263785",
-    "rough": "rbxassetid://139801943096724"
-   }
+    "metal": "rbxassetid://137126990883425",
+    "rough": "rbxassetid://135510979766646"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Planter",
@@ -173,9 +181,10 @@
    "sa": {
     "color": "rbxassetid://133399959402080",
     "normal": "rbxassetid://107494130169343",
-    "metal": "rbxassetid://75284510085173",
-    "rough": "rbxassetid://75487490028928"
-   }
+    "metal": "rbxassetid://131694566177420",
+    "rough": "rbxassetid://137304390329304"
+   },
+   "metal": true
   },
   {
    "name": "Halo_PotFlowers",
@@ -189,9 +198,10 @@
    "sa": {
     "color": "rbxassetid://79990736574148",
     "normal": "rbxassetid://120300479893818",
-    "metal": "rbxassetid://100260478865598",
-    "rough": "rbxassetid://74800105013905"
-   }
+    "metal": "rbxassetid://100881870357440",
+    "rough": "rbxassetid://104970581354034"
+   },
+   "metal": true
   },
   {
    "name": "Halo_RoundTree",
@@ -205,9 +215,10 @@
    "sa": {
     "color": "rbxassetid://127211722211421",
     "normal": "rbxassetid://140341390618643",
-    "metal": "rbxassetid://70402836123631",
-    "rough": "rbxassetid://83824064421671"
-   }
+    "metal": "rbxassetid://81488905814249",
+    "rough": "rbxassetid://99226449007893"
+   },
+   "metal": true
   },
   {
    "name": "Halo_Cathedral",

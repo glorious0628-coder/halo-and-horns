@@ -206,9 +206,9 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/KingDiary.luau": "7da57a6ed1f107c571850e7ca70864c6ce84787699471735b1d166520aec8c52",
-    "src/ReplicatedStorage/Shared/Config.luau": "d15222613df576289436fad84b59cab196ca1d5a2068b06447db9766bc2a3da7",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "5526d399199fa60fc7028df7afd672d065afcc805376531fb110b64b4100ff0b"
+    "src/StarterPlayer/StarterPlayerScripts/KingDiary.luau": "a160bc9f2bbaba237891e82e6c183fd1cddf35d34306002142640fb84ab2f48e",
+    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "62fa5ad2c1a5425358be61b0b9c9c4f99a7729108a43027f8d7216ee10be8b86"
   },
   "fixtureSHA256": "69cfeeb204363b128f31700e25d959d888d01c03a906fa35af195bf6e5b7f48d",
   "studioCalls": 0,

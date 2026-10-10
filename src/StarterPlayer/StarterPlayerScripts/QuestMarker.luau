@@ -983,6 +983,13 @@ function QuestMarker.IsShown()
 	return S.shown == true
 end
 
+-- the goal's tag (QuestTarget's "zone:<id>" / "blacksmith" / "story:<guide>" ...) or nil, and whether the marker is on
+-- screen (Audio: a new goal on screen = MarkerMove)
+function QuestMarker.TargetTag()
+	local t = S.target
+	return type(t) == "table" and t.Tag or nil, S.shown == true
+end
+
 -- A23-68 #2: point the small focus icon at a monster (Model or BasePart), nil = off. The same target again is a no-op
 function QuestMarker.Focus(target)
 	if typeof(target) ~= "Instance" or not (target:IsA("Model") or target:IsA("BasePart")) then target = nil end

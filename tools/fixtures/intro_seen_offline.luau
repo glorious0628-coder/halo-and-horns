@@ -36,6 +36,7 @@ local function fixture(saved)
 	local f = { Ready = true, Alive = true, RateAllowed = true, Rows = {}, Remote = {}, Loops = {}, Writes = {}, RateCalls = {} }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
+	config.Daily.IntroGate = false -- A23-104 (the daily jobs open after an intro quest) has its own tests: test_a23_14 / test_town_quests
 	local players = {}
 	local function newPlayer()
 		local p = { Name = "IntroTester", UserId = serial, Parent = players, Attrs = {}, __kind = "Instance" }
@@ -62,6 +63,7 @@ local function fixture(saved)
 	end, wait = function(delay) return coroutine.yield(delay or 0) end,
 		delay = function() end, defer = function(fn, ...) fn(...) end }
 	local util = { DeepCopy = copy, Warn = function(tag, msg) if tag ~= "DataService" then error(tag .. ": " .. msg) end end,
+		Signal = { new = signal }, -- QuestService.ForgeReached (A23-88 metrics) is made at load
 		IsAlive = function() return f.Alive end, FormatNumber = tostring, Now = function() return 100 end,
 		GetCharacter = function() return nil end, -- A23-68 #1: the accept's delayed move (never run here: task.delay is a no-op)
 		RateLimit = function(p, key, interval) table.insert(f.RateCalls, { p, key, interval }); return f.RateAllowed end,
@@ -91,7 +93,7 @@ local function fixture(saved)
 	end
 	function ps.AddStat(p, key, amount) local v = (dataService.Get(p)[key] or 0) + amount; ps.SetStat(p, key, v); return v end
 	local registry = { PlayerService = ps, DataService = dataService,
-		MonsterService = { MonsterKilled = signal() },
+		MonsterService = { MonsterKilled = signal() }, StoryQuestService = { QuestDone = signal() }, -- QuestService listens to the daily intro quest (A23-104)
 		ProgressionService = { GoldEarned = signal(), Rebirthed = signal(), LevelReset = signal(), LeveledUp = signal(),
 			AddBankGold = function(p, amount) ps.AddStat(p, "BankGold", amount) end, AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end },
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },

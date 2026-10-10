@@ -46,7 +46,20 @@
 -- without a track is quiet. The group = Settings "Music" (0..1) x Music.DuckMul while a big moment ducks the combat
 -- sounds. Water ambience (점검표 sound 60): Audio.Ambient(part, kind) puts a 3D looping Config.Audio.Ambient sound on a
 -- part (FountainFx: each fountain; here: Map.Decor models named *Waterfall and Ambient.Waterfall.Spots), scaled by the
--- Sound effects setting, outside the MaxPlaying pools.
+-- Sound effects setting, outside the MaxPlaying pools. The town's own air (Config.Audio.ZoneAmbient: HaloDay / HornsDen)
+-- loops in 2D in its zone and crossfades with the zone like the music, at its Volume x the Sound effects setting.
+--
+-- sound_gaps 2026-10-10 (소리 만들기 batch 8 + B / C): Fx Attendance -> StampPress (the claim's QuestDone line gives way:
+-- Replace) + Chest7Open BoxAfter s later for the 7-day box; Fx FinisherEnd Pick Help / Tickle -> KingHelpHome /
+-- KingTickleCoins; Fx Loot with candy -> CandyPlop; Fx KO with a fun Tip (EG05) -> TipDing KOTipAfter s later. A window
+-- opening (Audio.OpenSound): the quest window "Journal" -> QuestOpen, the King Diary on a page ([Read]) -> DiaryPage, a
+-- story page whose Speaker has a blip (Config.Audio.Blips) -> that blip, PauseCard "Back" -> WelcomeBack, "Tip" ->
+-- TipDing, else WindowOpen (PauseCard now counts as a window). A hidden quest's row first showing (an easter egg found)
+-- -> SecretFound instead of QuestNew. "PetList": one of my pets' Lv going up -> PetLevelUp, the follower put away ->
+-- Equip. A move of more than Warp.Jump studs in one frame that my speed cannot explain (Audio.IsWarp; not within
+-- SpawnCalm s of a spawn) -> Warp, WarpIn WarpInAfter s later. The quest marker's goal (QuestMarker.TargetTag) changing
+-- while the marker is on screen -> MarkerMove (a small Tap; not within MarkerQuiet s of QuestDone / QuestNew). QuestBook
+-- plays QuestTab on its tab buttons.
 --
 -- Public API: Audio.Init(C), Audio.Start(), Audio.Play(event, opts?) -> bool (opts { File, Speed, SpeedMul, Volume,
 --   Auto, Others }), Audio.Talk(speaker?) -> bool (typewriter blips, quality ②), Audio.Plan(kind, data, ctx) -> list of
@@ -55,7 +68,9 @@
 --   Audio.AnnounceSound(payload) -> event? (pure helpers of the world sounds). "No" (SkillBar) is an alias of Deny.
 --   Audio.MusicTrack(zoneId) -> id? (pure), Audio.BossLayer(zoneId, gs) -> id? (pure), Audio.RefreshBossLayer() -> bool,
 --   Audio.SetZoneMusic(zoneId) -> bool (changed), Audio.MusicStep(dt),
---   Audio.RefreshVolumes(), Audio.Ambient(part, kind) -> Sound?
+--   Audio.RefreshVolumes(), Audio.Ambient(part, kind) -> Sound?, Audio.AirTrack(zoneId) -> id? (pure),
+--   Audio.SetZoneAir(zoneId) -> bool (changed), Audio.OpenSound(name) -> event, Audio.OnPetList(payload),
+--   Audio.IsWarp(studs, speed, dt) -> bool (pure), Audio.Has(event) -> bool (its file is uploaded)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -104,7 +119,18 @@ local T = {
 	ContactDefault = 0.25, -- s: when the hits land if the packet has no ContactDelay
 	LaunchDefault = 0.22,
 	PunchVolume = 0.6,
-	Windows = { "Panels", "WorldMap", "PlayerListUI" },
+	Windows = { "Panels", "WorldMap", "PlayerListUI", "PauseCard" },
+	-- sound_gaps 2026-10-10: the windows with their own opening (Audio.OpenSound)
+	QuestWindow = "Journal", DiaryWindow = "Diary", StoryWindow = "Story",
+	CardSounds = { Back = "WelcomeBack", Tip = "TipDing" }, -- PauseCard kinds
+	Blips = type(A.Blips) == "table" and A.Blips or {}, -- story Speaker -> blip event
+	StoryDefs = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Defs) == "table" and Config.StoryQuests.Defs or {},
+	BoxAfter = tonumber(A.BoxAfter) or 0.35,
+	KOTipAfter = tonumber(A.KOTipAfter) or 0.9,
+	WarpInAfter = tonumber(A.WarpInAfter) or 0.45,
+	Warp = type(A.Warp) == "table" and A.Warp or { Jump = 40, Slack = 10 },
+	ReplaceWithin = tonumber(A.ReplaceWithin) or 0.3,
+	MarkerQuiet = 1.0, -- s after QuestDone / QuestNew: no MarkerMove (the quest's own sound says it)
 	Kings = { PumpkinKingActive = "PumpkinKing", GhostKingActive = "GhostKing" },
 	QuietStart = 3, -- s after Start: GameState flags that flip now came with the join
 	FactionCalm = 3, -- s after a faction change: points falling to 0 are not a RankDown
@@ -167,6 +193,11 @@ local S = {
 	GooseHit = false, -- I hit the goose this visit (its 3-2-1 is for the hitters)
 	GoldenSeen = setmetatable({}, { __mode = "k" }), -- golden monsters already announced
 	GameState = nil,
+	Hush = {}, -- [event] = os.clock() until which it stays quiet (a sound that replaced it just played)
+	Story = nil, -- the last "OpenPanel" Story page { Id, St, Var } (its Speaker's blip)
+	PetLv = nil, PetEq = nil, -- my pets' Lv by uid and the follower's uid at the last PetList (nil before the first)
+	MarkerTag = nil, -- the quest marker's last goal tag
+	WarpRoot = nil, WarpPos = nil, -- my root and its position at the last frame
 }
 
 local function num(v, default)
@@ -330,6 +361,15 @@ function Audio.Plan(kind, data, ctx)
 		elseif data.Option == "Evil" then
 			add(out, "Devour", 0)
 		end
+	elseif kind == "Attendance" then -- sound_gaps 10/10 A (to the owner after a claim): the stamp, the 7-day box after it
+		add(out, "StampPress", 0, { Replace = "QuestDone" }) -- the claim's "Day N reward!" line gives way
+		if data.Box == true then add(out, "Chest7Open", T.BoxAfter) end
+	elseif kind == "FinisherEnd" then -- the King Slime card's pick (to the picker only; its Notify line is silent)
+		if data.Pick == "Help" then
+			add(out, "KingHelpHome", 0)
+		elseif data.Pick == "Tickle" then
+			add(out, "KingTickleCoins", 0)
+		end
 	elseif kind == "Enhance" then
 		add(out, data.Success == true and "ScrollSuccess" or "ScrollFail", 0)
 	elseif kind == "Upgrade" then -- sound_gaps C2: a weapon bought / equipped = Equip (GoldPickup until its file)
@@ -337,12 +377,14 @@ function Audio.Plan(kind, data, ctx)
 		local equip = SOUNDS.Equip
 		add(out, (type(equip) == "table" and idOf(equip.File)) and "Equip" or "GoldPickup", 0)
 	elseif kind == "Loot" then -- sound_wiring_r4: my drop rings only for a scroll or a weapon (the weapon a little lower)
-		local weapon, scroll = false, false
+		local weapon, scroll, candy = false, false, false
 		for _, g in (type(data) == "table" and type(data.Items) == "table") and data.Items or {} do
 			local def = type(g) == "table" and g.Item ~= nil and T.LootItems[g.Item] or nil
 			if type(g) == "table" and g.Weapon ~= nil then weapon = true end
 			if type(def) == "table" and T.LootKinds[def.Kind] then scroll = true end
+			if type(g) == "table" and g.Item == "Candy" then candy = true end -- sound_gaps 10/10 A: the Halloween candy
 		end
+		if candy then add(out, "CandyPlop", 0) end
 		if weapon then
 			add(out, "Loot", 0, { Speed = T.LootWeaponSpeed })
 		elseif scroll then
@@ -371,6 +413,8 @@ function Audio.Plan(kind, data, ctx)
 		end
 	elseif kind == "KO" then -- sound_gaps B1 (BB14: the server sends it to the one knocked out only)
 		add(out, "KO", 0)
+		-- EG05 (dev3 easter eggs): a fun tip on the KO screen dings a moment after the fall
+		if type(data.Tip) == "string" and data.Tip ~= "" then add(out, "TipDing", T.KOTipAfter) end
 	elseif kind == "GooseEnd" then -- B3 { Pos, Winner, Coop } to everyone: heard near the goose only
 		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
 		if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end
@@ -491,6 +535,7 @@ function Audio.Play(event, opts)
 			return false
 		end
 	end
+	if now < (S.Hush[event] or -math.huge) then return false end -- a sound that replaced it just played
 	local last = S.Last[event]
 	if last and now - last < num(def.Gap, 0.03) then return false end
 	if playingCount() >= T.MaxPlaying then return false end
@@ -534,6 +579,16 @@ function Audio.Play(event, opts)
 		end
 	end
 	if T.BigEvents[event] then S.BigAt = now end
+	-- opts.Replace: that event's copies started within ReplaceWithin s stop, and it stays quiet as long again (either order)
+	local rep = opts.Replace
+	if type(rep) == "string" then
+		if now - (S.Last[rep] or -math.huge) < T.ReplaceWithin then
+			for _, q in S.Pools[rep] or {} do
+				if q.IsPlaying then q:Stop() end
+			end
+		end
+		S.Hush[rep] = now + T.ReplaceWithin
+	end
 	-- the big moments lower the combat sounds for a moment (§6)
 	if T.Duck.By and T.Duck.By[event] and S.Groups.Combat then
 		S.DuckToken += 1
@@ -554,7 +609,21 @@ function Audio.Play(event, opts)
 end
 
 ----------------------------------------------------------------- music (A23-100) + water ambience (점검표 sound 60)
-local MUSIC = { Id = nil, Zone = nil, Current = nil, Layer = nil, Fading = {}, Ambient = {} } -- Ambient: { Sound, Base }
+local MUSIC = { Id = nil, Zone = nil, Current = nil, Layer = nil, Fading = {}, Ambient = {}, -- Ambient: { Sound, Base }
+	AirId = nil, Air = nil, AirFading = {} } -- the zone's air (Config.Audio.ZoneAmbient)
+
+-- true when the event's file is uploaded (its def's File / Files)
+function Audio.Has(event)
+	local def = type(event) == "string" and SOUNDS[event] or nil
+	if type(def) ~= "table" then return false end
+	if type(def.Files) == "table" then
+		for _, f in def.Files do
+			if idOf(f) then return true end
+		end
+		return false
+	end
+	return idOf(def.File) ~= nil
+end
 
 -- the track of a zone (pure)
 function Audio.MusicTrack(zoneId)
@@ -620,9 +689,33 @@ function Audio.RefreshBossLayer()
 	return true
 end
 
+-- the town's own air of a zone (pure; Config.Audio.ZoneAmbient.Tracks)
+function Audio.AirTrack(zoneId)
+	local Z = type(A.ZoneAmbient) == "table" and A.ZoneAmbient or {}
+	local id = type(Z.Tracks) == "table" and type(zoneId) == "string" and Z.Tracks[zoneId] or nil
+	return (type(id) == "string" and id ~= "") and id or nil
+end
+
+-- my zone's air: a new loop starts at 0 in the Sfx group (MusicStep fades it in), the old one fades out. True = changed
+function Audio.SetZoneAir(zoneId)
+	local id = Audio.AirTrack(zoneId)
+	if id == MUSIC.AirId then return false end
+	MUSIC.AirId = id
+	if MUSIC.Air then table.insert(MUSIC.AirFading, MUSIC.Air) end
+	MUSIC.Air = nil
+	if id and S.Folder then
+		local s = musicSound("ZoneAir", id)
+		s.SoundGroup = S.Groups.Sfx
+		pcall(function() s:Play() end)
+		MUSIC.Air = s
+	end
+	return true
+end
+
 -- my zone's track: a new one starts at 0 (MusicStep fades it in), the old one (and its boss layer) fades out; nil =
--- quiet. True = changed
+-- quiet. True = changed (the zone's air follows too: Audio.SetZoneAir)
 function Audio.SetZoneMusic(zoneId)
+	Audio.SetZoneAir(zoneId)
 	MUSIC.Zone = zoneId
 	local id = Audio.MusicTrack(zoneId)
 	if id == MUSIC.Id then
@@ -650,17 +743,27 @@ function Audio.MusicStep(dt)
 	for _, cur in { MUSIC.Current, MUSIC.Layer } do
 		cur.Volume = cur.Volume < full and math.min(full, cur.Volume + d) or full
 	end
-	for i = #MUSIC.Fading, 1, -1 do
-		local f = MUSIC.Fading[i]
-		f.Volume = math.max(0, f.Volume - d)
-		if f.Volume <= 0 then
-			pcall(function()
-				f:Stop()
-				f:Destroy()
-			end)
-			table.remove(MUSIC.Fading, i)
+	local function fadeOut(list, by)
+		for i = #list, 1, -1 do
+			local f = list[i]
+			f.Volume = math.max(0, f.Volume - by)
+			if f.Volume <= 0 then
+				pcall(function()
+					f:Stop()
+					f:Destroy()
+				end)
+				table.remove(list, i)
+			end
 		end
 	end
+	fadeOut(MUSIC.Fading, d)
+	-- the zone's air: toward its Volume x the Sound effects setting, at Volume / Fade per second
+	local Z = type(A.ZoneAmbient) == "table" and A.ZoneAmbient or {}
+	local zv = num(Z.Volume, 0.25)
+	local zd = zv / math.max(0.05, num(Z.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
+	local air, target = MUSIC.Air, zv * sfxMult()
+	if air then air.Volume = air.Volume < target and math.min(target, air.Volume + zd) or math.max(target, air.Volume - zd) end
+	fadeOut(MUSIC.AirFading, zd)
 end
 
 -- a 3D looping water sound (Config.Audio.Ambient[kind]) on part; nil without an id or a part
@@ -986,6 +1089,32 @@ local function afterBig(event)
 	end
 end
 
+-- the sound of a window opening (sound_gaps 2026-10-10): the quest window QuestOpen, the King Diary on a page DiaryPage,
+-- a story page whose Speaker has a blip that blip, the welcome-back / tip cards their own; else (or not uploaded) WindowOpen
+function Audio.OpenSound(name)
+	local m = C and C[name]
+	local event = nil
+	if type(m) == "table" and name == "PauseCard" and type(m.OpenKind) == "function" then
+		local ok, kind = pcall(m.OpenKind)
+		event = ok and T.CardSounds[kind] or nil
+	elseif type(m) == "table" and name == "Panels" and type(m.CurrentId) == "function" then
+		local ok, id = pcall(m.CurrentId)
+		id = ok and id or nil
+		if id == T.QuestWindow then
+			event = "QuestOpen"
+		elseif id == T.DiaryWindow then
+			local diary = C and C.KingDiary
+			local okP, page = false, nil
+			if type(diary) == "table" and type(diary.FocusPage) == "function" then okP, page = pcall(diary.FocusPage) end
+			event = (okP and page ~= nil) and "DiaryPage" or nil
+		elseif id == T.StoryWindow and type(S.Story) == "table" then
+			local def = T.StoryDefs[S.Story.Id]
+			event = type(def) == "table" and T.Blips[def.Speaker] or nil
+		end
+	end
+	return (event and Audio.Has(event)) and event or "WindowOpen"
+end
+
 local function pollWindows()
 	for _, name in T.Windows do
 		local m = C and C[name]
@@ -993,10 +1122,69 @@ local function pollWindows()
 			local ok, open = pcall(m.IsOpen)
 			open = ok and open == true
 			local was = S.Win[name]
-			if was ~= nil and was ~= open then Audio.Play(open and "WindowOpen" or "WindowClose") end
+			if was ~= nil and was ~= open then Audio.Play(open and Audio.OpenSound(name) or "WindowClose") end
 			S.Win[name] = open
 		end
 	end
+end
+
+-- my pets ("PetList", owner only, at join / grant / equip / pet XP): a pet's Lv going up -> PetLevelUp, the follower put
+-- away (Equipped uid -> "") -> Equip; the first list is quiet
+function Audio.OnPetList(payload)
+	if type(payload) ~= "table" or type(payload.List) ~= "table" then return end
+	local lv, up = {}, false
+	for _, p in payload.List do
+		if type(p) == "table" and p.Uid ~= nil then
+			local uid = tostring(p.Uid)
+			lv[uid] = num(p.Lv, 0)
+			local was = S.PetLv and S.PetLv[uid]
+			if was and lv[uid] > was then up = true end
+		end
+	end
+	local eq = payload.Equipped
+	eq = (eq == nil or eq == "") and "" or tostring(eq)
+	local stowed = S.PetEq ~= nil and S.PetEq ~= "" and eq == ""
+	S.PetLv, S.PetEq = lv, eq
+	if up then Audio.Play("PetLevelUp") end
+	if stowed then Audio.Play("Equip") end
+end
+
+-- the quest marker's goal (QuestMarker.TargetTag -> tag, shown): a new goal while the marker is on screen -> MarkerMove;
+-- a goal that changes while it is hidden is taken quietly; no goal keeps the last one (a blink is not a new goal)
+local function pollMarker()
+	local m = C and C.QuestMarker
+	if type(m) ~= "table" or type(m.TargetTag) ~= "function" then return end
+	local tag, shown = m.TargetTag()
+	if tag == nil then return end
+	local prev = S.MarkerTag
+	S.MarkerTag = tag
+	if not shown or prev == nil or prev == tag then return end
+	local now = os.clock()
+	if now - (S.Last.QuestDone or -math.huge) < T.MarkerQuiet or now - (S.Last.QuestNew or -math.huge) < T.MarkerQuiet then return end
+	Audio.Play("MarkerMove")
+end
+
+-- a move of `studs` in dt s at `speed` studs / s is a warp: farther than Warp.Jump and than my speed explains (pure)
+function Audio.IsWarp(studs, speed, dt)
+	studs, speed, dt = num(studs, 0), math.abs(num(speed, 0)), math.clamp(num(dt, 0), 0, 1)
+	return studs > num(T.Warp.Jump, 40) and studs > speed * dt * 2 + num(T.Warp.Slack, 10)
+end
+
+-- every frame: the server moved me far at once (a pad, the map's travel, [Go]; not a new character) -> Warp, then WarpIn
+local function warpStep(dt)
+	local root = myRoot()
+	if not root then
+		S.WarpRoot, S.WarpPos = nil, nil
+		return
+	end
+	local pos = root.Position
+	local vel = root.AssemblyLinearVelocity
+	if S.WarpRoot == root and S.WarpPos and os.clock() - S.SpawnAt >= T.SpawnCalm
+		and Audio.IsWarp((pos - S.WarpPos).Magnitude, typeof(vel) == "Vector3" and vel.Magnitude or 0, dt) then
+		S.MovedAt = os.clock() -- no ZoneEnterPvP right now
+		if Audio.Play("Warp") then task.delay(T.WarpInAfter, Audio.Play, "WarpIn") end
+	end
+	S.WarpRoot, S.WarpPos = root, pos
 end
 
 -- the quest list (CR-L50 "Quests" remote): a quest id that was not there before = a new quest (not the first list)
@@ -1011,16 +1199,25 @@ function Audio.OnQuests(payload)
 		list = payload.Quests -- { Quests, Book } (A23-81), as a table or its JSON
 	end
 	if type(list) ~= "table" then return end
-	local ids, fresh = {}, false
+	local ids, fresh, secret = {}, false, false
 	for _, e in list do
 		if type(e) == "table" and e.Id ~= nil then
 			local id = tostring(e.Id)
 			ids[id] = true
-			if S.QuestIds and not S.QuestIds[id] then fresh = true end
+			if S.QuestIds and not S.QuestIds[id] then
+				-- sound_gaps 10/10 C: a hidden quest's row (E5 Hidden: it shows only once found) = an easter egg found
+				local sid = type(e.Story) == "table" and e.Story.Id or nil
+				local def = sid ~= nil and T.StoryDefs[sid] or nil
+				if type(def) == "table" and def.Hidden == true and Audio.Has("SecretFound") then secret = true else fresh = true end
+			end
 		end
 	end
 	S.QuestIds = ids
-	if fresh then Audio.Play("QuestNew") end
+	if secret then
+		Audio.Play("SecretFound")
+	elseif fresh then
+		Audio.Play("QuestNew")
+	end
 end
 
 -- our files replace Fx's defaults on this client (Config.Sounds: Swing -> the class swings, Release -> SkillCast,
@@ -1110,6 +1307,10 @@ function Audio.Start()
 		if not ok then warnThrottled("windows", "window watch failed: " .. tostring(err)) end
 		ok, err = pcall(pollWorld)
 		if not ok then warnThrottled("world", "world watch failed: " .. tostring(err)) end
+		ok, err = pcall(pollMarker)
+		if not ok then warnThrottled("marker", "marker watch failed: " .. tostring(err)) end
+		ok, err = pcall(warpStep, dt)
+		if not ok then warnThrottled("warp", "warp watch failed: " .. tostring(err)) end
 	end)
 	-- the remotes normally exist already; never block the other client modules' Start on them
 	task.spawn(function()
@@ -1130,6 +1331,21 @@ function Audio.Start()
 		announce.OnClientEvent:Connect(function(payload)
 			local event = Audio.AnnounceSound(payload)
 			if event and not Audio.Held() then Audio.Play(event) end
+		end)
+	end)
+	task.spawn(function()
+		local panel = Net.Get("OpenPanel")
+		if not panel then return end
+		panel.OnClientEvent:Connect(function(panelId, arg)
+			if panelId == T.StoryWindow and type(arg) == "table" then S.Story = arg end -- its Speaker's blip (OpenSound)
+		end)
+	end)
+	task.spawn(function()
+		local pets = Net.Get("PetList")
+		if not pets then return end
+		pets.OnClientEvent:Connect(function(payload)
+			local ok, err = pcall(Audio.OnPetList, payload)
+			if not ok then warnThrottled("pets", tostring(err)) end
 		end)
 	end)
 	task.spawn(function()

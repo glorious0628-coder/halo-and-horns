@@ -30,7 +30,7 @@ MUTATIONS = [
     ("M1_2's old title", C, 'Title = "The Prince Who Ate the Dust"', 'Title = "The King Who Ate the Dust"'),
     ("M1_2's old short name", C, 'ShortName = "Slime Princes",', 'ShortName = "King Slimes",'),
     ("Otto's old line", C, "The Slime Princes ate the most of it.", "The King Slimes ate the most of it."),
-    ("H1's old step", C, '{ Text = "Slime Princes near the woods %d/%d"', '{ Text = "King Slimes near the woods %d/%d"'),
+    ("H1's old step", C, '{ Text = "Slime Princes in the meadow %d/%d"', '{ Text = "King Slimes in the meadow %d/%d"'),
     ("Tiny's old line", C, '"Tiny: A Slime Prince swallowed a teddy bear!"', '"Tiny: A King Slime swallowed a teddy bear!"'),
     ("R5's old step", C, '{ Text = "Slime Prince %d/%d", Guide = "SlimePond"', '{ Text = "King Slime %d/%d", Guide = "SlimePond"'),
     ("M1_2 moved to the new boss", C, 'ShortName = "Slime Princes",\n\t\t\tStart = "Slime Princes full of shard dust guard their little brothers and sisters.",\n'

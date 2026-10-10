@@ -239,6 +239,8 @@ local function petRow(kit, parent, row)
 		local b = kit.Button(right, text, color, UDim2.fromOffset(T.ButtonW, T.ButtonH), function()
 			PetWindow.Equip(uid)
 		end)
+		-- sound_gaps 2026-10-10 B: [Put away] sounds when the server's PetList says it happened (Audio: Equip), no Click
+		if uid == "" then pcall(b.SetAttribute, b, "NoClick", true) end
 		b.LayoutOrder = kit.NextOrder()
 	end
 end

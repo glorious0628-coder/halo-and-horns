@@ -174,7 +174,7 @@ local PLAYER = attrHolder({ UserId = ME, Name = "Me", Character = CHAR, Characte
 	Attr = { Faction = "Halo", DataLoaded = true, Honor = 3, Infamy = 0 } })
 local GAMESTATE = attrHolder({ Name = "GameState", Attr = { PumpkinKingActive = false, GhostKingActive = false, GooseActive = false } })
 local REMOTES = { Fx = { OnClientEvent = signal() }, Notify = { OnClientEvent = signal() }, Quests = { OnClientEvent = signal() },
-	Announce = { OnClientEvent = signal() } }
+	Announce = { OnClientEvent = signal() }, OpenPanel = { OnClientEvent = signal() }, PetList = { OnClientEvent = signal() } }
 local HEART = signal()
 local PRELOADED = 0
 
@@ -538,6 +538,51 @@ do
 		and A.Files.SwingMageHalo ~= "" and A.Files.SwingMageHorns ~= "" and A.Files.HitSoft ~= "" and A.Files.HitHeavy ~= ""
 		and A.Files.HitCrit ~= "" and A.Files.PowerUp ~= "" and A.Files.Jump ~= "" and A.Files.Purify_b ~= "", "")
 	check(g, "the goose arrival ducks the combat sounds", A.Duck.By.GooseArrive == true, "")
+	-- sound_gaps 2026-10-10 (batch 8 + B / C, game dev 1): every new event, its uploaded file and sane numbers
+	local new10 = { "QuestOpen", "QuestTab", "StampPress", "Chest7Open", "WelcomeBack", "TipDing", "DiaryPage", "CandyPlop",
+		"KingHelpHome", "KingTickleCoins", "Warp", "WarpIn", "SecretFound", "PetLevelUp", "MarkerMove", "BlipBright", "BlipGleam",
+		"BlipFolk" }
+	for _, e in new10 do
+		local d = A.Sounds[e]
+		local f = d and A.Files[d.File]
+		check(g, "sound_gaps 10/10: each new event has its uploaded file and sane numbers", type(d) == "table"
+			and type(f) == "string" and string.find(f, "^rbxassetid://%d+$") ~= nil and type(d.Volume) == "number" and d.Volume > 0
+			and d.Volume <= 0.6 and (d.Max or 0) >= 1 and (d.Gap or -1) >= 0 and type(d.Speed) == "table" and d.Speed[1] <= d.Speed[2]
+			and not d.Combat, e)
+	end
+	check(g, "the pet's level up is a small, higher LevelUp", A.Sounds.PetLevelUp.File == "LevelUp"
+		and A.Sounds.PetLevelUp.Volume < A.Sounds.LevelUp.Volume and A.Sounds.PetLevelUp.Speed[1] > 1, "")
+	check(g, "the marker's tick is a quiet Tap", A.Sounds.MarkerMove.File == "Tap" and A.Sounds.MarkerMove.Volume <= 0.2, "")
+	check(g, "blips: Bright and Sir Gleam by story Speaker", A.Blips.Bright == "BlipBright" and A.Blips.Gleam == "BlipGleam", "")
+	local Z = A.ZoneAmbient
+	check(g, "the towns' air: HaloDay / HornsDen at 0.25 with a 1.5 s fade", Z and Z.Volume == 0.25 and Z.Fade == 1.5
+		and Z.Tracks.HaloTown == "rbxassetid://76688623617177" and Z.Tracks.HornsTown == "rbxassetid://112972652651947", encode(Z))
+end
+
+do
+	local g = "sound_gaps 10/10 plan"
+	local p = Audio.Plan("Attendance", { Slot = 3, Days = 3, Box = false }, ctx)
+	check(g, "an attendance claim = StampPress now, replacing the claim's QuestDone", events(p) == "StampPress" and p[1].At == 0
+		and p[1].Replace == "QuestDone", encode(p))
+	p = Audio.Plan("Attendance", { Slot = 7, Days = 7, Box = true }, ctx)
+	check(g, "the 7-day box: Chest7Open BoxAfter s after the stamp", events(p) == "StampPress,Chest7Open"
+		and near(p[2].At, A.BoxAfter), encode(p))
+	check(g, "the King Slime card: Help = KingHelpHome", events(Audio.Plan("FinisherEnd", { Pick = "Help" }, ctx)) == "KingHelpHome", "")
+	check(g, "... Tickle = KingTickleCoins", events(Audio.Plan("FinisherEnd", { Pick = "Tickle" }, ctx)) == "KingTickleCoins", "")
+	check(g, "... no pick = quiet", #Audio.Plan("FinisherEnd", { Pick = "None" }, ctx) == 0, "")
+	p = Audio.Plan("Loot", { Items = { { Item = "Candy", N = 2 } } }, ctx)
+	check(g, "my drop with candy = CandyPlop", events(p) == "CandyPlop", encode(p))
+	p = Audio.Plan("Loot", { Items = { { Item = "Jelly", N = 1 } } }, ctx)
+	check(g, "a drop without candy stays as before (materials quiet)", #p == 0, encode(p))
+	p = Audio.Plan("KO", { By = 222, Tip = "Tip: slimes cannot read. You can." }, ctx)
+	check(g, "a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later", events(p) == "KO,TipDing"
+		and near(p[2].At, A.KOTipAfter), encode(p))
+	check(g, "a KO without one: KO only", events(Audio.Plan("KO", { By = 222 }, ctx)) == "KO", "")
+	check(g, "IsWarp: 300 studs in one frame standing still = a warp", Audio.IsWarp(300, 0, 0.016) == true, "")
+	check(g, "IsWarp: 30 studs is a step, not a warp", Audio.IsWarp(30, 0, 0.016) == false, "")
+	check(g, "IsWarp: a long fall (100 studs in a half-second hitch at 200 studs/s) is not a warp",
+		Audio.IsWarp(100, 200, 0.5) == false, "")
+	check(g, "IsWarp: 100 studs at a run in one frame = a warp", Audio.IsWarp(100, 16, 0.016) == true, "")
 end
 
 ----------------------------------------------------------------- runtime
@@ -1169,6 +1214,188 @@ do
 	check(m, "... the Sound effects setting turns it down", w and near(w.Volume, AM.Fountain.Volume * 0.5), w and w.Volume)
 	settings.Sfx = 1
 	check(m, "no part / no kind: nothing", Audio.Ambient(nil, "Fountain") == nil and Audio.Ambient(hub, "Nope") == nil)
+
+	-- sound_gaps 2026-10-10 (batch 8 + B / C, game dev 1)
+	local q = "sound_gaps 10/10"
+	-- Replace: the stamp stops the claim's QuestDone (either order)
+	endAll()
+	waitClock(1.05)
+	table.clear(PLAYS)
+	Audio.Play("QuestDone")
+	local qd = PLAYS[1] and PLAYS[1].Sound
+	Audio.Play("StampPress", { Replace = "QuestDone" })
+	check(q, "StampPress stops the QuestDone that just started", qd ~= nil and qd.IsPlaying == false and playedName("StampPress"),
+		encode(PLAYS))
+	endAll()
+	waitClock(1.05)
+	table.clear(PLAYS)
+	Audio.Play("StampPress", { Replace = "QuestDone" })
+	check(q, "... and a QuestDone right after it stays quiet", Audio.Play("QuestDone") == false and not playedName("QuestDone"),
+		encode(PLAYS))
+	waitClock(0.35)
+	check(q, "... but not for long (ReplaceWithin)", Audio.Play("QuestDone") == true, "")
+	endAll()
+	-- listeners from here: what Audio.Play is asked for
+	local asked2 = {}
+	local real2 = Audio.Play
+	Audio.Play = function(event, opts)
+		table.insert(asked2, { Event = event, Opts = opts })
+		return true
+	end
+	local function last2() return asked2[#asked2] and asked2[#asked2].Event end
+	local function clear2() table.clear(asked2) end
+	-- the windows with their own opening
+	local win = { Id = nil, Card = false, Kind = nil, Page = nil }
+	C.Panels.CurrentId = function() return open.Panels and win.Id or nil end
+	C.PauseCard = { IsOpen = function() return win.Card end, OpenKind = function() return win.Card and win.Kind or nil end }
+	C.KingDiary = { FocusPage = function() return win.Page end }
+	HEART:Fire(0.016)
+	clear2()
+	local function openPanel(id)
+		win.Id, open.Panels = id, true
+		HEART:Fire(0.016)
+		local ev = last2()
+		open.Panels = false
+		HEART:Fire(0.016)
+		return ev
+	end
+	check(q, "the quest window opens with QuestOpen", openPanel("Journal") == "QuestOpen", tostring(last2()))
+	check(q, "... and closes with WindowClose", last2() == "WindowClose", tostring(last2()))
+	win.Page = 3
+	check(q, "the King Diary opened on a page ([Read]) = DiaryPage", openPanel("Diary") == "DiaryPage", tostring(last2()))
+	win.Page = nil
+	check(q, "the King Diary opened without a page = WindowOpen", openPanel("Diary") == "WindowOpen", tostring(last2()))
+	local brightId, plainId = nil, nil
+	for id, def in Config.StoryQuests.Defs do
+		if def.Speaker == "Bright" and not brightId then brightId = id end
+		if def.Speaker == nil and not plainId then plainId = id end
+	end
+	REMOTES.OpenPanel.OnClientEvent:Fire("Story", { Id = brightId, St = 1 })
+	check(q, "Bright's story page opens with her blip", brightId ~= nil and openPanel("Story") == "BlipBright", tostring(last2()))
+	REMOTES.OpenPanel.OnClientEvent:Fire("Story", { Id = plainId, St = 1 })
+	check(q, "a page without a blip speaker = WindowOpen", plainId ~= nil and openPanel("Story") == "WindowOpen", tostring(last2()))
+	REMOTES.OpenPanel.OnClientEvent:Fire("Shop", { Id = brightId })
+	check(q, "another window's OpenPanel leaves the story speaker alone", openPanel("Story") == "WindowOpen", tostring(last2()))
+	check(q, "any other window = WindowOpen", openPanel("Shop") == "WindowOpen", tostring(last2()))
+	local keepQO = A.Files.QuestOpen
+	A.Files.QuestOpen = ""
+	check(q, "an own sound not uploaded = WindowOpen", openPanel("Journal") == "WindowOpen", tostring(last2()))
+	A.Files.QuestOpen = keepQO
+	local function openCard(kind)
+		win.Card, win.Kind = true, kind
+		HEART:Fire(0.016)
+		local ev = last2()
+		win.Card = false
+		HEART:Fire(0.016)
+		return ev
+	end
+	check(q, "the welcome-back card opens with WelcomeBack", openCard("Back") == "WelcomeBack", tostring(last2()))
+	check(q, "... a card closing = WindowClose", last2() == "WindowClose", tostring(last2()))
+	check(q, "a tip card opens with TipDing", openCard("Tip") == "TipDing", tostring(last2()))
+	check(q, "the pause card opens with WindowOpen", openCard("Pause") == "WindowOpen", tostring(last2()))
+	-- an easter egg found: a hidden quest's row first showing
+	clear2()
+	REMOTES.Quests.OnClientEvent:Fire({ { Id = "story:M2_3" } })
+	clear2()
+	REMOTES.Quests.OnClientEvent:Fire({ { Id = "story:M2_3" }, { Id = "story:EG02", Story = { Id = "EG02" } } })
+	check(q, "a hidden quest's row showing = SecretFound (not QuestNew)", last2() == "SecretFound" and #asked2 == 1, encode(asked2))
+	REMOTES.Quests.OnClientEvent:Fire({ { Id = "story:M2_3" }, { Id = "story:EG02", Story = { Id = "EG02" } } })
+	check(q, "... the same row again is quiet", #asked2 == 1, encode(asked2))
+	REMOTES.Quests.OnClientEvent:Fire({ { Id = "story:M2_3" }, { Id = "story:EG02", Story = { Id = "EG02" } },
+		{ Id = "story:M3_1", Story = { Id = "M3_1" } } })
+	check(q, "a plain new quest is still QuestNew", last2() == "QuestNew", tostring(last2()))
+	-- my pets
+	clear2()
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } })
+	check(q, "the first pet list is quiet", #asked2 == 0, encode(asked2))
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2, XP = 5 } } })
+	check(q, "pet XP alone is quiet", #asked2 == 0, encode(asked2))
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })
+	check(q, "my pet's level up = PetLevelUp", last2() == "PetLevelUp" and #asked2 == 1, encode(asked2))
+	clear2()
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })
+	check(q, "the follower put away = Equip", last2() == "Equip" and #asked2 == 1, encode(asked2))
+	clear2()
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3, XP = 9 } } })
+	check(q, "a list with no follower before or now is quiet", #asked2 == 0, encode(asked2))
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p2", List = { { Uid = "p1", Lv = 3 }, { Uid = "p2", Sp = "BabySlime", Lv = 1 } } })
+	check(q, "a new pet following (and its first Lv) is quiet", #asked2 == 0, encode(asked2))
+	-- the quest marker's goal
+	local mk = { Tag = "zone:SlimeMeadow", Shown = true }
+	C.QuestMarker = { TargetTag = function() return mk.Tag, mk.Shown end }
+	waitClock(1.05) -- MarkerQuiet after the QuestDone above
+	clear2()
+	HEART:Fire(0.016)
+	check(q, "the marker's first goal is quiet", #asked2 == 0, encode(asked2))
+	mk.Tag = "blacksmith"
+	HEART:Fire(0.016)
+	check(q, "a new goal on screen = MarkerMove", last2() == "MarkerMove" and #asked2 == 1, encode(asked2))
+	clear2()
+	mk.Tag = nil
+	HEART:Fire(0.016)
+	mk.Tag = "blacksmith"
+	HEART:Fire(0.016)
+	check(q, "a blink of no goal is not a new goal", #asked2 == 0, encode(asked2))
+	mk.Shown, mk.Tag = false, "story:npc"
+	HEART:Fire(0.016)
+	mk.Shown = true
+	HEART:Fire(0.016)
+	check(q, "a goal that changed while the marker was hidden is quiet", #asked2 == 0, encode(asked2))
+	real2("QuestNew", { Waited = true })
+	mk.Tag = "zone:Crossroads"
+	HEART:Fire(0.016)
+	check(q, "no MarkerMove right on top of a quest's own sound", #asked2 == 0, encode(asked2))
+	-- the town's air (HaloDay / HornsDen)
+	local function airs(id)
+		local out = {}
+		for _, so in SOUNDS_MADE do
+			if so.Name == "ZoneAir" and not so.Destroyed and (id == nil or so.SoundId == id) then table.insert(out, so) end
+		end
+		return out
+	end
+	PLAYER:SetAttribute("ZoneId", "Outskirts")
+	beat(2)
+	check(q, "no air outside the towns", #airs() == 0, #airs())
+	PLAYER:SetAttribute("ZoneId", "HaloTown")
+	local air = airs(A.ZoneAmbient.Tracks.HaloTown)[1]
+	check(q, "the Halo town's air: looped, in the Sound effects group, from silence", air ~= nil and air.IsPlaying
+		and air.Looped == true and air.Volume == 0 and air.SoundGroup and air.SoundGroup.Name == "Sfx",
+		air and encode({ V = air.Volume, G = air.SoundGroup and air.SoundGroup.Name }) or "nil")
+	beat(2)
+	check(q, "... fading in to 0.25", air and near(air.Volume, 0.25), air and air.Volume)
+	settings.Sfx = 0.5
+	beat(1)
+	check(q, "... under the Sound effects setting", air and near(air.Volume, 0.125), air and air.Volume)
+	settings.Sfx = 1
+	PLAYER:SetAttribute("ZoneId", "HornsTown")
+	local den = airs(A.ZoneAmbient.Tracks.HornsTown)[1]
+	beat(2)
+	check(q, "into the Horns town: HornsDen in, the Halo air out and gone", den and near(den.Volume, 0.25) and air.IsPlaying == false
+		and air.Destroyed == true, den and den.Volume)
+	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	beat(2)
+	check(q, "a zone without air: quiet again", #airs() == 0 and den.Destroyed == true, #airs())
+	-- a warp (the server moving me far at once)
+	clear2()
+	table.clear(DELAYS)
+	ROOT.Position = vec(0, 3, 0)
+	HEART:Fire(0.016)
+	clear2()
+	ROOT.Position = vec(500, 3, 0)
+	HEART:Fire(0.016)
+	check(q, "moved 500 studs in one frame = Warp", last2() == "Warp" and #asked2 == 1, encode(asked2))
+	runDelays(A.WarpInAfter + 0.01)
+	check(q, "... then WarpIn WarpInAfter s later", last2() == "WarpIn" and #asked2 == 2, encode(asked2))
+	clear2()
+	ROOT.Position = vec(510, 3, 0)
+	HEART:Fire(0.016)
+	check(q, "a normal step is quiet", #asked2 == 0, encode(asked2))
+	PLAYER.CharacterAdded:Fire(CHAR)
+	clear2()
+	ROOT.Position = vec(0, 3, 0)
+	HEART:Fire(0.016)
+	check(q, "the jump to a new character's spawn is not a warp", #asked2 == 0, encode(asked2))
+	Audio.Play = real2
 end
 
 local list = {}
