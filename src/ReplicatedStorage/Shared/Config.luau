@@ -4012,6 +4012,22 @@ Config.Visuals = {
 -- the thud (Config.Audio.Sounds.KingThud: full within Near, silent from SoundFar) and spreads a round dust ring (Ring x
 -- its body height wide, RingPuffs dust clouds on its edge, no rays). 'Screen shake' off / Roblox Reduced Motion: no
 -- camera drop (the sound and the dust stay). Landings closer than Gap s make one thud.
+-- A23-113 ① (user 2026-10-10 "마감 전 넣자", LandShadow.luau): about a second before a big landing a round soft shadow on
+-- the ground where it lands - outside the circle = not hit; no text, no rays. Server contract (게임성 개발 2): monster model
+-- attributes DropAt (server time the warning starts; a new value = a new circle), DropTime (s to the landing), optional
+-- DropRadius (studs) and DropPos (Vector3; else the ground under the model). Radius = studs by MonsterKind when the server
+-- sends none (Default for any other); MaxTime clamps DropTime; StartAlpha -> EndAlpha = the disc's transparency from the
+-- warning to the landing (darker as it comes); Linger + Fade = s it stays, then fades, after the landing.
+Config.LandShadow = {
+	Radius = { Default = 10, SlimeKing = 10, PumpkinKing = 12, CaptainClatter = 12 },
+	MinRadius = 3, MaxRadius = 40,
+	MaxTime = 3, MaxDistance = 160,
+	StartAlpha = 0.82, EndAlpha = 0.45,
+	Linger = 0.15, Fade = 0.25,
+	Height = 0.08,
+	Color = Color3.fromRGB(46, 24, 34),
+}
+
 Config.BossThud = {
 	Kinds = { SlimeKing = true },
 	HopRate = 0.55, HopRatio = 0.2, HopMax = 2,
@@ -5079,6 +5095,16 @@ Config.Audio = {
 		HitSoft = "rbxassetid://96440842663562",
 		HitHeavy = "rbxassetid://95463530376920",
 		HitCrit = "rbxassetid://78018534821425",
+		-- A23-113 ④ class hits (소리 14차 b09de5e7: Blade a, Magic a, Arrow b)
+		HitBladeSoft = "rbxassetid://79062799855673",
+		HitBladeHeavy = "rbxassetid://82160983185355",
+		HitBladeCrit = "rbxassetid://96794463009444",
+		HitMagicSoft = "rbxassetid://113932787040275",
+		HitMagicHeavy = "rbxassetid://103466521988666",
+		HitMagicCrit = "rbxassetid://123083371421263",
+		HitArrowSoft = "rbxassetid://71567543920934",
+		HitArrowHeavy = "rbxassetid://111127770916206",
+		HitArrowCrit = "rbxassetid://83876322718434",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -5166,6 +5192,16 @@ Config.Audio = {
 		HitHeavy = { File = "HitHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		-- §4-2 6: a layer over the material hit when the first target is a critical hit
 		HitCrit = { File = "HitCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
+		-- A23-113 ④: the class's own hits take the places of HitSoft / HitHeavy / HitCrit (Audio, Config.Audio.HitByClass)
+		HitBladeSoft = { File = "HitBladeSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitBladeHeavy = { File = "HitBladeHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitBladeCrit = { File = "HitBladeCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
+		HitMagicSoft = { File = "HitMagicSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitMagicHeavy = { File = "HitMagicHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitMagicCrit = { File = "HitMagicCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
+		HitArrowSoft = { File = "HitArrowSoft", Volume = 0.32, Speed = { 0.95, 1.10 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
+		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
@@ -5259,6 +5295,9 @@ Config.Audio = {
 	PunchSpeed = 1.3, -- bare hands: a short swish (volume x0.6)
 	NeutralSpeed = { Warrior = 0.85, Mage = 0.9 },
 	-- hit sound per monster kind: soft = slimes, ghosts, pumpkins; everything else and players = heavy
+	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
+	-- bare hands, the pet and a class not listed keep the material hits
+	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)

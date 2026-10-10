@@ -218,6 +218,18 @@ local function idOf(file)
 	return id
 end
 
+-- A23-113 ④: the attacker's class's own hit (Config.Audio.HitByClass: Warrior Blade, Mage Magic, Archer Arrow) in place
+-- of the material HitSoft / HitHeavy / HitCrit, once its file is uploaded; bare hands / the pet (a Style) keep the material
+function T.ClassHit(data, event)
+	if type(data) ~= "table" or type(data.Style) == "string" then return event end
+	local fam = type(A.HitByClass) == "table" and A.HitByClass[data.Class] or nil
+	local suffix = type(event) == "string" and string.match(event, "^Hit(%a+)$") or nil
+	local own = fam and suffix and (fam .. suffix) or nil
+	local snd = own and SOUNDS[own] or nil
+	if type(snd) == "table" and idOf(snd.File) then return own end
+	return event
+end
+
 local function warnThrottled(key, msg)
 	local now = os.clock()
 	if now - (S.WarnAt[key] or -math.huge) < 10 then return end
@@ -277,10 +289,10 @@ end
 local function planHits(out, data, at, extra, ctx)
 	local h = hitEvent(data.Hits, ctx)
 	if h.Event then
-		local p = add(out, h.Event, at, extra)
+		local p = add(out, T.ClassHit(data, h.Event), at, extra)
 		if h.Many then p.Volume, p.SpeedMul = num(T.HitMany.Volume, 1.25), num(T.HitMany.Speed, 0.95) end
 		if h.Ghost then p.SpeedMul = num(p.SpeedMul, 1) * T.GhostSpeed end
-		if h.Crit then add(out, "HitCrit", at, extra) end
+		if h.Crit then add(out, T.ClassHit(data, "HitCrit"), at, extra) end
 	end
 	if h.Goose then add(out, "GooseHonk", at, extra) end
 	return h

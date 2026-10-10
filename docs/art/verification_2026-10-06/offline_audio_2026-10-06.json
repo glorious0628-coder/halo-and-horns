@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 426,
-  "namedChecks": 341,
+  "checks": 436,
+  "namedChecks": 351,
   "failing": [],
   "mutations": {
-    "total": 161,
-    "caught": 161,
+    "total": 164,
+    "caught": 164,
     "results": [
       {
         "mutation": "boss layer: never put back on the beat",
@@ -285,6 +285,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet",
           "sound_gaps 10/10 :: dusk: the lamps come on = LanternOn",
           "sound_gaps 10/10 :: night after dusk is quiet"
@@ -678,6 +680,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "swing :: Archer: 2+ targets = a second arrow 0.068 s later at 1.10x and 0.85 volume (§4-2 5)",
           "swing :: Archer: one SwingArrow when the arrow leaves (sound_gaps A1)"
         ]
@@ -698,12 +702,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: a Mage's critical slime hit = HitMagicSoft + HitMagicCrit",
+          "class hits :: a Warrior's slime hit = HitBladeSoft (not HitSoft)",
+          "class hits :: three slimes: still louder and lower",
           "hits :: a crit on a later target adds no layer",
           "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)",
-          "hits :: a ghost squishes higher (x1.15)",
-          "hits :: a little ghost hit = HitSoft",
-          "hits :: a slime hit = HitSoft at ContactDelay",
-          "hits :: goose + slime: squish and honk"
+          "hits :: a ghost squishes higher (x1.15)"
         ]
       },
       {
@@ -765,8 +769,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "swing :: Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)",
           "swing :: Horns mage: SwingMageHorns"
         ]
@@ -777,7 +779,39 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: a Mage's critical slime hit = HitMagicSoft + HitMagicCrit",
           "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)"
+        ]
+      },
+      {
+        "mutation": "no class hits",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class hits :: a Mage's critical slime hit = HitMagicSoft + HitMagicCrit",
+          "class hits :: a Warrior's goblin hit = HitBladeHeavy",
+          "class hits :: a Warrior's slime hit = HitBladeSoft (not HitSoft)",
+          "class hits :: an Archer's hit = HitArrowHeavy",
+          "class hits :: three slimes: still louder and lower"
+        ]
+      },
+      {
+        "mutation": "class hits for bare hands",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class hits :: bare hands keep the material hit"
+        ]
+      },
+      {
+        "mutation": "class hits before the upload",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class hits :: a class hit not uploaded yet: the material hit"
         ]
       },
       {
@@ -795,6 +829,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: three slimes: still louder and lower",
           "hits :: three slimes = one HitSoft, louder and lower (x1.25, x0.95)"
         ]
       },
@@ -825,6 +860,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "skills :: the cast sounds at the launch, not at the press"
         ]
       },
@@ -844,7 +881,6 @@
         "crashed": false,
         "newFailingChecks": [
           "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)",
-          "runtime :: the same event inside its cooldown is skipped",
           "world listeners :: a later weapon -> Equip"
         ]
       },
@@ -863,6 +899,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -950,12 +987,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: a class hit not uploaded yet: the material hit",
           "rewards :: a weapon bought / equipped = GoldPickup until Equip is uploaded",
           "runtime :: an event with an id plays",
           "runtime :: an event without an id never plays",
           "runtime :: volume = the table's Volume",
-          "sound_gaps 10/10 :: an own sound not uploaded = WindowOpen",
-          "swing :: a faction file not uploaded yet: the old SwingMage at once"
+          "sound_gaps 10/10 :: an own sound not uploaded = WindowOpen"
         ]
       },
       {
@@ -1660,9 +1697,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0dd45cace376b04919e99bceab063f1d803b7f70c5449025e0ed1388e175f8d7",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "66c5a92399b07e2b118095497bcfeb057712e08f575fe9c540a7cf6feb427d51",
-    "tools/fixtures/audio_offline.luau": "f244b63cf051a4bec4557b7b2dc79679d3d20b0b220d7c56786e8891605b0b21"
+    "src/ReplicatedStorage/Shared/Config.luau": "dbd595e9ccd22fbf127be3570e197dd0098ac2044846859f3cc1f574be375a77",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "306263a40c9c855d6c3332560abb44409f12ae34010851eb582e8a948ad10572",
+    "tools/fixtures/audio_offline.luau": "54bc38d484ae41db681f1afe3e5a53e38f9135c94ae0655a59922ad62507ddc2"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
