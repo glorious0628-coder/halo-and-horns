@@ -360,6 +360,44 @@ local MOTION = {
 			{ 0.36, "Out", { Waist = { -26, -60, 0 }, Neck = { 12, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
+		-- A23-116 X (off until the 10/20 check): the Berserker's Rage Roar - the blade tip set down before the feet with
+		-- both hands, then the left arm flung wide, chest forward, head back (the roar), two shrugs, back up
+		BerserkerX = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.2, "Out", { Waist = { -20, 0, 0 }, RightShoulder = { 40, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -60, 0, 0 }, LeftShoulder = { 40, 0, 6 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -60, 0, 0 } } },
+			{ 0.3, "In", { Waist = { -10, 0, 0 }, Neck = { 20, 0, 0 }, RightShoulder = { 30, 0, -4 }, RightElbow = { 10, 0, 0 }, RightWrist = { -50, 0, 0 }, LeftShoulder = { 90, 0, -80 }, LeftElbow = { 10, 0, 0 } } },
+			{ 0.42, "Out", { Waist = { -12, 0, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 34, 0, -4 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 96, 0, -84 }, LeftElbow = { 8, 0, 0 } } },
+			{ 0.55, "Out", { Waist = { -10, 0, 0 }, Neck = { 20, 0, 0 }, RightShoulder = { 30, 0, -4 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 90, 0, -80 }, LeftElbow = { 10, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
+		-- the Dark Mage's Hex Circle: the crooked staff turned tip-down onto the ground (the wrist in two keys), then the
+		-- left hand draws a big circle at chest height
+		DarkMageX = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.1, "Out", { RightShoulder = { 30, 0, 10 }, RightElbow = { 30, 0, 0 }, RightWrist = { -80, 0, 0 } } },
+			{ 0.2, "Out", { Waist = { -10, 0, 0 }, RightShoulder = { 20, 0, 10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -150, 0, 0 } } },
+			{ 0.3, "In", { Waist = { -8, 0, 0 }, RightShoulder = { 20, 0, 10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -150, 0, 0 }, LeftShoulder = { 80, 0, -30 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.42, "Out", { Waist = { -8, 0, 0 }, RightShoulder = { 20, 0, 10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -150, 0, 0 }, LeftShoulder = { 100, 0, 0 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.55, "Out", { Waist = { -8, 0, 0 }, RightShoulder = { 20, 0, 10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -150, 0, 0 }, LeftShoulder = { 80, 0, 30 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
+		-- the Ranger's Light Step: a tiny crouch, a light lean back in the air (the server's hop moves the body), the
+		-- decorative mid-air shot, a small bend on landing (waist / neck)
+		RangerX = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.05, "Out", { Waist = { -12, -30, 0 } } },
+			{ 0.12, "In", { Waist = { 8, -40, 0 }, Neck = { 6, 40, 0 } } },
+			{ 0.25, "Out", { Waist = { -8, -40, 0 }, Neck = { 0, 40, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
+		-- the Shadow Hunter's Shadow Step: a tiny crouch, curled 40 forward through the hop, a low landing (Z's first pose)
+		ShadowHunterX = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.05, "Out", { Waist = { -14, -30, 0 } } },
+			{ 0.12, "In", { Waist = { -40, -40, 0 }, Neck = { 20, 40, 0 } } },
+			{ 0.25, "Out", { Waist = { -30, -40, 0 }, Neck = { 14, 40, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
 		ArcherRelease = { Len = 0.44, Keys = { -- same hand/string solve, pointed toward the existing volley
 			{ 0, "Out", {} },
 			{ 0.08, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
@@ -472,11 +510,11 @@ local MOTION = {
 	SIDE_CLIPS = {
 		Warrior_Halo = { Swing = "PaladinSwing", Release = "PaladinRelease", Z = "PaladinZ", X = "PaladinX" },
 		Mage_Halo = { Swing = "LightMageSwing", Release = "LightMageRelease", Z = "LightMageZ", X = "LightMageX" },
-		Archer_Halo = { Release = "RangerRelease", Z = "RangerZ" }, -- (Light Step's hop moves the body itself)
-		-- A23-116 Q / Z: the Horns side's own moves (X comes with its stage)
-		Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ" },
-		Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ" },
-		Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ" },
+		Archer_Halo = { Release = "RangerRelease", Z = "RangerZ", X = "RangerX" }, -- (Light Step's hop moves the body itself)
+		-- A23-116 Q / Z / X: the Horns side's own moves
+		Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ", X = "BerserkerX" },
+		Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ", X = "DarkMageX" },
+		Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ", X = "ShadowHunterX" },
 	},
 	CLASS_CLIPS = {
 		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },
@@ -4091,15 +4129,27 @@ handlers.Skill = function(data)
 	if not isOwn(data) and not (ctx.Char.PrimaryPart and Feel.near(ctx.Char.PrimaryPart.Position, MOTION.PROC_DIST)) then return end
 	local ok, err = pcall(Feel.playAttack, ctx.Char, classId, slot, Feel.attackTime(classId, "Release", nil), data)
 	if not ok then warnThrottled("skill move failed: " .. tostring(err)) end
-	-- A23-116: the class x side's own Z art (SkillFx.luau; X comes with its stage)
+	-- A23-116: the class x side's own Z / X art (SkillFx.luau)
 	local sfx = C and C.SkillFx
 	local at = asVec(data.Center) or asVec(data.From)
-	if slot == "Z" and type(sfx) == "table" and type(sfx.Z) == "function" and at and nearCamera(at) then
-		local okZ, errZ = pcall(sfx.Z, data, isOwn(data), {
+	local draw = type(sfx) == "table" and type(sfx[slot]) == "function" and sfx[slot] or nil
+	if draw and at and nearCamera(at) then
+		local okZ, errZ = pcall(draw, data, isOwn(data), {
 			Muzzle = function() return Feel.muzzle(ctx, nil) end,
 			After = function(seconds, fn) Feel.after(ctx, seconds, fn) end,
 		})
 		if not okZ then warnThrottled("skill art failed: " .. tostring(errZ)) end
+	end
+end
+
+-- A23-116: a field's tick (Fx "SkillTick" { UserId, Slot = "X", Center, Radius, Hits, Statuses }): its circle pulses,
+-- the pops and the MP signal (SkillFx.Tick)
+handlers.SkillTick = function(data)
+	local sfx = C and C.SkillFx
+	local at = asVec(data.Center)
+	if type(sfx) == "table" and type(sfx.Tick) == "function" and at and nearCamera(at) then
+		local ok, err = pcall(sfx.Tick, data, isOwn(data))
+		if not ok then warnThrottled("skill tick art failed: " .. tostring(err)) end
 	end
 end
 
