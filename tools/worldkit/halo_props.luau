@@ -3238,24 +3238,20 @@ local PLAN = {
 	gold = { { { -14.4, -332.0 }, { -14.4, -338.19 }, { -14.4, -344.38 }, { -14.4, -350.56 }, { -14.4, -356.75 }, { -14.4, -362.94 }, { -14.4, -369.12 }, { -14.4, -375.31 }, { -14.4, -381.5 }, { -14.4, -387.69 }, { -14.4, -393.88 }, { -14.4, -400.06 }, { -14.4, -406.25 }, { -14.4, -412.44 }, { -14.4, -418.62 }, { -14.4, -424.81 }, { -14.4, -431.0 } }, { { -18.4, -457.0 }, { -18.4, -463.2 }, { -18.4, -469.4 }, { -18.4, -475.6 }, { -18.4, -481.8 }, { -18.4, -488.0 }, { -18.4, -494.2 }, { -18.4, -500.4 }, { -18.4, -506.6 }, { -18.4, -512.8 }, { -18.4, -519.0 } }, { { -61.5, -531.0 }, { -61.5, -536.83 }, { -61.5, -542.67 }, { -61.5, -548.5 }, { -61.5, -554.33 }, { -61.5, -560.17 }, { -61.5, -566.0 }, { -61.5, -571.83 }, { -61.5, -577.67 }, { -61.5, -583.5 }, { -61.5, -589.33 }, { -61.5, -595.17 }, { -61.5, -601.0 } }, { { -45.5, -614.0 }, { -45.5, -620.17 }, { -45.5, -626.33 }, { -45.5, -632.5 }, { -45.5, -638.67 }, { -45.5, -644.83 }, { -45.5, -651.0 }, { -45.5, -657.17 }, { -45.5, -663.33 }, { -45.5, -669.5 }, { -45.5, -675.67 }, { -45.5, -681.83 }, { -45.5, -688.0 } }, { { 14.4, -332.0 }, { 14.4, -338.19 }, { 14.4, -344.38 }, { 14.4, -350.56 }, { 14.4, -356.75 }, { 14.4, -362.94 }, { 14.4, -369.12 }, { 14.4, -375.31 }, { 14.4, -381.5 }, { 14.4, -387.69 }, { 14.4, -393.88 }, { 14.4, -400.06 }, { 14.4, -406.25 }, { 14.4, -412.44 }, { 14.4, -418.62 }, { 14.4, -424.81 }, { 14.4, -431.0 } }, { { 18.4, -457.0 }, { 18.4, -463.2 }, { 18.4, -469.4 }, { 18.4, -475.6 }, { 18.4, -481.8 }, { 18.4, -488.0 }, { 18.4, -494.2 }, { 18.4, -500.4 }, { 18.4, -506.6 }, { 18.4, -512.8 }, { 18.4, -519.0 } }, { { 61.5, -531.0 }, { 61.5, -536.83 }, { 61.5, -542.67 }, { 61.5, -548.5 }, { 61.5, -554.33 }, { 61.5, -560.17 }, { 61.5, -566.0 }, { 61.5, -571.83 }, { 61.5, -577.67 }, { 61.5, -583.5 }, { 61.5, -589.33 }, { 61.5, -595.17 }, { 61.5, -601.0 } }, { { 45.5, -614.0 }, { 45.5, -620.17 }, { 45.5, -626.33 }, { 45.5, -632.5 }, { 45.5, -638.67 }, { 45.5, -644.83 }, { 45.5, -651.0 }, { 45.5, -657.17 }, { 45.5, -663.33 }, { 45.5, -669.5 }, { 45.5, -675.67 }, { 45.5, -681.83 }, { 45.5, -688.0 } }, { { 17.5, -565.0 }, { 17.35, -562.72 }, { 16.9, -560.47 }, { 16.17, -558.3 }, { 15.16, -556.25 }, { 13.88, -554.35 }, { 12.37, -552.63 }, { 10.65, -551.12 }, { 8.75, -549.84 }, { 6.7, -548.83 }, { 4.53, -548.1 }, { 2.28, -547.65 }, { 0.0, -547.5 }, { -2.28, -547.65 }, { -4.53, -548.1 }, { -6.7, -548.83 }, { -8.75, -549.84 }, { -10.65, -551.12 }, { -12.37, -552.63 }, { -13.88, -554.35 }, { -15.16, -556.25 }, { -16.17, -558.3 }, { -16.9, -560.47 }, { -17.35, -562.72 }, { -17.5, -565.0 }, { -17.35, -567.28 }, { -16.9, -569.53 }, { -16.17, -571.7 }, { -15.16, -573.75 }, { -13.88, -575.65 }, { -12.37, -577.37 }, { -10.65, -578.88 }, { -8.75, -580.16 }, { -6.7, -581.17 }, { -4.53, -581.9 }, { -2.28, -582.35 }, { -0.0, -582.5 }, { 2.28, -582.35 }, { 4.53, -581.9 }, { 6.7, -581.17 }, { 8.75, -580.16 }, { 10.65, -578.88 }, { 12.37, -577.37 }, { 13.88, -575.65 }, { 15.16, -573.75 }, { 16.17, -571.7 }, { 16.9, -569.53 }, { 17.35, -567.28 }, { 17.5, -565.0 } }, { { 23.5, -565.0 }, { 23.3, -561.93 }, { 22.7, -558.92 }, { 21.71, -556.01 }, { 20.35, -553.25 }, { 18.64, -550.69 }, { 16.62, -548.38 }, { 14.31, -546.36 }, { 11.75, -544.65 }, { 8.99, -543.29 }, { 6.08, -542.3 }, { 3.07, -541.7 }, { 0.0, -541.5 }, { -3.07, -541.7 }, { -6.08, -542.3 }, { -8.99, -543.29 }, { -11.75, -544.65 }, { -14.31, -546.36 }, { -16.62, -548.38 }, { -18.64, -550.69 }, { -20.35, -553.25 }, { -21.71, -556.01 }, { -22.7, -558.92 }, { -23.3, -561.93 }, { -23.5, -565.0 }, { -23.3, -568.07 }, { -22.7, -571.08 }, { -21.71, -573.99 }, { -20.35, -576.75 }, { -18.64, -579.31 }, { -16.62, -581.62 }, { -14.31, -583.64 }, { -11.75, -585.35 }, { -8.99, -586.71 }, { -6.08, -587.7 }, { -3.07, -588.3 }, { -0.0, -588.5 }, { 3.07, -588.3 }, { 6.08, -587.7 }, { 8.99, -586.71 }, { 11.75, -585.35 }, { 14.31, -583.64 }, { 16.62, -581.62 }, { 18.64, -579.31 }, { 20.35, -576.75 }, { 21.71, -573.99 }, { 22.7, -571.08 }, { 23.3, -568.07 }, { 23.5, -565.0 } }, { { -45.5, -614.0 }, { -37.23, -614.0 }, { -28.95, -614.0 }, { -20.68, -614.0 }, { -12.41, -614.0 }, { -4.14, -614.0 }, { 4.14, -614.0 }, { 12.41, -614.0 }, { 20.68, -614.0 }, { 28.95, -614.0 }, { 37.23, -614.0 }, { 45.5, -614.0 } } },
 	medallions = { {
 		x = 0,
-		z = -352,
+		z = -396,
 		r = 9,
 	}, {
 		x = 0,
 		z = -486,
 		r = 8,
 	}, {
-		x = 0,
-		z = -590,
-		r = 7.5,
+		x = -34,
+		z = -622,
+		r = 6,
 	}, {
-		x = -30,
-		z = -640,
-		r = 8,
-	}, {
-		x = 30,
-		z = -640,
-		r = 8,
+		x = 34,
+		z = -622,
+		r = 6,
 	} },
 	counts = {
 		Gate = 1,
@@ -3447,6 +3443,20 @@ local function groundY(x, z, fallback)
 	local hit = workspace:Raycast(Vector3.new(x, 80, z), Vector3.new(0, -160, 0), rp)
 	if hit and hit.Material ~= Enum.Material.Water and math.abs(hit.Position.Y - fallback) < 4 then return hit.Position.Y end
 	return fallback
+end
+-- the terrain top wherever it is (gold lines and medallions on the raised terraces: groundY above only accepts a hit near its
+-- fallback, which buried them at Y 0 on tiers 2-4 until 2026-10-10)
+local function groundTop(x, z)
+	local hit = workspace:Raycast(Vector3.new(x, 80, z), Vector3.new(0, -160, 0), rp)
+	if not hit or hit.Material == Enum.Material.Water then return 0 end
+	-- the ray meets the paved voxels below the rendered surface on the raised tiers (measured 10/10 with decal plates:
+	-- tier 2 hit 8.0 on Concrete, 8.98 on grass, the visible paving at ~10): snap to the nearest flat top of
+	-- halo_terrain.luau and add the rendered rise (1 stud on the raised tops, 0 on the 0.2 gate/spawn tier)
+	local y = hit.Position.Y
+	for _, top in { 0.2, 3, 9, 12, 20, 22, 33 } do
+		if y >= top - 1.6 and y <= top + 0.5 then return top > 1 and top + 1 or top end
+	end
+	return y
 end
 
 local root = Instance.new("Model")
@@ -3671,7 +3681,7 @@ local GOLD_COLOR = Color3.fromRGB(236, 194, 88)
 for _, poly in PLAN.gold or {} do
 	local ys = {}
 	for i, pt in poly do
-		ys[i] = groundY(pt[1], pt[2], 0) -- fallback 0 only when the terrain is missing; the real height comes from the ray
+		ys[i] = groundTop(pt[1], pt[2])
 	end
 	for i = 1, #poly - 1 do
 		local a = Vector3.new(poly[i][1], ys[i] + 0.09, poly[i][2])
@@ -3691,6 +3701,25 @@ for _, poly in PLAN.gold or {} do
 		end
 	end
 end
+-- floor medallions (이미지 생성 2 HaloFloor_Medallion_A, 검수 10/10): a round Decal on a thin invisible plate at each spot
+-- (plaza, gate road, cathedral forecourt), laid on the paving; kept inside HaloGold so remove/apply clears them together
+local MEDALLION = "rbxassetid://103293671792155"
+local medCount = 0
+for _, m in PLAN.medallions or {} do
+	local y = groundTop(m.x, m.z)
+	local plate = Instance.new("Part")
+	plate.Name = "Medallion"
+	plate.Size = Vector3.new(m.r * 2, 0.05, m.r * 2)
+	plate.CFrame = CFrame.new(m.x, y + 0.06, m.z)
+	plate.Transparency = 1
+	plate.Anchored, plate.CanCollide, plate.CanQuery, plate.CanTouch, plate.CastShadow = true, false, false, false, false
+	local d = Instance.new("Decal")
+	d.Texture = MEDALLION
+	d.Face = Enum.NormalId.Top
+	d.Parent = plate
+	plate.Parent = goldFolder
+	medCount += 1
+end
 goldFolder.Parent = decor
 
-return string.format("halo_props applied | built %d + gate + %d gold lines | stashed %d old | %s | %s | collision group %s", built, goldCount, stashed, summary(), gateInfo, groupOk and T.Group or "NOT registered (player-only solids block everyone)")
+return string.format("halo_props applied | built %d + gate + %d gold lines + %d medallions | stashed %d old | %s | %s | collision group %s", built, goldCount, medCount, stashed, summary(), gateInfo, groupOk and T.Group or "NOT registered (player-only solids block everyone)")

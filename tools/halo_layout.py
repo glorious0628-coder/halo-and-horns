@@ -389,7 +389,7 @@ for sx in (-1, 1):
 for r in (17.5, 23.5):                                      # two rings round the fountain (concentric inlay, no rays)
     GOLD.append([[round(r * math.cos(2 * math.pi * i / 48), 2), round(-565 + r * math.sin(2 * math.pi * i / 48), 2)] for i in range(49)])
 GOLD.append(line(-45.5, -614, 45.5, -614, 8.0))             # forecourt front edge (broken by the stairs model)
-MEDALLIONS = [dict(x=0, z=-352, r=9), dict(x=0, z=-486, r=8), dict(x=0, z=-590, r=7.5), dict(x=-30, z=-640, r=8), dict(x=30, z=-640, r=8)]
+MEDALLIONS = [dict(x=0, z=-396, r=9), dict(x=0, z=-486, r=8), dict(x=-34, z=-622, r=6), dict(x=34, z=-622, r=6)]  # 10/10: off the stairs, out of the cathedral footprint
 
 # ---------------------------------------------------------------- reachability (#6): BFS over walkable columns from the spawn, bridges and ramps join tiers
 def solid_blocked():
