@@ -81,7 +81,16 @@
     "PetCall": "rbxassetid://139309639843969",
     "PetStow": "rbxassetid://109542349885083",
     "PetLevel": "rbxassetid://128227928372563",
-    "DiamondTick": "rbxassetid://89172108649325"
+    "DiamondTick": "rbxassetid://89172108649325",
+    "HitBladeSoft": "rbxassetid://79062799855673",
+    "HitBladeHeavy": "rbxassetid://82160983185355",
+    "HitBladeCrit": "rbxassetid://96794463009444",
+    "HitMagicSoft": "rbxassetid://113932787040275",
+    "HitMagicHeavy": "rbxassetid://103466521988666",
+    "HitMagicCrit": "rbxassetid://123083371421263",
+    "HitArrowSoft": "rbxassetid://71567543920934",
+    "HitArrowHeavy": "rbxassetid://111127770916206",
+    "HitArrowCrit": "rbxassetid://83876322718434"
   },
   "pending": [],
   "kept": {
@@ -278,6 +287,14 @@
       "BlipFolk": {
         "id": "rbxassetid://98476528780032",
         "seconds": 0.205
+      }
+    },
+    "hit_by_class": {
+      "about": "A23-113 class hit sounds: Warrior -> Blade, Mage -> Magic, Archer -> Arrow; Soft/Heavy/Crit take the places of HitSoft/HitHeavy/HitCrit (Volume 0.32/0.36/0.38). Picks: Blade a, Magic a, Arrow b.",
+      "map": {
+        "Warrior": "HitBlade",
+        "Mage": "HitMagic",
+        "Archer": "HitArrow"
       }
     }
   }
