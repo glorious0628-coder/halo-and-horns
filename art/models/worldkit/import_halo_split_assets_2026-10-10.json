@@ -1,0 +1,1063 @@
+{
+ "note": "2026-10-10 이미지 생성 1: Halo town models split into texture tiles (tools/split_uv_tiles.py from the 4096 Tripo source: Gate/Cathedral 3x3, the rest 2x2), imported in WorldKit (H5a/H5b). Every tile has SurfaceAppearance color+normal+metal+rough. group = kit Model name, offset = tile centre from the group's bottom centre (studs). Replaces the single-mesh kits of the same names. Metal/rough maps = tools/pbr_from_color.py colour-mask maps (gold metal 1 rough 0.18, stone 0.62, cloth 0.85, wood 0.78, leaf 0.8, glass 0.12), not Tripo's.",
+ "items": [
+  {
+   "name": "Halo_Cathedral_t00",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://88427249356478",
+   "textureId": "",
+   "size_studs": [
+    66.141,
+    52.187,
+    61.263
+   ],
+   "offset": [
+    -1.866,
+    27.331,
+    -1.181
+   ],
+   "sa": {
+    "color": "rbxassetid://127021336789646",
+    "rough": "rbxassetid://87207651641658",
+    "normal": "rbxassetid://78939023467097",
+    "metal": "rbxassetid://136498669675557"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t01",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://125648830201935",
+   "textureId": "",
+   "size_studs": [
+    64.488,
+    52.171,
+    56.087
+   ],
+   "offset": [
+    -1.2,
+    27.299,
+    1.976
+   ],
+   "sa": {
+    "color": "rbxassetid://110019080539878",
+    "rough": "rbxassetid://121543164700365",
+    "normal": "rbxassetid://110778677581455",
+    "metal": "rbxassetid://126399746541137"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t02",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://123349486732781",
+   "textureId": "",
+   "size_studs": [
+    67.687,
+    49.112,
+    69.696
+   ],
+   "offset": [
+    1.093,
+    24.757,
+    -0.121
+   ],
+   "sa": {
+    "color": "rbxassetid://88904668562121",
+    "rough": "rbxassetid://124068299968081",
+    "normal": "rbxassetid://103144179838792",
+    "metal": "rbxassetid://96121907766111"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t10",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://114011998968691",
+   "textureId": "",
+   "size_studs": [
+    69.76,
+    52.601,
+    67.321
+   ],
+   "offset": [
+    -0.003,
+    27.146,
+    -1.339
+   ],
+   "sa": {
+    "color": "rbxassetid://114276074547060",
+    "rough": "rbxassetid://137423170706354",
+    "normal": "rbxassetid://80589704126456",
+    "metal": "rbxassetid://138436113231681"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t11",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://90572011603548",
+   "textureId": "",
+   "size_studs": [
+    65.005,
+    53.385,
+    61.118
+   ],
+   "offset": [
+    -0.248,
+    26.692,
+    4.441
+   ],
+   "sa": {
+    "color": "rbxassetid://103768220616179",
+    "rough": "rbxassetid://80945402611502",
+    "normal": "rbxassetid://137981312639689",
+    "metal": "rbxassetid://130379456247565"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t12",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://133855873483852",
+   "textureId": "",
+   "size_studs": [
+    65.53,
+    48.827,
+    61.028
+   ],
+   "offset": [
+    0.015,
+    24.413,
+    4.447
+   ],
+   "sa": {
+    "color": "rbxassetid://129921299535436",
+    "rough": "rbxassetid://115310734977257",
+    "normal": "rbxassetid://128561251814528",
+    "metal": "rbxassetid://98794276235185"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t20",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://116036972217765",
+   "textureId": "",
+   "size_studs": [
+    69.23,
+    48.275,
+    67.656
+   ],
+   "offset": [
+    -0.271,
+    24.137,
+    -0.98
+   ],
+   "sa": {
+    "color": "rbxassetid://88084524978194",
+    "rough": "rbxassetid://101814582624149",
+    "normal": "rbxassetid://115277468696158",
+    "metal": "rbxassetid://103953844557816"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t21",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://102464715800266",
+   "textureId": "",
+   "size_studs": [
+    67.814,
+    45.521,
+    55.322
+   ],
+   "offset": [
+    0.97,
+    24.167,
+    7.334
+   ],
+   "sa": {
+    "color": "rbxassetid://112582341400263",
+    "rough": "rbxassetid://93596401220921",
+    "normal": "rbxassetid://98633230448085",
+    "metal": "rbxassetid://124963157873529"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Cathedral_t22",
+   "group": "Halo_Cathedral",
+   "meshId": "rbxassetid://116301918269131",
+   "textureId": "",
+   "size_studs": [
+    67.101,
+    52.145,
+    56.249
+   ],
+   "offset": [
+    -0.812,
+    27.286,
+    2.006
+   ],
+   "sa": {
+    "color": "rbxassetid://116165940259209",
+    "rough": "rbxassetid://78571959323256",
+    "normal": "rbxassetid://99898654917946",
+    "metal": "rbxassetid://111300940390639"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t00",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://122593150440045",
+   "textureId": "",
+   "size_studs": [
+    47.253,
+    36.463,
+    31.015
+   ],
+   "offset": [
+    -0.519,
+    18.244,
+    0.016
+   ],
+   "sa": {
+    "color": "rbxassetid://140501744916446",
+    "rough": "rbxassetid://137731832755486",
+    "normal": "rbxassetid://98950793390371",
+    "metal": "rbxassetid://120082449242205"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t01",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://88267351932632",
+   "textureId": "",
+   "size_studs": [
+    48.66,
+    42.306,
+    30.79
+   ],
+   "offset": [
+    -0.036,
+    21.201,
+    0.09
+   ],
+   "sa": {
+    "color": "rbxassetid://118950420757062",
+    "rough": "rbxassetid://78538201794221",
+    "normal": "rbxassetid://95634055966728",
+    "metal": "rbxassetid://137145621318206"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t02",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://98708738211578",
+   "textureId": "",
+   "size_studs": [
+    43.524,
+    36.496,
+    29.912
+   ],
+   "offset": [
+    -1.776,
+    18.302,
+    -0.115
+   ],
+   "sa": {
+    "color": "rbxassetid://136901077786399",
+    "rough": "rbxassetid://82644757234085",
+    "normal": "rbxassetid://112193250691194",
+    "metal": "rbxassetid://73673444524937"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t10",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://133895191119967",
+   "textureId": "",
+   "size_studs": [
+    47.404,
+    42.599,
+    31.427
+   ],
+   "offset": [
+    -0.465,
+    21.3,
+    -0.017
+   ],
+   "sa": {
+    "color": "rbxassetid://140236025721643",
+    "rough": "rbxassetid://131635777705889",
+    "normal": "rbxassetid://88350662145430",
+    "metal": "rbxassetid://88693800915810"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t11",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://85723550072609",
+   "textureId": "",
+   "size_studs": [
+    48.944,
+    46.789,
+    30.823
+   ],
+   "offset": [
+    -0.3,
+    23.394,
+    0.084
+   ],
+   "sa": {
+    "color": "rbxassetid://77279002756293",
+    "rough": "rbxassetid://114386861474540",
+    "normal": "rbxassetid://124108671642437",
+    "metal": "rbxassetid://136035324148891"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t12",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://87241547391087",
+   "textureId": "",
+   "size_studs": [
+    43.845,
+    48.151,
+    31.399
+   ],
+   "offset": [
+    -2.237,
+    24.135,
+    0.038
+   ],
+   "sa": {
+    "color": "rbxassetid://71578359976419",
+    "rough": "rbxassetid://90099040933093",
+    "normal": "rbxassetid://97349038113737",
+    "metal": "rbxassetid://136522365581289"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t20",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://116305453449473",
+   "textureId": "",
+   "size_studs": [
+    49.327,
+    48.196,
+    31.418
+   ],
+   "offset": [
+    0.353,
+    24.113,
+    -0.029
+   ],
+   "sa": {
+    "color": "rbxassetid://128961608112298",
+    "rough": "rbxassetid://100160379074591",
+    "normal": "rbxassetid://125506488179659",
+    "metal": "rbxassetid://110014112323034"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t21",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://123917772260022",
+   "textureId": "",
+   "size_studs": [
+    50.4,
+    43.023,
+    30.563
+   ],
+   "offset": [
+    0.0,
+    21.526,
+    0.214
+   ],
+   "sa": {
+    "color": "rbxassetid://140512428670291",
+    "rough": "rbxassetid://74659865181704",
+    "normal": "rbxassetid://117266536922077",
+    "metal": "rbxassetid://110871115822282"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Gate_t22",
+   "group": "Halo_Gate",
+   "meshId": "rbxassetid://74008048679326",
+   "textureId": "",
+   "size_studs": [
+    49.556,
+    48.199,
+    31.466
+   ],
+   "offset": [
+    -0.155,
+    24.153,
+    -0.005
+   ],
+   "sa": {
+    "color": "rbxassetid://118702646841451",
+    "rough": "rbxassetid://127159338398457",
+    "normal": "rbxassetid://118139316983132",
+    "metal": "rbxassetid://82544518212733"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Tower_t00",
+   "group": "Halo_Tower",
+   "meshId": "rbxassetid://136440062827358",
+   "textureId": "",
+   "size_studs": [
+    10.991,
+    35.985,
+    9.829
+   ],
+   "offset": [
+    0.011,
+    17.993,
+    -0.031
+   ],
+   "sa": {
+    "color": "rbxassetid://79752080475812",
+    "rough": "rbxassetid://118159038107460",
+    "normal": "rbxassetid://82608959582281",
+    "metal": "rbxassetid://93722698733322"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Tower_t01",
+   "group": "Halo_Tower",
+   "meshId": "rbxassetid://107117380290635",
+   "textureId": "",
+   "size_studs": [
+    10.533,
+    35.982,
+    10.576
+   ],
+   "offset": [
+    -0.33,
+    17.995,
+    -0.196
+   ],
+   "sa": {
+    "color": "rbxassetid://83680045718503",
+    "rough": "rbxassetid://106267874564694",
+    "normal": "rbxassetid://101478811239507",
+    "metal": "rbxassetid://97923395876666"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Tower_t10",
+   "group": "Halo_Tower",
+   "meshId": "rbxassetid://138579258821854",
+   "textureId": "",
+   "size_studs": [
+    10.903,
+    35.19,
+    11.358
+   ],
+   "offset": [
+    0.285,
+    17.597,
+    0.0
+   ],
+   "sa": {
+    "color": "rbxassetid://70796186954642",
+    "rough": "rbxassetid://131815993396534",
+    "normal": "rbxassetid://128449826777447",
+    "metal": "rbxassetid://112736354606132"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Tower_t11",
+   "group": "Halo_Tower",
+   "meshId": "rbxassetid://83610901569878",
+   "textureId": "",
+   "size_studs": [
+    10.868,
+    35.998,
+    11.025
+   ],
+   "offset": [
+    -0.302,
+    18.001,
+    -0.036
+   ],
+   "sa": {
+    "color": "rbxassetid://73811738926329",
+    "rough": "rbxassetid://82809163995836",
+    "normal": "rbxassetid://108190279850209",
+    "metal": "rbxassetid://138252878286787"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_ArchBridge_t00",
+   "group": "Halo_ArchBridge",
+   "meshId": "rbxassetid://133244774601808",
+   "textureId": "",
+   "size_studs": [
+    29.98,
+    13.618,
+    21.48
+   ],
+   "offset": [
+    0.01,
+    6.809,
+    0.103
+   ],
+   "sa": {
+    "color": "rbxassetid://111951299995052",
+    "rough": "rbxassetid://102301753125807",
+    "normal": "rbxassetid://121372693449982",
+    "metal": "rbxassetid://102786473507150"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_ArchBridge_t01",
+   "group": "Halo_ArchBridge",
+   "meshId": "rbxassetid://135315794652376",
+   "textureId": "",
+   "size_studs": [
+    29.933,
+    15.258,
+    21.485
+   ],
+   "offset": [
+    -0.028,
+    7.631,
+    -0.11
+   ],
+   "sa": {
+    "color": "rbxassetid://120569126737135",
+    "rough": "rbxassetid://85461002468767",
+    "normal": "rbxassetid://100884337903350",
+    "metal": "rbxassetid://96974462086073"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_ArchBridge_t10",
+   "group": "Halo_ArchBridge",
+   "meshId": "rbxassetid://97485931507836",
+   "textureId": "",
+   "size_studs": [
+    29.975,
+    13.581,
+    21.692
+   ],
+   "offset": [
+    0.012,
+    6.79,
+    0.006
+   ],
+   "sa": {
+    "color": "rbxassetid://139873440212543",
+    "rough": "rbxassetid://125322780367144",
+    "normal": "rbxassetid://130940038467523",
+    "metal": "rbxassetid://99365187408140"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_ArchBridge_t11",
+   "group": "Halo_ArchBridge",
+   "meshId": "rbxassetid://108224790181498",
+   "textureId": "",
+   "size_studs": [
+    29.999,
+    14.658,
+    21.489
+   ],
+   "offset": [
+    -0.0,
+    7.329,
+    0.108
+   ],
+   "sa": {
+    "color": "rbxassetid://80941440292284",
+    "rough": "rbxassetid://99462851685602",
+    "normal": "rbxassetid://80116188845507",
+    "metal": "rbxassetid://109667913769568"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseA_t00",
+   "group": "Halo_DomeHouseA",
+   "meshId": "rbxassetid://81903129942567",
+   "textureId": "",
+   "size_studs": [
+    11.803,
+    13.846,
+    10.847
+   ],
+   "offset": [
+    0.099,
+    6.973,
+    0.014
+   ],
+   "sa": {
+    "color": "rbxassetid://89170330453849",
+    "rough": "rbxassetid://135863696082720",
+    "normal": "rbxassetid://71699867433502",
+    "metal": "rbxassetid://72864699201509"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseA_t01",
+   "group": "Halo_DomeHouseA",
+   "meshId": "rbxassetid://99493241223603",
+   "textureId": "",
+   "size_studs": [
+    11.529,
+    15.094,
+    11.156
+   ],
+   "offset": [
+    -0.039,
+    7.547,
+    0.0
+   ],
+   "sa": {
+    "color": "rbxassetid://112915733274342",
+    "rough": "rbxassetid://93092448791250",
+    "normal": "rbxassetid://117936139287820",
+    "metal": "rbxassetid://77824770413421"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseA_t10",
+   "group": "Halo_DomeHouseA",
+   "meshId": "rbxassetid://132926738355121",
+   "textureId": "",
+   "size_studs": [
+    12,
+    13.813,
+    10.639
+   ],
+   "offset": [
+    -0.0,
+    6.907,
+    0.237
+   ],
+   "sa": {
+    "color": "rbxassetid://103090366739049",
+    "rough": "rbxassetid://126814756350298",
+    "normal": "rbxassetid://85215932598749",
+    "metal": "rbxassetid://74533587623761"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseA_t11",
+   "group": "Halo_DomeHouseA",
+   "meshId": "rbxassetid://74933150540151",
+   "textureId": "",
+   "size_studs": [
+    11.681,
+    13.634,
+    11.084
+   ],
+   "offset": [
+    -0.159,
+    6.817,
+    -0.013
+   ],
+   "sa": {
+    "color": "rbxassetid://99052978858619",
+    "rough": "rbxassetid://103844706595335",
+    "normal": "rbxassetid://94324338356549",
+    "metal": "rbxassetid://117711733020769"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseB_t00",
+   "group": "Halo_DomeHouseB",
+   "meshId": "rbxassetid://86097929669100",
+   "textureId": "",
+   "size_studs": [
+    13.225,
+    13.259,
+    9.472
+   ],
+   "offset": [
+    0.091,
+    6.631,
+    0.01
+   ],
+   "sa": {
+    "color": "rbxassetid://83385093010374",
+    "rough": "rbxassetid://129277248630323",
+    "normal": "rbxassetid://71314905949283",
+    "metal": "rbxassetid://128802262593509"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseB_t01",
+   "group": "Halo_DomeHouseB",
+   "meshId": "rbxassetid://138391922468514",
+   "textureId": "",
+   "size_studs": [
+    13.486,
+    16.872,
+    9.448
+   ],
+   "offset": [
+    -0.007,
+    8.436,
+    -0.022
+   ],
+   "sa": {
+    "color": "rbxassetid://134977161564065",
+    "rough": "rbxassetid://109150013123034",
+    "normal": "rbxassetid://125242431192796",
+    "metal": "rbxassetid://95492647409421"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseB_t10",
+   "group": "Halo_DomeHouseB",
+   "meshId": "rbxassetid://96661795777751",
+   "textureId": "",
+   "size_studs": [
+    14,
+    17.312,
+    9.472
+   ],
+   "offset": [
+    0.0,
+    8.656,
+    0.01
+   ],
+   "sa": {
+    "color": "rbxassetid://101962163522381",
+    "rough": "rbxassetid://96872504454129",
+    "normal": "rbxassetid://99687836243212",
+    "metal": "rbxassetid://94702023516823"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_DomeHouseB_t11",
+   "group": "Halo_DomeHouseB",
+   "meshId": "rbxassetid://108674935717169",
+   "textureId": "",
+   "size_studs": [
+    13.44,
+    16.643,
+    9.298
+   ],
+   "offset": [
+    -0.029,
+    8.321,
+    -0.077
+   ],
+   "sa": {
+    "color": "rbxassetid://129000430344510",
+    "rough": "rbxassetid://122634169642950",
+    "normal": "rbxassetid://127456005090930",
+    "metal": "rbxassetid://86696200102176"
+   },
+   "metal": true
+  },
+  {
+   "name": "Town_Halo_Fountain3_t00",
+   "group": "Town_Halo_Fountain3",
+   "meshId": "rbxassetid://104771560944363",
+   "textureId": "",
+   "size_studs": [
+    15.456,
+    12.849,
+    15.898
+   ],
+   "offset": [
+    -0.021,
+    6.424,
+    -0.051
+   ],
+   "sa": {
+    "color": "rbxassetid://109174055153722",
+    "rough": "rbxassetid://117333807314952",
+    "normal": "rbxassetid://84354505535881",
+    "metal": "rbxassetid://106970725426800"
+   },
+   "metal": true
+  },
+  {
+   "name": "Town_Halo_Fountain3_t01",
+   "group": "Town_Halo_Fountain3",
+   "meshId": "rbxassetid://74168447900687",
+   "textureId": "",
+   "size_studs": [
+    15.78,
+    11.883,
+    15.5
+   ],
+   "offset": [
+    -0.108,
+    5.942,
+    -0.25
+   ],
+   "sa": {
+    "color": "rbxassetid://105608574835041",
+    "rough": "rbxassetid://139391800857619",
+    "normal": "rbxassetid://76962422231779",
+    "metal": "rbxassetid://97249207403043"
+   },
+   "metal": true
+  },
+  {
+   "name": "Town_Halo_Fountain3_t10",
+   "group": "Town_Halo_Fountain3",
+   "meshId": "rbxassetid://92977527207530",
+   "textureId": "",
+   "size_studs": [
+    15.9,
+    11.935,
+    15.544
+   ],
+   "offset": [
+    -0.048,
+    5.968,
+    0.228
+   ],
+   "sa": {
+    "color": "rbxassetid://98159362626815",
+    "rough": "rbxassetid://137269002449635",
+    "normal": "rbxassetid://116889306374376",
+    "metal": "rbxassetid://81255606236679"
+   },
+   "metal": true
+  },
+  {
+   "name": "Town_Halo_Fountain3_t11",
+   "group": "Town_Halo_Fountain3",
+   "meshId": "rbxassetid://105373700152959",
+   "textureId": "",
+   "size_studs": [
+    15.846,
+    12.534,
+    15.902
+   ],
+   "offset": [
+    0.075,
+    6.267,
+    0.049
+   ],
+   "sa": {
+    "color": "rbxassetid://127796927186026",
+    "rough": "rbxassetid://94059465527607",
+    "normal": "rbxassetid://117873363384436",
+    "metal": "rbxassetid://126599629074130"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Shop_t00",
+   "group": "Halo_Shop",
+   "meshId": "rbxassetid://72549354217407",
+   "textureId": "",
+   "size_studs": [
+    11.982,
+    12.861,
+    7.079
+   ],
+   "offset": [
+    0.009,
+    6.43,
+    0.201
+   ],
+   "sa": {
+    "color": "rbxassetid://119521045896205",
+    "rough": "rbxassetid://113026535555249",
+    "normal": "rbxassetid://126872057602735",
+    "metal": "rbxassetid://130200767874771"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Shop_t01",
+   "group": "Halo_Shop",
+   "meshId": "rbxassetid://101167955597076",
+   "textureId": "",
+   "size_studs": [
+    11.619,
+    14.272,
+    7.432
+   ],
+   "offset": [
+    -0.118,
+    7.137,
+    -0.024
+   ],
+   "sa": {
+    "color": "rbxassetid://77911349298781",
+    "rough": "rbxassetid://75032310573241",
+    "normal": "rbxassetid://93959846327694",
+    "metal": "rbxassetid://100524993111370"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Shop_t10",
+   "group": "Halo_Shop",
+   "meshId": "rbxassetid://76283350932041",
+   "textureId": "",
+   "size_studs": [
+    12,
+    14.273,
+    7.432
+   ],
+   "offset": [
+    0.0,
+    7.136,
+    -0.024
+   ],
+   "sa": {
+    "color": "rbxassetid://74648593285173",
+    "rough": "rbxassetid://120260762478905",
+    "normal": "rbxassetid://99557630823492",
+    "metal": "rbxassetid://105968958270381"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Shop_t11",
+   "group": "Halo_Shop",
+   "meshId": "rbxassetid://105155521886819",
+   "textureId": "",
+   "size_studs": [
+    11.616,
+    13.468,
+    7.425
+   ],
+   "offset": [
+    -0.192,
+    6.749,
+    -0.027
+   ],
+   "sa": {
+    "color": "rbxassetid://100732526949205",
+    "rough": "rbxassetid://100641349572147",
+    "normal": "rbxassetid://91995670925010",
+    "metal": "rbxassetid://76485546900921"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Statue_t00",
+   "group": "Halo_Statue",
+   "meshId": "rbxassetid://73934042322866",
+   "textureId": "",
+   "size_studs": [
+    6.611,
+    13.0,
+    5.382
+   ],
+   "offset": [
+    0.049,
+    6.5,
+    0.042
+   ],
+   "sa": {
+    "color": "rbxassetid://76463955928731",
+    "rough": "rbxassetid://89437951390255",
+    "normal": "rbxassetid://83919673796404",
+    "metal": "rbxassetid://72111919031858"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Statue_t01",
+   "group": "Halo_Statue",
+   "meshId": "rbxassetid://119928828358879",
+   "textureId": "",
+   "size_studs": [
+    6.524,
+    9.938,
+    5.416
+   ],
+   "offset": [
+    0.056,
+    4.972,
+    -0.019
+   ],
+   "sa": {
+    "color": "rbxassetid://131449140719212",
+    "rough": "rbxassetid://131826905134275",
+    "normal": "rbxassetid://126815385281714",
+    "metal": "rbxassetid://76399502881151"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Statue_t10",
+   "group": "Halo_Statue",
+   "meshId": "rbxassetid://107150329987181",
+   "textureId": "",
+   "size_studs": [
+    6.034,
+    13.0,
+    5.443
+   ],
+   "offset": [
+    -0.032,
+    6.5,
+    0.011
+   ],
+   "sa": {
+    "color": "rbxassetid://118105892927850",
+    "rough": "rbxassetid://86379292940031",
+    "normal": "rbxassetid://91855379605399",
+    "metal": "rbxassetid://108894303503089"
+   },
+   "metal": true
+  },
+  {
+   "name": "Halo_Statue_t11",
+   "group": "Halo_Statue",
+   "meshId": "rbxassetid://113768097697142",
+   "textureId": "",
+   "size_studs": [
+    6.34,
+    12.481,
+    5.466
+   ],
+   "offset": [
+    -0.185,
+    6.241,
+    0.0
+   ],
+   "sa": {
+    "color": "rbxassetid://90726485231752",
+    "rough": "rbxassetid://111308534284845",
+    "normal": "rbxassetid://74002890110947",
+    "metal": "rbxassetid://140398387146103"
+   },
+   "metal": true
+  }
+ ]
+}
