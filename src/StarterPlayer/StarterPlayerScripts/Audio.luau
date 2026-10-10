@@ -55,8 +55,9 @@
 -- opening (Audio.OpenSound): the quest window "Journal" -> QuestOpen, the King Diary on a page ([Read]) -> DiaryPage, a
 -- story page whose Speaker has a blip (Config.Audio.Blips) -> that blip, PauseCard "Back" -> WelcomeBack, "Tip" ->
 -- TipDing, else WindowOpen (PauseCard now counts as a window). A hidden quest's row first showing (an easter egg found)
--- -> SecretFound instead of QuestNew. "PetList": one of my pets' Lv going up -> PetLevelUp, the follower put away ->
--- Equip. A move of more than Warp.Jump studs in one frame that my speed cannot explain (Audio.IsWarp; not within
+-- -> SecretFound instead of QuestNew. "PetList": one of my pets' Lv going up -> PetLevelUp; the attribute EquippedPet ->
+-- PetCall (a pet comes) / PetStow (put away). A move of more than Warp.Jump studs in one frame that my speed cannot
+-- explain (Audio.IsWarp; not within
 -- SpawnCalm s of a spawn) -> Warp, WarpIn WarpInAfter s later. The quest marker's goal (QuestMarker.TargetTag) changing
 -- while the marker is on screen -> MarkerMove (a small Tap; not within MarkerQuiet s of QuestDone / QuestNew). QuestBook
 -- plays QuestTab on its tab buttons. 13차: a pet starting to follow -> PetCall, put away -> PetStow, its level up ->
@@ -199,7 +200,7 @@ local S = {
 	GameState = nil,
 	Hush = {}, -- [event] = os.clock() until which it stays quiet (a sound that replaced it just played)
 	Story = nil, -- the last "OpenPanel" Story page { Id, St, Var } (its Speaker's blip)
-	PetLv = nil, PetEq = nil, -- my pets' Lv by uid and the follower's uid at the last PetList (nil before the first)
+	PetLv = nil, -- my pets' Lv by uid at the last PetList (nil before the first)
 	MarkerTag = nil, -- the quest marker's last goal tag
 	WarpRoot = nil, WarpPos = nil, -- my root and its position at the last frame
 }
@@ -1060,6 +1061,16 @@ local function watchMe()
 		end
 	end)
 	watch(LocalPlayer, "Faction", function() S.FactionAt = os.clock() end)
+	-- 13차 + 메인 반영 10/10: the follower comes / goes by the server's attribute EquippedPet (species, "" = none; set at
+	-- once, while the owner's PetList may wait or merge two changes) -> PetCall / PetStow; the join value is quiet
+	watch(LocalPlayer, "EquippedPet", function(prev, v)
+		if loaded() ~= true or prev == nil then return end
+		if v == "" and prev ~= "" then
+			Audio.Play("PetStow")
+		elseif type(v) == "string" and v ~= "" and v ~= prev then
+			Audio.Play("PetCall")
+		end
+	end)
 	watch(LocalPlayer, "WeaponTier", function(prev, v)
 		if loaded() and num(prev, -1) == 0 and num(v, 0) >= 1 then S.FirstWeaponAt = os.clock() end
 	end)
@@ -1232,36 +1243,9 @@ local function pollWindows()
 	end
 end
 
--- my pets ("PetList", owner only, at join / grant / equip / pet XP): a pet's Lv going up -> PetLevelUp, the follower put
--- away (Equipped uid -> "") -> PetStow, a pet starting to follow (Equipped -> another uid) -> PetCall; the first list is quiet
-local function petSig(p)
-	if type(p) ~= "table" or type(p.List) ~= "table" then return nil end
-	local parts = { tostring(p.Equipped or "") }
-	for _, e in p.List do
-		if type(e) == "table" then table.insert(parts, tostring(e.Uid) .. ":" .. tostring(e.Lv)) end
-	end
-	table.sort(parts)
-	return table.concat(parts, "|")
-end
-
+-- my pets' levels ("PetList", owner only): a pet's Lv going up -> PetLevelUp; the first list is quiet
 function Audio.OnPetList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return end
-	-- 메인 반영 10/10 (no PetCall after joining): the join list reached only PetWindow (a remote fired before a second
-	-- listener connects goes to the first one) - the first list this module sees starts from PetWindow's older one
-	local pw = C and C.PetWindow
-	if S.PetEq == nil and type(pw) == "table" and type(pw.Lists) == "function" then
-		local okL, last, prev = pcall(pw.Lists)
-		local mine = petSig(payload)
-		local older = okL and ((last ~= payload and petSig(last) ~= mine) and last or prev) or nil
-		if type(older) == "table" and older ~= payload and petSig(older) ~= mine then
-			S.PetLv, S.PetEq = {}, ""
-			for _, e in type(older.List) == "table" and older.List or {} do
-				if type(e) == "table" and e.Uid ~= nil then S.PetLv[tostring(e.Uid)] = num(e.Lv, 0) end
-			end
-			local q = older.Equipped
-			S.PetEq = (q == nil or q == "") and "" or tostring(q)
-		end
-	end
 	local lv, up = {}, false
 	for _, p in payload.List do
 		if type(p) == "table" and p.Uid ~= nil then
@@ -1271,14 +1255,8 @@ function Audio.OnPetList(payload)
 			if was and lv[uid] > was then up = true end
 		end
 	end
-	local eq = payload.Equipped
-	eq = (eq == nil or eq == "") and "" or tostring(eq)
-	local stowed = S.PetEq ~= nil and S.PetEq ~= "" and eq == ""
-	local called = S.PetEq ~= nil and eq ~= "" and eq ~= S.PetEq -- 13차: a pet starts following me
-	S.PetLv, S.PetEq = lv, eq
+	S.PetLv = lv
 	if up then Audio.Play("PetLevelUp") end
-	if stowed then Audio.Play("PetStow") end
-	if called then Audio.Play("PetCall") end
 end
 
 -- the quest marker's goal (QuestMarker.TargetTag -> tag, shown): a new goal while the marker is on screen -> MarkerMove;
