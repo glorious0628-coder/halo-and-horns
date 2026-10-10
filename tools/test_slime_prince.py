@@ -60,7 +60,9 @@ def static() -> tuple[int, list[str]]:
     for path in sorted((ROOT / "src").rglob("*.luau")):
         for n, line in enumerate(read(path).splitlines(), 1):
             code = line.split("--", 1)[0]
-            if re.search(r"king slime(?! hill)", code, re.I) and "SlimeKing" not in code:
+            # the new boss's own words: a line that names SlimeKing, and the rows of KO1 'The King's Hop' (A23-110: the rows say
+            # 'Defeat the King Slime' = the new boss, the personal King; the Slime Princes stay BigSlime)
+            if re.search(r"king slime(?! hill)", code, re.I) and "SlimeKing" not in code and 'Text = "Defeat the King Slime"' not in code:
                 hits.append(f"{path.relative_to(ROOT).as_posix()}:{n}")
     check(not hits, "no script writes 'King Slime' in code: " + ", ".join(hits[:5]))
     glossary = read(ROOT / "docs/design/glossary_en_2026-10-06.md")
@@ -74,7 +76,7 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-08/offline_dev3_slime_prince_2026-10-08.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-84: Config.MonsterTypes.BigSlime Name / Short = 'Slime Prince'; no Config text says 'King Slime' "
-             "except the new boss's own entries (a SlimeKing path, a story quest that counts SlimeKing) and 'King Slime "
+             "except the new boss's own entries (a SlimeKing path, a story quest that counts SlimeKing, the KO1 rows 'Defeat the King Slime') and 'King Slime "
              "Hill'; S0 / M1_1 / M1_2 / M2_6 / H1 / XR1 / R5 texts say Slime Prince(s); M1_2 Start + Otto's M1_1 line "
              "carry the family (the princes = big brothers of the green slimes, A23-85: no mom / queen line); every "
              "objective still counts BigSlime (S0, M1_2, M2_6, H1, XR1, R5, Loot.FirstScroll, Board Meadow.Big, the "
