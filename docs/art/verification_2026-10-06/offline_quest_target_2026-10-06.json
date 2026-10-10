@@ -1,12 +1,40 @@
 {
   "status": "passed",
-  "checks": 66,
-  "namedChecks": 66,
+  "checks": 70,
+  "namedChecks": 70,
   "failing": [],
   "mutations": {
-    "total": 29,
-    "caught": 29,
+    "total": 32,
+    "caught": 32,
     "results": [
+      {
+        "mutation": "a tagged landmark never wins",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... and the marker goes to the tagged spot",
+          "rows :: StorySpot: a tagged part in the world wins over the Config spot"
+        ]
+      },
+      {
+        "mutation": "a tagged landmark out of the world counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: StorySpot: a part tagged StoryLandmark (Spot) outside the world is ignored"
+        ]
+      },
+      {
+        "mutation": "the guides still read Config only",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... and the marker goes to the tagged spot"
+        ]
+      },
       {
         "mutation": "claim ignores CanClaim",
         "applied": true,
@@ -212,12 +240,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "rows :: ... and the marker goes to the tagged spot",
           "rows :: GoblinCamp1 from the Crossroads -> a trip to the goblin woods",
           "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
           "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip",
           "rows :: HeroStatue from the meadow -> a trip to its town",
-          "rows :: HeroStatue inside the town -> the anchor over the statue spot",
-          "rows :: WoodsGate in its zone -> the anchor over the woods' edge"
+          "rows :: HeroStatue inside the town -> the anchor over the statue spot"
         ]
       },
       {
@@ -226,6 +254,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "rows :: ... and the marker goes to the tagged spot",
           "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
           "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip",
           "rows :: HeroStatue inside the town -> the anchor over the statue spot",
@@ -324,9 +353,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "5e7e6661e44ba20c175b6c2e40018fb61fafaa826f112127acfca08feed57479",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "b1147df70af24f3bd85ca6994406593a03d8fcb03caf070c29716818cf23f8b1",
-    "tools/fixtures/quest_target_offline.luau": "aeb8135a7e58728a2f86ba946aeed470252a4507682189e8b7ce56af85d132ba"
+    "src/ReplicatedStorage/Shared/Config.luau": "36e17fae7aed6abdf16af9e8eaa3cd18a98e4febf1109e1b47350eff3cf299aa",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "c79bc94a39f7d6955e8302280671bccc6786d10a8ef74c14b3496ea90675170b",
+    "tools/fixtures/quest_target_offline.luau": "f632049dd4ed1d6468e7b0f4c9074313fed941008031221945b5c1c893b2c5f3"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

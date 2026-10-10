@@ -130,6 +130,7 @@ end
 
 local WORKSPACE, PLAYER, ATTR = nil, nil, {}
 local NPCS = {} -- CollectionService "StoryNpc" (dev3 TownNpcs)
+local LANDMARKS = {} -- CollectionService "StoryLandmark" (attribute Spot; the server's Util.TaggedSpot rule)
 local function newWorld()
 	WORKSPACE = inst("Workspace", "Workspace")
 	WORKSPACE.GetServerTimeNow = function() return 1790000000 end -- 2026-09 (Halloween on; Config.SeasonNow)
@@ -160,7 +161,10 @@ local function envFor()
 	local game = { GetService = function(_, n)
 		if n == "Players" then return { LocalPlayer = PLAYER } end
 		if n == "ReplicatedStorage" then return { WaitForChild = function() return shared end } end
-		if n == "CollectionService" then return { GetTagged = function(_, tag) return tag == "StoryNpc" and NPCS or {} end } end
+		if n == "CollectionService" then return { GetTagged = function(_, tag)
+			if tag == "StoryLandmark" then return LANDMARKS end
+			return tag == "StoryNpc" and NPCS or {}
+		end } end
 		return {}
 	end }
 	return { Vector3 = { new = vec, zero = vec(0, 0, 0) }, Vector2 = { new = vec, zero = vec(0, 0, 0) },
@@ -427,6 +431,22 @@ do
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "GoblinCamp1" } }, "Crossroads", "Halo", vec(0, 3, 0))
 	check(g, "GoblinCamp1 from the Crossroads -> a trip to the goblin woods", type(e) == "table" and e.Travel == true
 		and e.Zone == Config.ZoneAt(camp).Id and e.Zone == "GoblinWoods", e and encode({ Zone = e.Zone }) or "nil")
+	-- dev2-halo / 검수 10/10: a StoryLandmark-tagged part with Spot = "HeroStatue" in the world moves the spot (the
+	-- server's Util.TaggedSpot rule); out of the world it does not
+	local moved = inst("Part", "StatueMark", { Position = vec(spot.X + 30, 2, spot.Z - 20) })
+	moved.Attrs = { Spot = "HeroStatue" }
+	moved.GetAttribute = function(self, k) return self.Attrs[k] end
+	LANDMARKS = { moved }
+	check(g, "StorySpot: a part tagged StoryLandmark (Spot) outside the world is ignored", QT.StorySpot("HeroStatue") == spot, "")
+	add(WORKSPACE, moved)
+	local sp = QT.StorySpot("HeroStatue")
+	check(g, "StorySpot: a tagged part in the world wins over the Config spot", sp and sp.X == spot.X + 30 and sp.Z == spot.Z - 20,
+		sp and encode({ X = sp.X, Z = sp.Z }) or "nil")
+	e = QT.ForEntry(hero, heroZone, "Halo", vec(0, 3, -470))
+	check(g, "... and the marker goes to the tagged spot", type(e) == "table" and at(e.Part, spot.X + 30, spot.Z - 20), where(e and e.Part))
+	LANDMARKS = {}
+	check(g, "StorySpot: no tag -> the Config spot; unknown key -> nil", QT.StorySpot("HeroStatue") == spot
+		and QT.StorySpot("Nope") == nil and QT.StorySpot(nil) == nil, "")
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -470))
 	check(g, "a plain zone guide inside its zone -> still nothing", e == nil, e and encode({ Tag = e.Tag }) or "nil")
 	-- 빛 마을 점검 #1 / #22 / #25 / #30 (2026-10-10): a talk step through a story NPC in the world (dev3 TownNpcs)

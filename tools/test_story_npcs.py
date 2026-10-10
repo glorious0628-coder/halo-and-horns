@@ -38,6 +38,9 @@ MUTATIONS = [
     ("NPC", "extra '!' copies stay", "if bb then ch:Destroy() else bb = ch end", "if not bb then bb = ch end"),
     ("NPC", "rows without an NPC count", "type(st.Npc) == \"string\" and st.Npc ~= \"\"", "type(st.Npc) == \"string\""),
     ("NPC", "the '!' on the feet", "\tbb.StudsOffsetWorldSpace = Vector3.new(0, T.MarkLift, 0)\n", ""),
+    ("NPC", "a Talk press does not open at once", "\tpcall(panels.ExpectStory, tostring(id))\n", ""),
+    ("NPC", "every prompt expects a page", 'local id = typeof(prompt) == "Instance" and prompt:GetAttribute("StoryNpcId") or nil',
+     'local id = typeof(prompt) == "Instance" and "x" or nil'),
     ("MAIN", "the module is never loaded", "\"QuestMarker\", \"StoryNpcs\",", "\"QuestMarker\","),
 ]
 

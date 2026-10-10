@@ -1,0 +1,24 @@
+{
+  "checks": 5,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "kit bridges left out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every kit prop counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old bridges dropped",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Ground rings on bridges (게임성 개발 1, 검수 2026-10-10: the new arch bridges were left out of the ground raycast), offline.\n\nRuns, in the official Luau CLI, the CURRENT refreshRayFilter cut out of Fx.luau on doubles: the Include list holds\nTerrain, Map.Ground, Decor children named Bridge_*, and in a Decor \"*Props\" kit folder the cells' models whose names\nhold \"Bridge\" (HaloProps.Cell_*.Halo_ArchBridge_*) - never the other props. Mutations: each must be caught.",
+  "studioCalls": 0
+}

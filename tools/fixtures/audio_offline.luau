@@ -157,9 +157,16 @@ addMonster("LittleGhost", 120, 0)
 addMonster("Slime", 11, 1)
 addMonster("Slime", 9, -1)
 local CAMERA = { OnScreen = true } -- what WorldToViewportPoint answers for "on screen"
-local WORKSPACE = { FindFirstChild = function(_, n) if n == "Monsters" then return MONSTERS end return nil end,
+local DECOR = { Name = "Decor", Children = {}, ChildAdded = nil } -- 검수 10/10: waterfalls that come later
+local MAP = { Name = "Map", FindFirstChild = function(_, n) if n == "Decor" then return DECOR end return nil end }
+local WORKSPACE = { FindFirstChild = function(_, n)
+		if n == "Monsters" then return MONSTERS end
+		if n == "Map" then return MAP end
+		return nil
+	end,
 	CurrentCamera = { WorldToViewportPoint = function(_, p) return p, CAMERA.OnScreen end } }
 local SERVER = { T = 1000 } -- Util.Now() (server time) for the world timers
+function DECOR:GetChildren() return self.Children end
 
 local ME = 111
 local ROOT = { Position = vec(0, 3, 0), IsA = function(_, c) return c == "BasePart" end }
@@ -176,14 +183,19 @@ local GAMESTATE = attrHolder({ Name = "GameState", Attr = { PumpkinKingActive = 
 local REMOTES = { Fx = { OnClientEvent = signal() }, Notify = { OnClientEvent = signal() }, Quests = { OnClientEvent = signal() },
 	Announce = { OnClientEvent = signal() }, OpenPanel = { OnClientEvent = signal() }, PetList = { OnClientEvent = signal() } }
 local HEART = signal()
+DECOR.ChildAdded = signal()
 local PRELOADED = 0
+local PRELOAD_IDS = {} -- the SoundIds PreloadAsync got
 
 local function envFor()
 	local services = {
 		Players = { LocalPlayer = PLAYER },
 		RunService = { Heartbeat = HEART, RenderStepped = signal() },
 		SoundService = { Name = "SoundService" },
-		ContentProvider = { PreloadAsync = function(_, list) PRELOADED += #list end },
+		ContentProvider = { PreloadAsync = function(_, list)
+			PRELOADED += #list
+			for _, s in list do PRELOAD_IDS[s.SoundId] = true end
+		end },
 		HttpService = { JSONDecode = function(_, s) return { decoded = s } end },
 	}
 	local shared = { WaitForChild = function(_, n) return { __module = n } end }
@@ -632,6 +644,9 @@ do
 	check(g, "our files mute Fx's swing / skill / coin", fx.Swing == "" and fx.Release == "" and fx.Coin == "", encode(fx))
 	check(g, "Fx's click becomes our Tap", fx.Click == "rbxassetid://Tap", tostring(fx.Click))
 	check(g, "uploaded files are preloaded", PRELOADED >= 30, tostring(PRELOADED))
+	check(g, "검수 10/10: the music tracks, boss layers, town air and weather loops are preloaded too",
+		PRELOAD_IDS[A.Music.Tracks.HaloTown] and PRELOAD_IDS[A.Music.Boss.SlimeMeadow.Id] and PRELOAD_IDS[A.ZoneAmbient.Tracks.HornsTown]
+		and PRELOAD_IDS[A.Weather.Loops.Rain.Id], "")
 
 	table.clear(PLAYS)
 	check(g, "an event without an id never plays", Audio.Play("SwingMage") == false and #PLAYS == 0, tostring(#PLAYS))
@@ -1461,6 +1476,74 @@ do
 	wx.Weather = "Clear"
 	beat(2)
 	C.WeatherFx = nil
+	-- 검수 10/10 fixes
+	-- A -> B -> A within the fade: the same track comes back (no second copy out of step)
+	PLAYER:SetAttribute("ZoneId", "Outskirts")
+	beat(2)
+	PLAYER:SetAttribute("ZoneId", "HaloTown")
+	beat(2)
+	local t1 = musicSounds(M.Tracks.HaloTown)[1]
+	local a1 = airs(A.ZoneAmbient.Tracks.HaloTown)[1]
+	PLAYER:SetAttribute("ZoneId", "HornsTown")
+	beat(0.5)
+	PLAYER:SetAttribute("ZoneId", "HaloTown")
+	check(q, "A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)", #musicSounds(M.Tracks.HaloTown) == 1
+		and musicSounds(M.Tracks.HaloTown)[1] == t1 and t1.IsPlaying, #musicSounds(M.Tracks.HaloTown))
+	check(q, "... the town's air too", #airs(A.ZoneAmbient.Tracks.HaloTown) == 1 and airs(A.ZoneAmbient.Tracks.HaloTown)[1] == a1, "")
+	beat(2)
+	check(q, "... back to the music volume, the Horns track gone", t1 and near(t1.Volume, M.Volume) and #musicSounds(M.Tracks.HornsTown) == 0,
+		t1 and t1.Volume)
+	-- ... the boss layer too: the meadow with King Slime out, a step out and back within the fade
+	PLAYER:SetAttribute("ZoneId", "SlimeMeadow")
+	beat(2)
+	GAMESTATE:SetAttribute("SlimeKingActive", true)
+	beat(2)
+	local lay1 = layers()[1]
+	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	beat(0.5)
+	PLAYER:SetAttribute("ZoneId", "SlimeMeadow")
+	check(q, "A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)", #layers() == 1 and layers()[1] == lay1,
+		#layers())
+	GAMESTATE:SetAttribute("SlimeKingActive", false)
+	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	beat(2)
+	-- the boss layer back on the beat once both are loaded
+	PLAYER:SetAttribute("ZoneId", "SlimeMeadow")
+	beat(2)
+	GAMESTATE:SetAttribute("SlimeKingActive", true)
+	local tr, ly = musicSounds(M.Tracks.SlimeMeadow)[1], layers()[1]
+	tr.TimePosition, tr.TimeLength = 20, 69.6
+	ly.TimePosition = 3
+	HEART:Fire(0.016)
+	check(q, "a layer still loading is left alone", near(ly.TimePosition, 3), ly.TimePosition)
+	tr.IsLoaded, ly.IsLoaded = true, true
+	HEART:Fire(0.016)
+	check(q, "both loaded and 17 s apart: the layer goes to the track's TimePosition", near(ly.TimePosition, 20), ly.TimePosition)
+	ly.TimePosition = 20.02
+	HEART:Fire(0.016)
+	check(q, "a drift under 40 ms is left alone", near(ly.TimePosition, 20.02), ly.TimePosition)
+	check(q, "LayerDrift: the short way round a loop", near(Audio.LayerDrift(69.5, 0.1, 69.6), 0.2)
+		and near(Audio.LayerDrift(10, 12, 0), 2), "")
+	GAMESTATE:SetAttribute("SlimeKingActive", false)
+	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	beat(2)
+	-- a waterfall model that comes after Start
+	local function fallModel(name, x)
+		local mdl = { Name = name, ClassName = "Model", __kind = "Instance" }
+		mdl.IsA = function(_, c) return c == "Model" or c == "Instance" end
+		mdl.GetBoundingBox = function() return { Position = vec(x, 5, 0) } end
+		return mdl
+	end
+	local before = 0
+	for _, so in SOUNDS_MADE do if so.Name == "AmbientWaterfall" then before += 1 end end
+	local late = fallModel("Halo_Waterfall", 500)
+	table.insert(DECOR.Children, late)
+	DECOR.ChildAdded:Fire(late)
+	DECOR.ChildAdded:Fire(late)
+	DECOR.ChildAdded:Fire(fallModel("Halo_Tree", 520))
+	local after = 0
+	for _, so in SOUNDS_MADE do if so.Name == "AmbientWaterfall" then after += 1 end end
+	check(q, "a waterfall model added later gets its water sound (once; other models none)", after == before + 1, after - before)
 	-- a warp (the server moving me far at once)
 	clear2()
 	table.clear(DELAYS)

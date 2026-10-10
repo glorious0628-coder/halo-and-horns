@@ -1,12 +1,94 @@
 {
   "status": "passed",
-  "checks": 415,
-  "namedChecks": 330,
+  "checks": 425,
+  "namedChecks": 340,
   "failing": [],
   "mutations": {
-    "total": 153,
-    "caught": 153,
+    "total": 162,
+    "caught": 162,
     "results": [
+      {
+        "mutation": "boss layer: never put back on the beat",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: both loaded and 17 s apart: the layer goes to the track's TimePosition"
+        ]
+      },
+      {
+        "mutation": "boss layer: put back while still loading",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a layer still loading is left alone"
+        ]
+      },
+      {
+        "mutation": "drift: a loop wrap counts the long way",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: LayerDrift: the short way round a loop"
+        ]
+      },
+      {
+        "mutation": "A-B-A: a second copy of the track",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... back to the music volume, the Horns track gone",
+          "sound_gaps 10/10 :: A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)"
+        ]
+      },
+      {
+        "mutation": "A-B-A: a second boss layer",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)"
+        ]
+      },
+      {
+        "mutation": "A-B-A: a second town air",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... the town's air too"
+        ]
+      },
+      {
+        "mutation": "waterfalls: the late ones stay silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a waterfall model added later gets its water sound (once; other models none)"
+        ]
+      },
+      {
+        "mutation": "waterfalls: one model twice",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a waterfall model added later gets its water sound (once; other models none)"
+        ]
+      },
+      {
+        "mutation": "preload: no music",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: 검수 10/10: the music tracks, boss layers, town air and weather loops are preloaded too"
+        ]
+      },
       {
         "mutation": "attendance: no stamp",
         "applied": true,
@@ -355,6 +437,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "sound_gaps 10/10 :: ... the town's air too",
           "sound_gaps 10/10 :: ... under the Sound effects setting",
           "sound_gaps 10/10 :: a zone without air: quiet again",
           "sound_gaps 10/10 :: into the Horns town: HornsDen in, the Halo air out and gone",
@@ -394,7 +477,10 @@
         "crashed": false,
         "newFailingChecks": [
           "music :: ... fading in (half way at half the fade)",
-          "music :: into the Horns town: a crossfade (the old down, the new up)"
+          "music :: into the Horns town: a crossfade (the old down, the new up)",
+          "sound_gaps 10/10 :: ... back to the music volume, the Horns track gone",
+          "sound_gaps 10/10 :: A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)",
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)"
         ]
       },
       {
@@ -406,7 +492,9 @@
           "music :: ... the old track stops and goes",
           "music :: a zone without a track (the outskirts): quiet (the last one faded out)",
           "music :: into the Horns town: a crossfade (the old down, the new up)",
-          "music :: leaving the meadow during the boss: track and layer both fade out"
+          "music :: leaving the meadow during the boss: track and layer both fade out",
+          "sound_gaps 10/10 :: ... back to the music volume, the Horns track gone",
+          "sound_gaps 10/10 :: A -> B -> A: the Halo track still fading comes back (one copy, the same Sound)"
         ]
       },
       {
@@ -479,7 +567,9 @@
         "crashed": false,
         "newFailingChecks": [
           "music :: King Slime gone: the layer fades out and stops, the track stays",
-          "music :: leaving the meadow during the boss: track and layer both fade out"
+          "music :: leaving the meadow during the boss: track and layer both fade out",
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)",
+          "sound_gaps 10/10 :: both loaded and 17 s apart: the layer goes to the track's TimePosition"
         ]
       },
       {
@@ -500,7 +590,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "music :: ... fading in to the music volume"
+          "music :: ... fading in to the music volume",
+          "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)"
         ]
       },
       {
@@ -529,9 +620,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rewards :: a weapon drop = one Loot at 0.92x",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "rewards :: a weapon drop = one Loot at 0.92x"
         ]
       },
       {
@@ -776,6 +865,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -1280,6 +1370,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world listeners :: a PvP place reached by a teleport (300 studs at once) is quiet"
         ]
       },
@@ -1329,6 +1421,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world listeners :: no faction: no WarFinal30"
         ]
       },
@@ -1573,9 +1667,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "91e405791c69b2e51f03471f0418c219d9d7e1302ae9c890a91b36fd773fdc1f",
-    "tools/fixtures/audio_offline.luau": "0ea02aed610f7706e840f726cbdd45e577bb0e598b8b6fc0d2429a5dfac0a1da"
+    "src/ReplicatedStorage/Shared/Config.luau": "36e17fae7aed6abdf16af9e8eaa3cd18a98e4febf1109e1b47350eff3cf299aa",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "66bc20585e4d101a6257528f71a5ff54777a02d7e1c9c8927beac0a7ae072a8f",
+    "tools/fixtures/audio_offline.luau": "c4e4e6dfdc1f50cdb1c2a6297d36cc2da581e1bdce162e67c4285ea1c8992040"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

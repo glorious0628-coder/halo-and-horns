@@ -356,8 +356,30 @@ local function fountainTarget()
 			or (fountain:IsA("Model") and fountain.PrimaryPart) or fountain:FindFirstChildWhichIsA("BasePart", true)
 		if part then return part end
 	end
-	local spot = STORY_SPOTS.Fountain
-	return typeof(spot) == "Vector3" and (spot + K.FountainLift) or nil
+	local spot = QuestTarget.StorySpot("Fountain")
+	return spot and (spot + K.FountainLift) or nil
+end
+
+-- dev2-halo / 검수 10/10: the server's spot rule (Util.TaggedSpot): a part / model tagged Config.StoryQuests.LandmarkTag
+-- with attribute Spot = key (in the world) wins over Config.StoryQuests.Landmarks[key], so a world marker moves the spot
+-- for the server's Near checks and these guides at once. Never throws
+function QuestTarget.StorySpot(key)
+	if type(key) ~= "string" then return nil end
+	local tag = STORY.LandmarkTag
+	local okTag, tagged = false, nil
+	if type(tag) == "string" then
+		okTag, tagged = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
+	end
+	for _, inst in (okTag and type(tagged) == "table") and tagged or {} do
+		local okPos, pos = pcall(function()
+			if inst:GetAttribute("Spot") ~= key or not inst:IsDescendantOf(workspace) then return nil end
+			if inst:IsA("Model") then return inst:GetPivot().Position end
+			return inst.Position
+		end)
+		if okPos and typeof(pos) == "Vector3" then return pos end
+	end
+	local spot = STORY_SPOTS[key]
+	return typeof(spot) == "Vector3" and spot or nil
 end
 
 -- the goose perch (MapBuilder GoosePerch), else Config.Goose.Position at hover height
@@ -371,7 +393,7 @@ end
 
 -- L.StoryTap "SlimePond": Config.StoryQuests.Landmarks.SlimePond (+3) = HUD STORY_SPOT
 local function pondSpot()
-	local spot = STORY_SPOTS.SlimePond
+	local spot = QuestTarget.StorySpot("SlimePond")
 	return typeof(spot) == "Vector3" and (spot + K.Lift) or Vector3.new(290, 3, 150)
 end
 
@@ -381,8 +403,7 @@ local function landmarkSpot(guide)
 	if guide == "SlimePond" or guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" or guide == "OwnTown" then
 		return nil
 	end
-	local spot = STORY_SPOTS[guide]
-	return typeof(spot) == "Vector3" and spot or nil
+	return QuestTarget.StorySpot(guide)
 end
 
 -- the zone a story Guide happens in (L.StoryTap's target mapping)
