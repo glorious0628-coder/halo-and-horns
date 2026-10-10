@@ -7235,4 +7235,73 @@ Config.PetGrant = {
 	Text = { Got = "A Baby Slime joined you! It hops along behind you." },
 }
 
+----------------------------------------------------------------- A23-110 the first KO King (게임성 개발 2)
+-- The personal King Slime of game dev 3's quest Config.FirstKO (KO1; FirstKOService reads StoryQuestService.CurrentStep):
+--   step Config.FirstKO.Step "Defeat the King Slime" = the FIRST King: a quiet personal King (only its owner sees and hits
+--   it; its kill fires no MonsterKilled) appears SpawnDistance studs in front of the player in Zone (not a town; within
+--   Radius of Landmark when one is set: a Config.StoryQuests.Landmarks key / StoryLandmark tag; never while the field
+--   King stands within BossClear studs; never for a kaiju), lands DropTime s later (model attributes FirstKO = "First" |
+--   "Retry", DropAt = server time, DropTime: game dev 1 draws the drop) and its landing thud (and every later hit) knocks
+--   its owner out in one hit (OneHitMult x MaxHealth: through the 90% Guard cap), only below level OneHitBelow, once per
+--   account (data.FirstKODone) and never while something is at stake (a grudge sack, wanted stars / bounty, a PvP fight,
+--   the kaiju queue: plain hits and a normal death then). That KO is lossless (CombatService skips the sack, bounty, PvP
+--   and ranking steps; Net.Fx "KO" First = true, RespawnIn), StoryQuestService.Event "FirstKO" moves the quest on, the
+--   King floats away, and the player gets up GetUp.Back studs from where it fell (away from the King, never a town) after
+--   RespawnIn s with GetUp.HealthFrac of MaxHealth (the next rows: buy and drink a potion). On that step with the KO
+--   already had (or from OneHitBelow on) no King comes and the quest is told "FirstKO" again every SpawnGap.
+--   step Config.FirstKO.RematchStep = the RETRY King: a normal personal King (its kill is a Personal MonsterKilled with
+--   Practice = true: it counts for the quest's Kill row, never for a finisher card or boss drops, and pays the XP / gold
+--   of Retry.PayAs) with HP and hits from Config.FirstKORetry (about 2 potions); one win per session while the row stays.
+--   A KO by it is a normal KO. Both Kings come only by the player (never the home-town spot) and never swing before the
+--   landing.
+-- Tick = s between the service's checks; SpawnGap = s before another King comes; ClaimGrace = s between the lethal hit and
+-- the Died event that still count as the first KO.
+Config.FirstKOKing = {
+	Enabled = true,
+	Kind = "SlimeKing",
+	OneHitBelow = 10, -- Lv 10+ is never one-shot (A7-2: the early levels end at 10; KO1 opens up to Lv 8)
+	Zone = "SlimeMeadow", Radius = 90, -- Landmark = "KingHill": a Landmarks key (nil = anywhere in Zone)
+	-- studs: no personal King while the field King stands this close (bodies apart). Small on purpose: the field King
+	-- stays 300 s of every 480 s on its hill and never targets Lv < 5 / < 600 s players (A23-27), so a wide gap would
+	-- leave a new player at the hill marker without a King for minutes
+	BossClear = 24,
+	SpawnDistance = 6, DropTime = 1.2, LandRadius = 10,
+	FirstHP = 5000, -- the first King is not meant to fall (killed anyway: Event "FirstKO" with Beaten = true, the row counts)
+	OneHitMult = 20, -- x MaxHealth: still >= 2 x MaxHealth through the 90% Guard cap (SKL-3)
+	RespawnIn = 3, -- s before the get-up (the KO screen's 3-2-1)
+	ClaimGrace = 1,
+	-- studs away from the King, studs above the ground, s the spot is kept, the share of MaxHealth the player gets up with
+	GetUp = { Back = 6, Lift = 4, Keep = 20, HealthFrac = 0.4 },
+	SpawnGap = 4,
+	Tick = 0.5,
+	-- the retry King: HP = Seconds of the player's own basic attacks, each hit HitPct of MaxHealth (+ regen, FirstKORetry).
+	-- tools/test_first_ko_king.py (every class x faction x Lv 1-9 x tier 1-3, the King every 1.5-1.6 s, a potion = 30% /
+	-- 10 s drunk at <= 40-60% HP): no potion loses at 60-90% uptime, 1 potion loses at 80% for nearly every build, 2 potions
+	-- win at 80-110% with >= 10% HP left = about 2 potions (KO1's step 2 tops the gold up to 50 = 2 potions).
+	-- PayAs = the kind whose XP / gold its kill pays (the Slime Prince's; the quest pays the real reward)
+	Retry = { Seconds = 18, HitPct = 0.09, MinHP = 40, PayAs = "BigSlime" },
+}
+Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happened (set once, before the quest is told)
+
+-- the retry King against one player (A23-110): { HP, Hit }. HP = Retry.Seconds of that player's basic attacks (the swing
+-- formula of Config.SwingHitsToKill: weapon x class x faction bonus x SwingImmediate, rounded, per SwingInterval; no
+-- crit), at least MinHP, at most the King's own HP. Hit = the share of the player's MaxHealth one King hit takes: HitPct +
+-- the faction's out-of-town regen over one King attack (Config.Monsters.AttackCooldown), so every faction needs the same
+-- potions. Pure (FirstKOService and the offline test share it).
+function Config.FirstKORetry(level, tier, classId, factionId, enhance)
+	local FK = Config.FirstKOKing
+	local R = FK.Retry
+	local lv = math.max(1, math.floor(tonumber(level) or 1))
+	local c = Config.AttackProfile(classId, tonumber(tier), factionId)
+	local f = Config.Factions[factionId] or Config.Factions.None
+	local bonus = type(f.DamageBonus) == "number" and f.DamageBonus or 0
+	local per = Config.WeaponDamage(tonumber(tier), lv, tonumber(enhance) or 0) * (c.Damage or 1) * (1 + bonus)
+		* ((Config.BasicSkill and Config.BasicSkill.SwingImmediate) or 0.5)
+	local dps = math.max(1, math.floor(per + 0.5)) / math.max(0.1, tonumber(c.SwingInterval) or 1)
+	local king = Config.MonsterTypes[FK.Kind]
+	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, king and king.HP or 2500))
+	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
+	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
+end
+
 return Config

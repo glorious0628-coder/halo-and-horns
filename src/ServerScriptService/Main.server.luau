@@ -19,6 +19,7 @@ local INIT_ORDER = {
 	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 	"KillCardService", -- 게임성 개발 2: A23-87 cards some kills offer (after ChoiceCard)
+	"FirstKOService", -- 게임성 개발 2: A23-110 the first KO (the King Slime's one hit on the quest step, lossless)
 	"LostFoundService", -- 게임성 개발 3: #45 the lost things (after ChoiceCard: it listens to the card)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (the error record, the live switchboard)
 	"HealthService", -- 게임성 개발 3: the hourly health report (2026-10-09)
@@ -37,6 +38,7 @@ local START_ORDER = {
 	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"KillCardService", -- 게임성 개발 2: A23-87 (before PlayerService too)
+	"FirstKOService", -- 게임성 개발 2: A23-110 (before PlayerService too: it listens to PlayerLeaving / CharacterSpawned)
 	"LostFoundService", -- 게임성 개발 3: #45 (before PlayerService too: it listens to PlayerReady)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (before PlayerService too)
 	"HealthService", -- 게임성 개발 3: the hourly health report (before PlayerService: it listens to PlayerReady)
@@ -75,6 +77,7 @@ end
 --   game.ServerScriptService.DebugCommand:Invoke("Player1", "Gold", 5000)   -- adds carried gold
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
 --   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill); SlimeKing / any Config.FieldBosses key (that boss now)
+--   A23-110: FirstKO ("first" / "retry": that personal King without the quest, this session; "reset": FirstKODone = false; "off": back to the quest)
 --   A23-77: AttendNext (today's attendance claim opens again)
 --   A23-86: Card (a choice card of that Config.ChoiceCard.Kinds id opens now)
 --   #45: Lost ("Teddy" / "ClubBadge" / "GuardMedal" / "CandyBag": a find now with its card, "clear": forget the find; needs Config.LostFound.Enabled for the walk)
@@ -163,6 +166,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.MonetizationService.AddTickets(player, "Faction", value)
 		elseif key == "Absent" then
 			S.QuestService.DebugSimulateAbsence(player, value)
+		elseif key == "FirstKO" then -- A23-110 Studio test aid: "first" / "retry" (that King without the quest), "reset", "off"
+			return S.FirstKOService.Debug(player, value)
 		elseif key == "Finisher" then -- Studio test aid: a King Slime finisher card without a kill (FinisherService)
 			return S.FinisherService.DebugOffer(player) and "ok" or "a card is open"
 		elseif key == "Errors" then -- ops: the last server errors (value nil = this server, "stored" = the saved document, "live" = the real game's)
