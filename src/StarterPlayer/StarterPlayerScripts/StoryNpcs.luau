@@ -7,7 +7,7 @@
 --   The townsfolk (tag TownFolk) get nothing here. The marker / the row tap that lead to her are QuestTarget / HUD.
 -- No new art: a text "!" in the UIKit font with a dark outline (round, never rays).
 -- Public API: StoryNpcs.Init(C), StoryNpcs.Start(), StoryNpcs.Called(entries) -> { [npcId] = true } (pure),
--- StoryNpcs.Refresh() (one pass now).
+-- StoryNpcs.Refresh() (one pass now), StoryNpcs.Mark(model) -> its one "!" BillboardGui (made once, reused).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -26,7 +26,9 @@ local T = {
 	MarkDistance = 90, -- studs: the "!" shows within this distance
 	Gold = Color3.fromRGB(255, 214, 72),
 }
-local S = { Started = false, Marks = setmetatable({}, { __mode = "k" }) } -- Marks[model] = BillboardGui
+-- 검수 10/10 (main Play: seven "!" stacked under Bright): the mark is found ON the model (its child StoryNpcMark), never
+-- in a weak table - a weak-keyed Instance entry is dropped once Lua holds no reference, so every pass made a new one
+local S = { Started = false }
 
 -- the NPC ids my rows talk through (pure: entries = HUD quest rows)
 function StoryNpcs.Called(entries)
@@ -38,9 +40,15 @@ function StoryNpcs.Called(entries)
 	return out
 end
 
-local function mark(model)
-	local bb = S.Marks[model]
-	if bb and bb.Parent then return bb end
+-- the model's one "!" (made once; extra copies from older passes are removed)
+function StoryNpcs.Mark(model)
+	local bb = nil
+	for _, ch in model:GetChildren() do
+		if ch.Name == "StoryNpcMark" and ch:IsA("BillboardGui") then
+			if bb then ch:Destroy() else bb = ch end
+		end
+	end
+	if bb then return bb end
 	local head = model:FindFirstChild("Head")
 	if not (head and head:IsA("BasePart")) then
 		head = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart", true)
@@ -69,7 +77,6 @@ local function mark(model)
 	label.TextStrokeTransparency = 0.2
 	label.Parent = bb
 	bb.Parent = model
-	S.Marks[model] = bb
 	return bb
 end
 
@@ -89,7 +96,7 @@ function StoryNpcs.Refresh()
 		if typeof(model) == "Instance" and model:IsDescendantOf(workspace) then
 			local id = model:GetAttribute("NpcId")
 			local on = type(id) == "string" and called[id] == true
-			local bb = mark(model)
+			local bb = StoryNpcs.Mark(model)
 			if bb then bb.Enabled = on end
 			for _, d in model:GetDescendants() do
 				if d:IsA("ProximityPrompt") and d:GetAttribute("StoryNpcId") ~= nil and d.Enabled ~= on then d.Enabled = on end

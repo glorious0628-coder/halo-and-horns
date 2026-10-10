@@ -481,7 +481,13 @@ local function build(parent, kit, arg)
 	local n = #tabs()
 	for i, id in tabs() do
 		local b = kit.Button(bar, Config.QuestTabs.Names[id] or id, kit.Palette.Button,
-			UDim2.new(1 / n, -6 * (n - 1) / n, 1, 0), function() QuestBook.ShowTab(id) end)
+			UDim2.new(1 / n, -6 * (n - 1) / n, 1, 0), function()
+				-- sound_gaps 2026-10-10: the tab's own sound instead of the Click (NoClick); the open tab again = silent
+				local audio = C and C.Audio
+				if id ~= S.Tab and type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "QuestTab") end
+				QuestBook.ShowTab(id)
+			end)
+		pcall(b.SetAttribute, b, "NoClick", true)
 		b.LayoutOrder = i
 		tabIcon(b, id)
 		VIEW.Tabs[id] = b

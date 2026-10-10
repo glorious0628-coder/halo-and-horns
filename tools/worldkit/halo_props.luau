@@ -3469,10 +3469,9 @@ local function clean(m, small)
 	for _, d in m:GetDescendants() do
 		if d:IsA("LuaSourceContainer") then
 			d:Destroy()
-		elseif small and d:IsA("SurfaceAppearance") then
-			d.NormalMap = ""
-			d.RoughnessMap = ""
 		end
+		-- 2026-10-10 (A23-107 재질): small props keep all four SurfaceAppearance maps too (the old colour-only cut made
+		-- stone, gold and leaves read as the same flat plastic); `small` now only feeds the DecorTier lite flag below
 	end
 end
 local function setColl(m, mode)

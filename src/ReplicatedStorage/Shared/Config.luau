@@ -4932,6 +4932,24 @@ Config.Audio = {
 		Plunder = "rbxassetid://74602898707411",
 		JackpotOther = "rbxassetid://99814762304779",
 		Loot = "rbxassetid://114739645345413",
+		-- batch 8 + C (소리 만들기 2026-10-10, docs/design/sound_gaps_2026-10-10.md A / C; art/sfx/asset_ids.json): wired in
+		-- Audio.luau (the event table above its Public API)
+		QuestOpen = "rbxassetid://132431286215692",
+		QuestTab = "rbxassetid://80849245770259",
+		StampPress = "rbxassetid://76569480136584",
+		Chest7Open = "rbxassetid://137266411071976",
+		WelcomeBack = "rbxassetid://86644525324244",
+		DiaryPage = "rbxassetid://75472701527108",
+		CandyPlop = "rbxassetid://71630733199634",
+		KingHelpHome = "rbxassetid://129647790058754",
+		KingTickleCoins = "rbxassetid://90219483742298",
+		TipDing = "rbxassetid://111120758241059",
+		Warp = "rbxassetid://132227699974979",
+		WarpIn = "rbxassetid://127997176687568",
+		SecretFound = "rbxassetid://121833019298027",
+		BlipBright = "rbxassetid://126796215784360",
+		BlipGleam = "rbxassetid://103851146620116",
+		BlipFolk = "rbxassetid://98476528780032",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -5004,6 +5022,27 @@ Config.Audio = {
 		Plunder = { File = "Plunder", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- B2 my sack / pocket is taken (the victim only; the taker hears GoldPickup)
 		JackpotOther = { File = "JackpotOther", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B10 someone else's Jackpot / FirstMax line (not RareWeapon)
 		Loot = { File = "Loot", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- B14 Fx Loot with a scroll or a weapon (weapon SpeedMul 0.92); materials / potions silent
+		-- sound_gaps 2026-10-10 A (batch 8): windows and moments that had no sound of their own
+		QuestOpen = { File = "QuestOpen", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- the quest window "Journal" opening (instead of WindowOpen)
+		QuestTab = { File = "QuestTab", Volume = 0.40, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.08 }, -- its tabs (the tab buttons have no Click)
+		StampPress = { File = "StampPress", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- Fx Attendance (the claim's QuestDone line gives way)
+		Chest7Open = { File = "Chest7Open", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the 7-day box (Attendance Box), BoxAfter s after the stamp
+		WelcomeBack = { File = "WelcomeBack", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the "Welcome back!" card opening (PauseCard "Back")
+		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip"); the KO screen's fun tip (EG05)
+		DiaryPage = { File = "DiaryPage", Volume = 0.45, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.3 }, -- the King Diary opening on a page ([Read])
+		CandyPlop = { File = "CandyPlop", Volume = 0.35, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.12 }, -- my drop with candy (Fx Loot)
+		KingHelpHome = { File = "KingHelpHome", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Help"
+		KingTickleCoins = { File = "KingTickleCoins", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Tickle"
+		-- sound_gaps 2026-10-10 B / C
+		Warp = { File = "Warp", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- I am moved far at once (pad, map travel, [Go]; not a respawn)
+		WarpIn = { File = "WarpIn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- ... and land: WarpInAfter s later
+		SecretFound = { File = "SecretFound", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- a hidden quest's row first shows (an easter egg found; instead of QuestNew)
+		PetLevelUp = { File = "LevelUp", Volume = 0.42, Speed = { 1.2, 1.2 }, Max = 1, Gap = 2 }, -- one of my pets' Lv going up (PetList): a small, higher LevelUp
+		MarkerMove = { File = "Tap", Volume = 0.20, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- the quest marker's goal changing while it is on screen
+		-- NPC blips (asset_ids 'blips'): the story page of a speaker in Blips opens with that speaker's blip (instead of WindowOpen)
+		BlipBright = { File = "BlipBright", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
+		BlipGleam = { File = "BlipGleam", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
+		BlipFolk = { File = "BlipFolk", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
 	},
 	-- swing file per weapon style / class (Neutral Blacksmith / Alchemist: Speed x NeutralSpeed); SwingFaction picks the
 	-- caster's faction file when it is uploaded (sound_gaps A2: Halo / Horns mages)
@@ -5017,6 +5056,15 @@ Config.Audio = {
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
 	Talk = { Default = 1, Shard = 1.45, Halo = 1.1, Horns = 0.78, Smith = 0.86, Guild = 0.95, Fountain = 1.2 },
+	-- story Speaker -> the blip its page opens with (the Horns town's NPCs get theirs with the Horns zone; BlipFolk waits for
+	-- a townsperson who talks)
+	Blips = { Bright = "BlipBright", Gleam = "BlipGleam" },
+	BoxAfter = 0.35, -- s after StampPress: the 7-day box opens
+	KOTipAfter = 0.9, -- s after KO: the fun tip's ding (EG05)
+	WarpInAfter = 0.45, -- s after Warp: WarpIn
+	-- a move of more than Jump studs in one frame that my speed cannot explain (+ Slack studs) = a warp
+	Warp = { Jump = 40, Slack = 10 },
+	ReplaceWithin = 0.3, -- s: a sound with Replace stops that event's copies started this recently (StampPress -> QuestDone)
 }
 
 -- A23-100 배경 음악 (소리 만들기 2026-10-10, art/sfx/asset_ids.json "bgm"; mono loops, -24 LUFS): Audio.luau plays the
@@ -5048,6 +5096,15 @@ Config.Audio.Music = {
 -- and the waterfalls (Map.Decor models named *Waterfall, + Spots for terrain-only falls: the Halo town's six =
 -- tools/worldkit/halo_terrain.luau FALLS x WINGS, x = +-the wing's outer edge, y = half its drop to the sea). Outside the
 -- MaxPlaying pools; the Sound effects setting scales them
+-- the town's own air (soundboard 2026-10-10 'ambience' HaloDay / HornsDen, 25 s loops): a 2D loop in the zone, at Volume
+-- x the Sound effects setting, crossfading with the zone like the music (Fade s)
+Config.Audio.ZoneAmbient = {
+	Volume = 0.25, Fade = 1.5,
+	Tracks = {
+		HaloTown = "rbxassetid://76688623617177", -- birds + a tiny wind chime
+		HornsTown = "rbxassetid://112972652651947", -- lava bubbling + campfire crackle
+	},
+}
 Config.Audio.Ambient = {
 	Fountain = { Id = "rbxassetid://136139057502455", Volume = 0.5, MinDistance = 6, MaxDistance = 40 },
 	Waterfall = { Id = "rbxassetid://85234404217631", Volume = 0.5, MinDistance = 8, MaxDistance = 40,
