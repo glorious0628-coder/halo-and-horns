@@ -77,11 +77,15 @@ local L = {
 	-- Window = the Panels window the tile opens (the tile shows once it is registered; Alt = an older window it opens
 	-- until then), Map = the world map; Key = Keybinds action for the key badge; Keep = shown first when the row has
 	-- fewer slots than tiles (phones: the rest fold out of [메뉴], in front of its own squares)
+	-- A23-113 ③ (user 10/10): the row in the order the tiles come - Bag · Quests · Map from the start, then Hero (first
+	-- level-up), Skills (Lv5), Ranking (M1 done), Pet (the pet) - so a tile that comes joins at the right and the ones on
+	-- the row never move (Config.HudReveal.Tiles; the quest tile uses the quest-tab book until its own icon is drawn, P5)
 	Tiles = {
-		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
-		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
+		{ Id = "Quests", Icon = "QuestTabIconMain", Window = "Journal", Key = "Journal", Keep = 2 },
 		{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },
+		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 3 },
+		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
 		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
 		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
 	},
@@ -206,6 +210,7 @@ local TXT = {
 	Auto = "Auto",
 	-- A23-40 icon tiles (names under the icons; long names shrink inside the tile, never below 10 px on phones)
 	TileCharacter = "Hero",
+	TileQuests = "Quests",
 	TileSkills = "Skills",
 	TileRanking = "Ranking",
 	TileSettings = "Settings",
@@ -2775,9 +2780,10 @@ function L.FoldEntries()
 	for i = #(ui.foldTiles or {}), 1, -1 do
 		local f = ui.foldTiles[i]
 		local def = f.Def
-		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window
+		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window;
+		-- A23-113 ③: a row tile that has not come yet is in neither the row nor the fold
 		if (def.Map or f.Row or L.TileWindow(def) ~= nil or (def.Invite and L.InviteOk()))
-			and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+			and not (f.Row and (inRow[def.Id] or not (ui.tileCame or {})[def.Id])) then table.insert(list, f) end
 	end
 	return list
 end
@@ -2987,7 +2993,7 @@ local function buildButtons(root)
 
 	-- A23-40 icon tile row (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map). A window tile
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
-	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
+	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Quests = TXT.TileQuests, Skills = TXT.TileSkills, Map = TXT.Map,
 		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
 		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite }
 	ui.tiles = {}
@@ -5722,6 +5728,13 @@ function L.PickTiles()
 		-- once shown it stays this session (a level or a pet list that blinks never takes a tile away)
 		if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows(t.Def.Id, st) then table.insert(want, t) end
 	end
+	-- the tiles that have come (before the row's Count trims them): only these may fold out of [메뉴] (L.FoldEntries)
+	local came, cameKey = {}, "|"
+	for _, t in want do
+		came[t.Def.Id] = true
+		cameKey ..= t.Def.Id .. ","
+	end
+	ui.tileCame = came
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
 		local sorted = table.clone(want)
@@ -5736,6 +5749,7 @@ function L.PickTiles()
 	end
 	local key = ""
 	for _, t in want do key ..= t.Def.Id .. "," end
+	key ..= cameKey
 	if key == ui.tileKey then return false end
 	ui.tileKey = key
 	ui.shownTiles = want
