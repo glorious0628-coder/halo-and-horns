@@ -259,7 +259,7 @@ for db in reg.get("display") or []:
         part[box & (cen[:, 1] < ymax - 0.03 * span)] = "Display"
 if opt["lamp"]:
     # lantern lamp glass / glow core: very bright, pale warm faces -> own part (Studio: Neon + PointLight)
-    lampc = (fh >= 30) & (fh <= 70) & (fs >= 0.05) & (fs <= 0.5) & (fv >= 0.9)
+    lampc = (fh >= 30) & (fh <= 70) & (fs >= 0.18) & (fs <= 0.55) & (fv >= 0.92)  # cream marble is s < 0.15
     part[lampc & (part == "Body")] = "Lamp"
 pane = glassc & (np.abs(nrm[:, 2]) < 0.35) & (part == "Body")
 # drop blue petals: a pane face has few leaf faces around it (radius 2.5 % of the height); flowers sit in leaves
@@ -290,7 +290,8 @@ if opt["fit-h"]:
 elif opt["fit-w"]:
     s = float(opt["fit-w"]) / max(hi[0] - lo[0], hi[1] - lo[1])
 elif door:
-    s = DOOR_H / max(door["z1"] - door["z0"], 1e-6)
+    # door leaf DOOR_H studs tall, and at least 4.5 studs wide (검수 10/10, A23-106 interiors: avatar shoulders + room)
+    s = max(DOOR_H / max(door["z1"] - door["z0"], 1e-6), 4.5 / max(door["x1"] - door["x0"], 1e-6))
 else:
     s = 22.0 / (hi[2] - lo[2])
 cx, cy = (lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2
@@ -304,7 +305,7 @@ def tr(x, y, z):
     return p
 
 
-info = {"name": NAME, "scale": s, "size_studs": [float((hi[0] - lo[0]) * s), float((hi[2] - lo[2]) * s), float((hi[1] - lo[1]) * s)],
+info = {"name": NAME, "scale": float(s), "size_studs": [float((hi[0] - lo[0]) * s), float((hi[2] - lo[2]) * s), float((hi[1] - lo[1]) * s)],
         "front": "+Y blender = -Z roblox", "door": None}
 if door:
     a = tr(door["x0"], door["y"], door["z0"])

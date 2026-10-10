@@ -8480,5 +8480,454 @@
     "art/models/tripo/web/HaloPart_CathTowerB_HD_LOD.glb"
    ]
   }
+ ],
+ "HaloPart_TowerDome_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8bbd9611-583b-4d19-b218-14c8beac1c12",
+   "balance_after": 19120,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_TowerDome_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_TowerDome_right_v2_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_TowerDome_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_TowerDome_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 탑 돔·탑 문틀·성문 등불 부품(검수 묶음 3 추가 승인). 이미지 생성 1 조립.",
+   "file": "art/models/tripo/web/HaloPart_TowerDome_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_TowerDome_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_TowerDoorFrame_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "2e951eda-acbe-40a1-938b-496a6fd7d0df",
+   "balance_after": 19065,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_TowerDoorFrame_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_TowerDoorFrame_right_v2_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_TowerDoorFrame_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_TowerDoorFrame_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 탑 돔·탑 문틀·성문 등불 부품(검수 묶음 3 추가 승인). 이미지 생성 1 조립.",
+   "file": "art/models/tripo/web/HaloPart_TowerDoorFrame_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_TowerDoorFrame_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_GateLantern_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "77df5dfb-fa8d-43b4-b0b9-43458b5f3ed2",
+   "balance_after": 19010,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_GateLantern_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_GateLantern_right_v2_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_GateLantern_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_GateLantern_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 탑 돔·탑 문틀·성문 등불 부품(검수 묶음 3 추가 승인). 이미지 생성 1 조립.",
+   "file": "art/models/tripo/web/HaloPart_GateLantern_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_GateLantern_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_BenchA_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "997e5d48-2efc-47f7-a114-f2669f057709",
+   "balance_after": 18955,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_BenchA.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchA_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_BenchA/HaloReasonHQ_BenchA_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_BenchB_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "06f2a96e-7798-42f1-a1b7-b12fcd04c980",
+   "balance_after": 18900,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_BenchB.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_BenchB/HaloReasonHQ_BenchB_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_BenchC_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3b6c0309-b8dc-4cee-8abc-6d1aaec511c4",
+   "balance_after": 18845,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_BenchC.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchC_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_BenchC/HaloReasonHQ_BenchC_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_BreadStand_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8cdc47da-a2f4-4b70-9054-de2ddbb5bb3c",
+   "balance_after": 18790,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_BreadStand.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_BreadStand/HaloReasonHQ_BreadStand_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_Clothesline_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "39558284-7de3-4d56-b46f-ffd13ccf95eb",
+   "balance_after": 18735,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_Clothesline.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_Clothesline_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_Clothesline/HaloReasonHQ_Clothesline_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_FlowerCart_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "15809275-162d-4733-824e-3e0b9bdddffb",
+   "balance_after": 18680,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_FlowerCart.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_FlowerCart/HaloReasonHQ_FlowerCart_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_FruitStall_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "60aaf550-b6f0-4d01-b674-d241463ab055",
+   "balance_after": 18625,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_FruitStall.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_FruitStall/HaloReasonHQ_FruitStall_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_GuardPost_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "4bf41ef0-b8d8-4c10-ac92-2ed9d9cb2ee8",
+   "balance_after": 18570,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_GuardPost.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_GuardPost_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_PhotoDisc_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e6eb698a-bcdf-4cac-82fe-7750cd2f925d",
+   "balance_after": 18515,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_PhotoDisc.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_PhotoDisc_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_PhotoDisc/HaloReasonHQ_PhotoDisc_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_PotionCrate_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "01eb6330-f0fd-44c0-aa77-f4a0baea7d66",
+   "balance_after": 18460,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_PotionCrate.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_RackShieldSword_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b88bc369-997c-4c68-ab52-933a3c2b9de2",
+   "balance_after": 18405,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_RackShieldSword.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_RackShieldSword_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_RackShieldSword/HaloReasonHQ_RackShieldSword_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_VegGarden_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "1e287ae9-a826-4edd-b96c-c46eff49d04f",
+   "balance_after": 18350,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_VegGarden.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_VegGarden/HaloReasonHQ_VegGarden_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_Woodpile_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "eb94c66a-cba7-4d35-9b6c-41a5a4f73b1a",
+   "balance_after": 18295,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_Woodpile.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_Woodpile_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_Woodpile/HaloReasonHQ_Woodpile_parts.glb"
+   ]
+  }
+ ],
+ "HaloFlowerPotHQ_Daisy_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b641909a-4ddf-4c1e-a512-f0d87d840392",
+   "balance_after": 18240,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/flowerpots_hq\\HaloFlowerPotHQ_Daisy.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_parts.glb"
+   ]
+  }
+ ],
+ "HaloReasonHQ_Scarecrow_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "21103208-833f-44f4-9346-f33caadda1e9",
+   "balance_after": 18185,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/reason_hq\\HaloReasonHQ_Scarecrow.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloReasonHQ_Scarecrow/HaloReasonHQ_Scarecrow_parts.glb"
+   ]
+  }
+ ],
+ "HaloFlowerPotHQ_Lavender_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "1e521925-e22c-4a6e-be27-9a354f96aa8c",
+   "balance_after": 18130,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/flowerpots_hq\\HaloFlowerPotHQ_Lavender.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloFlowerPotHQ_Lavender/HaloFlowerPotHQ_Lavender_parts.glb"
+   ]
+  }
+ ],
+ "HaloFlowerPotHQ_Rose_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "decbc2e8-ae98-4ce5-ba7d-77689122ae9e",
+   "balance_after": 18075,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/flowerpots_hq\\HaloFlowerPotHQ_Rose.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloFlowerPotHQ_Rose/HaloFlowerPotHQ_Rose_parts.glb"
+   ]
+  }
+ ],
+ "HaloFlowerPotHQ_Sunflower_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "398eed1e-6bb0-43bd-b4eb-b82555b67580",
+   "balance_after": 18020,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/flowerpots_hq\\HaloFlowerPotHQ_Sunflower.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_parts.glb"
+   ]
+  }
+ ],
+ "HaloFlowerPotHQ_Tulip_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "645cd140-1ae9-4670-b82c-265d53010863",
+   "balance_after": 17965,
+   "mode": "HD single image, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 01:40~02:20",
+   "inputs": {
+    "front": "art/out/s2/halo/flowerpots_hq\\HaloFlowerPotHQ_Tulip.png"
+   },
+   "note": "빛 마을 소품 앞면 한 장 (A23-97, A23-107, 검수 묶음 4 승인). 부품 나누기·재질 4장: tools/prop_build.sh",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb",
+   "derived": [
+    "art/models/tripo/halo_props/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_parts.glb"
+   ]
+  }
  ]
 }
