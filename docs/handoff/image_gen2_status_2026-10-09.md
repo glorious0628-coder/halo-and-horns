@@ -83,3 +83,9 @@
 - 왕관 A(와인빛) 4면 + 부품 7(금 반구·와인 반구·가운데 아치 v2·꼭대기 구슬·사파이어·가넷): `art/out/s2/crown/A/`, 시트 crown_A_mv_parts_sheet.jpg.
 - 반복 소품 13장 깃발·파란 판·금돔 뺀 판(난간 4·등불 4·플랜터 2·꽃 화분 3): `art/out/s2/halo/variants4/HaloVar4_*`, 시트 halo_variants4_sheet.jpg — 옛 HaloVar_Balustrade/Lantern/Planter_A,D/PotFlowers_A,C,D 대체.
 - 대기: 마스코트 머리카락 선택, 집·가게 뒤·옆, 뿔 성채(대칭 콘셉트 뒤).
+
+## 10/10 밤 추가 9
+- 빛 기사 마스코트 C 고급+누끼: `art/out/s2/fac/hq2/`(approved 키 FacMascotHaloC) → 이미지 개발에 교체 요청.
+- 장인 길드 Coming soon 카드 후보 3(중간): `art/out/s2/fac/artisan/Fac_ArtisanCard_{A,B,C}_src.png`, 시트 `art/review/s2/fac_artisan_card_candidates.jpg` — 검수 선택 대기(망치·모루 문장, 자물쇠, 글자 없음).
+- 뿔 깃대 v4(L자 팔·걸이, 십자가 모양 아님): `art/out/s2/redo2/HornsProp_BannerPole_v4_front_HQ_src.png`.
+- 남음: 뿔 천 뒷면, 집·가게 뒤·옆(부품 분해: 몸통·지붕·문·창 유리·차양 따로).
