@@ -195,7 +195,7 @@ MUTATIONS = [
     ("no fade", "alpha += (1 - alpha) * (after / fade)", ""),
 ]
 STATIC = [
-    ("ClientMain loads LandShadow", lambda m, s: '"WeaponPose", "LandShadow", "Audio" }' in m),
+    ("ClientMain loads LandShadow", lambda m, s: '"WeaponPose", "LandShadow", "SkillFx", "Audio" }' in m),
     ("watches DropAt on workspace.Monsters", lambda m, s: 'workspace:WaitForChild("Monsters", 30)' in s
      and 'model:GetAttributeChangedSignal("DropAt")' in s and "monsters.ChildAdded:Connect" in s),
     ("no text, no rays (no Beam / Billboard / TextLabel / ParticleEmitter / Decal)",
