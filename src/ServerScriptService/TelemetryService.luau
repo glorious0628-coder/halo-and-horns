@@ -28,7 +28,8 @@
 --   account; the five steps of the King's Hop quest KO1 in order: KO, PotionBought, SlotSet, PotionUsed, KingWon - fed by
 --   StoryQuestService.StepDone through Config.Analytics.QuestFunnels), MinutesToLv5 (minutes of play when Lv5 is reached, once per
 --   account, field = faction) and PvPResult (every PvP KO: value = the winner side's size-scale multiplier, fields = winner
---   faction, loser faction, level bands "<winner>><loser>")
+--   faction, loser faction, level bands "<winner>><loser>") and PvPKOedDay (the same player KO'd by other players this many
+--   times in one KST day; logged when the count reaches a step of Config.Analytics.PvPKOedDay.Steps; fields = level band, zone)
 --   Phone / PC performance (게임성 개발 3, 2026-10-09; docs/design/phone_perf_server_2026-10-09.md): c->s ClientMetric "Perf"
 --   { D device, F average fps, W lowest second, M memory MB, Q quality } every Config.Analytics.Perf.Every s -> PerfFps /
 --   PerfFpsLow (W under Perf.Low) / PerfMem with fields device, zone, Q<level>; its own limit (MinGap s), not the shared budget.
@@ -881,8 +882,31 @@ function TelemetryService.Start()
 	end)
 	-- A23-113 #5: every PvP KO, the winner's and the loser's side and level band (who wins, between which levels, how much the
 	-- size scale helped); never a name or an id
+	-- A23-113 (검수 2026-10-10): how many times the same player is KO'd by other players in one KST day (the Lv15-20 sprouts the
+	-- woods hit again and again are the worry of the 10/17 test). The day's count lives in data.Telemetry.PvPKO = { D = day, N = n }
+	-- (saved: several sessions of one day add up); the custom event fires when it reaches a step of Config.Analytics.PvPKOedDay.Steps
+	-- (value = n, fields = the victim's level band and zone), so the dashboard shows how many players were hit 3, 5, 10 ... times
+	local function victimDay(victim)
+		local rule = A.PvPKOedDay
+		if type(rule) ~= "table" or type(rule.Steps) ~= "table" then return end
+		local data = getData(victim)
+		if not data then return end
+		local tel, day = telemetryOf(data), today()
+		local rec = tel.PvPKO
+		if type(rec) ~= "table" or rec.D ~= day then
+			rec = { D = day, N = 0 }
+			tel.PvPKO = rec
+		end
+		rec.N = math.floor(num(rec.N)) + 1
+		if table.find(rule.Steps, rec.N) then
+			TelemetryService.Custom(victim, tostring(rule.Event or "PvPKOedDay"), rec.N, bandOf(victim:GetAttribute("Level")),
+				tostring(victim:GetAttribute("ZoneId")))
+		end
+	end
 	connect("PvPService", "PlayerKO", function(killer, victim)
-		if typeof(killer) ~= "Instance" or typeof(victim) ~= "Instance" or throttled(killer, "pvpresult", num(A.PvPResultGap, 1)) then return end
+		if typeof(killer) ~= "Instance" or typeof(victim) ~= "Instance" then return end
+		victimDay(victim)
+		if throttled(killer, "pvpresult", num(A.PvPResultGap, 1)) then return end
 		local kf, vf = tostring(killer:GetAttribute("Faction")), tostring(victim:GetAttribute("Faction"))
 		local scale = 1
 		local justice = S.JusticeService

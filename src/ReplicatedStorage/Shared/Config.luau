@@ -7004,6 +7004,10 @@ Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }
 -- A23-113 #5: every PvP KO -> the custom event PvPResult (value = the winner's faction size-scale multiplier, 1.0-1.6; fields =
 -- winner faction, loser faction, "<winner level band>><loser level band>"), at most one per killer per this many seconds
 Config.Analytics.PvPResultGap = 1
+-- A23-113 (검수 2026-10-10): how many times the same player is KO'd by other players in one KST day (to see Lv15-20 sprouts hit again
+-- and again in the Goblin Woods on the 10/17 test): the custom event PvPKOedDay is logged when that day's count reaches a step
+-- (value = the count; fields = the victim's level band and zone). The count is saved with the account (data.Telemetry.PvPKO).
+Config.Analytics.PvPKOedDay = { Event = "PvPKOedDay", Steps = { 1, 3, 5, 10, 20 } }
 -- c->s "ClientMetric"(id, arg?): what only the client sees. The rule for the one argument: "None" (no argument),
 -- "Count" (a whole number 1..50), "Source" (one of InviteSources), "Pass" (a Config.GamePasses / Config.Looks id or
 -- "Look"), or a list of the allowed strings. Anything else is ignored.

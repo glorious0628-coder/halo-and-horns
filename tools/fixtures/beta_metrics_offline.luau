@@ -100,6 +100,8 @@ runGroup("config", function()
 		and A.QuestFunnels.KO1 == "FirstKO" and #A.Funnels.FirstKO.Steps == #C.StoryQuests.Defs.KO1.Steps,
 		"FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)", show(A.Funnels.FirstKO))
 	check(A.TimeToLevel.Level == 5 and A.TimeToLevel.Event == "MinutesToLv5" and A.PvPResultGap >= 1, "MinutesToLv5 at Lv5; PvPResult at most once a second per killer", show(A.TimeToLevel))
+	check(A.PvPKOedDay.Event == "PvPKOedDay" and table.concat(A.PvPKOedDay.Steps, ",") == "1,3,5,10,20",
+		"PvPKOedDay: logged at the 1st, 3rd, 5th, 10th and 20th KO by players of a KST day", show(A.PvPKOedDay))
 	-- review 2026-10-08: Roblox completes the earlier steps of a later one, so only steps that always come in order
 	check(table.concat(A.Funnels.LongRoad.Steps, ",") == "Level15,Level25,Level30,Level40,Level50,Rebirth1"
 		and A.Funnels.LongRoad.Once == true, "LongRoad: the level path (6 steps), once per account", show(A.Funnels.LongRoad))
@@ -684,6 +686,47 @@ runGroup("PvP result line (A23-113 #5)", function()
 	ko:Fire(nil, nil, nil)
 	ko:Fire("a", "b", {})
 	check(#w:Named("PvPResult") == 3, "bad killer / victim arguments log nothing", tostring(#w:Named("PvPResult")))
+end)
+
+runGroup("KO'd by players per day (A23-113 PvPKOedDay)", function()
+	local w = metricsWorld()
+	local a = hero(w, 61, { Data = { Level = 30, Faction = "Horns" }, Attrs = { Faction = "Horns", Level = 30 } })
+	local v = hero(w, 62, { Data = { Level = 17, Faction = "Halo" }, Attrs = { Faction = "Halo", Level = 17, ZoneId = "GoblinWoods" } })
+	local ko = w.Reg.PvPService.PlayerKO
+	for _ = 1, 5 do
+		ko:Fire(a, v, {})
+		w:Advance(2)
+	end
+	local ev = w:Named("PvPKOedDay", v)
+	check(#ev == 3 and ev[1].Value == 1 and ev[2].Value == 3 and ev[3].Value == 5, "5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not", brief(ev))
+	check(field(ev[2], 1) == "10-24" and field(ev[2], 2) == "GoblinWoods", "the victim's level band and zone", brief(ev))
+	check(#w:Named("PvPKOedDay", a) == 0, "logged under the one who was KO'd, never the killer", tostring(#w:Named("PvPKOedDay", a)))
+	local rec = w.Data[v].Telemetry.PvPKO
+	check(rec and rec.N == 5 and rec.D == w.Config.DayIndex(w.Time), "the day's count is saved with the account (a second session adds on)", tostring(rec and rec.N))
+	for _ = 1, 15 do
+		ko:Fire(a, v, {})
+		w:Advance(2)
+	end
+	local steps = {}
+	for _, e in w:Named("PvPKOedDay", v) do table.insert(steps, e.Value) end
+	check(table.concat(steps, ",") == "1,3,5,10,20", "20 KOs: the steps 1, 3, 5, 10, 20 and nothing else", table.concat(steps, ","))
+	-- a new KST day starts the count again
+	w:Advance(86400)
+	ko:Fire(a, v, {})
+	local again = w:Named("PvPKOedDay", v)
+	check(#again == 6 and again[6].Value == 1 and w.Data[v].Telemetry.PvPKO.N == 1, "the next day: back to 1", tostring(#again))
+	-- the killer's one-a-second limit never hides the victim's count
+	local b = hero(w, 63, { Data = { Level = 12, Faction = "Halo" }, Attrs = { Faction = "Halo", Level = 12, ZoneId = "SlimeMeadow" } })
+	local c1 = hero(w, 64, { Data = { Level = 12, Faction = "Halo" }, Attrs = { Faction = "Halo", Level = 12, ZoneId = "SlimeMeadow" } })
+	local c2 = hero(w, 65, { Data = { Level = 12, Faction = "Halo" }, Attrs = { Faction = "Halo", Level = 12, ZoneId = "SlimeMeadow" } })
+	ko:Fire(b, c1, {})
+	ko:Fire(b, c2, {})
+	check(#w:Named("PvPKOedDay", c1) == 1 and #w:Named("PvPKOedDay", c2) == 1 and #w:Named("PvPResult", b) == 1,
+		"two victims in one second both count (PvPResult stays one a second per killer)", tostring(#w:Named("PvPKOedDay")))
+	-- bad arguments never throw
+	ko:Fire(a, nil, {})
+	ko:Fire("a", v, {})
+	check(#w:Named("PvPKOedDay", v) == 6, "bad arguments count nothing", tostring(#w:Named("PvPKOedDay", v)))
 end)
 
 finish()
