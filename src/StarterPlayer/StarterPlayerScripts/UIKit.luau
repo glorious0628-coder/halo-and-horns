@@ -2333,10 +2333,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			local s = currentScale()
 			local width = label.AbsoluteSize.X
 			if width <= 1 or not label.Parent then return end
-			-- 이미지 개발 10/10 (UiSandbox 991x451, the Vacation popup's 2nd line got a 1-line box): the style floor (a
-			-- UITextSizeConstraint MinTextSize, real px) draws the text bigger than TextSize x UIScale - measure at that
-			local floor = label:FindFirstChildOfClass("UITextSizeConstraint")
-			local px = math.max(1, math.floor(label.TextSize * s + 0.5), floor and floor.MinTextSize or 0)
+			local px = math.max(1, math.floor(label.TextSize * s + 0.5))
 			local params = Instance.new("GetTextBoundsParams")
 			params.Text = label.Text
 			params.Font = label.FontFace
@@ -2379,16 +2376,42 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 end
 
 -- 검수 2026-10-10 (user, the Vacation card: "균형이 안 맞아" - 'You were away for 1 day, and that's / okay.', one word
--- alone on the last line): UIKit.BalanceLines(label) keeps a centred wrapped label's lines about even. It measures the
--- text with TextService in real px at the size the engine draws (TextSize x UIScale, at least the style floor), counts
--- the lines n it needs at the label's width, finds the narrowest width that still gives n lines (UIKit.BalanceWidth)
--- and pads the label inside by the difference (a UIPadding "LineBalance", left = right), so the text wraps there. The
--- label's own size and place never change (UIKit.WrapHeight's height stays right: same n lines). One line, left / right
--- aligned text and a label with its own UIPadding are left alone. Again whenever the text, size, face or width changes.
--- Margin: the box keeps this much more than the narrowest width (UiSandbox 1280: at the exact width the engine needed
--- one more line than TextService and clipped it); a pass whose text still does not fit drops the padding again
-local BAL = { Steps = 8, SlackPx = 6, Margin = 1.06, Fits = setmetatable({}, { __mode = "k" }) }
+-- alone on the last line): UIKit.BalanceLines(label) keeps a centred wrapped label's lines about even. It counts lines
+-- with the ENGINE: an invisible copy of the label (same font, size, stroke, size floor) in an off-screen ScreenGui under
+-- the same UIScale, resized and read back (TextBounds) - TextService was a few % off the engine at these sizes and gave
+-- one line too many or too few (UiSandbox 1280 / 991). It finds the narrowest width that still gives the label's n lines
+-- (UIKit.BalanceWidth), keeps Margin over it and pads the label inside by the difference (a UIPadding "LineBalance",
+-- left = right), so the text wraps there. The label's own size and place never change. One line, left / right aligned
+-- text and a label with its own UIPadding are left alone; a pass whose text still does not fit drops the padding again.
+-- Again whenever the text, size, face or width changes.
+local BAL = { Steps = 7, Margin = 1.03, Fits = setmetatable({}, { __mode = "k" }), Gui = nil }
 UIKit.LineBalance = BAL
+
+-- the off-screen measuring ScreenGui (made once; its UIScale follows the HUD's)
+function BAL.ProbeGui()
+	if BAL.Gui and BAL.Gui.Parent then return BAL.Gui end
+	local pg = LocalPlayer and LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if not pg then return nil end
+	local g = Instance.new("ScreenGui")
+	g.Name = "LineBalanceProbe"
+	g.ResetOnSpawn = false
+	g.DisplayOrder = -100
+	local sc = Instance.new("UIScale")
+	sc.Name = "Scale"
+	sc.Parent = g
+	g.Parent = pg
+	BAL.Gui = g
+	return g
+end
+
+-- waits until the probe's TextBounds reflect its last change (a frame, at most a few)
+function BAL.Settle(probe, before)
+	local hb = game:GetService("RunService").Heartbeat
+	for _ = 1, 4 do
+		hb:Wait()
+		if probe.TextBounds ~= before then return end
+	end
+end
 
 -- pure: the narrowest width (real px) at which linesAt(width) still needs no more lines than at `full`, between
 -- oneLine / n and full (linesAt never rises with the width); returns that width and n
@@ -2423,22 +2446,39 @@ function UIKit.BalanceLines(label)
 			clear()
 			return
 		end
-		local s = currentScale()
-		local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
-		local px = math.max(1, math.ceil(label.TextSize * s - 0.01), tc and tc.MinTextSize or 0)
-		local params = Instance.new("GetTextBoundsParams")
-		params.Text, params.Font, params.Size = label.Text, label.FontFace, px
-		pcall(function() params.RichText = label.RichText end)
-		local function linesAt(w)
-			params.Width = math.max(1, w - BAL.SlackPx)
-			local b = TextService:GetTextBoundsAsync(params)
-			return math.max(1, math.floor(b.Y / px + 0.5))
+		local s = math.max(0.05, currentScale())
+		local gui = BAL.ProbeGui()
+		if not gui then return end
+		gui.Scale.Scale = s
+		-- the copy: the label's own children (stroke, gradient, size floor) but no padding / size limits / scripts
+		local probe = label:Clone()
+		for _, ch in probe:GetChildren() do
+			if ch:IsA("UIPadding") or ch:IsA("UISizeConstraint") or ch:IsA("UIAspectRatioConstraint")
+				or ch:IsA("LuaSourceContainer") or ch:IsA("GuiObject") then
+				ch:Destroy()
+			end
 		end
-		params.Width = 100000
-		local one = TextService:GetTextBoundsAsync(params).X
-		local w, n = UIKit.BalanceWidth(linesAt, full, one + BAL.SlackPx)
+		probe.Name = "Probe"
+		probe.AutomaticSize = Enum.AutomaticSize.None
+		probe.AnchorPoint = Vector2.zero
+		probe.Position = UDim2.fromOffset(-20000, 0)
+		probe.Visible = true
+		probe.TextWrapped = false
+		probe.Size = UDim2.fromOffset(full / s, 4000)
+		probe.Parent = gui
+		BAL.Settle(probe, nil)
+		local lineH, one = probe.TextBounds.Y, probe.TextBounds.X
+		probe.TextWrapped = true
+		local function linesAt(w)
+			local before = probe.TextBounds
+			probe.Size = UDim2.fromOffset(w / s, 4000)
+			BAL.Settle(probe, before)
+			return math.max(1, math.floor(probe.TextBounds.Y / math.max(1, lineH) + 0.5))
+		end
+		local ok, w, n = pcall(UIKit.BalanceWidth, linesAt, full, one)
+		probe:Destroy()
+		if not ok then error(w) end
 		w = math.min(full, math.ceil(w * BAL.Margin))
-		params:Destroy()
 		if token ~= state.Token or not label.Parent then return end
 		local side = n > 1 and math.max(0, math.floor((full - w) / 2)) or 0
 		if side <= 0 then
@@ -2450,9 +2490,9 @@ function UIKit.BalanceLines(label)
 			pad.Name = "LineBalance"
 			pad.Parent = label
 		end
-		local du = side / math.max(0.05, s)
+		local du = side / s
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, du), UDim.new(0, du)
-		-- the engine may still wrap wider than TextService: if the text no longer fits, back to the full box
+		-- should the label still not fit (its box was sized for its old wrap), back to the full box
 		task.wait(0.05)
 		if token == state.Token and label.Parent and not label.TextFits then
 			pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 0), UDim.new(0, 0)
@@ -3653,10 +3693,7 @@ function UIKit.RewardPopup(opts)
 			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextSize = compact and cfg.LineCompact or cfg.LineSize,
 			LayoutOrder = nextOrder(),
 			ZIndex = body.ZIndex + 1, Parent = body }, "Body", plateLight)
-		-- 검수 10/10 (the Vacation card: one word alone on the 2nd line): the measured height (AutomaticSize may give a
-		-- wrapped line one line on small windows) and even lines
-		UIKit.WrapHeight(label)
-		UIKit.BalanceLines(label)
+		UIKit.BalanceLines(label) -- 검수 10/10 (the Vacation card: one word alone on the 2nd line): even lines
 	end
 	local counters = {}
 	local rewards = type(opts.Rewards) == "table" and opts.Rewards or {}

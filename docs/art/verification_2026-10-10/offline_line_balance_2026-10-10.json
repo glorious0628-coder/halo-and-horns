@@ -1,5 +1,5 @@
 {
-  "checks": 31,
+  "checks": 32,
   "failed": 0,
   "mutations": [
     {
@@ -43,7 +43,7 @@
       "caught": true
     },
     {
-      "name": "WrapHeight ignores the style floor again",
+      "name": "the probe keeps its padding",
       "applied": true,
       "caught": true
     },
