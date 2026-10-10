@@ -726,7 +726,7 @@ local function makeButton(parent, text, color, size, onClick, textColor)
 		b.BorderSizePixel = 0
 		corner(b, 10)
 		b.Activated:Connect(function()
-			playClick()
+			if b:GetAttribute("NoClick") ~= true then playClick() end -- NoClick: the button's own sound (UIKit wirePress)
 			handler()
 		end)
 		btn = b

@@ -347,6 +347,11 @@ function KingDiary.IsReady()
 	return S.Ready
 end
 
+-- the page the open book was asked to show ([Read] on a page card), nil = opened without one (Audio: DiaryPage)
+function KingDiary.FocusPage()
+	return VIEW.Kit ~= nil and S.Page or nil
+end
+
 function KingDiary.Open(arg)
 	local panels = C and C.Panels
 	if not S.Ready or type(panels) ~= "table" or type(panels.Open) ~= "function" then return false end

@@ -1,12 +1,295 @@
 {
   "status": "passed",
-  "checks": 316,
-  "namedChecks": 250,
+  "checks": 391,
+  "namedChecks": 308,
   "failing": [],
   "mutations": {
-    "total": 112,
-    "caught": 112,
+    "total": 142,
+    "caught": 142,
     "results": [
+      {
+        "mutation": "attendance: no stamp",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: an attendance claim = StampPress now, replacing the claim's QuestDone",
+          "sound_gaps 10/10 plan :: the 7-day box: Chest7Open BoxAfter s after the stamp"
+        ]
+      },
+      {
+        "mutation": "attendance: the claim's QuestDone stays",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: an attendance claim = StampPress now, replacing the claim's QuestDone"
+        ]
+      },
+      {
+        "mutation": "attendance: no 7-day box",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: the 7-day box: Chest7Open BoxAfter s after the stamp"
+        ]
+      },
+      {
+        "mutation": "finisher: tickle sounds like help",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: ... Tickle = KingTickleCoins"
+        ]
+      },
+      {
+        "mutation": "candy: silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: my drop with candy = CandyPlop"
+        ]
+      },
+      {
+        "mutation": "KO: the fun tip silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later"
+        ]
+      },
+      {
+        "mutation": "replace: never stops the old sound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: StampPress stops the QuestDone that just started"
+        ]
+      },
+      {
+        "mutation": "replace: the old sound comes right after",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... and a QuestDone right after it stays quiet",
+          "sound_gaps 10/10 :: ... but not for long (ReplaceWithin)"
+        ]
+      },
+      {
+        "mutation": "windows: the quest window plain",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: the quest window opens with QuestOpen"
+        ]
+      },
+      {
+        "mutation": "windows: the diary page ignored",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: the King Diary opened on a page ([Read]) = DiaryPage"
+        ]
+      },
+      {
+        "mutation": "windows: no story blip",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
+          "sound_gaps 10/10 :: Bright's story page opens with her blip"
+        ]
+      },
+      {
+        "mutation": "windows: the cards plain",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a tip card opens with TipDing",
+          "sound_gaps 10/10 :: the welcome-back card opens with WelcomeBack"
+        ]
+      },
+      {
+        "mutation": "windows: a missing file is not WindowOpen",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: an own sound not uploaded = WindowOpen"
+        ]
+      },
+      {
+        "mutation": "windows: the story speaker never kept",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: Bright's story page opens with her blip"
+        ]
+      },
+      {
+        "mutation": "windows: any OpenPanel sets the speaker",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: another window's OpenPanel leaves the story speaker alone"
+        ]
+      },
+      {
+        "mutation": "secret: plays QuestNew",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a hidden quest's row showing = SecretFound (not QuestNew)"
+        ]
+      },
+      {
+        "mutation": "pets: no level up",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: my pet's level up = PetLevelUp"
+        ]
+      },
+      {
+        "mutation": "pets: put away silent",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
+          "sound_gaps 10/10 :: the follower put away = Equip"
+        ]
+      },
+      {
+        "mutation": "pets: the first list sounds",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a list with no follower before or now is quiet",
+          "sound_gaps 10/10 :: a new pet following (and its first Lv) is quiet"
+        ]
+      },
+      {
+        "mutation": "marker: a hidden change sounds",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a goal that changed while the marker was hidden is quiet",
+          "sound_gaps 10/10 :: no MarkerMove right on top of a quest's own sound"
+        ]
+      },
+      {
+        "mutation": "marker: a blink sounds",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: a blink of no goal is not a new goal",
+          "sound_gaps 10/10 :: a goal that changed while the marker was hidden is quiet",
+          "sound_gaps 10/10 :: no MarkerMove right on top of a quest's own sound"
+        ]
+      },
+      {
+        "mutation": "marker: rings on top of the quest sound",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: no MarkerMove right on top of a quest's own sound"
+        ]
+      },
+      {
+        "mutation": "warp: a fall counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: IsWarp: a long fall (100 studs in a half-second hitch at 200 studs/s) is not a warp"
+        ]
+      },
+      {
+        "mutation": "warp: a step counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 plan :: IsWarp: 30 studs is a step, not a warp"
+        ]
+      },
+      {
+        "mutation": "warp: a new character counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: the jump to a new character's spawn is not a warp"
+        ]
+      },
+      {
+        "mutation": "warp: no landing",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... then WarpIn WarpInAfter s later"
+        ]
+      },
+      {
+        "mutation": "air: the old zone's air keeps playing",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... under the Sound effects setting",
+          "sound_gaps 10/10 :: a zone without air: quiet again",
+          "sound_gaps 10/10 :: into the Horns town: HornsDen in, the Halo air out and gone",
+          "sound_gaps 10/10 :: no air outside the towns",
+          "sound_gaps 10/10 :: the Halo town's air: looped, in the Sound effects group, from silence"
+        ]
+      },
+      {
+        "mutation": "air: not under the Sound effects setting",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: ... under the Sound effects setting"
+        ]
+      },
+      {
+        "mutation": "air: in the Music group",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sound_gaps 10/10 :: the Halo town's air: looped, in the Sound effects group, from silence"
+        ]
+      },
+      {
+        "mutation": "air: never follows the zone",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": []
+      },
       {
         "mutation": "music: no crossfade (a jump)",
         "applied": true,
@@ -138,7 +421,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rewards :: materials and potions alone are silent"
+          "rewards :: materials and potions alone are silent",
+          "sound_gaps 10/10 plan :: a drop without candy stays as before (materials quiet)",
+          "sound_gaps 10/10 plan :: my drop with candy = CandyPlop"
         ]
       },
       {
@@ -392,6 +677,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -401,7 +687,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
+          "runtime :: a king already there at the join is quiet",
+          "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)",
+          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
         ]
       },
       {
@@ -483,6 +771,7 @@
           "runtime :: an event with an id plays",
           "runtime :: an event without an id never plays",
           "runtime :: volume = the table's Volume",
+          "sound_gaps 10/10 :: an own sound not uploaded = WindowOpen",
           "swing :: a faction file not uploaded yet: the old SwingMage at once"
         ]
       },
@@ -686,6 +975,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "sound_gaps 10/10 plan :: a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later",
+          "sound_gaps 10/10 plan :: a KO without one: KO only",
           "world :: my KO = KO (B1)",
           "world listeners :: knocked out -> KO (B1)"
         ]
@@ -1109,19 +1400,71 @@
           "held alarms :: no goose or crown arrival in the first steps",
           "held alarms :: no sound for a held announce banner or an announce line",
           "held alarms :: no war 30 s call in the first steps",
-          "world listeners :: GoldenSpot once per monster",
-          "world listeners :: a golden monster 200 studs away is quiet"
+          "sound_gaps 10/10 :: a new goal on screen = MarkerMove",
+          "sound_gaps 10/10 :: the marker's first goal is quiet"
         ]
       }
     ]
   },
+  "static": [
+    {
+      "file": "UIKit.luau",
+      "check": "UIKit buttons skip the Click with NoClick",
+      "ok": true
+    },
+    {
+      "file": "Panels.luau",
+      "check": "Panels' own buttons skip it too",
+      "ok": true
+    },
+    {
+      "file": "QuestBook.luau",
+      "check": "the quest window's tabs play QuestTab",
+      "ok": true
+    },
+    {
+      "file": "QuestBook.luau",
+      "check": "... not for the tab already open",
+      "ok": true
+    },
+    {
+      "file": "QuestBook.luau",
+      "check": "... and have no Click",
+      "ok": true
+    },
+    {
+      "file": "PetWindow.luau",
+      "check": "[Put away] has no Click (Equip on PetList)",
+      "ok": true
+    },
+    {
+      "file": "PauseCard.luau",
+      "check": "PauseCard keeps the open card's kind",
+      "ok": true
+    },
+    {
+      "file": "PauseCard.luau",
+      "check": "PauseCard.OpenKind",
+      "ok": true
+    },
+    {
+      "file": "KingDiary.luau",
+      "check": "KingDiary.FocusPage",
+      "ok": true
+    },
+    {
+      "file": "QuestMarker.luau",
+      "check": "QuestMarker.TargetTag",
+      "ok": true
+    }
+  ],
   "compileOk": true,
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "146ebf2e1fc052d247069f3686f0d9ebe73280c8fe7d15741e41536c6206f863",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "ed68250ee9de2678dd35b79b388ecd46108261879d0f223233eb7d8661107c8e",
-    "tools/fixtures/audio_offline.luau": "ae81fdad5cbb65b06e7b49e5880fc08e3e55d14082b70dead5cc5ef56781ea6f"
+    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "14443eb188be9f0b857c7e9fe214e74e57387e1811ef124c1da0006864c9432e",
+    "tools/fixtures/audio_offline.luau": "73270d4757d3d3d707ebc1916ffeb4a7ca5afb76074ca482bf35164df2e15a0a"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

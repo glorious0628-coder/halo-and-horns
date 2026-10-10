@@ -234,9 +234,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "available :: a hidden ready sub stays hidden (the others still show)"
+          "available :: a hidden ready sub stays hidden (the others still show)",
+          "faction and hidden :: a hidden sub is never listed before it is found"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "started subs listed",
@@ -348,9 +349,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
+    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/StoryQuestService.luau": "beaba43294e412e9783939f0f81f3600dada8161ff3ab44554d51d7d1e9e7137"
+    "src/ServerScriptService/StoryQuestService.luau": "710e864a0c2c4541d8d65958560c8df97020b24a355c63a99acd0969dc7c81b3"
   },
   "fixtureSHA256": "287ccb827ac06c2d225bb4a4e5e91bd1bf016a29de261f90d749b1db2aa23c41",
   "sourcesChangedDuringRun": [],

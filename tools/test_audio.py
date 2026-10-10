@@ -45,6 +45,45 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_audio_2026-10-06.json"
 
 # (name, exact text in Audio.luau, replacement): each must match exactly once
 MUTATIONS = [
+    # sound_gaps 2026-10-10 (batch 8 + B / C, 게임성 개발 1)
+    ("attendance: no stamp", '\t\tadd(out, "StampPress", 0, { Replace = "QuestDone" })', '\t\t--'),
+    ("attendance: the claim's QuestDone stays", 'add(out, "StampPress", 0, { Replace = "QuestDone" })', 'add(out, "StampPress", 0)'),
+    ("attendance: no 7-day box", 'if data.Box == true then add(out, "Chest7Open", T.BoxAfter) end', ""),
+    ("finisher: tickle sounds like help", 'add(out, "KingTickleCoins", 0)', 'add(out, "KingHelpHome", 0)'),
+    ("candy: silent", 'if candy then add(out, "CandyPlop", 0) end', ""),
+    ("KO: the fun tip silent", 'if type(data.Tip) == "string" and data.Tip ~= "" then add(out, "TipDing", T.KOTipAfter) end', ""),
+    ("replace: never stops the old sound", "\t\t\tfor _, q in S.Pools[rep] or {} do\n", "\t\t\tfor _, q in {} do\n"),
+    ("replace: the old sound comes right after", "\tif now < (S.Hush[event] or -math.huge) then return false end", "\t--"),
+    ("windows: the quest window plain", '\t\t\tevent = "QuestOpen"\n', "\t\t\tevent = nil\n"),
+    ("windows: the diary page ignored", 'event = (okP and page ~= nil) and "DiaryPage" or nil', "event = nil"),
+    ("windows: no story blip", "event = type(def) == \"table\" and T.Blips[def.Speaker] or nil", "event = nil"),
+    ("windows: the cards plain", "event = ok and T.CardSounds[kind] or nil", "event = nil"),
+    ("windows: a missing file is not WindowOpen", 'return (event and Audio.Has(event)) and event or "WindowOpen"',
+     'return event or "WindowOpen"'),
+    ("windows: the story speaker never kept", "if panelId == T.StoryWindow and type(arg) == \"table\" then S.Story = arg end", ""),
+    ("windows: any OpenPanel sets the speaker", "if panelId == T.StoryWindow and type(arg) == \"table\" then S.Story = arg end",
+     "if type(arg) == \"table\" then S.Story = arg end"),
+    ("secret: plays QuestNew",
+     'if type(def) == "table" and def.Hidden == true and Audio.Has("SecretFound") then secret = true else fresh = true end',
+     "fresh = true"),
+    ("pets: no level up", "if was and lv[uid] > was then up = true end", ""),
+    ("pets: put away silent", 'if stowed then Audio.Play("Equip") end', ""),
+    ("pets: the first list sounds", 'local stowed = S.PetEq ~= nil and S.PetEq ~= "" and eq == ""', 'local stowed = eq == ""'),
+    ("marker: a hidden change sounds", "if not shown or prev == nil or prev == tag then return end",
+     "if prev == nil or prev == tag then return end"),
+    ("marker: a blink sounds", "\tif tag == nil then return end\n\tlocal prev = S.MarkerTag", "\tlocal prev = S.MarkerTag"),
+    ("marker: rings on top of the quest sound",
+     "if now - (S.Last.QuestDone or -math.huge) < T.MarkerQuiet or now - (S.Last.QuestNew or -math.huge) < T.MarkerQuiet then return end",
+     ""),
+    ("warp: a fall counts", "studs > speed * dt * 2 + num(T.Warp.Slack, 10)", "true"),
+    ("warp: a step counts", "return studs > num(T.Warp.Jump, 40) and", "return"),
+    ("warp: a new character counts", "and os.clock() - S.SpawnAt >= T.SpawnCalm\n", "\n"),
+    ("warp: no landing", 'if Audio.Play("Warp") then task.delay(T.WarpInAfter, Audio.Play, "WarpIn") end', 'Audio.Play("Warp")'),
+    ("air: the old zone's air keeps playing", "\tif MUSIC.Air then table.insert(MUSIC.AirFading, MUSIC.Air) end\n", ""),
+    ("air: not under the Sound effects setting", "local air, target = MUSIC.Air, zv * sfxMult()", "local air, target = MUSIC.Air, zv"),
+    ("air: in the Music group", "\t\ts.SoundGroup = S.Groups.Sfx\n\t\tpcall(function() s:Play() end)\n\t\tMUSIC.Air = s",
+     "\t\tpcall(function() s:Play() end)\n\t\tMUSIC.Air = s"),
+    ("air: never follows the zone", "\tAudio.SetZoneAir(zoneId)\n\tMUSIC.Zone = zoneId", "\tMUSIC.Zone = zoneId"),
     # A23-100 music + 점검표 sound 60 water (게임성 개발 1 2026-10-10)
     ("music: no crossfade (a jump)", "\tlocal d = full / math.max(0.05, num(M.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)\n",
      "\tlocal d = full\n"),
@@ -133,8 +172,8 @@ MUTATIONS = [
      'if type(v) == "number" and loaded() then Audio.Play("Potion") end'),
     ("kings already there at the join sound", "if v == true and prev ~= true and fresh() and not Audio.Held() then Audio.Play(event) end",
      "if v == true and prev ~= true and not Audio.Held() then Audio.Play(event) end"),
-    ("the first quest list chimes", "if S.QuestIds and not S.QuestIds[id] then fresh = true end",
-     "if not (S.QuestIds and S.QuestIds[id]) then fresh = true end"),
+    ("the first quest list chimes", "if S.QuestIds and not S.QuestIds[id] then\n",
+     "if not (S.QuestIds and S.QuestIds[id]) then\n"),
     ("a window staying open repeats", "if was ~= nil and was ~= open then", "if open or was ~= open then"),
     ("combo never resets", "if S.ComboToken == token then S.Combo = 0 end", ""),
     ("'No' is not Deny", 'Aliases = { No = "Deny" },', "Aliases = {},"),
@@ -167,7 +206,8 @@ MUTATIONS = [
     ("a bare-handed Upgrade rings", 'or num(LocalPlayer and LocalPlayer:GetAttribute("WeaponTier"), 0) == 0,', "or false,"),
     ("QuestDone over a LevelUp",
      'if event == "QuestDone" and now - (S.Last.LevelUp or -math.huge) < T.LevelSkip then return false end', ""),
-    ("a LevelUp leaves QuestDone ringing", "if q.IsPlaying then q:Stop() end", ""),
+    ("a LevelUp leaves QuestDone ringing", "for _, q in S.Pools.QuestDone or {} do\n\t\t\tif q.IsPlaying then q:Stop() end",
+     "for _, q in S.Pools.QuestDone or {} do\n\t\t\t"),
     ("QuestNew right on top of QuestDone", "local wait = T.QuestNewAfter - (now - (S.Last.QuestDone or -math.huge))",
      "local wait = 0"),
     ("a waited QuestNew waits again", 'if event == "QuestNew" and opts.Waited ~= true then', 'if event == "QuestNew" then'),
@@ -211,6 +251,30 @@ MUTATIONS = [
     ("golden spotted from anywhere", "if ok and (pivot.Position - root.Position).Magnitude <= T.GoldenRange then", "if ok then"),
     ("golden spot repeats", "\t\t\t\t\tS.GoldenSeen[m] = true", "\t\t\t\t\t--"),
 ]
+
+
+# sound_gaps 2026-10-10: the small hooks outside Audio.luau (file, exact text, what it does) - each must be there
+SRC = ROOT / "src/StarterPlayer/StarterPlayerScripts"
+STATIC = [
+    ("UIKit.luau", 'if btn:GetAttribute("NoClick") ~= true then playClick() end', "UIKit buttons skip the Click with NoClick"),
+    ("Panels.luau", 'if b:GetAttribute("NoClick") ~= true then playClick() end', "Panels' own buttons skip it too"),
+    ("QuestBook.luau", 'pcall(audio.Play, "QuestTab")', "the quest window's tabs play QuestTab"),
+    ("QuestBook.luau", 'if id ~= S.Tab and type(audio) == "table"', "... not for the tab already open"),
+    ("QuestBook.luau", 'pcall(b.SetAttribute, b, "NoClick", true)', "... and have no Click"),
+    ("PetWindow.luau", 'if uid == "" then pcall(b.SetAttribute, b, "NoClick", true) end', "[Put away] has no Click (Equip on PetList)"),
+    ("PauseCard.luau", "\tS.Kind = card.Kind\n", "PauseCard keeps the open card's kind"),
+    ("PauseCard.luau", "return PauseCard.IsOpen() and S.Kind or nil", "PauseCard.OpenKind"),
+    ("KingDiary.luau", "return VIEW.Kit ~= nil and S.Page or nil", "KingDiary.FocusPage"),
+    ("QuestMarker.luau", 'return type(t) == "table" and t.Tag or nil, S.shown == true', "QuestMarker.TargetTag"),
+]
+
+
+def static_checks() -> list[dict]:
+    out = []
+    for name, text, what in STATIC:
+        src = (SRC / name).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+        out.append({"file": name, "check": what, "ok": src.count(text) == 1})
+    return out
 
 
 def lua_long(text: str) -> str:
@@ -284,13 +348,14 @@ def main() -> int:
 
             with ThreadPoolExecutor(max_workers=6) as pool:
                 mutations.extend(pool.map(work, enumerate(jobs)))
+    statics = static_checks()
     changed = [p.relative_to(ROOT).as_posix() for p, b in raw.items() if p.read_bytes() != b]
     result = real["result"] or {}
     named = result.get("Named", [])
     bad = [n for n in named if n.get("Fail", 0) > 0]
     real_ok = real["result"] is not None and not bad and "AUDIO_OFFLINE_OK" in real["stdout"]
     mut_ok = all(m.get("applied") and m.get("caught") for m in mutations)
-    if compiled.returncode == 0 and real_ok and not changed and mut_ok:
+    if compiled.returncode == 0 and real_ok and not changed and mut_ok and all(s["ok"] for s in statics):
         status = "passed-no-mutations" if args.no_mutations else "passed"
     else:
         status = "failed"
@@ -300,6 +365,7 @@ def main() -> int:
         "namedChecks": len(named),
         "failing": [{"group": n["Group"], "check": n["Name"], "firstFailure": n.get("FirstFailure")} for n in bad],
         "mutations": {"total": len(MUTATIONS), "caught": sum(1 for m in mutations if m.get("caught")), "results": mutations},
+        "static": statics,
         "compileOk": compiled.returncode == 0,
         "compileErrors": compiled.stderr.strip(),
         "runtimeError": None if real["result"] else (real["stderr"].strip() or real["stdout"].strip())[-2000:],
@@ -318,6 +384,8 @@ def main() -> int:
             print(line)
     if not real["result"]:
         print(real["stderr"], end="")
+    for s in statics:
+        print(f"{'STATIC_OK  ' if s['ok'] else 'STATIC_FAIL'} {s['file']}: {s['check']}")
     for m in mutations:
         print(f"MUTATION {'caught ' if m.get('caught') else 'MISSED'} {m['mutation']}"
               + ("" if m.get("applied") else f" ({m.get('note')})"))
