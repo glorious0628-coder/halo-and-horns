@@ -32,6 +32,14 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     return dict(sources)
 
 
+# the joke-pick check of ReturnService.sideOf (Choice MyWay = false) and the A / B shortcut after it
+JOKE = ("\tfor _, step in type(def) == \"table\" and def.Steps or {} do\n\t\tlocal joke = step.Obj\n"
+        "\t\t-- a joke pick (the Terms of Fate egg: Choice MyWay = false) never counts for My Way, whatever it saved\n"
+        "\t\tif type(joke) == \"table\" and joke.Type == \"Choice\" and joke.MyWay == false then return nil end\n\tend\n")
+AB = "\tif pick == \"A\" then return \"Good\" end\n\tif pick == \"B\" then return \"Evil\" end\n"
+JOKE_FIRST, JOKE_AFTER = JOKE + AB, AB + JOKE
+
+
 MUTATIONS = [
     # --- #1 pause card / welcome back
     ("a card for every main quest", R, "\tif T.ChapterEnd[id] then queueCard(player, \"Chapter\") end\n", "\tqueueCard(player, \"Chapter\")\n"),
@@ -65,6 +73,9 @@ MUTATIONS = [
      "\tlocal text = (type(row.ShortName) == \"string\" and row.ShortName ~= \"\") and row.ShortName or row.Text\n",
      "\tlocal text = row.Text or row.ShortName\n"),
     # --- #2 My Way
+    ("My Way counts the joke pick", R, "\t\tif type(joke) == \"table\" and joke.Type == \"Choice\" and joke.MyWay == false then return nil end\n", ""),
+    ("My Way: the A / B shortcut comes before the joke check", R, JOKE_FIRST, JOKE_AFTER),
+    ("the joke pick is a real pick again", C, "Obj = { Type = \"Choice\", MyWay = false, Good = { Label = \"Read it all\"", "Obj = { Type = \"Choice\", Good = { Label = \"Read it all\""),
     ("My Way from one pick", R, "\tif total < num(MW.MinPicks, 2) then return \"\" end\n", ""),
     ("no Balance Walker", R, "\tif math.abs(lean) <= math.floor(total * num(MW.BalanceShare, 0.2)) then return \"BalanceWalker\" end\n", ""),
     ("Horns names swapped", R, "\treturn lean < 0 and \"ProudRascal\" or \"SoftDevil\"\n", "\treturn lean > 0 and \"ProudRascal\" or \"SoftDevil\"\n"),

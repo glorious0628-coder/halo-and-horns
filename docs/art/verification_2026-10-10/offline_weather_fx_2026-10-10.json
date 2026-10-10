@@ -1,0 +1,79 @@
+{
+  "checks": 31,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "lamps off at dusk",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no phase turns the lamps off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "off still rains",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a roof does not thin the rain",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "phones get the full rate",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the emitter can be queried",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the emitter collides",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an Atmosphere for the wet look",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every light follows the night",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the part does not follow the camera",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a late lamp inside a lantern is missed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rain streaks along the fall again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pale rain by day too",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "off stops the lamps too",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "WeatherFx (A23-105, 이미지 개발 2026-10-10): rain, snow and the evening lamps on the client, offline.\n\nRuns, in the official Luau CLI, the CURRENT WeatherFx.luau in tools/fixtures/weather_fx_offline.luau. Checks: the pure\nplan (rain 420/s, 12% under a roof, 55% on phones, snow 110/s, off = nothing falls and no tint while the lamps still\nfollow the time of day, lamps on at Dusk / Night, off at Dawn / Day, left alone before the server has a phase); Start\nwith night rain: one anchored, invisible, non-colliding / non-queried / non-touching emitter part under the camera, the\nrain emitter on with the recorded free textures, a client ColorCorrection WeatherTint, the tagged and the marked lamps on\nand an unmarked light untouched; the part follows 32 studs over the camera and 14 ahead; a roof thins the rain and it\ncomes back; day turns the marked lamps off; a light added later inside a marked lantern follows; SetEnabled(false) stops\nthe rain but not the lamps; snow; no phase leaves a lamp as the place has it; never an Atmosphere, never a Lighting\nproperty, no beams. Mutations: each must be caught.",
+  "studioCalls": 0
+}

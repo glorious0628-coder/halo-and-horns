@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 860,
+  "checks": 865,
   "failedChecks": 0,
-  "namedChecks": 787,
+  "namedChecks": 792,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -3285,6 +3285,36 @@
     },
     {
       "group": "easter-eggs",
+      "check": "EG01: the joke pick is marked MyWay = false (only that one)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "the scroll, the note and the goose get no face; the Crown Shard keeps hers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: the Shard's line has no 'Sky Crown:' label (the speaker says it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "every quest's Speaker names a Speakers entry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
       "check": "the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch",
       "pass": 1,
       "fail": 0
@@ -4734,9 +4764,9 @@
   "staticChecks": 8,
   "staticFailures": [],
   "mutations": {
-    "total": 191,
-    "applied": 191,
-    "caught": 191,
+    "total": 200,
+    "applied": 200,
+    "caught": 200,
     "skipped": false,
     "results": [
       {
@@ -5839,6 +5869,106 @@
         "crashed": false,
         "newFailingChecks": [
           "easter-eggs :: EG03: a hidden sub for everyone after M2_3"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the scroll speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the patch note speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the goose speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the sky speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the bench note speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the scroll has no name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face",
+          "easter-eggs :: every quest's Speaker names a Speakers entry"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: the goose has another name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the sky still says 'Sky Crown:'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG04: the Shard's line has no 'Sky Crown:' label (the speaker says it)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the joke pick counts for My Way",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01: the joke pick is marked MyWay = false (only that one)"
         ],
         "newFailingCount": 1
       },
@@ -7173,7 +7303,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "22032924c166ac1aae7130eb741e4ab2cc9a8e2802948d088e2e86d761aa0b62",
+    "src/ReplicatedStorage/Shared/Config.luau": "afb3fc5033338c28dcffaccad2d4d61817ee24ac34c6396728db0c7fbe00fa9c",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
@@ -7186,7 +7316,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "14c44ee05bbf534c969f47f2ad927e892c45c4cef3c36c873820354ed3a290fa",
+  "fixtureSHA256": "c20b507c28240058efc3af75ca67d2275b8d8b91c5bfbb7f52e3c14feb956a1e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

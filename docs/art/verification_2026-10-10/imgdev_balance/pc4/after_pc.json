@@ -1,0 +1,48 @@
+{
+ "Box": [
+  396,
+  201,
+  486,
+  380
+ ],
+ "Lines": [
+  {
+   "Bounds": [
+    261,
+    19
+   ],
+   "Abs": [
+    397,
+    19
+   ],
+   "Text": "You were away 1 day. That's okay!",
+   "Fits": true,
+   "Pos": [
+    441,
+    253
+   ]
+  },
+  {
+   "Pad": [
+    0,
+    0
+   ],
+   "Bounds": [
+    372,
+    38
+   ],
+   "Abs": [
+    397,
+    38
+   ],
+   "Text": "Even on breaks you get 70% of a day's rewards. Playing gives 100%!",
+   "Fits": true,
+   "Pos": [
+    441,
+    288
+   ]
+  }
+ ],
+ "Inset": 58,
+ "UIScale": 0.800000011920929
+}
