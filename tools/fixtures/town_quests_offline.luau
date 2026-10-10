@@ -1320,8 +1320,8 @@ runGroup("subs18-data", function()
 				show(pick and pick.Type))
 			local town = TOWN_TYPE[id]
 			check(sameReward(pick.Good.Reward, { Item = "Enh70", N = 1 })
-				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = town and 220 or 192 }),
-				id .. ": A = one 70% scroll, B = 3 HP potions + " .. (town and "220" or "192") .. " gold", show({ pick.Good.Reward, pick.Evil.Reward }))
+				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = 220 }),
+				id .. ": A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)", show({ pick.Good.Reward, pick.Evil.Reward }))
 			check(town and sameReward(def.Reward, { GoldN = 120, XPBar = 0.5 }) or (not town and sameReward(def.Reward, { Gold = 2, XP = 2 })),
 				id .. ": " .. (town and "town-type 120 gold + half a bar" or "woods-type 2 minutes of gold + XP"), show(def.Reward))
 			check(type(def.Finish) == "string" and string.find(def.Finish, "?", 1, true) ~= nil, id .. ": ends with a question", def.Finish)
@@ -1536,7 +1536,14 @@ runGroup("halo-check-h3", function()
 		show({ tr.St, storyPanels(panels, "H3") - before }))
 	w.ZoneOf[p] = "HaloTown"
 	w:Tick(p, 1)
-	check(tr.St == 4 and storyPanels(panels, "H3") == before + 1, "in Halo Citadel: Sir Gleam's card", show({ tr.St, storyPanels(panels, "H3") }))
+	-- 검수 10/10: the card is talked through Sir Gleam (Npc "Gleam", the TownNpcs body): it never pops by itself
+	check(tr.St == 4 and storyPanels(panels, "H3") == before, "in Halo Citadel: Sir Gleam's card waits for the talk",
+		show({ tr.St, storyPanels(panels, "H3") - before }))
+	check(SQ0.Defs.H3.Steps[1].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Npc == "Gleam", "H3's talks are at Sir Gleam",
+		show({ SQ0.Defs.H3.Steps[1].Npc, SQ0.Defs.H3.Steps[4].Npc }))
+	w:Act(p, "H3", "Open")
+	check(storyPanels(panels, "H3") == before + 1, "talking to him opens the card (no Gleam body here: anywhere)",
+		storyPanels(panels, "H3") - before)
 end)
 
 runGroup("halo-check-h6", function()
