@@ -1,7 +1,17 @@
 {
-  "checks": 33,
+  "checks": 70,
   "failed": 0,
   "mutations": [
+    {
+      "name": "every skill slot plays a move",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a swing cuts a Z / X short",
+      "applied": true,
+      "caught": true
+    },
     {
       "name": "side clips never used",
       "applied": true,

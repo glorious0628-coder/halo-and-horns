@@ -1,0 +1,34 @@
+{
+  "checks": 18,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the hammer never made",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "ClassGrips ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the short bow in the right hand",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the short bow has no bow rest",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the short bow full size",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "A23-108 ② weapon shapes per class x side (게임성 개발 1 proposal, 개발 3 checks), static / offline.\n\nReads the CURRENT Config.luau (Config.ClassGrips) and CharacterVisuals.luau. Checks: every ClassGrips Weapon has a shape\n(a SHAPES builder or the old Sword / Staff / Bow / Baton), buildWeapon takes the weapon from ClassGrips first and the old\nrule (tamer baton, the class's weapon) without a row, both bows go in the left hand with the arrow muzzle, the short bow\nis the bow at 0.75 size tilted 30 degrees, the shapes are plain Parts (no store assets). Mutations on in-memory copies:\neach must be caught. The look is checked in Studio photos (메인 반영 1, 9 classes).",
+  "studioCalls": 0
+}

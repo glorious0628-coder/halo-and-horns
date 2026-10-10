@@ -42,45 +42,64 @@ local SPINE = {
 	Z1 = -692, -- far end (cathedral terrace)
 	RampLen = 30, -- ramps stay <= 24 deg
 	-- { boundary z at the road centre (a step down the road toward the cathedral), height after it, west half-width, east half-width }
-	Tiers = { { 0, 0.2, 34, 44 }, { -444, 9, 58, 44 }, { -524, 20, 66, 84 }, { -606, 33, 92, 104 } },
+	-- 2nd pass (10/10, 모동숲 rule 1): the tiers get narrower going up (1 > 2 > 3 > 4 by walkable area incl. the wings)
+	Tiers = { { 0, 0.2, 34, 44 }, { -444, 9, 64, 40 }, { -524, 20, 52, 58 }, { -606, 33, 74, 34 } },
 	-- wavy step lines: offset = Amp * sin(u / Len + Phase), u = x - cx(z) (0 on the road centre, so the main ramps start straight)
-	Wave = { {}, { Amp = 6, Len = 23, Phase = 0 }, { Amp = 7, Len = 31, Phase = 0 }, { Amp = 5, Len = 19, Phase = 0 } },
-	-- ramps per step: { u centre, half-width } (main stair on the road + one side stair of another width)
-	Ramps = { {}, { { 0, 14 }, { 30, 6 } }, { { 0, 10 }, { -38, 7 } }, { { 0, 18 }, { 44, 6 } } },
+	Wave = { {}, { Amp = 6, Len = 23, Phase = 0.4 }, { Amp = 7, Len = 31, Phase = 2.1 }, { Amp = 5, Len = 19, Phase = 4.0 } },
+	-- ramps per step: { u centre, half-width }. One main stair per step, its own width and offset; one side stair only on step 3 (no pairs)
+	Ramps = { {}, { { 0, 12 } }, { { 6, 9 }, { -54, 5 } }, { { -4, 16 } } },
 	WidthBlend = 10,
 }
--- the S-curved road centre: straight (x 0) through the gate / spawn, bends east over tier 2, back west over the plaza and the forecourt
+-- the S-curved road centre: straight (x 0) through the gate / spawn (contract #46), then a smooth Hermite curve through these
+-- points: east over tier 2, the big turn at the fountain plaza (about 40 deg), west up to the cathedral forecourt (2nd pass: a
+-- stronger S, 검수 지적 4). tools/halo_layout.py CX() uses the same points and the same maths.
+local CXP = { { -432, 0 }, { -470, 10 }, { -510, 32 }, { -548, 44 }, { -580, 30 }, { -614, 0 }, { -650, -30 }, { -692, -36 } }
 local function cx(z)
-	if z >= -432 then return 0 end
-	if z >= -582 then return 34 * math.sin(math.pi * (-432 - z) / 150) end
-	if z >= -692 then return -28 * math.sin(math.pi * (-582 - z) / 110) end
-	return 0
+	if z >= CXP[1][1] then return 0 end
+	local n = #CXP
+	if z <= CXP[n][1] then return CXP[n][2] end
+	local i = 1
+	while z < CXP[i + 1][1] do i += 1 end
+	local function slope(k)
+		if k == 1 then return 0 end
+		if k == n then return (CXP[n][2] - CXP[n - 1][2]) / (CXP[n][1] - CXP[n - 1][1]) end
+		return (CXP[k + 1][2] - CXP[k - 1][2]) / (CXP[k + 1][1] - CXP[k - 1][1])
+	end
+	local za, zb = CXP[i][1], CXP[i + 1][1]
+	local t = (z - za) / (zb - za)
+	local d = zb - za
+	local t2, t3 = t * t, t * t * t
+	return (2 * t3 - 3 * t2 + 1) * CXP[i][2] + (t3 - 2 * t2 + t) * slope(i) * d + (-2 * t3 + 3 * t2) * CXP[i + 1][2] + (t3 - t2) * slope(i + 1) * d
 end
 -- wing terraces, west and east each their own (no mirroring): rect in (x, z), height, rounded corner radius
 local WINGS = { -- Ang = turn in degrees round the rect centre (A23-112: no grid, no mirrored pairs)
-	{ Name = "WA", x0 = -186, x1 = -62, z0 = -430, z1 = -336, H = 3, Rad = 28, Ang = 7 },
-	{ Name = "WB", x0 = -170, x1 = -46, z0 = -540, z1 = -452, H = 12, Rad = 24, Ang = -11 },
-	{ Name = "WC", x0 = -184, x1 = -86, z0 = -614, z1 = -558, H = 22, Rad = 20, Ang = 6 },
-	{ Name = "WD", x0 = -194, x1 = -132, z0 = -694, z1 = -632, H = 28, Rad = 18, Ang = -8 },
-	{ Name = "EA", x0 = 70, x1 = 194, z0 = -428, z1 = -344, H = 5, Rad = 34, Ang = -9 },
-	{ Name = "EB", x0 = 98, x1 = 176, z0 = -508, z1 = -452, H = 15, Rad = 18, Ang = 14 },
-	{ Name = "EC", x0 = 106, x1 = 196, z0 = -628, z1 = -530, H = 26, Rad = 30, Ang = -6 },
-	{ Name = "ED", x0 = 102, x1 = 176, z0 = -696, z1 = -652, H = 30, Rad = 16, Ang = 12 },
+	-- 2nd pass (검수 지적 3 "3x3 섬", rule 1/2/4): big and small islands, uneven gaps, the upper ones smaller
+	{ Name = "WA", x0 = -190, x1 = -62, z0 = -432, z1 = -338, H = 3, Rad = 28, Ang = 7 }, -- big
+	{ Name = "WB", x0 = -170, x1 = -80, z0 = -538, z1 = -462, H = 12, Rad = 22, Ang = -13 }, -- medium, cascade on its west cliff
+	{ Name = "WC", x0 = -152, x1 = -110, z0 = -604, z1 = -570, H = 22, Rad = 14, Ang = 18 }, -- small
+	{ Name = "WD", x0 = -192, x1 = -116, z0 = -690, z1 = -640, H = 26, Rad = 18, Ang = -8 }, -- medium (26: band 3, rule 1)
+	{ Name = "EA", x0 = 62, x1 = 172, z0 = -424, z1 = -352, H = 5, Rad = 30, Ang = -9 }, -- medium
+	{ Name = "EB", x0 = 104, x1 = 196, z0 = -520, z1 = -446, H = 15, Rad = 20, Ang = 12 }, -- big
+	{ Name = "EC", x0 = 122, x1 = 196, z0 = -624, z1 = -554, H = 26, Rad = 24, Ang = -6 }, -- medium, cascade off its north cliff
+	{ Name = "ED", x0 = 96, x1 = 152, z0 = -694, z1 = -638, H = 30, Rad = 14, Ang = 8 }, -- small, north of EC (stepping stones); the exhibition garden later
 	-- lobes (same height as their wing, so the terraces are not plain boxes)
-	{ Name = "WA", x0 = -150, x1 = -100, z0 = -440, z1 = -418, H = 3, Rad = 10, Ang = 0 },
-	{ Name = "EC", x0 = 150, x1 = 198, z0 = -536, z1 = -512, H = 26, Rad = 12, Ang = 0 },
+	{ Name = "WA", x0 = -150, x1 = -100, z0 = -442, z1 = -420, H = 3, Rad = 10, Ang = 0 },
+	{ Name = "EB", x0 = 150, x1 = 196, z0 = -446, z1 = -430, H = 15, Rad = 8, Ang = 0 },
 }
 -- arch-bridge spots across the canals (for the props tool: the bridge centre, its axis, the deck heights at both ends); the planner finds the exact spans
-local BRIDGES = {
-	{ "BAW", -48, -385, "x", 0.2, 3 }, { "BAE", 56, -400, "x", 0.2, 5 }, { "BBW", -66, -492, "x", 9, 12 }, { "BBE", 70, -490, "x", 9, 15 },
-	{ "BCW", -84, -582, "x", 20, 22 }, { "BCE", 92, -575, "x", 20, 26 }, { "BDW", -108, -662, "x", 33, 28 }, { "BDE", 116, -670, "x", 33, 30 },
-	{ "BABW", -130, -442, "z", 3, 12 }, { "BBCW", -150, -544, "z", 12, 22 }, { "BCDW", -150, -620, "z", 22, 28 },
-	{ "BABE", 130, -454, "z", 5, 15 }, { "BBCE", 140, -527, "z", 15, 26 }, { "BCDE", 170, -640, "z", 26, 30 },
+local BRIDGES = { -- 2nd pass (rule 4): about one per island, same-tier pairs >= 25 apart in z, different spans
+	{ "BAW", -48, -394, "x", 0.2, 3 }, { "BAE", 56, -366, "x", 0.2, 5 }, { "BBW", -60, -470, "x", 9, 12 }, { "BBE", 80, -498, "x", 9, 15 },
+	{ "BCE", 112, -566, "x", 20, 26 },
+	{ "BBCW", -128, -553, "z", 12, 22 }, { "BCDW", -136, -622, "z", 22, 26 }, { "BABE", 132, -437, "z", 5, 15 },
 }
-local PAVE = { Rim = 8, Wing = 16, Mat = "Concrete" } -- grass rim width on the wing tops (2026-10-10: 16 so the wings are gardens round a paved forecourt; the spine road is PAVEHALF below); Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
+-- stepping stones (rule 3/4: short crossings): small flat stones 1 column each, 1 stud higher each, touching (no jump): { x, z, top V }
+local STONES = { { 146, -626, 26.8 }, { 142, -630, 27.6 }, { 142, -634, 28.4 }, { 138, -638, 29.2 } } -- EC (26) -> ED (30): one column each, < 1 stud up per stone
+-- grass islands inside the paved plazas (rule 5: plazas are not plain slabs): { x, z, radius }
+local LAWNS = { { 12, -560, 7 }, { 54, -584, 6 }, { 26, -538, 5 }, { -22, -636, 8 }, { -8, -668, 6 }, { 8, -476, 4 } }
+local PAVE = { Rim = 8, Wing = 22, Mat = "Concrete" } -- grass rim width on the wing tops (2026-10-10: 16 so the wings are gardens round a paved forecourt; the spine road is PAVEHALF below); Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
 -- 2026-10-10 (검수: the road was 76 wide and read as an empty beige slab): the PAVED part of the spine is narrow like the concept (road about
 -- one house wide), the rest of the terrace is grass garden for the props tool (balustrade, planters, topiary rows). { boundary z (north of it), paved half-width }
-local PAVEHALF = { { 0, 15, 15 }, { -444, 22, 16 }, { -524, 54, 68 }, { -606, 40, 52 } } -- { boundary z, west, east } (A23-112: uneven)
+local PAVEHALF = { { 0, 15, 15 }, { -444, 17, 13 }, { -524, 34, 42 }, { -606, 26, 20 } } -- { boundary z, west, east } (A23-112: uneven; 2nd pass rule 5: paved <= 35 %)
 local function paveHalf(z, u)
 	local h = PAVEHALF[1]
 	for i = 2, #PAVEHALF do
@@ -92,15 +111,15 @@ local function paveHalf(z, u)
 end
 -- grass mounds in the gardens (2026-10-10, A23-76 보강 "언덕도 있고 해야지"): { |x|, z, radius, height }, mirrored east/west, only where the top is grass
 -- (never on the paved road / plaza / forecourt); person-high or more so the town is not a flat slab
-local MOUNDS = { -- { x, z, radius, height } signed (A23-112: no mirrored pairs)
+local MOUNDS = { -- { x, z, radius, height } signed (A23-112: no mirrored pairs); only grass tops get them
 	{ -29, -376, 8, 3.4 }, { 33, -418, 10, 4.4 }, { -35, -352, 6, 3.0 }, { 38, -368, 7, 2.6 },
-	{ -46, -470, 11, 5.0 }, { 36, -500, 8, 4.0 }, { -40, -508, 7, 3.6 },
-	{ -73, -566, 5, 3.0 }, { 92, -548, 7, 3.4 },
-	{ -66, -640, 10, 5.0 }, { 88, -688, 9, 5.5 }, { -82, -676, 8, 4.0 },
-	{ -170, -350, 12, 5.0 }, { -174, -420, 11, 5.5 }, { -150, -345, 9, 4.0 }, { 182, -372, 13, 6.0 }, { 150, -432, 8, 3.6 }, { 96, -360, 6, 3.0 },
-	{ -176, -466, 11, 5.5 }, { -178, -526, 11, 5.0 }, { 160, -474, 9, 4.6 },
-	{ -180, -558, 6, 4.5 }, { -176, -604, 9, 5.0 }, { 186, -560, 10, 5.5 }, { 176, -620, 8, 4.0 }, { 118, -612, 7, 3.4 },
-	{ -178, -642, 10, 6.0 }, { -176, -684, 9, 5.5 }, { 180, -680, 7, 4.5 },
+	{ -40, -462, 11, 5.0 }, { 52, -478, 8, 4.0 }, { -18, -506, 7, 3.6 },
+	{ -20, -572, 6, 3.0 }, { 84, -548, 7, 3.4 }, { 72, -600, 9, 4.6 },
+	{ -82, -620, 10, 5.0 }, { 18, -690, 8, 4.0 }, { -84, -686, 7, 3.6 },
+	{ -170, -350, 12, 5.0 }, { -174, -416, 11, 5.5 }, { -150, -345, 9, 4.0 }, { 158, -372, 13, 6.0 }, { 96, -360, 6, 3.0 },
+	{ -150, -476, 10, 5.0 }, { 182, -470, 9, 4.6 }, { 126, -504, 7, 3.4 },
+	{ -136, -586, 6, 4.0 }, { 180, -600, 9, 5.0 }, { 150, -572, 7, 3.4 },
+	{ -176, -676, 9, 5.5 }, { 64, -682, 6, 3.0 },
 }
 local function moundHeight(x, z)
 	local add = 0
@@ -117,10 +136,20 @@ local CLIFF = { Skirt = 5, Jag = 4.2, JagScale = 27, Jag2 = 1.6, Jag2Scale = 9 }
 -- waterfalls (mirrored, one per side): a small spring basin on the wing top spills over its outer cliff into the sea
 -- (art/review/s2/place_HaloTown_sheet.jpg, shot 5). Terrain water does not flow, so the sheet of water standing against the
 -- cliff is the base; the props tool adds foam / mist on top. { wing, centre z }; Half = half width of the channel.
-local FALLS = { { "WB", -493 }, { "WD", -660 }, { "EC", -580 } } -- one wing each, west twice, east once (A23-112)
-local FALL = { Half = 4, Basin = 9, Drop = 0.4, Dip = 1.5 }
+-- cascades (2nd pass, 모동숲 rule 3): a spring basin on the wing top spills over the cliff into a pool on a ledge, the next drop
+-- starts from that pool a few studs to the side (zig-zag), the last one reaches the sea. Terrain water does not flow: each sheet is a
+-- column of water standing against the rock, each pool a basin. { name, edge x, edge z (on the wing's cliff top), outward dx, dz,
+-- wing top H, drops (4..8 studs each; the last one goes to the sea) }
+local CASCADES = {
+	{ "WB", -174, -500, -1, 0, 12, { 6 } }, -- 12 -> pool 6 -> sea
+	{ "EC", 172, -620, 0, -1, 26, { 7, 7, 6 } }, -- 26 -> 19 -> 12 -> 6 -> sea
+	{ "WD", -192, -664, -1, 0, 26, {} }, -- one straight drop (a single tall fall for contrast)
+	-- in the middle of the town, straight ahead from the gate (rule 7): tier 3 garden -> a stone basin -> a pool on tier 2 (no sea)
+	{ "SP", 4, -520, 0, 1, 20, { 5.5, 5.5 }, true },
+}
+local CAS = { Half = 4, PoolLen = 10, PoolHalf = 8, Side = 5, Basin = 9 }
 -- sea stacks / rock pillars in the canals and off the coast (not walkable; give the sea silhouette rocks): { x, z, radius, top V }
-local STACKS = {} -- none yet: the canals are only 12..22 studs wide (the far sea stacks are a backdrop prop, not terrain)
+local STACKS = {}
 
 ------------------------------------------------------------------ math helpers
 local function clamp01(t) return t < 0 and 0 or (t > 1 and 1 or t) end
@@ -215,6 +244,20 @@ local function pieces(x, z)
 		local d = math.sqrt((x - st[1]) ^ 2 + (z - st[2]) ^ 2) - st[3]
 		table.insert(cand, { d + jg * 0.6, st[4], "stack" })
 	end
+	for _, st in STONES do -- no jag: the stones must touch
+		table.insert(cand, { math.max(math.abs(x - st[1]), math.abs(z - st[2])) - 1.9, st[3], "stone" })
+	end
+	for _, c in CASCADES do -- the ledge pools below each drop
+		local lvl = c[6]
+		for k = 1, #c[7] do
+			lvl -= c[7][k]
+			local sx, sc = (x - c[2]) * c[4] + (z - c[3]) * c[5], (x - c[2]) * -c[5] + (z - c[3]) * c[4]
+			local off = (k % 2 == 1) and CAS.Side or 0
+			local s0 = 2 + (CAS.PoolLen + 2) * (k - 1)
+			local d = math.max(s0 - sx, sx - (s0 + CAS.PoolLen), math.abs(sc - off) - CAS.PoolHalf)
+			table.insert(cand, { d, lvl, "pool:" .. c[1] .. ":" .. k })
+		end
+	end
 	local best
 	for _, c in cand do
 		if c[1] < 0 then -- inside: the highest piece wins
@@ -233,25 +276,32 @@ local function column(x, z)
 	if x < G.LandMinX or x > G.LandMaxX or z < G.LandMinZ or z > G.LandMaxZ then return nil end
 	local e = math.min(x - G.LandMinX, G.LandMaxX - x, z - G.LandMinZ, G.LandMaxZ - z)
 	local h, sdf, kind = pieces(x, z)
-	if h == nil then return G.Bed, G.WaterTop, "Sand", "bed", e end
 	local u = x - cx(z)
 	local ax = math.abs(u)
-	local wf
-	if string.sub(kind, 1, 5) == "wing:" then
-		for _, f in FALLS do
-			if "wing:" .. f[1] == kind and math.abs(z - f[2]) <= FALL.Half then
-				for _, ww in WINGS do -- only the outer (sea) side of the wing spills (A23-112: one fall, not a pair)
-					if ww.Name == f[1] and ((ww.x0 + ww.x1) / 2 < 0) == (x < (ww.x0 + ww.x1) / 2) then wf = f end
+	-- cascades: the spring basin on the wing top, the water sheets over each drop, the ledge pools
+	for _, c in CASCADES do
+		local sx, sc = (x - c[2]) * c[4] + (z - c[3]) * c[5], (x - c[2]) * -c[5] + (z - c[3]) * c[4]
+		if sx > -CAS.Basin - 1 and sx < 2 + (CAS.PoolLen + 2) * #c[7] + 2 and math.abs(sc) < CAS.PoolHalf + CAS.Side + 2 then
+			local lvl, off = c[6], 0
+			if (kind == "wing:" .. c[1] or (c[1] == "SP" and kind == "spine")) and sx <= -2.5 and sx >= -CAS.Basin and math.abs(sc) <= CAS.Half then
+				return lvl - 1.5, lvl - 0.4, "Sand", "basin", e
+			end
+			for k = 1, #c[7] + 1 do
+				local s0 = (CAS.PoolLen + 2) * (k - 1) - (k == 1 and 2.5 or 0)
+				local nxt = c[7][k] and lvl - c[7][k] or nil
+				if sx > s0 and sx <= (CAS.PoolLen + 2) * (k - 1) + 2 and math.abs(sc - off) <= CAS.Half then
+					return nxt and nxt - 1.5 or G.Bed, lvl - 0.4, "Sand", "fall", e
 				end
+				if not nxt then break end
+				if k == #c[7] and c[8] then break end -- ends in its last pool (no drop to the sea)
+				lvl, off = nxt, (k % 2 == 1) and CAS.Side or 0
 			end
 		end
 	end
-	if wf then
-		if sdf > -2.5 and sdf < CLIFF.Skirt - 0.5 then -- the water sheet down the cliff to the sea
-			return G.Bed, h - FALL.Drop, "Sand", "fall", e
-		elseif sdf <= -2.5 and sdf >= -FALL.Basin then -- spring basin, a little below the rim
-			return h - FALL.Dip, h - FALL.Drop, "Sand", "basin", e
-		end
+	if h == nil then return G.Bed, G.WaterTop, "Sand", "bed", e end
+	if string.sub(kind, 1, 5) == "pool:" then -- a ledge pool: rock rim, water inside
+		if sdf <= -1.5 then return h - 1.5, h - 0.3, "Sand", "basin", e end
+		if sdf <= 0 then return h, nil, "Limestone", "cliff", e end
 	end
 	if sdf > 0 then -- cliff skirt: drops from the top to the bed over the skirt
 		local t = smooth(sdf / CLIFF.Skirt)
@@ -263,6 +313,9 @@ local function column(x, z)
 	if kind == "spine" then
 		local hw = spineWidth(z, u)
 		if ax <= math.min(paveHalf(z, u), hw - PAVE.Rim) and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
+		for _, l in LAWNS do -- grass islands inside the plazas (rule 5)
+			if tag == "plaza" and (x - l[1]) ^ 2 + (z - l[2]) ^ 2 < l[3] * l[3] then mat, tag = "Grass", "top" end
+		end
 		local onRamp = false
 		for i = 2, #SPINE.Tiers do
 			if rampAt(i, u) and math.abs(z - bnd(i, x, z)) < SPINE.RampLen / 2 then onRamp = true end
@@ -573,13 +626,17 @@ for _, b in BRIDGES do
 end
 st:SetAttribute("Bridges", table.concat(spots, ";"))
 local falls = {}
-for _, f in FALLS do
-	local w
-	for _, ww in WINGS do if ww.Name == f[1] then w = ww end end
-	local outer = (w.x0 + w.x1) / 2 < 0 and w.x0 or w.x1
-	table.insert(falls, string.format("%s,%d,%d,%.1f", f[1], outer, f[2], w.H))
+for _, c in CASCADES do
+	local lvl = c[6]
+	for k = 1, #c[7] + (c[8] and 0 or 1) do
+		local sx = (CAS.PoolLen + 2) * (k - 1)
+		local off = (k == 1) and 0 or (((k - 1) % 2 == 1) and CAS.Side or 0)
+		local fx, fz = c[2] + c[4] * sx - c[5] * off, c[3] + c[5] * sx + c[4] * off
+		table.insert(falls, string.format("%s_%d,%.1f,%.1f,%.1f,%.1f,%.1f", c[1], k, fx, fz, lvl, c[4], c[5]))
+		if c[7][k] then lvl -= c[7][k] end
+	end
 end
-st:SetAttribute("Waterfalls", table.concat(falls, ";")) -- name, x of the wing outer edge, z, top Y
+st:SetAttribute("Waterfalls", table.concat(falls, ";")) -- name_step, x, z of the sheet top, top Y, outward dx, dz
 local tiers = {}
 for _, t in SPINE.Tiers do table.insert(tiers, string.format("%d,%.1f,%d,%d", t[1], t[2], t[3], t[4])) end
 st:SetAttribute("Tiers", table.concat(tiers, ";"))

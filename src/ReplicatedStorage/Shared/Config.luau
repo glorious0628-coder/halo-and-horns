@@ -1297,6 +1297,108 @@ Config.Sky.Faces = {
 	Rt = "rbxassetid://113124022425103", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
 }
 
+-- A23-105 (CR-L20 amended): WarService's war-sky ClockTime tween - only while no day cycle runs (Config.DayCycle.Enabled
+-- false or its Start not done; a running DayCycleService owns the clock under every sky) - runs forward unless that is
+-- more than ClockForwardMax hours (then the short way back): a guard against a whole day spun in 3 s from a clock moved
+-- off the presets (8:00 -> Dawn 7.2 = 23.2 h). 18 keeps every change between the fixed presets forward exactly as before
+-- (the longest: Dawn 7.2 -> Eclipse 0.5 = 17.3 h; Neutral 15.3 -> Dawn 7.2 = 15.9 h).
+Config.Sky.ClockForwardMax = 18
+
+-- A23-105 (user 2026-10-10 "해가 지고 떴으면 좋겠고 ... 건물이나 구조물들도 해 방향에 따라서 그림자 달라지면"; 검수 defaults):
+-- the server turns the day. DayCycleService owns Lighting.ClockTime under every sky and the Neutral sky's look
+-- (Brightness, Ambient, OutdoorAmbient, ExposureCompensation, FogColor / FogStart / FogEnd; WarService leaves them alone
+-- while it runs) and writes them every Tick s, a small step each time, so the sun and the shadows move. A crown-war sky
+-- (Dawn / Eclipse; 검수 2026-10-10, the user's choice (b)) covers only the LOOK - WarService's light values, fog, tint,
+-- bloom, cloud colour - while ClockTime keeps turning under it (the sun and the shadows keep moving); when it ends the
+-- look eases over Config.Sky.TweenTime from the war look to the look of the time of day it is then, no jump.
+-- Pace = how fast the clock runs: each piece from its From hour (ClockTime) to the next one's in Seconds of real time; one
+-- day = their sum (1440 s = 24 min). Slowest by day (0.08 degrees of sun per 0.5 s write), sunrise / sunset a little
+-- faster (0.13 degrees: short, as asked), the night fastest (0.31 degrees). Tick 0.5 halves the step of each write (the
+-- long low-sun shadows at sunrise / sunset are what would show a step).
+-- Phases = GameState DayPhase by the clock shown (names only; WeatherFx: lamps on at Dusk / Night, off at Dawn / Day):
+-- Dawn from 6:00, sunrise, when the light is already half up (NightLevel ~0.5 - never lamps off under the full night
+-- look), Day 7-17, Dusk 17-19 (lamps on while the sun is low), Night 19-6. Real time: Dawn 60 s, Day 960 s (2/3 of the
+-- day), Dusk 120 s, Night 300 s.
+-- GameState DayPhase / NightLevel ALWAYS follow the ClockTime shown, under every sky (검수 2026-10-10 lens review): its
+-- Phases name and the Night share of the time-of-day look at it (Looks / Keys below), 2 decimals. A war sky never fixes
+-- them (the clock keeps turning under it: a Halo win at 17:30 runs into Dusk and Night, the lamps on; a Horns win at noon
+-- is Day / 0, no night lift under the sun). With the cycle not running (Enabled false / its Start not done) they follow
+-- WarService's shown clock (the fixed afternoon 15.3 = Day / 0, the Eclipse preset 0.5 = Night / 1).
+-- Looks by ClockTime: Keys (ascending hours) mark where a look is exact; in between it eases (smoothstep). A look takes
+-- what it leaves out from Config.Sky.Neutral, so Day = {} IS the approved toy-bright afternoon (one source; 8-16 exactly).
+-- Night = a moonlit blue kids can walk in (the Eclipse sky's Brightness 1.4 / exposure +0.35), FogStart / FogEnd closer.
+-- Floor = the least any written value may be (each colour channel; rain at night included). Night (0..1) per look ->
+-- GameState NightLevel (ZoneLook's night lift). StartClock: a new server starts at the approved afternoon. MaxStepHours:
+-- the offline test's guard for the biggest clock step of one write. SwitchService "DayCycle" off = the clock eases the
+-- short way to StartClock and stays, the look with it unless a war sky covers it (live once Config.Switches.Defs lists
+-- it; until then always on). Enabled = false: WarService keeps the fixed Neutral afternoon and the preset war clocks.
+-- Studio: DebugCommand ("", "Clock", 21) / ("", "DayState") - no player, no save (under a war sky only the clock jumps).
+Config.DayCycle = {
+	-- on: ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) landed with it (game dev 1;
+	-- tools/test_day_cycle.py checks the pair)
+	Enabled = true,
+	Tick = 0.5,
+	StartClock = 15.3,
+	MaxStepHours = 0.025,
+	Pace = {
+		{ From = 5, Seconds = 120 }, -- sunrise
+		{ From = 7, Seconds = 960 }, -- the day
+		{ From = 17, Seconds = 120 }, -- sunset
+		{ From = 19, Seconds = 240 }, -- the night
+	},
+	Phases = {
+		{ Name = "Dawn", From = 6 },
+		{ Name = "Day", From = 7 },
+		{ Name = "Dusk", From = 17 },
+		{ Name = "Night", From = 19 },
+	},
+	Keys = {
+		{ Hour = 5, Look = "Night" }, { Hour = 6.5, Look = "Dawn" }, { Hour = 8, Look = "Day" },
+		{ Hour = 16, Look = "Day" }, { Hour = 17.5, Look = "Dusk" }, { Hour = 19, Look = "Night" },
+	},
+	Looks = {
+		Day = {},
+		Dawn = { Brightness = 1.6, Ambient = Color3.fromRGB(86, 78, 86), OutdoorAmbient = Color3.fromRGB(112, 104, 114),
+			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(236, 196, 178), Night = 0.3 },
+		Dusk = { Brightness = 1.6, Ambient = Color3.fromRGB(88, 74, 82), OutdoorAmbient = Color3.fromRGB(116, 100, 108),
+			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(232, 168, 140), Night = 0.3 },
+		Night = { Brightness = 1.4, Ambient = Color3.fromRGB(70, 78, 106), OutdoorAmbient = Color3.fromRGB(98, 110, 148),
+			ExposureCompensation = 0.35, FogColor = Color3.fromRGB(46, 60, 100), FogStart = 120, FogEnd = 800, Night = 1 },
+	},
+	Floor = { Brightness = 1.2, Ambient = Color3.fromRGB(60, 66, 80), OutdoorAmbient = Color3.fromRGB(88, 96, 108),
+		ExposureCompensation = -0.3 },
+}
+
+-- A23-105 weather (rain before the beta, snow in winter): one state for the whole server, GameState Weather = "Clear" /
+-- "Rain" / "Snow" (the client WeatherFx draws the drops / flakes around each camera; Settings 'Weather effects' turns
+-- them off on a phone). Mostly clear: a clear spell lasts Clear s (random in the range), then a shower starts with Chance
+-- (else another clear spell) and lasts Rain s. Snow ONLY in the northern winter by the Korean date (KST = UTC +
+-- UtcOffsetHours, SnowMonths 12 / 1 / 2): then every shower is snow INSTEAD of rain (WinterChance, Snow s) - one kind of
+-- sky at a time, snow is the winter's treat (the 12/19 launch is in it) and rain at freezing would only be sleet; a
+-- shower running when the month turns changes kind at midnight KST (its look eases across). A new server starts clear
+-- for FirstClear s. One Random per server, seeded from os.time() and the JobId (a number Seed pins it). The light gets
+-- wet with the weather, eased over BlendSeconds: the sun x BrightK, exposure + ExpAdd, the fog greyer (Desat) and
+-- darker / lighter (FogK) and closer (FogEndK), the terrain clouds (when the place has them) toward Cover / Density.
+-- Expected: rain ~12% of the time (0.45 x 270 s per ~1020 s), winter snow ~19%. The haunted hollow's fog is ZoneLook's.
+-- SwitchService "Weather" off = always Clear (live once Config.Switches.Defs lists it). Studio: DebugCommand ("", "Weather",
+-- "Snow:120") - snow in any month there.
+Config.Weather = {
+	Enabled = true,
+	UtcOffsetHours = 9,
+	SnowMonths = { [12] = true, [1] = true, [2] = true },
+	FirstClear = { 300, 600 },
+	Clear = { 600, 1200 },
+	Chance = 0.45,
+	WinterChance = 0.6,
+	Rain = { 180, 360 },
+	Snow = { 240, 480 },
+	BlendSeconds = 20,
+	Looks = {
+		Rain = { BrightK = 0.8, ExpAdd = -0.05, Desat = 0.6, FogK = 0.85, FogEndK = 0.7, Cover = 0.85, Density = 0.55 },
+		Snow = { BrightK = 0.9, ExpAdd = 0.05, Desat = 0.5, FogK = 1.1, FogEndK = 0.75, Cover = 0.8, Density = 0.45 },
+	},
+}
+
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit
 -- positions for FlashTime (original colours stored once per flash start); crit and my Release numbers pop
 -- PopScale -> 1.0 over PopTime; numbers spawned within MergeRadius studs and MergeWindow seconds merge into one label.
@@ -1408,6 +1510,27 @@ function Config.HudReveal.Shows(kind, s)
 	elseif kind == "Pouch" then
 		return (tonumber(s.Carried) or 0) > 0
 	end
+	return true
+end
+
+-- A23-113 ③ (user 2026-10-10 "마감 전 넣자"): the bottom menu tiles show when they are needed - the bag and the map
+-- from the start, the hero (stats) after the first level up, the skills at the first skill (Config.Skills.Unlock.Q),
+-- the pet once I have a pet, the ranking once the first chapter's main quests are done (FirstChapterLast). A tile that
+-- comes in during play pops in once (no pop with reduced motion), never with a text notice. The quick slots always
+-- show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
+Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet", Ranking = "Chapter" }
+Config.HudReveal.FirstChapterLast = "M1_4"
+function Config.HudReveal.TileShows(id, s)
+	s = type(s) == "table" and s or {}
+	local rule = Config.HudReveal.Tiles[id]
+	if rule == nil then return true end
+	if rule == "LevelUp" then return (tonumber(s.Level) or 1) >= 2 end
+	if rule == "Skill" then
+		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
+		return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q
+	end
+	if rule == "Pet" then return s.HasPet == true end
+	if rule == "Chapter" then return s.ChapterDone == true end
 	return true
 end
 
@@ -3416,20 +3539,25 @@ table.insert(Config.StoryQuests.Subs, "D0")
 
 -- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
 -- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
--- StoryQuestService.Event "FirstKO"), then buys a potion, drinks it from the quick slot and wins the rematch. Four plain rows, no
--- popups, no tips, no closing toast (A23-99). Event steps wait for a named happening (Config.StoryQuests.Events): FirstKO (the KO
--- itself), PotionBought (ShopService.BuyPotion), PotionUsed (VitalsService, a drink from the quick slot or the bag). Past = a step
--- whose happening was seen before it opened passes at once (a player who ran ahead is never stuck). TopUpGold = the carried gold
--- is topped up to this much when the step opens (once; two potions at 25 each); Personal = only the personal King counts.
-Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, PotionUsed = true }
+-- StoryQuestService.Event "FirstKO"), then buys a potion, puts it in a quick slot (a new player's slots start empty, 검수 10/10:
+-- "물약 사고 슬롯에 장착하는 퀘스트"), drinks it from there and wins the rematch. Five plain rows, no popups, no tips, no closing
+-- toast (A23-99). Event steps wait for a named happening (Config.StoryQuests.Events): FirstKO (the KO itself), PotionBought
+-- (ShopService.BuyPotion), QuickSlotSet (QuickSlotService: an item put into a slot), PotionUsed (VitalsService, a drink from the
+-- quick slot or the bag). Past = a step whose happening was seen before it opened passes at once (a player who ran ahead is never
+-- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
+-- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
+-- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
 	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
 	Steps = {
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
-		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "Crossroads", TopUpGold = 50,
+		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,
 			Obj = { Type = "Event", Name = "PotionBought", Past = true } },
-		{ Text = "Drink a potion from your quick slot", ShortName = "Drink potion",
+		{ Text = "Put the potion in a quick slot", ShortName = "Quick slot", Guide = "QuickSlot",
+			Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },
+		{ Text = "Drink it from your quick slot", ShortName = "Drink potion", Guide = "QuickSlot",
 			Obj = { Type = "Event", Name = "PotionUsed", Past = true } },
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow",
 			Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },
@@ -3440,19 +3568,19 @@ table.insert(Config.StoryQuests.Subs, "KO1")
 -- game dev 2 (the personal King) reads these: the quest, the step the King's first hop waits at, the step of the rematch.
 -- SipAttr = the player attribute (boolean) StoryQuestService keeps true while a quest step waits for a potion drink: game dev 1's
 -- VitalsUI then lets a full HP / MP bar be used (the server counts a practice sip and keeps the potion)
-Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 4, SipAttr = "PotionSip" }
+Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSip" }
 
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
 -- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
 --   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
---   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
---   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
--- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json: the plaza terrace is Y 20 at z -524..-606, the fountain
--- (0,-565), the four shops x +-44 facing the street: bakery (-44,-546), juice (44,-546), flowers (-44,-584), potions
--- (44,-584); a shop is 22.8 x 14.3 studs, so its front is at x +-37): Bright at the foot of the plaza stairs, Sir Gleam beside
--- the gate road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller 3 studs in front of their
--- shop. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
+--   Merchant = a potion stall seller (tag PotionMerchant; on since main took game dev 2's #34: ShopService sells at every
+--   tagged seller); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
+-- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json, A23-112 asymmetric layout: the plaza terrace is Y 20 at z
+-- -524..-606, the fountain (8.18,-566) 16 x 16, the four shops each at its own angle (a shop is 22.8 x 14.3 studs, its front
+-- = kit -Z turned by its yaw): Bright just south of the first plaza stairs (their foot, z -424), Sir Gleam beside the gate
+-- road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
+-- face, Folk4 beside the fountain. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
 -- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
 Config.TownNpcs = {
 	Enabled = true,
@@ -3465,20 +3593,20 @@ Config.TownNpcs = {
 	RetryDelay = 5, -- seconds between tries
 	MaxCoord = 3000,
 	List = {
-		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
+		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(8, 0, -424), Look = Vector3.new(8, 0, -380),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546), Y = 20,
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(63, 0, -567.5), Look = Vector3.new(72.5, 0, -564.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584), Y = 20,
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-41.5, 0, -598.5), Look = Vector3.new(-51, 0, -594.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-17, 0, -553), Look = Vector3.new(-27, 0, -550.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565), Y = 20,
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(24, 0, -560), Look = Vector3.new(8, 0, -566), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false, Y = 20,
-			At = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 20,
+			At = Vector3.new(44.5, 0, -594), Look = Vector3.new(34.5, 0, -595.5) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -3963,6 +4091,7 @@ Config.RateLimits = {
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
+	SetQuickSlot = 0.2, -- A23-109: one quick-slot fill / empty / swap (QuickSlotService)
 }
 
 ----------------------------------------------------------------- king finisher card (게임성 개발 2, 2026-10-08)
@@ -4359,6 +4488,8 @@ Config.Switches = {
 		Halloween = { Type = "Bool", Default = true }, -- Config.Halloween.Enabled follows it
 		CrownWar = { Type = "Bool", Default = true }, -- war points and rounds
 		Goose = { Type = "Bool", Default = true }, -- no new goose
+		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
+		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
 	},
 }
 
@@ -5717,7 +5848,7 @@ Config.UIArt = {
 		-- the faction pick screen (이미지 생성 2 b3ed558, 검수 OK 10/09): the sky behind the cards (gold left, red dusk right,
 		-- the middle / bottom third left calm) and the two mascots beside the cards
 		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
-		FacMascotHaloA = { Id = "rbxassetid://98817628227692", Size = Vector2.new(617, 1024) },
+		FacMascotHaloA = { Id = "rbxassetid://118792983602547", Size = Vector2.new(612, 1024) }, -- C (hair, user pick 10/10; was 98817628227692)
 		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
 		-- Halo town shop signs (이미지 생성 2, 검수 OK 10/10; wall arm + chains + round plate, no words): the shop models' sign
 		-- SurfaceGui (메인 반영 1 / 이미지 생성 1). The potion sign only at Halo town's real potion merchant
@@ -6724,7 +6855,19 @@ Config.Analytics.Funnels = {
 	Social = { Once = true, Steps = { "InviteSeen", "InvitePrompt", "InviteSent", "InviteeJoined", "PlayedTogether10m" } },
 	KingDiary = { Once = true, Steps = { "Page1", "Page3", "Page6", "Page9" } },
 	PassShop = { Steps = { "ShopOpen", "PassView", "PurchasePrompt", "Bought" } },
+	-- A23-113 #2: the first KO of the King's Hop (KO1), once per account; the steps are the quest's own five, in order:
+	-- the King's hit, a potion bought, put in a quick slot, drunk, the King beaten (a step an early action already passed
+	-- still logs, in order, when the quest passes it)
+	FirstKO = { Once = true, Steps = { "KO", "PotionBought", "SlotSet", "PotionUsed", "KingWon" } },
 }
+-- A23-113 #2: story quests whose steps are a funnel's steps (quest id -> funnel name; step i done = Steps[i]; StoryQuestService.StepDone)
+Config.Analytics.QuestFunnels = { KO1 = "FirstKO" }
+-- A23-113 #2: minutes of play (data.PlaytimeSeconds) it took to reach Level (the custom event MinutesToLv5, once per account,
+-- when the level is reached; field 1 = the faction)
+Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }
+-- A23-113 #5: every PvP KO -> the custom event PvPResult (value = the winner's faction size-scale multiplier, 1.0-1.6; fields =
+-- winner faction, loser faction, "<winner level band>><loser level band>"), at most one per killer per this many seconds
+Config.Analytics.PvPResultGap = 1
 -- c->s "ClientMetric"(id, arg?): what only the client sees. The rule for the one argument: "None" (no argument),
 -- "Count" (a whole number 1..50), "Source" (one of InviteSources), "Pass" (a Config.GamePasses / Config.Looks id or
 -- "Look"), or a list of the allowed strings. Anything else is ignored.

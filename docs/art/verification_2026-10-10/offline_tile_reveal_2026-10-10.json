@@ -1,0 +1,93 @@
+{
+  "checks": 21,
+  "failed": 0,
+  "static": [
+    {
+      "check": "Level / SkillSlots / EquippedPet re-pick at once",
+      "ok": true
+    },
+    {
+      "check": "... through PickTiles + layout",
+      "ok": true
+    },
+    {
+      "check": "the 1 s refresh still re-picks",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "every tile always shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a shown tile can go away",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "pops at the join",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no pop at all",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the join timer starts only at the first pop",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "pops with reduced motion",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pet list ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty pet list counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a later chapter row ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "chapter 1 rows count",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "server skill slots ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hero tile from the start",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the skills tile one level early",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ranking from the start",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Bottom menu tiles show when needed (게임성 개발 1, SPEC A23-113 ③, 검수 2026-10-10), offline.\n\nRuns, in the official Luau CLI, the CURRENT HUD L.PickTiles / L.RevealReady / L.RevealState / L.TilePop cut out of\nHUD.luau with the CURRENT Config.luau (Config.HudReveal.TileShows): a new player sees Bag and Map only; the hero\n(Character) comes at the first level up, the skills at the first skill (SkillSlots >= 1 or Config.Skills.Unlock.Q), the\npet with a pet (following, or any in the pet list), the ranking once story:M1_4 is in the quest book's Done (or a later\nchapter's main row shows); a tile shown once stays this session; a tile that comes in during play pops in once (a\nUIScale), never at the join (first 3 s after DataLoaded) and never with reduced motion; the row's Count still trims by\nKeep. Static: Level / SkillSlots / EquippedPet changes re-pick at once. Mutations: each must be caught.",
+  "studioCalls": 0
+}

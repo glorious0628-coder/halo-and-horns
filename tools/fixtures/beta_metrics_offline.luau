@@ -31,6 +31,9 @@ local function metricsWorld(o)
 	w.Reg.InviteService = { InviteJoined = Signal.new(), PlayedTogether = Signal.new(), WentToFriend = Signal.new() }
 	w.Reg.DiaryService = { PageOpened = Signal.new(), CandyTraded = Signal.new() }
 	w.Reg.MonetizationService.PassBought = Signal.new()
+	w.Reg.StoryQuestService.StepDone = Signal.new() -- A23-113 #2 (the steps of a funnel quest)
+	w.Reg.PvPService = { PlayerKO = Signal.new() } -- A23-113 #5
+	w.Reg.JusticeService = { GetFactionScale = function(f) return f == "Halo" and 1.3 or f == "Horns" and 1.05 or 1 end }
 	local env = w:Env()
 	env.task = setmetatable({ wait = function(t) return coroutine.yield(t) end }, { __index = env.task })
 	local keys = { CustomField01 = { Name = "CustomField01" }, CustomField02 = { Name = "CustomField02" },
@@ -91,8 +94,12 @@ runGroup("config", function()
 	local names = {}
 	for name in A.Funnels do table.insert(names, name) end
 	table.sort(names)
-	check(table.concat(names, ",") == "DailyVisit,KingDiary,LongRoad,PassShop,Social" and #names + 1 <= 10,
-		"5 funnels + the onboarding one (Roblox: at most 10)", table.concat(names, ","))
+	check(table.concat(names, ",") == "DailyVisit,FirstKO,KingDiary,LongRoad,PassShop,Social" and #names + 1 <= 10,
+		"6 funnels + the onboarding one (Roblox: at most 10)", table.concat(names, ","))
+	check(table.concat(A.Funnels.FirstKO.Steps, ",") == "KO,PotionBought,SlotSet,PotionUsed,KingWon" and A.Funnels.FirstKO.Once == true
+		and A.QuestFunnels.KO1 == "FirstKO" and #A.Funnels.FirstKO.Steps == #C.StoryQuests.Defs.KO1.Steps,
+		"FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)", show(A.Funnels.FirstKO))
+	check(A.TimeToLevel.Level == 5 and A.TimeToLevel.Event == "MinutesToLv5" and A.PvPResultGap >= 1, "MinutesToLv5 at Lv5; PvPResult at most once a second per killer", show(A.TimeToLevel))
 	-- review 2026-10-08: Roblox completes the earlier steps of a later one, so only steps that always come in order
 	check(table.concat(A.Funnels.LongRoad.Steps, ",") == "Level15,Level25,Level30,Level40,Level50,Rebirth1"
 		and A.Funnels.LongRoad.Once == true, "LongRoad: the level path (6 steps), once per account", show(A.Funnels.LongRoad))
@@ -592,6 +599,91 @@ runGroup("no AnalyticsService (Studio)", function()
 	w:Five()
 	w:Leave(p)
 	check(#w.Funnel == 0 and #w.Econ == 0, "nothing logged, nothing breaks", "")
+end)
+
+------------------------------------------------------------------ A23-113 (사용자 "마감 전 넣자"): FirstKO funnel, minutes to Lv5, PvP result
+runGroup("FirstKO funnel (A23-113 #2)", function()
+	local w = metricsWorld()
+	local p = hero(w, 31, { Data = { Level = 4 } })
+	local sd = w.Reg.StoryQuestService.StepDone
+	sd:Fire(p, "KO1", 1)
+	check(w:Steps(p, "FirstKO") == "1:KO", "the King's hit (step 1 done) = KO", w:Steps(p, "FirstKO"))
+	sd:Fire(p, "KO1", 1)
+	check(w:Steps(p, "FirstKO") == "1:KO", "a step logs once per account", w:Steps(p, "FirstKO"))
+	for step = 2, 5 do sd:Fire(p, "KO1", step) end
+	check(w:Steps(p, "FirstKO") == "1:KO,2:PotionBought,3:SlotSet,4:PotionUsed,5:KingWon", "the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon", w:Steps(p, "FirstKO"))
+	check(w.Data[p].Telemetry.F.FirstKO.KO == true, "saved in data.Telemetry.F (once per account)", show(w.Data[p].Telemetry))
+	-- other quests, a step past the end, a bad quest id: nothing
+	local q = hero(w, 32, { Data = { Level = 4 } })
+	sd:Fire(q, "M1_2", 1)
+	sd:Fire(q, "KO1", 6)
+	sd:Fire(q, "KO1", 0)
+	sd:Fire(q, nil, 1)
+	sd:Fire(q, "KO1", nil)
+	check(w:Steps(q, "FirstKO") == "", "another quest / a step outside 1-5 / bad arguments log nothing", w:Steps(q, "FirstKO"))
+	-- a step passed out of order by the quest (Past) still logs in the quest's order, one at a time
+	sd:Fire(q, "KO1", 3)
+	check(w:Steps(q, "FirstKO") == "3:SlotSet", "the funnel step index is the step's own number", w:Steps(q, "FirstKO"))
+	-- the other players' funnels stay apart
+	check(w:Steps(p, "FirstKO") == "1:KO,2:PotionBought,3:SlotSet,4:PotionUsed,5:KingWon", "players never share a funnel", w:Steps(p, "FirstKO"))
+end)
+
+local function brief(list) -- a readable line of logged events (never the player: it points back at the world)
+	local out = {}
+	for _, e in list do table.insert(out, tostring(e.Value) .. "|" .. tostring(e.F and e.F.CustomField01) .. "|" .. tostring(e.F and e.F.CustomField02) .. "|" .. tostring(e.F and e.F.CustomField03)) end
+	return table.concat(out, ";")
+end
+
+runGroup("minutes to Lv5 (A23-113 #2)", function()
+	local w = metricsWorld()
+	local p = hero(w, 41, { Data = { Level = 4, PlaytimeSeconds = 752, Faction = "Horns" } })
+	local up = w.Reg.ProgressionService.LeveledUp
+	up:Fire(p, 4)
+	check(#w:Named("MinutesToLv5", p) == 0, "Lv4: nothing", "")
+	up:Fire(p, 5)
+	local ev = w:Named("MinutesToLv5", p)
+	check(#ev == 1 and ev[1].Value == 13 and field(ev[1], 1) == "Horns", "reaching Lv5: the minutes of play (752 s = 13 min) and the faction", brief(ev))
+	up:Fire(p, 5)
+	up:Fire(p, 6)
+	check(#w:Named("MinutesToLv5", p) == 1 and w.Data[p].Telemetry.TimeToLevel == true, "once per account", tostring(#w:Named("MinutesToLv5", p)))
+	-- a very fast start is at least 1 minute; nothing for a bad level
+	local q = hero(w, 42, { Data = { Level = 4, PlaytimeSeconds = 5 } })
+	up:Fire(q, 5)
+	check(#w:Named("MinutesToLv5", q) == 1 and w:Named("MinutesToLv5", q)[1].Value == 1, "under half a minute still counts 1", brief(w:Named("MinutesToLv5", q)))
+	local r = hero(w, 43, { Data = { Level = 4, PlaytimeSeconds = 900 } })
+	up:Fire(r, nil)
+	up:Fire(r, "5")
+	up:Fire(r, 0 / 0)
+	check(#w:Named("MinutesToLv5", r) == 0, "a bad level logs nothing", "")
+end)
+
+runGroup("PvP result line (A23-113 #5)", function()
+	local w = metricsWorld()
+	local a = hero(w, 51, { Data = { Level = 12, Faction = "Halo" }, Attrs = { Faction = "Halo", Level = 12 } })
+	local b = hero(w, 52, { Data = { Level = 5, Faction = "Horns" }, Attrs = { Faction = "Horns", Level = 5 } })
+	local ko = w.Reg.PvPService.PlayerKO
+	ko:Fire(a, b, { Kind = "Bully" })
+	local ev = w:Named("PvPResult", a)
+	check(#ev == 1 and ev[1].Value == 1.3 and field(ev[1], 1) == "Halo" and field(ev[1], 2) == "Horns" and field(ev[1], 3) == "10-24>1-9",
+		"the winner's faction + scale (Halo 1.3), the loser's faction, both level bands", brief(ev))
+	check(#w:Named("PvPResult", b) == 0, "logged once, under the winner", "")
+	ko:Fire(a, b, {})
+	check(#w:Named("PvPResult", a) == 1, "a second KO inside the same second is not logged again (per killer)", tostring(#w:Named("PvPResult", a)))
+	w:Advance(2)
+	ko:Fire(b, a, {})
+	local back = w:Named("PvPResult", b)
+	check(#back == 1 and back[1].Value == 1.05 and field(back[1], 1) == "Horns" and field(back[1], 2) == "Halo" and field(back[1], 3) == "1-9>10-24",
+		"the other way: Horns wins (1.05 scale, 1-9 over 10-24)", brief(back))
+	-- Neutral / unknown side: scale 1; no Justice double: scale 1
+	local n = hero(w, 53, { Data = { Level = 30, Faction = "Neutral" }, Attrs = { Faction = "Neutral", Level = 30 } })
+	w:Advance(2)
+	ko:Fire(n, a, {})
+	local nn = w:Named("PvPResult", n)
+	check(#nn == 1 and nn[1].Value == 1 and field(nn[1], 1) == "Neutral" and field(nn[1], 3) == "25-49>10-24", "Neutral: scale 1", brief(nn))
+	-- bad arguments never throw
+	ko:Fire(nil, nil, nil)
+	ko:Fire("a", "b", {})
+	check(#w:Named("PvPResult") == 3, "bad killer / victim arguments log nothing", tostring(#w:Named("PvPResult")))
 end)
 
 finish()

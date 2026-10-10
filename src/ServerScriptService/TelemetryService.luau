@@ -24,6 +24,11 @@
 --   FriendJoin / GoToFriend, DiaryPage / CandyTrade, NotifyOptIn, InviteSent / WelcomeBackGo (c->s "ClientMetric"),
 --   PromptNearKO, and at leave KOLeave60 + LeaveContext. Gold goes to the economy dashboard too (LogEconomyEvent,
 --   currency "Gold", the sums per source / sink every Config.Analytics.EconomyFlush s and at the leave).
+--   A23-113 (게임성 개발 3, 2026-10-10; docs/design/player_reactions_research_2026-10-10.md): the FirstKO funnel (once per
+--   account; the five steps of the King's Hop quest KO1 in order: KO, PotionBought, SlotSet, PotionUsed, KingWon - fed by
+--   StoryQuestService.StepDone through Config.Analytics.QuestFunnels), MinutesToLv5 (minutes of play when Lv5 is reached, once per
+--   account, field = faction) and PvPResult (every PvP KO: value = the winner side's size-scale multiplier, fields = winner
+--   faction, loser faction, level bands "<winner>><loser>")
 --   Phone / PC performance (게임성 개발 3, 2026-10-09; docs/design/phone_perf_server_2026-10-09.md): c->s ClientMetric "Perf"
 --   { D device, F average fps, W lowest second, M memory MB, Q quality } every Config.Analytics.Perf.Every s -> PerfFps /
 --   PerfFpsLow (W under Perf.Low) / PerfMem with fields device, zone, Q<level>; its own limit (MinGap s), not the shared budget.
@@ -248,6 +253,7 @@ end
 -- LongRoad steps the save already passed (an old save catches up). Only the level path (always in order) is a funnel;
 -- the story's chapter ends and the first ruins daily are the custom events ChapterEnd / RuinsDaily.
 local ROAD_LEVELS = { 15, 25, 30, 40, 50 }
+local QUEST_FUNNELS = A.QuestFunnels or {} -- Config.Analytics.QuestFunnels (A23-113: KO1 = FirstKO)
 local function roadCatchUp(player, data)
 	local level = math.floor(num(data.Level, 1))
 	for _, at in ROAD_LEVELS do
@@ -853,6 +859,38 @@ function TelemetryService.Start()
 	end)
 	connect("DiaryService", "CandyTraded", function(player, id, candy)
 		TelemetryService.Custom(player, "CandyTrade", num(candy), tostring(id))
+	end)
+	-- A23-113 #2: the steps of a quest that is a funnel (KO1 = FirstKO), logged as the quest passes them, so they stay in order
+	connect("StoryQuestService", "StepDone", function(player, quest, step)
+		local name = type(quest) == "string" and QUEST_FUNNELS[quest] or nil
+		local def = name and T.Funnels[name]
+		local stepName = def and type(def.Steps) == "table" and def.Steps[math.floor(num(step))] or nil
+		if stepName then funnel(player, name, stepName) end
+	end)
+	-- A23-113 #2: how many minutes of play it took to reach Lv5 (once per account, when the level is reached)
+	connect("ProgressionService", "LeveledUp", function(player, level)
+		local rule = A.TimeToLevel
+		if type(rule) ~= "table" or type(level) ~= "number" or math.floor(num(level)) ~= math.floor(num(rule.Level)) then return end
+		local data = getData(player)
+		if not data then return end
+		local tel = telemetryOf(data)
+		if tel.TimeToLevel then return end
+		tel.TimeToLevel = true -- saved first: once per account
+		local minutes = math.max(1, math.floor(num(data.PlaytimeSeconds) / 60 + 0.5))
+		TelemetryService.Custom(player, tostring(rule.Event or "MinutesToLv5"), minutes, tostring(data.Faction))
+	end)
+	-- A23-113 #5: every PvP KO, the winner's and the loser's side and level band (who wins, between which levels, how much the
+	-- size scale helped); never a name or an id
+	connect("PvPService", "PlayerKO", function(killer, victim)
+		if typeof(killer) ~= "Instance" or typeof(victim) ~= "Instance" or throttled(killer, "pvpresult", num(A.PvPResultGap, 1)) then return end
+		local kf, vf = tostring(killer:GetAttribute("Faction")), tostring(victim:GetAttribute("Faction"))
+		local scale = 1
+		local justice = S.JusticeService
+		if type(justice) == "table" and type(justice.GetFactionScale) == "function" then
+			local ok, v = pcall(justice.GetFactionScale, kf)
+			if ok then scale = math.floor(num(v, 1) * 100 + 0.5) / 100 end
+		end
+		TelemetryService.Custom(killer, "PvPResult", scale, kf, vf, bandOf(killer:GetAttribute("Level")) .. ">" .. bandOf(victim:GetAttribute("Level")))
 	end)
 	connect("StoryQuestService", "QuestDone", function(player, id)
 		local ch = CHAPTER_END[id]

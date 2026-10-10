@@ -5,16 +5,16 @@
 ## 누가 어디에
 | Id | 무엇 | 자리 (X, Z) | 태그 / 속성 / 프롬프트 |
 |---|---|---|---|
-| Bright | 이야기 NPC | (18, -452) | `StoryNpc`, NpcId=Bright, "Talk" 프롬프트(G), StoryNpcId=Bright |
+| Bright | 이야기 NPC | (8, -424) — 첫 플라자 계단 발치(A23-112), 문 쪽을 봄 | `StoryNpc`, NpcId=Bright, "Talk" 프롬프트(G), StoryNpcId=Bright |
 | Gleam | 이야기 NPC (Sir Gleam) | (-10, -372) | 위와 같음, NpcId=Gleam |
-| Folk1~4 | 주민 (서 있기만) | 광장 단(Y 20): Folk1 주스(34,-546), Folk2 꽃집(-34,-584), Folk3 빵집(-34,-546) — 각자 가게 앞 3스터드, Folk4 분수 옆(16,-560) | `TownFolk`, FolkId=Folk1~4, 프롬프트 없음 |
-| PotionHalo | 빛 마을 물약 상인 | 물약 가게 앞(34, -584), 광장 단 | `PotionMerchant`, HHC_PotionMerchant, 프롬프트=`Config.Vitals.PotionMerchantPrompt`. **Enabled=false** (개발 2의 ShopService 다중 상인이 들어오면 켠다) |
+| Folk1~4 | 주민 (서 있기만) | 광장 단(Y 20), 각자 가게 얼굴 앞 5스터드(가게마다 yaw가 달라 가게 앞 방향 = 키트 -Z를 yaw만큼 돌린 쪽): Folk1 주스(63,-567.5), Folk2 꽃집(-41.5,-598.5), Folk3 빵집(-17,-553), Folk4 분수 옆(24,-560) | `TownFolk`, FolkId=Folk1~4, 프롬프트 없음 |
+| PotionHalo | 빛 마을 물약 상인 | 물약 가게 앞 5스터드(44.5, -594), 광장 단 | `PotionMerchant`, HHC_PotionMerchant, 프롬프트=`Config.Vitals.PotionMerchantPrompt`. **켜짐**(#34로 ShopService가 태그된 모든 상인에게 팖) (개발 2의 ShopService 다중 상인이 들어오면 켠다) |
 | Otto | 대장장이 (Crossroads, 장식) | 모루 뒤 4 | 가게 프롬프트는 모루에 그대로 |
 
 - 몸은 기본 HumanoidDescription(옷 색만 다름, 가리는 옷·새 그림 없음)으로 만들고 앵커·충돌 없음·스크립트 없음. 나중에 재제작 P4 모델이 오면 같은 Name으로 갈아 끼운다(같은 이름이 이미 있으면 재사용하고 태그·속성·프롬프트만 고친다, 자기 것(HHC_TownNpc)만 다룬다).
 - 높이: X/Z만 설정에 있고 Y는 위에서 아래로 쏘는 ray로 찾는다. 경사·벽이면 "땅 없음" → 그 NPC는 건너뛰고 경고. **기대 높이(`Y`)가 있는 칸(광장 단 20)은 그 ±`YTol`(4) 안의 바닥만 땅으로 본다**: 지붕·발코니·받침대 윗면·벽 옆면은 그 아래로 ray를 다시 쏜다(0.5 아래부터, 최대 `RayTries` 8번). 기대 높이가 없는 칸(브라이트·글림)은 처음 맞은 바닥이 땅.
 - 몸 만들기(`CreateHumanoidModelFromDescription`)가 실패하거나 준비가 실패하면 `RetryDelay`(5초) 뒤 다시, 모두 `Retries`(3)번까지(땅이 없거나 이름이 남의 것이면 다시 안 함). 끝내 못 만들면 "given up" 경고.
-- 자리 근거: `docs/design/halo_layout_plan_2026-10-10.json`(가게 4곳: 빵집 (-44,-546)·주스 (44,-546)·꽃집 (-44,-584)·물약 (44,-584), 가게 앞면은 x ±37). 시험이 이 json을 읽어 각 사람이 자기 가게 앞 2~8스터드에 서 있는지 본다.
+- 자리 근거: `docs/design/halo_layout_plan_2026-10-10.json`(A23-112 비대칭 판: 가게마다 자기 yaw, 가게 앞 = 키트 -Z를 yaw만큼 돌린 쪽, 깊이 7.5×s/2). 시험이 이 json을 읽어 각 사람이 가게 얼굴 앞 2~8스터드, 옆으로 4 안, Y 20인지 본다. 분수(8.18,-566, 16×16)와 첫 계단 발치(Bright)는 json 값에서 손으로 잡았다 — 스튜디오 사진으로 한 번 확인 필요.
 - `MapBuilder.Build`는 멈추지 않는다: 아바타 만들기는 Build가 끝난 뒤 한 작업에서 한다.
 
 ## 대화 연결

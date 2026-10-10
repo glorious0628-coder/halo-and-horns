@@ -24,10 +24,12 @@ OUT = ROOT / "docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.jso
 JOINTS = {"Waist", "Neck", "RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow", "LeftWrist"}
 STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST_DELAY", "Mage"),
           "PaladinRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "LightMageRelease": ("RELEASE_CONTACT.Mage", "Mage")}
+# Z / X (A23-108 ⑤, off until the 10/20 check): one strike key each, inside the clip
+ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX"}
 
 
 def clip(fx: str, name: str):
-    m = re.search(r"\t\t" + name + r" = \{ Len = ([\d.]+), Keys = \{\n(.*?)\n\t\t\} \},", fx, re.S)
+    m = re.search(r"\t\t" + name + r" = \{ Len = ([\d.]+), Keys = \{[^\n]*\n(.*?)\n\t\t\} \},", fx, re.S)
     if not m:
         return None
     keys = []
@@ -50,12 +52,15 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
     side = fx[fx.find("\tSIDE_CLIPS = {"):fx.find("\tCLASS_CLIPS = {")]
     rows = []
     for key, body in re.findall(r"(\w+_\w+) = \{ ([^}]*) \}", side):
-        for move, name in re.findall(r"(Swing|Release) = \"(\w+)\"", body):
+        for move, name in re.findall(r"(Swing|Release|Z|X) = \"(\w+)\"", body):
             rows.append((key, name))
     grips = cfg[cfg.find("Config.ClassGrips = {"):cfg.find("function Config.ClassGripKey")]
     out.append(("Halo's Paladin and Light Mage have their own swing", ("Warrior_Halo", "PaladinSwing") in rows
                 and ("Mage_Halo", "LightMageSwing") in rows))
     out.append(("... and their own Q (release)", ("Warrior_Halo", "PaladinRelease") in rows and ("Mage_Halo", "LightMageRelease") in rows))
+    out.append(("... and their own Z / X; the Ranger's Z is the solved draw", all((k, n) in rows for k, n in [
+        ("Warrior_Halo", "PaladinZ"), ("Warrior_Halo", "PaladinX"), ("Mage_Halo", "LightMageZ"), ("Mage_Halo", "LightMageX"),
+        ("Archer_Halo", "ArcherSwing")])))
     fit = num(fx, r"SWING_FIT = ([\d.]+)")
     for key, name in rows:
         out.append((f"{key} is a ClassGrips row", f"\t{key} = {{" in grips))
@@ -68,7 +73,7 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
         block = cfg[cfg.find(f"\t{cls} = {{", cfg.find("Config.Classes = {")):]
         interval = num(block, r"SwingInterval = ([\d.]+)")
         limit = (interval * fit) if interval is not None and fit is not None else None
-        if name.endswith("Release"):
+        if name.endswith("Release") or name in ZX:
             limit = 0.8  # a release clip is sped up to RELEASE_ANIM_TIME (0.75 s); keep its own length near that
         out.append((f"{name} fits its move (swing <= SwingInterval x SWING_FIT, release <= 0.8 s)", limit is not None
                     and length <= limit + 1e-9))
@@ -91,15 +96,25 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
                 t = num(fx, const + r" = ([\d.]+)")
             strike = [kt for kt, ease, _ in keys if ease == "In"]
             out.append((f"{name}: the strike key on {const}", t is not None and len(strike) == 1 and abs(strike[0] - t) < 1e-9))
+    for name in ZX:
+        c = clip(fx, name)
+        strikes = [kt for kt, ease, _ in (c[1] if c else []) if ease == "In"]
+        out.append((f"{name}: one strike key inside the clip", c is not None and len(strikes) == 1 and 0 < strikes[0] < c[0]))
     out += [
+        ("Fx \"Skill\" plays the Z / X move (only those slots)", "handlers.Skill = function(data)" in fx
+         and 'if slot ~= "Z" and slot ~= "X" then return end' in fx and "pcall(Feel.playAttack, ctx.Char, classId, slot," in fx),
+        ("Z / X hold like a release (a swing cannot cut them short)", 'if which ~= "Swing" then current.ReleaseUntil' in fx),
         ("playAttack takes the side clips (not for a style)", "if not style then names = MOTION.SideClips(char, classId) or names end" in fx),
         ("SideClips reads the attacker's Faction (ClassGripKey)", 'Config.ClassGripKey(classId, p:GetAttribute("Faction"))' in fx),
-        ("a move the side has none for stays the class's", "return { Swing = row.Swing or base.Swing, Release = row.Release or base.Release }" in fx),
+        ("a move the side has none for stays the class's (Z / X: the side's own only)",
+         "return { Swing = row.Swing or base.Swing, Release = row.Release or base.Release, Z = row.Z, X = row.X }" in fx),
     ]
     return out
 
 
 MUTATIONS = [
+    ("every skill slot plays a move", 'if slot ~= "Z" and slot ~= "X" then return end', 'if slot == "" then return end'),
+    ("a swing cuts a Z / X short", 'if which ~= "Swing" then current.ReleaseUntil', 'if which == "Release" then current.ReleaseUntil'),
     ("side clips never used", "\tif not style then names = MOTION.SideClips(char, classId) or names end", "\tlocal _ = 0"),
     ("the Paladin strikes late", '\t\t\t{ 0.23, "In", { Waist = { -12, 6, 0 }', '\t\t\t{ 0.3, "In", { Waist = { -12, 6, 0 }'),
     ("a key flips past 180", "RightShoulder = { 158, -6, 12 }", "RightShoulder = { 158, -6, 212 }"),
