@@ -959,6 +959,33 @@ local function onGooseFinished(result, counts)
 	end
 end
 
+-- zone_check_halo #22 / #25 / #30: a town NPC's "Talk" prompt (TownNpcs: attribute StoryNpcId) opens the dialogue of the player's
+-- quest whose CURRENT step is a Panel step talked through that NPC (the main quest first, then the subs, newest first), like
+-- a tap on its row (StoryAction "Open"). Returns the quest id it opened, or nil (nothing to say to this player right now).
+function StoryQuestService.TalkToNpc(player, npcId)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(npcId) ~= "string" then return nil end
+	if not S.PlayerService.IsReady(player) or player:GetAttribute("ClassChosen") ~= true then return nil end
+	local data = getData(player)
+	if not data then return nil end
+	local st = story(data)
+	local order = {}
+	if st.Main.Id ~= "" then table.insert(order, { st.Main.Id, st.Main }) end
+	for i = #SQ.Subs, 1, -1 do
+		local id = SQ.Subs[i]
+		if st.Subs[id] then table.insert(order, { id, st.Subs[id] }) end
+	end
+	for _, entry in order do
+		local id, tr = entry[1], entry[2]
+		local def = DEFS[id]
+		local step = def and not tr.Claim and stepOf(player, def, tr.St) or nil
+		if step and step.Panel == true and step.Npc == npcId and npcNear(player, npcId) then
+			openStep(player, id, tr, true)
+			return id
+		end
+	end
+	return nil
+end
+
 local function connect(serviceName, signalName, fn)
 	local service = S[serviceName]
 	local signal = service and service[signalName]
@@ -986,6 +1013,17 @@ function StoryQuestService.Start()
 		if data then sanitize(data) end
 		pcall(refresh, player)
 	end)
+	-- the town NPCs' "Talk" prompts (the service is looked up softly: a world without it simply has no NPC to talk to)
+	local okPrompts, prompts = pcall(game.GetService, game, "ProximityPromptService")
+	if okPrompts and prompts and prompts.PromptTriggered then
+		prompts.PromptTriggered:Connect(function(prompt, player)
+			local npcId = typeof(prompt) == "Instance" and prompt:GetAttribute("StoryNpcId") or nil
+			if type(npcId) ~= "string" or typeof(player) ~= "Instance" then return end
+			if not Util.RateLimit(player, "StoryNpcTalk", (Config.RateLimits and Config.RateLimits.StoryAction) or 0.4) then return end
+			local ok, err = pcall(StoryQuestService.TalkToNpc, player, npcId)
+			if not ok then Util.Warn(TAG, "TalkToNpc: " .. tostring(err)) end
+		end)
+	end
 	task.spawn(function()
 		while true do
 			task.wait(TICK)

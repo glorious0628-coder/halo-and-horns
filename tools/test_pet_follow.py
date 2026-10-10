@@ -23,6 +23,13 @@ MUTATIONS = [
      "return root.Position - right * P.Offset.X - flat * P.Offset.Z"),
     ("Attack ignores a missing pet", "if not st or not st.Model or not st.Model.Parent or st.Hidden then return false end",
      "if false then return false end"),
+    # PET-4 (검수 2026-10-09)
+    ("phones draw every pet", " or (phone and uid ~= me and not S.Near[uid])", ""),
+    ("the phone limit hides my own pet", "(phone and uid ~= me and not S.Near[uid])", "(phone and not S.Near[uid])"),
+    ("no range on phones", "\t\tif i > max or e.D > range then break end\n", "\t\tif i > max then break end\n"),
+    ("never re-ranked", "\t\tS.RankAt = now + P.RankEvery\n", "\t\tS.RankAt = math.huge\n"),
+    ("the tag stays without a story name", "\t\tif tag then tag.Enabled = false end\n", ""),
+    ("the tag keeps its first name", "\tif st.TagLabel and st.TagLabel.Text ~= name then st.TagLabel.Text = name end\n", ""),
 ]
 
 

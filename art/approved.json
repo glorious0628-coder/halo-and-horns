@@ -8087,5 +8087,82 @@
   "sheet": "art/review/kit_woods/woods_camp3_3d.jpg",
   "credits": 5,
   "points": 55
+ },
+ "NPC_HaloBright": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "prompt": "art/prompts/NPC_HaloBright_A.txt",
+  "original": "art/out/s2/npc/NPC_HaloBright_A_src.png",
+  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+ },
+ "NPC_HaloSirGleam": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "prompt": "art/prompts/NPC_HaloSirGleam_A.txt",
+  "original": "art/out/s2/npc/NPC_HaloSirGleam_A_src.png",
+  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+ },
+ "NPC_HaloBakerGranny": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "prompt": "art/prompts/NPC_HaloBakerGranny_A.txt",
+  "original": "art/out/s2/npc/NPC_HaloBakerGranny_A_src.png",
+  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+ },
+ "NPC_HaloFlowerGirl": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "prompt": "art/prompts/NPC_HaloFlowerGirl_A.txt",
+  "original": "art/out/s2/npc/NPC_HaloFlowerGirl_C_src.png",
+  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\", 꽃집 소녀는 2번(달걀 눈·살짝 웃음)=C",
+  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+ },
+ "NPC_HaloJuiceMan": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "prompt": "art/prompts/NPC_HaloJuiceMan_A.txt",
+  "original": "art/out/s2/npc/NPC_HaloJuiceMan_A_src.png",
+  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+ },
+ "HaloSign_Potion": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "prompt": "art/prompts/HaloSign_Potion_front.txt",
+  "original": "art/out/s2/halo/HaloSign_Potion_front_v2_HQ_src.png",
+  "note": "검수 통과 2026-10-10 (이미지 개발 업로드 c6e3dc83)"
+ },
+ "HaloSign_Bakery": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "prompt": "art/prompts/HaloSign_Bakery_front.txt",
+  "original": "art/out/s2/halo/HaloSign_Bakery_front_HQ_src.png",
+  "note": "검수 통과 2026-10-10 (이미지 개발 업로드 c6e3dc83)"
+ },
+ "HaloSign_Juice": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "prompt": "art/prompts/HaloSign_Juice_front.txt",
+  "original": "art/out/s2/halo/HaloSign_Juice_front_HQ_src.png",
+  "note": "검수 통과 2026-10-10 (이미지 개발 업로드 c6e3dc83)"
+ },
+ "HaloSign_Flower": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "prompt": "art/prompts/HaloSign_Flower_front.txt",
+  "original": "art/out/s2/halo/HaloSign_Flower_front_HQ_src.png",
+  "note": "검수 통과 2026-10-10 (이미지 개발 업로드 c6e3dc83)"
  }
 }

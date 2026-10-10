@@ -39,24 +39,57 @@ G.CX, G.CZ = math.ceil(G.NX / G.Chunk), math.ceil(G.NZ / G.Chunk)
 local SPINE = {
 	Z1 = -692, -- far end (cathedral terrace)
 	Stair = 14, -- stair half-width (flat ramp, walkable)
-	RampLen = 22,
+	RampLen = 30, -- 2026-10-10: taller tiers (A23-76 보강: 땅이 납작하지 않게), ramps stay <= 24 deg
 	-- { boundary z (a step down the road toward the cathedral), height after it, half-width after it }
-	Tiers = { { 0, 0.2, 38 }, { -444, 5, 50 }, { -524, 11, 76 }, { -606, 19, 100 } },
+	Tiers = { { 0, 0.2, 38 }, { -444, 9, 50 }, { -524, 20, 76 }, { -606, 33, 100 } },
 	WidthBlend = 10,
 }
 -- wing terraces (mirrored): ax = |x|, rect in (ax, z), height, rounded corner radius, kind
 local WINGS = {
-	{ Name = "WA", ax0 = 60, ax1 = 188, z0 = -434, z1 = -336, H = 1.2, Rad = 28 },
-	{ Name = "WB", ax0 = 74, ax1 = 188, z0 = -536, z1 = -450, H = 7, Rad = 26 },
-	{ Name = "WC", ax0 = 100, ax1 = 190, z0 = -612, z1 = -552, H = 14, Rad = 22 },
-	{ Name = "WD", ax0 = 124, ax1 = 190, z0 = -692, z1 = -628, H = 22, Rad = 20 },
+	{ Name = "WA", ax0 = 60, ax1 = 188, z0 = -434, z1 = -336, H = 3, Rad = 28 },
+	{ Name = "WB", ax0 = 74, ax1 = 188, z0 = -536, z1 = -450, H = 12, Rad = 26 },
+	{ Name = "WC", ax0 = 100, ax1 = 190, z0 = -612, z1 = -552, H = 22, Rad = 22 },
+	{ Name = "WD", ax0 = 124, ax1 = 190, z0 = -692, z1 = -628, H = 33, Rad = 20 },
 }
 -- arch-bridge spots across the canals (for the props tool: the bridge centre, its axis, the deck heights at both ends)
 local BRIDGES = {
-	{ "BA", 0, -385, "x", 0.2, 1.2 }, { "BB", 0, -492, "x", 5, 7 }, { "BC", 0, -582, "x", 11, 14 }, { "BD", 0, -662, "x", 19, 22 },
-	{ "BAB", 130, -442, "z", 1.2, 7 }, { "BBC", 150, -544, "z", 7, 14 }, { "BCD", 150, -620, "z", 14, 22 },
+	{ "BA", 0, -385, "x", 0.2, 3 }, { "BB", 0, -492, "x", 9, 12 }, { "BC", 0, -582, "x", 20, 22 }, { "BD", 0, -662, "x", 33, 33 },
+	{ "BAB", 130, -442, "z", 3, 12 }, { "BBC", 150, -544, "z", 12, 22 }, { "BCD", 150, -620, "z", 22, 33 },
 }
-local PAVE = { Rim = 8, Wing = 10, Mat = "Concrete" } -- grass rim width on the spine / wing tops; Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
+local PAVE = { Rim = 8, Wing = 16, Mat = "Concrete" } -- grass rim width on the wing tops (2026-10-10: 16 so the wings are gardens round a paved forecourt; the spine road is PAVEHALF below); Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
+-- 2026-10-10 (검수: the road was 76 wide and read as an empty beige slab): the PAVED part of the spine is narrow like the concept (road about
+-- one house wide), the rest of the terrace is grass garden for the props tool (balustrade, planters, topiary rows). { boundary z (north of it), paved half-width }
+local PAVEHALF = { { 0, 15 }, { -444, 19 }, { -524, 62 }, { -606, 46 } }
+local function paveHalf(z)
+	local h = PAVEHALF[1][2]
+	for i = 2, #PAVEHALF do
+		if z <= PAVEHALF[i][1] then h = PAVEHALF[i][2] end
+	end
+	return h
+end
+-- grass mounds in the gardens (2026-10-10, A23-76 보강 "언덕도 있고 해야지"): { |x|, z, radius, height }, mirrored east/west, only where the top is grass
+-- (never on the paved road / plaza / forecourt); person-high or more so the town is not a flat slab
+local MOUNDS = {
+	{ 29, -376, 8, 3.4 }, { 31, -418, 9, 4.0 }, { 34, -350, 6, 3.0 },                    -- spine tier 1 gardens (x 15..38)
+	{ 40, -470, 11, 5.0 }, { 36, -508, 9, 4.2 }, { 46, -492, 6, 3.2 },                   -- tier 2 (x 19..50)
+	{ 73, -566, 5, 3.0 },                                           -- tier 3 beyond the plaza
+	{ 66, -640, 10, 5.0 }, { 94, -652, 8, 5.5 }, { 64, -678, 8, 4.5 },                  -- tier 4 gardens (x 46..100)
+	{ 170, -350, 12, 5.0 }, { 174, -420, 11, 5.5 }, { 150, -345, 9, 4.0 }, { 78, -425, 7, 3.2 }, -- wing WA
+	{ 176, -466, 11, 5.5 }, { 178, -526, 11, 5.0 }, { 88, -462, 7, 3.4 },                  -- WB
+	{ 180, -558, 6, 4.5 }, { 176, -604, 9, 5.0 }, { 112, -558, 8, 4.0 },                 -- WC
+	{ 178, -642, 10, 6.0 }, { 176, -684, 9, 5.5 }, { 132, -686, 8, 4.5 },                 -- WD
+}
+local function moundHeight(ax, z)
+	local add = 0
+	for _, m in MOUNDS do
+		local d = math.sqrt((ax - m[1]) ^ 2 + (z - m[2]) ^ 2)
+		if d < m[3] then
+			local t = 1 - d / m[3]
+			add = math.max(add, m[4] * t * t * (3 - 2 * t))
+		end
+	end
+	return add
+end
 local CLIFF = { Skirt = 5, Jag = 4.2, JagScale = 27, Jag2 = 1.6, Jag2Scale = 9 }
 -- waterfalls (mirrored, one per side): a small spring basin on the wing top spills over its outer cliff into the sea
 -- (art/review/s2/place_HaloTown_sheet.jpg, shot 5). Terrain water does not flow, so the sheet of water standing against the
@@ -94,7 +127,7 @@ local function spineHeight(z, ax) -- V of the spine top at (ax, z); ramps only i
 		for i = 2, #SPINE.Tiers do
 			local b = SPINE.Tiers[i][1]
 			local t = (b + SPINE.RampLen / 2 - z) / SPINE.RampLen
-			if t > 0 and t < 1 then return lerp(SPINE.Tiers[i - 1][2], SPINE.Tiers[i][2], t) end
+			if t > 0 and t < 1 then return lerp(SPINE.Tiers[i - 1][2], SPINE.Tiers[i][2], t) - 1.4 * math.sin(math.pi * t) end -- 1.4 sunk in the middle so the stairs model's steps stand out of the ramp
 			if t >= 1 then h = SPINE.Tiers[i][2] end
 		end
 	end
@@ -125,6 +158,12 @@ local function pieces(x, z)
 	if z < SPINE.Z1 + 16 then
 		local qx, qz = ax - (hw - 16), (SPINE.Z1 + 16) - z
 		if qx > 0 and qz > 0 then sdfS = math.sqrt(qx * qx + qz * qz) - 16 end
+	end
+	-- the gate end: the outer front corners are rounded too (검수 10/10: the grass island in front of the gate read as a square slab); the road (|x| <= 14) keeps reaching z -330
+	local GR = 22
+	if z > -330 - GR then
+		local qx, qz = ax - (hw - GR), z - (-330 - GR)
+		if qx > 0 and qz > 0 then sdfS = math.max(sdfS, math.sqrt(qx * qx + qz * qz) - GR) end
 	end
 	cand[1] = { sdfS + jg, spineHeight(z, ax), "spine" }
 	for _, w in WINGS do
@@ -176,7 +215,7 @@ local function column(x, z)
 	local inner = -sdf -- studs inside the edge
 	if kind == "spine" then
 		local hw = spineWidth(z)
-		if ax <= hw - PAVE.Rim and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
+		if ax <= math.min(paveHalf(z), hw - PAVE.Rim) and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
 		if ax <= SPINE.Stair and h > SPINE.Tiers[spineTier(z)][2] + 0.01 then tag = "stair" end
 		if ax > SPINE.Stair and inner > 1 then
 			-- the wall between two tiers: the column right at a boundary (a step down) shows limestone
@@ -188,6 +227,7 @@ local function column(x, z)
 		if inner >= PAVE.Wing and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
 	end
 	if inner < 3 then mat = "Grass" end
+	if tag == "top" and inner >= 4 then h += moundHeight(ax, z) end -- grass mounds
 	return h, nil, mat, tag, e
 end
 

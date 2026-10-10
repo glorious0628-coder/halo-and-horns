@@ -161,13 +161,19 @@ runGroup("recorders", function()
 	CM:Fire(p, "InviteSent", 2)
 	CM:Fire(p, "PassView", 5)
 	CM:Fire(p, "ShopOpen")
+	CM:Fire(p, "PassView", "Look")
+	CM:Fire(p, "PassView", "HaloIce") -- a look id is the same funnel row as "Look" (and the same once-an-hour slot)
+	CM:Fire(p, "PurchasePrompt", "HornsLava")
 	R.MonetizationService.PassBought:Fire(p, "XP2")
+	R.MonetizationService.PassBought:Fire(p, "HaloIce") -- the buy is a look id: it is the "Look" row too
 	R.MonetizationService.PassBought:Fire(p, nil)
 	w.Health.OnPass("Nope", "XP2")
 	w.Health.OnPass("Bought", 5)
 	d = pending(w)
-	check(d.Pass.XP2.View == 2 and d.Pass.XP2.Prompt == 1 and d.Pass.XP2.Bought == 1 and d.Pass.VIP.View == 1 and d.Pass.VIP.Prompt == nil
-		and keyCount(d.Pass) == 2 and keyCount(d.Pass.XP2) == 3, "pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored)", show(d.Pass))
+	check(d.Pass.XP2.View == 1 and d.Pass.XP2.Prompt == 1 and d.Pass.XP2.Bought == 1 and d.Pass.VIP.View == 1 and d.Pass.VIP.Prompt == nil
+		and keyCount(d.Pass) == 3 and keyCount(d.Pass.XP2) == 3, "pass funnel: view -> prompt -> bought per pass (other metrics and bad ids ignored; a repeated metric counts once)", show(d.Pass))
+	check(d.Pass.Look.View == 1 and d.Pass.Look.Prompt == 1 and d.Pass.Look.Bought == 1 and d.Pass.HaloIce == nil and d.Pass.HornsLava == nil,
+		"looks: a look id (bought or reported) is the one 'Look' row of the funnel", show(d.Pass))
 	-- a sums table never grows past MaxKeys (+ "Other")
 	local before = 0
 	for i = 1, 45 do R.ProgressionService.GoldEarned:Fire(p, 1, "S" .. i) end
@@ -209,6 +215,43 @@ runGroup("level bands and key cleaning", function()
 	z:SetAttribute("Level", nil)
 	R.ProgressionService.XPEarned:Fire(z, 7)
 	check(pending(w).XP["1-9"] == expect["1-9"] + 7, "a player with no Level attribute counts as level 1", show(pending(w).XP))
+end)
+
+runGroup("a pass metric counts once an hour per person", function()
+	local w = healthWorld()
+	local CM = w.Reg.TelemetryService.ClientMetric
+	local p, q = hero(w, 10, 3), hero(w, 11, 3)
+	local function total(id, kind)
+		local n = 0
+		for _, row in w.Health.Pending() do
+			local r = row.Doc.Pass and row.Doc.Pass[id]
+			n += r and r[kind] or 0
+		end
+		return n
+	end
+	for _ = 1, 50 do CM:Fire(p, "PassView", "XP2") end
+	check(total("XP2", "View") == 1, "one person calling PassView 50 times: one view", tostring(total("XP2", "View")))
+	CM:Fire(q, "PassView", "XP2")
+	check(total("XP2", "View") == 2, "another person counts as well", tostring(total("XP2", "View")))
+	for _ = 1, 20 do CM:Fire(p, "PurchasePrompt", "XP2") end
+	CM:Fire(p, "PassView", "VIP")
+	check(total("XP2", "Prompt") == 1 and total("VIP", "View") == 1 and total("XP2", "View") == 2,
+		"a prompt and another pass are their own once-an-hour slots", show({ total("XP2", "Prompt"), total("VIP", "View"), total("XP2", "View") }))
+	CM:Fire(nil, "PassView", "XP2")
+	CM:Fire("someone", "PassView", "XP2")
+	check(total("XP2", "View") == 2, "a call with no player is not counted", tostring(total("XP2", "View")))
+	w:Advance(3599)
+	CM:Fire(p, "PassView", "XP2")
+	check(total("XP2", "View") == 2, "3599 s later: the same slot, not counted", tostring(total("XP2", "View")))
+	w:Advance(1)
+	CM:Fire(p, "PassView", "XP2")
+	CM:Fire(p, "PassView", "XP2")
+	check(total("XP2", "View") == 3, "an hour after the counted one: counted again, once", tostring(total("XP2", "View")))
+	CM:Fire(q, "PassView", "XP2")
+	check(total("XP2", "View") == 4, "each person has their own clock", tostring(total("XP2", "View")))
+	-- the bought count is not a client metric: never limited
+	for _ = 1, 3 do w.Reg.MonetizationService.PassBought:Fire(p, "XP2") end
+	check(total("XP2", "Bought") == 3, "purchases are counted every time", tostring(total("XP2", "Bought")))
 end)
 
 runGroup("nothing leaks: no names, no ids", function()

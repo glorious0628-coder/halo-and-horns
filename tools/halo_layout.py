@@ -183,23 +183,24 @@ SOUTH = 180.0  # front toward +Z (the gate / Crossroads side)
 # gate: its front edge stands on z -330 (the bridge end / island edge), centre z -345.8; the invisible Lintel PrimaryPart sits at the front edge (0, 19, -330) so MapBuilder.placeGate does not slide it; the arch opening is ~14 wide at scale 1.2 (Halo_Gate fit h 50.4)
 P.append(dict(kind="Gate", x=0, z=-345.8, y=0.2, yaw=SOUTH, s=1.0, lintel=[0, 19, -330], towers=[[-16.15, 22, -1.7], [16.15, 22, -1.7]], tower_size=[18.2, 44, 17.0]))
 # cathedral on the far terrace, front toward the road
-cat = put("Cathedral", 0, -648, SOUTH, 1.0, flat=1.5)
+cat = put("Cathedral", 0, -655.5, SOUTH, 0.9, flat=1.5)  # 63 x 63: the tier-4 ramp ends at z -621 and the terrace at -692
 # fountain on the plaza terrace
 fnt = put("Fountain", 0, -565, 0, 1.0)
 # stairs models on the three axis ramps (the collision is the terrain ramp; the model is only the look)
 # stairs model rise = 8.2 studs over a 20 deep run at scale 1 (measured on the LOD mesh): stretch it to the ramp (28 wide, 22 long, rise of that tier)
-for zb, yb, rise in ((-444, 0.2, 4.8), (-524, 5.0, 6.0), (-606, 11.0, 8.0)):
-    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=SOUTH, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.1], ramp=True))
+for zb, yb, rise in ((-444, 0.2, 8.8), (-524, 9.0, 11.0), (-606, 20.0, 13.0)):  # ramps are 30 long now (halo_terrain RampLen)
+    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=0.0, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.5], ramp=True))
 
 # hero statues (face the road axis): tier 1 pairs, one pair on tier 2
 for z in (-384, -408, -466, -492):
     for sx in (-1, 1):
-        put("Statue", sx * (26 if z > -440 else 28), z, face(-sx, 0), 1.0)
+        put("Statue", sx * (24 if z > -440 else 28), z, face(-sx, 0), 1.0)
 
 # shops on the plaza terrace: four, facing the fountain axis (bakery / juice / flowers / toys, decor only: 검수 #49 #51)
+SHOPKIND = {(-1, -546): "Bakery", (1, -546): "Juice", (-1, -584): "Flower", (1, -584): "Potion"}  # Potion = the real potion merchant (검수 #34); signs = HaloSign* (이미지 개발)
 for z in (-546, -584):
     for sx in (-1, 1):
-        put("Shop", sx * 44, z, face(-sx, 0), 1.0)
+        put("Shop", sx * 44, z, face(-sx, 0), 1.9, shopkind=SHOPKIND[(sx, z)])
 
 # towers: plaza terrace corners and cathedral terrace corners
 for sx in (-1, 1):
@@ -210,13 +211,13 @@ for sx in (-1, 1):
 HOUSES = [("WA", -392, 106, 150), ("WB", -494, 112, 156), ("WC", -582, 124, 168)]
 for name, z, xa, xb in HOUSES:
     for sx in (-1, 1):
-        put("DomeHouseA", sx * xa, z, face(-sx, 0), 1.0)
-        put("DomeHouseB", sx * xb, z, face(-sx, 0), 1.0)
+        put("DomeHouseA", sx * xa, z, face(-sx, 0), 1.9)  # x1.9: the door (3.2 studs at scale 1) becomes avatar size
+        put("DomeHouseB", sx * xb, z, face(-sx, 0), 2.0)
 
 # ---------------------------------------------------------------- bridges
 # (name, centre x, centre z, axis "x" = span along x, deck Y at the low / high end)
-BR = [("BA", 0, -385, "x", 0.2, 1.2), ("BB", 0, -492, "x", 5, 7), ("BC", 0, -582, "x", 11, 14), ("BD", 0, -662, "x", 19, 22),
-      ("BAB", 130, -442, "z", 1.2, 7), ("BBC", 150, -544, "z", 7, 14), ("BCD", 150, -620, "z", 14, 22)]
+BR = [("BA", 0, -385, "x", 0.2, 3), ("BB", 0, -492, "x", 9, 12), ("BC", 0, -582, "x", 20, 22), ("BD", 0, -662, "x", 33, 33),
+      ("BAB", 130, -442, "z", 3, 12), ("BBC", 150, -544, "z", 12, 22), ("BCD", 150, -620, "z", 22, 33)]
 BRIDGES = []
 
 
@@ -289,34 +290,51 @@ def spine_edge_x(z):
     return hw
 
 
-TIERS = [("T1", -364, -440, 38), ("T2", -450, -520, 50), ("T3", -530, -602, 76), ("T4", -612, -690, 100)]
-# lanterns on the road shoulders, balustrade along the spine edges, banner poles in pairs, planters at the stairs
-for name, za, zb, hw in TIERS:
-    z = za - 10
+TIERS = [("T1", -364, -440, 38, 15), ("T2", -450, -520, 50, 19), ("T3", -530, -602, 76, 62), ("T4", -612, -690, 100, 46)]  # name, z start, z end, terrace half-width, paved half-width (halo_terrain PAVEHALF)
+# the narrow road (T1, T2): a balustrade line on each paved edge with lantern posts in it, banner poles and statues just outside, garden rows behind
+for name, za, zb, hw, rh in TIERS[:2]:
+    z = za - 12
     while z > zb:
         for sx in (-1, 1):
-            put("Lantern", sx * 15.5, z, 0, 1.0, pad=0.2)
-        z -= 28
-for name, za, zb, hw in TIERS:
+            put("Lantern", sx * (rh + 1.8), z, 0, 1.0, pad=0.2)
+        z -= 24
+    z = za - 4
+    while z > zb:
+        for sx in (-1, 1):
+            put("Balustrade", sx * (rh + 1.8), z, 90, 1.0, pad=0.0)
+        z -= 8.2
+# plaza + forecourt (T3, T4): balustrade round the terrace edge, lanterns on the forecourt edge
+for name, za, zb, hw, rh in TIERS[2:]:
     z = za - 6
     while z > zb:
         for sx in (-1, 1):
             put("Balustrade", sx * (hw - 3.2), z, 90, 1.0, pad=0.0)
         z -= 8.2
-for z in (-340, -400, -470, -540, -590):
-    for sx in (-1, 1):
-        put("BannerPole", sx * 21, z, face(-sx, 0), 1.0, pad=0.3)
-# planters + topiary rows on the plaza terraces (inside the balustrade, off the road axis)
-for name, za, zb, hw in TIERS:
     z = za - 14
     while z > zb:
         for sx in (-1, 1):
-            put("Planter", sx * (hw - 9), z, 90, 1.0)
-        z -= 16
+            put("Lantern", sx * (rh - 2), z, 0, 1.0, pad=0.2)
+        z -= 26
+for z in (-340 - 30, -404, -466, -498):
+    for sx in (-1, 1):
+        put("BannerPole", sx * (15 + 6 if z > -440 else 19 + 6), z, face(-sx, 0), 1.0, pad=0.3)
+# garden rows on the grass beside the narrow road (cypress rows) and planters at the terrace corners
+for name, za, zb, hw, rh in TIERS[:2]:
+    z = za - 8
+    while z > zb:
+        for sx in (-1, 1):
+            put("Topiary", sx * (rh + 14), z, 0, 1.0, pad=1.0)
+        z -= 12
+for name, za, zb, hw, rh in TIERS:
+    z = za - 14
+    while z > zb:
+        for sx in (-1, 1):
+            put("Planter", sx * (hw - 9 if rh > 20 else rh + 9), z, 90, 1.0)
+        z -= 22
 # wing gardens: topiary + trees + bushes + pots on every wing top (random within, off the footprints)
 WINGS = [("WA", 60, 188, -434, -336), ("WB", 74, 188, -536, -450), ("WC", 100, 190, -612, -552), ("WD", 124, 190, -692, -628)]
 # counts follow the real triangle budget (Planter 4.5k, Topiary 3.5k, RoundTree 5k, CloudBush 1.8k, PotFlowers 3k; Roblox automatic LOD cuts the far ones)
-target = {"Topiary": 20, "RoundTree": 16, "CloudBush": 24, "PotFlowers": 24, "Planter": 8}
+target = {"Topiary": 74, "RoundTree": 36, "CloudBush": 100, "PotFlowers": 32, "Planter": 32}  # real LOD tris: Topiary 1.2k, CloudBush 0.8k, RoundTree 2.5k, Planter 2.6k, PotFlowers 1k (total ~0.84M)
 have = {}
 for e in P:
     have[e["kind"]] = have.get(e["kind"], 0) + 1
@@ -335,7 +353,7 @@ while any(need_more.values()) and tries < 60000:
     if put(kind, sx * ax, z, yaw, s, pad=1.5 if kind in ("RoundTree", "Topiary") else 0.6):
         need_more[kind] -= 1
 # cliff-edge cloud bushes: along the wing outer edge + the spine edge shoulders
-edge_target = 16
+edge_target = 50
 tries = 0
 while edge_target > 0 and tries < 20000:
     tries += 1
@@ -356,6 +374,22 @@ BACK = [("Islet", -250, -420, 1.0), ("Islet", 262, -470, 1.2), ("Islet", -238, -
         ("FarArch", -300, -540, 1.0), ("FarArch", 290, -380, 1.1), ("FarArch", 0, -760, 1.4)]
 for kind, x, z, s in BACK:
     P.append(dict(kind=kind, x=x, z=z, y=-1.2, yaw=rng.uniform(0, 360), s=s, backdrop=True))
+
+
+# ---------------------------------------------------------------- gold inlay lines (thin gold Parts laid on the paving, 검수 10/10 ①-b) + medallion spots (Decal later, ①-c)
+GOLD = []  # polylines [[x, z], ...] sampled every ~6 studs; the tool raycasts every point
+def line(x0, z0, x1, z1, step=6.0):
+    n = max(1, int(round(math.hypot(x1 - x0, z1 - z0) / step)))
+    return [[round(x0 + (x1 - x0) * i / n, 2), round(z0 + (z1 - z0) * i / n, 2)] for i in range(n + 1)]
+for sx in (-1, 1):
+    GOLD.append(line(sx * 14.4, -332, sx * 14.4, -431))   # tier 1 road edges
+    GOLD.append(line(sx * 18.4, -457, sx * 18.4, -519))   # tier 2 road edges
+    GOLD.append(line(sx * 61.5, -531, sx * 61.5, -601))   # plaza edge
+    GOLD.append(line(sx * 45.5, -614, sx * 45.5, -688))   # forecourt edge
+for r in (17.5, 23.5):                                      # two rings round the fountain (concentric inlay, no rays)
+    GOLD.append([[round(r * math.cos(2 * math.pi * i / 48), 2), round(-565 + r * math.sin(2 * math.pi * i / 48), 2)] for i in range(49)])
+GOLD.append(line(-45.5, -614, 45.5, -614, 8.0))             # forecourt front edge (broken by the stairs model)
+MEDALLIONS = [dict(x=0, z=-352, r=9), dict(x=0, z=-486, r=8), dict(x=0, z=-590, r=7.5), dict(x=-30, z=-640, r=8), dict(x=30, z=-640, r=8)]
 
 # ---------------------------------------------------------------- reachability (#6): BFS over walkable columns from the spawn, bridges and ramps join tiers
 def solid_blocked():
@@ -491,7 +525,7 @@ want = {"Statue": 8, "Shop": 4, "Tower": 8, "DomeHouseA": 6, "DomeHouseB": 6, "S
 for k, v in want.items():
     if count.get(k, 0) != v:
         print(f"!! {k}: placed {count.get(k, 0)} of {v}")
-json.dump(dict(note="halo_layout.py output; yaw = CFrame.Angles(0,rad(yaw),0), front = kit -Z", placements=P, walls=WALLS if a.walls else [], counts=count,
+json.dump(dict(note="halo_layout.py output; yaw = CFrame.Angles(0,rad(yaw),0), front = kit -Z", placements=P, walls=WALLS if a.walls else [], gold=GOLD, medallions=MEDALLIONS, counts=count,
                unreachable=len(unreach)), open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
 # plan picture, 3 px per stud

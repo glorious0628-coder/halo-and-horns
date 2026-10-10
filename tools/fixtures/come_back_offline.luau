@@ -308,8 +308,17 @@ end
 UIS_FOCUS(true)
 check("Perf: a window mostly out of focus (under 60 s played) sends nothing", #SENT == 0, #SENT)
 SENT = {}
-for i = 1, 121 do NOW += 1 CB.PerfFrame(i % 2 == 0 and 5 or 1 / 30) end
-check("Perf: gaps over a second (the app away) never count as play", #SENT == 0, #SENT)
+for i = 1, 121 do NOW += 1 CB.PerfFrame(i % 2 == 0 and 6 or 1 / 30) end
+check("Perf: gaps over 5 s (the app away) never count as play", #SENT == 0, #SENT)
+-- 검수 10/10: a real freeze of 1..5 s is play - one low second
+SENT = {}
+for i = 1, 30 * 121 do
+	NOW += 1 / 30
+	CB.PerfFrame(i == 30 * 50 and 3 or 1 / 30)
+end
+local frz = SENT[#SENT]
+check("Perf: a 3 s freeze shows as the window's lowest second (W 0), the average stays near 30",
+	frz and frz[2] and frz[2].W == 0 and frz[2].F >= 25, frz and frz[2] and (tostring(frz[2].F) .. "/" .. tostring(frz[2].W)) or "nil")
 ATTR.DataLoaded = nil
 
 print(("COME_BACK_SUMMARY checks=%d failed=%d"):format(checks, failed))

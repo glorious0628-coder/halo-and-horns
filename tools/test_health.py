@@ -77,8 +77,17 @@ MUTATIONS = [
     ("plunder: returned sacks are lost", HL, "local PLUNDER = { Paid = \"Paid\", Avenged = \"Avenged\", Returned = \"Returned\" }", "local PLUNDER = { Paid = \"Paid\", Avenged = \"Avenged\" }"),
     ("plunder: an unknown outcome counts as paid", HL, "local name = type(outcome) == \"string\" and PLUNDER[outcome] or nil", "local name = type(outcome) == \"string\" and PLUNDER[outcome] or \"Paid\""),
     ("plunder: gold is not floored", HL, "math.max(0, math.floor(num(total)))", "math.max(0, num(total))"),
-    ("pass: a view is a prompt", HL, "\t\tHealthService.OnPass(\"View\", arg)", "\t\tHealthService.OnPass(\"Prompt\", arg)"),
-    ("pass: no prompts", HL, "\telseif id == \"PurchasePrompt\" then\n\t\tHealthService.OnPass(\"Prompt\", arg)\n", "\telseif false then\n\t\tHealthService.OnPass(\"Prompt\", arg)\n"),
+    ("pass: a view is a prompt", HL, "local kind = id == \"PassView\" and \"View\" or", "local kind = id == \"PassView\" and \"Prompt\" or"),
+    ("pass: no prompts", HL, "or id == \"PurchasePrompt\" and \"Prompt\" or nil", "or false and \"Prompt\" or nil"),
+    ("pass: a metric counts every call", HL, "\tif seen[key] and now - seen[key] < METRIC_GAP then return end\n", ""),
+    ("pass: the slot is shared by everyone", HL, "\tlocal seen = METRIC_SEEN[player]\n\tif not seen then\n\t\tseen = {}\n\t\tMETRIC_SEEN[player] = seen\n\tend\n",
+     "\tlocal seen = METRIC_SEEN.All or {}\n\tMETRIC_SEEN.All = seen\n"),
+    ("pass: the slot ignores the pass", HL, "local key = kind .. \":\" .. passRow(arg)", "local key = kind"),
+    ("pass: the slot ignores the step", HL, "local key = kind .. \":\" .. passRow(arg)", "local key = passRow(arg)"),
+    ("pass: the gap is a day", HL, "local METRIC_GAP = 3600", "local METRIC_GAP = 86400"),
+    ("pass: the hour is never over", HL, "now - seen[key] < METRIC_GAP", "now - seen[key] <= METRIC_GAP"),
+    ("pass: a caller with no player counts", HL, " or typeof(player) ~= \"Instance\" then return end", " then return end"),
+    ("pass: a look id is its own row", HL, "if type(Config.Looks) == \"table\" and type(Config.Looks[id]) == \"table\" then return \"Look\" end\n", ""),
     ("pass: a number is a pass id", HL, "\tif type(id) ~= \"string\" or (kind ~= \"View\"", "\tif (kind ~= \"View\""),
     ("pass: any kind", HL, "(kind ~= \"View\" and kind ~= \"Prompt\" and kind ~= \"Bought\") then return end", "false then return end"),
     # --- the document
@@ -172,6 +181,24 @@ MUTATIONS = [
 ]
 
 
+READ_ONLY_KEYS = {"Errors", "Health", "StoryDump", "DataDump", "LootRoll"}
+
+
+def debug_taint_problems(main: str) -> list[str]:
+    """The DebugCommand taint rule: only the read-only keys leave the save clean (the other keys all mark DebugTainted)."""
+    out: list[str] = []
+    m = re.search(r"local READ_ONLY = \{(.*?)\}", main)
+    keys = set(re.findall(r"(\w+) = true", m.group(1))) if m else set()
+    if keys != READ_ONLY_KEYS:
+        out.append(f"READ_ONLY keys are {sorted(keys)}")
+    guard = "if tainted and not READ_ONLY[key] then tainted.DebugTainted = true end"
+    if guard not in main:
+        out.append("the taint line is not guarded by READ_ONLY")
+    elif main.find(guard) > main.find('key == "RankSettle"'):
+        out.append("the taint line is after the key branches")
+    return out
+
+
 def static() -> tuple[int, list[str]]:
     failures: list[str] = []
     count = 0
@@ -193,6 +220,13 @@ def static() -> tuple[int, list[str]]:
           "HealthService starts before PlayerService (it listens to PlayerReady)")
     check(sorted(init_list) == sorted(start_list), "every service is in both lists")
     check('key == "Health"' in main and "S.HealthService.Debug(" in main, "DebugCommand('Health') calls HealthService.Debug")
+    check(debug_taint_problems(main) == [], "DebugCommand: only Errors / Health / StoryDump / DataDump / LootRoll leave the save untainted: " + "; ".join(debug_taint_problems(main)))
+    guard = "if tainted and not READ_ONLY[key] then tainted.DebugTainted = true end"
+    for name, mutated in (("a read-only key taints", main.replace("tainted and not READ_ONLY[key]", "tainted", 1)),
+                          ("Gold is read-only", main.replace("LootRoll = true }", "LootRoll = true, Gold = true }", 1)),
+                          ("Health taints", main.replace("Health = true, ", "", 1)),
+                          ("the taint line moves below the branches", main.replace(guard, "", 1) + "\n" + guard)):
+        check(mutated != main and debug_taint_problems(mutated) != [], f"static mutation caught: {name}")
     health = read(SSS / "HealthService.luau")
     code = strip_comments(health)
     check("Config.StoreName" in code, "HealthService's store name goes through Config.StoreName (Beta / Live get their own)")

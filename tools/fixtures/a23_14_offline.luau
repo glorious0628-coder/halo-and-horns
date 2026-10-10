@@ -1032,6 +1032,9 @@ runGroup("goose-coop-rules", function()
 	check(fin.Result == "Tie" and fin.Info.Mode == "Coop" and fin.Info.Success == false, "gauge not full -> result Tie, co-op failed",
 		show(fin.Info))
 	check(t.Gold[t.H1] == lg and t.Gold[t.H2] == lg and t.XP[t.H1] == lx, "failed co-op pays the tie share (40%)", show({ t.Gold[t.H1], lg }))
+	local tm = {}
+	for _, row in t.Paid do table.insert(tm, row.Info.Mode) end
+	check(#tm == 2 and tm[1] == "Coop" and tm[2] == "Coop", "a failed co-op round still pays with Mode Coop (HealthService counts it as co-op)", show(tm))
 	check(t.H1.Data.CheerStars == 1 and t.H2.Data.CheerStars == 1, "failed co-op gives +1 cheer star each")
 	check(fin.Rewarded[t.H1] == 10 and fin.Rewarded[t.H2] == 8, "both still get goose quest credit (GooseFinished rewarded)", show(fin.Rewarded))
 	check(t:AllText(GT.CoopFail) == 1 and #t.War == 0, "co-op fail line, no war points")
@@ -1126,9 +1129,9 @@ local function classWorld(level, opts)
 		Warn = function(tag, msg) table.insert(groupWarnings, tag .. ": " .. tostring(msg)) end }
 	local players = { __kind = "Instance", Name = "Players" }
 	local p = newPlayer("Changer", 4242, players)
-	local data = { Level = level, XP = 7, Class = "Warrior", ClassChosen = true, Faction = "Halo", Tickets = { Class = opts.Tickets or 0 } }
+	local data = { Level = level, XP = 7, Class = "Warrior", ClassChosen = opts.Unpicked ~= true, Faction = "Halo", Tickets = { Class = opts.Tickets or 0 } }
 	if opts.NoDataLevel then data.Level = nil end
-	p.Attrs = { Class = "Warrior", ClassChosen = true, Level = opts.AttrLevel or level, XP = 7 }
+	p.Attrs = { Class = "Warrior", ClassChosen = opts.Unpicked ~= true, Level = opts.AttrLevel or level, XP = 7 }
 	f.Player, f.Data = p, data
 	local env = { game = { GetService = function(_, name)
 			if name == "ReplicatedStorage" then return { Shared = { Config = "Config", Util = "Util", Net = "Net" } } end
@@ -1162,12 +1165,27 @@ local function classWorld(level, opts)
 	class.Start()
 	class.ClassChanged:Connect(function(_, new, old) table.insert(f.Changed, { new, old }) end)
 	function f:Change(classId, useTicket) remotes.ChangeClass.OnServerEvent:Fire(p, classId, useTicket) end
+	function f:Choose(classId) remotes.ChooseClass.OnServerEvent:Fire(p, classId) end
 	function f:Noticed(text)
 		for _, e in self.Notices do if e.Text == text then return true end end
 		return false
 	end
 	return f
 end
+
+runGroup("class-first-pick", function()
+	-- the first class pick is free and silent (user 2026-10-10: no "Your class is now ..." after the player's own click)
+	local f = classWorld(1, { Unpicked = true })
+	f:Choose("Mage")
+	check(f.Data.Class == "Mage" and f.Data.ClassChosen == true and f.Data.Level == 1, "the first pick sets the class and ClassChosen", show({ f.Data.Class, f.Data.ClassChosen }))
+	check(#f.Changed == 1 and f.Changed[1][1] == "Mage" and #f.Refresh == 1 and f.Refresh[1] == true, "ClassChanged fires once, the character refreshes", show(f.Refresh))
+	check(#f.Notices == 0 and CONFIG.Text.ClassChosen == nil, "no notice after the first pick (and no text left for it)", show(f.Notices))
+	f:Choose("Archer")
+	check(f.Data.Class == "Mage" and #f.Changed == 1 and #f.Notices == 0, "a second pick is ignored, silently", show(f.Data.Class))
+	local bad = classWorld(1, { Unpicked = true })
+	bad:Choose("Wizard")
+	check(bad.Data.ClassChosen == false and bad.Data.Class == "Warrior" and #bad.Notices == 0, "an unknown class changes nothing", show(bad.Data.Class))
+end)
 
 runGroup("class-change", function()
 	local C = CONFIG

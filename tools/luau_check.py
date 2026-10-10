@@ -4,7 +4,7 @@ src/ 의 모든 Luau 파일을 Roblox Studio의 진짜 컴파일러(loadstring)�
   py tools/luau_check.py                 -> 전체 검사
   py tools/luau_check.py path1 path2 ... -> 지정한 파일만 검사 (src/ 기준 또는 절대 경로)
 
-대상: 이름에 STUDIO_NAME(기본 "GoodEvil")이 들어간 스튜디오 창, Edit 모드여야 함.
+대상: 이름에 STUDIO_NAME이 들어간 스튜디오 창(없으면 오류; 메인 Studio는 HH_MAIN_STUDIO=1 이 있을 때만), Edit 모드여야 함.
 종료 코드: 문법 오류가 있으면 1.
 """
 

@@ -1,0 +1,64 @@
+{
+  "checks": 32,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "no search: the full width back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the search keeps the wider half",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a balanced width may exceed the box",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the reward popup lines not balanced",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "left text balanced too",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "padding on the left only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no margin: the exact narrowest width",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a balance that adds a line stays",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the probe keeps its padding",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "addText does not balance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old long Vacation line",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Line balance (검수 2026-10-10, user: the Vacation card \"균형이 안 맞아\" - one word alone on the last line), offline.\n\nRuns the CURRENT UIKit.BalanceWidth (cut out of src/StarterPlayer/StarterPlayerScripts/UIKit.luau) in the official Luau\nCLI with a greedy word wrap (a fixed width per letter): the Vacation line and other centred lines that leave one word\nalone at the box width wrap into the same number of lines at the balanced width, and their lines come out even (the\nshortest line at least ~60% of the longest); one-line text keeps the full width; the result never exceeds the box and is the narrowest such width.\nStatic: the reward popup lines get UIKit.WrapHeight + UIKit.BalanceLines, toasts / the announce banner / UIKit.Confirm\nbalance too, Panels' centred addText labels and the pause card's body call it, BalanceLines leaves left / right text\nand labels with their own UIPadding alone and pads left = right, the Vacation lines are shorter (\"You were away %d days.\nThat's okay!\"). Mutations: each must be caught.",
+  "studioCalls": 0
+}

@@ -105,6 +105,7 @@ runGroup("config", function()
 	check(table.concat(A.Funnels.PassShop.Steps, ",") == "ShopOpen,PassView,PurchasePrompt,Bought" and not A.Funnels.PassShop.Once,
 		"PassShop: 4 steps, a session per shop visit", "")
 	check(table.find(A.UiIds, "Shop") ~= nil, "the Shop window is a UiMetric id (it opens a PassShop visit)", "")
+	check(table.find(A.UiIds, "Pet") ~= nil and table.find(A.UiIds, "Diary") ~= nil, "the Pet and Diary windows are UiMetric ids", show(A.UiIds))
 	check(C.RateLimits.ClientMetric == 0.5 and A.KOLeave == 60 and A.PromptNearKO == 30, "limits: 0.5 s, 60 s, 30 s", "")
 end)
 

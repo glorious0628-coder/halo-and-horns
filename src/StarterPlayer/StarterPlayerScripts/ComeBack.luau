@@ -14,7 +14,8 @@
 --   s after my data loads, ClientMetric("Perf", { D, F, W, M, Q }) for the window just gone - D the device (touch only:
 --   Phone when the screen's short side is under T.TabletPx, else Tablet; a keyboard: Desktop; a gamepad only: Console),
 --   F its average FPS, W the lowest full second (never above F), M Stats memory MB, Q the saved graphics level (0 =
---   auto). Only frames while the game window had focus count, frame gaps over a second (the app away) never; under
+--   auto). Only frames while the game window had focus count; a frame gap of 1..5 s is a freeze (a low second), a
+--   longer one the app away (dropped); under
 --   T.PerfActive s of such play in a window -> nothing sent. Nothing on screen changes.
 --   My Way (#2): the MyWay attribute (ReturnService: the name from my own story picks, "" = none yet) changing after its
 --   first value -> one 2 s line. No judging, no stats.
@@ -48,6 +49,7 @@ local T = {
 	MyWaySeconds = 2,
 	TabletPx = 600, -- a touch screen whose short side is this many px or more is a tablet
 	PerfActive = 60, -- s of focused play a Perf window needs (the contract)
+	PerfGapCut = 5, -- s: a longer frame gap is the app away (dropped); 1..5 s counts as a freeze (검수 10/10)
 	-- game text: English only (A23-48), short and easy
 	Text = { MyWay = "Your way: %s" },
 }
@@ -263,14 +265,18 @@ function ComeBack.PerfFrame(dt)
 		P.Started = now
 		return
 	end
-	if P.Focused and type(dt) == "number" and dt > 0 and dt <= 1 then
+	if P.Focused and type(dt) == "number" and dt > 0 and dt <= T.PerfGapCut then
 		P.Frames += 1
 		P.Active += dt
-		P.SecFrames += 1
-		P.SecTime += dt
-		if P.SecTime >= 1 then
-			table.insert(P.Seconds, P.SecFrames / P.SecTime)
-			P.SecFrames, P.SecTime = 0, 0
+		if dt > 1 then -- 검수 10/10: a stall of 1..5 s is a real freeze: its own low second (1 / dt FPS)
+			table.insert(P.Seconds, 1 / dt)
+		else
+			P.SecFrames += 1
+			P.SecTime += dt
+			if P.SecTime >= 1 then
+				table.insert(P.Seconds, P.SecFrames / P.SecTime)
+				P.SecFrames, P.SecTime = 0, 0
+			end
 		end
 	end
 	local every = tonumber(Config.Analytics and Config.Analytics.Perf and Config.Analytics.Perf.Every) or 120

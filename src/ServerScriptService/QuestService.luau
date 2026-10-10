@@ -817,6 +817,14 @@ local function publish(player)
 			for _, row in jobs do table.insert(list, row) end
 		end
 	end
+	-- #45: the walk of a lost thing to the Lost & Found bench / the vault (Kind "Find", no [Claim]: it pays on arrival)
+	local lost = S.LostFoundService
+	if lost and type(lost.Rows) == "function" then
+		local okLost, lostRows = pcall(lost.Rows, player, data)
+		if okLost and type(lostRows) == "table" then
+			for _, row in lostRows do table.insert(list, row) end
+		end
+	end
 	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
 	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
 	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE and (Config.Nudges or {}).GuideDone ~= false then

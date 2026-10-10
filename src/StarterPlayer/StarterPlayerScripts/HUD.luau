@@ -2226,13 +2226,19 @@ function L.TextLines(text, font, size, width)
 	return nil
 end
 
+-- A23-99 추가 (user 2026-10-10): the head line 'Quests (N) ▼' shows only with Config.Nudges.QuestHead (off)
+function L.QuestHeadOn()
+	return (Config.Nudges or {}).QuestHead == true
+end
+
 -- the head line 'Quests (n) ▼' (and its band) right under the tracker; L.QuestBottom = where the list / overlay start
+-- (no head line: right under the tracker)
 function L.PlaceTrackerHead()
 	local t, q = ui.tracker, L.Tracker.Rect
 	if not (t and q and ui.questHead) then return end
 	local s = currentScale()
 	local th = t.Frame.Visible and (t.Frame.AbsoluteSize.Y / s) or 0
-	local hh = ui.questHead.Frame.Size.Y.Offset
+	local hh = ui.questHead.Frame.Visible and ui.questHead.Frame.Size.Y.Offset or 0
 	local y = q.Y + (th > 0 and th + L.Tracker.Gap * 2 or 0)
 	ui.questHead.Frame.Position = UDim2.fromOffset(q.X, y)
 	if ui.questHead.Band then ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, y - 1) end
@@ -2260,7 +2266,8 @@ function L.LayoutQuestLines(q)
 	local block = ui.questLines
 	if not block then return end
 	local lh = q.H / 2 -- the layout's quest rect holds two lines; a third one hangs under it (A23-81)
-	local hh = ui.questHead and math.floor(lh * 0.75) or 0 -- 검수 10/08: the head line "Quests (3) ▼" on top
+	-- 검수 10/08: the head line "Quests (3) ▼" on top - none since A23-99 추가 (the lines start at the rect's top)
+	local hh = (ui.questHead and L.QuestHeadOn()) and math.floor(lh * 0.75) or 0
 	if ui.questHead then
 		ui.questHead.Frame.Position = UDim2.fromOffset(q.X, q.Y)
 		ui.questHead.Frame.Size = UDim2.fromOffset(q.W, hh)
@@ -4321,12 +4328,14 @@ refreshQuests = function()
 	L.TrackDone(questState.All or questState.Rows, all) -- A23-81: the quest window's 'Done' this session
 	-- 빛 마을 점검 #19: rows marked More (the subs past Config.StoryQuests.MaxSubs) are for the quest window only; the
 	-- HUD lines and the list draw the rest (questState.All keeps every row for HUD.QuestEntries)
+	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing); 검수 10/10:
+	-- its row stays on the HUD even when it is a More row (else nothing to tap / pulse)
+	local call = L.StoryPending()
 	local entries = {}
 	for _, e in all do
-		if not e.More then table.insert(entries, e) end
+		local waiting = call ~= nil and e.Story ~= nil and e.Story.Panel and e.Story.Id == call.Id
+		if not e.More or waiting then table.insert(entries, e) end
 	end
-	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing)
-	local call = L.StoryPending()
 	questState.StoryKey = call and (call.Id .. "|" .. tostring(call.St)) or ""
 	local callIndex = nil
 	if call then
@@ -4356,11 +4365,14 @@ refreshQuests = function()
 	for i, e in entries do
 		local done = e.Progress >= e.Target
 		if done and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") then
-			claimable += 1
 			if not firstClaim then firstClaim = i end
 		elseif not done and e.Kind == "Daily" and not firstDaily then
 			firstDaily = i
 		end
+	end
+	-- 검수 10/10: the counts cover every row (the quest window's More rows too), so they match the window's tabs
+	for _, e in all do
+		if e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") then claimable += 1 end
 	end
 	-- 'now do' row: the pinned guide / next-goal row when there is one (검수 2026-10-06 (b): it always shows, phones too),
 	-- else the waiting story, the first claimable, the first unfinished daily. Desktop shows one more row under it.
@@ -4446,8 +4458,9 @@ refreshQuests = function()
 		if ui.questFold then ui.questFold.Text = (questExpanded and not L.HasQuestBook()) and TXT.QuestCloseList or TXT.QuestOpenList end
 		if ui.questHead then
 			-- the head line: how many quests there are (before the first mission is accepted, only that one line shows)
-			ui.questHead.Frame.Visible = #entries > 0 and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
-			ui.questHead.Text.Text = string.format(TXT.QuestHead, #entries)
+			ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0
+				and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
+			ui.questHead.Text.Text = string.format(TXT.QuestHead, #all) -- every quest, the window's More rows too
 			task.delay(0, L.LayoutQuestPlates) -- the head plate follows the head line
 		end
 		questState.ShownEntry = entries[shown]
@@ -5198,6 +5211,24 @@ end
 local STORY_SPOT = { SlimePond = Vector3.new(290, 3, 150) }
 function L.StoryTap(st, zone, panels)
 	if st.Panel then
+		-- 빛 마을 점검 #1 / #30: a talk through a town NPC that stands in the world: far from her the tap guides there
+		-- (the Travel window + the guide from another zone, the guide to her a walk away); near (Config.StoryQuests
+		-- NpcRange) the page opens as before
+		local qt = C and C.QuestTarget
+		local npc = type(st.Npc) == "string" and type(qt) == "table" and type(qt.StoryNpc) == "function" and qt.StoryNpc(st.Npc) or nil
+		local char = LocalPlayer.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		if npc and root and Util.FlatDistance(root.Position, npc.Position) > (tonumber(Config.StoryQuests.NpcRange) or 16) then
+			local npcZone = Config.ZoneAt(npc.Position).Id
+			local name = Config.StoryQuests.Speakers and Config.StoryQuests.Speakers[st.Npc] or st.Npc
+			if npcZone ~= zone and not (L.ForgeWalk[zone] and L.ForgeWalk[npcZone]) then
+				if panels and panels.Open then panels.Open("Travel") end
+				showGuide(findTravelTarget(npcZone), tostring(name), "zone:" .. npcZone, 30)
+			else
+				showGuide(npc, tostring(name), "story", 30)
+			end
+			return
+		end
 		-- B15: my own tap: the server's reply opens the page even mid-fight (auto opens wait for a calm moment)
 		if panels and type(panels.ExpectStory) == "function" then pcall(panels.ExpectStory, st.Id) end
 		fire("StoryAction", st.Id, "Open")
@@ -5219,7 +5250,9 @@ function L.StoryTap(st, zone, panels)
 	local spot = not Config.Zones[target] and type(lms) == "table" and lms[g] or nil
 	if typeof(spot) ~= "Vector3" then spot = nil end
 	if spot then target = Config.ZoneAt(spot).Id end
-	if Config.Zones[target] and zone ~= target then
+	-- 검수 10/10: a landmark a walk away (both zones walk to each other: L.ForgeWalk) -> straight to the spot, no trip
+	local walkTo = spot ~= nil and L.ForgeWalk[zone] == true and L.ForgeWalk[target] == true
+	if Config.Zones[target] and zone ~= target and not walkTo then
 		if panels and panels.Open then panels.Open("Travel") end
 		if target == TUT_GUIDE_ZONE then
 			if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "zone:" .. target, 30) and guide then guide.From = zone end

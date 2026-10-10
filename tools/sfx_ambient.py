@@ -81,10 +81,13 @@ def cricket_track(rng, n, f0, rate, pulses=3, gain=1.0):
     pulse = np.sin(2 * np.pi * 28 * t) ** 2 * (t < 0.04 * pulses)
     tone = np.sin(2 * np.pi * f0 * t + 3 * np.sin(2 * np.pi * 9 * t) * 0.1) * pulse
     tone *= np.minimum(t / 0.004, 1.0)
-    for s in range(int(phase), n - chirp_len, period):
+    s = int(phase)
+    while s < n - chirp_len:
         y[s:s + chirp_len] += tone * gain * rng.uniform(0.7, 1.0)
+        step = period * rng.uniform(0.85, 1.15)  # 검수 10/10: the gap between chirps wobbles +-15 % (not machine-like)
         if rng.random() < 0.12:
-            s += period  # a skipped beat now and then keeps it alive
+            step += period  # a skipped beat now and then keeps it alive
+        s += int(step)
     return y
 
 
@@ -100,6 +103,8 @@ def night(variant):
     wind = band(wind, 120, 520) * (1.0 if variant == "a" else 1.6)
     air = band(rng.standard_normal(n), 6500, 9500) * 0.04 * slow(rng, n, 0.2, 0.5)
     y = crickets * 0.30 + wind * 1.0 + air
+    # 검수 10/10: nothing above ~6 kHz that tires the ear on a long listen (a 2nd-order low-pass at 5.8 kHz + the air band halved)
+    y = lowp(y - air * 0.5, 5800, 2)
     return finish(y, -31.0)
 
 
@@ -123,6 +128,100 @@ def winter(variant):
 
 MAKERS = {"Rain_a": lambda: rain("a"), "Rain_b": lambda: rain("b"), "Night_a": lambda: night("a"), "Night_b": lambda: night("b"),
           "WinterWind_a": lambda: winter("a"), "WinterWind_b": lambda: winter("b")}
+
+
+# ---------- town day / den ambience (검수 10/10) ----------
+def bird_voice(rng, n, lo, hi, rate, level):
+    """sparse bird calls: 2-4 short rising/falling chirps, a few times a minute (soft, never a flock)"""
+    y = np.zeros(n)
+    t0 = rng.uniform(0.5, 3.0)
+    while t0 < n / SR - 1.0:
+        k = int(rng.integers(2, 5))
+        base = rng.uniform(lo, hi)
+        at = t0
+        for _ in range(k):
+            d = rng.uniform(0.07, 0.16)
+            m = int(d * SR)
+            tt = np.arange(m) / SR
+            glide = base * (1 + rng.uniform(-0.25, 0.35) * (tt / d))
+            ph = 2 * np.pi * np.cumsum(glide) / SR
+            vib = 1 + 0.02 * np.sin(2 * np.pi * 38 * tt)
+            env_ = np.sin(np.pi * tt / d) ** 1.5
+            i = int(at * SR)
+            if i + m < n:
+                y[i:i + m] += np.sin(ph * vib) * env_ * level * rng.uniform(0.7, 1.0)
+            at += d + rng.uniform(0.04, 0.12)
+        t0 += rng.uniform(1.0, 1000.0 / rate)
+    return y
+
+
+def wind_chime(rng, n, count, level):
+    """a small metal wind chime: a few soft strikes of high tubes (not a church bell: no low fundamentals, no long ring)"""
+    y = np.zeros(n)
+    tubes = [1760.0, 1975.5, 2349.3, 2637.0, 3135.9]
+    for _ in range(count):
+        i = int(rng.uniform(0.5, n / SR - 2.0) * SR)
+        for j in range(int(rng.integers(1, 4))):
+            f = tubes[int(rng.integers(0, len(tubes)))]
+            m = int(1.1 * SR)
+            tt = np.arange(m) / SR
+            note = (np.sin(2 * np.pi * f * tt) + 0.25 * np.sin(2 * np.pi * f * 2.76 * tt)) * np.exp(-tt * 5.5)
+            at = i + int(j * rng.uniform(0.08, 0.35) * SR)
+            if at + m < n:
+                y[at:at + m] += note * level * rng.uniform(0.5, 1.0)
+    return y
+
+
+def halo_day(variant):
+    rng = np.random.default_rng(61 if variant == "a" else 62)
+    n = int(SECONDS * SR) + XF
+    birds = bird_voice(rng, n, 2600, 4200, 40, 0.5) + bird_voice(rng, n, 3300, 5000, 25, 0.35)
+    chime = wind_chime(rng, n, 5 if variant == "a" else 8, 0.5)
+    wind = band(lowp(rng.standard_normal(n), 700), 150, 700) * slow(rng, n, 0.1, 0.6)
+    y = birds * 0.30 + chime * 0.16 + wind * (0.9 if variant == "a" else 0.6)
+    return finish(y, -32.0)
+
+
+def crackle(rng, n, rate, level):
+    y = np.zeros(n)
+    t = 0.0
+    while t < n / SR - 0.3:
+        m = int(rng.uniform(0.004, 0.02) * SR)
+        tt = np.arange(m) / SR
+        click = band(rng.standard_normal(m), 1500, 6000) * np.exp(-tt * rng.uniform(200, 700))
+        i = int(t * SR)
+        y[i:i + m] += click * level * rng.uniform(0.3, 1.0)
+        t += rng.exponential(1.0 / rate)
+    return y
+
+
+def bubbles(rng, n, rate, level):
+    y = np.zeros(n)
+    t = 0.0
+    while t < n / SR - 0.5:
+        d = rng.uniform(0.08, 0.26)
+        m = int(d * SR)
+        tt = np.arange(m) / SR
+        f = rng.uniform(110, 260) * (1 + 1.2 * (tt / d))  # a 'blup' that rises as the bubble pops
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        y[int(t * SR):int(t * SR) + m] += np.sin(ph) * np.sin(np.pi * tt / d) ** 2 * level * rng.uniform(0.4, 1.0)
+        t += rng.exponential(1.0 / rate)
+    return y
+
+
+def horns_den(variant):
+    rng = np.random.default_rng(71 if variant == "a" else 72)
+    n = int(SECONDS * SR) + XF
+    lava = band(rng.standard_normal(n), 300, 1100) * slow(rng, n, 0.25, 0.7) * 0.5
+    blub = bubbles(rng, n, 2.2 if variant == "a" else 3.6, 0.7)
+    fire = band(rng.standard_normal(n), 250, 1400) * slow(rng, n, 0.3, 0.5) * 0.35
+    snap = crackle(rng, n, 9 if variant == "a" else 14, 0.8)
+    y = lava + blub * 0.5 + fire + snap * 0.5
+    return finish(y, -30.0)
+
+
+MAKERS.update({"HaloDay_a": lambda: halo_day("a"), "HaloDay_b": lambda: halo_day("b"),
+               "HornsDen_a": lambda: horns_den("a"), "HornsDen_b": lambda: horns_den("b")})
 
 
 def seam(x):

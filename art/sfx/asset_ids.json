@@ -75,7 +75,13 @@
     "TipDing": "rbxassetid://111120758241059",
     "Warp": "rbxassetid://132227699974979",
     "WarpIn": "rbxassetid://127997176687568",
-    "SecretFound": "rbxassetid://121833019298027"
+    "SecretFound": "rbxassetid://121833019298027",
+    "LanternOn": "rbxassetid://94311196771631",
+    "DoorOpen": "rbxassetid://128755702351901",
+    "PetCall": "rbxassetid://139309639843969",
+    "PetStow": "rbxassetid://109542349885083",
+    "PetLevel": "rbxassetid://128227928372563",
+    "DiamondTick": "rbxassetid://89172108649325"
   },
   "pending": [],
   "kept": {
@@ -194,6 +200,42 @@
         "seconds": 20,
         "lufs": -30,
         "note": "3D, RollOffMaxDistance ~40, outside the MaxPlaying pool"
+      },
+      "Rain": {
+        "id": "rbxassetid://126445007194331",
+        "seconds": 25,
+        "lufs": -28,
+        "note": "global weather ambience, Volume 0.35, 1.5 s fade on weather change; Rain_b"
+      },
+      "Night": {
+        "id": "rbxassetid://99972569683856",
+        "seconds": 25,
+        "lufs": -31,
+        "note": "global night ambience, Volume 0.3, 1.5 s fade; Night_b crickets gap +-15 %"
+      },
+      "WinterWind": {
+        "id": "rbxassetid://113002054407080",
+        "seconds": 25,
+        "lufs": -29,
+        "note": "global snow-time wind (December), Volume 0.35, 1.5 s fade; WinterWind_a"
+      },
+      "HaloDay": {
+        "id": "rbxassetid://76688623617177",
+        "seconds": 25,
+        "lufs": -32,
+        "note": "Halo Citadel daytime ambience (birds + tiny wind chime), Volume 0.25; HaloDay_a"
+      },
+      "HornsDen": {
+        "id": "rbxassetid://112972652651947",
+        "seconds": 25,
+        "lufs": -30,
+        "note": "Horns Den ambience (lava bubbling + campfire crackle), Volume 0.25; HornsDen_a"
+      },
+      "RainRoof": {
+        "id": "rbxassetid://76655204420103",
+        "seconds": 25,
+        "lufs": -33,
+        "note": "rain under a roof (muffled, weak), swap with Rain when the player is under a roof; Volume 0.25; RainRoof_a"
       }
     },
     "boss": {
@@ -221,6 +263,21 @@
         "seconds": 64.779,
         "boss": "CaptainClatter",
         "pairsWith": "Ruins"
+      }
+    },
+    "blips": {
+      "about": "NPC talk blips for the TalkToNpc window opening (no voice, 0.19-0.25 s, Volume 0.3). NpcId Bright -> BlipBright, Gleam (Sir Gleam) -> BlipGleam, TownFolk -> BlipFolk. Horns-town NPC blips come with the Horns zone.",
+      "BlipBright": {
+        "id": "rbxassetid://126796215784360",
+        "seconds": 0.19
+      },
+      "BlipGleam": {
+        "id": "rbxassetid://103851146620116",
+        "seconds": 0.245
+      },
+      "BlipFolk": {
+        "id": "rbxassetid://98476528780032",
+        "seconds": 0.205
       }
     }
   }
