@@ -5744,7 +5744,7 @@ Config.UIArt = {
 		Skill_Warrior_Z_Horns = { Id = "rbxassetid://96701336601012", Size = Vector2.new(512, 512) },
 		Skill_Mage_Z_Halo = { Id = "rbxassetid://117710924786358", Size = Vector2.new(512, 512) },
 		Skill_Mage_Z_Horns = { Id = "rbxassetid://82944323163651", Size = Vector2.new(512, 512) },
-		Skill_Archer_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Archer_Z_Halo = { Id = "rbxassetid://116429631383462", Size = Vector2.new(512, 512) },
 		Skill_Archer_Z_Horns = { Id = "rbxassetid://107578440852344", Size = Vector2.new(512, 512) },
 		Skill_Warrior_X_Halo = { Id = "rbxassetid://78225248119957", Size = Vector2.new(512, 512) },
 		Skill_Warrior_X_Horns = { Id = "rbxassetid://100908047802242", Size = Vector2.new(512, 512) },
