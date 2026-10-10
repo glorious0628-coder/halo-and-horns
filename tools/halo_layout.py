@@ -334,7 +334,7 @@ for name, za, zb, hw, rh in TIERS:
 # wing gardens: topiary + trees + bushes + pots on every wing top (random within, off the footprints)
 WINGS = [("WA", 60, 188, -434, -336), ("WB", 74, 188, -536, -450), ("WC", 100, 190, -612, -552), ("WD", 124, 190, -692, -628)]
 # counts follow the real triangle budget (Planter 4.5k, Topiary 3.5k, RoundTree 5k, CloudBush 1.8k, PotFlowers 3k; Roblox automatic LOD cuts the far ones)
-target = {"Topiary": 34, "RoundTree": 16, "CloudBush": 40, "PotFlowers": 24, "Planter": 16}
+target = {"Topiary": 34, "RoundTree": 16, "CloudBush": 40, "PotFlowers": 12, "Planter": 16}
 have = {}
 for e in P:
     have[e["kind"]] = have.get(e["kind"], 0) + 1
@@ -353,7 +353,7 @@ while any(need_more.values()) and tries < 60000:
     if put(kind, sx * ax, z, yaw, s, pad=1.5 if kind in ("RoundTree", "Topiary") else 0.6):
         need_more[kind] -= 1
 # cliff-edge cloud bushes: along the wing outer edge + the spine edge shoulders
-edge_target = 26
+edge_target = 20
 tries = 0
 while edge_target > 0 and tries < 20000:
     tries += 1
