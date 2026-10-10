@@ -52,6 +52,8 @@ Net.Names = {
 	"FinisherPick", -- (card id: number, "Help" | "Tickle") the King Slime finisher card (FinisherService)
 	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
 	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
+	"SetQuickSlot", -- A23-109 (게임성 개발 2): (slot 1..3, item: a Config.QuickSlots.Items key | "") QuickSlotService; the
+	-- answer is the owner's QuickSlots attribute (no reply remote)
 }
 
 Net.GameStateDefaults = {
