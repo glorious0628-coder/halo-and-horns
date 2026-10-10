@@ -10,7 +10,8 @@
 -- PC first (A23-98); no new art: the approved pet icon (Config.UIArt IconPetBabySlime) and the Panels kit. Game text:
 -- English only (A23-48), short and easy. Presentation only: the server owns every pet, level and equip.
 -- Public API: PetWindow.Init(C), PetWindow.Start(), PetWindow.IsReady(), PetWindow.Open(), PetWindow.OnList(payload),
--- PetWindow.Rows(payload, ctx) -> rows (pure; ctx = { Class, Faction, EquippedPet, PetLv }), PetWindow.Equip(uid) -> bool.
+-- PetWindow.Rows(payload, ctx) -> rows (pure; ctx = { Class, Faction, EquippedPet, PetLv }), PetWindow.Equip(uid) -> bool,
+-- PetWindow.FollowerName() -> my following pet's story name or nil (PetFollow's tag).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -284,6 +285,16 @@ function PetWindow.Open()
 	local panels = C and C.Panels
 	if not S.Ready or type(panels) ~= "table" or type(panels.Open) ~= "function" then return false end
 	return (pcall(panels.Open, T.Window))
+end
+
+-- PET-4: my following pet's story name (Good Buddy / Little Minion) for the tag over it (PetFollow); nil without one
+function PetWindow.FollowerName()
+	local p = S.List
+	if type(p) ~= "table" or type(p.List) ~= "table" or type(p.Equipped) ~= "string" or p.Equipped == "" then return nil end
+	for _, e in p.List do
+		if type(e) == "table" and e.Uid == p.Equipped and type(e.Name) == "string" and e.Name ~= "" then return e.Name end
+	end
+	return nil
 end
 
 -- the owner's "PetList": kept; the open window redraws when what it shows changed (XP only: the bars in place)

@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 308,
-  "namedChecks": 242,
+  "checks": 316,
+  "namedChecks": 250,
   "failing": [],
   "mutations": {
-    "total": 108,
-    "caught": 108,
+    "total": 112,
+    "caught": 112,
     "results": [
       {
         "mutation": "music: no crossfade (a jump)",
@@ -24,8 +24,9 @@
         "crashed": false,
         "newFailingChecks": [
           "music :: ... the old track stops and goes",
-          "music :: a zone without a track: quiet (the last one faded out)",
-          "music :: into the Horns town: a crossfade (the old down, the new up)"
+          "music :: a zone without a track (the outskirts): quiet (the last one faded out)",
+          "music :: into the Horns town: a crossfade (the old down, the new up)",
+          "music :: leaving the meadow during the boss: track and layer both fade out"
         ]
       },
       {
@@ -80,6 +81,46 @@
         "crashed": false,
         "newFailingChecks": [
           "music :: a waterfall sound at each of the six Halo spots"
+        ]
+      },
+      {
+        "mutation": "boss layer: from the start, out of step with the track",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: King Slime out: his layer starts at the track's TimePosition, looped, in the Music group, from silence"
+        ]
+      },
+      {
+        "mutation": "boss layer: never stops",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: King Slime gone: the layer fades out and stops, the track stays",
+          "music :: leaving the meadow during the boss: track and layer both fade out"
+        ]
+      },
+      {
+        "mutation": "boss layer: plays without the boss",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: BossLayer: the layer only while its boss is out",
+          "music :: King Slime gone: the layer fades out and stops, the track stays",
+          "music :: King Slime out: his layer starts at the track's TimePosition, looped, in the Music group, from silence",
+          "music :: the meadow track, no layer while King Slime is away"
+        ]
+      },
+      {
+        "mutation": "boss layer: never fades in",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "music :: ... fading in to the music volume"
         ]
       },
       {
@@ -351,7 +392,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -1079,9 +1119,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "2299a1ade44a3a3b3da23fc2650e9282899159fd9eae0a714cca2f3f17d4bd4c",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "059e9d38a9d2ecad10b45135df08d8ac30ea1a4262b332f8ac069728d0ba0332",
-    "tools/fixtures/audio_offline.luau": "5bb9164dd1afca9c15caad465e3a9e88251f2f2f73745b458864b47f90e95eec"
+    "src/ReplicatedStorage/Shared/Config.luau": "146ebf2e1fc052d247069f3686f0d9ebe73280c8fe7d15741e41536c6206f863",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "ed68250ee9de2678dd35b79b388ecd46108261879d0f223233eb7d8661107c8e",
+    "tools/fixtures/audio_offline.luau": "ae81fdad5cbb65b06e7b49e5880fc08e3e55d14082b70dead5cc5ef56781ea6f"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

@@ -91,6 +91,14 @@ imt.__index = {
 	end,
 	GetChildren = function(self) return table.clone(self.Children) end,
 	GetAttribute = function(self, k) return rawget(self, "Attrs") and self.Attrs[k] or nil end,
+	IsDescendantOf = function(self, anc)
+		local p = rawget(self, "Parent")
+		while p do
+			if p == anc then return true end
+			p = rawget(p, "Parent")
+		end
+		return false
+	end,
 	FindFirstChildWhichIsA = function(self, c, recursive)
 		for _, ch in self.Children do
 			if ch:IsA(c) then return ch end
@@ -121,6 +129,7 @@ local function add(parent, child)
 end
 
 local WORKSPACE, PLAYER, ATTR = nil, nil, {}
+local NPCS = {} -- CollectionService "StoryNpc" (dev3 TownNpcs)
 local function newWorld()
 	WORKSPACE = inst("Workspace", "Workspace")
 	WORKSPACE.GetServerTimeNow = function() return 1790000000 end -- 2026-09 (Halloween on; Config.SeasonNow)
@@ -151,6 +160,7 @@ local function envFor()
 	local game = { GetService = function(_, n)
 		if n == "Players" then return { LocalPlayer = PLAYER } end
 		if n == "ReplicatedStorage" then return { WaitForChild = function() return shared end } end
+		if n == "CollectionService" then return { GetTagged = function(_, tag) return tag == "StoryNpc" and NPCS or {} end } end
 		return {}
 	end }
 	return { Vector3 = { new = vec, zero = vec(0, 0, 0) }, Vector2 = { new = vec, zero = vec(0, 0, 0) },
@@ -254,6 +264,9 @@ do
 	check(g, "with the Halo plaza pad: the meadow -> that pad (no bridge walk)", t == pad, where(t))
 	check(g, "TownPad finds it for the Halo town only", QT.TownPad("HaloTown", "SlimeMeadow") == pad
 		and QT.TownPad("HornsTown", "SlimeMeadow") == nil and QT.TownPad("HaloTown", "GoblinWoods") == nil)
+	local mpad = add(pads, inst("Model", "Pad_Halo_GoblinWoods", { Attrs = { TravelTo = "GoblinWoods" } }))
+	add(mpad, inst("Part", "Top", { Position = vec(20, 1, -500) }))
+	check(g, "a Model pad is ignored (ZoneService connects BaseParts only, 검수 10/10)", QT.TownPad("HaloTown", "GoblinWoods") == nil)
 	t = QT.Travel("GoblinWoods", "HaloTown", vec(0, 3, -420))
 	check(g, "a zone the town pads do not go to -> the usual route", t ~= pad, where(t))
 	t = QT.Travel("SlimeMeadow", "Crossroads", vec(0, 3, 0))
@@ -387,9 +400,18 @@ do
 	local hero = { Story = { Id = "H6", St = 1, Guide = "HeroStatue" } }
 	local spot = Config.StoryQuests.Landmarks.HeroStatue
 	local heroZone = Config.ZoneAt(spot).Id
-	e = QT.ForEntry(hero, "Crossroads", "Halo", vec(0, 3, 0))
-	check(g, "HeroStatue from the Crossroads -> a trip to its town", type(e) == "table" and e.Travel == true and e.Zone == heroZone
+	e = QT.ForEntry(hero, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "HeroStatue from the meadow -> a trip to its town", type(e) == "table" and e.Travel == true and e.Zone == heroZone
 		and heroZone == "HaloTown", e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
+	-- 검수 10/10: a landmark a walk away (the Crossroads <-> the towns, like the forge) -> the spot itself, no trip
+	e = QT.ForEntry(hero, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip", type(e) == "table"
+		and e.Travel == false and isNamed(e.Part, "HUDGuideAnchor_Spot_HeroStatue") and at(e.Part, spot.X, spot.Z),
+		e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
+	local bridge = Config.StoryQuests.Landmarks.HaloBridge
+	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloBridge" } }, "HaloTown", "Halo", vec(0, 3, -470))
+	check(g, "HaloBridge from the Halo town -> the bridge spot, no trip", type(e) == "table" and e.Travel == false
+		and at(e.Part, bridge.X, bridge.Z), e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
 	e = QT.ForEntry(hero, heroZone, "Halo", vec(0, 3, -470))
 	check(g, "HeroStatue inside the town -> the anchor over the statue spot", type(e) == "table" and e.Travel == false
 		and isNamed(e.Part, "HUDGuideAnchor_Spot_HeroStatue") and at(e.Part, spot.X, spot.Z) and math.abs(e.Part.Position.Y - 3) <= 0.5,
@@ -407,6 +429,32 @@ do
 		and e.Zone == Config.ZoneAt(camp).Id and e.Zone == "GoblinWoods", e and encode({ Zone = e.Zone }) or "nil")
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -470))
 	check(g, "a plain zone guide inside its zone -> still nothing", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	-- 빛 마을 점검 #1 / #22 / #25 / #30 (2026-10-10): a talk step through a story NPC in the world (dev3 TownNpcs)
+	local talk = { Story = { Id = "H1", St = 1, Panel = true, Guide = "HaloTown", Npc = "Bright" } }
+	e = QT.ForEntry(talk, "HaloTown", "Halo", vec(0, 3, -420))
+	check(g, "no Bright in the world yet -> a talk row has no place (as before)", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	local bright = add(WORKSPACE, inst("Model", "Npc_Bright", { Attrs = { NpcId = "Bright" } }))
+	local head = add(bright, inst("Part", "Head", { Position = vec(18, 6, -452) }))
+	NPCS = { bright }
+	e = QT.ForEntry(talk, "HaloTown", "Halo", vec(0, 3, -400))
+	check(g, "Bright in the town -> the marker over her head, labelled Bright", type(e) == "table" and e.Part == head
+		and e.Travel == false and e.Label == "Bright" and e.Tag == "story:npc", e and encode({ Tag = e.Tag, L = e.Label }) or "nil")
+	e = QT.ForEntry(talk, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "... from the Crossroads (a walk away) -> her straight away, no trip", type(e) == "table" and e.Part == head
+		and e.Travel == false, e and encode({ Tag = e.Tag, T = e.Travel }) or "nil")
+	e = QT.ForEntry(talk, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "... from the meadow -> a trip to the Halo town", type(e) == "table" and e.Travel == true and e.Zone == "HaloTown",
+		e and encode({ Zone = e.Zone, T = e.Travel }) or "nil")
+	e = QT.ForEntry(talk, "HaloTown", "Halo", vec(14, 3, -448))
+	check(g, "... standing by her (her Talk prompt is right there) -> no marker", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "H3", St = 2, Panel = true, Guide = "HaloTown", Npc = "Gleam" } }, "HaloTown", "Halo", vec(0, 3, -400))
+	check(g, "a talk through an NPC not in the world (Gleam) -> no place", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "X", St = 1, Panel = true, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -400))
+	check(g, "a talk / choice card without an NPC -> still no place", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	bright.Parent = nil
+	e = QT.ForEntry(talk, "HaloTown", "Halo", vec(0, 3, -400))
+	check(g, "a tagged model out of the world counts as absent", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	NPCS = {}
 end
 
 local named = {}

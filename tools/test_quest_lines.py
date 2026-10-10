@@ -269,7 +269,7 @@ def static_checks(src):
          and "for _, key in L.LineIconKeys(e) do" in setline and 'QuestDone = "Done!",' in src),
         ("the ▼ sits on the head line 'Quests (N)' over the lines, not beside line 1",
          'QuestHead = "Quests (%d)",' in src and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
-         and "ui.questHead.Text.Text = string.format(TXT.QuestHead, #entries)" in refresh
+         and "ui.questHead.Text.Text = string.format(TXT.QuestHead, #all)" in refresh
          and "block.Position = UDim2.fromOffset(q.X, q.Y + hh)" in layout),
         ("the words get their own width (no flex shrink that squeezed a finished line's name to nothing)",
          "UIFlexItem" not in build and "l.Text.Size = UDim2.new(0, math.max(1, math.min(math.ceil(w) + 2, math.floor(avail))), 1, 0)" in fit),

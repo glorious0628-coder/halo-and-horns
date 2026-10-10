@@ -23,7 +23,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 FILES = {"HUD": SPS / "HUD.luau", "QT": SPS / "QuestTarget.luau", "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
-         "WM": SPS / "WorldMap.luau", "MM": SPS / "MiniMap.luau"}
+         "WM": SPS / "WorldMap.luau", "MM": SPS / "MiniMap.luau", "QM": SPS / "QuestMarker.luau"}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -50,6 +50,18 @@ STATIC = [
      ['\t\tif zone and zone.Id ~= "Crossroads" and used < T.MaxPads then\n',
       '\t\t\t\tmark = textMark("TownPad" .. used, TXT.Pad, T.PadGlyph, COL.Pad, 6, ui.canvas)\n',
       '\t\t\t\tif S.upright then table.insert(S.upright, mark) end\n', '\ttownPads()\n']),
+    # 검수 10/10 (7b5fbf42 / a2c1512a review)
+    ("Reduced Motion: a row tap turns the marker gold for FlashTime s (no tween)", "QM",
+     ['\tif UIKit.ReducedMotion() then\n\t\tfor _, e in tinted do e[1][e[2]] = COL.Flash end\n',
+      '\tFlashTime = 0.3,', '\t\t\tlocal back = S.claim and COL.Claim or COL.Go\n']),
+    ("the HUD row tap goes straight to a landmark a walk away (no Travel window)", "HUD",
+     ['\tlocal walkTo = spot ~= nil and L.ForgeWalk[zone] == true and L.ForgeWalk[target] == true\n',
+      '\tif Config.Zones[target] and zone ~= target and not walkTo then\n']),
+    ("빛 마을 점검 #1 / #30: a talk row through a town NPC guides to her when far, opens near", "HUD",
+     ['\t\tlocal npc = type(st.Npc) == "string" and type(qt) == "table" and type(qt.StoryNpc) == "function" and qt.StoryNpc(st.Npc) or nil\n',
+      '\t\tif npc and root and Util.FlatDistance(root.Position, npc.Position) > (tonumber(Config.StoryQuests.NpcRange) or 16) then\n']),
+    ("the maps mark BasePart pads only", "MM",
+     ['\t\tlocal part = p:IsA("BasePart") and p or nil -- 검수 10/10: BaseParts only (ZoneService connects only those)\n']),
     ("Config: no ground line / name chip, pad glow and Travel pulse on", "CONFIG",
      ["\tGuideBeam = false, --", "\tGuideLabel = false, --", "\tPadGlow = true,\n", "\tTravelPulse = true,\n"]),
 ]

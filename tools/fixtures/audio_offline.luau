@@ -1061,7 +1061,16 @@ do
 		and Config.Data.Defaults.Settings.Music == 1 and SD.Order[2] == "Music" and SD.Text.MusicEn == "Music"
 		and Config.SanitizeSettings({ Music = 0.34 }).Music == 0.3 and Config.SanitizeSettings({}).Music == 1)
 	check(m, "MusicTrack: the zone's id, nothing where a zone has none", Audio.MusicTrack("HaloTown") == M.Tracks.HaloTown
-		and Audio.MusicTrack("Crossroads") == nil and Audio.MusicTrack(nil) == nil)
+		and Audio.MusicTrack("Outskirts") == nil and Audio.MusicTrack(nil) == nil)
+	local zones8 = { "HaloTown", "HornsTown", "Crossroads", "SlimeMeadow", "GoblinWoods", "SkeletonRuins", "PumpkinPatch", "HauntedHollow" }
+	local all8 = true
+	for _, z in zones8 do
+		if type(M.Tracks[z]) ~= "string" or not string.find(M.Tracks[z], "^rbxassetid://%d+$") then all8 = false end
+	end
+	check(m, "Config: a track for each of the eight zones (소리 만들기 9d2e3b2)", all8, encode(M.Tracks))
+	check(m, "Config: the four boss layers on their zone + GameState flag", M.Boss.SlimeMeadow.Active == "SlimeKingActive"
+		and M.Boss.PumpkinPatch.Active == "PumpkinKingActive" and M.Boss.HauntedHollow.Active == "GhostKingActive"
+		and M.Boss.SkeletonRuins.Active == "ClatterActive" and M.Boss.SlimeMeadow.Id ~= M.Tracks.SlimeMeadow, encode(M.Boss))
 	local function musicSounds(id)
 		local out = {}
 		for _, so in SOUNDS_MADE do
@@ -1070,7 +1079,7 @@ do
 		return out
 	end
 	settings.Music, settings.Sfx = 1, 1
-	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	PLAYER:SetAttribute("ZoneId", "Outskirts")
 	PLAYER:SetAttribute("ZoneId", "HaloTown")
 	local halo = musicSounds(M.Tracks.HaloTown)[1]
 	check(m, "entering the Halo town starts its track: looped, in the Music group, from silence", halo ~= nil and halo.IsPlaying
@@ -1089,9 +1098,47 @@ do
 		and near(halo.Volume, M.Volume / 2), horns and halo and (horns.Volume .. "/" .. halo.Volume) or "nil")
 	beat(1)
 	check(m, "... the old track stops and goes", halo.IsPlaying == false and halo.Destroyed == true and near(horns.Volume, M.Volume))
-	PLAYER:SetAttribute("ZoneId", "SlimeMeadow")
+	PLAYER:SetAttribute("ZoneId", "Outskirts")
 	beat(2)
-	check(m, "a zone without a track: quiet (the last one faded out)", horns.IsPlaying == false and #musicSounds() == 0, #musicSounds())
+	check(m, "a zone without a track (the outskirts): quiet (the last one faded out)", horns.IsPlaying == false and #musicSounds() == 0,
+		#musicSounds())
+	-- the boss layer
+	local function layers()
+		local out = {}
+		for _, so in SOUNDS_MADE do
+			if so.Name == "MusicBoss" and not so.Destroyed then table.insert(out, so) end
+		end
+		return out
+	end
+	check(m, "BossLayer: the layer only while its boss is out", Audio.BossLayer("SlimeMeadow", GAMESTATE) == nil
+		and Audio.BossLayer("HaloTown", GAMESTATE) == nil and Audio.BossLayer("SlimeMeadow", nil) == nil)
+	PLAYER:SetAttribute("ZoneId", "SlimeMeadow")
+	local meadow = musicSounds(M.Tracks.SlimeMeadow)[1]
+	beat(2)
+	meadow.TimePosition = 12.5
+	check(m, "the meadow track, no layer while King Slime is away", meadow and near(meadow.Volume, M.Volume) and #layers() == 0, #layers())
+	GAMESTATE:SetAttribute("SlimeKingActive", true)
+	local layer = layers()[1]
+	check(m, "King Slime out: his layer starts at the track's TimePosition, looped, in the Music group, from silence",
+		layer and layer.SoundId == M.Boss.SlimeMeadow.Id and layer.IsPlaying and layer.Looped and near(layer.TimePosition, 12.5)
+		and layer.Volume == 0 and layer.SoundGroup and layer.SoundGroup.Name == "Music",
+		layer and encode({ T = layer.TimePosition, V = layer.Volume }) or "nil")
+	beat(2)
+	check(m, "... fading in to the music volume", layer and near(layer.Volume, M.Volume), layer and layer.Volume)
+	GAMESTATE:SetAttribute("SlimeKingActive", false)
+	beat(2)
+	check(m, "King Slime gone: the layer fades out and stops, the track stays", layer.IsPlaying == false and layer.Destroyed == true
+		and meadow.IsPlaying and #layers() == 0)
+	GAMESTATE:SetAttribute("SlimeKingActive", true)
+	local layer2 = layers()[1]
+	beat(2)
+	PLAYER:SetAttribute("ZoneId", "Crossroads")
+	beat(2)
+	check(m, "leaving the meadow during the boss: track and layer both fade out", layer2 and layer2.IsPlaying == false
+		and meadow.IsPlaying == false and #layers() == 0, #layers())
+	GAMESTATE:SetAttribute("SlimeKingActive", false)
+	PLAYER:SetAttribute("ZoneId", "Outskirts")
+	beat(2)
 	PLAYER:SetAttribute("ZoneId", "HaloTown")
 	local again = musicSounds(M.Tracks.HaloTown)[1]
 	local group = again and again.SoundGroup

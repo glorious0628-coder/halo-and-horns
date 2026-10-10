@@ -60,6 +60,7 @@ local T = {
 	TargetDt = 1 / 2, -- ask HUD for the target
 	StudsPerMeter = 3.5, -- A23-36: metres = studs / 3.5, rounded
 	PulseFrom = 1.7, PulseTime = 0.45, -- 빛 마을 점검 #20: a row tap pops the icon from this size back to 1 (s)
+	FlashTime = 0.3, -- s: with Reduced Motion the icon turns COL.Flash instead (검수 10/10)
 	FadeM = 10, -- starts fading inside this many metres...
 	HideM = 6, -- ...and is gone inside this many
 	Lift = 3, -- studs above the target part's top (or above a bare position)...
@@ -142,6 +143,7 @@ table.insert(IS_TOUCH and AVOID[4] or AVOID[2], "potions")
 local COL = {
 	Go = Color3.fromRGB(255, 255, 255), -- in progress: white (ArtColors.MarkerGo, copied in at build)
 	Claim = Color3.fromRGB(255, 228, 128), -- done, waiting for [Claim]: light gold (ArtColors.MarkerClaim)
+	Flash = Color3.fromRGB(255, 196, 40), -- 검수 10/10: the Reduced Motion row-tap sign (a still gold, no tween)
 	Rim = Color3.fromRGB(26, 40, 79), -- ArtColors.Navy: dark navy outline over 3D
 	Dot = Color3.new(1, 1, 1),
 	Halo = Color3.fromRGB(8, 12, 28), -- the dark halo under the art (never tinted)
@@ -995,11 +997,21 @@ function QuestMarker.Focus(target)
 end
 
 -- 빛 마을 점검 #20 (2026-10-10): a tap on the pinned row whose place is already marked pops the icon once (grows,
--- then settles with a small overshoot; no text, nothing new on screen). ReducedMotion: no pop. False when the marker
--- is not shown
+-- then settles with a small overshoot; no text, nothing new on screen). ReducedMotion (검수 10/10): no motion - the icon
+-- turns gold for FlashTime s, then back to its tint (no tween). False when the marker is not shown
 function QuestMarker.Pulse()
 	if not (S.shown and ui.iconBox and ui.iconBox.Parent) then return false end
-	if UIKit.ReducedMotion() then return true end
+	if UIKit.ReducedMotion() then
+		for _, e in tinted do e[1][e[2]] = COL.Flash end
+		local token = {}
+		S.flashToken = token
+		task.delay(T.FlashTime, function()
+			if S.flashToken ~= token then return end
+			local back = S.claim and COL.Claim or COL.Go
+			for _, e in tinted do e[1][e[2]] = back end
+		end)
+		return true
+	end
 	local sc = ui.iconBox:FindFirstChild("PulseScale")
 	if not sc then sc = UIKit.Create("UIScale", { Name = "PulseScale", Scale = 1, Parent = ui.iconBox }) end
 	sc.Scale = T.PulseFrom
