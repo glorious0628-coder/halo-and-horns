@@ -3840,7 +3840,9 @@ end
 -- RingPad x its width within RingSize..RingMax studs, gone RingShow s after my last attack.
 -- ServerHint = false: CombatService.Swing still aims by itself (A23-61: the nearest monster inside the front half, else
 -- the nearest within Range), so the pick copies that rule and the turn, the ring and the hit agree. The client already
--- sends its pick (Swing / Release arg 1 = the monster Model); once the server takes it (game dev 2) set true: then the
+-- sends its pick (Swing / Release arg 1 = the monster Model); the server takes it since dev2 2026-10-10 (CombatService
+-- HINT: a manual attack's valid pick within Range + 2, turned to outside 10 deg; tools/test_swing_hint.py), so game dev 1
+-- may set true: then the
 -- target stays for KeepFor s after each attack (until it dies / leaves Range) and a new one is picked by score: WDist x
 -- closeness (within Inside x Range) + WFront x in front of me + WScreen x near the screen centre + WAttacker if it wound
 -- up an attack (WindupAt, server time) within AttackerFor s and stands within AttackerReach studs; a monster behind me

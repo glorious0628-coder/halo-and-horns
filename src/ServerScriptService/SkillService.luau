@@ -1,6 +1,7 @@
 -- SkillService.luau : SKL-2 (A23-49, docs/design/skill_kit_beta_2026-10-06.md §1-§4, §8-1): the class skills Q / Z / X of
 -- every kit (Config.Skills, Config.SkillKit / SkillDef). One press = one cast; the server picks the target.
---   Cast(player, slot, isAuto) is the one entry for the UseSkill remote, the old Release remote (Q) and auto combat:
+--   Cast(player, slot, isAuto, hint) is the one entry for the UseSkill remote, the old Release remote (Q; hint = the
+--   client's pick, A23-91) and auto combat:
 --     - the shared GlobalGap (0.5 s) between any two skills: a manual press inside it is queued once (it fires when the
 --       gap ends), an auto cast simply waits;
 --     - every refusal comes before MP is spent (locked / switched off / cooldown / no MP / no target) and tells the
@@ -623,7 +624,7 @@ function SkillService.GuardOf(player)
 	return math.clamp(g.Pct, 0, 0.9)
 end
 
-local function castQ(player, s, isAuto)
+local function castQ(player, s, isAuto, hint)
 	local skill = Config.BasicSkill or {}
 	if not isAuto then
 		if Util.Now() < num(player:GetAttribute("SkillReadyAt"), 0) then
@@ -635,7 +636,7 @@ local function castQ(player, s, isAuto)
 			return false
 		end
 	end
-	local ok = S.CombatService.Release(player, isAuto) == true
+	local ok = S.CombatService.Release(player, isAuto, hint) == true
 	if ok then s.LastAt = os.clock() end
 	return ok
 end
@@ -686,8 +687,10 @@ local function castZX(player, s, slot, isAuto)
 	return true
 end
 
--- one cast of `slot` ("Q" | "Z" | "X"); true when it went off (a queued press returns false and fires later)
-function SkillService.Cast(player, slot, isAuto)
+-- one cast of `slot` ("Q" | "Z" | "X"); true when it went off (a queued press returns false and fires later).
+-- hint (optional): the client's pick from the old Release remote (A23-91), passed to Q's CombatService.Release (which
+-- validates it and ignores it for an auto cast); a queued press keeps it
+function SkillService.Cast(player, slot, isAuto, hint)
 	isAuto = isAuto == true
 	if not isPlayer(player) or player.Parent == nil or SLOT[slot] == nil then return false end
 	if not S.PlayerService.IsReady(player) or player:GetAttribute("ClassChosen") ~= true or not Util.IsAlive(player) then
@@ -708,12 +711,12 @@ function SkillService.Cast(player, slot, isAuto)
 			if s.Queued ~= slot then return end
 			s.Queued = nil
 			if player.Parent == nil or Util.GetCharacter(player) ~= character then return end
-			local ok, err = pcall(SkillService.Cast, player, slot, false)
+			local ok, err = pcall(SkillService.Cast, player, slot, false, hint)
 			if not ok then Util.Warn(TAG, "queued cast: " .. tostring(err)) end
 		end)
 		return false
 	end
-	if slot == "Q" then return castQ(player, s, isAuto) end
+	if slot == "Q" then return castQ(player, s, isAuto, hint) end
 	return castZX(player, s, slot, isAuto)
 end
 

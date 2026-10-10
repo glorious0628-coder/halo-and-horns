@@ -1,0 +1,872 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 72,
+  "failedChecks": 0,
+  "namedChecks": 72,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "warrior: the pick wins",
+      "check": "a pick behind me: it is hit, the root turns, the nearer front slime is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "the root now faces the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "control: no pick = today's rule (the front slime, no turn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "a pick 5 deg off my facing: no turn; the front half is hit as today (two slimes and an enemy)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "the pick is hit once (no second copy), the other slime once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "a pick at 45 deg: the root turns to it, the enemy beside it is not hit (monsters only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "warrior: the pick wins",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "a pick at Range + 1 (behind): accepted, the root turns, it is hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "a pick at Range + 3: ignored (no hit, no turn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "turned: only the pick gets the slack (its neighbour at Range + 1 is not hit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "Archer: a pick at Range + 1 straight ahead is shot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the slack is the pick's only",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "setup: with no pick the scene hits the front slime only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "setup: a valid pick changes the scene's outcome",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a hidden ambusher (MonsterService _hidden): ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a monster model marked Hidden: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "another player's personal monster: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a dead monster: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a player's character (an enemy behind me): ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a part (the monster's root): ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a model that is no monster: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a string: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a number: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a table: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "true: ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "a monster of a zone above my level (SkeletonRuins): ignored (the same swing as with no pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "an ignored pick: the A23-61 rule still turns to the nearest monster behind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "Swing(pick, extra): the swing goes as with no pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bad hints are ignored",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage splash",
+      "check": "Splash (turned): centre = the pick, its neighbour hit, the front slime and the enemy not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage splash",
+      "check": "the orb Fx lands on the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage splash",
+      "check": "Splash (no turn): centre = the pick (not the nearer slime), the enemy beside it is hit as today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage splash",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mage splash",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "archer multi and bare hands",
+      "check": "Multi: the pick first, then the nearest (Targets 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "archer multi and bare hands",
+      "check": "Multi: the pick is never shot twice (the second arrow goes to the next)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "archer multi and bare hands",
+      "check": "Multi turned to a pick behind: the pick, no player, no goose tug",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "archer multi and bare hands",
+      "check": "bare hands: the punch turns to the pick, the nearer front slime is not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "archer multi and bare hands",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "archer multi and bare hands",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "turned swings: monsters only",
+      "check": "Around turned: the pick is hit, the enemy and the goose beside it are not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "turned swings: monsters only",
+      "check": "not turned: the goose in front is tugged as today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "turned swings: monsters only",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "turned swings: monsters only",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto never takes a pick",
+      "check": "an auto swing with a pick: the pick is ignored (today's rule)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto never takes a pick",
+      "check": "an auto Q with a pick: the pick is ignored (centre = the nearest aimed slime)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto never takes a pick",
+      "check": "the auto loop: today's rule",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto never takes a pick",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "auto never takes a pick",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the queued swing keeps its pick",
+      "check": "setup: the early press is queued (nothing yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the queued swing keeps its pick",
+      "check": "the queued swing goes to its pick (turned)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the queued swing keeps its pick",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the queued swing keeps its pick",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "control: Q with no pick = the nearest aimed slime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "Q (Archer): a pick at Range + 1 is the centre",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "Q with a hidden pick: ignored (the nearest aimed slime)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "Q (Warrior, centred on me): the pick changes nothing, no turn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "Release(pick, extra): Q goes as with no pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q takes the pick",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q: the queued press and no SkillService",
+      "check": "setup: a first Q goes off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q: the queued press and no SkillService",
+      "check": "setup: the press inside the gap is queued",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q: the queued press and no SkillService",
+      "check": "the queued Q goes off on its pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q: the queued press and no SkillService",
+      "check": "Release without SkillService: the pick is the centre",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q: the queued press and no SkillService",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skill Q: the queued press and no SkillService",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 9,
+  "staticFailures": [],
+  "mutations": {
+    "total": 31,
+    "applied": 31,
+    "caught": 31,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "a wrong type reaches the Instance calls (no typeof)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bad hints are ignored :: Swing(pick, extra): the swing goes as with no pick",
+          "bad hints are ignored :: a dead monster: ignored (the same swing as with no pick)",
+          "bad hints are ignored :: a hidden ambusher (MonsterService _hidden): ignored (the same swing as with no pick)",
+          "bad hints are ignored :: a model that is no monster: ignored (the same swing as with no pick)",
+          "bad hints are ignored :: a monster model marked Hidden: ignored (the same swing as with no pick)",
+          "bad hints are ignored :: a monster of a zone above my level (SkeletonRuins): ignored (the same swing as with no pick)"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "a model marked Hidden is accepted",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bad hints are ignored :: a monster model marked Hidden: ignored (the same swing as with no pick)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a hidden ambusher (server flag) is accepted",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bad hints are ignored :: a hidden ambusher (MonsterService _hidden): ignored (the same swing as with no pick)",
+          "skill Q takes the pick :: Q with a hidden pick: ignored (the nearest aimed slime)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the pick skips the swing's filter (owner / zone gate)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bad hints are ignored :: a monster of a zone above my level (SkeletonRuins): ignored (the same swing as with no pick)",
+          "bad hints are ignored :: another player's personal monster: ignored (the same swing as with no pick)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no slack for the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Q (Archer): a pick at Range + 1 is the centre",
+          "the slack is the pick's only :: Archer: a pick at Range + 1 straight ahead is shot",
+          "the slack is the pick's only :: Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
+          "the slack is the pick's only :: a pick at Range + 1 (behind): accepted, the root turns, it is hit",
+          "the slack is the pick's only :: turned: only the pick gets the slack (its neighbour at Range + 1 is not hit)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a slack of 4 (a pick at Range + 3 accepted)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the slack is the pick's only :: a pick at Range + 3: ignored (no hit, no turn)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the root never turns to the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi turned to a pick behind: the pick, no player, no goose tug",
+          "archer multi and bare hands :: bare hands: the punch turns to the pick, the nearer front slime is not hit",
+          "mage splash :: Splash (turned): centre = the pick, its neighbour hit, the front slime and the enemy not",
+          "skill Q takes the pick :: Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit",
+          "the queued swing keeps its pick :: the queued swing goes to its pick (turned)",
+          "the slack is the pick's only :: a pick at Range + 1 (behind): accepted, the root turns, it is hit"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "always a turn (KeepDeg ignored)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi: the pick first, then the nearest (Targets 2)",
+          "mage splash :: Splash (no turn): centre = the pick (not the nearer slime), the enemy beside it is hit as today",
+          "skill Q takes the pick :: Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
+          "the slack is the pick's only :: Archer: a pick at Range + 1 straight ahead is shot",
+          "the slack is the pick's only :: Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
+          "turned swings: monsters only :: not turned: the goose in front is tugged as today"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "KeepDeg 90 (a pick at 45 deg does not turn)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "warrior: the pick wins :: a pick at 45 deg: the root turns to it, the enemy beside it is not hit (monsters only)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a turned pick swing still hits players",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi turned to a pick behind: the pick, no player, no goose tug",
+          "mage splash :: Splash (turned): centre = the pick, its neighbour hit, the front slime and the enemy not",
+          "turned swings: monsters only :: Around turned: the pick is hit, the enemy and the goose beside it are not",
+          "warrior: the pick wins :: a pick at 45 deg: the root turns to it, the enemy beside it is not hit (monsters only)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Swing ignores the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi: the pick first, then the nearest (Targets 2)",
+          "archer multi and bare hands :: bare hands: the punch turns to the pick, the nearer front slime is not hit",
+          "bad hints are ignored :: setup: a valid pick changes the scene's outcome",
+          "mage splash :: Splash (no turn): centre = the pick (not the nearer slime), the enemy beside it is hit as today",
+          "mage splash :: Splash (turned): centre = the pick, its neighbour hit, the front slime and the enemy not",
+          "mage splash :: the orb Fx lands on the pick"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "auto swings take a pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto never takes a pick :: an auto swing with a pick: the pick is ignored (today's rule)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Splash keeps the nearest as centre",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mage splash :: Splash (no turn): centre = the pick (not the nearer slime), the enemy beside it is hit as today"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Multi: the pick not first",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi turned to a pick behind: the pick, no player, no goose tug",
+          "archer multi and bare hands :: Multi: the pick first, then the nearest (Targets 2)",
+          "archer multi and bare hands :: Multi: the pick is never shot twice (the second arrow goes to the next)",
+          "archer multi and bare hands :: bare hands: the punch turns to the pick, the nearer front slime is not hit",
+          "the slack is the pick's only :: Archer: a pick at Range + 1 straight ahead is shot"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Multi: the pick shot twice",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi: the pick is never shot twice (the second arrow goes to the next)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Around: the pick at Range + Slack is not added",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the slack is the pick's only :: Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
+          "the slack is the pick's only :: a pick at Range + 1 (behind): accepted, the root turns, it is hit",
+          "the slack is the pick's only :: turned: only the pick gets the slack (its neighbour at Range + 1 is not hit)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Around: the slack for everyone",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the slack is the pick's only :: Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
+          "the slack is the pick's only :: turned: only the pick gets the slack (its neighbour at Range + 1 is not hit)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Around: the pick hit twice",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "warrior: the pick wins :: the pick is hit once (no second copy), the other slime once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Swing remote drops the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "archer multi and bare hands :: Multi: the pick first, then the nearest (Targets 2)",
+          "archer multi and bare hands :: bare hands: the punch turns to the pick, the nearer front slime is not hit",
+          "bad hints are ignored :: setup: a valid pick changes the scene's outcome",
+          "mage splash :: Splash (no turn): centre = the pick (not the nearer slime), the enemy beside it is hit as today",
+          "mage splash :: Splash (turned): centre = the pick, its neighbour hit, the front slime and the enemy not",
+          "mage splash :: the orb Fx lands on the pick"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "Swing: extra arguments keep the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bad hints are ignored :: Swing(pick, extra): the swing goes as with no pick"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the queue is given no pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the queued swing keeps its pick :: the queued swing goes to its pick (turned)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the queued swing drops its pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the queued swing keeps its pick :: the queued swing goes to its pick (turned)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the Release remote drops the pick (SkillService)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Q (Archer): a pick at Range + 1 is the centre",
+          "skill Q takes the pick :: Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
+          "skill Q takes the pick :: Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit",
+          "skill Q: the queued press and no SkillService :: the queued Q goes off on its pick"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the Release remote drops the pick (no SkillService)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q: the queued press and no SkillService :: Release without SkillService: the pick is the centre"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Release: extra arguments keep the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Release(pick, extra): Q goes as with no pick"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Q ignores the pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Q (Archer): a pick at Range + 1 is the centre",
+          "skill Q takes the pick :: Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
+          "skill Q takes the pick :: Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit",
+          "skill Q: the queued press and no SkillService :: Release without SkillService: the pick is the centre",
+          "skill Q: the queued press and no SkillService :: the queued Q goes off on its pick"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "auto Q takes a pick",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "auto never takes a pick :: an auto Q with a pick: the pick is ignored (centre = the nearest aimed slime)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a turned Q on the pick hits players",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SkillService drops the pick before Q",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Q (Archer): a pick at Range + 1 is the centre",
+          "skill Q takes the pick :: Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
+          "skill Q takes the pick :: Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit",
+          "skill Q: the queued press and no SkillService :: the queued Q goes off on its pick"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "castQ drops the pick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q takes the pick :: Q (Archer): a pick at Range + 1 is the centre",
+          "skill Q takes the pick :: Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
+          "skill Q takes the pick :: Q turned to a pick behind: the blast there, the root turns, the enemy beside it is not hit",
+          "skill Q: the queued press and no SkillService :: the queued Q goes off on its pick"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a queued Q drops its pick",
+        "file": "src/ServerScriptService/SkillService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "skill Q: the queued press and no SkillService :: the queued Q goes off on its pick"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "f26e7f7319f3835e9813266fb3dc094417c8b39ee4cae5378536a229d2f72021",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/CombatService.luau": "85dfeb8459d689a5a5829bf4754da24346a523f1091a791b4ceea1018627d71c",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
+    "src/ServerScriptService/StoryQuestService.luau": "989b17380513ea51dc947698fad09939e269b5cf672fba39e40267df878f1bbd",
+    "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
+    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
+    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
+    "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
+    "src/ServerScriptService/SkillService.luau": "b3e051641ece8830552bc1daf94718d79fe121936dc74d3d974f24b5c1e08a7f"
+  },
+  "fixtureSHA256": "157c2e2e49d7462423ab27fe2ab0a4470655e41998bebc1d7230c46d781e4fb2",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-91 server target hint: Swing / Release arg 1 = the client's pick (a monster Model). Valid only for a MANUAL attack and only when it is the Model of a monstersNear entry (alive, mine or nobody's, zone level gate, boss HitPad) within Range + HINT.Slack (2) and not hidden (rec._hidden / Model attribute Hidden). Valid: the root turns to it unless within HINT.KeepDeg (10 deg) of the facing; a turned attack hits monsters only (no player, no goose). Splash: centre = the pick. Multi: the pick first, then the nearest, no repeat. Around: the front half of the pick direction plus the pick itself even at Range + Slack (nobody else gets the slack). The queued manual swing keeps its pick; Q (ReleaseCenter Target) centres on the pick through SkillService (queued press too) or CombatService's fallback; a Self-centred Q ignores it. Anything else (wrong type, part, player character, dead / far / hidden / someone else's / gated monster, extra remote arguments, auto swings / auto Q) is ignored: the A23-61 swing of today.",
+  "limitations": "The real client pick (HUD.PickTarget) and the network delay are not simulated (tools/test_auto_face.py covers the client). Splash keeps its blast radius around the pick, so a pick at Range + 2 reaches up to Range + 2 + Splash (as a pick inside Range always did). The IsA(\"Model\") guard is redundant with the Model identity check and is not mutated. The CFrame turn is the combat world's double."
+}

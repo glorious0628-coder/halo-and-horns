@@ -21,10 +21,10 @@ CO = "COMBAT_SOURCE"
 MUTATIONS = [
     ("the move-to-meadow lock is ignored", "COMBAT_SOURCE",
      "\tif numAttr(player, \"MoveLockUntil\", 0) > Util.Now() then return true end\n", ""),
-    ("no turn to a monster behind", CO, "\tif not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then\n",
-     "\tif false then\n"),
+    ("no turn to a monster behind", CO, "if not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then\n",
+     "if false then\n"),
     ("always the nearest monster (the front ignored)", CO,
-     "\tif not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then\n", "\tif true then\n"),
+     "if not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then\n", "if true then\n"),
     ("the turn reaches past Range", CO, "local near = monstersNear(player, pos, range)[1]", "local near = monstersNear(player, pos, range + 20)[1]"),
     ("the body is not turned", CO, "\tpcall(function() root.CFrame = CFrame.lookAt(pos, pos + look) end)\n", ""),
     ("a turned Around sweep hits players", CO, "\t\tif isManual and not turned then\n\t\t\tvictims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)",
