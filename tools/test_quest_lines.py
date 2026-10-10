@@ -290,6 +290,10 @@ def static_checks(src):
          and 'if type(payload) == "table" and type(payload.Quests) == "table" then' in src
          and "if type(payload.Book) == \"table\" then questState.Book = payload.Book end\n" in src
          and "\t\tdata = payload.Quests" in src),
+        ("검수 10/10 API review ①: the phone's claim line counts only the rows the block shows (entries)",
+         "		claimable, hot = ready, ready > 0" in src),
+        ("검수 10/10 API review ③: the tracker keeps room for the head line only while it shows",
+         "+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8" in src),
         ("A23-104: the payload's DailyLocked is kept for the quest window (HUD.DailyLocked)",
          "questState.DailyLocked = payload.DailyLocked == true" in src and "function HUD.DailyLocked()" in src),
     ]

@@ -2189,7 +2189,7 @@ function L.LayoutTracker(q)
 	local R = L.Rects
 	if not IS_TOUCH and R and R.power_line and R.minimap then
 		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
-			+ math.floor(lh * 0.75) + 8
+			+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8 -- 검수 10/10: no head line, no room for it
 		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
 		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
 	end
@@ -4460,6 +4460,13 @@ refreshQuests = function()
 	if claimable > 0 then head ..= string.format(TXT.QuestClaimable, claimable) end
 	local hot = claimable > 0
 	if IS_TOUCH then
+		-- 검수 10/10 (API review ①): the phone's 'Claim N quests!' line and its gold count only the rows this block can
+		-- show (entries); the quest window's More rows are claimed there
+		local ready = 0
+		for _, e in entries do
+			if e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") then ready += 1 end
+		end
+		claimable, hot = ready, ready > 0
 		-- U5 + A23-26: line 1 = what to do now (the pinned / next-goal row first), line 2 = the waiting story (one tap
 		-- opens it: the header handler), else 받기 N, else today's count; tapping opens the overlay with the rows
 		local se = entries[shown]

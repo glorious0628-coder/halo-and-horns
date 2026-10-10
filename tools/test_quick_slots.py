@@ -75,6 +75,9 @@ def statics(src: dict) -> list[dict]:
         {"check": "A23-110 KO1 rows: Guide QuickSlot opens the bag, PotionShop shows the way to the seller", "ok":
          'if g == "PotionShop" or g == "QuickSlot" then' in src["HUD"] and 'panels.Open("Items")' in src["HUD"]
          and "pcall(vitals.ShowShopWay)" in src["HUD"] and "function VitalsUI.ShowShopWay()" in src["VITALS"]},
+        {"check": "A23-110 KO1: while PotionSip is set a full bar may still drink (the server's practice sip)", "ok":
+         'if player:GetAttribute(sip) == true then return count, "Use", true end' in src["VITALS"]
+         and "PotionSip = true," in src["VITALS"]},
         {"check": "Config: QuickSlot3 on key Three (Potion group)", "ok":
          '{ Id = "QuickSlot3", Group = "Potion", Key = "Three"' in src["CONFIG"]},
     ]

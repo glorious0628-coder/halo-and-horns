@@ -132,6 +132,12 @@ SN.Refresh()
 count = 0
 for _, ch in bright.Children do if ch.ClassName == "BillboardGui" then count += 1 end end
 check(count == 1 and markOf(bright) == mk and stale.Parent == nil, "an extra '!' left on the model is removed (one kept)", count)
+-- 검수 10/10 (API review ②): a rebuilt body (a new head) - the "!" follows it
+local oldHead = bright:FindFirstChild("Head")
+oldHead:Destroy()
+local newHead = obj("Part", "Head", bright)
+SN.Refresh()
+check(mk.Adornee == newHead, "a new head: the '!' floats over it", tostring(mk.Adornee and mk.Adornee.Name))
 ROWS = { { Story = { Id = "H1", St = 2, Panel = true, Npc = "Gleam" } } }
 SN.Refresh()
 check(mk.Enabled == false and bp.Enabled == false and markOf(gleam).Enabled == true and gp.Enabled == true,

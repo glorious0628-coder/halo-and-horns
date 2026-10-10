@@ -23,6 +23,10 @@
       "ok": true
     },
     {
+      "check": "A23-110 KO1: while PotionSip is set a full bar may still drink (the server's practice sip)",
+      "ok": true
+    },
+    {
       "check": "Config: QuickSlot3 on key Three (Potion group)",
       "ok": true
     }

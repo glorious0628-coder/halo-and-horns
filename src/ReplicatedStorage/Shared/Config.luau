@@ -5214,9 +5214,10 @@ Config.ClassGrips = {
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
 		RightShoulder = { 32, 0, 6 }, RightElbow = { 26, 0, 0 }, RightWrist = { -36, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
-	-- Alchemist: a flask held up in the left hand, the stirring stick in the right
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { LeftShoulder = { 42, 0, -10 }, LeftElbow = { 82, 0, 0 },
-		RightShoulder = { 30, 0, 12 }, RightElbow = { 62, 0, 0 } } },
+	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
+	-- handed), the left hand on the hip
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 42, 0, 10 }, RightElbow = { 82, 0, 0 },
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } } },
 	-- Ranger: the long bow upright in the left hand at the side
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 20, 0, -10 }, LeftElbow = { 26, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },
