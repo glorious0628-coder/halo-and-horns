@@ -11,7 +11,10 @@ with the KO already had (or from OneHitBelow on) no King comes and the quest is 
 Config.FirstKO.RematchStep the weakened retry King of Config.FirstKORetry comes (about 2 potions for every class / faction
 / Lv 1-9): a normal personal King whose kill is MonsterService's Personal MonsterKilled with Practice = true - the quest's
 Kill row counts it, FinisherService gives no card, LootService rolls no boss drops, QuestService counts no daily job, and
-it pays the XP / gold of Retry.PayAs; one win per session while the row stays. Both Kings come only by the player (Near)
+it pays the XP / gold of Retry.PayAs; one win per session while the row stays. Its HP comes from the best weapon the
+save may use (Config.BestUsableWeapon with its +N), and ONE HP potion wins it (no potion loses at 60-80% uptime).
+A King whose owner steps into a town goes home; Config.FirstKOKing.Enabled = false sends no King but still tells the KO
+row. Both Kings come only by the player (Near)
 and never swing before the landing (Hold). No step number is hard-coded: an extra row before the rematch moves the retry
 King. (The at-stake, Tell, Near / Hold and one-win checks follow the critic's corrected version, 2026-10-10.)
 
@@ -106,20 +109,25 @@ HOOKS = "Distance = num(FK.SpawnDistance, 6), Strike = strike, OnKilled = onKill
 
 MUTATIONS = [
     # --- FirstKOService: the stage comes from the quest's CurrentStep (never a step number of our own)
-    ("any quest step is the KO step", F, "\tif step == Q.Step then return fresh and \"First\" or \"Tell\" end",
-     "\tif step ~= nil then return fresh and \"First\" or \"Tell\" end"),
-    ("the KO row never", F, "\tif step == Q.Step then return fresh and \"First\" or \"Tell\" end\n", ""),
-    ("any quest step is the rematch", F, "\tif step == Q.RematchStep then return \"Retry\" end", "\tif true then return \"Retry\" end"),
-    ("no rematch step", F, "\tif step == Q.RematchStep then return \"Retry\" end\n", ""),
+    ("any quest step is the KO step", F, "\tif step == Q.Step then return (fresh and not off) and \"First\" or \"Tell\" end",
+     "\tif step ~= nil then return (fresh and not off) and \"First\" or \"Tell\" end"),
+    ("the KO row never", F, "\tif step == Q.Step then return (fresh and not off) and \"First\" or \"Tell\" end\n", ""),
+    ("any quest step is the rematch", F, "\tif step == Q.RematchStep and not off then return \"Retry\" end",
+     "\tif not off then return \"Retry\" end"),
+    ("no rematch step", F, "\tif step == Q.RematchStep and not off then return \"Retry\" end\n", ""),
     ("the KO step hard-coded as 1", F, "\tif step == Q.Step then", "\tif step == 1 then"),
-    ("the rematch step hard-coded as 4", F, "\tif step == Q.RematchStep then", "\tif step == 4 then"),
+    ("the rematch step hard-coded as 4", F, "\tif step == Q.RematchStep and", "\tif step == 4 and"),
+    ("disabled still sends the first King", F, "return (fresh and not off) and \"First\" or \"Tell\" end",
+     "return fresh and \"First\" or \"Tell\" end"),
+    ("disabled still sends the retry King", F, "\tif step == Q.RematchStep and not off then", "\tif step == Q.RematchStep then"),
+    ("disabled strands the KO row", F, "return (fresh and not off) and \"First\" or \"Tell\" end",
+     "return (not off) and (fresh and \"First\" or \"Tell\") or nil end"),
     ("another quest's step asked", F, "local ok, step = pcall(svc.CurrentStep, player, Q.Quest)",
      "local ok, step = pcall(svc.CurrentStep, player, \"M1_2\")"),
     ("a throwing CurrentStep breaks the stage", F, "local ok, step = pcall(svc.CurrentStep, player, Q.Quest)",
      "local ok, step = true, svc.CurrentStep(player, Q.Quest)"),
     ("one-shot twice (Done ignored)", F, "local fresh = data.FirstKODone ~= true and num(data.Level, 1)", "local fresh = num(data.Level, 1)"),
     ("one-shot at any level", F, " and num(data.Level, 1) < num(FK.OneHitBelow, 10)\n", "\n"),
-    ("disabled still runs", F, "\tif FK.Enabled == false then return nil end\n", ""),
     ("a kaiju gets a King", F, "\tif not data or isKaiju(player) then return nil end", "\tif not data then return nil end"),
     ("a queued kaiju-to-be refused", F, "return ok and (st == \"Siren\" or st == \"Active\")", "return ok and st ~= \"None\""),
     # --- the place
@@ -157,6 +165,10 @@ MUTATIONS = [
     ("a PvP fight ignored", F, "\tif not okP or fight then return true end\n", "\tif not okP then return true end\n"),
     ("the kaiju queue ignored", F, "\treturn not okK or (st ~= \"None\" and st ~= nil)\n", "\treturn not okK\n"),
     ("a failing check is no stake", F, "\tif not okS or sack then return true end\n", "\tif okS and sack then return true end\n"),
+    ("a failing stars check is no stake", F, "if not okW or num(stars) >= 1 or num(player:GetAttribute(\"Bounty\")) > 0 then return true end",
+     "if (okW and num(stars) >= 1) or num(player:GetAttribute(\"Bounty\")) > 0 then return true end"),
+    ("a failing combat-tag check is no stake", F, "\tif not okP or fight then return true end\n", "\tif okP and fight then return true end\n"),
+    ("a failing kaiju check is no stake", F, "\treturn not okK or (st ~= \"None\" and st ~= nil)\n", "\treturn okK and (st ~= \"None\" and st ~= nil)\n"),
     ("strike ignores the stake", F, "\tif stage == \"First\" and atStake(target) then return hitBase(rec, target) end", ""),
     ("the claim ignores the stake", F, "or data.FirstKODone == true or atStake(victim) then return nil end",
      "or data.FirstKODone == true then return nil end"),
@@ -182,8 +194,12 @@ MUTATIONS = [
     ("no spawn gap", F, "\tST.NextAt[player] = os.clock() + num(FK.SpawnGap, 4)\n\tlocal ok, model, rec", "\tlocal ok, model, rec"),
     ("lifetime end re-drops at once", F,
      "\t\t\tST.NextAt[player] = math.max(ST.NextAt[player] or 0, now + num(FK.SpawnGap, 4)) -- not a new drop at once\n", ""),
-    ("King stays after the step", F, "\t\telseif stage ~= e.Stage or not Util.IsAlive(player) then",
-     "\t\telseif not Util.IsAlive(player) then"),
+    ("King stays after the step", F, "\t\telseif stage ~= e.Stage or not Util.IsAlive(player) or inTown(player) then",
+     "\t\telseif not Util.IsAlive(player) or inTown(player) then"),
+    ("a King kept while its owner is in town", F, "not Util.IsAlive(player) or inTown(player) then", "not Util.IsAlive(player) then"),
+    ("retry HP from the weapon in hand", F, "\tlocal tier = Config.BestUsableWeapon(data.WeaponOwnedMask, level)\n",
+     "\tlocal tier = player:GetAttribute(\"WeaponTier\")\n"),
+    ("retry HP ignores the +N", F, "\tlocal enh = type(data.WeaponEnhance) == \"table\" and num(data.WeaponEnhance[tier]) or 0\n", "\tlocal enh = 0\n"),
     ("a foreign personal King adopted", F, SPAWN_CHECK, "\tif (typeof(model) == \"Instance\" and model:GetAttribute(\"FirstKO\") ~= nil) then"),
     ("a stale King of ours adopted", F, SPAWN_CHECK, "\tif rec._strike ~= strike then"),
     ("the first King beaten is not reported", F, "\telse\n\t\treport(player, true)\n", "\telse\n"),
@@ -232,8 +248,11 @@ MUTATIONS = [
     ("gets up with full HP", C, "Keep = 20, HealthFrac = 0.4 }", "Keep = 20, HealthFrac = 1 }"),
     ("practice pays the King's own XP", C, "MinHP = 40, PayAs = \"BigSlime\" }", "MinHP = 40, PayAs = \"SlimeKing\" }"),
     ("save field missing", C, "Config.Data.Defaults.FirstKODone = false", "Config.Data.FirstKODoneX = false"),
-    ("retry King too strong", C, "Retry = { Seconds = 18, HitPct = 0.09,", "Retry = { Seconds = 18, HitPct = 0.13,"),
-    ("retry King too weak", C, "Retry = { Seconds = 18, HitPct = 0.09,", "Retry = { Seconds = 12, HitPct = 0.09,"),
+    ("retry King too strong (the old 2-potion King)", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 18, HitPct = 0.09,"),
+    ("retry King hits a bit harder", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 17, HitPct = 0.08,"),
+    ("retry King hits a bit softer", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 17, HitPct = 0.07,"),
+    ("retry King too weak", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 14, HitPct = 0.075,"),
+    ("retry ignores the +N", C, "Config.WeaponDamage(tonumber(tier), lv, tonumber(enhance) or 0)", "Config.WeaponDamage(tonumber(tier), lv, 0)"),
     ("FirstKORetry reads the quest's table", C, "\tlocal FK = Config.FirstKOKing\n\tlocal R = FK.Retry",
      "\tlocal FK = Config.FirstKO\n\tlocal R = FK.Retry"),
     ("retry ignores regen", C, "return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }",
@@ -352,7 +371,8 @@ SUITE = Suite(
              "RespawnIn, ClaimGrace, GetUp { Back, Lift, Keep, HealthFrac }, SpawnGap, Tick, Retry { Seconds, HitPct, MinHP, "
              "PayAs } } + Config.FirstKORetry + data.FirstKODone. FirstKOService: StageOf (StoryQuestService.CurrentStep "
              "== Step -> First (FirstKODone false, below OneHitBelow) else Tell (Event FirstKO every SpawnGap, no King), == "
-             "RematchStep -> Retry (one win per session while the row stays)), atStake (sack, stars, bounty, PvP tag, kaiju "
+             "RematchStep -> Retry (one win per session while the row stays); Enabled = false: Tell at Step, nothing at "
+             "RematchStep), the retry HP from Config.BestUsableWeapon + its +N, a King whose owner is in a town goes home, atStake (sack, stars, bounty, PvP tag, kaiju "
              "state, a failing check: plain hits, no claim), Tick (the first King: SpawnPersonal { HP, Quiet, Distance, Strike, "
              "OnKilled, Near, Hold }; the retry King: { HP, Distance, Strike, OnKilled, Near, Hold, Practice = PayAs }; model attributes "
              "FirstKO / DropAt / DropTime), the landing thud after DropTime, strike (first = MaxHealth x OneHitMult, retry = "

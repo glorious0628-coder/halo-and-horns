@@ -13,11 +13,13 @@
 --                  GetUp.HealthFrac of MaxHealth. Killed anyway: Event "FirstKO" { Kind, Beaten = true } (the row counts).
 --                  "Tell": the KO already had (or Lv OneHitBelow+): no King, the quest is told again every SpawnGap.
 --   == RematchStep "Retry": a normal personal King (SpawnPersonal Practice = Retry.PayAs) with the HP / hits of
---                  Config.FirstKORetry (about 2 potions). Its kill is MonsterService's normal Personal kill (MonsterKilled
+--                  Config.FirstKORetry (one HP potion wins; the HP from the best weapon the save may use). Its kill is MonsterService's normal Personal kill (MonsterKilled
 --                  Kind SlimeKing, ZoneId SlimeMeadow, Personal, Practice = true): the quest's Kill row counts it; no
 --                  finisher card, drops or daily jobs; the Slime Prince's XP / gold. One win per session while the row
 --                  stays (no farming a stuck row). A KO by it is a normal KO.
--- Both Kings: Near (by the player or not at all), Hold = DropTime (no swing before the landing).
+-- Both Kings: Near (by the player or not at all), Hold = DropTime (no swing before the landing); a King whose owner
+-- steps into a town goes home (it never swings there, so it is never fought from there). Config.FirstKOKing.Enabled =
+-- false: no King at all, the KO row is still told (never stuck on it).
 --   FirstKOService.StageOf(player, data?) -> "First" | "Tell" | "Retry" | nil
 --   FirstKOService.ClaimKO(victim, diedAt) -> { RespawnIn = s } | nil   (CombatService's death pipeline)
 --   FirstKOService.GetUp(player) -> { Delay = s, CFrame = CFrame? } | nil (PlayerService's respawn)
@@ -132,20 +134,20 @@ end
 
 -- "First" = the one-hit King (the quest's Step, the account never had the KO, below OneHitBelow); "Tell" = the quest's
 -- Step but the KO already happened (or OneHitBelow reached): the quest is told, no King; "Retry" = the weakened King (the
--- quest's RematchStep); nil = none
+-- quest's RematchStep); nil = none. Enabled = false: no King at all, the KO row is still told (never stuck on it)
 function FirstKOService.StageOf(player, data)
-	if FK.Enabled == false then return nil end
 	data = data or getData(player)
 	if not data or isKaiju(player) then return nil end
+	local off = FK.Enabled == false
 	local fresh = data.FirstKODone ~= true and num(data.Level, 1) < num(FK.OneHitBelow, 10)
-	local forced = ST.Force[player]
+	local forced = (not off) and ST.Force[player] or nil
 	if forced == "First" then return fresh and "First" or "Retry" end
 	if forced == "Retry" then return "Retry" end
 	local Q = quest()
 	local step = questStep(player)
 	if step == nil then return nil end
-	if step == Q.Step then return fresh and "First" or "Tell" end
-	if step == Q.RematchStep then return "Retry" end
+	if step == Q.Step then return (fresh and not off) and "First" or "Tell" end
+	if step == Q.RematchStep and not off then return "Retry" end
 	return nil
 end
 
@@ -180,9 +182,14 @@ local function inPlace(player)
 end
 
 ------------------------------------------------------------------ the hits
+-- the retry King's numbers for this player: the best weapon the save may use (Config.BestUsableWeapon, with that tier's
+-- +N), never the one in hand (a swap to a weak weapon must not shrink the King)
 local function retryOf(player)
-	return Config.FirstKORetry(player:GetAttribute("Level"), player:GetAttribute("WeaponTier"), player:GetAttribute("Class"),
-		player:GetAttribute("Faction"), player:GetAttribute("WeaponEnhance"))
+	local data = getData(player) or {}
+	local level = num(data.Level, num(player:GetAttribute("Level"), 1))
+	local tier = Config.BestUsableWeapon(data.WeaponOwnedMask, level)
+	local enh = type(data.WeaponEnhance) == "table" and num(data.WeaponEnhance[tier]) or 0
+	return Config.FirstKORetry(level, tier, player:GetAttribute("Class"), player:GetAttribute("Faction"), enh)
 end
 
 local function hitBase(rec, target)
@@ -215,6 +222,12 @@ local function strike(rec, target)
 end
 
 ------------------------------------------------------------------ the King
+-- the owner stands in a town: a personal King there never swings (MonsterService), so it must not be fought from there
+local function inTown(player)
+	local root = Util.GetRoot(player)
+	return root ~= nil and typeof(root.Position) == "Vector3" and Config.ZoneAt(root.Position).Town == true
+end
+
 local function removeKing(player, leaving)
 	local e = ST.Kings[player]
 	ST.Kings[player] = nil
@@ -300,8 +313,8 @@ local function checkPlayer(player, now)
 			ST.Kings[player] = nil -- its time ran out / its model was lost (a kill already cleared it in onKilled)
 			ST.NextAt[player] = math.max(ST.NextAt[player] or 0, now + num(FK.SpawnGap, 4)) -- not a new drop at once
 			e = nil
-		elseif stage ~= e.Stage or not Util.IsAlive(player) then
-			removeKing(player, true) -- the step moved on, or its owner fell (a retry starts fresh)
+		elseif stage ~= e.Stage or not Util.IsAlive(player) or inTown(player) then
+			removeKing(player, true) -- the step moved on, its owner fell (a retry starts fresh) or went into a town
 			ST.NextAt[player] = now + num(FK.SpawnGap, 4)
 			return
 		end

@@ -7394,12 +7394,13 @@ Config.PetGrant = {
 --   already had (or from OneHitBelow on) no King comes and the quest is told "FirstKO" again every SpawnGap.
 --   step Config.FirstKO.RematchStep = the RETRY King: a normal personal King (its kill is a Personal MonsterKilled with
 --   Practice = true: it counts for the quest's Kill row, never for a finisher card or boss drops, and pays the XP / gold
---   of Retry.PayAs) with HP and hits from Config.FirstKORetry (about 2 potions); one win per session while the row stays.
+--   of Retry.PayAs) with HP and hits from Config.FirstKORetry (one HP potion wins); one win per session while the row stays.
 --   A KO by it is a normal KO. Both Kings come only by the player (never the home-town spot) and never swing before the
 --   landing.
 -- Tick = s between the service's checks; SpawnGap = s before another King comes; ClaimGrace = s between the lethal hit and
 -- the Died event that still count as the first KO.
 Config.FirstKOKing = {
+	-- false = no King at all; the KO row is still told "FirstKO" (never stuck); the rematch row then needs another way
 	Enabled = true,
 	Kind = "SlimeKing",
 	OneHitBelow = 10, -- Lv 10+ is never one-shot (A7-2: the early levels end at 10; KO1 opens up to Lv 8)
@@ -7417,12 +7418,16 @@ Config.FirstKOKing = {
 	GetUp = { Back = 6, Lift = 4, Keep = 20, HealthFrac = 0.4 },
 	SpawnGap = 4,
 	Tick = 0.5,
-	-- the retry King: HP = Seconds of the player's own basic attacks, each hit HitPct of MaxHealth (+ regen, FirstKORetry).
-	-- tools/test_first_ko_king.py (every class x faction x Lv 1-9 x tier 1-3, the King every 1.5-1.6 s, a potion = 30% /
-	-- 10 s drunk at <= 40-60% HP): no potion loses at 60-90% uptime, 1 potion loses at 80% for nearly every build, 2 potions
-	-- win at 80-110% with >= 10% HP left = about 2 potions (KO1's step 2 tops the gold up to 50 = 2 potions).
+	-- the retry King: HP = Seconds of the player's own basic attacks (the best weapon the save may use, with its +N), each
+	-- hit HitPct of MaxHealth (+ regen, FirstKORetry). One HP potion is the lesson: KO1 may leave a player with only one
+	-- (one purchase of any kind passes its buy row, the drink row may use it). tools/test_first_ko_king.py, 729 builds
+	-- (3 classes x Halo / Horns / Neutral x Lv 1-9 x tier 1-3 x +0 / +3 / +5), a potion = 30% / 10 s drunk at 40-60% HP:
+	--   no potion LOSES at 60-80% uptime against a King every 1.5 s and at 60-70% against one every 1.6 s (>= 1.38 s
+	--   short); at 80% against a 1.6 s King only 9 builds of 729 win without a potion;
+	--   1 potion WINS at 80-110% uptime (King every 1.5 s) with >= 7% HP left; 2 potions win at 70-110% with >= 19% left.
+	--   (Seconds 18 / HitPct 0.09 needed 2 potions; 16.5 / 0.075 leaves 342 no-potion wins at 80% vs a 1.6 s King.)
 	-- PayAs = the kind whose XP / gold its kill pays (the Slime Prince's; the quest pays the real reward)
-	Retry = { Seconds = 18, HitPct = 0.09, MinHP = 40, PayAs = "BigSlime" },
+	Retry = { Seconds = 17, HitPct = 0.075, MinHP = 40, PayAs = "BigSlime" },
 }
 Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happened (set once, before the quest is told)
 

@@ -199,7 +199,9 @@ local function fkWorld(o)
 	-- unless o2.Step (false = no step). The real story: a save that finished M1_1 / M1_2 with no potion (KO1 starts at join)
 	function w:Hunter(userId, faction, o2)
 		o2 = o2 or {}
-		local data = { Class = o2.Class or "Warrior", WeaponTier = o2.Tier or 1, FirstKODone = o2.Done == true }
+		local tier = o2.Tier or 1
+		local data = { Class = o2.Class or "Warrior", WeaponTier = tier, FirstKODone = o2.Done == true,
+			WeaponOwnedMask = tier >= 1 and bit32.lshift(1, tier - 1) or 0 }
 		if self.Story then
 			data.TutorialStep = 99
 			data.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true, M1_2 = true }, Pick = {}, First = { Migrated = true } }
@@ -325,8 +327,15 @@ runGroup("stage", function()
 	kq:SetAttribute("KaijuState", "Queued")
 	check(w.FK.StageOf(kz) == nil and w.FK.StageOf(ks) == nil, "a kaiju (Siren / Active) never: its KO is the kaiju event's")
 	check(w.FK.StageOf(kq) == "First", "only queued for the kaiju: the King still comes (its hits stay plain: at stake)")
+	-- Enabled = false: no King anywhere, but the KO row is still told (never stuck there); the rematch row gets nothing
 	local w2 = fkWorld({ Edit = function(c) c.FirstKOKing.Enabled = false end })
-	check(w2.FK.StageOf(w2:Hunter(160, "Halo")) == nil, "Enabled = false: nothing")
+	local d1 = w2:Hunter(160, "Halo")
+	local d2 = w2:Hunter(161, "Halo", { Step = RETRY })
+	check(w2.FK.StageOf(d1) == "Tell" and w2.FK.StageOf(d2) == nil, "Enabled = false: the KO row is a Tell row, the rematch row has nothing",
+		show({ w2.FK.StageOf(d1), w2.FK.StageOf(d2) }))
+	w2:FKTick()
+	check(#w2.Spawns == 0 and #w2:EventsOf(d1) == 1 and w2.StepOf[d1] == STEP + 1 and #w2:EventsOf(d2) == 0,
+		"Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row", show({ #w2.Spawns, w2.StepOf[d1] }))
 	-- game dev 3 adds a row before the rematch (RematchStep + 1): the retry King follows it
 	local wx = fkWorld({ Edit = function(c) c.FirstKO.RematchStep = c.FirstKO.RematchStep + 1 end })
 	check(wx.FK.StageOf(wx:Hunter(170, "Halo", { Step = RETRY })) == nil
@@ -476,6 +485,21 @@ runGroup("spawn", function()
 	w7.Reuse = own
 	w7:FKTick(FK0.SpawnGap)
 	check(w7.Removed[#w7.Removed] and w7.Removed[#w7.Removed].Rec == own, "a personal King Slime without our hook is sent home")
+	-- the owner steps into a town while a King is alive: it goes home (a personal King never swings there, so it is never
+	-- fought from there), then waits SpawnGap
+	local wtw = fkWorld()
+	local ptw = wtw:Hunter(121, "Halo", { Step = RETRY })
+	wtw:FKTick()
+	local ktw = wtw:KingOf(ptw)
+	wtw:Place(ptw, TOWN)
+	wtw:FKTick()
+	check(ktw ~= nil and not ktw.Alive and wtw.Removed[#wtw.Removed] and wtw.Removed[#wtw.Removed].Rec == ktw
+		and wtw.Removed[#wtw.Removed].Leaving == true, "the owner in a town: its King goes home (leaving)", show(#wtw.Removed))
+	wtw:Place(ptw, MEADOW)
+	wtw:FKTick()
+	check(wtw:KingOf(ptw) == nil, "back in the meadow: not at once (SpawnGap)")
+	wtw:FKTick(FK0.SpawnGap)
+	check(wtw:KingOf(ptw) ~= nil, "then the King comes again")
 	-- its personal lifetime ran out (MonsterService despawned it, no kill): no new drop at once, SpawnGap first
 	local w9 = fkWorld()
 	local s9 = w9:Hunter(119, "Halo")
@@ -717,6 +741,30 @@ runGroup("at stake", function()
 	wt:FKTick()
 	wt:Advance(FK0.DropTime + 0.01)
 	check(wt:Hum(t).Health == 100 - PLAIN, "a failing stake check: plain hit", tostring(wt:Hum(t).Health))
+	-- each other check that throws counts as at stake too: a plain hit, no first-KO delay, and no claim when it starts
+	-- failing between the one hit and the Died event
+	local function proxy(real, key, fn) return setmetatable({ [key] = fn }, { __index = real }) end
+	local function throwing(name, install)
+		local ws = fkWorld()
+		local s = ws:Hunter(410, "Horns")
+		install(ws)
+		ws:FKTick()
+		ws:Advance(FK0.DropTime + 0.01)
+		check(ws:Hum(s).Health == 100 - PLAIN and ws.FK.GetUp(s) == nil, "a failing " .. name .. " check: plain hit, no first KO waiting",
+			tostring(ws:Hum(s).Health))
+		local wc = fkWorld()
+		local c = wc:Hunter(411, "Horns")
+		wc:Meet(c)
+		local waiting = wc:Hum(c).Health == 0 and wc.FK.GetUp(c) ~= nil
+		install(wc)
+		check(waiting and wc.FK.GetUp(c) == nil and wc.FK.ClaimKO(c, wc.Clock) == nil and wc.Data[c].FirstKODone == false and #wc.FirstKOs == 0,
+			"a failing " .. name .. " check at the Died event: no first-KO delay, no claim", tostring(waiting))
+	end
+	throwing("stars", function(ws) ws.Registry.PvPService = proxy(ws.Registry.PvPService, "GetStars", function() error("offline stars boom") end) end)
+	throwing("combat tag", function(ws)
+		ws.Registry.CombatService = proxy(ws.Registry.CombatService, "IsInCombat", function() error("offline tag boom") end)
+	end)
+	throwing("kaiju", function(ws) ws.Registry.KaijuService = proxy(ws.Registry.KaijuService, "GetState", function() error("offline kaiju boom") end) end)
 end)
 
 ------------------------------------------------------------------ 6. once per account; the Tell row; never for others
@@ -982,46 +1030,58 @@ runGroup("retry numbers", function()
 	local w = fkWorld()
 	check(w.Util.RoundDamage(2.5) == roundDamage(2.5) and w.Util.RoundDamage(0.2) == roundDamage(0.2), "the model rounds like Util.RoundDamage")
 	local R = FK0.Retry
-	local fails = { A = {}, B = {}, C = {}, N = 0 }
-	local minLeft, minShort = math.huge, math.huge
+	-- one HP potion is the lesson (KO1 may leave only one): every class x faction x Lv 1-9 x tier 1-3 x +0 / +3 / +5
+	local fails = { A = {}, B = {}, C = {}, N = 0, Slow = 0 }
+	local minLeft1, minLeft2, minShort = math.huge, math.huge, math.huge
 	for _, cls in { "Warrior", "Mage", "Archer" } do
 		for _, fac in { "Halo", "Horns", "Neutral" } do
 			for lv = 1, 9 do
 				for tier = 1, 3 do
-					fails.N += 1
-					local r = C0.FirstKORetry(lv, tier, cls, fac, 0)
-					local prof = C0.AttackProfile(cls, tier, fac)
-					local f = C0.Factions[fac]
-					local per = w.Util.RoundDamage(C0.WeaponDamage(tier, lv, 0) * prof.Damage * (1 + f.DamageBonus) * C0.BasicSkill.SwingImmediate)
-					local dps = per / prof.SwingInterval
-					local maxHP = C0.MaxHealth(lv, fac, cls)
-					local hit = w.Util.RoundDamage(maxHP * r.Hit)
-					local tag = cls .. "/" .. fac .. "/Lv" .. lv .. "/T" .. tier
-					-- A: no potion loses at 60-90% uptime (King every 1.5 or 1.6 s)
-					for _, u in { 0.6, 0.7, 0.8, 0.9 } do
-						for _, acd in { 1.5, 1.6 } do
+					for _, enh in { 0, 3, 5 } do
+						fails.N += 1
+						local r = C0.FirstKORetry(lv, tier, cls, fac, enh)
+						local prof = C0.AttackProfile(cls, tier, fac)
+						local f = C0.Factions[fac]
+						local per = w.Util.RoundDamage(C0.WeaponDamage(tier, lv, enh) * prof.Damage * (1 + f.DamageBonus) * C0.BasicSkill.SwingImmediate)
+						local dps = per / prof.SwingInterval
+						local maxHP = C0.MaxHealth(lv, fac, cls)
+						local hit = w.Util.RoundDamage(maxHP * r.Hit)
+						local tag = cls .. "/" .. fac .. "/Lv" .. lv .. "/T" .. tier .. "+" .. enh
+						-- A: no potion loses at 60-80% uptime against a King every 1.5 s, at 60-70% against one every 1.6 s
+						for _, case in { { 0.6, 1.5 }, { 0.7, 1.5 }, { 0.8, 1.5 }, { 0.6, 1.6 }, { 0.7, 1.6 } } do
+							local u, acd = case[1], case[2]
 							local won, _, t = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 0, u, acd, 0.5)
 							if won then table.insert(fails.A, tag .. " u" .. u .. " acd" .. acd) else minShort = math.min(minShort, r.HP / (dps * u) - t) end
 						end
-					end
-					-- B: 2 potions win at 80-110% uptime whenever drunk at 40-60% HP (King every 1.5 s), >= 10% HP left
-					for _, u in { 0.8, 0.9, 1.0, 1.1 } do
-						for _, drink in { 0.4, 0.5, 0.6 } do
-							local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 2, u, 1.5, drink)
-							if not won or left < 0.1 then table.insert(fails.B, tag .. " u" .. u .. " d" .. drink .. " left" .. string.format("%.2f", left)) end
-							if won then minLeft = math.min(minLeft, left) end
+						if fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 0, 0.8, 1.6, 0.5) then fails.Slow += 1 end
+						-- B: ONE potion wins at 80-110% uptime whenever drunk at 40-60% HP (King every 1.5 s), >= 5% HP left
+						for _, u in { 0.8, 0.9, 1.0, 1.1 } do
+							for _, drink in { 0.4, 0.5, 0.6 } do
+								local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 1, u, 1.5, drink)
+								if not won or left < 0.05 then table.insert(fails.B, tag .. " u" .. u .. " d" .. drink .. " left" .. string.format("%.2f", left)) end
+								if won then minLeft1 = math.min(minLeft1, left) end
+							end
+						end
+						-- C: 2 potions win comfortably at 70-110% uptime (>= 15% HP left)
+						for _, u in { 0.7, 0.8, 0.9, 1.0, 1.1 } do
+							for _, drink in { 0.4, 0.5, 0.6 } do
+								local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 2, u, 1.5, drink)
+								if not won or left < 0.15 then table.insert(fails.C, tag .. " u" .. u .. " d" .. drink .. " left" .. string.format("%.2f", left)) end
+								if won then minLeft2 = math.min(minLeft2, left) end
+							end
 						end
 					end
-					-- C: one potion is not enough at 80% uptime
-					if fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 1, 0.8, 1.5, 0.5) then table.insert(fails.C, tag) end
 				end
 			end
 		end
 	end
-	check(#fails.A == 0, "no potion: the retry King wins (60-90% uptime) for every class / faction / Lv 1-9 / tier 1-3", fails.A[1])
-	check(#fails.B == 0, "2 potions: the player wins with >= 10% HP left (80-110% uptime)", fails.B[1])
-	check(#fails.C <= fails.N * 0.05, "1 potion: not enough at 80% uptime for >= 95% of the builds (about 2 potions)", tostring(#fails.C) .. " " .. tostring(fails.C[1]))
-	finding(string.format("retry sweep: %d builds; no potion falls >= %.1f s short; 2 potions leave >= %.0f%% HP; 1 potion enough for %d", fails.N, minShort, minLeft * 100, #fails.C))
+	check(#fails.A == 0, "0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+		fails.A[1])
+	check(fails.Slow <= fails.N * 0.05, "0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds", tostring(fails.Slow))
+	check(#fails.B == 0, "1 potion wins: 80-110% uptime, drunk at 40-60% HP, >= 5% HP left", fails.B[1])
+	check(#fails.C == 0, "2 potions win comfortably: 70-110% uptime, >= 15% HP left", fails.C[1])
+	finding(string.format("retry sweep: %d builds; no potion falls >= %.2f s short (%d no-potion wins at 80%% vs a 1.6 s King); 1 potion leaves >= %.0f%% HP; 2 potions >= %.0f%%",
+		fails.N, minShort, fails.Slow, minLeft1 * 100, minLeft2 * 100))
 	-- the HP formula against a hand-made example: Lv 3 Halo Warrior, wooden weapon
 	local ex = C0.FirstKORetry(3, 1, "Warrior", "Halo", 0)
 	local per = w.Util.RoundDamage(8 * (1 + 0.02 * 2) * 1.0 * 1 * 0.5)
@@ -1036,6 +1096,18 @@ runGroup("retry numbers", function()
 	finding(string.format("Lv3 Halo Warrior T1: MaxHP %d, King HP %d, King hit %d (%.1f%%)", C0.MaxHealth(3, "Halo", "Warrior"), ex.HP,
 		w.Util.RoundDamage(C0.MaxHealth(3, "Halo", "Warrior") * ex.Hit), ex.Hit * 100))
 
+	-- the HP comes from the best weapon the save may use (Lv 4: tier 2, not the owned tier 3 of Lv 5) with its +3, not the
+	-- weapon in hand (tier 1): a swap to a weak weapon never shrinks the King
+	local pe = w:Hunter(105, "Halo", { Step = RETRY, Level = 4, Class = "Warrior", Tier = 1,
+		Data = { WeaponOwnedMask = 7, WeaponEnhance = { 0, 3, 5 } } })
+	w:FKTick()
+	local re = w:KingOf(pe)
+	local best3 = C0.FirstKORetry(4, 2, "Warrior", "Halo", 3)
+	check(best3.HP ~= C0.FirstKORetry(4, 2, "Warrior", "Halo", 0).HP and best3.HP ~= C0.FirstKORetry(4, 1, "Warrior", "Halo", 0).HP
+		and best3.HP ~= C0.FirstKORetry(4, 3, "Warrior", "Halo", 5).HP, "setup: the tier, its +N and the level rule each change the King's HP",
+		show(best3))
+	check(re ~= nil and pe:GetAttribute("WeaponTier") == 1 and re.MaxHP == best3.HP,
+		"the retry King's HP: the best usable weapon (tier 2) with its +3, not the weapon in hand (tier 1)", show({ re and re.MaxHP, best3.HP }))
 	-- the service spawns the retry King with those numbers and hits with them
 	local p = w:Hunter(101, "Horns", { Step = RETRY, Level = 4, Class = "Mage", Tier = 2, Done = true })
 	w:FKTick()
