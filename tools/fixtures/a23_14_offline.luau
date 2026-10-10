@@ -849,6 +849,45 @@ runGroup("dailies-nonhunt (A23-113 #8)", function()
 	end
 	check(natural >= 10 and both <= natural * 0.8, "a set with a non-hunting slot among the first two does not always get a third (" .. both .. " of " .. natural .. ")",
 		show({ natural, both }))
+	-- 검수 2026-10-10: the goose daily is never made two days running (GooseDay = the KST day of the last one); the rule is
+	-- "one non-hunting daily if one fits": a rested goose with nothing else that fits leaves three hunting dailies
+	check(W.GooseRestDays == 1 and CONFIG.Data.Defaults.GooseDay == 0, "the goose rests 1 day; GooseDay is a save field (default 0)", show({ W.GooseRestDays, CONFIG.Data.Defaults.GooseDay }))
+	local geese, oldGeese = 0, 0
+	for _, level in { 12, 17, 40 } do
+		for seed = 1, 40 do
+			local f = questWorld(rookieRow(level, "Halo", { GooseDay = today() - 1 }), seed * 5 + level, { Graduated = false })
+			local i, q = f:Slot("Goose")
+			check(q == nil and f.Data.GooseDay == today() - 1, "Lv" .. level .. ": a goose daily yesterday: none today (the day mark stays)", show({ f.Data.Quests[1].Id, f.Data.Quests[2].Id, f.Data.Quests[3].Id }))
+			check(#f.Data.Quests == 3, "... and still three dailies", tostring(#f.Data.Quests))
+			local g = questWorld(rookieRow(level, "Halo", { GooseDay = today() - 2 }), seed * 5 + level, { Graduated = false })
+			if g:Slot("Goose") then
+				oldGeese += 1
+				check(g.Data.GooseDay == today(), "a goose daily made today marks GooseDay", tostring(g.Data.GooseDay))
+			end
+			local h = questWorld(rookieRow(level, "Halo", { GooseDay = today() }), seed * 5 + level, { Graduated = false })
+			if h:Slot("Goose") then geese += 1 end
+		end
+	end
+	check(oldGeese >= 60 and geese >= 60, "two days after (and the same day) the goose is allowed again, and it is the usual last-slot pick (" .. oldGeese .. ", " .. geese .. " of 120)", show({ oldGeese, geese }))
+	-- the day after a goose day, through the real day check
+	local day2 = questWorld(rookieRow(12, "Halo"), 4242, { Graduated = false })
+	local _, gq = day2:Slot("Goose")
+	check(gq ~= nil and day2.Data.GooseDay == today(), "a Lv12 Halo day: the last slot is the goose and it is marked", show({ day2.Data.Quests[1].Id, day2.Data.Quests[2].Id, day2.Data.Quests[3].Id }))
+	day2.Data.DailyDay = today() - 1
+	day2.Data.GooseDay = today() - 1
+	day2.Quest.DayCheck(day2.Player)
+	check(day2:Slot("Goose") == nil and #day2.Data.Quests == 3, "the next day: no goose daily (three hunting dailies, nothing else fits)", show({ day2.Data.Quests[1].Id, day2.Data.Quests[2].Id, day2.Data.Quests[3].Id }))
+	-- the PvP kinds are drawn rarely, so a forced non-hunting slot is not often a fight with a player
+	for _, level in { 17, 40 } do
+		local sets, pvp, goose = 0, 0, 0
+		for seed = 1, 300 do
+			local f = questWorld(rookieRow(level, "Halo"), seed * 29 + 7 + level, { Graduated = true })
+			sets += 1
+			if f:Slot("Hunt") then pvp += 1 end
+			if f:Slot("Goose") then goose += 1 end
+		end
+		check(pvp <= sets * 0.36 and goose > pvp, "Lv" .. level .. " Halo: a PvP daily in at most 36% of the sets, the goose more often (" .. pvp .. " Hunt, " .. goose .. " Goose of " .. sets .. ")", show({ pvp, goose, sets }))
+	end
 	-- the guild (Neutral) has no Goose / PvP: nothing non-hunting fits, the set is drawn as before
 	for seed = 1, 20 do
 		local f = questWorld(rookieRow(17, "Neutral"), seed * 53)

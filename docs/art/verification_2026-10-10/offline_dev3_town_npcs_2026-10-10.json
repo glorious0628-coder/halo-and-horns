@@ -111,37 +111,37 @@
     },
     {
       "group": "config",
-      "check": "juice man (61.1,-568.6), flower girl (18,-582.4), baker (19.7,-553.9), the potion seller (43.7,-583)",
+      "check": "juice man (38.42,-499.19), flower girl (6.6,-489.63), baker (-6.35,-476.52), the potion seller (20.07,-468.17)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "Folk1 is on the plaza terrace: Y 20",
+      "check": "Folk1 is on the shop street terrace: Y 9",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "Folk2 is on the plaza terrace: Y 20",
+      "check": "Folk2 is on the shop street terrace: Y 9",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "Folk3 is on the plaza terrace: Y 20",
+      "check": "Folk3 is on the shop street terrace: Y 9",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "Folk4 is on the plaza terrace: Y 20",
+      "check": "PotionHalo is on the shop street terrace: Y 9",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "PotionHalo is on the plaza terrace: Y 20",
+      "check": "Folk4 is on the fountain plaza: Y 20",
       "pass": 1,
       "fail": 0
     },
@@ -339,7 +339,7 @@
     },
     {
       "group": "build",
-      "check": "Folk1: feet on the plaza terrace (Y 20 + 2.6)",
+      "check": "Folk1: feet on the terrace (Y 9 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -351,7 +351,7 @@
     },
     {
       "group": "build",
-      "check": "Folk2: feet on the plaza terrace (Y 20 + 2.6)",
+      "check": "Folk2: feet on the terrace (Y 9 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -363,7 +363,7 @@
     },
     {
       "group": "build",
-      "check": "Folk3: feet on the plaza terrace (Y 20 + 2.6)",
+      "check": "Folk3: feet on the terrace (Y 9 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -375,7 +375,7 @@
     },
     {
       "group": "build",
-      "check": "Folk4: feet on the plaza terrace (Y 20 + 2.6)",
+      "check": "Folk4: feet on the terrace (Y 20 + 2.6)",
       "pass": 1,
       "fail": 0
     },
@@ -441,13 +441,13 @@
     },
     {
       "group": "the potion seller (switched on)",
-      "check": "in front of the potion shop (43.7, -583), feet on the plaza terrace",
+      "check": "in front of the potion shop (20.07, -468.17), feet on the shop street terrace",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "the potion seller (switched on)",
-      "check": "facing the street (33.8, -584.5) at her own height",
+      "check": "facing the shop (32.38, -466) at her own height",
       "pass": 1,
       "fail": 0
     },
@@ -597,7 +597,7 @@
     },
     {
       "group": "the expected ground (roofs, balconies, walls)",
-      "check": "a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+      "check": "a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
       "pass": 1,
       "fail": 0
     },
@@ -621,31 +621,31 @@
     },
     {
       "group": "the expected ground (roofs, balconies, walls)",
-      "check": "a steep face at 24 over the floor: the floor is the ground",
+      "check": "a steep face at 13 over the floor: the floor is the ground",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "the expected ground (roofs, balconies, walls)",
-      "check": "only a roof over the spot: no body (a warning each), the others are built",
+      "check": "only a roof over the spot: no body (a warning each: Folk1-3, the seller is off), the others are built",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "the expected ground (roofs, balconies, walls)",
-      "check": "a floor at 5 where the terrace should be 20 (+-4): no body",
+      "check": "a floor at 0.2 where the terrace should be 9 (+-4): no body",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "the expected ground (roofs, balconies, walls)",
-      "check": "20 + 3.9 is inside the tolerance",
+      "check": "9 + 3.9 is inside the tolerance",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "the expected ground (roofs, balconies, walls)",
-      "check": "20 + 4.1 is a roof: the ray goes on to the floor",
+      "check": "9 + 4.1 is a roof: the ray goes on to the floor",
       "pass": 1,
       "fail": 0
     },
@@ -693,7 +693,7 @@
     },
     {
       "group": "failures",
-      "check": "each body takes its own terrace height (0.2 / 22; Y 20 +- 4 accepts the plaza)",
+      "check": "each body takes its own terrace height (0.2 / 7 on the street / 22 on the plaza; Y 9 / 20 +- 4 accept them)",
       "pass": 1,
       "fail": 0
     },
@@ -946,8 +946,8 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: PotionHalo has a spot of its own",
-          "config :: juice man (61.1,-568.6), flower girl (18,-582.4), baker (19.7,-553.9), the potion seller (43.7,-583)",
-          "the potion seller (switched on) :: in front of the potion shop (43.7, -583), feet on the plaza terrace"
+          "config :: juice man (38.42,-499.19), flower girl (6.6,-489.63), baker (-6.35,-476.52), the potion seller (20.07,-468.17)",
+          "the potion seller (switched on) :: in front of the potion shop (20.07, -468.17), feet on the shop street terrace"
         ],
         "newFailingCount": 3
       },
@@ -959,7 +959,7 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: PotionHalo has a spot of its own",
-          "config :: juice man (61.1,-568.6), flower girl (18,-582.4), baker (19.7,-553.9), the potion seller (43.7,-583)"
+          "config :: juice man (38.42,-499.19), flower girl (6.6,-489.63), baker (-6.35,-476.52), the potion seller (20.07,-468.17)"
         ],
         "newFailingCount": 2
       },
@@ -970,12 +970,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: Folk1 is on the plaza terrace: Y 20",
-          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "config :: Folk1 is on the shop street terrace: Y 9",
+          "the expected ground (roofs, balconies, walls) :: 9 + 4.1 is a roof: the ray goes on to the floor",
           "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts",
-          "the expected ground (roofs, balconies, walls) :: a floor at 5 where the terrace should be 20 (+-4): no body",
-          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
-          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built"
+          "the expected ground (roofs, balconies, walls) :: a floor at 0.2 where the terrace should be 9 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each: Folk1-3, the seller is off), the others are built"
         ],
         "newFailingCount": 7
       },
@@ -991,9 +991,9 @@
           "build :: 8 entries queued, 7 bodies made (the potion seller is switched off)",
           "build :: Folk4: a townsperson, tagged TownFolk, no prompt",
           "build :: group ran to the end without a Lua error",
-          "config :: Folk4 is on the plaza terrace: Y 20"
+          "config :: Folk4 is on the fountain plaza: Y 20"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 15
       },
       {
         "mutation": "Config: no retries",
@@ -1032,11 +1032,12 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: retries 3 x 5 s, ground tolerance 4, 8 casts",
-          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
-          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: 9 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: a floor at 0.2 where the terrace should be 9 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
           "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "Config: two casts",
@@ -1081,7 +1082,7 @@
         "crashed": false,
         "newFailingChecks": [
           "failures :: a steep surface under a spot is not ground",
-          "the expected ground (roofs, balconies, walls) :: a steep face at 24 over the floor: the floor is the ground"
+          "the expected ground (roofs, balconies, walls) :: a steep face at 13 over the floor: the floor is the ground"
         ],
         "newFailingCount": 2
       },
@@ -1106,7 +1107,7 @@
           "failures :: no ground at the placing: the made body is destroyed, a warning each",
           "failures :: no ground: no body, a warning",
           "retries :: no ground: no avatar call, no retry",
-          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built"
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each: Folk1-3, the seller is off), the others are built"
         ],
         "newFailingCount": 4
       },
@@ -1117,7 +1118,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
           "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error",
           "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
         ],
@@ -1130,11 +1131,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: 9 + 4.1 is a roof: the ray goes on to the floor",
           "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts",
-          "the expected ground (roofs, balconies, walls) :: a floor at 5 where the terrace should be 20 (+-4): no body",
-          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
-          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built",
+          "the expected ground (roofs, balconies, walls) :: a floor at 0.2 where the terrace should be 9 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each: Folk1-3, the seller is off), the others are built",
           "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
         ],
         "newFailingCount": 6
@@ -1146,11 +1147,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the expected ground (roofs, balconies, walls) :: 20 + 4.1 is a roof: the ray goes on to the floor",
+          "the expected ground (roofs, balconies, walls) :: 9 + 4.1 is a roof: the ray goes on to the floor",
           "the expected ground (roofs, balconies, walls) :: RayTries = 3: five things over the floor are too many casts",
-          "the expected ground (roofs, balconies, walls) :: a floor at 5 where the terrace should be 20 (+-4): no body",
-          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
-          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each), the others are built",
+          "the expected ground (roofs, balconies, walls) :: a floor at 0.2 where the terrace should be 9 (+-4): no body",
+          "the expected ground (roofs, balconies, walls) :: a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: only a roof over the spot: no body (a warning each: Folk1-3, the seller is off), the others are built",
           "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
         ],
         "newFailingCount": 6
@@ -1207,7 +1208,7 @@
         "crashed": false,
         "newFailingChecks": [
           "failures :: a steep surface under a spot is not ground",
-          "the expected ground (roofs, balconies, walls) :: a steep face at 24 over the floor: the floor is the ground"
+          "the expected ground (roofs, balconies, walls) :: a steep face at 13 over the floor: the floor is the ground"
         ],
         "newFailingCount": 2
       },
@@ -1253,7 +1254,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the expected ground (roofs, balconies, walls) :: a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top",
+          "the expected ground (roofs, balconies, walls) :: a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top",
           "the expected ground (roofs, balconies, walls) :: group ran to the end without a Lua error",
           "the expected ground (roofs, balconies, walls) :: three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit"
         ],
@@ -1451,10 +1452,10 @@
         "crashed": false,
         "newFailingChecks": [
           "build :: Bright stands at (18, -424), the foot of the first plaza stairs, with her feet on the ground (Y 0.2 + 2.6)",
-          "build :: Folk1: feet on the plaza terrace (Y 20 + 2.6)",
-          "build :: Folk2: feet on the plaza terrace (Y 20 + 2.6)",
-          "build :: Folk3: feet on the plaza terrace (Y 20 + 2.6)",
-          "build :: Folk4: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk1: feet on the terrace (Y 9 + 2.6)",
+          "build :: Folk2: feet on the terrace (Y 9 + 2.6)",
+          "build :: Folk3: feet on the terrace (Y 9 + 2.6)",
+          "build :: Folk4: feet on the terrace (Y 20 + 2.6)",
           "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
         ],
         "newFailingCount": 15
@@ -1467,10 +1468,10 @@
         "crashed": false,
         "newFailingChecks": [
           "build :: Bright stands at (18, -424), the foot of the first plaza stairs, with her feet on the ground (Y 0.2 + 2.6)",
-          "build :: Folk1: feet on the plaza terrace (Y 20 + 2.6)",
-          "build :: Folk2: feet on the plaza terrace (Y 20 + 2.6)",
-          "build :: Folk3: feet on the plaza terrace (Y 20 + 2.6)",
-          "build :: Folk4: feet on the plaza terrace (Y 20 + 2.6)",
+          "build :: Folk1: feet on the terrace (Y 9 + 2.6)",
+          "build :: Folk2: feet on the terrace (Y 9 + 2.6)",
+          "build :: Folk3: feet on the terrace (Y 9 + 2.6)",
+          "build :: Folk4: feet on the terrace (Y 20 + 2.6)",
           "build :: Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground"
         ],
         "newFailingCount": 15
@@ -1495,7 +1496,7 @@
         "crashed": false,
         "newFailingChecks": [
           "build :: ... facing the gate side (18, -380) at her own height",
-          "the potion seller (switched on) :: facing the street (33.8, -584.5) at her own height"
+          "the potion seller (switched on) :: facing the shop (32.38, -466) at her own height"
         ],
         "newFailingCount": 2
       },
@@ -2128,10 +2129,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "097449ae7837c0e1399da6458413d7719a2bf73174c05638c32995f0f35afeb7",
+    "src/ReplicatedStorage/Shared/Config.luau": "67dc9d354aa66487fcbdd470a54b042ff205afabc6c8e80fdc8c0a521ea338ae",
     "src/ServerScriptService/TownNpcs.luau": "4ff53bc75659ccd39cd7974b8062daa1714f458feac8605fd1dc7be5471f106d"
   },
-  "fixtureSHA256": "4443161af3ef9a914c8134290f1d85eefaf31a0de389b212c78a9bc0b3924069",
+  "fixtureSHA256": "077f932752a6c9bbcafa8a21c8ff7f12f84ad38bd8c2e073d5ae4748a141d779",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

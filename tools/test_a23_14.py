@@ -204,8 +204,18 @@ MUTATIONS = [
     ("A23-113 config: Choice is hunting", "CONFIG_SOURCE", "RewardPerUnit = 20, NonHunt = true,\n\t\t\tText = \"Make a kind or sneaky choice\"", "RewardPerUnit = 20,\n\t\t\tText = \"Make a kind or sneaky choice\""),
     ("A23-113 config: the guarantee from Lv30", "CONFIG_SOURCE", "\tNonHuntFrom = 10,", "\tNonHuntFrom = 30,"),
     ("A23-113 config: the woods have no Choice row", "CONFIG_SOURCE",
-     "\t\t\t{ Id = \"Choice\", Weight = 2, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)\n", ""),
-    ("A23-113 config: the Choice daily needs two choices", "CONFIG_SOURCE", "{ Id = \"Choice\", Weight = 2, Targets = { 1 } }", "{ Id = \"Choice\", Weight = 2, Targets = { 2 } }"),
+     "\t\t\t{ Id = \"Choice\", Weight = 3, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)\n", ""),
+    ("A23-113 config: the Choice daily needs two choices", "CONFIG_SOURCE", "{ Id = \"Choice\", Weight = 3, Targets = { 1 } }", "{ Id = \"Choice\", Weight = 3, Targets = { 2 } }"),
+    # 검수 2026-10-10: the goose rests a day; the PvP kinds are drawn rarely
+    ("goose rest: none", "QUEST_SOURCE", " and not (gooseResting and rt.Id == \"Goose\") then", " then"),
+    ("goose rest: the day is never marked", "QUEST_SOURCE", "\tif kind == \"Daily\" and t.Id == \"Goose\" then data.GooseDay = today end\n", ""),
+    ("goose rest: the same day rests too", "QUEST_SOURCE", " and num(data.GooseDay) ~= today\n", "\n"),
+    ("goose rest: a mark of 0 rests", "QUEST_SOURCE", "kind == \"Daily\" and num(data.GooseDay) > 0\n", "kind == \"Daily\"\n"),
+    ("goose rest: zero days", "CONFIG_SOURCE", "\tGooseRestDays = 1,", "\tGooseRestDays = 0,"),
+    ("goose rest: three days", "CONFIG_SOURCE", "\tGooseRestDays = 1,", "\tGooseRestDays = 3,"),
+    ("goose rest: no save field", "CONFIG_SOURCE", "Config.Data.Defaults.GooseDay = 0", "Config.Data.Defaults.GooseDay_ = 0"),
+    ("PvP weight: the woods Hunt row is common again", "CONFIG_SOURCE", "{ Id = \"Hunt\", Weight = 0.4, Targets = { 1 } }", "{ Id = \"Hunt\", Weight = 1.5, Targets = { 1 } }"),
+    ("PvP weight: the Hunt template is common again", "CONFIG_SOURCE", "{ Id = \"Hunt\", ShortName = \"Catch Wanted\", Weight = 3, Units", "{ Id = \"Hunt\", ShortName = \"Catch Wanted\", Weight = 40, Units"),
 ]
 
 

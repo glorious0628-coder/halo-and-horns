@@ -28,7 +28,8 @@ STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST
           "BerserkerRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "DarkMageRelease": ("RELEASE_CONTACT.Mage", "Mage"),
           "RangerRelease": ("RELEASE_LAUNCH.Archer", "Archer"), "ShadowHunterRelease": ("RELEASE_LAUNCH.Archer", "Archer")}
 # Z / X (A23-108 ⑤, off until the 10/20 check): one strike key each, inside the clip
-ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX", "BerserkerZ", "DarkMageZ", "RangerZ", "ShadowHunterZ"}
+ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX", "BerserkerZ", "DarkMageZ", "RangerZ", "ShadowHunterZ",
+      "BerserkerX", "DarkMageX", "RangerX", "ShadowHunterX"}
 
 
 def clip(fx: str, name: str):

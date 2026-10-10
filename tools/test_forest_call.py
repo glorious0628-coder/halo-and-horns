@@ -41,7 +41,7 @@ MUTATIONS = [
     ("the alternative never counts", ST, "\t\tif not alt then\n\t\t\tif obj.Kind", "\t\talt = false\n\t\tif not alt then\n\t\t\tif obj.Kind"),
     ("the alternative skips the base kind check", ST, "\t\tif not alt then\n\t\t\tif obj.Kind and Config.QuestKind(info.Kind) ~= obj.Kind then return 0 end -- a pumpkin slime counts as a slime\n\t\t\tif obj.Zone and info.ZoneId ~= obj.Zone then return 0 end\n\t\tend\n",
      "\t\tif false then\n\t\tend\n"),
-    ("personal monsters count", ST, "\t\tif info.Personal == true then return 0 end\n", ""),
+    ("personal monsters count", ST, "\t\tif (info.Personal == true) ~= (obj.Personal == true) then return 0 end\n", ""),
     ("the row never names the woods", ST, "\t\ttemplate = step.AltText\n", ""),
     ("the row names the woods for everyone", ST, "type(obj.Alt) == \"table\" and num(data.Level, 1) >= num(obj.Alt.MinLevel, 1) then", "type(obj.Alt) == \"table\" then"),
     # --- WB1

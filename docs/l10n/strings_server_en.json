@@ -7343,6 +7343,48 @@
   "max": 23
  },
  {
+  "key": "Config.StoryQuests.Defs.SG1.ShortName",
+  "en": "Grudge Sack",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 14
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Lines.All.1",
+  "en": "Gold taken in a PvP fight goes into the thief's Grudge Sack.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 78
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Lines.All.2",
+  "en": "The thief keeps it after 45 seconds in a PvP zone.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 65
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Lines.All.3",
+  "en": "Beat the thief first and the gold goes back to its owner!",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 74
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Text",
+  "en": "Read about the Grudge Sack",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 33
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Title",
+  "en": "The Grudge Sack",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 19
+ },
+ {
   "key": "Config.StoryQuests.Defs.SK1.ShortName",
   "en": "New move",
   "where": "Config.StoryQuests",
@@ -7452,6 +7494,76 @@
   "where": "Config.StoryQuests",
   "args": [],
   "max": 20
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.ShortName",
+  "en": "Size scale",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 13
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Steps.1.Lines.All.1",
+  "en": "The Fountain weighs both sides. The side with less power grows bigger and stronger!",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 107
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Steps.1.Lines.All.2",
+  "en": "It grows up to 1.6 times, then shrinks back as the sides even out.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 85
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Steps.1.Text",
+  "en": "Hear about the size scale",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 32
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Title",
+  "en": "The Size Scale",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 18
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.ShortName",
+  "en": "Move a plus",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 14
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Steps.1.Lines.All.1",
+  "en": "A Transfer Scroll moves a weapon's + to another weapon.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 71
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Steps.1.Lines.All.2",
+  "en": "If it fails, the + stays where it was. Only the scroll is used up.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 85
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Steps.1.Text",
+  "en": "Hear about your Transfer Scroll",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Title",
+  "en": "Moving a Plus",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 16
  },
  {
   "key": "Config.StoryQuests.Defs.WB1.Finish",
@@ -8431,6 +8543,83 @@
   "where": "Config.GamePasses",
   "args": [],
   "max": 8
+ },
+ {
+  "key": "Config.PassInfo.Gold2.Desc",
+  "en": "Earn 2x gold from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 153
+ },
+ {
+  "key": "Config.PassInfo.Gold2.Line",
+  "en": "Earn 2x gold",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 15
+ },
+ {
+  "key": "Config.PassInfo.Look.Desc",
+  "en": "A new color for your halo or horns. It only changes how you look: the shape still shows your rank. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 157
+ },
+ {
+  "key": "Config.PassInfo.Look.Line",
+  "en": "New colors for halo or horns",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.PassInfo.NoStats",
+  "en": "No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 28
+ },
+ {
+  "key": "Config.PassInfo.PrivateServer.Desc",
+  "en": "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 165
+ },
+ {
+  "key": "Config.PassInfo.PrivateServer.Line",
+  "en": "Play with just your friends.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.PassInfo.VIP.Desc",
+  "en": "A crown by your name, a VIP tag in chat, and your name on the village Supporters board. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 143
+ },
+ {
+  "key": "Config.PassInfo.VIP.Line",
+  "en": "Crown, chat tag, Supporters board",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.PassInfo.XP2.Desc",
+  "en": "Get 2x XP from everything you do, so you level up 2x faster. It only speeds up leveling. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 144
+ },
+ {
+  "key": "Config.PassInfo.XP2.Line",
+  "en": "Level up 2x faster",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 23
  },
  {
   "key": "Config.Looks.HaloGold.Name",

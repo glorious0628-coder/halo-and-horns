@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 205,
+  "checks": 216,
   "failedChecks": 0,
-  "namedChecks": 181,
+  "namedChecks": 192,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -22,6 +22,12 @@
     {
       "group": "config",
       "check": "MinutesToLv5 at Lv5; PvPResult at most once a second per killer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PvPKOedDay: logged at the 1st, 3rd, 5th, 10th and 20th KO by players of a KST day",
       "pass": 1,
       "fail": 0
     },
@@ -1092,15 +1098,75 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "the victim's level band and zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "logged under the one who was KO'd, never the killer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "the day's count is saved with the account (a second session adds on)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "20 KOs: the steps 1, 3, 5, 10, 20 and nothing else",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "the next day: back to 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "two victims in one second both count (PvPResult stays one a second per killer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "bad arguments count nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KO'd by players per day (A23-113 PvPKOedDay)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 110,
-    "applied": 110,
-    "caught": 110,
+    "total": 118,
+    "applied": 118,
+    "caught": 118,
     "skipped": false,
     "results": [
       {
@@ -2373,13 +2439,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: two victims in one second both count (PvPResult stays one a second per killer)",
           "PvP result line (A23-113 #5) :: Neutral: scale 1",
           "PvP result line (A23-113 #5) :: a second KO inside the same second is not logged again (per killer)",
           "PvP result line (A23-113 #5) :: logged once, under the winner",
           "PvP result line (A23-113 #5) :: the other way: Horns wins (1.05 scale, 1-9 over 10-24)",
           "PvP result line (A23-113 #5) :: the winner's faction + scale (Halo 1.3), the loser's faction, both level bands"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "PvPResult without the size scale",
@@ -2426,10 +2493,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: two victims in one second both count (PvPResult stays one a second per killer)",
           "PvP result line (A23-113 #5) :: a second KO inside the same second is not logged again (per killer)",
           "PvP result line (A23-113 #5) :: bad killer / victim arguments log nothing"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "Config: FirstKO loses a step",
@@ -2487,6 +2555,115 @@
           "minutes to Lv5 (A23-113 #2) :: under half a minute still counts 1"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "PvPKOedDay counts nothing",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 20 KOs: the steps 1, 3, 5, 10, 20 and nothing else",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: bad arguments count nothing",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the day's count is saved with the account (a second session adds on)",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the next day: back to 1"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "PvPKOedDay is never saved",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 20 KOs: the steps 1, 3, 5, 10, 20 and nothing else",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: bad arguments count nothing",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the day's count is saved with the account (a second session adds on)",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the next day: back to 1"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "PvPKOedDay never starts a new day",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: bad arguments count nothing",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the next day: back to 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvPKOedDay logs every KO",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 20 KOs: the steps 1, 3, 5, 10, 20 and nothing else",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: bad arguments count nothing",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the next day: back to 1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "PvPKOedDay without the zone",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the victim's level band and zone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvPKOedDay behind the killer's limit",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: two victims in one second both count (PvPResult stays one a second per killer)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvPKOedDay under the killer",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 20 KOs: the steps 1, 3, 5, 10, 20 and nothing else",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: bad arguments count nothing",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the next day: back to 1",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the victim's level band and zone",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: two victims in one second both count (PvPResult stays one a second per killer)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Config: PvPKOedDay steps 1, 2, 3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 20 KOs: the steps 1, 3, 5, 10, 20 and nothing else",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: 5 KOs in a day: the steps 1, 3, 5 are logged, 2 and 4 are not",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: bad arguments count nothing",
+          "KO'd by players per day (A23-113 PvPKOedDay) :: the next day: back to 1",
+          "config :: PvPKOedDay: logged at the 1st, 3rd, 5th, 10th and 20th KO by players of a KST day"
+        ],
+        "newFailingCount": 5
       }
     ]
   },
@@ -2494,11 +2671,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
+    "src/ReplicatedStorage/Shared/Config.luau": "bfa3492ffbd5deb6909844a5c88084b223901dbf94617403148a893ff9d0e766",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/TelemetryService.luau": "ecfa6152512e63e71e6fbde59efd9124ff5f9919df80e68b6b623caa7f6c1946"
+    "src/ServerScriptService/TelemetryService.luau": "ce8633df7f29acae831b2cdc8edbac1eb487724d46bde4a00c0caeb72c8efcca"
   },
-  "fixtureSHA256": "b39384e07fdbb22ecdd94bc7d2a317f760675905972468947e0b7a674d20ed48",
+  "fixtureSHA256": "c7e953f8038fac5c59ff137dc16597babc7a5d046a6cab8de554e75a9f2d3a68",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

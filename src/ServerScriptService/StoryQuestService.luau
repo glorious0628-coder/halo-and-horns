@@ -540,6 +540,23 @@ local function feed(player, ev)
 	end
 end
 
+-- A23-113: has the player met this thing now? rule.HoldKind = an item of that Config.Loot.Items kind sits in the bag (a transfer
+-- scroll); rule.AttrOver = { Name, Over } = the player's own attribute is above the number (SizeMult: their side is the smaller one)
+local function metNow(player, data, rule)
+	if type(rule.HoldKind) == "string" and type(data.Items) == "table" then
+		local items = Config.Loot and Config.Loot.Items or {}
+		for id, n in data.Items do
+			local def = items[id]
+			if type(def) == "table" and def.Kind == rule.HoldKind and num(n) > 0 then return true end
+		end
+	end
+	local over = rule.AttrOver
+	if type(over) == "table" and type(over.Name) == "string" and num(player:GetAttribute(over.Name), 0) > num(over.Over, 0) then
+		return true
+	end
+	return false
+end
+
 local function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
@@ -558,6 +575,9 @@ local function requirementsMet(player, data, def)
 	-- A23-110: MaxLevel = only up to this level; NoPotionYet = no potion bought, drunk or held yet
 	if req.MaxLevel and num(data.Level, 1) > req.MaxLevel then return false end
 	if req.NoPotionYet and not noPotionYet(data) then return false end
+	-- A23-113: Seen = a first meeting (Config.StoryQuests.Meetings, or a happening of Events) is saved in st.First: a quest line for
+	-- something the player has just met
+	if req.Seen and st.First[req.Seen] ~= true then return false end
 	-- A23-86 Sprout Oath: Sprout = the Sprout Shield is still on (PvPService.IsRookie; unknown = still a sprout)
 	if req.Sprout and stateTrue(player, "Graduated") then return false end
 	-- SKL-3: Skill = "Q" / "Z" / "X" learned (its switch on and the saved slot open)
@@ -606,6 +626,14 @@ local function refresh(player)
 		changed = true
 	end
 	st.First.Migrated = true
+	-- A23-113: first meetings (Config.StoryQuests.Meetings: what the player holds, the size scale on their own body) leave a saved flag
+	-- the one-row quests of those things wait for (Requires.Seen); a meeting seen once stays seen
+	for name, rule in SQ.Meetings or {} do
+		if st.First[name] ~= true and type(rule) == "table" and metNow(player, data, rule) then
+			st.First[name] = true
+			changed = true
+		end
+	end
 	-- main chain starts after the first mission is claimed
 	if st.Main.Id == "" and num(data.TutorialStep) == TUT_DONE and data.ClassChosen == true then
 		for _, id in SQ.Main do
@@ -1241,6 +1269,16 @@ function StoryQuestService.Start()
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
 	connect("GooseService", "GooseFinished", onGooseFinished)
+	-- A23-113: a PvP KO that took gold into a Grudge Sack is the first meeting with the sack, for the thief and for the victim
+	-- (looked up softly like the card hooks below: a world without PvPService connects nothing, with no warning)
+	local pvp = S.PvPService
+	if type(pvp) == "table" and type(pvp.PlayerKO) == "table" then
+		pvp.PlayerKO:Connect(function(killer, victim, info)
+			if type(info) ~= "table" or num(info.Stolen) <= 0 then return end
+			pcall(StoryQuestService.Event, killer, "SackMet")
+			pcall(StoryQuestService.Event, victim, "SackMet")
+		end)
+	end
 	connect("ZoneService", "ZoneChanged", function(player) pcall(refresh, player) end)
 	connect("ProgressionService", "LeveledUp", function(player) pcall(refresh, player) end)
 	connect("PlayerService", "PlayerReady", function(player)

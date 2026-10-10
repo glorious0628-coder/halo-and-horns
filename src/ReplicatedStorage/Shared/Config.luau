@@ -3558,6 +3558,49 @@ Config.StoryQuests.Defs.D0 = {
 }
 table.insert(Config.StoryQuests.Subs, "D0")
 
+-- A23-113 (검수 2026-10-10: "원한 자루·강화 옮기기 주문서·덩치 저울도 처음 만날 때 퀘스트 한 줄", like the goose, the daily jobs and the quick
+-- slots): the first meeting with three things the screen no longer explains (A23-99) leaves ONE plain talking row, the frame of D0
+-- above: no popup, no toast, no Start / Finish line; the row opens a short dialogue when it is pressed, and pays a minute of hunting.
+-- A meeting is a saved flag (data.Story.First[name]) that the quest waits for with Requires.Seen:
+--   Meetings = the state the 1 s loop checks (StoryQuestService.refresh): ScrollMet = a transfer scroll sits in the bag
+--     (Config.Loot.Items Kind "Transfer"; an old save that already holds one meets it at once), ScaleMet = the player's own SizeMult
+--     is above 1 (JusticeService: their side is the smaller one, so their body is bigger and stronger)
+--   Events.SackMet = a PvP KO took gold into a Grudge Sack (PvPService.PlayerKO info.Stolen > 0), reported for the thief AND the victim
+-- The words are checked against the numbers (tools/test_first_meetings.py): 45 s = Config.Grudge.SackSeconds, 1.6 = Config.Justice.MaxScale.
+Config.StoryQuests.Meetings = {
+	ScrollMet = { HoldKind = "Transfer" },
+	ScaleMet = { AttrOver = { Name = "SizeMult", Over = 1 } },
+}
+Config.StoryQuests.Defs.TS1 = {
+	Kind = "Sub", Title = "Moving a Plus", ShortName = "Move a plus", Speaker = "Smith", Requires = { Seen = "ScrollMet" },
+	Steps = {
+		{ Text = "Hear about your Transfer Scroll", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "A Transfer Scroll moves a weapon's + to another weapon.",
+				"If it fails, the + stays where it was. Only the scroll is used up." } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+}
+Config.StoryQuests.Defs.SG1 = {
+	Kind = "Sub", Title = "The Grudge Sack", ShortName = "Grudge Sack", Speaker = "Notice", Requires = { Seen = "SackMet" },
+	Steps = {
+		{ Text = "Read about the Grudge Sack", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Gold taken in a PvP fight goes into the thief's Grudge Sack.",
+				"The thief keeps it after 45 seconds in a PvP zone.",
+				"Beat the thief first and the gold goes back to its owner!" } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+}
+Config.StoryQuests.Defs.SZ1 = {
+	Kind = "Sub", Title = "The Size Scale", ShortName = "Size scale", Speaker = "Fountain", Requires = { Seen = "ScaleMet" },
+	Steps = {
+		{ Text = "Hear about the size scale", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "The Fountain weighs both sides. The side with less power grows bigger and stronger!",
+				"It grows up to 1.6 times, then shrinks back as the sides even out." } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+}
+for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id) end
+
 -- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
 -- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
 -- StoryQuestService.Event "FirstKO"), then buys a potion, puts it in a quick slot (a new player's slots start empty, 검수 10/10:
@@ -3569,6 +3612,7 @@ table.insert(Config.StoryQuests.Subs, "D0")
 -- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
 -- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
+Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
 	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
@@ -3618,16 +3662,16 @@ Config.TownNpcs = {
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(61.1, 0, -568.6), Look = Vector3.new(72.07, 0, -565), Y = 20,
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(38.42, 0, -499.19), Look = Vector3.new(49.53, 0, -496), Y = 9,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(18, 0, -582.4), Look = Vector3.new(7.08, 0, -578), Y = 20,
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(6.6, 0, -489.63), Look = Vector3.new(-4.57, 0, -486), Y = 9,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(19.7, 0, -553.9), Look = Vector3.new(7.96, 0, -551), Y = 20,
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-6.35, 0, -476.52), Look = Vector3.new(-18.21, 0, -474), Y = 9,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
 		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(46, 0, -556), Look = Vector3.new(34.55, 0, -566), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 20,
-			At = Vector3.new(43.7, 0, -583), Look = Vector3.new(33.8, 0, -584.5) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 9,
+			At = Vector3.new(20.07, 0, -468.17), Look = Vector3.new(32.38, 0, -466) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -3752,21 +3796,26 @@ Config.Quests = {
 			Text = "Hit monsters with skills %d times" },
 		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Join the Golden Goose tug %d times" },
-		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
+		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
-		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
+		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
 			Text = "Rob %d Knights of Light" },
 		-- A23-113 #8 (user "마감 전 넣자"; docs/design/player_reactions_research_2026-10-10.md §9): a daily that is not hunting: make one
 		-- good or naughty choice (a choice card, the King's finisher, a job board Kind / Sneaky job - every one of them is a deed of
 		-- the daily ledger, Deeds.Add; Deeds.Booked counts it). It is made only while one of those sources is on (a Board /
 		-- LostFound / KillCards switch in Config), else the slot is another kind.
-		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
+		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 14, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Make a kind or sneaky choice" },
 	},
 	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
 	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
 	-- fits: unchanged). Lv1-9 (the meadow set of 3) is not touched.
 	NonHuntFrom = 10,
+	-- 검수 2026-10-10: the goose is a 60 s event every 10 minutes: a daily that waits for it must not become homework, so it is
+	-- never a daily two days running (Config.Data.Defaults.GooseDay = the KST day index of the last goose daily made). The rule
+	-- is "one non-hunting daily if one fits": a day with none that fits (the goose rested, no choice source, a guild member)
+	-- keeps its three hunting dailies. The PvP kinds (Hunt / Plunder) are drawn rarely (low weights above).
+	GooseRestDays = 1,
 	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
 	-- opens at Lv10) come from Newbie.Dailies instead of Templates[].DailyUnits. The "different template" rule picks one
 	-- row per Id, so the 3 slots are always 3 different goals (kill / skill / gold). Extras and Lv10+ dailies unchanged.
@@ -3809,9 +3858,9 @@ Config.Quests = {
 			{ Id = "Gold", Weight = 3, Targets = { 150, 200, 250 } }, -- hunting gold
 			{ Id = "Golden", Weight = 1, Targets = { 1 } }, -- one golden monster
 			{ Id = "Goose", Weight = 1, Targets = { 1 } }, -- the Golden Goose tug (Halo / Horns)
-			{ Id = "Hunt", Weight = 1, Targets = { 1 } }, -- PvP, Halo
-			{ Id = "Plunder", Weight = 1, Targets = { 1 } }, -- PvP, Horns
-			{ Id = "Choice", Weight = 2, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
+			{ Id = "Hunt", Weight = 0.4, Targets = { 1 } }, -- PvP, Halo (A23-113: rarely drawn: never pushed on a child)
+			{ Id = "Plunder", Weight = 0.4, Targets = { 1 } }, -- PvP, Horns
+			{ Id = "Choice", Weight = 3, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
 		},
 	},
 }
@@ -3833,6 +3882,8 @@ Config.Daily = {
 }
 -- A23-104: set when the intro quest is done (the daily jobs are open); additive save field (the data version stays 3)
 Config.Data.Defaults.DailyIntro = false
+-- A23-113 (검수 2026-10-10): the KST day index of the last day a Golden Goose daily was made (never two days running; 0 = never)
+Config.Data.Defaults.GooseDay = 0
 
 function Config.DayIndex(unixTime)
 	return math.floor((unixTime + Config.Daily.TimezoneOffset) / 86400)
@@ -3932,6 +3983,25 @@ Config.PassBoost = {
 	-- a failed write of the shared list is tried again this many times (each after WriteGap), unless a newer choice
 	-- is queued by then
 	WriteRetries = 3,
+}
+-- 검수 2026-10-10 (A23-113 follow-up): what each pass really does, in plain easy English. Line = the one short line of a Shop
+-- card (<= 38 letters: the card wraps longer ones); Desc = the description of the pass page on create.roblox.com (the user pastes
+-- it with the pass id; <= 300 letters). Prices and the 2x are not changed here: the text only says what the code does, and its
+-- "2x" is Config.PassBoost.Mult (tools/test_pass_text.py keeps the words and the numbers in step). VIP lists the crown, the
+-- chat tag and the Supporters board (they exist); the VIP emote of the A23-75 list is not built, so it is not promised yet.
+-- Look = the looks tab (every sold or attendance look), PrivateServer = the Shop's private server card.
+Config.PassInfo = {
+	NoStats = "No stats are for sale.",
+	XP2 = { Line = "Level up 2x faster",
+		Desc = "Get 2x XP from everything you do, so you level up 2x faster. It only speeds up leveling. No stats are for sale." },
+	Gold2 = { Line = "Earn 2x gold",
+		Desc = "Earn 2x gold from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale." },
+	VIP = { Line = "Crown, chat tag, Supporters board",
+		Desc = "A crown by your name, a VIP tag in chat, and your name on the village Supporters board. No stats are for sale." },
+	Look = { Line = "New colors for halo or horns",
+		Desc = "A new color for your halo or horns. It only changes how you look: the shape still shows your rank. No stats are for sale." },
+	PrivateServer = { Line = "Play with just your friends.",
+		Desc = "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale." },
 }
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
@@ -5742,18 +5812,18 @@ Config.UIArt = {
 		Skill_Mage_Q_Horns = { Id = "rbxassetid://81157543004771", Size = Vector2.new(512, 512) },
 		Skill_Archer_Q_Halo = { Id = "rbxassetid://92206547315755", Size = Vector2.new(512, 512) },
 		Skill_Archer_Q_Horns = { Id = "rbxassetid://103422334299041", Size = Vector2.new(512, 512) },
-		Skill_Warrior_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Warrior_Z_Horns = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Mage_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Mage_Z_Horns = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Archer_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Archer_Z_Horns = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Warrior_X_Halo = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Warrior_X_Horns = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Mage_X_Halo = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Mage_X_Horns = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Archer_X_Halo = { Id = "", Size = Vector2.new(512, 512) },
-		Skill_Archer_X_Horns = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Warrior_Z_Halo = { Id = "rbxassetid://84642189475299", Size = Vector2.new(512, 512) },
+		Skill_Warrior_Z_Horns = { Id = "rbxassetid://96701336601012", Size = Vector2.new(512, 512) },
+		Skill_Mage_Z_Halo = { Id = "rbxassetid://117710924786358", Size = Vector2.new(512, 512) },
+		Skill_Mage_Z_Horns = { Id = "rbxassetid://82944323163651", Size = Vector2.new(512, 512) },
+		Skill_Archer_Z_Halo = { Id = "rbxassetid://116429631383462", Size = Vector2.new(512, 512) },
+		Skill_Archer_Z_Horns = { Id = "rbxassetid://107578440852344", Size = Vector2.new(512, 512) },
+		Skill_Warrior_X_Halo = { Id = "rbxassetid://78225248119957", Size = Vector2.new(512, 512) },
+		Skill_Warrior_X_Horns = { Id = "rbxassetid://100908047802242", Size = Vector2.new(512, 512) },
+		Skill_Mage_X_Halo = { Id = "rbxassetid://75459677268571", Size = Vector2.new(512, 512) },
+		Skill_Mage_X_Horns = { Id = "rbxassetid://88850195258144", Size = Vector2.new(512, 512) },
+		Skill_Archer_X_Halo = { Id = "rbxassetid://87471824044528", Size = Vector2.new(512, 512) },
+		Skill_Archer_X_Horns = { Id = "rbxassetid://115987329631921", Size = Vector2.new(512, 512) },
 		Skill_Tamer_Z = { Id = "rbxassetid://74796187578422", Size = Vector2.new(512, 512) },
 		Skill_Tamer_X = { Id = "rbxassetid://81030071007443", Size = Vector2.new(512, 512) },
 		Skill_Blacksmith_X = { Id = "rbxassetid://74870682122468", Size = Vector2.new(512, 512) },
@@ -6980,6 +7050,10 @@ Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }
 -- A23-113 #5: every PvP KO -> the custom event PvPResult (value = the winner's faction size-scale multiplier, 1.0-1.6; fields =
 -- winner faction, loser faction, "<winner level band>><loser level band>"), at most one per killer per this many seconds
 Config.Analytics.PvPResultGap = 1
+-- A23-113 (검수 2026-10-10): how many times the same player is KO'd by other players in one KST day (to see Lv15-20 sprouts hit again
+-- and again in the Goblin Woods on the 10/17 test): the custom event PvPKOedDay is logged when that day's count reaches a step
+-- (value = the count; fields = the victim's level band and zone). The count is saved with the account (data.Telemetry.PvPKO).
+Config.Analytics.PvPKOedDay = { Event = "PvPKOedDay", Steps = { 1, 3, 5, 10, 20 } }
 -- c->s "ClientMetric"(id, arg?): what only the client sees. The rule for the one argument: "None" (no argument),
 -- "Count" (a whole number 1..50), "Source" (one of InviteSources), "Pass" (a Config.GamePasses / Config.Looks id or
 -- "Look"), or a list of the allowed strings. Anything else is ignored.

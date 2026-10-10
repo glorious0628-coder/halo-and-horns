@@ -1,0 +1,165 @@
+{
+  "status": "passed",
+  "checks": 43,
+  "failedChecks": [],
+  "mutations": {
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
+    "results": [
+      {
+        "mutation": "2x XP says 3x",
+        "applied": true,
+        "caught": true,
+        "expect": "2x XP",
+        "failures": [
+          "CHECK_FAIL 2x XP: the text names XP, leveling and the multiplier (Config.PassBoost.Mult) :: Get 3x XP from everything you do, so you level up 3x faster. It only speeds up leveling. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "2x XP card line says 3x",
+        "applied": true,
+        "caught": true,
+        "expect": "2x XP",
+        "failures": [
+          "CHECK_FAIL 2x XP: the text names XP, leveling and the multiplier (Config.PassBoost.Mult) :: Get 2x XP from everything you do, so you level up 2x faster. It only speeds up leveling. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "2x XP talks about gold",
+        "applied": true,
+        "caught": true,
+        "expect": "2x XP does not talk about gold",
+        "failures": [
+          "CHECK_FAIL 2x XP does not talk about gold :: Get 2x XP from everything you do, so you level up 2x faster. It speeds up leveling and gold. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "2x Gold promises XP",
+        "applied": true,
+        "caught": true,
+        "expect": "2x Gold does not talk about XP",
+        "failures": [
+          "CHECK_FAIL 2x Gold does not talk about XP or levels :: Earn 2x gold and XP from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "2x Gold forgets the other players",
+        "applied": true,
+        "caught": true,
+        "expect": "gold taken from other players",
+        "failures": [
+          "CHECK_FAIL 2x Gold: gold taken from other players is not doubled (Plunder is not a doubled source) and the text says so :: Earn 2x gold from hunting, quests and rewards. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "2x Gold loses hunting",
+        "applied": true,
+        "caught": true,
+        "expect": "hunting and quests",
+        "failures": [
+          "CHECK_FAIL 2x Gold: hunting and quests are doubled sources and named :: Earn 2x gold from quests and rewards. Gold you take from other players is not doubled. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "plunder gold is doubled",
+        "applied": true,
+        "caught": true,
+        "expect": "gold taken from other players",
+        "failures": [
+          "CHECK_FAIL 2x Gold: gold taken from other players is not doubled (Plunder is not a doubled source) and the text says so :: Earn 2x gold from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "VIP promises an emote",
+        "applied": true,
+        "caught": true,
+        "expect": "no emote is promised",
+        "failures": [
+          "CHECK_FAIL VIP: no emote is promised (it is not built) :: A crown by your name, a VIP tag in chat, an emote, and your name on the village Supporters board. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "VIP loses the Supporters board",
+        "applied": true,
+        "caught": true,
+        "expect": "the crown, the chat tag",
+        "failures": [
+          "CHECK_FAIL VIP: the crown, the chat tag and the Supporters board :: A crown by your name, a VIP tag in chat, and more. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "a look pass promises strength",
+        "applied": true,
+        "caught": true,
+        "expect": "no promise of strength",
+        "failures": [
+          "CHECK_FAIL Look: no promise of strength or winning :: A new color for your halo or horns. It only changes how you look and makes you stronger. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "the private server loses the friends",
+        "applied": true,
+        "caught": true,
+        "expect": "for you and your friends",
+        "failures": [
+          "CHECK_FAIL Private server: for you and your friends :: Your own private server for you. Create it on the game page: open Servers, then Create. No stats are for sale."
+        ]
+      },
+      {
+        "mutation": "the no-stats sentence changes",
+        "applied": true,
+        "caught": true,
+        "expect": "no-stats sentence",
+        "failures": [
+          "CHECK_FAIL 5 kinds and the one no-stats sentence :: Stats are for sale."
+        ]
+      },
+      {
+        "mutation": "a card line over 38 letters",
+        "applied": true,
+        "caught": true,
+        "expect": "a short card line",
+        "failures": [
+          "CHECK_FAIL VIP: a short card line (6-38 letters) :: Crown, VIP chat tag, Supporters board and more"
+        ]
+      },
+      {
+        "mutation": "a fancy dash",
+        "applied": true,
+        "caught": true,
+        "expect": "plain ASCII",
+        "failures": [
+          "CHECK_FAIL Gold2: plain ASCII (no Korean, no fancy dashes) :: Earn 2x gold — now"
+        ]
+      },
+      {
+        "mutation": "2x XP costs 99",
+        "applied": true,
+        "caught": true,
+        "expect": "untouched",
+        "failures": [
+          "CHECK_FAIL prices 199 / 149 / 249 and the 2x are untouched :: table: 0x000002368edee4f0"
+        ]
+      },
+      {
+        "mutation": "the 2x becomes 3x",
+        "applied": true,
+        "caught": true,
+        "expect": "untouched",
+        "failures": [
+          "CHECK_FAIL prices 199 / 149 / 249 and the 2x are untouched :: table: 0x000001b33e9dae90",
+          "CHECK_FAIL 2x XP: the text names XP, leveling and the multiplier (Config.PassBoost.Mult) :: Get 2x XP from everything you do, so you level up 2x faster. It only speeds up leveling. No stats are for sale.",
+          "CHECK_FAIL 2x Gold: gold and the multiplier :: Earn 2x gold from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale."
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "721379ea1735efba4ca4cb326d742fc785816f001a974e58d7c830608a70afce"
+  },
+  "fixtureSHA256": "32aabde81ea131d437e5cfce34d879532bf083adf070a0c981901610bfc8e455",
+  "studioCalls": 0,
+  "contract": "Plain-English pass text offline test (검수 2026-10-10, A23-113 follow-up; 게임성 개발 3), plus mutations.\n\nConfig.PassInfo (the Shop card line and the create.roblox.com page description of 2x XP, 2x Gold, VIP, the looks and the\nprivate server) must say what the code does and move with its numbers: the \"2x\" is Config.PassBoost.Mult, 2x Gold names the\ndoubled sources and says that gold taken from other players is not doubled (Plunder is no doubled source), VIP names only\nwhat exists (crown, chat tag, Supporters board; no emote), nothing promises strength, every text is plain ASCII and ends in\n\"No stats are for sale.\", and the prices (199 / 149 / 249) and the 2x stay as the user set them.\nThe real Config.luau is loaded with engine doubles (tools/fixtures/pass_text_offline.luau, the installed official Luau CLI).",
+  "limitations": "Words only: the Shop card (ShopUI) and the pass page on create.roblox.com read them by hand / by game dev 1."
+}
