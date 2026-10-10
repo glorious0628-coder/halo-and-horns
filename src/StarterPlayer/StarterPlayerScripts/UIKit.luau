@@ -2461,8 +2461,14 @@ function UIKit.BalanceLines(label)
 		probe.Name = "Probe"
 		probe.AutomaticSize = Enum.AutomaticSize.None
 		probe.AnchorPoint = Vector2.zero
-		probe.Position = UDim2.fromOffset(-20000, 0)
+		-- on screen but drawn invisible (an off-screen copy kept stale TextBounds: UiSandbox 10/10 3rd after-shots)
+		probe.Position = UDim2.fromOffset(0, 0)
 		probe.Visible = true
+		probe.TextTransparency = 1
+		probe.TextStrokeTransparency = 1
+		for _, ch in probe:GetChildren() do
+			if ch:IsA("UIStroke") then ch.Transparency = 1 end
+		end
 		probe.TextWrapped = false
 		probe.Size = UDim2.fromOffset(full / s, 4000)
 		probe.Parent = gui
@@ -2490,11 +2496,15 @@ function UIKit.BalanceLines(label)
 			pad.Name = "LineBalance"
 			pad.Parent = label
 		end
+		-- the label's own height at the full width first: the balance may never add a line to it
+		clear()
+		BAL.Settle(label, nil)
+		local tall = label.TextBounds.Y
 		local du = side / s
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, du), UDim.new(0, du)
-		-- should the label still not fit (its box was sized for its old wrap), back to the full box
-		task.wait(0.05)
-		if token == state.Token and label.Parent and not label.TextFits then
+		BAL.Settle(label, nil)
+		-- a line more than before, or text that no longer fits: back to the full box
+		if token == state.Token and label.Parent and (not label.TextFits or label.TextBounds.Y > tall + 1) then
 			pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 0), UDim.new(0, 0)
 		end
 	end
