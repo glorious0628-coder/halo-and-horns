@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 17,
+  "checks": 22,
   "failedChecks": 0,
-  "namedChecks": 17,
+  "namedChecks": 22,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -108,15 +108,45 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "kaiju HP count",
+      "check": "Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju HP count",
+      "check": "the same player out of town counts again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju HP count",
+      "check": "a Halo player standing in Horns Den does not count either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju HP count",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju HP count",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 2,
   "staticFailures": [],
   "mutations": {
-    "total": 5,
-    "applied": 5,
-    "caught": 5,
+    "total": 8,
+    "applied": 8,
+    "caught": 8,
     "skipped": false,
     "results": [
       {
@@ -153,9 +183,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "kaiju HP count :: Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+          "kaiju HP count :: a Halo player standing in Horns Den does not count either",
+          "kaiju HP count :: the same player out of town counts again",
           "kaiju exception :: Crossroads -> kaiju outside: allowed (the Crossroads fight stays)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "never in a faction town",
@@ -164,11 +197,49 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "kaiju HP count :: Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+          "kaiju HP count :: a Halo player standing in Horns Den does not count either",
           "kaiju exception :: Halo Citadel -> kaiju outside: blocked (SafeZone, #41)",
           "kaiju exception :: Horns Den -> kaiju outside: blocked too (any faction town)",
           "rookies and others :: a rookie Halo in Halo Citadel: blocked"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the kaiju's HP counts Halo players in their town",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju HP count :: Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+          "kaiju HP count :: a Halo player standing in Horns Den does not count either"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "KaijuService ignores the faction-town rule",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju HP count :: Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+          "kaiju HP count :: a Halo player standing in Horns Den does not count either"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvPService.InFactionTown always false",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju HP count :: Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+          "kaiju HP count :: a Halo player standing in Horns Den does not count either"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "the Crossroads gets a faction",
@@ -177,10 +248,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "kaiju HP count :: Halo fighters near the kaiju: the meadow and the Crossroads count, Halo Citadel does not (#41)",
+          "kaiju HP count :: a Halo player standing in Horns Den does not count either",
+          "kaiju HP count :: the same player out of town counts again",
           "kaiju exception :: Crossroads -> kaiju outside: allowed (the Crossroads fight stays)",
           "zones :: the Crossroads: a town without a faction"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       }
     ]
   },
@@ -188,11 +262,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "68342cc70b615239386a54a79bcefd03848574ae0407f38e71ea13a5ad71d41d",
+    "src/ReplicatedStorage/Shared/Config.luau": "0846ca3d06216654d23f43393e4252a0a9d2dc68e020bbc1cdfa81670ee26f2b",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/RankingService.luau": "6f626bec812ec8edec524152ce42d0086b66709e6a5657fee97376ad55f70f6e",
     "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
+    "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
     "src/ServerScriptService/GrudgeService.luau": "b42981e97f8dcc8f4ff263a7bdea0712095cd7b090e8510e9c07be065360e6e3",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
@@ -200,12 +274,12 @@
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
     "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
-    "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
+    "src/ServerScriptService/KaijuService.luau": "4a039abb42334ee0d5bb118ab39b173aa8e43d23cc7f1d8e3a13c5155467c384"
   },
-  "fixtureSHA256": "d202bf3aa1a06b533383469530aabb3c66cc5c95d3007dc4e1162860029e7d44",
+  "fixtureSHA256": "6eb9a203da6a78513a0043b5fae722cb9bcb27e4b0b656a7075c3d1d096197fa",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "#41 (b): PvPService.CanAttack's kaiju exception (a Halo player may hit the Active kaiju in any zone, rookies allowed, protection ignored) does not apply while the attacker stands in a faction town (Config.Zones Town = true with a Faction: Halo Citadel, Horns Den); then the normal rules answer (a town is a safe zone, 'SafeZone'). The Crossroads (a town without a faction) and every zone outside the towns keep the exception; where the kaiju stands does not matter; a queued kaiju and Horns attackers never had the exception.",
+  "contract": "#41 (b): PvPService.CanAttack's kaiju exception (a Halo player may hit the Active kaiju in any zone, rookies allowed, protection ignored) does not apply while the attacker stands in a faction town (Config.Zones Town = true with a Faction: Halo Citadel, Horns Den); then the normal rules answer (a town is a safe zone, 'SafeZone'). The Crossroads (a town without a faction) and every zone outside the towns keep the exception; where the kaiju stands does not matter; a queued kaiju and Horns attackers never had the exception. KaijuService's HP count (countNearbyHalo, HPPerNearbyHalo) skips Halo players standing in a faction town (PvPService.InFactionTown): they cannot fight it; the Crossroads still counts.",
   "limitations": "The zone comes from a ZoneService double (Config.Zones by id); the real ZoneService samples positions once a second. Client feedback for a blocked hit is unchanged (the same as any safe-zone hit)."
 }

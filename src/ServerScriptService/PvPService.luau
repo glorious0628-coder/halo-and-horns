@@ -495,6 +495,12 @@ function PvPService.IsShielded(p)
 	return PvPService.IsRookie(p) or PvPService.InGrace(p)
 end
 
+-- 빛 마을 점검 #41 / A23-103: true while p stands in a faction town (the kaiju exception skips them; KaijuService does
+-- not count them as kaiju fighters either)
+function PvPService.InFactionTown(p)
+	return inFactionTown(p)
+end
+
 function PvPService.HasRevenge(attacker, victim)
 	local r = attacker and revenge[attacker]
 	return r ~= nil and victim ~= nil and r.Target == victim and os.clock() < r.Until

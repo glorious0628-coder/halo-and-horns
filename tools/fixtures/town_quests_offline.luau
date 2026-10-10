@@ -1330,8 +1330,8 @@ runGroup("subs18-data", function()
 				show(pick and pick.Type))
 			local town = TOWN_TYPE[id]
 			check(sameReward(pick.Good.Reward, { Item = "Enh70", N = 1 })
-				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = town and 220 or 192 }),
-				id .. ": A = one 70% scroll, B = 3 HP potions + " .. (town and "220" or "192") .. " gold", show({ pick.Good.Reward, pick.Evil.Reward }))
+				and sameReward(pick.Evil.Reward, { Potion = "HP", N = 3, Gold = 220 }),
+				id .. ": A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)", show({ pick.Good.Reward, pick.Evil.Reward }))
 			check(town and sameReward(def.Reward, { GoldN = 120, XPBar = 0.5 }) or (not town and sameReward(def.Reward, { Gold = 2, XP = 2 })),
 				id .. ": " .. (town and "town-type 120 gold + half a bar" or "woods-type 2 minutes of gold + XP"), show(def.Reward))
 			check(type(def.Finish) == "string" and string.find(def.Finish, "?", 1, true) ~= nil, id .. ": ends with a question", def.Finish)
@@ -1546,7 +1546,14 @@ runGroup("halo-check-h3", function()
 		show({ tr.St, storyPanels(panels, "H3") - before }))
 	w.ZoneOf[p] = "HaloTown"
 	w:Tick(p, 1)
-	check(tr.St == 4 and storyPanels(panels, "H3") == before + 1, "in Halo Citadel: Sir Gleam's card", show({ tr.St, storyPanels(panels, "H3") }))
+	-- 검수 10/10: the card is talked through Sir Gleam (Npc "Gleam", the TownNpcs body): it never pops by itself
+	check(tr.St == 4 and storyPanels(panels, "H3") == before, "in Halo Citadel: Sir Gleam's card waits for the talk",
+		show({ tr.St, storyPanels(panels, "H3") - before }))
+	check(SQ0.Defs.H3.Steps[1].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Npc == "Gleam", "H3's talks are at Sir Gleam",
+		show({ SQ0.Defs.H3.Steps[1].Npc, SQ0.Defs.H3.Steps[4].Npc }))
+	w:Act(p, "H3", "Open")
+	check(storyPanels(panels, "H3") == before + 1, "talking to him opens the card (no Gleam body here: anywhere)",
+		storyPanels(panels, "H3") - before)
 end)
 
 runGroup("halo-check-h6", function()
@@ -1978,14 +1985,16 @@ runGroup("npc-talk", function()
 	local g, gd = joinAfterM23(w, 985, "Halo", { Pos = vec(-8, 0, -370) })
 	gd.Story.Subs.H3 = { St = 1, P = 0, T = {}, Claim = false }
 	local b5 = #panels
-	check(SQ0.Defs.H3.Steps[1].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Npc == nil and SQ0.Defs.H3.Steps[4].Obj.Type == "Choice",
-		"H3: the first card names Sir Gleam, the choice card names nobody", show(SQ0.Defs.H3.Steps[1].Npc))
+	check(SQ0.Defs.H3.Steps[1].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Obj.Type == "Choice",
+		"H3: both cards (the talk and the choice) are Sir Gleam's", show({ SQ0.Defs.H3.Steps[1].Npc, SQ0.Defs.H3.Steps[4].Npc }))
 	check(w.Story.TalkToNpc(g, "Gleam") == "H3" and #panels == b5 + 1 and panels[#panels].Arg.Id == "H3" and panels[#panels].Arg.St == 1,
 		"talking to Sir Gleam opens H3's first card", show(panels[#panels] and panels[#panels].Arg))
 	check(w.Story.TalkToNpc(g, "Bright") ~= "H3", "... not by talking to Bright", "")
 	gd.Story.Subs.H3.St = 4
 	local b6 = #panels
-	check(w.Story.TalkToNpc(g, "Gleam") == nil and #panels == b6, "H3's choice card has no NPC: nothing to say to Sir Gleam", "")
+	check(w.Story.TalkToNpc(g, "Gleam") == "H3" and #panels == b6 + 1 and panels[#panels].Arg.Id == "H3" and panels[#panels].Arg.St == 4,
+		"H3's choice card (step 4) opens at Sir Gleam too", show(panels[#panels] and panels[#panels].Arg))
+	check(w.Story.TalkToNpc(g, "Bright") ~= "H3", "... and never at Bright", "")
 	-- no talker present in the world at all: the old fallback (anywhere) is kept for NPC ids that have no body
 	w:Npc("Tiny", vec(0, 0, 0))
 	check(w.Story.TalkToNpc(c, "Smokey") == nil, "an NPC id nobody waits at: nothing", "")
@@ -2120,7 +2129,7 @@ runGroup("a23-64 town pick", function()
 	end
 	local base = { M1_1 = true, M1_2 = true, M1_3 = true, M1_4 = true, Lunch1 = true }
 	-- a Halo player at H2's card (the lantern is back): the pick sets TownPick and the save
-	local p, d = joinAt(6411, "Halo", 9, { H2 = { St = 4, P = 0, T = {}, Claim = false } }, table.clone(base))
+	local p, d = joinAt(6411, "Halo", 9, { H2 = { St = 4, P = 0, T = {}, Claim = false } }, table.clone(base)) -- step 4: the pick (#36 way home is 3)
 	check(p:GetAttribute("TownPick") == "", "no town pick yet: TownPick = ''", tostring(p:GetAttribute("TownPick")))
 	w:Act(p, "H2", "Choose", "Good")
 	check(d.Story.Pick.H2 == "Good" and d.Story.TownLast == "H2" and p:GetAttribute("TownPick") == "H2:Good",
