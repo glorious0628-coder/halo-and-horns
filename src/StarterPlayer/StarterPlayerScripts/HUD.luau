@@ -943,6 +943,61 @@ local function buildStats(root)
 			if L.Rects and L.Rects.tiles then L.LayoutTiles(L.Rects.tiles) end
 		end)
 	end
+	if not IS_TOUCH then L.BuildQuick(root) end
+end
+
+-- A23-109 (user 10/10 "1·2·3은 가로로"): PC quick slots 1 · 2 · 3 right of the icon tiles (HudLayout quick row). Slots 1
+-- and 2 are VitalsUI's square potion slots (HP, MP) until 개발 1's quick slots take items; slot 3 starts empty. Every
+-- slot: Icon, Count, Key ('1' / '2' / '3' top-left), Cooldown (fills up from the bottom), Status, the slot number as
+-- attribute QuickSlot. HUD.QuickSlots() lists them; after HUD.OnQuickSlot(fn) every slot's click calls only fn(i) and
+-- VitalsUI stops filling slots 1 / 2 (개발 1's QuickSlots.luau fills icons, counts, keys and cooldowns)
+function L.BuildQuick(root)
+	local btn = UIKit.ArtButton("MenuTile", {
+		Name = "QuickSlot3",
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Size = UDim2.fromOffset(52, 52),
+		ImageTransparency = L.TileTint,
+		Parent = root,
+	}, function()
+		if L.QuickHandler then task.spawn(L.QuickHandler, 3) end
+	end, { CornerRadius = UDim.new(0, 8), BackgroundTransparency = 0.25 })
+	btn:SetAttribute("QuickSlot", 3)
+	UIKit.Create("ImageLabel", { Name = "Icon", BackgroundTransparency = 1, Image = "", AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.66, 0.66), ZIndex = 3, Parent = btn })
+	local count = UIKit.LightText({ Name = "Count", Parent = btn, Text = "", AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromScale(0.5, 0.38), TextScaled = true, Number = true,
+		MaxTextSize = 16, ZIndex = 5 })
+	L.FitText(count, 14, true, 11, true)
+	local key = UIKit.LightText({ Name = "Key", Parent = btn, Text = "3", TextSize = 11, ZIndex = 6,
+		AnchorPoint = Vector2.new(0, 0), Position = UDim2.fromScale(0.06, 0.04), Size = UDim2.fromOffset(15, 15),
+		AutomaticSize = Enum.AutomaticSize.X })
+	L.FitText(key, L.QuickKeyPx + 1, true, L.QuickKeyPx, true)
+	C.VitalsUI.QuickCooldown(btn)
+	UIKit.LightText({ Name = "Status", Parent = btn, Text = "", AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.86, 0.3), TextScaled = true, Title = true,
+		MaxTextSize = 14, ZIndex = 6, Visible = false })
+	ui.quick3 = btn
+end
+
+function HUD.QuickSlots()
+	local out = {}
+	for i, b in { ui.potions and ui.potions:FindFirstChild("HPPotion"), ui.potions and ui.potions:FindFirstChild("MPPotion"),
+		ui.quick3 } do
+		if b then
+			out[i] = { Button = b, Icon = b:FindFirstChild("Icon"), Count = b:FindFirstChild("Count"), Key = b:FindFirstChild("Key"),
+				Status = b:FindFirstChild("Status"), Cooldown = b:FindFirstChild("Cooldown") }
+		end
+	end
+	return out
+end
+
+-- once fn is set every slot (1 and 2 too, VitalsUI) calls only fn(i); VitalsUI stops filling slots 1 / 2
+function HUD.OnQuickSlot(fn)
+	L.QuickHandler = type(fn) == "function" and fn or nil
+end
+
+function HUD.QuickHandler()
+	return L.QuickHandler
 end
 
 -- faction-shaped level badge (bundle 6): Halo ivory centre with a dark number, Horns / Artisan / none navy with light
@@ -2660,7 +2715,8 @@ local function tileButton(def, onClick)
 		Parent = btn,
 	})
 	label:SetAttribute("StyleMinPx", L.TileNamePx)
-	L.FitText(label, 12, true, L.TileNamePx)
+	-- A23-109: PC names keep >= L.TileNamePxPC real px on small windows too (991x451 showed 7 px names)
+	if IS_TOUCH then L.FitText(label, 12, true, L.TileNamePx) else L.FitText(label, 13, true, L.TileNamePxPC, true) end
 	if type(UIKit.StyleText) == "function" then UIKit.StyleText(label, "NameTag") end -- A23-38: white name, navy rim
 	if def.Key then keyHint(btn, def.Key, UDim2.new(1, -2, 0, 2), Vector2.new(1, 0)) end
 	return btn, label, img
@@ -5674,16 +5730,13 @@ function L.LayoutTiles(tr)
 	if n == 0 then return end
 	local size, gap = tr.Size or tr.H, tr.Gap or 4
 	local total = n * size + (n - 1) * gap
-	local x0 = IS_TOUCH and (tr.X + tr.W - total) or (tr.X + (tr.W - total) / 2)
-	-- 검수 10/09 (user: the row ended short under the wide bars): on PC with the potions still hidden (Config.HudReveal)
-	-- the row centres under the bars' full width instead of its own box left of the potions
-	local xp = L.Rects and L.Rects.xp_bar
-	if not IS_TOUCH and xp and not (ui.potions and ui.potions.Visible) then
-		x0 = xp.X + (xp.W - total) / 2
-	end
-	-- small PC windows (main Studio 2026-10-08: 991x451 -> UIScale 0.5, 33 px tiles): a name no longer fits under its icon
-	-- and ran under the next tile ("Map?ankin("); below L.TileLabelMinPx real px the tiles show their icons only
-	local named = size * currentScale() >= L.TileLabelMinPx
+	-- A23-109 (PC): HudLayout centres tiles + quick slots as one row under the bars, so the tiles fill their own box
+	-- from its left end (were centred under the bars while the potions were hidden, 검수 10/09)
+	local x0 = IS_TOUCH and (tr.X + tr.W - total) or tr.X
+	-- small windows (main Studio 2026-10-08: 991x451 -> UIScale 0.5, 33 px tiles): a name no longer fits under its icon
+	-- and ran under the next tile ("Map?ankin("); below L.TileLabelMinPx real px the tiles show their icons only. PCs:
+	-- A23-109 (user 10/10 "왜 네모 안에 글씨 사라졌냐") - HudLayout keeps PC tiles >= 40-46 real px, so names show
+	local named = size * currentScale() >= (IS_TOUCH and L.TileLabelMinPx or L.TileLabelMinPxPC)
 	for i, t in shown do
 		t.Button.Size = UDim2.fromOffset(size, size)
 		t.Button.Position = UDim2.fromOffset(x0 + (i - 1) * (size + gap) + size / 2, tr.Y + size / 2)
@@ -5691,6 +5744,7 @@ function L.LayoutTiles(tr)
 	end
 end
 L.TileLabelMinPx = 40
+L.TileLabelMinPxPC = 34 -- A23-109: PC tiles are >= 40 px (HudLayout floors); a tiny window may still go under
 -- the quest lines' plates (검수 2026-10-08): du of plate left / right of a line's content, the gap between two lines
 L.QuestPlate = { On = false, PadL = 6, PadR = 10, Gap = 4 }
 -- A23-94 quest tracker (L.BuildTracker): On = the big left-middle 'now do' quest instead of the lines; du gap between its
@@ -5714,6 +5768,8 @@ L.GuideHide = 15
 -- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
 -- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
 L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
+L.TileNamePxPC = 10 -- A23-109: PC tile names in real px (tiles >= 40-46 px fit 'Ranking' at 10 px)
+L.QuickKeyPx = 12 -- A23-109: the quick slot numbers 1 · 2 · 3 in real px
 -- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
 -- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
 -- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
@@ -5800,6 +5856,16 @@ applyLayout = function()
 	L.Place(ui.auto, R.auto)
 	for _, hint in L.Hints do L.PlaceHint(hint) end
 	C.VitalsUI.PlacePotions(R.potions)
+	if ui.quick3 and R.quick and R.quick.Cells then
+		local c = R.quick.Cells[3]
+		ui.quick3.Position = UDim2.fromOffset(c.X + c.W / 2, c.Y + c.H / 2)
+		ui.quick3.Size = UDim2.fromOffset(c.W, c.H)
+		local key = ui.quick3:FindFirstChild("Key")
+		if key then
+			local keyH = math.max(15, math.ceil((L.QuickKeyPx + 3) / math.max(0.1, currentScale())))
+			key.Size = UDim2.fromOffset(keyH, keyH)
+		end
+	end
 	-- combo line + milestone (Fx builds them in MainGui; it never moves them after build)
 	local combo = gui:FindFirstChild("FxCombo")
 	if combo and combo:IsA("GuiObject") then

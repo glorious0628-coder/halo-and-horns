@@ -129,7 +129,7 @@ function VitalsUI.LayoutPotions()
 			math.max(d * 0.38, math.ceil(COUNT_PX.H / s)))
 		potion.Status.Size = UDim2.fromOffset(d * 0.86, math.max(d * 0.26, math.ceil(12 / s)))
 		if potion.Key then
-			local keyH = math.max(15, math.ceil(12 / s))
+			local keyH = math.max(15, math.ceil((potion.Slot and 15 or 12) / s))
 			potion.Key.Size = UDim2.fromOffset(keyH, keyH)
 		end
 	end
@@ -141,13 +141,26 @@ end
 function VitalsUI.BuildPotions(parent, touch)
 	local row = UIKit.Create("Frame", { Name = "Potions", BackgroundTransparency = 1,
 		Size = UDim2.fromOffset(152, 72), Parent = parent })
-	for _, kind in { "HP", "MP" } do
-		local button = UIKit.ArtButton("BtnPotion", { Name = kind .. "Potion", Parent = row,
-			AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(72, 72) }, function() requestPotion(kind) end,
-			{ CornerRadius = UDim.new(0.5, 0) })
+	-- A23-109 (user 10/10 "물약은 빼야겠어 … 1·2·3은 가로로"): on PCs the pair are quick slots 1 and 2 - square slots
+	-- (the MenuTile square, a little smaller than the menu tiles) in HudLayout's quick row, the slot number top-left;
+	-- slot 3 is HUD's (QuickSlot3). Until 개발 1's quick slots take items, slot 1 = HP potion, slot 2 = MP potion
+	local square = not touch
+	for i, kind in { "HP", "MP" } do
+		local button = UIKit.ArtButton(square and "MenuTile" or "BtnPotion", { Name = kind .. "Potion", Parent = row,
+			AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(72, 72),
+			ImageTransparency = square and 0.15 or nil }, function() -- 0.15 = HUD L.TileTint
+			-- A23-109: once 개발 1's quick slots registered (HUD.OnQuickSlot), slots 1 and 2 belong to them
+			local own = square and VitalsUI.QuickOwner()
+			if own then own(i) else requestPotion(kind) end
+		end,
+			{ CornerRadius = square and UDim.new(0, 8) or UDim.new(0.5, 0), BackgroundTransparency = square and 0.25 or nil })
+		if square then
+			button:SetAttribute("QuickSlot", i)
+			VitalsUI.QuickCooldown(button)
+		end
 		local icon = UIKit.ArtImage("IconPotion" .. kind, { Name = "Icon", Parent = button,
-			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.48, 0.47), Size = UDim2.fromScale(0.56, 0.56),
-			ZIndex = 3 })
+			AnchorPoint = Vector2.new(0.5, 0.5), Position = square and UDim2.fromScale(0.5, 0.5) or UDim2.fromScale(0.48, 0.47),
+			Size = square and UDim2.fromScale(0.66, 0.66) or UDim2.fromScale(0.56, 0.56), ZIndex = 3 })
 		local count = UIKit.LightText({ Name = "Count", Parent = button, Text = "0",
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromOffset(22, 18),
 			TextScaled = true, Number = true, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
@@ -167,21 +180,38 @@ function VitalsUI.BuildPotions(parent, touch)
 		local kbm = C and C.Keybinds
 		local showsKeys = UserInputService.KeyboardEnabled
 		if type(kbm) == "table" and type(kbm.ShowsKeys) == "function" then showsKeys = kbm.ShowsKeys() end
-		if showsKeys then -- review of 27246d1: the same rule as Keybinds / HUD
+		if showsKeys or square then -- review of 27246d1: the same rule as Keybinds / HUD (A23-109: PC slots always numbered)
 			-- BB1: the badge shows the potion's current key (VitalsUI.RefreshKeys) and widens for "Ctrl" / "Num1"
 			key = UIKit.LightText({ Name = "Key", Parent = button, Text = "", TextSize = 11, ZIndex = 6,
-				AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0.04, 1), Size = UDim2.fromOffset(15, 15),
+				AnchorPoint = square and Vector2.new(0, 0) or Vector2.new(0, 1),
+				Position = square and UDim2.fromScale(0.06, 0.04) or UDim2.fromScale(0.04, 1), Size = UDim2.fromOffset(15, 15),
 				AutomaticSize = Enum.AutomaticSize.X })
-			C.HUD.FitText(key, 11)
+			if square then C.HUD.FitText(key, 13, true, 12, true) else C.HUD.FitText(key, 11) end -- A23-109: 12 px numbers
 		end
 		ui.Potions[kind] = { Button = button, Icon = icon, Count = count, Status = status, Key = key,
-			Action = ACTION[kind], Size = 72 }
+			Action = ACTION[kind], Size = 72, Slot = square and i or nil }
 	end
 	ui.Row = row
 	VitalsUI.LayoutPotions()
 	VitalsUI.RefreshKeys()
 	if ui.Refresh then ui.Refresh() end
 	return row
+end
+
+-- A23-109 quick slots: the handler 개발 1 registered with HUD.OnQuickSlot (nil = slots 1 / 2 are still the potions)
+function VitalsUI.QuickOwner()
+	local hud = C and C.HUD
+	local get = type(hud) == "table" and hud.QuickHandler or nil
+	return type(get) == "function" and get() or nil
+end
+
+-- A23-109: the cooldown cover of a quick slot - a dark Frame filling up from the bottom (개발 1 sets Size.Y / Visible)
+function VitalsUI.QuickCooldown(button)
+	local f = UIKit.Create("Frame", { Name = "Cooldown", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1),
+		Size = UDim2.fromScale(1, 0), BackgroundColor3 = Color3.fromRGB(10, 14, 30), BackgroundTransparency = 0.45,
+		BorderSizePixel = 0, Visible = false, ZIndex = 4, Parent = button })
+	UIKit.Create("UICorner", { CornerRadius = UDim.new(0, 8), Parent = f })
+	return f
 end
 
 -- HUD v2: the pair on Rects.potions (logical units). rect.Cells = { HP = rect, MP = rect } (HudLayout 2026-10-07: each
@@ -231,8 +261,14 @@ function VitalsUI.RefreshKeys()
 				label = okL and type(text) == "string" and text or ""
 				bound = okK and type(name) == "string" and name ~= ""
 			end
-			key.Text = label
-			key.Visible = badges and bound and label ~= ""
+			if potion.Slot then
+				-- A23-109 PC quick slot: the slot number always shows (the bound key's name when it is not the number)
+				key.Text = (bound and label ~= "") and label or tostring(potion.Slot)
+				key.Visible = true
+			else
+				key.Text = label
+				key.Visible = badges and bound and label ~= ""
+			end
 		end
 	end
 end
@@ -256,6 +292,7 @@ local function refresh()
 			bar.Text.Text = string.format("%d/%d", math.ceil(values[1]), math.ceil(values[2]))
 		end
 		local potion = ui.Potions[kind]
+		if potion and potion.Slot and VitalsUI.QuickOwner() then potion = nil end -- 개발 1's quick slots fill it
 		if potion then
 			local count, status, available = potionState(kind)
 			potion.Count.Text = tostring(count)
