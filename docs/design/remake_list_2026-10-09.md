@@ -4,6 +4,7 @@ User 2026-10-09: "기존 것 재활용하지 말구 TRIPO 써도 돼! 왜 아끼
 Inventory: 검수 sweep of `src/` + `build/GoodEvil.rbxlx` (saved 10/09 12:56). Line numbers drift; search by name.
 
 Pipeline for every 3D item: Firefly **High** multiview (front + side + back; back has no face) by 이미지 생성 2 (world props: the zone plan says who draws — the Halo and Meadow plans give their 2D to 이미지 생성 2 too, `halo_town_plan_2026-10-09.md`, `meadow_props_list_2026-10-09.md`) → Tripo web 25,000-pt account HD by 이미지 생성 1 → Blender front/back render vs the 2D → WorldKit / CustomModels → main Studio photo PC + phone. Old asset stays until the new one is in the game (screen never blank), then delete the old file + record.
+**Sharpness rule (user 10/10, photo of a blurry gate banner: "이거 다 따로따로 만들어야지"):** one big model = one texture (max 1024) → small details blur. So big buildings are split into 2–4 pieces with their own baked 1024 texture each (gate and cathedral first), and flat decorations (banners, crests, emblems, signs) are separate thin parts with their own High Firefly image (SurfaceGui/Decal front + back), not baked into the mesh. Every new 3D item follows this.
 Credits: no per-batch report to the user; 검수 tells the user only when a balance is down to ~500 (user 10/09).
 
 ## P1 — monsters and bosses (2D: 이미지 생성 2 · 3D: 이미지 생성 1 · code: 개발 2)
