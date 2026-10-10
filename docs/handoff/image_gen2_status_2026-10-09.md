@@ -72,3 +72,9 @@
 - 지붕 다시 7(집 01·05·07·11·12, 꽃집 유리 온실, 주스 줄무늬 지붕): `art/out/s2/halo/roofs/`, 시트 halo_roofs_v2_sheet.jpg.
 - 큐 진행 중: 부품 v2 8개 뒤·좌·우 24장 → 연금술사 v4·왕관 A 앞(와인빛)·뿔 깃대(천 없음)·뿔 문장 천(뿔 한 쌍).
 - 남음: 왕관 A 4면+부품, 반복 소품 13장 깃발 빼기, 집·가게 12+4 뒤·옆(부품 분해 halo_parts_plan), 뿔 성채는 A23-112 대칭 콘셉트 뒤.
+
+## 10/10 밤 추가 7
+- 부품 v2 8개 뒤·좌·우 24장 `art/out/s2/halo/parts/HaloPart_<이름>_{back,left,right}_v2_HQ_src.png`(시트 halo_parts_v2_mv_sheet.jpg). 본관 오른쪽은 첫 판이 앞면처럼 넓게 나와 `HaloPart_CathBody_right_v3_HQ_src.png`(좁은 끝벽)가 최종. 문 오른 탑·작은 탑 뒤는 민벽.
+- 지붕 다시 7: `art/out/s2/halo/roofs/`. 왕관 A 앞(와인빛, 고급) `art/out/s2/redo2/CrownA_front_v2_HQ_src.png`, 뿔 깃대(천 없음)·뿔 한 쌍 문장 천·연금술사 병 하나 v4(`redo2/`).
+- 큐: 왕관 A 3면 + 부품 6(금 반구·와인 반구·가운데 아치·꼭대기 구슬·사파이어·가넷).
+- 남음: 반복 소품 13장 깃발·금돔 빼기, 집·가게 뒤·옆(부품 분해), 뿔 성채는 A23-112 대칭 콘셉트 뒤.
