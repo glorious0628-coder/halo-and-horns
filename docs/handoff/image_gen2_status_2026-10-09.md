@@ -127,3 +127,6 @@
 ## 10/10 밤 추가 18
 - PhotoDisc 고급 완료(검수 A): `art/out/s2/halo/reason_hq/HaloReasonHQ_PhotoDisc.png`(고른 것 = `reason_disc/HaloReasonDisc_A_HQ_1.png`), 시트 `art/review/s2/halo_photodisc_hq.jpg`.
 - 꽃 종류별 화분 5종 중간 후보 10장: `art/out/s2/halo/flowerpots/HaloFlowerPot_<Rose|Tulip|Lavender|Daisy|Sunflower>_{A,B}.png`, 시트 `art/review/s2/halo_flowerpots_candidates.jpg` — 검수 선택 대기 → 고급 → 이미지 생성 3. (분홍 장미=사는 동네, 주황 튤립=상점 거리, 연보라 라벤더=대성당 언덕, 빨강·흰 데이지=꽃 정원, 작은 해바라기=기사 훈련장)
+
+## 10/10 밤 추가 19
+- 꽃 화분 5종 고급 완료(검수: Rose B, Tulip A, Lavender B, Daisy B, Sunflower A를 참조로 그대로 다시 그림): `art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_*.png`, 시트 `art/review/s2/halo_flowerpots_hq_check.jpg`, 인수인계 표에 줄 추가 → 이미지 생성 3 전달.

@@ -21,3 +21,14 @@
 
 - 3D 때 주의: 안내판·간판은 **빈 판** 그대로(글자 넣지 않음). 허수아비는 얼굴 없는 자루 머리 그대로.
 - **PhotoDisc 포토존 바닥 금 메달리온**(검수 승인 A, 고급): `HaloReasonHQ_PhotoDisc.png` — 정사각 대리석 바닥 판에 금 메달리온이 상감(땅과 같은 높이) + 모서리 작은 금 말뚝 4 + 하늘색 타일 4. 구획/Why: 분수 광장·전망대 곁 포토존(사진 찍는 자리). 글씨·빛살 없음.
+
+## 꽃 종류별 화분 5종 (A23-117 + 모동숲 규칙 9: 구획마다 다른 꽃 모델, 색 바꾼 복사 아님) — 검수 승인(10/10), 고급
+그림: `art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_<이름>.png` (1024², 앞면), 시트 `art/review/s2/halo_flowerpots_hq_check.jpg`. 화분 모양도 다 다름. 글씨·얼굴 없음.
+
+| 이름 | 파일 | 구획 / Why |
+|---|---|---|
+| Rose 분홍 장미(발 달린 그릇) | HaloFlowerPotHQ_Rose.png | 사는 동네 — 집 앞 길가 화분 |
+| Tulip 주황 튤립(사각 화분) | HaloFlowerPotHQ_Tulip.png | 상점 거리 — 가게 앞 화분 줄 |
+| Lavender 연보라 라벤더(배불뚝이 항아리) | HaloFlowerPotHQ_Lavender.png | 대성당 언덕 — 계단·성당 앞 |
+| Daisy 빨강·흰 데이지(육각 화분) | HaloFlowerPotHQ_Daisy.png | 꽃 정원 — 정원 길 가장자리 |
+| Sunflower 작은 해바라기(둥근 통+금 띠) | HaloFlowerPotHQ_Sunflower.png | 기사 훈련장 — 훈련장 가장자리 |
