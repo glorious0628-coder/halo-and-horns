@@ -48,7 +48,7 @@ def soft(mask, r=1.5):
 
 
 gold = soft((h >= a.gold_hue_min) & (h <= 58) & (s >= 0.4) & (v >= 0.72))  # 10/10 measured: the gate gold sits at hue 25-46, value 0.7-1.0
-wood = soft((h >= 12) & (h < 38) & (s >= 0.3) & ((v < 0.72) | (h < a.gold_hue_min))) * (1 - gold)  # the shop doors: hue 25-34, value 0.5-0.7
+wood = soft((h >= 12) & (h < 38) & (s >= 0.3) & ((v < 0.72) | ((h >= 20) & (h < a.gold_hue_min)))) * (1 - gold)  # the shop doors: hue 25-34, value 0.5-0.7
 leaf = soft((h >= 70) & (h <= 160) & (s >= 0.25)) * (1 - gold)
 glass = soft((h >= 185) & (h <= 215) & (s >= 0.18) & (s < 0.45) & (v >= 0.85)) * (1 - gold)
 cloth = soft((s >= 0.3) & ~((h >= 28) & (h <= 58))) * (1 - gold - wood - leaf - glass).clip(0, 1)
