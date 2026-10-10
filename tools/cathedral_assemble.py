@@ -19,7 +19,7 @@ from mathutils import Matrix, Vector
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 OUT, RDIR = os.path.abspath(argv[0]), os.path.abspath(argv[1])
-opt = {"res": 700.0}
+opt = {"res": 700.0, "body-depth": 34.0}
 i = 2
 while i < len(argv):
     opt[argv[i][2:]] = float(argv[i + 1])
@@ -83,11 +83,56 @@ base = part("CathStairs", (66, 66, 10), "x")  # the oval platform + front stairs
 lo_b, hi_b = bbox(base)
 top = hi_b.z
 body = part("CathBody", (56, 50, 26), "x")
+REAL_BODY = not body.name.endswith("PLACEHOLDER")
+if REAL_BODY:  # the Tripo body is a deep facade (about 13 deep): stretch it front-to-back into a real hall (like the gate arch)
+    lo_, hi_ = bbox(body)
+    body.data.transform(Matrix.Diagonal((1.0, opt["body-depth"] / (hi_.y - lo_.y), 1.0, 1.0)))
+    body.data.update()
+    bpy.context.view_layer.update()
 body.location = (0, 0, top)
 P += [base, body]
 bpy.context.view_layer.update()
 lo, hi = bbox(body)
 dome = part("CathDome", (30, 30, 22), "x")
+
+
+def metal_from_color(ob):
+    """이미지 생성 3: the Tripo dome's metallic map came out rainbow -> metal / roughness from the colour (gold = metal 0.9 rough 0.28,
+    the rest 0 / 0.62; the pbr_from_color.py gold mask), fed to the Principled inputs so the glTF export packs them"""
+    import numpy as np
+    for slot in ob.material_slots:
+        m = slot.material
+        if not m or not m.use_nodes:
+            continue
+        nt = m.node_tree
+        bsdf = next((n for n in nt.nodes if n.type == "BSDF_PRINCIPLED"), None)
+        col = next((l.from_node for l in bsdf.inputs["Base Color"].links), None) if bsdf else None
+        if not col or col.type != "TEX_IMAGE":
+            continue
+        img = col.image
+        w, h = img.size
+        px = np.empty(w * h * 4, dtype=np.float32)
+        img.pixels.foreach_get(px)
+        rgb = px.reshape(-1, 4)[:, :3]
+        mx, mn = rgb.max(1), rgb.min(1)
+        sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0)
+        r, g, b = rgb[:, 0], rgb[:, 1], rgb[:, 2]
+        hue = np.degrees(np.arctan2(np.sqrt(3) * (g - b), 2 * r - g - b)) % 360
+        gold = ((hue >= 20) & (hue <= 58) & (sat >= 0.4) & (mx >= 0.5)).astype(np.float32)  # linear values: 0.5 ~ sRGB 0.73
+        for nm, val in (("metal", gold * 0.9), ("rough", gold * 0.28 + (1 - gold) * 0.62)):
+            out = bpy.data.images.new(ob.name + "_" + nm, w, h, alpha=False, is_data=True)
+            out.pixels.foreach_set(np.repeat(val[:, None], 4, axis=1).ravel())
+            t = nt.nodes.new("ShaderNodeTexImage")
+            t.image = out
+            t.image.colorspace_settings.name = "Non-Color"
+            for l in list(bsdf.inputs["Metallic" if nm == "metal" else "Roughness"].links):
+                nt.links.remove(l)
+            nt.links.new(t.outputs["Color"], bsdf.inputs["Metallic" if nm == "metal" else "Roughness"])
+        print("[cath] %s: metal / roughness rebuilt from the colour (gold %.0f %%)" % (ob.name, 100 * gold.mean()), flush=True)
+
+
+if not dome.name.endswith("PLACEHOLDER"):
+    metal_from_color(dome)
 dome.location = (0, (lo.y + hi.y) / 2, hi.z - 0.3)
 P.append(dome)
 # corner towers, A and B crossed so left and right differ
@@ -107,12 +152,90 @@ for side in (-1, 1):
     leaf.location = (side * lw / 2, lo.y + 0.2, top + 0.2)
     leaf.name = "Cath_DoorLeaf" + ("L" if side < 0 else "R")
     P.append(leaf)
-# arched windows on the front, two each side of the door, at different heights (no strict row)
-for k, (wx, wz) in enumerate(((-18, 8.5), (-11, 9.5), (11, 9.0), (18, 8.0))):
+# arched windows on the front (only on the placeholder body: the real body has its own windows and rose window)
+for k, (wx, wz) in enumerate((() if REAL_BODY else ((-18, 8.5), (-11, 9.5), (11, 9.0), (18, 8.0)))):
     w = part("CathWindow", (4, 1, 8), "z")
     w.location = (wx, lo.y - 0.1, top + wz)
     w.name = "Cath_Window%d" % (k + 1)
     P.append(w)
+bpy.context.view_layer.update()
+lo, hi = bbox(body)
+
+
+def flat_mat(name, rgba, emit=0.0):
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = rgba
+    b.inputs["Alpha"].default_value = rgba[3]
+    if emit:
+        b.inputs["Emission Color"].default_value = rgba
+        b.inputs["Emission Strength"].default_value = emit
+    return m
+
+
+if REAL_BODY:
+    # ① stained glass (검수 v1: the windows read white / see-through): a light-blue glass core just inside the walls, so every
+    # window opening shows blue glass behind its gold frame (Studio: Material Glass, Transparency 0.3)
+    bpy.ops.mesh.primitive_cube_add(size=1.0)
+    core = bpy.context.active_object
+    core.name = "Cath_GlassCore"
+    core.scale = ((hi.x - lo.x) * 0.72, (hi.y - lo.y) * 0.55, (hi.z - lo.z) * 0.8)  # deep inside: the walls sit well behind the columns
+    core.location = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z + (hi.z - lo.z) * 0.42)
+    core.data.materials.append(flat_mat("Cath_StainedGlass", (0.55, 0.75, 0.95, 0.7)))
+    P.append(core)
+    # ② the side walls went plain when the body was stretched: arched windows along both sides, uneven spacing
+    for sx in (-1, 1):
+        for k, (fy, wz) in enumerate(((0.28, 9.0), (0.52, 10.0), (0.76, 8.5))):
+            w = part("CathWindow", (4, 1, 9), "z")
+            w.rotation_euler = (0, 0, math.radians(-90 * sx))
+            w.location = (sx * (hi.x + 0.15), lo.y + (hi.y - lo.y) * fy, top + wz)
+            w.name = "Cath_SideWindow%s%d" % ("L" if sx < 0 else "R", k + 1)
+            P.append(w)
+    # ③ the platform has stairs at the back too: a garden door at the back of the hall gives them a reason (A23-117)
+    bf = part("CathDoorFrame", (10, 2, 14), "z")
+    bf.rotation_euler = (0, 0, math.pi)
+    bf.location = (0, hi.y + 0.2, top)
+    bf.name = "Cath_BackDoorFrame"
+    P.append(bf)
+    for side in (-1, 1):
+        lf = part("CathDoorLeaf", (3.6, 0.6, 12), "x")
+        lf.rotation_euler = (0, 0, math.pi)
+        lf.location = (side * 1.8, hi.y - 0.2, top + 0.2)
+        lf.name = "Cath_BackDoorLeaf" + ("L" if side < 0 else "R")
+        P.append(lf)
+# ④ halo rings over the four small towers (2D) and the door-halo plate over the front door
+for o in [o for o in P if o.name.startswith("Cath_CathTower")]:
+    l_, h_ = bbox(o)
+    rr = max(1.6, (h_.x - l_.x) * 0.32)
+    bpy.ops.mesh.primitive_torus_add(major_radius=rr, minor_radius=0.22, major_segments=48, minor_segments=10,
+                                     location=((l_.x + h_.x) / 2, (l_.y + h_.y) / 2, h_.z + 1.6), rotation=(math.radians(12), 0, 0))
+    ring = bpy.context.active_object
+    ring.name = o.name.replace("Cath_", "Cath_HaloRing_")
+    ring.data.materials.append(flat_mat("Cath_HaloRingGold", (1.0, 0.86, 0.45, 1.0), 3.0))
+    P.append(ring)
+img_p = os.path.join(ROOT, "art/out/s2/halo/deco/HaloDecoHQ_DoorHalo_cut.png")
+lo_f, hi_f = bbox(frame)
+me = bpy.data.meshes.new("Cath_Deco_DoorHalo")
+pw = 9.0
+ph = pw * 428 / 894
+me.from_pydata([(-pw / 2, 0, 0), (pw / 2, 0, 0), (pw / 2, 0, ph), (-pw / 2, 0, ph)], [], [(0, 1, 2, 3)])
+uv = me.uv_layers.new(name="UVMap")
+for li, (u, v) in zip(range(4), ((0, 0), (1, 0), (1, 1), (0, 1))):
+    uv.data[li].uv = (u, v)
+plate = bpy.data.objects.new("Cath_Deco_DoorHalo", me)
+bpy.context.scene.collection.objects.link(plate)
+plate.location = (0, lo_f.y - 0.15, hi_f.z + 0.3)
+if os.path.exists(img_p):
+    m = bpy.data.materials.new("Cath_Deco_DoorHalo")
+    m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]
+    t = m.node_tree.nodes.new("ShaderNodeTexImage")
+    t.image = bpy.data.images.load(img_p)
+    m.node_tree.links.new(t.outputs["Color"], b.inputs["Base Color"])
+    m.node_tree.links.new(t.outputs["Alpha"], b.inputs["Alpha"])
+    me.materials.append(m)
+P.append(plate)
 bpy.context.view_layer.update()
 LO = Vector([min(bbox(o)[0][k] for o in P) for k in range(3)])
 HI = Vector([max(bbox(o)[1][k] for o in P) for k in range(3)])

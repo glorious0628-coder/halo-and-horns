@@ -2,7 +2,7 @@
 practice Studio's MCP upload_image; ids -> art/ui/asset_ids.json as SA_<name>_<T>. 이미지 개발 2026-10-10 (the
 crossroads run, made general for 이미지 생성 3's Halo town bundles).
 
-  py tools/upload_sa_maps.py <folder> [--names A,B] [--tags NMR] [--port 8766] [--pause 20] [--dry]
+  py tools/upload_sa_maps.py <folder> [--names A,B] [--tags NMR] [--port 8766] [--pause 20] [--dry] [--replace]
 --tags: which maps (default NMR: the colour stays the game's own, decision (a) - a new colour map greys the whole SA
 while it waits for moderation; pass CNMR for models that are not in the game yet). Already recorded keys are skipped.
 STUDIO_NAME must name a practice Studio (default UiSandbox). Never uploads from art/out/v1 (Hard rule 1).
@@ -27,6 +27,8 @@ def main():
     ap.add_argument("--port", type=int, default=8766)
     ap.add_argument("--pause", type=float, default=20.0, help="seconds between batches")
     ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--replace", action="store_true", help="upload again even when SA_<name>_<T> is recorded (rebaked maps; "
+                    "the old id is overwritten in asset_ids, the old one is printed)")
     a = ap.parse_args()
     folder = os.path.abspath(a.folder)
     if "art" + os.sep + "out" + os.sep + "v1" in folder:
@@ -38,21 +40,38 @@ def main():
     files = [f"{n}_{t}.png" for n in names for t in a.tags if os.path.isfile(os.path.join(folder, f"{n}_{t}.png"))]
     with open(IDS, encoding="utf-8") as f:
         ids = json.load(f)
-    todo = [f for f in files if "SA_" + f[:-4] not in ids]
+    todo = [f for f in files if a.replace or "SA_" + f[:-4] not in ids]
+    if a.replace:
+        for f in todo:
+            if "SA_" + f[:-4] in ids:
+                print("  replaces", "SA_" + f[:-4], ids["SA_" + f[:-4]])
     print(len(names), "models,", len(files), "files,", len(todo), "to upload")
     if a.dry or not todo:
         return
-    srv = subprocess.Popen([sys.executable, "-m", "http.server", str(a.port), "--bind", "127.0.0.1"], cwd=folder,
+    import socket
+    import urllib.request
+    port = a.port
+    with socket.socket() as sk:  # a port someone else's server holds would serve the wrong folder (10/10: 64 fails)
+        if sk.connect_ex(("127.0.0.1", port)) == 0:
+            with socket.socket() as free:
+                free.bind(("127.0.0.1", 0))
+                port = free.getsockname()[1]
+            print("port", a.port, "is busy - using", port)
+    srv = subprocess.Popen([sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"], cwd=folder,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    base = f"http://127.0.0.1:{a.port}/"
+    base = f"http://127.0.0.1:{port}/"
     try:
-        import urllib.request
-        for _ in range(40):  # the server answers before the first upload (a cold start once gave 404s)
+        served = False
+        for _ in range(40):  # the file must come back (200) from THIS folder before any upload
             try:
-                urllib.request.urlopen(base + todo[0], timeout=2).close()
-                break
+                with urllib.request.urlopen(base + todo[0], timeout=2) as r:
+                    served = r.status == 200
+                if served:
+                    break
             except Exception:  # noqa: BLE001
                 time.sleep(0.5)
+        if not served:
+            raise SystemExit(f"the local server does not serve {todo[0]} - nothing uploaded")
         for i in range(0, len(todo), 10):
             batch = todo[i:i + 10]
             arg = json.dumps({"imagePaths": [base + f for f in batch]})

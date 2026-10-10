@@ -5,7 +5,7 @@ art/models/tripo/halo_houses/<house>/<part>_C/_N/_M/_R.png, part name = MeshPart
   py tools/apply_sa_by_name.py <folder> [<folder> ...] [--mode survey|apply] [--out build/apply_sa_byname_<mode>.luau]
 
 Writes a Studio Luau that walks workspace / ServerStorage / ReplicatedStorage and, for every MeshPart whose Name is one
-of the parts, puts a new SurfaceAppearance (ColorMap + NormalMap + MetalnessMap + RoughnessMap; AlphaMode Overlay) in
+of the parts (or whose parent's Name is, after a GLB import), puts a new SurfaceAppearance (ColorMap + NormalMap + MetalnessMap + RoughnessMap; AlphaMode Overlay) in
 place of any old one. Parts named *_Glass get no maps: Material Glass, Transparency 0.45, Reflectance 0.25 (이미지
 생성 3). Survey only counts. ALLOW_MAIN is false: the main place refuses it until 메인 반영 1 sets it after a practice
 Studio run. Parts with no uploaded colour map are listed and left out.
@@ -35,12 +35,16 @@ for _, root in { workspace, game:GetService("ServerStorage"), game:GetService("R
 		if not mp:IsA("MeshPart") then
 			continue
 		end
-		local glass = GLASS[mp.Name]
-		local it = PARTS[mp.Name]
+		-- the part name is the MeshPart's, or its parent's (Studio's GLB import names a lone mesh 'Mesh_0' and keeps the
+		-- part name on the Model / node above it, 이미지 생성 1 10/10)
+		local key = mp.Name
+		if not (PARTS[key] or GLASS[key]) and mp.Parent then key = mp.Parent.Name end
+		local glass = GLASS[key]
+		local it = PARTS[key]
 		if not (it or glass) then
 			continue
 		end
-		seen[mp.Name] = (seen[mp.Name] or 0) + 1
+		seen[key] = (seen[key] or 0) + 1
 		if glass then
 			if mp.Material == Enum.Material.Glass and math.abs(mp.Transparency - glass.Transparency) < 0.01 then
 				table.insert(already, mp:GetFullName())
