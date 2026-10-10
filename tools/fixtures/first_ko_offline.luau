@@ -239,6 +239,9 @@ runGroup("flow", function()
 	local panels = panelsOf(w)
 	local done = {}
 	w.Story.QuestDone:Connect(function(_, id) table.insert(done, id) end)
+	-- A23-113 #2: the funnel's steps come from StepDone, one per quest step, in order, before the next opens
+	local stepLog = {}
+	w.Story.StepDone:Connect(function(_, id, step) if id == "KO1" then table.insert(stepLog, step) end end)
 	local uid = 1200
 	for _, faction in { "Halo", "Horns", "Neutral" } do
 		uid += 1
@@ -312,6 +315,8 @@ runGroup("flow", function()
 		w.Story.Refresh(p)
 		w.Story.Event(p, "FirstKO")
 		check(count == uid - 1200 and w:Track(d, "KO1") == nil and #w.Granted == g0 + 1, faction .. ": never again (one payout)", tostring(count))
+		local n = uid - 1200
+		check(#stepLog == n * 5 and table.concat(stepLog, ",", (n - 1) * 5 + 1, n * 5) == "1,2,3,4,5", faction .. ": StepDone fired for steps 1-5 of KO1, once each, in order (the FirstKO funnel's feed)", table.concat(stepLog, ","))
 	end
 end)
 

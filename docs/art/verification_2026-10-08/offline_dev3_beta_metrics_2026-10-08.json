@@ -1,15 +1,27 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 179,
+  "checks": 205,
   "failedChecks": 0,
-  "namedChecks": 155,
+  "namedChecks": 181,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "config",
-      "check": "5 funnels + the onboarding one (Roblox: at most 10)",
+      "check": "6 funnels + the onboarding one (Roblox: at most 10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "MinutesToLv5 at Lv5; PvPResult at most once a second per killer",
       "pass": 1,
       "fail": 0
     },
@@ -936,15 +948,159 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "the King's hit (step 1 done) = KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "a step logs once per account",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "saved in data.Telemetry.F (once per account)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "another quest / a step outside 1-5 / bad arguments log nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "the funnel step index is the step's own number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "players never share a funnel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "FirstKO funnel (A23-113 #2)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "Lv4: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "reaching Lv5: the minutes of play (752 s = 13 min) and the faction",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "once per account",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "under half a minute still counts 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "a bad level logs nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "minutes to Lv5 (A23-113 #2)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "the winner's faction + scale (Halo 1.3), the loser's faction, both level bands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "logged once, under the winner",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "a second KO inside the same second is not logged again (per killer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "the other way: Horns wins (1.05 scale, 1-9 over 10-24)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "Neutral: scale 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "bad killer / victim arguments log nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "PvP result line (A23-113 #5)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 92,
-    "applied": 92,
-    "caught": 92,
+    "total": 110,
+    "applied": 110,
+    "caught": 110,
     "skipped": false,
     "results": [
       {
@@ -983,7 +1139,7 @@
           "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel",
           "DailyVisit + DaysPlayed :: each step once a day"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 18
       },
       {
         "mutation": "DailyVisit session = UTC day",
@@ -1093,7 +1249,7 @@
           "DailyVisit + DaysPlayed :: all claimed (the chest) + the daily card: the whole day's funnel",
           "DailyVisit + DaysPlayed :: the attendance claim is no funnel step (optional)"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 25
       },
       {
         "mutation": "DaysPlayed every join",
@@ -2098,6 +2254,239 @@
           "ClientMetric rules :: OptIn / WelcomeBackGo are logged once a session"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "a quest funnel step is never logged",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "FirstKO funnel (A23-113 #2) :: a step logs once per account",
+          "FirstKO funnel (A23-113 #2) :: group ran to the end without a Lua error",
+          "FirstKO funnel (A23-113 #2) :: the King's hit (step 1 done) = KO",
+          "FirstKO funnel (A23-113 #2) :: the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "every quest feeds the FirstKO funnel",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "FirstKO funnel (A23-113 #2) :: another quest / a step outside 1-5 / bad arguments log nothing",
+          "FirstKO funnel (A23-113 #2) :: the funnel step index is the step's own number"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the funnel step is the next one",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "FirstKO funnel (A23-113 #2) :: a step logs once per account",
+          "FirstKO funnel (A23-113 #2) :: another quest / a step outside 1-5 / bad arguments log nothing",
+          "FirstKO funnel (A23-113 #2) :: players never share a funnel",
+          "FirstKO funnel (A23-113 #2) :: saved in data.Telemetry.F (once per account)",
+          "FirstKO funnel (A23-113 #2) :: the King's hit (step 1 done) = KO",
+          "FirstKO funnel (A23-113 #2) :: the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "MinutesToLv5 at every level",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "minutes to Lv5 (A23-113 #2) :: Lv4: nothing",
+          "minutes to Lv5 (A23-113 #2) :: a bad level logs nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MinutesToLv5 more than once",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "minutes to Lv5 (A23-113 #2) :: once per account"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "MinutesToLv5 forgets the save mark",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "minutes to Lv5 (A23-113 #2) :: once per account"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "MinutesToLv5 counts seconds",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "minutes to Lv5 (A23-113 #2) :: reaching Lv5: the minutes of play (752 s = 13 min) and the faction",
+          "minutes to Lv5 (A23-113 #2) :: under half a minute still counts 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MinutesToLv5 can be 0",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "minutes to Lv5 (A23-113 #2) :: reaching Lv5: the minutes of play (752 s = 13 min) and the faction",
+          "minutes to Lv5 (A23-113 #2) :: under half a minute still counts 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "MinutesToLv5 without the faction",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "minutes to Lv5 (A23-113 #2) :: reaching Lv5: the minutes of play (752 s = 13 min) and the faction"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "PvPResult under the loser",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PvP result line (A23-113 #5) :: Neutral: scale 1",
+          "PvP result line (A23-113 #5) :: a second KO inside the same second is not logged again (per killer)",
+          "PvP result line (A23-113 #5) :: logged once, under the winner",
+          "PvP result line (A23-113 #5) :: the other way: Horns wins (1.05 scale, 1-9 over 10-24)",
+          "PvP result line (A23-113 #5) :: the winner's faction + scale (Halo 1.3), the loser's faction, both level bands"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "PvPResult without the size scale",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PvP result line (A23-113 #5) :: the other way: Horns wins (1.05 scale, 1-9 over 10-24)",
+          "PvP result line (A23-113 #5) :: the winner's faction + scale (Halo 1.3), the loser's faction, both level bands"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "PvPResult sides swapped",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PvP result line (A23-113 #5) :: Neutral: scale 1",
+          "PvP result line (A23-113 #5) :: the other way: Horns wins (1.05 scale, 1-9 over 10-24)",
+          "PvP result line (A23-113 #5) :: the winner's faction + scale (Halo 1.3), the loser's faction, both level bands"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "PvPResult bands swapped",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PvP result line (A23-113 #5) :: Neutral: scale 1",
+          "PvP result line (A23-113 #5) :: the other way: Horns wins (1.05 scale, 1-9 over 10-24)",
+          "PvP result line (A23-113 #5) :: the winner's faction + scale (Halo 1.3), the loser's faction, both level bands"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "PvPResult unthrottled",
+        "file": "src/ServerScriptService/TelemetryService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "PvP result line (A23-113 #5) :: a second KO inside the same second is not logged again (per killer)",
+          "PvP result line (A23-113 #5) :: bad killer / victim arguments log nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: FirstKO loses a step",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "FirstKO funnel (A23-113 #2) :: players never share a funnel",
+          "FirstKO funnel (A23-113 #2) :: the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon",
+          "FirstKO funnel (A23-113 #2) :: the funnel step index is the step's own number",
+          "config :: FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Config: FirstKO per session",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "FirstKO funnel (A23-113 #2) :: a step logs once per account",
+          "FirstKO funnel (A23-113 #2) :: group ran to the end without a Lua error",
+          "FirstKO funnel (A23-113 #2) :: the King's hit (step 1 done) = KO",
+          "FirstKO funnel (A23-113 #2) :: the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon",
+          "config :: FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: KO1 is no funnel quest",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "FirstKO funnel (A23-113 #2) :: a step logs once per account",
+          "FirstKO funnel (A23-113 #2) :: group ran to the end without a Lua error",
+          "FirstKO funnel (A23-113 #2) :: the King's hit (step 1 done) = KO",
+          "FirstKO funnel (A23-113 #2) :: the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon",
+          "config :: FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Config: Lv5 becomes Lv6",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: MinutesToLv5 at Lv5; PvPResult at most once a second per killer",
+          "minutes to Lv5 (A23-113 #2) :: reaching Lv5: the minutes of play (752 s = 13 min) and the faction",
+          "minutes to Lv5 (A23-113 #2) :: under half a minute still counts 1"
+        ],
+        "newFailingCount": 3
       }
     ]
   },
@@ -2105,11 +2494,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "70a05e28d6e1e2d2a5d15e98d46a6e6fa6345245f9377966d98b8114516807e6",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/TelemetryService.luau": "448e3d04958d632156feb886479aa6393b68159db327c9e404c5f0c6b8158671"
+    "src/ReplicatedStorage/Shared/Config.luau": "1ec9cedce693d225cae59a8feb320437fe96be0bb9ff114691fb43f18a481237",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/TelemetryService.luau": "ecfa6152512e63e71e6fbde59efd9124ff5f9919df80e68b6b623caa7f6c1946"
   },
-  "fixtureSHA256": "bd765ea087c0eb3c9bd6e4a786644d35a38c75d4e0f404cb2ada99d420de3839",
+  "fixtureSHA256": "b39384e07fdbb22ecdd94bc7d2a317f760675905972468947e0b7a674d20ed48",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

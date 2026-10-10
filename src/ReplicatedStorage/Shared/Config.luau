@@ -6855,7 +6855,19 @@ Config.Analytics.Funnels = {
 	Social = { Once = true, Steps = { "InviteSeen", "InvitePrompt", "InviteSent", "InviteeJoined", "PlayedTogether10m" } },
 	KingDiary = { Once = true, Steps = { "Page1", "Page3", "Page6", "Page9" } },
 	PassShop = { Steps = { "ShopOpen", "PassView", "PurchasePrompt", "Bought" } },
+	-- A23-113 #2: the first KO of the King's Hop (KO1), once per account; the steps are the quest's own five, in order:
+	-- the King's hit, a potion bought, put in a quick slot, drunk, the King beaten (a step an early action already passed
+	-- still logs, in order, when the quest passes it)
+	FirstKO = { Once = true, Steps = { "KO", "PotionBought", "SlotSet", "PotionUsed", "KingWon" } },
 }
+-- A23-113 #2: story quests whose steps are a funnel's steps (quest id -> funnel name; step i done = Steps[i]; StoryQuestService.StepDone)
+Config.Analytics.QuestFunnels = { KO1 = "FirstKO" }
+-- A23-113 #2: minutes of play (data.PlaytimeSeconds) it took to reach Level (the custom event MinutesToLv5, once per account,
+-- when the level is reached; field 1 = the faction)
+Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }
+-- A23-113 #5: every PvP KO -> the custom event PvPResult (value = the winner's faction size-scale multiplier, 1.0-1.6; fields =
+-- winner faction, loser faction, "<winner level band>><loser level band>"), at most one per killer per this many seconds
+Config.Analytics.PvPResultGap = 1
 -- c->s "ClientMetric"(id, arg?): what only the client sees. The rule for the one argument: "None" (no argument),
 -- "Count" (a whole number 1..50), "Source" (one of InviteSources), "Pass" (a Config.GamePasses / Config.Looks id or
 -- "Look"), or a list of the allowed strings. Anything else is ignored.

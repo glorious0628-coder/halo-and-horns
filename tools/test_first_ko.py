@@ -141,6 +141,9 @@ MUTATIONS = [
     ("a Studio memory-mode record gets no slots (HP, MP: the slot step passes at once)", "DATA_SOURCE", "\t\tgiveNewQuickSlots(d) -- ", "\t\tlocal _ = d -- "),
     ("a new record gets the slots of an old save (HP, MP)", "DATA_SOURCE", "\t\td.QuickSlots = table.concat(Config.QuickSlots.Default, \",\")\n\tend\nend",
      "\t\td.QuickSlots = \"HP,MP,\"\n\tend\nend"),
+    # A23-113 #2: the funnel feed
+    ("StepDone never fires", ST, "\tStoryQuestService.StepDone:Fire(player, id, track.St)\n", ""),
+    ("StepDone names the next step", ST, "StoryQuestService.StepDone:Fire(player, id, track.St)", "StoryQuestService.StepDone:Fire(player, id, track.St + 1)"),
     # Studio test aids (Main's DebugCommand StorySub / StoryDone)
     ("DebugSub keeps a Done mark", ST, "\tst.Done[id] = nil\n\tlocal track = { St = n", "\tlocal track = { St = n"),
     ("DebugSub starts any quest", ST, 'if not def or def.Kind ~= "Sub" then return "no such sub quest "', 'if not def then return "no such sub quest "'),

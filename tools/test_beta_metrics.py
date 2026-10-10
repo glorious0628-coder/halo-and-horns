@@ -166,6 +166,27 @@ MUTATIONS = [
     ("Config: DailyVisit steps out of order", C, "Steps = { \"Join\", \"Daily1\", \"Daily3\", \"SetChest\", \"StopCardSeen\" }",
      "Steps = { \"Join\", \"Daily3\", \"Daily1\", \"SetChest\", \"StopCardSeen\" }"),
     ("Config: once-ids forgotten", C, "Config.Analytics.ClientMetricOnce = { \"OptIn\", \"WelcomeBackGo\" }", "Config.Analytics.ClientMetricOnce = {}"),
+    # --- A23-113 (사용자 "마감 전 넣자"): the FirstKO funnel, minutes to Lv5, the PvP result line
+    ("a quest funnel step is never logged", T, "\t\tif stepName then funnel(player, name, stepName) end\n", ""),
+    ("every quest feeds the FirstKO funnel", T, "local name = type(quest) == \"string\" and QUEST_FUNNELS[quest] or nil", "local name = \"FirstKO\""),
+    ("the funnel step is the next one", T, "def.Steps[math.floor(num(step))]", "def.Steps[math.floor(num(step)) + 1]"),
+    ("MinutesToLv5 at every level", T, "or math.floor(num(level)) ~= math.floor(num(rule.Level)) then return end", "then return end"),
+    ("MinutesToLv5 more than once", T, "\t\tif tel.TimeToLevel then return end\n", ""),
+    ("MinutesToLv5 forgets the save mark", T, "\t\ttel.TimeToLevel = true -- saved first: once per account\n", ""),
+    ("MinutesToLv5 counts seconds", T, "num(data.PlaytimeSeconds) / 60 + 0.5", "num(data.PlaytimeSeconds) + 0.5"),
+    ("MinutesToLv5 can be 0", T, "math.max(1, math.floor(num(data.PlaytimeSeconds) / 60 + 0.5))", "math.floor(num(data.PlaytimeSeconds) / 60)"),
+    ("MinutesToLv5 without the faction", T, "minutes, tostring(data.Faction))", "minutes)"),
+    ("PvPResult under the loser", T, "TelemetryService.Custom(killer, \"PvPResult\"", "TelemetryService.Custom(victim, \"PvPResult\""),
+    ("PvPResult without the size scale", T, "scale = math.floor(num(v, 1) * 100 + 0.5) / 100", "scale = 1"),
+    ("PvPResult sides swapped", T, "\"PvPResult\", scale, kf, vf,", "\"PvPResult\", scale, vf, kf,"),
+    ("PvPResult bands swapped", T, "bandOf(killer:GetAttribute(\"Level\")) .. \">\" .. bandOf(victim:GetAttribute(\"Level\"))",
+     "bandOf(victim:GetAttribute(\"Level\")) .. \">\" .. bandOf(killer:GetAttribute(\"Level\"))"),
+    ("PvPResult unthrottled", T, " or throttled(killer, \"pvpresult\", num(A.PvPResultGap, 1)) then return end", " then return end"),
+    ("Config: FirstKO loses a step", C, "FirstKO = { Once = true, Steps = { \"KO\", \"PotionBought\", \"SlotSet\", \"PotionUsed\", \"KingWon\" } },",
+     "FirstKO = { Once = true, Steps = { \"KO\", \"PotionBought\", \"PotionUsed\", \"KingWon\" } },"),
+    ("Config: FirstKO per session", C, "FirstKO = { Once = true, Steps", "FirstKO = { Steps"),
+    ("Config: KO1 is no funnel quest", C, "Config.Analytics.QuestFunnels = { KO1 = \"FirstKO\" }", "Config.Analytics.QuestFunnels = {}"),
+    ("Config: Lv5 becomes Lv6", C, "Config.Analytics.TimeToLevel = { Level = 5,", "Config.Analytics.TimeToLevel = { Level = 6,"),
 ]
 
 CAUSES = 5  # FirstDeath_<By>: Player / Kaiju / Monster / Fall / Other (BB14)
@@ -186,14 +207,17 @@ def static() -> tuple[int, list[str]]:
     code = strip_comments(tel)
     names = set(re.findall(r'Custom\(\w+, "(\w+)"', code))
     config = read(SHARED / "Config.luau")
+    lv = re.search(r"Config\.Analytics\.TimeToLevel = \{[^}]*Event = \"(\w+)\"", config)
+    if lv:
+        names.add(lv.group(1))  # MinutesToLv5: its name is read from Config (A23-113 #2)
     ui = re.search(r"\tUiIds = \{(.*?)\}", config, re.S)
     ui_ids = re.findall(r'"(\w+)"', ui.group(1)) if ui else []
     total = len(names) + len(ui_ids) + CAUSES + PLUNDER
     check(total <= 100, f"custom event names {total} <= 100 (Roblox limit)")
     check({"DaysPlayed", "ReturnGap", "PauseCard", "WelcomeBack", "Attendance", "FriendJoin", "GoToFriend", "DiaryPage",
            "CandyTrade", "NotifyOptIn", "InviteSent", "WelcomeBackGo", "PromptNearKO", "KOLeave60", "LeaveContext",
-           "ChapterEnd", "RuinsDaily", "PerfFps", "PerfFpsLow", "PerfMem"} <= names,
-          "every A23-79 event name (and the three Perf ones) is logged somewhere")
+           "ChapterEnd", "RuinsDaily", "PerfFps", "PerfFpsLow", "PerfMem", "MinutesToLv5", "PvPResult"} <= names,
+          "every A23-79 event name (the three Perf ones and A23-113's MinutesToLv5 / PvPResult) is logged somewhere")
     print(f"custom event names: {len(names)} + {len(ui_ids)} UI + {CAUSES} + {PLUNDER} = {total}")
     check(code.count("LogFunnelStepEvent") == 1 and code.count("LogEconomyEvent") == 1, "one funnel and one economy call site")
     net = read(SHARED / "Net.luau")

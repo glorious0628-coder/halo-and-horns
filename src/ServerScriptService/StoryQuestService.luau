@@ -25,6 +25,9 @@ local StoryQuestService = {}
 -- A23-79 (게임성 개발 3): (player, quest id) a story quest finished / (player, quest id, saved pick) a choice was made
 StoryQuestService.QuestDone = Util.Signal.new()
 StoryQuestService.Picked = Util.Signal.new()
+-- A23-113 #2 (게임성 개발 3): (player, quest id, step) a step of a story quest is done, in order, just before the next one opens
+-- (or the quest ends); TelemetryService turns the steps of Config.Analytics.QuestFunnels quests into funnel steps
+StoryQuestService.StepDone = Util.Signal.new()
 local S = nil
 local TAG = "StoryQuestService"
 local SQ = Config.StoryQuests
@@ -463,6 +466,7 @@ end
 -- the active step reached its goal: next step (saved first), or the quest is finished / waits for [받기]
 local function advance(player, data, id, track)
 	local def = DEFS[id]
+	StoryQuestService.StepDone:Fire(player, id, track.St)
 	track.P, track.T = 0, {}
 	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
 	if track.St < #def.Steps then
