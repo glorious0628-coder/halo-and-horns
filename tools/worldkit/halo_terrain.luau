@@ -159,6 +159,12 @@ local function pieces(x, z)
 		local qx, qz = ax - (hw - 16), (SPINE.Z1 + 16) - z
 		if qx > 0 and qz > 0 then sdfS = math.sqrt(qx * qx + qz * qz) - 16 end
 	end
+	-- the gate end: the outer front corners are rounded too (검수 10/10: the grass island in front of the gate read as a square slab); the road (|x| <= 14) keeps reaching z -330
+	local GR = 22
+	if z > -330 - GR then
+		local qx, qz = ax - (hw - GR), z - (-330 - GR)
+		if qx > 0 and qz > 0 then sdfS = math.max(sdfS, math.sqrt(qx * qx + qz * qz) - GR) end
+	end
 	cand[1] = { sdfS + jg, spineHeight(z, ax), "spine" }
 	for _, w in WINGS do
 		table.insert(cand, { rrect(ax, z, w.ax0, w.ax1, w.z0, w.z1, w.Rad) + jg, w.H, "wing:" .. w.Name })
