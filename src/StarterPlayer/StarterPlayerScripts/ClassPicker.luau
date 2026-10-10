@@ -1136,7 +1136,7 @@ local function applyFaction()
 	local redraw = string.sub(key, 1, 9) == "ClassPick"
 	mode = complete(key) and "art" or "old"
 
-	local shieldId = artId("LevelBadge" .. faction) -- 그림체 #11: the Firefly badge until the new shield is drawn
+	local shieldId = artId("Shield" .. faction) -- 그림체 #11: the redrawn shields (2026-10-08: halo + gem / horns)
 	head.Shield.Image = shieldId or ""
 	head.ShieldDisc.Visible = shieldId == nil
 	head.ShieldDisc.BackgroundColor3 = factionColor(faction)
@@ -1187,7 +1187,7 @@ end
 local function layoutHeader(w, top, headH, minT, s)
 	local rs = partSize(LAY.RibbonKey or "TitleRibbon")
 	local ribbonAspect = rs and rs.X / rs.Y or 4
-	local ss = partSize("LevelBadge" .. (shownFaction or "Halo"))
+	local ss = partSize("Shield" .. (shownFaction or "Halo"))
 	local shieldAspect = ss and ss.X / ss.Y or 1
 	local unit = math.min(headH, LAY.HeadMax) -- shield and pill keep their size when the bundle 2 ribbon is taller
 	local shieldH = unit
@@ -1456,7 +1456,7 @@ local function layoutSide(w, h, top, minT, s)
 	local rowW = layoutArtCards(w, top + 2, bottom, minT, s) or w * 0.6
 	local side = math.max(0, (w - rowW) / 2)
 	local colW = math.max(1, side - 2 * LAY.Gutter)
-	local ss = partSize("LevelBadge" .. (shownFaction or "Halo"))
+	local ss = partSize("Shield" .. (shownFaction or "Halo"))
 	local shieldAspect = ss and ss.X / ss.Y or 1
 	local shieldH = math.floor(math.min(colW * 0.6 / shieldAspect, 96))
 	local cy = top + (bottom - top) * 0.4

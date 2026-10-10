@@ -218,7 +218,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "962a390918ddd2d5958f31bc2a16f6f4e0b62df550107e726e4efced439fbb31"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "fa4bca93b657efa5f30d693913248504fd5ac9d8c2c583d11bb50556cd039172"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."
