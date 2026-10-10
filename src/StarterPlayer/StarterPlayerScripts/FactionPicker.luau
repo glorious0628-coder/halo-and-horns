@@ -29,6 +29,11 @@ local player = Players.LocalPlayer
 -- A23-57 (beta): Halo and Horns only; Config.Features.NeutralFaction (game dev 2) brings the Artisan Guild card back
 local FACTION_IDS = (type(Config.Features) == "table" and Config.Features.NeutralFaction == true)
 	and { "Halo", "Horns", "Neutral" } or { "Halo", "Horns" }
+-- A23-114 (beta): while the Artisan Guild is off, a third locked "Artisan Guild - Coming soon" card stands beside Halo /
+-- Horns (grey, a little smaller; a press only shakes it, no server request). ROW_IDS = the cards the row lays out.
+local SOON_ID = "Soon"
+local ROW_IDS = table.clone(FACTION_IDS)
+if not table.find(FACTION_IDS, "Neutral") then table.insert(ROW_IDS, SOON_ID) end
 local CLICK_LOCK = 2 -- seconds the choose buttons stay disabled after a click
 local OPEN_LOCK = 0.6 -- CR-M26: card input ignored this long after the picker opens (a fast 2nd tap)
 local PREMISE_STEP = 0.6 -- seconds between premise lines fading in
@@ -104,6 +109,16 @@ local LAY = {
 	Glow = { { 0.04, 0.03, 0.45 }, { 0.08, 0.05, 0.75 } },
 	GlowBody = { Art = { 0.56, 0.88 }, Old = { 0.5, 1 } }, -- { centre Y, height }: the art's emblem pokes out on top
 	Regions = { "Title", "Desc", "Motto", "Perks", "Button" },
+	-- A23-114 locked card: its size against the faction cards, the press shake (x offsets, step seconds), the grey look
+	-- of the code card (until the FactionPickSoon art; text regions { x, y, w, h } of the card)
+	SoonScale = 0.9,
+	SoonShake = { 7, -7, 5, -5, 2, 0 },
+	SoonStep = 0.045,
+	SoonBg = Color3.fromRGB(70, 72, 82),
+	SoonRim = Color3.fromRGB(128, 130, 140),
+	SoonInk = Color3.fromRGB(196, 198, 206),
+	SoonDim = Color3.fromRGB(150, 152, 162),
+	SoonRegions = { Title = { 0.06, 0.07, 0.88, 0.11 }, Soon = { 0.08, 0.64, 0.84, 0.1 }, Sub = { 0.1, 0.76, 0.8, 0.065 } },
 }
 
 -- per-faction text style on the card art ("ink" = brown on parchment, "light" = white with a dark outline,
@@ -137,6 +152,9 @@ local T = {
 	WeakerF = "Joining the smaller side! Start gold +%d · the Size Scale makes you bigger",
 	Footer = "You can switch later at the Altar of Fate in the Crossroads (free or with a ticket)",
 	FooterShort = "Switch sides later at the Altar of Fate.", -- phones with the A23-57 cards
+	SoonName = "Artisan Guild", -- A23-114 locked card
+	Soon = "Coming soon",
+	SoonSub = "Crafting update",
 }
 
 local DEFAULT_THEME = {
@@ -1024,6 +1042,157 @@ local function buildCard(id, order)
 	cards[id] = c
 end
 
+-- A23-114: a press shakes the locked card sideways a little (no sound, no remote); one shake at a time
+local function shakeSoon(c)
+	if c.Shaking then return end
+	c.Shaking = true
+	c.Slot:SetAttribute("Shakes", (tonumber(c.Slot:GetAttribute("Shakes")) or 0) + 1) -- read by the photo checks
+	task.spawn(function()
+		for _, dx in LAY.SoonShake do
+			tween(c.Body, LAY.SoonStep, { Position = UDim2.new(0.5, dx, 0.5, 0) })
+			task.wait(LAY.SoonStep)
+		end
+		if c.Body.Parent then c.Body.Position = UDim2.fromScale(0.5, 0.5) end
+		c.Shaking = false
+	end)
+end
+
+-- the locked Artisan Guild card: the FactionPickSoon art when uploaded (words in its Layout regions), else a grey code
+-- card with a padlock (IMG-R4). Not in `cards`: choose / buttons / badges / glow never see it.
+local function buildSoonCard(order)
+	local slot = Instance.new("Frame")
+	slot.Name = "Card_" .. SOON_ID
+	slot.BackgroundTransparency = 1
+	slot.BorderSizePixel = 0
+	slot.LayoutOrder = order
+	slot.Parent = cardsRow
+	local body = Instance.new("Frame")
+	body.Name = "Body"
+	body.AnchorPoint = Vector2.new(0.5, 0.5)
+	body.Position = UDim2.fromScale(0.5, 0.5)
+	body.Size = UDim2.fromScale(1, 1)
+	body.BackgroundTransparency = 1
+	body.BorderSizePixel = 0
+	body.Parent = slot
+	local scale = Instance.new("UIScale")
+	scale.Name = "CardScale"
+	scale.Scale = LAY.SoonScale
+	scale.Parent = body
+	local c = { Id = SOON_ID, Slot = slot, Body = body, Scale = scale, Soon = true, Art = false, Aspect = LAY.OldAspect }
+
+	local imageId, size = artId("FactionPickSoon"), partSize("FactionPickSoon")
+	local lay = type(Art.Layout.FactionPickSoon) == "table" and Art.Layout.FactionPickSoon or LAY.SoonRegions
+	local ink, dim = LAY.SoonInk, LAY.SoonDim
+	if imageId and size then
+		c.ArtAspect = size.X / size.Y
+		c.Aspect = c.ArtAspect
+		local bg = newImage(body, "Art", 2)
+		bg.ScaleType = Enum.ScaleType.Stretch
+		bg.Size = UDim2.fromScale(1, 1)
+		bg.Image = imageId
+	else
+		local panel = Instance.new("Frame")
+		panel.Name = "Panel"
+		panel.BackgroundColor3 = LAY.SoonBg
+		panel.BackgroundTransparency = 0.08
+		panel.BorderSizePixel = 0
+		panel.Size = UDim2.fromScale(1, 1)
+		panel.ZIndex = 2
+		corner(panel, 14)
+		local st = Instance.new("UIStroke")
+		st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		st.Color = LAY.SoonRim
+		st.Thickness = 3
+		st.Parent = panel
+		panel.Parent = body
+		-- padlock: a ring (the shackle) over a rounded block with a keyhole
+		local lock = Instance.new("Frame")
+		lock.Name = "Lock"
+		lock.AnchorPoint = Vector2.new(0.5, 0)
+		lock.Position = UDim2.fromScale(0.5, 0.25)
+		lock.Size = UDim2.fromScale(0.4, 0.34)
+		lock.BackgroundTransparency = 1
+		lock.ZIndex = 3
+		lock.Parent = panel
+		local ring = Instance.new("Frame")
+		ring.Name = "Shackle"
+		ring.AnchorPoint = Vector2.new(0.5, 0)
+		ring.Position = UDim2.fromScale(0.5, 0)
+		ring.Size = UDim2.fromScale(0.62, 0.62)
+		ring.BackgroundTransparency = 1
+		ring.ZIndex = 3
+		local rc = Instance.new("UICorner")
+		rc.CornerRadius = UDim.new(0.5, 0)
+		rc.Parent = ring
+		local rs = Instance.new("UIStroke")
+		rs.Color = LAY.SoonRim
+		rs.Thickness = 9
+		rs.Parent = ring
+		ring.Parent = lock
+		local block = Instance.new("Frame")
+		block.Name = "Block"
+		block.AnchorPoint = Vector2.new(0.5, 1)
+		block.Position = UDim2.fromScale(0.5, 1)
+		block.Size = UDim2.fromScale(1, 0.6)
+		block.BackgroundColor3 = LAY.SoonRim
+		block.BorderSizePixel = 0
+		block.ZIndex = 4
+		corner(block, 10)
+		block.Parent = lock
+		local hole = Instance.new("Frame")
+		hole.Name = "Keyhole"
+		hole.AnchorPoint = Vector2.new(0.5, 0.5)
+		hole.Position = UDim2.fromScale(0.5, 0.45)
+		hole.Size = UDim2.fromScale(0.14, 0.3)
+		hole.BackgroundColor3 = LAY.SoonBg
+		hole.BorderSizePixel = 0
+		hole.ZIndex = 5
+		corner(hole, 6)
+		hole.Parent = block
+	end
+	local words = {
+		{ "FactionName", T.SoonName, lay.Title or LAY.SoonRegions.Title, ink, artFont("Title", Enum.Font.GothamBlack), 40 },
+		{ "Soon", T.Soon, lay.Soon or LAY.SoonRegions.Soon, ink, artFont("Title", Enum.Font.GothamBlack), 34 },
+		{ "Sub", T.SoonSub, lay.Sub or LAY.SoonRegions.Sub, dim, theme.Font, 22 },
+	}
+	for _, w in words do
+		local r = w[3]
+		local l = newLabel(body, {
+			Name = w[1],
+			Position = UDim2.fromScale(r[1], r[2]),
+			Size = UDim2.fromScale(r[3], r[4]),
+			Text = w[2],
+			TextScaled = true,
+			TextWrapped = false,
+			TextColor3 = w[4],
+			Font = w[5],
+			ZIndex = 6,
+		}, w[6])
+		if c.ArtAspect then styleText(l, "light", 1) end
+	end
+	-- the whole card is the hit area (a press = the shake); not selectable, so a gamepad skips it
+	local hit = Instance.new("TextButton")
+	hit.Name = "Hit"
+	hit.Text = ""
+	hit.BackgroundTransparency = 1
+	hit.AutoButtonColor = false
+	hit.Selectable = false
+	hit.Size = UDim2.fromScale(1, 1)
+	hit.ZIndex = 7
+	hit.Parent = body
+	hit.Activated:Connect(function()
+		shakeSoon(c)
+	end)
+	c.Button = hit
+	LAY.SoonCard = c
+end
+
+-- a card of the row by id (the locked one lives apart from `cards`)
+local function rowCard(id)
+	if id == SOON_ID then return LAY.SoonCard end
+	return cards[id]
+end
+
 ------------------------------------------------------------------ layout
 local function layoutOldCard(c, compact, s)
 	local hh = compact and 62 or 96 -- header (emblem + name)
@@ -1337,6 +1506,14 @@ local function prepareCardBalance()
 			LAY.BalancedHeight = math.max(LAY.BalancedHeight, c.YFactor + c.HeightFactor)
 		end
 	end
+	-- A23-114: the locked card takes the faction cards' width (its own art's aspect when drawn), centred on their height
+	local soon = LAY.SoonCard
+	if soon then
+		if not soon.ArtAspect then soon.Aspect = aspect end
+		soon.HeightFactor = aspect / soon.Aspect
+		LAY.BalancedHeight = math.max(LAY.BalancedHeight, soon.HeightFactor)
+		soon.YFactor = (LAY.BalancedHeight - soon.HeightFactor) / 2
+	end
 end
 
 local function fittedCardHeight(areaW, areaH, sumAspect, gaps, balancedHeight, s)
@@ -1348,8 +1525,8 @@ end
 local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	prepareCardBalance()
 	local n, sumA = 0, 0
-	for _, id in FACTION_IDS do
-		local c = cards[id]
+	for _, id in ROW_IDS do
+		local c = rowCard(id)
 		if c then
 			n += 1
 			sumA += LAY.CardAspect
@@ -1363,8 +1540,8 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	cardH = math.max(1, math.floor(cardH))
 	local lift = math.ceil(cardH * LAY.Lift)
 	local canvasW = gaps + 2 * lift
-	for _, id in FACTION_IDS do
-		local c = cards[id]
+	for _, id in ROW_IDS do
+		local c = rowCard(id)
 		if c then canvasW += math.floor(cardH * LAY.CardAspect) end
 	end
 	local canvasH = math.ceil(cardH * LAY.BalancedHeight) + 2 * lift
@@ -1382,13 +1559,15 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 			math.clamp(cardsRow.CanvasPosition.Y, 0, math.max(0, canvasH - frameH)))
 	end
 	local cx = lift
-	for _, id in FACTION_IDS do
-		local c = cards[id]
+	for _, id in ROW_IDS do
+		local c = rowCard(id)
 		if c then
 			local cw = math.floor(cardH * LAY.CardAspect)
 			local ch = cw / c.Aspect
 			place(c.Slot, cx, lift + (cw / LAY.CardAspect) * c.YFactor, cw, ch)
-			if c.Art then
+			if c.Soon then
+				-- words and padlock scale with the card (TextScaled, fractions)
+			elseif c.Art then
 				layoutArtCard(c, cw, ch, minT, s)
 			else
 				layoutOldCard(c, ch < 420, s)
@@ -1610,6 +1789,7 @@ local function build()
 		buildCard(id, i)
 		if cards[id] and cards[id].Art then anyArt = true end
 	end
+	if table.find(ROW_IDS, SOON_ID) then buildSoonCard(#ROW_IDS) end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
 	-- the dim over the whole screen, phone side edges included (UIKit.FullScreenDim)
 	if type(UIKit.FullScreenDim) == "function" then
