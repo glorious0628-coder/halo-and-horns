@@ -6951,5 +6951,56 @@
     "art/models/tripo/web/NPC_HaloFlowerGirl_HD_LOD.glb"
    ]
   }
+ ],
+ "Crown_GoldHalf_web_hd": [
+  {
+   "event": "web_generation",
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "at": "2026-10-10 11:30~12:05",
+   "mode": "HD multi-view, H3.1, poly 15000, 8K texture trial (free once), PBR, triangles, remove-lighting OFF",
+   "points": 0,
+   "task": "66d1fbae-1346-4b44-8a21-08269b5736b6",
+   "balance_after": 23300,
+   "file": "art/models/tripo/web/Crown_GoldHalf_HD_src.glb",
+   "note": "균형의 왕관 금 반쪽(이미지 생성 2 부품 멀티뷰 art/out/s2/crown). Tripo가 온전한 고리로 만들어 tools/crown_assemble.py에서 반 잘라 조립.",
+   "derived": [
+    "art/models/tripo/web/Crown_GoldHalf_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Crown_RedHalf_web_hd": [
+  {
+   "event": "web_generation",
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "at": "2026-10-10 11:30~12:05",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF",
+   "points": 55,
+   "task": "ad5ef32c-c114-4f50-8932-ba6ff6f03f7b",
+   "balance_after": 23245,
+   "file": "art/models/tripo/web/Crown_RedHalf_HD_src.glb",
+   "note": "균형의 왕관 붉은 반쪽. 앞뒤가 반대로 나와 조립 때 180도.",
+   "derived": [
+    "art/models/tripo/web/Crown_RedHalf_HD_LOD.glb"
+   ]
+  }
+ ],
+ "Halo_Tower_v2_web_hd": [
+  {
+   "event": "web_generation",
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "at": "2026-10-10 11:30~12:05",
+   "mode": "HD multi-view, H3.1, poly 15000, 4K, PBR, triangles, remove-lighting OFF",
+   "points": 55,
+   "task": "470e456a-42eb-47c7-859b-c296ce720837",
+   "balance_after": 23190,
+   "file": "art/models/tripo/web/Halo_Tower_v2_HD_src.glb",
+   "note": "빛 마을 탑 v2(사람 키 문, 땅 높이). LOD 9000, 2×2 질감 조각.",
+   "derived": [
+    "art/models/tripo/web/Halo_Tower_v2_HD_LOD.glb"
+   ]
+  }
  ]
 }
