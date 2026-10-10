@@ -123,6 +123,7 @@ local MIN_TAP = 60 -- logical units (>= 45 real px at the phone's 0.75 UIScale)
 local TAP_PX = 45 -- touch [메뉴] in the Roblox top bar: real px (MIN_TAP at the phone's UIScale; tablets keep the px)
 local MIN_PRESS_GAP = 2 -- logical units between any two pressable items (touching buttons are a regression)
 local POTION_GAP_PX = 6 -- real px between the HP and MP potion buttons on the PC sheet
+local QUICK_GAP_PX = 5 -- A23-109: real px between two PC quick slots (slots 1 · 2 = the potions)
 local TILE_GAP_PX = 3 -- real px on the reference screens: least gap between two tiles of the icon row
 local GROUP_GAP = 8 -- logical units: the phone bottom group keeps this from the thumb ring (HudLayout GAP)
 local RING_GAP_MAX = 24 -- logical units: a phone ring button's circle stays this close to the attack disc
@@ -364,6 +365,7 @@ for _, case in CASES do
 			local minX, maxX = math.huge, -math.huge
 			local group = table.clone(FACE)
 			for _, id in POTIONS do table.insert(group, id) end
+			if out.quick then table.insert(group, "quick") end -- A23-109: quick slot 3 ends the row
 			for _, id in group do
 				local r = out[id]
 				minX, maxX = math.min(minX, r.X), math.max(maxX, r.X + r.W)
@@ -376,7 +378,9 @@ for _, case in CASES do
 			local clusterLeft = math.huge
 			for _, id in CLUSTER do clusterLeft = math.min(clusterLeft, out[id].X) end
 			local centred = math.abs((minX + maxX) / 2 - W / 2) <= 1
-			check(g, "face group centred or stepped aside", centred or maxX <= clusterLeft - 8 + 0.01,
+			-- stepped aside = pushed left by the cluster: its right end a GAP before the cluster (or at the left margin)
+			local aside = maxX <= clusterLeft - 8 + 0.01 and (maxX >= clusterLeft - 8 - 0.5 or minX <= 8 + 0.5)
+			check(g, "face group centred or stepped aside", centred or aside,
 				("group %.1f..%.1f W/2 %.1f cluster %.1f"):format(minX, maxX, W / 2, clusterLeft))
 			check(g, "face group left margin", minX >= 8 - 0.01, ("group %.1f..%.1f"):format(minX, maxX))
 			check(g, "all 6 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= ROW_TILES),
@@ -432,11 +436,28 @@ for _, case in CASES do
 			else
 				check(g, nName, false, ("%.1f px %s"):format(nPx, fmt(out.notify)))
 			end
-			-- the potions stay a lead gap right of the tile row, the bars end with the pair (one block)
-			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 16,
+			-- A23-109 (user 10/10): the potions are quick slots 1 · 2 of the quick row (slot 3 = Cells[3]) a lead gap right of
+			-- the tile row; tiles + quick slots are one row centred under the bars unless it had to step aside or squeeze
+			local qk = out.quick
+			local cellsOk = type(qk) == "table" and type(qk.Cells) == "table" and #qk.Cells == 3 and qk.Cells[1] == hp
+				and qk.Cells[2] == mp
+			check(g, "PC quick slots 1 2 = the potions", cellsOk, fmt(qk))
+			if cellsOk then
+				local c3 = qk.Cells[3]
+				check(g, "PC quick slot 3 right of slot 2", math.abs(c3.Y - mp.Y) <= 0.01 and math.abs(c3.W - mp.W) <= 0.01
+					and math.abs(c3.X - (mp.X + mp.W) - qk.Gap) <= 0.01, fmt(mp) .. " " .. fmt(c3))
+				check(g, "PC quick slots clear of the corner cluster", c3.X + c3.W <= clusterLeft - 8 + 0.01,
+					fmt(c3) .. (" cluster %.1f"):format(clusterLeft))
+				check(g, "PC quick slots >= 38 real px", hp.H * s >= 38 - 0.01, ("%.1f px"):format(hp.H * s))
+				check(g, "PC quick slots bottom = tiles bottom", math.abs((hp.Y + hp.H) - (t.Y + t.H)) <= 0.01, fmt(hp) .. " " .. fmt(t))
+				local rowMid = (t.X + c3.X + c3.W) / 2
+				local xp = out.xp_bar
+				check(g, "PC row centred under the bars or stepped aside", math.abs(rowMid - (xp.X + xp.W / 2)) <= 0.5
+					or c3.X + c3.W >= clusterLeft - 8 - 0.5, ("row mid %.1f bars mid %.1f"):format(rowMid, xp.X + xp.W / 2))
+			end
+			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 20.5,
 				fmt(hp) .. " " .. fmt(t))
-			check(g, "PC bars end with the potion pair", math.abs((out.power_line.X + out.power_line.W) - (mp.X + mp.W)) <= 0.5,
-				fmt(out.power_line) .. " " .. fmt(mp))
+			check(g, "PC tiles >= 38 real px (names under the icons)", t.Size * s >= 38 - 0.01, ("%.1f px"):format(t.Size * s))
 		end
 		-- [메뉴]: a square in the top bar's right end, MENU_EDGE_PX from its free part's end, a Roblox button on PCs
 		-- (A23-40 정정 + 보강)
@@ -570,7 +591,7 @@ for _, case in CASES do
 				("got %.1f,%.1f %.1fx%.1f want %d,%d %dx%d"):format(px.x, px.y, px.w, px.h, want.x, want.y, want.w, want.h))
 		end
 		if not touch then
-			check(g, "matches sheet potion gap", math.abs(pg * s - POTION_GAP_PX) <= 1.01, ("gap %.2f px"):format(pg * s))
+			check(g, "matches sheet potion gap", math.abs(pg * s - QUICK_GAP_PX) <= 1.01, ("gap %.2f px"):format(pg * s))
 		end
 		check(g, "matches sheet tile gap", tileOk and math.abs(t.Gap * s - TILE_GAP_PX) <= 0.51, ("gap %.2f px"):format((t.Gap or 0) * s))
 		-- phones: 4 tiles in the bottom row (2026-10-07 layout; [메뉴] in the top bar); PCs: the six tiles exactly (the
