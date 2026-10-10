@@ -102,8 +102,8 @@ end
 
 ------------------------------------------------------------------ 1. the definition
 runGroup("config", function()
-	check(KO ~= nil and KO.Kind == "Sub" and KO.Title == "The King's Hop" and #KO.Steps == 4 and KO.Hidden == nil,
-		"KO1: a visible sub 'The King's Hop' with four steps", show(KO and #KO.Steps))
+	check(KO ~= nil and KO.Kind == "Sub" and KO.Title == "The King's Hop" and #KO.Steps == 5 and KO.Hidden == nil,
+		"KO1: a visible sub 'The King's Hop' with five steps", show(KO and #KO.Steps))
 	local subs, count = SQ0.Subs, 0
 	for _, id in subs do if id == "KO1" then count += 1 end end
 	check(count == 1, "KO1 is in StoryQuests.Subs exactly once", tostring(count))
@@ -111,15 +111,19 @@ runGroup("config", function()
 	check(type(req) == "table" and #req.Done == 1 and req.Done[1] == "M1_2" and req.MaxLevel == 8 and req.NoPotionYet == true,
 		"opens after M1_2, up to Lv8, only with no potion yet", show(req))
 	local s = KO.Steps
-	check(s[1].Text == "Defeat the King Slime" and s[1].Obj.Type == "Event" and s[1].Obj.Name == "FirstKO" and s[1].Obj.Past == nil,
-		"step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)", show(s[1].Obj))
+	check(s[1].Text == "Defeat the King Slime" and s[1].Obj.Type == "Event" and s[1].Obj.Name == "FirstKO" and s[1].Obj.Past == nil
+		and s[1].Guide == "SlimeMeadow", "step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)", show(s[1].Obj))
 	check(s[2].Text == "Buy a potion" and s[2].Obj.Type == "Event" and s[2].Obj.Name == "PotionBought" and s[2].Obj.Past == true
-		and s[2].TopUpGold == 50 and s[2].Guide == "Crossroads", "step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+		and s[2].TopUpGold == 50 and s[2].Guide == "PotionShop", "step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
 		show(s[2]))
-	check(s[3].Text == "Drink a potion from your quick slot" and s[3].Obj.Type == "Event" and s[3].Obj.Name == "PotionUsed" and s[3].Obj.Past == true
-		and s[3].TopUpGold == nil, "step 3: Drink a potion from your quick slot = PotionUsed (passes when seen before)", show(s[3]))
-	check(s[4].Text == "Defeat the King Slime" and s[4].Obj.Type == "Kill" and s[4].Obj.Kind == "SlimeKing" and s[4].Obj.Personal == true
-		and s[4].Obj.Count == 1 and s[4].Obj.Zone == "SlimeMeadow", "step 4: the rematch = one personal King Slime kill in the meadow", show(s[4].Obj))
+	check(s[3].Text == "Put the potion in a quick slot" and s[3].Obj.Type == "Event" and s[3].Obj.Name == "QuickSlotSet" and s[3].Obj.Past == true
+		and s[3].Obj.Held == "QuickSlots" and s[3].TopUpGold == nil and s[3].Guide == "QuickSlot",
+		"step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)", show(s[3]))
+	check(s[4].Text == "Drink it from your quick slot" and s[4].Obj.Type == "Event" and s[4].Obj.Name == "PotionUsed" and s[4].Obj.Past == true
+		and s[4].TopUpGold == nil and s[4].Guide == "QuickSlot", "step 4: Drink it from your quick slot = PotionUsed (passes when seen before)", show(s[4]))
+	check(s[5].Text == "Defeat the King Slime" and s[5].Obj.Type == "Kill" and s[5].Obj.Kind == "SlimeKing" and s[5].Obj.Personal == true
+		and s[5].Obj.Count == 1 and s[5].Obj.Zone == "SlimeMeadow" and s[5].Guide == "SlimeMeadow",
+		"step 5: the rematch = one personal King Slime kill in the meadow", show(s[5].Obj))
 	check(KO.Reward.Gold == 2 and KO.Reward.XP == 2 and KO.Reward.Item == "Enh70" and KO.Reward.N == 1 and KO.Finish == nil
 		and KO.Start == nil and KO.Pop == nil and KO.Claim == nil, "two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)", show(KO.Reward))
 	for i, step in s do
@@ -128,17 +132,20 @@ runGroup("config", function()
 	end
 	check(#KO.ShortName <= 14, "KO1 has a short name for the phone row", tostring(KO.ShortName))
 	local events = SQ0.Events
-	check(events and events.FirstKO == true and events.PotionBought == true and events.PotionUsed == true, "the happenings are listed in Config.StoryQuests.Events", show(events))
+	check(events and events.FirstKO == true and events.PotionBought == true and events.QuickSlotSet == true and events.PotionUsed == true,
+		"the happenings are listed in Config.StoryQuests.Events", show(events))
 	for _, step in s do
 		if step.Obj.Type == "Event" then
 			check(events[step.Obj.Name] == true, "every Event step waits for a listed happening: " .. step.Obj.Name, "")
 		end
 	end
 	local f = C0.FirstKO
-	check(f and f.Quest == "KO1" and f.Step == 1 and f.RematchStep == 4 and s[f.RematchStep].Obj.Type == "Kill" and s[f.Step].Obj.Name == "FirstKO",
-		"Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)", show(f))
+	check(f and f.Quest == "KO1" and f.Step == 1 and f.RematchStep == 5 and s[f.RematchStep].Obj.Type == "Kill" and s[f.Step].Obj.Name == "FirstKO",
+		"Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (5)", show(f))
 	check(f and f.SipAttr == "PotionSip", "Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)", show(f))
 	check(C0.PotionStockKey("HP") == "HPPotionCount" and C0.Text.PotionPractice ~= nil, "the potion stock keys and the practice-sip line exist", "")
+	local Q = C0.QuickSlots
+	check(Q and Q.Attr == "QuickSlots" and Q.Default[1] == "" and Q.Default[2] == "" and Q.Default[3] == "", "a new player's quick slots start empty (the Held field is data.QuickSlots)", show(Q and Q.Default))
 end)
 
 ------------------------------------------------------------------ 2. who is offered it, and quietly
@@ -186,7 +193,7 @@ runGroup("offered", function()
 	check(d.Story.Subs.KO1 ~= nil and d.Story.Subs.KO1.St == 3, "buying potions after the start never cancels the quest", show(d.Story.Subs.KO1))
 end)
 
------------------------------------------------------------------- 3. the four steps, in order
+------------------------------------------------------------------ 3. the five steps, in order
 runGroup("flow", function()
 	local w = koWorld()
 	local panels = panelsOf(w)
@@ -195,7 +202,7 @@ runGroup("flow", function()
 	local uid = 1200
 	for _, faction in { "Halo", "Horns", "Neutral" } do
 		uid += 1
-		local p, d = joinKO(w, uid, faction)
+		local p, d = joinKO(w, uid, faction, { Data = { QuickSlots = ",," } })
 		local tr = w:Track(d, "KO1")
 		local n0, panels0, gold0 = #w.Notices, #panels, #w.GoldGiven
 		-- nothing a stranger says moves it
@@ -213,35 +220,43 @@ runGroup("flow", function()
 			and d.CarriedGold == 50 and d.Story.First.TopKO12 == true, faction .. ": a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
 			show({ w.GoldGiven[#w.GoldGiven], d.CarriedGold, d.Story.First }))
 		local row = rowOf(w, p, d, "KO1")
-		check(row.Text == "Buy a potion" and row.ShortName == "Buy a potion" and row.Story.Guide == "Crossroads" and row.Story.St == 2,
+		check(row.Text == "Buy a potion" and row.ShortName == "Buy a potion" and row.Story.Guide == "PotionShop" and row.Story.St == 2,
 			faction .. ": row 2 reads 'Buy a potion' and guides to the seller", show(row))
-		check(w.Story.Wants(p, "PotionBought") == true and w.Story.Wants(p, "FirstKO") == false and w.Story.Wants(p, "PotionUsed") == false,
-			faction .. ": step 2 waits for PotionBought only", "")
+		check(w.Story.Wants(p, "PotionBought") == true and w.Story.Wants(p, "FirstKO") == false and w.Story.Wants(p, "PotionUsed") == false
+			and w.Story.Wants(p, "QuickSlotSet") == false, faction .. ": step 2 waits for PotionBought only", "")
 		check(p:GetAttribute("PotionSip") == false, faction .. ": steps 1-2: the client may not use a full bar yet (PotionSip false)", tostring(p:GetAttribute("PotionSip")))
 		-- the KO does not repeat the step
 		check(w.Story.Event(p, "FirstKO") == false and tr.St == 2, faction .. ": a second KO moves nothing", show(tr))
 		-- 2. the purchase
 		check(w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 }) == true and tr.St == 3, faction .. ": PotionBought moves step 2 to 3", show(tr))
 		row = rowOf(w, p, d, "KO1")
-		check(row.Text == "Drink a potion from your quick slot" and row.ShortName == "Drink potion" and row.Story.Guide == nil,
-			faction .. ": row 3 reads 'Drink a potion from your quick slot'", show(row))
-		check(w.Story.Wants(p, "PotionUsed") == true and w.Story.Wants(p, "PotionBought") == false, faction .. ": step 3 waits for PotionUsed only", "")
-		check(p:GetAttribute("PotionSip") == true, faction .. ": step 3: PotionSip is true at once (the client lets a full bar be used)", tostring(p:GetAttribute("PotionSip")))
+		check(row.Text == "Put the potion in a quick slot" and row.ShortName == "Quick slot" and row.Story.Guide == "QuickSlot" and row.Story.St == 3,
+			faction .. ": row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)", show(row))
+		check(w.Story.Wants(p, "QuickSlotSet") == true and w.Story.Wants(p, "PotionBought") == false and w.Story.Wants(p, "PotionUsed") == false,
+			faction .. ": step 3 waits for QuickSlotSet only", "")
+		check(p:GetAttribute("PotionSip") == false, faction .. ": step 3: no sip yet (the potion is not in a slot)", tostring(p:GetAttribute("PotionSip")))
 		check(#w.GoldGiven == gold0 + 1, faction .. ": no second top-up", show(w.GoldGiven))
-		-- 3. the drink
-		check(w.Story.Event(p, "PotionUsed", { Kind = "HP" }) == true and tr.St == 4 and w.Story.Wants(p, "PotionUsed") == false,
-			faction .. ": PotionUsed moves step 3 to 4", show(tr))
-		check(p:GetAttribute("PotionSip") == false, faction .. ": step 4: PotionSip false again", tostring(p:GetAttribute("PotionSip")))
+		-- 3. the slot
+		check(w.Story.Event(p, "QuickSlotSet", { Slot = 1, Kind = "HP" }) == true and tr.St == 4, faction .. ": QuickSlotSet moves step 3 to 4", show(tr))
 		row = rowOf(w, p, d, "KO1")
-		check(row.Text == "Defeat the King Slime" and row.Story.St == 4 and row.Story.Guide == "SlimeMeadow" and row.CanClaim == false,
-			faction .. ": row 4 reads 'Defeat the King Slime' again", show(row))
-		-- 4. the rematch: only a personal King Slime kill in the meadow
+		check(row.Text == "Drink it from your quick slot" and row.ShortName == "Drink potion" and row.Story.Guide == "QuickSlot" and row.Story.St == 4,
+			faction .. ": row 4 reads 'Drink it from your quick slot'", show(row))
+		check(w.Story.Wants(p, "PotionUsed") == true and w.Story.Wants(p, "QuickSlotSet") == false, faction .. ": step 4 waits for PotionUsed only", "")
+		check(p:GetAttribute("PotionSip") == true, faction .. ": step 4: PotionSip is true at once (the client lets a full bar be used)", tostring(p:GetAttribute("PotionSip")))
+		-- 4. the drink
+		check(w.Story.Event(p, "PotionUsed", { Kind = "HP" }) == true and tr.St == 5 and w.Story.Wants(p, "PotionUsed") == false,
+			faction .. ": PotionUsed moves step 4 to 5", show(tr))
+		check(p:GetAttribute("PotionSip") == false, faction .. ": step 5: PotionSip false again", tostring(p:GetAttribute("PotionSip")))
+		row = rowOf(w, p, d, "KO1")
+		check(row.Text == "Defeat the King Slime" and row.Story.St == 5 and row.Story.Guide == "SlimeMeadow" and row.CanClaim == false,
+			faction .. ": row 5 reads 'Defeat the King Slime' again", show(row))
+		-- 5. the rematch: only a personal King Slime kill in the meadow
 		w:Kill(p, "SlimeKing", { Personal = false })
 		w:Kill(p, "SlimeKing", { Personal = false })
 		w:Kill(p, "Slime", { Personal = true })
 		w:Kill(p, "BigSlime", { Personal = true })
 		w:Kill(p, "SlimeKing", { Personal = true, Zone = "Crossroads" })
-		check(tr.St == 4 and w:Track(d, "KO1") == tr and d.Story.Done.KO1 == nil, faction .. ": other kills (a shared King, another monster, another zone) never finish it", show(tr))
+		check(tr.St == 5 and w:Track(d, "KO1") == tr and d.Story.Done.KO1 == nil, faction .. ": other kills (a shared King, another monster, another zone) never finish it", show(tr))
 		local xp0, bank0, g0 = #w.XP, d.BankGold or 0, #w.Granted
 		w:Kill(p, "SlimeKing", { Personal = true })
 		check(d.Story.Done.KO1 == true and w:Track(d, "KO1") == nil and done[#done] == "KO1" and w.Story.CurrentStep(p, "KO1") == nil,
@@ -307,9 +322,9 @@ end)
 runGroup("ahead", function()
 	local w = koWorld()
 	local uid = 1400
-	local function start(faction)
+	local function start(faction, slots)
 		uid += 1
-		local p, d = joinKO(w, uid, faction or "Halo")
+		local p, d = joinKO(w, uid, faction or "Halo", { Data = slots ~= nil and { QuickSlots = slots } or nil })
 		return p, d, w:Track(d, "KO1")
 	end
 	-- a KO from before the quest started is not step 1 (the step is the quest's own KO)
@@ -317,27 +332,61 @@ runGroup("ahead", function()
 	local old, oldD = joinKO(w, uid, "Halo", { First = { Migrated = true, FirstKO = true } })
 	check(w:Track(oldD, "KO1") ~= nil and w:Track(oldD, "KO1").St == 1 and w.Story.Wants(old, "FirstKO") == true,
 		"an old KO does not pass step 1: the quest waits for its own KO", show(w:Track(oldD, "KO1")))
-	-- bought and drunk before the KO: the KO opens the rematch straight away
-	local p, d, tr = start()
+	-- bought, put in a slot and drunk before the KO: the KO opens the rematch straight away
+	local p, d, tr = start("Halo", ",,")
 	w.Story.Event(p, "PotionBought")
+	w.Story.Event(p, "QuickSlotSet", { Slot = 2, Kind = "MP" })
 	w.Story.Event(p, "PotionUsed")
-	check(tr.St == 1 and d.Story.First.PotionBought == true and d.Story.First.PotionUsed == true, "events seen early are remembered, the open step does not move", show(tr))
+	check(tr.St == 1 and d.Story.First.PotionBought == true and d.Story.First.QuickSlotSet == true and d.Story.First.PotionUsed == true,
+		"events seen early are remembered, the open step does not move", show(tr))
 	w.Story.Event(p, "FirstKO")
-	check(tr.St == 4 and w.Story.Wants(p, "PotionUsed") == false and p:GetAttribute("PotionSip") == false,
-		"the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)", show(tr))
+	check(tr.St == 5 and w.Story.Wants(p, "PotionUsed") == false and p:GetAttribute("PotionSip") == false,
+		"the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)", show(tr))
 	-- drunk before bought
-	p, d, tr = start("Horns")
+	p, d, tr = start("Horns", ",,")
 	w.Story.Event(p, "PotionUsed")
 	w.Story.Event(p, "FirstKO")
 	check(tr.St == 2, "a drink before the KO does not skip the purchase", show(tr))
 	w.Story.Event(p, "PotionBought")
-	check(tr.St == 4, "the purchase passes the drink step at once (already seen)", show(tr))
-	-- bought during step 2 with the 1 s loop: the Event call refreshes at once
-	p, d, tr = start("Neutral")
+	check(tr.St == 3 and w.Story.Wants(p, "QuickSlotSet") == true, "the purchase does not skip the slot step", show(tr))
+	w.Story.Event(p, "QuickSlotSet", { Slot = 1, Kind = "HP" })
+	check(tr.St == 5, "the slot passes the drink step at once (already seen)", show(tr))
+	-- a potion put in a slot before it was bought
+	p, d, tr = start("Neutral", ",,")
+	w.Story.Event(p, "QuickSlotSet", { Slot = 3, Kind = "HP" })
 	w.Story.Event(p, "FirstKO")
 	w.Story.Event(p, "PotionBought")
-	check(tr.St == 3, "buying moves on to the drink step", show(tr))
+	check(tr.St == 4 and w.Story.Wants(p, "PotionUsed") == true and p:GetAttribute("PotionSip") == true,
+		"a slot filled early passes the slot step; the drink step is next (sip flag lit)", show(tr))
+	-- an old save: its HP / MP are already in the slots (the field holds a potion): the slot step passes at once
+	p, d, tr = start("Halo", "HP,MP,")
+	w.Story.Event(p, "FirstKO")
+	check(tr.St == 2, "an old save at step 2 waits for the purchase", show(tr))
+	w.Story.Event(p, "PotionBought")
+	check(tr.St == 4 and w.Story.Wants(p, "QuickSlotSet") == false and w.Story.Wants(p, "PotionUsed") == true,
+		"an old save's filled slots pass step 3 at once (no 'put it' to do)", show(tr))
+	-- what counts as a filled slot: any letter in the saved text; empty / missing / not text never
+	for _, case in { { ",MP,", true }, { ",,HP", true }, { "HP,,", true }, { ",,", false }, { "", false }, { ", ,", false } } do
+		p, d, tr = start("Halo", case[1])
+		w.Story.Event(p, "FirstKO")
+		w.Story.Event(p, "PotionBought")
+		check((tr.St == 4) == case[2] and (tr.St == 3) == (not case[2]), "slots text '" .. case[1] .. "' " .. (case[2] and "is filled: step 3 passes" or "is empty: step 3 waits"), show(tr))
+	end
+	p, d, tr = start("Halo")
+	d.QuickSlots = nil
+	w.Story.Event(p, "FirstKO")
+	w.Story.Event(p, "PotionBought")
+	check(tr.St == 3, "no saved slots field at all: step 3 waits (nothing is held)", show(tr))
+	p, d, tr = start("Halo")
+	d.QuickSlots = 5
+	w.Story.Event(p, "FirstKO")
+	w.Story.Event(p, "PotionBought")
+	check(tr.St == 3, "a slots field that is not text: step 3 waits", show(tr))
 	-- a step waits only for its own name
+	p, d, tr = start("Neutral", ",,")
+	w.Story.Event(p, "FirstKO")
+	w.Story.Event(p, "PotionBought")
+	check(tr.St == 3, "buying moves on to the slot step", show(tr))
 	check(w.Story.Event(p, "PotionBought") == false and tr.St == 3, "a second purchase moves nothing", show(tr))
 	-- two players never share a quest
 	local a, ad, atr = start()

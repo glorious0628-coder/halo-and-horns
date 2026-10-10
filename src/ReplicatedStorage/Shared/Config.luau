@@ -3415,20 +3415,25 @@ table.insert(Config.StoryQuests.Subs, "D0")
 
 -- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
 -- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
--- StoryQuestService.Event "FirstKO"), then buys a potion, drinks it from the quick slot and wins the rematch. Four plain rows, no
--- popups, no tips, no closing toast (A23-99). Event steps wait for a named happening (Config.StoryQuests.Events): FirstKO (the KO
--- itself), PotionBought (ShopService.BuyPotion), PotionUsed (VitalsService, a drink from the quick slot or the bag). Past = a step
--- whose happening was seen before it opened passes at once (a player who ran ahead is never stuck). TopUpGold = the carried gold
--- is topped up to this much when the step opens (once; two potions at 25 each); Personal = only the personal King counts.
-Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, PotionUsed = true }
+-- StoryQuestService.Event "FirstKO"), then buys a potion, puts it in a quick slot (a new player's slots start empty, 검수 10/10:
+-- "물약 사고 슬롯에 장착하는 퀘스트"), drinks it from there and wins the rematch. Five plain rows, no popups, no tips, no closing
+-- toast (A23-99). Event steps wait for a named happening (Config.StoryQuests.Events): FirstKO (the KO itself), PotionBought
+-- (ShopService.BuyPotion), QuickSlotSet (QuickSlotService: an item put into a slot), PotionUsed (VitalsService, a drink from the
+-- quick slot or the bag). Past = a step whose happening was seen before it opened passes at once (a player who ran ahead is never
+-- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
+-- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
+-- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
 	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
 	Steps = {
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
-		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "Crossroads", TopUpGold = 50,
+		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,
 			Obj = { Type = "Event", Name = "PotionBought", Past = true } },
-		{ Text = "Drink a potion from your quick slot", ShortName = "Drink potion",
+		{ Text = "Put the potion in a quick slot", ShortName = "Quick slot", Guide = "QuickSlot",
+			Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },
+		{ Text = "Drink it from your quick slot", ShortName = "Drink potion", Guide = "QuickSlot",
 			Obj = { Type = "Event", Name = "PotionUsed", Past = true } },
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow",
 			Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },
@@ -3439,7 +3444,7 @@ table.insert(Config.StoryQuests.Subs, "KO1")
 -- game dev 2 (the personal King) reads these: the quest, the step the King's first hop waits at, the step of the rematch.
 -- SipAttr = the player attribute (boolean) StoryQuestService keeps true while a quest step waits for a potion drink: game dev 1's
 -- VitalsUI then lets a full HP / MP bar be used (the server counts a practice sip and keeps the potion)
-Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 4, SipAttr = "PotionSip" }
+Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSip" }
 
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks

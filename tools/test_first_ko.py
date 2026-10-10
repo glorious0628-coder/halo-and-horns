@@ -1,11 +1,12 @@
 """A23-109 / A23-110 the King's Hop quest KO1 (게임성 개발 3, 2026-10-10), offline.
 
 Design docs/design/first_ko_quest_2026-10-10.md (검수 approved the numbers 2026-10-10): after the Slime Princes (M1_2) a new player
-with no potions (Lv <= 8) gets the side quest KO1 as four plain rows - no popup, no toast: 1 Defeat the King Slime (game dev 2's
+with no potions (Lv <= 8) gets the side quest KO1 as five plain rows - no popup, no toast: 1 Defeat the King Slime (game dev 2's
 personal King hops over and lands on the player: a lossless KO, reported with StoryQuestService.Event "FirstKO"), 2 Buy a
 potion (the step opens with the carried gold topped up to 50 = two potions; ShopService.BuyPotion reports "PotionBought"),
-3 Drink a potion from your quick slot (VitalsService reports "PotionUsed"; at full HP / MP a practice sip counts for the step
-and keeps the potion, so the step never dead-ends), 4 Defeat the King Slime again (a PERSONAL King kill in the meadow); the
+3 Put the potion in a quick slot (a new player's slots start empty; QuickSlotService reports "QuickSlotSet"; an old save whose
+slots already hold HP / MP passes it at once), 4 Drink it from your quick slot (VitalsService reports "PotionUsed"; at full HP / MP
+a practice sip counts for the step and keeps the potion, so the step never dead-ends), 5 Defeat the King Slime again (a PERSONAL King kill in the meadow); the
 reward is two minutes of hunting gold + XP and one 70% scroll. A step whose happening was seen before it opened passes at once.
 Runs the CURRENT Config, Util, StoryQuestService, LootService and CombatService (the dev2_combat_world doubles for the other
 services) with tools/fixtures/first_ko_offline.luau and the installed official Luau CLI. The shop / drink hooks are checked in
@@ -25,8 +26,9 @@ FILES = dict(UNARMED_FILES)
 C, ST = "CONFIG_SOURCE", "STORY_SOURCE"
 FILES["VITALS_SOURCE"] = SSS / "VitalsService.luau"
 DEF_STEP2 = 'Obj = { Type = "Event", Name = "PotionBought", Past = true } },'
-DEF_STEP3 = 'Obj = { Type = "Event", Name = "PotionUsed", Past = true } },'
-DEF_STEP4 = 'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },'
+DEF_STEP3 = 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },'
+DEF_STEP4 = 'Obj = { Type = "Event", Name = "PotionUsed", Past = true } },'
+DEF_STEP5 = 'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },'
 
 MUTATIONS = [
     # the definition
@@ -41,14 +43,24 @@ MUTATIONS = [
     ("KO1 step 1 passes on an old KO", C, 'Obj = { Type = "Event", Name = "FirstKO" } },',
      'Obj = { Type = "Event", Name = "FirstKO", Past = true } },'),
     ("KO1 step 2 never passes early", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionBought" } },'),
-    ("KO1 step 3 never passes early", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "PotionUsed" } },'),
+    ("KO1 step 3 never passes early", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "QuickSlotSet", Held = "QuickSlots" } },'),
+    ("KO1 step 3 ignores a filled slot", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true } },'),
+    ("KO1 step 3 reads another field", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "Quick" } },'),
+    ("KO1 step 3 waits for the wrong happening", C, DEF_STEP3,
+     'Obj = { Type = "Event", Name = "PotionBought", Past = true, Held = "QuickSlots" } },'),
+    ("KO1 step 4 never passes early", C, DEF_STEP4, 'Obj = { Type = "Event", Name = "PotionUsed" } },'),
+    ("KO1 step 4 waits for the wrong happening", C, DEF_STEP4, 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true } },'),
     ("KO1 step 2 waits for the wrong happening", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionUsed", Past = true } },'),
+    ("KO1 guides step 2 to the old spot", C, 'Guide = "PotionShop", TopUpGold = 50,', 'Guide = "Crossroads", TopUpGold = 50,'),
+    ("KO1 guides step 3 nowhere", C, 'ShortName = "Quick slot", Guide = "QuickSlot",', 'ShortName = "Quick slot",'),
+    ("QuickSlotSet not a listed happening", C, "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }",
+     "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, PotionUsed = true }"),
     ("KO1 tops up to 25 only", C, "TopUpGold = 50,", "TopUpGold = 25,"),
-    ("KO1 never tops up", C, "Guide = \"Crossroads\", TopUpGold = 50,", "Guide = \"Crossroads\","),
-    ("KO1 rematch counts any King", C, DEF_STEP4,
+    ("KO1 never tops up", C, "Guide = \"PotionShop\", TopUpGold = 50,", "Guide = \"PotionShop\","),
+    ("KO1 rematch counts any King", C, DEF_STEP5,
      'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Count = 1 } },'),
-    ("KO1 rematch in any zone", C, DEF_STEP4, 'Obj = { Type = "Kill", Kind = "SlimeKing", Personal = true, Count = 1 } },'),
-    ("KO1 rematch kills any slime", C, DEF_STEP4,
+    ("KO1 rematch in any zone", C, DEF_STEP5, 'Obj = { Type = "Kill", Kind = "SlimeKing", Personal = true, Count = 1 } },'),
+    ("KO1 rematch kills any slime", C, DEF_STEP5,
      'Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Personal = true, Count = 1 } },'),
     ("KO1 pays no scroll", C, 'Reward = { Gold = 2, XP = 2, Item = "Enh70", N = 1 },', 'Reward = { Gold = 2, XP = 2 },'),
     ("KO1 pays no XP", C, 'Reward = { Gold = 2, XP = 2, Item = "Enh70", N = 1 },', 'Reward = { Gold = 2, Item = "Enh70", N = 1 },'),
@@ -60,10 +72,10 @@ MUTATIONS = [
     ("KO1 starts with a toast", C, 'Kind = "Sub", Title = "The King\'s Hop", ShortName = "King\'s hop",',
      'Kind = "Sub", Title = "The King\'s Hop", ShortName = "King\'s hop", Start = "The King is coming!",'),
     ("KO1 forgotten in the sub list", C, 'table.insert(Config.StoryQuests.Subs, "KO1")', ""),
-    ("KO1 the rematch step moved", C, "RematchStep = 4, SipAttr", "RematchStep = 3, SipAttr"),
+    ("KO1 the rematch step moved", C, "RematchStep = 5, SipAttr", "RematchStep = 4, SipAttr"),
     ("KO1 the KO step moved", C, "Config.FirstKO = { Quest = \"KO1\", Step = 1,", "Config.FirstKO = { Quest = \"KO1\", Step = 2,"),
-    ("KO1 PotionUsed not a listed happening", C, "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, PotionUsed = true }",
-     "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true }"),
+    ("KO1 PotionUsed not a listed happening", C, "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }",
+     "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true }"),
     ("KO1 no practice-sip line", C, '\tPotionPractice = "Cheers! The potion stays in your bag.",', "\tPotionPracticeX = \"Cheers!\","),
     # the engine
     ("a personal kill counts for a normal kill step", ST, "if (info.Personal == true) ~= (obj.Personal == true) then return 0 end",
@@ -80,10 +92,12 @@ MUTATIONS = [
     ("Requires.MaxLevel ignored", ST, "\tif req.MaxLevel and num(data.Level, 1) > req.MaxLevel then return false end\n", ""),
     ("Requires.MaxLevel off by one", ST, "num(data.Level, 1) > req.MaxLevel then return false end", "num(data.Level, 1) >= req.MaxLevel then return false end"),
     ("Requires.NoPotionYet ignored", ST, "\tif req.NoPotionYet and not noPotionYet(data) then return false end\n", ""),
-    ("a seen happening never passes a later step", ST, "return type(obj) == \"table\" and obj.Type == \"Event\" and obj.Past == true and story(data).First[obj.Name] == true",
-     "return false"),
-    ("Past ignored (every seen happening passes)", ST, "obj.Type == \"Event\" and obj.Past == true and story(data).First[obj.Name] == true",
-     "obj.Type == \"Event\" and story(data).First[obj.Name] == true"),
+    ("a seen happening never passes a later step", ST, "\tif story(data).First[obj.Name] == true then return true end\n", ""),
+    ("Past ignored (every seen happening passes)", ST, " or obj.Past ~= true then return false end", " then return false end"),
+    ("Held ignored (a filled slot does not pass the step)", ST,
+     "\treturn type(held) == \"string\" and type(data[held]) == \"string\" and string.find(data[held], \"%a\") ~= nil\n", "\treturn false\n"),
+    ("Held counts any text (',,' too)", ST, "string.find(data[held], \"%a\") ~= nil", "data[held] ~= \"\""),
+    ("Held counts a missing field", ST, "return type(held) == \"string\" and type(data[held]) == \"string\" and", "return type(held) == \"string\" and"),
     ("the 1 s loop never passes a seen happening", ST, "\t\t\telseif obj.Type == \"Event\" then\n\t\t\t\tdone = eventPast(data, obj)\n",
      "\t\t\telseif obj.Type == \"Event\" then\n\t\t\t\tdone = false\n"),
     ("TopUpGold never paid", ST, "\t\ttopUpGold(player, data, id, track)\n", ""),
@@ -122,8 +136,8 @@ MUTATIONS = [
      "local want = true\n\t\tif player:GetAttribute(sipAttr)"),
     ("the sip flag waits for the wrong happening", ST, "local want = wantsEvent(player, data, \"PotionUsed\")\n\t\tif player:GetAttribute(sipAttr)",
      "local want = wantsEvent(player, data, \"PotionBought\")\n\t\tif player:GetAttribute(sipAttr)"),
-    ("the sip flag has another name", C, 'RematchStep = 4, SipAttr = "PotionSip" }', 'RematchStep = 4, SipAttr = "SipFlag" }'),
-    ("the sip flag has no name", C, 'RematchStep = 4, SipAttr = "PotionSip" }', "RematchStep = 4 }"),
+    ("the sip flag has another name", C, 'RematchStep = 5, SipAttr = "PotionSip" }', 'RematchStep = 5, SipAttr = "SipFlag" }'),
+    ("the sip flag has no name", C, 'RematchStep = 5, SipAttr = "PotionSip" }', "RematchStep = 5 }"),
 ]
 
 
@@ -147,8 +161,8 @@ def static() -> tuple[int, list[str]]:
     events = re.search(r"^Config\.StoryQuests\.Events = \{(.*?)\}", config, re.M)
     listed = set(re.findall(r"(\w+) = true", events.group(1))) if events else set()
     used = set(re.findall(r'Type = "Event", Name = "(\w+)"', config))
-    check(listed == {"FirstKO", "PotionBought", "PotionUsed"} and used <= listed,
-          f"Config.StoryQuests.Events lists the three happenings and the steps use only those ({sorted(used)})")
+    check(listed == {"FirstKO", "PotionBought", "QuickSlotSet", "PotionUsed"} and used <= listed,
+          f"Config.StoryQuests.Events lists the four happenings and the steps use only those ({sorted(used)})")
     check(shop.count('pcall(story.Event, player, "PotionBought"') == 1, "ShopService reports PotionBought once (a successful BuyPotion)")
     buy = function_block(shop, "function M.BuyPotion(")
     check(buy.index("S.PlayerService.SetStat(player, key, count + amount)") < buy.index('"PotionBought"'),
@@ -177,7 +191,8 @@ SUITE = Suite(
              "none bought or drunk, Requires.MaxLevel / NoPotionYet), as a plain row (no popup, no toast, no Start / Finish): "
              "Defeat the King Slime (Event FirstKO) -> Buy a potion (Event PotionBought, TopUpGold 50: the missing part of 50 "
              "gold is added to the carried gold once, source Choice, nothing when already rich or when the step passes at once) "
-             "-> Drink a potion from your quick slot (Event PotionUsed) -> Defeat the King Slime (a Personal kill: only a "
+             "-> Put the potion in a quick slot (Event QuickSlotSet; Held = data.QuickSlots with a letter in it passes it at once) "
+             "-> Drink it from your quick slot (Event PotionUsed) -> Defeat the King Slime (a Personal kill: only a "
              "personal King Slime in the meadow counts, shared kills never) -> two minutes of hunting gold + XP and one 70% scroll, "
              "once. StoryQuestService.Event(player, name, info) = the one way a service reports a named happening (listed in "
              "Config.StoryQuests.Events; unknown names, non-players, players not ready: nothing): it is saved in "

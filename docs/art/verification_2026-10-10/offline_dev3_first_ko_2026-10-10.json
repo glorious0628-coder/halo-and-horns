@@ -1,15 +1,15 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 151,
+  "checks": 179,
   "failedChecks": 0,
-  "namedChecks": 151,
+  "namedChecks": 179,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
     {
       "group": "config",
-      "check": "KO1: a visible sub 'The King's Hop' with four steps",
+      "check": "KO1: a visible sub 'The King's Hop' with five steps",
       "pass": 1,
       "fail": 0
     },
@@ -33,19 +33,25 @@
     },
     {
       "group": "config",
-      "check": "step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+      "check": "step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "step 3: Drink a potion from your quick slot = PotionUsed (passes when seen before)",
+      "check": "step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "step 4: the rematch = one personal King Slime kill in the meadow",
+      "check": "step 4: Drink it from your quick slot = PotionUsed (passes when seen before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 5: the rematch = one personal King Slime kill in the meadow",
       "pass": 1,
       "fail": 0
     },
@@ -81,6 +87,12 @@
     },
     {
       "group": "config",
+      "check": "step 5: a phone short name (<= 14), no Start line, no panel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
       "check": "KO1 has a short name for the phone row",
       "pass": 1,
       "fail": 0
@@ -105,13 +117,19 @@
     },
     {
       "group": "config",
+      "check": "every Event step waits for a listed happening: QuickSlotSet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
       "check": "every Event step waits for a listed happening: PotionUsed",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)",
+      "check": "Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (5)",
       "pass": 1,
       "fail": 0
     },
@@ -124,6 +142,12 @@
     {
       "group": "config",
       "check": "the potion stock keys and the practice-sip line exist",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a new player's quick slots start empty (the Held field is data.QuickSlots)",
       "pass": 1,
       "fail": 0
     },
@@ -321,19 +345,19 @@
     },
     {
       "group": "flow",
-      "check": "Halo: row 3 reads 'Drink a potion from your quick slot'",
+      "check": "Halo: row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Halo: step 3 waits for PotionUsed only",
+      "check": "Halo: step 3 waits for QuickSlotSet only",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+      "check": "Halo: step 3: no sip yet (the potion is not in a slot)",
       "pass": 1,
       "fail": 0
     },
@@ -345,19 +369,43 @@
     },
     {
       "group": "flow",
-      "check": "Halo: PotionUsed moves step 3 to 4",
+      "check": "Halo: QuickSlotSet moves step 3 to 4",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Halo: step 4: PotionSip false again",
+      "check": "Halo: row 4 reads 'Drink it from your quick slot'",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Halo: row 4 reads 'Defeat the King Slime' again",
+      "check": "Halo: step 4 waits for PotionUsed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: PotionUsed moves step 4 to 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: step 5: PotionSip false again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: row 5 reads 'Defeat the King Slime' again",
       "pass": 1,
       "fail": 0
     },
@@ -447,19 +495,19 @@
     },
     {
       "group": "flow",
-      "check": "Horns: row 3 reads 'Drink a potion from your quick slot'",
+      "check": "Horns: row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Horns: step 3 waits for PotionUsed only",
+      "check": "Horns: step 3 waits for QuickSlotSet only",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
+      "check": "Horns: step 3: no sip yet (the potion is not in a slot)",
       "pass": 1,
       "fail": 0
     },
@@ -471,19 +519,43 @@
     },
     {
       "group": "flow",
-      "check": "Horns: PotionUsed moves step 3 to 4",
+      "check": "Horns: QuickSlotSet moves step 3 to 4",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Horns: step 4: PotionSip false again",
+      "check": "Horns: row 4 reads 'Drink it from your quick slot'",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Horns: row 4 reads 'Defeat the King Slime' again",
+      "check": "Horns: step 4 waits for PotionUsed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: step 4: PotionSip is true at once (the client lets a full bar be used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: PotionUsed moves step 4 to 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: step 5: PotionSip false again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: row 5 reads 'Defeat the King Slime' again",
       "pass": 1,
       "fail": 0
     },
@@ -573,19 +645,19 @@
     },
     {
       "group": "flow",
-      "check": "Neutral: row 3 reads 'Drink a potion from your quick slot'",
+      "check": "Neutral: row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Neutral: step 3 waits for PotionUsed only",
+      "check": "Neutral: step 3 waits for QuickSlotSet only",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Neutral: step 3: PotionSip is true at once (the client lets a full bar be used)",
+      "check": "Neutral: step 3: no sip yet (the potion is not in a slot)",
       "pass": 1,
       "fail": 0
     },
@@ -597,19 +669,43 @@
     },
     {
       "group": "flow",
-      "check": "Neutral: PotionUsed moves step 3 to 4",
+      "check": "Neutral: QuickSlotSet moves step 3 to 4",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Neutral: step 4: PotionSip false again",
+      "check": "Neutral: row 4 reads 'Drink it from your quick slot'",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "flow",
-      "check": "Neutral: row 4 reads 'Defeat the King Slime' again",
+      "check": "Neutral: step 4 waits for PotionUsed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: step 4: PotionSip is true at once (the client lets a full bar be used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: PotionUsed moves step 4 to 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: step 5: PotionSip false again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: row 5 reads 'Defeat the King Slime' again",
       "pass": 1,
       "fail": 0
     },
@@ -795,7 +891,7 @@
     },
     {
       "group": "ahead",
-      "check": "the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+      "check": "the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
       "pass": 1,
       "fail": 0
     },
@@ -807,13 +903,85 @@
     },
     {
       "group": "ahead",
-      "check": "the purchase passes the drink step at once (already seen)",
+      "check": "the purchase does not skip the slot step",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ahead",
-      "check": "buying moves on to the drink step",
+      "check": "the slot passes the drink step at once (already seen)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "an old save at step 2 waits for the purchase",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "an old save's filled slots pass step 3 at once (no 'put it' to do)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "slots text ',MP,' is filled: step 3 passes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "slots text ',,HP' is filled: step 3 passes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "slots text 'HP,,' is filled: step 3 passes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "slots text ',,' is empty: step 3 waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "slots text '' is empty: step 3 waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "slots text ', ,' is empty: step 3 waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "no saved slots field at all: step 3 waits (nothing is held)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "a slots field that is not text: step 3 waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "buying moves on to the slot step",
       "pass": 1,
       "fail": 0
     },
@@ -918,9 +1086,9 @@
   "staticChecks": 12,
   "staticFailures": [],
   "mutations": {
-    "total": 60,
-    "applied": 60,
-    "caught": 60,
+    "total": 71,
+    "applied": 71,
+    "caught": 71,
     "skipped": false,
     "results": [
       {
@@ -993,8 +1161,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
           "top-up :: step 2 passes at once (bought earlier), no top-up"
         ],
         "newFailingCount": 3
@@ -1006,11 +1174,89 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "ahead :: the purchase passes the drink step at once (already seen)",
-          "config :: step 3: Drink a potion from your quick slot = PotionUsed (passes when seen before)"
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: slots text ',,HP' is filled: step 3 passes",
+          "ahead :: slots text ',MP,' is filled: step 3 passes",
+          "ahead :: slots text 'HP,,' is filled: step 3 passes",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "KO1 step 3 ignores a filled slot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: slots text ',,HP' is filled: step 3 passes",
+          "ahead :: slots text ',MP,' is filled: step 3 passes",
+          "ahead :: slots text 'HP,,' is filled: step 3 passes",
+          "config :: step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "KO1 step 3 reads another field",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: slots text ',,HP' is filled: step 3 passes",
+          "ahead :: slots text ',MP,' is filled: step 3 passes",
+          "ahead :: slots text 'HP,,' is filled: step 3 passes",
+          "config :: step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "KO1 step 3 waits for the wrong happening",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a second purchase moves nothing",
+          "ahead :: a slots field that is not text: step 3 waits",
+          "ahead :: buying moves on to the slot step",
+          "ahead :: no saved slots field at all: step 3 waits (nothing is held)",
+          "ahead :: slots text '' is empty: step 3 waits",
+          "ahead :: slots text ', ,' is empty: step 3 waits"
+        ],
+        "newFailingCount": 25
+      },
+      {
+        "mutation": "KO1 step 4 never passes early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "ahead :: the slot passes the drink step at once (already seen)",
+          "config :: step 4: Drink it from your quick slot = PotionUsed (passes when seen before)"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "KO1 step 4 waits for the wrong happening",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "config :: step 4: Drink it from your quick slot = PotionUsed (passes when seen before)",
+          "flow :: Halo: PotionUsed moves step 4 to 5",
+          "flow :: Halo: QuickSlotSet moves step 3 to 4",
+          "flow :: Halo: row 4 reads 'Drink it from your quick slot'"
+        ],
+        "newFailingCount": 18
       },
       {
         "mutation": "KO1 step 2 waits for the wrong happening",
@@ -1021,12 +1267,56 @@
         "newFailingChecks": [
           "ahead :: a drink before the KO does not skip the purchase",
           "ahead :: a second purchase moves nothing",
-          "ahead :: buying moves on to the drink step",
-          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
-          "flow :: Halo: PotionBought moves step 2 to 3",
-          "flow :: Halo: row 3 reads 'Drink a potion from your quick slot'"
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: a slots field that is not text: step 3 waits",
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: buying moves on to the slot step"
         ],
-        "newFailingCount": 17
+        "newFailingCount": 39
+      },
+      {
+        "mutation": "KO1 guides step 2 to the old spot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
+          "flow :: Halo: row 2 reads 'Buy a potion' and guides to the seller",
+          "flow :: Horns: row 2 reads 'Buy a potion' and guides to the seller",
+          "flow :: Neutral: row 2 reads 'Buy a potion' and guides to the seller"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "KO1 guides step 3 nowhere",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)",
+          "flow :: Halo: row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)",
+          "flow :: Horns: row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)",
+          "flow :: Neutral: row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "QuickSlotSet not a listed happening",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: events seen early are remembered, the open step does not move",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "ahead :: the slot passes the drink step at once (already seen)",
+          "config :: every Event step waits for a listed happening: QuickSlotSet",
+          "config :: the happenings are listed in Config.StoryQuests.Events"
+        ],
+        "newFailingCount": 39
       },
       {
         "mutation": "KO1 tops up to 25 only",
@@ -1035,7 +1325,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
@@ -1051,7 +1341,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Halo: no second top-up",
           "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
@@ -1067,7 +1357,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: step 4: the rematch = one personal King Slime kill in the meadow",
+          "config :: step 5: the rematch = one personal King Slime kill in the meadow",
           "flow :: Halo: never again (one payout)",
           "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
           "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
@@ -1083,7 +1373,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: step 4: the rematch = one personal King Slime kill in the meadow",
+          "config :: step 5: the rematch = one personal King Slime kill in the meadow",
           "flow :: Halo: never again (one payout)",
           "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
           "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
@@ -1099,7 +1389,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: step 4: the rematch = one personal King Slime kill in the meadow",
+          "config :: step 5: the rematch = one personal King Slime kill in the meadow",
           "flow :: Halo: never again (one payout)",
           "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
           "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
@@ -1211,7 +1501,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)"
+          "config :: Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (5)"
         ],
         "newFailingCount": 1
       },
@@ -1222,7 +1512,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)"
+          "config :: Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (5)"
         ],
         "newFailingCount": 1
       },
@@ -1234,11 +1524,11 @@
         "crashed": false,
         "newFailingChecks": [
           "ahead :: events seen early are remembered, the open step does not move",
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "ahead :: the purchase passes the drink step at once (already seen)",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "ahead :: the slot passes the drink step at once (already seen)",
           "config :: every Event step waits for a listed happening: PotionUsed",
           "config :: the happenings are listed in Config.StoryQuests.Events",
-          "flow :: Halo: PotionUsed moves step 3 to 4"
+          "flow :: Halo: PotionUsed moves step 4 to 5"
         ],
         "newFailingCount": 29
       },
@@ -1377,11 +1667,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "ahead :: the purchase passes the drink step at once (already seen)",
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "ahead :: the slot passes the drink step at once (already seen)",
           "top-up :: step 2 passes at once (bought earlier), no top-up"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "Past ignored (every seen happening passes)",
@@ -1395,17 +1686,63 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "Held ignored (a filled slot does not pass the step)",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: slots text ',,HP' is filled: step 3 passes",
+          "ahead :: slots text ',MP,' is filled: step 3 passes",
+          "ahead :: slots text 'HP,,' is filled: step 3 passes"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Held counts any text (',,' too)",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a second purchase moves nothing",
+          "ahead :: buying moves on to the slot step",
+          "ahead :: slots text ', ,' is empty: step 3 waits",
+          "ahead :: slots text ',,' is empty: step 3 waits",
+          "ahead :: the purchase does not skip the slot step",
+          "flow :: Halo: PotionBought moves step 2 to 3"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "Held counts a missing field",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: no service warnings (pcall-swallowed handler errors)",
+          "offered :: group ran to the end without a Lua error",
+          "top-up :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 3
+      },
+      {
         "mutation": "the 1 s loop never passes a seen happening",
         "file": "src/ServerScriptService/StoryQuestService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "ahead :: the purchase passes the drink step at once (already seen)",
-          "top-up :: step 2 passes at once (bought earlier), no top-up"
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: slots text ',,HP' is filled: step 3 passes",
+          "ahead :: slots text ',MP,' is filled: step 3 passes",
+          "ahead :: slots text 'HP,,' is filled: step 3 passes",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 8
       },
       {
         "mutation": "TopUpGold never paid",
@@ -1533,14 +1870,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: events seen early are remembered, the open step does not move",
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "ahead :: the purchase passes the drink step at once (already seen)",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "ahead :: the slot passes the drink step at once (already seen)",
           "flow :: Halo: FirstKO moves step 1 to 2 and is remembered",
-          "flow :: Horns: FirstKO moves step 1 to 2 and is remembered",
-          "flow :: Neutral: FirstKO moves step 1 to 2 and is remembered"
+          "flow :: Horns: FirstKO moves step 1 to 2 and is remembered"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "Event moves a step that waits for another name",
@@ -1551,12 +1888,12 @@
         "newFailingChecks": [
           "ahead :: a drink before the KO does not skip the purchase",
           "ahead :: a second purchase moves nothing",
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: events seen early are remembered, the open step does not move",
-          "flow :: Halo: PotionBought moves step 2 to 3",
-          "flow :: Halo: PotionUsed moves step 3 to 4",
-          "flow :: Halo: a second KO moves nothing"
+          "ahead :: the purchase does not skip the slot step",
+          "flow :: Halo: PotionBought moves step 2 to 3"
         ],
-        "newFailingCount": 23
+        "newFailingCount": 37
       },
       {
         "mutation": "Event never moves a step",
@@ -1568,11 +1905,11 @@
           "ahead :: a drink before the KO does not skip the purchase",
           "ahead :: a player who is not ready is ignored",
           "ahead :: a second purchase moves nothing",
-          "ahead :: an event is one player's own",
-          "ahead :: buying moves on to the drink step",
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)"
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: a slots field that is not text: step 3 waits",
+          "ahead :: an event is one player's own"
         ],
-        "newFailingCount": 73
+        "newFailingCount": 94
       },
       {
         "mutation": "Event never refreshes the next step",
@@ -1581,14 +1918,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "ahead :: the purchase passes the drink step at once (already seen)",
-          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Neutral: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "top-up :: step 2 passes at once (bought earlier), no top-up"
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
+          "ahead :: slots text ',,HP' is filled: step 3 passes",
+          "ahead :: slots text ',MP,' is filled: step 3 passes",
+          "ahead :: slots text 'HP,,' is filled: step 3 passes",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 11
       },
       {
         "mutation": "Event refreshes only once (one step per call)",
@@ -1597,7 +1934,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)"
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
         ],
         "newFailingCount": 1
       },
@@ -1610,12 +1947,12 @@
         "newFailingChecks": [
           "flow :: Halo: FirstKO moves step 1 to 2 and is remembered",
           "flow :: Halo: PotionBought moves step 2 to 3",
-          "flow :: Halo: PotionUsed moves step 3 to 4",
+          "flow :: Halo: PotionUsed moves step 4 to 5",
+          "flow :: Halo: QuickSlotSet moves step 3 to 4",
           "flow :: Horns: FirstKO moves step 1 to 2 and is remembered",
-          "flow :: Horns: PotionBought moves step 2 to 3",
-          "flow :: Horns: PotionUsed moves step 3 to 4"
+          "flow :: Horns: PotionBought moves step 2 to 3"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 12
       },
       {
         "mutation": "Wants is always true",
@@ -1624,14 +1961,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "flow :: Halo: step 2 waits for PotionBought only",
-          "flow :: Halo: step 3 waits for PotionUsed only",
-          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 2 waits for PotionBought only",
-          "flow :: Horns: step 3 waits for PotionUsed only",
-          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+          "flow :: Halo: step 3 waits for QuickSlotSet only",
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 4 waits for PotionUsed only",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 19
       },
       {
         "mutation": "Wants ignores the name",
@@ -1640,14 +1977,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "flow :: Halo: step 2 waits for PotionBought only",
-          "flow :: Halo: step 3 waits for PotionUsed only",
-          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 2 waits for PotionBought only",
-          "flow :: Horns: step 3 waits for PotionUsed only",
-          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+          "flow :: Halo: step 3 waits for QuickSlotSet only",
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 4 waits for PotionUsed only",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 19
       },
       {
         "mutation": "CurrentStep names a quest waiting for [Claim]",
@@ -1667,14 +2004,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Halo: step 4: PotionSip false again",
-          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Horns: step 4: PotionSip false again"
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: step 5: PotionSip false again",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 14
       },
       {
         "mutation": "the sip flag is never cleared",
@@ -1683,14 +2020,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "flow :: Halo: step 4: PotionSip false again",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 5: PotionSip false again",
           "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 4: PotionSip false again",
-          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Neutral: step 4: PotionSip false again"
+          "flow :: Horns: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Horns: step 5: PotionSip false again"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 10
       },
       {
         "mutation": "the sip flag is always on",
@@ -1699,14 +2036,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
-          "flow :: Halo: step 4: PotionSip false again",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 5: PotionSip false again",
           "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 4: PotionSip false again",
-          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Neutral: step 4: PotionSip false again"
+          "flow :: Horns: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Horns: step 5: PotionSip false again"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 10
       },
       {
         "mutation": "the sip flag waits for the wrong happening",
@@ -1715,14 +2052,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
           "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Horns: step 4: PotionSip is true at once (the client lets a full bar be used)",
           "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Neutral: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Neutral: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+          "flow :: Neutral: step 4: PotionSip is true at once (the client lets a full bar be used)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "the sip flag has another name",
@@ -1731,14 +2068,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
           "config :: Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
-          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Halo: step 4: PotionSip false again",
-          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)"
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: step 5: PotionSip false again"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 15
       },
       {
         "mutation": "the sip flag has no name",
@@ -1747,14 +2084,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
           "config :: Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
-          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Halo: step 4: PotionSip false again",
-          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)"
+          "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
+          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: step 5: PotionSip false again"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 15
       }
     ]
   },
@@ -1762,11 +2099,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ce439e76da4e1a35dfa7960e9650ef4748fca5b9dad3d7b1799616d0ebdcbe7a",
+    "src/ReplicatedStorage/Shared/Config.luau": "33c86e616147b90247bfa72159552b8e02419d29d88363fc071ac4c0213d134f",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "989b17380513ea51dc947698fad09939e269b5cf672fba39e40267df878f1bbd",
+    "src/ServerScriptService/StoryQuestService.luau": "fa5b75d0dc29005b9ad65010b4cfcdbb27150a54aeda176d75275be84be761fd",
     "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
     "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -1774,10 +2111,10 @@
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
     "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808"
   },
-  "fixtureSHA256": "5ada540ddd71f780bf3971f9e230f0187723734394fbec628119f84ffc053652",
+  "fixtureSHA256": "596c7d6c6ec01e4727870b491b725e66efe09fc37ee680697376cb592ba03dcb",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-109 / A23-110: the sub KO1 'The King's Hop' starts by itself after M1_2 for a Lv <= 8 save with no potion (no stock, none bought or drunk, Requires.MaxLevel / NoPotionYet), as a plain row (no popup, no toast, no Start / Finish): Defeat the King Slime (Event FirstKO) -> Buy a potion (Event PotionBought, TopUpGold 50: the missing part of 50 gold is added to the carried gold once, source Choice, nothing when already rich or when the step passes at once) -> Drink a potion from your quick slot (Event PotionUsed) -> Defeat the King Slime (a Personal kill: only a personal King Slime in the meadow counts, shared kills never) -> two minutes of hunting gold + XP and one 70% scroll, once. StoryQuestService.Event(player, name, info) = the one way a service reports a named happening (listed in Config.StoryQuests.Events; unknown names, non-players, players not ready: nothing): it is saved in data.Story.First[name] first, the open Event step that waits for it moves on, the next steps are checked at once; an Event step with Past passes at once when its happening was seen before it opened (never a dead end for a player who ran ahead); a client has no way to report one (StoryAction is Open / Talk / Choose and an Event step has no panel). Wants(player, name) = a step waits for it; CurrentStep(player, id) = the step of a started quest. Config.FirstKO = { Quest, Step, RematchStep } is what game dev 2's personal King reads.",
+  "contract": "A23-109 / A23-110: the sub KO1 'The King's Hop' starts by itself after M1_2 for a Lv <= 8 save with no potion (no stock, none bought or drunk, Requires.MaxLevel / NoPotionYet), as a plain row (no popup, no toast, no Start / Finish): Defeat the King Slime (Event FirstKO) -> Buy a potion (Event PotionBought, TopUpGold 50: the missing part of 50 gold is added to the carried gold once, source Choice, nothing when already rich or when the step passes at once) -> Put the potion in a quick slot (Event QuickSlotSet; Held = data.QuickSlots with a letter in it passes it at once) -> Drink it from your quick slot (Event PotionUsed) -> Defeat the King Slime (a Personal kill: only a personal King Slime in the meadow counts, shared kills never) -> two minutes of hunting gold + XP and one 70% scroll, once. StoryQuestService.Event(player, name, info) = the one way a service reports a named happening (listed in Config.StoryQuests.Events; unknown names, non-players, players not ready: nothing): it is saved in data.Story.First[name] first, the open Event step that waits for it moves on, the next steps are checked at once; an Event step with Past passes at once when its happening was seen before it opened (never a dead end for a player who ran ahead); a client has no way to report one (StoryAction is Open / Talk / Choose and an Event step has no panel). Wants(player, name) = a step waits for it; CurrentStep(player, id) = the step of a started quest. Config.FirstKO = { Quest, Step, RematchStep } is what game dev 2's personal King reads.",
   "limitations": "The shop / drink hooks and the practice sip (full HP / MP) are tested in tools/test_potions.py. The personal King itself (hop, landing, lossless KO, rematch numbers) is game dev 2's; the row guide, the quick-slot highlight and the KO screen are game dev 1's. The 1 s loop timing is modelled by calling Refresh by hand."
 }

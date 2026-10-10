@@ -425,9 +425,13 @@ local function noPotionYet(data)
 	return true
 end
 
--- an Event step the player has already seen happen (obj.Past): it passes without waiting
+-- an Event step the player has already seen happen (obj.Past): it passes without waiting; obj.Held names a text field of the
+-- save whose letters mean it is done already (an old save's quick slots hold "HP,MP,": nothing is left to put in a slot)
 local function eventPast(data, obj)
-	return type(obj) == "table" and obj.Type == "Event" and obj.Past == true and story(data).First[obj.Name] == true
+	if type(obj) ~= "table" or obj.Type ~= "Event" or obj.Past ~= true then return false end
+	if story(data).First[obj.Name] == true then return true end
+	local held = obj.Held
+	return type(held) == "string" and type(data[held]) == "string" and string.find(data[held], "%a") ~= nil
 end
 
 -- A23-110 TopUpGold: a step that opens with the player short of this much gold (carried + bank) adds the missing part to the
