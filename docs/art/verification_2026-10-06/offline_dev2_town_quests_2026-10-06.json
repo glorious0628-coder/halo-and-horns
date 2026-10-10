@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 865,
+  "checks": 938,
   "failedChecks": 0,
-  "namedChecks": 792,
+  "namedChecks": 864,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -39,7 +39,7 @@
     },
     {
       "group": "config",
-      "check": "R1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "check": "R1: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
       "pass": 1,
       "fail": 0
     },
@@ -81,7 +81,7 @@
     },
     {
       "group": "config",
-      "check": "N3: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "check": "N3: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
       "pass": 1,
       "fail": 0
     },
@@ -123,7 +123,7 @@
     },
     {
       "group": "config",
-      "check": "H1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
+      "check": "H1: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
       "pass": 1,
       "fail": 0
     },
@@ -423,7 +423,7 @@
     },
     {
       "group": "r1-evil",
-      "check": "B: 3 HP potions + 60 gold (then the quest's 120)",
+      "check": "B: 3 HP potions + 220 gold (then the quest's 120)",
       "pass": 1,
       "fail": 0
     },
@@ -1971,7 +1971,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "S6: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "S6: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2013,7 +2013,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2061,7 +2061,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "H2: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "H2: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2109,7 +2109,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "R5: A = one 70% scroll, B = 3 HP potions + 60 gold",
+      "check": "R5: A = one 70% scroll, B = 3 HP potions + 220 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2686,7 +2686,7 @@
     {
       "group": "subs18-data",
       "check": "H6: spot HeroStatue exists",
-      "pass": 1,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -2883,7 +2883,7 @@
     },
     {
       "group": "subs18-flow",
-      "check": "Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold",
+      "check": "Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold",
       "pass": 1,
       "fail": 0
     },
@@ -2918,8 +2918,308 @@
       "fail": 0
     },
     {
+      "group": "halo-check-data",
+      "check": "#38 H1: any Slime Prince in the meadow (the row says so)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#37 H2 step 1 guides to the fountain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#18 H3 / H5 have a Start line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H6 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H6 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H2 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H2 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "OathH pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "OathH pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H5 pick 3: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H5 pick 3: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H3 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H3 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H1 pick 4: in Halo Citadel (Npc, or after a way home)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "H1 pick 4: a card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "the Halo-only picks were all looked at (H1 H2 H3 H5 H6 OathH)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#40 the oaths sit in the Faction tab",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "#2 landmark marker tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-data",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "H2 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "the fountain: on to the slimes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "#36 5 slimes: take it home first (no pick card in the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "the 'take it home' line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "home in Halo Citadel: the pick card opens there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "#71 Hang it in my house: 3 HP potions + 220 gold, then 120",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "an old save at the old pick step: in the meadow it waits for the way home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "... and gets the card in Halo Citadel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h2",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "H3 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "#36 6 slimes: back to Sir Gleam first (no card in the meadow)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "in Halo Citadel: Sir Gleam's card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "H6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "#35 in the woods: no statue card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "at the hero statues: the card opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h6",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "H6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "#2 a marker outside the workspace or for another spot moves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "... the Config spot still works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "#2 with the statue marker placed: the old spot no longer counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "... standing at the marker does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "S6 offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "#2 a kill at the old arrival spot no longer counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "... a kill at the marker does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-landmark",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "send-all-subs",
-      "check": "SendAllSubs is off until the HUD skips More rows",
+      "check": "SendAllSubs is on in the real Config (the HUD skips More rows, the quest window lists all)",
       "pass": 1,
       "fail": 0
     },
@@ -2931,19 +3231,13 @@
     },
     {
       "group": "send-all-subs",
-      "check": "a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
+      "check": "a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "send-all-subs",
-      "check": "SendAllSubs: all five active subs, the 4th and 5th marked More",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "send-all-subs",
-      "check": "the H1 row sends no Rank / Order",
+      "check": "SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
       "pass": 1,
       "fail": 0
     },
@@ -2962,6 +3256,12 @@
     {
       "group": "send-all-subs",
       "check": "the T3 row sends no Rank / Order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "the H1 row sends no Rank / Order",
       "pass": 1,
       "fail": 0
     },
@@ -3021,6 +3321,18 @@
     },
     {
       "group": "send-all-subs",
+      "check": "T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
+      "check": "and with SendAllSubs the plain offers follow (newer first), marked More",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "send-all-subs",
       "check": "a Horns player never gets Bright's offer",
       "pass": 1,
       "fail": 0
@@ -3033,6 +3345,102 @@
     },
     {
       "group": "send-all-subs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "D0 is not offered before M1_4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: tapped: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Halo: never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: tapped: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Horns: never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: tapped: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "Neutral: never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "daily intro quest (A23-104)",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -3754,6 +4162,30 @@
     {
       "group": "npc-talk",
       "check": "a nil / non-string NPC id never opens a dialogue that names no NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H3: the first card names Sir Gleam, the choice card names nobody",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "talking to Sir Gleam opens H3's first card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "... not by talking to Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H3's choice card has no NPC: nothing to say to Sir Gleam",
       "pass": 1,
       "fail": 0
     },
@@ -4764,9 +5196,9 @@
   "staticChecks": 8,
   "staticFailures": [],
   "mutations": {
-    "total": 200,
-    "applied": 200,
-    "caught": 200,
+    "total": 229,
+    "applied": 229,
+    "caught": 229,
     "skipped": false,
     "results": [
       {
@@ -4956,13 +5388,13 @@
         "crashed": false,
         "newFailingChecks": [
           "a23-70 lunchbox :: a player past the Forge (M1_1 done) never gets it",
-          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
-          "h1-good :: Open from far away: no window",
-          "h1-good :: Open next to Bright: the talk window"
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 12
       },
       {
         "mutation": "the card waits in the list",
@@ -5331,8 +5763,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: R1: A = one 70% scroll, B = 3 HP potions + 60 gold; 1 honor / infamy point",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)"
+          "config :: R1: A = one 70% scroll, B = 3 HP potions + 220 gold; 1 honor / infamy point",
+          "r1-evil :: B: 3 HP potions + 220 gold (then the quest's 120)"
         ],
         "newFailingCount": 2
       },
@@ -5392,7 +5824,7 @@
           "r1-evil :: 15 s: step 3",
           "r1-evil :: 5 slimes",
           "r1-evil :: 6 slimes: step 4",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)",
+          "r1-evil :: B: 3 HP potions + 220 gold (then the quest's 120)",
           "r1-evil :: B: Pick 'Evil', infamy +1"
         ],
         "newFailingCount": 9
@@ -5422,7 +5854,7 @@
           "ch3-horns-evil :: Into our vault: Infamy +3 and Dibs's 192 gold at once",
           "h1-good :: A: one 70% scroll (no potions)"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "a Neutral A pays Evil's reward",
@@ -5456,11 +5888,12 @@
         "newFailingChecks": [
           "a23-58 :: the B reward is paid as usual",
           "h1-good :: the quest: +120 gold, +half a Lv6 bar of XP",
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
           "n3 :: Neutral B: recorded, no score, Evil's reward",
-          "r1-evil :: B: 3 HP potions + 60 gold (then the quest's 120)",
-          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold"
+          "r1-evil :: B: 3 HP potions + 220 gold (then the quest's 120)",
+          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "the guild's own quests offered while off",
@@ -5485,9 +5918,9 @@
           "a23-70 lunchbox :: a Horns player can give it back too",
           "grant-item :: 3 HP potions (the attribute too)",
           "grant-item :: potions stop at the cap",
-          "n3 :: Neutral B: recorded, no score, Evil's reward"
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "GrantItem: no upper count limit",
@@ -5565,7 +5998,7 @@
           "max-subs :: both town quests wait at their NPC: on the list",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)"
         ],
         "newFailingCount": 9
       },
@@ -5580,22 +6013,50 @@
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
-        "mutation": "a town offer waits behind the subs in progress",
+        "mutation": "a town offer ranks with the subs in progress",
         "file": "src/ServerScriptService/StoryQuestService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a town offer is no better than a plain offer",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a town offer ranks below the plain offers",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "every waiting card is a town offer",
@@ -5604,14 +6065,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: XR1's new offer joins after the subs in progress",
-          "max-subs :: a pick card waiting mid-quest comes first",
-          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 3
       },
       {
         "mutation": "an offer without a faction is a town offer",
@@ -5620,12 +6078,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: XR1's new offer joins after the subs in progress",
-          "max-subs :: a pick card waiting mid-quest comes first",
-          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer"
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 2
       },
       {
         "mutation": "an offer without an NPC is a town offer",
@@ -5634,10 +6090,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "SendAllSubs sends everything always",
@@ -5650,10 +6107,10 @@
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
           "send-all-subs :: SendAllSubs = 1 is not true: three rows",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: the first three rows are the same with the flag on"
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "SendAllSubs sends nothing more",
@@ -5664,9 +6121,10 @@
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 0: every row is More",
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "SendAllSubs any truthy value",
@@ -5688,9 +6146,10 @@
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 0: every row is More",
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "every row is marked More",
@@ -5700,13 +6159,13 @@
         "crashed": false,
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: row 1 (the HUD's) has no More",
-          "send-all-subs :: row 2 (the HUD's) has no More",
-          "send-all-subs :: row 3 (the HUD's) has no More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More",
+          "send-all-subs :: row 1 (the HUD's) has no More"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "More starts one row early",
@@ -5716,12 +6175,13 @@
         "crashed": false,
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: row 3 (the HUD's) has no More",
-          "send-all-subs :: the flag off again: three rows, none More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)",
+          "send-all-subs :: a town-NPC offer waits behind the subs in progress: T1, T2, T3 stay (newest first), H1 waits for a free row",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More",
+          "send-all-subs :: row 3 (the HUD's) has no More"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "More starts one row late",
@@ -5732,9 +6192,10 @@
         "newFailingChecks": [
           "send-all-subs :: MaxSubs 0: every row is More",
           "send-all-subs :: MaxSubs 2: the rows past 2 are More",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: and with SendAllSubs the plain offers follow (newer first), marked More"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "MaxSubs is not read",
@@ -5752,20 +6213,15 @@
         "newFailingCount": 5
       },
       {
-        "mutation": "Config: SendAllSubs is on",
+        "mutation": "Config: SendAllSubs is off",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "max-subs :: both town quests wait at their NPC: on the list",
-          "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
-          "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs is off until the HUD skips More rows",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits",
-          "send-all-subs :: the first three rows are the same with the flag on"
+          "send-all-subs :: SendAllSubs is on in the real Config (the HUD skips More rows, the quest window lists all)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 1
       },
       {
         "mutation": "a new offer outranks the subs in progress",
@@ -5778,10 +6234,10 @@
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "older quests first within a rank",
@@ -5794,10 +6250,10 @@
           "max-subs :: a pick card waiting mid-quest comes first",
           "max-subs :: the goose + H1 in progress + S0: H1 stays on the list (N3's new offer, S2 / S3 wait)",
           "max-subs :: the goose gone: H1, S0, then N3's offer",
-          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More",
-          "send-all-subs :: a town-NPC offer ranks with the subs in progress: H1 (newest) first, then T1, T2; T3 waits"
+          "send-all-subs :: SendAllSubs: all five active subs, the 4th and 5th marked More (the town offer before the plain one)",
+          "send-all-subs :: T3 done: a row is free, the town offer H1 takes it (W1 waits)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "the sort fields reach the client",
@@ -5871,6 +6327,106 @@
           "easter-eggs :: EG03: a hidden sub for everyone after M2_3"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "daily intro: offered at once",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: D0 is not offered before M1_4"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily intro: only for Halo",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: never again",
+          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: never again"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "daily intro: no closing line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "daily intro: pays nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "daily intro: not in the sub list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: never again",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: never again"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "daily intro: it pops up by itself",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "daily intro: not a dialogue",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: never again",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: never again"
+        ],
+        "newFailingCount": 12
       },
       {
         "mutation": "egg: the scroll speaks as the guide",
@@ -5990,12 +6546,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
-          "easter-eggs :: EG14: 10 studs away is still too far (radius 6)"
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 10
       },
       {
         "mutation": "egg: the nest radius is 6 -> 60",
@@ -6004,14 +6562,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "e5-hidden :: the pick card opens",
-          "easter-eggs :: EG01 (Halo): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Horns): the scroll's choice opens by itself",
-          "easter-eggs :: EG01 (Neutral): the scroll's choice opens by itself",
-          "easter-eggs :: EG02: 3 studs away: found, the dialogue opens by itself, the row shows",
-          "easter-eggs :: EG03: 10 studs away is still too far (radius 6)"
+          "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
+          "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
+          "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 13
       },
       {
         "mutation": "egg: the sky takes 3 seconds",
@@ -6070,12 +6628,12 @@
         "newFailingChecks": [
           "npc-talk :: (the same player with a class: H1 opens)",
           "npc-talk :: H1 moved on (no more card at Bright): nothing opens",
+          "npc-talk :: H3's choice card has no NPC: nothing to say to Sir Gleam",
           "npc-talk :: a quest waiting for [Claim] is skipped",
           "npc-talk :: an NPC id nobody waits at: nothing",
-          "npc-talk :: another NPC, a bad id or a bad player: nothing",
-          "npc-talk :: talking to Bright opens H1's card"
+          "npc-talk :: another NPC, a bad id or a bad player: nothing"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "npc talk: a quest waiting for [Claim]",
@@ -6131,6 +6689,31 @@
           "npc-talk :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: H3 is not Sir Gleam's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: H3: the first card names Sir Gleam, the choice card names nobody",
+          "npc-talk :: talking to Sir Gleam opens H3's first card"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "npc talk: H3's choice card names Gleam",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card",
+          "npc-talk :: H3's choice card has no NPC: nothing to say to Sir Gleam",
+          "npc-talk :: H3: the first card names Sir Gleam, the choice card names nobody"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "npc talk: any prompt",
@@ -6697,7 +7280,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 60 gold, then 120 gold",
+          "subs18-flow :: Count it twice: Infamy +1, 3 potions + 220 gold, then 120 gold",
           "subs18-flow :: Horns: 80 hunting gold (not sale gold) finishes step 1",
           "subs18-flow :: home: the pick"
         ],
@@ -6710,9 +7293,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "halo-check-data :: H6 pick 4: in Halo Citadel (Npc, or after a way home)",
           "subs18-data :: HeroStatue is in Halo Citadel, LavaCrack in Horns Den"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "A23-64 review: the pick does not save its faction",
@@ -6770,6 +7354,224 @@
           "a23-64 town react lines :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "#71 the town B pays 60 again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
+          "subs18-data :: H2: A = one 70% scroll, B = 3 HP potions + 220 gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#36 H2: the pick opens in the field",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H2 pick 3: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h2 :: #36 5 slimes: take it home first (no pick card in the meadow)",
+          "halo-check-h2 :: ... and gets the card in Halo Citadel",
+          "halo-check-h2 :: home in Halo Citadel: the pick card opens there",
+          "halo-check-h2 :: the 'take it home' line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "#36 H2: home is the Crossroads",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H2 pick 4: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
+          "halo-check-h2 :: ... and gets the card in Halo Citadel",
+          "halo-check-h2 :: home in Halo Citadel: the pick card opens there"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "#37 H2 guides to the Crossroads",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #37 H2 step 1 guides to the fountain"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#36 H3: the pick opens in the field",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H3 pick 3: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h3 :: #36 6 slimes: back to Sir Gleam first (no card in the meadow)",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card",
+          "npc-talk :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "#18 H3 without a Start line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #18 H3 / H5 have a Start line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#18 H5 without a Start line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #18 H3 / H5 have a Start line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#35 H6: the pick opens in the woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: H6 pick 3: in Halo Citadel (Npc, or after a way home)",
+          "halo-check-h6 :: at the hero statues: the card opens",
+          "halo-check-landmark :: ... standing at the marker does",
+          "halo-check-landmark :: ... the Config spot still works"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "#35 H6: any spot near the statues",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a marker outside the workspace or for another spot moves nothing",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#38 H1 says near the woods",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #38 H1: any Slime Prince in the meadow (the row says so)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#40 the oaths under Side",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #40 the oaths sit in the Faction tab"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 the landmark tag renamed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-data :: #2 landmark marker tag",
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "#2 Near ignores the world marker",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 kill-Near ignores the world marker",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 a marker outside the workspace counts",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a marker outside the workspace or for another spot moves nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "#2 any marker moves any spot",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a marker outside the workspace or for another spot moves nothing",
+          "halo-check-landmark :: ... a kill at the marker does"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#2 the server skips the marker",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "#2 a marker never wins over Config",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-landmark :: #2 a kill at the old arrival spot no longer counts",
+          "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "GW7 forgets the GW1 pick",
@@ -7303,12 +8105,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "afb3fc5033338c28dcffaccad2d4d61817ee24ac34c6396728db0c7fbe00fa9c",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Config.luau": "3a608a778fcbfc747f3d5ff97dfff0e621a133d5e6aa32a5101ffb8d600d0199",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "9bc0cef388bbd3b27820b4532543e5413b6bb582546f2a7abf3f5ea6f7a2d75e",
-    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
+    "src/ServerScriptService/StoryQuestService.luau": "1785e3b8f25cbce1406e994d24b4b7ac968e6593a069bea9155da02fc72aa9f0",
+    "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
     "src/ServerScriptService/ShopService.luau": "edf9ad90671a3f8459b912b953af2bed14ac30b078bd6941ab1797fd81c4af62",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
@@ -7316,10 +8118,10 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "c20b507c28240058efc3af75ca67d2275b8d8b91c5bfbb7f52e3c14feb956a1e",
+  "fixtureSHA256": "29eac9b45800c46035571a792b701c26456b109d7882339f4a5731e040e5bc8d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 60 gold, 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows (claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order sent), so a town quest in progress stays on the list. story_depth E1: Requires.Pick { Id, Is } (Is Good / Evil = that side: Purify / A = Good, Devour / B = Evil; else the exact pick). E2: LinesBy { From, Good, Evil, A, B, Default } -> Var (exact pick, else its side, else Default) on the OpenPanel payload and row.Story.Var; every LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). A23-64 ② (zone_check_halo #39): every story pick (0-point and Neutral A / B too), a ChoiceCard Good / Evil pick and a finisher Help / Tickle send one Fx Afterglow { UserId, Side, Seconds = Config.Afterglow.Seconds (60), Private } to every client, or only to the chooser in a PvP area (an unknown zone counts as PvP); None / Enabled off / From off = none. A23-64 ①: a Config.TownReact.Order quest's pick saves Story.TownLast and sets the attribute TownPick '<id>:Good|Evil' (Neutral A / B = their side); a join backfills it (bad / missing = the last of TownReact.Order with a saved pick). Config.TownReactLines: rank + lean + the town pick; the town pick is said only in the player's own town (npc Town == Config.HomeZoneId(faction), zone ids) and only to the quest's own factions (Defs[id].Factions); lines live in Config.TownReact.Text (Good / Evil by quest id, FactionPick overrides); every line <= 12 words, no format tokens, no scary words, Bright / Smokey = she. Config.TownReact.Tag = the tag TownNpcs gives its Folk bodies, which stand in a town zone.",
+  "contract": "A23-46: subs H1 (Halo, Bright), R1 (Horns, Smokey), N3 (everyone, Tiny) open after M2_3, once each: talk to the NPC -> H1 stay 10 s at WoodsGate (outside PvP) -> 2 king slimes / R1 stay 15 s at the fountain (Crossroads zone) -> 6 slimes / N3 both bridge ends -> 30 hunting gold -> the pick at the NPC (A = one Enh70, B = 3 HP potions + 220 gold (빛 마을 점검 #71), 1 honor / infamy point, Neutral A / B recorded only) -> +120 gold + half a level bar of XP, a closing question. E4 Near.Stay counts seconds in one go (leaving resets, the row shows %d/%d s). E6 pick rewards go through LootService.GrantItem (items / potions, caps, 1..99). Npc steps need the player within StoryQuests.NpcRange of the CollectionService-tagged NPC (attribute NpcId) when it exists, never pop up by themselves, and rows carry Story.Npc. A23-57: Config.Features.NeutralFaction = false -> Config.Pickable refuses Neutral at the picker / altar (logged) and rebirth; the guild-only subs N1 / N2 are not offered; Neutral saves keep N3. quest_volume §2-6: StoryQuests.MaxSubs = 3 sub rows (claim / waiting card > situational > started or S0 > the rest, newer first in a rank, no Rank / Order sent), so a town quest in progress stays on the list. story_depth E1: Requires.Pick { Id, Is } (Is Good / Evil = that side: Purify / A = Good, Devour / B = Evil; else the exact pick). E2: LinesBy { From, Good, Evil, A, B, Default } -> Var (exact pick, else its side, else Default) on the OpenPanel payload and row.Story.Var; every LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). A23-64 ② (zone_check_halo #39): every story pick (0-point and Neutral A / B too), a ChoiceCard Good / Evil pick and a finisher Help / Tickle send one Fx Afterglow { UserId, Side, Seconds = Config.Afterglow.Seconds (60), Private } to every client, or only to the chooser in a PvP area (an unknown zone counts as PvP); None / Enabled off / From off = none. A23-64 ①: a Config.TownReact.Order quest's pick saves Story.TownLast and sets the attribute TownPick '<id>:Good|Evil' (Neutral A / B = their side); a join backfills it (bad / missing = the last of TownReact.Order with a saved pick). Config.TownReactLines: rank + lean + the town pick; the town pick is said only in the player's own town (npc Town == Config.HomeZoneId(faction), zone ids) and only to the quest's own factions (Defs[id].Factions); lines live in Config.TownReact.Text (Good / Evil by quest id, FactionPick overrides); every line <= 12 words, no format tokens, no scary words, Bright / Smokey = she. Config.TownReact.Tag = the tag TownNpcs gives its Folk bodies, which stand in a town zone. 빛 마을 점검 2026-10-10: every Halo-only pick happens in Halo Citadel (Npc Bright, or after a way-home step: H2 / H3 Enter HaloTown, H6 Near HeroStatue); H2 step 1 guides to the Fountain; H3 / H5 have Start lines; H1 says 'in the meadow'; OathH / OathR sit in the Faction tab; a workspace instance tagged StoryLandmark with Spot = <key> moves that landmark (Near steps and kill-Near), a marker outside the workspace or for another key moves nothing.",
   "limitations": "NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are modelled by moving the root and calling Refresh each second."
 }
