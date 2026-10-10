@@ -78,13 +78,18 @@ MUTATIONS = [
     # 빛 마을 점검 #17 / #21 / #29: story landmark spots
     ("a landmark guide has no zone again", "\tlocal spot = landmarkSpot(guide)\n\tif spot and type(Config.ZoneAt) == \"function\" then\n",
      "\tlocal spot = nil\n\tif spot and type(Config.ZoneAt) == \"function\" then\n"),
-    ("a landmark inside its zone points nowhere", "\tif spot then -- a landmark spot in this zone: an anchor over it (K.Lift)\n",
-     "\tif false then -- a landmark spot in this zone: an anchor over it (K.Lift)\n"),
+    ("a landmark inside its zone points nowhere", "\tif spot then -- a landmark spot in this zone (or a walk away): an anchor over it (K.Lift)\n",
+     "\tif false then -- a landmark spot in this zone (or a walk away): an anchor over it (K.Lift)\n"),
     # 빛 마을 점검 #52: town pads
     ("the town pad is skipped", "\t\tif townPad then return townPad end\n\tend\n\t-- L.MeadowTarget", "\tend\n\t-- L.MeadowTarget"),
-    ("a pad in another zone counts", "\t\t\tif type(z) == \"table\" and z.Id == zone then return part end\n",
-     "\t\t\tif type(z) == \"table\" then return part end\n"),
-    ("any pad counts, whatever it goes to", "\t\tif p:GetAttribute(\"TravelTo\") == dest then\n", "\t\tif true then\n"),
+    ("a pad in another zone counts", "\t\t\tif type(z) == \"table\" and z.Id == zone then return p end\n",
+     "\t\t\tif type(z) == \"table\" then return p end\n"),
+    ("any pad counts, whatever it goes to", "\t\tif p:IsA(\"BasePart\") and p:GetAttribute(\"TravelTo\") == dest then\n",
+     "\t\tif p:IsA(\"BasePart\") then\n"),
+    ("a Model pad counts", "\t\tif p:IsA(\"BasePart\") and p:GetAttribute(\"TravelTo\") == dest then\n",
+     "\t\tif p:GetAttribute(\"TravelTo\") == dest then\n\t\t\tp = p:IsA(\"Model\") and (p:FindFirstChildWhichIsA(\"BasePart\", true) or p) or p\n"),
+    ("a landmark a walk away still makes a trip",
+     "\tif spot and fromZone ~= zone and K.SmithWalk[fromZone] == true and K.SmithWalk[zone] == true then fromZone = zone end\n", ""),
 ]
 
 

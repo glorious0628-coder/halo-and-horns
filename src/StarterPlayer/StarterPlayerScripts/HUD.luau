@@ -5219,7 +5219,9 @@ function L.StoryTap(st, zone, panels)
 	local spot = not Config.Zones[target] and type(lms) == "table" and lms[g] or nil
 	if typeof(spot) ~= "Vector3" then spot = nil end
 	if spot then target = Config.ZoneAt(spot).Id end
-	if Config.Zones[target] and zone ~= target then
+	-- 검수 10/10: a landmark a walk away (both zones walk to each other: L.ForgeWalk) -> straight to the spot, no trip
+	local walkTo = spot ~= nil and L.ForgeWalk[zone] == true and L.ForgeWalk[target] == true
+	if Config.Zones[target] and zone ~= target and not walkTo then
 		if panels and panels.Open then panels.Open("Travel") end
 		if target == TUT_GUIDE_ZONE then
 			if showGuide(L.MeadowTarget(zone), TUT_GUIDE_TEXT, "zone:" .. target, 30) and guide then guide.From = zone end

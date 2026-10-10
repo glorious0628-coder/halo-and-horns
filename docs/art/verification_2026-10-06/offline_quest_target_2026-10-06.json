@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 55,
-  "namedChecks": 55,
+  "checks": 58,
+  "namedChecks": 58,
   "failing": [],
   "mutations": {
-    "total": 23,
-    "caught": 23,
+    "total": 25,
+    "caught": 25,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -180,6 +180,8 @@
         "newFailingChecks": [
           "rows :: ... and the distance only goes down",
           "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
+          "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
+          "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip",
           "rows :: walking from the Halo spawn to the anvil: the same mark all the way"
         ]
       },
@@ -210,7 +212,9 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: GoblinCamp1 from the Crossroads -> a trip to the goblin woods",
-          "rows :: HeroStatue from the Crossroads -> a trip to its town",
+          "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
+          "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip",
+          "rows :: HeroStatue from the meadow -> a trip to its town",
           "rows :: HeroStatue inside the town -> the anchor over the statue spot",
           "rows :: WoodsGate in its zone -> the anchor over the woods' edge"
         ]
@@ -221,6 +225,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
+          "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip",
           "rows :: HeroStatue inside the town -> the anchor over the statue spot",
           "rows :: WoodsGate in its zone -> the anchor over the woods' edge"
         ]
@@ -250,7 +256,27 @@
         "crashed": false,
         "newFailingChecks": [
           "town pads :: TownPad finds it for the Halo town only",
+          "town pads :: a Model pad is ignored (ZoneService connects BaseParts only, 검수 10/10)",
           "town pads :: a zone the town pads do not go to -> the usual route"
+        ]
+      },
+      {
+        "mutation": "a Model pad counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "town pads :: a Model pad is ignored (ZoneService connects BaseParts only, 검수 10/10)"
+        ]
+      },
+      {
+        "mutation": "a landmark a walk away still makes a trip",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
+          "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip"
         ]
       }
     ]
@@ -259,9 +285,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "87b58ecb538c4ed7a75e392126bc525ee35a8a93f9a596ce0e7bc3861749afda",
-    "tools/fixtures/quest_target_offline.luau": "f0570afe0fa328a04875112083a6967544371ede66038af39f7d2f1992e1d2c1"
+    "src/ReplicatedStorage/Shared/Config.luau": "5e7e6661e44ba20c175b6c2e40018fb61fafaa826f112127acfca08feed57479",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "01f35ffd15029b0d80fd51eea21aca960217fc588c4c8d579a7bfe854badc293",
+    "tools/fixtures/quest_target_offline.luau": "95304bd9b627a29a13e9d0f1f91215f9b6bcb1d89c463c3b7445d7e4cfa41042"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

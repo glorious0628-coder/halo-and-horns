@@ -196,10 +196,10 @@ function QuestTarget.TownPad(zone, dest)
 	local pads = map and map:FindFirstChild("Pads")
 	if not pads then return nil end
 	for _, p in pads:GetChildren() do
-		if p:GetAttribute("TravelTo") == dest then
-			local part = resolvePart(p)
-			local z = part and Config.ZoneAt(part.Position)
-			if type(z) == "table" and z.Id == zone then return part end
+		-- 검수 10/10: BaseParts only - ZoneService connects only BasePart pads
+		if p:IsA("BasePart") and p:GetAttribute("TravelTo") == dest then
+			local z = Config.ZoneAt(p.Position)
+			if type(z) == "table" and z.Id == zone then return p end
 		end
 	end
 	return nil
@@ -417,12 +417,15 @@ function QuestTarget.Story(guide, fromZone, pos, faction)
 	if guide == "Blacksmith" then return smithFrom(fromZone, pos) end
 	local zone = guideZone(guide, faction)
 	if not zoneDef(zone) then return nil end
+	local spot = landmarkSpot(guide)
+	-- 검수 10/10: a landmark a walk away (both zones in K.SmithWalk, like the forge) -> the spot itself, no trip (a trip
+	-- pointed at the Crossroads plaza / a gate and the distance jumped)
+	if spot and fromZone ~= zone and K.SmithWalk[fromZone] == true and K.SmithWalk[zone] == true then fromZone = zone end
 	if zone == K.Pumpkin.Zone or zone == K.Hollow.Zone or fromZone ~= zone then return QuestTarget.Travel(zone, fromZone, pos) end
 	if guide == "SlimePond" then return pondSpot() end
 	if guide == "Fountain" then return fountainTarget() end
 	if guide == "Goose" then return gooseTarget() end
-	local spot = landmarkSpot(guide)
-	if spot then -- a landmark spot in this zone: an anchor over it (K.Lift)
+	if spot then -- a landmark spot in this zone (or a walk away): an anchor over it (K.Lift)
 		local a = QuestTarget.Anchor("Spot_" .. guide, spot + K.Lift)
 		a.Position = spot + K.Lift
 		return a
@@ -477,7 +480,8 @@ local function storyEntry(st, myZone, faction, pos)
 	local zone = guideZone(guide, faction)
 	local t = QuestTarget.Story(guide, myZone, pos, faction)
 	if t == nil then return nil end
-	local travel = myZone ~= zone or zone == K.Pumpkin.Zone or zone == K.Hollow.Zone
+	local walk = landmarkSpot(guide) ~= nil and K.SmithWalk[myZone] == true and K.SmithWalk[zone] == true
+	local travel = (myZone ~= zone and not walk) or zone == K.Pumpkin.Zone or zone == K.Hollow.Zone
 	local r = pack(t, "story:" .. guide, storyLabel(guide, zone), zone, travel)
 	if not r or travel or not pos then return r end
 	-- a Near step (pond slimes, the fountain) already happens inside its radius

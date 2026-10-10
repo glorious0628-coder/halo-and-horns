@@ -254,6 +254,9 @@ do
 	check(g, "with the Halo plaza pad: the meadow -> that pad (no bridge walk)", t == pad, where(t))
 	check(g, "TownPad finds it for the Halo town only", QT.TownPad("HaloTown", "SlimeMeadow") == pad
 		and QT.TownPad("HornsTown", "SlimeMeadow") == nil and QT.TownPad("HaloTown", "GoblinWoods") == nil)
+	local mpad = add(pads, inst("Model", "Pad_Halo_GoblinWoods", { Attrs = { TravelTo = "GoblinWoods" } }))
+	add(mpad, inst("Part", "Top", { Position = vec(20, 1, -500) }))
+	check(g, "a Model pad is ignored (ZoneService connects BaseParts only, 검수 10/10)", QT.TownPad("HaloTown", "GoblinWoods") == nil)
 	t = QT.Travel("GoblinWoods", "HaloTown", vec(0, 3, -420))
 	check(g, "a zone the town pads do not go to -> the usual route", t ~= pad, where(t))
 	t = QT.Travel("SlimeMeadow", "Crossroads", vec(0, 3, 0))
@@ -387,9 +390,18 @@ do
 	local hero = { Story = { Id = "H6", St = 1, Guide = "HeroStatue" } }
 	local spot = Config.StoryQuests.Landmarks.HeroStatue
 	local heroZone = Config.ZoneAt(spot).Id
-	e = QT.ForEntry(hero, "Crossroads", "Halo", vec(0, 3, 0))
-	check(g, "HeroStatue from the Crossroads -> a trip to its town", type(e) == "table" and e.Travel == true and e.Zone == heroZone
+	e = QT.ForEntry(hero, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "HeroStatue from the meadow -> a trip to its town", type(e) == "table" and e.Travel == true and e.Zone == heroZone
 		and heroZone == "HaloTown", e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
+	-- 검수 10/10: a landmark a walk away (the Crossroads <-> the towns, like the forge) -> the spot itself, no trip
+	e = QT.ForEntry(hero, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip", type(e) == "table"
+		and e.Travel == false and isNamed(e.Part, "HUDGuideAnchor_Spot_HeroStatue") and at(e.Part, spot.X, spot.Z),
+		e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
+	local bridge = Config.StoryQuests.Landmarks.HaloBridge
+	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloBridge" } }, "HaloTown", "Halo", vec(0, 3, -470))
+	check(g, "HaloBridge from the Halo town -> the bridge spot, no trip", type(e) == "table" and e.Travel == false
+		and at(e.Part, bridge.X, bridge.Z), e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
 	e = QT.ForEntry(hero, heroZone, "Halo", vec(0, 3, -470))
 	check(g, "HeroStatue inside the town -> the anchor over the statue spot", type(e) == "table" and e.Travel == false
 		and isNamed(e.Part, "HUDGuideAnchor_Spot_HeroStatue") and at(e.Part, spot.X, spot.Z) and math.abs(e.Part.Position.Y - 3) <= 0.5,
