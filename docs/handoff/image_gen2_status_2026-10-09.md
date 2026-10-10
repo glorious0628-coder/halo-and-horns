@@ -18,3 +18,10 @@
 
 ## 남은 것 (검수 큐)
 1. 뿔 마을 소품 멀티뷰·한 장짜리(`docs/design/horns_town_plan_2026-10-09.md` 표): 문·감시탑·전쟁 천막·노점·나무집·돌다리는 멀티뷰, 모닥불·말뚝 울타리·화로·등불·깃대·침엽수·현무암 기둥·통/상자는 한 장.
+
+## 10/10 아침 추가
+- 빛 마을 가게 간판 4종(고급, 물약 v2·빵집·주스·꽃; 장난감은 검수가 뺌): `art/out/s2/halo/HaloSign_*_front_HQ_src.png`, 시트 `art/review/s2/halo_signs_sheet.jpg`. 프롬프트 `tools/_halo_npc_sign_prompts.py`.
+- 빛 마을 NPC 5명 전신 후보(중간): `art/out/s2/npc/NPC_Halo<이름>_{A,B}_src.png`(+FlowerGirl C·D), 시트 `art/review/s2/halo_npc_candidates_sheet.jpg`, 추천 `halo_npc_picks_sheet.jpg`. 사용자 승인 대기 → 승인되면 앞면을 참조로 뒤·좌·우(고급).
+- 뿔 마을: 앞면 22 + 성채 1(고급) → `art/out/s2/horns/HornsProp_<이름>_front_HQ_src.png`(+ v2: RockColumnB·C·Pine), 건물 9개 + 성채 뒤·좌·우 30장 → `..._{back,left,right}_HQ_src.png`, 시트 `art/review/s2/horns_*`. 도구 `tools/_horns_prop_prompts.py`, `_horns_prop_mv_prompts.py`, `_img2_sheet_horns.py`. StallSmith는 앞면만(뒤·좌·우 건너뜀, 검수 결정 대기).
+- 방법 메모(10/10): 숨김 창에서도 프롬프트 입력·생성은 돌아감(새로고침 금지). Adobe 참조 링크(at.adobe.com)는 몇 시간 뒤 403 → 다시 올림. 새 asset_search는 이미지 mediaType 필터 + 시각 순서로 매핑.
+- 크레딧(10/10 아침까지 고급): 간판 6 + 뿔 앞면 18+3 + 성채 1 + 뒤·좌·우 30 + 빛 소품 v2 등 = 약 300(어젯밤 분 제외). 화면 잔액은 다음에 확인.

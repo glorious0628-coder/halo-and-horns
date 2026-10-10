@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 58,
-  "namedChecks": 58,
+  "checks": 66,
+  "namedChecks": 66,
   "failing": [],
   "mutations": {
-    "total": 25,
-    "caught": 25,
+    "total": 29,
+    "caught": 29,
     "results": [
       {
         "mutation": "claim ignores CanClaim",
@@ -179,6 +179,7 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: ... and the distance only goes down",
+          "rows :: ... from the Crossroads (a walk away) -> her straight away, no trip",
           "rows :: Forge step from HaloTown -> the mark over the anvil, no trip",
           "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
           "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip",
@@ -278,6 +279,44 @@
           "rows :: HaloBridge from the Halo town -> the bridge spot, no trip",
           "rows :: HeroStatue from the Crossroads (a walk away) -> the statue spot straight away, no trip"
         ]
+      },
+      {
+        "mutation": "a talk row never points at its NPC",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... from the Crossroads (a walk away) -> her straight away, no trip",
+          "rows :: ... from the meadow -> a trip to the Halo town",
+          "rows :: Bright in the town -> the marker over her head, labelled Bright"
+        ]
+      },
+      {
+        "mutation": "the marker sits on the NPC by her prompt",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... standing by her (her Talk prompt is right there) -> no marker"
+        ]
+      },
+      {
+        "mutation": "an NPC a walk away makes a trip",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: ... from the Crossroads (a walk away) -> her straight away, no trip"
+        ]
+      },
+      {
+        "mutation": "an NPC out of the world counts",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: a tagged model out of the world counts as absent"
+        ]
       }
     ]
   },
@@ -286,8 +325,8 @@
   "runtimeError": null,
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "5e7e6661e44ba20c175b6c2e40018fb61fafaa826f112127acfca08feed57479",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "01f35ffd15029b0d80fd51eea21aca960217fc588c4c8d579a7bfe854badc293",
-    "tools/fixtures/quest_target_offline.luau": "95304bd9b627a29a13e9d0f1f91215f9b6bcb1d89c463c3b7445d7e4cfa41042"
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "b1147df70af24f3bd85ca6994406593a03d8fcb03caf070c29716818cf23f8b1",
+    "tools/fixtures/quest_target_offline.luau": "aeb8135a7e58728a2f86ba946aeed470252a4507682189e8b7ce56af85d132ba"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

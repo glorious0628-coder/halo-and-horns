@@ -68,6 +68,7 @@ local K = {
 	HomeBridge = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }, -- HUD HOME_BRIDGE
 	PadFrom = { Crossroads = true, HaloTown = true, HornsTown = true }, -- pads first from these (HUD order)
 	NearShare = 0.75, -- a Near step's spot counts as reached inside this share of its Radius
+	NpcNear = 10, -- studs (flat) from a story NPC: no marker - its Talk prompt (Config.TownNpcs.PromptDistance) is right there
 	-- the anvil from outside the Crossroads: true = route to the Crossroads (Travel); false = nil like HUD's beam,
 	-- which only shows inside the Crossroads (refreshGuides)
 	SmithFromAfar = true,
@@ -200,6 +201,23 @@ function QuestTarget.TownPad(zone, dest)
 		if p:IsA("BasePart") and p:GetAttribute("TravelTo") == dest then
 			local z = Config.ZoneAt(p.Position)
 			if type(z) == "table" and z.Id == zone then return p end
+		end
+	end
+	return nil
+end
+
+-- 빛 마을 점검 #1 / #22 / #25 / #30 (2026-10-10): a story NPC in the world (dev3 TownNpcs: CollectionService tag
+-- Config.StoryQuests.NpcTag, attribute NpcId) -> the part a marker floats over (its head, else its root), nil when absent
+function QuestTarget.StoryNpc(npcId)
+	if type(npcId) ~= "string" or npcId == "" then return nil end
+	local tag = type(STORY.NpcTag) == "string" and STORY.NpcTag or "StoryNpc"
+	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
+	if not ok or type(list) ~= "table" then return nil end
+	for _, m in list do
+		if typeof(m) == "Instance" and m:GetAttribute("NpcId") == npcId and m:IsDescendantOf(workspace) then
+			local head = m:FindFirstChild("Head")
+			if head and head:IsA("BasePart") then return head end
+			return resolvePart(m)
 		end
 	end
 	return nil
@@ -473,8 +491,27 @@ local function needsMeadow(step, entry)
 	return kills < K.QuestKills
 end
 
+-- a talk step through a story NPC that stands in the world: the NPC (a trip to its zone from far; a walk away = the NPC
+-- itself), nothing within NpcNear studs of it (its Talk prompt is right there); no NPC in the world = no place
+local function npcEntry(st, myZone, pos)
+	local part = QuestTarget.StoryNpc(st.Npc)
+	if not part or type(Config.ZoneAt) ~= "function" then return nil end
+	local z = Config.ZoneAt(part.Position)
+	local zone = type(z) == "table" and z.Id or myZone
+	local speakers = type(STORY.Speakers) == "table" and STORY.Speakers or {}
+	local label = type(speakers[st.Npc]) == "string" and speakers[st.Npc] or zoneName(zone)
+	if myZone ~= zone and not (K.SmithWalk[myZone] == true and K.SmithWalk[zone] == true) then
+		return pack(QuestTarget.Travel(zone, myZone, pos), "story:npc", label, zone, true)
+	end
+	if pos and flatDist(pos, part.Position) <= K.NpcNear then return nil end
+	return pack(part, "story:npc", label, zone, false)
+end
+
 local function storyEntry(st, myZone, faction, pos)
-	if st.Panel then return nil end -- a talk / choice card: no place
+	if st.Panel then -- a talk / choice card: no place, unless it is talked through a town NPC in the world
+		if type(st.Npc) == "string" and st.Npc ~= "" then return npcEntry(st, myZone, pos) end
+		return nil
+	end
 	local guide = st.Guide
 	if type(guide) ~= "string" or guide == "" then return nil end
 	local zone = guideZone(guide, faction)

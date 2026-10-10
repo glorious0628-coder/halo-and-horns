@@ -212,34 +212,24 @@
   {
    "name": "Halo_Cathedral",
    "meshId": "rbxassetid://90003197344128",
-   "textureId": "",
+   "textureId": "rbxassetid://100581759564837",
    "size_studs": [
     69.873,
     53.446,
     70.0
    ],
-   "sa": {
-    "color": "rbxassetid://100581759564837",
-    "normal": "rbxassetid://71668304222452",
-    "metal": "rbxassetid://120363732308063",
-    "rough": "rbxassetid://70958418575589"
-   }
+   "note_texture": "2026-10-10: the SurfaceAppearance ColorMap of this asset renders gray in Studio (the same image id works as MeshPart.TextureID and loads fine, status Green) -> kit uses TextureID only (no normal/rough) until the cause is found"
   },
   {
    "name": "Halo_DomeHouseA",
    "meshId": "rbxassetid://115698884040104",
-   "textureId": "",
+   "textureId": "rbxassetid://107362374992649",
    "size_studs": [
     12.0,
     15.094,
     11.156
    ],
-   "sa": {
-    "color": "rbxassetid://107362374992649",
-    "normal": "rbxassetid://136966986398205",
-    "metal": "rbxassetid://84025571312073",
-    "rough": "rbxassetid://105873973132273"
-   }
+   "note_texture": "2026-10-10: the SurfaceAppearance ColorMap of this asset renders gray in Studio (the same image id works as MeshPart.TextureID and loads fine, status Green) -> kit uses TextureID only (no normal/rough) until the cause is found"
   },
   {
    "name": "Halo_DomeHouseB",
