@@ -1,5 +1,5 @@
 {
-  "checks": 28,
+  "checks": 29,
   "failed": 0,
   "mutations": [
     {
@@ -54,6 +54,11 @@
     },
     {
       "name": "a late lamp inside a lantern is missed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rain streaks along the fall again",
       "applied": true,
       "caught": true
     },

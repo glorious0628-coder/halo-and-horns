@@ -201,6 +201,8 @@ check(rain and rain.Rate == 420 and rain.Enabled == true and snow and snow.Enabl
 	rain and rain.Rate)
 check(rain and rain.Texture == "rbxassetid://77226041980480" and snow and snow.Texture == "rbxassetid://117774040305599",
 	"our own textures (Fx_RainStreak, Fx_SnowFlake)", rain and rain.Texture)
+check(rain and tostring(rain.Orientation) == "ParticleOrientation.FacingCameraWorldUp",
+	"rain streaks stand upright (FacingCameraWorldUp: VelocityParallel laid them sideways)", rain and tostring(rain.Orientation))
 local tint = lighting:FindFirstChild("WeatherTint")
 check(tint ~= nil and tint.ClassName == "ColorCorrectionEffect", "a client ColorCorrection WeatherTint for the wet look", tint)
 check(lampLight.Enabled == true and lanternLight.Enabled == true, "night: the tagged lamp and the marked lantern light are on",

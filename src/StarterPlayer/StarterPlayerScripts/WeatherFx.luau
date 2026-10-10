@@ -145,12 +145,13 @@ local function emitter(name, def, tex, col, slow)
 		e.Rotation = NumberRange.new(0, 360)
 		e.Orientation = Enum.ParticleOrientation.FacingCamera
 	else
-		-- rain: streaks along their fall, a little see-through
+		-- rain: upright streaks (FacingCameraWorldUp keeps the texture's up = world up; UiSandbox 10/10: VelocityParallel
+		-- laid the vertical streak along the fall's sideways axis - short horizontal dashes), a little see-through
 		e.Size = NumberSequence.new(def.Size)
 		e.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.08, 0.2),
 			NumberSequenceKeypoint.new(1, 0.35) })
 		e.SpreadAngle = Vector2.new(4, 4)
-		e.Orientation = Enum.ParticleOrientation.VelocityParallel
+		e.Orientation = Enum.ParticleOrientation.FacingCameraWorldUp
 	end
 	e.Parent = S.Part
 	return e

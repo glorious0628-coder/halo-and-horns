@@ -45,6 +45,8 @@ MUTATIONS = [
      "\tif light:IsA(\"Light\") then S.Lamps[light] = true end\n\tfor _, d in workspace:GetDescendants() do if d:IsA(\"Light\") then S.Lamps[d] = true end end\n"),
     ("WX", "the part does not follow the camera", "\tif S.Part then S.Part.CFrame =", "\tif false then S.Part.CFrame ="),
     ("WX", "a late lamp inside a lantern is missed", "\t\t\tif isMarked(p) then\n", "\t\t\tif false then\n"),
+    ("WX", "rain streaks along the fall again", "e.Orientation = Enum.ParticleOrientation.FacingCameraWorldUp",
+     "e.Orientation = Enum.ParticleOrientation.VelocityParallel"),
     ("WX", "off stops the lamps too", "\tsetLamps(plan.Lamps)\n", "\tif S.Enabled then setLamps(plan.Lamps) end\n"),
 ]
 
