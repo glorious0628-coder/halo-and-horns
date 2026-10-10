@@ -189,7 +189,7 @@ fnt = put("Fountain", 0, -565, 0, 1.0)
 # stairs models on the three axis ramps (the collision is the terrain ramp; the model is only the look)
 # stairs model rise = 8.2 studs over a 20 deep run at scale 1 (measured on the LOD mesh): stretch it to the ramp (28 wide, 22 long, rise of that tier)
 for zb, yb, rise in ((-444, 0.2, 8.8), (-524, 9.0, 11.0), (-606, 20.0, 13.0)):  # ramps are 30 long now (halo_terrain RampLen)
-    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=SOUTH, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.5], ramp=True))
+    P.append(dict(kind="Stairs", x=0, z=zb, y=yb, yaw=0.0, s=1.0, sv=[1.4, round(rise / 8.2, 3), 1.5], ramp=True))
 
 # hero statues (face the road axis): tier 1 pairs, one pair on tier 2
 for z in (-384, -408, -466, -492):

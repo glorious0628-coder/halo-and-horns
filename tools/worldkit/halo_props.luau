@@ -50,7 +50,7 @@ local PLAN = {
 		x = 0,
 		z = -444,
 		y = 0.2,
-		yaw = 180.0,
+		yaw = 0.0,
 		s = 1.0,
 		sv = { 1.4, 1.073, 1.5 },
 		ramp = true,
@@ -59,7 +59,7 @@ local PLAN = {
 		x = 0,
 		z = -524,
 		y = 9.0,
-		yaw = 180.0,
+		yaw = 0.0,
 		s = 1.0,
 		sv = { 1.4, 1.341, 1.5 },
 		ramp = true,
@@ -68,7 +68,7 @@ local PLAN = {
 		x = 0,
 		z = -606,
 		y = 20.0,
-		yaw = 180.0,
+		yaw = 0.0,
 		s = 1.0,
 		sv = { 1.4, 1.585, 1.5 },
 		ramp = true,
@@ -2195,6 +2195,8 @@ assert(decor, "Map.Decor missing")
 local gates = map:FindFirstChild("Gates")
 local landmarks = map:FindFirstChild("Landmarks")
 
+-- kinds held back for now (e.g. textures still being fixed): SKIP = { Cathedral = true, DomeHouseA = true } leaves the old landmark dome in place and skips those placements
+local SKIP = {}
 local T = {
 	CellSize = 64, Group = "DecorPlayerOnly", Rect = { MinX = -212, MaxX = 212, MinZ = -712, MaxZ = -322 },
 	DeckFrac = 0.59, -- the arch bridge's deck top as a fraction of its model height (tune with the real model)
@@ -2287,6 +2289,7 @@ end
 ------------------------------------------------------------------ plan (counts, kit present?)
 local counts, missing, tris, parts = {}, {}, 0, 0
 for _, e in PLAN.placements do
+	if SKIP[e.kind] then continue end
 	counts[e.kind] = (counts[e.kind] or 0) + 1
 	local nm = KITNAME[e.kind]
 	if not (nm and kit:FindFirstChild(nm)) then missing[e.kind] = true end
@@ -2322,7 +2325,7 @@ for _, parent in { decor, landmarks } do
 			local nm = i.Name
 			local protected = nm == "Bridge_Halo" or string.sub(nm, 1, 6) == "Bridge" or nm == "Roads" or nm == "HaloProps" or string.sub(nm, 1, 5) == "Gate_"
 			local p = pivotOf(i)
-			if not protected and ((OLD[nm] and p and inRect(p)) or (string.sub(nm, 1, 10) == "Town_Halo_" and p and inRect(p))) then
+			if not protected and not (nm == "Cathedral" and SKIP.Cathedral) and ((OLD[nm] and p and inRect(p)) or (string.sub(nm, 1, 10) == "Town_Halo_" and p and inRect(p))) then
 				stash(i)
 				stashed += 1
 			end
@@ -2401,7 +2404,7 @@ end
 
 local built = 0
 for _, e in PLAN.placements do
-	if e.kind == "Gate" then continue end
+	if e.kind == "Gate" or SKIP[e.kind] then continue end
 	local src = kit:FindFirstChild(KITNAME[e.kind])
 	local m = src:Clone()
 	m.Name = (e.kind == "Fountain" and "Town_Halo_Fountain3") or (e.name and ("Halo_ArchBridge_" .. e.name)) or KITNAME[e.kind]

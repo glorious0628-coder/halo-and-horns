@@ -127,7 +127,7 @@ local function spineHeight(z, ax) -- V of the spine top at (ax, z); ramps only i
 		for i = 2, #SPINE.Tiers do
 			local b = SPINE.Tiers[i][1]
 			local t = (b + SPINE.RampLen / 2 - z) / SPINE.RampLen
-			if t > 0 and t < 1 then return lerp(SPINE.Tiers[i - 1][2], SPINE.Tiers[i][2], t) end
+			if t > 0 and t < 1 then return lerp(SPINE.Tiers[i - 1][2], SPINE.Tiers[i][2], t) - 1.4 * math.sin(math.pi * t) end -- 1.4 sunk in the middle so the stairs model's steps stand out of the ramp
 			if t >= 1 then h = SPINE.Tiers[i][2] end
 		end
 	end
