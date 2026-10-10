@@ -1,0 +1,74 @@
+{
+ "name": "HaloDomeHouse_01",
+ "scale": 20.93719172088826,
+ "size_studs": [
+  19.221603393554688,
+  20.53017807006836,
+  14.59111499786377
+ ],
+ "front": "+Y blender = -Z roblox",
+ "door": {
+  "center_x": 0.22491204738616943,
+  "bottom_z": 2.1507139205932617,
+  "width": 6.373761892318726,
+  "height": 7.999999046325684,
+  "front_y": 4.044759750366211,
+  "note": "DoorFront: Roblox position (x, 0, -front_y - 1) facing -Z; door leaf = <Name>_Door"
+ },
+ "parts": {
+  "HaloDomeHouse_01_DoorHw": {
+   "faces": 53,
+   "tex": 512,
+   "uv_fill": 0.774,
+   "tris": 53
+  },
+  "HaloDomeHouse_01_Body_t01": {
+   "faces": 6277,
+   "tex": 1024,
+   "uv_fill": 0.549,
+   "tris": 6277
+  },
+  "HaloDomeHouse_01_Body_t00": {
+   "faces": 5972,
+   "tex": 1024,
+   "uv_fill": 0.511,
+   "tris": 5972
+  },
+  "HaloDomeHouse_01_WinPane": {
+   "faces": 63,
+   "tex": 512,
+   "uv_fill": 0.78,
+   "tris": 63
+  },
+  "HaloDomeHouse_01_Body_t10": {
+   "faces": 5965,
+   "tex": 1024,
+   "uv_fill": 0.473,
+   "tris": 5965
+  },
+  "HaloDomeHouse_01_Body_t11": {
+   "faces": 5434,
+   "tex": 1024,
+   "uv_fill": 0.509,
+   "tris": 5434
+  },
+  "HaloDomeHouse_01_Door": {
+   "faces": 275,
+   "tex": 512,
+   "uv_fill": 0.8,
+   "tris": 275
+  },
+  "HaloDomeHouse_01_Awning": {
+   "faces": 175,
+   "tex": 512,
+   "uv_fill": 0.789,
+   "tris": 175
+  },
+  "HaloDomeHouse_01_Glass": {
+   "faces": 63,
+   "note": "Studio: Material Glass, Transparency 0.45, Reflectance 0.25",
+   "tris": 63
+  }
+ },
+ "tris_total": 24277
+}
