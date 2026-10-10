@@ -378,8 +378,9 @@ end
 -- mine or nobody's, the zone level gate, a boss's HitPad), searched within Range + Slack (the client saw it a moment
 -- earlier), and not a hidden ambusher (the client never picks one). Anything else (a player's character, a part, a dead /
 -- far / someone else's monster, a wrong type) is ignored and the attack aims as before (A23-61). Only the hint gets the
--- slack: every other target is still searched within Range. The root turns to it unless it is within KeepDeg of the
--- facing; a turned attack hits monsters only (the A23-61 rule). Auto combat never has a hint.
+-- slack: every other target is still searched within Range. The attack aims at it unless it is within KeepDeg of the
+-- facing (HINT.Aim: a facing for the hit math only, the real root is never written); it hits monsters only (the A23-61
+-- rule) only when the pick is outside the attack's own cone (AimCone) of the real facing. Auto combat never has a hint.
 local HINT = { Slack = 2, KeepDeg = 10 }
 
 -- the monstersNear entry { Rec, Pos, Dist } of a valid hint, else nil
@@ -394,11 +395,15 @@ function HINT.Pick(player, pos, range, hint)
 	return nil
 end
 
--- the facing for a valid hint: the root as it is within KeepDeg, else turned to it (aimRoot, turned)
-function HINT.Aim(root, pos, e)
+-- the facing for a valid hint (aimRoot, turned): within KeepDeg of the real facing the root itself, else a facing toward
+-- the pick for the hit math only. The real root is never written here (the client owns its character and already turned
+-- to its pick; a server write from the position the server last saw snaps a walking player back). turned (monsters only,
+-- A23-61) only when the pick is outside `cone` (the attack's AimCone) of the real facing: inside it players and the goose
+-- keep today's real front half.
+function HINT.Aim(root, pos, e, cone)
 	if inAim(root, e.Pos, HINT.KeepDeg) then return root, false end
-	local r = turnTo(root, pos, e.Pos)
-	return r, r ~= root
+	local look = Vector3.new(e.Pos.X - pos.X, 0, e.Pos.Z - pos.Z).Unit -- inAim: at least 1 stud away here
+	return { Position = pos, CFrame = { LookVector = look } }, not inAim(root, e.Pos, cone)
 end
 
 -- monstersNear entries with the hint first and no second copy of it
@@ -924,11 +929,12 @@ function CombatService.Swing(player, isManual, hint)
 	-- inside the real front half the swing aims at the nearest monster within Range in any direction (the client
 	-- FaceTarget rule) and turns the root to it; a turned swing hits monsters only (players and the goose keep the
 	-- front-half rule)
-	-- A23-91 server target hint: a valid client pick wins over both (HINT); auto swings never carry one
+	-- A23-91 server target hint: a valid client pick wins over both (HINT; the real root is not written then, `turned` =
+	-- the pick is outside the real front half); auto swings never carry one
 	local aimRoot, turned = root, false
 	local hinted = isManual and HINT.Pick(player, pos, range, hint) or nil
 	if hinted then
-		aimRoot, turned = HINT.Aim(root, pos, hinted)
+		aimRoot, turned = HINT.Aim(root, pos, hinted, w.AimCone)
 	elseif not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then
 		local near = monstersNear(player, pos, range)[1]
 		if near then
@@ -1020,8 +1026,9 @@ function CombatService.Swing(player, isManual, hint)
 	else -- "Around" (default): everything within Range of self, in front of me (AimCone; turned: the new front half)
 		monsters = aimed(monstersNear(player, pos, range), aimRoot, w.AimCone)
 		if hinted then monsters = HINT.First(hinted, monsters) end -- A23-91: the pick even at Range + Slack, nobody else
+		-- players: the real front half (A23-91: a pick inside it may aim the monster sweep a little elsewhere)
 		if isManual and not turned then
-			victims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)
+			victims = aimed(playersNear(player, pos, range), root, w.AimCone)
 		end
 		hitGoose = goosePos ~= nil and not turned and Util.FlatDistance(goosePos, pos) <= range + gooseReach
 			and inAim(root, goosePos, w.AimCone)
@@ -1155,11 +1162,11 @@ function CombatService.Release(player, isAuto, hint)
 	if c.ReleaseCenter == "Target" then
 		local range = c.Range or 10
 		local bestPos, bestDist = nil, math.huge
-		-- A23-91 server target hint: a manual cast goes to a valid client pick (the swing's HINT rule: the root turns to it
-		-- outside KeepDeg and a turned blast hits monsters only); auto casts never carry one
+		-- A23-91 server target hint: a manual cast goes to a valid client pick (the swing's HINT rule: the root is not
+		-- written, a pick outside the class AimCone makes the blast monsters only); auto casts never carry one
 		local hinted = not isAuto and HINT.Pick(player, pos, range, hint) or nil
 		if hinted then
-			local _, turned = HINT.Aim(root, pos, hinted)
+			local _, turned = HINT.Aim(root, pos, hinted, c.AimCone)
 			bestPos, turnedQ = hinted.Pos, turned
 		else
 			local nearMon = aimed(monstersNear(player, pos, range), root, c.AimCone)

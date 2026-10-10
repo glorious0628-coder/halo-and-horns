@@ -27,7 +27,7 @@ MUTATIONS = [
      "if not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then\n", "if true then\n"),
     ("the turn reaches past Range", CO, "local near = monstersNear(player, pos, range)[1]", "local near = monstersNear(player, pos, range + 20)[1]"),
     ("the body is not turned", CO, "\tpcall(function() root.CFrame = CFrame.lookAt(pos, pos + look) end)\n", ""),
-    ("a turned Around sweep hits players", CO, "\t\tif isManual and not turned then\n\t\t\tvictims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)",
+    ("a turned Around sweep hits players", CO, "\t\tif isManual and not turned then\n\t\t\tvictims = aimed(playersNear(player, pos, range), root, w.AimCone)",
      "\t\tif isManual then\n\t\t\tvictims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)"),
     ("a turned swing counts the goose", CO, "hitGoose = goosePos ~= nil and not turned and Util.FlatDistance(goosePos, pos) <= range + gooseReach",
      "hitGoose = goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach"),
