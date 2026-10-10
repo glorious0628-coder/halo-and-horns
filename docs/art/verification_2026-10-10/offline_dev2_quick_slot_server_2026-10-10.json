@@ -1,0 +1,1618 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 166,
+  "failedChecks": 0,
+  "namedChecks": 164,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config + wiring",
+      "check": "three quick slots, three defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "the attribute / remote names of the contract",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "every default is empty or a known item",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "SetQuickSlot has a short rate limit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "Main INIT_ORDER has QuickSlotService once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "Main START_ORDER has it once, before PlayerService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "Net.Names has the remote once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "the remote is appended after the older names",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "the UsePotion remote stays (a slot press uses it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config + wiring",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "the Default is three empty slots (검수 10/10: a new player fills one in the KO1 quest)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "Get = HP, MP, empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "a brand-new save shows and keeps the Default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 1 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 1 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 1: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 2 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 2 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 2: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 3 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 3 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 3: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 4 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 4 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 4: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 5 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 5 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 5: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 6 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 6 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 6: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 7 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 7 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 7: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 8 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 8 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 8: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 9 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 9 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 9: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 10 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 10 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 10: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 11 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 11 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 11: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 12 shows the clean slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 12 is saved clean",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "stored case 12: the client reads what the server holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "loading fires no Changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "loading shows no notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ready: missing / stored / broken saves",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "an item put on another slot moves there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "Changed fires once with the new slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "moved again (slot 2 gets slot 1's empty)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "two full slots swap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "the same item on its own slot changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "\"\" empties a slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "emptying an empty slot changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "an item owned 0 times may sit in a slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "Get = the saved slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "all three empty stays saved as empty (not the Default)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "setting shows no notice (A23-99)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 1 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 1 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 2 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 2 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 3 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 3 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 4 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 4 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 5 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 5 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 6 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 6 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 7 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 7 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 8 is three entries, known items, no repeats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "attribute write 8 reads back the same on the client",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: fill, move, swap, empty",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 7",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 8",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 9",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 11",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 12",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 13",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 15",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 16",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 17",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 18",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 19",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 21",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 22",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad SetQuickSlot args 23",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "an extra argument is refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "a trailing nil argument is refused too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "no arguments: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "a good call after the bad ones works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "bad calls show no notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: bad arguments change nothing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "a player who is not ready cannot set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "a player who left cannot set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "a ready player without data changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "the first call is accepted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "a second call within the rate limit is dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "another player's call is not held by the first one's limit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "after the rate limit the next call works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "the refused player's save keeps what the load gave it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "set: not ready / left / no data / rate limit",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken Default is reported and read as empty",
+      "check": "Init warns once about the unknown default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken Default is reported and read as empty",
+      "check": "unknown and repeated defaults become empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken Default is reported and read as empty",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a broken Default is reported and read as empty",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "putting HP in slot 2 tells the quest { Slot = 2, Kind = HP }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "a move tells the quest the new slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "a swap tells the quest once, for the item put in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "no change and emptying tell the quest nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "refused calls tell the quest nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "no quest entry yet: the slot still changes, no warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "a quest error is caught and warned once; the slot is saved and shown anyway",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest: QuickSlotSet when an item goes into a slot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a brand-new save loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a brand-new save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a v3 save from before the quick slots loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a v3 save from before the quick slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a v2 save (migrated) loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a v2 save (migrated)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a save whose slots were emptied stays empty loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a save whose slots were emptied stays empty",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a save with its own slots keeps them loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a save with its own slots keeps them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: broken slots are cleaned loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: broken slots are cleaned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a slots field of the wrong type is the Default loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a slots field of the wrong type is the Default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load: a too-long slots text is the Default loads",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "load + ready: a too-long slots text is the Default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "loading changes nothing the quest hears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: new saves empty, old saves HP / MP, stored slots kept",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "an old save loads without the field (QuickSlotService fills it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "PlayerReady gives the old save HP / MP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "a change goes into the session data",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "the release writes the slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "the next load keeps them (never the old-save HP / MP again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "a brand-new save is written with the Default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: the slots survive a release and the next load",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 44,
+    "applied": 44,
+    "caught": 44,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "extra arguments accepted",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: bad arguments change nothing :: a trailing nil argument is refused too",
+          "set: bad arguments change nothing :: an extra argument is refused",
+          "set: bad arguments change nothing :: no arguments: nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "slot range not checked",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 1",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 2",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 3",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 6",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 7"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "slot 0 accepted",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: bad arguments change nothing :: bad SetQuickSlot args 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "fractional slots accepted",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: bad arguments change nothing :: bad SetQuickSlot args 4",
+          "set: bad arguments change nothing :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "slot type not checked",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: bad arguments change nothing :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "unknown items accepted",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing",
+          "set: bad arguments change nothing :: a good call after the bad ones works",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 12",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 13",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 14",
+          "set: bad arguments change nothing :: bad SetQuickSlot args 15"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "known() takes any string",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: Init warns once about the unknown default",
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty",
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing",
+          "ready: missing / stored / broken saves :: stored case 5 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 5 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 5: the client reads what the server holds"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "a player who is not ready may set",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing",
+          "set: not ready / left / no data / rate limit :: a player who is not ready cannot set",
+          "set: not ready / left / no data / rate limit :: a player who left cannot set",
+          "set: not ready / left / no data / rate limit :: a ready player without data changes nothing",
+          "set: not ready / left / no data / rate limit :: the refused player's save keeps what the load gave it"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a player who left may set",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: not ready / left / no data / rate limit :: a player who left cannot set",
+          "set: not ready / left / no data / rate limit :: a ready player without data changes nothing",
+          "set: not ready / left / no data / rate limit :: the refused player's save keeps what the load gave it"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no rate limit",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: not ready / left / no data / rate limit :: a second call within the rate limit is dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the rate limit falls to 0",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: not ready / left / no data / rate limit :: a second call within the rate limit is dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no data check",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: not ready / left / no data / rate limit :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a moved item is copied, not swapped",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: no change and emptying tell the quest nothing",
+          "save: the slots survive a release and the next load :: a change goes into the session data",
+          "save: the slots survive a release and the next load :: the next load keeps them (never the old-save HP / MP again)",
+          "save: the slots survive a release and the next load :: the release writes the slots",
+          "set: fill, move, swap, empty :: Changed fires once with the new slots",
+          "set: fill, move, swap, empty :: an item put on another slot moves there"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "the same item on its own slot fires Changed",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: no change and emptying tell the quest nothing",
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing",
+          "set: fill, move, swap, empty :: emptying an empty slot changes nothing",
+          "set: fill, move, swap, empty :: the same item on its own slot changes nothing"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the change is not saved",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: a quest error is caught and warned once; the slot is saved and shown anyway",
+          "quest: QuickSlotSet when an item goes into a slot :: no change and emptying tell the quest nothing",
+          "quest: QuickSlotSet when an item goes into a slot :: no quest entry yet: the slot still changes, no warning",
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing",
+          "save: the slots survive a release and the next load :: a change goes into the session data",
+          "save: the slots survive a release and the next load :: the next load keeps them (never the old-save HP / MP again)"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "the change is not shown",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: a quest error is caught and warned once; the slot is saved and shown anyway",
+          "set: bad arguments change nothing :: a good call after the bad ones works",
+          "set: fill, move, swap, empty :: \"\" empties a slot",
+          "set: fill, move, swap, empty :: all three empty stays saved as empty (not the Default)",
+          "set: fill, move, swap, empty :: an item put on another slot moves there",
+          "set: fill, move, swap, empty :: two full slots swap"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Changed never fires",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: a quest error is caught and warned once; the slot is saved and shown anyway",
+          "set: fill, move, swap, empty :: Changed fires once with the new slots"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Changed hands out the live table",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "set: fill, move, swap, empty :: Changed fires once with the new slots"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "repeats kept",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty",
+          "ready: missing / stored / broken saves :: stored case 4 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 4 shows the clean slots",
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: broken slots are cleaned"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "unknown stored items kept",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty",
+          "ready: missing / stored / broken saves :: stored case 5 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 5 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 5: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 6 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 6 shows the clean slots"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "no length cap",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ready: missing / stored / broken saves :: stored case 9 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 9 shows the clean slots",
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a too-long slots text is the Default"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a broken value is all empty, not the Default",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "short text keeps its length",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ready: missing / stored / broken saves :: stored case 3 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 3 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 3: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 7 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 7 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 7: the client reads what the server holds"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Get reads another field",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ready: missing / stored / broken saves :: stored case 10: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 11: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 12: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 1: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 2: the client reads what the server holds",
+          "ready: missing / stored / broken saves :: stored case 3: the client reads what the server holds"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "ready: no attribute",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty",
+          "ready: missing / stored / broken saves :: a brand-new save shows and keeps the Default",
+          "ready: missing / stored / broken saves :: a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+          "ready: missing / stored / broken saves :: stored case 1 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 10 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 11 shows the clean slots"
+        ],
+        "newFailingCount": 29
+      },
+      {
+        "mutation": "ready: the clean slots are not saved",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ready: missing / stored / broken saves :: a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+          "ready: missing / stored / broken saves :: stored case 10 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 11 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 12 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 3 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 4 is saved clean"
+        ],
+        "newFailingCount": 18
+      },
+      {
+        "mutation": "an old save gets the Default",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ready: missing / stored / broken saves :: Get = HP, MP, empty",
+          "ready: missing / stored / broken saves :: a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a v2 save (migrated)",
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a v3 save from before the quick slots",
+          "save: the slots survive a release and the next load :: PlayerReady gives the old save HP / MP",
+          "save: the slots survive a release and the next load :: a change goes into the session data"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "an old save gets empty slots",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ready: missing / stored / broken saves :: Get = HP, MP, empty",
+          "ready: missing / stored / broken saves :: a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a v2 save (migrated)",
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a v3 save from before the quick slots",
+          "save: the slots survive a release and the next load :: PlayerReady gives the old save HP / MP",
+          "save: the slots survive a release and the next load :: a change goes into the session data"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "no QuickSlotSet",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: a move tells the quest the new slot",
+          "quest: QuickSlotSet when an item goes into a slot :: a quest error is caught and warned once; the slot is saved and shown anyway",
+          "quest: QuickSlotSet when an item goes into a slot :: a swap tells the quest once, for the item put in",
+          "quest: QuickSlotSet when an item goes into a slot :: no change and emptying tell the quest nothing",
+          "quest: QuickSlotSet when an item goes into a slot :: putting HP in slot 2 tells the quest { Slot = 2, Kind = HP }",
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "emptying tells the quest",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: no change and emptying tell the quest nothing",
+          "quest: QuickSlotSet when an item goes into a slot :: refused calls tell the quest nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the quest hears the wrong slot",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: a move tells the quest the new slot",
+          "quest: QuickSlotSet when an item goes into a slot :: putting HP in slot 2 tells the quest { Slot = 2, Kind = HP }"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the quest hears another name",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: putting HP in slot 2 tells the quest { Slot = 2, Kind = HP }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a quest error escapes",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: a quest error is caught and warned once; the slot is saved and shown anyway",
+          "quest: QuickSlotSet when an item goes into a slot :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no quest entry = an error",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: no quest entry yet: the slot still changes, no warning",
+          "quest: QuickSlotSet when an item goes into a slot :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a brand-new save gets no field (= HP / MP)",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a brand-new save",
+          "save: the slots survive a release and the next load :: a brand-new save is written with the Default"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a brand-new save gets HP / MP",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a brand-new save",
+          "save: the slots survive a release and the next load :: a brand-new save is written with the Default"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "ready: not connected",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty",
+          "ready: missing / stored / broken saves :: a brand-new save shows and keeps the Default",
+          "ready: missing / stored / broken saves :: a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+          "ready: missing / stored / broken saves :: stored case 1 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 10 is saved clean",
+          "ready: missing / stored / broken saves :: stored case 10 shows the clean slots"
+        ],
+        "newFailingCount": 41
+      },
+      {
+        "mutation": "a broken Default is not reported",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: Init warns once about the unknown default"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the remote name is not Config's",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest: QuickSlotSet when an item goes into a slot :: group ran to the end without a Lua error",
+          "save: the slots survive a release and the next load :: group ran to the end without a Lua error",
+          "set: bad arguments change nothing :: group ran to the end without a Lua error",
+          "set: fill, move, swap, empty :: group ran to the end without a Lua error",
+          "set: not ready / left / no data / rate limit :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the attribute name is not Config's",
+        "file": "src/ServerScriptService/QuickSlotService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a broken Default is reported and read as empty :: unknown and repeated defaults become empty",
+          "quest: QuickSlotSet when an item goes into a slot :: a quest error is caught and warned once; the slot is saved and shown anyway",
+          "ready: missing / stored / broken saves :: a brand-new save shows and keeps the Default",
+          "ready: missing / stored / broken saves :: a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+          "ready: missing / stored / broken saves :: stored case 1 shows the clean slots",
+          "ready: missing / stored / broken saves :: stored case 10 shows the clean slots"
+        ],
+        "newFailingCount": 35
+      },
+      {
+        "mutation": "Config: the rate limit is 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config + wiring :: SetQuickSlot has a short rate limit",
+          "set: not ready / left / no data / rate limit :: a second call within the rate limit is dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Main: never initialized",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config + wiring :: Main INIT_ORDER has QuickSlotService once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Main: started after PlayerService",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config + wiring :: Main START_ORDER has it once, before PlayerService"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Net: the remote missing",
+        "file": "src/ReplicatedStorage/Shared/Net.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config + wiring :: Net.Names has the remote once",
+          "config + wiring :: the remote is appended after the older names"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "f0412b1a63833feb7da3f14a666f7b5ad112c1aa9f873e88bd545a5d4c6798d0",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ReplicatedStorage/Shared/Net.luau": "787e762fb51f1bf0549260a5be046c982931c782aca1386628136d8772ca31d5",
+    "src/ServerScriptService/QuickSlotService.luau": "0e42f52f39ed689757e16e3600e981a7a6c8508df00845a37cdedbfed8ddaa20",
+    "src/ServerScriptService/DataService.luau": "15c5ee14e9f91f0175bdab4c5d6017ce5ccdfdedeed8693527176ff33b072913",
+    "src/ServerScriptService/Main.server.luau": "191931d1a8df77e6c95a5c48c4a7db035471b16747c601acf2f08bc21a810b5f",
+    "src/StarterPlayer/StarterPlayerScripts/QuickSlots.luau": "9440bdf5841851370fe35be0c63d719e310f3ff7b2184fc75e1a7b9826f088d3"
+  },
+  "fixtureSHA256": "d372e1a7f067a18639c81ddf93f10cd42425546573b1bf30ef1f64b1ea0a2571",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-109 server (contract with 게임성 개발 1, Config.QuickSlots read only): data.QuickSlots = \"<i1>,<i2>,<i3>\" (Config.QuickSlots.Items keys HP / MP, \"\" = empty; additive, Version 3). A brand-new save gets Config.QuickSlots.Default (empty, 검수 10/10) from DataService; a stored save without the field (from before the quick slots) gets HP, MP, empty once; a broken value (not text, > 120 chars) = the Default; cleaned and saved at PlayerReady (unknown items and repeats empty, extra parts dropped). The owner's attribute QuickSlots = the same text, set at PlayerReady and after every accepted change; the client's QuickSlots.Parse reads it the same. c->s SetQuickSlot(slot 1..3 integer, item key | \"\"): the item already in another slot swaps with this slot's; the same item on its own slot / emptying an empty slot = no change; bad or extra args, not ready, left, no data, faster than Config.RateLimits.SetQuickSlot (0.2 s): nothing, no notice. QuickSlotService.Changed(player, slots) after every accepted change; an item put into a slot (also a swap) calls S.StoryQuestService.Event(player, \"QuickSlotSet\", { Slot, Kind }) when it exists (pcall; emptying, no change and refused calls: nothing). Get(player); Parse(value). A slot press stays the UsePotion remote (VitalsService, unchanged).",
+  "limitations": "Offline doubles: Players / attributes, a PlayerService double (data rows, IsReady, PlayerReady), a StoryQuestService double (Event), the kit's DataStore (the real DataService Load / Release). The slots on screen, keys, the bag rows (게임성 개발 1) and the KO1 quest (게임성 개발 3) are not certified here; a live Studio play is still needed."
+}

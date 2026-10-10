@@ -434,6 +434,11 @@ local function loadLocked(player)
 	-- A4 / A5-C5: onboarding step BEFORE the generic default fill
 	if fresh then
 		d.TutorialStep = TUTORIAL_NEW
+		-- A23-109 (검수 10/10): a brand-new save starts with Config.QuickSlots.Default (empty: the KO1 quest has the player
+		-- fill a slot); a stored save without the field is from before the quick slots (QuickSlotService gives it HP, MP)
+		if type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Default) == "table" then
+			d.QuickSlots = table.concat(Config.QuickSlots.Default, ",")
+		end
 	elseif type(d.TutorialStep) ~= "number" then
 		d.TutorialStep = TUTORIAL_DONE
 	end
