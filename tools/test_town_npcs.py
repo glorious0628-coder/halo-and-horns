@@ -47,6 +47,12 @@ MUTATIONS = [
     ("Config: retry every second", C, "\tRetryDelay = 5,", "\tRetryDelay = 1,"),
     ("Config: the tolerance is 10", C, "\tYTol = 4,", "\tYTol = 10,"),
     ("Config: two casts", C, "\tRayTries = 8,", "\tRayTries = 2,"),
+    ("Config: Sir Gleam back at the gate", C, 'At = Vector3.new(110, 0, -400), Look = Vector3.new(122, 0, -392), Y = 5,',
+     'At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372), Y = 5,'),
+    ("Config: Sir Gleam without his Y", C, 'At = Vector3.new(110, 0, -400), Look = Vector3.new(122, 0, -392), Y = 5,',
+     'At = Vector3.new(110, 0, -400), Look = Vector3.new(122, 0, -392),'),
+    ("Config: Sir Gleam on the shop street's Y", C, 'At = Vector3.new(110, 0, -400), Look = Vector3.new(122, 0, -392), Y = 5,',
+     'At = Vector3.new(110, 0, -400), Look = Vector3.new(122, 0, -392), Y = 9,'),
     ("Config: H3's first card is not Sir Gleam's", C, "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Npc = \"Gleam\", Panel = true,", "{ Text = \"Talk to Sir Gleam\", Guide = \"HaloTown\", Panel = true,"),
     ("Config: the ray is shorter", C, "\tRayTop = 150, -- the ground ray", "\tRayTop = 50, -- the ground ray"),
     # --- TownNpcs
@@ -199,6 +205,15 @@ def static() -> tuple[int, list[str]]:
             check(2 <= gap <= 8 and abs(side) <= 4 and want_y is not None and abs(shop["y"] - want_y) < 1,
                   f"{entry_id} stands 2..8 studs in front of the {shop_kind} shop ({shop['x']}, {shop['z']}, yaw {shop['yaw']}, y {shop['y']}) "
                   f"on its terrace (the entry's Y {want_y}): gap {gap:.1f}, sideways {side:.1f}")
+    # 검수 2026-10-10 (the plan's district reasons): Sir Gleam stands on the knights' training yard, the plan's spot 'Sir Gleam stand (NPC)',
+    # on that yard's terrace (the entry's Y = the height of the things the plan puts on the yard), and facing the yard
+    import math
+    stand = next((sp for sp in plan["spots"].get("training", []) if "Sir Gleam" in sp.get("what", "")), None)
+    gleam = entry_at("Gleam")
+    yard_y = {p["y"] for p in plan["placements"] if p.get("zone") == "training" and p["kind"] in ("Statue", "RoundTree", "CloudBush", "PotFlowers")}
+    gy = entry_y("Gleam")
+    check(stand is not None and gleam is not None and math.hypot(gleam[0] - stand["x"], gleam[1] - stand["z"]) <= stand["r"] and gy in yard_y,
+          f"Sir Gleam stands on the plan's training yard spot {stand and (stand['x'], stand['z'], stand['r'])} at its terrace (entry {gleam}, Y {gy}, the yard's heights {sorted(yard_y)})")
     check(src.count("CreateHumanoidModelFromDescription") == 1 and "ServerStorage" not in src and "CustomModels" not in src, "the body comes from a HumanoidDescription only (A23-6): no costume rig, no template")
     return count, failures
 

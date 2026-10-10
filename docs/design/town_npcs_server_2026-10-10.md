@@ -6,7 +6,7 @@
 | Id | 무엇 | 자리 (X, Z) | 태그 / 속성 / 프롬프트 |
 |---|---|---|---|
 | Bright | 이야기 NPC | (18, -424) — 첫 플라자 계단 발치 오른쪽 잔디(계단 위 아님, A23-112 2차 배치), 문 쪽을 봄 | `StoryNpc`, NpcId=Bright, "Talk" 프롬프트(G), StoryNpcId=Bright |
-| Gleam | 이야기 NPC (Sir Gleam) | (-10, -372) | 위와 같음, NpcId=Gleam |
+| Gleam | 이야기 NPC (Sir Gleam) | **(110, -400), Y 5, 훈련장** (동쪽 섬 EA; 문 마당에서 다리 BAE (58,-366)를 건너 감; Look (122,-392)) — 10/10 검수: 구획 이유(기사 훈련장)로 문 옆 (-10,-372)에서 옮김 | 위와 같음, NpcId=Gleam. 시험이 plan의 'Sir Gleam stand (NPC)' 자리 반경 안인지, Y가 훈련장 단 높이(5)인지 본다 |
 | Folk1~4 | 주민 (서 있기만) | Folk1~3은 상점 거리 단(Y 9), 각자 가게 얼굴 앞 5스터드(가게마다 yaw가 달라 가게 앞 방향 = 키트 -Z를 yaw만큼 돌린 쪽): Folk1 주스(38.42,-499.19), Folk2 꽃집(6.6,-489.63), Folk3 빵집(-6.35,-476.52); Folk4는 분수 광장 단(Y 20) 분수 옆(46,-556) (3차 배치 5e0be705부터, 10/10) | `TownFolk`, FolkId=Folk1~4, 프롬프트 없음 |
 | PotionHalo | 빛 마을 물약 상인 | 물약 가게 앞 5스터드(20.07, -468.17), 상점 거리 단(Y 9) | `PotionMerchant`, HHC_PotionMerchant, 프롬프트=`Config.Vitals.PotionMerchantPrompt`. **켜짐**(#34로 ShopService가 태그된 모든 상인에게 팖) (개발 2의 ShopService 다중 상인이 들어오면 켠다) |
 | Otto | 대장장이 (Crossroads, 장식) | 모루 뒤 4 | 가게 프롬프트는 모루에 그대로 |
@@ -23,3 +23,8 @@
 - 개발 1(클라): 프롬프트는 서버가 처리한다. 열 줄이 없을 때 프롬프트를 숨기는 것, 다이아몬드·'!'·말풍선은 클라 몫.
 - 개발 2: 주민 반응 대사는 `TownFolk` 태그와 FolkId로 붙인다. 물약 상인은 `Config.Vitals.PotionMerchantTag`(있으면)로 태그하고, 개발 2의 ShopService 다중 상인(dev2-halo2 #34)이 main에 들어오면 `PotionHalo`의 `Enabled = false`만 지운다.
 - Sir Gleam: H3 첫 카드('Talk to Sir Gleam')에 `Npc = "Gleam"`를 붙였다(프롬프트 G로 열림). 선택 카드(4단계)는 NPC 없이 마을 안에서 저절로 열리므로 그대로.
+
+## Sir Gleam 훈련장 이동 (10/10, 검수 지시)
+- 처음 안내 흐름(문 근처)에서는 멀어지지만 Gleam은 H3('Day 40: Cat in Tree', Lv12+·M2_7 뒤)에서만 쓰이는 이야기 NPC라 처음 10분에는 안 나온다. H3의 마을 줄('Cat in tree. Again!', 슬라임을 치워 달라는 말, 고양이가 또 올라감)은 어느 자리에서도 맞는다. 4번째 줄 'Back to Sir Gleam' 단계는 HaloTown 구역에 들어오면 풀리고(Enter), 그다음 'Talk with Sir Gleam'은 길 안내(`Npc = "Gleam"`)가 몸 위에 표시를 띄워 훈련장으로 이끈다.
+- 높이: 훈련장 단은 plan에서 Y 5(조각상·나무·화분이 모두 y 5). `Y = 5`(YTol 4)라 지붕·다리 위가 아니라 단 바닥을 땅으로 본다.
+- 걷는 길: plan의 다리 BAE (58,-366, y 2.6)가 '문 마당 ↔ 훈련장(EA)' 다리다(`why`에 그렇게 적혀 있다). 실제 걸어서 닿는지는 오프라인으로 못 보니 메인 반영 1이 사진·한 번 걸어 보기로 확인해 주세요(안 닿으면 Gleam만 문 옆으로 되돌리면 된다: 한 줄).
