@@ -7307,7 +7307,7 @@
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "4b0ad3c44624f381ed3d4445fecb1efd0750f00833014064a6cc07b7c47129f5",
+    "src/ServerScriptService/StoryQuestService.luau": "9bc0cef388bbd3b27820b4532543e5413b6bb582546f2a7abf3f5ea6f7a2d75e",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
     "src/ServerScriptService/ShopService.luau": "edf9ad90671a3f8459b912b953af2bed14ac30b078bd6941ab1797fd81c4af62",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",

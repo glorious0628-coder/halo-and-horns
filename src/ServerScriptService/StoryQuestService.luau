@@ -1082,11 +1082,18 @@ function StoryQuestService.Start()
 		end
 		pcall(refresh, player)
 	end)
-	-- A23-64 ①: an Altar / rebirth faction switch: the old faction's town pick goes quiet (back again: it is voiced again)
-	connect("FactionService", "FactionChanged", function(player)
-		local data = getData(player)
-		if data then publishTownPick(player, story(data)) end
-	end)
+	-- A23-64 ①: an Altar / rebirth faction switch: the old faction's town pick goes quiet (back again: it is voiced again).
+	-- Looked up softly like the card hooks below (a world without FactionService connects nothing, with no warning)
+	local factions = S.FactionService
+	if type(factions) == "table" and type(factions.FactionChanged) == "table" then
+		factions.FactionChanged:Connect(function(player)
+			local ok, err = pcall(function()
+				local data = getData(player)
+				if data then publishTownPick(player, story(data)) end
+			end)
+			if not ok then Util.Warn(TAG, "FactionChanged: " .. tostring(err)) end
+		end)
+	end
 	-- A23-64 ②: the other good / evil picks glow too: a choice card (ChoiceCard.Picked side "Good" | "Evil") and the King
 	-- Slime finisher card (FinisherService.Picked "Help" = Good, "Tickle" = Evil); "None" (time up / left) never glows.
 	-- Optional services: a server (or an offline world) without them connects nothing, with no warning.
