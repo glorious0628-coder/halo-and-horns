@@ -10,11 +10,11 @@
 |---|---|---|---|
 | 00_review.md | 모든 것 검수 | Opus | Ultracode(막대 맨 오른쪽) |
 | 01_mainapply.md | 메인 반영 1 | Sonnet | high |
-| 02_dev1.md | 게임성 개발 1 | Opus | xhigh |
+| 02_dev1.md | 게임성 개발 1 | Opus | high (10/10 오후, 사용량) |
 | 03_dev2.md | 게임성 개발 2 | Opus | Ultracode(막대 맨 오른쪽) |
 | 04_dev3.md | 게임성 개발 3 | Sonnet | xhigh |
-| 05_imgdev.md | 이미지 개발 | Opus | xhigh |
-| 06_img1.md | 이미지 생성 1 | Sonnet | high |
+| 05_imgdev.md | 이미지 개발 | Opus | high (10/10 오후, 사용량) |
+| 06_img1.md | 이미지 생성 1 | **Opus** | high (10/10 오후: A23-107 3D 부품·조립이 가장 중요) |
 | 07_img2.md | 이미지 생성 2 | Sonnet | high |
 | 08_film.md | 촬영 편집 1 | Sonnet | high |
-| 09_sound.md | 소리 만들기 | Sonnet | high |
+| 09_sound.md | 소리 만들기 | Sonnet | medium (10/10 오후) |
