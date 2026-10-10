@@ -78,6 +78,8 @@ end
 --   keys: Gold, Stars, Bully, Tickets, Absent, Goose, PumpkinKing, Faction, any mirrored stat (Level, PlaytimeSeconds, Class, ...)
 --   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill); SlimeKing / any Config.FieldBosses key (that boss now)
 --   A23-77: AttendNext (today's attendance claim opens again)
+--   StoryStep ("M2_3:1": the active quest goes to that step), StorySub ("KO1:3": that Sub quest starts at that step, a bare "KO1" =
+--   step 1), StoryDone ("KO1": that quest is done, no reward)
 --   A23-86: Card (a choice card of that Config.ChoiceCard.Kinds id opens now)
 --   #45: Lost ("Teddy" / "ClubBadge" / "GuardMedal" / "CandyBag": a find now with its card, "clear": forget the find; needs Config.LostFound.Enabled for the walk)
 --   ops: Errors (the last server errors; value "stored" / "live" reads the saved document)
@@ -123,6 +125,12 @@ if game:GetService("RunService"):IsStudio() then
 			if not track then return "no active quest " .. tostring(id) end
 			track.St, track.P, track.T, track.Claim = tonumber(st), 0, {}, false
 			return "ok"
+		elseif key == "StorySub" then -- Studio test aid: "KO1:3" starts that Sub quest at that step (a bare "KO1" = step 1)
+			local id, step = string.match(tostring(value), "^([%w_]+):?(%d*)$")
+			if not id then return 'use "<quest>:<step>"' end
+			return S.StoryQuestService.DebugSub(player, id, tonumber(step) or 1)
+		elseif key == "StoryDone" then -- Studio test aid: "KO1" marks that quest done (no reward)
+			return S.StoryQuestService.DebugDone(player, tostring(value))
 		elseif key == "StoryDump" then -- Studio test aid: the saved story quest state as JSON
 			local data = S.PlayerService.GetData(player)
 			return game:GetService("HttpService"):JSONEncode(data and data.Story or {})

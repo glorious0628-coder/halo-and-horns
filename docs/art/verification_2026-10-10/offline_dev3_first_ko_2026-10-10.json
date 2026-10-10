@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 179,
+  "checks": 201,
   "failedChecks": 0,
-  "namedChecks": 179,
+  "namedChecks": 201,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1080,15 +1080,147 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "Lv9: KO1 is not offered by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugSub KO1 step 3: the quest starts at 'Put the potion in a quick slot'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "... no notice, no popup, no QuestDone, no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugSub again: moves it to step 4 (the sip flag lit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugSub KO1 step 2: the 50 gold top-up like a real step 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "... once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "no step given: step 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "2.7 -> step 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "step 0 is refused (steps 1-5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "step -1 is refused (steps 1-5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "step 6 is refused (steps 1-5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "step 99 is refused (steps 1-5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "an unknown id / a main quest is not a sub quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "no save: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "a done quest starts again (its Done mark is cleared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugDone: marked done, the track is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "... never restarted, no QuestDone, no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "M1_2 is the active main quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "DebugDone on the active main quest: done, the slot is free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "unknown quest / no save: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug aids",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
-  "staticChecks": 12,
+  "staticChecks": 15,
   "staticFailures": [],
   "mutations": {
-    "total": 71,
-    "applied": 71,
-    "caught": 71,
+    "total": 79,
+    "applied": 79,
+    "caught": 79,
     "skipped": false,
     "results": [
       {
@@ -1111,9 +1243,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: opens after M1_2, up to Lv8, only with no potion yet",
+          "debug aids :: Lv9: KO1 is not offered by itself",
           "offered :: Lv9: not offered"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "KO1 level cap 9",
@@ -1123,9 +1256,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: opens after M1_2, up to Lv8, only with no potion yet",
+          "debug aids :: Lv9: KO1 is not offered by itself",
           "offered :: Lv9: not offered"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "KO1 is offered to players with potions",
@@ -1227,7 +1361,7 @@
           "ahead :: slots text '' is empty: step 3 waits",
           "ahead :: slots text ', ,' is empty: step 3 waits"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 26
       },
       {
         "mutation": "KO1 step 4 never passes early",
@@ -1252,11 +1386,11 @@
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "config :: step 4: Drink it from your quick slot = PotionUsed (passes when seen before)",
+          "debug aids :: DebugSub again: moves it to step 4 (the sip flag lit)",
           "flow :: Halo: PotionUsed moves step 4 to 5",
-          "flow :: Halo: QuickSlotSet moves step 3 to 4",
-          "flow :: Halo: row 4 reads 'Drink it from your quick slot'"
+          "flow :: Halo: QuickSlotSet moves step 3 to 4"
         ],
-        "newFailingCount": 18
+        "newFailingCount": 19
       },
       {
         "mutation": "KO1 step 2 waits for the wrong happening",
@@ -1326,13 +1460,13 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
+          "debug aids :: ... once",
+          "debug aids :: DebugSub KO1 step 2: the 50 gold top-up like a real step 2",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "top-up :: 10 carried + 20 in the bank: tops up to 50 in total (+20 carried), the bank is untouched",
-          "top-up :: 30 carried: tops up to 50 in total (+20 carried), the bank is untouched"
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 11
       },
       {
         "mutation": "KO1 never tops up",
@@ -1342,13 +1476,13 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
+          "debug aids :: ... once",
+          "debug aids :: DebugSub KO1 step 2: the 50 gold top-up like a real step 2",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Halo: no second top-up",
-          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "flow :: Horns: no second top-up",
-          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 22
       },
       {
         "mutation": "KO1 rematch counts any King",
@@ -1631,9 +1765,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "debug aids :: Lv9: KO1 is not offered by itself",
           "offered :: Lv9: not offered"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "Requires.MaxLevel off by one",
@@ -1711,9 +1846,9 @@
           "ahead :: slots text ', ,' is empty: step 3 waits",
           "ahead :: slots text ',,' is empty: step 3 waits",
           "ahead :: the purchase does not skip the slot step",
-          "flow :: Halo: PotionBought moves step 2 to 3"
+          "debug aids :: DebugSub KO1 step 3: the quest starts at 'Put the potion in a quick slot'"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 21
       },
       {
         "mutation": "Held counts a missing field",
@@ -1767,14 +1902,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "debug aids :: DebugSub KO1 step 2: the 50 gold top-up like a real step 2",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "top-up :: 10 carried + 20 in the bank: the one-time flag is saved",
-          "top-up :: 30 carried: the one-time flag is saved",
-          "top-up :: 49 gold: the one-time flag is saved"
+          "top-up :: 30 carried: the one-time flag is saved"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 13
       },
       {
         "mutation": "TopUpGold always pays the full 50",
@@ -1998,6 +2133,104 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "DebugSub keeps a Done mark",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: a done quest starts again (its Done mark is cleared)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DebugSub starts any quest",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: an unknown id / a main quest is not a sub quest"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DebugSub does not check the step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: step -1 is refused (steps 1-5)",
+          "debug aids :: step 0 is refused (steps 1-5)",
+          "debug aids :: step 6 is refused (steps 1-5)",
+          "debug aids :: step 99 is refused (steps 1-5)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "DebugSub forgets the step's gold",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: ... once",
+          "debug aids :: DebugSub KO1 step 2: the 50 gold top-up like a real step 2"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DebugSub does not round the step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: 2.7 -> step 2",
+          "debug aids :: step -1 is refused (steps 1-5)",
+          "debug aids :: step 0 is refused (steps 1-5)",
+          "debug aids :: step 6 is refused (steps 1-5)",
+          "debug aids :: step 99 is refused (steps 1-5)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "DebugDone does not mark it done",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: DebugDone on the active main quest: done, the slot is free",
+          "debug aids :: DebugDone: marked done, the track is gone"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DebugDone keeps the track",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: ... never restarted, no QuestDone, no reward",
+          "debug aids :: DebugDone: marked done, the track is gone"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DebugDone keeps the main quest",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug aids :: DebugDone on the active main quest: done, the slot is free"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "the sip flag is never published",
         "file": "src/ServerScriptService/StoryQuestService.luau",
         "applied": true,
@@ -2006,12 +2239,12 @@
         "newFailingChecks": [
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
+          "debug aids :: DebugSub again: moves it to step 4 (the sip flag lit)",
           "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
           "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Halo: step 5: PotionSip false again",
-          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+          "flow :: Halo: step 5: PotionSip false again"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 15
       },
       {
         "mutation": "the sip flag is never cleared",
@@ -2053,13 +2286,13 @@
         "crashed": false,
         "newFailingChecks": [
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
+          "debug aids :: DebugSub again: moves it to step 4 (the sip flag lit)",
           "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
           "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
           "flow :: Horns: step 4: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
-          "flow :: Neutral: step 4: PotionSip is true at once (the client lets a full bar be used)"
+          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "the sip flag has another name",
@@ -2071,11 +2304,11 @@
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
           "config :: Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
+          "debug aids :: DebugSub again: moves it to step 4 (the sip flag lit)",
           "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
-          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Halo: step 5: PotionSip false again"
+          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 16
       },
       {
         "mutation": "the sip flag has no name",
@@ -2087,11 +2320,11 @@
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
           "config :: Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
+          "debug aids :: DebugSub again: moves it to step 4 (the sip flag lit)",
           "flow :: Halo: step 3: no sip yet (the potion is not in a slot)",
-          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)",
-          "flow :: Halo: step 5: PotionSip false again"
+          "flow :: Halo: step 4: PotionSip is true at once (the client lets a full bar be used)"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 16
       }
     ]
   },
@@ -2099,19 +2332,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4830f77ebe4a7fc6093aeb17fc6ac02a7ea25cb277d44889b8b190d7097f019c",
+    "src/ReplicatedStorage/Shared/Config.luau": "cebaa4eef37e02460c921d2cf7259ce43e5668d6fab877e5e75d1547c7ce6cf1",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "fa5b75d0dc29005b9ad65010b4cfcdbb27150a54aeda176d75275be84be761fd",
+    "src/ServerScriptService/StoryQuestService.luau": "d8618ee1457239a1b3ef28f1613ffe9add01d5175c6ec50986618580734f4504",
     "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
     "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
+    "src/ServerScriptService/DataService.luau": "15c5ee14e9f91f0175bdab4c5d6017ce5ccdfdedeed8693527176ff33b072913",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
+    "src/ServerScriptService/CharacterVisuals.luau": "6c87145e91fe67aebd043eabed71d6f01c7d51b68f9df8b5638c0c54881e7f5e",
     "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808"
   },
-  "fixtureSHA256": "596c7d6c6ec01e4727870b491b725e66efe09fc37ee680697376cb592ba03dcb",
+  "fixtureSHA256": "e1b386864b76421b256dfcceadc97573380016491f0be6bea603a4e476f89615",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

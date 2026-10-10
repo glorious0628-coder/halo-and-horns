@@ -128,6 +128,18 @@ MUTATIONS = [
      "if obj and obj.Type == \"Event\" and not eventPast(data, obj) then return true end"),
     ("CurrentStep names a quest waiting for [Claim]", ST, "if type(tr) ~= \"table\" or tr.Claim == true or st.Done[id] then return nil end",
      "if type(tr) ~= \"table\" or st.Done[id] then return nil end"),
+    # Studio test aids (Main's DebugCommand StorySub / StoryDone)
+    ("DebugSub keeps a Done mark", ST, "\tst.Done[id] = nil\n\tlocal track = { St = n", "\tlocal track = { St = n"),
+    ("DebugSub starts any quest", ST, 'if not def or def.Kind ~= "Sub" then return "no such sub quest "', 'if not def then return "no such sub quest "'),
+    ("DebugSub does not check the step", ST, '\tif n < 1 or n > #def.Steps then return string.format("%s has steps 1-%d", id, #def.Steps) end\n', ""),
+    ("DebugSub forgets the step's gold", ST, "\ttopUpGold(player, data, id, track)\n\tdirty(player)\n\tlocal ok, err = pcall(refresh, player)",
+     "\tdirty(player)\n\tlocal ok, err = pcall(refresh, player)"),
+    ("DebugSub does not round the step", ST, "local n = math.floor(num(step, 1))", "local n = num(step, 1)"),
+    ("DebugDone does not mark it done", ST, "\tst.Done[id] = true\n\tst.Subs[id] = nil\n\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\"",
+     "\tst.Subs[id] = nil\n\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\""),
+    ("DebugDone keeps the track", ST, "\tst.Done[id] = true\n\tst.Subs[id] = nil\n\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\"",
+     "\tst.Done[id] = true\n\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\""),
+    ("DebugDone keeps the main quest", ST, "\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\"", "\tdirty(player)\n\treturn \"ok\""),
     # the client flag (VitalsUI lets a full bar be used while a step waits for the drink)
     ("the sip flag is never published", ST, "\t\tif player:GetAttribute(sipAttr) ~= want then player:SetAttribute(sipAttr, want) end\n", ""),
     ("the sip flag is never cleared", ST, "\t\tif player:GetAttribute(sipAttr) ~= want then player:SetAttribute(sipAttr, want) end\n",
@@ -178,6 +190,14 @@ def static() -> tuple[int, list[str]]:
     check(story.count("OnServerEvent:Connect(") == 1, "StoryQuestService has one remote handler (StoryAction)")
     check(re.search(r'action == "(?!Open|Talk|Choose)\w+"', function_block(story, "local function onStoryAction(")) is None,
           "StoryAction has no action that could report a happening")
+    # the Studio aids live only in Main's Studio block, and they change the save (DebugTainted), so they are not read-only
+    main = read(SSS / "Main.server.luau")
+    studio = main.index('if game:GetService("RunService"):IsStudio() then')
+    read_only = main.split("local READ_ONLY = {")[1].split("}")[0]
+    check(main.index('key == "StorySub"') > studio and main.index('key == "StoryDone"') > studio and main.count('key == "StorySub"') == 1,
+          "StorySub / StoryDone exist once, inside Main's IsStudio block")
+    check("StorySub" not in read_only and "StoryDone" not in read_only, "StorySub / StoryDone change the save: they taint it (not read-only)")
+    check("S.StoryQuestService.DebugSub(player" in main and "S.StoryQuestService.DebugDone(player" in main, "Main calls the two StoryQuestService aids")
     return count, failures
 
 

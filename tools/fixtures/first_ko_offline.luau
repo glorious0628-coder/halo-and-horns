@@ -431,4 +431,49 @@ runGroup("personal", function()
 	check(m.P == 1, "a shared one does", show(m))
 end)
 
+------------------------------------------------------------------ 7. Studio test aids (Main's DebugCommand StorySub / StoryDone)
+runGroup("debug aids", function()
+	local w = koWorld()
+	local panels = panelsOf(w)
+	local done = {}
+	w.Story.QuestDone:Connect(function(_, id) table.insert(done, id) end)
+	-- Lv9: KO1 is never offered by itself, the aid starts it anyway at the step asked for
+	local p, d = joinKO(w, 1601, "Halo", { Level = 9, Data = { QuickSlots = ",," } })
+	check(w:Track(d, "KO1") == nil, "Lv9: KO1 is not offered by itself", "")
+	local n0 = #w.Notices
+	check(w.Story.DebugSub(p, "KO1", 3) == "ok" and w:Track(d, "KO1") ~= nil and w:Track(d, "KO1").St == 3 and w.Story.Wants(p, "QuickSlotSet") == true,
+		"DebugSub KO1 step 3: the quest starts at 'Put the potion in a quick slot'", show(w:Track(d, "KO1")))
+	check(#w.Notices == n0 and #panels == 0 and #done == 0 and #w.XP == 0 and #w.Granted == 0, "... no notice, no popup, no QuestDone, no reward", "")
+	check(w.Story.DebugSub(p, "KO1", 4) == "ok" and w:Track(d, "KO1").St == 4 and p:GetAttribute("PotionSip") == true,
+		"DebugSub again: moves it to step 4 (the sip flag lit)", show(w:Track(d, "KO1")))
+	-- step 2 comes with its gold like a real arrival
+	local q, qd = joinKO(w, 1602, "Horns", { Level = 9 })
+	check(w.Story.DebugSub(q, "KO1", 2) == "ok" and qd.CarriedGold == 50 and qd.Story.First.TopKO12 == true, "DebugSub KO1 step 2: the 50 gold top-up like a real step 2", show({ qd.CarriedGold, qd.Story.First }))
+	check(w.Story.DebugSub(q, "KO1", 2) == "ok" and qd.CarriedGold == 50, "... once", show(qd.CarriedGold))
+	-- a bare quest id = step 1; a fraction rounds down; a bad step / quest is refused and changes nothing
+	local r, rd = joinKO(w, 1603, "Neutral", { Level = 9 })
+	check(w.Story.DebugSub(r, "KO1") == "ok" and w:Track(rd, "KO1").St == 1, "no step given: step 1", show(w:Track(rd, "KO1")))
+	check(w.Story.DebugSub(r, "KO1", 2.7) == "ok" and w:Track(rd, "KO1").St == 2, "2.7 -> step 2", show(w:Track(rd, "KO1")))
+	for _, bad in { 0, -1, 6, 99 } do
+		check(string.find(w.Story.DebugSub(r, "KO1", bad), "steps 1-5", 1, true) ~= nil and w:Track(rd, "KO1").St == 2, "step " .. tostring(bad) .. " is refused (steps 1-5)", show(w:Track(rd, "KO1")))
+	end
+	check(string.find(w.Story.DebugSub(r, "Nope", 1), "no such sub quest", 1, true) ~= nil and string.find(w.Story.DebugSub(r, "M1_2", 1), "no such sub quest", 1, true) ~= nil
+		and w:Track(rd, "M1_2") == nil and rd.Story.Subs.M1_2 == nil, "an unknown id / a main quest is not a sub quest", "")
+	check(w.Story.DebugSub(w:NewPlayer(1699, {}), "KO1", 1) == "no data", "no save: refused", "")
+	-- a finished quest can be started again
+	rd.Story.Done.KO1 = true
+	rd.Story.Subs.KO1 = nil
+	check(w.Story.DebugSub(r, "KO1", 1) == "ok" and rd.Story.Done.KO1 == nil and w:Track(rd, "KO1").St == 1, "a done quest starts again (its Done mark is cleared)", show(rd.Story.Done))
+	-- StoryDone: no reward, no QuestDone, never restarts by itself
+	local gold0 = #w.GoldGiven
+	check(w.Story.DebugDone(r, "KO1") == "ok" and rd.Story.Done.KO1 == true and w:Track(rd, "KO1") == nil, "DebugDone: marked done, the track is gone", show({ rd.Story.Done, w:Track(rd, "KO1") }))
+	w.Story.Refresh(r)
+	check(w:Track(rd, "KO1") == nil and #done == 0 and #w.XP == 0 and #w.Granted == 0 and #w.GoldGiven == gold0, "... never restarted, no QuestDone, no reward", "")
+	-- a main quest done: the main slot is free
+	local m, md = joinKO(w, 1604, "Halo", { Level = 3, Done = { M1_1 = true } })
+	check(md.Story.Main.Id == "M1_2", "M1_2 is the active main quest", show(md.Story.Main))
+	check(w.Story.DebugDone(m, "M1_2") == "ok" and md.Story.Done.M1_2 == true and md.Story.Main.Id ~= "M1_2", "DebugDone on the active main quest: done, the slot is free", show(md.Story.Main))
+	check(string.find(w.Story.DebugDone(m, "Nope"), "no such quest", 1, true) ~= nil and w.Story.DebugDone(w:NewPlayer(1698, {}), "KO1") == "no data", "unknown quest / no save: refused", "")
+end)
+
 finish()

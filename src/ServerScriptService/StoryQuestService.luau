@@ -739,6 +739,40 @@ function StoryQuestService.Event(player, name, info)
 	return moved
 end
 
+-- Studio test aids (Main's DebugCommand "StorySub" / "StoryDone", built inside its IsStudio block only): start a Sub quest at a
+-- step (what the step needs at its start is done as when it opens: TopUpGold; steps that pass at once pass), and mark one
+-- done. No reward, no notice, no QuestDone. Both return "ok" or a short reason.
+function StoryQuestService.DebugSub(player, id, step)
+	local def = DEFS[id]
+	if not def or def.Kind ~= "Sub" then return "no such sub quest " .. tostring(id) end
+	local data = getData(player)
+	if not data then return "no data" end
+	local n = math.floor(num(step, 1))
+	if n < 1 or n > #def.Steps then return string.format("%s has steps 1-%d", id, #def.Steps) end
+	local st = story(data)
+	st.Done[id] = nil
+	local track = { St = n, P = 0, T = {}, Claim = false }
+	st.Subs[id] = track
+	topUpGold(player, data, id, track)
+	dirty(player)
+	local ok, err = pcall(refresh, player)
+	if not ok then Util.Warn(TAG, "DebugSub refresh: " .. tostring(err)) end
+	return "ok"
+end
+
+function StoryQuestService.DebugDone(player, id)
+	local def = DEFS[id]
+	if not def then return "no such quest " .. tostring(id) end
+	local data = getData(player)
+	if not data then return "no data" end
+	local st = story(data)
+	st.Done[id] = true
+	st.Subs[id] = nil
+	if st.Main.Id == id then st.Main = { Id = "" } end
+	dirty(player)
+	return "ok"
+end
+
 -- A23-110: true while an open step of this player's quests waits for that happening (and has not seen it before)
 function StoryQuestService.Wants(player, name)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(name) ~= "string" then return false end
