@@ -30,10 +30,11 @@ local player = Players.LocalPlayer
 local FACTION_IDS = (type(Config.Features) == "table" and Config.Features.NeutralFaction == true)
 	and { "Halo", "Horns", "Neutral" } or { "Halo", "Horns" }
 -- A23-114 (beta): while the Artisan Guild is off, a third locked "Artisan Guild - Coming soon" card stands beside Halo /
--- Horns (grey, a little smaller; a press only shakes it, no server request). ROW_IDS = the cards the row lays out.
+-- Horns (grey, a little smaller; a press only shakes it, no server request). ROW_IDS = the cards the row lays out, in
+-- order: the neutral guild BETWEEN the two sides (검수 10/10: [Halo] [Artisan] [Horns], the mascots at the ends)
 local SOON_ID = "Soon"
 local ROW_IDS = table.clone(FACTION_IDS)
-if not table.find(FACTION_IDS, "Neutral") then table.insert(ROW_IDS, SOON_ID) end
+if not table.find(FACTION_IDS, "Neutral") then table.insert(ROW_IDS, math.min(2, #ROW_IDS + 1), SOON_ID) end
 local CLICK_LOCK = 2 -- seconds the choose buttons stay disabled after a click
 local OPEN_LOCK = 0.6 -- CR-M26: card input ignored this long after the picker opens (a fast 2nd tap)
 local PREMISE_STEP = 0.6 -- seconds between premise lines fading in
@@ -1602,14 +1603,18 @@ local function placeMascots(w)
 	local cx, cy = cardsRow.Position.X.Offset, cardsRow.Position.Y.Offset
 	local cw, ch = cardsRow.Size.X.Offset, cardsRow.Size.Y.Offset
 	local h = math.floor(ch * LAY.MascotH)
+	-- 검수 10/10 (fair to both sides): one scale for both mascots - the smaller room decides; both hide together
+	local scale = 1
 	for i, m in list do
 		local mw = math.floor(h * m.Aspect)
 		local room = i == 1 and (cx - 8) or (w - (cx + cw) - 8)
-		local scale = math.min(1, room / math.max(1, mw))
-		local fits = scale >= LAY.MascotMinFit
+		scale = math.min(scale, room / math.max(1, mw))
+	end
+	local fits = scale >= LAY.MascotMinFit
+	for i, m in list do
 		m.Image.Visible = fits
 		if fits then
-			local hh, ww = math.floor(h * scale), math.floor(mw * scale)
+			local hh, ww = math.floor(h * scale), math.floor(h * m.Aspect * scale)
 			local x = i == 1 and (cx - ww - 4) or (cx + cw + 4)
 			place(m.Image, x, cy + ch - hh, ww, hh)
 		end
@@ -1785,11 +1790,11 @@ local function build()
 	cardsRow.CanvasSize = UDim2.fromOffset(0, 0)
 	cardsRow.Parent = root
 	local anyArt = false
-	for i, id in FACTION_IDS do
-		buildCard(id, i)
+	for _, id in FACTION_IDS do
+		buildCard(id, table.find(ROW_IDS, id) or 0)
 		if cards[id] and cards[id].Art then anyArt = true end
 	end
-	if table.find(ROW_IDS, SOON_ID) then buildSoonCard(#ROW_IDS) end
+	if table.find(ROW_IDS, SOON_ID) then buildSoonCard(table.find(ROW_IDS, SOON_ID)) end
 	if anyArt then root.BackgroundTransparency = LAY.DimArt end
 	-- the dim over the whole screen, phone side edges included (UIKit.FullScreenDim)
 	if type(UIKit.FullScreenDim) == "function" then
