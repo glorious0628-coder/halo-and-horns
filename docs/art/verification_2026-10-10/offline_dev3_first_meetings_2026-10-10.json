@@ -1,0 +1,1019 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 104,
+  "failedChecks": 0,
+  "namedChecks": 87,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "TS1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: it waits only for the meeting ScrollMet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: one talking row 'Hear about your Transfer Scroll' (the Smith speaks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: a minute of hunting, like D0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: two or three short lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: a line of at most 14 words (the story text rule)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: says 'transfer scroll'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: says 'moves a weapon's + to another weapon'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: says 'only the scroll is used up'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TS1: plain ASCII",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: it waits only for the meeting SackMet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: one talking row 'Read about the Grudge Sack' (the Notice speaks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: a minute of hunting, like D0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: two or three short lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: a line of at most 14 words (the story text rule)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: says 'grudge sack'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: says '45 seconds'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: says 'beat the thief'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SG1: plain ASCII",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: it waits only for the meeting ScaleMet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: one talking row 'Hear about the size scale' (the Fountain speaks)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: a minute of hunting, like D0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1 is in StoryQuests.Subs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: a phone name of at most 14 letters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: two or three short lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: a line of at most 14 words (the story text rule)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: says 'both sides'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: says 'bigger'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: says '1.6 times'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "SZ1: plain ASCII",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the sack's 45 seconds are Config.Grudge.SackSeconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "'up to 1.6 times' is Config.Justice.MaxScale",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ScrollMet = a Transfer item in the bag; ScaleMet = SizeMult over 1; SackMet = a listed happening",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Transfer scrolls are Move10 / Move30 / Move70",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "an enhance scroll is not a transfer scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing before the meeting",
+      "check": "Halo: a player who met nothing has none of the three rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing before the meeting",
+      "check": "Horns: a player who met nothing has none of the three rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing before the meeting",
+      "check": "Neutral: a player who met nothing has none of the three rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing before the meeting",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nothing before the meeting",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Move10 in the bag: the row appears, with no popup and no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Move30 in the bag: the row appears, with no popup and no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Move70 in the bag: the row appears, with no popup and no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Zero: no Transfer Scroll, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Potion: no Transfer Scroll, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Empty: no Transfer Scroll, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Enhance: no Transfer Scroll, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "Unknown: no Transfer Scroll, no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "no scroll yet: no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "the drop arrives: the row appears at the next look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "the scroll is used up: the row stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "pressed: its dialogue opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "talked: done, a little gold and XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "never offered again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "transfer scroll",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Halo: SizeMult 1 (the side is not the smaller one): nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Halo: SizeMult just over 1: the row appears, no popup, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Halo: the sides even out: the row stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Horns: SizeMult 1 (the side is not the smaller one): nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Horns: SizeMult just over 1: the row appears, no popup, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Horns: the sides even out: the row stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "Neutral: SizeMult 1: no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "no attribute at all: no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "a text SizeMult never counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "talked: done with a little gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "never again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "size scale",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "a KO that stole nothing is no meeting (Stolen 0, no info, a bad info)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "no popup and no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "the row reads 'Read about the Grudge Sack'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "a second plunder starts nothing new",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "talked: done with a little gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "never again after it is done",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "a victim that is not ready costs nothing (Event answers false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grudge sack",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 0,
+  "staticFailures": [],
+  "mutations": {
+    "total": 33,
+    "applied": 33,
+    "caught": 33,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "TS1 waits for nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: TS1: it waits only for the meeting ScrollMet",
+          "nothing before the meeting :: Halo: a player who met nothing has none of the three rows",
+          "nothing before the meeting :: Horns: a player who met nothing has none of the three rows",
+          "nothing before the meeting :: Neutral: a player who met nothing has none of the three rows",
+          "transfer scroll :: Empty: no Transfer Scroll, no row",
+          "transfer scroll :: Enhance: no Transfer Scroll, no row"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "TS1 waits for the wrong meeting",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: TS1: it waits only for the meeting ScrollMet",
+          "transfer scroll :: Move10 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move30 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move70 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: never offered again",
+          "transfer scroll :: pressed: its dialogue opens"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "SG1 waits for the wrong meeting",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SG1: it waits only for the meeting SackMet",
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "SZ1 waits for the wrong meeting",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SZ1: it waits only for the meeting ScaleMet",
+          "size scale :: Halo: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Halo: the sides even out: the row stays",
+          "size scale :: Horns: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Horns: the sides even out: the row stays",
+          "size scale :: talked: done with a little gold"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "SG1 also needs a level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SG1: it waits only for the meeting SackMet",
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "ScrollMet watches enhance scrolls",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ScrollMet = a Transfer item in the bag; ScaleMet = SizeMult over 1; SackMet = a listed happening",
+          "transfer scroll :: Enhance: no Transfer Scroll, no row",
+          "transfer scroll :: Move10 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move30 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move70 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: never offered again"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "ScaleMet needs 1.5",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ScrollMet = a Transfer item in the bag; ScaleMet = SizeMult over 1; SackMet = a listed happening",
+          "size scale :: Halo: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Halo: the sides even out: the row stays",
+          "size scale :: Horns: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Horns: the sides even out: the row stays",
+          "size scale :: talked: done with a little gold"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "ScaleMet reads another attribute",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ScrollMet = a Transfer item in the bag; ScaleMet = SizeMult over 1; SackMet = a listed happening",
+          "size scale :: Halo: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Halo: the sides even out: the row stays",
+          "size scale :: Horns: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Horns: the sides even out: the row stays",
+          "size scale :: talked: done with a little gold"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "SackMet is not a listed happening",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ScrollMet = a Transfer item in the bag; ScaleMet = SizeMult over 1; SackMet = a listed happening",
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "TS1 pops up by itself",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: TS1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line",
+          "transfer scroll :: Move10 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move30 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move70 in the bag: the row appears, with no popup and no toast"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "TS1 gets a closing line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: TS1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SG1 starts with a line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SG1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SZ1 is Halo only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SZ1: a plain sub for everyone: no faction, not hidden, no pop-up, no Start / Finish line",
+          "size scale :: Horns: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Horns: the sides even out: the row stays",
+          "size scale :: talked: done with a little gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "SG1 says 30 seconds",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SG1: says '45 seconds'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SZ1 says 2 times",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SZ1: says '1.6 times'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an SG1 line of 20 words",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SG1: a line of at most 14 words (the story text rule)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "TS1 forgets the plus",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: TS1: says 'moves a weapon's + to another weapon'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SZ1 has the wrong speaker",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SZ1: one talking row 'Hear about the size scale' (the Fountain speaks)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SG1 left out of the sub list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: SG1 is in StoryQuests.Subs",
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a Korean line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: TS1: plain ASCII"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Requires.Seen ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a KO that stole nothing is no meeting (Stolen 0, no info, a bad info)",
+          "nothing before the meeting :: Halo: a player who met nothing has none of the three rows",
+          "nothing before the meeting :: Horns: a player who met nothing has none of the three rows",
+          "nothing before the meeting :: Neutral: a player who met nothing has none of the three rows",
+          "size scale :: Halo: SizeMult 1 (the side is not the smaller one): nothing"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "Requires.Seen reads the wrong table",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'",
+          "size scale :: Halo: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Halo: the sides even out: the row stays"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "the meetings are never checked",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "size scale :: Halo: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Halo: the sides even out: the row stays",
+          "size scale :: Horns: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Horns: the sides even out: the row stays",
+          "size scale :: talked: done with a little gold",
+          "transfer scroll :: Move10 in the bag: the row appears, with no popup and no toast"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "a meeting is not remembered",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "size scale :: Halo: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Halo: the sides even out: the row stays",
+          "size scale :: Horns: SizeMult just over 1: the row appears, no popup, no toast",
+          "size scale :: Horns: the sides even out: the row stays",
+          "size scale :: talked: done with a little gold",
+          "transfer scroll :: Move10 in the bag: the row appears, with no popup and no toast"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "any item counts as a scroll",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer scroll :: Enhance: no Transfer Scroll, no row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an empty stack counts",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer scroll :: Zero: no Transfer Scroll, no row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the bag is never read",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "transfer scroll :: Move10 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move30 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: Move70 in the bag: the row appears, with no popup and no toast",
+          "transfer scroll :: never offered again",
+          "transfer scroll :: pressed: its dialogue opens",
+          "transfer scroll :: talked: done, a little gold and XP"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "SizeMult 1 counts",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "size scale :: Halo: SizeMult 1 (the side is not the smaller one): nothing",
+          "size scale :: Horns: SizeMult 1 (the side is not the smaller one): nothing",
+          "size scale :: Neutral: SizeMult 1: no row"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a grown body never counts",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nothing before the meeting :: Halo: a player who met nothing has none of the three rows",
+          "nothing before the meeting :: Horns: a player who met nothing has none of the three rows",
+          "nothing before the meeting :: Neutral: a player who met nothing has none of the three rows",
+          "size scale :: Halo: SizeMult 1 (the side is not the smaller one): nothing",
+          "size scale :: Horns: SizeMult 1 (the side is not the smaller one): nothing",
+          "size scale :: Neutral: SizeMult 1: no row"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "a sack with nothing stolen counts",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grudge sack :: a KO that stole nothing is no meeting (Stolen 0, no info, a bad info)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "only the thief meets the sack",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "only the victim meets the sack",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the sack happening is never connected",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grudge sack :: Stolen gold: the thief AND the victim meet the sack; a bystander does not",
+          "grudge sack :: a second plunder starts nothing new",
+          "grudge sack :: talked: done with a little gold",
+          "grudge sack :: the row reads 'Read about the Grudge Sack'"
+        ],
+        "newFailingCount": 4
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "51d597166b735ebcb667fca54ae4eaeda42c9ec13cd17627d911d8ced09ac5c8",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
+    "src/ServerScriptService/StoryQuestService.luau": "f981f07d4b8f2ae28a30f0a2e2c5b74a7fffb7fac3e49e9033266536576b66c7",
+    "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
+    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479"
+  },
+  "fixtureSHA256": "33b03bdded965b2777c80a848cb1e38dd7db60f94b6312e339a44345e508873e",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-113: three one-row quests for first meetings, the frame of the daily jobs' D0 (no popup, no toast, no Start / Finish, one talking row, a minute of hunting): TS1 'Moving a Plus' (Requires.Seen ScrollMet: a transfer scroll in the bag), SZ1 'The Size Scale' (Seen ScaleMet: the player's own SizeMult above 1), SG1 'The Grudge Sack' (Seen SackMet: a PvP KO with info.Stolen > 0, for the thief and the victim). A meeting is saved in data.Story.First first and stays; Requires.Seen = that flag. The words follow Config.Grudge.SackSeconds (45 s) and Config.Justice.MaxScale (1.6).",
+  "limitations": "Whether a real SizeMult is above 1 and whether PvPService really sends info.Stolen are the services' own tests; the dialogue panel and the row look are game dev 1's (the same D0 row frame)."
+}

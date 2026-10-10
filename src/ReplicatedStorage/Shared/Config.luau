@@ -3558,6 +3558,49 @@ Config.StoryQuests.Defs.D0 = {
 }
 table.insert(Config.StoryQuests.Subs, "D0")
 
+-- A23-113 (검수 2026-10-10: "원한 자루·강화 옮기기 주문서·덩치 저울도 처음 만날 때 퀘스트 한 줄", like the goose, the daily jobs and the quick
+-- slots): the first meeting with three things the screen no longer explains (A23-99) leaves ONE plain talking row, the frame of D0
+-- above: no popup, no toast, no Start / Finish line; the row opens a short dialogue when it is pressed, and pays a minute of hunting.
+-- A meeting is a saved flag (data.Story.First[name]) that the quest waits for with Requires.Seen:
+--   Meetings = the state the 1 s loop checks (StoryQuestService.refresh): ScrollMet = a transfer scroll sits in the bag
+--     (Config.Loot.Items Kind "Transfer"; an old save that already holds one meets it at once), ScaleMet = the player's own SizeMult
+--     is above 1 (JusticeService: their side is the smaller one, so their body is bigger and stronger)
+--   Events.SackMet = a PvP KO took gold into a Grudge Sack (PvPService.PlayerKO info.Stolen > 0), reported for the thief AND the victim
+-- The words are checked against the numbers (tools/test_first_meetings.py): 45 s = Config.Grudge.SackSeconds, 1.6 = Config.Justice.MaxScale.
+Config.StoryQuests.Meetings = {
+	ScrollMet = { HoldKind = "Transfer" },
+	ScaleMet = { AttrOver = { Name = "SizeMult", Over = 1 } },
+}
+Config.StoryQuests.Defs.TS1 = {
+	Kind = "Sub", Title = "Moving a Plus", ShortName = "Move a plus", Speaker = "Smith", Requires = { Seen = "ScrollMet" },
+	Steps = {
+		{ Text = "Hear about your Transfer Scroll", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "A Transfer Scroll moves a weapon's + to another weapon.",
+				"If it fails, the + stays where it was. Only the scroll is used up." } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+}
+Config.StoryQuests.Defs.SG1 = {
+	Kind = "Sub", Title = "The Grudge Sack", ShortName = "Grudge Sack", Speaker = "Notice", Requires = { Seen = "SackMet" },
+	Steps = {
+		{ Text = "Read about the Grudge Sack", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Gold taken in a PvP fight goes into the thief's Grudge Sack.",
+				"The thief keeps it after 45 seconds in a PvP zone.",
+				"Beat the thief first and the gold goes back to its owner!" } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+}
+Config.StoryQuests.Defs.SZ1 = {
+	Kind = "Sub", Title = "The Size Scale", ShortName = "Size scale", Speaker = "Fountain", Requires = { Seen = "ScaleMet" },
+	Steps = {
+		{ Text = "Hear about the size scale", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "The Fountain weighs both sides. The side with less power grows bigger and stronger!",
+				"It grows up to 1.6 times, then shrinks back as the sides even out." } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+}
+for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id) end
+
 -- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
 -- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
 -- StoryQuestService.Event "FirstKO"), then buys a potion, puts it in a quick slot (a new player's slots start empty, 검수 10/10:
@@ -3569,6 +3612,7 @@ table.insert(Config.StoryQuests.Subs, "D0")
 -- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
 -- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
+Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
 	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
