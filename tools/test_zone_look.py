@@ -88,7 +88,7 @@ local function sameColor(a, b) return a and b and near(a.R, b.R, 1e-4) and near(
 for _, z in { "SlimeMeadow", "Crossroads", "GoblinWoods", "SkeletonRuins", "PumpkinPatch", "HaloTown", "HornsTown" } do
 	for _, sky in { "Neutral", "Dawn", "Eclipse" } do
 		local b = base(sky)
-		local g = ZoneLook.TargetFor(z, b, sky)
+		local g = ZoneLook.TargetFor(z, b, sky == "Eclipse" and 1 or 0)
 		check(z .. " keeps the clock", near(g.ClockTime, b.ClockTime), z .. "/" .. sky .. " " .. tostring(g.ClockTime))
 		check(z .. " keeps the fog", sameColor(g.FogColor, b.FogColor) and near(g.FogEnd, b.FogEnd) and near(g.FogStart, b.FogStart),
 			z .. "/" .. sky)
@@ -97,14 +97,14 @@ end
 -- the meadow is the base itself
 do
 	local b = base("Neutral")
-	local g = ZoneLook.TargetFor("SlimeMeadow", b, "Neutral")
+	local g = ZoneLook.TargetFor("SlimeMeadow", b, 0)
 	check("meadow brightness = base", near(g.Brightness, 2), g.Brightness)
 	check("meadow ambient = base", sameColor(g.Ambient, b.Ambient), "ambient")
 end
 -- the hollow at day: dusk clock, purple fog nearer, dim sun, blue ambient lift, exposure up
 do
 	local b = base("Neutral")
-	local g, cc = ZoneLook.TargetFor("HauntedHollow", b, "Neutral")
+	local g, cc = ZoneLook.TargetFor("HauntedHollow", b, 0)
 	check("hollow day -> dusk clock 18.9", near(g.ClockTime, 18.9, 1e-4), g.ClockTime)
 	check("hollow fog nearer (<= 340)", near(g.FogEnd, 340) and near(g.FogStart, 60), g.FogStart .. ".." .. g.FogEnd)
 	check("hollow fog purple-navy", g.FogColor.B > g.FogColor.R and g.FogColor.B > g.FogColor.G and g.FogColor.B < 0.5,
@@ -114,12 +114,13 @@ do
 	check("hollow exposure up", g.ExposureCompensation > b.ExposureCompensation, g.ExposureCompensation)
 	check("hollow tint violet", cc.TintColor.B >= cc.TintColor.R, "tint")
 	-- Dawn (7.2): still turned to the dusk clock (forward the short way: +11.7 h)
-	local d = ZoneLook.TargetFor("HauntedHollow", base("Dawn"), "Dawn")
+	local d = ZoneLook.TargetFor("HauntedHollow", base("Dawn"), 0)
 	check("hollow at dawn -> dusk clock", near(d.ClockTime, 18.9, 1e-4), d.ClockTime)
 	check("hollow at dawn fog nearer", d.FogEnd <= 340, d.FogEnd)
-	-- Eclipse night (0.5): the night clock stays, the fog still turns purple and nearer
-	local n = ZoneLook.TargetFor("HauntedHollow", base("Eclipse"), "Eclipse")
-	check("hollow at night keeps the night clock", near(n.ClockTime, 0.5), n.ClockTime)
+	-- night (0.5, NightLevel 1): A23-105 C2 - the hollow stays at its dusk clock (no 6:00 jump in the running cycle),
+	-- the fog purple and nearer, the light on the night floor
+	local n = ZoneLook.TargetFor("HauntedHollow", base("Eclipse"), 1)
+	check("hollow at night -> its dusk clock too (C2)", near(n.ClockTime, 18.9, 1e-4), n.ClockTime)
 	check("hollow at night fog purple", n.FogColor.B > n.FogColor.R, "fog")
 	check("hollow at night keeps the night floor light", n.Brightness >= 1.4 * 0.95 - 1e-6, n.Brightness)
 end
@@ -127,7 +128,7 @@ end
 do
 	for _, sky in { "Neutral", "Dawn", "Eclipse" } do
 		local b = base(sky)
-		local g, cc = ZoneLook.TargetFor("HornsTown", b, sky)
+		local g, cc = ZoneLook.TargetFor("HornsTown", b, sky == "Eclipse" and 1 or 0)
 		local want = b.ExposureCompensation + 0.25 + (sky == "Eclipse" and 1.6 or 0)
 		check("horns den exposure: +0.25, +1.6 more only at night", near(g.ExposureCompensation, want, 1e-4),
 			sky .. " " .. tostring(g.ExposureCompensation) .. " want " .. want)
@@ -139,8 +140,8 @@ do
 			sky)
 	end
 	for _, z in { "SlimeMeadow", "Crossroads", "HaloTown", "GoblinWoods", "SkeletonRuins" } do
-		local n = ZoneLook.TargetFor(z, base("Eclipse"), "Eclipse")
-		local d = ZoneLook.TargetFor(z, base("Neutral"), "Neutral")
+		local n = ZoneLook.TargetFor(z, base("Eclipse"), 1)
+		local d = ZoneLook.TargetFor(z, base("Neutral"), 0)
 		check("other zones: no night exposure lift", near(n.ExposureCompensation - base("Eclipse").ExposureCompensation,
 			d.ExposureCompensation - base("Neutral").ExposureCompensation, 1e-6), z)
 	end
@@ -148,10 +149,14 @@ end
 -- half way through a zone change (the eased weight carries the dusk too)
 do
 	local b = base("Neutral")
-	local h = ZoneLook.Blend("SlimeMeadow", "HauntedHollow", 0.5, b, "Neutral")
+	local h = ZoneLook.Blend("SlimeMeadow", "HauntedHollow", 0.5, b, 0)
 	check("half way into the hollow: clock half way", near(h.ClockTime, (14.2 + 18.9) / 2, 1e-4), h.ClockTime)
 	check("half way into the hollow: fog half way", near(h.FogEnd, (1100 + 340) / 2, 1e-4), h.FogEnd)
-	local o = ZoneLook.Blend("HauntedHollow", "SlimeMeadow", 1, b, "Neutral")
+	local o = ZoneLook.Blend("HauntedHollow", "SlimeMeadow", 1, b, 0)
+	-- A23-105 C1: half the night level = half the night lift (horns den: +0.8 of its 1.6)
+	local hh = ZoneLook.TargetFor("HornsTown", b, 0.5)
+	check("night level 0.5: half the horns den's night lift", near(hh.ExposureCompensation, b.ExposureCompensation + 0.25 + 0.8, 1e-4),
+		hh.ExposureCompensation)
 	check("out of the hollow: back to the base clock", near(o.ClockTime, 14.2), o.ClockTime)
 	check("out of the hollow: back to the base fog", near(o.FogEnd, 1100), o.FogEnd)
 end
@@ -166,14 +171,16 @@ if failed == 0 then print("ZONE_LOOK_OFFLINE_OK checks=" .. checks .. " Studio/A
 MUTATIONS = [
     ("hollow has no dusk", "Dusk = { Clock = 18.9,", "NoDusk = { Clock = 18.9,"),
     ("dusk clock ignores the weight", "clock = (clock + clockDelta(clock, d.Clock) * w) % 24", "clock = clock"),
-    ("night base also turned to dusk", "if type(clock) == \"number\" and clock >= 6 and clock < d.Clock then",
-     "if type(clock) == \"number\" then"),
+    ("the 6:00 jump is back (a night base keeps its clock)", "\tif type(clock) == \"number\" then\n\t\tclock = (clock",
+     "\tif type(clock) == \"number\" and clock >= 6 and clock < d.Clock then\n\t\tclock = (clock"),
     ("fog never nearer", "lerp(base.FogEnd, math.min(base.FogEnd, d.FogEnd), w)", "base.FogEnd"),
     ("hollow as bright as the meadow", "Bright = 0.45, Exp = 0.2,", "Bright = 1, Exp = 0.2,"),
     ("dusk weight lost when easing", "W = lerp(a.W or 0, b.W or 0, t), Dusk = b.Dusk or a.Dusk,", "W = 0, Dusk = nil,"),
     # quality 7 (2026-10-07)
-    ("NightExp by day too", 'Exp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),', "Exp = z.Exp + (z.NightExp or 0),"),
-    ("no NightExp", 'Exp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),', "Exp = z.Exp,"),
+    ("NightExp by day too", "Exp = z.Exp + (z.NightExp or 0) * n,", "Exp = z.Exp + (z.NightExp or 0),"),
+    ("no NightExp", "Exp = z.Exp + (z.NightExp or 0) * n,", "Exp = z.Exp,"),
+    ("the night floor whole at any night level", "Bright = z.Bright + (math.max(z.Bright, T.NightBright) - z.Bright) * n,",
+     "Bright = math.max(z.Bright, T.NightBright),"),
     ("horns den back to the dark numbers", "Bright = 1.0, Exp = 0.25, Tint = rgb(255, 236, 230)", "Bright = 0.88, Exp = 0.08, Tint = rgb(255, 236, 230)"),
 ]
 

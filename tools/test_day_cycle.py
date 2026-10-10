@@ -87,9 +87,12 @@ MUTATIONS = [
     ("night starts at 21", C, '{ Name = "Night", From = 19 },', '{ Name = "Night", From = 21 },'),
     ("Dawn (lamps off) from 5:00 under the full night look", C, '{ Name = "Dawn", From = 6 },', '{ Name = "Dawn", From = 5 },'),
     ("one write a second again (Tick 1)", C, "\tTick = 0.5,\n\tStartClock = 15.3,\n", "\tTick = 1,\n\tStartClock = 15.3,\n"),
-    # the merge gate (검수 2026-10-10): the cycle stays off until ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk
-    # without the 6:00 jump) land
-    ("Enabled = true without ZoneLook C1/C2", C, "\tEnabled = false,\n\tTick = 0.5,\n", "\tEnabled = true,\n\tTick = 0.5,\n"),
+    # the merge gate (검수 2026-10-10): the cycle runs only with ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk
+    # without the 6:00 jump) - game dev 1 landed both with Enabled = true; losing either must fail the gate
+    ("Enabled = true without ZoneLook C1 (the night lift back on the Eclipse name)", "ZONELOOK_SOURCE",
+     "\t\tExp = z.Exp + (z.NightExp or 0) * n,\n", '\t\tExp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),\n'),
+    ("Enabled = true without ZoneLook C2 (the 6:00 jump back)", "ZONELOOK_SOURCE",
+     "\tif type(clock) == \"number\" then\n\t\tclock = (clock", "\tif type(clock) == \"number\" and clock >= 6 and clock < d.Clock then\n\t\tclock = (clock"),
     ("ClockForwardMax 16: Dawn -> Eclipse runs backwards", C, "Config.Sky.ClockForwardMax = 18\n", "Config.Sky.ClockForwardMax = 16\n"),
     ("the cycle owns the light before its Start", D, "\treturn dc().Enabled == true and st.Running == true\n",
      "\treturn dc().Enabled == true\n"),

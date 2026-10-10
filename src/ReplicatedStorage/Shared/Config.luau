@@ -1334,9 +1334,9 @@ Config.Sky.ClockForwardMax = 18
 -- it; until then always on). Enabled = false: WarService keeps the fixed Neutral afternoon and the preset war clocks.
 -- Studio: DebugCommand ("", "Clock", 21) / ("", "DayState") - no player, no save (under a war sky only the clock jumps).
 Config.DayCycle = {
-	-- off until ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) land; the session that
-	-- lands them sets this true (tools/test_day_cycle.py checks the pair)
-	Enabled = false,
+	-- on: ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) landed with it (game dev 1;
+	-- tools/test_day_cycle.py checks the pair)
+	Enabled = true,
 	Tick = 0.5,
 	StartClock = 15.3,
 	MaxStepHours = 0.025,
