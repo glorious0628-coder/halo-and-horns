@@ -1,8 +1,8 @@
 """A23-109 quick slots 1·2·3 — the server half (QuickSlotService, 게임성 개발 2), offline.
 
-Runs the CURRENT Config, Util and QuickSlotService sources (plus Main / Net text for the wiring and QuickSlots.Parse cut
-from the client's QuickSlots.luau) in tools/fixtures/quick_slot_server_offline.luau on tools/fixtures/dev2_kit.luau with
-the installed official Luau CLI. No Studio, network, DataStore or Roblox API calls. Mutations run on in-memory copies only.
+Runs the CURRENT Config, Util, QuickSlotService and DataService sources (plus Main / Net text for the wiring and
+QuickSlots.Parse cut from the client's QuickSlots.luau) in tools/fixtures/quick_slot_server_offline.luau on
+tools/fixtures/dev2_kit.luau with the installed official Luau CLI. No Studio, network, DataStore or Roblox API calls. Mutations run on in-memory copies only.
 The client half (slots on screen, keys 1·2·3, the bag rows) is 게임성 개발 1's tools/test_quick_slots.py.
 
 Usage: py tools/test_quick_slot_server.py [--no-mutations] [--luau path/to/luau.exe]
@@ -20,6 +20,7 @@ FILES = {
     "UTIL_SOURCE": SHARED / "Util.luau",
     "NET_SOURCE": SHARED / "Net.luau",
     "QUICK_SOURCE": SSS / "QuickSlotService.luau",
+    "DATA_SOURCE": SSS / "DataService.luau",
     "MAIN_SOURCE": SSS / "Main.server.luau",
     "CLIENT_SOURCE": CLIENT,
 }
@@ -31,7 +32,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     return out
 
 
-C, Q, M, N = "CONFIG_SOURCE", "QUICK_SOURCE", "MAIN_SOURCE", "NET_SOURCE"
+C, Q, D, M, N = "CONFIG_SOURCE", "QUICK_SOURCE", "DATA_SOURCE", "MAIN_SOURCE", "NET_SOURCE"
 MUTATIONS = [
     # SetQuickSlot: argument checks
     ("extra arguments accepted", Q, '\tif select("#", ...) ~= 0 then return end\n\tif type(slot)', "\tif type(slot)"),
@@ -64,10 +65,23 @@ MUTATIONS = [
     ("Get reads another field", Q, "data.QuickSlots or nil", "data.QuickSlot or nil"),
     # load
     ("ready: no attribute", Q, '\tpublish(player, slots)\nend\n\nfunction QuickSlotService.Init', "end\n\nfunction QuickSlotService.Init"),
-    ("ready: a stored value is not cleaned", Q,
-     '\tif data.QuickSlots ~= nil then data.QuickSlots = table.concat(slots, ",") end\n', ""),
-    ("ready: a missing field is written as the Default", Q, "\tif data.QuickSlots ~= nil then data.QuickSlots =",
-     "\tif true then data.QuickSlots ="),
+    ("ready: the clean slots are not saved", Q, '\tdata.QuickSlots = table.concat(slots, ",") -- clean', "\t-- clean"),
+    ("an old save gets the Default", Q, '\tif value == nil then\n\t\tparts = string.split(T.OldSave, ",")\n\telseif',
+     "\tif false then\n\telseif"),
+    ("an old save gets empty slots", Q, 'OldSave = "HP,MP,",', 'OldSave = ",,",'),
+    # the KO1 quest entry
+    ("no QuickSlotSet", Q, '\tif item ~= "" then questEvent(player, slot, item) end\n', ""),
+    ("emptying tells the quest", Q, 'if item ~= "" then questEvent(player, slot, item) end', "questEvent(player, slot, item)"),
+    ("the quest hears the wrong slot", Q, "{ Slot = slot, Kind = item }", "{ Slot = 1, Kind = item }"),
+    ("the quest hears another name", Q, 'pcall(sq.Event, player, "QuickSlotSet"', 'pcall(sq.Event, player, "QuickSlot"'),
+    ("a quest error escapes", Q, 'local ok, err = pcall(sq.Event, player, "QuickSlotSet", { Slot = slot, Kind = item })',
+     'local ok, err = true, sq.Event(player, "QuickSlotSet", { Slot = slot, Kind = item })'),
+    ("no quest entry = an error", Q, '\tif type(sq) ~= "table" or type(sq.Event) ~= "function" then return end\n', ""),
+    # DataService: a brand-new save
+    ("a brand-new save gets no field (= HP / MP)", D,
+     '\t\tif type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Default) == "table" then\n'
+     '\t\t\td.QuickSlots = table.concat(Config.QuickSlots.Default, ",")\n\t\tend\n', ""),
+    ("a brand-new save gets HP / MP", D, 'd.QuickSlots = table.concat(Config.QuickSlots.Default, ",")', 'd.QuickSlots = "HP,MP,"'),
     ("ready: not connected", Q, "\tS.PlayerService.PlayerReady:Connect(function(player, data)\n",
      "\tlocal _ = (function(player, data)\n"),
     ("a broken Default is not reported", Q,
@@ -101,14 +115,14 @@ def static() -> tuple[int, list[str]]:
     # the server only reads Config.QuickSlots (게임성 개발 1 owns it)
     check(not re.search(r"(^|[^.\w])(Q|Config\.QuickSlots)(\.\w+|\[[^]]*\])+\s*=[^=]", quick, re.M),
           "QuickSlotService never writes Config.QuickSlots")
-    # one place writes the save field, outside the load repair: onSet (and nobody else in the server)
+    # who writes the save field: QuickSlotService (onSet + the PlayerReady clean) and DataService (a brand-new save)
     writers = []
     for path in sorted(SSS.glob("*.luau")):
         for line in strip_comments(read(path)).splitlines():
             if ".QuickSlots =" in line:
-                writers.append(f"{path.name}: {line.strip()}")
-    check(all(w.startswith("QuickSlotService.luau:") for w in writers) and len(writers) == 2,
-          f"only QuickSlotService writes data.QuickSlots (onSet + the load repair): {writers}")
+                writers.append(path.name)
+    check(sorted(writers) == ["DataService.luau", "QuickSlotService.luau", "QuickSlotService.luau"],
+          f"only QuickSlotService (2) and DataService's new save (1) write data.QuickSlots: {writers}")
     # a slot press stays the UsePotion remote (no second potion path on the server)
     check("UsePotion" not in quick and "PotionCount" not in quick, "QuickSlotService has no potion use path of its own")
     return count, failures
@@ -120,17 +134,20 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-10/offline_dev2_quick_slot_server_2026-10-10.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-109 server (contract with 게임성 개발 1, Config.QuickSlots read only): data.QuickSlots = \"<i1>,<i2>,<i3>\" "
-             "(Config.QuickSlots.Items keys HP / MP, \"\" = empty; additive, Version 3, written only when the player changes "
-             "a slot); a missing / broken value is Config.QuickSlots.Default (HP, MP, empty); a stored value is cleaned at "
-             "PlayerReady (unknown items and repeats empty, extra parts dropped, > 120 chars = Default). The owner's "
+             "(Config.QuickSlots.Items keys HP / MP, \"\" = empty; additive, Version 3). A brand-new save gets "
+             "Config.QuickSlots.Default (empty, 검수 10/10) from DataService; a stored save without the field (from before "
+             "the quick slots) gets HP, MP, empty once; a broken value (not text, > 120 chars) = the Default; cleaned and "
+             "saved at PlayerReady (unknown items and repeats empty, extra parts dropped). The owner's "
              "attribute QuickSlots = the same text, set at PlayerReady and after every accepted change; the client's "
              "QuickSlots.Parse reads it the same. c->s SetQuickSlot(slot 1..3 integer, item key | \"\"): the item already in "
              "another slot swaps with this slot's; the same item on its own slot / emptying an empty slot = no change; "
              "bad or extra args, not ready, left, no data, faster than Config.RateLimits.SetQuickSlot (0.2 s): nothing, no "
-             "notice. QuickSlotService.Changed(player, slots) after every accepted change; Get(player); Parse(value). A slot "
+             "notice. QuickSlotService.Changed(player, slots) after every accepted change; an item put into a slot (also a swap) "
+             "calls S.StoryQuestService.Event(player, \"QuickSlotSet\", { Slot, Kind }) when it exists (pcall; emptying, "
+             "no change and refused calls: nothing). Get(player); Parse(value). A slot "
              "press stays the UsePotion remote (VitalsService, unchanged).",
-    limitations="Offline doubles: Players / attributes, a PlayerService double (data rows, IsReady, PlayerReady); the real "
-                "DataService save is not run (the field is a plain string in the saved table). The slots on screen, keys, "
+    limitations="Offline doubles: Players / attributes, a PlayerService double (data rows, IsReady, PlayerReady), a "
+                "StoryQuestService double (Event), the kit's DataStore (the real DataService Load / Release). The slots on screen, keys, "
                 "the bag rows (게임성 개발 1) and the KO1 quest (게임성 개발 3) are not certified here; a live Studio play "
                 "is still needed.",
 )

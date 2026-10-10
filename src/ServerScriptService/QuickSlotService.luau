@@ -1,14 +1,17 @@
 -- QuickSlotService.luau : A23-109 quick slots 1·2·3 (server, 게임성 개발 2, 2026-10-10). Contract with 게임성 개발 1
 -- (QuickSlots.luau, Config.QuickSlots — read only here):
---   save  data.QuickSlots = "<item1>,<item2>,<item3>" (Config.QuickSlots.Items keys, "" = empty). A save without it
---         (or with a broken value) is Config.QuickSlots.Default; the field is written only when the player changes a slot.
+--   save  data.QuickSlots = "<item1>,<item2>,<item3>" (Config.QuickSlots.Items keys, "" = empty). A brand-new save gets
+--         Config.QuickSlots.Default (empty, 검수 10/10: the KO1 quest has the player fill a slot) from DataService; a stored
+--         save without the field is from before the quick slots and starts with HP, MP, empty (T.OldSave: the old potion
+--         circles on keys 1 / 2); a broken value (not text, too long) = the Default. Cleaned and saved at PlayerReady.
 --   show  the owner's attribute Config.QuickSlots.Attr = the same text ("HP,MP,"), set when the player is ready and after
 --         every accepted change. Always Count entries, known keys, one item in one slot.
 --   c->s  Config.QuickSlots.Remote "SetQuickSlot"(slot 1..Count integer, item key | ""): the item already in another slot
 --         swaps with what this slot held. Bad / extra args, not ready, faster than Config.RateLimits.SetQuickSlot: nothing.
 --   use   unchanged: a slot press is the UsePotion remote (VitalsService, its own checks); nothing to do here.
--- Changed(player, slots { item, item, item }) fires after every accepted change; Get(player) = the slots now. (KO1 has
--- no quick-slot event: a new save already holds HP / MP, so the quest counts PotionUsed instead — 게임성 개발 3, 10/10.)
+-- Changed(player, slots { item, item, item }) fires after every accepted change; Get(player) = the slots now. An item
+-- put into a slot (also by a swap) calls S.StoryQuestService.Event(player, "QuickSlotSet", { Slot, Kind }) when that
+-- function exists (the KO1 'put a potion in a quick slot' row, 게임성 개발 3).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -19,6 +22,7 @@ local TAG = "QuickSlotService"
 local Q = Config.QuickSlots
 local T = {
 	MaxLen = 120, -- a longer stored text is broken (the Default)
+	OldSave = "HP,MP,", -- a stored save from before A23-109 (no field): the old HP / MP circles on keys 1 / 2
 	Rate = (Config.RateLimits and Config.RateLimits.SetQuickSlot) or 0.2,
 }
 
@@ -31,10 +35,13 @@ local function known(item)
 	return type(item) == "string" and Q.Items[item] ~= nil
 end
 
--- a stored text -> { item, item, item }: unknown entries and repeats empty, a missing or broken value = Default
+-- a stored text -> { item, item, item }: unknown entries and repeats empty; nil (a save from before the quick slots) =
+-- T.OldSave, a broken value = Default
 local function parse(value)
 	local parts
-	if type(value) == "string" and #value <= T.MaxLen then
+	if value == nil then
+		parts = string.split(T.OldSave, ",")
+	elseif type(value) == "string" and #value <= T.MaxLen then
 		parts = string.split(value, ",")
 	else
 		parts = Q.Default
@@ -60,6 +67,13 @@ local function publish(player, slots)
 	player:SetAttribute(Q.Attr, table.concat(slots, ","))
 end
 
+local function questEvent(player, slot, item)
+	local sq = S.StoryQuestService
+	if type(sq) ~= "table" or type(sq.Event) ~= "function" then return end
+	local ok, err = pcall(sq.Event, player, "QuickSlotSet", { Slot = slot, Kind = item })
+	if not ok then Util.Warn(TAG, "quest event: " .. tostring(err)) end
+end
+
 local function onSet(player, slot, item, ...)
 	if select("#", ...) ~= 0 then return end
 	if type(slot) ~= "number" or slot ~= math.floor(slot) or slot < 1 or slot > Q.Count then return end -- NaN fails floor
@@ -76,13 +90,13 @@ local function onSet(player, slot, item, ...)
 	data.QuickSlots = table.concat(slots, ",")
 	publish(player, slots)
 	QuickSlotService.Changed:Fire(player, table.clone(slots))
+	if item ~= "" then questEvent(player, slot, item) end
 end
 
 local function onReady(player, data)
 	if type(data) ~= "table" then return end
 	local slots = parse(data.QuickSlots)
-	-- a stored value is kept clean (a missing one stays missing: the Default may change later)
-	if data.QuickSlots ~= nil then data.QuickSlots = table.concat(slots, ",") end
+	data.QuickSlots = table.concat(slots, ",") -- clean (an old save gets its HP / MP once)
 	publish(player, slots)
 end
 

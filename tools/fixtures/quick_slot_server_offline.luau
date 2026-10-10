@@ -1,11 +1,12 @@
 -- quick_slot_server_offline.luau : A23-109 quick slots 1·2·3 (server: QuickSlotService), offline.
 -- tools/test_quick_slot_server.py injects (before tools/fixtures/dev2_kit.luau): CONFIG_SOURCE, UTIL_SOURCE, QUICK_SOURCE,
--- NET_SOURCE, MAIN_SOURCE (the CURRENT src) and CLIENT_PARSE (QuickSlots.Parse cut from the client's QuickSlots.luau).
--- QuickSlotService runs for real on a PlayerService double (data rows, IsReady, PlayerReady). The client side has its own
--- suite (tools/test_quick_slots.py, 게임성 개발 1).
+-- DATA_SOURCE, NET_SOURCE, MAIN_SOURCE (the CURRENT src) and CLIENT_PARSE (QuickSlots.Parse cut from the client's
+-- QuickSlots.luau). QuickSlotService runs for real on a PlayerService double (data rows, IsReady, PlayerReady) and a
+-- StoryQuestService double (Event); DataService.Load / Release run for real on the kit's DataStore double. The client
+-- side has its own suite (tools/test_quick_slots.py, 게임성 개발 1).
 
 ------------------------------------------------------------------ a server with the real QuickSlotService
-local MISSING = {} -- Join(id, MISSING): the save has no QuickSlots field
+local MISSING = {} -- Join(id, MISSING): the save has no QuickSlots field (a save from before the quick slots)
 
 local function qsWorld(opts)
 	opts = opts or {}
@@ -16,7 +17,16 @@ local function qsWorld(opts)
 	local ps = { PlayerReady = Signal.new(), PlayerLeaving = Signal.new() }
 	function ps.GetData(p) return data[p] end
 	function ps.IsReady(p) return w.Ready[p] == true end
-	local reg = { PlayerService = ps }
+	-- the KO1 quest's entry (게임성 개발 3): every call is logged; opts.NoQuest = no Event, opts.QuestThrows = it errors
+	w.QuestLog = {}
+	local sq = {}
+	if not opts.NoQuest then
+		function sq.Event(p, name, info)
+			table.insert(w.QuestLog, { P = p.UserId, Name = name, Info = info })
+			if opts.QuestThrows then error("quest broke") end
+		end
+	end
+	local reg = { PlayerService = ps, StoryQuestService = sq }
 	local quick = w:Load("QuickSlotService", QUICK_SOURCE)
 	reg.QuickSlotService = quick
 	quick.Init(reg)
@@ -103,11 +113,16 @@ end)
 runGroup("ready: missing / stored / broken saves", function()
 	local w = qsWorld()
 	local parseClient = clientParser(w.Config)
+	local DEF = table.concat(w.Quick.Parse(5), ",") -- the Default, cleaned (main 10/10: all empty)
+	check(DEF == ",,", "the Default is three empty slots (검수 10/10: a new player fills one in the KO1 quest)", DEF)
 	local p0, d0 = w:Join(1, MISSING)
-	check(p0:GetAttribute("QuickSlots") == "HP,MP,", "a save without slots shows the Default (HP, MP, empty)",
-		tostring(p0:GetAttribute("QuickSlots")))
-	check(d0.QuickSlots == nil, "a missing field stays missing (the Default may change later)", tostring(d0.QuickSlots))
-	check(same(w.Quick.Get(p0), { "HP", "MP", "" }), "Get = the Default", show(w.Quick.Get(p0)))
+	check(p0:GetAttribute("QuickSlots") == "HP,MP," and d0.QuickSlots == "HP,MP,",
+		"a save from before the quick slots (no field) gets HP, MP, empty - shown and saved",
+		show({ p0:GetAttribute("QuickSlots"), d0.QuickSlots }))
+	check(same(w.Quick.Get(p0), { "HP", "MP", "" }), "Get = HP, MP, empty", show(w.Quick.Get(p0)))
+	local pn, dn = w:Join(2, table.concat(w.Config.QuickSlots.Default, ",")) -- what DataService gives a brand-new save
+	check(pn:GetAttribute("QuickSlots") == DEF and dn.QuickSlots == DEF, "a brand-new save shows and keeps the Default",
+		show({ pn:GetAttribute("QuickSlots"), dn.QuickSlots }))
 	local cases = {
 		{ "MP,,HP", "MP,,HP" },
 		{ ",,", ",," },
@@ -117,10 +132,10 @@ runGroup("ready: missing / stored / broken saves", function()
 		{ "hp, MP,", ",," }, -- exact keys only
 		{ "HP", "HP,," }, -- short: the rest empty
 		{ "MP,HP,,HP,x", "MP,HP," }, -- extra parts ignored
-		{ "MP,HP," .. string.rep("x", 200), "HP,MP," }, -- over the length cap: broken = Default
-		{ 5, "HP,MP," },
-		{ true, "HP,MP," },
-		{ { "MP" }, "HP,MP," },
+		{ "MP,HP," .. string.rep("x", 200), DEF }, -- over the length cap: broken = Default
+		{ 5, DEF },
+		{ true, DEF },
+		{ { "MP" }, DEF },
 	}
 	for i, c in cases do
 		local p, d = w:Join(10 + i, c[1])
@@ -235,7 +250,7 @@ runGroup("set: not ready / left / no data / rate limit", function()
 	w:Advance(w.Config.RateLimits.SetQuickSlot + 0.01)
 	w:SetNow(p3, 1, "MP")
 	check(d3.QuickSlots == "MP,,HP", "after the rate limit the next call works", tostring(d3.QuickSlots))
-	check(d.QuickSlots == nil, "the refused player's save was never written")
+	check(d.QuickSlots == "HP,MP,", "the refused player's save keeps what the load gave it", tostring(d.QuickSlots))
 end)
 
 runGroup("a broken Default is reported and read as empty", function()
@@ -248,8 +263,159 @@ runGroup("a broken Default is reported and read as empty", function()
 		if string.find(text, "Default has an unknown item", 1, true) then n += 1 end
 	end
 	check(n == 1, "Init warns once about the unknown default", show(w.Warnings))
-	local p = w:Join(1, MISSING)
+	local p = w:Join(1, 5) -- a broken stored value reads the Default
 	check(p:GetAttribute("QuickSlots") == ",MP,", "unknown and repeated defaults become empty", tostring(p:GetAttribute("QuickSlots")))
+end)
+
+------------------------------------------------------------------ the KO1 quest entry
+runGroup("quest: QuickSlotSet when an item goes into a slot", function()
+	local w = qsWorld()
+	local p = w:Join(1, ",,")
+	w:Set(p, 2, "HP")
+	check(#w.QuestLog == 1 and w.QuestLog[1].P == 1 and w.QuestLog[1].Name == "QuickSlotSet"
+		and type(w.QuestLog[1].Info) == "table" and w.QuestLog[1].Info.Slot == 2 and w.QuestLog[1].Info.Kind == "HP",
+		"putting HP in slot 2 tells the quest { Slot = 2, Kind = HP }", show(w.QuestLog))
+	w:Set(p, 3, "HP") -- moved: slot 3 now holds it
+	check(#w.QuestLog == 2 and w.QuestLog[2].Info.Slot == 3 and w.QuestLog[2].Info.Kind == "HP",
+		"a move tells the quest the new slot", show(w.QuestLog[2]))
+	w:Set(p, 1, "MP")
+	w:Set(p, 1, "HP") -- a swap: HP goes to 1, MP to 3 -> one event for the item put in
+	check(#w.QuestLog == 4 and w.QuestLog[4].Info.Slot == 1 and w.QuestLog[4].Info.Kind == "HP",
+		"a swap tells the quest once, for the item put in", show(w.QuestLog))
+	w:Set(p, 1, "HP") -- no change
+	w:Set(p, 2, "") -- empty an empty slot
+	w:Set(p, 1, "") -- empty a full slot
+	check(#w.QuestLog == 4 and w:Snap(p)[1] == ",,MP", "no change and emptying tell the quest nothing", show(w.QuestLog))
+	w:Set(p, 9, "HP")
+	w:Set(p, 1, "Jelly")
+	w.Ready[p] = false
+	w:Set(p, 1, "HP")
+	check(#w.QuestLog == 4, "refused calls tell the quest nothing", show(w.QuestLog))
+
+	local w2 = qsWorld({ NoQuest = true })
+	local p2, d2 = w2:Join(2, ",,")
+	w2:Set(p2, 1, "MP")
+	check(d2.QuickSlots == "MP,," and #w2.Warnings == 0, "no quest entry yet: the slot still changes, no warning",
+		show({ d2.QuickSlots, w2.Warnings }))
+
+	local w3 = qsWorld({ QuestThrows = true, AllowWarn = "quest event: " })
+	local p3, d3 = w3:Join(3, ",,")
+	w3:Set(p3, 1, "MP")
+	local n = 0
+	for _, text in w3.Warnings do
+		if string.find(text, "quest event: ", 1, true) then n += 1 end
+	end
+	check(d3.QuickSlots == "MP,," and p3:GetAttribute("QuickSlots") == "MP,," and #w3.ChangedLog == 1 and n == 1,
+		"a quest error is caught and warned once; the slot is saved and shown anyway", show({ d3.QuickSlots, w3.Warnings }))
+end)
+
+------------------------------------------------------------------ DataService: new saves / old saves (the real Load / Release)
+local function dsServer(opts)
+	opts = opts or {}
+	local w = newWorld({ Studio = false, Stores = opts.Stores })
+	w.Game.JobId = opts.JobId or "live-1"
+	w.AllowWarn = { "had type" }
+	local env = w:Env()
+	env.task = table.clone(env.task)
+	env.task.wait = function(t)
+		coroutine.yield(tonumber(t) or 0)
+		return t
+	end
+	local ds = execute("DataService", DATA_SOURCE, env)
+	ds.Init({})
+	ds.Start()
+	local probe = table.remove(w.Spawned, 1) -- the store probe; the autosave loop stays queued and never runs
+	w.Spawned = {}
+	probe[1](table.unpack(probe, 2, probe.n))
+	w.DS = ds
+	w.StoreName = w.Config.StoreName(w.Config.Data.StoreName)
+	function w:Drive(fn, ...)
+		local co = coroutine.create(fn)
+		local out = table.pack(coroutine.resume(co, ...))
+		local n = 0
+		while coroutine.status(co) ~= "dead" do
+			assert(out[1], out[2])
+			n += 1
+			assert(n < 200, "runaway waits")
+			local t = tonumber(out[2]) or 0
+			self.Clock += t
+			self.Time += t
+			out = table.pack(coroutine.resume(co))
+		end
+		assert(out[1], out[2])
+		return table.unpack(out, 2, out.n)
+	end
+	function w:Rows()
+		self.StoreOf(self.StoreName, "Standard")
+		return self.Stores[self.StoreName].Rows
+	end
+	return w
+end
+
+local function stored(extra)
+	local r = { Version = 3, Level = 7, XP = 0, BankGold = 50, CarriedGold = 0, Faction = "Halo", Class = "Mage",
+		ClassChosen = true, TutorialStep = 99, HPPotionCount = 4, MPPotionCount = 1 }
+	for k, v in extra or {} do r[k] = v end
+	return r
+end
+
+runGroup("save: new saves empty, old saves HP / MP, stored slots kept", function()
+	local q = qsWorld()
+	local cases = {
+		{ "a brand-new save", nil, ",," },
+		{ "a v3 save from before the quick slots", stored(), "HP,MP," },
+		{ "a v2 save (migrated)", stored({ Version = 2 }), "HP,MP," },
+		{ "a save whose slots were emptied stays empty", stored({ QuickSlots = ",," }), ",," },
+		{ "a save with its own slots keeps them", stored({ QuickSlots = "MP,,HP" }), "MP,,HP" },
+		{ "broken slots are cleaned", stored({ QuickSlots = "MP,MP,Junk" }), "MP,," },
+		{ "a slots field of the wrong type is the Default", stored({ QuickSlots = 5 }), ",," },
+		{ "a too-long slots text is the Default", stored({ QuickSlots = "HP,MP," .. string.rep("y", 300) }), ",," },
+	}
+	for i, c in cases do
+		local w = dsServer()
+		local key = w.Config.Data.KeyPrefix .. tostring(100 + i)
+		if c[2] then w:Rows()[key] = c[2] end
+		local dp = w:NewPlayer(100 + i)
+		local d = w:Drive(w.DS.Load, dp)
+		check(type(d) == "table", "load: " .. c[1] .. " loads", show(d))
+		if type(d) == "table" then
+			-- the loaded data then reaches QuickSlotService at PlayerReady
+			local v = d.QuickSlots
+			local p, row = q:Join(100 + i, v == nil and MISSING or v)
+			check(p:GetAttribute("QuickSlots") == c[3] and row.QuickSlots == c[3], "load + ready: " .. c[1],
+				show({ Loaded = v, Attr = p:GetAttribute("QuickSlots"), Want = c[3] }))
+		end
+	end
+	check(#q.ChangedLog == 0 and #q.QuestLog == 0, "loading changes nothing the quest hears")
+end)
+
+runGroup("save: the slots survive a release and the next load", function()
+	local stores = {}
+	local w = dsServer({ Stores = stores })
+	local key = w.Config.Data.KeyPrefix .. "201"
+	w:Rows()[key] = stored()
+	local p = w:NewPlayer(201)
+	local d = w:Drive(w.DS.Load, p)
+	check(d and d.QuickSlots == nil, "an old save loads without the field (QuickSlotService fills it)", show(d and d.QuickSlots))
+	local q = qsWorld()
+	local qp = q:Join(201, MISSING)
+	q.Data[qp] = d -- the same table as DataService's session data
+	q.PS.PlayerReady:Fire(qp, d)
+	check(d.QuickSlots == "HP,MP,", "PlayerReady gives the old save HP / MP", show(d.QuickSlots))
+	q:Set(qp, 3, "HP")
+	check(d.QuickSlots == ",MP,HP", "a change goes into the session data", show(d.QuickSlots))
+	w:Drive(w.DS.Release, p)
+	check(w:Rows()[key].QuickSlots == ",MP,HP", "the release writes the slots", show(w:Rows()[key].QuickSlots))
+	local w2 = dsServer({ Stores = stores, JobId = "live-2" })
+	local p2 = w2:NewPlayer(201)
+	local d2 = w2:Drive(w2.DS.Load, p2)
+	check(d2 and d2.QuickSlots == ",MP,HP", "the next load keeps them (never the old-save HP / MP again)", show(d2 and d2.QuickSlots))
+	local w3 = dsServer({ Stores = stores, JobId = "live-3" })
+	local p3 = w3:NewPlayer(202)
+	w3:Drive(w3.DS.Load, p3)
+	w3:Drive(w3.DS.Release, p3)
+	local row = w3:Rows()[w3.Config.Data.KeyPrefix .. "202"]
+	check(type(row) == "table" and row.QuickSlots == ",,", "a brand-new save is written with the Default", show(row))
 end)
 
 finish()
