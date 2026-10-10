@@ -1,6 +1,6 @@
 """PBR maps from a colour texture by colour masks (이미지 생성 1, 2026-10-10, A23-107 재질 + 검수 재질 값 표).
 
-  py tools/pbr_from_color.py <color.png> <out_dir> [--name N] [--size 1024] [--normal-in tile_n.png] [--gold-boost 0.12]
+  py tools/pbr_from_color.py <color.png> <out_dir> [--name N] [--size 1024] [--normal-in tile_n.png] [--gold-boost 0.12] [--gold-hue-min 20]
 
 Writes <N>_metal.png and <N>_rough.png (8-bit grey). With --normal-in also <N>_normal.png (the Tripo tangent normal plus a
 detail normal baked from the colour, per material), and with --gold-boost <N>_color.png (gold areas a little more saturated
@@ -29,6 +29,9 @@ ap.add_argument("--name", default=None)
 ap.add_argument("--size", type=int, default=1024)
 ap.add_argument("--normal-in", default=None)
 ap.add_argument("--gold-boost", type=float, default=0.0)
+# lowest hue counted as gold. 20 suits the Halo gate (gold hue 25-46); light wood props (Crossroads kit: hue 23-30) need 34
+# (이미지 개발 10/10: crates/barrels/benches read as metal). Bright pixels below it fall to wood instead.
+ap.add_argument("--gold-hue-min", type=float, default=20.0)
 a = ap.parse_args()
 
 name = a.name or os.path.splitext(os.path.basename(a.color))[0]
@@ -44,8 +47,8 @@ def soft(mask, r=1.5):
     return np.asarray(m).astype(np.float32) / 255.0
 
 
-gold = soft((h >= 20) & (h <= 58) & (s >= 0.4) & (v >= 0.72))  # 10/10 measured: the gate gold sits at hue 25-46, value 0.7-1.0
-wood = soft((h >= 12) & (h < 38) & (s >= 0.3) & (v < 0.72)) * (1 - gold)  # the shop doors: hue 25-34, value 0.5-0.7
+gold = soft((h >= a.gold_hue_min) & (h <= 58) & (s >= 0.4) & (v >= 0.72))  # 10/10 measured: the gate gold sits at hue 25-46, value 0.7-1.0
+wood = soft((h >= 12) & (h < 38) & (s >= 0.3) & ((v < 0.72) | (h < a.gold_hue_min))) * (1 - gold)  # the shop doors: hue 25-34, value 0.5-0.7
 leaf = soft((h >= 70) & (h <= 160) & (s >= 0.25)) * (1 - gold)
 glass = soft((h >= 185) & (h <= 215) & (s >= 0.18) & (s < 0.45) & (v >= 0.85)) * (1 - gold)
 cloth = soft((s >= 0.3) & ~((h >= 28) & (h <= 58))) * (1 - gold - wood - leaf - glass).clip(0, 1)
