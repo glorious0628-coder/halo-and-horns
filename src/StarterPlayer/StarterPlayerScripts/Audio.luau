@@ -51,7 +51,7 @@
 --
 -- sound_gaps 2026-10-10 (소리 만들기 batch 8 + B / C): Fx Attendance -> StampPress (the claim's QuestDone line gives way:
 -- Replace) + Chest7Open BoxAfter s later for the 7-day box; Fx FinisherEnd Pick Help / Tickle -> KingHelpHome /
--- KingTickleCoins; Fx Loot with candy -> CandyPlop; Fx KO with a fun Tip (EG05) -> TipDing KOTipAfter s later. A window
+-- KingTickleCoins; Fx Loot with candy -> CandyPlop; Fx KO -> KO only (the screen shows no tip). A window
 -- opening (Audio.OpenSound): the quest window "Journal" -> QuestOpen, the King Diary on a page ([Read]) -> DiaryPage, a
 -- story page whose Speaker has a blip (Config.Audio.Blips) -> that blip, PauseCard "Back" -> WelcomeBack, "Tip" ->
 -- TipDing, else WindowOpen (PauseCard now counts as a window). A hidden quest's row first showing (an easter egg found)
@@ -130,7 +130,6 @@ local T = {
 	Blips = type(A.Blips) == "table" and A.Blips or {}, -- story Speaker -> blip event
 	StoryDefs = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Defs) == "table" and Config.StoryQuests.Defs or {},
 	BoxAfter = tonumber(A.BoxAfter) or 0.35,
-	KOTipAfter = tonumber(A.KOTipAfter) or 0.9,
 	WarpInAfter = tonumber(A.WarpInAfter) or 0.45,
 	Warp = type(A.Warp) == "table" and A.Warp or { Jump = 40, Slack = 10 },
 	ReplaceWithin = tonumber(A.ReplaceWithin) or 0.3,
@@ -417,9 +416,7 @@ function Audio.Plan(kind, data, ctx)
 			end
 		end
 	elseif kind == "KO" then -- sound_gaps B1 (BB14: the server sends it to the one knocked out only)
-		add(out, "KO", 0)
-		-- EG05 (dev3 easter eggs): a fun tip on the KO screen dings a moment after the fall
-		if type(data.Tip) == "string" and data.Tip ~= "" then add(out, "TipDing", T.KOTipAfter) end
+		add(out, "KO", 0) -- (검수 10/10, A23-110: the KO screen shows no tip, so no tip ding either)
 	elseif kind == "GooseEnd" then -- B3 { Pos, Winner, Coop } to everyone: heard near the goose only
 		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
 		if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end
@@ -1237,8 +1234,34 @@ end
 
 -- my pets ("PetList", owner only, at join / grant / equip / pet XP): a pet's Lv going up -> PetLevelUp, the follower put
 -- away (Equipped uid -> "") -> PetStow, a pet starting to follow (Equipped -> another uid) -> PetCall; the first list is quiet
+local function petSig(p)
+	if type(p) ~= "table" or type(p.List) ~= "table" then return nil end
+	local parts = { tostring(p.Equipped or "") }
+	for _, e in p.List do
+		if type(e) == "table" then table.insert(parts, tostring(e.Uid) .. ":" .. tostring(e.Lv)) end
+	end
+	table.sort(parts)
+	return table.concat(parts, "|")
+end
+
 function Audio.OnPetList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return end
+	-- 메인 반영 10/10 (no PetCall after joining): the join list reached only PetWindow (a remote fired before a second
+	-- listener connects goes to the first one) - the first list this module sees starts from PetWindow's older one
+	local pw = C and C.PetWindow
+	if S.PetEq == nil and type(pw) == "table" and type(pw.Lists) == "function" then
+		local okL, last, prev = pcall(pw.Lists)
+		local mine = petSig(payload)
+		local older = okL and ((last ~= payload and petSig(last) ~= mine) and last or prev) or nil
+		if type(older) == "table" and older ~= payload and petSig(older) ~= mine then
+			S.PetLv, S.PetEq = {}, ""
+			for _, e in type(older.List) == "table" and older.List or {} do
+				if type(e) == "table" and e.Uid ~= nil then S.PetLv[tostring(e.Uid)] = num(e.Lv, 0) end
+			end
+			local q = older.Equipped
+			S.PetEq = (q == nil or q == "") and "" or tostring(q)
+		end
+	end
 	local lv, up = {}, false
 	for _, p in payload.List do
 		if type(p) == "table" and p.Uid ~= nil then

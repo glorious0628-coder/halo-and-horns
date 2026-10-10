@@ -4159,6 +4159,12 @@ handlers.GooseEnd = function(data)
 end
 
 ----------------------------------------------------------------- public API
+-- A23-108 (WeaponPose.luau): true while an attack / hurt clip plays on that character (its weapon pose steps aside)
+function Fx.Animating(char)
+	local st = typeof(char) == "Instance" and Feel.Chars[char] or nil
+	return st ~= nil and Feel.Active[st] == true
+end
+
 function Fx.Init(registry)
 	C = registry
 end

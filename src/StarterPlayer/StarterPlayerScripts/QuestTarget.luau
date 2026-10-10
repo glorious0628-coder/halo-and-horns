@@ -102,6 +102,7 @@ local TXT = {
 	Fountain = "Fountain",
 	Goose = "Golden Goose Nest",
 	PumpkinSign = "To the Pumpkin Patch",
+	PotionShop = "Potion shop", -- A23-110 KO1 "Buy a potion"
 }
 
 ----------------------------------------------------------------- state
@@ -400,7 +401,8 @@ end
 -- 빛 마을 점검 #17 / #21 / #29 (2026-10-10): a story Guide that is a Config.StoryQuests.Landmarks spot (WoodsGate,
 -- HeroStatue, GoblinCamp1-3, LavaCrack, HaloBridge, ...; never a zone id; not one of the special guides) -> its spot
 local function landmarkSpot(guide)
-	if guide == "SlimePond" or guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" or guide == "OwnTown" then
+	if guide == "SlimePond" or guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" or guide == "OwnTown"
+		or guide == "PotionShop" or guide == "QuickSlot" then
 		return nil
 	end
 	return QuestTarget.StorySpot(guide)
@@ -412,7 +414,7 @@ local function guideZone(guide, faction)
 		return type(Config.HomeZoneId) == "function" and Config.HomeZoneId(faction or myFaction()) or K.Town
 	end
 	if guide == "SlimePond" then return K.GuideZone end
-	if guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" then return K.Town end
+	if guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" or guide == "PotionShop" then return K.Town end
 	local spot = landmarkSpot(guide)
 	if spot and type(Config.ZoneAt) == "function" then
 		local z = Config.ZoneAt(spot)
@@ -454,6 +456,14 @@ function QuestTarget.Story(guide, fromZone, pos, faction)
 	if type(guide) ~= "string" or guide == "" then return nil end
 	if type(fromZone) ~= "string" then fromZone = attr("ZoneId", "") end
 	if guide == "Blacksmith" then return smithFrom(fromZone, pos) end
+	-- A23-110 (dev3 KO1): "Buy a potion" -> the potion seller in the Crossroads (a trip there from elsewhere); the quick
+	-- slot steps (Guide QuickSlot) have no place in the world (the row opens the bag)
+	if guide == "QuickSlot" then return nil end
+	if guide == "PotionShop" then
+		if fromZone ~= K.Town then return QuestTarget.Travel(K.Town, fromZone, pos) end
+		local tune = type(Config.Vitals) == "table" and Config.Vitals or {}
+		return resolvePart(mapChild("NPCs", tune.PotionMerchantName or "PotionMerchant"))
+	end
 	local zone = guideZone(guide, faction)
 	if not zoneDef(zone) then return nil end
 	local spot = landmarkSpot(guide)
@@ -493,6 +503,7 @@ local function storyLabel(guide, zone)
 		return type(speakers.Fountain) == "string" and speakers.Fountain or TXT.Fountain
 	end
 	if guide == "Goose" then return TXT.Goose end
+	if guide == "PotionShop" then return TXT.PotionShop end
 	return zoneName(zone)
 end
 

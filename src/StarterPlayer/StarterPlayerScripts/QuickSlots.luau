@@ -1,7 +1,7 @@
 -- QuickSlots.luau (게임성 개발 1, SPEC A23-109 "물약 원 2개 빼고 퀵슬롯 1·2·3 가로", user photo 2026-10-10): what the three
 -- quick slots hold and do. The slots themselves (place, size, art, name tags) are 이미지 개발's HUD parts:
 --   HUD.QuickSlots() -> { [i] = { Button, Icon, Count, Key, Cooldown, Status } }, HUD.OnQuickSlot(fn) -> fn(i) on a press.
--- Here: the contents (Config.QuickSlots: default 1 = HP potion, 2 = MP potion, 3 = empty; saved by the server -
+-- Here: the contents (Config.QuickSlots: a new player's slots start empty - 검수 10/10 -; saved by the server -
 -- 게임성 개발 2 - as the owner's attribute "QuickSlots" = "HP,MP," and changed with c->s SetQuickSlot(slot, item); until
 -- that exists a change lasts this session only), using a slot (an item's Use: the potions go through VitalsUI's own
 -- request = the existing UsePotion remote, so the server keeps every check), the keys (Keybinds PotionHP = 1, PotionMP =
@@ -28,7 +28,7 @@ local LocalPlayer = Players.LocalPlayer
 local Q = type(Config.QuickSlots) == "table" and Config.QuickSlots or {}
 local T = {
 	Count = tonumber(Q.Count) or 3,
-	Default = type(Q.Default) == "table" and Q.Default or { "HP", "MP", "" },
+	Default = type(Q.Default) == "table" and Q.Default or { "", "", "" },
 	Items = type(Q.Items) == "table" and Q.Items or {},
 	Attr = type(Q.Attr) == "string" and Q.Attr or "QuickSlots",
 	Remote = type(Q.Remote) == "string" and Q.Remote or "SetQuickSlot",

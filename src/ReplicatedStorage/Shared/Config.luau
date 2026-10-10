@@ -5073,7 +5073,7 @@ Config.Audio = {
 		StampPress = { File = "StampPress", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- Fx Attendance (the claim's QuestDone line gives way)
 		Chest7Open = { File = "Chest7Open", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the 7-day box (Attendance Box), BoxAfter s after the stamp
 		WelcomeBack = { File = "WelcomeBack", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the "Welcome back!" card opening (PauseCard "Back")
-		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip"); the KO screen's fun tip (EG05)
+		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip")
 		DiaryPage = { File = "DiaryPage", Volume = 0.45, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.3 }, -- the King Diary opening on a page ([Read])
 		CandyPlop = { File = "CandyPlop", Volume = 0.35, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.12 }, -- my drop with candy (Fx Loot)
 		KingHelpHome = { File = "KingHelpHome", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Help"
@@ -5108,7 +5108,6 @@ Config.Audio = {
 	-- a townsperson who talks)
 	Blips = { Bright = "BlipBright", Gleam = "BlipGleam" },
 	BoxAfter = 0.35, -- s after StampPress: the 7-day box opens
-	KOTipAfter = 0.9, -- s after KO: the fun tip's ding (EG05)
 	WarpInAfter = 0.45, -- s after Warp: WarpIn
 	-- a move of more than Jump studs in one frame that my speed cannot explain (+ Slack studs) = a warp
 	Warp = { Jump = 40, Slack = 10 },
@@ -5180,7 +5179,9 @@ Config.Audio.Ambient = {
 -- Stock / ReadyAt (the owner's attributes), Cooldown (s) }; Order = the bag's quick items rows
 Config.QuickSlots = {
 	Count = 3,
-	Default = { "HP", "MP", "" },
+	-- 검수 10/10 (user: "물약 사서 슬롯에 장착하는 퀘스트"): a new player starts with empty slots (the quest row says what to
+	-- do); an old save gets HP / MP from the server
+	Default = { "", "", "" },
 	Attr = "QuickSlots",
 	Remote = "SetQuickSlot",
 	Order = { "HP", "MP" },
@@ -5191,6 +5192,47 @@ Config.QuickSlots = {
 			Cooldown = Config.Vitals.PotionCooldown },
 	},
 }
+
+-- A23-108 (user 2026-10-10 "직업별로 무기 쥐는 법 이런 것도 다 해야 된다"; docs/design/class_grips_a23_108_2026-10-10.md):
+-- each class x faction holds its weapon its own way. Key = Config.ClassGripKey(class, faction) ("Warrior_Halo" ... ,
+-- a class alone without a side). Weapon = what the hand holds (CharacterVisuals proposal, game dev 3 checks); Hold =
+-- the standing pose WeaponPose.luau adds over Roblox's idle / walk while the weapon is out and no attack plays
+-- (degrees in joint space like Fx MOTION.CLIPS: +rx raises an arm forward / leans back, +rz swings an arm to the
+-- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows)
+Config.ClassGrips = {
+	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 22, 0, 8 }, RightElbow = { 38, 0, 0 },
+		RightWrist = { -30, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	-- Berserker: the great sword rests on the right shoulder, a low stance
+	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 72, 0, 26 },
+		RightElbow = { 112, 0, 0 }, RightWrist = { -18, 0, 0 }, LeftShoulder = { 12, 0, -8 } } },
+	-- Blacksmith: the hammer on the right shoulder, the left hand on the hip
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 62, 0, 20 }, RightElbow = { 104, 0, 0 },
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
+	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 12, 0, 10 }, RightElbow = { 22, 0, 0 },
+		LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -20, 0, 0 } } },
+	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
+	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
+		RightShoulder = { 32, 0, 6 }, RightElbow = { 26, 0, 0 }, RightWrist = { -36, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
+	-- Alchemist: a flask held up in the left hand, the stirring stick in the right
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { LeftShoulder = { 42, 0, -10 }, LeftElbow = { 82, 0, 0 },
+		RightShoulder = { 30, 0, 12 }, RightElbow = { 62, 0, 0 } } },
+	-- Ranger: the long bow upright in the left hand at the side
+	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 20, 0, -10 }, LeftElbow = { 26, 0, 0 },
+		RightShoulder = { 6, 0, 6 } } },
+	-- Shadow Hunter: low and quiet, the short bow hanging down
+	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },
+		LeftShoulder = { 6, 0, -8 }, RightShoulder = { 10, 0, 6 } } },
+	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
+	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
+		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },
+}
+function Config.ClassGripKey(classId, faction)
+	if type(classId) ~= "string" then return nil end
+	if faction == "Halo" or faction == "Horns" or faction == "Neutral" then return classId .. "_" .. faction end
+	return classId
+end
 
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }
 

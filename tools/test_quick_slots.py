@@ -24,7 +24,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 FILES = {"QS": SPS / "QuickSlots.luau", "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
-         "VITALS": SPS / "VitalsUI.luau", "MAIN": SPS / "ClientMain.client.luau", "PANELS": SPS / "Panels.luau"}
+         "VITALS": SPS / "VitalsUI.luau", "MAIN": SPS / "ClientMain.client.luau", "PANELS": SPS / "Panels.luau", "HUD": SPS / "HUD.luau"}
 FIXTURE = ROOT / "tools/fixtures/quick_slots_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
@@ -32,7 +32,7 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_quick_slots_2026-10-10.json"
 
 MUTATIONS = [
-    ("QS", "no default slots", 'Default = type(Q.Default) == "table" and Q.Default or { "HP", "MP", "" },', 'Default = { "", "", "" },'),
+    ("CONFIG", "a new player starts with potions in the slots", '	Default = { "", "", "" },', '	Default = { "HP", "MP", "" },'),
     ("QS", "unknown items kept", "out[i] = (type(v) == \"string\" and T.Items[v] ~= nil) and v or \"\"", "out[i] = v or \"\""),
     ("QS", "an empty slot still uses (an HP potion)", "\tlocal def = slot.Def\n\tif type(def) ~= \"table\" then return false end\n",
      "\tlocal def = slot.Def or T.Items.HP\n\tif type(def) ~= \"table\" then return false end\n"),
@@ -48,7 +48,7 @@ MUTATIONS = [
     ("QS", "an empty slot keeps the old icon", 'local id = def and artId(def.Icon) or ""', 'local id = def and artId(def.Icon) or w.Icon.Image'),
     ("QS", "the lit slot cannot be emptied", "QuickSlots.Set(i, on and \"\" or item)", "QuickSlots.Set(i, item)"),
     ("VITALS", "keys used twice (VitalsUI too)", "and quick.OwnsKeys() then return end", "and false then return end"),
-    ("MAIN", "never loaded", '"SkillBar", "QuickSlots", "Audio"', '"SkillBar", "Audio"'),
+    ("MAIN", "never loaded", '"SkillBar", "QuickSlots", "WeaponPose"', '"SkillBar", "WeaponPose"'),
 ]
 
 
@@ -72,6 +72,9 @@ def statics(src: dict) -> list[dict]:
         {"check": "the bag (Items, no scroll chosen) shows the quick items rows", "ok":
          "if not mode and C and type(C.QuickSlots) == \"table\" and type(C.QuickSlots.BagRows) == \"function\" then" in src["PANELS"]
          and "pcall(C.QuickSlots.BagRows, parent, REG.Kit())" in src["PANELS"]},
+        {"check": "A23-110 KO1 rows: Guide QuickSlot opens the bag, PotionShop shows the way to the seller", "ok":
+         'if g == "PotionShop" or g == "QuickSlot" then' in src["HUD"] and 'panels.Open("Items")' in src["HUD"]
+         and "pcall(vitals.ShowShopWay)" in src["HUD"] and "function VitalsUI.ShowShopWay()" in src["VITALS"]},
         {"check": "Config: QuickSlot3 on key Three (Potion group)", "ok":
          '{ Id = "QuickSlot3", Group = "Potion", Key = "Three"' in src["CONFIG"]},
     ]
