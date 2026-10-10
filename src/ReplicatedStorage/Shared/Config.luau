@@ -5906,7 +5906,6 @@ Config.Text = {
 	SwitchCooldown = "You can switch sides again in %s.",
 	NoTicket = "You have no change ticket. Get one at Menu > Ticket Shop.",
 	TicketSaving = "Saving your ticket purchase. Please tap again in a moment.", -- CR-L25: UseTicket returned "Pending"
-	ClassChosen = "Your class is now %s!",
 	ClassChangedFree = "You changed your class to %s! You start again from Lv 1.", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "You changed your class to %s! (Level kept: under Lv%d)", -- A23-14 (className, FreeKeepLevelBelow)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)

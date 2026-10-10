@@ -87,6 +87,12 @@ MUTATIONS = [
     ("co-op success pays 100%", "GOOSE_SOURCE",
      "local share = (judged == \"Coop\" and success) and (tonumber(Config.Goose.CoopWinShare) or 0.7) or nil",
      "local share = nil"),
+    ("the first class pick says it again", "CLASS_SOURCE",
+     "\tClassService.ClassChanged:Fire(player, classId, old) -- also when equal, so visuals / charge refresh\n",
+     "\tClassService.ClassChanged:Fire(player, classId, old) -- also when equal, so visuals / charge refresh\n"
+     "\tNet.Notify(player, string.format(\"Your class is now %s!\", Config.ClassName(classId, faction)), \"good\")\n"),
+    ("the class pick text is back", "CONFIG_SOURCE", "\tClassChangedFree = \"You changed your class to %s! You start again",
+     "\tClassChosen = \"Your class is now %s!\",\n\tClassChangedFree = \"You changed your class to %s! You start again"),
     ("the pay is not reported (HealthService)", "GOOSE_SOURCE",
      "\tGooseService.GooseRewarded:Fire(p, { Won = won, Rare = rare == true, Gold = gold, XP = xp, Level = level,\n\t\tMode = judged == \"Coop\" and \"Coop\" or \"Versus\" })\n",
      ""),

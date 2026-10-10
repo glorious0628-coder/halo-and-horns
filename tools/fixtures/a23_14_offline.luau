@@ -1129,9 +1129,9 @@ local function classWorld(level, opts)
 		Warn = function(tag, msg) table.insert(groupWarnings, tag .. ": " .. tostring(msg)) end }
 	local players = { __kind = "Instance", Name = "Players" }
 	local p = newPlayer("Changer", 4242, players)
-	local data = { Level = level, XP = 7, Class = "Warrior", ClassChosen = true, Faction = "Halo", Tickets = { Class = opts.Tickets or 0 } }
+	local data = { Level = level, XP = 7, Class = "Warrior", ClassChosen = opts.Unpicked ~= true, Faction = "Halo", Tickets = { Class = opts.Tickets or 0 } }
 	if opts.NoDataLevel then data.Level = nil end
-	p.Attrs = { Class = "Warrior", ClassChosen = true, Level = opts.AttrLevel or level, XP = 7 }
+	p.Attrs = { Class = "Warrior", ClassChosen = opts.Unpicked ~= true, Level = opts.AttrLevel or level, XP = 7 }
 	f.Player, f.Data = p, data
 	local env = { game = { GetService = function(_, name)
 			if name == "ReplicatedStorage" then return { Shared = { Config = "Config", Util = "Util", Net = "Net" } } end
@@ -1165,12 +1165,27 @@ local function classWorld(level, opts)
 	class.Start()
 	class.ClassChanged:Connect(function(_, new, old) table.insert(f.Changed, { new, old }) end)
 	function f:Change(classId, useTicket) remotes.ChangeClass.OnServerEvent:Fire(p, classId, useTicket) end
+	function f:Choose(classId) remotes.ChooseClass.OnServerEvent:Fire(p, classId) end
 	function f:Noticed(text)
 		for _, e in self.Notices do if e.Text == text then return true end end
 		return false
 	end
 	return f
 end
+
+runGroup("class-first-pick", function()
+	-- the first class pick is free and silent (user 2026-10-10: no "Your class is now ..." after the player's own click)
+	local f = classWorld(1, { Unpicked = true })
+	f:Choose("Mage")
+	check(f.Data.Class == "Mage" and f.Data.ClassChosen == true and f.Data.Level == 1, "the first pick sets the class and ClassChosen", show({ f.Data.Class, f.Data.ClassChosen }))
+	check(#f.Changed == 1 and f.Changed[1][1] == "Mage" and #f.Refresh == 1 and f.Refresh[1] == true, "ClassChanged fires once, the character refreshes", show(f.Refresh))
+	check(#f.Notices == 0 and CONFIG.Text.ClassChosen == nil, "no notice after the first pick (and no text left for it)", show(f.Notices))
+	f:Choose("Archer")
+	check(f.Data.Class == "Mage" and #f.Changed == 1 and #f.Notices == 0, "a second pick is ignored, silently", show(f.Data.Class))
+	local bad = classWorld(1, { Unpicked = true })
+	bad:Choose("Wizard")
+	check(bad.Data.ClassChosen == false and bad.Data.Class == "Warrior" and #bad.Notices == 0, "an unknown class changes nothing", show(bad.Data.Class))
+end)
 
 runGroup("class-change", function()
 	local C = CONFIG

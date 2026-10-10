@@ -1,0 +1,92 @@
+{
+  "status": "passed",
+  "checks": 44,
+  "failedChecks": 0,
+  "failing": [],
+  "mutations": {
+    "total": 15,
+    "caught": 15,
+    "skipped": false,
+    "missed": [],
+    "results": [
+      {
+        "mutation": "no name is fine",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "main needs no flag",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "only GoodEvil is main",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the main is found by name case-sensitively",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the flag alone picks a practice window",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "two windows are not an error",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the old default name is back",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "any non-empty flag counts",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the early check is gone",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the pin is ignored",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "a pin bypasses the main check",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "a practice name falls back to the main",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "empty name pieces match everything",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "spaces count as a name",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "the guard is only in the loop's first ask",
+        "applied": true,
+        "caught": true
+      }
+    ]
+  },
+  "contract": "tools/studio_mcp.py picks a Studio window only with STUDIO_NAME or STUDIO_ID; the main Studio (GoodEvil / 81671223175574) only with HH_MAIN_STUDIO=1; the default name is gone; two matching windows stay an error.",
+  "studioCalls": 0,
+  "apiCalls": 0
+}
