@@ -3383,8 +3383,7 @@ Config.StoryQuests.Defs.D0 = {
 			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!",
 				"Look in your Quests window. New jobs come every morning." } } },
 	},
-	Reward = { Gold = 1, XP = 1 },
-	Finish = "Daily jobs are open!",
+	Reward = { Gold = 1, XP = 1 }, -- no Finish line: the usual quest-done line, then the Daily tab opens (A23-99: no "daily quests are open" toast)
 }
 table.insert(Config.StoryQuests.Subs, "D0")
 
