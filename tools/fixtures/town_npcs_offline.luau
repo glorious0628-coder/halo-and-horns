@@ -80,7 +80,7 @@ end
 -- one world per scenario
 local function townWorld(o)
 	o = o or {}
-	local t = { Tags = {}, Warnings = {}, Ctx = { pieces = 0 }, Created = {}, Queue = {}, Defer = false, Rays = {}, Characters = {} }
+	local t = { Tags = {}, Warnings = {}, Ctx = { pieces = 0 }, Created = {}, Queue = {}, Defer = false, Rays = {}, Characters = {}, Waits = {} }
 	local cfg = execute("Config", CONFIG_SOURCE, colorEnv())
 	t.Config = cfg
 	local npcs = object("Folder", "NPCs")
@@ -93,14 +93,25 @@ local function townWorld(o)
 		local anvil = object(o.AnvilModel and "Model" or "Part", "Anvil"); anvil.Position = o.AnvilAt or vec(39, 0, 49); anvil.Parent = guild
 		t.Anvil = anvil
 	end
-	-- the ground: a flat 5 studs on the plaza, 0.2 elsewhere, unless the scenario says otherwise
+	-- the ground: the Halo terraces (halo_layout_plan: 0.2 at the gate, 9, the plaza 20, the cathedral 33), unless the scenario says otherwise
 	function t.Ground(x, z)
-		if z <= -444 then return 5 end
-		return 0.2
+		if z > -444 then return 0.2 end
+		if z > -524 then return 9 end
+		if z > -606 then return 20 end
+		return 33
 	end
 	local ws = { FindFirstChild = function(_, name) if name == "Map" then return map end return nil end }
 	function ws:Raycast(origin, direction, params)
 		table.insert(t.Rays, { Origin = origin, Direction = direction, Params = params })
+		if t.Layers then
+			-- layered surfaces under a spot (a roof over a floor ...): the first one the ray reaches, { Y, NormalY? }
+			for _, l in t.Layers(origin.X, origin.Z) do
+				if l.Y <= origin.Y and l.Y >= origin.Y + direction.Y then
+					return { Position = vec(origin.X, l.Y, origin.Z), Normal = vec(0, l.NormalY or 1, 0) }
+				end
+			end
+			return nil
+		end
 		local g = t.Ground(origin.X, origin.Z)
 		if g == nil then return nil end
 		if type(g) == "table" then return { Position = vec(origin.X, g.Y, origin.Z), Normal = vec(0, g.NormalY, 0) } end
@@ -115,6 +126,10 @@ local function townWorld(o)
 	function players:CreateHumanoidModelFromDescription(desc, rigType)
 		table.insert(t.Created, { Desc = desc, Rig = rigType })
 		if t.CreateError then error("avatar service unavailable") end
+		if t.CreateFailures and t.CreateFailures > 0 then
+			t.CreateFailures -= 1
+			error("avatar service busy")
+		end
 		if t.OnCreate then
 			local hook = t.OnCreate
 			t.OnCreate = nil
@@ -156,7 +171,8 @@ local function townWorld(o)
 	env.typeof = typeofDouble
 	env.Instance = { new = function(kind) return object(kind, kind) end }
 	env.RaycastParams = { new = function() return {} end }
-	env.task = { spawn = function(fn, ...) if t.Defer then table.insert(t.Queue, table.pack(fn, ...)) else fn(...) end end }
+	env.task = { spawn = function(fn, ...) if t.Defer then table.insert(t.Queue, table.pack(fn, ...)) else fn(...) end end,
+		wait = function(seconds) table.insert(t.Waits, seconds) end }
 	env.require = function(m) return m end
 	env.pcall = pcall
 	local mod = execute("TownNpcs", TOWNNPCS_SOURCE, env)
@@ -194,6 +210,27 @@ runGroup("config", function()
 		end
 	end
 	check(kinds.Story == 2 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto", show(kinds))
+	-- the shop people stand in front of their shop (halo_layout_plan: bakery (-44,-546), juice (44,-546), flowers (-44,-584),
+	-- potions (44,-584); the fronts are at x +-37), on the plaza terrace (Y 20)
+	local spot = {}
+	for _, e in T.List do spot[e.Id] = e end
+	check(spot.Folk1.At.X == 34 and spot.Folk1.At.Z == -546 and spot.Folk2.At.X == -34 and spot.Folk2.At.Z == -584
+		and spot.Folk3.At.X == -34 and spot.Folk3.At.Z == -546 and spot.PotionHalo.At.X == 34 and spot.PotionHalo.At.Z == -584,
+		"juice man east (34,-546), flower girl west (-34,-584), baker west (-34,-546), the potion seller east (34,-584)",
+		show({ spot.Folk1.At, spot.Folk2.At, spot.Folk3.At, spot.PotionHalo.At }))
+	for _, id in { "Folk1", "Folk2", "Folk3", "Folk4", "PotionHalo" } do
+		check(spot[id].Y == 20, id .. " is on the plaza terrace: Y 20", tostring(spot[id].Y))
+	end
+	check(spot.Bright.Y == nil and spot.Gleam.Y == nil, "Bright and Sir Gleam have no expected Y (a ramp / the gate road)", "")
+	local taken = {}
+	for _, e in T.List do
+		if e.At then
+			local key = e.At.X .. "," .. e.At.Z
+			check(not taken[key], e.Id .. " has a spot of its own", key)
+			taken[key] = true
+		end
+	end
+	check(T.Retries == 3 and T.RetryDelay == 5 and T.YTol == 4 and T.RayTries == 8, "retries 3 x 5 s, ground tolerance 4, 8 casts", show({ T.Retries, T.RetryDelay, T.YTol, T.RayTries }))
 	check(ids.Bright and ids.Gleam and ids.Folk1 and ids.Folk4 and ids.PotionHalo and ids.Otto, "the ids the plan names", "")
 	-- every NPC a quest step names that is a Halo town person has a body (Smokey / Tiny come with the Horns / Crossroads turns)
 	local storyIds = {}
@@ -203,6 +240,7 @@ runGroup("config", function()
 		for _, step in def.Steps or {} do if step.Npc then named[step.Npc] = true end end
 	end
 	check(storyIds.Bright and named.Bright, "Bright is named by quest steps and has a body", show(named))
+	check(storyIds.Gleam and named.Gleam, "Sir Gleam is named by a quest step (H3's first card) and has a body", show(named))
 	for _, e in T.List do
 		if e.Merchant then check(e.Enabled == false, "the Halo potion seller stays off until ShopService accepts more than one seller", tostring(e.Enabled)) end
 	end
@@ -227,7 +265,7 @@ runGroup("build", function()
 		and prompt.Enabled == true and prompt:GetAttribute("StoryNpcId") == "Bright" and prompt:GetAttribute("Conversation") == true,
 		"Bright: a 'Talk' prompt (G, tap, 10 studs) that names her", show(prompt and { prompt.ActionText, prompt.KeyboardKeyCode, prompt.MaxActivationDistance }))
 	local pv = b:GetPivot()
-	check(near(pv.Position.X, 18) and near(pv.Position.Z, -452) and near(pv.Position.Y, 5 + 2.6), "Bright stands at (18, -452) with her feet on the ground (Y 5 + 2.6)", show(pv.Position))
+	check(near(pv.Position.X, 18) and near(pv.Position.Z, -452) and near(pv.Position.Y, 9 + 2.6), "Bright stands at (18, -452) with her feet on the ground (Y 9 + 2.6)", show(pv.Position))
 	check(near(pv.Look.X, 0) and near(pv.Look.Z, -420) and near(pv.Look.Y, pv.Position.Y), "... facing the spawn side (0, -420) at her own height", show(pv.Look))
 	-- the body: no scripts, anchored, no collision, a standing humanoid
 	local parts = 0
@@ -256,7 +294,7 @@ runGroup("build", function()
 		local f = t.Npc("Npc_Folk" .. i)
 		check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk" .. i and not t.Tagged(f, "StoryNpc") and t.PromptOf(f, "TalkPrompt") == nil,
 			"Folk" .. i .. ": a townsperson, tagged TownFolk, no prompt", show(t.Tags[f]))
-		check(near(f:GetPivot().Position.Y, 5 + 2.6), "Folk" .. i .. ": feet on the ground", show(f:GetPivot().Position))
+		check(near(f:GetPivot().Position.Y, 20 + 2.6), "Folk" .. i .. ": feet on the plaza terrace (Y 20 + 2.6)", show(f:GetPivot().Position))
 	end
 	-- Otto: 4 studs behind the anvil, away from the Crossroads middle, facing it
 	local o = t.Npc("Npc_Otto")
@@ -284,8 +322,10 @@ runGroup("the potion seller (switched on)", function()
 	check(p and p.ActionText == "Buy potions" and p.ObjectText == "Potion Seller" and p.KeyboardKeyCode == "KeyCode.G" and p.HoldDuration == 0
 		and p.MaxActivationDistance == t.Config.Vitals.PotionMerchantDistance and p.Enabled == true and p:GetAttribute("StoryNpcId") == nil,
 		"the shop prompt (the Crossroads seller's name and range), no StoryNpcId", show(p and { p.ActionText, p.ObjectText }))
-	check(near(m:GetPivot().Position.X, -34) and near(m:GetPivot().Position.Z, -546) and near(m:GetPivot().Position.Y, 5 + 2.6), "at the potion stall (-34, -546), feet on the ground", show(m:GetPivot().Position))
-	check(near(m:GetPivot().Look.X, 0), "facing the plaza axis", show(m:GetPivot().Look))
+	check(near(m:GetPivot().Position.X, 34) and near(m:GetPivot().Position.Z, -584) and near(m:GetPivot().Position.Y, 20 + 2.6),
+		"in front of the potion shop (34, -584), feet on the plaza terrace", show(m:GetPivot().Position))
+	check(near(m:GetPivot().Look.X, 0) and near(m:GetPivot().Look.Z, -584), "facing the plaza axis", show(m:GetPivot().Look))
+	check(t.Tagged(m, t.Config.Vitals.PotionMerchantTag or "PotionMerchant"), "the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)", show(t.Tags[m]))
 	-- the seller's colours default to the Crossroads seller's (Config.Vitals.PotionMerchantColors)
 	local vc = t.Config.Vitals.PotionMerchantColors
 	check(t.Created[7].Desc.TorsoColor.R == vc.Torso.R and t.Created[7].Desc.LeftLegColor.R == vc.Legs.R and t.Created[7].Desc.HeadColor.R == vc.Head.R,
@@ -344,6 +384,125 @@ runGroup("a second build", function()
 	check(t.PromptOf(t.Npc("Npc_Gleam"), "TalkPrompt").Enabled == false, "an entry with Enabled = false: its prompt is off", "")
 end)
 
+------------------------------------------------------------------ a body that failed is made again
+runGroup("retries", function()
+	local r = townWorld()
+	r.CreateFailures = 2 -- the first two avatar calls fail (Bright, Sir Gleam)
+	r.Ensure()
+	check(#r.NPCs:GetChildren() == 7 and #r.Created == 9 and #r.Waits == 1 and r.Waits[1] == 5 and #r.Warnings == 2,
+		"two avatar calls failed: after one 5 s wait both are made, nothing else is made twice", show({ #r.NPCs:GetChildren(), #r.Created, r.Waits, #r.Warnings }))
+	check(r.Npc("Npc_Bright") ~= nil and r.Npc("Npc_Gleam") ~= nil, "the two that failed have their bodies", "")
+	-- an entry whose ground is missing is NOT retried (the map is not built here)
+	local g = townWorld()
+	function g.Ground() return nil end
+	g.Ensure()
+	check(#g.Created == 0 and #g.Waits == 0, "no ground: no avatar call, no retry", show({ #g.Created, #g.Waits }))
+	-- a foreign model under the name is not retried either
+	local o = townWorld()
+	local other = object("Model", "Npc_Bright")
+	other.Parent = o.NPCs
+	o.Ensure()
+	check(#o.Waits == 0 and #o.Created == 6, "a name taken by something else: skipped, no retry", show({ #o.Created, #o.Waits }))
+	-- Retries = 1: one try, no wait
+	local one = townWorld()
+	one.Config.TownNpcs.Retries = 1
+	one.CreateError = true
+	one.Ensure()
+	check(#one.Created == 7 and #one.Waits == 0, "Retries = 1: one try each, no wait", show({ #one.Created, #one.Waits }))
+	-- the delay is at least half a second; Retries = 2 waits once
+	local fast = townWorld()
+	fast.Config.TownNpcs.Retries, fast.Config.TownNpcs.RetryDelay = 2, 0
+	fast.CreateError = true
+	fast.Ensure()
+	check(#fast.Created == 14 and #fast.Waits == 1 and fast.Waits[1] == 0.5, "Retries = 2, RetryDelay = 0: one wait of 0.5 s", show({ #fast.Created, fast.Waits }))
+	-- a retry that finds the body already there (made meanwhile) does nothing
+	local late = townWorld()
+	late.CreateFailures = 1
+	late.Ensure()
+	check(#late.NPCs:GetChildren() == 7 and #late.Created == 8, "7 bodies, 8 avatar calls (one failed)", show({ #late.NPCs:GetChildren(), #late.Created }))
+end)
+
+------------------------------------------------------------------ the ground under a spot with a roof over it
+runGroup("the expected ground (roofs, balconies, walls)", function()
+	-- the plaza terrace is Y 20; a shop roof at 36 and a balcony at 27 hang over some spots
+	local function roofed(t)
+		t.Layers = function(x, z)
+			if z <= -524 and z >= -606 then return { { Y = 36 }, { Y = 27 }, { Y = 20.1 }, { Y = 9 } } end
+			return { { Y = t.Ground(x, z) } }
+		end
+	end
+	local r = townWorld()
+	for _, e in r.Config.TownNpcs.List do if e.Merchant then e.Enabled = true end end
+	roofed(r)
+	r.Ensure()
+	local seller = r.Npc("PotionMerchant_Halo")
+	check(near(r.Npc("Npc_Folk1"):GetPivot().Position.Y, 20.1 + 2.6) and near(r.Npc("Npc_Folk3"):GetPivot().Position.Y, 20.1 + 2.6)
+		and seller and near(seller:GetPivot().Position.Y, 20.1 + 2.6),
+		"a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top", show({ r.Npc("Npc_Folk1"):GetPivot().Position.Y }))
+	check(near(r.Npc("Npc_Bright"):GetPivot().Position.Y, 9 + 2.6), "Bright (no expected Y) takes the ground the ray finds", show(r.Npc("Npc_Bright"):GetPivot().Position.Y))
+	local casts = 0
+	for _, ray in r.Rays do if near(ray.Origin.X, 34) and near(ray.Origin.Z, -546) then casts += 1 end end
+	check(casts == 6, "three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit", tostring(casts))
+	for _, ray in r.Rays do
+		if near(ray.Origin.X, 34) and near(ray.Origin.Z, -546) and ray.Origin.Y < 150 then
+			check(ray.Origin.Y == 35.5 or ray.Origin.Y == 26.5, "a later cast starts 0.5 below the hit it passes", tostring(ray.Origin.Y))
+		end
+	end
+	-- a wall (a balustrade's side) on the way is looked under too
+	local w = townWorld()
+	w.Layers = function(x, z)
+		if z <= -524 and z >= -606 then return { { Y = 24, NormalY = 0 }, { Y = 20 } } end
+		return { { Y = w.Ground(x, z) } }
+	end
+	w.Ensure()
+	check(near(w.Npc("Npc_Folk2"):GetPivot().Position.Y, 20 + 2.6), "a steep face at 24 over the floor: the floor is the ground", show(w.Npc("Npc_Folk2"):GetPivot().Position.Y))
+	-- only a roof, no floor: the body is not made (a warning)
+	local nf = townWorld()
+	nf.Layers = function(x, z)
+		if z <= -524 and z >= -606 then return { { Y = 36 } } end
+		return { { Y = nf.Ground(x, z) } }
+	end
+	nf.Ensure()
+	check(nf.Npc("Npc_Folk1") == nil and nf.Npc("Npc_Bright") ~= nil and #nf.Warnings >= 4, "only a roof over the spot: no body (a warning each), the others are built", show({ #nf.Warnings }))
+	-- the floor is far below the terrace (a hole): not the ground either
+	local hole = townWorld()
+	hole.Layers = function(x, z)
+		if z <= -524 and z >= -606 then return { { Y = 5 } } end
+		return { { Y = hole.Ground(x, z) } }
+	end
+	hole.Ensure()
+	check(hole.Npc("Npc_Folk1") == nil, "a floor at 5 where the terrace should be 20 (+-4): no body", "")
+	-- a pedestal top just inside the tolerance is the floor for the ray (the tolerance is 4)
+	local ped = townWorld()
+	ped.Layers = function(x, z)
+		if z <= -524 and z >= -606 then return { { Y = 23.9 } } end
+		return { { Y = ped.Ground(x, z) } }
+	end
+	ped.Ensure()
+	check(ped.Npc("Npc_Folk1") ~= nil and near(ped.Npc("Npc_Folk1"):GetPivot().Position.Y, 23.9 + 2.6), "20 + 3.9 is inside the tolerance", "")
+	local out = townWorld()
+	out.Layers = function(x, z)
+		if z <= -524 and z >= -606 then return { { Y = 24.1 }, { Y = 20 } } end
+		return { { Y = out.Ground(x, z) } }
+	end
+	out.Ensure()
+	check(near(out.Npc("Npc_Folk1"):GetPivot().Position.Y, 20 + 2.6), "20 + 4.1 is a roof: the ray goes on to the floor", "")
+	-- RayTries: five roofs over the floor need six casts
+	local deep = townWorld()
+	deep.Config.TownNpcs.RayTries = 3
+	deep.Layers = function(x, z)
+		if z <= -524 and z >= -606 then return { { Y = 60 }, { Y = 50 }, { Y = 40 }, { Y = 30 }, { Y = 20 } } end
+		return { { Y = deep.Ground(x, z) } }
+	end
+	deep.Ensure()
+	check(deep.Npc("Npc_Folk1") == nil, "RayTries = 3: five things over the floor are too many casts", "")
+	-- the ray never counts the NPC folder (unchanged) and an entry without Y behaves as before: the first hit is the ground
+	local first = townWorld()
+	first.Layers = function(x, z) return { { Y = 40 }, { Y = first.Ground(x, z) } } end
+	first.Ensure()
+	check(near(first.Npc("Npc_Bright"):GetPivot().Position.Y, 40 + 2.6), "an entry without Y: the first floor-like hit is the ground (as before)", show(first.Npc("Npc_Bright"):GetPivot().Position.Y))
+end)
+
 ------------------------------------------------------------------ failures and bad input
 runGroup("failures", function()
 	-- no ground under any spot (the map is not built here): nothing is made, one warning each, the build never throws
@@ -353,35 +512,40 @@ runGroup("failures", function()
 	check(#t.NPCs:GetChildren() == 0 and #t.Warnings >= 1, "no ground: no body, a warning", show({ #t.NPCs:GetChildren(), #t.Warnings }))
 	-- a slope is not ground
 	local s = townWorld()
-	function s.Ground(x, z) return { Y = 3, NormalY = 0.5 } end
+	function s.Ground(x, z) return { Y = 20, NormalY = 0.5 } end
 	s.Ensure()
 	check(#s.NPCs:GetChildren() == 0, "a steep surface under a spot is not ground", tostring(#s.NPCs:GetChildren()))
 	local flat = townWorld()
-	function flat.Ground(x, z) return { Y = 3, NormalY = 0.7 } end
+	function flat.Ground(x, z) return { Y = 20, NormalY = 0.7 } end
 	flat.Ensure()
 	check(#flat.NPCs:GetChildren() == 7, "a slope of exactly 0.7 is still ground", tostring(#flat.NPCs:GetChildren()))
 	-- the heights follow the ground (a stepped terrace)
 	local st = townWorld()
-	function st.Ground(x, z) if z <= -524 then return 11 end if z <= -444 then return 5 end return 0.2 end
+	function st.Ground(x, z) if z <= -524 then return 22 end if z <= -444 then return 7 end return 0.2 end
 	st.Ensure()
-	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 5 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 11 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
-		"each body takes its own terrace height (0.2 / 5 / 11)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
+	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 7 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 22 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
+		"each body takes its own terrace height (0.2 / 7 / 22; Y 20 +- 4 accepts the plaza)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
 	-- the avatar service failing
 	local e = townWorld()
 	e.CreateError = true
 	e.Ensure()
 	check(#e.NPCs:GetChildren() == 0 and #e.Warnings >= 7, "the avatar call failing: nothing left half-built, a warning each", show({ #e.NPCs:GetChildren(), #e.Warnings }))
+	check(#e.Created == 7 * 3 and #e.Waits == 2 and e.Waits[1] == 5 and e.Waits[2] == 5, "... every body is tried 3 times, 5 s apart (2 waits)", show({ #e.Created, e.Waits }))
+	local given = 0
+	for _, w in e.Warnings do if string.find(w, "given up after 3 tries", 1, true) then given += 1 end end
+	check(given == 7, "... and each says it gave up", tostring(given))
 	local nr = townWorld()
 	nr.NoRoot = true
 	nr.Ensure()
 	check(#nr.NPCs:GetChildren() == 0 and nr.LastNpc == nil or (#nr.NPCs:GetChildren() == 0 and nr.LastNpc.Destroyed == true), "a body without a root part is thrown away", tostring(#nr.NPCs:GetChildren()))
+	check(#nr.Created == 7 * 3 and #nr.Waits == 2, "a body that cannot be prepared is retried too (3 tries)", show({ #nr.Created, #nr.Waits }))
 	-- the ground disappears between the check and the placing: the body is thrown away, not left at a bad height
 	local mid = townWorld()
 	local calls = 0
 	function mid.Ground()
 		calls += 1
 		if calls % 2 == 0 then return nil end
-		return 5
+		return 20
 	end
 	mid.Ensure()
 	check(#mid.NPCs:GetChildren() == 0 and mid.LastNpc.Destroyed == true and #mid.Warnings >= 7, "no ground at the placing: the made body is destroyed, a warning each", show({ #mid.NPCs:GetChildren(), #mid.Warnings }))

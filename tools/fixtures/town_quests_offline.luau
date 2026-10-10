@@ -1972,6 +1972,19 @@ runGroup("npc-talk", function()
 	local b4 = #panels
 	check(w:Track(nnd, "TX_NN") and w.Story.TalkToNpc(nn, nil) == nil and w.Story.TalkToNpc(nn, 5) == nil and w.Story.TalkToNpc(nn, true) == nil and #panels == b4,
 		"a nil / non-string NPC id never opens a dialogue that names no NPC", "")
+	-- Sir Gleam: H3's first card is talked through him; its choice card (step 4) opens by itself in the town, no NPC
+	w:Npc("Gleam", vec(-10, 0, -372))
+	local g, gd = joinAfterM23(w, 985, "Halo", { Pos = vec(-8, 0, -370) })
+	gd.Story.Subs.H3 = { St = 1, P = 0, T = {}, Claim = false }
+	local b5 = #panels
+	check(SQ0.Defs.H3.Steps[1].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Npc == nil and SQ0.Defs.H3.Steps[4].Obj.Type == "Choice",
+		"H3: the first card names Sir Gleam, the choice card names nobody", show(SQ0.Defs.H3.Steps[1].Npc))
+	check(w.Story.TalkToNpc(g, "Gleam") == "H3" and #panels == b5 + 1 and panels[#panels].Arg.Id == "H3" and panels[#panels].Arg.St == 1,
+		"talking to Sir Gleam opens H3's first card", show(panels[#panels] and panels[#panels].Arg))
+	check(w.Story.TalkToNpc(g, "Bright") ~= "H3", "... not by talking to Bright", "")
+	gd.Story.Subs.H3.St = 4
+	local b6 = #panels
+	check(w.Story.TalkToNpc(g, "Gleam") == nil and #panels == b6, "H3's choice card has no NPC: nothing to say to Sir Gleam", "")
 	-- no talker present in the world at all: the old fallback (anywhere) is kept for NPC ids that have no body
 	w:Npc("Tiny", vec(0, 0, 0))
 	check(w.Story.TalkToNpc(c, "Smokey") == nil, "an NPC id nobody waits at: nothing", "")
