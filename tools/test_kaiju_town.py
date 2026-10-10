@@ -15,7 +15,19 @@ from dev2_offline import ROOT, SSS, Suite, function_block, read, run
 from test_ranking import FILES as RANKING_FILES, bindings
 
 FILES = dict(RANKING_FILES)
-P, C = "PVP_SOURCE", "CONFIG_SOURCE"
+P, C, K = "PVP_SOURCE", "CONFIG_SOURCE", "KAIJU_SOURCE"
+
+
+def kaiju_bindings(sources: dict[str, str]) -> dict[str, str]:
+    out = bindings(sources)
+    kaiju = sources[K]
+    # KaijuService's HP count of the Halo fighters near the kaiju (cut out; its helpers come from the fixture)
+    out["KAIJU_COUNT_EXTRACT"] = (
+        "local Config, Util, S, readyPlayers, factionOf = ...\n"
+        + function_block(kaiju, "local function inFactionTown(")
+        + function_block(kaiju, "local function countNearbyHalo(")
+        + "\nreturn countNearbyHalo\n")
+    return out
 
 MUTATIONS = [
     ("the town rule is gone", P, 'kstate(victim) == "Active" and not inFactionTown(attacker) then',
@@ -25,6 +37,11 @@ MUTATIONS = [
     ("the Crossroads blocks too", P, "zone.Town == true and zone.Faction ~= nil", "zone.Town == true"),
     ("never in a faction town", P, '\treturn ok and type(zone) == "table" and zone.Town == true and zone.Faction ~= nil\n',
      "\treturn false\n"),
+    ("the kaiju's HP counts Halo players in their town", K, " and Util.IsAlive(v) and not inFactionTown(v) then",
+     " and Util.IsAlive(v) then"),
+    ("KaijuService ignores the faction-town rule", K, "\treturn ok and inTown == true\nend", "\treturn false\nend"),
+    ("PvPService.InFactionTown always false", P, "function PvPService.InFactionTown(p)\n\treturn inFactionTown(p)\nend",
+     "function PvPService.InFactionTown(p)\n\treturn false\nend"),
     ("the Crossroads gets a faction", C, 'MinLevel = 1, PvP = false, Town = true, Faction = nil,',
      'MinLevel = 1, PvP = false, Town = true, Faction = "Halo",'),
 ]
@@ -53,12 +70,14 @@ SUITE = Suite(
     fixture=ROOT / "tools/fixtures/kaiju_town_offline.luau",
     world=ROOT / "tools/fixtures/dev2_world.luau",
     out=ROOT / "docs/art/verification_2026-10-10/offline_dev2_kaiju_town_2026-10-10.json",
-    files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
+    files=FILES, bindings=kaiju_bindings, mutations=MUTATIONS, static=static,
     contract="#41 (b): PvPService.CanAttack's kaiju exception (a Halo player may hit the Active kaiju in any zone, rookies "
              "allowed, protection ignored) does not apply while the attacker stands in a faction town (Config.Zones "
              "Town = true with a Faction: Halo Citadel, Horns Den); then the normal rules answer (a town is a safe zone, "
              "'SafeZone'). The Crossroads (a town without a faction) and every zone outside the towns keep the exception; "
-             "where the kaiju stands does not matter; a queued kaiju and Horns attackers never had the exception.",
+             "where the kaiju stands does not matter; a queued kaiju and Horns attackers never had the exception. "
+             "KaijuService's HP count (countNearbyHalo, HPPerNearbyHalo) skips Halo players standing in a faction town "
+             "(PvPService.InFactionTown): they cannot fight it; the Crossroads still counts.",
     limitations="The zone comes from a ZoneService double (Config.Zones by id); the real ZoneService samples positions "
                 "once a second. Client feedback for a blocked hit is unchanged (the same as any safe-zone hit).",
 )

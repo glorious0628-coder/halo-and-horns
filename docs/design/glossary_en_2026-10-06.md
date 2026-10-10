@@ -86,3 +86,12 @@
 | 돌려주기 / 사례금 / 전리품 | **Give it back** / **Finder's fee!** / **Keep it as a trophy** | 카드 버튼. 아이 물건은 사례금, 아이 것이 아닌 물건은 전리품 |
 | 금고 줄 | **Put the %s in your vault · your town** (폰: Trophy vault) | 내 마을에 들어가면 끝 |
 | 분실물 이름 | Lost Teddy · Grab Club Badge · Old Guard Medal · Lost Candy Bag | |
+
+## 킹의 점프 (A23-109 / A23-110, 10/10)
+| 한국어 | English | 메모 |
+|---|---|---|
+| 킹의 점프(퀘스트 이름) | **The King's Hop** (폰: King's hop) | 줄 5개만, 알림 없음 |
+| 킹 슬라임을 이겨라(첫 줄·마지막 줄) | **Defeat the King Slime** (폰: Defeat King) | 처음엔 한 방에 쓰러지고, 마지막엔 이긴다 |
+| 물약 사기 | **Buy a potion** | 안내: 교차로 물약 상인 |
+| 연습 한 모금 안내 | **Cheers! The potion stays in your bag.** | 물약은 안 줄어든다 |
+| 퀵슬롯에 넣기 / 퀵슬롯으로 마시기 (KO1 3·4번 줄) | **Put the potion in a quick slot** (폰: Quick slot) / **Drink it from your quick slot** (폰: Drink potion) | 새 플레이어의 칸은 비어 있다. 옛 저장은 이미 HP·MP가 들어 있어 3번 줄이 바로 끝난다 |

@@ -1,0 +1,89 @@
+{
+ "note": "이미지 개발 2026-10-10: Halo flat decoration plates = a thin MeshPart + SurfaceAppearance (AlphaMode Transparency). ColorMap = the plate's uploaded HaloDeco_* image (unchanged, its alpha is the outline); Normal / Metalness / Roughness new (tools/deco_sa_maps.py, 이미지 생성 1 recipe e81005a, gold-boost 0, painted-gold fill). size_px = the image's own pixels (plate aspect).",
+ "items": [
+  {
+   "name": "HaloDeco_ShieldEmblem",
+   "size_px": [
+    774,
+    895
+   ],
+   "sa": {
+    "color": "rbxassetid://106986923513948",
+    "normal": "rbxassetid://93778177393966",
+    "metal": "rbxassetid://134032970115885",
+    "rough": "rbxassetid://114295681658311"
+   },
+   "alpha_mode": "Transparency"
+  },
+  {
+   "name": "HaloDeco_DoorHalo",
+   "size_px": [
+    894,
+    428
+   ],
+   "sa": {
+    "color": "rbxassetid://100137589613851",
+    "normal": "rbxassetid://129822507196849",
+    "metal": "rbxassetid://112413651185304",
+    "rough": "rbxassetid://128858597748891"
+   },
+   "alpha_mode": "Transparency"
+  },
+  {
+   "name": "HaloDeco_RoundWindow",
+   "size_px": [
+    894,
+    871
+   ],
+   "sa": {
+    "color": "rbxassetid://117536729915032",
+    "normal": "rbxassetid://112114839375800",
+    "metal": "rbxassetid://98345060755631",
+    "rough": "rbxassetid://114633808268605"
+   },
+   "alpha_mode": "Transparency"
+  },
+  {
+   "name": "HaloDeco_BannerPlain",
+   "size_px": [
+    463,
+    890
+   ],
+   "sa": {
+    "color": "rbxassetid://126853811322145",
+    "normal": "rbxassetid://118250997857489",
+    "metal": "rbxassetid://91648026674888",
+    "rough": "rbxassetid://111154496828116"
+   },
+   "alpha_mode": "Transparency"
+  },
+  {
+   "name": "HaloDeco_BannerEmblem",
+   "size_px": [
+    419,
+    893
+   ],
+   "sa": {
+    "color": "rbxassetid://92952369591884",
+    "normal": "rbxassetid://125796231758268",
+    "metal": "rbxassetid://130187587618782",
+    "rough": "rbxassetid://74002673599975"
+   },
+   "alpha_mode": "Transparency"
+  },
+  {
+   "name": "HaloDeco_AwningStripes",
+   "size_px": [
+    893,
+    440
+   ],
+   "sa": {
+    "color": "rbxassetid://80217811387157",
+    "normal": "rbxassetid://86858116939049",
+    "metal": "rbxassetid://95883476701196",
+    "rough": "rbxassetid://73423819743465"
+   },
+   "alpha_mode": "Transparency"
+  }
+ ]
+}

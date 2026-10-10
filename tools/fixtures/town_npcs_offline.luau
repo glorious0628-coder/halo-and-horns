@@ -83,6 +83,10 @@ local function townWorld(o)
 	local t = { Tags = {}, Warnings = {}, Ctx = { pieces = 0 }, Created = {}, Queue = {}, Defer = false, Rays = {}, Characters = {}, Waits = {} }
 	local cfg = execute("Config", CONFIG_SOURCE, colorEnv())
 	t.Config = cfg
+	-- most groups count the bodies of the seven people; the potion seller (on in the real Config) is on only for o.SellerOn / the groups that switch it themselves
+	if o.SellerOn ~= true then
+		for _, e in cfg.TownNpcs.List do if e.Merchant then e.Enabled = false end end
+	end
 	local npcs = object("Folder", "NPCs")
 	t.NPCs = npcs
 	-- the Crossroads anvil (Map.Landmarks.ArtisanGuild.Anvil), at (39, 0, 49) unless o.NoAnvil
@@ -210,13 +214,13 @@ runGroup("config", function()
 		end
 	end
 	check(kinds.Story == 2 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto", show(kinds))
-	-- the shop people stand in front of their shop (halo_layout_plan: bakery (-44,-546), juice (44,-546), flowers (-44,-584),
-	-- potions (44,-584); the fronts are at x +-37), on the plaza terrace (Y 20)
+	-- the shop people stand in front of their shop (A23-112 halo_layout_plan: each shop has its own yaw; tools/test_town_npcs.py
+	-- checks the 2..8 studs in front of the face against the plan), on the plaza terrace (Y 20)
 	local spot = {}
 	for _, e in T.List do spot[e.Id] = e end
-	check(spot.Folk1.At.X == 34 and spot.Folk1.At.Z == -546 and spot.Folk2.At.X == -34 and spot.Folk2.At.Z == -584
-		and spot.Folk3.At.X == -34 and spot.Folk3.At.Z == -546 and spot.PotionHalo.At.X == 34 and spot.PotionHalo.At.Z == -584,
-		"juice man east (34,-546), flower girl west (-34,-584), baker west (-34,-546), the potion seller east (34,-584)",
+	check(spot.Folk1.At.X == 63 and spot.Folk1.At.Z == -567.5 and spot.Folk2.At.X == -41.5 and spot.Folk2.At.Z == -598.5
+		and spot.Folk3.At.X == -17 and spot.Folk3.At.Z == -553 and spot.PotionHalo.At.X == 44.5 and spot.PotionHalo.At.Z == -594,
+		"juice man (63,-567.5), flower girl (-41.5,-598.5), baker (-17,-553), the potion seller (44.5,-594)",
 		show({ spot.Folk1.At, spot.Folk2.At, spot.Folk3.At, spot.PotionHalo.At }))
 	for _, id in { "Folk1", "Folk2", "Folk3", "Folk4", "PotionHalo" } do
 		check(spot[id].Y == 20, id .. " is on the plaza terrace: Y 20", tostring(spot[id].Y))
@@ -241,8 +245,9 @@ runGroup("config", function()
 	end
 	check(storyIds.Bright and named.Bright, "Bright is named by quest steps and has a body", show(named))
 	check(storyIds.Gleam and named.Gleam, "Sir Gleam is named by a quest step (H3's first card) and has a body", show(named))
+	check(C0.StoryQuests.Defs.H3.Steps[1].Npc == "Gleam", "H3's first card is talked through Sir Gleam", tostring(C0.StoryQuests.Defs.H3.Steps[1].Npc))
 	for _, e in T.List do
-		if e.Merchant then check(e.Enabled == false, "the Halo potion seller stays off until ShopService accepts more than one seller", tostring(e.Enabled)) end
+		if e.Merchant then check(e.Enabled ~= false, "the Halo potion seller is switched on (ShopService sells at every tagged seller, #34)", tostring(e.Enabled)) end
 	end
 end)
 
@@ -265,8 +270,8 @@ runGroup("build", function()
 		and prompt.Enabled == true and prompt:GetAttribute("StoryNpcId") == "Bright" and prompt:GetAttribute("Conversation") == true,
 		"Bright: a 'Talk' prompt (G, tap, 10 studs) that names her", show(prompt and { prompt.ActionText, prompt.KeyboardKeyCode, prompt.MaxActivationDistance }))
 	local pv = b:GetPivot()
-	check(near(pv.Position.X, 18) and near(pv.Position.Z, -452) and near(pv.Position.Y, 9 + 2.6), "Bright stands at (18, -452) with her feet on the ground (Y 9 + 2.6)", show(pv.Position))
-	check(near(pv.Look.X, 0) and near(pv.Look.Z, -420) and near(pv.Look.Y, pv.Position.Y), "... facing the spawn side (0, -420) at her own height", show(pv.Look))
+	check(near(pv.Position.X, 8) and near(pv.Position.Z, -424) and near(pv.Position.Y, 0.2 + 2.6), "Bright stands at (8, -424), the foot of the first plaza stairs, with her feet on the ground (Y 0.2 + 2.6)", show(pv.Position))
+	check(near(pv.Look.X, 8) and near(pv.Look.Z, -380) and near(pv.Look.Y, pv.Position.Y), "... facing the gate side (8, -380) at her own height", show(pv.Look))
 	-- the body: no scripts, anchored, no collision, a standing humanoid
 	local parts = 0
 	for _, d in b:GetDescendants() do
@@ -322,9 +327,9 @@ runGroup("the potion seller (switched on)", function()
 	check(p and p.ActionText == "Buy potions" and p.ObjectText == "Potion Seller" and p.KeyboardKeyCode == "KeyCode.G" and p.HoldDuration == 0
 		and p.MaxActivationDistance == t.Config.Vitals.PotionMerchantDistance and p.Enabled == true and p:GetAttribute("StoryNpcId") == nil,
 		"the shop prompt (the Crossroads seller's name and range), no StoryNpcId", show(p and { p.ActionText, p.ObjectText }))
-	check(near(m:GetPivot().Position.X, 34) and near(m:GetPivot().Position.Z, -584) and near(m:GetPivot().Position.Y, 20 + 2.6),
-		"in front of the potion shop (34, -584), feet on the plaza terrace", show(m:GetPivot().Position))
-	check(near(m:GetPivot().Look.X, 0) and near(m:GetPivot().Look.Z, -584), "facing the plaza axis", show(m:GetPivot().Look))
+	check(near(m:GetPivot().Position.X, 44.5) and near(m:GetPivot().Position.Z, -594) and near(m:GetPivot().Position.Y, 20 + 2.6),
+		"in front of the potion shop (44.5, -594), feet on the plaza terrace", show(m:GetPivot().Position))
+	check(near(m:GetPivot().Look.X, 34.5) and near(m:GetPivot().Look.Z, -595.5) and near(m:GetPivot().Look.Y, 20 + 2.6), "facing the street (34.5, -595.5) at her own height", show(m:GetPivot().Look))
 	check(t.Tagged(m, t.Config.Vitals.PotionMerchantTag or "PotionMerchant"), "the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)", show(t.Tags[m]))
 	-- the seller's colours default to the Crossroads seller's (Config.Vitals.PotionMerchantColors)
 	local vc = t.Config.Vitals.PotionMerchantColors
@@ -439,12 +444,12 @@ runGroup("the expected ground (roofs, balconies, walls)", function()
 	check(near(r.Npc("Npc_Folk1"):GetPivot().Position.Y, 20.1 + 2.6) and near(r.Npc("Npc_Folk3"):GetPivot().Position.Y, 20.1 + 2.6)
 		and seller and near(seller:GetPivot().Position.Y, 20.1 + 2.6),
 		"a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top", show({ r.Npc("Npc_Folk1"):GetPivot().Position.Y }))
-	check(near(r.Npc("Npc_Bright"):GetPivot().Position.Y, 9 + 2.6), "Bright (no expected Y) takes the ground the ray finds", show(r.Npc("Npc_Bright"):GetPivot().Position.Y))
+	check(near(r.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6), "Bright (no expected Y) takes the ground the ray finds", show(r.Npc("Npc_Bright"):GetPivot().Position.Y))
 	local casts = 0
-	for _, ray in r.Rays do if near(ray.Origin.X, 34) and near(ray.Origin.Z, -546) then casts += 1 end end
+	for _, ray in r.Rays do if near(ray.Origin.X, 63) and near(ray.Origin.Z, -567.5) then casts += 1 end end
 	check(casts == 6, "three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit", tostring(casts))
 	for _, ray in r.Rays do
-		if near(ray.Origin.X, 34) and near(ray.Origin.Z, -546) and ray.Origin.Y < 150 then
+		if near(ray.Origin.X, 63) and near(ray.Origin.Z, -567.5) and ray.Origin.Y < 150 then
 			check(ray.Origin.Y == 35.5 or ray.Origin.Y == 26.5, "a later cast starts 0.5 below the hit it passes", tostring(ray.Origin.Y))
 		end
 	end
@@ -523,8 +528,8 @@ runGroup("failures", function()
 	local st = townWorld()
 	function st.Ground(x, z) if z <= -524 then return 22 end if z <= -444 then return 7 end return 0.2 end
 	st.Ensure()
-	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 7 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 22 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
-		"each body takes its own terrace height (0.2 / 7 / 22; Y 20 +- 4 accepts the plaza)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
+	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 22 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
+		"each body takes its own terrace height (0.2 / 22; Y 20 +- 4 accepts the plaza)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
 	-- the avatar service failing
 	local e = townWorld()
 	e.CreateError = true

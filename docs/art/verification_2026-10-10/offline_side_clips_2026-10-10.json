@@ -1,0 +1,49 @@
+{
+  "checks": 70,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "every skill slot plays a move",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a swing cuts a Z / X short",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "side clips never used",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Paladin strikes late",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a key flips past 180",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Light Mage clip too long",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a row for no class",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Light Mage's Q strikes early",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Class x side attack moves (게임성 개발 1, SPEC A23-108 ④, Halo first), static / offline.\n\nReads the CURRENT Fx.luau and Config.luau. Checks: every MOTION.SIDE_CLIPS row is a Config.ClassGrips key and names\nclips that exist; each side clip fits its class (Len <= SwingInterval x SWING_FIT), its keys run in time order from 0 to\nLen, every joint is a real R15 joint, consecutive keys stay under 180 degrees apart per axis (the slerp rule), its\nstrike key sits on the class's contact time (Paladin = SLASH_CONTACT, Light Mage = CAST_DELAY) so the slash / cast art\nand the sound still land on it; Feel.playAttack takes the side clips (not for a style like bare hands / the pet) by the\nattacker's Faction attribute. Mutations: each must be caught. The look is checked in Studio photos (메인 반영 1).",
+  "studioCalls": 0
+}

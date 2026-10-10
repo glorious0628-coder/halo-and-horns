@@ -65,7 +65,7 @@ if a.normal_in:
     gy, gx = np.gradient(height)
     g = np.sqrt(gx * gx + gy * gy)
     tilt = np.zeros_like(g)
-    for mask, deg in ((stone, 12.0), (wood, 10.0), (cloth, 6.0), (leaf, 8.0)):
+    for mask, deg in ((stone, 16.0), (wood, 12.0), (cloth, 6.0), (leaf, 8.0)):  # 10/10 검수: stone 12 gave 4.2-4.9/255 shading change (< 5) -> 16
         sel = mask > 0.5
         if sel.sum() > 200:
             p95 = np.percentile(g[sel], 95) + 1e-6

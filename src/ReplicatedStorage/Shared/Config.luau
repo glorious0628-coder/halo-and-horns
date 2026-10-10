@@ -3099,7 +3099,8 @@ Config.StoryQuests = {
 		-- quest_volume §3-2 (A23-56, 검수 2026-10-06): 12 new subs + 6 pulled from story_depth §3 / town_npc_quests, each once,
 		-- ending in an A (angel) / B (devil) pick with the same size of reward in a different kind (A23-58 scores the pick).
 		-- Town-type (Lv5-10): 120 gold + half a level bar, A one 70% scroll / B 3 HP potions + 220 gold (#71). Woods-type (Lv10+):
-		-- 2 minutes of hunting gold + XP, A one 70% scroll / B 3 HP potions + 192 gold (HuntValue 1 minute of Lv10-24).
+		-- 2 minutes of hunting gold + XP, A one 70% scroll / B 3 HP potions + 220 gold (검수 2026-10-10: the same as the
+		-- town-type B, #71; WB1's bridge card keeps its own 192 = 1 minute of Lv10 hunting).
 		-- They open after M1_4 at Lv5+ (the first ten minutes stay as they are). No weekly ranking points (A23-23 D1).
 		S6 = {
 			Kind = "Sub", Title = "Keep the Path Safe", ShortName = "Safe path", Factions = { Halo = true, Horns = true },
@@ -3181,7 +3182,7 @@ Config.StoryQuests = {
 						"Grabbo: Last week we grabbed 100 dust. This week's goal: MORE.",
 						"Pip: Um, boss? Why do we grab?\nGrabbo: Because we grabbed last week! Next meeting: right now." } },
 					Obj = { Type = "Choice", Good = { Label = "Give the dust back", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Grab MORE dust!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Evil = { Label = "Grab MORE dust!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Give the dust back", B = "Grab MORE dust!" } } },
 				{ Text = "Grabbo's answer", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "Grabbo: Hmm. Noted!" } },
 					LinesBy = { From = "GW1", Good = { All = { "Grabbo: Give it… back? Write that down! A new idea!" } },
@@ -3200,10 +3201,10 @@ Config.StoryQuests = {
 					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: Each rescue is a heart. 10,001 hearts!\nClear the slimes so I can reach it." } } },
 				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
 				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Obj = { Type = "Enter", Zone = "HaloTown" } },
-				{ Text = "Talk with Sir Gleam", Guide = "HaloTown", Panel = true,
+				{ Text = "Talk with Sir Gleam", Guide = "HaloTown", Npc = "Gleam", Panel = true, -- 검수 10/10: at Sir Gleam (TownNpcs)
 					Lines = { All = { "Sir Gleam: The cat is down! …It is already climbing again.", "Sir Gleam: What should we do?" } },
 					Obj = { Type = "Choice", Good = { Label = "Let the cat be. Help someone new.", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Put it back up. More hearts!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Put it back up. More hearts!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Sir Gleam: Is it still helping if you do it for the hearts?",
@@ -3218,7 +3219,7 @@ Config.StoryQuests = {
 				{ Text = "Back to Rascal Rex", Guide = "HornsTown", Panel = true,
 					Lines = { All = { "Rascal Rex: The boos are the best part!", "Rascal Rex: So. Which prank?" } },
 					Obj = { Type = "Choice", Good = { Label = "Plan a surprise party instead", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Do prank 201. The same one!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Do prank 201. The same one!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Rascal Rex: Classic! …Is classic getting old?",
@@ -3235,7 +3236,7 @@ Config.StoryQuests = {
 				{ Text = "What will you put up?", Panel = true,
 					Lines = { All = { "The path is clear for now.", "What will you put up by the path?" } },
 					Obj = { Type = "Choice", Good = { Label = "Put up a lamp for everyone", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Put up a KEEP OUT sign", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Evil = { Label = "Put up a KEEP OUT sign", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Put up a lamp for everyone", B = "Put up a KEEP OUT sign" } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -3251,7 +3252,7 @@ Config.StoryQuests = {
 				{ Text = "The gold goblin", Panel = true,
 					Lines = { All = { "Goblin: Don't tell! The gold comes off in the rain.", "Goblin: Do I look rich? Be honest." } },
 					Obj = { Type = "Choice", Good = { Label = "Tell him he's fine as he is", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Sell him more gold paint", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Evil = { Label = "Sell him more gold paint", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Tell him he's fine as he is", B = "Sell him more gold paint" } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -3268,7 +3269,7 @@ Config.StoryQuests = {
 				{ Text = "Tell Bright", Guide = "HaloTown", Npc = "Bright", Panel = true,
 					Lines = { All = { "Bright: You beat it! Without a form!", "Bright: So… what about the forms?" } },
 					Obj = { Type = "Choice", Good = { Label = "Skip the form. Just help!", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Fill in three more forms", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Fill in three more forms", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Bright: Do rules help, or do people help?",
@@ -3283,7 +3284,7 @@ Config.StoryQuests = {
 				{ Text = "Back to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
 					Lines = { All = { "Smokey: Gold! Now, the plan…", "Smokey: Which plan?" } },
 					Obj = { Type = "Choice", Good = { Label = "Try a brand-new plan", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Plan B again, but LOUDER", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Plan B again, but LOUDER", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Smokey: What if a plan needs two people?",
@@ -3297,7 +3298,7 @@ Config.StoryQuests = {
 				{ Text = "The round is over", Panel = true,
 					Lines = { All = { "What a round!", "How will you end it?" } },
 					Obj = { Type = "Choice", Good = { Label = "Cheer for both sides", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Victory dance, our side only!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Victory dance, our side only!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Who was the war really for?",
@@ -3311,7 +3312,7 @@ Config.StoryQuests = {
 				{ Text = "Talk with the Fountain Shard", Guide = "Crossroads", Panel = true,
 					Lines = { All = { "Fountain Shard: She runs every day. Pulled this way, then that way.", "Fountain Shard: What now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Let her rest a day", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Make her lay eggs faster!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Make her lay eggs faster!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Fountain Shard: Are more eggs ever enough?",
@@ -3326,7 +3327,7 @@ Config.StoryQuests = {
 				{ Text = "The sleepy Brute", Panel = true,
 					Lines = { All = { "Brute: Zzz… five more minutes…", "What will you do?" } },
 					Obj = { Type = "Choice", Good = { Label = "Tuck him in for a nap", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Tuck him in for a nap", B = "Draw a mustache on him" } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -3347,7 +3348,7 @@ Config.StoryQuests = {
 				{ Text = "The club votes", Panel = true,
 					Lines = { All = { "Grabbo: Time to vote!" } },
 					Obj = { Type = "Choice", Good = { Label = "Bring the club a new idea", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Vote for MORE. Again!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Evil = { Label = "Vote for MORE. Again!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Bring the club a new idea", B = "Vote for MORE. Again!" } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -3365,7 +3366,7 @@ Config.StoryQuests = {
 				{ Text = "The statues shine again!", Guide = "HeroStatue", Panel = true,
 					Lines = { All = { "Bright: The statues are shiny again!", "Bright: What should the road show next?" } },
 					Obj = { Type = "Choice", Good = { Label = "Add a statue of a sprout too", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Make OUR statue bigger", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "Make OUR statue bigger", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Bright: Who is a hero? Only the big ones?",
@@ -3381,7 +3382,7 @@ Config.StoryQuests = {
 				{ Text = "Party time", Guide = "HornsTown", Panel = true,
 					Lines = { All = { "Smokey: Snacks! Gold! Music!", "Smokey: Who gets in?" } },
 					Obj = { Type = "Choice", Good = { Label = "Invite the whole den", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "VIP only. Just us!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } } } },
+						Evil = { Label = "VIP only. Just us!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Smokey: Is a party better big, or just right?",
@@ -3396,7 +3397,7 @@ Config.StoryQuests = {
 				{ Text = "Talk about the vault", Panel = true,
 					Lines = { All = { "So much gold! The vault door barely shuts.", "Is a bigger vault ever big enough?" } },
 					Obj = { Type = "Choice", Good = { Label = "Give some to the town fund", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Build a bigger vault", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },
+						Evil = { Label = "Build a bigger vault", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 						Neutral = { A = "Give some to the town fund", B = "Build a bigger vault" } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -3515,17 +3516,50 @@ Config.StoryQuests.Defs.D0 = {
 }
 table.insert(Config.StoryQuests.Subs, "D0")
 
+-- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
+-- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
+-- StoryQuestService.Event "FirstKO"), then buys a potion, puts it in a quick slot (a new player's slots start empty, 검수 10/10:
+-- "물약 사고 슬롯에 장착하는 퀘스트"), drinks it from there and wins the rematch. Five plain rows, no popups, no tips, no closing
+-- toast (A23-99). Event steps wait for a named happening (Config.StoryQuests.Events): FirstKO (the KO itself), PotionBought
+-- (ShopService.BuyPotion), QuickSlotSet (QuickSlotService: an item put into a slot), PotionUsed (VitalsService, a drink from the
+-- quick slot or the bag). Past = a step whose happening was seen before it opened passes at once (a player who ran ahead is never
+-- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
+-- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
+-- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
+Config.StoryQuests.Defs.KO1 = {
+	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
+	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
+	Steps = {
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
+		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,
+			Obj = { Type = "Event", Name = "PotionBought", Past = true } },
+		{ Text = "Put the potion in a quick slot", ShortName = "Quick slot", Guide = "QuickSlot",
+			Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },
+		{ Text = "Drink it from your quick slot", ShortName = "Drink potion", Guide = "QuickSlot",
+			Obj = { Type = "Event", Name = "PotionUsed", Past = true } },
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow",
+			Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },
+	},
+	Reward = { Gold = 2, XP = 2, Item = "Enh70", N = 1 }, -- two minutes of hunting + one 70% scroll
+}
+table.insert(Config.StoryQuests.Subs, "KO1")
+-- game dev 2 (the personal King) reads these: the quest, the step the King's first hop waits at, the step of the rematch.
+-- SipAttr = the player attribute (boolean) StoryQuestService keeps true while a quest step waits for a potion drink: game dev 1's
+-- VitalsUI then lets a full HP / MP bar be used (the server counts a practice sip and keeps the potion)
+Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSip" }
+
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
 -- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
 --   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
---   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
---   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
--- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json: the plaza terrace is Y 20 at z -524..-606, the fountain
--- (0,-565), the four shops x +-44 facing the street: bakery (-44,-546), juice (44,-546), flowers (-44,-584), potions
--- (44,-584); a shop is 22.8 x 14.3 studs, so its front is at x +-37): Bright at the foot of the plaza stairs, Sir Gleam beside
--- the gate road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller 3 studs in front of their
--- shop. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
+--   Merchant = a potion stall seller (tag PotionMerchant; on since main took game dev 2's #34: ShopService sells at every
+--   tagged seller); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
+-- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json, A23-112 asymmetric layout: the plaza terrace is Y 20 at z
+-- -524..-606, the fountain (8.18,-566) 16 x 16, the four shops each at its own angle (a shop is 22.8 x 14.3 studs, its front
+-- = kit -Z turned by its yaw): Bright just south of the first plaza stairs (their foot, z -424), Sir Gleam beside the gate
+-- road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
+-- face, Folk4 beside the fountain. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
 -- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
 Config.TownNpcs = {
 	Enabled = true,
@@ -3538,20 +3572,20 @@ Config.TownNpcs = {
 	RetryDelay = 5, -- seconds between tries
 	MaxCoord = 3000,
 	List = {
-		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
+		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(8, 0, -424), Look = Vector3.new(8, 0, -380),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546), Y = 20,
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(63, 0, -567.5), Look = Vector3.new(72.5, 0, -564.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584), Y = 20,
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-41.5, 0, -598.5), Look = Vector3.new(-51, 0, -594.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-17, 0, -553), Look = Vector3.new(-27, 0, -550.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565), Y = 20,
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(24, 0, -560), Look = Vector3.new(8, 0, -566), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false, Y = 20,
-			At = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 20,
+			At = Vector3.new(44.5, 0, -594), Look = Vector3.new(34.5, 0, -595.5) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -4036,6 +4070,7 @@ Config.RateLimits = {
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
+	SetQuickSlot = 0.2, -- A23-109: one quick-slot fill / empty / swap (QuickSlotService)
 }
 
 ----------------------------------------------------------------- king finisher card (게임성 개발 2, 2026-10-08)
@@ -6158,6 +6193,7 @@ Config.Text = {
 	PotionGreeting = "Fizzby: Glug, glug, feel better!",
 	PotionStockFull = "You can hold up to %d of each potion.", -- (PotionInventoryCap)
 	PotionBought = "Bought %s potion ×%d!", -- (kind, amount)
+	PotionPractice = "Cheers! The potion stays in your bag.", -- A23-110: a drink at full HP / MP while the quest step waits for it
 	-- PvP
 	Plundered = "%s stole %s gold from you!\nIf a knight catches the thief within 45 s, you get 120%% back.",
 	PlunderGain = "Put %s gold in your Grudge Sack!\nKeep it: survive 45 s in a PvP zone. (Wanted stars: %d)",
