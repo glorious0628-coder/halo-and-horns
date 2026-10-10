@@ -64,3 +64,11 @@
 - 앞면 17장 + 재작업 3(본관 v2·문짝 L·R v2: 아치 윗면): `art/out/s2/horns/parts/HornsPart_<이름>[_v2]_front_HQ_src.png`, 시트 `art/review/s2/horns_parts_front_sheet.jpg`·`horns_parts_fix_sheet.jpg`, 도구 `tools/_horns_parts_prompts.py`. 깃발·등불·불꽃·후광·용암빛 안 구움. 황소 방패는 밖으로 뿔이 붙은 모양.
 - 남은 큐(검수 통과 후): 입체 부품 4면 — 빛 마을 부품 v2 8개(뒤·좌·우), 뿔 부품 12개(본관·탑 L·R·성벽 A·B·문틀·계단·뿔 L·R·기둥 L·R·상인방), 납작(깃발 2·문짝 2·방패)은 앞·뒤. 왕관 3안 선택 후 4면+부품.
 - 이 세션은 한 사용자 턴에 피어 메시지 10건 한도에 걸림 → 사용자 메시지가 와야 다시 보낼 수 있음. 검수는 이 문서와 최종 보고로 확인.
+
+## 10/10 저녁 추가 6
+- 빛 기사 마스코트 머리카락 새 후보 4(중간): `art/out/s2/fac/hair/Fac_MascotHalo_Hair_{A..D}_src.png`, 시트 fac_mascot_halo_hair_candidates.jpg — 검수 2장 선택 대기.
+- 집 차양·나무 색 바꿈(PIL 색상 이동): `houses/HaloDomeHouse_{02,06,10,12}_front_HQ_recolor.png`, 사과 금빛 열매·버들 초록 `HaloVar3_RoundTree_{E,F}_HQ_src`(원본 *_orig).
+- 무기 고침 3(광전사 v2·조련사 v2, 연금술사는 v3 불합격 → v4 큐)·계단 4·5·반달 다리 v2·깃대 3 v2: `art/out/s2/redo/`, 시트 redo_weapons_stairs_sheet.jpg.
+- 지붕 다시 7(집 01·05·07·11·12, 꽃집 유리 온실, 주스 줄무늬 지붕): `art/out/s2/halo/roofs/`, 시트 halo_roofs_v2_sheet.jpg.
+- 큐 진행 중: 부품 v2 8개 뒤·좌·우 24장 → 연금술사 v4·왕관 A 앞(와인빛)·뿔 깃대(천 없음)·뿔 문장 천(뿔 한 쌍).
+- 남음: 왕관 A 4면+부품, 반복 소품 13장 깃발 빼기, 집·가게 12+4 뒤·옆(부품 분해 halo_parts_plan), 뿔 성채는 A23-112 대칭 콘셉트 뒤.
