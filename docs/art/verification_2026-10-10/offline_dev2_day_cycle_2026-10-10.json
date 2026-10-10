@@ -1,0 +1,2104 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 52088,
+  "failedChecks": 0,
+  "namedChecks": 175,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "one full day = 1440 s (about 24 min)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "real time per phase: Dawn 60 s, Day 960 s, Dusk 120 s, Night 300 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "the day is most of it (>= 60%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "dusk / night / dawn are short (<= 3 / 5 / 3 min)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "phases by ClockTime (Dawn 6-7, Day 7-17, Dusk 17-19, Night 19-6)",
+      "pass": 15,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "Dawn (lamps off) starts only when the light is half up, Dusk (lamps on) before it gets dark",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "the cycle starts at 5:00 and each Pace edge is its From hour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "PosOf is ClockAt's inverse (every 0.1 h)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "each Pace piece starts at its From hour",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "real seconds per Pace piece = its Seconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "8:00-16:00 is exactly Config.Sky.Neutral (the approved day)",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "NightLevel: 1 at night, 0 by day, in between at dusk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the day curve and its phases (pure)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "a new server starts at the approved afternoon (StartClock 15.3 = Neutral)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "GameState DayPhase / NightLevel / Weather at Start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "a write at least every 0.5 s (small low-sun shadow steps)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "the clock always moves forward, every tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "no tick moves the clock more than MaxStepHours (no visible jump)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "one day of ticks (1440 s) = exactly 24 h, back at 15.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "the light changes in small steps (Brightness / exposure <= 0.03, colour <= 3.5/255, FogEnd <= 12 per tick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "all four phases come round",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "DayPhase = the phase of the clock shown, every tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "NightLevel = the night share of the time-of-day look at the clock shown (2 decimals), every tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "DayPhase lasts its real time (Dawn 60 / Day 960 / Dusk 120 / Night 300 s)",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "between 8:00 and 16:00 only ClockTime is sent (an unchanged value is never written again)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "DayPhase in Dawn / Day / Dusk / Night, NightLevel in 0..1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "at midnight: Night, NightLevel 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "time flows smoothly (Config Tick, one whole day)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "the night is night (less sun, a lifted exposure, a dark fog)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "every hour, dry / rain / snow: Brightness >= 1.2, OutdoorAmbient luminance >= 0.35, Ambient >= 0.25, exposure >= -0.3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "the night / dawn / dusk looks themselves are readable (the floor only guards)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "rain at night is held at the floor (1.4 x 0.8 = 1.12 -> 1.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "each colour channel >= Config.DayCycle.Floor",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "nights stay bright enough (floors)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "rain darkens the sun and brings the fog in (on the Lighting the clients multiply)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "rain covers the sky (terrain clouds Cover / Density)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "the shower lasts its Rain seconds (270)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "then it clears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "after the rain the place's clouds come back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "a clear spell (600 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "a roll >= Chance gives another clear spell, not rain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "a new server starts clear (FirstClear), then rain - never snow in October",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "the wet look eases in over BlendSeconds (no jump)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "Weather is Clear / Rain / Snow",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "Weather is published on each change only (Start, Rain, Clear)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "time base",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "Config.Weather.Enabled = false: always Clear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "debug rain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "the live switch Weather off clears it at the next tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather state machine",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather over three days (seeded Random)",
+      "check": "no snow in October",
+      "pass": 51840,
+      "fail": 0
+    },
+    {
+      "group": "weather over three days (seeded Random)",
+      "check": "mostly clear: rain 4-25% of the time (expected ~12%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather over three days (seeded Random)",
+      "check": "every shower lasts 3-6 min (Config.Weather.Rain), many showers in 3 days",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather over three days (seeded Random)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weather over three days (seeded Random)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "winter = KST months 12 / 1 / 2 (boundaries by the Korean date)",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "a shower is snow in winter, rain otherwise",
+      "pass": 14,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "rain's look eases out while snow's eases in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "no jump in the light at the change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "WinterChance in winter, Chance otherwise",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "KST winter: snow instead of rain",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "the cycle owns nothing before its Start (WarService's Start runs first)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "WarService's Start sets the Neutral afternoon itself (the cycle is not running yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "the cycle takes over at the same light (StartClock 15.3 = Neutral): nothing re-sent, no jump",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "WarService never writes LightingStyle (a place setting, Soft)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "WarService still bootstraps its fixed light",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "Halo: WarService covers the cycle's look with the Dawn sky in the same frame (Cover)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "round 1 ends at 8:52 by the cycle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "a war sky's look tween is WarService's, with no ClockTime in it",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "WarService never tweens or writes the clock while the cycle owns the time (no preset clock 7.2 / 0.5)",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "in the same frame the cycle writes only ClockTime: the clock turns on under the war sky",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "the war sky's look is on and the sun stays where the day is",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "the shower's clouds come under the war sky too (Cover / Density are the weather's)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "round 2 ends at 15:07 by the cycle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "round 3 ends at 6:00 by the cycle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "a draw: WarService hands the look back in the same frame (Uncover)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "over Config.Sky.TweenTime",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "no clock tween at the hand-back (the clock never stopped)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "the hand-back frame: DayPhase / NightLevel are the clock's (no step at the war sky's edge)",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "during the ease the cycle writes no look but turns the clock every frame",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "when the ease ends the look IS the look of the time of day then (ValuesAt(now))",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "the per-tick writes go on from there: nothing to re-send, no jump",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "then the look follows the time of day in small steps again",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "Halo again at 12:37: the Dawn sky covers the look, Day / 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "round 4 ends at 12:37 by the cycle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "under the Dawn sky the clock runs into Dusk and Night: DayPhase Day > Dusk > Night, NightLevel rising 0 -> 1, never falling (WeatherFx: lamps on all night under the Dawn sky)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "round 5 ends at 21:30 by the cycle (the night look)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "every frame through two Dawn skies, an Eclipse sky and all their edges: ClockTime = the cycle's moving clock, forward, <= MaxStepHours (never held, never a jump)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "no clock tween at all while the cycle owns the time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a crown-war sky covers the look, the clock keeps turning (real WarService)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "Uncover plays one look ease (no ClockTime in it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "and no clock tween (the clock was never stopped)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "Cover cancels it (a late frame never paints over the war sky)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "nothing is written by a cancelled ease",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "a second Uncover with no war sky up does nothing (a draw after a draw)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky drops a running hand-back look ease",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky never fixes DayPhase / NightLevel: they follow the turning clock",
+      "check": "a Halo win at 17:30 (the Dawn sky): DayPhase Dusk and the dusk look's NightLevel at once - not Day / 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky never fixes DayPhase / NightLevel: they follow the turning clock",
+      "check": "every tick under the Dawn sky to 21:00: DayPhase / NightLevel = the clock shown's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky never fixes DayPhase / NightLevel: they follow the turning clock",
+      "check": "Dusk, then Night; NightLevel rises to 1 and never falls (WeatherFx: the lamps on through the night under the Dawn sky)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky never fixes DayPhase / NightLevel: they follow the turning clock",
+      "check": "a Horns win at noon (the Eclipse sky): DayPhase Day / NightLevel 0 every tick - never Night / 1 under the noon sun",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky never fixes DayPhase / NightLevel: they follow the turning clock",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a war sky never fixes DayPhase / NightLevel: they follow the turning clock",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "safety net: a missed Cover / Uncover is caught within one tick",
+      "check": "the next step covers the look for the Eclipse sky (DayPhase / NightLevel stay the afternoon clock's: Day / 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "safety net: a missed Cover / Uncover is caught within one tick",
+      "check": "then 30 ticks: 30 ClockTime writes (the clock turns on), not one look write",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "safety net: a missed Cover / Uncover is caught within one tick",
+      "check": "Studio's Clock under a war sky: only the clock jumps (the war look stays); DayPhase / NightLevel are the new clock's at once (21 = Night / 1, 12 = Day / 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "safety net: a missed Cover / Uncover is caught within one tick",
+      "check": "None again: the next step hands the look back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "safety net: a missed Cover / Uncover is caught within one tick",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "safety net: a missed Cover / Uncover is caught within one tick",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "off: the clock eases to StartClock 15.3 the short way (never a whole-day spin)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "and the look with it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "during the switch-off clock ease DayPhase / NightLevel follow the clock shown (Lighting.ClockTime), not StartClock",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "and stays there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "after the ease: DayPhase / NightLevel of StartClock 15.3 (Day / 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "back on: it goes on from 15.3 (no jump)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "off under a war sky: the clock eases to StartClock all the same, the war look stays (no look ease)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "and stays at StartClock under the war look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "after the war the look eases to StartClock's look",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the DayCycle switch freezes the day at StartClock",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "WarService wrote Neutral itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "no cycle writes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "DayPhase / NightLevel of the clock WarService shows: the fixed afternoon 15.3 = Day / 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "Halo: WarService tweens the clock to the Dawn preset 7.2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "after Halo wins (the Dawn preset 7.2 shown): DayPhase = PhaseOf(7.2), NightLevel = its look's night share",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "every war-sky change between the fixed presets still runs forward (Dawn 7.2 -> Eclipse 0.5 = +17.3 h)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "cycle off: during the preset clock tween DayPhase / NightLevel are the goal's (Eclipse 0.5 = Night / 1) at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "after Horns wins (the Eclipse preset 0.5 shown): DayPhase Night, NightLevel 1 - the lamps on all Eclipse night",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "back to Neutral (the fixed afternoon 15.3 shown): Day / 0 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "cycle off, its Start (before any step): DayPhase / NightLevel of the sky's preset clock (Eclipse 0.5 = Night / 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "a clock off the presets goes the short way to the war clock (8:00 -> Dawn 7.2 = 0.8 h back, ClockForwardMax 18)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a cycle that never started: WarService keeps lighting Neutral",
+      "check": "a war sky as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a cycle that never started: WarService keeps lighting Neutral",
+      "check": "Neutral comes back by WarService's own tween (never stuck on the war light)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a cycle that never started: WarService keeps lighting Neutral",
+      "check": "and its fixed afternoon clock",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a cycle that never started: WarService keeps lighting Neutral",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a cycle that never started: WarService keeps lighting Neutral",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Debug Clock 22: the day jumps there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "and goes on from there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "DebugWeather Snow works in any month (Studio photos)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "and ends after its seconds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "a bad value changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "a bad clock changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "State() for DayState",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Debug DayState reads the state",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "one Random per server, seeded by os.time + JobId (two servers differ)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Config.Weather.Seed pins it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Net.GameStateDefaults DayPhase / NightLevel / Weather",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Main INIT_ORDER has DayCycleService (after WarService)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Main START_ORDER: WarService < DayCycleService < PlayerService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "Main DebugCommand Clock / Weather / DayState: before the player lookup (no player, never taints a save)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "READ_ONLY is untouched (test_health's exact set)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "WarService has no LightingStyle write left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug, seed and the published contract",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "check": "Config.DayCycle.Enabled is a plain true / false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "check": "Enabled = true only with ZoneLook C1: the night lift and the NightBright floor by GameState NightLevel, not sky == \"Eclipse\"",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "check": "Enabled = true only with ZoneLook C2: the haunted hollow's clock never jumps over a day of the cycle (<= 0.25 h a tick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "Text": "gate self-test C1 skipped: ZoneLook no longer has the pre-C1 Eclipse-keyed night lift text"
+    },
+    {
+      "Group": "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled)",
+      "Text": "gate self-test C2 skipped: ZoneLook's duskOver no longer has the pre-C2 '6:00 .. dusk' condition or could not be evaluated (nil)"
+    }
+  ],
+  "staticChecks": 31,
+  "staticFailures": [],
+  "mutations": {
+    "total": 75,
+    "applied": 75,
+    "caught": 75,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the day twice as long",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: round 1 ends at 8:52 by the cycle",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: round 2 ends at 15:07 by the cycle",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: round 3 ends at 6:00 by the cycle"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "night as long as the day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo again at 12:37: the Dawn sky covers the look, Day / 0",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: round 1 ends at 8:52 by the cycle"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "night starts at 21",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the day curve and its phases (pure) :: phases by ClockTime (Dawn 6-7, Day 7-17, Dusk 17-19, Night 19-6)",
+          "the day curve and its phases (pure) :: real time per phase: Dawn 60 s, Day 960 s, Dusk 120 s, Night 300 s",
+          "time flows smoothly (Config Tick, one whole day) :: DayPhase lasts its real time (Dawn 60 / Day 960 / Dusk 120 / Night 300 s)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Dawn (lamps off) from 5:00 under the full night look",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays",
+          "the day curve and its phases (pure) :: Dawn (lamps off) starts only when the light is half up, Dusk (lamps on) before it gets dark",
+          "the day curve and its phases (pure) :: phases by ClockTime (Dawn 6-7, Day 7-17, Dusk 17-19, Night 19-6)",
+          "the day curve and its phases (pure) :: real time per phase: Dawn 60 s, Day 960 s, Dusk 120 s, Night 300 s",
+          "time flows smoothly (Config Tick, one whole day) :: DayPhase lasts its real time (Dawn 60 / Day 960 / Dusk 120 / Night 300 s)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "one write a second again (Tick 1)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every frame through two Dawn skies, an Eclipse sky and all their edges: ClockTime = the cycle's moving clock, forward, <= MaxStepHours (never held, never a jump)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the shower's clouds come under the war sky too (Cover / Density are the weather's)",
+          "time flows smoothly (Config Tick, one whole day) :: a write at least every 0.5 s (small low-sun shadow steps)",
+          "time flows smoothly (Config Tick, one whole day) :: no tick moves the clock more than MaxStepHours (no visible jump)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Enabled = true without ZoneLook C1 (the night lift back on the Eclipse name)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled) :: Enabled = true only with ZoneLook C1: the night lift and the NightBright floor by GameState NightLevel, not sky == \"Eclipse\""
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Enabled = true without ZoneLook C2 (the 6:00 jump back)",
+        "file": "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "merge gate: the cycle runs only with ZoneLook C1 + C2 (Config.DayCycle.Enabled) :: Enabled = true only with ZoneLook C2: the haunted hollow's clock never jumps over a day of the cycle (<= 0.25 h a tick)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ClockForwardMax 16: Dawn -> Eclipse runs backwards",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: every war-sky change between the fixed presets still runs forward (Dawn 7.2 -> Eclipse 0.5 = +17.3 h)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the cycle owns the light before its Start",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: WarService's Start sets the Neutral afternoon itself (the cycle is not running yet)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the cycle owns nothing before its Start (WarService's Start runs first)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the cycle takes over at the same light (StartClock 15.3 = Neutral): nothing re-sent, no jump",
+          "a cycle that never started: WarService keeps lighting Neutral :: Neutral comes back by WarService's own tween (never stuck on the war light)",
+          "a cycle that never started: WarService keeps lighting Neutral :: a war sky as before",
+          "a cycle that never started: WarService keeps lighting Neutral :: and its fixed afternoon clock"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the clock jumps phase to phase",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: no jump in the light at the change",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo again at 12:37: the Dawn sky covers the look, Day / 0",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: during the ease the cycle writes no look but turns the clock every frame"
+        ],
+        "newFailingCount": 35
+      },
+      {
+        "mutation": "phases share one speed (24 h over the first phase's seconds)",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: no jump in the light at the change",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo again at 12:37: the Dawn sky covers the look, Day / 0",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: during the ease the cycle writes no look but turns the clock every frame"
+        ],
+        "newFailingCount": 37
+      },
+      {
+        "mutation": "PhaseOf / PosOf without the wrap",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Horns wins (the Eclipse preset 0.5 shown): DayPhase Night, NightLevel 1 - the lamps on all Eclipse night",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off, its Start (before any step): DayPhase / NightLevel of the sky's preset clock (Eclipse 0.5 = Night / 1)",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off: during the preset clock tween DayPhase / NightLevel are the goal's (Eclipse 0.5 = Night / 1) at once",
+          "the day curve and its phases (pure) :: PosOf is ClockAt's inverse (every 0.1 h)",
+          "the day curve and its phases (pure) :: phases by ClockTime (Dawn 6-7, Day 7-17, Dusk 17-19, Night 19-6)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "a new server starts at noon",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the cycle takes over at the same light (StartClock 15.3 = Neutral): nothing re-sent, no jump",
+          "the DayCycle switch freezes the day at StartClock :: and stays at StartClock under the war look",
+          "the DayCycle switch freezes the day at StartClock :: and stays there",
+          "the DayCycle switch freezes the day at StartClock :: back on: it goes on from 15.3 (no jump)",
+          "the DayCycle switch freezes the day at StartClock :: off under a war sky: the clock eases to StartClock all the same, the war look stays (no look ease)",
+          "the DayCycle switch freezes the day at StartClock :: off: the clock eases to StartClock 15.3 the short way (never a whole-day spin)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "the day is not Neutral",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the cycle takes over at the same light (StartClock 15.3 = Neutral): nothing re-sent, no jump",
+          "the day curve and its phases (pure) :: 8:00-16:00 is exactly Config.Sky.Neutral (the approved day)",
+          "time flows smoothly (Config Tick, one whole day) :: a new server starts at the approved afternoon (StartClock 15.3 = Neutral)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "looks switch without easing",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: no jump in the light at the change",
+          "the day curve and its phases (pure) :: Dawn (lamps off) starts only when the light is half up, Dusk (lamps on) before it gets dark",
+          "time flows smoothly (Config Tick, one whole day) :: the light changes in small steps (Brightness / exposure <= 0.03, colour <= 3.5/255, FogEnd <= 12 per tick)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "every tick rewrites everything",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the cycle takes over at the same light (StartClock 15.3 = Neutral): nothing re-sent, no jump",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the per-tick writes go on from there: nothing to re-send, no jump",
+          "the DayCycle switch freezes the day at StartClock :: back on: it goes on from 15.3 (no jump)",
+          "time flows smoothly (Config Tick, one whole day) :: between 8:00 and 16:00 only ClockTime is sent (an unchanged value is never written again)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no floor",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nights stay bright enough (floors) :: every hour, dry / rain / snow: Brightness >= 1.2, OutdoorAmbient luminance >= 0.35, Ambient >= 0.25, exposure >= -0.3",
+          "nights stay bright enough (floors) :: rain at night is held at the floor (1.4 x 0.8 = 1.12 -> 1.2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "floor too low",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nights stay bright enough (floors) :: every hour, dry / rain / snow: Brightness >= 1.2, OutdoorAmbient luminance >= 0.35, Ambient >= 0.25, exposure >= -0.3",
+          "nights stay bright enough (floors) :: rain at night is held at the floor (1.4 x 0.8 = 1.12 -> 1.2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a pitch-dark night",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nights stay bright enough (floors) :: the night / dawn / dusk looks themselves are readable (the floor only guards)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no NightLevel",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo again at 12:37: the Dawn sky covers the look, Day / 0",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the hand-back frame: DayPhase / NightLevel are the clock's (no step at the war sky's edge)"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "no DayPhase",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: group ran to the end without a Lua error",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: Dusk, then Night; NightLevel rises to 1 and never falls (WeatherFx: the lamps on through the night under the Dawn sky)",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Halo win at 17:30 (the Dawn sky): DayPhase Dusk and the dusk look's NightLevel at once - not Day / 0",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Horns win at noon (the Eclipse sky): DayPhase Day / NightLevel 0 every tick - never Night / 1 under the noon sun",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: every tick under the Dawn sky to 21:00: DayPhase / NightLevel = the clock shown's"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "NightLevel is not the look's night share (0 / 1 by the phase)",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the hand-back frame: DayPhase / NightLevel are the clock's (no step at the war sky's edge)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Dawn sky the clock runs into Dusk and Night: DayPhase Day > Dusk > Night, NightLevel rising 0 -> 1, never falling (WeatherFx: lamps on all night under the Dawn sky)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Halo win at 17:30 (the Dawn sky): DayPhase Dusk and the dusk look's NightLevel at once - not Day / 0",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: every tick under the Dawn sky to 21:00: DayPhase / NightLevel = the clock shown's"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "a war sky publishes a fixed phase (the old WarSky rule, every tick)",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Dawn sky the clock runs into Dusk and Night: DayPhase Day > Dusk > Night, NightLevel rising 0 -> 1, never falling (WeatherFx: lamps on all night under the Dawn sky)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: Dusk, then Night; NightLevel rises to 1 and never falls (WeatherFx: the lamps on through the night under the Dawn sky)",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Halo win at 17:30 (the Dawn sky): DayPhase Dusk and the dusk look's NightLevel at once - not Day / 0",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Horns win at noon (the Eclipse sky): DayPhase Day / NightLevel 0 every tick - never Night / 1 under the noon sun"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "Cover publishes the war sky's fixed phase",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Studio's Clock keeps the old phase under a war sky",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "safety net: a missed Cover / Uncover is caught within one tick :: Studio's Clock under a war sky: only the clock jumps (the war look stays); DayPhase / NightLevel are the new clock's at once (21 = Night / 1, 12 = Day / 0)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the switch-off ease publishes the frozen StartClock, not the clock shown",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the DayCycle switch freezes the day at StartClock :: during the switch-off clock ease DayPhase / NightLevel follow the clock shown (Lighting.ClockTime), not StartClock"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "cycle-off Step never publishes",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Halo wins (the Dawn preset 7.2 shown): DayPhase = PhaseOf(7.2), NightLevel = its look's night share",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Horns wins (the Eclipse preset 0.5 shown): DayPhase Night, NightLevel 1 - the lamps on all Eclipse night",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off: during the preset clock tween DayPhase / NightLevel are the goal's (Eclipse 0.5 = Night / 1) at once"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "cycle-off Step follows the sweeping tween clock (the lamps flicker)",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off: during the preset clock tween DayPhase / NightLevel are the goal's (Eclipse 0.5 = Night / 1) at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "firstLight off-path publishes Day/0 instead of the preset clock",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off, its Start (before any step): DayPhase / NightLevel of the sky's preset clock (Eclipse 0.5 = Night / 1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the preset clock ignores the war sky",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Halo wins (the Dawn preset 7.2 shown): DayPhase = PhaseOf(7.2), NightLevel = its look's night share",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Horns wins (the Eclipse preset 0.5 shown): DayPhase Night, NightLevel 1 - the lamps on all Eclipse night",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off, its Start (before any step): DayPhase / NightLevel of the sky's preset clock (Eclipse 0.5 = Night / 1)",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off: during the preset clock tween DayPhase / NightLevel are the goal's (Eclipse 0.5 = Night / 1) at once"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "WarService writes the preset clock while the cycle owns the time",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: WarService never tweens or writes the clock while the cycle owns the time (no preset clock 7.2 / 0.5)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: no clock tween at all while the cycle owns the time",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: no clock tween at the hand-back (the clock never stopped)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the war sky's look is on and the sun stays where the day is"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "WarService holds the war preset clocks again (the old rule)",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: WarService never tweens or writes the clock while the cycle owns the time (no preset clock 7.2 / 0.5)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: no clock tween at all while the cycle owns the time",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the war sky's look is on and the sun stays where the day is"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the cycle stops the clock under a war sky",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every frame through two Dawn skies, an Eclipse sky and all their edges: ClockTime = the cycle's moving clock, forward, <= MaxStepHours (never held, never a jump)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: in the same frame the cycle writes only ClockTime: the clock turns on under the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the war sky's look is on and the sun stays where the day is",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Dawn sky the clock runs into Dusk and Night: DayPhase Day > Dusk > Night, NightLevel rising 0 -> 1, never falling (WeatherFx: lamps on all night under the Dawn sky)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "the clock waits for the look's hand-back",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: during the ease the cycle writes no look but turns the clock every frame",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every cycle frame of the run (war skies, their edges, the hand-backs): DayPhase / NightLevel = the clock shown's",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every frame through two Dawn skies, an Eclipse sky and all their edges: ClockTime = the cycle's moving clock, forward, <= MaxStepHours (never held, never a jump)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the hand-back frame: DayPhase / NightLevel are the clock's (no step at the war sky's edge)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the cycle writes the look under a war sky",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Dawn sky the clock runs into Dusk and Night: DayPhase Day > Dusk > Night, NightLevel rising 0 -> 1, never falling (WeatherFx: lamps on all night under the Dawn sky)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Eclipse sky the clock runs on through Day, Dusk and Night and DayPhase / NightLevel follow it (Day > Dusk > Night, NightLevel 0 .. 1), its look stays",
+          "the DayCycle switch freezes the day at StartClock :: and stays at StartClock under the war look"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the hand-back eases to the war-start look",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the per-tick writes go on from there: nothing to re-send, no jump",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: when the ease ends the look IS the look of the time of day then (ValuesAt(now))"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the hand-back aims at its start (a step when it ends)",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the per-tick writes go on from there: nothing to re-send, no jump",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: when the ease ends the look IS the look of the time of day then (ValuesAt(now))"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the hand-back tweens the clock again",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a war sky drops a running hand-back look ease :: Uncover plays one look ease (no ClockTime in it)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "WarService never covers the cycle's look",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo again at 12:37: the Dawn sky covers the look, Day / 0",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo: WarService covers the cycle's look with the Dawn sky in the same frame (Cover)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a Horns win at 15:07 (the Eclipse sky by daylight): DayPhase Day, NightLevel 0 - no lamps, no night lift under the sun"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WarService never hands the look back",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a draw: WarService hands the look back in the same frame (Uncover)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: over Config.Sky.TweenTime"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WarService paints Neutral over the cycle",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the war clock spins a whole day (forward only, cycle off)",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: a clock off the presets goes the short way to the war clock (8:00 -> Dawn 7.2 = 0.8 h back, ClockForwardMax 18)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no safety net",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Halo win at 17:30 (the Dawn sky): DayPhase Dusk and the dusk look's NightLevel at once - not Day / 0",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: a Horns win at noon (the Eclipse sky): DayPhase Day / NightLevel 0 every tick - never Night / 1 under the noon sun",
+          "a war sky never fixes DayPhase / NightLevel: they follow the turning clock :: every tick under the Dawn sky to 21:00: DayPhase / NightLevel = the clock shown's",
+          "safety net: a missed Cover / Uncover is caught within one tick :: None again: the next step hands the look back",
+          "safety net: a missed Cover / Uncover is caught within one tick :: Studio's Clock under a war sky: only the clock jumps (the war look stays); DayPhase / NightLevel are the new clock's at once (21 = Night / 1, 12 = Day / 0)",
+          "safety net: a missed Cover / Uncover is caught within one tick :: the next step covers the look for the Eclipse sky (DayPhase / NightLevel stay the afternoon clock's: Day / 0)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Cover keeps the hand-back look ease",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a war sky drops a running hand-back look ease :: Cover cancels it (a late frame never paints over the war sky)",
+          "a war sky drops a running hand-back look ease :: nothing is written by a cancelled ease"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the hand-back is a jump",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a draw: WarService hands the look back in the same frame (Uncover)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: during the ease the cycle writes no look but turns the clock every frame",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: over Config.Sky.TweenTime",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the per-tick writes go on from there: nothing to re-send, no jump",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: when the ease ends the look IS the look of the time of day then (ValuesAt(now))"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "steps write the look during the hand-back",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: a draw: WarService hands the look back in the same frame (Uncover)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: during the ease the cycle writes no look but turns the clock every frame",
+          "safety net: a missed Cover / Uncover is caught within one tick :: None again: the next step hands the look back"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the switch is ignored",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the DayCycle switch freezes the day at StartClock :: after the ease: DayPhase / NightLevel of StartClock 15.3 (Day / 0)",
+          "the DayCycle switch freezes the day at StartClock :: after the war the look eases to StartClock's look",
+          "the DayCycle switch freezes the day at StartClock :: and stays at StartClock under the war look",
+          "the DayCycle switch freezes the day at StartClock :: and stays there",
+          "the DayCycle switch freezes the day at StartClock :: and the look with it",
+          "the DayCycle switch freezes the day at StartClock :: back on: it goes on from 15.3 (no jump)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the switch-off clock jumps",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the DayCycle switch freezes the day at StartClock :: during the switch-off clock ease DayPhase / NightLevel follow the clock shown (Lighting.ClockTime), not StartClock",
+          "the DayCycle switch freezes the day at StartClock :: off under a war sky: the clock eases to StartClock all the same, the war look stays (no look ease)",
+          "the DayCycle switch freezes the day at StartClock :: off: the clock eases to StartClock 15.3 the short way (never a whole-day spin)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the switch-off clock spins the long way",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the DayCycle switch freezes the day at StartClock :: back on: it goes on from 15.3 (no jump)",
+          "the DayCycle switch freezes the day at StartClock :: off: the clock eases to StartClock 15.3 the short way (never a whole-day spin)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the switch-off paints the look over a war sky",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the DayCycle switch freezes the day at StartClock :: and stays at StartClock under the war look",
+          "the DayCycle switch freezes the day at StartClock :: off under a war sky: the clock eases to StartClock all the same, the war look stays (no look ease)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the cycle writes when the Config turns it off",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: DayPhase / NightLevel of the clock WarService shows: the fixed afternoon 15.3 = Day / 0",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Halo wins (the Dawn preset 7.2 shown): DayPhase = PhaseOf(7.2), NightLevel = its look's night share",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: after Horns wins (the Eclipse preset 0.5 shown): DayPhase Night, NightLevel 1 - the lamps on all Eclipse night",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: back to Neutral (the fixed afternoon 15.3 shown): Day / 0 again",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: cycle off: during the preset clock tween DayPhase / NightLevel are the goal's (Eclipse 0.5 = Night / 1) at once",
+          "the cycle off in Config: WarService keeps the fixed afternoon and the preset war clocks :: every war-sky change between the fixed presets still runs forward (Dawn 7.2 -> Eclipse 0.5 = +17.3 h)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "UTC instead of KST",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+          "KST winter: snow instead of rain :: Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+          "KST winter: snow instead of rain :: a shower is snow in winter, rain otherwise",
+          "KST winter: snow instead of rain :: rain's look eases out while snow's eases in",
+          "KST winter: snow instead of rain :: winter = KST months 12 / 1 / 2 (boundaries by the Korean date)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no December",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+          "KST winter: snow instead of rain :: WinterChance in winter, Chance otherwise",
+          "KST winter: snow instead of rain :: a shower is snow in winter, rain otherwise",
+          "KST winter: snow instead of rain :: rain's look eases out while snow's eases in",
+          "KST winter: snow instead of rain :: winter = KST months 12 / 1 / 2 (boundaries by the Korean date)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "March is winter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+          "KST winter: snow instead of rain :: a shower is snow in winter, rain otherwise",
+          "KST winter: snow instead of rain :: winter = KST months 12 / 1 / 2 (boundaries by the Korean date)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "snow all year",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+          "KST winter: snow instead of rain :: Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+          "KST winter: snow instead of rain :: a shower is snow in winter, rain otherwise",
+          "KST winter: snow instead of rain :: rain's look eases out while snow's eases in",
+          "weather over three days (seeded Random) :: no snow in October",
+          "weather state machine :: a new server starts clear (FirstClear), then rain - never snow in October"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "rain and snow never cross over",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+          "KST winter: snow instead of rain :: Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+          "KST winter: snow instead of rain :: rain's look eases out while snow's eases in"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WinterChance ignored",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: WinterChance in winter, Chance otherwise"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rain whenever a spell ends",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: WinterChance in winter, Chance otherwise",
+          "weather state machine :: Weather is published on each change only (Start, Rain, Clear)",
+          "weather state machine :: a roll >= Chance gives another clear spell, not rain"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "showers never end",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: Debug DayState reads the state",
+          "debug, seed and the published contract :: a bad value changes nothing",
+          "debug, seed and the published contract :: and ends after its seconds",
+          "weather over three days (seeded Random) :: every shower lasts 3-6 min (Config.Weather.Rain), many showers in 3 days",
+          "weather over three days (seeded Random) :: mostly clear: rain 4-25% of the time (expected ~12%)",
+          "weather state machine :: Weather is published on each change only (Start, Rain, Clear)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "rain far too often",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: WinterChance in winter, Chance otherwise",
+          "weather state machine :: Weather is published on each change only (Start, Rain, Clear)",
+          "weather state machine :: a roll >= Chance gives another clear spell, not rain"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the wet look jumps",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: no jump in the light at the change",
+          "KST winter: snow instead of rain :: rain's look eases out while snow's eases in",
+          "weather state machine :: the wet look eases in over BlendSeconds (no jump)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "rain does not touch the light",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "nights stay bright enough (floors) :: rain at night is held at the floor (1.4 x 0.8 = 1.12 -> 1.2)",
+          "weather state machine :: rain darkens the sun and brings the fog in (on the Lighting the clients multiply)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no clouds in rain",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the shower's clouds come under the war sky too (Cover / Density are the weather's)",
+          "weather state machine :: rain covers the sky (terrain clouds Cover / Density)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Weather not published",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+          "KST winter: snow instead of rain :: Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+          "KST winter: snow instead of rain :: WinterChance in winter, Chance otherwise",
+          "debug, seed and the published contract :: DebugWeather Snow works in any month (Studio photos)",
+          "weather over three days (seeded Random) :: every shower lasts 3-6 min (Config.Weather.Rain), many showers in 3 days",
+          "weather over three days (seeded Random) :: mostly clear: rain 4-25% of the time (expected ~12%)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the weather switch is ignored",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: when the ease ends the look IS the look of the time of day then (ValuesAt(now))",
+          "weather state machine :: the live switch Weather off clears it at the next tick"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a new server may start wet",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "KST winter: snow instead of rain :: Feb 28 23:59:59 KST snow -> Mar 1 00:00 KST rain",
+          "KST winter: snow instead of rain :: Nov 30 23:59:59 KST rain -> Dec 1 00:00 KST snow (same shower)",
+          "KST winter: snow instead of rain :: rain's look eases out while snow's eases in",
+          "weather state machine :: Weather is published on each change only (Start, Rain, Clear)",
+          "weather state machine :: a clear spell (600 s)",
+          "weather state machine :: a new server starts clear (FirstClear), then rain - never snow in October"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "one seed for every server",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: one Random per server, seeded by os.time + JobId (two servers differ)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Seed ignored",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: Config.Weather.Seed pins it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "debug clock does nothing",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: 10 minutes of daytime under the Dawn sky: DayPhase Day / NightLevel 0 (the clock's) every frame, its look on, not one look write by the cycle (rain included)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: Halo at 8:52: DayPhase / NightLevel are the clock's (Day / 0), never a value fixed by the war sky",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: every frame through two Dawn skies, an Eclipse sky and all their edges: ClockTime = the cycle's moving clock, forward, <= MaxStepHours (never held, never a jump)",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: one look ease (the cycle's, no ClockTime) aimed at the look of the time of day it ends at - not the look the war began at",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: the war sky's look is on and the sun stays where the day is",
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: under the Dawn sky the clock runs into Dusk and Night: DayPhase Day > Dusk > Night, NightLevel rising 0 -> 1, never falling (WeatherFx: lamps on all night under the Dawn sky)"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "debug snow follows the season",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: DebugWeather Snow works in any month (Studio photos)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no Net defaults",
+        "file": "src/ReplicatedStorage/Shared/Net.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: Net.GameStateDefaults DayPhase / NightLevel / Weather"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not in Main START",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: Main START_ORDER: WarService < DayCycleService < PlayerService"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the day debug keys need a ready player",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: Main DebugCommand Clock / Weather / DayState: before the player lookup (no player, never taints a save)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Debug never sets the weather",
+        "file": "src/ServerScriptService/DayCycleService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug, seed and the published contract :: DebugWeather Snow works in any month (Studio photos)",
+          "debug, seed and the published contract :: a bad value changes nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "LightingStyle written again",
+        "file": "src/ServerScriptService/WarService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a crown-war sky covers the look, the clock keeps turning (real WarService) :: WarService never writes LightingStyle (a place setting, Soft)",
+          "debug, seed and the published contract :: WarService has no LightingStyle write left"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3b51b942a4686f4bd8707c15eb4c689f3c0e6242401579169ed8a36a4ba70425",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ReplicatedStorage/Shared/Net.luau": "7cf8e277fe2267425e3f51e200aca951f0ada9900137e3c7fab4b78396dc81b0",
+    "src/ServerScriptService/Main.server.luau": "d7e211437e629ad249de9e5c9518edbdae20d50e2891c21fbd83cb7df8aa5c27",
+    "src/ServerScriptService/DayCycleService.luau": "385b70fa7891a0670d3fcb4e8e83c968ffdbc5c4dbd90eaf9ca70664effd2647",
+    "src/ServerScriptService/WarService.luau": "94cb2a6aee9b5a450b9a2694d2f9f6d109d2d1c1503f8e1e342827312a317cca",
+    "src/StarterPlayer/StarterPlayerScripts/ZoneLook.luau": "964c09d8308a2b4c6482822a96ee7b56445727f23781a37fec085fce781f9481"
+  },
+  "fixtureSHA256": "c62001eecc39decc0641efee2b88c99b463bfcaf76108c0c2a5332d0ed16e9a4",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-105 day: ClockTime turns once per 1440 s (Pace 5-7 120 s, 7-17 960 s, 17-19 120 s, 19-5 240 s), a step every Tick (0.5 s, <= MaxStepHours 0.025 h, always forward); DayPhase by Phases (Dawn 6-7 = 60 s, Day 7-17 = 960 s, Dusk 17-19 = 120 s, Night 19-6 = 300 s; Dawn only once the light is half up). GameState DayPhase / NightLevel ALWAYS follow the ClockTime shown, under every sky: DayPhase = PhaseOf(clock), NightLevel = LookAt(clock).Night (the night share of the time-of-day look, 2 decimals); a war sky never fixes them (Halo at 17:30 -> Dusk then Night, NightLevel rising; Horns at noon -> Day / 0); the clock shown = Lighting.ClockTime during the switch-off ease and whenever the cycle does not own the clock (fixed afternoon 15.3 = Day / 0, Dawn preset 7.2 = PhaseOf(7.2), Eclipse preset 0.5 = Night / 1), published every tick, changes only. Config.DayCycle.Enabled = false until ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) land (the gate group). The cycle owns the time and the Neutral look only after its Start (WarService keeps Neutral and the preset war clocks before / without it); the Neutral sky's light by the time of day (Looks / Keys, Day = Config.Sky.Neutral exactly 8-16) with Floor minimums (rain at night included); a new server starts at StartClock 15.3. War (검수 2026-10-10, user (b)): WarService Cover(sky) on Dawn / Eclipse - it tweens the look only, never the clock while the cycle runs -, the cycle keeps writing ClockTime every tick (forward, <= MaxStepHours; never a look key) under it; Uncover(TweenTime) on Neutral (one Lighting look tween, no ClockTime, toward ValuesAt of the time it ends - not the war-start look -, no look writes until it ends, the clock turning meanwhile, no jump after); a missed call is caught by the next step. Cycle off: WarService's preset clocks, forward <= ClockForwardMax 18 h (Dawn -> Eclipse +17.3 h). Switch DayCycle off: the clock eases the short way to StartClock (the look with it unless a war sky covers it). Weather: Clear / Rain (Snow instead in KST months 12/1/2), FirstClear, Clear, Chance / WinterChance, Rain / Snow seconds, a shower changes kind at KST midnight, the wet look eases over BlendSeconds (sun, exposure, fog, clouds). GameState DayPhase / NightLevel / Weather; switches DayCycle / Weather; Studio debug Clock / Weather / DayState (no player, no save); WarService writes no LightingStyle.",
+  "limitations": "Lighting, TweenService (tweens finish when the test says), Clouds, Color3 and the registry are doubles; how the night and the rain LOOK (PC and phone photos), how a war sky's look reads with the sun or moon of any hour (Eclipse at noon, Dawn at midnight), Roblox's own sun / moon position for a ClockTime, replication timing and the client modules running (ZoneLook's night lift by NightLevel, WeatherFx lamps) are not here - the gate only reads ZoneLook's text and evaluates its duskOver; main-Studio photos by 메인 반영 1 with DebugCommand Clock / Weather once Enabled is true. With the cycle off, WarService's 3 s preset clock tween sweeps the sun through the hours in between (e.g. Neutral 15.3 -> Dawn 7.2 forward through the night) and DayPhase follows that shown clock tick by tick (lamps may come on for ~1-2 s)."
+}

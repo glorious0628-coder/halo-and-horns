@@ -147,9 +147,9 @@ PADS = [(-24, -357), (24, -357)]
 RESERVE = [corners(px, pz, 12, 12, 0) for px, pz in PADS]
 
 
-def free(kind, x, z, yaw, s, pad=0.4, ignore=()):
+def free(kind, x, z, yaw, s, pad=0.4, ignore=(), noreserve=False):
     fp = foot(kind, x, z, yaw, s, pad)
-    if any(sat(fp, r) for r in RESERVE):
+    if not noreserve and any(sat(fp, r) for r in RESERVE):
         return False
     for q in P:
         if q["kind"] in ignore or q.get("backdrop"):
@@ -165,14 +165,14 @@ def free(kind, x, z, yaw, s, pad=0.4, ignore=()):
 WHY = {}
 
 
-def put(kind, x, z, yaw, s=1.0, need=WALK, flat=FLAT, pad=0.4, **extra):
+def put(kind, x, z, yaw, s=1.0, need=WALK, flat=FLAT, pad=0.4, noreserve=False, **extra):
     if not ok_ground(kind, x, z, yaw, s, need, flat):
         WHY[(kind, "ground")] = WHY.get((kind, "ground"), 0) + 1
         return None
     if not clear_keep(kind, x, z, yaw, s):
         WHY[(kind, "keep")] = WHY.get((kind, "keep"), 0) + 1
         return None
-    if not free(kind, x, z, yaw, s, pad):
+    if not free(kind, x, z, yaw, s, pad, noreserve=noreserve):
         WHY[(kind, "overlap")] = WHY.get((kind, "overlap"), 0) + 1
         return None
     ty, v = tagv(x, z)
@@ -187,25 +187,43 @@ def face(dx, dz):
 
 SOUTH = 180.0  # front toward +Z (the gate / Crossroads side)
 
-# ---------------------------------------------------------------- A23-112 (사용자 "빛 마을은 비대칭"): the same numbers as tools/worldkit/halo_terrain.luau
+# ---------------------------------------------------------------- A23-112 2nd pass (모동숲 rules, docs/design/acnh_halo_layout_rules_2026-10-10.md):
+# the same numbers as tools/worldkit/halo_terrain.luau
+CXP = [(-432, 0), (-470, 10), (-510, 32), (-548, 44), (-580, 30), (-614, 0), (-650, -30), (-692, -36)]
+
+
 def CX(z):
-    """S-curved road centre (halo_terrain cx)"""
-    if z >= -432:
+    """S-curved road centre (halo_terrain cx: Hermite through CXP, straight x 0 for z >= -432)"""
+    if z >= CXP[0][0]:
         return 0.0
-    if z >= -582:
-        return 34 * math.sin(math.pi * (-432 - z) / 150)
-    if z >= -692:
-        return -28 * math.sin(math.pi * (-582 - z) / 110)
-    return 0.0
+    n = len(CXP)
+    if z <= CXP[-1][0]:
+        return float(CXP[-1][1])
+    i = 0
+    while z < CXP[i + 1][0]:
+        i += 1
+
+    def slope(k):
+        if k == 0:
+            return 0.0
+        if k == n - 1:
+            return (CXP[k][1] - CXP[k - 1][1]) / (CXP[k][0] - CXP[k - 1][0])
+        return (CXP[k + 1][1] - CXP[k - 1][1]) / (CXP[k + 1][0] - CXP[k - 1][0])
+    za, zb = CXP[i][0], CXP[i + 1][0]
+    t = (z - za) / (zb - za)
+    d = zb - za
+    t2, t3 = t * t, t * t * t
+    return (2 * t3 - 3 * t2 + 1) * CXP[i][1] + (t3 - 2 * t2 + t) * slope(i) * d + (-2 * t3 + 3 * t2) * CXP[i + 1][1] + (t3 - t2) * slope(i + 1) * d
 
 
 TIER_Z = [0, -444, -524, -606]
 TIER_H = [0.2, 9, 20, 33]
-WAVE = {2: (6, 23, 0), 3: (7, 31, 0), 4: (5, 19, 0)}
-RAMPS = {2: [(0, 14), (30, 6)], 3: [(0, 10), (-38, 7)], 4: [(0, 18), (44, 6)]}
-PAVEHALF = [(0, 15, 15), (-444, 22, 16), (-524, 54, 68), (-606, 40, 52)]
-WINGS = [("WA", -186, -62, -430, -336), ("WB", -170, -46, -540, -452), ("WC", -184, -86, -614, -558), ("WD", -194, -132, -694, -632),
-         ("EA", 70, 194, -428, -344), ("EB", 98, 176, -508, -452), ("EC", 106, 196, -628, -530), ("ED", 102, 176, -696, -652)]  # rects before the turn (halo_terrain Ang)
+WAVE = {2: (6, 23, 0.4), 3: (7, 31, 2.1), 4: (5, 19, 4.0)}
+RAMPS = {2: [(0, 12)], 3: [(6, 9), (-54, 5)], 4: [(-4, 16)]}
+PAVEHALF = [(0, 15, 15), (-444, 17, 13), (-524, 34, 42), (-606, 26, 20)]
+WINGS = [("WA", -190, -62, -432, -338), ("WB", -170, -80, -538, -462), ("WC", -152, -110, -604, -570), ("WD", -192, -116, -690, -640),
+         ("EA", 62, 172, -424, -352), ("EB", 104, 196, -520, -446), ("EC", 122, 196, -624, -554), ("ED", 96, 152, -694, -638)]  # rects before the turn
+WING_H = {"WA": 3, "WB": 12, "WC": 22, "WD": 26, "EA": 5, "EB": 15, "EC": 26, "ED": 30}
 
 
 def bnd(i, x, z):
@@ -237,14 +255,45 @@ def face_to(x, z, tx, tz):
     return face(tx - x, tz - z)
 
 
+def wing_of(x, z):
+    for name, x0, x1, z0, z1 in WINGS:
+        if x0 - 6 <= x <= x1 + 6 and z0 - 6 <= z <= z1 + 6:
+            return name
+    return None
+
+
 SOUTH = 180.0  # front toward +Z (the gate / Crossroads side)
+
+# ---------------------------------------------------------------- reserved spots first (rule 12 + "게임에 가져올 것" 1, 2, 5): nothing big is
+# planned on them; the scenes get a lantern + flowers now and a bench later (the kit has no bench yet: 2-3 new kinds to make)
+SPOTS = {
+    # 20 x 20 empty lawns, one per height band (rule 12): no props at all
+    "lawn": [dict(x=-138, z=-372, r=10), dict(x=-40, z=-492, r=9), dict(x=-133, z=-588, r=8)],  # band 4: the exhibition step on ED
+    # lookouts on the high ground (rule 12): edge 8 studs kept low, view over the lower tiers to the sea / islets
+    "lookout": [dict(x=-180, z=-664, r=7, look=[-250, -610]), dict(x=134, z=-688, r=6, look=[30, -770])],
+    # small scenes (rule 12): seat + light + flowers under a tree, facing something to see, 8-20 studs off the road
+    "scene": [dict(x=-160, z=-506, r=5, look=[-190, -500], what="cascade pool bench"), dict(x=-114, z=-598, r=4, look=[-60, -560], what="small island tea table"),
+              dict(x=162, z=-628, r=5, look=[172, -650], what="cascade side bench"), dict(x=-96, z=-396, r=5, look=[-48, -394], what="canal view bench"),
+              dict(x=176, z=-400, r=5, look=[230, -400], what="sea balcony"), dict(x=-90, z=-626, r=4, look=[-160, -610], what="top-tier west edge, sea view"),
+              dict(x=84, z=-470, r=4, look=[60, -440], what="angel niche")],
+    # photo spots (게임에 가져올 것 2): small gold discs, no lettering, no ray pattern
+    "photo": [dict(x=-4, z=-616, r=2), dict(x=-48, z=-394, r=2), dict(x=168, z=-640, r=2), dict(x=-182, z=-664, r=2), dict(x=6, z=-452, r=2), dict(x=140, z=-632, r=2)],
+    # gather bushes (게임에 가져올 것 1): 4-6 garden bushes, 2-3 of them give something each day
+    "gather": [dict(x=-150, z=-410, r=3), dict(x=124, z=-380, r=3), dict(x=-120, z=-520, r=3), dict(x=180, z=-520, r=3), dict(x=-170, z=-650, r=3), dict(x=110, z=-670, r=3)],
+    # the exhibition garden (게임에 가져올 것 5, after the beta): one empty step about 30 x 30
+    "exhibit": [dict(x=124, z=-666, r=15)],
+}
+RES_SPOTS = []
+for kind_, lst in SPOTS.items():
+    for sp in lst:
+        rr = sp["r"] + (8 if kind_ == "lookout" else 2)
+        RES_SPOTS.append(corners(sp["x"], sp["z"], 2 * rr, 2 * rr, 0))
+RESERVE.extend(RES_SPOTS)
 
 # ---------------------------------------------------------------- bridges (placed first so the houses / shops keep off the landings)
 # (name, side, hint x, z, axis "x" = span along x from the spine, "z" = between two wings of one side, deck Y at both ends)
-BR = [("BAW", -1, None, -385, "x", 0.2, 3), ("BAE", 1, None, -400, "x", 0.2, 5), ("BBW", -1, None, -492, "x", 9, 12), ("BBE", 1, None, -490, "x", 9, 15),
-      ("BCW", -1, None, -580, "x", 20, 22), ("BCE", 1, None, -575, "x", 20, 26), ("BDW", -1, None, -662, "x", 33, 28), ("BDE", 1, None, -672, "x", 33, 30),
-      ("BABW", -1, -170, -444, "z", 3, 12), ("BBCW", -1, -150, -544, "z", 12, 22), ("BCDW", -1, -160, -620, "z", 22, 28),
-      ("BABE", 1, 130, -454, "z", 5, 15), ("BBCE", 1, 120, -527, "z", 15, 26), ("BCDE", 1, 170, -640, "z", 26, 30)]
+BR = [("BAW", -1, None, -394, "x", 0.2, 3), ("BAE", 1, None, -366, "x", 0.2, 5), ("BBW", -1, None, -470, "x", 9, 12), ("BBE", 1, None, -498, "x", 9, 15),
+      ("BCE", 1, None, -566, "x", 20, 26), ("BBCW", -1, -128, -553, "z", 12, 22), ("BCDW", -1, -136, -622, "z", 22, 26), ("BABE", 1, 132, -437, "z", 5, 15)]
 BRIDGES = []
 
 
@@ -288,17 +337,22 @@ for b in bridge_spots():
 
 # ---------------------------------------------------------------- the big pieces
 P.append(dict(kind="Gate", x=0, z=-345.8, y=0.2, yaw=SOUTH, s=1.0, lintel=[0, 19, -330], towers=[], tower_size=[0, 0, 0]))
-# cathedral: the highest tier, off the road to the east, turned toward the road's arrival (south-west)
+# cathedral (검수 지적 1): on the top tier WEST of the gate axis, its door turned toward where the road arrives (south-east)
 cat = None
-for cz_ in (-655, -652, -658, -650):
-    for cx_ in (24, 20, 28, 16):
-        cat = put("Cathedral", cx_, cz_, face(-0.18, 1.0), 0.9, flat=1.5)  # a 10 deg turn: a 24 deg turn pushed the 63-stud square over the step and the far end
-        if cat:
-            break
-    if cat:
+CAT_TRY = sorted(((cx_, cz_, sc_, tw_) for sc_ in (0.85, 0.8, 0.75, 0.7) for tw_ in (-18, -12, -6, -24) for cx_ in range(-66, -30, 2) for cz_ in range(-676, -640, 2)),
+                 key=lambda t: (-t[2], abs(t[0] + 52) + abs(t[1] + 656) * 0.5 + abs(t[3] + 18)))
+for cx_, cz_, sc_, tw_ in CAT_TRY:
+    yaw_ = SOUTH + tw_  # door to the south (where the road arrives), turned a little east toward the plaza
+    # walkable ground 8 studs round it too, so the back of the top tier stays reachable (rule: no unreachable corners)
+    if ok_ground("Cathedral", cx_, cz_, yaw_, sc_ + 16 / 70, need=WALK + ("stair",), flat=40) and ok_ground("Cathedral", cx_, cz_, yaw_, sc_, flat=1.5)             and free("Cathedral", cx_, cz_, yaw_, sc_):
+        cat = put("Cathedral", cx_, cz_, yaw_, sc_, flat=1.5)
         break
-# fountain on the plaza, a little east of the curved road
-fnt = put("Fountain", CX(-566) - 3, -566, 15.0, 1.0)
+# fountain on the plaza, right at the big turn
+fnt = None
+for dz in (0, 4, -4, 8, -8):
+    fnt = put("Fountain", CX(-566 + dz) - 4, -566 + dz, 15.0, 1.0)
+    if fnt:
+        break
 # stairs models on every ramp (the ramp is the walkable terrain; the model is the look), width / rise from the ramp
 STAIRS = []
 for i in (2, 3, 4):
@@ -310,120 +364,212 @@ for i in (2, 3, 4):
         P.append(e)
         STAIRS.append(e)
 
-# hero statues: single, scattered, each its own offset and side (no pairs), facing the road
-for z, side, off in ((-372, -1, 19), (-403, 1, 22), (-468, -1, 27), (-548, 1, 30), (-598, -1, 34), (-640, 1, 58)):
-    for dz, do in ((0, 0), (-6, 0), (6, 0), (-12, 0), (12, 0), (0, 6), (-6, 6), (6, 6), (0, -3)):
-        x = CX(z + dz) + side * (pave_half(z + dz, side) + off * 0.25 + 3 + do)
-        if put("Statue", x, z + dz, face_to(x, z + dz, CX(z + dz), z + dz + 6), 1.0, flat=1.5):
+# hero statues: single, each its own size and distance from the road (rule 7: the gate pair is broken), facing the road
+for z, side, off, sc in ((-372, -1, 5, 1.0), (-410, 1, 9, 0.85), (-470, -1, 7, 1.12), (-540, 1, 6, 0.92), (-600, -1, 10, 1.05), (-646, 1, 8, 0.95)):
+    for dz, do in ((0, 0), (-6, 0), (6, 0), (-12, 0), (12, 0), (0, 4), (-6, 4), (6, 4), (0, -2), (-18, 0), (18, 0)):
+        x = CX(z + dz) + side * (pave_half(z + dz, side) + off + do)
+        if put("Statue", x, z + dz, face_to(x, z + dz, CX(z + dz), z + dz + 6), sc, flat=1.5):
             break
 
-# shops round the plaza, each its own angle; the potion merchant (east) stays in sight of the gate
+# shops round the fountain plaza, each its own angle; the potion merchant stays in sight of the gate (rule 7)
 SHOPKIND = {}
-for kindname, z, side, gap, tilt in (("Bakery", -548, -1, 4, 14), ("Juice", -546, 1, 7, -18), ("Flower", -596, -1, 0, 22), ("Potion", -592, 1, 2, -9)):
-    x = CX(z) + side * (pave_half(z, side) - 6 + gap)
-    for dz, dg in [(0, 0)] + [(d_, g_) for d_ in (-5, 5, -10, 10, -15, 15, -20, 20, -25) for g_ in (2, -4, 8)]:
+for kindname, z, side, gap, tilt, sc in (("Bakery", -546, -1, 4, 14, 1.9), ("Juice", -560, 1, 7, -18, 1.75), ("Flower", -598, -1, 0, 22, 1.8), ("Potion", -586, 1, 2, -9, 2.0)):
+    for dz, dg in [(0, 0)] + [(d_, g_) for d_ in (-5, 5, -10, 10, -15, 15, -20, 20, -25) for g_ in (2, -4, 8, -8)]:
         x = CX(z + dz) + side * (pave_half(z + dz, side) - 6 + gap + dg)
         yaw = face_to(x, z + dz, CX(z + dz), z + dz) + tilt
-        if put("Shop", x, z + dz, yaw, 1.9, flat=1.5, shopkind=kindname):
+        if not ok_ground("Shop", x, z + dz, yaw, sc + 0.9, need=WALK + ("stair",), flat=40):  # >= 5 studs of walkable ground all round (no pockets behind)
+            continue
+        if put("Shop", x, z + dz, yaw, sc, flat=1.5, shopkind=kindname):
             break
 
-# towers: different heights, never in pairs
-towers = 0
-for x, z, s in ((-52, -540, 1.2), (78, -560, 0.85), (-86, -612, 1.0), (96, -650, 1.3), (-150, -600, 0.9), (170, -598, 1.1), (-60, -680, 0.8), (150, -380, 1.15),
-                (-170, -470, 0.95), (110, -470, 1.05), (-120, -660, 1.2), (176, -680, 0.9), (-40, -400, 0.85), (60, -440, 1.0)):
-    if towers >= 8:
-        break
-    if put("Tower", x, z, face_to(x, z, CX(z), z) + rng.uniform(-20, 20), s):
-        towers += 1
-
-# houses: 12, in clusters of 2-3 on the wings, each its own angle (+-10..25 deg off facing the road), set back unevenly
-CLUSTERS = [(-118, -388, 3), (128, -398, 2), (-128, -495, 2), (122, -492, 2), (-146, -584, 1), (148, -582, 2)]
+# houses (rule 8): 12 in five clusters 3-3-2-2-2, clusters on different wings; inside a cluster each house its own angle
+# (+-10..25 off facing the road and >= 10 from its neighbour), its own set-back; one house per cluster faces the sea / a fall
+CLUSTERS = [("WA", -128, -392, 3), ("EB", 150, -486, 3), ("WB", -122, -500, 2), ("EC", 166, -584, 2), ("WD", -156, -664, 1), ("EA", 128, -392, 1)]  # 3-3-2-2 + two single houses with a terrace
 houses = 0
-for cxw, czw, n in CLUSTERS:
-    placed = 0
-    tries = 0
-    while placed < n and tries < 400:
-        tries += 1
-        ang = rng.uniform(0, 2 * math.pi)
-        r = rng.uniform(6, 32)
-        x, z = cxw + r * math.cos(ang), czw + r * math.sin(ang)
-        tilt = rng.choice((-1, 1)) * rng.uniform(10, 25)
-        yaw = face_to(x, z, CX(z), z) + tilt
+for wname, cxw, czw, n in CLUSTERS:
+    placed = []
+    cands = [(cxw + dx, czw + dz) for dx in range(-36, 37, 3) for dz in range(-36, 37, 3) if 5 <= math.hypot(dx, dz) <= 36]
+    rng.shuffle(cands)
+    cands.sort(key=lambda c: math.hypot(c[0] - cxw, c[1] - czw) // 8)  # near the cluster centre first, random inside each ring
+    for x, z in cands:
+        if len(placed) >= n:
+            break
+        if wing_of(x, z) != wname:
+            continue
+        if len(placed) == n - 1:  # the last one looks out to the sea (away from the road)
+            yaw = face_to(x, z, CX(z), z) + 180 + rng.uniform(-25, 25)
+        else:
+            yaw = face_to(x, z, CX(z), z) + rng.choice((-1, 1)) * rng.uniform(10, 25)
+        if any(abs(((yaw - q["yaw"]) + 180) % 360 - 180) < 10 for q in placed):
+            continue
+        if any(q["kind"].startswith("DomeHouse") and abs(q["x"] + x) < 14 and abs(q["z"] - z) < 14 for q in P):  # mirror partner
+            continue
         kind = "DomeHouseA" if (houses % 2 == 0) else "DomeHouseB"
-        if put(kind, x, z, yaw, rng.uniform(1.85, 2.05), pad=1.6):
-            placed += 1
+        e = put(kind, x, z, yaw, rng.uniform(1.75, 2.05), flat=1.6, pad=rng.uniform(1.0, 2.5))
+        if e:
+            placed.append(e)
             houses += 1
 
-# ---------------------------------------------------------------- small props (irregular: no rows, no mirrored pairs)
-# lanterns along the road edges, side and spacing random
-z = -352.0
-while z > -690:
+# towers: 6, different heights, never in pairs; the first one is the landmark on the OUTSIDE of the east bend (rule 6)
+towers = 0
+TOWER_TRY = [(CX(-548) + 50, -548, 1.3), (CX(-548) + 46, -540, 1.3), (CX(-548) + 52, -556, 1.3)]
+for _ in range(400):
+    z = rng.uniform(-380, -690)
     side = rng.choice((-1, 1))
+    TOWER_TRY.append((CX(z) + side * (pave_half(z, side) + rng.uniform(10, 24)), z, rng.choice((0.8, 0.9, 1.0, 1.1, 1.2))))
+for _ in range(300):  # a few on the wings too
+    w = rng.choice(WINGS)
+    TOWER_TRY.append((rng.uniform(w[1] + 8, w[2] - 8), rng.uniform(w[3] + 8, w[4] - 8), rng.choice((0.8, 0.9, 1.0, 1.1, 1.2))))
+for x, z, s in TOWER_TRY:
+    if towers >= 6:
+        break
+    if any(e["kind"] == "Tower" and math.hypot(e["x"] - x, e["z"] - z) < 45 for e in P):
+        continue
+    if cat and math.hypot(cat["x"] - x, cat["z"] - z) < 52:  # keep the walk round the cathedral open
+        continue
+    if z > -440:  # rule 7: no tower pair framing the road at the gate; the entrance tier keeps statues and gardens
+        continue
+    if any(e["kind"] == "Tower" and abs(e["x"] + x) < 20 and abs(e["z"] - z) < 20 for e in P):  # no mirror partner
+        continue
+    for dx, dz in ((0, 0), (4, 0), (-4, 0), (0, 4), (0, -4), (6, 6), (-6, -6)):
+        if put("Tower", x + dx, z + dz, face_to(x, z, CX(z), z) + rng.uniform(-20, 20), s):
+            towers += 1
+            break
+
+# ---------------------------------------------------------------- small props (rule 10 / 11: groups, layers, varied angle / size, no rows)
+VAR = {"Lantern": 15, "Balustrade": 15, "Planter": 15, "BannerPole": 15}  # things that face the road: yaw jitter (deg)
+
+
+def vs():
+    return rng.uniform(0.87, 1.15)
+
+
+def crowd_ok(kind, x, z, cap=3):
+    """rule 11: <= 5 of one kind in any 40 x 40 (checked as <= cap others within +-20)"""
+    return sum(1 for e in P if e["kind"] == kind and abs(e["x"] - x) <= 20 and abs(e["z"] - z) <= 20) <= cap
+
+
+def put_v(kind, x, z, yaw, s, **kw):
+    if not crowd_ok(kind, x, z):
+        return None
+    return put(kind, x, z, yaw, s, **kw)
+
+
+# lanterns (rule 6): 25-40 apart on the straight parts, sides mostly alternating but not strictly, 1-2 at every bend / stair head
+z = -356.0
+side = -1
+while z > -688:
+    side = -side if rng.random() < 0.8 else side
     x = CX(z) + side * (pave_half(z, side) + 1.6)
-    put("Lantern", x, z, 0, 1.0, pad=0.2)
-    z -= rng.uniform(13, 24)
-# balustrades along the upper side of every wavy step (skipping the ramps) and some pieces along the road edge
+    put_v("Lantern", x, z, rng.uniform(-VAR["Lantern"], VAR["Lantern"]), vs(), pad=0.2)
+    z -= rng.uniform(25, 40)
+for z, side in ((-548, 1), (-552, -1), (-614, -1), (-650, -1), (-444, 1), (-524, -1), (-606, 1)):
+    for dz in (0, 3, -3, 6, -6):
+        x = CX(z + dz) + side * (pave_half(z + dz, side) + 1.6)
+        if put_v("Lantern", x, z + dz, rng.uniform(-15, 15), vs(), pad=0.2):
+            break
+# lantern on every bridge landing side, one side only (no pairs)
+for b in BRIDGES:
+    sgn = rng.choice((-1, 1))
+    L = KIND["ArchBridge"]["w"] * b["s"] / 2 + 3
+    x, z = (b["x"] + sgn * L, b["z"] + 6) if b["axis"] == "x" else (b["x"] + 6, b["z"] + sgn * L)
+    put_v("Lantern", x, z, rng.uniform(-15, 15), vs(), pad=0.2)
+# balustrades: pieces along the upper edge of the steps (not every one, two models later), each slightly turned
 for i in (2, 3, 4):
-    xs_ = [x * 1.0 for x in range(-110, 112, 2)]
-    for x in xs_:
+    for x in range(-110, 112, 2):
         z = bnd(i, x, TIER_Z[i - 1]) - 5.0
         u = x - CX(z)
         if any(abs(u - ru) < half + 3 for ru, half in RAMPS[i]):
             continue
-        if rng.random() < 0.25:
+        if rng.random() < 0.45 or x % 8 != 0:
             continue
-        if int(x) % 8 != 0:
-            continue
-        put("Balustrade", x, z, 0, 1.0, pad=0.0)
-for z in range(-360, -440, -9):
-    if rng.random() < 0.45:
-        side = rng.choice((-1, 1))
-        put("Balustrade", CX(z) + side * (pave_half(z, side) + 3.2), z, 90, 1.0, pad=0.0)
+        put_v("Balustrade", x, z, rng.uniform(-8, 8), rng.uniform(0.9, 1.1), pad=0.0)
 banners = 0
-for x, z in ((-20, -462), (31, -522), (-58, -566), (60, -612), (-30, -500), (46, -470), (-70, -598), (-40, -640), (70, -590)):
+for _ in range(200):
     if banners >= 4:
         break
-    if put("BannerPole", x, z, face_to(x, z, CX(z), z), 1.0, pad=0.3):
+    z = rng.uniform(-450, -680)
+    side = rng.choice((-1, 1))
+    x = CX(z) + side * (pave_half(z, side) + rng.uniform(3, 9))
+    if any(e["kind"] == "BannerPole" and (math.hypot(e["x"] - x, e["z"] - z) < 40 or (abs(e["x"] + x) < 16 and abs(e["z"] - z) < 16)) for e in P):
+        continue
+    if put("BannerPole", x, z, face_to(x, z, CX(z), z) + rng.uniform(-15, 15), rng.uniform(0.9, 1.1), pad=0.3):
         banners += 1
 
 
-def scatter(kind, n, centres, spread, smin=0.9, smax=1.25, keep_road=8, pad=0.8):
-    done = 0
-    tries = 0
+def tree_group(cx_, cz_, n):
+    """rule 10: 3-5 trees of mixed size, a bush / white rock layer, a flower ring round them; never a row"""
+    got = 0
+    for _ in range(n * 30):
+        if got >= n:
+            break
+        a_ = rng.uniform(0, 2 * math.pi)
+        r_ = rng.uniform(2, 9)
+        if put("RoundTree", cx_ + r_ * math.cos(a_), cz_ + r_ * math.sin(a_), rng.uniform(0, 360), rng.uniform(0.85, 1.25), pad=0.4):
+            got += 1
+    if not got:
+        return 0
+    for _ in range(14):
+        a_ = rng.uniform(0, 2 * math.pi)
+        r_ = rng.uniform(8, 13)
+        k_ = rng.choice(("CloudBush", "CloudBush", "PotFlowers", "PotFlowers", "Topiary"))
+        put_v(k_, cx_ + r_ * math.cos(a_), cz_ + r_ * math.sin(a_), rng.uniform(0, 360), vs(), pad=0.3)
+    return got
+
+
+# tree groups: on every wing and in the spine gardens, >= 16 apart, kept 6+ off the road (rule 10: tall things not on the road edge),
+# none on the inside of a bend (camera); the cliff edges get the densest planting
+GROUPS = []
+for _ in range(900):
+    if len(GROUPS) >= 26:
+        break
+    if rng.random() < 0.6:
+        w = rng.choice(WINGS)
+        x, z = rng.uniform(w[1] + 6, w[2] - 6), rng.uniform(w[3] + 6, w[4] - 6)
+    else:
+        z = rng.uniform(-350, -690)
+        side = rng.choice((-1, 1))
+        x = CX(z) + side * (pave_half(z, side) + rng.uniform(10, 34))
+    if near_road(x, z, 10) or any(math.hypot(g[0] - x, g[1] - z) < 16 for g in GROUPS):
+        continue
+    if tagv(x, z)[0] != "top":
+        continue
+    n = rng.choice((3, 3, 4, 5))
+    if tree_group(x, z, n):
+        GROUPS.append((x, z))
+# low garden pieces between the groups (rule 10 layer 1-2), capped per 40 x 40 (rule 11)
+for kind, n, keep, s0, s1 in (("Topiary", 40, 6, 0.87, 1.15), ("CloudBush", 70, 4, 0.9, 1.3), ("PotFlowers", 30, 2, 0.87, 1.15), ("Planter", 24, 3, 0.87, 1.15)):
+    done = tries = 0
     while done < n and tries < n * 80:
         tries += 1
-        cxs, czs = rng.choice(centres)
-        x, z = cxs + rng.gauss(0, spread), czs + rng.gauss(0, spread)
-        if near_road(x, z, keep_road) and z > -700:
+        if rng.random() < 0.55:
+            w = rng.choice(WINGS)
+            x, z = rng.uniform(w[1] + 4, w[2] - 4), rng.uniform(w[3] + 4, w[4] - 4)
+        else:
+            z = rng.uniform(-350, -690)
+            side = rng.choice((-1, 1))
+            x = CX(z) + side * (pave_half(z, side) + rng.uniform(keep, 30))
+        if near_road(x, z, keep):
             continue
-        if put(kind, x, z, rng.uniform(0, 360), rng.uniform(smin, smax), pad=pad):
+        yaw = rng.uniform(-15, 15) + face_to(x, z, CX(z), z) if kind == "Planter" else rng.uniform(0, 360)
+        if put_v(kind, x, z, yaw, rng.uniform(s0, s1), pad=0.6):
             done += 1
-    return done
-
-
-# garden clusters: random centres on the spine gardens and every wing
-GC = []
-for _ in range(60):
-    w = rng.choice(WINGS)
-    GC.append((rng.uniform(w[1] + 8, w[2] - 8), rng.uniform(w[3] + 8, w[4] - 8)))
-for _ in range(30):
-    z = rng.uniform(-350, -690)
-    side = rng.choice((-1, 1))
-    GC.append((CX(z) + side * (pave_half(z, side) + rng.uniform(8, 30)), z))
-scatter("Topiary", 70, GC, 6, keep_road=6)
-scatter("RoundTree", 32, GC, 8, keep_road=10)
-scatter("CloudBush", 100, GC, 7, 0.9, 1.35, keep_road=4)
-scatter("PotFlowers", 30, GC, 5, 1.0, 1.0, keep_road=2)
-scatter("Planter", 34, GC, 6, 1.0, 1.0, keep_road=3)
-# cliff-edge cloud bushes
+# cliff-edge cloud bushes (rule 2: irregular, every 10-20 studs; the edges are the densest part, A23-76)
 edge = [(x, z) for (x, z), (v, w, m, t) in COL.items() if t == "top" and any(tagv(x + dx, z + dz)[0] == "cliff" for dx, dz in ((4, 0), (-4, 0), (0, 4), (0, -4)))]
 done = 0
-for _ in range(4000):
-    if done >= 45 or not edge:
+for _ in range(5000):
+    if done >= 60 or not edge:
         break
     x, z = rng.choice(edge)
-    if put("CloudBush", x, z, rng.uniform(0, 360), rng.uniform(1.0, 1.4), pad=0.2):
+    if any(e["kind"] == "CloudBush" and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(8, 16) for e in P):
+        continue
+    if put_v("CloudBush", x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.4), pad=0.2):
         done += 1
+# small scenes: a lantern and flowers now (the bench comes with the new bench models)
+for sp in SPOTS["scene"]:
+    a_ = math.atan2(sp["look"][1] - sp["z"], sp["look"][0] - sp["x"])  # light behind the seat, flowers beside it
+    put("Lantern", sp["x"] - 3 * math.cos(a_) + 2 * math.sin(a_), sp["z"] - 3 * math.sin(a_) - 2 * math.cos(a_), rng.uniform(-15, 15), vs(), pad=0.1, noreserve=True)
+    put("PotFlowers", sp["x"] - 2 * math.sin(a_), sp["z"] + 2 * math.cos(a_), rng.uniform(0, 360), vs(), pad=0.1, noreserve=True)
 
 # ---------------------------------------------------------------- backdrop (beyond the land rect, no collision, nobody can stand there: #64)
 BACK = [("Islet", -250, -430, 1.0), ("Islet", 268, -480, 1.25), ("Islet", -232, -610, 0.85), ("Islet", 244, -660, 1.1),
@@ -458,10 +604,9 @@ for side in (-1, 1):
 fx, fz = (fnt["x"], fnt["z"]) if fnt else (CX(-566), -566)
 for r in (17.5, 23.5):
     GOLD.append([[round(fx + r * math.cos(2 * math.pi * i / 48), 2), round(fz + r * math.sin(2 * math.pi * i / 48), 2)] for i in range(49)])
-MEDALLIONS = [dict(x=0, z=-396, r=9), dict(x=round(CX(-488), 2), z=-488, r=8)]
+MEDALLIONS = [dict(x=0, z=-396, r=9), dict(x=round(CX(-488), 2), z=-488, r=7)]
 if cat:
-    MEDALLIONS.append(dict(x=round(cat["x"] - 30, 2), z=-628, r=6))
-MEDALLIONS.append(dict(x=round(CX(-650) - 18, 2), z=-650, r=7))
+    MEDALLIONS.append(dict(x=round(CX(-640) + 6, 2), z=-640, r=6))
 
 # ---------------------------------------------------------------- reachability (#6): BFS over walkable columns from the spawn, bridges and ramps join tiers
 def solid_blocked():
@@ -590,14 +735,15 @@ count = {}
 for e in P:
     count[e["kind"]] = count.get(e["kind"], 0) + 1
 print("placed:", ", ".join(f"{k}={v}" for k, v in sorted(count.items())))
-print("refused:", {f"{k[0]}:{k[1]}": v for k, v in sorted(WHY.items()) if k[0] in ("Tower", "Stairs", "Statue", "Shop", "Lantern", "BannerPole")})
+print("refused:", {f"{k[0]}:{k[1]}": v for k, v in sorted(WHY.items()) if k[0] in ("Tower", "Stairs", "Statue", "Shop", "Lantern", "BannerPole", "DomeHouseA", "DomeHouseB", "Cathedral")})
 print("bridges:", [(b["name"], b["span"]) for b in BRIDGES])
 print(f"walkable columns {len(cells)}, reachable from the spawn {len(seen)}, unreachable {len(unreach)} {by_wing}")
-want = {"Statue": 6, "Shop": 4, "Tower": 6, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 6}
+print("   unreachable at:", sorted({(X0 + c[0] * R, Z0 + c[1] * R) for c in unreach})[:20])
+want = {"Statue": 6, "Shop": 4, "Tower": 6, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
 for k, v in want.items():
     if count.get(k, 0) != v:
         print(f"!! {k}: placed {count.get(k, 0)} of {v}")
-json.dump(dict(note="halo_layout.py output; yaw = CFrame.Angles(0,rad(yaw),0), front = kit -Z", placements=P, walls=WALLS if a.walls else [], gold=GOLD, medallions=MEDALLIONS, counts=count,
+json.dump(dict(note="halo_layout.py output; yaw = CFrame.Angles(0,rad(yaw),0), front = kit -Z", placements=P, walls=WALLS if a.walls else [], gold=GOLD, medallions=MEDALLIONS, counts=count, spots=SPOTS,
                unreachable=len(unreach)), open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
 # plan picture, 3 px per stud
@@ -621,8 +767,16 @@ for e in P:
     if not k or e.get("backdrop"):
         continue
     fp = foot(e["kind"], e["x"], e["z"], e["yaw"], e["s"])
+    if e.get("sv"):
+        fp = corners(e["x"], e["z"], k["w"] * e["sv"][0], k["d"], e["yaw"])
     pts = [((px - X0 - R / 2) * S, (pz - Z0 - R / 2) * S) for px, pz in fp]
     dr.polygon(pts, fill=KC.get(e["kind"], (255, 0, 255)), outline=(0, 0, 0))
+SPC = {"lawn": (150, 255, 150), "lookout": (255, 255, 255), "scene": (255, 120, 0), "photo": (255, 215, 0), "gather": (180, 0, 200), "exhibit": (0, 220, 220)}
+for kind_, lst in SPOTS.items():
+    for sp in lst:
+        px, pz = (sp["x"] - X0) * S, (sp["z"] - Z0) * S
+        rr = sp["r"] * S
+        dr.ellipse([px - rr, pz - rr, px + rr, pz + rr], outline=SPC[kind_], width=3)
 for c in unreach:
     px, pz = c[0] * R * S, c[1] * R * S
     dr.rectangle([px, pz, px + R * S, pz + R * S], outline=(255, 0, 0))

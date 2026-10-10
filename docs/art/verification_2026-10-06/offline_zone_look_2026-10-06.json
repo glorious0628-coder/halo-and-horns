@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 77,
+  "checks": 78,
   "failed": 0,
   "mutations": [
     {
@@ -21,15 +21,16 @@
       "newFailing": [
         "half way into the hollow: clock half way",
         "hollow at dawn -> dusk clock",
+        "hollow at night -> its dusk clock too (C2)",
         "hollow day -> dusk clock 18.9"
       ]
     },
     {
-      "mutation": "night base also turned to dusk",
+      "mutation": "the 6:00 jump is back (a night base keeps its clock)",
       "applied": true,
       "caught": true,
       "newFailing": [
-        "hollow at night keeps the night clock"
+        "hollow at night -> its dusk clock too (C2)"
       ]
     },
     {
@@ -64,7 +65,8 @@
       "applied": true,
       "caught": true,
       "newFailing": [
-        "horns den exposure: +0.25, +1.6 more only at night"
+        "horns den exposure: +0.25, +1.6 more only at night",
+        "night level 0.5: half the horns den's night lift"
       ]
     },
     {
@@ -72,7 +74,16 @@
       "applied": true,
       "caught": true,
       "newFailing": [
-        "horns den exposure: +0.25, +1.6 more only at night"
+        "horns den exposure: +0.25, +1.6 more only at night",
+        "night level 0.5: half the horns den's night lift"
+      ]
+    },
+    {
+      "mutation": "the night floor whole at any night level",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "hollow sun dimmed to 0.7-0.9"
       ]
     },
     {
@@ -81,11 +92,12 @@
       "caught": true,
       "newFailing": [
         "horns den exposure: +0.25, +1.6 more only at night",
-        "horns den sun not dimmed (Bright 1.0)"
+        "horns den sun not dimmed (Bright 1.0)",
+        "night level 0.5: half the horns den's night lift"
       ]
     }
   ],
-  "sourceSHA256": "52fb8e4acc7553134a61b4cd4e162a15d6bafa46c164938d0b15bf2addf7bf87",
+  "sourceSHA256": "964c09d8308a2b4c6482822a96ee7b56445727f23781a37fec085fce781f9481",
   "runtimeError": null,
   "studioCalls": 0,
   "apiCalls": 0

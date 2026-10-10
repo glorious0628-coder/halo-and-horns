@@ -25,6 +25,9 @@ local StoryQuestService = {}
 -- A23-79 (게임성 개발 3): (player, quest id) a story quest finished / (player, quest id, saved pick) a choice was made
 StoryQuestService.QuestDone = Util.Signal.new()
 StoryQuestService.Picked = Util.Signal.new()
+-- A23-113 #2 (게임성 개발 3): (player, quest id, step) a step of a story quest is done, in order, just before the next one opens
+-- (or the quest ends); TelemetryService turns the steps of Config.Analytics.QuestFunnels quests into funnel steps
+StoryQuestService.StepDone = Util.Signal.new()
 local S = nil
 local TAG = "StoryQuestService"
 local SQ = Config.StoryQuests
@@ -425,9 +428,13 @@ local function noPotionYet(data)
 	return true
 end
 
--- an Event step the player has already seen happen (obj.Past): it passes without waiting
+-- an Event step the player has already seen happen (obj.Past): it passes without waiting; obj.Held names a text field of the
+-- save whose letters mean it is done already (an old save's quick slots hold "HP,MP,": nothing is left to put in a slot)
 local function eventPast(data, obj)
-	return type(obj) == "table" and obj.Type == "Event" and obj.Past == true and story(data).First[obj.Name] == true
+	if type(obj) ~= "table" or obj.Type ~= "Event" or obj.Past ~= true then return false end
+	if story(data).First[obj.Name] == true then return true end
+	local held = obj.Held
+	return type(held) == "string" and type(data[held]) == "string" and string.find(data[held], "%a") ~= nil
 end
 
 -- A23-110 TopUpGold: a step that opens with the player short of this much gold (carried + bank) adds the missing part to the
@@ -459,6 +466,7 @@ end
 -- the active step reached its goal: next step (saved first), or the quest is finished / waits for [받기]
 local function advance(player, data, id, track)
 	local def = DEFS[id]
+	StoryQuestService.StepDone:Fire(player, id, track.St)
 	track.P, track.T = 0, {}
 	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
 	if track.St < #def.Steps then
@@ -733,6 +741,40 @@ function StoryQuestService.Event(player, name, info)
 		end
 	end
 	return moved
+end
+
+-- Studio test aids (Main's DebugCommand "StorySub" / "StoryDone", built inside its IsStudio block only): start a Sub quest at a
+-- step (what the step needs at its start is done as when it opens: TopUpGold; steps that pass at once pass), and mark one
+-- done. No reward, no notice, no QuestDone. Both return "ok" or a short reason.
+function StoryQuestService.DebugSub(player, id, step)
+	local def = DEFS[id]
+	if not def or def.Kind ~= "Sub" then return "no such sub quest " .. tostring(id) end
+	local data = getData(player)
+	if not data then return "no data" end
+	local n = math.floor(num(step, 1))
+	if n < 1 or n > #def.Steps then return string.format("%s has steps 1-%d", id, #def.Steps) end
+	local st = story(data)
+	st.Done[id] = nil
+	local track = { St = n, P = 0, T = {}, Claim = false }
+	st.Subs[id] = track
+	topUpGold(player, data, id, track)
+	dirty(player)
+	local ok, err = pcall(refresh, player)
+	if not ok then Util.Warn(TAG, "DebugSub refresh: " .. tostring(err)) end
+	return "ok"
+end
+
+function StoryQuestService.DebugDone(player, id)
+	local def = DEFS[id]
+	if not def then return "no such quest " .. tostring(id) end
+	local data = getData(player)
+	if not data then return "no data" end
+	local st = story(data)
+	st.Done[id] = true
+	st.Subs[id] = nil
+	if st.Main.Id == id then st.Main = { Id = "" } end
+	dirty(player)
+	return "ok"
 end
 
 -- A23-110: true while an open step of this player's quests waits for that happening (and has not seen it before)

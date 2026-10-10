@@ -62,3 +62,10 @@ TimedReward, Sale·Refund = Shop(들어옴), Weapon·Potion·LookChange = Shop(�
 ## 판단 날짜(retention_round 그대로)
 11/03 첫 D1 뒤: 온보딩 퍼널 가장 큰 낙차 + KOLeave60 많은 구역. 11/07~08 첫 D7 뒤: LongRoad Lv25→RuinsDaily1·Lv30 전환,
 DailyVisit SetChest 비율, Social(InviteSent/D1), Rebirth1, PromptNearKO > 0이면 버그.
+
+## A23-113 더하기 (게임성 개발 3, 2026-10-10 — 사용자 "마감 전 넣자")
+- **퍼널 `FirstKO`**(계정당 한 번, `Config.Analytics.Funnels.FirstKO`): 단계 `KO → PotionBought → SlotSet → PotionUsed → KingWon` = KO1 'The King's Hop'의 다섯 줄 그대로. 일이 일어난 순간이 아니라 **퀘스트가 그 줄을 끝낸 순간**(`StoryQuestService.StepDone(player, quest, step)`)에 남겨서 순서가 늘 맞다(일찍 한 줄도 퀘스트가 지나갈 때 차례대로 남음 — 퍼널은 앞 단계를 같이 채우므로). `Config.Analytics.QuestFunnels = { KO1 = "FirstKO" }` 한 줄로 다른 퀘스트도 퍼널로 만들 수 있다. 퍼널 이름은 이제 6개 + 온보딩 = 7(로블록스 한도 10).
+- **`MinutesToLv5`**(사용자 지정 이벤트, 계정당 한 번): Lv5가 되는 순간 `PlaytimeSeconds`를 분으로(최소 1), 칸 1 = 진영. `Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }`. 이미 Lv5가 넘은 옛 저장은 레벨이 오를 때만 남으므로 안 남는다.
+- **`PvPResult`**(사용자 지정 이벤트): PvP KO마다 한 줄 — 값 = **이긴 진영의 덩치 저울 배율**(`JusticeService.GetFactionScale`, 1.0~1.6), 칸 = 이긴 진영 / 진 진영 / `<이긴 사람 레벨대>><진 사람 레벨대>`(`1-9`·`10-24`·`25-49`·`50+`). 같은 사람이 1초 안에 또 이기면 안 남김(`Config.Analytics.PvPResultGap`). 이름·UserId·글 없음. 10/17 시험과 베타 첫 주에 진영별 승률을 대시보드에서 본다(쏠리면 GDD §5-1 특성·덩치 저울 숫자를 Config로).
+- 사용자 지정 이벤트 이름 합계 73개(한도 100; MinutesToLv5·PvPResult 포함).
+- 시험: `tools/test_beta_metrics.py` 205 체크·변이 110/110, `tools/test_first_ko.py` StepDone 순서 검사.

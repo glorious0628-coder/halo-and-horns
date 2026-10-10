@@ -250,6 +250,9 @@ local function near(a, b) return type(a) == "number" and type(b) == "number" and
 ----------------------------------------------------------------- planning
 local Audio, Config = load()
 local A = Config.Audio
+-- A23-113 ④: the material-hit checks below run with the class hits off; the "class hits" group turns them on
+local CLASS_HITS = A.HitByClass
+A.HitByClass = nil
 local ctx = { Me = ME, Faction = "Halo", Combo = 1, HP = 100, MaxHP = 100,
 	KindAt = function(p)
 		local best, bestD = nil, 8
@@ -1565,6 +1568,45 @@ do
 	HEART:Fire(0.016)
 	check(q, "the jump to a new character's spawn is not a warp", #asked2 == 0, encode(asked2))
 	Audio.Play = real2
+end
+
+do
+	local g = "class hits"
+	A.HitByClass = CLASS_HITS
+	ctx.Faction = "Halo"
+	check(g, "Warrior Blade, Mage Magic, Archer Arrow", type(CLASS_HITS) == "table" and CLASS_HITS.Warrior == "HitBlade"
+		and CLASS_HITS.Mage == "HitMagic" and CLASS_HITS.Archer == "HitArrow", "")
+	local p = swing({ Hits = { hit(10, 0) } })
+	check(g, "a Warrior's slime hit = HitBladeSoft (not HitSoft)", find(p, "HitBladeSoft") ~= nil and find(p, "HitSoft") == nil, events(p))
+	p = swing({ Hits = { hit(80, 0) } })
+	check(g, "a Warrior's goblin hit = HitBladeHeavy", find(p, "HitBladeHeavy") ~= nil and find(p, "HitHeavy") == nil, events(p))
+	p = swing({ Class = "Mage", Hits = { hit(10, 0, true) } })
+	check(g, "a Mage's critical slime hit = HitMagicSoft + HitMagicCrit", find(p, "HitMagicSoft") ~= nil
+		and find(p, "HitMagicCrit") ~= nil and find(p, "HitCrit") == nil, events(p))
+	p = swing({ Class = "Archer", Hits = { hit(80, 0) } })
+	check(g, "an Archer's hit = HitArrowHeavy", find(p, "HitArrowHeavy") ~= nil, events(p))
+	p = swing({ Hits = { hit(10, 0), hit(11, 0), hit(12, 0) } })
+	local h = find(p, "HitBladeSoft")
+	check(g, "three slimes: still louder and lower", h ~= nil and near(h.Volume, A.HitMany.Volume or 1.25), events(p))
+	p = swing({ Style = "Punch", Hits = { hit(80, 0) } })
+	check(g, "bare hands keep the material hit", find(p, "HitHeavy") ~= nil, events(p))
+	p = swing({ Class = "Tamer", Hits = { hit(80, 0) } })
+	check(g, "a class not listed keeps the material hit", find(p, "HitHeavy") ~= nil, events(p))
+	local saved = A.Files.HitArrowHeavy
+	A.Files.HitArrowHeavy = ""
+	p = swing({ Class = "Archer", Hits = { hit(80, 0) } })
+	check(g, "a class hit not uploaded yet: the material hit", find(p, "HitHeavy") ~= nil, events(p))
+	A.Files.HitArrowHeavy = saved
+	local same = true
+	for _, fam in { "HitBlade", "HitMagic", "HitArrow" } do
+		for _, suf in { "Soft", "Heavy", "Crit" } do
+			local s, m = A.Sounds[fam .. suf], A.Sounds["Hit" .. suf]
+			if type(s) ~= "table" or s.Volume ~= m.Volume or s.Max ~= m.Max or s.Gap ~= m.Gap or s.File ~= fam .. suf
+				or type(A.Files[fam .. suf]) ~= "string" or A.Files[fam .. suf] == "" then same = false end
+		end
+	end
+	check(g, "nine class hits, uploaded, at the material volumes / caps", same, "")
+	A.HitByClass = nil
 end
 
 local list = {}

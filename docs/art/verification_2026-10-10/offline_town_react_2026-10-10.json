@@ -1,0 +1,78 @@
+{
+  "checks": 22,
+  "failed": 0,
+  "static": [
+    {
+      "check": "ClientMain loads TownReact after MonsterLabels",
+      "ok": true
+    },
+    {
+      "check": "B.Make takes a size",
+      "ok": true
+    },
+    {
+      "check": "lines only from Config.TownReactLines (no text of its own)",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "anyone at any distance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no wait per person",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "bubbles pile up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "talks over windows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "talks before data",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the new pick never first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pick said every time",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the join's pick said first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "repeats its last line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never goes",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "bark-sized bubble",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Town people notice my lean (게임성 개발 1, SPEC A23-64 ① / A23-113 ⑥), offline.\n\nRuns, in the official Luau CLI, the CURRENT TownReact.luau (Choose / Step / Say / TownOf) with the CURRENT Config.luau\n(Config.TownReact, Config.TownReactLines) and fake Roblox objects: the nearest tagged town person within Range speaks a\nline from Config.TownReactLines for my faction / rank; it waits Every s before speaking again; only one bubble at a time\n(Show s); nothing while a window is open, before DataLoaded / ClassChosen, or beyond Range; a new TownPick is said first\nonce (the join's saved one is not); the same person never says the same line twice in a row; the bubble is MonsterLabels'\nB.Make with the sentence size and goes after Show s. Static: ClientMain loads it after MonsterLabels; B.Make takes the\nsize. Mutations: each must be caught.",
+  "studioCalls": 0
+}

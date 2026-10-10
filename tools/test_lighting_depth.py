@@ -1,6 +1,6 @@
 """Lighting depth check (2026-10-08, user on the meadow photo: "입체적이지 않아"; 검수: our darkest 10% was 0.69-0.74 bright,
-the concept's 0.41). Static, no Studio: the CURRENT Config.Sky.Neutral, WarService (LIGHTING_FIXED / TINT_FIXED /
-LIGHT_STYLE) and tools/preview_map.lua (the values Edit bakes) give a picture with shade: a lower sun, a darker cooler
+the concept's 0.41). Static, no Studio: the CURRENT Config.Sky.Neutral, WarService (LIGHTING_FIXED / TINT_FIXED; no
+LightingStyle write since A23-105) and tools/preview_map.lua (the values Edit bakes) give a picture with shade: a lower sun, a darker cooler
 shade, sharper shadows, less flat sky fill, more contrast, less neon saturation, a closer haze in the horizon colour - and
 preview_map bakes exactly Config's Neutral numbers (no drift between Edit and the server). No Atmosphere anywhere (A9-3:
 it would replace the war skies' FogColor / FogStart / FogEnd). Mutations: in-memory copies with one value pushed back to
@@ -37,7 +37,12 @@ MUTATIONS = [
     ("WAR", "full sky fill back", "\tEnvironmentDiffuseScale = 0.5, EnvironmentSpecularScale = 0.6,\n", "\tEnvironmentDiffuseScale = 1.0, EnvironmentSpecularScale = 0.6,\n"),
     ("WAR", "low contrast back", "Contrast = 0.12, Saturation = -0.05", "Contrast = 0.05, Saturation = -0.05"),
     ("WAR", "neon saturation back", "Contrast = 0.12, Saturation = -0.05", "Contrast = 0.12, Saturation = 0.1"),
-    ("WAR", "the soft lighting style back", 'local LIGHT_STYLE = "Realistic"', 'local LIGHT_STYLE = "Soft"'),
+    # A23-105 (메인 반영 1 2026-10-10): LightingStyle is a place setting (Soft); a script write fails in Play and Realistic
+    # broke Play visually - WarService never writes it, and Edit (preview_map) bakes Soft
+    ("WAR", "the Realistic write back", "local function bootstrapLighting()\n",
+     "local function bootstrapLighting()\n\tpcall(function() Lighting.LightingStyle = Enum.LightingStyle.Realistic end)\n"),
+    ("PREVIEW", "Edit bakes Realistic again", "pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Soft end)\n",
+     "pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Realistic end)\n"),
     ("CONFIG", "the sky sides back in the seam order", 'Lf = "rbxassetid://80981399991828",\n\tRt = "rbxassetid://113124022425103",',
      'Lf = "rbxassetid://113124022425103",\n\tRt = "rbxassetid://80981399991828",'),
     ("PREVIEW", "Edit bakes the old noon", "Lighting.ClockTime = 15.3\n", "Lighting.ClockTime = 14.2\n"),
@@ -55,7 +60,8 @@ def checks_for(config, war, preview):
                   r"FogEnd = (\d+), ExposureCompensation = (-?[\d.]+)", config)
     lf = re.search(r"GlobalShadows = true, ShadowSoftness = ([\d.]+),.*?EnvironmentDiffuseScale = ([\d.]+)", war, re.S)
     tint = re.search(r"local TINT_FIXED = \{ Brightness = 0, Contrast = (-?[\d.]+), Saturation = (-?[\d.]+) \}", war)
-    style = re.search(r'local LIGHT_STYLE = "(\w+)"', war)
+    war_code = "\n".join(line.split("--", 1)[0] for line in war.splitlines())
+    preview_code = "\n".join(line.split("--", 1)[0] for line in preview.splitlines())
     out = []
     if not m:
         return [("Config.Sky.Neutral parses", False)]
@@ -73,8 +79,9 @@ def checks_for(config, war, preview):
         ("sharper sun shadows (ShadowSoftness <= 0.2)", bool(lf) and float(lf[1]) <= 0.2),
         ("less flat sky fill (EnvironmentDiffuseScale <= 0.6)", bool(lf) and float(lf[2]) <= 0.6),
         ("more contrast (>= 0.1) and calmer greens (saturation <= 0)", bool(tint) and float(tint[1]) >= 0.1 and float(tint[2]) <= 0),
-        ("the Realistic lighting style", bool(style) and style[1] == "Realistic"
-         and "Lighting.LightingStyle = Enum.LightingStyle[LIGHT_STYLE]" in war),
+        ("the lighting style is the place's (Soft): WarService never writes it, Edit bakes Soft (A23-105)",
+         "LightingStyle" not in war_code and "LIGHT_STYLE" not in war_code
+         and "Lighting.LightingStyle = Enum.LightingStyle.Soft" in preview_code and "LightingStyle.Realistic" not in preview_code),
     ]
     baked = {
         "ClockTime": f"Lighting.ClockTime = {m[1]}\n" in preview,

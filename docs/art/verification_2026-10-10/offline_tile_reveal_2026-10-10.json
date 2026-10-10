@@ -1,0 +1,117 @@
+{
+  "checks": 26,
+  "failed": 0,
+  "static": [
+    {
+      "check": "a locked tile's press only wiggles (TileTap returns first)",
+      "ok": true
+    },
+    {
+      "check": "the tile build makes UIKit.TileLock(btn, icon, label)",
+      "ok": true
+    },
+    {
+      "check": "Level / SkillSlots / EquippedPet re-check at once",
+      "ok": true
+    },
+    {
+      "check": "the 1 s refresh still checks (PickTiles -> RefreshLocks)",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "tiles hidden again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never locked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an open tile locks again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "pops at the join",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no pop at all",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the join timer only on change",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "pops with reduced motion",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no wiggle",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "wiggles with reduced motion",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pet list ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty pet list counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a later chapter row ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "chapter 1 rows count",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "server skill slots ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hero open from the start",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the skills one level early",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ranking open from the start",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no level in the skills word",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Bottom menu tiles: all shown, locked until needed (게임성 개발 1, SPEC A23-113 ③ + 고침 2026-10-10), offline.\n\nRuns, in the official Luau CLI, the CURRENT HUD L.PickTiles / L.RefreshLocks / L.TileLocked / L.TileWiggle /\nL.RevealReady / L.RevealState / L.TilePop cut out of HUD.luau with the CURRENT Config.luau (Config.HudReveal.TileShows /\nTileWord): every tile is on the row from the start (user \"처음부터 다 보이고, 그 자물쇠 해놓자\"); Bag and Map are open; the\nhero is locked (\"Lv 2\") until the first level up, the skills (\"Lv <Unlock.Q>\") until the first skill (SkillSlots >= 1\nor the level), the pet (\"Get pet\") until a pet (following, or any in the pet list), the ranking (\"Story 1\") until\nstory:M1_4 is in the quest book's Done (or a later chapter's main row); a tile once open stays open this session; the\nlock goes with a pop when it opens in play, never at the join (first 3 s after DataLoaded), never with reduced motion; a\nlocked tile's press wiggles it (Rotation tweens back to 0; nothing with reduced motion). Static: L.TileTap returns early\non a locked tile; the tile build makes UIKit.TileLock(btn, icon, label); Level / SkillSlots / EquippedPet re-check at once.\nMutations: each must be caught.",
+  "studioCalls": 0
+}
