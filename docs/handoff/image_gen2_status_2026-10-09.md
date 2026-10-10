@@ -41,3 +41,8 @@
 - 빛 마을 부품 2D(고급, 재사용 없이 새로, `docs/design/halo_parts_plan_2026-10-10.md` 기준): `art/out/s2/halo/parts/HaloPart_<부품>_{front,back,left,right}_HQ_src.png`, 시트 `halo_parts_{gate,cath,tower}_{front,mv}.jpg`. 입체 부품은 4면, 평면(문짝·창)은 앞 + 뒤. 도구 `tools/_halo_parts_prompts.py`, `tools/_img2_parts_sheet.py`.
 - 뿔 마을 StallSnack(뜨거운 간식 노점) 4면(StallSmith 대체), 장식 6종 투명 PNG, 왕관 부품 15장(`art/out/s2/crown/`).
 - 남은 큐: 빛 마을 반복 소품 종류별 새로(이미지 생성 1 목록 대기), 실내 시안(24장 중간 재시도), 뿔 마을 성채 부품·붉은 깃발·황소 문장.
+
+## 10/10 오후 추가 2
+- A23-106 실내 시안 24장(중간, 0크레딧): `art/out/s2/interior/Interior_<Cathedral|DomeHouse|PotionShop|Bakery|JuiceShop|FlowerShop>_{whole,part1,part2,part3}.png`, 시트 `art/review/s2/halo_interior_sheet.jpg`(c1655ea). 검수가 고르면 고급으로 다시.
+- 빛 마을 반복 소품 새 종류 각 4가지(고급, 화분·난간·등불·꽃항아리·구름덤불·토피어리·둥근나무) → `art/out/s2/halo/variants/HaloVar_<종류>_{A..D}_HQ_src.png`, 시트 `art/review/s2/halo_variants_sheet.jpg`. 구름덤불 첫판은 금 돔·깃발이 붙어서 `HaloVar2_CloudBush_*`로 다시(구름만). BannerPole·다른 종류는 이미지 생성 1 목록 오면. 도구 `tools/_img2_grid_sheet.py`.
+- 남은 큐: 뿔 마을 성채 부품·붉은 깃발·황소 문장, 빛 마을 집·가게 부품(문틀·문짝·창).
