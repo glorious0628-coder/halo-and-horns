@@ -178,7 +178,7 @@ def put(kind, x, z, yaw, s=1.0, need=WALK, flat=FLAT, pad=0.4, noreserve=False, 
     ty, v = tagv(x, z)
     e = dict(kind=kind, x=round(x, 2), z=round(z, 2), y=round(v, 2), yaw=round(yaw % 360, 1), s=round(s, 3), why=why, zone=zone_of(x, z), **extra)
     if kind in ("PotFlowers", "Planter"):  # rule 9: 2-3 flower colours per district, set in clumps (the colour variants swap in by this)
-        e["flower"] = flower_pick(e["zone"], x, z)
+        e["flower_kit"] = flower_pick(e["zone"], x, z, kind)
     P.append(e)
     return e
 
@@ -280,17 +280,28 @@ ZONES = {
     "training": ("기사 훈련장", (200, 60, 60)),  # wing EA: statues, dummies, shield rack, Sir Gleam
     "garden": ("꽃 정원·전망대", (120, 220, 120)),  # WC, WD, ED + every cliff edge: flowers, lookouts, photo spots, gather bushes
 }
-FLOWERS = {"gate": ("white", "gold", "sky"), "shops": ("orange", "white"), "plaza": ("white", "gold"), "cathedral": ("white", "lilac"),
-           "homes": ("pink", "white"), "training": ("white", "sky"), "garden": ("pink", "white", "gold")}
-WILD = (-180, -664, 30)  # the one wildflower slope (mixed colours): round the west lookout (rule 9)
+# rule 9 (검수 10/10: not one pot recoloured six ways, A23-96) -> each district gets its own flower-pot KINDS (variants already drawn,
+# art/out/s2/halo/variants*/HaloVar*_<Kind>_<L>); the petals keep each model's own colour. Pink / orange / lilac flower kinds are
+# still to draw (asked of 이미지 생성 2): until then those districts use the closest drawn kinds.
+FLOWER_KITS = {
+    "gate": {"PotFlowers": ("HaloVar_PotFlowers_B", "HaloVar4_PotFlowers_C"), "Planter": ("HaloVar4_Planter_A", "HaloVar_Planter_A")},
+    "shops": {"PotFlowers": ("HaloVar3_PotFlowers_E", "HaloVar_PotFlowers_A"), "Planter": ("HaloVar3_Planter_E", "HaloVar_Planter_C")},
+    "plaza": {"PotFlowers": ("HaloVar4_PotFlowers_D", "HaloVar_PotFlowers_D"), "Planter": ("HaloVar_Planter_B",)},
+    "cathedral": {"PotFlowers": ("HaloVar3_PotFlowers_F", "HaloVar_PotFlowers_C"), "Planter": ("HaloVar_Planter_D", "HaloVar4_Planter_D")},
+    "homes": {"PotFlowers": ("HaloVar_PotFlowers_A", "HaloVar4_PotFlowers_A"), "Planter": ("HaloVar_Planter_A", "HaloVar3_Planter_E")},
+    "training": {"PotFlowers": ("HaloVar4_PotFlowers_C",), "Planter": ("HaloVar4_Planter_D", "HaloVar_Planter_C")},
+    "garden": {"PotFlowers": ("HaloVar3_PotFlowers_E", "HaloVar3_PotFlowers_F", "HaloVar_PotFlowers_B", "HaloVar4_PotFlowers_D"), "Planter": ("HaloVar3_Planter_E", "HaloVar_Planter_B")},
+}
+WILD = (-180, -664, 30)  # the one mixed wildflower slope round the west lookout (rule 9): every garden kind mixed there
 
 
-def flower_pick(zone, x, z):
+def flower_pick(zone, x, z, kind="PotFlowers"):
+    kits = FLOWER_KITS.get(zone, FLOWER_KITS["garden"])[kind]
     if math.hypot(x - WILD[0], z - WILD[1]) < WILD[2]:
-        return "mixed"
-    pal = FLOWERS.get(zone, ("white",))
-    # clumps: the colour follows a coarse grid cell, so neighbours share it (5-12 flowers per clump, rule 9)
-    return pal[(int(math.floor(x / 18)) * 7 + int(math.floor(z / 18)) * 13) % len(pal)]
+        kits = FLOWER_KITS["garden"][kind]
+        return kits[int(abs(x * 3 + z * 7)) % len(kits)]
+    # clumps: the kind follows a coarse grid cell, so neighbours share it (5-12 per clump)
+    return kits[(int(math.floor(x / 18)) * 7 + int(math.floor(z / 18)) * 13) % len(kits)]
 
 
 WING_ZONE = {"WA": "homes", "WB": "homes", "EB": "homes", "EC": "homes", "EA": "training", "WC": "garden", "WD": "garden", "ED": "garden"}
@@ -514,7 +525,8 @@ for kindname, z, side, gap, tilt, sc, why in (("Potion", -462, 1, 4, -10, 2.0, "
 # ---- 사는 동네: 12 houses in clusters 3-3-2-2 + 2 single houses with a terrace; each house its own angle / set-back,
 # one per cluster looks out to the sea or a fall
 CLUSTERS = [("WA", -128, -392, 3), ("EB", 150, -486, 3), ("WB", -122, -500, 2), ("EC", 166, -584, 2), ("WB", -146, -520, 1), ("EC", 176, -604, 1),
-            ("WA", -166, -362, 1), ("EB", 176, -460, 1), ("WA", -100, -420, 1)]  # the last three only if a single house above found no ground
+            ("WA", -166, -362, 1), ("EB", 176, -460, 1), ("WA", -100, -420, 1), ("EC", 150, -560, 1), ("WB", -100, -480, 1), ("EB", 126, -508, 1),
+            ("WA", -150, -350, 1), ("EA", 150, -420, 1)]  # the tail only if a house above found no ground (all 12 must stand: each is its own model)
 houses = 0
 HOUSES = []
 for wname, cxw, czw, n in CLUSTERS:

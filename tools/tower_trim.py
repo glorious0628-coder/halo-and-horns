@@ -302,7 +302,7 @@ def add_window(rec):
     outer = arch_outline(w, h)
     inner = [(u * (w - 2 * fr) / w, fr + (zz) * (h - 2 * fr) / h) for u, zz in outer]
     # glass panel (fan), a hair behind the frame
-    vs = [glass_bm.verts.new(bend(u, zb + zz, rec["a"], r_out - H * 0.001)) for u, zz in inner]
+    vs = [glass_bm.verts.new(bend(u, zb + zz, rec["a"], r_out - H * 0.003)) for u, zz in outer]  # the full outline, behind the frame: no gap at the edge
     glass_bm.faces.new(vs)
     # frame ring (outer -> inner quads) + a lip round the outside
     vo = [gold_bm.verts.new(bend(u, zb + zz, rec["a"], r_out)) for u, zz in outer]
@@ -318,7 +318,8 @@ def add_window(rec):
 
 covered = set()
 for b0, b1, r in bands:
-    add_shell(gold_bm, b0 - H * 0.002, b1 + H * 0.002, r + H * 0.003, thick=H * 0.006)
+    wr_ = max(wall_r((b0 + b1) / 2), 1e-4)
+    add_shell(gold_bm, b0 - H * 0.002, b1 + H * 0.002, max(wr_ + H * 0.004, min(r, wr_ + H * 0.008)), thick=H * 0.008)  # on the wall, not floating
     for i_, f in enumerate(info):
         if f["gold"] and b0 - H * 0.004 <= f["z"] <= b1 + H * 0.004:
             covered.add(i_)

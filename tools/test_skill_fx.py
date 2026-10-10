@@ -121,6 +121,7 @@ setfenv(cf, setmetatable(base, { __index = getfenv() }))
 local Config = cf()
 
 local TOUCH = false
+FADE_AT = 0
 local pending = {}
 local function later(t, fn) table.insert(pending, { T = t, Fn = fn }) end
 local function runAll()
@@ -146,12 +147,17 @@ local services = {
 	Players = { LocalPlayer = ME, GetPlayerByUserId = function(_, id) if id == 7 then return ME end return nil end },
 	RunService = { RenderStepped = { Connect = function() return { Disconnect = function() end } end } },
 	TweenService = { Create = function(_, inst, info, goal)
+		if goal.Transparency == 1 or goal.BackgroundTransparency == 1 then
+			FADE_AT = math.max(FADE_AT, type(info) == "table" and tonumber(info[6]) or 0)
+		end
 		return { Play = function() for k, v in goal do inst[k] = v end end, Cancel = function() end }
 	end },
 	UserInputService = setmetatable({}, { __index = function(_, k) if k == "TouchEnabled" then return TOUCH end end }),
+	ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function() return "Config" end } end },
 }
 local env = {
 	game = { GetService = function(_, n) return services[n] end },
+	require = function() return Config end,
 	workspace = ws, Instance = Instance, Vector3 = Vector3, CFrame = CFrame, Enum = EnumT,
 	RaycastParams = { new = function() return {} end },
 	Color3 = base.Color3, ColorSequence = base.ColorSequence, NumberSequence = base.NumberSequence,
@@ -170,10 +176,16 @@ local SkillFx = f()
 
 local MOVING = { Ball = true, Block = true, Ring = true, Disc = true }
 local gets = {}
+local liveMoving, peakMoving = 0, 0
 local realGet = SkillFx.Get
 SkillFx.Get = function(kind, life)
 	local p = realGet(kind, life)
 	table.insert(gets, { Kind = kind, Part = p })
+	if MOVING[kind] then
+		liveMoving += 1
+		peakMoving = math.max(peakMoving, liveMoving)
+		later(life, function() liveMoving -= 1 end)
+	end
 	return p
 end
 local function envFor() return { Muzzle = function() return v3(1, 4, 0) end, After = function(t, fn) later(t, fn) end } end
@@ -280,17 +292,61 @@ check(math.abs(mid.X - 5) < 1e-6 and math.abs(mid.Y - 3) < 1e-6, "the bird hops 
 local dash = SkillFx.PathAt({ v3(0, 0, 0), v3(10, 0, 0) }, { 0, 1 }, 0.5, 0)
 check(math.abs(dash.Y) < 1e-6, "the bat dashes straight", dash.Y)
 check(SkillFx.PathAt({ v3(0, 0, 0), v3(10, 0, 0) }, { 0, 1 }, 2, 3).X == 10, "past the end: the last point", "")
+-- X (A23-116 X stage): the peak of live moving parts (a field keeps its circle 5 s)
+local function xcast(class, faction, own, auto, extra)
+	gets, emits, liveMoving, peakMoving = {}, 0, 0, 0
+	local data = { Class = class, Faction = faction, UserId = own and 7 or 99, Auto = auto, Hits = {}, From = v3(0, 0, 0),
+		Center = v3(0, 0, -10), Radius = class == "Archer" and 7 or 12, To = v3(0, 0, 10), Life = 5, Statuses = {} }
+	for k, v in extra or {} do data[k] = v end
+	local res = SkillFx.X(data, own, envFor())
+	runAll()
+	return res, peakMoving, emits
+end
+for _, k in KITS do
+	local name = "X " .. k[1] .. "_" .. k[2]
+	local res, peak, parts = xcast(k[1], k[2], true, false)
+	check(res == true and peak >= 2 and peak <= 12, name .. ": draws, BIG live parts 2..12", peak)
+	check(parts <= 12, name .. ": BIG particles <= 12", parts)
+	local _, peak2, parts2 = xcast(k[1], k[2], true, true)
+	check(peak2 <= 8 and parts2 <= 6, name .. ": SMALL live parts <= 8, particles <= 6", peak2 .. "/" .. parts2)
+end
+-- guard bubbles: only for Statuses.Guard players (me here), up to 5
+local _, peakG = xcast("Warrior", "Halo", true, false, { Statuses = { Guard = { { V = 7, Pct = 0.4, Sec = 6 } } } })
+local guardGets = gets
+local _, peakN = xcast("Warrior", "Halo", true, false)
+check(peakG - peakN == 1, "a guard bubble on the guarded player", peakG - peakN)
+local bubble = nil
+for _, g in guardGets do if g.Kind == "Ball" and g.Part.Material == "Material.ForceField" then bubble = g.Part end end
+check(bubble ~= nil, "the bubble is a soft ForceField ball (no Highlight)", "")
+-- MP: blue dots only when MP really came in, on my cast
+local hits4 = { { P = v3(1, 0, -10) }, { P = v3(2, 0, -10) }, { P = v3(3, 0, -10) }, { P = v3(4, 0, -10) }, { P = v3(5, 0, -10) } }
+local _, peakMP = xcast("Warrior", "Horns", true, false, { Hits = hits4, Statuses = { MP = 20 } })
+local _, peakNoMP = xcast("Warrior", "Horns", true, false, { Hits = hits4, Statuses = {} })
+check(peakMP - peakNoMP == 8, "MP: 2 blue dots from each of the first 4 monsters (BIG)", peakMP - peakNoMP)
+local _, peakOtherMP = xcast("Warrior", "Horns", false, false, { Hits = hits4, Statuses = { MP = 20 } })
+local _, peakOtherNo = xcast("Warrior", "Horns", false, false, { Hits = hits4, Statuses = {} })
+check(peakOtherMP == peakOtherNo, "MP: another player's MP draws nothing on my screen", peakOtherMP .. "/" .. peakOtherNo)
+FADE_AT = 0
+xcast("Mage", "Halo", true, false)
+check(FADE_AT >= 4.5, "the Sun Circle stays its 5 s before it fades", FADE_AT)
+-- the field's ticks
+gets, emits = {}, 0
+SkillFx.Tick({ UserId = 7, Center = v3(0, 0, -10), Hits = {}, Statuses = {} }, true)
+runAll()
+check(emits == 4, "a tick: 4 sparkles (BIG)", emits)
+check(SkillFx.X({ Class = "Archer", Faction = "Neutral", From = v3() }, true, envFor()) == false, "X: the artisan guild draws nothing here", "")
 print(("SKILLFX_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
-    ("BIG and SMALL swapped", "local budget = big and T.Budget.Big or T.Budget.Small", "local budget = big and T.Budget.Small or T.Budget.Big"),
+    ("BIG and SMALL swapped", "local budget = big and T.Budget.Big or T.Budget.Small\n\tlocal ground", "local budget = big and T.Budget.Small or T.Budget.Big\n\tlocal ground"),
     ("phones get BIG", "local big = own and data.Auto ~= true and not UserInputService.TouchEnabled\n\tlocal budget", "local big = own and data.Auto ~= true\n\tlocal budget"),
     ("thin ring lines", "local thick = math.max(0.6, num(o.Thick, 0.8))", "local thick = num(o.Thick, 0.8) * 0.5"),
     ("every hit pops", "for i = 1, math.min(#list, budget.Pops) do", "for i = 1, #list do"),
     ("a fake heal", "for i, uid in data.Healed do", "for i, uid in { 7, 7 } do"),
     ("a steal with nothing stolen", "if stole > 0 and root and type(data.Hits) == \"table\" then", "if root and type(data.Hits) == \"table\" then"),
-    ("others' steals drawn", "local root = own and LocalPlayer.Character", "local root = LocalPlayer.Character"),
+    ("others' steals drawn", "local root = own and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif stole > 0",
+     "local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif stole > 0"),
     ("no crowd limit", "if not own and S.Live > T.ScreenParts then", "if false then"),
     ("the artisan guild drawn", "local kit = key and Q[key]", "local kit = key and (Q[key] or Q.Warrior_Halo)"),
     ("parts collide", "p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false",
@@ -299,6 +355,11 @@ MUTATIONS = [
     ("no arc in hops", "return p + Vector3.new(0, (arc or 0) * math.sin(math.pi * u), 0)", "return p"),
     ("SMALL fire rake with rims", "\t\t\t\tif c.Big then\n\t\t\t\t\tlocal rim", "\t\t\t\tif true then\n\t\t\t\t\tlocal rim"),
     ("Z for the artisan guild", "local kit = key and Z[key]", "local kit = key and (Z[key] or Z.Mage_Halo)"),
+    ("every Sun Circle rim dot on SMALL", "local n = c.Big and 8 or 6", "local n = 8"),
+    ("MP for anyone", "local root = own and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif gained <= 0",
+     "local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif gained <= 0"),
+    ("MP from every monster", "if n >= 4 then break end", "if n >= 99 then break end"),
+    ("a field fades early", "if o.Hold then fadeTime, fadeAt = math.min(0.3, life), math.max(0, life - 0.3) end", ""),
 ]
 STATIC = [
     ("Fx's Release hands the art to SkillFx.Q", lambda fx, m: "local okQ, res = pcall(sfx.Q, data, pos, radius, impactDelay, own, {" in fx),
@@ -314,9 +375,11 @@ STATIC = [
      and "if clip.Redraw and clip.Shot2 then Feel.secondShot(context, current, clip, rate) end" in fx
      and "ShadowHunterRelease = { Len = 0.44, Redraw = 0.2, Shot2 = 0.3," in fx
      and "Joints = joints, Redraw = def.Redraw, Shot2 = def.Shot2 }" in fx),
-    ("Fx's Skill hands the Z art to SkillFx.Z (near the camera)", lambda fx, m: 'if slot == "Z" and type(sfx) == "table" and type(sfx.Z) == "function" and at and nearCamera(at) then' in fx),
-    ("the Horns side's Q moves", lambda fx, m: 'Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ" }' in fx and 'Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ" }' in fx
-     and 'Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ" }' in fx and 'Archer_Halo = { Release = "RangerRelease", Z = "RangerZ" }' in fx),
+    ("Fx's Skill hands the Z / X art to SkillFx (near the camera)", lambda fx, m: 'local draw = type(sfx) == "table" and type(sfx[slot]) == "function" and sfx[slot] or nil' in fx
+     and "if draw and at and nearCamera(at) then" in fx),
+    ("Fx's SkillTick goes to SkillFx.Tick", lambda fx, m: "handlers.SkillTick = function(data)" in fx and "pcall(sfx.Tick, data, isOwn(data))" in fx),
+    ("the Horns side's Q moves", lambda fx, m: 'Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ", X = "BerserkerX" }' in fx and 'Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ", X = "DarkMageX" }' in fx
+     and 'Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ", X = "ShadowHunterX" }' in fx and 'Archer_Halo = { Release = "RangerRelease", Z = "RangerZ", X = "RangerX" }' in fx),
 ]
 
 

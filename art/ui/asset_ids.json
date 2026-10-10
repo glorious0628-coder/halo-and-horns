@@ -714,5 +714,17 @@
   "Skill_Mage_Q_Halo": "rbxassetid://92523085656561",
   "Skill_Mage_Q_Horns": "rbxassetid://81157543004771",
   "Skill_Archer_Q_Halo": "rbxassetid://92206547315755",
-  "Skill_Archer_Q_Horns": "rbxassetid://103422334299041"
+  "Skill_Archer_Q_Horns": "rbxassetid://103422334299041",
+  "Skill_Archer_X_Halo": "rbxassetid://87471824044528",
+  "Skill_Archer_X_Horns": "rbxassetid://115987329631921",
+  "Skill_Archer_Z_Horns": "rbxassetid://107578440852344",
+  "Skill_Mage_X_Halo": "rbxassetid://75459677268571",
+  "Skill_Mage_X_Horns": "rbxassetid://88850195258144",
+  "Skill_Mage_Z_Halo": "rbxassetid://117710924786358",
+  "Skill_Mage_Z_Horns": "rbxassetid://82944323163651",
+  "Skill_Warrior_X_Halo": "rbxassetid://78225248119957",
+  "Skill_Warrior_X_Horns": "rbxassetid://100908047802242",
+  "Skill_Warrior_Z_Halo": "rbxassetid://84642189475299",
+  "Skill_Warrior_Z_Horns": "rbxassetid://96701336601012",
+  "Skill_Archer_Z_Halo": "rbxassetid://116429631383462"
 }

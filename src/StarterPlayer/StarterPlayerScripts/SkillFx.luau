@@ -10,9 +10,12 @@
 -- Halo heal = gold sparkles over each healed player (up to 5); Horns steal = pink heart dots flying from the first 3
 -- hits to my chest + a 0.1 s pink edge on me (my own cast only).
 local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 
 local SkillFx = {}
 local LocalPlayer = Players.LocalPlayer
@@ -36,7 +39,7 @@ local T = {
 	HealMax = 5, StealMax = 3,
 }
 -- Pool[kind] = free parts; Live = parts out now
-local S = { Pool = {}, Live = 0, Folder = nil }
+local S = { Pool = {}, Live = 0, Folder = nil, Fields = {} } -- Fields[UserId] = the live circle (SkillFx.Tick pulses it)
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -128,6 +131,7 @@ function SkillFx.Get(kind, life)
 			if d:IsA("Trail") or d:IsA("PointLight") or d:IsA("Attachment") then d:Destroy() end
 		end
 		p.Parent = nil
+		if kind == "Block" then p.Shape = Enum.PartType.Block end -- an afterimage capsule goes back square
 		S.Live -= 1
 		S.Pool[kind] = S.Pool[kind] or {}
 		if #S.Pool[kind] < 40 then table.insert(S.Pool[kind], p) else p:Destroy() end
@@ -163,7 +167,7 @@ end
 ----------------------------------------------------------------- primitives
 -- a flat round ring (o.Disc = filled) growing From -> To studs across in Grow s, fading out by Life s.
 -- o: { From, To, Thick, Color, Inner (a thinner inner line colour), Alpha, Grow, Life, Rise (studs up while it fades),
--- Fill (Disc fill alpha) }
+-- Fill (Disc fill alpha), Hold (no fade: stays until Life ends, then a quick 0.3 s fade - fields) }
 function SkillFx.Ring(pos, o)
 	local life = num(o.Life, 0.6)
 	local kind = o.Disc and "Disc" or "Ring"
@@ -187,11 +191,13 @@ function SkillFx.Ring(pos, o)
 		inner.Line.Color = o.Inner
 		inner.Line.Thickness = math.max(0.25, thick * 0.4) * T.PixelsPerStud
 		inner.Line.Transparency = alpha
-		tween(inner.Line, life * 0.6, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life * 0.4)
 	end
+	local fadeTime, fadeAt = life * 0.6, life * 0.4
+	if o.Hold then fadeTime, fadeAt = math.min(0.3, life), math.max(0, life - 0.3) end
+	if o.Inner then tween(inner.Line, fadeTime, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt) end
 	tween(p, num(o.Grow, 0.2), { Size = Vector3.new(d1, 0.05, d1) })
-	tween(line, life * 0.6, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life * 0.4)
-	if o.Disc then tween(fr, life * 0.6, { BackgroundTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, life * 0.4) end
+	tween(line, fadeTime, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt)
+	if o.Disc then tween(fr, fadeTime, { BackgroundTransparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, fadeAt) end
 	if o.Rise then tween(p, life, { CFrame = cf + Vector3.new(0, o.Rise, 0) }, Enum.EasingStyle.Sine) end
 	return p
 end
@@ -850,6 +856,294 @@ function Z.Archer_Horns(c)
 end
 
 SkillFx.ZKits = Z
+
+----------------------------------------------------------------- the six X (A23-116 X stage; XEnabled stays off until 10/20)
+local X = {}
+
+local function rootOf(uid)
+	local p = Players:GetPlayerByUserId(tonumber(uid) or 0)
+	local ch = p and p.Character
+	return ch and ch:FindFirstChild("HumanoidRootPart") or nil
+end
+
+-- the guard bubbles (Statuses.Guard = { { V = UserId, Pct, Sec } }): a round soft bubble on me and up to 4 friends,
+-- popping 0.6 -> 1.0, held faint for Sec s, breathing once a second (no Highlight)
+function SkillFx.Guard(list, color, size, budget)
+	if type(list) ~= "table" then return end
+	for i, g in list do
+		if i > 5 then break end
+		local root = type(g) == "table" and rootOf(g.V) or nil
+		if root then
+			local sec = math.clamp(num(g.Sec, 4), 0.5, 10)
+			local d = size
+			local b = SkillFx.Ball(root.Position, d * 0.6, color, sec + 0.1, 0.75)
+			b.Material = Enum.Material.ForceField
+			tween(b, 0.15, { Size = Vector3.new(d, d, d) }, Enum.EasingStyle.Back)
+			tween(b, 0.4, { Transparency = 0.88 }, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0.2)
+			SkillFx.Follow(sec, function(t)
+				if not root.Parent then return end
+				local s = d * (1 + 0.04 * math.sin(t * math.pi * 2))
+				b.Size = Vector3.new(s, s, s)
+				b.CFrame = CFrame.new(root.Position)
+				if t > sec - 0.3 then b.Transparency = 0.88 + (t - (sec - 0.3)) / 0.3 * 0.12 end
+			end)
+		end
+	end
+end
+
+-- the MP signal: blue dots fly from up to 4 hit monsters to me and "+N MP" shows (only when MP really came in, mine)
+function SkillFx.MP(hits, gained, own, budget)
+	gained = num(gained, 0)
+	local root = own and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("UpperTorso")
+	if gained <= 0 or not root then return end
+	local n = 0
+	for _, h in type(hits) == "table" and hits or {} do
+		if n >= 4 then break end
+		if type(h) == "table" and typeof(h.P) == "Vector3" then
+			n += 1
+			for k = 1, (budget.PopEach >= 2 and 2 or 1) do
+				SkillFx.Fly(h.P + Vector3.new(0, 1.5 + k * 0.4, 0), root.Position, 0.4, 0.35, COL.Mp, { Arc = 1 })
+			end
+		end
+	end
+	local fx = C and C.Fx
+	local text = type(Config.Skills) == "table" and type(Config.Skills.Text) == "table" and Config.Skills.Text.MPGain or "+%d MP"
+	if type(fx) == "table" and type(fx.ShowNumber) == "function" then
+		pcall(fx.ShowNumber, root.Position + Vector3.new(0, 3, 0), string.format(text, math.floor(gained)), COL.Mp, 1)
+	end
+end
+
+-- a tall soft capsule standing where the archer was (an afterimage, not a copy of the avatar)
+local function ghost(at, color, life)
+	local p = SkillFx.Get("Block", life + 0.05)
+	p.Shape = Enum.PartType.Cylinder
+	p.Size = Vector3.new(4.5, 1.6, 1.6)
+	p.CFrame = CFrame.new(at + Vector3.new(0, 2.4, 0)) * CFrame.Angles(0, 0, math.pi / 2)
+	p.Color, p.Material, p.Transparency = color, Enum.Material.Neon, 0.7
+	tween(p, life, { Transparency = 1 }, Enum.EasingStyle.Linear)
+	return p
+end
+
+-- Guardian Roar: two thin gold rings to r12 and r16 (concentric only), gold guard bubbles, white feathers drifting down
+function X.Warrior_Halo(c)
+	c.Env.After(0.3, function()
+		SkillFx.Ring(c.Center, { From = 2, To = c.Radius * 2, Thick = 0.6, Color = COL.Gold, Grow = 0.25, Life = 0.4 })
+		task.delay(0.15, function()
+			SkillFx.Ring(c.Center, { From = 2, To = c.Taunt * 2, Thick = 0.6, Color = COL.Gold, Inner = COL.Cream, Grow = 0.25, Life = 0.4 })
+		end)
+		SkillFx.Guard(c.Statuses.Guard, COL.Gold, 6, c.Budget)
+		SkillFx.Dots(c.Center + Vector3.new(0, 7, 0), c.Big and 8 or 4, { Color = COL.White, Size = 0.35, Speed = 1, SpeedMin = 0.5,
+			Life = 1.2, Up = -1.5, Glow = 0.3, Spread = Vector2.new(180, 180) })
+		SkillFx.Pops(c.Data.Hits, COL.Gold, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Rage Roar: a crimson ring then a thin purple one to r12 / r16, a cartoon flame edge on me (my own cast, my screen),
+-- a dim red guard bubble, embers rising off the shoulders, the MP signal
+function X.Warrior_Horns(c)
+	c.Env.After(0.3, function()
+		SkillFx.Ring(c.Center, { From = 2, To = c.Radius * 2, Thick = 0.8, Color = COL.Crimson, Inner = COL.Ember, Grow = 0.3, Life = 0.45 })
+		task.delay(0.08, function()
+			SkillFx.Ring(c.Center, { From = 2, To = c.Taunt * 2, Thick = 0.6, Color = COL.Purple, Grow = 0.3, Life = 0.45 })
+		end)
+		local ch = c.Data.Character
+		if typeof(ch) ~= "Instance" then
+			local root = rootOf(c.Data.UserId)
+			ch = root and root.Parent
+		end
+		if c.Own and ch then
+			local hl = Instance.new("Highlight")
+			hl.OutlineColor, hl.FillColor, hl.FillTransparency, hl.OutlineTransparency = COL.Ember, COL.Crimson, 0.85, 0
+			hl.Parent = ch
+			task.delay(1.2, function() hl:Destroy() end)
+		end
+		local up = ch and ch:FindFirstChild("UpperTorso")
+		if up then SkillFx.Dots(up.Position + Vector3.new(0, 1.2, 0), 3, { Color = ColorSequence.new(COL.Ember, COL.Crimson), Size = 0.45, Speed = 2, Life = 1.2, Up = 3 }) end
+		SkillFx.Guard(c.Statuses.Guard, Color3.fromRGB(200, 70, 70), 6, c.Budget)
+		SkillFx.MP(c.Data.Hits, c.Statuses.MP, c.Own, c.Budget)
+		SkillFx.Pops(c.Data.Hits, COL.Crimson, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- a field circle that stays Life s, turning fn(t) each frame, then shrinking away with a pop; S.Fields[UserId] keeps it
+-- for the ticks
+local function fieldCircle(c, rim, fill, fillAlpha, spin)
+	c.Env.After(0.3, function()
+		local life = c.Life
+		local plate = SkillFx.Ring(c.Center, { Disc = true, From = 2, To = c.Radius * 2, Thick = 0.6, Color = rim, FillColor = fill,
+			Fill = fillAlpha, Alpha = 0.1, Grow = 0.2, Life = life + 0.3, Hold = true })
+		S.Fields[c.Data.UserId] = { Plate = plate, D = c.Radius * 2, Until = os.clock() + life }
+		local turn = spin and SkillFx.Follow(life, spin)
+		task.delay(life, function()
+			if turn then pcall(function() turn:Disconnect() end) end
+			tween(plate, 0.3, { Size = Vector3.new(0.3, 0.05, 0.3) }, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+			task.delay(0.3, function() SkillFx.Dots(c.Ground + Vector3.new(0, 0.5, 0), 3, { Color = rim, Size = 0.6, Speed = 3, Life = 0.4 }) end)
+			if S.Fields[c.Data.UserId] and S.Fields[c.Data.UserId].Plate == plate then S.Fields[c.Data.UserId] = nil end
+		end)
+	end)
+end
+
+-- Sun Circle: a gold circle (cream inside) with round gold dots lighting one by one on its rim and turning slowly, a
+-- small warm disc in the middle (no rays, no spokes, nothing joining the middle and the dots)
+function X.Mage_Halo(c)
+	local n = c.Big and 8 or 6
+	local dots = {}
+	c.Env.After(0.3, function()
+		for i = 1, n do
+			task.delay(0.2 * (i - 1) / n, function()
+				local d = SkillFx.Ball(c.Ground, 0.9, COL.Gold, c.Life + 0.1, 0)
+				dots[i] = d
+			end)
+		end
+		SkillFx.Ring(c.Center, { Disc = true, From = 2, To = 3, Thick = 0.6, Color = COL.Gold, FillColor = COL.Cream, Fill = 0.4,
+			Alpha = 0.2, Grow = 0.2, Life = c.Life, Hold = true })
+	end)
+	fieldCircle(c, COL.Gold, COL.Cream, 0.85, function(t)
+		for i, d in dots do
+			local a = (i / n) * math.pi * 2 - t * 0.4 -- clockwise, slowly
+			d.CFrame = CFrame.new(c.Ground + Vector3.new(math.cos(a) * c.Radius, 0.5, math.sin(a) * c.Radius))
+		end
+	end)
+	c.Env.After(0.3, function()
+		SkillFx.Guard(c.Statuses.Guard, COL.Gold, 5, c.Budget)
+		SkillFx.Pops(c.Data.Hits, COL.Gold, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Hex Circle: a purple circle (crimson rim, plum inside) with two thin inner rings (r6, r9), each with round purple
+-- beads turning the opposite way (nothing joining them), and a small plum cloud above dropping purple bubbles
+function X.Mage_Horns(c)
+	local per = c.Big and 3 or 1
+	local beads = {}
+	c.Env.After(0.3, function()
+		for _, r in { 6, 9 } do
+			SkillFx.Ring(c.Center, { From = r * 2, To = r * 2, Thick = 0.6, Color = COL.Purple, Alpha = 0.3, Grow = 0, Life = c.Life, Hold = true })
+			for k = 1, per do table.insert(beads, { R = r, K = k, Part = SkillFx.Ball(c.Ground, 0.8, COL.Purple, c.Life + 0.1, 0) }) end
+		end
+		local cloudAt = c.Ground + Vector3.new(0, 7, 0)
+		SkillFx.Cloud(cloudAt, 6, COL.Plum, c.Life, COL.Pink, 1)
+		for s = 0, math.floor(c.Life) - 1 do
+			for k = 1, (c.Big and 2 or 1) do
+				task.delay(s + k * 0.4, function()
+					local from = cloudAt + Vector3.new((math.random() - 0.5) * 3, -1, (math.random() - 0.5) * 3)
+					SkillFx.Fly(from, Vector3.new(from.X, c.Ground.Y + 0.5, from.Z), 0.45, 0.6, COL.Purple, { Style = Enum.EasingStyle.Quad, Linger = 0.1 })
+				end)
+			end
+		end
+	end)
+	fieldCircle(c, COL.Crimson, COL.Plum, 0.85, function(t)
+		for _, b in beads do
+			local dirSign = b.R == 6 and 1 or -1 -- the two rings turn opposite ways
+			local a = (b.K / per) * math.pi * 2 + dirSign * t * 0.6
+			b.Part.CFrame = CFrame.new(c.Ground + Vector3.new(math.cos(a) * b.R, 0.6, math.sin(a) * b.R))
+		end
+	end)
+	c.Env.After(0.3, function()
+		SkillFx.MP(c.Data.Hits, c.Statuses.MP, c.Own, c.Budget)
+		SkillFx.Pops(c.Data.Hits, COL.Plum, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Light Step: two concentric white-gold wind rings (r7) where I stood, gold feather dots, two faint gold afterimage
+-- capsules on the way, a decorative mid-air arrow down into the ring, a small gold ripple on landing, small guard bubbles
+function X.Archer_Halo(c)
+	local land = c.To or c.From
+	c.Env.After(0, function()
+		SkillFx.Ring(c.From, { From = 2, To = c.Radius * 2, Thick = 0.6, Color = COL.White, Inner = COL.Gold, Grow = 0.15, Life = 0.4 })
+		SkillFx.Ring(c.From, { From = 2, To = c.Radius * 1.4, Thick = 0.6, Color = COL.Gold, Grow = 0.15, Life = 0.4 })
+		SkillFx.Dots(SkillFx.Ground(c.From) + Vector3.new(0, 0.5, 0), c.Big and 8 or 4, { Color = COL.Gold, Size = 0.4, Speed = 7, Life = 0.6 })
+		SkillFx.Pops(c.Data.Hits, COL.Gold, c.Budget)
+	end)
+	for i, t in { 0.05, 0.2 } do
+		c.Env.After(t, function() ghost(c.From:Lerp(land, i / 3), COL.Gold, 0.25) end)
+	end
+	c.Env.After(0.12, function()
+		local m = c.Env.Muzzle()
+		if m then SkillFx.Arrow(m, SkillFx.Ground(c.From) + Vector3.new(0, 0.5, 0), 0.12, COL.Gold, 1.6) end
+	end)
+	c.Env.After(0.25, function()
+		SkillFx.Ring(land, { From = 1, To = 5, Thick = 0.6, Color = COL.Gold, Grow = 0.2, Life = 0.4 })
+		SkillFx.Guard(c.Statuses.Guard, COL.Gold, 4.5, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+-- Shadow Step: soft plum smoke puffs and a dark wind ring (r7) where I stood, two tiny pink-rimmed bats flying up, two
+-- dark afterimage capsules, small plum pops on landing, the MP signal
+function X.Archer_Horns(c)
+	local land = c.To or c.From
+	c.Env.After(0, function()
+		local g = SkillFx.Ground(c.From)
+		SkillFx.Dots(g + Vector3.new(0, 1.5, 0), c.Big and 4 or 2, { Color = COL.Plum, Size = 4, EndSize = 6, Speed = 3, Life = 0.6, Up = 0, Glow = 0,
+			Spread = Vector2.new(180, 180) })
+		SkillFx.Ring(c.From, { From = 2, To = c.Radius * 2, Thick = 0.6, Color = COL.Plum, Inner = COL.Purple, Grow = 0.2, Life = 0.4 })
+		for k = 1, (c.Big and 2 or 1) do
+			local b = SkillFx.Ball(g + Vector3.new(k * 1.2 - 1.8, 2, 0), 0.9, COL.Purple, 0.55, 0)
+			for side = -1, 1, 2 do
+				local w = SkillFx.Get("Block", 0.55)
+				w.Size, w.Color, w.Material, w.Transparency = Vector3.new(0.8, 0.1, 0.5), COL.Pink, Enum.Material.Neon, 0
+				w.CFrame = b.CFrame * CFrame.new(side * 0.7, 0.1, 0)
+				tween(w, 0.5, { CFrame = w.CFrame + Vector3.new(k - 1.5, 6, 0) }, Enum.EasingStyle.Sine)
+			end
+			tween(b, 0.5, { CFrame = b.CFrame + Vector3.new(k - 1.5, 6, 0) }, Enum.EasingStyle.Sine)
+		end
+		SkillFx.Pops(c.Data.Hits, COL.Purple, c.Budget)
+	end)
+	for i, t in { 0.05, 0.2 } do
+		c.Env.After(t, function() ghost(c.From:Lerp(land, i / 3), COL.Purple, 0.25) end)
+	end
+	c.Env.After(0.25, function()
+		SkillFx.Dots(SkillFx.Ground(land) + Vector3.new(0, 0.6, 0), c.Big and 3 or 1, { Color = COL.Plum, Size = 1.2, EndSize = 1.6, Speed = 2,
+			Life = 0.4, Up = 0, Glow = 0, Spread = Vector2.new(180, 180) })
+		SkillFx.MP(c.Data.Hits, c.Statuses.MP, c.Own, c.Budget)
+		SkillFx.Signals(c.Data, c.Own)
+	end)
+end
+
+SkillFx.XKits = X
+
+-- Fx "Skill" with Slot X -> true when drawn. Roar: Center / Radius (+ Config TauntRadius); Field: Center / Radius /
+-- Life; Hop: From -> To. Statuses = { Guard, Taunted, MP }
+function SkillFx.X(data, own, env)
+	local key = type(data.Class) == "string" and type(data.Faction) == "string" and (data.Class .. "_" .. data.Faction) or nil
+	local kit = key and X[key]
+	local from = typeof(data.From) == "Vector3" and data.From or nil
+	if not kit or not from or type(env) ~= "table" then return false end
+	local center = typeof(data.Center) == "Vector3" and data.Center or from
+	local def = type(Config.Skills) == "table" and type(Config.Skills.Defs) == "table" and Config.Skills.Defs[data.Class] or nil
+	local xdef = type(def) == "table" and def.X or {}
+	local big = own and data.Auto ~= true and not UserInputService.TouchEnabled
+	local c = { Data = data, From = from, Center = center, Ground = (SkillFx.Ground(center)), To = typeof(data.To) == "Vector3" and data.To or nil,
+		Radius = math.clamp(num(data.Radius, num(xdef.Radius, 12)), 1, 40), Taunt = math.clamp(num(xdef.TauntRadius, 16), 1, 40),
+		Life = math.clamp(num(data.Life, num(xdef.Duration, 5)), 0.5, 10), Statuses = type(data.Statuses) == "table" and data.Statuses or {},
+		Own = own, Big = big, Budget = big and T.Budget.Big or T.Budget.Small, Env = env }
+	kit(c)
+	return true
+end
+
+-- Fx "SkillTick": a live field circle swells 1 -> 1.05 -> 1, sparkles rise (Halo), the pops, the MP signal
+function SkillFx.Tick(data, own)
+	local f = S.Fields[data.UserId]
+	local big = own and not UserInputService.TouchEnabled
+	local budget = big and T.Budget.Big or T.Budget.Small
+	if f and f.Plate.Parent and os.clock() < f.Until then
+		local d = f.D
+		tween(f.Plate, 0.15, { Size = Vector3.new(d * 1.05, 0.05, d * 1.05) })
+		tween(f.Plate, 0.15, { Size = Vector3.new(d, 0.05, d) }, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0.15)
+	end
+	local center = typeof(data.Center) == "Vector3" and data.Center or nil
+	if center then
+		SkillFx.Dots(SkillFx.Ground(center) + Vector3.new(0, 0.6, 0), big and 4 or 2, { Color = COL.Gold, Size = 0.4, Speed = 3, Life = 0.7, Up = 2 })
+	end
+	SkillFx.Pops(data.Hits, COL.White, budget)
+	local st = type(data.Statuses) == "table" and data.Statuses or {}
+	SkillFx.MP(data.Hits, st.MP, own, budget)
+	SkillFx.Signals(data, own)
+end
 
 -- Fx "Skill" with Slot Z -> true when drawn. env = { Muzzle(), After(s, fn) }. Times from the press: Contact = the hit
 -- (packet ContactDelay, else the class's), Hit = a chain's first hit, Launch = an arrow's release
