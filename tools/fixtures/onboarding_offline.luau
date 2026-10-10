@@ -65,6 +65,7 @@ local function fixture(saved, opts)
 	-- A23-74: the forge trip lands at the Crossroads spawn here (no Vector3 / CFrame doubles; test_weapon_first checks
 	-- the spot in front of the anvil)
 	config.Tutorial.Forge.Landing = "Spawn"
+	config.Daily.IntroGate = false -- A23-104 (the daily jobs open after an intro quest) has its own tests: test_a23_14 / test_town_quests
 	local players = {}
 	local function newPlayer()
 		local p = { Name = "OnboardingTester", UserId = serial, Parent = players, Attrs = {}, __kind = "Instance" }
@@ -159,6 +160,7 @@ local function fixture(saved, opts)
 		AddBankGold = function(p, amount) ps.AddStat(p, "BankGold", amount) end,
 		AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end }
 	local registry = { PlayerService = ps, DataService = dataService, MonsterService = monster, ProgressionService = prog,
+		StoryQuestService = { QuestDone = signal() }, -- QuestService listens to the daily intro quest (A23-104)
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end,
 			-- A23-68 #1: the accepted mission's move to the meadow (an instant Travel); arriving fires ZoneChanged

@@ -16,7 +16,8 @@
 -- test drives it), PauseCard.IsOpen(), PauseCard.Waiting() (a card waits), PauseCard.Busy() (the screen is talking: the
 -- calm-screen rule, also ComeBack's opt-in), PauseCard.Build(parent, info) -> the card (이미지 개발 may restyle it: info =
 -- { Title, Body, Buttons = { { Id, Text } }, OnButton = fn(id) }), PauseCard.Shown (Util.Signal: kind, button, why;
--- button = "Keep" | "OK" | "Go" | "Backdrop") for the beta metrics.
+-- button = "Keep" | "OK" | "Go" | "Backdrop") for the beta metrics, PauseCard.OpenKind() -> the open card's kind or nil
+-- (Audio: "Back" WelcomeBack, "Tip" TipDing, else WindowOpen).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -111,6 +112,10 @@ end
 
 function PauseCard.IsOpen()
 	return S.Card ~= nil and S.Card.Parent ~= nil
+end
+
+function PauseCard.OpenKind()
+	return PauseCard.IsOpen() and S.Kind or nil
 end
 
 function PauseCard.Waiting()
@@ -269,6 +274,7 @@ local function open(card)
 		return false
 	end
 	S.Card = built
+	S.Kind = card.Kind
 	return true
 end
 

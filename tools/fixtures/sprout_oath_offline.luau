@@ -69,15 +69,22 @@ runGroup("config", function()
 	check(sq.SkipChapters[2].Level == 25 and sq.SkipChapters[2].Subs[1] == "M3_5", "an old Lv25+ save skips M3_5 too", show(sq.SkipChapters))
 	for _, id in { "OathH", "OathR" } do
 		local d = sq.Defs[id]
-		check(d.Kind == "Sub" and d.Requires.Done[1] == "M3_4" and d.Requires.Level == 15 and d.Requires.Sprout == true,
-			id .. ": after M3_4, Lv15, while a sprout", show(d.Requires))
+		check(d.Kind == "Sub" and d.Requires.Done[1] == "M3_4" and d.Requires.Level == 15 and d.Requires.Sprout == nil,
+			id .. ": after M3_4, Lv15, with or without the Sprout Shield (빛 마을 점검 #54)", show(d.Requires))
 		local last = d.Steps[#d.Steps]
 		check(last.Panel == true and last.Obj.Type == "Choice" and last.Obj.Good.Points == 2 and last.Obj.Evil.Points == 2
 			and last.Obj.Good.Label == "I'll guard the small ones" and last.Obj.Evil.Label == "Rascals bow to no one!",
 			id .. ": ends with the oath card, 2 points each way", show(last.Obj))
-		check(d.Reward.TitleBy.Good == "GuardianCadet" and d.Reward.TitleBy.Evil == "RascalCadet" and d.Reward.GoldN == 120
-			and d.Reward.XPBar == 0.5, id .. ": stat-free titles by the pick, the town-sub reward size", show(d.Reward))
-		check(d.Finish == "Oath sworn! Your Sprout Shield ends after 1 hour of play.", id .. ": the closing line", d.Finish)
+		check(d.Reward.TitleBy.Good == "GuardianCadet" and d.Reward.TitleBy.Evil == "RascalCadet" and d.Reward.Gold == 2
+			and d.Reward.XP == 2 and d.Reward.GoldN == nil and d.Reward.XPBar == nil,
+			id .. ": stat-free titles by the pick, the woods-sub reward (2 minutes of hunting gold + XP, #54)", show(d.Reward))
+		check(d.Finish == "Promise made! Keep it close, wherever you go.", id .. ": the closing line", d.Finish)
+		local said = d.Start .. " " .. d.Finish
+		for _, step in d.Steps do
+			for _, line in (step.Lines and step.Lines.All) or {} do said ..= " " .. line end
+		end
+		check(not string.find(said, "Shield", 1, true) and not string.find(said, "graduate", 1, true),
+			id .. ": no line says the Sprout Shield is still on (a graduate may take it, #54)", said)
 		check(not string.find(show(d), "[\234-\237][\128-\191][\128-\191]"), id .. ": English only", "")
 	end
 	local h, r = sq.Defs.OathH, sq.Defs.OathR
@@ -167,7 +174,11 @@ runGroup("who gets an oath", function()
 	check(not sub(early, ed, "OathH"), "without M3_4: no oath", "")
 	w.NotRookie[14] = true
 	local grad, gd = hero(w, 14, "Halo", 20, storyOf(pre))
-	check(not sub(grad, gd, "OathH") and gd.Story.Subs.OathH == nil, "already graduated: no oath", show(gd.Story.Subs))
+	check(sub(grad, gd, "OathH") ~= nil and sub(grad, gd, "OathH").St == 1, "already graduated: the oath opens too (#54)",
+		show(gd.Story.Subs))
+	w.NotRookie[17] = true
+	local gradR, grd = hero(w, 17, "Horns", 15, storyOf(pre))
+	check(sub(gradR, grd, "OathR") ~= nil, "a graduated Horn at Lv15: OathR too (both sides the same)", show(grd.Story.Subs))
 	local n, nd = hero(w, 15, "Neutral", 15, storyOf(pre))
 	check(not sub(n, nd, "OathH") and nd.Story.Subs.OathR == nil, "Neutral: no oath (the guild has its own graduation lines)", show(nd.Story.Subs))
 	-- the oath keeps running when the shield ends meanwhile
@@ -198,7 +209,7 @@ runGroup("OathH: kill, then the oath", function()
 	w:Remote("StoryAction", p, "OathH", "Choose", "Good")
 	check(d.Story.Done.OathH == true and d.Honor == 7 and d.Story.Pick.OathH == "Good", "oath A: Honor +2, done", show({ d.Honor, d.Story.Done }))
 	check(titlesOf(w, p) == "GuardianCadet", "title Guardian Cadet", titlesOf(w, p))
-	check((d.BankGold or 0) > 0, "the town-sub gold is paid", d.BankGold)
+	check((d.BankGold or 0) > 0, "the woods-sub gold is paid", d.BankGold)
 	-- the other pick
 	local q, qd = hero(w, 21, "Halo", 15, storyOf(pre, { OathH = { St = 4, P = 0, T = {}, Claim = false } }), { Honor = 5 })
 	w:Remote("StoryAction", q, "OathH", "Choose", "Evil")
@@ -227,6 +238,19 @@ runGroup("OathR: basic hits, then the oath", function()
 	local q, qd = hero(w, 31, "Horns", 15, storyOf(pre, { OathR = { St = 5, P = 0, T = {}, Claim = false } }), { Infamy = 6 })
 	w:Remote("StoryAction", q, "OathR", "Choose", "Good")
 	check(qd.Infamy == 4 and titlesOf(w, q) == "GuardianCadet", "oath A for a Horn: Infamy -2 (A23-58), Guardian Cadet", show({ qd.Infamy, titlesOf(w, q) }))
+end)
+
+-- the Requires.Sprout gate itself stays in StoryQuestService for later subs (no beta sub uses it after #54)
+runGroup("Requires.Sprout gate", function()
+	local w = oathWorld()
+	w.Config.StoryQuests.Defs.OathH.Requires.Sprout = true
+	local pre = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7", "M3_1", "M3_2", "M3_3", "M3_4" }
+	local function sub(p, d, id) w:Tick(2) return d.Story.Subs[id] end
+	local s, sd = hero(w, 40, "Halo", 15, storyOf(pre))
+	check(sub(s, sd, "OathH") ~= nil, "a sub with Requires.Sprout: a sprout gets it", show(sd.Story.Subs))
+	w.NotRookie[41] = true
+	local g, gd = hero(w, 41, "Halo", 15, storyOf(pre))
+	check(sub(g, gd, "OathH") == nil, "a sub with Requires.Sprout: a graduate does not", show(gd.Story.Subs))
 end)
 
 finish()

@@ -364,12 +364,30 @@ local function destroyForceFields(p)
 	end
 end
 
--- ⑤ a soft outline in the faction color (no fill, hidden behind walls) while protected. Protect adds it; the 1 s loop
--- puts it back on a rebuilt body (an appearance swap moves the ForceField, not this)
+-- 빛 마을 점검 #42: true while p stands in a town (no PvP there; a spawn-plaza outline protects nothing)
+local function inTown(p)
+	local zs = S and S.ZoneService
+	if type(zs) ~= "table" or type(zs.IsTown) ~= "function" then return false end
+	local ok, town = pcall(zs.IsTown, p)
+	return ok and town == true
+end
+
+-- 빛 마을 점검 #41: true while p stands in a faction town (Config.Zones[..].Town with a Faction: Halo Citadel, Horns Den;
+-- the Crossroads town has none)
+local function inFactionTown(p)
+	local zs = S and S.ZoneService
+	if type(zs) ~= "table" or type(zs.GetZone) ~= "function" then return false end
+	local ok, zone = pcall(zs.GetZone, p)
+	return ok and type(zone) == "table" and zone.Town == true and zone.Faction ~= nil
+end
+
+-- ⑤ a soft outline in the faction color (no fill, hidden behind walls) while protected, outside the towns (#42).
+-- Protect adds it; the 1 s loop puts it back on a rebuilt body (an appearance swap moves the ForceField, not this) and
+-- after the protected player walks out of town, and takes it off back inside
 local function addProtectGlow(p)
 	local character = p.Character
 	local f = Config.Factions[faction(p)]
-	if not character or not character.Parent or character:FindFirstChild(PROTECT_GLOW) or not (f and f.Color) then
+	if not character or not character.Parent or character:FindFirstChild(PROTECT_GLOW) or not (f and f.Color) or inTown(p) then
 		return
 	end
 	local h = Instance.new("Highlight")
@@ -379,6 +397,11 @@ local function addProtectGlow(p)
 	h.OutlineTransparency = Config.PvP.ProtectGlow.OutlineTransparency
 	h.DepthMode = Enum.HighlightDepthMode.Occluded
 	h.Parent = character
+end
+
+local function removeProtectGlow(p)
+	local glow = p.Character and p.Character:FindFirstChild(PROTECT_GLOW)
+	if glow and glow:IsA("Highlight") then glow:Destroy() end
 end
 
 local function clearRevenge(p)
@@ -530,8 +553,10 @@ function PvPService.CanAttack(attacker, victim)
 	if not isFighter(fa) or not isFighter(fv) or fa == fv then
 		return false, "SameFaction"
 	end
-	-- kaiju exception: Halo may hit the Active kaiju in any zone (rookies allowed, protection ignored)
-	if fa == "Halo" and kstate(victim) == "Active" then
+	-- kaiju exception: Halo may hit the Active kaiju in any zone (rookies allowed, protection ignored), except from inside
+	-- a faction town (user 2026-10-10, 빛 마을 점검 #41: Halo Citadel / Horns Den are no fortress; the Crossroads fight
+	-- stays). From a faction town the normal rules below answer (a town is a safe zone).
+	if fa == "Halo" and kstate(victim) == "Active" and not inFactionTown(attacker) then
 		return true, nil
 	end
 	if not inPvP(attacker) or not inPvP(victim) then
@@ -848,7 +873,7 @@ local function tickPlayer(p, now)
 		destroyForceFields(p)
 		setAttr(p, "Protected", false)
 	elseif pu and pu > 0 then
-		addProtectGlow(p)
+		if inTown(p) then removeProtectGlow(p) else addProtectGlow(p) end
 	end
 
 	-- star decay: one star per StarDecaySeconds, paused while queued / siren / active kaiju

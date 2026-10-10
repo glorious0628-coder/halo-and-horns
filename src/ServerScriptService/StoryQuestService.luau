@@ -227,6 +227,14 @@ local function npcNear(player, npcId)
 	return not found
 end
 
+-- 빛 마을 점검 #2: a landmark follows its placed model (Util.TaggedSpot: a workspace instance tagged SQ.LandmarkTag
+-- with the attribute Spot = the key, e.g. on the hero statue pair's centre; the client guides read the same rule), else
+-- the Config spot. Read when a step needs it (like npcNear); only flat distances use it, so its height does not matter.
+local function landmark(id)
+	if type(id) ~= "string" then return nil end
+	return Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", id) or SQ.Landmarks[id]
+end
+
 local function ownsIron(player)
 	local mask = math.floor(num(player:GetAttribute("WeaponOwnedMask"), 1))
 	return bit32.btest(mask, bit32.lshift(1, 2)) or num(player:GetAttribute("WeaponTier"), 1) >= 3
@@ -303,7 +311,7 @@ local function eventAmount(player, obj, ev)
 		end
 		if obj.Golden and info.Golden ~= true then return 0 end
 		if obj.Near then
-			local spot = SQ.Landmarks[obj.Near]
+			local spot = landmark(obj.Near)
 			if not spot or typeof(info.Position) ~= "Vector3" or Util.FlatDistance(info.Position, spot) > (obj.Radius or 40) then return 0 end
 		end
 		if t == "BasicKill" and info.SkillHit == true then return 0 end
@@ -584,7 +592,7 @@ local function refresh(player)
 				done = zoneMatches(player, obj.Zone, currentZone(player))
 			elseif obj.Type == "Near" then
 				-- standing next to a landmark (e.g. the Crossroads fountain), checked by the 1 s loop
-				local spot = SQ.Landmarks[obj.Spot]
+				local spot = landmark(obj.Spot)
 				local root = Util.GetRoot(player)
 				local inside = spot ~= nil and root ~= nil and (obj.Zone == nil or zoneMatches(player, obj.Zone, currentZone(player)))
 					and Util.FlatDistance(root.Position, spot) <= (obj.Radius or 20)
@@ -764,11 +772,13 @@ end
 
 -- sub rows, best first, at most Config.StoryQuests.MaxSubs (quest_volume §2-6: 3; the HUD shows 2, the open list all):
 -- 0 = a claim or a Talk / Choice card waiting mid-quest (past step 1), 1 = situational (Show), 2 = started (past step 1
--- or with progress) or S0, 3 = a new offer waiting at its first card, 4 = the rest; within a rank the newer quest
+-- or with progress) or S0, 2.5 = a faction town-NPC offer (below the subs in progress, above the other offers), 3 = a new
+-- offer waiting at its first card, 4 = the rest; within a rank the newer quest
 -- (later in StoryQuests.Subs) first. With A23-56's many subs a sub in progress is never pushed off by new offers or
 -- older background subs, and the order index keeps the rows from swapping between refreshes (table.sort is not stable).
--- zone_check_halo #19: a faction town-NPC offer (a sub with Factions whose step waits at its Npc) counts as rank 2, so the
--- new Halo / Horns town quest is not pushed out by the other offers. With Config.StoryQuests.SendAllSubs the rows past
+-- zone_check_halo #19: a faction town-NPC offer (a sub with Factions whose step waits at its Npc) counts as rank 2.5, so the
+-- new Halo / Horns town quest is not pushed out by the other offers, yet never pushes out a sub the player already started
+-- (검수 3a2111a0: an offer not yet taken must not push a sub in progress out of the three rows). With Config.StoryQuests.SendAllSubs the rows past
 -- MaxSubs are sent too, each marked More = true: the HUD draws only the rows without More (the top MaxSubs), the quest window
 -- (QuestBook 'In progress') lists all of them, so no active sub is missing from both. Off = exactly MaxSubs rows, as before.
 function StoryQuestService.SubRows(player, data)
@@ -788,7 +798,7 @@ function StoryQuestService.SubRows(player, data)
 				local started = num(tr.St, 1) > 1 or num(tr.P) > 0 or (type(tr.T) == "table" and next(tr.T) ~= nil)
 				local townOffer = waiting and type(def.Factions) == "table" and step.Npc ~= nil
 				row.Rank = ((tr.Claim or (waiting and started)) and 0) or (def.Show and 1)
-					or ((started or id == "S0" or townOffer) and 2) or (waiting and 3) or 4
+					or ((started or id == "S0") and 2) or (townOffer and 2.5) or (waiting and 3) or 4
 				row.Order = order
 				table.insert(rows, row)
 			end

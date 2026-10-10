@@ -1319,6 +1319,7 @@ local function questWorld(saved, seed, zone)
 	local f = { Now = 1000, Rows = {}, Notices = {}, Pays = {}, Tickets = {}, Spawned = {}, Ready = true, Zone = zone or "SlimeMeadow" }
 	local config = newConfig()
 	f.Config = config
+	config.Daily.IntroGate = false -- A23-104 (the daily jobs open after an intro quest) has its own tests: test_a23_14 / test_town_quests
 	local players = { __kind = "Instance", Name = "Players" }
 	local userId = 7000 + questSerial
 	if saved then f.Rows["P_" .. userId] = deepCopy(saved) end
@@ -1390,7 +1391,7 @@ local function questWorld(saved, seed, zone)
 	local registry = { PlayerService = ps, DataService = ds, ProgressionService = prog,
 		MonsterService = { MonsterKilled = signal() }, CombatService = { Released = signal() },
 		GooseService = { GooseFinished = signal() }, PvPService = { PlayerKO = signal(), IsRookie = function() return true end },
-		KaijuService = { KaijuEnded = signal() },
+		KaijuService = { KaijuEnded = signal() }, StoryQuestService = { QuestDone = signal() },
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return ds.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() },
 		ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end },

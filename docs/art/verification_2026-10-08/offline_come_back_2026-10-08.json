@@ -353,8 +353,8 @@
   },
   "sourceSHA256": {
     "src/StarterPlayer/StarterPlayerScripts/ComeBack.luau": "9600a14159ec74a6cc8023126f6abd9249a83d5edc3e860f1f42cebc7bd4322a",
-    "src/ReplicatedStorage/Shared/Config.luau": "5e7e6661e44ba20c175b6c2e40018fb61fafaa826f112127acfca08feed57479",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "342bcc7b0eea5f666c66fff6caaa59685097441fdb30073dc682f8e2a1f5cfd0"
+    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "62fa5ad2c1a5425358be61b0b9c9c4f99a7729108a43027f8d7216ee10be8b86"
   },
   "fixtureSHA256": "40f6e339f85fb33222667e817127a7c8f8ba76e8658255c42feb3b5370113abb",
   "studioCalls": 0,

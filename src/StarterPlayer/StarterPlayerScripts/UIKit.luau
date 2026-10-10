@@ -817,12 +817,13 @@ function UIKit.Typewriter(label, text, opts)
 end
 
 -- the shared press feel (UIKit.ButtonFeel) + Click sound; onClick(button) runs on Activated unless the button has
--- Active == false or attribute Disabled == true (shared by UIKit.Button and UIKit.ArtButton)
+-- Active == false or attribute Disabled == true (shared by UIKit.Button and UIKit.ArtButton). Attribute NoClick = true:
+-- no Click (the button plays its own sound, e.g. the quest window's tabs QuestTab; game dev 1, sound_gaps 2026-10-10)
 local function wirePress(btn, onClick)
 	UIKit.ButtonFeel(btn)
 	btn.Activated:Connect(function()
 		if not btn.Active or btn:GetAttribute("Disabled") == true then return end
-		playClick()
+		if btn:GetAttribute("NoClick") ~= true then playClick() end
 		if type(onClick) == "function" then
 			safeCall(onClick, btn)
 		end

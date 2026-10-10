@@ -31,3 +31,8 @@
 - 새 탑(사람 키 문, 땅 높이): `art/out/s2/halo/HaloProp_Tower_v2_{front,back,left,right}_HQ_src.png`, 시트 `art/review/s2/halo_tower_v2_sheet.jpg`.
 - 바닥 메달리온(후보 A 월계수 + 후광 고리 고름, B·C는 후보): `art/out/s2/halo/HaloFloor_Medallion_A_HQ_src.png`(원본), `..._HQ_cut.png`(1024² 투명 원형 PNG, `tools/_img2_circle_cut.py`), 시트 `halo_medallion_cut_check.jpg`, 후보 시트 `halo_tower_medallion_sheet.jpg`.
 - 남은 큐(사용 한도 때문에 초기화 뒤): 깨진 왕관 새 그림(후보 중간 3 → 검수가 고름 → 4면), StallSnack(앞 + 뒤·좌·우), A23-106 건물 실내 시안(대성당·돔집·물약·빵집·주스·꽃).
+
+## 10/10 낮 추가 (A23-107)
+- 납작한 장식(빛 마을) 고급 + 투명 PNG: 세로 깃발 2종·금 방패·둥근 창·문 위 후광 장식·차양 → `art/out/s2/halo/deco/HaloDecoHQ_<이름>_{src,cut}.png`, 확인 시트 `art/review/s2/halo_deco_cut_check.jpg`(후보 시트 halo_deco_candidates_sheet.jpg, 방패 재시도 halo_shield2_sheet.jpg). 방패 문장 첫 판은 깃발꼴이라 금 방패로 다시.
+- 왕관 부품(금 반쪽·붉은 반쪽·루비·사파이어·후광 고리·금 간 자국) 앞 6 + 뒤·옆 9 → `art/out/s2/crown/`, 시트 `crown_parts_front_sheet.jpg`·`crown_parts_mv_sheet.jpg`.
+- 남은 큐: 빛 마을 문·대성당·탑 부품(이미지 생성 1과 접합 기준 맞춤 대기) → StallSnack → 실내 시안 → 뿔 성채 부품·붉은 깃발·황소 문장.

@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 234,
+  "checks": 246,
   "namedChecks": 57,
   "failing": [],
   "static": [
@@ -460,14 +460,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
+    "src/ReplicatedStorage/Shared/Config.luau": "fe4f39cfdbcb09a03bdbcee37ffe836acd4cfdb077f13677ae5add02f7c6a061",
     "src/StarterPlayer/StarterPlayerScripts/Announce.luau": "8e8837a3d8490f9676d5284120d0596f2b6f8fb47e179aeee7104de5c0a66b37",
-    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "9ee257e0f0304207dca77a2bd541a285158cbb654b20b004a6b5225d6a9c9830",
-    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "342bcc7b0eea5f666c66fff6caaa59685097441fdb30073dc682f8e2a1f5cfd0",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "21d44dc7b858985f44081c4ad5b2ce10c0c5066fa708dac35b39c5e98bbc0248",
-    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "197597c32d61c48bcaccc0d75d8e3a73c74bf1d062e18681b25911ce8f9b5a69",
+    "src/StarterPlayer/StarterPlayerScripts/Panels.luau": "eada45d07d7ce9c0878105794de748a156c40b704ebd573743cfd21e9698279d",
+    "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "62fa5ad2c1a5425358be61b0b9c9c4f99a7729108a43027f8d7216ee10be8b86",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "e28e3f298c8cf1c772c403a7d6593d7fad809c05dbb763cd9a79802130a5dfd2",
     "src/StarterPlayer/StarterPlayerScripts/PlayerListUI.luau": "6ab44af8e2f32c8b9890d801ae93fe2b627a44a5a8936eaddf1def8a34986a16",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "fe19f90766778c1dfca3b660eedf7528da426c458d1228a8f2f946f8c887a63b",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "14443eb188be9f0b857c7e9fe214e74e57387e1811ef124c1da0006864c9432e",
     "tools/fixtures/story_client_offline.luau": "3490ef646046a11732a3e00956ece64da13229f165f37bc1aa29f0a787d0ff4d"
   },
   "sourcesChangedDuringRun": [],
