@@ -6866,5 +6866,90 @@
     "art/models/tripo/web/Halo_RoundTree_v2_HD_LOD.glb"
    ]
   }
+ ],
+ "NPC_HaloBright_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view (front/left/right/back), H3.1 (ultra mesh, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b2955d98-ec9a-4f8c-9224-061945dab0f4",
+   "at": "2026-10-10 10:03~10:30",
+   "balance_after": 23520,
+   "file": "art/models/tripo/web/NPC_HaloBright_HD_src.glb",
+   "note": "빛 마을 NPC 장식 모델(검수 통과 멀티뷰, 이미지 생성 2: art/out/s2/npc/NPC_HaloBright_A_src.png + left/right/back_HQ). LOD 8000(tools/npc_lod.sh), 시트 art/review/world/halo_new/npc/NPC_Bright_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/NPC_HaloBright_HD_LOD.glb"
+   ]
+  }
+ ],
+ "NPC_HaloSirGleam_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view (front/left/right/back), H3.1 (ultra mesh, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f7720ef9-b12c-4b06-a978-bd161093448a",
+   "at": "2026-10-10 10:03~10:30",
+   "balance_after": 23465,
+   "file": "art/models/tripo/web/NPC_HaloSirGleam_HD_src.glb",
+   "note": "빛 마을 NPC 장식 모델(검수 통과 멀티뷰, 이미지 생성 2: art/out/s2/npc/NPC_HaloSirGleam_A_src.png + left/right/back_HQ). LOD 8000(tools/npc_lod.sh), 시트 art/review/world/halo_new/npc/NPC_SirGleam_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/NPC_HaloSirGleam_HD_LOD.glb"
+   ]
+  }
+ ],
+ "NPC_HaloBakerGranny_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view (front/left/right/back), H3.1 (ultra mesh, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f128ddd7-6db9-4e40-9225-af58cea68f92",
+   "at": "2026-10-10 10:03~10:30",
+   "balance_after": 23410,
+   "file": "art/models/tripo/web/NPC_HaloBakerGranny_HD_src.glb",
+   "note": "빛 마을 NPC 장식 모델(검수 통과 멀티뷰, 이미지 생성 2: art/out/s2/npc/NPC_HaloBakerGranny_A_src.png + left/right/back_HQ). LOD 8000(tools/npc_lod.sh), 시트 art/review/world/halo_new/npc/NPC_BakerGranny_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/NPC_HaloBakerGranny_HD_LOD.glb"
+   ]
+  }
+ ],
+ "NPC_HaloJuiceMan_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view (front/left/right/back), H3.1 (ultra mesh, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3e3fd106-190f-4288-a8dc-f9310a6af452",
+   "at": "2026-10-10 10:03~10:30",
+   "balance_after": 23355,
+   "file": "art/models/tripo/web/NPC_HaloJuiceMan_HD_src.glb",
+   "note": "빛 마을 NPC 장식 모델(검수 통과 멀티뷰, 이미지 생성 2: art/out/s2/npc/NPC_HaloJuiceMan_A_src.png + left/right/back_HQ). LOD 8000(tools/npc_lod.sh), 시트 art/review/world/halo_new/npc/NPC_JuiceMan_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/NPC_HaloJuiceMan_HD_LOD.glb"
+   ]
+  }
+ ],
+ "NPC_HaloFlowerGirl_web_hd": [
+  {
+   "event": "web_generation",
+   "mode": "HD multi-view (front/left/right/back), H3.1 (ultra mesh, poly 15000, 4K, PBR, triangles, remove-lighting OFF, 8K trial OFF)",
+   "points": 55,
+   "account": "web ② (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "a2d0ae39-a720-424e-9042-b87342ca90e8",
+   "at": "2026-10-10 10:03~10:30",
+   "balance_after": 23300,
+   "file": "art/models/tripo/web/NPC_HaloFlowerGirl_HD_src.glb",
+   "note": "빛 마을 NPC 장식 모델(검수 통과 멀티뷰, 이미지 생성 2: art/out/s2/npc/NPC_HaloFlowerGirl_C_src.png + left/right/back_HQ). LOD 8000(tools/npc_lod.sh), 시트 art/review/world/halo_new/npc/NPC_FlowerGirl_compare.jpg",
+   "derived": [
+    "art/models/tripo/web/NPC_HaloFlowerGirl_HD_LOD.glb"
+   ]
+  }
  ]
 }

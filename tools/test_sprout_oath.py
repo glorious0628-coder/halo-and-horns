@@ -43,9 +43,12 @@ MUTATIONS = [
     ("the migration forgets the step", ST, "st.Subs[st.Main.Id] = { St = st.Main.St, P = st.Main.P, T = st.Main.T, Claim = st.Main.Claim }", "st.Subs[st.Main.Id] = { St = 1, P = 0, T = {}, Claim = false }"),
     ("the migration overwrites a sub", ST, "and not st.Done[st.Main.Id] and st.Subs[st.Main.Id] == nil then", "and not st.Done[st.Main.Id] then"),
     # --- who gets an oath
-    ("config: oath at Lv14", C, 'Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },\n\t\t\tStart = "Bright', 'Requires = { Done = { "M3_4" }, Level = 14, Sprout = true },\n\t\t\tStart = "Bright'),
-    ("config: oath without M3_4", C, 'Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },\n\t\t\tStart = "Smokey', 'Requires = { Level = 15, Sprout = true },\n\t\t\tStart = "Smokey'),
-    ("config: oath for graduates too", C, 'Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },\n\t\t\tStart = "Bright', 'Requires = { Done = { "M3_4" }, Level = 15 },\n\t\t\tStart = "Bright'),
+    ("config: oath at Lv14", C, 'Requires = { Done = { "M3_4" }, Level = 15 },\n\t\t\tStart = "Bright', 'Requires = { Done = { "M3_4" }, Level = 14 },\n\t\t\tStart = "Bright'),
+    ("config: oath without M3_4", C, 'Requires = { Done = { "M3_4" }, Level = 15 },\n\t\t\tStart = "Smokey', 'Requires = { Level = 15 },\n\t\t\tStart = "Smokey'),
+    ("config: the oath only for sprouts again", C, 'Requires = { Done = { "M3_4" }, Level = 15 },\n\t\t\tStart = "Bright', 'Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },\n\t\t\tStart = "Bright'),
+    ("config: OathR only for sprouts again", C, 'Requires = { Done = { "M3_4" }, Level = 15 },\n\t\t\tStart = "Smokey', 'Requires = { Done = { "M3_4" }, Level = 15, Sprout = true },\n\t\t\tStart = "Smokey'),
+    ("config: Bright still says the shield ends", C, 'Start = "Bright has one more lesson for you.",', 'Start = "Bright has a last lesson before your Sprout Shield ends.",'),
+    ("config: Smokey still says the shield ends", C, '"Smokey: A real Horn raids knights in the woods!",', '"Smokey: Almost a graduate! When the shield ends, you can raid knights.",'),
     ("config: OathH for Horns", C, 'Speaker = "Bright", Factions = { Halo = true },\n\t\t\tRequires = { Done = { "M3_4" }, Level = 15', 'Speaker = "Bright", Factions = { Halo = true, Horns = true },\n\t\t\tRequires = { Done = { "M3_4" }, Level = 15'),
     ("config: OathR for Neutral", C, 'Speaker = "Smokey", Factions = { Horns = true },\n\t\t\tRequires = { Done = { "M3_4" }, Level = 15', 'Speaker = "Smokey", Factions = { Horns = true, Neutral = true },\n\t\t\tRequires = { Done = { "M3_4" }, Level = 15'),
     ("Sprout is not checked", ST, '\tif req.Sprout and stateTrue(player, "Graduated") then return false end\n', ""),
@@ -56,13 +59,14 @@ MUTATIONS = [
     ("config: Horns may use skills", C, 'Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 }', 'Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 }'),
     ("config: Horns skip a camp", C, '{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },\n', ''),
     # --- the oath
-    ("config: Halo oath A scores 1", C, 'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 2 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR',
-     'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 1 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR'),
-    ("config: the titles are swapped", C, 'TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR', 'TitleBy = { Good = "RascalCadet", Evil = "GuardianCadet" } },\n\t\t\tFinish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR'),
-    ("config: the oath gives no titles", C, 'Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR', 'Reward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR'),
+    ("config: Halo oath A scores 1", C, 'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 2 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR',
+     'Obj = { Type = "Choice", Good = { Label = "I\'ll guard the small ones", Points = 1 },\n\t\t\t\t\t\tEvil = { Label = "Rascals bow to no one!", Points = 2 } } },\n\t\t\t},\n\t\t\tReward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: the titles are swapped", C, 'TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'TitleBy = { Good = "RascalCadet", Evil = "GuardianCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: the oath gives no titles", C, 'Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Reward = { Gold = 2, XP = 2 },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
+    ("config: the town-sub gold for the oath", C, 'Reward = { Gold = 2, XP = 2, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Reward = { GoldN = 120, XPBar = 0.5, TitleBy = { Good = "GuardianCadet", Evil = "RascalCadet" } },\n\t\t\tFinish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR'),
     ("config: no Rascal Cadet title", C, 'Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }\n', ''),
     ("config: Guardian Cadet not pickable", C, 'for _, id in { "GuardianCadet", "RascalCadet" } do', 'for _, id in { "RascalCadet" } do'),
-    ("config: the closing line changed", C, 'Finish = "Oath sworn! Your Sprout Shield ends after 1 hour of play.",\n\t\t},\n\t\tOathR', 'Finish = "Done.",\n\t\t},\n\t\tOathR'),
+    ("config: the closing line changed", C, 'Finish = "Promise made! Keep it close, wherever you go.",\n\t\t},\n\t\tOathR', 'Finish = "Done.",\n\t\t},\n\t\tOathR'),
     ("config: no sprout oath for Horns in the list", C, '"M3_5", "OathH", "OathR" }', '"M3_5", "OathH" }'),
 ]
 
@@ -101,10 +105,11 @@ SUITE = Suite(
              "M3_4 -> M3_6; row 'Sprout Shield on · ends at Lv15 + 1 hour of play' without numbers; a saved in-progress main "
              "M3_5 moves to the side lines keeping its step; an old Lv25+ save skips it; a finished one stays finished); "
              "Requires.Sprout = the Sprout Shield is still on; OathH (Halo, Bright) / OathR (Horns, Smokey) open at Lv15 "
-             "after M3_4 while a sprout, once, not for graduates / Neutral / below Lv15; Halo: talk, guard the woods bridge "
+             "after M3_4 with or without the shield (#54), once, not for Neutral / below Lv15; Halo: talk, guard the woods bridge "
              "15 s, one Goblin Brute in the woods, the oath; Horns: talk, goblin camp 1, camp 2, one Goblin Brute with basic "
              "hits only, the oath; the oath card 2 points each way (A23-58 floor), Reward TitleBy (Good Guardian Cadet / "
-             "Evil Rascal Cadet), the town-sub gold, 'Oath sworn! Your Sprout Shield ends after 1 hour of play.'.",
+             "Evil Rascal Cadet), the woods-sub reward Gold 2 / XP 2, 'Promise made! Keep it close, wherever you go.'; no line says "
+             "the shield is still on.",
     limitations="Walking steps (Near) are the existing engine's 1 s loop and are not simulated; the fixture sets the track to "
                 "the step it tests. No 'Playtime' objective type was added: the shield clock is the existing State "
                 "'Graduated' (PvPService.IsRookie). The NPC lines are new English text for 검수's review.",

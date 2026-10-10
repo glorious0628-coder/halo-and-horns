@@ -9,5 +9,10 @@
 | 2026-10-07 | (시험만, 지금 안 씀) | 5465796644 | Moving Beam Water - Tiny (10610453422) | bluecoolman280 | 넓은 물판 — 분수에는 안 맞음 |
 | 2026-10-07 | 분수 물줄기: 떨어지는 곳 물결(바닥에 눕힌 파티클) | 9833214445 | Stylized Water Particles Splash Effect RP (104302188311459) | MoonRocket29609 | 원본에 스크립트 2개 → 넣을 때 샌드박스, 살펴본 뒤 원본 통째로 지움(텍스처 id만 씀) |
 | 2026-10-07 | 분수 물줄기: 연못·후광 반짝이 | 244221535 | Sparkles Particle (688891088) | Nanonauts | 스크립트 0개 |
+| 2026-10-10 | (살펴보기만, 안 씀 → 우리 그림 Fx_RainStreak 77226041980480) 날씨 빗줄기 | 241868005 | Rain (Particle) (483675631) | Casmik | 스크립트 0개. 원본은 81×64 판 2장(빗줄기 300개/초 + 바닥 튀김 241576804) — 우리는 빗줄기만, 420개/초(폰 55%, 지붕 아래 12%) |
+| 2026-10-10 | (살펴보기만, 안 씀 → 우리 그림 Fx_SnowFlake 117774040305599) 날씨 눈송이 | 99851851 | Snow Particles (Realistic) (243533538) | jbjgang2 | 스크립트 0개. 원본은 470×571 판 1000개/초 — 우리는 카메라 둘레 90×90 판에 110개/초, 천천히 |
+| 2026-10-10 | (안 씀) | 242802297 등 | Water Drop Particle Rain Realistic Effect (72003775617457) | CodeRocket17850 | 스크립트 2개가 들어 있어 뺌 |
 
-살펴보기 방법: Studio MCP `insert_asset`으로 ServerStorage에 잠깐 넣어 파티클·빔 속성만 읽고 바로 지움(2026-10-07, 메인 Studio Edit, 저장 안 함). 후보 검색 기록: Particle Waterfall Cascade(109227527797309, Sparksh7143)는 큰 안개 텍스처라 이번엔 안 씀.
+살펴보기 방법: Studio MCP `insert_asset`으로 ServerStorage에 잠깐 넣어 파티클·빔 속성만 읽고 바로 지움(2026-10-07, 메인 Studio Edit, 저장 안 함; 2026-10-10 날씨는 연습 Studio UiSandbox에서). 후보 검색 기록: Particle Waterfall Cascade(109227527797309, Sparksh7143)는 큰 안개 텍스처라 이번엔 안 씀.
+
+- 2026-10-10 검수(A23-96): 날씨 파티클은 남의 애셋을 빌리지 않고 우리가 PIL로 만든 그림(art/ui/Fx_RainStreak.png·Fx_SnowFlake.png)을 올려 쓴다 — 원본이 내려가면 빈 파티클이 될 위험.

@@ -188,6 +188,14 @@ local function npcNear(player, npcId)
 	return not found
 end
 
+-- 빛 마을 점검 #2: a landmark follows its placed model (Util.TaggedSpot: a workspace instance tagged SQ.LandmarkTag
+-- with the attribute Spot = the key, e.g. on the hero statue pair's centre; the client guides read the same rule), else
+-- the Config spot. Read when a step needs it (like npcNear); only flat distances use it, so its height does not matter.
+local function landmark(id)
+	if type(id) ~= "string" then return nil end
+	return Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", id) or SQ.Landmarks[id]
+end
+
 local function ownsIron(player)
 	local mask = math.floor(num(player:GetAttribute("WeaponOwnedMask"), 1))
 	return bit32.btest(mask, bit32.lshift(1, 2)) or num(player:GetAttribute("WeaponTier"), 1) >= 3
@@ -264,7 +272,7 @@ local function eventAmount(player, obj, ev)
 		end
 		if obj.Golden and info.Golden ~= true then return 0 end
 		if obj.Near then
-			local spot = SQ.Landmarks[obj.Near]
+			local spot = landmark(obj.Near)
 			if not spot or typeof(info.Position) ~= "Vector3" or Util.FlatDistance(info.Position, spot) > (obj.Radius or 40) then return 0 end
 		end
 		if t == "BasicKill" and info.SkillHit == true then return 0 end
@@ -545,7 +553,7 @@ local function refresh(player)
 				done = zoneMatches(player, obj.Zone, currentZone(player))
 			elseif obj.Type == "Near" then
 				-- standing next to a landmark (e.g. the Crossroads fountain), checked by the 1 s loop
-				local spot = SQ.Landmarks[obj.Spot]
+				local spot = landmark(obj.Spot)
 				local root = Util.GetRoot(player)
 				local inside = spot ~= nil and root ~= nil and (obj.Zone == nil or zoneMatches(player, obj.Zone, currentZone(player)))
 					and Util.FlatDistance(root.Position, spot) <= (obj.Radius or 20)

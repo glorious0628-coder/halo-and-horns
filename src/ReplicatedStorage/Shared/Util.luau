@@ -269,6 +269,27 @@ function Util.DeepCopy(t)
 	return out
 end
 
+-- 빛 마을 점검 #2: where a placed marker puts a named spot. A workspace instance tagged `tag` with the attribute Spot = key
+-- (a Model: its pivot, a Part: its position) -> that position, else nil. The server (StoryQuestService) and the client
+-- (QuestTarget / HUD guides) use this one rule: Util.TaggedSpot(Config.StoryQuests.LandmarkTag, key) or
+-- Config.StoryQuests.Landmarks[key], so a marker moves the spot for both at once. Tags replicate; never throws.
+function Util.TaggedSpot(tag, key)
+	if type(tag) ~= "string" or type(key) ~= "string" then return nil end
+	local okTag, tagged = pcall(function()
+		return game:GetService("CollectionService"):GetTagged(tag)
+	end)
+	if not okTag or type(tagged) ~= "table" then return nil end
+	for _, inst in tagged do
+		local okPos, pos = pcall(function()
+			if inst:GetAttribute("Spot") ~= key or not inst:IsDescendantOf(workspace) then return nil end
+			if inst:IsA("Model") then return inst:GetPivot().Position end
+			return inst.Position
+		end)
+		if okPos and typeof(pos) == "Vector3" then return pos end
+	end
+	return nil
+end
+
 function Util.PlayersExcept(player)
 	local out = {}
 	for _, p in Players:GetPlayers() do

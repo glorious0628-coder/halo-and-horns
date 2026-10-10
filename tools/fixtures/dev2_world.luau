@@ -84,7 +84,16 @@ local function rankWorld(opts)
 	}
 	reg.ClassService = { ClassChanged = Signal.new(), GetClass = function() return "Warrior" end,
 		GetClassDef = function() return cfg.Classes.Warrior end }
-	reg.ZoneService = { IsPvPZone = function() return w.PvPZone ~= false end, IsTown = function() return false end,
+	-- 빛 마을 점검 #42 / #41: w.InTown[p] = standing in a town; w.ZoneIdOf[p] = a Config.Zones id (GetZone, and the PvP
+	-- answer follows that zone's PvP flag). Players without a ZoneIdOf keep the old answers (PvP unless w.PvPZone == false).
+	w.InTown, w.ZoneIdOf = {}, {}
+	reg.ZoneService = { IsPvPZone = function(p)
+			local z = w.ZoneIdOf[p] and cfg.Zones[w.ZoneIdOf[p]]
+			if z then return z.PvP == true end
+			return w.PvPZone ~= false
+		end,
+		IsTown = function(p) return w.InTown[p] == true end,
+		GetZone = function(p) return cfg.Zones[w.ZoneIdOf[p] or ""] or cfg.Zones.SlimeMeadow end,
 		IsPlausible = function() return true end }
 	reg.KaijuService = { GetState = function(p)
 			local s = p:GetAttribute("KaijuState")
