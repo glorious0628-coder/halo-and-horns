@@ -165,6 +165,8 @@ runGroup("config", function()
 		and WR.DryReset >= 1 and WR.DryReset < WR.Seconds,
 		"a sample every <= 1 s; a dry spell under DryReset (a swim jump) keeps the count", show({ WR.CheckEvery, WR.DryReset }))
 	check(WR.MaxSlope < 46, "landing slope below the players' MaxSlopeAngle 46", tostring(WR.MaxSlope))
+	check(WR.MaxRise >= 40 and WR.RayTop > WR.MaxRise, "a bank beside the Halo top tier / wings (Y 33 + 1.2 + mounds) is in reach",
+		show({ WR.MaxRise, WR.RayTop }))
 	check(table.find(WR.AvoidMaterials, "CrackedLava") ~= nil, "Horns lava strips are never a landing spot", show(WR.AvoidMaterials))
 	local ok = #WR.Rings >= 4 and WR.Rings[1] <= 8 and WR.Rings[#WR.Rings] >= 60
 	for i = 2, #WR.Rings do
@@ -319,7 +321,7 @@ runGroup("landing rules", function()
 		{ "a puddle on a ledge (the ray meets water first)", { Water = 1.8, Floor = 1.2 } },
 		{ "a ledge only 0.2 above the water (DryAbove 0.5)", land(-1.0) },
 		{ "too steep (60 deg, MaxSlope 40)", land(2, { NormalY = 0.5 }) },
-		{ "too high (35 above the water, MaxRise 30)", land(34) },
+		{ "too high (43 above the water, MaxRise 42)", land(42) },
 		{ "a lava strip (AvoidMaterials)", land(1.2, { Material = "Material.CrackedLava" }) },
 		{ "no room (a prop in the body box)", land(1.2, { Blocked = true }) },
 	} do

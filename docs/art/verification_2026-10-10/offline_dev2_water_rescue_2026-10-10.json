@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 136,
+  "checks": 137,
   "failedChecks": 0,
-  "namedChecks": 136,
+  "namedChecks": 137,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -28,6 +28,12 @@
     {
       "group": "config",
       "check": "landing slope below the players' MaxSlopeAngle 46",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a bank beside the Halo top tier / wings (Y 33 + 1.2 + mounds) is in reach",
       "pass": 1,
       "fail": 0
     },
@@ -363,7 +369,7 @@
     },
     {
       "group": "landing rules",
-      "check": "too high (35 above the water, MaxRise 30): skipped, the shore 10 studs away is taken",
+      "check": "too high (43 above the water, MaxRise 42): skipped, the shore 10 studs away is taken",
       "pass": 1,
       "fail": 0
     },
@@ -825,12 +831,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 12,
+  "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 61,
-    "applied": 61,
-    "caught": 61,
+    "total": 62,
+    "applied": 62,
+    "caught": 62,
     "skipped": false,
     "results": [
       {
@@ -1045,7 +1051,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "landing rules :: too high (35 above the water, MaxRise 30): skipped, the shore 10 studs away is taken"
+          "landing rules :: too high (43 above the water, MaxRise 42): skipped, the shore 10 studs away is taken"
         ],
         "newFailingCount": 1
       },
@@ -1609,6 +1615,17 @@
           "enemy town and kaiju :: an R6 body gets an R6-tall body box (6) and stands on the shore"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "water review: MaxRise below the Halo top tier",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a bank beside the Halo top tier / wings (Y 33 + 1.2 + mounds) is in reach"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1616,11 +1633,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "5725813ce6d33116291517f83615aa0512cf424041d555880b1fb8fdae3d05e5",
+    "src/ReplicatedStorage/Shared/Config.luau": "22032924c166ac1aae7130eb741e4ab2cc9a8e2802948d088e2e86d761aa0b62",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
     "src/ServerScriptService/ZoneService.luau": "581177de21c4bb55b1a43a7bd71ad7571d70285f77a56f14a909e9c51720dc09"
   },
-  "fixtureSHA256": "b02d5c4570d6b2b6da5dc0194131dc7520de1f3318d6cc4204abcdb2c3c48066",
+  "fixtureSHA256": "e5b9722fcbf4aca848924f67c2a13812e67349097ea43dbc4e7a68e7994fbeab",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -7,7 +7,12 @@
 --
 -- data.Story = { Main = { Id, St, P, T, Claim } | { Id = "" }, Subs = { [id] = { St, P, T, Claim } },
 --                Done = { [id] = true }, Pick = { [id] = "Good" | "Evil" | "A" | "B" | "Purify" | "Devour" },
---                First = { [key] = true } }     (St = 1-based step, P = progress, T = trial progress table)
+--                First = { [key] = true }, LastSide = "Good" | "Evil" | nil, TownLast = quest id | nil,
+--                TownFaction = the faction that made the TownLast pick | nil }
+--                (St = 1-based step, P = progress, T = trial progress table; TownLast: A23-64 ① the last
+--                Config.TownReact.Order quest picked, its side = SIDE[Pick[TownLast]])
+-- A23-64 (zone_check_halo #39): every good / evil pick sends Fx "Afterglow" (afterglow below); a town quest's pick sets
+-- the player attribute TownPick "<quest id>:Good|Evil" that game dev 1's TownReact bubbles read (townPickOf below).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -88,6 +93,28 @@ local function story(data)
 	return st
 end
 
+-- A23-64 ① (zone_check_halo #39): a quest whose pick the townsfolk remember (listed in Config.TownReact.Order)
+local function isTownPick(id)
+	local R = Config.TownReact
+	return type(id) == "string" and type(R) == "table" and type(R.Order) == "table" and table.find(R.Order, id) ~= nil
+end
+
+-- "<quest id>:Good" | "<quest id>:Evil" from data.Story.TownLast (the side of its saved pick) for faction f, "" = none /
+-- not valid. A pick made under another faction (Story.TownFaction; an Altar or rebirth switch since) is not voiced:
+-- S6's card differs per town, so the other town's line would tell a pick the player never made (review 10/10)
+local function townPickOf(st, f)
+	local id = st.TownLast
+	local side = isTownPick(id) and SIDE[st.Pick[id]] or nil
+	if not side or (st.TownFaction ~= nil and st.TownFaction ~= f) then return "" end
+	return id .. ":" .. side
+end
+
+-- the player attribute TownPick (game dev 1's TownReact reads it; set only when it changes)
+local function publishTownPick(player, st)
+	local value = townPickOf(st, faction(player))
+	if player:GetAttribute("TownPick") ~= value then player:SetAttribute("TownPick", value) end
+end
+
 -- drop unknown ids / bad numbers (fillDefaults only fills the top level)
 local function sanitize(data)
 	local st = story(data)
@@ -119,6 +146,18 @@ local function sanitize(data)
 		if not DEFS[id] then st.Done[id] = nil end
 	end
 	if st.LastSide ~= "Good" and st.LastSide ~= "Evil" then st.LastSide = nil end -- E2: the side of the last real pick
+	-- A23-64 ①: a missing or bad TownLast (an old save) = the last quest of Config.TownReact.Order with a saved pick that
+	-- the save's faction can have (Defs[id].Factions); TownFaction = the faction that made it (an old save: today's)
+	if type(st.TownFaction) ~= "string" then st.TownFaction = nil end
+	if townPickOf(st, st.TownFaction or data.Faction) == "" then
+		st.TownLast, st.TownFaction = nil, nil
+		local R = Config.TownReact
+		for _, id in type(R) == "table" and type(R.Order) == "table" and R.Order or {} do
+			local fs = DEFS[id] and DEFS[id].Factions
+			if SIDE[st.Pick[id]] ~= nil and (type(fs) ~= "table" or fs[data.Faction] == true) then st.TownLast = id end
+		end
+		if st.TownLast then st.TownFaction = data.Faction end
+	end
 end
 
 ------------------------------------------------------------------ step helpers
@@ -781,11 +820,34 @@ function StoryQuestService.Claim(player, id)
 end
 
 ------------------------------------------------------------------ StoryAction (Talk / Choose / Open)
+-- A23-64 ② (zone_check_halo #39, 검수 2026-10-10): after a good / evil pick, Fx "Afterglow" { UserId, Side = "Good" |
+-- "Evil", Seconds, Private } so game dev 1 draws Seconds of round gold sparkles (Good) / soft purple smoke (Evil) at the
+-- chooser's feet. To every client; in a PvP area (ZoneService.IsPvPZone: a PvP zone or the Crown Pit; unknown = PvP)
+-- only to the chooser (Private = true). from = "Story" | "Card" | "Finisher" (Config.Afterglow.From); any other side
+-- (a card's "None") never glows.
+local function afterglow(player, side, from)
+	local A = Config.Afterglow
+	if type(A) ~= "table" or A.Enabled ~= true or (side ~= "Good" and side ~= "Evil") then return end
+	if type(A.From) == "table" and A.From[from] ~= true then return end
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return end
+	local zones = S.ZoneService
+	local okZ, pvp = false, nil
+	if type(zones) == "table" and type(zones.IsPvPZone) == "function" then okZ, pvp = pcall(zones.IsPvPZone, player) end
+	local private = not okZ or pvp ~= false
+	local payload = { UserId = player.UserId, Side = side, Seconds = math.max(1, num(A.Seconds, 60)), Private = private }
+	local ok, err = pcall(Net.Fx, private and player or nil, "Afterglow", payload)
+	if not ok then Util.Warn(TAG, "afterglow: " .. tostring(err)) end
+end
+
+-- (player, "Good" | "Evil", from) for another service's good / evil pick later (e.g. the job board when it is on)
+StoryQuestService.Afterglow = afterglow
+
 -- sound_spec 2026-10-07 §4-1: the moment of a story pick (the client plays Purify / Devour on it, never on a score
 -- change): Fx "Choice" { Option = "Good" | "Evil" } to the picker (a Neutral A = Good, B = Evil)
 local function choiceFx(player, option)
 	local ok, err = pcall(Net.Fx, player, "Choice", { Option = option })
 	if not ok then Util.Warn(TAG, "choice fx: " .. tostring(err)) end
+	afterglow(player, option, "Story") -- A23-64 ②: every story pick, a 0-point one too (A23-70 Lunch1)
 end
 
 -- A23-58 (user 2026-10-06, every good / evil pick): my side's own score only. Halo: Good = Honor +pts, Evil = Honor
@@ -919,6 +981,10 @@ local function onStoryAction(player, id, action, option, ...)
 			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
+		if isTownPick(id) then
+			st.TownLast, st.TownFaction = id, faction(player) -- A23-64 ①: the townsfolk remember this town pick (saved; its side = SIDE[st.Pick[id]])
+			publishTownPick(player, st)
+		end
 		StoryQuestService.Picked:Fire(player, id, st.Pick[id]) -- A23-79: My Way
 		advance(player, data, id, tr)
 		if type(reply) == "string" then replyLater(player, reply) end
@@ -1010,9 +1076,30 @@ function StoryQuestService.Start()
 	connect("ProgressionService", "LeveledUp", function(player) pcall(refresh, player) end)
 	connect("PlayerService", "PlayerReady", function(player)
 		local data = getData(player)
-		if data then sanitize(data) end
+		if data then
+			sanitize(data)
+			publishTownPick(player, story(data)) -- A23-64 ①: TownPick from the save (sanitize backfilled it)
+		end
 		pcall(refresh, player)
 	end)
+	-- A23-64 ①: an Altar / rebirth faction switch: the old faction's town pick goes quiet (back again: it is voiced again)
+	connect("FactionService", "FactionChanged", function(player)
+		local data = getData(player)
+		if data then publishTownPick(player, story(data)) end
+	end)
+	-- A23-64 ②: the other good / evil picks glow too: a choice card (ChoiceCard.Picked side "Good" | "Evil") and the King
+	-- Slime finisher card (FinisherService.Picked "Help" = Good, "Tickle" = Evil); "None" (time up / left) never glows.
+	-- Optional services: a server (or an offline world) without them connects nothing, with no warning.
+	local cards = S.ChoiceCard
+	if type(cards) == "table" and type(cards.Picked) == "table" then
+		cards.Picked:Connect(function(player, _, side) afterglow(player, side, "Card") end)
+	end
+	local finisher = S.FinisherService
+	if type(finisher) == "table" and type(finisher.Picked) == "table" then
+		finisher.Picked:Connect(function(player, pick)
+			afterglow(player, (pick == "Help" and "Good") or (pick == "Tickle" and "Evil") or nil, "Finisher")
+		end)
+	end
 	-- the town NPCs' "Talk" prompts (the service is looked up softly: a world without it simply has no NPC to talk to)
 	local okPrompts, prompts = pcall(game.GetService, game, "ProximityPromptService")
 	if okPrompts and prompts and prompts.PromptTriggered then

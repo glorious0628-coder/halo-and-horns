@@ -155,6 +155,8 @@ MUTATIONS = [
      '\tif true then\n'),
     ('R6 legs ignored', Z, '\t\tstand += (leg and leg:IsA("BasePart")) and leg.Size.Y or 2\n',
      ''),
+    ('water review: MaxRise below the Halo top tier', C, '\tMaxRise = 42, -- ... and at most this far',
+     '\tMaxRise = 30, -- ... and at most this far'),
 ]
 
 
@@ -181,6 +183,12 @@ def static_checks(sources: dict[str, str]) -> tuple[int, list[str]]:
     m2 = re.search(r"R = 4, Lift = 2, WaterTop = (-?[\d.]+)", halo)
     check(bool(m1 and m2) and float(m1.group(1)) == float(m2.group(1)),
           "Config.Map.WaterTop = halo_terrain G.WaterTop (the canals the rule is sized for)")
+    tiers = [float(h) for h in re.findall(r"\{ -?\d+, (-?[\d.]+), \d+ \}", halo)]
+    wings = [float(h) for h in re.findall(r"H = (\d+), Rad =", halo)]
+    m5 = re.search(r"\tMaxRise = (\d+), --", cfg)
+    top = max(tiers + wings) if (tiers or wings) else None
+    check(bool(m5 and m1 and top is not None) and float(m5.group(1)) >= top - float(m1.group(1)) + 6,
+          "MaxRise reaches a bank beside the highest halo_terrain tier / wing (+ 6 for mounds)")
     ps = read(SSS / "PlayerService.luau")
     m3 = re.search(r"^local MAX_SLOPE_ANGLE = (\d+)", ps, re.M)
     m4 = re.search(r"\tMaxSlope = (\d+), -- degrees", cfg)
