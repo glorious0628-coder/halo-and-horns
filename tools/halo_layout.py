@@ -555,10 +555,9 @@ for wname, cxw, czw, n in CLUSTERS:
             HOUSES.append(e)
             houses += 1
 
-# ---- watch towers (망루): only on cliff edges looking out to the sea or over a bend; never between the gate and the cathedral dome
-towers = 0
+# ---- watch towers (망루, 검수 10/10 + A23-117): only where a watch is needed, four of them, three kinds (A watch tower / B open lookout /
+# C gold tower, tools/tower_assemble.py --variant), no two of a kind near each other, never between the gate and the cathedral dome
 edge_cells = [(x, z) for (x, z), (v, w, m, t) in COL.items() if t == "top" and any(tagv(x + dx, z + dz)[0] == "cliff" for dx, dz in ((8, 0), (-8, 0), (0, 8), (0, -8)))]
-TOWER_TRY = [(CX(-548) + 50, -548, 1.3)] + [(x, z, rng.choice((0.8, 0.9, 1.0, 1.1, 1.2))) for x, z in rng.sample(edge_cells, min(900, len(edge_cells)))]
 
 
 def blocks_dome(x, z):
@@ -570,22 +569,23 @@ def blocks_dome(x, z):
     return abs(a1 - a2) < math.radians(9) and math.hypot(x - gx, z - gz) < math.hypot(cat["x"] - gx, cat["z"] - gz)
 
 
-for x, z, s_ in TOWER_TRY:
-    if towers >= 6:
-        break
-    if z > -440 or blocks_dome(x, z) or zone_of(x, z) == "cathedral":  # the cathedral hill has its own dome; a tower there closed the west walk
-        continue
-    if any(e["kind"].startswith("DomeHouse") and math.hypot(e["x"] - x, e["z"] - z) < 26 for e in P):  # no tower squeezed between houses
-        continue
-    if any(e["kind"] == "Tower" and math.hypot(e["x"] - x, e["z"] - z) < 45 for e in P):
-        continue
-    if cat and math.hypot(cat["x"] - x, cat["z"] - z) < 56:
-        continue
-    if any(e["kind"] == "Tower" and abs(e["x"] + x) < 20 and abs(e["z"] - z) < 20 for e in P):
-        continue
-    for dx, dz in ((0, 0), (4, 0), (-4, 0), (0, 4), (0, -4)):
-        if put_reach("Tower", x + dx, z + dz, face_to(x, z, CX(z), z) + rng.uniform(-20, 20), s_,
-               why="망루: 바다·아래 단을 지켜보는 경비 자리" if towers else "광장 동쪽 굽이 망루: 길 꺾이는 곳 표지(규칙 6)"):
+TOWER_SPOTS = [  # (centre x, z, kind, scale, why)
+    (CX(-548) + 50, -548, "C", 1.0, "광장 동쪽 굽이 망루: 길이 꺾이는 곳 표지·광장 지킴(규칙 6)"),
+    (-176, -676, "A", 1.0, "서쪽 바다 망루: 서쪽 전망대 옆, 바다 쪽 경계"),
+    (-176, -398, "B", 1.0, "서쪽 동네 바다 전망 망루: 열린 아래층에서 운하·바다를 봄(동네 사람 쉼터)"),
+    (182, -470, "A", 0.95, "동쪽 동네 바다 망루: 동쪽 바다 쪽 경계"),
+]
+towers = 0
+for tx, tz, tkind, s_, why in TOWER_SPOTS:
+    cands = sorted(((x, z) for (x, z), (v, w, m, t) in COL.items() if t == "top" and math.hypot(x - tx, z - tz) < 34),
+                   key=lambda c: math.hypot(c[0] - tx, c[1] - tz))
+    cands = [(tx, tz)] + cands
+    for x, z in cands:
+        if blocks_dome(x, z) or (cat and math.hypot(cat["x"] - x, cat["z"] - z) < 56):
+            continue
+        if any(e["kind"] == "Tower" and e.get("tower_kind") == tkind and math.hypot(e["x"] - x, e["z"] - z) < 90 for e in P):
+            continue
+        if put_reach("Tower", x, z, face_to(x, z, CX(z), z) + rng.uniform(-20, 20), s_, why=why, tower_kind=tkind):
             towers += 1
             break
 
@@ -926,7 +926,7 @@ print("refused:", {f"{k[0]}:{k[1]}": v for k, v in sorted(WHY.items()) if k[0] i
 print("bridges:", [(b["name"], b["span"]) for b in BRIDGES])
 print(f"walkable columns {len(cells)}, reachable from the spawn {len(seen)}, unreachable {len(unreach)} {by_wing}")
 print("   unreachable at:", sorted({(X0 + c[0] * R, Z0 + c[1] * R) for c in unreach})[:20])
-want = {"Statue": 7, "Shop": 4, "Tower": 6, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
+want = {"Statue": 7, "Shop": 4, "Tower": 4, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
 for k, v in want.items():
     if count.get(k, 0) != v:
         print(f"!! {k}: placed {count.get(k, 0)} of {v}")

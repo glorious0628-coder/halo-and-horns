@@ -17,10 +17,10 @@ from mathutils import Matrix, Vector
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 OUT, RDIR = os.path.abspath(argv[0]), os.path.abspath(argv[1])
-opt = {"res": 700.0}
+opt = {"res": 700.0, "variant": "A"}
 i = 2
 while i < len(argv):
-    opt[argv[i][2:]] = float(argv[i + 1])
+    opt[argv[i][2:]] = argv[i + 1] if argv[i] == "--variant" else float(argv[i + 1])
     i += 2
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -96,8 +96,31 @@ def metal_from_color(ob):
         print("[tower] %s: metal / roughness from the colour (gold %.0f %%)" % (ob.name, 100 * gold.mean()), flush=True)
 
 
+# kinds (검수 10/10, A23-96: not one tower resized) — each its own part mix:
+#   A  watch tower : 3 floors, tower dome + halo ring, door
+#   B  open lookout: 2 floors (the top floor cut off), the gate's left dome, open arch (no door), no halo
+#   C  gold tower  : 3 floors, the gate's right dome, two extra gold bands, door, no halo
+V = opt["variant"]
 P = []
 body = part("TowerBody", 26.0, "z")
+if V == "B":  # cut the top floor away: keep the lower 2/3, close the top with a flat cap
+    import bmesh
+    lo0, hi0 = bbox(body)
+    cut = lo0.z + (hi0.z - lo0.z) * 0.64
+    bm = bmesh.new()
+    bm.from_mesh(body.data)
+    geom = bm.verts[:] + bm.edges[:] + bm.faces[:]
+    res = bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(0, 0, cut), plane_no=(0, 0, 1), clear_outer=True)
+    edges = [e for e in res["geom_cut"] if isinstance(e, bmesh.types.BMEdge)]
+    if edges:
+        try:
+            bmesh.ops.holes_fill(bm, edges=edges, sides=0)
+        except Exception:
+            pass
+    bm.to_mesh(body.data)
+    bm.free()
+    body.data.update()
+    bpy.context.view_layer.update()
 lo, hi = bbox(body)
 P.append(body)
 # the radius of the wall at a height: rays from outside toward the axis
@@ -112,32 +135,74 @@ def wall_r(z, ang):
 
 
 top_w = 2 * max(wall_r(hi.z - 0.3, a) for a in (0, math.pi / 2, math.pi, -math.pi / 2))
-dome = part("TowerDome", top_w + 1.0, "x")
+dome = part({"A": "TowerDome", "B": "GateDomeL", "C": "GateDomeR"}[V], top_w + 1.0, "x")
 dome.location = (cx, cy, hi.z - 0.2)
 metal_from_color(dome)
 P.append(dome)
 ld, hd = bbox(dome)
-bpy.ops.mesh.primitive_torus_add(major_radius=max(1.4, top_w * 0.22), minor_radius=0.2, major_segments=48, minor_segments=10,
-                                 location=(cx, cy, hd.z + 1.4), rotation=(math.radians(12), 0, 0))
-ring = bpy.context.active_object
-ring.name = "Tower_HaloRing"
-m_ = bpy.data.materials.new("Tower_HaloRing")
-m_.use_nodes = True
-b_ = m_.node_tree.nodes["Principled BSDF"]
-b_.inputs["Base Color"].default_value = (1.0, 0.86, 0.45, 1)
-b_.inputs["Emission Color"].default_value = (1.0, 0.86, 0.45, 1)
-b_.inputs["Emission Strength"].default_value = 3.0
-ring.data.materials.append(m_)
-P.append(ring)
+if V == "A":
+    bpy.ops.mesh.primitive_torus_add(major_radius=max(2.2, top_w * 0.34), minor_radius=0.3, major_segments=48, minor_segments=10,
+                                     location=(cx, cy, hd.z - (hd.z - ld.z) * 0.22), rotation=(math.radians(12), 0, 0))  # round the spire, a halo over the dome
+    ring = bpy.context.active_object
+    ring.name = "Tower_HaloRing"
+    m_ = bpy.data.materials.new("Tower_HaloRing")
+    m_.use_nodes = True
+    b_ = m_.node_tree.nodes["Principled BSDF"]
+    b_.inputs["Base Color"].default_value = (1.0, 0.86, 0.45, 1)
+    b_.inputs["Emission Color"].default_value = (1.0, 0.86, 0.45, 1)
+    b_.inputs["Emission Strength"].default_value = 3.0
+    ring.data.materials.append(m_)
+    P.append(ring)
+if V == "C":  # two extra gold bands round the shaft (short cylinder shells hugging the wall)
+    mg = bpy.data.materials.new("Tower_GoldBand")
+    mg.use_nodes = True
+    bg = mg.node_tree.nodes["Principled BSDF"]
+    bg.inputs["Base Color"].default_value = (0.86, 0.62, 0.18, 1)
+    bg.inputs["Metallic"].default_value = 0.9
+    bg.inputs["Roughness"].default_value = 0.3
+    for zf in (0.3, 0.52):
+        z = lo.z + (hi.z - lo.z) * zf
+        r = max(wall_r(z, a) for a in (0, math.pi / 2, math.pi, -math.pi / 2)) + 0.12
+        bpy.ops.mesh.primitive_cylinder_add(radius=r + 0.1, depth=1.1, vertices=64, location=(cx, cy, z), end_fill_type="NOTHING")
+        band = bpy.context.active_object
+        band.name = "Tower_GoldBand%d" % (1 if zf < 0.4 else 2)
+        band.data.materials.append(mg)
+        P.append(band)
+    # a long banner down the front (HaloDeco BannerPlain): the gold tower reads at a glance
+    img_p = os.path.join(ROOT, "art/out/s2/halo/deco/HaloDecoHQ_BannerPlain_cut.png")
+    zb, zt = lo.z + (hi.z - lo.z) * 0.58, lo.z + (hi.z - lo.z) * 0.86
+    bh = zt - zb
+    bw = bh * 463 / 890
+    rr_ = wall_r((zb + zt) / 2, 0.0) + 0.2
+    me = bpy.data.meshes.new("Tower_Deco_BannerPlain")
+    me.from_pydata([(-bw / 2, 0, 0), (bw / 2, 0, 0), (bw / 2, 0, bh), (-bw / 2, 0, bh)], [], [(0, 1, 2, 3)])
+    uv = me.uv_layers.new(name="UVMap")
+    for li, (u, v) in zip(range(4), ((0, 0), (1, 0), (1, 1), (0, 1))):
+        uv.data[li].uv = (u, v)
+    if os.path.exists(img_p):
+        mb = bpy.data.materials.new("Tower_Deco_BannerPlain")
+        mb.use_nodes = True
+        bb = mb.node_tree.nodes["Principled BSDF"]
+        tb = mb.node_tree.nodes.new("ShaderNodeTexImage")
+        tb.image = bpy.data.images.load(img_p)
+        mb.node_tree.links.new(tb.outputs["Color"], bb.inputs["Base Color"])
+        mb.node_tree.links.new(tb.outputs["Alpha"], bb.inputs["Alpha"])
+        me.materials.append(mb)
+    ban = bpy.data.objects.new("Tower_Deco_BannerPlain", me)
+    bpy.context.scene.collection.objects.link(ban)
+    ban.location = (cx, cy - rr_, zb)
+    P.append(ban)
 # entrance: door frame at the front wall (ground), leaf just inside
 r0 = wall_r(3.5, 0.0)
-frame = part("TowerDoorFrame", 7.0, "z")
-frame.location = (cx, cy - r0 - 0.15, lo.z)
-P.append(frame)
-lf, hf = bbox(frame)
-leaf = part("TowerDoorLeaf", (hf.z - lf.z) * 0.85, "z")
-leaf.location = (cx, cy - r0 + 0.3, lo.z + 0.1)
-P.append(leaf)
+if V != "B":  # B keeps the body's own open arch (an open lookout, no door)
+    frame = part("TowerDoorFrame", 7.0, "z")
+    frame.location = (cx, cy - r0 - 0.15, lo.z)
+    P.append(frame)
+    bpy.context.view_layer.update()
+    lf, hf = bbox(frame)
+    leaf = part("TowerDoorLeaf", (hf.z - lf.z) * 0.85, "z")
+    leaf.location = (cx, cy - r0 + 0.3, lo.z + 0.1)
+    P.append(leaf)
 # windows: one per floor, each floor its own angle (not stacked in a line), facing outward
 for k, (zf, deg) in enumerate(() if opt.get("windows", 0) < 1 else ((0.36, 35), (0.58, -40), (0.8, 150))):  # off by default: the body has its own windows
     z = lo.z + (hi.z - lo.z) * zf
@@ -174,7 +239,7 @@ for name, dv in (("front", Vector((0, -1, 0.15))), ("front34", Vector((0.7, -1, 
     dv.normalize()
     cam.location = c + dv * rad
     cam.rotation_euler = (c - cam.location).to_track_quat("-Z", "Y").to_euler()
-    scene.render.filepath = os.path.join(RDIR, "tower_asm_" + name + ".png")
+    scene.render.filepath = os.path.join(RDIR, "tower%s_asm_%s.png" % (V, name))
     bpy.ops.render.render(write_still=True)
 bpy.ops.object.select_all(action="DESELECT")
 for o in P:
