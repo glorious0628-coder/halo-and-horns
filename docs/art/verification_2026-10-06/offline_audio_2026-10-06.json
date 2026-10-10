@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 443,
-  "namedChecks": 358,
+  "checks": 447,
+  "namedChecks": 362,
   "failing": [],
   "mutations": {
     "total": 167,
@@ -123,8 +123,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 plan :: ... Tickle = KingTickleCoins"
         ]
       },
@@ -162,8 +160,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: the quest window opens with QuestOpen"
         ]
       },
@@ -289,8 +285,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet",
           "sound_gaps 10/10 :: dusk: the lamps come on = LanternOn",
           "sound_gaps 10/10 :: night after dusk is quiet"
@@ -336,8 +330,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 plan :: WeatherLoops: snow = WinterWind"
         ]
       },
@@ -374,8 +366,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a goal that changed while the marker was hidden is quiet",
           "sound_gaps 10/10 :: no MarkerMove right on top of a quest's own sound"
         ]
@@ -386,8 +376,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a blink of no goal is not a new goal",
           "sound_gaps 10/10 :: a goal that changed while the marker was hidden is quiet",
           "sound_gaps 10/10 :: no MarkerMove right on top of a quest's own sound"
@@ -408,8 +396,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 plan :: IsWarp: a long fall (100 studs in a half-second hitch at 200 studs/s) is not a warp"
         ]
       },
@@ -437,8 +423,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: ... then WarpIn WarpInAfter s later"
         ]
       },
@@ -514,9 +498,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "music :: a big moment (Duck.By) dips the music too",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "music :: a big moment (Duck.By) dips the music too"
         ]
       },
       {
@@ -543,9 +525,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "music :: the same zone again: no second track",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "music :: the same zone again: no second track"
         ]
       },
       {
@@ -563,9 +543,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "music :: a waterfall sound at each of the six Halo spots",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "music :: a waterfall sound at each of the six Halo spots"
         ]
       },
       {
@@ -585,8 +563,6 @@
         "newFailingChecks": [
           "music :: King Slime gone: the layer fades out and stops, the track stays",
           "music :: leaving the meadow during the boss: track and layer both fade out",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: A -> B -> A: the boss layer still fading comes back (one layer, the same Sound)",
           "sound_gaps 10/10 :: both loaded and 17 s apart: the layer goes to the track's TimePosition"
         ]
@@ -600,9 +576,7 @@
           "music :: BossLayer: the layer only while its boss is out",
           "music :: King Slime gone: the layer fades out and stops, the track stays",
           "music :: King Slime out: his layer starts at the track's TimePosition, looped, in the Music group, from silence",
-          "music :: the meadow track, no layer while King Slime is away",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "music :: the meadow track, no layer while King Slime is away"
         ]
       },
       {
@@ -650,9 +624,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "rewards :: I took it = GoldPickup",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "rewards :: I took it = GoldPickup"
         ]
       },
       {
@@ -773,8 +745,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "skills :: my skill = SkillCast with my class's swing file (a Halo mage: SwingMageHalo)",
           "swing :: Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)",
           "swing :: Horns mage: SwingMageHorns"
@@ -1101,10 +1071,8 @@
         "crashed": false,
         "newFailingChecks": [
           "runtime :: a big moment ducks the combat sounds to 0.5",
-          "runtime :: a king already there at the join is quiet",
           "runtime :: a king holds the duck longer than 1.2 s (§4-2 10)",
-          "runtime :: a level up ducks for 1.2 s only",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "runtime :: a level up ducks for 1.2 s only"
         ]
       },
       {
@@ -1229,8 +1197,6 @@
         "crashed": false,
         "newFailingChecks": [
           "runtime :: Sound = 'None' keeps even a 'bad' notice quiet",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "runtime :: the line after a completion stays quiet (Sound None)"
         ]
       },
@@ -1359,8 +1325,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world :: my first weapon's Upgrade is quiet (C1: HUD's first-weapon moment plays PowerUp)",
           "world listeners :: an Upgrade while still bare-handed is quiet too",
           "world listeners :: my first weapon's Upgrade is quiet"
@@ -1463,8 +1427,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "world listeners :: a PvP place reached by a teleport (300 studs at once) is quiet"
         ]
       },
@@ -1600,9 +1562,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "held alarms :: no sound for a held announce banner or an announce line",
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)"
+          "held alarms :: no sound for a held announce banner or an announce line"
         ]
       },
       {
@@ -1760,9 +1720,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "5501934eb1e80c07b4701e3f9b129c41e0ae2c0074051f6ddb7e48db7c4fa89b",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "1590c0d55bad2d25eb47532c0b1a53b7408d4de92eacba287c6eacf9e28a4120",
-    "tools/fixtures/audio_offline.luau": "b4fd2a37435d69e2e84bde944c36d5c456ff1b836fed294e7884f3a3a8d0f30e"
+    "src/ReplicatedStorage/Shared/Config.luau": "34fd758377b7b9b86bb1b2e4a064d089bad3cadee8ec248259f35ed2516a6c8b",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "3d629588f427b6ea57898086438581dabff205a1150b5080d058e06ab20b0c6b",
+    "tools/fixtures/audio_offline.luau": "5fbf193423867037f2728fab520c8c7e0382a04b9d010dd733f828e2011b2d35"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

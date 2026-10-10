@@ -5379,6 +5379,8 @@ Config.Audio.Music = {
 -- x the Sound effects setting, crossfading with the zone like the music (Fade s)
 Config.Audio.ZoneAmbient = {
 	Volume = 0.25, Fade = 1.5,
+	-- A23-105 (검수 10/10): the Halo birds only by day - at night they fade out and the crickets (Weather Night) carry it
+	DayOnly = { HaloTown = true },
 	Tracks = {
 		HaloTown = "rbxassetid://76688623617177", -- birds + a tiny wind chime
 		HornsTown = "rbxassetid://112972652651947", -- lava bubbling + campfire crackle
