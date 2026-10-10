@@ -107,6 +107,8 @@ pal = [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 0), (1, 0, 1), (0, 1, 1), (1, .5,
        (1, .75, .8), (.3, .2, .1)]
 for i, o in enumerate(objs):
     col = pal[i % len(pal)]
+    if o.name.endswith("_Glass") or o.name.endswith("_WinPane"):
+        col = (1.0, 1.0, 1.0)  # white: a blend of two other ids can never make it (window crop of the sheet)
     m = bpy.data.materials.new("id%d" % i)
     m.use_nodes = True
     t = m.node_tree

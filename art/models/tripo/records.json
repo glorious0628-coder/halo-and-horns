@@ -8388,5 +8388,97 @@
     "art/models/tripo/halo_props/HaloBridge_3/HaloBridge_3_parts.glb"
    ]
   }
+ ],
+ "HaloPart_CathBody_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b126445b-4282-4898-8596-335850d550b4",
+   "balance_after": 19340,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_CathBody_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_CathBody_right_v3_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_CathBody_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_CathBody_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 대성당 부품(A23-107 부품별 새로 만들기, 검수 묶음 3 승인). 이미지 생성 1 조립(tools/cathedral_assemble.py).",
+   "file": "art/models/tripo/web/HaloPart_CathBody_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathBody_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathDome_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "5fe0d6a7-d1f1-40fd-9059-115cf3c0e660",
+   "balance_after": 19285,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_CathDome_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_CathDome_right_v2_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_CathDome_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_CathDome_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 대성당 부품(A23-107 부품별 새로 만들기, 검수 묶음 3 승인). 이미지 생성 1 조립(tools/cathedral_assemble.py).",
+   "file": "art/models/tripo/web/HaloPart_CathDome_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathDome_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathTowerA_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f727b05c-a450-4796-9032-2f9839238115",
+   "balance_after": 19230,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_CathTowerA_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_CathTowerA_right_v2_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_CathTowerA_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_CathTowerA_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 대성당 부품(A23-107 부품별 새로 만들기, 검수 묶음 3 승인). 이미지 생성 1 조립(tools/cathedral_assemble.py).",
+   "file": "art/models/tripo/web/HaloPart_CathTowerA_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathTowerA_HD_LOD.glb"
+   ]
+  }
+ ],
+ "HaloPart_CathTowerB_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "dceccc53-4cde-465a-9f40-6af27f647771",
+   "balance_after": 19175,
+   "mode": "HD multi-view, H3.1, poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 00:30~01:20",
+   "inputs": {
+    "front": "art/out/s2/halo/parts/HaloPart_CathTowerB_v2_front_HQ_src.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/parts/HaloPart_CathTowerB_right_v2_HQ_src.png",
+    "right_slot": "art/out/s2/halo/parts/HaloPart_CathTowerB_left_v2_HQ_src.png",
+    "back": "art/out/s2/halo/parts/HaloPart_CathTowerB_back_v2_HQ_src.png"
+   },
+   "note": "빛 마을 대성당 부품(A23-107 부품별 새로 만들기, 검수 묶음 3 승인). 이미지 생성 1 조립(tools/cathedral_assemble.py).",
+   "file": "art/models/tripo/web/HaloPart_CathTowerB_HD_src.glb",
+   "derived": [
+    "art/models/tripo/web/HaloPart_CathTowerB_HD_LOD.glb"
+   ]
+  }
  ]
 }

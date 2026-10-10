@@ -250,6 +250,13 @@ for ab in reg.get("awning") or []:
     wall = np.percentile(cen[stone, 1], 30) if stone.sum() > 10 else np.percentile(cen[box, 1], 20)
     span = hi[1] - lo[1]
     part[box & (cen[:, 1] > wall + 0.035 * span)] = "Awning"
+for db in reg.get("display") or []:
+    # shop display (bread, juice, potions) sits behind the facade: its own part, no metal (bread reads as gold by colour)
+    box = inbox(db, 0.01) & (part == "Body")
+    if box.sum() > 10:
+        span = hi[1] - lo[1]
+        ymax = np.percentile(cen[box, 1], 95)
+        part[box & (cen[:, 1] < ymax - 0.03 * span)] = "Display"
 if opt["lamp"]:
     # lantern lamp glass / glow core: very bright, pale warm faces -> own part (Studio: Neon + PointLight)
     lampc = (fh >= 30) & (fh <= 70) & (fs >= 0.05) & (fs <= 0.5) & (fv >= 0.9)
@@ -275,7 +282,7 @@ for k in np.nonzero(pane)[0]:
 ngroups = int(keep.sum())
 part[keep] = "WinPane"
 print("[parts] window pane groups", ngroups, flush=True)
-print("[parts] faces", {k: int((part == k).sum()) for k in ("Body", "Door", "DoorHw", "Awning", "WinPane", "Lamp")}, flush=True)
+print("[parts] faces", {k: int((part == k).sum()) for k in ("Body", "Door", "DoorHw", "Awning", "WinPane", "Lamp", "Display")}, flush=True)
 
 # scale: door leaf height -> DOOR_H studs (no door: height 22 studs)
 if opt["fit-h"]:

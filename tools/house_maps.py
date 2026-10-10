@@ -44,6 +44,9 @@ for cp in sorted(glob.glob(os.path.join(D, "*_color.png"))):
         g = ((hue >= 40) & (hue <= 58) & (sat >= 0.45) & (val >= 0.72)).astype(np.float32)
         metal = metal * g
         rough = np.where(g > 0, rough, np.maximum(rough, 0.72))
+    if part.endswith("_Display"):
+        metal = metal * 0
+        rough = np.maximum(rough, 0.5)
     if part.endswith("_WinPane"):
         metal = metal * 0
         rough = rough * 0 + 0.06

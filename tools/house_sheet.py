@@ -49,7 +49,8 @@ def mask_of(suffix):
     m = np.zeros(idi.shape[:2], bool)
     for w in want:
         m |= (np.abs(idi - np.array(w)).sum(-1) < 20)
-    return m
+    from scipy import ndimage
+    return ndimage.binary_erosion(m, iterations=1)  # anti-aliased edges between two other ids can mix to this colour
 
 
 CS = 300  # crop size in render px (100 %)
