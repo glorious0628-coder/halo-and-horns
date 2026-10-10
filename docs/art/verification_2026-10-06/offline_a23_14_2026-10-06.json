@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 5926,
+  "checks": 6284,
   "failedChecks": 0,
-  "namedChecks": 275,
+  "namedChecks": 286,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -574,13 +574,13 @@
     {
       "group": "dailies-woods",
       "check": "kill rows: 12-15 goblins, or 2 Goblin Brutes (strict)",
-      "pass": 86,
+      "pass": 78,
       "fail": 0
     },
     {
       "group": "dailies-woods",
       "check": "no goose daily for the guild",
-      "pass": 48,
+      "pass": 56,
       "fail": 0
     },
     {
@@ -592,13 +592,13 @@
     {
       "group": "dailies-woods",
       "check": "Hunt: Halo, Lv15+ (no Sprout Shield) only",
-      "pass": 12,
+      "pass": 8,
       "fail": 0
     },
     {
       "group": "dailies-woods",
       "check": "Plunder: Horns, Lv15+ (no Sprout Shield) only",
-      "pass": 12,
+      "pass": 8,
       "fail": 0
     },
     {
@@ -819,7 +819,73 @@
     },
     {
       "group": "dailies-nonhunt (A23-113 #8)",
-      "check": "a set with a non-hunting slot among the first two does not always get a third (18 of 128)",
+      "check": "a set with a non-hunting slot among the first two does not always get a third (6 of 90)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the goose rests 1 day; GooseDay is a save field (default 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv12: a goose daily yesterday: none today (the day mark stays)",
+      "pass": 40,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "... and still three dailies",
+      "pass": 120,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a goose daily made today marks GooseDay",
+      "pass": 120,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv17: a goose daily yesterday: none today (the day mark stays)",
+      "pass": 40,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv40: a goose daily yesterday: none today (the day mark stays)",
+      "pass": 40,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "two days after (and the same day) the goose is allowed again, and it is the usual last-slot pick (120, 120 of 120)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "a Lv12 Halo day: the last slot is the goose and it is marked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "the next day: no goose daily (three hunting dailies, nothing else fits)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv17 Halo: a PvP daily in at most 36% of the sets, the goose more often (96 Hunt, 210 Goose of 300)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dailies-nonhunt (A23-113 #8)",
+      "check": "Lv40 Halo: a PvP daily in at most 36% of the sets, the goose more often (74 Hunt, 235 Goose of 300)",
       "pass": 1,
       "fail": 0
     },
@@ -1667,9 +1733,9 @@
   "staticChecks": 4,
   "staticFailures": [],
   "mutations": {
-    "total": 87,
-    "applied": 87,
-    "caught": 87,
+    "total": 96,
+    "applied": 96,
+    "caught": 96,
     "results": [
       {
         "mutation": "A23-71: a skill daily before the first skill",
@@ -2556,14 +2622,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: off: a claimed daily slot becomes an extra quest",
-          "board-switch :: off: the extra is listed",
-          "board-switch :: switched off again: an empty slot gets an extra at load",
-          "board-switch :: the extra row carries its template's ShortName",
+          "board-switch :: group ran to the end without a Lua error",
           "dailies-generate :: both kill variants occur (king slime 3 more often than 12-15 slimes)",
-          "dailies-progress :: a claimed daily slot becomes an extra quest"
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: a claimed daily slot becomes an extra quest",
+          "dailies-progress :: group ran to the end without a Lua error",
+          "dailies-woods :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "board on: a claimed daily still becomes an extra",
@@ -2572,9 +2638,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: on: a claimed daily slot stays empty (no extra quest)",
-          "board-switch :: on: an empty slot is never rerolled into an extra",
-          "board-switch :: on: the empty slot is not listed"
+          "board-switch :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "goose-coop :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 3
       },
@@ -2585,9 +2651,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: on: the empty slot is not listed"
+          "board-switch :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "goose-coop :: group ran to the end without a Lua error",
+          "goose-coop-rules :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "board on: an empty slot can be rerolled",
@@ -2596,9 +2665,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: on: an empty slot is never rerolled into an extra"
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "board-switch :: on: an empty slot is never rerolled into an extra",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "board on: the job rows are not listed",
@@ -2607,9 +2680,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: on: the boards' Job rows are listed"
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "board-switch :: on: the boards' Job rows are listed",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error",
+          "goose-modes :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 6
       },
       {
         "mutation": "board on: a finished extra refills its slot",
@@ -2618,9 +2696,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: on: a finished old extra pays and leaves its slot empty"
+          "board-switch :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "goose-coop-rules :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "board on: a rebirth refills empty slots",
@@ -2629,9 +2710,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "board-switch :: on: a rebirth keeps the empty slots empty"
+          "board-switch :: on: a rebirth keeps the empty slots empty",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "goose-modes :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "A23-113: no non-hunting daily guarantee",
@@ -2641,13 +2724,10 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv17 Horns: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv24 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv24 Horns: at least one of the 3 is not hunting"
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "goose-modes :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 3
       },
       {
         "mutation": "A23-113: the guarantee only from Lv20",
@@ -2657,12 +2737,10 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv17 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
           "dailies-woods :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 3
       },
       {
         "mutation": "A23-113: the guarantee on the first slot too",
@@ -2682,9 +2760,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-nonhunt (A23-113 #8) :: a set with a non-hunting slot among the first two does not always get a third (122 of 128)"
+          "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: a PvP daily in at most 36% of the sets, the goose more often (141 Hunt, 232 Goose of 300)",
+          "dailies-nonhunt (A23-113 #8) :: Lv40 Halo: a PvP daily in at most 36% of the sets, the goose more often (141 Hunt, 251 Goose of 300)",
+          "dailies-nonhunt (A23-113 #8) :: a set with a non-hunting slot among the first two does not always get a third (89 of 90)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "A23-113: a Choice daily with no source on",
@@ -2694,10 +2774,12 @@
         "crashed": false,
         "newFailingChecks": [
           "dailies-nonhunt (A23-113 #8) :: Neutral with no choice source: all hunting, unchanged",
+          "dailies-nonhunt (A23-113 #8) :: a Lv12 Halo day: the last slot is the goose and it is marked",
           "dailies-nonhunt (A23-113 #8) :: no choice source on: no Choice daily",
-          "dailies-nonhunt (A23-113 #8) :: the source went off: the unfinished Choice daily is remade as another kind"
+          "dailies-nonhunt (A23-113 #8) :: the source went off: the unfinished Choice daily is remade as another kind",
+          "dailies-nonhunt (A23-113 #8) :: two days after (and the same day) the goose is allowed again, and it is the usual last-slot pick (44, 44 of 120)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "A23-113: the job board is no choice source",
@@ -2741,9 +2823,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-nonhunt (A23-113 #8) :: a deed fills the Choice daily (even a pick that moved no points)",
-          "dailies-nonhunt (A23-113 #8) :: a finished Choice stays at its target",
-          "dailies-nonhunt (A23-113 #8) :: the Choice daily can be claimed and pays"
+          "board-switch :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 3
       },
@@ -2754,11 +2836,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-nonhunt (A23-113 #8) :: a deed fills the Choice daily (even a pick that moved no points)",
-          "dailies-nonhunt (A23-113 #8) :: a finished Choice stays at its target",
-          "dailies-nonhunt (A23-113 #8) :: the Choice daily can be claimed and pays"
+          "board-switch :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "goose-coop :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "A23-113 config: Goose is hunting",
@@ -2767,11 +2850,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class-change :: group ran to the end without a Lua error",
           "dailies-nonhunt (A23-113 #8) :: Goose is a non-hunting template",
           "dailies-nonhunt (A23-113 #8) :: Lv10 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting"
+          "dailies-nonhunt (A23-113 #8) :: Lv10 Horns: at least one of the 3 is not hunting",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "daily-intro (A23-104) :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 7
       },
       {
         "mutation": "A23-113 config: Choice is hunting",
@@ -2780,10 +2866,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-nonhunt (A23-113 #8) :: (and the Choice slot is the non-hunting one)",
-          "dailies-nonhunt (A23-113 #8) :: Choice is a non-hunting template"
+          "board-switch :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: Choice is a non-hunting template",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "A23-113 config: the guarantee from Lv30",
@@ -2797,7 +2885,7 @@
           "dailies-nonhunt (A23-113 #8) :: Lv17 Halo: at least one of the 3 is not hunting",
           "dailies-nonhunt (A23-113 #8) :: Lv17 Horns: at least one of the 3 is not hunting",
           "dailies-nonhunt (A23-113 #8) :: Lv24 Halo: at least one of the 3 is not hunting",
-          "dailies-nonhunt (A23-113 #8) :: Lv24 Horns: at least one of the 3 is not hunting"
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 7
       },
@@ -2808,28 +2896,144 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-nonhunt (A23-113 #8) :: Board on: the Choice daily can be made",
-          "dailies-nonhunt (A23-113 #8) :: KillCard on: the Choice daily can be made",
-          "dailies-nonhunt (A23-113 #8) :: LostFound on: the Choice daily can be made",
-          "dailies-nonhunt (A23-113 #8) :: a Lv12 world with a Choice daily",
-          "dailies-nonhunt (A23-113 #8) :: the woods band has a Choice row (target 1)",
-          "dailies-nonhunt (A23-113 #8) :: with a choice source on the Choice daily shows up (Lv12 and Lv40; the guild has no other non-hunting kind)"
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "board-switch :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "class-first-pick :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 10
       },
       {
         "mutation": "A23-113 config: the Choice daily needs two choices",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
+        "crashed": true,
+        "newFailingChecks": [],
+        "newFailingCount": 0
+      },
+      {
+        "mutation": "goose rest: none",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": [],
+        "newFailingCount": 0
+      },
+      {
+        "mutation": "goose rest: the day is never marked",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": [],
+        "newFailingCount": 0
+      },
+      {
+        "mutation": "goose rest: the same day rests too",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "dailies-nonhunt (A23-113 #8) :: Lv12: the Choice daily is one choice, paid like any daily of its band",
-          "dailies-nonhunt (A23-113 #8) :: a deed fills the Choice daily (even a pick that moved no points)",
-          "dailies-nonhunt (A23-113 #8) :: a finished Choice stays at its target",
-          "dailies-nonhunt (A23-113 #8) :: the woods band has a Choice row (target 1)"
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-woods :: group ran to the end without a Lua error",
+          "goose-coop :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "goose rest: a mark of 0 rests",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "board-switch :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "goose rest: zero days",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-day-change :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "goose rest: three days",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-progress :: group ran to the end without a Lua error",
+          "dailies-woods :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "goose rest: no save field",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "board-switch :: group ran to the end without a Lua error",
+          "class-change :: group ran to the end without a Lua error",
+          "class-first-pick :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "PvP weight: the woods Hunt row is common again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a23-71 skill dailies :: group ran to the end without a Lua error",
+          "dailies-generate :: group ran to the end without a Lua error",
+          "dailies-nonhunt (A23-113 #8) :: group ran to the end without a Lua error",
+          "dailies-woods :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 4
+      },
+      {
+        "mutation": "PvP weight: the Hunt template is common again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "newFailingChecks": [],
+        "newFailingCount": 0
       }
     ]
   },
@@ -2837,14 +3041,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
+    "src/ReplicatedStorage/Shared/Config.luau": "09f83e4beee7f336b6a0e8d3992e4b156f3b73f8f7ff08cca22e2aae41bf9da4",
     "src/ReplicatedStorage/Shared/Net.luau": "7cf8e277fe2267425e3f51e200aca951f0ada9900137e3c7fab4b78396dc81b0",
     "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
-    "src/ServerScriptService/QuestService.luau": "21e758c5696b07f1ce6c8c5b2e135ea5dfc6a151b452034253772d0d0b53e9e2",
+    "src/ServerScriptService/QuestService.luau": "124eeeaf1e1d7c934bff8591da0a7d908984f2deb3d6ab624ee770f0979fffa0",
     "src/ServerScriptService/GooseService.luau": "4f7593b4c7e070e23ad97f74647a6cdd29029a7752267452b35bf6e17eb8465f",
     "src/ServerScriptService/ClassService.luau": "6d4735d865cdcd48702a083b4ac84eb4374ee4c7377ee0f494d0075698222448"
   },
-  "fixtureSHA256": "bf996072102e8515ac45b56fb15b60e8c86837e7ce760b516a029daff6073589",
+  "fixtureSHA256": "329f22a455ff1066f11f07d7a2928d3bfcc814c5835b76fa2bd518da10ced378",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

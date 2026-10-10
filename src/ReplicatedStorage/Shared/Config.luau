@@ -3752,21 +3752,26 @@ Config.Quests = {
 			Text = "Hit monsters with skills %d times" },
 		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Join the Golden Goose tug %d times" },
-		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
+		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
-		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
+		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
 			Text = "Rob %d Knights of Light" },
 		-- A23-113 #8 (user "마감 전 넣자"; docs/design/player_reactions_research_2026-10-10.md §9): a daily that is not hunting: make one
 		-- good or naughty choice (a choice card, the King's finisher, a job board Kind / Sneaky job - every one of them is a deed of
 		-- the daily ledger, Deeds.Add; Deeds.Booked counts it). It is made only while one of those sources is on (a Board /
 		-- LostFound / KillCards switch in Config), else the slot is another kind.
-		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
+		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 14, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Make a kind or sneaky choice" },
 	},
 	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
 	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
 	-- fits: unchanged). Lv1-9 (the meadow set of 3) is not touched.
 	NonHuntFrom = 10,
+	-- 검수 2026-10-10: the goose is a 60 s event every 10 minutes: a daily that waits for it must not become homework, so it is
+	-- never a daily two days running (Config.Data.Defaults.GooseDay = the KST day index of the last goose daily made). The rule
+	-- is "one non-hunting daily if one fits": a day with none that fits (the goose rested, no choice source, a guild member)
+	-- keeps its three hunting dailies. The PvP kinds (Hunt / Plunder) are drawn rarely (low weights above).
+	GooseRestDays = 1,
 	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
 	-- opens at Lv10) come from Newbie.Dailies instead of Templates[].DailyUnits. The "different template" rule picks one
 	-- row per Id, so the 3 slots are always 3 different goals (kill / skill / gold). Extras and Lv10+ dailies unchanged.
@@ -3809,9 +3814,9 @@ Config.Quests = {
 			{ Id = "Gold", Weight = 3, Targets = { 150, 200, 250 } }, -- hunting gold
 			{ Id = "Golden", Weight = 1, Targets = { 1 } }, -- one golden monster
 			{ Id = "Goose", Weight = 1, Targets = { 1 } }, -- the Golden Goose tug (Halo / Horns)
-			{ Id = "Hunt", Weight = 1, Targets = { 1 } }, -- PvP, Halo
-			{ Id = "Plunder", Weight = 1, Targets = { 1 } }, -- PvP, Horns
-			{ Id = "Choice", Weight = 2, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
+			{ Id = "Hunt", Weight = 0.4, Targets = { 1 } }, -- PvP, Halo (A23-113: rarely drawn: never pushed on a child)
+			{ Id = "Plunder", Weight = 0.4, Targets = { 1 } }, -- PvP, Horns
+			{ Id = "Choice", Weight = 3, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
 		},
 	},
 }
@@ -3833,6 +3838,8 @@ Config.Daily = {
 }
 -- A23-104: set when the intro quest is done (the daily jobs are open); additive save field (the data version stays 3)
 Config.Data.Defaults.DailyIntro = false
+-- A23-113 (검수 2026-10-10): the KST day index of the last day a Golden Goose daily was made (never two days running; 0 = never)
+Config.Data.Defaults.GooseDay = 0
 
 function Config.DayIndex(unixTime)
 	return math.floor((unixTime + Config.Daily.TimezoneOffset) / 86400)
