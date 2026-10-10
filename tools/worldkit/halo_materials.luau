@@ -17,6 +17,9 @@ if MODE == "restore" then
 	local c = Terrain:GetAttribute("ConcreteColorWas")
 	if typeof(c) == "Color3" then Terrain:SetMaterialColor(Enum.Material.Concrete, c) end
 	Terrain:SetAttribute("ConcreteColorWas", nil)
+	local lc = Terrain:GetAttribute("LimestoneColorWas")
+	if typeof(lc) == "Color3" then Terrain:SetMaterialColor(Enum.Material.Limestone, lc) end
+	Terrain:SetAttribute("LimestoneColorWas", nil)
 	return "halo materials restored"
 end
 local src = MS:FindFirstChild("GE_HaloTiles")
@@ -31,4 +34,9 @@ if Terrain:GetAttribute("ConcreteColorWas") == nil then
 	Terrain:SetAttribute("ConcreteColorWas", Terrain:GetMaterialColor(Enum.Material.Concrete))
 end
 Terrain:SetMaterialColor(Enum.Material.Concrete, Color3.fromRGB(235, 235, 235))
+-- 2026-10-10: the cliffs read WHITE limestone in the concept (the default tan made the island look like a sand slab)
+if Terrain:GetAttribute("LimestoneColorWas") == nil then
+	Terrain:SetAttribute("LimestoneColorWas", Terrain:GetMaterialColor(Enum.Material.Limestone))
+end
+Terrain:SetMaterialColor(Enum.Material.Limestone, Color3.fromRGB(244, 240, 230))
 return string.format("halo materials: %s (Concrete) override = %s, studs per tile %s", NAME, tostring(MS:GetBaseMaterialOverride(Enum.Material.Concrete)), tostring(v.StudsPerTile))

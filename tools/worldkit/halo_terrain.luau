@@ -56,7 +56,17 @@ local BRIDGES = {
 	{ "BA", 0, -385, "x", 0.2, 1.2 }, { "BB", 0, -492, "x", 5, 7 }, { "BC", 0, -582, "x", 11, 14 }, { "BD", 0, -662, "x", 19, 22 },
 	{ "BAB", 130, -442, "z", 1.2, 7 }, { "BBC", 150, -544, "z", 7, 14 }, { "BCD", 150, -620, "z", 14, 22 },
 }
-local PAVE = { Rim = 8, Wing = 10, Mat = "Concrete" } -- grass rim width on the spine / wing tops; Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
+local PAVE = { Rim = 8, Wing = 16, Mat = "Concrete" } -- grass rim width on the wing tops (2026-10-10: 16 so the wings are gardens round a paved forecourt; the spine road is PAVEHALF below); Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
+-- 2026-10-10 (검수: the road was 76 wide and read as an empty beige slab): the PAVED part of the spine is narrow like the concept (road about
+-- one house wide), the rest of the terrace is grass garden for the props tool (balustrade, planters, topiary rows). { boundary z (north of it), paved half-width }
+local PAVEHALF = { { 0, 15 }, { -444, 19 }, { -524, 62 }, { -606, 46 } }
+local function paveHalf(z)
+	local h = PAVEHALF[1][2]
+	for i = 2, #PAVEHALF do
+		if z <= PAVEHALF[i][1] then h = PAVEHALF[i][2] end
+	end
+	return h
+end
 local CLIFF = { Skirt = 5, Jag = 4.2, JagScale = 27, Jag2 = 1.6, Jag2Scale = 9 }
 -- waterfalls (mirrored, one per side): a small spring basin on the wing top spills over its outer cliff into the sea
 -- (art/review/s2/place_HaloTown_sheet.jpg, shot 5). Terrain water does not flow, so the sheet of water standing against the
@@ -176,7 +186,7 @@ local function column(x, z)
 	local inner = -sdf -- studs inside the edge
 	if kind == "spine" then
 		local hw = spineWidth(z)
-		if ax <= hw - PAVE.Rim and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
+		if ax <= math.min(paveHalf(z), hw - PAVE.Rim) and inner >= 3 then mat, tag = PAVE.Mat, "plaza" end
 		if ax <= SPINE.Stair and h > SPINE.Tiers[spineTier(z)][2] + 0.01 then tag = "stair" end
 		if ax > SPINE.Stair and inner > 1 then
 			-- the wall between two tiers: the column right at a boundary (a step down) shows limestone
