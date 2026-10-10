@@ -8254,5 +8254,13 @@
   "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
   "original": "art/out/s2/crown/Crown_CrackSeam_front_HQ_src.png",
   "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
+ },
+ "Halo_TowerMarbleBlock": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits); Medium candidate c1 (0) checked 3x3 first",
+  "original": "art/out/Halo_TowerMarbleBlock_HQ_src.png",
+  "file": "art/ui/halo_tile/Halo_TowerMarbleBlock_color.png",
+  "note": "탑 몸통 대리석 블록 타일(이음매 없음 3x3 확인). 1254->1024 축소. PBR: _normal(돌 16도, 3x3 감싸 계산)·_rough 0.62·_metal 0 (--gold-hue-min 59로 금줄 금속 아님). 문 탑 L/R 돌 면에 반복 UV(tools/tower_retile.py)"
  }
 }

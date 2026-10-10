@@ -74,7 +74,8 @@ ZoneLook.Zone = ZONE -- read by tests / the design table
 local MANAGED = { "Brightness", "Ambient", "OutdoorAmbient", "ExposureCompensation", "EnvironmentSpecularScale",
 	"ClockTime", "FogColor", "FogStart", "FogEnd" }
 
-local S = {
+local S = { Night = 0, -- GameState NightLevel (A23-105 C1)
+
 	Started = false, Zone = nil, Sky = "Neutral", Preview = nil,
 	Base = {}, -- [property] = the server's latest value (never one of ZoneLook's own writes)
 	F = nil, From = nil, Goal = nil, T0 = 0, Dur = 1.5, Easing = false, -- current / start / goal factors, the ease clock
@@ -125,13 +126,16 @@ local function configBase(sky)
 	return base
 end
 
--- the zone's factors for the sky (the Eclipse night floor keeps the light up); Spec nil = the server's specular
-local function factorsFor(zoneId, sky)
+-- the zone's factors at a night level (A23-105 C1, dev2 contract: GameState NightLevel 0..1 of the clock shown - the
+-- day cycle runs under every war sky): the night floor (NightBright) and the night lift (NightExp) scale with it, never
+-- with the sky's name; Spec nil = the server's specular
+local function factorsFor(zoneId, night)
 	local z = ZONE[zoneId] or ZONE.Default
+	local n = math.clamp(tonumber(night) or 0, 0, 1)
 	return {
 		Amb = { z.Amb[1], z.Amb[2], z.Amb[3] },
-		Bright = sky == "Eclipse" and math.max(z.Bright, T.NightBright) or z.Bright,
-		Exp = z.Exp + (sky == "Eclipse" and (z.NightExp or 0) or 0),
+		Bright = z.Bright + (math.max(z.Bright, T.NightBright) - z.Bright) * n,
+		Exp = z.Exp + (z.NightExp or 0) * n,
 		Spec = z.Specular,
 		Tint = z.Tint, Sat = z.Sat, Con = z.Con, CC = z.CC,
 		W = z.Dusk and 1 or 0, Dusk = z.Dusk, -- dusk weight (eased like the factors) and its targets
@@ -143,13 +147,15 @@ local function clockDelta(a, b)
 	return ((b - a + 12) % 24) - 12
 end
 
--- the dusk part of a goal over a base: ClockTime / fog toward the zone's dusk by weight w (a night base keeps its clock)
+-- the dusk part of a goal over a base: ClockTime / fog toward the zone's dusk by weight w. A23-105 C2: the hollow is
+-- always at its dusk clock (night too - its light still follows the server's night + the C1 floor), so the running day
+-- cycle never flips its sun at 6:00 (the old 'only 6:00 .. dusk' rule jumped 11 h once a day)
 local function duskOver(base, w, d)
 	if not d or w <= 0 then
 		return { ClockTime = base.ClockTime, FogColor = base.FogColor, FogStart = base.FogStart, FogEnd = base.FogEnd }
 	end
 	local clock = base.ClockTime
-	if type(clock) == "number" and clock >= 6 and clock < d.Clock then
+	if type(clock) == "number" then
 		clock = (clock + clockDelta(clock, d.Clock) * w) % 24
 	end
 	return {
@@ -174,9 +180,9 @@ local function compose(f, base)
 	}, { TintColor = f.Tint, Saturation = f.Sat, Contrast = f.Con, Brightness = f.CC }
 end
 
--- { Lighting goal, ZoneTint goal } for a zone over a base; sky only picks the night floor
-function ZoneLook.TargetFor(zoneId, base, sky)
-	return compose(factorsFor(zoneId, sky), base)
+-- { Lighting goal, ZoneTint goal } for a zone over a base at a night level (0..1, GameState NightLevel)
+function ZoneLook.TargetFor(zoneId, base, night)
+	return compose(factorsFor(zoneId, night), base)
 end
 
 -- factors part of the way from a to b (Spec: the server's value stands for a missing one)
@@ -195,8 +201,8 @@ end
 
 -- the goal part of the way (t 0..1) from one zone's look to another's over a base: what a zone change shows mid-ease
 -- (tests / previews; the live ease runs the same mix on Heartbeat)
-function ZoneLook.Blend(fromZone, toZone, t, base, sky)
-	return compose(mix(factorsFor(fromZone, sky), factorsFor(toZone, sky), math.clamp(t, 0, 1)), base)
+function ZoneLook.Blend(fromZone, toZone, t, base, night)
+	return compose(mix(factorsFor(fromZone, night), factorsFor(toZone, night), math.clamp(t, 0, 1)), base)
 end
 
 -- writes base x current factors: every managed property (name = nil) or one; ZoneTint with the full write
@@ -228,7 +234,7 @@ end
 -- start easing the factors to the current zone / sky (seconds <= 0: jump)
 local function retarget(seconds)
 	S.Sky = skyName()
-	local goal = factorsFor(S.Preview or S.Zone, S.Sky)
+	local goal = factorsFor(S.Preview or S.Zone, S.Night)
 	if not S.F or seconds <= 0 then
 		S.F, S.Easing = goal, false
 		write(nil)
@@ -327,6 +333,24 @@ function ZoneLook.Start()
 			local ok, err = pcall(retarget, tonumber(Config.Sky and Config.Sky.TweenTime) or T.Tween)
 			if not ok then Util.Warn("ZoneLook", tostring(err)) end
 		end)
+		-- A23-105 C1: the night level of the clock shown (every 0.5 s while it changes, dusk / dawn ~4 min): an ease
+		-- running takes the new goal, else one write (never a new 1.5 s ease each step)
+		local function onNight()
+			local v = tonumber(gs:GetAttribute("NightLevel"))
+			S.Night = (v and v == v) and math.clamp(v, 0, 1) or 0
+			local goal = factorsFor(S.Preview or S.Zone, S.Night)
+			if S.Easing then
+				S.Goal = goal
+			else
+				S.F = goal
+				write(nil)
+			end
+		end
+		gs:GetAttributeChangedSignal("NightLevel"):Connect(function()
+			local ok, err = pcall(onNight)
+			if not ok then Util.Warn("ZoneLook", tostring(err)) end
+		end)
+		pcall(onNight)
 	end)
 	print("[ZoneLook] started")
 end

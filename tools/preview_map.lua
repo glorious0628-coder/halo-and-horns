@@ -1063,7 +1063,9 @@ Lighting.ExposureCompensation = -0.25
 pcall(function() Lighting.EnvironmentDiffuseScale = 0.5 end)
 pcall(function() Lighting.EnvironmentSpecularScale = 0.6 end)
 pcall(function() Lighting.ShadowSoftness = 0.15 end)
-pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Realistic end)
+-- A23-105: the place's lighting style is Soft (Realistic broke Play: white screen; the Realistic -> Soft toggle brought
+-- the shadows back). Edit bakes Soft so a map rebuild never saves Realistic into the place.
+pcall(function() Lighting.LightingStyle = Enum.LightingStyle.Soft end)
 Lighting.GlobalShadows = true
 
 return string.format("map v2 full mode: parts %d, lights %d; %s", count, lights, table.concat(report, "; "))

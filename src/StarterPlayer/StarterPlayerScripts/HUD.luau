@@ -5714,7 +5714,14 @@ function L.PickTiles()
 	if not ui.tiles then return false end
 	-- 검수 2026-10-07 (user: "이렇게 하라고" with the reference row): A23-40's six tiles are always on the row; a window
 	-- that is not built yet answers on press (L.TileTap); only the row's room (Count) decides what overflows to [메뉴]
-	local want = table.clone(ui.tiles)
+	-- A23-113 ③: only the tiles that are needed by now (Config.HudReveal.TileShows); one that comes in pops in once
+	local ready = L.RevealReady() -- every pick (even one that changes nothing) so the join timer starts with my data
+	local want = {}
+	local st = L.RevealState()
+	for _, t in ui.tiles do
+		-- once shown it stays this session (a level or a pet list that blinks never takes a tile away)
+		if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows(t.Def.Id, st) then table.insert(want, t) end
+	end
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
 		local sorted = table.clone(want)
@@ -5735,8 +5742,56 @@ function L.PickTiles()
 	local shown = {}
 	for _, t in want do shown[t] = true end
 	local underFold = IS_TOUCH and ui.foldOpen == true
-	for _, t in ui.tiles do t.Button.Visible = shown[t] == true and not underFold end
+	for _, t in ui.tiles do
+		local was = L.TileSeen[t.Def.Id]
+		t.Button.Visible = shown[t] == true and not underFold
+		if shown[t] and was == false and ready then L.TilePop(t.Button) end -- new in play (not at the join)
+		if shown[t] then L.TileSeen[t.Def.Id] = true elseif was == nil then L.TileSeen[t.Def.Id] = false end
+	end
 	return true
+end
+
+-- A23-113 ③: tile id -> true once shown, false = hidden at the first pick (its first showing later pops)
+L.TileSeen = {}
+
+-- pops only a few seconds after my data loaded (the quest book and the pet list come in just after the join)
+function L.RevealReady()
+	if attr("DataLoaded", false) ~= true then L.RevealAt = nil return false end
+	L.RevealAt = L.RevealAt or os.clock()
+	return os.clock() - L.RevealAt > 3
+end
+
+-- what the tile rule reads: my level, skill slots, a pet (one following, or any in my pet list), the first chapter done
+function L.RevealState()
+	local hasPet = (attr("EquippedPet", "") or "") ~= ""
+	local pw = C and C.PetWindow
+	if not hasPet and type(pw) == "table" and type(pw.Lists) == "function" then
+		local ok, list = pcall(pw.Lists)
+		hasPet = ok and type(list) == "table" and type(list.List) == "table" and #list.List > 0 or false
+	end
+	local last = "story:" .. tostring(Config.HudReveal.FirstChapterLast or "M1_4")
+	local done = false
+	local book = questState.Book
+	for _, id in type(book) == "table" and type(book.Done) == "table" and book.Done or {} do
+		if id == last then done = true break end
+	end
+	for _, e in questState.All or questState.Rows or {} do -- a later chapter's main row = the first chapter is done
+		local ch = type(e) == "table" and type(e.Id) == "string" and tonumber(string.match(e.Id, "^story:M(%d+)_")) or nil
+		if ch and ch >= 2 then done = true end
+	end
+	return { Level = num("Level", 1), SkillSlots = num("SkillSlots", 0), HasPet = hasPet, ChapterDone = done }
+end
+
+-- a tile coming in: a short pop (none with reduced motion)
+function L.TilePop(btn)
+	if not btn or UIKit.ReducedMotion() then return end
+	local sc = btn:FindFirstChild("RevealPop") or Instance.new("UIScale")
+	sc.Name = "RevealPop"
+	sc.Scale = 0.4
+	sc.Parent = btn
+	local tw = TweenService:Create(sc, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 })
+	tw.Completed:Connect(function() sc:Destroy() end)
+	tw:Play()
 end
 
 -- the shown tiles on Rects.tiles: squares of Size, Gap apart; PC centred on the row (the screen centre), phones flush
@@ -6223,6 +6278,12 @@ function HUD.Start()
 		refreshQuests()
 	end)
 	L.ApplyFold(false)
+	-- A23-113 ③: a level up, a new skill or a pet brings its menu tile in at once (the 1 s refresh also catches it)
+	for _, name in { "Level", "SkillSlots", "EquippedPet" } do
+		LocalPlayer:GetAttributeChangedSignal(name):Connect(function()
+			if L.PickTiles() then requestLayout() end
+		end)
+	end
 	-- Studio-only check hook (UiSandbox captures of A23-68 #2): the local attribute HintPreview = "Attack" / "Q" shows
 	-- that hint, any other value clears them; never read outside Studio
 	if game:GetService("RunService"):IsStudio() then

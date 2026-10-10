@@ -23,6 +23,7 @@ local INIT_ORDER = {
 	"LostFoundService", -- 게임성 개발 3: #45 the lost things (after ChoiceCard: it listens to the card)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (the error record, the live switchboard)
 	"HealthService", -- 게임성 개발 3: the hourly health report (2026-10-09)
+	"DayCycleService", -- 게임성 개발 2: A23-105 the day and the weather (a crown-war sky covers its look, the clock turns on)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -42,6 +43,7 @@ local START_ORDER = {
 	"LostFoundService", -- 게임성 개발 3: #45 (before PlayerService too: it listens to PlayerReady)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (before PlayerService too)
 	"HealthService", -- 게임성 개발 3: the hourly health report (before PlayerService: it listens to PlayerReady)
+	"DayCycleService", -- 게임성 개발 2: A23-105 (after WarService, whose Start bootstraps the light and hands Neutral to it)
 	"PlayerService",
 }
 
@@ -89,11 +91,17 @@ end
 --   except the read-only ones (Errors, Health, StoryDump, DataDump, LootRoll: they only read or count).
 --   A23-75: Pass ("XP2:on" / "Gold2:off" / "VIP:clear" / "HaloIce:on": this session only, never saved, never on the
 --   shared supporter board), LookGrant ("HaloSprout": an attendance look, saved like a real unlock)
+--   A23-105 (no player needed, nothing saved or tainted): Clock (hours 0-24: the day jumps there and goes on), Weather
+--   ("Rain" / "Snow" / "Clear" [":seconds"]: that weather now, snow in any month here), DayState (the day / weather now):
+--   game.ServerScriptService.DebugCommand:Invoke("", "Clock", 21)
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
 	local READ_ONLY = { Errors = true, Health = true, StoryDump = true, DataDump = true, LootRoll = true } -- these change nothing saved
 	debugFn.OnInvoke = function(playerName, key, value)
+		if key == "Clock" or key == "Weather" or key == "DayState" then -- A23-105: the server's day (no player, no save)
+			return S.DayCycleService.Debug(key, value)
+		end
 		local player = game:GetService("Players"):FindFirstChild(playerName)
 		if not player or not S.PlayerService.IsReady(player) then return "no such ready player" end
 		local okData, tainted = pcall(function() return S.PlayerService.GetData(player) end)
