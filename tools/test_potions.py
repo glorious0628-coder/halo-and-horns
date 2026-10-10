@@ -68,7 +68,7 @@ def costume_removal_checks() -> tuple[int, list[str]]:
     check(not re.search(r"\bCostumeEnabled\s*=", config), "Config still defines CostumeEnabled")
     return count, failures
 # zone_check_halo #34: each mutant must make the fixture fail (exact search text, matched once, in-memory sources only)
-SHOP, CONF = "SHOP_SOURCE", "CONFIG_SOURCE"
+SHOP, CONF, VIT = "SHOP_SOURCE", "CONFIG_SOURCE", "VITALS_SOURCE"
 MUTATIONS = [
     ("#34 tagged sellers ignored (Crossroads only)", SHOP, "for _, merchant in tagged do add(merchant) end", "local _ = tagged"),
     ("#34 the Crossroads seller's old path dropped", SHOP, "if legacy and legacy.Parent == npcs then add(legacy) end",
@@ -90,6 +90,28 @@ MUTATIONS = [
     ("#34 MerchantEnabled ignored", SHOP, "if Config.Vitals.MerchantEnabled ~= true or typeof(player) ~= \"Instance\"",
      "if typeof(player) ~= \"Instance\""),
     ("#34 Config: the seller tag renamed", CONF, "PotionMerchantTag = \"PotionMerchant\",", "PotionMerchantTag = \"NPC\","),
+    # A23-110 the King's Hop quest: a purchase / a drink reports, a practice sip never dead-ends the step
+    ("A23-110 a purchase never reports PotionBought", SHOP,
+     "local okEvent, errEvent = pcall(story.Event, player, \"PotionBought\", { Kind = kind, N = amount })",
+     "local okEvent, errEvent = true, nil"),
+    ("A23-110 a real drink never reports PotionUsed", VIT,
+     "local okEvent, errEvent = pcall(story.Event, player, \"PotionUsed\", { Kind = kind })",
+     "local okEvent, errEvent = true, nil"),
+    ("A23-110 a sip is taken with no step waiting", VIT, "if not okWants or wants ~= true then return false end",
+     "if not okWants then return false end"),
+    ("A23-110 a sip never reports", VIT, "pcall(story.Event, player, \"PotionUsed\", { Kind = kind, Practice = true })",
+     "local _ = kind"),
+    ("A23-110 a sip eats the potion", VIT, "pcall(story.Event, player, \"PotionUsed\", { Kind = kind, Practice = true })",
+     "S.PlayerService.SetStat(player, Config.PotionStockKey(kind), S.PlayerService.GetData(player)[Config.PotionStockKey(kind)] - 1); "
+     "pcall(story.Event, player, \"PotionUsed\", { Kind = kind, Practice = true })"),
+    ("A23-110 no sip at full HP", VIT, "\t\t\tif practiceSip(player, kind) then return end\n\t\t\tNet.Notify(player, \"HP is full.\", \"info\")",
+     "\t\t\tNet.Notify(player, \"HP is full.\", \"info\")"),
+    ("A23-110 no sip at full MP", VIT, "\t\t\tif practiceSip(player, kind) then return end\n\t\t\tNet.Notify(player, \"MP is full.\", \"info\")",
+     "\t\t\tNet.Notify(player, \"MP is full.\", \"info\")"),
+    ("A23-110 a sip says nothing", VIT, "\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn true\nend",
+     "\treturn true\nend"),
+    ("A23-110 a sip is refused after counting", VIT, "\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn true\nend",
+     "\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn false\nend"),
 ]
 
 

@@ -151,12 +151,13 @@ def tools_checks(base, repo):
                  ["diff", "HEAD", "--", "../outside.txt"], ["diff", "--", "C:/Windows/win.ini"], ["show", "HEAD:../x.txt"],
                  ["show", "C:/Windows/win.ini"], ["diff", "-Ofile.txt"], ["diff", "-O", "file.txt"], ["log", "-n", "C:/x"],
                  ["log", "--format=../x"], ["diff", "no_such_rev_zz9"], ["log", "--", ".envrc"], ["diff", "--git-dir=.."],
-                 ["diff", "../outside.txt", "a.txt"], ["log", "--", "tools/../../x"]]:
+                 ["diff", "../outside.txt", "a.txt"], ["log", "--", "tools/../../x"], ["log", "-L1,5:../outside.txt"],
+                 ["log", "-L", "1,5:C:/Windows/win.ini"], ["log", "-L1,5:.env"]]:
         t, e = G.call("git_readonly", {"args": args})
         check(f"git outside blocked: {args}", e and "[fonts]" not in t.lower(), t)
     for args in [["log", "--format=%h", "-n", "2"], ["diff", "HEAD~1", "HEAD", "--stat"], ["show", "HEAD:tools/api_agent.py"],
                  ["diff", "HEAD~1..HEAD", "--", "tools/api_agent.py"], ["log", "-3", "--oneline", "--", "tools"],
-                 ["rev-parse", "HEAD"]]:
+                 ["rev-parse", "HEAD"], ["log", "-L1,3:tools/api_agent.py", "-n", "1"]]:
         t, e = G.call("git_readonly", {"args": args})
         check(f"git allowed: {args}", not e and t.startswith("exit 0"), t[:200])
 

@@ -61,17 +61,32 @@ local function same(a, b)
 		and a.LookVector:FuzzyEq(b.LookVector, 1e-4) and a.UpVector:FuzzyEq(b.UpVector, 1e-4)
 end
 
+-- 메인 반영 10/10 (no pose seen): today's avatars may carry upgraded joints - an AnimationConstraint (Attachment0 on
+-- the parent part, Attachment1 on the child) instead of the Motor6D - so both are found (the same pairs as Fx's clips)
+local function joins(d, part, parent)
+	if d:IsA("Motor6D") then return d.Enabled and d.Part1 == part and d.Part0 == parent end
+	if d:IsA("AnimationConstraint") then
+		local a0, a1 = d.Attachment0, d.Attachment1
+		return d.Enabled and a0 ~= nil and a1 ~= nil and a1.Parent == part and a0.Parent == parent
+	end
+	return false
+end
+
 local function findJoint(char, joint)
 	local pair = T.Parts[joint]
 	local part, parent = char:FindFirstChild(pair[1]), char:FindFirstChild(pair[2])
 	if not (part and parent) then return nil end
-	for _, d in part:GetChildren() do
-		if d:IsA("Motor6D") and d.Part1 == part and d.Part0 == parent then return d end
+	local best = nil
+	for _, holder in { part, parent } do
+		for _, d in holder:GetChildren() do
+			local ok, hit = pcall(joins, d, part, parent)
+			if ok and hit then
+				if d:IsA("AnimationConstraint") then return d end -- the upgraded joint is the one the Animator drives
+				best = best or d
+			end
+		end
 	end
-	for _, d in parent:GetChildren() do
-		if d:IsA("Motor6D") and d.Part1 == part and d.Part0 == parent then return d end
-	end
-	return nil
+	return best
 end
 
 -- hands every joint this module still holds back to the pose under it

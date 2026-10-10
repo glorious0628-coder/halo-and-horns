@@ -405,6 +405,10 @@ class Tools:
                 name, eq, val = a.partition("=")
                 if eq and self.pathish(val):
                     raise ToolError(f"option value not allowed: {a}")
+                # 검수 nit 10/10: log -L<range>:<path> / -L <range>:<path> - the path part goes through git_path_ok too
+                lval = a[2:] if a.startswith("-L") and len(a) > 2 else (rest[i + 1] if a == "-L" and i + 1 < len(rest) else None)
+                if lval is not None and (":" not in lval or not self.git_path_ok(lval.rsplit(":", 1)[1])):
+                    raise ToolError(f"-L needs <range>:<repository-relative path>: {lval}")
                 if not eq and name in self.GIT_VALUE_OPTS and i + 1 < len(rest):
                     if self.pathish(rest[i + 1]):
                         raise ToolError(f"option value not allowed: {rest[i + 1]}")

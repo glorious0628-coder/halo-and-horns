@@ -1,0 +1,124 @@
+"""Class x side attack moves (게임성 개발 1, SPEC A23-108 ④, Halo first), static / offline.
+
+Reads the CURRENT Fx.luau and Config.luau. Checks: every MOTION.SIDE_CLIPS row is a Config.ClassGrips key and names
+clips that exist; each side clip fits its class (Len <= SwingInterval x SWING_FIT), its keys run in time order from 0 to
+Len, every joint is a real R15 joint, consecutive keys stay under 180 degrees apart per axis (the slerp rule), its
+strike key sits on the class's contact time (Paladin = SLASH_CONTACT, Light Mage = CAST_DELAY) so the slash / cast art
+and the sound still land on it; Feel.playAttack takes the side clips (not for a style like bare hands / the pet) by the
+attacker's Faction attribute. Mutations: each must be caught. The look is checked in Studio photos (메인 반영 1).
+
+Usage: py tools/test_side_clips.py
+Report: docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.json
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+import re
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+FX = ROOT / "src/StarterPlayer/StarterPlayerScripts/Fx.luau"
+CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
+OUT = ROOT / "docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.json"
+JOINTS = {"Waist", "Neck", "RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow", "LeftWrist"}
+STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST_DELAY", "Mage")}
+
+
+def clip(fx: str, name: str):
+    m = re.search(r"\t\t" + name + r" = \{ Len = ([\d.]+), Keys = \{\n(.*?)\n\t\t\} \},", fx, re.S)
+    if not m:
+        return None
+    keys = []
+    for line in m.group(2).split("\n"):
+        k = re.match(r'\s*\{ ([\d.]+), "(\w+)", \{(.*)\} \},\s*$', line)
+        if not k:
+            continue
+        joints = {j: tuple(float(v) for v in a.split(",")) for j, a in re.findall(r"(\w+) = \{ ([-\d., ]+) \}", k.group(3))}
+        keys.append((float(k.group(1)), k.group(2), joints))
+    return float(m.group(1)), keys
+
+
+def num(src: str, pat: str):
+    m = re.search(pat, src)
+    return float(m.group(1)) if m else None
+
+
+def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
+    out = []
+    side = fx[fx.find("\tSIDE_CLIPS = {"):fx.find("\tCLASS_CLIPS = {")]
+    rows = re.findall(r"(\w+_\w+) = \{ Swing = \"(\w+)\" \}", side)
+    grips = cfg[cfg.find("Config.ClassGrips = {"):cfg.find("function Config.ClassGripKey")]
+    out.append(("Halo's Paladin and Light Mage have their own swing", ("Warrior_Halo", "PaladinSwing") in rows
+                and ("Mage_Halo", "LightMageSwing") in rows))
+    fit = num(fx, r"SWING_FIT = ([\d.]+)")
+    for key, name in rows:
+        out.append((f"{key} is a ClassGrips row", f"\t{key} = {{" in grips))
+        c = clip(fx, name)
+        out.append((f"{name} exists", c is not None))
+        if not c:
+            continue
+        length, keys = c
+        cls = key.split("_")[0]
+        block = cfg[cfg.find(f"\t{cls} = {{", cfg.find("Config.Classes = {")):]
+        interval = num(block, r"SwingInterval = ([\d.]+)")
+        out.append((f"{name} fits the {cls} swing (<= SwingInterval x SWING_FIT)", interval is not None and fit is not None
+                    and length <= interval * fit + 1e-9))
+        times = [t for t, _, _ in keys]
+        out.append((f"{name}: keys in time order from 0 to Len", times == sorted(times) and times[0] == 0 and abs(times[-1] - length) < 1e-9))
+        out.append((f"{name}: real R15 joints only", all(j in JOINTS for _, _, js in keys for j in js)))
+        ok = True
+        for (_, _, a), (_, _, b) in zip(keys, keys[1:]):
+            for j in set(a) | set(b):
+                va, vb = a.get(j, (0, 0, 0)), b.get(j, (0, 0, 0))
+                if any(abs(x - y) >= 180 for x, y in zip(va, vb)):
+                    ok = False
+        out.append((f"{name}: neighbouring keys < 180 degrees apart", ok))
+        const, _ = STRIKE.get(name, (None, None))
+        if const:
+            t = num(fx, const + r" = ([\d.]+)")
+            strike = [kt for kt, ease, _ in keys if ease == "In"]
+            out.append((f"{name}: the strike key on {const}", t is not None and len(strike) == 1 and abs(strike[0] - t) < 1e-9))
+    out += [
+        ("playAttack takes the side clips (not for a style)", "if not style then names = MOTION.SideClips(char, classId) or names end" in fx),
+        ("SideClips reads the attacker's Faction (ClassGripKey)", 'Config.ClassGripKey(classId, p:GetAttribute("Faction"))' in fx),
+        ("a move the side has none for stays the class's", "return { Swing = row.Swing or base.Swing, Release = row.Release or base.Release }" in fx),
+    ]
+    return out
+
+
+MUTATIONS = [
+    ("side clips never used", "\tif not style then names = MOTION.SideClips(char, classId) or names end", "\tlocal _ = 0"),
+    ("the Paladin strikes late", '\t\t\t{ 0.23, "In", { Waist = { -12, 6, 0 }', '\t\t\t{ 0.3, "In", { Waist = { -12, 6, 0 }'),
+    ("a key flips past 180", "RightShoulder = { 158, -6, 12 }", "RightShoulder = { 158, -6, 212 }"),
+    ("the Light Mage clip too long", "LightMageSwing = { Len = 0.68,", "LightMageSwing = { Len = 1.68,"),
+    ("a row for no class", "\t\tMage_Halo = { Swing = \"LightMageSwing\" },", "\t\tMage_Sky = { Swing = \"LightMageSwing\" },"),
+]
+
+
+def main() -> int:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    fx = FX.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    cfg = CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    res = checks(fx, cfg)
+    for name, ok in res:
+        print(("CHECK_OK  " if ok else "CHECK_FAIL ") + name)
+    muts = []
+    for name, old, new in MUTATIONS:
+        hits = fx.count(old)
+        caught = hits == 1 and not all(ok for _, ok in checks(fx.replace(old, new), cfg))
+        muts.append({"name": name, "applied": hits == 1, "caught": caught})
+        print(("MUTATION caught  " if caught else "MUTATION MISSED ") + name + ("" if hits == 1 else f" (matched {hits})"))
+    failed = sum(0 if ok else 1 for _, ok in res)
+    ok = failed == 0 and all(m["caught"] for m in muts)
+    status = "passed" if ok else "failed"
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps({"checks": len(res), "failed": failed, "mutations": muts, "status": status,
+                               "contract": __doc__.split("Usage")[0].strip(), "studioCalls": 0}, indent=2,
+                              ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Status: {status} (checks {len(res)}, failed {failed}, mutations {sum(m['caught'] for m in muts)}/{len(muts)})")
+    return 0 if ok else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

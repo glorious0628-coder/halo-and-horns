@@ -1,0 +1,1783 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 151,
+  "failedChecks": 0,
+  "namedChecks": 151,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "KO1: a visible sub 'The King's Hop' with four steps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "KO1 is in StoryQuests.Subs exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "opens after M1_2, up to Lv8, only with no potion yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 3: Drink a potion from your quick slot = PotionUsed (passes when seen before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 4: the rematch = one personal King Slime kill in the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 1: a phone short name (<= 14), no Start line, no panel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 2: a phone short name (<= 14), no Start line, no panel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 3: a phone short name (<= 14), no Start line, no panel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "step 4: a phone short name (<= 14), no Start line, no panel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "KO1 has a short name for the phone row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the happenings are listed in Config.StoryQuests.Events",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Event step waits for a listed happening: FirstKO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Event step waits for a listed happening: PotionBought",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every Event step waits for a listed happening: PotionUsed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the potion stock keys and the practice-sip line exist",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Halo: after M1_2 the quest is just a row: no popup, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Halo: row 1 reads 'Defeat the King Slime', guides to the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Halo: CurrentStep 1; the quest waits for FirstKO only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Horns: after M1_2 the quest is just a row: no popup, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Horns: row 1 reads 'Defeat the King Slime', guides to the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Horns: CurrentStep 1; the quest waits for FirstKO only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Neutral: after M1_2 the quest is just a row: no popup, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Neutral: row 1 reads 'Defeat the King Slime', guides to the meadow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Neutral: CurrentStep 1; the quest waits for FirstKO only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Lv8 (the last level): offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "Lv9: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "before M1_2: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "an HP potion in the bag: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "an MP potion in the bag: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a potion bought once (and used): not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a potion drunk once: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "already done: not offered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "a started quest is never restarted by the 1 s loop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "buying potions after the start never cancels the quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "offered",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: unknown names / non-players do nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: the client cannot move the quest (no Talk / Choose / Open on an Event step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: FirstKO moves step 1 to 2 and is remembered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: row 2 reads 'Buy a potion' and guides to the seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: step 2 waits for PotionBought only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: a second KO moves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: PotionBought moves step 2 to 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: row 3 reads 'Drink a potion from your quick slot'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: step 3 waits for PotionUsed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: no second top-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: PotionUsed moves step 3 to 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: step 4: PotionSip false again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: row 4 reads 'Defeat the King Slime' again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: other kills (a shared King, another monster, another zone) never finish it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: the personal King's defeat finishes it: Done, QuestDone fires, no track left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: the usual 'done' line says the quest is over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Halo: never again (one payout)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: unknown names / non-players do nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: the client cannot move the quest (no Talk / Choose / Open on an Event step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: FirstKO moves step 1 to 2 and is remembered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: row 2 reads 'Buy a potion' and guides to the seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: step 2 waits for PotionBought only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: a second KO moves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: PotionBought moves step 2 to 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: row 3 reads 'Drink a potion from your quick slot'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: step 3 waits for PotionUsed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: no second top-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: PotionUsed moves step 3 to 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: step 4: PotionSip false again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: row 4 reads 'Defeat the King Slime' again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: other kills (a shared King, another monster, another zone) never finish it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: the personal King's defeat finishes it: Done, QuestDone fires, no track left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: paid two minutes of hunting gold + XP and one 70% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: the usual 'done' line says the quest is over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Horns: never again (one payout)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: unknown names / non-players do nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: the client cannot move the quest (no Talk / Choose / Open on an Event step)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: FirstKO moves step 1 to 2 and is remembered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: row 2 reads 'Buy a potion' and guides to the seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: step 2 waits for PotionBought only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: a second KO moves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: PotionBought moves step 2 to 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: row 3 reads 'Drink a potion from your quick slot'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: step 3 waits for PotionUsed only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: step 3: PotionSip is true at once (the client lets a full bar be used)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: no second top-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: PotionUsed moves step 3 to 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: step 4: PotionSip false again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: row 4 reads 'Defeat the King Slime' again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: other kills (a shared King, another monster, another zone) never finish it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: the personal King's defeat finishes it: Done, QuestDone fires, no track left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: paid two minutes of hunting gold + XP and one 70% scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: the usual 'done' line says the quest is over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "Neutral: never again (one payout)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "flow",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "no gold: tops up to 50 in total (+50 carried), the bank is untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "no gold: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "30 carried: tops up to 50 in total (+20 carried), the bank is untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "30 carried: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "10 carried + 20 in the bank: tops up to 50 in total (+20 carried), the bank is untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "10 carried + 20 in the bank: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "49 gold: tops up to 50 in total (+1 carried), the bank is untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "49 gold: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "exactly 50: already has 50 or more: nothing added",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "exactly 50: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "50 in the bank: already has 50 or more: nothing added",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "50 in the bank: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "500 gold: already has 50 or more: nothing added",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "500 gold: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "again: tops up to 50 in total (+50 carried), the bank is untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "again: the one-time flag is saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "the top-up is paid once per step, never twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "a purchase before the KO moves nothing yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "step 2 passes at once (bought earlier), no top-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "top-up",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "an old KO does not pass step 1: the quest waits for its own KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "events seen early are remembered, the open step does not move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "a drink before the KO does not skip the purchase",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "the purchase passes the drink step at once (already seen)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "buying moves on to the drink step",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "a second purchase moves nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "an event is one player's own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "no data: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "a player who is not ready is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "CurrentStep: bad arguments give nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "a quest waiting for [Claim] is at no step",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ahead",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "a normal kill step counts shared kills only (as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "a Personal step counts personal kills only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "war points never come from a personal monster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "M1_2 is the main quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "a personal Slime Prince does not count for M1_2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "a shared one does",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 12,
+  "staticFailures": [],
+  "mutations": {
+    "total": 60,
+    "applied": 60,
+    "caught": 60,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "KO1 opens before M1_2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error",
+          "offered :: before M1_2: not offered"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "KO1 has no level cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: opens after M1_2, up to Lv8, only with no potion yet",
+          "offered :: Lv9: not offered"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "KO1 level cap 9",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: opens after M1_2, up to Lv8, only with no potion yet",
+          "offered :: Lv9: not offered"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "KO1 is offered to players with potions",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: opens after M1_2, up to Lv8, only with no potion yet",
+          "offered :: a potion bought once (and used): not offered",
+          "offered :: a potion drunk once: not offered",
+          "offered :: an HP potion in the bag: not offered",
+          "offered :: an MP potion in the bag: not offered"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "KO1 step 1 passes on an old KO",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: an old KO does not pass step 1: the quest waits for its own KO",
+          "config :: step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "KO1 step 2 never passes early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "top-up :: step 2 passes at once (bought earlier), no top-up"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "KO1 step 3 never passes early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: the purchase passes the drink step at once (already seen)",
+          "config :: step 3: Drink a potion from your quick slot = PotionUsed (passes when seen before)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "KO1 step 2 waits for the wrong happening",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a drink before the KO does not skip the purchase",
+          "ahead :: a second purchase moves nothing",
+          "ahead :: buying moves on to the drink step",
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "flow :: Halo: PotionBought moves step 2 to 3",
+          "flow :: Halo: row 3 reads 'Drink a potion from your quick slot'"
+        ],
+        "newFailingCount": 17
+      },
+      {
+        "mutation": "KO1 tops up to 25 only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "top-up :: 10 carried + 20 in the bank: tops up to 50 in total (+20 carried), the bank is untouched",
+          "top-up :: 30 carried: tops up to 50 in total (+20 carried), the bank is untouched"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "KO1 never tops up",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller",
+          "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Halo: no second top-up",
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Horns: no second top-up",
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
+        ],
+        "newFailingCount": 20
+      },
+      {
+        "mutation": "KO1 rematch counts any King",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 4: the rematch = one personal King Slime kill in the meadow",
+          "flow :: Halo: never again (one payout)",
+          "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: never again (one payout)",
+          "flow :: Horns: other kills (a shared King, another monster, another zone) never finish it"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "KO1 rematch in any zone",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 4: the rematch = one personal King Slime kill in the meadow",
+          "flow :: Halo: never again (one payout)",
+          "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: never again (one payout)",
+          "flow :: Horns: other kills (a shared King, another monster, another zone) never finish it"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "KO1 rematch kills any slime",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: step 4: the rematch = one personal King Slime kill in the meadow",
+          "flow :: Halo: never again (one payout)",
+          "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: never again (one payout)",
+          "flow :: Horns: other kills (a shared King, another monster, another zone) never finish it"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "KO1 pays no scroll",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)",
+          "flow :: Halo: never again (one payout)",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: never again (one payout)",
+          "flow :: Horns: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Neutral: never again (one payout)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "KO1 pays no XP",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Neutral: paid two minutes of hunting gold + XP and one 70% scroll"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "KO1 pays no gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Neutral: paid two minutes of hunting gold + XP and one 70% scroll"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "KO1 gets a closing toast",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KO1 pops up by itself",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KO1 starts with a toast",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)",
+          "offered :: Halo: after M1_2 the quest is just a row: no popup, no toast",
+          "offered :: Horns: after M1_2 the quest is just a row: no popup, no toast",
+          "offered :: Neutral: after M1_2 the quest is just a row: no popup, no toast"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "KO1 forgotten in the sub list",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: an old KO does not pass step 1: the quest waits for its own KO",
+          "ahead :: group ran to the end without a Lua error",
+          "config :: KO1 is in StoryQuests.Subs exactly once",
+          "flow :: group ran to the end without a Lua error",
+          "offered :: Halo: CurrentStep 1; the quest waits for FirstKO only",
+          "offered :: Halo: after M1_2 the quest is just a row: no popup, no toast"
+        ],
+        "newFailingCount": 29
+      },
+      {
+        "mutation": "KO1 the rematch step moved",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KO1 the KO step moved",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.FirstKO tells game dev 2 the quest, the KO step (1) and the rematch step (4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KO1 PotionUsed not a listed happening",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: events seen early are remembered, the open step does not move",
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: the purchase passes the drink step at once (already seen)",
+          "config :: every Event step waits for a listed happening: PotionUsed",
+          "config :: the happenings are listed in Config.StoryQuests.Events",
+          "flow :: Halo: PotionUsed moves step 3 to 4"
+        ],
+        "newFailingCount": 29
+      },
+      {
+        "mutation": "KO1 no practice-sip line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the potion stock keys and the practice-sip line exist"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a personal kill counts for a normal kill step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal :: a normal kill step counts shared kills only (as before)",
+          "personal :: a personal Slime Prince does not count for M1_2",
+          "personal :: a shared one does",
+          "personal :: war points never come from a personal monster"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a Personal step never counts",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: never again (one payout)",
+          "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: never again (one payout)",
+          "flow :: Horns: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Horns: paid two minutes of hunting gold + XP and one 70% scroll"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "a Personal step counts shared kills too",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: never again (one payout)",
+          "flow :: Halo: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Halo: paid two minutes of hunting gold + XP and one 70% scroll",
+          "flow :: Horns: never again (one payout)",
+          "flow :: Horns: other kills (a shared King, another monster, another zone) never finish it",
+          "flow :: Horns: paid two minutes of hunting gold + XP and one 70% scroll"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "NoPotionYet ignores a bought / drunk potion",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: a potion bought once (and used): not offered",
+          "offered :: a potion drunk once: not offered"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "NoPotionYet ignores the stock",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: an HP potion in the bag: not offered",
+          "offered :: an MP potion in the bag: not offered"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "NoPotionYet checks only HP",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: an MP potion in the bag: not offered"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Requires.MaxLevel ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: Lv9: not offered"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Requires.MaxLevel off by one",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: Lv8 (the last level): offered"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Requires.NoPotionYet ignored",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "offered :: a potion bought once (and used): not offered",
+          "offered :: a potion drunk once: not offered",
+          "offered :: an HP potion in the bag: not offered",
+          "offered :: an MP potion in the bag: not offered"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a seen happening never passes a later step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: the purchase passes the drink step at once (already seen)",
+          "top-up :: step 2 passes at once (bought earlier), no top-up"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Past ignored (every seen happening passes)",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: an old KO does not pass step 1: the quest waits for its own KO"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the 1 s loop never passes a seen happening",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: the purchase passes the drink step at once (already seen)",
+          "top-up :: step 2 passes at once (bought earlier), no top-up"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "TopUpGold never paid",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Halo: no second top-up",
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Horns: no second top-up",
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Neutral: no second top-up"
+        ],
+        "newFailingCount": 19
+      },
+      {
+        "mutation": "TopUpGold not saved first",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "top-up :: 10 carried + 20 in the bank: the one-time flag is saved",
+          "top-up :: 30 carried: the one-time flag is saved",
+          "top-up :: 49 gold: the one-time flag is saved"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "TopUpGold always pays the full 50",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "top-up :: 10 carried + 20 in the bank: tops up to 50 in total (+20 carried), the bank is untouched",
+          "top-up :: 30 carried: tops up to 50 in total (+20 carried), the bank is untouched",
+          "top-up :: 49 gold: tops up to 50 in total (+1 carried), the bank is untouched"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "TopUpGold pays even when rich",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "top-up :: 50 in the bank: already has 50 or more: nothing added",
+          "top-up :: 500 gold: already has 50 or more: nothing added",
+          "top-up :: exactly 50: already has 50 or more: nothing added"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "TopUpGold is doubled by the gold pass",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "TopUpGold counts the carried gold only",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "top-up :: 10 carried + 20 in the bank: tops up to 50 in total (+20 carried), the bank is untouched",
+          "top-up :: 49 gold: tops up to 50 in total (+1 carried), the bank is untouched",
+          "top-up :: 50 in the bank: already has 50 or more: nothing added"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "TopUpGold paid for a step that passes at once",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "top-up :: step 2 passes at once (bought earlier), no top-up"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Event names are not checked",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: unknown names / non-players do nothing",
+          "flow :: Horns: unknown names / non-players do nothing",
+          "flow :: Neutral: unknown names / non-players do nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Event ignores readiness",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a player who is not ready is ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Event forgets what it saw",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: events seen early are remembered, the open step does not move",
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: the purchase passes the drink step at once (already seen)",
+          "flow :: Halo: FirstKO moves step 1 to 2 and is remembered",
+          "flow :: Horns: FirstKO moves step 1 to 2 and is remembered",
+          "flow :: Neutral: FirstKO moves step 1 to 2 and is remembered"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Event moves a step that waits for another name",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a drink before the KO does not skip the purchase",
+          "ahead :: a second purchase moves nothing",
+          "ahead :: events seen early are remembered, the open step does not move",
+          "flow :: Halo: PotionBought moves step 2 to 3",
+          "flow :: Halo: PotionUsed moves step 3 to 4",
+          "flow :: Halo: a second KO moves nothing"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "Event never moves a step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a drink before the KO does not skip the purchase",
+          "ahead :: a player who is not ready is ignored",
+          "ahead :: a second purchase moves nothing",
+          "ahead :: an event is one player's own",
+          "ahead :: buying moves on to the drink step",
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)"
+        ],
+        "newFailingCount": 73
+      },
+      {
+        "mutation": "Event never refreshes the next step",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "ahead :: the purchase passes the drink step at once (already seen)",
+          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Neutral: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "top-up :: step 2 passes at once (bought earlier), no top-up"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "Event refreshes only once (one step per call)",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Event does not say if it moved",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: FirstKO moves step 1 to 2 and is remembered",
+          "flow :: Halo: PotionBought moves step 2 to 3",
+          "flow :: Halo: PotionUsed moves step 3 to 4",
+          "flow :: Horns: FirstKO moves step 1 to 2 and is remembered",
+          "flow :: Horns: PotionBought moves step 2 to 3",
+          "flow :: Horns: PotionUsed moves step 3 to 4"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Wants is always true",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: step 2 waits for PotionBought only",
+          "flow :: Halo: step 3 waits for PotionUsed only",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 2 waits for PotionBought only",
+          "flow :: Horns: step 3 waits for PotionUsed only",
+          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "Wants ignores the name",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: step 2 waits for PotionBought only",
+          "flow :: Halo: step 3 waits for PotionUsed only",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 2 waits for PotionBought only",
+          "flow :: Horns: step 3 waits for PotionUsed only",
+          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "CurrentStep names a quest waiting for [Claim]",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: a quest waiting for [Claim] is at no step"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the sip flag is never published",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: step 4: PotionSip false again",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Horns: step 4: PotionSip false again"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "the sip flag is never cleared",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "flow :: Halo: step 4: PotionSip false again",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 4: PotionSip false again",
+          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Neutral: step 4: PotionSip false again"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the sip flag is always on",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "flow :: Halo: step 4: PotionSip false again",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 4: PotionSip false again",
+          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Neutral: step 4: PotionSip false again"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the sip flag waits for the wrong happening",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Horns: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Neutral: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Neutral: steps 1-2: the client may not use a full bar yet (PotionSip false)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the sip flag has another name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "config :: Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
+          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: step 4: PotionSip false again",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "the sip flag has no name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ahead :: the KO then passes steps 2 and 3 at once (step 4 waits for the rematch; the sip flag never lit)",
+          "config :: Config.FirstKO.SipAttr = the attribute game dev 1's VitalsUI reads (PotionSip)",
+          "flow :: Halo: step 3: PotionSip is true at once (the client lets a full bar be used)",
+          "flow :: Halo: step 4: PotionSip false again",
+          "flow :: Halo: steps 1-2: the client may not use a full bar yet (PotionSip false)",
+          "flow :: Horns: step 3: PotionSip is true at once (the client lets a full bar be used)"
+        ],
+        "newFailingCount": 11
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "ce439e76da4e1a35dfa7960e9650ef4748fca5b9dad3d7b1799616d0ebdcbe7a",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
+    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
+    "src/ServerScriptService/StoryQuestService.luau": "989b17380513ea51dc947698fad09939e269b5cf672fba39e40267df878f1bbd",
+    "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
+    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
+    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
+    "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808"
+  },
+  "fixtureSHA256": "5ada540ddd71f780bf3971f9e230f0187723734394fbec628119f84ffc053652",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-109 / A23-110: the sub KO1 'The King's Hop' starts by itself after M1_2 for a Lv <= 8 save with no potion (no stock, none bought or drunk, Requires.MaxLevel / NoPotionYet), as a plain row (no popup, no toast, no Start / Finish): Defeat the King Slime (Event FirstKO) -> Buy a potion (Event PotionBought, TopUpGold 50: the missing part of 50 gold is added to the carried gold once, source Choice, nothing when already rich or when the step passes at once) -> Drink a potion from your quick slot (Event PotionUsed) -> Defeat the King Slime (a Personal kill: only a personal King Slime in the meadow counts, shared kills never) -> two minutes of hunting gold + XP and one 70% scroll, once. StoryQuestService.Event(player, name, info) = the one way a service reports a named happening (listed in Config.StoryQuests.Events; unknown names, non-players, players not ready: nothing): it is saved in data.Story.First[name] first, the open Event step that waits for it moves on, the next steps are checked at once; an Event step with Past passes at once when its happening was seen before it opened (never a dead end for a player who ran ahead); a client has no way to report one (StoryAction is Open / Talk / Choose and an Event step has no panel). Wants(player, name) = a step waits for it; CurrentStep(player, id) = the step of a started quest. Config.FirstKO = { Quest, Step, RematchStep } is what game dev 2's personal King reads.",
+  "limitations": "The shop / drink hooks and the practice sip (full HP / MP) are tested in tools/test_potions.py. The personal King itself (hop, landing, lossless KO, rematch numbers) is game dev 2's; the row guide, the quick-slot highlight and the KO screen are game dev 1's. The 1 s loop timing is modelled by calling Refresh by hand."
+}

@@ -290,13 +290,13 @@ function PetWindow.Open()
 	return (pcall(panels.Open, T.Window))
 end
 
--- PET-4: my following pet's story name (Good Buddy / Little Minion) for the tag over it (PetFollow); nil without one
 -- the last PetList and the one before it (Audio: a remote fired before a second listener connects reaches only the
 -- first one, so Audio may have missed the join list - it reads it here)
 function PetWindow.Lists()
 	return S.List, S.Prev
 end
 
+-- PET-4: my following pet's story name (Good Buddy / Little Minion) for the tag over it (PetFollow); nil without one
 function PetWindow.FollowerName()
 	local p = S.List
 	if type(p) ~= "table" or type(p.List) ~= "table" or type(p.Equipped) ~= "string" or p.Equipped == "" then return nil end
