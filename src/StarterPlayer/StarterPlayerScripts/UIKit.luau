@@ -2333,7 +2333,10 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			local s = currentScale()
 			local width = label.AbsoluteSize.X
 			if width <= 1 or not label.Parent then return end
-			local px = math.max(1, math.floor(label.TextSize * s + 0.5))
+			-- 이미지 개발 10/10 (UiSandbox 991x451, the Vacation popup's 2nd line got a 1-line box): the style floor (a
+			-- UITextSizeConstraint MinTextSize, real px) draws the text bigger than TextSize x UIScale - measure at that
+			local floor = label:FindFirstChildOfClass("UITextSizeConstraint")
+			local px = math.max(1, math.floor(label.TextSize * s + 0.5), floor and floor.MinTextSize or 0)
 			local params = Instance.new("GetTextBoundsParams")
 			params.Text = label.Text
 			params.Font = label.FontFace
@@ -2382,7 +2385,9 @@ end
 -- and pads the label inside by the difference (a UIPadding "LineBalance", left = right), so the text wraps there. The
 -- label's own size and place never change (UIKit.WrapHeight's height stays right: same n lines). One line, left / right
 -- aligned text and a label with its own UIPadding are left alone. Again whenever the text, size, face or width changes.
-local BAL = { Steps = 8, SlackPx = 6, Fits = setmetatable({}, { __mode = "k" }) }
+-- Margin: the box keeps this much more than the narrowest width (UiSandbox 1280: at the exact width the engine needed
+-- one more line than TextService and clipped it); a pass whose text still does not fit drops the padding again
+local BAL = { Steps = 8, SlackPx = 6, Margin = 1.06, Fits = setmetatable({}, { __mode = "k" }) }
 UIKit.LineBalance = BAL
 
 -- pure: the narrowest width (real px) at which linesAt(width) still needs no more lines than at `full`, between
@@ -2420,7 +2425,7 @@ function UIKit.BalanceLines(label)
 		end
 		local s = currentScale()
 		local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
-		local px = math.max(1, math.floor(label.TextSize * s + 0.5), tc and tc.MinTextSize or 0)
+		local px = math.max(1, math.ceil(label.TextSize * s - 0.01), tc and tc.MinTextSize or 0)
 		local params = Instance.new("GetTextBoundsParams")
 		params.Text, params.Font, params.Size = label.Text, label.FontFace, px
 		pcall(function() params.RichText = label.RichText end)
@@ -2432,6 +2437,7 @@ function UIKit.BalanceLines(label)
 		params.Width = 100000
 		local one = TextService:GetTextBoundsAsync(params).X
 		local w, n = UIKit.BalanceWidth(linesAt, full, one + BAL.SlackPx)
+		w = math.min(full, math.ceil(w * BAL.Margin))
 		params:Destroy()
 		if token ~= state.Token or not label.Parent then return end
 		local side = n > 1 and math.max(0, math.floor((full - w) / 2)) or 0
@@ -2446,6 +2452,11 @@ function UIKit.BalanceLines(label)
 		end
 		local du = side / math.max(0.05, s)
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, du), UDim.new(0, du)
+		-- the engine may still wrap wider than TextService: if the text no longer fits, back to the full box
+		task.wait(0.05)
+		if token == state.Token and label.Parent and not label.TextFits then
+			pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 0), UDim.new(0, 0)
+		end
 	end
 	local function fit()
 		state.Token += 1

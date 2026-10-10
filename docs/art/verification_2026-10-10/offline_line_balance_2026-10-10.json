@@ -1,5 +1,5 @@
 {
-  "checks": 28,
+  "checks": 31,
   "failed": 0,
   "mutations": [
     {
@@ -29,6 +29,21 @@
     },
     {
       "name": "padding on the left only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no margin: the exact narrowest width",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a clipped balance stays",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "WrapHeight ignores the style floor again",
       "applied": true,
       "caught": true
     },
