@@ -1,0 +1,14 @@
+[reference: style collage Skill_Archer_Q + Skill_Mage_Q + Skill_Mage_X, Medium x2 → High x2]
+Same template as SkillQ_Icons_HQ.txt plus "nothing sticking out past the round badge". Subjects (Halo = cream→sky-blue badge with gold rim, Horns = plum badge with crimson rim):
+WarriorZ (Halo): a golden rope coming from a silver sword hilt, looped in an oval ring around one round gray boulder, a few round sparkles
+WarriorX (Halo): a round knight shield with a small gold halo ring floating above it and two thin gold rings around it
+HornsWarriorZ: a heavy dark sword dragging a straight glowing orange-red trail, round ember dots floating up, one curved arrow
+HornsWarriorX: a dark broadsword standing in the ground, crimson and purple double rings around it, small blue round sparkles coming toward it
+MageZ (Halo): a chubby round golden bird mid-hop with simple dot eyes, a dotted arc connecting three small gold stars
+MageX (Halo): a round golden circle on the ground with dots along its border, a small shield in the middle, round sparkles rising
+HornsMageZ: a round purple bat with a pink outline and simple dot eyes flapping its wings, a zigzag dotted line behind it ending in three small smoke puffs
+HornsMageX: a purple circle with two inner rings with small beads on them, a small plump cloud above it, blue sparkles rising
+ArcherX (Halo): a round curled white-gold wind ring with no spiral arms, two golden feathers, a curved arrow pointing backward
+HornsArcherZ: a dark arrow with a purple crescent-moon arrowhead pulling a straight purple tail with red edges past three dots
+HornsArcherX: a plum smoke puff with a small faceless dark silhouette rolling backward out of it, two small bats flying up, a curved arrow pointing backward
+ArcherZ (Halo) REDO: a real archery arrow flying diagonally up to the right: a slim wooden shaft with white feather fletching at the back and a shiny golden arrowhead at the front, with a soft round comet tail of golden sparkle dots and tiny stars trailing behind it

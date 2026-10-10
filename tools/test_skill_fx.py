@@ -52,11 +52,14 @@ V.__div = function(a, b) return v3(a.X / b, a.Y / b, a.Z / b) end
 V.__unm = function(a) return v3(-a.X, -a.Y, -a.Z) end
 function V.Cross(a, b) return v3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X) end
 function V.Dot(a, b) return a.X * b.X + a.Y * b.Y + a.Z * b.Z end
+function V.Lerp(a, b, u) return v3(a.X + (b.X - a.X) * u, a.Y + (b.Y - a.Y) * u, a.Z + (b.Z - a.Z) * u) end
 local Vector3 = { new = v3, zero = v3(0, 0, 0), xAxis = v3(1, 0, 0), yAxis = v3(0, 1, 0), zAxis = v3(0, 0, 1) }
 local CFm = {}
 CFm.__index = CFm
 CFm.__add = function(a, b) return setmetatable({ Position = a.Position + b }, CFm) end
-local CFrame = { new = function(p) return setmetatable({ Position = p }, CFm) end,
+CFm.__mul = function(a, b) if getmetatable(b) == CFm then return setmetatable({ Position = a.Position + (b.Position or v3()) }, CFm) end return a.Position + b end
+local CFrame = { new = function(p, y, z) if type(p) == "number" then p = v3(p, y, z) end return setmetatable({ Position = p or v3() }, CFm) end,
+	Angles = function() return setmetatable({ Position = v3() }, CFm) end,
 	lookAt = function(p) return setmetatable({ Position = p }, CFm) end,
 	fromMatrix = function(p) return setmetatable({ Position = p }, CFm) end }
 local function ctor() return setmetatable({}, { __index = function() return function(...) return { ... } end end }) end
@@ -75,6 +78,7 @@ Inst.__index = function(o, k)
 	return nil
 end
 Inst.__newindex = function(o, k, v)
+	if k == "CFrame" and type(v) == "table" and v.Position then rawset(o, "Position", v.Position) end
 	if k == "Parent" then
 		local old = rawget(o, "_parent")
 		if old then for i, ch in rawget(old, "Children") do if ch == o then table.remove(rawget(old, "Children"), i) break end end end
@@ -117,6 +121,7 @@ setfenv(cf, setmetatable(base, { __index = getfenv() }))
 local Config = cf()
 
 local TOUCH = false
+FADE_AT = 0
 local pending = {}
 local function later(t, fn) table.insert(pending, { T = t, Fn = fn }) end
 local function runAll()
@@ -142,12 +147,17 @@ local services = {
 	Players = { LocalPlayer = ME, GetPlayerByUserId = function(_, id) if id == 7 then return ME end return nil end },
 	RunService = { RenderStepped = { Connect = function() return { Disconnect = function() end } end } },
 	TweenService = { Create = function(_, inst, info, goal)
+		if goal.Transparency == 1 or goal.BackgroundTransparency == 1 then
+			FADE_AT = math.max(FADE_AT, type(info) == "table" and tonumber(info[6]) or 0)
+		end
 		return { Play = function() for k, v in goal do inst[k] = v end end, Cancel = function() end }
 	end },
 	UserInputService = setmetatable({}, { __index = function(_, k) if k == "TouchEnabled" then return TOUCH end end }),
+	ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function() return "Config" end } end },
 }
 local env = {
 	game = { GetService = function(_, n) return services[n] end },
+	require = function() return Config end,
 	workspace = ws, Instance = Instance, Vector3 = Vector3, CFrame = CFrame, Enum = EnumT,
 	RaycastParams = { new = function() return {} end },
 	Color3 = base.Color3, ColorSequence = base.ColorSequence, NumberSequence = base.NumberSequence,
@@ -166,10 +176,16 @@ local SkillFx = f()
 
 local MOVING = { Ball = true, Block = true, Ring = true, Disc = true }
 local gets = {}
+local liveMoving, peakMoving = 0, 0
 local realGet = SkillFx.Get
 SkillFx.Get = function(kind, life)
 	local p = realGet(kind, life)
 	table.insert(gets, { Kind = kind, Part = p })
+	if MOVING[kind] then
+		liveMoving += 1
+		peakMoving = math.max(peakMoving, liveMoving)
+		later(life, function() liveMoving -= 1 end)
+	end
 	return p
 end
 local function envFor() return { Muzzle = function() return v3(1, 4, 0) end, After = function(t, fn) later(t, fn) end } end
@@ -241,22 +257,109 @@ local resC, movingC = cast("Mage", "Halo", false, false, {})
 check(resC == true and movingC == 1, "a crowded screen: another player's cast = its ring only", movingC)
 local _, movingMine = cast("Mage", "Halo", true, false, {})
 check(movingMine > 1, "... my own cast still draws all", movingMine)
+-- Z (A23-116 Z stage)
+local function zcast(class, faction, own, auto, extra)
+	gets, emits = {}, 0
+	local data = { Class = class, Faction = faction, UserId = own and 7 or 99, Auto = auto, Hits = {}, From = v3(0, 0, 0),
+		Dir = v3(0, 0, -1), Len = class == "Archer" and 40 or 22, Width = class == "Archer" and 4 or 10, LaunchDelay = 0.18,
+		Points = { v3(0, 0, -10), v3(5, 0, -15), v3(10, 0, -18), v3(14, 0, -22) } }
+	for k, v in extra or {} do data[k] = v end
+	local res = SkillFx.Z(data, own, envFor())
+	runAll()
+	local moving = 0
+	for _, g in gets do if MOVING[g.Kind] then moving += 1 end end
+	return res, moving, emits
+end
+for _, k in KITS do
+	local name = "Z " .. k[1] .. "_" .. k[2]
+	local res, moving, parts = zcast(k[1], k[2], true, false)
+	check(res == true and moving >= 2 and moving <= 12, name .. ": draws, BIG moving parts 2..12", moving)
+	check(parts >= 4 and parts <= 24, name .. ": BIG particles (own 12 + pops 12)", parts)
+	local _, moving2, parts2 = zcast(k[1], k[2], true, true)
+	check(moving2 <= 8 and parts2 <= 9, name .. ": SMALL parts <= 8, particles <= 6 + 3 pops", moving2 .. "/" .. parts2)
+	local ok = true
+	for _, g in gets do
+		local p = g.Part
+		if not (p.Anchored == true and p.CanCollide == false and p.CanQuery == false and p.CanTouch == false) then ok = false end
+	end
+	check(ok, name .. ": parts anchored, no collision / query / touch", "")
+end
+check(beams == 0, "Z: still no Beam", beams)
+check(SkillFx.Z({ Class = "Mage", Faction = "Neutral", From = v3() }, true, envFor()) == false, "Z: the artisan guild draws nothing here", "")
+check(SkillFx.Z({ Class = "Mage", Faction = "Halo" }, true, envFor()) == false, "Z: no From, nothing", "")
+local mid = SkillFx.PathAt({ v3(0, 0, 0), v3(10, 0, 0) }, { 0, 1 }, 0.5, 3)
+check(math.abs(mid.X - 5) < 1e-6 and math.abs(mid.Y - 3) < 1e-6, "the bird hops in a 3-stud arc", mid.Y)
+local dash = SkillFx.PathAt({ v3(0, 0, 0), v3(10, 0, 0) }, { 0, 1 }, 0.5, 0)
+check(math.abs(dash.Y) < 1e-6, "the bat dashes straight", dash.Y)
+check(SkillFx.PathAt({ v3(0, 0, 0), v3(10, 0, 0) }, { 0, 1 }, 2, 3).X == 10, "past the end: the last point", "")
+-- X (A23-116 X stage): the peak of live moving parts (a field keeps its circle 5 s)
+local function xcast(class, faction, own, auto, extra)
+	gets, emits, liveMoving, peakMoving = {}, 0, 0, 0
+	local data = { Class = class, Faction = faction, UserId = own and 7 or 99, Auto = auto, Hits = {}, From = v3(0, 0, 0),
+		Center = v3(0, 0, -10), Radius = class == "Archer" and 7 or 12, To = v3(0, 0, 10), Life = 5, Statuses = {} }
+	for k, v in extra or {} do data[k] = v end
+	local res = SkillFx.X(data, own, envFor())
+	runAll()
+	return res, peakMoving, emits
+end
+for _, k in KITS do
+	local name = "X " .. k[1] .. "_" .. k[2]
+	local res, peak, parts = xcast(k[1], k[2], true, false)
+	check(res == true and peak >= 2 and peak <= 12, name .. ": draws, BIG live parts 2..12", peak)
+	check(parts <= 12, name .. ": BIG particles <= 12", parts)
+	local _, peak2, parts2 = xcast(k[1], k[2], true, true)
+	check(peak2 <= 8 and parts2 <= 6, name .. ": SMALL live parts <= 8, particles <= 6", peak2 .. "/" .. parts2)
+end
+-- guard bubbles: only for Statuses.Guard players (me here), up to 5
+local _, peakG = xcast("Warrior", "Halo", true, false, { Statuses = { Guard = { { V = 7, Pct = 0.4, Sec = 6 } } } })
+local guardGets = gets
+local _, peakN = xcast("Warrior", "Halo", true, false)
+check(peakG - peakN == 1, "a guard bubble on the guarded player", peakG - peakN)
+local bubble = nil
+for _, g in guardGets do if g.Kind == "Ball" and g.Part.Material == "Material.ForceField" then bubble = g.Part end end
+check(bubble ~= nil, "the bubble is a soft ForceField ball (no Highlight)", "")
+-- MP: blue dots only when MP really came in, on my cast
+local hits4 = { { P = v3(1, 0, -10) }, { P = v3(2, 0, -10) }, { P = v3(3, 0, -10) }, { P = v3(4, 0, -10) }, { P = v3(5, 0, -10) } }
+local _, peakMP = xcast("Warrior", "Horns", true, false, { Hits = hits4, Statuses = { MP = 20 } })
+local _, peakNoMP = xcast("Warrior", "Horns", true, false, { Hits = hits4, Statuses = {} })
+check(peakMP - peakNoMP == 8, "MP: 2 blue dots from each of the first 4 monsters (BIG)", peakMP - peakNoMP)
+local _, peakOtherMP = xcast("Warrior", "Horns", false, false, { Hits = hits4, Statuses = { MP = 20 } })
+local _, peakOtherNo = xcast("Warrior", "Horns", false, false, { Hits = hits4, Statuses = {} })
+check(peakOtherMP == peakOtherNo, "MP: another player's MP draws nothing on my screen", peakOtherMP .. "/" .. peakOtherNo)
+FADE_AT = 0
+xcast("Mage", "Halo", true, false)
+check(FADE_AT >= 4.5, "the Sun Circle stays its 5 s before it fades", FADE_AT)
+-- the field's ticks
+gets, emits = {}, 0
+SkillFx.Tick({ UserId = 7, Center = v3(0, 0, -10), Hits = {}, Statuses = {} }, true)
+runAll()
+check(emits == 4, "a tick: 4 sparkles (BIG)", emits)
+check(SkillFx.X({ Class = "Archer", Faction = "Neutral", From = v3() }, true, envFor()) == false, "X: the artisan guild draws nothing here", "")
 print(("SKILLFX_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
-    ("BIG and SMALL swapped", "local budget = big and T.Budget.Big or T.Budget.Small", "local budget = big and T.Budget.Small or T.Budget.Big"),
-    ("phones get BIG", "local big = own and data.Auto ~= true and not UserInputService.TouchEnabled", "local big = own and data.Auto ~= true"),
+    ("BIG and SMALL swapped", "local budget = big and T.Budget.Big or T.Budget.Small\n\tlocal ground", "local budget = big and T.Budget.Small or T.Budget.Big\n\tlocal ground"),
+    ("phones get BIG", "local big = own and data.Auto ~= true and not UserInputService.TouchEnabled\n\tlocal budget", "local big = own and data.Auto ~= true\n\tlocal budget"),
     ("thin ring lines", "local thick = math.max(0.6, num(o.Thick, 0.8))", "local thick = num(o.Thick, 0.8) * 0.5"),
     ("every hit pops", "for i = 1, math.min(#list, budget.Pops) do", "for i = 1, #list do"),
     ("a fake heal", "for i, uid in data.Healed do", "for i, uid in { 7, 7 } do"),
     ("a steal with nothing stolen", "if stole > 0 and root and type(data.Hits) == \"table\" then", "if root and type(data.Hits) == \"table\" then"),
-    ("others' steals drawn", "local root = own and LocalPlayer.Character", "local root = LocalPlayer.Character"),
+    ("others' steals drawn", "local root = own and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif stole > 0",
+     "local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif stole > 0"),
     ("no crowd limit", "if not own and S.Live > T.ScreenParts then", "if false then"),
     ("the artisan guild drawn", "local kit = key and Q[key]", "local kit = key and (Q[key] or Q.Warrior_Halo)"),
     ("parts collide", "p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false",
      "p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, true, false, false, false"),
     ("all rain dots on SMALL", "if i <= dots then", "if true then"),
+    ("no arc in hops", "return p + Vector3.new(0, (arc or 0) * math.sin(math.pi * u), 0)", "return p"),
+    ("SMALL fire rake with rims", "\t\t\t\tif c.Big then\n\t\t\t\t\tlocal rim", "\t\t\t\tif true then\n\t\t\t\t\tlocal rim"),
+    ("Z for the artisan guild", "local kit = key and Z[key]", "local kit = key and (Z[key] or Z.Mage_Halo)"),
+    ("every Sun Circle rim dot on SMALL", "local n = c.Big and 8 or 6", "local n = 8"),
+    ("MP for anyone", "local root = own and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif gained <= 0",
+     "local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild(\"UpperTorso\")\n\tif gained <= 0"),
+    ("MP from every monster", "if n >= 4 then break end", "if n >= 99 then break end"),
+    ("a field fades early", "if o.Hold then fadeTime, fadeAt = math.min(0.3, life), math.max(0, life - 0.3) end", ""),
 ]
 STATIC = [
     ("Fx's Release hands the art to SkillFx.Q", lambda fx, m: "local okQ, res = pcall(sfx.Q, data, pos, radius, impactDelay, own, {" in fx),
@@ -272,8 +375,11 @@ STATIC = [
      and "if clip.Redraw and clip.Shot2 then Feel.secondShot(context, current, clip, rate) end" in fx
      and "ShadowHunterRelease = { Len = 0.44, Redraw = 0.2, Shot2 = 0.3," in fx
      and "Joints = joints, Redraw = def.Redraw, Shot2 = def.Shot2 }" in fx),
-    ("the Horns side's Q moves", lambda fx, m: 'Warrior_Horns = { Release = "BerserkerRelease" }' in fx and 'Mage_Horns = { Release = "DarkMageRelease" }' in fx
-     and 'Archer_Horns = { Release = "ShadowHunterRelease" }' in fx and 'Archer_Halo = { Release = "RangerRelease", Z = "ArcherSwing" }' in fx),
+    ("Fx's Skill hands the Z / X art to SkillFx (near the camera)", lambda fx, m: 'local draw = type(sfx) == "table" and type(sfx[slot]) == "function" and sfx[slot] or nil' in fx
+     and "if draw and at and nearCamera(at) then" in fx),
+    ("Fx's SkillTick goes to SkillFx.Tick", lambda fx, m: "handlers.SkillTick = function(data)" in fx and "pcall(sfx.Tick, data, isOwn(data))" in fx),
+    ("the Horns side's Q moves", lambda fx, m: 'Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ", X = "BerserkerX" }' in fx and 'Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ", X = "DarkMageX" }' in fx
+     and 'Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ", X = "ShadowHunterX" }' in fx and 'Archer_Halo = { Release = "RangerRelease", Z = "RangerZ", X = "RangerX" }' in fx),
 ]
 
 

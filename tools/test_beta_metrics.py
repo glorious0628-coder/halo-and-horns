@@ -181,12 +181,24 @@ MUTATIONS = [
     ("PvPResult sides swapped", T, "\"PvPResult\", scale, kf, vf,", "\"PvPResult\", scale, vf, kf,"),
     ("PvPResult bands swapped", T, "bandOf(killer:GetAttribute(\"Level\")) .. \">\" .. bandOf(victim:GetAttribute(\"Level\"))",
      "bandOf(victim:GetAttribute(\"Level\")) .. \">\" .. bandOf(killer:GetAttribute(\"Level\"))"),
-    ("PvPResult unthrottled", T, " or throttled(killer, \"pvpresult\", num(A.PvPResultGap, 1)) then return end", " then return end"),
+    ("PvPResult unthrottled", T, "\t\tif throttled(killer, \"pvpresult\", num(A.PvPResultGap, 1)) then return end\n", ""),
     ("Config: FirstKO loses a step", C, "FirstKO = { Once = true, Steps = { \"KO\", \"PotionBought\", \"SlotSet\", \"PotionUsed\", \"KingWon\" } },",
      "FirstKO = { Once = true, Steps = { \"KO\", \"PotionBought\", \"PotionUsed\", \"KingWon\" } },"),
     ("Config: FirstKO per session", C, "FirstKO = { Once = true, Steps", "FirstKO = { Steps"),
     ("Config: KO1 is no funnel quest", C, "Config.Analytics.QuestFunnels = { KO1 = \"FirstKO\" }", "Config.Analytics.QuestFunnels = {}"),
     ("Config: Lv5 becomes Lv6", C, "Config.Analytics.TimeToLevel = { Level = 5,", "Config.Analytics.TimeToLevel = { Level = 6,"),
+    # A23-113 PvPKOedDay: how often one player is KO'd by players in a KST day
+    ("PvPKOedDay counts nothing", T, "rec.N = math.floor(num(rec.N)) + 1", "rec.N = 1"),
+    ("PvPKOedDay is never saved", T, "\t\t\ttel.PvPKO = rec\n", ""),
+    ("PvPKOedDay never starts a new day", T, "if type(rec) ~= \"table\" or rec.D ~= day then", "if type(rec) ~= \"table\" then"),
+    ("PvPKOedDay logs every KO", T, "if table.find(rule.Steps, rec.N) then", "if true then"),
+    ("PvPKOedDay without the zone", T, "bandOf(victim:GetAttribute(\"Level\")),\n\t\t\t\ttostring(victim:GetAttribute(\"ZoneId\")))",
+     "bandOf(victim:GetAttribute(\"Level\")))"),
+    ("PvPKOedDay behind the killer's limit", T, "\t\tvictimDay(victim)\n\t\tif throttled(killer, \"pvpresult\", num(A.PvPResultGap, 1)) then return end",
+     "\t\tif throttled(killer, \"pvpresult\", num(A.PvPResultGap, 1)) then return end\n\t\tvictimDay(victim)"),
+    ("PvPKOedDay under the killer", T, "TelemetryService.Custom(victim, tostring(rule.Event or \"PvPKOedDay\")",
+     "TelemetryService.Custom(S.PlayerService.Killer, tostring(rule.Event or \"PvPKOedDay\")"),
+    ("Config: PvPKOedDay steps 1, 2, 3", C, "Steps = { 1, 3, 5, 10, 20 } }", "Steps = { 1, 2, 3 } }"),
 ]
 
 CAUSES = 5  # FirstDeath_<By>: Player / Kaiju / Monster / Fall / Other (BB14)
@@ -210,14 +222,17 @@ def static() -> tuple[int, list[str]]:
     lv = re.search(r"Config\.Analytics\.TimeToLevel = \{[^}]*Event = \"(\w+)\"", config)
     if lv:
         names.add(lv.group(1))  # MinutesToLv5: its name is read from Config (A23-113 #2)
+    ko = re.search(r"Config\.Analytics\.PvPKOedDay = \{[^}]*Event = \"(\w+)\"", config)
+    if ko:
+        names.add(ko.group(1))  # PvPKOedDay: its name is read from Config (A23-113)
     ui = re.search(r"\tUiIds = \{(.*?)\}", config, re.S)
     ui_ids = re.findall(r'"(\w+)"', ui.group(1)) if ui else []
     total = len(names) + len(ui_ids) + CAUSES + PLUNDER
     check(total <= 100, f"custom event names {total} <= 100 (Roblox limit)")
     check({"DaysPlayed", "ReturnGap", "PauseCard", "WelcomeBack", "Attendance", "FriendJoin", "GoToFriend", "DiaryPage",
            "CandyTrade", "NotifyOptIn", "InviteSent", "WelcomeBackGo", "PromptNearKO", "KOLeave60", "LeaveContext",
-           "ChapterEnd", "RuinsDaily", "PerfFps", "PerfFpsLow", "PerfMem", "MinutesToLv5", "PvPResult"} <= names,
-          "every A23-79 event name (the three Perf ones and A23-113's MinutesToLv5 / PvPResult) is logged somewhere")
+           "ChapterEnd", "RuinsDaily", "PerfFps", "PerfFpsLow", "PerfMem", "MinutesToLv5", "PvPResult", "PvPKOedDay"} <= names,
+          "every A23-79 event name (the three Perf ones and A23-113's MinutesToLv5 / PvPResult / PvPKOedDay) is logged somewhere")
     print(f"custom event names: {len(names)} + {len(ui_ids)} UI + {CAUSES} + {PLUNDER} = {total}")
     check(code.count("LogFunnelStepEvent") == 1 and code.count("LogEconomyEvent") == 1, "one funnel and one economy call site")
     net = read(SHARED / "Net.luau")

@@ -1,5 +1,5 @@
 {
-  "checks": 54,
+  "checks": 109,
   "failed": 0,
   "static": [
     {
@@ -32,6 +32,14 @@
     },
     {
       "check": "고침 4: the Spark Shower's second draw / release",
+      "ok": true
+    },
+    {
+      "check": "Fx's Skill hands the Z / X art to SkillFx (near the camera)",
+      "ok": true
+    },
+    {
+      "check": "Fx's SkillTick goes to SkillFx.Tick",
       "ok": true
     },
     {
@@ -92,6 +100,41 @@
     },
     {
       "name": "all rain dots on SMALL",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no arc in hops",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "SMALL fire rake with rims",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Z for the artisan guild",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every Sun Circle rim dot on SMALL",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "MP for anyone",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "MP from every monster",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a field fades early",
       "applied": true,
       "caught": true
     }

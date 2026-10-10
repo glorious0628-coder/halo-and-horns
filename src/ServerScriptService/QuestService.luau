@@ -312,6 +312,12 @@ local function newQuest(player, kind, others)
 		end
 	end
 
+	-- 검수 2026-10-10: the Golden Goose daily is never made two days running (the goose is a 60 s event; a daily waiting for it
+	-- must not become homework)
+	local today = Config.DayIndex(os.time())
+	local gooseResting = kind == "Daily" and num(data.GooseDay) > 0
+		and today - num(data.GooseDay) <= num(Config.Quests.GooseRestDays, 1) and num(data.GooseDay) ~= today
+
 	local pvpAllowed = level >= Config.Quests.PvPMinLevel
 		and otherPvP < (Config.Quests.MaxPvPQuests or 1)
 		and not S.PvPService.IsRookie(player)
@@ -322,7 +328,7 @@ local function newQuest(player, kind, others)
 	local candidates, preferred, otherUnit = {}, {}, {}
 	for _, row in (if band then band.Dailies else Config.Quests.Templates) do
 		local rt = type(row) == "table" and TEMPLATE_BY_ID[row.Id]
-		if rt and templateFitsNow(rt, faction, data) and (not rt.PvP or pvpAllowed) then
+		if rt and templateFitsNow(rt, faction, data) and (not rt.PvP or pvpAllowed) and not (gooseResting and rt.Id == "Goose") then
 			table.insert(candidates, row)
 			if not otherIds[row.Id] then
 				table.insert(preferred, row)
@@ -356,6 +362,7 @@ local function newQuest(player, kind, others)
 		row = TEMPLATE_BY_ID.Kill or Config.Quests.Templates[1]
 	end
 	local t = TEMPLATE_BY_ID[row.Id] or row
+	if kind == "Daily" and t.Id == "Goose" then data.GooseDay = today end
 
 	local unitsList
 	if band then

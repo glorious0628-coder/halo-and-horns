@@ -39,7 +39,7 @@
     },
     {
       "group": "no King Slime left",
-      "check": "no game text calls the Slime Prince 'King Slime' (5224 strings)",
+      "check": "no game text calls the Slime Prince 'King Slime' (5967 strings)",
       "pass": 1,
       "fail": 0
     },
@@ -224,7 +224,7 @@
         "newFailingChecks": [
           "names :: BigSlime = 'Slime Prince' (nametag + quest / board / daily name)",
           "names :: the rookie daily row reads 'Slime Prince'",
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)"
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)"
         ],
         "newFailingCount": 3
       },
@@ -237,7 +237,7 @@
         "newFailingChecks": [
           "names :: BigSlime = 'Slime Prince' (nametag + quest / board / daily name)",
           "names :: the rookie daily row reads 'Slime Prince'",
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)"
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)"
         ],
         "newFailingCount": 3
       },
@@ -248,7 +248,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)",
           "quest texts :: S0: a Slime Prince swallowed the shard"
         ],
         "newFailingCount": 2
@@ -260,7 +260,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)",
           "quest texts :: M1_2: 'The Prince Who Ate the Dust' / 'Slime Princes'"
         ],
         "newFailingCount": 2
@@ -272,7 +272,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)",
           "quest texts :: M1_2: 'The Prince Who Ate the Dust' / 'Slime Princes'"
         ],
         "newFailingCount": 2
@@ -284,7 +284,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)"
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)"
         ],
         "newFailingCount": 1
       },
@@ -295,7 +295,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)",
           "quest texts :: H1: its Slime Prince step says 'Slime Prince'"
         ],
         "newFailingCount": 2
@@ -307,7 +307,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)",
           "quest texts :: XR1: Tiny's line names the Slime Prince"
         ],
         "newFailingCount": 2
@@ -319,7 +319,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5224 strings)",
+          "no King Slime left :: no game text calls the Slime Prince 'King Slime' (5967 strings)",
           "quest texts :: R5: its Slime Prince step says 'Slime Prince'"
         ],
         "newFailingCount": 2
@@ -387,12 +387,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ed5fdc24dc03d34144f23d41730e4febe24b9a2fa1b4ce34c6cafc1335c61ae8"
+    "src/ReplicatedStorage/Shared/Config.luau": "31bf696a9f3d1ceaffb9c1e37ec356d13e6be3d145fe545c7911c5b938fea850"
   },
   "fixtureSHA256": "41f82e846c890fe65ed99aec799662260a92d3791ecbb6e9233c635a87988841",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-84: Config.MonsterTypes.BigSlime Name / Short = 'Slime Prince'; no Config text says 'King Slime' except the new boss's own entries (a SlimeKing path, a story quest that counts SlimeKing) and 'King Slime Hill'; S0 / M1_1 / M1_2 / M2_6 / H1 / XR1 / R5 texts say Slime Prince(s); M1_2 Start + Otto's M1_1 line carry the family (the princes = big brothers of the green slimes, A23-85: no mom / queen line); every objective still counts BigSlime (S0, M1_2, M2_6, H1, XR1, R5, Loot.FirstScroll, Board Meadow.Big, the rookie daily 3 strict).",
+  "contract": "A23-84: Config.MonsterTypes.BigSlime Name / Short = 'Slime Prince'; no Config text says 'King Slime' except the new boss's own entries (a SlimeKing path, a story quest that counts SlimeKing, the KO1 rows 'Defeat the King Slime') and 'King Slime Hill'; S0 / M1_1 / M1_2 / M2_6 / H1 / XR1 / R5 texts say Slime Prince(s); M1_2 Start + Otto's M1_1 line carry the family (the princes = big brothers of the green slimes, A23-85: no mom / queen line); every objective still counts BigSlime (S0, M1_2, M2_6, H1, XR1, R5, Loot.FirstScroll, Board Meadow.Big, the rookie daily 3 strict).",
   "limitations": "The barks (Config.Barks.BigSlime 'Royal BOING!') and the icon / 3D crown are other sessions' (검수 wording -> game dev 2, image dev). The new boss SlimeKing is game dev 2's."
 }

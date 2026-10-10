@@ -28,7 +28,8 @@ STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST
           "BerserkerRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "DarkMageRelease": ("RELEASE_CONTACT.Mage", "Mage"),
           "RangerRelease": ("RELEASE_LAUNCH.Archer", "Archer"), "ShadowHunterRelease": ("RELEASE_LAUNCH.Archer", "Archer")}
 # Z / X (A23-108 ⑤, off until the 10/20 check): one strike key each, inside the clip
-ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX"}
+ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX", "BerserkerZ", "DarkMageZ", "RangerZ", "ShadowHunterZ",
+      "BerserkerX", "DarkMageX", "RangerX", "ShadowHunterX"}
 
 
 def clip(fx: str, name: str):
@@ -65,7 +66,7 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
         ("Mage_Horns", "DarkMageRelease"), ("Archer_Halo", "RangerRelease"), ("Archer_Horns", "ShadowHunterRelease")])))
     out.append(("... and their own Z / X; the Ranger's Z is the solved draw", all((k, n) in rows for k, n in [
         ("Warrior_Halo", "PaladinZ"), ("Warrior_Halo", "PaladinX"), ("Mage_Halo", "LightMageZ"), ("Mage_Halo", "LightMageX"),
-        ("Archer_Halo", "ArcherSwing")])))
+        ("Archer_Halo", "RangerZ"), ("Warrior_Horns", "BerserkerZ"), ("Mage_Horns", "DarkMageZ"), ("Archer_Horns", "ShadowHunterZ")])))
     fit = num(fx, r"SWING_FIT = ([\d.]+)")
     for key, name in rows:
         out.append((f"{key} is a ClassGrips row", f"\t{key} = {{" in grips))

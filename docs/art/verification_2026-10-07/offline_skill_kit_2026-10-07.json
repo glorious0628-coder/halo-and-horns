@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 93,
+  "checks": 113,
   "failedChecks": [],
   "mutations": {
-    "total": 10,
-    "applied": 10,
-    "caught": 10,
+    "total": 23,
+    "applied": 23,
+    "caught": 23,
     "results": [
       {
         "mutation": "Z unlocks at Lv10",
@@ -20,11 +20,11 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x000001607f8e5410"
+          "CHECK_FAIL flags off until the 10/20 decision: ZEnabled / XEnabled / PvPZX = false :: table: 0x0000023b8f421890"
         ]
       },
       {
-        "mutation": "Earth Cleave's band 20 long",
+        "mutation": "the Warrior's Z band 20 long",
         "applied": true,
         "caught": true,
         "failures": [
@@ -38,7 +38,8 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL SkillDef Halo X: the faction table merged over the base (no nested Halo / Horns) :: Guardian Roar",
-          "CHECK_FAIL SkillDef Horns X: its own extras only :: Guardian Roar"
+          "CHECK_FAIL SkillDef Horns X: its own extras only :: Guardian Roar",
+          "CHECK_FAIL the 18 names are all different :: Light Step"
         ]
       },
       {
@@ -47,6 +48,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL SkillKit: the artisan guild's kits, else the class (unknown -> Warrior) :: nil",
+          "CHECK_FAIL the artisan guild keeps its own names :: nil",
           "CHECK_FAIL SkillNumbers: chain jumps, hop studs, field seconds :: nil"
         ]
       },
@@ -64,7 +66,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL SkillX: C / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x00000242fceeee40"
+          "CHECK_FAIL SkillX: C / ButtonR3, Flag Skills.XEnabled, right after SkillZ :: table: 0x00000208f82fb7b0"
         ]
       },
       {
@@ -93,14 +95,130 @@
           "CHECK_FAIL Roar: taunt 16 / 4 s, self guard 40%; Halo allies 20%, Horns +5 MP a monster :: nil",
           "CHECK_FAIL SkillDef Horns X: its own extras only :: Rage Roar"
         ]
+      },
+      {
+        "mutation": "two skills with one name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Mage Q Halo: Star Fall (<= 14 letters, a description) :: Halo Slam",
+          "CHECK_FAIL the 18 names are all different :: Halo Slam",
+          "CHECK_FAIL no word is shared between the 18 names except an X pair's (Roar, Circle, Step) :: halo"
+        ]
+      },
+      {
+        "mutation": "a word shared by a Z and an X name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Warrior Z Horns: Fire Rake (<= 14 letters, a description) :: Fire Roar",
+          "CHECK_FAIL no word is shared between the 18 names except an X pair's (Roar, Circle, Step) :: roar"
+        ]
+      },
+      {
+        "mutation": "a monster's word in a skill name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Mage Q Horns: Purple Pop (<= 14 letters, a description) :: Bat Pop",
+          "CHECK_FAIL no Q / Z word shared with a monster, a game pass or a look name (Bat, Lava, Gold ... avoided) :: bat"
+        ]
+      },
+      {
+        "mutation": "a look's word in a skill name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Archer Z Halo: Comet Arrow (<= 14 letters, a description) :: Lava Arrow",
+          "CHECK_FAIL no Q / Z word shared with a monster, a game pass or a look name (Bat, Lava, Gold ... avoided) :: lava"
+        ]
+      },
+      {
+        "mutation": "an artisan word in a skill name",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Archer Z Horns: Moon Shot (<= 14 letters, a description) :: Hook Shot",
+          "CHECK_FAIL no word shared with the artisan guild's names (Hammer Quake, Hook Chain, ...) :: hook"
+        ]
+      },
+      {
+        "mutation": "a side table changes a number",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a Q / Z Halo / Horns table holds only NameEn + DescEn (the numbers are the slot's, the same for both sides) :: nil",
+          "CHECK_FAIL the same slot: Halo and Horns share Shape / Mult / MP / CD / Push / Pull / sizes / Auto :: nil"
+        ]
+      },
+      {
+        "mutation": "a base name left on a class skill",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL no base NameEn / DescEn left on a class skill: the words live in the Halo / Horns tables :: nil",
+          "CHECK_FAIL no side yet (None / nil): the Halo words for every class skill :: nil"
+        ]
+      },
+      {
+        "mutation": "a Horns line that does not steal",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 18 names <= 13 letters and a line <= 100 letters that fits the side (heal / steal HP / guard / steal MP) :: table: 0x0000022a5199ab10"
+        ]
+      },
+      {
+        "mutation": "a Halo line that does not heal",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL 18 names <= 13 letters and a line <= 100 letters that fits the side (heal / steal HP / guard / steal MP) :: table: 0x000001ea2a15eab0"
+        ]
+      },
+      {
+        "mutation": "no Halo words without a side",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL a split X seen with no side yet shows the Halo name :: nil",
+          "CHECK_FAIL no side yet (None / nil): the Halo words for every class skill :: nil"
+        ]
+      },
+      {
+        "mutation": "a skill name over 13 letters",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Mage Z Horns: Flappy Zigzag (<= 14 letters, a description) :: Flappy Zigzag Bat",
+          "CHECK_FAIL 18 names <= 13 letters and a line <= 100 letters that fits the side (heal / steal HP / guard / steal MP) :: table: 0x00000293adccc990",
+          "CHECK_FAIL no Q / Z word shared with a monster, a game pass or a look name (Bat, Lava, Gold ... avoided) :: bat"
+        ]
+      },
+      {
+        "mutation": "an old name comes back",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL Warrior Q Halo: Halo Slam (<= 14 letters, a description) :: Shockwave",
+          "CHECK_FAIL the old names (Shockwave, Earth Cleave, Meteor, Chain Bolt, Arrow Rain, Pierce Shot) are gone :: nil"
+        ]
+      },
+      {
+        "mutation": "the Horns side line says MP",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL section 5 short words (English, A23-48) :: nil"
+        ]
       }
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21"
+    "src/ReplicatedStorage/Shared/Config.luau": "026678577c1fcc73d2aedab37fd37e45facad7d7d13a15236e578d642b661077"
   },
-  "fixtureSHA256": "b3b41fe2b0490f4b833fa46488cb975c366ba93a7f2c6f2e6b510eed07a5b4b0",
+  "fixtureSHA256": "f09bef5746e2302d1587377013a98564e257a4536ec41b5eb79946aff7cd2ef0",
   "studioCalls": 0,
-  "contract": "SKL-1 offline test (A23-49 skill kit, docs/design/skill_kit_beta_2026-10-06.md sections 1 / 4 / 5 / 6-3 / 8-1), plus\nmutations: the real Config.luau loaded with engine doubles. Config.Skills flags off (ZEnabled / XEnabled / PvPZX),\nUnlock Q1 / Z5 / X8, 0.5 s gap, MP steal cap 20, 6 kits x 3 slots = 21 skills with the section 4 MP / CD / Mult / shape\nnumbers and the section 5 English names (<= 14 letters) + descriptions, artisan kits with crafted looks only;\nConfig.SkillKit / SkillDef (faction table merged, cached) / SkillNumbers (\"Costs N MP\", A23-60); the SkillX key (X,\npad ButtonR3, Flag Skills.XEnabled, right after SkillZ).",
+  "contract": "SKL-1 offline test (A23-49 skill kit, docs/design/skill_kit_beta_2026-10-06.md sections 1 / 4 / 5 / 6-3 / 8-1), plus\nmutations: the real Config.luau loaded with engine doubles. Config.Skills flags off (ZEnabled / XEnabled / PvPZX),\nUnlock Q1 / Z5 / X8, 0.5 s gap, MP steal cap 20, 6 kits x 3 slots = 21 skills with the section 4 MP / CD / Mult / shape\nnumbers and the section 5 English names (<= 14 letters) + descriptions, artisan kits with crafted looks only;\nA23-116: the 18 class skills named per side (Halo / Horns tables on Q, Z and X; 18 names all different, no shared word\nexcept an X pair, no word of a monster / pass / look / artisan name, the same numbers for both sides, the Halo words with\nno side, Skills.Text QZHalo / QZHorns);\nConfig.SkillKit / SkillDef (faction table merged, cached) / SkillNumbers (\"Costs N MP\", A23-60); the SkillX key (X,\npad ButtonR3, Flag Skills.XEnabled, right after SkillZ).",
   "limitations": "Data only: casting, shapes, cooldowns and auto combat are SKL-2 / SKL-3 (dev2's SkillService)."
 }

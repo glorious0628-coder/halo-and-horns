@@ -6314,6 +6314,16 @@
   "size": "1024x1536",
   "note": "뿔 마스코트 새로 그림(빛 C와 같은 그림체·머리 모양·비율·조명, 헝클어진 와인색 머리+작은 뿔 둘+정수리 한 가닥, 붉은 박쥐 날개, 삼지창). 대체: FacMascotHornsA. 컷아웃 art/out/s2/fac/hq2/Fac_MascotHorns_D_HQ_cut.png (680x1024, cutout_flat.cutout tol50 soft14 holes tol10 — 검정 갑옷이 비치지 않게 엄격), 확인 art/review/s2/fac_mascot_horns_D_cut_check.jpg / fac_mascot_horns_D_cut_crops.jpg. 업로드·교체는 이미지 개발. 빛 C(612x1024)와 높이 1024 기준 짝."
  },
+ "SkillZX_Icons": {
+  "status": "approved (11 of 12; Archer Z Halo pending redo)",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits each, 2 per skill), Firefly reference = existing Skill icon collage",
+  "prompt": "art/prompts/SkillZX_Icons_HQ.txt",
+  "original": "art/out/s2/skills_zx_hq/SkillZXHQ_<Skill>_<1|2>_src (named SkillZXHQ_*.png)",
+  "medium_pick": "검수 10/10: all but ArcherZ (Comet Arrow looked like a next-arrow button → redone as a real feathered arrow with a round comet tail: art/out/s2/skills_zx_hq/SkillZXHQ_ArcherZnew_{A,B}.png are Medium candidates)",
+  "size": "512x512 RGBA",
+  "note": "A23-116 Z·X 아이콘 11장: art/out/s2/skills_final/Skill_<Warrior|Mage|Archer>_<Z|X>_<Halo|Horns>.png (Archer_Z_Halo 아직 없음). 컷아웃 cutout_flat tol40 soft10 holes, 밝은·어두운·마젠타 바탕 확인 art/review/s2/skill_zx_final_cut_check.jpg. 업로드는 이미지 개발."
+ },
  "SkillQ_Icons": {
   "status": "approved",
   "date": "2026-10-10",

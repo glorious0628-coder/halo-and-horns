@@ -224,11 +224,18 @@
   "max": 59
  },
  {
-  "key": "Config.Skills.Defs.Archer.Q.DescEn",
-  "en": "Arrows rain on the closest group.",
+  "key": "Config.Skills.Defs.Archer.Q.Halo.DescEn",
+  "en": "Gold arrows rain on the closest group. Friends there get healed.",
   "where": "Config.Skills",
   "args": [],
-  "max": 42
+  "max": 83
+ },
+ {
+  "key": "Config.Skills.Defs.Archer.Q.Horns.DescEn",
+  "en": "Shoot twice! Dark arrows rain on the closest group. Steal HP.",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 79
  },
  {
   "key": "Config.Skills.Defs.Archer.X.Halo.DescEn",
@@ -245,11 +252,18 @@
   "max": 74
  },
  {
-  "key": "Config.Skills.Defs.Archer.Z.DescEn",
-  "en": "One big arrow through a whole line.",
+  "key": "Config.Skills.Defs.Archer.Z.Halo.DescEn",
+  "en": "A giant gold arrow flies through a line. Heals you and friends.",
   "where": "Config.Skills",
   "args": [],
-  "max": 45
+  "max": 81
+ },
+ {
+  "key": "Config.Skills.Defs.Archer.Z.Horns.DescEn",
+  "en": "A dark moon arrow flies through a line. Steal HP.",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 63
  },
  {
   "key": "Config.Skills.Defs.Blacksmith.Q.DescEn",
@@ -273,11 +287,18 @@
   "max": 44
  },
  {
-  "key": "Config.Skills.Defs.Mage.Q.DescEn",
-  "en": "Drop a meteor on the closest monster.",
+  "key": "Config.Skills.Defs.Mage.Q.Halo.DescEn",
+  "en": "A big star falls on the closest monster. Friends near it get healed.",
   "where": "Config.Skills",
   "args": [],
-  "max": 48
+  "max": 88
+ },
+ {
+  "key": "Config.Skills.Defs.Mage.Q.Horns.DescEn",
+  "en": "Purple bubbles pop up under the closest monster. Steal HP.",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 75
  },
  {
   "key": "Config.Skills.Defs.Mage.X.Halo.DescEn",
@@ -294,11 +315,18 @@
   "max": 75
  },
  {
-  "key": "Config.Skills.Defs.Mage.Z.DescEn",
-  "en": "A spark that jumps from monster to monster.",
+  "key": "Config.Skills.Defs.Mage.Z.Halo.DescEn",
+  "en": "A gold bird hops from monster to monster. Heals you and friends.",
   "where": "Config.Skills",
   "args": [],
-  "max": 55
+  "max": 83
+ },
+ {
+  "key": "Config.Skills.Defs.Mage.Z.Horns.DescEn",
+  "en": "A little bat zigzags from monster to monster. Steal HP.",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 71
  },
  {
   "key": "Config.Skills.Defs.Tamer.Q.DescEn",
@@ -322,11 +350,18 @@
   "max": 49
  },
  {
-  "key": "Config.Skills.Defs.Warrior.Q.DescEn",
-  "en": "Slam the ground. Hit and push everything around you.",
+  "key": "Config.Skills.Defs.Warrior.Q.Halo.DescEn",
+  "en": "Slam your sword down. A gold ring hits and heals you and friends.",
   "where": "Config.Skills",
   "args": [],
-  "max": 67
+  "max": 84
+ },
+ {
+  "key": "Config.Skills.Defs.Warrior.Q.Horns.DescEn",
+  "en": "Smash the ground hard! Hit monsters around you and steal HP.",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 78
  },
  {
   "key": "Config.Skills.Defs.Warrior.X.Halo.DescEn",
@@ -343,11 +378,18 @@
   "max": 80
  },
  {
-  "key": "Config.Skills.Defs.Warrior.Z.DescEn",
-  "en": "Crack the ground ahead and pull monsters to you.",
+  "key": "Config.Skills.Defs.Warrior.Z.Halo.DescEn",
+  "en": "Throw a glowing rope and pull monsters in. Heals you and friends.",
   "where": "Config.Skills",
   "args": [],
-  "max": 62
+  "max": 84
+ },
+ {
+  "key": "Config.Skills.Defs.Warrior.Z.Horns.DescEn",
+  "en": "Drag a fire crack ahead. Pull monsters in and steal HP.",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 71
  },
  {
   "key": "Config.Skills.Text.CantHop",
@@ -427,6 +469,20 @@
   "where": "Config.Skills",
   "args": [],
   "max": 11
+ },
+ {
+  "key": "Config.Skills.Text.QZHalo",
+  "en": "Halo: your hits heal friends",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.Skills.Text.QZHorns",
+  "en": "Horns: your hits steal HP",
+  "where": "Config.Skills",
+  "args": [],
+  "max": 32
  },
  {
   "key": "Config.Skills.Text.Ready",
@@ -831,6 +887,34 @@
   "max": 29
  },
  {
+  "key": "Config.DayCycle.Phases.1.Name",
+  "en": "Dawn",
+  "where": "Config.DayCycle",
+  "args": [],
+  "max": 8
+ },
+ {
+  "key": "Config.DayCycle.Phases.2.Name",
+  "en": "Day",
+  "where": "Config.DayCycle",
+  "args": [],
+  "max": 8
+ },
+ {
+  "key": "Config.DayCycle.Phases.3.Name",
+  "en": "Dusk",
+  "where": "Config.DayCycle",
+  "args": [],
+  "max": 8
+ },
+ {
+  "key": "Config.DayCycle.Phases.4.Name",
+  "en": "Night",
+  "where": "Config.DayCycle",
+  "args": [],
+  "max": 8
+ },
+ {
   "key": "Config.Goose.Text.CoopFail",
   "en": "The gauge wasn't filled, so the Golden Goose flew away!",
   "where": "Config.Goose",
@@ -1013,6 +1097,36 @@
   "where": "Config.Goose",
   "args": [],
   "max": 123
+ },
+ {
+  "key": "Config.HudReveal.TileWords.Character",
+  "en": "Lv 2",
+  "where": "Config.HudReveal",
+  "args": [],
+  "max": 8
+ },
+ {
+  "key": "Config.HudReveal.TileWords.Pet",
+  "en": "Get pet",
+  "where": "Config.HudReveal",
+  "args": [],
+  "max": 9
+ },
+ {
+  "key": "Config.HudReveal.TileWords.Ranking",
+  "en": "Story 1",
+  "where": "Config.HudReveal",
+  "args": [],
+  "max": 9
+ },
+ {
+  "key": "Config.HudReveal.TileWords.Skills",
+  "en": "Lv %d",
+  "where": "Config.HudReveal",
+  "args": [
+   "%d"
+  ],
+  "max": 8
  },
  {
   "key": "Config.Zones.Crossroads.Name",
@@ -7229,6 +7343,48 @@
   "max": 23
  },
  {
+  "key": "Config.StoryQuests.Defs.SG1.ShortName",
+  "en": "Grudge Sack",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 14
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Lines.All.1",
+  "en": "Gold taken in a PvP fight goes into the thief's Grudge Sack.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 78
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Lines.All.2",
+  "en": "The thief keeps it after 45 seconds in a PvP zone.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 65
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Lines.All.3",
+  "en": "Beat the thief first and the gold goes back to its owner!",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 74
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Steps.1.Text",
+  "en": "Read about the Grudge Sack",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 33
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SG1.Title",
+  "en": "The Grudge Sack",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 19
+ },
+ {
   "key": "Config.StoryQuests.Defs.SK1.ShortName",
   "en": "New move",
   "where": "Config.StoryQuests",
@@ -7338,6 +7494,76 @@
   "where": "Config.StoryQuests",
   "args": [],
   "max": 20
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.ShortName",
+  "en": "Size scale",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 13
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Steps.1.Lines.All.1",
+  "en": "The Fountain weighs both sides. The side with less power grows bigger and stronger!",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 107
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Steps.1.Lines.All.2",
+  "en": "It grows up to 1.6 times, then shrinks back as the sides even out.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 85
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Steps.1.Text",
+  "en": "Hear about the size scale",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 32
+ },
+ {
+  "key": "Config.StoryQuests.Defs.SZ1.Title",
+  "en": "The Size Scale",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 18
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.ShortName",
+  "en": "Move a plus",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 14
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Steps.1.Lines.All.1",
+  "en": "A Transfer Scroll moves a weapon's + to another weapon.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 71
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Steps.1.Lines.All.2",
+  "en": "If it fails, the + stays where it was. Only the scroll is used up.",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 85
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Steps.1.Text",
+  "en": "Hear about your Transfer Scroll",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.StoryQuests.Defs.TS1.Title",
+  "en": "Moving a Plus",
+  "where": "Config.StoryQuests",
+  "args": [],
+  "max": 16
  },
  {
   "key": "Config.StoryQuests.Defs.WB1.Finish",
@@ -8270,6 +8496,20 @@
   "max": 29
  },
  {
+  "key": "Config.Quests.Templates.8.ShortName",
+  "en": "Kind or sneaky",
+  "where": "Config.Quests",
+  "args": [],
+  "max": 18
+ },
+ {
+  "key": "Config.Quests.Templates.8.Text",
+  "en": "Make a kind or sneaky choice",
+  "where": "Config.Quests",
+  "args": [],
+  "max": 36
+ },
+ {
   "key": "Config.Products.ClassTicket.Name",
   "en": "Class Change Ticket",
   "where": "Config.Products",
@@ -8303,6 +8543,83 @@
   "where": "Config.GamePasses",
   "args": [],
   "max": 8
+ },
+ {
+  "key": "Config.PassInfo.Gold2.Desc",
+  "en": "Earn 2x gold from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 153
+ },
+ {
+  "key": "Config.PassInfo.Gold2.Line",
+  "en": "Earn 2x gold",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 15
+ },
+ {
+  "key": "Config.PassInfo.Look.Desc",
+  "en": "A new color for your halo or horns. It only changes how you look: the shape still shows your rank. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 157
+ },
+ {
+  "key": "Config.PassInfo.Look.Line",
+  "en": "New colors for halo or horns",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.PassInfo.NoStats",
+  "en": "No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 28
+ },
+ {
+  "key": "Config.PassInfo.PrivateServer.Desc",
+  "en": "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 165
+ },
+ {
+  "key": "Config.PassInfo.PrivateServer.Line",
+  "en": "Play with just your friends.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.PassInfo.VIP.Desc",
+  "en": "A crown by your name, a VIP tag in chat, and your name on the village Supporters board. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 143
+ },
+ {
+  "key": "Config.PassInfo.VIP.Line",
+  "en": "Crown, chat tag, Supporters board",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.PassInfo.XP2.Desc",
+  "en": "Get 2x XP from everything you do, so you level up 2x faster. It only speeds up leveling. No stats are for sale.",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 144
+ },
+ {
+  "key": "Config.PassInfo.XP2.Line",
+  "en": "Level up 2x faster",
+  "where": "Config.PassInfo",
+  "args": [],
+  "max": 23
  },
  {
   "key": "Config.Looks.HaloGold.Name",
@@ -12581,6 +12898,566 @@
   "where": "Config.TownReact",
   "args": [],
   "max": 39
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Lean.BalanceWalker",
+  "en": "Kind today, sneaky tomorrow? I'll keep guessing!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 62
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Lean.ProudRascal",
+  "en": "Trouble again? I'll count the cookies!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 49
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Lean.RebelAngel",
+  "en": "A halo with a wink? I won't tell. Maybe.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 52
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Lean.SoftDevil",
+  "en": "A kind Horn? Come in, friend!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 37
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Lean.TrueKnight",
+  "en": "You always help. I tell everyone about you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 55
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Halo.1",
+  "en": "Welcome, Squire! I'm Bright. Stay shiny!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 52
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Halo.2",
+  "en": "Knight! Your halo is glowing today!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Halo.3",
+  "en": "Paladin! I told everyone you'd do it!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 48
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Halo.4",
+  "en": "A Saint! May I stand next to you?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Halo.5",
+  "en": "Archangel! I'm too happy to talk!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Horns.1",
+  "en": "A Rascal in our town? Behave, okay?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Horns.2",
+  "en": "Raider! You may visit. Just don't grab!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 50
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Horns.3",
+  "en": "Warlord! Please wipe your boots first.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 49
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Horns.4",
+  "en": "Dread Lord! Welcome! Please be gentle with the flowers.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 71
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Horns.5",
+  "en": "Demon King! Hello! The tea is warm.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Bright.Rank.Neutral",
+  "en": "A guild crafter! Our lamps need fixing!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 50
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Lean.BalanceWalker",
+  "en": "Kind or sneaky? Mixed juice for you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 46
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Lean.ProudRascal",
+  "en": "Trouble again? Juice first!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 35
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Lean.RebelAngel",
+  "en": "A halo and a grin? Fun mix!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 35
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Lean.SoftDevil",
+  "en": "A sweet devil! Mango for you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 37
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Lean.TrueKnight",
+  "en": "Always helping! Have a free sip!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 41
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Halo.1",
+  "en": "Squire! Fresh juice for the new face!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 48
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Halo.2",
+  "en": "Knight! Orange or berry?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 31
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Halo.3",
+  "en": "Paladin! Squeezed this morning, just for you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 58
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Halo.4",
+  "en": "A Saint! This one is on the house!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Halo.5",
+  "en": "Archangel! Best juice, best day!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 41
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Horns.1",
+  "en": "A Rascal! No pouring it on heads!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Horns.2",
+  "en": "Raider! Pay first, then sip!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Horns.3",
+  "en": "Warlord! Easy on the cups, please!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Horns.4",
+  "en": "Dread Lord! Berry juice looks great on you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 55
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Horns.5",
+  "en": "Demon King! One juice, extra sweet!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk1.Rank.Neutral",
+  "en": "A crafter! My juicer squeaks. Help?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Lean.BalanceWalker",
+  "en": "Kind or naughty? Both like cake!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 41
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Lean.ProudRascal",
+  "en": "Trouble again? Sit and eat first.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Lean.RebelAngel",
+  "en": "A halo with a grin? Eat your crust.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Lean.SoftDevil",
+  "en": "A nice Horn? Take extra jam!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Lean.TrueKnight",
+  "en": "Such a kind child. Here, a bun!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Halo.1",
+  "en": "Welcome, dear Squire! Have a bun.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Halo.2",
+  "en": "Knight! Come in, the buns are warm!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Halo.3",
+  "en": "Paladin! A fresh loaf for you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 39
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Halo.4",
+  "en": "A Saint in my shop! Take two!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 37
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Halo.5",
+  "en": "Archangel! My best cake is yours!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Horns.1",
+  "en": "A Rascal! Eyes off the cookies, dear.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 48
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Horns.2",
+  "en": "Raider! Pay for the buns, please!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Horns.3",
+  "en": "Warlord! One bun each. No more!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Horns.4",
+  "en": "Dread Lord! Even you want a muffin?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 45
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Horns.5",
+  "en": "Demon King! Sit. Eat. Be nice.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 39
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Folk3.Rank.Neutral",
+  "en": "A crafter! Can you fix my oven?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Lean.BalanceWalker",
+  "en": "Light or dark? I can't tell today.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Lean.ProudRascal",
+  "en": "Trouble follows you. I follow too.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Lean.RebelAngel",
+  "en": "A halo with a wink? Not very knightly!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 49
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Lean.SoftDevil",
+  "en": "A gentle Horn? A knight respects that.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 49
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Lean.TrueKnight",
+  "en": "A true knight's heart. Well done!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Halo.1",
+  "en": "Welcome, Squire. Stand tall!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 36
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Halo.2",
+  "en": "Knight! Your armor shines. Well done.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 48
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Halo.3",
+  "en": "Paladin! It is an honor.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 31
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Halo.4",
+  "en": "A Saint! I must polish my armor.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 41
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Halo.5",
+  "en": "Archangel! Sir Gleam salutes you!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 42
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Horns.1",
+  "en": "A Rascal! Halt. Hmm. Hello.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 35
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Horns.2",
+  "en": "Raider! Keep your hands to yourself.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 46
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Horns.3",
+  "en": "Warlord! I do not bow. Quite.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 37
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Horns.4",
+  "en": "Dread Lord! I shall stay polite. Barely.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 52
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Horns.5",
+  "en": "Demon King! A knight stays calm. Gulp.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 49
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.Gleam.Rank.Neutral",
+  "en": "A crafter! My armor needs a dent fixed.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 50
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Lean.BalanceWalker",
+  "en": "Kind, sneaky, kind… keep it up!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Lean.ProudRascal",
+  "en": "Trouble again? Careful with the glass!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 49
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Lean.RebelAngel",
+  "en": "A halo that winks? Hmm!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 29
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Lean.SoftDevil",
+  "en": "A nice Horn! Rare, like my gold bottle.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 50
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Lean.TrueKnight",
+  "en": "A kind one! Take a sip of luck!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Halo.1",
+  "en": "Welcome, Squire! Bottles are cheap today.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 53
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Halo.2",
+  "en": "Knight! Stay healthy out there!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 40
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Halo.3",
+  "en": "Paladin! You almost never need me!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Halo.4",
+  "en": "A Saint! Even you drink water, right?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 48
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Halo.5",
+  "en": "Archangel! Please don't sneeze on my bottles!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 58
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Horns.1",
+  "en": "A Rascal! No tasting the blue one!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Horns.2",
+  "en": "Raider! Pay for each bottle, please!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 46
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Horns.3",
+  "en": "Warlord! Don't squeeze my bottles!",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 44
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Horns.4",
+  "en": "Dread Lord! Red is for HP. Be gentle.",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 48
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Horns.5",
+  "en": "Demon King! One potion, one coin. Fair?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 50
+ },
+ {
+  "key": "Config.TownReact.Text.Npc.PotionHalo.Rank.Neutral",
+  "en": "A crafter! Want to swap recipes?",
+  "where": "Config.TownReact",
+  "args": [],
+  "max": 41
  },
  {
   "key": "Config.TownReact.Text.Rank.Halo.1.1",
