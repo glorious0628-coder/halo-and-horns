@@ -13,6 +13,7 @@ local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, 
 	Mana = true, MaxMana = true, HPPotionCount = true, MPPotionCount = true,
 	HPPotionReadyAt = true, MPPotionReadyAt = true, ClassChosen = true, DataLoaded = true, KaijuState = true,
 	Level = true, -- Config.HudReveal: the potion pair from its level on
+	PotionSip = true, -- A23-110 KO1: a full bar may drink (dev3)
 } }
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
@@ -56,7 +57,13 @@ local function potionState(kind)
 	local humanoid = Util.GetHumanoid(player)
 	local amount = kind == "HP" and humanoid.Health or finiteNumber(player:GetAttribute("Mana"), 0)
 	local maximum = kind == "HP" and humanoid.MaxHealth or finiteNumber(player:GetAttribute("MaxMana"), Config.Vitals.MaxMana)
-	if amount >= maximum then return count, "Full", false end
+	if amount >= maximum then
+		-- A23-110 (dev3 KO1 'Drink a potion from your quick slot', right after the King's hit = full bars): while the
+		-- server sets PotionSip (Config.FirstKO.SipAttr) a full bar may still drink (the server makes it a practice sip)
+		local sip = type(Config.FirstKO) == "table" and Config.FirstKO.SipAttr or "PotionSip"
+		if player:GetAttribute(sip) == true then return count, "Use", true end
+		return count, "Full", false
+	end
 	return count, "Use", true
 end
 

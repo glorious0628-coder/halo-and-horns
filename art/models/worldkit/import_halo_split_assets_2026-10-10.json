@@ -1,5 +1,5 @@
 {
- "note": "2026-10-10 이미지 생성 1: Halo town models split into texture tiles (tools/split_uv_tiles.py from the 4096 Tripo source: Gate/Cathedral 3x3, the rest 2x2), imported in WorldKit (H5a/H5b). Every tile has SurfaceAppearance color+normal+metal+rough. group = kit Model name, offset = tile centre from the group's bottom centre (studs). Replaces the single-mesh kits of the same names. Metal/rough maps = tools/pbr_from_color.py colour-mask maps (gold metal 1 rough 0.18, stone 0.62, cloth 0.85, wood 0.78, leaf 0.8, glass 0.12), not Tripo's.",
+ "note": "2026-10-10 이미지 생성 1: Halo town models split into texture tiles (tools/split_uv_tiles.py from the 4096 Tripo source: Gate/Cathedral 3x3, the rest 2x2), imported in WorldKit (H5a/H5b). Every tile has SurfaceAppearance color+normal+metal+rough. group = kit Model name, offset = tile centre from the group's bottom centre (studs). Replaces the single-mesh kits of the same names. Maps v2 (검수 재질 값 표 10/10): metal = gold 0.9, rough = gold 0.28 / stone 0.62 / cloth 0.85 / wood 0.78 / leaf 0.8 / glass 0.12, normal = Tripo normal + a colour-derived detail normal (stone 12, wood 10, leaf 8, cloth 6 deg) — tools/pbr_from_color.py --normal-in.",
  "items": [
   {
    "name": "Halo_Cathedral_t00",
@@ -18,9 +18,9 @@
    ],
    "sa": {
     "color": "rbxassetid://127021336789646",
-    "rough": "rbxassetid://87207651641658",
-    "normal": "rbxassetid://78939023467097",
-    "metal": "rbxassetid://136498669675557"
+    "rough": "rbxassetid://131030838741191",
+    "normal": "rbxassetid://140529208187137",
+    "metal": "rbxassetid://88208667122099"
    },
    "metal": true
   },
@@ -41,9 +41,9 @@
    ],
    "sa": {
     "color": "rbxassetid://110019080539878",
-    "rough": "rbxassetid://121543164700365",
-    "normal": "rbxassetid://110778677581455",
-    "metal": "rbxassetid://126399746541137"
+    "rough": "rbxassetid://70603860782090",
+    "normal": "rbxassetid://134439036666400",
+    "metal": "rbxassetid://120894767552808"
    },
    "metal": true
   },
@@ -64,9 +64,9 @@
    ],
    "sa": {
     "color": "rbxassetid://88904668562121",
-    "rough": "rbxassetid://124068299968081",
-    "normal": "rbxassetid://103144179838792",
-    "metal": "rbxassetid://96121907766111"
+    "rough": "rbxassetid://81778134351978",
+    "normal": "rbxassetid://97454836485612",
+    "metal": "rbxassetid://122062479123758"
    },
    "metal": true
   },
@@ -87,9 +87,9 @@
    ],
    "sa": {
     "color": "rbxassetid://114276074547060",
-    "rough": "rbxassetid://137423170706354",
-    "normal": "rbxassetid://80589704126456",
-    "metal": "rbxassetid://138436113231681"
+    "rough": "rbxassetid://70369510151830",
+    "normal": "rbxassetid://85413467643419",
+    "metal": "rbxassetid://139582960043115"
    },
    "metal": true
   },
@@ -110,9 +110,9 @@
    ],
    "sa": {
     "color": "rbxassetid://103768220616179",
-    "rough": "rbxassetid://80945402611502",
-    "normal": "rbxassetid://137981312639689",
-    "metal": "rbxassetid://130379456247565"
+    "rough": "rbxassetid://98864366522044",
+    "normal": "rbxassetid://102620072581206",
+    "metal": "rbxassetid://131408505662246"
    },
    "metal": true
   },
@@ -133,9 +133,9 @@
    ],
    "sa": {
     "color": "rbxassetid://129921299535436",
-    "rough": "rbxassetid://115310734977257",
-    "normal": "rbxassetid://128561251814528",
-    "metal": "rbxassetid://98794276235185"
+    "rough": "rbxassetid://132745297875784",
+    "normal": "rbxassetid://90783074315570",
+    "metal": "rbxassetid://80719127066568"
    },
    "metal": true
   },
@@ -156,9 +156,9 @@
    ],
    "sa": {
     "color": "rbxassetid://88084524978194",
-    "rough": "rbxassetid://101814582624149",
-    "normal": "rbxassetid://115277468696158",
-    "metal": "rbxassetid://103953844557816"
+    "rough": "rbxassetid://108057326693206",
+    "normal": "rbxassetid://102324094832602",
+    "metal": "rbxassetid://130167643271862"
    },
    "metal": true
   },
@@ -179,9 +179,9 @@
    ],
    "sa": {
     "color": "rbxassetid://112582341400263",
-    "rough": "rbxassetid://93596401220921",
-    "normal": "rbxassetid://98633230448085",
-    "metal": "rbxassetid://124963157873529"
+    "rough": "rbxassetid://103792454474194",
+    "normal": "rbxassetid://107413769456292",
+    "metal": "rbxassetid://105595259753048"
    },
    "metal": true
   },
@@ -202,9 +202,9 @@
    ],
    "sa": {
     "color": "rbxassetid://116165940259209",
-    "rough": "rbxassetid://78571959323256",
-    "normal": "rbxassetid://99898654917946",
-    "metal": "rbxassetid://111300940390639"
+    "rough": "rbxassetid://134216745407436",
+    "normal": "rbxassetid://89203965786363",
+    "metal": "rbxassetid://140352841593429"
    },
    "metal": true
   },
@@ -225,9 +225,9 @@
    ],
    "sa": {
     "color": "rbxassetid://140501744916446",
-    "rough": "rbxassetid://137731832755486",
-    "normal": "rbxassetid://98950793390371",
-    "metal": "rbxassetid://120082449242205"
+    "rough": "rbxassetid://109976790198399",
+    "normal": "rbxassetid://90195436166601",
+    "metal": "rbxassetid://80660764375722"
    },
    "metal": true
   },
@@ -248,9 +248,9 @@
    ],
    "sa": {
     "color": "rbxassetid://118950420757062",
-    "rough": "rbxassetid://78538201794221",
-    "normal": "rbxassetid://95634055966728",
-    "metal": "rbxassetid://137145621318206"
+    "rough": "rbxassetid://101081070875902",
+    "normal": "rbxassetid://79499835375796",
+    "metal": "rbxassetid://129063849439368"
    },
    "metal": true
   },
@@ -271,9 +271,9 @@
    ],
    "sa": {
     "color": "rbxassetid://136901077786399",
-    "rough": "rbxassetid://82644757234085",
-    "normal": "rbxassetid://112193250691194",
-    "metal": "rbxassetid://73673444524937"
+    "rough": "rbxassetid://85745832450030",
+    "normal": "rbxassetid://102530114620929",
+    "metal": "rbxassetid://73005574559475"
    },
    "metal": true
   },
@@ -294,9 +294,9 @@
    ],
    "sa": {
     "color": "rbxassetid://140236025721643",
-    "rough": "rbxassetid://131635777705889",
-    "normal": "rbxassetid://88350662145430",
-    "metal": "rbxassetid://88693800915810"
+    "rough": "rbxassetid://99179043979857",
+    "normal": "rbxassetid://90518427255345",
+    "metal": "rbxassetid://75058272911155"
    },
    "metal": true
   },
@@ -317,9 +317,9 @@
    ],
    "sa": {
     "color": "rbxassetid://77279002756293",
-    "rough": "rbxassetid://114386861474540",
-    "normal": "rbxassetid://124108671642437",
-    "metal": "rbxassetid://136035324148891"
+    "rough": "rbxassetid://81493666684214",
+    "normal": "rbxassetid://72320163316004",
+    "metal": "rbxassetid://118980623012199"
    },
    "metal": true
   },
@@ -340,9 +340,9 @@
    ],
    "sa": {
     "color": "rbxassetid://71578359976419",
-    "rough": "rbxassetid://90099040933093",
-    "normal": "rbxassetid://97349038113737",
-    "metal": "rbxassetid://136522365581289"
+    "rough": "rbxassetid://125155612933346",
+    "normal": "rbxassetid://131704057306563",
+    "metal": "rbxassetid://104588546098798"
    },
    "metal": true
   },
@@ -363,9 +363,9 @@
    ],
    "sa": {
     "color": "rbxassetid://128961608112298",
-    "rough": "rbxassetid://100160379074591",
-    "normal": "rbxassetid://125506488179659",
-    "metal": "rbxassetid://110014112323034"
+    "rough": "rbxassetid://131834765759779",
+    "normal": "rbxassetid://112854165188335",
+    "metal": "rbxassetid://133798148958114"
    },
    "metal": true
   },
@@ -386,9 +386,9 @@
    ],
    "sa": {
     "color": "rbxassetid://140512428670291",
-    "rough": "rbxassetid://74659865181704",
-    "normal": "rbxassetid://117266536922077",
-    "metal": "rbxassetid://110871115822282"
+    "rough": "rbxassetid://121558142121867",
+    "normal": "rbxassetid://124446878343770",
+    "metal": "rbxassetid://91111777935915"
    },
    "metal": true
   },
@@ -409,9 +409,9 @@
    ],
    "sa": {
     "color": "rbxassetid://118702646841451",
-    "rough": "rbxassetid://127159338398457",
-    "normal": "rbxassetid://118139316983132",
-    "metal": "rbxassetid://82544518212733"
+    "rough": "rbxassetid://95460918726841",
+    "normal": "rbxassetid://137071295227534",
+    "metal": "rbxassetid://81663432076707"
    },
    "metal": true
   },
@@ -432,9 +432,9 @@
    ],
    "sa": {
     "color": "rbxassetid://79752080475812",
-    "rough": "rbxassetid://118159038107460",
-    "normal": "rbxassetid://82608959582281",
-    "metal": "rbxassetid://93722698733322"
+    "rough": "rbxassetid://74560009583773",
+    "normal": "rbxassetid://94256198120496",
+    "metal": "rbxassetid://100363143280204"
    },
    "metal": true
   },
@@ -455,9 +455,9 @@
    ],
    "sa": {
     "color": "rbxassetid://83680045718503",
-    "rough": "rbxassetid://106267874564694",
-    "normal": "rbxassetid://101478811239507",
-    "metal": "rbxassetid://97923395876666"
+    "rough": "rbxassetid://95797611375411",
+    "normal": "rbxassetid://100697207272640",
+    "metal": "rbxassetid://139859452998463"
    },
    "metal": true
   },
@@ -478,9 +478,9 @@
    ],
    "sa": {
     "color": "rbxassetid://70796186954642",
-    "rough": "rbxassetid://131815993396534",
-    "normal": "rbxassetid://128449826777447",
-    "metal": "rbxassetid://112736354606132"
+    "rough": "rbxassetid://132074228039909",
+    "normal": "rbxassetid://116292829746712",
+    "metal": "rbxassetid://91076761625116"
    },
    "metal": true
   },
@@ -501,9 +501,9 @@
    ],
    "sa": {
     "color": "rbxassetid://73811738926329",
-    "rough": "rbxassetid://82809163995836",
-    "normal": "rbxassetid://108190279850209",
-    "metal": "rbxassetid://138252878286787"
+    "rough": "rbxassetid://98634456182809",
+    "normal": "rbxassetid://77574352374541",
+    "metal": "rbxassetid://134919137265076"
    },
    "metal": true
   },
@@ -524,9 +524,9 @@
    ],
    "sa": {
     "color": "rbxassetid://111951299995052",
-    "rough": "rbxassetid://102301753125807",
-    "normal": "rbxassetid://121372693449982",
-    "metal": "rbxassetid://102786473507150"
+    "rough": "rbxassetid://124683556370845",
+    "normal": "rbxassetid://96092026458368",
+    "metal": "rbxassetid://70527641538037"
    },
    "metal": true
   },
@@ -547,9 +547,9 @@
    ],
    "sa": {
     "color": "rbxassetid://120569126737135",
-    "rough": "rbxassetid://85461002468767",
-    "normal": "rbxassetid://100884337903350",
-    "metal": "rbxassetid://96974462086073"
+    "rough": "rbxassetid://85474164620166",
+    "normal": "rbxassetid://133148542460091",
+    "metal": "rbxassetid://96768886819121"
    },
    "metal": true
   },
@@ -570,9 +570,9 @@
    ],
    "sa": {
     "color": "rbxassetid://139873440212543",
-    "rough": "rbxassetid://125322780367144",
-    "normal": "rbxassetid://130940038467523",
-    "metal": "rbxassetid://99365187408140"
+    "rough": "rbxassetid://87854661292601",
+    "normal": "rbxassetid://71806601496542",
+    "metal": "rbxassetid://88350501206047"
    },
    "metal": true
   },
@@ -593,9 +593,9 @@
    ],
    "sa": {
     "color": "rbxassetid://80941440292284",
-    "rough": "rbxassetid://99462851685602",
-    "normal": "rbxassetid://80116188845507",
-    "metal": "rbxassetid://109667913769568"
+    "rough": "rbxassetid://114796963813843",
+    "normal": "rbxassetid://110951192351007",
+    "metal": "rbxassetid://90096970243802"
    },
    "metal": true
   },
@@ -616,9 +616,9 @@
    ],
    "sa": {
     "color": "rbxassetid://89170330453849",
-    "rough": "rbxassetid://135863696082720",
-    "normal": "rbxassetid://71699867433502",
-    "metal": "rbxassetid://72864699201509"
+    "rough": "rbxassetid://111549636653378",
+    "normal": "rbxassetid://100694319175296",
+    "metal": "rbxassetid://101765594386903"
    },
    "metal": true
   },
@@ -639,9 +639,9 @@
    ],
    "sa": {
     "color": "rbxassetid://112915733274342",
-    "rough": "rbxassetid://93092448791250",
-    "normal": "rbxassetid://117936139287820",
-    "metal": "rbxassetid://77824770413421"
+    "rough": "rbxassetid://130359010239958",
+    "normal": "rbxassetid://104792497649540",
+    "metal": "rbxassetid://107320496812854"
    },
    "metal": true
   },
@@ -662,9 +662,9 @@
    ],
    "sa": {
     "color": "rbxassetid://103090366739049",
-    "rough": "rbxassetid://126814756350298",
-    "normal": "rbxassetid://85215932598749",
-    "metal": "rbxassetid://74533587623761"
+    "rough": "rbxassetid://78240691925749",
+    "normal": "rbxassetid://112390734100457",
+    "metal": "rbxassetid://126270045795702"
    },
    "metal": true
   },
@@ -685,9 +685,9 @@
    ],
    "sa": {
     "color": "rbxassetid://99052978858619",
-    "rough": "rbxassetid://103844706595335",
-    "normal": "rbxassetid://94324338356549",
-    "metal": "rbxassetid://117711733020769"
+    "rough": "rbxassetid://107394216858656",
+    "normal": "rbxassetid://129502580238968",
+    "metal": "rbxassetid://71809997358358"
    },
    "metal": true
   },
@@ -708,9 +708,9 @@
    ],
    "sa": {
     "color": "rbxassetid://83385093010374",
-    "rough": "rbxassetid://129277248630323",
-    "normal": "rbxassetid://71314905949283",
-    "metal": "rbxassetid://128802262593509"
+    "rough": "rbxassetid://127405121203599",
+    "normal": "rbxassetid://118506650513181",
+    "metal": "rbxassetid://80064040225908"
    },
    "metal": true
   },
@@ -731,9 +731,9 @@
    ],
    "sa": {
     "color": "rbxassetid://134977161564065",
-    "rough": "rbxassetid://109150013123034",
-    "normal": "rbxassetid://125242431192796",
-    "metal": "rbxassetid://95492647409421"
+    "rough": "rbxassetid://94100180468140",
+    "normal": "rbxassetid://121384696739993",
+    "metal": "rbxassetid://88678388857699"
    },
    "metal": true
   },
@@ -754,9 +754,9 @@
    ],
    "sa": {
     "color": "rbxassetid://101962163522381",
-    "rough": "rbxassetid://96872504454129",
-    "normal": "rbxassetid://99687836243212",
-    "metal": "rbxassetid://94702023516823"
+    "rough": "rbxassetid://88778869972664",
+    "normal": "rbxassetid://76860132103999",
+    "metal": "rbxassetid://129247390911061"
    },
    "metal": true
   },
@@ -777,9 +777,9 @@
    ],
    "sa": {
     "color": "rbxassetid://129000430344510",
-    "rough": "rbxassetid://122634169642950",
-    "normal": "rbxassetid://127456005090930",
-    "metal": "rbxassetid://86696200102176"
+    "rough": "rbxassetid://131397613132622",
+    "normal": "rbxassetid://109111649727783",
+    "metal": "rbxassetid://92277350411091"
    },
    "metal": true
   },
@@ -800,9 +800,9 @@
    ],
    "sa": {
     "color": "rbxassetid://109174055153722",
-    "rough": "rbxassetid://117333807314952",
-    "normal": "rbxassetid://84354505535881",
-    "metal": "rbxassetid://106970725426800"
+    "rough": "rbxassetid://77470075921894",
+    "normal": "rbxassetid://136091733962912",
+    "metal": "rbxassetid://91960668724588"
    },
    "metal": true
   },
@@ -823,9 +823,9 @@
    ],
    "sa": {
     "color": "rbxassetid://105608574835041",
-    "rough": "rbxassetid://139391800857619",
-    "normal": "rbxassetid://76962422231779",
-    "metal": "rbxassetid://97249207403043"
+    "rough": "rbxassetid://108301622748512",
+    "normal": "rbxassetid://99848888593050",
+    "metal": "rbxassetid://121918546728243"
    },
    "metal": true
   },
@@ -846,9 +846,9 @@
    ],
    "sa": {
     "color": "rbxassetid://98159362626815",
-    "rough": "rbxassetid://137269002449635",
-    "normal": "rbxassetid://116889306374376",
-    "metal": "rbxassetid://81255606236679"
+    "rough": "rbxassetid://121148229218005",
+    "normal": "rbxassetid://107665938572127",
+    "metal": "rbxassetid://107197149487932"
    },
    "metal": true
   },
@@ -869,9 +869,9 @@
    ],
    "sa": {
     "color": "rbxassetid://127796927186026",
-    "rough": "rbxassetid://94059465527607",
-    "normal": "rbxassetid://117873363384436",
-    "metal": "rbxassetid://126599629074130"
+    "rough": "rbxassetid://105953986706959",
+    "normal": "rbxassetid://123084310744728",
+    "metal": "rbxassetid://85416213726482"
    },
    "metal": true
   },
@@ -892,9 +892,9 @@
    ],
    "sa": {
     "color": "rbxassetid://119521045896205",
-    "rough": "rbxassetid://113026535555249",
-    "normal": "rbxassetid://126872057602735",
-    "metal": "rbxassetid://130200767874771"
+    "rough": "rbxassetid://91959095983577",
+    "normal": "rbxassetid://120241891254702",
+    "metal": "rbxassetid://122868701379931"
    },
    "metal": true
   },
@@ -915,9 +915,9 @@
    ],
    "sa": {
     "color": "rbxassetid://77911349298781",
-    "rough": "rbxassetid://75032310573241",
-    "normal": "rbxassetid://93959846327694",
-    "metal": "rbxassetid://100524993111370"
+    "rough": "rbxassetid://123402232482814",
+    "normal": "rbxassetid://75146723702951",
+    "metal": "rbxassetid://125077409510855"
    },
    "metal": true
   },
@@ -938,9 +938,9 @@
    ],
    "sa": {
     "color": "rbxassetid://74648593285173",
-    "rough": "rbxassetid://120260762478905",
-    "normal": "rbxassetid://99557630823492",
-    "metal": "rbxassetid://105968958270381"
+    "rough": "rbxassetid://135099987057195",
+    "normal": "rbxassetid://136783926845713",
+    "metal": "rbxassetid://85572641036347"
    },
    "metal": true
   },
@@ -961,9 +961,9 @@
    ],
    "sa": {
     "color": "rbxassetid://100732526949205",
-    "rough": "rbxassetid://100641349572147",
-    "normal": "rbxassetid://91995670925010",
-    "metal": "rbxassetid://76485546900921"
+    "rough": "rbxassetid://86735110901369",
+    "normal": "rbxassetid://135322082875848",
+    "metal": "rbxassetid://109770200487505"
    },
    "metal": true
   },
@@ -984,9 +984,9 @@
    ],
    "sa": {
     "color": "rbxassetid://76463955928731",
-    "rough": "rbxassetid://89437951390255",
-    "normal": "rbxassetid://83919673796404",
-    "metal": "rbxassetid://72111919031858"
+    "rough": "rbxassetid://132776619099310",
+    "normal": "rbxassetid://121548937847107",
+    "metal": "rbxassetid://82066932590710"
    },
    "metal": true
   },
@@ -1007,9 +1007,9 @@
    ],
    "sa": {
     "color": "rbxassetid://131449140719212",
-    "rough": "rbxassetid://131826905134275",
-    "normal": "rbxassetid://126815385281714",
-    "metal": "rbxassetid://76399502881151"
+    "rough": "rbxassetid://105210752775861",
+    "normal": "rbxassetid://127297147305416",
+    "metal": "rbxassetid://140414752344006"
    },
    "metal": true
   },
@@ -1030,9 +1030,9 @@
    ],
    "sa": {
     "color": "rbxassetid://118105892927850",
-    "rough": "rbxassetid://86379292940031",
-    "normal": "rbxassetid://91855379605399",
-    "metal": "rbxassetid://108894303503089"
+    "rough": "rbxassetid://108013599489788",
+    "normal": "rbxassetid://104026407508981",
+    "metal": "rbxassetid://95485262509073"
    },
    "metal": true
   },
@@ -1053,9 +1053,9 @@
    ],
    "sa": {
     "color": "rbxassetid://90726485231752",
-    "rough": "rbxassetid://111308534284845",
-    "normal": "rbxassetid://74002890110947",
-    "metal": "rbxassetid://140398387146103"
+    "rough": "rbxassetid://136382860253011",
+    "normal": "rbxassetid://124898284102772",
+    "metal": "rbxassetid://126655218923076"
    },
    "metal": true
   }

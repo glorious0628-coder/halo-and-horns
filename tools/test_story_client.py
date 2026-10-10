@@ -76,7 +76,7 @@ MUTATIONS = [
     ("the Story window ignores Var", "panels", "local lines = STORY.Lines(step, f, arg.Var)", "local lines = STORY.Lines(step, f, nil)"),
     ("no Forge greeting", "panels", "local hello = Config.Text and Config.Text.ForgeGreeting", "local hello = nil"),
     ("no Potion greeting", "panels", "local hello = Config.Text and Config.Text.PotionGreeting", "local hello = nil"),
-    ("ClientMain never loads Audio", "client_main", '"SkillBar", "Audio" }', '"SkillBar" }'),
+    ("ClientMain never loads Audio", "client_main", '"WeaponPose", "Audio" }', '"WeaponPose" }'),
     # quality 2: UIKit.Typewriter on the dialogue lines (검수 2026-10-07: 40 letters / s, a tap shows the whole line)
     ("typing at UIKit's 38 / s", "panels", "local TYPE = { Speed = 40 }", "local TYPE = { Speed = 38 }"),
     ("every refresh retypes the line", "panels", "\tif state.Key == key and state.Label == label then return end\n", ""),

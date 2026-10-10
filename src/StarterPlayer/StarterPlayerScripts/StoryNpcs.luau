@@ -49,10 +49,14 @@ function StoryNpcs.Mark(model)
 			if bb then ch:Destroy() else bb = ch end
 		end
 	end
-	if bb then return bb end
 	local head = model:FindFirstChild("Head")
 	if not (head and head:IsA("BasePart")) then
 		head = model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart", true)
+	end
+	if bb then
+		-- 검수 10/10 (API review ②): the body may be rebuilt (a new head): the "!" follows the head it has now
+		if head and bb.Adornee ~= head then bb.Adornee = head end
+		return bb
 	end
 	if not head then return nil end
 	bb = Instance.new("BillboardGui")

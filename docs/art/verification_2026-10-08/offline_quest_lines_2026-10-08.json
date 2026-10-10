@@ -72,6 +72,14 @@
       "ok": true
     },
     {
+      "check": "검수 10/10 API review ①: the phone's claim line counts only the rows the block shows (entries)",
+      "ok": true
+    },
+    {
+      "check": "검수 10/10 API review ③: the tracker keeps room for the head line only while it shows",
+      "ok": true
+    },
+    {
       "check": "A23-104: the payload's DailyLocked is kept for the quest window (HUD.DailyLocked)",
       "ok": true
     }
@@ -308,7 +316,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "6e69ee7cde1c08f9629d8215b11f7b43c17e3ca60b15e0adb343aee5dc809de2"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "04b7d295956ae6f0479140d901d9cf9a83753e739949f5b8bac98d32dd6e2b02"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

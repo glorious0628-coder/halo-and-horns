@@ -3,6 +3,8 @@
 -- Every Every s this client keeps the lights of the nearest MaxOthers other characters (by distance to the camera) and
 -- turns the rest off on this screen only (Enabled = false set locally; a light the server itself turned off is never
 -- turned on - only the ones this module turned off come back). My own character's lights are never touched.
+-- Assumes (검수 10/10 API review ④): the server never toggles a character light's Enabled after building it (it builds
+-- lights on and rebuilds the model on a change); a server toggle on a light this module dimmed would replicate over ours.
 -- Public API: LightCap.Init(C), LightCap.Start(), LightCap.Keep(list, max) -> { [key] = true } (pure: list = { { Key, D } },
 -- the nearest `max`), LightCap.Pass() (one pass now).
 local Players = game:GetService("Players")

@@ -91,6 +91,7 @@ EXPECTED = [
     ("StoryQuestService.luau", "AddBankGold", "Quest", True),
     ("StoryQuestService.luau", "AddXP", None, True),
     ("StoryQuestService.luau", "AddBankGold", "Choice", True),  # a pick's gold: shown as added, never 2x
+    ("StoryQuestService.luau", "AddCarriedGold", "Choice", False),  # A23-110 KO1: the missing part of 50 gold for two potions (a gift, no line, never 2x)
     ("WarService.luau", "AddBankGold", "War", True),
 ]
 # A23-75 review 2026-10-08: shown as added, but never 2x: made from gold that already holds the pass (the kaiju survive

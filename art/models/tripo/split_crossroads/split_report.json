@@ -1,0 +1,599 @@
+{
+ "X_GuildHall": {
+  "source": "art/models/tripo/X_GuildHall_raw.glb",
+  "source_px": 4096,
+  "tris": 9025,
+  "grid": 3,
+  "mode": "split",
+  "before": "tex",
+  "masks": {
+   "gold": 0.049,
+   "wood": 0.608,
+   "leaf": 0.006,
+   "glass": 0.0,
+   "cloth": 0.163,
+   "stone": 0.175
+  },
+  "normal": "from colour brightness (review judges)",
+  "glb": "art/models/tripo/split_crossroads/X_GuildHall_split.glb",
+  "log": "[split_uv_tiles] ok C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\split_crossroads\\X_GuildHall_split.glb parts 9 size_studs [24.0, 22.48, 23.91]"
+ },
+ "Kit_X_StallRed": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_StallRed_raw.glb",
+  "source_px": 4096,
+  "tris": 2840,
+  "grid": 2,
+  "mode": "split",
+  "before": "tex",
+  "masks": {
+   "gold": 0.028,
+   "wood": 0.322,
+   "leaf": 0.011,
+   "glass": 0.0,
+   "cloth": 0.452,
+   "stone": 0.187
+  },
+  "normal": "from colour brightness (review judges)",
+  "glb": "art/models/tripo/split_crossroads/Kit_X_StallRed_split.glb",
+  "log": "[split_uv_tiles] ok C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\split_crossroads\\Kit_X_StallRed_split.glb parts 4 size_studs [10.0, 12.91, 7.48]"
+ },
+ "Kit_X_StallBlue": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_StallBlue_raw.glb",
+  "source_px": 4096,
+  "tris": 2840,
+  "grid": 2,
+  "mode": "split",
+  "before": "tex",
+  "masks": {
+   "gold": 0.028,
+   "wood": 0.278,
+   "leaf": 0.011,
+   "glass": 0.0,
+   "cloth": 0.485,
+   "stone": 0.198
+  },
+  "normal": "from colour brightness (review judges)",
+  "glb": "art/models/tripo/split_crossroads/Kit_X_StallBlue_split.glb",
+  "log": "[split_uv_tiles] ok C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\split_crossroads\\Kit_X_StallBlue_split.glb parts 4 size_studs [10.0, 12.91, 7.48]"
+ },
+ "Kit_X_StallGreen": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_StallGreen_raw.glb",
+  "source_px": 4096,
+  "tris": 2840,
+  "grid": 2,
+  "mode": "split",
+  "before": "tex",
+  "masks": {
+   "gold": 0.028,
+   "wood": 0.295,
+   "leaf": 0.126,
+   "glass": 0.0,
+   "cloth": 0.348,
+   "stone": 0.203
+  },
+  "normal": "from colour brightness (review judges)",
+  "glb": "art/models/tripo/split_crossroads/Kit_X_StallGreen_split.glb",
+  "log": "[split_uv_tiles] ok C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\split_crossroads\\Kit_X_StallGreen_split.glb parts 4 size_studs [10.0, 12.91, 7.48]"
+ },
+ "Kit_X_BannerHalo": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_BannerHalo_raw.glb",
+  "source_px": 4096,
+  "tris": 2888,
+  "grid": 2,
+  "mode": "split",
+  "before": "tex",
+  "masks": {
+   "gold": 0.334,
+   "wood": 0.004,
+   "leaf": 0.0,
+   "glass": 0.007,
+   "cloth": 0.266,
+   "stone": 0.39
+  },
+  "normal": "from colour brightness (review judges)",
+  "glb": "art/models/tripo/split_crossroads/Kit_X_BannerHalo_split.glb",
+  "log": "[split_uv_tiles] ok C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\split_crossroads\\Kit_X_BannerHalo_split.glb parts 4 size_studs [5.54, 14.0, 2.14]"
+ },
+ "Kit_X_BannerHorns": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_BannerHorns_raw.glb",
+  "source_px": 4096,
+  "tris": 2949,
+  "grid": 2,
+  "mode": "split",
+  "before": "tex",
+  "masks": {
+   "gold": 0.014,
+   "wood": 0.147,
+   "leaf": 0.001,
+   "glass": 0.0,
+   "cloth": 0.62,
+   "stone": 0.219
+  },
+  "normal": "from colour brightness (review judges)",
+  "glb": "art/models/tripo/split_crossroads/Kit_X_BannerHorns_split.glb",
+  "log": "[split_uv_tiles] ok C:\\Users\\glori\\Documents\\Roblox\\Game\\art\\models\\tripo\\split_crossroads\\Kit_X_BannerHorns_split.glb parts 4 size_studs [5.66, 14.0, 1.79]"
+ },
+ "Kit_X_Lamp": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Lamp_raw.glb",
+  "source_px": 4096,
+  "tris": 2854,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.105,
+   "wood": 0.21,
+   "leaf": 0.015,
+   "glass": 0.0,
+   "cloth": 0.506,
+   "stone": 0.164
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Lamp_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Lamp_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Lamp_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Lamp_R.png"
+  }
+ },
+ "X_PadBase": {
+  "source": "art/models/tripo/X_PadBase_raw.glb",
+  "source_px": 2048,
+  "tris": 2871,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.08,
+   "wood": 0.183,
+   "leaf": 0.075,
+   "glass": 0.0,
+   "cloth": 0.105,
+   "stone": 0.558
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_PadBase_C.png",
+   "N": "art/ui/sa_crossroads/X_PadBase_N.png",
+   "M": "art/ui/sa_crossroads/X_PadBase_M.png",
+   "R": "art/ui/sa_crossroads/X_PadBase_R.png"
+  }
+ },
+ "Kit_X_PotionCart": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_PotionCart_raw.glb",
+  "source_px": 4096,
+  "tris": 2652,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.024,
+   "wood": 0.599,
+   "leaf": 0.021,
+   "glass": 0.0,
+   "cloth": 0.237,
+   "stone": 0.118
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_PotionCart_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_PotionCart_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_PotionCart_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_PotionCart_R.png"
+  }
+ },
+ "Kit_X_Forge": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Forge_raw.glb",
+  "source_px": 4096,
+  "tris": 2704,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.083,
+   "wood": 0.154,
+   "leaf": 0.006,
+   "glass": 0.0,
+   "cloth": 0.299,
+   "stone": 0.457
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Forge_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Forge_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Forge_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Forge_R.png"
+  }
+ },
+ "Kit_X_Bench": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Bench_raw.glb",
+  "source_px": 4096,
+  "tris": 2668,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.011,
+   "wood": 0.531,
+   "leaf": 0.005,
+   "glass": 0.0,
+   "cloth": 0.439,
+   "stone": 0.014
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Bench_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Bench_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Bench_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Bench_R.png"
+  }
+ },
+ "Kit_X_Curb": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Curb_raw.glb",
+  "source_px": 4096,
+  "tris": 2852,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.024,
+   "wood": 0.092,
+   "leaf": 0.007,
+   "glass": 0.0,
+   "cloth": 0.15,
+   "stone": 0.728
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Curb_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Curb_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Curb_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Curb_R.png"
+  }
+ },
+ "Kit_X_Anvil": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Anvil_raw.glb",
+  "source_px": 4096,
+  "tris": 2824,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.065,
+   "wood": 0.552,
+   "leaf": 0.0,
+   "glass": 0.0,
+   "cloth": 0.087,
+   "stone": 0.297
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Anvil_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Anvil_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Anvil_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Anvil_R.png"
+  }
+ },
+ "Kit_X_Brazier": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Brazier_raw.glb",
+  "source_px": 4096,
+  "tris": 2760,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.19,
+   "wood": 0.401,
+   "leaf": 0.01,
+   "glass": 0.0,
+   "cloth": 0.267,
+   "stone": 0.132
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Brazier_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Brazier_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Brazier_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Brazier_R.png"
+  }
+ },
+ "Town_Halo_Fountain": {
+  "source": "art/models/tripo/web_fixed/Town_Halo_Fountain_R2_fixed.glb",
+  "source_px": 1024,
+  "tris": 9700,
+  "grid": 1,
+  "mode": "maps",
+  "before": "sa",
+  "masks": {
+   "gold": 0.123,
+   "wood": 0.026,
+   "leaf": 0.0,
+   "glass": 0.03,
+   "cloth": 0.161,
+   "stone": 0.66
+  },
+  "normal": "own (Tripo), x1.5 on wood/stone",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Town_Halo_Fountain_C.png",
+   "N": "art/ui/sa_crossroads/Town_Halo_Fountain_N.png",
+   "M": "art/ui/sa_crossroads/Town_Halo_Fountain_M.png",
+   "R": "art/ui/sa_crossroads/Town_Halo_Fountain_R.png"
+  }
+ },
+ "X_NoticeBoard": {
+  "source": "art/models/tripo/web_fixed/X_NoticeBoard_fixed.glb",
+  "source_px": 1024,
+  "tris": 8747,
+  "grid": 1,
+  "mode": "maps",
+  "before": "sa",
+  "masks": {
+   "gold": 0.026,
+   "wood": 0.372,
+   "leaf": 0.019,
+   "glass": 0.004,
+   "cloth": 0.371,
+   "stone": 0.208
+  },
+  "normal": "own (Tripo), x1.5 on wood/stone",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_NoticeBoard_C.png",
+   "N": "art/ui/sa_crossroads/X_NoticeBoard_N.png",
+   "M": "art/ui/sa_crossroads/X_NoticeBoard_M.png",
+   "R": "art/ui/sa_crossroads/X_NoticeBoard_R.png"
+  }
+ },
+ "X_GooseNest": {
+  "source": "art/models/tripo/web_fixed/X_GooseNest_fixed.glb",
+  "source_px": 1024,
+  "tris": 9204,
+  "grid": 1,
+  "mode": "maps",
+  "before": "sa",
+  "masks": {
+   "gold": 0.292,
+   "wood": 0.425,
+   "leaf": 0.015,
+   "glass": 0.0,
+   "cloth": 0.118,
+   "stone": 0.15
+  },
+  "normal": "own (Tripo), x1.5 on wood/stone",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_GooseNest_C.png",
+   "N": "art/ui/sa_crossroads/X_GooseNest_N.png",
+   "M": "art/ui/sa_crossroads/X_GooseNest_M.png",
+   "R": "art/ui/sa_crossroads/X_GooseNest_R.png"
+  }
+ },
+ "X_MarketArch": {
+  "source": "art/models/tripo/web_fixed/X_MarketArch_fixed.glb",
+  "source_px": 1024,
+  "tris": 9576,
+  "grid": 1,
+  "mode": "maps",
+  "before": "sa",
+  "masks": {
+   "gold": 0.029,
+   "wood": 0.488,
+   "leaf": 0.009,
+   "glass": 0.0,
+   "cloth": 0.17,
+   "stone": 0.305
+  },
+  "normal": "own (Tripo), x1.5 on wood/stone",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_MarketArch_C.png",
+   "N": "art/ui/sa_crossroads/X_MarketArch_N.png",
+   "M": "art/ui/sa_crossroads/X_MarketArch_M.png",
+   "R": "art/ui/sa_crossroads/X_MarketArch_R.png"
+  }
+ },
+ "X_Altar": {
+  "source": "art/models/tripo/web_fixed/X_Altar_fixed.glb",
+  "source_px": 1024,
+  "tris": 9674,
+  "grid": 1,
+  "mode": "maps",
+  "before": "sa",
+  "masks": {
+   "gold": 0.05,
+   "wood": 0.393,
+   "leaf": 0.008,
+   "glass": 0.0,
+   "cloth": 0.209,
+   "stone": 0.34
+  },
+  "normal": "own (Tripo), x1.5 on wood/stone",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_Altar_C.png",
+   "N": "art/ui/sa_crossroads/X_Altar_N.png",
+   "M": "art/ui/sa_crossroads/X_Altar_M.png",
+   "R": "art/ui/sa_crossroads/X_Altar_R.png"
+  }
+ },
+ "Kit_X_FruitCart": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_FruitCart_raw.glb",
+  "source_px": 4096,
+  "tris": 2700,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.022,
+   "wood": 0.017,
+   "leaf": 0.054,
+   "glass": 0.0,
+   "cloth": 0.829,
+   "stone": 0.078
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_FruitCart_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_FruitCart_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_FruitCart_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_FruitCart_R.png"
+  }
+ },
+ "Kit_X_Barrel": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Barrel_raw.glb",
+  "source_px": 4096,
+  "tris": 2790,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.136,
+   "wood": 0.568,
+   "leaf": 0.001,
+   "glass": 0.0,
+   "cloth": 0.231,
+   "stone": 0.064
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Barrel_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Barrel_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Barrel_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Barrel_R.png"
+  }
+ },
+ "Kit_X_Crate": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Crate_raw.glb",
+  "source_px": 4096,
+  "tris": 2454,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.041,
+   "wood": 0.502,
+   "leaf": 0.015,
+   "glass": 0.0,
+   "cloth": 0.297,
+   "stone": 0.145
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Crate_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Crate_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Crate_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Crate_R.png"
+  }
+ },
+ "Kit_X_Fence": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Fence_raw.glb",
+  "source_px": 4096,
+  "tris": 2842,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.015,
+   "wood": 0.025,
+   "leaf": 0.003,
+   "glass": 0.0,
+   "cloth": 0.618,
+   "stone": 0.339
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Fence_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Fence_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Fence_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Fence_R.png"
+  }
+ },
+ "Kit_X_FlowerPot": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_FlowerPot_raw.glb",
+  "source_px": 4096,
+  "tris": 2896,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.156,
+   "wood": 0.03,
+   "leaf": 0.485,
+   "glass": 0.0,
+   "cloth": 0.229,
+   "stone": 0.099
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_FlowerPot_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_FlowerPot_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_FlowerPot_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_FlowerPot_R.png"
+  }
+ },
+ "Kit_X_Bush": {
+  "source": "art/models/tripo/kit_crossroads/Kit_X_Bush_raw.glb",
+  "source_px": 4096,
+  "tris": 2812,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.003,
+   "wood": 0.003,
+   "leaf": 0.902,
+   "glass": 0.0,
+   "cloth": 0.04,
+   "stone": 0.052
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/Kit_X_Bush_C.png",
+   "N": "art/ui/sa_crossroads/Kit_X_Bush_N.png",
+   "M": "art/ui/sa_crossroads/Kit_X_Bush_M.png",
+   "R": "art/ui/sa_crossroads/Kit_X_Bush_R.png"
+  }
+ },
+ "X_TreeA": {
+  "source": "art/models/tripo/X_TreeA_raw.glb",
+  "source_px": 2048,
+  "tris": 2934,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.013,
+   "wood": 0.134,
+   "leaf": 0.578,
+   "glass": 0.0,
+   "cloth": 0.055,
+   "stone": 0.221
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_TreeA_C.png",
+   "N": "art/ui/sa_crossroads/X_TreeA_N.png",
+   "M": "art/ui/sa_crossroads/X_TreeA_M.png",
+   "R": "art/ui/sa_crossroads/X_TreeA_R.png"
+  }
+ },
+ "X_SpawnPlaza": {
+  "source": "art/models/tripo/X_SpawnPlaza_raw.glb",
+  "source_px": 4096,
+  "tris": 9727,
+  "grid": 1,
+  "mode": "maps",
+  "before": "tex",
+  "masks": {
+   "gold": 0.118,
+   "wood": 0.283,
+   "leaf": 0.079,
+   "glass": 0.0,
+   "cloth": 0.095,
+   "stone": 0.424
+  },
+  "normal": "from colour brightness (review judges)",
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_SpawnPlaza_C.png",
+   "N": "art/ui/sa_crossroads/X_SpawnPlaza_N.png",
+   "M": "art/ui/sa_crossroads/X_SpawnPlaza_M.png",
+   "R": "art/ui/sa_crossroads/X_SpawnPlaza_R.png"
+  }
+ }
+}
