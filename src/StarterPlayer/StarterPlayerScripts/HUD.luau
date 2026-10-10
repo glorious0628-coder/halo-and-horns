@@ -4321,12 +4321,14 @@ refreshQuests = function()
 	L.TrackDone(questState.All or questState.Rows, all) -- A23-81: the quest window's 'Done' this session
 	-- 빛 마을 점검 #19: rows marked More (the subs past Config.StoryQuests.MaxSubs) are for the quest window only; the
 	-- HUD lines and the list draw the rest (questState.All keeps every row for HUD.QuestEntries)
+	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing); 검수 10/10:
+	-- its row stays on the HUD even when it is a More row (else nothing to tap / pulse)
+	local call = L.StoryPending()
 	local entries = {}
 	for _, e in all do
-		if not e.More then table.insert(entries, e) end
+		local waiting = call ~= nil and e.Story ~= nil and e.Story.Panel and e.Story.Id == call.Id
+		if not e.More or waiting then table.insert(entries, e) end
 	end
-	-- B15: a story page waiting for a calm moment turns its row into "…말을 걸어요 — 눌러서 보기" (pulsing)
-	local call = L.StoryPending()
 	questState.StoryKey = call and (call.Id .. "|" .. tostring(call.St)) or ""
 	local callIndex = nil
 	if call then
@@ -4356,11 +4358,14 @@ refreshQuests = function()
 	for i, e in entries do
 		local done = e.Progress >= e.Target
 		if done and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") then
-			claimable += 1
 			if not firstClaim then firstClaim = i end
 		elseif not done and e.Kind == "Daily" and not firstDaily then
 			firstDaily = i
 		end
+	end
+	-- 검수 10/10: the counts cover every row (the quest window's More rows too), so they match the window's tabs
+	for _, e in all do
+		if e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub") then claimable += 1 end
 	end
 	-- 'now do' row: the pinned guide / next-goal row when there is one (검수 2026-10-06 (b): it always shows, phones too),
 	-- else the waiting story, the first claimable, the first unfinished daily. Desktop shows one more row under it.
@@ -4447,7 +4452,7 @@ refreshQuests = function()
 		if ui.questHead then
 			-- the head line: how many quests there are (before the first mission is accepted, only that one line shows)
 			ui.questHead.Frame.Visible = #entries > 0 and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
-			ui.questHead.Text.Text = string.format(TXT.QuestHead, #entries)
+			ui.questHead.Text.Text = string.format(TXT.QuestHead, #all) -- every quest, the window's More rows too
 			task.delay(0, L.LayoutQuestPlates) -- the head plate follows the head line
 		end
 		questState.ShownEntry = entries[shown]

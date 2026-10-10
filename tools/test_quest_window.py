@@ -138,9 +138,15 @@ def main():
         # 빛 마을 점검 #19 (dev3: Config.StoryQuests.SendAllSubs): More rows = the quest window only
         ("#19: the HUD keeps a row's More flag, draws only the rows without it, and the window lists every row",
          "\t\t\t\tMore = e.More == true,\n" in hud
-         and "\tlocal entries = {}\n\tfor _, e in all do\n\t\tif not e.More then table.insert(entries, e) end\n\tend\n" in hud
+         and "\t\tif not e.More or waiting then table.insert(entries, e) end\n" in hud
          and "\tquestState.All = all -- + the More rows (HUD.QuestEntries: the quest window)\n" in hud
          and "\tfor i, e in questState.All or questState.Rows or {} do out[i] = e end\n" in hud),
+        ("검수 10/10: a waiting story (B15) on a More row stays on the HUD (its row to tap and pulse)",
+         "\t\tlocal waiting = call ~= nil and e.Story ~= nil and e.Story.Panel and e.Story.Id == call.Id\n" in hud
+         and hud.find("\tlocal call = L.StoryPending()\n\tlocal entries = {}\n") > 0),
+        ("검수 10/10: the head count and the claim count cover every row (the window's More rows too)",
+         "ui.questHead.Text.Text = string.format(TXT.QuestHead, #all)" in hud
+         and "\tfor _, e in all do\n\t\tif e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == \"Daily\" or e.Kind == \"Sub\") then claimable += 1 end\n" in hud),
         ("#19: a More row (no HUD row) is claimed straight from the window",
          "\tif e.More and e.Story and type(e.Id) == \"string\" and not throttled(\"claim\", 0.35) then\n\t\tfire(\"ClaimQuest\", e.Id)\n" in hud),
         ("the HUD tells the window when its quests change", "pcall(function() HUD.QuestsChanged:Fire() end)" in hud
