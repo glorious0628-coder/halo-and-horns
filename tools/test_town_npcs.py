@@ -2,7 +2,7 @@
 검수 2026-10-10; 게임성 개발 3), offline.
 
 Runs the CURRENT TownNpcs module with the CURRENT Config (Config.TownNpcs: Bright, Sir Gleam, four townsfolk, the Halo potion seller
-(off until ShopService accepts more than one seller), Otto behind the anvil) on tools/fixtures/dev2_kit.luau with
+(on since #34: ShopService sells at every tagged seller), Otto behind the anvil) on tools/fixtures/dev2_kit.luau with
 tools/fixtures/town_npcs_offline.luau and the installed official Luau CLI. Doubles: the Instance tree, Players:
 CreateHumanoidModelFromDescription (the real call yields), a workspace ray (the ground height), the CollectionService tags and the
 Crossroads anvil. Static checks: MapBuilder calls the module once after the potion seller, the sync list needs nothing, nothing
@@ -32,17 +32,17 @@ MUTATIONS = [
     # --- Config
     ("Config: Bright is not a story NPC", C, 'Id = "Bright", Name = "Npc_Bright", Story = "Bright",', 'Id = "Bright", Name = "Npc_Bright",'),
     ("Config: Bright has another NpcId", C, 'Name = "Npc_Bright", Story = "Bright",', 'Name = "Npc_Bright", Story = "Brite",'),
-    ("Config: Bright outside the town", C, "At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),", "At = Vector3.new(18, 0, -252), Look = Vector3.new(0, 0, -420),"),
+    ("Config: Bright outside the town", C, "At = Vector3.new(8, 0, -424), Look = Vector3.new(8, 0, -380),", "At = Vector3.new(8, 0, -224), Look = Vector3.new(8, 0, -380),"),
     ("Config: the prompt range is 40", C, "\tPromptDistance = 10,", "\tPromptDistance = 40,"),
-    ("Config: the seller is switched on", C, 'Label = "Potion Seller", Enabled = false,', 'Label = "Potion Seller",'),
+    ("Config: the seller is switched off", C, 'Label = "Potion Seller", Y = 20,', 'Label = "Potion Seller", Enabled = false, Y = 20,'),
     ("Config: a fifth townsperson", C, '\t\t{ Id = "PotionHalo",', '\t\t{ Id = "Folk5", Name = "Npc_Folk5", Folk = "Folk5", At = Vector3.new(20, 0, -570), Look = Vector3.new(0, 0, -565) },\n\t\t{ Id = "PotionHalo",'),
     ("Config: a duplicate model name", C, 'Id = "Folk2", Name = "Npc_Folk2",', 'Id = "Folk2", Name = "Npc_Folk1",'),
     ("Config: Otto is not behind the anvil", C, 'Anvil = true, Behind = 4,', 'Anvil = true, Behind = -4,'),
     ("Config: off", C, "Config.TownNpcs = {\n\tEnabled = true,", "Config.TownNpcs = {\n\tEnabled = false,"),
-    ("Config: the seller back at the bakery", C, "Y = 20,\n\t\t\tAt = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },", "Y = 20,\n\t\t\tAt = Vector3.new(-34, 0, -546), Look = Vector3.new(0, 0, -584) },"),
-    ("Config: Folk3 on the seller's spot", C, "At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,", "At = Vector3.new(34, 0, -584), Look = Vector3.new(-44, 0, -546), Y = 20,"),
-    ("Config: Folk1 has no expected Y", C, "Look = Vector3.new(44, 0, -546), Y = 20,", "Look = Vector3.new(44, 0, -546),"),
-    ("Config: Folk4 on the terrace below", C, "Look = Vector3.new(0, 0, -565), Y = 20,", "Look = Vector3.new(0, 0, -565), Y = 9,"),
+    ("Config: the seller back at the bakery", C, "Y = 20,\n\t\t\tAt = Vector3.new(44.5, 0, -594), Look = Vector3.new(34.5, 0, -595.5) },", "Y = 20,\n\t\t\tAt = Vector3.new(-17, 0, -553), Look = Vector3.new(34.5, 0, -595.5) },"),
+    ("Config: Folk3 on the seller's spot", C, "At = Vector3.new(-17, 0, -553), Look = Vector3.new(-27, 0, -550.5), Y = 20,", "At = Vector3.new(44.5, 0, -594), Look = Vector3.new(-27, 0, -550.5), Y = 20,"),
+    ("Config: Folk1 has no expected Y", C, "Look = Vector3.new(72.5, 0, -564.5), Y = 20,", "Look = Vector3.new(72.5, 0, -564.5),"),
+    ("Config: Folk4 on the terrace below", C, "Look = Vector3.new(8, 0, -566), Y = 20,", "Look = Vector3.new(8, 0, -566), Y = 9,"),
     ("Config: no retries", C, "\tRetries = 3,", "\tRetries = 1,"),
     ("Config: retry every second", C, "\tRetryDelay = 5,", "\tRetryDelay = 1,"),
     ("Config: the tolerance is 10", C, "\tYTol = 4,", "\tYTol = 10,"),
@@ -179,12 +179,17 @@ def static() -> tuple[int, list[str]]:
         shop, at = shops.get(shop_kind), entry_at(entry_id)
         check(shop is not None and at is not None, f"the plan has a {shop_kind} shop and Config an entry {entry_id}")
         if shop and at:
-            side = 1 if shop["x"] > 0 else -1
+            # A23-112: every shop has its own yaw; its front is the kit -Z turned by yaw (CFrame.Angles(0, rad(yaw), 0))
+            import math
+            theta = math.radians(shop["yaw"])
+            front_dir = (-math.sin(theta), -math.cos(theta))
+            right_dir = (math.cos(theta), -math.sin(theta))
             depth = 7.5 * shop["s"] / 2  # the kit shop is 7.5 deep (halo_layout.py), x its scale
-            front = shop["x"] - side * depth
-            gap = (front - at[0]) * side  # studs in front of the shop's face, towards the street
-            check(2 <= gap <= 8 and abs(at[1] - shop["z"]) <= 4 and abs(shop["y"] - 20) < 1,
-                  f"{entry_id} stands 2..8 studs in front of the {shop_kind} shop ({shop['x']}, {shop['z']}): gap {gap:.1f}, dz {abs(at[1] - shop['z']):.1f}")
+            rel = (at[0] - shop["x"], at[1] - shop["z"])
+            gap = rel[0] * front_dir[0] + rel[1] * front_dir[1] - depth  # studs in front of the shop's face
+            side = rel[0] * right_dir[0] + rel[1] * right_dir[1]  # along the face from its middle
+            check(2 <= gap <= 8 and abs(side) <= 4 and abs(shop["y"] - 20) < 1,
+                  f"{entry_id} stands 2..8 studs in front of the {shop_kind} shop ({shop['x']}, {shop['z']}, yaw {shop['yaw']}): gap {gap:.1f}, sideways {side:.1f}")
     check(src.count("CreateHumanoidModelFromDescription") == 1 and "ServerStorage" not in src and "CustomModels" not in src, "the body comes from a HumanoidDescription only (A23-6): no costume rig, no template")
     return count, failures
 
@@ -196,8 +201,8 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-10/offline_dev3_town_npcs_2026-10-10.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="Config.TownNpcs.List: Bright + Sir Gleam (tag StoryNpc, NpcId, 'Talk' prompt with StoryNpcId, G, tap, 10 studs), four "
-             "townsfolk (tag TownFolk, no prompt), the Halo potion seller (tag PotionMerchant + the shop prompt, off until ShopService "
-             "accepts more than one seller), Otto 4 studs behind the Crossroads anvil (decorative). Temporary default R15 bodies from a "
+             "townsfolk (tag TownFolk, no prompt), the Halo potion seller (tag PotionMerchant + the shop prompt, on since #34: "
+             "ShopService sells at every tagged seller), Otto 4 studs behind the Crossroads anvil (decorative). Temporary default R15 bodies from a "
              "HumanoidDescription (sleeves, trousers), anchored, no collision, no scripts; the height comes from a ground ray (floor-like "
              "hits only, never the NPC folder or a player's character), feet on the ground, facing the Look point; reused / repaired / "
              "moved when they exist, a foreign model under the name is never touched, a missing ground skips only that body; built "

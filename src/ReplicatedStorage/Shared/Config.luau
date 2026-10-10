@@ -3451,13 +3451,13 @@ Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSi
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
 -- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
 --   Story = a quest NPC (tag StoryNpc, NpcId, a "Talk" prompt); Folk = a townsperson who only stands there (tag TownFolk);
---   Merchant = a potion stall seller (tag PotionMerchant; Enabled = false until ShopService accepts more than the one named
---   seller: game dev 2); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
--- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json: the plaza terrace is Y 20 at z -524..-606, the fountain
--- (0,-565), the four shops x +-44 facing the street: bakery (-44,-546), juice (44,-546), flowers (-44,-584), potions
--- (44,-584); a shop is 22.8 x 14.3 studs, so its front is at x +-37): Bright at the foot of the plaza stairs, Sir Gleam beside
--- the gate road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller 3 studs in front of their
--- shop. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
+--   Merchant = a potion stall seller (tag PotionMerchant; on since main took game dev 2's #34: ShopService sells at every
+--   tagged seller); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
+-- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json, A23-112 asymmetric layout: the plaza terrace is Y 20 at z
+-- -524..-606, the fountain (8.18,-566) 16 x 16, the four shops each at its own angle (a shop is 22.8 x 14.3 studs, its front
+-- = kit -Z turned by its yaw): Bright just south of the first plaza stairs (their foot, z -424), Sir Gleam beside the gate
+-- road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
+-- face, Folk4 beside the fountain. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
 -- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
 Config.TownNpcs = {
 	Enabled = true,
@@ -3470,20 +3470,20 @@ Config.TownNpcs = {
 	RetryDelay = 5, -- seconds between tries
 	MaxCoord = 3000,
 	List = {
-		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -452), Look = Vector3.new(0, 0, -420),
+		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(8, 0, -424), Look = Vector3.new(8, 0, -380),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(34, 0, -546), Look = Vector3.new(44, 0, -546), Y = 20,
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(63, 0, -567.5), Look = Vector3.new(72.5, 0, -564.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-34, 0, -584), Look = Vector3.new(-44, 0, -584), Y = 20,
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-41.5, 0, -598.5), Look = Vector3.new(-51, 0, -594.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-34, 0, -546), Look = Vector3.new(-44, 0, -546), Y = 20,
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-17, 0, -553), Look = Vector3.new(-27, 0, -550.5), Y = 20,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(16, 0, -560), Look = Vector3.new(0, 0, -565), Y = 20,
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(24, 0, -560), Look = Vector3.new(8, 0, -566), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Enabled = false, Y = 20,
-			At = Vector3.new(34, 0, -584), Look = Vector3.new(0, 0, -584) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 20,
+			At = Vector3.new(44.5, 0, -594), Look = Vector3.new(34.5, 0, -595.5) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
