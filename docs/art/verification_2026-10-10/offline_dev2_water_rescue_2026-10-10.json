@@ -1,0 +1,1629 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 136,
+  "failedChecks": 0,
+  "namedChecks": 136,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.WaterRescue exists and is on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "8 s in water, 40 studs around a town rect (검수 10/10)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a sample every <= 1 s; a dry spell under DryReset (a swim jump) keeps the count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "landing slope below the players' MaxSlopeAngle 46",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Horns lava strips are never a landing spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rings nearest first, from <= 8 to >= 60 studs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Text.WaterRescue: easy English, <= 12 words, ASCII",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the sea / canal surface is Y -1.2 (Config.Map.WaterTop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "inside the Halo rect (a canal)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "39 studs outside the Halo rect (east / west sea)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "41 studs outside: no town area",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "the far end: z -700 - 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "the strait 38 studs off the Halo gate end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "mid strait (z -240) lies between the Crossroads and Halo margins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "the Crossroads river by the meadow bridge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "Horns Den and its far sea",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "meadow, goblin river, ruins: no town area",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "town area",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "still swimming 7.6 s after the first wet sample",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "moved once by 8.6 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "onto the LOW terrace (Y 0.2 + Lift 4), not the Y 7 one across the canal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "facing inland (away from the water), level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "CR-H2: teleport grace on, the movement track restarts at the shore",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "velocity cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "room check: a 3 x 6 x 3 body box from 0.5 above the landing spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "one line: Text.WaterRescue",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "no sound with it (happens to me)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "the count restarts after the rescue",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "on the shore: no second move",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "the zone loop goes on (ZoneId HaloTown)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "8 s in a row in a canal",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Toast off",
+      "check": "Toast = false: moved without a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Toast off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Toast off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dry spells",
+      "check": "a 1 s swim jump keeps the count: rescued 8.6 s after the first wet sample",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dry spells",
+      "check": "2 s out of the water restarts the count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dry spells",
+      "check": "... and 8 s after getting back in it is rescued",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dry spells",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dry spells",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shallow water",
+      "check": "a foot-deep spring basin is not 'in water' (surface 1.9 under the root)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shallow water",
+      "check": "a root 0.95 above the surface counts (RootSlack 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shallow water",
+      "check": "a root 1.05 above the surface does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shallow water",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shallow water",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "away from the towns",
+      "check": "no rescue away from the towns (outside every margin)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "away from the towns",
+      "check": "... and no Terrain read there",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "away from the towns",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "away from the towns",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sample rate",
+      "check": "one Terrain read per CheckEvery (0.5 s), not per zone tick (0.2 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sample rate",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "sample rate",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "a roof (not Terrain / Ground / bridge): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "a puddle on a ledge (the ray meets water first): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "a ledge only 0.2 above the water (DryAbove 0.5): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "too steep (60 deg, MaxSlope 40): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "too high (35 above the water, MaxRise 30): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "a lava strip (AvoidMaterials): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "no room (a prop in the body box): skipped, the shore 10 studs away is taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "inside a ring the lowest climb wins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "the nearest ring wins over a lower shore farther away",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "a 30 deg shore is a landing spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "nothing dry within 80 studs: the Halo home spawn (0, 4, -420) +-6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "... with the CR-H2 grace and the line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "landing rules",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "a Halo player lands on the Halo shore",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "no enemy-town bounce afterwards (only the rescue line)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "an Active kaiju in the Crossroads river lands on the Crossroads shore",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "nothing dry near the Crossroads: its spawn (0, 4, -25), not the far home town",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "an R6 body gets an R6-tall body box (6) and stands on the shore",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "enemy town and kaiju",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dead, not ready, a new character",
+      "check": "a dead or not-ready player is never moved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dead, not ready, a new character",
+      "check": "... and costs no Terrain read",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dead, not ready, a new character",
+      "check": "a new character starts its own 8 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dead, not ready, a new character",
+      "check": "... and is rescued 8 s after its own first wet sample",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dead, not ready, a new character",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "dead, not ready, a new character",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave",
+      "check": "a water state while in town",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave",
+      "check": "PlayerLeaving -> cleanup forgets it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A10 first",
+      "check": "below Y -20 the A10 rescue runs (home spawn) and the water tick is not reached",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A10 first",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "A10 first",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a probe error is contained",
+      "check": "updateZone never throws for a water probe error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a probe error is contained",
+      "check": "the zone bookkeeping before it still ran",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a probe error is contained",
+      "check": "one throttled warning",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a probe error is contained",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a probe error is contained",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "sea level read back as -1.2 (voxel bottom + 4 x 0.7)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "a grid-aligned 1 x 3 x 1 column of 4-stud voxels: one below the root's voxel, the root's, one above",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "reads LiquidOccupancy + SolidMaterial / SolidOccupancy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "shorelines off (SolidMaterial Water + SolidOccupancy): the same -1.2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "a diver: the column is full, the top of the last voxel",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "a spring basin: its own surface (6.6)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "the highest wet voxel decides (full below, half in the root's)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "a film (<= 0.02) is no water",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "dry: nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "ReadVoxelChannels missing: ReadVoxels gives the same surface",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "both reads fail: nil, never thrown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Terrain water probe",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "Terrain: walkable; position / normal / material passed on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "straight down, the asked length",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "Terrain + Map only, water NOT ignored, non-colliding parts ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "rays query as a player (Players group: A23-81 player-only decor is seen)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "the list is { Terrain, workspace.Map } (characters, monsters, pets are never hit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "a part under Map.Ground is walkable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "a Map.Decor Bridge_* deck is walkable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "a Halo prop (Map.Decor.HaloProps) is no landing spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "a travel pad is no landing spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "a model named Ground inside Decor is not the map ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "no instance: not walkable",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "nothing hit: nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "an engine error: nil, never thrown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "the ray params are built once ...",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "... and rebuilt after 5 s (the new Map)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "an empty body box: room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "the box is centred where asked, the asked size",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "only collidable Map parts count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "the body box queries as a player too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "a prop in the box: no room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "an engine error: no room (another spot, or the home spawn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "no players' group registered: the default group",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ground and room probes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "end to end on the engine doubles",
+      "check": "Terrain read + rays + room check: out of the canal onto the low side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "end to end on the engine doubles",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "end to end on the engine doubles",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 12,
+  "staticFailures": [],
+  "mutations": {
+    "total": 61,
+    "applied": 61,
+    "caught": 61,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no water tick in the zone loop",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: facing inland (away from the water), level",
+          "8 s in a row in a canal :: moved once by 8.6 s",
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: on the shore: no second move",
+          "8 s in a row in a canal :: one line: Text.WaterRescue"
+        ],
+        "newFailingCount": 38
+      },
+      {
+        "mutation": "no pcall around the water tick",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a probe error is contained :: one throttled warning",
+          "a probe error is contained :: updateZone never throws for a water probe error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rescued on the first wet sample",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: one line: Text.WaterRescue",
+          "8 s in a row in a canal :: still swimming 7.6 s after the first wet sample",
+          "dead, not ready, a new character :: a new character starts its own 8 s",
+          "dry spells :: ... and 8 s after getting back in it is rescued"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "half the time",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: one line: Text.WaterRescue",
+          "8 s in a row in a canal :: still swimming 7.6 s after the first wet sample",
+          "dead, not ready, a new character :: a new character starts its own 8 s"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a swim jump restarts the count",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dry spells :: a 1 s swim jump keeps the count: rescued 8.6 s after the first wet sample"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "leaving the water never restarts the count",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dry spells :: 2 s out of the water restarts the count"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no margin",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enemy town and kaiju :: a Halo player lands on the Halo shore",
+          "enemy town and kaiju :: a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+          "enemy town and kaiju :: an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+          "enemy town and kaiju :: an Active kaiju in the Crossroads river lands on the Crossroads shore",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)",
+          "enemy town and kaiju :: nothing dry near the Crossroads: its spawn (0, 4, -25), not the far home town"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "every zone counts as a town",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "away from the towns :: ... and no Terrain read there",
+          "away from the towns :: no rescue away from the towns (outside every margin)",
+          "town area :: meadow, goblin river, ruins: no town area"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no root slack",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: facing inland (away from the water), level",
+          "8 s in a row in a canal :: moved once by 8.6 s",
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: on the shore: no second move",
+          "8 s in a row in a canal :: one line: Text.WaterRescue"
+        ],
+        "newFailingCount": 34
+      },
+      {
+        "mutation": "a basin counts",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "shallow water :: a foot-deep spring basin is not 'in water' (surface 1.9 under the root)",
+          "shallow water :: a root 1.05 above the surface does not"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no sample throttle",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "sample rate :: one Terrain read per CheckEvery (0.5 s), not per zone tick (0.2 s)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Terrain read away from the towns",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "away from the towns :: ... and no Terrain read there",
+          "away from the towns :: no rescue away from the towns (outside every margin)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a new character keeps the count",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dead, not ready, a new character :: a new character starts its own 8 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "roofs are shore",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: a roof (not Terrain / Ground / bridge): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "wet spots are shore",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: a puddle on a ledge (the ray meets water first): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a ledge under DryAbove is shore",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: a ledge only 0.2 above the water (DryAbove 0.5): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no MaxRise",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: too high (35 above the water, MaxRise 30): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "steep is shore",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: too steep (60 deg, MaxSlope 40): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "first found wins (no lowest climb)",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: facing inland (away from the water), level",
+          "8 s in a row in a canal :: onto the LOW terrace (Y 0.2 + Lift 4), not the Y 7 one across the canal",
+          "8 s in a row in a canal :: room check: a 3 x 6 x 3 body box from 0.5 above the landing spot",
+          "end to end on the engine doubles :: Terrain read + rays + room check: out of the canal onto the low side",
+          "enemy town and kaiju :: an R6 body gets an R6-tall body box (6) and stands on the shore",
+          "landing rules :: inside a ring the lowest climb wins"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "lava is shore",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: a lava strip (AvoidMaterials): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "enemy towns are shore",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enemy town and kaiju :: a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+          "enemy town and kaiju :: an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no room check",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: room check: a 3 x 6 x 3 body box from 0.5 above the landing spot",
+          "enemy town and kaiju :: an R6 body gets an R6-tall body box (6) and stands on the shore",
+          "landing rules :: no room (a prop in the body box): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the rings never stop at a hit",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: facing inland (away from the water), level",
+          "8 s in a row in a canal :: onto the LOW terrace (Y 0.2 + Lift 4), not the Y 7 one across the canal",
+          "end to end on the engine doubles :: Terrain read + rays + room check: out of the canal onto the low side",
+          "enemy town and kaiju :: a Halo player lands on the Halo shore",
+          "enemy town and kaiju :: an Active kaiju in the Crossroads river lands on the Crossroads shore",
+          "enemy town and kaiju :: an R6 body gets an R6-tall body box (6) and stands on the shore"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "no CR-H2 grace on the shore move",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: no service warnings (pcall-swallowed handler errors)",
+          "dead, not ready, a new character :: no service warnings (pcall-swallowed handler errors)",
+          "dry spells :: no service warnings (pcall-swallowed handler errors)",
+          "end to end on the engine doubles :: no service warnings (pcall-swallowed handler errors)",
+          "enemy town and kaiju :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no lift",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: onto the LOW terrace (Y 0.2 + Lift 4), not the Y 7 one across the canal",
+          "end to end on the engine doubles :: Terrain read + rays + room check: out of the canal onto the low side",
+          "enemy town and kaiju :: a Halo player lands on the Halo shore",
+          "enemy town and kaiju :: an Active kaiju in the Crossroads river lands on the Crossroads shore",
+          "enemy town and kaiju :: an R6 body gets an R6-tall body box (6) and stands on the shore",
+          "landing rules :: a 30 deg shore is a landing spot"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "faces the water",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: facing inland (away from the water), level"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "velocity kept",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: velocity cleared"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no line",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: one line: Text.WaterRescue",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)",
+          "landing rules :: ... with the CR-H2 grace and the line"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the line with a sound",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: no sound with it (happens to me)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Toast ignored",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Toast off :: Toast = false: moved without a line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "state kept after leaving",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave :: PlayerLeaving -> cleanup forgets it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "surface ignores the occupancy",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: ReadVoxelChannels missing: ReadVoxels gives the same surface",
+          "Terrain water probe :: a spring basin: its own surface (6.6)",
+          "Terrain water probe :: sea level read back as -1.2 (voxel bottom + 4 x 0.7)",
+          "Terrain water probe :: shorelines off (SolidMaterial Water + SolidOccupancy): the same -1.2",
+          "Terrain water probe :: the highest wet voxel decides (full below, half in the root's)",
+          "end to end on the engine doubles :: Terrain read + rays + room check: out of the canal onto the low side"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the lowest wet voxel decides",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: ReadVoxelChannels missing: ReadVoxels gives the same surface",
+          "Terrain water probe :: a diver: the column is full, the top of the last voxel",
+          "Terrain water probe :: sea level read back as -1.2 (voxel bottom + 4 x 0.7)",
+          "Terrain water probe :: shorelines off (SolidMaterial Water + SolidOccupancy): the same -1.2",
+          "Terrain water probe :: the highest wet voxel decides (full below, half in the root's)",
+          "end to end on the engine doubles :: Terrain read + rays + room check: out of the canal onto the low side"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a column off the voxel grid",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: a diver: the column is full, the top of the last voxel",
+          "Terrain water probe :: a grid-aligned 1 x 3 x 1 column of 4-stud voxels: one below the root's voxel, the root's, one above",
+          "Terrain water probe :: a spring basin: its own surface (6.6)",
+          "Terrain water probe :: the highest wet voxel decides (full below, half in the root's)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a film counts as water",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: a film (<= 0.02) is no water"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "solid-material water ignored",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: ReadVoxelChannels missing: ReadVoxels gives the same surface",
+          "Terrain water probe :: shorelines off (SolidMaterial Water + SolidOccupancy): the same -1.2"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "only LiquidOccupancy read",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: reads LiquidOccupancy + SolidMaterial / SolidOccupancy"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no ReadVoxels fallback",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Terrain water probe :: ReadVoxelChannels missing: ReadVoxels gives the same surface"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rays ignore water",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: Terrain + Map only, water NOT ignored, non-colliding parts ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rays see characters (Exclude)",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: Terrain + Map only, water NOT ignored, non-colliding parts ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "non-colliding parts stop the rays",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: Terrain + Map only, water NOT ignored, non-colliding parts ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "ray params never rebuilt",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: ... and rebuilt after 5 s (the new Map)",
+          "ground and room probes :: no players' group registered: the default group",
+          "ground and room probes :: only collidable Map parts count"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "any Decor child is a bridge",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: a Halo prop (Map.Decor.HaloProps) is no landing spot",
+          "ground and room probes :: a model named Ground inside Decor is not the map ground"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any Ground is the map ground",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: a model named Ground inside Decor is not the map ground"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a room error reads as room",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: an engine error: no room (another spot, or the home spawn)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "non-colliding parts take the room",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: only collidable Map parts count"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Config: off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: facing inland (away from the water), level",
+          "8 s in a row in a canal :: moved once by 8.6 s",
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: on the shore: no second move",
+          "8 s in a row in a canal :: one line: Text.WaterRescue"
+        ],
+        "newFailingCount": 39
+      },
+      {
+        "mutation": "Config: 80 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: CR-H2: teleport grace on, the movement track restarts at the shore",
+          "8 s in a row in a canal :: facing inland (away from the water), level",
+          "8 s in a row in a canal :: moved once by 8.6 s",
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: on the shore: no second move",
+          "8 s in a row in a canal :: one line: Text.WaterRescue"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "Config: 4-stud margin",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 8 s in water, 40 studs around a town rect (검수 10/10)",
+          "enemy town and kaiju :: a Halo player lands on the Halo shore",
+          "enemy town and kaiju :: a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+          "enemy town and kaiju :: an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+          "enemy town and kaiju :: an Active kaiju in the Crossroads river lands on the Crossroads shore",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "Config: slack 4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "dry spells :: 2 s out of the water restarts the count",
+          "shallow water :: a foot-deep spring basin is not 'in water' (surface 1.9 under the root)",
+          "shallow water :: a root 1.05 above the surface does not"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Config: steep landings",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: landing slope below the players' MaxSlopeAngle 46",
+          "landing rules :: too steep (60 deg, MaxSlope 40): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: no lava rule",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Horns lava strips are never a landing spot",
+          "landing rules :: a lava strip (AvoidMaterials): skipped, the shore 10 studs away is taken"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Config: no line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "8 s in a row in a canal :: no sound with it (happens to me)",
+          "8 s in a row in a canal :: one line: Text.WaterRescue",
+          "config :: Text.WaterRescue: easy English, <= 12 words, ASCII",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)",
+          "landing rules :: ... with the CR-H2 grace and the line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no fallback",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enemy town and kaiju :: a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+          "enemy town and kaiju :: an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)",
+          "enemy town and kaiju :: nothing dry near the Crossroads: its spawn (0, 4, -25), not the far home town",
+          "landing rules :: ... with the CR-H2 grace and the line",
+          "landing rules :: nothing dry within 80 studs: the Halo home spawn (0, 4, -420) +-6"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "the fallback is the home town",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enemy town and kaiju :: a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+          "enemy town and kaiju :: an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)",
+          "enemy town and kaiju :: nothing dry near the Crossroads: its spawn (0, 4, -25), not the far home town"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the other side's town as fallback",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enemy town and kaiju :: a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home",
+          "enemy town and kaiju :: an Active kaiju (no faction town, not even its own): the Crossroads spawn",
+          "enemy town and kaiju :: no enemy-town bounce afterwards (only the rescue line)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the near town never used",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "landing rules :: nothing dry within 80 studs: the Halo home spawn (0, 4, -420) +-6"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rays in the Default group",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: rays query as a player (Players group: A23-81 player-only decor is seen)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "box in the Default group",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: the body box queries as a player too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "group set even when not registered",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ground and room probes :: no players' group registered: the default group"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "R6 legs ignored",
+        "file": "src/ServerScriptService/ZoneService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "enemy town and kaiju :: an R6 body gets an R6-tall body box (6) and stands on the shore"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "5725813ce6d33116291517f83615aa0512cf424041d555880b1fb8fdae3d05e5",
+    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ServerScriptService/ZoneService.luau": "581177de21c4bb55b1a43a7bd71ad7571d70285f77a56f14a909e9c51720dc09"
+  },
+  "fixtureSHA256": "b02d5c4570d6b2b6da5dc0194131dc7520de1f3318d6cc4204abcdb2c3c48066",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "zone_check_halo #11 / #62 / #63: ZoneService.updateZone runs waterTick (pcall) after the gates and applyZone. In a town zone or within Config.WaterRescue.Margin studs of a town rect, a live player whose root is in Terrain water (ReadVoxelChannels at the root, RootSlack) for Seconds in a row (a dry spell of DryReset restarts it; a new character restarts it) is moved to the nearest dry land: rings of downward rays (Include Terrain / Map.Ground / Decor Bridge_*, IgnoreWater false, RespectCanCollide, the players' collision group when registered), a walkable non-water hit DryAbove..MaxRise above the surface, slope <= MaxSlope, not AvoidMaterials (CrackedLava), allowed for the player (level, enemy town), with room for the body (GetPartBoundsInBox; R6 legs counted); the lowest climb in the first ring that has one wins; markTeleported, PivotTo facing inland, zero velocity, one Toast line (Config.Text.WaterRescue, Sound None). Nothing dry: the near town's spawn when the player may stand there, else the Crossroads spawn. cleanup forgets the state.",
+  "limitations": "The engine's ReadVoxelChannels values, a swimmer's real root height and the collision-group queries are faked; 메인 반영 1 checks the canals, the outer sea, the spring basins and the bridges in Play."
+}

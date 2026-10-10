@@ -1691,6 +1691,28 @@ Config.AntiCheat = {
 	LogCooldown = 10,
 }
 
+-- zone_check_halo_2026-10-10 #11 / #62 / #63 (검수 2026-10-10): the water rescue (ZoneService waterTick). A live player whose
+-- root stays in Terrain water for Seconds in a row inside a town zone (Zones[*].Town) or within Margin studs of a town rect
+-- is moved to the nearest dry land (rings of downward rays: nearest ring first, then the lowest climb); nothing found ->
+-- the home spawn (an Active kaiju: Crossroads). No invisible edge walls (too many parts).
+Config.WaterRescue = {
+	Enabled = true,
+	Seconds = 8, -- in water this long in a row (counted from the first wet sample)
+	Margin = 40, -- studs around each town rect: the Halo canals + sea strip, the Crossroads river and sea edges
+	CheckEvery = 0.5, -- s between two water samples of one player (one 3-voxel Terrain read; the zone loop runs every 0.2 s)
+	RootSlack = 1, -- in water = the Terrain water surface is at most this far below the root (a swimmer floats at the surface)
+	DryReset = 1.5, -- a dry spell shorter than this (a swim jump at a canal wall) keeps the count
+	Rings = { 6, 10, 16, 24, 34, 46, 60, 80 }, -- search radii (studs), nearest first
+	RaysPerRing = 12,
+	RayTop = 60, -- rays start this far above the root / water (Halo terraces reach Y 22; tall props fail the body box)
+	DryAbove = 0.5, -- a landing spot is at least this far above the water surface by the player ...
+	MaxRise = 30, -- ... and at most this far (the Halo cathedral terrace is 22)
+	MaxSlope = 40, -- degrees; players walk up to 46 (PlayerService MAX_SLOPE_ANGLE)
+	Lift = 4, -- the root is put at least this far above the landing spot (like a zone spawn)
+	AvoidMaterials = { "CrackedLava" }, -- Horns Den's painted lava strips are floor, never a landing spot
+	Toast = true, -- Text.WaterRescue after the move (false = silent)
+}
+
 ----------------------------------------------------------------- monsters
 Config.Monsters = {
 	AIInterval = 0.25,
@@ -5942,6 +5964,7 @@ Config.Text = {
 	-- addendum A3 (review fixes)
 	AutoUnderAttack = "You're under attack! Hit back with the Attack button", -- M3: auto ON + took PvP damage (once per 60 s)
 	EnemyTown = "You can't enter the other side's town!", -- L1: bounced to Crossroads (also Neutral in either town)
+	WaterRescue = "Splash! Back on dry land.", -- zone_check_halo #62: ZoneService water rescue (Config.WaterRescue.Toast)
 	-- addendum A7-3 (next goal, client)
 	Unlocked = "Unlocked! %s", -- (unlockText)
 	KillsToAfford = "%s: %d more!", -- (monsterName, kills)
