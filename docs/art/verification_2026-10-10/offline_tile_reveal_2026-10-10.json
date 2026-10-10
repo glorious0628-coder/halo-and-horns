@@ -1,5 +1,5 @@
 {
-  "checks": 21,
+  "checks": 26,
   "failed": 0,
   "static": [
     {
@@ -23,6 +23,16 @@
     },
     {
       "name": "a shown tile can go away",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the rule reads raw attributes again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an override ignored",
       "applied": true,
       "caught": true
     },
@@ -72,6 +82,11 @@
       "caught": true
     },
     {
+      "name": "the rule off",
+      "applied": true,
+      "caught": true
+    },
+    {
       "name": "the hero tile from the start",
       "applied": true,
       "caught": true
@@ -88,6 +103,6 @@
     }
   ],
   "status": "passed",
-  "contract": "Bottom menu tiles show when needed (게임성 개발 1, SPEC A23-113 ③, 검수 2026-10-10), offline.\n\nRuns, in the official Luau CLI, the CURRENT HUD L.PickTiles / L.RevealReady / L.RevealState / L.TilePop cut out of\nHUD.luau with the CURRENT Config.luau (Config.HudReveal.TileShows): a new player sees Bag and Map only; the hero\n(Character) comes at the first level up, the skills at the first skill (SkillSlots >= 1 or Config.Skills.Unlock.Q), the\npet with a pet (following, or any in the pet list), the ranking once story:M1_4 is in the quest book's Done (or a later\nchapter's main row shows); a tile shown once stays this session; a tile that comes in during play pops in once (a\nUIScale), never at the join (first 3 s after DataLoaded) and never with reduced motion; the row's Count still trims by\nKeep. Static: Level / SkillSlots / EquippedPet changes re-pick at once. Mutations: each must be caught.",
+  "contract": "Bottom menu tiles show when needed (게임성 개발 1, SPEC A23-113 ③, 검수 2026-10-10), offline.\n\nRuns, in the official Luau CLI, the CURRENT HUD L.TileShown / HUD.SetTileShown / L.PickTiles / L.RevealReady /\nL.RevealState / L.TilePop cut out of HUD.luau (image dev's row + fold, 개발 1's moments) with the CURRENT Config.luau\n(Config.HudReveal.Tiles / ShowsTile, On): a new player sees Bag, Quests and Map only; the hero\n(Character) comes at the first level up, the skills at the first skill (SkillSlots >= 1 or Config.Skills.Unlock.Q), the\npet with a pet (following, or any in the pet list), the ranking once story:M1_4 is in the quest book's Done (or a later\nchapter's main row shows); a tile shown once stays this session; a tile that comes in during play pops in once (a\nUIScale), never at the join (first 3 s after DataLoaded) and never with reduced motion; the row's Count still trims by\nKeep; On = false shows every tile (as before); HUD.SetTileShown forces / gives back a tile. Static: Level / SkillSlots /\nEquippedPet changes re-pick at once. Mutations: each must be caught.",
   "studioCalls": 0
 }

@@ -1410,26 +1410,32 @@ function Config.HudReveal.Shows(kind, s)
 	end
 	return true
 end
-
--- A23-113 ③ (user 2026-10-10 "마감 전 넣자"): the bottom menu tiles show when they are needed - the bag and the map
--- from the start, the hero (stats) after the first level up, the skills at the first skill (Config.Skills.Unlock.Q),
--- the pet once I have a pet, the ranking once the first chapter's main quests are done (FirstChapterLast). A tile that
--- comes in during play pops in once (no pop with reduced motion), never with a text notice. The quick slots always
--- show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
-Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet", Ranking = "Chapter" }
+-- A23-113 ③ (user 10/10 "마감 전 넣자"): the bottom menu tiles come when they are needed - Bag · Quests · Map from the
+-- start, Hero (stats) at the first level-up, Skills at Lv5, Pet when the pet comes, Ranking when M1 is done. The quick
+-- slots 1 · 2 · 3 always show. On = the rule is in use (게임성 개발 1 sets the moments and turns it on; off = every tile
+-- shows, as before). A rule: Level = shown from this level; Attr = shown while LocalPlayer has this attribute truthy.
+-- A tile once shown stays (HUD remembers it for the session; the level / attribute keep it after a rejoin)
+Config.HudReveal.Tiles = {
+	On = true, -- 게임성 개발 1 2026-10-10: the moments below are in use
+	Always = { Bag = true, Quests = true, Map = true },
+	Character = { Level = 2 }, -- the first level up
+	Skills = { Level = Config.Skills.Unlock.Q, Attr = "HasSkill" }, -- the first skill (HasSkill = SkillSlots >= 1)
+	Pet = { Attr = "HasPet" }, -- a pet following, or any pet in my pet list
+	Ranking = { Attr = "M1Done" }, -- story:<FirstChapterLast> in the quest book's Done, or a chapter 2+ main row
+}
+-- HUD reads HasSkill / HasPet / M1Done from the client's own state (SkillSlots, EquippedPet, the pet list, the quest
+-- book), or from a LocalPlayer attribute of that name (Studio tests, a later server attribute)
 Config.HudReveal.FirstChapterLast = "M1_4"
-function Config.HudReveal.TileShows(id, s)
-	s = type(s) == "table" and s or {}
-	local rule = Config.HudReveal.Tiles[id]
-	if rule == nil then return true end
-	if rule == "LevelUp" then return (tonumber(s.Level) or 1) >= 2 end
-	if rule == "Skill" then
-		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
-		return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q
-	end
-	if rule == "Pet" then return s.HasPet == true end
-	if rule == "Chapter" then return s.ChapterDone == true end
-	return true
+-- get(name) = the player's attribute (Level, HasPet, M1Done, ...); force = use the rule even while On is false (Studio
+-- tests: HUD passes the player's TestTileReveal attribute there)
+function Config.HudReveal.ShowsTile(id, get, force)
+	local t = Config.HudReveal.Tiles
+	if type(t) ~= "table" or not (t.On == true or force == true) or t.Always[id] then return true end
+	local rule = t[id]
+	if type(rule) ~= "table" then return true end
+	if rule.Level and (tonumber(get("Level")) or 0) >= rule.Level then return true end
+	if rule.Attr and get(rule.Attr) then return true end
+	return false
 end
 
 Config.Luck = {

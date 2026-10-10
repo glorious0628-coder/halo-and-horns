@@ -145,7 +145,7 @@ local MENU_TILES = 4 -- 새 소식 · 이동 · 도움말 · 설정
 local TOP_BAR = { war_meter = true, menu = true }
 local ROBLOX_BUTTON_PX = 44 -- Roblox's top bar button height in a 58 px bar (Inset - 4 in smaller bars)
 local MENU_EDGE_PX = 12 -- [메뉴] keeps this from the bar's free right end
-local ROW_TILES = 6 -- 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫
+local ROW_TILES = 7 -- A23-113: 가방 · 퀘스트 · 지도 · 영웅 · 스킬 · 랭킹 · 펫 (phones keep at most 6 wide)
 -- touch thumbstick zone: x < STICK_X W and y > STICK_Y H (2026-10-07 phone layout: the quest lines hang under the minimap
 -- above it; Roblox's thumbstick appears where the thumb lands in the lower left and rests around STICK_MID W). 검수
 -- 2026-10-07: the phone bottom group sits centred between that rest and the thumb ring, nothing pressable left of 0.3 W
@@ -350,7 +350,7 @@ for _, case in CASES do
 					limit = math.min(limit, r.X - GROUP_GAP)
 				end
 			end
-			check(g, "phone row at most six tiles wide", tileOk and row.W <= ROW_TILES * row.Size + (ROW_TILES - 1) * row.Gap + 0.01,
+			check(g, "phone row at most six tiles wide", tileOk and row.W <= 6 * row.Size + 5 * row.Gap + 0.01,
 				fmt(row))
 			check(g, "phone group no wider than the room right of 0.4 W", row.W <= math.max(0, limit - 0.4 * W) + 0.5,
 				fmt(row) .. (" limit %.2f"):format(limit))
@@ -383,7 +383,7 @@ for _, case in CASES do
 			check(g, "face group centred or stepped aside", centred or aside,
 				("group %.1f..%.1f W/2 %.1f cluster %.1f"):format(minX, maxX, W / 2, clusterLeft))
 			check(g, "face group left margin", minX >= 8 - 0.01, ("group %.1f..%.1f"):format(minX, maxX))
-			check(g, "all 6 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= ROW_TILES),
+			check(g, "all 7 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= ROW_TILES),
 				fmt(t) .. " count " .. tostring(t.Count))
 			-- every PC row holds the six tiles; a declared narrow window may give up its right end (the rest fold out of
 			-- [메뉴]) but keeps at least four
@@ -461,7 +461,15 @@ for _, case in CASES do
 			end
 			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 20.5,
 				fmt(hp) .. " " .. fmt(t))
-			check(g, "PC tiles >= 38 real px (names under the icons)", t.Size * s >= 38 - 0.01, ("%.1f px"):format(t.Size * s))
+			local tsName = "PC tiles >= 38 real px (names under the icons)"
+			if t.Size * s >= 38 - 0.01 then
+				check(g, tsName, true)
+			elseif excepted(case, tsName) then
+				table.insert(exceptions, { Screen = g, Check = tsName, Reason = excepted(case, tsName).Reason, Measured = t.Size * s,
+					Need = 38 })
+			else
+				check(g, tsName, false, ("%.1f px"):format(t.Size * s))
+			end
 		end
 		-- [메뉴]: a square in the top bar's right end, MENU_EDGE_PX from its free part's end, a Roblox button on PCs
 		-- (A23-40 정정 + 보강)

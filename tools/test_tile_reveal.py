@@ -1,12 +1,14 @@
 """Bottom menu tiles show when needed (게임성 개발 1, SPEC A23-113 ③, 검수 2026-10-10), offline.
 
-Runs, in the official Luau CLI, the CURRENT HUD L.PickTiles / L.RevealReady / L.RevealState / L.TilePop cut out of
-HUD.luau with the CURRENT Config.luau (Config.HudReveal.TileShows): a new player sees Bag and Map only; the hero
+Runs, in the official Luau CLI, the CURRENT HUD L.TileShown / HUD.SetTileShown / L.PickTiles / L.RevealReady /
+L.RevealState / L.TilePop cut out of HUD.luau (image dev's row + fold, 개발 1's moments) with the CURRENT Config.luau
+(Config.HudReveal.Tiles / ShowsTile, On): a new player sees Bag, Quests and Map only; the hero
 (Character) comes at the first level up, the skills at the first skill (SkillSlots >= 1 or Config.Skills.Unlock.Q), the
 pet with a pet (following, or any in the pet list), the ranking once story:M1_4 is in the quest book's Done (or a later
 chapter's main row shows); a tile shown once stays this session; a tile that comes in during play pops in once (a
 UIScale), never at the join (first 3 s after DataLoaded) and never with reduced motion; the row's Count still trims by
-Keep. Static: Level / SkillSlots / EquippedPet changes re-pick at once. Mutations: each must be caught.
+Keep; On = false shows every tile (as before); HUD.SetTileShown forces / gives back a tile. Static: Level / SkillSlots /
+EquippedPet changes re-pick at once. Mutations: each must be caught.
 
 Usage: py tools/test_tile_reveal.py
 Report: docs/art/verification_2026-10-10/offline_tile_reveal_2026-10-10.json
@@ -27,7 +29,7 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_tile_reveal_2026-10-10.json"
-START, END = "function L.PickTiles()", "-- the shown tiles on Rects.tiles"
+START, END = "-- A23-113 ③: has this tile come yet?", "-- the shown tiles on Rects.tiles"
 
 FIXTURE = r'''
 local checks, failed = 0, 0
@@ -53,13 +55,17 @@ local function button(id)
 	return b
 end
 local ui = { tiles = {} }
-for _, d in { { "Character", 2 }, { "Bag", 1 }, { "Skills", 4 }, { "Map", 1 }, { "Ranking", 5 }, { "Pet", 6 } } do
+for _, d in { { "Bag", 1 }, { "Quests", 2 }, { "Map", 1 }, { "Character", 3 }, { "Skills", 4 }, { "Ranking", 5 }, { "Pet", 6 } } do
 	table.insert(ui.tiles, { Def = { Id = d[1], Keep = d[2] }, Button = button(d[1]) })
 end
-local L = { Rects = { tiles = { Count = 6 } } }
+local L = { Rects = { tiles = { Count = 7 } } }
+local HUD, LAYOUTS, STUDIO = {}, 0, false
+local LocalPlayer = { GetAttribute = function(_, n) return ATTR[n] end }
 local questState = {}
 local env = {
-	Config = Config, ui = ui, L = L, questState = questState, IS_TOUCH = false,
+	Config = Config, ui = ui, L = L, HUD = HUD, questState = questState, IS_TOUCH = false, LocalPlayer = LocalPlayer,
+	requestLayout = function() LAYOUTS += 1 end,
+	game = { GetService = function() return { IsStudio = function() return STUDIO end } end },
 	C = { PetWindow = { Lists = function() return PETLIST end } },
 	attr = function(n, d) local v = ATTR[n] if v == nil then return d end return v end,
 	num = function(n, d) return tonumber(ATTR[n]) or d end,
@@ -70,7 +76,7 @@ local env = {
 			if obj.Parent then table.insert(pops, obj.Parent.Id .. ":" .. tostring(obj.Scale) .. ">" .. tostring(goal.Scale)) end
 		end }
 	end },
-	TweenInfo = base.TweenInfo, Enum = EnumT,
+	TweenInfo = base.TweenInfo, Enum = EnumT, pcall = pcall,
 	os = { clock = function() return CLOCK end },
 }
 local f = assert(loadstring(HUD_SOURCE, "=Tiles"))
@@ -89,17 +95,17 @@ local function pick() L.PickTiles() return shown() end
 ATTR.Level = 1
 pick()
 ATTR.DataLoaded = true
-check(pick() == "Bag,Map", "a new player sees Bag and Map only", shown())
+check(pick() == "Bag,Map,Quests", "a new player sees Bag, Quests and Map only", shown())
 CLOCK += 5
 pick()
 check(#pops == 0, "nothing pops at the join", table.concat(pops, ","))
 ATTR.Level = 2
-check(pick() == "Bag,Character,Map", "the first level up brings the hero tile", shown())
+check(pick() == "Bag,Character,Map,Quests", "the first level up brings the hero tile", shown())
 check(pops[1] == "Character:0.4>1" and #pops == 1, "... which pops in once (a scale 0.4 -> 1 on the tile)", table.concat(pops, ","))
 pick()
 check(#pops == 1, "a second pick does not pop it again", table.concat(pops, ","))
 ATTR.Level = 4
-check(pick() == "Bag,Character,Map", "no skills tile before the first skill (Lv4)", shown())
+check(pick() == "Bag,Character,Map,Quests", "no skills tile before the first skill (Lv4)", shown())
 local q = Config.Skills and Config.Skills.Unlock and Config.Skills.Unlock.Q or 5
 ATTR.Level = q
 check(string.find(pick(), "Skills") ~= nil, "the first skill level brings the skills tile", shown())
@@ -120,6 +126,7 @@ check(string.find(pick(), "Ranking") ~= nil, "story:M1_4 done brings the ranking
 -- a second player: skill slots from the server, a following pet, a later chapter row; reduced motion = no pop
 for _, t in ui.tiles do t.Button.Visible = false end
 L.TileSeen = {}
+L.TileWas = {}
 ui.tileKey = nil
 L.RevealAt = nil
 questState.Book = nil
@@ -142,15 +149,16 @@ check(string.find(pick(), "Ranking") ~= nil, "a chapter 2 main row brings the ra
 -- a returning player: the HUD's first pick runs before my data, then level 12 + a pet arrive with it - no pops
 for _, t in ui.tiles do t.Button.Visible = false end
 L.TileSeen = {}
+L.TileWas = {}
 ui.tileKey = nil
 L.RevealAt = nil
-L.Rects.tiles.Count = 6
+L.Rects.tiles.Count = 7
 questState.All = nil
 ATTR = {}
 pops = {}
 pick()
 ATTR = { DataLoaded = true, Level = 12, EquippedPet = "pup" }
-check(pick() == "Bag,Character,Map,Pet,Skills", "a returning player's tiles come with the data", shown())
+check(pick() == "Bag,Character,Map,Pet,Quests,Skills", "a returning player's tiles come with the data", shown())
 CLOCK += 1
 questState.Book = { Done = { "story:M1_4" } }
 check(string.find(pick(), "Ranking") ~= nil and #pops == 0, "... and the quest book a moment later: still no pops", table.concat(pops, ","))
@@ -158,16 +166,41 @@ check(string.find(pick(), "Ranking") ~= nil and #pops == 0, "... and the quest b
 -- the row's room still trims by Keep
 for _, t in ui.tiles do t.Button.Visible = false end
 L.TileSeen = {}
+L.TileWas = {}
 ui.tileKey = nil
 L.Rects.tiles.Count = 3
 ATTR = { DataLoaded = true, Level = 30, EquippedPet = "pup" }
-check(pick() == "Bag,Character,Map", "a 3-tile row keeps Bag, Map, then the hero (Keep order)", shown())
+check(pick() == "Bag,Map,Quests", "a 3-tile row keeps Bag, Map, then Quests (Keep order)", shown())
+
+-- HUD.SetTileShown forces a tile / gives it back; the rule switched off shows every tile
+L.Rects.tiles.Count = 7
+ATTR = { DataLoaded = true, Level = 1 }
+L.TileSeen = {}
+L.TileWas = {}
+ui.tileKey = nil
+questState.Book = nil
+HUD.SetTileShown("Ranking", true)
+check(string.find(shown(), "Ranking") ~= nil and LAYOUTS > 0, "SetTileShown(id, true) brings a tile (and lays out)", shown())
+HUD.SetTileShown("Ranking", nil)
+check(string.find(shown(), "Ranking") == nil, "... nil gives it back to the rule (M1 not done: away again)", shown())
+HUD.SetTileShown("Bag", false)
+check(string.find(shown(), "Bag") == nil, "SetTileShown(id, false) hides one", shown())
+HUD.SetTileShown("Bag", nil)
+Config.HudReveal.Tiles.On = false
+L.TileSeen = {}
+L.TileWas = {}
+ui.tileKey = nil
+check(pick() == "Bag,Character,Map,Pet,Quests,Ranking,Skills", "On = false shows every tile (as before)", shown())
+Config.HudReveal.Tiles.On = true
+check(Config.HudReveal.Tiles.Skills.Level == q, "the skills tile level is the first skill's level", Config.HudReveal.Tiles.Skills.Level)
 print(("TILES_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
-    ("every tile always shows", "if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows(t.Def.Id, st) then", "if true then"),
-    ("a shown tile can go away", "if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows", "if Config.HudReveal.TileShows"),
+    ("every tile always shows", "if L.TileShown(t.Def, st) then", "if true then"),
+    ("a shown tile can go away", "if L.TileSeen[id] then return true end", ""),
+    ("the rule reads raw attributes again", "function(name) return st[name] end", "function(name) return LocalPlayer:GetAttribute(name) end"),
+    ("an override ignored", "if L.TileOverride[id] ~= nil then return L.TileOverride[id] end", ""),
     ("pops at the join", "if shown[t] and was == false and ready then", "if shown[t] and was ~= true then"),
     ("no pop at all", "if shown[t] and was == false and ready then L.TilePop(t.Button) end", ""),
     ("the join timer starts only at the first pop", "local ready = L.RevealReady()", "local ready = true"),
@@ -176,17 +209,18 @@ MUTATIONS = [
     ("an empty pet list counts", "and #list.List > 0 or false", "or false"),
     ("a later chapter row ignored", "if ch and ch >= 2 then done = true end", ""),
     ("chapter 1 rows count", "if ch and ch >= 2 then done = true end", "if ch and ch >= 1 then done = true end"),
-    ("server skill slots ignored", "SkillSlots = num(\"SkillSlots\", 0)", "SkillSlots = 0"),
+    ("server skill slots ignored", "HasSkill = num(\"SkillSlots\", 0) >= 1", "HasSkill = false"),
 ]
 CONFIG_MUTATIONS = [
-    ("the hero tile from the start", 'if rule == "LevelUp" then return (tonumber(s.Level) or 1) >= 2 end', 'if rule == "LevelUp" then return true end'),
-    ("the skills tile one level early", "return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q",
-     "return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q - 1"),
-    ("the ranking from the start", 'if rule == "Chapter" then return s.ChapterDone == true end', 'if rule == "Chapter" then return true end'),
+    ("the rule off", "	On = true, -- 게임성 개발 1", "	On = false, -- 게임성 개발 1"),
+    ("the hero tile from the start", "	Character = { Level = 2 }, -- the first level up", "	Character = { Level = 1 },"),
+    ("the skills tile one level early", "Skills = { Level = Config.Skills.Unlock.Q, Attr", "Skills = { Level = Config.Skills.Unlock.Q - 1, Attr"),
+    ("the ranking from the start", "	Ranking = { Attr = \"M1Done\" },", "	Ranking = { Level = 1 },"),
 ]
 STATIC = [
-    ("Level / SkillSlots / EquippedPet re-pick at once", 'for _, name in { "Level", "SkillSlots", "EquippedPet" } do'),
-    ("... through PickTiles + layout", "LocalPlayer:GetAttributeChangedSignal(name):Connect(function()\n\t\t\tif L.PickTiles() then requestLayout() end"),
+    ("Level / SkillSlots / EquippedPet re-pick at once",
+     'UIKit.OnAttr({ "Level", "SkillSlots", "EquippedPet", "HasSkill", "HasPet", "M1Done", "TestTileReveal" }, function() HUD.RefreshTiles() end)'),
+    ("... through PickTiles + layout", "function HUD.RefreshTiles()\n\tif L.PickTiles() then requestLayout() end"),
     ("the 1 s refresh still re-picks", "\tif L.PickTiles() then requestLayout() end\nend"),
 ]
 

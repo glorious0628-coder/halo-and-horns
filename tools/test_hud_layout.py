@@ -106,6 +106,10 @@ EXCEPTIONS = [
      "4-inch phone (568x320 px): the 58 px top bar holds Roblox's buttons (164 px), the war meter (240du = 180 px) and "
      "[메뉴] (45 px), which leaves room for 3 thumb-size fold squares beside [메뉴]; the 4th wraps to the line right "
      "under the bar."),
+    # A23-113: seven tiles; the tiny 655x340 window cannot lift the row (the quest lines above) to the 46 px floor
+    ("pc_655x340_small", "PC tiles >= 38 real px (names under the icons)",
+     "A 655x340 desktop window (UIScale 0.5): the quest lines stop the row's lift, so the seven tiles stay at 36.5 px; "
+     "their names still show at the 10 px floor ('Ranking' fills the tile)."),
     # A23-109 (user 10/10): the PC bars are as wide as the six tiles and the quick slots sit right of the bars' end, so
     # the narrowest windows give a tile to [메뉴] (the tiles shrink to 40 px first)
     ("pc_700x720_narrow", "at least 6 tiles on every PC",
@@ -201,9 +205,9 @@ MUTATIONS = [
      'if id ~= "combo" then w, h = r[3] * kc, r[4] * kc end', ""),
     ("combo line grows with the thumb cluster", 'if id ~= "combo" then w, h', 'if true then w, h'),
     ("desktop attack rect drifted", 'attack = { "BR", { 1186, 620, 80, 80 }', 'attack = { "BR", { 1186, 626, 80, 80 }'),
-    ("desktop tiles rect drifted", 'tiles = { "BC", { 482, 634, 375, 60 }', 'tiles = { "BC", { 482, 640, 375, 60 }'),
-    ("PC row wider than its six tiles (the potions drift off)", 'tiles = { "BC", { 482, 634, 375, 60 }',
-     'tiles = { "BC", { 482, 634, 470, 60 }'),
+    ("desktop tiles rect drifted", 'tiles = { "BC", { 482, 638, 410, 56 }', 'tiles = { "BC", { 482, 644, 410, 56 }'),
+    ("PC row wider than its seven tiles (the potions drift off)", 'tiles = { "BC", { 482, 638, 410, 56 }',
+     'tiles = { "BC", { 482, 638, 470, 56 }'),
     ("phone skill Q rect drifted", "{ 523, 204, 54, 54 }", "{ 523, 214, 54, 54 }"),
     # A23-49: the X skill button
     ("phone X skill rect drifted", "{ 633, 215, 54, 54 }", "{ 633, 201, 54, 54 }"),
