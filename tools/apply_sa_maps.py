@@ -34,7 +34,7 @@ local function idOf(s)
 end
 local function look(mp)
 	local sa = mp:FindFirstChildOfClass("SurfaceAppearance")
-	return idOf(mp.TextureID), sa and idOf(sa.ColorMap) or ""
+	return idOf(mp.TextureID), sa and idOf(sa.ColorMap) or "", sa and idOf(sa.NormalMap) or ""
 end
 local changed, already, skipped, failed = {}, {}, {}, {}
 local roots = { workspace, game:GetService("ServerStorage"), game:GetService("ReplicatedStorage") }
@@ -47,7 +47,7 @@ for _, root in roots do
 		if not list then
 			continue
 		end
-		local tex, col = look(mp)
+		local tex, col, nrm = look(mp)
 		local hit
 		for _, it in list do
 			if (it.match.tex and it.match.tex == tex) or (it.match.color and (it.match.color == col or idOf(it.sa.color) == col)) then
@@ -60,7 +60,8 @@ for _, root in roots do
 			table.insert(skipped, row)
 			continue
 		end
-		if col == idOf(hit.sa.color) then
+		-- done = its new maps are on (the colour alone says nothing: decision (a) keeps the game's own colour map)
+		if col == idOf(hit.sa.color) and (hit.sa.normal == nil or nrm == idOf(hit.sa.normal)) then
 			table.insert(already, hit.name .. "  " .. row)
 			continue
 		end
