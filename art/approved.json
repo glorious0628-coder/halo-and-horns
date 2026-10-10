@@ -8164,5 +8164,95 @@
   "prompt": "art/prompts/HaloSign_Flower_front.txt",
   "original": "art/out/s2/halo/HaloSign_Flower_front_HQ_src.png",
   "note": "검수 통과 2026-10-10 (이미지 개발 업로드 c6e3dc83)"
+ },
+ "HaloDeco_BannerPlain": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
+  "original": "art/out/s2/halo/deco/HaloDecoHQ_BannerPlain_src.png",
+  "file": "art/out/s2/halo/deco/HaloDecoHQ_BannerPlain_cut.png",
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+ },
+ "HaloDeco_BannerEmblem": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
+  "original": "art/out/s2/halo/deco/HaloDecoHQ_BannerEmblem_src.png",
+  "file": "art/out/s2/halo/deco/HaloDecoHQ_BannerEmblem_cut.png",
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+ },
+ "HaloDeco_ShieldEmblem": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
+  "original": "art/out/s2/halo/deco/HaloDecoHQ_ShieldEmblem_src.png",
+  "file": "art/out/s2/halo/deco/HaloDecoHQ_ShieldEmblem_cut.png",
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+ },
+ "HaloDeco_RoundWindow": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
+  "original": "art/out/s2/halo/deco/HaloDecoHQ_RoundWindow_src.png",
+  "file": "art/out/s2/halo/deco/HaloDecoHQ_RoundWindow_cut.png",
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+ },
+ "HaloDeco_DoorHalo": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
+  "original": "art/out/s2/halo/deco/HaloDecoHQ_DoorHalo_src.png",
+  "file": "art/out/s2/halo/deco/HaloDecoHQ_DoorHalo_cut.png",
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+ },
+ "HaloDeco_AwningStripes": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits) redraw of the Medium pick A",
+  "original": "art/out/s2/halo/deco/HaloDecoHQ_AwningStripes_src.png",
+  "file": "art/out/s2/halo/deco/HaloDecoHQ_AwningStripes_cut.png",
+  "note": "투명 PNG 1024², 밝은·어두운·갈색 바탕 확인(art/review/s2/halo_deco_cut_check.jpg). 검수 확인 대기"
+ },
+ "Crown_GoldHalf": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "original": "art/out/s2/crown/Crown_GoldHalf_front_HQ_src.png",
+  "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
+ },
+ "Crown_RedHalf": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "original": "art/out/s2/crown/Crown_RedHalf_front_HQ_src.png",
+  "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
+ },
+ "Crown_GemRed": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "original": "art/out/s2/crown/Crown_GemRed_front_HQ_src.png",
+  "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
+ },
+ "Crown_GemBlue": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "original": "art/out/s2/crown/Crown_GemBlue_front_HQ_src.png",
+  "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
+ },
+ "Crown_HaloRing": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "original": "art/out/s2/crown/Crown_HaloRing_front_HQ_src.png",
+  "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
+ },
+ "Crown_CrackSeam": {
+  "status": "pending-review",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, High (5 credits)",
+  "original": "art/out/s2/crown/Crown_CrackSeam_front_HQ_src.png",
+  "note": "왕관 부품(A23-107). 뒤·옆: art/out/s2/crown/ . 검수 확인 대기"
  }
 }
