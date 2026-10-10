@@ -871,7 +871,7 @@ local function buildWeapon(player, character)
 		-- Server-built attachment offsets survive both joint types and avoid reading a one-frame-old
 		-- hand/weapon pair while their Transform batch is still waiting for the physics step.
 		model:SetAttribute("HandMuzzle", hand.CFrame:ToObjectSpace(main.CFrame * muzzle.CFrame))
-		if kind == "Bow" then
+		if kind == "Bow" or kind == "ShortBow" then -- both bows: Fx.archerPose needs HandBowRest (개발 3 check: the short bow lacked it)
 			for _, part in parts do
 				local nock = part:FindFirstChild("BowNock")
 				if nock then model:SetAttribute("HandBowRest", hand.CFrame:ToObjectSpace(part.CFrame * nock.CFrame)) end

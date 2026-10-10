@@ -1,5 +1,5 @@
 {
-  "checks": 17,
+  "checks": 18,
   "failed": 0,
   "mutations": [
     {
@@ -14,6 +14,11 @@
     },
     {
       "name": "the short bow in the right hand",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the short bow has no bow rest",
       "applied": true,
       "caught": true
     },

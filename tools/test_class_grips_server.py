@@ -38,6 +38,8 @@ def checks(cv: str, cfg: str) -> list[tuple[str, bool]]:
          and "parts, main = shape(grip, sc, w, color, tier)" in cv),
         ("both bows in the left hand", 'local left = kind == "Bow" or kind == "ShortBow"' in cv),
         ("both bows get the arrow muzzle", 'if kind == "Bow" or kind == "ShortBow" then' in cv),
+        ("both bows publish the bow rest the archer pose reads (HandBowRest)", 'if kind == "Bow" or kind == "ShortBow" then -- both bows' in cv
+         and 'model:SetAttribute("HandBowRest"' in cv),
         ("the short bow = the bow at 0.75, tilted 30 degrees", "return buildBow(grip, sc, w, color, 0.75, 30)" in cv
          and "local H = w.Length * (tonumber(scale) or 1)" in cv and "CFrame.Angles(0, 0, math.rad(tonumber(tilt) or 0))" in cv),
         ("the shapes are plain parts (no store asset ids)", "rbxassetid" not in cv[cv.find("local SHAPES = {}"):cv.find("local function buildWeapon(")]),
@@ -49,6 +51,7 @@ MUTATIONS = [
     ("the hammer never made", "function SHAPES.Hammer(", "function SHAPES.Hammer_("),
     ("ClassGrips ignored", 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)', "local kind = (false)"),
     ("the short bow in the right hand", 'local left = kind == "Bow" or kind == "ShortBow"', 'local left = kind == "Bow"'),
+    ("the short bow has no bow rest", 'if kind == "Bow" or kind == "ShortBow" then -- both bows', 'if kind == "Bow" then -- both bows'),
     ("the short bow full size", "return buildBow(grip, sc, w, color, 0.75, 30)", "return buildBow(grip, sc, w, color)"),
 ]
 
