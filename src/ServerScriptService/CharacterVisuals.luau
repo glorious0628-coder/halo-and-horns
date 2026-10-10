@@ -643,14 +643,14 @@ local function buildStaff(grip, sc, w, color, tier)
 	return { shaft, collar, tip }, tip
 end
 
-local function buildBow(grip, sc, w, color)
-	local H = w.Length
+local function buildBow(grip, sc, w, color, scale, tilt)
+	local H = w.Length * (tonumber(scale) or 1) -- A23-108: the Shadow Hunter's short bow is smaller and held tilted
 	local half = math.rad(50)
 	local R = H / (2 * math.sin(half))
 	local sag = R * (1 - math.cos(half))
 	-- The centre/grip stays in the hand at every tier; lifting a long bow moved its arrow rest
 	-- above the grip, so no arm pose could align the string hand, face and launch axis together.
-	local base = grip * CFrame.new(0, 0, -0.1 * sc)
+	local base = grip * CFrame.new(0, 0, -0.1 * sc) * CFrame.Angles(0, 0, math.rad(tonumber(tilt) or 0))
 	local segLen = math.max(0.9, 2 * R * math.sin(math.rad(10)) * 1.08)
 	local parts = {}
 	local main
@@ -709,6 +709,100 @@ local function buildBaton(grip, sc, w, color, tier)
 	return { shaft, tip }, tip
 end
 
+-- A23-108 (docs/design/class_grips_a23_108_2026-10-10.md; game dev 1's proposal, game dev 3 checks): each class x side
+-- holds its own weapon (Config.ClassGrips[...].Weapon). Code shapes until the P3 weapon models (Tripo) replace them.
+-- (a table, not locals: buildWeapon finds them by kind; offline extracts of buildWeapon without it keep the old shapes)
+local SHAPES = {}
+
+-- Berserker: a broad great sword (longer, wider blade, a long two-hand grip)
+function SHAPES.GreatSword(grip, sc, w, color)
+	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward
+	local handleLen, bladeLen = 1.7, w.Length * 1.3
+	local handle = accPart({
+		Name = "Handle", Size = Vector3.new(0.32, handleLen, 0.32) * sc,
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = L * CFrame.new(0, -0.25 * sc, 0),
+	})
+	local guard = accPart({
+		Name = "Guard", Size = Vector3.new(1.6, 0.3, 0.45) * sc,
+		Material = Enum.Material.Metal, Color = DARK_METAL,
+		CFrame = L * CFrame.new(0, (handleLen / 2 - 0.25 + 0.15) * sc, 0),
+	})
+	local blade = accPart({
+		Name = "Blade", Size = Vector3.new(0.3, bladeLen, 0.95) * sc,
+		Material = w.Material, Color = color,
+		CFrame = L * CFrame.new(0, (handleLen / 2 - 0.25 + 0.3 + bladeLen / 2) * sc, 0),
+	})
+	return { handle, guard, blade }, blade
+end
+
+-- Blacksmith: a short smithing hammer (a wooden handle, a heavy metal head with a band in the tier colour)
+function SHAPES.Hammer(grip, sc, w, color)
+	local handleLen = 1.9
+	local handle = accPart({
+		Name = "Handle", Size = Vector3.new(0.26, handleLen, 0.26) * sc,
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = grip * CFrame.new(0, (handleLen / 2 - 0.4) * sc, 0),
+	})
+	local head = accPart({
+		Name = "Head", Size = Vector3.new(1.1, 0.6, 0.6) * sc,
+		Material = Enum.Material.Metal, Color = DARK_METAL, CFrame = grip * CFrame.new(0, (handleLen - 0.4) * sc, 0),
+	})
+	local band = accPart({
+		Name = "Band", Size = Vector3.new(0.3, 0.64, 0.64) * sc,
+		Material = w.Material, Color = color, CFrame = grip * CFrame.new(0, (handleLen - 0.4) * sc, 0),
+	})
+	return { handle, head, band }, head
+end
+
+-- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
+function SHAPES.CrookStaff(grip, sc, w, color, tier)
+	local shaftLen = w.Length + 1.5
+	local shaft = accPart({
+		Name = "Shaft", Size = Vector3.new(0.28, shaftLen, 0.28) * sc,
+		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
+		CFrame = grip * CFrame.new(0, (shaftLen / 2 - 1.0) * sc, 0),
+	})
+	local top = grip * CFrame.new(0, (shaftLen - 1.0) * sc, 0)
+	local hook = accPart({
+		Name = "Hook", Size = Vector3.new(0.24, 0.9, 0.24) * sc,
+		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
+		CFrame = top * CFrame.Angles(0, 0, math.rad(-60)) * CFrame.new(0, 0.4 * sc, 0),
+	})
+	local d = 0.55 + 0.08 * tier
+	local orb = accPart({
+		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
+		Material = Enum.Material.Neon, Color = color,
+		CFrame = top * CFrame.new(0.55 * sc, -0.05 * sc, 0),
+	})
+	addLight(orb, color, 8 * sc, 1.5)
+	return { shaft, hook, orb }, orb
+end
+
+-- Alchemist: a round flask in the right hand (glass, a neck and a cork; the brew in the tier colour)
+function SHAPES.Flask(grip, sc, w, color, tier)
+	local d = 0.75 + 0.04 * tier
+	local ball = accPart({
+		Name = "Flask", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
+		Material = Enum.Material.Glass, Color = color, Transparency = 0.25,
+		CFrame = grip * CFrame.new(0, (d / 2 + 0.05) * sc, 0),
+	})
+	local neck = accPart({
+		Name = "Neck", Size = Vector3.new(0.22, 0.35, 0.22) * sc,
+		Material = Enum.Material.Glass, Color = Color3.fromRGB(220, 235, 240), Transparency = 0.3,
+		CFrame = grip * CFrame.new(0, (d + 0.2) * sc, 0),
+	})
+	local cork = accPart({
+		Name = "Cork", Size = Vector3.new(0.26, 0.14, 0.26) * sc,
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = grip * CFrame.new(0, (d + 0.42) * sc, 0),
+	})
+	addLight(ball, color, 6 * sc, 1)
+	return { ball, neck, cork }, ball
+end
+
+-- Shadow Hunter: the bow smaller and held tilted
+function SHAPES.ShortBow(grip, sc, w, color)
+	return buildBow(grip, sc, w, color, 0.75, 30)
+end
+
 local function buildWeapon(player, character)
 	clearChild(character, "WeaponModel")
 	-- A23-34: bare hands (tier 0) = nothing in the hands (the halo / horns stay)
@@ -717,8 +811,12 @@ local function buildWeapon(player, character)
 	local classDef = Config.Classes[classId] or Config.Classes.Warrior
 	-- A23-39: the pet tamer (artisan Archer) holds a baton in the right hand, never a bow (guarded: some offline suites
 	-- load only the Config weapon rows)
-	local kind = (Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon
-	local left = kind == "Bow"
+	-- A23-108: the weapon of this class x side (Config.ClassGrips); without a row the old rule
+	local gkey = type(Config.ClassGripKey) == "function" and Config.ClassGripKey(classId, getFaction(player)) or nil
+	local gdef = type(Config.ClassGrips) == "table" and gkey and Config.ClassGrips[gkey] or nil
+	local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)
+		or ((Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon)
+	local left = kind == "Bow" or kind == "ShortBow"
 	local hand = left and Util.FindPart(character, "LeftHand", "Left Arm")
 		or (not left and Util.FindPart(character, "RightHand", "Right Arm"))
 	if not hand then return end
@@ -730,7 +828,10 @@ local function buildWeapon(player, character)
 	local grip = gripCFrame(hand, left)
 
 	local parts, main
-	if kind == "Staff" then
+	local shape = type(SHAPES) == "table" and SHAPES[kind] or nil
+	if shape then
+		parts, main = shape(grip, sc, w, color, tier)
+	elseif kind == "Staff" then
 		parts, main = buildStaff(grip, sc, w, color, tier)
 	elseif kind == "Bow" then
 		parts, main = buildBow(grip, sc, w, color)
@@ -759,7 +860,7 @@ local function buildWeapon(player, character)
 	if main then
 		local muzzle = Instance.new("Attachment")
 		muzzle.Name = "AttackMuzzle"
-		if kind == "Bow" then
+		if kind == "Bow" or kind == "ShortBow" then
 			muzzle.Position = Vector3.new(0, 0, -0.18 * sc)
 		elseif kind == "Staff" or kind == "Baton" then
 			muzzle.Position = Vector3.new(0, main.Size.Y * 0.5, 0)
