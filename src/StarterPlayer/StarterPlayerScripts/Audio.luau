@@ -230,6 +230,14 @@ function T.ClassHit(data, event)
 	return event
 end
 
+-- 검수 10/10: the killed monster kind's own death sound (Config.Audio.DeathByKind) once uploaded, else KillPop
+function T.DieOf(kind)
+	local ev = type(kind) == "string" and type(A.DeathByKind) == "table" and A.DeathByKind[kind] or nil
+	local snd = ev and SOUNDS[ev] or nil
+	if type(snd) == "table" and idOf(snd.File) then return ev end
+	return "KillPop"
+end
+
 local function warnThrottled(key, msg)
 	local now = os.clock()
 	if now - (S.WarnAt[key] or -math.huge) < 10 then return end
@@ -368,7 +376,12 @@ function Audio.Plan(kind, data, ctx)
 		local step = num(steps[math.min(combo, #steps)], 0)
 		local speed = math.min(num(T.Combo.Top, 1.6), num(T.Combo.Base, 0.8) * 2 ^ (step / 12))
 		local golden = data.Golden == true -- sound_spec GoldenKill: the GoldenSpot file, the coin 0.1 s later
-		add(out, "KillPop", 0)
+		local dead = type(data.Kind) == "string" and data.Kind or nil
+		if not dead and typeof(data.Pos) == "Vector3" and type(ctx.KindAt) == "function" then
+			local ok, k = pcall(ctx.KindAt, data.Pos)
+			dead = ok and k or nil
+		end
+		add(out, T.DieOf(dead), 0)
 		if golden then add(out, "GoldenKill", 0) end
 		add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed })
 		if MILESTONES[combo] then add(out, "ComboMilestone", 0.15) end

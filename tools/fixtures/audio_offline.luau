@@ -1609,6 +1609,26 @@ do
 	A.HitByClass = nil
 end
 
+do
+	local g = "death by kind"
+	check(g, "a slime kill (the packet's Kind) = DieSlime, not KillPop", find(Audio.Plan("Reward", { Kind = "Slime" }, ctx), "DieSlime") ~= nil
+		and find(Audio.Plan("Reward", { Kind = "Slime" }, ctx), "KillPop") == nil, "")
+	check(g, "a Slime Prince kill = DieBigSlime", find(Audio.Plan("Reward", { Kind = "BigSlime" }, ctx), "DieBigSlime") ~= nil, "")
+	check(g, "no Kind: the monster at Pos (a slime at x 10)", find(Audio.Plan("Reward", { Pos = vec(10, 3, 0) }, ctx), "DieSlime") ~= nil, "")
+	check(g, "a goblin (no own sound yet) keeps KillPop", find(Audio.Plan("Reward", { Pos = vec(80, 3, 0) }, ctx), "KillPop") ~= nil, "")
+	check(g, "no Kind, no Pos: KillPop", find(Audio.Plan("Reward", {}, ctx), "KillPop") ~= nil, "")
+	local saved = A.Files.DieSlime
+	A.Files.DieSlime = ""
+	check(g, "not uploaded yet: KillPop", find(Audio.Plan("Reward", { Kind = "Slime" }, ctx), "KillPop") ~= nil, "")
+	A.Files.DieSlime = saved
+	local ok = true
+	for _, ev in A.DeathByKind do
+		local s2, k = A.Sounds[ev], A.Sounds.KillPop
+		if type(s2) ~= "table" or s2.Volume ~= k.Volume or s2.Max ~= k.Max or s2.Gap ~= k.Gap or type(A.Files[ev]) ~= "string" or A.Files[ev] == "" then ok = false end
+	end
+	check(g, "every death sound uploaded, at KillPop's volume / caps", ok, "")
+end
+
 local list = {}
 for _, key in order do table.insert(list, Named[key]) end
 print("AUDIO_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = list }))

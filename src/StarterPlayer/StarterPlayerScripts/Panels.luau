@@ -2981,18 +2981,15 @@ local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, Calm
 	Text = {
 		RowShard = "A shard is talking to you — tap to see",
 		RowOther = "Someone wants to talk — tap to see",
-		ToastShard = "A shard is talking to you! Tap the quest row to see.",
-		ToastOther = "A story is waiting! Tap the quest row to see.",
 		HintLean = "No points here. Your shard just leans to the light or the dark.", -- E5: both picks 0 points
 		HintHave = " (you have %d)", -- round 3 #5: my own side's points now, after the hint
 	},
 }
 
-function STORY.Label(id, forToast)
+function STORY.Label(id)
 	local defs = Config.StoryQuests and Config.StoryQuests.Defs
 	local def = defs and defs[id]
 	local shard = type(def) == "table" and (def.Speaker == "Shard" or def.Speaker == "Fountain")
-	if forToast then return shard and STORY.Text.ToastShard or STORY.Text.ToastOther end
 	return shard and STORY.Text.RowShard or STORY.Text.RowOther
 end
 
@@ -3012,10 +3009,9 @@ end
 function STORY.Queue(arg)
 	STORY.Pending = { Id = arg.Id, St = arg.St, Var = arg.Var }
 	local key = arg.Id .. "|" .. tostring(arg.St)
-	if STORY.Toasted ~= key and not pickerOpen() then
-		STORY.Toasted = key
-		toast(STORY.Label(arg.Id, true), "info", 4)
-	end
+	-- 검수 10/10 (user "이거는 언제쯤 없애는 거야?", A23-99 less hand-holding): no toast any more - the quest row's pulse
+	-- and its 'Someone wants to talk' line are the hint
+	STORY.Toasted = key
 end
 
 function STORY.Def()
