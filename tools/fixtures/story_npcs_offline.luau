@@ -36,6 +36,15 @@ local function obj(c, name, parent)
 	function o.IsA(self, k) return k == self.ClassName or (k == "BasePart" and self.ClassName == "Part") end
 	function o.GetAttribute(self, k) return self.Attrs[k] end
 	function o.FindFirstChild(self, n) for _, ch in self.Children do if ch.Name == n then return ch end end return nil end
+	function o.GetChildren(self) return table.clone(self.Children) end
+	function o.Destroy(self)
+		local p = rawget(self, "Parent")
+		if p and p.Children then
+			local i = table.find(p.Children, self)
+			if i then table.remove(p.Children, i) end
+		end
+		rawset(self, "Parent", nil)
+	end
 	function o.FindFirstChildWhichIsA(self, k) for _, ch in self.Children do if ch:IsA(k) then return ch end end return nil end
 	function o.GetDescendants(self)
 		local out = {}
@@ -117,6 +126,12 @@ SN.Refresh()
 local count = 0
 for _, ch in bright.Children do if ch.ClassName == "BillboardGui" then count += 1 end end
 check(count == 1, "one '!' per NPC however many passes", count)
+-- 검수 10/10: seven "!" under Bright - an older pass's copy on the model is removed, the first one is kept
+local stale = obj("BillboardGui", "StoryNpcMark", bright)
+SN.Refresh()
+count = 0
+for _, ch in bright.Children do if ch.ClassName == "BillboardGui" then count += 1 end end
+check(count == 1 and markOf(bright) == mk and stale.Parent == nil, "an extra '!' left on the model is removed (one kept)", count)
 ROWS = { { Story = { Id = "H1", St = 2, Panel = true, Npc = "Gleam" } } }
 SN.Refresh()
 check(mk.Enabled == false and bp.Enabled == false and markOf(gleam).Enabled == true and gp.Enabled == true,
