@@ -99,7 +99,7 @@ QS.Init({
 
 local function show(t) return table.concat(t, ",") end
 -- pure
-check(show(QS.Parse(nil)) == "HP,MP,", "no saved slots: the default (1 HP, 2 MP, 3 empty)", show(QS.Parse(nil)))
+check(show(QS.Parse(nil)) == ",,", "no saved slots: all empty (검수 10/10: the quest row says to put a potion in)", show(QS.Parse(nil)))
 check(show(QS.Parse("MP,,HP")) == "MP,,HP", "a saved 'MP,,HP' reads as it is", show(QS.Parse("MP,,HP")))
 check(show(QS.Parse("Bogus,HP")) == ",HP,", "an unknown item or a missing entry is empty", show(QS.Parse("Bogus,HP")))
 -- what a slot shows
@@ -122,6 +122,14 @@ check(REQUESTS[3] == "MP", "key 1 (action PotionHP) uses slot 1 - whatever it ho
 KEYS.Began:Fire({ Action = "QuickSlot3" }, false)
 KEYS.Began:Fire({ Action = "PotionMP" }, true)
 check(#REQUESTS == 3, "key 3 on an empty slot and a key the game took (chat) do nothing", #REQUESTS)
+-- 검수 10/10: an empty slot 1 with HP potions in the bag - key 1 drinks nothing
+setAttr("QuickSlots", ",HP,")
+ATTR.HPPotionCount = 3
+local before = #REQUESTS
+KEYS.Began:Fire({ Action = "PotionHP" }, false)
+check(#REQUESTS == before, "slot 1 empty, 3 HP potions held: key 1 drinks nothing", #REQUESTS - before)
+setAttr("QuickSlots", "MP,HP,")
+ATTR.HPPotionCount = 0
 check(QS.OwnsKeys() == true, "VitalsUI leaves its potion keys to the quick slots while they run", "")
 -- what the HUD's slots show
 QS.Refresh()

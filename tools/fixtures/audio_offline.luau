@@ -602,8 +602,7 @@ do
 	p = Audio.Plan("Loot", { Items = { { Item = "Jelly", N = 1 } } }, ctx)
 	check(g, "a drop without candy stays as before (materials quiet)", #p == 0, encode(p))
 	p = Audio.Plan("KO", { By = 222, Tip = "Tip: slimes cannot read. You can." }, ctx)
-	check(g, "a KO with a fun tip (EG05): KO, then TipDing KOTipAfter s later", events(p) == "KO,TipDing"
-		and near(p[2].At, A.KOTipAfter), encode(p))
+	check(g, "a KO with the server's fun tip: still KO only (the screen shows no tip, 검수 10/10)", events(p) == "KO", encode(p))
 	check(g, "a KO without one: KO only", events(Audio.Plan("KO", { By = 222 }, ctx)) == "KO", "")
 	check(g, "IsWarp: 300 studs in one frame standing still = a warp", Audio.IsWarp(300, 0, 0.016) == true, "")
 	check(g, "IsWarp: 30 studs is a step, not a warp", Audio.IsWarp(30, 0, 0.016) == false, "")
@@ -1352,8 +1351,13 @@ do
 	check(q, "a plain new quest is still QuestNew", last2() == "QuestNew", tostring(last2()))
 	-- my pets
 	clear2()
-	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } })
-	check(q, "the first pet list is quiet", #asked2 == 0, encode(asked2))
+	-- 메인 반영 10/10: the join list (pet put away) reached only PetWindow; the first list here is the follow
+	local joinList = { Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } }
+	local followList = { Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } }
+	C.PetWindow = { Lists = function() return followList, joinList end }
+	REMOTES.PetList.OnClientEvent:Fire(followList)
+	check(q, "the join list only PetWindow saw: the follow right after it = PetCall", last2() == "PetCall" and #asked2 == 1, encode(asked2))
+	clear2()
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2, XP = 5 } } })
 	check(q, "pet XP alone is quiet", #asked2 == 0, encode(asked2))
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })

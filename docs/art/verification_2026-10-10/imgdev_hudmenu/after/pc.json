@@ -1,0 +1,466 @@
+{
+ "Viewport": [
+  1280,
+  720
+ ],
+ "Items": [
+  {
+   "Shown": true,
+   "Rect": [
+    754,
+    583,
+    52,
+    52
+   ],
+   "Name": "HPPotion",
+   "Labels": [
+    {
+     "Rect": [
+      784,
+      614,
+      26,
+      19
+     ],
+     "Name": "Count",
+     "Shown": true,
+     "Text": "0",
+     "Fits": true,
+     "Bounds": [
+      10,
+      17
+     ]
+    },
+    {
+     "Rect": [
+      758,
+      603,
+      44,
+      13
+     ],
+     "Name": "Status",
+     "Shown": false,
+     "Text": "Buy",
+     "Fits": true,
+     "Bounds": [
+      15,
+      11
+     ]
+    },
+    {
+     "Rect": [
+      757,
+      585,
+      15,
+      15
+     ],
+     "Name": "Key",
+     "Shown": true,
+     "Text": "1",
+     "Fits": true,
+     "Bounds": [
+      5,
+      15
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    811,
+    583,
+    52,
+    52
+   ],
+   "Name": "MPPotion",
+   "Labels": [
+    {
+     "Rect": [
+      841,
+      614,
+      26,
+      19
+     ],
+     "Name": "Count",
+     "Shown": true,
+     "Text": "0",
+     "Fits": true,
+     "Bounds": [
+      10,
+      17
+     ]
+    },
+    {
+     "Rect": [
+      815,
+      603,
+      44,
+      13
+     ],
+     "Name": "Status",
+     "Shown": false,
+     "Text": "Buy",
+     "Fits": true,
+     "Bounds": [
+      15,
+      11
+     ]
+    },
+    {
+     "Rect": [
+      814,
+      585,
+      15,
+      15
+     ],
+     "Name": "Key",
+     "Shown": true,
+     "Text": "2",
+     "Fits": true,
+     "Bounds": [
+      8,
+      15
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    868,
+    583,
+    52,
+    52
+   ],
+   "Name": "QuickSlot3",
+   "Labels": [
+    {
+     "Rect": [
+      898,
+      613,
+      26,
+      20
+     ],
+     "Name": "Count",
+     "Shown": true,
+     "Text": "",
+     "Fits": true,
+     "Bounds": [
+      0,
+      13
+     ]
+    },
+    {
+     "Rect": [
+      872,
+      585,
+      15,
+      15
+     ],
+     "Name": "Key",
+     "Shown": true,
+     "Text": "3",
+     "Fits": true,
+     "Bounds": [
+      8,
+      15
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    363,
+    575,
+    60,
+    60
+   ],
+   "Name": "TileCharacter",
+   "Labels": [
+    {
+     "Rect": [
+      365,
+      615,
+      55,
+      18
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Hero",
+     "Fits": true,
+     "Bounds": [
+      26,
+      12
+     ]
+    },
+    {
+     "Rect": [
+      407,
+      577,
+      14,
+      14
+     ],
+     "Name": "KeyHint",
+     "Shown": false,
+     "Text": "E",
+     "Fits": true,
+     "Bounds": [
+      7,
+      11
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    426,
+    575,
+    60,
+    60
+   ],
+   "Name": "TileBag",
+   "Labels": [
+    {
+     "Rect": [
+      428,
+      615,
+      55,
+      18
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Bag",
+     "Fits": true,
+     "Bounds": [
+      22,
+      12
+     ]
+    },
+    {
+     "Rect": [
+      470,
+      577,
+      14,
+      14
+     ],
+     "Name": "KeyHint",
+     "Shown": false,
+     "Text": "I",
+     "Fits": true,
+     "Bounds": [
+      3,
+      11
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    489,
+    575,
+    60,
+    60
+   ],
+   "Name": "TileSkills",
+   "Labels": [
+    {
+     "Rect": [
+      492,
+      615,
+      55,
+      18
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Skills",
+     "Fits": true,
+     "Bounds": [
+      28,
+      12
+     ]
+    },
+    {
+     "Rect": [
+      533,
+      577,
+      14,
+      14
+     ],
+     "Name": "KeyHint",
+     "Shown": false,
+     "Text": "K",
+     "Fits": true,
+     "Bounds": [
+      7,
+      11
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    552,
+    575,
+    60,
+    60
+   ],
+   "Name": "TileMap",
+   "Labels": [
+    {
+     "Rect": [
+      555,
+      615,
+      55,
+      18
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Map",
+     "Fits": true,
+     "Bounds": [
+      24,
+      12
+     ]
+    },
+    {
+     "Rect": [
+      596,
+      577,
+      14,
+      14
+     ],
+     "Name": "KeyHint",
+     "Shown": false,
+     "Text": "M",
+     "Fits": true,
+     "Bounds": [
+      9,
+      11
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    615,
+    575,
+    60,
+    60
+   ],
+   "Name": "TileRanking",
+   "Labels": [
+    {
+     "Rect": [
+      617,
+      615,
+      55,
+      18
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Ranking",
+     "Fits": true,
+     "Bounds": [
+      45,
+      12
+     ]
+    },
+    {
+     "Rect": [
+      659,
+      577,
+      14,
+      14
+     ],
+     "Name": "KeyHint",
+     "Shown": false,
+     "Text": "L",
+     "Fits": true,
+     "Bounds": [
+      6,
+      11
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    678,
+    575,
+    60,
+    60
+   ],
+   "Name": "TilePet",
+   "Labels": [
+    {
+     "Rect": [
+      680,
+      615,
+      55,
+      18
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Pet",
+     "Fits": true,
+     "Bounds": [
+      19,
+      12
+     ]
+    }
+   ]
+  },
+  {
+   "Shown": true,
+   "Rect": [
+    1224,
+    -46,
+    43,
+    43
+   ],
+   "Name": "TileMenu",
+   "Labels": [
+    {
+     "Rect": [
+      1226,
+      -18,
+      38,
+      13
+     ],
+     "Name": "Label",
+     "Shown": true,
+     "Text": "Menu",
+     "Fits": true,
+     "Bounds": [
+      31,
+      12
+     ]
+    },
+    {
+     "Rect": [
+      1251,
+      -44,
+      14,
+      14
+     ],
+     "Name": "KeyHint",
+     "Shown": false,
+     "Text": "B",
+     "Fits": true,
+     "Bounds": [
+      7,
+      11
+     ]
+    }
+   ]
+  }
+ ],
+ "Inset": 58,
+ "UIScale": 0.800000011920929
+}

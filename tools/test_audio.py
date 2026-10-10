@@ -62,7 +62,6 @@ MUTATIONS = [
     ("attendance: no 7-day box", 'if data.Box == true then add(out, "Chest7Open", T.BoxAfter) end', ""),
     ("finisher: tickle sounds like help", 'add(out, "KingTickleCoins", 0)', 'add(out, "KingHelpHome", 0)'),
     ("candy: silent", 'if candy then add(out, "CandyPlop", 0) end', ""),
-    ("KO: the fun tip silent", 'if type(data.Tip) == "string" and data.Tip ~= "" then add(out, "TipDing", T.KOTipAfter) end', ""),
     ("replace: never stops the old sound", "\t\t\tfor _, q in S.Pools[rep] or {} do\n", "\t\t\tfor _, q in {} do\n"),
     ("replace: the old sound comes right after", "\tif now < (S.Hush[event] or -math.huge) then return false end", "\t--"),
     ("windows: the quest window plain", '\t\t\tevent = "QuestOpen"\n', "\t\t\tevent = nil\n"),
@@ -208,7 +207,7 @@ MUTATIONS = [
     ("Sound None still plays", '\t\tif sound == "None" then return nil end\n', ""),
     ("the payload's Sound is ignored", "\t\treturn sound\n\tend\n", "\tend\n"),
     # sound Play check 2026-10-08 + the world sounds (sound_gaps B1-B10, sound_spec §4-2 11)
-    ("KO is silent", '\t\tadd(out, "KO", 0)\n', ""),
+    ("KO is silent", '\t\tadd(out, "KO", 0) -- (', '\t\tlocal _ = 0 -- ('),
     ("the goose's goodbye heard from anywhere", 'if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end',
      'add(out, "GooseEnd", 0)'),
     ("stomps at full volume everywhere", 'if v > 0 then add(out, "KaijuStomp", 0, { Volume = v }) end', 'add(out, "KaijuStomp", 0)'),

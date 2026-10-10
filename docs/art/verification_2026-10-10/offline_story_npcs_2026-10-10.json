@@ -1,5 +1,5 @@
 {
-  "checks": 13,
+  "checks": 14,
   "failed": 0,
   "mutations": [
     {
@@ -19,6 +19,11 @@
     },
     {
       "name": "a new '!' every pass",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the '!' stays on the old head",
       "applied": true,
       "caught": true
     },

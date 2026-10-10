@@ -1,5 +1,5 @@
 {
-  "checks": 26,
+  "checks": 27,
   "failed": 0,
   "static": [
     {
@@ -19,13 +19,21 @@
       "ok": true
     },
     {
+      "check": "A23-110 KO1 rows: Guide QuickSlot opens the bag, PotionShop shows the way to the seller",
+      "ok": true
+    },
+    {
+      "check": "A23-110 KO1: while PotionSip is set a full bar may still drink (the server's practice sip)",
+      "ok": true
+    },
+    {
       "check": "Config: QuickSlot3 on key Three (Potion group)",
       "ok": true
     }
   ],
   "mutations": [
     {
-      "name": "no default slots",
+      "name": "a new player starts with potions in the slots",
       "applied": true,
       "caught": true
     },

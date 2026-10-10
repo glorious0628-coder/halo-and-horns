@@ -290,6 +290,12 @@ function PetWindow.Open()
 	return (pcall(panels.Open, T.Window))
 end
 
+-- the last PetList and the one before it (Audio: a remote fired before a second listener connects reaches only the
+-- first one, so Audio may have missed the join list - it reads it here)
+function PetWindow.Lists()
+	return S.List, S.Prev
+end
+
 -- PET-4: my following pet's story name (Good Buddy / Little Minion) for the tag over it (PetFollow); nil without one
 function PetWindow.FollowerName()
 	local p = S.List
@@ -303,7 +309,7 @@ end
 -- the owner's "PetList": kept; the open window redraws when what it shows changed (XP only: the bars in place)
 function PetWindow.OnList(payload)
 	if type(payload) ~= "table" or type(payload.List) ~= "table" then return false end
-	S.List = payload
+	S.Prev, S.List = S.List, payload
 	local kit = VIEW.Kit
 	local panels = C and C.Panels
 	local open = kit ~= nil and type(panels) == "table" and type(panels.CurrentId) == "function" and panels.CurrentId() == T.Window
