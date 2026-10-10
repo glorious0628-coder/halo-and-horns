@@ -4008,6 +4008,7 @@ local function onQuests(payload)
 	if type(payload) == "table" and type(payload.Quests) == "table" then
 		-- { Quests = rows, Book = { Available, Done } } (A23-81: the quest window's lists, 게임성 개발 3), as a table or JSON
 		if type(payload.Book) == "table" then questState.Book = payload.Book end
+		questState.DailyLocked = payload.DailyLocked == true -- A23-104 (dev3): the daily jobs are not open yet
 		data = payload.Quests
 	end
 	if type(data) ~= "table" then return end
@@ -5957,6 +5958,11 @@ function HUD.QuestEntries()
 end
 
 -- the server's quest book ({ Available = {...}, Done = {...} }) when it sends one, else nil
+-- A23-104: true while the server says the daily jobs are not open yet (the quest window hides its Daily tab)
+function HUD.DailyLocked()
+	return questState.DailyLocked == true
+end
+
 function HUD.QuestBook()
 	return questState.Book
 end

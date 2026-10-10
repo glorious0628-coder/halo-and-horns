@@ -70,6 +70,10 @@
     {
       "check": "the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
       "ok": true
+    },
+    {
+      "check": "A23-104: the payload's DailyLocked is kept for the quest window (HUD.DailyLocked)",
+      "ok": true
     }
   ],
   "mutations": {
@@ -304,7 +308,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "6e69ee7cde1c08f9629d8215b11f7b43c17e3ca60b15e0adb343aee5dc809de2"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

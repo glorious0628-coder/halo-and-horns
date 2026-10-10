@@ -288,7 +288,10 @@ def static_checks(src):
         ("the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
          "payload = data -- a JSON payload is read like a table payload below" in src
          and 'if type(payload) == "table" and type(payload.Quests) == "table" then' in src
-         and "if type(payload.Book) == \"table\" then questState.Book = payload.Book end\n\t\tdata = payload.Quests" in src),
+         and "if type(payload.Book) == \"table\" then questState.Book = payload.Book end\n" in src
+         and "\t\tdata = payload.Quests" in src),
+        ("A23-104: the payload's DailyLocked is kept for the quest window (HUD.DailyLocked)",
+         "questState.DailyLocked = payload.DailyLocked == true" in src and "function HUD.DailyLocked()" in src),
     ]
 
 
