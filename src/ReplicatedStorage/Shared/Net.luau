@@ -84,6 +84,9 @@ Net.GameStateDefaults = {
 	ClatterNextAt = 0, ClatterActive = false, ClatterEndsAt = 0, -- J Captain Clatter (the ruins)
 	-- RankingService (BB10): the current ranking week (Config.WeekIndex) and when it ends (Monday 00:00 KST, os.time)
 	RankWeekId = 0, RankWeekEndsAt = 0,
+	-- A23-105 DayCycleService: the phase of the ClockTime shown and the night share (0..1) of the time-of-day look at it
+	-- (under every sky, a war sky included), the weather
+	DayPhase = "Day", NightLevel = 0, Weather = "Clear",
 	-- SettingsService (BB3 footer): false while this server runs without a DataStore (DataService memory mode)
 	SaveOK = true,
 }

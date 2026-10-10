@@ -25,14 +25,15 @@ local WARN_INTERVAL = 10
 -- sky light reaches the monsters (EnvironmentDiffuse 1.0, Specular 0.6, ShadowSoftness 0.5), softer bloom and tint.
 -- tools/preview_map.lua bakes the same Neutral values so Edit and the server start look alike.
 -- 2026-10-08 (user: "입체적이지 않아", 검수 depth pass): sharper sun shadows (ShadowSoftness 0.15), half the sky's flat
--- diffuse fill so the shadow side reads, contrast +0.12 and saturation -0.05 (the neon green calmer). LIGHT_STYLE:
--- Realistic shades by the sun more than Soft. Lighting.Technology is a place setting (not scriptable): ShadowMap -
--- sun shadows are what gives the depth, and Future's per-pixel shadows of local lights cost phones for our few lamps.
+-- diffuse fill so the shadow side reads, contrast +0.12 and saturation -0.05 (the neon green calmer).
+-- Lighting.LightingStyle and Lighting.Technology are PLACE settings, set in Studio Edit and saved with the place; a script
+-- cannot change them in a running game (A23-105, 메인 반영 1 2026-10-10: the old Realistic write here failed silently in
+-- its pcall and Play kept Soft; Realistic itself broke Play visually, white screen). The place is Soft, the source of
+-- truth, so this service never writes either; the Edit toggle Realistic -> Soft is what brought the sun shadows back.
 local LIGHTING_FIXED = {
 	GlobalShadows = true, ShadowSoftness = 0.15, GeographicLatitude = 35,
 	EnvironmentDiffuseScale = 0.5, EnvironmentSpecularScale = 0.6,
 }
-local LIGHT_STYLE = "Realistic"
 local TINT_FIXED = { Brightness = 0, Contrast = 0.12, Saturation = -0.05 } -- only TintColor is tweened
 local SKY_FIXED = { SunAngularSize = 14, MoonAngularSize = 18, StarCount = 3000 }
 local BLOOM_FIXED = { Size = 24, Threshold = 2.2 }
@@ -58,7 +59,8 @@ local lastWarnAt = {}
 -- CR-M19: head counts summed every tick of the current round; the per-capita divisor is the round AVERAGE, so a
 -- last-second exodus cannot flip the result
 local presence = { Halo = 0, Horns = 0, Ticks = 0 }
--- CR-L20: ClockTime is tweened through this NumberValue (always forward, wrapping at 24)
+-- CR-L20: ClockTime is tweened through this NumberValue (forward, wrapping at 24; A23-105: at most ClockForwardMax h) -
+-- only while no day cycle runs (a running DayCycleService owns the clock under every sky)
 local clock = { Value = nil, Conn = nil }
 
 ------------------------------------------------------------------ helpers
@@ -140,9 +142,6 @@ end
 -- ART_DIRECTION 3.1, once in Start
 local function bootstrapLighting()
 	pcall(function()
-		Lighting.LightingStyle = Enum.LightingStyle[LIGHT_STYLE]
-	end)
-	pcall(function()
 		Lighting.PrioritizeLightingQuality = true
 	end)
 	setProps(Lighting, LIGHTING_FIXED)
@@ -163,6 +162,21 @@ local function bootstrapLighting()
 	end
 end
 
+-- A23-105: DayCycleService, once it runs (Owns(): Config.DayCycle.Enabled and its Start done), owns Lighting.ClockTime
+-- under EVERY sky (검수 2026-10-10, the user's choice (b): the clock keeps turning through a crown-war sky, the sun and the
+-- shadows move) and the Neutral sky's look - Brightness, Ambient, OutdoorAmbient, ExposureCompensation, FogColor /
+-- FogStart / FogEnd - which it turns through the day. A war sky (Dawn / Eclipse) covers only the look (Cover: this
+-- service still tweens its light values, tint, bloom, rays and cloud colour, never the clock); going back to Neutral
+-- hands the look back (Uncover, the same tween time: the cycle eases from the war look to the look of the time of day
+-- it is then). nil = no running cycle (off, not started yet - this Start runs first - or its Start failed): this
+-- service applies every sky itself, preset clocks included (the fixed afternoon, as before).
+local function dayCycle()
+	local dc = S and S.DayCycleService
+	if type(dc) ~= "table" or type(dc.Owns) ~= "function" then return nil end
+	local ok, owns = pcall(dc.Owns)
+	return (ok and owns == true) and dc or nil
+end
+
 local function skyNameFor(winner)
 	if winner == "Halo" then return "Dawn" end
 	if winner == "Horns" then return "Eclipse" end
@@ -173,15 +187,21 @@ local function num(v)
 	return (type(v) == "number" and v == v) and v or nil
 end
 
--- CR-L20: a tween of ClockTime toward `target` that only runs FORWARD (to < from -> to + 24, written back as v % 24);
--- a plain number tween ran the sun backwards (16.8 -> 0.5). nil when there is nothing to tween or it failed.
+-- CR-L20: a tween of ClockTime toward `target` that runs FORWARD (to < from -> to + 24, written back as v % 24); a plain
+-- number tween ran the sun backwards (16.8 -> 0.5). Used only while no day cycle runs (applySky). A23-105: more than
+-- Config.Sky.ClockForwardMax hours forward (a clock moved off the presets, e.g. 8:00 -> Dawn 7.2 = 23.2 h, a whole day
+-- spun in 3 s) goes the short way back instead; 18 keeps every war-sky change between the fixed presets forward exactly
+-- as before (the longest, Dawn 7.2 -> Eclipse 0.5, is 17.3 h). nil when there is nothing to tween or it failed.
 local function clockTween(target, info)
 	local from = Lighting.ClockTime
 	local to = target
 	if to < from then
 		to += 24
 	end
-	if to - from < 1e-3 then return nil end
+	if to - from > (num(Config.Sky.ClockForwardMax) or 18) then
+		to -= 24
+	end
+	if math.abs(to - from) < 1e-3 then return nil end
 	if not clock.Value then
 		local nv = Instance.new("NumberValue")
 		nv.Name = "WarClock"
@@ -210,8 +230,16 @@ local function applySky(name, animate)
 		t:Cancel()
 	end
 	table.clear(skyTweens)
+	-- A23-105: a running day cycle owns the clock under every sky; a war sky covers only its look (its light wins),
+	-- Neutral's look is the cycle's (handed back below)
+	local cycle = dayCycle()
+	local cycleLook = cycle ~= nil and name == "Neutral"
+	if cycle and not cycleLook then
+		local ok, err = pcall(cycle.Cover, name)
+		if not ok then warnThrottled("cover", "day cycle cover failed: " .. tostring(err)) end
+	end
 
-	-- ClockTime is not in the goal: it is tweened forward on its own (CR-L20)
+	-- ClockTime is not in the goal: it is tweened forward on its own (CR-L20), only while no day cycle runs
 	local lightingGoal = {
 		Brightness = preset.Brightness, Ambient = preset.Ambient,
 		OutdoorAmbient = preset.OutdoorAmbient, FogColor = preset.FogColor, FogEnd = preset.FogEnd,
@@ -223,6 +251,7 @@ local function applySky(name, animate)
 		lightingGoal.FogStart = math.max(0, fogEnd - 1) -- FogStart must stay below FogEnd
 	end
 	local goals = { { Lighting, lightingGoal } }
+	if cycleLook then table.clear(goals) end -- the day cycle has the Neutral sky's look (A23-105)
 	if preset.Tint then
 		table.insert(goals, { ensureTint(), { TintColor = preset.Tint } })
 	end
@@ -232,7 +261,7 @@ local function applySky(name, animate)
 	if rays then table.insert(goals, { rays, { Intensity = extras.SunRays } }) end
 	local clouds = workspace.Terrain:FindFirstChildOfClass("Clouds")
 	if clouds then table.insert(goals, { clouds, { Color = extras.Clouds } }) end
-	local clockTarget = num(preset.ClockTime)
+	local clockTarget = (cycle == nil) and num(preset.ClockTime) or nil -- the preset clocks: only without a running cycle
 
 	if animate then
 		local info = TweenInfo.new(Config.Sky.TweenTime, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
@@ -258,6 +287,10 @@ local function applySky(name, animate)
 		if clockTarget then
 			setProps(Lighting, { ClockTime = clockTarget }) -- no animation: set at once (CR-L20)
 		end
+	end
+	if cycleLook then
+		local ok, err = pcall(cycle.Uncover, animate and Config.Sky.TweenTime or 0)
+		if not ok then warnThrottled("uncover", "day cycle uncover failed: " .. tostring(err)) end
 	end
 end
 
