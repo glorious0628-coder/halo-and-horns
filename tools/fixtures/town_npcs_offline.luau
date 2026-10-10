@@ -218,9 +218,9 @@ runGroup("config", function()
 	-- checks the 2..8 studs in front of the face against the plan), on the plaza terrace (Y 20)
 	local spot = {}
 	for _, e in T.List do spot[e.Id] = e end
-	check(spot.Folk1.At.X == 63 and spot.Folk1.At.Z == -567.5 and spot.Folk2.At.X == -41.5 and spot.Folk2.At.Z == -598.5
-		and spot.Folk3.At.X == -17 and spot.Folk3.At.Z == -553 and spot.PotionHalo.At.X == 44.5 and spot.PotionHalo.At.Z == -594,
-		"juice man (63,-567.5), flower girl (-41.5,-598.5), baker (-17,-553), the potion seller (44.5,-594)",
+	check(spot.Folk1.At.X == 61.1 and spot.Folk1.At.Z == -568.6 and spot.Folk2.At.X == 18 and spot.Folk2.At.Z == -582.4
+		and spot.Folk3.At.X == 19.7 and spot.Folk3.At.Z == -553.9 and spot.PotionHalo.At.X == 43.7 and spot.PotionHalo.At.Z == -583,
+		"juice man (61.1,-568.6), flower girl (18,-582.4), baker (19.7,-553.9), the potion seller (43.7,-583)",
 		show({ spot.Folk1.At, spot.Folk2.At, spot.Folk3.At, spot.PotionHalo.At }))
 	for _, id in { "Folk1", "Folk2", "Folk3", "Folk4", "PotionHalo" } do
 		check(spot[id].Y == 20, id .. " is on the plaza terrace: Y 20", tostring(spot[id].Y))
@@ -270,8 +270,8 @@ runGroup("build", function()
 		and prompt.Enabled == true and prompt:GetAttribute("StoryNpcId") == "Bright" and prompt:GetAttribute("Conversation") == true,
 		"Bright: a 'Talk' prompt (G, tap, 10 studs) that names her", show(prompt and { prompt.ActionText, prompt.KeyboardKeyCode, prompt.MaxActivationDistance }))
 	local pv = b:GetPivot()
-	check(near(pv.Position.X, 8) and near(pv.Position.Z, -424) and near(pv.Position.Y, 0.2 + 2.6), "Bright stands at (8, -424), the foot of the first plaza stairs, with her feet on the ground (Y 0.2 + 2.6)", show(pv.Position))
-	check(near(pv.Look.X, 8) and near(pv.Look.Z, -380) and near(pv.Look.Y, pv.Position.Y), "... facing the gate side (8, -380) at her own height", show(pv.Look))
+	check(near(pv.Position.X, 18) and near(pv.Position.Z, -424) and near(pv.Position.Y, 0.2 + 2.6), "Bright stands at (18, -424), the foot of the first plaza stairs, with her feet on the ground (Y 0.2 + 2.6)", show(pv.Position))
+	check(near(pv.Look.X, 18) and near(pv.Look.Z, -380) and near(pv.Look.Y, pv.Position.Y), "... facing the gate side (18, -380) at her own height", show(pv.Look))
 	-- the body: no scripts, anchored, no collision, a standing humanoid
 	local parts = 0
 	for _, d in b:GetDescendants() do
@@ -327,9 +327,9 @@ runGroup("the potion seller (switched on)", function()
 	check(p and p.ActionText == "Buy potions" and p.ObjectText == "Potion Seller" and p.KeyboardKeyCode == "KeyCode.G" and p.HoldDuration == 0
 		and p.MaxActivationDistance == t.Config.Vitals.PotionMerchantDistance and p.Enabled == true and p:GetAttribute("StoryNpcId") == nil,
 		"the shop prompt (the Crossroads seller's name and range), no StoryNpcId", show(p and { p.ActionText, p.ObjectText }))
-	check(near(m:GetPivot().Position.X, 44.5) and near(m:GetPivot().Position.Z, -594) and near(m:GetPivot().Position.Y, 20 + 2.6),
-		"in front of the potion shop (44.5, -594), feet on the plaza terrace", show(m:GetPivot().Position))
-	check(near(m:GetPivot().Look.X, 34.5) and near(m:GetPivot().Look.Z, -595.5) and near(m:GetPivot().Look.Y, 20 + 2.6), "facing the street (34.5, -595.5) at her own height", show(m:GetPivot().Look))
+	check(near(m:GetPivot().Position.X, 43.7) and near(m:GetPivot().Position.Z, -583) and near(m:GetPivot().Position.Y, 20 + 2.6),
+		"in front of the potion shop (43.7, -583), feet on the plaza terrace", show(m:GetPivot().Position))
+	check(near(m:GetPivot().Look.X, 33.8) and near(m:GetPivot().Look.Z, -584.5) and near(m:GetPivot().Look.Y, 20 + 2.6), "facing the street (33.8, -584.5) at her own height", show(m:GetPivot().Look))
 	check(t.Tagged(m, t.Config.Vitals.PotionMerchantTag or "PotionMerchant"), "the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)", show(t.Tags[m]))
 	-- the seller's colours default to the Crossroads seller's (Config.Vitals.PotionMerchantColors)
 	local vc = t.Config.Vitals.PotionMerchantColors
@@ -446,10 +446,10 @@ runGroup("the expected ground (roofs, balconies, walls)", function()
 		"a roof (36) and a balcony (27) over the plaza: the shop people stand on the terrace (20.1), not on top", show({ r.Npc("Npc_Folk1"):GetPivot().Position.Y }))
 	check(near(r.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6), "Bright (no expected Y) takes the ground the ray finds", show(r.Npc("Npc_Bright"):GetPivot().Position.Y))
 	local casts = 0
-	for _, ray in r.Rays do if near(ray.Origin.X, 63) and near(ray.Origin.Z, -567.5) then casts += 1 end end
+	for _, ray in r.Rays do if near(ray.Origin.X, 61.1) and near(ray.Origin.Z, -568.6) then casts += 1 end end
 	check(casts == 6, "three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit", tostring(casts))
 	for _, ray in r.Rays do
-		if near(ray.Origin.X, 63) and near(ray.Origin.Z, -567.5) and ray.Origin.Y < 150 then
+		if near(ray.Origin.X, 61.1) and near(ray.Origin.Z, -568.6) and ray.Origin.Y < 150 then
 			check(ray.Origin.Y == 35.5 or ray.Origin.Y == 26.5, "a later cast starts 0.5 below the hit it passes", tostring(ray.Origin.Y))
 		end
 	end

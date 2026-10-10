@@ -22,6 +22,9 @@ local Util = require(Shared:WaitForChild("Util"))
 local Net = require(Shared:WaitForChild("Net"))
 
 local Deeds = {}
+-- A23-113 #8: (player, side "Good" | "Evil", change, mine) a good / naughty deed was made (every Add with a side and points; the
+-- daily 'Choice' job counts it - the caller's own score is the cap's business, the deed itself happened)
+Deeds.Booked = Util.Signal.new()
 
 local TAG = "Deeds"
 local S = nil
@@ -128,6 +131,7 @@ function Deeds.Add(player, side, n)
 	if (f == "Halo") == (side == "Good") then
 		local got = Deeds.Take(player, n)
 		if got > 0 then S.PlayerService.AddStat(player, stat, got) end
+		Deeds.Booked:Fire(player, side, got, true)
 		return stat, got, true, false, got < n
 	end
 	local have = ownStat(player, stat)
@@ -137,6 +141,7 @@ function Deeds.Add(player, side, n)
 		S.PlayerService.SetStat(player, stat, have - take)
 		down = rankOf(f, have - take) < rankOf(f, have)
 	end
+	Deeds.Booked:Fire(player, side, -take, false)
 	return stat, -take, false, down, false
 end
 

@@ -73,17 +73,18 @@ local L = {
 	PotionGap = 7.5, -- du between the HP and MP potion buttons (6 px at the PC UIScale 0.8)
 	Badge = { Halo = "LevelBadgeHalo", Horns = "LevelBadgeHorns", Neutral = "LevelBadgeArtisan" }, -- else LevelBadge
 	Glyph = { Warrior = "GlyphSword", Mage = "GlyphStaff", Archer = "GlyphBow" }, -- attack button (IconAttack fallback)
-	-- A23-40 icon tile row, left to right: the windows opened often (A23-40 정정: 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫).
+	-- A23-40 icon tile row, left to right (검수 10/10, A23-113 ③: in the order they open - 가방 · 지도 first, then 영웅 (Lv 2) ·
+	-- 스킬 (Lv 5) · 펫 · 순위, so an opened tile never moves).
 	-- Window = the Panels window the tile opens (the tile shows once it is registered; Alt = an older window it opens
 	-- until then), Map = the world map; Key = Keybinds action for the key badge; Keep = shown first when the row has
 	-- fewer slots than tiles (phones: the rest fold out of [메뉴], in front of its own squares)
 	Tiles = {
-		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
-		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
 		{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },
-		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
-		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
+		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
+		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
+		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 5 },
+		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 6 },
 	},
 	-- A23-40 정정 (user 2026-10-06 "메뉴는 오른쪽 위에, 누르면 옆으로 좌르륵"; 검수: 새 소식 · 이동 · 도움말 · 설정): the
 	-- squares [메뉴] folds out to its left, left to right. 직업 바꾸기 · 환생 · 오프닝 다시 보기 · 이름 숨기기 · 휴가 are
@@ -2745,13 +2746,18 @@ function L.BuildMenu(names)
 	local function add(def, row)
 		local copy = table.clone(def)
 		copy.Text = names[def.Id]
-		local b = tileButton(copy, function()
+		local b, lbl, icon = tileButton(copy, function()
 			if copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done
 			L.FoldTap(copy)
 		end)
 		b.Name = "Fold" .. def.Id
 		b.Parent = ui.fold
 		local entry = { Def = copy, Button = b, Row = row }
+		-- A23-113 ③: a row tile's fold copy (phones) locks like the tile itself (L.RefreshLocks)
+		if row and type(UIKit.TileLock) == "function" and Config.HudReveal.Tiles[def.Id] then
+			local ok, lock = pcall(UIKit.TileLock, b, icon, lbl)
+			if ok then entry.Lock = lock end
+		end
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
 		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
 		table.insert(ui.foldTiles, entry)
@@ -2897,6 +2903,10 @@ end
 
 -- a fold square: fold back, then open its window like a row tile
 function L.FoldTap(def)
+	if L.TileLocked(def.Id) then -- A23-113 ③: a locked square only wiggles (the fold stays open)
+		L.TileWiggle(def.Id)
+		return
+	end
 	L.SetFold(false)
 	L.TileTap(def)
 end
@@ -2994,10 +3004,15 @@ local function buildButtons(root)
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
-		local btn, label = tileButton(def, function()
+		local btn, label, icon = tileButton(def, function()
 			L.TileTap(def)
 		end)
-		ui.tiles[i] = { Def = def, Button = btn, Label = label }
+		ui.tiles[i] = { Def = def, Button = btn, Label = label, Icon = icon }
+		-- A23-113 ③: the lock look (이미지 개발 UIKit.TileLock); L.RefreshLocks decides when
+		if type(UIKit.TileLock) == "function" and Config.HudReveal.Tiles[def.Id] then
+			local ok, lock = pcall(UIKit.TileLock, btn, icon, label)
+			if ok then ui.tiles[i].Lock = lock end
+		end
 		if def.Id == "Bag" then ui.bagGlow = makeGlow(btn, UDim.new(0, 10)) end -- B14 scroll hint
 	end
 	L.BuildMenu(names)
@@ -3059,6 +3074,9 @@ function L.RefreshSkillIcon()
 	if not rel then return end
 	local class = attr("ClassChosen", false) == true and getClass() or nil
 	local key = (class and not (class == "Archer" and getFaction() == "Neutral")) and ("Skill_" .. class .. "_Q") or nil
+	-- skills18 (10/10): the class's own Q icon per faction first (Skill_<Class>_Q_<Faction>)
+	local own = class and ("Skill_" .. class .. "_Q_" .. tostring(getFaction())) or nil
+	if own and UIKit.ArtId(own) then key = own end
 	if not (key and UIKit.ArtId(key)) then key = "Skill_Warrior_Q" end
 	if ui.releaseIconKey == key and ui.releaseIcon and ui.releaseIcon.Parent then return end
 	ui.releaseIconKey = key
@@ -5502,6 +5520,10 @@ end
 -- a tile press: 지도 = the world map toggle, window tiles open their window (the same tile closes it; another window
 -- switches)
 function L.TileTap(def)
+	if L.TileLocked(def.Id) then
+		L.TileWiggle(def.Id) -- A23-113 ③: locked = a small wiggle only (no window, no notice)
+		return
+	end
 	if def.Invite then
 		local inv = C and C.Invite
 		if type(inv) == "table" and type(inv.Prompt) == "function" then task.spawn(inv.Prompt, "Menu") end
@@ -5715,15 +5737,10 @@ function L.PickTiles()
 	if not ui.tiles then return false end
 	-- 검수 2026-10-07 (user: "이렇게 하라고" with the reference row): A23-40's six tiles are always on the row; a window
 	-- that is not built yet answers on press (L.TileTap); only the row's room (Count) decides what overflows to [메뉴]
-	-- A23-113 ③: only the tiles that are needed by now (Config.HudReveal.TileShows); one that comes in pops in once
-	local ready = L.RevealReady() -- every pick (even one that changes nothing) so the join timer starts with my data
-	local want = {}
-	local st = L.RevealState()
-	for _, t in ui.tiles do
-		-- once shown it stays this session (a level or a pet list that blinks never takes a tile away)
-		if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows(t.Def.Id, st) then table.insert(want, t) end
-	end
-	-- the tiles that have come (before the row's Count trims them): only these may fold out of [메뉴] (L.FoldEntries)
+	-- A23-113 ③ 고침 (user 10/10 "처음부터 다 보이고, 그 자물쇠 해놓자"): every tile is on the row from the start; one not
+	-- open yet is locked (L.RefreshLocks), never hidden
+	L.RefreshLocks()
+	local want = table.clone(ui.tiles)
 	local came, cameKey = {}, "|"
 	for _, t in want do
 		came[t.Def.Id] = true
@@ -5751,17 +5768,67 @@ function L.PickTiles()
 	local shown = {}
 	for _, t in want do shown[t] = true end
 	local underFold = IS_TOUCH and ui.foldOpen == true
-	for _, t in ui.tiles do
-		local was = L.TileSeen[t.Def.Id]
-		t.Button.Visible = shown[t] == true and not underFold
-		if shown[t] and was == false and ready then L.TilePop(t.Button) end -- new in play (not at the join)
-		if shown[t] then L.TileSeen[t.Def.Id] = true elseif was == nil then L.TileSeen[t.Def.Id] = false end
-	end
+	for _, t in ui.tiles do t.Button.Visible = shown[t] == true and not underFold end
 	return true
 end
 
--- A23-113 ③: tile id -> true once shown, false = hidden at the first pick (its first showing later pops)
+-- A23-113 ③: tile id -> true once open (stays open this session), false = locked at the first check (its opening pops)
 L.TileSeen = {}
+
+-- lock / unlock each tile by the rule (Config.HudReveal.TileShows); the lock pops away when one opens in play
+function L.RefreshLocks()
+	if not ui.tiles then return end
+	local ready = L.RevealReady() -- every check (even one that changes nothing) so the join timer starts with my data
+	local st = L.RevealState()
+	for _, t in ui.tiles do
+		local id = t.Def.Id
+		local was = L.TileSeen[id]
+		local open = was == true or Config.HudReveal.TileShows(id, st)
+		if open then
+			if was == false and ready then L.TilePop(t.Button) end -- opened in play (not at the join)
+			L.TileSeen[id] = true
+		elseif was == nil then
+			L.TileSeen[id] = false
+		end
+		if t.Lock and t.Lock.Locked ~= not open then pcall(t.Lock.Set, not open, Config.HudReveal.TileWord(id)) end
+	end
+	for _, f in ui.foldTiles or {} do -- the phones' fold copies follow their tile
+		local open = L.TileSeen[f.Def.Id] ~= false
+		if f.Lock and f.Lock.Locked ~= not open then pcall(f.Lock.Set, not open, Config.HudReveal.TileWord(f.Def.Id)) end
+	end
+end
+
+-- is this tile locked right now (no lock look = never locked)
+function L.TileLocked(id)
+	for _, t in ui.tiles or {} do
+		if t.Def.Id == id then return t.Lock ~= nil and t.Lock.Locked == true end
+	end
+	return false
+end
+
+-- a locked tile's press: a quick small wiggle (nothing with reduced motion)
+function L.TileWiggle(id)
+	if UIKit.ReducedMotion() then return end
+	local list = table.clone(ui.tiles or {})
+	for _, f in ui.foldTiles or {} do
+		if f.Row then table.insert(list, f) end
+	end
+	for _, t in list do
+		if t.Def.Id == id and not t.Wiggling then
+			t.Wiggling = true
+			local btn = t.Button
+			task.spawn(function()
+				for _, r in { 7, -6, 4, -2, 0 } do
+					local tw = TweenService:Create(btn, TweenInfo.new(0.05, Enum.EasingStyle.Sine), { Rotation = r })
+					tw:Play()
+					tw.Completed:Wait()
+				end
+				btn.Rotation = 0
+				t.Wiggling = false
+			end)
+		end
+	end
+end
 
 -- pops only a few seconds after my data loaded (the quest book and the pet list come in just after the join)
 function L.RevealReady()
@@ -6287,11 +6354,9 @@ function HUD.Start()
 		refreshQuests()
 	end)
 	L.ApplyFold(false)
-	-- A23-113 ③: a level up, a new skill or a pet brings its menu tile in at once (the 1 s refresh also catches it)
+	-- A23-113 ③: a level up, a new skill or a pet unlocks its menu tile at once (the 1 s refresh also catches it)
 	for _, name in { "Level", "SkillSlots", "EquippedPet" } do
-		LocalPlayer:GetAttributeChangedSignal(name):Connect(function()
-			if L.PickTiles() then requestLayout() end
-		end)
+		LocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)
 	end
 	-- Studio-only check hook (UiSandbox captures of A23-68 #2): the local attribute HintPreview = "Attack" / "Q" shows
 	-- that hint, any other value clears them; never read outside Studio

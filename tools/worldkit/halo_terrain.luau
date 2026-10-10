@@ -39,11 +39,11 @@ G.CX, G.CZ = math.ceil(G.NX / G.Chunk), math.ceil(G.NZ / G.Chunk)
 -- the tier steps are wavy lines, the two sides have their own widths, and every step has its own ramps (main + side, different widths).
 -- The gate end and the spawn road (z > -432) stay straight on x 0 (Bridge_Halo deck, Gate_HaloTown, Zones.HaloTown.Spawn contract).
 local SPINE = {
-	Z1 = -692, -- far end (cathedral terrace)
+	Z1 = -697, -- far end (cathedral terrace; 3rd pass: room for the full-size cathedral)
 	RampLen = 30, -- ramps stay <= 24 deg
 	-- { boundary z at the road centre (a step down the road toward the cathedral), height after it, west half-width, east half-width }
 	-- 2nd pass (10/10, 모동숲 rule 1): the tiers get narrower going up (1 > 2 > 3 > 4 by walkable area incl. the wings)
-	Tiers = { { 0, 0.2, 34, 44 }, { -444, 9, 64, 40 }, { -524, 20, 52, 58 }, { -606, 33, 74, 34 } },
+	Tiers = { { 0, 0.2, 34, 44 }, { -444, 9, 64, 40 }, { -524, 20, 52, 58 }, { -606, 33, 80, 40 } },
 	-- wavy step lines: offset = Amp * sin(u / Len + Phase), u = x - cx(z) (0 on the road centre, so the main ramps start straight)
 	Wave = { {}, { Amp = 6, Len = 23, Phase = 0.4 }, { Amp = 7, Len = 31, Phase = 2.1 }, { Amp = 5, Len = 19, Phase = 4.0 } },
 	-- ramps per step: { u centre, half-width }. One main stair per step, its own width and offset; one side stair only on step 3 (no pairs)
@@ -99,7 +99,7 @@ local LAWNS = { { 12, -560, 7 }, { 54, -584, 6 }, { 26, -538, 5 }, { -22, -636, 
 local PAVE = { Rim = 8, Wing = 22, Mat = "Concrete" } -- grass rim width on the wing tops (2026-10-10: 16 so the wings are gardens round a paved forecourt; the spine road is PAVEHALF below); Mat = the paved top (Terrain has no Marble: tools/worldkit/halo_materials.luau gives Concrete the Halo tile)
 -- 2026-10-10 (검수: the road was 76 wide and read as an empty beige slab): the PAVED part of the spine is narrow like the concept (road about
 -- one house wide), the rest of the terrace is grass garden for the props tool (balustrade, planters, topiary rows). { boundary z (north of it), paved half-width }
-local PAVEHALF = { { 0, 15, 15 }, { -444, 17, 13 }, { -524, 34, 42 }, { -606, 26, 20 } } -- { boundary z, west, east } (A23-112: uneven; 2nd pass rule 5: paved <= 35 %)
+local PAVEHALF = { { 0, 13, 13 }, { -444, 17, 13 }, { -524, 34, 42 }, { -606, 26, 20 } } -- { boundary z, west, east } (A23-112: uneven; 2nd pass rule 5: paved <= 35 %)
 local function paveHalf(z, u)
 	local h = PAVEHALF[1]
 	for i = 2, #PAVEHALF do
@@ -115,7 +115,7 @@ local MOUNDS = { -- { x, z, radius, height } signed (A23-112: no mirrored pairs)
 	{ -29, -376, 8, 3.4 }, { 33, -418, 10, 4.4 }, { -35, -352, 6, 3.0 }, { 38, -368, 7, 2.6 },
 	{ -40, -462, 11, 5.0 }, { 52, -478, 8, 4.0 }, { -18, -506, 7, 3.6 },
 	{ -20, -572, 6, 3.0 }, { 84, -548, 7, 3.4 }, { 72, -600, 9, 4.6 },
-	{ -82, -620, 10, 5.0 }, { 18, -690, 8, 4.0 }, { -84, -686, 7, 3.6 },
+	{ 18, -690, 8, 4.0 }, -- 3rd pass: the cathedral hill mounds went (the full-size cathedral needs the whole flat top)
 	{ -170, -350, 12, 5.0 }, { -174, -416, 11, 5.5 }, { -150, -345, 9, 4.0 }, { 158, -372, 13, 6.0 }, { 96, -360, 6, 3.0 },
 	{ -150, -476, 10, 5.0 }, { 182, -470, 9, 4.6 }, { 126, -504, 7, 3.4 },
 	{ -136, -586, 6, 4.0 }, { 180, -600, 9, 5.0 }, { 150, -572, 7, 3.4 },

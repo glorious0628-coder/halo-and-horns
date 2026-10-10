@@ -1,0 +1,7 @@
+{
+ "note": "Halo gate tower body marble block tile (Firefly High, art/approved.json Halo_TowerMarbleBlock); SurfaceAppearance on the *_Stone MeshPart of HaloPart_GateTower{L,R}_trim.glb (tiling UV, tools/tower_retile.py); uploaded 2026-10-10 by 이미지 생성 1 (검수 OK)",
+ "ColorMap": "rbxassetid://133937959661245",
+ "NormalMap": "rbxassetid://126193858276827",
+ "RoughnessMap": "rbxassetid://82509703836879",
+ "MetalnessMap": "rbxassetid://87489921567476"
+}

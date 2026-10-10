@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 426,
-  "namedChecks": 341,
+  "checks": 447,
+  "namedChecks": 362,
   "failing": [],
   "mutations": {
-    "total": 161,
-    "caught": 161,
+    "total": 167,
+    "caught": 167,
     "results": [
       {
         "mutation": "boss layer: never put back on the beat",
@@ -698,12 +698,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: a Mage's critical slime hit = HitMagicSoft + HitMagicCrit",
+          "class hits :: a Warrior's slime hit = HitBladeSoft (not HitSoft)",
+          "class hits :: three slimes: still louder and lower",
           "hits :: a crit on a later target adds no layer",
           "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)",
-          "hits :: a ghost squishes higher (x1.15)",
-          "hits :: a little ghost hit = HitSoft",
-          "hits :: a slime hit = HitSoft at ContactDelay",
-          "hits :: goose + slime: squish and honk"
+          "hits :: a ghost squishes higher (x1.15)"
         ]
       },
       {
@@ -765,8 +765,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "swing :: Halo mage: SwingMageHalo, its peak (0.20 s in) on the launch (sound_gaps A2)",
           "swing :: Horns mage: SwingMageHorns"
         ]
@@ -777,7 +775,68 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: a Mage's critical slime hit = HitMagicSoft + HitMagicCrit",
           "hits :: a critical slime hit = HitSoft + the HitCrit layer at the contact (§4-2 6)"
+        ]
+      },
+      {
+        "mutation": "no class hits",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class hits :: a Mage's critical slime hit = HitMagicSoft + HitMagicCrit",
+          "class hits :: a Warrior's goblin hit = HitBladeHeavy",
+          "class hits :: a Warrior's slime hit = HitBladeSoft (not HitSoft)",
+          "class hits :: an Archer's hit = HitArrowHeavy",
+          "class hits :: three slimes: still louder and lower"
+        ]
+      },
+      {
+        "mutation": "class hits for bare hands",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class hits :: bare hands keep the material hit"
+        ]
+      },
+      {
+        "mutation": "class hits before the upload",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "class hits :: a class hit not uploaded yet: the material hit"
+        ]
+      },
+      {
+        "mutation": "no death by kind",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "death by kind :: a Slime Prince kill = DieBigSlime",
+          "death by kind :: a slime kill (the packet's Kind) = DieSlime, not KillPop",
+          "death by kind :: no Kind: the monster at Pos (a slime at x 10)"
+        ]
+      },
+      {
+        "mutation": "death sound before the upload",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "death by kind :: not uploaded yet: KillPop"
+        ]
+      },
+      {
+        "mutation": "no kind from the place",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "death by kind :: no Kind: the monster at Pos (a slime at x 10)"
         ]
       },
       {
@@ -795,6 +854,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: three slimes: still louder and lower",
           "hits :: three slimes = one HitSoft, louder and lower (x1.25, x0.95)"
         ]
       },
@@ -844,7 +904,6 @@
         "crashed": false,
         "newFailingChecks": [
           "rewards :: a weapon bought / equipped = Equip once it is uploaded (sound_gaps C2)",
-          "runtime :: the same event inside its cooldown is skipped",
           "world listeners :: a later weapon -> Equip"
         ]
       },
@@ -863,6 +922,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "runtime :: a muted (skipped) purify keeps the turn",
           "runtime :: purify alternates its two files (16 plays: a, b, a, b ...)"
         ]
       },
@@ -950,12 +1010,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "class hits :: a class hit not uploaded yet: the material hit",
+          "death by kind :: not uploaded yet: KillPop",
           "rewards :: a weapon bought / equipped = GoldPickup until Equip is uploaded",
           "runtime :: an event with an id plays",
           "runtime :: an event without an id never plays",
-          "runtime :: volume = the table's Volume",
-          "sound_gaps 10/10 :: an own sound not uploaded = WindowOpen",
-          "swing :: a faction file not uploaded yet: the old SwingMage at once"
+          "runtime :: volume = the table's Volume"
         ]
       },
       {
@@ -1660,9 +1720,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0dd45cace376b04919e99bceab063f1d803b7f70c5449025e0ed1388e175f8d7",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "66c5a92399b07e2b118095497bcfeb057712e08f575fe9c540a7cf6feb427d51",
-    "tools/fixtures/audio_offline.luau": "f244b63cf051a4bec4557b7b2dc79679d3d20b0b220d7c56786e8891605b0b21"
+    "src/ReplicatedStorage/Shared/Config.luau": "34fd758377b7b9b86bb1b2e4a064d089bad3cadee8ec248259f35ed2516a6c8b",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "3d629588f427b6ea57898086438581dabff205a1150b5080d058e06ab20b0c6b",
+    "tools/fixtures/audio_offline.luau": "5fbf193423867037f2728fab520c8c7e0382a04b9d010dd733f828e2011b2d35"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

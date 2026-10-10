@@ -33,7 +33,7 @@ MUTATIONS = [
     ("CAP", "lights never come back", "\t\t\telseif on and S.Off[l] then\n", "\t\t\telseif false then\n"),
     ("CAP", "the farthest kept (no sort)", "\ttable.sort(list, function(a, b) return a.D < b.D end)\n",
      "\ttable.sort(list, function(a, b) return a.D > b.D end)\n"),
-    ("MAIN", "never loaded", "\"StoryNpcs\", \"LightCap\",", "\"StoryNpcs\","),
+    ("MAIN", "never loaded", "\"TownReact\", \"LightCap\",", "\"TownReact\","),
 ]
 
 

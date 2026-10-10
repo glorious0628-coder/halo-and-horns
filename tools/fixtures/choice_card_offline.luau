@@ -96,6 +96,35 @@ runGroup("deeds: the day's six points", function()
 	check(c9 == 1 and d.Honor == 16, "a new day pays again", show({ c9, d.Honor }))
 end)
 
+-- A23-113 #8: every deed that happens is announced (the daily 'Choice' counts it): own side or other side, points or none, full day or not
+runGroup("deeds: the Booked signal", function()
+	local w = cardWorld()
+	local D = w.Reg.Deeds
+	local log = {}
+	D.Booked:Connect(function(player, side, change, mine) table.insert(log, { P = player, Side = side, Change = change, Mine = mine }) end)
+	local p, d = hero(w, 21, "Halo", { Honor = 0 })
+	D.Add(p, "Good")
+	check(#log == 1 and log[1].P == p and log[1].Side == "Good" and log[1].Change == 1 and log[1].Mine == true, "Halo + Good: Booked (Good, +1, mine)", show({ log[1] and log[1].Side, log[1] and log[1].Change }))
+	for _ = 1, 5 do D.Add(p, "Good") end
+	D.Add(p, "Good")
+	check(#log == 7 and log[7].Change == 0 and log[7].Mine == true, "a full day's pick is still a deed (change 0)", show({ #log, log[7] and log[7].Change }))
+	D.Add(p, "Evil")
+	check(#log == 8 and log[8].Side == "Evil" and log[8].Change == -1 and log[8].Mine == false, "the other side: Booked (Evil, -1, not mine)", show({ log[8] and log[8].Change }))
+	local q = hero(w, 22, "Halo", { Honor = 0 })
+	D.Add(q, "Evil")
+	check(#log == 9 and log[9].P == q and log[9].Change == 0 and log[9].Mine == false, "a naughty pick with no points to lose is still a deed (change 0)", show({ log[9] and log[9].Change }))
+	local before = #log
+	D.Add(p, "None")
+	D.Add(p, "Maybe")
+	D.Add(p, nil)
+	D.Add(p, "Good", 0)
+	D.Add(p, "Good", -3)
+	check(#log == before, "no side / a bad side / no points: nothing is announced", tostring(#log - before))
+	local n = hero(w, 23, "None", {})
+	D.Add(n, "Good")
+	check(#log == before, "a player with no side makes no deed", tostring(#log - before))
+end)
+
 runGroup("deeds: sides, floor, ranks", function()
 	local w = cardWorld()
 	local C = w.Config

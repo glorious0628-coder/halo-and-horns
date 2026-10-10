@@ -139,8 +139,9 @@ local function roundLook(frame, fades)
 	table.insert(fades, { rim, { Transparency = 1 } })
 end
 
--- builds the bubble on root; returns it and its fade-out (nil with reduced motion: it just goes at the end)
-function B.Make(root, offsetY, text, kind)
+-- builds the bubble on root; returns it and its fade-out (nil with reduced motion: it just goes at the end). size =
+-- { W, H } px for a longer line (A23-113 ⑥ TownReact: a town person's short sentence; nil = the bark sizes)
+function B.Make(root, offsetY, text, kind, size)
 	local old = root:FindFirstChild("BarkBubble")
 	if old then old:Destroy() end
 	local cfg = Config.Barks or {}
@@ -185,6 +186,7 @@ function B.Make(root, offsetY, text, kind)
 		art.Parent = bb
 	end
 	local w, h = B.SizeOf(def)
+	if type(size) == "table" and tonumber(size[1]) and tonumber(size[2]) then w, h = tonumber(size[1]), tonumber(size[2]) end
 	bb.Size = UDim2.fromOffset(w, h)
 	art.AnchorPoint = Vector2.new(0, 1) -- scales out of the tail corner
 	art.Position = UDim2.fromScale(0, 1)

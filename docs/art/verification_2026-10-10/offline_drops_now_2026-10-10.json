@@ -1,0 +1,43 @@
+{
+  "checks": 8,
+  "failed": 0,
+  "static": [
+    {
+      "check": "the line only when not x1",
+      "ok": true
+    },
+    {
+      "check": "from the player's own attributes",
+      "ok": true
+    },
+    {
+      "check": "LootService still uses the same attributes and numbers",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "the penalty ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the top 3 ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "one stack is not a bully",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty reward counts",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "'Your drops now' line (게임성 개발 1, 검수 2026-10-10 조사 '피할 것 6'), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.DropsNow with the CURRENT Config.luau: x1 with nothing; a bully or\nthis week's outlaw x Config.Bully.Penalty.DropMult (0.5, once even when both); the weekly top 3 (RankReward) x\nConfig.Ranking.RewardMult (1.1); both multiply; the reasons are short words. Static: the bag's 'What Monsters Drop'\nadds the line only when it is not x1, from the player's own attributes; LootService still uses the same attributes and\nnumbers. Mutations: each must be caught.",
+  "studioCalls": 0
+}

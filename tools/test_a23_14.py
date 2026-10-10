@@ -186,6 +186,26 @@ MUTATIONS = [
      "\t\tdata.Quests[index] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\t\tdata.Quests[index] = newQuest("),
     ("board on: a rebirth refills empty slots", "QUEST_SOURCE",
      "\t\t\tquests[i] = boardOn() and { Kind = \"Empty\" } or newQuest(", "\t\t\tquests[i] = newQuest("),
+    # A23-113 #8: one daily is not hunting (from Lv10), and the Choice daily
+    ("A23-113: no non-hunting daily guarantee", "QUEST_SOURCE", "\tif kind == \"Daily\" and not newbie and level >= num(Config.Quests.NonHuntFrom, 10)",
+     "\tif false and kind == \"Daily\" and not newbie and level >= num(Config.Quests.NonHuntFrom, 10)"),
+    ("A23-113: the guarantee only from Lv20", "QUEST_SOURCE", "level >= num(Config.Quests.NonHuntFrom, 10)", "level >= 20"),
+    ("A23-113: the guarantee on the first slot too", "QUEST_SOURCE",
+     "\t\tand otherCount >= math.max(1, num(Config.Quests.Slots, 3) - 1) and not otherNonHunt then", "\t\tand not otherNonHunt then"),
+    ("A23-113: another non-hunting slot is forced anyway", "QUEST_SOURCE", " and not otherNonHunt then", " then"),
+    ("A23-113: a Choice daily with no source on", "QUEST_SOURCE", "\tif t.Id == \"Choice\" and not choiceOn() then return false end\n", ""),
+    ("A23-113: the job board is no choice source", "QUEST_SOURCE", "\tif type(Config.Board) == \"table\" and Config.Board.Enabled == true then return true end\n", ""),
+    ("A23-113: the lost things are no choice source", "QUEST_SOURCE", "\tif type(Config.LostFound) == \"table\" and Config.LostFound.Enabled == true then return true end\n", ""),
+    ("A23-113: kill cards are no choice source", "QUEST_SOURCE", "if type(card) == \"table\" and card.Enabled ~= false then return true end", "if false then return true end"),
+    ("A23-113: a deed never fills the Choice daily", "QUEST_SOURCE",
+     "if typeof(player) == \"Instance\" and player:IsA(\"Player\") then addProgress(player, \"Choice\", 1) end", "local _ = player"),
+    ("A23-113: a deed fills the goose daily", "QUEST_SOURCE", "addProgress(player, \"Choice\", 1) end", "addProgress(player, \"Goose\", 1) end"),
+    ("A23-113 config: Goose is hunting", "CONFIG_SOURCE", "RewardPerUnit = 20, NonHunt = true,\n\t\t\tText = \"Join the Golden Goose", "RewardPerUnit = 20,\n\t\t\tText = \"Join the Golden Goose"),
+    ("A23-113 config: Choice is hunting", "CONFIG_SOURCE", "RewardPerUnit = 20, NonHunt = true,\n\t\t\tText = \"Make a kind or sneaky choice\"", "RewardPerUnit = 20,\n\t\t\tText = \"Make a kind or sneaky choice\""),
+    ("A23-113 config: the guarantee from Lv30", "CONFIG_SOURCE", "\tNonHuntFrom = 10,", "\tNonHuntFrom = 30,"),
+    ("A23-113 config: the woods have no Choice row", "CONFIG_SOURCE",
+     "\t\t\t{ Id = \"Choice\", Weight = 2, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)\n", ""),
+    ("A23-113 config: the Choice daily needs two choices", "CONFIG_SOURCE", "{ Id = \"Choice\", Weight = 2, Targets = { 1 } }", "{ Id = \"Choice\", Weight = 2, Targets = { 2 } }"),
 ]
 
 

@@ -208,9 +208,22 @@ local function templateFitsFaction(t, faction)
 	return true
 end
 
--- a template the player can do now: its faction rule, and A23-71 the skill row ("Release") only once a skill is learned
+-- A23-113 #8: the daily 'Choice' (one good or naughty deed) exists only while something can offer a choice: the job board, the lost
+-- things, or a kill card that is not switched off. Nothing on: the slot is another kind (and a saved Choice daily is remade).
+local function choiceOn()
+	if type(Config.Board) == "table" and Config.Board.Enabled == true then return true end
+	if type(Config.LostFound) == "table" and Config.LostFound.Enabled == true then return true end
+	for _, card in type(Config.KillCards) == "table" and Config.KillCards or {} do
+		if type(card) == "table" and card.Enabled ~= false then return true end
+	end
+	return false
+end
+
+-- a template the player can do now: its faction rule, A23-113 the Choice row only while a choice source is on, and A23-71 the
+-- skill row ("Release") only once a skill is learned
 local function templateFitsNow(t, faction, data)
 	if not templateFitsFaction(t, faction) then return false end
+	if t.Id == "Choice" and not choiceOn() then return false end
 	return t.Id ~= "Release" or (data ~= nil and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths))
 end
 
@@ -287,12 +300,15 @@ local function newQuest(player, kind, others)
 	end
 
 	local otherIds, otherKeys, otherPvP = {}, {}, 0
+	local otherCount, otherNonHunt = 0, false -- A23-113 #8
 	for _, q in others or {} do
 		if type(q) == "table" and type(q.Id) == "string" then
 			otherIds[q.Id] = true
 			otherKeys[q.Id .. "|" .. tostring(q.Unit)] = true
 			local ot = TEMPLATE_BY_ID[q.Id]
 			if ot and ot.PvP then otherPvP += 1 end
+			otherCount += 1
+			if ot and ot.NonHunt == true then otherNonHunt = true end
 		end
 	end
 
@@ -316,6 +332,22 @@ local function newQuest(player, kind, others)
 		end
 	end
 	local pool = (#preferred > 0 and preferred) or (#otherUnit > 0 and otherUnit) or candidates
+	-- A23-113 #8: from Lv10 the three dailies are not all hunting: the last slot, when the other two both hunt, is drawn from the
+	-- non-hunting kinds that fit this player now; none fits: unchanged (the other two hold no non-hunting kind, so every one
+	-- that fits is a new goal: `preferred` has them all)
+	if kind == "Daily" and not newbie and level >= num(Config.Quests.NonHuntFrom, 10)
+		and otherCount >= math.max(1, num(Config.Quests.Slots, 3) - 1) and not otherNonHunt then
+		local function nonHunt(list)
+			local out = {}
+			for _, r in list do
+				local rt = TEMPLATE_BY_ID[r.Id]
+				if rt and rt.NonHunt == true then table.insert(out, r) end
+			end
+			return out
+		end
+		local nh = nonHunt(preferred)
+		if #nh > 0 then pool = nh end
+	end
 	local row
 	if #pool > 0 then
 		row = pickWeighted(pool)
@@ -1388,6 +1420,14 @@ function M.Init(registry)
 	connectSignal("ProgressionService", "LeveledUp", onLeveledUp) -- CR-M6
 	connectSignal("CombatService", "Released", onReleased)
 	connectSignal("GooseService", "GooseFinished", onGooseFinished)
+	-- A23-113 #8: a good / naughty deed (a choice card, the King's finisher card, a job board Kind / Sneaky job) fills the daily
+	-- 'Choice'. Soft: a world without the ledger simply never has the choice daily.
+	local deeds = S.Deeds
+	if type(deeds) == "table" and type(deeds.Booked) == "table" and type(deeds.Booked.Connect) == "function" then
+		deeds.Booked:Connect(function(player)
+			if typeof(player) == "Instance" and player:IsA("Player") then addProgress(player, "Choice", 1) end
+		end)
+	end
 	connectSignal("PvPService", "PlayerKO", onPlayerKO)
 	connectSignal("KaijuService", "KaijuEnded", onKaijuEnded)
 	connectSignal("FactionService", "FactionChanged", onFactionChanged)

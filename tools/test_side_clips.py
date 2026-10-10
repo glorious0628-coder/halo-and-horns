@@ -23,13 +23,16 @@ CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.json"
 JOINTS = {"Waist", "Neck", "RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow", "LeftWrist"}
 STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST_DELAY", "Mage"),
-          "PaladinRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "LightMageRelease": ("RELEASE_CONTACT.Mage", "Mage")}
+          "PaladinRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "LightMageRelease": ("RELEASE_CONTACT.Mage", "Mage"),
+          # A23-116 Q (the Horns side + the Ranger)
+          "BerserkerRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "DarkMageRelease": ("RELEASE_CONTACT.Mage", "Mage"),
+          "RangerRelease": ("RELEASE_LAUNCH.Archer", "Archer"), "ShadowHunterRelease": ("RELEASE_LAUNCH.Archer", "Archer")}
 # Z / X (A23-108 ⑤, off until the 10/20 check): one strike key each, inside the clip
 ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX"}
 
 
 def clip(fx: str, name: str):
-    m = re.search(r"\t\t" + name + r" = \{ Len = ([\d.]+), Keys = \{[^\n]*\n(.*?)\n\t\t\} \},", fx, re.S)
+    m = re.search(r"\t\t" + name + r" = \{ Len = ([\d.]+),[^\n]*?Keys = \{[^\n]*\n(.*?)\n\t\t\} \},", fx, re.S)
     if not m:
         return None
     keys = []
@@ -58,6 +61,8 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
     out.append(("Halo's Paladin and Light Mage have their own swing", ("Warrior_Halo", "PaladinSwing") in rows
                 and ("Mage_Halo", "LightMageSwing") in rows))
     out.append(("... and their own Q (release)", ("Warrior_Halo", "PaladinRelease") in rows and ("Mage_Halo", "LightMageRelease") in rows))
+    out.append(("A23-116: every side's own Q", all((k, n) in rows for k, n in [("Warrior_Horns", "BerserkerRelease"),
+        ("Mage_Horns", "DarkMageRelease"), ("Archer_Halo", "RangerRelease"), ("Archer_Horns", "ShadowHunterRelease")])))
     out.append(("... and their own Z / X; the Ranger's Z is the solved draw", all((k, n) in rows for k, n in [
         ("Warrior_Halo", "PaladinZ"), ("Warrior_Halo", "PaladinX"), ("Mage_Halo", "LightMageZ"), ("Mage_Halo", "LightMageX"),
         ("Archer_Halo", "ArcherSwing")])))

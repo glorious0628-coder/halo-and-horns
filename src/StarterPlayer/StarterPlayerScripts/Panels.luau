@@ -2226,6 +2226,7 @@ ITEMS = {
 		Drops = "What Monsters Drop", DropsNone = "Defeat monsters to see what they drop here.", -- P7
 		DropLine = "%s: %s", DropPart = "%s %s", DropJackpot = "★Legendary weapon (jackpot) 1 in %s", DropPotion = "%s potion",
 		DropWeapon = "%s weapon",
+		DropsNowF = "Your drops now: ×%s (%s)", -- 검수 10/10: (multiplier, reasons) - only when it is not x1
 		DropCount = "%s ×%d", -- a row that gives N > 1 at once (the king's 8 candies); symbols only, same in English
 		NoScrolls = "None yet. Monsters drop them sometimes!",
 		NoMaterials = "None yet. Monsters drop them!",
@@ -2765,6 +2766,13 @@ BUILDERS.Items = function(parent)
 		end
 	end
 	if not anyDrop then addText(parent, L.DropsNone, { Color = theme.SubText, Size = 16 }) end
+	-- 검수 10/10: my drop multiplier right now (Config.DropsNow: outlaw / bully x0.5, top 3 x1.1); no line at x1
+	local dm, why = Config.DropsNow({ BullyStacks = player:GetAttribute("BullyStacks"), Outlaw = player:GetAttribute("Outlaw"),
+		RankReward = player:GetAttribute("RankReward") })
+	if math.abs(dm - 1) > 1e-6 then
+		addText(parent, string.format(L.DropsNowF, string.format("%g", math.floor(dm * 100 + 0.5) / 100), table.concat(why, " · ")),
+			{ Name = "DropsNow", Color = dm < 1 and theme.SubText or theme.Gold, Size = 15 })
+	end
 
 	-- 0.25 s: a pending request that got its answer / timed out, or the PvP combat tag flipping, rebuilds in place
 	return function()
@@ -2981,18 +2989,15 @@ local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, Calm
 	Text = {
 		RowShard = "A shard is talking to you — tap to see",
 		RowOther = "Someone wants to talk — tap to see",
-		ToastShard = "A shard is talking to you! Tap the quest row to see.",
-		ToastOther = "A story is waiting! Tap the quest row to see.",
 		HintLean = "No points here. Your shard just leans to the light or the dark.", -- E5: both picks 0 points
 		HintHave = " (you have %d)", -- round 3 #5: my own side's points now, after the hint
 	},
 }
 
-function STORY.Label(id, forToast)
+function STORY.Label(id)
 	local defs = Config.StoryQuests and Config.StoryQuests.Defs
 	local def = defs and defs[id]
 	local shard = type(def) == "table" and (def.Speaker == "Shard" or def.Speaker == "Fountain")
-	if forToast then return shard and STORY.Text.ToastShard or STORY.Text.ToastOther end
 	return shard and STORY.Text.RowShard or STORY.Text.RowOther
 end
 
@@ -3012,10 +3017,9 @@ end
 function STORY.Queue(arg)
 	STORY.Pending = { Id = arg.Id, St = arg.St, Var = arg.Var }
 	local key = arg.Id .. "|" .. tostring(arg.St)
-	if STORY.Toasted ~= key and not pickerOpen() then
-		STORY.Toasted = key
-		toast(STORY.Label(arg.Id, true), "info", 4)
-	end
+	-- 검수 10/10 (user "이거는 언제쯤 없애는 거야?", A23-99 less hand-holding): no toast any more - the quest row's pulse
+	-- and its 'Someone wants to talk' line are the hint
+	STORY.Toasted = key
 end
 
 function STORY.Def()

@@ -145,6 +145,9 @@ local function questWorld(saved, seed, opts)
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
 	f.Config = config
 	if opts and opts.Gate == false then config.Daily.IntroGate = false end
+	-- A23-113 #8: from Lv10 one daily is not hunting; the older groups drive kill / skill / gold sets only (NoNonHunt = the old draw)
+	if opts and opts.NoNonHunt then config.Quests.NonHuntFrom = 1000000 end
+	if opts and opts.EditConfig then opts.EditConfig(config) end
 	local players = { __kind = "Instance", Name = "Players" }
 	local userId = 7000 + questSerial
 	if saved then f.Rows["P_" .. userId] = deepCopy(saved) end
@@ -230,7 +233,7 @@ local function questWorld(saved, seed, opts)
 		MonsterService = { MonsterKilled = signal() }, CombatService = { Released = signal() },
 		GooseService = { GooseFinished = signal() }, PvPService = { PlayerKO = signal(),
 			IsRookie = function() return not (opts and opts.Graduated) end },
-		KaijuService = { KaijuEnded = signal() }, StoryQuestService = { QuestDone = signal() },
+		KaijuService = { KaijuEnded = signal() }, StoryQuestService = { QuestDone = signal() }, Deeds = { Booked = signal() },
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return ds.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() },
 		ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end },
@@ -661,7 +664,7 @@ end
 -- a woods set of kill / skill / gold only (the goals f:Finish can drive), generated at `level`
 local function woodsKSG(level, from)
 	for seed = from or 1, (from or 1) + 600 do
-		local g = questWorld(rookieRow(level, "Halo"), seed)
+		local g = questWorld(rookieRow(level, "Halo"), seed, { NoNonHunt = true })
 		local ok = true
 		for _, q in g.Data.Quests do
 			if q.Id ~= "Kill" and q.Id ~= "Release" and q.Id ~= "Gold" then ok = false end
@@ -782,6 +785,148 @@ runGroup("dailies-woods", function()
 	local part = questWorld(rookieRow(12, "Halo", { DailyDay = today() - 1, DailyClaims = 1, DailyLevel = 12, Quests = {} }), 32)
 	check(math.abs((part.Data.VacationDays or 0) - 0.8) < 1e-9, "one claim of three = 3 of 15 woods minutes -> 0.8 vacation day",
 		part.Data.VacationDays)
+end)
+
+------------------------------------------------------------------ A23-113 #8: one daily that is not hunting (+ the Choice daily)
+local function nonHuntCount(f)
+	local n = 0
+	for _, q in f.Data.Quests do
+		local t = TEMPLATE[q.Id]
+		if t and t.NonHunt == true then n += 1 end
+	end
+	return n
+end
+
+runGroup("dailies-nonhunt (A23-113 #8)", function()
+	local W = CONFIG.Quests
+	check(W.NonHuntFrom == 10, "the guarantee starts at Lv10", tostring(W.NonHuntFrom))
+	for _, id in { "Goose", "Hunt", "Plunder", "Choice" } do
+		check(TEMPLATE[id] and TEMPLATE[id].NonHunt == true, id .. " is a non-hunting template", id)
+	end
+	for _, id in { "Kill", "Golden", "Gold", "Release" } do
+		check(TEMPLATE[id] and not TEMPLATE[id].NonHunt, id .. " is hunting", id)
+	end
+	local C = TEMPLATE.Choice
+	check(C and C.DailyUnits[1] == 1 and C.Text == "Make a kind or sneaky choice" and #C.ShortName <= 14, "Choice: one choice, its text, a short name", show(C))
+	local row
+	for _, r in W.Woods.Dailies do if r.Id == "Choice" then row = r end end
+	check(row ~= nil and row.Targets[1] == 1 and #row.Targets == 1, "the woods band has a Choice row (target 1)", show(row))
+	-- no choice source on (the beta default): never a Choice daily; Lv10+ still has a non-hunting one for a side player
+	for _, faction in { "Halo", "Horns" } do
+		for _, level in { 10, 17, 24, 30, 60 } do
+			for seed = 1, 30 do
+				local f = questWorld(rookieRow(level, faction), seed * 97 + level, { Graduated = level >= 15 })
+				check(#f.Data.Quests == 3 and nonHuntCount(f) >= 1, "Lv" .. level .. " " .. faction .. ": at least one of the 3 is not hunting",
+					show({ f.Data.Quests[1].Id, f.Data.Quests[2].Id, f.Data.Quests[3].Id }))
+				for _, q in f.Data.Quests do check(q.Id ~= "Choice", "no choice source on: no Choice daily", q.Id) end
+				local ids = {}
+				for _, q in f.Data.Quests do ids[q.Id] = true end
+				check(count(ids) == 3, "... and the three goals still differ", show(ids))
+			end
+		end
+	end
+	-- the rule is for the LAST slot only: a hunting first slot stays the usual draw (Goose is 1 in ~12 of a Lv12 draw, so it
+	-- opens a set in a small share of sets, never in all of them)
+	local first, total = 0, 0
+	for seed = 1, 60 do
+		local f = questWorld(rookieRow(12, "Halo"), seed * 211)
+		total += 1
+		local t = TEMPLATE[f.Data.Quests[1].Id]
+		if t and t.NonHunt == true then first += 1 end
+	end
+	check(first <= total * 0.4, "the first slot is not forced to be non-hunting (" .. first .. " of " .. total .. ")", tostring(first))
+	-- ... and only when the other two both hunt: a set that already has a non-hunting slot draws its last slot as usual (so the
+	-- last slot is non-hunting in most of those sets only by the usual odds, not in all of them)
+	local natural, both = 0, 0
+	for seed = 1, 400 do
+		local f = questWorld(rookieRow(17, "Halo"), seed * 37, { Graduated = true })
+		local q = f.Data.Quests
+		local function nh(i) local t = TEMPLATE[q[i].Id]; return t ~= nil and t.NonHunt == true end
+		if nh(1) or nh(2) then
+			natural += 1
+			if nh(3) then both += 1 end
+		end
+	end
+	check(natural >= 10 and both <= natural * 0.8, "a set with a non-hunting slot among the first two does not always get a third (" .. both .. " of " .. natural .. ")",
+		show({ natural, both }))
+	-- the guild (Neutral) has no Goose / PvP: nothing non-hunting fits, the set is drawn as before
+	for seed = 1, 20 do
+		local f = questWorld(rookieRow(17, "Neutral"), seed * 53)
+		check(nonHuntCount(f) == 0 and #f.Data.Quests == 3, "Neutral with no choice source: all hunting, unchanged", show({ f.Data.Quests[1].Id, f.Data.Quests[2].Id, f.Data.Quests[3].Id }))
+	end
+	-- Lv1-9 is not touched: no non-hunting row, ever
+	for _, level in { 1, 5, 9 } do
+		for seed = 1, 20 do
+			local f = questWorld(rookieRow(level, "Halo"), seed * 31)
+			check(nonHuntCount(f) == 0, "Lv" .. level .. ": the meadow set of 3 is unchanged (all hunting)", show({ f.Data.Quests[1].Id, f.Data.Quests[2].Id, f.Data.Quests[3].Id }))
+		end
+	end
+	-- a choice source on: the Choice daily appears (woods band and Lv25+), it is a normal paid daily
+	local seen, seenHigh = 0, 0
+	for _, level in { 12, 40 } do
+		for seed = 1, 80 do
+			local f = questWorld(rookieRow(level, "Neutral"), seed * 71 + level, { Graduated = true, EditConfig = function(c) c.LostFound.Enabled = true end })
+			local i, q = f:Slot("Choice")
+			if q then
+				if level == 12 then seen += 1 else seenHigh += 1 end
+				local wantG, wantX
+				if level < 25 then wantG, wantX = CONFIG.HuntValue(level, W.Woods.RewardMinutes) else wantG, wantX = CONFIG.DailyQuestReward(level) end
+				check(q.Kind == "Daily" and q.Target == 1 and q.Progress == 0 and q.Text == "Make a kind or sneaky choice" and q.RewardGold == wantG and q.RewardXP == wantX,
+					"Lv" .. level .. ": the Choice daily is one choice, paid like any daily of its band", show({ q.Target, q.Progress, q.Text, q.RewardGold, wantG }))
+				check(nonHuntCount(f) >= 1, "(and the Choice slot is the non-hunting one)", "")
+			end
+		end
+	end
+	check(seen > 0 and seenHigh > 0, "with a choice source on the Choice daily shows up (Lv12 and Lv40; the guild has no other non-hunting kind)", show({ seen, seenHigh }))
+	-- the Board switch, a kill card, the lost things: each is a source on its own
+	for label, edit in {
+		Board = function(c) c.Board.Enabled = true end,
+		LostFound = function(c) c.LostFound.Enabled = true end,
+		KillCard = function(c) c.KillCards.FlowerPatch.Enabled = true end,
+	} do
+		local got = false
+		for seed = 1, 120 do
+			local f = questWorld(rookieRow(12, "Neutral"), seed * 13, { EditConfig = edit })
+			if f:Slot("Choice") then got = true break end
+		end
+		check(got, label .. " on: the Choice daily can be made", label)
+	end
+	-- progress: a deed (Deeds.Booked, any caller of Deeds.Add) fills it; other quests / bad players do nothing
+	local g
+	for seed = 1, 200 do
+		local f = questWorld(rookieRow(12, "Neutral"), seed * 13 + 1, { EditConfig = function(c) c.LostFound.Enabled = true end })
+		if f:Slot("Choice") then g = f break end
+	end
+	check(g ~= nil, "a Lv12 world with a Choice daily")
+	if g then
+		local i, q = g:Slot("Choice")
+		local others = 0
+		for _, o in g.Data.Quests do others += o.Progress end
+		g.Registry.Deeds.Booked:Fire(nil, "Good", 1, true)
+		g.Registry.Deeds.Booked:Fire("x", "Good", 1, true)
+		check(q.Progress == 0, "a bad player does nothing", q.Progress)
+		g.Registry.Deeds.Booked:Fire(g.Player, "Evil", 0, false) -- a naughty pick that took nothing is still a choice
+		check(q.Progress == 1 and q.Progress >= q.Target, "a deed fills the Choice daily (even a pick that moved no points)", show({ q.Progress, q.Target }))
+		local before = {}
+		for _, o in g.Data.Quests do before[o.Id] = o.Progress end
+		g.Registry.Deeds.Booked:Fire(g.Player, "Good", 1, true)
+		check(q.Progress == 1, "a finished Choice stays at its target", q.Progress)
+		g.Now += 2
+		g:Claim(i)
+		local gold = g:Paid()
+		check(gold > 0, "the Choice daily can be claimed and pays", tostring(gold))
+	end
+	-- a saved Choice daily is remade when its source goes off (the next time the player loads)
+	local r
+	for seed = 1, 200 do
+		local f = questWorld(rookieRow(12, "Neutral"), seed * 13 + 2, { EditConfig = function(c) c.LostFound.Enabled = true end })
+		if f:Slot("Choice") then r = f break end
+	end
+	if r then
+		r.Config.LostFound.Enabled = false
+		r.PS.PlayerReady:Fire(r.Player, r.Data)
+		check(r:Slot("Choice") == nil and #r.Data.Quests == 3, "the source went off: the unfinished Choice daily is remade as another kind", show({ r.Data.Quests[1].Id, r.Data.Quests[2].Id, r.Data.Quests[3].Id }))
+	end
 end)
 
 ------------------------------------------------------------------ A5. E11 the job-board switch (QuestService's side)

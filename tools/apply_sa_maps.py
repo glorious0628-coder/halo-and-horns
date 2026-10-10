@@ -34,7 +34,7 @@ local function idOf(s)
 end
 local function look(mp)
 	local sa = mp:FindFirstChildOfClass("SurfaceAppearance")
-	return idOf(mp.TextureID), sa and idOf(sa.ColorMap) or ""
+	return idOf(mp.TextureID), sa and idOf(sa.ColorMap) or "", sa and idOf(sa.NormalMap) or ""
 end
 local changed, already, skipped, failed = {}, {}, {}, {}
 local roots = { workspace, game:GetService("ServerStorage"), game:GetService("ReplicatedStorage") }
@@ -47,7 +47,7 @@ for _, root in roots do
 		if not list then
 			continue
 		end
-		local tex, col = look(mp)
+		local tex, col, nrm = look(mp)
 		local hit
 		for _, it in list do
 			if (it.match.tex and it.match.tex == tex) or (it.match.color and (it.match.color == col or idOf(it.sa.color) == col)) then
@@ -60,7 +60,8 @@ for _, root in roots do
 			table.insert(skipped, row)
 			continue
 		end
-		if col == idOf(hit.sa.color) then
+		-- done = its new maps are on (the colour alone says nothing: decision (a) keeps the game's own colour map)
+		if col == idOf(hit.sa.color) and (hit.sa.normal == nil or nrm == idOf(hit.sa.normal)) then
 			table.insert(already, hit.name .. "  " .. row)
 			continue
 		end
@@ -140,6 +141,12 @@ def collect(zone):
             continue
         rec = recs.get(name)
         sa = {keys[t]: ids[f"SA_{name}_{t}"] for t in "CNMR" if f"SA_{name}_{t}" in ids}
+        # decision (a), 이미지 생성 1 + 검수 10/10: no new colour map (a new one greys the SA while it waits for moderation) -
+        # the colour stays the game's own (its SurfaceAppearance ColorMap, else the MeshPart TextureID)
+        if rec and "color" not in sa and "normal" in sa:
+            own = (rec.get("sa") or {}).get("color") or rec.get("textureId")
+            if own:
+                sa["color"] = own
         if not rec or "color" not in sa:
             missing.append(name + (" (no import record)" if not rec else " (not uploaded)"))
             continue

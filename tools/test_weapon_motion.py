@@ -757,7 +757,7 @@ def main():
     harness += "\n" + config[config.index("Config.Weapons = {"):config.index("-- display names per class")]
     visuals = VISUALS.read_text(encoding="utf-8")
     helper_names = ["attrNum", "attrStr", "getFaction", "getClass", "charScale", "clearChild", "accPart",
-                    "gripCFrame", "buildSword", "buildStaff", "buildBow", "buildWeapon"]
+                    "gripCFrame", "fist", "buildSword", "buildStaff", "buildBow", "buildWeapon"]
     harness += "\n" + "\n".join(local_function(visuals, n) for n in helper_names)
     output = ROOT / "build/weapon_motion_offline_test.luau"
     output.parent.mkdir(parents=True, exist_ok=True)
