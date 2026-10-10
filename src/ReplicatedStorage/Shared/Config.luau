@@ -189,7 +189,7 @@ Config.Data = {
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
 		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow", PvPCards = false },
+			Cam = "Follow", PvPCards = false, Weather = true },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -4206,11 +4206,13 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the nine values incl. Music, Seq)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eleven values incl. Music / Weather, Seq = 14)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
 		Shake = { Type = "Bool" },
+		-- A23-105 (game dev 1): rain / snow and the weather's tint and sound (WeatherFx.SetEnabled; the evening lamps stay)
+		Weather = { Type = "Bool" },
 		DmgNum = { Type = "Enum", Options = { "All", "Off" } },
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
@@ -4220,11 +4222,12 @@ Config.Settings = {
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
-	Order = { "Sfx", "Music", "Shake", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
+	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
 		Music = "Music", MusicEn = "Music",
 		Shake = "Screen shake", ShakeEn = "Screen shake",
+		Weather = "Weather effects", WeatherEn = "Weather effects",
 		DmgNum = "Damage numbers", DmgNumEn = "Damage numbers",
 		Tags = "Other players' name tags", TagsEn = "Other players' name tags",
 		KeyBadges = "Key hints", KeyBadgesEn = "Key hints",
@@ -4950,6 +4953,12 @@ Config.Audio = {
 		BlipBright = "rbxassetid://126796215784360",
 		BlipGleam = "rbxassetid://103851146620116",
 		BlipFolk = "rbxassetid://98476528780032",
+		-- 13차 (소리 만들기 2026-10-10, own synthesis tools/sfx_r13.py; DoorOpen is kept for later)
+		LanternOn = "rbxassetid://94311196771631",
+		PetCall = "rbxassetid://139309639843969",
+		PetStow = "rbxassetid://109542349885083",
+		PetLevel = "rbxassetid://128227928372563",
+		DiamondTick = "rbxassetid://89172108649325",
 	},
 	Sounds = {
 		SwingWarrior = { File = "SwingWarrior", Volume = 0.30, Speed = { 0.92, 1.05 }, Max = 2, Gap = 0.08, Auto = true, Combat = true },
@@ -5037,8 +5046,11 @@ Config.Audio = {
 		Warp = { File = "Warp", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- I am moved far at once (pad, map travel, [Go]; not a respawn)
 		WarpIn = { File = "WarpIn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- ... and land: WarpInAfter s later
 		SecretFound = { File = "SecretFound", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- a hidden quest's row first shows (an easter egg found; instead of QuestNew)
-		PetLevelUp = { File = "LevelUp", Volume = 0.42, Speed = { 1.2, 1.2 }, Max = 1, Gap = 2 }, -- one of my pets' Lv going up (PetList): a small, higher LevelUp
-		MarkerMove = { File = "Tap", Volume = 0.20, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- the quest marker's goal changing while it is on screen
+		PetLevelUp = { File = "PetLevel", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- one of my pets' Lv going up (PetList; 13차 its own file)
+		PetCall = { File = "PetCall", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- a pet starts following me (PetList Equipped "" / other -> uid)
+		PetStow = { File = "PetStow", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.3 }, -- my follower put away (Equipped uid -> "")
+		MarkerMove = { File = "DiamondTick", Volume = 0.25, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- the quest marker's goal changing while it is on screen (13차 wood tick)
+		LanternOn = { File = "LanternOn", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- dusk: the lamps come on (GameState DayPhase -> "Dusk")
 		-- NPC blips (asset_ids 'blips'): the story page of a speaker in Blips opens with that speaker's blip (instead of WindowOpen)
 		BlipBright = { File = "BlipBright", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
 		BlipGleam = { File = "BlipGleam", Volume = 0.30, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.5 },
@@ -5103,6 +5115,19 @@ Config.Audio.ZoneAmbient = {
 	Tracks = {
 		HaloTown = "rbxassetid://76688623617177", -- birds + a tiny wind chime
 		HornsTown = "rbxassetid://112972652651947", -- lava bubbling + campfire crackle
+	},
+}
+-- A23-105 weather air (소리 만들기 2026-10-10 'ambience', 25 s loops): from WeatherFx.State() (GameState Weather / DayPhase,
+-- the roof check, the 'Weather effects' setting): Rain (RainRoof instead under a roof) and WinterWind (snow) while the
+-- weather effects are on; Night (crickets) at night unless it rains. 2D, each fading in / out over Fade s, at Volume x
+-- the Sound effects setting
+Config.Audio.Weather = {
+	Fade = 1.5,
+	Loops = {
+		Rain = { Id = "rbxassetid://126445007194331", Volume = 0.35 },
+		RainRoof = { Id = "rbxassetid://76655204420103", Volume = 0.25 },
+		Night = { Id = "rbxassetid://99972569683856", Volume = 0.30 },
+		WinterWind = { Id = "rbxassetid://113002054407080", Volume = 0.35 },
 	},
 }
 Config.Audio.Ambient = {

@@ -253,6 +253,11 @@ local function buildMain(kit, frame)
 	local sb = button(kit, hk, W.On, nil, function() settingsSet("Shake", settingsGet("Shake", true) == false) end)
 	table.insert(refresh, function() paintToggle(kit, sb, settingsGet("Shake", true) ~= false) end)
 
+	-- A23-105: rain / snow on or off (WeatherFx; the evening lamps stay - they are light, not an effect)
+	local _, hw = row(kit, frame, ST.WeatherEn or ST.Weather)
+	local wb = button(kit, hw, W.On, nil, function() settingsSet("Weather", settingsGet("Weather", true) == false) end)
+	table.insert(refresh, function() paintToggle(kit, wb, settingsGet("Weather", true) ~= false) end)
+
 	-- A23-65: Camera Follow (turns behind me while I walk) / Free; one button switches
 	local _, hc = row(kit, frame, ST.CamEn or ST.Cam)
 	local cb = button(kit, hc, "", nil, function()
@@ -541,7 +546,23 @@ function SettingsUI.Init(registry)
 	end
 end
 
+-- A23-105: the saved 'Weather effects' value drives WeatherFx (now, and on every change / the server's first value)
+function SettingsUI.ApplyWeather()
+	local st, wx = C and C.Settings, C and C.WeatherFx
+	if type(st) ~= "table" or type(st.Get) ~= "function" or type(wx) ~= "table" or type(wx.SetEnabled) ~= "function" then
+		return false
+	end
+	local ok, v = pcall(st.Get, "Weather")
+	pcall(wx.SetEnabled, not (ok and v == false))
+	return true
+end
+
 function SettingsUI.Start()
+	SettingsUI.ApplyWeather()
+	local st = C and C.Settings
+	if type(st) == "table" and type(st.Changed) == "table" and type(st.Changed.Connect) == "function" then
+		st.Changed:Connect(function() SettingsUI.ApplyWeather() end)
+	end
 	print("[SettingsUI] started")
 end
 
