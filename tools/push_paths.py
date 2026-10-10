@@ -12,14 +12,69 @@ handoff file). Uncommitted edits survive another session's reset --keep, so this
   4. if the push is rejected (someone pushed first), fetch and rebuild on the new origin/main (up to 5 tries)
   5. `git reset --keep origin/main` so the shared HEAD equals origin again (your pushed files are now clean)
 Only the listed paths are touched; nobody else's staged or modified files are committed.
+
+Before anything is pushed (검수 2026-10-10, the core of a pre-push AI check, our way): a secrets scan of the listed paths.
+A path named .env / .env.* (not *.example), anything under .tripo/, *.pem or id_rsa* is refused; a text file holding a
+key-shaped value (TRIPO_API_KEY=<value>, an sk-ant- key, a PRIVATE KEY block, a long tsk_ token) is refused. Only the
+file and line number are printed - never the value. Nothing is pushed when anything is found.
 """
 
 import os
+import re
 import subprocess
 import sys
 import tempfile
 
 TRAILER = "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+
+# key shapes (built from pieces so this file never matches itself)
+SECRET_PATTERNS = [
+    ("TRIPO_API_KEY with a value", re.compile("TRIPO_API_KEY" + r"\s*[=:]\s*['\"]?[A-Za-z0-9_\-]{8,}")),
+    ("an Anthropic key (sk-ant-)", re.compile("sk-" + "ant-" + r"[A-Za-z0-9_\-]{10,}")),
+    ("a PRIVATE KEY block", re.compile("-----BEGIN " + r"[A-Z ]*" + "PRIVATE KEY-----")),
+    ("a long tsk_ token", re.compile(r"\b" + "tsk" + r"_[A-Za-z0-9_\-]{20,}")),
+]
+MAX_SCAN_BYTES = 5 * 1024 * 1024
+# a matched value holding one of these is a placeholder in docs / tests (vendor 'TRIPO_API_KEY=your_api_key'), not a key
+PLACEHOLDER_WORDS = ("your", "xxx", "dummy", "fake", "test", "example", "placeholder", "here", "redact", "<", "...")
+
+
+def secret_name(path):
+    """why a path's NAME alone is refused, else None"""
+    parts = path.replace("\\", "/").split("/")
+    name = parts[-1]
+    if name == ".env" or (name.startswith(".env.") and not name.endswith(".example")):
+        return "an .env file"
+    if ".tripo" in parts[:-1] or name == ".tripo":
+        return "under .tripo/"
+    if name.lower().endswith(".pem"):
+        return "a .pem key file"
+    if name.startswith("id_rsa"):
+        return "an id_rsa key file"
+    return None
+
+
+def scan_paths(paths):
+    """[(path, line or None, reason)] for every listed path that looks like a secret; never holds the value itself"""
+    found = []
+    for p in paths:
+        why = secret_name(p)
+        if why:
+            found.append((p, None, why))
+            continue
+        if not os.path.isfile(p) or os.path.getsize(p) > MAX_SCAN_BYTES:
+            continue
+        with open(p, "rb") as f:
+            data = f.read()
+        if b"\x00" in data[:4096]:
+            continue  # a binary file (images, places)
+        text = data.decode("utf-8", errors="replace")
+        for n, line in enumerate(text.splitlines(), 1):
+            for reason, pat in SECRET_PATTERNS:
+                m = pat.search(line)
+                if m and not any(w in m.group(0).lower() for w in PLACEHOLDER_WORDS):
+                    found.append((p, n, reason))
+    return found
 
 
 def git(*args, env=None, check=True, inp=None):
@@ -49,6 +104,11 @@ def main():
         message += "\n\n" + TRAILER
     top = git("rev-parse", "--show-toplevel")
     os.chdir(top)
+    found = scan_paths(paths)
+    if found:
+        for p, n, reason in found:
+            print(f"비밀 같은 것 발견 - 올리지 않아요: {p}{'' if n is None else ':' + str(n)} ({reason})")
+        sys.exit("push 중단: 위 파일에서 비밀 값을 빼고 다시 해 주세요 (값은 출력하지 않았어요)")
     blobs = {}
     for p in paths:
         blobs[p] = git("hash-object", "-w", p) if os.path.isfile(p) else None
