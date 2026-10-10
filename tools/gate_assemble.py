@@ -207,6 +207,27 @@ if opt["halo"]:  # the floating halo ring over the arch (2D gate): a torus, Stud
     b_.inputs["Emission Strength"].default_value = 3.0
     ring.data.materials.append(m_)
     parts.append(ring)
+# gate lanterns (이미지 생성 3 묶음 3): one each side in front of the towers, a glow bead in the open head (Studio: Neon + PointLight)
+if opt.get("lanterns", 1.0) and os.path.exists(os.path.join(ROOT, "art/models/tripo/web/HaloPart_GateLantern_HD_LOD.glb")):
+    for side, sx in (("L", -1), ("R", 1)):
+        ln = fit(load("GateLantern"), "z", 9.0)
+        ln.name = "Gate_Lantern" + side
+        r = TOWER_R[side]
+        ln.location = (sx * (AW + 2 * r + 1.5), lo_a.y - 3.5, 0)
+        parts.append(ln)
+        bpy.context.view_layer.update()  # the new location must be in matrix_world before the bbox
+        l_, h_ = bbox(ln)
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=0.55, location=((l_.x + h_.x) / 2, (l_.y + h_.y) / 2, h_.z - 1.6))
+        glow = bpy.context.active_object
+        glow.name = "Gate_LanternGlow" + side
+        mg = bpy.data.materials.new("Gate_LanternGlow")
+        mg.use_nodes = True
+        bg = mg.node_tree.nodes["Principled BSDF"]
+        bg.inputs["Base Color"].default_value = (1.0, 0.85, 0.5, 1)
+        bg.inputs["Emission Color"].default_value = (1.0, 0.85, 0.5, 1)
+        bg.inputs["Emission Strength"].default_value = 5.0
+        glow.data.materials.append(mg)
+        parts.append(glow)
 if opt["deco"]:  # flat decoration plates (HaloDeco_* images, SA from art/models/worldkit/sa_halodeco_2026-10-10.json)
     fy = lo_a.y - 0.12  # just in front of the arch wall face
     # the shield sits in the wall band between the top of the opening and the top of the wall (no overhang); the door halo goes to the cathedral door
