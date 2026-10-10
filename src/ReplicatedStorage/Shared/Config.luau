@@ -3940,6 +3940,25 @@ Config.PassBoost = {
 	-- is queued by then
 	WriteRetries = 3,
 }
+-- 검수 2026-10-10 (A23-113 follow-up): what each pass really does, in plain easy English. Line = the one short line of a Shop
+-- card (<= 38 letters: the card wraps longer ones); Desc = the description of the pass page on create.roblox.com (the user pastes
+-- it with the pass id; <= 300 letters). Prices and the 2x are not changed here: the text only says what the code does, and its
+-- "2x" is Config.PassBoost.Mult (tools/test_pass_text.py keeps the words and the numbers in step). VIP lists the crown, the
+-- chat tag and the Supporters board (they exist); the VIP emote of the A23-75 list is not built, so it is not promised yet.
+-- Look = the looks tab (every sold or attendance look), PrivateServer = the Shop's private server card.
+Config.PassInfo = {
+	NoStats = "No stats are for sale.",
+	XP2 = { Line = "Level up 2x faster",
+		Desc = "Get 2x XP from everything you do, so you level up 2x faster. It only speeds up leveling. No stats are for sale." },
+	Gold2 = { Line = "Earn 2x gold",
+		Desc = "Earn 2x gold from hunting, quests and rewards. Gold you take from other players is not doubled. No stats are for sale." },
+	VIP = { Line = "Crown, chat tag, Supporters board",
+		Desc = "A crown by your name, a VIP tag in chat, and your name on the village Supporters board. No stats are for sale." },
+	Look = { Line = "New colors for halo or horns",
+		Desc = "A new color for your halo or horns. It only changes how you look: the shape still shows your rank. No stats are for sale." },
+	PrivateServer = { Line = "Play with just your friends.",
+		Desc = "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale." },
+}
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
 -- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
