@@ -395,6 +395,43 @@ for _, case in CASES do
 			else
 				check(g, pcName, false, fmt(t) .. " count " .. tostring(t.Count))
 			end
+			-- small PC windows (2026-10-08): the quest lines >= 250 real px wide (a declared tiny window: as wide as the room
+			-- before the item level with them), the HP / MP bars >= 14 real px tall
+			local qName = "PC quest lines at least 250 px wide"
+			local eQ = excepted(case, qName)
+			local qPx = out.quest.W * s
+			if qPx >= 250 - 0.5 then
+				check(g, qName, true)
+				if eQ then check(g, "exception still needed: " .. qName, false, ("%.1f px fits; drop the exception"):format(qPx)) end
+			elseif eQ then
+				local q, room = out.quest, math.huge
+				for oid, o in out do
+					if oid ~= "quest" and oid ~= "minimap" and type(o) == "table" and finite(o.X) and finite(o.H)
+						and o.X > q.X and o.Y < q.Y + q.H and o.Y + o.H > q.Y then
+						room = math.min(room, o.X - 8 - q.X)
+					end
+				end
+				check(g, "PC quest lines fill the room before their neighbour", math.abs(q.W - room) <= 0.5,
+					("%.1f du, room %.1f du"):format(q.W, room))
+				table.insert(exceptions, { Screen = g, Check = qName, Reason = eQ.Reason, Measured = qPx, Need = 250 })
+			else
+				check(g, qName, false, ("%.1f px"):format(qPx))
+			end
+			check(g, "PC HP / MP bars at least 14 px tall", out.hp_bar.H * s >= 14 - 0.5 and out.mp_bar.H * s >= 14 - 0.5,
+				("%.1f / %.1f px"):format(out.hp_bar.H * s, out.mp_bar.H * s))
+			local ch = out.chips
+			check(g, "PC notify column centred with the chips", math.abs((out.notify.X + out.notify.W / 2)
+				- (ch.X + ch.W / 2)) <= 1, fmt(out.notify) .. " " .. fmt(ch))
+			local nName = "PC notify column at least 288 px wide"
+			local nPx = out.notify.W * s
+			if nPx >= 288 - 0.5 then
+				check(g, nName, true)
+			elseif excepted(case, nName) then
+				table.insert(exceptions, { Screen = g, Check = nName, Reason = excepted(case, nName).Reason, Measured = nPx,
+					Need = 288 })
+			else
+				check(g, nName, false, ("%.1f px %s"):format(nPx, fmt(out.notify)))
+			end
 			-- the potions stay a lead gap right of the tile row, the bars end with the pair (one block)
 			check(g, "PC potions follow the icon row", hp.X - (t.X + t.W) >= MIN_PRESS_GAP - 0.01 and hp.X - (t.X + t.W) <= 16,
 				fmt(hp) .. " " .. fmt(t))

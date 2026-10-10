@@ -3223,6 +3223,33 @@ Config.Visuals = {
 	HugeNumberScale = 2.5, -- release total damage number scale
 }
 
+-- A23-75 / A23-77 looks (이미지 생성 2 dd217fc, 검수 OK): a worn look (player attribute LookOn = one of these ids, set by
+-- the server; Config.Looks sells / awards them under the same id) recolours the rank's own mark mesh - TextureID per
+-- rank, R1 and R2 share one 64 px palette - so the shape stays the rank's (a bought look never passes for a higher
+-- rank). Glow = the halo's light, Sparkle = the top rank's sparkles (round, no rays). Ids: UiSandbox upload (이미지 개발)
+Config.LookThemes = {
+	HaloIce = { Faction = "Halo", R1R2 = "rbxassetid://137659488563185", R3 = "rbxassetid://108650983430092", R4 = "rbxassetid://76422994410695", R5 = "rbxassetid://130485697124157",
+		Glow = Color3.fromRGB(170, 225, 255), Sparkle = Color3.fromRGB(225, 245, 255) }, -- shop
+	HaloGold = { Faction = "Halo", R1R2 = "rbxassetid://124557820913278", R3 = "rbxassetid://124870710556969", R4 = "rbxassetid://104125803475842", R5 = "rbxassetid://121454866183175",
+		Glow = Color3.fromRGB(255, 170, 110), Sparkle = Color3.fromRGB(255, 120, 130) }, -- shop
+	HornsLava = { Faction = "Horns", R1R2 = "rbxassetid://80238307725390", R3 = "rbxassetid://82767525442280", R4 = "rbxassetid://78943828071190", R5 = "rbxassetid://85082048989349",
+		Glow = Color3.fromRGB(255, 120, 40), Sparkle = Color3.fromRGB(255, 190, 90) }, -- shop
+	HornsShadow = { Faction = "Horns", R1R2 = "rbxassetid://77090857785800", R3 = "rbxassetid://134445622258892", R4 = "rbxassetid://97761533502616", R5 = "rbxassetid://112202207856048",
+		Glow = Color3.fromRGB(160, 100, 255), Sparkle = Color3.fromRGB(215, 190, 255) }, -- shop
+	HaloSprout = { Faction = "Halo", R1R2 = "rbxassetid://86617186225584", R3 = "rbxassetid://126112718924134", R4 = "rbxassetid://70457193636840", R5 = "rbxassetid://84485205872223",
+		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
+	HornsSprout = { Faction = "Horns", R1R2 = "rbxassetid://98729066506053", R3 = "rbxassetid://111198088905000", R4 = "rbxassetid://92425781835056", R5 = "rbxassetid://88143987545459",
+		Glow = Color3.fromRGB(150, 235, 120), Sparkle = Color3.fromRGB(210, 255, 180) }, -- attendance 14 days
+	HaloStarlight = { Faction = "Halo", R1R2 = "rbxassetid://79900622177360", R3 = "rbxassetid://106125508143560", R4 = "rbxassetid://120783323880170", R5 = "rbxassetid://112919940044810",
+		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
+	HornsStarlight = { Faction = "Horns", R1R2 = "rbxassetid://87973276568961", R3 = "rbxassetid://120704216649593", R4 = "rbxassetid://77284887873440", R5 = "rbxassetid://114837008556596",
+		Glow = Color3.fromRGB(120, 150, 255), Sparkle = Color3.fromRGB(255, 220, 120) }, -- attendance 50 days
+	HaloPlatinum = { Faction = "Halo", R1R2 = "rbxassetid://129286691726526", R3 = "rbxassetid://125145984859168", R4 = "rbxassetid://116074292544544", R5 = "rbxassetid://73047553511936",
+		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
+	HornsPlatinum = { Faction = "Horns", R1R2 = "rbxassetid://118578097813756", R3 = "rbxassetid://98158447043587", R4 = "rbxassetid://88887895520232", R5 = "rbxassetid://127877205287600",
+		Glow = Color3.fromRGB(210, 235, 255), Sparkle = Color3.fromRGB(255, 255, 255) }, -- attendance 100 days
+}
+
 -- 계급 장식 3D (이미지 생성 1 45b6220, user OK "좋아, 넣어"): the rank's own halo / horns model replaces the drawn mark
 -- once it is in Studio. ServerStorage[Folder] holds MeshParts (or Models with one mesh) named as below, imported at their
 -- real size (studs, built for a 1.2-stud head, origin = the bottom center; files art/models/acc/*.glb). Horns sink
@@ -4419,7 +4446,7 @@ Config.UIArt = {
 		MapZonePumpkinField = { Id = "rbxassetid://137146546854171", Size = Vector2.new(512, 512) },
 		MapZoneHauntedHollow = { Id = "rbxassetid://126361608809712", Size = Vector2.new(512, 512) },
 		MapKaiju = { Id = "rbxassetid://105547922444119", Size = Vector2.new(512, 512) },
-		MapGrudgeSack = { Id = "rbxassetid://93012481707250", Size = Vector2.new(512, 512) },
+		MapGrudgeSack = { Id = "rbxassetid://84005598517360", Size = Vector2.new(512, 512) },
 		MapPvP = { Id = "rbxassetid://118074682518530", Size = Vector2.new(512, 512) },
 		IconChipPumpkinKing = { Id = "rbxassetid://137587017958008", Size = Vector2.new(512, 512) }, -- event chip heads (left of '호박 대왕까지 m:ss' / the ghost king's chip)
 		IconChipGhostKing = { Id = "rbxassetid://139986664903918", Size = Vector2.new(512, 512) },
@@ -4465,19 +4492,6 @@ Config.UIArt = {
 		IconRankArtisan = { Id = "rbxassetid://96372902638765", Size = Vector2.new(512, 512) },
 		IconRankPvP = { Id = "rbxassetid://118972460416266", Size = Vector2.new(512, 512) }, -- redrawn 2026-10-06 (blades cross in an X)
 		-- User-approved E sprites; shared legacy keys remain unchanged.
-		FactionCardHaloE = { Id = "rbxassetid://115165874013728", Size = Vector2.new(380, 636) },
-		FactionCardHornsE = { Id = "rbxassetid://117803151290007", Size = Vector2.new(380, 636) },
-		FactionCardNeutralE = { Id = "rbxassetid://78748710982730", Size = Vector2.new(380, 636) },
-		FactionTitleRibbonE = { Id = "rbxassetid://77703498329138", Size = Vector2.new(549, 108) },
-		FactionPremisePanelE = { Id = "rbxassetid://101379550181314", Size = Vector2.new(1024, 130) },
-		FactionPremiseFreshTyped = { Id = "rbxassetid://105024415024705", Size = Vector2.new(1024, 174) },
-		FactionCardHaloFreshTyped = { Id = "rbxassetid://76818879022385", Size = Vector2.new(570, 954) },
-		FactionCardHornsFreshTyped = { Id = "rbxassetid://137806621328187", Size = Vector2.new(570, 954) },
-		FactionCardNeutralFreshTyped = { Id = "rbxassetid://127475794518664", Size = Vector2.new(570, 954) },
-		FactionTitleFreshTypedBalanced = { Id = "rbxassetid://81044633324158", Size = Vector2.new(1024, 210) },
-		FactionTitleFreshTyped = { Id = "rbxassetid://111239293270560", Size = Vector2.new(1024, 210) },
-		FactionFooterFreshTyped = { Id = "rbxassetid://128423642459976", Size = Vector2.new(1024, 126) },
-		FactionFooterPanelE = { Id = "rbxassetid://99568724265364", Size = Vector2.new(928, 86) },
 		-- pick screens: bundle 2 (5d16034, Firefly, wordless) text-free card backgrounds, regions in CardLayout; A23-48 the
 		-- game writes every word on them in English (the baked Korean FactionE cards are off)
 		CardHalo = { Id = "rbxassetid://116448859963324", Size = Vector2.new(622, 1024) },
@@ -4497,18 +4511,18 @@ Config.UIArt = {
 		FactionPickHorns = { Id = "rbxassetid://111143659498431", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
-		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://83476661743336", Size = Vector2.new(460, 550) },
-		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://88805775159569", Size = Vector2.new(460, 550) },
-		CLS_HaloMage_M_Card = { Id = "rbxassetid://126336881237120", Size = Vector2.new(460, 550) },
-		CLS_HaloMage_F_Card = { Id = "rbxassetid://123314243302195", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_M_Card = { Id = "rbxassetid://113804016014809", Size = Vector2.new(460, 550) },
+		CLS_HaloWarrior_F_Card = { Id = "rbxassetid://129768786563436", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_M_Card = { Id = "rbxassetid://118225411450017", Size = Vector2.new(460, 550) },
+		CLS_HaloMage_F_Card = { Id = "rbxassetid://113800216565552", Size = Vector2.new(460, 550) },
 		CLS_HaloArcher_M_Card = { Id = "rbxassetid://115817198015355", Size = Vector2.new(460, 550) },
 		CLS_HaloArcher_F_Card = { Id = "rbxassetid://126666354590986", Size = Vector2.new(460, 550) },
-		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://91103879889186", Size = Vector2.new(460, 550) },
-		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://94079237131593", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_M_Card = { Id = "rbxassetid://74863399200858", Size = Vector2.new(460, 550) },
+		CLS_HornsWarrior_F_Card = { Id = "rbxassetid://74943559632831", Size = Vector2.new(460, 550) },
 		CLS_HornsMage_M_Card = { Id = "rbxassetid://87840664026840", Size = Vector2.new(460, 550) },
 		CLS_HornsMage_F_Card = { Id = "rbxassetid://136362714347322", Size = Vector2.new(460, 550) },
-		CLS_HornsArcher_M_Card = { Id = "rbxassetid://81732631379103", Size = Vector2.new(460, 550) },
-		CLS_HornsArcher_F_Card = { Id = "rbxassetid://100853653295965", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_M_Card = { Id = "rbxassetid://75310398708603", Size = Vector2.new(460, 550) },
+		CLS_HornsArcher_F_Card = { Id = "rbxassetid://71626258615966", Size = Vector2.new(460, 550) },
 		FactionPremise = { Id = "rbxassetid://75757875574311", Size = Vector2.new(1024, 434), Slice = Rect.new(120, 120, 904, 314), SliceScale = 0.22, Tone = "Navy" },
 		FactionFooter = { Id = "rbxassetid://97044636639921", Size = Vector2.new(1024, 142), Slice = Rect.new(100, 70, 924, 72), FitHeight = true, Tone = "Navy" },
 		ShieldNeutral = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(251, 256) },
@@ -4542,6 +4556,38 @@ Config.UIArt = {
 		IconBloodSword = { Id = "rbxassetid://80973759611362", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconGauge = { Id = "" --[[old-account upload removed 2026-10-05: code fallback until the Firefly redraw]] , Size = Vector2.new(256, 70) },
 		IconDemon = { Id = "rbxassetid://101305375688321", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
+		-- A23-75 round pass badges (user pick "B", 이미지 생성 2 2096b5f, 512 round alpha): the Shop cards show them alone
+		IconPassXP2 = { Id = "rbxassetid://84663066597118", Size = Vector2.new(512, 512) }, -- PassIconExp2.png
+		IconPassGold2 = { Id = "rbxassetid://100341080284667", Size = Vector2.new(512, 512) }, -- PassIconGold2.png
+		IconPassVIP = { Id = "rbxassetid://98036294458431", Size = Vector2.new(512, 512) }, -- PassIconVIP.png
+		IconPassLooks = { Id = "rbxassetid://136373208143894", Size = Vector2.new(512, 512) }, -- PassIconBundle.png (the Looks header)
+		-- A23-75 / A23-77 look icons (이미지 생성 2 5cd9d28 / 565e19f, 검수 OK): 'Look' .. the Config.LookThemes id; the
+		-- shop's Looks tiles and the attendance board draw them (R3 shape render, navy rim)
+		LookHaloIce = { Id = "rbxassetid://131721415854040", Size = Vector2.new(512, 512) },
+		LookHaloGold = { Id = "rbxassetid://90123867490784", Size = Vector2.new(512, 512) },
+		LookHornsLava = { Id = "rbxassetid://110647559507483", Size = Vector2.new(512, 512) },
+		LookHornsShadow = { Id = "rbxassetid://135507968189284", Size = Vector2.new(512, 512) },
+		LookHaloSprout = { Id = "rbxassetid://83263248829283", Size = Vector2.new(512, 512) },
+		LookHornsSprout = { Id = "rbxassetid://116226794293707", Size = Vector2.new(512, 512) },
+		LookHaloStarlight = { Id = "rbxassetid://132781328122100", Size = Vector2.new(512, 512) },
+		LookHornsStarlight = { Id = "rbxassetid://140058187507403", Size = Vector2.new(512, 512) },
+		LookHaloPlatinum = { Id = "rbxassetid://78646024449809", Size = Vector2.new(512, 512) },
+		LookHornsPlatinum = { Id = "rbxassetid://123042000375413", Size = Vector2.new(512, 512) },
+		IconPrivateServer = { Id = "rbxassetid://95789432053642", Size = Vector2.new(512, 512) }, -- PassIconPrivate.png (이미지 생성 2 c5150fa, 검수 고름 A23-79)
+		-- A23-77 attendance board / A23-79 come-back art (이미지 생성 2 514737f, 검수 OK; 512, no letters - numbers are TextLabels)
+		IconWeeklyBox = { Id = "rbxassetid://134725206012544", Size = Vector2.new(512, 512) }, -- the 7th slot's weekly box
+		StampClaimed = { Id = "rbxassetid://133963492491506", Size = Vector2.new(512, 512) }, -- laid over a claimed slot
+		-- collected-days ribbons: the number sits in the empty cream disc - centre (0.497, 0.407), size 0.432 x 0.412 of the
+		-- picture (이미지 생성 2 measured all five); keep the digits inside ~70 % of it so they never touch the rim
+		RibbonDays7 = { Id = "rbxassetid://74039691524147", Size = Vector2.new(512, 512) },
+		RibbonDays14 = { Id = "rbxassetid://128474383322866", Size = Vector2.new(512, 512) },
+		RibbonDays28 = { Id = "rbxassetid://105857078981391", Size = Vector2.new(512, 512) },
+		RibbonDays50 = { Id = "rbxassetid://127528019933746", Size = Vector2.new(512, 512) },
+		RibbonDays100 = { Id = "rbxassetid://104467679017156", Size = Vector2.new(512, 512) },
+		IconKingDiary = { Id = "rbxassetid://82663430349001", Size = Vector2.new(512, 512) }, -- [King Diary] book
+		IconCandyJar = { Id = "rbxassetid://94570617639866", Size = Vector2.new(512, 512) }, -- candy jar
+		IconInviteFriend = { Id = "rbxassetid://72491188968210", Size = Vector2.new(512, 512) }, -- [Invite a friend]
+		IconSaved = { Id = "rbxassetid://112371750811683", Size = Vector2.new(512, 512) }, -- the pause card's 'Saved!'
 		IconNoBuff = { Id = "rbxassetid://125613826056625", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06, re-cut 3f1716b (faction perk row)
 		IconShieldBlue = { Id = "rbxassetid://97867243551313", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
 		IconNoLoot = { Id = "rbxassetid://105527491154744", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (faction perk row)
@@ -4610,6 +4656,7 @@ Config.UIArt = {
 		Tex_TreeLeaves = { Id = "rbxassetid://139379724133324", Size = Vector2.new(1024, 1024) }, -- tree leaf balls (neutral: the part Color tints it)
 		Tex_TreeBark = { Id = "rbxassetid://85265884740870", Size = Vector2.new(1024, 1024) }, -- tree trunks (neutral: the part Color tints it)
 		Tex_HauntedFloor = { Id = "rbxassetid://78580688016455", Size = Vector2.new(1024, 1024) }, -- A23-45 유령 숲 floor (Tex_HauntedFloor_FF): Asphalt slot GE_HauntedFloor
+		Tex_WaterfallFlow = { Id = "rbxassetid://86909517913668", Size = Vector2.new(1024, 1024) }, -- A23-76 waterfall face (이미지 생성 1 ca0dfea, Tex_WaterfallFlow_FF2): streams run top -> bottom (V down)
 		-- sky sun / moon (black = transparent, additive): WarService Sky.SunTextureId / MoonTextureId per war sky
 		Sky_Sun = { Id = "rbxassetid://104329382887122", Size = Vector2.new(512, 512) }, -- Neutral sun
 		Sky_SunDawn = { Id = "rbxassetid://134904669662412", Size = Vector2.new(512, 512) }, -- Dawn (Halo crown) sun
@@ -4737,53 +4784,6 @@ Config.UIArt.FactionPerks = {
 
 -- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
 -- English/localized sprites are a separate release item; live fallbacks stay available.
-Config.UIArt.FactionE = {
-    -- A23-48 (English only): off. These cards carry baked Korean letters; the bundle 2 wordless cards (CardLayout)
-    -- show the game's English text instead
-    Enabled = false,
-    Locale = "ko",
-    BakedText = true,
-    BakedPerkIcons = true,
-    BakedFooterIcon = true,
-    CardAspect = 380 / 636,
-    Parts = {
-        Halo = "FactionCardHaloFreshTyped", Horns = "FactionCardHornsFreshTyped", Neutral = "FactionCardNeutralFreshTyped",
-        Title = "FactionTitleFreshTypedBalanced", Premise = "FactionPremiseFreshTyped", Footer = "FactionFooterFreshTyped",
-    },
-    ButtonRects = {
-		Halo = { 0.24793872, 0.80211072, 0.50513279, 0.07605582 },
-		Horns = { 0.20268785, 0.78690554, 0.59458409, 0.07466372 },
-		Neutral = { 0.17223303, 0.81271190, 0.65554510, 0.07833555 },
-    },
-    -- Last benefit glyph bottom + 6px in each 570x954 export; enlarged touch hitboxes stay below it.
-    ButtonHitTop = { Halo = 0.76277029, Horns = 0.75550551, Neutral = 0.77759915 },
-    MinBakedWidth = { Premise = 460 },
-    Layout = {
-        ReferenceSize = Vector2.new(1584, 1050),
-        Title = { 514/1584, 5/1050, 557/1584, 111/1050 },
-        Premise = { 240/1584, 124/1050, 1100/1584, 187/1050 },
-        Cards = { 238/1584, 318/1050, 1102/1584, 627/1050 },
-        Footer = { 326/1584, 929/1050, 929/1584, 116/1050 },
-    },
-    SemanticText = {
-        Title = "어느 편에 설래요?",
-        Premise = {
-            "세상을 지키던 균형의 왕관이 부서졌다.",
-            "조각을 주운 자들 중 누구는 머리 위에 후광이, 누구는 뿔이 돋았다.",
-            "조각을 더 많이 모으는 쪽이 세상을 다시 만든다.",
-        },
-        Footer = "나중에 교차로 마을의 운명의 제단에서 바꿀 수 있어요 (무료 또는 변경권)",
-        Cards = {
-            Halo = {Name="빛의 기사단",Desc="후광을 얻은 자들.",Motto="지키고, 치유하고, 되찾아 줘라!",Button="이 편으로!",
-                Perks={"경험치 +30%","체력 +20%, 계속 회복","스킬로 동료 치유","주머니 골드 자동 저금"}},
-            Horns = {Name="뿔 군단",Desc="뿔을 얻은 자들.",Motto="털고, 버티고, 괴수가 되어라!",Button="이 편으로!",
-                Perks={"골드 +25%","공격력 +15%, 체력 흡수","약탈한 골드 지켜내기","별 5개면 괴수 변신!"}},
-            Neutral = {Name="장인 길드",Desc="조각을 다듬는 자들.",Motto="줍지 말고, 다듬고, 만들어라!",Button="이 편으로!",
-                Perks={"싸움 버프 없음","PvP 없음 (안전)","약탈·현상수배 걱정 없음","제작 특화 (곧 추가)"}},
-        },
-    },
-}
-
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
 Config.CustomModels = {
 	FolderName = "CustomModels",

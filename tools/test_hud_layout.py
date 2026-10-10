@@ -79,6 +79,8 @@ SCREENS = [
     ("pc_655x340_small", False, 655, 340, False, True, INSET, None),
     ("pc_573x354_small", False, 573, 354, False, True, INSET, None),
     ("pc_700x450_small", False, 700, 450, False, True, INSET, None),
+    # the main Studio game view the user plays in (검수 2026-10-08 photos: 991x451 -> UIScale 0.5)
+    ("pc_991x451_studio", False, 991, 451, False, True, INSET, None),
     # a very short window: overlaps are accepted there, but everything must stay on screen below the top bar
     ("pc_1280x240_short", False, 1280, 240, False, False, INSET, None),
     ("phone_749x361", True, 749, 361, True, True, INSET, None),
@@ -114,6 +116,16 @@ EXCEPTIONS = [
      "4-inch phone (568x320 px): the room between 0.4 W (227 px) and the thumb ring's MP "
      "potion (kept at thumb size) is 85 px, one 45 px tile with the face and bars above it; the other icon windows "
      "fold out of [메뉴]."),
+    # 2026-10-08: the quest lines' 250 px floor on small PC windows stops GAP before an item level with them
+    ("pc_573x354_small", "PC quest lines at least 250 px wide",
+     "A 573x354 desktop window (UIScale 0.5): the combo line sits level with the quest lines 236 px from their left edge, "
+     "so they widen only to a GAP before it (236 px instead of 250)."),
+    # 2026-10-08: the notify column's 288 px floor (its 1280x720 width) widens over its own row around the centre column's
+    # middle and stops at the items level with it on the narrowest windows
+    ("pc_700x720_narrow", "PC notify column at least 288 px wide",
+     "A 700x720 desktop window (UIScale 0.8): the minimap level with it leaves 275 px around the centre column's middle."),
+    ("pc_573x354_small", "PC notify column at least 288 px wide",
+     "A 573x354 desktop window (UIScale 0.5): the minimap level with it leaves 282 px around the centre column's middle."),
     ("phone_592x360_navbar", "fold holds the menu tiles in one line",
      "Android 640x360 with its 48 px navigation bar (592 px wide): the top bar holds Roblox's buttons, the war meter "
      "and [메뉴] with room for 3 fold squares beside it; the 4th wraps to the line right under the bar."),
@@ -136,6 +148,15 @@ MUTATIONS = [
     ("PC potions left behind when the block's right end comes in", "\t\t\t\tmp.X -= cut\n\t\t\t\thp.X -= cut\n", ""),
     ("PC bars keep their length when the block's right end comes in", "\t\t\t\tout.power_line.W -= cut\n", ""),
     ("potions box not published", "Cells = { HP = ph, MP = pm }", "Cells = { HP = pm, MP = ph }"),
+    # 2026-10-08 small PC windows: real-px floors for the quest lines and the HP / MP bars
+    ("PC quest lines keep the sheet width on small windows", "local qw = math.max(q.W, PC_FLOOR.QuestW / s)",
+     "local qw = q.W"),
+    ("PC quest lines widen into their neighbours", "qw = math.min(qw, o.X - GAP - q.X)", "qw = qw"),
+    ("PC bars keep the sheet height on small windows", "local d = PC_FLOOR.Bar / s - hb.H", "local d = 0"),
+    ("PC notify column keeps the top bar's room on small windows", "local want = PC_FLOOR.NotifyW / s",
+     "local want = 0"),
+    ("PC notify column widens into its row's neighbours", "local half = math.min(want / 2, cx - l, r - cx)",
+     "local half = want / 2"),
     ("short desktop windows go to the phone sheet", "\tlocal sheet = touch\n",
      "\tlocal sheet = touch or (env.H or 0) * (env.Scale or 1) < 500\n"),
     ("touch targets may shrink to 30", "local MIN_TAP = 60", "local MIN_TAP = 30"),
@@ -204,7 +225,7 @@ MUTATIONS = [
      "if c.Y < bar.Y1 and c.Y + c.H > bar.Y0 then leftEdge = math.max(leftEdge, bar.X0 + GAP) end", ""),
     ("no fold room left beside [메뉴]", "rightEdge = math.min(rightEdge, o.X - FOLD_MIN * (o.W + fGapRow) - GAP)",
      "rightEdge = math.min(rightEdge, o.X - GAP)"),
-    ("info rows not under the bar", 'chips = { "TC", { 516, 62, 248, 22 }', 'chips = { "TC", { 516, 112, 248, 22 }'),
+    ("info rows not under the bar", 'chips = { "TC", { 496, 62, 288, 22 }', 'chips = { "TC", { 496, 112, 288, 22 }'),
     # (the fold's Roblox-buttons blocker is defensive: the war meter always sits between them and [메뉴] in the bar, so no
     # supported screen reaches it; "fold first line in the top bar" still checks that the line stays right of them)
     ("fold may cover the war meter", "local FOLD_OVER = { menu = true,", "local FOLD_OVER = { war_meter = true, menu = true,"),
