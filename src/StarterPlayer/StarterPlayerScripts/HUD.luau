@@ -5203,6 +5203,24 @@ end
 local STORY_SPOT = { SlimePond = Vector3.new(290, 3, 150) }
 function L.StoryTap(st, zone, panels)
 	if st.Panel then
+		-- 빛 마을 점검 #1 / #30: a talk through a town NPC that stands in the world: far from her the tap guides there
+		-- (the Travel window + the guide from another zone, the guide to her a walk away); near (Config.StoryQuests
+		-- NpcRange) the page opens as before
+		local qt = C and C.QuestTarget
+		local npc = type(st.Npc) == "string" and type(qt) == "table" and type(qt.StoryNpc) == "function" and qt.StoryNpc(st.Npc) or nil
+		local char = LocalPlayer.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		if npc and root and Util.FlatDistance(root.Position, npc.Position) > (tonumber(Config.StoryQuests.NpcRange) or 16) then
+			local npcZone = Config.ZoneAt(npc.Position).Id
+			local name = Config.StoryQuests.Speakers and Config.StoryQuests.Speakers[st.Npc] or st.Npc
+			if npcZone ~= zone and not (L.ForgeWalk[zone] and L.ForgeWalk[npcZone]) then
+				if panels and panels.Open then panels.Open("Travel") end
+				showGuide(findTravelTarget(npcZone), tostring(name), "zone:" .. npcZone, 30)
+			else
+				showGuide(npc, tostring(name), "story", 30)
+			end
+			return
+		end
 		-- B15: my own tap: the server's reply opens the page even mid-fight (auto opens wait for a calm moment)
 		if panels and type(panels.ExpectStory) == "function" then pcall(panels.ExpectStory, st.Id) end
 		fire("StoryAction", st.Id, "Open")

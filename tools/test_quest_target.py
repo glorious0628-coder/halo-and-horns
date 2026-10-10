@@ -90,6 +90,13 @@ MUTATIONS = [
      "\t\tif p:GetAttribute(\"TravelTo\") == dest then\n\t\t\tp = p:IsA(\"Model\") and (p:FindFirstChildWhichIsA(\"BasePart\", true) or p) or p\n"),
     ("a landmark a walk away still makes a trip",
      "\tif spot and fromZone ~= zone and K.SmithWalk[fromZone] == true and K.SmithWalk[zone] == true then fromZone = zone end\n", ""),
+    # 빛 마을 점검 #1 / #22 / #25 / #30: story NPCs
+    ("a talk row never points at its NPC", "\t\tif type(st.Npc) == \"string\" and st.Npc ~= \"\" then return npcEntry(st, myZone, pos) end\n", ""),
+    ("the marker sits on the NPC by her prompt", "\tif pos and flatDist(pos, part.Position) <= K.NpcNear then return nil end\n", ""),
+    ("an NPC a walk away makes a trip",
+     "\tif myZone ~= zone and not (K.SmithWalk[myZone] == true and K.SmithWalk[zone] == true) then\n", "\tif myZone ~= zone then\n"),
+    ("an NPC out of the world counts", " and m:GetAttribute(\"NpcId\") == npcId and m:IsDescendantOf(workspace) then",
+     " and m:GetAttribute(\"NpcId\") == npcId then"),
 ]
 
 

@@ -1,0 +1,44 @@
+{
+  "checks": 10,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the '!' always shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Talk prompt never hides",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every prompt is toggled",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new '!' every pass",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rows without an NPC count",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the '!' on the feet",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the module is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "StoryNpcs (게임성 개발 1, 빛 마을 점검 #22 / #25 / #30; server = 게임성 개발 3's TownNpcs,\ndocs/design/town_npcs_server_2026-10-10.md), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and StoryNpcs.luau in tools/fixtures/story_npcs_offline.luau.\nChecks: StoryNpcs.Called = the NPC ids my quest rows talk through (Story.Npc); an NPC no row talks through has no \"!\"\nand her Talk prompt (attribute StoryNpcId) is hidden on this client; a row through her shows both; other prompts are\nnever touched; one \"!\" per NPC over her head, near players only; the row moving to another NPC moves the \"!\" and the\nprompt; an NPC out of the world is left alone. Static: ClientMain loads StoryNpcs after HUD and QuestMarker.\nMutations: each must be caught.",
+  "studioCalls": 0
+}
