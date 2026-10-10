@@ -75,7 +75,13 @@
     "TipDing": "rbxassetid://111120758241059",
     "Warp": "rbxassetid://132227699974979",
     "WarpIn": "rbxassetid://127997176687568",
-    "SecretFound": "rbxassetid://121833019298027"
+    "SecretFound": "rbxassetid://121833019298027",
+    "LanternOn": "rbxassetid://94311196771631",
+    "DoorOpen": "rbxassetid://128755702351901",
+    "PetCall": "rbxassetid://139309639843969",
+    "PetStow": "rbxassetid://109542349885083",
+    "PetLevel": "rbxassetid://128227928372563",
+    "DiamondTick": "rbxassetid://89172108649325"
   },
   "pending": [],
   "kept": {
@@ -224,6 +230,12 @@
         "seconds": 25,
         "lufs": -30,
         "note": "Horns Den ambience (lava bubbling + campfire crackle), Volume 0.25; HornsDen_a"
+      },
+      "RainRoof": {
+        "id": "rbxassetid://76655204420103",
+        "seconds": 25,
+        "lufs": -33,
+        "note": "rain under a roof (muffled, weak), swap with Rain when the player is under a roof; Volume 0.25; RainRoof_a"
       }
     },
     "boss": {
