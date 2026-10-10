@@ -1,0 +1,58 @@
+{
+  "checks": 13,
+  "failed": 0,
+  "static": [
+    {
+      "check": "HUD tags through UIKit.NewTag",
+      "ok": true
+    },
+    {
+      "check": "EventHUD tags through UIKit.NewTag",
+      "ok": true
+    },
+    {
+      "check": "nobody calls ShowNewTag but the queue",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "every call shows at once",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the same thing gets a second tag",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a waiting part queued twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the queue never drains",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no gap between tags",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a hidden part still tagged",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "only the next one ever comes",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "One NEW! at a time (게임성 개발 1, 검수 2026-10-10: the war bar, its info line and the goose chip wore NEW! at once), offline.\n\nRuns, in the official Luau CLI, the CURRENT UIKit.NewTag / UIKit.NextNewTag cut out of UIKit.luau in\ntools/fixtures/new_tag_offline.luau (UIKit.ShowNewTag, which draws the tag, is a double). Checks: the first part gets its\ntag at once; a part inside / around the tagged (or waiting) part gets none; a different part waits and gets its tag when\nthe one before goes (+ Gap); the queue drains in order and skips a part hidden by its turn; the same part again restarts.\nStatic: HUD and EventHUD still call UIKit.NewTag (never ShowNewTag). Mutations: each must be caught.",
+  "studioCalls": 0
+}
