@@ -77,11 +77,15 @@ local L = {
 	-- Window = the Panels window the tile opens (the tile shows once it is registered; Alt = an older window it opens
 	-- until then), Map = the world map; Key = Keybinds action for the key badge; Keep = shown first when the row has
 	-- fewer slots than tiles (phones: the rest fold out of [메뉴], in front of its own squares)
+	-- A23-113 ③ (user 10/10): the row in the order the tiles come - Bag · Quests · Map from the start, then Hero (first
+	-- level-up), Skills (Lv5), Ranking (M1 done), Pet (the pet) - so a tile that comes joins at the right and the ones on
+	-- the row never move (Config.HudReveal.Tiles; the quest tile uses the quest-tab book until its own icon is drawn, P5)
 	Tiles = {
-		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
-		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
+		{ Id = "Quests", Icon = "QuestTabIconMain", Window = "Journal", Key = "Journal", Keep = 2 },
 		{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },
+		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 3 },
+		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
 		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
 		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
 	},
@@ -206,6 +210,7 @@ local TXT = {
 	Auto = "Auto",
 	-- A23-40 icon tiles (names under the icons; long names shrink inside the tile, never below 10 px on phones)
 	TileCharacter = "Hero",
+	TileQuests = "Quests",
 	TileSkills = "Skills",
 	TileRanking = "Ranking",
 	TileSettings = "Settings",
@@ -2777,7 +2782,7 @@ function L.FoldEntries()
 		local def = f.Def
 		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window
 		if (def.Map or f.Row or L.TileWindow(def) ~= nil or (def.Invite and L.InviteOk()))
-			and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+			and not (f.Row and inRow[def.Id]) and not (f.Row and not L.TileShown(def)) then table.insert(list, f) end
 	end
 	return list
 end
@@ -2987,7 +2992,7 @@ local function buildButtons(root)
 
 	-- A23-40 icon tile row (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map). A window tile
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
-	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
+	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Quests = TXT.TileQuests, Skills = TXT.TileSkills, Map = TXT.Map,
 		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
 		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite }
 	ui.tiles = {}
@@ -5708,13 +5713,45 @@ function L.Place(btn, r)
 	btn.Position = UDim2.fromOffset(r.X + r.W / 2, r.Y + r.H / 2)
 end
 
+-- A23-113 ③: has this tile come yet? HUD.SetTileShown overrides (tests, 개발 1), else Config.HudReveal.ShowsTile with the
+-- player's attributes; once true it stays for the session (a tile never leaves the row again)
+L.TileOverride, L.TileSeen = {}, {}
+function L.TileShown(def)
+	local id = def.Id
+	if L.TileOverride[id] ~= nil then return L.TileOverride[id] end
+	if L.TileSeen[id] then return true end
+	local force = game:GetService("RunService"):IsStudio() and LocalPlayer:GetAttribute("TestTileReveal") == true -- Studio tests only
+	if force then L.TileSeen = {} end -- the test steps the rule back and forth
+	local ok, on = pcall(Config.HudReveal.ShowsTile, id, function(name) return LocalPlayer:GetAttribute(name) end, force)
+	if not ok or on ~= false then
+		L.TileSeen[id] = true
+		return true
+	end
+	return false
+end
+
+-- A23-113 ③ API for 게임성 개발 1: on = true / false forces a tile, nil gives it back to the rule; RefreshTiles = check
+-- the rule again now (after a level-up, the pet, M1 done)
+function HUD.SetTileShown(id, on)
+	L.TileOverride[id] = on
+	HUD.RefreshTiles()
+end
+
+function HUD.RefreshTiles()
+	if L.PickTiles() then requestLayout() end
+end
+
 -- A23-40 icon tiles: which tiles show (a window tile once its window exists; 지도 always), trimmed to the row's Count by
 -- Keep (phones: the rest fold out of [메뉴], L.FoldEntries). Returns true when the shown set changed.
 function L.PickTiles()
 	if not ui.tiles then return false end
 	-- 검수 2026-10-07 (user: "이렇게 하라고" with the reference row): A23-40's six tiles are always on the row; a window
 	-- that is not built yet answers on press (L.TileTap); only the row's room (Count) decides what overflows to [메뉴]
-	local want = table.clone(ui.tiles)
+	-- A23-113 ③: only the tiles that have come (L.TileShown); the others are not in the row or the [메뉴] fold yet
+	local want = {}
+	for _, t in ui.tiles do
+		if L.TileShown(t.Def) then table.insert(want, t) end
+	end
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
 		local sorted = table.clone(want)
@@ -6208,6 +6245,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
 	UIKit.OnAttr({ "Class", "ClassChosen", "Faction" }, L.RefreshSkillIcon)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
+	UIKit.OnAttr({ "Level", "HasPet", "M1Done", "TestTileReveal" }, function() HUD.RefreshTiles() end) -- A23-113 ③ tiles come
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",

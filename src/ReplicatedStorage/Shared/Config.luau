@@ -1410,6 +1410,30 @@ function Config.HudReveal.Shows(kind, s)
 	end
 	return true
 end
+-- A23-113 ③ (user 10/10 "마감 전 넣자"): the bottom menu tiles come when they are needed - Bag · Quests · Map from the
+-- start, Hero (stats) at the first level-up, Skills at Lv5, Pet when the pet comes, Ranking when M1 is done. The quick
+-- slots 1 · 2 · 3 always show. On = the rule is in use (게임성 개발 1 sets the moments and turns it on; off = every tile
+-- shows, as before). A rule: Level = shown from this level; Attr = shown while LocalPlayer has this attribute truthy.
+-- A tile once shown stays (HUD remembers it for the session; the level / attribute keep it after a rejoin)
+Config.HudReveal.Tiles = {
+	On = false,
+	Always = { Bag = true, Quests = true, Map = true },
+	Character = { Level = 2 },
+	Skills = { Level = 5 },
+	Pet = { Attr = "HasPet" },
+	Ranking = { Attr = "M1Done" },
+}
+-- get(name) = the player's attribute (Level, HasPet, M1Done, ...); force = use the rule even while On is false (Studio
+-- tests: HUD passes the player's TestTileReveal attribute there)
+function Config.HudReveal.ShowsTile(id, get, force)
+	local t = Config.HudReveal.Tiles
+	if type(t) ~= "table" or not (t.On == true or force == true) or t.Always[id] then return true end
+	local rule = t[id]
+	if type(rule) ~= "table" then return true end
+	if rule.Level and (tonumber(get("Level")) or 0) >= rule.Level then return true end
+	if rule.Attr and get(rule.Attr) then return true end
+	return false
+end
 
 Config.Luck = {
 	BaseRare = 0.05,

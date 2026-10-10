@@ -54,7 +54,7 @@ local ITEMS = {
 	hp_bar = { "BC", { 482, 590, 184, 20 }, { 275, 267, 68, 12 } },
 	mp_bar = { "BC", { 673, 590, 184, 20 }, { 347, 267, 68, 12 } },
 	xp_bar = { "BC", { 482, 614, 375, 8 }, { 275, 282, 140, 5 } },
-	tiles = { "BC", { 482, 634, 375, 60 }, { 225, 296, 190, 45 } },
+	tiles = { "BC", { 482, 638, 410, 56 }, { 225, 296, 190, 45 } },
 	-- PC only (phones keep the potion ring until the phone round, A23-98): three squares, one row with the tiles
 	quick = { "BC", { 873, 642, 166, 52 }, { 225, 296, 1, 1 } },
 	-- A23-40 정정 + 보강: [메뉴] in the top bar's right end (TB anchor; size and position come from TOPBAR, the rects are
