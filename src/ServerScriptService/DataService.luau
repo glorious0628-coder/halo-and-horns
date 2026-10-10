@@ -144,6 +144,15 @@ local function migrate(d, player)
 	end
 end
 
+-- A23-109 (검수 10/10): a brand-new record - a first DataStore record AND every in-memory (Studio) record - starts with
+-- Config.QuickSlots.Default (empty: the KO1 quest has the player fill a slot). A stored record WITHOUT the field is from before
+-- the quick slots (QuickSlotService gives it HP, MP once), so the field is not in Config.Data.Defaults.
+local function giveNewQuickSlots(d)
+	if type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Default) == "table" then
+		d.QuickSlots = table.concat(Config.QuickSlots.Default, ",")
+	end
+end
+
 -- add missing keys from the defaults and repair obviously corrupted values
 local function fillDefaults(d, playerName)
 	for k, v in Config.Data.Defaults do
@@ -434,11 +443,7 @@ local function loadLocked(player)
 	-- A4 / A5-C5: onboarding step BEFORE the generic default fill
 	if fresh then
 		d.TutorialStep = TUTORIAL_NEW
-		-- A23-109 (검수 10/10): a brand-new save starts with Config.QuickSlots.Default (empty: the KO1 quest has the player
-		-- fill a slot); a stored save without the field is from before the quick slots (QuickSlotService gives it HP, MP)
-		if type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Default) == "table" then
-			d.QuickSlots = table.concat(Config.QuickSlots.Default, ",")
-		end
+		giveNewQuickSlots(d)
 	elseif type(d.TutorialStep) ~= "number" then
 		d.TutorialStep = TUTORIAL_DONE
 	end
@@ -482,6 +487,7 @@ function DataService.Load(player)
 	if memoryMode then
 		local d = Util.DeepCopy(Config.Data.Defaults)
 		d.TutorialStep = TUTORIAL_NEW -- always a fresh record in memory mode (A5-C5)
+		giveNewQuickSlots(d) -- 검수 10/10 main apply: without this a Studio fresh save got "HP,MP," and KO1's slot step passed at once
 		d.Version = Config.Data.Version
 		d.FirstJoinTime = os.time()
 		cache[player] = d

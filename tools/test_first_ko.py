@@ -20,11 +20,20 @@ from __future__ import annotations
 import re
 
 from dev2_offline import ROOT, SHARED, SSS, Suite, function_block, read, run
-from test_unarmed_start import FILES as UNARMED_FILES, bindings
+from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindings
 
 FILES = dict(UNARMED_FILES)
 C, ST = "CONFIG_SOURCE", "STORY_SOURCE"
 FILES["VITALS_SOURCE"] = SSS / "VitalsService.luau"
+FILES["QUICK_SOURCE"] = SSS / "QuickSlotService.luau"
+
+
+def bindings(sources: dict[str, str]) -> dict[str, str]:
+    out = unarmed_bindings(sources)
+    out["QUICK_SOURCE"] = sources["QUICK_SOURCE"]  # the real QuickSlotService runs in the brand-new-save group
+    out["DATA_SOURCE"] = sources["DATA_SOURCE"]  # ... and the real DataService builds its memory-mode record
+    return out
+
 DEF_STEP2 = 'Obj = { Type = "Event", Name = "PotionBought", Past = true } },'
 DEF_STEP3 = 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },'
 DEF_STEP4 = 'Obj = { Type = "Event", Name = "PotionUsed", Past = true } },'
@@ -128,6 +137,10 @@ MUTATIONS = [
      "if obj and obj.Type == \"Event\" and not eventPast(data, obj) then return true end"),
     ("CurrentStep names a quest waiting for [Claim]", ST, "if type(tr) ~= \"table\" or tr.Claim == true or st.Done[id] then return nil end",
      "if type(tr) ~= \"table\" or st.Done[id] then return nil end"),
+    # the brand-new Studio save (DataService memory mode) must start with empty slots, or KO1's slot step passes at once
+    ("a Studio memory-mode record gets no slots (HP, MP: the slot step passes at once)", "DATA_SOURCE", "\t\tgiveNewQuickSlots(d) -- ", "\t\tlocal _ = d -- "),
+    ("a new record gets the slots of an old save (HP, MP)", "DATA_SOURCE", "\t\td.QuickSlots = table.concat(Config.QuickSlots.Default, \",\")\n\tend\nend",
+     "\t\td.QuickSlots = \"HP,MP,\"\n\tend\nend"),
     # Studio test aids (Main's DebugCommand StorySub / StoryDone)
     ("DebugSub keeps a Done mark", ST, "\tst.Done[id] = nil\n\tlocal track = { St = n", "\tlocal track = { St = n"),
     ("DebugSub starts any quest", ST, 'if not def or def.Kind ~= "Sub" then return "no such sub quest "', 'if not def then return "no such sub quest "'),
@@ -190,6 +203,9 @@ def static() -> tuple[int, list[str]]:
     check(story.count("OnServerEvent:Connect(") == 1, "StoryQuestService has one remote handler (StoryAction)")
     check(re.search(r'action == "(?!Open|Talk|Choose)\w+"', function_block(story, "local function onStoryAction(")) is None,
           "StoryAction has no action that could report a happening")
+    data_src = read(SSS / "DataService.luau")
+    check(data_src.count("giveNewQuickSlots(d)") == 3 and "local function giveNewQuickSlots(" in data_src,
+          "DataService gives new quick slots in BOTH new-record paths (a first DataStore record and the Studio memory-mode record)")
     # the Studio aids live only in Main's Studio block, and they change the save (DebugTainted), so they are not read-only
     main = read(SSS / "Main.server.luau")
     studio = main.index('if game:GetService("RunService"):IsStudio() then')

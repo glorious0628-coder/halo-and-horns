@@ -7,7 +7,8 @@ local SQ0 = C0.StoryQuests
 local KO = SQ0.Defs.KO1
 
 -- a started story world: the 1 s loop is never run (Refresh is called by hand), XP / gold are recorded
-local function koWorld()
+local function koWorld(o)
+	o = o or {}
 	local w = bareWorld({})
 	local reg = w.Registry
 	local Signal = w.Util.Signal
@@ -42,6 +43,14 @@ local function koWorld()
 		return grant(p, id, n)
 	end
 	w.Net.Get("OpenPanel")
+	-- the real QuickSlotService (it tells the story service when a potion goes into a slot)
+	if o.Quick then
+		local quick = w:Load("QuickSlotService", QUICK_SOURCE)
+		reg.QuickSlotService = quick
+		quick.Init(reg)
+		quick.Start()
+		w.Quick = quick
+	end
 	function w:Act(p, id, action, option)
 		self:Advance(1) -- RateLimits.StoryAction
 		self.Net.Get("StoryAction").OnServerEvent:Fire(p, id, action, option)
@@ -98,6 +107,37 @@ local function panelsOf(w)
 		return base(self, p, kind, arg)
 	end
 	return out
+end
+
+-- the record DataService really builds for a brand-new player in Studio (memory mode: ServerStorage StudioFreshSave, or a Studio
+-- without DataStore access), run for real in its own world
+local function memoryRecord(userId)
+	local w = newWorld({ Studio = true })
+	w.AllowWarn = { "StudioFreshSave", "had type" }
+	w.Services.ServerStorage = { GetAttribute = function(_, key) return key == "StudioFreshSave" and true or nil end }
+	local env = w:Env()
+	env.task = table.clone(env.task)
+	env.task.wait = function(t)
+		coroutine.yield(tonumber(t) or 0)
+		return t
+	end
+	local ds = execute("DataService", DATA_SOURCE, env)
+	ds.Init({})
+	ds.Start()
+	local probe = table.remove(w.Spawned, 1)
+	w.Spawned = {}
+	probe[1](table.unpack(probe, 2, probe.n))
+	local co = coroutine.create(ds.Load)
+	local out = table.pack(coroutine.resume(co, w:NewPlayer(userId)))
+	local n = 0
+	while coroutine.status(co) ~= "dead" do
+		assert(out[1], out[2])
+		n += 1
+		assert(n < 200, "runaway waits")
+		out = table.pack(coroutine.resume(co))
+	end
+	assert(out[1], out[2])
+	return out[2]
 end
 
 ------------------------------------------------------------------ 1. the definition
@@ -474,6 +514,46 @@ runGroup("debug aids", function()
 	check(md.Story.Main.Id == "M1_2", "M1_2 is the active main quest", show(md.Story.Main))
 	check(w.Story.DebugDone(m, "M1_2") == "ok" and md.Story.Done.M1_2 == true and md.Story.Main.Id ~= "M1_2", "DebugDone on the active main quest: done, the slot is free", show(md.Story.Main))
 	check(string.find(w.Story.DebugDone(m, "Nope"), "no such quest", 1, true) ~= nil and w.Story.DebugDone(w:NewPlayer(1698, {}), "KO1") == "no data", "unknown quest / no save: refused", "")
+end)
+
+------------------------------------------------------------------ 8. a brand-new Studio save, start to finish (검수 10/10 main apply: the slot step went by at once)
+runGroup("a brand-new Studio save keeps the slot step", function()
+	local rec = memoryRecord(1701)
+	check(type(rec) == "table" and rec.QuickSlots == ",,", "DataService's memory-mode record starts with empty quick slots", show(rec and rec.QuickSlots))
+	local w = koWorld({ Quick = true })
+	local function player(uid, saved)
+		local d = saved
+		d.Class, d.Faction, d.ClassChosen, d.Level, d.TutorialStep = "Warrior", "Halo", true, 4, 99
+		d.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true, M1_2 = true }, Pick = {}, First = { Migrated = true } }
+		local p = w:Join(uid, { Saved = d })
+		w.Story.Refresh(p)
+		w:Flush()
+		return p, d
+	end
+	-- the real chain: record -> QuickSlotService at PlayerReady -> the story service
+	local p, d = player(1701, rec)
+	check(d.QuickSlots == ",," and p:GetAttribute("QuickSlots") == ",,", "ready: still three empty slots (no HP / MP given)", show({ d.QuickSlots, p:GetAttribute("QuickSlots") }))
+	local tr = w:Track(d, "KO1")
+	check(tr ~= nil and tr.St == 1, "the new player (M1_2 done, Lv4, no potions) gets KO1", show(tr))
+	w.Story.Event(p, "FirstKO")
+	check(tr.St == 2 and d.CarriedGold == 50, "the King's KO: 'Buy a potion' with its 50 gold", show({ tr.St, d.CarriedGold }))
+	w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 })
+	check(tr.St == 3 and w.Story.Wants(p, "QuickSlotSet") == true and p:GetAttribute("QuickSlots") == ",,",
+		"after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)", show({ tr.St, p:GetAttribute("QuickSlots") }))
+	for _ = 1, 3 do w.Story.Refresh(p) end
+	check(tr.St == 3, "... and the 1 s loop does not pass it either", show(tr))
+	-- putting the potion in a slot goes through the real QuickSlotService -> Event QuickSlotSet -> step 4
+	w:Advance(1)
+	w.Remotes.SetQuickSlot.OnServerEvent:Fire(p, 1, "HP")
+	check(p:GetAttribute("QuickSlots") == "HP,," and tr.St == 4 and w.Story.Wants(p, "PotionUsed") == true,
+		"the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'", show({ p:GetAttribute("QuickSlots"), tr.St }))
+	-- the other way round (the rule the old saves live by): a save from before the slots has no field -> HP, MP, step 3 passes
+	local old = memoryRecord(1702)
+	old.QuickSlots = nil
+	local q, qd = player(1702, old)
+	w.Story.Event(q, "FirstKO")
+	w.Story.Event(q, "PotionBought")
+	check(qd.QuickSlots == "HP,MP," and w:Track(qd, "KO1").St == 4, "a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes", show({ qd.QuickSlots, w:Track(qd, "KO1").St }))
 end)
 
 finish()

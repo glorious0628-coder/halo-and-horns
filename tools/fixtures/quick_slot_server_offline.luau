@@ -312,9 +312,13 @@ end)
 ------------------------------------------------------------------ DataService: new saves / old saves (the real Load / Release)
 local function dsServer(opts)
 	opts = opts or {}
-	local w = newWorld({ Studio = false, Stores = opts.Stores })
+	local w = newWorld({ Studio = opts.Studio == true, Stores = opts.Stores })
 	w.Game.JobId = opts.JobId or "live-1"
-	w.AllowWarn = { "had type" }
+	-- the Studio test aid: ServerStorage attribute StudioFreshSave = true -> DataService runs in memory mode (always a new record)
+	if opts.FreshSave then
+		w.Services.ServerStorage = { GetAttribute = function(_, key) return key == "StudioFreshSave" and true or nil end }
+	end
+	w.AllowWarn = opts.FreshSave and { "had type", "StudioFreshSave" } or { "had type" }
 	local env = w:Env()
 	env.task = table.clone(env.task)
 	env.task.wait = function(t)
@@ -416,6 +420,24 @@ runGroup("save: the slots survive a release and the next load", function()
 	w3:Drive(w3.DS.Release, p3)
 	local row = w3:Rows()[w3.Config.Data.KeyPrefix .. "202"]
 	check(type(row) == "table" and row.QuickSlots == ",,", "a brand-new save is written with the Default", show(row))
+end)
+
+-- 검수 10/10 main apply: Studio runs DataService in memory mode (StudioFreshSave, or no DataStore access). Its new record must
+-- have the empty Default slots like a first DataStore record - it had no field, so QuickSlotService treated it as an old save
+-- (HP, MP) and KO1's 'put the potion in a quick slot' step passed at once.
+runGroup("save: a Studio memory-mode record is a brand-new save with empty slots", function()
+	local q = qsWorld()
+	local w = dsServer({ Studio = true, FreshSave = true })
+	local dp = w:NewPlayer(301)
+	local d = w:Drive(w.DS.Load, dp)
+	check(type(d) == "table" and d.QuickSlots == ",,", "memory mode: the new record has the empty Default slots", show(d and d.QuickSlots))
+	check(d and d.TutorialStep == 0 and d.FirstJoinTime ~= nil, "(it is the brand-new tutorial record of memory mode)", show(d and d.TutorialStep))
+	local noted = false
+	for _, line in w.Warnings do if string.find(line, "StudioFreshSave", 1, true) then noted = true end end
+	check(noted, "(the Studio fresh save notice shows memory mode really ran)", show(w.Warnings))
+	local p, row = q:Join(301, d.QuickSlots)
+	check(p:GetAttribute("QuickSlots") == ",," and row.QuickSlots == ",,", "load + ready: a Studio fresh save has no potion in a slot (not HP, MP)",
+		show({ p:GetAttribute("QuickSlots"), row.QuickSlots }))
 end)
 
 finish()

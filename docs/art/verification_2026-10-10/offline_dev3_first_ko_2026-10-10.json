@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 201,
+  "checks": 211,
   "failedChecks": 0,
-  "namedChecks": 201,
+  "namedChecks": 211,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1212,15 +1212,75 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "DataService's memory-mode record starts with empty quick slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "ready: still three empty slots (no HP / MP given)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "the new player (M1_2 done, Lv4, no potions) gets KO1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "the King's KO: 'Buy a potion' with its 50 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "... and the 1 s loop does not pass it either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "a brand-new Studio save keeps the slot step",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
-  "staticChecks": 15,
+  "staticChecks": 16,
   "staticFailures": [],
   "mutations": {
-    "total": 79,
-    "applied": 79,
-    "caught": 79,
+    "total": 81,
+    "applied": 81,
+    "caught": 81,
     "skipped": false,
     "results": [
       {
@@ -1308,14 +1368,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "ahead :: slots text ',,HP' is filled: step 3 passes",
           "ahead :: slots text ',MP,' is filled: step 3 passes",
-          "ahead :: slots text 'HP,,' is filled: step 3 passes",
-          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
+          "ahead :: slots text 'HP,,' is filled: step 3 passes"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "KO1 step 3 ignores a filled slot",
@@ -1324,13 +1384,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "ahead :: slots text ',,HP' is filled: step 3 passes",
           "ahead :: slots text ',MP,' is filled: step 3 passes",
           "ahead :: slots text 'HP,,' is filled: step 3 passes",
           "config :: step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "KO1 step 3 reads another field",
@@ -1339,13 +1400,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "ahead :: slots text ',,HP' is filled: step 3 passes",
           "ahead :: slots text ',MP,' is filled: step 3 passes",
           "ahead :: slots text 'HP,,' is filled: step 3 passes",
           "config :: step 3: Put the potion in a quick slot = QuickSlotSet (passes when seen before or a slot is already filled), guides to the bag's slots (QuickSlot)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "KO1 step 3 waits for the wrong happening",
@@ -1354,14 +1416,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: ... and the 1 s loop does not pass it either",
+          "a brand-new Studio save keeps the slot step :: after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
           "ahead :: a second purchase moves nothing",
           "ahead :: a slots field that is not text: step 3 waits",
           "ahead :: buying moves on to the slot step",
-          "ahead :: no saved slots field at all: step 3 waits (nothing is held)",
-          "ahead :: slots text '' is empty: step 3 waits",
-          "ahead :: slots text ', ,' is empty: step 3 waits"
+          "ahead :: no saved slots field at all: step 3 waits (nothing is held)"
         ],
-        "newFailingCount": 26
+        "newFailingCount": 28
       },
       {
         "mutation": "KO1 step 4 never passes early",
@@ -1383,14 +1445,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'",
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "config :: step 4: Drink it from your quick slot = PotionUsed (passes when seen before)",
           "debug aids :: DebugSub again: moves it to step 4 (the sip flag lit)",
-          "flow :: Halo: PotionUsed moves step 4 to 5",
-          "flow :: Halo: QuickSlotSet moves step 3 to 4"
+          "flow :: Halo: PotionUsed moves step 4 to 5"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 20
       },
       {
         "mutation": "KO1 step 2 waits for the wrong happening",
@@ -1399,14 +1461,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: ... and the 1 s loop does not pass it either",
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
+          "a brand-new Studio save keeps the slot step :: after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
+          "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'",
           "ahead :: a drink before the KO does not skip the purchase",
-          "ahead :: a second purchase moves nothing",
-          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
-          "ahead :: a slots field that is not text: step 3 waits",
-          "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
-          "ahead :: buying moves on to the slot step"
+          "ahead :: a second purchase moves nothing"
         ],
-        "newFailingCount": 39
+        "newFailingCount": 43
       },
       {
         "mutation": "KO1 guides step 2 to the old spot",
@@ -1443,14 +1505,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'",
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: events seen early are remembered, the open step does not move",
           "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)",
           "ahead :: the slot passes the drink step at once (already seen)",
-          "config :: every Event step waits for a listed happening: QuickSlotSet",
-          "config :: the happenings are listed in Config.StoryQuests.Events"
+          "config :: every Event step waits for a listed happening: QuickSlotSet"
         ],
-        "newFailingCount": 39
+        "newFailingCount": 40
       },
       {
         "mutation": "KO1 tops up to 25 only",
@@ -1459,14 +1521,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: the King's KO: 'Buy a potion' with its 50 gold",
           "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
           "debug aids :: ... once",
           "debug aids :: DebugSub KO1 step 2: the 50 gold top-up like a real step 2",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
+          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "KO1 never tops up",
@@ -1475,14 +1537,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: the King's KO: 'Buy a potion' with its 50 gold",
           "config :: step 2: Buy a potion = PotionBought (passes when seen before), tops up to 50 gold, guides to the seller (PotionShop)",
           "debug aids :: ... once",
           "debug aids :: DebugSub KO1 step 2: the 50 gold top-up like a real step 2",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "flow :: Halo: no second top-up",
-          "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
+          "flow :: Halo: no second top-up"
         ],
-        "newFailingCount": 22
+        "newFailingCount": 23
       },
       {
         "mutation": "KO1 rematch counts any King",
@@ -1619,14 +1681,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: group ran to the end without a Lua error",
+          "a brand-new Studio save keeps the slot step :: the new player (M1_2 done, Lv4, no potions) gets KO1",
           "ahead :: an old KO does not pass step 1: the quest waits for its own KO",
           "ahead :: group ran to the end without a Lua error",
           "config :: KO1 is in StoryQuests.Subs exactly once",
-          "flow :: group ran to the end without a Lua error",
-          "offered :: Halo: CurrentStep 1; the quest waits for FirstKO only",
-          "offered :: Halo: after M1_2 the quest is just a row: no popup, no toast"
+          "flow :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 29
+        "newFailingCount": 31
       },
       {
         "mutation": "KO1 the rematch step moved",
@@ -1827,12 +1889,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "ahead :: slots text ',,HP' is filled: step 3 passes",
           "ahead :: slots text ',MP,' is filled: step 3 passes",
           "ahead :: slots text 'HP,,' is filled: step 3 passes"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "Held counts any text (',,' too)",
@@ -1841,14 +1904,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: ... and the 1 s loop does not pass it either",
+          "a brand-new Studio save keeps the slot step :: after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
           "ahead :: a second purchase moves nothing",
           "ahead :: buying moves on to the slot step",
           "ahead :: slots text ', ,' is empty: step 3 waits",
-          "ahead :: slots text ',,' is empty: step 3 waits",
-          "ahead :: the purchase does not skip the slot step",
-          "debug aids :: DebugSub KO1 step 3: the quest starts at 'Put the potion in a quick slot'"
+          "ahead :: slots text ',,' is empty: step 3 waits"
         ],
-        "newFailingCount": 21
+        "newFailingCount": 23
       },
       {
         "mutation": "Held counts a missing field",
@@ -1870,14 +1933,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "ahead :: slots text ',,HP' is filled: step 3 passes",
           "ahead :: slots text ',MP,' is filled: step 3 passes",
-          "ahead :: slots text 'HP,,' is filled: step 3 passes",
-          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
+          "ahead :: slots text 'HP,,' is filled: step 3 passes"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "TopUpGold never paid",
@@ -1886,14 +1949,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: the King's KO: 'Buy a potion' with its 50 gold",
           "flow :: Halo: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Halo: no second top-up",
           "flow :: Horns: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
           "flow :: Horns: no second top-up",
-          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once",
-          "flow :: Neutral: no second top-up"
+          "flow :: Neutral: a player with no gold gets 50 carried gold (source 'Choice', never doubled), saved once"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 20
       },
       {
         "mutation": "TopUpGold not saved first",
@@ -2037,14 +2100,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ahead :: a drink before the KO does not skip the purchase",
-          "ahead :: a player who is not ready is ignored",
-          "ahead :: a second purchase moves nothing",
-          "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
-          "ahead :: a slots field that is not text: step 3 waits",
-          "ahead :: an event is one player's own"
+          "a brand-new Studio save keeps the slot step :: ... and the 1 s loop does not pass it either",
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
+          "a brand-new Studio save keeps the slot step :: after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
+          "a brand-new Studio save keeps the slot step :: the King's KO: 'Buy a potion' with its 50 gold",
+          "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'",
+          "ahead :: a drink before the KO does not skip the purchase"
         ],
-        "newFailingCount": 94
+        "newFailingCount": 99
       },
       {
         "mutation": "Event never refreshes the next step",
@@ -2053,14 +2116,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: a save from before the slots (no field) is given HP, MP: nothing to put, step 3 passes",
           "ahead :: a slot filled early passes the slot step; the drink step is next (sip flag lit)",
           "ahead :: an old save's filled slots pass step 3 at once (no 'put it' to do)",
           "ahead :: slots text ',,HP' is filled: step 3 passes",
           "ahead :: slots text ',MP,' is filled: step 3 passes",
-          "ahead :: slots text 'HP,,' is filled: step 3 passes",
-          "ahead :: the KO then passes steps 2, 3 and 4 at once (step 5 waits for the rematch; the sip flag never lit)"
+          "ahead :: slots text 'HP,,' is filled: step 3 passes"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "Event refreshes only once (one step per call)",
@@ -2131,6 +2194,36 @@
           "ahead :: a quest waiting for [Claim] is at no step"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "a Studio memory-mode record gets no slots (HP, MP: the slot step passes at once)",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: ... and the 1 s loop does not pass it either",
+          "a brand-new Studio save keeps the slot step :: DataService's memory-mode record starts with empty quick slots",
+          "a brand-new Studio save keeps the slot step :: after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
+          "a brand-new Studio save keeps the slot step :: ready: still three empty slots (no HP / MP given)",
+          "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a new record gets the slots of an old save (HP, MP)",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a brand-new Studio save keeps the slot step :: ... and the 1 s loop does not pass it either",
+          "a brand-new Studio save keeps the slot step :: DataService's memory-mode record starts with empty quick slots",
+          "a brand-new Studio save keeps the slot step :: after the purchase the new player STAYS at 'Put the potion in a quick slot' (slots still empty)",
+          "a brand-new Studio save keeps the slot step :: ready: still three empty slots (no HP / MP given)",
+          "a brand-new Studio save keeps the slot step :: the slot press (SetQuickSlot 1 'HP') -> QuickSlotSet -> 'Drink it from your quick slot'"
+        ],
+        "newFailingCount": 5
       },
       {
         "mutation": "DebugSub keeps a Done mark",
@@ -2332,19 +2425,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "cebaa4eef37e02460c921d2cf7259ce43e5668d6fab877e5e75d1547c7ce6cf1",
+    "src/ReplicatedStorage/Shared/Config.luau": "b2576cbf39f7d536b92b96c0b49b4af7feb2c9296382e13402dfff5929f5e9b8",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
     "src/ServerScriptService/StoryQuestService.luau": "d8618ee1457239a1b3ef28f1613ffe9add01d5175c6ec50986618580734f4504",
     "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
     "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
-    "src/ServerScriptService/DataService.luau": "15c5ee14e9f91f0175bdab4c5d6017ce5ccdfdedeed8693527176ff33b072913",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "6c87145e91fe67aebd043eabed71d6f01c7d51b68f9df8b5638c0c54881e7f5e",
-    "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808"
+    "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808",
+    "src/ServerScriptService/QuickSlotService.luau": "0e42f52f39ed689757e16e3600e981a7a6c8508df00845a37cdedbfed8ddaa20"
   },
-  "fixtureSHA256": "e1b386864b76421b256dfcceadc97573380016491f0be6bea603a4e476f89615",
+  "fixtureSHA256": "d91de8eac03ee3cf4bfd499be15dab9d6b28564b89b3a1e07004767d18d4ccdd",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

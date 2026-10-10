@@ -79,8 +79,10 @@ MUTATIONS = [
     ("no quest entry = an error", Q, '\tif type(sq) ~= "table" or type(sq.Event) ~= "function" then return end\n', ""),
     # DataService: a brand-new save
     ("a brand-new save gets no field (= HP / MP)", D,
-     '\t\tif type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Default) == "table" then\n'
-     '\t\t\td.QuickSlots = table.concat(Config.QuickSlots.Default, ",")\n\t\tend\n', ""),
+     '\tif type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Default) == "table" then\n'
+     '\t\td.QuickSlots = table.concat(Config.QuickSlots.Default, ",")\n\tend\n', ""),
+    ("a first DataStore record gets no slots", D, "\t\tgiveNewQuickSlots(d)\n\telseif type(d.TutorialStep)", "\telseif type(d.TutorialStep)"),
+    ("a Studio memory-mode record gets no slots (= HP / MP)", D, "\t\tgiveNewQuickSlots(d) -- ", "\t\tlocal _ = d -- "),
     ("a brand-new save gets HP / MP", D, 'd.QuickSlots = table.concat(Config.QuickSlots.Default, ",")', 'd.QuickSlots = "HP,MP,"'),
     ("ready: not connected", Q, "\tS.PlayerService.PlayerReady:Connect(function(player, data)\n",
      "\tlocal _ = (function(player, data)\n"),

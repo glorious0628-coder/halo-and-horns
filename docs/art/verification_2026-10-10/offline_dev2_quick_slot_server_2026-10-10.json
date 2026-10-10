@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 166,
+  "checks": 172,
   "failedChecks": 0,
-  "namedChecks": 164,
+  "namedChecks": 170,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -990,15 +990,51 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "save: a Studio memory-mode record is a brand-new save with empty slots",
+      "check": "memory mode: the new record has the empty Default slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: a Studio memory-mode record is a brand-new save with empty slots",
+      "check": "(it is the brand-new tutorial record of memory mode)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: a Studio memory-mode record is a brand-new save with empty slots",
+      "check": "(the Studio fresh save notice shows memory mode really ran)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: a Studio memory-mode record is a brand-new save with empty slots",
+      "check": "load + ready: a Studio fresh save has no potion in a slot (not HP, MP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: a Studio memory-mode record is a brand-new save with empty slots",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save: a Studio memory-mode record is a brand-new save with empty slots",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 44,
-    "applied": 44,
-    "caught": 44,
+    "total": 46,
+    "applied": 46,
+    "caught": 46,
     "skipped": false,
     "results": [
       {
@@ -1342,7 +1378,7 @@
           "ready: missing / stored / broken saves :: stored case 10 shows the clean slots",
           "ready: missing / stored / broken saves :: stored case 11 shows the clean slots"
         ],
-        "newFailingCount": 29
+        "newFailingCount": 30
       },
       {
         "mutation": "ready: the clean slots are not saved",
@@ -1474,8 +1510,34 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "save: a Studio memory-mode record is a brand-new save with empty slots :: load + ready: a Studio fresh save has no potion in a slot (not HP, MP)",
+          "save: a Studio memory-mode record is a brand-new save with empty slots :: memory mode: the new record has the empty Default slots",
           "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a brand-new save",
           "save: the slots survive a release and the next load :: a brand-new save is written with the Default"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a first DataStore record gets no slots",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a brand-new save",
+          "save: the slots survive a release and the next load :: a brand-new save is written with the Default"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a Studio memory-mode record gets no slots (= HP / MP)",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save: a Studio memory-mode record is a brand-new save with empty slots :: load + ready: a Studio fresh save has no potion in a slot (not HP, MP)",
+          "save: a Studio memory-mode record is a brand-new save with empty slots :: memory mode: the new record has the empty Default slots"
         ],
         "newFailingCount": 2
       },
@@ -1486,10 +1548,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "save: a Studio memory-mode record is a brand-new save with empty slots :: load + ready: a Studio fresh save has no potion in a slot (not HP, MP)",
+          "save: a Studio memory-mode record is a brand-new save with empty slots :: memory mode: the new record has the empty Default slots",
           "save: new saves empty, old saves HP / MP, stored slots kept :: load + ready: a brand-new save",
           "save: the slots survive a release and the next load :: a brand-new save is written with the Default"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "ready: not connected",
@@ -1505,7 +1569,7 @@
           "ready: missing / stored / broken saves :: stored case 10 is saved clean",
           "ready: missing / stored / broken saves :: stored case 10 shows the clean slots"
         ],
-        "newFailingCount": 41
+        "newFailingCount": 42
       },
       {
         "mutation": "a broken Default is not reported",
@@ -1547,7 +1611,7 @@
           "ready: missing / stored / broken saves :: stored case 1 shows the clean slots",
           "ready: missing / stored / broken saves :: stored case 10 shows the clean slots"
         ],
-        "newFailingCount": 35
+        "newFailingCount": 36
       },
       {
         "mutation": "Config: the rate limit is 0",
@@ -1601,15 +1665,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "f0412b1a63833feb7da3f14a666f7b5ad112c1aa9f873e88bd545a5d4c6798d0",
+    "src/ReplicatedStorage/Shared/Config.luau": "b2576cbf39f7d536b92b96c0b49b4af7feb2c9296382e13402dfff5929f5e9b8",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ReplicatedStorage/Shared/Net.luau": "787e762fb51f1bf0549260a5be046c982931c782aca1386628136d8772ca31d5",
     "src/ServerScriptService/QuickSlotService.luau": "0e42f52f39ed689757e16e3600e981a7a6c8508df00845a37cdedbfed8ddaa20",
-    "src/ServerScriptService/DataService.luau": "15c5ee14e9f91f0175bdab4c5d6017ce5ccdfdedeed8693527176ff33b072913",
-    "src/ServerScriptService/Main.server.luau": "191931d1a8df77e6c95a5c48c4a7db035471b16747c601acf2f08bc21a810b5f",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
+    "src/ServerScriptService/Main.server.luau": "77efa67484e6f11e1231cec8c43ec49b9b9f312f6329d9e3ce1d509a55296221",
     "src/StarterPlayer/StarterPlayerScripts/QuickSlots.luau": "9440bdf5841851370fe35be0c63d719e310f3ff7b2184fc75e1a7b9826f088d3"
   },
-  "fixtureSHA256": "d372e1a7f067a18639c81ddf93f10cd42425546573b1bf30ef1f64b1ea0a2571",
+  "fixtureSHA256": "f81f827bbcc4e4720b11f2f384a10a51fffecb5907320b1c8c9fdd20160fea98",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
