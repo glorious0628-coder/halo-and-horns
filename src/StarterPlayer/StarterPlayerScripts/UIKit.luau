@@ -1332,15 +1332,17 @@ function UIKit.ArtImage(name, props)
 end
 
 -- A23-113 ③ (user 10/10): all six menu tiles show from the start; one that is not open yet is LOCKED - its icon at
--- half strength under a dark veil, the lock (GlyphLock, the skill bar's) in the upper middle and a small gold
+-- half strength under a dark veil, the lock (GlyphLock, the skill bar's) as a badge on its upper right and a small gold
 -- condition word ("Lv 2") on the name's own line (same size floors as the name). Look only; the HUD decides when
 -- (게임성 개발 1):  local lock = UIKit.TileLock(btn, icon, label)   lock.Set(true, "Lv 2")   lock.Set(false)
 -- No GlyphLock art = a code lock (white body + shackle ring, IMG-R4).
 UIKit.TileLockLook = {
-	Veil = 0.45, -- transparency of the black veil (the tile's own corners)
-	IconFade = 0.5, -- icon ImageTransparency while locked (the icon still reads, half seen)
-	IconTint = Color3.fromRGB(170, 170, 182),
-	Lock = { 0.5, 0.36, 0.44 }, -- lock centre x, y and size (fractions of the tile)
+	Veil = 0.55, -- transparency of the black veil (the tile's own corners)
+	IconFade = 0.3, -- icon ImageTransparency while locked (half seen: what the tile is still reads, 검수 10/10)
+	IconTint = Color3.fromRGB(190, 190, 200),
+	-- lock centre x, y and size (fractions of the tile): a badge on the icon's upper right, so the icon stays readable
+	-- (centred at 44 % it hid the icon, UiSandbox 10/10)
+	Lock = { 0.76, 0.24, 0.36 },
 	Word = Color3.fromRGB(255, 214, 110),
 }
 
