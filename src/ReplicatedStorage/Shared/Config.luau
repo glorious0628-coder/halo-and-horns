@@ -6700,6 +6700,61 @@ Config.ChoiceCard.Kinds.ApprenticeScratch = {
 	Good = { Label = "It's fine. Thank you!", Reward = { Item = "Enh70", N = 1 }, Points = 1, Done = "Otto's apprentice beams." },
 	Evil = { Label = "Fix it AND give me a discount!", Reward = { GoldMin = 2 }, Points = 1, Done = "A discount, just for you." },
 }
+-- #45 Lost & Found (content_beyond_10min C; 게임성 개발 3, 2026-10-10; docs/design/lost_found_server_2026-10-10.md,
+-- LostFoundService). A monster in a zone that has an item sometimes drops what somebody lost: the player's own kills
+-- are counted (nothing below From, rising evenly to sure at Sure, then the count starts again), one thing is held at a time,
+-- DayCap finds a KST day. A find opens the item's ChoiceCard (Good = give it back, Evil = the finder's fee, or - for what is
+-- not a child's - keep it as a trophy); the card pays nothing, its points go through Deeds. The pick sends the player to the
+-- Lost & Found bench (Bench) or to the own town (the vault); arriving pays RewardMinutes of hunting at the player's level:
+-- Good = that much XP + Reward.Good.Give (+ one FirstScroll on the first find of a day), Evil = that much gold (all of it never
+-- 2x). The numbers are PROPOSED (검수 decides). OFF until the quest window draws the Kind "Find" row (game dev 1) and the
+-- four item icons are in (image session 2); switched on through Config.LostFound.Enabled (or the live switchboard).
+Config.Data.Defaults.LostFound = { Day = 0, N = 0, K = 0 }
+Config.LostFound = {
+	Enabled = false,
+	From = 60, -- kills before the first chance (about 5 minutes at 12 a minute)
+	Sure = 100, -- the kill that surely drops it (about 8 minutes)
+	DayCap = 3,
+	RewardMinutes = 2,
+	Bench = { Zone = "Crossroads", Spot = "KidsBench", Range = 10 },
+	Order = { "Teddy", "ClubBadge", "GuardMedal", "CandyBag" },
+	Items = {
+		Teddy = { Name = "Lost Teddy", Zone = "SlimeMeadow", Owner = "Kid", Card = "LostTeddy" },
+		ClubBadge = { Name = "Grab Club Badge", Zone = "GoblinWoods", Owner = "Goblin", Card = "LostBadge" },
+		GuardMedal = { Name = "Old Guard Medal", Zone = "SkeletonRuins", Owner = "Guard", Card = "LostMedal" },
+		CandyBag = { Name = "Lost Candy Bag", Zone = "PumpkinPatch", Owner = "Kid", Card = "LostCandy", Season = "Halloween" },
+	},
+	Reward = { Good = { Give = { HP = 2, MP = 2 }, FirstScroll = "Enh70" } },
+	Text = {
+		GoodDone = "Thank you for the %s! Here is a little gift.",
+		FeeDone = "Cheeky! Here's a coin for the %s.",
+		TrophyDone = "The %s is in your vault now.",
+		RowBench = "Bring the %s to the Lost & Found · Crossroads",
+		RowVault = "Put the %s in your vault · your town",
+		ShortBench = "Lost & Found",
+		ShortVault = "Trophy vault",
+	},
+}
+Config.ChoiceCard.Kinds.LostTeddy = {
+	Title = "A lost teddy! Someone must miss it.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Finder's fee!", Points = 1, Done = "Sneaky! Ask for a fee at the Lost & Found." },
+}
+Config.ChoiceCard.Kinds.LostCandy = {
+	Title = "A candy bag! Someone is looking for it.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Finder's fee!", Points = 1, Done = "Sneaky! Ask for a fee at the Lost & Found." },
+}
+Config.ChoiceCard.Kinds.LostBadge = {
+	Title = "A Grab Club badge! A big goblin must be sad.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Keep it as a trophy", Points = 1, Done = "A fine trophy! Stash it in your vault." },
+}
+Config.ChoiceCard.Kinds.LostMedal = {
+	Title = "An old guard medal! It still shines.",
+	Good = { Label = "Give it back", Points = 1, Done = "Kind! Take it to the Lost & Found." },
+	Evil = { Label = "Keep it as a trophy", Points = 1, Done = "A fine trophy! Stash it in your vault." },
+}
 -- A23-86 Sprout Oath titles (stat-free; the oath's pick decides which: Good = Guardian Cadet, Evil = Rascal Cadet)
 Config.TitleDefs.GuardianCadet = { Name = "Guardian Cadet", NameEn = "Guardian Cadet", Color = Color3.fromRGB(255, 225, 120) }
 Config.TitleDefs.RascalCadet = { Name = "Rascal Cadet", NameEn = "Rascal Cadet", Color = Color3.fromRGB(190, 120, 235) }

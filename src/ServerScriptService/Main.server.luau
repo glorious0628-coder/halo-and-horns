@@ -19,6 +19,7 @@ local INIT_ORDER = {
 	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 	"KillCardService", -- 게임성 개발 2: A23-87 cards some kills offer (after ChoiceCard)
+	"LostFoundService", -- 게임성 개발 3: #45 the lost things (after ChoiceCard: it listens to the card)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (the error record, the live switchboard)
 	"HealthService", -- 게임성 개발 3: the hourly health report (2026-10-09)
 }
@@ -36,6 +37,7 @@ local START_ORDER = {
 	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"KillCardService", -- 게임성 개발 2: A23-87 (before PlayerService too)
+	"LostFoundService", -- 게임성 개발 3: #45 (before PlayerService too: it listens to PlayerReady)
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (before PlayerService too)
 	"HealthService", -- 게임성 개발 3: the hourly health report (before PlayerService: it listens to PlayerReady)
 	"PlayerService",
@@ -75,6 +77,7 @@ end
 --   A23-77: AttendNext (today's attendance claim opens again); Finisher (a King Slime finisher card, no kill); SlimeKing / any Config.FieldBosses key (that boss now)
 --   A23-77: AttendNext (today's attendance claim opens again)
 --   A23-86: Card (a choice card of that Config.ChoiceCard.Kinds id opens now)
+--   #45: Lost ("Teddy" / "ClubBadge" / "GuardMedal" / "CandyBag": a find now with its card, "clear": forget the find; needs Config.LostFound.Enabled for the walk)
 --   ops: Errors (the last server errors; value "stored" / "live" reads the saved document)
 --   ops: Health (this server's unsaved hourly sums + alerts; value "stored" / "live" or "live:48" reads the saved hours)
 --   BB10: RankSettle (settle this week's server board now; STUDIO season), RankWrite (write my rows now), PairCD (clear
@@ -166,6 +169,9 @@ if game:GetService("RunService"):IsStudio() then
 			return S.ServerErrorService.Debug(value ~= nil and tostring(value) or nil)
 		elseif key == "Health" then -- ops: the hourly health report (value nil = this server, "stored" / "live" [":hours"] = the saved documents)
 			return S.HealthService.Debug(value ~= nil and tostring(value) or nil)
+		elseif key == "Lost" then -- #45 Studio test aid: "Teddy" / "ClubBadge" / "GuardMedal" / "CandyBag" (a find now), "" (the zone's item), "clear"
+			if tostring(value) == "clear" then return S.LostFoundService.DebugClear(player) end
+			return S.LostFoundService.DebugFind(player, value ~= nil and tostring(value) ~= "" and tostring(value) or nil)
 		elseif key == "Card" then -- A23-86 Studio test aid: a choice card of that kind (Config.ChoiceCard.Kinds) opens now
 			return tostring(S.ChoiceCard.Offer(player, tostring(value)))
 		elseif key == "AttendNext" then -- A23-77 Studio test aid: today's attendance claim opens again
