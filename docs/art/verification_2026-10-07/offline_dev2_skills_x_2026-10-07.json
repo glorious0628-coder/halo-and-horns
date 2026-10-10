@@ -2134,13 +2134,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "514b54609ee5a4c55e1f1ba2c56a8f544b7c1b8109a4460c7abaabf850c5a9b5",
+    "src/ReplicatedStorage/Shared/Config.luau": "5725813ce6d33116291517f83615aa0512cf424041d555880b1fb8fdae3d05e5",
     "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
+    "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "e227d61cb361955c1897bd13d7530e606b7eb8c285804121d780a6e3b5a18308",
+    "src/ServerScriptService/StoryQuestService.luau": "710e864a0c2c4541d8d65958560c8df97020b24a355c63a99acd0969dc7c81b3",
     "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
-    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
+    "src/ServerScriptService/ShopService.luau": "edf9ad90671a3f8459b912b953af2bed14ac30b078bd6941ab1797fd81c4af62",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
@@ -2148,7 +2148,7 @@
     "src/ServerScriptService/SkillService.luau": "4cf5a2e8efc95cb99cc3138db33135d6b49b5d6763cbca5a3ed880d621d16a48",
     "src/ServerScriptService/MonsterService.luau": "e6ddeddd09167069deeed115a88108a5c69ce851f99f9e7e8dd269dfaae6e391",
     "src/ServerScriptService/VitalsService.luau": "e6aafc50c8fb3ac9e8fd7acc7b99222ccedcc2327fa2ab32c266d6e3800a0d23",
-    "src/ServerScriptService/ZoneService.luau": "fcb98635553265b47d2931d308171ae15eb445eb381737129456032bcd8bb9ce"
+    "src/ServerScriptService/ZoneService.luau": "581177de21c4bb55b1a43a7bd71ad7571d70285f77a56f14a909e9c51720dc09"
   },
   "fixtureSHA256": "235da76c9b453070e5912041728fb1a035ef92045fb53dc2455d9c92fe8e4ddf",
   "sourcesChangedDuringRun": [],
