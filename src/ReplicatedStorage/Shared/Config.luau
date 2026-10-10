@@ -80,6 +80,10 @@ Config.Vitals = {
 	PotionMerchantColors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(46, 120, 92), Legs = Color3.fromRGB(70, 55, 45) },
 	PotionMerchantPrompt = "PotionShopPrompt",
 	PotionMerchantPromptRate = 0.5,
+	-- zone_check_halo #34 (검수 2026-10-10): the CollectionService tag of EVERY potion seller Model besides the Crossroads one
+	-- above (TownNpcs tags the Halo stall seller, Config.TownNpcs). ShopService sells at the nearest live seller (same prices,
+	-- prompt and distance); MiniMap / [Show me the way] point at the nearest one.
+	PotionMerchantTag = "PotionMerchant",
 	PotionMerchantOffset = { X = 12, Z = -9 }, -- beside the Crossroads spawn, off the north road/pads
 }
 
