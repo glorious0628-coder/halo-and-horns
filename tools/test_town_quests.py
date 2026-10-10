@@ -179,7 +179,7 @@ MUTATIONS = [
     ("More starts one row early", ST, "if i > cap then rows[i].More = true end", "if i >= cap then rows[i].More = true end"),
     ("More starts one row late", ST, "if i > cap then rows[i].More = true end", "if i > cap + 1 then rows[i].More = true end"),
     ("MaxSubs is not read", ST, "local cap = math.max(0, math.floor(num(SQ.MaxSubs, 3)))", "local cap = 3"),
-    ("Config: SendAllSubs is on", C, "\tSendAllSubs = false,", "\tSendAllSubs = true,"),
+    ("Config: SendAllSubs is off", C, "\tSendAllSubs = true,", "\tSendAllSubs = false,"),
     ("a new offer outranks the subs in progress", ST, "((tr.Claim or (waiting and started)) and 0)", "((tr.Claim or waiting) and 0)"),
     ("older quests first within a rank", ST, "\t\treturn a.Order > b.Order\n", "\t\treturn a.Order < b.Order\n"),
     ("the sort fields reach the client", ST, "\t\trows[i].Rank, rows[i].Order = nil, nil\n", ""),

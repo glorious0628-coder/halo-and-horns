@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 72,
+  "checks": 79,
   "failedChecks": 0,
-  "namedChecks": 72,
+  "namedChecks": 79,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -45,7 +45,7 @@
     },
     {
       "group": "config",
-      "check": "OathH: after M3_4, Lv15, while a sprout",
+      "check": "OathH: after M3_4, Lv15, with or without the Sprout Shield (빛 마을 점검 #54)",
       "pass": 1,
       "fail": 0
     },
@@ -57,7 +57,7 @@
     },
     {
       "group": "config",
-      "check": "OathH: stat-free titles by the pick, the town-sub reward size",
+      "check": "OathH: stat-free titles by the pick, the woods-sub reward (2 minutes of hunting gold + XP, #54)",
       "pass": 1,
       "fail": 0
     },
@@ -69,13 +69,19 @@
     },
     {
       "group": "config",
+      "check": "OathH: no line says the Sprout Shield is still on (a graduate may take it, #54)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
       "check": "OathH: English only",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "OathR: after M3_4, Lv15, while a sprout",
+      "check": "OathR: after M3_4, Lv15, with or without the Sprout Shield (빛 마을 점검 #54)",
       "pass": 1,
       "fail": 0
     },
@@ -87,13 +93,19 @@
     },
     {
       "group": "config",
-      "check": "OathR: stat-free titles by the pick, the town-sub reward size",
+      "check": "OathR: stat-free titles by the pick, the woods-sub reward (2 minutes of hunting gold + XP, #54)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
       "check": "OathR: the closing line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "OathR: no line says the Sprout Shield is still on (a graduate may take it, #54)",
       "pass": 1,
       "fail": 0
     },
@@ -315,7 +327,13 @@
     },
     {
       "group": "who gets an oath",
-      "check": "already graduated: no oath",
+      "check": "already graduated: the oath opens too (#54)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "who gets an oath",
+      "check": "a graduated Horn at Lv15: OathR too (both sides the same)",
       "pass": 1,
       "fail": 0
     },
@@ -375,7 +393,7 @@
     },
     {
       "group": "OathH: kill, then the oath",
-      "check": "the town-sub gold is paid",
+      "check": "the woods-sub gold is paid",
       "pass": 1,
       "fail": 0
     },
@@ -438,15 +456,39 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "Requires.Sprout gate",
+      "check": "a sub with Requires.Sprout: a sprout gets it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Requires.Sprout gate",
+      "check": "a sub with Requires.Sprout: a graduate does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Requires.Sprout gate",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Requires.Sprout gate",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 6,
   "staticFailures": [],
   "mutations": {
-    "total": 29,
-    "applied": 29,
-    "caught": 29,
+    "total": 33,
+    "applied": 33,
+    "caught": 33,
     "skipped": false,
     "results": [
       {
@@ -592,7 +634,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: OathH: after M3_4, Lv15, while a sprout",
+          "config :: OathH: after M3_4, Lv15, with or without the Sprout Shield (빛 마을 점검 #54)",
           "the main chain skips M3_5 :: no oath below Lv15",
           "who gets an oath :: Lv14: no oath yet"
         ],
@@ -610,16 +652,50 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "config: oath for graduates too",
+        "mutation": "config: the oath only for sprouts again",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: OathH: after M3_4, Lv15, while a sprout",
-          "who gets an oath :: already graduated: no oath"
+          "config :: OathH: after M3_4, Lv15, with or without the Sprout Shield (빛 마을 점검 #54)",
+          "who gets an oath :: already graduated: the oath opens too (#54)"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "config: OathR only for sprouts again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathR: after M3_4, Lv15, with or without the Sprout Shield (빛 마을 점검 #54)",
+          "who gets an oath :: a graduated Horn at Lv15: OathR too (both sides the same)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Bright still says the shield ends",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathH: no line says the Sprout Shield is still on (a graduate may take it, #54)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: Smokey still says the shield ends",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathR: no line says the Sprout Shield is still on (a graduate may take it, #54)"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "config: OathH for Horns",
@@ -651,7 +727,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "who gets an oath :: already graduated: no oath"
+          "Requires.Sprout gate :: a sub with Requires.Sprout: a graduate does not"
         ],
         "newFailingCount": 1
       },
@@ -662,13 +738,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "who gets an oath :: Halo Lv15 sprout: OathH only",
-          "who gets an oath :: Horns Lv15 sprout: OathR only",
-          "who gets an oath :: already graduated: no oath",
-          "who gets an oath :: at Lv15 it starts",
-          "who gets an oath :: group ran to the end without a Lua error"
+          "Requires.Sprout gate :: a sub with Requires.Sprout: a graduate does not",
+          "Requires.Sprout gate :: a sub with Requires.Sprout: a sprout gets it"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 2
       },
       {
         "mutation": "config: the bridge guard 5 s",
@@ -738,7 +811,7 @@
         "newFailingChecks": [
           "OathH: kill, then the oath :: oath B for a Halo: Honor -2 (A23-58), Rascal Cadet",
           "OathH: kill, then the oath :: title Guardian Cadet",
-          "config :: OathH: stat-free titles by the pick, the town-sub reward size"
+          "config :: OathH: stat-free titles by the pick, the woods-sub reward (2 minutes of hunting gold + XP, #54)"
         ],
         "newFailingCount": 3
       },
@@ -754,6 +827,17 @@
           "config :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "config: the town-sub gold for the oath",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: OathH: stat-free titles by the pick, the woods-sub reward (2 minutes of hunting gold + XP, #54)"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "config: no Rascal Cadet title",
@@ -799,9 +883,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: M3_5 / OathH / OathR listed once each",
-          "who gets an oath :: Horns Lv15 sprout: OathR only"
+          "who gets an oath :: Horns Lv15 sprout: OathR only",
+          "who gets an oath :: a graduated Horn at Lv15: OathR too (both sides the same)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       }
     ]
   },
@@ -809,14 +894,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1adf22dd4507c9ae259301fd54dc903343e197fbc5c5277c0df5b8f05be9e1dd",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/StoryQuestService.luau": "382e4af4b504f26b0dea84a39c2344f55d530f3eed07696e47bea4849c327777"
+    "src/ReplicatedStorage/Shared/Config.luau": "0a6bc6feaac71ac6580f07e8f0e17033e58b01ed0cfce68fa9eeb0be407a4f71",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/StoryQuestService.luau": "767f08c57c8c3b63b29e78770c8fbc9e42f07c5a48d59fc75c2f05667525ab7b"
   },
-  "fixtureSHA256": "fcb6b2242bad275f0fb21852c4524b6e81e616c34a6b1e63273894a572dd6c28",
+  "fixtureSHA256": "9b55e0d5cf55d9db0e8b94f6882b3ded902417c8727df958b96bfc818234e3d5",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-86 G: M3_5 'Sprout Graduation' is a side line (Kind Sub, after M3_4, the same two steps; main chain M3_4 -> M3_6; row 'Sprout Shield on · ends at Lv15 + 1 hour of play' without numbers; a saved in-progress main M3_5 moves to the side lines keeping its step; an old Lv25+ save skips it; a finished one stays finished); Requires.Sprout = the Sprout Shield is still on; OathH (Halo, Bright) / OathR (Horns, Smokey) open at Lv15 after M3_4 while a sprout, once, not for graduates / Neutral / below Lv15; Halo: talk, guard the woods bridge 15 s, one Goblin Brute in the woods, the oath; Horns: talk, goblin camp 1, camp 2, one Goblin Brute with basic hits only, the oath; the oath card 2 points each way (A23-58 floor), Reward TitleBy (Good Guardian Cadet / Evil Rascal Cadet), the town-sub gold, 'Oath sworn! Your Sprout Shield ends after 1 hour of play.'.",
+  "contract": "A23-86 G: M3_5 'Sprout Graduation' is a side line (Kind Sub, after M3_4, the same two steps; main chain M3_4 -> M3_6; row 'Sprout Shield on · ends at Lv15 + 1 hour of play' without numbers; a saved in-progress main M3_5 moves to the side lines keeping its step; an old Lv25+ save skips it; a finished one stays finished); Requires.Sprout = the Sprout Shield is still on; OathH (Halo, Bright) / OathR (Horns, Smokey) open at Lv15 after M3_4 with or without the shield (#54), once, not for Neutral / below Lv15; Halo: talk, guard the woods bridge 15 s, one Goblin Brute in the woods, the oath; Horns: talk, goblin camp 1, camp 2, one Goblin Brute with basic hits only, the oath; the oath card 2 points each way (A23-58 floor), Reward TitleBy (Good Guardian Cadet / Evil Rascal Cadet), the woods-sub reward Gold 2 / XP 2, 'Promise made! Keep it close, wherever you go.'; no line says the shield is still on.",
   "limitations": "Walking steps (Near) are the existing engine's 1 s loop and are not simulated; the fixture sets the track to the step it tests. No 'Playtime' objective type was added: the shield clock is the existing State 'Graduated' (PvPService.IsRookie). The NPC lines are new English text for 검수's review."
 }

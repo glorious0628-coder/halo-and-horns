@@ -14,6 +14,9 @@ local function townWorld(o)
 	local w = bareWorld({})
 	local reg = w.Registry
 	local Signal = w.Util.Signal
+	-- zone_check_halo #19: the real Config sends every active sub (More past MaxSubs); the groups here are about the three
+	-- rows, so they start with the flag off and the send-all-subs group switches it on itself (o.SendAll = true: on)
+	w.Config.StoryQuests.SendAllSubs = o.SendAll == true
 	-- A23-104: the intro of the daily jobs (D0) starts for everybody past M1_4; only its own group wants it among the subs
 	if o.D0 ~= true then
 		local subs = w.Config.StoryQuests.Subs
@@ -1617,7 +1620,7 @@ end)
 -- a new faction town-NPC offer ranks with the subs in progress (newer first); with SendAllSubs the rows past MaxSubs come too,
 -- marked More = true (the HUD skips them, the quest window lists all)
 runGroup("send-all-subs", function()
-	check(SQ0.SendAllSubs == false, "SendAllSubs is off until the HUD skips More rows", tostring(SQ0.SendAllSubs))
+	check(SQ0.SendAllSubs == true, "SendAllSubs is on in the real Config (the HUD skips More rows, the quest window lists all)", tostring(SQ0.SendAllSubs))
 	local w = townWorld()
 	w:Npc("Bright", vec(0, 0, -400))
 	local p, d = joinAfterM23(w, 702, "Halo", { Pos = vec(2, 0, -398) })
