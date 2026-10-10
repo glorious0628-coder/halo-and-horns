@@ -42,17 +42,30 @@ def main():
     print(len(names), "models,", len(files), "files,", len(todo), "to upload")
     if a.dry or not todo:
         return
-    srv = subprocess.Popen([sys.executable, "-m", "http.server", str(a.port), "--bind", "127.0.0.1"], cwd=folder,
+    import socket
+    import urllib.request
+    port = a.port
+    with socket.socket() as sk:  # a port someone else's server holds would serve the wrong folder (10/10: 64 fails)
+        if sk.connect_ex(("127.0.0.1", port)) == 0:
+            with socket.socket() as free:
+                free.bind(("127.0.0.1", 0))
+                port = free.getsockname()[1]
+            print("port", a.port, "is busy - using", port)
+    srv = subprocess.Popen([sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"], cwd=folder,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    base = f"http://127.0.0.1:{a.port}/"
+    base = f"http://127.0.0.1:{port}/"
     try:
-        import urllib.request
-        for _ in range(40):  # the server answers before the first upload (a cold start once gave 404s)
+        served = False
+        for _ in range(40):  # the file must come back (200) from THIS folder before any upload
             try:
-                urllib.request.urlopen(base + todo[0], timeout=2).close()
-                break
+                with urllib.request.urlopen(base + todo[0], timeout=2) as r:
+                    served = r.status == 200
+                if served:
+                    break
             except Exception:  # noqa: BLE001
                 time.sleep(0.5)
+        if not served:
+            raise SystemExit(f"the local server does not serve {todo[0]} - nothing uploaded")
         for i in range(0, len(todo), 10):
             batch = todo[i:i + 10]
             arg = json.dumps({"imagePaths": [base + f for f in batch]})
