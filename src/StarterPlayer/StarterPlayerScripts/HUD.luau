@@ -2775,9 +2775,10 @@ function L.FoldEntries()
 	for i = #(ui.foldTiles or {}), 1, -1 do
 		local f = ui.foldTiles[i]
 		local def = f.Def
-		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window
+		-- row tiles always count (A23-40's six; a window still to come answers TileSoon), fold squares need their window;
+		-- A23-113 ③: a row tile that has not come yet is in neither the row nor the fold
 		if (def.Map or f.Row or L.TileWindow(def) ~= nil or (def.Invite and L.InviteOk()))
-			and not (f.Row and inRow[def.Id]) then table.insert(list, f) end
+			and not (f.Row and (inRow[def.Id] or not (ui.tileCame or {})[def.Id])) then table.insert(list, f) end
 	end
 	return list
 end
@@ -5722,6 +5723,13 @@ function L.PickTiles()
 		-- once shown it stays this session (a level or a pet list that blinks never takes a tile away)
 		if L.TileSeen[t.Def.Id] == true or Config.HudReveal.TileShows(t.Def.Id, st) then table.insert(want, t) end
 	end
+	-- the tiles that have come (before the row's Count trims them): only these may fold out of [메뉴] (L.FoldEntries)
+	local came, cameKey = {}, "|"
+	for _, t in want do
+		came[t.Def.Id] = true
+		cameKey ..= t.Def.Id .. ","
+	end
+	ui.tileCame = came
 	local count = (L.Rects and L.Rects.tiles and L.Rects.tiles.Count) or #want
 	if #want > count then
 		local sorted = table.clone(want)
@@ -5736,6 +5744,7 @@ function L.PickTiles()
 	end
 	local key = ""
 	for _, t in want do key ..= t.Def.Id .. "," end
+	key ..= cameKey
 	if key == ui.tileKey then return false end
 	ui.tileKey = key
 	ui.shownTiles = want
