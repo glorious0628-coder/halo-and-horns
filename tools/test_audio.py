@@ -45,6 +45,17 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_audio_2026-10-06.json"
 
 # (name, exact text in Audio.luau, replacement): each must match exactly once
 MUTATIONS = [
+    # 검수 10/10 fixes (게임성 개발 1)
+    ("boss layer: never put back on the beat", "\t\tlay.TimePosition = cur.TimePosition\n", ""),
+    ("boss layer: put back while still loading", "if cur and lay and cur.IsLoaded == true and lay.IsLoaded == true",
+     "if cur and lay"),
+    ("drift: a loop wrap counts the long way", "\t\td = math.min(d, len - d)\n", ""),
+    ("A-B-A: a second copy of the track", 'local s = revive(MUSIC.Fading, id, "Music")', "local s = nil"),
+    ("A-B-A: a second boss layer", 'revive(MUSIC.Fading, id, "MusicBoss") or ', ""),
+    ("A-B-A: a second town air", 'local s = revive(MUSIC.AirFading, id, "ZoneAir")', "local s = nil"),
+    ("waterfalls: the late ones stay silent", "\t\ttask.defer(function() pcall(fall, m) end) -- its parts arrive right after it\n", ""),
+    ("waterfalls: one model twice", "\tif done[m] or not", "\tif not"),
+    ("preload: no music", "for _, id in type(M.Tracks) == \"table\" and M.Tracks or {} do table.insert(ids, id) end", ""),
     # sound_gaps 2026-10-10 (batch 8 + B / C, 게임성 개발 1)
     ("attendance: no stamp", '\t\tadd(out, "StampPress", 0, { Replace = "QuestDone" })', '\t\t--'),
     ("attendance: the claim's QuestDone stays", 'add(out, "StampPress", 0, { Replace = "QuestDone" })', 'add(out, "StampPress", 0)'),
@@ -93,8 +104,8 @@ MUTATIONS = [
     ("warp: no landing", 'if Audio.Play("Warp") then task.delay(T.WarpInAfter, Audio.Play, "WarpIn") end', 'Audio.Play("Warp")'),
     ("air: the old zone's air keeps playing", "\tif MUSIC.Air then table.insert(MUSIC.AirFading, MUSIC.Air) end\n", ""),
     ("air: not under the Sound effects setting", "local air, target = MUSIC.Air, zv * sfxMult()", "local air, target = MUSIC.Air, zv"),
-    ("air: in the Music group", "\t\ts.SoundGroup = S.Groups.Sfx\n\t\tpcall(function() s:Play() end)\n\t\tMUSIC.Air = s",
-     "\t\tpcall(function() s:Play() end)\n\t\tMUSIC.Air = s"),
+    ("air: in the Music group", '\t\t\ts = musicSound("ZoneAir", id)\n\t\t\ts.SoundGroup = S.Groups.Sfx\n',
+     '\t\t\ts = musicSound("ZoneAir", id)\n'),
     ("air: never follows the zone", "\tAudio.SetZoneAir(zoneId)\n\tMUSIC.Zone = zoneId", "\tMUSIC.Zone = zoneId"),
     # A23-100 music + 점검표 sound 60 water (게임성 개발 1 2026-10-10)
     ("music: no crossfade (a jump)", "\tlocal d = full / math.max(0.05, num(M.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)\n",
