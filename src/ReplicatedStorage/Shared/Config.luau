@@ -4660,6 +4660,10 @@ Config.Loot = {
 -- game dev 1 sent (2026-10-09)
 Config.Nudges = {
 	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
+	-- A23-99 추가 (user 2026-10-10 photo: "이거 없애달라니까 ㅋㅋ 위에 메인 퀘스트 관련한 내용 있잖아 이미"): the head line
+	-- 'Quests (N) ▼' over the quest lines / tracker is gone (with its ▼); the quest window still opens with Q, the menu
+	-- and a press on a quest line (phones: the block); the lines stay as many as before
+	QuestHead = false,
 	-- 검수 10/09 decision (docs/design/nudge_list_2026-10-09.md): client
 	WarIntro = false, -- "Crown War: win points for your side!" when the war bar first shows (HUD.ApplyFold)
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)

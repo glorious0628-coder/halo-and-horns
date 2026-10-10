@@ -168,6 +168,11 @@ print(("QUEST_LINES_SUMMARY checks=%d failed=%d"):format(checks, failed))
 """
 
 MUTATIONS = [
+    # A23-99 추가 (2026-10-10): the head line 'Quests (N) ▼' is gone
+    ("the head line shows again", "ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0",
+     "ui.questHead.Frame.Visible = #entries > 0"),
+    ("the lines keep a gap for the gone head line", "local hh = (ui.questHead and L.QuestHeadOn()) and math.floor(lh * 0.75) or 0",
+     "local hh = ui.questHead and math.floor(lh * 0.75) or 0"),
     ("lines never capped", "\treturn math.clamp(math.floor(tonumber(type(qt) == \"table\" and qt.HudLines) or 2), 1, 5)\n",
      "\treturn math.floor(tonumber(type(qt) == \"table\" and qt.HudLines) or 2)\n"),
     ("the 'now do' row not first", "\tadd(first)\n\tfor k = 1, 5 do add(prefer[k]) end\n", "\tfor k = 1, 5 do add(prefer[k]) end\n\tadd(first)\n"),
@@ -271,6 +276,13 @@ def static_checks(src):
          'QuestHead = "Quests (%d)",' in src and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
          and "ui.questHead.Text.Text = string.format(TXT.QuestHead, #all)" in refresh
          and "block.Position = UDim2.fromOffset(q.X, q.Y + hh)" in layout),
+        # A23-99 추가 (user 2026-10-10 photo "이거 없애달라니까"): the head line is off - no frame, no height, no gap
+        ("A23-99: the head line 'Quests (N) ▼' is gone (Config.Nudges.QuestHead = false) and leaves no gap",
+         "\tQuestHead = false,\n" in (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig")
+         and "ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0" in refresh
+         and "local hh = (ui.questHead and L.QuestHeadOn()) and math.floor(lh * 0.75) or 0" in layout
+         and "local hh = ui.questHead.Frame.Visible and ui.questHead.Frame.Size.Y.Offset or 0" in src
+         and "\treturn (Config.Nudges or {}).QuestHead == true\n" in src),
         ("the words get their own width (no flex shrink that squeezed a finished line's name to nothing)",
          "UIFlexItem" not in build and "l.Text.Size = UDim2.new(0, math.max(1, math.min(math.ceil(w) + 2, math.floor(avail))), 1, 0)" in fit),
         ("the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
@@ -293,8 +305,10 @@ def main():
         applied = src.count(old) == 1
         caught, why = False, []
         if applied:
-            m_ok, _, why, _ = run(src.replace(old, new), "_mut")
-            caught = not m_ok
+            mutated = src.replace(old, new)
+            m_ok, _, why, _ = run(mutated, "_mut")
+            # a static check failing on the mutated source catches it too (the head line rules are text checks)
+            caught = not m_ok or not all(g for _, g in static_checks(mutated))
         rows.append({"mutation": name, "applied": applied, "caught": caught, "failures": why[:3]})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     passed = ok and all(g for _, g in static) and all(r["applied"] and r["caught"] for r in rows)
