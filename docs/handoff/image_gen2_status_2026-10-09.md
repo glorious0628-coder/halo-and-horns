@@ -114,3 +114,7 @@
 
 ## 10/10 밤 추가 15 (A23-117 '그 자리에 있는 이유' 소품, 빛 마을)
 - 14종 앞면 중간 후보 28장(A/B): `art/out/s2/halo/reason/HaloReason_<BenchA|BenchB|BenchC|BreadStand|FruitStall|FlowerCart|PotionCrate|Scarecrow|RackShieldSword|Clothesline|VegGarden|Woodpile|PhotoDisc|GuardPost>_{A,B}.png`, 프롬프트 `art/prompts/HaloReason_*_front.txt`(+`tools/_halo_reason_props.py`), 시트 `art/review/s2/halo_reason_props_candidates.jpg`. 참조 = HaloProp_Shop_front(그림체만). 검수 선택 대기 → 고급 → 이미지 생성 3(3D).
+
+## 10/10 밤 추가 16
+- Z·X 아이콘 11장 고급+누끼 끝: `art/out/s2/skills_final/Skill_<Warrior|Mage|Archer>_<Z|X>_<Halo|Horns>.png`(Archer_Z_Halo 제외). 원본 `art/out/s2/skills_zx_hq/`, 확인 `art/review/s2/skill_zx_hq_check.jpg`·`skill_zx_final_cut_check.jpg`. approved.json `SkillZX_Icons`.
+- Archer Z(Comet Arrow) 다시: 중간 2장 `skills_zx_hq/SkillZXHQ_ArcherZnew_{A,B}.png`, 시트 `art/review/s2/skill_archer_z_redo.jpg` — 검수 확인 대기 → 고급 → 누끼.
