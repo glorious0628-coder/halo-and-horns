@@ -6284,6 +6284,16 @@
   "size": "1024x1536",
   "note": "빛 마스코트(블록 아바타 기사, 날개·후광·별 방패). 컷아웃 art/out/s2/fac/hq/Fac_MascotHalo_A_HQ_cut.png (617x1024), 확인 art/review/s2/fac_mascot_cut_check.jpg"
  },
+ "FacMascotHaloC": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate (머리카락 새 후보 C)",
+  "prompt": "art/prompts/Fac_MascotHalo_C_HQ.txt",
+  "original": "art/out/s2/fac/hq2/Fac_MascotHalo_C_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/fac/hair/Fac_MascotHalo_Hair_C_src.png (사용자 고름 2026-10-10, 검수 전달)",
+  "size": "1024x1536",
+  "note": "빛 마스코트 머리카락 새로 그림(금발+정수리 곱슬, 후광은 머리카락 위, 부분 수정 아님). 대체: FacMascotHaloA(대머리 같다는 사용자 지적). 컷아웃 art/out/s2/fac/hq2/Fac_MascotHalo_C_HQ_cut.png (612x1024, tools/cutout_flat.cutout tol66 soft24 holes tol48), 확인 art/review/s2/fac_mascot_halo_C_cut_check.jpg / fac_mascot_halo_C_cut_crops.jpg. 업로드·교체는 이미지 개발."
+ },
  "FacMascotHornsA": {
   "status": "approved",
   "date": "2026-10-09",
