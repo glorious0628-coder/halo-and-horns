@@ -1,0 +1,34 @@
+{
+  "checks": 5,
+  "failed": 0,
+  "static": [
+    {
+      "check": "BuildNews adds the line after the news",
+      "ok": true
+    },
+    {
+      "check": "small, in its own colour",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "no title",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the same line every week",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new line every day",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "News window Goblin Notes line (게임성 개발 1, EG06, 검수 2026-10-10 \"News 줄만\"), offline.\n\nRuns, in the official Luau CLI, the CURRENT H.GoblinLine cut out of SettingsUI.luau with the CURRENT Config.luau:\n\"Goblin Notes: <the week's line>\", a new line each KST week (Config.GoblinNote(Config.DayIndex(now))), the three lines\ncycling. Static: H.BuildNews adds it after the news blocks, small (L.NoteSize) and in its own colour. Mutations: each\nmust be caught.",
+  "studioCalls": 0
+}
