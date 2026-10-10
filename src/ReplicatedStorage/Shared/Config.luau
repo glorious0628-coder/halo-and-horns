@@ -1297,6 +1297,108 @@ Config.Sky.Faces = {
 	Rt = "rbxassetid://113124022425103", Up = "rbxassetid://139860275275280", Dn = "rbxassetid://111194337613180",
 }
 
+-- A23-105 (CR-L20 amended): WarService's war-sky ClockTime tween - only while no day cycle runs (Config.DayCycle.Enabled
+-- false or its Start not done; a running DayCycleService owns the clock under every sky) - runs forward unless that is
+-- more than ClockForwardMax hours (then the short way back): a guard against a whole day spun in 3 s from a clock moved
+-- off the presets (8:00 -> Dawn 7.2 = 23.2 h). 18 keeps every change between the fixed presets forward exactly as before
+-- (the longest: Dawn 7.2 -> Eclipse 0.5 = 17.3 h; Neutral 15.3 -> Dawn 7.2 = 15.9 h).
+Config.Sky.ClockForwardMax = 18
+
+-- A23-105 (user 2026-10-10 "해가 지고 떴으면 좋겠고 ... 건물이나 구조물들도 해 방향에 따라서 그림자 달라지면"; 검수 defaults):
+-- the server turns the day. DayCycleService owns Lighting.ClockTime under every sky and the Neutral sky's look
+-- (Brightness, Ambient, OutdoorAmbient, ExposureCompensation, FogColor / FogStart / FogEnd; WarService leaves them alone
+-- while it runs) and writes them every Tick s, a small step each time, so the sun and the shadows move. A crown-war sky
+-- (Dawn / Eclipse; 검수 2026-10-10, the user's choice (b)) covers only the LOOK - WarService's light values, fog, tint,
+-- bloom, cloud colour - while ClockTime keeps turning under it (the sun and the shadows keep moving); when it ends the
+-- look eases over Config.Sky.TweenTime from the war look to the look of the time of day it is then, no jump.
+-- Pace = how fast the clock runs: each piece from its From hour (ClockTime) to the next one's in Seconds of real time; one
+-- day = their sum (1440 s = 24 min). Slowest by day (0.08 degrees of sun per 0.5 s write), sunrise / sunset a little
+-- faster (0.13 degrees: short, as asked), the night fastest (0.31 degrees). Tick 0.5 halves the step of each write (the
+-- long low-sun shadows at sunrise / sunset are what would show a step).
+-- Phases = GameState DayPhase by the clock shown (names only; WeatherFx: lamps on at Dusk / Night, off at Dawn / Day):
+-- Dawn from 6:00, sunrise, when the light is already half up (NightLevel ~0.5 - never lamps off under the full night
+-- look), Day 7-17, Dusk 17-19 (lamps on while the sun is low), Night 19-6. Real time: Dawn 60 s, Day 960 s (2/3 of the
+-- day), Dusk 120 s, Night 300 s.
+-- GameState DayPhase / NightLevel ALWAYS follow the ClockTime shown, under every sky (검수 2026-10-10 lens review): its
+-- Phases name and the Night share of the time-of-day look at it (Looks / Keys below), 2 decimals. A war sky never fixes
+-- them (the clock keeps turning under it: a Halo win at 17:30 runs into Dusk and Night, the lamps on; a Horns win at noon
+-- is Day / 0, no night lift under the sun). With the cycle not running (Enabled false / its Start not done) they follow
+-- WarService's shown clock (the fixed afternoon 15.3 = Day / 0, the Eclipse preset 0.5 = Night / 1).
+-- Looks by ClockTime: Keys (ascending hours) mark where a look is exact; in between it eases (smoothstep). A look takes
+-- what it leaves out from Config.Sky.Neutral, so Day = {} IS the approved toy-bright afternoon (one source; 8-16 exactly).
+-- Night = a moonlit blue kids can walk in (the Eclipse sky's Brightness 1.4 / exposure +0.35), FogStart / FogEnd closer.
+-- Floor = the least any written value may be (each colour channel; rain at night included). Night (0..1) per look ->
+-- GameState NightLevel (ZoneLook's night lift). StartClock: a new server starts at the approved afternoon. MaxStepHours:
+-- the offline test's guard for the biggest clock step of one write. SwitchService "DayCycle" off = the clock eases the
+-- short way to StartClock and stays, the look with it unless a war sky covers it (live once Config.Switches.Defs lists
+-- it; until then always on). Enabled = false: WarService keeps the fixed Neutral afternoon and the preset war clocks.
+-- Studio: DebugCommand ("", "Clock", 21) / ("", "DayState") - no player, no save (under a war sky only the clock jumps).
+Config.DayCycle = {
+	-- on: ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) landed with it (game dev 1;
+	-- tools/test_day_cycle.py checks the pair)
+	Enabled = true,
+	Tick = 0.5,
+	StartClock = 15.3,
+	MaxStepHours = 0.025,
+	Pace = {
+		{ From = 5, Seconds = 120 }, -- sunrise
+		{ From = 7, Seconds = 960 }, -- the day
+		{ From = 17, Seconds = 120 }, -- sunset
+		{ From = 19, Seconds = 240 }, -- the night
+	},
+	Phases = {
+		{ Name = "Dawn", From = 6 },
+		{ Name = "Day", From = 7 },
+		{ Name = "Dusk", From = 17 },
+		{ Name = "Night", From = 19 },
+	},
+	Keys = {
+		{ Hour = 5, Look = "Night" }, { Hour = 6.5, Look = "Dawn" }, { Hour = 8, Look = "Day" },
+		{ Hour = 16, Look = "Day" }, { Hour = 17.5, Look = "Dusk" }, { Hour = 19, Look = "Night" },
+	},
+	Looks = {
+		Day = {},
+		Dawn = { Brightness = 1.6, Ambient = Color3.fromRGB(86, 78, 86), OutdoorAmbient = Color3.fromRGB(112, 104, 114),
+			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(236, 196, 178), Night = 0.3 },
+		Dusk = { Brightness = 1.6, Ambient = Color3.fromRGB(88, 74, 82), OutdoorAmbient = Color3.fromRGB(116, 100, 108),
+			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(232, 168, 140), Night = 0.3 },
+		Night = { Brightness = 1.4, Ambient = Color3.fromRGB(70, 78, 106), OutdoorAmbient = Color3.fromRGB(98, 110, 148),
+			ExposureCompensation = 0.35, FogColor = Color3.fromRGB(46, 60, 100), FogStart = 120, FogEnd = 800, Night = 1 },
+	},
+	Floor = { Brightness = 1.2, Ambient = Color3.fromRGB(60, 66, 80), OutdoorAmbient = Color3.fromRGB(88, 96, 108),
+		ExposureCompensation = -0.3 },
+}
+
+-- A23-105 weather (rain before the beta, snow in winter): one state for the whole server, GameState Weather = "Clear" /
+-- "Rain" / "Snow" (the client WeatherFx draws the drops / flakes around each camera; Settings 'Weather effects' turns
+-- them off on a phone). Mostly clear: a clear spell lasts Clear s (random in the range), then a shower starts with Chance
+-- (else another clear spell) and lasts Rain s. Snow ONLY in the northern winter by the Korean date (KST = UTC +
+-- UtcOffsetHours, SnowMonths 12 / 1 / 2): then every shower is snow INSTEAD of rain (WinterChance, Snow s) - one kind of
+-- sky at a time, snow is the winter's treat (the 12/19 launch is in it) and rain at freezing would only be sleet; a
+-- shower running when the month turns changes kind at midnight KST (its look eases across). A new server starts clear
+-- for FirstClear s. One Random per server, seeded from os.time() and the JobId (a number Seed pins it). The light gets
+-- wet with the weather, eased over BlendSeconds: the sun x BrightK, exposure + ExpAdd, the fog greyer (Desat) and
+-- darker / lighter (FogK) and closer (FogEndK), the terrain clouds (when the place has them) toward Cover / Density.
+-- Expected: rain ~12% of the time (0.45 x 270 s per ~1020 s), winter snow ~19%. The haunted hollow's fog is ZoneLook's.
+-- SwitchService "Weather" off = always Clear (live once Config.Switches.Defs lists it). Studio: DebugCommand ("", "Weather",
+-- "Snow:120") - snow in any month there.
+Config.Weather = {
+	Enabled = true,
+	UtcOffsetHours = 9,
+	SnowMonths = { [12] = true, [1] = true, [2] = true },
+	FirstClear = { 300, 600 },
+	Clear = { 600, 1200 },
+	Chance = 0.45,
+	WinterChance = 0.6,
+	Rain = { 180, 360 },
+	Snow = { 240, 480 },
+	BlendSeconds = 20,
+	Looks = {
+		Rain = { BrightK = 0.8, ExpAdd = -0.05, Desat = 0.6, FogK = 0.85, FogEndK = 0.7, Cover = 0.85, Density = 0.55 },
+		Snow = { BrightK = 0.9, ExpAdd = 0.05, Desat = 0.5, FogK = 1.1, FogEndK = 0.75, Cover = 0.8, Density = 0.45 },
+	},
+}
+
 -- addendum A9-2: client hit feel (Fx only). White flash of monsters within FlashRadius of my own Swing/Release hit
 -- positions for FlashTime (original colours stored once per flash start); crit and my Release numbers pop
 -- PopScale -> 1.0 over PopTime; numbers spawned within MergeRadius studs and MergeWindow seconds merge into one label.
