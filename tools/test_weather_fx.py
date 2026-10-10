@@ -47,6 +47,8 @@ MUTATIONS = [
     ("WX", "a late lamp inside a lantern is missed", "\t\t\tif isMarked(p) then\n", "\t\t\tif false then\n"),
     ("WX", "rain streaks along the fall again", "e.Orientation = Enum.ParticleOrientation.FacingCameraWorldUp",
      "e.Orientation = Enum.ParticleOrientation.VelocityParallel"),
+    ("WX", "the pale rain by day too", "S.Rain.Color = ColorSequence.new(night and COL.Rain or COL.RainDay)",
+     "S.Rain.Color = ColorSequence.new(COL.Rain)"),
     ("WX", "off stops the lamps too", "\tsetLamps(plan.Lamps)\n", "\tif S.Enabled then setLamps(plan.Lamps) end\n"),
 ]
 

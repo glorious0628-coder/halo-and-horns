@@ -203,6 +203,8 @@ check(rain and rain.Texture == "rbxassetid://77226041980480" and snow and snow.T
 	"our own textures (Fx_RainStreak, Fx_SnowFlake)", rain and rain.Texture)
 check(rain and tostring(rain.Orientation) == "ParticleOrientation.FacingCameraWorldUp",
 	"rain streaks stand upright (FacingCameraWorldUp: VelocityParallel laid them sideways)", rain and tostring(rain.Orientation))
+check(rain and rain.Color and rain.Color.A and rain.Color.A.R == 196 and rain.LightEmission == 0.2,
+	"night rain: the pale glowing streak", rain and rain.Color and rain.Color.A and rain.Color.A.R)
 local tint = lighting:FindFirstChild("WeatherTint")
 check(tint ~= nil and tint.ClassName == "ColorCorrectionEffect", "a client ColorCorrection WeatherTint for the wet look", tint)
 check(lampLight.Enabled == true and lanternLight.Enabled == true, "night: the tagged lamp and the marked lantern light are on",
@@ -228,6 +230,8 @@ check(rain.Rate == 420, "out from under the roof the rain comes back", rain.Rate
 
 -- 5. day: the marked lamps go off, the unmarked light stays
 setState("DayPhase", "Day")
+check(rain.Color.A.R == 128 and rain.LightEmission == 0, "day rain: the darker blue-grey streak (seen on a bright sky)",
+	rain.Color.A.R)
 check(lampLight.Enabled == false and lanternLight.Enabled == false and plainLight.Enabled == true,
 	"day: the marked lamps off, the unmarked light untouched", tostring(lampLight.Enabled) .. tostring(plainLight.Enabled))
 

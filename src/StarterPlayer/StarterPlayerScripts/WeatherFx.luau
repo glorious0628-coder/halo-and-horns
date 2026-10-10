@@ -62,9 +62,13 @@ local TEX = {
 	Rain = "rbxassetid://77226041980480",
 	Snow = "rbxassetid://117774040305599",
 }
+-- rain by day / night (UiSandbox 10/10: pale streaks vanished on the bright day sky and clouds; at night they read well):
+-- a darker blue-grey by day, the pale glowing streak at Dusk / Night (light emission per phase too)
 local COL = {
 	Rain = Color3.fromRGB(196, 214, 236),
+	RainDay = Color3.fromRGB(128, 146, 176),
 	Snow = Color3.fromRGB(255, 255, 255),
+	RainGlow = { Day = 0, Night = 0.2 },
 }
 
 local S = {
@@ -294,6 +298,9 @@ local function apply()
 	setLamps(plan.Lamps)
 	if not build() then return end
 	S.Rain.Rate, S.Rain.Enabled = plan.Rain, plan.Rain > 0
+	local night = plan.Lamps == true -- Dusk / Night
+	S.Rain.Color = ColorSequence.new(night and COL.Rain or COL.RainDay)
+	S.Rain.LightEmission = night and COL.RainGlow.Night or COL.RainGlow.Day
 	S.Snow.Rate, S.Snow.Enabled = plan.Snow, plan.Snow > 0
 	if not old or old.Tint ~= plan.Tint then easeTint(plan.Tint) end
 end

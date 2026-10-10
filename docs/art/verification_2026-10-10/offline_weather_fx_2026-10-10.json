@@ -1,5 +1,5 @@
 {
-  "checks": 29,
+  "checks": 31,
   "failed": 0,
   "mutations": [
     {
@@ -59,6 +59,11 @@
     },
     {
       "name": "rain streaks along the fall again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pale rain by day too",
       "applied": true,
       "caught": true
     },
