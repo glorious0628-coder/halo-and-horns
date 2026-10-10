@@ -3,17 +3,21 @@
 The client (HUD.PickTarget, game dev 1) sends its pick - the monster Model - as argument 1 of the Swing and Release
 remotes. CombatService takes it for MANUAL attacks only when it is the Model of an entry of the attack's own filter
 (monstersNear: alive, mine or nobody's, the zone level gate, a boss's HitPad) within Range + HINT.Slack (2) and not a
-hidden ambusher; then the attack aims at it unless it is within HINT.KeepDeg (10 deg) of the facing - through a facing
-for the hit math only, the client-owned root is never written (review 2026-10-10 B) - and hits monsters only only when
-the pick is outside the attack's own AimCone of the real facing (review A: inside it players and the goose keep
-today's real front half); Splash centres on it, Multi shoots it first, Around hits it even at Range + Slack (nobody else gets the
-slack), a queued manual swing keeps it, and the skill Q (Target-centred classes) centres on it through SkillService (its
-queued press too) or CombatService's own fallback. Anything else - a player's character, a part, a dead / far / hidden /
-someone else's / zone-gated monster, a wrong type, more arguments than the pick, any auto attack - is ignored: exactly
-the swing of today (A23-61, whose own no-pick turn still writes the root). Runs the CURRENT Config, Util, CombatService, LootService, StoryQuestService, PvPService,
-DamageWindow and SkillService plus the ShopService / JusticeService extracts of tools/test_unarmed_start.py on
-tools/fixtures/dev2_combat_world.luau with tools/fixtures/swing_hint_offline.luau and the installed official Luau CLI. No
-Studio, network, DataStore or Roblox API calls; mutations run on in-memory copies of the sources only.
+hidden ambusher. Lead decision 2026-10-10: a pick may only change which MONSTERS a press hits, never which enemy players
+or the goose - the pick is ignored whenever the same press without it would hit an enemy or the goose (R1: one in the
+real front half; Splash / Q: one in the blast at today's centre), and a press that uses it hits monsters only (so a
+pick outside the cone, R2, and a pick in the slack zone, R3, never reach a player or the goose). With the pick the aim
+follows it unless it is within HINT.KeepDeg (10 deg) of the facing, through a facing for the hit math only - the
+client-owned root is never written (review B; today's A23-61 turn still writes it); Splash centres on it, Multi shoots it
+first, Around hits it even at Range + Slack (nobody else gets the slack), a queued manual swing keeps it, and the skill Q
+(Target-centred classes) centres on it through SkillService (its queued press too) or CombatService's own fallback.
+Anything else - a player's character, a part, a dead / far / hidden / someone else's / zone-gated monster, a wrong type,
+more arguments than the pick, any auto attack - is ignored: exactly the swing of today (A23-61). A seeded differential
+check runs random scenes with and without the pick: the enemies' HP and the goose tugs must be equal.
+Runs the CURRENT Config, Util, CombatService, LootService, StoryQuestService, PvPService, DamageWindow and SkillService
+plus the ShopService / JusticeService extracts of tools/test_unarmed_start.py on tools/fixtures/dev2_combat_world.luau
+with tools/fixtures/swing_hint_offline.luau and the installed official Luau CLI. No Studio, network, DataStore or
+Roblox API calls; mutations run on in-memory copies of the sources only.
 
 Usage: py tools/test_swing_hint.py [--no-mutations] [--luau path/to/luau.exe]
 Report: docs/art/verification_2026-10-10/offline_dev2_swing_hint_2026-10-10.json
@@ -39,23 +43,16 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 CO, SK = "COMBAT_SOURCE", "SKILL_SOURCE"
 AIM_LOOK = "\tlocal look = Vector3.new(e.Pos.X - pos.X, 0, e.Pos.Z - pos.Z).Unit -- inAim: at least 1 stud away here\n"
-AIM_RETURN = "\treturn { Position = pos, CFrame = { LookVector = look } }, not inAim(root, e.Pos, cone)\n"
-SPLASH_OVERRIDE = "\t\tif hinted then pickPos, pickIsGoose = hinted.Pos, false end -- A23-91: the orb goes to the client's pick\n"
-SPLASH_PLAYERS = "\t\tif isManual and not turned then\n\t\t\tlocal nearPl = aimed(playersNear(player, pos, range), root, w.AimCone)\n"
-
-
-def _splash_chunk() -> str:
-    """The Splash player / goose choice up to and including the pick override (the 'pick replaces only the monster
-    choice' mutation moves the override in front of them); '' when the source changed (the mutation then fails loudly)."""
-    combat = read(SSS / "CombatService.luau")
-    a = combat.find(SPLASH_PLAYERS)
-    b = combat.find(SPLASH_OVERRIDE, a) if a >= 0 else -1
-    return combat[a:b + len(SPLASH_OVERRIDE)] if a >= 0 and b >= 0 else ""
-
-
-SPLASH_CHUNK = _splash_chunk()
+AIM_RETURN = "\treturn { Position = pos, CFrame = { LookVector = look } }\n"
 SWING_REMOTE_HEAD = "local function onSwingRemote(player, hint, ...)\n\tif select(\"#\", ...) ~= 0 then hint = nil end\n"
 RELEASE_REMOTE_HEAD = "local function onReleaseRemote(player, hint, ...)\n\tif select(\"#\", ...) ~= 0 then hint = nil end\n"
+PVP_PLAYERS = "\tif #aimed(playersNear(player, pos, range), root, w.AimCone) > 0 then return true end\n"
+PVP_GOOSE = ("\tif goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach and inAim(root, goosePos, w.AimCone) then\n"
+             "\t\treturn true\n\tend\n")
+PVP_BLAST = ("\treturn #playersNear(player, m0.Pos, radius) > 0\n"
+             "\t\tor (goosePos ~= nil and Util.FlatDistance(goosePos, m0.Pos) <= radius + gooseReach)\n")
+QPVP_PLAYERS = "\tif #aimed(playersNear(player, pos, range), root, cone) > 0 then return true end\n"
+QPVP_CENTER = "\tlocal center = m0 and m0.Pos or (monstersNear(player, pos, range)[1] == nil and pos) or nil\n"
 
 MUTATIONS = [
     # --- the validation (HINT.Pick)
@@ -70,42 +67,41 @@ MUTATIONS = [
      "\t\tlocal e = { Rec = r, Pos = r.Root.Position, Dist = Util.FlatDistance(r.Root.Position, pos) }\n"),
     ("no slack for the pick", CO, "monstersNear(player, pos, range + HINT.Slack) do", "monstersNear(player, pos, range) do"),
     ("a slack of 4 (a pick at Range + 3 accepted)", CO, "local HINT = { Slack = 2,", "local HINT = { Slack = 4,"),
-    # --- the facing (HINT.Aim): KeepDeg moves the aim, the attack's own cone decides "monsters only", no root write
-    ("the aim never follows the pick", CO, AIM_LOOK + AIM_RETURN, "\treturn root, not inAim(root, e.Pos, cone)\n"),
-    ("always a new aim (KeepDeg ignored)", CO, "\tif inAim(root, e.Pos, HINT.KeepDeg) then return root, false end\n", ""),
+    # --- the facing (HINT.Aim): KeepDeg moves the aim, no root write
+    ("the aim never follows the pick", CO, AIM_LOOK + AIM_RETURN, "\treturn root\n"),
+    ("always a new aim (KeepDeg ignored)", CO, "\tif inAim(root, e.Pos, HINT.KeepDeg) then return root end\n", ""),
     ("KeepDeg 30 (a pick at 20 deg keeps the old aim)", CO, "Slack = 2, KeepDeg = 10 }", "Slack = 2, KeepDeg = 30 }"),
     ("KeepDeg 3 (a pick at 5 deg moves the aim)", CO, "Slack = 2, KeepDeg = 10 }", "Slack = 2, KeepDeg = 3 }"),
-    ("review A: every new aim is monsters only", CO, AIM_RETURN, AIM_RETURN.replace("not inAim(root, e.Pos, cone)", "true")),
-    ("never monsters only (a pick outside the cone keeps players)", CO, AIM_RETURN,
-     AIM_RETURN.replace("not inAim(root, e.Pos, cone)", "false")),
-    ("review B: the pick path writes the root", CO, AIM_RETURN,
-     AIM_RETURN.replace("{ Position = pos, CFrame = { LookVector = look } }", "turnTo(root, pos, e.Pos)")),
-    ("a turned pick swing still hits players", CO, "\t\taimRoot, turned = HINT.Aim(root, pos, hinted, w.AimCone)\n",
-     "\t\taimRoot = HINT.Aim(root, pos, hinted, w.AimCone)\n"),
-    ("Swing judges the cone with KeepDeg", CO, "HINT.Aim(root, pos, hinted, w.AimCone)", "HINT.Aim(root, pos, hinted, HINT.KeepDeg)"),
-    ("Q passes no cone (never monsters only)", CO, "HINT.Aim(root, pos, hinted, c.AimCone)", "HINT.Aim(root, pos, hinted)"),
-    ("Around players from the pick's facing", CO,
-     "\t\t\tvictims = aimed(playersNear(player, pos, range), root, w.AimCone)",
-     "\t\t\tvictims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)"),
-    # --- Swing
+    ("review B: the pick path writes the root", CO, AIM_LOOK + AIM_RETURN, "\treturn turnTo(root, pos, e.Pos)\n"),
+    # --- R1: the press without the pick would hit an enemy / the goose -> the pick is ignored
+    ("R1: a front enemy does not stop the pick (swing)", CO, PVP_PLAYERS, ""),
+    ("R1: the front goose does not stop the pick (swing)", CO, PVP_GOOSE, ""),
+    ("R1 Splash: an enemy in today's blast does not stop the pick", CO, PVP_BLAST,
+     "\treturn (goosePos ~= nil and Util.FlatDistance(goosePos, m0.Pos) <= radius + gooseReach)\n"),
+    ("R1 Splash: the goose in today's blast does not stop the pick", CO, PVP_BLAST,
+     "\treturn #playersNear(player, m0.Pos, radius) > 0\n"),
+    ("R1 Splash: today's blast never checked", CO, "\tif w.Pattern ~= \"Splash\" then return false end\n", "\tdo return false end\n"),
+    ("R1: the swing never asks (SwingPvP unused)", CO,
+     "\tif hinted and HINT.SwingPvP(player, root, pos, w, range, goosePos, gooseReach) then hinted = nil end\n", ""),
+    ("R1 Q: a front enemy does not stop the pick", CO, QPVP_PLAYERS, ""),
+    ("R1 Q: an enemy in the blast at today's target does not stop the pick", CO, QPVP_CENTER,
+     "\tlocal center = (monstersNear(player, pos, range)[1] == nil and pos) or nil\n"),
+    ("R1 Q: an enemy in today's blast on me does not stop the pick", CO, QPVP_CENTER, "\tlocal center = m0 and m0.Pos or nil\n"),
+    ("R1: the Q never asks (QPvP unused)", CO,
+     "\t\tif hinted and HINT.QPvP(player, root, pos, range, c.AimCone, skill.Radius or 9) then hinted = nil end\n", ""),
+    # --- a press on the pick hits monsters only (R2 outside the cone, R3 the slack zone)
+    ("R2/R3: a swing on the pick hits players / the goose", CO, "\t\taimRoot, turned = HINT.Aim(root, pos, hinted), true -- monsters only\n",
+     "\t\taimRoot = HINT.Aim(root, pos, hinted)\n"),
+    ("R2/R3: a Q on the pick hits players", CO, "\t\t\tbestPos, turnedQ = hinted.Pos, true -- monsters only\n",
+     "\t\t\tbestPos = hinted.Pos\n"),
+    # --- Swing patterns
     ("Swing ignores the pick", CO, "local hinted = isManual and HINT.Pick(player, pos, range, hint) or nil",
      "local hinted = nil"),
     ("auto swings take a pick", CO, "local hinted = isManual and HINT.Pick(player, pos, range, hint) or nil",
      "local hinted = HINT.Pick(player, pos, range, hint) or nil"),
-    ("Splash keeps the nearest as centre", CO, SPLASH_OVERRIDE, ""),
-    ("Splash: a nearer goose still counts", CO, "if hinted then pickPos, pickIsGoose = hinted.Pos, false end",
-     "if hinted then pickPos = hinted.Pos end"),
-    ("Splash: the pick replaces only the monster choice", CO, SPLASH_CHUNK, SPLASH_OVERRIDE + SPLASH_CHUNK[:-len(SPLASH_OVERRIDE)]
-     if SPLASH_CHUNK else ""),
-    ("Splash: no slack for the centre", CO, "if hinted then pickPos, pickIsGoose", "if hinted and hinted.Dist <= range then pickPos, pickIsGoose"),
-    ("Multi: no player arrow with a pick", CO,
-     "\t\tif isManual and not turned then\n\t\t\tfor _, v in aimed(playersNear(player, pos, range), root, w.AimCone) do",
-     "\t\tif isManual and not turned and not hinted then\n\t\t\tfor _, v in aimed(playersNear(player, pos, range), root, w.AimCone) do"),
-    ("Multi: no goose with a pick", CO,
-     "\t\tif goosePos and not turned and inAim(root, goosePos, w.AimCone) then\n\t\t\tlocal d = Util.FlatDistance(goosePos, pos)\n"
-     "\t\t\tif d <= range + gooseReach then\n",
-     "\t\tif goosePos and not turned and not hinted and inAim(root, goosePos, w.AimCone) then\n"
-     "\t\t\tlocal d = Util.FlatDistance(goosePos, pos)\n\t\t\tif d <= range + gooseReach then\n"),
+    ("Splash keeps the nearest as centre", CO,
+     "\t\tif hinted then pickPos = hinted.Pos end -- A23-91: the orb goes to the client's pick (monsters only)\n", ""),
+    ("Splash: no slack for the centre", CO, "if hinted then pickPos = hinted.Pos end", "if hinted and hinted.Dist <= range then pickPos = hinted.Pos end"),
     ("Multi: the pick not first", CO,
      "\t\tif hinted then\n\t\t\ttable.insert(candidates, 1, { Kind = \"M\", Entry = hinted, Pos = hinted.Pos, Dist = hinted.Dist })\n\t\tend\n", ""),
     ("Multi: the pick shot twice", CO, "\t\t\tif not (hinted and m.Rec == hinted.Rec) then -- A23-91", "\t\t\tif true then -- A23-91"),
@@ -129,12 +125,8 @@ MUTATIONS = [
     ("Q ignores the pick", CO, "local hinted = not isAuto and HINT.Pick(player, pos, range, hint) or nil", "local hinted = nil"),
     ("auto Q takes a pick", CO, "local hinted = not isAuto and HINT.Pick(player, pos, range, hint) or nil",
      "local hinted = HINT.Pick(player, pos, range, hint) or nil"),
-    ("a turned Q on the pick hits players", CO, "\t\t\tbestPos, turnedQ = hinted.Pos, turned\n", "\t\t\tbestPos = hinted.Pos\n"),
     ("Q: the pick reaches Range + 20", CO, "not isAuto and HINT.Pick(player, pos, range, hint)",
      "not isAuto and HINT.Pick(player, pos, range + 20, hint)"),
-    ("Q: a nearer enemy beats the pick", CO, "\t\t\tbestPos, turnedQ = hinted.Pos, turned\n",
-     "\t\t\tbestPos, turnedQ = hinted.Pos, turned\n\t\t\tlocal pl = aimed(playersNear(player, pos, range), root, c.AimCone)[1]\n"
-     "\t\t\tif pl and pl.Dist < hinted.Dist then bestPos = pl.Pos end\n"),
     # --- SkillService
     ("SkillService drops the pick before Q", SK, "\tif slot == \"Q\" then return castQ(player, s, isAuto, hint) end\n",
      "\tif slot == \"Q\" then return castQ(player, s, isAuto) end\n"),
@@ -164,18 +156,21 @@ def static() -> tuple[int, list[str]]:
     check(pick.count("monstersNear(player, pos, range + HINT.Slack)") == 1 and "GetMonstersInRadius" not in pick,
           "the pick is checked only against the swing's own filter (monstersNear)")
     swing = function_block(combat, "function CombatService.Swing(")
-    check(swing.count("HINT.Pick(") == 1 and swing.count("turnTo(root, pos, near.Pos)") == 1,
-          "Swing: one pick check; the A23-61 turn stays for no pick")
+    check(swing.count("HINT.Pick(") == 1 and swing.count("HINT.SwingPvP(") == 1 and swing.count("turnTo(root, pos, near.Pos)") == 1,
+          "Swing: one pick check and one PvP check; the A23-61 turn stays for no pick")
     release = function_block(combat, "function CombatService.Release(")
-    check(release.count("HINT.Pick(") == 1, "Release: one pick check (the Target centre)")
+    check(release.count("HINT.Pick(") == 1 and release.count("HINT.QPvP(") == 1 and "HINT.Aim(" not in release,
+          "Release: one pick check and one PvP check (the Target centre); Q never needs a facing")
     # review B: the pick path never writes the client-owned root; the no-pick A23-61 turn (turnTo) still does
     aim = function_block(combat, "function HINT.Aim(")
     check("turnTo(" not in aim and "lookAt" not in aim and ".CFrame =" not in aim and "pcall" not in aim,
           "HINT.Aim never writes the root (a facing table only)")
     check("CFrame.lookAt(pos, pos + look)" in function_block(combat, "local function turnTo("),
           "turnTo (the A23-61 no-pick turn) still writes the root")
-    check(swing.count("HINT.Aim(root, pos, hinted, w.AimCone)") == 1 and release.count("HINT.Aim(root, pos, hinted, c.AimCone)") == 1,
-          "Swing / Q judge 'monsters only' with the attack's own AimCone")
+    # lead 2026-10-10: the PvP checks only read (no damage, no Fx, no write)
+    for name in ("function HINT.SwingPvP(", "function HINT.QPvP("):
+        body = function_block(combat, name)
+        check(not any(word in body for word in ("damage", "Damage", "Fx", "turnTo", "CFrame", "SetAttribute")), f"{name} only reads")
     auto = function_block(combat, "local function autoTick(")
     check("CombatService.Swing(p, false)\n" in auto and "skills.Cast(p, \"Q\", true)" in auto
           and "CombatService.Release(p, true)\n" in auto and "hint" not in auto, "the auto loop sends no pick")
@@ -197,20 +192,23 @@ SUITE = Suite(
     contract="A23-91 server target hint: Swing / Release arg 1 = the client's pick (a monster Model). Valid only for a "
              "MANUAL attack and only when it is the Model of a monstersNear entry (alive, mine or nobody's, zone level "
              "gate, boss HitPad) within Range + HINT.Slack (2) and not hidden (rec._hidden / Model attribute Hidden). "
-             "Valid: the aim follows it unless within HINT.KeepDeg (10 deg) of the facing, through a facing table only "
-             "(the real root is never written; the no-pick A23-61 turn still writes it); monsters only (no player, "
-             "no goose) only when the pick is outside the attack's AimCone of the real facing, inside it players "
-             "and the goose keep the real front half (Around players too). Splash: centre = the pick. Multi: the pick first, then the nearest, "
-             "no repeat. Around: the front half of the pick direction plus the pick itself even at Range + Slack "
-             "(nobody else gets the slack). The queued manual swing keeps its pick; Q (ReleaseCenter Target) centres on "
-             "the pick through SkillService (queued press too) or CombatService's fallback; a Self-centred Q ignores it. "
-             "Anything else (wrong type, part, player character, dead / far / hidden / someone else's / gated monster, "
-             "extra remote arguments, auto swings / auto Q) is ignored: the A23-61 swing of today.",
+             "Lead 2026-10-10: a pick only changes which monsters are hit - it is ignored when the press without it "
+             "would hit an enemy player or the goose (an enemy / the goose in the real front half; for Splash and Q one "
+             "in the blast at today's centre: the nearest front monster, or me for a Q with no monster in range), and a "
+             "press on the pick hits monsters only. With the pick: the aim follows it unless within HINT.KeepDeg (10 "
+             "deg) of the facing, through a facing table only (the real root is never written; the no-pick A23-61 turn "
+             "still writes it). Splash: centre = the pick. Multi: the pick first, then the nearest, no repeat. Around: "
+             "the front half of the pick direction plus the pick itself even at Range + Slack (nobody else gets the "
+             "slack). The queued manual swing keeps its pick; Q (ReleaseCenter Target) centres on the pick through "
+             "SkillService (queued press too) or CombatService's fallback; a Self-centred Q ignores it. Anything else "
+             "(wrong type, part, player character, dead / far / hidden / someone else's / gated monster, extra remote "
+             "arguments, auto swings / auto Q) is ignored: the A23-61 swing of today. Differential: 800 seeded random "
+             "scenes give the same enemy HP and goose tugs with and without the pick.",
     limitations="The real client pick (HUD.PickTarget) and the network delay are not simulated (tools/test_auto_face.py "
-                "covers the client). Splash keeps its blast radius around the pick, so a pick at Range + 2 reaches up to "
-                "Range + 2 + Splash (as a pick inside Range always did). The IsA(\"Model\") guard is redundant with the "
-                "Model identity check and is not mutated. Root writes are seen as a new root.CFrame value (the combat "
-                "world's CFrame.lookAt double); the real client's own turn is not simulated.",
+                "covers the client). The IsA(\"Model\") guard is redundant with the Model identity check and is not "
+                "mutated. Root writes are seen as a new root.CFrame value (the combat world's CFrame.lookAt double); "
+                "the real client's own turn is not simulated. The differential property compares enemy HP and goose "
+                "tugs only (allies' heals, Fx and monster damage may differ by design).",
 )
 
 if __name__ == "__main__":

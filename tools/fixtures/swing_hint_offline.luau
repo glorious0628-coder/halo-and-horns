@@ -1,17 +1,37 @@
 -- swing_hint_offline.luau : A23-91 server target hint (dev2 2026-10-10). The client sends its pick (HUD.PickTarget: the
--- monster Model) as argument 1 of Swing and Release; CombatService now takes it for MANUAL attacks when it is the Model
--- of a monster the attack's own filter (monstersNear: alive, mine or nobody's, the zone level gate) finds within Range +
--- HINT.Slack (2) and not a hidden ambusher. Valid: the attack aims at it unless it is within HINT.KeepDeg (10) of the
--- facing - through a facing for the hit math only, the real root is NEVER written (review 2026-10-10 B: a server write
--- from the stale position snaps a walking player back); it hits monsters only only when the pick is outside the
--- attack's own AimCone of the real facing (review A: inside it players and the goose keep today's real front half).
--- Splash centres on it, Multi hits it first, Around hits it even at Range + Slack (nobody else gets the slack), the skill
--- Q (a Target-centred class) centres on it. Anything else: exactly the swing of today (A23-61, whose own turn still
--- writes the root). tools/test_swing_hint.py binds the CURRENT sources of tools/test_unarmed_start.py plus DamageWindow
--- / SkillService (dev2_kit.luau and dev2_combat_world.luau come first). Players face -Z at the origin; H.At(deg, dist):
--- 0 deg = straight ahead, 90 = right, 180 = right behind.
+-- monster Model) as argument 1 of Swing and Release; CombatService takes it for MANUAL attacks when it is the Model of a
+-- monster the attack's own filter (monstersNear: alive, mine or nobody's, the zone level gate) finds within Range +
+-- HINT.Slack (2) and not a hidden ambusher. Lead decision 2026-10-10: a pick may only change which MONSTERS a press hits,
+-- never which enemy players or the goose - so the pick is ignored whenever the same press without it would hit an enemy
+-- or the goose (R1: one in the real front half; Splash / Q: one in the blast at today's centre), and a press that uses it
+-- hits monsters only (R2 outside the cone and R3 in the slack zone fall out of that). With the pick: the aim follows it
+-- unless it is within HINT.KeepDeg (10) of the facing, through a facing for the hit math only - the real root is NEVER
+-- written (review B; today's A23-61 turn still writes it); Splash centres on it, Multi hits it first, Around hits it even
+-- at Range + Slack (nobody else gets the slack), Q (a Target-centred class) centres on it. Ends with a seeded
+-- differential check: random scenes run with and without the pick give the same enemy HP and goose tugs.
+-- tools/test_swing_hint.py binds the CURRENT sources of tools/test_unarmed_start.py plus DamageWindow / SkillService
+-- (dev2_kit.luau and dev2_combat_world.luau come first). Players face -Z at the origin; H.At(deg, dist): 0 deg = straight
+-- ahead, 90 = right, 180 = right behind.
 
 local H = {}
+
+-- speed (this suite builds ~900 worlds): the kit's execute() compiles every module source again for each world; the
+-- same source string always compiles to the same function, so keep one per source (execute still gives each world its
+-- own fresh environment with setfenv and runs the module again: separate module state, as before)
+do
+	local compile, compiled = loadstring, {}
+	loadstring = function(source, chunk)
+		local key = tostring(chunk) .. "\0" .. source
+		local fn = compiled[key]
+		if not fn then
+			local err
+			fn, err = compile(source, chunk)
+			if not fn then return fn, err end
+			compiled[key] = fn
+		end
+		return fn
+	end
+end
 
 -- true when anything wrote the real root's CFrame since `cf0` (a write always puts a new CFrame value there)
 function H.Wrote(p, cf0)
@@ -64,6 +84,7 @@ function H.World(o)
 		Attrs = attrs })
 	w.Me = p
 	w.Range = o.Bare and w.Config.Combat.Unarmed.Range or w.Config.Classes[class].Range
+	w.QRange = w.Config.Classes[class].Range
 	return w, p
 end
 
@@ -109,188 +130,242 @@ function H.Near(a, b)
 	return a ~= nil and b ~= nil and math.abs(a.X - b.X) < 0.01 and math.abs(a.Z - b.Z) < 0.01
 end
 
--- the Warrior scene every "ignored hint" case uses: a slime in front (30 deg, 4 studs: today's target) and the bad
--- candidate behind (160 deg, 8 studs). `bad(w, p, behind)` turns the behind one into the bad case and returns the hint
--- to send; the outcome: { front dealt, behind dealt, root written, the facing's Z, warnings }
-function H.Scene(bad)
-	local w, p = H.World()
-	local front = H.Mob(w, 30, 4)
-	local behind = H.Mob(w, 160, 8)
-	local hint = bad and bad(w, p, behind) or nil
-	local wrote = H.Swing(w, p, hint)
-	return show({ Front = w:Dealt(front), Behind = w:Dealt(behind), Wrote = wrote,
-		LookZ = math.floor(H.Cf(p).LookVector.Z * 100 + 0.5), Warn = #w.Warnings })
+-- a scene `{ Class, Bare, Q, Goose = {deg, dist}, Mobs = {{deg, dist}}, Enemies = {{deg, dist}}, Pick = {deg, dist} }`
+-- built on a fresh world and pressed once, with the pick (useHint) or without it. Returns { E = enemy HPs, T = goose
+-- tugs, M = the dealt of each monster (the pick last), P = the pick's dealt, W = the root written, C = Q's centre }
+function H.Run(s, useHint)
+	local goose = s.Goose and H.Pos(s.Goose[1], s.Goose[2]) or nil
+	local w, p = H.World({ Class = s.Class, Bare = s.Bare, Goose = goose })
+	local mobs = {}
+	for i, m in s.Mobs or {} do mobs[i] = H.Mob(w, m[1], m[2]) end
+	local enemies = {}
+	for i, e in s.Enemies or {} do enemies[i] = H.Enemy(w, 1 + i, e[1], e[2]) end
+	local pick = s.Pick and H.Mob(w, s.Pick[1], s.Pick[2]) or nil
+	if pick and s.Bad then s.Bad(pick) end
+	local hint = nil
+	if useHint then hint = s.Hint and s.Hint(w, pick, enemies) or (pick and pick.Model) end
+	local wrote
+	if s.Q then wrote = H.Release(w, p, hint) else wrote = H.Swing(w, p, hint) end
+	local out = { E = {}, M = {}, T = #w.Tugs, W = wrote, P = pick and w:Dealt(pick) or 0, Warn = #w.Warnings }
+	for i, v in enemies do out.E[i] = H.Hp(v) end
+	for i, m in mobs do out.M[i] = w:Dealt(m) end
+	local info = s.Q and H.Last(w) or nil
+	out.C = info and info.Center or nil
+	return out
 end
 
------------------------------------------------------------------- the pick wins
+-- the same scene with and without the pick: enemy HP and goose tugs must be equal (lead 2026-10-10)
+function H.Same(a, b)
+	return show(a.E) == show(b.E) and a.T == b.T
+end
+
+------------------------------------------------------------------ the pick wins (no enemy, no goose)
 runGroup("warrior: the pick wins", function()
 	-- today: a slime in front is hit, the one behind is not; with the behind one as my pick: it is hit, the front one
 	-- (130 deg off the pick) is not; the real root is never written
-	local w, p = H.World()
-	local front = H.Mob(w, 30, 4)
-	local behind = H.Mob(w, 160, 8)
-	local wrote = H.Swing(w, p, behind.Model)
-	check(w:Dealt(behind) > 0 and w:Dealt(front) == 0, "a pick behind me: it is hit, the nearer front slime is not",
-		show({ w:Dealt(behind), w:Dealt(front) }))
-	check(not wrote and H.Cf(p).LookVector.Z < -0.99, "review B: the real root is not written (it still faces -Z)",
-		show({ wrote, H.Cf(p).LookVector.Z }))
-	local w0, p0 = H.World()
-	local front0 = H.Mob(w0, 30, 4)
-	local behind0 = H.Mob(w0, 160, 8)
-	H.Swing(w0, p0)
-	check(w0:Dealt(front0) > 0 and w0:Dealt(behind0) == 0, "control: no pick = today's rule (the front slime)",
-		show({ w0:Dealt(front0), w0:Dealt(behind0) }))
+	local a = H.Run({ Mobs = { { 30, 4 } }, Pick = { 160, 8 } }, true)
+	check(a.P > 0 and a.M[1] == 0, "a pick behind me: it is hit, the nearer front slime is not", show({ a.P, a.M[1] }))
+	check(not a.W, "review B: the real root is not written", a.W)
+	local b = H.Run({ Mobs = { { 30, 4 } }, Pick = { 160, 8 } }, false)
+	check(b.P == 0 and b.M[1] > 0, "control: no pick = today's rule (the front slime)", show({ b.P, b.M[1] }))
 	-- within KeepDeg (5 deg): the aim stays my facing - a slime at -87 deg (inside my front half, 92 deg off the pick)
-	-- is still hit, and so is an enemy at -40
+	-- is still hit
 	local w2, p2 = H.World()
 	local pick = H.Mob(w2, 5, 6)
 	local other = H.Mob(w2, 40, 6)
 	local edge = H.Mob(w2, -87, 6)
-	local v = H.Enemy(w2, 2, -40, 5)
 	local wrote2 = H.Swing(w2, p2, pick.Model)
-	check(w2:Dealt(pick) > 0 and w2:Dealt(other) > 0 and w2:Dealt(edge) > 0 and H.Hp(v) < 100 and not wrote2,
-		"a pick 5 deg off my facing: the aim stays (the -87 deg slime is hit), the enemy is hit, no root write",
-		show({ w2:Dealt(pick), w2:Dealt(other), w2:Dealt(edge), H.Hp(v), wrote2 }))
+	check(w2:Dealt(pick) > 0 and w2:Dealt(other) > 0 and w2:Dealt(edge) > 0 and not wrote2,
+		"a pick 5 deg off my facing: the aim stays (the -87 deg slime is hit), no root write",
+		show({ w2:Dealt(pick), w2:Dealt(other), w2:Dealt(edge), wrote2 }))
 	check(H.Hits(w2, pick) == 1 and H.Hits(w2, other) == 1, "the pick is hit once (no second copy), the other slime once",
 		show({ H.Hits(w2, pick), H.Hits(w2, other) }))
 	-- KeepDeg bracket (20 deg): the aim follows the pick - a slime at -80 deg (100 deg off the pick) is not hit, one at
 	-- 105 deg (behind my facing, 85 deg off the pick) is
-	local w3, p3 = H.World()
-	local pick3 = H.Mob(w3, 20, 6)
-	local left = H.Mob(w3, -80, 6)
-	local right = H.Mob(w3, 105, 6)
-	local wrote3 = H.Swing(w3, p3, pick3.Model)
-	check(w3:Dealt(pick3) > 0 and w3:Dealt(left) == 0 and w3:Dealt(right) > 0 and not wrote3,
+	local c = H.Run({ Mobs = { { -80, 6 }, { 105, 6 } }, Pick = { 20, 6 } }, true)
+	check(c.P > 0 and c.M[1] == 0 and c.M[2] > 0 and not c.W,
 		"a pick 20 deg off: the monster sweep is the pick's front half (-80 deg out, 105 deg in), no root write",
-		show({ w3:Dealt(pick3), w3:Dealt(left), w3:Dealt(right), wrote3 }))
+		show({ c.P, c.M[1], c.M[2], c.W }))
 end)
 
-runGroup("review A: inside the attack's cone players stay", function()
-	-- Warrior: an enemy 4 studs straight ahead and a slime at 30 deg as the pick: both are hit
-	local w, p = H.World()
-	local v = H.Enemy(w, 2, 0, 4)
-	local pick = H.Mob(w, 30, 5)
-	H.Swing(w, p, pick.Model)
-	check(H.Hp(v) < 100 and w:Dealt(pick) > 0, "Warrior: a pick at 30 deg, an enemy straight ahead: both are hit", show({ H.Hp(v), w:Dealt(pick) }))
-	-- players are judged in my real front half, not the pick's: a pick at 80 deg, an enemy at -60 deg (in my half, 140 deg
-	-- off the pick) is hit
-	local w2, p2 = H.World()
-	local v2 = H.Enemy(w2, 2, -60, 5)
-	local pick2 = H.Mob(w2, 80, 6)
-	H.Swing(w2, p2, pick2.Model)
-	check(H.Hp(v2) < 100 and w2:Dealt(pick2) > 0, "Warrior: a pick at 80 deg, an enemy at -60 deg (my front half): hit",
-		show({ H.Hp(v2), w2:Dealt(pick2) }))
-	-- outside the cone (120 deg): monsters only - the enemy straight ahead is not hit
-	local w3, p3 = H.World()
-	local v3 = H.Enemy(w3, 2, 0, 4)
-	local pick3 = H.Mob(w3, 120, 5)
-	local wrote3 = H.Swing(w3, p3, pick3.Model)
-	check(H.Hp(v3) == 100 and w3:Dealt(pick3) > 0 and not wrote3, "a pick at 120 deg (outside the cone): monsters only, no root write",
-		show({ H.Hp(v3), w3:Dealt(pick3), wrote3 }))
-	-- the goose: counted with a pick inside the cone, not with one outside it
-	local w4, p4 = H.World({ Goose = vec(0, 0, -4) })
-	local pick4 = H.Mob(w4, 45, 5)
-	H.Swing(w4, p4, pick4.Model)
-	check(#w4.Tugs == 1 and w4:Dealt(pick4) > 0, "a pick at 45 deg and the goose in front: the goose is tugged as today", show({ #w4.Tugs, w4:Dealt(pick4) }))
-	local w5, p5 = H.World({ Goose = vec(0, 0, -4) })
-	local pick5 = H.Mob(w5, 150, 5)
-	H.Swing(w5, p5, pick5.Model)
-	check(#w5.Tugs == 0 and w5:Dealt(pick5) > 0, "a pick at 150 deg and the goose in front: monsters only, no tug", show({ #w5.Tugs, w5:Dealt(pick5) }))
-	-- Mage Splash: a pick at 30 deg and an enemy beside it: both in the blast (inside the cone)
-	local w6, p6 = H.World({ Class = "Mage" })
-	local pick6 = H.Mob(w6, 30, 20)
-	local v6 = H.Enemy(w6, 2, 30, 22)
-	H.Swing(w6, p6, pick6.Model)
-	check(w6:Dealt(pick6) > 0 and H.Hp(v6) < 100, "Mage: a pick at 30 deg and an enemy beside it: both in the blast", show({ w6:Dealt(pick6), H.Hp(v6) }))
+------------------------------------------------------------------ R1: an enemy / the goose in front: the pick is ignored
+runGroup("R1: an enemy or the goose in front, the pick is ignored", function()
+	-- each case: the press with the pick = the press without it (enemy HP, tugs, monsters)
+	local cases = {
+		{ "Warrior: enemy 0/5, pick 170/6: the enemy is hit, the pick is not", { Enemies = { { 0, 5 } }, Pick = { 170, 6 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "Mage swing: enemy 0/8, pick 160/20: the enemy is hit", { Class = "Mage", Enemies = { { 0, 8 } }, Pick = { 160, 20 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "Mage Q: enemy 0/8, pick 160/20: the blast on the enemy", { Class = "Mage", Q = true, Enemies = { { 0, 8 } }, Pick = { 160, 20 } },
+			function(a) return a.E[1] < 100 and a.P == 0 and H.Near(a.C, H.Pos(0, 8)) end },
+		{ "Warrior: the goose 4 ahead, pick 170/6: one tug, the pick is not hit", { Goose = { 0, 4 }, Pick = { 170, 6 } },
+			function(a) return a.T == 1 and a.P == 0 end },
+		{ "Archer Q: pick 95/12, enemy 0/6: the enemy is hit", { Class = "Archer", Q = true, Enemies = { { 0, 6 } }, Pick = { 95, 12 } },
+			function(a) return a.E[1] < 100 and H.Near(a.C, H.Pos(0, 6)) end },
+		{ "Mage swing: enemy 0/5, pick 0/30: the nearer enemy is the centre", { Class = "Mage", Enemies = { { 0, 5 } }, Pick = { 0, 30 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "Mage Q: enemy 0/5, pick 0/30: the blast on the nearer enemy", { Class = "Mage", Q = true, Enemies = { { 0, 5 } }, Pick = { 0, 30 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "bare hands: enemy 0/3, pick 5/6: the punch goes to the enemy", { Bare = true, Enemies = { { 0, 3 } }, Pick = { 5, 6 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "Archer: pick 60/20, slime 140/5, enemy 0/8: the enemy and the pick (as without it)",
+			{ Class = "Archer", Mobs = { { 140, 5 } }, Enemies = { { 0, 8 } }, Pick = { 60, 20 } },
+			function(a) return a.E[1] < 100 and a.P > 0 and a.M[1] == 0 end },
+		{ "Archer: pick 60/20, slimes -60/3 and -50/4, enemy 0/8: the two slimes (as without it)",
+			{ Class = "Archer", Mobs = { { -60, 3 }, { -50, 4 } }, Enemies = { { 0, 8 } }, Pick = { 60, 20 } },
+			function(a) return a.E[1] == 100 and a.P == 0 and a.M[1] > 0 and a.M[2] > 0 end },
+		{ "Warrior: pick 30/5, enemy straight ahead: both hit", { Enemies = { { 0, 4 } }, Pick = { 30, 5 } },
+			function(a) return a.E[1] < 100 and a.P > 0 end },
+		{ "Warrior: pick 120/5, enemy straight ahead: the enemy is hit, the pick is not", { Enemies = { { 0, 4 } }, Pick = { 120, 5 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "Warrior: pick 150/5, the goose in front: one tug, the pick is not hit", { Goose = { 0, 4 }, Pick = { 150, 5 } },
+			function(a) return a.T == 1 and a.P == 0 end },
+		{ "Mage: pick 30/20, an enemy beside it: both in the blast", { Class = "Mage", Enemies = { { 30, 22 } }, Pick = { 30, 20 } },
+			function(a) return a.E[1] < 100 and a.P > 0 end },
+		{ "Mage Q: pick 30/20, an enemy beside it: both in the blast", { Class = "Mage", Q = true, Enemies = { { 30, 22 } }, Pick = { 30, 20 } },
+			function(a) return a.E[1] < 100 and a.P > 0 end },
+		{ "Archer: pick 0/25, enemy 10/8: the enemy and the pick", { Class = "Archer", Enemies = { { 10, 8 } }, Pick = { 0, 25 } },
+			function(a) return a.E[1] < 100 and a.P > 0 end },
+		{ "Archer: pick 0/25, the goose 8 ahead: one tug and the pick", { Class = "Archer", Goose = { 0, 8 }, Pick = { 0, 25 } },
+			function(a) return a.T == 1 and a.P > 0 end },
+		{ "Archer: pick 180/15, an enemy and the goose ahead: those two, not the pick",
+			{ Class = "Archer", Goose = { 0, 8 }, Enemies = { { 0, 8 } }, Pick = { 180, 15 } },
+			function(a) return a.E[1] < 100 and a.T == 1 and a.P == 0 end },
+		{ "Mage: pick 0/25, the goose 5 ahead: the goose is the centre (one tug), the pick is not hit",
+			{ Class = "Mage", Goose = { 0, 5 }, Pick = { 0, 25 } }, function(a) return a.T == 1 and a.P == 0 end },
+		{ "Warrior: pick 0/5, the goose 4 ahead: the slime and one tug", { Goose = { 0, 4 }, Pick = { 0, 5 } },
+			function(a) return a.T == 1 and a.P > 0 end },
+		-- Splash / Q: one in the blast at today's centre (the nearest front monster), beyond my Range: still today's result
+		{ "Mage: an enemy just past the nearest front slime (beyond Range), pick 160/20: the enemy is hit",
+			{ Class = "Mage", Mobs = { { 0, 30 } }, Enemies = { { 0, 36 } }, Pick = { 160, 20 } },
+			function(a) return a.E[1] < 100 and a.P == 0 and a.M[1] > 0 end },
+		{ "Mage: the goose just past the nearest front slime (beyond reach), pick 160/20: one tug",
+			{ Class = "Mage", Mobs = { { 0, 32 } }, Goose = { 0, 41 }, Pick = { 160, 20 } },
+			function(a) return a.T == 1 and a.P == 0 end },
+		{ "Mage Q: an enemy just past the nearest front slime (beyond Range), pick 160/20: the enemy is hit",
+			{ Class = "Mage", Q = true, Mobs = { { 0, 30 } }, Enemies = { { 0, 37 } }, Pick = { 160, 20 } },
+			function(a) return a.E[1] < 100 and a.P == 0 end },
+		{ "Mage Q: only a pick in the slack zone, an enemy behind me: today's blast on me hits the enemy",
+			{ Class = "Mage", Q = true, Enemies = { { 180, 5 } }, Pick = { 0, 36 } },
+			function(a) return a.E[1] < 100 and a.P == 0 and H.Near(a.C, vec(0, 0, 0)) end },
+	}
+	for _, case in cases do
+		local a = H.Run(case[2], true)
+		local b = H.Run(case[2], false)
+		check(H.Same(a, b) and show(a.M) == show(b.M) and a.P == b.P and case[3](a) and a.Warn == 0, case[1],
+			show({ With = { a.E, a.T, a.P, a.M }, Without = { b.E, b.T, b.P, b.M } }))
+	end
+end)
+
+------------------------------------------------------------------ monsters only (R2 / R3)
+runGroup("a press on the pick hits monsters only", function()
+	-- R3: a pick in the slack zone; an enemy / the goose beyond today's reach but inside the blast at the pick: not hit
+	local range = H.World({ Class = "Mage" }).Range
+	local cases = {
+		{ "Mage swing: pick at Range + 1.9, an enemy at 43.8 beside it: not hit", { Class = "Mage", Enemies = { { 0, 43.8 } },
+			Pick = { 0, range + 1.9 } }, function(a) return a.E[1] == 100 and a.P > 0 end },
+		{ "Mage swing: pick at Range + 1.9, the goose at 47.8 beside it: no tug", { Class = "Mage", Goose = { 0, 47.8 },
+			Pick = { 0, range + 1.9 } }, function(a) return a.T == 0 and a.P > 0 end },
+		{ "Mage Q: pick at Range + 1.9, an enemy at 45.8 beside it: not hit", { Class = "Mage", Q = true, Enemies = { { 0, 45.8 } },
+			Pick = { 0, range + 1.9 } }, function(a) return a.E[1] == 100 and a.P > 0 and H.Near(a.C, H.Pos(0, range + 1.9)) end },
+		{ "Archer Q: pick at 31.9, an enemy at 40.8 beside it: not hit", { Class = "Archer", Q = true, Enemies = { { 0, 40.8 } },
+			Pick = { 0, 31.9 } }, function(a) return a.E[1] == 100 and a.P > 0 end },
+		-- R2: a pick behind me, an enemy beside it (nothing in front would reach them today): the pick, not the enemy
+		{ "Mage swing: pick behind (150/20), an enemy beside it: the pick and its neighbour, not the enemy",
+			{ Class = "Mage", Mobs = { { 0, 10 }, { 150, 23 } }, Enemies = { { 150, 18 } }, Pick = { 150, 20 } },
+			function(a) return a.E[1] == 100 and a.P > 0 and a.M[1] == 0 and a.M[2] > 0 and not a.W end },
+		{ "Mage Q: pick behind (160/20), an enemy beside it: the blast there, not the enemy",
+			{ Class = "Mage", Q = true, Mobs = { { 0, 10 } }, Enemies = { { 160, 22 } }, Pick = { 160, 20 } },
+			function(a) return a.E[1] == 100 and a.M[1] == 0 and H.Near(a.C, H.Pos(160, 20)) and not a.W end },
+		{ "Warrior: pick behind (180/5), an enemy and the goose behind me: the pick only",
+			{ Goose = { 180, 4 }, Enemies = { { 170, 4 } }, Pick = { 180, 5 } },
+			function(a) return a.E[1] == 100 and a.T == 0 and a.P > 0 and not a.W end },
+		{ "Archer: pick behind (180/15) alone: the pick, no root write", { Class = "Archer", Pick = { 180, 15 } },
+			function(a) return a.P > 0 and not a.W end },
+	}
+	for _, case in cases do
+		local a = H.Run(case[2], true)
+		local b = H.Run(case[2], false)
+		check(H.Same(a, b) and case[3](a) and a.Warn == 0, case[1], show({ With = { a.E, a.T, a.P, a.M, a.W }, Without = { b.E, b.T, b.P } }))
+	end
 end)
 
 runGroup("the slack is the pick's only", function()
-	local w, p = H.World()
-	local range = w.Range
-	-- range + 1 behind: accepted (hit); range + 3: ignored (nothing in Range: no hit)
-	local near = H.Mob(w, 180, range + 1)
-	H.Swing(w, p, near.Model)
-	check(w:Dealt(near) > 0, "a pick at Range + 1 (behind): accepted, it is hit", w:Dealt(near))
-	local w2, p2 = H.World()
-	local far = H.Mob(w2, 180, range + 3)
-	local wrote2 = H.Swing(w2, p2, far.Model)
-	check(w2:Dealt(far) == 0 and not wrote2, "a pick at Range + 3: ignored (no hit, no turn)", show({ w2:Dealt(far), wrote2 }))
-	-- Around with a pick at Range + 1 ahead: the pick is hit, another slime at Range + 1 is not, one inside Range is
-	local w3, p3 = H.World()
-	local pick = H.Mob(w3, 0, range + 1)
-	local edge = H.Mob(w3, 20, range + 1)
-	local inside = H.Mob(w3, 20, range - 2)
-	H.Swing(w3, p3, pick.Model)
-	check(w3:Dealt(pick) > 0 and w3:Dealt(edge) == 0 and w3:Dealt(inside) > 0,
-		"Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
-		show({ w3:Dealt(pick), w3:Dealt(edge), w3:Dealt(inside) }))
-	-- a pick at Range + 1 behind: a slime beside it also at Range + 1 is not hit
-	local w4, p4 = H.World()
-	local pick4 = H.Mob(w4, 180, range + 1)
-	local edge4 = H.Mob(w4, 170, range + 1)
-	H.Swing(w4, p4, pick4.Model)
-	check(w4:Dealt(pick4) > 0 and w4:Dealt(edge4) == 0, "behind: only the pick gets the slack (its neighbour at Range + 1 is not hit)",
-		show({ w4:Dealt(pick4), w4:Dealt(edge4) }))
-	-- Multi (Archer) and Splash (Mage) at Range + 1 straight ahead
-	local w5, p5 = H.World({ Class = "Archer" })
-	local pick5 = H.Mob(w5, 0, w5.Range + 1)
-	H.Swing(w5, p5, pick5.Model)
-	check(w5:Dealt(pick5) > 0, "Archer: a pick at Range + 1 straight ahead is shot", w5:Dealt(pick5))
-	local w6, p6 = H.World({ Class = "Mage" })
-	local pick6 = H.Mob(w6, 0, w6.Range + 1)
-	H.Swing(w6, p6, pick6.Model)
-	check(w6:Dealt(pick6) > 0, "Mage: a lone pick at Range + 1 straight ahead is the orb's centre", w6:Dealt(pick6))
+	local w0 = H.World()
+	local range = w0.Range
+	local a = H.Run({ Pick = { 180, range + 1 } }, true)
+	check(a.P > 0, "a pick at Range + 1 (behind): accepted, it is hit", a.P)
+	local b = H.Run({ Pick = { 180, range + 3 } }, true)
+	check(b.P == 0 and not b.W, "a pick at Range + 3: ignored (no hit, no turn)", show({ b.P, b.W }))
+	local c = H.Run({ Mobs = { { 20, range + 1 }, { 20, range - 2 } }, Pick = { 0, range + 1 } }, true)
+	check(c.P > 0 and c.M[1] == 0 and c.M[2] > 0, "Around: the pick at Range + 1 is hit, another slime at Range + 1 is not, one inside Range is",
+		show({ c.P, c.M }))
+	local d = H.Run({ Mobs = { { 170, range + 1 } }, Pick = { 180, range + 1 } }, true)
+	check(d.P > 0 and d.M[1] == 0, "behind: only the pick gets the slack (its neighbour at Range + 1 is not hit)", show({ d.P, d.M }))
+	local e = H.Run({ Class = "Archer", Pick = { 0, 31 } }, true)
+	check(e.P > 0, "Archer: a pick at Range + 1 straight ahead is shot", e.P)
+	local f = H.Run({ Class = "Mage", Pick = { 0, 36 } }, true)
+	check(f.P > 0, "Mage: a lone pick at Range + 1 straight ahead is the orb's centre", f.P)
 end)
 
 ------------------------------------------------------------------ ignored hints: exactly today's swing
 runGroup("bad hints are ignored", function()
-	local base = H.Scene(nil)
-	check(string.find(base, "Behind=0,", 1, true) ~= nil and string.find(base, "Front=0,", 1, true) == nil,
-		"setup: with no pick the scene hits the front slime only", base)
-	local accepted = H.Scene(function(_, _, behind) return behind.Model end)
-	check(accepted ~= base, "setup: a valid pick changes the scene's outcome", show({ base, accepted }))
-	local cases = {
-		{ "a hidden ambusher (MonsterService _hidden)", function(_, _, b) b._hidden = true return b.Model end },
-		{ "a monster model marked Hidden", function(_, _, b) b.Model:SetAttribute("Hidden", true) return b.Model end },
-		{ "another player's personal monster", function(w, _, b)
-			b.Owner = H.Enemy(w, 7, 90, 30)
-			return b.Model
-		end },
-		{ "a dead monster", function(_, _, b) b.Alive = false return b.Model end },
-		{ "a player's character (an enemy behind me)", function(w) return H.Enemy(w, 8, 160, 6).Character end },
-		{ "a part (the monster's root)", function(_, _, b) return b.Root end },
+	local scene = { Mobs = { { 30, 4 } }, Pick = { 160, 8 } }
+	local base = H.Run(scene, false)
+	local function sig(o) return show({ o.E, o.T, o.M, o.P, o.W, o.Warn }) end
+	check(base.M[1] > 0 and base.P == 0, "setup: with no pick the scene hits the front slime only", sig(base))
+	local accepted = H.Run(scene, true)
+	check(sig(accepted) ~= sig(base), "setup: a valid pick changes the scene's outcome", show({ sig(base), sig(accepted) }))
+	local bad = {
+		{ "a hidden ambusher (MonsterService _hidden)", function(b) b._hidden = true end },
+		{ "a monster model marked Hidden", function(b) b.Model:SetAttribute("Hidden", true) end },
+		{ "a dead monster", function(b) b.Alive = false end },
+	}
+	local hints = {
+		{ "a part (the monster's root)", function(_, pick) return pick.Root end },
 		{ "a model that is no monster", function(w) return newInstance("Model", w) end },
 		{ "a string", function() return "Slime" end },
 		{ "a number", function() return 3 end },
-		{ "a table", function(_, _, b) return { Model = b.Model } end },
+		{ "a table", function(_, pick) return { Model = pick.Model } end },
 		{ "true", function() return true end },
 	}
-	-- the zone level gate: a monster of a zone above my level
+	for _, case in bad do
+		local s = { Mobs = scene.Mobs, Pick = scene.Pick, Bad = case[2] }
+		check(sig(H.Run(s, true)) == sig(H.Run(s, false)) and sig(H.Run(s, false)) == sig(base), case[1] .. ": ignored (the same swing as with no pick)",
+			show({ sig(H.Run(s, true)), sig(base) }))
+	end
+	for _, case in hints do
+		local s = { Mobs = scene.Mobs, Pick = scene.Pick, Hint = case[2] }
+		check(sig(H.Run(s, true)) == sig(base), case[1] .. ": ignored (the same swing as with no pick)", show({ sig(H.Run(s, true)), sig(base) }))
+	end
+	-- another player's personal monster, a player's character, the zone level gate (outcome = no pick)
+	local function own(w, pick)
+		pick.Owner = H.Enemy(w, 7, 90, 30)
+		return pick.Model
+	end
+	local s1 = { Mobs = scene.Mobs, Pick = scene.Pick, Hint = own }
+	local o1, o0 = H.Run(s1, true), H.Run(s1, false)
+	check(show({ o1.M, o1.P, o1.W }) == show({ o0.M, o0.P, o0.W }), "another player's personal monster: ignored", show({ sig(o1), sig(o0) }))
+	local s2 = { Mobs = scene.Mobs, Pick = scene.Pick, Enemies = { { 160, 6 } }, Hint = function(_, _, enemies) return enemies[1].Character end }
+	local o2, o3 = H.Run(s2, true), H.Run(s2, false)
+	check(sig(o2) == sig(o3), "a player's character (an enemy behind me): ignored", show({ sig(o2), sig(o3) }))
 	local w0 = H.World()
 	local gated = nil
 	for id, z in w0.Config.Zones do
 		if type(z) == "table" and (tonumber(z.MinLevel) or 1) > 5 then gated = id break end
 	end
 	if gated then
-		table.insert(cases, { "a monster of a zone above my level (" .. gated .. ")", function(_, _, b)
-			b.ZoneId = gated
-			return b.Model
-		end })
+		local s3 = { Mobs = scene.Mobs, Pick = scene.Pick, Bad = function(b) b.ZoneId = gated end }
+		check(sig(H.Run(s3, true)) == sig(H.Run(s3, false)), "a monster of a zone above my level (" .. gated .. "): ignored",
+			show({ sig(H.Run(s3, true)), sig(H.Run(s3, false)) }))
 	else
 		finding("no zone above Lv5 in Config.Zones: the zone-gate hint case was skipped")
 	end
-	for _, case in cases do
-		local got = H.Scene(case[2])
-		check(got == base, case[1] .. ": ignored (the same swing as with no pick)", show({ got, base }))
-	end
 	-- an ignored pick still lets today's A23-61 rule turn to the nearest monster behind - and that turn still writes the
 	-- root (review B: only the pick path never writes it)
-	local w, p = H.World()
-	local behind = H.Mob(w, 170, 5)
-	behind._hidden = true
-	local wrote = H.Swing(w, p, behind.Model)
-	check(wrote and w:Dealt(behind) > 0, "an ignored pick: the A23-61 rule still turns (writes the root) to the nearest monster behind",
-		show({ wrote, w:Dealt(behind) }))
+	local s4 = { Pick = { 170, 5 }, Bad = function(b) b._hidden = true end }
+	local o4 = H.Run(s4, true)
+	check(o4.W and o4.P > 0, "an ignored pick: the A23-61 rule still turns (writes the root) to the nearest monster behind", show({ o4.W, o4.P }))
 	-- more arguments than the pick: the press still swings, without the pick
 	local w2, p2 = H.World()
 	local front2 = H.Mob(w2, 30, 4)
@@ -300,96 +375,33 @@ runGroup("bad hints are ignored", function()
 		show({ w2:Dealt(front2), w2:Dealt(behind2) }))
 end)
 
------------------------------------------------------------------- patterns
+------------------------------------------------------------------ patterns (no enemy, no goose)
 runGroup("mage splash", function()
-	-- outside the cone: the orb goes to the pick behind me; the slime 3 studs past it is in the blast, the nearer front
-	-- one is not, the enemy beside the pick is not hit (monsters only)
 	local w, p = H.World({ Class = "Mage" })
 	local front = H.Mob(w, 0, 10)
 	local pick = H.Mob(w, 150, 20)
 	local past = H.Mob(w, 150, 23)
-	local v = H.Enemy(w, 2, 150, 18)
 	local wrote = H.Swing(w, p, pick.Model)
-	check(w:Dealt(pick) > 0 and w:Dealt(past) > 0 and w:Dealt(front) == 0 and H.Hp(v) == 100 and not wrote,
-		"Splash (pick behind): centre = the pick, its neighbour hit, the front slime and the enemy not, no root write",
-		show({ w:Dealt(pick), w:Dealt(past), w:Dealt(front), H.Hp(v), wrote }))
+	check(w:Dealt(pick) > 0 and w:Dealt(past) > 0 and w:Dealt(front) == 0 and not wrote,
+		"Splash (pick behind): centre = the pick, its neighbour hit, the front slime not, no root write",
+		show({ w:Dealt(pick), w:Dealt(past), w:Dealt(front), wrote }))
 	local fx = w:FxOf("Swing")
 	check(#fx > 0 and H.Near(fx[#fx].Data.Pos, pick.Root.Position), "the orb Fx lands on the pick", fx[#fx] and show(fx[#fx].Data.Pos))
-	-- straight ahead, farther than a front slime: centre = the pick; the enemy beside it is hit (as today)
-	local w2, p2 = H.World({ Class = "Mage" })
-	local near2 = H.Mob(w2, 0, 10)
-	local pick2 = H.Mob(w2, 0, 25)
-	local v2 = H.Enemy(w2, 2, 3, 26)
-	H.Swing(w2, p2, pick2.Model)
-	check(w2:Dealt(pick2) > 0 and w2:Dealt(near2) == 0 and H.Hp(v2) < 100,
-		"Splash (ahead): centre = the pick (not the nearer slime), the enemy beside it is hit as today",
-		show({ w2:Dealt(pick2), w2:Dealt(near2), H.Hp(v2) }))
-	-- the pick beats a nearer goose and a nearer enemy (they are not the centre and not in the blast)
-	local w3, p3 = H.World({ Class = "Mage", Goose = vec(0, 0, -5) })
-	local pick3 = H.Mob(w3, 0, 25)
-	H.Swing(w3, p3, pick3.Model)
-	check(w3:Dealt(pick3) > 0 and #w3.Tugs == 0, "Splash: the pick beats a nearer goose (no tug, the pick is hit)", show({ w3:Dealt(pick3), #w3.Tugs }))
-	local w4, p4 = H.World({ Class = "Mage" })
-	local pick4 = H.Mob(w4, 0, 25)
-	local v4 = H.Enemy(w4, 2, 5, 8)
-	H.Swing(w4, p4, pick4.Model)
-	check(w4:Dealt(pick4) > 0 and H.Hp(v4) == 100, "Splash: the pick beats a nearer enemy (the enemy is not hit)", show({ w4:Dealt(pick4), H.Hp(v4) }))
+	local a = H.Run({ Class = "Mage", Mobs = { { 0, 10 } }, Pick = { 0, 25 } }, true)
+	check(a.P > 0 and a.M[1] == 0, "Splash (ahead): centre = the pick, not the nearer slime", show({ a.P, a.M }))
 end)
 
 runGroup("archer multi and bare hands", function()
-	-- the pick first, then the nearest (Targets 2): pick + the 10-stud slime, not the 15-stud one
-	local w, p = H.World({ Class = "Archer" })
-	local m1 = H.Mob(w, 30, 10)
-	local m2 = H.Mob(w, -30, 15)
-	local pick = H.Mob(w, 0, 25)
-	H.Swing(w, p, pick.Model)
-	check(w:Dealt(pick) > 0 and w:Dealt(m1) > 0 and w:Dealt(m2) == 0, "Multi: the pick first, then the nearest (Targets 2)",
-		show({ w:Dealt(pick), w:Dealt(m1), w:Dealt(m2) }))
-	-- the pick is also the nearest: hit once, the next one is the second arrow
+	local a = H.Run({ Class = "Archer", Mobs = { { 30, 10 }, { -30, 15 } }, Pick = { 0, 25 } }, true)
+	check(a.P > 0 and a.M[1] > 0 and a.M[2] == 0, "Multi: the pick first, then the nearest (Targets 2)", show({ a.P, a.M }))
 	local w2, p2 = H.World({ Class = "Archer" })
 	local pick2 = H.Mob(w2, 0, 8)
 	local m3 = H.Mob(w2, 30, 10)
 	H.Swing(w2, p2, pick2.Model)
 	check(H.Hits(w2, pick2) == 1 and H.Hits(w2, m3) == 1, "Multi: the pick is never shot twice (the second arrow goes to the next)",
 		show({ H.Hits(w2, pick2), H.Hits(w2, m3) }))
-	-- inside KeepDeg the second arrow may still go to an enemy, the goose still counts
-	local w3, p3 = H.World({ Class = "Archer" })
-	local pick3 = H.Mob(w3, 0, 25)
-	local v3 = H.Enemy(w3, 2, 10, 8)
-	H.Swing(w3, p3, pick3.Model)
-	check(w3:Dealt(pick3) > 0 and H.Hp(v3) < 100, "Multi: the pick, then the nearer enemy (second arrow)", show({ w3:Dealt(pick3), H.Hp(v3) }))
-	local w4, p4 = H.World({ Class = "Archer", Goose = vec(0, 0, -8) })
-	local pick4 = H.Mob(w4, 0, 25)
-	H.Swing(w4, p4, pick4.Model)
-	check(w4:Dealt(pick4) > 0 and #w4.Tugs == 1, "Multi: the pick, then the goose (second arrow, one tug)", show({ w4:Dealt(pick4), #w4.Tugs }))
-	-- a pick behind (outside the cone): monsters only - no arrow for the enemy or the goose in front
-	local w5, p5 = H.World({ Class = "Archer", Goose = vec(0, 0, -8) })
-	local pick5 = H.Mob(w5, 180, 15)
-	local v5 = H.Enemy(w5, 2, 0, 8)
-	local wrote5 = H.Swing(w5, p5, pick5.Model)
-	check(w5:Dealt(pick5) > 0 and H.Hp(v5) == 100 and #w5.Tugs == 0 and not wrote5,
-		"Multi with a pick behind: the pick, no player, no goose, no root write", show({ w5:Dealt(pick5), H.Hp(v5), #w5.Tugs, wrote5 }))
-	-- bare hands (one punch, Range 7): the pick behind-right, not the nearer slime in front
-	local w6, p6 = H.World({ Bare = true })
-	local front6 = H.Mob(w6, 20, 3)
-	local pick6 = H.Mob(w6, 170, 5)
-	H.Swing(w6, p6, pick6.Model)
-	check(w6:Dealt(pick6) > 0 and w6:Dealt(front6) == 0, "bare hands: the punch goes to the pick, the nearer front slime is not hit",
-		show({ w6:Dealt(pick6), w6:Dealt(front6) }))
-end)
-
-runGroup("not turned: the goose as today", function()
-	local w, p = H.World({ Goose = vec(0, 0, -4) })
-	local pick = H.Mob(w, 0, 5)
-	H.Swing(w, p, pick.Model)
-	check(w:Dealt(pick) > 0 and #w.Tugs == 1, "a pick straight ahead: the goose in front is tugged as today", show({ w:Dealt(pick), #w.Tugs }))
-	-- Around with a pick behind me: an enemy and the goose behind me (beside the pick) are not hit / counted
-	local w2, p2 = H.World({ Goose = vec(0, 0, 4) })
-	local pick2 = H.Mob(w2, 180, 5)
-	local v2 = H.Enemy(w2, 2, 170, 4)
-	H.Swing(w2, p2, pick2.Model)
-	check(w2:Dealt(pick2) > 0 and H.Hp(v2) == 100 and #w2.Tugs == 0, "Around, pick behind: the enemy and the goose beside it are not hit",
-		show({ w2:Dealt(pick2), H.Hp(v2), #w2.Tugs }))
+	local b = H.Run({ Bare = true, Mobs = { { 20, 3 } }, Pick = { 170, 5 } }, true)
+	check(b.P > 0 and b.M[1] == 0 and not b.W, "bare hands: the punch goes to the pick, the nearer front slime is not hit", show({ b.P, b.M, b.W }))
 end)
 
 ------------------------------------------------------------------ auto, the queue
@@ -402,7 +414,6 @@ runGroup("auto never takes a pick", function()
 	w:Flush()
 	check(w:Dealt(front) > 0 and w:Dealt(behind) == 0, "an auto swing with a pick: the pick is ignored (today's rule)",
 		show({ w:Dealt(front), w:Dealt(behind) }))
-	-- auto skill Q (Mage, Target): the centre stays the nearest aimed slime
 	local w2, p2 = H.World({ Class = "Mage", Auto = true })
 	local near = H.Mob(w2, 0, 10)
 	local pick = H.Mob(w2, 0, 30)
@@ -438,81 +449,21 @@ runGroup("the queued swing keeps its pick", function()
 		show({ w:Dealt(behind), w:Dealt(front), wrote }))
 end)
 
------------------------------------------------------------------- the skill Q
+------------------------------------------------------------------ the skill Q (no enemy)
 runGroup("skill Q takes the pick", function()
-	-- Mage (Target centre), through the old Release remote and SkillService: the blast on the pick, not the nearer slime;
-	-- the enemy beside the pick is hit (inside the cone, manual: as today)
-	local w, p = H.World({ Class = "Mage" })
-	local near = H.Mob(w, 0, 10)
-	local pick = H.Mob(w, 0, 30)
-	local v = H.Enemy(w, 2, 2, 31)
-	local wrote = H.Release(w, p, pick.Model)
-	local info = H.Last(w)
-	check(info ~= nil and not wrote and H.Near(info.Center, pick.Root.Position) and w:Dealt(pick) > 0 and w:Dealt(near) == 0 and H.Hp(v) < 100,
-		"Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit, the enemy beside it is",
-		info and show({ info.Center, wrote, w:Dealt(pick), w:Dealt(near), H.Hp(v) }))
-	local w0, p0 = H.World({ Class = "Mage" })
-	local near0 = H.Mob(w0, 0, 10)
-	local pick0 = H.Mob(w0, 0, 30)
-	H.Release(w0, p0)
-	local info0 = H.Last(w0)
-	check(info0 ~= nil and H.Near(info0.Center, near0.Root.Position) and w0:Dealt(pick0) == 0, "control: Q with no pick = the nearest aimed slime",
-		info0 and show(info0.Center))
-	-- review A: a pick at 30 deg (inside the cone) with an enemy beside it: the enemy is hit
-	local w1, p1 = H.World({ Class = "Mage" })
-	local pick1 = H.Mob(w1, 30, 20)
-	local v1 = H.Enemy(w1, 2, 30, 22)
-	H.Release(w1, p1, pick1.Model)
-	local info1 = H.Last(w1)
-	check(info1 ~= nil and H.Near(info1.Center, pick1.Root.Position) and H.Hp(v1) < 100, "Q at a pick at 30 deg: the enemy beside it is hit",
-		info1 and show({ info1.Center, H.Hp(v1) }))
-	-- a pick behind me (outside the cone): the blast there, monsters only, no root write
-	local w2, p2 = H.World({ Class = "Mage" })
-	local near2 = H.Mob(w2, 0, 10)
-	local pick2 = H.Mob(w2, 160, 20)
-	local v2 = H.Enemy(w2, 2, 160, 22)
-	local wrote2 = H.Release(w2, p2, pick2.Model)
-	local info2 = H.Last(w2)
-	check(info2 ~= nil and not wrote2 and H.Near(info2.Center, pick2.Root.Position) and w2:Dealt(near2) == 0 and H.Hp(v2) == 100,
-		"Q at a pick behind: the blast there, the enemy beside it is not hit, no root write",
-		info2 and show({ info2.Center, wrote2, w2:Dealt(near2), H.Hp(v2) }))
-	-- the pick beats a nearer enemy in front
-	local w3, p3 = H.World({ Class = "Mage" })
-	local pick3 = H.Mob(w3, 0, 30)
-	local v3 = H.Enemy(w3, 2, 5, 8)
-	H.Release(w3, p3, pick3.Model)
-	local info3 = H.Last(w3)
-	check(info3 ~= nil and H.Near(info3.Center, pick3.Root.Position) and H.Hp(v3) == 100, "Q: the pick beats a nearer enemy (not hit)",
-		info3 and show({ info3.Center, H.Hp(v3) }))
-	-- Range + 1 is the centre (Archer); a lone pick at Range + 3 is not (Mage: the blast stays on me, the pick unhit)
-	local w4, p4 = H.World({ Class = "Archer" })
-	local pick4 = H.Mob(w4, 0, w4.Range + 1)
-	H.Release(w4, p4, pick4.Model)
-	local info4 = H.Last(w4)
-	check(info4 ~= nil and H.Near(info4.Center, pick4.Root.Position), "Q (Archer): a pick at Range + 1 is the centre", info4 and show(info4.Center))
-	local w5, p5 = H.World({ Class = "Mage" })
-	local pick5 = H.Mob(w5, 0, w5.Range + 3)
-	H.Release(w5, p5, pick5.Model)
-	local info5 = H.Last(w5)
-	check(info5 ~= nil and H.Near(info5.Center, vec(0, 0, 0)) and w5:Dealt(pick5) == 0, "Q (Mage): a lone pick at Range + 3 is ignored",
-		info5 and show({ info5.Center, w5:Dealt(pick5) }))
-	-- a bad pick (hidden): Q as with none
-	local w6, p6 = H.World({ Class = "Mage" })
-	local near6 = H.Mob(w6, 0, 10)
-	local pick6 = H.Mob(w6, 0, 30)
-	pick6._hidden = true
-	H.Release(w6, p6, pick6.Model)
-	local info6 = H.Last(w6)
-	check(info6 ~= nil and H.Near(info6.Center, near6.Root.Position), "Q with a hidden pick: ignored (the nearest aimed slime)", info6 and show(info6.Center))
-	-- Warrior (the blast is centred on me): the pick changes nothing, no root write
-	local w7, p7 = H.World()
-	H.Mob(w7, 30, 4)
-	local pick7 = H.Mob(w7, 160, 6)
-	local wrote7 = H.Release(w7, p7, pick7.Model)
-	local info7 = H.Last(w7)
-	check(info7 ~= nil and not wrote7 and H.Near(info7.Center, vec(0, 0, 0)), "Q (Warrior, centred on me): the pick changes nothing",
-		info7 and show({ info7.Center, wrote7 }))
-	-- more arguments than the pick: Q still goes, without the pick
+	local a = H.Run({ Class = "Mage", Q = true, Mobs = { { 0, 10 } }, Pick = { 0, 30 } }, true)
+	check(a.C ~= nil and not a.W and H.Near(a.C, H.Pos(0, 30)) and a.P > 0 and a.M[1] == 0,
+		"Q (Mage) through SkillService: centre = the pick, the nearer slime is not hit", show({ a.C, a.W, a.P, a.M }))
+	local b = H.Run({ Class = "Mage", Q = true, Mobs = { { 0, 10 } }, Pick = { 0, 30 } }, false)
+	check(b.C ~= nil and H.Near(b.C, H.Pos(0, 10)) and b.P == 0, "control: Q with no pick = the nearest aimed slime", show(b.C))
+	local c = H.Run({ Class = "Archer", Q = true, Pick = { 0, 31 } }, true)
+	check(c.C ~= nil and H.Near(c.C, H.Pos(0, 31)), "Q (Archer): a pick at Range + 1 is the centre", show(c.C))
+	local d = H.Run({ Class = "Mage", Q = true, Pick = { 0, 38 } }, true)
+	check(d.C ~= nil and H.Near(d.C, vec(0, 0, 0)) and d.P == 0, "Q (Mage): a lone pick at Range + 3 is ignored", show({ d.C, d.P }))
+	local e = H.Run({ Class = "Mage", Q = true, Mobs = { { 0, 10 } }, Pick = { 0, 30 }, Bad = function(r) r._hidden = true end }, true)
+	check(e.C ~= nil and H.Near(e.C, H.Pos(0, 10)), "Q with a hidden pick: ignored (the nearest aimed slime)", show(e.C))
+	local f = H.Run({ Q = true, Mobs = { { 30, 4 } }, Pick = { 160, 6 } }, true)
+	check(f.C ~= nil and not f.W and H.Near(f.C, vec(0, 0, 0)), "Q (Warrior, centred on me): the pick changes nothing", show({ f.C, f.W }))
 	local w8, p8 = H.World({ Class = "Mage" })
 	local near8 = H.Mob(w8, 0, 10)
 	local pick8 = H.Mob(w8, 0, 30)
@@ -520,12 +471,8 @@ runGroup("skill Q takes the pick", function()
 	local info8 = H.Last(w8)
 	check(info8 ~= nil and H.Near(info8.Center, near8.Root.Position), "Release(pick, extra): Q goes as with no pick", info8 and show(info8.Center))
 	-- review B: with no pick, Q's own A23-61 turn (a lone slime behind) still writes the root
-	local w9, p9 = H.World({ Class = "Mage" })
-	local back9 = H.Mob(w9, 180, 10)
-	local wrote9 = H.Release(w9, p9)
-	local info9 = H.Last(w9)
-	check(info9 ~= nil and wrote9 and H.Near(info9.Center, back9.Root.Position), "Q with no pick: the A23-61 turn still writes the root",
-		info9 and show({ info9.Center, wrote9 }))
+	local g = H.Run({ Class = "Mage", Q = true, Pick = { 180, 10 } }, false)
+	check(g.W and H.Near(g.C, H.Pos(180, 10)), "Q with no pick: the A23-61 turn still writes the root", show({ g.C, g.W }))
 end)
 
 runGroup("skill Q: the queued press and no SkillService", function()
@@ -545,7 +492,6 @@ runGroup("skill Q: the queued press and no SkillService", function()
 	local info = H.Last(w)
 	check(#w.Rel == n + 1 and H.Near(info.Center, pick.Root.Position) and w:Dealt(near) > 0,
 		"the queued Q goes off on its pick", info and show({ #w.Rel - n, info.Center }))
-	-- the Release remote without SkillService (CombatService's own fallback) passes the pick too
 	local w2, p2 = H.World({ Class = "Mage" })
 	w2.Registry.SkillService = nil
 	local near2 = H.Mob(w2, 0, 10)
@@ -554,6 +500,95 @@ runGroup("skill Q: the queued press and no SkillService", function()
 	local info2 = H.Last(w2)
 	check(info2 ~= nil and H.Near(info2.Center, pick2.Root.Position) and w2:Dealt(near2) == 0,
 		"Release without SkillService: the pick is the centre", info2 and show(info2.Center))
+end)
+
+------------------------------------------------------------------ the differential property (lead 2026-10-10)
+-- DIFF.N seeded random scenes (every class + bare hands, swing and Q, 0-2 enemies, maybe the goose, 0-4 monsters, a
+-- valid / invalid pick at a random angle and distance): with the pick and without it (fresh worlds) the enemies' HP and
+-- the goose tugs are the same; with no enemy and no goose a valid pick is hit (Warrior Q, centred on me, excepted)
+local DIFF = { N = 800, Seed = 20261010 }
+function DIFF.Rnd()
+	DIFF.Seed = (DIFF.Seed * 1103515245 + 12345) % 2147483648
+	return DIFF.Seed / 2147483648
+end
+function DIFF.Scene()
+	local R = DIFF.Rnd
+	local kinds = { "Warrior", "Mage", "Archer", "Bare" }
+	local kind = kinds[1 + math.floor(R() * 4)]
+	local s = { Class = kind ~= "Bare" and kind or nil, Bare = kind == "Bare" }
+	s.Q = kind ~= "Bare" and R() < 0.4
+	local cfg = C0.Classes[s.Class or "Warrior"]
+	local range = s.Q and cfg.Range or (s.Bare and C0.Combat.Unarmed.Range or cfg.Range)
+	s.Range = range
+	local pve = R() < 0.3 -- a third of the scenes: no enemy, no goose (the pick must be hit)
+	s.Mobs = {}
+	for i = 1, math.floor(R() * 5) do -- a quarter of them near the edge of Range (boundary bias)
+		s.Mobs[i] = { R() * 360, R() < 0.25 and range - 4 + R() * 4 or 0.5 + R() * (range + 6) }
+	end
+	local hk = ({ "valid", "valid", "valid", "valid", "far", "dead", "hidden", "enemyChar", "string", "none" })[1 + math.floor(R() * 10)]
+	-- an enemy / the goose: anywhere out to Range + 12, or (half of them) within 10 studs of me (twice as likely), a
+	-- monster or the pick - the blasts at today's centre and at the pick
+	local pickAt = (hk == "valid" or hk == "far" or hk == "dead" or hk == "hidden") and { R() * 360, 0 } or nil
+	local function spot()
+		local anchors = { { 0, 0 }, { 0, 0 } }
+		for _, m in s.Mobs do table.insert(anchors, m) end
+		if pickAt then table.insert(anchors, pickAt) end
+		if R() < 0.5 then return { R() * 360, 0.5 + R() * (range + 12) } end
+		local a = anchors[1 + math.floor(R() * #anchors)]
+		local ax, az = H.At(a[1], a[2])
+		local ox, oz = H.At(R() * 360, R() * 10)
+		local x, z = ax + ox, az + oz
+		return { math.deg(math.atan2(x, z)), math.max(0.5, math.sqrt(x * x + z * z)) }
+	end
+	if pickAt then -- the pick's distance first (spot() may anchor on it)
+		if hk == "valid" then -- up to Range + 1.9 (the slack is 2); a quarter of them at the edge / in the slack zone
+			pickAt[2] = R() < 0.25 and range - 0.5 + R() * 2.4 or 0.5 + R() * (range + 1.4)
+		elseif hk == "far" then
+			pickAt[2] = range + 2.5 + R() * 8
+		else
+			pickAt[2] = 0.5 + R() * range
+		end
+	end
+	if not pve and R() < 0.4 then s.Goose = spot() end
+	s.Enemies = {}
+	for i = 1, pve and 0 or math.floor(R() * 3) do s.Enemies[i] = spot() end
+	s.Kind = hk
+	s.Pick = pickAt
+	if hk == "dead" or hk == "hidden" then
+		s.Bad = hk == "dead" and function(r) r.Alive = false end or function(r) r._hidden = true end
+	elseif hk == "enemyChar" then
+		s.Hint = function(_, _, enemies) return enemies[1] and enemies[1].Character or nil end
+	elseif hk == "string" then
+		s.Hint = function() return "Slime" end
+	elseif hk == "none" then
+		s.Hint = function() return nil end -- no pick monster either: nil is sent
+	end
+	return s -- "valid" / "far" / "dead" / "hidden": the pick monster's Model is sent
+end
+
+runGroup("differential: a pick never changes who else is hit", function()
+	local counts = { Pvp = 0, PvpHit = 0, Pve = 0 }
+	for i = 1, DIFF.N do
+		local s = DIFF.Scene()
+		local a = H.Run(s, true)
+		local b = H.Run(s, false)
+		local label = string.format("#%d %s%s pick=%s goose=%s enemies=%d", i, s.Bare and "Bare" or s.Class or "Warrior",
+			s.Q and " Q" or "", s.Kind, tostring(s.Goose ~= nil), #s.Enemies)
+		check(H.Same(a, b) and a.Warn == 0 and b.Warn == 0, "enemy HP and goose tugs: with the pick = without it",
+			label .. " " .. show({ With = { a.E, a.T }, Without = { b.E, b.T } }))
+		if #s.Enemies > 0 or s.Goose then
+			counts.Pvp += 1
+			local hitSomeone = b.T > 0
+			for _, hp in b.E do if hp < 100 then hitSomeone = true end end
+			if hitSomeone then counts.PvpHit += 1 end
+		elseif s.Kind == "valid" and not (s.Q and (s.Class or "Warrior") == "Warrior") then
+			counts.Pve += 1
+			check(a.P > 0, "no enemy, no goose: a valid pick is hit", label .. " " .. show({ a.P, s.Pick }))
+		end
+	end
+	finding(string.format("differential: %d scenes, %d with an enemy / the goose (%d of them hit someone without the pick), %d pure-PvE valid picks",
+		DIFF.N, counts.Pvp, counts.PvpHit, counts.Pve))
+	check(counts.PvpHit >= 30 and counts.Pve >= 30, "the random scenes cover both properties (>= 30 each)", show(counts))
 end)
 
 finish()

@@ -379,8 +379,10 @@ end
 -- earlier), and not a hidden ambusher (the client never picks one). Anything else (a player's character, a part, a dead /
 -- far / someone else's monster, a wrong type) is ignored and the attack aims as before (A23-61). Only the hint gets the
 -- slack: every other target is still searched within Range. The attack aims at it unless it is within KeepDeg of the
--- facing (HINT.Aim: a facing for the hit math only, the real root is never written); it hits monsters only (the A23-61
--- rule) only when the pick is outside the attack's own cone (AimCone) of the real facing. Auto combat never has a hint.
+-- facing (HINT.Aim: a facing for the hit math only, the real root is never written). Auto combat never has a hint.
+-- Lead 2026-10-10: a pick may only change which MONSTERS a press hits, never which enemy players or the goose. So the
+-- pick is ignored (today's swing runs unchanged) whenever the same press without it would hit an enemy player or the
+-- goose (HINT.SwingPvP / HINT.QPvP), and an attack that does use it hits monsters only.
 local HINT = { Slack = 2, KeepDeg = 10 }
 
 -- the monstersNear entry { Rec, Pos, Dist } of a valid hint, else nil
@@ -395,15 +397,40 @@ function HINT.Pick(player, pos, range, hint)
 	return nil
 end
 
--- the facing for a valid hint (aimRoot, turned): within KeepDeg of the real facing the root itself, else a facing toward
--- the pick for the hit math only. The real root is never written here (the client owns its character and already turned
--- to its pick; a server write from the position the server last saw snaps a walking player back). turned (monsters only,
--- A23-61) only when the pick is outside `cone` (the attack's AimCone) of the real facing: inside it players and the goose
--- keep today's real front half.
-function HINT.Aim(root, pos, e, cone)
-	if inAim(root, e.Pos, HINT.KeepDeg) then return root, false end
+-- the facing for a valid hint: within KeepDeg of the real facing the root itself, else a facing toward the pick for the
+-- hit math only. The real root is never written here (the client owns its character and already turned to its pick; a
+-- server write from the position the server last saw snaps a walking player back).
+function HINT.Aim(root, pos, e)
+	if inAim(root, e.Pos, HINT.KeepDeg) then return root end
 	local look = Vector3.new(e.Pos.X - pos.X, 0, e.Pos.Z - pos.Z).Unit -- inAim: at least 1 stud away here
-	return { Position = pos, CFrame = { LookVector = look } }, not inAim(root, e.Pos, cone)
+	return { Position = pos, CFrame = { LookVector = look } }
+end
+
+-- true when this manual swing WITHOUT a pick would hit an enemy player or the goose (then the pick is ignored): one of
+-- them inside the real front half (frontTarget's player / goose parts: Around / Multi / Splash choose them there), or,
+-- for Splash, one inside the blast at today's centre (the nearest monster of the real front half). Nothing in front:
+-- today's swing turns to a monster (monsters only) or whiffs.
+function HINT.SwingPvP(player, root, pos, w, range, goosePos, gooseReach)
+	if #aimed(playersNear(player, pos, range), root, w.AimCone) > 0 then return true end
+	if goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach and inAim(root, goosePos, w.AimCone) then
+		return true
+	end
+	if w.Pattern ~= "Splash" then return false end
+	local m0 = aimed(monstersNear(player, pos, range), root, w.AimCone)[1]
+	if not m0 then return false end
+	local radius = w.Splash or 0
+	return #playersNear(player, m0.Pos, radius) > 0
+		or (goosePos ~= nil and Util.FlatDistance(goosePos, m0.Pos) <= radius + gooseReach)
+end
+
+-- the same for a manual skill Q centred on its target (Release, ReleaseCenter "Target"; Q never counts the goose): an
+-- enemy inside the real front half within range, or one inside the blast at today's centre - the nearest monster of the
+-- real front half, or me when no monster at all is within range (a monster elsewhere: today's Q turns, monsters only)
+function HINT.QPvP(player, root, pos, range, cone, radius)
+	if #aimed(playersNear(player, pos, range), root, cone) > 0 then return true end
+	local m0 = aimed(monstersNear(player, pos, range), root, cone)[1]
+	local center = m0 and m0.Pos or (monstersNear(player, pos, range)[1] == nil and pos) or nil
+	return center ~= nil and #playersNear(player, center, radius) > 0
 end
 
 -- monstersNear entries with the hint first and no second copy of it
@@ -929,12 +956,14 @@ function CombatService.Swing(player, isManual, hint)
 	-- inside the real front half the swing aims at the nearest monster within Range in any direction (the client
 	-- FaceTarget rule) and turns the root to it; a turned swing hits monsters only (players and the goose keep the
 	-- front-half rule)
-	-- A23-91 server target hint: a valid client pick wins over both (HINT; the real root is not written then, `turned` =
-	-- the pick is outside the real front half); auto swings never carry one
+	-- A23-91 server target hint: a valid client pick wins over both (HINT) unless the press without it would hit an enemy
+	-- player or the goose (then today's swing runs unchanged); a swing on the pick hits monsters only and never writes the
+	-- real root. Auto swings never carry one
 	local aimRoot, turned = root, false
 	local hinted = isManual and HINT.Pick(player, pos, range, hint) or nil
+	if hinted and HINT.SwingPvP(player, root, pos, w, range, goosePos, gooseReach) then hinted = nil end
 	if hinted then
-		aimRoot, turned = HINT.Aim(root, pos, hinted, w.AimCone)
+		aimRoot, turned = HINT.Aim(root, pos, hinted), true -- monsters only
 	elseif not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then
 		local near = monstersNear(player, pos, range)[1]
 		if near then
@@ -970,7 +999,7 @@ function CombatService.Swing(player, isManual, hint)
 				pickPos, pickDist, pickIsGoose = goosePos, d, true
 			end
 		end
-		if hinted then pickPos, pickIsGoose = hinted.Pos, false end -- A23-91: the orb goes to the client's pick
+		if hinted then pickPos = hinted.Pos end -- A23-91: the orb goes to the client's pick (monsters only)
 		if pickPos then
 			center = pickPos
 			monsters = monstersNear(player, center, radius)
@@ -1026,9 +1055,8 @@ function CombatService.Swing(player, isManual, hint)
 	else -- "Around" (default): everything within Range of self, in front of me (AimCone; turned: the new front half)
 		monsters = aimed(monstersNear(player, pos, range), aimRoot, w.AimCone)
 		if hinted then monsters = HINT.First(hinted, monsters) end -- A23-91: the pick even at Range + Slack, nobody else
-		-- players: the real front half (A23-91: a pick inside it may aim the monster sweep a little elsewhere)
 		if isManual and not turned then
-			victims = aimed(playersNear(player, pos, range), root, w.AimCone)
+			victims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)
 		end
 		hitGoose = goosePos ~= nil and not turned and Util.FlatDistance(goosePos, pos) <= range + gooseReach
 			and inAim(root, goosePos, w.AimCone)
@@ -1162,12 +1190,13 @@ function CombatService.Release(player, isAuto, hint)
 	if c.ReleaseCenter == "Target" then
 		local range = c.Range or 10
 		local bestPos, bestDist = nil, math.huge
-		-- A23-91 server target hint: a manual cast goes to a valid client pick (the swing's HINT rule: the root is not
-		-- written, a pick outside the class AimCone makes the blast monsters only); auto casts never carry one
+		-- A23-91 server target hint: a manual cast goes to a valid client pick (the swing's HINT rule) unless the cast
+		-- without it would hit an enemy player (HINT.QPvP: then today's Q runs unchanged); a blast on the pick hits monsters
+		-- only and never writes the root. Auto casts never carry one
 		local hinted = not isAuto and HINT.Pick(player, pos, range, hint) or nil
+		if hinted and HINT.QPvP(player, root, pos, range, c.AimCone, skill.Radius or 9) then hinted = nil end
 		if hinted then
-			local _, turned = HINT.Aim(root, pos, hinted, c.AimCone)
-			bestPos, turnedQ = hinted.Pos, turned
+			bestPos, turnedQ = hinted.Pos, true -- monsters only
 		else
 			local nearMon = aimed(monstersNear(player, pos, range), root, c.AimCone)
 			if nearMon[1] then
