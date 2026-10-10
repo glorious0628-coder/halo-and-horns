@@ -1715,8 +1715,8 @@ runGroup("daily intro quest (A23-104)", function()
 	local done = {}
 	w.Story.QuestDone:Connect(function(_, id) table.insert(done, id) end)
 	local def = SQ0.Defs.D0
-	check(def.Reward.Gold == 1 and def.Reward.XP == 1 and def.Finish == "Daily jobs are open!" and def.Steps[1].Lines.All[1] ~= nil
-		and C0.Daily.IntroQuest == "D0", "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)", show(def.Reward))
+	check(def.Reward.Gold == 1 and def.Reward.XP == 1 and def.Finish == nil and def.Steps[1].Lines.All[1] ~= nil
+		and C0.Daily.IntroQuest == "D0", "D0: a small reward, no 'Daily jobs are open!' closing line (A23-99), the guide speaks (no Speaker)", show(def.Reward))
 	-- before the first chapter is over: nothing is offered
 	local e, ed = joinAfterM23(w, 970, "Halo", { Before = true })
 	w.Story.Refresh(e)
@@ -1737,7 +1737,7 @@ runGroup("daily intro quest (A23-104)", function()
 		local gold0 = d.BankGold or 0
 		w:Act(p, "D0", "Talk")
 		check(d.Story.Done.D0 == true and w:Track(d, "D0") == nil and done[#done] == "D0" and (d.BankGold or 0) > gold0
-			and said(w, p, n0, "Daily jobs are open!"), faction .. ": talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'", show({ done, d.BankGold }))
+			and not said(w, p, n0, "open"), faction .. ": talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast", show({ done, d.BankGold }))
 		w.Story.Refresh(p)
 		w:Act(p, "D0", "Talk")
 		local count = 0
@@ -1972,6 +1972,19 @@ runGroup("npc-talk", function()
 	local b4 = #panels
 	check(w:Track(nnd, "TX_NN") and w.Story.TalkToNpc(nn, nil) == nil and w.Story.TalkToNpc(nn, 5) == nil and w.Story.TalkToNpc(nn, true) == nil and #panels == b4,
 		"a nil / non-string NPC id never opens a dialogue that names no NPC", "")
+	-- Sir Gleam: H3's first card is talked through him; its choice card (step 4) opens by itself in the town, no NPC
+	w:Npc("Gleam", vec(-10, 0, -372))
+	local g, gd = joinAfterM23(w, 985, "Halo", { Pos = vec(-8, 0, -370) })
+	gd.Story.Subs.H3 = { St = 1, P = 0, T = {}, Claim = false }
+	local b5 = #panels
+	check(SQ0.Defs.H3.Steps[1].Npc == "Gleam" and SQ0.Defs.H3.Steps[4].Npc == nil and SQ0.Defs.H3.Steps[4].Obj.Type == "Choice",
+		"H3: the first card names Sir Gleam, the choice card names nobody", show(SQ0.Defs.H3.Steps[1].Npc))
+	check(w.Story.TalkToNpc(g, "Gleam") == "H3" and #panels == b5 + 1 and panels[#panels].Arg.Id == "H3" and panels[#panels].Arg.St == 1,
+		"talking to Sir Gleam opens H3's first card", show(panels[#panels] and panels[#panels].Arg))
+	check(w.Story.TalkToNpc(g, "Bright") ~= "H3", "... not by talking to Bright", "")
+	gd.Story.Subs.H3.St = 4
+	local b6 = #panels
+	check(w.Story.TalkToNpc(g, "Gleam") == nil and #panels == b6, "H3's choice card has no NPC: nothing to say to Sir Gleam", "")
 	-- no talker present in the world at all: the old fallback (anywhere) is kept for NPC ids that have no body
 	w:Npc("Tiny", vec(0, 0, 0))
 	check(w.Story.TalkToNpc(c, "Smokey") == nil, "an NPC id nobody waits at: nothing", "")

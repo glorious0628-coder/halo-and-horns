@@ -1,5 +1,5 @@
 {
-  "checks": 11,
+  "checks": 13,
   "failed": 0,
   "mutations": [
     {
@@ -34,6 +34,16 @@
     },
     {
       "name": "the '!' on the feet",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a Talk press does not open at once",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every prompt expects a page",
       "applied": true,
       "caught": true
     },

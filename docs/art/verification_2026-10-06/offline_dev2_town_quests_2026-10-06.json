@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 701,
+  "checks": 705,
   "failedChecks": 0,
-  "namedChecks": 696,
+  "namedChecks": 700,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -3351,7 +3351,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
+      "check": "D0: a small reward, no 'Daily jobs are open!' closing line (A23-99), the guide speaks (no Speaker)",
       "pass": 1,
       "fail": 0
     },
@@ -3375,7 +3375,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "check": "Halo: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
       "pass": 1,
       "fail": 0
     },
@@ -3399,7 +3399,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "check": "Horns: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
       "pass": 1,
       "fail": 0
     },
@@ -3423,7 +3423,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "check": "Neutral: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
       "pass": 1,
       "fail": 0
     },
@@ -4167,6 +4167,30 @@
     },
     {
       "group": "npc-talk",
+      "check": "H3: the first card names Sir Gleam, the choice card names nobody",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "talking to Sir Gleam opens H3's first card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "... not by talking to Bright",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H3's choice card has no NPC: nothing to say to Sir Gleam",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
       "check": "an NPC id nobody waits at: nothing",
       "pass": 1,
       "fail": 0
@@ -4188,9 +4212,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 181,
-    "applied": 181,
-    "caught": 181,
+    "total": 183,
+    "applied": 183,
+    "caught": 183,
     "skipped": false,
     "results": [
       {
@@ -5337,7 +5361,7 @@
         "newFailingChecks": [
           "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Horns: never again",
-          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
           "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
           "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Neutral: never again"
@@ -5345,18 +5369,15 @@
         "newFailingCount": 8
       },
       {
-        "mutation": "daily intro: no closing line",
+        "mutation": "daily intro: a closing toast again",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "daily intro quest (A23-104) :: D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
-          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
-          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
-          "daily intro quest (A23-104) :: Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'"
+          "daily intro quest (A23-104) :: D0: a small reward, no 'Daily jobs are open!' closing line (A23-99), the guide speaks (no Speaker)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 1
       },
       {
         "mutation": "daily intro: pays nothing",
@@ -5378,7 +5399,7 @@
         "newFailingChecks": [
           "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Halo: never again",
-          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
           "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
           "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Horns: never again"
@@ -5410,7 +5431,7 @@
         "newFailingChecks": [
           "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Halo: never again",
-          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
           "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
           "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Horns: never again"
@@ -5617,12 +5638,12 @@
         "newFailingChecks": [
           "npc-talk :: (the same player with a class: H1 opens)",
           "npc-talk :: H1 moved on (no more card at Bright): nothing opens",
+          "npc-talk :: H3's choice card has no NPC: nothing to say to Sir Gleam",
           "npc-talk :: a quest waiting for [Claim] is skipped",
           "npc-talk :: an NPC id nobody waits at: nothing",
-          "npc-talk :: another NPC, a bad id or a bad player: nothing",
-          "npc-talk :: talking to Bright opens H1's card"
+          "npc-talk :: another NPC, a bad id or a bad player: nothing"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 9
       },
       {
         "mutation": "npc talk: a quest waiting for [Claim]",
@@ -5678,6 +5699,31 @@
           "npc-talk :: group ran to the end without a Lua error"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: H3 is not Sir Gleam's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: H3: the first card names Sir Gleam, the choice card names nobody",
+          "npc-talk :: talking to Sir Gleam opens H3's first card"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "npc talk: H3's choice card names Gleam",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card",
+          "npc-talk :: H3's choice card has no NPC: nothing to say to Sir Gleam",
+          "npc-talk :: H3: the first card names Sir Gleam, the choice card names nobody"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "npc talk: any prompt",
@@ -6323,9 +6369,10 @@
         "newFailingChecks": [
           "halo-check-data :: H3 pick 3: in Halo Citadel (Npc, or after a way home)",
           "halo-check-h3 :: #36 6 slimes: back to Sir Gleam first (no card in the meadow)",
-          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card"
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card",
+          "npc-talk :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "#18 H3 without a Start line",
@@ -6508,7 +6555,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "01b3f1b958bf5a8b0023c310e192afa71bebe56637490277523a03ad5fee4e45",
+    "src/ReplicatedStorage/Shared/Config.luau": "916d4ad0e26bfc07c249a2eb51df6f20c9492a9128ed245db24bbfebde03d8a3",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
@@ -6521,7 +6568,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "6c4e3bb3f4af93442b7d39461dcf46f923eb3b251412b78be236c7a47e9dcff2",
+  "fixtureSHA256": "5aa80150c032fb7bcd620e9ccfe9d21f8f73bf299ccfda1f73e347659e3af16b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

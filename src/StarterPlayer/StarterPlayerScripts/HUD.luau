@@ -5293,7 +5293,9 @@ function L.StoryTap(st, zone, panels)
 	-- 빛 마을 점검 #17 / #21 / #29: a Config.StoryQuests.Landmarks spot (HeroStatue, WoodsGate, GoblinCamp1, ...): its
 	-- zone (Config.ZoneAt), then the spot itself (QuestTarget.Story does the same for the marker)
 	local lms = Config.StoryQuests and Config.StoryQuests.Landmarks
-	local spot = not Config.Zones[target] and type(lms) == "table" and lms[g] or nil
+	-- (dev2-halo / 검수 10/10: the server's rule - a StoryLandmark-tagged Spot wins over the Config spot)
+	local spot = not Config.Zones[target] and type(lms) == "table" and type(g) == "string"
+		and (Util.TaggedSpot(Config.StoryQuests.LandmarkTag, g) or lms[g]) or nil
 	if typeof(spot) ~= "Vector3" then spot = nil end
 	if spot then target = Config.ZoneAt(spot).Id end
 	-- 검수 10/10: a landmark a walk away (both zones walk to each other: L.ForgeWalk) -> straight to the spot, no trip

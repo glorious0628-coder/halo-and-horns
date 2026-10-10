@@ -7,7 +7,8 @@
 --   The townsfolk (tag TownFolk) get nothing here. The marker / the row tap that lead to her are QuestTarget / HUD.
 -- No new art: a text "!" in the UIKit font with a dark outline (round, never rays).
 -- Public API: StoryNpcs.Init(C), StoryNpcs.Start(), StoryNpcs.Called(entries) -> { [npcId] = true } (pure),
--- StoryNpcs.Refresh() (one pass now), StoryNpcs.Mark(model) -> its one "!" BillboardGui (made once, reused).
+-- StoryNpcs.OnPrompt(prompt) -> bool (a Talk prompt press: Panels.ExpectStory), StoryNpcs.Refresh() (one pass now),
+-- StoryNpcs.Mark(model) -> its one "!" BillboardGui (made once, reused).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -105,6 +106,17 @@ function StoryNpcs.Refresh()
 	end
 end
 
+-- 검수 10/10 (NPC review): a press on a story NPC's Talk prompt asked for this page, so the server's reply opens even
+-- while Panels would make an auto-opened page wait (STORY.Busy) - like a tap on the quest row (Panels.ExpectStory)
+function StoryNpcs.OnPrompt(prompt)
+	local id = typeof(prompt) == "Instance" and prompt:GetAttribute("StoryNpcId") or nil
+	if id == nil then return false end
+	local panels = C and C.Panels
+	if type(panels) ~= "table" or type(panels.ExpectStory) ~= "function" then return false end
+	pcall(panels.ExpectStory, tostring(id))
+	return true
+end
+
 function StoryNpcs.Init(registry)
 	C = registry
 end
@@ -118,6 +130,9 @@ function StoryNpcs.Start()
 			if not ok then Util.Warn(TAG, "refresh failed: " .. tostring(err)) end
 			task.wait(T.Every)
 		end
+	end)
+	pcall(function()
+		game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt) StoryNpcs.OnPrompt(prompt) end)
 	end)
 	-- a quest list change shows / hides at once (the pass above catches NPCs that arrive later)
 	local hud = C and C.HUD
