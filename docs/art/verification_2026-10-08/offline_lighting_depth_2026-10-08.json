@@ -38,7 +38,7 @@
       "ok": true
     },
     {
-      "check": "the Realistic lighting style",
+      "check": "the lighting style is the place's (Soft): WarService never writes it, Edit bakes Soft (A23-105)",
       "ok": true
     },
     {
@@ -71,9 +71,9 @@
     }
   ],
   "mutations": {
-    "total": 19,
-    "applied": 19,
-    "caught": 19,
+    "total": 20,
+    "applied": 20,
+    "caught": 20,
     "results": [
       {
         "mutation": "the noon sun back",
@@ -166,8 +166,14 @@
         "caught": true
       },
       {
-        "mutation": "the soft lighting style back",
+        "mutation": "the Realistic write back",
         "source": "WAR",
+        "applied": true,
+        "caught": true
+      },
+      {
+        "mutation": "Edit bakes Realistic again",
+        "source": "PREVIEW",
         "applied": true,
         "caught": true
       },
@@ -192,9 +198,9 @@
     ]
   },
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "00b98c421ec53b17a8bd3158b6d972da3502210e5ee5e980523aab32f3d19845",
-    "src/ServerScriptService/WarService.luau": "1519e7af51e1a554377d70be3b1d7b7fe639bbdbe9a5713c9830790dcba19c05",
-    "tools/preview_map.lua": "6ea6e58ef38f09e101bb0db99aa589ccf032a811f6fd3dc2090ca0d37d9e17f8"
+    "src/ReplicatedStorage/Shared/Config.luau": "782323937cfbc021af59dc6c16be48095d30a225ab72149d192b28edfd9ecee9",
+    "src/ServerScriptService/WarService.luau": "94cb2a6aee9b5a450b9a2694d2f9f6d109d2d1c1503f8e1e342827312a317cca",
+    "tools/preview_map.lua": "58693ddf316774971766a81acd5474d2828ac3bc4a49046bc9bba75882c280b6"
   },
   "studioCalls": 0,
   "limitations": "Numbers only: whether the meadow now reads deep (hills, path, waterfall; PC and phone) is the main-Studio before / after photo check (메인 반영); Lighting.Technology is a place setting set in Edit."
