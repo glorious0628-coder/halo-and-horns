@@ -1351,28 +1351,24 @@ do
 	check(q, "a plain new quest is still QuestNew", last2() == "QuestNew", tostring(last2()))
 	-- my pets
 	clear2()
-	-- 메인 반영 10/10: the join list (pet put away) reached only PetWindow; the first list here is the follow
-	local joinList = { Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } }
-	local followList = { Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } }
-	C.PetWindow = { Lists = function() return followList, joinList end }
-	REMOTES.PetList.OnClientEvent:Fire(followList)
-	check(q, "the join list only PetWindow saw: the follow right after it = PetCall", last2() == "PetCall" and #asked2 == 1, encode(asked2))
-	clear2()
+	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2 } } })
+	check(q, "the first pet list is quiet", #asked2 == 0, encode(asked2))
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 2, XP = 5 } } })
 	check(q, "pet XP alone is quiet", #asked2 == 0, encode(asked2))
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p1", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })
 	check(q, "my pet's level up = PetLevelUp", last2() == "PetLevelUp" and #asked2 == 1, encode(asked2))
-	clear2()
-	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3 } } })
-	check(q, "the follower put away = PetStow", last2() == "PetStow" and #asked2 == 1, encode(asked2))
-	clear2()
-	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "", List = { { Uid = "p1", Sp = "BabySlime", Lv = 3, XP = 9 } } })
-	check(q, "a list with no follower before or now is quiet", #asked2 == 0, encode(asked2))
 	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p2", List = { { Uid = "p1", Lv = 3 }, { Uid = "p2", Sp = "BabySlime", Lv = 1 } } })
-	check(q, "a pet starting to follow = PetCall (its first Lv is quiet)", last2() == "PetCall" and #asked2 == 1, encode(asked2))
+	check(q, "a new pet's first Lv is quiet", #asked2 == 1, encode(asked2))
+	-- 메인 반영 10/10: the follower by the attribute EquippedPet (the PetList may wait or merge two changes)
 	clear2()
-	REMOTES.PetList.OnClientEvent:Fire({ Equipped = "p2", List = { { Uid = "p1", Lv = 3 }, { Uid = "p2", Sp = "BabySlime", Lv = 1, XP = 3 } } })
-	check(q, "the same follower again is quiet", #asked2 == 0, encode(asked2))
+	PLAYER:SetAttribute("EquippedPet", "BabySlime")
+	check(q, "the follower that came with the join is quiet", #asked2 == 0, encode(asked2))
+	PLAYER:SetAttribute("EquippedPet", "")
+	check(q, "the follower put away = PetStow", last2() == "PetStow" and #asked2 == 1, encode(asked2))
+	PLAYER:SetAttribute("EquippedPet", "BabySlime")
+	check(q, "a pet starting to follow = PetCall", last2() == "PetCall" and #asked2 == 2, encode(asked2))
+	PLAYER:SetAttribute("EquippedPet", "BabySlime")
+	check(q, "the same follower again is quiet", #asked2 == 2, encode(asked2))
 	-- the quest marker's goal
 	local mk = { Tag = "zone:SlimeMeadow", Shown = true }
 	C.QuestMarker = { TargetTag = function() return mk.Tag, mk.Shown end }

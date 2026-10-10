@@ -73,6 +73,7 @@
   - **Black Han Sans·Gasoek One:** 너무 굵어서 14px 본문이 뭉칩니다(Gasoek은 못 읽음). 큰 제목에만 쓸 수 있습니다.
   - **Dongle:** 가늘고 글자 사이가 넓어 장난감 UI와 안 맞습니다.
   - **추천: 제목·버튼·배너·이름표 = Bagel Fat One, 본문 = Jua, 숫자 = Denk One(OFL이라 같은 글자 그림에 함께 굽습니다).**
+  - **결정(사용자 10/10 "글씨체 너랑 같은 생각", SPEC A23-111 보강):** 위 추천대로 제목·버튼·배너·메뉴 이름표 = Bagel Fat One, 본문 = Jua, 숫자 = Denk One. 글자 그림 굽기·업로드·글 배치 모듈은 빛 마을이 끝난 뒤 만듭니다.
 - 주의: 가운뎃점(·)이 Jua·Do Hyeon에서는 □로, Black Han Sans에서는 빈칸으로 나옵니다. 기호는 만들 때 글꼴마다 빠진 글자를 검사하고, 다른 OFL 글꼴(Denk One 등)에서 채웁니다.
 
 ### 기술 메모 (실제 구현은 빛 마을 뒤)
@@ -91,3 +92,7 @@
   - FitText: 정해진 크기 단계에서 칸에 맞는 가장 큰 크기를 고르고, 줄 높이는 ko 1.22입니다.
   - API: TextLabel처럼 Text·크기·스타일·정렬·줄바꿈 폭을 받아 Frame 하나를 돌려줍니다. 영어 모드는 지금 TextLabel 그대로 두고, 언어 장치(개발 1 L10n)가 ko일 때만 이 모듈을 씁니다.
 - **고정 큰 글(③)과의 관계:** 비트맵 글꼴로 창 제목·버튼까지 같은 모양을 낼 수 있습니다. 그래서 GPT 글자 그림은 로고("선악 키우기")와 큰 배너 몇 개처럼 특별한 장식 글자만으로 줄일 수 있습니다(검수 결정).
+
+### 월드 안 글자 (이미지 생성 1, 10/10)
+- 빛 마을 배치(halo_props)는 월드에 글자를 넣지 않습니다. 가게 간판 4종(HaloSign*)은 글자 없는 그림이고, 메달리온은 데칼, 문(Gate_HaloTown)에는 BillboardGui가 없습니다.
+- 월드에 글이 남는 곳은 다른 도구 쪽입니다: MapBuilder 이동 판 `Pad_*` BillboardGui, `Gate_*` Lintel 빌보드, Landmarks의 MarketSign·Altar·GoosePerch·ArtisanGuild BillboardGui. 한국어 모드 때 이것들도 언어별로 바꿉니다(클라가 바꿔 끼움, A23-111).

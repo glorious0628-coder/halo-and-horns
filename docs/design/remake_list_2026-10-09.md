@@ -49,9 +49,11 @@ Credits: no per-batch report to the user; 검수 tells the user only when a bala
 - Pet menu button (now the Baby Slime pet icon) and the 2x XP pass tile (now the faction XP +30% icon): own icons.
 - Top bar (A23-81, fdb3b7c8) reuses old approved parts (PanelCard, LevelBadgeHalo/Horns, WarCrownPip) → its own plate + Halo badge + Horns badge, no lettering (검수 2026-10-10). 이미지 생성 2 after the Halo NPCs; 이미지 개발 uploads and swaps.
 - Speech bubbles: Captain Clatter, Flower Slime, Slingshot Goblin, Skeleton Archer get their own (now family bubbles).
+- Quick slots 1·2·3 (A23-109, 30f5442c / c3f1d90f): now the menu tile square (MenuTile) → their own slot frame (a little darker, an empty-slot look, room for the number top-left and the count bottom-right), no lettering — part of the Halo HUD art bundle (검수 10/10: after 이미지 생성 2's Halo buildings and weapons); 이미지 개발 uploads and swaps (VitalsUI square slots + HUD QuickSlot3).
 - World map pond slimes are pasted concept cutouts → goes away with the minimap/big-map tile set (A23-95, MapTilesFull).
 
 ## P6 — sharpness redo (SPEC A23-107, user 10/10: "지금까지 그렇게 한 것들 없으면 싹 다 다시 해. 크레딧 많이 들어도 상관 없음")
+- **X_Altar (Crossroads altar):** 검수 10/10 (crossroads v1 | v2 sheet, art/review/imgdev/crossroads_split_v1v2.jpg): still blurred with the new material maps - the Tripo colour map itself is smeared (ripples, bleeding), so it is remade part by part at zone ③ Crossroads (new 2D parts → Tripo); until then it only gets the new maps.
 Every existing 3D world model that is big (gate, cathedral, towers, houses, shops, bridges, castles, arches) or has baked flat decorations (banners, crests, signs) is redone: split into 2–4 pieces with their own baked texture, decorations as separate thin parts with High Firefly images. Zone order: ① Halo town now (gate first, then cathedral, towers, dome houses, shops, bridges) → ② Horns town (castle, gate, tower, tents — red banners / bull crest as separate images) → ③ Crossroads … in the A23-102 order. Full audit done 10/10 (wf_14e90401-7f8): per-zone list + 검수 decisions in `docs/design/sharpness_redo_list_2026-10-10.md` (UV tile splits are only a stopgap; big structures = part-by-part remake; town buildings each unique, small props 3–5 kinds; Part-built bridges/gates become 3D too).
 
 ## Order — one zone at a time (A23-97, user 10/09)

@@ -2389,8 +2389,22 @@ end
 -- left = right), so the text wraps there. The label's own size and place never change. One line, left / right aligned
 -- text and a label with its own UIPadding are left alone; a pass whose text still does not fit drops the padding again.
 -- Again whenever the text, size, face or width changes.
-local BAL = { Steps = 7, Margin = 1.03, Fits = setmetatable({}, { __mode = "k" }), Gui = nil }
+-- 검수 API review 10/10 (minor): a pass waits Debounce s after the last change (pop-ins / banners animate their size every
+-- frame) and only the newest one runs; it measures at the label's whole UIScale chain (BAL.ScaleOf: the HUD's UIScale x a
+-- popup's own Pop / Fit scale); the old padding stays until the new one is measured (no full-width flash on a text change)
+local BAL = { Steps = 7, Margin = 1.03, Debounce = 0.12, Fits = setmetatable({}, { __mode = "k" }), Gui = nil }
 UIKit.LineBalance = BAL
+
+-- the product of every UIScale that scales `obj` (its own and its ancestors')
+function BAL.ScaleOf(obj)
+	local s, o = 1, obj
+	while o and o ~= game do
+		local sc = o:FindFirstChildOfClass("UIScale")
+		if sc then s *= sc.Scale end
+		o = o.Parent
+	end
+	return math.max(0.05, s)
+end
 
 -- the off-screen measuring ScreenGui (made once; its UIScale follows the HUD's)
 function BAL.ProbeGui()
@@ -2451,7 +2465,7 @@ function UIKit.BalanceLines(label)
 			clear()
 			return
 		end
-		local s = math.max(0.05, currentScale())
+		local s = BAL.ScaleOf(label)
 		local gui = BAL.ProbeGui()
 		if not gui then return end
 		gui.Scale.Scale = s
@@ -2464,6 +2478,7 @@ function UIKit.BalanceLines(label)
 			end
 		end
 		probe.Name = "Probe"
+		probe.BackgroundTransparency = 1
 		probe.AutomaticSize = Enum.AutomaticSize.None
 		probe.AnchorPoint = Vector2.zero
 		-- on screen but drawn invisible (an off-screen copy kept stale TextBounds: UiSandbox 10/10 3rd after-shots)
@@ -2501,22 +2516,23 @@ function UIKit.BalanceLines(label)
 			pad.Name = "LineBalance"
 			pad.Parent = label
 		end
-		-- the label's own height at the full width first: the balance may never add a line to it
-		clear()
-		BAL.Settle(label, nil)
-		local tall = label.TextBounds.Y
+		-- the new padding straight away (no full-width frame in between); the copy said n lines at the full width, so
+		-- the balance may never give the label more than n
 		local du = side / s
+		local before = label.TextBounds
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, du), UDim.new(0, du)
-		BAL.Settle(label, nil)
-		-- a line more than before, or text that no longer fits: back to the full box
-		if token == state.Token and label.Parent and (not label.TextFits or label.TextBounds.Y > tall + 1) then
+		BAL.Settle(label, before)
+		local lines = math.floor(label.TextBounds.Y / math.max(1, lineH) + 0.5)
+		-- a line more than at the full width, or text that no longer fits: back to the full box
+		if token == state.Token and label.Parent and (not label.TextFits or lines > n) then
 			pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 0), UDim.new(0, 0)
 		end
 	end
 	local function fit()
 		state.Token += 1
 		local token = state.Token
-		task.spawn(function()
+		task.delay(BAL.Debounce, function()
+			if token ~= state.Token then return end -- a newer change came in: only the last one measures
 			local ok, err = pcall(balance, token)
 			if not ok then warn("[UIKit] line balance: " .. tostring(err)) end
 		end)
@@ -2532,6 +2548,10 @@ function UIKit.BalanceLines(label)
 		end
 	end)
 	BAL.Fits[label] = fit
+	-- the closure holds the label, so the weak-keyed table alone would keep it: drop the entry when it goes
+	label.Destroying:Connect(function()
+		BAL.Fits[label] = nil
+	end)
 	fit()
 	return label
 end

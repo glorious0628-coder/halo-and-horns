@@ -3,10 +3,10 @@
   blender --background --factory-startup --python tools/gate_assemble.py -- <out.glb> <render_dir> [--door-open 70]
 
 Parts (art/models/tripo/web/HaloPart_<P>_HD_LOD.glb, Z-up, front = -Y after glb_decimate --rotz -90), sizes in studs (1 unit = 1 stud):
-- GateArch      : arch wall + paved passage, fit width 22, centred at x 0, its base on z 0
-- GateTowerL/R  : tower bodies, fit height 30, centres x -/+ (11 + r) so each touches the arch side
+- GateArch      : arch wall + paved passage, fit height 26, centred at x 0, its base on z 0
+- GateTowerL/R  : tower bodies, fit height 30, centres x -/+ (arch half width + r) so each touches the arch side
 - GateDomeL/R   : gold domes, fit width = tower diameter + 1, sitting on the tower tops
-- GateDoorLeafL/R: door leaves, fit height = 0.8 x the measured opening height, hinged at the opening edges, opened --door-open degrees
+- GateDoorLeafL/R (only with --doors 1): door leaves, fit height = 0.8 x the measured opening height, hinged at the opening edges, opened --door-open degrees
 The opening (width, height) is measured with rays through the arch mesh. Writes <out.glb> (one mesh per part, names kept) and
 <render_dir>/gate_asm_{front,front34,back34}.png. Model front = -Y (Roblox -Z after import), pivot = bottom centre.
 """
@@ -19,7 +19,7 @@ from mathutils import Matrix, Vector
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 OUT, RDIR = os.path.abspath(argv[0]), os.path.abspath(argv[1])
-opt = {"door-open": 70.0}
+opt = {"door-open": 70.0, "doors": 0.0}
 i = 2
 while i < len(argv):
     opt[argv[i][2:]] = float(argv[i + 1])
@@ -66,8 +66,9 @@ def fit(ob, axis, size):
     return ob
 
 
-arch = fit(load("GateArch"), "x", 22.0)
+arch = fit(load("GateArch"), "z", 26.0)  # plan: arch wall 26 high (the Tripo arch is wider than the 2D, so the width follows)
 lo_a, hi_a = bbox(arch)
+AW = (hi_a.x - lo_a.x) / 2
 # measure the opening: rays along -Y through the arch at several heights / widths
 deps = bpy.context.evaluated_depsgraph_get()
 
@@ -94,10 +95,12 @@ for side, sx in (("L", -1), ("R", 1)):
     t = fit(load("GateTower" + side), "z", 30.0)
     lo_t, hi_t = bbox(t)
     r = (hi_t.x - lo_t.x) / 2
-    t.location = (sx * (11.0 + r - 0.3), 0, 0)
+    t.location = (sx * (AW + r - 0.3), 0, 0)
     d = fit(load("GateDome" + side), "h", 2 * r + 1.0)
-    d.location = (sx * (11.0 + r - 0.3), 0, 30.0 - 0.2)
+    d.location = (sx * (AW + r - 0.3), 0, 30.0 - 0.2)
     parts += [t, d]
+    if not opt["doors"]:
+        continue  # 10/10: the Tripo leaves came with their own stone frame; the concept gate is an open arch -> leaves kept for the interior pass
     leaf = fit(load("GateDoorLeaf" + side), "z", 0.8 * open_h if open_h > 4 else 10.0)
     lo_l, hi_l = bbox(leaf)
     w = hi_l.x - lo_l.x

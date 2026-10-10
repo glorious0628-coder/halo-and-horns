@@ -1,5 +1,5 @@
 {
-  "checks": 18,
+  "checks": 33,
   "failed": 0,
   "mutations": [
     {
@@ -24,6 +24,11 @@
     },
     {
       "name": "a row for no class",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Light Mage's Q strikes early",
       "applied": true,
       "caught": true
     }
