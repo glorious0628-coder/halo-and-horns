@@ -6304,6 +6304,16 @@
   "size": "1024x1536",
   "note": "진영 고르기 세 번째 카드 '장인 길드 — Coming soon'(잠김, A23-114). 은회색 돌+황동 테·리벳, 망치·모루 메달, 자물쇠, 글 자리 = 황동 리본·양피지 판·아래 타원 판(글자는 게임 글). 컷아웃 art/out/s2/fac/artisan/Fac_ArtisanCard_B_HQ_cut.png (619x1024, cutout_flat.cutout tol48 soft10 holes), 확인 art/review/s2/fac_artisan_card_B_cut_check.jpg / fac_artisan_card_B_cut_crops.jpg. 업로드·적용은 이미지 개발."
  },
+ "FacMascotHornsD": {
+  "status": "approved",
+  "date": "2026-10-10",
+  "tool": "Adobe Firefly — GPT Image 2.5 Sunburst, High (5 credits), Firefly reference = the picked Medium candidate D (빛 C 그림체 참조로만 만든 새 후보)",
+  "prompt": "art/prompts/Fac_MascotHorns_D_HQ.txt",
+  "original": "art/out/s2/fac/hq2/Fac_MascotHorns_D_HQ_src.png (Adobe MCP presigned download)",
+  "medium_pick": "art/out/s2/fac/horns2/Fac_MascotHornsNew_D_src.png (사용자 고름 2026-10-10)",
+  "size": "1024x1536",
+  "note": "뿔 마스코트 새로 그림(빛 C와 같은 그림체·머리 모양·비율·조명, 헝클어진 와인색 머리+작은 뿔 둘+정수리 한 가닥, 붉은 박쥐 날개, 삼지창). 대체: FacMascotHornsA. 컷아웃 art/out/s2/fac/hq2/Fac_MascotHorns_D_HQ_cut.png (680x1024, cutout_flat.cutout tol50 soft14 holes tol10 — 검정 갑옷이 비치지 않게 엄격), 확인 art/review/s2/fac_mascot_horns_D_cut_check.jpg / fac_mascot_horns_D_cut_crops.jpg. 업로드·교체는 이미지 개발. 빛 C(612x1024)와 높이 1024 기준 짝."
+ },
  "FacMascotHornsA": {
   "status": "approved",
   "date": "2026-10-09",
