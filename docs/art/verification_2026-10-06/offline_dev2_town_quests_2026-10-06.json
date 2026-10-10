@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 938,
+  "checks": 941,
   "failedChecks": 0,
-  "namedChecks": 864,
+  "namedChecks": 867,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1971,7 +1971,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "S6: A = one 70% scroll, B = 3 HP potions + 220 gold",
+      "check": "S6: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2013,7 +2013,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 220 gold",
+      "check": "XR1: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2061,7 +2061,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "H2: A = one 70% scroll, B = 3 HP potions + 220 gold",
+      "check": "H2: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2109,7 +2109,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "R5: A = one 70% scroll, B = 3 HP potions + 220 gold",
+      "check": "R5: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2157,7 +2157,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW1: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW1: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2217,7 +2217,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "H3: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "H3: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2259,7 +2259,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "R3: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "R3: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2301,7 +2301,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW2: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW2: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2355,7 +2355,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW3: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW3: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2397,7 +2397,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "H5: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "H5: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2439,7 +2439,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "R6: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "R6: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2481,7 +2481,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW4: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW4: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2517,7 +2517,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW5: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW5: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2559,7 +2559,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW6: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW6: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2601,7 +2601,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW7: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW7: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2661,7 +2661,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "H6: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "H6: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2709,7 +2709,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "R7: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "R7: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -2757,7 +2757,7 @@
     },
     {
       "group": "subs18-data",
-      "check": "GW8: A = one 70% scroll, B = 3 HP potions + 192 gold",
+      "check": "GW8: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)",
       "pass": 1,
       "fail": 0
     },
@@ -3111,7 +3111,19 @@
     },
     {
       "group": "halo-check-h3",
-      "check": "in Halo Citadel: Sir Gleam's card",
+      "check": "in Halo Citadel: Sir Gleam's card waits for the talk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "H3's talks are at Sir Gleam",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "halo-check-h3",
+      "check": "talking to him opens the card (no Gleam body here: anywhere)",
       "pass": 1,
       "fail": 0
     },
@@ -4167,7 +4179,7 @@
     },
     {
       "group": "npc-talk",
-      "check": "H3: the first card names Sir Gleam, the choice card names nobody",
+      "check": "H3: both cards (the talk and the choice) are Sir Gleam's",
       "pass": 1,
       "fail": 0
     },
@@ -4185,7 +4197,13 @@
     },
     {
       "group": "npc-talk",
-      "check": "H3's choice card has no NPC: nothing to say to Sir Gleam",
+      "check": "H3's choice card (step 4) opens at Sir Gleam too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "... and never at Bright",
       "pass": 1,
       "fail": 0
     },
@@ -5196,9 +5214,9 @@
   "staticChecks": 8,
   "staticFailures": [],
   "mutations": {
-    "total": 229,
-    "applied": 229,
-    "caught": 229,
+    "total": 230,
+    "applied": 230,
+    "caught": 230,
     "skipped": false,
     "results": [
       {
@@ -5836,9 +5854,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "h1-good :: 2 king slimes: step 4 waits at Bright (no pop-up)"
+          "h1-good :: 2 king slimes: step 4 waits at Bright (no pop-up)",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
+          "halo-check-h3 :: talking to him opens the card (no Gleam body here: anywhere)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "the pick pays nothing of its own",
@@ -6625,7 +6645,7 @@
         "newFailingChecks": [
           "npc-talk :: (the same player with a class: H1 opens)",
           "npc-talk :: H1 moved on (no more card at Bright): nothing opens",
-          "npc-talk :: H3's choice card has no NPC: nothing to say to Sir Gleam",
+          "npc-talk :: H3's choice card (step 4) opens at Sir Gleam too",
           "npc-talk :: a quest waiting for [Claim] is skipped",
           "npc-talk :: an NPC id nobody waits at: nothing",
           "npc-talk :: another NPC, a bad id or a bad player: nothing"
@@ -6694,23 +6714,26 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "npc-talk :: H3: the first card names Sir Gleam, the choice card names nobody",
+          "halo-check-h3 :: H3's talks are at Sir Gleam",
+          "npc-talk :: H3: both cards (the talk and the choice) are Sir Gleam's",
           "npc-talk :: talking to Sir Gleam opens H3's first card"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
-        "mutation": "npc talk: H3's choice card names Gleam",
+        "mutation": "npc talk: H3's choice card is nobody's",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card",
-          "npc-talk :: H3's choice card has no NPC: nothing to say to Sir Gleam",
-          "npc-talk :: H3: the first card names Sir Gleam, the choice card names nobody"
+          "halo-check-h3 :: H3's talks are at Sir Gleam",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
+          "halo-check-h3 :: talking to him opens the card (no Gleam body here: anywhere)",
+          "npc-talk :: H3's choice card (step 4) opens at Sir Gleam too",
+          "npc-talk :: H3: both cards (the talk and the choice) are Sir Gleam's"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "npc talk: any prompt",
@@ -7260,13 +7283,13 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "a woods-type B pays the town gold",
+        "mutation": "a woods-type B pays the old 192",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "subs18-data :: GW6: A = one 70% scroll, B = 3 HP potions + 192 gold"
+          "subs18-data :: GW6: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)"
         ],
         "newFailingCount": 1
       },
@@ -7360,7 +7383,7 @@
         "crashed": false,
         "newFailingChecks": [
           "halo-check-h2 :: #71 Hang it in my house: 3 HP potions + 220 gold, then 120",
-          "subs18-data :: H2: A = one 70% scroll, B = 3 HP potions + 220 gold"
+          "subs18-data :: H2: A = one 70% scroll, B = 3 HP potions + 220 gold (town- and woods-type the same, 검수 10/10)"
         ],
         "newFailingCount": 2
       },
@@ -7411,12 +7434,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "halo-check-data :: H3 pick 3: in Halo Citadel (Npc, or after a way home)",
-          "halo-check-h3 :: #36 6 slimes: back to Sir Gleam first (no card in the meadow)",
-          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card",
+          "halo-check-h3 :: group ran to the end without a Lua error",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
           "npc-talk :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 3
       },
       {
         "mutation": "#18 H3 without a Start line",
@@ -7569,6 +7591,21 @@
           "halo-check-landmark :: #2 with the statue marker placed: the old spot no longer counts"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "H3 talks anywhere again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "halo-check-h3 :: H3's talks are at Sir Gleam",
+          "halo-check-h3 :: in Halo Citadel: Sir Gleam's card waits for the talk",
+          "halo-check-h3 :: talking to him opens the card (no Gleam body here: anywhere)",
+          "npc-talk :: H3's choice card (step 4) opens at Sir Gleam too",
+          "npc-talk :: H3: both cards (the talk and the choice) are Sir Gleam's"
+        ],
+        "newFailingCount": 5
       },
       {
         "mutation": "GW7 forgets the GW1 pick",
@@ -8102,12 +8139,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "33c86e616147b90247bfa72159552b8e02419d29d88363fc071ac4c0213d134f",
+    "src/ReplicatedStorage/Shared/Config.luau": "4830f77ebe4a7fc6093aeb17fc6ac02a7ea25cb277d44889b8b190d7097f019c",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
     "src/ServerScriptService/StoryQuestService.luau": "fa5b75d0dc29005b9ad65010b4cfcdbb27150a54aeda176d75275be84be761fd",
-    "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
+    "src/ServerScriptService/PvPService.luau": "ff7ffbd2f949477307eb3c89231e1144bcaa1b86b88fdf8d0e0b11675f02f31c",
     "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
@@ -8115,7 +8152,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "1531523fbf9e57efa68f1fe125254f80355e45d5042b66c14a36e992ade00323",
+  "fixtureSHA256": "0a8e8de5c3e4c5741678b714f574d012378ac3b2f10fbfe918017ecfa9b11fca",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
