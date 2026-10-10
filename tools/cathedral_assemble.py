@@ -159,6 +159,84 @@ for k, (wx, wz) in enumerate((() if REAL_BODY else ((-18, 8.5), (-11, 9.5), (11,
     w.name = "Cath_Window%d" % (k + 1)
     P.append(w)
 bpy.context.view_layer.update()
+lo, hi = bbox(body)
+
+
+def flat_mat(name, rgba, emit=0.0):
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = rgba
+    b.inputs["Alpha"].default_value = rgba[3]
+    if emit:
+        b.inputs["Emission Color"].default_value = rgba
+        b.inputs["Emission Strength"].default_value = emit
+    return m
+
+
+if REAL_BODY:
+    # ① stained glass (검수 v1: the windows read white / see-through): a light-blue glass core just inside the walls, so every
+    # window opening shows blue glass behind its gold frame (Studio: Material Glass, Transparency 0.3)
+    bpy.ops.mesh.primitive_cube_add(size=1.0)
+    core = bpy.context.active_object
+    core.name = "Cath_GlassCore"
+    core.scale = ((hi.x - lo.x) * 0.72, (hi.y - lo.y) * 0.55, (hi.z - lo.z) * 0.8)  # deep inside: the walls sit well behind the columns
+    core.location = ((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z + (hi.z - lo.z) * 0.42)
+    core.data.materials.append(flat_mat("Cath_StainedGlass", (0.55, 0.75, 0.95, 0.7)))
+    P.append(core)
+    # ② the side walls went plain when the body was stretched: arched windows along both sides, uneven spacing
+    for sx in (-1, 1):
+        for k, (fy, wz) in enumerate(((0.28, 9.0), (0.52, 10.0), (0.76, 8.5))):
+            w = part("CathWindow", (4, 1, 9), "z")
+            w.rotation_euler = (0, 0, math.radians(-90 * sx))
+            w.location = (sx * (hi.x + 0.15), lo.y + (hi.y - lo.y) * fy, top + wz)
+            w.name = "Cath_SideWindow%s%d" % ("L" if sx < 0 else "R", k + 1)
+            P.append(w)
+    # ③ the platform has stairs at the back too: a garden door at the back of the hall gives them a reason (A23-117)
+    bf = part("CathDoorFrame", (10, 2, 14), "z")
+    bf.rotation_euler = (0, 0, math.pi)
+    bf.location = (0, hi.y + 0.2, top)
+    bf.name = "Cath_BackDoorFrame"
+    P.append(bf)
+    for side in (-1, 1):
+        lf = part("CathDoorLeaf", (3.6, 0.6, 12), "x")
+        lf.rotation_euler = (0, 0, math.pi)
+        lf.location = (side * 1.8, hi.y - 0.2, top + 0.2)
+        lf.name = "Cath_BackDoorLeaf" + ("L" if side < 0 else "R")
+        P.append(lf)
+# ④ halo rings over the four small towers (2D) and the door-halo plate over the front door
+for o in [o for o in P if o.name.startswith("Cath_CathTower")]:
+    l_, h_ = bbox(o)
+    rr = max(1.6, (h_.x - l_.x) * 0.32)
+    bpy.ops.mesh.primitive_torus_add(major_radius=rr, minor_radius=0.22, major_segments=48, minor_segments=10,
+                                     location=((l_.x + h_.x) / 2, (l_.y + h_.y) / 2, h_.z + 1.6), rotation=(math.radians(12), 0, 0))
+    ring = bpy.context.active_object
+    ring.name = o.name.replace("Cath_", "Cath_HaloRing_")
+    ring.data.materials.append(flat_mat("Cath_HaloRingGold", (1.0, 0.86, 0.45, 1.0), 3.0))
+    P.append(ring)
+img_p = os.path.join(ROOT, "art/out/s2/halo/deco/HaloDecoHQ_DoorHalo_cut.png")
+lo_f, hi_f = bbox(frame)
+me = bpy.data.meshes.new("Cath_Deco_DoorHalo")
+pw = 9.0
+ph = pw * 428 / 894
+me.from_pydata([(-pw / 2, 0, 0), (pw / 2, 0, 0), (pw / 2, 0, ph), (-pw / 2, 0, ph)], [], [(0, 1, 2, 3)])
+uv = me.uv_layers.new(name="UVMap")
+for li, (u, v) in zip(range(4), ((0, 0), (1, 0), (1, 1), (0, 1))):
+    uv.data[li].uv = (u, v)
+plate = bpy.data.objects.new("Cath_Deco_DoorHalo", me)
+bpy.context.scene.collection.objects.link(plate)
+plate.location = (0, lo_f.y - 0.15, hi_f.z + 0.3)
+if os.path.exists(img_p):
+    m = bpy.data.materials.new("Cath_Deco_DoorHalo")
+    m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]
+    t = m.node_tree.nodes.new("ShaderNodeTexImage")
+    t.image = bpy.data.images.load(img_p)
+    m.node_tree.links.new(t.outputs["Color"], b.inputs["Base Color"])
+    m.node_tree.links.new(t.outputs["Alpha"], b.inputs["Alpha"])
+    me.materials.append(m)
+P.append(plate)
+bpy.context.view_layer.update()
 LO = Vector([min(bbox(o)[0][k] for o in P) for k in range(3)])
 HI = Vector([max(bbox(o)[1][k] for o in P) for k in range(3)])
 print("[cath] size", [round(v, 1) for v in (HI - LO)], flush=True)
