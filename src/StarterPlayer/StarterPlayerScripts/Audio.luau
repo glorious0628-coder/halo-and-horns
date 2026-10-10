@@ -748,6 +748,13 @@ function Audio.AirTrack(zoneId)
 	return (type(id) == "string" and id ~= "") and id or nil
 end
 
+-- A23-105 (검수 10/10): a DayOnly town air (the Halo birds) is quiet at night, when the crickets come (pure)
+function Audio.AirMult(zoneId, phase)
+	local Z = type(A.ZoneAmbient) == "table" and A.ZoneAmbient or {}
+	if type(Z.DayOnly) == "table" and type(zoneId) == "string" and Z.DayOnly[zoneId] and phase == "Night" then return 0 end
+	return 1
+end
+
 -- my zone's air: a new loop starts at 0 in the Sfx group (MusicStep fades it in), the old one fades out. True = changed
 function Audio.SetZoneAir(zoneId)
 	local id = Audio.AirTrack(zoneId)
@@ -826,7 +833,8 @@ function Audio.MusicStep(dt)
 	local Z = type(A.ZoneAmbient) == "table" and A.ZoneAmbient or {}
 	local zv = num(Z.Volume, 0.25)
 	local zd = zv / math.max(0.05, num(Z.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
-	local air, target = MUSIC.Air, zv * sfxMult()
+	local phase = S.GameState and S.GameState:GetAttribute("DayPhase") or nil
+	local air, target = MUSIC.Air, zv * sfxMult() * Audio.AirMult(MUSIC.Zone, phase)
 	if air then air.Volume = air.Volume < target and math.min(target, air.Volume + zd) or math.max(target, air.Volume - zd) end
 	fadeOut(MUSIC.AirFading, zd)
 end

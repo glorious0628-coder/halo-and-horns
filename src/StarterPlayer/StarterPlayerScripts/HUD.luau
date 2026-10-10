@@ -3074,6 +3074,9 @@ function L.RefreshSkillIcon()
 	if not rel then return end
 	local class = attr("ClassChosen", false) == true and getClass() or nil
 	local key = (class and not (class == "Archer" and getFaction() == "Neutral")) and ("Skill_" .. class .. "_Q") or nil
+	-- skills18 (10/10): the class's own Q icon per faction first (Skill_<Class>_Q_<Faction>)
+	local own = class and ("Skill_" .. class .. "_Q_" .. tostring(getFaction())) or nil
+	if own and UIKit.ArtId(own) then key = own end
 	if not (key and UIKit.ArtId(key)) then key = "Skill_Warrior_Q" end
 	if ui.releaseIconKey == key and ui.releaseIcon and ui.releaseIcon.Parent then return end
 	ui.releaseIconKey = key

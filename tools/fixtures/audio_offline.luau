@@ -1629,6 +1629,14 @@ do
 	check(g, "every death sound uploaded, at KillPop's volume / caps", ok, "")
 end
 
+do
+	local g = "day air"
+	check(g, "the Halo birds by day", Audio.AirMult("HaloTown", "Day") == 1 and Audio.AirMult("HaloTown", "Dusk") == 1, "")
+	check(g, "... quiet at night (the crickets carry it)", Audio.AirMult("HaloTown", "Night") == 0, "")
+	check(g, "the Horns den's lava keeps going at night", Audio.AirMult("HornsTown", "Night") == 1, "")
+	check(g, "no zone / no phase: as before", Audio.AirMult(nil, "Night") == 1 and Audio.AirMult("HaloTown", nil) == 1, "")
+end
+
 local list = {}
 for _, key in order do table.insert(list, Named[key]) end
 print("AUDIO_RESULT_JSON " .. encode({ Checks = checks, Failed = failed, Named = list }))

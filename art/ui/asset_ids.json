@@ -708,5 +708,11 @@
   "SA_X_MarketArch_R": "rbxassetid://103216505866438",
   "SA_X_Altar_N": "rbxassetid://77583304221536",
   "SA_X_Altar_M": "rbxassetid://112518401623620",
-  "SA_X_Altar_R": "rbxassetid://76012571669616"
+  "SA_X_Altar_R": "rbxassetid://76012571669616",
+  "Skill_Warrior_Q_Halo": "rbxassetid://120532395379341",
+  "Skill_Warrior_Q_Horns": "rbxassetid://111763129346678",
+  "Skill_Mage_Q_Halo": "rbxassetid://92523085656561",
+  "Skill_Mage_Q_Horns": "rbxassetid://81157543004771",
+  "Skill_Archer_Q_Halo": "rbxassetid://92206547315755",
+  "Skill_Archer_Q_Horns": "rbxassetid://103422334299041"
 }

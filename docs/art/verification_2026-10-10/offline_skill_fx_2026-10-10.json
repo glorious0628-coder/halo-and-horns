@@ -1,0 +1,121 @@
+{
+  "checks": 84,
+  "failed": 0,
+  "static": [
+    {
+      "check": "Fx's Release hands the art to SkillFx.Q",
+      "ok": true
+    },
+    {
+      "check": "... and skips its old art when drawn",
+      "ok": true
+    },
+    {
+      "check": "an archer's drawn shot still lets the string go",
+      "ok": true
+    },
+    {
+      "check": "ClientMain loads SkillFx before Audio",
+      "ok": true
+    },
+    {
+      "check": "고침 1: only a swing waits for a skill move",
+      "ok": true
+    },
+    {
+      "check": "고침 2: a cut blends CUT_BLEND s from the last pose",
+      "ok": true
+    },
+    {
+      "check": "고침 3: the shot time by the slot",
+      "ok": true
+    },
+    {
+      "check": "고침 4: the Spark Shower's second draw / release",
+      "ok": true
+    },
+    {
+      "check": "Fx's Skill hands the Z art to SkillFx.Z (near the camera)",
+      "ok": true
+    },
+    {
+      "check": "the Horns side's Q moves",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "BIG and SMALL swapped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "phones get BIG",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "thin ring lines",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every hit pops",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a fake heal",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a steal with nothing stolen",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "others' steals drawn",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no crowd limit",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the artisan guild drawn",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "parts collide",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "all rain dots on SMALL",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no arc in hops",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "SMALL fire rake with rims",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Z for the artisan guild",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Skill Q art per class x side (게임성 개발 1, SPEC A23-116, docs/design/skills18_2026-10-10.md), offline.\n\nRuns, in the official Luau CLI, the CURRENT SkillFx.luau with the CURRENT Config.luau and fake Roblox objects: each of\nthe six Q kits (Halo Slam, Crater Smash, Star Fall, Purple Pop, Feather Rain, Spark Shower) draws (SkillFx.Q -> true)\nwithin the design's budget per cast - moving Parts BIG <= 12 / SMALL <= 8, own particles BIG <= 12 / SMALL <= 6 - every\nPart anchored with no collision / query / touch / shadow, every ring line >= 0.6 studs, no Beam / ParticleEmitter with\na streak (VelocityParallel); a kit without art (the artisan guild) and a packet without a side draw nothing (Fx keeps\nits old art); a crowded screen leaves another player's cast with its ring only; the hit pops are the nearest 6 x 2\n(BIG) / 3 x 1 (SMALL); the heal sparkles only for data.Healed players (up to 5), the steal hearts only when data.Stole\n> 0 on my own cast (up to 3 + a pink edge). Static: Fx's Release hands the art to SkillFx.Q and skips its old art when\ndrawn; ClientMain loads SkillFx before Audio; the move fixes (A23-116 고침 1-4) are in Fx. Mutations: each must be caught.",
+  "studioCalls": 0
+}

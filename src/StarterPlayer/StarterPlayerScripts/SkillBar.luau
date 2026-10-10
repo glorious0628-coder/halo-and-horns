@@ -213,6 +213,10 @@ end
 
 local function iconKey(slot)
 	if attr("ClassChosen", false) ~= true then return "Skill_Warrior_Q" end -- 그림체 #15: was the old winged IconSpecial
+	-- skills18 (10/10): each class's own icon per faction first (Skill_<Class>_<Slot>_<Faction>, e.g. Skill_Mage_Z_Horns),
+	-- then the kit icon (kept: the Artisan Guild borrows them)
+	local own = "Skill_" .. myClass() .. "_" .. slot .. "_" .. myFaction()
+	if UIKit.ArtId(own) then return own end
 	local kit = kitOf(myClass(), myFaction())
 	local key = "Skill_" .. kit .. "_" .. slot
 	if UIKit.ArtId(key) then return key end
