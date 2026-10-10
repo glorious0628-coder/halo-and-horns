@@ -92,6 +92,11 @@ for k in ("DomeHouseA", "Lantern", "Planter", "Topiary", "Tower", "Statue"):
                 rows += 1
 print(f"rule 8/11 even rows of three: {rows // 2}")
 
+# A23-117: every building / prop says why it stands there and belongs to one district
+nowhy = [e["kind"] for e in plan["placements"] if not e.get("why")]
+print(f"A23-117 why empty: {len(nowhy)} (want 0)", sorted(set(nowhy)))
+from collections import Counter as _C
+print("A23-117 per district:", dict(_C(e.get("zone", "?") for e in plan["placements"])))
 print("unreachable columns:", plan.get("unreachable"))
 spots = plan.get("spots", {})
 print("reserved spots:", {k: len(v) for k, v in spots.items()})
