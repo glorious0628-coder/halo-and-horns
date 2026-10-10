@@ -3351,7 +3351,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
+      "check": "D0: a small reward, no 'Daily jobs are open!' closing line (A23-99), the guide speaks (no Speaker)",
       "pass": 1,
       "fail": 0
     },
@@ -3375,7 +3375,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "check": "Halo: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
       "pass": 1,
       "fail": 0
     },
@@ -3399,7 +3399,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "check": "Horns: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
       "pass": 1,
       "fail": 0
     },
@@ -3423,7 +3423,7 @@
     },
     {
       "group": "daily intro quest (A23-104)",
-      "check": "Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+      "check": "Neutral: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
       "pass": 1,
       "fail": 0
     },
@@ -6348,7 +6348,7 @@
         "newFailingChecks": [
           "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Horns: never again",
-          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
           "daily intro quest (A23-104) :: Horns: tapped: its dialogue opens",
           "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Neutral: never again"
@@ -6356,18 +6356,15 @@
         "newFailingCount": 8
       },
       {
-        "mutation": "daily intro: no closing line",
+        "mutation": "daily intro: a closing toast again",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "daily intro quest (A23-104) :: D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)",
-          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
-          "daily intro quest (A23-104) :: Horns: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
-          "daily intro quest (A23-104) :: Neutral: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'"
+          "daily intro quest (A23-104) :: D0: a small reward, no 'Daily jobs are open!' closing line (A23-99), the guide speaks (no Speaker)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 1
       },
       {
         "mutation": "daily intro: pays nothing",
@@ -6389,7 +6386,7 @@
         "newFailingChecks": [
           "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Halo: never again",
-          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
           "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
           "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Horns: never again"
@@ -6421,7 +6418,7 @@
         "newFailingChecks": [
           "daily intro quest (A23-104) :: Halo: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Halo: never again",
-          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'",
+          "daily intro quest (A23-104) :: Halo: talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast",
           "daily intro quest (A23-104) :: Halo: tapped: its dialogue opens",
           "daily intro quest (A23-104) :: Horns: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Horns: never again"
@@ -6569,7 +6566,7 @@
           "daily intro quest (A23-104) :: Neutral: after M1_4 the intro starts by itself as a row (nothing pops up); tapping it is the player's move",
           "daily intro quest (A23-104) :: Neutral: tapped: its dialogue opens"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 12
       },
       {
         "mutation": "egg: the sky takes 3 seconds",
@@ -8105,20 +8102,20 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3a608a778fcbfc747f3d5ff97dfff0e621a133d5e6aa32a5101ffb8d600d0199",
+    "src/ReplicatedStorage/Shared/Config.luau": "ce439e76da4e1a35dfa7960e9650ef4748fca5b9dad3d7b1799616d0ebdcbe7a",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "1785e3b8f25cbce1406e994d24b4b7ac968e6593a069bea9155da02fc72aa9f0",
+    "src/ServerScriptService/StoryQuestService.luau": "989b17380513ea51dc947698fad09939e269b5cf672fba39e40267df878f1bbd",
     "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
-    "src/ServerScriptService/ShopService.luau": "edf9ad90671a3f8459b912b953af2bed14ac30b078bd6941ab1797fd81c4af62",
+    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
     "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
     "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "29eac9b45800c46035571a792b701c26456b109d7882339f4a5731e040e5bc8d",
+  "fixtureSHA256": "1531523fbf9e57efa68f1fe125254f80355e45d5042b66c14a36e992ade00323",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
