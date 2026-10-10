@@ -23,6 +23,7 @@ local function forgeWorld()
 	local w = bareWorld()
 	local cfg, reg = w.Config, w.Registry
 	local Signal = w.Util.Signal
+	cfg.Daily.IntroGate = false -- A23-104 (the daily jobs open after an intro quest) has its own tests: test_a23_14 / test_town_quests
 	w.Util.RateLimit = function() return true end
 	-- the zone each player stands in, the travel double (an instant Travel lands at the zone spawn, fires ZoneChanged)
 	w.ZoneOf, w.Travels, w.Marked = {}, {}, {}

@@ -2394,8 +2394,9 @@ Config.Tutorial = {
 Config.StoryQuests = {
 	MaxSubs = 3, -- sub rows sent with the quest list (after the main row); the HUD shows 2, the open list all (quest_volume §2-6)
 	-- zone_check_halo #19: true = every active sub is sent, the ones past MaxSubs marked More = true (the HUD must draw only the
-	-- rows without More; the quest window lists all). Off until game dev 1's HUD skips More rows (then: true).
-	SendAllSubs = false,
+	-- rows without More; the quest window lists all). On since 2026-10-10 (game dev 1's HUD skips More rows, b9a0d16b / cce87d8d:
+	-- the quest window's In progress lists them, a More row's [Claim] goes straight to ClaimQuest).
+	SendAllSubs = true,
 	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
 	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
@@ -3400,6 +3401,20 @@ Config.StoryQuests.Defs.EG14 = {
 }
 for _, id in { "EG01", "EG02", "EG03", "EG04", "EG14" } do table.insert(Config.StoryQuests.Subs, id) end
 
+-- A23-104: the intro of the daily jobs (QuestService opens them when this quest ends: Config.Daily.IntroQuest). It starts by
+-- itself at the end of the first chapter (M1_4), one short dialogue from my side's guide, a small reward like a woods sub's.
+Config.StoryQuests.Defs.D0 = {
+	Kind = "Sub", Title = "Daily Jobs", ShortName = "Daily jobs", Requires = { Done = { "M1_4" } },
+	Steps = {
+		{ Text = "Hear about the daily jobs", Panel = true, Obj = { Type = "Talk" },
+			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!",
+				"Look in your Quests window. New jobs come every morning." } } },
+	},
+	Reward = { Gold = 1, XP = 1 },
+	Finish = "Daily jobs are open!",
+}
+table.insert(Config.StoryQuests.Subs, "D0")
+
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
 -- are remake P4). At = the spot (X, Z; the height comes from a ray onto the ground at build time), Look = what it faces.
@@ -3615,7 +3630,14 @@ Config.Daily = {
 	VacationRate = 0.7,
 	VacationMaxDays = 3,
 	CheckInterval = 30, -- seconds between day-rollover checks for online players
+	-- A23-104 (user 2026-10-10): a new player is told about the daily jobs by a short quest (the sub IntroQuest, after the
+	-- first chapter) before any is made; until then QuestService makes, shows and counts none and says DailyLocked. A save that
+	-- already ran its dailies (DailyDay > 0) is open. IntroGate = false: always open (the old rule).
+	IntroGate = true,
+	IntroQuest = "D0",
 }
+-- A23-104: set when the intro quest is done (the daily jobs are open); additive save field (the data version stays 3)
+Config.Data.Defaults.DailyIntro = false
 
 function Config.DayIndex(unixTime)
 	return math.floor((unixTime + Config.Daily.TimezoneOffset) / 86400)
@@ -6863,7 +6885,7 @@ Config.RateLimits.CandyTrade = 1
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
 Config.QuestBook = {
-	DoneMax = 60, -- every main (19) + every sub (~35) of a finished save still fits (검수 2026-10-08)
+	DoneMax = 80, -- every main (19) + every sub (~45) of a finished save still fits (검수 2026-10-08; 60 -> 80 with the daily intro, A23-104)
 	AvailableMax = 10,
 	Text = { OpensAt = "%s · Opens at Lv %d" }, -- (quest Title, level)
 }

@@ -36,6 +36,7 @@ local function fixture(saved)
 	local f = { Ready = true, Alive = true, RateAllowed = true, Rows = {}, Remote = {}, Loops = {}, Writes = {}, RateCalls = {} }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
+	config.Daily.IntroGate = false -- A23-104 (the daily jobs open after an intro quest) has its own tests: test_a23_14 / test_town_quests
 	local players = {}
 	local function newPlayer()
 		local p = { Name = "IntroTester", UserId = serial, Parent = players, Attrs = {}, __kind = "Instance" }
@@ -92,7 +93,7 @@ local function fixture(saved)
 	end
 	function ps.AddStat(p, key, amount) local v = (dataService.Get(p)[key] or 0) + amount; ps.SetStat(p, key, v); return v end
 	local registry = { PlayerService = ps, DataService = dataService,
-		MonsterService = { MonsterKilled = signal() },
+		MonsterService = { MonsterKilled = signal() }, StoryQuestService = { QuestDone = signal() }, -- QuestService listens to the daily intro quest (A23-104)
 		ProgressionService = { GoldEarned = signal(), Rebirthed = signal(), LevelReset = signal(), LeveledUp = signal(),
 			AddBankGold = function(p, amount) ps.AddStat(p, "BankGold", amount) end, AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end },
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },

@@ -144,6 +144,7 @@ local function questWorld(saved, seed, opts)
 	local f = { Now = 1000, Rows = {}, Notices = {}, Pays = {}, Tickets = {}, Spawned = {}, Ready = true, Zone = "SlimeMeadow" }
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
 	f.Config = config
+	if opts and opts.Gate == false then config.Daily.IntroGate = false end
 	local players = { __kind = "Instance", Name = "Players" }
 	local userId = 7000 + questSerial
 	if saved then f.Rows["P_" .. userId] = deepCopy(saved) end
@@ -198,6 +199,8 @@ local function questWorld(saved, seed, opts)
 	f.Player = player
 	local data = assert(ds.Load(player), "DataService.Load failed")
 	f.Data, f.DS = data, ds
+	-- A23-104: the daily jobs open after the intro quest; every world but the "daily-intro" group's starts past it
+	if not (opts and opts.Intro == false) then data.DailyIntro = true end
 	local mirrored = {}
 	for _, key in config.Data.Mirrored do mirrored[key] = true end
 	for key in mirrored do player:SetAttribute(key, data[key]) end
@@ -227,7 +230,7 @@ local function questWorld(saved, seed, opts)
 		MonsterService = { MonsterKilled = signal() }, CombatService = { Released = signal() },
 		GooseService = { GooseFinished = signal() }, PvPService = { PlayerKO = signal(),
 			IsRookie = function() return not (opts and opts.Graduated) end },
-		KaijuService = { KaijuEnded = signal() },
+		KaijuService = { KaijuEnded = signal() }, StoryQuestService = { QuestDone = signal() },
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return ds.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() },
 		ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end },
@@ -1172,6 +1175,80 @@ local function classWorld(level, opts)
 	end
 	return f
 end
+
+runGroup("daily-intro (A23-104)", function()
+	local C = CONFIG
+	check(C.Daily.IntroGate == true and C.Daily.IntroQuest == "D0" and C.Data.Defaults.DailyIntro == false and C.Data.Version == 3,
+		"config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 3)", show({ C.Daily.IntroGate, C.Daily.IntroQuest }))
+	local def = C.StoryQuests.Defs.D0
+	check(def and def.Kind == "Sub" and def.Factions == nil and def.Hidden ~= true and table.concat(def.Requires.Done, ",") == "M1_4"
+		and #def.Steps == 1 and def.Steps[1].Panel == true and def.Steps[1].Npc == nil and def.Steps[1].Obj.Type == "Talk"
+		and #def.ShortName <= 14 and table.find(C.StoryQuests.Subs, "D0") ~= nil, "D0: a sub for everyone after the first chapter (M1_4), one dialogue, in the list", show(def and def.Requires))
+	-- a new save: nothing is made, shown or counted; the payload says so
+	local f = questWorld(nil, 21, { Intro = false })
+	check(f.Quest.DailiesOpen(f.Player) == false and #f.Data.Quests == 0 and f.Data.DailyDay == 0 and f.Data.DailyIntro == false,
+		"a new save: no daily jobs yet", show({ #f.Data.Quests, f.Data.DailyDay }))
+	local function jobRows(list)
+		local n = 0
+		for _, r in list or {} do if r.Kind == "Daily" or r.Kind == "Extra" then n += 1 end end
+		return n
+	end
+	check(type(f.LastJson) == "table" and f.LastJson.DailyLocked == true and jobRows(f.LastJson.Quests) == 0,
+		"the quest list has no daily job and says DailyLocked", show(f.LastJson))
+	f:Kill("Slime")
+	f:Kill("Slime")
+	f:Gold(500, "Monster")
+	f:Skill({ MonstersHit = 2, Auto = false })
+	f.Registry.ProgressionService.Rebirthed:Fire(f.Player)
+	f.Registry.FactionService.FactionChanged:Fire(f.Player, "Horns")
+	f.Quest.DebugSimulateAbsence(f.Player, 3)
+	check(#f.Data.Quests == 0 and f.Data.DailyDay == 0 and f.Data.VacationDays == 0 and #f.Pays == 0,
+		"kills, gold, skills, a rebirth, a faction change and 3 days away make no daily job, no vacation, no pay", show({ #f.Data.Quests, f.Data.DailyDay, f.Data.VacationDays }))
+	f:Claim(1)
+	f:Reroll(1)
+	check(#f.Data.Quests == 0 and #f.Pays == 0, "claim / reroll of a job that does not exist: nothing", "")
+	f.Quest.DayCheck(f.Player)
+	check(#f.Data.Quests == 0 and f.Data.DailyDay == 0 and jobRows(f.LastJson.Quests) == 0, "the day loop's check makes no set for a locked player", show({ #f.Data.Quests, f.Data.DailyDay }))
+	f.Registry.StoryQuestService.QuestDone:Fire(f.Player, "M1_4")
+	f.Registry.StoryQuestService.QuestDone:Fire(f.Player, "S0")
+	check(f.Quest.DailiesOpen(f.Player) == false and #f.Data.Quests == 0, "another quest's end opens nothing", "")
+	-- the intro quest ends: the first set is made at once
+	f.Registry.StoryQuestService.QuestDone:Fire(f.Player, "D0")
+	check(f.Quest.DailiesOpen(f.Player) == true and f.Data.DailyIntro == true and #f.Data.Quests == C.Quests.Slots and f.Data.DailyDay == today(),
+		"D0 done: the daily jobs open, the day's set is made", show({ #f.Data.Quests, f.Data.DailyDay, f.Data.DailyIntro }))
+	local kinds = {}
+	for _, q in f.Data.Quests do kinds[q.Kind] = (kinds[q.Kind] or 0) + 1 end
+	check(kinds.Daily == C.Quests.Slots and f.LastJson.DailyLocked == nil and jobRows(f.LastJson.Quests) == C.Quests.Slots,
+		"three Daily jobs, published, no DailyLocked", show(kinds))
+	check(f.Data.VacationDays == 0 and #f.Pays == 0, "no vacation reward for the days before (nothing was owed)", show({ f.Data.VacationDays }))
+	local before = f.Data.Quests
+	f.Registry.StoryQuestService.QuestDone:Fire(f.Player, "D0")
+	check(f.Data.Quests == before and f.Quest.OpenDailies(f.Player) == false, "a second signal changes nothing (the set stays)", "")
+	-- they work like any daily: a kill counts
+	local slot, quest = f:Slot("Kill")
+	if quest then
+		local was = quest.Progress
+		f:Kill("Slime")
+		check(f.Data.Quests[slot].Progress > was, "a kill counts for the Kill job now", show({ was, f.Data.Quests[slot].Progress }))
+	end
+	-- jobs that a locked save somehow still holds are neither shown nor counted (DailyDay 0 = never run)
+	local stray = questWorld(rookieRow(8, "Halo", { DailyDay = 0, Quests = { { Id = "Kill", Kind = "Daily", Target = 3, Progress = 0, RewardGold = 5, RewardXP = 5,
+		Text = "x", Unit = "Slime" } } }), 24, { Intro = false })
+	stray:Kill("Slime")
+	check(stray.Quest.DailiesOpen(stray.Player) == false and stray.Data.Quests[1] and stray.Data.Quests[1].Progress == 0 and jobRows(stray.LastJson.Quests) == 0,
+		"a stray job of a locked save: not shown, not counted", show(stray.Data.Quests[1]))
+	-- a save that already runs its dailies is open without the intro (and never gets the intro quest)
+	local old = questWorld(rookieRow(8, "Halo", { DailyDay = today(), Quests = {} }), 22, { Intro = false })
+	check(old.Quest.DailiesOpen(old.Player) == true and #old.Data.Quests == C.Quests.Slots and old.Data.Story.Done.D0 == true,
+		"an old save with DailyDay > 0: open, the intro quest is marked done", show({ #old.Data.Quests, old.Data.Story.Done.D0 }))
+	check(old.LastJson.DailyLocked == nil and jobRows(old.LastJson.Quests) == C.Quests.Slots, "and its list has the three jobs", show(old.LastJson))
+	-- the gate off (Config.Daily.IntroGate = false): everybody is open at once, the old rule
+	local off = questWorld(nil, 23, { Intro = false, Gate = false })
+	check(off.Quest.DailiesOpen(off.Player) == true and #off.Data.Quests == C.Quests.Slots and off.Data.Story.Done.D0 == true,
+		"IntroGate = false: a new save has its jobs at once", show({ #off.Data.Quests }))
+	-- an unknown player / no data
+	check(f.Quest.DailiesOpen({}) == false and f.Quest.OpenDailies({}) == false, "no data: false, no error", "")
+end)
 
 runGroup("class-first-pick", function()
 	-- the first class pick is free and silent (user 2026-10-10: no "Your class is now ..." after the player's own click)

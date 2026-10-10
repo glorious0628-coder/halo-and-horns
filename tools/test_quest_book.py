@@ -42,7 +42,7 @@ MUTATIONS = [
      "\t\t\telseif false then\n\t\t\t\ttable.insert(avail, { Id = \"story:\" .. id, Kind = \"Sub\" })\n"),
     ("highest level first", ST, "return (a.Level or 0) < (b.Level or 0) end", "return (a.Level or 0) > (b.Level or 0) end"),
     ("no AvailableMax", ST, "\tfor i = #avail, math.floor(num(QB.AvailableMax, 10)) + 1, -1 do avail[i] = nil end\n", ""),
-    ("Config: Done keeps 10", C, "\tDoneMax = 60,", "\tDoneMax = 10,"),
+    ("Config: Done keeps 10", C, "\tDoneMax = 80,", "\tDoneMax = 10,"),
 ]
 
 
@@ -58,7 +58,7 @@ def static() -> tuple[int, list[str]]:
 
     quest = read(SSS / "QuestService.luau")
     pub = function_block(quest, "local function publish(")
-    check('Net.Get("Quests"):FireClient(player, { Quests = list, Book = book })' in pub,
+    check('Net.Get("Quests"):FireClient(player, { Quests = list, Book = book, DailyLocked = locked or nil })' in pub,
           "publish sends { Quests = rows, Book = book } (HUD / Audio read .Quests)")
     check("pcall(story.BookRows, player, data)" in pub, "publish asks StoryQuestService.BookRows (pcall)")
     check('local sentKey = json .. "|" .. (okBookJson and bookJson or "")' in pub and "if lastSent[player] == sentKey then return end" in pub
