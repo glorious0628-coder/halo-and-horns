@@ -119,6 +119,7 @@ local MOTION = {
 	SWING_FIT = 0.9, -- a swing move finishes within this fraction of the class SwingInterval
 	RELEASE_ANIM_TIME = 0.75, -- the release move finishes within this many seconds
 	RELEASE_HOLD = 0.6, -- swings do not cut the release move short for this many seconds
+	CUT_BLEND = 0.06, -- A23-116: a move cutting another blends from the last pose this long (no snap)
 	ANIM_MAX_SPEED = 4,
 	ANIM_FADE_IN = 0.05,
 	ANIM_FADE_OUT = 0.12,
@@ -282,6 +283,83 @@ local MOTION = {
 			{ 0.29, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
+		-- A23-116 Q (docs/design/skills18_2026-10-10.md): the Berserker's Crater Smash - the great sword lifted in both
+		-- hands behind the head with a big lean back, a deep two-hand smash on RELEASE_CONTACT.Warrior, held, back up
+		BerserkerRelease = { Len = 0.7, Keys = {
+			{ 0, "Out", {} },
+			{ 0.14, "Out", { Waist = { 24, -6, 0 }, Neck = { -10, 4, 0 }, RightShoulder = { 172, 0, 10 }, RightElbow = { 90, 0, 0 }, RightWrist = { -90, 0, 0 }, LeftShoulder = { 166, 0, -4 }, LeftElbow = { 86, 0, 0 }, LeftWrist = { -90, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -40, 0, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 60, 0, -14 }, RightElbow = { 6, 0, 0 }, RightWrist = { -86, 0, 0 }, LeftShoulder = { 58, 0, 12 }, LeftElbow = { 8, 0, 0 }, LeftWrist = { -86, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 52, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 50, 0, 12 }, LeftElbow = { 12, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.7, "InOut", {} },
+		} },
+		-- the Dark Mage's Purple Pop: crouched, the left palm sweeping low, then lifting something up on
+		-- RELEASE_CONTACT.Mage (staffPose aims the tip at the pool)
+		DarkMageRelease = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.2, "Out", { Waist = { -20, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 30, 0, 10 }, RightElbow = { 40, 0, 0 }, RightWrist = { -40, 0, 0 }, LeftShoulder = { 40, 0, -20 }, LeftElbow = { 30, 0, 0 }, LeftWrist = { -60, 0, 0 } } },
+			{ 0.33, "InOut", { Waist = { -24, 4, 0 }, Neck = { 8, 0, 0 }, RightShoulder = { 26, 0, 10 }, RightElbow = { 44, 0, 0 }, RightWrist = { -44, 0, 0 }, LeftShoulder = { 30, 0, -24 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -70, 0, 0 } } },
+			{ 0.35, "In", { Waist = { 10, 0, 0 }, Neck = { 10, 0, 0 }, RightShoulder = { 50, 0, 6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -90, 0, 0 }, LeftShoulder = { 120, 0, -20 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -30, 0, 0 } } },
+			{ 0.55, "Out", { Waist = { 6, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 50, 0, 6 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 100, 0, -16 }, LeftElbow = { 20, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
+		-- the Ranger's Feather Rain: leaning back 15 and looking up while the bow solve aims high (waist / neck only)
+		RangerRelease = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.08, "Out", { Waist = { 10, -60, 0 }, Neck = { 8, 60, 0 } } },
+			{ 0.16, "InOut", { Waist = { 15, -65, 0 }, Neck = { 12, 65, 0 } } },
+			{ 0.18, "In", { Waist = { 15, -65, 0 }, Neck = { 12, 65, 0 } } },
+			{ 0.3, "Out", { Waist = { 14, -60, 0 }, Neck = { 12, 60, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
+		-- the Shadow Hunter's Spark Shower: crouched 20 forward, two quick half draws (Redraw / Shot2: the bow solve lets
+		-- go again at Shot2; only the first shot is the server's)
+		ShadowHunterRelease = { Len = 0.44, Redraw = 0.2, Shot2 = 0.3, Keys = {
+			{ 0, "Out", {} },
+			{ 0.08, "Out", { Waist = { -18, -58, 0 }, Neck = { 6, 58, 0 } } },
+			{ 0.16, "InOut", { Waist = { -20, -62, 0 }, Neck = { 8, 62, 0 } } },
+			{ 0.18, "In", { Waist = { -20, -62, 0 }, Neck = { 8, 62, 0 } } },
+			{ 0.24, "Out", { Waist = { -20, -60, 0 }, Neck = { 6, 60, 0 } } },
+			{ 0.3, "InOut", { Waist = { -20, -62, 0 }, Neck = { 8, 62, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
+		-- A23-116 Z (off until the 10/20 check): the Berserker's Fire Rake - the blade dragged low behind on the right,
+		-- a big upward cut to the left on the contact, then both arms haul it back over the right shoulder
+		BerserkerZ = { Len = 0.75, Keys = {
+			{ 0, "Out", {} },
+			{ 0.14, "Out", { Waist = { 0, 25, 0 }, RightShoulder = { 20, 0, 40 }, RightElbow = { 10, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 20, 0, 30 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.24, "In", { Waist = { 0, -30, 0 }, RightShoulder = { 120, 0, -30 }, RightElbow = { 10, 0, 0 }, RightWrist = { -40, 0, 0 }, LeftShoulder = { 110, 0, -10 }, LeftElbow = { 20, 0, 0 } } },
+			{ 0.48, "Out", { Waist = { 0, -10, 0 }, RightShoulder = { 150, 0, 20 }, RightElbow = { 90, 0, 0 }, LeftShoulder = { 130, 0, 10 }, LeftElbow = { 80, 0, 0 } } },
+			{ 0.75, "InOut", {} },
+		} },
+		-- the Dark Mage's Flappy Zigzag: the crooked staff pulled back right, a quick side swing to the left (the bat
+		-- leaves), the left fingers wiggling 'go'
+		DarkMageZ = { Len = 0.68, Keys = {
+			{ 0, "Out", {} },
+			{ 0.12, "Out", { Waist = { 0, 20, 0 }, RightShoulder = { 40, 0, 40 }, RightElbow = { 40, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 20, 0, -10 } } },
+			{ 0.24, "In", { Waist = { 0, -25, 0 }, RightShoulder = { 70, 0, -40 }, RightElbow = { 10, 0, 0 }, RightWrist = { -60, 0, 0 }, LeftShoulder = { 60, 0, -20 }, LeftElbow = { 20, 0, 0 }, LeftWrist = { -30, 0, 0 } } },
+			{ 0.4, "Out", { Waist = { 0, -15, 0 }, RightShoulder = { 50, 0, -20 }, RightElbow = { 20, 0, 0 }, LeftShoulder = { 50, 0, -16 }, LeftElbow = { 30, 0, 0 }, LeftWrist = { -50, 0, 0 } } },
+			{ 0.68, "InOut", {} },
+		} },
+		-- the Ranger's Comet Arrow: a flat full draw leaning a little in, a small kick back after the shot (waist / neck)
+		RangerZ = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.08, "Out", { Waist = { -6, -60, 0 }, Neck = { 0, 60, 0 } } },
+			{ 0.16, "InOut", { Waist = { -8, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.18, "In", { Waist = { -8, -65, 0 }, Neck = { 0, 65, 0 } } },
+			{ 0.26, "Out", { Waist = { 4, -62, 0 }, Neck = { -2, 62, 0 } } },
+			{ 0.36, "Out", { Waist = { -4, -62, 0 }, Neck = { 0, 62, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
+		-- the Shadow Hunter's Moon Shot: crouched 30 deep, the head up on the target, a sharp shoulder kick after the shot
+		ShadowHunterZ = { Len = 0.44, Keys = {
+			{ 0, "Out", {} },
+			{ 0.12, "Out", { Waist = { -30, -60, 0 }, Neck = { 14, 60, 0 } } },
+			{ 0.16, "InOut", { Waist = { -30, -62, 0 }, Neck = { 14, 62, 0 } } },
+			{ 0.18, "In", { Waist = { -30, -62, 0 }, Neck = { 14, 62, 0 } } },
+			{ 0.26, "Out", { Waist = { -20, -62, 0 }, Neck = { 10, 62, 0 } } },
+			{ 0.36, "Out", { Waist = { -26, -60, 0 }, Neck = { 12, 60, 0 } } },
+			{ 0.44, "InOut", {} },
+		} },
 		ArcherRelease = { Len = 0.44, Keys = { -- same hand/string solve, pointed toward the existing volley
 			{ 0, "Out", {} },
 			{ 0.08, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
@@ -394,7 +472,11 @@ local MOTION = {
 	SIDE_CLIPS = {
 		Warrior_Halo = { Swing = "PaladinSwing", Release = "PaladinRelease", Z = "PaladinZ", X = "PaladinX" },
 		Mage_Halo = { Swing = "LightMageSwing", Release = "LightMageRelease", Z = "LightMageZ", X = "LightMageX" },
-		Archer_Halo = { Z = "ArcherSwing" }, -- Pierce Shot: the long solved draw (Light Step's hop moves the body itself)
+		Archer_Halo = { Release = "RangerRelease", Z = "RangerZ" }, -- (Light Step's hop moves the body itself)
+		-- A23-116 Q / Z: the Horns side's own moves (X comes with its stage)
+		Warrior_Horns = { Release = "BerserkerRelease", Z = "BerserkerZ" },
+		Mage_Horns = { Release = "DarkMageRelease", Z = "DarkMageZ" },
+		Archer_Horns = { Release = "ShadowHunterRelease", Z = "ShadowHunterZ" },
 	},
 	CLASS_CLIPS = {
 		Warrior = { Swing = "WarriorSwing", Release = "WarriorRelease" },
@@ -2354,7 +2436,8 @@ function Feel.compileClips()
 			end
 			joints[joint] = track
 		end
-		Feel.Clips[name] = { Name = name, Len = def.Len, Joints = joints }
+		-- A23-116: Redraw / Shot2 (the Spark Shower's second bow release) ride along
+		Feel.Clips[name] = { Name = name, Len = def.Len, Joints = joints, Redraw = def.Redraw, Shot2 = def.Shot2 }
 	end
 end
 
@@ -2563,7 +2646,8 @@ function Feel.solveArm(arm, torso, handGoal, pole)
 end
 
 function Feel.archerPhase(attack)
-	local clipLaunch = attack.Clip.Name == "ArcherRelease" and MOTION.RELEASE_LAUNCH.Archer or MOTION.SHOT_DELAY
+	local release = attack.Which == "Release" or (attack.Which == nil and attack.Clip.Name == "ArcherRelease")
+	local clipLaunch = release and MOTION.RELEASE_LAUNCH.Archer or MOTION.SHOT_DELAY
 	local at = attack.LaunchT or clipLaunch
 	if attack.T <= at then return attack.T / math.max(0.001, at) * clipLaunch end
 	return clipLaunch + (attack.T - at) / math.max(0.001, attack.Clip.Len - at) * (attack.Clip.Len - clipLaunch)
@@ -2864,6 +2948,10 @@ function Feel.play(char, layer, name, rate)
 		l = { Clip = nil, T = 0, Rate = 1 }
 		st.Layers[layer] = l
 	end
+	if layer == "Attack" and l.Clip and l.T < l.Clip.Len and next(st.Last) then
+		-- A23-116 고침 2: cutting a running move starts from where the arms are (CUT_BLEND s), never a snap
+		st.BlendFrom, st.BlendAt = table.clone(st.Last), os.clock()
+	end
 	l.Clip = clip
 	l.T = 0
 	l.Rate = rate or 1
@@ -2982,6 +3070,15 @@ function Feel.stepChar(st, dt, now)
 	elseif attack and attack.Clip and plain and st.AttackContext.Class == "Mage" then
 		Feel.staffPose(st, attack, bases, outputs)
 	end
+	local blendW = st.BlendFrom and math.clamp((now - st.BlendAt) / MOTION.CUT_BLEND, 0, 1) or 1
+	if blendW < 1 then
+		for joint, out in outputs do
+			local from = st.BlendFrom[joint]
+			if from then outputs[joint] = from:Lerp(out, blendW) end
+		end
+	else
+		st.BlendFrom = nil
+	end
 	-- Every solved child uses this frame's predicted parent FK, independent of table iteration order.
 	for joint, out in outputs do
 		st.Joints[joint].Transform = out
@@ -3034,7 +3131,8 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	context.Style = style
 	local now = os.clock()
 	local st = Feel.Chars[char]
-	if which ~= "Release" and st and Feel.Active[st] and Feel.validAttack(st.AttackContext)
+	-- A23-116 고침 1: only a basic swing waits for a skill move (a Z / X after the 0.5 s global gap plays)
+	if which == "Swing" and st and Feel.Active[st] and Feel.validAttack(st.AttackContext)
 		and now < st.ReleaseUntil then return true end
 	local rate = math.clamp(clip.Len / math.max(0.05, maxTime), 1, MOTION.ANIM_MAX_SPEED)
 	local launch = math.clamp(asNum(data.LaunchDelay, which == "Release" and MOTION.RELEASE_LAUNCH[classId]
@@ -3049,8 +3147,10 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	current.AttackContext = context
 	Feel.clearWeaponMotion(current)
 	current.AttackSerial, current.BowReleased = {}, false
+	current.Layers.Attack.Which = which -- A23-116 고침 3: Feel.archerPhase picks the shot time by the slot, not the name
 	if classId == "Archer" and not style then
 		current.Layers.Attack.LaunchT = launch * rate
+		if clip.Redraw and clip.Shot2 then Feel.secondShot(context, current, clip, rate) end
 		current.AttackTarget = which == "Release" and asVec(data.Pos) and (data.Pos + Vector3.new(0, 30, 0))
 			or (type(data.Targets) == "table" and asVec(data.Targets[1])) or nil
 	elseif classId == "Mage" and not style then
@@ -3063,6 +3163,22 @@ function Feel.playAttack(char, classId, which, maxTime, data)
 	end
 	if which ~= "Swing" then current.ReleaseUntil = now + math.min(MOTION.RELEASE_HOLD, maxTime) end -- Release, Z, X
 	return true
+end
+
+-- A23-116 고침 4 (Spark Shower): a clip with Redraw / Shot2 draws the bow again after the first shot and lets go at
+-- Shot2 (clip seconds; only the first shot is the server's - SkillFx draws the second arrow)
+function Feel.secondShot(ctx, st, clip, rate)
+	local serial = st.AttackSerial
+	local attack = st.Layers.Attack
+	local function same() return st.AttackSerial == serial and attack.Clip == clip end
+	Feel.after(ctx, clip.Redraw / rate, function()
+		if not same() then return end
+		st.BowReleased = false
+		attack.LaunchT = clip.Shot2
+	end)
+	Feel.after(ctx, clip.Shot2 / rate, function()
+		if same() then st.BowReleased = true end
+	end)
 end
 
 -- another player's Swing / Release -> the clip on their character (near the camera only)
@@ -3868,9 +3984,25 @@ handlers.Release = function(data)
 	local color = factionColor(data.Faction)
 	local visible = nearCamera(pos)
 	local impactDelay = math.clamp(asNum(data.ContactDelay, MOTION.RELEASE_CONTACT[classId] or MOTION.SMASH_AT), 0, 1)
+	-- A23-116: the class x side's own Q art (SkillFx.luau); the old class art below only when it drew nothing
+	local sfx = C and C.SkillFx
+	local drawn = false
+	if visible and data.Style == nil and type(sfx) == "table" and type(sfx.Q) == "function" then
+		local okQ, res = pcall(sfx.Q, data, pos, radius, impactDelay, own, {
+			Muzzle = function() return Feel.muzzle(ctx, nil) end,
+			After = function(seconds, fn) Feel.after(ctx, seconds, fn) end,
+		})
+		drawn = okQ and res == true
+		if not okQ then warnThrottled("skill art failed: " .. tostring(res)) end
+	end
 	if data.Style == "PetDash" then
 		-- A23-39 / PET-3: the pet dashes to the impact point (no pet drawn: only the impact below shows)
 		if visible then MOTION.PetMove("Dash", data, pos, impactDelay) end
+	elseif drawn and classId == "Archer" then
+		-- SkillFx drew the shot; the bow still lets go at the launch (the string snaps back)
+		Feel.launchArrow(ctx, math.clamp(asNum(data.LaunchDelay, MOTION.RELEASE_LAUNCH.Archer), 0, impactDelay), function() end)
+	elseif drawn then
+		-- SkillFx drew it
 	elseif classId == "Mage" then
 		if visible then meteor(pos, radius, color, impactDelay, ctx) end
 	elseif classId == "Archer" then
@@ -3899,9 +4031,11 @@ handlers.Release = function(data)
 	local function impact()
 		if visible then
 			-- shockwave ring always sized exactly to Radius (A14-4: GPT ring art once its id exists)
-			ring(pos, radius, color, { Grow = 0.25, Fade = 0.45, Transparency = 0.3, Thickness = 0.3, StartDiameter = 2, Art = true })
+			if not drawn then ring(pos, radius, color, { Grow = 0.25, Fade = 0.45, Transparency = 0.3, Thickness = 0.3, StartDiameter = 2, Art = true }) end
 			local gpos = Vector3.new(pos.X, groundY(pos) + 0.5, pos.Z)
-			if classId == "Mage" then
+			if drawn then
+				-- SkillFx drew the impact
+			elseif classId == "Mage" then
 				Feel.magicBurst(gpos + Vector3.new(0, 1, 0), true)
 				burst(gpos, ColorSequence.new(COLOR_FIRE, color), 40, {
 					Size = 1.4, SpeedMin = 14, SpeedMax = 26, LifeMin = 0.4, LifeMax = 0.8, LightEmission = 1,
@@ -3957,6 +4091,16 @@ handlers.Skill = function(data)
 	if not isOwn(data) and not (ctx.Char.PrimaryPart and Feel.near(ctx.Char.PrimaryPart.Position, MOTION.PROC_DIST)) then return end
 	local ok, err = pcall(Feel.playAttack, ctx.Char, classId, slot, Feel.attackTime(classId, "Release", nil), data)
 	if not ok then warnThrottled("skill move failed: " .. tostring(err)) end
+	-- A23-116: the class x side's own Z art (SkillFx.luau; X comes with its stage)
+	local sfx = C and C.SkillFx
+	local at = asVec(data.Center) or asVec(data.From)
+	if slot == "Z" and type(sfx) == "table" and type(sfx.Z) == "function" and at and nearCamera(at) then
+		local okZ, errZ = pcall(sfx.Z, data, isOwn(data), {
+			Muzzle = function() return Feel.muzzle(ctx, nil) end,
+			After = function(seconds, fn) Feel.after(ctx, seconds, fn) end,
+		})
+		if not okZ then warnThrottled("skill art failed: " .. tostring(errZ)) end
+	end
 end
 
 handlers.Hurt = function(data)

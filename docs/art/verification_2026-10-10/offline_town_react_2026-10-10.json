@@ -1,5 +1,5 @@
 {
-  "checks": 22,
+  "checks": 25,
   "failed": 0,
   "static": [
     {
@@ -63,6 +63,21 @@
     },
     {
       "name": "never goes",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Otto speaks",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "only TownFolk speak",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no p.Npc",
       "applied": true,
       "caught": true
     },

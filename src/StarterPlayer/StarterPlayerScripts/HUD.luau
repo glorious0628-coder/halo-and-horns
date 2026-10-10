@@ -73,17 +73,18 @@ local L = {
 	PotionGap = 7.5, -- du between the HP and MP potion buttons (6 px at the PC UIScale 0.8)
 	Badge = { Halo = "LevelBadgeHalo", Horns = "LevelBadgeHorns", Neutral = "LevelBadgeArtisan" }, -- else LevelBadge
 	Glyph = { Warrior = "GlyphSword", Mage = "GlyphStaff", Archer = "GlyphBow" }, -- attack button (IconAttack fallback)
-	-- A23-40 icon tile row, left to right: the windows opened often (A23-40 정정: 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫).
+	-- A23-40 icon tile row, left to right (검수 10/10, A23-113 ③: in the order they open - 가방 · 지도 first, then 영웅 (Lv 2) ·
+	-- 스킬 (Lv 5) · 펫 · 순위, so an opened tile never moves).
 	-- Window = the Panels window the tile opens (the tile shows once it is registered; Alt = an older window it opens
 	-- until then), Map = the world map; Key = Keybinds action for the key badge; Keep = shown first when the row has
 	-- fewer slots than tiles (phones: the rest fold out of [메뉴], in front of its own squares)
 	Tiles = {
-		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
 		{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },
-		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
 		{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },
-		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 5 },
-		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 6 },
+		{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },
+		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
+		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 5 },
+		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 6 },
 	},
 	-- A23-40 정정 (user 2026-10-06 "메뉴는 오른쪽 위에, 누르면 옆으로 좌르륵"; 검수: 새 소식 · 이동 · 도움말 · 설정): the
 	-- squares [메뉴] folds out to its left, left to right. 직업 바꾸기 · 환생 · 오프닝 다시 보기 · 이름 숨기기 · 휴가 are
@@ -2745,13 +2746,18 @@ function L.BuildMenu(names)
 	local function add(def, row)
 		local copy = table.clone(def)
 		copy.Text = names[def.Id]
-		local b = tileButton(copy, function()
+		local b, lbl, icon = tileButton(copy, function()
 			if copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done
 			L.FoldTap(copy)
 		end)
 		b.Name = "Fold" .. def.Id
 		b.Parent = ui.fold
 		local entry = { Def = copy, Button = b, Row = row }
+		-- A23-113 ③: a row tile's fold copy (phones) locks like the tile itself (L.RefreshLocks)
+		if row and type(UIKit.TileLock) == "function" and Config.HudReveal.Tiles[def.Id] then
+			local ok, lock = pcall(UIKit.TileLock, b, icon, lbl)
+			if ok then entry.Lock = lock end
+		end
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
 		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
 		table.insert(ui.foldTiles, entry)
@@ -2897,6 +2903,10 @@ end
 
 -- a fold square: fold back, then open its window like a row tile
 function L.FoldTap(def)
+	if L.TileLocked(def.Id) then -- A23-113 ③: a locked square only wiggles (the fold stays open)
+		L.TileWiggle(def.Id)
+		return
+	end
 	L.SetFold(false)
 	L.TileTap(def)
 end
@@ -3064,6 +3074,9 @@ function L.RefreshSkillIcon()
 	if not rel then return end
 	local class = attr("ClassChosen", false) == true and getClass() or nil
 	local key = (class and not (class == "Archer" and getFaction() == "Neutral")) and ("Skill_" .. class .. "_Q") or nil
+	-- skills18 (10/10): the class's own Q icon per faction first (Skill_<Class>_Q_<Faction>)
+	local own = class and ("Skill_" .. class .. "_Q_" .. tostring(getFaction())) or nil
+	if own and UIKit.ArtId(own) then key = own end
 	if not (key and UIKit.ArtId(key)) then key = "Skill_Warrior_Q" end
 	if ui.releaseIconKey == key and ui.releaseIcon and ui.releaseIcon.Parent then return end
 	ui.releaseIconKey = key
@@ -5779,6 +5792,10 @@ function L.RefreshLocks()
 		end
 		if t.Lock and t.Lock.Locked ~= not open then pcall(t.Lock.Set, not open, Config.HudReveal.TileWord(id)) end
 	end
+	for _, f in ui.foldTiles or {} do -- the phones' fold copies follow their tile
+		local open = L.TileSeen[f.Def.Id] ~= false
+		if f.Lock and f.Lock.Locked ~= not open then pcall(f.Lock.Set, not open, Config.HudReveal.TileWord(f.Def.Id)) end
+	end
 end
 
 -- is this tile locked right now (no lock look = never locked)
@@ -5792,7 +5809,11 @@ end
 -- a locked tile's press: a quick small wiggle (nothing with reduced motion)
 function L.TileWiggle(id)
 	if UIKit.ReducedMotion() then return end
-	for _, t in ui.tiles or {} do
+	local list = table.clone(ui.tiles or {})
+	for _, f in ui.foldTiles or {} do
+		if f.Row then table.insert(list, f) end
+	end
+	for _, t in list do
 		if t.Def.Id == id and not t.Wiggling then
 			t.Wiggling = true
 			local btn = t.Button

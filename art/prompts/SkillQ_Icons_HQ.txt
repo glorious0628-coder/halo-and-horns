@@ -1,0 +1,9 @@
+[reference: style collage Skill_Archer_Q + Skill_Mage_Q + Skill_Mage_X, High x2 per skill]
+Use the attached image only as an art-style reference for a game skill icon: glossy cartoon sticker look, thick clean dark outline, one bold subject, bright saturated colors. Draw a NEW icon: <SUBJECT>, on a round badge backdrop <Halo: that fades from cream to sky blue with a thin polished gold rim | Horns: in deep plum purple with a thin polished crimson rim>. Centered, whole icon in frame on a plain flat medium gray background with wide margin, shadowless. No text, no letters, no numbers, no symbols, no faces, no light rays, no sunburst, no lens flare, no radiating lines.
+SUBJECTS
+HaloSlam: a silver sword stuck point-down into the ground with a flat gold ring around the blade and a small gold halo ring floating above the hilt
+CraterSmash: a wide heavy dark broadsword stuck in a round crater, a thick red-orange ring and a thin purple ring around it, two round ember dots and one small rock
+StarFall: a chubby rounded gold star with a short sparkle tail falling onto a small gold ring, a few tiny round star bits
+PurplePop: a cluster of big glossy purple bubbles popping up from a dark puddle, small pink-orange embers
+FeatherRain: several golden arrows with white feather fletching falling straight down side by side onto a soft gold circle, one white feather
+SparkShower: dark purple arrows raining straight down in two neat parallel lines from a small plum cloud onto the ground, a few orange sparks

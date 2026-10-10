@@ -230,6 +230,14 @@ function T.ClassHit(data, event)
 	return event
 end
 
+-- 검수 10/10: the killed monster kind's own death sound (Config.Audio.DeathByKind) once uploaded, else KillPop
+function T.DieOf(kind)
+	local ev = type(kind) == "string" and type(A.DeathByKind) == "table" and A.DeathByKind[kind] or nil
+	local snd = ev and SOUNDS[ev] or nil
+	if type(snd) == "table" and idOf(snd.File) then return ev end
+	return "KillPop"
+end
+
 local function warnThrottled(key, msg)
 	local now = os.clock()
 	if now - (S.WarnAt[key] or -math.huge) < 10 then return end
@@ -368,7 +376,12 @@ function Audio.Plan(kind, data, ctx)
 		local step = num(steps[math.min(combo, #steps)], 0)
 		local speed = math.min(num(T.Combo.Top, 1.6), num(T.Combo.Base, 0.8) * 2 ^ (step / 12))
 		local golden = data.Golden == true -- sound_spec GoldenKill: the GoldenSpot file, the coin 0.1 s later
-		add(out, "KillPop", 0)
+		local dead = type(data.Kind) == "string" and data.Kind or nil
+		if not dead and typeof(data.Pos) == "Vector3" and type(ctx.KindAt) == "function" then
+			local ok, k = pcall(ctx.KindAt, data.Pos)
+			dead = ok and k or nil
+		end
+		add(out, T.DieOf(dead), 0)
 		if golden then add(out, "GoldenKill", 0) end
 		add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed })
 		if MILESTONES[combo] then add(out, "ComboMilestone", 0.15) end
@@ -735,6 +748,13 @@ function Audio.AirTrack(zoneId)
 	return (type(id) == "string" and id ~= "") and id or nil
 end
 
+-- A23-105 (검수 10/10): a DayOnly town air (the Halo birds) is quiet at night, when the crickets come (pure)
+function Audio.AirMult(zoneId, phase)
+	local Z = type(A.ZoneAmbient) == "table" and A.ZoneAmbient or {}
+	if type(Z.DayOnly) == "table" and type(zoneId) == "string" and Z.DayOnly[zoneId] and phase == "Night" then return 0 end
+	return 1
+end
+
 -- my zone's air: a new loop starts at 0 in the Sfx group (MusicStep fades it in), the old one fades out. True = changed
 function Audio.SetZoneAir(zoneId)
 	local id = Audio.AirTrack(zoneId)
@@ -813,7 +833,8 @@ function Audio.MusicStep(dt)
 	local Z = type(A.ZoneAmbient) == "table" and A.ZoneAmbient or {}
 	local zv = num(Z.Volume, 0.25)
 	local zd = zv / math.max(0.05, num(Z.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
-	local air, target = MUSIC.Air, zv * sfxMult()
+	local phase = S.GameState and S.GameState:GetAttribute("DayPhase") or nil
+	local air, target = MUSIC.Air, zv * sfxMult() * Audio.AirMult(MUSIC.Zone, phase)
 	if air then air.Volume = air.Volume < target and math.min(target, air.Volume + zd) or math.max(target, air.Volume - zd) end
 	fadeOut(MUSIC.AirFading, zd)
 end

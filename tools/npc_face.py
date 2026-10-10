@@ -1,7 +1,7 @@
 """NPC face fix (이미지 생성 1, 2026-10-10, 검수: "얼굴이 흐림 — 머리를 따로 부품(자기 1024 텍스처)으로, 얼굴은 2D 앞면에서 투사로 다시 굽기").
 
   blender --background --factory-startup --python tools/npc_face.py -- <npc_LOD.glb> <front_2d.png> <bbox x0,y0,x1,y1,W,H> <out.glb> <render_dir>
-          [--neck 0.64] [--size 1024] [--front-lo 0.35] [--front-hi 0.75] [--mask <face_mask.png>] [--face-scale 3] [--plane-eps 0.02]
+          [--neck 0.64] [--size 1024] [--front-lo 0.35] [--front-hi 0.75] [--mask <face_mask.png>] [--face-scale 3] [--plane-eps 0.02] [--flatten-face 0.03]
 
 - The model (Z-up, front = -Y, as tools/npc_lod.sh writes it) is split at --neck x height: the faces above become <Name>_Head with
   their own UV (the Tripo islands packed again) and their own SIZE x SIZE colour texture; the rest stays <Name>_Body with the Tripo texture.
@@ -158,6 +158,28 @@ if opt.get("mask"):
         for li in poly.loop_indices:
             proj.data[li].color = (ok, ok, ok, 1.0)
     print("[face] face plane y %.4f, %d polys in front of it skip the projection" % (plane_y, n_front), flush=True)
+    # flatten the shallow Tripo relief on the face (eye bumps, a sunk mouth): it never lines up with the 2D eyes / mouth and showed
+    # as a "ghost eye" outline (검수 10/10). Vertices of the skin polys within --flatten-face x height of the plane go onto it; the
+    # nose and the hair locks stick out further and stay.
+    ff = opt.get("flatten-face", 0.03) * (mz1 - mz0)
+    if opt.get("plane-eps", 0.02) < 1 and ff > 0:
+        vs_ = set()
+        for i_ in skin_polys:
+            vs_.update(me.polygons[i_].vertices)
+        moved_ = 0
+        for vi in vs_:
+            v = me.vertices[vi]
+            if abs(v.co.y - plane_y) < ff:
+                v.co.y = plane_y
+                moved_ += 1
+        me.update()
+        bpy.ops.object.select_all(action="DESELECT")
+        head.select_set(True)
+        bpy.context.view_layer.objects.active = head
+        if me.has_custom_normals:
+            bpy.ops.mesh.customdata_custom_splitnormals_clear()
+        bpy.ops.object.shade_smooth_by_angle(angle=math.radians(40))
+        print("[face] face relief flattened: %d vertices onto the plane" % moved_, flush=True)
     print("[face] face islands scaled x%.1f: %d of %d islands" % (fs, len(groups), len({find(p_.index) for p_ in me.polygons})), flush=True)
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="SELECT")
@@ -235,6 +257,43 @@ scene.render.engine = "CYCLES"
 scene.cycles.device = "CPU"
 scene.cycles.samples = 1
 bpy.ops.object.bake(type="EMIT", margin=6)
+# skin warmth (검수 10/10: the baked face read paler / greyer than the 2D's warm peach): every skin-like texel of the head is pulled
+# toward the 2D face's skin colour (mean of the 2D skin inside the mask), softly by how skin-like it is
+if opt.get("mask"):
+    import colorsys
+    import numpy as np
+    fimg = t_front.image
+    fw, fh = fimg.size
+    fpx = np.empty(fw * fh * 4, dtype=np.float32)
+    fimg.pixels.foreach_get(fpx)
+    fpx = fpx.reshape(fh, fw, 4)[..., :3]
+    mk = mpx if mpx.shape[:2] == fpx.shape[:2] else None
+    rgb2 = fpx.reshape(-1, 3)
+    mx_, mn_ = rgb2.max(1), rgb2.min(1)
+    sat2 = np.where(mx_ > 0, (mx_ - mn_) / np.maximum(mx_, 1e-6), 0)
+    sel = (sat2 > 0.12) & (mx_ > 0.55)
+    if mk is not None:
+        sel &= mk.reshape(-1) > 0.9
+    skin2 = rgb2[sel].mean(0) if sel.sum() > 50 else None
+    tp = np.empty(size * size * 4, dtype=np.float32)
+    target.pixels.foreach_get(tp)
+    tp = tp.reshape(-1, 4)
+    rgb = tp[:, :3]
+    mx_, mn_ = rgb.max(1), rgb.min(1)
+    sat = np.where(mx_ > 0, (mx_ - mn_) / np.maximum(mx_, 1e-6), 0)
+    hue_ok = (rgb[:, 0] >= rgb[:, 1]) & (rgb[:, 1] >= rgb[:, 2])  # warm (red >= green >= blue): skin, not hair grey / blue / gold leaf
+    w = np.clip((sat - 0.1) / 0.08, 0, 1) * np.clip((0.62 - sat) / 0.1, 0, 1) * np.clip((mx_ - 0.5) / 0.1, 0, 1) * hue_ok
+    if skin2 is not None:  # only texels close to skin colour (brown / blond hair and gold are warm too)
+        w = w * np.clip(1 - np.linalg.norm(rgb - skin2[None, :], axis=1) / 0.22, 0, 1)
+    if skin2 is not None and w.sum() > 100:
+        cur = (rgb * w[:, None]).sum(0) / w.sum()
+        gain = np.clip(skin2 / np.maximum(cur, 1e-4), 0.85, 1.25)
+        rgb[:] = rgb * (1 + (gain - 1) * w[:, None])
+        # a little warmer than the 2D (+12 % saturation on skin): the game's neutral daylight reads skin paler than the 2D's studio light
+        lum = rgb.mean(1, keepdims=True)
+        rgb[:] = rgb + (rgb - lum) * 0.12 * w[:, None]
+        target.pixels.foreach_set(np.clip(tp, 0, 1).reshape(-1))
+        print("[face] skin warmth: 2D skin %s, head skin %s, gain %s" % (np.round(skin2, 3), np.round(cur, 3), np.round(gain, 3)), flush=True)
 target.filepath_raw = os.path.join(RDIR, NAME + "_head.png")
 target.file_format = "PNG"
 target.save()

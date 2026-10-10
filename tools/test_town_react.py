@@ -65,6 +65,7 @@ local function npc(name, pos, town)
 	function m:FindFirstChild(n) if n == "Head" then return self.Head end end
 	return m
 end
+local NPCS = {}
 local folk = { npc("Folk1", Vector3.new(10, 0, 0), "HaloTown"), npc("Folk2", Vector3.new(20, 0, 0), "HaloTown"),
 	npc("Folk3", Vector3.new(200, 0, 0), "HaloTown") }
 local B = { Out = 0.18 }
@@ -79,7 +80,11 @@ local LocalPlayer = { GetAttribute = function(_, n) return ATTR[n] end,
 	Character = { FindFirstChild = function(_, n) if n == "HumanoidRootPart" then return { Position = Vector3.new(0, 0, 0) } end end } }
 local function service(name)
 	if name == "Players" then return { LocalPlayer = LocalPlayer } end
-	if name == "CollectionService" then return { GetTagged = function(_, tag) return tag == R.Tag and folk or {} end } end
+	if name == "CollectionService" then return { GetTagged = function(_, tag)
+		if tag == R.Tag then return folk end
+		if tag == "NPC" then return NPCS end
+		return {}
+	end } end
 	return { WaitForChild = function() return { WaitForChild = function() return "Config" end } end }
 end
 local env = {
@@ -151,6 +156,25 @@ local back = folk
 folk = { npc("Far", Vector3.new(R.Range + 5, 0, 0), "HaloTown") }
 check(TR.Step(9000) == nil, "beyond Range: nothing", "")
 folk = back
+
+-- 개발 3: every TownNpcs body speaks (tag NPC + HHC_TownNpc), with its id as p.Npc; the decorative Otto never
+local bright = npc("BrightBody", Vector3.new(3, 0, 0), "HaloTown")
+bright.Attr.HHC_TownNpc = "Bright"
+local otto = npc("OttoBody", Vector3.new(1, 0, 0), "Crossroads")
+otto.Attr.HHC_TownNpc = "Otto"
+local noid = npc("Prop", Vector3.new(2, 0, 0), "HaloTown")
+NPCS = { otto, noid, bright }
+local seenNpc = nil
+local realLines = Config.TownReactLines
+Config.TownReactLines = function(p) seenNpc = p.Npc return realLines(p) end
+folk = {}
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+local who = TR.Step(20000)
+check(who == bright, "a story NPC body (tag NPC + HHC_TownNpc) speaks; Otto and an id-less NPC do not", who and who.Name)
+check(seenNpc == "Bright", "its id goes to TownReactLines as p.Npc", seenNpc)
+check(TR.Step(20000 + R.Show + 1) == nil, "Otto (decorative) never speaks", "")
+Config.TownReactLines = realLines
 print(("TOWN_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -166,6 +190,9 @@ MUTATIONS = [
      "S.Pick = { Init = true, Value = pick, At = now, Said = false }"),
     ("repeats its last line", "if l ~= last then table.insert(pool, l) end", "table.insert(pool, l)"),
     ("never goes", "if bubble.Parent then bubble:Destroy() end", ""),
+    ("Otto speaks", "if type(e) == \"table\" and e.Anvil == true and type(e.Id) == \"string\" then out[e.Id] = true end", ""),
+    ("only TownFolk speak", "for _, m in CollectionService:GetTagged(\"NPC\") do", "for _, m in {} do"),
+    ("no p.Npc", "Npc = best:GetAttribute(\"HHC_TownNpc\") })", "Npc = nil })"),
     ("bark-sized bubble", "pcall(B.Make, head, T.Lift, line, nil, T.Size)", "pcall(B.Make, head, T.Lift, line, nil, nil)"),
 ]
 STATIC = [

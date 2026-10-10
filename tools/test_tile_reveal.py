@@ -218,6 +218,11 @@ STATIC = [
     ("a locked tile's press only wiggles (TileTap returns first)",
      "function L.TileTap(def)\n\tif L.TileLocked(def.Id) then\n\t\tL.TileWiggle(def.Id) -- A23-113 ③: locked = a small wiggle only (no window, no notice)\n\t\treturn\n\tend"),
     ("the tile build makes UIKit.TileLock(btn, icon, label)", "local ok, lock = pcall(UIKit.TileLock, btn, icon, label)"),
+    ("the phones' fold copies lock too", "local ok, lock = pcall(UIKit.TileLock, b, icon, lbl)"),
+    ("a locked fold square only wiggles (the fold stays open)",
+     "function L.FoldTap(def)\n\tif L.TileLocked(def.Id) then -- A23-113 ③: a locked square only wiggles (the fold stays open)\n\t\tL.TileWiggle(def.Id)\n\t\treturn\n\tend"),
+    ("the row in the order the tiles open (Bag, Map, Hero, Skills, Pet, Ranking)",
+     '{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },\n\t\t{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },\n\t\t{ Id = "Character",'),
     ("Level / SkillSlots / EquippedPet re-check at once", 'for _, name in { "Level", "SkillSlots", "EquippedPet" } do\n\t\tLocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)'),
     ("the 1 s refresh still checks (PickTiles -> RefreshLocks)", "\tif L.PickTiles() then requestLayout() end\nend"),
 ]

@@ -2,6 +2,9 @@
 mutations: the real Config.luau loaded with engine doubles. Config.Skills flags off (ZEnabled / XEnabled / PvPZX),
 Unlock Q1 / Z5 / X8, 0.5 s gap, MP steal cap 20, 6 kits x 3 slots = 21 skills with the section 4 MP / CD / Mult / shape
 numbers and the section 5 English names (<= 14 letters) + descriptions, artisan kits with crafted looks only;
+A23-116: the 18 class skills named per side (Halo / Horns tables on Q, Z and X; 18 names all different, no shared word
+except an X pair, no word of a monster / pass / look / artisan name, the same numbers for both sides, the Halo words with
+no side, Skills.Text QZHalo / QZHorns);
 Config.SkillKit / SkillDef (faction table merged, cached) / SkillNumbers ("Costs N MP", A23-60); the SkillX key (X,
 pad ButtonR3, Flag Skills.XEnabled, right after SkillZ).
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
@@ -22,8 +25,7 @@ OUT = ROOT / "docs/art/verification_2026-10-07/offline_skill_kit_2026-10-07.json
 MUTATIONS = [
     ("Z unlocks at Lv10", "Unlock = { Q = 5, Z = 15, X = 25 }", "Unlock = { Q = 5, Z = 10, X = 25 }"),
     ("the Z flag starts on", "ZEnabled = false, XEnabled = false, PvPZX = false,", "ZEnabled = true, XEnabled = false, PvPZX = false,"),
-    ("Earth Cleave's band 20 long", 'pull monsters to you.",\n\t\t\t\tShape = "Line", Len = 22,',
-     'pull monsters to you.",\n\t\t\t\tShape = "Line", Len = 20,'),
+    ("the Warrior's Z band 20 long", 'Z = { Shape = "Line", Len = 22,', 'Z = { Shape = "Line", Len = 20,'),
     ("SkillDef ignores the faction", 'local fx = (factionId == "Halo" or factionId == "Horns") and base[factionId] or nil',
      "local fx = nil"),
     ("the artisan Mage keeps the Mage kit", '\t\tif class == "Mage" then return "Alchemist" end\n', "\n"),
@@ -32,6 +34,24 @@ MUTATIONS = [
     ("auto combat may Hop", "CD = 10,\n\t\t\t\tAuto = { Never = true },", "CD = 10,\n\t\t\t\tAuto = { Min = 1 },"),
     ("a name longer than 14 letters", 'NameEn = "Guardian Roar"', 'NameEn = "Guardian Roar of Light"'),
     ("Rage Roar steals no MP", "MPSteal = 5 } },\n\t\t},\n\t\tMage = {", "MPSteal = 0 } },\n\t\t},\n\t\tMage = {"),
+    # A23-116: the fourth item is a text the failing checks must name (the new checks, not only the names list)
+    ("two skills with one name", 'NameEn = "Star Fall"', 'NameEn = "Halo Slam"', "the 18 names are all different"),
+    ("a word shared by a Z and an X name", 'NameEn = "Fire Rake"', 'NameEn = "Fire Roar"', "no word is shared between the 18 names"),
+    ("a monster's word in a skill name", 'NameEn = "Purple Pop"', 'NameEn = "Bat Pop"', "monster, a game pass or a look"),
+    ("a look's word in a skill name", 'NameEn = "Comet Arrow"', 'NameEn = "Lava Arrow"', "monster, a game pass or a look"),
+    ("an artisan word in a skill name", 'NameEn = "Moon Shot"', 'NameEn = "Hook Shot"', "artisan guild's names"),
+    ("a side table changes a number", 'Horns = { NameEn = "Crater Smash"', 'Horns = { Mult = 7, NameEn = "Crater Smash"',
+     "holds only NameEn + DescEn"),
+    ("a base name left on a class skill", 'Z = { Shape = "Line", Range = 40, Len = 40,',
+     'Z = { NameEn = "Pierce Shot", Shape = "Line", Range = 40, Len = 40,', "no base NameEn"),
+    ("a Horns line that does not steal", 'Pull monsters in and steal HP."', 'Pull monsters in."', "fits the side"),
+    ("a Halo line that does not heal", 'Throw a glowing rope and pull monsters in. Heals you and friends.',
+     'Throw a glowing rope and pull monsters in.', "fits the side"),
+    ("no Halo words without a side", "elseif out.NameEn == nil then", "elseif false then", "no side yet (None / nil)"),
+    ("a skill name over 13 letters", 'NameEn = "Flappy Zigzag"', 'NameEn = "Flappy Zigzag Bat"', "18 names <= 13 letters"),
+    ("an old name comes back", 'NameEn = "Halo Slam"', 'NameEn = "Shockwave"', "the old names"),
+    ("the Horns side line says MP", 'QZHorns = "Horns: your hits steal HP"', 'QZHorns = "Horns: your hits steal MP"',
+     "section 5 short words"),
 ]
 
 
@@ -59,12 +79,14 @@ def main():
     print(result.stdout, end="")
     print(result.stderr, end="")
     rows = []
-    for name, old, new in MUTATIONS:
+    for name, old, new, *rest in MUTATIONS:
         applied = config.count(old) == 1
         caught, why = False, []
         if applied:
             m_ok, _, why, _ = run(config.replace(old, new), "_mut")
             caught = not m_ok
+            if rest:
+                caught = caught and any(rest[0] in line for line in why)
         rows.append({"mutation": name, "applied": applied, "caught": caught, "failures": why[:3]})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     passed = ok and all(r["applied"] and r["caught"] for r in rows)

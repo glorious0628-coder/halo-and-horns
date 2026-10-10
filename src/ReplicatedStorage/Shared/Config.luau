@@ -584,11 +584,15 @@ Config.Skills = {
 	Kits = { "Warrior", "Mage", "Archer", "Blacksmith", "Alchemist", "Tamer" },
 	Defs = {
 		Warrior = {
-			Q = { NameEn = "Shockwave", DescEn = "Slam the ground. Hit and push everything around you.",
-				Shape = "SelfCircle", Radius = 9, Mult = 6, MP = 20, CD = 3, Push = 2, Auto = { Min = 1, Radius = 9 } },
-			Z = { NameEn = "Earth Cleave", DescEn = "Crack the ground ahead and pull monsters to you.",
-				Shape = "Line", Len = 22, Width = 10, AimCone = 75, Mult = 7.5, MP = 25, CD = 6, Pull = 5,
-				Auto = { Min = 2, OrBig = true, NoPull = true } },
+			-- A23-116: Q and Z have a name and a line per side (the numbers are the same for both sides); a split slot seen
+			-- with no side yet shows the Halo words (Config.SkillDef), like X
+			Q = { Shape = "SelfCircle", Radius = 9, Mult = 6, MP = 20, CD = 3, Push = 2, Auto = { Min = 1, Radius = 9 },
+				Halo = { NameEn = "Halo Slam", DescEn = "Slam your sword down. A gold ring hits and heals you and friends." },
+				Horns = { NameEn = "Crater Smash", DescEn = "Smash the ground hard! Hit monsters around you and steal HP." } },
+			Z = { Shape = "Line", Len = 22, Width = 10, AimCone = 75, Mult = 7.5, MP = 25, CD = 6, Pull = 5,
+				Auto = { Min = 2, OrBig = true, NoPull = true },
+				Halo = { NameEn = "Glow Lasso", DescEn = "Throw a glowing rope and pull monsters in. Heals you and friends." },
+				Horns = { NameEn = "Fire Rake", DescEn = "Drag a fire crack ahead. Pull monsters in and steal HP." } },
 			X = { Shape = "Roar", Radius = 12, Mult = 2, TauntRadius = 16, TauntSec = 4, SelfGuard = 0.4, GuardSec = 6,
 				MP = 30, CD = 15, Auto = { Min = 3, Radius = 16, LowHP = 0.5, LowHPRadius = 10 },
 				Halo = { NameEn = "Guardian Roar", DescEn = "Shout! Monsters chase you. You and your friends take less damage.",
@@ -597,11 +601,13 @@ Config.Skills = {
 					MPSteal = 5 } },
 		},
 		Mage = {
-			Q = { NameEn = "Meteor", DescEn = "Drop a meteor on the closest monster.",
-				Shape = "TargetCircle", Range = 35, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 35 } },
-			Z = { NameEn = "Chain Bolt", DescEn = "A spark that jumps from monster to monster.",
-				Shape = "Chain", Range = 35, Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true,
-				Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 } },
+			Q = { Shape = "TargetCircle", Range = 35, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 35 },
+				Halo = { NameEn = "Star Fall", DescEn = "A big star falls on the closest monster. Friends near it get healed." },
+				Horns = { NameEn = "Purple Pop", DescEn = "Purple bubbles pop up under the closest monster. Steal HP." } },
+			Z = { Shape = "Chain", Range = 35, Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true,
+				Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 },
+				Halo = { NameEn = "Birdie Bounce", DescEn = "A gold bird hops from monster to monster. Heals you and friends." },
+				Horns = { NameEn = "Flappy Zigzag", DescEn = "A little bat zigzags from monster to monster. Steal HP." } },
 			X = { Shape = "Field", Range = 35, Ahead = 10, Radius = 12, Duration = 5, Tick = 1, TickMult = 1.5, Slow = 0.5,
 				MP = 30, CD = 14, Auto = { Min = 2, Radius = 12 },
 				Halo = { NameEn = "Sun Circle", DescEn = "A sunny circle. Monsters slow down. Friends inside are guarded.",
@@ -610,10 +616,12 @@ Config.Skills = {
 					MPStealTick = 2 } },
 		},
 		Archer = {
-			Q = { NameEn = "Arrow Rain", DescEn = "Arrows rain on the closest group.",
-				Shape = "TargetCircle", Range = 30, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 30 } },
-			Z = { NameEn = "Pierce Shot", DescEn = "One big arrow through a whole line.",
-				Shape = "Line", Range = 40, Len = 40, Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 } },
+			Q = { Shape = "TargetCircle", Range = 30, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 30 },
+				Halo = { NameEn = "Feather Rain", DescEn = "Gold arrows rain on the closest group. Friends there get healed." },
+				Horns = { NameEn = "Spark Shower", DescEn = "Shoot twice! Dark arrows rain on the closest group. Steal HP." } },
+			Z = { Shape = "Line", Range = 40, Len = 40, Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 },
+				Halo = { NameEn = "Comet Arrow", DescEn = "A giant gold arrow flies through a line. Heals you and friends." },
+				Horns = { NameEn = "Moon Shot", DescEn = "A dark moon arrow flies through a line. Steal HP." } },
 			X = { Shape = "Hop", Hop = 10, HopTime = 0.25, Radius = 7, Mult = 3, Push = 6, MP = 25, CD = 10,
 				Auto = { Never = true },
 				Halo = { NameEn = "Light Step", DescEn = "Hop back on the wind. Friends near you are guarded.",
@@ -657,6 +665,7 @@ Config.Skills = {
 		UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt", Guarded = "Guarded", MPGain = "+%d MP",
 		Cost = "Costs %d MP", Cooldown = "%s s cooldown", Ready = "Ready", NeedMP = "Need MP",
 		XHalo = "Halo: guards friends", XHorns = "Horns: steals MP", XArtisan = "Artisan: crafted look",
+			QZHalo = "Halo: your hits heal friends", QZHorns = "Horns: your hits steal HP",
 		ShapeLine = "Line %d", ShapeCircle = "Area %d", ShapeChain = "Jumps %d", ShapeField = "Field %d s", ShapeHop = "Hop %d",
 	},
 }
@@ -3589,8 +3598,8 @@ Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSi
 --   Merchant = a potion stall seller (tag PotionMerchant; on since main took game dev 2's #34: ShopService sells at every
 --   tagged seller); Anvil = Otto, 4 studs behind the Crossroads anvil, decorative (the prompt stays on the anvil).
 -- Halo Citadel spots (docs/design/halo_layout_plan_2026-10-10.json, A23-112 asymmetric layout: the plaza terrace is Y 20 at z
--- -524..-606, the fountain (8.18,-566) 16 x 16, the four shops each at its own angle (a shop is 22.8 x 14.3 studs, its front
--- = kit -Z turned by its yaw): Bright just south of the first plaza stairs (their foot, z -424), Sir Gleam beside the gate
+-- -524..-606, the fountain (34.55,-566) 16 x 16, the four shops each at its own angle (a shop is 22.8 x 14.3 studs, its front
+-- = kit -Z turned by its yaw): Bright at the foot of the first plaza stairs (z -424, on the grass right of them, not on them), Sir Gleam beside the gate
 -- road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
 -- face, Folk4 beside the fountain. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
 -- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
@@ -3605,20 +3614,20 @@ Config.TownNpcs = {
 	RetryDelay = 5, -- seconds between tries
 	MaxCoord = 3000,
 	List = {
-		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(8, 0, -424), Look = Vector3.new(8, 0, -380),
+		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -424), Look = Vector3.new(18, 0, -380),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
 		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(63, 0, -567.5), Look = Vector3.new(72.5, 0, -564.5), Y = 20,
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(61.1, 0, -568.6), Look = Vector3.new(72.07, 0, -565), Y = 20,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(-41.5, 0, -598.5), Look = Vector3.new(-51, 0, -594.5), Y = 20,
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(18, 0, -582.4), Look = Vector3.new(7.08, 0, -578), Y = 20,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-17, 0, -553), Look = Vector3.new(-27, 0, -550.5), Y = 20,
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(19.7, 0, -553.9), Look = Vector3.new(7.96, 0, -551), Y = 20,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(24, 0, -560), Look = Vector3.new(8, 0, -566), Y = 20,
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(46, 0, -556), Look = Vector3.new(34.55, 0, -566), Y = 20,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
 		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 20,
-			At = Vector3.new(44.5, 0, -594), Look = Vector3.new(34.5, 0, -595.5) },
+			At = Vector3.new(43.7, 0, -583), Look = Vector3.new(33.8, 0, -584.5) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -3741,13 +3750,23 @@ Config.Quests = {
 			Text = "Earn %s gold by hunting" },
 		{ Id = "Release", ShortName = "Skill hits", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
 			Text = "Hit monsters with skills %d times" },
-		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20,
+		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Join the Golden Goose tug %d times" },
-		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true,
+		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
-		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true,
+		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 12, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
 			Text = "Rob %d Knights of Light" },
+		-- A23-113 #8 (user "마감 전 넣자"; docs/design/player_reactions_research_2026-10-10.md §9): a daily that is not hunting: make one
+		-- good or naughty choice (a choice card, the King's finisher, a job board Kind / Sneaky job - every one of them is a deed of
+		-- the daily ledger, Deeds.Add; Deeds.Booked counts it). It is made only while one of those sources is on (a Board /
+		-- LostFound / KillCards switch in Config), else the slot is another kind.
+		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
+			Text = "Make a kind or sneaky choice" },
 	},
+	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
+	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
+	-- fits: unchanged). Lv1-9 (the meadow set of 3) is not touched.
+	NonHuntFrom = 10,
 	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
 	-- opens at Lv10) come from Newbie.Dailies instead of Templates[].DailyUnits. The "different template" rule picks one
 	-- row per Id, so the 3 slots are always 3 different goals (kill / skill / gold). Extras and Lv10+ dailies unchanged.
@@ -3792,6 +3811,7 @@ Config.Quests = {
 			{ Id = "Goose", Weight = 1, Targets = { 1 } }, -- the Golden Goose tug (Halo / Horns)
 			{ Id = "Hunt", Weight = 1, Targets = { 1 } }, -- PvP, Halo
 			{ Id = "Plunder", Weight = 1, Targets = { 1 } }, -- PvP, Horns
+			{ Id = "Choice", Weight = 2, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
 		},
 	},
 }
@@ -5119,6 +5139,10 @@ Config.Audio = {
 		HitArrowSoft = "rbxassetid://71567543920934",
 		HitArrowHeavy = "rbxassetid://111127770916206",
 		HitArrowCrit = "rbxassetid://83876322718434",
+		-- 검수 10/10: monster death sounds by kind (소리 15차 86cd4a69, slimes first)
+		DieSlime = "rbxassetid://105660948835844",
+		DieBigSlime = "rbxassetid://135159844685749",
+		DieFlowerSlime = "rbxassetid://108731319971001",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -5217,6 +5241,10 @@ Config.Audio = {
 		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		-- 검수 10/10: a monster kind's own death sound takes KillPop's place (Config.Audio.DeathByKind; same caps)
+		DieSlime = { File = "DieSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		DieBigSlime = { File = "DieBigSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
+		DieFlowerSlime = { File = "DieFlowerSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
@@ -5312,6 +5340,9 @@ Config.Audio = {
 	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
 	-- bare hands, the pet and a class not listed keep the material hits
 	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
+	-- 검수 10/10: my kill's sound by the monster kind (the Reward packet's Kind, else the monster at its Pos); a kind not
+	-- listed or not uploaded keeps KillPop (goblin, skeleton, pumpkin, ghost follow in their zone turns)
+	DeathByKind = { Slime = "DieSlime", BigSlime = "DieBigSlime", FlowerSlime = "DieFlowerSlime" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
@@ -5359,6 +5390,8 @@ Config.Audio.Music = {
 -- x the Sound effects setting, crossfading with the zone like the music (Fade s)
 Config.Audio.ZoneAmbient = {
 	Volume = 0.25, Fade = 1.5,
+	-- A23-105 (검수 10/10): the Halo birds only by day - at night they fade out and the crickets (Weather Night) carry it
+	DayOnly = { HaloTown = true },
 	Tracks = {
 		HaloTown = "rbxassetid://76688623617177", -- birds + a tiny wind chime
 		HornsTown = "rbxassetid://112972652651947", -- lava bubbling + campfire crackle
@@ -5410,33 +5443,35 @@ Config.QuickSlots = {
 -- a class alone without a side). Weapon = what the hand holds (CharacterVisuals proposal, game dev 3 checks); Hold =
 -- the standing pose WeaponPose.luau adds over Roblox's idle / walk while the weapon is out and no attack plays
 -- (degrees in joint space like Fx MOTION.CLIPS: +rx raises an arm forward / leans back, +rz swings an arm to the
--- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows)
+-- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows).
+-- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
+-- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
 	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 22, 0, 8 }, RightElbow = { 38, 0, 0 },
-		RightWrist = { -30, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 20, 0, 4 }, RightElbow = { 44, 0, 0 },
+		RightWrist = { -12, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
 	-- Berserker: the great sword rests on the right shoulder, a low stance
 	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 72, 0, 26 },
 		RightElbow = { 112, 0, 0 }, RightWrist = { -18, 0, 0 }, LeftShoulder = { 12, 0, -8 } } },
-	-- Blacksmith: the hammer on the right shoulder, the left hand on the hip
-	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 62, 0, 20 }, RightElbow = { 104, 0, 0 },
+	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
-	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 12, 0, 10 }, RightElbow = { 22, 0, 0 },
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -20, 0, 0 } } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
-		RightShoulder = { 32, 0, 6 }, RightElbow = { 26, 0, 0 }, RightWrist = { -36, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
+		RightShoulder = { 14, 0, 6 }, RightElbow = { 56, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 42, 0, 10 }, RightElbow = { 82, 0, 0 },
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 16, 0, 10 }, RightElbow = { 74, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } } },
-	-- Ranger: the long bow upright in the left hand at the side
-	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 20, 0, -10 }, LeftElbow = { 26, 0, 0 },
+	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
+	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },
-	-- Shadow Hunter: low and quiet, the short bow hanging down
+	-- Shadow Hunter: low and quiet, the short bow upright and a little tilted in front
 	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },
-		LeftShoulder = { 6, 0, -8 }, RightShoulder = { 10, 0, 6 } } },
+		LeftShoulder = { 30, 0, -10 }, LeftElbow = { 55, 0, 0 }, RightShoulder = { 10, 0, 6 } } },
 	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
 	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
 		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },
@@ -5700,6 +5735,25 @@ Config.UIArt = {
 		Skill_Archer_Z = { Id = "rbxassetid://128895673530336", Size = Vector2.new(512, 512) },
 		Skill_Archer_X = { Id = "rbxassetid://113854418875147", Size = Vector2.new(512, 512) },
 		Skill_Tamer_Q = { Id = "rbxassetid://120034309999138", Size = Vector2.new(512, 512) },
+		-- skills18 (10/10): each class's own skill icon per faction (이미지 생성 2); empty Id = the kit icon above
+		Skill_Warrior_Q_Halo = { Id = "rbxassetid://120532395379341", Size = Vector2.new(512, 512) },
+		Skill_Warrior_Q_Horns = { Id = "rbxassetid://111763129346678", Size = Vector2.new(512, 512) },
+		Skill_Mage_Q_Halo = { Id = "rbxassetid://92523085656561", Size = Vector2.new(512, 512) },
+		Skill_Mage_Q_Horns = { Id = "rbxassetid://81157543004771", Size = Vector2.new(512, 512) },
+		Skill_Archer_Q_Halo = { Id = "rbxassetid://92206547315755", Size = Vector2.new(512, 512) },
+		Skill_Archer_Q_Horns = { Id = "rbxassetid://103422334299041", Size = Vector2.new(512, 512) },
+		Skill_Warrior_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Warrior_Z_Horns = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Mage_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Mage_Z_Horns = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Archer_Z_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Archer_Z_Horns = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Warrior_X_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Warrior_X_Horns = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Mage_X_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Mage_X_Horns = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Archer_X_Halo = { Id = "", Size = Vector2.new(512, 512) },
+		Skill_Archer_X_Horns = { Id = "", Size = Vector2.new(512, 512) },
 		Skill_Tamer_Z = { Id = "rbxassetid://74796187578422", Size = Vector2.new(512, 512) },
 		Skill_Tamer_X = { Id = "rbxassetid://81030071007443", Size = Vector2.new(512, 512) },
 		Skill_Blacksmith_X = { Id = "rbxassetid://74870682122468", Size = Vector2.new(512, 512) },
@@ -5817,6 +5871,7 @@ Config.UIArt = {
 		-- (eyes at 20 %, feet at 92 %): drawn exactly on ClassPick*'s Portrait region, by the player's chosen gender.
 		FactionPickTitle = { Id = "rbxassetid://109240387368574", Size = Vector2.new(1024, 373), TextRect = { 0.148, 0.41, 0.704, 0.343 } }, -- HQ redraw 4ceaabf: the band sits a little higher
 		FactionPickHalo = { Id = "rbxassetid://78441813872022", Size = Vector2.new(624, 1024) },
+		FactionPickSoon = { Id = "rbxassetid://73776589039158", Size = Vector2.new(619, 1024) }, -- A23-114 locked Artisan Guild card (이미지 생성 2, 검수 pick B)
 		FactionPickHorns = { Id = "rbxassetid://92021424719072", Size = Vector2.new(624, 1024) },
 		ClassPickHalo = { Id = "rbxassetid://124189187259241", Size = Vector2.new(555, 1024) },
 		ClassPickHorns = { Id = "rbxassetid://71780267521296", Size = Vector2.new(555, 1024) },
@@ -5902,7 +5957,7 @@ Config.UIArt = {
 		-- the middle / bottom third left calm) and the two mascots beside the cards
 		FactionBgA = { Id = "rbxassetid://128364866807552", Size = Vector2.new(1536, 1024) },
 		FacMascotHaloA = { Id = "rbxassetid://118792983602547", Size = Vector2.new(612, 1024) }, -- C (hair, user pick 10/10; was 98817628227692)
-		FacMascotHornsA = { Id = "rbxassetid://91053337808874", Size = Vector2.new(675, 1024) },
+		FacMascotHornsA = { Id = "rbxassetid://106604703369405", Size = Vector2.new(680, 1024) }, -- D (bat wings, user pick 10/10; was 91053337808874)
 		-- Halo town shop signs (이미지 생성 2, 검수 OK 10/10; wall arm + chains + round plate, no words): the shop models' sign
 		-- SurfaceGui (메인 반영 1 / 이미지 생성 1). The potion sign only at Halo town's real potion merchant
 		HaloSignPotion = { Id = "rbxassetid://122788599616130", Size = Vector2.new(1024, 1024) },
@@ -6079,6 +6134,10 @@ Config.UIArt.MapTiles = {
 Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 	-- A23-57 redraw: the faction cards' Name ribbon (Title), Panel (Perks) and Button - no Desc / Motto strips; the class
 	-- card frames' Portrait window (the CLS_* picture fills it), Name, Body and Button
+	-- A23-114 locked Artisan card: name on the brass ribbon, "Coming soon" + "Crafting update" on the parchment (the dark oval
+	-- plate was too small for the second line at the 11 px floor, UiSandbox 10/10)
+	FactionPickSoon = { Title = { 0.25, 0.332, 0.5, 0.05 }, Soon = { 0.18, 0.47, 0.64, 0.09 }, Sub = { 0.2, 0.585, 0.6, 0.05 },
+		SubStyle = "ink" },
 	FactionPickHalo = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
 		Button = { 0.224, 0.859, 0.548, 0.061 } },
 	FactionPickHorns = { Aspect = 0.609, Title = { 0.2, 0.425, 0.6, 0.076 }, Perks = { 0.146, 0.551, 0.707, 0.266 },
@@ -7107,11 +7166,99 @@ Config.TownReact = {
 				Evil = { M3_4 = "Sold the dust back? Business is business!" },
 			},
 		},
+		-- A23-113 #6 (게임성 개발 3, 2026-10-10; the town people know my lean): the five Halo Citadel people say these in their OWN
+		-- voice instead of the shared lines above (Config.TownReactLines(p) with p.Npc = the body's attribute HHC_TownNpc = the
+		-- Config.TownNpcs entry id). Rank.Halo / Rank.Horns = one line per faction rank 1..5, Rank.Neutral = the guild; Lean = one
+		-- line per Config.MyWay.Names id. No entry for an id (or no line in a group) = the shared lines. Bright is she (A23-59).
+		Npc = {
+			Bright = { -- the town guide: warm and bubbly
+				Rank = {
+					Halo = { "Welcome, Squire! I'm Bright. Stay shiny!", "Knight! Your halo is glowing today!",
+						"Paladin! I told everyone you'd do it!", "A Saint! May I stand next to you?", "Archangel! I'm too happy to talk!" },
+					Horns = { "A Rascal in our town? Behave, okay?", "Raider! You may visit. Just don't grab!",
+						"Warlord! Please wipe your boots first.", "Dread Lord! Welcome! Please be gentle with the flowers.",
+						"Demon King! Hello! The tea is warm." },
+					Neutral = "A guild crafter! Our lamps need fixing!",
+				},
+				Lean = {
+					TrueKnight = "You always help. I tell everyone about you!",
+					RebelAngel = "A halo with a wink? I won't tell. Maybe.",
+					ProudRascal = "Trouble again? I'll count the cookies!",
+					SoftDevil = "A kind Horn? Come in, friend!",
+					BalanceWalker = "Kind today, sneaky tomorrow? I'll keep guessing!",
+				},
+			},
+			Gleam = { -- the town knight: polite, a little stiff, proud of his armor
+				Rank = {
+					Halo = { "Welcome, Squire. Stand tall!", "Knight! Your armor shines. Well done.", "Paladin! It is an honor.",
+						"A Saint! I must polish my armor.", "Archangel! Sir Gleam salutes you!" },
+					Horns = { "A Rascal! Halt. Hmm. Hello.", "Raider! Keep your hands to yourself.", "Warlord! I do not bow. Quite.",
+						"Dread Lord! I shall stay polite. Barely.", "Demon King! A knight stays calm. Gulp." },
+					Neutral = "A crafter! My armor needs a dent fixed.",
+				},
+				Lean = {
+					TrueKnight = "A true knight's heart. Well done!",
+					RebelAngel = "A halo with a wink? Not very knightly!",
+					ProudRascal = "Trouble follows you. I follow too.",
+					SoftDevil = "A gentle Horn? A knight respects that.",
+					BalanceWalker = "Light or dark? I can't tell today.",
+				},
+			},
+			Folk3 = { -- the baker granny: warm, always offering a bun
+				Rank = {
+					Halo = { "Welcome, dear Squire! Have a bun.", "Knight! Come in, the buns are warm!", "Paladin! A fresh loaf for you!",
+						"A Saint in my shop! Take two!", "Archangel! My best cake is yours!" },
+					Horns = { "A Rascal! Eyes off the cookies, dear.", "Raider! Pay for the buns, please!", "Warlord! One bun each. No more!",
+						"Dread Lord! Even you want a muffin?", "Demon King! Sit. Eat. Be nice." },
+					Neutral = "A crafter! Can you fix my oven?",
+				},
+				Lean = {
+					TrueKnight = "Such a kind child. Here, a bun!",
+					RebelAngel = "A halo with a grin? Eat your crust.",
+					ProudRascal = "Trouble again? Sit and eat first.",
+					SoftDevil = "A nice Horn? Take extra jam!",
+					BalanceWalker = "Kind or naughty? Both like cake!",
+				},
+			},
+			Folk1 = { -- the juice man: jolly, fresh-squeezed puns
+				Rank = {
+					Halo = { "Squire! Fresh juice for the new face!", "Knight! Orange or berry?", "Paladin! Squeezed this morning, just for you!",
+						"A Saint! This one is on the house!", "Archangel! Best juice, best day!" },
+					Horns = { "A Rascal! No pouring it on heads!", "Raider! Pay first, then sip!", "Warlord! Easy on the cups, please!",
+						"Dread Lord! Berry juice looks great on you!", "Demon King! One juice, extra sweet!" },
+					Neutral = "A crafter! My juicer squeaks. Help?",
+				},
+				Lean = {
+					TrueKnight = "Always helping! Have a free sip!",
+					RebelAngel = "A halo and a grin? Fun mix!",
+					ProudRascal = "Trouble again? Juice first!",
+					SoftDevil = "A sweet devil! Mango for you!",
+					BalanceWalker = "Kind or sneaky? Mixed juice for you!",
+				},
+			},
+			PotionHalo = { -- the Halo potion seller: shiny bottles, careful with them
+				Rank = {
+					Halo = { "Welcome, Squire! Bottles are cheap today.", "Knight! Stay healthy out there!", "Paladin! You almost never need me!",
+						"A Saint! Even you drink water, right?", "Archangel! Please don't sneeze on my bottles!" },
+					Horns = { "A Rascal! No tasting the blue one!", "Raider! Pay for each bottle, please!", "Warlord! Don't squeeze my bottles!",
+						"Dread Lord! Red is for HP. Be gentle.", "Demon King! One potion, one coin. Fair?" },
+					Neutral = "A crafter! Want to swap recipes?",
+				},
+				Lean = {
+					TrueKnight = "A kind one! Take a sip of luck!",
+					RebelAngel = "A halo that winks? Hmm!",
+					ProudRascal = "Trouble again? Careful with the glass!",
+					SoftDevil = "A nice Horn! Rare, like my gold bottle.",
+					BalanceWalker = "Kind, sneaky, kind… keep it up!",
+				},
+			},
+		},
 	},
 }
 
 -- A23-64 ①: what one town person may say to the local player now (game dev 1's TownReact). p = { Faction, Honor, Infamy,
--- MyWay (the player attribute), TownPick (the player attribute), Town (the town person's Config.Zones id) }. Returns the
+-- MyWay (the player attribute), TownPick (the player attribute), Town (the town person's Config.Zones id), Npc (A23-113: the
+-- body's attribute HHC_TownNpc = its Config.TownNpcs entry id; the five Halo people have lines of their own, Text.Npc) }. Returns the
 -- lines to pick from (rank + lean + the town pick; empty = stay quiet) and the town pick's own line (nil = none) so a new
 -- pick can be said first. The town pick is said only in the player's own town (Town == Config.HomeZoneId(Faction)) and
 -- only to its quest's factions (StoryQuests.Defs[id].Factions; no Factions = everyone).
@@ -7123,13 +7270,32 @@ function Config.TownReactLines(p)
 	local f = p.Faction
 	if f ~= "Halo" and f ~= "Horns" and f ~= "Neutral" then return out, nil end
 	local _, rank = Config.GetTitle(f, tonumber(p.Honor) or 0, tonumber(p.Infamy) or 0)
-	local byRank = type(T.Rank) == "table" and T.Rank[f] or nil
-	if type(byRank) == "table" and #byRank > 0 then
-		for _, line in byRank[math.clamp(rank, 1, #byRank)] or {} do table.insert(out, line) end
+	-- A23-113 #6: a town person with lines of his / her own (T.Npc[p.Npc]: the five Halo Citadel people) says that one line of a
+	-- group instead of the shared ones; a group without an own line falls back to the shared lines
+	local own = type(p.Npc) == "string" and type(T.Npc) == "table" and type(T.Npc[p.Npc]) == "table" and T.Npc[p.Npc] or nil
+	local ownRank = own and type(own.Rank) == "table" and own.Rank[f] or nil
+	local ownLine = nil
+	if type(ownRank) == "string" then
+		ownLine = ownRank
+	elseif type(ownRank) == "table" and #ownRank > 0 then
+		ownLine = ownRank[math.clamp(rank, 1, #ownRank)]
+	end
+	if type(ownLine) == "string" then
+		table.insert(out, ownLine)
+	else
+		local byRank = type(T.Rank) == "table" and T.Rank[f] or nil
+		if type(byRank) == "table" and #byRank > 0 then
+			for _, line in byRank[math.clamp(rank, 1, #byRank)] or {} do table.insert(out, line) end
+		end
 	end
 	for id, name in type(Config.MyWay) == "table" and Config.MyWay.Names or {} do
-		if name == p.MyWay and type(T.Lean) == "table" then
-			for _, line in T.Lean[id] or {} do table.insert(out, line) end
+		if name == p.MyWay then
+			local ownLean = own and type(own.Lean) == "table" and own.Lean[id] or nil
+			if type(ownLean) == "string" then
+				table.insert(out, ownLean)
+			elseif type(T.Lean) == "table" then
+				for _, line in T.Lean[id] or {} do table.insert(out, line) end
+			end
 		end
 	end
 	local id, side = string.match(type(p.TownPick) == "string" and p.TownPick or "", "^([%w_]+):(%a+)$")
@@ -7205,6 +7371,24 @@ Config.RateLimits.CandyTrade = 1
 ----------------------------------------------------------------- A23-81 quest window book (게임성 개발 3, 2026-10-08)
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
+-- 검수 10/10 (조사 '피할 것 6'): what my drop rows are multiplied by now (LootService: the bully / outlaw penalty x the
+-- weekly top 3 reward; never the jackpot rule), with short reasons. s = { BullyStacks, Outlaw, RankReward } (player
+-- attributes). x1 = no line in the bag's 'What Monsters Drop'. Pure
+function Config.DropsNow(s)
+	s = type(s) == "table" and s or {}
+	local mult, why = 1, {}
+	local pen = type(Config.Bully) == "table" and Config.Bully.Penalty or nil
+	if type(pen) == "table" and ((tonumber(s.BullyStacks) or 0) >= 1 or s.Outlaw == true) then
+		mult *= tonumber(pen.DropMult) or 1
+		table.insert(why, s.Outlaw == true and "Outlaw" or "Bully")
+	end
+	if type(s.RankReward) == "string" and s.RankReward ~= "" and type(Config.Ranking) == "table" then
+		mult *= tonumber(Config.Ranking.RewardMult) or 1
+		table.insert(why, "Top 3 this week")
+	end
+	return mult, why
+end
+
 Config.QuestBook = {
 	DoneMax = 80, -- every main (19) + every sub (~45) of a finished save still fits (검수 2026-10-08; 60 -> 80 with the daily intro, A23-104)
 	AvailableMax = 10,

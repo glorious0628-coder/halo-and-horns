@@ -5,6 +5,9 @@
 -- in my own town, my last town pick): a new TownPick is said first, once, while it is newer than PickFirst s; after that
 -- the lines are picked at random, never the same one twice in a row for one person. No judging, no lessons (the lines
 -- are game dev 2 / 3's table); no sound; the round code bubble of MonsterLabels (B.Make) sized for a sentence.
+-- 개발 3 (2026-10-10): every TownNpcs body speaks - a Model tagged "NPC" with the attribute HHC_TownNpc (Bright, Gleam, the
+-- folk, the potion sellers; not a decorative one: Config.TownNpcs.List Anvil, Otto) - and its id goes to TownReactLines as
+-- p.Npc (its own voice lines, else the shared ones). TownFolk-tagged models without the attribute still speak.
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -29,6 +32,38 @@ end
 
 local function attr(name)
 	return LocalPlayer:GetAttribute(name)
+end
+
+-- the TownNpcs ids that never speak (decorative: Config.TownNpcs.List Anvil)
+function TownReact.Quiet()
+	local out = {}
+	local list = type(Config.TownNpcs) == "table" and Config.TownNpcs.List or nil
+	for _, e in type(list) == "table" and list or {} do
+		if type(e) == "table" and e.Anvil == true and type(e.Id) == "string" then out[e.Id] = true end
+	end
+	return out
+end
+
+-- every model that may speak: TownNpcs bodies (tag NPC + HHC_TownNpc, not quiet) and TownFolk-tagged models
+function TownReact.Speakers()
+	local out, seen = {}, {}
+	local quiet = S.Quiet or TownReact.Quiet()
+	S.Quiet = quiet
+	for _, m in CollectionService:GetTagged("NPC") do
+		local id = m:GetAttribute("HHC_TownNpc")
+		if type(id) == "string" and id ~= "" and not quiet[id] and not seen[m] then
+			seen[m] = true
+			table.insert(out, m)
+		end
+	end
+	for _, m in CollectionService:GetTagged(R.Tag or "TownFolk") do
+		local id = m:GetAttribute("HHC_TownNpc")
+		if not seen[m] and not (type(id) == "string" and quiet[id]) then
+			seen[m] = true
+			table.insert(out, m)
+		end
+	end
+	return out
 end
 
 -- the town person's town (its attribute Town, else the zone it stands in)
@@ -82,7 +117,7 @@ function TownReact.Step(now)
 		S.Pick = { Init = true, Value = pick, At = now, Said = false } -- a new pick is said first
 	end
 	local best, bestD = nil, num(R.Range, 30)
-	for _, npc in CollectionService:GetTagged(R.Tag or "TownFolk") do
+	for _, npc in TownReact.Speakers() do
 		if npc:IsA("Model") and npc:IsDescendantOf(workspace) and now >= (S.NextAt[npc] or 0) then
 			local ok, pos = pcall(function() return npc:GetPivot().Position end)
 			local d = ok and (pos - root.Position).Magnitude or math.huge
@@ -91,7 +126,7 @@ function TownReact.Step(now)
 	end
 	if not best then return nil end
 	local lines, pickLine = Config.TownReactLines({ Faction = attr("Faction"), Honor = attr("Honor"), Infamy = attr("Infamy"),
-		MyWay = attr("MyWay"), TownPick = pick, Town = TownReact.TownOf(best) })
+		MyWay = attr("MyWay"), TownPick = pick, Town = TownReact.TownOf(best), Npc = best:GetAttribute("HHC_TownNpc") })
 	local fresh = not S.Pick.Said and now - S.Pick.At <= num(R.PickFirst, 600)
 	local line = TownReact.Choose(lines, pickLine, S.Last[best], fresh, function(n) return math.random(1, n) end)
 	S.NextAt[best] = now + num(R.Every, 30)

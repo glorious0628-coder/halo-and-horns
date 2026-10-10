@@ -422,6 +422,24 @@ MUTATIONS = [
     ("a Neutral save gets the Halo / Horns subs", C,
      'Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War", Factions = { Halo = true, Horns = true },',
      'Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War",'),
+    # A23-113 #6: the five Halo people's own reaction lines
+    ("own lines: Npc never read", C, 'local own = type(p.Npc) == "string" and', 'local own = false and type(p.Npc) == "string" and'),
+    ("own lines: the shared rank lines are mixed in", C,
+     "\tif type(ownLine) == \"string\" then\n\t\ttable.insert(out, ownLine)\n\telse\n\t\tlocal byRank",
+     "\tif type(ownLine) == \"string\" then\n\t\ttable.insert(out, ownLine)\n\tend\n\tdo\n\t\tlocal byRank"),
+    ("own lines: the own rank line is never used", C, "\tif type(ownLine) == \"string\" then\n\t\ttable.insert(out, ownLine)\n", "\tif false then\n\t\ttable.insert(out, ownLine)\n"),
+    ("own lines: the own lean line is never used", C, "\t\t\tif type(ownLean) == \"string\" then\n", "\t\t\tif false then\n"),
+    ("own lines: the lean falls back never", C, "\t\t\telseif type(T.Lean) == \"table\" then\n\t\t\t\tfor _, line in T.Lean[id] or {} do table.insert(out, line) end\n", "\t\t\telse\n"),
+    ("own lines: the rank index ignores the rank", C, "ownLine = ownRank[math.clamp(rank, 1, #ownRank)]", "ownLine = ownRank[1]"),
+    ("own lines: Gleam is not a town person", C, "\t\t\tGleam = { -- the town knight", "\t\t\tGleam_ = { -- the town knight"),
+    ("own lines: a Bright line is too long", C, "\"Archangel! I'm too happy to talk!\"",
+     "\"Archangel! I'm so happy that I truly cannot say one more word to you today!\""),
+    ("own lines: Bright says he", C, "\"Knight! Your halo is glowing today!\"", "\"Knight! He is glowing today!\""),
+    ("own lines: a line is a shared one", C, "\"Welcome, Squire! I'm Bright. Stay shiny!\"", "\"Welcome, little Squire!\""),
+    ("own lines: the baker has no guild line", C, "\t\t\t\t\tNeutral = \"A crafter! Can you fix my oven?\",\n", ""),
+    ("own lines: the juice man has no lean line", C, "\t\t\t\t\tBalanceWalker = \"Kind or sneaky? Mixed juice for you!\",\n", ""),
+    ("own lines: a lean line of no My Way name", C, "\t\t\t\t\tSoftDevil = \"A sweet devil! Mango for you!\",", "\t\t\t\t\tSoftDevil = \"A sweet devil! Mango for you!\",\n\t\t\t\t\tNobody = \"Who?\","),
+    ("own lines: a scary word", C, "\"Warlord! Don't squeeze my bottles!\"", "\"Warlord! Don't scary bottles!\""),
 ]
 
 

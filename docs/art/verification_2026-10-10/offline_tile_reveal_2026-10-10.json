@@ -11,6 +11,18 @@
       "ok": true
     },
     {
+      "check": "the phones' fold copies lock too",
+      "ok": true
+    },
+    {
+      "check": "a locked fold square only wiggles (the fold stays open)",
+      "ok": true
+    },
+    {
+      "check": "the row in the order the tiles open (Bag, Map, Hero, Skills, Pet, Ranking)",
+      "ok": true
+    },
+    {
       "check": "Level / SkillSlots / EquippedPet re-check at once",
       "ok": true
     },

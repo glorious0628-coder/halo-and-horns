@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 436,
-  "namedChecks": 351,
+  "checks": 447,
+  "namedChecks": 362,
   "failing": [],
   "mutations": {
-    "total": 164,
-    "caught": 164,
+    "total": 167,
+    "caught": 167,
     "results": [
       {
         "mutation": "boss layer: never put back on the beat",
@@ -285,8 +285,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "sound_gaps 10/10 :: a dusk with no phase before it (a fresh server value) is quiet",
           "sound_gaps 10/10 :: dusk: the lamps come on = LanternOn",
           "sound_gaps 10/10 :: night after dusk is quiet"
@@ -680,8 +678,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "swing :: Archer: 2+ targets = a second arrow 0.068 s later at 1.10x and 0.85 volume (§4-2 5)",
           "swing :: Archer: one SwingArrow when the arrow leaves (sound_gaps A1)"
         ]
@@ -815,6 +811,35 @@
         ]
       },
       {
+        "mutation": "no death by kind",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "death by kind :: a Slime Prince kill = DieBigSlime",
+          "death by kind :: a slime kill (the packet's Kind) = DieSlime, not KillPop",
+          "death by kind :: no Kind: the monster at Pos (a slime at x 10)"
+        ]
+      },
+      {
+        "mutation": "death sound before the upload",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "death by kind :: not uploaded yet: KillPop"
+        ]
+      },
+      {
+        "mutation": "no kind from the place",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "death by kind :: no Kind: the monster at Pos (a slime at x 10)"
+        ]
+      },
+      {
         "mutation": "crit on any target",
         "applied": true,
         "caught": true,
@@ -860,8 +885,6 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "runtime :: a king already there at the join is quiet",
-          "runtime :: the golden goose appears -> GooseArrive (sound_gaps A7)",
           "skills :: the cast sounds at the launch, not at the press"
         ]
       },
@@ -988,11 +1011,11 @@
         "crashed": false,
         "newFailingChecks": [
           "class hits :: a class hit not uploaded yet: the material hit",
+          "death by kind :: not uploaded yet: KillPop",
           "rewards :: a weapon bought / equipped = GoldPickup until Equip is uploaded",
           "runtime :: an event with an id plays",
           "runtime :: an event without an id never plays",
-          "runtime :: volume = the table's Volume",
-          "sound_gaps 10/10 :: an own sound not uploaded = WindowOpen"
+          "runtime :: volume = the table's Volume"
         ]
       },
       {
@@ -1697,9 +1720,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "dbd595e9ccd22fbf127be3570e197dd0098ac2044846859f3cc1f574be375a77",
-    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "306263a40c9c855d6c3332560abb44409f12ae34010851eb582e8a948ad10572",
-    "tools/fixtures/audio_offline.luau": "54bc38d484ae41db681f1afe3e5a53e38f9135c94ae0655a59922ad62507ddc2"
+    "src/ReplicatedStorage/Shared/Config.luau": "34fd758377b7b9b86bb1b2e4a064d089bad3cadee8ec248259f35ed2516a6c8b",
+    "src/StarterPlayer/StarterPlayerScripts/Audio.luau": "3d629588f427b6ea57898086438581dabff205a1150b5080d058e06ab20b0c6b",
+    "tools/fixtures/audio_offline.luau": "5fbf193423867037f2728fab520c8c7e0382a04b9d010dd733f828e2011b2d35"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
