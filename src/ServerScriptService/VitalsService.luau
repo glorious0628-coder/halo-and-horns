@@ -53,6 +53,18 @@ function VitalsService.AddMana(player, amount)
 	return st.Mana - before
 end
 
+-- A23-110: "Drink a potion from your quick slot" must never dead-end: after the King's hop the player is healthy, and a drink at
+-- full HP / MP is refused. While that quest step waits for it, a drink at full counts for the step and keeps the potion.
+local function practiceSip(player, kind)
+	local story = S.StoryQuestService
+	if type(story) ~= "table" or type(story.Wants) ~= "function" or type(story.Event) ~= "function" then return false end
+	local okWants, wants = pcall(story.Wants, player, "PotionUsed")
+	if not okWants or wants ~= true then return false end
+	pcall(story.Event, player, "PotionUsed", { Kind = kind, Practice = true })
+	Net.Notify(player, Config.Text.PotionPractice, "good")
+	return true
+end
+
 local function usePotion(player, kind)
 	if kind ~= "HP" and kind ~= "MP" then return end
 	if not ready(player) or not Util.RateLimit(player, "UsePotion" .. kind, Config.RateLimits.UsePotion) then return end
@@ -77,6 +89,7 @@ local function usePotion(player, kind)
 	if not humanoid or humanoid.Health <= 0 then return end
 	if kind == "HP" then
 		if humanoid.Health >= humanoid.MaxHealth then
+			if practiceSip(player, kind) then return end
 			Net.Notify(player, "HP is full.", "info")
 			return
 		end
@@ -85,6 +98,7 @@ local function usePotion(player, kind)
 		if humanoid.Health <= before then return end -- a failed/no-op heal consumes neither stock nor the deadline
 	else
 		if st.Mana >= TUNE.MaxMana then
+			if practiceSip(player, kind) then return end
 			Net.Notify(player, "MP is full.", "info")
 			return
 		end
@@ -98,6 +112,12 @@ local function usePotion(player, kind)
 	publish(player, st)
 	S.PlayerService.MarkActive(player)
 	Net.Notify(player, "Used a " .. kind .. " potion!", "good")
+	-- A23-110: the King's Hop quest waits for the first drink (only a real use gets here)
+	local story = S.StoryQuestService
+	if type(story) == "table" and type(story.Event) == "function" then
+		local okEvent, errEvent = pcall(story.Event, player, "PotionUsed", { Kind = kind })
+		if not okEvent then Util.Warn("VitalsService", "PotionUsed event: " .. tostring(errEvent)) end
+	end
 end
 
 -- Studio-only resource setup, invoked through Main's existing DebugCommand BindableFunction.

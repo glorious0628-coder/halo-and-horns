@@ -70,6 +70,18 @@
     {
       "check": "the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
       "ok": true
+    },
+    {
+      "check": "검수 10/10 API review ①: the phone's claim line counts only the rows the block shows (entries)",
+      "ok": true
+    },
+    {
+      "check": "검수 10/10 API review ③: the tracker keeps room for the head line only while it shows",
+      "ok": true
+    },
+    {
+      "check": "A23-104: the payload's DailyLocked is kept for the quest window (HUD.DailyLocked)",
+      "ok": true
     }
   ],
   "mutations": {
@@ -304,7 +316,7 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b"
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "04b7d295956ae6f0479140d901d9cf9a83753e739949f5b8bac98d32dd6e2b02"
   },
   "studioCalls": 0,
   "limitations": "Extracted functions + the code's text: how three lines sit under the minimap on PC and phone is a Studio photo (메인 반영) and the quest rect's size is 이미지 개발's HudLayout."

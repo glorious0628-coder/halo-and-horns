@@ -46,12 +46,17 @@ local ITEMS = {
 	-- king pill ("Pumpkin King is here! 4:54 left") was squeezed to 150 x 16 px with its words spilling out
 	event = { "TC", { 496, 88, 288, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
-	portrait = { "BC", { 387, 586, 50, 50 }, { 225, 248, 45, 45 } },
-	power_line = { "BC", { 445, 578, 449, 16 }, { 275, 250, 140, 14 } },
-	hp_bar = { "BC", { 445, 598, 220, 20 }, { 275, 267, 68, 12 } },
-	mp_bar = { "BC", { 673, 598, 221, 20 }, { 347, 267, 68, 12 } },
-	xp_bar = { "BC", { 445, 622, 449, 8 }, { 275, 282, 140, 5 } },
-	tiles = { "BC", { 445, 640, 327, 52 }, { 225, 296, 190, 45 } },
+	-- A23-109 (user 10/10 "네모를 조금 더 키우고, 물약은 빼야겠어 … 1·2·3은 가로로" + "MP 칸 밑에 있으면 안 되고 옆에"): on PCs
+	-- the group sits 8 px higher, the six tiles are 60 px (were 52) with their names under the icons, the bars as wide as
+	-- the tile row right above it, and the quick slots 1 · 2 · 3 (keys, 개발 1) right of the bars' end (PC_FLOOR / QUICK)
+	portrait = { "BC", { 424, 578, 50, 50 }, { 225, 248, 45, 45 } },
+	power_line = { "BC", { 482, 570, 375, 16 }, { 275, 250, 140, 14 } },
+	hp_bar = { "BC", { 482, 590, 184, 20 }, { 275, 267, 68, 12 } },
+	mp_bar = { "BC", { 673, 590, 184, 20 }, { 347, 267, 68, 12 } },
+	xp_bar = { "BC", { 482, 614, 375, 8 }, { 275, 282, 140, 5 } },
+	tiles = { "BC", { 482, 634, 375, 60 }, { 225, 296, 190, 45 } },
+	-- PC only (phones keep the potion ring until the phone round, A23-98): three squares, one row with the tiles
+	quick = { "BC", { 873, 642, 166, 52 }, { 225, 296, 1, 1 } },
 	-- A23-40 정정 + 보강: [메뉴] in the top bar's right end (TB anchor; size and position come from TOPBAR, the rects are
 	-- the 1280x720 / 749x361 results). out.fold = its fold-out room
 	menu = { "TB", { 1224, 12, 44, 44 }, { 692, 12, 45, 45 } },
@@ -67,8 +72,9 @@ local ITEMS = {
 	-- jump button), 자동 above the jump button, the grudge ghost above the ring's left end (A23-49: three skills Q · Z ·
 	-- X, docs/design/skill_kit_beta_2026-10-06.md). The two potions are round buttons of their own (out.potions = the
 	-- box around both with Cells, for VitalsUI.PlacePotions)
-	potion_hp = { "BC", { 784, 640, 52, 52 }, { 500, 305, 46, 46 }, "BR" },
-	potion_mp = { "BC", { 842, 640, 52, 52 }, { 496, 254, 46, 46 }, "BR" },
+	-- PCs (A23-109): the pair are quick slots 1 · 2 (their rects = quick.Cells[1] / [2]); phones: the thumb ring
+	potion_hp = { "BC", { 873, 642, 52, 52 }, { 500, 305, 46, 46 }, "BR" },
+	potion_mp = { "BC", { 930, 642, 52, 52 }, { 496, 254, 46, 46 }, "BR" },
 	ghost = { "BR", { 1050, 630, 61, 61 }, { 475, 161, 50, 50 } },
 	q = { "BR", { 1199, 392, 66, 66 }, { 523, 204, 54, 54 } },
 	z = { "BR", { 1199, 466, 66, 66 }, { 580, 188, 54, 54 } },
@@ -107,7 +113,12 @@ local TILE_GAP = 3 -- real px: the least gap between two tiles of the icon row (
 local STICK = { X = 0.3, Y = 0.54, Mid = 0.2, Room = 0.4 }
 -- the bottom-centre group (face, power line, bars, XP, tiles; PCs: the potions right of the tiles) and the corner cluster
 -- it must stay clear of (touch: the thumb ring, potions included)
-local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles", "potion_hp", "potion_mp" }
+local BC_GROUP = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles", "potion_hp", "potion_mp" } -- touch
+local BC_GROUP_PC = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles", "quick" } -- A23-109: no potions
+local BC_BLOCK_PC = { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar", "tiles" } -- centred (the quick slots ride on)
+-- A23-109 quick slots 1 · 2 · 3 (PC): N squares, Gap real px apart, Sep real px right of the tile row
+local QUICK = { N = 3, Gap = 5, Sep = 16 }
+HudLayout.Quick = QUICK
 local CLUSTER = { "ghost", "q", "z", "x", "auto", "attack" }
 local RING = { "potion_hp", "potion_mp", "ghost", "q", "z", "x", "auto", "attack" }
 local RING_BUTTONS = { "potion_hp", "potion_mp", "q", "z", "x" } -- the buttons on the ring itself (lower left -> upper right)
@@ -118,7 +129,9 @@ local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide wh
 -- HP / MP bars' height ("Get your first wea...", bar numbers ~6 px) and the notify column's width: as wide as on the
 -- 1280x720 sheet (a two-line notice kept one cut line, "First mission: Free the...": its words never go under 11 real px,
 -- Config.UI.MinTextSize); the centre column's room still clamps it on the narrowest windows
-local PC_FLOOR = { QuestW = 250, Bar = 14, NotifyW = 288 }
+-- Tile / Quick (A23-109): real px floors of a PC tile (its name always fits under the icon: the 10/08 small-window rule
+-- hid the names under 40 px, user 10/10 "왜 네모 안에 글씨 사라졌냐") and of a quick slot; a taller row grows upwards
+local PC_FLOOR = { QuestW = 250, Bar = 14, NotifyW = 288, Tile = 46, Quick = 40, Squeeze = 40 }
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
 -- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
@@ -129,6 +142,16 @@ local FOLD_GAP = 4 -- real px between two fold-out squares on PCs
 
 local function rect(x, y, w, h)
 	return { X = x, Y = y, W = w, H = h }
+end
+
+-- A23-109 (PC): the power line, the XP bar and the HP | MP pair (halves keeping their gap) w logical units wide
+local function barsTo(out, w)
+	local hb, mb = out.hp_bar, out.mp_bar
+	local barGap = mb.X - (hb.X + hb.W)
+	local half = math.max(1, (w - barGap) / 2)
+	hb.W = half
+	mb.X, mb.W = hb.X + half + barGap, half
+	out.power_line.W, out.xp_bar.W = w, w
 end
 
 local function anchorOf(id, touch)
@@ -291,6 +314,39 @@ function HudLayout.Compute(env)
 		out.mp_bar.X, out.mp_bar.W = bx + half + barGap, half
 	end
 
+	-- A23-109 PC row (user 10/10 with a drawing: "1·2·3 이거는 MP 칸 밑에 있으면 안 되고 옆에"): the six tiles are as wide
+	-- as the HP / MP / XP bars and sit right under them (tiles >= PC_FLOOR.Tile real px; a taller row lifts the face, the
+	-- power line and the bars by as much, so the row keeps its bottom); the face + bars + tiles block stays centred on the
+	-- screen and the quick slots (>= PC_FLOOR.Quick) sit QUICK.Sep right of the bars' right end, bottom-aligned with the tiles
+	if not sheet then
+		local tl, qk = out.tiles, out.quick
+		local n = math.max(1, math.floor((tl.W + tileGap) / (tl.H + tileGap) + 1e-6))
+		local lift = math.max(tl.H, PC_FLOOR.Tile / s) - tl.H
+		-- never into the quest lines above the face group (tiny windows: the tiles stay a little under the floor)
+		local q, pl = out.quest, out.power_line
+		if q.X < pl.X + pl.W and q.X + q.W > out.portrait.X then
+			lift = math.min(lift, math.max(0, math.min(pl.Y, out.portrait.Y) - GAP - (q.Y + q.H)))
+		end
+		if lift > 0 then
+			for _, id in { "portrait", "power_line", "hp_bar", "mp_bar", "xp_bar" } do out[id].Y -= lift end
+			tl.Y, tl.H = tl.Y - lift, tl.H + lift
+		end
+		tl.W = n * tl.H + (n - 1) * tileGap
+		barsTo(out, tl.W)
+		tl.X = out.xp_bar.X
+		local qs, qg = math.max(qk.H, PC_FLOOR.Quick / s), QUICK.Gap * k
+		qk.W, qk.H = QUICK.N * qs + (QUICK.N - 1) * qg, qs
+		qk.Y = tl.Y + tl.H - qs
+		qk.X = out.xp_bar.X + out.xp_bar.W + QUICK.Sep * k
+		-- the face + bars + tiles block centred on the screen (the quick slots ride along on its right)
+		local g0, g1 = math.huge, -math.huge
+		for _, id in BC_BLOCK_PC do
+			g0, g1 = math.min(g0, out[id].X), math.max(g1, out[id].X + out[id].W)
+		end
+		local dx = W / 2 - (g0 + g1) / 2
+		for _, id in BC_GROUP_PC do out[id].X += dx end
+	end
+
 	-- tile row: square tiles as tall as the row (touch: the row already grew to MIN_TAP), Count = how many fit with the
 	-- least gap
 	local tiles = out.tiles
@@ -313,7 +369,7 @@ function HudLayout.Compute(env)
 	-- the left margin; if that is still not enough it is squeezed from its left edge (narrow 4:3 / 5:4 windows)
 	if not sheet then
 		local minX, maxX, minY, maxY = math.huge, -math.huge, math.huge, -math.huge
-		for _, id in BC_GROUP do
+		for _, id in BC_GROUP_PC do
 			local r = out[id]
 			minX, maxX = math.min(minX, r.X), math.max(maxX, r.X + r.W)
 			minY, maxY = math.min(minY, r.Y), math.max(maxY, r.Y + r.H)
@@ -326,24 +382,26 @@ function HudLayout.Compute(env)
 		local limit = clusterLeft - GAP
 		if maxX > limit then
 			local shift = math.min(maxX - limit, math.max(0, minX - GAP))
-			for _, id in BC_GROUP do out[id].X -= shift end
+			for _, id in BC_GROUP_PC do out[id].X -= shift end
 			minX, maxX = minX - shift, maxX - shift
 			if maxX > limit and maxX - minX > 1 then
 				-- the right end comes in to the limit (narrow 4:3-ish windows): the face and the starts of the bars and the
-				-- row stay, the potion pair keeps its size and gaps at the right end, the tile row gives up its right part
-				-- (tiles that no longer fit go to [메뉴]) and the bars end with the pair, HP and MP halves keeping their gap
-				local hp, mp = out.potion_hp, out.potion_mp
-				local lead, cut = hp.X - (tiles.X + tiles.W), maxX - limit
-				mp.X -= cut
-				hp.X -= cut
-				tiles.W = math.max(0, hp.X - lead - tiles.X)
-				out.power_line.W -= cut
-				out.xp_bar.W -= cut
-				local hb, mb = out.hp_bar, out.mp_bar
-				local barGap = mb.X - (hb.X + hb.W)
-				local half = math.max(1, (out.power_line.W - barGap) / 2)
-				hb.W = half
-				mb.X, mb.W = hb.X + half + barGap, half
+				-- row stay, the quick slots (A23-109; were the potion pair) keep their size and gaps at the right end, the
+				-- tile row gives up its right part (tiles that no longer fit go to [메뉴]) and the bars end no further right
+				-- than the quick slots, HP and MP halves keeping their gap
+				local qk = out.quick
+				local want = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
+				qk.X -= maxX - limit
+				tiles.W = math.max(0, qk.X - QUICK.Sep * k - tiles.X)
+				-- A23-109: before a tile goes to [메뉴] the tiles shrink (bottom kept) down to PC_FLOOR.Squeeze real px;
+				-- the bars stay as wide as the row
+				local fit = math.max(PC_FLOOR.Squeeze / s, (tiles.W - (want - 1) * tileGap) / want)
+				if fit < size then
+					tiles.Y, tiles.H = tiles.Y + size - fit, fit
+					size = fit
+					tiles.Size = size
+				end
+				barsTo(out, tiles.W)
 				tiles.Count = math.max(1, math.floor((tiles.W + tileGap) / (size + tileGap) + 1e-6))
 			end
 		end
@@ -461,6 +519,19 @@ function HudLayout.Compute(env)
 	local px0, py0 = math.min(ph.X, pm.X), math.min(ph.Y, pm.Y)
 	out.potions = { X = px0, Y = py0, W = math.max(ph.X + ph.W, pm.X + pm.W) - px0,
 		H = math.max(ph.Y + ph.H, pm.Y + pm.H) - py0, Gap = POTION_GAP * k, Cells = { HP = ph, MP = pm } }
+	-- A23-109 quick slots (PC): Cells = the N square rects left to right, Gap = du between them (HUD.LayoutQuick)
+	local qk = out.quick
+	local qg = QUICK.Gap * k
+	qk.Gap, qk.Cells = qg, {}
+	for i = 1, QUICK.N do
+		qk.Cells[i] = rect(qk.X + (i - 1) * (qk.H + qg), qk.Y, qk.H, qk.H)
+	end
+	-- PCs: the potion pair are quick slots 1 and 2 (VitalsUI square slots) until 개발 1's quick slots take items
+	if not sheet then
+		local c1, c2 = qk.Cells[1], qk.Cells[2]
+		out.potion_hp, out.potion_mp = c1, c2
+		out.potions = { X = c1.X, Y = c1.Y, W = c2.X + c2.W - c1.X, H = c1.H, Gap = qg, Cells = { HP = c1, MP = c2 } }
+	end
 	return out
 end
 

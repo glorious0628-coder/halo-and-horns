@@ -2569,6 +2569,11 @@ BUILDERS.Items = function(parent)
 		if status and ITEMS.Result and ITEMS.Result.Success then statusColor = theme.Good end
 	end
 	if status then addText(parent, status, { Name = "ItemStatus", Color = statusColor, Size = 17 }) end
+	-- A23-109 (game dev 1): the quick items (the potions) with [1] [2] [3] = which quick slot holds them (QuickSlots.luau)
+	if not mode and C and type(C.QuickSlots) == "table" and type(C.QuickSlots.BagRows) == "function" then
+		addText(parent, "Quick slots", { Name = "QuickTitle", Size = 18, Color = theme.Gold })
+		pcall(C.QuickSlots.BagRows, parent, REG.Kit())
+	end
 
 	-- the chosen scroll's step + confirmation (rate and failure result shown before sending)
 	if mode and def then

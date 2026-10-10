@@ -287,7 +287,8 @@ local function eventAmount(player, obj, ev)
 	local t = obj.Type
 	if ev.Kind == "Kill" then
 		local info = ev.Info
-		if info.Personal == true then return 0 end
+		-- a personal monster never counts, except for a step that asks for exactly that (KO1's rematch Personal = true)
+		if (info.Personal == true) ~= (obj.Personal == true) then return 0 end
 		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
 		if t ~= "Kill" and t ~= "BasicKill" and t ~= "SafeKill" and t ~= "AutoKill" then return 0 end
 		-- A23-86 Call of the Woods: obj.Alt = { MinLevel, Pairs = { { Kind, Zone } } } lets another kind in its own zone
@@ -413,6 +414,36 @@ local function complete(player, data, id)
 	StoryQuestService.QuestDone:Fire(player, id)
 end
 
+-- A23-110: nothing of potions yet: no stock, no potion ever bought or drunk (the King's Hop is for those saves only)
+local function noPotionYet(data)
+	local st = story(data)
+	if st.First.PotionBought == true or st.First.PotionUsed == true then return false end
+	for _, kind in { "HP", "MP" } do
+		local key = Config.PotionStockKey(kind)
+		if key and num(data[key]) > 0 then return false end
+	end
+	return true
+end
+
+-- an Event step the player has already seen happen (obj.Past): it passes without waiting
+local function eventPast(data, obj)
+	return type(obj) == "table" and obj.Type == "Event" and obj.Past == true and story(data).First[obj.Name] == true
+end
+
+-- A23-110 TopUpGold: a step that opens with the player short of this much gold (carried + bank) adds the missing part to the
+-- carried gold, once per step ("Choice" source: never doubled by the 2x pass). Nothing for a step that already passes.
+local function topUpGold(player, data, id, track)
+	local step = stepOf(player, DEFS[id], track.St)
+	local want = step and math.floor(num(step.TopUpGold)) or 0
+	if want <= 0 or eventPast(data, step.Obj) then return end
+	local first = story(data).First
+	local key = "Top" .. id .. tostring(track.St)
+	if first[key] == true then return end
+	first[key] = true -- saved before the gold, so it can never be paid twice
+	local have = S.ProgressionService.GetTotalGold(player)
+	if have < want then S.ProgressionService.AddCarriedGold(player, want - have, "Choice") end
+end
+
 -- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself
 local function openStep(player, id, track, manual)
 	local def = DEFS[id]
@@ -434,6 +465,7 @@ local function advance(player, data, id, track)
 		track.St += 1
 		local nextStep = stepOf(player, def, track.St)
 		if nextStep and nextStep.Start then notify(player, nextStep.Start, "info") end
+		topUpGold(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
 		return
@@ -454,6 +486,17 @@ local function tracks(data)
 	if st.Main.Id ~= "" and DEFS[st.Main.Id] then table.insert(out, { Id = st.Main.Id, Track = st.Main }) end
 	for id, tr in st.Subs do table.insert(out, { Id = id, Track = tr }) end
 	return out
+end
+
+-- A23-110: an open step of this player's quests waits for that happening (and has not seen it before)
+local function wantsEvent(player, data, name)
+	for _, t in tracks(data) do
+		local def, tr = DEFS[t.Id], t.Track
+		local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
+		local obj = step and step.Obj
+		if obj and obj.Type == "Event" and obj.Name == name and not eventPast(data, obj) then return true end
+	end
+	return false
 end
 
 local function feed(player, ev)
@@ -504,6 +547,9 @@ local function requirementsMet(player, data, def)
 		if st.Done[gone] then return false end
 	end
 	if req.Level and num(data.Level, 1) < req.Level then return false end
+	-- A23-110: MaxLevel = only up to this level; NoPotionYet = no potion bought, drunk or held yet
+	if req.MaxLevel and num(data.Level, 1) > req.MaxLevel then return false end
+	if req.NoPotionYet and not noPotionYet(data) then return false end
 	-- A23-86 Sprout Oath: Sprout = the Sprout Shield is still on (PvPService.IsRookie; unknown = still a sprout)
 	if req.Sprout and stateTrue(player, "Graduated") then return false end
 	-- SKL-3: Skill = "Q" / "Z" / "X" learned (its switch on and the saved slot open)
@@ -585,6 +631,8 @@ local function refresh(player)
 			local done = false
 			if obj.Type == "State" then
 				done = stateTrue(player, obj.Key)
+			elseif obj.Type == "Event" then
+				done = eventPast(data, obj)
 			elseif obj.Type == "Level" then
 				done = levelReached(data, obj)
 				if not done then changed = true end -- the row shows "(지금 LvN)"
@@ -629,6 +677,12 @@ local function refresh(player)
 	-- user 2026-10-05: no window or waiting choice card ever pauses auto combat ("아이템 열어도 그대로 자동 전투"),
 	-- and monsters keep attacking as usual; the old ChoicePending flag is cleared for saves/servers that set it
 	if player:GetAttribute("ChoicePending") == true then player:SetAttribute("ChoicePending", false) end
+	-- A23-110: tells the client a step waits for a potion drink (it then lets a full HP / MP bar be used: the practice sip)
+	local sipAttr = Config.FirstKO and Config.FirstKO.SipAttr
+	if type(sipAttr) == "string" then
+		local want = wantsEvent(player, data, "PotionUsed")
+		if player:GetAttribute(sipAttr) ~= want then player:SetAttribute(sipAttr, want) end
+	end
 	if changed then dirty(player) end
 end
 
@@ -636,6 +690,69 @@ end
 -- the weapon shop shows
 function StoryQuestService.Refresh(player)
 	refresh(player)
+end
+
+local function stepsSum(data)
+	local n = 0
+	for _, t in tracks(data) do n += num(t.Track.St) end
+	return n
+end
+
+-- A23-110: a named happening (Config.StoryQuests.Events: FirstKO, PotionBought, PotionUsed) another service reports. It is
+-- saved first (data.Story.First[name]), so an Event step that opens later with Past passes at once, then the open step that
+-- waits for it moves on (the next one is checked right away). Unknown names / not-ready players do nothing. Returns true when
+-- a step moved.
+function StoryQuestService.Event(player, name, info)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(name) ~= "string" then return false end
+	if SQ.Events == nil or SQ.Events[name] ~= true then return false end
+	if not S.PlayerService.IsReady(player) then return false end
+	local data = getData(player)
+	if not data then return false end
+	story(data).First[name] = true
+	local moved = false
+	for _, t in tracks(data) do
+		local def, tr = DEFS[t.Id], t.Track
+		local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
+		local obj = step and step.Obj
+		if obj and obj.Type == "Event" and obj.Name == name then
+			advance(player, data, t.Id, tr)
+			moved = true
+		end
+	end
+	if moved then
+		-- the steps that pass at once (an Event step whose happening was seen before) follow each other without waiting for
+		-- the 1 s loop; the sum of the steps stops changing when nothing more passes
+		for _ = 1, 8 do
+			local before = stepsSum(data)
+			local ok, err = pcall(refresh, player)
+			if not ok then
+				Util.Warn(TAG, "Event refresh: " .. tostring(err))
+				break
+			end
+			if stepsSum(data) == before then break end
+		end
+	end
+	return moved
+end
+
+-- A23-110: true while an open step of this player's quests waits for that happening (and has not seen it before)
+function StoryQuestService.Wants(player, name)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(name) ~= "string" then return false end
+	local data = getData(player)
+	if not data then return false end
+	return wantsEvent(player, data, name)
+end
+
+-- A23-110: the step (1-based) a started quest is at, nil = not started, done or waiting for [Claim]. Game dev 2's personal King
+-- reads it (Config.FirstKO.Quest / Step / RematchStep)
+function StoryQuestService.CurrentStep(player, id)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(id) ~= "string" then return nil end
+	local data = getData(player)
+	if not data then return nil end
+	local st = story(data)
+	local tr = (st.Main.Id == id) and st.Main or st.Subs[id]
+	if type(tr) ~= "table" or tr.Claim == true or st.Done[id] then return nil end
+	return tr.St
 end
 
 ------------------------------------------------------------------ quest list rows (QuestService.publish)

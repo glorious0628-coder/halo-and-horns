@@ -1,0 +1,66 @@
+{
+  "checks": 21,
+  "failed": 0,
+  "static": [
+    {
+      "check": "Fx.Animating(char) = an attack / hurt clip plays there",
+      "ok": true
+    },
+    {
+      "check": "the pose steps aside while Fx animates",
+      "ok": true
+    },
+    {
+      "check": "it writes in PreSimulation (after the Animator, like Fx's clips)",
+      "ok": true
+    },
+    {
+      "check": "메인 반영 10/10: upgraded avatar joints (AnimationConstraint) are found, preferred over a Motor6D",
+      "ok": true
+    },
+    {
+      "check": "ClientMain loads WeaponPose after Fx",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "no fade (a jump)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "walking changes nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "walking bends every joint",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fallback without a side",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pose fights the attack clips",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "two sides share a pose",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Weapon hold poses (게임성 개발 1, SPEC A23-108 ①③), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau (Config.ClassGrips / Config.ClassGripKey) and the pure parts of\nWeaponPose.luau (HoldFor, Angles). Checks: all nine class x faction rows with a weapon, a walk share and a hold of real\nR15 joints and sane angles (|deg| <= 120); the three sides of a class hold differently (A23-108: not one pose recoloured);\nthe key and the fallback for a side not chosen; Angles scales by the fade weight and keeps only Walk of the shoulders'\nforward raise while walking. Static: Fx.Animating (the pose steps aside during attack / hurt clips), WeaponPose writes in\nPreSimulation and is loaded after Fx. Mutations: each must be caught. The look itself is checked in Studio photos\n(메인 반영 1: 9 classes x stand / walk / attack / Q).",
+  "studioCalls": 0
+}

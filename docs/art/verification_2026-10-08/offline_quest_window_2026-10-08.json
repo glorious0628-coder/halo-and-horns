@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 84,
+  "checks": 91,
   "failedChecks": [],
   "static": [
     {
@@ -49,9 +49,9 @@
     }
   ],
   "mutations": {
-    "total": 40,
-    "applied": 40,
-    "caught": 40,
+    "total": 44,
+    "applied": 44,
+    "caught": 44,
     "results": [
       {
         "mutation": "no tab icons",
@@ -88,8 +88,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Studio: on the Daily tab with the two sample dailies :: 1",
-          "CHECK_FAIL Studio: [Claim] and a row press do nothing on samples :: "
+          "CHECK_FAIL Studio: switching to 'Faction,empty' redraws the open window empty :: "
         ]
       },
       {
@@ -362,6 +361,46 @@
         ]
       },
       {
+        "mutation": "Daily shows while locked",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL VisibleTabs: DailyLocked hides Daily :: ",
+          "CHECK_FAIL VisibleTabs: a first-chapter list (the main quest only, dailies locked) -> Main only :: Main,Daily",
+          "CHECK_FAIL VisibleTabs: Main shows even with nothing in it :: Main,Daily"
+        ]
+      },
+      {
+        "mutation": "empty tabs show",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL VisibleTabs: a first-chapter list (the main quest only, dailies locked) -> Main only :: Main,Side,Event,Faction",
+          "CHECK_FAIL VisibleTabs: Main shows even with nothing in it :: Main,Side,Event,Faction",
+          "CHECK_FAIL the window on the first chapter: only the Main tab (an asked empty tab falls back to Main) :: Main,Side,Event,Faction"
+        ]
+      },
+      {
+        "mutation": "Main can hide",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL VisibleTabs: Main shows even with nothing in it :: "
+        ]
+      },
+      {
+        "mutation": "the tab set never changes in an open window",
+        "source": "BOOK",
+        "applied": true,
+        "caught": true,
+        "failures": [
+          "CHECK_FAIL the window has five tab buttons and a body :: 0"
+        ]
+      },
+      {
         "mutation": "Toggle never closes",
         "source": "BOOK",
         "applied": true,
@@ -379,7 +418,7 @@
         "caught": true,
         "failures": [
           "CHECK_FAIL Build({ Tab = 'Faction' }) opens that tab :: button",
-          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them :: 0 Event",
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them (the goose story's 1 only) :: 0 Event 1",
           "CHECK_FAIL a link opens the diary window on its tab :: "
         ]
       },
@@ -389,7 +428,8 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL it opens on my 'now do' quest's tab (Main), painted gold, with counts :: Main / Daily"
+          "CHECK_FAIL it opens on my 'now do' quest's tab (Main), painted gold, with counts :: Main / Daily",
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them (the goose story's 1 only) :: 2 Event"
         ]
       },
       {
@@ -418,7 +458,7 @@
         "applied": true,
         "caught": true,
         "failures": [
-          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them :: 2 Event 2"
+          "CHECK_FAIL Event tab: the diary and jar rows; no count on the tab for them (the goose story's 1 only) :: 2 Event 3"
         ]
       },
       {
@@ -455,12 +495,12 @@
     ]
   },
   "sourceSHA256": {
-    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "ab88e56b555b0e4fdd4eb38542348a367f8564faf5344eb60fa58c09745e7723",
-    "src/ReplicatedStorage/Shared/Config.luau": "7869686a3836ea5ecc4d750db23ce8b3df8b3a61c117752250021cb1f176dac6",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "f66862a83cc5e0adcb287d3b9dcfdc073df116ac7f365fbaa35de1b9cae9979b",
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "73f466603e3167e941133d517b5d38f384eff4deacf7809ec5f88e747e334a44",
+    "src/ReplicatedStorage/Shared/Config.luau": "9f7d765172a4ed9edc00e6c9c108e2c9ff853fd00bd7f4fb24294e419d59037a",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "6e69ee7cde1c08f9629d8215b11f7b43c17e3ca60b15e0adb343aee5dc809de2",
     "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau": "8dddc7e955a942baa171d8b1473e57ddfba905fa46cff828077c4b973c8007f8"
   },
-  "fixtureSHA256": "f53d518aff0ec2395a218c71e7c1533c795a5b634132ee270df2f6ca131f1821",
+  "fixtureSHA256": "34d688340652a71f91ab724f84014ceb95c6ddf29d534195eb2447159de3c4ba",
   "studioCalls": 0,
   "limitations": "Doubles instead of Panels / the HUD: the window's look on PC and phone and the HUD's real rows are a Studio photo check (메인 반영). The book rows follow 게임성 개발 3's contract (tools/test_quest_book.py checks the server side); before a book comes Done is what the client can tell."
 }

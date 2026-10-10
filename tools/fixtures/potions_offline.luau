@@ -568,4 +568,69 @@ do
 	check(f.Registry.DataService.Save(f.Player,false),"final mock save failed")
 	check(f.StoreRows["P_"..f.Player.UserId].HPPotionCount==3,"rejected use changed persisted stock")
 end
+-- A23-110 (the King's Hop quest): a bought and a drunk potion report to StoryQuestService.Event (a refused one never does), and
+-- the 'Drink a potion from your quick slot' step never dead-ends at full HP / MP: a practice sip counts for the step, keeps the
+-- potion and the cooldown (only while a quest step waits for it)
+do
+	local function watch(f, wants)
+		local rec = { Events = {}, Wants = wants }
+		f.Registry.StoryQuestService = {
+			Event = function(p, name, info) table.insert(rec.Events, { P = p, Name = name, Info = info }) return true end,
+			Wants = function(_, name) return rec.Wants == name end }
+		return rec
+	end
+	local function last(f) return f.Notices[#f.Notices] and f.Notices[#f.Notices][1] end
+	local f = fixture(); local rec = watch(f); f:Gold(300, 0)
+	check(f:Buy("HP", 5) == true and #rec.Events == 1 and rec.Events[1].Name == "PotionBought" and rec.Events[1].P == f.Player
+		and rec.Events[1].Info.Kind == "HP" and rec.Events[1].Info.N == 5, "A23-110 a purchase did not report PotionBought once")
+	check(f:Buy("MP", 1) == true and #rec.Events == 2 and rec.Events[2].Info.Kind == "MP" and rec.Events[2].Info.N == 1,
+		"A23-110 the MP purchase did not report")
+	for label, mutate in {
+		Poor = function(g) g:Gold(4, 5) end,
+		Far = function(g) g.Root.Position = vector(12.01, 0, 0) end,
+		Full = function(g) g:Stock(99, 0) end,
+		BadAmount = function() end,
+		Dead = function(g) g.Humanoid.Health = 0 end,
+		Cooldown = function(g) g.Blocks.BuyPotion = true end,
+	} do
+		local g = fixture(); local r = watch(g); g:Gold(100, 0); mutate(g)
+		check(g:Buy("HP", label == "BadAmount" and 2 or 1) == false and #r.Events == 0, "A23-110 a refused purchase (" .. label .. ") reported PotionBought")
+	end
+	-- a real drink reports PotionUsed once (HP hurt, MP low)
+	local u = fixture(); local ur = watch(u); u:Stock(3, 3); u.Vitals.DebugSetMana(u.Player, 20)
+	u:Use("HP")
+	check(u.Data.HPPotionCount == 2 and #ur.Events == 1 and ur.Events[1].Name == "PotionUsed" and ur.Events[1].Info.Kind == "HP"
+		and ur.Events[1].Info.Practice == nil, "A23-110 a real HP drink did not report PotionUsed")
+	u.Now += 100; u:Use("MP")
+	check(u.Data.MPPotionCount == 2 and #ur.Events == 2 and ur.Events[2].Info.Kind == "MP", "A23-110 a real MP drink did not report")
+	-- full HP / MP and no step waiting: refused as before, no event, the potion stays
+	local n = fixture(); local nr = watch(n); n:Stock(3, 3); n.Humanoid.Health = n.Humanoid.MaxHealth
+	n:Use("HP")
+	check(n.Data.HPPotionCount == 3 and #nr.Events == 0 and last(n) == "HP is full.", "A23-110 full HP with nothing waiting reported or changed",
+		tostring(last(n)))
+	n.Vitals.DebugSetMana(n.Player, n.Config.Vitals.MaxMana); n:Use("MP")
+	check(n.Data.MPPotionCount == 3 and #nr.Events == 0 and last(n) == "MP is full.", "A23-110 full MP with nothing waiting reported or changed")
+	-- a step waiting for another happening does not take a sip either
+	local o = fixture(); local orr = watch(o, "PotionBought"); o:Stock(3, 3); o.Humanoid.Health = o.Humanoid.MaxHealth
+	o:Use("HP")
+	check(#orr.Events == 0 and last(o) == "HP is full.", "A23-110 a step waiting for another happening took a sip")
+	-- the step waits for the drink: a sip at full HP counts, keeps the potion, the HP and the cooldown
+	local s = fixture(); local sr = watch(s, "PotionUsed"); s:Stock(3, 3); s.Humanoid.Health = s.Humanoid.MaxHealth
+	local ready0 = s.Attrs.HPPotionReadyAt
+	s:Use("HP")
+	check(s.Data.HPPotionCount == 3 and s.Humanoid.Health == s.Humanoid.MaxHealth and #sr.Events == 1 and sr.Events[1].Name == "PotionUsed"
+		and sr.Events[1].Info.Practice == true and sr.Events[1].Info.Kind == "HP" and last(s) == s.Config.Text.PotionPractice
+		and s.Attrs.HPPotionReadyAt == ready0, "A23-110 a practice sip at full HP: counted, potion kept, no cooldown", tostring(last(s)))
+	s.Vitals.DebugSetMana(s.Player, s.Config.Vitals.MaxMana); s:Use("MP")
+	check(s.Data.MPPotionCount == 3 and #sr.Events == 2 and sr.Events[2].Info.Practice == true and sr.Events[2].Info.Kind == "MP"
+		and last(s) == s.Config.Text.PotionPractice, "A23-110 a practice sip at full MP: counted, potion kept")
+	-- no potion in the bag: nothing to sip (the refusal comes first)
+	local e = fixture(); local er = watch(e, "PotionUsed"); e.Humanoid.Health = e.Humanoid.MaxHealth
+	e:Use("HP")
+	check(#er.Events == 0 and e.Data.HPPotionCount == 0, "A23-110 a sip without a potion counted")
+	-- while a step waits, a real drink (hurt) still works as usual and reports as a real use
+	local h = fixture(); local hr = watch(h, "PotionUsed"); h:Stock(3, 3)
+	h:Use("HP")
+	check(h.Data.HPPotionCount == 2 and #hr.Events == 1 and hr.Events[1].Info.Practice == nil, "A23-110 a hurt drink while the step waits is a real use")
+end
 print("POTION_OFFLINE_OK checks="..checks.." Studio/API calls=0")

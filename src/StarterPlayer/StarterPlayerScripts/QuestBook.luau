@@ -99,6 +99,23 @@ local VIEW = { Parent = nil, Kit = nil, Tabs = nil, Body = nil } -- the open win
 
 local function tabs() return Config.QuestTabs.Order end
 
+-- A23-104 / 검수 10/10 (a Lv1 photo showed all five tabs): the tabs the window shows (pure) - Daily is hidden while the
+-- server says DailyLocked, and a tab with nothing in it (no row in progress, available or done) is hidden until it
+-- has one; Main (the first tab) always shows
+function QuestBook.VisibleTabs(ctx)
+	ctx = type(ctx) == "table" and ctx or {}
+	local out = {}
+	for i, id in tabs() do
+		local keep = i == 1
+		if not keep and not (id == "Daily" and ctx.DailyLocked == true) then
+			local sec = QuestBook.Sections(id, ctx)
+			keep = #sec.InProgress + #sec.Available + #sec.Done > 0
+		end
+		if keep then table.insert(out, id) end
+	end
+	return out
+end
+
 -- the tab of one HUD quest row
 function QuestBook.TabOf(e)
 	if type(e) ~= "table" then return Config.QuestTabs.Default end
@@ -297,6 +314,7 @@ local function context()
 	return {
 		Entries = hudCall("QuestEntries") or {},
 		Book = hudCall("QuestBook"),
+		DailyLocked = hudCall("DailyLocked") == true,
 		DoneSession = hudCall("QuestDoneSession") or {},
 		HasDiary = C and type(C.KingDiary) == "table" and type(C.KingDiary.IsReady) == "function" and C.KingDiary.IsReady() or false,
 		Attr = function(name) return kit and kit.Attr(name, nil) end,
@@ -411,13 +429,20 @@ local function paintTabs()
 	end
 end
 
+local makeTabs -- (below: the tab buttons of the visible tabs)
+
 local function drawBody()
 	local kit, body = VIEW.Kit, VIEW.Body
 	if not (kit and body) then return end
 	for _, ch in body:GetChildren() do
 		if not ch:IsA("UIListLayout") and not ch:IsA("UIPadding") then ch:Destroy() end
 	end
-	local sec = QuestBook.Sections(S.Tab, context())
+	local ctx = context()
+	-- the tab set follows what there is (a tab appears with its first row, Daily once the daily jobs open)
+	local vis = S.Preview and tabs() or QuestBook.VisibleTabs(ctx) -- the Studio photos show every tab
+	if not table.find(vis, S.Tab) then S.Tab = vis[1] or Config.QuestTabs.Default end
+	if table.concat(vis, ",") ~= VIEW.TabSig then makeTabs(vis) end
+	local sec = QuestBook.Sections(S.Tab, ctx)
 	section(kit, body, T.Text.InProgress, sec.InProgress, T.Text.EmptyInProgress)
 	if not T.NoAvailable[S.Tab] then section(kit, body, T.Text.Available, sec.Available, T.Text.EmptyAvailable) end
 	section(kit, body, T.Text.Done, sec.Done, T.Text.EmptyDone)
@@ -459,6 +484,31 @@ local function tabIcon(b, id)
 	return icon
 end
 
+-- the tab buttons of the visible tabs (made again when that set changes)
+function makeTabs(vis)
+	local kit, bar = VIEW.Kit, VIEW.Bar
+	if not (kit and bar) then return end
+	for _, ch in bar:GetChildren() do
+		if ch:IsA("GuiButton") then ch:Destroy() end
+	end
+	VIEW.Tabs = {}
+	VIEW.TabSig = table.concat(vis, ",")
+	local n = math.max(1, #vis)
+	for i, id in vis do
+		local b = kit.Button(bar, Config.QuestTabs.Names[id] or id, kit.Palette.Button,
+			UDim2.new(1 / n, -6 * (n - 1) / n, 1, 0), function()
+				-- sound_gaps 2026-10-10: the tab's own sound instead of the Click (NoClick); the open tab again = silent
+				local audio = C and C.Audio
+				if id ~= S.Tab and type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "QuestTab") end
+				QuestBook.ShowTab(id)
+			end)
+		pcall(b.SetAttribute, b, "NoClick", true)
+		b.LayoutOrder = i
+		tabIcon(b, id)
+		VIEW.Tabs[id] = b
+	end
+end
+
 local function build(parent, kit, arg)
 	VIEW.Parent, VIEW.Kit = parent, kit
 	if type(arg) == "table" and table.find(tabs(), arg.Tab) then
@@ -477,21 +527,8 @@ local function build(parent, kit, arg)
 	bl.Padding = UDim.new(0, 6)
 	bl.Parent = bar
 	bar.Parent = parent
-	VIEW.Tabs = {}
-	local n = #tabs()
-	for i, id in tabs() do
-		local b = kit.Button(bar, Config.QuestTabs.Names[id] or id, kit.Palette.Button,
-			UDim2.new(1 / n, -6 * (n - 1) / n, 1, 0), function()
-				-- sound_gaps 2026-10-10: the tab's own sound instead of the Click (NoClick); the open tab again = silent
-				local audio = C and C.Audio
-				if id ~= S.Tab and type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "QuestTab") end
-				QuestBook.ShowTab(id)
-			end)
-		pcall(b.SetAttribute, b, "NoClick", true)
-		b.LayoutOrder = i
-		tabIcon(b, id)
-		VIEW.Tabs[id] = b
-	end
+	VIEW.Bar = bar
+	VIEW.TabSig = nil
 	local body = Instance.new("ScrollingFrame")
 	body.Name = "Body"
 	body.BackgroundTransparency = 1
@@ -518,7 +555,7 @@ local function build(parent, kit, arg)
 end
 
 local function cleanup()
-	VIEW.Parent, VIEW.Kit, VIEW.Tabs, VIEW.Body = nil, nil, nil, nil
+	VIEW.Parent, VIEW.Kit, VIEW.Tabs, VIEW.Body, VIEW.Bar, VIEW.TabSig = nil, nil, nil, nil, nil, nil
 end
 
 function QuestBook.IsReady()

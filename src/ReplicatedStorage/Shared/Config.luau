@@ -3410,10 +3410,37 @@ Config.StoryQuests.Defs.D0 = {
 			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!",
 				"Look in your Quests window. New jobs come every morning." } } },
 	},
-	Reward = { Gold = 1, XP = 1 },
-	Finish = "Daily jobs are open!",
+	Reward = { Gold = 1, XP = 1 }, -- no Finish line: the usual quest-done line, then the Daily tab opens (A23-99: no "daily quests are open" toast)
 }
 table.insert(Config.StoryQuests.Subs, "D0")
+
+-- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
+-- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
+-- StoryQuestService.Event "FirstKO"), then buys a potion, drinks it from the quick slot and wins the rematch. Four plain rows, no
+-- popups, no tips, no closing toast (A23-99). Event steps wait for a named happening (Config.StoryQuests.Events): FirstKO (the KO
+-- itself), PotionBought (ShopService.BuyPotion), PotionUsed (VitalsService, a drink from the quick slot or the bag). Past = a step
+-- whose happening was seen before it opened passes at once (a player who ran ahead is never stuck). TopUpGold = the carried gold
+-- is topped up to this much when the step opens (once; two potions at 25 each); Personal = only the personal King counts.
+Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, PotionUsed = true }
+Config.StoryQuests.Defs.KO1 = {
+	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
+	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },
+	Steps = {
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
+		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "Crossroads", TopUpGold = 50,
+			Obj = { Type = "Event", Name = "PotionBought", Past = true } },
+		{ Text = "Drink a potion from your quick slot", ShortName = "Drink potion",
+			Obj = { Type = "Event", Name = "PotionUsed", Past = true } },
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow",
+			Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },
+	},
+	Reward = { Gold = 2, XP = 2, Item = "Enh70", N = 1 }, -- two minutes of hunting + one 70% scroll
+}
+table.insert(Config.StoryQuests.Subs, "KO1")
+-- game dev 2 (the personal King) reads these: the quest, the step the King's first hop waits at, the step of the rematch.
+-- SipAttr = the player attribute (boolean) StoryQuestService keeps true while a quest step waits for a potion drink: game dev 1's
+-- VitalsUI then lets a full HP / MP bar be used (the server counts a practice sip and keeps the potion)
+Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 4, SipAttr = "PotionSip" }
 
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
@@ -4052,6 +4079,8 @@ Config.Keybinds = {
 		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost hold", LabelEn = "Ghost hold", Button = "Ghost button", ButtonEn = "Ghost button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP potion", LabelEn = "HP potion", Button = "HP potion button", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP potion", LabelEn = "MP potion", Button = "MP potion button", ButtonEn = "MP potion button" },
+		-- A23-109 quick slots: the keys 1 / 2 above use slots 1 / 2 (QuickSlots.luau), this one slot 3
+		{ Id = "QuickSlot3", Group = "Potion", Key = "Three", Pad = "", Label = "Quick slot 3", LabelEn = "Quick slot 3", Button = "Quick slot 3", ButtonEn = "Quick slot 3" },
 		-- KeySet "Prompt" + NoClear: the default ProximityPrompt UI must be able to draw the key (review of 27246d1)
 		{ Id = "Interact", Group = "Other", Key = "G", Pad = "ButtonX", Label = "Interact", LabelEn = "Interact", Button = "Interact button", ButtonEn = "Interact button",
 			KeySet = "Prompt", NoClear = true },
@@ -5072,7 +5101,7 @@ Config.Audio = {
 		StampPress = { File = "StampPress", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- Fx Attendance (the claim's QuestDone line gives way)
 		Chest7Open = { File = "Chest7Open", Volume = 0.60, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the 7-day box (Attendance Box), BoxAfter s after the stamp
 		WelcomeBack = { File = "WelcomeBack", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the "Welcome back!" card opening (PauseCard "Back")
-		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip"); the KO screen's fun tip (EG05)
+		TipDing = { File = "TipDing", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 1 }, -- a tip card opening (PauseCard "Tip")
 		DiaryPage = { File = "DiaryPage", Volume = 0.45, Speed = { 0.98, 1.02 }, Max = 1, Gap = 0.3 }, -- the King Diary opening on a page ([Read])
 		CandyPlop = { File = "CandyPlop", Volume = 0.35, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.12 }, -- my drop with candy (Fx Loot)
 		KingHelpHome = { File = "KingHelpHome", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- Fx FinisherEnd Pick "Help"
@@ -5107,7 +5136,6 @@ Config.Audio = {
 	-- a townsperson who talks)
 	Blips = { Bright = "BlipBright", Gleam = "BlipGleam" },
 	BoxAfter = 0.35, -- s after StampPress: the 7-day box opens
-	KOTipAfter = 0.9, -- s after KO: the fun tip's ding (EG05)
 	WarpInAfter = 0.45, -- s after Warp: WarpIn
 	-- a move of more than Jump studs in one frame that my speed cannot explain (+ Slack studs) = a warp
 	Warp = { Jump = 40, Slack = 10 },
@@ -5171,6 +5199,69 @@ Config.Audio.Ambient = {
 		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
+
+-- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
+-- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
+-- attribute Attr = "HP,MP," (three entries, "" = empty), c->s Remote(slot 1..3, item key or ""): known keys only, the same
+-- item in another slot swaps. Items[key] = { Name, Icon (Config.UIArt part), Use = "Potion" (VitalsUI's UsePotion), Kind,
+-- Stock / ReadyAt (the owner's attributes), Cooldown (s) }; Order = the bag's quick items rows
+Config.QuickSlots = {
+	Count = 3,
+	-- 검수 10/10 (user: "물약 사서 슬롯에 장착하는 퀘스트"): a new player starts with empty slots (the quest row says what to
+	-- do); an old save gets HP / MP from the server
+	Default = { "", "", "" },
+	Attr = "QuickSlots",
+	Remote = "SetQuickSlot",
+	Order = { "HP", "MP" },
+	Items = {
+		HP = { Name = "HP Potion", Icon = "IconPotionHP", Use = "Potion", Kind = "HP", Stock = "HPPotionCount", ReadyAt = "HPPotionReadyAt",
+			Cooldown = Config.Vitals.PotionCooldown },
+		MP = { Name = "MP Potion", Icon = "IconPotionMP", Use = "Potion", Kind = "MP", Stock = "MPPotionCount", ReadyAt = "MPPotionReadyAt",
+			Cooldown = Config.Vitals.PotionCooldown },
+	},
+}
+
+-- A23-108 (user 2026-10-10 "직업별로 무기 쥐는 법 이런 것도 다 해야 된다"; docs/design/class_grips_a23_108_2026-10-10.md):
+-- each class x faction holds its weapon its own way. Key = Config.ClassGripKey(class, faction) ("Warrior_Halo" ... ,
+-- a class alone without a side). Weapon = what the hand holds (CharacterVisuals proposal, game dev 3 checks); Hold =
+-- the standing pose WeaponPose.luau adds over Roblox's idle / walk while the weapon is out and no attack plays
+-- (degrees in joint space like Fx MOTION.CLIPS: +rx raises an arm forward / leans back, +rz swings an arm to the
+-- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows)
+Config.ClassGrips = {
+	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 22, 0, 8 }, RightElbow = { 38, 0, 0 },
+		RightWrist = { -30, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	-- Berserker: the great sword rests on the right shoulder, a low stance
+	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 72, 0, 26 },
+		RightElbow = { 112, 0, 0 }, RightWrist = { -18, 0, 0 }, LeftShoulder = { 12, 0, -8 } } },
+	-- Blacksmith: the hammer on the right shoulder, the left hand on the hip
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 62, 0, 20 }, RightElbow = { 104, 0, 0 },
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
+	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 12, 0, 10 }, RightElbow = { 22, 0, 0 },
+		LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -20, 0, 0 } } },
+	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
+	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
+		RightShoulder = { 32, 0, 6 }, RightElbow = { 26, 0, 0 }, RightWrist = { -36, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
+	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
+	-- handed), the left hand on the hip
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 42, 0, 10 }, RightElbow = { 82, 0, 0 },
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } } },
+	-- Ranger: the long bow upright in the left hand at the side
+	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 20, 0, -10 }, LeftElbow = { 26, 0, 0 },
+		RightShoulder = { 6, 0, 6 } } },
+	-- Shadow Hunter: low and quiet, the short bow hanging down
+	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },
+		LeftShoulder = { 6, 0, -8 }, RightShoulder = { 10, 0, 6 } } },
+	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
+	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
+		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },
+}
+function Config.ClassGripKey(classId, faction)
+	if type(classId) ~= "string" then return nil end
+	if faction == "Halo" or faction == "Horns" or faction == "Neutral" then return classId .. "_" .. faction end
+	return classId
+end
 
 Config.Combo = { ResetSeconds = 4, Milestones = { { 10, "Nice! x10" }, { 25, "Great! x25" }, { 50, "Wild! x50" }, { 100, "Legend! x100" } } }
 
@@ -5994,6 +6085,7 @@ Config.Text = {
 	PotionGreeting = "Fizzby: Glug, glug, feel better!",
 	PotionStockFull = "You can hold up to %d of each potion.", -- (PotionInventoryCap)
 	PotionBought = "Bought %s potion ×%d!", -- (kind, amount)
+	PotionPractice = "Cheers! The potion stays in your bag.", -- A23-110: a drink at full HP / MP while the quest step waits for it
 	-- PvP
 	Plundered = "%s stole %s gold from you!\nIf a knight catches the thief within 45 s, you get 120%% back.",
 	PlunderGain = "Put %s gold in your Grudge Sack!\nKeep it: survive 45 s in a PvP zone. (Wanted stars: %d)",

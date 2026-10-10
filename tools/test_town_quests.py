@@ -193,10 +193,10 @@ MUTATIONS = [
     ("daily intro: offered at once", C, "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Requires = { Done = { \"M1_4\" } },",
      "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Requires = { Done = { \"M1_1\" } },"),
     ("daily intro: only for Halo", C, "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Requires", "Title = \"Daily Jobs\", ShortName = \"Daily jobs\", Factions = { Halo = true }, Requires"),
-    ("daily intro: no closing line", C, "\tFinish = \"Daily jobs are open!\",\n", ""),
-    ("daily intro: pays nothing", C, "\tReward = { Gold = 1, XP = 1 },\n\tFinish = \"Daily jobs are open!\",", "\tFinish = \"Daily jobs are open!\","),
+    ("daily intro: a closing toast again", C, "\tReward = { Gold = 1, XP = 1 }, -- no Finish line", "\tFinish = \"Daily jobs are open!\",\n\tReward = { Gold = 1, XP = 1 }, -- no Finish line"),
+    ("daily intro: pays nothing", C, "\tReward = { Gold = 1, XP = 1 }, -- no Finish line", "\t-- no Finish line"),
     ("daily intro: not in the sub list", C, "table.insert(Config.StoryQuests.Subs, \"D0\")\n", ""),
-    ("daily intro: it pops up by itself", C, "\tReward = { Gold = 1, XP = 1 },\n\tFinish = \"Daily jobs are open!\",", "\tReward = { Gold = 1, XP = 1 },\n\tPop = true,\n\tFinish = \"Daily jobs are open!\","),
+    ("daily intro: it pops up by itself", C, "\tReward = { Gold = 1, XP = 1 }, -- no Finish line", "\tReward = { Gold = 1, XP = 1 },\n\tPop = true, -- no Finish line"),
     ("daily intro: not a dialogue", C, "{ Text = \"Hear about the daily jobs\", Panel = true, Obj = { Type = \"Talk\" },", "{ Text = \"Hear about the daily jobs\", Obj = { Type = \"Talk\" },"),
     ("egg: the scroll speaks as the guide", C, "Hidden = true, Speaker = \"Scroll\",", "Hidden = true,"),
     ("egg: the patch note speaks as the guide", C, "ShortName = \"Patch Note\", Hidden = true, Speaker = \"Notice\",", "ShortName = \"Patch Note\", Hidden = true,"),
@@ -485,12 +485,7 @@ SUITE = Suite(
              "LinesBy has a Default; a real pick (with points) on the other side from the last one adds ChangedGood / "
              "ChangedEvil (data.Story.LastSide, bad values dropped at load). E3: Reward.Title / TitleBy -> "
              "TitleService.Grant + 'New title: %s!' when new. E5: Hidden subs: no Start toast, no row until found (past "
-             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). 빛 마을 점검 2026-10-10: every Halo-only "
-             "pick happens in Halo Citadel (Npc Bright, or after a way-home step: H2 / H3 Enter HaloTown, H6 Near HeroStatue); "
-             "H2 step 1 guides to the Fountain; H3 / H5 have Start lines; H1 says 'in the meadow'; OathH / OathR sit in the "
-             "Faction tab; a workspace instance tagged StoryLandmark with Spot = <key> moves that landmark (Near steps and "
-             "kill-Near), a marker outside the workspace or for another key moves nothing. "
-             "A23-64 ② (zone_check_halo #39): every "
+             "step 1 / claim); a 0-point pick says LeanGood / LeanEvil (no score line). A23-64 ② (zone_check_halo #39): every "
              "story pick (0-point and Neutral A / B too), a ChoiceCard Good / Evil pick and a finisher Help / Tickle "
              "send one Fx Afterglow { UserId, Side, Seconds = Config.Afterglow.Seconds (60), Private } to every client, "
              "or only to the chooser in a PvP area (an unknown zone counts as PvP); None / Enabled off / From off = none. "
@@ -500,7 +495,12 @@ SUITE = Suite(
              "said only in the player's own town (npc Town == Config.HomeZoneId(faction), zone ids) and only to the "
              "quest's own factions (Defs[id].Factions); lines live in Config.TownReact.Text (Good / Evil by quest id, "
              "FactionPick overrides); every line <= 12 words, no format tokens, no scary words, Bright / Smokey = she. "
-             "Config.TownReact.Tag = the tag TownNpcs gives its Folk bodies, which stand in a town zone.",
+             "Config.TownReact.Tag = the tag TownNpcs gives its Folk bodies, which stand in a town zone. "
+             "빛 마을 점검 2026-10-10: every Halo-only "
+             "pick happens in Halo Citadel (Npc Bright, or after a way-home step: H2 / H3 Enter HaloTown, H6 Near HeroStatue); "
+             "H2 step 1 guides to the Fountain; H3 / H5 have Start lines; H1 says 'in the meadow'; OathH / OathR sit in the "
+             "Faction tab; a workspace instance tagged StoryLandmark with Spot = <key> moves that landmark (Near steps and "
+             "kill-Near), a marker outside the workspace or for another key moves nothing.",
     limitations="NPC models, '!' markers, the talk window and the quest marker routes are game dev 1's (contract: tag "
                 "StoryNpc, attribute NpcId, row Story.Npc / Guide). Real walking, physics and the 1 s loop timing are "
                 "modelled by moving the root and calling Refresh each second.",

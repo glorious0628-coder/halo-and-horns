@@ -1,5 +1,5 @@
 {
-  "checks": 11,
+  "checks": 14,
   "failed": 0,
   "mutations": [
     {
@@ -23,6 +23,11 @@
       "caught": true
     },
     {
+      "name": "the '!' stays on the old head",
+      "applied": true,
+      "caught": true
+    },
+    {
       "name": "extra '!' copies stay",
       "applied": true,
       "caught": true
@@ -34,6 +39,16 @@
     },
     {
       "name": "the '!' on the feet",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a Talk press does not open at once",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every prompt expects a page",
       "applied": true,
       "caught": true
     },

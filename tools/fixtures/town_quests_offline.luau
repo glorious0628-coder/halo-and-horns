@@ -1723,8 +1723,8 @@ runGroup("daily intro quest (A23-104)", function()
 	local done = {}
 	w.Story.QuestDone:Connect(function(_, id) table.insert(done, id) end)
 	local def = SQ0.Defs.D0
-	check(def.Reward.Gold == 1 and def.Reward.XP == 1 and def.Finish == "Daily jobs are open!" and def.Steps[1].Lines.All[1] ~= nil
-		and C0.Daily.IntroQuest == "D0", "D0: a small reward, the closing line 'Daily jobs are open!', the guide speaks (no Speaker)", show(def.Reward))
+	check(def.Reward.Gold == 1 and def.Reward.XP == 1 and def.Finish == nil and def.Steps[1].Lines.All[1] ~= nil
+		and C0.Daily.IntroQuest == "D0", "D0: a small reward, no 'Daily jobs are open!' closing line (A23-99), the guide speaks (no Speaker)", show(def.Reward))
 	-- before the first chapter is over: nothing is offered
 	local e, ed = joinAfterM23(w, 970, "Halo", { Before = true })
 	w.Story.Refresh(e)
@@ -1745,7 +1745,7 @@ runGroup("daily intro quest (A23-104)", function()
 		local gold0 = d.BankGold or 0
 		w:Act(p, "D0", "Talk")
 		check(d.Story.Done.D0 == true and w:Track(d, "D0") == nil and done[#done] == "D0" and (d.BankGold or 0) > gold0
-			and said(w, p, n0, "Daily jobs are open!"), faction .. ": talked: done, QuestDone fires, a little gold, 'Daily jobs are open!'", show({ done, d.BankGold }))
+			and not said(w, p, n0, "open"), faction .. ": talked: done, QuestDone fires, a little gold, no 'daily jobs are open' toast", show({ done, d.BankGold }))
 		w.Story.Refresh(p)
 		w:Act(p, "D0", "Talk")
 		local count = 0

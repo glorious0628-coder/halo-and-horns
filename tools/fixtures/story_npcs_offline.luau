@@ -132,6 +132,12 @@ SN.Refresh()
 count = 0
 for _, ch in bright.Children do if ch.ClassName == "BillboardGui" then count += 1 end end
 check(count == 1 and markOf(bright) == mk and stale.Parent == nil, "an extra '!' left on the model is removed (one kept)", count)
+-- 검수 10/10 (API review ②): a rebuilt body (a new head) - the "!" follows it
+local oldHead = bright:FindFirstChild("Head")
+oldHead:Destroy()
+local newHead = obj("Part", "Head", bright)
+SN.Refresh()
+check(mk.Adornee == newHead, "a new head: the '!' floats over it", tostring(mk.Adornee and mk.Adornee.Name))
 ROWS = { { Story = { Id = "H1", St = 2, Panel = true, Npc = "Gleam" } } }
 SN.Refresh()
 check(mk.Enabled == false and bp.Enabled == false and markOf(gleam).Enabled == true and gp.Enabled == true,
@@ -140,5 +146,11 @@ bright.Parent = nil
 ROWS = { { Story = { Npc = "Bright" } } }
 SN.Refresh()
 check(mk.Enabled == false, "an NPC out of the world is left alone")
+-- 검수 10/10: a Talk prompt press opens the server's page even while Panels would hold it (Panels.ExpectStory)
+local expected = {}
+SN.Init({ HUD = { QuestEntries = function() return ROWS end }, UIKit = { Theme = {} },
+	Panels = { ExpectStory = function(id) table.insert(expected, id) end } })
+check(SN.OnPrompt(bp) == true and expected[1] == "Bright", "a press on Bright's Talk prompt -> Panels.ExpectStory", expected[1])
+check(SN.OnPrompt(bOther) == false and #expected == 1, "another prompt changes nothing", #expected)
 
 print(("STORY_NPCS_SUMMARY checks=%d failed=%d"):format(checks, failed))

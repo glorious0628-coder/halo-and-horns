@@ -35,6 +35,11 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_quest_target_2026-10-06.j
 
 # (name, exact text in QuestTarget.luau, replacement): each must match exactly once
 MUTATIONS = [
+    # dev2-halo / 검수 10/10: the server's Util.TaggedSpot rule
+    ("a tagged landmark never wins", '\t\tif okPos and typeof(pos) == "Vector3" then return pos end\n', ""),
+    ("a tagged landmark out of the world counts", ' or not inst:IsDescendantOf(workspace)', ""),
+    ("the guides still read Config only", "\treturn QuestTarget.StorySpot(guide)\nend",
+     "\tlocal spot = STORY_SPOTS[guide]\n\treturn typeof(spot) == \"Vector3\" and spot or nil\nend"),
     ("claim ignores CanClaim",
      "return entry.CanClaim == true and num(entry.Progress, 0) >= num(entry.Target, 1)",
      "return num(entry.Progress, 0) >= num(entry.Target, 1)"),

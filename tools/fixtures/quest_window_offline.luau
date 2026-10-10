@@ -308,6 +308,41 @@ REGISTERED.Journal.Cleanup()
 ENTRIES = { MAIN, KILL }
 HUDD.QuestsChanged:Fire()
 check("a closed window does not redraw", #bodyRows() == 1)
+-- A23-104 / 검수 10/10 (a Lv1 photo showed all five tabs): the tabs follow what there is
+local ALL = { MAIN, SIDE, HALO, GOOSE, KILL, GOLD, JOB }
+check("VisibleTabs: every tab has rows -> all five", table.concat(Book.VisibleTabs(ctx({ Entries = ALL })), ",") == "Main,Side,Daily,Event,Faction",
+	table.concat(Book.VisibleTabs(ctx({ Entries = ALL })), ","))
+check("VisibleTabs: DailyLocked hides Daily", table.concat(Book.VisibleTabs(ctx({ Entries = ALL, DailyLocked = true })), ",") == "Main,Side,Event,Faction")
+check("VisibleTabs: a first-chapter list (the main quest only, dailies locked) -> Main only",
+	table.concat(Book.VisibleTabs(ctx({ Entries = { MAIN }, DailyLocked = true })), ",") == "Main",
+	table.concat(Book.VisibleTabs(ctx({ Entries = { MAIN }, DailyLocked = true })), ","))
+local keepStep = ATTR.TutorialStep
+ATTR.TutorialStep = 1 -- the first mission runs: nothing done yet either
+check("VisibleTabs: Main shows even with nothing in it", table.concat(Book.VisibleTabs(ctx({ Entries = {}, DailyLocked = true })), ",") == "Main",
+	table.concat(Book.VisibleTabs(ctx({ Entries = {}, DailyLocked = true })), ","))
+ATTR.TutorialStep = keepStep
+do
+	local function tabTexts(P)
+		local out = {}
+		for _, c in P:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(out, (string.gsub(c.Text, " %d+$", ""))) end end
+		return table.concat(out, ",")
+	end
+	ENTRIES = { MAIN }
+	HUDD.DailyLocked = function() return true end
+	local PV = inst("Frame")
+	REGISTERED.Journal.Build(PV, KIT, { Tab = "Faction" })
+	check("the window on the first chapter: only the Main tab (an asked empty tab falls back to Main)", tabTexts(PV) == "Main", tabTexts(PV))
+	ENTRIES = { MAIN, SIDE }
+	HUDD.QuestsChanged:Fire()
+	check("a side quest comes: its tab appears", tabTexts(PV) == "Main,Side", tabTexts(PV))
+	HUDD.DailyLocked = function() return false end
+	ENTRIES = { MAIN, SIDE, KILL }
+	HUDD.QuestsChanged:Fire()
+	check("the daily jobs open: the Daily tab appears", tabTexts(PV) == "Main,Side,Daily", tabTexts(PV))
+	REGISTERED.Journal.Cleanup()
+	HUDD.DailyLocked = nil
+	ENTRIES = { MAIN, KILL }
+end
 -- Toggle (Q / the HUD's ▼ / a phone tap)
 Book.Toggle()
 check("Toggle opens the window", OPENED[#OPENED] and OPENED[#OPENED][1] == "Journal")
@@ -320,6 +355,7 @@ check("Toggle(false) while closed does nothing", CLOSED == 1)
 -- a tab asked for
 local P2 = inst("Frame")
 ORDER = 0
+ENTRIES = { MAIN, SIDE, HALO, GOOSE, KILL, GOLD, JOB } -- every tab has rows (empty tabs hide: A23-104 / 검수 10/10)
 REGISTERED.Journal.Build(P2, KIT, { Tab = "Faction" })
 local b2 = {}
 for _, c in P2:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(b2, c) end end
@@ -335,7 +371,7 @@ REGISTERED.Journal.Build(P3, KIT, { Tab = "Event" })
 local links, b3 = {}, {}
 for _, c in P3:FindFirstChild("Body").Children do if c.Name == "Link" then table.insert(links, c) end end
 for _, c in P3:FindFirstChild("Tabs").Children do if c.Name == "Button" then table.insert(b3, c) end end
-check("Event tab: the diary and jar rows; no count on the tab for them", #links == 2 and b3[4] and b3[4].Text == "Event",
+check("Event tab: the diary and jar rows; no count on the tab for them (the goose story's 1 only)", #links == 2 and b3[4] and b3[4].Text == "Event 1",
 	#links .. " " .. tostring(b3[4] and b3[4].Text))
 if links[2] then links[2].Activated:Fire() end
 check("a link opens the diary window on its tab", SUBS[1] and SUBS[1][1] == "Diary" and SUBS[1][2].Tab == "Jar")
