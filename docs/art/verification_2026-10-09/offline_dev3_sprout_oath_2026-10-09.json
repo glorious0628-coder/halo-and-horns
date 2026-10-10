@@ -498,13 +498,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "config :: every main + sub still fits in the book's Done",
           "config :: the main chain goes M3_4 -> M3_6 (M3_5 is a side line)",
           "graduation as a side line :: a saved main M3_5 (step 2) moves to the side lines and M3_6 starts",
           "graduation as a side line :: a sub that exists is not overwritten by the old main",
           "graduation as a side line :: meanwhile M3_6 ran",
           "the main chain skips M3_5 :: after M3_4 the main quest is M3_6"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "M3_5 is a main again",
@@ -894,9 +895,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ed5fdc24dc03d34144f23d41730e4febe24b9a2fa1b4ce34c6cafc1335c61ae8",
+    "src/ReplicatedStorage/Shared/Config.luau": "68342cc70b615239386a54a79bcefd03848574ae0407f38e71ea13a5ad71d41d",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/StoryQuestService.luau": "d4e0a2d1b570ce92f20aef4c72a81659b3a1db2ccdc4e00bb5bf350350328a29"
+    "src/ServerScriptService/StoryQuestService.luau": "dc0a8450b7202f75db01928f4ff797a239d98d56cac555e68da9fccaaa145228"
   },
   "fixtureSHA256": "9b55e0d5cf55d9db0e8b94f6882b3ded902417c8727df958b96bfc818234e3d5",
   "sourcesChangedDuringRun": [],

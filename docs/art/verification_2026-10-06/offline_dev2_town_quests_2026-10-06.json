@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 660,
+  "checks": 683,
   "failedChecks": 0,
-  "namedChecks": 655,
+  "namedChecks": 678,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -3585,6 +3585,36 @@
     },
     {
       "group": "easter-eggs",
+      "check": "EG01: the joke pick is marked MyWay = false (only that one)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "the scroll, the note and the goose get no face; the Crown Shard keeps hers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "EG04: the Shard's line has no 'Sky Crown:' label (the speaker says it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
+      "check": "every quest's Speaker names a Speakers entry",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "easter-eggs",
       "check": "the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch",
       "pass": 1,
       "fail": 0
@@ -3936,15 +3966,123 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H1 waits at Bright (its first card)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a step talked through an NPC never pops up by itself",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "talking to Bright opens H1's card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "80 studs away: nothing opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "another NPC, a bad id or a bad player: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "(the same player with a class: H1 opens)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a player who has not chosen a class: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "the prompt's trigger opens the card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a second trigger within 0.4 s is ignored (rate limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a prompt without a StoryNpcId, a bad id, no player: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "H1 moved on (no more card at Bright): nothing opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "two cards wait at Bright: the newest quest (last in Subs) first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "then the next one waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a quest waiting for [Claim] is skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "a nil / non-string NPC id never opens a dialogue that names no NPC",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "an NPC id nobody waits at: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "npc-talk",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 154,
-    "applied": 154,
-    "caught": 154,
+    "total": 172,
+    "applied": 172,
+    "caught": 172,
     "skipped": false,
     "results": [
       {
@@ -5049,6 +5187,106 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "egg: the scroll speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the patch note speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the goose speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the sky speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the bench note speaks as the guide",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the scroll has no name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face",
+          "easter-eggs :: every quest's Speaker names a Speakers entry"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: the goose has another name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: every egg has its own speaker (a scroll, a note, the goose, the Crown Shard): no guide name or face"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the sky still says 'Sky Crown:'",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG04: the Shard's line has no 'Sky Crown:' label (the speaker says it)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "egg: the joke pick counts for My Way",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "easter-eggs :: EG01: the joke pick is marked MyWay = false (only that one)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "egg: Goose Fan is Halo only",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
@@ -5124,6 +5362,112 @@
           "easter-eggs :: EG01: three pages for 'Read it all', one for 'I agree', a Lines fallback"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: any distance",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: 80 studs away: nothing opens",
+          "npc-talk :: another NPC, a bad id or a bad player: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "npc talk: any NPC",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: (the same player with a class: H1 opens)",
+          "npc-talk :: H1 moved on (no more card at Bright): nothing opens",
+          "npc-talk :: a quest waiting for [Claim] is skipped",
+          "npc-talk :: an NPC id nobody waits at: nothing",
+          "npc-talk :: another NPC, a bad id or a bad player: nothing",
+          "npc-talk :: talking to Bright opens H1's card"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "npc talk: a quest waiting for [Claim]",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a quest waiting for [Claim] is skipped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: the oldest quest first",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: two cards wait at Bright: the newest quest (last in Subs) first"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: a player without a class",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a player who has not chosen a class: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: a non-string id",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a nil / non-string NPC id never opens a dialogue that names no NPC"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: the prompt is never heard",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: any prompt",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a prompt without a StoryNpcId, a bad id, no player: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "npc talk: no rate limit",
+        "file": "src/ServerScriptService/StoryQuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "npc-talk :: a prompt without a StoryNpcId, a bad id, no player: nothing",
+          "npc-talk :: a second trigger within 0.4 s is ignored (rate limit)"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "egg: the scroll titles are swapped",
@@ -5931,11 +6275,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7fed57245142b7cf3f14b425225c710aad79a6ad69c755f891b913cb38049f46",
+    "src/ReplicatedStorage/Shared/Config.luau": "68342cc70b615239386a54a79bcefd03848574ae0407f38e71ea13a5ad71d41d",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ServerScriptService/CombatService.luau": "fcfb61ec7b39ec45644300169d1f72dd94a99e7dcd47bc094598781b63470701",
     "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "d4e0a2d1b570ce92f20aef4c72a81659b3a1db2ccdc4e00bb5bf350350328a29",
+    "src/ServerScriptService/StoryQuestService.luau": "dc0a8450b7202f75db01928f4ff797a239d98d56cac555e68da9fccaaa145228",
     "src/ServerScriptService/PvPService.luau": "ea959f7154ee853c347b76bba9b439c2fb84704bd9d77647b34eac0fff4d00dc",
     "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
     "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
@@ -5944,7 +6288,7 @@
     "src/ServerScriptService/FactionService.luau": "de7ba5269fdec68557d7360cd3d45d59cbde319d9cafa1584e0e513978d0077c",
     "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645"
   },
-  "fixtureSHA256": "0d798a356e694826c4eaae3798b3654ba13084d150870866689467000911d176",
+  "fixtureSHA256": "2b4555bb9cb1af70add010ecf64db06329df7506d3201e2bb666ce9ed5c1672d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
