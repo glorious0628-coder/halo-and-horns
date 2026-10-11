@@ -69,6 +69,8 @@ MUTATIONS = [
     ("BAG", "scrolls during a fight", "\t\t\telseif ctx.Combat then\n\t\t\t\tact(go, tx(TXT, \"InFight\"), false, \"Free\")",
      "\t\t\telseif false then\n\t\t\t\tact(go, tx(TXT, \"InFight\"), false, \"Free\")"),
     ("BAG", "equip below MinLevel", "\t\telseif not Config.WeaponUsable(cell.Tier, level) then\n", "\t\telseif false then\n"),
+    ("BAG", "a locked weapon shows a power change", "elseif now and with and Config.WeaponUsable(cell.Tier, level) then",
+     "elseif now and with then"),
     ("BAG", "weapon swap during a fight", "\t\telseif ctx.Combat then\n\t\t\tact(\"Equip\", tx(TXT, \"InFight\"), false, \"Free\")",
      "\t\telseif false then\n\t\t\tact(\"Equip\", tx(TXT, \"InFight\"), false, \"Free\")"),
     ("BAG", "no power change", "\t\t\tline(tx(TXT, \"Power\", Util.FormatInt(now), Util.FormatInt(with))", "\t\t\tline((\"\")"),

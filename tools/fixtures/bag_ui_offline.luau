@@ -389,6 +389,8 @@ v = detail(byKey["W:7"] or byKey["W:4"])
 local lockTier = byKey["W:7"] and 7 or 4
 check(action(v, "Equip").Text == string.format("From Lv %d", Config.Weapons[lockTier].MinLevel) and not action(v, "Equip").Enabled,
 	"below its MinLevel: From Lv N, off (A23-28)", action(v, "Equip").Text)
+check(lineWith(v, "Power") == nil, "a weapon I can't equip yet shows no power change (UiSandbox 10/12)")
+check(T.TXT.Worn.PetGear == "Pet" and #T.TXT.Worn.Weapon <= 6, "the worn row's words are one short word each (UiSandbox 10/12)")
 v = detail(byKey["W:1"], { Combat = true })
 check(action(v, "Equip").Text == "In a fight" and not action(v, "Equip").Enabled, "PvP fight tag: no weapon swap")
 v = detail(byKey["W:1"], { Pending = { Kind = "Equip", Tier = 1 } })

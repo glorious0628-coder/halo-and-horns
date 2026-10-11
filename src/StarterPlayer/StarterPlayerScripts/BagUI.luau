@@ -38,7 +38,7 @@ local TXT = {
 	Title = "Bag",
 	Tabs = { Gear = "Gear", Use = "Use", Scroll = "Scrolls", Material = "Materials" },
 	Sorts = { Default = "Newest", Name = "Name", Grade = "Grade", Kind = "Type" },
-	Worn = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", PetGear = "Pet gear" },
+	Worn = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", PetGear = "Pet" }, -- one short word per slot (UiSandbox 10/12: "Pet gear" ran into "Ring")
 	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
 	Slow = "No answer yet. Try again.",
 	Attack = "Attack %s",
@@ -478,7 +478,7 @@ function BagUI.Detail(cell, ctx)
 		local with = type(ctx.Power) == "function" and ctx.Power(cell.Tier, cell.Plus) or nil
 		if cell.Equipped and now then
 			line(tx(TXT, "PowerNow", Util.FormatInt(now)))
-		elseif now and with then
+		elseif now and with and Config.WeaponUsable(cell.Tier, level) then -- a locked weapon: no power it can't give yet
 			line(tx(TXT, "Power", Util.FormatInt(now), Util.FormatInt(with)), with > now and "Good" or (with < now and "Sub" or nil))
 		end
 		local source = Config.WeaponSource(cell.Tier)
@@ -842,9 +842,11 @@ local function drawWorn(parent, all, cols)
 			box = slot(frame, nil, nil, L.Cell, nil, "Worn" .. kind)
 		end
 		box.Position = UDim2.fromOffset(x, 0)
+		-- the word fits its own column (UiSandbox 10/12: fixed 15 du words ran into each other): scaled down to the
+		-- name tag floor (12 px), never past the slot + the gap
 		label(frame, tx(TXT.Worn, kind), L.Size.Small, colorOf("Sub"), { Name = "WornCap" .. kind,
-			Position = UDim2.fromOffset(x - 6, L.Cell), Size = UDim2.fromOffset(L.Cell + 12, L.WornCap),
-			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false })
+			Position = UDim2.fromOffset(x - math.floor(L.Gap / 2), L.Cell + 2), Size = UDim2.fromOffset(L.Cell + L.Gap, L.WornCap - 2),
+			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, TextScaled = true, Style = "NameTag" })
 	end
 	return L.Cell + L.WornCap + L.RowGap
 end

@@ -1,5 +1,5 @@
 {
-  "checks": 126,
+  "checks": 128,
   "failed": 0,
   "mutations": [
     {
@@ -99,6 +99,11 @@
     },
     {
       "name": "equip below MinLevel",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a locked weapon shows a power change",
       "applied": true,
       "caught": true
     },
