@@ -1,4 +1,4 @@
-# 게임성 개발 1 — 인계 상태 (2026-10-11 밤 늦게, ①②③ + 후속 3묶음 + 황금 알 화면(7) 끝·보고함)
+# 게임성 개발 1 — 인계 상태 (2026-10-12 밤, PC 꺼짐 전 마무리 — 아침에 '아침에 할 것'부터)
 
 클라 코드만(창·HUD·Config·Fx). 메인 Studio는 건드리지 않음(sync·사진 = 메인 반영 1). 사용자에게 직접 묻지 않음. 보고는 send_message, 묶음마다 한 번 → 턴 끝내기.
 - **보고처(사용자 10/11 변경):** 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
@@ -26,6 +26,14 @@
 10. **fix/photo-1012 471d099c** (main 0696ccc4에서, wt_onehand 재사용 — onehand-2는 병합됨): ① 지팡이 끝이 사진에서 0.27/0.26 뜸 → WeaponPose.StaffStep/StaffLift(화면이 Shaft 끝→땅 재서 손 목표 보정, ±0.4) — 서버 HipHeight 식은 맞았음(PotionMerchant 부품 위치가 낡음: 몸 크기 1.06, 연결점 기준 윗몸통 3.441·키 5.46; 크기 1이면 ~5.15라 H 5.2 그대로; grip_reference §5-1 바로잡음). ② 가방 강화 칩 → Config.Loot.Text EnhanceOk/FailDown/FailKeep/MoveOk 결과만(인자 그대로), tools/test_enhance_lines.py. 게임성 검수·개발 2에 알림.
 
 11. **main 96ec45ad에 병합됨:** golden-egg-client(eebeebd3까지)·onehand-2·photo-1012·reward-chip. **fix/egg-mine cef8f3f6** (wt_goldegg, main 8e6b7288에서): Eggs 켜기 전 낮은 것 — Near에 S.Trail 포함, MineAt은 미리 보기 없는 줍기만. test_egg_fx 55·29/29. 게임성 검수에 보고.
+
+12. **fix/pvp-toast 2dec3bdf** (wt_lesstext, main 408e6a5f에서, push함, 게임성 검수에 보고): 첫 PvP 카드 + 'PvP zone!' 겹침 → UIKit.NotifyFilters + FirstSteps PVP.SkipToast(Config.Text.EnteredPvP / Key; 카드 기다림·열림·이번 진입에 열릴 때만 건너뜀). 시험 first_steps 57·32/32 등 통과. **test_audio(혼자 돌려야 함)는 못 끝냄 → 아침에 돌려 게임성 검수에 결과.**
+
+## 아침에 할 것 (게임성 검수 10/12 밤, 사용자 'PC 꺼짐' 직전)
+1. test_audio를 fix/pvp-toast(wt_lesstext)에서 **혼자** 돌려 결과 보고(다른 시험과 동시면 시간 재는 2개가 흔들림).
+2. 지팡이 끝 경사·계단: 사진 측정 평지 0.02~0.07 OK, 계단 −0.12(박힘)·경사 +0.51(뜸) → WeaponPose.StaffStep에서 Ground.Cast 법선(hit.Normal) 고려 (경사면에서 발끝 바로 아래 높이 vs 기울기; 계단 모서리는 발끝 둘레 몇 점 중 가장 높은 땅). 낮음. 새 가지(main에서) + test_one_hand_grips StaffLift 경사 사례.
+3. HUD Hero 칸: 지금 'Coming soon!' 칩만(창 없음) → 베타 전 Hero 창(BB8 내 캐릭터·장비창) 계획 전까지 **다른 잠긴 칸과 같은 자물쇠 표시, 누르면 아무 글 없음**(덜 친절한 UI, A23-99/130). HUD 칸 잠금 모양은 이미 있는 잠긴 칸(Lv 5·Get pet·Story 1)과 같게.
+4. 그다음 큐는 아래 '그다음 큐' + A23-137(거위 4시간마다: EventHUD 예고 칩 = 다음 거위 시각), A23-138(밈 묶음 fix/meme-en-client, Smokey → Rose) 지시 오면.
 
 ## 기다리는 것
 - 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(eebeebd3) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
