@@ -54,6 +54,9 @@ Net.Names = {
 	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
 	"SetQuickSlot", -- A23-109 (게임성 개발 2): (slot 1..3, item: a Config.QuickSlots.Items key | "") QuickSlotService; the
 	-- answer is the owner's QuickSlots attribute (no reply remote)
+	-- 게임성 개발 3 (2026-10-11), server -> client:
+	"GatherState", -- owner only { Ready = { [GatherId] = workspace:GetServerTimeNow() it can be picked again }, N, Cap }
+	-- (GatherService after each gather and at PlayerReady; the client's GatherView dims my resting nodes)
 }
 
 Net.GameStateDefaults = {

@@ -3,6 +3,7 @@
 근거: `docs/design/gathering_2026-10-06.md`(검수 설계, 규칙·숫자는 거기가 기준), SPEC A23-119(채집 베타 포함)·A23-127(제작은 장인만)·A23-133(모든 글 L10n 키, 한국어 베타)·A23-111·A23-78(상호작용 G)·A23-58·A23-86(Deeds 하루 6점)·A23-96(노드 3D 새로),
 `docs/design/save_v4_tables_2026-10-11.md`(Gather 표), `docs/design/l10n_contract_2026-10-11.md` §5(ids·키만), 코드 main ca7554ae.
 이 문서는 **서버 계약 + 화면 계약(게임성 개발 4)**이다. 10/06 설계에서 바뀐 곳만 '바뀜'으로 적는다.
+**구현(10/11 밤, 가지 `dev3-gather`):** `GatherService.luau`, `LootService.GrantItems`, Config(`Config.Features.Gathering`은 따로 한 줄 — Features 표 줄을 바꾸면 다른 시험의 변이가 깨짐), Net `GatherState`, Main 두 목록. 시험 `tools/test_gather.py`(113 named, 변이 74/74). 화면 = 게임성 개발 4 `dev4-gather`(GatherView).
 
 ## 0. 한눈에
 - 누구나(빛·뿔·장인) 같은 규칙: 노드 8스터드 안에서 **G 꾹**(폰 버튼 꾹) → 재료 1개(20%는 2개). XP·주문서·무기·물약 없음.
@@ -81,18 +82,18 @@ Config.RateLimits.Gather = 1
 - 클라 `GatherView`: Ready가 미래인 노드는 **나에게만** 프롬프트 `Enabled = false`(로컬), 흐리게, 반짝이 끔. 시각이 지나면 다시 켬.
 - 얻음 팝업 = 기존 Fx "Loot"(Items = `{ { Item = id, N } }`, 이름은 클라가 id로). 장인이면 Fx "Gather" `{ Id, Artisan = true }` → 청록 톱니 반짝이·망치 톡톡(겉모습뿐).
 - 조각 꽃 = 기존 ChoiceCard Fx "Card"/"CardEnd". 프롬프트 글 = `ActionKey`/`ObjectKey`.
-- 첫 안내 한 줄(M1_1 뒤, 노드 근처 한 번)은 화면 쪽에서 `Config.Gather.Text.FirstHint`(BB24 규칙, A23-130대로 짧게).
+- 첫 안내 줄은 **없음**(게임성 개발 4 판단, A23-130 설명 글 줄이기). `FirstHint` 키는 만들지 않았다.
 
 ## 8. 다른 서비스와 이어지는 곳
 - **LootService**: 공개 `GrantItems(player, list, pos, source)` 추가(개발 2 파일 — 이 가지에서 작은 함수만, 개발 2에 알림).
 - **CombatService.PlayerDamaged**: 연결만(파일 안 고침).
 - **ChoiceCard**: 카드 종류 하나 + Picked 연결(파일 안 고침).
 - **퀘스트**: `GatherService.Gathered` 신호. 목표 종류 `Gather`(일일 "Pick 8 herbs", 장인 'First Harvest')는 ⑧ 장인 첫 10분에서 붙임.
-- **Main.server.luau**: 목록에 LootService 다음, **같은 커밋**으로(따로 올리면 서버가 멈춤).
+- **Main.server.luau**: 두 목록 모두 LostFoundService 다음(LootService·ChoiceCard 뒤, START는 PlayerService 앞), **같은 커밋**으로(따로 올리면 서버가 멈춤).
 - **Telemetry**: Funnel "FirstGather", 시간당 Heavy 넘으면 "GatherHeavy".
 
 ## 9. 열린 것 (검수에게)
-1. **오토의 '재료 팔기'는 Material을 전부 판다**(LootService onSellMaterials). 장인이 모은 제작 재료까지 팔릴 수 있음 → 제안: 오토 창(개발 2·4의 C-3)에 '팔 것 고르기' 또는 장인은 채집 재료 제외. 개발 2와 같이 정함.
+1. ~~오토의 '재료 팔기'는 Material을 전부 판다~~ → **게임성 검수 답(10/11):** 한 번에 다 팔기는 **몬스터 재료만** 판다. 채집·제작 재료(`Source`가 있는 물건, 예 "Gather")는 빼고, 나중에 가방에서 하나씩 고르는 SellItem(개발 4 가방 + 개발 2 서버)으로 판다. 구현: LootService onSellMaterials에 `def.Source ~= nil`이면 건너뜀(가지 `dev3-gather`, test_loot에 시험·변이). 최종 검수가 다르게 정하면 바꿈.
 2. 새 구역 노드(9번째)는 E-1 구역이 정해진 뒤.
 3. 노드 3D(이미지 생성 1/3): 노드 7종 2D → Tripo. 그 전까지 임시 대체(스위치 꺼짐).
 
