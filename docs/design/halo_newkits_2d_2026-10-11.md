@@ -23,3 +23,4 @@
 - ③ 벽등: 받침 앞·뒤 Medium(`HaloKit_WallLampBase_{front,back}_m.png`, Studio 참고, 뒤는 앞과 거의 같은 면이라 약함) + 머리(랜턴+고리)만 기존 High 4면에서 잘라 회색 1024에 가운데 놓은 4장(`HaloKit_WallLampHead_*.png`, 0크레딧).
 - 물뿌리개 오른쪽(디자인 검수 지시) High 다시: 손잡이가 앞, 리본은 손잡이 꼭대기, 주둥이는 몸통 뒤에 가려 끝만 보임 → 앞면 높이와 맞음(`kits_mv3/HaloKit_WateringCan_right_v2.png`, kits_mv2의 옛 right 대신 이것 사용).
 - 크레딧: 종 앞 5 + 종 3면 15 + 물뿌리개 5 + 27장 135 = 160. 오늘 밤 합계 약 575(무기 28+소품 4면 7종 140+6종 120+이번 160+사고 15), 표시 잔액 약 4,190.
+- (디자인 검수 지시) Tripo 카메라는 모두 정면 똑바로: 3/4 비스듬한 면 7장 다시 High(35크레딧): Planter_A front, Planter_E front·left·right(짧은 끝면), Balustrade_F front·left·right(끝 기둥 하나+덤불 끝). 파일 `kits_mv3/HaloKit_<키>_{front,left,right}_v2.png`, 시트 `art/review/s2/halo_kits3_fix7.jpg`. 뒤 등 나머지는 그대로. 눈으로: 면이 평평히 정면, 높이 같음, 장식 자리 일치.
