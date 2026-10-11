@@ -1,0 +1,59 @@
+{
+  "images": [],
+  "max_images": 40,
+  "job": "smoke_write_2026-10-11",
+  "model": "claude-haiku-5-5",
+  "status": "done",
+  "stop_reason": "end_turn",
+  "turns": 4,
+  "max_turns": 10,
+  "max_usd": 0.05,
+  "cost_usd": 0.001682,
+  "tokens": {
+    "input": 10,
+    "output": 711,
+    "cache_read": 20224,
+    "cache_write": 8991
+  },
+  "prompt_file": "C:\\Users\\glori\\AppData\\Local\\Temp\\claude\\C--Users-glori-Documents-Roblox-Game\\dd263bfb-da64-4234-9c06-1932c7dfa2bd\\scratchpad\\smoke_prompt.md",
+  "repo_dir": "C:\\Users\\glori\\Documents\\Roblox\\Game\\build\\api_agent_wt\\smoke_write_2026-10-11",
+  "worktree": "C:\\Users\\glori\\Documents\\Roblox\\Game\\build\\api_agent_wt\\smoke_write_2026-10-11",
+  "run_test": true,
+  "notes": [],
+  "started": "2026-10-11T05:22:12+00:00",
+  "updated": "2026-10-11T05:22:25+00:00",
+  "error": null,
+  "write": {
+    "branch": "api/smoke",
+    "ref": "origin/main",
+    "base": "170c062e82571ba34474c00811dda6668beedbe6",
+    "allow_run_modified_py": false
+  },
+  "ended": "2026-10-11T05:22:17+00:00",
+  "code": {
+    "branch": "api/smoke",
+    "base": "170c062e82571ba34474c00811dda6668beedbe6",
+    "head": "848b3d1fba23f5d45dba3aed0afdf56e89145b54",
+    "commits": [
+      {
+        "hash": "848b3d1fba23f5d45dba3aed0afdf56e89145b54",
+        "subject": "쓰기 시험: 제목 줄 한 줄 고침",
+        "files": [
+          "docs/design/halo_zonelook_values_2026-10-11.md"
+        ]
+      }
+    ],
+    "files_changed": [
+      "docs/design/halo_zonelook_values_2026-10-11.md"
+    ],
+    "uncommitted": [],
+    "touched": [
+      "docs/design/halo_zonelook_values_2026-10-11.md"
+    ],
+    "bytes_written": 3212,
+    "pushed": true,
+    "push_note": "remote: \nremote: Create a pull request for 'api/smoke' on GitHub by visiting:        \nremote:      https://github.com/glorious0628-coder/halo-and-horns/pull/new/api/smoke        \nremote: \nTo https://github.com/glorious0628-coder/halo-and-horns.git\n * [new branch]        HEAD -> api/smoke"
+  },
+  "worktree_removed": true,
+  "worktree_note": "removed"
+}
