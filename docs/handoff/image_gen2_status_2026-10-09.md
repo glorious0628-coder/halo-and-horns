@@ -137,3 +137,5 @@
 - 꽃 덤불 3종 + 생울타리 2종 중간 후보 10장: `art/out/s2/halo/bushes/HaloBush_<Hydrangea|Rose|WhiteBlossom|HedgeBlue|HedgePink>_{A,B}.png`, 시트 `art/review/s2/halo_bushes_candidates.jpg` (진짜 잎·가지·꽃 보임, 둥근 덩어리 아님) — 검수 선택 대기 → 고급 → 이미지 생성 3.
 - 새 구역(A23-119) 주제 콘셉트 3장(Medium, 0크레딧): `art/out/s2/zones_new/NewZoneConcept_{CrystalCaveForest,SkyIslands,CoralCoast}.png`, 시트 `art/review/s2/new_zone_concepts.jpg` — 검수가 사용자에게 → 고른 주제로 구역 콘셉트 세트(A23-93) + 새 몬스터.
 - 꽃 덤불 3+생울타리 2 고급 완료(검수 고름: 수국 A·장미 B·흰 꽃 B·파란 울타리 A·분홍 울타리 A를 참조로 그대로 다시 그림): `art/out/s2/halo/bushes_hq/HaloBushHQ_*.png`, 시트 `art/review/s2/halo_bushes_hq_check.jpg`, 인수인계 표 추가 → 이미지 생성 3 전달.
+- 새 구역 주제 v2(검수: 하늘 섬 빼고 수정 동굴 숲 / 산호 해안 / 사탕 과자 골짜기, 각 장 구석에 몬스터 실루엣 3종 + 장면 속에도): `art/out/s2/zones_new/NewZoneConcept_{Crystal2,Coral2,Candy2}.png`, 시트 `art/review/s2/new_zone_concepts_v2.jpg`. 몬스터: 수정(슬라임·박쥐·골렘) / 해안(꽃게·해파리·소라 달팽이) / 사탕(젤리곰 덩어리·컵케이크·사탕 지렁이).
+- 성 시안: 검수 지시로 일시 중지(성당 조사 오면 다시, 돔 금지 — 앞서 그린 4장은 모두 돔 있어서 버림 예정).
