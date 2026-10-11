@@ -2300,7 +2300,12 @@ end
 -- hunted and from the road, review 2026-10-06); it stays Lifetime s, then leaves when not defeated. GameState:
 -- PumpkinKingNextAt (server time of the next appearance, 0 = off), PumpkinKingActive, PumpkinKingEndsAt.
 Config.Halloween = {
-	Enabled = true,
+	-- A23-119 (user 2026-10-11, beta moved to 2026-12-01): the Pumpkin Patch and the Haunted Hollow are HIDDEN. false = the season is off
+	-- for everyone (Config.SeasonOn): both zones leave Config.ZoneAt, no pumpkin / bat / ghost kind spawns (their slots go back to the base
+	-- kinds), no king, no road sign, no HUD line, no map drawing (WorldMap / MiniMap skip Season lands, roads and zones), no candy bag
+	-- (LostFound), no King Diary / candy jar row (QuestBook), no news line. No code and no data is deleted: true brings it all back (a
+	-- new EndsAt too). The live switch Halloween can only turn it off further. A new zone with new monsters is to take the place.
+	Enabled = false,
 	-- A23-28 HW-13: the season switches itself off at 2026-11-09 00:00 KST (= 2026-11-08 15:00 UTC) by the server clock:
 	-- no seasonal spawns, no king, no PumpkinPatch zone / sign after it. Candy already earned stays in the bag.
 	EndsAt = 1794150000,
@@ -4070,7 +4075,9 @@ end
 -- RingPad x its width within RingSize..RingMax studs, gone RingShow s after my last attack.
 -- ServerHint = false: CombatService.Swing still aims by itself (A23-61: the nearest monster inside the front half, else
 -- the nearest within Range), so the pick copies that rule and the turn, the ring and the hit agree. The client already
--- sends its pick (Swing / Release arg 1 = the monster Model); once the server takes it (game dev 2) set true: then the
+-- sends its pick (Swing / Release arg 1 = the monster Model); the server takes it since dev2 2026-10-10 (CombatService
+-- HINT: a manual attack's valid pick within Range + 2, turned to outside 10 deg; tools/test_swing_hint.py), so game dev 1
+-- may set true: then the
 -- target stays for KeepFor s after each attack (until it dies / leaves Range) and a new one is picked by score: WDist x
 -- closeness (within Inside x Range) + WFront x in front of me + WScreen x near the screen centre + WAttacker if it wound
 -- up an attack (WindupAt, server time) within AttackerFor s and stands within AttackerReach studs; a monster behind me
@@ -4729,11 +4736,10 @@ Config.Help = {
 	-- the news window (and the last help topic): update weekly
 	News = {
 		{ Title = "Beta", Lines = {
-			"Your beta save carries over to the full launch on December 19.",
+			"Your beta save carries over to the full launch.", -- A23-119: the launch date is set in December
 			"Everyone who joins before the launch gets the Beta Pioneer title.",
 		} },
 		{ Title = "New this week", Lines = {
-			"Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
 			"New players get their first weapon from the Blacksmith before the first hunt.", -- A23-74
 			"New Settings window: change your keys, sound effects and screen shake.",
 		} },

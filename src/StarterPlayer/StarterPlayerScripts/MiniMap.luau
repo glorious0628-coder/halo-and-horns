@@ -236,11 +236,16 @@ local function myPose()
 end
 
 ----------------------------------------------------------------- world data (Config -> drawable lists, WorldMap prepareData)
+-- A23-119: a land / road / zone of a season that is off (Config.SeasonOn: the hidden Pumpkin Patch and Haunted Hollow) is not drawn
+local function seasonOff(def)
+	return type(def) == "table" and def.Season ~= nil and type(Config.SeasonOn) == "function" and not Config.SeasonOn(def.Season)
+end
+
 local function readRects(list)
 	local out = {}
 	if type(list) ~= "table" then return out end
 	for _, l in list do
-		if type(l) == "table" then
+		if type(l) == "table" and not seasonOff(l) then
 			local a, b, c, d = num(l.MinX), num(l.MaxX), num(l.MinZ), num(l.MaxZ)
 			if a and b and c and d and b > a and d > c then
 				table.insert(out, { Name = tostring(l.Name or ""), MinX = a, MaxX = b, MinZ = c, MaxZ = d })
@@ -266,7 +271,7 @@ local function prepareData()
 	local zones = type(Config.Zones) == "table" and Config.Zones or {}
 	for _, id in (type(Config.ZoneOrder) == "table" and Config.ZoneOrder or {}) do
 		local z = zones[id]
-		if type(z) == "table" and typeof(z.Center) == "Vector3" and typeof(z.Size) == "Vector3" then
+		if type(z) == "table" and typeof(z.Center) == "Vector3" and typeof(z.Size) == "Vector3" and not seasonOff(z) then
 			table.insert(W.Zones, {
 				Id = tostring(id),
 				Center = z.Center,

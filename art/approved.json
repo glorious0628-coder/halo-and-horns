@@ -8312,5 +8312,15 @@
   "original": "art/out/Halo_TowerMarbleBlock_HQ_src.png",
   "file": "art/ui/halo_tile/Halo_TowerMarbleBlock_color.png",
   "note": "탑 몸통 대리석 블록 타일(이음매 없음 3x3 확인). 1254->1024 축소. PBR: _normal(돌 16도, 3x3 감싸 계산)·_rough 0.62·_metal 0 (--gold-hue-min 59로 금줄 금속 아님). 문 탑 L/R 돌 면에 반복 UV(tools/tower_retile.py)"
+ },
+ "Halo_WaterfallStreaks": {
+  "status": "approved-by-review",
+  "date": "2026-10-11",
+  "tool": "Adobe Firefly GPT Image 2.5 Flare, High (5 credits); Medium candidate m1 (0) checked first",
+  "prompt": "art/prompts/Halo_WaterfallStreaks.txt",
+  "original": "art/out/Halo_WaterfallStreaks.png",
+  "file": "art/ui/Halo_WaterfallStreaks.png",
+  "asset_id": "rbxassetid://111806947888357",
+  "note": "폭포 Beam 물줄기 무늬(세로로 이어짐, 3x3 이음매 없음). 512로 줄이고 밝기→투명도(tools/streak_alpha.py). halo_waterfx.luau STREAK. 검수 m1 OK 2026-10-11."
  }
 }

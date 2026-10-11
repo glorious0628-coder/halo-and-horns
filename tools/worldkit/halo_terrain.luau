@@ -79,26 +79,32 @@ local WINGS = { -- Ang = turn in degrees round the rect centre (A23-112: no grid
 	{ Name = "WC", x0 = -152, x1 = -110, z0 = -604, z1 = -570, H = 22, Rad = 14, Ang = 18 }, -- small
 	{ Name = "WD", x0 = -192, x1 = -116, z0 = -690, z1 = -640, H = 26, Rad = 18, Ang = -8 }, -- medium (26: band 3, rule 1)
 	{ Name = "EA", x0 = 62, x1 = 172, z0 = -424, z1 = -352, H = 5, Rad = 30, Ang = -9 }, -- medium
-	{ Name = "EB", x0 = 104, x1 = 196, z0 = -520, z1 = -446, H = 15, Rad = 20, Ang = 12 }, -- big
+	-- EB = the knights' castle island (검수 10/11 site B, next to the training ground EA): a landing at 12 where the EA bridge
+	-- comes in, a grand ramp rising east along the south edge, the castle plateau at 30 (higher than the plaza, seen from the gate)
+	{ Name = "EB", x0 = 104, x1 = 196, z0 = -526, z1 = -462, H = 30, Rad = 16, Ang = 0 }, -- castle plateau
+	{ Name = "EB", x0 = 104, x1 = 136, z0 = -466, z1 = -442, H = 12, Rad = 6, Ang = 0 }, -- bridge landing
 	{ Name = "EC", x0 = 122, x1 = 196, z0 = -624, z1 = -554, H = 26, Rad = 24, Ang = -6 }, -- medium, cascade off its north cliff
-	{ Name = "ED", x0 = 96, x1 = 152, z0 = -694, z1 = -638, H = 30, Rad = 14, Ang = 8 }, -- small, north of EC (stepping stones); the exhibition garden later
+	{ Name = "ED", x0 = 86, x1 = 160, z0 = -698, z1 = -636, H = 30, Rad = 14, Ang = 8 }, -- north of EC (stepping stones); 3rd home island since the castle took EB
 	-- lobes (same height as their wing, so the terraces are not plain boxes)
 	{ Name = "WA", x0 = -150, x1 = -100, z0 = -442, z1 = -420, H = 3, Rad = 10, Ang = 0 },
-	{ Name = "EB", x0 = 150, x1 = 196, z0 = -446, z1 = -430, H = 15, Rad = 8, Ang = 0 },
+
 }
 -- arch-bridge spots across the canals (for the props tool: the bridge centre, its axis, the deck heights at both ends); the planner finds the exact spans
 local BRIDGES = { -- 2nd pass (rule 4): about one per island, same-tier pairs >= 25 apart in z, different spans
-	{ "BAW", -48, -394, "x", 0.2, 3 }, { "BAE", 56, -366, "x", 0.2, 5 }, { "BBW", -60, -470, "x", 9, 12 }, { "BBE", 80, -498, "x", 9, 15 },
+	{ "BAW", -48, -394, "x", 0.2, 3 }, { "BAE", 56, -366, "x", 0.2, 5 }, { "BBW", -60, -470, "x", 9, 12 }, 
 	{ "BCE", 112, -566, "x", 20, 26 },
-	{ "BBCW", -128, -553, "z", 12, 22 }, { "BCDW", -136, -622, "z", 22, 26 }, { "BABE", 132, -437, "z", 5, 15 },
+	{ "BBCW", -128, -553, "z", 12, 22 }, { "BCDW", -136, -622, "z", 22, 26 }, { "BABE", 120, -437, "z", 5, 12 }, { "BBCE", 168, -540, "z", 30, 26 },
 }
 -- stepping stones (rule 3/4: short crossings): small flat stones 1 column each, 1 stud higher each, touching (no jump): { x, z, top V }
+-- ramps between two heights on the wings: { x0, x1, z0, z1, h at the low end, h at the high end, "x" (rises toward +x) or "z" }
+local RAMPS2 = { { 134, 178, -466, -446, 12, 30, "x" } } -- the castle's grand ramp (24 deg), from the bridge landing up to the plateau
 local STONES = { { 146, -626, 26.8 }, { 142, -630, 27.6 }, { 142, -634, 28.4 }, { 138, -638, 29.2 } } -- EC (26) -> ED (30): one column each, < 1 stud up per stone
 -- grass islands inside the paved plazas (rule 5: plazas are not plain slabs): { x, z, radius }
 local LAWNS = { { 12, -560, 7 }, { 54, -584, 6 }, { 26, -538, 5 }, { -22, -636, 8 }, { -8, -668, 6 },
 	{ 19, -486, 6 } } -- the last one: the shop-street fork (4th pass, rule 6): the road splits round a statue island and meets again
 -- garden paths (4th pass, rule 6 "곁길"): narrow paved paths from the road / a court out to a small scene or a lookout: { x0, z0, x1, z1 }
-local PATHS = { { -160, -506, -146, -502 }, { 160, -610, 158, -602 }, { -90, -626, -58, -646 }, { 118, -474, 126, -474 }, { -180, -664, -166, -666 }, { 134, -688, 130, -670 } }
+local PATHS = { { 76, -372, 112, -432 }, -- the way to the castle: from the gate-side bridge (BAE) across the training ground to the castle bridge (BABE)
+	{ -160, -506, -146, -502 }, { 160, -610, 158, -602 }, { -90, -626, -58, -646 }, { 118, -474, 126, -474 }, { -180, -664, -166, -666 }, { 134, -688, 130, -670 } }
 local PATH_HALF = 3.2
 local function onPath(x, z)
 	for _, p in PATHS do
@@ -131,7 +137,7 @@ local MOUNDS = { -- { x, z, radius, height } signed (A23-112: no mirrored pairs)
 	{ -20, -572, 6, 3.0 }, { 84, -548, 7, 3.4 }, { 72, -600, 9, 4.6 },
 	{ 18, -690, 8, 4.0 }, -- 3rd pass: the cathedral hill mounds went (the full-size cathedral needs the whole flat top)
 	{ -170, -350, 12, 5.0 }, { -174, -416, 11, 5.5 }, { 158, -372, 13, 6.0 }, { 96, -360, 6, 3.0 },
-	{ -150, -476, 10, 5.0 }, { 182, -470, 9, 4.6 },
+	{ -150, -476, 10, 5.0 },
 	{ -136, -586, 6, 4.0 }, { 180, -600, 9, 5.0 }, -- 4th pass: two home-wing mounds went (room for all 12 houses)
 	{ -176, -676, 9, 5.5 }, { 64, -682, 6, 3.0 },
 }
@@ -258,6 +264,11 @@ local function pieces(x, z)
 		local d = math.sqrt((x - st[1]) ^ 2 + (z - st[2]) ^ 2) - st[3]
 		table.insert(cand, { d + jg * 0.6, st[4], "stack" })
 	end
+	for _, r in RAMPS2 do -- no jag: the ramp edges meet the landing and the plateau
+		local d = math.max(r[1] - x, x - r[2], r[3] - z, z - r[4])
+		local t = r[7] == "x" and (x - r[1]) / (r[2] - r[1]) or (z - r[3]) / (r[4] - r[3])
+		table.insert(cand, { d, r[5] + (r[6] - r[5]) * math.clamp(t, 0, 1), "ramp" })
+	end
 	for _, st in STONES do -- no jag: the stones must touch
 		table.insert(cand, { math.max(math.abs(x - st[1]), math.abs(z - st[2])) - 1.9, st[3], "stone" })
 	end
@@ -313,6 +324,7 @@ local function column(x, z)
 		end
 	end
 	if h == nil then return G.Bed, G.WaterTop, "Sand", "bed", e end
+	if kind == "ramp" and sdf <= 0 then return h, nil, "Concrete", "stair", e end -- the grand ramp (paved, walkable)
 	if string.sub(kind, 1, 5) == "pool:" then -- a ledge pool: rock rim, water inside
 		if sdf <= -1.5 then return h - 1.5, h - 0.3, "Sand", "basin", e end
 		if sdf <= 0 then return h, nil, "Limestone", "cliff", e end

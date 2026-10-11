@@ -90,6 +90,7 @@ local cfgEnv = setmetatable({
 local cfn = assert(loadstring(CONFIG_SOURCE, "=Config"))
 setfenv(cfn, cfgEnv)
 local Config = cfn()
+Config.Halloween.Enabled = true -- A23-119: the shipped Config hides the Halloween season (Enabled = false); this suite tests the season's own rules, so it turns it on
 local HW = Config.Halloween
 local DAY1 = HW.Banter.DayOneStart
 TIME = DAY1 + 4 * 86400 + 600 -- Nov 4 (page 5's day)

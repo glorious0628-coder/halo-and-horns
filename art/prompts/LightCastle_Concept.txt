@@ -1,0 +1,13 @@
+[reference: ref_Cathedral.jpg (Halo cathedral, style/colour only), Medium x4 → 검수 picks 2-3 → user]
+Common head: Use the attached image only as a style and color reference. Concept art of a brand new fantasy castle of the Knights of Light on top of a floating-island cliff, full front view slightly from above, plain flat medium gray background.
+Common tail (A23-120 update): White marble and gold trim, tall slender towers with pointed pale-blue spire roofs plus some golden domes, a small floating golden halo ring above the tallest tower, high battlement walls, towers of many heights, clearly asymmetric, a small clean waterfall falling down the cliff below the castle, rich fine detail. A REAL huge open main entrance at ground level, taller than a person, a deep recessed archway you could walk into (not a painted door), with a wide stair and a paved courtyard in front of it. No flags, no people, no lettering, no faces. Glossy toy-like 3D render, only soft round glows, no light rays, no sunburst.
+A: one very tall blue-spired tower at left, a wide gold-domed great hall in the middle with the big open entrance at its center-left, a lower round blue-spired tower at right.
+B: a stepped cluster rising to the right, many blue pointed spires around one large central golden dome, the big open entrance at lower left with a broad stair, waterfall at far left.
+C: a long high front wall with an off-center gatehouse of two blue-spired towers whose huge open gate arch is at ground level with a stair and courtyard, behind it a tall keep with a golden dome and three slim spires, a round turret at far right.
+D: a tall narrow castle climbing the cliff in terraces, a big blue-spired tower at top left, a golden domed hall mid-terrace, gatehouse with a huge open ground-level arch at bottom right with a stair, two bridges between towers.
+
+A23-120 보강(10/11): 건물은 Studio 파트 골격 위에 타일 + Tripo 장식. 시안은 덩어리(벽·탑·층·돔의 위치와 비율)가 또렷하게 읽히는 구도·조명(깔끔한 실루엣, 어두운 그림자 없음, 장식은 덜 복잡하게). 뽑힌 1장은 같은 그림체로 옆면·위(평면) 시안도 그린다.
+Add to every prompt: "Clean readable silhouette and massing: walls, towers, floors and domes clearly separated, even soft lighting, simple clear volumes before ornaments."
+
+이미지 생성 1 수치(10/11): 동쪽 높은 섬(높이 30, 훈련장 바로 뒤). 바닥 약 64×40 스터드, 높이 약 40(가장 높은 탑 꼭대기까지). 정문은 남쪽 앞면 하나, 땅 높이 진짜 큰 문(폭 8×높이 10, 사람이 걸어 들어감), 문 앞 마당(깊이 약 16)은 앞을 막는 계단·벽 없이. 흰 대리석+금+파랑 깃발, 비대칭 탑 2~4개(서로 다른 높이·모양, 거울 금지), 성벽 위 망루 통로, 기사단 상징(금 방패·날개 검) 깃발은 따로 판. 뒤(북)=섬 끝 절벽, 왼쪽(서)=광장 쪽 바다, 오른쪽(동)=먼 바다. 앞·왼쪽 3/4 모습이 가장 중요. 3D는 부품별(몸통 성벽, 탑 A·B(·C), 정문 문틀·문짝, 지붕/돔, 깃발 판) → 뽑힌 1장은 앞·뒤·좌·우도 그린다.
+=> 콘셉트 4장 프롬프트에 반영: 성이 64×40으로 가로로 넓고, 정문 앞은 평평한 마당(계단·벽 없음), 앞·왼쪽 3/4 구도. (위 Common tail의 "wide stair" 문구는 "flat paved courtyard, no stairs or walls in front"로 바꿈.)

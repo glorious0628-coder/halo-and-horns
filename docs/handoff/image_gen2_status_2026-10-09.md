@@ -130,3 +130,14 @@
 
 ## 10/10 밤 추가 19
 - 꽃 화분 5종 고급 완료(검수: Rose B, Tulip A, Lavender B, Daisy B, Sunflower A를 참조로 그대로 다시 그림): `art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_*.png`, 시트 `art/review/s2/halo_flowerpots_hq_check.jpg`, 인수인계 표에 줄 추가 → 이미지 생성 3 전달.
+
+## 10/11 추가 20 (A23-120: 안에 들어가는 건물·골격 먼저)
+- 사용자 로그인 확인("로그인했오") 뒤 Firefly 재개. 빛 성(빛의 기사단 본부) 콘셉트 4장(Medium): `art/out/s2/halo/castle/HaloCastleConcept_{A,B,C,D}.png`, 시트 `art/review/s2/halo_castle_concepts.jpg`, 프롬프트 메모 `art/prompts/LightCastle_Concept.txt`. 4장 모두 땅 높이 진짜 큰 열린 입구+평평한 마당. 그림에 섬 절벽이 같이 들어 있음(3D는 성만). 검수가 2~3장 고르면 → 1장 확정 → 앞·뒤·좌·우·위(평면) 시안 → 부품.
+- 큐 남음: 꽃 덤불 3 + 생울타리 2 → 새 구역 주제 3.
+- 꽃 덤불 3종 + 생울타리 2종 중간 후보 10장: `art/out/s2/halo/bushes/HaloBush_<Hydrangea|Rose|WhiteBlossom|HedgeBlue|HedgePink>_{A,B}.png`, 시트 `art/review/s2/halo_bushes_candidates.jpg` (진짜 잎·가지·꽃 보임, 둥근 덩어리 아님) — 검수 선택 대기 → 고급 → 이미지 생성 3.
+- 새 구역(A23-119) 주제 콘셉트 3장(Medium, 0크레딧): `art/out/s2/zones_new/NewZoneConcept_{CrystalCaveForest,SkyIslands,CoralCoast}.png`, 시트 `art/review/s2/new_zone_concepts.jpg` — 검수가 사용자에게 → 고른 주제로 구역 콘셉트 세트(A23-93) + 새 몬스터.
+- 꽃 덤불 3+생울타리 2 고급 완료(검수 고름: 수국 A·장미 B·흰 꽃 B·파란 울타리 A·분홍 울타리 A를 참조로 그대로 다시 그림): `art/out/s2/halo/bushes_hq/HaloBushHQ_*.png`, 시트 `art/review/s2/halo_bushes_hq_check.jpg`, 인수인계 표 추가 → 이미지 생성 3 전달.
+- 새 구역 주제 v2(검수: 하늘 섬 빼고 수정 동굴 숲 / 산호 해안 / 사탕 과자 골짜기, 각 장 구석에 몬스터 실루엣 3종 + 장면 속에도): `art/out/s2/zones_new/NewZoneConcept_{Crystal2,Coral2,Candy2}.png`, 시트 `art/review/s2/new_zone_concepts_v2.jpg`. 몬스터: 수정(슬라임·박쥐·골렘) / 해안(꽃게·해파리·소라 달팽이) / 사탕(젤리곰 덩어리·컵케이크·사탕 지렁이).
+- 성 시안: 검수 지시로 일시 중지(성당 조사 오면 다시, 돔 금지 — 앞서 그린 4장은 모두 돔 있어서 버림 예정).
+- 빛 성 콘셉트 v3(돔 0개, 검수 성당 조사 프롬프트 그대로, Medium 4): `art/out/s2/halo/castle2/HaloCastleCath_{A,B,C,D}.png`, 시트 `art/review/s2/halo_castle_cathedral_concepts.jpg` (이전 돔 있던 `art/out/s2/halo/castle/`는 버림 예정). 4장 탑 꼭대기 확대 확인: 둥근 돔·둥근 머리 없음.
+- 하늘 섬 → 바람 협곡/열기구 고원(Medium 2): `art/out/s2/zones_new/NewZoneConcept_Wind3_{Canyon,Balloon}.png`, 시트 `art/review/s2/new_zone_wind_concepts.jpg`(떠 있는 섬·구름 바다·흰 대리석·금 없음, 몬스터 실루엣=바람 양·바람 요정·깃털 새).
