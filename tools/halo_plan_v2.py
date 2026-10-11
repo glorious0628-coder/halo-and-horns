@@ -1042,6 +1042,9 @@ STAGE5_FIXES = [
     "under_side_close 파란 점 2개(LOD 티) 지우기",
     "섬 받침 -48 평평 → 뾰족한 떠 있는 바위 아랫면 (2차 됨, 사진 확인)",
     "새 섬 폭포: halo_waterfx가 옛 HaloTerrainStore Waterfalls를 읽음 → plan v2 falls(W1·W2·W3)로 바꿈",
+    "디자인 검수 10/11 사진 3차: 계단 발치 흰 칠 번짐(r2_05 아래, r2_06 오른쪽 끝) — 지형 칠과 파트 가장자리 정리",
+    "디자인 검수 10/11: 계단 옆 회색 각진 바위 큰 삼각면(r2_05 오른쪽) → 축대·옹벽 파트 또는 잔디 둔덕",
+    "디자인 검수 10/11: 꽃 단·두 단 턱의 검은 바위 띠(위에서 검은 금처럼, r2_03·04·07) → 축대(대리석 옹벽 + 꽃 덤불)",
     "대성당 굽은 계단(cathedral_stairs, rails=True): 다리(leg) 양옆 난간을 끊김 없이 — 꽃 단을 넘어 질러가지 못하게(걷는 시간 계산이 난간을 막힘으로 침)",
 ]
 # the gate's inner face never gets direct sun (front_sun 0%): warm fill lights there (검수 10/11), outside the spawn corridor
