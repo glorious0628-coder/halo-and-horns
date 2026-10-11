@@ -62,11 +62,13 @@ local function lockFor()
 end
 local ui = { tiles = {} }
 for _, d in { { "Character", 2 }, { "Bag", 1 }, { "Skills", 4 }, { "Map", 1 }, { "Ranking", 5 }, { "Pet", 6 } } do
-	local t = { Def = { Id = d[1], Keep = d[2] }, Button = button(d[1]) }
+	local t = { Def = { Id = d[1], Keep = d[2], Text = d[1] == "Character" and "Hero" or d[1] }, Button = button(d[1]) }
 	if Config.HudReveal.Tiles[d[1]] then t.Lock = lockFor() end
 	table.insert(ui.tiles, t)
 end
-local L = { Rects = { tiles = { Count = 6 } } }
+-- 게임성 검수 10/13: the windows Panels has (L.TileOpens asks L.TileWindow); the hero's goes away in the last scene
+local WINDOWS = { Character = "Hero", Bag = "Bag", Skills = "SkillBook", Pet = "PetWindow", Map = "Map" }
+local L = { Rects = { tiles = { Count = 6 } }, TileWindow = function(def) return WINDOWS[def.Id] end }
 local questState = {}
 local env = {
 	Config = Config, ui = ui, L = L, questState = questState, IS_TOUCH = false,
@@ -182,6 +184,28 @@ CLOCK += 1
 questState.Book = { Done = { "story:M1_4" } }
 check(pick() == "" and #pops == 0, "... and the quest book a moment later: still no pops", table.concat(pops, ","))
 
+-- 게임성 검수 10/13 (A23-99: the hero tile only said "Coming soon!"): a tile with nothing to open stays locked like the
+-- others - its level word before the level, its own name after it, no pop; its window coming opens it
+L.TileSeen = {}
+L.RevealAt = nil
+for _, t in ui.tiles do if t.Lock then t.Lock.Set(false) end end
+questState.All, questState.Book, PETLIST = nil, nil, nil
+WINDOWS.Character = nil
+ATTR = { DataLoaded = true, Level = 1 }
+pops = {}
+pick()
+CLOCK += 5
+pick()
+check(L.TileLocked("Character") and tile("Character").Lock.Word == "Lv 2", "10/13: no hero window, Lv 1: locked, 'Lv 2'",
+	tostring(tile("Character").Lock.Word))
+ATTR.Level = 2
+pick()
+check(L.TileLocked("Character") and tile("Character").Lock.Word == "Hero" and #pops == 0,
+	"10/13: no hero window, Lv 2: still locked, its own name under the lock, no pop", tostring(tile("Character").Lock.Word))
+WINDOWS.Character = "Hero"
+pick()
+check(not L.TileLocked("Character"), "10/13: its window comes - the hero tile opens", locked())
+
 -- the row's room still trims by Keep (locked tiles count like any other)
 for _, t in ui.tiles do t.Button.Visible = false end
 ui.tileKey = nil
@@ -193,10 +217,17 @@ print(("TILES_SUMMARY checks=%d failed=%d"):format(checks, failed))
 
 MUTATIONS = [
     ("tiles hidden again", "local want = table.clone(ui.tiles)", "local want = {}"),
-    ("never locked", "if t.Lock and t.Lock.Locked ~= not open then pcall(t.Lock.Set, not open, Config.HudReveal.TileWord(id)) end", ""),
+    ("never locked", "\t\t\tpcall(t.Lock.Set, locked, word)\n", ""),
     ("an open tile locks again", "local open = was == true or Config.HudReveal.TileShows(id, st)", "local open = Config.HudReveal.TileShows(id, st)"),
-    ("pops at the join", "if was == false and ready then L.TilePop(t.Button) end", "if was ~= true then L.TilePop(t.Button) end"),
-    ("no pop at all", "if was == false and ready then L.TilePop(t.Button) end -- opened in play (not at the join)", ""),
+    ("pops at the join", "if was == false and ready and opens then L.TilePop(t.Button) end", "if was ~= true then L.TilePop(t.Button) end"),
+    ("no pop at all", "if was == false and ready and opens then L.TilePop(t.Button) end -- opened in play (not at the join)", ""),
+    # 게임성 검수 10/13: a tile with nothing to open
+    ("a tile with nothing to open shows open ('Coming soon!' again)",
+     "\t\tlocal locked = not (open and opens)\n\t\tlocal word = (open and not opens) and t.Def.Text",
+     "\t\tlocal locked = not open\n\t\tlocal word = (open and not opens) and t.Def.Text"),
+    ("its level word stays after the level", "local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id)",
+     "local word = Config.HudReveal.TileWord(id)"),
+    ("pops while still locked", "if was == false and ready and opens then L.TilePop(t.Button) end", "if was == false and ready then L.TilePop(t.Button) end"),
     ("the join timer only on change", "local ready = L.RevealReady() -- every check", "local ready = true -- every check"),
     ("pops with reduced motion", "if not btn or UIKit.ReducedMotion() then return end", "if not btn then return end"),
     ("no wiggle", "for _, r in { 7, -6, 4, -2, 0 } do", "for _, r in {} do"),

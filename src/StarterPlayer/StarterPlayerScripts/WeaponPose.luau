@@ -52,6 +52,10 @@ local T = {
 	-- until its Shaft's foot rests StaffGap (= CharacterVisuals STAFF.FootGap) over the ground under it - StaffFix of the
 	-- gap a frame, at most StaffMax either way; no ground within StaffReach (a jump): back towards 0
 	StaffGap = 0.08, StaffFix = 0.5, StaffMax = 0.4, StaffReach = 8,
+	-- 게임성 검수 10/13 (r1012b: a stair -0.12, a terrain slope +0.51 against the SOLE): the ground is read at the foot's
+	-- centre and StaffRing x the shaft's half width around it, the highest counts (a tread's edge, the uphill side of a
+	-- slope never swallow the tip); GripProbe prints the tip against the ground UNDER it
+	StaffRing = { { 0, 0 }, { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } },
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
 
@@ -252,8 +256,13 @@ function WeaponPose.StaffStep(st, model)
 		return 0
 	end
 	local foot = (shaft.CFrame * CFrame.new(0, -shaft.Size.Y / 2, 0)).Position
-	local hit = Ground.Cast(foot, 2, T.StaffReach)
-	st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, hit and hit.Position.Y or nil, T.StaffGap)
+	local r, ground = shaft.Size.X / 2, nil
+	for _, o in T.StaffRing do
+		local hit = Ground.Cast(foot + Vector3.new(o[1] * r, 0, o[2] * r), 2, T.StaffReach)
+		if hit and (ground == nil or hit.Position.Y > ground) then ground = hit.Position.Y end
+	end
+	st.StaffFootY, st.StaffGroundY = foot.Y, ground -- (GripProbe)
+	st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, ground, T.StaffGap)
 	return st.StaffLift
 end
 
@@ -471,6 +480,12 @@ function WeaponPose.ProbeStep(me, now)
 			table.insert(parts, string.format("%s%s dHand=%.2f(max %.2f) dGrip=%.2f(max %.2f) axis=%.0f(max %.0f) fore=%.0f(%.0f..%.0f)",
 				side, v.Holds and "*" or "", v.dHand, w.dHand, v.dGrip, w.dGrip, v.axis, w.axis, v.fore, w.foreLo, w.foreHi))
 		end
+	end
+	-- 게임성 검수 10/13: a staff's tip against the ground under it (not the sole) and its hand lift
+	local st = S.Chars[char]
+	if st and type(st.StaffFootY) == "number" then
+		table.insert(parts, string.format("Staff tip-ground=%s lift=%.2f", type(st.StaffGroundY) == "number"
+			and string.format("%.2f", st.StaffFootY - st.StaffGroundY) or "none", tonumber(st.StaffLift) or 0))
 	end
 	print(table.concat(parts, " | "))
 	S.Probe = nil

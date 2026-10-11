@@ -706,8 +706,16 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          "local lift = WeaponPose.StaffStep(st, model)" in body
          and "local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(pole))" in body
          and "local foot = (shaft.CFrame * CFrame.new(0, -shaft.Size.Y / 2, 0)).Position" in wp
-         and "local hit = Ground.Cast(foot, 2, T.StaffReach)" in wp
+         and "local hit = Ground.Cast(foot + Vector3.new(o[1] * r, 0, o[2] * r), 2, T.StaffReach)" in wp
          and staff_gap_ok(wp, src["CV"]), ""),
+        # 게임성 검수 10/13 (r1012b: a stair -0.12, a slope +0.51 against the sole)
+        ("10/13: the staff reads the ground at its centre and a ring of its half width, the highest counts; GripProbe "
+         "prints the tip against the ground under it (not the sole)",
+         re.search(r"StaffRing = \{ \{ 0, 0 \}, \{ 1, 0 \}, \{ -1, 0 \}, \{ 0, 1 \}, \{ 0, -1 \} \}", wp) is not None
+         and "for _, o in T.StaffRing do" in wp and "local r, ground = shaft.Size.X / 2, nil" in wp
+         and "if hit and (ground == nil or hit.Position.Y > ground) then ground = hit.Position.Y end" in wp
+         and "st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, ground, T.StaffGap)" in wp
+         and '"Staff tip-ground=%s lift=%.2f"' in wp and "st.StaffFootY - st.StaffGroundY" in wp, ""),
         ("OneHand fades in with the pose weight", "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
         ("A23-128: OneHand bends the elbow to the row's Pole (else T.PoleRight)",
          'local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight' in body
@@ -786,6 +794,11 @@ MUTATIONS = [
     ("WP", "the solve moves with the goal (the torso lifted too)", "local pose = fx.SolveArm(right, torso, rGoal,",
      "local pose = fx.SolveArm(right, torso + Vector3.new(0, lift, 0), rGoal,"),
     ("WP", "a foot height other than the server's", "StaffGap = 0.08,", "StaffGap = 0.3,"),
+    # 게임성 검수 10/13
+    ("WP", "the lowest ground of the ring (a tread's edge swallows the tip)",
+     "if hit and (ground == nil or hit.Position.Y > ground) then ground = hit.Position.Y end",
+     "if hit and (ground == nil or hit.Position.Y < ground) then ground = hit.Position.Y end"),
+    ("WP", "the centre only again", "StaffRing = { { 0, 0 }, { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } },", "StaffRing = { { 0, 0 } },"),
     ("CV", "the dark sword never made", "function SHAPES.DarkSword(grip, sc, w, color)", "function SHAPES.DarkSword_(grip, sc, w, color)"),
     ("CONFIG", "a hand-on-hip sinks into the waist", "OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage",
      "OffHand = { At = Vector3.new(-0.6, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage"),
