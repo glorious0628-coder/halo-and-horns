@@ -3763,7 +3763,7 @@
     "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479",
     "src/ServerScriptService/KaijuService.luau": "507adb6941b9fb1e40598c27d061ed51def5ef64286f50c3c00585ff8c9d3444",
     "src/ServerScriptService/FirstKOService.luau": "31c1a7d1e56afa7160efb4b5b8b45ed132160a2f39591cbcbb1dbb4d0ea473cb",
-    "src/ServerScriptService/MonsterService.luau": "5eafcf62f94f096f95c5d6cc21f2d23c94ba845e3511be9204c86225455cde94",
+    "src/ServerScriptService/MonsterService.luau": "62260aff531ef6e6290f7fa9ed426c5e261ed8f4ab742e62896100d1ac39566e",
     "src/ServerScriptService/Main.server.luau": "f296c784034c65ac764b12aa8fbeb8167d48af74b89f9d2a8dfcde5d4231cdce",
     "src/ServerScriptService/StoryQuestService.luau": "fe2772848aec297272d7ca49a2a31dc5aacfcd15c8d5ae0e6530c6b2aa20e62a",
     "src/ServerScriptService/FinisherService.luau": "664b72b99582fb4ade811529e09b9679f883488b0963aee08bb0c973f1da2dc1",

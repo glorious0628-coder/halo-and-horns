@@ -1106,7 +1106,7 @@
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "9f0cd9c5ccd37a96c6977ac2b6ecf4ed413c8b94264722f23ed8544073a478dd",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/MonsterService.luau": "5eafcf62f94f096f95c5d6cc21f2d23c94ba845e3511be9204c86225455cde94"
+    "src/ServerScriptService/MonsterService.luau": "62260aff531ef6e6290f7fa9ed426c5e261ed8f4ab742e62896100d1ac39566e"
   },
   "fixtureSHA256": "711e0398637d59990dc5ab6f0b1014c55cd372f6d057da6ab31dfefed00d37ca",
   "sourcesChangedDuringRun": [],

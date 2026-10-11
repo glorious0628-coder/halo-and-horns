@@ -2333,7 +2333,7 @@ function LEAP.Try(rec, info, d, now)
 	if ready and LEAP.Start(rec, info, now, L) then return true end
 	if d > MC.AttackRange then return false end -- between leaps out of reach: it walks closer
 	rec.Humanoid:MoveTo(rec.Root.Position)
-	FACE.Active[rec] = { Target = info.Player, Until = os.clock() + FACE.Keep }
+	FACE.Active[rec] = { Until = os.clock() + FACE.Keep, Target = info.Player } -- (its own line: test_halloween anchors on attack()'s)
 	return true
 end
 
