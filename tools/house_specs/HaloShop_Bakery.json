@@ -1,0 +1,17 @@
+{
+ "name": "HaloShop_Bakery",
+ "src2d": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
+ "note": "Shop (24 x 15 x 18). Rect body 20 x 13.5, a 9.5-stud ground storey with a display window each side of the centred door (the 2D has ONE big shop window left of an off-centre door: the generator door is always centred, so the shopfront is mirrored), a short upper tier with the small arched window over the sign, gold corner pilasters, lantern pedestals, wide blue/white awning, two corner planters with topiary, flat roof with a solid parapet. Missing: gold sign plaque, raised arched gable with the round-top window, brick-red dome + chimney lantern tower, off-centre door, baker's display shelves, ivy on the corner posts (see generator_gaps.md). Built from art/review/img3/HaloShop_Bakery_check.jpg (2D panel); the 2D PNG is not in the worktree.",
+ "plan": {"shape": "rect", "W": 20.0, "D": 13.5},
+ "Z0": 1.1,
+ "storeys": [{"h": 9.5, "win": {"w": 2.8, "type": "arch"}, "walls": {"front": [0.14, 0.86], "left": [0.3, 0.7], "right": [0.3, 0.7], "back": [0.3, 0.7]}},
+             {"h": 4.5, "win": {"w": 1.6, "type": "arch"}, "walls": {"front": [0.5]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false},
+ "pilasters": true,
+ "pedestals": true,
+ "awning": {"w": 11.5, "colors": [[110, 165, 232], [255, 255, 252]], "n": 9},
+ "pots": [[-8.8, 8.2, 3.2, 2.4], [8.8, 8.2, 3.2, 2.4]],
+ "steps": "half",
+ "medals": [],
+ "top": {"type": "flat", "parapet": "solid", "h": 1.2, "skylight": null, "topiary": []}
+}

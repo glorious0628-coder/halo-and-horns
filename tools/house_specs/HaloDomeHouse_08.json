@@ -1,0 +1,17 @@
+{
+ "name": "HaloDomeHouse_08",
+ "src2d": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png",
+ "note": "HouseA (24 x 22 x 26). Square body 19 x 17 with four corner towers + finials, two storeys (door + two arched windows below; a shorter upper tier), double arched door with lantern pedestals, two big front urn pots, round drum with 3 arched windows and a ribbed gold dome. Missing: small gold dome canopy over the door, balcony balustrades with flower boxes on the upper tier, topiary cones beside the pots, wide front stairs (see generator_gaps.md). Upper-tier front has no window because the 2D shows a balcony there. Built from art/review/img3/HaloDomeHouse_08_check.jpg (2D panel); the 2D PNG and side view are not in the worktree.",
+ "plan": {"shape": "rect", "W": 19.0, "D": 17.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 9.5, "win": {"w": 1.9, "type": "arch"}, "walls": {"front": [0.15, 0.85], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}},
+             {"h": 5.0, "win": {"w": 1.7, "type": "arch"}, "walls": {"left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": true},
+ "pilasters": false,
+ "towers": {"w": 2.8, "h_extra": 1.6, "finial": true},
+ "pedestals": true,
+ "steps": "half",
+ "pots": [[-7.2, 9.8, 4.0, 2.6], [7.2, 9.8, 4.0, 2.6]],
+ "medals": [],
+ "top": {"type": "drum_dome", "R": 6.0, "h": 3.2, "seg": 20, "windows": 3, "dome_h": 5.8, "ribs": 8}
+}

@@ -1,0 +1,16 @@
+{
+ "name": "HaloShop_Potion",
+ "src2d": "art/out/s2/halo/shops/HaloShop_Potion_front_HQ_src.png",
+ "note": "Shop (24 x 15 x 18). Rect body 19 x 13, one 10-stud storey, centred arched door with lantern pedestals, an arched display window each side (the 2D has ONE wide potion-shelf window left of an off-centre door: generator door is always centred, so the shopfront is mirrored), gold corner pilasters, blue/white awning, two corner planters with topiary, big gold ribbed dome with a spike finial on a short round base (drum_dome R 5.8, 0.8 high, no windows). Left out on purpose: the two small arched windows beside the sign (they sit on an upper tier of only ~3 studs; a second storey would push the shop far over the 18-stud plan height). Missing: gold sign plaque, off-centre door, potion shelves, cauldron by the door, ivy garlands, round sign medallions on the plinth (see generator_gaps.md). Built from art/review/img3/HaloShop_Potion_check.jpg (2D panel); the 2D PNG is not in the worktree.",
+ "plan": {"shape": "rect", "W": 19.0, "D": 13.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 10.0, "win": {"w": 2.8, "type": "arch"}, "walls": {"front": [0.13, 0.87], "left": [0.3, 0.7], "right": [0.3, 0.7], "back": [0.3, 0.7]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false},
+ "pilasters": true,
+ "pedestals": true,
+ "awning": {"w": 8.0, "colors": [[110, 165, 232], [255, 255, 252]], "n": 7},
+ "pots": [[-8.2, 7.8, 3.2, 2.4], [8.2, 7.8, 3.2, 2.4]],
+ "steps": "half",
+ "medals": [],
+ "top": {"type": "drum_dome", "R": 5.8, "h": 0.8, "seg": 20, "windows": 0, "dome_h": 4.8, "ribs": 8}
+}
