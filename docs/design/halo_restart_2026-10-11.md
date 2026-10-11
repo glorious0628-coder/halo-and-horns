@@ -60,5 +60,51 @@
   - 새 구역 주제 시안.
   - WorldKit import_now 가져오기(조각 창고용, 배치는 안 함).
 
-## 게임 고정점 목록
-(검수가 코드에서 뽑아 아래에 붙임)
+## 게임 고정점 목록 (검수가 코드에서 뽑음, 2026-10-11)
+코드는 plan json을 읽지 않는다. 고정점은 거의 다 Config 값이거나 이름·태그다. 옮기면 Config + 아래 시험을 같이 고친다.
+
+**꼭 지킬 것**
+- **걷는 바닥 = Terrain.** 땅을 찾는 레이캐스트는 Terrain, Map.Ground, `Decor.Bridge_*`만 본다(MonsterService 300-321, KaijuService 242-256, ZoneService 438-451, LandShadow 72-77, SkillFx 148-154, Fx 753-776). `Decor.HaloProps` 안의 파트 바닥은 땅이 아니다. 그래서 골격 건물의 바닥·마당을 파트로 만들면 그림자·스킬 효과·물 구조가 어긋날 수 있다. → 개발이 '걷는 바닥' 태그(예: CollectionService `WalkGround`)를 땅 규칙에 더한다(아래 '개발 큐'). 그 전까지 마을 바닥은 Terrain으로 만든다.
+- **Bridge_Halo:** `Map.Decor.Bridge_Halo`. From (0,0,-150) → To (0,0,-330), 폭 22, 갑판 Y ~0.2. 교차로로 걸어 나가는 유일한 길이다(Config 1760).
+- **Gate_HaloTown:** `Map.Gates.Gate_HaloTown` Model, PrimaryPart `Lintel`. Config 위치 (0,0,-330). MapBuilder가 서버 시작 때마다 위치를 맞추고 BillboardGui를 지운다(Config 1734, MapBuilder 519-543).
+- **스폰과 문 사이 길:** 스폰 (0,0,-420) ±6 땅은 Spawn.Y 근처여야 한다. |x|≤12, z -330..-432 사이와 (0,-420) 반경 12에는 막는 것이 없어야 한다. SpawnLook (0,0,-330)은 문과 같다(Config 1636-1637).
+- **이름:**
+  - 분수: `Town_Halo_Fountain3`(FountainFx). `Town_Halo_Fountain`은 교차로 것이니 쓰지 않는다.
+  - 등불: `LampLight` 속성 또는 태그.
+  - 충돌 그룹: `DecorPlayerOnly`.
+
+**Config 고치면 옮길 수 있는 것**
+- **HaloTown 구역 사각형:** Center (0,0,-515), Size (400,0,370), 곧 x -200..200, z -700..-330.
+  - 이 사각형 전체가 PvP 안전 구역, 마을 음악, Enter 퀘스트, 적 진영 튕겨내기, 몬스터 추적 한계를 정한다.
+  - IslandHalo 땅(Config 1751), Map.Bounds(MinX -260, MinZ -720), 물 구조(MaxRise 42, Y ~40 넘는 층이면 올림)도 같이 맞춘다.
+- **NPC(Config.TownNpcs 3655-3683):**
+  - Bright (18,0,-424), Sir Gleam (-10,0,-372).
+  - Folk1~3: 주스·꽃·빵집 앞, Y 9. Folk4: 분수 옆, Y 20.
+  - PotionHalo: (20,-468), Y 9, 12칸 안에서 팜.
+  - NPC는 아래로 쏜 레이로 땅을 찾는다. Y가 있으면 ±4 안의 바닥만 쓴다. 땅이 없으면 NPC가 안 생긴다.
+- **HeroStatue:** (0,0,-370), 퀘스트 H6 Near 16. 동상에 `StoryLandmark` 태그 + `Spot="HeroStatue"`를 달면 Config보다 우선한다. 높은 층에 놓으면 이 태그를 꼭 단다.
+- **이동 발판:** `Pad_Halo_SlimeMeadow` (-24,0.7,-357), `Pad_Halo_GoblinWoods` (24,0.7,-357). `Map.Pads` 바로 아래 Part, `TravelTo` 속성, 사각형 안. 실시간으로 읽으니 옮기기 자유.
+- **폭포 소리 6곳:** (±188,3,-493), (±190,7,-582), (±190,11,-660). 또는 `Map.Decor` 바로 아래 이름이 "Waterfall"로 끝나는 것(Config 5487-5489).
+- **RoadNorthIsland 띠:** x -8..8, z -600..-330, 미니맵용.
+- **오프닝 카메라:** (18,30,-315) → (6,26,-340), 조각이 (0,18,-406)에 내려앉음. 새 문이 화면을 막지 않게 한다(Intro.luau 40, 249-253).
+
+**마을을 바꾸면 다시 할 것**
+- 큰 지도 그림(WorldMapV2 94679214685541): 섬 모양이 그림에 박혀 있어 다시 그린다.
+- 미니맵: Halo MapTiles를 새로 찍는다.
+
+**free(코드가 안 읽음):** DoorFront, Door, DoorSize, Why, Zone, ShopKind, SignBoard, DecorTier 속성(halo_props만 씀). plan json `spots`.
+
+**시험(옮기면 고칠 것):**
+- 지도·마을 퀘스트·NPC: test_map_v2, test_town_quests, test_town_npcs(옛 json 경로가 박혀 있어 v2 json으로 바꿈)
+- 스폰·분수: test_spawn_look, test_fountain_fx
+- 땅·물: test_ground_rays, water_rescue
+- fixtures: audio_offline(폭포 6곳), quest_target_offline(Pad), return_offline, kaiju_town_offline
+
+## 개발 큐(이 일로 생긴 것)
+- **걷는 바닥 태그:** 파트로 만든 바닥(골격 건물 1층, 마당, 나중 실내)도 땅으로 치게 한다.
+  - 서버 = 게임성 개발 2: MonsterService, ZoneService, KaijuService
+  - 클라 = 게임성 개발 1: LandShadow, SkillFx, Fx
+  - 태그 이름은 둘이 맞추고, 시험 test_ground_rays를 늘린다.
+- **6단계 직전 고정점 일괄 고침:** 구역 사각형, NPC, 동상, 발판, 폭포 소리, 큰 지도, 미니맵.
+  - Config와 시험 = 게임성 개발 1·2
+  - 그림(큰 지도) = 이미지 생성 2
