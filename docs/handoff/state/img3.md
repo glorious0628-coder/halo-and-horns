@@ -14,7 +14,7 @@
 
 ## 집 ↔ plan 자리 (10/11 밤 내 제안, 이미지 생성 1에 보냄, 검수가 바꿀 수 있음)
 - plan = `docs/design/halo_plan_v2_2026-10-11.json` buildings[] (e8bd29f). HouseA 칸 24×22, HouseB 26×18, 가게 24×15.
-- Hill1(A)=05 · Hill2(B)=11 · Hill3(A)=01 · Hill4(B)=04 · Cliff1(B)=10 · Cliff2(A)=08 · Cliff3(A)=06 · Cliff4(B)=03 · Cliff5(A)=09 · Garden1(A)=12 · Garden2(B)=02 · Garden5(A)=07. 남은 7자리(Cliff6·7·8, Garden3·4·6·7) = 새 집 7채.
+- Hill1(A)=05 · Hill2(B)=11 · Hill3(A)=01 · Garden4(B)=04 · Cliff1(B)=10 · Cliff2(A)=08 · Cliff3(A)=06 · Cliff4(B)=03 · Cliff5(A)=09 · Garden1(A)=12 · Garden2(B)=02 · Garden3(A, 바닷가)=07. 새 집 7채 자리 = Hill4·Cliff6·Cliff7·Cliff8·Garden5·Garden6·Garden7(이미지 생성 1 고침: Hill4 약초꾼 부부·Garden5 꽃 농부 2D 있음, docs/design/halo_new_houses_2026-10-11.md). 이미지 생성 1 검사: 16채 서로 안 겹침, 길 안 막음, B 칸 깊이 여유. 검수 OK 기다림 → OK 나면 이미지 생성 1에 알리기.
 - 원점: 문 면을 door_at에 맞춤(이미지 생성 1 요청). 문 면 = 몸통 가운데에서 01 7.10 · 02 6.30 · 03 5.60 · 04 5.60 · 05 7.80 · 06 5.92 · 08 6.55 · 09 6.87 · 10 5.15 · 11 6.20 · 12 6.50 · 빵 6.00 · 꽃 5.40 · 주스 6.00 · 물약 5.70. 가게 문 옆 치우침(문 앞에서 볼 때): 빵 오른쪽 4.6, 주스 왼쪽 4.6, 물약 오른쪽 3.8.
 
 ## 다음 일 3번: Tripo 장식 (돈 안 듦 — 이미 있는 HD 멀티뷰 15개)
