@@ -14,10 +14,10 @@ ROWS = {
     "Tower_Lookout": (["HaloProp_Tower_v2_front_HQ_src.png", "HaloProp_Tower_v2_back_HQ_src.png"],
                       ["Tower_Lookout_front", "Tower_Lookout_34", "Tower_Lookout_side", "Tower_Lookout_back", "Tower_Lookout_door_eye", "Tower_Lookout_top",
                        "Tower_Lookout_balcony_eye", "Tower_Lookout_balcony_sea"]),
-    "Armory": (["HaloProp_Shop_front_HQ_src.png", "roofs/HaloDomeHouse_07_roof_v2.png"],
+    "Armory": (["../../../review/s2/halo_armory_views.jpg"],
                ["Armory_front", "Armory_34", "Armory_side", "Armory_back", "Armory_door_eye", "Armory_roof"]),
 }
-NOTE = {"Armory": "2D 없음: 가게·집 2D로 언어만 참고"}
+NOTE = {"Armory": "승인 2D: halo_armory_views (앞·옆·뒤)"}
 FONT = ImageFont.truetype("C:/Windows/Fonts/malgunbd.ttf", 16)
 
 
@@ -32,7 +32,7 @@ def load(path, w):
 
 sheets = []
 for bid, (twod, views) in ROWS.items():
-    cw, pw = 320, 480
+    cw, pw = (640 if bid == "Armory" else 320), 480
     c = [load(os.path.join(A, t), cw) for t in twod]
     ph = [load(os.path.join(D, v + ".jpg"), pw) for v in views]
     for im, v in zip(ph, views):
