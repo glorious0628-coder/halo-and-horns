@@ -158,7 +158,29 @@ def review2_spec():
     return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
 
 
-shots = door_spec() if "--doors" in sys.argv else review2_spec() if "--review2" in sys.argv else spec()
+def houses_spec():
+    """--houses (10/11 밤): 이미지 생성 3's house / shop skeletons at their plan spots, one shot per group, from the door side"""
+    B = {b["id"]: b for b in PLAN["buildings"]}
+    out = []
+    for name, ids, dist, hgt in (("h_01_market", ("Shop_Potion", "Shop_Flower", "Shop_Bakery", "Shop_Juice"), 34, 22),
+                                  ("h_02_hill", ("House_Hill1", "House_Hill2", "House_Hill3"), 40, 26),
+                                  ("h_03_cliff_lower", ("House_Cliff1", "House_Cliff2"), 34, 18),
+                                  ("h_04_cliff_upper", ("House_Cliff3", "House_Cliff4", "House_Cliff5"), 44, 26),
+                                  ("h_05_garden", ("House_Garden1", "House_Garden2", "House_Garden3", "House_Garden4"), 50, 30)):
+        bs = [B[i] for i in ids]
+        cx, cz = sum(b["x"] for b in bs) / len(bs), sum(b["z"] for b in bs) / len(bs)
+        ux, uz = sum(b["door_dir"][0] for b in bs), sum(b["door_dir"][1] for b in bs)
+        n = math.hypot(ux, uz) or 1.0
+        out.append((name, g(cx + ux / n * dist, cz + uz / n * dist, hgt), g(cx, cz, 4)))
+    for bid in ("House_Hill1", "Shop_Bakery", "House_Garden3"):  # close door shots (05 the widest, a shop with an off-centre door, 07)
+        b = B[bid]
+        (ax, az), (ux, uz) = b["door_at"], b["door_dir"]
+        out.append(("h_door_" + bid, ab(ax + ux * 14 + uz * 4, b["ground_y"] + 6, az + uz * 14 - ux * 4), ab(ax, b["ground_y"] + 3, az)))
+    return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
+
+
+shots = (door_spec() if "--doors" in sys.argv else review2_spec() if "--review2" in sys.argv else
+         houses_spec() if "--houses" in sys.argv else spec())
 only = [a for a in sys.argv[1:] if not a.startswith("--")]
 if only:
     shots = [s for s in shots if any(s["name"].startswith(o) for o in only)]
