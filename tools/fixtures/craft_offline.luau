@@ -30,7 +30,11 @@ local function cWorld(o)
 	local ws = newInstance("Workspace", w)
 	ws.GetServerTimeNow = function() return w.Time + 0.25 end
 	w.Tagged = { CraftStation = {} }
-	w.Services.CollectionService = { GetTagged = function(_, tag) return w.Tagged[tag] or {} end }
+	w.Added = rbxSignal(w.Warnings)
+	w.Services.CollectionService = { GetTagged = function(_, tag) return w.Tagged[tag] or {} end,
+		GetInstanceAddedSignal = function() return w.Added end }
+	w.PPS = { PromptTriggered = rbxSignal(w.Warnings) }
+	w.Services.ProximityPromptService = w.PPS
 	local baseEnv = w.Env
 	function w:Env()
 		local e = baseEnv(self)
@@ -221,7 +225,10 @@ runGroup("recipes", function()
 	local n = cWorld({ NoSpare = true })
 	check(n.C.RecipeOn("W1") == nil, "no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off", "")
 	local p = smith(n, 1)
-	check(n.C.TryStart(p, "W1") == "recipe", "... and refused", "")
+	local nf = #n.Notices
+	check(n.C.TryStart(p, "W1") == "recipe" and keysFor(n, p, nf)[1] == "Config.Craft.Text.NotReady", "... and refused with NotReady (a key)", "")
+	local nf2 = #n.Notices
+	check(n.C.TryStart(p, "Nope") == "recipe" and #keysFor(n, p, nf2) == 0, "an unknown recipe id: refused without a word", "")
 	local gem = cWorld({ EditConfig = function(c)
 		c.Loot.Items.ClatterGem = { Kind = "Material", Name = "Old Crown Gem", Sell = 400, Icon = "IconClatterGem" }
 		c.Loot.Items.KingJelly = { Kind = "Material", Name = "Royal Jelly", Sell = 60, Icon = "IconKingJelly" }
@@ -302,6 +309,8 @@ runGroup("hammer", function()
 	check(#w.Spares == 1 and w.Spares[1].Tier == 1 and w.Spares[1].Plus == 2, "the weapon goes to the spares (AddSpare 1, +2)", "")
 	check(d.Craft.Pend == nil and d.Craft.Made.W1 == 1 and d.Craft.Smith.XP == 10, "Pend cleared, Made.W1 = 1, 10 craft XP", show(d.Craft))
 	local info = last(fired(w, "CraftInfo", p))
+	check(info and type(info.On) == "table" and table.concat(info.On, ",") == "W1,W2,W3,W4,W5,W6",
+		"CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)", info and show(info.On) or "")
 	check(info and info.Role == "Smith" and info.Lv == 1 and info.XP == 10 and info.Need == 40 and info.Made.W1 == 1,
 		"CraftInfo { Role, Lv, XP, Need, Made } after the craft", show(info))
 	check(#w.Crafted == 1 and w.Crafted[1].Id == "W1" and w.Crafted[1].Plus == 2, "Crafted(player, W1, 2)", "")
@@ -575,6 +584,50 @@ runGroup("remotes", function()
 			check(string.match(n.Key, "^Config%.Craft%.Text%.%a+$") ~= nil, "every craft notice is a Config.Craft.Text key", n.Key)
 		end
 	end
+end)
+
+------------------------------------------------------------------ workbench prompts
+runGroup("workbench", function()
+	local w = cWorld()
+	local function bench(role, pos)
+		local part = newInstance("Part", w)
+		part.Position = pos
+		part.Attrs.Role = role
+		table.insert(w.Tagged.CraftStation, part)
+		w.Added:Fire(part)
+		return part
+	end
+	local anvil = bench("Smith", vec(100, 0, 0))
+	local odd = bench("Painter", vec(200, 0, 0))
+	local prompt = anvil:FindFirstChild("CraftPrompt")
+	check(prompt and prompt.ClassName == "ProximityPrompt" and prompt.HoldDuration == 0 and prompt.ActionText == "" and prompt.ObjectText == ""
+		and prompt:GetAttribute("ActionKey") == "Config.Craft.Text.Prompt" and prompt:GetAttribute("ObjectKey") == "Config.Craft.Text.Stations.Smith",
+		"a tagged workbench gets one Craft prompt (no words; ActionKey / ObjectKey)", "")
+	check(odd:FindFirstChild("CraftPrompt") == nil, "a workbench of an unknown role gets none", "")
+	w.Added:Fire(anvil)
+	local n = 0
+	for _, c in anvil:GetChildren() do if c.Name == "CraftPrompt" then n += 1 end end
+	check(n == 1, "never two prompts on one workbench", tostring(n))
+	local p = smith(w, 1)
+	local before = #fired(w, "CraftInfo", p)
+	w.PPS.PromptTriggered:Fire(prompt, p)
+	local open = fired(w, "OpenPanel", p)
+	check(#open == 1 and open[1] == "Craft" and #fired(w, "CraftInfo", p) == before + 1, "a blacksmith at the anvil: OpenPanel Craft + CraftInfo", "")
+	local k = smith(w, 2, nil, "Warrior", "Halo")
+	local mage = smith(w, 3, nil, "Mage")
+	local from = #w.Notices
+	w.PPS.PromptTriggered:Fire(prompt, k)
+	w.PPS.PromptTriggered:Fire(prompt, mage)
+	check(#fired(w, "OpenPanel", k) == 0 and #fired(w, "OpenPanel", mage) == 0 and keysFor(w, k, from)[1] == "Config.Craft.Text.NotArtisan"
+		and keysFor(w, mage, from)[1] == "Config.Craft.Text.NotArtisan", "a Knight or an alchemist at the anvil: NotArtisan, no window", "")
+	local other = newInstance("ProximityPrompt", w)
+	w.PPS.PromptTriggered:Fire(other, p)
+	check(#fired(w, "OpenPanel", p) == 1, "someone else's prompt is not ours", "")
+	local off = cWorld({ Off = true })
+	local part = newInstance("Part", off)
+	part.Attrs.Role = "Smith"
+	off.Added:Fire(part)
+	check(part:FindFirstChild("CraftPrompt") == nil, "switch off: no prompt", "")
 end)
 
 finish()

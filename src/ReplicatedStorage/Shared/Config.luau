@@ -8313,6 +8313,9 @@ Config.Craft = {
 		Busy = "Finish this craft first.",
 		Full = "No room for it.",
 		Auto = "Turn off auto combat first.",
+		NotReady = "You can't make this yet.", -- a recipe the server has switched off (its drops / spares are not in yet)
+		Prompt = "Craft", -- the workbench prompt (ActionKey)
+		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 	},
 }
 Config.RateLimits.CraftStart = 3

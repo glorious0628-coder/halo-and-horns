@@ -20,6 +20,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -36,6 +37,7 @@ local ST = {
 	Open = {}, -- [Player] = { Id, Recipe, StartAt, Strikes = { [i] = server time }, Done = true? }
 	Starts = {}, -- [Player] = { os.clock() of the recent starts } (StartsPerMinute)
 	Serial = 0,
+	Prompts = {}, -- [ProximityPrompt] = the workbench's role (the "Craft" prompts this service made)
 	GearSum = 60, -- Gear.Own holds at most this many things in all (the save v4 agreement; per key: Config.SaveV4.OwnKeyMax)
 }
 
@@ -191,7 +193,14 @@ local function sendInfo(player, data)
 	if not role then return end
 	local c = craftOf(data)
 	local rr = roleRec(c, role)
-	fire(player, "CraftInfo", { Role = role, Lv = rr.Lv, XP = rr.XP, Need = Config.CraftXPToNext(rr.Lv), Made = table.clone(c.Made) })
+	-- On = the recipe ids of my role the server would start now (a recipe waiting for its drops / spares is left out)
+	local onIds = {}
+	for id, r in K().Recipes do
+		if r.Role == role and CraftService.RecipeOn(id) then table.insert(onIds, id) end
+	end
+	table.sort(onIds)
+	fire(player, "CraftInfo", { Role = role, Lv = rr.Lv, XP = rr.XP, Need = Config.CraftXPToNext(rr.Lv), Made = table.clone(c.Made),
+		On = onIds })
 end
 
 -- craft XP for `role`; returns the level now and whether it rose
@@ -285,9 +294,13 @@ end
 ------------------------------------------------------------------ the three remotes
 function CraftService.TryStart(player, id)
 	if not on() then return "off" end
-	local r = CraftService.RecipeOn(id)
-	if not r then return "recipe" end
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return "state" end
+	local r = CraftService.RecipeOn(id)
+	if not r then
+		-- a known recipe the server keeps off (its drops / the spares are not in yet) says so; an unknown id says nothing
+		if type(id) == "string" and type(K().Recipes[id]) == "table" then notify(player, "NotReady") end
+		return "recipe"
+	end
 	local data = getData(player)
 	if not data or not Util.IsAlive(player) then return "state" end
 	local role = roleOf(data)
@@ -454,6 +467,40 @@ local function onFinish(player, ...)
 	CraftService.Finish(player, sid)
 end
 
+------------------------------------------------------------------ workbench prompts
+-- every part tagged StationTag (attribute Role = Smith | Alch | Tame; WorldKit places them in the guild) gets one "Craft"
+-- prompt (ActionKey / ObjectKey: the client writes the words). An artisan of that role opens the craft window
+-- (OpenPanel "Craft" + CraftInfo); anyone else hears NotArtisan. The Crossroads anvil keeps Otto's prompt only.
+local function addPrompt(part)
+	if not on() or typeof(part) ~= "Instance" or not part:IsA("BasePart") or part:FindFirstChild("CraftPrompt") then return end
+	local role = part:GetAttribute("Role")
+	if type(role) ~= "string" or type(K().Text.Stations[role]) ~= "string" then return end
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "CraftPrompt"
+	prompt.HoldDuration = 0
+	prompt.MaxActivationDistance = math.min(10, K().Range)
+	prompt.RequiresLineOfSight = false
+	prompt.ActionText = ""
+	prompt.ObjectText = ""
+	prompt:SetAttribute("ActionKey", "Config.Craft.Text.Prompt")
+	prompt:SetAttribute("ObjectKey", "Config.Craft.Text.Stations." .. role)
+	prompt.Parent = part
+	ST.Prompts[prompt] = role
+end
+
+local function onPrompt(prompt, player)
+	local role = ST.Prompts[prompt]
+	if not role or not on() then return end
+	local data = getData(player)
+	if not data or not S.PlayerService.IsReady(player) then return end
+	if roleOf(data) ~= role then
+		notify(player, "NotArtisan")
+		return
+	end
+	fire(player, "OpenPanel", "Craft")
+	sendInfo(player, data)
+end
+
 ------------------------------------------------------------------ service
 function CraftService.Init(registry)
 	S = registry
@@ -470,6 +517,9 @@ function CraftService.Start()
 	Net.Get("CraftStart").OnServerEvent:Connect(guard("CraftStart", onStart))
 	Net.Get("CraftStrike").OnServerEvent:Connect(guard("CraftStrike", onStrike))
 	Net.Get("CraftFinish").OnServerEvent:Connect(guard("CraftFinish", onFinish))
+	ProximityPromptService.PromptTriggered:Connect(guard("prompt", onPrompt))
+	for _, part in CollectionService:GetTagged(K().StationTag) do pcall(addPrompt, part) end
+	CollectionService:GetInstanceAddedSignal(K().StationTag):Connect(guard("station", addPrompt))
 	S.PlayerService.PlayerReady:Connect(guard("ready", function(player, data)
 		-- switched off: nothing is read or written (a waiting craft waits for the switch)
 		if type(data) ~= "table" or not on() then return end
