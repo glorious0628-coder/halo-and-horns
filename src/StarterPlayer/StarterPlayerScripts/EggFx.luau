@@ -721,6 +721,15 @@ function EggFx.Init(registry)
 	C = registry
 end
 
+-- 게임성 검수 10/11: a repeating error (every frame) warns once per WarnGap s per message, not 60 times a second
+local function warnThrottled(msg)
+	local now = os.clock()
+	S.Warned = S.Warned or {}
+	if now - (S.Warned[msg] or -math.huge) < num(lookCfg().WarnGap, 10) then return end
+	S.Warned[msg] = now
+	warn("[EggFx] " .. msg)
+end
+
 function EggFx.Start()
 	task.spawn(function()
 		local effects = workspace:WaitForChild("Effects", 60)
@@ -734,13 +743,13 @@ function EggFx.Start()
 	task.spawn(function()
 		local ok, err = pcall(function() Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
 			local fine, e = pcall(EggFx.OnFx, kind, data)
-			if not fine then warn("[EggFx] " .. tostring(e)) end
+			if not fine then warnThrottled(tostring(kind) .. ": " .. tostring(e)) end
 		end) end)
-		if not ok then warn("[EggFx] Fx hook: " .. tostring(err)) end
+		if not ok then warnThrottled("Fx hook: " .. tostring(err)) end
 	end)
 	RunService.RenderStepped:Connect(function()
 		local ok, err = pcall(EggFx.Step)
-		if not ok then warn("[EggFx] " .. tostring(err)) end
+		if not ok then warnThrottled(tostring(err)) end
 	end)
 end
 

@@ -185,6 +185,9 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         ("EggFx: no PointLight / Highlight / Beam (design: no per-egg lights, no rays)",
          not re.search(r'Instance\.new\("(PointLight|Highlight|Beam|SpotLight|SurfaceLight)"\)', egg), ""),
         ("EggFx: no remote of its own (no FireServer / InvokeServer)", "FireServer" not in egg and "InvokeServer" not in egg, ""),
+        ("EggFx: a repeating error warns once per WarnGap s (게임성 검수 10/11), never a bare warn per frame",
+         "if now - (S.Warned[msg] or -math.huge) < num(lookCfg().WarnGap, 10) then return end" in egg
+         and "if not ok then warnThrottled(tostring(err)) end" in egg and egg.count("warn(") == 1, ""),
         ("EggFx: a removed ground egg waits GoneWait s for an EggReturn before a 'picked' pop",
          "task.delay(num(lookCfg().GoneWait, 0.25)" in egg and "if gone.Returned then return end" in egg
          and "gone.Returned = true" in egg, ""),
@@ -249,6 +252,8 @@ MUTATIONS = [
     ("EGG", "fractions on the bar", "local halo = math.max(0, math.floor(num(a.Rescue, 0) + 0.5))", "local halo = math.max(0, num(a.Rescue, 0))"),
     ("EGG", "a point light on the crown egg", "local glow\n", "local glow\n\tInstance.new(\"PointLight\").Parent = v\n"),
     ("EGG", "the server part left showing", "part.LocalTransparencyModifier = 1", "part.LocalTransparencyModifier = 0"),
+    ("EGG", "a frame error warns every frame", "if not ok then warnThrottled(tostring(err)) end",
+     'if not ok then warn("[EggFx] " .. tostring(err)) end'),
     ("EGG", "a 'picked' pop without waiting for a return", "if gone.Returned then return end", ""),
     ("EGG", "'+N' for everyone's delivery", "if data.UserId ~= LocalPlayer.UserId then return end", ""),
     ("HUD", "the explanation line under the bar again", "if type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\tsetVisible(ui.TugSub, false)",
