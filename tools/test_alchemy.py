@@ -66,7 +66,8 @@ MUTATIONS = [
     ("remote: extra arguments taken", B, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal id = ...\n", "\tlocal id = ...\n"),
     ("remote: no rate limit", B, "\tif not Util.RateLimit(player, \"UseTonic\", num(Config.RateLimits.UseTonic, 1)) then return end\n", ""),
     # --- the Lucky Tonic hook in LootService
-    ("loot: Lucky on every row", L, "\t\tlocal rowBonus = rowBonus * ((def and def.Kind == \"Material\") and num(info.MatMult, 1) or 1)\n", "\t\tlocal rowBonus = rowBonus * num(info.MatMult, 1)\n"),
+    ("loot: Lucky on every row", L, "\t\tlocal rowBonus = rowBonus * ((def and def.Kind == \"Material\" and def.Source == nil) and num(info.MatMult, 1) or 1)\n", "\t\tlocal rowBonus = rowBonus * num(info.MatMult, 1)\n"),
+    ("loot: Lucky on boss / gathered material rows", L, " and def.Source == nil) and num(info.MatMult, 1) or 1)\n", ") and num(info.MatMult, 1) or 1)\n"),
     ("loot: Lucky never asked", L, "\tif S.BuffService then info.MatMult = S.BuffService.Mult(player, \"MaterialDrop\") end\n", ""),
 ]
 

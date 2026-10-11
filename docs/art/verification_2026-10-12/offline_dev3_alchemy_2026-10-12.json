@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 62,
+  "checks": 64,
   "failedChecks": 0,
-  "namedChecks": 53,
+  "namedChecks": 55,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -315,6 +315,18 @@
     },
     {
       "group": "loot",
+      "check": "a Boss material row ignores the Lucky Tonic (0.35 still misses)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a Gather material row ignores the Lucky Tonic (0.35 still misses)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -330,9 +342,9 @@
   "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 30,
-    "applied": 30,
-    "caught": 30,
+    "total": 31,
+    "applied": 31,
+    "caught": 31,
     "skipped": false,
     "results": [
       {
@@ -685,9 +697,23 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "loot :: a Boss material row ignores the Lucky Tonic (0.35 still misses)",
+          "loot :: a Gather material row ignores the Lucky Tonic (0.35 still misses)",
           "loot :: a scroll row stays as it was (0.3%: a draw of 0.0035 misses even with the tonic)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "loot: Lucky on boss / gathered material rows",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: a Boss material row ignores the Lucky Tonic (0.35 still misses)",
+          "loot :: a Gather material row ignores the Lucky Tonic (0.35 still misses)"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "loot: Lucky never asked",
@@ -706,12 +732,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "8c1ccd5799009b0093f21b8003765d00005ef5a806fd076f4dc49ee36bf9a007",
+    "src/ReplicatedStorage/Shared/Config.luau": "d6fd55a240d4e41f2083b118e0a9b5d2c39480ffef83c64792c48c7b68558191",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/LootService.luau": "b427096f06419dc337a116b14589ac05b3ed36222c5f9261872927ad6d73ef4e",
+    "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
     "src/ServerScriptService/BuffService.luau": "006bebe3e25f689014abad6d52f43b3fdc417d72cb69c4c1277331abc0f5eb0a"
   },
-  "fixtureSHA256": "6ac52d0a90c766ef0688508461feceb94f5c6d8dae4ae2dbe5aafe7f9785ec72",
+  "fixtureSHA256": "8c717936f4e22f997c556e206ec4fcb4241c640042298567b1b0e70908abebcf",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
