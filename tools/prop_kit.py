@@ -40,6 +40,8 @@ COL = {
     "rope": (232, 214, 170), "leaf": (120, 186, 70), "soil": (140, 100, 62), "iron": (58, 58, 64),
     "candle": (250, 246, 236), "paint": (255, 255, 255), "stone": (242, 236, 222), "dark": (70, 52, 40),
     "water": (120, 200, 235),
+    # 디자인 검수 10/11: painted cream wood = smooth cream (Wood grain read as grey marble swirl) + thin seam parts
+    "pcream": (242, 233, 214), "groove": (212, 198, 176), "ironblue": (60, 64, 78),
 }
 
 KITS = {}          # name -> builder
@@ -198,6 +200,25 @@ def inlay(n, centre, nrm, w, h, kind="rect", fr=0.07, t=0.04):
             plate(n + "_G" + k, s, s, t - 0.005, vadd(c, vmul(nrm, 0.002)), nrm, "gold", rot=45)
             sb = w / math.sqrt(2)
             plate(n + "_B" + k, sb, sb, t, vadd(c, vmul(nrm, 0.022)), nrm, "blue", rot=45)
+
+
+def seam(n, centre, nrm, length, vertical=False, w=0.03):
+    """Thin plank seam on a painted face (darker cream strip, sticks out 0.012)."""
+    return plate(n, w if vertical else length, length if vertical else w, 0.012, centre, nrm, "groove")
+
+
+def chamfer_slab(n, w, h, t, centre, ch, m="marble", keep=True, **kw):
+    """Flat slab in the x-z plane (thickness along y) with its four corners cut at 45 deg (long octagon)."""
+    r = math.sqrt(0.5)
+    cuts = []
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            cuts.append(cut(part, "%s_c%d%d" % (n, sx, sz), "Block", (ch * 2 * r, ch * 2 * r, t + 0.2),
+                            vadd(centre, (sx * w / 2, 0.0, sz * h / 2)), (r, 0.0, r), (-r, 0.0, r), m))
+    d = part(n, "Block", (w, h, t), centre, EX, UP, m, ops=[("minus", cuts)], **kw)
+    if not keep:
+        P.remove(d)
+    return d
 
 
 def gold_ball(n, dia, x, y, z0, neck=True):
@@ -566,11 +587,14 @@ def cafe_table():
 @kit("NEW_CandleCrate", 2.0, "art/out/s2/halo/kits_new/HaloKit_CandleCrate_front.png")
 def candle_crate():
     W, D, H, t = 2.0, 1.5, 1.15, 0.12
-    box("Bottom", W, D, 0.12, 0, 0, 0, "woodcream")
-    box("Front", W, t, H, 0, D / 2 - t / 2, 0, "woodcream")
-    box("Back", W, t, H, 0, -D / 2 + t / 2, 0, "woodcream")
-    box("Left", t, D - 2 * t, H, -W / 2 + t / 2, 0, 0, "woodcream")
-    box("Right", t, D - 2 * t, H, W / 2 - t / 2, 0, 0, "woodcream")
+    box("Bottom", W, D, 0.12, 0, 0, 0, "pcream")
+    box("Front", W, t, H, 0, D / 2 - t / 2, 0, "pcream")
+    box("Back", W, t, H, 0, -D / 2 + t / 2, 0, "pcream")
+    box("Left", t, D - 2 * t, H, -W / 2 + t / 2, 0, 0, "pcream")
+    box("Right", t, D - 2 * t, H, W / 2 - t / 2, 0, 0, "pcream")
+    for k, f in enumerate(((0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0))):      # one plank seam round the middle
+        L = (W if f[1] else D) - 0.4
+        seam("Seam%d" % k, (f[0] * W / 2, f[1] * D / 2, H * 0.62), f, L)
     for sx in (-1, 1):
         for sy in (-1, 1):
             box("Corner%d%d" % (sx, sy), 0.18, 0.18, H + 0.04, sx * (W / 2 - 0.07), sy * (D / 2 - 0.07), 0, "gold")
@@ -580,7 +604,7 @@ def candle_crate():
         box("BandBot%d" % sy, W + 0.02, 0.06, 0.12, 0, sy * (D / 2 + 0.01), 0.02, "gold", cc=False)
     # diagonal brace on the front
     part("Brace", "Block", (math.hypot(W - 0.4, H - 0.4), 0.16, 0.05), (0, D / 2 + 0.025, H / 2), norm((W - 0.4, 0, H - 0.4)),
-         norm((-(H - 0.4), 0, W - 0.4)), "woodcream", cc=False)
+         norm((-(H - 0.4), 0, W - 0.4)), "pcream", cc=False)
     # white candles standing in the crate (no flame)
     for k, (x, y, d, h) in enumerate(((-0.45, 0.2, 0.42, 1.55), (0.15, 0.25, 0.4, 1.75), (0.6, -0.2, 0.38, 1.45),
                                        (-0.2, -0.3, 0.44, 1.9), (0.35, 0.3, 0.32, 1.25), (-0.65, -0.25, 0.34, 1.35))):
@@ -591,12 +615,17 @@ def candle_crate():
 
 def barrel(n, d, h, x, y, z0=0.0):
     """Bulged barrel: three stacked cylinders + gold hoops."""
-    cyl(n + "_Lo", d * 0.92, h * 0.26, x, y, z0, "woodcream")
-    cyl(n + "_Mid", d, h * 0.48, x, y, z0 + h * 0.26, "woodcream")
-    cyl(n + "_Hi", d * 0.92, h * 0.26, x, y, z0 + h * 0.74, "woodcream")
+    cyl(n + "_Lo", d * 0.92, h * 0.26, x, y, z0, "pcream")
+    cyl(n + "_Mid", d, h * 0.48, x, y, z0 + h * 0.26, "pcream")
+    cyl(n + "_Hi", d * 0.92, h * 0.26, x, y, z0 + h * 0.74, "pcream")
+    for k in range(8):                                          # stave seams, one per section
+        f = hdir(22.5 + 45 * k)
+        for j, (zz, hh, dd) in enumerate(((0.0, 0.26, 0.92), (0.26, 0.48, 1.0), (0.74, 0.26, 0.92))):
+            seam("%s_Stave%d_%d" % (n, k, j), (x + f[0] * d * dd / 2, y + f[1] * d * dd / 2, z0 + h * (zz + hh / 2)), f,
+                 h * hh, vertical=True)
     for k, (zz, dd) in enumerate(((0.06, 0.92), (0.26, 0.96), (0.7, 0.96), (0.9, 0.92))):
         cyl("%s_Hoop%d" % (n, k), d * dd + 0.08, 0.14, x, y, z0 + h * zz - 0.07, "gold", cc=False)
-    cyl(n + "_Lid", d * 0.84, 0.04, x, y, z0 + h, "wood", cc=False)
+    cyl(n + "_Lid", d * 0.84, 0.04, x, y, z0 + h, "groove", cc=False)
 
 
 @kit("NEW_ArmoryBarrels", 3.5, "art/out/s2/halo/kits_new/HaloKit_ArmoryBarrels_front.png", mirror=True)
@@ -606,7 +635,10 @@ def armory_barrels():
     # crate (right back), cream planks, gold corners and an X brace
     S = 1.85
     x, y = 1.15, -0.15
-    box("Crate", S, S, S, x, y, 0, "woodcream")
+    box("Crate", S, S, S, x, y, 0, "pcream")
+    for k, f in enumerate(((0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0))):      # two plank seams per side
+        for j, zz in enumerate((S / 3, 2 * S / 3)):
+            seam("CrateSeam%d_%d" % (k, j), (x + f[0] * S / 2, y + f[1] * S / 2, zz), f, S - 0.4)
     for sx in (-1, 1):
         for sy in (-1, 1):
             box("CrateCorner%d%d" % (sx, sy), 0.2, 0.2, S + 0.02, x + sx * (S / 2 - 0.08), y + sy * (S / 2 - 0.08), 0, "gold", cc=False)
@@ -614,7 +646,7 @@ def armory_barrels():
         box("CrateBand%d" % sz, S + 0.04, S + 0.04, 0.14, x, y, 0.02 + sz * (S - 0.18), "gold", cc=False)
     for k, sgn in enumerate((1, -1)):
         a = norm((sgn * 1.0, 0, 1.0))
-        part("CrateX%d" % k, "Block", (S * 1.15, 0.18, 0.06), (x, y + S / 2 + 0.06 + 0.02 * k, S / 2), a, norm((-a[2], 0, a[0])), "woodcream", cc=False)
+        part("CrateX%d" % k, "Block", (S * 1.15, 0.18, 0.06), (x, y + S / 2 + 0.06 + 0.02 * k, S / 2), a, norm((-a[2], 0, a[0])), "pcream", cc=False)
     # white cloth with a blue stripe hanging over barrel A's rim (Fabric)
     box("ClothTop", 0.9, 0.9, 0.06, -1.45, -0.35, 3.0, "cloth", cc=False)          # lies on barrel A's lid edge
     box("Cloth", 0.06, 0.9, 1.0, -1.93, -0.35, 2.02, "cloth", cc=False)             # hangs down its outer side
@@ -630,7 +662,12 @@ def beehive():
     box("Floor", W + 0.1, D + 0.1, 0.12, 0, 0, 0.38, "gold")
     z = 0.5
     for k in range(2):
-        box("Box%d" % k, W, D, 0.82, 0, 0, z, "woodcream")
+        box("Box%d" % k, W, D, 0.82, 0, 0, z, "pcream")
+        for j, f in enumerate(((0, 1, 0), (0, -1, 0), (1, 0, 0), (-1, 0, 0))):  # plank seams below / above the slot
+            for i, zz in enumerate((0.2, 0.62)):
+                if f[1] > 0 and i == 1:
+                    continue
+                seam("BoxSeam%d_%d_%d" % (k, j, i), (f[0] * W / 2, f[1] * D / 2, z + zz), f, (W if f[1] else D) - 0.26)
         box("BoxBand%d" % k, W + 0.06, D + 0.06, 0.1, 0, 0, z + 0.7, "gold", cc=False)
         for sx in (-1, 1):
             for sy in (-1, 1):
@@ -663,9 +700,9 @@ def notice_board():
         inlay("GableWin%d" % sx, (sx * 2.2, 0, 5.3), (sx, 0, 0), 0.14, 0.3, "arch", fr=0.04)
         gold_ball("Finial%d" % sx, 0.3, sx * 2.45, 0, 5.84, neck=False)
     # board: light wood planks with a gold frame, slightly in front of the posts
-    box("Board", 2.9, 0.16, 2.3, 0, 0.05, 1.7, "woodcream")
+    box("Board", 2.9, 0.16, 2.3, 0, 0.05, 1.7, "pcream")
     for k in range(4):
-        box("BoardSeam%d" % k, 2.9, 0.02, 0.03, 0, 0.14, 2.15 + k * 0.48, "wood", cc=False)
+        box("BoardSeam%d" % k, 2.9, 0.02, 0.03, 0, 0.14, 2.15 + k * 0.48, "groove", cc=False)
     for sz, zz in ((0, 1.62), (1, 4.0)):
         box("FrameH%d" % sz, 3.06, 0.2, 0.09, 0, 0.06, zz, "gold", cc=False)
     for sx in (-1, 1):
@@ -989,9 +1026,10 @@ def lantern_e():
 @kit("NEW_WallLamp", 1.5, "art/out/s2/halo/kits_mv/HaloKit_WallLamp_front_HQ_src.png",
      note="origin = the wall face at the plate's foot; the lamp sticks out along +y")
 def wall_lamp():
-    box("PlateGold", 0.56, 0.08, 1.5, 0, 0.04, 0.0, "gold")
-    box("Plate", 0.44, 0.1, 1.38, 0, 0.1, 0.06, "marble")
-    inlay("PlateWin", (0, 0.15, 0.75), EY, 0.12, 0.5, "hex", fr=0.035)
+    chamfer_slab("Plate", 0.56, 1.5, 0.12, (0, 0.06, 0.75), 0.12, "marble")
+    inner = chamfer_slab("PlateRim_in", 0.44, 1.38, 0.3, (0, 0.14, 0.75), 0.08, "gold", keep=False)
+    chamfer_slab("PlateRim", 0.58, 1.52, 0.04, (0, 0.14, 0.75), 0.13, "gold", cc=False)["ops"][0][1].append(inner)
+    inlay("PlateWin", (0, 0.12, 0.75), EY, 0.12, 0.6, "hex", fr=0.035)
     box("ArmBlock", 0.24, 0.3, 0.24, 0, 0.3, 1.1, "marble")
     box("Arm", 0.16, 0.75, 0.16, 0, 0.8, 1.2, "gold", cc=False)
     arc("ArmBrace", 0.32, 0.06, 0.08, (0.0, 0.47, 0.88), 0, 90, "gold", axis=EX, cc=False)
@@ -1036,13 +1074,15 @@ def cap_bowl(n, d, depth, y_rim, x=0.0, y=0.0, m="marble", **kw):
 
 def stripes_disc(n, d, t, centre, nrm, cols, count=3):
     """Round shield face: white disc + vertical blue stripes cut to the circle (CSG AND), facing nrm."""
+    nrm = norm(nrm)
     X, _ = face_axes(nrm)
-    part(n, "Cylinder", (t, d, d), centre, nrm, UP, "cloth", c=cols[0], cc=False)
+    Yf = norm(cross(X, nrm))                       # "up" inside the (maybe tilted) shield face
+    part(n, "Cylinder", (t, d, d), centre, nrm, Yf, "cloth", c=cols[0], cc=False)
     w = d / (2 * count + 1)
     for k in range(count):
         u = -d / 2 + w * (2 * k + 1.5)
-        disc = cut(part, "%s_d%d" % (n, k), "Cylinder", (t + 0.2, d, d), centre, nrm, UP, "cloth")
-        part("%s_S%d" % (n, k), "Block", (w, d, t + 0.02), vadd(centre, vmul(X, u)), X, UP, "cloth", c=cols[1], cc=False,
+        disc = cut(part, "%s_d%d" % (n, k), "Cylinder", (t + 0.2, d, d), centre, nrm, Yf, "cloth")
+        part("%s_S%d" % (n, k), "Block", (w, d, t + 0.02), vadd(centre, vmul(X, u)), X, Yf, "cloth", c=cols[1], cc=False,
              ops=[("and", [disc])])
 
 
@@ -1114,12 +1154,16 @@ def guard_post():
 @kit("HaloReasonHQ_Woodpile", 4.9, "art/out/s2/halo/props4/HaloProp4_ReasonWood_front.png")
 def woodpile():
     W, D = 6.0, 2.9
-    box("Floor", W, D, 0.35, 0, 0, 0, "marble")
-    box("FloorBand", W + 0.04, D + 0.04, 0.08, 0, 0, 0.22, "gold")
+    box("Floor", W - 0.5, D - 0.5, 0.3, 0, 0, 0.05, "wood")
     for sx in (-1, 1):
         for sy in (-1, 1):
             x, y = sx * (W / 2 - 0.25), sy * (D / 2 - 0.25)
-            box("Post%d%d" % (sx, sy), 0.42, 0.42, 3.25, x, y, 0.35, "wood")
+            box("Foot%d%d" % (sx, sy), 0.62, 0.62, 0.62, x, y, 0, "marble")
+            box("FootBand%d%d" % (sx, sy), 0.66, 0.66, 0.08, x, y, 0.5, "gold", cc=False)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (W / 2 - 0.25), sy * (D / 2 - 0.25)
+            box("Post%d%d" % (sx, sy), 0.42, 0.42, 3.0, x, y, 0.6, "wood")
             box("PostBand%d%d" % (sx, sy), 0.48, 0.48, 0.1, x, y, 1.6, "gold", cc=False)
             box("PostCap%d%d" % (sx, sy), 0.5, 0.5, 0.12, x, y, 3.6, "gold", cc=False)
     for sy in (-1, 1):
@@ -1128,7 +1172,12 @@ def woodpile():
         box("BeamS%d" % sx, 0.3, D, 0.3, sx * (W / 2 - 0.25), 0, 3.6, "wood")
     gable_roof("Roof", D + 0.4, W + 0.2, 1.0, 0, 0, 3.9, ridge="x", over=0.3, t=0.16, m="marble")
     for sx in (-1, 1):
-        inlay("Gable%d" % sx, (sx * (W / 2 + 0.1), 0, 4.2), (sx, 0, 0), 0.9, 0.35, "rect", fr=0.06)
+        # blue gable triangle (two wedges, high side at the ridge) like the 2D
+        gx = sx * (W / 2 + 0.1 + 0.04)          # just outside the roof's marble gable fill (ends at W / 2 + 0.1)
+        for sy in (-1, 1):
+            Z = (0.0, -sy, 0.0)
+            part("Gable%d_%d" % (sx, sy), "Wedge", (0.08, 0.86, (D + 0.4) / 2 - 0.2), (gx, sy * ((D + 0.4) / 4 - 0.1), 3.9 + 0.43),
+                 cross(UP, Z), UP, "blue", cc=False)
         gold_ball("RidgeBall%d" % sx, 0.3, sx * (W / 2 + 0.35), 0, 4.95, neck=False)
     # log stack: rows of logs lying front-back, pale wood with a darker end ring
     rows = ((0.4, 6), (1.1, 5), (1.8, 6), (2.5, 5))
@@ -1137,10 +1186,13 @@ def woodpile():
         d = span / 6
         for k in range(n):
             x = -span / 2 + d * (k + 0.5 + (0.5 if n == 5 else 0))
-            part("Log%d_%d" % (r, k), "Cylinder", (D - 0.7, d * 0.95, d * 0.95), (x, 0, z + d * 0.47), EY, UP, "woodcream", c=(232, 196, 140))
+            part("Log%d_%d" % (r, k), "Cylinder", (D - 0.7, d * 0.95, d * 0.95), (x, 0, z + d * 0.47), EY, UP, "wood",
+                 c=(206, 140, 76))
             for sy in (-1, 1):
-                part("LogEnd%d_%d_%d" % (r, k, sy), "Cylinder", (0.03, d * 0.6, d * 0.6), (x, sy * (D / 2 - 0.34), z + d * 0.47), EY, UP,
-                     "wood", c=(196, 150, 96), cc=False)
+                part("LogEnd%d_%d_%d" % (r, k, sy), "Cylinder", (0.03, d * 0.86, d * 0.86), (x, sy * (D / 2 - 0.34), z + d * 0.47), EY, UP,
+                     "paint", c=(240, 198, 138), cc=False)
+                ring("LogRing%d_%d_%d" % (r, k, sy), d * 0.6, d * 0.46, 0.035, x, sy * (D / 2 - 0.34), z + d * 0.47, "paint",
+                     axis=EY, c=(206, 146, 84), cc=False)
 
 
 @kit("HaloReasonHQ_Clothesline", 4.7, "art/out/s2/halo/props4/HaloProp4_ReasonCloth_front.png")
@@ -1154,25 +1206,39 @@ def clothesline():
         gold_ball("PostBall%d" % sx, 0.55, x, 0, z)
     # rope with a little sag (two runs)
     zr, sag = 3.9, 0.35
-    rod("RopeL", (3.8, 0, zr), (0, 0, zr - sag), 0.08, "rope", cc=False)
-    rod("RopeR", (0, 0, zr - sag), (-3.8, 0, zr), 0.08, "rope", cc=False)
-    blue, white, sky = (110, 170, 235), (250, 248, 240), (170, 210, 245)
-    towels = ((2.85, 1.25, 1.9, white, blue), (1.55, 0.85, 1.25, sky, None), (0.35, 1.3, 2.0, blue, white), (-0.95, 0.85, 1.3, white, None),
-              (-2.15, 1.2, 1.9, white, blue))
-    for k, (x, w, h, c0, c1) in enumerate(towels):
-        zt = zr - sag * (1 - abs(x) / 3.8)
-        box("Towel%d" % k, w, 0.05, h, x, 0.0, zt - h, "cloth", c=c0, cc=False)
-        if c1:
-            for j in range(2):
-                box("TowelStripe%d_%d" % (k, j), w * 0.18, 0.06, h, x - w * 0.25 + j * w * 0.5, 0.0, zt - h, "cloth", c=c1, cc=False)
+    rod("RopeL", (3.8, 0, zr), (0, 0, zr - sag), 0.1, "paint", c=(214, 186, 136), cc=False)
+    rod("RopeR", (0, 0, zr - sag), (-3.8, 0, zr), 0.1, "paint", c=(214, 186, 136), cc=False)
+    blue, white, sky = (110, 170, 235), (250, 248, 240), (150, 196, 245)
+
+    # 2D left to right (= +x to -x): big white towel with a blue band, small square one with a blue border,
+    # plain blue one, big white one with blue stripes
+    def zt_at(x):
+        return zr - sag * (1 - abs(x) / 3.8)
+    x, w, h = 2.45, 1.75, 2.3
+    box("Towel0", w, 0.05, h, x, 0.0, zt_at(x) - h, "cloth", c=white, cc=False)
+    box("Towel0Band", w, 0.06, 0.24, x, 0.0, zt_at(x) - h + 0.3, "cloth", c=blue, cc=False)
+    box("Towel0Line", w, 0.06, 0.07, x, 0.0, zt_at(x) - h + 0.62, "cloth", c=blue, cc=False)
+    x = 1.0
+    box("Towel1Edge", 0.92, 0.05, 0.92, x, 0.0, zt_at(x) - 0.92, "cloth", c=blue, cc=False)
+    box("Towel1", 0.76, 0.06, 0.76, x, 0.0, zt_at(x) - 0.84, "cloth", c=white, cc=False)
+    x = -0.2
+    box("Towel2", 1.0, 0.05, 1.45, x, 0.0, zt_at(x) - 1.45, "cloth", c=sky, cc=False)
+    x, w, h = -1.95, 1.7, 2.55
+    box("Towel3", w, 0.05, h, x, 0.0, zt_at(x) - h, "cloth", c=white, cc=False)
+    for j in range(3):
+        box("Towel3Stripe%d" % j, w * 0.15, 0.06, h, x - w * 0.33 + j * w * 0.33, 0.0, zt_at(x) - h, "cloth", c=blue, cc=False)
+    for k, (x, w) in enumerate(((2.45, 1.75), (1.0, 0.92), (-0.2, 1.0), (-1.95, 1.7))):
         for sxp in (-1, 1):
-            box("Peg%d_%d" % (k, sxp), 0.06, 0.12, 0.2, x + sxp * w * 0.35, 0.0, zt - 0.12, "wood", cc=False)
-    # baskets with folded towels at both ends (in front of the posts)
-    for k, x in enumerate((3.2, -3.2)):
-        box("Basket%d" % k, 1.7, 1.2, 0.8, x, 1.0, 0, "woodcream", c=(230, 200, 150))
-        box("BasketRim%d" % k, 1.78, 1.28, 0.12, x, 1.0, 0.72, "gold", cc=False)
-        for j, col in enumerate((white, blue, white)):
-            box("Folded%d_%d" % (k, j), 1.3, 0.9, 0.18, x, 1.0, 0.84 + j * 0.18, "cloth", c=col, cc=False)
+            box("Peg%d_%d" % (k, sxp), 0.08, 0.14, 0.26, x + sxp * w * 0.36, 0.0, zt_at(x) - 0.14, "wood", cc=False)
+    # one warm-wood basket with folded towels in front of the left post (2D)
+    x = 3.2
+    box("Basket", 1.8, 1.25, 0.85, x, 1.0, 0, "wood", c=(205, 140, 76))
+    for j, zz in enumerate((0.28, 0.56)):
+        seam("BasketSeam%d" % j, (x, 1.0 + 0.625, zz), EY, 1.6)
+    box("BasketRim", 1.88, 1.33, 0.12, x, 1.0, 0.77, "gold", cc=False)
+    for j, col in enumerate((white, blue, white)):
+        box("Folded%d" % j, 1.35, 0.95, 0.18, x, 1.0, 0.89 + j * 0.18, "cloth", c=col, cc=False)
+    box("FoldedHang", 0.7, 0.05, 0.75, x - 0.3, 1.66, 0.4, "cloth", c=white, cc=False)
 
 
 @kit("HaloReasonHQ_RackShieldSword", 4.9, "art/out/s2/halo/props4/HaloProp4_ReasonRack_front.png")
@@ -1207,10 +1273,10 @@ def rack_shield_sword():
     for k, x in enumerate((-0.9, 0.9)):
         c = (x, 0.55, 1.0)
         nrm = norm((0.0, 1.0, 0.25))
-        stripes_disc("Shield%d" % k, 1.5, 0.06, c, nrm, ((250, 248, 240), (110, 170, 235)))
-        part("ShieldBack%d" % k, "Cylinder", (0.12, 1.5, 1.5), vadd(c, vmul(nrm, -0.09)), nrm, UP, "wood")
-        ring("ShieldRim%d" % k, 1.6, 1.42, 0.14, c[0], c[1], c[2], "gold", axis=nrm, cc=False)
-        ball("ShieldBoss%d" % k, 0.36, *vadd(c, vmul(nrm, 0.05)), "gold", cc=False)
+        stripes_disc("Shield%d" % k, 1.5, 0.12, c, nrm, ((250, 248, 240), (110, 170, 235)))
+        part("ShieldBack%d" % k, "Cylinder", (0.14, 1.52, 1.52), vadd(c, vmul(nrm, -0.12)), nrm, perp(nrm), "wood")
+        ring("ShieldRim%d" % k, 1.66, 1.42, 0.2, c[0], c[1], c[2], "gold", axis=nrm, cc=False)
+        ball("ShieldBoss%d" % k, 0.44, *vadd(c, vmul(nrm, 0.08)), "gold", cc=False)
 
 
 @kit("Town_Halo_Fountain3", 12.85, "art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png",
@@ -1763,11 +1829,11 @@ def cauldron():
         plate("BaseGold%d" % k, 0.35, 0.3, 0.05, vadd((0, 0, 0.22), vmul(nrm, 1.6)), nrm, "gold")
     for k in range(3):
         a = math.radians(90 + 120 * k)
-        box("Foot%d" % k, 0.35, 0.35, 0.5, 0.85 * math.cos(a), 0.85 * math.sin(a), 0.45, "iron", rot=math.degrees(a))
+        box("Foot%d" % k, 0.35, 0.35, 0.5, 0.85 * math.cos(a), 0.85 * math.sin(a), 0.45, "ironblue", rot=math.degrees(a))
     R, zc, zo = 1.3, 1.8, 2.6
-    top = cut(box, "PotTop", 3.0, 3.0, 2.0, 0, 0, zo, "iron")
-    inner = cut(ball, "PotIn", 2 * R - 0.24, 0, 0, zc, "iron")
-    ball("Pot", 2 * R, 0, 0, zc, "iron", ops=[("minus", [top, inner])])
+    top = cut(box, "PotTop", 3.0, 3.0, 2.0, 0, 0, zo, "ironblue")
+    inner = cut(ball, "PotIn", 2 * R - 0.24, 0, 0, zc, "ironblue")
+    ball("Pot", 2 * R, 0, 0, zc, "ironblue", ops=[("minus", [top, inner])])
     ro = math.sqrt(R * R - (zo - zc) ** 2)
     ring("Rim", 2 * ro + 0.24, 2 * ro - 0.18, 0.2, 0, 0, zo + 0.06, "gold")
     zb = zc + 0.45
@@ -1777,10 +1843,11 @@ def cauldron():
         a = math.radians(60 * k)
         ball("Stud%d" % k, 0.14, (rb + 0.04) * math.cos(a), (rb + 0.04) * math.sin(a), zb, "gold", cc=False)
     for sx in (-1, 1):
-        ring("Handle%d" % sx, 0.6, 0.38, 0.12, sx * (R + 0.08), 0, zc + 0.35, "iron", axis=EY, cc=False)
-    cyl("Brew", 2 * ro - 0.25, 0.06, 0, 0, zo - 0.22, "neon", c=(110, 235, 200), cc=False)
-    for k, (x, y, d) in enumerate(((0.3, 0.2, 0.3), (-0.35, -0.1, 0.24), (0.05, -0.4, 0.2), (-0.2, 0.35, 0.18))):
-        ball("Bubble%d" % k, d, x, y, zo - 0.18, "glass", c=(170, 250, 220), cc=False)
+        ring("Handle%d" % sx, 0.6, 0.38, 0.12, sx * (R + 0.08), 0, zc + 0.35, "ironblue", axis=EY, cc=False)
+    # brew: glowing surface just over the gold rim top, so it shows from eye height (2D key point)
+    cyl("Brew", 2 * ro - 0.2, 0.08, 0, 0, zo + 0.12, "neon", c=(110, 235, 190), cc=False)
+    for k, (x, y, d) in enumerate(((0.3, 0.2, 0.3), (-0.35, -0.1, 0.24), (0.05, -0.4, 0.2), (-0.2, 0.35, 0.18), (0.45, -0.25, 0.16))):
+        ball("Bubble%d" % k, d, x, y, zo + 0.24, "glass", c=(150, 225, 250), cc=False)
 
 
 # ---------------------------------------------------------------- output
@@ -1808,6 +1875,9 @@ MAT_LUA = {
     "stone": 'p.Material = Enum.Material.Marble',
     "dark": 'p.Material = Enum.Material.SmoothPlastic',
     "water": 'p.Material = Enum.Material.Glass; p.Transparency = 0.25; p.Reflectance = 0.2',
+    "pcream": 'p.Material = Enum.Material.SmoothPlastic',
+    "groove": 'p.Material = Enum.Material.SmoothPlastic',
+    "ironblue": 'p.Material = Enum.Material.Metal; p.Reflectance = 0.08',
 }
 
 
