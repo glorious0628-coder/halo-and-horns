@@ -1,0 +1,190 @@
+{
+ "HaloDomeHouse_07_PlantsBackL_t00": {
+  "faces_in": 206,
+  "slivers_pale": 5,
+  "flowers": 2,
+  "faces_out": 185
+ },
+ "HaloDomeHouse_07_PlantsBackL_t01": {
+  "faces_in": 203,
+  "slivers_pale": 4,
+  "flowers": 0,
+  "faces_out": 199
+ },
+ "HaloDomeHouse_07_PlantsBackL_t10": {
+  "faces_in": 297,
+  "slivers_pale": 7,
+  "flowers": 5,
+  "faces_out": 250
+ },
+ "HaloDomeHouse_07_PlantsBackL_t11": {
+  "faces_in": 298,
+  "slivers_pale": 18,
+  "flowers": 6,
+  "faces_out": 213
+ },
+ "HaloDomeHouse_07_PlantsBackR_t00": {
+  "faces_in": 387,
+  "slivers_pale": 14,
+  "flowers": 6,
+  "faces_out": 330
+ },
+ "HaloDomeHouse_07_PlantsBackR_t01": {
+  "faces_in": 393,
+  "slivers_pale": 14,
+  "flowers": 3,
+  "faces_out": 356
+ },
+ "HaloDomeHouse_07_PlantsBackR_t10": {
+  "faces_in": 689,
+  "slivers_pale": 14,
+  "flowers": 8,
+  "faces_out": 624
+ },
+ "HaloDomeHouse_07_PlantsBackR_t11": {
+  "faces_in": 453,
+  "slivers_pale": 30,
+  "flowers": 6,
+  "faces_out": 365
+ },
+ "HaloDomeHouse_07_PlantsL_t00": {
+  "faces_in": 346,
+  "slivers_pale": 24,
+  "flowers": 0,
+  "faces_out": 322
+ },
+ "HaloDomeHouse_07_PlantsL_t01": {
+  "faces_in": 181,
+  "slivers_pale": 4,
+  "flowers": 0,
+  "faces_out": 177
+ },
+ "HaloDomeHouse_07_PlantsL_t10": {
+  "faces_in": 259,
+  "slivers_pale": 12,
+  "flowers": 2,
+  "faces_out": 214
+ },
+ "HaloDomeHouse_07_PlantsL_t11": {
+  "faces_in": 388,
+  "slivers_pale": 30,
+  "flowers": 1,
+  "faces_out": 342
+ },
+ "HaloDomeHouse_07_PlantsR_t00": {
+  "faces_in": 126,
+  "slivers_pale": 9,
+  "flowers": 1,
+  "faces_out": 99
+ },
+ "HaloDomeHouse_07_PlantsR_t01": {
+  "faces_in": 410,
+  "slivers_pale": 6,
+  "flowers": 0,
+  "faces_out": 404
+ },
+ "HaloDomeHouse_07_PlantsR_t10": {
+  "faces_in": 219,
+  "slivers_pale": 13,
+  "flowers": 1,
+  "faces_out": 202
+ },
+ "HaloDomeHouse_07_PlantsR_t11": {
+  "faces_in": 425,
+  "slivers_pale": 16,
+  "flowers": 4,
+  "faces_out": 336
+ },
+ "HaloDomeHouse_07_PlantsSideL_t00": {
+  "faces_in": 267,
+  "slivers_pale": 9,
+  "flowers": 3,
+  "faces_out": 230
+ },
+ "HaloDomeHouse_07_PlantsSideL_t01": {
+  "faces_in": 338,
+  "slivers_pale": 7,
+  "flowers": 2,
+  "faces_out": 323
+ },
+ "HaloDomeHouse_07_PlantsSideL_t10": {
+  "faces_in": 322,
+  "slivers_pale": 14,
+  "flowers": 6,
+  "faces_out": 271
+ },
+ "HaloDomeHouse_07_PlantsSideL_t11": {
+  "faces_in": 488,
+  "slivers_pale": 13,
+  "flowers": 5,
+  "faces_out": 421
+ },
+ "HaloDomeHouse_07_PlantsSideR_t00": {
+  "faces_in": 624,
+  "slivers_pale": 13,
+  "flowers": 6,
+  "faces_out": 551
+ },
+ "HaloDomeHouse_07_PlantsSideR_t01": {
+  "faces_in": 393,
+  "slivers_pale": 24,
+  "flowers": 2,
+  "faces_out": 353
+ },
+ "HaloDomeHouse_07_PlantsSideR_t10": {
+  "faces_in": 1029,
+  "slivers_pale": 37,
+  "flowers": 8,
+  "faces_out": 898
+ },
+ "HaloDomeHouse_07_PlantsSideR_t11": {
+  "faces_in": 547,
+  "slivers_pale": 20,
+  "flowers": 5,
+  "faces_out": 499
+ },
+ "_parts": {
+  "HaloDomeHouse_07_PlantsBackL": {
+   "tiles_joined": 4,
+   "island_faces_cut": 32,
+   "tris": 815,
+   "maps": 512,
+   "uv_fill": 0.533
+  },
+  "HaloDomeHouse_07_PlantsBackR": {
+   "tiles_joined": 4,
+   "island_faces_cut": 71,
+   "tris": 1604,
+   "maps": 1024,
+   "uv_fill": 0.4
+  },
+  "HaloDomeHouse_07_PlantsL": {
+   "tiles_joined": 4,
+   "island_faces_cut": 11,
+   "tris": 1044,
+   "maps": 512,
+   "uv_fill": 0.563
+  },
+  "HaloDomeHouse_07_PlantsR": {
+   "tiles_joined": 4,
+   "island_faces_cut": 14,
+   "tris": 1027,
+   "maps": 512,
+   "uv_fill": 0.541
+  },
+  "HaloDomeHouse_07_PlantsSideL": {
+   "tiles_joined": 4,
+   "island_faces_cut": 15,
+   "tris": 1230,
+   "maps": 1024,
+   "uv_fill": 0.525
+  },
+  "HaloDomeHouse_07_PlantsSideR": {
+   "tiles_joined": 4,
+   "island_faces_cut": 36,
+   "tris": 2265,
+   "maps": 1024,
+   "uv_fill": 0.38
+  }
+ }
+}

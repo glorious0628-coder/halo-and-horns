@@ -12,6 +12,9 @@ arguments (all optional except the position):
             "h" strap height 0.34, "end" end disk diameter 0.56, "barrel" [diameter 0.24, height 0.85]
   lantern : "pos": [x, y, z] = centre of the glass box, "w" body width 0.9, "hgt" body height 1.15, "wall_y" = the face
             it hangs from (bracket arm from there), "post" 0.09
+  arch_window : a dormer / blind arched window with an exact arch, as four objects (<name>_Surround marble, _Frame gold,
+            _Glass, _Pane): "pos": [x, y_front, z_bottom], "W" opening width 1.5, "spring" z of the spring line, "pier" 0.45
+            marble round the frame, "frame" 0.16 gold width, "depth" 1.6, "recess" 0.25
   leaf    : an arched plank door leaf (wood) with an exact arch: "c": [x, z] arch centre (spring line), "R" half width,
             "bottom" z, "front" y of the plank faces, "t" thickness 0.32, "planks" 5, "gap" 0.06, "groove" 0.1
 Each item becomes one joined mesh object named "Orn_<name>" with one material: "OrnGold" (metal 1, roughness 0.3,
@@ -55,6 +58,21 @@ _b = GOLD.node_tree.nodes["Principled BSDF"]
 _b.inputs["Base Color"].default_value = (*[s2l(c / 255) for c in (240, 186, 56)], 1)
 _b.inputs["Metallic"].default_value = 1.0
 _b.inputs["Roughness"].default_value = 0.3
+def flat_mat(name, rgb, metal=0.0, rough=0.5, alpha=1.0):
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    b = m.node_tree.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = (*[s2l(c / 255) for c in rgb], 1)
+    b.inputs["Metallic"].default_value = metal
+    b.inputs["Roughness"].default_value = rough
+    if alpha < 1:
+        b.inputs["Alpha"].default_value = alpha
+    return m
+
+
+MARBLE = flat_mat("OrnMarble", (255, 244, 222), 0.0, 0.45)   # Studio: Marble + HH_HaloMarbleBlock_Cream
+GLASSM = flat_mat("OrnGlass", (150, 205, 245), 0.0, 0.05, 0.4)   # Studio: Glass, Transparency 0.3
+PANE = flat_mat("OrnPane", (120, 175, 225), 0.0, 0.3)        # behind the glass of a blind window
 WOOD = bpy.data.materials.new("OrnWood")
 WOOD.use_nodes = True
 _w = WOOD.node_tree.nodes["Principled BSDF"]
@@ -102,21 +120,21 @@ class Piece:
         M = Matrix.Translation(Vector(centre)) @ rot.to_4x4() @ Matrix.Diagonal((*size, 1))
         self._add(bmesh.ops.create_cube, M, size=1.0)
 
-    def cyl(self, d, length, centre, axis="z", seg=32):
+    def cyl(self, d, length, centre, axis="z", seg=20):
         R = {"z": Matrix(), "x": Matrix.Rotation(math.pi / 2, 4, "Y"), "y": Matrix.Rotation(math.pi / 2, 4, "X")}[axis]
         M = Matrix.Translation(Vector(centre)) @ R
         self._add(bmesh.ops.create_cone, M, cap_ends=True, segments=seg, radius1=d / 2, radius2=d / 2, depth=length)
 
-    def cone(self, d0, d1, length, centre, seg=32, axis="z", spin=0.0):
+    def cone(self, d0, d1, length, centre, seg=20, axis="z", spin=0.0):
         R = {"z": Matrix(), "y": Matrix.Rotation(math.pi / 2, 4, "X")}[axis] @ Matrix.Rotation(spin, 4, "Z")
         M = Matrix.Translation(Vector(centre)) @ R
         self._add(bmesh.ops.create_cone, M, cap_ends=True, segments=seg, radius1=d0 / 2, radius2=d1 / 2, depth=length)
 
     def ball(self, d, centre):
         M = Matrix.Translation(Vector(centre))
-        self._add(bmesh.ops.create_uvsphere, M, u_segments=24, v_segments=12, radius=d / 2)
+        self._add(bmesh.ops.create_uvsphere, M, u_segments=12, v_segments=8, radius=d / 2)
 
-    def torus(self, R, r, centre, plane="xz", seg=56, tseg=16, arc=(0.0, 2 * math.pi)):
+    def torus(self, R, r, centre, plane="xz", seg=40, tseg=10, arc=(0.0, 2 * math.pi)):
         """torus (or an arc of one) around the plane's normal; tube made of rings so the circle stays a true circle"""
         a0, a1 = arc
         full = abs(a1 - a0 - 2 * math.pi) < 1e-6
@@ -178,8 +196,8 @@ def knocker(it):
     top = z + R                                   # the ring hangs from the plate centre
     y0 = surface_y(x, top, it.get("face_y", 0.0))
     p = Piece(it.get("name", "Knocker"))
-    p.cyl(plate, 0.08, (x, y0 + 0.04, top), "y", 40)                       # round back plate
-    p.cyl(plate * 0.72, 0.05, (x, y0 + 0.1, top), "y", 40)                  # raised step
+    p.cyl(plate, 0.08, (x, y0 + 0.04, top), "y", 28)                       # round back plate
+    p.cyl(plate * 0.72, 0.05, (x, y0 + 0.1, top), "y", 28)                  # raised step
     p.ball(0.26, (x, y0 + 0.16, top))                                       # boss
     p.cyl(0.11, 0.42, (x, y0 + 0.2, top), "x", 16)                          # pin the ring hangs on
     yc = y0 + 0.2
@@ -203,7 +221,7 @@ def hinge(it):
     p.box((L, t, h), (ex + sg * L / 2, y0 + t / 2, z))                     # strap
     p.box((L * 0.55, t * 0.6, h * 0.45), (ex + sg * L * 0.3, y0 + t + t * 0.3, z))   # raised rib
     xe = ex + sg * L
-    p.cyl(endd, t, (xe, y0 + t / 2, z), "y", 40)                            # round end
+    p.cyl(endd, t, (xe, y0 + t / 2, z), "y", 28)                            # round end
     tip = [(xe + sg * endd * 0.3, z + endd * 0.42), (xe + sg * endd * 1.05, z), (xe + sg * endd * 0.3, z - endd * 0.42)]
     p.prism(tip if sg < 0 else list(reversed(tip)), y0 + t, t)               # flat spear tip, same plane as the strap
     for k, f in enumerate((0.2, 0.55)):                                     # rivets
@@ -271,8 +289,54 @@ def leaf(it):
     return p.finish(smooth=False, mat=WOOD)
 
 
-MAKE = {"knocker": knocker, "hinge": hinge, "lantern": lantern, "leaf": leaf}
-made = [MAKE[it["type"]](it) for it in spec["items"]]
+def arch_window(it):
+    x, yf, zb = it["pos"]
+    W, zs = it.get("W", 1.5), it["spring"]
+    pier, fr, depth, rec = it.get("pier", 0.45), it.get("frame", 0.16), it.get("depth", 1.6), it.get("recess", 0.25)
+    R = W / 2
+    Ri, Ro = R + fr, R + fr + pier
+    nm = it.get("name", "ArchWin")
+
+    def arch(r, z_from=zb, k=40):
+        return [(x - r, z_from), (x + r, z_from)] + [(x + r * math.cos(math.pi * i / k), zs + r * math.sin(math.pi * i / k)) for i in range(k + 1)]
+
+    def ring(r0, r1, k=40):
+        return ([(x + r1 * math.cos(math.pi * i / k), zs + r1 * math.sin(math.pi * i / k)) for i in range(k + 1)]
+                + [(x + r0 * math.cos(math.pi * (k - i) / k), zs + r0 * math.sin(math.pi * (k - i) / k)) for i in range(k + 1)])
+
+    sur = Piece(nm + "_Surround")
+    sur.prism(arch(Ro), yf - rec, depth - rec)                                   # back block, full outline
+    for sx in (-1, 1):                                                            # piers either side of the opening
+        a0, a1 = sorted((x + sx * Ri, x + sx * Ro))
+        sur.prism([(a0, zb), (a1, zb), (a1, zs), (a0, zs)], yf, rec + 0.01)
+    sur.prism(ring(Ri, Ro), yf, rec + 0.01)                                       # arch band (exact half ring)
+    sur.prism([(x - Ri, zb), (x + Ri, zb), (x + Ri, zb + 0.2), (x - Ri, zb + 0.2)], yf, rec + 0.01)   # sill stone
+    out = [sur.finish(smooth=False, mat=MARBLE)]
+    frm = Piece(nm + "_Frame")
+    frm.prism(ring(R, Ri), yf + 0.05, rec + 0.05)                                 # gold arch frame
+    for sx in (-1, 1):
+        a0, a1 = sorted((x + sx * R, x + sx * Ri))
+        frm.prism([(a0, zb + 0.2), (a1, zb + 0.2), (a1, zs), (a0, zs)], yf + 0.05, rec + 0.05)
+    frm.prism([(x - Ri - 0.08, zb + 0.08), (x + Ri + 0.08, zb + 0.08), (x + Ri + 0.08, zb + 0.24), (x - Ri - 0.08, zb + 0.24)],
+              yf + 0.12, rec + 0.12)                                              # gold sill
+    frm.box((0.07, 0.06, zs + R - zb - 0.2), (x, yf - rec + 0.16, (zb + 0.2 + zs + R) / 2))   # mullion
+    frm.box((W, 0.06, 0.07), (x, yf - rec + 0.16, zs))                           # transom
+    frm.box((0.3, rec + 0.2, 0.36), (x, yf - rec / 2 + 0.1, zs + Ro - 0.12))     # keystone
+    out.append(frm.finish(smooth=False))
+    gl = Piece(nm + "_Glass")
+    gl.prism(arch(R, zb + 0.2), yf - rec + 0.12, 0.03)
+    out.append(gl.finish(smooth=False, mat=GLASSM))
+    pn = Piece(nm + "_Pane")
+    pn.prism(arch(R, zb + 0.2), yf - rec + 0.02, 0.02)
+    out.append(pn.finish(smooth=False, mat=PANE))
+    return out
+
+
+MAKE = {"knocker": knocker, "hinge": hinge, "lantern": lantern, "leaf": leaf, "arch_window": arch_window}
+made = []
+for it in spec["items"]:
+    r = MAKE[it["type"]](it)
+    made += r if isinstance(r, list) else [r]
 for o in made:
     me = o.data
     me.calc_loop_triangles()

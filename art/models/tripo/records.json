@@ -8929,5 +8929,46 @@
     "art/models/tripo/halo_props/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_parts.glb"
    ]
   }
+ ],
+ "HaloDomeHouse_07_skeleton_v4_fix": [
+  {
+   "event": "blender_fix",
+   "at": "2026-10-11 14:00",
+   "by": "이미지 생성 3",
+   "rule": "A23-125 (Tripo -> Blender 손보기 -> Roblox 재질)",
+   "source": "art/models/tripo/skeleton_test/HaloDomeHouse_07_keep.glb (Tripo HD multiview, HaloDomeHouse_07 job)",
+   "replaced_by_exact_blender_parts": {
+    "tool": "tools/metal_ornaments.py",
+    "spec": "build/skeleton_test_07_ornaments.json (tools/skeleton_house07.py)",
+    "parts": [
+     "Leaf (arched planks, Tripo leaf had holes)",
+     "Knocker (true circle ring)",
+     "HingeTop/HingeLow",
+     "LanternL/R frames",
+     "Dormer arch window (Tripo had gold spikes, loose bits)"
+    ]
+   },
+   "fixed_tripo": {
+    "plants": "tools/piece_fix.py --flowers: slivers/pale shards/planter-rim bits cut, islands after tile weld, 4 tiles joined per part, white/blue petal clusters -> exact 5-petal flowers, own C/N/R/M maps (art/models/tripo/skeleton_test/fix07/)",
+    "roof": "tools/roof_fit.py: ribs mapped to body octagon corners (+front/back middles), eave polygon -> plan octagon (0.7 out), old dormer lump cut; piece_fix own C/N/R/M maps 1024",
+    "reports": [
+     "art/models/tripo/skeleton_test/fix07/roof_fit_report.json",
+     "art/models/tripo/skeleton_test/fix07/piece_fix_report_plants.json",
+     "art/models/tripo/skeleton_test/fix07/piece_fix_report_roof.json"
+    ]
+   },
+   "dropped_tripo": [
+    "Door",
+    "DoorHw",
+    "Lanterns",
+    "Awning (Studio Fabric parts)",
+    "Dormer/WinPane/Glass"
+   ],
+   "file": "art/models/tripo/skeleton_test/HaloDomeHouse_07_fixed.glb",
+   "tris": 27559,
+   "sheet": "art/review/img3/skeleton07/house07_fix_before_after.jpg",
+   "roblox_step": "pending import (WorldKit, one click)",
+   "credits": 0
+  }
  ]
 }

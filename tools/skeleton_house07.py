@@ -466,9 +466,7 @@ place = {
         # Door: dropped too, the leaf is a Blender plank door now (the Tripo leaf had holes where its old hardware was cut)
         # DoorHw and Lanterns: dropped, knocker / hinges / lantern frames are Blender ornaments now (<out>_ornaments.json)
         # Awning: dropped, the awning is skeleton parts now (검수 v4c)
-        "Dormer": [{"move": [CX - 0.1, DY, DZ]}],
-        "WinPane": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerPane"}],
-        "Glass": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerGlass"}],
+        # Dormer / WinPane / Glass: dropped, the dormer is a Blender arched window now (<out>_ornaments.json)
         # roof: its eave outline (keep GLB, 10/11) is x -8.1..7.4, y -7.15..6.0 around (-0.62, -0.575); as in the 2D the eaves
         # stop just inside the cornice line (0.3 past the walls), centred on the plan
         "Roof": [{"scale": [round((XS + 0.3) / 7.75, 4), round(((YF - YB) / 2 + 0.3) / 6.575, 4), 1.0], "about": [-0.62, -0.575, 13.7],
@@ -495,11 +493,17 @@ orn = {
         {"type": "knocker", "name": "H07_Knocker", "pos": [KN[0], KN[1]], "face_y": LEAF_FRONT},
         {"type": "hinge", "name": "H07_HingeTop", "edge": [CX - LEAF_HALF + 0.1, Z0 + 5.4], "dir": 1, "face_y": LEAF_FRONT},
         {"type": "hinge", "name": "H07_HingeLow", "edge": [CX - LEAF_HALF + 0.1, Z0 + 1.8], "dir": 1, "face_y": LEAF_FRONT},
+        # dormer: the Tripo one had gold spikes (roof ribs) and loose white bits -> exact arched window, breaking the
+        # cornice line as in the 2D (front 0.1 past the cornice, arch top 0.4 above it)
+        {"type": "arch_window", "name": "H07_Dormer", "pos": [CX, YF + 1.3, 10.75], "W": 1.5, "spring": 12.25, "pier": 0.45,
+         "frame": 0.16, "depth": 1.6, "recess": 0.25},
         {"type": "lantern", "name": "H07_LanternL", "pos": [CX - LANT_U, LANT_C, LANT_Z], "w": LANT_W, "hgt": LANT_H,
          "post": LANT_POST, "wall_y": LANT_Y},
         {"type": "lantern", "name": "H07_LanternR", "pos": [CX + LANT_U, LANT_C, LANT_Z], "w": LANT_W, "hgt": LANT_H,
          "post": LANT_POST, "wall_y": LANT_Y},
     ],
+    # roof octagon for tools/roof_fit.py: the eaves 0.7 out from the walls, just inside the cornice (1.2) as in the 2D
+    "roof": {"center": [CX, CY], "poly": [[round(x, 4), round(y, 4)] for x, y in offset_poly(0.7)]},
     "shots": {  # name: [camera, look at, ortho width or null, lens]
         "door_front": [[CX, YF + 30, Z0 + 3.9], [CX, YF, Z0 + 3.9], 6.2, None],
         "door_side": [[CX + 30, LEAF_FRONT + 0.3, Z0 + 3.9], [CX, LEAF_FRONT + 0.3, Z0 + 3.9], 6.2, None],
