@@ -227,8 +227,8 @@ for ix = 1, NX do
 			local yb = VY0 + (iy - 1) * 4
 			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
 			if lo > 0 then
-				if yb + 4 > land - 3 then
-					mx[iy][iz] = top
+				if yb + 4 > land - 7 then -- 디자인 검수 10/11 (h_05): top material 2 voxels deep; with 1 the Rock under a partly filled
+					mx[iy][iz] = top            -- top voxel showed through as dark brown patches on the slopes
 				elseif yb < bottom + 4 then
 					mx[iy][iz] = Basalt -- the lowest 1-2 voxels
 				else
