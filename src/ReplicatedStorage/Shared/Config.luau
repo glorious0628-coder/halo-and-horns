@@ -2838,7 +2838,9 @@ Config.StoryQuests = {
 		},
 		-- A23-70 (user 2026-10-07 "아 좋다"): the first good / evil moment, one small card right after the first [Claim]
 		-- (Pop = the card opens by itself once). No score either way (Points 0: the shard leans, the Choice sound and the
-		-- afterglow answer); every side may press both buttons. Reply = the kid's line after the pick. Then the Forge row.
+		-- afterglow answer); every side may press both buttons. Then the Forge row. A23-130 (user 2026-10-11 "너무 설명해주는
+		-- 게 많은 거 같애"): no Reply line after a pick any more (the kid's "Thank you! …"), only the reward toast ("+HP
+		-- Potion" / "+25 gold"); a pick with a Reward sends no lean / "saved" line either (StoryQuestService)
 		Lunch1 = {
 			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Pop = true,
 			Requires = { TutorialDone = true, NotDone = { "M1_1" } },
@@ -2846,9 +2848,9 @@ Config.StoryQuests = {
 				{ Text = "Return the lunchbox, or take a bite?", Panel = true,
 					Lines = { All = { "A slime dropped a lunchbox. It belongs to a kid at the Crossroads." } },
 					Obj = { Type = "Choice",
-						Good = { Label = "Give it back", Points = 0, Pick = "GiveBack", Reply = "Thank you! Here, take this potion.",
+						Good = { Label = "Give it back", Points = 0, Pick = "GiveBack",
 							Reward = { Potion = "HP", N = 1 } },
-						Evil = { Label = "One bite!", Points = 0, Pick = "Bite", Reply = "Yum! ...Nobody saw that, right?",
+						Evil = { Label = "One bite!", Points = 0, Pick = "Bite",
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
@@ -3319,9 +3321,9 @@ Config.StoryQuests = {
 				{ Text = "Pick up the lantern?", Panel = true,
 					Lines = { All = { "A goblin dropped his lantern on the bridge. It is still warm." } },
 					Obj = { Type = "Choice",
-						Good = { Label = "Hand it back", Points = 1, Reply = "A grateful grunt echoes from the trees.",
+						Good = { Label = "Hand it back", Points = 1, -- A23-130: no Reply line, the reward toast only
 							Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Finders keepers!", Points = 1, Reply = "The lantern glows brighter in your hands.",
+						Evil = { Label = "Finders keepers!", Points = 1,
 							Reward = { Potion = "HP", N = 3, Gold = 192 } },
 						Neutral = { A = "Hand it back", B = "Finders keepers!" } } },
 			},
@@ -5287,6 +5289,9 @@ Config.Nudges = {
 	QuestHead = false,
 	-- 검수 10/09 decision (docs/design/nudge_list_2026-10-09.md): client
 	WarIntro = false, -- "Crown War: win points for your side!" when the war bar first shows (HUD.ApplyFold)
+	-- A23-130 (user 2026-10-11 photo, Golden Goose): only the top bar (gauge + "0 / 20") stays; the line under it
+	-- ("My points 0 · Knights, fill the gauge!" / the tug's "My points · hint") is gone (EventHUD updateGoose, TugSub)
+	GooseSub = false,
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
 	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
 	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
