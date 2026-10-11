@@ -3,6 +3,7 @@
 사용자: "내가 보내 준 사람처럼 유튜브 영상 만들고 싶어" (참고: MedoDeveloper `jnJpzyF-8PA`, `docs/design/video_lessons_jnJpzyF-8PA_2026-10-06.md`) / "유튜브에 올리는 건 직접 할게, 대신 촬영 편집은 너가 해줘" / 촬영 세션을 열고 **로블록스 스튜디오 창만 녹화**하는 것을 허락(2026-10-06). SPEC A23-42.
 
 먼저 읽을 것: `AGENTS.md`, 이 문서, `docs/SPEC_ADDENDUM.md` A23-42, `docs/design/video_lessons_jnJpzyF-8PA_2026-10-06.md`, `docs/design/reference_sites_2026-10-06.md`(umanmade.com = 움직임·전환 참고).
+> 기록용(10/06 인계) 10/11 갱신: 촬영 편집은 계속 쉼 — 교차로(③)가 디자인·게임성 모두 끝난 뒤에 세션을 새로 만든다(`role_prompts/README.md`, A23-102). 아래 '1편 예 = 10/31 핼러윈 베타·호박 대왕·세션 6개 팀' 대본 예는 낡음(베타 12/1, 호박밭 숨김, 세션은 상시 8개). 녹화 허용 범위(FilmSet Studio 창만, ffmpeg gdigrab)·모더레이션 점검 규칙은 지금도 유효.
 > 2026-10-09 검수: 지금 할 일은 `docs/handoff/role_prompts/08_film.md`(지금은 쉬는 차례, 검수가 부를 때). 마지막 상태(10/08 저녁): 첫 쇼츠 v7(6e70408f)을 검수에 보냄(`docs/handoff/account_switch_2026-10-08_2100.md`, `build/handoff_2026-10-08/film_tail.md`), 쇼츠 2~4·1편은 s40 원본으로 다시(`docs/handoff/film_2026-10-08.md`). 규칙 더하기(10/08): 같은 장면 반복 금지, 0.5초 넘게 가만히 서 있는 장면 금지, Downloads에는 검수 통과 뒤 최종 mp4 + 제목 txt만(`HaloHorns_<무엇>_<날짜>`).
 
 ## 할 일

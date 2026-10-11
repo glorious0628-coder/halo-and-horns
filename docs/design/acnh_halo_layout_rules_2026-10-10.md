@@ -202,12 +202,12 @@
   - 최근 본 5줄은 다시 안 나온다. 첫 안내 줄은 한 번만 나온다.
 - 왜: 주민 첫인사가 4~5개 안에서 돌고 금방 바닥난다는 불만이 있다 ([Bell Tree](https://www.belltreeforums.com/threads/question-about-dialogue-in-the-series.599249)).
 - 이미 있는 것: 마을 사람 눈치 말풍선(TownReact, A23-64 베타 여유 몫).
-- 크기 S~M. 시점: 10/17 점검 뒤 여유가 남으면 베타 전, 아니면 베타 뒤.
+- 크기 S~M. 시점: 여유가 남으면 베타(12/1) 전, 아니면 베타 뒤(A23-119 새 날짜).
 
 ### 4. 마을 계절 장식: 이미 있음 → 더 좋게
 - 무엇:
   - 빛 마을 화분 꽃, 깃발 천, 등불 색을 날짜에 따라 바꿔 끼운다. 소품 자리는 그대로 두고 변형만 바꾼다.
-  - 첫 세트는 겨울(정식 12/19 무렵). 해마다 새 장식을 1개 이상 넣는다.
+  - 첫 세트는 겨울(정식 2027년 1월 말 무렵, A23-119 — 옛 "12/19"는 낡음). 해마다 새 장식을 1개 이상 넣는다.
   - 이벤트 드롭은 기본 전리품을 대신하지 않고 그 위에 얹는다. 이벤트 두 개를 겹치지 않고, 기간은 짧게, 확률은 Config에 둔다.
 - 왜: 실제 계절과 축제가 마을을 진짜 동네처럼 느끼게 한다 ([Nintendojo](https://www.nintendojo.com/features/round-tables/round-table-why-we-love-animal-crossing)). 반대로 1년 뒤 같은 이벤트 재탕에는 불만이 컸고 ([Wccftech](https://wccftech.com/animal-crossing-new-horizons-new-content-later-this-year/amp/)), 토끼의 날에 달걀만 나와 불만이 컸다 ([Capital FM](https://www.capitalfm.com/news/animal-crossing-update-1114-bunny-memes/)).
 - 이미 있는 것: 계절 장치 Config.SeasonOn, 핼러윈 "매년 돌아와요"(P10).

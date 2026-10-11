@@ -1,7 +1,8 @@
 # 이미지 개발 세션 인계 + 두 개발 세션 나누기 (검수 세션, 2026-10-06)
 
 사용자 결정(2026-10-06): 세션 4개 — **이미지**(그림) · **이미지 개발**(그림·화면을 게임에 넣기) · **게임성 개발**(기능, 지금의 '개발' 세션) · **검수**(이끌기·검사). 검수 세션이 일을 정하고 결과를 검사한다.
-> 2026-10-09 검수: 지금은 세션 10개(`docs/handoff/role_prompts/README.md`). 이 글의 '게임성 개발' 칸은 지금 둘로 나뉨: 창·HUD 동작·Config = 게임성 개발 1(클라이언트 코드만, worktree Game-wtc), 서버·시험 = 게임성 개발 2·3(worktree Game-dev2·Game-dev3). **메인 Studio 주인(sync·Play 사진·저장·`place/` 커밋)은 메인 반영 1**(10/08부터), 검증 통과한 개발 2 브랜치의 main 병합은 검수. 지금 할 일은 `docs/handoff/role_prompts/05_imgdev.md`.
+> 10/11 갱신: 지금 상시 세션은 8개(검수·메인 반영 1·게임성 개발 1·2·이미지 개발·이미지 생성 1·2·3), 게임성 개발 3은 쉼(`docs/handoff/role_prompts/README.md`). 한국어 글 장치(나눔고딕 꾸밈·글자 그림)는 A23-111(빛 마을 뒤)·`ko_mode_imgdev_2026-10-10.md`가 기준.
+> 2026-10-09 검수(낡음: '세션 10개' 시절): 이 글의 '게임성 개발' 칸은 둘로 나뉨: 창·HUD 동작·Config = 게임성 개발 1(클라이언트 코드만, worktree Game-wtc), 서버·시험 = 게임성 개발 2(·옛 3)(worktree Game-dev2). **메인 Studio 주인(sync·Play 사진·저장·`place/` 커밋)은 메인 반영 1**(10/08부터), 검증 통과한 개발 2 브랜치의 main 병합은 검수. 지금 할 일은 `docs/handoff/role_prompts/05_imgdev.md`.
 
 먼저 읽을 것: `AGENTS.md`, `docs/design/visual_direction_2026-10-05.md`(스타일·화면 배치·묶음), `docs/design/image_session_handoff_2026-10-06.md`(그림 흐름), 이 문서.
 
