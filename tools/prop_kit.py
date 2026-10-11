@@ -41,7 +41,7 @@ COL = {
     "candle": (250, 246, 236), "paint": (255, 255, 255), "stone": (242, 236, 222), "dark": (70, 52, 40),
     "water": (120, 200, 235),
     # 디자인 검수 10/11: painted cream wood = smooth cream (Wood grain read as grey marble swirl) + thin seam parts
-    "pcream": (242, 233, 214), "groove": (212, 198, 176), "ironblue": (92, 94, 102),
+    "pcream": (242, 233, 214), "groove": (212, 198, 176), "ironblue": (110, 100, 92),
 }
 
 KITS = {}          # name -> builder
@@ -1892,7 +1892,9 @@ MAT_LUA = {
     "water": 'p.Material = Enum.Material.Glass; p.Transparency = 0.25; p.Reflectance = 0.2',
     "pcream": 'p.Material = Enum.Material.SmoothPlastic',
     "groove": 'p.Material = Enum.Material.SmoothPlastic',
-    "ironblue": 'p.Material = Enum.Material.Metal; p.Reflectance = 0.05',
+    # 10/12 (4 colour tests on town ground, C2c): Metal / SmoothPlastic dark greys pick up the blue sky and read navy;
+    # rough Slate in a warm grey reads as the 2D's charcoal iron
+    "ironblue": 'p.Material = Enum.Material.Slate',
 }
 
 
