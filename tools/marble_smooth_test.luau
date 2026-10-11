@@ -29,7 +29,7 @@ end
 mv.BaseMaterial = Enum.Material.Marble
 mv.MaterialPattern = Enum.MaterialPattern.Regular
 mv.StudsPerTile = STUDS
-mv.ColorMap = "rbxassetid://99912622204711"
+mv.ColorMap = "rbxassetid://140510838680155"
 mv.NormalMap = "rbxassetid://131597673772642"
 mv.RoughnessMap = "rbxassetid://76093268063395"
 mv.MetalnessMap = "rbxassetid://87489921567476"

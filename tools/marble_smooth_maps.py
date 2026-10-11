@@ -29,6 +29,9 @@ def periodic_noise(n, rng, sigma_cells):
     return a / (a.std() + 1e-9)
 
 
+VEIN1, VEIN2 = 0.16, 0.09   # blend strength at the vein centre (round 2 = about 0.08 / 0.045 as darkening)
+
+
 def build(n):
     rng = np.random.default_rng(1011)
     base = np.array([237.0, 231.0, 220.0])
@@ -42,14 +45,19 @@ def build(n):
         ph = 2 * np.pi * (kx * x + ky * y) / n + amp * periodic_noise(n, r, sig)
         d = np.angle(np.exp(1j * (ph - np.pi)))        # signed distance to the line, -pi..pi
         return np.exp(-(d ** 2) / (2 * width ** 2))
-    v1 = vein(1, 2, 0.45, 0.06, 7, 2.5)
-    v2 = vein(2, -1, 0.4, 0.045, 19, 3.0)
-    lum = 1.0 + 0.006 * soft + 0.004 * mid - 0.020 * v1 - 0.011 * v2
+    v1 = vein(1, 2, 0.45, 0.04, 7, 2.5)
+    v2 = vein(2, -1, 0.4, 0.03, 19, 3.0)
+    lum = 1.0 + 0.006 * soft + 0.004 * mid
     warm = 0.006 * periodic_noise(n, rng, 4.0)          # tiny hue drift: warm <-> cool
     col = np.empty((n, n, 3))
     col[..., 0] = base[0] * lum * (1 + warm)
     col[..., 1] = base[1] * lum
     col[..., 2] = base[2] * lum * (1 - warm)
+    # veins = light grey-brown (178,168,158) blended in (not just darker cream, which reads yellow-brown); round 3: x2 of round 2
+    vein_col = np.array([178.0, 168.0, 158.0])
+    for v, k in ((v1, VEIN1), (v2, VEIN2)):
+        a = (k * v)[..., None]
+        col = col * (1 - a) + vein_col * a
     col = np.clip(col, 0, 255).astype(np.uint8)
     rough = 0.62 + 0.035 * soft + 0.02 * mid + 0.04 * v1
     rough = (np.clip(rough, 0, 1) * 255).astype(np.uint8)
