@@ -36,7 +36,8 @@ NUM = r"(-?[\d.]+)"
 ROWS = {"Mage_Halo": {"Tilt": 5, "Staff": True}, "Mage_Horns": {"Tilt": 15, "Staff": True},
         "Mage_Neutral": {"Tilt": 10, "Staff": False}, "Warrior_Halo": {"Tilt": None, "Staff": False}}
 # 검수 10/11 (grip_audit9 §2): the free left hands go to points on the body; Hip = the back of the hand on the waist
-OFF_ROWS = {"Warrior_Halo": "Fist", "Warrior_Neutral": "Hip", "Mage_Halo": "Palm", "Mage_Neutral": "Hip", "Archer_Neutral": "Hip"}
+OFF_ROWS = {"Warrior_Halo": "Fist", "Warrior_Neutral": "Hip", "Mage_Halo": "Palm", "Mage_Horns": "Hip", "Mage_Neutral": "Hip",
+            "Archer_Neutral": "Hip"}
 BODY = [((-1.0, 1.0), (-0.8, 0.8), (-0.5, 0.5)), ((-1.0, 1.0), (-1.6, -0.8), (-0.5, 0.5))]  # UpperTorso, LowerTorso boxes
 TORSO_ABOVE_FEET = 3.9  # studs, UpperTorso centre over the feet (R15 estimate; the photos check it)
 TORSO_HALF = (1.0, 0.5)  # x, z half sizes of the UpperTorso box
@@ -157,8 +158,13 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
         if spec["Tilt"] is None:
             # the Paladin (class_grips table): the sword in front of the body, its tip up to the left and ahead
             out.append((f"{key}: the sword's tip up to the left and ahead, the hilt in front on the right",
-                        aim[0] < -0.2 and aim[1] > 0.5 and aim[2] < -0.1 and hilt[0] > 0 and hilt[2] < -0.5
+                        aim[0] < -0.2 and aim[1] > 0.3 and aim[2] < -0.1 and hilt[0] > 0 and hilt[2] < -0.5
                         and line_clear_of_torso(hilt, aim), f"aim {tuple(round(x, 2) for x in aim)}"))
+            # 검수 10/11 main photo: the blade hid the face - where it passes in front of the head (|x| < 0.7) it stays
+            # under the face (y < 0.85 in UpperTorso space; the neck starts at the torso top 0.8)
+            face = max((G.add(hilt, aim, t / 10)[1] for t in range(0, 61)
+                        if abs(G.add(hilt, aim, t / 10)[0]) < 0.7 and G.add(hilt, aim, t / 10)[2] < 0), default=-9)
+            out.append((f"{key}: the blade passes in front of the chest, never the face", face < 0.85, f"highest {face:.2f}"))
         else:
             out.append((f"{key}: upright (tilt <= {spec['Tilt']} deg), never leaning out to the side",
                         tilt <= spec["Tilt"] and aim[0] <= 0.05, f"{tilt:.0f} deg, x {aim[0]:.2f}"))
@@ -234,7 +240,14 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
     wp = src["WP"]
     body = wp.split("function WeaponPose.OneHand(", 1)[-1].split("\nend\n", 1)[0]
     off = wp.split("function WeaponPose.OffHand(", 1)[-1].split("\nend\n", 1)[0]
+    cv = src["CV"]
+    gear = re.search(r"local GEAR = \{ Size = " + NUM + ", Gap = " + NUM + r" \}", cv)
     return [
+        ("검수 10/11: the Neutral gear sits small just over the head / hat (markFloor defined before it, half size or less)",
+         gear is not None and float(gear[1]) <= 0.6 and float(gear[2]) <= 0.5
+         and 0 < cv.find("local function markFloor(") < cv.find("local function buildNeutralGear(head, sc, character)")
+         and "buildNeutralGear(head, sc, character), character, head)" in cv
+         and "local floor = character and markFloor(character, head, k) or head.Size.Y / 2" in cv, ""),
         ("WeaponPose runs OneHand and OffHand when a row has no TwoHand",
          '\telse\n\t\tif type(def.OneHand) == "table" then WeaponPose.OneHand(char, st, def, model) end\n'
          '\t\tif type(def.OffHand) == "table" then WeaponPose.OffHand(char, st, def) end\n' in wp, ""),
@@ -260,13 +273,19 @@ def run(src: dict):
 MUTATIONS = [
     ("CONFIG", "the Light Mage's staff leaning out", "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) }",
      "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0.6, 1, -0.05) }"),
-    ("CONFIG", "the Paladin's sword tip to the right", "Aim = Vector3.new(-0.45, 0.8, -0.4)", "Aim = Vector3.new(0.6, 0.6, -0.4)"),
+    ("CONFIG", "the Paladin's sword tip to the right", "Aim = Vector3.new(-0.8, 0.55, -0.2)", "Aim = Vector3.new(0.6, 0.6, -0.4)"),
     ("CONFIG", "a hand-on-hip sinks into the waist", "OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage",
      "OffHand = { At = Vector3.new(-0.6, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage"),
     ("CONFIG", "the Paladin's fist pushed out of reach", "OffHand = { At = Vector3.new(-0.3, 0.0, -0.95)", "OffHand = { At = Vector3.new(-0.3, 0.0, -2.2)"),
     ("CONFIG", "the old left-arm hold kept (Tamer)", "RightWrist = { -30, 0, 0 } }, OffHand", "RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 } }, OffHand"),
     ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6)", "OneHand = { Hilt = Vector3.new(0.2, -0.3, -0.6)"),
-    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, -0.2) } },", "Aim = Vector3.new(0, 1, -0.8) } },"),
+    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, -0.2) },", "Aim = Vector3.new(0, 1, -0.8) },"),
+    ("CONFIG", "the Paladin's blade across the face again", "Hilt = Vector3.new(0.85, -0.6, -0.6), Aim = Vector3.new(-0.8, 0.55, -0.2)",
+     "Hilt = Vector3.new(0.6, -0.5, -0.85), Aim = Vector3.new(-0.45, 0.8, -0.4)"),
+    ("CONFIG", "the Dark Mage's free hand out at the side again", "Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 } },",
+     "Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 }, LeftShoulder = { 14, 0, -20 } },"),
+    ("CV", "the big floating gear again", "local GEAR = { Size = 0.55, Gap = 0.35 }", "local GEAR = { Size = 1, Gap = 1.6 }"),
+    ("CV", "the gear ignores the hat / hair", "buildNeutralGear(head, sc, character), character, head)", "buildNeutralGear(head, sc), character, head)"),
     ("CONFIG", "the flask held out of reach", "OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9)", "OneHand = { Hilt = Vector3.new(0.55, -0.05, -2.2)"),
     ("CONFIG", "the old right-arm hold kept", 'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck',
      'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, Neck'),

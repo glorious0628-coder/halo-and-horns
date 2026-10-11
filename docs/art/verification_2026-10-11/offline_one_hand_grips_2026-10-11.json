@@ -1,5 +1,5 @@
 {
-  "checks": 58,
+  "checks": 64,
   "failed": 0,
   "mutations": [
     {
@@ -34,6 +34,26 @@
     },
     {
       "name": "the Dark Mage's staff slanted far",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Paladin's blade across the face again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Dark Mage's free hand out at the side again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the big floating gear again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the gear ignores the hat / hair",
       "applied": true,
       "caught": true
     },

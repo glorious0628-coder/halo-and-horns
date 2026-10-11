@@ -422,34 +422,6 @@ local function updateNametagOffset(player, character)
 end
 
 ------------------------------------------------------------------ FactionMark (halo disc / horns / neutral gear)
--- A9-1 Neutral: a teal Neon gear 1.6 studs above the head = one thin Cylinder + two crossed Blocks (3 parts), fixed
--- size (does not grow with rank). It stands upright (faces front/back), so at a distance it reads differently from
--- the flat Halo disc, the Horns wedges and the bare None head.
-local function buildNeutralGear(head, sc)
-	local color = factionColor(NEUTRAL_ID)
-	local base = head.CFrame * CFrame.new(0, 1.6 * sc, 0)
-	local parts = {
-		accPart({
-			Name = "GearDisc",
-			Shape = Enum.PartType.Cylinder,
-			Size = Vector3.new(0.18, 1.1, 1.1) * sc,
-			Material = Enum.Material.Neon,
-			Color = color,
-			CFrame = base * CFrame.Angles(0, math.pi / 2, 0), -- cylinder axis along the head's look direction
-		}),
-	}
-	for k = 0, 1 do
-		table.insert(parts, accPart({
-			Name = "GearTeeth" .. (k + 1),
-			Size = Vector3.new(1.5, 0.34, 0.14) * sc, -- sticks 0.2 out of the disc rim on both ends = 4 teeth
-			Material = Enum.Material.Neon,
-			Color = color,
-			CFrame = base * CFrame.Angles(0, 0, math.rad(45 + 90 * k)),
-		}))
-	end
-	return parts
-end
-
 -- 계급 장식 3D: the rank's imported halo / horns (Config.Visuals.MarkModels; a MeshPart, or the first mesh of a Model),
 -- nil until it is in Studio
 local function markTemplate(f, rank)
@@ -484,6 +456,41 @@ local function markFloor(character, head, k)
 		end
 	end
 	return math.min(floor, top + (V.MarkModels.MaxRise or 1) * k)
+end
+
+-- A9-1 Neutral: a teal Neon gear 1.6 studs above the head = one thin Cylinder + two crossed Blocks (3 parts), fixed
+-- size (does not grow with rank). It stands upright (faces front/back), so at a distance it reads differently from
+-- the flat Halo disc, the Horns wedges and the bare None head.
+-- 검수 10/11 (main photo: a big teal square floated 1.6 studs up and hid the 'Altar of Fate' sign; from the side a
+-- pillar): GEAR.Size of the old size, sitting GEAR.Gap above the head top or the hat / hair on it (markFloor, like
+-- the halo / horns models), until a 3D gear model exists (Config.Visuals.MarkModels.Neutral, art)
+local GEAR = { Size = 0.55, Gap = 0.35 }
+local function buildNeutralGear(head, sc, character)
+	local color = factionColor(NEUTRAL_ID)
+	sc *= GEAR.Size
+	local k = math.max(0.25, head.Size.Y / ((V.MarkModels and V.MarkModels.HeadRef) or 1.2))
+	local floor = character and markFloor(character, head, k) or head.Size.Y / 2
+	local base = head.CFrame * CFrame.new(0, floor + GEAR.Gap * k + 0.55 * sc, 0)
+	local parts = {
+		accPart({
+			Name = "GearDisc",
+			Shape = Enum.PartType.Cylinder,
+			Size = Vector3.new(0.18, 1.1, 1.1) * sc,
+			Material = Enum.Material.Neon,
+			Color = color,
+			CFrame = base * CFrame.Angles(0, math.pi / 2, 0), -- cylinder axis along the head's look direction
+		}),
+	}
+	for k = 0, 1 do
+		table.insert(parts, accPart({
+			Name = "GearTeeth" .. (k + 1),
+			Size = Vector3.new(1.5, 0.34, 0.14) * sc, -- sticks 0.2 out of the disc rim on both ends = 4 teeth
+			Material = Enum.Material.Neon,
+			Color = color,
+			CFrame = base * CFrame.Angles(0, 0, math.rad(45 + 90 * k)),
+		}))
+	end
+	return parts
 end
 
 -- A23-75 / A23-77: the worn look's Config.LookThemes entry when it belongs to my side (LookOn is written and checked by
@@ -535,7 +542,7 @@ local function buildFactionMark(player, character)
 	if not head then return end
 	local sc = charScale(character)
 	if f == NEUTRAL_ID then
-		mount(newPiece("FactionMark"), buildNeutralGear(head, sc), character, head)
+		mount(newPiece("FactionMark"), buildNeutralGear(head, sc, character), character, head)
 		return
 	end
 	local _, rank = Config.GetTitle(f, attrNum(player, "Honor", 0), attrNum(player, "Infamy", 0))
