@@ -115,7 +115,7 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--glass", default="", help="extra glass part names (comma list) besides *_Glass")
     ap.add_argument("--ids", default=os.path.join(ROOT, "art", "ui", "asset_ids.json"), help="id record (tests)")
-    ap.add_argument("--skip", default="", help="regex of part names to leave out (A23-120: '_Body_t\d+$' - the walls "
+    ap.add_argument("--skip", default="", help="regex of part names to leave out (A23-120: '_Body_t[0-9]+$' - the walls "
                     "are a part skeleton with tile MaterialVariants now)")
     a = ap.parse_args()
     with open(a.ids, encoding="utf-8") as f:
