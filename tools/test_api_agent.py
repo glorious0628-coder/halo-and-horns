@@ -315,6 +315,239 @@ def image_checks(base, repo):
     check("cap: still 3 sent", T.images_sent == ["img/small.png", "img/big.jpg", "img/tall.webp"], T.images_sent)
 
 
+def write_checks(base):
+    """write mode (검수 2026-10-11): write/edit/delete/commit only inside the temporary worktree, run_test gating, the runner's
+    push to api/<name> only (a local bare repository stands in for origin), refused branches, usage.json / result.md"""
+    g = lambda repo, *a: subprocess.run(["git", "-C", repo, *a], capture_output=True, text=True, encoding="utf-8")  # noqa: E731
+    origin = os.path.join(base, "origin.git")
+    src = os.path.join(base, "wsrc")
+    subprocess.run(["git", "init", "-q", "--bare", origin], check=True)
+    subprocess.run(["git", "init", "-q", src], check=True)
+    for k, v in (("user.name", "Test"), ("user.email", "t@example.com"), ("core.autocrlf", "false"), ("commit.gpgsign", "false")):
+        g(src, "config", k, v)
+    g(src, "remote", "add", "origin", origin)
+    os.makedirs(os.path.join(src, "src"))
+    os.makedirs(os.path.join(src, "tools"))
+    os.makedirs(os.path.join(src, "docs"))
+    for rel, data in [("AGENTS.md", b"rules\n"), ("src/a.luau", b"local a = 1\nlocal b = 2\nlocal b = 3\n"),
+                      ("tools/test_ok.py", b"print('ok ran')\n"), ("docs/note.md", b"line1\r\nline2\r\n"),
+                      (".gitignore", b"build/\nignored.txt\n"), ("other.txt", b"other\n")]:
+        with open(os.path.join(src, rel), "wb") as f:
+            f.write(data)
+    g(src, "add", "-A")
+    g(src, "commit", "-q", "-m", "init")
+    g(src, "branch", "-M", "main")
+    r = g(src, "push", "-q", "origin", "main")
+    check("write: local origin ready", r.returncode == 0, r.stderr)
+    main_before = g(origin, "rev-parse", "refs/heads/main").stdout.strip()
+    head_before = g(src, "rev-parse", "HEAD").stdout.strip()
+    branches_before = g(src, "branch", "--list").stdout
+
+    old_wt = A.WORKTREE_ROOT
+    A.WORKTREE_ROOT = os.path.join(base, "wtw")
+    try:
+        wt = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "tw"))
+        out = os.path.join(base, "jobs", "tw")
+        os.makedirs(out)
+        red = A.Redactor([FAKE_KEY])
+        ctx = A.WriteCtx("api/tw", head_before, "HEAD", "claude-sonnet-5-5", "tw")
+        T = A.Tools(wt, out, True, red, write=ctx)
+        t, e = T.call("write_file", {"path": "src/new/b.luau", "content": "return 1\nreturn 2\n"})
+        check("write: new file in a new folder", not e and "created src/new/b.luau" in t
+              and open(os.path.join(wt, "src", "new", "b.luau"), "rb").read() == b"return 1\nreturn 2\n", t)
+        t, e = T.call("write_file", {"path": "docs/note.md", "content": "line1\nline2\nline3\n"})
+        check("write: an existing CRLF file stays CRLF", not e and open(os.path.join(wt, "docs", "note.md"), "rb").read()
+              == b"line1\r\nline2\r\nline3\r\n", t)
+        t, e = T.call("edit_file", {"path": "src/a.luau", "old_string": "local a = 1", "new_string": "local a = 10"})
+        check("edit: unique string", not e and b"local a = 10\n" in open(os.path.join(wt, "src", "a.luau"), "rb").read(), t)
+        t, e = T.call("edit_file", {"path": "src/a.luau", "old_string": "local b =", "new_string": "local c ="})
+        check("edit: not unique -> error", e and "2 times" in t, t)
+        t, e = T.call("edit_file", {"path": "src/a.luau", "old_string": "local b =", "new_string": "local c =", "replace_all": True})
+        check("edit: replace_all", not e and open(os.path.join(wt, "src", "a.luau")).read().count("local c =") == 2, t)
+        t, e = T.call("edit_file", {"path": "src/a.luau", "old_string": "nope nope", "new_string": "x"})
+        check("edit: not found -> error", e and "not found" in t, t)
+        t, e = T.call("edit_file", {"path": "docs/note.md", "old_string": "line1\nline2", "new_string": "A\nB"})
+        check("edit: multi-line old_string on a CRLF file", not e and open(os.path.join(wt, "docs", "note.md"), "rb").read()
+              == b"A\r\nB\r\nline3\r\n", t)
+        t, e = T.call("edit_file", {"path": "src/none.luau", "old_string": "a", "new_string": "b"})
+        check("edit: missing file -> error", e, t)
+        for p in ["../outside.txt", os.path.join(base, "outside.txt"), ".env", ".env.local", "sub/../.env", ".git/config", ".git",
+                  ".GIT/hooks/pre-commit", ".github/workflows/x.yml", "build/x.luau", ".claude/settings.json", "AGENTS.md",
+                  "agents.MD", "CLAUDE.md", ".gitattributes", "docs/.gitmodules", "tools/run.bat", "tools/x.PS1", "tools/x.sh",
+                  "x.exe", "x.dll", "src/a.luau.", "src/a.luau ", "src/a.luau:evil", "C:/Windows/x.txt", "/abs.txt", "", "  ",
+                  ".", "src/..", "src/../../outside.txt", ".tripo/x.json", "id_rsa", "keys/server.pem"]:
+            t, e = T.call("write_file", {"path": p, "content": "x"})
+            check(f"write blocked: {p!r}", e and t.startswith("Error"), t)
+        check("write blocked: nothing written outside", open(os.path.join(base, "outside.txt")).read() == "outside\n"
+              and not os.path.exists(os.path.join(wt, ".env")) and not os.path.exists(os.path.join(wt, ".github")))
+        t, e = T.call("delete_file", {"path": ".git/HEAD"})
+        check("delete blocked: .git/HEAD", e and os.path.exists(os.path.join(wt, ".git")), t)
+        t, e = T.call("delete_file", {"path": "src"})
+        check("delete blocked: a folder", e and "folder" in t, t)
+        t, e = T.call("delete_file", {"path": "../outside.txt"})
+        check("delete blocked: outside", e, t)
+        t, e = T.call("delete_file", {"path": "other.txt"})
+        check("delete: a file", not e and not os.path.exists(os.path.join(wt, "other.txt")), t)
+        old = dict(A.LIMITS)
+        try:
+            A.LIMITS["write_file_bytes_max"] = 10
+            t, e = T.call("write_file", {"path": "src/big.luau", "content": "x" * 50})
+            check("write: file size limit", e and "too large" in t and not os.path.exists(os.path.join(wt, "src", "big.luau")), t)
+            A.LIMITS.update(old)
+            A.LIMITS["write_total_bytes_max"] = ctx.bytes + 5
+            t, e = T.call("write_file", {"path": "src/more.luau", "content": "x" * 50})
+            check("write: total byte budget", e and "budget" in t, t)
+            A.LIMITS.update(old)
+            A.LIMITS["write_files_max"] = len(ctx.touched)
+            t, e = T.call("write_file", {"path": "src/another.luau", "content": "x"})
+            check("write: file count limit", e and "too many" in t, t)
+        finally:
+            A.LIMITS.clear()
+            A.LIMITS.update(old)
+
+        # a read-only job has no write tools
+        RO = A.Tools(wt, out, True, red)
+        for name, a in [("write_file", {"path": "x.txt", "content": "x"}), ("edit_file", {"path": "src/a.luau", "old_string": "a",
+                        "new_string": "b"}), ("delete_file", {"path": "src/a.luau"}), ("git_commit", {"message": "m", "paths": ["a"]})]:
+            t, e = RO.call(name, a)
+            check(f"read-only job: {name} refused", e and "write tools are off" in t, t)
+
+        # git_commit: only the listed paths, the runner's trailer, the shared tree untouched
+        with open(os.path.join(wt, "src", "dirty.luau"), "w") as f:
+            f.write("dirty\n")
+        t, e = T.call("git_commit", {"message": "새 파일과 수정", "paths": ["src/new/b.luau", "src/a.luau", "other.txt"]})
+        check("git_commit ok", not e and t.startswith("committed "), t)
+        msg = g(wt, "log", "-1", "--format=%B").stdout.strip()
+        check("git_commit: runner trailer is the last line", msg.splitlines()[-1] == "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+              and msg.startswith("새 파일과 수정") and "api_agent job tw" in msg, msg)
+        files = g(wt, "show", "--name-status", "--format=", "HEAD").stdout
+        check("git_commit: only the listed paths (deleted file too)", "src/new/b.luau" in files and "src/a.luau" in files
+              and "other.txt" in files and "dirty.luau" not in files and "note.md" not in files, files)
+        check("git_commit: other work stays uncommitted", "dirty.luau" in g(wt, "status", "--porcelain").stdout
+              and "note.md" in g(wt, "status", "--porcelain").stdout)
+        check("git_commit: recorded", len(ctx.commits) == 1 and ctx.commits[0]["subject"] == "새 파일과 수정", ctx.commits)
+        check("git_commit: the shared tree's HEAD and branches are untouched", g(src, "rev-parse", "HEAD").stdout.strip() == head_before
+              and g(src, "branch", "--list").stdout == branches_before)
+        t, e = T.call("git_commit", {"message": "again", "paths": ["src/a.luau"]})
+        check("git_commit: nothing to commit -> error", e and "nothing to commit" in t, t)
+        for a in [{"message": "", "paths": ["src/a.luau"]}, {"message": "m", "paths": []}, {"message": "m", "paths": ["../x"]},
+                  {"message": "m", "paths": [".env"]}, {"message": "m", "paths": [".git/config"]}, {"message": "m", "paths": ["C:/x"]},
+                  {"message": "m", "paths": [123]}, {"message": "m", "paths": "src/a.luau"}]:
+            t, e = T.call("git_commit", a)
+            check(f"git_commit blocked: {a}", e, t)
+
+        # run_test: allowed while no script differs from the base, refused after a .py changes (unless allowed)
+        t, e = T.call("run_test", {"path": "tools/test_ok.py"})
+        check("run_test ok while only Luau/docs changed", not e and "ok ran" in t, t)
+        T.call("write_file", {"path": "tools/test_new.py", "content": "import os\nos.system('echo pwned > pwned.txt')\n"})
+        t, e = T.call("run_test", {"path": "tools/test_new.py"})
+        check("run_test refused: a new .py differs from the base", e and "refused" in t and "test_new.py" in t
+              and not os.path.exists(os.path.join(wt, "pwned.txt")), t)
+        t, e = T.call("run_test", {"path": "tools/test_ok.py"})
+        check("run_test refused: any test, once a .py differs", e and "refused" in t, t)
+        T.call("git_commit", {"message": "py", "paths": ["tools/test_new.py"]})
+        t, e = T.call("run_test", {"path": "tools/test_ok.py"})
+        check("run_test refused: also after the .py is committed", e and "refused" in t, t)
+        ctx2 = A.WriteCtx("api/tw", head_before, "HEAD", "claude-sonnet-5-5", "tw", allow_modified_py=True)
+        t, e = A.Tools(wt, out, True, red, write=ctx2).call("run_test", {"path": "tools/test_ok.py"})
+        check("run_test allowed with --allow-run-modified-py", not e and "ok ran" in t, t)
+        ok, msg2 = A.drop_worktree(src, wt)
+        check("write: worktree dropped", ok, msg2)
+
+        # push_branch: api/<name> only
+        wt2 = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "tw2"))
+        for b in ["main", "master", "api/../main", "api/", "api", "feature/x", "api/a b", "api/x.lock", "api/x..y", "refs/heads/main",
+                  "api/x;rm", "origin/api/x", "api/" + "x" * 80, "", None, "API/x"]:
+            ok, note = A.push_branch(wt2, b)
+            check(f"push refused: {b!r}", ok is False and "refused" in note, note)
+        check("push refused: origin untouched", g(origin, "rev-parse", "refs/heads/main").stdout.strip() == main_before
+              and "api/" not in g(origin, "branch", "--list").stdout)
+        A.drop_worktree(src, wt2)
+
+        # a full run through run_job: the runner pushes, the shared tree keeps its branches
+        script = [tool_step([("write_file", {"path": "src/feature.luau", "content": "return 'feature'\n"}),
+                             ("edit_file", {"path": "src/a.luau", "old_string": "local a = 1", "new_string": "local a = 2"}),
+                             ("git_commit", {"message": "기능 추가", "paths": ["src/feature.luau", "src/a.luau"]}),
+                             ("write_file", {"path": "src/left.luau", "content": "not committed\n"}),
+                             ("write_file", {"path": ".env", "content": "KEY=1"})]),
+                  end_step("REPORT: feature added")]
+        fc = FakeClient(script)
+        a = run_args(base, "wjob", "do it", "--repo-dir", src, "--make-worktree", "HEAD", "--write", "--branch", "api/t1")
+        m = A.run_job(a, client=fc, key=FAKE_KEY)
+        outd = os.path.join(A.JOBS_ROOT, "wjob")
+        u = json.load(open(os.path.join(outd, "usage.json"), encoding="utf-8"))
+        code = u.get("code") or {}
+        check("run: done", m["status"] == "done" and u["status"] == "done", m["status"])
+        check("run: usage code (branch, commit, files, push)", code.get("branch") == "api/t1" and code.get("pushed") is True
+              and len(code.get("commits", [])) == 1 and sorted(code.get("files_changed", [])) == ["src/a.luau", "src/feature.luau"]
+              and code.get("base") == head_before and code["commits"][0]["subject"] == "기능 추가", code)
+        check("run: uncommitted change reported", code.get("uncommitted") == ["src/left.luau"], code.get("uncommitted"))
+        res_blocks = fc.messages.calls[1]["messages"][2]["content"]
+        check("run: the .env write was refused", res_blocks[4].get("is_error") is True and "denied" in res_blocks[4]["content"], res_blocks[4])
+        pushed = g(origin, "rev-parse", "refs/heads/api/t1").stdout.strip()
+        check("run: origin has api/t1 at the commit", pushed == code["head"] and pushed != main_before, pushed)
+        check("run: origin main untouched, no other new branch", g(origin, "rev-parse", "refs/heads/main").stdout.strip() == main_before
+              and sorted(g(origin, "for-each-ref", "--format=%(refname)").stdout.split()) == ["refs/heads/api/t1", "refs/heads/main"])
+        check("run: pushed tree has the change and no .env", g(origin, "show", "api/t1:src/a.luau").stdout.startswith("local a = 2")
+              and g(origin, "cat-file", "-e", "api/t1:.env").returncode != 0 and g(origin, "cat-file", "-e", "api/t1:src/left.luau").returncode != 0)
+        check("run: shared tree untouched (HEAD, branches, files)", g(src, "rev-parse", "HEAD").stdout.strip() == head_before
+              and g(src, "branch", "--list").stdout == branches_before and not os.path.exists(os.path.join(src, "src", "feature.luau"))
+              and open(os.path.join(src, "src", "a.luau")).read().startswith("local a = 1"))
+        check("run: worktree removed", u.get("worktree_removed") is True and not os.path.exists(os.path.join(A.WORKTREE_ROOT, "wjob")), u)
+        res = open(os.path.join(outd, "result.md"), encoding="utf-8").read()
+        check("run: result.md summary", "REPORT: feature added" in res and "api/t1" in res and "기능 추가" in res and "src/left.luau" in res, res)
+        p0 = fc.messages.calls[0]
+        names = [t["name"] for t in p0["tools"]]
+        check("run: write tools listed, write_note last with the cache breakpoint", {"write_file", "edit_file", "delete_file", "git_commit"} <= set(names)
+              and names[-1] == "write_note" and p0["tools"][-1].get("cache_control") == {"type": "ephemeral"}, names)
+        check("run: write-mode system prompt names the branch", "api/t1" in p0["system"][0]["text"] and "TEMPORARY git worktree" in p0["system"][0]["text"])
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            A.cmd_status(A.parser().parse_args(["status", "wjob"]))
+        check("status shows the code line", "code: branch api/t1 commits 1 files 2 pushed True uncommitted 1" in buf.getvalue(), buf.getvalue())
+        # a read-only job's tools carry no write tools
+        fcr = FakeClient([end_step("x")])
+        A.run_job(run_args(base, "rjob", "look", "--repo-dir", src), client=fcr, key=FAKE_KEY)
+        check("read-only run: no write tools in the request", not ({"write_file", "edit_file", "delete_file", "git_commit"}
+              & {t["name"] for t in fcr.messages.calls[0]["tools"]}))
+
+        # no commits -> nothing is pushed
+        fc2 = FakeClient([tool_step([("write_file", {"path": "src/x.luau", "content": "x\n"})]), end_step("no commit")])
+        A.run_job(run_args(base, "wnone", "do", "--repo-dir", src, "--make-worktree", "HEAD", "--write", "--branch", "api/t2"),
+                  client=fc2, key=FAKE_KEY)
+        u2 = json.load(open(os.path.join(A.JOBS_ROOT, "wnone", "usage.json"), encoding="utf-8"))
+        check("run without commits: nothing pushed", u2["code"]["pushed"] is False and "no commits" in u2["code"]["push_note"]
+              and g(origin, "rev-parse", "--verify", "--quiet", "refs/heads/api/t2").returncode != 0, u2["code"])
+        # a stopped job (turn cap) with a commit still pushes it
+        fc3 = FakeClient([tool_step([("write_file", {"path": "src/y.luau", "content": "y\n"}),
+                                     ("git_commit", {"message": "y", "paths": ["src/y.luau"]})])])
+        m3 = A.run_job(run_args(base, "wstop", "do", "--repo-dir", src, "--make-worktree", "HEAD", "--write", "--branch", "api/t3",
+                                "--max-turns", "2"), client=fc3, key=FAKE_KEY)
+        u3 = json.load(open(os.path.join(A.JOBS_ROOT, "wstop", "usage.json"), encoding="utf-8"))
+        check("run stopped by the turn cap: commit still pushed", m3["status"] == "stopped_turns" and u3["code"]["pushed"] is True
+              and g(origin, "rev-parse", "--verify", "--quiet", "refs/heads/api/t3").returncode == 0, u3["code"])
+        check("run stopped: wrap-up asks to commit", "git_commit" in json.dumps(fc3.messages.calls[1]["messages"][-1]))
+
+        # bad option combinations stop before anything exists
+        for extra, label in [(["--write", "--branch", "api/x"], "--write without --make-worktree"),
+                             (["--make-worktree", "HEAD", "--write"], "--write without --branch"),
+                             (["--make-worktree", "HEAD", "--branch", "api/x"], "--branch without --write"),
+                             (["--make-worktree", "HEAD", "--write", "--branch", "main"], "branch main"),
+                             (["--make-worktree", "HEAD", "--write", "--branch", "feature/x"], "branch outside api/"),
+                             (["--make-worktree", "HEAD", "--write", "--branch", "api/../x"], "branch with .."),
+                             (["--make-worktree", "HEAD", "--write", "--branch", "api/x y"], "branch with a space")]:
+            try:
+                A.run_job(run_args(base, "bad", "x", "--repo-dir", src, *extra), client=FakeClient([end_step("x")]), key=FAKE_KEY)
+                check(label, False, "no SystemExit")
+            except SystemExit:
+                check(label + " refused", not os.path.exists(os.path.join(A.WORKTREE_ROOT, "bad")))
+            shutil.rmtree(os.path.join(A.JOBS_ROOT, "bad"), ignore_errors=True)
+        check("origin never got another branch", sorted(g(origin, "for-each-ref", "--format=%(refname)").stdout.split())
+              == ["refs/heads/api/t1", "refs/heads/api/t3", "refs/heads/main"])
+    finally:
+        A.WORKTREE_ROOT = old_wt
+
+
 def run_args(base, job, prompt, *extra):
     pf = os.path.join(base, "prompt.md")
     open(pf, "w", encoding="utf-8").write(prompt)
@@ -436,6 +669,7 @@ def main():
         tools_checks(base, repo)
         image_checks(base, repo)
         loop_checks(base, repo)
+        write_checks(base)
     finally:
         A.JOBS_ROOT = old_root
         shutil.rmtree(base, ignore_errors=True)
