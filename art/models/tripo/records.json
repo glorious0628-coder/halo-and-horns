@@ -9666,5 +9666,313 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_GatherBush_HD_src.glb"
   }
+ ],
+ "NEW_BellFrame_Bell_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "9bdbbfc8-7a0e-4a24-a326-1d4bd62d9018",
+   "balance_after": 16480,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_back.png"
+   },
+   "use": "bell only (frame/posts = Studio parts, tools/prop_kit.py BellFrame); Blender: swap rings/ribs for exact shapes, symmetric, bake C/N/R/M",
+   "file": "art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb"
+  }
+ ],
+ "NEW_WallLamp_Head_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "a731d352-9d33-4430-a60a-ee98f829b52c",
+   "balance_after": 16425,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_back.png"
+   },
+   "use": "lamp head only (wall bracket = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb"
+  }
+ ],
+ "NEW_WateringCan_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "0ac4c276-10e9-48bd-b244-4d9e7fbb4b61",
+   "balance_after": 16370,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_WateringCan_right_v2.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WateringCan_HD_src.glb"
+  }
+ ],
+ "NEW_BreadBasket_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "737433c4-62a3-48bd-b39a-edf5162fed95",
+   "balance_after": 16315,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_BreadBasket_HD_src.glb"
+  }
+ ],
+ "NEW_Hedge_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "c922b6d7-f9ac-404b-90a3-e48f7e94323b",
+   "balance_after": 16260,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_Hedge_HD_src.glb"
+  }
+ ],
+ "NEW_WhiteRock_a_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d1c12925-5e05-427f-9620-97a3b106c3ea",
+   "balance_after": 16205,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb"
+  }
+ ],
+ "NEW_WhiteRock_b_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e57ab49b-1cb2-49f3-adb8-242e3499d7c7",
+   "balance_after": 16150,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb"
+  }
+ ],
+ "NEW_WhiteRock_c_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "2d75d822-c92f-40c7-99bd-b1672d1378c6",
+   "balance_after": 16095,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb"
+  }
+ ],
+ "HaloVar4_PotFlowers_A_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "83b11dea-1171-4be7-ac8a-8d257c7f52b2",
+   "balance_after": 16040,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_A_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb"
+  }
+ ],
+ "HaloVar4_PotFlowers_C_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "fa0bd3a2-15fe-4363-bafd-491ea499f294",
+   "balance_after": 15985,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_C_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb"
+  }
+ ],
+ "HaloVar4_PotFlowers_D_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "92fd2545-c17c-489c-bc39-e7c936eeabfd",
+   "balance_after": 15930,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_D_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb"
+  }
+ ],
+ "HaloVar3_PotFlowers_E_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "4cfc398c-f957-45c1-bd6f-73791796541c",
+   "balance_after": 15875,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants/HaloVar3_PotFlowers_E_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb"
+  }
+ ],
+ "HaloVar3_PotFlowers_F_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8758e04d-cae5-4e03-b936-b72952d4eba7",
+   "balance_after": 15820,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants/HaloVar3_PotFlowers_F_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb"
+  }
+ ],
+ "HaloVar4_Planter_D_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "64beef17-81d1-4458-a96f-6a509b2fca2d",
+   "balance_after": 15765,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_Planter_D_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb"
+  }
  ]
 }
