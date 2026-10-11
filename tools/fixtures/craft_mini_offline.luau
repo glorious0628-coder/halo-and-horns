@@ -64,6 +64,8 @@ check(M.Check(40, -5, 0) and not M.Check(40, -11, 0), "at most 50 ms earlier tha
 check(M.Check(40, 290, 0) and not M.Check(40, 291, 0), "at most 250 ms later without ping")
 check(M.Check(40, 430, 100) and not M.Check(40, 441, 100), "ping 100 ms widens it by 150", M.Check(40, 441, 100))
 check(not M.Check(nil, 100, 0) and not M.Check(40, 0 / 0, 0), "no number = no")
+check(M.Check(40, 430, 0, 100) and M.Check(40, 430, 100, 0) and not M.Check(40, 441, 20, 100),
+	"the bigger of the start ping and the ping now counts (게임성 검수 10/12)", M.Check(40, 430, 0, 100))
 
 -- 5. a whole session on the server
 local function at(i, ms, lag) return { Ms = ms, At = M.Target(S, i) + (ms + (lag or 60)) / 1000 } end
@@ -87,4 +89,10 @@ g = M.Accept(close, S, 0)
 check(g[1] == "Perfect" and g[2] == "Miss", "a strike less than Rest after the previous = Miss", table.concat(g, ","))
 check(select(3, M.Accept(nil, S, 0)) == 0 and select(3, M.Accept({}, nil, 0)) == 0, "no strikes / no start = +0 (Skip)")
 
+-- a phone whose ping was 100 ms at the start reads 0 for a moment at strike 3: no unfair Miss
+local wob = { at(1, 40, 180), at(2, 40, 180), at(3, 40, 180), at(4, 40, 180), at(5, 40, 180) }
+g = M.Accept(wob, S, 0, 100)
+check(table.concat(g, ",") == "Perfect,Perfect,Perfect,Perfect,Perfect", "a ping that dips for a moment does not cost a Miss", table.concat(g, ","))
+g = M.Accept({ { Ms = 40, At = M.Target(S, 1) + 0.4, Ping = 100 } }, S, 0, 0)
+check(g[1] == "Perfect", "a strike's own ping counts too", g[1])
 print(string.format("CRAFT_MINI_SUMMARY checks=%d failed=%d", checks, failed))

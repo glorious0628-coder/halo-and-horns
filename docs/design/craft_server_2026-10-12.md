@@ -63,7 +63,7 @@
 스위치·장인만·역할만·Lv·재료·골드·자리 거리·자동 전투·세션 하나·분당 수·재료 먼저 빠짐·Pend 저장·점수 경계(70/130/200 ± 보정 40)·13/9점·모두 같은 수 = +0·너무 이른 Finish 거절·시간 넘음 +0·나감 +0·다음 접속 Pend 완성·XP 곡선·레벨업 여러 번·Lv30 상한·Made·CraftResult/CraftInfo 모양·알림은 키만·없는 재료 레시피 꺼짐·AddSpare 없으면 무기 거절.
 
 ## 8. 구현 (10/12, 가지 `dev3-craft`)
-- `src/ServerScriptService/CraftService.luau`(망치질은 `Shared/CraftMini` require), Config(`Config.Features.Crafting`·`Config.Craft`·`Config.CraftXPToNext`; 망치질 숫자는 Config에 없음), Net 원격 6개, Main 두 목록(GatherService 다음). CraftMini.luau·test_craft_mini.py는 개발 4 dev4-craft 1634e079와 같은 파일.
-- 시험 `tools/test_craft.py`: 96 named·변이 53/53(도착이 안 맞으면 Miss·핑 무시·일정 틀림·서버 시각 대신 클라 시각 변이 포함). test_craft_mini 42·14/14.
+- `src/ServerScriptService/CraftService.luau`(망치질은 `Shared/CraftMini` require), Config(`Config.Features.Crafting`·`Config.Craft`·`Config.CraftXPToNext`; 망치질 숫자는 Config에 없음), Net 원격 6개, Main 두 목록(GatherService 다음). CraftMini.luau·test_craft_mini.py는 개발 4 dev4-craft 44dba035와 같은 파일.
+- 시험 `tools/test_craft.py`: 100 named·변이 55/55(핑 = 시작·두드림·지금 중 큰 값, 개발 4 44dba035)(도착이 안 맞으면 Miss·핑 무시·일정 틀림·서버 시각 대신 클라 시각 변이 포함). test_craft_mini 45·16/16.
 - **켜는 가지에서 할 것(최종 검수 10/12):** 2배 XP 패스 설명(Config 약 4185 "Get 2x XP from everything you do")을 "Get 2x level XP, so you level up 2x faster. Crafting levels do not change. No stats are for sale."로 바꾸고, 시험에 '제작 켜짐이면 패스 글에 Crafting 줄' 정적 검사. 패스에 제작 XP를 넣을지는 최종 검수가 사용자에게 물음(답 바뀌면 다시).
 - 허용(−50..250 + 1.5×핑)은 CraftMini.T(Early·Late·JitterMul) — 숫자 하나로 조정.

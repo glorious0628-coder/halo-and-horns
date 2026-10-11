@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 110,
+  "checks": 114,
   "failedChecks": 0,
-  "namedChecks": 96,
+  "namedChecks": 100,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -351,6 +351,30 @@
     },
     {
       "group": "hammer",
+      "check": "a 300 ms ping at the session start widens the window at the end (300 ms off: kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a 300 ms ping when the strike came counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a 300 ms ping at the Finish counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "no ping anywhere: 300 ms off is a Miss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
       "check": "a press the server never got is a Miss (the next ones still count)",
       "pass": 1,
       "fail": 0
@@ -588,9 +612,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 53,
-    "applied": 53,
-    "caught": 53,
+    "total": 55,
+    "applied": 55,
+    "caught": 55,
     "skipped": false,
     "results": [
       {
@@ -1002,10 +1026,10 @@
           "hammer :: 55 ms earlier than claimed: Miss",
           "hammer :: CraftMismatch logged (5)",
           "hammer :: claims ~700 ms off the arrival: all Miss, +0",
-          "hammer :: the strike notes { Ms, At = server time }",
-          "hammer :: with no ping the window is 250 ms (260 off: Miss)"
+          "hammer :: no ping anywhere: 300 ms off is a Miss",
+          "hammer :: the strike notes { Ms, At = server time }"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "finish: any lie fits (huge ping)",
@@ -1017,18 +1041,30 @@
           "hammer :: 405 ms later than claimed: Miss",
           "hammer :: CraftMismatch logged (5)",
           "hammer :: claims ~700 ms off the arrival: all Miss, +0",
+          "hammer :: no ping anywhere: 300 ms off is a Miss",
           "hammer :: with no ping the window is 250 ms (260 off: Miss)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
-        "mutation": "finish: the ping ignored",
+        "mutation": "finish: the ping now ignored",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: 395 ms later than claimed (inside 400): kept"
+          "hammer :: a 300 ms ping at the Finish counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: the start ping ignored",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: a 300 ms ping at the session start widens the window at the end (300 ms off: kept)"
         ],
         "newFailingCount": 1
       },
@@ -1044,9 +1080,20 @@
           "hammer :: Crafted(player, W1, 2)",
           "hammer :: Grades x5",
           "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
-          "hammer :: a press the server never got is a Miss (the next ones still count)"
+          "hammer :: a 300 ms ping at the Finish counts"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "strike: the ping then not kept",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: a 300 ms ping when the strike came counts"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "finish: twice",
@@ -1270,11 +1317,11 @@
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "9d72e6505842fa4997b151687e08b8f57c9ec88800ca59ee6275935bf895278b",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ReplicatedStorage/Shared/CraftMini.luau": "63cae32dd4462a042756775b2dad81ccd7a35d49ad125f4ec74d1676cc20189d",
+    "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "59a7fdc40f90eb44f238c6caf97fa3df0efeeb88ac08e3cc995b37c961382415",
-    "src/ServerScriptService/CraftService.luau": "3d33b4f8d69c30ad4827bf14df65d36a6765cfd534957b14f2d450776c5f17ce"
+    "src/ServerScriptService/CraftService.luau": "1e657ac2156c8fa5e0eac59b274e60fff69a15cfc002c4b5ff1154b96a2705a3"
   },
-  "fixtureSHA256": "3a8615aace5d5346e154b6c12e7176d757057321d37f879aed6e3ff40a753a8e",
+  "fixtureSHA256": "ff24105291bc53f7db8b7764f55f5192a51203d147ea82747759c66fd757ad4d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

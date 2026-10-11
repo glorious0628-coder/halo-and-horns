@@ -338,6 +338,27 @@ runGroup("hammer", function()
 	startAndHammer(w, slow, { 30, 260, 40, 20, 60 }, { Claim = { 30, 0, 40, 20, 60 } })
 	w.Ping = 0.1
 	check(last(fired(w, "CraftResult", slow)).Grades[2] == "Miss", "with no ping the window is 250 ms (260 off: Miss)", "")
+	-- the ping that counts is the biggest of the session start's, the strike's and now (CraftMini.Ping, 게임성 검수)
+	local function pingCase(id, startPing, strikePing, endPing)
+		local x = smith(w, id)
+		w.Ping = startPing
+		w.C.TryStart(x, "W1")
+		local s = last(fired(w, "CraftSession", x))
+		local actual, claim = { 30, 300, 40, 20, 60 }, { 30, 0, 40, 20, 60 }
+		for i = 1, 5 do
+			w:Advance(w.Mini.Target(s.StartAt, i) + actual[i] / 1000 - serverNow(w))
+			w.Ping = i == 2 and strikePing or 0
+			w.C.Strike(x, s.Id, i, claim[i])
+		end
+		w.Ping = endPing
+		w.C.Finish(x, s.Id)
+		w.Ping = 0.1
+		return last(fired(w, "CraftResult", x)).Grades[2]
+	end
+	check(pingCase(11, 0.3, 0, 0) == "Perfect", "a 300 ms ping at the session start widens the window at the end (300 ms off: kept)", "")
+	check(pingCase(12, 0, 0.3, 0) == "Perfect", "a 300 ms ping when the strike came counts", "")
+	check(pingCase(13, 0, 0, 0.3) == "Perfect", "a 300 ms ping at the Finish counts", "")
+	check(pingCase(14, 0, 0, 0) == "Miss", "no ping anywhere: 300 ms off is a Miss", "")
 
 	-- strikes the server never got, rings, repeats, bad ms
 	local sk = smith(w, 7)

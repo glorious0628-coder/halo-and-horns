@@ -66,6 +66,12 @@ local function serverNow()
 	return ok and type(t) == "number" and t or os.time()
 end
 
+-- the player's round-trip ping in ms (0..1000); CraftMini takes the biggest of the session start's, the strike's and now
+local function pingMs(player)
+	local ok, p = pcall(function() return player:GetNetworkPing() end)
+	return math.clamp((ok and num(p) or 0) * 1000, 0, 1000)
+end
+
 local function fire(player, remote, payload)
 	local ok, err = pcall(function() Net.Get(remote):FireClient(player, payload) end)
 	if not ok then Util.Warn(TAG, remote .. ": " .. tostring(err)) end
@@ -305,7 +311,7 @@ function CraftService.TryStart(player, id)
 	table.insert(recent, now)
 	ST.Serial += 1
 	local T = CraftMini.T
-	local sess = { Id = ST.Serial, Recipe = id, StartAt = serverNow() + T.Lead, Strikes = {} }
+	local sess = { Id = ST.Serial, Recipe = id, StartAt = serverNow() + T.Lead, Strikes = {}, StartPing = pingMs(player) }
 	ST.Open[player] = sess
 	fire(player, "CraftSession", { Id = sess.Id, Recipe = id, Strikes = T.Strikes, Ring = T.Ring, Rest = T.Rest, StartAt = sess.StartAt })
 	task.delay(T.Lead + T.Timeout, function()
@@ -314,20 +320,16 @@ function CraftService.TryStart(player, id)
 	return "ok"
 end
 
--- a press: the first strike of ring i is noted with the server's time (CraftMini.Accept checks it at the Finish)
+-- a press: the first strike of ring i is noted with the server's time and the ping then (CraftMini.Accept checks it at
+-- the Finish)
 function CraftService.Strike(player, sid, i, ms)
 	local sess = ST.Open[player]
 	if not sess or sess.Id ~= sid or sess.Done then return "session" end
 	if type(i) ~= "number" or i ~= math.floor(i) or i < 1 or i > CraftMini.T.Strikes then return "ring" end
 	if sess.Strikes[i] then return "again" end
 	if type(ms) ~= "number" or ms ~= ms then return "ms" end
-	sess.Strikes[i] = { Ms = ms, At = serverNow() }
+	sess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }
 	return "ok"
-end
-
-local function pingMs(player)
-	local ok, p = pcall(function() return player:GetNetworkPing() end)
-	return math.clamp((ok and num(p) or 0) * 1000, 0, 1000)
 end
 
 -- the end of the hammer: CraftMini.Accept grades the strikes that came (a missing or a made-up one is a Miss); five
@@ -337,7 +339,7 @@ function CraftService.Finish(player, sid)
 	if not sess or sess.Id ~= sid or sess.Done then return "session" end
 	sess.Done = true
 	ST.Open[player] = nil
-	local grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player))
+	local grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player), sess.StartPing)
 	local claims, mismatch = {}, 0
 	for i = 1, CraftMini.T.Strikes do
 		local s = sess.Strikes[i]

@@ -33,8 +33,11 @@ OUT = ROOT / "docs/art/verification_2026-10-12/offline_craft_mini_2026-10-12.jso
 MUTATIONS = [
     ("MINI", "an offset that its arrival disproves still counts (게임성 검수 10/12)",
      "\treturn d >= -T.Early and d <= T.Late + T.JitterMul * ping\n", "\treturn true\n"),
-    ("MINI", "Accept skips the server check", "if s.At >= prevAt + T.Rest and CraftMini.Check(s.Ms, serverMs, pingMs) then",
+    ("MINI", "Accept skips the server check", "if s.At >= prevAt + T.Rest and CraftMini.Check(s.Ms, serverMs, ping) then",
      "if s.At >= prevAt + T.Rest then"),
+    ("MINI", "only the ping now counts (게임성 검수 10/12)", "\treturn math.max(a, b)\n", "\treturn a\n"),
+    ("MINI", "a strike's own ping ignored", "math.max(CraftMini.Ping(pingMs, startPingMs), CraftMini.Ping(s.Ping))",
+     "CraftMini.Ping(pingMs, startPingMs)"),
     ("MINI", "no early limit", "\treturn d >= -T.Early and d <= T.Late", "\treturn d <= T.Late"),
     ("MINI", "ping not counted", "d <= T.Late + T.JitterMul * ping", "d <= T.Late"),
     ("MINI", "no input delay forgiven", "\tlocal e = math.abs(ms - T.Lag)\n", "\tlocal e = math.abs(ms)\n"),

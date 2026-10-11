@@ -84,18 +84,27 @@ function CraftMini.Score(grades)
 	return points, 0
 end
 
+-- ping (ms) as the check uses it: the bigger of the strike's and the session start's (게임성 검수 10/12: GetNetworkPing is a
+-- round trip and jumps - a phone / wifi player must not get a Miss from one quiet moment), clamped to 0..1000
+function CraftMini.Ping(pingMs, startPingMs)
+	local a = finite(pingMs) and math.clamp(pingMs, 0, 1000) or 0
+	local b = finite(startPingMs) and math.clamp(startPingMs, 0, 1000) or 0
+	return math.max(a, b)
+end
+
 -- the server's check of one strike: its own offset (serverMs) against the client's (ms), widened by the ping
-function CraftMini.Check(ms, serverMs, pingMs)
+function CraftMini.Check(ms, serverMs, pingMs, startPingMs)
 	if not (finite(ms) and finite(serverMs)) then return false end
-	local ping = finite(pingMs) and math.clamp(pingMs, 0, 1000) or 0
+	local ping = CraftMini.Ping(pingMs, startPingMs)
 	local d = serverMs - ms
 	return d >= -T.Early and d <= T.Late + T.JitterMul * ping
 end
 
--- the server's grades of a session: strikes[i] = { Ms = the client's offset, At = when the server received it } for the
--- strikes that came (any order of arrival is checked against the previous one: At_i >= At_(i-1) + Rest). Returns the
--- grades (Strikes long), the points and the +N
-function CraftMini.Accept(strikes, startAt, pingMs)
+-- the server's grades of a session: strikes[i] = { Ms = the client's offset, At = when the server received it, Ping = the
+-- ping (ms) then, optional } for the strikes that came (each checked against the previous one: At_i >= At_(i-1) + Rest);
+-- pingMs = the ping now, startPingMs = at the session start (the bigger one counts). Returns the grades (Strikes
+-- long), the points and the +N
+function CraftMini.Accept(strikes, startAt, pingMs, startPingMs)
 	local grades = {}
 	local prevAt = -math.huge
 	for i = 1, T.Strikes do
@@ -103,7 +112,8 @@ function CraftMini.Accept(strikes, startAt, pingMs)
 		local g = "Miss"
 		if type(s) == "table" and finite(s.Ms) and finite(s.At) and finite(startAt) then
 			local serverMs = (s.At - CraftMini.Target(startAt, i)) * 1000
-			if s.At >= prevAt + T.Rest and CraftMini.Check(s.Ms, serverMs, pingMs) then g = CraftMini.Grade(s.Ms) end
+			local ping = math.max(CraftMini.Ping(pingMs, startPingMs), CraftMini.Ping(s.Ping))
+			if s.At >= prevAt + T.Rest and CraftMini.Check(s.Ms, serverMs, ping) then g = CraftMini.Grade(s.Ms) end
 			prevAt = s.At
 		end
 		grades[i] = g
