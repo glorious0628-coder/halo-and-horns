@@ -12,14 +12,14 @@
   },
   "Shop_Bakery": {
    "from_spawn_s": 6.6,
-   "from_gate_s": 9.1
+   "from_gate_s": 9.0
   },
   "Shop_Juice": {
-   "from_spawn_s": 9.8,
-   "from_gate_s": 12.8
+   "from_spawn_s": 9.9,
+   "from_gate_s": 12.9
   },
   "Shop_Flower": {
-   "from_spawn_s": 7.5,
+   "from_spawn_s": 7.6,
    "from_gate_s": 12.0
   },
   "House_Hill1": {
@@ -31,7 +31,7 @@
    "from_gate_s": 16.3
   },
   "House_Hill3": {
-   "from_spawn_s": 13.3,
+   "from_spawn_s": 13.4,
    "from_gate_s": 15.2
   },
   "Armory": {
@@ -55,12 +55,12 @@
    "from_gate_s": 21.0
   },
   "House_Cliff3": {
-   "from_spawn_s": 23.3,
+   "from_spawn_s": 23.4,
    "from_gate_s": 25.2
   },
   "House_Cliff4": {
-   "from_spawn_s": 23.8,
-   "from_gate_s": 28.3
+   "from_spawn_s": 23.9,
+   "from_gate_s": 28.4
   },
   "House_Cliff5": {
    "from_spawn_s": 22.2,
@@ -75,8 +75,8 @@
    "from_gate_s": 29.2
   },
   "House_Garden3": {
-   "from_spawn_s": 29.6,
-   "from_gate_s": 34.1
+   "from_spawn_s": 29.5,
+   "from_gate_s": 34.0
   },
   "House_Garden4": {
    "from_spawn_s": 26.4,
@@ -87,12 +87,12 @@
    "from_gate_s": 35.0
   },
   "House_Hill4": {
-   "from_spawn_s": 14.8,
+   "from_spawn_s": 14.9,
    "from_gate_s": 16.7
   },
   "House_Cliff6": {
    "from_spawn_s": 20.2,
-   "from_gate_s": 24.7
+   "from_gate_s": 24.6
   },
   "House_Cliff7": {
    "from_spawn_s": 17.7,

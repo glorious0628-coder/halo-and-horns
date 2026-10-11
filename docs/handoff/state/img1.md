@@ -42,6 +42,14 @@
 - 사진 자리: hill_yard(광장 쪽 30, 높이 16), cathedral_stairs(뒤·위로) + 벽 앞으로 당기기(두 장만). `--nobloom` 추가.
 - 원인 찾음: plaza_high 흰 얼룩 = 지형 포장(Concrete→GE_HaloPave, r40)이 분수 원판 파트(r40, 두께 0.5, 윗면 10.15) 사이로 솟음(블룸 아님, nobloom 사진도 같음). bridge_B1 검은 덩어리 = 훈련장 지형 Ground + MaterialVariant GE_Ground가 C2c 빛에서 거의 검게(재질 빠진 것 아님).
 
+## 10/11 18:00 구획·이유·골격 다듬기 (검수 지시)
+- 검수 판정: 섬 2차 통과. 5단계 할 일로 적음: **바위 테가 옆에서 검고 두꺼운 곧은 띠**(색·튀어나온 바위로 다듬기), **under_side_close 파란 점 2개**(LOD 티).
+- 광장 원판 아래 지형 1칸 낮춤(`PAVED_SINK`, skeleton_ground `D.plaza_sink`로 원판 높이 그대로), 훈련장 땅 = 모래(`DIST_MAT`), e39c823.
+- A23-117 이유 칸: `tools/halo_plan_v2.py` DIST_JOB(구역 하는 일)·WHY_B(건물 29: 누가 살고 왜 여기)·WHY_YARD·WHY_BRIDGE·WHY_SCENE → plan json `job`/`why`. 빠지면 checks에 "이유 없음". 집 주인 이야기(종지기·성가대·정원사 등)는 내가 정한 안 — 검수/사용자가 바꾸면 WHY_B만 고침.
+- 구획 지도: `art/review/world/halo_v2/halo_district_map.png`(구역 색·이름, 건물 번호 = 오른쪽 표, 주황 테 = A23-124 새 집 7).
+- 골격 다듬기(지형): 기울어진 구역(시장 4→8·정원 12→16·절벽 18→22)에서 문 앞 땅이 문턱보다 최대 4 높았음 → 문 앞 평평한 턱(APRON_D 8 + 경사 12), 건물 받침 평탄화는 **벽에서 5 안**(전에는 모서리 점에서만 3 → 안쪽 바닥이 최대 4 솟음). 지금: 문 앞 땅 ≤0.4, 안쪽 바닥 ≤0.8. Ground 골격 다시 지음(1403조각, CSG 실패 0). 사진 `art/review/world/halo_v2/doors/`(`ground_shots.py --doors`).
+- 문 안 갈색 = 바닥 잔디를 70% 투명 빨간 DoorHole 판 너머로 본 색(문제 아님).
+
 ## 폭포 물줄기 (5단계 재료)
 - High 최종 업로드 `rbxassetid://111806947888357` (`art/ui/Halo_WaterfallStreaks.png`, approved.json·asset_ids.json 기록, 5 크레딧)
 - `tools/worldkit/halo_waterfx.luau` STREAK 넣음, 경사 물 램프 따라 착지점(9/9), 거품 원판 → 둥근 물보라 파티클, 띠 넓고 밝게. WorldKit에 적용됨(옛 지형 위).

@@ -37,6 +37,7 @@ SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them 
 }
 DIST_MAT = {"training": "sand", "arrival": "grass"}  # 2차 10/11 검수: training was dirt (GE_Ground reads near black in C2c)
 PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
+APRON_D, APRON_RAMP = 8, 12  # level doorstep in front of every door, then a ramp back to the district slope (studs)
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
@@ -253,11 +254,38 @@ def main():
         for r in range(rows):
             for c in range(cols):
                 x, z = cxz(r, c)
-                if min(xs) - 4 <= x <= max(xs) + 4 and min(zs) - 4 <= z <= max(zs) + 4:
-                    if inside((x, z), fp) or min(math.hypot(x - px, z - pz) for px, pz in fp) < 3:
+                if min(xs) - 6 <= x <= max(xs) + 6 and min(zs) - 6 <= z <= max(zs) + 6:
+                    # 골격 다듬기 10/11: margin from the WALLS (was corner points only, so the slope reached the wall and the
+                    # 4-stud voxels lifted the floor inside by up to 4 on sloped districts)
+                    if inside((x, z), fp) or min(seg_t((x, z), fp[i], fp[(i + 1) % len(fp)])[1] for i in range(len(fp))) < 5:
                         if MAT[r][c] != "sea":
                             H[r][c] = b["ground_y"]
                             PAD.add((r, c))
+    # 골격 다듬기 10/11: in sloped districts (market 4->8, garden 12->16, cliff 18->22) the ground in front of a door rose up to
+    # 4 above the sill. A level doorstep apron (door width + 6, APRON_D deep) at ground_y, then a ramp back to the slope
+    apron = 0
+    for b in plan["buildings"]:
+        if b["kind"] == "Gate":
+            continue
+        ux, uz = b["door_dir"]
+        ax, az = b["door_at"]
+        half = b["door_size"][0] / 2 + 3
+        for r in range(rows):
+            for c in range(cols):
+                if MAT[r][c] == "sea" or H[r][c] is None or (r, c) in PAD:
+                    continue
+                x, z = cxz(r, c)
+                u = (x - ax) * ux + (z - az) * uz
+                v = abs(-(x - ax) * uz + (z - az) * ux)
+                if 0 <= u <= APRON_D + APRON_RAMP and v <= half + (u - APRON_D) * 0.5 * (u > APRON_D):
+                    if u <= APRON_D:
+                        H[r][c] = b["ground_y"]
+                        PAD.add((r, c))
+                    else:
+                        t = (u - APRON_D) / APRON_RAMP
+                        H[r][c] = b["ground_y"] + (H[r][c] - b["ground_y"]) * t
+                    apron += 1
+    print(f"[blockout] door aprons: {apron} cells")
     base = [row[:] for row in H]
 
     # roads: own height profile, painted, ramps; stairs where steeper than 24 deg

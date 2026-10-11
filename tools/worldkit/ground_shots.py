@@ -115,7 +115,24 @@ def resolve(shots):
     return json.loads(raw[raw.index("["):raw.rindex("]") + 1])
 
 
-shots = spec()
+def door_spec():
+    """--doors (골격 다듬기 10/11): doorsteps in the sloped districts (market 4->8, garden 12->16, cliff 18->22) after the level
+    aprons, plus one overview of each sloped district"""
+    B = {b["id"]: b for b in PLAN["buildings"]}
+    out = []
+    for bid in ("Shop_Juice", "Shop_Bakery", "House_Garden3", "House_Garden7", "House_Cliff4", "House_Cliff8"):
+        b = B[bid]
+        (ax, az), (ux, uz) = b["door_at"], b["door_dir"]
+        out.append(("door_" + bid, ab(ax + ux * 16 + uz * 5, b["ground_y"] + 7, az + uz * 16 - ux * 5), ab(ax, b["ground_y"] + 3, az)))
+    for did in ("market", "garden_homes", "cliff_homes"):
+        d = next(x for x in PLAN["districts"] if x["id"] == did)
+        xs, zs = [p[0] for p in d["poly"]], [p[1] for p in d["poly"]]
+        cx, cz = sum(xs) / len(xs), sum(zs) / len(zs)
+        out.append(("district_" + did, ab(cx + 40, d["y"] + 70, cz + 70), ab(cx, d["y"], cz)))
+    return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
+
+
+shots = door_spec() if "--doors" in sys.argv else spec()
 only = [a for a in sys.argv[1:] if not a.startswith("--")]
 if only:
     shots = [s for s in shots if any(s["name"].startswith(o) for o in only)]

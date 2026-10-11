@@ -300,6 +300,91 @@ WATER["pools"] += [
 ]
 
 
+# ---------------------------------------------------------------- A23-117 '이유' 칸 (검수 10/11 17:30): every district says what it does,
+# every building / yard / bridge / photo scene says who uses it and why it stands there. A missing why is a check issue.
+DIST_JOB = {
+    "arrival": "들어오고 나가는 곳 — 문지기·길잡이·이동 발판",
+    "market": "사고파는 곳 — 가게 4채 한 골목",
+    "market_hill": "가게 주인들이 사는 곳",
+    "training": "기술 연습 — 첫 기술 시험",
+    "castle": "기사단 본부 — 훈련장과 서쪽 바다를 지킴",
+    "plaza": "모이는 곳 — 모든 길이 만남",
+    "garden": "쉬어 가는 곳 — 폭포 웅덩이 벤치",
+    "garden_homes": "꽃 키우는 사람들이 사는 곳",
+    "cathedral": "기도하는 곳 — 왕관 조각을 지킴",
+    "cliff_homes": "대성당 일꾼들이 사는 곳",
+    "lookout": "내려다보는 곳 — 마을·바다 사진 자리",
+}
+WHY_B = {
+    "Gate": "교차로 다리에서 마을로 들어오는 하나뿐인 문. 문지기가 지킨다",
+    "Tower_GateEast": "문지기 망루: 다리로 오는 사람을 높이서 본다(동쪽에만, 비대칭)",
+    "Shop_Potion": "첫 10분 둘째 할 일(Bright 다음 물약). 스폰에서 보이는 첫 가게",
+    "Shop_Bakery": "빵집 할머니(Folk3) 가게. 언덕 동네에서 내려오는 계단 바로 앞",
+    "Shop_Juice": "주스 아저씨(Folk1) 가게. 골목 끝, 구경하고 쉬어 가는 자리",
+    "Shop_Flower": "꽃 가게(Folk2). 광장으로 내려가는 모퉁이, 정원 마을 꽃을 받아 판다",
+    "House_Hill1": "빵집 할머니 집: 가게로 내려가는 계단이 가장 가깝다",
+    "House_Hill2": "주스 아저씨 집: 언덕 마당 옆",
+    "House_Hill3": "물약 상인 집: 시장 쪽을 본다",
+    "House_Hill4": "꽃 가게 주인 집: 언덕 마당 화분을 돌본다 (A23-124 새 집)",
+    "Armory": "기사단 무기고: 훈련장 바로 옆이라 무기를 꺼내 바로 연습한다(Sir Gleam 훈련 시작)",
+    "Castle": "기사단 성: 훈련장을 내려다보고 서쪽 바다를 지킨다. 문은 훈련장 쪽",
+    "Cathedral": "왕관 조각을 지키는 대성당: 마을에서 가장 높은 언덕",
+    "House_Cliff1": "종지기 집: 대성당 가는 비탈 아래",
+    "House_Cliff2": "성가대 선생님 집",
+    "House_Cliff3": "바다를 그리는 화가 집: 창이 바다 쪽",
+    "House_Cliff4": "대성당 정원사 집: 위 단, 대성당과 가깝다",
+    "House_Cliff5": "촛불 만드는 사람 집: 대성당에 초를 댄다",
+    "House_Cliff6": "별 보는 사람 집: 위 단, 전망대 가까이 (A23-124 새 집)",
+    "House_Cliff7": "성가대 아이들 집: 아래 골목 (A23-124 새 집)",
+    "House_Cliff8": "폭포지기 집: W3 폭포 옆, 물길을 돌본다 (A23-124 새 집)",
+    "House_Garden1": "정원사 집: 꽃 가게에 꽃을 댄다, 광장에서 가장 가깝다",
+    "House_Garden2": "씨앗 모으는 사람 집",
+    "House_Garden3": "물러난 늙은 기사 집: 성이 보이는 바닷가",
+    "House_Garden4": "벌 치는 사람 집: 꽃밭 가운데",
+    "House_Garden5": "약초 키우는 사람 집: 서쪽 끝 (물약 가게에 약초를 댐, A23-124 새 집)",
+    "House_Garden6": "연못 집: 연꽃을 돌본다 (A23-124 새 집)",
+    "House_Garden7": "정원 마을 이장 집: 남쪽 바다 쪽 끝 (A23-124 새 집)",
+    "Tower_Lookout": "전망 탑: 마을·바다를 내려다보는 사진 자리, 하늘 다리로 오는 것을 지켜본다",
+}
+WHY_YARD = {
+    "hill_yard": "언덕 집 2·3·4가 같이 쓰는 마당(빨랫줄·화분)",
+    "castle_court": "기사들이 모이는 성 문 앞 마당",
+    "cliff_yard": "절벽 위 집 3·8 앞 마당, W3 웅덩이 옆",
+    "cliff_landing": "절벽 비탈 오르다 쉬는 쉼참",
+    "garden_yard": "정원 집 2·5 사이 꽃밭 일하는 자리",
+    "lookout_yard": "전망 탑에 오르기 전 모이는 곳",
+    "market_corner": "뒷골목 모퉁이 노점·수레 자리",
+    "cathedral_court": "큰 계단 위, 기도하러 온 사람들이 모이는 대성당 앞",
+}
+WHY_BRIDGE = {
+    "B1": "첫 10분: 스폰에서 훈련장으로 시냇물을 건너는 곳",
+    "B2": "훈련 뒤 성문으로 돌아가는 고리길이 시냇물을 건너는 곳",
+    "B3": "광장에서 성 뒤 마당으로 가는 지름길",
+}
+WHY_SCENE = {
+    "폭포 웅덩이 벤치": "정원 쉼터에서 쉬는 사람 자리",
+    "성벽 전망": "성벽 곁길 막다른 끝의 보상(서쪽 바다)",
+    "북동 곶 벤치": "언덕 동네 사람이 교차로 다리를 보는 자리",
+    "시장 끝 꽃 화분 탁자": "장 본 사람이 골목을 내려다보며 쉬는 자리",
+    "절벽 마을 발코니": "절벽 마을 사람이 동쪽 바다와 W3를 보는 자리",
+    "대성당 뒤 바다 전망": "기도 뒤 조용히 바다를 보는 자리",
+    "전망 탑 꼭대기": "마을 전체 사진 자리",
+    "훈련장 관람 계단": "훈련을 구경하는 자리",
+}
+for _d in DISTRICTS:
+    _d["job"] = DIST_JOB.get(_d["id"], "")
+    if _d["id"] == "training":
+        _d["why"] = _d["why"].replace("흙 마당", "모래 마당")  # 10/11 2차: the yard terrain is Sand (GE_Ground read near black)
+    if _d["id"] == "cliff_homes":
+        _d["why"] = "대성당 일꾼(종지기·성가대·정원사·초 만드는 사람)이 대성당 가까운 절벽에 산다. 집 8채가 두 단(18·22)에 무리. 절벽 끝 폭포가 바다로 떨어진다."
+    if _d["id"] == "garden_homes":
+        _d["why"] = "꽃 키우는 사람들이 사는 남서쪽 조용한 동네. 집 7채가 마당·꽃밭·연못과 함께, 2채는 바다를 본다."
+for _y in YARDS:
+    _y["why"] = WHY_YARD.get(_y["id"], "")
+for _b in BRIDGES:
+    _b["why"] = WHY_BRIDGE.get(_b["id"], "")
+
+
 # ---------------------------------------------------------------- geometry
 def inside(pt, poly):
     x, z = pt
@@ -382,7 +467,7 @@ def build_list():
         out.append(dict(id=bid, kind=kind, district=dist, x=x, z=z, ground_y=gy, yaw=yaw,
                         door_dir=[round(math.sin(math.radians(yaw)), 3), round(math.cos(math.radians(yaw)), 3)],
                         door_compass=compass(math.sin(math.radians(yaw)), math.cos(math.radians(yaw))),
-                        w=w, d=d, h=h, floors=floors, floor_h=fh, door_size=list(door), note=note))
+                        w=w, d=d, h=h, floors=floors, floor_h=fh, door_size=list(door), note=note, why=WHY_B.get(bid, "")))
     for b in out:
         yaw = math.radians(b["yaw"])
         b["door_at"] = [round(b["x"] + math.sin(yaw) * b["d"] / 2, 1), round(b["z"] + math.cos(yaw) * b["d"] / 2, 1)]
@@ -420,6 +505,19 @@ def door_spurs(blds):
 
 def checks(blds):
     msgs = []
+    for b in blds:
+        if not b.get("why"):
+            msgs.append(f"이유 없음: {b['id']}")
+    for kind, items, key in (("마당", YARDS, "id"), ("다리", BRIDGES, "id")):
+        for it in items:
+            if not it.get("why"):
+                msgs.append(f"이유 없음: {kind} {it[key]}")
+    for n, _a, _v in SCENES:
+        if n not in WHY_SCENE:
+            msgs.append(f"이유 없음: 장면 {n}")
+    for dd in DISTRICTS:
+        if not dd.get("job"):
+            msgs.append(f"하는 일 없음: 구역 {dd['id']}")
     for b in blds:
         fp = footprint(b)
         if b["kind"] != "Gate" and not all(inside(p, LAND) for p in fp):  # the gate stands on the bridge end
@@ -559,7 +657,7 @@ DRESSING = {
                         props="Clothesline·Woodpile·VegGarden (사는 집), BenchB (북동 곶 벤치 = 교차로 다리 경치), 언덕 마당 화단",
                         water="언덕 샘 (작은 바위 샘)", edge="단 턱 (시장보다 6 높음) + Balustrade", light="마당 등불 1, 곶 벤치 작은 빛",
                         empty="곶 앞 잔디"),
-    "training": dict(paths="흙 마당 (Ground), 고리길 조약돌", plants="마당 가장자리만 낮은 덤불 (가운데는 비움)",
+    "training": dict(paths="모래 마당 (Sand, 10/11: Ground는 C2c 빛에서 거의 검음), 고리길 조약돌", plants="마당 가장자리만 낮은 덤불 (가운데는 비움)",
                      props="Scarecrow 3 (첫 기술 시험 표적, 훈련장 표시 (-130,-446)), RackShieldSword, Flagpole_2, 관람 계단 (HaloStairs) 장면",
                      water="동쪽 시냇물 + 다리 B1·B2 (모양 다름)", edge="동쪽 시냇물 / 남쪽 성 축대", light="마당 모서리 등불 2",
                      empty="흙 마당 가운데 (기술 시험 자리)"),
@@ -863,6 +961,87 @@ def draw_map(blds, lamps=()):
     return im, d
 
 
+OUT_DMAP = os.path.join(OUT_DIR, "halo_district_map.png")
+NEW_HOUSES = {"House_Hill4", "House_Cliff6", "House_Cliff7", "House_Cliff8", "House_Garden5", "House_Garden6", "House_Garden7"}
+KIND_KO = {"Gate": "성문", "Tower": "탑", "Shop": "가게", "HouseA": "집", "HouseB": "집", "Castle": "성", "Cathedral": "대성당", "Armory": "무기고"}
+
+
+def draw_district_map(blds):
+    """A23-117 구획 지도 (검수 10/11): districts with their job, every building numbered inside its district with its why,
+    the A23-124 new homes outlined orange. Output art/review/world/halo_v2/halo_district_map.png"""
+    panel = 980
+    im = Image.new("RGB", (MW + panel, MH), (150, 200, 230))
+    d = ImageDraw.Draw(im, "RGBA")
+    d.polygon([P(*p) for p in LAND], fill=(246, 240, 214), outline=(110, 96, 70))
+    for dd in DISTRICTS:
+        d.polygon([P(*p) for p in dd["poly"]], fill=dd["color"] + (255,), outline=(90, 80, 60, 255), width=3)
+    st = WATER["stream"]
+    for i in range(len(st) - 1):
+        d.line([P(*st[i]), P(*st[i + 1])], fill=(80, 160, 215), width=int(WATER["stream_w"][i] * S))
+    for r in ROADS:
+        for i in range(len(r["pts"]) - 1):
+            d.line([P(*r["pts"][i]), P(*r["pts"][i + 1])], fill=(255, 255, 255, 150), width=max(2, int(r["w"] * S * 0.6)))
+    order = [dd["id"] for dd in DISTRICTS]
+    num = {}
+    for b in sorted(blds, key=lambda b: (order.index(b["district"]), b["id"])):
+        num[b["id"]] = len(num) + 1
+    for b in blds:
+        fp = [P(*q) for q in footprint(b)]
+        d.polygon(fp, fill=(255, 255, 255), outline=(60, 50, 40), width=2)
+        if b["id"] in NEW_HOUSES:
+            d.polygon(fp, outline=(240, 120, 0), width=5)
+        yaw = math.radians(b["yaw"])
+        dx, dz = math.sin(yaw), math.cos(yaw)
+        a = P(b["door_at"][0], b["door_at"][1])
+        e = P(b["door_at"][0] + dx * 7, b["door_at"][1] + dz * 7)
+        d.line([a, e], fill=(200, 40, 40), width=4)
+        cx, cy = P(b["x"], b["z"])
+        t = str(num[b["id"]])
+        f = font(16, True)
+        bb = d.textbbox((0, 0), t, font=f)
+        d.text((cx - (bb[2] - bb[0]) / 2, cy - (bb[3] - bb[1]) / 2 - 4), t, fill=(20, 20, 20), font=f)
+    for dd in DISTRICTS:
+        # label at the clearest point inside the district: farthest from its edges and from every building
+        xs = [q[0] for q in dd["poly"]]
+        zs = [q[1] for q in dd["poly"]]
+        best, bx, bz = -1.0, sum(xs) / len(xs), sum(zs) / len(zs)
+        for gx in range(int(min(xs)), int(max(xs)) + 1, 4):
+            for gz in range(int(min(zs)), int(max(zs)) + 1, 4):
+                if not inside((gx, gz), dd["poly"]):
+                    continue
+                pl = dd["poly"]
+                de = min(seg_dist((gx, gz), pl[i], pl[(i + 1) % len(pl)]) for i in range(len(pl)))
+                db = min([math.hypot(gx - b["x"], gz - b["z"]) - max(b["w"], b["d"]) / 2 for b in blds] + [999])
+                sc = min(de * 1.6, db)
+                if sc > best:
+                    best, bx, bz = sc, gx, gz
+        cx, cy = P(bx, bz)
+        cy -= 11
+        f = font(15, True)
+        bb = d.textbbox((0, 0), dd["name"], font=f)
+        w = bb[2] - bb[0]
+        d.rounded_rectangle([cx - w / 2 - 5, cy - 2, cx + w / 2 + 5, cy + 22], 6, fill=(255, 255, 255, 215), outline=(90, 80, 60, 255))
+        d.text((cx - w / 2, cy), dd["name"], fill=(30, 25, 20), font=f)
+    d.text((PAD, 8), "빛 마을 구획 지도 (A23-117)  ·  북 = 성문·교차로 다리  ·  번호 = 오른쪽 표  ·  빨간 선 = 문 방향  ·  주황 테 = A23-124 새 집 7",
+           fill=(20, 40, 70), font=font(15, True))
+    # panel: district -> job -> numbered buildings with why
+    x0, y = MW + 14, 12
+    d.rectangle([MW, 0, MW + panel, MH], fill=(250, 248, 242))
+    d.text((x0, y), f"구획 {len(DISTRICTS)} · 건물 {len(blds)} (집 {sum(1 for b in blds if b['kind'].startswith('House'))}, 새 집 {len(NEW_HOUSES)})",
+           fill=(30, 30, 30), font=font(19, True)); y += 30
+    for dd in DISTRICTS:
+        d.rectangle([x0, y + 4, x0 + 14, y + 18], fill=dd["color"], outline=(90, 80, 60))
+        d.text((x0 + 20, y), f"{dd['name']} — {dd['job']}", fill=(25, 25, 25), font=font(15, True)); y += 22
+        for b in sorted([b for b in blds if b["district"] == dd["id"]], key=lambda b: num[b["id"]]):
+            col = (200, 90, 0) if b["id"] in NEW_HOUSES else (50, 50, 50)
+            ln = f"{num[b['id']]:>2}. {KIND_KO[b['kind']]} {b['id']} (문 {b['door_compass']}): {b['why']}"
+            d.text((x0 + 22, y), ln, fill=col, font=font(12)); y += 17
+        ys = [yd for yd in YARDS if inside(yd["at"], dd["poly"])]
+        for yd in ys:
+            d.text((x0 + 22, y), f"  마당 {yd['id']}: {yd['why']}", fill=(110, 90, 60), font=font(12)); y += 17
+        y += 4
+    return im
+
 def draw_panel(im, d, blds, stats):
     x0 = MW + 16
     y = 14
@@ -934,6 +1113,7 @@ def main():
     im, d = draw_map(blds, lamps)
     draw_panel(im, d, blds, stats)
     im.save(OUT_MAP)
+    draw_district_map(blds).save(OUT_DMAP)
     plan = dict(
         note="빛 마을 v2 1단계 '이야기와 구역' (SPEC A23-121, 이미지 생성 1, 2026-10-11). 옛 섬·옛 plan은 쓰지 않음. 좌표 x,z(스터드), "
              "북 = z -330 성문/교차로 다리. y = 그 구역 땅 높이(y_to = 경사 끝). 건물 yaw = 문이 보는 방향(0 = 북 +z, 90 = 동 +x). "
@@ -956,7 +1136,7 @@ def main():
                       photo_discs=["대성당 계단 꼭대기", "다리 B1 위", "폭포 웅덩이 벤치", "전망 탑 꼭대기", "성벽 전망", "북동 곶 벤치"],
                       gather_bushes="정원 마을 5곳(매일 2~3곳, 플레이어마다 다름) - 동작은 베타 다듬기"),
         buildings=blds,
-        scenes=[dict(name=n, at=list(a), view=v) for n, a, v in SCENES],
+        scenes=[dict(name=n, at=list(a), view=v, why=WHY_SCENE.get(n, "")) for n, a, v in SCENES],
         fixed_points=dict(keep=[dict(name=n, at=list(a) if a else None, code=c) for n, a, c in FIXED_KEEP],
                           move=[dict(name=n, now=list(a) if a else None, new_xyz=list(b) if b else None, code=c) for n, a, b, c in FIXED_MOVE],
                           ground_rule=GROUND_RULE, pads=[dict(name="Pad_Halo_SlimeMeadow", at=[-24, 0.7, -357]), dict(name="Pad_Halo_GoblinWoods", at=[24, 0.7, -357])],
