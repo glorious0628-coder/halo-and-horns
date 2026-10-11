@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 2차: 금 WorldKit 적용·FF3 시트)
+
+- **금 WorldKit 적용 끝(저장 안 함):** HH_HaloGoldTrim 파트 4110개 색 (255,195,45), MV 금속 137160255192059(0.5)·거칠기 109029776386025(0.15). 도구 `tools/gold_trim_apply.luau` (MODE survey/apply/undo, 메인은 ALLOW_MAIN 막음). 최종 확인 = 이미지 생성 3의 다음 집 07 사진(2D 옆) — 어긋나면 파트 색만. 메인엔 새 마을 들어갈 때 같이.
+- **FF3 5장 3×3 시트:** art/review/imgdev/tex_ff3_tiled3x3_sheet_2026-10-11.jpg — 이음매 없음, Grass·GrassShade·MeadowFlowers는 패턴 반복이 눈에 띔(꽃이 격자로 보임). 판정은 검수.
+
 # 이미지 개발 — 상태 (2026-10-11 밤 갱신: ID 점검·재질 3종 검수 라운드)
 
 ## 지금 기다리는 것 / 다음 일 (이 블록이 맨 위 최신)
