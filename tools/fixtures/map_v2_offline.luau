@@ -96,6 +96,7 @@ end
 -- in season (2026-09-21) and after the Halloween EndsAt (2027)
 local C = execute("Config", CONFIG_SOURCE, envFor(1790000000))
 local Off = execute("Config", CONFIG_SOURCE, envFor(1800000000))
+C.Halloween.Enabled, Off.Halloween.Enabled = true, true -- A23-119: the shipped Config hides the Halloween season (Enabled = false); this suite tests the season's own rules, so it turns it on (the Off one is off by its EndsAt clock)
 local P = execute("PreviewData", PREVIEW_SOURCE, envFor(1790000000))
 local L = LAYOUT
 local M = C.Map

@@ -193,7 +193,8 @@ local function load(season)
 	newWorld()
 	local env = envFor()
 	local Config = execute("Config", CONFIG_SOURCE, env)
-	if season == false and type(Config.Halloween) == "table" then Config.Halloween.Enabled = false end
+	-- A23-119: the shipped Config hides the Halloween season (Enabled = false); this suite tests the season's own rules, so it turns it on; season == false turns it off again
+	if type(Config.Halloween) == "table" then Config.Halloween.Enabled = season ~= false end
 	env.require = function() return Config end
 	local QT = execute("QuestTarget", QT_SOURCE, env)
 	return QT, Config
