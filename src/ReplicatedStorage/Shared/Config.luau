@@ -4337,6 +4337,7 @@ Config.GooseEggFx = {
 	RetryAfter = 1.5, -- s: a preview the server turned down is not tried again sooner (no flicker)
 	MoveWindow = 0.5, MoveMin = 1, -- the preview needs MoveMin studs walked in MoveWindow s (the server's away rule)
 	GoneWait = 0.25,
+	MineSlack = 1, MineWindow = 0.5, -- 최종 검수 10/11: a removed egg within PickRadius + MineSlack of me while my EggCarry rose within MineWindow s = mine (no "someone picked it" pop)
 	SoundRange = 30,
 	PickSpeed = { 1, 1.12, 1.26 },
 	MarkHeight = 6,
