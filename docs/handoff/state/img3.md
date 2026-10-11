@@ -18,6 +18,14 @@
 2d. A23-125(사용자 다시 강조): 모든 3D = Tripo → Blender 손보기 → Roblox 재질. 집 07 조각 전부 손봄(10/11): 문짝·문고리·경첩·등불·지붕창 = Blender 정확한 부품(metal_ornaments, arch_window), 식물 6 = `tools/piece_fix.py --flowers`(파편·섬 지움, 꽃 = 정확한 5잎, 부품마다 C·N·R·M), 지붕 = `tools/roof_fit.py`(몸통 팔각에 맞춤·갈빗대 모서리로) + piece_fix 맵. 합본 `art/models/tripo/skeleton_test/HaloDomeHouse_07_fixed.glb`(2.76만 tris, `tools/glb_merge.py`) → import_now(사용자 클릭 1번 기다림). 시트 `art/review/img3/skeleton07/house07_fix_before_after.jpg`. records.json 키 `HaloDomeHouse_07_skeleton_v4_fix`. 가져온 뒤: TripoPieces 지우고 fixed로 바꿈, Orn 금 = Metal+HH_HaloGoldTrim, Leaf = Wood, Dormer_Surround = Marble+Cream, Glass = Glass 0.3, 꽃 = SmoothPlastic → 낮·밤 사진 + Studio 열 붙여 시트 완성.
 2e. 10/11 집 07 끝판: fixed.glb 가져옴 → SkeletonTest.House07_Fixed(재질 3단계), 시트 `art/review/img3/skeleton07/house07_final_studio.jpg`, 사진 `v4/studio_fixed/`(C2c 빛으로 찍고 되돌림: tools/halo_light_sim.luau·restore). 판정 기다림.
 2f. ④ 일반 생성기 `tools/skeleton_house.py` + `tools/house_specs/*.json`. 1묶음 02·05·09·03 골격 WorldKit z 60 줄(x 2950/2985/3020/3055), 장식 합본 `halo_houses_batch1_ornaments.glb`(import_now, 가져오기 기다림; 합칠 때 @dx,dy,dz로 집 원점 맞춤 → 붙일 땐 원점 3000,0,0 기준). 시트 `art/review/img3/houses/houses_batch1_blender.jpg`. 다음 묶음 01·04·06·08 → 10·11·12 → 가게 4 → 새 집 7 → 대성당·빛 성 C2.
+2g. 10/11 오후 (사용자: "큰 작업은 API로") — ④ 15채 진행:
+   - API 작업(tools/api_agent.py, 프롬프트 build/api_agent_prompts/*.md): house_specs_b2r(spec 11채, $1.09) · houses_b1_fixr(창 폭·09 원통·02 탑·3단 계단·돔 갈빗대, $1.30) · houses_gaps(문 위치·가게 진열창·발코니·창 화분 상자·박공지붕·퍼걸러·작은 탑 지붕, $1.67) → 셋 다 main에 반영(398da10f). 빠진 기능 표 docs/design/house_generator_gaps_2026-10-11.md.
+   - API 작업은 --max-tokens 32000 + "파일 통째로 쓰지 말고 edit_file로 조금씩" 이 없으면 done_max_tokens로 아무것도 못 씀. 2D 원본 PNG는 API worktree에 없음(추적 안 됨) → 판정은 읽기 전용(--repo-dir 기본 = 공유 트리)으로 돌림.
+   - 15채 Blender 시트 `art/review/img3/houses/houses_all15_blender.jpg`(build/render_houses.sh가 전부 다시 그림). 장식 GLB = art/models/tripo/skeleton_test/<name>_ornaments.glb.
+   - 돌고 있음: API 판정 build/api_agent/houses_judge (읽기 전용, 결과 notes/houses_judge.md = 집마다 spec 고칠 값).
+   - 천 = Fabric + HH_Fabric(이미지 개발 새 변형, 집 07·생성기 둘 다).
+   - 공유 트리: 14:57 .git/index.lock 남아 HEAD가 origin보다 뒤(내 push는 push_paths라 정상). 다른 세션 git일 수 있어 안 지움 → 검수에 알림.
+   다음 큐(리셋 뒤): ① houses_judge 결과 → spec 고치기(API write) → 다시 그림 → 시트 검수 ② 1묶음 재질·장식 GLB 합본(build: glb_merge @오프셋) → 사용자 Import 3D 1번 → WorldKit에 넣고 C2c 사진(halo_light_sim) ③ 집 07 차양 HH_Fabric WorldKit 다시 넣기 ④ 남은 기능(간판·박공·파라솔·온실·벽돌 돔) ⑤ 새 집 7 → 대성당·빛 성 C2 → 등불 Tripo → 다시 검수 11 → 새 구역 몬스터 8(after_reset §2).
 3. 통과하면 ④ 건물 골격(지도 v2 건물 목록) — 이미지 생성 1 지도 기준.
 ## 멈춘 것 (A23-121 빛 마을 다시 만들기, 사용자 "3D 다시 재검수, 앞뒤옆 다 그려 넣기")
 - 집 07·11 지붕 맵 따로 굽기(이미지 개발이 Roof 폴더를 기다렸음): **검수 10/11 '미루기'** — 지붕·문·창·차양 Tripo 조각은 A23-122 재검수 판정 뒤에 다시 구울지 정함.
