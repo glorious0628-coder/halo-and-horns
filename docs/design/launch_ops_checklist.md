@@ -39,7 +39,7 @@
 
 ## 다시 오게 만들기(A23-79) — 게시 때 사용자
 - [ ] Roblox 배지 8개 만들기(하루 5개 무료 → 이틀에 나눔), 나온 배지 ID를 Config에 붙여 넣기.
-  - 배지 그림: `art/ui/Badge*.png`(이미지 생성 2, 512 원형 — 고른 것: Chose a Side A·First Slime A·Lost Lunchbox A·Stronger! B·First Skill A·Shard Choice A·Rank 2 A·Halloween 2026 A, 시트 art/review/s2/badges_private_sheet.jpg). 개인 서버·게임 패스 그림 = `art/ui/PassIcon*.png`.
+  - 배지 그림: `art/ui/Badge*.png`(이미지 생성 2, 512 원형 — 고른 것: Chose a Side A·First Slime A·Lost Lunchbox A·Stronger! B·First Skill A·Shard Choice A·Rank 2 A·Halloween 2026 A, 시트 art/review/s2/badges_private_sheet.jpg). **A23-119(10/11): 호박밭·유령 숲이 숨어서 'Halloween 2026' 배지는 지금 만들지 않아도 된다**(배지 7개면 된다; `Config.Badges.Ids.Halloween2026`은 0 그대로 = 안 물어봄. 철을 다시 켜는 날 만든다 — `docs/design/halloween_hidden_2026-10-11.md`). 개인 서버·게임 패스 그림 = `art/ui/PassIcon*.png`.
 - [ ] (11/09 업데이트 때) Experience Notifications 문구 틀 + Open Cloud 키(Secrets) — 키는 채팅에 붙여 넣지 않기.
 
 ## 게임 페이지 영상·업데이트 표시(뜯어보기 2026-10-10, docs/design/roblox_teardown_2026-10-10.md §4)

@@ -8,6 +8,11 @@ local NOON = 1789959600 -- 2026-09-22 12:00 KST (before the Halloween season's d
 local function retWorld(o)
 	o = o or {}
 	o.Time = o.Time or NOON
+	local edit = o.EditConfig
+	o.EditConfig = function(c) -- A23-119: the shipped Config hides the Halloween season (Enabled = false); this suite tests the season's own rules, so it turns it on
+		c.Halloween.Enabled = true
+		if edit then edit(c) end
+	end
 	local w = dev3World(o)
 	local Signal = w.Util.Signal
 	w.Pinned = {} -- [Player] = the row QuestService.PinnedRow returns

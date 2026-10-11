@@ -130,3 +130,7 @@
 
 ## 10/10 밤 추가 19
 - 꽃 화분 5종 고급 완료(검수: Rose B, Tulip A, Lavender B, Daisy B, Sunflower A를 참조로 그대로 다시 그림): `art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_*.png`, 시트 `art/review/s2/halo_flowerpots_hq_check.jpg`, 인수인계 표에 줄 추가 → 이미지 생성 3 전달.
+
+## 10/11 추가 20 (A23-120: 안에 들어가는 건물·골격 먼저)
+- 사용자 로그인 확인("로그인했오") 뒤 Firefly 재개. 빛 성(빛의 기사단 본부) 콘셉트 4장(Medium): `art/out/s2/halo/castle/HaloCastleConcept_{A,B,C,D}.png`, 시트 `art/review/s2/halo_castle_concepts.jpg`, 프롬프트 메모 `art/prompts/LightCastle_Concept.txt`. 4장 모두 땅 높이 진짜 큰 열린 입구+평평한 마당. 그림에 섬 절벽이 같이 들어 있음(3D는 성만). 검수가 2~3장 고르면 → 1장 확정 → 앞·뒤·좌·우·위(평면) 시안 → 부품.
+- 큐 남음: 꽃 덤불 3 + 생울타리 2 → 새 구역 주제 3.

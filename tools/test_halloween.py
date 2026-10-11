@@ -315,7 +315,7 @@ MUTATIONS = [
     ("slime hop not capped at HopMax", "FX_SOURCE",
      "or math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "or st.H * WOBBLE.HopRatio"),
     ("slime sits on the ground surface (no Sink)", "FX_SOURCE",
-     "-(hop + (sy - 1) * half) + WOBBLE.Sink, 0)", "-(hop + (sy - 1) * half), 0)"),
+     "-(hop + drop + (sy - 1) * half) + WOBBLE.Sink, 0)", "-(hop + drop + (sy - 1) * half), 0)"), # A23-110 added `drop`
     ("slime shadow does not shrink in the air", "FX_SOURCE",
      "WOBBLE.placeShadow(model, st.Root, st, pop * (hopMax > 0 and 1 - 0.35 * (hop / hopMax) or 1))",
      "WOBBLE.placeShadow(model, st.Root, st, pop)"),
@@ -507,6 +507,9 @@ def make_harness(sources: dict[str, str]) -> str:
         "local makePart, groundY, burst, Feel = H.makePart, H.groundY, H.burst, H.Feel\n"
         + function_block(fx, "local function isSlimeModel(model)") + "\n"
         + between(fx, "local WOBBLE = {", "-- tweens VisualJoint.C0 through steps")
+        # A23-110 (a King dropping from the sky, DropAt / DropTime): WOBBLE.step calls WOBBLE.dropLift, which Fx defines further down
+        + "local function asNum(v, d) if type(v) == 'number' and v == v then return v end return d end\n"
+        + "WOBBLE.DROP_HEIGHT = 40\n" + function_block(fx, "function WOBBLE.dropLift(model, st)") + "\n"
         + "return WOBBLE\n")
     bindings["PANELS_ITEMS_SOURCE"] = function_block(sources["PANELS_SOURCE"], "BUILDERS.Items = function(parent)")
     head = "\n".join(f"local {key} = {literal(value)}" for key, value in bindings.items())

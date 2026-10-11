@@ -279,10 +279,12 @@ local function configEnv(clock, extra)
 	return nativeEnv(e)
 end
 local CONFIG = execute("Config", CONFIG_SOURCE, configEnv())
+CONFIG.Halloween.Enabled = true -- A23-119: the shipped Config hides the Halloween season (Enabled = false); this suite tests the season's own rules, so it turns it on
 local ENDS_AT = tonumber(CONFIG.Halloween and CONFIG.Halloween.EndsAt) or 1794150000
 SEASON_CLOCK.Now = ENDS_AT - 14 * 86400
 local function newConfig(tweak, clock)
 	local c = execute("Config", CONFIG_SOURCE, configEnv(clock))
+	c.Halloween.Enabled = true -- A23-119 (see CONFIG above)
 	if tweak then tweak(c) end
 	return c
 end
@@ -1657,7 +1659,7 @@ local function hwWorld(opts)
 	local ws = { GetServerTimeNow = function() return f.Now end,
 		FindFirstChild = function(_, n) if n == "Map" then return f.Map end return nil end }
 	local config = execute("Config", CONFIG_SOURCE, configEnv(nil, { workspace = ws }))
-	if opts.Season == false then config.Halloween.Enabled = false end
+	config.Halloween.Enabled = opts.Season ~= false -- A23-119: the shipped Config hides the season; the season's rules run with it on
 	-- A23-45: the single-king groups below certify one boss's schedule; 'ghost-king-schedule' runs both (Bosses = "all")
 	if opts.Bosses ~= "all" then config.Halloween.Bosses = { { Kind = "PumpkinKing", Key = "PumpkinKing" } } end
 	f.Config = config

@@ -56,6 +56,7 @@ FLAT = 1.2
 KIND = {
     "Gate": dict(w=50.4, d=31.5, h=48.3, coll="gate"),
     "Cathedral": dict(w=69.9, d=70, h=53.5, coll="solid"),
+    "Castle": dict(w=64, d=40, h=40, coll="solid"),  # the knights' castle (빛의 기사단 본부, 검수 10/11 site B); model by 이미지 생성 2/3
     "Fountain": dict(w=16, d=16, h=12.9, coll="solid"),
     "Tower": dict(w=11.5, d=11.4, h=36, coll="solid"),
     "DomeHouseA": dict(w=12, d=11.2, h=15.1, coll="solid"),
@@ -73,7 +74,7 @@ KIND = {
     "PotFlowers": dict(w=3, d=2.8, h=3, coll="none"),
     "BannerPole": dict(w=4, d=2.4, h=12, coll="player"),
 }
-SOLID = ("Cathedral", "Fountain", "Tower", "DomeHouseA", "DomeHouseB", "Shop", "Statue", "Stairs", "Gate")
+SOLID = ("Cathedral", "Castle", "Fountain", "Tower", "DomeHouseA", "DomeHouseB", "Shop", "Statue", "Stairs", "Gate")
 P = []  # placements
 rng = random.Random(20261010)
 
@@ -224,8 +225,8 @@ WAVE = {2: (6, 23, 0.4), 3: (7, 31, 2.1), 4: (5, 19, 4.0)}
 RAMPS = {2: [(0, 12)], 3: [(6, 9), (-54, 5)], 4: [(-4, 16)]}
 PAVEHALF = [(0, 13, 13), (-444, 21, 17), (-524, 34, 42), (-606, 26, 20)]
 WINGS = [("WA", -190, -62, -432, -338), ("WB", -170, -80, -538, -462), ("WC", -152, -110, -604, -570), ("WD", -192, -116, -690, -640),
-         ("EA", 62, 172, -424, -352), ("EB", 104, 196, -520, -446), ("EC", 122, 196, -624, -554), ("ED", 96, 152, -694, -638)]  # rects before the turn
-WING_H = {"WA": 3, "WB": 12, "WC": 22, "WD": 26, "EA": 5, "EB": 15, "EC": 26, "ED": 30}
+         ("EA", 62, 172, -424, -352), ("EB", 104, 196, -526, -442), ("EC", 122, 196, -624, -554), ("ED", 86, 160, -698, -636)]  # rects before the turn
+WING_H = {"WA": 3, "WB": 12, "WC": 22, "WD": 26, "EA": 5, "EB": 30, "EC": 26, "ED": 30}
 
 
 def bnd(i, x, z):
@@ -257,7 +258,7 @@ def face_to(x, z, tx, tz):
     return face(tx - x, tz - z)
 
 
-LOBES = [("WA", -150, -100, -442, -420), ("EB", 150, 196, -446, -430)]  # halo_terrain lobes (same height as their wing)
+LOBES = [("WA", -150, -100, -442, -420)]  # halo_terrain lobes (same height as their wing)
 
 
 def wing_of(x, z):
@@ -276,7 +277,8 @@ ZONES = {
     "shops": ("상점 거리", (240, 120, 60)),  # spine tier 2: the four shops along one street, their stalls
     "plaza": ("분수 광장", (90, 190, 240)),  # spine tier 3: the fountain, the meeting place, the guide
     "cathedral": ("대성당 언덕", (250, 250, 250)),  # spine tier 4: the cathedral and its formal garden
-    "homes": ("사는 동네", (240, 150, 200)),  # wings WA, WB, EB, EC: the twelve houses with their yards
+    "homes": ("사는 동네", (240, 150, 200)),  # wings WA, WB, EC, ED: the twelve houses with their yards
+    "castle": ("기사단 성", (255, 200, 40)),  # EB: the knights' castle on its high plateau, the grand ramp, the courtyard
     "training": ("기사 훈련장", (200, 60, 60)),  # wing EA: statues, dummies, shield rack, Sir Gleam
     "garden": ("꽃 정원·전망대", (120, 220, 120)),  # WC, WD, ED + every cliff edge: flowers, lookouts, photo spots, gather bushes
 }
@@ -290,6 +292,7 @@ FLOWER_KITS = {
     "cathedral": {"PotFlowers": ("HaloVar3_PotFlowers_F", "HaloVar_PotFlowers_C"), "Planter": ("HaloVar_Planter_D", "HaloVar4_Planter_D")},
     "homes": {"PotFlowers": ("HaloVar_PotFlowers_A", "HaloVar4_PotFlowers_A"), "Planter": ("HaloVar_Planter_A", "HaloVar3_Planter_E")},
     "training": {"PotFlowers": ("HaloVar4_PotFlowers_C",), "Planter": ("HaloVar4_Planter_D", "HaloVar_Planter_C")},
+    "castle": {"PotFlowers": ("HaloVar_PotFlowers_C", "HaloVar4_PotFlowers_C"), "Planter": ("HaloVar4_Planter_A", "HaloVar_Planter_D")},
     "garden": {"PotFlowers": ("HaloVar3_PotFlowers_E", "HaloVar3_PotFlowers_F", "HaloVar_PotFlowers_B", "HaloVar4_PotFlowers_D"), "Planter": ("HaloVar3_Planter_E", "HaloVar_Planter_B")},
 }
 WILD = (-180, -664, 30)  # the one mixed wildflower slope round the west lookout (rule 9): every garden kind mixed there
@@ -304,7 +307,7 @@ def flower_pick(zone, x, z, kind="PotFlowers"):
     return kits[(int(math.floor(x / 18)) * 7 + int(math.floor(z / 18)) * 13) % len(kits)]
 
 
-WING_ZONE = {"WA": "homes", "WB": "homes", "EB": "homes", "EC": "homes", "EA": "training", "WC": "garden", "WD": "garden", "ED": "garden"}
+WING_ZONE = {"WA": "homes", "WB": "homes", "EB": "castle", "EC": "homes", "EA": "training", "WC": "garden", "WD": "garden", "ED": "homes"}
 
 
 def zone_of(x, z):
@@ -324,20 +327,21 @@ def zone_of(x, z):
 # planned on them; the scenes get a lantern + flowers now and a bench later (the kit has no bench yet: 2-3 new kinds to make)
 SPOTS = {
     # 20 x 20 empty lawns, one per height band (rule 12): no props at all
-    "lawn": [dict(x=-138, z=-372, r=10), dict(x=-40, z=-492, r=9), dict(x=-133, z=-588, r=8)],  # band 4: the exhibition step on ED
+    "lawn": [dict(x=-138, z=-372, r=10), dict(x=-40, z=-492, r=9), dict(x=-28, z=-576, r=8)],  # band 4: the exhibition step (now on WC)
     # lookouts on the high ground (rule 12): edge 8 studs kept low, view over the lower tiers to the sea / islets
-    "lookout": [dict(x=-180, z=-664, r=7, look=[-250, -610]), dict(x=134, z=-688, r=6, look=[30, -770])],
+    "lookout": [dict(x=-180, z=-664, r=7, look=[-250, -610]), dict(x=150, z=-690, r=4, look=[30, -770])],
     # small scenes (rule 12): seat + light + flowers under a tree, facing something to see, 8-20 studs off the road
-    "scene": [dict(x=-160, z=-506, r=5, look=[-190, -500], what="cascade pool bench"), dict(x=-140, z=-580, r=4, look=[-60, -560], what="small island tea table"),
+    "scene": [dict(x=-160, z=-506, r=5, look=[-190, -500], what="cascade pool bench"), dict(x=-146, z=-572, r=3, look=[-60, -560], what="small island tea table"),
               dict(x=160, z=-610, r=4, look=[172, -650], what="cascade side bench"), dict(x=-96, z=-396, r=5, look=[-48, -394], what="canal view bench"),
               dict(x=158, z=-392, r=4, look=[230, -400], what="sea balcony"), dict(x=-90, z=-626, r=4, look=[-160, -610], what="top-tier west edge, sea view"),
-              dict(x=118, z=-474, r=4, look=[60, -440], what="angel niche")],
+              dict(x=86, z=-410, r=4, look=[60, -440], what="angel niche by the training ground")],
     # photo spots (게임에 가져올 것 2): small gold discs, no lettering, no ray pattern
     "photo": [dict(x=-4, z=-616, r=2), dict(x=-48, z=-394, r=2), dict(x=168, z=-640, r=2), dict(x=-182, z=-664, r=2), dict(x=6, z=-452, r=2), dict(x=140, z=-632, r=2)],
     # gather bushes (게임에 가져올 것 1): 4-6 garden bushes, 2-3 of them give something each day
-    "gather": [dict(x=-150, z=-410, r=3), dict(x=124, z=-380, r=3), dict(x=-120, z=-520, r=3), dict(x=180, z=-520, r=3), dict(x=-170, z=-650, r=3), dict(x=110, z=-670, r=3)],
+    "gather": [dict(x=-150, z=-410, r=3), dict(x=124, z=-380, r=3), dict(x=-120, z=-520, r=3), dict(x=188, z=-580, r=3), dict(x=-170, z=-650, r=3), dict(x=110, z=-670, r=3)],
     # the exhibition garden (게임에 가져올 것 5, after the beta): one empty step about 30 x 30
-    "exhibit": [dict(x=124, z=-666, r=15)],
+    "exhibit": [dict(x=-128, z=-588, r=13)],  # moved to the small flower island WC (the castle took EB, the homes went to ED)
+    "castle_yard": [dict(x=150, z=-469, r=6, what="castle courtyard: open ground in front of the castle gate (A23-120 real doors)")],
     # training ground on EA (Sir Gleam): straw dummies and a shield rack (new props)
     "training": [dict(x=104, z=-372, r=3, what="training dummy"), dict(x=116, z=-382, r=3, what="training dummy"), dict(x=98, z=-392, r=3, what="training dummy"),
                  dict(x=128, z=-366, r=3, what="shield / sword rack"), dict(x=110, z=-400, r=3, what="Sir Gleam stand (NPC)")],
@@ -351,8 +355,9 @@ RESERVE.extend(RES_SPOTS)
 
 # ---------------------------------------------------------------- bridges (placed first so the houses / shops keep off the landings)
 # (name, side, hint x, z, axis "x" = span along x from the spine, "z" = between two wings of one side, deck Y at both ends)
-BR = [("BAW", -1, None, -394, "x", 0.2, 3), ("BAE", 1, None, -366, "x", 0.2, 5), ("BBW", -1, None, -470, "x", 9, 12), ("BBE", 1, None, -498, "x", 9, 15),
-      ("BCE", 1, None, -566, "x", 20, 26), ("BBCW", -1, -128, -553, "z", 12, 22), ("BCDW", -1, -136, -622, "z", 22, 26), ("BABE", 1, 132, -437, "z", 5, 15)]
+BR = [("BAW", -1, None, -394, "x", 0.2, 3), ("BAE", 1, None, -366, "x", 0.2, 5), ("BBW", -1, None, -470, "x", 9, 12),
+      ("BCE", 1, None, -566, "x", 20, 26), ("BBCW", -1, -128, -553, "z", 12, 22), ("BCDW", -1, -136, -622, "z", 22, 26), ("BABE", 1, 120, -437, "z", 5, 12),
+      ("BBCE", 1, 168, -540, "z", 30, 26)]
 BRIDGES = []
 
 
@@ -471,6 +476,15 @@ CAT_TRY.sort(key=lambda t: (t[1], t[0]))  # closest to x -38 first: further west
 if CAT_TRY:
     _, _, cx_, cz_, sc_, yaw_ = CAT_TRY[0]
     cat = put("Cathedral", cx_, cz_, yaw_, sc_, flat=1.5, why="빛 진영의 대성당: 마을의 목표 지점·랜드마크(문에서 돔이 보임)")
+# ---- 기사단 성 (검수 10/11 site B): on the EB plateau, its gate facing south toward the courtyard and the grand ramp
+#      (the way in from the training ground bridge); A23-120: a real door at ground level, nothing in front of it
+castle = None
+for dx, dz in ((0, 0), (2, 0), (-2, 0), (0, -2), (4, -2), (-4, -2), (0, -4)):
+    castle = put("Castle", 150 + dx, -500 + dz, SOUTH, 1.0, flat=1.6, why="빛의 기사단 본부: 훈련장 옆, 기사들이 묵고 모이는 성(A23-117)", door_front=[0, 0, 21.5])
+    if castle:
+        break
+P.append(dict(kind="Stairs", x=156.0, z=-455.0, y=12, yaw=270.0, s=1.0, sv=[0.8, round(18 / 8.2, 3), 2.2], ramp=True,
+              why="성 큰 계단: 훈련장 다리 착륙장(12)에서 성 마당(30)으로", zone="castle"))
 # ---- 분수 광장
 fnt = None
 for dz in (0, 4, -4, 8, -8):
@@ -524,8 +538,8 @@ for kindname, z, side, gap, tilt, sc, why in (("Potion", -462, 1, 4, -10, 2.0, "
 
 # ---- 사는 동네: 12 houses in clusters 3-3-2-2 + 2 single houses with a terrace; each house its own angle / set-back,
 # one per cluster looks out to the sea or a fall
-CLUSTERS = [("WA", -128, -392, 3), ("EB", 150, -486, 3), ("WB", -122, -500, 2), ("EC", 166, -584, 2), ("WB", -146, -520, 1), ("EC", 176, -604, 1),
-            ("WA", -166, -362, 1), ("EB", 176, -460, 1), ("WA", -100, -420, 1), ("EC", 150, -560, 1), ("WB", -100, -480, 1), ("EB", 126, -508, 1),
+CLUSTERS = [("WA", -128, -392, 3), ("ED", 122, -668, 3), ("WB", -122, -500, 2), ("EC", 166, -584, 2), ("WB", -146, -520, 1), ("EC", 176, -604, 1),
+            ("WA", -166, -362, 1), ("ED", 100, -650, 1), ("WA", -100, -420, 1), ("EC", 150, -560, 1), ("WB", -100, -480, 1), ("ED", 144, -690, 1), ("EC", 188, -578, 1), ("ED", 96, -682, 1), ("WA", -110, -372, 1), ("WB", -150, -486, 1), ("EC", 142, -604, 1), ("ED", 120, -646, 1),
             ("WA", -150, -350, 1), ("EA", 150, -420, 1)]  # the tail only if a house above found no ground (all 12 must stand: each is its own model)
 houses = 0
 HOUSES = []
@@ -573,7 +587,7 @@ TOWER_SPOTS = [  # (centre x, z, kind, scale, why)
     (CX(-548) + 50, -548, "C", 1.0, "광장 동쪽 굽이 망루: 길이 꺾이는 곳 표지·광장 지킴(규칙 6)"),
     (-176, -676, "A", 1.0, "서쪽 바다 망루: 서쪽 전망대 옆, 바다 쪽 경계"),
     (-176, -398, "B", 1.0, "서쪽 동네 바다 전망 망루: 열린 아래층에서 운하·바다를 봄(동네 사람 쉼터)"),
-    (182, -470, "A", 0.95, "동쪽 동네 바다 망루: 동쪽 바다 쪽 경계"),
+    (166, -400, "A", 0.95, "훈련장 망루: 훈련장과 동쪽 바다를 지켜봄(기사단 성 아래)"),
 ]
 towers = 0
 for tx, tz, tkind, s_, why in TOWER_SPOTS:
@@ -710,7 +724,7 @@ def tree_group(cx_, cz_, n, why):
     for _ in range(12):
         a_ = rng.uniform(0, 2 * math.pi)
         r_ = rng.uniform(8, 13)
-        k_ = rng.choice(("CloudBush", "CloudBush", "PotFlowers"))
+        k_ = rng.choice(("PotFlowers", "Planter", "Planter"))  # user 10/11: no white cloud puffs ("꽃도 아니고 뭉탱이") -> flowers under the trees
         put_v(k_, cx_ + r_ * math.cos(a_), cz_ + r_ * math.sin(a_), rng.uniform(0, 360), vs(), pad=0.3, why="나무 무리 밑 꽃·덤불(3겹 심기)")
     return got
 
@@ -736,16 +750,18 @@ for x, z in rng.sample(edge_cells, min(1500, len(edge_cells))):
 # cliff-edge cloud bushes (island edges: the densest part, A23-76)
 done = 0
 for _ in range(5000):
-    if done >= 60 or not edge_cells:
+    if done >= 40 or not edge_cells:
         break
     x, z = rng.choice(edge_cells)
-    if tagv(x, z)[0] != "top" or any(e["kind"] == "CloudBush" and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(8, 16) for e in P):
+    if tagv(x, z)[0] != "top" or any(e["kind"] in ("Topiary", "PotFlowers") and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(9, 16) for e in P):
         continue
-    if put_v("CloudBush", x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.4), pad=0.2, why="절벽 가장자리 덤불(가장자리 채우기·떨어짐 막는 느낌)"):
+    k_ = rng.choice(("Topiary", "Topiary", "PotFlowers"))
+    if put_v(k_, x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.2), pad=0.2,
+             why="절벽 가장자리 " + ("다듬은 나무" if k_ == "Topiary" else "꽃 화분") + "(가장자리 채우기·떨어짐 막는 느낌)"):
         done += 1
 # gather bushes (게임에 가져올 것 1): the reserved spots get their bush now
 for sp in SPOTS["gather"]:
-    put("CloudBush", sp["x"], sp["z"], rng.uniform(0, 360), rng.uniform(1.1, 1.3), pad=0.1, noreserve=True, why="채집 덤불: 매일 숨은 꽃·재료")
+    put("Topiary", sp["x"], sp["z"], rng.uniform(0, 360), rng.uniform(1.1, 1.3), pad=0.1, noreserve=True, why="채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)")
 # flower garden islands: pots and beds on the garden wings
 for _ in range(400):
     w = rng.choice([w_ for w_ in WINGS if WING_ZONE[w_[0]] == "garden"])
@@ -759,8 +775,9 @@ for sp in SPOTS["scene"]:
     put("PotFlowers", sp["x"] - 2 * math.sin(a_), sp["z"] + 2 * math.cos(a_), rng.uniform(0, 360), vs(), pad=0.1, noreserve=True, why="작은 장면 꽃: " + sp["what"])
 
 # ---------------------------------------------------------------- backdrop (beyond the land rect, no collision, nobody can stand there: #64)
-BACK = [("Islet", -250, -430, 1.0), ("Islet", 268, -480, 1.25), ("Islet", -232, -610, 0.85), ("Islet", 244, -660, 1.1),
-        ("FarArch", -305, -530, 0.9), ("FarArch", 286, -372, 1.15), ("FarArch", 30, -770, 1.4)]
+# user 10/11: the small rock-and-bush islets in the sea looked like scraps ("쫌쫌따리들 보기 싫음") -> gone; only the three far arches stay,
+# big and clear (the lookouts look at them)
+BACK = [("FarArch", -305, -530, 1.6), ("FarArch", 286, -372, 1.8), ("FarArch", 30, -770, 2.2)]
 for kind, x, z, s in BACK:
     P.append(dict(kind=kind, x=x, z=z, y=-1.2, yaw=rng.uniform(0, 360), s=s, backdrop=True, why="먼 바다 배경(전망대에서 보는 섬·아치)", zone="sea"))
 
@@ -917,6 +934,30 @@ for ex, zs_ in segs_v.items():
         WALLS.append([ex, a_ - R / 2, ex, b_ + R / 2])
 print("edge walls:", len(WALLS), "runs, total length", round(sum(abs(w[2] - w[0]) + abs(w[3] - w[1]) for w in WALLS)))
 
+# ---------------------------------------------------------------- building frames (SPEC A23-120 보강, user "건물 골격 먼저"): every building
+# gets its footprint, floor height / floors and its door (direction, ground point, size) so 이미지 생성 3 builds the Studio part frame
+# to exactly these numbers and the swap keeps the same name and place. Front = kit -Z turned by yaw -> world (-sin yaw, -cos yaw).
+BUILD = {  # kind: (floors, floor height, door w, door h)
+    "DomeHouseA": (2, 7.0, 4.0, 7.0), "DomeHouseB": (2, 7.5, 4.0, 7.0), "Shop": (1, 9.0, 5.0, 7.5), "Tower": (3, 8.0, 4.0, 7.0),
+    "Cathedral": (1, 24.0, 10.0, 14.0), "Castle": (3, 10.0, 8.0, 10.0), "Gate": (1, 20.3, 14.0, 20.3),
+}
+for e in P:
+    b = BUILD.get(e["kind"])
+    if not b or e.get("backdrop"):
+        continue
+    k = KIND[e["kind"]]
+    yaw = math.radians(e["yaw"])
+    fx, fz = -math.sin(yaw), -math.cos(yaw)
+    w, d = k["w"] * e["s"], k["d"] * e["s"]
+    floors, fh, dw, dh = b
+    if e["kind"] == "Tower" and e.get("tower_kind") == "B":
+        floors = 2
+    e["building"] = dict(w=round(w, 1), d=round(d, 1), h=round(k["h"] * e["s"], 1), floors=floors, floor_h=fh,
+                         door_dir=[round(fx, 3), round(fz, 3)], door_at=[round(e["x"] + fx * d / 2, 2), round(e["z"] + fz * d / 2, 2)],
+                         door_size=[dw, dh], door_local=[0, 0, round(-d / 2, 2)], ground_y=e["y"],
+                         note="pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)")
+print("building frames:", sum(1 for e in P if e.get("building")))
+
 # ---------------------------------------------------------------- report + files
 count = {}
 for e in P:
@@ -926,7 +967,7 @@ print("refused:", {f"{k[0]}:{k[1]}": v for k, v in sorted(WHY.items()) if k[0] i
 print("bridges:", [(b["name"], b["span"]) for b in BRIDGES])
 print(f"walkable columns {len(cells)}, reachable from the spawn {len(seen)}, unreachable {len(unreach)} {by_wing}")
 print("   unreachable at:", sorted({(X0 + c[0] * R, Z0 + c[1] * R) for c in unreach})[:20])
-want = {"Statue": 7, "Shop": 4, "Tower": 4, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
+want = {"Statue": 7, "Shop": 4, "Tower": 4, "Castle": 1, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 5, "Cathedral": 1, "Fountain": 1}
 for k, v in want.items():
     if count.get(k, 0) != v:
         print(f"!! {k}: placed {count.get(k, 0)} of {v}")
@@ -959,7 +1000,7 @@ for e in P:
         fp = corners(e["x"], e["z"], k["w"] * e["sv"][0], k["d"], e["yaw"])
     pts = [((px - X0 - R / 2) * S, (pz - Z0 - R / 2) * S) for px, pz in fp]
     dr.polygon(pts, fill=KC.get(e["kind"], (255, 0, 255)), outline=(0, 0, 0))
-SPC = {"training": (200, 60, 60), "stall": (255, 140, 0), "yard": (255, 105, 180), "lawn": (150, 255, 150), "lookout": (255, 255, 255), "scene": (255, 120, 0), "photo": (255, 215, 0), "gather": (180, 0, 200), "exhibit": (0, 220, 220)}
+SPC = {"castle_yard": (255, 200, 40), "training": (200, 60, 60), "stall": (255, 140, 0), "yard": (255, 105, 180), "lawn": (150, 255, 150), "lookout": (255, 255, 255), "scene": (255, 120, 0), "photo": (255, 215, 0), "gather": (180, 0, 200), "exhibit": (0, 220, 220)}
 for kind_, lst in SPOTS.items():
     for sp in lst:
         px, pz = (sp["x"] - X0) * S, (sp["z"] - Z0) * S
@@ -982,7 +1023,7 @@ for (x, z), (v, w, m, t) in COL.items():
     zd.rectangle([px, pz, px + R * S, pz + R * S], fill=c)
 for e in P:
     k = KIND.get(e["kind"])
-    if not k or e.get("backdrop") or e["kind"] not in ("Cathedral", "Fountain", "Tower", "DomeHouseA", "DomeHouseB", "Shop", "Statue", "ArchBridge", "Stairs", "Gate"):
+    if not k or e.get("backdrop") or e["kind"] not in ("Cathedral", "Castle", "Fountain", "Tower", "DomeHouseA", "DomeHouseB", "Shop", "Statue", "ArchBridge", "Stairs", "Gate"):
         continue
     fp = foot(e["kind"], e["x"], e["z"], e["yaw"], e["s"])
     zd.polygon([((px - X0 - R / 2) * S, (pz - Z0 - R / 2) * S) for px, pz in fp], outline=(0, 0, 0), width=2)
