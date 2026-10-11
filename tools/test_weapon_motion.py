@@ -758,6 +758,10 @@ def main():
     visuals = VISUALS.read_text(encoding="utf-8")
     helper_names = ["attrNum", "attrStr", "getFaction", "getClass", "charScale", "clearChild", "accPart",
                     "gripCFrame", "fist", "buildSword", "buildStaff", "buildBow", "buildWeapon"]
+    # 검수 10/11 staff grip: buildStaff reads STAFF / staffLow (where the hand holds the shaft)
+    if "local function staffLow(" in visuals:
+        helper_names.insert(helper_names.index("buildStaff"), "staffLow")
+        harness += "\n" + next(line for line in visuals.splitlines() if line.startswith("local STAFF = {"))
     harness += "\n" + "\n".join(local_function(visuals, n) for n in helper_names)
     output = ROOT / "build/weapon_motion_offline_test.luau"
     output.parent.mkdir(parents=True, exist_ok=True)

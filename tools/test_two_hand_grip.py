@@ -153,10 +153,10 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
 
 def statics(src: dict) -> list[tuple[str, bool, str]]:
     wp, fx = src["WP"], src["FX"]
-    body = wp.split("function WeaponPose.TwoHand(", 1)[-1]
+    body = wp.split("function WeaponPose.TwoHand(", 1)[-1].split("function WeaponPose.OneHand(", 1)[0]
     return [
         ("Fx shares its arm solver", "Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames" in fx, ""),
-        ("WeaponPose runs TwoHand after the hold", '\tif type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end\nend' in wp, ""),
+        ("WeaponPose runs TwoHand after the hold", '\tif type(def.TwoHand) == "table" then\n\t\tWeaponPose.TwoHand(char, st, def, model)\n' in wp, ""),
         ("the goal: grip point on the line, -Z along the blade, +Y to the shoulder",
          "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)" in wp
          and "local up = shoulder - point\n\t\tup -= aim * up:Dot(aim)" in wp and "local z = -aim" in wp, ""),
@@ -197,12 +197,13 @@ MUTATIONS = [
     ("WP", "the hand turned along the handle", "CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z)",
      "CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z)"),
     ("WP", "the left hand on top of the right", "goal(hilt - aim * gap, leftGrip, leftShoulder)", "goal(hilt, leftGrip, leftShoulder)"),
-    ("WP", "never run", '\tif type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end\n', ""),
+    ("WP", "never run", '\tif type(def.TwoHand) == "table" then\n\t\tWeaponPose.TwoHand(char, st, def, model)\n', '\tif false then\n\t\tWeaponPose.TwoHand(char, st, def, model)\n'),
     ("WP", "a clamped solve drops the pose (the hanging left hand)", 'if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end',
      'if type(rPose) ~= "table" or type(lPose) ~= "table" or lPose.Clamped then return false end'),
     ("WP", "the blade in world space (turns with nothing)", "local aim = torso:VectorToWorldSpace(th.Aim.Unit)", "local aim = th.Aim.Unit"),
     ("WP", "the probe samples once per print", "pcall(WeaponPose.ProbeStep, me, now) end", "pcall(WeaponPose.ProbeStep, me, now + 99) end"),
-    ("WP", "no fade", "local out = base:Lerp(pose[w[2]], st.W)", "local out = pose[w[2]]"),
+    ("WP", "no fade", "local m, pose = st.Joints[joint], poses[w[1]]\n\t\tif m and pose and typeof(pose[w[2]]) == \"CFrame\" then\n\t\t\tlocal cur = m.Transform\n\t\t\tlocal last = st.Last[joint]\n\t\t\tlocal base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur\n\t\t\tlocal out = base:Lerp(pose[w[2]], st.W)",
+     "local m, pose = st.Joints[joint], poses[w[1]]\n\t\tif m and pose and typeof(pose[w[2]]) == \"CFrame\" then\n\t\t\tlocal cur = m.Transform\n\t\t\tlocal last = st.Last[joint]\n\t\t\tlocal base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur\n\t\t\tlocal out = pose[w[2]]"),
     ("WP", "a fixed gap", "local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad,", "local gap = math.clamp(0.45,"),
     ("FX", "no shared solver", "Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames\n", "\n"),
 ]

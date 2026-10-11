@@ -9,6 +9,8 @@
 | 실제 두 손 검(롱소드) 쥐기 | 오른손은 날밑 바로 아래, 왼손은 손 하나~반 개 길이 아래 자루 끝(폼멜) 쪽. 오른손은 자루 위에서 거의 고정, 왼손은 기술에 따라 움직임. 보통 두 손은 거의 붙어 있음 | [ARMA 포럼 "Proper Parrying Technique"](https://www.thearma.org/forum/viewtopic.php?p=3239), [ARMA "Gripping the Pommel"](https://www.thearma.org/forum/viewtopic.php?p=26488), [Guy Windsor, Fiore 번역 #9 "The Six Grips"](https://www.guywindsor.net/?p=4359) |
 | 게임 대검 대기 자세 | 무거운 대검은 칼날을 어깨에 걸치고 두 손으로 자루를 잡음. 왼팔이 늘어지면 어색해서 고친 사례가 있고, 대기 동작은 크게 흔들지 않음 | [Unreal 마켓 Greatsword Anims](https://docs.unrealengine.com/marketplace/ja/product/greatsword-anims), [Fab 대검 애니메이션 묶음](https://www.fab.com/listings/0dc2f903-17ce-4db0-9200-576cae9c1b47), [게임 대기 애니메이션 학생 블로그](https://yufeizheng.myblog.arts.ac.uk/?p=1024) |
 | Roblox 도구 쥐기 | 도구 손잡이는 손의 그립 지점(R15 `RightGripAttachment`)에 맞춰 붙고, 방향은 `Tool.Grip`(GripPos·GripForward…) 한 CFrame이 정함. 좋은 값은 도구마다 직접 맞춰 봐야 함 | [Roblox 문서 "In-game tools"](https://create.roblox.com/docs/en-us/players/tools), [Tool.GripForward](https://create.roblox.com/docs/reference/engine/classes/Tool/GripForward), [DevForum "Tool grip is sideways"](https://devforum.roblox.com/t/tool-grip-is-sideways/1584419) |
+| 지팡이(빛·어둠 마법사) | 지팡이는 몸 가까이 곧게 세워 든다("팔의 연장처럼", 바깥으로 비스듬히 두지 않음). 손은 손목~가슴 높이, 팔꿈치는 조금 굽힘. 마법사 지팡이는 가운데보다 조금 위를 쥐고, 발끝은 땅 가까이 둔다 | [Cherry Tree "10 tips on using a hiking staff"](https://www.cherrytreecountryclothing.com/resources/10-useful-tips-on-using-a-hiking-staff/), [Wilderness "holding your walking pole"](https://www.wildernessmag.co.nz/?p=2859), [Walking stick guide](https://sftp.thewrap.com/post/walking-stick-guide-proper-use) |
+| 플라스크(연금술사) | 병은 목을 손가락으로 감싸 쥔다(full wrap). 몸통을 손바닥에 얹는 쥐기는 '보여 주기'용이라 쥔 느낌이 약하다. 손목을 조금 굽혀 병이 손에 붙어 떠 보이지 않게 한다 | [바텐더 병 목 잡기(ShortList)](https://www.shortlist.com/news/how-to-spin-and-pour-a-bottle-like-a-barman) — 그림 참고는 못 찾음, 손 쥐기 일반 설명 |
 
 **우리 place에서 잰 값(`place/GoodEvil.rbxlx` R15):** `RightGripAttachment` = 손 안 (0, -0.158, 0), 방향 Angles(-90°, 0, 0). 어깨 관절은 UpperTorso (±0.972, 0.598, 0)에 있어요. 위팔은 0.92, 아래팔은 0.81. 우리 무기는 `CharacterVisuals.fist()`로 손의 -Z(주먹을 꿰뚫는 축)를 따라 붙어요.
 
@@ -20,8 +22,15 @@
 5. **대검 자세:** 칼자루는 가슴 앞에 있어요. 칼날은 위·뒤로 115~145° 올라가서 오른 어깨 바로 위(몸통 위 0.8보다 높게)를 지나요.
 6. **팔이 닿는다:** 손목까지 거리가 팔 길이의 92% 이하예요(키 1·0.85 아바타, 큰 손·작은 손 모두). 안 닿으면 두 손 자세를 하지 않아요.
 
+**지팡이·플라스크 숫자 기준(시험 `tools/test_one_hand_grips.py`):**
+- 지팡이는 곧게 선다. 빛은 5° 이하, 어둠은 앞으로 15° 이하로 기울고, 옆으로는 기울지 않는다.
+- 손은 몸통 바깥에 있고, 지팡이 선이 몸통을 지나지 않는다.
+- 6칸 이하 지팡이는 발끝에서 절반 이상 위를 쥔다(`STAFF.Grip` 0.55). 긴 지팡이는 땅에 박히지 않게 손-발끝 거리를 3.3칸까지만 둔다. 발끝은 땅 위 0~1.3칸이다.
+- 플라스크는 주먹이 목을 감싸고, 몸통은 주먹 아래, 코르크는 위에 있다. 병은 곧게 가슴 앞에 든다.
+- 그립점-선 0.2 이하, 축 10° 이하, 팔뚝-무기 45~135°, 팔 닿기 92% 이하(대검과 같음).
+
 ## 3. 만드는 법 (WeaponPose)
-- 자세를 팔 각도에서 시작하지 않아요. **칼 위치에서 시작해요:** `Config.ClassGrips.Warrior_Horns.TwoHand` = { Hilt(오른손 그립 지점), Aim(칼날 방향) — 몸통 기준 }.
+- 자세를 팔 각도에서 시작하지 않아요. **칼 위치에서 시작해요:** `Config.ClassGrips.Warrior_Horns.TwoHand` = { Hilt(오른손 그립 지점), Aim(칼날 방향) — 몸통 기준 }. 한 손 무기는 `OneHand` = { Hilt, Aim }(빛·어둠 마법사, 연금술사)이고, 같은 계산으로 오른팔만 놓아요(왼팔은 각도 표 그대로).
 - 두 팔 모두 Fx의 두 마디 팔 계산(활과 같은 계산, 아바타의 실제 뼈 길이)으로 손을 그 자리에 놓아요. 손의 -Z는 칼날을 따라가고, +Y(손목 쪽)는 자기 어깨 쪽을 향해요.
 - Studio 측정: 플레이어 속성 `GripProbe = true`이면 Studio에서만 2초마다 콘솔에 `[WeaponPose] probe <조합> | Right dHand=… dGrip=… axis=… fore=… | Left …`가 찍혀요(실제 부품에서 잼).
 
