@@ -1,0 +1,1623 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 1143,
+  "failedChecks": 0,
+  "namedChecks": 113,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.Gathering is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "seven node kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "node kinds: item, hold, Pick / Mine, plant, zone as the contract",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the 8 materials: Material, sell price, a name, the named icon key, in the bag order",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "spots: meadow 12 herbs + 8 copper, woods 8 oak + 8 glowcap + 6 iron, ruins 6 silver + 6 moon (no hidden zone)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every spot is inside its zone and of that zone's kind",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no spot on the crown road (|z| <= 9)",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no spot within 40 studs of the meadow spawn",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "spots of a zone are at least 8 studs apart",
+      "pass": 487,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GatherSpotPos: u 0 / v 1 = the west / south edge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GatherSpotPos: unknown zone / outside 0..1 / NaN / text -> nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "texts: Pick, Mine, DailyCap, PvPCut, BloomGift, BloomWilt (no first hint, A23-130)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the Shard Bloom card: timed 120 s, Share = 2, Keep it all = 3, 1 point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "switch off: no node, no folder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "switch off: Try answers off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "switch off: no GatherState at join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "switch on: 54 nodes in workspace.Map.GatherNodes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "a node model: GatherId, GatherKind, named by its kind, in the folder",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "the prompt: GatherPrompt, the node's hold, 8 studs, no sight line, no words",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "ActionKey = Config.Gather.Text.Pick | Mine, ObjectKey = the item's Name key (the client writes the words)",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "the server never sets Enabled (the client dims my resting nodes)",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "a node stands on the ground the ray found",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "ids are <Zone>:<n>",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "20 / 22 / 12 nodes a zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "the ground ray: from 300 up, 600 down, the nodes' folder excluded",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "without a kit model: an anchored, walk-through stand-in part holds the prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "no ground hit: y = 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "WorldKit GatherSpot parts replace their zone's list (sorted by x; an unknown kind ignored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "a ServerStorage.GatherKit model is cloned and holds the prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "kinds without a kit model keep the stand-in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "build",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a full hold gives one herb and counts one gather",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "Gathered(player, Herb, 1, HerbBush)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "the Loot Fx shows +1 Meadow Herb at the node",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "GatherState at join, then { Ready[node] = server time + 180, N, Cap }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "the first gather ever is logged once (GatherFirst)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a Halo gatherer gets no artisan sparkle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a gather counts as activity",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a draw under 0.2 gives two",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a draw of 0.2 gives one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "the same node again at once: nothing (it rests for me)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "another player picks the node I just picked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "still resting 179 s after the pick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "picked again once 180 s have passed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a rock held 1.59 s (under 0.8 x 2.0) gives nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a rock held 1.61 s (just over 0.8 x 2.0) counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a trigger without a hold that began (an instant fire) gives nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a hold that began on another node gives nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a trigger 1.5 s after the release is stale: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a trigger right after the release still counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "12.5 studs from the node: nothing (server range 12)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "11.9 studs: counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a gather",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "another one within a second: rate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a second later: ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a KO'd player, one without a class or without a side gathers nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "an artisan gathers like everyone and gets the artisan sparkle Fx { Id, Artisan }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "switch off at run time: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "no gather ever touched a prompt's Enabled",
+      "pass": 54,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "hit by a player during the hold: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "... and the PvPCut notice (a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "the node did not rest after the cut gather",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "a monster hit never cuts a gather",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "a full bag: nothing given, nothing counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "... and the node did not rest (no gather happened)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "two rolled but one fits: one given, it counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "the 400th gather of the day counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "the 401st: cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "again: cap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "the DailyCap notice once a day (a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "a new KST day: the count starts over (Total keeps going)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "202 gathers in an hour: one GatherHeavy (at 201), every gather counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "leaving keeps the saved counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "every gather notice is a Config.Gather.Text key",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "limits",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "4 gathers: no card yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "the 5th gather on a rock: no bloom",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "the first plant gather from the 5th on opens the Shard Bloom for sure",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "while the card is open a herb still gathers but never blooms or counts a bloom",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "Share it: I get 2 Crown Dust (the card)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a player 39 studs away (any side) gets 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a player 41 studs away gets nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a player who took 10 gifts today gets nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "the receiver hears BloomGift (a key, no name); the giver no gather notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a Knight who shares: Honor +1 (the card's Deeds point)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a draw under 8% blooms again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "Keep it all: I get 3, nobody else anything",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a third bloom",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "while a card is open no bloom (and nothing counted)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "120 s without a pick: +1 Crown Dust",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "... with the BloomWilt notice (a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a 4th bloom the same day never opens",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "the next day blooms again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a draw of 0 on a rock: no bloom (rocks never bloom)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "an artisan keeps it all: 3 dust, no Honor / Infamy change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "GrantItems: known ids with 1..99 only, rows { Item, Name, N } in the bag order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "the items are in the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "one Loot Fx with the position",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "ItemsGranted once with the rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "a full bag: no row, no Fx, no signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "a broken list gives nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "grant items",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 10,
+  "staticFailures": [],
+  "mutations": {
+    "total": 74,
+    "applied": 74,
+    "caught": 74,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: switch off: Try answers off",
+          "build :: switch off: no GatherState at join",
+          "build :: switch off: no node, no folder",
+          "config :: Config.Features.Gathering is off"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: 500 a day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+          "gather :: GatherState at join, then { Ready[node] = server time + 180, N, Cap }",
+          "limits :: a new KST day: the count starts over (Total keeps going)",
+          "limits :: again: cap",
+          "limits :: the 401st: cap",
+          "limits :: the DailyCap notice once a day (a key)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: 0.7 of the hold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+          "gather :: a rock held 1.59 s (under 0.8 x 2.0) gives nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: server range 15",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+          "gather :: 12.5 studs from the node: nothing (server range 12)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: 120 s rest",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+          "gather :: GatherState at join, then { Ready[node] = server time + 180, N, Cap }",
+          "gather :: still resting 179 s after the pick"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: 30% double",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+          "gather :: a draw of 0.2 gives one",
+          "gather :: picked again once 180 s have passed",
+          "gather :: still resting 179 s after the pick",
+          "gather :: switch off at run time: nothing",
+          "gather :: the same node again at once: nothing (it rests for me)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: herbs hold 1 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: node kinds: item, hold, Pick / Mine, plant, zone as the contract"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: copper is picked",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: node kinds: item, hold, Pick / Mine, plant, zone as the contract"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: rocks bloom",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: the 5th gather on a rock: no bloom",
+          "config :: node kinds: item, hold, Pick / Mine, plant, zone as the contract"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: bloom 10%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: sure at the 3rd",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: 4 blooms a day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a 4th bloom the same day never opens",
+          "config :: bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: share radius 50",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a player 41 studs away gets nothing",
+          "config :: bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: 20 gifts a day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a player who took 10 gifts today gets nothing",
+          "config :: bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: a first hint again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: texts: Pick, Mine, DailyCap, PvPCut, BloomGift, BloomWilt (no first hint, A23-130)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: herb sells for 2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the 8 materials: Material, sell price, a name, the named icon key, in the bag order"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the gathered items out of the bag order",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the 8 materials: Material, sell price, a name, the named icon key, in the bag order"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: share pays 3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: Keep it all: I get 3, nobody else anything",
+          "bloom :: Share it: I get 2 Crown Dust (the card)",
+          "config :: the Shard Bloom card: timed 120 s, Share = 2, Keep it all = 3, 1 point"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: the card waits forever",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: ... with the BloomWilt notice (a key)",
+          "bloom :: 120 s without a pick: +1 Crown Dust",
+          "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: the next day blooms again",
+          "config :: the Shard Bloom card: timed 120 s, Share = 2, Keep it all = 3, 1 point"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: a spot on the crown road",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: no spot on the crown road (|z| <= 9)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: spot pos off by one edge",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GatherSpotPos: u 0 / v 1 = the west / south edge"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: no rate limit entry",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 400 a day, 0.8 of the hold, prompt 8 / server 12 studs, 180 s rest, 20% double, heavy 200 an hour, 1 a second",
+          "gather :: a second later: ok",
+          "gather :: another one within a second: rate"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "build: nodes with the switch off",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: switch off: no node, no folder"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: the prompt reaches 10",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the prompt: GatherPrompt, the node's hold, 8 studs, no sight line, no words"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: a sight line needed",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the prompt: GatherPrompt, the node's hold, 8 studs, no sight line, no words"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: English words on the prompt",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the prompt: GatherPrompt, the node's hold, 8 studs, no sight line, no words"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: no ObjectKey",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: ActionKey = Config.Gather.Text.Pick | Mine, ObjectKey = the item's Name key (the client writes the words)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: Mine for everything",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: ActionKey = Config.Gather.Text.Pick | Mine, ObjectKey = the item's Name key (the client writes the words)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: tagged spots ignored",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: WorldKit GatherSpot parts replace their zone's list (sorted by x; an unknown kind ignored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: the kit model ignored",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: a ServerStorage.GatherKit model is cloned and holds the prompt"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: nodes float at 0",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: a node stands on the ground the ray found"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: the ray sees the nodes",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: the ground ray: from 300 up, 600 down, the nodes' folder excluded"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "build: the stand-in blocks players",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: without a kit model: an anchored, walk-through stand-in part holds the prompt"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: the switch not checked",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "build :: switch off: Try answers off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: a KO'd player gathers",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: a KO'd player, one without a class or without a side gathers nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: no class needed",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: a KO'd player, one without a class or without a side gathers nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: no side needed",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: a KO'd player, one without a class or without a side gathers nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: a hold on any node",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: 11.9 studs: counts",
+          "gather :: 12.5 studs from the node: nothing (server range 12)",
+          "gather :: a hold that began on another node gives nothing",
+          "gather :: a trigger 1.5 s after the release is stale: nothing",
+          "gather :: a trigger right after the release still counts"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "try: no hold needed",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: 11.9 studs: counts",
+          "gather :: 12.5 studs from the node: nothing (server range 12)",
+          "gather :: a hold that began on another node gives nothing",
+          "gather :: a trigger 1.5 s after the release is stale: nothing",
+          "gather :: a trigger right after the release still counts",
+          "gather :: a trigger without a hold that began (an instant fire) gives nothing"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "try: a stale release counts",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: 11.9 studs: counts",
+          "gather :: 12.5 studs from the node: nothing (server range 12)",
+          "gather :: a trigger 1.5 s after the release is stale: nothing",
+          "gather :: a trigger right after the release still counts"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "try: any hold time",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: a rock held 1.59 s (under 0.8 x 2.0) gives nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: no distance check",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: 12.5 studs from the node: nothing (server range 12)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: no rate limit",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: a second later: ok",
+          "gather :: another one within a second: rate"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "try: no rest",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: picked again once 180 s have passed",
+          "gather :: still resting 179 s after the pick",
+          "gather :: switch off at run time: nothing",
+          "gather :: the same node again at once: nothing (it rests for me)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "try: no daily cap",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "limits :: a new KST day: the count starts over (Total keeps going)",
+          "limits :: again: cap",
+          "limits :: the 401st: cap",
+          "limits :: the DailyCap notice once a day (a key)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "try: the cap notice every time",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "limits :: the DailyCap notice once a day (a key)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: player hits do not cut",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "limits :: ... and the PvPCut notice (a key)",
+          "limits :: hit by a player during the hold: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "try: always one",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: ... with the BloomWilt notice (a key)",
+          "bloom :: 120 s without a pick: +1 Crown Dust",
+          "bloom :: Keep it all: I get 3, nobody else anything",
+          "bloom :: a 4th bloom the same day never opens",
+          "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: a draw under 8% blooms again"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "try: a full bag still counts",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "limits :: ... and the node did not rest (no gather happened)",
+          "limits :: a full bag: nothing given, nothing counted",
+          "limits :: two rolled but one fits: one given, it counts"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "try: the rest is 0",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: GatherState at join, then { Ready[node] = server time + 180, N, Cap }",
+          "gather :: picked again once 180 s have passed",
+          "gather :: still resting 179 s after the pick",
+          "gather :: switch off at run time: nothing",
+          "gather :: the same node again at once: nothing (it rests for me)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "try: the day count never grows",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: GatherState at join, then { Ready[node] = server time + 180, N, Cap }",
+          "gather :: a full hold gives one herb and counts one gather",
+          "gather :: the same node again at once: nothing (it rests for me)",
+          "limits :: ... and the node did not rest (no gather happened)",
+          "limits :: a full bag: nothing given, nothing counted",
+          "limits :: a new KST day: the count starts over (Total keeps going)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "try: no artisan sparkle",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: an artisan gathers like everyone and gets the artisan sparkle Fx { Id, Artisan }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: no Gathered signal",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: Gathered(player, Herb, 1, HerbBush)",
+          "gather :: group ran to the end without a Lua error",
+          "limits :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "try: no GatherState",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: GatherState at join, then { Ready[node] = server time + 180, N, Cap }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "try: the day never turns",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: the next day blooms again",
+          "limits :: a new KST day: the count starts over (Total keeps going)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "try: no first-gather log",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: the first gather ever is logged once (GatherFirst)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "heavy: logged every gather over",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "limits :: 202 gathers in an hour: one GatherHeavy (at 201), every gather counted"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "state: the rest time is local",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: GatherState at join, then { Ready[node] = server time + 180, N, Cap }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hit: monsters cut too",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "limits :: ... and the node did not rest (no gather happened)",
+          "limits :: a full bag: nothing given, nothing counted",
+          "limits :: a monster hit never cuts a gather",
+          "limits :: two rolled but one fits: one given, it counts"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "bloom: rocks bloom",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: the 5th gather on a rock: no bloom"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bloom: the card's answer ignored",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: ... with the BloomWilt notice (a key)",
+          "bloom :: 120 s without a pick: +1 Crown Dust",
+          "bloom :: a draw under 8% blooms again",
+          "bloom :: a third bloom",
+          "bloom :: while the card is open a herb still gathers but never blooms or counts a bloom"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "bloom: no daily max",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a 4th bloom the same day never opens"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bloom: no sure first",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: group ran to the end without a Lua error",
+          "bloom :: the first plant gather from the 5th on opens the Shard Bloom for sure"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bloom: the sure one again and again",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: the first plant gather from the 5th on opens the Shard Bloom for sure"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bloom: never counted",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a 4th bloom the same day never opens",
+          "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: a draw under 8% blooms again",
+          "bloom :: a third bloom",
+          "bloom :: the first plant gather from the 5th on opens the Shard Bloom for sure",
+          "bloom :: the next day blooms again"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "share: nobody gets one",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a player 39 studs away (any side) gets 1",
+          "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "share: the giver gets one too",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: Keep it all: I get 3, nobody else anything",
+          "bloom :: Share it: I get 2 Crown Dust (the card)",
+          "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "share: any distance",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a player 41 studs away gets nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "share: no gift cap",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a player who took 10 gifts today gets nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "share: keep it all shares",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: Keep it all: I get 3, nobody else anything"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "wilt: nothing at time up",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: ... with the BloomWilt notice (a key)",
+          "bloom :: 120 s without a pick: +1 Crown Dust"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "grant: 100 at once",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grant items :: GrantItems: known ids with 1..99 only, rows { Item, Name, N } in the bag order",
+          "grant items :: ItemsGranted once with the rows",
+          "grant items :: the items are in the save"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "grant: no Loot Fx",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: the Loot Fx shows +1 Meadow Herb at the node",
+          "grant items :: a full bag: no row, no Fx, no signal",
+          "grant items :: one Loot Fx with the position",
+          "limits :: ... and the node did not rest (no gather happened)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "grant: Fx even when nothing fit",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "grant items :: a full bag: no row, no Fx, no signal",
+          "limits :: ... and the node did not rest (no gather happened)"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "4a4b3f88e1917d754f1a776c506c01c180aeb735ff12d8b3ff28c096ff4aec28",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/LootService.luau": "59a7fdc40f90eb44f238c6caf97fa3df0efeeb88ac08e3cc995b37c961382415",
+    "src/ServerScriptService/Deeds.luau": "ef54e177229e0155e119ea7d8c54da813ad50561251410e46e00c120665384eb",
+    "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f",
+    "src/ServerScriptService/GatherService.luau": "b1f31849819c086b1900c16ec6c5b9393704b999d5288c39481d3e5cf1e92251"
+  },
+  "fixtureSHA256": "2d8fc0d20e89e9576118f9664decfad67ff5ce889a40ef08bce2dd2e3651974f",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Gathering (docs/design/gather_server_2026-10-11.md): switch Config.Features.Gathering off; 54 nodes (meadow 12 herb + 8 copper, woods 8 oak + 8 glowcap + 6 iron, ruins 6 silver + 6 moon crystal) in workspace.Map.GatherNodes, WorldKit GatherSpot parts replacing a zone's list, a GatherKit model or a walk-through stand-in on the ray-found ground; prompt GatherPrompt (the node's hold, 8 studs, no sight line, no words, ActionKey / ObjectKey, Enabled never touched); a gather = switch on, our node, alive + class + side, hold >= 0.8 x and began on this node (a release <= 1 s before the trigger), <= 12 studs, 1 a second, my 180 s rest, 400 a KST day (one DailyCap notice), no player hit (monsters fine), a full bag = nothing; 20% two; Gathered, GatherState { Ready (server time), N, Cap }, the artisan Fx, GatherFirst / GatherHeavy (once past 200 an hour); the Shard Bloom on plants (sure from the 5th gather, 8%, 3 a day, not over an open card): Share = 2 + 1 to everyone within 40 studs (10 gifts a day), Keep = 3, time up = 1 + BloomWilt, points through Deeds (none for artisans); LootService.GrantItems (known ids, 1..99, drop-shaped rows, one Loot Fx).",
+  "limitations": "No real ProximityPrompt / hold UI (the prompt events are fired by the test), no Studio raycast against the real map, no client (GatherView is 게임성 개발 4's dev4-gather). Quests that count gathers (Gather goal) and the crafting recipes that use the materials come later."
+}

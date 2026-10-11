@@ -2466,6 +2466,18 @@ runGroup("sell", function()
 	f:FireRaw("SellMaterials")
 	f:FireRaw("SellMaterials")
 	check(#leftAtPay == 2 and leftAtPay[2].Amount == 5 * L.Items.Jelly.Sell, "SellMaterials rate limited (one payment)", #leftAtPay)
+	-- 게임성 검수 2026-10-11: monster materials only; gathered ones (Source "Gather") stay for the artisans
+	do
+		local g = fixture()
+		g:Give("Jelly", 3)
+		g:Give("Herb", 4)
+		g:Give("CopperOre", 2)
+		g:Sell()
+		local paid = 0
+		for _, e in g.GoldLog do paid += e.Amount end
+		check(g:Count("Jelly") == 0 and g:Count("Herb") == 4 and g:Count("CopperOre") == 2 and paid == 3 * L.Items.Jelly.Sell,
+			"the sell-all keeps gathered materials (only the monster ones are sold)", show(g.Data.Items))
+	end
 	-- review B10: an unknown saved id is never sold (no price) and stays in the save
 	local saved = deepCopy(DEFAULT_ROW)
 	saved.Items = { Bogus = 7, Jelly = 2 }

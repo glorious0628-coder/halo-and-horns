@@ -240,6 +240,8 @@ MUTATIONS = [
      "if not S.ShopService.CanBuyWeapon(player) then", "if false then"),
     ("sell also sells scrolls", "LOOT_SOURCE",
      "if def and def.Kind == \"Material\" then", "if def then"),
+    ("sell also sells gathered materials", "LOOT_SOURCE",
+     "\t\tif def and def.Source ~= nil then def = nil end\n", ""),
     ("remote rate limit bypassed", "LOOT_SOURCE",
      "and Util.RateLimit(player, key, Config.RateLimits[key] or 0.5)", "and true"),
     ("WeaponEnhance attribute not refreshed on equip", "LOOT_SOURCE",

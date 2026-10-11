@@ -192,7 +192,8 @@ runGroup("shop and egg", function()
 	check(b.Day == 0 and b.N == 0 and b.Later == true, "Shop: NaN / negative -> 0, an unknown flat key kept", show(b))
 	check(C.SanitizeEggHonorAt(NOW - 60, NOW) == NOW - 60, "EggHonorAt in the past is kept", "")
 	check(C.SanitizeEggHonorAt(NOW, NOW) == NOW, "EggHonorAt = now is kept", "")
-	check(C.SanitizeEggHonorAt(NOW + 1, NOW) == 0, "a future EggHonorAt -> 0 (a later hour is never promised)", "")
+	check(C.SanitizeEggHonorAt(NOW + 1, NOW) == NOW and C.SanitizeEggHonorAt(NOW + 9999, NOW) == NOW,
+		"a future EggHonorAt is cut to now (never 0: the hourly +5 never reopens early)", "")
 	check(C.SanitizeEggHonorAt(NAN, NOW) == 0 and C.SanitizeEggHonorAt("x", NOW) == 0 and C.SanitizeEggHonorAt(-5, NOW) == 0
 		and C.SanitizeEggHonorAt(INF, NOW) == 0, "NaN / text / negative / inf -> 0", "")
 	check(C.SanitizeEggHonorAt(NOW - 0.5, NOW) == NOW - 1, "a fraction is floored", "")
@@ -230,8 +231,8 @@ runGroup("load", function()
 	local broken = load({ Version = 3, Level = 3, TutorialStep = 99, Craft = "oops", Gear = 5, Buffs = { Might = 1790009999 },
 		EggHonorAt = 1790009999, Shop = { N = 99 }, Gather = { N = -1, FirstBloom = 1 } })
 	check(sameTable(broken.Craft, D.Craft) and sameTable(broken.Gear, D.Gear), "a broken table becomes its default", "")
-	check(broken.Buffs.Might == 1790000180 and broken.EggHonorAt == 0 and broken.Shop.N == 50 and broken.Gather.N == 0
-		and broken.Gather.FirstBloom == false, "the load uses the server clock: a long buff is cut, a future egg hour is 0",
+	check(broken.Buffs.Might == 1790000180 and broken.EggHonorAt == 1790000000 and broken.Shop.N == 50 and broken.Gather.N == 0
+		and broken.Gather.FirstBloom == false, "the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
 		show({ broken.Buffs, broken.EggHonorAt }))
 	local fixed = load({ Version = 3, Level = 3, TutorialStep = 99, Gear = { Own = { ["Armor:01:0"] = 3, ["Ring:0:0"] = 1 },
 		On = { Armor = "1:99" } } })

@@ -440,6 +440,42 @@ function LootService.RollKill(player, info)
 	return gained
 end
 
+-- 게임성 개발 3 (gathering, docs/design/gather_server_2026-10-11.md): items from something other than a kill. list = { { Id
+-- = a Config.Loot.Items id, N = 1..99 } }; the same caps / full notices as drops, then one Loot Fx (pos may be nil) and
+-- ItemsGranted with the drop rows' shape. Returns the rows actually given ({} when nothing fit). `source` is for callers'
+-- logs only (gathering gives no gold, so nothing here is doubled).
+function LootService.GrantItems(player, list, pos, source)
+	local data = getData(player)
+	local gained = {}
+	if not data or type(list) ~= "table" then return gained end
+	ensureTables(data)
+	local counts = {}
+	for _, row in list do
+		local id = type(row) == "table" and row.Id or nil
+		local n = type(row) == "table" and math.floor(num(row.N)) or 0
+		if type(id) == "string" and n >= 1 and n <= 99 then
+			local given = addItem(player, data, id, n) -- 0 for an id missing from LOOT.Items
+			if given > 0 then counts[id] = (counts[id] or 0) + given end
+		end
+	end
+	for _, id in LOOT.Order do
+		local n = counts[id]
+		if n then
+			table.insert(gained, { Item = id, Name = LOOT.Items[id].Name, N = n })
+			counts[id] = nil
+		end
+	end
+	for id, n in counts do -- an item missing from LOOT.Order still shows
+		table.insert(gained, { Item = id, Name = LOOT.Items[id].Name, N = n })
+	end
+	if #gained > 0 then
+		publish(player, data)
+		pcall(Net.Fx, player, "Loot", { Pos = typeof(pos) == "Vector3" and pos or nil, Items = gained })
+		LootService.ItemsGranted:Fire(player, gained)
+	end
+	return gained
+end
+
 ------------------------------------------------------------------ remotes
 local function ready(player, key)
 	return typeof(player) == "Instance" and player:IsA("Player") and player.Parent == Players
@@ -561,6 +597,9 @@ local function onSellMaterials(player, ...)
 	local count, gold = 0, 0
 	for id, n in data.Items do
 		local def = LOOT.Items[id]
+		-- 게임성 검수 2026-10-11: the sell-all takes monster materials only; gathered / crafted ones (a Source, e.g.
+		-- "Gather") stay for the artisans (sold one at a time later from the bag: SellItem)
+		if def and def.Source ~= nil then def = nil end
 		if def and def.Kind == "Material" then
 			local c = math.floor(num(n))
 			count += c

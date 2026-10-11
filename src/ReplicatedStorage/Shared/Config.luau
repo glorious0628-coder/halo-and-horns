@@ -5072,6 +5072,17 @@ Config.Loot = {
 		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
 		SeaShell = { Kind = "Material", Name = "Sea Shell", Sell = 4, Color = Color3.fromRGB(250, 205, 180), Icon = "IconSeaShell" }, -- Coral Coast
 		CrystalShard = { Kind = "Material", Name = "Crystal Shard", Sell = 8, Color = Color3.fromRGB(130, 210, 240), Icon = "IconCrystalShard" }, -- Crystal Cave Woods
+		-- gathering (Config.Gather, GatherService; ids fixed: the market key I:<id> and the recipes use them). Icon keys named
+		-- by 디자인 검수 (10/11); the parts come with image session 2 -> image dev, until then the code fallback. CrownDust:
+		-- only from a Shard Bloom
+		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." },
+		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Sell it at the Forge." },
+		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Sell it at the Forge." },
+		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Sell it at the Forge." },
+		IronOre = { Kind = "Material", Name = "Iron Ore", Sell = 5, Color = Color3.fromRGB(130, 135, 145), Icon = "IconIronOre", Source = "Gather", Desc = "Sell it at the Forge." },
+		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Sell it at the Forge." },
+		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Sell it at the Forge." },
+		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Sell it at the Forge." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5083,7 +5094,8 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
+		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy",
+		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -8120,6 +8132,109 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
 end
 
+----------------------------------------------------------------- gathering (게임성 개발 3, 2026-10-11)
+-- GatherService (contract docs/design/gather_server_2026-10-11.md, background gathering_2026-10-06.md). Everyone (Halo,
+-- Horns, artisans) the same: hold the interact key at a node (PromptRange studs) for Nodes[kind].Hold s -> 1 material,
+-- Double = the chance of 2. No XP, scroll, weapon or potion. A node rests Regrow s for the gatherer only (server memory).
+-- Server checks: the held time >= Hold x MinHoldRatio, root <-> node <= ServerRange, one gather per RateLimits.Gather s,
+-- my own node rest, DailyCap gathers a KST day (data.Gather.N), no hit from another player since the hold began.
+-- Plant nodes sometimes show a Shard Bloom (Bloom: the ChoiceCard ShardBloom). Heavy = gathers in one hour above which
+-- TelemetryService logs "GatherHeavy" (ids only). Spots[zone] = { { kind, u, v } } with u, v in 0..1 of the zone rectangle
+-- (Config.GatherSpotPos); WorldKit "GatherSpot" tagged parts (attribute Node = kind) replace a zone's list. Ray = the
+-- downward ground ray of a spot (from From studs up, Length studs long). Text = keys only on the wire (Net.NotifyKey,
+-- prompt attributes ActionKey / ObjectKey); no first-time hint line (A23-130, 게임성 개발 4).
+-- Switched by Config.Features.Gathering (off).
+-- Gathering (게임성 개발 3): the herb / ore nodes. Off = no node is built and every gather handler returns at once; on
+-- together with the artisan guild (검수)
+Config.Features.Gathering = false
+Config.Gather = {
+	DailyCap = 400,
+	MinHoldRatio = 0.8,
+	PromptRange = 8,
+	ServerRange = 12,
+	Regrow = 180,
+	Double = 0.2,
+	Heavy = 200,
+	Ray = { From = 300, Length = 600 },
+	Nodes = {
+		HerbBush = { Item = "Herb", Hold = 1.5, Action = "Pick", Plant = true, Zone = "SlimeMeadow", Color = Color3.fromRGB(140, 210, 255) },
+		CopperRock = { Item = "CopperOre", Hold = 2.0, Action = "Mine", Zone = "SlimeMeadow", Color = Color3.fromRGB(205, 125, 75) },
+		OakPile = { Item = "OakLog", Hold = 1.5, Action = "Pick", Zone = "GoblinWoods", Color = Color3.fromRGB(160, 115, 70) },
+		GlowcapPatch = { Item = "Glowcap", Hold = 1.5, Action = "Pick", Plant = true, Zone = "GoblinWoods", Color = Color3.fromRGB(80, 225, 205) },
+		IronRock = { Item = "IronOre", Hold = 2.0, Action = "Mine", Zone = "GoblinWoods", Color = Color3.fromRGB(130, 135, 145) },
+		SilverRock = { Item = "SilverOre", Hold = 2.0, Action = "Mine", Zone = "SkeletonRuins", Color = Color3.fromRGB(210, 215, 225) },
+		MoonCrystal = { Item = "MoonCrystal", Hold = 2.0, Action = "Mine", Zone = "SkeletonRuins", Color = Color3.fromRGB(175, 165, 255) },
+	},
+	-- gathering_2026-10-06 §2 stud spots in today's zone rectangles (the pumpkin-path clump dropped: the north-path
+	-- candidates make two clumps). Nodes >= 8 studs apart, none within 40 studs of the meadow spawn (230, 0), none on the
+	-- crown road (|z| <= 9). Studs in the comments.
+	Spots = {
+		SlimeMeadow = {
+			-- HerbBush: south-east of the watchtower (260, -200)
+			{ "HerbBush", 0.15, 0.1125 }, { "HerbBush", 0.1773, 0.125 }, { "HerbBush", 0.1455, 0.1417 }, -- (276,-186) (288,-180) (274,-172)
+			-- the north ring path (x 480-560, z -205): two clumps
+			{ "HerbBush", 0.6182, 0.0729 }, { "HerbBush", 0.6455, 0.08125 }, { "HerbBush", 0.6318, 0.05625 }, -- (482,-205) (494,-201) (488,-213)
+			{ "HerbBush", 0.75, 0.0729 }, { "HerbBush", 0.7773, 0.08125 }, { "HerbBush", 0.7636, 0.05625 }, -- (540,-205) (552,-201) (546,-213)
+			-- the pond's west edge (x 240-255, z 140-170)
+			{ "HerbBush", 0.0773, 0.7958 }, { "HerbBush", 0.0909, 0.8229 }, { "HerbBush", 0.075, 0.85 }, -- (244,142) (250,155) (243,168)
+			-- CopperRock: the King Slime hill's (430, -170) south-east slope
+			{ "CopperRock", 0.5364, 0.175 }, { "CopperRock", 0.5636, 0.1917 }, -- (446,-156) (458,-148)
+			{ "CopperRock", 0.5318, 0.2042 }, { "CopperRock", 0.5591, 0.2208 }, -- (444,-142) (456,-134)
+			-- in front of the woods bridge (x 615-640), off the road
+			{ "CopperRock", 0.9273, 0.4583 }, { "CopperRock", 0.9636, 0.4667 }, -- (618,-20) (634,-16)
+			{ "CopperRock", 0.9273, 0.5417 }, { "CopperRock", 0.9636, 0.5333 }, -- (618,20) (634,16)
+		},
+		GoblinWoods = {
+			-- OakPile: a ring of 16 studs around the goblin treehouse's old tree (960, -90)
+			{ "OakPile", 0.5542, 0.3269 }, { "OakPile", 0.5438, 0.3481 }, { "OakPile", 0.5208, 0.3577 }, { "OakPile", 0.4979, 0.3481 }, -- (976,-90) (971,-79) (960,-74) (949,-79)
+			{ "OakPile", 0.4875, 0.3269 }, { "OakPile", 0.4979, 0.3058 }, { "OakPile", 0.5208, 0.2962 }, { "OakPile", 0.5438, 0.3058 }, -- (944,-90) (949,-101) (960,-106) (971,-101)
+			-- GlowcapPatch: the woods' north ring path (z about -222), two clumps
+			{ "GlowcapPatch", 0.1458, 0.0731 }, { "GlowcapPatch", 0.1708, 0.0846 }, { "GlowcapPatch", 0.1958, 0.0692 }, { "GlowcapPatch", 0.1708, 0.0577 }, -- (780,-222) (792,-216) (804,-224) (792,-230)
+			{ "GlowcapPatch", 0.6875, 0.0731 }, { "GlowcapPatch", 0.7125, 0.0846 }, { "GlowcapPatch", 0.7375, 0.0692 }, { "GlowcapPatch", 0.7125, 0.0577 }, -- (1040,-222) (1052,-216) (1064,-224) (1052,-230)
+			-- IronRock: before the pass (x 1150-1180), off the road
+			{ "IronRock", 0.9208, 0.4423 }, { "IronRock", 0.95, 0.4538 }, { "IronRock", 0.9792, 0.4385 }, -- (1152,-30) (1166,-24) (1180,-32)
+			{ "IronRock", 0.9208, 0.5577 }, { "IronRock", 0.95, 0.5462 }, { "IronRock", 0.9792, 0.5615 }, -- (1152,30) (1166,24) (1180,32)
+		},
+		SkeletonRuins = {
+			-- SilverRock: a ring of 18 studs around the broken tower (1560, -70)
+			{ "SilverRock", 0.6115, 0.3793 }, { "SilverRock", 0.5942, 0.4069 }, { "SilverRock", 0.5596, 0.4069 }, -- (1578,-70) (1569,-54) (1551,-54)
+			{ "SilverRock", 0.5423, 0.3793 }, { "SilverRock", 0.5596, 0.3517 }, { "SilverRock", 0.5942, 0.3517 }, -- (1542,-70) (1551,-86) (1569,-86)
+			-- MoonCrystal: the south ring path (z 150-200), two clumps
+			{ "MoonCrystal", 0.3077, 0.7931 }, { "MoonCrystal", 0.3346, 0.8069 }, { "MoonCrystal", 0.3577, 0.7862 }, -- (1420,170) (1434,178) (1446,166)
+			{ "MoonCrystal", 0.6154, 0.7966 }, { "MoonCrystal", 0.6423, 0.8103 }, { "MoonCrystal", 0.6654, 0.7897 }, -- (1580,172) (1594,180) (1606,168)
+		},
+	},
+	-- Item = what a bloom pays (the card's rewards, the share, the wilt), Card = the ChoiceCard kind
+	Bloom = { Chance = 0.08, FirstAt = 5, DailyMax = 3, Radius = 40, GiftDailyMax = 10, Item = "CrownDust", Card = "ShardBloom" },
+	Text = {
+		Pick = "Pick",
+		Mine = "Mine",
+		DailyCap = "You gathered a lot today! Come back tomorrow!",
+		PvPCut = "A player hit you! Try again.",
+		BloomGift = "Someone shared a Shard Bloom! +1 Crown Dust",
+		BloomWilt = "The bloom closed up. +1 Crown Dust",
+	},
+}
+Config.RateLimits.Gather = 1
+
+-- a Config.Gather spot (u, v in 0..1 of the zone rectangle Config.Zones[zone].Center / Size) -> Vector3 with y = 0; nil
+-- for an unknown zone or u / v outside 0..1 (pure: GatherService and the offline test share it)
+function Config.GatherSpotPos(zone, u, v)
+	local z = type(zone) == "string" and Config.Zones[zone] or nil
+	if type(z) ~= "table" or type(u) ~= "number" or type(v) ~= "number" then return nil end
+	if not (u >= 0 and u <= 1 and v >= 0 and v <= 1) then return nil end -- NaN fails too
+	return Vector3.new(z.Center.X - z.Size.X / 2 + u * z.Size.X, 0, z.Center.Z - z.Size.Z / 2 + v * z.Size.Z)
+end
+
+-- the Shard Bloom (a plant node's sometimes-bloom): a timed card (time up = +1 crown dust, GatherService). Points through
+-- Deeds like every card (an artisan picks for the reward only)
+Config.ChoiceCard.Kinds.ShardBloom = {
+	Seconds = 120,
+	Title = "A Shard Bloom! It sparkles with crown dust. What will you do?",
+	Good = { Label = "Share it", Reward = { Item = "CrownDust", N = 2 }, Points = 1 },
+	Evil = { Label = "Keep it all", Reward = { Item = "CrownDust", N = 3 }, Points = 1 },
+}
+
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
 -- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3
@@ -8329,11 +8444,12 @@ function Config.SanitizeShop(t)
 	return V4.keepExtra(src, out, { Day = true, N = true })
 end
 
--- EggHonorAt at `now`: a whole os.time() not after now (a future value = 0: a later hour is never promised)
+-- EggHonorAt at `now`: a whole os.time() not after now. A future value (another server's clock a few seconds ahead) is cut
+-- to now, never to 0: the next hourly +5 may open a little late but never early (게임성 검수 2026-10-11)
 function Config.SanitizeEggHonorAt(v, now)
 	now = V4.int(now, 0, 2 ^ 52) or os.time()
 	local at = V4.int(v, 0, 2 ^ 52) or 0
-	return at > now and 0 or at
+	return math.min(at, now)
 end
 
 -- every v4 table of a save, in place (DataService.fillDefaults, after the default fill)

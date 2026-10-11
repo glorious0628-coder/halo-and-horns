@@ -453,7 +453,7 @@
     },
     {
       "group": "shop and egg",
-      "check": "a future EggHonorAt -> 0 (a later hour is never promised)",
+      "check": "a future EggHonorAt is cut to now (never 0: the hourly +5 never reopens early)",
       "pass": 1,
       "fail": 0
     },
@@ -513,7 +513,7 @@
     },
     {
       "group": "load",
-      "check": "the load uses the server clock: a long buff is cut, a future egg hour is 0",
+      "check": "the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
       "pass": 1,
       "fail": 0
     },
@@ -588,9 +588,9 @@
   "staticChecks": 7,
   "staticFailures": [],
   "mutations": {
-    "total": 53,
-    "applied": 53,
-    "caught": 53,
+    "total": 54,
+    "applied": 54,
+    "caught": 54,
     "skipped": false,
     "results": [
       {
@@ -653,7 +653,7 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys",
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0",
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
           "shop and egg :: Shop.N is cut at 50 (Otto's cheap materials a day)"
         ],
         "newFailingCount": 3
@@ -751,9 +751,10 @@
           "buffs :: NaN / text / inf ends, long ids and number keys dropped",
           "craft :: NaN Lv -> 1, inf XP -> 0 (never a free value)",
           "craft :: an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
-          "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true"
+          "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true",
+          "shop and egg :: NaN / text / negative / inf -> 0"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "helper: no id length cap",
@@ -936,7 +937,7 @@
         "crashed": false,
         "newFailingChecks": [
           "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true",
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now"
         ],
         "newFailingCount": 2
       },
@@ -1078,7 +1079,7 @@
         "crashed": false,
         "newFailingChecks": [
           "buffs :: an end later than now + 180 is cut to now + 180 (never a longer buff)",
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now"
         ],
         "newFailingCount": 2
       },
@@ -1112,7 +1113,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0",
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
           "shop and egg :: Shop.N is cut at 50 (Otto's cheap materials a day)"
         ],
         "newFailingCount": 2
@@ -1124,8 +1125,20 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0",
-          "shop and egg :: a future EggHonorAt -> 0 (a later hour is never promised)"
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
+          "shop and egg :: a future EggHonorAt is cut to now (never 0: the hourly +5 never reopens early)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: a future hour reopens at once",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
+          "shop and egg :: a future EggHonorAt is cut to now (never 0: the hourly +5 never reopens early)"
         ],
         "newFailingCount": 2
       },
@@ -1147,7 +1160,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now"
         ],
         "newFailingCount": 1
       },
@@ -1158,7 +1171,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now"
         ],
         "newFailingCount": 1
       },
@@ -1170,7 +1183,7 @@
         "crashed": false,
         "newFailingChecks": [
           "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)",
-          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is cut to now"
         ],
         "newFailingCount": 2
       },
@@ -1248,12 +1261,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9a81ba51afac3af40a936116de6e891229c68d12c34174380848547720de5bf9",
+    "src/ReplicatedStorage/Shared/Config.luau": "396918dafdf787046b88f9cdf910cf5b5c95b6f034f83fbd80aaeb18707a3243",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/DataService.luau": "bcc20283d5258fc89af43961e12c1a1c6345eeba61a923bdb7f17cd5e6450217",
     "src/ServerScriptService/PetService.luau": "7b989fa015080ca49e49466def1cdbeb886f172e906e26ce2c6fea343d8e37a3"
   },
-  "fixtureSHA256": "d210535e8448163335be95ad475a7032f5247e4978efe8f55aa39ca8c42e5193",
+  "fixtureSHA256": "9e35c4b6fcbd66f0d4acf549d678d3bc7476821147474403c2647d2d16edf31a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
