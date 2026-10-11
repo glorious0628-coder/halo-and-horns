@@ -45,7 +45,7 @@ local TXT = {
 	PowerNow = "Power %s",
 	Spare = "Spare",
 	Count = "×%d",
-	Drink = "Drink", Full = "Full", Wait = "%d s", Quick = "Quick slot",
+	Drink = "Drink", Full = "Full", Empty = "Empty", Wait = "%d s", Quick = "Quick slot",
 	Use = "Use", Cancel = "Cancel", Enhance = "Enhance", Move = "Move",
 	ScrollEnh = "+%d on success · %d%%",
 	ScrollMove = "Moves all + to another weapon · %d%%",
@@ -322,7 +322,7 @@ function BagUI.PotionState(p)
 	local count = math.floor(num(p.Count, 0))
 	local left = num(p.ReadyAt, 0) - num(p.Now, 0)
 	if left > 0 then return tx(TXT, "Wait", math.ceil(left)), false end
-	if count <= 0 then return tx(TXT, "Drink"), false end
+	if count <= 0 then return tx(TXT, "Empty"), false end -- UiSandbox 10/12: a dimmed "Drink" read as on
 	if p.Busy then return tx(TXT, "Drink"), false end
 	if num(p.Amount, 0) >= num(p.Max, 1) and p.Sip ~= true then return tx(TXT, "Full"), false end
 	return tx(TXT, "Drink"), true
@@ -716,6 +716,7 @@ local function label(parent, text, size, color, props)
 	end
 	l.Parent = parent
 	local kit = ui()
+	if props and props.Style == false then return l end -- a tiny caption that shrinks to fit (no text-size floor)
 	if type(kit) == "table" and type(kit.StyleText) == "function" then
 		pcall(kit.StyleText, l, (props and props.Style) or "Body")
 		l.TextColor3 = color
@@ -872,11 +873,14 @@ local function drawWorn(parent, all, cols)
 			box = slot(frame, nil, nil, L.Cell, nil, "Worn" .. kind)
 		end
 		box.Position = UDim2.fromOffset(x, 0)
-		-- the word fits its own column (UiSandbox 10/12: fixed 15 du words ran into each other): scaled down to the
-		-- name tag floor (12 px), never past the slot + the gap
-		label(frame, tx(TXT.Worn, kind), L.Size.Small, colorOf("Sub"), { Name = "WornCap" .. kind,
+		-- the word fits its own column (UiSandbox 10/12: on a very short window the styled text floor cut "Weapon"):
+		-- a plain caption scaled down to fit, at most Size.Small
+		local cap = label(frame, tx(TXT.Worn, kind), L.Size.Small, colorOf("Sub"), { Name = "WornCap" .. kind,
 			Position = UDim2.fromOffset(x - L.WornInset, L.Cell + 2), Size = UDim2.fromOffset(L.Cell + 2 * L.WornInset, L.WornCap - 2),
-			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, TextScaled = true, Style = "NameTag" })
+			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, TextScaled = true, Style = false })
+		local tc = Instance.new("UITextSizeConstraint")
+		tc.MaxTextSize = L.Size.Small
+		tc.Parent = cap
 	end
 	return L.Cell + L.WornCap + L.RowGap
 end
@@ -958,6 +962,10 @@ local function drawDetail(frame, all, picked)
 	end
 	local big = slot(frame, view.Grade, view.Icon, L.Big, nil, "Big", { Text = view.Title, Color = view.Color })
 	big.LayoutOrder = nextOrder()
+	if type(picked) == "table" and picked.Kind == "Potion" and picked.Count <= 0 and not S.Mode then
+		local icon = big:FindFirstChild("Icon")
+		if icon then icon.ImageTransparency = 0.55 end
+	end
 	if view.Plus or view.Count then corners(big, { Count = view.Count or 1, Plus = view.Plus or 0 }) end
 	label(frame, view.Title, L.Size.Name, view.Color or colorOf("Text"), { Name = "Name", Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y, TextXAlignment = Enum.TextXAlignment.Center, LayoutOrder = nextOrder(), Style = "Title" })
