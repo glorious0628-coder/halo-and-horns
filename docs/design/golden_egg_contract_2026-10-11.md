@@ -20,6 +20,7 @@ Config.Goose.Egg = {
 		-- Feather = { Points = 0, Slots = 0 }, -- A23-134 장인 깃털이 땅에 떨어지는 물건이면
 	},
 	MaxSlots = 3, PickRadius = 4.5, PickHeight = 6, -- 서버는 +0.5 여유
+	Center = Vector3.new(0, 0, 0), -- 링 가운데(분수). 화면의 링 경계 점·흔들림 거리·평소 마름모가 이 점을 씀
 	RingRadius = 54, WobbleFrom = 45, -- 링 끝(반납), 45칸부터 든 알이 흔들림(화면)
 	Home = { Halo = Vector3.new(-30, 0, -30), Horns = Vector3.new(-30, 0, 30) }, HomeRadius = 8,
 	IdleReturn = 10, IdleWobble = 7, -- 들고 서 있기: 7초부터 흔들림(화면), 10초에 반납(서버)
@@ -30,7 +31,9 @@ Config.Goose.Egg = {
 
 ## 3. 땅의 알 — `workspace.Effects.GooseEggs` (Folder, 서버가 만들고 비움; `Util.GetFolder(workspace, "Effects")` 아래)
 - 땅에 있는 알 하나 = 고정 부품 하나(Anchored, CanCollide·CanQuery·CanTouch 끔, PointLight·Highlight 없음). 부품 CFrame =
-  **내려앉을 자리**(땅 위). 화면은 이 부품을 `LocalTransparencyModifier = 1`로 숨기고 자기 모형을 그려요.
+  **내려앉을 자리**(땅 위). 화면은 이 부품을 `LocalTransparencyModifier = 1`로 숨기고, 그 부품을 복제한 것(MeshPart거나
+  SpecialMesh가 있으면 그 모양 그대로, 없으면 코드 알)으로 포물선·반짝임을 그려요. 그래서 서버 부품에는 ParticleEmitter·빛을 달지 않아요
+  (Tripo 알 모델이 오면 부품만 바꾸면 화면도 따라와요).
 - 속성:
 
 | 이름 | 모양 | 뜻 |
@@ -48,7 +51,7 @@ Config.Goose.Egg = {
 ## 4. 플레이어 속성 (서버가 씀)
 | 이름 | 모양 | 뜻 |
 |---|---|---|
-| `EggCarry` | 정수 0..3 | 든 칸 수(CharacterVisuals `EggStack`, 속도) |
+| `EggCarry` | 정수 0..3 | 든 칸 수(CharacterVisuals `EggStack`, 속도). `EggStack`의 알들은 머리(또는 등)에 **Motor6D `EggJoint`** 하나로 붙여 주세요 — 화면이 그 `Transform`으로 링 끝·서 있기 때 알을 흔들어요 |
 | `GooseCount` | 정수 | 이번 판 내 배달 점수(지금 이름 그대로) |
 | `EggDelivered` | 정수 | 이번 판 내가 배달한 알 개수(보상 기준 "2개 또는 20점") |
 | `EggCan` | bool | 지금 알을 주울 수 있나(빛·뿔 참가 편, A23-134 장인 포함 / 괴수·원한 자루·협동 판의 늦은 상대 편·None = false). 화면은 false면 알을 반투명으로, 줍기 미리 보기도 안 함 |
