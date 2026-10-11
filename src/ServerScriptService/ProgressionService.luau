@@ -499,6 +499,9 @@ local function onMonsterKilled(player, info)
 	if type(info) ~= "table" or not getData(player) then return end
 	local gold = math.floor(num(info.Gold) * M.GetGoldMult(player) + 0.5)
 	local xp = math.floor(num(info.XP) * M.GetXPMult(player) + 0.5)
+	-- ④ alchemy (BuffService): a Wisdom Tonic adds to a kill's XP (hunting only, never a quest)
+	local hx = S.BuffService and S.BuffService.Mult(player, "HuntXP") or 1
+	if hx ~= 1 then xp = math.floor(num(info.XP) * M.GetXPMult(player) * hx + 0.5) end
 	-- A23-27: below def.XPCapBelowLevel a kill gives at most one level's XP (the Pumpkin King and a Lv1 player), with
 	-- the 2x XP pass too (A23-75: AddXP applies the cap after the pass)
 	local def = type(info.Kind) == "string" and Config.MonsterTypes[info.Kind] or nil

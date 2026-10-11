@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 136,
+  "checks": 140,
   "failedChecks": 0,
-  "namedChecks": 122,
+  "namedChecks": 126,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -573,19 +573,19 @@
     },
     {
       "group": "results",
-      "check": "an item recipe starts with room for 3",
+      "check": "an item recipe starts with room for 3 + the best +2",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "results",
-      "check": "only 1 of 3 would fit: nothing given, it waits",
+      "check": "only 1 of 5 would fit: nothing given, it waits",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "results",
-      "check": "room again: all 3 at once",
+      "check": "room again: all of it at once (3 + the earned +2 = 5)",
       "pass": 1,
       "fail": 0
     },
@@ -657,7 +657,31 @@
     },
     {
       "group": "xp",
-      "check": "the 2x XP pass does not touch craft XP",
+      "check": "with the 2x XP pass: 10 craft XP -> 20 (shown in CraftResult)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "without the pass: 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "a hunting XP bonus (faction / rebirth) never doubles craft XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "a Knight's waiting craft: the item comes, no craft XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "an alchemist finishing an old blacksmith craft: no XP for either role",
       "pass": 1,
       "fail": 0
     },
@@ -744,9 +768,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 69,
-    "applied": 69,
-    "caught": 69,
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
     "skipped": false,
     "results": [
       {
@@ -920,9 +944,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "start :: a Knight cannot craft (NotArtisan, a key)"
+          "start :: a Knight cannot craft (NotArtisan, a key)",
+          "xp :: a Knight's waiting craft: the item comes, no craft XP"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "start: any role's recipe",
@@ -1081,7 +1106,7 @@
           "ends :: the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
           "results :: 60 of 60 at the Finish: no 61st thing, it waits",
           "results :: a full key (20) at the Finish: no 21st, it waits",
-          "results :: only 1 of 3 would fit: nothing given, it waits"
+          "results :: only 1 of 5 would fit: nothing given, it waits"
         ],
         "newFailingCount": 9
       },
@@ -1236,7 +1261,7 @@
           "hammer :: Crafted(player, W1, 2)",
           "hammer :: Grades x5"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 16
       },
       {
         "mutation": "strike: the ping then not kept",
@@ -1263,7 +1288,7 @@
           "hammer :: Skip (Finish right away): +0, made",
           "remotes :: 3 s later: a new session"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "finish: bots get their +N",
@@ -1323,7 +1348,7 @@
           "ends :: no Finish by StartAt + 20 s: made at +0",
           "ends :: room again: the waiting one is made first at its +2, then the new one starts"
         ],
-        "newFailingCount": 17
+        "newFailingCount": 19
       },
       {
         "mutation": "end: Made not counted",
@@ -1353,9 +1378,43 @@
           "xp :: 200 XP from Lv1: 40 + 113 used, Lv3 with 47",
           "xp :: 35 + 10 XP: Lv2 with 5 over",
           "xp :: Lv30 stays 30",
-          "xp :: the 2x XP pass does not touch craft XP"
+          "xp :: a hunting XP bonus (faction / rebirth) never doubles craft XP"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "xp: the pass ignored (A23-139)",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "xp :: with the 2x XP pass: 10 craft XP -> 20 (shown in CraftResult)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: the hunting bonus used",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "xp :: with the 2x XP pass: 10 craft XP -> 20 (shown in CraftResult)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: any side gets craft XP (A23-139)",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "xp :: a Knight's waiting craft: the item comes, no craft XP",
+          "xp :: an alchemist finishing an old blacksmith craft: no XP for either role"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "end: one level at most",
@@ -1428,9 +1487,10 @@
           "ends :: an earned +2 waiting in the save comes as +2",
           "ends :: an unknown recipe pays back the gold and every material (150 in two parts)",
           "ends :: no room at the join: it stays pending with its +2 (Full notice)",
-          "ends :: the gold comes back as CraftRefund (never doubled by a pass)"
+          "ends :: the gold comes back as CraftRefund (never doubled by a pass)",
+          "xp :: a Knight's waiting craft: the item comes, no craft XP"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "end: an unknown Pend stays",
@@ -1497,9 +1557,10 @@
         "newFailingChecks": [
           "ends :: full at the Finish: +2 earned and kept in the save",
           "ends :: the next start pays the +2 first",
+          "results :: room again: all of it at once (3 + the earned +2 = 5)",
           "results :: room again: the armor +2 goes in"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "pend: a waiting craft always +0",
@@ -1512,9 +1573,10 @@
           "ends :: no room at the join: it stays pending with its +2 (Full notice)",
           "ends :: room again: the waiting one is made first at its +2, then the new one starts",
           "ends :: the next start pays the +2 first",
+          "results :: room again: all of it at once (3 + the earned +2 = 5)",
           "results :: room again: the armor +2 goes in"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "off: the join writes when off",
@@ -1534,7 +1596,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "results :: only 1 of 3 would fit: nothing given, it waits"
+          "results :: only 1 of 5 would fit: nothing given, it waits"
         ],
         "newFailingCount": 1
       },
@@ -1624,13 +1686,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a0ee7351c55a312f3c6f25e37eeda0e4cbd2f1f11c123c99b52472637784cd83",
+    "src/ReplicatedStorage/Shared/Config.luau": "8c1ccd5799009b0093f21b8003765d00005ef5a806fd076f4dc49ee36bf9a007",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
-    "src/ServerScriptService/LootService.luau": "cc98aa790dd427fa78bbe60a8c4951e62be002ec7b56c305d639b94d1ead9156",
-    "src/ServerScriptService/CraftService.luau": "cf3716b3c308f6d6099ea211460dbb23484845632045ad516e8d8d9746210ca5"
+    "src/ServerScriptService/LootService.luau": "b427096f06419dc337a116b14589ac05b3ed36222c5f9261872927ad6d73ef4e",
+    "src/ServerScriptService/CraftService.luau": "59ff53422d45950753fa80abd664ad81729fb5477308403cbe303dff38785aa9"
   },
-  "fixtureSHA256": "93ea1c5689fcd647797962b7cd6360f780b4d0292ce59984327ca62b8d3f88b8",
+  "fixtureSHA256": "84f09dc67e79dedd9bf8d5e6096aff1a9020a9c28281066436b01b16a8677fcb",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

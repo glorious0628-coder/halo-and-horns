@@ -35,8 +35,9 @@ FILES = {
     "PROGRESSION_SOURCE": SSS / "ProgressionService.luau",
     "MONETIZATION_SOURCE": SSS / "MonetizationService.luau",
     "KAIJU_SOURCE": SSS / "KaijuService.luau",
+    "CRAFT_SOURCE": SSS / "CraftService.luau",  # A23-139: read as text only (the craft XP line)
 }
-C, P, M, K = "CONFIG_SOURCE", "PROGRESSION_SOURCE", "MONETIZATION_SOURCE", "KAIJU_SOURCE"
+C, P, M, K, CR = "CONFIG_SOURCE", "PROGRESSION_SOURCE", "MONETIZATION_SOURCE", "KAIJU_SOURCE", "CRAFT_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
@@ -169,11 +170,13 @@ def static() -> tuple[int, list[str]]:
     check(prog.count("* M.PassMult(player,") == 2, "the pass is applied in two places only: AddXP and boostGold")
     # 검수 2026-10-08: quest rewards double their gold (and XP) only; items (scrolls, jelly, potions, materials) never.
     # Item grants (LootService.GrantItem / drops, the quest / board / story item rewards) never read the pass: outside
-    # ProgressionService / MonetizationService only KaijuService's survive cap reads PassMult
+    # ProgressionService / MonetizationService only KaijuService's survive cap and CraftService's craft XP line (A23-139,
+    # user 10/12: 2x level AND crafting XP; the fixture's "craft XP pass" group checks it is that line only) read PassMult
     readers = sorted(p.name for p in SSS.glob("*.luau")
                      if p.name not in ("ProgressionService.luau", "MonetizationService.luau")
                      and re.search(r"PassMult|HasPass|PassBoost|PassGold2|PassXP2", strip_comments(read(p))))
-    check(readers == ["KaijuService.luau"], f"items are never 2x: no grant path but the kaiju cap reads the pass ({readers})")
+    check(readers == ["CraftService.luau", "KaijuService.luau"],
+          f"items are never 2x: no grant path but the kaiju cap and the craft XP line read the pass ({readers})")
     net = read(SHARED / "Net.luau")
     check("\"SetLook\"," in net and "SupporterNames = \"\"," in net, "Net: c->s SetLook, GameState SupporterNames")
     data = read(SSS / "DataService.luau")
@@ -205,6 +208,11 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # A23-139: the pass doubles craft XP only, never what a craft makes
+    ("craft: the result count x the pass", CR, "\tlocal n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus))) -- items: N + the hammer's +N\n", "\tlocal n = (math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))) * math.max(1, num(S.ProgressionService.PassMult(player, \"XP2\"), 1))\n"),
+    ("craft: the +N x the pass", CR, "\t\tlocal okPass, pass = pcall(function() return ps and type(ps.PassMult) == \"function\" and ps.PassMult(player, \"XP2\") or 1 end)\n\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n\tend\n", "\t\tlocal okPass, pass = pcall(function() return ps and type(ps.PassMult) == \"function\" and ps.PassMult(player, \"XP2\") or 1 end)\n\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n\t\tplus = math.min(2, plus * num(pass, 1))\n\tend\n"),
+    ("craft: the 2x Gold pass on craft XP", CR, "ps.PassMult(player, \"XP2\") or 1 end)\n", "ps.PassMult(player, \"Gold2\") or 1 end)\n"),
+    ("craft: XP x the pass twice", CR, "\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n", "\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1) * (okPass and num(pass, 1) or 1))\n"),
     # config
     ("2x Gold for sales", C, "GoldSources = { Monster = true,", "GoldSources = { Sale = true, Monster = true,"),
     ("kills not doubled", C, "GoldSources = { Monster = true, Quest = true,", "GoldSources = { Quest = true,"),

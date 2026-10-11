@@ -5094,6 +5094,12 @@ Config.Loot = {
 		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Artisans craft with it." },
 		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Artisans craft with it." },
 		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Artisans craft with it." },
+		-- alchemy tonics (Config.Alchemy, BuffService; 게임성 개발 3 2026-10-12): made by alchemists, drunk by anyone (A23-133),
+		-- monsters only, 3 minutes, two at a time. Source "Craft": never in the Forge's sell-all. Icons named later (디자인 검수)
+		MightTonic = { Kind = "Tonic", Name = "Might Tonic", Sell = 15, Color = Color3.fromRGB(235, 90, 70), Icon = "IconMightTonic", Source = "Craft", Desc = "Hit monsters harder for 3 minutes." },
+		GuardTonic = { Kind = "Tonic", Name = "Guard Tonic", Sell = 20, Color = Color3.fromRGB(90, 150, 235), Icon = "IconGuardTonic", Source = "Craft", Desc = "Monsters hurt you less for 3 minutes." },
+		LuckyTonic = { Kind = "Tonic", Name = "Lucky Tonic", Sell = 40, Color = Color3.fromRGB(110, 210, 110), Icon = "IconLuckyTonic", Source = "Craft", Desc = "More materials from monsters for 3 minutes." },
+		WisdomTonic = { Kind = "Tonic", Name = "Wisdom Tonic", Sell = 60, Color = Color3.fromRGB(175, 120, 235), Icon = "IconWisdomTonic", Source = "Craft", Desc = "More XP from monsters for 3 minutes." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5106,7 +5112,8 @@ Config.Loot = {
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
 		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy",
-		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust" },
+		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
+		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -8300,6 +8307,11 @@ Config.Craft = {
 		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 30, Bone = 60, CaptainBadge = 1, SilverOre = 12 }, XP = 900 },
 		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 60, Bone = 100, CaptainBadge = 2, ClatterGem = 1, SilverOre = 25 }, XP = 2000 },
 		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 100, CaptainBadge = 6, ClatterGem = 3, KingJelly = 10, MoonCrystal = 20 }, XP = 4000 },
+		-- alchemist tonics (④, crafting_market §4 + the gathered herbs; Kind Item = N bottles + the hammer's +N)
+		A1 = { Role = "Alch", Kind = "Item", Item = "MightTonic", N = 1, Lv = 1, Gold = 20, Mats = { Herb = 3, Jelly = 5 }, XP = 10 },
+		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
+		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
+		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",
@@ -8342,6 +8354,30 @@ Config.SpawnClear = {
 	-- a flower cart / pot is furniture; a puddle's stone rim (Kit_M_PuddleRim, 최종 검수 2026-10-12) is a rock
 	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box", "Rim" },
 }
+
+----------------------------------------------------------------- alchemy tonics (게임성 개발 3, 2026-10-12)
+-- BuffService (docs/design/alchemy_server_2026-10-12.md; A23-133: everyone drinks them, monsters only, 3 minutes, two at a
+-- time, the speed tonic after the beta). Tonics[item] = { Stat, Mult }: MonsterDamage = every hit on a monster,
+-- MonsterHurt = every monster's hit on me, MaterialDrop = the chance of a material row in a kill's drops (never a
+-- weapon, scroll, potion or the jackpot), HuntXP = a kill's XP. Drinking the same tonic again starts its 3 minutes over;
+-- a third different one waits. Saved in data.Buffs (tonic -> os.time() it ends; Config.SanitizeBuffs). Switched by
+-- Config.Features.Tonics (off; on with the artisan guild, 검수).
+Config.Features.Tonics = false
+Config.Alchemy = {
+	Duration = 180,
+	MaxActive = 2,
+	Tonics = {
+		MightTonic = { Stat = "MonsterDamage", Mult = 1.10 },
+		GuardTonic = { Stat = "MonsterHurt", Mult = 0.90 },
+		LuckyTonic = { Stat = "MaterialDrop", Mult = 1.25 },
+		WisdomTonic = { Stat = "HuntXP", Mult = 1.10 },
+	},
+	Text = {
+		TwoMax = "Only two tonics at a time.",
+		NoTonic = "You have none of that tonic.",
+	},
+}
+Config.RateLimits.UseTonic = 1
 
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save

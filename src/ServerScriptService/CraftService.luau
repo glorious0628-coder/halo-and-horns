@@ -157,7 +157,7 @@ local function room(player, data, r)
 		return true
 	end
 	local have = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
-	return have + math.max(1, math.floor(num(r.N, 1))) <= Config.Loot.ItemCap
+	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 
 -- the result goes in; false = it did not fit (the craft stays pending)
@@ -176,7 +176,7 @@ local function payOut(player, data, r, plus)
 		own[key] = math.floor(num(own[key])) + 1
 		return true
 	end
-	local n = math.max(1, math.floor(num(r.N, 1)))
+	local n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus))) -- items: N + the hammer's +N
 	local function have()
 		return type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
 	end
@@ -219,11 +219,19 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	if not payOut(player, data, r, plus) then return false end
 	c.Pend = nil
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
-	local lv, up = addXP(c, r.Role, r.XP)
+	-- A23-139 (user 10/12 "그래야 공평"): craft XP only for a player who is that artisan now (a pending craft finished after
+	-- a side change still pays its item, never the XP), x2 with the 2x XP pass (the same pass check as level XP)
+	local xp = 0
+	if roleOf(data) == r.Role then
+		local ps = S.ProgressionService
+		local okPass, pass = pcall(function() return ps and type(ps.PassMult) == "function" and ps.PassMult(player, "XP2") or 1 end)
+		xp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))
+	end
+	local lv, up = addXP(c, r.Role, xp)
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if player.Parent == Players then
 		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item,
-			Plus = plus, Grades = grades, XP = r.XP, Lv = lv, LvUp = up })
+			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up })
 		sendInfo(player, data)
 	end
 	CraftService.Crafted:Fire(player, recipeId, plus)

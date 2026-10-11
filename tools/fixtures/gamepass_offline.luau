@@ -888,4 +888,25 @@ runGroup("review 3rd look", function()
 	check(choice == 60 and quest == 120, "2x Gold: a pick's gold 60 -> 60, a quest reward 60 -> 120", show({ choice, quest }))
 end)
 
+------------------------------------------------------------------ A23-139: the craft XP pass (CraftService as text)
+-- CraftService (게임성 개발 3) reads the 2x XP pass once, for the craft XP of a finished craft; what a craft makes (its
+-- count, its +N, a weapon / gear) never reads it (검수 2026-10-08: items are never 2x)
+runGroup("craft XP pass", function()
+	local code = string.gsub(CRAFT_SOURCE, "%-%-[^\n]*", "")
+	local reads = select(2, string.gsub(code, "PassMult%(", ""))
+	check(reads == 1 and string.find(code, 'ps.PassMult(player, "XP2")', 1, true) ~= nil,
+		"CraftService reads one pass, once: the 2x XP pass", tostring(reads))
+	local a = string.find(code, "local function complete(", 1, true)
+	local b = a and string.find(code, "\nend\n", a, true)
+	local body = (a and b) and string.sub(code, a, b) or ""
+	local words = select(2, string.gsub(code, "%f[%w_]pass%f[^%w_]", ""))
+	local inBody = select(2, string.gsub(body, "%f[%w_]pass%f[^%w_]", ""))
+	check(words == 2 and inBody == 2 and string.find(body, "xp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))", 1, true) ~= nil,
+		"the pass value is used in the craft XP line only (never the count, the +N or the result)", words .. " / " .. inBody)
+	local p0 = string.find(code, "local function payOut(", 1, true)
+	local p1 = p0 and string.find(code, "\nend\n", p0, true)
+	local pay = (p0 and p1) and string.sub(code, p0, p1) or "Pass"
+	check(not string.find(pay, "[Pp]ass"), "payOut (the result: weapon, gear, items) never reads a pass", "")
+end)
+
 finish()

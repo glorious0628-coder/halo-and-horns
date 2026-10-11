@@ -65,6 +65,8 @@ Net.Names = {
 	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
 	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp }
 	"CraftInfo", -- { Role, Lv, XP, Need, Made } at join and after every craft
+	-- 게임성 개발 3 (2026-10-12) alchemy tonics (BuffService), client -> server:
+	"UseTonic", -- (itemId: a Config.Alchemy.Tonics item) drink one; the running ones are the attributes Buff_<itemId>
 }
 
 Net.GameStateDefaults = {

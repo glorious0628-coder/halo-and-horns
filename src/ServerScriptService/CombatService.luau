@@ -634,6 +634,10 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 		local g = tonumber(S.SkillService.GuardOf(victim)) or 0
 		if g > 0 then amount = amount * (1 - math.clamp(g, 0, 0.9)) end
 	end
+	-- ④ alchemy (BuffService): a Guard Tonic cuts a monster's hit too (the same 'a monster kind' test as the Guard skill)
+	if attacker == nil and type(sourceKind) == "string" and Config.MonsterTypes[sourceKind] ~= nil and S.BuffService then
+		amount = amount * S.BuffService.Mult(victim, "MonsterHurt")
+	end
 	amount = Util.RoundDamage(amount)
 	local now = os.clock()
 	lastDamagedAt[victim] = now
@@ -738,6 +742,8 @@ end
 -- CR-M10: damage a monster and return the HP it actually lost (no overkill; 0 when the hit was refused).
 -- killed = DamageMonster's own result. manual: the player's own press, not auto combat (the King Slime finisher card)
 local function damageMonster(rec, dealt, player, crit, castId, manual)
+	-- ④ alchemy (BuffService): a Might Tonic makes every hit on a monster harder (monsters only, never PvP)
+	if player and S.BuffService then dealt = dealt * S.BuffService.Mult(player, "MonsterDamage") end
 	local hpBefore = math.max(0, tonumber(rec.HP) or 0)
 	-- castId: SKL-3 one hit a cast
 	local killed = S.MonsterService.DamageMonster(rec, dealt, player, crit, castId, manual == true)

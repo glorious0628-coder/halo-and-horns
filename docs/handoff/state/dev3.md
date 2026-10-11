@@ -11,10 +11,13 @@
 ## 지금 (10/12 새벽)
 - **`dev3-craft`**(dev3-gather 520e8cb7 위) 37113fa4: ③ 제작 서버 설계 `docs/design/craft_server_2026-10-12.md` — 게임성 검수 판단 대기(숫자·펫 장비 역할·Spares 의존). 개발 4 망치질 계약 그대로 받음(false = +200ms 확인 요청). 개발 2에 AddSpare/SpareRoom·KingJelly/ClatterGem 부탁.
 - 코드 끝: CraftService(dev3-craft). 망치질은 개발 4의 공용 `Shared/CraftMini.luau`(고정 일정, CraftStrike(id, i, ms), CraftFinish(id), Accept) — 같은 파일을 이 가지에도 넣음. test_craft 101·56/56, test_craft_mini 45·16/16(dev4-craft 44dba035와 동일). 무기 결과는 개발 2 AddSpare/SpareRoom 뒤.
-- **켜는 가지에서 할 것:** 2배 XP 패스 설명 문구 바꾸기 + 정적 검사(설계 §8, 최종 검수 10/12). TolMs 질문은 CraftMini.T(Early/Late/JitterMul)로 옮겨감.
+- **켜는 가지에서 할 것:** 2배 XP 패스 설명 = "Get 2x level and crafting XP. No stats are for sale."(A23-139, 앞 문구 취소) + 정적 검사(설계 §8). TolMs 질문은 CraftMini.T(Early/Late/JitterMul)로 옮겨감.
 - 게임성 검수 10/12 후속(dev3-craft에): 채집 켜기 전 고칠 것 5개(gather_server §9-2) + 제작 지표 CraftStrikeD. **채집 켜는 조건 남음: SellItem 또는 거래소.**
 - 제작 켜기 전 고칠 것 6개 반영(craft_server §8): Pend = { Id, Plus, Gold, Mats } 등. **제작 켜는 조건 남음: 개발 2 AddSpare/SpareRoom(+ W7·W9는 새 재료·T9) + 패스 문구.**
-- 다음: ④ 연금 버프 물약(같은 레시피 표에 Kind Item 줄 + Buffs).
+- (10/12 아침) dev3-v4-tables·dev3-gather·dev3-craft 모두 main에 병합됨.
+- **④ 연금 버프 물약 = 가지 `dev3-alchemy`**(main 위): BuffService(UseTonic, Buff_<id> 속성, data.Buffs), 물약 4종·레시피 A1~A4, 효과 줄 4곳(CombatService 2·LootService·ProgressionService — 개발 2 파일, 한 줄씩), Item 레시피 = N + 망치질 +N. 설계 `docs/design/alchemy_server_2026-10-12.md`. 시험 test_alchemy 53·30/30. 남의 시험 고침: test_town_quests(Config.Gather의 Pick을 이야기 Pick으로 잘못 셈 — gather 병합 뒤 main에서도 실패하던 것), loot 픽스처(Tonic 종류 허용), new_zones 픽스처(Source Craft도 다음 묶음).
+- A23-139 반영(dev3-alchemy 두 번째 커밋): 제작 XP × 2배 XP 패스(PassMult "XP2"), 제작 XP는 그 역할 장인만.
+- 다음: ⑤ 조련사 연구·소환·간식(Research 표, Pets.Roll, Pet Treat 레시피).
 
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.
