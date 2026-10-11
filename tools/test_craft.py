@@ -90,7 +90,10 @@ MUTATIONS = [
     # --- the end
     ("end: Pend never cleared", R, "\tc.Pend = nil\n\tc.Made[recipeId]", "\tc.Made[recipeId]"),
     ("end: Made not counted", R, "\tc.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1\n", ""),
-    ("end: no XP", R, "\tlocal lv, up = addXP(c, r.Role, r.XP)\n", "\tlocal lv, up = roleRec(c, r.Role).Lv, false\n"),
+    ("end: no XP", R, "\tlocal lv, up = addXP(c, r.Role, xp)\n", "\tlocal lv, up = roleRec(c, r.Role).Lv, false\n"),
+    ("xp: the pass ignored (A23-139)", R, "xp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))", "xp = math.floor(num(r.XP))"),
+    ("xp: the hunting bonus used", R, "ps.PassMult(player, \"XP2\")", "ps.GetXPMult(player)"),
+    ("xp: any side gets craft XP (A23-139)", R, "\tif roleOf(data) == r.Role then\n\t\tlocal ps = S.ProgressionService", "\tif true then\n\t\tlocal ps = S.ProgressionService"),
     ("end: one level at most", R, "\twhile rr.Lv < K().MaxLv do\n", "\tif rr.Lv < K().MaxLv then\n"),
     ("end: no Crafted signal", R, "\tCraftService.Crafted:Fire(player, recipeId, plus)\n", ""),
     ("end: no CraftInfo after", R, "\t\tsendInfo(player, data)\n\tend\n\tCraftService.Crafted", "\tend\n\tCraftService.Crafted"),
