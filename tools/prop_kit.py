@@ -1986,6 +1986,47 @@ def run_lua(code, tag):
     return (r.stdout.strip() or r.stderr.strip())[-600:]
 
 
+NUDGE = 0.012
+
+
+def defight(parts):
+    """Block faces in one plane facing the same way z-fight in Roblox and render black in Cycles (PotTulip_B band / post
+    corners, 디자인 검수 10/12): the smaller part (no CSG ops first) steps out NUDGE studs on that face. Faces lying on
+    the ground are left alone. Returns the number of faces moved."""
+    import numpy as np
+    import prop_kit_coplanar as CP
+    blocks = [t for t in parts if t["s"] == "Block"]
+    if not blocks:
+        return 0
+    floor = min(t["p"][2] - sum(abs(ax[2]) * h for ax, h in zip(CP.boxes({"parts": [t]})[0][3], np.array(t["size"]) / 2)) for t in blocks)
+    moved = set()
+    for i in range(len(blocks)):
+        for j in range(i + 1, len(blocks)):
+            A, B = CP.boxes({"parts": [blocks[i]]})[0], CP.boxes({"parts": [blocks[j]]})[0]
+            for ia, fa in enumerate(CP.faces(A)):
+                if fa[0][2] < -0.99 and abs(fa[1][2] - floor) < 0.003:
+                    continue
+                for ib, fb in enumerate(CP.faces(B)):
+                    if CP.overlap(fa, fb) <= 0:
+                        continue
+                    va, vb = np.prod(blocks[i]["size"]), np.prod(blocks[j]["size"])
+                    pick_b = vb <= va
+                    if blocks[i].get("ops") and not blocks[j].get("ops"):
+                        pick_b = True
+                    elif blocks[j].get("ops") and not blocks[i].get("ops"):
+                        pick_b = False
+                    t, k = (blocks[j], ib) if pick_b else (blocks[i], ia)
+                    if (id(t), k) in moved:
+                        continue
+                    moved.add((id(t), k))
+                    axis, sgn = k // 2, (-1, 1)[k % 2]
+                    box_ = CP.boxes({"parts": [t]})[0]
+                    nrm = box_[3][axis] * sgn
+                    t["size"][axis] = round(t["size"][axis] + NUDGE, 4)
+                    t["p"] = [round(p + n * NUDGE / 2, 4) for p, n in zip(t["p"], nrm)]
+    return len(moved)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("kits", nargs="*")
@@ -2010,11 +2051,17 @@ def main():
         if META[k]["mirror"]:
             for t in parts:
                 mirror_x(t)
+        nudged = 0
+        for _ in range(3):                       # a stepped face can land in another part's plane: repeat
+            n = defight(parts)
+            nudged += n
+            if not n:
+                break
         zs = [t["p"][2] + max(t["size"]) / 2 for t in parts]
         json.dump(dict(name=k, **META[k], colors=COL, parts=parts), open(os.path.join(OUTDIR, k + ".json"), "w"), indent=0)
         code = build_lua(k, parts, a.marble)
         open(os.path.join(OUTDIR, k + ".luau"), "w", encoding="utf-8").write(code)
-        msg = "[prop_kit] %s: %d parts (top ~%.2f, target %.2f)" % (k, len(parts), max(zs), META[k]["h"])
+        msg = "[prop_kit] %s: %d parts (top ~%.2f, target %.2f, %d coplanar faces stepped out)" % (k, len(parts), max(zs), META[k]["h"], nudged)
         if a.apply:
             msg += " -> " + run_lua(code, k)
         print(msg)

@@ -57,6 +57,9 @@ ap.add_argument("--px", type=int, default=1024)
 ap.add_argument("--rotz", type=float, default=90.0)
 ap.add_argument("--out", default=os.path.join(ROOT, "art", "models", "tripo", "touchup"))
 ap.add_argument("--preview", action="store_true")
+ap.add_argument("--outline", type=float, default=0.035, help="thin outline shell (SPEC A23-139) in studs, 0 = none; built on a voxel-remeshed copy so only the silhouette of a leaf mass gets a line, not every leaf")
+ap.add_argument("--outline-voxel", type=float, default=0.0, help="voxel size for the outline base (0 = 1.5 %% of the size)")
+ap.add_argument("--rim-frac", type=float, default=0.0, help="plant: where the pot rim sits in the 2D front (tools/rim_frac_2d.py); the whole Tripo model is scaled so that height x rim_frac = the body top (the plant keeps the 2D proportion to the pot)")
 ap.add_argument("--calib", action="store_true", help="plant: try to match Tripo's gold rim to the body top (off: unreliable, 10/12)")
 ap.add_argument("--below-all", action="store_true", help="plant: cut every face under the body top (no hanging leaves; Tripo pot wider than the body)")
 ap.add_argument("--tol", type=float, default=0.06, help="studs kept clear round the body")
@@ -84,6 +87,17 @@ def select_only(obs, active):
 
 def tris(ob):
     return sum(len(p.vertices) - 2 for p in ob.data.polygons)
+
+
+def body_rim_top(obs):
+    """Top of the pot itself: the highest body object at least half as wide as the widest one (finial balls on the rim
+    do not count - Topiary_E's rim balls made the hedge float, 10/12)."""
+    spans = []
+    for o in obs:
+        W = np.array([(o.matrix_world @ v.co)[:] for v in o.data.vertices])
+        spans.append((W[:, 2].max(), max(np.ptp(W[:, 0]), np.ptp(W[:, 1]))))     # the object's own width
+    wmax = max(w for _, w in spans)
+    return max(z for z, w in spans if w >= 0.5 * wmax)
 
 
 # ---------------------------------------------------------------- 1. load, turn, place, scale
@@ -155,6 +169,10 @@ elif a.kind == "ontop":
     stats["body_top"] = round(bmx.z, 3)
 else:
     s = val / (size0[2] if key == "h" else max(size0[0], size0[1]))
+    if a.kind == "plant" and body_obs and a.rim_frac > 0:
+        zt = body_rim_top(body_obs)
+        s = zt / a.rim_frac / size0[2]
+        stats["rim_frac"] = {"frac": a.rim_frac, "body_top": round(zt, 3), "height": round(zt / a.rim_frac, 3)}
     me.transform(Matrix.Scale(s, 4))
     if a.kind == "plant" and body_obs and a.calib:
         # match Tripo's pot to the part body: the top of Tripo's gold rim (outermost gold faces in the lower part)
@@ -199,7 +217,7 @@ if a.kind == "plant":
     for o in body_obs:
         W = np.array([(o.matrix_world @ v.co)[:] for v in o.data.vertices])
         spans.append((W[:, 2].min(), W[:, 2].max(), np.sqrt(W[:, 0] ** 2 + W[:, 1] ** 2).max()))
-    ztop = max(sp[1] for sp in spans)
+    ztop = body_rim_top(body_obs)
     stats["body_top"] = round(ztop, 3)
 
     def r_at(z):
@@ -288,8 +306,65 @@ stats["min"] = [round(v, 3) for v in mn]
 stats["maps"] = ["%s_%s.png" % (NAME, t) for t in ("C", "N", "R", "M")]
 stats["px"] = a.px
 
-# ---------------------------------------------------------------- 6. export
-select_only([work], work)
+# ---------------------------------------------------------------- 5b. outline shell (inverted hull)
+outline = None
+if a.outline > 0:
+    outline = work.copy()
+    outline.data = work.data.copy()
+    outline.name = NAME + "_Outline"
+    bpy.context.scene.collection.objects.link(outline)
+    outline.data.materials.clear()
+    vox = a.outline_voxel or max(0.03, 0.015 * max(mx - mn))
+    select_only([outline], outline)
+    rm = outline.modifiers.new("remesh", "REMESH")
+    rm.mode = "VOXEL"
+    rm.voxel_size = vox
+    bpy.ops.object.modifier_apply(modifier=rm.name)
+    if tris(outline) > 4000:
+        dm = outline.modifiers.new("dec", "DECIMATE")
+        dm.ratio = 4000 / max(tris(outline), 1)
+        bpy.ops.object.modifier_apply(modifier=dm.name)
+    tm = outline.modifiers.new("tri", "TRIANGULATE")
+    bpy.ops.object.modifier_apply(modifier=tm.name)
+    ob_bm = bmesh.new()
+    ob_bm.from_mesh(outline.data)
+    ob_bm.normal_update()
+    # 디자인 검수 10/12 (same rule as the part kits): no shell under the mesh - faces facing down at its foot (ground / the
+    # part body it sits on) are dropped, nothing goes more than 0.01 below the foot
+    zf = min(v.co.z for v in ob_bm.verts)
+    down = [f for f in ob_bm.faces if f.normal.z < -0.7 and max(v.co.z for v in f.verts) < zf + 0.06]
+    bmesh.ops.delete(ob_bm, geom=down, context="FACES")
+    bmesh.ops.delete(ob_bm, geom=[v for v in ob_bm.verts if not v.link_faces], context="VERTS")
+    ob_bm.normal_update()
+    for v in ob_bm.verts:
+        v.co += v.normal * a.outline * min(v.calc_shell_factor(), 3.0)
+        if v.co.z < zf - 0.01:
+            v.co.z = zf - 0.01
+    bmesh.ops.reverse_faces(ob_bm, faces=ob_bm.faces)
+    ob_bm.to_mesh(outline.data)
+    ob_bm.free()
+    while outline.data.uv_layers:
+        outline.data.uv_layers.remove(outline.data.uv_layers[0])
+    om = bpy.data.materials.new("Outline")
+    om.use_nodes = True
+    nt = om.node_tree
+    pb = nt.nodes["Principled BSDF"]
+    pb.inputs["Base Color"].default_value = (0.069, 0.031, 0.017, 1)          # (74, 50, 36) in linear
+    pb.inputs["Roughness"].default_value = 0.9
+    om.use_backface_culling = True
+    geo = nt.nodes.new("ShaderNodeNewGeometry")                                 # preview only: Cycles draws both sides
+    tr = nt.nodes.new("ShaderNodeBsdfTransparent")
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(geo.outputs["Backfacing"], mix.inputs[0])
+    nt.links.new(pb.outputs[0], mix.inputs[1])
+    nt.links.new(tr.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], nt.nodes["Material Output"].inputs["Surface"])
+    outline.data.materials.append(om)
+    outline.visible_shadow = outline.visible_diffuse = outline.visible_glossy = outline.visible_transmission = False
+    stats["outline"] = {"thickness": a.outline, "voxel": round(vox, 3), "tris": tris(outline)}
+
+# ---------------------------------------------------------------- 6. export (the plant / head and its outline as two meshes)
+select_only([work] + ([outline] if outline else []), work)
 bpy.ops.export_scene.gltf(filepath=os.path.join(OUT, NAME + ".glb"), export_format="GLB", use_selection=True,
                           export_apply=True)
 json.dump(stats, open(os.path.join(OUT, NAME + ".json"), "w"), indent=1)
@@ -301,6 +376,8 @@ if a.preview:
     sc = bpy.context.scene
     obs = [work] + body_obs
     bmn, bmx = bounds(obs)
+    if outline:
+        obs.append(outline)
     ctr = (bmn + bmx) / 2
     size = max(bmx - bmn)
     sc.render.engine = "CYCLES"

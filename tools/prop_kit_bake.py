@@ -190,6 +190,7 @@ def make_hull(K, t):
         if sz is None:                       # CSG-renamed objects keep the part name; unknown = keep
             return True
         return min(sz) >= a.hull_min and max(sz) >= a.hull_big
+    floor = bounds(obs)[0].z
     keep = [o for o in obs if o.get("pk_mat") not in NO_HULL and big(o)]
     for o in obs:
         if o not in keep:
@@ -198,8 +199,16 @@ def make_hull(K, t):
     bm = bmesh.new()
     bm.from_mesh(h.data)
     bm.normal_update()
+    # 디자인 검수 10/12: no hull under the kit - faces on the ground (facing down, near the floor) are dropped so the bottom
+    # corners are not pushed down / out into a thick black band, and nothing is left below the floor
+    down = [f for f in bm.faces if f.normal.z < -0.7 and max(v.co.z for v in f.verts) < floor + 0.06]
+    bmesh.ops.delete(bm, geom=down, context="FACES")
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    bm.normal_update()
     for v in bm.verts:
         v.co += v.normal * t * min(v.calc_shell_factor(), 3.0)
+        if v.co.z < floor - 0.01:
+            v.co.z = floor - 0.01
     bmesh.ops.reverse_faces(bm, faces=bm.faces)
     bm.to_mesh(h.data)
     bm.free()
