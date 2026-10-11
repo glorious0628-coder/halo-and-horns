@@ -1,4 +1,6 @@
-# 게임성 개발 4 — 인계 상태 (2026-10-12, 가방 main 병합·fix/bag-2·채집 화면·망치질 판정+고리 화면 push)
+# 게임성 개발 4 — 인계 상태 (2026-10-12 01:45 PC 끄기 전, 가방 main 병합·fix/bag-2·채집 화면·망치질 판정+고리 화면 push)
+
+아침에: 게임성 검수 답(fix/bag-2·dev4-gather bb2cdbfe·dev4-craft 5d4fc6f3 병합 가능?) 확인 → ③-3 제작 창을 dev4-craft 위에 쌓기. 이미지 개발 imgdev-icons1(재료 아이콘 10개 키)이 먼저 들어감 — 내 가지엔 그 키 안 넣음.
 
 클라 화면만(StarterPlayerScripts·UIKit·클라 시험 + 공용 순수 모듈). 메인 Studio 안 건드림. **보고: 가지 push·사진·결과 = '게임성 검수', UiSandbox 화면 조작 승인·사용자 질문 = '최종 검수'**(list_sessions로 찾기). UiSandbox 창·Play는 최종 검수에 "게임성 개발 4 / 무엇 / 몇 초" → "전달함, 시작" 뒤에만, 끝나면 Play 멈추고 UiSandbox 저장 없이 닫기(Stop-Process 그 pid, 제목에 UiSandbox 확인) → "끝". 바탕화면 마우스·키보드 금지(내 시험 Play 안 Studio MCP user_mouse_input은 승인받고만).
 - worktree(sparse src/tools/docs): `Game-dev4w` = `fix/bag-2`(옛 dev4-bag은 main에 병합됨), `Game-dev4g` = `dev4-gather` / `dev4-craft`(같은 폴더, 브랜치 바꿔 씀). 쌓는 순서 fix/bag-2 → dev4-gather → dev4-craft.
@@ -12,7 +14,7 @@ BagUI.luau(탭 4·등급 칸·입은 칸·설명 칸·Equip/Drink+퀵슬롯/주�
 ## ② 채집 화면 — dev4-gather bb2cdbfe(게임성 검수 통과, 최종 검수 병합 대기)
 GatherView.luau(노드 글 ActionKey/ObjectKey, 나만 쉬는 노드 흐리게). 개발 3 채집 서버는 main에 있음(꺼짐).
 
-## ③ 망치질 — dev4-craft 3f94f2f5(게임성 검수 시험 차례)
+## ③ 망치질 — dev4-craft 5d4fc6f3(게임성 검수 '고쳐서 다시' 반영: Space 직접 묶기 → 점프 끄고 JumpRequest = 두드림(BB1), keys_settings·craft_view 45·20/20 통과, 다시 시험 대기)
 - 설계 `docs/design/hammer_minigame_2026-10-12.md`, 공용 `Shared/CraftMini.luau`(main에 개발 3 것과 같은 파일), test_craft_mini 45·16/16. 개발 3 CraftService(main, 꺼짐)가 CraftMini로 판정, 원격 CraftStart / CraftSession / CraftStrike(Id,i,ms) / CraftFinish(Id) / CraftResult / CraftInfo.
 - CraftView.luau(고리 화면, Skip, Studio 연습 CraftPractice, 그림 키 CraftTarget·CraftIngot·CraftRing 먼저), test_craft_view 41·17/17, 사진 craft_ring/pc 3장.
 - 소리 키 HammerPerfect/Great/Good/Miss·CraftDone 없음(소리 만들기에 요청 필요). 그림은 디자인 검수 → 이미지 생성 2.
