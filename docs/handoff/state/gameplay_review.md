@@ -17,7 +17,14 @@ fix/onehand 33272a46, golden-egg 3d95925a, dev3-v4-tables e5c8bb08, fix/lesstext
 - 개발 1: Eggs 모드 켜기 전 알 팝·소리 두 번 고침(보냄).
 - lesstext-server '서버 글 판정표' 큰 커밋(개발 2) — 오면 따로.
 
+## 전달 확인 필요
+- 개발 4 (전달 안 됐을 수 있음 eb6349d2): 재료 팔기 합계 골드·개수 = `Kind == "Material" and Source == nil`만(Panels 2240·2727-2733), 팔 것 없으면 버튼 끔, 가방 판매가 줄은 Source 물건이면 숨김.
+- 개발 2: main test_english 낡은 변이(twins drift apart, ClaimedEn 지워짐) 고치기 — main에서 실패 확인. 보스 재료 KingJelly·ClatterGem = Source "Boss"(결정).
+- 개발 1: 받기 칩 "★ +150..." 잘림(merge_a23130/06_claim_*) → 칩 폭 또는 IconCoin + 숫자.
+- 최종 검수: golden-egg eebeebd3 병합 가능(egg_fx 53·27/27, audio), main test_english 실패(개발 2 몫), dev3-craft b868d6ce 시험 결과.
+
 ## 결정
+- 보스 재료(KingJelly·ClatterGem) = Source "Boss" → 한 번에 팔기에서 빠짐(개발 2 C1/C2).
 - 한 번에 팔기 = 몬스터 재료만(채집·제작 재료는 SellItem으로). 2배 XP 패스 글은 제작 켜는 가지에서("Get 2x level XP, so you level up 2x faster. Crafting levels do not change. No stats are for sale.").
 - 망치질: 두드림마다 CraftStrike(Id, i, ms), 공용 Shared/CraftMini 하나, Finish(Id)만, Skip = +0, 나가기·20초 = +0 저장, 핑 = 시작·두드림·지금 중 큰 값.
 - 제작 서버: 레시피 시작값 OK, 펫 장비 = 조련사, 무기는 개발 2 AddSpare 뒤.
