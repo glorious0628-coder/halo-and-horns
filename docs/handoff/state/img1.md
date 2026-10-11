@@ -57,7 +57,7 @@
 - 지도 `art/review/world/halo_v2/halo_props_map.png`(번호 = 표, 빨간 글씨 = 새 키트 NEW_ 18종). 구역 밖 가장자리 소품은 가까운 구역(zone)에 묶음.
 - 바꾼 것: 성문 경비 초소 = 성문 안쪽 **서쪽**(동쪽은 탑·발판·채움 빛, 비대칭).
 - 검수 사진 판정 → 5단계 할 일 = plan `dressing.stage5_fixes`(길 두 겹·반 잘린 디딤돌·하늘색 기둥 숨김·바위 테·LOD 점·폭포 v2).
-- **금 2차(이미지 개발, 10/11 저녁)**: WorldKit(저장 안 함)의 HH_HaloGoldTrim 파트 4110개 = 색 (255,195,45), MV 금속 0.5·거칠기 0.15. 되돌리기 `tools/gold_trim_apply.luau` MODE "undo". **내 생성기(skeleton_civic·skeleton_ground GOLD_RGB)는 아직 (255,175,25)** → 다시 돌리면 옛 금색으로 돌아감. 검수 통과 소식 오면 두 파일 GOLD_RGB = (255,195,45)로 고쳐 올림.
+- **금 2차(이미지 개발, 10/11 저녁)**: WorldKit(저장 안 함)의 HH_HaloGoldTrim 파트 4110개 = 색 (255,195,45), MV 금속 0.5·거칠기 0.15. 되돌리기 `tools/gold_trim_apply.luau` MODE "undo". **내 생성기(skeleton_civic·skeleton_ground GOLD_RGB)는 아직 (255,175,25)** → 다시 돌리면 옛 금색으로 돌아감. → **최종 (255,168,36)(cd1aaa3) 확정, 두 파일 GOLD_RGB 고쳐 올림** — 이제 다시 돌려도 금색 같음.
 - **검수 판정(10/11): 소품 130 + 등불 44 통과.** 밀도는 5단계 사진에서 다시(분수 광장·대성당 언덕 잔디·전망대가 비어 보이면 이유 있는 것만 더함). 새 키트 18종 = **전부 만듦** → 목록 `docs/design/halo_new_prop_kits_2026-10-11.md`(2D 4면 이미지 생성 2, Tripo·Blender 이미지 생성 3, 검수가 넘김).
 - **WorldKit에 놓음(10/11 저녁, Edit, 파일 저장 안 함)**: `py tools/worldkit/halo_props_place.py [--mode remove]` → `Workspace.HaloV2.Props` = StandIn 96(옛 WorldKit3D 등불·화단·화분·나무·토피어리·난간을 키트 키×크기로 줄여 대신 놓음, 속성 StandIn — 자리·크기 보기용, 최종 모양 아님) + Placeholder 78(반투명 상자 + 이름: 파랑 41 = 만든 키트지만 Studio에 없음 HaloReasonHQ·Flagpole, 주황 37 = NEW). 땅 못 찾은 것 0, 탑 꼭대기 사진 원판은 탑 위. 속성 PropId·Kit·Why·Anchor.
 - 왜 진짜 키트가 아닌가: HaloVar4_*/HaloReasonHQ_*/FlowerPotHQ 모델은 파일(`art/models/tripo/halo_props/<이름>/*_parts.glb`)만 있고 WorldKit에 안 올라감 + 3D 재검사(`docs/review/3d_recheck_2026-10-11_result.md`) 178개 전부 '다시'. 고쳐진 키트가 Studio에 들어오면 STAND 표 대신 그 모델을 복제하게 바꿀 것.

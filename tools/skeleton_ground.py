@@ -10,7 +10,7 @@ The Luau measures the ground on the Terrain (workspace:Raycast down on Terrain o
   * every walking part carries the CollectionService tag "WalkGround" (Config.Ground.Tag): road plates, stepping stones, plaza
     discs, yard discs, stairs, landings, and the Workspace.HaloV2.Bridges Bridge_* decks. Rails and gold trim are NOT ground;
   * materials as skeleton_civic.py: marble = Marble + MaterialVariant HH_HaloMarbleBlock_Cream + (255,244,222), gold = Metal +
-    HH_HaloGoldTrim + (255,175,25), cobble = Cobblestone (214,200,168), stepping stone = Slate (210,205,195);
+    HH_HaloGoldTrim + (255,168,36), cobble = Cobblestone (214,200,168), stepping stone = Slate (210,205,195);
   * grade 1 = marble plates + two gold lines, grade 2 = cobblestone plates, grade 3 = stepping stones (deterministic jitter from the
     id's letter codes); a bend > 8 deg gets an upright disc of diameter w; a 5-stud step steeper than 24 deg becomes real stairs
     (rise 0.5, tread 1.2) with a landing at each end and rails on both sides;
@@ -46,7 +46,7 @@ OX, OZ = (float(v) for v in args.offset.split(","))
 
 MARBLE_VARIANT = "HH_HaloMarbleBlock_Cream"
 MARBLE_RGB = (255, 244, 222)
-GOLD_RGB = (255, 175, 25)
+GOLD_RGB = (255, 168, 36)  # 이미지 개발 10/11 최종(cd1aaa3)
 COBBLE_RGB = (214, 200, 168)
 SLATE_RGB = (210, 205, 195)
 PLAZA_R = 40.0
