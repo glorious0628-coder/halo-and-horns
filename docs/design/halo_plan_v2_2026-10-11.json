@@ -1524,7 +1524,7 @@
    "kind": "Gate",
    "district": "arrival",
    "x": 0,
-   "z": -346,
+   "z": -334,
    "ground_y": 0,
    "yaw": 0,
    "door_dir": [
@@ -1533,38 +1533,38 @@
    ],
    "door_compass": "북",
    "w": 50,
-   "d": 32,
-   "h": 48,
+   "d": 16,
+   "h": 44,
    "floors": 1,
-   "floor_h": 20,
+   "floor_h": 30,
    "door_size": [
-    14,
-    20
+    16,
+    30
    ],
-   "note": "교차로 다리 끝. 통로 14×20, 양쪽으로 지나감",
+   "note": "Gate_HaloTown Lintel (0,-330) 그대로. 깊이 16(다리 끝에 걸침), 통로 16×30: 오프닝 카메라 (18,30,-315)→(6,26,-340)가 문 안으로 지나가게",
    "door_at": [
     0.0,
-    -330.0
+    -326.0
    ],
    "footprint": [
     [
      -25.0,
-     -362.0
+     -342.0
     ],
     [
      25.0,
-     -362.0
+     -342.0
     ],
     [
      25.0,
-     -330.0
+     -326.0
     ],
     [
      -25.0,
-     -330.0
+     -326.0
     ]
    ],
-   "door_to_path": 0,
+   "door_to_path": 0.0,
    "path_from": "main"
   },
   {
@@ -2645,12 +2645,20 @@
  "fixed_points": {
   "keep": [
    {
-    "name": "성문 / 다리 끝",
+    "name": "Bridge_Halo",
     "at": [
      0,
      -330
     ],
-    "code": "Config.Map.Gates, 다리 경로 From (0,-150) To (0,-330)"
+    "code": "Map.Decor.Bridge_Halo (0,-150)→(0,-330) 폭 22, 갑판 Y ~0.2: 교차로로 나가는 유일한 길"
+   },
+   {
+    "name": "Gate_HaloTown",
+    "at": [
+     0,
+     -330
+    ],
+    "code": "Map.Gates.Gate_HaloTown, PrimaryPart Lintel (Config 1734, MapBuilder가 매번 맞춤)"
    },
    {
     "name": "스폰 + 보는 쪽",
@@ -2658,23 +2666,12 @@
      0,
      -420
     ],
-    "code": "Config.Zones.HaloTown.Spawn / SpawnLook (0,0,-330)"
+    "code": "Config.Zones.HaloTown.Spawn (0,0,-420) / SpawnLook (0,0,-330); 스폰 ±6 땅 = Y 0"
    },
    {
-    "name": "영웅상",
-    "at": [
-     0,
-     -370
-    ],
-    "code": "Config.StoryQuests.Landmarks.HeroStatue"
-   },
-   {
-    "name": "Sir Gleam",
-    "at": [
-     -10,
-     -372
-    ],
-    "code": "Config.TownNpcs Gleam"
+    "name": "스폰-문 통로",
+    "at": null,
+    "code": "|x|≤12, z -330..-432 와 (0,-420) 반경 12는 비움(큰 길만, 소품·NPC·동상 없음)"
    },
    {
     "name": "Bright",
@@ -2682,42 +2679,82 @@
      18,
      -424
     ],
-    "code": "Config.TownNpcs Bright"
+    "code": "Config.TownNpcs Bright (통로 밖, 스폰에서 18)"
    },
    {
-    "name": "구역 경계",
+    "name": "이동 발판",
+    "at": [
+     -24,
+     -357
+    ],
+    "code": "Map.Pads Pad_Halo_SlimeMeadow (-24,0.7,-357) / Pad_Halo_GoblinWoods (24,0.7,-357) 그대로"
+   },
+   {
+    "name": "구역 상자",
     "at": null,
-    "code": "Config.Zones.HaloTown Center (0,0,-515) Size 400×370 = x -200..200, z -700..-330; IslandHalo 같은 상자"
+    "code": "Config.Zones.HaloTown x -200..200, z -700..-330 그대로(넘침 없음). 가장 높은 땅 Y 34 < 물 구조 MaxRise 42"
    },
    {
-    "name": "월드맵 이름 자리",
+    "name": "월드맵 라벨",
     "at": [
      0,
      -400
     ],
-    "code": "WorldMap.luau HaloTown 라벨"
-   },
-   {
-    "name": "오프닝 카메라",
-    "at": [
-     0,
-     -410
-    ],
-    "code": "Intro.luau Halo = (0,16,-410)"
+    "code": "WorldMap.luau HaloTown"
    }
   ],
   "move": [
+   {
+    "name": "영웅상 HeroStatue",
+    "now": [
+     0,
+     -370
+    ],
+    "new_xyz": [
+     -34,
+     0,
+     -388
+    ],
+    "code": "Config.StoryQuests.Landmarks.HeroStatue (통로 |x|≤12 안이라 서쪽으로 비킴, 큰 길을 봄; H6 Near 16)"
+   },
+   {
+    "name": "Sir Gleam",
+    "now": [
+     -10,
+     -372
+    ],
+    "new_xyz": [
+     -22,
+     0,
+     -368
+    ],
+    "code": "Config.TownNpcs Gleam At/Look(0,-372) (통로 밖으로 12 비킴, 문 길 옆 그대로)"
+   },
    {
     "name": "물약 상인 PotionHalo",
     "now": [
      20.07,
      -468.17
     ],
-    "new": [
+    "new_xyz": [
      24,
+     5,
      -458
     ],
-    "code": "Config.TownNpcs PotionHalo At/Look/Y(9 → 5)"
+    "code": "Config.TownNpcs PotionHalo At/Look(14,-440)/Y 5 (12칸 안 판매 그대로)"
+   },
+   {
+    "name": "Folk3 빵집",
+    "now": [
+     -6.35,
+     -476.52
+    ],
+    "new_xyz": [
+     76,
+     7,
+     -454
+    ],
+    "code": "Config.TownNpcs Folk3 At/Look(66,-470)/Y 7"
    },
    {
     "name": "Folk1 주스",
@@ -2725,11 +2762,12 @@
      38.42,
      -499.19
     ],
-    "new": [
-     88,
-     -482
+    "new_xyz": [
+     92,
+     8,
+     -484
     ],
-    "code": "Config.TownNpcs Folk1 At/Look/Y"
+    "code": "Config.TownNpcs Folk1 At/Look(72,-482)/Y 8"
    },
    {
     "name": "Folk2 꽃",
@@ -2737,23 +2775,12 @@
      6.6,
      -489.63
     ],
-    "new": [
-     60,
+    "new_xyz": [
+     58,
+     8,
      -490
     ],
-    "code": "Config.TownNpcs Folk2 At/Look/Y"
-   },
-   {
-    "name": "Folk3 빵",
-    "now": [
-     -6.35,
-     -476.52
-    ],
-    "new": [
-     76,
-     -456
-    ],
-    "code": "Config.TownNpcs Folk3 At/Look/Y"
+    "code": "Config.TownNpcs Folk2 At/Look(62,-472)/Y 8"
    },
    {
     "name": "Folk4 분수",
@@ -2761,34 +2788,72 @@
      46,
      -556
     ],
-    "new": [
-     34,
-     -546
+    "new_xyz": [
+     36,
+     10,
+     -548
     ],
-    "code": "Config.TownNpcs Folk4 At/Look(분수 (22,-540))/Y 10"
+    "code": "Config.TownNpcs Folk4 At/Look(22,-540)/Y 10; 분수 이름 Town_Halo_Fountain3"
    },
    {
     "name": "폭포 소리 6곳",
     "now": null,
-    "new": null,
-    "code": "Config.Audio.Ambient.Waterfall.Spots → W1 (-70,1,-340), W2 (-44,20,-592), W3 (194,10,-566)"
+    "new_xyz": null,
+    "code": "Config.Audio.Ambient.Waterfall.Spots → W1 (-70,1,-340), W2 (-44,20,-592), W3 (194,10,-566) 3곳(또는 Decor 아래 이름 …Waterfall)"
    },
    {
-    "name": "빛 마을 미니맵 그림",
+    "name": "RoadNorthIsland 띠",
     "now": null,
-    "new": null,
-    "code": "Config.UIArt MapHaloTown: 새 마을이 서면 다시 그림(이미지 개발)"
+    "new_xyz": null,
+    "code": "미니맵 x -8..8, z -600..-330 → 새 큰 길 따라(성문→스폰→시장→광장→대성당)"
+   },
+   {
+    "name": "큰 지도·미니맵",
+    "now": null,
+    "new_xyz": null,
+    "code": "WorldMapV2 그림(이미지 생성 2) + Halo MapTiles 다시 찍기(6단계 직전)"
    },
    {
     "name": "훈련장 (새)",
     "now": null,
-    "new": [
+    "new_xyz": [
      -100,
+     2,
      -444
     ],
     "code": "새 Landmark TrainingYard + 허수아비 표적(게임성 개발: 첫 기술 퀘스트가 여기를 가리키게)"
+   },
+   {
+    "name": "오프닝 카메라",
+    "now": null,
+    "new_xyz": null,
+    "code": "Intro.luau (18,30,-315)→(6,26,-340), 조각 (0,18,-406): 새 성문 통로 16×30이면 그대로, 3단계 사진으로 확인"
    }
-  ]
+  ],
+  "ground_rule": "걷는 바닥은 전부 Terrain(마당·길·광장·건물 앞·다리 끝 땅). 파트 바닥은 땅으로 안 침(MonsterService·ZoneService·KaijuService·LandShadow·SkillFx·Fx). 개발의 WalkGround 태그 전까지 건물 1층 바닥도 Terrain 위에 바로 문턱. 다리만 Decor.Bridge_* 이름.",
+  "pads": [
+   {
+    "name": "Pad_Halo_SlimeMeadow",
+    "at": [
+     -24,
+     0.7,
+     -357
+    ]
+   },
+   {
+    "name": "Pad_Halo_GoblinWoods",
+    "at": [
+     24,
+     0.7,
+     -357
+    ]
+   }
+  ],
+  "names": {
+   "fountain": "Town_Halo_Fountain3",
+   "lamps": "LampLight 속성/태그",
+   "collision": "DecorPlayerOnly"
+  }
  },
  "checks": {
   "paving_share": 0.228,

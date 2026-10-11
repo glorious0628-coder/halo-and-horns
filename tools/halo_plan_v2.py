@@ -116,7 +116,7 @@ BRIDGES = [
 
 # ---------------------------------------------------------------- buildings: kind -> footprint (w, d), height, floors, floor height, door (w, h)
 KINDS = {
-    "Gate": (50, 32, 48, 1, 20, (14, 20)),
+    "Gate": (50, 16, 44, 1, 30, (16, 30)),
     "Tower": (12, 12, 36, 3, 8, (4, 7)),
     "Shop": (24, 15, 18, 1, 9, (5, 7.5)),
     "HouseA": (24, 22, 26, 2, 7, (4, 7)),
@@ -128,7 +128,7 @@ KINDS = {
 
 # (id, kind, district, x, z, faces=(x, z) the door looks at, note)
 BUILDINGS = [
-    ("Gate", "Gate", "arrival", 0, -346, (0, -300), "교차로 다리 끝. 통로 14×20, 양쪽으로 지나감"),
+    ("Gate", "Gate", "arrival", 0, -334, (0, -300), "Gate_HaloTown Lintel (0,-330) 그대로. 깊이 16(다리 끝에 걸침), 통로 16×30: 오프닝 카메라 (18,30,-315)→(6,26,-340)가 문 안으로 지나가게"),
     ("Tower_GateEast", "Tower", "arrival", 40, -350, (20, -380), "성문 동쪽 큰 탑(서쪽엔 탑 없음 = 비대칭)"),
     ("Shop_Potion", "Shop", "market", 34, -470, (14, -440), "물약 가게: 스폰에서 보이게 북서를 봄"),
     ("Shop_Bakery", "Shop", "market", 82, -442, (66, -470), "빵집: 골목 북쪽"),
@@ -166,25 +166,31 @@ ROUTE = [(0, -420), (18, -424), (24, -458), (8, -436), (-30, -436), (-48, -434),
          (-96, -402), (-70, -384), (-56, -376), (-24, -366), (-8, -362), (0, -346)]
 
 FIXED_KEEP = [
-    ("성문 / 다리 끝", (0, -330), "Config.Map.Gates, 다리 경로 From (0,-150) To (0,-330)"),
-    ("스폰 + 보는 쪽", (0, -420), "Config.Zones.HaloTown.Spawn / SpawnLook (0,0,-330)"),
-    ("영웅상", (0, -370), "Config.StoryQuests.Landmarks.HeroStatue"),
-    ("Sir Gleam", (-10, -372), "Config.TownNpcs Gleam"),
-    ("Bright", (18, -424), "Config.TownNpcs Bright"),
-    ("구역 경계", None, "Config.Zones.HaloTown Center (0,0,-515) Size 400×370 = x -200..200, z -700..-330; IslandHalo 같은 상자"),
-    ("월드맵 이름 자리", (0, -400), "WorldMap.luau HaloTown 라벨"),
-    ("오프닝 카메라", (0, -410), "Intro.luau Halo = (0,16,-410)"),
+    ("Bridge_Halo", (0, -330), "Map.Decor.Bridge_Halo (0,-150)→(0,-330) 폭 22, 갑판 Y ~0.2: 교차로로 나가는 유일한 길"),
+    ("Gate_HaloTown", (0, -330), "Map.Gates.Gate_HaloTown, PrimaryPart Lintel (Config 1734, MapBuilder가 매번 맞춤)"),
+    ("스폰 + 보는 쪽", (0, -420), "Config.Zones.HaloTown.Spawn (0,0,-420) / SpawnLook (0,0,-330); 스폰 ±6 땅 = Y 0"),
+    ("스폰-문 통로", None, "|x|≤12, z -330..-432 와 (0,-420) 반경 12는 비움(큰 길만, 소품·NPC·동상 없음)"),
+    ("Bright", (18, -424), "Config.TownNpcs Bright (통로 밖, 스폰에서 18)"),
+    ("이동 발판", (-24, -357), "Map.Pads Pad_Halo_SlimeMeadow (-24,0.7,-357) / Pad_Halo_GoblinWoods (24,0.7,-357) 그대로"),
+    ("구역 상자", None, "Config.Zones.HaloTown x -200..200, z -700..-330 그대로(넘침 없음). 가장 높은 땅 Y 34 < 물 구조 MaxRise 42"),
+    ("월드맵 라벨", (0, -400), "WorldMap.luau HaloTown"),
 ]
+# (what, now, new (x, y, z) or None, Config / code to change)
 FIXED_MOVE = [
-    ("물약 상인 PotionHalo", (20.07, -468.17), (24, -458), "Config.TownNpcs PotionHalo At/Look/Y(9 → 5)"),
-    ("Folk1 주스", (38.42, -499.19), (88, -482), "Config.TownNpcs Folk1 At/Look/Y"),
-    ("Folk2 꽃", (6.6, -489.63), (60, -490), "Config.TownNpcs Folk2 At/Look/Y"),
-    ("Folk3 빵", (-6.35, -476.52), (76, -456), "Config.TownNpcs Folk3 At/Look/Y"),
-    ("Folk4 분수", (46, -556), (34, -546), "Config.TownNpcs Folk4 At/Look(분수 (22,-540))/Y 10"),
-    ("폭포 소리 6곳", None, None, "Config.Audio.Ambient.Waterfall.Spots → W1 (-70,1,-340), W2 (-44,20,-592), W3 (194,10,-566)"),
-    ("빛 마을 미니맵 그림", None, None, "Config.UIArt MapHaloTown: 새 마을이 서면 다시 그림(이미지 개발)"),
-    ("훈련장 (새)", None, (-100, -444), "새 Landmark TrainingYard + 허수아비 표적(게임성 개발: 첫 기술 퀘스트가 여기를 가리키게)"),
+    ("영웅상 HeroStatue", (0, -370), (-34, 0, -388), "Config.StoryQuests.Landmarks.HeroStatue (통로 |x|≤12 안이라 서쪽으로 비킴, 큰 길을 봄; H6 Near 16)"),
+    ("Sir Gleam", (-10, -372), (-22, 0, -368), "Config.TownNpcs Gleam At/Look(0,-372) (통로 밖으로 12 비킴, 문 길 옆 그대로)"),
+    ("물약 상인 PotionHalo", (20.07, -468.17), (24, 5, -458), "Config.TownNpcs PotionHalo At/Look(14,-440)/Y 5 (12칸 안 판매 그대로)"),
+    ("Folk3 빵집", (-6.35, -476.52), (76, 7, -454), "Config.TownNpcs Folk3 At/Look(66,-470)/Y 7"),
+    ("Folk1 주스", (38.42, -499.19), (92, 8, -484), "Config.TownNpcs Folk1 At/Look(72,-482)/Y 8"),
+    ("Folk2 꽃", (6.6, -489.63), (58, 8, -490), "Config.TownNpcs Folk2 At/Look(62,-472)/Y 8"),
+    ("Folk4 분수", (46, -556), (36, 10, -548), "Config.TownNpcs Folk4 At/Look(22,-540)/Y 10; 분수 이름 Town_Halo_Fountain3"),
+    ("폭포 소리 6곳", None, None, "Config.Audio.Ambient.Waterfall.Spots → W1 (-70,1,-340), W2 (-44,20,-592), W3 (194,10,-566) 3곳(또는 Decor 아래 이름 …Waterfall)"),
+    ("RoadNorthIsland 띠", None, None, "미니맵 x -8..8, z -600..-330 → 새 큰 길 따라(성문→스폰→시장→광장→대성당)"),
+    ("큰 지도·미니맵", None, None, "WorldMapV2 그림(이미지 생성 2) + Halo MapTiles 다시 찍기(6단계 직전)"),
+    ("훈련장 (새)", None, (-100, 2, -444), "새 Landmark TrainingYard + 허수아비 표적(게임성 개발: 첫 기술 퀘스트가 여기를 가리키게)"),
+    ("오프닝 카메라", None, None, "Intro.luau (18,30,-315)→(6,26,-340), 조각 (0,18,-406): 새 성문 통로 16×30이면 그대로, 3단계 사진으로 확인"),
 ]
+GROUND_RULE = "걷는 바닥은 전부 Terrain(마당·길·광장·건물 앞·다리 끝 땅). 파트 바닥은 땅으로 안 침(MonsterService·ZoneService·KaijuService·LandShadow·SkillFx·Fx). 개발의 WalkGround 태그 전까지 건물 1층 바닥도 Terrain 위에 바로 문턱. 다리만 Decor.Bridge_* 이름."
 
 SCENES = [
     ("폭포 웅덩이 벤치", (-74, -596), "정원 쉼터, W2 계단 폭포를 봄"),
@@ -319,7 +325,7 @@ def checks(blds):
     msgs = []
     for b in blds:
         fp = footprint(b)
-        if not all(inside(p, LAND) for p in fp):
+        if b["kind"] != "Gate" and not all(inside(p, LAND) for p in fp):  # the gate stands on the bridge end
             msgs.append(f"땅 밖: {b['id']}")
         if not inside((b["x"], b["z"]), DIST[b["district"]]["poly"]):
             msgs.append(f"구역 밖: {b['id']} ({b['district']})")
@@ -329,6 +335,17 @@ def checks(blds):
         for j in range(i + 1, len(blds)):
             if poly_overlap(footprint(blds[i]), footprint(blds[j]), gap=4):
                 msgs.append(f"겹침(4 띄움): {blds[i]['id']} - {blds[j]['id']}")
+    # the spawn-gate corridor (|x|<=12, z -330..-432) and the spawn circle stay clear (the gate itself is the passage)
+    for b in blds:
+        if b["kind"] == "Gate":
+            continue
+        fp = footprint(b)
+        cor = [(-12, -330), (12, -330), (12, -432), (-12, -432)]
+        if poly_overlap(fp, cor) or any(math.hypot(px, pz + 420) < 12 for px, pz in fp):
+            msgs.append(f"스폰-문 통로 막음: {b['id']}")
+    for name, now, new, _ in FIXED_MOVE:
+        if new and abs(new[0]) <= 12 and -432 <= new[2] <= -330:
+            msgs.append(f"통로 안 고정점: {name}")
     # mirror pairs: same kind within 12 studs of the x-mirrored other
     pairs = 0
     for i in range(len(blds)):
@@ -436,10 +453,17 @@ def draw_map(blds):
         cx, cy = P(*s["at"])
         d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=(220, 40, 120), outline=(255, 255, 255), width=2)
         d.text((cx - 5, cy - 11), str(s["n"]), fill=(255, 255, 255), font=font(17, True))
-    # fixed points kept
-    for name, at, _ in FIXED_KEEP:
-        if at and name not in ("스폰 + 보는 쪽", "Bright", "성문 / 다리 끝", "월드맵 이름 자리", "오프닝 카메라"):
-            cx, cy = P(*at)
+    # the spawn-gate corridor (kept clear) and the fixed points
+    a, b = P(-12, -330), P(12, -432)
+    for yy in range(int(a[1]), int(b[1]), 10):
+        d.line([(a[0], yy), (a[0], yy + 5)], fill=(200, 30, 30), width=2)
+        d.line([(b[0], yy), (b[0], yy + 5)], fill=(200, 30, 30), width=2)
+    for px in (-24, 24):
+        cx, cy = P(px, -357)
+        d.rectangle([cx - 6, cy - 6, cx + 6, cy + 6], fill=(120, 220, 120), outline=(20, 90, 20), width=2)
+    for name, now, new, _ in FIXED_MOVE:
+        if new and now:
+            cx, cy = P(new[0], new[2])
             d.rectangle([cx - 5, cy - 5, cx + 5, cy + 5], fill=(30, 30, 30))
     # scenes
     for name, at, _ in SCENES:
@@ -486,14 +510,15 @@ def draw_panel(im, d, blds, stats):
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
     y += 8
     d.text((x0, y), "고정점", fill=(30, 30, 30), font=font(16, True)); y += 26
-    for ln in ["그대로: 성문(0,-330), 스폰(0,-420), 영웅상, Gleam, Bright, 구역 상자",
-               "옮김: 물약 상인 · Folk1~4 · 폭포 소리 · 미니맵 그림 (Config 목록은 JSON)",
-               "새로: 훈련장 표적·표시 (게임성 개발 몫)"]:
+    for ln in ["그대로: 다리·성문(0,-330)·스폰(0,-420)·Bright·이동 발판 2(초록)·구역 상자",
+               "빨간 점선 = 스폰-문 통로(|x|≤12) 비움 → 영웅상·Gleam만 옆으로",
+               "옮김(검은 네모): 영웅상·Gleam·물약 상인·Folk1~4 / 폭포 소리 3곳",
+               "새로: 훈련장 표적·표시 · 걷는 바닥은 전부 Terrain"]:
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
     y += 8
     d.text((x0, y), "검사", fill=(30, 30, 30), font=font(16, True)); y += 26
     for ln in [f"포장 약 {stats['pave'] * 100:.0f}% (목표 ≤35%) · 거울 짝 {stats['pairs']}",
-               f"겹침·땅 밖·문 앞 길 먼 것: {stats['issues']}건", "노란 마름모 = 작은 장면·사진 자리 8곳", "검은 네모 = 그대로 두는 고정점"]:
+               f"겹침·땅 밖·문 앞 길 먼 것: {stats['issues']}건", "노란 마름모 = 작은 장면·사진 자리 8곳", "검은 네모 = 옮긴 고정점의 새 자리"]:
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
 
 
@@ -525,7 +550,9 @@ def main():
         buildings=blds,
         scenes=[dict(name=n, at=list(a), view=v) for n, a, v in SCENES],
         fixed_points=dict(keep=[dict(name=n, at=list(a) if a else None, code=c) for n, a, c in FIXED_KEEP],
-                          move=[dict(name=n, now=list(a) if a else None, new=list(b) if b else None, code=c) for n, a, b, c in FIXED_MOVE]),
+                          move=[dict(name=n, now=list(a) if a else None, new_xyz=list(b) if b else None, code=c) for n, a, b, c in FIXED_MOVE],
+                          ground_rule=GROUND_RULE, pads=[dict(name="Pad_Halo_SlimeMeadow", at=[-24, 0.7, -357]), dict(name="Pad_Halo_GoblinWoods", at=[24, 0.7, -357])],
+                          names=dict(fountain="Town_Halo_Fountain3", lamps="LampLight 속성/태그", collision="DecorPlayerOnly")),
         checks=dict(paving_share=round(pave, 3), mirror_pairs=pairs, issues=msgs, land_area=round(land)),
         rules="A23-112 비대칭, A23-117 구역·이유, A23-106/120 진짜 문·빈 속, 성 돔 없음, 빛살 무늬 금지, acnh 12규칙",
     )
