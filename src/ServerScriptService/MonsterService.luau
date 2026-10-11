@@ -1135,6 +1135,9 @@ local function spawnMonster(kind, opts)
 		_contributors = {},
 		_hits = {}, -- [Player] = own hits (A23-27)
 		_dmg = {}, -- [Player] = own damage, overkill excluded (A23-27)
+		-- A23-113 ⑦: [Player] = own damage as shares of the MaxHP at each hit (a field boss's MaxHP follows its hunters),
+		-- what the reward bar and the side share read
+		_share = {},
 		_nextAttackAt = 0,
 		_nextWanderAt = os.clock() + Util.Random:NextNumber(1, WANDER_MAX),
 		_noAggroUntil = 0,
@@ -1299,7 +1302,7 @@ local function killRecord(rec)
 	updateBar(rec)
 	if rec.Quiet == true then
 		-- A23-110: a quiet personal monster (FirstKOService's King) pays nothing and counts nowhere; its service hears it
-		rec._contributors, rec._hits, rec._dmg = {}, {}, {}
+		rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}
 		rec._manualAt = nil
 		deathPop(rec, true)
 		removePersonalRef(rec)
@@ -1344,13 +1347,21 @@ local function killRecord(rec)
 	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
 	local minHits = tonumber(def.RewardMinHits) or 0
 	if isPersonal then minHits = 0 end -- A23-110: only its owner hits a personal monster (no free riders: 2 skill hits count)
-	local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP
+	-- A23-113 ⑦: the bar is a share of the boss: each hit counts as a share of the MaxHP it had then (_share), so a
+	-- field boss that grew with its crowd never drops an early hunter under the bar (검수 bosshp_verify 2026-10-11)
+	local minFrac = tonumber(def.RewardMinDamageFrac) or 0
+	local share = type(rec._share) == "table" and rec._share or {}
+	local function shareOf(p) -- a record made without _share (an old double): its raw damage / MaxHP
+		local s = share[p]
+		if type(s) ~= "number" then s = (tonumber(rec._dmg[p]) or 0) / math.max(1, tonumber(rec.MaxHP) or 1) end
+		return s
+	end
 	-- 검수 2026-10-09 (Captain Clatter free riders): def.MinorShare > 0 = a contributor with the hits but under the
 	-- damage share still gets MinorShare of the XP / gold (info.Minor: no drops, no card, no war points, not paid)
 	local minorShare = math.clamp(tonumber(def.MinorShare) or 0, 0, 1)
 	for p, t in rec._contributors do
 		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits then
-			if (rec._dmg[p] or 0) >= minDamage then
+			if shareOf(p) >= minFrac - 1e-9 then
 				local okF, f = pcall(factionOf, p)
 				if not okF or type(f) ~= "string" then f = "None" end
 				table.insert(eligible, { Player = p, Faction = f })
@@ -1369,13 +1380,13 @@ local function killRecord(rec)
 	-- FB 6 (content_beyond_10min J): every hitter's own damage summed per side, kept for FieldBossService's defeat share
 	-- line (Halo n% · Horns n%); Neutral / no side counts nowhere
 	local sideDmg = { Halo = 0, Horns = 0 }
-	for p, d in rec._dmg do
+	for p in rec._dmg do -- A23-113 ⑦: shares of the boss at each hit (a raw sum would undercount early hits)
 		local okF, f = pcall(factionOf, p)
-		if okF and sideDmg[f] ~= nil then sideDmg[f] += math.max(0, tonumber(d) or 0) end
+		if okF and sideDmg[f] ~= nil then sideDmg[f] += math.max(0, shareOf(p)) end
 	end
 	rec.FactionDamage = sideDmg
 	local manualAt = type(rec._manualAt) == "table" and rec._manualAt or {}
-	rec._contributors, rec._hits, rec._dmg, rec._manualAt = {}, {}, {}, {}
+	rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt = {}, {}, {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
@@ -1455,7 +1466,11 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 				record._castOf[player] = seen
 			end
 		end
-		record._dmg[player] = (record._dmg[player] or 0) + math.min(amount, math.max(0, record.HP))
+		local dealt = math.min(amount, math.max(0, record.HP))
+		record._dmg[player] = (record._dmg[player] or 0) + dealt
+		if type(record._share) == "table" then -- every spawned record has it (a record made without it: raw damage / MaxHP)
+			record._share[player] = (record._share[player] or 0) + dealt / math.max(1, tonumber(record.MaxHP) or 1)
+		end
 	end
 	record.HP -= amount
 	if record.HP > 0 then

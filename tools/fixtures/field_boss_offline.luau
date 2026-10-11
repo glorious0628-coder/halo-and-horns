@@ -409,7 +409,7 @@ runGroup("clatter config", function()
 	check(type(K.Weekly) == "table" and K.Weekly.Item == "CaptainBadge" and K.Weekly.Max == 2
 		and K.Titles[1] == "ClatterStopper" and K.Titles[10] == "ClatterStopper10" and K.Titles[50] == "ClatterStopper50",
 		"weekly badge banked up to 2, titles 1 / 10 / 50")
-	check(def and def.Boss == true and def.Count == 0 and def.Zone == "SkeletonRuins" and def.HP == 9000
+	check(def and def.Boss == true and def.Count == 0 and def.Zone == "SkeletonRuins" and def.HP == 20000
 		and def.Scale == 2.2 and def.ModelFrom == "SkeletonKnight" and def.AnimFrom == "SkeletonKnight"
 		and def.RewardMinHits == 3 and def.XP == 3900 and def.Gold == 3900, "Captain Clatter: a ruins boss on the knight", show(def))
 	check(table.find(C.MonsterTypeOrder, "CaptainClatter") ~= nil and C.Barks.BubbleFamily.CaptainClatter == "Skeleton"
@@ -592,18 +592,20 @@ runGroup("crowd numbers", function()
 	local w = newWorld()
 	local C = w.Config
 	local K = C.FieldBosses.Crowd
-	check(type(K) == "table" and K.PerHunter == 0.5 and K.Max == 10 and K.Radius == 50 and K.Window == 15 and K.Every == 2
-		and K.SoloSeconds == 120 and K.ByDamage == nil,
-		"Crowd: +50% per hunter, up to 10, within 50 studs, damage of the last 15 s vs a 120 s pace, every 2 s", show(K))
+	check(type(K) == "table" and K.PerHunter == 0.5 and K.Max == 10 and K.Radius == 50 and K.Window == 15 and K.Every == 0.5
+		and K.Rise == 2 and K.SoloSeconds == 120 and K.ByDamage == nil,
+		"Crowd: +50% per hunter, up to 10, within 50 studs, damage vs a 120 s pace (Rise 2 s, Window 15 s), every 0.5 s", show(K))
+	check(K.Every <= C.FieldBosses.Tick, "counted at every tick (no first-seconds discount at the solo price)")
 	check(C.FieldBosses.SlimeKing.Crowd == nil and C.FieldBosses.Clatter.Crowd == nil, "both bosses use the shared rule")
 	local king, clatter = C.MonsterTypes.SlimeKing.HP, C.MonsterTypes.CaptainClatter.HP
-	check(king == 2000 and clatter == 9000, "one hunter's HP: King 2000, Clatter 9000", show({ king, clatter }))
-	-- A23-113 ⑦: alone about 2 min (King: Lv 5-8, tier 1-2; Clatter: Lv25 tier 3)
-	local kd, kc = meanDps(C, { 5, 6, 7, 8 }, { 1, 2 })
-	local cd, cc = meanDps(C, { 25 }, { 3 })
+	check(king == 2600 and clatter == 20000, "one hunter's HP: King 2600, Clatter 20000", show({ king, clatter }))
+	-- A23-113 ⑦ + 검수 bosshp_verify: alone about 2 min with the expected weapon (King: Lv 5-8 tier 2, the first mission's
+	-- buy; Clatter: Lv25 tier 4, the woods drop / Lv12 commission)
+	local kd, kc = meanDps(C, { 5, 6, 7, 8 }, { 2 })
+	local cd, cc = meanDps(C, { 25 }, { 4 })
 	local kt, ct = king / kd, clatter / cd
-	check(kt >= 105 and kt <= 135, "King alone: about 2 min", show({ seconds = math.floor(kt), dps = kd, byClass = kc }))
-	check(ct >= 105 and ct <= 135, "Clatter alone: about 2 min", show({ seconds = math.floor(ct), dps = cd, byClass = cc }))
+	check(kt >= 105 and kt <= 135, "King alone (T2): about 2 min", show({ seconds = math.floor(kt), dps = kd, byClass = kc }))
+	check(ct >= 105 and ct <= 135, "Clatter alone (Lv25 T4): about 2 min", show({ seconds = math.floor(ct), dps = cd, byClass = cc }))
 	-- the share's pace (HP / SoloSeconds) is an average hunter's damage, so an average hunter counts about 1
 	check(math.abs(kd / (king / K.SoloSeconds) - 1) <= 0.15 and math.abs(cd / (clatter / K.SoloSeconds) - 1) <= 0.15,
 		"an average hunter's DPS = the pace within 15% (shares near 1)", show({ kd, king / K.SoloSeconds, cd, clatter / K.SoloSeconds }))
@@ -620,6 +622,11 @@ runGroup("crowd numbers", function()
 	check(times["3"] >= 70 and times["10"] >= 55 and times["2"] >= 80, "a crowd never melts the King (3 >= 70 s, 10 >= 55 s)",
 		show(times))
 	check(K.PerHunter < 1, "PerHunter < 1: one more hunter always helps (n / (1 + k (n - 1)) grows)", K.PerHunter)
+	-- 검수 bosshp_verify #5: the KO1 retry King has its own cap (Retry.MaxHP, 2500 unset), never the field King's HP
+	local wr = newWorld({ EditConfig = function(c) c.FirstKOKing.Retry.MaxHP = 300 end })
+	check(wr.Config.FirstKORetry(9, 3, "Mage", "Horns", 5).HP == 300 and C.FirstKORetry(9, 3, "Mage", "Horns", 5).HP > 300,
+		"the retry King's cap is Retry.MaxHP (not the field King's HP)", tostring(wr.Config.FirstKORetry(9, 3, "Mage", "Horns", 5).HP))
+	check(C.FirstKOKing.Retry.MaxHP == nil and C.FirstKORetry(9, 8, "Mage", "Horns", 20).HP <= 2500, "unset: at most 2500 (the old King HP)")
 end)
 
 -- own damage on the boss double (MonsterService's _dmg; the fixture's HP does not move)
@@ -632,27 +639,27 @@ runGroup("crowd hp", function()
 	check(w.King.Hunters("SlimeKing") == 0, "no boss: 0 hunters")
 	w.King.DebugSpawn("SlimeKing")
 	local rec = w.Rec
-	check(rec.MaxHP == 2000 and w.King.Hunters("SlimeKing") == 1, "appears with one hunter's HP", show({ rec.MaxHP }))
+	check(rec.MaxHP == 2600 and w.King.Hunters("SlimeKing") == 1, "appears with one hunter's HP", show({ rec.MaxHP }))
 	-- a bystander next to it who never hits adds nothing
 	local idle = w:Hunter(10)
 	body(idle, vec(5, 2, 3))
 	w:Tick(2)
-	check(rec.MaxHP == 2000 and w.King.Hunters("SlimeKing") == 1, "a bystander adds nothing", rec.MaxHP)
+	check(rec.MaxHP == 2600 and w.King.Hunters("SlimeKing") == 1, "a bystander adds nothing", rec.MaxHP)
 	local a = w:Hunter(1)
 	body(a, vec(10, 2, 3))
 	hit(rec, a, 1000)
 	w:Tick(2)
-	check(rec.MaxHP == 2000 and w.King.Hunters("SlimeKing") == 1, "one hunter (however strong): 2000", rec.MaxHP)
-	-- at half HP a second full hunter (37 studs away) joins: x1.5 at the next count, still half
+	check(rec.MaxHP == 2600 and w.King.Hunters("SlimeKing") == 1, "one hunter (however strong): 2600", rec.MaxHP)
+	-- at 1000 HP a second full hunter (37 studs away) joins: x1.5 at the next count, the fraction kept
 	rec.HP = 1000
 	local b = w:Hunter(2)
 	local rb, hb = body(b, vec(1, 2, 40))
 	hit(rec, a, 1000)
 	hit(rec, b, 1000)
-	w:Tick(0.5)
-	check(rec.MaxHP == 2000, "the count waits Every s", rec.MaxHP)
-	w:Tick(1.5)
-	check(rec.MaxHP == 3000 and rec.HP == 1500 and w.King.Hunters("SlimeKing") == 2, "two full hunters: 3000, still half",
+	w:Tick(0.2)
+	check(rec.MaxHP == 2600, "the count waits Every (0.5) s", rec.MaxHP)
+	w:Tick(0.3)
+	check(rec.MaxHP == 3900 and rec.HP == 1500 and w.King.Hunters("SlimeKing") == 2, "two full hunters: 3900, the fraction kept",
 		show({ rec.MaxHP, rec.HP, w.King.Hunters("SlimeKing") }))
 	check((rec._bars or 0) >= 1, "the HP bar follows", rec._bars)
 	-- out of 50 studs / dead / not ready: back to one hunter, the fraction kept each way
@@ -661,27 +668,27 @@ runGroup("crowd hp", function()
 		hit(rec, b, 1000)
 		set()
 		w:Tick(2)
-		check(rec.MaxHP == 2000 and rec.HP == 1000 and w.King.Hunters("SlimeKing") == 1, why .. ": not counted",
+		check(rec.MaxHP == 2600 and rec.HP == 1000 and w.King.Hunters("SlimeKing") == 1, why .. ": not counted",
 			show({ rec.MaxHP, rec.HP }))
 		unset()
 		hit(rec, a, 1000)
 		hit(rec, b, 1000)
 		w:Tick(2)
-		check(rec.MaxHP == 3000 and rec.HP == 1500, why .. ": counted again", show({ rec.MaxHP, rec.HP }))
+		check(rec.MaxHP == 3900 and rec.HP == 1500, why .. ": counted again", show({ rec.MaxHP, rec.HP }))
 	end
 	again("57 studs away", function() rb.Position = vec(1, 2, 60) end, function() rb.Position = vec(1, 2, 40) end)
 	again("dead", function() hb.Health = 0 end, function() hb.Health = 100 end)
 	again("not ready", function() w.ReadyMap[b] = false end, function() w.ReadyMap[b] = true end)
-	-- b stops (its last damage is in the count at T): still counted at T + 14, not at T + 16 (Window 15, counts every 2 s)
+	-- b stops (its last damage is in the count at T): still counted at T + 14, not at T + 16 (Window 15)
 	for _ = 1, 7 do
 		hit(rec, a, 1000)
 		w:Tick(2)
 	end
-	check(rec.MaxHP == 3000, "a hunter who stopped 14 s ago still counts", rec.MaxHP)
+	check(rec.MaxHP == 3900, "a hunter who stopped 14 s ago (far over its pace) still counts", rec.MaxHP)
 	hit(rec, a, 1000)
 	w:Tick(2)
-	check(rec.MaxHP == 2000 and rec.HP == 1000, "... and 16 s ago no more", show({ rec.MaxHP, rec.HP }))
-	-- a full hunter + four new players punching 10 every 2 s (0.3 of one hunter's pace each): 2.2 hunters, not 5
+	check(rec.MaxHP == 2600 and rec.HP == 1000, "... and 16 s ago no more", show({ rec.MaxHP, rec.HP }))
+	-- a full hunter + four new players punching 13 every 2 s (0.3 of one hunter's 21.7 / s pace each): 2.2 hunters, not 5
 	local kids = {}
 	for i = 40, 43 do
 		local p = w:Hunter(i)
@@ -690,11 +697,11 @@ runGroup("crowd hp", function()
 	end
 	for _ = 1, 9 do
 		hit(rec, a, 1000)
-		for _, p in kids do hit(rec, p, 10) end
+		for _, p in kids do hit(rec, p, 13) end
 		w:Tick(2)
 	end
-	check(math.abs(w.King.Hunters("SlimeKing") - 2.2) < 1e-6 and rec.MaxHP == 3200,
-		"weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)", show({ w.King.Hunters("SlimeKing"), rec.MaxHP }))
+	check(math.abs(w.King.Hunters("SlimeKing") - 2.2) < 1e-6 and rec.MaxHP == 4160,
+		"weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)", show({ w.King.Hunters("SlimeKing"), rec.MaxHP }))
 	for _, p in kids do w:Remove(p) end
 	-- 13 full hunters count as 10: x5.5
 	local many = {}
@@ -706,7 +713,7 @@ runGroup("crowd hp", function()
 	for _, p in many do hit(rec, p, 1000) end
 	hit(rec, a, 1000)
 	w:Tick(2)
-	check(rec.MaxHP == 11000 and w.King.Hunters("SlimeKing") == 10, "13 full hunters count as 10: 2000 x 5.5",
+	check(rec.MaxHP == 14300 and w.King.Hunters("SlimeKing") == 10, "13 full hunters count as 10: 2600 x 5.5",
 		show({ rec.MaxHP, w.King.Hunters("SlimeKing") }))
 	-- they leave the game at 1 HP (their damage still on the record): it stays 1, alive, one hunter again
 	for _, p in many do w:Remove(p) end
@@ -714,15 +721,15 @@ runGroup("crowd hp", function()
 	rec.HP = 1
 	hit(rec, a, 1000)
 	w:Tick(2)
-	check(rec.MaxHP == 2000 and rec.HP == 1 and rec.Alive == true, "1 HP stays 1 when the crowd leaves (gone players not counted)",
+	check(rec.MaxHP == 2600 and rec.HP == 1 and rec.Alive == true, "1 HP stays 1 when the crowd leaves (gone players not counted)",
 		show({ rec.MaxHP, rec.HP }))
 	-- defeated: 0 hunters; the next one comes with one hunter's HP again
 	rec.Alive, rec.HP = false, 0
 	w:Tick(0.5)
 	check(w.King.Hunters("SlimeKing") == 0, "gone: 0 hunters")
 	w.King.DebugSpawn("SlimeKing")
-	check(w.Rec ~= rec and w.Rec.MaxHP == 2000 and w.King.Hunters("SlimeKing") == 1, "the next King: 2000 again", w.Rec.MaxHP)
-	-- Captain Clatter (pace 75 / s): three full hunters = 9000 x 2
+	check(w.Rec ~= rec and w.Rec.MaxHP == 2600 and w.King.Hunters("SlimeKing") == 1, "the next King: 2600 again", w.Rec.MaxHP)
+	-- Captain Clatter (pace 167 / s): three full hunters = 20000 x 2
 	w.King.DebugSpawn("Clatter")
 	local cr = w.Rec
 	local c1, c2 = w:Hunter(50), w:Hunter(51)
@@ -730,7 +737,97 @@ runGroup("crowd hp", function()
 	body(c2)
 	for _, p in { a, c1, c2 } do hit(cr, p, 5000) end
 	w:Tick(2)
-	check(cr.MaxHP == 18000 and w.King.Hunters("Clatter") == 3, "Clatter with three hunters: 18000", cr.MaxHP)
+	check(cr.MaxHP == 40000 and w.King.Hunters("Clatter") == 3, "Clatter with three hunters: 40000", cr.MaxHP)
+end)
+
+-- 검수 bosshp_verify 2026-10-11: a newcomer counts within Rise s, a quitter fades over the window, no on / off gain
+runGroup("crowd ramp", function()
+	local w = bossWorld({})
+	w.King.DebugSpawn("SlimeKing")
+	local rec = w.Rec
+	local rate = rec.MaxHP / w.Config.FieldBosses.Crowd.SoloSeconds -- one hunter's pace (21.7 / s)
+	local a, b, c = w:Hunter(1), w:Hunter(2), w:Hunter(3)
+	body(a)
+	body(b)
+	body(c)
+	local function step(list)
+		for _, p in list do hit(rec, p, rate * 0.5) end
+		w:Tick(0.5)
+	end
+	for _ = 1, 40 do step({ a }) end -- a hunts alone 20 s
+	check(w.King.Hunters("SlimeKing") == 1, "one hunter at its pace: 1", tostring(w.King.Hunters("SlimeKing")))
+	step({ a, b })
+	local first = w.King.Hunters("SlimeKing")
+	check(first <= 1.3, "a newcomer's first half second counts little (Rise 2 s: no burst)", tostring(first))
+	for _ = 1, 7 do step({ a, b }) end
+	check(w.King.Hunters("SlimeKing") >= 1.9, "... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+		tostring(w.King.Hunters("SlimeKing")))
+	-- one small hit (10 = 0.23 of 2 s of pace) adds little, never a whole hunter
+	hit(rec, c, 10)
+	step({ a, b })
+	check(w.King.Hunters("SlimeKing") <= 2.3, "one small hit: a small share (never a whole hunter)", tostring(w.King.Hunters("SlimeKing")))
+	-- b stops: it fades over the window, not at once
+	for _ = 1, 12 do step({ a }) end
+	local fading = w.King.Hunters("SlimeKing")
+	check(fading > 1.2 and fading < 1.8, "a hunter who stopped 6 s ago fades slowly (no instant drop)", tostring(fading))
+	-- whole fights (every hunter at the pace, the HP really falling): the doc's times whenever they come
+	local function fight(n, joinAt)
+		local wf = bossWorld({})
+		wf.King.DebugSpawn("SlimeKing")
+		local r = wf.Rec
+		local pace = r.MaxHP / wf.Config.FieldBosses.Crowd.SoloSeconds
+		local hunters = {}
+		for i = 1, n do
+			local p = wf:Hunter(100 + i)
+			body(p)
+			table.insert(hunters, p)
+		end
+		local t = 0
+		while r.HP > 0 and t < 600 do
+			for i, p in hunters do
+				if (i == 1 or t >= joinAt) and r.HP > 0 then
+					local d = math.min(pace * 0.5, r.HP)
+					r.HP -= d
+					r._dmg[p] = (r._dmg[p] or 0) + d
+				end
+			end
+			t += 0.5
+			if r.HP <= 0 then break end -- a real kill happens at once (no count after it)
+			wf:Tick(0.5)
+		end
+		return t
+	end
+	local solo, at0, at30 = fight(1, 0), fight(10, 0), fight(10, 30)
+	check(solo >= 115 and solo <= 125, "solo: 120 s", tostring(solo))
+	check(at0 >= 60 and at0 <= 70, "10 hunters from the start: about 66 s (the doc; the first 2 s ramp)", tostring(at0))
+	check(at30 >= 72 and at30 <= 85, "10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)", tostring(at30))
+	-- on / off: 9 of 10 hit 8 s, rest 8 s, ... never beats steady play
+	local wc = bossWorld({})
+	wc.King.DebugSpawn("SlimeKing")
+	local rc = wc.Rec
+	local pc = rc.MaxHP / wc.Config.FieldBosses.Crowd.SoloSeconds
+	local hs = {}
+	for i = 1, 10 do
+		local p = wc:Hunter(200 + i)
+		body(p)
+		table.insert(hs, p)
+	end
+	local t = 0
+	while rc.HP > 0 and t < 600 do
+		local on = (t % 16) < 8
+		for i, p in hs do
+			if (i == 1 or on) and rc.HP > 0 then
+				local d = math.min(pc * 0.5, rc.HP)
+				rc.HP -= d
+				rc._dmg[p] = (rc._dmg[p] or 0) + d
+			end
+		end
+		t += 0.5
+		if rc.HP <= 0 then break end
+		wc:Tick(0.5)
+	end
+	check(t >= at0, "on / off play (8 s on, 8 s off) is never faster than steady play", show({ cycle = t, steady = at0 }))
+	finding(string.format("crowd fights (King, every hunter at the pace): solo %g s, 10 from the start %g s, 10 joining at 30 s %g s, 10 on / off %g s", solo, at0, at30, t))
 end)
 
 runGroup("crowd rule per boss", function()
@@ -742,7 +839,7 @@ runGroup("crowd rule per boss", function()
 		hit(off.Rec, p, 1000)
 	end
 	off:Tick(2)
-	check(off.Rec.MaxHP == 2000, "Crowd = false: that boss keeps its HP", off.Rec.MaxHP)
+	check(off.Rec.MaxHP == 2600, "Crowd = false: that boss keeps its HP", off.Rec.MaxHP)
 	local own = bossWorld({ EditConfig = function(c)
 		c.FieldBosses.SlimeKing.Crowd = { PerHunter = 1, Max = 3, Radius = 50, Window = 15, Every = 2, SoloSeconds = 120 }
 	end })
@@ -756,10 +853,10 @@ runGroup("crowd rule per boss", function()
 	hit(own.Rec, list[1], 1000)
 	hit(own.Rec, list[2], 1000)
 	own:Tick(2)
-	check(own.Rec.MaxHP == 4000, "its own Crowd table wins: +100% per hunter", own.Rec.MaxHP)
+	check(own.Rec.MaxHP == 5200, "its own Crowd table wins: +100% per hunter", own.Rec.MaxHP)
 	for _, p in list do hit(own.Rec, p, 1000) end
 	own:Tick(2)
-	check(own.Rec.MaxHP == 6000, "... and its own Max (3)", own.Rec.MaxHP)
+	check(own.Rec.MaxHP == 7800, "... and its own Max (3)", own.Rec.MaxHP)
 	-- ByDamage = false: anyone with damage in the window counts 1 (the plain head count)
 	local heads = bossWorld({ EditConfig = function(c) c.FieldBosses.Crowd.ByDamage = false end })
 	heads.King.DebugSpawn("SlimeKing")
@@ -772,8 +869,72 @@ runGroup("crowd rule per boss", function()
 		hit(heads.Rec, p, 1)
 	end
 	heads:Tick(2)
-	check(heads.Rec.MaxHP == 6000 and heads.King.Hunters("SlimeKing") == 5, "ByDamage = false: five heads -> 2000 x 3",
+	check(heads.Rec.MaxHP == 7800 and heads.King.Hunters("SlimeKing") == 5, "ByDamage = false: five heads -> 2600 x 3",
 		show({ heads.Rec.MaxHP }))
+end)
+
+-- 검수 bosshp_verify 2026-10-11 #1: the reward bar and the side share read each hit as a share of the MaxHP it had then
+-- (MonsterService _share, the real DamageMonster + killRecord), so an early hunter is never dropped when the boss grows
+runGroup("reward share", function()
+	local w = newWorld()
+	local C = w.Config
+	local killed, fac = {}, {}
+	local MS = { MonsterKilled = { Fire = function(_, p, info) table.insert(killed, { P = p, Info = info }) end },
+		Moment = { Fire = function() end } }
+	local nop = function() end
+	local K = execute("killRecord", KILL_EXTRACT, w:Env(), {}, C, C.Monsters, MS, function(p) return fac[p] end,
+		nop, nop, nop, nop, nop, function() return "SkeletonRuins" end, { Show = nop }, nop)
+	local def = C.MonsterTypes.CaptainClatter
+	local function boss()
+		return { Id = 1, Kind = "CaptainClatter", Def = def, ZoneId = def.Zone, Alive = true, HP = def.HP, MaxHP = def.HP,
+			Event = true, Home = vec(1, 2, 3), _contributors = {}, _hits = {}, _dmg = {}, _share = {}, _hurtAt = 0 }
+	end
+	local function infoOf(p)
+		for _, k in killed do if k.P == p then return k.Info end end
+		return nil
+	end
+	local rec = boss()
+	local early = w:NewPlayer(1)
+	fac[early] = "Halo"
+	for _ = 1, 3 do K.Damage(rec, 500, early) end -- 1500 = 7.5% of the solo 20000
+	-- nine more come: the crowd rule makes it 100000 (the fraction kept)
+	rec.HP = math.floor(rec.HP / rec.MaxHP * 100000 + 0.5)
+	rec.MaxHP = 100000
+	local crowd = {}
+	for i = 2, 10 do
+		local p = w:NewPlayer(i)
+		fac[p] = "Horns"
+		table.insert(crowd, p)
+	end
+	while rec.Alive do
+		for _, p in crowd do
+			if rec.Alive then K.Damage(rec, 4000, p) end
+		end
+	end
+	local ei = infoOf(early)
+	check(ei ~= nil and ei.Minor == nil and ei.XP == def.XP, "the early hunter (7.5% at the solo HP, 1.5% of the grown total) is paid in full",
+		ei and tostring(ei.Minor))
+	check(table.find(rec.PaidUserIds, 1) ~= nil, "... and on the paid list (weekly badge, titles, war points)")
+	local share = rec.FactionDamage
+	check(math.abs(share.Halo - 0.075) < 1e-6 and math.abs(share.Halo + share.Horns - 1) < 1e-6,
+		"the side share counts the Halo hunter's 7.5% of the boss (not 1.6% of raw damage)", show(share))
+	-- a fixed-HP boss: the same as before (the share = damage / MaxHP)
+	local r2 = boss()
+	local lo, hi = w:NewPlayer(20), w:NewPlayer(21)
+	for _ = 1, 3 do K.Damage(r2, 130, lo) end -- 390 < 2% of 20000 = 400
+	while r2.Alive do K.Damage(r2, 5000, hi) end
+	local li = infoOf(lo)
+	check(li ~= nil and li.Minor == true, "a fixed boss: under 2% is still the minor share", li and tostring(li.Minor))
+	-- an old record without _share (a double): raw damage / MaxHP
+	local r3 = boss()
+	r3._share = nil
+	local q, q2 = w:NewPlayer(30), w:NewPlayer(31)
+	r3._dmg[q], r3._hits[q], r3._contributors[q] = 7000, 3, w.Clock
+	r3._dmg[q2], r3._hits[q2], r3._contributors[q2] = 300, 3, w.Clock
+	r3.HP = 0
+	K.Kill(r3)
+	check(infoOf(q) and infoOf(q).Minor == nil and infoOf(q2) and infoOf(q2).Minor == true,
+		"a record without _share: raw damage / MaxHP (7000 paid, 300 minor)")
 end)
 
 runGroup("crowd monster api", function()

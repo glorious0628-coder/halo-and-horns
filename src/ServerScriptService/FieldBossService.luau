@@ -15,7 +15,8 @@
 -- Signal Defeated(key, kind, { UserIds paid }, rec).
 -- A23-113 ⑦ crowd HP (Config.FieldBosses.Crowd; a boss's own Crowd table wins, Crowd = false = off): the def HP is one
 -- hunter's fight (SoloSeconds, about 2 min); every Every s the hunters are counted - each player's own damage over the
--- last Window s against one hunter's pace (def HP / SoloSeconds) is that player's share, at most 1, for ready, alive
+-- last Window s against one hunter's pace (def HP / SoloSeconds) over the time since its first hit there (at least Rise
+-- s: a newcomer counts within Rise s, a quitter fades over the window) is that player's share, at most 1, for ready, alive
 -- players within Radius studs (flat); hunters = the shares added up, 1..Max - and MaxHP = def HP x (1 + PerHunter x
 -- (hunters - 1)), the HP fraction kept (MonsterService.SetEventMaxHP). Bystanders add nothing and a weak hitter (a new
 -- player punching the King) adds only its small share; the reward rules stay MonsterService's.
@@ -151,8 +152,10 @@ end
 
 -- the hunters at the boss now: a snapshot of every player's own damage (MonsterService.DamageTotals) joins b.Snaps; the
 -- oldest snapshot still covering the window (c.Window s) is the baseline. A player's share = own damage since the
--- baseline / one hunter's pace over that span (BaseHP / c.SoloSeconds per s), at most 1 (c.ByDamage = false: 1 for any
--- damage); only ready, alive players within c.Radius studs of it (flat) count. The shares added up, in tenths, 1..c.Max
+-- baseline / one hunter's pace (BaseHP / c.SoloSeconds per s) over the time since that player's first hit in the window
+-- (the last snapshot before it), at least c.Rise s, at most 1 (c.ByDamage = false: 1 for any damage). So a hunter who
+-- comes counts fully within Rise s, one who stops fades over the window (검수 bosshp_verify 2026-10-11: no on / off
+-- gain). Only ready, alive players within c.Radius studs of it (flat) count. The shares added up, in tenths, 1..c.Max
 -- (nobody yet = one hunter's HP)
 function CROWD.Count(b, c, now)
 	local rec = b.Rec
@@ -166,13 +169,20 @@ function CROWD.Count(b, c, now)
 	local window = math.max(0, num(c.Window, 15))
 	while #snaps > 1 and snaps[2].At <= now - window do table.remove(snaps, 1) end
 	local base = snaps[1]
-	local pace = b.BaseHP / math.max(1, num(c.SoloSeconds, 120)) * (now - base.At)
+	local rate = b.BaseHP / math.max(1, num(c.SoloSeconds, 120))
+	local rise = math.max(0.5, num(c.Rise, 2))
 	local radius, sum = math.max(0, num(c.Radius, 50)), 0
 	for p, d in totals do
-		local recent = num(d) - num(base.D[p])
+		local b0 = num(base.D[p])
+		local recent = num(d) - b0
 		if recent > 0 and p.Parent ~= nil and S.PlayerService.IsReady(p) and Util.IsAlive(p) then
 			local r = Util.GetRoot(p)
 			if r and Util.FlatDistance(r.Position, pos) <= radius then
+				local since = base.At -- the last snapshot before this player's first hit in the window
+				for i = 2, #snaps - 1 do
+					if num(snaps[i].D[p]) <= b0 then since = snaps[i].At end
+				end
+				local pace = rate * math.max(rise, now - since)
 				sum += (c.ByDamage == false or pace <= 0) and 1 or math.min(1, recent / pace)
 			end
 		end

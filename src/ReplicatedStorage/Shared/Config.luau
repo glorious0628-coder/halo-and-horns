@@ -1967,14 +1967,16 @@ Config.MonsterTypes = {
 	SkeletonKnight = { Name = "Skeleton Knight", Short = "Skeleton Knight", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): the ruins' field boss (FieldBossService:
 	-- every 20 min, stays 6 min), 300 years on duty with nobody to take his shift. The Skeleton Knight's model and moves x
-	-- Scale 2.2 until his own (ModelFrom / AnimFrom). A23-113 ⑦: HP 9000 = one hunter's fight, about 2 min for a Lv25 T3
-	-- hunter (swings + skill Q MP20 / 3 s x6, 75% uptime: 74.6 DPS averaged over the 3 classes x 3 sides; was 20000 = 4 min);
-	-- more hunters add HP (Config.FieldBosses.Crowd). XP / Gold = 5 min of Lv25 hunting
+	-- Scale 2.2 until his own (ModelFrom / AnimFrom). A23-113 ⑦: HP 20000 = one hunter's fight, about 2 min (116 s) for a
+	-- Lv25 hunter with the T4 weapon a woods hunter brings (Goblin drops / the Lv12 commission; swings + skill Q MP20 / 3 s
+	-- x6, 75% uptime: 172.9 DPS averaged over the 3 classes x 3 sides; 검수 bosshp_verify 2026-10-11: T3+0 is the weakest
+	-- loadout, 9000 let a normal ruins hunter solo him in 20-80 s); more hunters add HP (Config.FieldBosses.Crowd). Lv30+
+	-- T5 / T6 hunters still solo him fast (a share is at most 1). XP / Gold = 5 min of Lv25 hunting
 	-- (3,900 each), paid per eligible contributor (A23-27: 3 own hits + the damage share)
 	CaptainClatter = { Name = "Captain Clatter", Short = "Captain Clatter", Zone = "SkeletonRuins", Count = 0, Boss = true,
 		-- 검수 2026-10-09: paid only with 2% of his HP dealt; 3 hits but less = MinorShare (15%) of XP / gold, nothing else
 		ContributorWindow = 180, RewardMinHits = 3, RewardMinDamageFrac = 0.02, MinorShare = 0.15, ModelFrom = "SkeletonKnight",
-		AnimFrom = "SkeletonKnight", HP = 9000, Damage = 30, XP = 3900, Gold = 3900, Speed = 8, Shape = "Humanoid",
+		AnimFrom = "SkeletonKnight", HP = 20000, Damage = 30, XP = 3900, Gold = 3900, Speed = 8, Shape = "Humanoid",
 		Scale = 2.2, Color = Color3.fromRGB(150, 140, 120) },
 	-- Halloween (Config.Halloween; provisional numbers). A23-45 (user 2026-10-06 "고블린은 고블린끼리, 호박은 호박, 유령은
 	-- 유령끼리"): one family per field. PumpkinPatch = pumpkin slimes + the pumpkin king; the bat goblins take 3 goblin
@@ -1996,14 +1998,15 @@ Config.MonsterTypes = {
 	-- a boss of the meadow (FieldBossService: one on the server, every 8 min at the King Slime Hill shrine, 5 min stay),
 	-- never in the regular pool. Its own model comes later (image gen 2 -> Tripo): until then the Slime Prince's crowned
 	-- cube x Scale (2.5 = the Pumpkin King's body: 3.0 put the body past the attack ring, test_monster_spacing).
-	-- A23-113 ⑦: HP 2000 = one hunter's fight, about 2 min for a Lv 5-8 hunter with a tier 1-2 weapon (swings + skill Q,
-	-- 75% uptime: 16.9 DPS averaged over the 3 classes x 3 sides; was 2500); more hunters add HP (Config.FieldBosses.Crowd:
-	-- three = about 80 s). The finisher card is its (Config.Finisher.Kinds)
+	-- A23-113 ⑦: HP 2600 = one hunter's fight, about 2 min (118 s) for a Lv 5-8 hunter with the tier 2 weapon the first
+	-- mission's 150 gold buys (swings + skill Q, 75% uptime: 22.1 DPS averaged over the 3 classes x 3 sides; 검수
+	-- bosshp_verify 2026-10-11: T1 is gone by Lv5; was 2500); T1 only ~220 s, T3 ~46 s; more hunters add HP
+	-- (Config.FieldBosses.Crowd: three = about 80 s). The finisher card is its (Config.Finisher.Kinds)
 	SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true,
 		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime",
 		-- A23-92 (user 2026-10-09 "조금 더 크면"): Scale 2.5 -> 3.2; players reach its body's edge (MonsterService.HitPad);
 		-- pink body (its texture: image gen 2 -> image dev; until then this Color tints the borrowed model)
-		HP = 2000, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 3.2, Color = Color3.fromRGB(255, 140, 190) },
+		HP = 2600, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 3.2, Color = Color3.fromRGB(255, 140, 190) },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
@@ -4272,11 +4275,13 @@ Config.FieldBosses = {
 	-- A23-113 ⑦ (user 2026-10-10 "마감 전 넣자"; numbers by game dev 2, docs/design/field_boss_crowd_2026-10-11.md): the
 	-- def HP is one hunter's fight (SoloSeconds); each more hunter adds PerHunter of it (the kaiju's per-player way, bigger:
 	-- 0.15 let ten melt a boss in 28 s). Hunters, recounted every Every s: each ready, alive player within Radius studs
-	-- (flat) counts its own damage over the last Window s / one hunter's pace (def HP / SoloSeconds per s), at most 1, so
-	-- a bystander adds 0 and a new player punching the King about 0.2 (ByDamage = false: 1 for any damage); the shares
-	-- added up, 1..Max. The HP fraction stays. Equal hunters: 2 = 90 s, 3 = 80 s, 5 = 72 s, 10 = 66 s. A boss's own
-	-- Crowd table overrides this one; Crowd = false turns it off for that boss.
-	Crowd = { PerHunter = 0.5, Max = 10, Radius = 50, Window = 15, Every = 2, SoloSeconds = 120 },
+	-- (flat) counts its own damage over the last Window s / one hunter's pace (def HP / SoloSeconds per s) over the time
+	-- since its first hit in the window (at least Rise s), at most 1, so a newcomer counts fully within Rise s, one who
+	-- stops fades over Window s (no on / off gain), a bystander adds 0 and a new player punching the King about 0.2
+	-- (ByDamage = false: 1 for any damage); the shares added up, 1..Max. The HP fraction stays. Equal hunters: 2 = 90 s,
+	-- 3 = 80 s, 5 = 72 s, 10 = 66 s, whenever they come. A boss's own Crowd table overrides this one; Crowd = false turns
+	-- it off for that boss. The reward bar reads each hit as a share of the MaxHP it had then (MonsterService _share).
+	Crowd = { PerHunter = 0.5, Max = 10, Radius = 50, Window = 15, Every = 0.5, Rise = 2, SoloSeconds = 120 },
 	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
 	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
 	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
@@ -7759,7 +7764,8 @@ Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happe
 
 -- the retry King against one player (A23-110): { HP, Hit }. HP = Retry.Seconds of that player's basic attacks (the swing
 -- formula of Config.SwingHitsToKill: weapon x class x faction bonus x SwingImmediate, rounded, per SwingInterval; no
--- crit), at least MinHP, at most the King's own HP. Hit = the share of the player's MaxHealth one King hit takes: HitPct +
+-- crit), at least MinHP, at most Retry.MaxHP (2500 when unset: the King's HP before A23-113; never follows the field
+-- King's crowd HP, 검수 bosshp_verify 2026-10-11). Hit = the share of the player's MaxHealth one King hit takes: HitPct +
 -- the faction's out-of-town regen over one King attack (Config.Monsters.AttackCooldown), so every faction needs the same
 -- potions. Pure (FirstKOService and the offline test share it).
 function Config.FirstKORetry(level, tier, classId, factionId, enhance)
@@ -7772,8 +7778,7 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local per = Config.WeaponDamage(tonumber(tier), lv, tonumber(enhance) or 0) * (c.Damage or 1) * (1 + bonus)
 		* ((Config.BasicSkill and Config.BasicSkill.SwingImmediate) or 0.5)
 	local dps = math.max(1, math.floor(per + 0.5)) / math.max(0.1, tonumber(c.SwingInterval) or 1)
-	local king = Config.MonsterTypes[FK.Kind]
-	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, king and king.HP or 2500))
+	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, tonumber(R.MaxHP) or 2500))
 	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
 	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
 end

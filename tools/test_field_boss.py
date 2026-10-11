@@ -61,6 +61,13 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         + function_block(mon, "function MonsterService.SetEventMaxHP(")
         + function_block(mon, "function MonsterService.DamageTotals(")
         + "\nreturn MonsterService\n")
+    # 검수 bosshp_verify 2026-10-11: the real DamageMonster + killRecord (the reward bar reads each hit's share, _share)
+    out["KILL_EXTRACT"] = (
+        "local records, Config, MC, MonsterService, factionOf, updateBar, deathPop, removePersonalRef, scheduleRespawn, "
+        "warnThrottled, zoneIdOf, MOB3, markHurt = ...\n"
+        + function_block(mon, "local function killRecord(")
+        + function_block(mon, "function MonsterService.DamageMonster(")
+        + "\nreturn { Kill = killRecord, Damage = MonsterService.DamageMonster }\n")
     out["COMBAT_NEAR_TEXT"] = function_block(sources["COMBAT_SOURCE"], "local function monstersNear(")
     out["MONSTER_QUERY_TEXT"] = function_block(mon, "function MonsterService.GetMonstersInRadius(")
     return out
@@ -144,8 +151,17 @@ MUTATIONS = [
     ("the window never moves", K, "\twhile #snaps > 1 and snaps[2].At <= now - window do table.remove(snaps, 1) end\n", ""),
     ("the window too short", K, "snaps[2].At <= now - window do", "snaps[2].At <= now - 2 do"),
     ("baseline = the newest snapshot", K, "\tlocal base = snaps[1]\n", "\tlocal base = snaps[#snaps]\n"),
-    ("pace from the current MaxHP", K, "local pace = b.BaseHP / math.max(1, num(c.SoloSeconds, 120))",
-     "local pace = b.Rec.MaxHP / math.max(1, num(c.SoloSeconds, 120))"),
+    ("pace from the current MaxHP", K, "local rate = b.BaseHP / math.max(1, num(c.SoloSeconds, 120))",
+     "local rate = b.Rec.MaxHP / math.max(1, num(c.SoloSeconds, 120))"),
+    ("no rise floor (a burst counts whole)", K, "local pace = rate * math.max(rise, now - since)", "local pace = rate * math.max(0.01, now - since)"),
+    ("a newcomer measured from the window start", K, "\t\t\t\t\tif num(snaps[i].D[p]) <= b0 then since = snaps[i].At end\n", ""),
+    ("the first count after 2 s", K, "\tb.CrowdAt = now + math.max(0.5, num(crowd and crowd.Every, 2))", "\tb.CrowdAt = now + 2"),
+    ("reward bar on raw damage", "MONSTER_SOURCE", "\t\t\tif shareOf(p) >= minFrac - 1e-9 then", "\t\t\tif (tonumber(rec._dmg[p]) or 0) >= minFrac * rec.MaxHP then"),
+    ("side share on raw damage", "MONSTER_SOURCE", "sideDmg[f] += math.max(0, shareOf(p))", "sideDmg[f] += math.max(0, tonumber(rec._dmg[p]) or 0)"),
+    ("no share kept", "MONSTER_SOURCE", "\t\t\trecord._share[player] = (record._share[player] or 0) + dealt / math.max(1, tonumber(record.MaxHP) or 1)\n", ""),
+    ("share against the solo HP", "MONSTER_SOURCE", "dealt / math.max(1, tonumber(record.MaxHP) or 1)", "dealt / math.max(1, tonumber(record.Def.HP) or 1)"),
+    ("no fallback without _share", "MONSTER_SOURCE", "\t\tif type(s) ~= \"number\" then s = (tonumber(rec._dmg[p]) or 0) / math.max(1, tonumber(rec.MaxHP) or 1) end\n",
+     "\t\tif type(s) ~= \"number\" then s = 0 end\n"),
     ("SoloSeconds ignored", K, "math.max(1, num(c.SoloSeconds, 120))", "60"),
     ("radius ignored", K, "if r and Util.FlatDistance(r.Position, pos) <= radius then", "if r then"),
     ("the dead count", K, "S.PlayerService.IsReady(p) and Util.IsAlive(p)", "S.PlayerService.IsReady(p)"),
@@ -156,7 +172,7 @@ MUTATIONS = [
     ("nobody = 0 hunters", K, "return math.clamp(math.floor(sum * 10 + 0.5) / 10, 1,",
      "return math.clamp(math.floor(sum * 10 + 0.5) / 10, 0,"),
     ("the kaiju's 15% hard-coded", K, "math.max(0, num(c.PerHunter, 0.5))", "0.15"),
-    ("counted every tick", K, "\tb.CrowdAt = now + math.max(0.5, num(c.Every, 2))\n\tb.Hunters", "\tb.CrowdAt = now\n\tb.Hunters"),
+    ("Every ignored (every 2 s)", K, "\tb.CrowdAt = now + math.max(0.5, num(c.Every, 2))\n\tb.Hunters", "\tb.CrowdAt = now + 2\n\tb.Hunters"),
     ("base from a doubled HP", K, "b.BaseHP, b.Hunters, b.Snaps = math.max(0, num(rec.MaxHP)), 1,",
      "b.BaseHP, b.Hunters, b.Snaps = math.max(0, num(rec.MaxHP)) * 2, 1,"),
     ("old snapshots kept for the next boss", K, "b.BaseHP, b.Hunters, b.Snaps = math.max(0, num(rec.MaxHP)), 1, { { At = now, D = {} } }",
@@ -181,11 +197,14 @@ MUTATIONS = [
      "\tif type(rec) ~= \"table\" or type(rec._dmg) ~= \"table\" then return out end\n\tif true then return rec._dmg end\n"),
     ("zero damage in the totals", "MONSTER_SOURCE", "type(d) == \"number\" and d > 0 then out[p] = d end",
      "type(d) == \"number\" then out[p] = d end"),
-    ("King HP 2500 again", C, "HP = 2000, Damage = 6, XP = 120", "HP = 2500, Damage = 6, XP = 120"),
-    ("Clatter HP 20000 again", C, "AnimFrom = \"SkeletonKnight\", HP = 9000,", "AnimFrom = \"SkeletonKnight\", HP = 20000,"),
+    ("King HP 2000 (T1 / T2 mean)", C, "HP = 2600, Damage = 6, XP = 120", "HP = 2000, Damage = 6, XP = 120"),
+    ("Clatter HP 9000 (T3+0)", C, "AnimFrom = \"SkeletonKnight\", HP = 20000,", "AnimFrom = \"SkeletonKnight\", HP = 9000,"),
     ("crowd +15%", C, "Crowd = { PerHunter = 0.5, Max = 10,", "Crowd = { PerHunter = 0.15, Max = 10,"),
-    ("crowd window 60 s", C, "Radius = 50, Window = 15, Every = 2,", "Radius = 50, Window = 60, Every = 2,"),
-    ("solo pace 60 s", C, "Every = 2, SoloSeconds = 120 },", "Every = 2, SoloSeconds = 60 },"),
+    ("crowd window 60 s", C, "Radius = 50, Window = 15, Every = 0.5,", "Radius = 50, Window = 60, Every = 0.5,"),
+    ("crowd every 2 s", C, "Window = 15, Every = 0.5, Rise = 2,", "Window = 15, Every = 2, Rise = 2,"),
+    ("crowd rise 15 s", C, "Every = 0.5, Rise = 2, SoloSeconds = 120 },", "Every = 0.5, Rise = 15, SoloSeconds = 120 },"),
+    ("solo pace 60 s", C, "Rise = 2, SoloSeconds = 120 },", "Rise = 2, SoloSeconds = 60 },"),
+    ("retry King capped by the field King", C, "math.max(R.MinHP, tonumber(R.MaxHP) or 2500))", "math.max(R.MinHP, Config.MonsterTypes[FK.Kind].HP))"),
 ]
 
 
@@ -229,12 +248,14 @@ SUITE = Suite(
              "= Fx KingDefeat { Key, Kind, Pos, Contributors (numbers) } to all + <Key>Defeat + Defeated(key, kind, ids, "
              "rec); time up / lost model = RemoveEvent(fade, leaving) + <Key>Leave; GameState <Key>Active / EndsAt / "
              "NextAt. King Slime: 180 / 480 / 300 s, KingSpawn, hill. BigSlime = Slime Prince; the card is SlimeKing's. "
-             "A23-113 ⑦ crowd HP: def HP = one hunter about 2 min (King 2000 Lv 5-8 T1-2, Clatter 9000 Lv25 T3, by the "
-             "solo DPS model on the current Config); every 2 s hunters = the shares added up (in tenths, 1..10) of the "
-             "ready, alive players within 50 studs: own damage over the last 15 s / one hunter's pace (def HP / 120 s), at "
+             "A23-113 ⑦ crowd HP (+ 검수 bosshp_verify fixes): def HP = one hunter about 2 min (King 2600 Lv 5-8 T2, Clatter 20000 Lv25 T4, by the "
+             "solo DPS model on the current Config); every 0.5 s hunters = the shares added up (in tenths, 1..10) of the "
+             "ready, alive players within 50 studs: own damage over the last 15 s / one hunter's pace (def HP / 120 s) over "
+             "the time since its first hit in the window (at least Rise 2 s: comes fast, fades slow, no on / off gain), at "
              "most 1 (ByDamage = false: 1 each); MaxHP = def HP x (1 + 0.5 x (hunters - 1)), the HP fraction kept "
              "(MonsterService.SetEventMaxHP: event monsters only, rounded, never below 1 HP; DamageTotals = a copy); a "
-             "boss's own Crowd wins, false = off.",
+             "boss's own Crowd wins, false = off. The reward bar and the side share read each hit as a share of the MaxHP "
+             "it had then (MonsterService _share; no _share = damage / MaxHP). The retry King's cap is Retry.MaxHP (2500).",
     limitations="MonsterService (SpawnEvent ground pick, kill payout, model borrow), PlayerService, ZoneService and "
                 "AnnounceService are doubles; the client (boss chip, minimap icon) and the shrine placement are not here. "
                 "The solo DPS model is an average (75% uptime, no perks / enhancement / pets); real fight times need play.",
