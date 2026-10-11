@@ -75,9 +75,9 @@ MUTATIONS = [
     ("build: the stand-in blocks players", G, "\tpart.CanCollide = false\n", "\tpart.CanCollide = true\n"),
     # --- one gather
     ("try: the switch not checked", G, "\tif not on() then return \"off\" end\n", ""),
-    ("try: a KO'd player gathers", G, "\t\tor not Util.IsAlive(player) then\n", "\t\tthen\n"),
-    ("try: no class needed", G, "if not data or data.ClassChosen ~= true or", "if not data or"),
-    ("try: no side needed", G, " or data.Faction == \"None\"\n", "\n"),
+    ("try: a KO'd player gathers", G, " or not Util.IsAlive(player) then\n\t\treturn \"state\"", " then\n\t\treturn \"state\""),
+    ("try: no class needed", G, "or data.ClassChosen ~= true or not Config.Factions[data.Faction]", "or not Config.Factions[data.Faction]"),
+    ("try: no side needed", G, "\t\tor data.Faction == \"None\" or not Util.IsAlive(player) then", "\t\tor not Util.IsAlive(player) then"),
     ("try: a hold on any node", G, "\tif type(hold) ~= \"table\" or hold.Id ~= id then return \"hold\" end\n", "\tif type(hold) ~= \"table\" then return \"hold\" end\n"),
     ("try: no hold needed", G, "\tif type(hold) ~= \"table\" or hold.Id ~= id then return \"hold\" end\n", "\tif type(hold) ~= \"table\" then hold = { Id = id, T0 = 0 } end\n"),
     ("try: a stale release counts", G, "\tif hold.Ended and now - hold.Ended > ST.StaleHold then return \"hold\" end\n", ""),
@@ -109,10 +109,23 @@ MUTATIONS = [
     ("bloom: never counted", G, "\tg.Bloom += 1\n\tg.FirstBloom = true\n", "\tg.FirstBloom = true\n"),
     ("share: nobody gets one", G, "\tif side == \"Good\" then\n\t\tshare(player, bloom)\n", "\tif side == \"Good\" then\n"),
     ("share: the giver gets one too", G, "\t\tlocal r = other ~= giver and rootOf(other)\n", "\t\tlocal r = rootOf(other)\n"),
-    ("share: any distance", G, "if data and (r.Position - center).Magnitude <= num(B.Radius, 40) then", "if data then"),
+    ("share: any distance", G, "(r.Position - center).Magnitude <= num(B.Radius, 40) then", "true then"),
     ("share: no gift cap", G, "\t\t\tif g.Gift < num(B.GiftDailyMax, 10) then\n", "\t\t\tif true then\n"),
     ("share: keep it all shares", G, "\tif side == \"Good\" then\n\t\tshare(player, bloom)\n", "\tif side ~= \"None\" then\n\t\tshare(player, bloom)\n"),
     ("wilt: nothing at time up", G, "\telseif side == \"None\" then\n", "\telseif false then\n"),
+    # --- 게임성 검수 10/12 (before the switch goes on)
+    ("ready: a hold before ready is noted", G, "\tif not id or not on() or not S.PlayerService.IsReady(player) then return end\n", "\tif not id or not on() then return end\n"),
+    ("ready: Try ignores ready", G, "\tif not data or not S.PlayerService.IsReady(player) or data.ClassChosen ~= true", "\tif not data or data.ClassChosen ~= true"),
+    ("seat: seated players gather", G, "\tif hum and hum.Sit == true then return \"seated\" end\n", ""),
+    ("jump: never blocks", G, "\tif os.clock() - num(ST.Jumped[player], -math.huge) < num(cfg.AfterJump, 3) then return \"moved\" end\n", ""),
+    ("jump: never marked", G, "then ST.Jumped[p] = os.clock() end\n", "then end\n"),
+    ("jump: 40 studs is a jump", C, "\tJumpStuds = 60,\n", "\tJumpStuds = 40,\n"),
+    ("grant: counted from the returned rows", G, "\tlocal got = math.max(0, after - before)\n", "\tlocal got = okGrant and math.max(0, after - before) or 0\n"),
+    ("share: around the giver", G, "\tlocal center = bloom and bloom.Pos\n", "\tlocal center = rootOf(giver) and rootOf(giver).Position or (bloom and bloom.Pos)\n"),
+    ("share: KO'd players get one", G, "\t\tlocal data = r and S.PlayerService.IsReady(other) and Util.IsAlive(other) and getData(other)\n", "\t\tlocal data = r and S.PlayerService.IsReady(other) and getData(other)\n"),
+    ("share: classless players get one", G, "\t\tif data and data.ClassChosen == true and (r.Position - center).Magnitude", "\t\tif data and (r.Position - center).Magnitude"),
+    ("text: herbs sold at the Forge", C, 'Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Artisans craft with it." }', 'Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." }'),
+    ("text: the full line sends to the Forge", L, "\t\tif def.Kind == \"Material\" and def.Source ~= nil then fmt = TXT.ItemFullKeep or fmt end -- not sold at the Forge\n", ""),
     # --- LootService.GrantItems
     ("grant: 100 at once", L, "\t\tif type(id) == \"string\" and n >= 1 and n <= 99 then\n", "\t\tif type(id) == \"string\" and n >= 1 then\n"),
     # (no 'n >= 1 removed' mutation: addItem gives 0 for n <= 0, so it is equivalent)
@@ -148,6 +161,8 @@ def static() -> tuple[int, list[str]]:
     check("Net.Notify(" not in gather and "Net.NotifyAll" not in gather and "Net.NotifyKey" in gather,
           "GatherService sends notices by key only (Net.NotifyKey)")
     check(".Enabled" not in gather, "GatherService never touches a prompt's Enabled")
+    check("Players.PlayerRemoving:Connect(forget)" in gather and "S.PlayerService.PlayerLeaving:Connect(forget)" in gather,
+          "per-player state is dropped on both leave paths (PlayerLeaving and Players.PlayerRemoving)")
     check(not re.search(r"MarketplaceService|PromptPurchase|Robux|AddXP|AddBankGold|AddCarriedGold|GrantFirstWeapon|Potion",
                         gather), "gathering pays no XP, gold, weapon or potion and has no purchase path")
     check("MonsterService" not in gather and "AutoCombat" not in gather, "no auto-combat path into gathering")

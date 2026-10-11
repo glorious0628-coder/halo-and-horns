@@ -5042,14 +5042,14 @@ Config.Loot = {
 		-- gathering (Config.Gather, GatherService; ids fixed: the market key I:<id> and the recipes use them). Icon keys named
 		-- by 디자인 검수 (10/11); the parts come with image session 2 -> image dev, until then the code fallback. CrownDust:
 		-- only from a Shard Bloom
-		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." },
-		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Sell it at the Forge." },
-		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Sell it at the Forge." },
-		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Sell it at the Forge." },
-		IronOre = { Kind = "Material", Name = "Iron Ore", Sell = 5, Color = Color3.fromRGB(130, 135, 145), Icon = "IconIronOre", Source = "Gather", Desc = "Sell it at the Forge." },
-		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Sell it at the Forge." },
-		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Sell it at the Forge." },
-		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Sell it at the Forge." },
+		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Artisans craft with it." },
+		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Artisans craft with it." },
+		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Artisans craft with it." },
+		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Artisans craft with it." },
+		IronOre = { Kind = "Material", Name = "Iron Ore", Sell = 5, Color = Color3.fromRGB(130, 135, 145), Icon = "IconIronOre", Source = "Gather", Desc = "Artisans craft with it." },
+		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Artisans craft with it." },
+		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Artisans craft with it." },
+		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Artisans craft with it." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5247,6 +5247,7 @@ Config.Loot = {
 		-- full-stack notices: at most once per item id (or potion kind) per player per FullNoticeSeconds, kind "info"
 		ItemFull = "%s is full (max %d). You can sell it at the Forge.", -- materials
 		ItemFullUse = "%s is full (max %d). Use some from your Bag.", -- scrolls (not sellable)
+		ItemFullKeep = "%s is full (max %d).", -- gathered / crafted materials (a Source: not in the Forge's sell-all)
 		UseCombat = "You can't use scrolls in combat.",
 		EquipDead = "You can't change weapons while knocked out.",
 		RareWeapon = "%s weapon! You got %s!", -- grade name (Rare / Epic / Legendary), weapon
@@ -8098,6 +8099,11 @@ Config.Gather = {
 	Double = 0.2,
 	Heavy = 200,
 	Ray = { From = 300, Length = 600 },
+	-- the jump watch (게임성 검수 10/12): samples every JumpSample s; a root that moved more than JumpStuds in one sample
+	-- (a teleport / fling, never a walk) cannot gather for AfterJump s
+	JumpSample = 0.5,
+	JumpStuds = 60,
+	AfterJump = 3,
 	Nodes = {
 		HerbBush = { Item = "Herb", Hold = 1.5, Action = "Pick", Plant = true, Zone = "SlimeMeadow", Color = Color3.fromRGB(140, 210, 255) },
 		CopperRock = { Item = "CopperOre", Hold = 2.0, Action = "Mine", Zone = "SlimeMeadow", Color = Color3.fromRGB(205, 125, 75) },

@@ -67,3 +67,4 @@
 - 시험 `tools/test_craft.py`: 101 named·변이 56/56(핑 = 시작·두드림·지금 중 큰 값, 개발 4 44dba035)(도착이 안 맞으면 Miss·핑 무시·일정 틀림·서버 시각 대신 클라 시각 변이 포함). test_craft_mini 45·16/16.
 - **켜는 가지에서 할 것(최종 검수 10/12):** 2배 XP 패스 설명(Config 약 4185 "Get 2x XP from everything you do")을 "Get 2x level XP, so you level up 2x faster. Crafting levels do not change. No stats are for sale."로 바꾸고, 시험에 '제작 켜짐이면 패스 글에 Crafting 줄' 정적 검사. 패스에 제작 XP를 넣을지는 최종 검수가 사용자에게 물음(답 바뀌면 다시).
 - 허용(−50..250 + 1.5×핑)은 CraftMini.T(Early·Late·JitterMul) — 숫자 하나로 조정.
+- **지표(게임성 검수 10/12):** 제작마다 Telemetry `CraftStrikeD`(값 = 두드림 (서버 ms − 클라 ms) 가장 큰 값, a = 가장 작은 값, b = 받은 두드림 수) → 10/17~20 시험 뒤 CraftMini 창(Early·Late·JitterMul) 조정. 베타는 지금 창 그대로. test_craft 102·58/58.

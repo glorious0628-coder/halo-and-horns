@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 115,
+  "checks": 116,
   "failedChecks": 0,
-  "namedChecks": 101,
+  "namedChecks": 102,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -280,6 +280,12 @@
     {
       "group": "hammer",
       "check": "Crafted(player, W1, 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "CraftStrikeD logged per craft: the biggest / smallest (server ms - client ms) and how many strikes (50 / 50 / 5 at ping 0.1)",
       "pass": 1,
       "fail": 0
     },
@@ -618,9 +624,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 56,
-    "applied": 56,
-    "caught": 56,
+    "total": 58,
+    "applied": 58,
+    "caught": 58,
     "skipped": false,
     "results": [
       {
@@ -1045,11 +1051,11 @@
           "hammer :: 405 ms later than claimed: Miss",
           "hammer :: 55 ms earlier than claimed: Miss",
           "hammer :: CraftMismatch logged (5)",
+          "hammer :: CraftStrikeD logged per craft: the biggest / smallest (server ms - client ms) and how many strikes (50 / 50 / 5 at ping 0.1)",
           "hammer :: claims ~700 ms off the arrival: all Miss, +0",
-          "hammer :: no ping anywhere: 300 ms off is a Miss",
-          "hammer :: the strike notes { Ms, At = server time }"
+          "hammer :: no ping anywhere: 300 ms off is a Miss"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "finish: any lie fits (huge ping)",
@@ -1139,6 +1145,28 @@
         "crashed": false,
         "newFailingChecks": [
           "hammer :: five equal offsets (even on time): +0 and CraftBot"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: no strike-d metric",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftStrikeD logged per craft: the biggest / smallest (server ms - client ms) and how many strikes (50 / 50 / 5 at ping 0.1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: d measured the wrong way",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftStrikeD logged per craft: the biggest / smallest (server ms - client ms) and how many strikes (50 / 50 / 5 at ping 0.1)"
         ],
         "newFailingCount": 1
       },
@@ -1335,13 +1363,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "9d72e6505842fa4997b151687e08b8f57c9ec88800ca59ee6275935bf895278b",
+    "src/ReplicatedStorage/Shared/Config.luau": "ba4ddf80772cc1e2d86ea22b316c9fc1135b06cd66562fec49081afdc4ad10a7",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
-    "src/ServerScriptService/LootService.luau": "59a7fdc40f90eb44f238c6caf97fa3df0efeeb88ac08e3cc995b37c961382415",
-    "src/ServerScriptService/CraftService.luau": "cad89307976da9c112ebddff2cabe6ab18596ee4321bac9871bfa852e79edf3f"
+    "src/ServerScriptService/LootService.luau": "cc98aa790dd427fa78bbe60a8c4951e62be002ec7b56c305d639b94d1ead9156",
+    "src/ServerScriptService/CraftService.luau": "0d8c2dfec5c378beabba9c80e35ef74368f0b0e032bfe7299e5b1e4f87bad9d9"
   },
-  "fixtureSHA256": "296485c646b63255ac70debcb15d6393a9319d5aa36611d2db39d2ec6e7a50b3",
+  "fixtureSHA256": "80f99d4d4e8f921f3477cdb6d927235c50dc15491101de6d8ac6b06671ecb677",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -515,20 +515,36 @@ runGroup("bloom", function()
 	gather(w, p, "SlimeMeadow:8", { Draws = { 0.5, 0.0 } })
 	check(cardOf(w, p).Id == card.Id and d.Gather.Bloom == 1 and items(d, "Herb") == 2,
 		"while the card is open a herb still gathers but never blooms or counts a bloom", show(d.Gather))
-	-- share: me 2 (the card), everyone within 40 studs 1
+	-- share: me 2 (the card), everyone within 40 studs OF THE BLOOM 1 (the giver walked off to node 8 meanwhile)
+	local bloomAt = node(w, "SlimeMeadow:1").Pos
 	local near, dnear = hero(w, 2, "Horns")
 	local far, dfar = hero(w, 3, "Halo")
 	local full, dfull = hero(w, 4, "Halo", { Gather = { Day = w.Config.DayIndex(w.Time), N = 0, Bloom = 0, Gift = 10, Total = 0, FirstBloom = true } })
-	rootOf(near).Position = rootOf(p).Position + vec(39, 0, 0)
-	rootOf(far).Position = rootOf(p).Position + vec(0, 0, 41)
-	rootOf(full).Position = rootOf(p).Position + vec(5, 0, 0)
+	local byGiver, dby = hero(w, 11, "Halo")
+	local ko, dko = hero(w, 12, "Halo")
+	local noClass, dnc = hero(w, 13, "Halo", { ClassChosen = false })
+	local waiting, dwait = hero(w, 14, "Halo")
+	rootOf(near).Position = bloomAt + vec(39, 0, 0)
+	rootOf(far).Position = bloomAt + vec(0, 0, 41)
+	rootOf(full).Position = bloomAt + vec(5, 0, 0)
+	rootOf(byGiver).Position = rootOf(p).Position + vec(3, 0, 0)
+	rootOf(ko).Position = bloomAt + vec(4, 0, 0)
+	ko.Character:FindFirstChildOfClass("Humanoid").Health = 0
+	rootOf(noClass).Position = bloomAt + vec(6, 0, 0)
+	rootOf(waiting).Position = bloomAt + vec(7, 0, 0)
+	w.Ready[waiting] = false
+	check((rootOf(p).Position - bloomAt).Magnitude > 45, "(the giver stands more than 40 studs from the bloom now)", "")
 	local honor = tonumber(d.Honor) or 0
 	local from = #w.Notices
 	w:Remote("CardAction", p, card.Id, "Good")
 	check(items(d, "CrownDust") == 2, "Share it: I get 2 Crown Dust (the card)", tostring(items(d, "CrownDust")))
-	check(items(dnear, "CrownDust") == 1 and dnear.Gather.Gift == 1, "a player 39 studs away (any side) gets 1", "")
-	check(items(dfar, "CrownDust") == 0, "a player 41 studs away gets nothing", "")
+	check(items(dnear, "CrownDust") == 1 and dnear.Gather.Gift == 1, "a player 39 studs from the bloom (any side) gets 1", "")
+	check(items(dfar, "CrownDust") == 0, "a player 41 studs from the bloom gets nothing", "")
+	check(items(dby, "CrownDust") == 0, "a player next to the giver, far from the bloom, gets nothing (no share carried to a town)", "")
 	check(items(dfull, "CrownDust") == 0, "a player who took 10 gifts today gets nothing", "")
+	check(items(dko, "CrownDust") == 0 and items(dnc, "CrownDust") == 0 and items(dwait, "CrownDust") == 0,
+		"a KO'd player, one without a class or one not ready yet gets nothing", "")
+	w.Ready[waiting] = true
 	check(#keysFor(w, near, from) == 1 and keysFor(w, near, from)[1] == "Config.Gather.Text.BloomGift"
 		and #keysFor(w, p, from) == 0, "the receiver hears BloomGift (a key, no name); the giver no gather notice", "")
 	check((tonumber(d.Honor) or 0) == honor + 1, "a Knight who shares: Honor +1 (the card's Deeds point)", show({ honor, d.Honor }))
@@ -538,7 +554,7 @@ runGroup("bloom", function()
 	gather(w, p, "SlimeMeadow:2", { Draws = { 0.5, 0.07 } })
 	local c2 = cardOf(w, p)
 	check(c2 and c2.Id ~= card.Id and d.Gather.Bloom == 2, "a draw under 8% blooms again", show(d.Gather))
-	rootOf(near).Position = rootOf(p).Position + vec(10, 0, 0) -- close enough that a share would reach
+	rootOf(near).Position = node(w, "SlimeMeadow:2").Pos + vec(10, 0, 0) -- close enough to this bloom that a share would reach
 	local nearBefore = items(dnear, "CrownDust")
 	w:Remote("CardAction", p, c2.Id, "Evil")
 	check(items(d, "CrownDust") == 5 and items(dnear, "CrownDust") == nearBefore, "Keep it all: I get 3, nobody else anything", "")
@@ -562,6 +578,9 @@ runGroup("bloom", function()
 	w:ToDay(1)
 	gather(w, p, "SlimeMeadow:6", { Draws = { 0.5, 0.0 } })
 	check(d.Gather.Bloom == 1 and cardOf(w, p).Id ~= c3.Id, "the next day blooms again", show(d.Gather))
+	local dust0 = items(d, "CrownDust")
+	w:Remote("CardAction", p, cardOf(w, p).Id, "Good")
+	check(items(d, "CrownDust") == dust0 + 2, "a giver standing at the bloom gets the card's 2 only (never a share +1 too)", "")
 	gather(w, p, "SlimeMeadow:13", { Draws = { 0.5, 0.0 } })
 	check(d.Gather.Bloom == 1, "a draw of 0 on a rock: no bloom (rocks never bloom)", "")
 
@@ -574,6 +593,84 @@ runGroup("bloom", function()
 	w:Remote("CardAction", a, ac.Id, "Evil")
 	check(items(dA, "CrownDust") == 3 and dA.Honor == before[1] and dA.Infamy == before[2],
 		"an artisan keeps it all: 3 dust, no Honor / Infamy change", show({ dA.Honor, dA.Infamy }))
+end)
+
+------------------------------------------------------------------ before the switch goes on (게임성 검수 10/12)
+runGroup("rules", function()
+	local w = gWorld()
+	-- not ready yet: the hold is not even noted
+	local p, d = hero(w, 1)
+	w.Ready[p] = false
+	gather(w, p, "SlimeMeadow:1")
+	check(items(d, "Herb") == 0, "a player not ready yet gathers nothing", "")
+	w.Ready[p] = true
+	local n1 = node(w, "SlimeMeadow:1")
+	stand(p, n1)
+	w.Ready[p] = false
+	w.PPS.PromptButtonHoldBegan:Fire(n1.Prompt, p)
+	w.Ready[p] = true
+	w:Advance(2)
+	w.PPS.PromptTriggered:Fire(n1.Prompt, p)
+	w:Flush()
+	check(items(d, "Herb") == 0, "a hold that began before the player was ready does not count", "")
+	w.Ready[p] = false
+	w:Advance(1.1)
+	check(w.G.Try(p, "SlimeMeadow:1", { Id = "SlimeMeadow:1", T0 = w.Clock - 3 }) == "state", "Try itself refuses a player not ready", "")
+	w.Ready[p] = true
+	-- seated
+	local hum = p.Character:FindFirstChildOfClass("Humanoid")
+	hum.Sit = true
+	gather(w, p, "SlimeMeadow:2")
+	check(items(d, "Herb") == 0, "a seated player (a vehicle / seat) gathers nothing", "")
+	hum.Sit = false
+	gather(w, p, "SlimeMeadow:2")
+	check(items(d, "Herb") == 1, "standing up again: it counts", "")
+	-- the jump watch: a teleport blocks gathering for 3 s
+	local j, dj = hero(w, 2)
+	rootOf(j).Position = vec(0, 0, 0)
+	w:Tick(0.5)
+	local n3 = node(w, "SlimeMeadow:3")
+	rootOf(j).Position = n3.Pos + vec(2, 0, 0)
+	w:Tick(0.5)
+	check(w.G.Try(j, "SlimeMeadow:3", { Id = "SlimeMeadow:3", T0 = w.Clock - 3 }) == "moved", "right after a jump of more than 60 studs: moved", "")
+	w:Advance(3.1)
+	check(try(w, j, "SlimeMeadow:3") == "ok" and items(dj, "Herb") == 1, "3 s later: it counts", "")
+	local walk, dw = hero(w, 3)
+	rootOf(walk).Position = n3.Pos + vec(50, 0, 0)
+	w:Tick(0.5)
+	rootOf(walk).Position = n3.Pos + vec(2, 0, 0)
+	w:Tick(0.5)
+	check(try(w, walk, "SlimeMeadow:3") == "ok", "48 studs in one sample (not a jump) does not block", "")
+	-- an error after the item went in still counts the gather (counted from the bag)
+	local e, de = hero(w, 4)
+	local L = w.Reg.LootService
+	local real = L.GrantItems
+	L.GrantItems = function(...)
+		real(...)
+		error("offline: an error after the grant")
+	end
+	w.AllowWarn = "an error after the grant"
+	check(try(w, e, "SlimeMeadow:4") == "ok" and items(de, "Herb") == 1 and de.Gather.N == 1, "the bag says it went in: the gather counts", "")
+	w:Advance(1.1)
+	check(try(w, e, "SlimeMeadow:4") == "rest", "... and the node rests (no free second pick)", "")
+	L.GrantItems = real
+	-- texts that would lie while the gathered materials have no seller
+	for _, id in { "Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust" } do
+		local it = w.Config.Loot.Items[id]
+		check(not string.find(it.Desc or "", "Forge", 1, true), "a gathered material's text never says 'sell it at the Forge'", id)
+	end
+	check(type(w.Config.Loot.Text.ItemFullKeep) == "string" and not string.find(w.Config.Loot.Text.ItemFullKeep, "Forge", 1, true),
+		"its full-bag line does not send the player to the Forge", tostring(w.Config.Loot.Text.ItemFullKeep))
+	local f, df = hero(w, 5)
+	df.Items.Herb = 999
+	local before = #w.Notices
+	try(w, f, "SlimeMeadow:5")
+	local txt = ""
+	for i = before + 1, #w.Notices do
+		if w.Notices[i].Player == f and string.find(w.Notices[i].Text or "", "is full", 1, true) then txt = w.Notices[i].Text end
+	end
+	check(string.find(txt, "Meadow Herb is full", 1, true) ~= nil and not string.find(txt, "Forge", 1, true),
+		"a full bag of herbs says it is full, without the Forge", txt)
 end)
 
 ------------------------------------------------------------------ LootService.GrantItems (from source)

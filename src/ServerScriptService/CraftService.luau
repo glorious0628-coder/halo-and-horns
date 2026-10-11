@@ -77,8 +77,8 @@ local function fire(player, remote, payload)
 	if not ok then Util.Warn(TAG, remote .. ": " .. tostring(err)) end
 end
 
-local function tele(player, name, value)
-	if S.TelemetryService and S.TelemetryService.Custom then pcall(S.TelemetryService.Custom, player, name, value or 1) end
+local function tele(player, name, value, a, b)
+	if S.TelemetryService and S.TelemetryService.Custom then pcall(S.TelemetryService.Custom, player, name, value or 1, a, b) end
 end
 
 local function roleOf(data)
@@ -359,6 +359,17 @@ function CraftService.Finish(player, sid)
 		end
 	end
 	if mismatch > 0 then tele(player, "CraftMismatch", mismatch) end
+	-- 게임성 검수 10/12: how far each strike's arrival sat from its claim (server ms - client ms), to tune CraftMini's window
+	-- after the 10/17-20 test: value = the biggest, a = the smallest, b = how many strikes came
+	local dMax, dMin, dN = -math.huge, math.huge, 0
+	for i = 1, CraftMini.T.Strikes do
+		local s = sess.Strikes[i]
+		if s then
+			local d = (s.At - CraftMini.Target(sess.StartAt, i)) * 1000 - s.Ms
+			dMax, dMin, dN = math.max(dMax, d), math.min(dMin, d), dN + 1
+		end
+	end
+	if dN > 0 then tele(player, "CraftStrikeD", math.floor(dMax + 0.5), math.floor(dMin + 0.5), dN) end
 	local data = getData(player)
 	if not data then return "state" end
 	if not complete(player, data, sess.Recipe, plus, grades, sess.Id) then

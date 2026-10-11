@@ -84,6 +84,8 @@ MUTATIONS = [
     ("strike: the ping then not kept", R, "\tsess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }\n", "\tsess.Strikes[i] = { Ms = ms, At = serverNow() }\n"),
     ("finish: twice", R, "\tsess.Done = true\n\tST.Open[player] = nil\n\tlocal grades", "\tlocal grades"),
     ("finish: bots get their +N", R, "\t\tif same then\n\t\t\tplus = 0\n", "\t\tif same then\n"),
+    ("finish: no strike-d metric", R, "\tif dN > 0 then tele(player, \"CraftStrikeD\", math.floor(dMax + 0.5), math.floor(dMin + 0.5), dN) end\n", ""),
+    ("finish: d measured the wrong way", R, "\t\t\tlocal d = (s.At - CraftMini.Target(sess.StartAt, i)) * 1000 - s.Ms\n", "\t\t\tlocal d = s.Ms - (s.At - CraftMini.Target(sess.StartAt, i)) * 1000\n"),
     ("finish: no mismatch log", R, "\tif mismatch > 0 then tele(player, \"CraftMismatch\", mismatch) end\n", ""),
     # --- the end
     ("end: Pend never cleared", R, "\tc.Pend = \"\"\n\tc.Made[recipeId]", "\tc.Made[recipeId]"),

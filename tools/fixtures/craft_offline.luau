@@ -41,7 +41,7 @@ local function cWorld(o)
 		table.insert(w.Notices, { Player = p, Key = key, Kind = kind, Text = "KEY:" .. tostring(key) })
 	end
 	w.Tele = {}
-	w.Reg.TelemetryService = { Custom = function(p, name, v) table.insert(w.Tele, { P = p, Name = name, V = v }) end }
+	w.Reg.TelemetryService = { Custom = function(p, name, v, a, b) table.insert(w.Tele, { P = p, Name = name, V = v, A = a, B = b }) end }
 	local anvil = newInstance("Part", w)
 	anvil.Position = vec(0, 0, 0)
 	w.Anvil = anvil
@@ -300,6 +300,11 @@ runGroup("hammer", function()
 	check(info and info.Role == "Smith" and info.Lv == 1 and info.XP == 10 and info.Need == 40 and info.Made.W1 == 1,
 		"CraftInfo { Role, Lv, XP, Need, Made } after the craft", show(info))
 	check(#w.Crafted == 1 and w.Crafted[1].Id == "W1" and w.Crafted[1].Plus == 2, "Crafted(player, W1, 2)", "")
+	local sd = nil
+	for _, e in w.Tele do if e.Name == "CraftStrikeD" and e.P == p then sd = e end end
+	check(sd and sd.V == 50 and sd.A == 50 and sd.B == 5,
+		"CraftStrikeD logged per craft: the biggest / smallest (server ms - client ms) and how many strikes (50 / 50 / 5 at ping 0.1)",
+		sd and string.format("%s %s %s", tostring(sd.V), tostring(sd.A), tostring(sd.B)) or "none")
 
 	startAndHammer(w, p, { 40, 150, 220, false, 45 })
 	res = last(fired(w, "CraftResult", p))

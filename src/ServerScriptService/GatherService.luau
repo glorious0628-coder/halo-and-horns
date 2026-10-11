@@ -48,6 +48,8 @@ local ST = {
 	CapSaid = {}, -- [Player] = the KST day the DailyCap notice was shown
 	Bloom = {}, -- [Player] = { Id, Pos } the Shard Bloom card that is open
 	Hour = {}, -- [Player] = { T0 = os.clock(), N } gathers in the running hour (Telemetry "GatherHeavy")
+	LastPos = {}, -- [Player] = the root position at the last sample (the jump watch)
+	Jumped = {}, -- [Player] = os.clock() of the last jump (a teleport / fling: > JumpStuds between two samples)
 	Folder = nil,
 	StaleHold = 1, -- seconds a hold that ended still counts (the trigger can arrive just after the release)
 }
@@ -287,10 +289,14 @@ function GatherService.Try(player, id, hold)
 	if not node then return "node" end
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return "state" end
 	local data = getData(player)
-	if not data or data.ClassChosen ~= true or not Config.Factions[data.Faction] or data.Faction == "None"
-		or not Util.IsAlive(player) then
+	if not data or not S.PlayerService.IsReady(player) or data.ClassChosen ~= true or not Config.Factions[data.Faction]
+		or data.Faction == "None" or not Util.IsAlive(player) then
 		return "state"
 	end
+	-- 1b. not seated (a vehicle / seat), not right after a teleport (게임성 검수 10/12)
+	local hum = Util.GetHumanoid(player)
+	if hum and hum.Sit == true then return "seated" end
+	if os.clock() - num(ST.Jumped[player], -math.huge) < num(cfg.AfterJump, 3) then return "moved" end
 	-- 2. the hold began on this node, long enough ago
 	if type(hold) ~= "table" or hold.Id ~= id then return "hold" end
 	local now = os.clock()
@@ -321,13 +327,12 @@ function GatherService.Try(player, id, hold)
 	-- pay: 1, or 2 at Double; a full bag gives nothing and counts nothing
 	local item = node.Def.Item
 	local n = rng:NextNumber() < num(cfg.Double, 0.2) and 2 or 1
-	local okGrant, gained = pcall(S.LootService.GrantItems, player, { { Id = item, N = n } }, node.Pos, "Gather")
-	local got = 0
-	if okGrant and type(gained) == "table" then
-		for _, row in gained do
-			if row.Item == item then got += num(row.N) end
-		end
-	end
+	-- counted by the bag itself, before and after (an error after the item went in still counts the gather)
+	local before = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+	local okGrant, err = pcall(S.LootService.GrantItems, player, { { Id = item, N = n } }, node.Pos, "Gather")
+	if not okGrant then Util.Warn(TAG, "grant: " .. tostring(err)) end
+	local after = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+	local got = math.max(0, after - before)
 	if got <= 0 then return "full" end
 	if not rest then
 		rest = {}
@@ -349,13 +354,14 @@ end
 ------------------------------------------------------------------ the bloom's end
 local function share(giver, bloom)
 	local B = G().Bloom
-	local root = rootOf(giver)
-	local center = root and root.Position or (bloom and bloom.Pos)
+	-- around the bloom itself (the giver may have walked off during the 120 s card: no share in a town full of
+	-- idle players), to ready, living players with a class (게임성 검수 10/12)
+	local center = bloom and bloom.Pos
 	if not center then return end
 	for _, other in Players:GetPlayers() do
 		local r = other ~= giver and rootOf(other)
-		local data = r and S.PlayerService.IsReady(other) and getData(other)
-		if data and (r.Position - center).Magnitude <= num(B.Radius, 40) then
+		local data = r and S.PlayerService.IsReady(other) and Util.IsAlive(other) and getData(other)
+		if data and data.ClassChosen == true and (r.Position - center).Magnitude <= num(B.Radius, 40) then
 			local g = gatherOf(data)
 			if g.Gift < num(B.GiftDailyMax, 10) then
 				local ok, gained = pcall(S.LootService.GrantItems, other, { { Id = B.Item, N = 1 } }, nil, "Bloom")
@@ -384,7 +390,7 @@ end
 ------------------------------------------------------------------ prompts
 local function onHoldBegan(prompt, player)
 	local id = ST.ByPrompt[prompt]
-	if not id or not on() then return end
+	if not id or not on() or not S.PlayerService.IsReady(player) then return end
 	ST.Hold[player] = { Id = id, T0 = os.clock() }
 end
 
@@ -429,10 +435,33 @@ function GatherService.Start()
 	S.PlayerService.PlayerReady:Connect(guard("ready", function(player, data)
 		if on() and type(data) == "table" then sendState(player, data) end
 	end))
-	S.PlayerService.PlayerLeaving:Connect(function(player)
+	-- both leave paths: a player who never got ready still leaves no state behind
+	local function forget(player)
 		ST.Hold[player], ST.Rest[player], ST.CapSaid[player], ST.Bloom[player], ST.Hour[player] = nil, nil, nil, nil, nil
-	end)
+		ST.LastPos[player], ST.Jumped[player] = nil, nil
+	end
+	S.PlayerService.PlayerLeaving:Connect(forget)
+	Players.PlayerRemoving:Connect(forget)
 	task.spawn(guard("build", GatherService.Build))
+	-- the jump watch: a root that moved more than JumpStuds between two samples was teleported (or flung)
+	task.spawn(function()
+		while true do
+			task.wait(num(G().JumpSample, 0.5))
+			if on() then
+				local ok, err = pcall(function()
+					for _, p in Players:GetPlayers() do
+						local r = rootOf(p)
+						if r then
+							local last = ST.LastPos[p]
+							if last and (r.Position - last).Magnitude > num(G().JumpStuds, 60) then ST.Jumped[p] = os.clock() end
+							ST.LastPos[p] = r.Position
+						end
+					end
+				end)
+				if not ok then Util.Warn(TAG, "jump watch: " .. tostring(err)) end
+			end
+		end
+	end)
 	print("[GatherService] started")
 end
 
