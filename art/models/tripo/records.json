@@ -10739,5 +10739,621 @@
    ],
    "credits": 0
   }
+ ],
+ "Weapon_Halo_Paladin_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "91e6175c-9c4d-437c-ab7e-5b2d0db10748",
+   "balance_after": 15710,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T1_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T1_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_Paladin_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_Paladin_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "0e532da7-04d0-46f3-90aa-a1813eb3917a",
+   "balance_after": 15655,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_Paladin_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_Paladin_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "04680c24-45d5-41bb-a05a-7e2089f1da62",
+   "balance_after": 15600,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_Paladin_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_Paladin_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_LightMage_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b35be0a2-dcd4-45b5-9a69-f00a4833bf50",
+   "balance_after": 15545,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T1_left_v2.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T1_right_v2.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_LightMage_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_LightMage_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "188ca818-4b6e-4bf5-930b-090919e6b084",
+   "balance_after": 15490,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_LightMage_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_LightMage_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8e757e6d-766b-4d4c-b7c1-f6214e8a9f35",
+   "balance_after": 15435,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_LightMage_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_LightMage_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_Ranger_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "0a8d6523-8c59-4ca5-81d0-13b5e2bc1d98",
+   "balance_after": 15380,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T1_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T1_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_Ranger_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_Ranger_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3ff5f6ef-c399-40f0-a96f-246e4da59846",
+   "balance_after": 15325,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_Ranger_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Halo_Ranger_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "05ccd29a-c7c3-406c-80a3-92dc04b1c072",
+   "balance_after": 15270,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Halo_Ranger_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Halo_Ranger_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_Berserker_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "fa2796e9-c493-402e-9251-1b219de9ab72",
+   "balance_after": 15215,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T1_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T1_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_Berserker_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_Berserker_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "fedaccca-41e3-4f9c-ac36-05415dce2f7f",
+   "balance_after": 15160,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_Berserker_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_Berserker_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f5563bc6-c994-4639-b80d-23b244838fe3",
+   "balance_after": 15105,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_Berserker_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_DarkMage_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "918a676a-ccc4-4f68-b6ec-293ba9f2e37f",
+   "balance_after": 15050,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T1_left_v2.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T1_right_v2.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_DarkMage_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3fcd5f7d-c995-430b-b5d6-6f023f74516f",
+   "balance_after": 14995,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T2_left_v2.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T2_right_v2.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_DarkMage_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8168a269-e82f-4b0a-88f7-164cb4746517",
+   "balance_after": 14940,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_DarkMage_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_DarkMage_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "43db4d08-993f-4606-a830-e858518c74dd",
+   "balance_after": 14885,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T1_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T1_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_ShadowHunter_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_ShadowHunter_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "c9c8ae8e-bf6f-44ce-9315-059b0fd13c62",
+   "balance_after": 14830,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_ShadowHunter_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_ShadowHunter_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "bf09dc34-5793-43c2-bee1-f7101b90baf1",
+   "balance_after": 14775,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_ShadowHunter_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_ShadowHunter_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_Blacksmith_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "035dfbcd-84b2-46ce-9daa-b5e952c58bb5",
+   "balance_after": 14720,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T1_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T1_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_Blacksmith_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_Blacksmith_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "2bb84379-f185-4032-a6a5-92229b59b7fc",
+   "balance_after": 14665,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_Blacksmith_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_Blacksmith_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "7d150122-75d7-4068-b231-ca6e809231f8",
+   "balance_after": 14610,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T3_left_v2.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_Blacksmith_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_Alchemist_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "36df806f-f036-482a-af02-0b6b8c7441c0",
+   "balance_after": 14555,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T1_left_v2.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T1_right_v2.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_Alchemist_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f1c4bb1c-95f0-416e-bc45-4d32937c3ef9",
+   "balance_after": 14500,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_Alchemist_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "a34ecbc0-6ec7-4f44-a37a-71c3319b1e73",
+   "balance_after": 14445,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_Alchemist_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "cca3d2ec-0746-486a-9c2a-95cb74e4bf0e",
+   "balance_after": 14390,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T1_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T1_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T1_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T1_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_PetTamer_T1_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_PetTamer_T2_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e02c0e52-a85b-424d-9ace-88fe01d7c9b1",
+   "balance_after": 14335,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T2_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T2_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T2_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_PetTamer_T2_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Neutral_PetTamer_T3_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8aeb1501-55e0-4886-8eaa-a876d9f6b4b2",
+   "balance_after": 14280,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T3_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T3_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_PetTamer_T3_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Neutral_PetTamer_T3_MV4_HD_src.glb"
+  }
+ ],
+ "Weapon_Horns_Berserker_final_b_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e0be264f-5fea-4014-8038-53b6a490c65f",
+   "balance_after": 14225,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 morning",
+   "approval": "최종 검수 10/12 아침: Tripo 무기 28개 ≈1,540점 (9직업 × T1~T3 + 뿔 전사 최종 b), 디자인 검수 승인",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_final_b_front.png",
+    "left_slot(=weapon's own left; 2D sides named by the weapon's own side, bow left = string side)": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_final_b_left.png",
+    "right_slot": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_final_b_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_final_b_back.png"
+   },
+   "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
+   "file": "art/models/tripo/web/Weapon_Horns_Berserker_final_b_MV4_HD_src.glb"
+  }
  ]
 }
