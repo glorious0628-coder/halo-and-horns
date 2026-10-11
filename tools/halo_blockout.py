@@ -40,6 +40,8 @@ DIST_MAT = {"training": "sand", "arrival": "grass"}  # 2차 10/11 검수: traini
 PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
 APRON_D, APRON_RAMP = 8, 12  # level doorstep in front of every door, then a ramp back to the district slope (studs)
 APRON_SIDE = 8  # review 10/11: sideways blend width of the doorstep (its sides were steps)
+PAINT_IN = CELL  # 디자인 검수 10/11: road / yard / plaza terrain paint stops one cell inside the parts
+FACE_DH = 2.5  # a land cell more than this above a neighbour is a rock face (the upper rim of every step)
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
@@ -323,7 +325,7 @@ def main():
     stairs = 0
     for rd in sorted(plan["roads"], key=lambda r: -r["grade"]):  # grade 1 painted last (on top)
         pts = [tuple(p) for p in rd["pts"]]
-        prof = list(rd["ys"]) if rd.get("ys") else [ground_at(p) for p in pts]
+        prof = [ground_at(p) if not rd.get("ys") or rd["ys"][k] is None else rd["ys"][k] for k, p in enumerate(pts)]  # ys: None = ground
         if rd["id"].startswith("door_"):
             prof[0] = prof[1] = ground_at(pts[0])
         half = rd["w"] / 2
@@ -344,6 +346,8 @@ def main():
                 seg_len = math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1])
                 slope = math.degrees(math.atan2(abs(prof[i + 1] - prof[i]), max(seg_len, 1e-6)))
                 H[r][c] = y
+                if best[0] > half - PAINT_IN:
+                    continue  # 디자인 검수 10/11: the paint stays one cell inside the parts (it bled white round them)
                 if slope > 24:
                     MAT[r][c] = "stair"
                     stairs += 1
@@ -391,7 +395,7 @@ def main():
         for r in range(rows):
             for c in range(cols):
                 x, z = cxz(r, c)
-                if math.hypot(x - y["at"][0], z - y["at"][1]) <= y["r"] and MAT[r][c] not in ("sea", "water", "stair"):
+                if math.hypot(x - y["at"][0], z - y["at"][1]) <= y["r"] - PAINT_IN and MAT[r][c] not in ("sea", "water", "stair"):
                     MAT[r][c] = "road2"
     fpool = next(p for p in plan["water"]["pools"] if p["id"] == "fountain")
     PAVED = [(fpool["at"][0], fpool["at"][1], PAVED_R["fountain"]), (0, -420, PAVED_R["spawn"])]
@@ -400,9 +404,10 @@ def main():
             for c in range(cols):
                 x, z = cxz(r, c)
                 if math.hypot(x - px, z - pz) <= pr and MAT[r][c] not in ("sea", "water", "stair"):
-                    MAT[r][c] = "road1"
+                    if math.hypot(x - px, z - pz) <= pr - PAINT_IN:
+                        MAT[r][c] = "road1"
                     if H[r][c] is not None:
-                        H[r][c] -= PAVED_SINK
+                        H[r][c] -= PAVED_SINK  # the sink keeps the full radius (tools/skeleton_ground G() tests the same cells)
     # shore: distance to the sea in cells (4-neighbour BFS)
     DS = [[None] * cols for _ in range(rows)]
     q = deque()
@@ -613,6 +618,23 @@ def main():
                     UND[rr][cc] = min(UND_CAP, max(UND[rr][cc], H[rr][cc] - 2 + 30 + 4 + 6 * (3 - near[rr][cc])))
     und_max = max(max(row) for row in UND)
     print(f"[blockout] underside depth max {und_max:.1f} studs (cap {UND_CAP}), unit {UND_UNIT}")
+
+    # 디자인 검수 10/11 (r2_05·07): steep faces between levels (stair terraces, district steps) are rock, not smeared grass /
+    # white road paint
+    faces = 0
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] in ("sea", "water", "stair") or MAT[r][c].startswith("road") or (r, c) in PAD or H[r][c] is None:
+                continue
+            d = 0.0
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                rr, cc = r + dr, c + dc
+                if 0 <= rr < rows and 0 <= cc < cols and MAT[rr][cc] not in ("sea", "water") and H[rr][cc] is not None:
+                    d = max(d, H[r][c] - H[rr][cc])
+            if d > FACE_DH:
+                MAT[r][c] = "rock"
+                faces += 1
+    print(f"[blockout] rock faces {faces}")
 
     # encode
     hrows, mrows, urows = [], [], []

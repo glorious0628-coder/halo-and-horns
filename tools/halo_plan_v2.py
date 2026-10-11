@@ -441,7 +441,12 @@ _road("main")["pts"] = [(0, -336), (0, -362), (2, -400), (6, -426), (34, -452.0)
 _road("main")["note"] = "성문 → 스폰(통로는 곧게) → 시장 골목 → 분수 광장(분수 동쪽으로) → 광장 남쪽 끝에서 대성당 굽은 계단"
 for _f in WATER["falls"]:
     _f["y"] = {"W1": 1, "W2": 21, "W3": 12}[_f["id"]]  # sound / FX height (halfway down each fall)
-_road("cliff_lookout")["pts"] = [(220, -692), (206, -712), (208, -748), (222, -772)]
+_road("cliff_lookout")["pts"] = [(220, -692), (206, -712), (208, -744), (208.6, -754), (222, -772)]
+# 디자인 검수 10/11 (r2_08·09): the tier steps must read as stairs. A road may carry "ys" with None = take the ground; the set
+# values make one short flight (> 24 deg -> skeleton stairs + rails) right at the step
+_road("cliff_lookout")["ys"] = [None, None, 22, 28, None]
+_road("to_cliff")["pts"] = [(91.0, -584.0), (127.0, -602.0), (166.0, -614.0), (174.5, -620.5), (177.5, -622.8), (205.0, -644.0), (220.0, -692.0)]
+_road("to_cliff")["ys"] = [None, None, None, 18, 22, None, None]
 _road("lookout_end")["pts"] = [(199, -788), (210, -785), (220, -782)]
 _road("lookout_end")["note"] = "전망 탑 문 앞 마당"
 YARDS = [dict(y, at=(214, -786)) if y["id"] == "lookout_yard" else y for y in YARDS]
@@ -754,6 +759,11 @@ def fix_bridges():
             p, j = min(xs, key=lambda t: math.hypot(t[0][0] - br["at"][0], t[0][1] - br["at"][1]))
             br["at"] = (round(p[0], 1), round(p[1], 1))
             br["road"] = rd["id"]
+            # 디자인 검수 10/11 (r2_12): the deck follows its own road (the blockout took the nearest of 3 roads: B4 lay along the stream)
+            a, b = next((rd["pts"][i], rd["pts"][i + 1]) for i in range(len(rd["pts"]) - 1)
+                        if seg_cross(rd["pts"][i], rd["pts"][i + 1], WATER["stream"][j], WATER["stream"][j + 1]))
+            ln = math.hypot(b[0] - a[0], b[1] - a[1])
+            br["dir"] = [round((b[0] - a[0]) / ln, 4), round((b[1] - a[1]) / ln, 4)]
             br["stream_w"] = WATER["stream_w"][j]
 
 

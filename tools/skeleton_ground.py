@@ -85,6 +85,7 @@ def lua_data():
         " grid={x0=%s,z0=%s,cell=%s}," % (fm(GRID_X0 + OX), fm(GRID_Z0 + OZ), fm(GRID_CELL)),  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
         " passage={x0=%s,x1=%s,z0=%s,z1=%s}," % (fm(PASSAGE[0] + OX), fm(PASSAGE[1] + OX), fm(PASSAGE[2] + OZ), fm(PASSAGE[3] + OZ)),
         " yards={%s}," % yards,
+        " bridges={%s}," % ",".join('{x=%s,z=%s,r=%s}' % (fm(b["at"][0] + OX), fm(b["at"][1] + OZ), fm(b["len"] / 2 + 2)) for b in BRIDGES),
         " roads={",
         ",\n".join("  " + lua_road(r) for r in ROADS),
         " },",
@@ -245,6 +246,10 @@ local function skipSeg(r, ax, az, bx, bz)
 	local mx, mz = (ax + bx) / 2, (az + bz) / 2
 	if r.id ~= "main" and (inRect(ax, az) or inRect(mx, mz) or inRect(bx, bz)) then return true end
 	if r.grade > 1 and (inDisc(mx, mz) or covered(mx, mz, r.grade)) then return true end
+	-- 디자인 검수 10/11 (r2_06): inside a yard the cobble disc is the floor (marble plates lay over it, lifted)
+	for _, y in D.yards do
+		if (mx - y.x) ^ 2 + (mz - y.z) ^ 2 < (y.r - 0.5) ^ 2 then return true end
+	end
 	return false
 end
 local function resample(pts, step)
@@ -336,6 +341,12 @@ if ONLY.roads or ONLY.stairs or ONLY.rails then
 		for k = 1, #P - 1 do
 			local a, b = P[k], P[k + 1]
 			local sg = { ok = a.h ~= nil and b.h ~= nil, stair = false }
+			-- 디자인 검수 10/11 (r2_12): the bridge deck is the road there; plates / stones / stairs over the stream channel made
+			-- a second rail and a lone post on the deck
+			local mx, mz = (a.x + b.x) / 2, (a.z + b.z) / 2
+			for _, bb in D.bridges do
+				if (mx - bb.x) ^ 2 + (mz - bb.z) ^ 2 < bb.r * bb.r then sg.ok = false end
+			end
 			if sg.ok then
 				local hd = math.sqrt((b.x - a.x) ^ 2 + (b.z - a.z) ^ 2)
 				local slope = math.deg(math.atan2(math.abs(b.h - a.h), math.max(hd, 0.01)))
@@ -431,6 +442,14 @@ ST.yards = function()
 	end
 end
 
+-- the turn at resampled point k is sharper than 20 degrees (the gold edge lines of the two plates would cross outside)
+local function sharp(P, k)
+	local a, p, b = P[k - 1], P[k], P[k + 1]
+	if not (a and p and b) then return false end
+	local d1x, d1z, d2x, d2z = p.x - a.x, p.z - a.z, b.x - p.x, b.z - p.z
+	return math.deg(math.abs(math.atan2(d1x * d2z - d1z * d2x, d1x * d2x + d1z * d2z))) > 20
+end
+
 ST.roads = function()
 	for _, r in D.roads do
 		local P, S, w = r.P, r.S, r.w
@@ -447,7 +466,7 @@ ST.roads = function()
 					local len = (B - A).Magnitude
 					local cf0 = CFrame.lookAt((A + B) / 2, B)
 					mk("roads", "Roads", r.name .. "_" .. k, BLK, Vector3.new(w, 0.5, len + 0.4), cf0 * CFrame.new(0, -0.25, 0), r.grade == 1 and "marble" or "cobble", "walk")
-					if r.grade == 1 then
+					if r.grade == 1 and not sharp(P, k) and not sharp(P, k + 1) then -- 디자인 검수 10/11 (r2_06): no gold X at sharp bends
 						for _, side in { -1, 1 } do
 							mk("roads", "Roads", r.name .. "_line" .. k .. (side < 0 and "L" or "R"), BLK, Vector3.new(0.35, 0.12, len + 0.2),
 								cf0 * CFrame.new(side * (w / 2 - 0.9), 0.06, 0), "gold", "deco")

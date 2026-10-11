@@ -144,14 +144,16 @@ def review2_spec():
         ("r2_04_stairs_low", g(30, -625, 8), g(80, -675, 4)),
         ("r2_05_stairs_mid", g(112, -668, 6), g(40, -686, 4)),
         ("r2_06_stairs_top", g(70, -724, 8), g(40, -640, 0)),
-        ("r2_07_stairs_side", g(150, -640, 42), g(70, -680, 0)),
-        ("r2_08_cliff_tiers", g(118, -598, 26), g(210, -660, 0)),
+        ("r2_07_stairs_side", g(10, -630, 40), g(72, -680, 0)),  # 3차: was inside a gray box (150,-640)
+        ("r2_08_cliff_tiers", g(160, -606, 6), g(185, -628, 2)),  # 3차: from the lower tier at the to_cliff flight
         ("r2_09_cliff_lookout_lane", g(198, -700, 8), g(218, -772, 4)),
-        ("r2_10_lookout_to_cathedral", ab(look["x"] - 5, look["ground_y"] + 41, look["z"]), ab(cat["x"], cat["ground_y"] + 20, cat["z"])),
+        ("r2_10_lookout_to_cathedral", ab(look["x"] - 9, look["ground_y"] + 46, look["z"]), ab(cat["x"], cat["ground_y"] + 20, cat["z"])),
         ("r2_11_lookout_yard", g(205, -800, 6), ab(cat["x"], cat["ground_y"] + 30, cat["z"])),
         ("r2_12_garden_B4", g(b4[0] + 22, b4[1] + 16, 8), g(b4[0], b4[1], 0)),
         ("r2_13_pads", ab(0, 34, -398), ab(0, 0, -357)),
-        ("r2_14_top", ab(CX, 540, CZ + 2), ab(CX, 0, CZ)),
+        ("r2_14_top", ab(CX, 380, CZ + 150), ab(CX, 0, CZ)),  # 3차: 540 straight down was hazy
+        ("r2_15_bridge_B4_close", g(b4[0] - 6, b4[1] + 14, 5), g(b4[0], b4[1], 1)),
+        ("r2_16_cliff_flight", g(196, -606, 8), g(176, -622, 2)),
     ]
     return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
 

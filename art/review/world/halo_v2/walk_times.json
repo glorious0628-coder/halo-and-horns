@@ -91,15 +91,15 @@
    "from_gate_s": 13.2
   },
   "House_Cliff6": {
-   "from_spawn_s": 16.4,
-   "from_gate_s": 20.0
+   "from_spawn_s": 16.5,
+   "from_gate_s": 20.1
   },
   "House_Cliff7": {
    "from_spawn_s": 14.5,
    "from_gate_s": 18.1
   },
   "House_Cliff8": {
-   "from_spawn_s": 18.7,
+   "from_spawn_s": 18.8,
    "from_gate_s": 22.3
   },
   "House_Garden5": {
