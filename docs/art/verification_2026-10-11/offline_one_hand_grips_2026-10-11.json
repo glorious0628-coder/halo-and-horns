@@ -1,9 +1,29 @@
 {
-  "checks": 28,
+  "checks": 58,
   "failed": 0,
   "mutations": [
     {
       "name": "the Light Mage's staff leaning out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Paladin's sword tip to the right",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a hand-on-hip sinks into the waist",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Paladin's fist pushed out of reach",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old left-arm hold kept (Tamer)",
       "applied": true,
       "caught": true
     },
@@ -33,7 +53,17 @@
       "caught": true
     },
     {
-      "name": "a tall staff sinks into the ground",
+      "name": "a staff sinks into the ground",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old tall staffs",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old big orb",
       "applied": true,
       "caught": true
     },
@@ -44,6 +74,16 @@
     },
     {
       "name": "never run",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the free hand never placed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no body scale (small avatars stretch)",
       "applied": true,
       "caught": true
     }

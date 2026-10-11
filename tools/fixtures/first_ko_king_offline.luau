@@ -112,10 +112,10 @@ local function fkWorld(o)
 		self:Flush()
 	end
 	-- what MonsterService.landAttack does for a landed hit (tested cut out below)
-	function w:Strike(rec, target)
+	function w:Strike(rec, target, mult)
 		table.insert(self.Struck, { Rec = rec, T = target })
-		if rec._strike then return rec._strike(rec, target) end
-		return reg.CombatService.DamagePlayer(target, rec.Def.Damage, nil, false, rec.Kind)
+		if rec._strike then return rec._strike(rec, target, mult) end
+		return reg.CombatService.DamagePlayer(target, rec.Def.Damage * (mult or 1), nil, false, rec.Kind)
 	end
 
 	-- the King Slime finisher card (the real FinisherService: a card for a manual King kill)
@@ -369,11 +369,15 @@ runGroup("spawn", function()
 	check(s and s.Opts.HP == FK0.FirstHP and s.Opts.Quiet == true and type(s.Opts.Strike) == "function"
 		and type(s.Opts.OnKilled) == "function" and s.Opts.Distance == FK0.SpawnDistance and s.Opts.Practice == nil,
 		"SpawnPersonal opts: FirstHP, Quiet, Strike, OnKilled, SpawnDistance (no Practice)", s and show({ s.Opts.HP, s.Opts.Quiet, s.Opts.Distance }))
-	check(s and s.Opts.Near == true and s.Opts.Hold == FK0.DropTime,
-		"Near (never the home-town spot) and Hold = DropTime (no swing before the landing)", s and show({ s.Opts.Near, s.Opts.Hold }))
+	check(s and s.Opts.Near == true and s.Opts.Hold == FK0.DropTime + FK0.FirstLeapAfter,
+		"Near (never the home-town spot) and Hold = DropTime + FirstLeapAfter (A23-113: its first leap lands one cycle after the drop)",
+		s and show({ s.Opts.Near, s.Opts.Hold }))
+	check(s and s.Opts.LeapGrow == FK0.LeapGrow and s.Opts.LeapGrowMax == FK0.LeapGrowMax and FK0.LeapGrow > 0,
+		"A23-113: the first King's circle grows LeapGrow after each miss (up to LeapGrowMax)", s and show({ s.Opts.LeapGrow, s.Opts.LeapGrowMax }))
 	local rec = w:KingOf(p)
 	check(rec ~= nil and rec.Quiet == true and rec.Practice == nil and rec.Model.Attrs.FirstKO == "First" and rec.Model.Attrs.DropAt == w.Time
-		and rec.Model.Attrs.DropTime == FK0.DropTime, "a quiet King; model attributes FirstKO / DropAt / DropTime (the client's drop)",
+		and rec.Model.Attrs.DropTime == FK0.DropTime and rec.Model.Attrs.DropRadius == FK0.LandRadius,
+		"a quiet King; model attributes FirstKO / DropAt / DropTime / DropRadius = LandRadius (the client's drop and circle)",
 		rec and show(rec.Model.Attrs))
 	w:FKTick()
 	w:FKTick(5)
@@ -541,6 +545,18 @@ runGroup("one hit", function()
 	check(w2:Hum(q).Health == 100, "out of LandRadius: the landing misses")
 	w2:Strike(r2, q)
 	check(w2:Hum(q).Health == 0, "its next landed hit knocks out in one hit")
+	-- A23-113 ①: the drop's circle hits inside LandRadius - BossLeap.Grace (the rule of every leap's circle)
+	local edge = FK0.LandRadius - C0.BossLeap.Grace
+	for i, case in { { edge - 0.1, 0 }, { edge + 0.1, 100 } } do
+		local wl = fkWorld()
+		local u = wl:Hunter(120 + i, "Halo")
+		wl:FKTick()
+		local k = wl:KingOf(u).Root.Position
+		wl:Place(u, vec(k.X + case[1], k.Y, k.Z))
+		wl:Advance(FK0.DropTime + 0.01)
+		check(wl:Hum(u).Health == case[2], string.format("the drop's circle: %.1f studs from it %s", case[1],
+			case[2] == 0 and "is hit" or "is not (outside LandRadius - Grace)"), tostring(wl:Hum(u).Health))
+	end
 	-- high above / below the landing (a cliff): no thud
 	local w3 = fkWorld()
 	local h = w3:Hunter(103, "Halo")
@@ -864,6 +880,18 @@ runGroup("get-up", function()
 	check(look and (look - at).Magnitude > 0.5 and near(((look - at).Unit).Z, -away.Z, 1e-3), "facing where the King was")
 	check(C0.ZoneAt(at).Id == "SlimeMeadow" and (at - fell).Magnitude < FK0.GetUp.Back + FK0.GetUp.Lift + 1,
 		"in the meadow, right by the fall (not the town spawn)", show(at))
+	-- A23-113 ①: a King that leapt ON the player: away from where it leapt from (DropFrom), not from its body
+	local wd = fkWorld()
+	local pd = wd:Hunter(109, "Halo")
+	wd:FKTick()
+	local rd = wd:KingOf(pd)
+	rd.Model.Attrs.DropFrom = MEADOW + vec(12, 0, 0)
+	wd:Advance(FK0.DropTime + 0.01)
+	wd:Die(pd)
+	local upd = wd.FK.GetUp(pd)
+	local atd = upd and upd.CFrame and upd.CFrame.Args[1]
+	check(atd and near(atd.X, MEADOW.X - FK0.GetUp.Back, 1e-3) and near(atd.Z, MEADOW.Z, 1e-3),
+		"a leaping King: gets up Back studs away from its DropFrom", show(atd))
 	-- water at the Back spot: right where it fell
 	local w2 = fkWorld()
 	local q = w2:Hunter(102, "Halo")
@@ -995,7 +1023,8 @@ runGroup("player service", function()
 end)
 
 ------------------------------------------------------------------ 9. the retry King: about 2 potions, a normal personal kill
--- the fight model: the King hits every acd s (the first after the wind-up), the player deals its basic-attack DPS x
+-- the fight model: the King's drop hits at t = 0, its first leap FirstLeapAfter + Warn s later, then every acd s
+-- (A23-113 ①: the player never steps out of a circle here - dodging only helps), the player deals its basic-attack DPS x
 -- uptime, the faction regen heals every RegenTick (HealPlayer rounds), a potion heals HPRecovery of MaxHealth with
 -- PotionCooldown, drunk when HP <= drink x MaxHealth
 local function roundDamage(x) return math.max(1, math.floor(x + 0.5)) end -- Util.RoundDamage (HealPlayer)
@@ -1003,7 +1032,8 @@ local function roundDamage(x) return math.max(1, math.floor(x + 0.5)) end -- Uti
 local function fight(maxHP, kingHP, hit, dps, regen, potions, uptime, acd, drink)
 	local V, CB = C0.Vitals, C0.Combat
 	local hp, king, t, ready, left = maxHP, kingHP, 0, -math.huge, potions
-	local nextHit, nextRegen = C0.HitReact.MonsterWindup, CB.RegenTick
+	-- A23-113 ①: t = 0 is the drop from the sky, which hits (the player stands in its circle); then a leap lands every acd s
+	local nextHit, nextRegen = 0, CB.RegenTick
 	local dt = 0.02
 	while t < 600 do
 		t += dt
@@ -1014,7 +1044,8 @@ local function fight(maxHP, kingHP, hit, dps, regen, potions, uptime, acd, drink
 			if regen > 0 and hp < maxHP then hp = math.min(maxHP, hp + roundDamage(maxHP * regen * CB.RegenTick)) end
 		end
 		if t >= nextHit then
-			nextHit += acd
+			-- after the drop: its first leap lands FirstLeapAfter + Warn s later, then one every acd s
+			nextHit = (nextHit == 0) and (FK0.FirstLeapAfter + C0.BossLeap.Kinds[FK0.Kind].Warn) or (nextHit + acd)
 			hp -= hit
 			if hp <= 0 then return false, 0, t end
 		end
@@ -1117,13 +1148,19 @@ runGroup("retry numbers", function()
 	check(rec and rec.MaxHP == want.HP and rec.Model.Attrs.FirstKO == "Retry", "the retry King's HP = FirstKORetry of the player",
 		show({ rec and rec.MaxHP, want.HP }))
 	check(s.Opts.Quiet == nil and type(s.Opts.OnKilled) == "function" and s.Opts.Practice == R.PayAs and type(s.Opts.Strike) == "function"
-		and s.Opts.Near == true and s.Opts.Hold == FK0.DropTime and rec.Quiet == nil and rec.Practice == R.PayAs,
+		and s.Opts.Near == true and s.Opts.Hold == FK0.DropTime + FK0.FirstLeapAfter and s.Opts.LeapGrow == nil
+		and rec.Quiet == nil and rec.Practice == R.PayAs,
 		"a normal (not quiet) practice personal King: Practice = Retry.PayAs, the strike / kill hooks, Near, Hold",
 		show({ s.Opts.Practice, rec.Practice }))
 	w:Advance(FK0.DropTime + 0.01)
-	check(w:Hum(p).Health == 100, "the retry King's landing does not thud")
+	local hit1 = w.Util.RoundDamage(100 * want.Hit)
+	check(w:Hum(p).Health == 100 - hit1, "A23-113: the retry King's drop hits inside its circle like a leap (Hit x MaxHealth)",
+		tostring(w:Hum(p).Health))
 	w:Strike(rec, p)
-	check(w:Hum(p).Health == 100 - w.Util.RoundDamage(100 * want.Hit), "its hit = Hit x MaxHealth", tostring(w:Hum(p).Health))
+	check(w:Hum(p).Health == 100 - 2 * hit1, "its hit = Hit x MaxHealth", tostring(w:Hum(p).Health))
+	w:Strike(rec, p, 2)
+	check(w:Hum(p).Health == 100 - 2 * hit1 - w.Util.RoundDamage(100 * want.Hit * 2), "a landing's mult: Hit x MaxHealth x mult",
+		tostring(w:Hum(p).Health))
 	-- its kill: the real killRecord - one Personal MonsterKilled with Practice (two hits are enough: a personal monster)
 	w:KillKing(rec, { Hits = 2 })
 	local k = w.Killed[#w.Killed]

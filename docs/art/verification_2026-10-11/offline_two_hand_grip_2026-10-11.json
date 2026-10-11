@@ -1,5 +1,5 @@
 {
-  "checks": 20,
+  "checks": 21,
   "failed": 0,
   "mutations": [
     {
@@ -33,7 +33,12 @@
       "caught": true
     },
     {
-      "name": "the old short handle",
+      "name": "a long bare handle under the left hand",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no pommel",
       "applied": true,
       "caught": true
     },

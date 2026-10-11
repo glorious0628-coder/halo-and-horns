@@ -17,9 +17,12 @@
 --                  Kind SlimeKing, ZoneId SlimeMeadow, Personal, Practice = true): the quest's Kill row counts it; no
 --                  finisher card, drops or daily jobs; the Slime Prince's XP / gold. One win per session while the row
 --                  stays (no farming a stuck row). A KO by it is a normal KO.
--- Both Kings: Near (by the player or not at all), Hold = DropTime (no swing before the landing); a King whose owner
--- steps into a town goes home (it never swings there, so it is never fought from there). Config.FirstKOKing.Enabled =
--- false: no King at all, the KO row is still told (never stuck on it).
+-- Both Kings: Near (by the player or not at all); the drop from the sky lands DropTime s later with a LandRadius circle
+-- (DropRadius) that hits its owner inside it; then (A23-113 ①, Config.BossLeap / MonsterService LEAP) every attack is a
+-- leap with a circle a second ahead - outside it = not hit - the first one FirstLeapAfter s after the drop (Hold), then
+-- one every cycle. The first King's circle grows LeapGrow studs after each miss (it keeps hopping until it lands); the
+-- retry King's leaps are dodged to win. A King whose owner steps into a town goes home (it never swings there, so it is
+-- never fought from there). Config.FirstKOKing.Enabled = false: no King at all, the KO row is still told (never stuck).
 --   FirstKOService.StageOf(player, data?) -> "First" | "Tell" | "Retry" | nil
 --   FirstKOService.ClaimKO(victim, diedAt) -> { RespawnIn = s } | nil   (CombatService's death pipeline)
 --   FirstKOService.GetUp(player) -> { Delay = s, CFrame = CFrame? } | nil (PlayerService's respawn)
@@ -192,25 +195,35 @@ local function retryOf(player)
 	return Config.FirstKORetry(level, tier, player:GetAttribute("Class"), player:GetAttribute("Faction"), enh)
 end
 
-local function hitBase(rec, target)
+local function hitBase(rec, target, mult)
 	local def = type(rec.Def) == "table" and rec.Def or {}
-	return S.CombatService.DamagePlayer(target, num(def.Damage, 1), nil, false, rec.Kind)
+	return S.CombatService.DamagePlayer(target, num(def.Damage, 1) * mult, nil, false, rec.Kind)
 end
 
--- every landed hit of a King of ours (MonsterService rec._strike) and its landing thud. Only the owner on the King's own
--- stage gets the raised damage: the first King one-shots (the lethal hit is noted BEFORE the damage, so a Died handler
--- that runs at once already sees it), the retry King hits FirstKORetry.Hit of MaxHealth; anything else is a plain hit
-local function strike(rec, target)
+-- where the King came at the player from: a leap's DropFrom (A23-113 ①: it lands ON the player), else its body
+local function cameFrom(rec, at)
+	local model = rec.Model
+	local leap = typeof(model) == "Instance" and model:GetAttribute("DropFrom") or nil
+	if typeof(leap) == "Vector3" and Util.FlatDistance(leap, at) > 0.5 then return leap end
+	return (rec.Root and rec.Root.Parent) and rec.Root.Position or at
+end
+
+-- every landed hit of a King of ours (MonsterService rec._strike: its landings, A23-113 ① Config.BossLeap, with mult = x
+-- the plain hit) and its first landing thud. Only the owner on the King's own stage gets the raised damage: the first
+-- King one-shots (the lethal hit is noted BEFORE the damage, so a Died handler that runs at once already sees it), the
+-- retry King hits FirstKORetry.Hit of MaxHealth x mult; anything else is a plain hit x mult
+local function strike(rec, target, mult)
+	mult = math.max(0, num(mult, 1))
 	local owner = rec.Owner
 	local e = owner and ST.Kings[owner]
-	if target ~= owner or not e or e.Rec ~= rec then return hitBase(rec, target) end
+	if target ~= owner or not e or e.Rec ~= rec then return hitBase(rec, target, mult) end
 	local hum, root = Util.GetHumanoid(target), Util.GetRoot(target)
 	if not hum or not root or hum.Health <= 0 then return 0 end
 	local stage = FirstKOService.StageOf(target)
-	if stage ~= e.Stage then return hitBase(rec, target) end -- the step moved on under it (Tick sends it home)
-	if stage == "First" and atStake(target) then return hitBase(rec, target) end -- never a way out of a loss
+	if stage ~= e.Stage then return hitBase(rec, target, mult) end -- the step moved on under it (Tick sends it home)
+	if stage == "First" and atStake(target) then return hitBase(rec, target, mult) end -- never a way out of a loss
 	if stage == "First" then
-		local from = (rec.Root and rec.Root.Parent) and rec.Root.Position or root.Position
+		local from = cameFrom(rec, root.Position)
 		local pend = { At = os.clock(), Pos = root.Position, From = from }
 		ST.Pending[target] = pend
 		local applied = S.CombatService.DamagePlayer(target, hum.MaxHealth * math.max(10, num(FK.OneHitMult, 20)), nil,
@@ -218,7 +231,7 @@ local function strike(rec, target)
 		if hum.Health > 0 and ST.Pending[target] == pend then ST.Pending[target] = nil end -- a ForceField took it: no KO
 		return applied
 	end
-	return S.CombatService.DamagePlayer(target, hum.MaxHealth * retryOf(target).Hit, nil, false, rec.Kind)
+	return S.CombatService.DamagePlayer(target, hum.MaxHealth * retryOf(target).Hit * mult, nil, false, rec.Kind)
 end
 
 ------------------------------------------------------------------ the King
@@ -252,26 +265,31 @@ local function onKilled(rec)
 	FirstKOService.KingBeaten:Fire(player, e.Stage == "Retry")
 end
 
--- the first King's landing thud, DropTime s after it appeared: hits its owner within LandRadius (flat, 12 up / down)
+-- a King's landing thud from the sky, DropTime s after it appeared (A23-113 ①: its circle is LandRadius, drawn from
+-- DropRadius): hits its owner within LandRadius - Config.BossLeap.Grace (flat, 12 up / down) - the first King's one hit,
+-- the retry King's plain FirstKORetry hit
 local function land(player, rec)
 	local e = ST.Kings[player]
-	if not e or e.Rec ~= rec or e.Stage ~= "First" or not rec.Alive then return end
+	if not e or e.Rec ~= rec or not rec.Alive then return end
 	local root, kroot = Util.GetRoot(player), rec.Root
 	if not root or not kroot or not kroot.Parent or not Util.IsAlive(player) then return end
 	local p, k = root.Position, kroot.Position
 	if Config.ZoneAt(p).Town == true then return end
-	if Util.FlatDistance(p, k) > num(FK.LandRadius, 10) or math.abs(p.Y - k.Y) > 12 then return end
+	local grace = math.max(0, num(type(Config.BossLeap) == "table" and Config.BossLeap.Grace, 0.5))
+	if Util.FlatDistance(p, k) > math.max(0, num(FK.LandRadius, 10) - grace) or math.abs(p.Y - k.Y) > 12 then return end
 	strike(rec, player)
 end
 
 local function spawnKing(player, stage)
 	local first = stage == "First"
-	-- Near: never the home-town fallback spot (by the player or not at all); Hold: no swing before the landing
+	-- Near: never the home-town fallback spot (by the player or not at all); Hold: no landing of its own before the drop
+	-- (+ FirstLeapAfter: its leaps then land every Config.BossLeap cycle from the drop on)
 	local opts = { HP = first and math.max(1, num(FK.FirstHP, 5000)) or retryOf(player).HP,
 		Distance = num(FK.SpawnDistance, 6), Strike = strike, OnKilled = onKilled, Near = true,
-		Hold = math.max(0, num(FK.DropTime, 1.2)) }
+		Hold = math.max(0, num(FK.DropTime, 1.2)) + math.max(0, num(FK.FirstLeapAfter, 0.5)) }
 	if first then
 		opts.Quiet = true
+		opts.LeapGrow, opts.LeapGrowMax = math.max(0, num(FK.LeapGrow, 6)), math.max(0, num(FK.LeapGrowMax, 18))
 	else
 		local R = type(FK.Retry) == "table" and FK.Retry or {}
 		opts.Practice = type(R.PayAs) == "string" and R.PayAs or true
@@ -290,17 +308,16 @@ local function spawnKing(player, stage)
 	end
 	ST.Kings[player] = { Rec = rec, Stage = stage }
 	if typeof(model) == "Instance" then
-		-- game dev 1: the drop from the sky (DropAt = server time, DropTime s) and the stage
+		-- game dev 1: the drop from the sky (DropAt = server time, DropTime s; DropRadius = the circle, LandShadow) and the stage
 		model:SetAttribute("FirstKO", stage)
+		model:SetAttribute("DropRadius", num(FK.LandRadius, 10))
 		model:SetAttribute("DropTime", num(FK.DropTime, 1.2))
 		model:SetAttribute("DropAt", Util.Now())
 	end
-	if first then
-		task.delay(math.max(0, num(FK.DropTime, 1.2)), function()
-			local okL, err = pcall(land, player, rec)
-			if not okL then warnThrottled("land", err) end
-		end)
-	end
+	task.delay(math.max(0, num(FK.DropTime, 1.2)), function()
+		local okL, err = pcall(land, player, rec)
+		if not okL then warnThrottled("land", err) end
+	end)
 	return rec
 end
 

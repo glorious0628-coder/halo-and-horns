@@ -1127,6 +1127,9 @@ local function spawnMonster(kind, opts)
 		_contributors = {},
 		_hits = {}, -- [Player] = own hits (A23-27)
 		_dmg = {}, -- [Player] = own damage, overkill excluded (A23-27)
+		-- A23-113 ⑦: [Player] = own damage as shares of the MaxHP at each hit (a field boss's MaxHP follows its hunters),
+		-- what the reward bar and the side share read
+		_share = {},
 		_nextAttackAt = 0,
 		_nextWanderAt = os.clock() + Util.Random:NextNumber(1, WANDER_MAX),
 		_noAggroUntil = 0,
@@ -1291,7 +1294,7 @@ local function killRecord(rec)
 	updateBar(rec)
 	if rec.Quiet == true then
 		-- A23-110: a quiet personal monster (FirstKOService's King) pays nothing and counts nowhere; its service hears it
-		rec._contributors, rec._hits, rec._dmg = {}, {}, {}
+		rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}
 		rec._manualAt = nil
 		deathPop(rec, true)
 		removePersonalRef(rec)
@@ -1336,13 +1339,21 @@ local function killRecord(rec)
 	local window = tonumber(def.ContributorWindow) or MC.ContributorWindow -- a miniboss fight is longer
 	local minHits = tonumber(def.RewardMinHits) or 0
 	if isPersonal then minHits = 0 end -- A23-110: only its owner hits a personal monster (no free riders: 2 skill hits count)
-	local minDamage = (tonumber(def.RewardMinDamageFrac) or 0) * rec.MaxHP
+	-- A23-113 ⑦: the bar is a share of the boss: each hit counts as a share of the MaxHP it had then (_share), so a
+	-- field boss that grew with its crowd never drops an early hunter under the bar (검수 bosshp_verify 2026-10-11)
+	local minFrac = tonumber(def.RewardMinDamageFrac) or 0
+	local share = type(rec._share) == "table" and rec._share or {}
+	local function shareOf(p) -- a record made without _share (an old double): its raw damage / MaxHP
+		local s = share[p]
+		if type(s) ~= "number" then s = (tonumber(rec._dmg[p]) or 0) / math.max(1, tonumber(rec.MaxHP) or 1) end
+		return s
+	end
 	-- 검수 2026-10-09 (Captain Clatter free riders): def.MinorShare > 0 = a contributor with the hits but under the
 	-- damage share still gets MinorShare of the XP / gold (info.Minor: no drops, no card, no war points, not paid)
 	local minorShare = math.clamp(tonumber(def.MinorShare) or 0, 0, 1)
 	for p, t in rec._contributors do
 		if p.Parent and now - t <= window and (rec._hits[p] or 0) >= minHits then
-			if (rec._dmg[p] or 0) >= minDamage then
+			if shareOf(p) >= minFrac - 1e-9 then
 				local okF, f = pcall(factionOf, p)
 				if not okF or type(f) ~= "string" then f = "None" end
 				table.insert(eligible, { Player = p, Faction = f })
@@ -1361,13 +1372,13 @@ local function killRecord(rec)
 	-- FB 6 (content_beyond_10min J): every hitter's own damage summed per side, kept for FieldBossService's defeat share
 	-- line (Halo n% · Horns n%); Neutral / no side counts nowhere
 	local sideDmg = { Halo = 0, Horns = 0 }
-	for p, d in rec._dmg do
+	for p in rec._dmg do -- A23-113 ⑦: shares of the boss at each hit (a raw sum would undercount early hits)
 		local okF, f = pcall(factionOf, p)
-		if okF and sideDmg[f] ~= nil then sideDmg[f] += math.max(0, tonumber(d) or 0) end
+		if okF and sideDmg[f] ~= nil then sideDmg[f] += math.max(0, shareOf(p)) end
 	end
 	rec.FactionDamage = sideDmg
 	local manualAt = type(rec._manualAt) == "table" and rec._manualAt or {}
-	rec._contributors, rec._hits, rec._dmg, rec._manualAt = {}, {}, {}, {}
+	rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt = {}, {}, {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
@@ -1447,7 +1458,11 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 				record._castOf[player] = seen
 			end
 		end
-		record._dmg[player] = (record._dmg[player] or 0) + math.min(amount, math.max(0, record.HP))
+		local dealt = math.min(amount, math.max(0, record.HP))
+		record._dmg[player] = (record._dmg[player] or 0) + dealt
+		if type(record._share) == "table" then -- every spawned record has it (a record made without it: raw damage / MaxHP)
+			record._share[player] = (record._share[player] or 0) + dealt / math.max(1, tonumber(record.MaxHP) or 1)
+		end
 	end
 	record.HP -= amount
 	if record.HP > 0 then
@@ -1721,6 +1736,31 @@ function MonsterService.RemoveEvent(rec, fade, leaving)
 	return true
 end
 
+-- A23-113 ⑦ (FieldBossService, a field boss's HP follows its hunters): a living event monster's new MaxHP; its HP keeps
+-- the same fraction (rounded, never below 1 here) and the bar follows. true when it changed
+function MonsterService.SetEventMaxHP(rec, maxHP)
+	if type(rec) ~= "table" or rec.Event ~= true or not rec.Alive then return false end
+	if type(maxHP) ~= "number" or maxHP ~= maxHP or maxHP <= 0 or maxHP == math.huge then return false end
+	local old = tonumber(rec.MaxHP) or 0
+	if old <= 0 or math.abs(maxHP - old) < 1e-6 then return false end
+	local frac = math.clamp((tonumber(rec.HP) or 0) / old, 0, 1)
+	rec.MaxHP = maxHP
+	rec.HP = math.max(1, math.floor(frac * maxHP + 0.5))
+	updateBar(rec)
+	return true
+end
+
+-- A23-113 ⑦: a copy of every player's own damage on this monster so far (A23-27 _dmg: overkill excluded; players who
+-- left stay in it until the kill)
+function MonsterService.DamageTotals(rec)
+	local out = {}
+	if type(rec) ~= "table" or type(rec._dmg) ~= "table" then return out end
+	for p, d in rec._dmg do
+		if typeof(p) == "Instance" and type(d) == "number" and d > 0 then out[p] = d end
+	end
+	return out
+end
+
 -- A23-110: removes a living personal monster without rewards, like RemoveEvent (FirstKOService: the King leaves after
 -- the first KO, or when its quest step is over); true when it was removed
 function MonsterService.RemovePersonal(rec, fade, leaving)
@@ -1809,6 +1849,13 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 	-- A23-110: opts.Hold = s before its first swing (FirstKOService: the King drops from the sky first)
 	local hold = tonumber(opts.Hold)
 	if hold and hold == hold and hold > 0 then rec._nextAttackAt = os.clock() + math.min(hold, 10) end
+	-- A23-113 ①: opts.LeapGrow / LeapGrowMax = studs its next landing circle grows after one that hit nobody, up to that
+	-- much more (Config.BossLeap; FirstKOService's first King keeps hopping until it lands)
+	local grow, growMax = tonumber(opts.LeapGrow), tonumber(opts.LeapGrowMax)
+	if grow and grow == grow and grow > 0 then
+		if not growMax or growMax ~= growMax then growMax = grow end
+		rec._leapGrow, rec._leapGrowMax = math.min(grow, 40), math.clamp(growMax, 0, 40)
+	end
 
 	task.delay(PERSONAL_LIFETIME, function()
 		if rec.Alive then despawn(rec, true, rec.Quiet == true) end -- A23-110: a quiet King goes home (no splat)
@@ -2158,6 +2205,168 @@ local function pickWanderPoint(rec, zone)
 		if noHit then return p end -- bare test place without Terrain / Map.Ground: legacy flat behaviour
 	end
 	return nil
+end
+
+------------------------------------------------------------------ A23-113 ① big landings (Config.BossLeap)
+-- Clients draw the circle (LandShadow) and the fall (Fx dropLift) from the model attributes; the server only decides who
+-- is hit when it lands: a valid target inside DropRadius - Grace of DropPos (LEAP.Victim). rec._leap = the landing under
+-- way { Token, Spot, Radius, Mult, Slam } (its token also sits in rec._windup, so no swing starts meanwhile).
+local LEAP = {}
+
+function LEAP.Num(v, default)
+	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
+	return default
+end
+
+-- the kind's landing rule (Config.BossLeap.Kinds[kind]); nil = plain swings
+function LEAP.Of(rec)
+	local B = Config.BossLeap
+	if type(B) ~= "table" or B.Enabled == false or type(B.Kinds) ~= "table" then return nil end
+	local L = B.Kinds[rec.Kind]
+	return (type(L) == "table" and L.Enabled ~= false) and L or nil
+end
+
+-- s from one leap's start to the next (never shorter than its warning)
+function LEAP.Cycle(L)
+	return math.max(LEAP.Num(L.Warn, 1) + 0.1, LEAP.Num(L.Cycle, MC.AttackCooldown))
+end
+
+-- x the plain hit: L.Mult, else a leap's Cycle / AttackCooldown (standing still costs what the swings did), a slam 1
+function LEAP.Mult(L)
+	local m = LEAP.Num(L.Mult, nil)
+	if m then return math.max(0, m) end
+	if L.Mode == "Slam" then return 1 end
+	return LEAP.Cycle(L) / math.max(0.1, MC.AttackCooldown)
+end
+
+-- studs of the circle: Config.LandShadow.Radius[kind] (else Default) + what a personal King grew after misses
+function LEAP.Radius(rec)
+	local LS = type(Config.LandShadow) == "table" and Config.LandShadow or {}
+	local radii = type(LS.Radius) == "table" and LS.Radius or {}
+	local r = LEAP.Num(radii[rec.Kind], nil) or LEAP.Num(radii.Default, 10)
+	return math.clamp(r + math.max(0, LEAP.Num(rec._leapExtra, 0)), LEAP.Num(LS.MinRadius, 3), LEAP.Num(LS.MaxRadius, 40))
+end
+
+-- one player when it lands: alive, the root within the circle (flat; YRange up / down) and a target it may hit (a
+-- personal monster: its owner out of towns and water; else targetable: a boss's new-player rules, towns, zone, water)
+function LEAP.Victim(rec, J, p)
+	if typeof(p) ~= "Instance" or p.Parent == nil or not Util.IsAlive(p) then return false end
+	local root = Util.GetRoot(p)
+	if not root then return false end
+	local pos = root.Position
+	local B = type(Config.BossLeap) == "table" and Config.BossLeap or {}
+	if Util.FlatDistance(pos, J.Spot) > math.max(0, J.Radius - math.max(0, LEAP.Num(B.Grace, 0.5))) then return false end
+	if math.abs(pos.Y - J.Spot.Y) > math.max(0, LEAP.Num(B.YRange, 12)) then return false end
+	local town = isPlayerInTown(p, pos)
+	if rec.Owner then return p == rec.Owner and pos.Y >= OUT_Y and not town end
+	return targetable(rec, { Player = p, Pos = pos, Town = town, Zone = Config.ZoneAt(pos).Id })
+end
+
+-- the landing: every victim once (a personal King's service strike(rec, player, Mult), else the plain hit x Mult); a
+-- personal King that hit nobody grows its next circle by LeapGrow (up to LeapGrowMax more). Returns how many were hit
+function LEAP.Land(rec, token)
+	local J = rec._leap
+	if type(J) ~= "table" or J.Token ~= token then return 0 end
+	rec._leap = nil
+	if rec._windup == token then rec._windup = nil end
+	if not rec.Alive or records[rec.Id] ~= rec then return 0 end
+	local model = rec.Model
+	if not model or not model.Parent then return 0 end
+	if J.Slam then
+		local seq = model:GetAttribute(ATTACK_SEQ_ATTR)
+		model:SetAttribute(ATTACK_SEQ_ATTR, (type(seq) == "number" and seq or 0) + 1) -- the swing clients play
+	end
+	local n = 0
+	for _, p in Players:GetPlayers() do
+		if LEAP.Victim(rec, J, p) then
+			n += 1
+			local ok, err = true, nil
+			if rec._strike then
+				ok, err = pcall(rec._strike, rec, p, J.Mult)
+			elseif S and S.CombatService then
+				ok, err = pcall(S.CombatService.DamagePlayer, p, (tonumber(rec.Def.Damage) or 1) * J.Mult, nil, false, rec.Kind)
+			end
+			if not ok then warnThrottled("leapHit", err) end
+		end
+	end
+	if n == 0 and LEAP.Num(rec._leapGrow, 0) > 0 then
+		rec._leapExtra = math.min(math.max(0, LEAP.Num(rec._leapGrowMax, 0)), LEAP.Num(rec._leapExtra, 0) + rec._leapGrow)
+	end
+	return n
+end
+
+-- starts a landing at `info` (Leap: onto the ground where it stands, the body moves there now; Slam: around itself).
+-- false = no walkable ground there (in its zone) this time: it tries again RetryDelay s later
+function LEAP.Start(rec, info, now, L)
+	local root, model = rec.Root, rec.Model
+	if not root or not root.Parent or not model or not model.Parent then return false end
+	local B = type(Config.BossLeap) == "table" and Config.BossLeap or {}
+	local slam = L.Mode == "Slam"
+	local from = root.Position - Vector3.new(0, rec._rootOffset or 3, 0)
+	local spot = from
+	if not slam then
+		local g, noHit = groundPoint(info.Pos.X, info.Pos.Z, L.MaxY)
+		if noHit then g = Vector3.new(info.Pos.X, from.Y, info.Pos.Z) end -- bare test place: flat ground
+		if not g or (rec.Owner == nil and Config.ZoneAt(g).Id ~= rec.ZoneId) then
+			rec._nextAttackAt = now + math.max(0.1, LEAP.Num(B.RetryDelay, 0.5))
+			return false
+		end
+		spot = g
+	end
+	local warn = math.clamp(LEAP.Num(L.Warn, 1), 0.3, 3)
+	local token = {}
+	local J = { Token = token, Spot = spot, Radius = LEAP.Radius(rec), Mult = LEAP.Mult(L), Slam = slam }
+	rec._windup, rec._leap = token, J
+	rec._nextAttackAt = now + (slam and MC.AttackCooldown or LEAP.Cycle(L))
+	model:SetAttribute("DropPos", spot)
+	model:SetAttribute("DropRadius", J.Radius)
+	model:SetAttribute("DropTime", warn)
+	model:SetAttribute("DropFrom", slam and spot or from)
+	model:SetAttribute("DropHeight", slam and 0 or math.max(0, LEAP.Num(L.Height, 12)))
+	model:SetAttribute("DropAt", Util.Now()) -- last: a new value = a new circle (LandShadow) and a new fall (Fx)
+	if not slam then
+		-- the body stands on the spot at once; clients draw it in the air above it, falling over DropTime
+		local p = spot + Vector3.new(0, rec._rootOffset or 3, 0)
+		local flat = Vector3.new(spot.X - from.X, 0, spot.Z - from.Z)
+		if flat.Magnitude < 0.01 then
+			local lv = root.CFrame.LookVector
+			flat = Vector3.new(lv.X, 0, lv.Z)
+		end
+		if flat.Magnitude < 0.01 then flat = Vector3.new(0, 0, -1) end
+		model:PivotTo(CFrame.lookAt(p, p + flat.Unit))
+		root.AssemblyLinearVelocity = Vector3.zero
+		rec.Humanoid:MoveTo(p)
+		rec._goal, rec._walkTo, rec._stuckAt = nil, nil, nil
+	end
+	task.delay(warn, function()
+		local ok, err = pcall(LEAP.Land, rec, token)
+		if not ok then
+			if type(rec._leap) == "table" and rec._leap.Token == token then rec._leap = nil end
+			if rec._windup == token then rec._windup = nil end
+			warnThrottled("leap", err)
+		end
+	end)
+	return true
+end
+
+-- one AI step with a target `d` studs away: true when the landing rules took it (a landing started, or a leaper in reach
+-- standing between leaps: it never swings); false = the plain chase / swing goes on (a slam counts that swing)
+function LEAP.Try(rec, info, d, now)
+	local L = LEAP.Of(rec)
+	if not L then return false end
+	local ready = rec._windup == nil and now >= rec._nextAttackAt
+	if L.Mode == "Slam" then
+		if not ready or d > MC.AttackRange then return false end
+		rec._slamCount = (rec._slamCount or 0) + 1
+		if rec._slamCount % math.max(1, math.floor(LEAP.Num(L.Every, 3))) ~= 0 then return false end
+		return LEAP.Start(rec, info, now, L)
+	end
+	if d > LEAP.Num(L.Range, 14) then return false end
+	if ready and LEAP.Start(rec, info, now, L) then return true end
+	if d > MC.AttackRange then return false end -- between leaps out of reach: it walks closer
+	rec.Humanoid:MoveTo(rec.Root.Position)
+	FACE.Active[rec] = { Until = os.clock() + FACE.Keep, Target = info.Player } -- (its own line: test_halloween anchors on attack()'s)
+	return true
 end
 
 ------------------------------------------------------------------ A23-74 spacing (user 2026-10-07 "점점 합쳐지겠다")
@@ -2816,6 +3025,7 @@ local function personalStep(rec, plist, now, pos)
 		rec._spotted = true
 		MonsterService.Moment:Fire(rec, "Spot") -- ③ barks: it goes for its owner (the tutorial golden slime's line)
 	end
+	if d <= PERSONAL_FOLLOW_RADIUS and LEAP.Try(rec, info, d, now) then return end -- A23-113 ①: the personal King leaps
 	if d > PERSONAL_FOLLOW_RADIUS then
 		rec.Humanoid:MoveTo(pos)
 	elseif d <= MC.AttackRange then
@@ -3018,6 +3228,12 @@ local function aiStep(rec, plist, now)
 	-- A10-V3-2 (c): sunk deep (water, knocked off a cliff) for > 2 s -> back home. Also for personal monsters.
 	if deepRecovery(rec, pos, now) then return end
 
+	-- A23-113 ①: in the middle of a landing it stays where it is (a leaper already stands on the spot)
+	if rec._leap then
+		hum:MoveTo(pos)
+		return
+	end
+
 	if rec.Owner then
 		personalStep(rec, plist, now, pos)
 		return
@@ -3129,6 +3345,10 @@ local function aiStep(rec, plist, now)
 		local alerting = NATURAL.Alert(rec, best, bestD, now) -- a new target: stop with a '!' for a moment first
 		rec._target = best.Player
 		if alerting then return end
+		if LEAP.Try(rec, best, bestD, now) then -- A23-113 ①: a big landing (or a leaper between leaps in reach)
+			rec._chaseStuck = 0
+			return
+		end
 		local ranged = rec.Def.Ranged -- A23-87: shoots within Range, otherwise walks to Stand studs from the target
 		if type(ranged) == "table" then
 			if bestD <= (tonumber(ranged.Range) or 20) then

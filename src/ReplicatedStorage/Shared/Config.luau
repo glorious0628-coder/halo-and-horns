@@ -2013,8 +2013,11 @@ Config.MonsterTypes = {
 	SkeletonKnight = { Name = "Skeleton Knight", Short = "Skeleton Knight", Zone = "SkeletonRuins", Count = 4, HP = 1300, Damage = 24, XP = 170, Gold = 170, Speed = 11, Shape = "Humanoid", Scale = 1.5, Color = Color3.fromRGB(120, 120, 140) },
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): the ruins' field boss (FieldBossService:
 	-- every 20 min, stays 6 min), 300 years on duty with nobody to take his shift. The Skeleton Knight's model and moves x
-	-- Scale 2.2 until his own (ModelFrom / AnimFrom). HP 20000 = about 4 min for one Lv25 T3 hunter (skill MP20 / 3 s x6,
-	-- 75% uptime; measure in the test week and stretch the stay to 8 min if short). XP / Gold = 5 min of Lv25 hunting
+	-- Scale 2.2 until his own (ModelFrom / AnimFrom). A23-113 ⑦: HP 20000 = one hunter's fight, about 2 min (116 s) for a
+	-- Lv25 hunter with the T4 weapon a woods hunter brings (Goblin drops / the Lv12 commission; swings + skill Q MP20 / 3 s
+	-- x6, 75% uptime: 172.9 DPS averaged over the 3 classes x 3 sides; 검수 bosshp_verify 2026-10-11: T3+0 is the weakest
+	-- loadout, 9000 let a normal ruins hunter solo him in 20-80 s); more hunters add HP (Config.FieldBosses.Crowd). Lv30+
+	-- T5 / T6 hunters still solo him fast (a share is at most 1). XP / Gold = 5 min of Lv25 hunting
 	-- (3,900 each), paid per eligible contributor (A23-27: 3 own hits + the damage share)
 	CaptainClatter = { Name = "Captain Clatter", Short = "Captain Clatter", Zone = "SkeletonRuins", Count = 0, Boss = true,
 		-- 검수 2026-10-09: paid only with 2% of his HP dealt; 3 hits but less = MinorShare (15%) of XP / gold, nothing else
@@ -2040,13 +2043,16 @@ Config.MonsterTypes = {
 	-- the King Slime (A23-84 the slime family's dad; docs/design/king_slime_split_2026-10-08.md §3, 검수 OK 2026-10-08):
 	-- a boss of the meadow (FieldBossService: one on the server, every 8 min at the King Slime Hill shrine, 5 min stay),
 	-- never in the regular pool. Its own model comes later (image gen 2 -> Tripo): until then the Slime Prince's crowned
-	-- cube x Scale (2.5 = the Pumpkin King's body: 3.0 put the body past the attack ring, test_monster_spacing). HP 2500 = about 4 minutes for one Lv 5-8 hunter with a tier 1-2 weapon (~15 DPS x 0.75 uptime),
-	-- about 75 s for three (proposed, tune after play). The finisher card is its (Config.Finisher.Kinds)
+	-- cube x Scale (2.5 = the Pumpkin King's body: 3.0 put the body past the attack ring, test_monster_spacing).
+	-- A23-113 ⑦: HP 2600 = one hunter's fight, about 2 min (118 s) for a Lv 5-8 hunter with the tier 2 weapon the first
+	-- mission's 150 gold buys (swings + skill Q, 75% uptime: 22.1 DPS averaged over the 3 classes x 3 sides; 검수
+	-- bosshp_verify 2026-10-11: T1 is gone by Lv5; was 2500); T1 only ~220 s, T3 ~46 s; more hunters add HP
+	-- (Config.FieldBosses.Crowd: three = about 80 s). The finisher card is its (Config.Finisher.Kinds)
 	SlimeKing = { Name = "King Slime", Short = "King Slime", Zone = "SlimeMeadow", Count = 0, Boss = true,
 		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "BigSlime",
 		-- A23-92 (user 2026-10-09 "조금 더 크면"): Scale 2.5 -> 3.2; players reach its body's edge (MonsterService.HitPad);
 		-- pink body (its texture: image gen 2 -> image dev; until then this Color tints the borrowed model)
-		HP = 2500, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 3.2, Color = Color3.fromRGB(255, 140, 190) },
+		HP = 2600, Damage = 6, XP = 120, Gold = 60, Speed = 7, Shape = "Slime", Scale = 3.2, Color = Color3.fromRGB(255, 140, 190) },
 	-- miniboss (HalloweenService schedule, never in the regular pool). HP 9000 = about 4 minutes for one Lv 8-12
 	-- player with a tier 2-3 weapon, about 70 s for three. Per player DPS (Config.WeaponDamage x class Damage; swing =
 	-- 0.5 x D x 1.1 crit avg per SwingInterval; skill = 6 x D every 3 s while MP lasts: 100 MP + 4/s regen, 20 per
@@ -4183,6 +4189,26 @@ Config.LandShadow = {
 	Color = Color3.fromRGB(46, 24, 34),
 }
 
+-- A23-113 ① the server half of the circle (게임성 개발 2, MonsterService LEAP; docs/design/boss_leap_2026-10-11.md): per
+-- monster kind a big landing with the LandShadow attributes (DropAt last, DropTime = Warn, DropRadius, DropPos, plus
+-- DropFrom / DropHeight for the leap's arc). The rule never changes: Warn s later every player whose root is within
+-- DropRadius - Grace studs of DropPos (flat, YRange up / down) and a valid target (a boss's new-player rules, towns, zone,
+-- water; a personal monster: its owner only) is hit, nobody else. DropRadius = Config.LandShadow.Radius[kind] (else
+-- Default) + a personal King's LeapGrow after each miss (FirstKOService's first King: it keeps hopping until it lands).
+--   Mode "Leap" (the King Slime): every attack is a leap onto the ground where its target stands when it starts (within
+--     Range studs; the body moves there at once and clients draw it falling there, Fx dropLift); between leaps it never
+--     swings. Cycle = s from one leap's start to the next (default Config.Monsters.AttackCooldown) and Mult = x its hit
+--     (default Cycle / AttackCooldown), so standing still costs what the plain swings did; stepping out costs nothing.
+--   Mode "Slam" (Captain Clatter): every Every-th attack is a slam around itself (it stays) instead of a swing, Mult x hit.
+Config.BossLeap = {
+	Enabled = true,
+	Kinds = {
+		SlimeKing = { Mode = "Leap", Range = 14, Warn = 1, Height = 12 },
+		CaptainClatter = { Mode = "Slam", Every = 3, Warn = 1, Mult = 2 },
+	},
+	Grace = 0.5, YRange = 12, RetryDelay = 0.5,
+}
+
 Config.BossThud = {
 	Kinds = { SlimeKing = true },
 	HopRate = 0.55, HopRatio = 0.2, HopMax = 2,
@@ -4312,6 +4338,16 @@ Config.RateLimits.FinisherPick = 0.3
 Config.FieldBosses = {
 	Order = { "SlimeKing", "Clatter" },
 	Tick = 0.5,
+	-- A23-113 ⑦ (user 2026-10-10 "마감 전 넣자"; numbers by game dev 2, docs/design/field_boss_crowd_2026-10-11.md): the
+	-- def HP is one hunter's fight (SoloSeconds); each more hunter adds PerHunter of it (the kaiju's per-player way, bigger:
+	-- 0.15 let ten melt a boss in 28 s). Hunters, recounted every Every s: each ready, alive player within Radius studs
+	-- (flat) counts its own damage over the last Window s / one hunter's pace (def HP / SoloSeconds per s) over the time
+	-- since its first hit in the window (at least Rise s), at most 1, so a newcomer counts fully within Rise s, one who
+	-- stops fades over Window s (no on / off gain), a bystander adds 0 and a new player punching the King about 0.2
+	-- (ByDamage = false: 1 for any damage); the shares added up, 1..Max. The HP fraction stays. Equal hunters: 2 = 90 s,
+	-- 3 = 80 s, 5 = 72 s, 10 = 66 s, whenever they come. A boss's own Crowd table overrides this one; Crowd = false turns
+	-- it off for that boss. The reward bar reads each hit as a share of the MaxHP it had then (MonsterService _share).
+	Crowd = { PerHunter = 0.5, Max = 10, Radius = 50, Window = 15, Every = 0.5, Rise = 2, SoloSeconds = 120 },
 	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
 	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
 	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
@@ -5567,9 +5603,12 @@ Config.QuickSlots = {
 -- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
 -- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
-	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 20, 0, 4 }, RightElbow = { 44, 0, 0 },
-		RightWrist = { -12, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	-- Paladin: straight sword ready in front, its tip up to the left (class_grips table; grip_reference §1-6 sword and
+	-- shield idle: the sword in front, the guard arm up) - OneHand from the sword; until his shield model exists the left
+	-- hand is a fist in front of the chest (OffHand, 검수 10/11)
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(0.6, -0.5, -0.85), Aim = Vector3.new(-0.45, 0.8, -0.4) },
+		OffHand = { At = Vector3.new(-0.3, 0.0, -0.95), Up = Vector3.new(-0.95, -0.3, 0.65), Fwd = Vector3.new(0, 1, 0) } },
 	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
 	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
 	-- hand lower towards the pommel, the hilt in front of the chest, a heavy blade laid back over the shoulder). TwoHand
@@ -5577,23 +5616,26 @@ Config.ClassGrips = {
 	-- y 0.6; the torso top y 0.8) - the blade passes just over the right shoulder at (1.1, 1.05, 0.05); both arms are
 	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
 	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.8 } } },
-	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip
-	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
-		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
+		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },
+	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
+	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
+		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
 	-- 검수 10/11 + grip_reference §1: the staff stands upright at the side, close to the body (OneHand: the right hand placed
 	-- from the staff, WeaponPose; studs in UpperTorso space), held a little above its middle (CharacterVisuals staffLow)
-	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 },
-		LeftWrist = { -20, 0, 0 } }, OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) } },
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) },
+		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
 		LeftShoulder = { 14, 0, -20 } }, OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
 	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask)
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) } },
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) },
+		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },
@@ -5602,7 +5644,7 @@ Config.ClassGrips = {
 		LeftShoulder = { 30, 0, -10 }, LeftElbow = { 55, 0, 0 }, RightShoulder = { 10, 0, 6 } } },
 	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
 	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
-		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },
+		RightWrist = { -30, 0, 0 } }, OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 }
 function Config.ClassGripKey(classId, faction)
 	if type(classId) ~= "string" then return nil end
@@ -7779,6 +7821,13 @@ Config.FirstKOKing = {
 	-- leave a new player at the hill marker without a King for minutes
 	BossClear = 24,
 	SpawnDistance = 6, DropTime = 1.2, LandRadius = 10,
+	-- A23-113 ①: the first King's leaps (Config.BossLeap) grow LeapGrow studs after each one that missed, up to LeapGrowMax
+	-- more: by the third a player cannot step out in the second it shows (it keeps hopping until it lands, "결국 맞힘")
+	LeapGrow = 6, LeapGrowMax = 18,
+	-- s after the drop before both Kings' first leap (A23-113 ①): it lands FirstLeapAfter + Warn (1) = 1.8 s after the drop
+	-- (which hits inside its circle), then one every 1.5 s - the old pace (first swing 0.28 s after the drop, then every
+	-- 1.5 s) with the first hit 0.28 s sooner, which the retry numbers below still pass
+	FirstLeapAfter = 0.8,
 	FirstHP = 5000, -- the first King is not meant to fall (killed anyway: Event "FirstKO" with Beaten = true, the row counts)
 	OneHitMult = 20, -- x MaxHealth: still >= 2 x MaxHealth through the 90% Guard cap (SKL-3)
 	RespawnIn = 3, -- s before the get-up (the KO screen's 3-2-1)
@@ -7790,10 +7839,12 @@ Config.FirstKOKing = {
 	-- the retry King: HP = Seconds of the player's own basic attacks (the best weapon the save may use, with its +N), each
 	-- hit HitPct of MaxHealth (+ regen, FirstKORetry). One HP potion is the lesson: KO1 may leave a player with only one
 	-- (one purchase of any kind passes its buy row, the drink row may use it). tools/test_first_ko_king.py, 729 builds
-	-- (3 classes x Halo / Horns / Neutral x Lv 1-9 x tier 1-3 x +0 / +3 / +5), a potion = 30% / 10 s drunk at 40-60% HP:
-	--   no potion LOSES at 60-80% uptime against a King every 1.5 s and at 60-70% against one every 1.6 s (>= 1.38 s
+	-- (3 classes x Halo / Horns / Neutral x Lv 1-9 x tier 1-3 x +0 / +3 / +5), a potion = 30% / 10 s drunk at 40-60% HP,
+	-- a player who never steps out of a circle (A23-113 ①: the drop hits, the first leap 1.8 s later, then every 1.5 s):
+	--   no potion LOSES at 60-80% uptime against a King every 1.5 s and at 60-70% against one every 1.6 s (>= 1.36 s
 	--   short); at 80% against a 1.6 s King only 9 builds of 729 win without a potion;
-	--   1 potion WINS at 80-110% uptime (King every 1.5 s) with >= 7% HP left; 2 potions win at 70-110% with >= 19% left.
+	--   1 potion WINS at 80-110% uptime (King every 1.5 s) with >= 13% HP left; 2 potions win at 70-110% with >= 19% left.
+	--   Stepping out of the circles wins without potions (the rematch lesson, A23-113).
 	--   (Seconds 18 / HitPct 0.09 needed 2 potions; 16.5 / 0.075 leaves 342 no-potion wins at 80% vs a 1.6 s King.)
 	-- PayAs = the kind whose XP / gold its kill pays (the Slime Prince's; the quest pays the real reward)
 	Retry = { Seconds = 17, HitPct = 0.075, MinHP = 40, PayAs = "BigSlime" },
@@ -7802,7 +7853,8 @@ Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happe
 
 -- the retry King against one player (A23-110): { HP, Hit }. HP = Retry.Seconds of that player's basic attacks (the swing
 -- formula of Config.SwingHitsToKill: weapon x class x faction bonus x SwingImmediate, rounded, per SwingInterval; no
--- crit), at least MinHP, at most the King's own HP. Hit = the share of the player's MaxHealth one King hit takes: HitPct +
+-- crit), at least MinHP, at most Retry.MaxHP (2500 when unset: the King's HP before A23-113; never follows the field
+-- King's crowd HP, 검수 bosshp_verify 2026-10-11). Hit = the share of the player's MaxHealth one King hit takes: HitPct +
 -- the faction's out-of-town regen over one King attack (Config.Monsters.AttackCooldown), so every faction needs the same
 -- potions. Pure (FirstKOService and the offline test share it).
 function Config.FirstKORetry(level, tier, classId, factionId, enhance)
@@ -7815,8 +7867,7 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local per = Config.WeaponDamage(tonumber(tier), lv, tonumber(enhance) or 0) * (c.Damage or 1) * (1 + bonus)
 		* ((Config.BasicSkill and Config.BasicSkill.SwingImmediate) or 0.5)
 	local dps = math.max(1, math.floor(per + 0.5)) / math.max(0.1, tonumber(c.SwingInterval) or 1)
-	local king = Config.MonsterTypes[FK.Kind]
-	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, king and king.HP or 2500))
+	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, tonumber(R.MaxHP) or 2500))
 	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
 	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
 end

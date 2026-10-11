@@ -1508,9 +1508,14 @@ function WOBBLE.step(dt)
 						half = st.Base.Y * 0.5
 					end
 					-- A23-110: a King dropping from the sky (DropAt / DropTime) is drawn that far up (LandShadow draws its circle)
-					local drop = WOBBLE.dropLift(model, st)
+					-- A23-113 ①: a King's leap also carries the body sideways from where it jumped (world X / Z -> the joint)
+					local drop, dropX, dropZ = WOBBLE.dropLift(model, st)
 					-- bottom stays on the floor, Sink studs into it (no visible gap under the jelly)
-					st.Joint.C1 = CFrame.new(0, -(hop + drop + (sy - 1) * half) + WOBBLE.Sink, 0)
+					local c1 = CFrame.new(0, -(hop + drop + (sy - 1) * half) + WOBBLE.Sink, 0)
+					if dropX ~= 0 or dropZ ~= 0 then
+						c1 = CFrame.new(-(st.Root.CFrame * st.Joint.C0).Rotation:VectorToObjectSpace(Vector3.new(dropX, 0, dropZ))) * c1
+					end
+					st.Joint.C1 = c1
 					if not foreign then
 						WOBBLE.placeShadow(model, st.Root, st, pop * (hopMax > 0 and 1 - 0.35 * (hop / hopMax) or 1))
 					end
@@ -1957,11 +1962,14 @@ MOTION.Bump = { Mag = 0, At = -math.huge, Dur = 0, Bound = false, LastAt = -math
 
 -- A23-110 (개발 2 FirstKOService): a monster with DropAt (server time) / DropTime falls from DROP_HEIGHT studs up,
 -- faster and faster (height x (1 - u^2)), and lands with the big thud once (not for a drop long over at the join, never
--- for another player's own King). Returns the studs up now (0 = on the ground)
+-- for another player's own King). A23-113 ① (개발 2 MonsterService LEAP, docs/design/boss_leap_2026-10-11.md): with
+-- DropHeight the King LEAPS instead - a low arc DropHeight studs high from DropFrom (where it jumped) to DropPos (where
+-- the server body already stands): up = DropHeight x 4u(1-u) + the ground's height difference x (1-u), sideways =
+-- (DropFrom - DropPos) x (1-u). Returns the studs up now (0 = on the ground) and the world X / Z offset from the body
 WOBBLE.DROP_HEIGHT = 40
 function WOBBLE.dropLift(model, st)
 	local at, dur = model:GetAttribute("DropAt"), model:GetAttribute("DropTime")
-	if type(at) ~= "number" or type(dur) ~= "number" or dur <= 0 then return 0 end
+	if type(at) ~= "number" or type(dur) ~= "number" or dur <= 0 then return 0, 0, 0 end
 	local u = (workspace:GetServerTimeNow() - at) / dur
 	if u >= 1 then
 		if st.DropLanded ~= at then
@@ -1970,10 +1978,19 @@ function WOBBLE.dropLift(model, st)
 				pcall(MOTION.Thud, st.Root, st.H, asNum(MOTION.THUD.AttackMul, 1.4))
 			end
 		end
-		return 0
+		return 0, 0, 0
 	end
 	u = math.max(0, u)
-	return WOBBLE.DROP_HEIGHT * (1 - u * u)
+	local h = model:GetAttribute("DropHeight")
+	if type(h) ~= "number" then return WOBBLE.DROP_HEIGHT * (1 - u * u), 0, 0 end -- the sky drop (KO1's first fall)
+	local k = 1 - u
+	local up, ox, oz = math.max(0, h) * 4 * u * k, 0, 0
+	local from, to = model:GetAttribute("DropFrom"), model:GetAttribute("DropPos")
+	if typeof(from) == "Vector3" and typeof(to) == "Vector3" then
+		ox, oz = (from.X - to.X) * k, (from.Z - to.Z) * k
+		up += (from.Y - to.Y) * k
+	end
+	return math.max(0, up), ox, oz
 end
 
 -- true for a monster whose kind thuds (the King Slime)

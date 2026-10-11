@@ -13,6 +13,13 @@
 -- AnnounceService.Broadcast <Key>Appear / Defeat / Leave. GameState per boss: <Key>Active, <Key>EndsAt (Util.Now time it
 -- leaves, 0 = none), <Key>NextAt (Util.Now time of the next slot; a past time = due, waiting for a hunter; 0 = off).
 -- Signal Defeated(key, kind, { UserIds paid }, rec).
+-- A23-113 ⑦ crowd HP (Config.FieldBosses.Crowd; a boss's own Crowd table wins, Crowd = false = off): the def HP is one
+-- hunter's fight (SoloSeconds, about 2 min); every Every s the hunters are counted - each player's own damage over the
+-- last Window s against one hunter's pace (def HP / SoloSeconds) over the time since its first hit there (at least Rise
+-- s: a newcomer counts within Rise s, a quitter fades over the window) is that player's share, at most 1, for ready, alive
+-- players within Radius studs (flat); hunters = the shares added up, 1..Max - and MaxHP = def HP x (1 + PerHunter x
+-- (hunters - 1)), the HP fraction kept (MonsterService.SetEventMaxHP). Bystanders add nothing and a weak hitter (a new
+-- player punching the King) adds only its small share; the reward rules stay MonsterService's.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -28,10 +35,13 @@ FieldBossService.Defeated = Util.Signal.new() -- (key, kind, { UserIds the kill 
 local TAG = "FieldBossService"
 local S = nil
 local FB = Config.FieldBosses or {}
--- B[key] = { Rec (living MonsterService record or nil), NextAt / EndsAt (Util.Now times), Defeats (this server) }
+-- B[key] = { Rec (living MonsterService record or nil), NextAt / EndsAt (Util.Now times), Defeats (this server),
+-- BaseHP (the def HP it came with), Hunters (last count), CrowdAt (Util.Now time of the next count), Snaps (the damage
+-- totals at each count still inside the window, oldest first: { At, D = { [Player] = damage } }) }
 local B = {}
 local WarnAt = {}
 local SPOT = {}
+local CROWD = {}
 
 local function warnThrottled(key, msg)
 	local now = os.clock()
@@ -129,6 +139,74 @@ local function hunterHere(key)
 		end
 	end
 	return false
+end
+
+------------------------------------------------------------------ crowd HP (A23-113 ⑦)
+-- the boss's crowd rule: its own Crowd table, else Config.FieldBosses.Crowd; nil = off (Crowd = false)
+function CROWD.Of(key)
+	local own = cfg(key).Crowd
+	if own == false then return nil end
+	local c = type(own) == "table" and own or FB.Crowd
+	return type(c) == "table" and c or nil
+end
+
+-- the hunters at the boss now: a snapshot of every player's own damage (MonsterService.DamageTotals) joins b.Snaps; the
+-- oldest snapshot still covering the window (c.Window s) is the baseline. A player's share = own damage since the
+-- baseline / one hunter's pace (BaseHP / c.SoloSeconds per s) over the time since that player's first hit in the window
+-- (the last snapshot before it), at least c.Rise s, at most 1 (c.ByDamage = false: 1 for any damage). So a hunter who
+-- comes counts fully within Rise s, one who stops fades over the window (검수 bosshp_verify 2026-10-11: no on / off
+-- gain). Only ready, alive players within c.Radius studs of it (flat) count. The shares added up, in tenths, 1..c.Max
+-- (nobody yet = one hunter's HP)
+function CROWD.Count(b, c, now)
+	local rec = b.Rec
+	local svc = S.MonsterService
+	local pos = rec.Root and rec.Root.Position
+	if type(svc.DamageTotals) ~= "function" or typeof(pos) ~= "Vector3" then return 1 end
+	local ok, totals = pcall(svc.DamageTotals, rec)
+	if not ok or type(totals) ~= "table" then return 1 end
+	local snaps = b.Snaps
+	table.insert(snaps, { At = now, D = totals })
+	local window = math.max(0, num(c.Window, 15))
+	while #snaps > 1 and snaps[2].At <= now - window do table.remove(snaps, 1) end
+	local base = snaps[1]
+	local rate = b.BaseHP / math.max(1, num(c.SoloSeconds, 120))
+	local rise = math.max(0.5, num(c.Rise, 2))
+	local radius, sum = math.max(0, num(c.Radius, 50)), 0
+	for p, d in totals do
+		local b0 = num(base.D[p])
+		local recent = num(d) - b0
+		if recent > 0 and p.Parent ~= nil and S.PlayerService.IsReady(p) and Util.IsAlive(p) then
+			local r = Util.GetRoot(p)
+			if r and Util.FlatDistance(r.Position, pos) <= radius then
+				local since = base.At -- the last snapshot before this player's first hit in the window
+				for i = 2, #snaps - 1 do
+					if num(snaps[i].D[p]) <= b0 then since = snaps[i].At end
+				end
+				local pace = rate * math.max(rise, now - since)
+				sum += (c.ByDamage == false or pace <= 0) and 1 or math.min(1, recent / pace)
+			end
+		end
+	end
+	return math.clamp(math.floor(sum * 10 + 0.5) / 10, 1, math.max(1, num(c.Max, 10)))
+end
+
+-- MaxHP for `hunters` (whole HP): base x (1 + PerHunter x (hunters - 1))
+function CROWD.MaxHP(base, c, hunters)
+	return math.max(1, math.floor(base * (1 + math.max(0, num(c.PerHunter, 0.5)) * (math.max(1, hunters) - 1)) + 0.5))
+end
+
+-- every c.Every s while the boss is here: recount and set its MaxHP (the HP fraction stays)
+function CROWD.Tick(key, now)
+	local b = B[key]
+	local c = CROWD.Of(key)
+	if not c or b.Rec == nil or num(b.BaseHP) <= 0 or now < num(b.CrowdAt) then return end
+	b.CrowdAt = now + math.max(0.5, num(c.Every, 2))
+	b.Hunters = CROWD.Count(b, c, now)
+	local want = CROWD.MaxHP(b.BaseHP, c, b.Hunters)
+	if want ~= b.Rec.MaxHP and type(S.MonsterService.SetEventMaxHP) == "function" then
+		local ok, err = pcall(S.MonsterService.SetEventMaxHP, b.Rec, want)
+		if not ok then warnThrottled("crowd_" .. key, err) end
+	end
 end
 
 ------------------------------------------------------------------ defeat extras (J: Captain Clatter)
@@ -235,6 +313,10 @@ local function appear(key, now)
 		return false
 	end
 	b.Rec, b.EndsAt = rec, now + math.max(1, num(c.Lifetime, 300))
+	-- A23-113 ⑦: the def HP = one hunter; the first count comes one Every later against an empty snapshot
+	local crowd = CROWD.Of(key)
+	b.BaseHP, b.Hunters, b.Snaps = math.max(0, num(rec.MaxHP)), 1, { { At = now, D = {} } }
+	b.CrowdAt = now + math.max(0.5, num(crowd and crowd.Every, 2))
 	publish(key)
 	announce(key .. "Appear")
 	return true
@@ -245,6 +327,7 @@ local function finish(key, defeated)
 	local b = B[key]
 	local rec = b.Rec
 	b.Rec, b.EndsAt = nil, 0
+	b.Snaps = {} -- A23-113 ⑦: no Player references kept until the next one
 	if not defeated and type(rec) == "table" and rec.Alive then
 		local svc = S and S.MonsterService
 		if type(svc) == "table" and type(svc.RemoveEvent) == "function" then
@@ -279,9 +362,12 @@ local function tickOne(key, now)
 			finish(key, num(rec.HP, 1) <= 0) -- a lost model (fell out of the world) keeps its HP: not a defeat
 		elseif now >= b.EndsAt then
 			finish(key, false)
-		elseif b.NextAt > 0 and now >= b.NextAt then
-			b.NextAt += math.max(60, num(c.Interval, 480)) -- a slot while one is still here (a Studio spawn) is skipped
-			publish(key)
+		else
+			if b.NextAt > 0 and now >= b.NextAt then
+				b.NextAt += math.max(60, num(c.Interval, 480)) -- a slot while one is still here (a Studio spawn) is skipped
+				publish(key)
+			end
+			CROWD.Tick(key, now)
 		end
 		return
 	end
@@ -299,6 +385,12 @@ end
 function FieldBossService.IsActive(key)
 	local b = B[key]
 	return b ~= nil and b.Rec ~= nil and b.Rec.Alive == true
+end
+
+-- A23-113 ⑦: the hunters counted at the boss last time (0 = not here)
+function FieldBossService.Hunters(key)
+	local b = B[key]
+	return (b ~= nil and b.Rec ~= nil) and num(b.Hunters, 1) or 0
 end
 
 -- Studio test aid (Main DebugCommand "SlimeKing" / "Clatter"): that boss appears now (its schedule is unchanged)
@@ -326,7 +418,7 @@ function FieldBossService.Start()
 			Util.Warn(TAG, "Config.MonsterTypes." .. kindOf(key) .. " missing: no " .. key)
 		else
 			local c = cfg(key)
-			B[key] = { Rec = nil, EndsAt = 0, Defeats = 0,
+			B[key] = { Rec = nil, EndsAt = 0, Defeats = 0, BaseHP = 0, Hunters = 0, CrowdAt = 0, Snaps = {},
 				NextAt = c.Enabled ~= false and (now + math.max(0, num(c.FirstDelay, 180))) or 0 }
 			publish(key)
 		end

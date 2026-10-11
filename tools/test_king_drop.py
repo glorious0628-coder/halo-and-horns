@@ -4,8 +4,14 @@ Runs, in the official Luau CLI, the CURRENT Fx.luau WOBBLE.dropLift cut out of F
 DropAt (server time) / DropTime is drawn DROP_HEIGHT studs up at DropAt and falls faster and faster
 (height x (1 - u^2)) to the ground at DropAt + DropTime; it lands with the big thud (AttackMul) exactly once; a drop
 already long over at the join (u >= 1.5) lands silently; another player's own King (Feel.isForeign) never thuds; no
-DropAt / DropTime = on the ground. Static: the slime joint adds the drop height; the King's attack-hop thud skips
-another player's own King; LandShadow draws the circle from the same attributes. Mutations: each must be caught.
+DropAt / DropTime = on the ground. A23-113 ① leap (개발 2 MonsterService LEAP, docs/design/boss_leap_2026-10-11.md):
+with DropHeight the King leaps a low arc from DropFrom to DropPos (the body already stands at DropPos): at the start it
+is drawn at DropFrom on the ground (offset = DropFrom - DropPos, the ground's height difference), at mid time
+DropHeight up and half way, at the end on the spot with the thud once; DropHeight 0 with DropFrom = DropPos (Captain
+Clatter's slam) = no lift; DropHeight without DropFrom = an arc in place; no DropHeight = the old sky fall (KO1's first
+drop). Static: the slime joint adds the drop height and turns the sideways offset into the joint's frame; the King's
+attack-hop thud skips another player's own King; LandShadow draws the circle from the same attributes. Mutations:
+each must be caught.
 
 Usage: py tools/test_king_drop.py
 Report: docs/art/verification_2026-10-10/offline_king_drop_2026-10-10.json
@@ -38,8 +44,11 @@ local NOW, FOREIGN, thuds = 100, false, {}
 local WOBBLE, MOTION, Feel = {}, { THUD = { AttackMul = 1.4 } }, {}
 function MOTION.Thud(root, h, mul) table.insert(thuds, mul) return true end
 function Feel.isForeign() return FOREIGN end
+local V3 = {}
+local function v3(x, y, z) return setmetatable({ X = x, Y = y, Z = z }, V3) end
 local env = { WOBBLE = WOBBLE, MOTION = MOTION, Feel = Feel,
 	workspace = { GetServerTimeNow = function() return NOW end },
+	typeof = function(v) return getmetatable(v) == V3 and "Vector3" or type(v) end,
 	asNum = function(v, d) return type(v) == "number" and v or d end }
 local f = assert(loadstring(SOURCE, "=drop"))
 setfenv(f, setmetatable(env, { __index = getfenv() }))
@@ -72,6 +81,39 @@ check(WOBBLE.dropLift(model({}), st) == 0, "no DropAt / DropTime: on the ground"
 check(WOBBLE.dropLift(model({ DropAt = 1, DropTime = 0 }), st) == 0, "DropTime 0: on the ground", "")
 NOW = 99
 check(math.abs(WOBBLE.dropLift(model({ DropAt = 100, DropTime = 1 }), { Root = {}, H = 6 }) - WOBBLE.DROP_HEIGHT) < 1e-9, "before DropAt: still at the top", "")
+-- A23-113 ① the King's leap: a low arc from DropFrom to DropPos (the body already stands at DropPos)
+local function near(a, b) return math.abs(a - b) < 1e-6 end
+thuds = {}
+local leap = model({ DropAt = 300, DropTime = 1, DropHeight = 12, DropFrom = v3(10, 0, -4), DropPos = v3(0, 0, 0) })
+local lst = { Root = {}, H = 6 }
+NOW = 300
+local up, ox, oz = WOBBLE.dropLift(leap, lst)
+check(near(up, 0) and near(ox, 10) and near(oz, -4), "leap start: drawn on the ground where it jumped (DropFrom)", up .. "," .. ox)
+check(up < WOBBLE.DROP_HEIGHT * 0.5, "a leap never starts in the sky (not the old 40-stud fall)", up)
+NOW = 300.5
+up, ox, oz = WOBBLE.dropLift(leap, lst)
+check(near(up, 12) and near(ox, 5) and near(oz, -2), "mid leap: DropHeight up, half way across", up .. "," .. ox)
+NOW = 300.25
+local upA = WOBBLE.dropLift(leap, lst)
+NOW = 300.75
+local upB = WOBBLE.dropLift(leap, lst)
+check(near(upA, upB) and near(upA, 9), "the arc is even (up at 1/4 = up at 3/4 = 3/4 of DropHeight)", upA .. "/" .. upB)
+check(#thuds == 0, "no thud in the air (leap)", #thuds)
+NOW = 301.05
+up, ox, oz = WOBBLE.dropLift(leap, lst)
+check(up == 0 and ox == 0 and oz == 0 and #thuds == 1, "leap end: on the spot, the thud once", #thuds)
+local hill = model({ DropAt = 400, DropTime = 1, DropHeight = 12, DropFrom = v3(6, 3, 0), DropPos = v3(0, 0, 0) })
+NOW = 400
+up = WOBBLE.dropLift(hill, { Root = {}, H = 6 })
+check(near(up, 3), "jumping from higher ground starts that much up", up)
+local slam = model({ DropAt = 500, DropTime = 1, DropHeight = 0, DropFrom = v3(2, 0, 2), DropPos = v3(2, 0, 2) })
+NOW = 500.5
+up, ox, oz = WOBBLE.dropLift(slam, { Root = {}, H = 6 })
+check(up == 0 and ox == 0 and oz == 0, "DropHeight 0 with DropFrom = DropPos (a slam): no lift", up)
+local inPlace = model({ DropAt = 600, DropTime = 1, DropHeight = 12 })
+NOW = 600.5
+up, ox, oz = WOBBLE.dropLift(inPlace, { Root = {}, H = 6 })
+check(near(up, 12) and ox == 0 and oz == 0, "DropHeight without DropFrom: an arc in place", up)
 print(("DROP_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -81,10 +123,19 @@ MUTATIONS = [
     ("old drops thud at the join", "if u < 1.5 and not Feel.isForeign(model) then", "if not Feel.isForeign(model) then"),
     ("foreign Kings thud", "if u < 1.5 and not Feel.isForeign(model) then", "if u < 1.5 then"),
     ("a small thud", "asNum(MOTION.THUD.AttackMul, 1.4)", "1"),
+    ("every leap falls from the sky", 'if type(h) ~= "number" then return WOBBLE.DROP_HEIGHT * (1 - u * u), 0, 0 end',
+     "do return WOBBLE.DROP_HEIGHT * (1 - u * u), 0, 0 end"),
+    ("no sideways move (the King pops at the spot)", "ox, oz = (from.X - to.X) * k, (from.Z - to.Z) * k", "ox, oz = 0, 0"),
+    ("the sideways move runs backwards", "ox, oz = (from.X - to.X) * k, (from.Z - to.Z) * k", "ox, oz = (from.X - to.X) * u, (from.Z - to.Z) * u"),
+    ("a flat arc", "math.max(0, h) * 4 * u * k", "math.max(0, h) * k"),
+    ("the ground difference ignored", "\t\tup += (from.Y - to.Y) * k\n", ""),
 ]
 STATIC = [
-    ("the slime joint adds the drop height", lambda fx, sh: "local drop = WOBBLE.dropLift(model, st)" in fx
-     and "st.Joint.C1 = CFrame.new(0, -(hop + drop + (sy - 1) * half) + WOBBLE.Sink, 0)" in fx),
+    ("the slime joint adds the drop height and the leap's sideways offset (in the joint's frame)",
+     lambda fx, sh: "local drop, dropX, dropZ = WOBBLE.dropLift(model, st)" in fx
+     and "local c1 = CFrame.new(0, -(hop + drop + (sy - 1) * half) + WOBBLE.Sink, 0)" in fx
+     and "c1 = CFrame.new(-(st.Root.CFrame * st.Joint.C0).Rotation:VectorToObjectSpace(Vector3.new(dropX, 0, dropZ))) * c1" in fx
+     and "st.Joint.C1 = c1" in fx),
     ("the attack-hop thud skips another player's own King", lambda fx, sh: "if MOTION.Thuds(model) and not Feel.isForeign(model) then" in fx),
     ("LandShadow draws the circle from DropAt / DropTime", lambda fx, sh: 'model:GetAttributeChangedSignal("DropAt")' in sh
      and 'DropTime = model:GetAttribute("DropTime")' in sh),

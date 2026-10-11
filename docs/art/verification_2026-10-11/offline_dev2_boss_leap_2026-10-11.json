@@ -1,0 +1,1117 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 81,
+  "failedChecks": 0,
+  "namedChecks": 81,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.BossLeap: on, Grace 0.5, YRange 12, RetryDelay 0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the King Slime leaps (Range 14, Warn 1 s, Height 12; its cycle = the swing's)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Captain Clatter: every 3rd attack a slam x2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a leap reaches past a swing; warnings fit the client's MaxTime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "circles: King 10, Clatter 12 (the client's radii); the first King's drop = the same 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the hidden Pumpkin King has none (A23-119)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "first King: +6 per miss up to +18, first leap 0.8 s after the drop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the grown circle (28) cannot be left in 1 s even at the fastest walk (22)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the normal circle (10) can be left in 1 s (the dodge is real)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "in Range and ready: a leap starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "rec._leap set; its token blocks swings (_windup)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "the body moves onto the spot at once, facing the way it leapt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "the next leap one cycle (1.5 s = the swing's) after this one starts; x1 hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "nothing lands at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "nothing before the warning ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "one landing at a time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "standing still: hit once, the plain hit (x1), the KO screen names the King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "landed: free again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "a leap bumps no AttackSeq (the drop's own thud plays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leap start",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "9.4 studs from the spot: hit (inside 10 - 0.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "9.6 studs: not hit (outside the circle = not hit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "flat distance in any direction (6.7, 6.7 = 9.48 in; 6.8, 6.8 = 9.62 out)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "YRange: 11 up is hit, 13 up is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "a dead player: not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "in a town: not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "in the water (below OUT_Y): not hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "a boss leaves Lv < 5 alone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "a boss leaves < 600 s played alone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "every valid player in the circle is hit once; outside nobody",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the circle",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "a personal King: only its owner (a new player too), through its service's strike(rec, player, mult)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "a hit does not grow the circle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "stepped out every time: no more strikes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "the owner in a town: not hit; the other player: never",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "a personal King leaps wherever its owner stands (no zone rule)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "no strike hook: the plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal king",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "past Range (14): no leap, the chase goes on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "in Range but between leaps, out of reach: false (it walks closer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "between leaps in reach: it stands facing the target (never a swing)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "no ground there (water / a ridge): no leap, no circle",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "it tries again RetryDelay (0.5 s) later",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "a bare test place: flat ground at its feet height",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "setup: the zone edge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "a spot outside its zone: no leap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "range, cooldown, ground",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "attacks 1 and 2: plain swings (false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "both counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "not ready: not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "out of swing reach: not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "attack 3: the slam",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "around itself (DropPos = its feet), it does not move, radius 12",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "the next attack a swing's cooldown later",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "everyone within 11.5 is hit for 2x his hit (60); 11.6 is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "the slam bumps AttackSeq (the swing clients play)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "slam",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gone before landing",
+      "check": "killed during the warning: no hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gone before landing",
+      "check": "removed from the records: no hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gone before landing",
+      "check": "model gone: no hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gone before landing",
+      "check": "a newer landing replaced it: the old one does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gone before landing",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gone before landing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "BossLeap.Enabled = false: plain swings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "a kind's Enabled = false: plain swings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "other kinds: plain swings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "Cycle 3 s: x2 (3 / 1.5: standing still costs what the swings did)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "an explicit Mult wins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "a cycle never shorter than its warning + 0.1 (1.1 s, x1.1 / 1.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "the circle is clamped to the client's MaxRadius",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switches and mult",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 15,
+  "staticFailures": [],
+  "mutations": {
+    "total": 48,
+    "applied": 48,
+    "caught": 48,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "no dodge (anyone near)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)",
+          "personal king :: stepped out every time: no more strikes",
+          "personal king :: the owner in a town: not hit; the other player: never",
+          "slam :: everyone within 11.5 is hit for 2x his hit (60); 11.6 is not",
+          "the circle :: 9.6 studs: not hit (outside the circle = not hit)",
+          "the circle :: every valid player in the circle is hit once; outside nobody"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "no grace",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: everyone within 11.5 is hit for 2x his hit (60); 11.6 is not",
+          "the circle :: 9.6 studs: not hit (outside the circle = not hit)",
+          "the circle :: flat distance in any direction (6.7, 6.7 = 9.48 in; 6.8, 6.8 = 9.62 out)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no height rule",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the circle :: YRange: 11 up is hit, 13 up is not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the dead are hit",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the circle :: a dead player: not hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "towns not safe (personal)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: the owner in a town: not hit; the other player: never"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "anyone hit by a personal King",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: a personal King: only its owner (a new player too), through its service's strike(rec, player, mult)",
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)",
+          "personal king :: stepped out every time: no more strikes",
+          "personal king :: the owner in a town: not hit; the other player: never"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no targetable rules",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the circle :: a boss leaves < 600 s played alone",
+          "the circle :: a boss leaves Lv < 5 alone",
+          "the circle :: in a town: not hit",
+          "the circle :: in the water (below OUT_Y): not hit"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "only the target is hit",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: standing still: hit once, the plain hit (x1), the KO screen names the King",
+          "personal king :: a hit does not grow the circle",
+          "personal king :: a personal King: only its owner (a new player too), through its service's strike(rec, player, mult)",
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)",
+          "personal king :: no strike hook: the plain hit",
+          "personal king :: stepped out every time: no more strikes"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "strike hook skipped",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: a personal King: only its owner (a new player too), through its service's strike(rec, player, mult)",
+          "personal king :: stepped out every time: no more strikes",
+          "personal king :: the owner in a town: not hit; the other player: never"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "strike without mult",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: a personal King: only its owner (a new player too), through its service's strike(rec, player, mult)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "plain hit without mult",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: everyone within 11.5 is hit for 2x his hit (60); 11.6 is not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "lands after it died",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gone before landing :: killed during the warning: no hit",
+          "gone before landing :: removed from the records: no hit"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "an old landing still lands",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gone before landing :: a newer landing replaced it: the old one does nothing",
+          "gone before landing :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "never free again",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: landed: free again",
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "an instant landing",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: nothing before the warning ends"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "swings during a landing",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: rec._leap set; its token blocks swings (_windup)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "slam without AttackSeq",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: the slam bumps AttackSeq (the swing clients play)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no growth",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "grows on a hit too",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: a hit does not grow the circle",
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "growth uncapped",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "growth not in the radius",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal king :: each miss grows the next circle by 6, up to +18 (10 / 16 / 22 / 28 / 28)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "radius not clamped",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches and mult :: the circle is clamped to the client's MaxRadius"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "radius ignores the kind",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: around itself (DropPos = its feet), it does not move, radius 12",
+          "slam :: everyone within 11.5 is hit for 2x his hit (60); 11.6 is not",
+          "switches and mult :: the circle is clamped to the client's MaxRadius"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "spot = its own feet (no leap)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now",
+          "leap start :: the body moves onto the spot at once, facing the way it leapt",
+          "range, cooldown, ground :: a bare test place: flat ground at its feet height",
+          "the circle :: 9.4 studs from the spot: hit (inside 10 - 0.5)",
+          "the circle :: flat distance in any direction (6.7, 6.7 = 9.48 in; 6.8, 6.8 = 9.62 out)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "leaps out of its zone",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "range, cooldown, ground :: a spot outside its zone: no leap"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no retry delay",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "range, cooldown, ground :: it tries again RetryDelay (0.5 s) later"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bare place ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "range, cooldown, ground :: a bare test place: flat ground at its feet height"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no DropAt",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no DropPos",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now",
+          "personal king :: group ran to the end without a Lua error",
+          "range, cooldown, ground :: a bare test place: flat ground at its feet height",
+          "slam :: around itself (DropPos = its feet), it does not move, radius 12"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no DropRadius",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now",
+          "personal king :: group ran to the end without a Lua error",
+          "slam :: around itself (DropPos = its feet), it does not move, radius 12",
+          "switches and mult :: the circle is clamped to the client's MaxRadius"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "DropTime not the warning",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the body stays behind",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: one landing at a time",
+          "leap start :: the body moves onto the spot at once, facing the way it leapt"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a slam moves too",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: around itself (DropPos = its feet), it does not move, radius 12"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no cooldown after a leap",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leap start :: the next leap one cycle (1.5 s = the swing's) after this one starts; x1 hit",
+          "slam :: the next attack a swing's cooldown later",
+          "switches and mult :: a cycle never shorter than its warning + 0.1 (1.1 s, x1.1 / 1.5)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "cycle shorter than the warning",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches and mult :: a cycle never shorter than its warning + 0.1 (1.1 s, x1.1 / 1.5)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mult ignores the cycle",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches and mult :: Cycle 3 s: x2 (3 / 1.5: standing still costs what the swings did)",
+          "switches and mult :: a cycle never shorter than its warning + 0.1 (1.1 s, x1.1 / 1.5)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "explicit mult ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: everyone within 11.5 is hit for 2x his hit (60); 11.6 is not",
+          "switches and mult :: an explicit Mult wins"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "no range limit",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "range, cooldown, ground :: between leaps in reach: it stands facing the target (never a swing)",
+          "range, cooldown, ground :: in Range but between leaps, out of reach: false (it walks closer)",
+          "range, cooldown, ground :: past Range (14): no leap, the chase goes on"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "swings between leaps",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "range, cooldown, ground :: between leaps in reach: it stands facing the target (never a swing)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "slam every attack",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: attack 3: the slam",
+          "slam :: attacks 1 and 2: plain swings (false)",
+          "slam :: both counted",
+          "slam :: not ready: not counted",
+          "slam :: out of swing reach: not counted",
+          "slam :: the next attack a swing's cooldown later"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "slams counted when not ready",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "slam :: attack 3: the slam",
+          "slam :: not ready: not counted",
+          "slam :: out of swing reach: not counted",
+          "slam :: the next attack a swing's cooldown later"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "switch ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches and mult :: BossLeap.Enabled = false: plain swings"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kind switch ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switches and mult :: a kind's Enabled = false: plain swings"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "King range 30",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the King Slime leaps (Range 14, Warn 1 s, Height 12; its cycle = the swing's)",
+          "range, cooldown, ground :: between leaps in reach: it stands facing the target (never a swing)",
+          "range, cooldown, ground :: in Range but between leaps, out of reach: false (it walks closer)",
+          "range, cooldown, ground :: past Range (14): no leap, the chase goes on"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "King warning 0.3 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the King Slime leaps (Range 14, Warn 1 s, Height 12; its cycle = the swing's)",
+          "config :: the normal circle (10) can be left in 1 s (the dodge is real)",
+          "leap start :: attributes: DropPos = the ground where the target stood, DropRadius 10, DropTime 1, DropHeight 12, DropFrom, DropAt = now",
+          "leap start :: nothing before the warning ends",
+          "switches and mult :: a cycle never shorter than its warning + 0.1 (1.1 s, x1.1 / 1.5)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "Clatter slams every attack",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Captain Clatter: every 3rd attack a slam x2",
+          "slam :: attack 3: the slam",
+          "slam :: attacks 1 and 2: plain swings (false)",
+          "slam :: both counted",
+          "slam :: not ready: not counted",
+          "slam :: out of swing reach: not counted"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "grace 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.BossLeap: on, Grace 0.5, YRange 12, RetryDelay 0.5",
+          "slam :: everyone within 11.5 is hit for 2x his hit (60); 11.6 is not",
+          "the circle :: 9.6 studs: not hit (outside the circle = not hit)",
+          "the circle :: flat distance in any direction (6.7, 6.7 = 9.48 in; 6.8, 6.8 = 9.62 out)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "growth too small to land",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: first King: +6 per miss up to +18, first leap 0.8 s after the drop",
+          "config :: the grown circle (28) cannot be left in 1 s even at the fastest walk (22)"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "9f0cd9c5ccd37a96c6977ac2b6ecf4ed413c8b94264722f23ed8544073a478dd",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/MonsterService.luau": "62260aff531ef6e6290f7fa9ed426c5e261ed8f4ab742e62896100d1ac39566e"
+  },
+  "fixtureSHA256": "711e0398637d59990dc5ab6f0b1014c55cd372f6d057da6ab31dfefed00d37ca",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-113 ①: Config.BossLeap.Kinds — SlimeKing Leap (Range 14, Warn 1, Height 12, cycle = AttackCooldown, x cycle / AttackCooldown), CaptainClatter Slam (every 3rd attack in swing reach, Warn 1, x2); a landing sets DropPos (Leap: the ground where the target stands, in its zone unless personal; Slam: its feet), DropRadius (LandShadow.Radius[kind] + a personal King's growth, clamped Min..MaxRadius), DropTime = Warn, DropFrom, DropHeight, then DropAt = now; a leaper moves onto the spot at once; Warn s later every valid player inside DropRadius - Grace (0.5) flat and YRange (12) is hit once (personal: its owner out of towns / water via its strike(rec, p, mult); else targetable: boss new-player rules, towns, zone, water); a slam bumps AttackSeq; a personal King that hit nobody grows LeapGrow up to LeapGrowMax (first KO King 6 / 18: 28 > the fastest walk); no ground = no leap, RetryDelay 0.5; between leaps in reach a leaper stands facing (never a swing).",
+  "limitations": "MonsterService's aiStep / personalStep / SpawnPersonal and FirstKOService hooks are checked as source text (FirstKOService's strike / land / spawn run in test_first_ko_king); the AI loop, ground rays and CombatService are doubles; the circle, the fall and DropFrom / DropHeight drawing are game dev 1's client."
+}

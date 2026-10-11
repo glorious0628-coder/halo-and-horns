@@ -43,7 +43,8 @@ local T = {
 		LeftShoulder = { "Left", "Shoulder" }, LeftElbow = { "Left", "Elbow" }, LeftWrist = { "Left", "Wrist" } },
 	RightGrip = Vector3.new(0, -0.158, 0), LeftGrip = Vector3.new(0, -0.158, 0),
 	PoleRight = Vector3.new(0.7, -0.7, 0.2), Pole = Vector3.new(-0.7, -0.7, 0.2),
-	Gap = { 0.45, 0.8 }, GapPad = 0.05,
+	Gap = { 0.45, 0.9 }, GapPad = 0.05, OverlapShare = 0.8,
+	ShoulderX = 0.972, -- the place rig's shoulder joint x on UpperTorso (WeaponPose.BodyScale)
 	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.ProbeStep: every frame measured, the worst printed)
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
@@ -154,9 +155,9 @@ end
 -- goals live in torso space and the arm joints are torso-relative, so walking / running / jumping (the Animator's arm
 -- swing is replaced, not added) keeps both hands on the handle; a goal out of reach takes the closest reach that frame
 -- (검수 10/11 walk photos: a dropped solve let the left hand hang for a frame).
-function WeaponPose.TwoHandGoals(torso, th, rightGrip, leftGrip, rightShoulder, leftShoulder, gap)
+function WeaponPose.TwoHandGoals(torso, th, rightGrip, leftGrip, rightShoulder, leftShoulder, gap, k)
 	local aim = torso:VectorToWorldSpace(th.Aim.Unit)
-	local hilt = torso * th.Hilt
+	local hilt = torso * (th.Hilt * (k or 1)) -- k: this avatar's body scale (WeaponPose.BodyScale)
 	local function goal(point, gripPos, shoulder)
 		local up = shoulder - point
 		up -= aim * up:Dot(aim)
@@ -190,10 +191,19 @@ function WeaponPose.TwoHand(char, st, def, model)
 	if not (right and left) then return false end
 	local torso = torsoPart.CFrame
 	local g = type(th.Gap) == "table" and th.Gap or T.Gap
-	local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad, tonumber(g[1]) or 0.45, tonumber(g[2]) or 0.8)
+	-- 검수 10/11 (reference: the left hand near the pommel): the left hand sits at the lower end of the weapon's Handle
+	-- (its own half length up from the end), never closer to the right hand than OverlapShare of their sizes
+	local gap = (hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad
+	local handle = model:FindFirstChild("Handle")
+	if handle and handle:IsA("BasePart") then
+		local grip = gripOf(hand, "RightGripAttachment", T.RightGrip)
+		local foot = hand.CFrame:ToObjectSpace(handle.CFrame) * Vector3.new(0, -handle.Size.Y / 2, 0)
+		gap = math.max((foot.Z - grip.Z) - leftHand.Size.Z / 2 - T.GapPad, (hand.Size.Z + leftHand.Size.Z) / 2 * T.OverlapShare)
+	end
+	gap = math.clamp(gap, tonumber(g[1]) or 0.45, tonumber(g[2]) or 0.9)
 	local rGoal, lGoal = WeaponPose.TwoHandGoals(torso, th, gripOf(hand, "RightGripAttachment", T.RightGrip),
 		gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), (torso * right.Shoulder.C0).Position,
-		(torso * left.Shoulder.C0).Position, gap)
+		(torso * left.Shoulder.C0).Position, gap, WeaponPose.BodyScale(right))
 	local rPose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
 	local lPose = fx.SolveArm(left, torso, lGoal, torso:VectorToWorldSpace(T.Pole))
 	if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end
@@ -234,10 +244,68 @@ function WeaponPose.OneHand(char, st, def, model)
 	if not right then return false end
 	local torso = torsoPart.CFrame
 	local rGoal = WeaponPose.TwoHandGoals(torso, oh, gripOf(hand, "RightGripAttachment", T.RightGrip), T.LeftGrip,
-		(torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0)
+		(torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0, WeaponPose.BodyScale(right))
 	local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
 	if type(pose) ~= "table" then return false end
 	for i = 1, 3 do
+		local joint = T.TwoJoints[i]
+		local m, w = st.Joints[joint], T.TwoKeys[joint]
+		if m and typeof(pose[w[2]]) == "CFrame" then
+			local cur = m.Transform
+			local last = st.Last[joint]
+			local base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur
+			local out = base:Lerp(pose[w[2]], st.W)
+			m.Transform = out
+			st.Base[joint], st.Last[joint] = base, out
+		end
+	end
+	return not pose.Clamped
+end
+
+-- this avatar's body scale against the place's R15 rig (its shoulder joint's distance from the torso centre, 0.972 at
+-- scale 1): the torso-space points (Hilt, OffHand At) shrink and grow with the body, the directions do not
+function WeaponPose.BodyScale(arm)
+	local c0 = arm and arm.Shoulder and arm.Shoulder.C0
+	if typeof(c0) ~= "CFrame" then return 1 end
+	return math.clamp(math.abs(c0.Position.X) / T.ShoulderX, 0.6, 1.4)
+end
+
+-- 검수 10/11 (grip_audit9 §2: the empty left hands floated out at the side; references grip_reference §1-6/7): the free
+-- hand goes to a point ON the body instead of joint angles. def.OffHand = { At = the left grip point, Up = the hand's
+-- +Y (towards the wrist), Fwd = the hand's -Z (the knuckle line), in UpperTorso space; At scales with the body }:
+-- a hand on the hip (the back of the hand on the waist's side, the elbow out), a fist in front of the chest (the
+-- Paladin until his shield exists), a palm up in front of the chest. Solved with Fx's arm solver like the hilt.
+function WeaponPose.OffHandGoal(torso, oh, gripPos, k)
+	local up = torso:VectorToWorldSpace(oh.Up.Unit)
+	local f = torso:VectorToWorldSpace(oh.Fwd.Unit)
+	f -= up * f:Dot(up)
+	if f.Magnitude < 1e-3 then f = torso.LookVector - up * torso.LookVector:Dot(up) end
+	local z = -f.Unit
+	return CFrame.new(torso * (oh.At * (k or 1))) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)
+end
+
+function WeaponPose.OffHand(char, st, def)
+	local oh, fx = def.OffHand, C and C.Fx
+	if typeof(oh.At) ~= "Vector3" or typeof(oh.Up) ~= "Vector3" or typeof(oh.Fwd) ~= "Vector3" then return false end
+	if type(fx) ~= "table" or type(fx.SolveArm) ~= "function" or type(fx.ArmGeometry) ~= "function" then return false end
+	local torsoPart, leftHand = char:FindFirstChild("UpperTorso"), char:FindFirstChild("LeftHand")
+	if not (torsoPart and leftHand) then return false end
+	for i = 1, 6 do
+		local joint = T.TwoJoints[i]
+		local m = st.Joints[joint]
+		if not (m and m.Parent) then
+			st.Joints[joint] = findJoint(char, joint)
+			st.Base[joint], st.Last[joint] = nil, nil
+		end
+	end
+	local left, right = fx.ArmGeometry(st, "Left"), fx.ArmGeometry(st, "Right")
+	if not left then return false end
+	local torso = torsoPart.CFrame
+	local goal = WeaponPose.OffHandGoal(torso, oh, gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), WeaponPose.BodyScale(right or left))
+	local p = typeof(oh.Pole) == "Vector3" and oh.Pole or T.Pole
+	local pose = fx.SolveArm(left, torso, goal, torso:VectorToWorldSpace(p))
+	if type(pose) ~= "table" then return false end
+	for i = 4, 6 do
 		local joint = T.TwoJoints[i]
 		local m, w = st.Joints[joint], T.TwoKeys[joint]
 		if m and typeof(pose[w[2]]) == "CFrame" then
@@ -298,8 +366,9 @@ local function poseChar(char, player, dt)
 	end
 	if type(def.TwoHand) == "table" then
 		WeaponPose.TwoHand(char, st, def, model)
-	elseif type(def.OneHand) == "table" then
-		WeaponPose.OneHand(char, st, def, model)
+	else
+		if type(def.OneHand) == "table" then WeaponPose.OneHand(char, st, def, model) end
+		if type(def.OffHand) == "table" then WeaponPose.OffHand(char, st, def) end
 	end
 end
 
