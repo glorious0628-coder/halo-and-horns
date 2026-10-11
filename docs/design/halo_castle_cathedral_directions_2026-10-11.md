@@ -174,3 +174,4 @@ No domes: every roof and tower top is a steep pointed spire or crystal point. Fa
 ## 2차 결과 (사용자 2026-10-11)
 - 사용자: "3번이 좋은데 건물 느낌나게 다시 만들으라고 행" → **F3 고름**(시트 `art/review/s2/halo_castle_fantasy_concepts.jpg`).
 - 다시 그리기 F3b(이미지 생성 2, Medium 4): 날개를 정면의 평평한 판이 아니라 건물의 일부(날개 모양 버팀벽·날개 지붕·탑 옆 날개 벽, 두꺼운 돌 + 금테)로 만든다. 성당 덩어리가 날개보다 커 보이게 한다. 가운데 첨탑 + 후광, 장미창, 땅 높이 큰 금문 + 평평한 마당을 넣는다. 살짝 비대칭으로 한다. 돔·빛살·십자가는 0이다(꼭대기는 별·후광).
+- **F3c 결과(사용자 2026-10-11 "ㅇㅇ 나도 C2!"):** 빛 성 = **C2 확정**(`art/out/s2/halo/castle5/HaloCastleF3c_C2.png`, 시트 `art/review/s2/halo_castle_f3c_concepts.jpg`). F3 정면 구도를 지키고, 날개는 폭 약 60%로 살짝 접는다. 건물이 날개보다 커 보인다. 확정본에서는 금문 무늬를 세로 패널 + 꽃으로 바꾸고(퍼지는 줄 없이), 정문 앞을 평평한 마당으로 바꾼다. 몸통·탑·벽은 Studio 골격으로 짓고, 날개·장미창·첨탑 끝만 Tripo(4면)로 만든다.
