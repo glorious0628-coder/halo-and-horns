@@ -63,12 +63,14 @@ Net.Names = {
 	"CraftFinish", -- (sessionId: number) the hammer is over (or Skip): the server grades the strikes (Shared/CraftMini)
 	-- server -> client (owner only):
 	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
-	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp }
+	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp, Pet? = { Uid, Species, Spd } (a summon) }
 	"CraftInfo", -- { Role, Lv, XP, Need, Made } at join and after every craft
 	-- 게임성 개발 3 (2026-10-12) alchemy tonics (BuffService), client -> server:
 	"UseTonic", -- (itemId: a Config.Alchemy.Tonics item) drink one; the running ones are the attributes Buff_<itemId>
 	-- 게임성 개발 3 (2026-10-12) tamer research (TamerService), server -> client (owner only, the tamer):
 	"TamerInfo", -- { Pts = { [family] = points }, Stage = { [family] = 0..5 }, Sum = { [family] = summons }, Stages }
+	-- client -> server (anyone with a pet):
+	"FeedPet", -- (uid: my pet) one Pet Treat -> that pet gets Config.Research.TreatXP pet XP
 }
 
 Net.GameStateDefaults = {

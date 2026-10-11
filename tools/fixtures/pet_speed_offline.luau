@@ -62,11 +62,29 @@ runGroup("config", function()
 		check(near(got, c[5]), "WalkSpeed(" .. c[1] .. ", " .. tostring(c[2]) .. " Lv" .. c[3] .. (c[4] and ", kaiju" or "") .. ")",
 			show({ got, c[5] }))
 	end
+	-- ⑤ a summoned pet (Roll.Spd, whole %; tamer_server §4): Lv1 = roll %, MaxLv = roll % + RollGrow (3), a straight line;
+	-- no roll (nil / 0) = the species' own line; a roll outside PetRollSpd (5..10) is cut to it
+	check(C.Pets.RollGrow == 0.03 and near(C.PetSpeedBonus("BabySlime", 1, 7), 0.07) and near(C.PetSpeedBonus("BabySlime", 10, 7), 0.10)
+		and near(C.PetSpeedBonus("BabySlime", 4, 7), 0.08), "roll 7: +7% at Lv1 -> +10% at Lv10 (the baby slime's slope)",
+		show({ C.PetSpeedBonus("BabySlime", 1, 7), C.PetSpeedBonus("BabySlime", 10, 7) }))
+	check(near(C.PetSpeedBonus("BabySlime", 1, 5), 0.05) and near(C.PetSpeedBonus("BabySlime", 10, 10), 0.13)
+		and near(C.PetSpeedBonus("BabySlime", 1, 10), 0.10), "roll 5: +5% at Lv1; roll 10: +10% -> +13%",
+		show({ C.PetSpeedBonus("BabySlime", 1, 5), C.PetSpeedBonus("BabySlime", 10, 10) }))
+	check(C.PetSpeedBonus("BabySlime", 4, 0) == C.PetSpeedBonus("BabySlime", 4) and C.PetSpeedBonus("BabySlime", 4, nil) == C.PetSpeedBonus("BabySlime", 4)
+		and near(C.PetSpeedBonus("BabySlime", 1, 0), 0.07), "roll 0 / nil = the old line (the baby slime 7 -> 10 stays)", "")
+	check(near(C.PetSpeedBonus("BabySlime", 1, 50), 0.10) and near(C.PetSpeedBonus("BabySlime", 1, 2), 0.05) and C.PetSpeedBonus("Dragon", 1, 9) == 0,
+		"a roll is cut to 5..10; an unknown species is still 0", show({ C.PetSpeedBonus("BabySlime", 1, 50), C.PetSpeedBonus("BabySlime", 1, 2) }))
+	check(near(C.WalkSpeed("Archer", "BabySlime", 10, false, 10), BASE * 1.1 * 1.13) and near(C.WalkSpeed("Archer", "BabySlime", 10, true, 10), BASE * 1.1)
+		and near(C.WalkSpeed("Warrior", "BabySlime", 1, false, 6), BASE * 1.06), "WalkSpeed takes the roll (kaiju: none)",
+		show({ C.WalkSpeed("Archer", "BabySlime", 10, false, 10) }))
 	-- the cap: a faster class (tuning) never goes over Cap x the base, with or without the pet
 	local alt = execute("Config", CONFIG_SOURCE, nativeEnv())
 	alt.Classes.Archer.WalkSpeedMult = 1.4
-	check(near(alt.WalkSpeed("Archer", "BabySlime", 10, false), BASE * 1.35) and near(alt.WalkSpeed("Archer", nil, 0, false), BASE * 1.35),
-		"capped at Cap x the base", show({ alt.WalkSpeed("Archer", "BabySlime", 10, false) }))
+	check(near(alt.WalkSpeed("Archer", "BabySlime", 10, false), BASE * 1.35) and near(alt.WalkSpeed("Archer", nil, 0, false), BASE * 1.35)
+		and near(alt.WalkSpeed("Archer", "BabySlime", 10, false, 10), BASE * 1.35),
+		"capped at Cap x the base (a roll 10 pet too)", show({ alt.WalkSpeed("Archer", "BabySlime", 10, false) }))
+	check(C.WalkSpeed("Archer", "BabySlime", 10, false, 10) <= BASE * C.Speed.Cap, "the fastest summon (archer + roll 10, Lv10: 24.86) is under the cap",
+		tostring(C.WalkSpeed("Archer", "BabySlime", 10, false, 10)))
 	local maxNow = 0
 	for _, cls in C.ClassOrder do
 		for lv = 0, C.Pets.MaxLv do
@@ -94,6 +112,9 @@ runGroup("player-speed", function()
 	kaiju[tamer] = "Siren"
 	check(near(ps.ComputeWalkSpeed(tamer), BASE * 1.1 * 1.07), "the siren is not the kaiju yet: the pet bonus stays", ps.ComputeWalkSpeed(tamer))
 	kaiju[tamer] = nil
+	tamer:SetAttribute("PetRoll", 10)
+	check(near(ps.ComputeWalkSpeed(tamer), BASE * 1.1 * 1.10), "reads the PetRoll attribute (roll 10, Lv1: +10%)", ps.ComputeWalkSpeed(tamer))
+	tamer:SetAttribute("PetRoll", 0)
 	-- no KaijuService / a throwing one: never an error, the pet bonus stays
 	local ps2 = speedApi(w, {})
 	check(near(ps2.ComputeWalkSpeed(tamer), BASE * 1.1 * 1.07), "no KaijuService in the registry: pet bonus", ps2.ComputeWalkSpeed(tamer))
@@ -151,6 +172,12 @@ runGroup("pet-publish-refresh", function()
 	ps.PlayerReady:Fire(q, data[q])
 	check(refreshed[#refreshed].P == q and refreshed[#refreshed].Pet == "", "a join without a pet still publishes + refreshes (EquippedPet '')",
 		show({ refreshed[#refreshed].Pet, refreshed[#refreshed].Lv }))
+	check(p:GetAttribute("PetRoll") == 0 and q:GetAttribute("PetRoll") == 0, "PetRoll = 0 without a summoned pet", "")
+	-- ⑤ a summoned pet that follows: PetRoll = its Roll.Spd, set before the speed refresh
+	data[p].Pets.List.P1.Roll = { Spd = 9 }
+	data[p].Pets.Equipped = {}
+	pet.GiveTamerPet(p, true)
+	check(p:GetAttribute("PetRoll") == 9, "a pet with Roll.Spd 9 out: PetRoll = 9", tostring(p:GetAttribute("PetRoll")))
 end)
 
 runGroup("move-check", function()
@@ -175,7 +202,8 @@ runGroup("move-check", function()
 	for _, cls in C.ClassOrder do
 		for lv = 0, C.Pets.MaxLv do
 			for _, kaijuOn in { false, true } do
-				local speed = C.WalkSpeed(cls, lv > 0 and "BabySlime" or nil, lv, kaijuOn)
+				local speed = math.max(C.WalkSpeed(cls, lv > 0 and "BabySlime" or nil, lv, kaijuOn),
+					C.WalkSpeed(cls, lv > 0 and "BabySlime" or nil, lv, kaijuOn, lv > 0 and 10 or nil)) -- ⑤ a roll 10 summon
 				fastest = math.max(fastest, speed)
 				for _, dt in { 0.05, 0.1, 0.2, 0.5, 1, 3 } do
 					if not flatMove(speed, dt) then worst = worst or { cls, lv, kaijuOn, dt, speed } end

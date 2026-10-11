@@ -1,4 +1,4 @@
-# 조련사 연구·소환·간식 서버 (게임성 개발 3, 2026-10-12, 설계 — 합의 전)
+# 조련사 연구·소환·간식 서버 (게임성 개발 3, 2026-10-12, 설계 + 구현(합의됨, §7))
 
 근거: `crafting_market_2026-10-11.md` §4 조련사(연구력 = 조련사가 잡은 몬스터 가족마다 1점, 단계 50/150/400/1000/2500, 소환 = 연구 2단계 + 재료 → 그 가족 펫·능력치 게임 안 랜덤·로벅스 없음, 베타는 3D가 있는 슬라임 가족만, Pet Treat = 펫 XP +20·거래 가능·펫은 못 팖), A23-115·A23-127(조련사 = 펫 쪽)·A23-133(펫 장비도 장인 — ⑥)·A23-139(제작 XP 패스 2배·장인만), `save_v4_tables`(Research {Pts, Sum}, Pets.List[uid].Roll {Spd 5..10}), `craft_server_2026-10-12.md`(레시피 표·망치질). 스위치: Config.Features.Crafting(소환·간식 레시피)·새 `Config.Features.Research`(연구 세기, 장인 길드와 같이 켬).
 
@@ -30,3 +30,10 @@
 - 소환 능력치 = 무작위 5..8 + 망치질 +N(최대 10): '실력이 조금 올려 줌'으로 제안(설계 §4는 5~10 무작위만). 숫자 판단 부탁.
 - 간식 XP +20, 소환 재료·골드·연구 150(2단계)은 설계 §4 그대로.
 - 간식 재료: Jelly 5 + Petal 2(설계 §4) 또는 Jelly 5 + Herb 2(채집 설계 방향). 답 없으면 설계 §4대로.
+
+## 7. 합의·결정 (2026-10-12) — 됨
+- **게임성 검수:** 소환 속도 = 무작위 5~8%(정수) + 망치질 +0/+1/+2, 최대 10% — 그대로 넣음(`S1.Spd = { 5, 8 }`, `Config.SaveV4.PetRollSpd[2]` 상한). 행운 물약 = Source 없는 몬스터 재료 줄만(보스·채집·제작 제외).
+- **게임성 개발 2:** PetService 4개는 개발 3이 넣고 개발 2가 읽어 확인. 맞춘 모양: 새 펫 줄은 `addPet` 한 곳(grant·SummonPet 같이 씀), 64마리는 넣기 **전에** 막음(HasRoom), 거절 = nil(모르는 종·`sanitizeRoll` 실패·64), XP 고리는 `giveXP(p, n)`(onKilled는 거르기만), `AddPetXP(uid, n)` = 내 펫 + 정수 > 0만, 최대 레벨이면 그대로 레벨 반환, `PetRoll` 속성 → `Config.WalkSpeed(..., petRoll)` → `PetSpeedBonus(sp, lv, roll)`(Lv1 roll%, MaxLv roll% + `Config.Pets.RollGrow` 0.03, roll 0/nil = 옛 줄), `PetList` 줄에 `Roll`.
+- 간식 재료는 답이 없어 설계 §4대로 **Jelly 5 + Petal 2**.
+- **남은 클라 몫(개발 4·1):** PetWindow 82·101줄 `Config.PetSpeedBonus(sp, lv)`에 Roll(`p.Roll and p.Roll.Spd`, 따라오는 펫은 `PetRoll` 속성)을 넘겨야 창 숫자가 맞음. 연구 창(TamerInfo), 소환 결과(CraftResult.Pet), 간식 주기 버튼(FeedPet).
+- 시험: test_tamer_research(연구·소환 펫·펫 XP·간식) / test_craft(S1·T1, 대역) / test_pet_speed(roll) / test_alchemy(보스 재료) / test_tamer·test_gamepass 패턴 맞춤.

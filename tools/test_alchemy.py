@@ -43,7 +43,7 @@ MUTATIONS = [
     ("config: Wisdom on gold", C, "WisdomTonic = { Stat = \"HuntXP\", Mult = 1.10 },", "WisdomTonic = { Stat = \"HuntGold\", Mult = 1.10 },"),
     ("config: tonics sold at the Forge", C, "Icon = \"IconMightTonic\", Source = \"Craft\",", "Icon = \"IconMightTonic\","),
     ("config: A1 at craft Lv2", C, "Item = \"MightTonic\", N = 1, Lv = 1, Gold = 20,", "Item = \"MightTonic\", N = 1, Lv = 2, Gold = 20,"),
-    ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\" },", "\t},"),
+    ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\", \"PetTreat\" },", "\t\t\"PetTreat\" },"),
     # --- drinking
     ("use: the switch not checked", B, "\tif not on() then return \"off\" end\n\tlocal tonic", "\tlocal tonic"),
     ("use: any item drinks", B, "\tif type(tonic) ~= \"table\" or not Config.Loot.Items[id] then return \"tonic\" end\n", "\tif type(tonic) ~= \"table\" then tonic = { Stat = \"x\", Mult = 1 } end\n"),

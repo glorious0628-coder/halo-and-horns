@@ -1,7 +1,8 @@
--- tamer_research_offline.luau : the pet tamer's research (TamerService, 게임성 개발 3, 2026-10-12; contract
--- docs/design/tamer_server_2026-10-12.md §1). tools/test_tamer_research.py binds CONFIG_SOURCE, UTIL_SOURCE and
--- TAMER_SOURCE in front of dev2_kit.luau + dev3_world.luau; this file follows. TamerService runs from source;
--- PlayerService / MonsterService are the world's doubles (MonsterKilled fired by hand).
+-- tamer_research_offline.luau : the pet tamer's research, summons and treats (TamerService + PetService, 게임성 개발 3,
+-- 2026-10-12; contract docs/design/tamer_server_2026-10-12.md §1-§4). tools/test_tamer_research.py binds CONFIG_SOURCE,
+-- UTIL_SOURCE, TAMER_SOURCE and PET_SOURCE in front of dev2_kit.luau + dev3_world.luau; this file follows. TamerService
+-- and PetService run from source; PlayerService / MonsterService / LootService are the world's doubles (MonsterKilled
+-- fired by hand).
 
 local NOON = 1789959600 -- 2026-09-22 12:00 KST
 
@@ -17,14 +18,19 @@ local function tWorld(o)
 	w.Net.NotifyKey = function(p, key, args, kind)
 		table.insert(w.Notices, { Player = p, Key = key, Args = args, Kind = kind, Text = "KEY:" .. tostring(key) })
 	end
+	w.Services.ServerStorage = newInstance("ServerStorage", w)
+	w.Speeds = {}
+	w.PS.RefreshSpeed = function(p) table.insert(w.Speeds, { P = p, Roll = p:GetAttribute("PetRoll") }) end
+	w:Service("PetService", PET_SOURCE)
 	w:Service("TamerService", TAMER_SOURCE)
-	w:InitStart({ "TamerService" })
+	w:InitStart({ "PetService", "TamerService" })
 	w.T = w.Reg.TamerService
+	w.P = w.Reg.PetService
 	return w
 end
 
 local function player(w, id, class, faction, extra)
-	local data = { Faction = faction or "Neutral", Class = class or "Archer", ClassChosen = true, Level = 5 }
+	local data = { Faction = faction or "Neutral", Class = class or "Archer", ClassChosen = true, Level = 5, TamerNotice = true }
 	for k, v in extra or {} do data[k] = v end
 	return w:Arrive(id, { Data = data })
 end
@@ -210,6 +216,120 @@ runGroup("off", function()
 	local p, d = player(w, 1)
 	kill(w, p, "Slime")
 	check(count(d.Research.Pts) == 0 and #fired(w, "TamerInfo", p) == 0, "switch off: no points, no TamerInfo", "")
+end)
+
+------------------------------------------------------------------ PetService: summons (§2, §4)
+runGroup("summon pets", function()
+	local w = tWorld()
+	local p, d = player(w, 1)
+	check(d.Pets.List.P1 and d.Pets.List.P1.Sp == "BabySlime" and d.Pets.Equipped[1] == "P1" and p:GetAttribute("PetRoll") == 0,
+		"the tamer's own baby slime (no roll: PetRoll 0)", "")
+	local granted = {}
+	w.P.PetGranted:Connect(function(pl, uid, sp) table.insert(granted, { uid, sp }) end)
+	local uid = w.P.SummonPet(p, "BabySlime", { Spd = 7 })
+	local s = uid and d.Pets.List[uid]
+	check(uid == "P2" and s and s.Sp == "BabySlime" and s.Lv == 1 and s.XP == 0 and s.Bound == true and s.Roll and s.Roll.Spd == 7
+		and s.Name == "" and s.Lean == "", "a second baby slime: a new Bound pet with Roll { Spd = 7 }", s and show(s) or "nil")
+	check(#granted == 1 and granted[1][1] == "P2" and granted[1][2] == "BabySlime", "PetGranted(player, uid, species)", "")
+	check(d.Pets.Equipped[1] == "P1", "the pet that follows stays (a summon comes out only when none does)", "")
+	local list = last(fired(w, "PetList", p))
+	local row = nil
+	for _, r in list.List do if r.Uid == "P2" then row = r end end
+	check(row and row.Roll and row.Roll.Spd == 7, "PetList rows carry Roll (the window's stats)", row and show(row.Roll) or "")
+	for _, bad in { { Spd = 11 }, { Spd = 4 }, { Spd = 7.5 }, { Spd = 7, X = 1 }, { Spd = "7" }, "x" } do
+		check(w.P.SummonPet(p, "BabySlime", bad) == nil, "a bad roll: no pet (the server never makes a value up)", show(bad))
+	end
+	check(w.P.SummonPet(p, "BabySlime", nil) == nil and w.P.SummonPet(p, "Dragon", { Spd = 6 }) == nil and w.P.SummonPet(nil, "BabySlime", { Spd = 6 }) == nil,
+		"no roll / an unknown species / no player: no pet", "")
+	check(count(d.Pets.List) == 2, "still two pets", tostring(count(d.Pets.List)))
+	-- equip the summoned one: PetRoll = its Spd before the speed refresh
+	w.Gap = 1
+	w:Remote("EquipPet", p, "P2")
+	check(d.Pets.Equipped[1] == "P2" and p:GetAttribute("PetRoll") == 7 and last(w.Speeds).P == p and last(w.Speeds).Roll == 7,
+		"the summon follows: PetRoll 7, then the speed refresh", show({ p:GetAttribute("PetRoll") }))
+	-- a player with no pet out: the summon comes out
+	local k, dk = player(w, 2, "Warrior", "Halo")
+	check(w.P.SummonPet(k, "BabySlime", { Spd = 5 }) == "P1" and dk.Pets.Equipped[1] == "P1" and k:GetAttribute("PetRoll") == 5,
+		"nothing follows: the summon comes out", "")
+	-- the 64 cap, checked before a pet goes in
+	local list64 = {}
+	for i = 1, 63 do list64["Q" .. i] = { Sp = "BabySlime", Lv = 1, XP = 0, Name = "", Lean = "", Bound = true } end
+	local f, df = player(w, 3, "Warrior", "Halo", { Pets = { List = list64, Equipped = {}, Next = 1, Away = false } })
+	check(w.P.HasRoom(f) == true, "63 pets: room", "")
+	check(w.P.SummonPet(f, "BabySlime", { Spd = 6 }) ~= nil and count(df.Pets.List) == 64, "the 64th goes in", tostring(count(df.Pets.List)))
+	check(w.P.HasRoom(f) == false and w.P.SummonPet(f, "BabySlime", { Spd = 6 }) == nil and count(df.Pets.List) == 64,
+		"64 pets: no room, no 65th (Sanitize would drop some pet at the next join)", tostring(count(df.Pets.List)))
+	check(w.P.GetPet(p, "P2").Lv == 1 and w.P.GetPet(p, "P2").Sp == "BabySlime" and w.P.GetPet(p, "Nope") == nil and w.P.GetPet(p, nil) == nil
+		and w.P.GetPet(k, "P2") == nil, "GetPet: my pet only", "")
+end)
+
+------------------------------------------------------------------ PetService.AddPetXP (a treat's XP, the kill XP's levels)
+runGroup("pet xp", function()
+	local w = tWorld()
+	local p, d = player(w, 1)
+	local uid = w.P.SummonPet(p, "BabySlime", { Spd = 6 })
+	local sent = #fired(w, "PetList", p)
+	w:Advance(5)
+	check(w.P.AddPetXP(p, uid, 10) == 1 and d.Pets.List[uid].XP == 10 and #fired(w, "PetList", p) == sent + 1,
+		"10 XP on a pet that does not follow: no level yet, the list goes", "")
+	check(w.P.AddPetXP(p, uid, 20) == 2 and d.Pets.List[uid].Lv == 2 and d.Pets.List[uid].XP == 15, "10 + 20 = 30: Lv2 (15) with 15 over", show(d.Pets.List[uid]))
+	check(p:GetAttribute("PetLv") == 1, "the follower's PetLv is not the summon's", "")
+	check(w.P.AddPetXP(p, "P1", 15) == 2 and p:GetAttribute("PetLv") == 2, "the follower levels up: published (PetLv 2)", "")
+	for _, bad in { 0, -5, 1.5, 0 / 0, math.huge, "20" } do
+		local before = d.Pets.List[uid].XP
+		check(w.P.AddPetXP(p, uid, bad) == nil and d.Pets.List[uid].XP == before, "a bad amount: nil, nothing changes", tostring(bad))
+	end
+	check(w.P.AddPetXP(p, "Nope", 5) == nil and w.P.AddPetXP(nil, uid, 5) == nil, "not my pet: nil", "")
+	d.Pets.List[uid].Lv, d.Pets.List[uid].XP = 10, 0
+	w:Advance(5)
+	local lists = #fired(w, "PetList", p)
+	check(w.P.AddPetXP(p, uid, 20) == 10 and d.Pets.List[uid].XP == 0, "MaxLv: unchanged (Lv 10, XP 0)", show(d.Pets.List[uid]))
+	w:Advance(5)
+	check(#fired(w, "PetList", p) == lists, "... and no list goes (nothing changed)", "")
+end)
+
+------------------------------------------------------------------ Pet Treats (FeedPet, §3)
+runGroup("feed", function()
+	local w = tWorld()
+	local C = w.Config
+	check(C.Research.Treat == "PetTreat" and C.Research.TreatXP == 20 and C.RateLimits.FeedPet == 0.5, "a treat = +20 pet XP, one a half second", "")
+	local p, d = player(w, 1, nil, nil, { Items = { PetTreat = 3 } })
+	local from = #w.Notices
+	check(w.T.Feed(p, "P1") == "ok" and d.Items.PetTreat == 2 and d.Pets.List.P1.Lv == 2 and d.Pets.List.P1.XP == 5 and p:GetAttribute("PetLv") == 2,
+		"one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)", show(d.Pets.List.P1))
+	local ns = noticesFor(w, p, from)
+	check(#ns == 1 and ns[1].Key == "Config.Research.Text.Fed" and ns[1].Kind == "reward" and ns[1].Args[1] == "20", "the Fed line (a key, \"20\")",
+		ns[1] and show(ns[1].Args) or "")
+	check(w.T.Feed(p, "Nope") == "pet" and d.Items.PetTreat == 2, "not my pet: the treat stays", "")
+	d.Pets.List.P1.Lv, d.Pets.List.P1.XP = 10, 0
+	local f2 = #w.Notices
+	check(w.T.Feed(p, "P1") == "max" and d.Items.PetTreat == 2 and noticesFor(w, p, f2)[1].Key == "Config.Research.Text.PetMax",
+		"a MaxLv pet: PetMax, the treat stays", "")
+	local k, dk = player(w, 2, "Warrior", "Halo", { Items = {} })
+	local kid = w.P.SummonPet(k, "BabySlime", { Spd = 5 })
+	local f3 = #w.Notices
+	check(w.T.Feed(k, kid) == "none" and noticesFor(w, k, f3)[1].Key == "Config.Research.Text.NoTreat" and dk.Pets.List[kid].XP == 0,
+		"no treat: NoTreat, no XP", "")
+	dk.Items.PetTreat = 1
+	check(w.T.Feed(k, kid) == "ok" and dk.Items.PetTreat == 0 and dk.Pets.List[kid].Lv == 2, "anyone with a pet feeds it (a Halo knight too)", "")
+	w.Ready[k] = nil
+	dk.Items.PetTreat = 1
+	check(w.T.Feed(k, kid) == "state" and dk.Items.PetTreat == 1, "not ready: no", "")
+	w.Ready[k] = true
+	check(w.T.Feed(k, 5) == "state" and w.T.Feed(nil, kid) == "state", "junk: no", "")
+	-- the remote: one argument, one feed a half second
+	d.Pets.List.P1.Lv = 3
+	d.Items.PetTreat = 5
+	w.Gap = 1
+	w:Remote("FeedPet", p, "P1", "x")
+	check(d.Items.PetTreat == 5, "FeedPet with two arguments: ignored", "")
+	w:Remote("FeedPet", p, "P1")
+	w.Gap = 0.1
+	w:Remote("FeedPet", p, "P1")
+	check(d.Items.PetTreat == 4, "two within half a second: one treat", tostring(d.Items.PetTreat))
+	local off = tWorld({ Off = true })
+	local o, dob = player(off, 1, nil, nil, { Items = { PetTreat = 2 } })
+	check(off.T.Feed(o, "P1") == "off" and dob.Items.PetTreat == 2, "switch off: no feeding", "")
 end)
 
 finish()

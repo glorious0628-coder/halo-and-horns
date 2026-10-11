@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 40,
+  "checks": 49,
   "failedChecks": 0,
-  "namedChecks": 40,
+  "namedChecks": 49,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -87,7 +87,43 @@
     },
     {
       "group": "config",
-      "check": "capped at Cap x the base",
+      "check": "roll 7: +7% at Lv1 -> +10% at Lv10 (the baby slime's slope)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "roll 5: +5% at Lv1; roll 10: +10% -> +13%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "roll 0 / nil = the old line (the baby slime 7 -> 10 stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a roll is cut to 5..10; an unknown species is still 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed takes the roll (kaiju: none)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "capped at Cap x the base (a roll 10 pet too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the fastest summon (archer + roll 10, Lv10: 24.86) is under the cap",
       "pass": 1,
       "fail": 0
     },
@@ -136,6 +172,12 @@
     {
       "group": "player-speed",
       "check": "the siren is not the kaiju yet: the pet bonus stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "reads the PetRoll attribute (roll 10, Lv1: +10%)",
       "pass": 1,
       "fail": 0
     },
@@ -207,6 +249,18 @@
     },
     {
       "group": "pet-publish-refresh",
+      "check": "PetRoll = 0 without a summoned pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
+      "check": "a pet with Roll.Spd 9 out: PetRoll = 9",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet-publish-refresh",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -252,9 +306,9 @@
   "staticChecks": 2,
   "staticFailures": [],
   "mutations": {
-    "total": 15,
-    "applied": 15,
-    "caught": 15,
+    "total": 21,
+    "applied": 21,
+    "caught": 21,
     "skipped": false,
     "results": [
       {
@@ -264,7 +318,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: capped at Cap x the base"
+          "config :: capped at Cap x the base (a roll 10 pet too)"
         ],
         "newFailingCount": 1
       },
@@ -276,7 +330,7 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: Config.Speed.Cap = 1.35 (x the base)",
-          "config :: capped at Cap x the base"
+          "config :: capped at Cap x the base (a roll 10 pet too)"
         ],
         "newFailingCount": 2
       },
@@ -290,11 +344,11 @@
           "config :: WalkSpeed(Archer, BabySlime Lv1)",
           "config :: baby slime: +7% at pet Lv1 -> +10% at pet Lv10 (design §2)",
           "config :: bonus grows in a straight line (Lv4 = +8%)",
+          "config :: roll 0 / nil = the old line (the baby slime 7 -> 10 stays)",
           "player-speed :: RefreshSpeed sets WalkSpeed only",
-          "player-speed :: a failing GetState: pet bonus, no error",
-          "player-speed :: no KaijuService in the registry: pet bonus"
+          "player-speed :: a failing GetState: pet bonus, no error"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "pet level not clamped",
@@ -314,14 +368,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "config :: WalkSpeed takes the roll (kaiju: none)",
           "config :: WalkSpeed(Archer, BabySlime Lv1)",
           "config :: WalkSpeed(Archer, BabySlime Lv10)",
           "config :: WalkSpeed(Warrior, BabySlime Lv10)",
           "config :: today's fastest = archer + Lv10 pet (24.2), under the cap",
-          "player-speed :: RefreshSpeed sets WalkSpeed only",
-          "player-speed :: a failing GetState: pet bonus, no error"
+          "player-speed :: RefreshSpeed sets WalkSpeed only"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 12
       },
       {
         "mutation": "a kaiju keeps the pet bonus",
@@ -330,8 +384,82 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "config :: WalkSpeed takes the roll (kaiju: none)",
           "config :: WalkSpeed(Archer, BabySlime Lv10, kaiju)",
           "player-speed :: an Active kaiju: no pet bonus (the kaiju rule)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "WalkSpeed drops the roll",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed takes the roll (kaiju: none)",
+          "player-speed :: reads the PetRoll attribute (roll 10, Lv1: +10%)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "RollGrow +5%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed takes the roll (kaiju: none)",
+          "config :: roll 5: +5% at Lv1; roll 10: +10% -> +13%",
+          "config :: roll 7: +7% at Lv1 -> +10% at Lv10 (the baby slime's slope)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the roll is not cut to its range",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a roll is cut to 5..10; an unknown species is still 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a roll replaces the end only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed takes the roll (kaiju: none)",
+          "config :: a roll is cut to 5..10; an unknown species is still 0",
+          "config :: roll 5: +5% at Lv1; roll 10: +10% -> +13%",
+          "player-speed :: reads the PetRoll attribute (roll 10, Lv1: +10%)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "ComputeWalkSpeed ignores the roll",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player-speed :: reads the PetRoll attribute (roll 10, Lv1: +10%)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "publish sets no PetRoll",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet-publish-refresh :: PetRoll = 0 without a summoned pet",
+          "pet-publish-refresh :: a pet with Roll.Spd 9 out: PetRoll = 9"
         ],
         "newFailingCount": 2
       },
@@ -342,14 +470,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "config :: WalkSpeed takes the roll (kaiju: none)",
           "config :: WalkSpeed(Archer, BabySlime Lv1)",
           "config :: WalkSpeed(Archer, BabySlime Lv10)",
           "config :: WalkSpeed(Archer, BabySlime Lv10, kaiju)",
           "config :: WalkSpeed(Archer, nil Lv0)",
-          "config :: capped at Cap x the base",
-          "config :: today's fastest = archer + Lv10 pet (24.2), under the cap"
+          "config :: capped at Cap x the base (a roll 10 pet too)"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 15
       },
       {
         "mutation": "ComputeWalkSpeed reads no pet",
@@ -361,11 +489,11 @@
           "player-speed :: RefreshSpeed sets WalkSpeed only",
           "player-speed :: a failing GetState: pet bonus, no error",
           "player-speed :: no KaijuService in the registry: pet bonus",
+          "player-speed :: reads the PetRoll attribute (roll 10, Lv1: +10%)",
           "player-speed :: reads the pet level attribute (Lv1: 23.54)",
-          "player-speed :: the siren is not the kaiju yet: the pet bonus stays",
-          "player-speed :: the tamer with a Lv10 baby slime: 24.2"
+          "player-speed :: the siren is not the kaiju yet: the pet bonus stays"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "kaiju state not read",
@@ -450,13 +578,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "18984c20401ad0c29066f7b27e7bb9b590d0b4c862b0c406c2c6922508484e47",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/ZoneService.luau": "fcb98635553265b47d2931d308171ae15eb445eb381737129456032bcd8bb9ce",
-    "src/ServerScriptService/PetService.luau": "907a11a65dc26bb12e03839b8b32a63868222df701f4448ca17e2e93cd19705e"
+    "src/ReplicatedStorage/Shared/Config.luau": "d0fc3e5de4dc67ced59cedbeb6feee1e6728e743addf3b4e49206d957c916d57",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/PlayerService.luau": "6afb7f423d1fe6b1277f5040fe411781a647244ba6cd2d43edc3bfb2c9dbe934",
+    "src/ServerScriptService/ZoneService.luau": "becfcaaf73db143aa5db1ca6f6d211a73dea9751960c588d5c05a8655748a3e5",
+    "src/ServerScriptService/PetService.luau": "84e35578d5f91cd0a09e9fe0550acc26ebf0a8f8c42530991dbb6bc95f8d2961"
   },
-  "fixtureSHA256": "8cf9688a6f3e990bba850cf25010fef1e0d3a6f9a2d7cac3635b79cd7e906773",
+  "fixtureSHA256": "ee8b15af25a41a8c6a14a21ab9c4b1e889eed09724b86859bc25d0cd60a87ce6",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

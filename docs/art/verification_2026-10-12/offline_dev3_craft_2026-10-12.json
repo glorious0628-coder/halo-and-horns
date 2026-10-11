@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 151,
+  "checks": 175,
   "failedChecks": 0,
-  "namedChecks": 137,
+  "namedChecks": 161,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -828,15 +828,159 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "T1: Jelly 5 + Petal 2 -> 3 Pet Treats (+ the hammer's +N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "Pet Treat: Kind Treat, Source Craft (never sold at the Forge), in the bag order; a pet's walk roll tops at 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "a NeedResearch line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "research switch off: no summon recipe (treats stay)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "no PetService summon yet: no summon recipe",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "both switches + both services: S1 on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "the tamer's CraftInfo.On = S1, T1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "149 Slime points: NeedResearch, nothing taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "a blacksmith cannot summon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "150 points but 64 pets: Full, nothing taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "random 5 + the hammer's +2 = walk +7%; SummonPet(BabySlime, { Spd = 7 }), Sum + 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "random 8 + 2 = 10 (the top)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "no hammer (+0): 5..8 only (8)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "no hammer, the lowest draw: 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "never over 10: 9 + 2 is cut to 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "SummonPet says no: the craft waits (Pend), no Sum, no XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "the next try: the pet comes at the earned +2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "T1 starts (no research needed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "3 + 2 = 5 Pet Treats, 10 craft XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 82,
-    "applied": 82,
-    "caught": 82,
+    "total": 96,
+    "applied": 96,
+    "caught": 96,
     "skipped": false,
     "results": [
       {
@@ -860,9 +1004,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: artisan roles: Warrior Smith, Mage Alch, Archer Tame"
+          "config :: artisan roles: Warrior Smith, Mage Alch, Archer Tame",
+          "tamer :: 149 Slime points: NeedResearch, nothing taken",
+          "tamer :: 150 points but 64 pets: Full, nothing taken",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: group ran to the end without a Lua error",
+          "tamer :: the tamer's CraftInfo.On = S1, T1"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 6
       },
       {
         "mutation": "config: Lv40",
@@ -886,10 +1035,11 @@
           "config :: XP to next: Lv1 40, Lv2 113, Lv29 6246, Lv30 none",
           "config :: craft Lv 1..30 (same as the save repair), 40 x Lv^1.5",
           "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
           "xp :: 200 XP from Lv1: 40 + 113 used, Lv3 with 47",
           "xp :: 35 + 10 XP: Lv2 with 5 over"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "config: range 15",
@@ -1025,9 +1175,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "start :: an alchemist cannot make blacksmith recipes"
+          "start :: an alchemist cannot make blacksmith recipes",
+          "tamer :: a blacksmith cannot summon"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "start: two sessions",
@@ -1133,9 +1284,12 @@
         "newFailingChecks": [
           "start :: auto combat on: refused",
           "start :: everything there: ok",
-          "start :: no spare room: full, nothing taken"
+          "start :: no spare room: full, nothing taken",
+          "tamer :: 150 points but 64 pets: Full, nothing taken",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 10
       },
       {
         "mutation": "start: gold never paid",
@@ -1148,9 +1302,10 @@
           "start :: auto combat on: refused",
           "start :: everything there: ok",
           "start :: no spare room: full, nothing taken",
-          "start :: the gold (source Craft) and the materials go at the start"
+          "start :: the gold (source Craft) and the materials go at the start",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "start: materials kept",
@@ -1159,9 +1314,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "start :: the gold (source Craft) and the materials go at the start"
+          "start :: the gold (source Craft) and the materials go at the start",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "start: nothing pending in the save",
@@ -1177,7 +1333,7 @@
           "results :: a full key (20) at the Finish: no 21st, it waits",
           "results :: only 1 of 5 would fit: nothing given, it waits"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 11
       },
       {
         "mutation": "start: no lead time",
@@ -1330,7 +1486,7 @@
           "hammer :: Crafted(player, W1, 2)",
           "hammer :: Grades x5"
         ],
-        "newFailingCount": 16
+        "newFailingCount": 21
       },
       {
         "mutation": "strike: the ping then not kept",
@@ -1357,7 +1513,7 @@
           "hammer :: Skip (Finish right away): +0, made",
           "remotes :: 3 s later: a new session"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 12
       },
       {
         "mutation": "finish: bots get their +N",
@@ -1417,7 +1573,7 @@
           "ends :: no Finish by StartAt + 20 s: made at +0",
           "ends :: room again: the waiting one is made first at its +2, then the new one starts"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 24
       },
       {
         "mutation": "end: Made not counted",
@@ -1444,12 +1600,12 @@
         "newFailingChecks": [
           "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft",
           "hammer :: Pend cleared, Made.W1 = 1, 10 craft XP",
+          "tamer :: 3 + 2 = 5 Pet Treats, 10 craft XP",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
           "xp :: 200 XP from Lv1: 40 + 113 used, Lv3 with 47",
-          "xp :: 35 + 10 XP: Lv2 with 5 over",
-          "xp :: Lv30 stays 30",
-          "xp :: a hunting XP bonus (faction / rebirth) never doubles craft XP"
+          "xp :: 35 + 10 XP: Lv2 with 5 over"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 10
       },
       {
         "mutation": "xp: the pass ignored (A23-139)",
@@ -1499,7 +1655,7 @@
           "remotes :: group ran to the end without a Lua error",
           "results :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 10
       },
       {
         "mutation": "end: no Crafted signal",
@@ -1711,9 +1867,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)"
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
+          "tamer :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "info: On lists every recipe",
@@ -1820,6 +1977,185 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "config: S1 at research stage 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: 149 Slime points: NeedResearch, nothing taken",
+          "tamer :: 150 points but 64 pets: Full, nothing taken",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
+          "tamer :: S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4)",
+          "tamer :: no hammer (+0): 5..8 only (8)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "config: T1 makes two",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: 3 + 2 = 5 Pet Treats, 10 craft XP",
+          "tamer :: T1: Jelly 5 + Petal 2 -> 3 Pet Treats (+ the hammer's +N)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Pet Treats sold at the Forge",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: Pet Treat: Kind Treat, Source Craft (never sold at the Forge), in the bag order; a pet's walk roll tops at 10"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: on without the research switch",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: research switch off: no summon recipe (treats stay)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: on without PetService",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: no research check",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: 149 Slime points: NeedResearch, nothing taken",
+          "tamer :: 150 points but 64 pets: Full, nothing taken",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
+          "tamer :: no hammer (+0): 5..8 only (8)",
+          "tamer :: no hammer, the lowest draw: 5"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "pet: one point short is enough",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: 149 Slime points: NeedResearch, nothing taken",
+          "tamer :: 150 points but 64 pets: Full, nothing taken",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
+          "tamer :: no hammer (+0): 5..8 only (8)",
+          "tamer :: no hammer, the lowest draw: 5"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "pet: no room check",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: 150 points but 64 pets: Full, nothing taken",
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
+          "tamer :: no hammer (+0): 5..8 only (8)",
+          "tamer :: no hammer, the lowest draw: 5",
+          "tamer :: random 5 + the hammer's +2 = walk +7%; SummonPet(BabySlime, { Spd = 7 }), Sum + 1"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "pet: the hammer adds nothing",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)",
+          "tamer :: never over 10: 9 + 2 is cut to 10",
+          "tamer :: random 5 + the hammer's +2 = walk +7%; SummonPet(BabySlime, { Spd = 7 }), Sum + 1",
+          "tamer :: random 8 + 2 = 10 (the top)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pet: no top of 10",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: never over 10: 9 + 2 is cut to 10"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: random 5..10 before the hammer",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: no hammer (+0): 5..8 only (8)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: a failed summon counts as made",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: SummonPet says no: the craft waits (Pend), no Sum, no XP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: Sum not counted",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: random 5 + the hammer's +2 = walk +7%; SummonPet(BabySlime, { Spd = 7 }), Sum + 1",
+          "tamer :: the next try: the pet comes at the earned +2"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pet: no Pet in the result",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "remote: extra arguments taken",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
@@ -1870,13 +2206,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6d5a25fc50a0301c7e6c1487528a0d4fcfda7982f0bd87949dba375b188c8b18",
+    "src/ReplicatedStorage/Shared/Config.luau": "d0fc3e5de4dc67ced59cedbeb6feee1e6728e743addf3b4e49206d957c916d57",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
-    "src/ServerScriptService/LootService.luau": "b427096f06419dc337a116b14589ac05b3ed36222c5f9261872927ad6d73ef4e",
-    "src/ServerScriptService/CraftService.luau": "0f8363991f59b331de5abe308aabdc129917231b3418d3e2b4ea28bc95e9ce4c"
+    "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
+    "src/ServerScriptService/CraftService.luau": "6efa1c0a17eb495b2dd2ec25d9bb3c39fad95bb19510c43360b63fee3b99ab42"
   },
-  "fixtureSHA256": "98fa658d66b14d47e7b2df3d6ba87ab140560915c8dd1160a2e4574ba0127479",
+  "fixtureSHA256": "792469571ccfe898dcfc9844eaf1652d4fb614d6f898a7bcb2bede071b0fd3cc",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

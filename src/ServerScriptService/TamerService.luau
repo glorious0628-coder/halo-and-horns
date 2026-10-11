@@ -8,7 +8,10 @@
 --   * s->c TamerInfo { Pts, Stage, Sum, Stages } at PlayerReady and after points change (at most once every InfoEvery
 --     seconds; a new stage at once).
 -- The summon recipes (CraftService, Kind "Pet") read the points with TamerService.Points; a summon adds Sum (AddSummon).
---   TamerService.Points(player, family) · Stage(player, family) · AddSummon(player, family) · OnKilled(player, info)
+--   * c->s FeedPet(uid) (anyone with a pet, §3): a ready player's own pet below MaxLv; one Config.Research.Treat goes,
+--     the pet gets TreatXP pet XP (PetService.AddPetXP, the same levels as kills). Keys only (Config.Research.Text).
+--   TamerService.Points(player, family) · Stage(player, family) · AddSummon(player, family) · OnKilled(player, info) ·
+--   Feed(player, uid) -> "ok" | reason (the remote handler; public for the offline test)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -136,6 +139,40 @@ function TamerService.OnKilled(player, info)
 	sendSoon(player, data, s1 > s0)
 end
 
+local function notify(player, key, args, kind)
+	local ok, err = pcall(Net.NotifyKey, player, "Config.Research.Text." .. key, args, kind or "bad")
+	if not ok then Util.Warn(TAG, "notice " .. key .. ": " .. tostring(err)) end
+end
+
+function TamerService.Feed(player, uid)
+	if not on() then return "off" end
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(uid) ~= "string" then return "state" end
+	local data = getData(player)
+	if not data or not S.PlayerService.IsReady(player) then return "state" end
+	local P = S.PetService
+	local pet = P and P.GetPet(player, uid)
+	if not pet then return "pet" end
+	if P.XPToNext(pet.Lv) <= 0 then
+		notify(player, "PetMax")
+		return "max"
+	end
+	local R = Config.Research
+	if not S.LootService.TakeItem(player, R.Treat, 1) then
+		notify(player, "NoTreat")
+		return "none"
+	end
+	P.AddPetXP(player, uid, R.TreatXP) -- my pet below MaxLv (checked above, nothing yields in between)
+	notify(player, "Fed", { tostring(R.TreatXP) }, "reward")
+	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
+	return "ok"
+end
+
+local function onFeed(player, ...)
+	if select("#", ...) ~= 1 then return end
+	if not Util.RateLimit(player, "FeedPet", num(Config.RateLimits.FeedPet, 0.5)) then return end
+	TamerService.Feed(player, ...)
+end
+
 local function forget(player)
 	ST.Sent[player], ST.Waiting[player] = nil, nil
 end
@@ -158,6 +195,10 @@ function TamerService.Start()
 			if isTamer(data) then send(player, data) end
 		end)
 		if not ok then Util.Warn(TAG, "ready: " .. tostring(err)) end
+	end)
+	Net.Get("FeedPet").OnServerEvent:Connect(function(player, ...)
+		local ok, err = pcall(onFeed, player, ...)
+		if not ok then Util.Warn(TAG, "FeedPet: " .. tostring(err)) end
 	end)
 	Players.PlayerRemoving:Connect(forget)
 	print("[TamerService] started")

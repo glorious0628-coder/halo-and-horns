@@ -22,8 +22,9 @@ FILES = {
     "CONFIG_SOURCE": SHARED / "Config.luau",
     "UTIL_SOURCE": SHARED / "Util.luau",
     "TAMER_SOURCE": SSS / "TamerService.luau",
+    "PET_SOURCE": SSS / "PetService.luau",
 }
-C, T = "CONFIG_SOURCE", "TAMER_SOURCE"
+C, T, PE = "CONFIG_SOURCE", "TAMER_SOURCE", "PET_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
@@ -62,6 +63,33 @@ MUTATIONS = [
     # --- summons
     ("summon: Sum not counted", T, "\tr.Sum[family] = math.min(Config.SaveV4.MaxCount, math.floor(num(r.Sum[family])) + 1)\n", ""),
     ("summon: info not sent", T, "\tr.Sum[family] = math.min(Config.SaveV4.MaxCount, math.floor(num(r.Sum[family])) + 1)\n\tsendSoon(player, data, true)\n", "\tr.Sum[family] = math.min(Config.SaveV4.MaxCount, math.floor(num(r.Sum[family])) + 1)\n"),
+    # --- PetService (game dev 2's file; the ⑤ calls, tamer_server §4)
+    ("summon: one per species", PE, "\treturn addPet(player, data, pets, { Sp = species, Lv = 1, XP = 0, Name = \"\", Lean = \"\", Bound = true, Roll = r }, nil)\n", "\treturn grant(player, species, \"\", \"\", nil, false)\n"),
+    ("summon: the roll not kept", PE, "Lean = \"\", Bound = true, Roll = r }, nil)", "Lean = \"\", Bound = true, Roll = nil }, nil)"),
+    ("summon: not Bound", PE, "Lean = \"\", Bound = true, Roll = r }, nil)", "Lean = \"\", Bound = false, Roll = r }, nil)"),
+    ("summon: any roll", PE, "\tlocal r = sanitizeRoll(roll)\n\tif not r then return nil end\n", "\tlocal r = sanitizeRoll(roll) or { Spd = 5 }\n"),
+    ("summon: unknown species", PE, "\tif not data or not known(species) then return nil end\n\tlocal r = sanitizeRoll(roll)", "\tif not data then return nil end\n\tlocal r = sanitizeRoll(roll)"),
+    ("pets: no cap of 64", PE, "\tif petCount(pets) >= LIMIT.Pets then return nil end\n", ""),
+    ("pets: a 65th", PE, "\tif petCount(pets) >= LIMIT.Pets then return nil end\n", "\tif petCount(pets) > LIMIT.Pets then return nil end\n"),
+    ("room: always", PE, "\treturn petCount(pets) < LIMIT.Pets\n", "\treturn true\n"),
+    ("GetPet: no level", PE, "\treturn { Sp = p.Sp, Lv = p.Lv, XP = p.XP }\n", "\treturn { Sp = p.Sp, Lv = 1, XP = p.XP }\n"),
+    ("xp: fractions", PE, "type(n) ~= \"number\" or n ~= math.floor(n) or n <= 0", "type(n) ~= \"number\" or n <= 0"),
+    ("xp: zero", PE, "n ~= math.floor(n) or n <= 0 or n == math.huge", "n ~= math.floor(n) or n < 0 or n == math.huge"),
+    ("xp: infinity", PE, " or n <= 0 or n == math.huge then return nil end", " or n <= 0 then return nil end"),
+    ("xp: no level-up publish", PE, "\tlocal leveled = giveXP(p, n)\n\tif leveled then\n\t\tpublish(player, data)\n", "\tlocal leveled = giveXP(p, n)\n\tif false then\n\t\tpublish(player, data)\n"),
+    ("xp: no list after XP", PE, "\telseif leveled == false then\n\t\tsendListSoon(player, data)\n", "\telseif false then\n\t\tsendListSoon(player, data)\n"),
+    ("xp: MaxLv keeps adding", PE, "\tif need <= 0 then return nil end -- MaxLv\n", ""),
+    ("list: no Roll", PE, "\t\t\tLean = p.Lean, Roll = p.Roll })\n", "\t\t\tLean = p.Lean })\n"),
+    # --- Pet Treats (TamerService.Feed)
+    ("feed: the switch not checked", T, "\tif not on() then return \"off\" end\n\tif typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") or type(uid) ~= \"string\" then return \"state\" end\n", "\tif typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") or type(uid) ~= \"string\" then return \"state\" end\n"),
+    ("feed: not ready", T, "\tif not data or not S.PlayerService.IsReady(player) then return \"state\" end\n\tlocal P = S.PetService", "\tif not data then return \"state\" end\n\tlocal P = S.PetService"),
+    ("feed: MaxLv eats the treat", T, "\tif P.XPToNext(pet.Lv) <= 0 then\n", "\tif false then\n"),
+    ("feed: the treat stays", T, "\tif not S.LootService.TakeItem(player, R.Treat, 1) then\n", "\tif (S.LootService.GrantItem(player, \"Jelly\", 0) or 0) < 0 then\n"),
+    ("feed: no XP", T, "\tP.AddPetXP(player, uid, R.TreatXP) -- my pet", "\tlocal _ = P.AddPetXP -- my pet"),
+    ("feed: no line", T, "\tnotify(player, \"Fed\", { tostring(R.TreatXP) }, \"reward\")\n", ""),
+    ("feed: extra arguments taken", T, "\tif select(\"#\", ...) ~= 1 then return end\n\tif not Util.RateLimit(player, \"FeedPet\"", "\tif not Util.RateLimit(player, \"FeedPet\""),
+    ("feed: no rate limit", T, "\tif not Util.RateLimit(player, \"FeedPet\", num(Config.RateLimits.FeedPet, 0.5)) then return end\n", ""),
+    ("config: a treat gives 30", C, "\tTreatXP = 20,\n", "\tTreatXP = 30,\n"),
 ]
 
 
@@ -86,6 +114,9 @@ def static() -> tuple[int, list[str]]:
     check(bool(names) and '"TamerInfo"' in strip_comments(names.group(1)), "Net.Names has TamerInfo")
     tamer = strip_comments(read(SSS / "TamerService.luau"))
     check("Net.Notify(" not in tamer and "Net.NotifyKey" in tamer, "TamerService sends notices by key only")
+    check(bool(names) and '"FeedPet"' in strip_comments(names.group(1)), "Net.Names has FeedPet")
+    player = strip_comments(read(SSS / "PlayerService.luau"))
+    check('kaiju,\n\t\tplayer:GetAttribute("PetRoll"))' in player, "PlayerService.ComputeWalkSpeed passes the PetRoll attribute")
     check(not re.search(r"MarketplaceService|PromptPurchase|Robux", tamer), "no purchase path for research (A23-115: no Robux)")
     return count, failures
 
@@ -96,13 +127,16 @@ SUITE = Suite(
     world=ROOT / "tools/fixtures/dev3_world.luau",
     out=ROOT / "docs/art/verification_2026-10-12/offline_dev3_tamer_research_2026-10-12.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="Tamer research (docs/design/tamer_server_2026-10-12.md §1, crafting_market §4, A23-115): switch "
+    contract="Tamer research + summons + treats (docs/design/tamer_server_2026-10-12.md §1-§4, crafting_market §4, "
+             "A23-115; PetService.SummonPet / HasRoom / GetPet / AddPetXP, PetList Roll, the 64-pet cap before a pet goes "
+             "in; FeedPet(uid): a ready owner's pet below MaxLv, one Pet Treat -> +20 pet XP, keys only, 0.5 s). Research: switch "
              "Config.Features.Research off; the tamer (artisan Archer, class picked) gets 1 point per paid kill (not "
              "MinorShare; auto too) in Config.MonsterFamily (every slime = Slime); stages 50/150/400/1000/2500, one "
              "keyed line per new stage (named families), StageUp signal; TamerInfo { Pts, Stage, Sum, Stages } at join "
              "and after changes (once a second, a new stage / summon at once); 64 families, MaxCount; AddSummon.",
-    limitations="The summon / Pet Treat recipes (CraftService) and the PetService side (SummonPet, AddPetXP, the Roll "
-                "speed) come in the next chunk after 게임성 개발 2 agrees; the research window is client work.",
+    limitations="The summon / Pet Treat recipes are tested in tools/test_craft.py (PetService / TamerService doubles "
+                "there); the Roll walk speed in tools/test_pet_speed.py; the research window, the summon result and the "
+                "Feed button (PetWindow: Roll in its speed number) are client work.",
 )
 
 if __name__ == "__main__":

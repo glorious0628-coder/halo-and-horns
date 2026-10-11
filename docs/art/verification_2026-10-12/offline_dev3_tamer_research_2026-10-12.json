@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 52,
+  "checks": 102,
   "failedChecks": 0,
-  "namedChecks": 52,
+  "namedChecks": 92,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -318,15 +318,255 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the tamer's own baby slime (no roll: PetRoll 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "a second baby slime: a new Bound pet with Roll { Spd = 7 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "PetGranted(player, uid, species)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the pet that follows stays (a summon comes out only when none does)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "PetList rows carry Roll (the window's stats)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "a bad roll: no pet (the server never makes a value up)",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "no roll / an unknown species / no player: no pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "still two pets",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the summon follows: PetRoll 7, then the speed refresh",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "nothing follows: the summon comes out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "63 pets: room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the 64th goes in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "64 pets: no room, no 65th (Sanitize would drop some pet at the next join)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "GetPet: my pet only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "10 XP on a pet that does not follow: no level yet, the list goes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "10 + 20 = 30: Lv2 (15) with 15 over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "the follower's PetLv is not the summon's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "the follower levels up: published (PetLv 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "a bad amount: nil, nothing changes",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "not my pet: nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "MaxLv: unchanged (Lv 10, XP 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "... and no list goes (nothing changed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "a treat = +20 pet XP, one a half second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "the Fed line (a key, \"20\")",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "not my pet: the treat stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "a MaxLv pet: PetMax, the treat stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "no treat: NoTreat, no XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "anyone with a pet feeds it (a Halo knight too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "not ready: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "junk: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "FeedPet with two arguments: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "two within half a second: one treat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "switch off: no feeding",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
-  "staticChecks": 5,
+  "staticChecks": 7,
   "staticFailures": [],
   "mutations": {
-    "total": 26,
-    "applied": 26,
-    "caught": 26,
+    "total": 51,
+    "applied": 51,
+    "caught": 51,
     "skipped": false,
     "results": [
       {
@@ -337,9 +577,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: Config.Features.Research is off",
+          "feed :: switch off: no feeding",
           "off :: switch off: no points, no TamerInfo"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "config: stage 2 at 100",
@@ -654,6 +895,302 @@
           "summons :: ... and TamerInfo shows it"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "summon: one per species",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: 10 + 20 = 30: Lv2 (15) with 15 over",
+          "pet xp :: 10 XP on a pet that does not follow: no level yet, the list goes",
+          "pet xp :: group ran to the end without a Lua error",
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)",
+          "summon pets :: PetGranted(player, uid, species)",
+          "summon pets :: PetList rows carry Roll (the window's stats)"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "summon: the roll not kept",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: PetList rows carry Roll (the window's stats)",
+          "summon pets :: a second baby slime: a new Bound pet with Roll { Spd = 7 }",
+          "summon pets :: nothing follows: the summon comes out",
+          "summon pets :: the summon follows: PetRoll 7, then the speed refresh"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "summon: not Bound",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: a second baby slime: a new Bound pet with Roll { Spd = 7 }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "summon: any roll",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: a bad roll: no pet (the server never makes a value up)",
+          "summon pets :: no roll / an unknown species / no player: no pet",
+          "summon pets :: still two pets"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "summon: unknown species",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: no roll / an unknown species / no player: no pet",
+          "summon pets :: still two pets"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pets: no cap of 64",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pets: a 65th",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "room: always",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GetPet: no level",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a MaxLv pet: PetMax, the treat stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: fractions",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: a bad amount: nil, nothing changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: zero",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: a bad amount: nil, nothing changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: infinity",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: a bad amount: nil, nothing changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: no level-up publish",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+          "pet xp :: the follower levels up: published (PetLv 2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "xp: no list after XP",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: 10 XP on a pet that does not follow: no level yet, the list goes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: MaxLv keeps adding",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: ... and no list goes (nothing changed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "list: no Roll",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: PetList rows carry Roll (the window's stats)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: the switch not checked",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: switch off: no feeding"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: not ready",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: not ready: no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: MaxLv eats the treat",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a MaxLv pet: PetMax, the treat stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: the treat stays",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a MaxLv pet: PetMax, the treat stays",
+          "feed :: anyone with a pet feeds it (a Halo knight too)",
+          "feed :: no treat: NoTreat, no XP",
+          "feed :: not my pet: the treat stays",
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+          "feed :: two within half a second: one treat"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "feed: no XP",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: anyone with a pet feeds it (a Halo knight too)",
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "feed: no line",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: the Fed line (a key, \"20\")"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: extra arguments taken",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: FeedPet with two arguments: ignored",
+          "feed :: two within half a second: one treat"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "feed: no rate limit",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: two within half a second: one treat"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a treat gives 30",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a treat = +20 pet XP, one a half second",
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+          "feed :: the Fed line (a key, \"20\")"
+        ],
+        "newFailingCount": 3
       }
     ]
   },
@@ -661,14 +1198,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d6fd55a240d4e41f2083b118e0a9b5d2c39480ffef83c64792c48c7b68558191",
+    "src/ReplicatedStorage/Shared/Config.luau": "d0fc3e5de4dc67ced59cedbeb6feee1e6728e743addf3b4e49206d957c916d57",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/TamerService.luau": "0f14a0546c918921b4c5a03dfcdd17ea43d0a2895eef20d7baa00abdec7d9cea"
+    "src/ServerScriptService/TamerService.luau": "054748a11d59918f2a0dd0f7fcf5524d86f5498321877bcd26b50ab71dd0ff1c",
+    "src/ServerScriptService/PetService.luau": "84e35578d5f91cd0a09e9fe0550acc26ebf0a8f8c42530991dbb6bc95f8d2961"
   },
-  "fixtureSHA256": "5b39094eb99063687d578847444d53952028187ffd88121ec9930b7e1d9f406a",
+  "fixtureSHA256": "2267f7afdb9cfd1702ffa88250564ec994b3ec1c72c2d647cd31bf69694bc68e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Tamer research (docs/design/tamer_server_2026-10-12.md §1, crafting_market §4, A23-115): switch Config.Features.Research off; the tamer (artisan Archer, class picked) gets 1 point per paid kill (not MinorShare; auto too) in Config.MonsterFamily (every slime = Slime); stages 50/150/400/1000/2500, one keyed line per new stage (named families), StageUp signal; TamerInfo { Pts, Stage, Sum, Stages } at join and after changes (once a second, a new stage / summon at once); 64 families, MaxCount; AddSummon.",
-  "limitations": "The summon / Pet Treat recipes (CraftService) and the PetService side (SummonPet, AddPetXP, the Roll speed) come in the next chunk after 게임성 개발 2 agrees; the research window is client work."
+  "contract": "Tamer research + summons + treats (docs/design/tamer_server_2026-10-12.md §1-§4, crafting_market §4, A23-115; PetService.SummonPet / HasRoom / GetPet / AddPetXP, PetList Roll, the 64-pet cap before a pet goes in; FeedPet(uid): a ready owner's pet below MaxLv, one Pet Treat -> +20 pet XP, keys only, 0.5 s). Research: switch Config.Features.Research off; the tamer (artisan Archer, class picked) gets 1 point per paid kill (not MinorShare; auto too) in Config.MonsterFamily (every slime = Slime); stages 50/150/400/1000/2500, one keyed line per new stage (named families), StageUp signal; TamerInfo { Pts, Stage, Sum, Stages } at join and after changes (once a second, a new stage / summon at once); 64 families, MaxCount; AddSummon.",
+  "limitations": "The summon / Pet Treat recipes are tested in tools/test_craft.py (PetService / TamerService doubles there); the Roll walk speed in tools/test_pet_speed.py; the research window, the summon result and the Feed button (PetWindow: Roll in its speed number) are client work."
 }

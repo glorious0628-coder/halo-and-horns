@@ -5091,6 +5091,8 @@ Config.Loot = {
 		GuardTonic = { Kind = "Tonic", Name = "Guard Tonic", Sell = 20, Color = Color3.fromRGB(90, 150, 235), Icon = "IconGuardTonic", Source = "Craft", Desc = "Monsters hurt you less for 3 minutes." },
 		LuckyTonic = { Kind = "Tonic", Name = "Lucky Tonic", Sell = 40, Color = Color3.fromRGB(110, 210, 110), Icon = "IconLuckyTonic", Source = "Craft", Desc = "More materials from monsters for 3 minutes." },
 		WisdomTonic = { Kind = "Tonic", Name = "Wisdom Tonic", Sell = 60, Color = Color3.fromRGB(175, 120, 235), Icon = "IconWisdomTonic", Source = "Craft", Desc = "More XP from monsters for 3 minutes." },
+		-- ⑤ tamers make it (recipe T1); anyone feeds it to a pet (FeedPet: pet XP + Config.Research.TreatXP)
+		PetTreat = { Kind = "Treat", Name = "Pet Treat", Sell = 10, Color = Color3.fromRGB(240, 170, 90), Icon = "IconPetTreat", Source = "Craft", Desc = "Feed it to your pet for pet XP." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5104,7 +5106,7 @@ Config.Loot = {
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
 		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
-		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic" },
+		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -7319,6 +7321,9 @@ Config.Pets = {
 	MaxLv = 10,
 	XPPerKill = 1,
 	XPPerLv = 15,
+	-- a summoned pet (Pets.List[uid].Roll.Spd, whole %; 게임성 개발 3, docs/design/tamer_server_2026-10-12.md §4): its
+	-- bonus is Spd % at Lv1 -> Spd % + RollGrow at MaxLv (the baby slime's own slope, 7 -> 10)
+	RollGrow = 0.03,
 	ListEvery = 1,
 	NoticeAfter = 0.5,
 	Species = {
@@ -7327,22 +7332,30 @@ Config.Pets = {
 	},
 }
 
--- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv
-function Config.PetSpeedBonus(species, lv)
+-- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv. roll = a summoned pet's
+-- Roll.Spd (whole %, cut to Config.SaveV4.PetRollSpd): Lv1 = roll %, MaxLv = roll % + Pets.RollGrow; nil / 0 = the
+-- species' own line
+function Config.PetSpeedBonus(species, lv, roll)
 	local P = Config.Pets
 	local def = type(species) == "string" and P.Species[species] or nil
 	if type(def) ~= "table" or type(def.Speed) ~= "table" then return 0 end
 	if type(lv) ~= "number" or lv ~= lv then lv = 1 end
 	lv = math.clamp(math.floor(lv), 1, P.MaxLv)
 	local a, b = def.Speed[1], def.Speed[2]
+	if type(roll) == "number" and roll > 0 then
+		local range = Config.SaveV4.PetRollSpd
+		a = math.clamp(roll, range[1], range[2]) / 100
+		b = a + P.RollGrow
+	end
 	return a + (b - a) * (lv - 1) / math.max(1, P.MaxLv - 1)
 end
 
--- studs per second for a class with a pet (species, level; nil = none); kaiju = an Active kaiju (no pet bonus)
-function Config.WalkSpeed(classId, petSpecies, petLv, kaiju)
+-- studs per second for a class with a pet (species, level; nil = none); kaiju = an Active kaiju (no pet bonus);
+-- petRoll = a summoned pet's Roll.Spd (nil / 0 = none)
+function Config.WalkSpeed(classId, petSpecies, petLv, kaiju, petRoll)
 	local c = Config.Classes[classId] or Config.Classes.Warrior
 	local base = Config.Player.WalkSpeed
-	local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv)
+	local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv, petRoll)
 	local raw = base * (c.WalkSpeedMult or 1) * (1 + pet)
 	return math.min(raw, base * Config.Speed.Cap)
 end
@@ -8303,6 +8316,11 @@ Config.Craft = {
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
 		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
+		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
+		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
+		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N)
+		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
+		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Petal = 2 }, XP = 10 },
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",
@@ -8314,6 +8332,7 @@ Config.Craft = {
 		Full = "No room for it.",
 		Auto = "Turn off auto combat first.",
 		NotReady = "You can't make this yet.", -- a recipe the server has switched off (its drops / spares are not in yet)
+		NeedResearch = "Research this monster more first.", -- a summon before its research stage
 		Prompt = "Craft", -- the workbench prompt (ActionKey)
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 	},
@@ -8384,6 +8403,8 @@ Config.Features.Research = false
 Config.Research = {
 	Stages = { 50, 150, 400, 1000, 2500 },
 	InfoEvery = 1, -- TamerInfo goes at most once a second (a new stage at once)
+	Treat = "PetTreat", -- FeedPet(uid): one of these -> that pet gets TreatXP pet XP (anyone with a pet)
+	TreatXP = 20,
 	-- the kinds that are not their own family (the rest: Config.QuestKind, e.g. a pumpkin slime is a Slime already)
 	Family = {
 		BigSlime = "Slime", FlowerSlime = "Slime", SlimeKing = "Slime",
@@ -8395,8 +8416,12 @@ Config.Research = {
 		Stage = "%s research: stage %s!", -- (family name, stage) a new stage
 		Names = { Slime = "Slime", Goblin = "Goblin", Skeleton = "Skeleton", Ghost = "Ghost" }, -- family names (a family
 		-- without one never gets the stage line)
+		Fed = "Pet XP +%s", -- (TreatXP) a treat eaten
+		PetMax = "Your pet is at max level.",
+		NoTreat = "You have no Pet Treats.",
 	},
 }
+Config.RateLimits.FeedPet = 0.5
 
 -- the research family of a monster kind (nil for a kind the game does not know)
 function Config.MonsterFamily(kind)
