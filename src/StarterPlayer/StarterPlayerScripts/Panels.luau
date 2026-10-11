@@ -45,7 +45,7 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag" },
+		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 	RailGap = 8, RailMinRoom = 300, -- du: the window stops this far above the HUD icon row, if it keeps this much height
 }
@@ -1583,6 +1583,17 @@ BUILDERS.Menu = function(parent)
 		{ Text = attr("HideAnnounceName", false) == true and Config.Announce.Text.MenuHide or Config.Announce.Text.MenuShow,
 			Id = "AnnounceName" },
 	}
+	-- BB13: a registered window with opts.Menu (fn -> its button text, or nil while it is not for this player) gets an
+	-- entry after the bag (③-3: Crafting for artisans while crafting is on)
+	local extra = {}
+	for rid, o in REG.Opts do
+		if type(o.Menu) == "function" and BUILDERS[rid] then
+			local ok, text = pcall(o.Menu)
+			if ok and type(text) == "string" and text ~= "" then table.insert(extra, { Text = text, Id = rid }) end
+		end
+	end
+	table.sort(extra, function(a, b) return a.Id < b.Id end)
+	for i, e in extra do table.insert(entries, 2 + i, e) end
 	if not FRAME.TicketsOnSale() then -- 검수 2026-10-07: no "Coming soon" shop for kids until a ticket is on sale
 		for i = #entries, 1, -1 do
 			if entries[i].Id == "Shop" then table.remove(entries, i) end
@@ -3502,7 +3513,7 @@ end
 -- BB13: another client module adds its window. opts = { Build = fn(parent, kit, arg) -> update?, Title = string |
 -- fn() -> string, FixedBody = bool (a plain frame instead of the scrolling list), Rebuild = { [attr] = true } | false,
 -- KeepScroll = bool (a Rebuild attribute keeps the scroll), Cleanup = fn(), Width = du | fn() -> du (H-1: the window's own
--- width, at most the usual one) }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
+-- width, at most the usual one), Menu = fn() -> text? (③-3: a menu entry while it returns its text) }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
 -- Keybinds.Start, the HUD [메뉴] squares show once their window is registered
 function Panels.Register(id, opts)
 	if type(id) ~= "string" or type(opts) ~= "table" or type(opts.Build) ~= "function" then

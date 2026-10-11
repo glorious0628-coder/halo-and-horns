@@ -1,0 +1,52 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 BankGold=0 CarriedGold=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 BankGold=0 CarriedGold=0
+debug: Level=ok Gold=ok Item=24 Item=2 Item=6 Item=3 Item=5 Item=3
+attrs Neutral Warrior
+CraftInfo sent
+state: DataLoaded=true Faction=Neutral Class=Warrior ClassChosen=true Level=10 BankGold=1234 CarriedGold=0
+nil -> opened the craft window
+probe 01_smith_lv1_w1: {"Words":["Level:Blacksmith Lv 1","Text:10 / 40","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Twig","Grade:★ Common","Line1:Attack 9","Name:Jelly","Count:24 / 5","Name:Copper Ore","Count:6 / 2","Cost:10","Note1:+10 craft XP","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\01_smith_lv1_w1.png
+{ Select = "W2" } -> opened the craft window
+probe 02_w2_short_petal: {"Words":["Level:Blacksmith Lv 1","Text:10 / 40","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Wooden Sword","Grade:★ Common","Line1:Attack 17","Name:Jelly","Count:24 / 10","Name:Flower Petal","Count:2 / 3","Name:Copper Ore","Count:6 / 4","Cost:40","Note1:+20 craft XP","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Flower Petal","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\02_w2_short_petal.png
+{ Select = "W3" } -> opened the craft window
+probe 03_w3_locked: {"Words":["Level:Blacksmith Lv 1","Text:10 / 40","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Iron Sword","Grade:★★ Fine","Line1:Attack 44","Name:Jelly","Count:24 / 20","Name:Slime Core","Count:3 / 6","Name:Copper Ore","Count:6 / 10","Cost:200","Note1:+60 craft XP","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Slime Core","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\03_w3_locked.png
+CraftInfo sent
+{ Select = "W3" } -> opened the craft window
+probe 04_lv5_w3_open: {"Words":["Level:Blacksmith Lv 5","Text:120 / 447","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Iron Sword","Grade:★★ Fine","Line1:Attack 44","Name:Jelly","Count:24 / 20","Name:Slime Core","Count:3 / 6","Name:Copper Ore","Count:6 / 10","Cost:200","Note1:+60 craft XP","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Slime Core","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\04_lv5_w3_open.png
+{ Select = "W5" } -> opened the craft window
+probe 05_w5_many_mats: {"Words":["Level:Blacksmith Lv 5","Text:120 / 447","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Old Kingdom Crystal Sword","Grade:★★★★ Epic","Line1:Attack 236","Line2:Use from Lv 20","Name:Old Bone","Count:5 / 30","Name:Rusty Knight Crest","Count:0 / 12","Name:Oak Log","Count:0 / 6","Name:Iron Ore","Count:3 / 15","Cost:2,500","Note1:+400 craft XP","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Rusty Knight Crest"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\05_w5_many_mats.png
+{ Select = "W1" } -> opened the craft window
+probe 06_w1_made: {"Words":["Level:Blacksmith Lv 5","Text:120 / 447","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Twig","Grade:★ Common","Line1:Attack 9","Name:Jelly","Count:24 / 5","Name:Copper Ore","Count:6 / 2","Cost:10","Note1:+10 craft XP","Note2:Made 2","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\06_w1_made.png
+Forge path: LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.FixedBody.Body.Detail.Forge
+probe 07: {"Words":["Level:Blacksmith Lv 5","Text:120 / 447","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Twig","Grade:★ Common","Line1:Attack 9","Name:Jelly","Count:24 / 5","Name:Copper Ore","Count:6 / 2","Cost:10","Note1:+10 craft XP","Note2:Made 2","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\07_forge_checking.png
+probe 08: {"Words":["Level:Blacksmith Lv 5","Text:120 / 447","Name:Twig","Lv:Lv 1","Name:Wooden Sword","Lv:Lv 1","Name:Iron Sword","Lv:Lv 5","Name:Goblin Thief's Golden Sword","Lv:Lv 10","Name:Old Kingdom Crystal Sword","Lv:Lv 15","Name:Guardian Spirit Sword","Lv:Lv 20","Name:Twig","Grade:★ Common","Line1:Attack 9","Name:Jelly","Count:24 / 5","Name:Copper Ore","Count:6 / 2","Cost:10","Note1:+10 craft XP","Note2:Made 2","Status:Go to your workbench.","Forge:Forge","Label:Forge","Gold:1,234"],"Viewport":"1274x473","Rows":["W1","W2","W3","W4","W5","W6"],"Window":"277x315 px at 498,26","Cut":["Name:Wooden Sword","Name:Goblin Thief's Golden Sword","Name:Old Kingdom Crystal Sword","Name:Guardian Spirit Sword","Name:Copper Ore"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\08_forge_back.png
+attrs Neutral Mage
+CraftInfo sent
+nil -> opened the craft window
+probe 09_alchemist_none: {"Words":["Level:Alchemist Lv 1","Text:0 / 40","Status:Nothing to make yet.","Gold:1,234"],"Viewport":"1274x473","Rows":[],"Window":"277x315 px at 498,26","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\09_alchemist_none.png
+attrs Halo Warrior
+nil -> opened the craft window
+probe 10_halo_not_artisan: {"Words":["Status:Only artisans can make this.","Gold:1,234"],"Viewport":"1274x473","Rows":[],"Window":"277x315 px at 498,26","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_window\pc\10_halo_not_artisan.png
+console: [ServerErrorService] started
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Goblin_86969d1c-332d-4889-ab56-123455c9280f.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.GoblinBrute_2b302594-5a3c-447f-ba4b-3d92f98b4f15.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Skeleton_static.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] ServerError = 694 (Heartbeat, tick # ms, Slow)
+[Metrics] ServerError = 5439 (Heartbeat, tick # ms, Slow)
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+play stopped
+fresh off
