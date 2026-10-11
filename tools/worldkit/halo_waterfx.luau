@@ -11,7 +11,7 @@
 
 local MODE = "__MODE__"
 if MODE ~= "plan" and MODE ~= "remove" then MODE = "apply" end
-local STREAK = "" -- rbxassetid of art/out/Halo_WaterfallStreaks (white / aqua streaks, alpha from luminance); set after the upload
+local STREAK = "rbxassetid://111806947888357" -- art/ui/Halo_WaterfallStreaks.png (Firefly High, alpha from brightness: tools/streak_alpha.py)
 local CFG = {
 	Half = 4, -- the terrain sheet half width (halo_terrain CAS.Half)
 	Lip = 0.6, -- studs in front of the terrain water face
