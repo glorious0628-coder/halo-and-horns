@@ -1,0 +1,17 @@
+{
+ "name": "HaloDomeHouse_10",
+ "src2d": "art/out/s2/halo/houses/HaloDomeHouse_10_front_HQ_recolor.png",
+ "note": "HouseA (24 x 22 x 26, tall). Octagon tower body about 15.6 wide, two storeys (arched windows either side of the single door; three arched windows above the awning), gold corner pilasters with storey bands, single arched door with lantern pedestals, blue/mint awning, two front flower pots, tall gold ONION dome with a spike finial (drum_dome R 4.6, 1.2 high, no windows, onion true). Missing: balcony balustrade with flower boxes between the storeys, topiary cones beside the pots, small ball finials on the corner caps (see generator_gaps.md). Built from art/review/img3/HaloDomeHouse_10_check.jpg (2D panel); the 2D PNG and side view are not in the worktree.",
+ "plan": {"shape": "oct", "HF": 5.0, "XS": 7.8, "DY": 3.2, "D": 15.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 9.5, "win": {"w": 1.7, "type": "arch"}, "walls": {"front_l": [0.5], "front_r": [0.5], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}},
+             {"h": 7.0, "win": {"w": 1.6, "type": "arch"}, "walls": {"front": [0.5], "front_l": [0.5], "front_r": [0.5], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false},
+ "pilasters": true,
+ "pedestals": true,
+ "awning": {"w": 6.8, "colors": [[110, 165, 232], [214, 240, 222]], "n": 7},
+ "pots": [[-7.6, 9.2, 3.6, 2.6], [7.6, 9.2, 3.6, 2.6]],
+ "steps": "half",
+ "medals": [],
+ "top": {"type": "drum_dome", "R": 4.6, "h": 1.2, "seg": 16, "windows": 0, "dome_h": 7.5, "onion": true, "ribs": 8}
+}
