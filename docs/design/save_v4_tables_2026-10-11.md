@@ -3,7 +3,7 @@
 근거: SPEC A23-127·A23-133·A23-134·A23-119, `origin/api/dev2-crafting-design:docs/design/crafting_market_2026-10-11.md` §2·§4·§6-2,
 `docs/design/gathering_2026-10-06.md` §6, `docs/design/gameplay_remaining_2026-10-11.md` C-1, 코드 main ca7554ae
 (DataService.fillDefaults·migrate, PetService.Sanitize, LootService.sanitize, Config.SanitizeStats).
-상태: **안(합의 전)**. 개발 2 답을 받으면 '합의' 칸을 채운다.
+상태: **합의됨(개발 2 답 2026-10-11 밤, 맨 아래 '합의')**. 코드 = 가지 `dev3-v4-tables`(Version 3 그대로, 동작 없음), 시험 `tools/test_save_v4_tables.py`.
 
 ## 0. 왜 한 번에
 - `Config.Data.Version = 4`가 필요한 진짜 이유는 T9(마스크 9비트·WeaponEnhance[9])다. v3 서버는 9번째 비트를 '깨짐'으로 보고 무기를 모두 지운다(DataService 204-209).
@@ -46,5 +46,18 @@
 4. 개발 2 쪽에서 v4에 더 넣을 칸(예: 오토 싼 재료 하루 50개 `Shop = { Day, N }`, 거래소 퀘스트 표시)이 있나?
 5. Spares 상한(키 20·합 60)을 Gear.Own에도 같게(키 20·합 60, 따로 셈) 쓸까?
 
-## 합의 (개발 2 답 뒤 채움)
-- 
+## 합의 (개발 2 답, 2026-10-11 밤)
+1. **제작 레벨은 역할마다**(Smith·Alch·Tame 각 `{ Lv, XP }`). Rep·Made는 셋이 같이 씀. (설계 §4의 `Craft = { Lv, XP }` 하나를 대신함)
+2. **PetService.Sanitize의 Roll 보존은 개발 3 가지에서.** 펫 줄에는 '모르는 칸 일반 보존'을 하지 않고 **Roll만 명시**: `Roll = { Spd = 정수 5..10 }`, 모양이 틀리면 Roll 통째로 버림(값을 만들어 주지 않음). 기존 펫 시험을 다 돌려 통과 확인.
+3. **순서:** 개발 3 `dev3-v4-tables`(Version 3, 동작 없음) 먼저 → 개발 2 C1이 그 위에서 **Version 4**(T9 마스크·WeaponEnhance[9]·Spares·Market sanitize). C1은 지금 바로는 아님(개발 2: A23-129 검토·서버 글 판정·황금 알 다음).
+4. **v4에 더 넣는 칸 2개(주인 개발 2, 모양·sanitize는 개발 3 가지에 같이):**
+   - `Shop = { Day = 0, N = 0 }` — 오토 싼 재료 하루 50(설계 열린 결정 9). Day = KST DayIndex, N 0..50.
+   - `EggHonorAt = 0` — 황금 알(A23-134) 명예/악명 1시간 한 번 +5. os.time 정수 ≥ 0, **미래 값이면 0**. 서버를 옮겨 다니며 다시 받는 것을 막으려고 저장에 둠.
+   - 깃털은 Items id(예 `GooseFeather`)라 모양 변경 없음. 거래소 퀘스트 표시는 StoryQuest 기록으로 충분(칸 없음).
+5. **Gear.Own 상한 = Spares와 같게:** 키당 20, 합 60은 쓰는 쪽이 거절(따로 셈). 낀 것(On·Pet)은 합에 안 셈.
+- 검수 보고는 개발 3이 한 번에 한다.
+
+## 구현 메모 (dev3-v4-tables)
+- `Config.SaveV4`(상한 표) + `Config.Data.Defaults.{Craft, Research, Gather, Gear, Buffs, Shop, EggHonorAt}` + `Config.Sanitize{Craft, Research, Gather, Gear, Buffs, Shop, EggHonorAt}` + `Config.SanitizeSaveV4(d, now)`(DataService.fillDefaults 끝에서 부름). Config 맨 위 지역 변수는 `V4` 표 하나만 늘림(200개 한도).
+- Gear.Own 키는 숫자를 그대로 다시 써서 합침(`"Armor:01:0"` = `"Armor:1:0"`), 지도 하나에 키 64개까지(정렬 순서로 같은 것만 남김). Buffs는 불러올 때 서버 시계로 지난 것 버림·180초 넘으면 자름·끝이 늦은 2개.
+- 시험: 깨진 값·NaN·inf·글자·긴 id·모르는 칸 보존·두 번 고쳐도 같음·DataService 실제 불러오기 경로·PetService Roll. 변이 53개 모두 잡음.

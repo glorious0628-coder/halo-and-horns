@@ -242,6 +242,9 @@ local function fillDefaults(d, playerName)
 	if Config.SanitizeStats then d.Stats = Config.SanitizeStats(d.Stats) end
 	-- A23-75 looks / last known pass answers (additive, Version stays 3; guarded like the fields above)
 	if Config.SanitizeLooks then d.Looks, d.PassSeen = Config.SanitizeLooks(d.Looks, d.PassSeen) end
+	-- the save v4 tables (Craft, Research, Gather, Gear, Buffs, Shop, EggHonorAt; docs/design/save_v4_tables_2026-10-11.md):
+	-- additive, the version stays 3 until 게임성 개발 2's C1 (guarded like the fields above)
+	if Config.SanitizeSaveV4 then Config.SanitizeSaveV4(d, os.time()) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.
