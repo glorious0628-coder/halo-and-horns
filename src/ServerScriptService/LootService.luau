@@ -295,7 +295,7 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then
 			announce(player, "RareWeapon", { Weapon = tier, Monster = kind }, tier)
 		end
-		if before then notify(player, string.format(TXT.BareEquip, name, formatNumber(before), formatNumber(after)), "reward", "None") end
+		-- A23-130: no second "[X] equipped! Power" line (the HUD Stronger! banner and the power count-up show it)
 	end
 end
 
@@ -463,14 +463,9 @@ local function useEnhance(player, data, id, def, tier)
 	publish(player, data)
 	if success then
 		firstMax(player, data, tier, after)
-		notify(player, string.format(TXT.EnhanceOk, name, before, after,
-			math.floor(Config.EnhanceMult(before) * 100 + 0.5), math.floor(Config.EnhanceMult(after) * 100 + 0.5)), "reward",
-			"ScrollSuccess")
-	elseif after < before then
-		notify(player, string.format(TXT.EnhanceFailDown, name, before, after), "bad", "ScrollFail")
-	else
-		notify(player, string.format(TXT.EnhanceFailKeep, name, before), "info", "ScrollFail")
 	end
+	-- A23-130: no result toast: the open Items window shows the same line (Panels ITEMS.ResultText from the Fx below,
+	-- Loot.Text EnhanceOk / EnhanceFailDown / EnhanceFailKeep) and the Fx plays ScrollSuccess / ScrollFail
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
 	LootService.Enhanced:Fire(player, tier, before, after, success, id)
 end
@@ -493,10 +488,8 @@ local function useTransfer(player, data, id, def, fromTier, toTier)
 		data.WeaponEnhance[toTier] = after
 		data.WeaponEnhance[fromTier] = amount - (after - target)
 		firstMax(player, data, toTier, after) -- after both tiers are saved
-		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward", "ScrollSuccess")
-	else
-		notify(player, string.format(TXT.MoveFail, fromName, amount), "info", "ScrollFail")
 	end
+	-- A23-130: no result toast: the Items window shows MoveOk / MoveFail and the Fx plays the sound
 	publish(player, data)
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = toTier, From = fromTier, Before = target, After = after, Success = success, Move = true })
 end
@@ -548,7 +541,7 @@ local function onEquipWeapon(player, tier, ...)
 	if S.CombatService.IsInCombat(player) then notify(player, TXT.EquipCombat, "bad"); return end
 	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals rebuilds the model; WeaponEnhance follows
 	S.PlayerService.MarkActive(player)
-	notify(player, string.format(TXT.Equip, weaponName(player, tier)), "info", "Equip")
+	-- A23-130: no "%s equipped!" line (the Bag row and the model show it); Fx Upgrade plays the Equip sound
 	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
 end
 

@@ -198,7 +198,7 @@ local function milestones(player, days, loud)
 		if at > 0 and at <= days then
 			local newTitle = m.Title and grantTitle(player, m.Title)
 			if loud and at == days then
-				notify(player, string.format(TXT.Days or "%d days collected!", at), "reward", "RankUp")
+				notify(player, "", "reward", "RankUp") -- A23-130: no "N days collected!" text, the reward lines say it; the sound stays
 				if m.Border then notify(player, TXT.NewBorder or "New name frame!", "reward", "None") end
 			end
 			if loud and newTitle then

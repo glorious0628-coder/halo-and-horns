@@ -366,7 +366,7 @@ local function avenge(thief, sack, killer)
 			local refund = math.floor(entry.Amount * (bonusOk and G.AvengeRefundRate or G.ReturnRate))
 			if refund > 0 then
 				S.ProgressionService.AddBankGold(victim, refund, "Refund")
-				notify(victim, fmt("GrudgeRefund", Util.PlayerDisplayName(killer), Util.FormatNumber(refund)), "good")
+				notify(victim, fmt("GrudgeRefund", Util.FormatNumber(refund)), "good") -- A23-130: the amount only
 				local victimPos = rootPos(victim)
 				if thiefPos and victimPos then
 					-- sound_gaps B2: the robbed player gets gold back (Refund: the client plays GoldPickup, not Plunder);
@@ -385,8 +385,7 @@ local function avenge(thief, sack, killer)
 		local got = S.ProgressionService.AddBankGold(killer, G.AvengerBonus, "Bounty") or G.AvengerBonus -- A23-75: as added
 		notify(killer, fmt("AvengerBonus", Util.FormatNumber(got)), "reward", "GoldPickup")
 	end
-
-	Net.NotifyAll(fmt("GrudgeAvengedAll", publicName(killer, true), publicName(thief, true)), "info")
+	-- A23-130: no server-wide "took the sack back" toast (GrudgeAvengedAll): the victims get their own refund line
 end
 
 local function returnSack(thief, tellThief)
@@ -530,7 +529,7 @@ local function onGhostHold(victim, ...)
 	end
 	local room = G.HoldMaxSeconds - (sack.Held or 0)
 	if room <= 0 then
-		notify(victim, fmt("GhostHoldMax", G.HoldMaxSeconds), "info")
+		notify(victim, fmt("GhostHoldMax"), "info")
 		return
 	end
 	local add = math.min(G.HoldAddSeconds, room)
@@ -543,7 +542,7 @@ local function onGhostHold(victim, ...)
 	task.delay(G.HoldGlowSeconds + 0.1, function()
 		if isPlaying(thief) and thief:GetAttribute("SackHeldUntil") == glowUntil then thief:SetAttribute("SackHeldUntil", 0) end
 	end)
-	notify(victim, fmt("GhostHoldOk", add, G.HoldMaxSeconds), "good")
+	-- A23-130: the victim's press needs no line (the thief's glow shows it); the thief hears the danger
 	notify(thief, fmt("GhostHeld"), "bad", "None")
 	S.PlayerService.MarkActive(victim)
 end

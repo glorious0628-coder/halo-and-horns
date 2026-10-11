@@ -408,8 +408,9 @@ runGroup("config-contract", function()
 	check(CONFIG.PvP.PairRewardCooldown == 300, "avenger bonus cooldown = Config.PvP.PairRewardCooldown 300", CONFIG.PvP.PairRewardCooldown)
 	check(NET_NAMES.GhostHold == true, "Net.Names has the GhostHold remote")
 	local T = CONFIG.Text
-	for _, case in { { "GrudgeMail", { "1.2K" } }, { "GhostHoldOk", { 2, 10 } }, { "GhostHoldMax", { 10 } }, { "GhostHeld", {} },
-		{ "SackPaid", { "5" } }, { "SackLost", {} }, { "GrudgeRefund", { "A", "5" } }, { "GrudgeReturned", { "5" } },
+	-- A23-130 (server text verdicts 2026-10-11): GrudgeRefund is the amount only, GhostHoldMax has no number
+	for _, case in { { "GrudgeMail", { "1.2K" } }, { "GhostHoldOk", { 2, 10 } }, { "GhostHoldMax", {} }, { "GhostHeld", {} },
+		{ "SackPaid", { "5" } }, { "SackLost", {} }, { "GrudgeRefund", { "5" } }, { "GrudgeReturned", { "5" } },
 		{ "AvengerBonus", { "100" } }, { "GrudgeAvengedAll", { "A", "B" } } } do
 		local text = T[case[1]]
 		local specs = type(text) == "string" and select(2, string.gsub(string.gsub(text, "%%%%", ""), "%%[sd]", "")) or -1
@@ -597,8 +598,8 @@ runGroup("sack-avenged", function()
 	f:KO(T, H)
 	check(not S.HasSack(T) and f:BankOf(V1, "Refund") == 120 and f:BankOf(V2, "Refund") == 66,
 		"Avenged: present same-life victims get 120% (floored) to the bank", show({ f:BankOf(V1), f:BankOf(V2) }))
-	check(f:Told(V1, f:Text("GrudgeRefund", "Knight", "120"), "good") == 1 and f:Told(V2, f:Text("GrudgeRefund", "Knight", "66"), "good") == 1,
-		"GrudgeRefund names the avenger and the amount")
+	check(f:Told(V1, f:Text("GrudgeRefund", "120"), "good") == 1 and f:Told(V2, f:Text("GrudgeRefund", "66"), "good") == 1,
+		"GrudgeRefund says the amount (A23-130: 'Stolen gold back: +120')")
 	local fx = nil
 	for _, e in f.Fx do if e.Player == V1 then fx = e end end
 	check(fx ~= nil and fx.Kind == "Plunder" and fx.Data.Amount == 120 and fx.Data.From.X == 50 and fx.Data.To.X == 10,
@@ -611,7 +612,7 @@ runGroup("sack-avenged", function()
 	-- BB37: the line names both players through AnnounceService.PublicName(p, true) (no AnnounceService here: the
 	-- fallback = nickname + Config.Announce.Text.Honorific)
 	local hon = f.Config.Announce.Text.Honorific
-	check(#f.All == 1 and f.All[1].Text == f:Text("GrudgeAvengedAll", "Knight" .. hon, "Thief" .. hon), "server-wide avenged line", show(f.All))
+	check(#f.All == 0 and type(hon) == "string", "no server-wide avenged line (A23-130: the victims have their own)", show(f.All))
 	check(f:Told(T, f:Text("SackLost"), "bad") == 1, "the thief is told SackLost")
 	check((f.Resolved[1] or {}).Outcome == "Avenged" and (f.Resolved[1] or {}).Total == 155, "SackResolved Avenged 155", show(f.Resolved))
 	check(V1.Data.PairCD["refund:0"] == f:Time() and V2.Data.PairCD["refund:0"] == f:Time() and H.Data.PairCD["avenge:0"] == f:Time(),
@@ -994,12 +995,12 @@ runGroup("ghost-hold", function()
 	check(f:Seconds(T) == 42, "the respawned victim holds: +2 s on the thief's countdown (SackSeconds published)", f:Seconds(T))
 	check(T:GetAttribute("SackHeldUntil") == t0 + G.HoldGlowSeconds, "thief SackHeldUntil = Util.Now() + HoldGlowSeconds",
 		show({ T:GetAttribute("SackHeldUntil"), t0 }))
-	check(f:Told(V, f:Text("GhostHoldOk", 2, 10), "good") == 1, "GhostHoldOk to the victim (+2, max 10)")
+	check(f:Told(V, f:Text("GhostHoldOk", 2, 10)) == 0, "no GhostHoldOk line to the victim (A23-130: the thief's glow shows it)")
 	check(f:Told(T, f:Text("GhostHeld"), "bad") == 1, "GhostHeld to the thief")
 	check(f.Active[V] == 1, "the holding victim is marked active", f.Active[V])
 	f:Advance(2.5)
 	f:Hold(V)
-	check(f:Seconds(T) == 42 and f:Told(V, f:Text("GhostHoldOk", 2, 10)) == 1, "a second press 2.5 s later is refused (RateLimit GhostHold 2.7)")
+	check(f:Seconds(T) == 42 and f:Told(T, f:Text("GhostHeld")) == 1, "a second press 2.5 s later is refused (RateLimit GhostHold 2.7)")
 	f:Advance(0.25)
 	f:Hold(V)
 	check(f:Seconds(T) == 44 and T:GetAttribute("SackHeldUntil") == t0 + 5.75, "2.75 s after the first press the next one counts", f:Seconds(T))
@@ -1018,7 +1019,7 @@ runGroup("ghost-hold", function()
 	local activeBefore = f.Active[V]
 	f:Hold(V)
 	check(f:Seconds(T) == 50, "at the +10 s cap nothing changes", f:Seconds(T))
-	check(f:Told(V, f:Text("GhostHoldMax", 10), "info") == 1, "the victim gets GhostHoldMax at the cap")
+	check(f:Told(V, f:Text("GhostHoldMax"), "info") == 1, "the victim gets GhostHoldMax at the cap")
 	check(T:GetAttribute("SackHeldUntil") == heldUntil and f:Told(T, f:Text("GhostHeld")) == 5 and f.Active[V] == activeBefore,
 		"at the cap the thief is not told and does not glow again", show({ T:GetAttribute("SackHeldUntil"), heldUntil }))
 	f:Ticks(40)
@@ -1074,7 +1075,7 @@ runGroup("ghost-hold-refusals", function()
 	f:Leave(T)
 	f:Advance(3)
 	f:Hold(V)
-	check(f:Target(V) == 0 and f:Told(V, f:Text("GhostHoldOk", 2, 10)) == 1, "after the thief leaves the hold does nothing")
+	check(f:Target(V) == 0 and f:Told(V, f:Text("GhostHoldMax")) == 0, "after the thief leaves the hold does nothing")
 	-- min(HoldAddSeconds, room): a cap that is not a multiple of 2
 	local g = grudgeWorld({ Grudge = { HoldMaxSeconds = 9 } })
 	local Tg, Vg = g:Add("Thief", "Horns"), g:Add("Victim", "Halo")
@@ -1083,10 +1084,10 @@ runGroup("ghost-hold-refusals", function()
 		g:Hold(Vg)
 		g:Advance(3)
 	end
-	check(g:Seconds(Tg) == 54 and g:Told(Vg, g:Text("GhostHoldOk", 1, 9), "good") == 1, "the last press adds only the room left (+1 s up to max 9)",
+	check(g:Seconds(Tg) == 54 and g:Told(Tg, g:Text("GhostHeld"), "bad") == 5, "the last press adds only the room left (+1 s up to max 9)",
 		g:Seconds(Tg))
 	g:Hold(Vg)
-	check(g:Seconds(Tg) == 54 and g:Told(Vg, g:Text("GhostHoldMax", 9), "info") == 1, "then GhostHoldMax")
+	check(g:Seconds(Tg) == 54 and g:Told(Vg, g:Text("GhostHoldMax"), "info") == 1, "then GhostHoldMax")
 	g:Steal(Tg, Vg, 10, 0)
 	g:Advance(3)
 	g:Hold(Vg)

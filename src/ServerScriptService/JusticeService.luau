@@ -489,8 +489,7 @@ local function decayStep(player, b)
 	b.Stacks -= 1
 	b.Last = os.clock()
 	if player.Parent ~= Players then return end
-	publishBully(player, b)
-	Net.Notify(player, string.format(Config.Text.BullyDecay, b.Stacks), "info")
+	publishBully(player, b) -- A23-130: no BullyDecay line (the size and the HUD chip show it)
 	JusticeService.RefreshScale(player)
 end
 

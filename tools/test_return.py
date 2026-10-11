@@ -201,7 +201,7 @@ def static() -> tuple[int, list[str]]:
     check("StoryQuestService.QuestDone:Fire(player, id)" in comp and comp.find("st.Done[id] = true") < comp.find("QuestDone:Fire"),
           "StoryQuestService.complete fires QuestDone after Done is saved")
     check("StoryQuestService.Picked:Fire(player, id, st.Pick[id])" in act
-          and act.find("StoryQuestService.Picked:Fire") < act.find("advance(player, data, id, tr)\n\t\tif type(reply)"),
+          and act.find("StoryQuestService.Picked:Fire") < act.rfind("advance(player, data, id, tr)"),
           "onStoryAction fires Picked after the pick is saved, before advancing")
     qs = read(SSS / "QuestService.luau")
     check("function M.PinnedRow(player)" in qs, "QuestService.PinnedRow exists")

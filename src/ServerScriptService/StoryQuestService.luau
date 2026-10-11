@@ -273,18 +273,6 @@ local function levelReached(data, obj)
 	return obj.Skill == true and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths)
 end
 
--- the opening line(s) of a quest that just started: its Start, then (A23-71 S8) its first Level step's own Start while
--- that level is still ahead (past it, the step passes at once and the next step's Start is said instead)
-local function announceStart(player, data, def)
-	if def.Hidden then return end -- E5: a hidden sub stays secret
-	if def.Start then notify(player, def.Start, "info") end
-	local first = stepOf(player, def, 1)
-	local obj = first and first.Obj
-	if first and first.Start and type(obj) == "table" and obj.Type == "Level" and not levelReached(data, obj) then
-		notify(player, first.Start, "info")
-	end
-end
-
 -- how much one event moves an objective (0 = not this objective)
 local function eventAmount(player, obj, ev)
 	local t = obj.Type
@@ -390,14 +378,14 @@ local function complete(player, data, id)
 		pcall(S.CombatService.UnlockAutoCombat, player)
 		notify(player, TXT.Unlocked, "reward", "None") -- the completion line below has the sound
 	end
-	notify(player, def.Finish or msg, "reward", "QuestDone")
-	if def.Finish then notify(player, msg, "reward", "None") end
+	-- A23-130: the reward line only, with the QuestDone sound (def.Finish lore lines are not sent)
+	notify(player, msg, "reward", "QuestDone")
 	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
 	if type(def.Reward) == "table" and def.Reward.Item then
 		local line = grantItem(player, def.Reward.Item, def.Reward.N)
 		if line then notify(player, line, "reward", "None") end
 	end
-	if def.Clue then notify(player, def.Clue, "info") end -- story_depth §2-1: a clue toast after the closing lines
+	-- A23-130: no def.Clue toast (lore)
 	-- E3: a stat-free title (Reward.Title, or Reward.TitleBy by the side of this quest's own pick), once
 	local r = type(def.Reward) == "table" and def.Reward or nil
 	local titleId = r and (r.Title or (type(r.TitleBy) == "table" and r.TitleBy[SIDE[st.Pick[id]] or ""]) or nil)
@@ -471,16 +459,14 @@ local function advance(player, data, id, track)
 	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
 	if track.St < #def.Steps then
 		track.St += 1
-		local nextStep = stepOf(player, def, track.St)
-		if nextStep and nextStep.Start then notify(player, nextStep.Start, "info") end
+		-- A23-130: no step Start line (the row switches to the new step text)
 		topUpGold(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
 		return
 	end
 	if def.Claim then
-		track.Claim = true
-		notify(player, string.format(TXT.Claim, def.Title), "good")
+		track.Claim = true -- A23-130: no toast, the row shows Done! and [Claim] (TXT.Claim is the row text)
 		dirty(player)
 		return
 	end
@@ -524,7 +510,6 @@ local function feed(player, ev)
 						cur = math.min(sub.Count, cur + add)
 						tr.T[sub.Key] = cur
 						changed = true
-						if cur >= sub.Count and sub.Say then notify(player, sub.Say, "info") end -- one line per part done
 					end
 				end
 				if cur < sub.Count then doneAll = false end
@@ -648,7 +633,7 @@ local function refresh(player)
 		for _, id in SQ.Main do
 			if not st.Done[id] then
 				st.Main = { Id = id, St = 1, P = 0, T = {}, Claim = false }
-				announceStart(player, data, DEFS[id])
+				-- A23-130: no Start line (the new row, its marker and the QuestNew sound announce the quest)
 				changed = true
 				openStep(player, id, st.Main)
 				break
@@ -659,7 +644,6 @@ local function refresh(player)
 		local def = DEFS[id]
 		if def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
-			announceStart(player, data, def) -- E5: a hidden sub stays secret
 			if def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once
 			changed = true
 		elseif st.Subs[id] and def.Factions and not def.Factions[faction(player)] then
@@ -1074,10 +1058,7 @@ local function pickScore(player, f, option, pts)
 	local have = math.max(0, math.floor(num(data and data[stat])))
 	local take = math.min(have, pts)
 	if take <= 0 then
-		-- 3rd idea round #5: nothing to take (A23-58 floor), but the pick still answers: no number, the shard leans
-		notify(player, (f == "Halo" and TXT.OffSideHaloZero or TXT.OffSideHornsZero) .. " "
-			.. (option == "Good" and TXT.LeanGood or TXT.LeanEvil), "info")
-		return
+		return -- nothing to take (A23-58 floor): A23-130 no line, the Choice Fx answers the pick
 	end
 	S.PlayerService.SetStat(player, stat, have - take)
 	notify(player, string.format(f == "Halo" and TXT.OffSideHalo or TXT.OffSideHorns, take), "info")
@@ -1124,21 +1105,7 @@ end
 local function changedMind(player, st, obj, pick)
 	local side = SIDE[pick]
 	if side == nil or (num(obj.Good and obj.Good.Points) <= 0 and num(obj.Evil and obj.Evil.Points) <= 0) then return end
-	if st.LastSide ~= nil and st.LastSide ~= side then
-		notify(player, side == "Good" and TXT.ChangedGood or TXT.ChangedEvil, "info")
-	end
-	st.LastSide = side
-end
-
--- 10/08 Play check (게임성 개발 1): while the story card is open the client keeps only the newest toast
--- (UIKit NOTIFY.ToastCap), and the pick's answer came first - the gold line and the step's "done!" pushed it off at
--- once. The answer (A23-70: the other person answers) now goes last, ReplyAfter s after the step moved on (the card
--- has closed by then): the newest line, so it stays.
-local REPLY_AFTER = 0.35
-local function replyLater(player, text)
-	task.delay(REPLY_AFTER, function()
-		if player.Parent == Players then notify(player, text, "good", "None") end
-	end)
+	st.LastSide = side -- A23-130: saved only, no ChangedGood / ChangedEvil line
 end
 
 local function onStoryAction(player, id, action, option, ...)
@@ -1162,31 +1129,21 @@ local function onStoryAction(player, id, action, option, ...)
 		advance(player, data, id, tr)
 	elseif action == "Choose" and obj.Type == "Choice" then
 		local f = faction(player)
-		local reply = nil -- the other person's answer, sent after the step moved on (replyLater)
 		if f == "Halo" or f == "Horns" then
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
 			st.Pick[id] = pick.Pick or option -- saved before the points
 			choiceFx(player, option)
 			local pts = math.floor(num(pick.Points))
-			if pts > 0 then
-				pickScore(player, f, option, pts)
-			elseif not pick.Reply and not pick.Reward then -- A23-130: a reward pick shows its reward toast only
-				notify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans
-			end
-			reply = pick.Reply -- A23-70: the other person answers (last, replyLater)
+			-- A23-130: a 0-point pick says nothing (the Choice Fx and the afterglow answer); no Reply line any more
+			if pts > 0 then pickScore(player, f, option, pts) end
 			changedMind(player, st, obj, st.Pick[id])
 			payChoice(player, obj, option)
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
 			choiceFx(player, option == "A" and "Good" or "Evil")
-			local side = obj[option == "A" and "Good" or "Evil"]
-			if type(side) == "table" and side.Reply then
-				reply = side.Reply -- A23-70: the other person answers (last, replyLater)
-			elseif not (type(side) == "table" and side.Reward) then -- A23-130: a reward pick shows its reward toast only
-				notify(player, TXT.Recorded, "info")
-			end
+			-- A23-130: no "Your choice is saved." line (the Choice Fx answers the pick)
 			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
 		end
@@ -1196,7 +1153,6 @@ local function onStoryAction(player, id, action, option, ...)
 		end
 		StoryQuestService.Picked:Fire(player, id, st.Pick[id]) -- A23-79: My Way
 		advance(player, data, id, tr)
-		if type(reply) == "string" then replyLater(player, reply) end
 	end
 end
 

@@ -38,13 +38,12 @@ MUTATIONS = [
      '\t\t"이제 서로 저쪽이 그랬다고 해요.",'),
     ("a Korean travel name", C, '{ Id = "SlimeMeadow", Name = "Squishy Meadow" }', '{ Id = "SlimeMeadow", Name = "말랑 초원" }'),
     ("twins drift apart", C,
-     'ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",',
-     'ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the smithy!",'),
+     'VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",',
+     'VisitBlacksmithEn = "Get your first weapon · the Forge",'),
     ("a faction off the glossary", C, 'Name = "Knights of Light", Short', 'Name = "Light Knights", Short'),
     ("the character window is not 'Hero'", C, 'Label = "Hero", LabelEn = "Hero"', 'Label = "Character", LabelEn = "Character"'),
     ("an artisan class off the glossary", C, 'Neutral = "Pet Tamer", None = "Archer"', 'Neutral = "Tamer", None = "Archer"'),
-    ("a Korean potion notice", "S_VITALSSERVICE", 'Net.Notify(player, "HP is full.", "info")',
-     'Net.Notify(player, "HP가 가득 찼어요.", "info")'),
+    ("a Korean potion notice", C, 'PotionHPFull = "HP is full.",', 'PotionHPFull = "HP가 가득 찼어요.",'),
     ("a Korean nametag word", "S_CHARACTERVISUALS", 'line2 ..= "  Sprout Shield"', 'line2 ..= "  새싹 보호"'),
     ("a Korean nickname message", "S_NICKNAMESERVICE", 'Active = "Nickname saved.",', 'Active = "닉네임을 저장했어요.",'),
     ("a Korean world sign", "S_MAPBUILDER", 'text.Text = "Wanted Board"', 'text.Text = "현상수배 게시판"'),
@@ -53,8 +52,8 @@ MUTATIONS = [
     ("the Halo guide loses her name", C, 'Name = "Hallie", Title = "Guide of Light",', 'Name = "Guide of Light",'),
     ("no catchphrase line", C, '\t\t\t\t"Finders keepers! HA! You\'re with us now. I\'m Magpie.",\n', ""),
     ("the blacksmith speaker is the role again", C, 'Smith = "Otto", Guild = "Kit"', 'Smith = "Blacksmith", Guild = "Kit"'),
-    ("the off-side line without the guide", C, 'OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d"',
-     'OffSideHalo = "Not very angel-like! Honor -%d"'),
+    # A23-130: the off-side line is the loss only; the guide's voice back must fail
+    ("the off-side line with the guide's voice", C, 'OffSideHalo = "Honor -%d"', 'OffSideHalo = "Hallie: Hmm… Honor -%d"'),
     ("the potion prompt ignores the label", "S_MAPBUILDER", 'tune.PotionMerchantLabel or "Potion Seller"', '"Potion Seller"'),
 ]
 

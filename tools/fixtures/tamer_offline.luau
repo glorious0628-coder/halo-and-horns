@@ -224,7 +224,11 @@ runGroup("lost baby slime", function()
 	w:Advance(0.02)
 	local lines = notices(w, p, n0)
 	check(lines[#lines] == G.Text.Got, "then it is the newest line", show(lines))
-	check(indexOf(lines, G.Text.Got) ~= nil and indexOf(lines, C0.Tamer.Text.PetGot) == nil, "the pet line for everyone (not 'fights for you')")
+	-- A23-130 (server text verdicts 2026-10-11): both pet lines are 'New pet: Baby Slime!' now; exactly one shows
+	local got = 0
+	for _, l in lines do if l == G.Text.Got then got += 1 end end
+	check(got == 1 and not string.find(G.Text.Got, "fights for you", 1, true), "one pet line for everyone (not 'fights for you')",
+		show(lines))
 	-- the same pick again: nothing more
 	local n1 = #w.Notices
 	w.Story.Picked:Fire(p, G.Quest, "Care")

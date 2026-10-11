@@ -119,7 +119,7 @@ runGroup("announce-lines", function()
 	local shown = w:Player(1, "Halo", "용감한기사", false)
 	local hidden = w:Player(2, "Horns", "숨은뿔", true)
 	local lines = {
-		{ "MostWanted", "%s is now the Most Wanted", { "1,200" } },
+		{ "MostWanted", "Most Wanted: %s", { "1,200" } },
 		{ "BountyAnnounce", "] %s got a", { "300" } },
 		{ "GrudgeAvengedAll", "%s took the Grudge Sack back from %s", nil }, -- glossary case (검수 2026-10-07)
 		{ "RebirthAnnounce", "%s was reborn", { 2 } },
@@ -198,11 +198,11 @@ runGroup("pvp-lines", function()
 	local from = #w.All
 	w.PvP.DebugSetStars(hiddenVillain, C.PvP.AnnounceStars)
 	local line = (w.All[from + 1] or {}).Text
-	check(line ~= nil and has(line, string.format(T.HiddenName, HORNS) .. " is now") and not has(line, "숨은악당"),
+	check(line ~= nil and has(line, "Most Wanted: " .. string.format(T.HiddenName, HORNS) .. " ") and not has(line, "숨은악당"),
 		"Most Wanted line names a hidden villain 'A member of the Horn Legion'", line)
 	w.PvP.DebugSetStars(shownVillain, C.PvP.AnnounceStars)
 	line = (w.All[from + 2] or {}).Text
-	check(line ~= nil and has(line, "보이는악당" .. T.Honorific .. " is now"), "Most Wanted line names a shown villain by nickname", line)
+	check(line ~= nil and has(line, "Most Wanted: 보이는악당" .. T.Honorific .. " "), "Most Wanted line names a shown villain by nickname", line)
 	-- board: refreshed by Start's first update and by the loop; run the loop body's board step through Start again
 	w.PvP.Start()
 	local board = w.Label.Text

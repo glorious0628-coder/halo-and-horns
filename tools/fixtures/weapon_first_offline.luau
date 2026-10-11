@@ -138,12 +138,12 @@ local function count(list, text)
 	for _, x in list do if x == text then n += 1 end end
 	return n
 end
--- LootService's first-weapon line ("You got your first weapon, [name]! Power 0 → N"): bare-handed, so from Power 0
-local FIRST_HEAD = string.match(C0.Loot.Text.FirstWeapon, "^(.-)%[") -- "You got your first weapon, "
+-- LootService's first-weapon line (A23-130: "First weapon: [name]!", the HUD count-up shows the power)
+local FIRST_HEAD = string.match(C0.Loot.Text.FirstWeapon, "^(.-)%[") -- "First weapon: "
 local function firstLines(list)
 	local n = 0
 	for _, x in list do
-		if string.sub(x, 1, #FIRST_HEAD) == FIRST_HEAD and string.find(x, "Power 0 → ", 1, true) then n += 1 end
+		if string.sub(x, 1, #FIRST_HEAD) == FIRST_HEAD and not string.find(x, "Power", 1, true) then n += 1 end
 	end
 	return n
 end
@@ -232,9 +232,9 @@ runGroup("weapon first", function()
 	local said = w:NoticesFor(p, n1)
 	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BlacksmithVisited == true, "the gift: tier 1 owned and equipped, the visit counted",
 		show({ d.WeaponTier, d.WeaponOwnedMask, d.BlacksmithVisited }))
-	check(#said == 2 and said[1] == T.Text.ForgeGift and firstLines({ said[2] }) == 1
-		and string.find(said[2], w.Config.WeaponName(1, "Warrior", "Halo"), 1, true) ~= nil,
-		"Otto's line, then 'You got your first weapon, [Twig]! Power 0 → N'", show(said))
+	-- A23-130 (server text verdicts 2026-10-11): no Otto line, the weapon line alone
+	check(#said == 1 and firstLines({ said[1] }) == 1 and string.find(said[1], w.Config.WeaponName(1, "Warrior", "Halo"), 1, true) ~= nil,
+		"the first weapon line only: 'First weapon: [Twig]!' (no Otto line)", show(said))
 	check(w:Panels(p, "WeaponShop", f1) == 0, "no weapon window at the gift (the Stronger! moment)", w:Panels(p, "WeaponShop", f1))
 	check(step(p) == T.Steps.Guide, "the mission goes on: step 1", step(p))
 	-- A23-88: "Travel to the Squishy Meadow": nothing moves the player; the pad / the map / a walk end the step
@@ -280,8 +280,8 @@ runGroup("weapon first", function()
 	check(st.Done.M1_1 == true and w:Panels(p, "WeaponShop", f3) == 1, "the visit finishes M1_1, then the shop opens",
 		show({ st.Done.M1_1, w:Panels(p, "WeaponShop", f3) }))
 	local lines = w:NoticesFor(p, n3)
-	check(lines[1] == w.Config.StoryQuests.Defs.M1_1.Finish and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
-		"Otto's jelly lines; no second weapon (the gift is only the safety net)", show(lines))
+	check(lines[1] ~= nil and string.find(lines[1], " done!", 1, true) ~= nil and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
+		"M1_1's reward line (A23-130: no Otto lines); no second weapon (the gift is only the safety net)", show(lines))
 	check(d.BankGold > 150, "M1_1 pays a little gold (Reward Gold 1)", d.BankGold)
 	w:Buy(p, 2)
 	check(d.WeaponTier == 2 and d.WeaponOwnedMask == 3, "the 150 gold buy the tier-2 weapon right there", show({ d.WeaponTier, d.WeaponOwnedMask }))

@@ -97,7 +97,7 @@ runGroup("an order, start to end", function()
 	local fx = lastFx(w, "Commission", p)
 	check(fx and fx.Tier == 4 and fx.Name == "Goblin Thief's Golden Sword", "Fx Commission { Tier 4, the class name }", show(fx))
 	check(lastFx(w, "Upgrade", p) and lastFx(w, "Upgrade", p).Tier == 4, "and the existing Upgrade fx (power A -> B)", show(lastFx(w, "Upgrade", p)))
-	check(string.find(notices(w, p), "Otto made your Goblin Thief's Golden Sword!", 1, true) ~= nil, "the line", notices(w, p))
+	check(string.find(notices(w, p), "Goblin Thief's Golden Sword equipped!", 1, true) ~= nil, "the line", notices(w, p))
 	check(#made == 1 and made[1] == 4, "Made signal", show(made))
 	-- the card comes a moment later
 	w:Advance(0.5)
@@ -134,7 +134,7 @@ runGroup("T5 and T6", function()
 	local w2 = commWorld()
 	local q, qd = hero(w2, 3, "Halo", 30, { BankGold = 30000, WeaponOwnedMask = 31, Items = { KnightCrest = 30, Bone = 60 } })
 	order(w2, q, 6)
-	check(qd.WeaponTier == 3 and qd.BankGold == 30000 and qd.Items.KnightCrest == 30 and string.find(notices(w2, q), "more materials", 1, true) ~= nil,
+	check(qd.WeaponTier == 3 and qd.BankGold == 30000 and qd.Items.KnightCrest == 30 and string.find(notices(w2, q), "Not enough materials.", 1, true) ~= nil,
 		"T6 without the Captain's Badge: refused, nothing taken", show({ qd.WeaponTier, qd.BankGold, qd.Items }))
 	-- the ladder line names the badge when it is the missing piece
 	local line = w2.Reg.CommissionService.NextGoal(q, qd)
@@ -162,10 +162,10 @@ runGroup("refusals pay nothing", function()
 	check(untouched(d) and string.find(notices(w, p), w.Config.Text.WeaponShopFar, 1, true) ~= nil, "away from the Forge: refused with the shop's line", notices(w, p))
 	w, p, d = fresh({ Level = 11 })
 	order(w, p, 4)
-	check(untouched(d) and string.find(notices(w, p), "come back at Lv 12", 1, true) ~= nil, "Lv11: refused (the weapon needs Lv12)", notices(w, p))
+	check(untouched(d) and string.find(notices(w, p), "You need Lv 12.", 1, true) ~= nil, "Lv11: refused (the weapon needs Lv12)", notices(w, p))
 	w, p, d = fresh({ Items = { BruteHorn = 10, GoblinTooth = 19 } })
 	order(w, p, 4)
-	check(d.BankGold == 3000 and d.Items.GoblinTooth == 19 and d.Items.BruteHorn == 10 and d.WeaponTier == 3 and string.find(notices(w, p), "more materials", 1, true) ~= nil,
+	check(d.BankGold == 3000 and d.Items.GoblinTooth == 19 and d.Items.BruteHorn == 10 and d.WeaponTier == 3 and string.find(notices(w, p), "Not enough materials.", 1, true) ~= nil,
 		"one tooth short: refused, nothing taken (gold untouched too)", show({ d.BankGold, d.Items }))
 	w, p, d = fresh({ BankGold = 2999 })
 	order(w, p, 4)

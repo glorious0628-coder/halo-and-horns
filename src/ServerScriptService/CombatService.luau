@@ -916,8 +916,7 @@ function AUTO_IDLE.SetResting(p, on)
 		label.Parent = bb
 		bb.Parent = head
 	end
-	pcall(Net.Notify, p, Config.Text[on and "AutoRestOn" or "AutoRestOff"], "info")
-end
+end -- A23-130: no AutoRestOn / AutoRestOff line (the Zzz label shows it)
 
 -- true while the auto loop must wait: idle rest (with the 30 s warning first) or a pending choice card
 function AUTO_IDLE.Check(p)
@@ -938,10 +937,7 @@ function AUTO_IDLE.Check(p)
 	end
 	if p:GetAttribute("AutoResting") == true then AUTO_IDLE.SetResting(p, false) end
 	if idle >= cfg.AutoIdleSeconds - cfg.AutoIdleWarnSeconds then
-		if not AUTO_IDLE.Warned[p] then
-			AUTO_IDLE.Warned[p] = true
-			pcall(Net.Notify, p, Config.Text.AutoSleepy, "info", cfg.AutoIdleWarnSeconds)
-		end
+		AUTO_IDLE.Warned[p] = true -- A23-130: no AutoSleepy line
 	else
 		AUTO_IDLE.Warned[p] = nil
 	end

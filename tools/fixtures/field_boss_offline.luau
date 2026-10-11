@@ -166,7 +166,9 @@ runGroup("config", function()
 		check(not string.find(t, "mom", 1, true) and not string.find(t, "mother", 1, true) and not string.find(t, "wife", 1, true),
 			"A23-85 no mom line: " .. k, t)
 	end
-	check(string.find(A.Text.SlimeKingAppear, "Who's bothering my kids?!", 1, true) ~= nil, "appear line = the dad line")
+	-- A23-130 (server text verdicts 2026-10-11): the appear toast is one short line, no NPC voice or how-to
+	check(A.Text.SlimeKingAppear == "King Slime is here!" and A.Text.SlimeKingAppearEn == A.Text.SlimeKingAppear,
+		"appear line = 'King Slime is here!'", A.Text.SlimeKingAppear)
 	check(A.Events.SlimeKingAppear.Toast == true and A.Events.SlimeKingLeave.Toast ~= true, "toast only when it appears")
 	check(C.Barks.BubbleFamily.SlimeKing == "Slime" and type(C.Barks.Lines.SlimeKing) == "table", "slime bubbles + dad lines")
 	check(C.Audio.SoftKinds.SlimeKing == true, "soft hit sound")

@@ -104,14 +104,15 @@ MUTATIONS = [
     ("A23-110 a sip eats the potion", VIT, "pcall(story.Event, player, \"PotionUsed\", { Kind = kind, Practice = true })",
      "S.PlayerService.SetStat(player, Config.PotionStockKey(kind), S.PlayerService.GetData(player)[Config.PotionStockKey(kind)] - 1); "
      "pcall(story.Event, player, \"PotionUsed\", { Kind = kind, Practice = true })"),
-    ("A23-110 no sip at full HP", VIT, "\t\t\tif practiceSip(player, kind) then return end\n\t\t\tNet.Notify(player, \"HP is full.\", \"info\")",
-     "\t\t\tNet.Notify(player, \"HP is full.\", \"info\")"),
-    ("A23-110 no sip at full MP", VIT, "\t\t\tif practiceSip(player, kind) then return end\n\t\t\tNet.Notify(player, \"MP is full.\", \"info\")",
-     "\t\t\tNet.Notify(player, \"MP is full.\", \"info\")"),
-    ("A23-110 a sip says nothing", VIT, "\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn true\nend",
-     "\treturn true\nend"),
-    ("A23-110 a sip is refused after counting", VIT, "\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn true\nend",
-     "\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn false\nend"),
+    ("A23-110 no sip at full HP", VIT, "\t\t\tif practiceSip(player, kind) then return end\n\t\t\tNet.Notify(player, Config.Text.PotionHPFull, \"info\")",
+     "\t\t\tNet.Notify(player, Config.Text.PotionHPFull, \"info\")"),
+    ("A23-110 no sip at full MP", VIT, "\t\t\tif practiceSip(player, kind) then return end\n\t\t\tNet.Notify(player, Config.Text.PotionMPFull, \"info\")",
+     "\t\t\tNet.Notify(player, Config.Text.PotionMPFull, \"info\")"),
+    # A23-130: a practice sip says nothing (the quest row moves on); the line back must fail
+    ("A23-130 a sip says its line again", VIT, "-- A23-130: no line, the quest row moves on\n\treturn true\nend",
+     "-- A23-130\n\tNet.Notify(player, Config.Text.PotionPractice, \"good\")\n\treturn true\nend"),
+    ("A23-110 a sip is refused after counting", VIT, "-- A23-130: no line, the quest row moves on\n\treturn true\nend",
+     "-- A23-130: no line, the quest row moves on\n\treturn false\nend"),
 ]
 
 

@@ -118,8 +118,8 @@ MUTATIONS = [
      "\tClassService.ClassChanged:Fire(player, classId, old) -- also when equal, so visuals / charge refresh\n",
      "\tClassService.ClassChanged:Fire(player, classId, old) -- also when equal, so visuals / charge refresh\n"
      "\tNet.Notify(player, string.format(\"Your class is now %s!\", Config.ClassName(classId, faction)), \"good\")\n"),
-    ("the class pick text is back", "CONFIG_SOURCE", "\tClassChangedFree = \"You changed your class to %s! You start again",
-     "\tClassChosen = \"Your class is now %s!\",\n\tClassChangedFree = \"You changed your class to %s! You start again"),
+    ("the class pick text is back", "CONFIG_SOURCE", "\tClassChangedFree = \"Class: %s. Back to Lv 1!\"",
+     "\tClassChosen = \"Your class is now %s!\",\n\tClassChangedFree = \"Class: %s. Back to Lv 1!\""),
     ("the pay is not reported (HealthService)", "GOOSE_SOURCE",
      "\tGooseService.GooseRewarded:Fire(p, { Won = won, Rare = rare == true, Gold = gold, XP = xp, Level = level,\n\t\tMode = judged == \"Coop\" and \"Coop\" or \"Versus\" })\n",
      ""),

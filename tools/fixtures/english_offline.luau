@@ -152,18 +152,19 @@ runGroup("the five names", function()
 	check(string.sub(SQ.Defs.N1.Start, 1, 5) == "Kit: " and string.sub(SQ.Defs.N2.Start, 1, 5) == "Kit: ", "N1 / N2: Kit speaks",
 		show({ SQ.Defs.N1.Start, SQ.Defs.N2.Start }))
 	local T = SQ.Text
-	check(string.format(T.OffSideHalo, 2) == "Hallie: Hmm… not very angel-like! Honor -2"
-		and string.format(T.OffSideHorns, 2) == "Magpie: Too nice for a devil! Your call. Infamy -2",
-		"the off-side line is said by the guide (one toast, ASCII minus)", show({ T.OffSideHalo, T.OffSideHorns }))
+	-- A23-130 (server text verdicts 2026-10-11): the off-side line is the loss only, no guide voice
+	check(string.format(T.OffSideHalo, 2) == "Honor -2" and string.format(T.OffSideHorns, 2) == "Infamy -2",
+		"the off-side line is the loss only (one toast, ASCII minus)", show({ T.OffSideHalo, T.OffSideHorns }))
 	check(C.Vitals.PotionMerchantLabel == "Fizzby" and C.Vitals.PotionMerchantName == "PotionMerchant",
 		"the potion seller's prompt says Fizzby (the model name stays)", show({ C.Vitals.PotionMerchantLabel, C.Vitals.PotionMerchantName }))
 	check(C.Text.ForgeGreeting == "Otto: Clang, clang… done. Cocoa time." and C.Text.PotionGreeting == "Fizzby: Glug, glug, feel better!",
 		"the shop greetings", show({ C.Text.ForgeGreeting, C.Text.PotionGreeting }))
-	-- the role stays in system lines (a kid finds the place by its role)
-	check(string.find(C.Text.WeaponFromQuest, "The Blacksmith", 1, true) ~= nil and C.Text.BlacksmithPromptObject == "Forge"
+	-- the role stays in system lines (a kid finds the place by its role); A23-130 cut the how-to lines, the place names stay
+	check(C.Text.BlacksmithPromptObject == "Forge" and string.find(C.Text.WeaponShopFar, "Forge", 1, true) ~= nil
 		and string.find(C.Text.PotionShopFar, "Potion Seller", 1, true) ~= nil
-		and string.find(C.Loot.Text.FirstWeaponBag, "The Blacksmith", 1, true) ~= nil,
-		"system lines keep 'The Blacksmith' / 'Forge' / 'Potion Seller'", show({ C.Text.WeaponFromQuest, C.Text.PotionShopFar }))
+		and not string.find(C.Text.PotionShopFar .. C.Text.WeaponShopFar, "Otto", 1, true)
+		and not string.find(C.Text.PotionShopFar, "Fizzby", 1, true),
+		"system lines keep 'Forge' / 'Potion Seller' (never the NPC names)", show({ C.Text.WeaponShopFar, C.Text.PotionShopFar }))
 	check(string.find(SERVER_TEXT, "prompt.ObjectText = \"Buy potions\", tune.PotionMerchantLabel", 1, true) ~= nil,
 		"MapBuilder's potion prompt reads Config.Vitals.PotionMerchantLabel")
 end)

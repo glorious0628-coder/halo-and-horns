@@ -183,7 +183,7 @@ local function finish(player, card, side)
 		local stat, change, mine, down, full = S.Deeds.Add(player, side, o.Points)
 		out.Stat, out.Score, out.Full = stat, change, full
 		count(data, card.Kind, side)
-		local parts = { o.Done or (side == "Good" and TXT.GoodDone or TXT.EvilDone) }
+		local parts = {} -- A23-130: the gains only (no Kind / Sneaky choice label, no NPC sentence)
 		if given > 0 then
 			table.insert(parts, given > 1 and string.format(Config.Loot.Text.GotN, itemName(id), given)
 				or string.format(Config.Loot.Text.Got, itemName(id)))
@@ -191,7 +191,7 @@ local function finish(player, card, side)
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
 		if xp > 0 then table.insert(parts, string.format(TXT.XP or "+%s XP", Util.FormatNumber(xp))) end
 		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
-		notify(player, table.concat(parts, " · "), "reward", "None")
+		if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end
 		S.Deeds.Say(player, side, stat, change, mine, down, full) -- the other side's line, a lost rank, a full day
 	end
 	if player.Parent == Players then fx(player, "CardEnd", out) end

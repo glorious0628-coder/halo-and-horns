@@ -711,7 +711,9 @@ runGroup("config", function()
 	for _, key in { "UseCombat", "EquipDead", "EquipCombat", "ItemFull", "ItemFullUse" } do
 		check(type(L.Text[key]) == "string" and L.Text[key] ~= "", "Config.Loot.Text." .. key .. " is a Korean string", key)
 	end
-	check(string.find(L.Text.ItemFull, "Forge", 1, true) ~= nil, "B7 ItemFull (materials) says they sell at the Forge")
+	-- A23-130 (server text verdicts 2026-10-11): the full line says the cap only (no sell / use tip)
+	check(L.Text.ItemFull == "%s is full (max %d)." and L.Text.ItemFullUse == L.Text.ItemFull,
+		"B7 ItemFull / ItemFullUse: '%s is full (max %d).' (no Forge / Bag tip)", L.Text.ItemFull)
 	-- review B3: legendary = exactly 2 x tier 3 (38), below tier 4
 	check(C.Weapons[8].Damage == 76 and C.Weapons[8].Damage == 2 * C.Weapons[3].Damage and C.Weapons[8].Damage < C.Weapons[4].Damage,
 		"B3 legendary damage 76 = 2 x tier 3, below tier 4", C.Weapons[8].Damage)
@@ -1933,7 +1935,8 @@ runGroup("transfer", function()
 	local have = f:Count("Move70")
 	a, b = move(4, 2, 0.95)
 	check(a == 4 and b == 2 and f:Count("Move70") == have, "failure leaves both, consumes the scroll (1 given, 1 used)", show({ a, b }))
-	check(f:Noticed(string.format(L.Text.MoveFail, f.Config.WeaponName(1, "Warrior", "Halo"), 4)) == 1, "MoveFail notice")
+	check(f:Noticed(string.format(L.Text.MoveFail, f.Config.WeaponName(1, "Warrior", "Halo"), 4)) == 0,
+		"no MoveFail toast (A23-130: the open Items window shows it from Fx Enhance)")
 	-- equipped attribute follows when the equipped tier is the source or the target
 	f:Set("WeaponTier", 2)
 	a, b = move(4, 3, 0)
@@ -2132,7 +2135,8 @@ runGroup("equip", function()
 		f.Data.WeaponTier)
 	check(f:Noticed(needT3) == 0, "no level refusal once the level is reached")
 	check(f.Player:GetAttribute("WeaponEnhance") == 4, "WeaponEnhance attribute follows the equipped tier's +N", f.Player:GetAttribute("WeaponEnhance"))
-	check(f:Noticed(string.format(L.Text.Equip, C.WeaponName(3, "Warrior", "Halo"))) == 1, "equip notice")
+	check(f:Noticed(string.format(L.Text.Equip, C.WeaponName(3, "Warrior", "Halo"))) == 0,
+		"no equip toast (A23-130: the Bag row and the model show it; Fx Upgrade plays the Equip sound)")
 	-- review B6: equip needs a living character (same as the blacksmith path)
 	f.Dead = true
 	refusedCase("refused while dead (Util.IsAlive)", function() f:Equip(1) end, L.Text.EquipDead)
@@ -2216,8 +2220,9 @@ runGroup("shop", function()
 	f:Set("Level", 5)
 	spent = attempt(3)
 	check(f.Data.WeaponTier == 3 and f.Player:GetAttribute("WeaponTier") == 3 and spent == 0
-		and f:Noticed(string.format(C.Loot.Text.Equip, C.WeaponName(3, "Warrior", "Halo"))) == 1,
-		"A23-28 shop: the owned tier 3 equips at Lv5 for free (equip notice)", show({ f.Data.WeaponTier, spent }))
+		and f:Noticed(string.format(C.Loot.Text.Equip, C.WeaponName(3, "Warrior", "Halo"))) == 0,
+		"A23-28 shop: the owned tier 3 equips at Lv5 for free (A23-130: no equip line, the Equip sound only)",
+		show({ f.Data.WeaponTier, spent }))
 	spent = attempt(2)
 	check(f.Data.WeaponTier == 2 and spent == C.Weapons[2].Price and bit32.btest(f.Data.WeaponOwnedMask, 2),
 		"shop: an unowned tier 2 (MinLevel 1) is bought and equipped", show({ f.Data.WeaponTier, spent }))

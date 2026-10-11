@@ -73,7 +73,9 @@ MUTATIONS = [
      "\t\tlocal need = type(look) == \"table\" and type(look.Unlock) == \"table\" and num(look.Unlock.Attendance) or 0\n",
      "\t\tlocal need = type(look) == \"table\" and type(look.Unlock) == \"table\" and num(look.Unlock.Attendance) or 1\n"),
     ("every faction's look is announced", A, "\t\tif loud and look.Faction == faction then\n", "\t\tif loud then\n"),
-    ("no milestone line", A, "\t\t\t\tnotify(player, string.format(TXT.Days or \"%d days collected!\", at), \"reward\", \"RankUp\")\n", ""),
+    ("no milestone sound", A, "\t\t\t\tnotify(player, \"\", \"reward\", \"RankUp\")", "\t\t\t\tlocal _ = 0"),
+    ("milestone text back (A23-130)", A, "\t\t\t\tnotify(player, \"\", \"reward\", \"RankUp\")",
+     "\t\t\t\tnotify(player, string.format(\"%d days collected!\", at), \"reward\", \"RankUp\")"),
     ("titles only on the exact day", A, "\t\tif at > 0 and at <= days then\n", "\t\tif at > 0 and at == days then\n"),
     # --- Config
     ("Config: the 70% scroll on day 3 becomes a 10%", C, "\t\t{ Item = \"Enh70\", N = 1 },\n", "\t\t{ Item = \"Enh10\", N = 1 },\n"),

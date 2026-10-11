@@ -15,9 +15,6 @@ local RECOUNT_INTERVAL = 10 -- seconds between periodic faction recounts (spec Â
 local LEAVE_FORGET_SECONDS = 60 -- how long a leaving player stays in the "leaving" set (they are gone by then)
 local ALTAR_PROMPT_RATE = 0.5 -- private rate limit for the altar ProximityPrompt
 local WARN_THROTTLE = 10
--- TODO(config): no Config.Text key for a switch that costs nothing (leaving Neutral, addendum A6);
--- Config.Text.SwitchDonePlain is used instead once it exists.
-local TEXT_SWITCH_DONE_PLAIN = "You joined the %s!"
 local SCORE_NAME = { Halo = "Honor", Horns = "Infamy" } -- score lost by a FREE switch away from that faction
 local SCORE_KEY = { Halo = "Honor", Horns = "Infamy" } -- CR-L11: the stat behind SCORE_NAME
 local UNDERDOG_IDLE_SECONDS = 120 -- CR-L7: no input / combat for this long = not counted for the underdog bonus
@@ -379,14 +376,10 @@ local function onSwitchFaction(player, a, b)
 	S.PlayerService.SetStat(player, "LastSwitchTime", os.time())
 	FactionService.SetFaction(player, new, "Altar")
 
-	local newName = (Config.Factions[new] and Config.Factions[new].Name) or new
-	if ticketUsed then
-		notify(player, "SwitchDoneTicket", "good", newName)
-	elseif lostScore and atStake then
-		notify(player, "SwitchDoneFree", "good", newName, lostScore)
-	else
-		local fmt = Config.Text.SwitchDonePlain
-		Net.Notify(player, string.format(type(fmt) == "string" and fmt or TEXT_SWITCH_DONE_PLAIN, newName), "good")
+	-- A23-130: no "You joined ..." line (the confirm said it, the player respawns in the new town); a free switch
+	-- that reset a score says that loss only ("Honor back to 0.")
+	if not ticketUsed and lostScore and atStake then
+		notify(player, "SwitchDoneFree", "info", lostScore)
 	end
 	S.PlayerService.Respawn(player)
 end

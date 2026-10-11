@@ -101,8 +101,7 @@ MUTATIONS = [
     ("card back on the Prince", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
      "\tKinds = { BigSlime = true, CaptainClatter = true },"),
     ("Prince renamed back", C, "BigSlime = { Name = \"Slime Prince\"", "BigSlime = { Name = \"King Slime\""),
-    ("a mom line", C, "SlimeKingLeaveEn = \"King Slime: \\\"Hmph! Bedtime, kids!\\\"\"",
-     "SlimeKingLeaveEn = \"King Slime: \\\"Hmph! Mom says bedtime!\\\"\""),
+    ("a mom line", C, "SlimeKingLeaveEn = \"King Slime went home.\"", "SlimeKingLeaveEn = \"King Slime went home to mom.\""),
     ("King in the regular pool", C, "Zone = \"SlimeMeadow\", Count = 0, Boss = true,", "Zone = \"SlimeMeadow\", Count = 2, Boss = true,"),
     # 검수 2026-10-09: the shrine marker part, the hill's MaxY
     ("no marker part", K, "\t\tif part == nil and d:IsA(\"BasePart\") and (d.Name == attr or v == true) then part = d end\n", ""),

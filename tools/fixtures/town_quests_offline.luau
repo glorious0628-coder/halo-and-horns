@@ -264,27 +264,24 @@ runGroup("h1-good", function()
 	check(d.BankGold == bank + 120 and #w.XP == xpN + 1 and w.XP[#w.XP].N == wantXP, "the quest: +120 gold, +half a Lv6 bar of XP",
 		show({ d.BankGold - bank, w.XP[#w.XP] and w.XP[#w.XP].N, wantXP }))
 	check(d.Story.Done.H1 == true and w:Track(d, "H1") == nil, "H1 done (once)")
+	-- A23-130 (server text verdicts 2026-10-11): the reward lines only; no closing (Finish) line, no clue toast
 	local lines = w:NoticesFor(p, n0)
-	local hasFinish, hasScroll = false, false
-	for _, t in lines do
-		if t == SQ0.Defs.H1.Finish then hasFinish = true end
-		if t == string.format(w.Config.Loot.Text.Got, w.Config.Loot.Items.Enh70.Name) then hasScroll = true end
-	end
-	check(hasFinish and hasScroll, "lines: '+Enhance Scroll 70%' and the closing question", show(lines))
-	local sounds, finishSound, nextSound = w:SoundsFor(p, n0), nil, nil
-	local quest = 0
+	local hasFinish, hasScroll, doneAt, clue = false, false, nil, false
 	for i, t in lines do
-		if t == SQ0.Defs.H1.Finish then finishSound, nextSound = sounds[i], sounds[i + 1] end
+		if t == SQ0.Defs.H1.Finish then hasFinish = true end
+		if t == SQ0.Defs.H1.Clue then clue = true end
+		if t == string.format(w.Config.Loot.Text.Got, w.Config.Loot.Items.Enh70.Name) then hasScroll = true end
+		if string.find(t, SQ0.Defs.H1.Title .. " done! +120 gold", 1, true) == 1 then doneAt = i end
+	end
+	check(hasScroll and doneAt ~= nil and not hasFinish, "lines: '+Enhance Scroll 70%' and the quest's reward line, no closing line",
+		show(lines))
+	local sounds = w:SoundsFor(p, n0)
+	local quest = 0
+	for i in lines do
 		if sounds[i] == "QuestDone" then quest += 1 end
 	end
-	check(finishSound == "QuestDone" and nextSound == "None" and quest == 1,
-		"one QuestDone for the finish; the reward line right after it says Sound 'None'", show({ finishSound, sounds }))
-	local clueAt, finishAt = nil, nil
-	for i, t in lines do
-		if t == SQ0.Defs.H1.Clue then clueAt = i end
-		if t == SQ0.Defs.H1.Finish then finishAt = i end
-	end
-	check(clueAt ~= nil and finishAt ~= nil and clueAt > finishAt, "the wristband clue comes after the closing lines", show(lines))
+	check(doneAt ~= nil and sounds[doneAt] == "QuestDone" and quest == 1, "one QuestDone, on the reward line", show(sounds))
+	check(not clue, "no wristband clue toast (lore)", show(lines))
 	local before = { d.BankGold, d.Items.Enh70 }
 	w:Act(p, "H1", "Choose", "Evil")
 	check(d.BankGold == before[1] and d.Items.Enh70 == before[2], "a second pick after the end pays nothing")
@@ -472,10 +469,10 @@ runGroup("a23-58", function()
 	local n3, fx3 = #w.Notices, #w.Fx
 	local p3, d3 = atPick(w, 803, "Halo", "H1", { Honor = 0 })
 	w:Act(p3, "H1", "Choose", "Evil")
+	-- A23-130 (server text verdicts 2026-10-11): nothing taken = no line (no guide remark, no lean); the Choice Fx answers
 	local zero = T.OffSideHaloZero .. " " .. T.LeanEvil
-	check((d3.Honor or 0) == 0 and has(lines(p3, n3), zero) and not has(lines(p3, n3), string.format(T.OffSideHalo, 1)),
-		"Honor 0 stays 0, the pick says 'not very angel-like! Your shard leaned to the dark.' (no number)",
-		show({ d3.Honor, lines(p3, n3) }))
+	check((d3.Honor or 0) == 0 and not has(lines(p3, n3), zero) and not has(lines(p3, n3), string.format(T.OffSideHalo, 1)),
+		"Honor 0 stays 0, no loss line and no 'not very angel-like' / lean line", show({ d3.Honor, lines(p3, n3) }))
 	local leaned = nil
 	for i = fx3 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p3 then leaned = w.Fx[i].Data end end
 	check(leaned and leaned.Option == "Evil", "a 0-point pick still sends Fx Choice { Option = 'Evil' }", show(leaned))
@@ -760,21 +757,22 @@ runGroup("a23-71 skill quests", function()
 	local ps, ds = w:Join(7103, { Faction = "Halo", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true }) } })
 	w.Story.Refresh(ps)
 	w:Flush()
-	check(ds.Story.Main.Id == "M1_3" and ds.Story.Main.St == 1 and count(ps, n0, GROW) == 1 and count(ps, n0, DUSTY) == 0,
-		"M1_3 starts at Lv3: 'Grow to Lv5 to learn your first skill!' once, not the skill line", show(w:NoticesFor(ps, n0)))
+	-- A23-130 (server text verdicts 2026-10-11): quest / step Start lines are not sent (the rows carry the goal)
+	check(ds.Story.Main.Id == "M1_3" and ds.Story.Main.St == 1 and count(ps, n0, GROW) == 0 and count(ps, n0, DUSTY) == 0,
+		"M1_3 starts at Lv3: the Lv5 step, no Start line (A23-130)", show(w:NoticesFor(ps, n0)))
 	local n1 = #w.Notices
 	w.PS.SetStat(ps, "Level", 5)
 	w.Story.Refresh(ps)
 	w:Flush()
-	check(ds.Story.Main.St == 2 and count(ps, n1, DUSTY) == 1 and count(ps, n1, GROW) == 0,
-		"Lv5: the skill step says 'Dusty slimes move in groups. Skills use MP!'", show(w:NoticesFor(ps, n1)))
+	check(ds.Story.Main.St == 2 and count(ps, n1, DUSTY) == 0 and count(ps, n1, GROW) == 0,
+		"Lv5: the skill step, no Start line (A23-130)", show(w:NoticesFor(ps, n1)))
 	-- M1_3 starts at Lv7: straight to the skill step, its line once, no 'Grow to Lv5'
 	local n2 = #w.Notices
 	local pq, dq = w:Join(7104, { Faction = "Horns", Level = 7, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true }) } })
 	w.Story.Refresh(pq)
 	w:Flush()
-	check(dq.Story.Main.Id == "M1_3" and dq.Story.Main.St == 2 and count(pq, n2, DUSTY) == 1 and count(pq, n2, GROW) == 0,
-		"M1_3 starts at Lv7: the skill line once, no 'Grow to Lv5'", show(w:NoticesFor(pq, n2)))
+	check(dq.Story.Main.Id == "M1_3" and dq.Story.Main.St == 2 and count(pq, n2, DUSTY) == 0 and count(pq, n2, GROW) == 0,
+		"M1_3 starts at Lv7: straight to the skill step, no Start line", show(w:NoticesFor(pq, n2)))
 	-- a Lv1 who kept Q (a free class change from Lv5+ took the level back, the slots stay) passes the Lv5 step at once
 	local pk, dk = w:Join(7105, { Faction = "Halo", Level = 1, Data = { SkillSlots = 1,
 		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
@@ -857,8 +855,8 @@ runGroup("skl3 subs", function()
 	local n0 = #w.Notices
 	w.Story.Refresh(p)
 	w:Flush()
-	check(w:Track(d, "SK1") ~= nil and said(w, p, n0, SQ0.Defs.SK1.Start), "the Z switch on and the slot open: SK1 with its Start line",
-		show(w:NoticesFor(p, n0)))
+	check(w:Track(d, "SK1") ~= nil and not said(w, p, n0, SQ0.Defs.SK1.Start),
+		"the Z switch on and the slot open: SK1 (A23-130: no Start line, the row says it)", show(w:NoticesFor(p, n0)))
 	local p14, d14 = w:Join(7302, { Faction = "Halo", Level = 14, Data = { SkillSlots = 1, Story = story() } })
 	w.Story.Refresh(p14)
 	w:Flush()
@@ -896,8 +894,8 @@ runGroup("skl3 subs", function()
 	check(e.Story.Pick.SK2 == "Guard" and (e.Honor or 0) == honor + 1 and t2.St == 3, "Halo 'Guard my friends': Pick Guard, Honor +1, then the X step",
 		show({ e.Story.Pick.SK2, e.Honor, t2.St }))
 	-- 검수 2026-10-07: SK2's picks have their side (Guard = Good, Take = Evil), so the pick is a change of mind like the others
-	check(e.Story.LastSide == "Good" and said(w, q, nk, SQ0.Text.ChangedGood),
-		"SK2 'Guard' is a Good pick: LastSide Good and the change-of-mind line after an Evil one",
+	check(e.Story.LastSide == "Good" and not said(w, q, nk, SQ0.Text.ChangedGood),
+		"SK2 'Guard' is a Good pick: LastSide Good after an Evil one (A23-130: no change-of-mind line)",
 		show({ e.Story.LastSide, w:NoticesFor(q, nk) }))
 	CS.Released:Fire(q, { Slot = "Z", Auto = false, MonstersHit = 3 })
 	CS.Released:Fire(q, { Slot = "X", Auto = false, MonstersHit = 0 })
@@ -990,14 +988,15 @@ runGroup("e2-changed-mind", function()
 		"the first real pick: no line, its side saved", show({ d.Story.LastSide, w:NoticesFor(p, n0) }))
 	local n1 = #w.Notices
 	w:Act(p, "TX_C2", "Choose", "Evil")
-	check(said(w, p, n1, SQ0.Text.ChangedEvil) and d.Story.LastSide == "Evil", "Good then Evil: 'You gave it last time…'",
+	-- A23-130 (server text verdicts 2026-10-11): the side is still saved, the change-of-mind line is not sent
+	check(not said(w, p, n1, SQ0.Text.ChangedEvil) and d.Story.LastSide == "Evil", "Good then Evil: LastSide Evil, no line",
 		show(w:NoticesFor(p, n1)))
 	-- an easter egg (0 points) leans the shard, never counts as a change, never moves the score
 	local n2, honor = #w.Notices, d.Honor
 	w:Act(p, "TX_Egg", "Choose", "Good")
 	local eggLines = w:NoticesFor(p, n2)
-	check(said(w, p, n2, SQ0.Text.LeanGood) and not said(w, p, n2, SQ0.Text.ChangedGood) and d.Story.LastSide == "Evil"
-		and d.Honor == honor and d.Story.Pick.TX_Egg == "Good", "a 0-point pick: 'Your shard leaned to the light.', no change line, no score",
+	check(not said(w, p, n2, SQ0.Text.LeanGood) and not said(w, p, n2, SQ0.Text.ChangedGood) and d.Story.LastSide == "Evil"
+		and d.Honor == honor and d.Story.Pick.TX_Egg == "Good", "a 0-point pick: no lean line (A23-130), no change, no score",
 		show({ eggLines, d.Story.LastSide, d.Honor }))
 	for _, t in eggLines do
 		check(t ~= string.format(SQ0.Text.Good, 0) and t ~= string.format(SQ0.Text.OffSideHalo, 0), "no '+0' / '-0' line", t)
@@ -1010,13 +1009,15 @@ runGroup("e2-changed-mind", function()
 	local q, e = joinAfterM23(w, 822, "Neutral")
 	e.Story.LastSide = "Sideways"
 	w.PS.PlayerReady:Fire(q, e)
+	check(e.Story.LastSide == nil, "a broken saved side is dropped at load", e.Story.LastSide)
 	local n4 = #w.Notices
 	w:Act(q, "TX_C1", "Choose", "B")
 	check(not said(w, q, n4, SQ0.Text.ChangedEvil) and e.Story.LastSide == "Evil", "a bad saved side is dropped: no line on the first pick",
 		show({ e.Story.LastSide, w:NoticesFor(q, n4) }))
 	local n5 = #w.Notices
 	w:Act(q, "TX_C2", "Choose", "A")
-	check(said(w, q, n5, SQ0.Text.ChangedGood), "an artisan's A after B: 'You kept it last time…'", show(w:NoticesFor(q, n5)))
+	check(not said(w, q, n5, SQ0.Text.ChangedGood) and e.Story.LastSide == "Good", "an artisan's A after B: LastSide Good, no line",
+		show(w:NoticesFor(q, n5)))
 end)
 
 runGroup("e3-titles", function()
@@ -1087,13 +1088,13 @@ runGroup("e5-hidden", function()
 	local honor = d.Honor or 0
 	local n1 = #w.Notices
 	w:Act(p, "TX_Egg", "Choose", "Evil")
-	check(said(w, p, n1, SQ0.Text.LeanEvil) and (d.Honor or 0) == honor and d.Story.Pick.TX_Egg == "Evil",
-		"a 0-point egg pick: the lean line only (no score)", show({ w:NoticesFor(p, n1), d.Honor }))
+	check(not said(w, p, n1, SQ0.Text.LeanEvil) and (d.Honor or 0) == honor and d.Story.Pick.TX_Egg == "Evil",
+		"a 0-point egg pick: no lean line (A23-130), no score", show({ w:NoticesFor(p, n1), d.Honor }))
 	local after = panels[#panels]
 	check(after.Arg.Id == "TX_Egg" and after.Arg.St == 3 and after.Arg.Var == "Evil", "LinesBy its own pick: Var Evil",
 		show(after.Arg))
 	w:Tick(p, 3)
-	check(d.Story.Done.TX_Sky and said(w, p, n1, "Sky found"), "the one-step egg ends after its seconds (never listed)",
+	check(d.Story.Done.TX_Sky and not said(w, p, n1, "Sky found"), "the one-step egg ends after its seconds (no Finish line, A23-130)",
 		show(w:Track(d, "TX_Sky")))
 end)
 
@@ -1176,7 +1177,7 @@ runGroup("ch3-halo-good", function()
 	check(main().Id == "M3_1" and main().P == 0, "goblins outside the woods do not count", show(main()))
 	local n0 = #w.Notices
 	killAt(w, p, "Goblin", "GoblinWoods", nil, 5)
-	check(d.Story.Done.M3_1 and said(w, p, n0, SQ0.Defs.M3_1.Finish), "5 goblins in the woods: M3_1 done ('IOU 1 dust')",
+	check(d.Story.Done.M3_1 and not said(w, p, n0, SQ0.Defs.M3_1.Finish), "5 goblins in the woods: M3_1 done (A23-130: the reward line, no lore)",
 		show(w:NoticesFor(p, n0)))
 	w.Story.Refresh(p)
 	check(main().Id == "M3_2", "M3_2 starts", show(main()))
@@ -1189,19 +1190,19 @@ runGroup("ch3-halo-good", function()
 	for _, t in w:NoticesFor(p, n1) do
 		if t == SQ0.Defs.M3_2.Steps[1].Obj.List[1].Say then campLines += 1 end
 	end
-	check(campLines == 1 and main().T.a == 1 and main().T.b == nil, "camp 1: its line once (a second goblin there adds nothing)",
+	check(campLines == 0 and main().T.a == 1 and main().T.b == nil, "camp 1 counted once (a second goblin there adds nothing; A23-130: no Say line)",
 		show({ campLines, main().T }))
 	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp2 + vec(80, 0, 0))
 	check(main().T.b == nil, "a goblin 80 studs from camp 2 does not count", show(main().T))
 	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp2)
 	killAt(w, p, "Goblin", "GoblinWoods", L.GoblinCamp3 + vec(0, 0, 30))
-	check(d.Story.Done.M3_2 and said(w, p, n1, SQ0.Defs.M3_2.Steps[1].Obj.List[3].Say), "all three camps: M3_2 done",
+	check(d.Story.Done.M3_2 and not said(w, p, n1, SQ0.Defs.M3_2.Steps[1].Obj.List[3].Say), "all three camps: M3_2 done (no Say line)",
 		show(d.Story.Done.M3_2))
 	w.Story.Refresh(p)
 	local n2 = #w.Notices
 	killAt(w, p, "GoblinBrute", "GoblinWoods")
-	check(d.Story.Done.M3_3 and said(w, p, n2, SQ0.Defs.M3_3.Finish) and said(w, p, n2, SQ0.Defs.M3_3.Clue),
-		"M3_3: the Brute's line, then the crayon clue", show(w:NoticesFor(p, n2)))
+	check(d.Story.Done.M3_3 and not said(w, p, n2, SQ0.Defs.M3_3.Finish) and not said(w, p, n2, SQ0.Defs.M3_3.Clue),
+		"M3_3 done: the reward line, no Brute line, no crayon clue (A23-130)", show(w:NoticesFor(p, n2)))
 	-- M3_4: home -> the pick card remembers M2_3 -> +3 honor -> the Guide's reaction -> [Claim]
 	w.Story.Refresh(p)
 	check(main().Id == "M3_4" and main().St == 1, "M3_4 starts: go home", show(main()))
@@ -1513,7 +1514,8 @@ runGroup("halo-check-h2", function()
 	w:Tick(p, 1)
 	check(tr.St == 3 and storyPanels(panels, "H2") == 0, "#36 5 slimes: take it home first (no pick card in the meadow)",
 		show({ tr.St, storyPanels(panels, "H2") }))
-	check(indexOf(w:NoticesFor(p, n0), SQ0.Defs.H2.Steps[3].Start) ~= nil, "the 'take it home' line", show(w:NoticesFor(p, n0)))
+	check(indexOf(w:NoticesFor(p, n0), SQ0.Defs.H2.Steps[3].Start) == nil, "no 'take it home' line (A23-130: the row says it)",
+		show(w:NoticesFor(p, n0)))
 	w.ZoneOf[p] = "HaloTown"
 	w:Tick(p, 1)
 	check(tr.St == 4 and storyPanels(panels, "H2") == 1, "home in Halo Citadel: the pick card opens there", show({ tr.St, storyPanels(panels, "H2") }))

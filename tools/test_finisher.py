@@ -56,8 +56,8 @@ MUTATIONS = [
      "\t\tif true then\n\t\t\trecord._manualAt = record._manualAt or {}\n"),
     ("Manual ignores the window", M, "i.Manual = manualAt[e.Player] ~= nil and now - manualAt[e.Player] <= window",
      "i.Manual = manualAt[e.Player] ~= nil"),
-    ("the kill keeps the manual hits", M, "rec._contributors, rec._hits, rec._dmg, rec._manualAt = {}, {}, {}, {}",
-     "rec._contributors, rec._hits, rec._dmg = {}, {}, {}"),
+    ("the kill keeps the manual hits", M, "rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt = {}, {}, {}, {}, {}",
+     "rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}"),
     ("a refused hit marked manual", M, "\tif record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end",
      "\tif record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then\n"
      "\t\tif manual == true then record._manualAt = record._manualAt or {}; record._manualAt[player] = os.clock() end\n"
@@ -121,7 +121,11 @@ MUTATIONS = [
      "\tif f == \"Halo\" or f == \"Horns\" then return f end\n\treturn \"Horns\"\n"),
     ("the sides swapped", F, "local SIDE = { Help = \"Good\", Tickle = \"Evil\" }", "local SIDE = { Help = \"Evil\", Tickle = \"Good\" }"),
     ("no rank-down line", D, "\t\tdown = rankOf(f, have - take) < rankOf(f, have)\n", "\t\tdown = false\n"),
-    ("no 'points full' line", F, "\telseif mine and change <= 0 and points() > 0 then\n", "\telseif false then\n"),
+    # A23-130: the 'points full' line is off; putting it back must fail
+    ("the 'points full' line back", F,
+     "if down then notify(player, f == \"Halo\" and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n\t\tend\n",
+     "if down then notify(player, f == \"Halo\" and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n"
+     "\t\telseif mine and change <= 0 and points() > 0 then\n\t\t\tnotify(player, TXT.HintFull, \"info\")\n\t\tend\n"),
     ("no off-side line", F, "\t\tif stat ~= \"None\" and not mine then\n", "\t\tif false then\n"),
     ("the card shows points past the cap", D, "return stat, math.min(n, Deeds.Left(player)), true", "return stat, n, true"),
     ("the card shows a drop below 0", D, "return stat, -math.min(ownStat(player, stat), n), false", "return stat, -n, false"),
@@ -130,11 +134,14 @@ MUTATIONS = [
     ("no Picked signal", F, "\tFinisherService.Picked:Fire(player, out.Pick, card.Kind)\n", ""),
     ("metric sides swapped", F, "local METRIC = { Help = \"Halo\", Tickle = \"Horns\" }", "local METRIC = { Help = \"Horns\", Tickle = \"Halo\" }"),
     ("no metric", F, "\tmetric(player, option)\n", ""),
-    ("no reward line", F, "\t\tnotify(player, table.concat(parts, \" · \"), \"reward\", \"None\")", "\t\tlocal _ = parts"),
-    ("the pick line plays QuestDone", F, "\"reward\", \"None\") -- the pick's own sound", "\"reward\") -- the pick's own sound"),
+    ("no reward line", F, "\t\tif #parts > 0 then notify(player, table.concat(parts, \" · \"), \"reward\", \"None\") end", "\t\tlocal _ = parts"),
+    ("the pick line plays QuestDone", F, "\"reward\", \"None\") end -- the pick's own sound", "\"reward\") end -- the pick's own sound"),
     ("the sound never reaches Notify", F, "pcall(Net.Notify, player, text, kind, nil, sound)", "pcall(Net.Notify, player, text, kind)"),
-    ("no lean after the zero line", F, "\t\t\t\t\t.. (SIDE[option] == \"Good\" and STORY.LeanGood or STORY.LeanEvil), \"info\")\n",
-     "\t\t\t\t\t.. \"\", \"info\")\n"),
+    # A23-130: no zero / lean line at the score floor; putting it back must fail
+    ("the zero line back", F,
+     "\t\t\t\tnotify(player, string.format(f == \"Halo\" and STORY.OffSideHalo or STORY.OffSideHorns, -change), \"info\")\n\t\t\tend\n",
+     "\t\t\t\tnotify(player, string.format(f == \"Halo\" and STORY.OffSideHalo or STORY.OffSideHorns, -change), \"info\")\n"
+     "\t\t\telse\n\t\t\t\tnotify(player, STORY.OffSideHaloZero, \"info\")\n\t\t\tend\n"),
     ("hint Full and Zero swapped", F, "\treturn mine and \"Full\" or \"Zero\"\n", "\treturn mine and \"Zero\" or \"Full\"\n"),
     ("no Neutral hint", F, "\tif stat == \"None\" then return \"Neutral\" end\n", ""),
     ("a hint on a scoring option", F, "\tif score ~= 0 then return nil end\n", ""),

@@ -61,8 +61,10 @@ MUTATIONS = [
     ("the hint stays after the first job", BD, "\t\tst.Seen = true -- the hint row goes away", "\t\tlocal _ = 0"),
     ("a broken save keeps 4+ jobs", BD, "and (h.Side == \"Kind\" or h.Side == \"Sneaky\") and #held < num(B.Hold, 3) then",
      "and (h.Side == \"Kind\" or h.Side == \"Sneaky\") then"),
-    ("the wrong side's line", BD, "notify(player, h.Side == \"Kind\" and T.LeanKind or T.LeanSneaky, \"info\")",
-     "notify(player, T.LeanKind, \"info\")"),
+    # A23-130: the lean line is off (the score line says it); putting it back must fail
+    ("the lean line back", BD, "\tlocal okD, stat, change, mine, down, full = pcall(S.Deeds.Add, player, deed, 1)\n",
+     "\tlocal okD, stat, change, mine, down, full = pcall(S.Deeds.Add, player, deed, 1)\n"
+     "\tnotify(player, h.Side == \"Kind\" and T.LeanKind or T.LeanSneaky, \"info\")\n"),
     # (no "slot range" mutation: a slot outside 1..Cards finds no card and is ignored by the next line anyway)
     ("EventAmount not shared", ST, "function StoryQuestService.EventAmount(player, obj, ev)\n\treturn eventAmount(player, obj, ev)",
      "function StoryQuestService.EventAmount(player, obj, ev)\n\treturn 0"),

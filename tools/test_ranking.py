@@ -269,8 +269,8 @@ MUTATIONS = [
      "return e ~= nil and now - e.Last <= GUARD.EngageGap"),
     ("a fight never ends", P, "if e == nil or nowFight - e.Last > GUARD.EngageGap then", "if e == nil then"),
     ("every hit starts a new fight", P, "if e == nil or nowFight - e.Last > GUARD.EngageGap then", "if true then"),
-    ("hidden bounty line not used", P, 'fmt(hidden == true and "BountyAnnounceHidden" or "BountyAnnounce",', 'fmt("BountyAnnounce",'),
-    ("IsHidden always false", A, 'return typeof(player) == "Instance" and player:IsA("Player") and isHidden(player)', "return false"),
+    # (no "hidden bounty line" / "IsHidden always false" mutations: A23-130 turned the server-wide bounty line off, and it
+    # was the only user of AnnounceService.IsHidden)
     ("kaiju name not re-published on a hide toggle", K,
      "\t\t\t\tpublish(phase, player.UserId, kaijuName, phaseEndsAt)\n", "\t\t\t\tlocal _ = phase\n"),
     ("HandleKO may ask the web", P, "ctx.HadSack == true, NoYield = true,", "ctx.HadSack == true, NoYield = false,"),

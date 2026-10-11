@@ -98,7 +98,10 @@ MUTATIONS = [
     ("walk: the record stays after the payment", LF, "\tst.Holding = nil\n\tCARRY[player] = nil\n\tlocal parts, paid", "\tCARRY[player] = nil\n\tlocal parts, paid"),
     ("walk: no refresh after the payment", LF, "\tdirty(player)\n\tLostFoundService.Delivered:Fire", "\tLostFoundService.Delivered:Fire"),
     ("walk: nobody is told", LF, "\tLostFoundService.Delivered:Fire(player, h.Id, h.Side, h.Leg, paid)\n", ""),
-    ("walk: the wrong thank-you", LF, "local line = h.Side == \"Good\" and T.GoodDone or (h.Leg == \"Vault\" and T.TrophyDone or T.FeeDone)", "local line = T.GoodDone"),
+    # A23-130: the turn-in line is the reward parts only; the thank-you lead back must fail
+    ("walk: the thank-you lead back", LF, "\tnotify(player, table.concat(parts, \" · \"), \"reward\")\n",
+     "\ttable.insert(parts, 1, string.format((cfg().Text or {}).GoodDone or \"%s\", d and d.Name or h.Id))\n"
+     "\tnotify(player, table.concat(parts, \" · \"), \"reward\")\n"),
     ("walk: the loop never pays", LF, "\t\t\t\t\tlocal ok, err = pcall(LostFoundService.Deliver, player)\n", "\t\t\t\t\tlocal ok, err = true, nil\n"),
     ("walk: the join forgets the walk", LF, "\t\t\tif st.Holding and st.Holding.Phase == \"Carry\" then CARRY[player] = true end\n", ""),
     # --- the payment

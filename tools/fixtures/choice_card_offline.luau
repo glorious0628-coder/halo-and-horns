@@ -268,7 +268,8 @@ runGroup("card: offer, pick, reward", function()
 	check(d.Story.N.LostBear.Good == 1 and d.Story.N.LostBear.Evil == nil, "counted: Story.N.LostBear.Good = 1", show(d.Story))
 	check(p:GetAttribute("DeedsToday") == 1, "the pick used one deed point", p:GetAttribute("DeedsToday"))
 	local n = notices(w, p)
-	check(string.find(n, "Kind choice!", 1, true) and string.find(n, "Honor +1", 1, true), "one line: Kind choice! … Honor +1", n)
+	-- A23-130: the gains only (no 'Kind choice!' label)
+	check(string.find(n, "+Jelly ×2 · Honor +1", 1, true) and not string.find(n, "Kind choice!", 1, true), "one line: +Jelly ×2 · Honor +1", n)
 	pick(w, p, 1, "Good")
 	check(d.Items.Jelly == 2 and d.Honor == 6 and #w:FxOf("CardEnd", p) == 1, "the same card twice: paid once", show({ d.Items, d.Honor }))
 	-- the next card has a new id; the other side
@@ -310,7 +311,9 @@ runGroup("card: a full day keeps the reward", function()
 	pick(w, p, 1, "Good")
 	local en = lastFx(w, "CardEnd", p)
 	check(en.Score == 0 and en.Full == true and en.N == 2 and d.Items.Jelly == 2 and d.Honor == 0, "no points, the reward still comes, Full = true", show(en))
-	check(string.find(notices(w, p), w.Config.ChoiceCard.Text.Full, 1, true) ~= nil, "the 'shard is full' line", notices(w, p))
+	-- A23-130: no 'shard is full' line (the card said Full before the pick); the reward line still comes
+	check(string.find(notices(w, p), w.Config.ChoiceCard.Text.Full, 1, true) == nil and string.find(notices(w, p), "+Jelly ×2", 1, true) ~= nil,
+		"no 'shard is full' line, the reward line only", notices(w, p))
 end)
 
 runGroup("card: no faction, bag full", function()
