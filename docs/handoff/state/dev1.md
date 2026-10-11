@@ -19,8 +19,12 @@
 
 7. **fix/golden-egg-client 30fa96da** (A23-131·134 황금 알 줍기 화면, 게임성 검수에 보고): 서버-화면 약속 `docs/design/golden_egg_contract_2026-10-11.md`(Effects.GooseEggs 부품 + Id·Kind·Points·From·LandAt, 플레이어 EggCarry·GooseCount·EggDelivered·EggCan·EggShield, GameState GooseOvertimeUntil·정수 GooseRescue/Poach, 거위 Act·ActUntil, Fx EggDeliver·EggReturn·EggTag, Config.Goose.Egg 모양 + Center, EggStack Motor6D EggJoint). 새 `EggFx.luau`(ClientMain "FountainFx" 다음), EventHUD 알 막대(EggFx.Bar), Audio(EggDeliver/EggTag, 알 주운 사람만 3-2-1), QuestMarker(알 들면 집), QuestTarget·WorldMap(둥지·수레), Config.GooseEggFx + 소리 7줄. Mode ≠ "Eggs"면 전부 꺼짐(병합해도 게임 그대로). 시험 test_egg_fx 51·25/25 + 관련 41개 통과. 개발 2에게 약속 보냄, 9절 질문 3개 답 기다림.
 
+8. **(PC 재부팅 뒤) fix/onehand-2 6d449153** (33272a46 위, 게임성 검수 후속 6개, 게임성 검수에 보고): WarriorRelease 왼팔 = 받침·균형(grip_reference §1-9), CharacterVisuals `staffHandHeight`(아바타 몸으로 손 높이 → 발끝 땅 위 0.08, STAFF.Grip·FootMin 지움), 시험 빈 곳(위팔 ≥0.15 → 연금술사 Pole (1,-0.8,0); FK 두 손 간격 ≥1.2), 옛 대검 주석. 4번(진영 대기 자세 차이)은 최종 검수에 질문(추천: 빛 곧게·뿔 숙임). 6번 Legend 길이 = 의도(힘 T3~T4). fix/golden-egg-client **3d95925a**: EggFx 경고 10초에 한 번.
+
 ## 기다리는 것
-- 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46)·fix/golden-egg-client(30fa96da) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게). 사진 오면 쥐기·길이 다시 봄.
+- 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(3d95925a) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
+- 최종 검수: 진영 대기 자세 차이 할지 답.
+- 새 SPEC: A23-137(거위 4시간마다·예고 칩 = 다음 거위 시각 → 황금 알 화면 EventHUD 칩 손볼 것, 지시 오면), A23-138(밈 묶음 = fix/meme-en-client, 급한 병합 뒤 지시 오면; Smokey → Rose 36곳).
 - 개발 2: 황금 알 약속 답(장인 알 들고 다니나, 깃털 Kind, "Bring 2 eggs…" Notify) + 서버 GooseEggs → 그 뒤 진짜 서버로 Play 확인·폰 확인(메인 반영 1), 약속이 바뀌면 EggFx 맞춤.
 - 서버 줄(끔 52·짧게 60)은 개발 2 몫. tools/_weapon_prompts.py 뿔 전사 문구는 이미지 생성 2 몫.
 - 아직 안 한 황금 알 화면: 거위 조각 색(거위 3D 필요), "!"·"Zzz" 아이콘 그림(승인되면 글자 대신), 알 아이콘 IconGoldenEgg(이미지 개발 업로드 뒤 막대 양 끝).
