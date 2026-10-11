@@ -190,8 +190,11 @@ local STYLE = {
 
 -- HUD v2 notify column (UIKit.PlaceNotify). Rect == nil = the old TOAST_Y stack + 30% banner (before the first call).
 local NOTIFY = {
-	-- 검수 2026-10-09 (user: "not too kind, not too unkind"; UI clutter review ②): one toast at a time for at most
-	-- ShowSeconds; the next ones wait in Queue (newest kept, at most QueueMax: a burst never fills half a minute)
+	-- 게임성 검수 10/11 (merge photo: the first mission's "+150 gold" came out "★ +150..." over an open card): a capsule
+	-- whose words do not fit once drawn widens up to the column (FitStep studs a frame, FitTries frames) - the measure
+	-- can come out short; and a reward line that is only gold shows the approved coin and the number (CoinFormats)
+	FitTries = 12, FitStep = 24,
+	CoinIcon = "IconCoin",
 	OneAtATime = true,
 	ShowSeconds = 3,
 	QueueMax = 3,
@@ -2758,12 +2761,51 @@ function NOTIFY.BuildArtToast(text, kind, icon, color)
 			local want = math.ceil(hExp * (ta.CapL + ta.CapR) + w + ta.Slack)
 			frame.Size = UDim2.new(0, math.clamp(want, math.floor(minH * 3), math.floor(col)), 0, 0)
 		end
+		-- 게임성 검수 10/11: once drawn, words that still do not fit (TextFits false: cut "...") widen the capsule step by
+		-- step up to the column
+		task.spawn(function()
+			for _ = 1, NOTIFY.FitTries do
+				task.wait()
+				if t.Dead or not frame.Parent or label.TextFits then return end
+				local cur = frame.AbsoluteSize.X / currentScale()
+				if cur >= col - 0.5 then return end
+				frame.Size = UDim2.new(0, math.floor(math.min(col, cur + NOTIFY.FitStep)), 0, 0)
+			end
+		end)
 		local info = TweenInfo.new(0.15)
 		if art then TweenService:Create(art, info, { ImageTransparency = 0 }):Play() end
 		TweenService:Create(label, info, { TextTransparency = 0, TextStrokeTransparency = 0.6 }):Play()
 		if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
 	end)
 	return t
+end
+
+-- a Lua pattern for a one-%s text format ("+%s gold" -> "^%+([%d,]+) gold$"; the number may carry thousands commas)
+function NOTIFY.FmtPattern(fmt)
+	local esc = string.gsub(fmt, "[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0")
+	esc = string.gsub(esc, "%%%%s", "([%%d,]+)")
+	return "^" .. esc .. "$"
+end
+
+-- the text formats of a reward line that is only gold (the first mission's claim, a pick's gold), read when used
+function NOTIFY.CoinFormats()
+	local out = {}
+	local tut = type(Config.Tutorial) == "table" and Config.Tutorial.Text or nil
+	local story = type(Config.StoryQuests) == "table" and Config.StoryQuests.Text or nil
+	for _, f in { type(tut) == "table" and tut.Claimed or nil, type(story) == "table" and story.ChoiceGold or nil } do
+		if type(f) == "string" and select(2, string.gsub(f, "%%s", "")) == 1 then table.insert(out, f) end
+	end
+	return out
+end
+
+-- (pure) a reward toast with no icon of its own whose whole text is one of those formats -> the coin icon and "+N"
+function NOTIFY.CoinLine(text, kind, icon, formats)
+	if kind ~= "reward" or (type(icon) == "string" and icon ~= "") or type(text) ~= "string" then return text, icon end
+	for _, fmt in formats or NOTIFY.CoinFormats() do
+		local n = string.match(text, NOTIFY.FmtPattern(fmt))
+		if n then return "+" .. n, NOTIFY.CoinIcon end
+	end
+	return text, icon
 end
 
 -- kinds: info / good / bad / reward (anything else = info); max 4 stacked (2 on short phones, CR-L38), newest on
@@ -2773,6 +2815,7 @@ function UIKit.Toast(text, kind, duration, icon)
 	if text == nil then return end
 	text = tostring(text)
 	if text == "" or not toastHolder then return end
+	text, icon = NOTIFY.CoinLine(text, kind, icon) -- a gold-only reward: the coin + "+N"
 	duration = tonumber(duration) or DEFAULT_TOAST_SECONDS
 	if duration <= 0 then duration = DEFAULT_TOAST_SECONDS end
 	if NOTIFY.OneAtATime then duration = math.min(duration, NOTIFY.ShowSeconds) end
