@@ -7,6 +7,8 @@ Reads docs/design/halo_plan_v2_2026-10-11.json dressing.props (tools/halo_props_
                the old kits are not the final look, A23-96).
   * Placeholder - everything else (HaloReasonHQ_*, Flagpole, NEW_* kits): a half-transparent box of the kit size + a name
                label (blue = kit made but not imported, orange = NEW kit still to make).
+  * Real    - kits already built (ServerStorage.HaloPropKits.<kit>, tools/prop_kit.py, 이미지 생성 4): clone, ScaleTo(prop scale),
+               PivotTo the ground point looking along yaw (the kit's front = its LookVector). Checked first.
 Every object: attributes PropId, Kit, Why, Anchor; feet on the ground (ray down onto Terrain + HaloV2.Ground, tower-top
 props onto HaloV2.Buildings). Re-running replaces the folder.
 usage: py tools/worldkit/halo_props_place.py [--mode apply|remove]
@@ -69,10 +71,10 @@ def build(mode):
             target_h = fits.get(p["kit"], ("h", HP.kit_cat(p["kit"])[2]))[1] * p["scale"]
         size = [round(v * p["scale"], 2) for v in box_size(p, fits)]
         wall = 4.8 if p["kit"] == "NEW_WallLamp" else 0
-        rows.append("{%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s}" % (
+        rows.append("{%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s}" % (
             lua_str(p["id"]), lua_str(p["kit"]), p["at"][0], p["at"][1], p["yaw"], lua_str(stand or ""),
             round(target_h, 2) if target_h else 0, "{%s,%s,%s}" % tuple(size), "true" if p["kit"].startswith("NEW_") else "false",
-            "true" if p.get("top") else "false", lua_str(p["why"]), lua_str(p["anchor"]), wall))
+            "true" if p.get("top") else "false", lua_str(p["why"]), lua_str(p["anchor"]), wall, p["scale"]))
     code = TEMPLATE.replace("__MODE__", mode).replace("__ROWS__", ",\n".join(rows))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w", encoding="utf-8", newline="\n").write(code)
@@ -94,6 +96,8 @@ local root = Instance.new("Folder")
 root.Name = "Props"
 local fS = Instance.new("Folder"); fS.Name = "StandIn"; fS.Parent = root
 local fP = Instance.new("Folder"); fP.Name = "Placeholder"; fP.Parent = root
+local fR = Instance.new("Folder"); fR.Name = "Real"; fR.Parent = root
+local real = game:GetService("ServerStorage"):FindFirstChild("HaloPropKits")
 local groundP = RaycastParams.new()
 groundP.FilterType = Enum.RaycastFilterType.Include
 groundP.FilterDescendantsInstances = { workspace.Terrain, halo:FindFirstChild("Ground") }
@@ -104,9 +108,9 @@ local function groundAt(x, z, top)
 	local hit = workspace:Raycast(Vector3.new(x, 400, z), Vector3.new(0, -700, 0), top and topP or groundP)
 	return hit and hit.Position.Y or nil
 end
-local nS, nP, nNew, miss = 0, 0, 0, {}
+local nS, nP, nNew, nR, miss = 0, 0, 0, 0, {}
 for _, r in R do
-	local id, kname, x, z, yaw, stand, th, size, isNew, top, why, anchor, wall = table.unpack(r)
+	local id, kname, x, z, yaw, stand, th, size, isNew, top, why, anchor, wall, scale = table.unpack(r)
 	local gy = groundAt(x, z, top)
 	if not gy then
 		table.insert(miss, id)
@@ -115,7 +119,17 @@ for _, r in R do
 	local dir = Vector3.new(math.sin(math.rad(yaw)), 0, math.cos(math.rad(yaw)))
 	local inst
 	local src = stand ~= "" and kit and kit:FindFirstChild(stand)
-	if src then
+	local rk = real and real:FindFirstChild(kname)
+	if rk then
+		local m = rk:Clone()
+		pcall(function() m:ScaleTo(scale) end)
+		local p0 = Vector3.new(x, gy + wall, z)
+		m:PivotTo(CFrame.lookAt(p0, p0 + dir))
+		m.Name = id .. "_" .. kname
+		m.Parent = fR
+		inst = m
+		nR += 1
+	elseif src then
 		local m = src:Clone()
 		if th > 0 then
 			local _, s = m:GetBoundingBox()
@@ -162,8 +176,8 @@ for _, r in R do
 	inst:SetAttribute("PropId", id); inst:SetAttribute("Kit", kname); inst:SetAttribute("Why", why); inst:SetAttribute("Anchor", anchor)
 end
 root.Parent = halo
-return string.format("HaloV2.Props: stand-in %d, placeholder %d (NEW %d, made-not-imported %d), no ground %d %s",
-	nS, nP, nNew, nP - nNew, #miss, table.concat(miss, ","))
+return string.format("HaloV2.Props: real %d, stand-in %d, placeholder %d (NEW %d, made-not-imported %d), no ground %d %s",
+	nR, nS, nP, nNew, nP - nNew, #miss, table.concat(miss, ","))
 '''
 
 
