@@ -262,7 +262,7 @@ add("CeilingSlab", (2 * XS + 0.4, (YF - YB) + 0.4, 0.5), (CX, (YF + YB) / 2, Z1 
 # ---------------- pilasters: big gold capital, band on the impost line, gold foot. They stay inside the cornice line (the
 # 2D cornice is the widest part of the walls). The two front ones face the front (the lanterns hang on them) and stand on
 # the front pedestals; the others turn along the corner bisector.
-PIL_OUT = 0.45                 # pilaster face this far outside the corner
+PIL_OUT = 0.85                 # pilaster face this far outside the corner (검수 v4c: 0.4 more, the 2D pilasters stand out)
 for i, (x, y) in enumerate(V):
     wa, wb = walls[EDGES[i - 1][0]], walls[EDGES[i][0]]
     if i in (0, 7):
@@ -290,7 +290,7 @@ for nm, i in (("PedestalL", 0), ("PedestalR", 7)):
     pc = (x + sx * 0.1, (PED_FRONT + YF - 0.6) / 2)
     dep = PED_FRONT - (YF - 0.6)
     add(nm, (PED_W, PED_Z, dep), (pc[0], pc[1], PED_Z / 2))
-    add(nm + "_Cap", (PED_W + 0.25, 0.35, dep + 0.25), (pc[0], pc[1], PED_Z + 0.175), mat="gold")
+    add(nm + "_Cap", (PED_W + 0.12, 0.35, dep + 0.12), (pc[0], pc[1], PED_Z + 0.175), mat="gold")   # half the old overhang
     add(nm + "_Foot", (PED_W + 0.2, 0.55, dep + 0.2), (pc[0], pc[1], 0.275), mat="gold")
     add(nm + "_Plaque", (0.7, 1.2, 0.1), (pc[0], PED_FRONT + 0.03, 2.0), mat="gold")
 
@@ -321,8 +321,8 @@ def ring(prefix, d, z0, z1, depth, mat, skip=()):
 ring("Plinth", 1.2, 0.0, Z0, 2.0, "marble")
 ring("FootRing", 1.4, 0.0, 0.55, 0.5, "gold")            # one unbroken gold foot line all round
 ring("Frieze", 0.15, FRZ0, FRZ1, 0.45, "gold")           # the second gold line, front face too
-ring("Cornice", 0.85, Z1, Z1 + 0.7, 1.65, "marble")
-ring("CorniceGold", 0.97, Z1 + 0.7, Z1 + 0.9, 0.75, "gold")
+ring("Cornice", 1.2, Z1, Z1 + 0.7, 2.0, "marble")       # still the widest line, past the pilaster capitals
+ring("CorniceGold", 1.32, Z1 + 0.7, Z1 + 0.9, 0.85, "gold")
 
 # ---------------- half-round two-step stair (upright cylinders, half in the wall)
 post("StepTop", 6.6, Z0 - 0.01, CX, YF, 0.0)
@@ -401,6 +401,24 @@ LANT_U, LANT_Y = HF - 0.35, YF + PIL_OUT   # lanterns hang on the front faces of
 for nm, x in (("LampGlassL", CX - LANT_U + 0.03), ("LampGlassR", CX + LANT_U + 0.03)):
     add(nm, (0.62, 0.85, 0.62), (x, LANT_Y + 0.7, 7.45), mat="lamp")
 
+# ---------------- awning (검수 v4c: the Tripo awning reads as a small gold lump; its map is cut into gold-orange islands,
+# so a recolour would need a new texture upload + re-import): cream / yellow striped cloth of parts, Fabric, matte, a
+# scalloped valance, a gold rod at the wall and gold balls at the corners, as in the 2D. Sits under the dormer.
+AW_W, AW_D, AW_TOP, AW_DROP, AW_N = 7.4, 2.3, 10.55, 1.2, 7
+aw_len = math.hypot(AW_D, AW_DROP)
+aw_n = (0.0, AW_DROP / aw_len, AW_D / aw_len)          # cloth normal (up and out)
+sw = AW_W / AW_N
+for k in range(AW_N):
+    x = CX - AW_W / 2 + sw * (k + 0.5)
+    m = "fabricY" if k % 2 == 0 else "fabricC"
+    add("Awning_Stripe%d" % k, (sw + 0.01, 0.15, aw_len), (x, YF + AW_D / 2, AW_TOP - AW_DROP / 2), (1.0, 0.0, 0.0), aw_n, m)
+    add("Awning_Valance%d" % k, (sw + 0.01, 0.42, 0.12), (x, YF + AW_D + 0.02, AW_TOP - AW_DROP - 0.19), mat=m)
+    disk("Awning_Scallop%d" % k, sw * 0.98, 0.14, (x, YF + AW_D + 0.02, AW_TOP - AW_DROP - 0.4), (0.0, 1.0, 0.0), m)
+add("Awning_Rod", (AW_W + 0.4, 0.26, 0.26), (CX, YF + 0.16, AW_TOP + 0.02), (1.0, 0.0, 0.0), UP, "gold", "Cylinder")
+for k, sx in enumerate((-1, 1)):
+    add("Awning_BallFront%d" % k, (0.42, 0.42, 0.42), (CX + sx * (AW_W / 2 + 0.05), YF + AW_D + 0.05, AW_TOP - AW_DROP), mat="gold", shape="Ball")
+    add("Awning_BallTop%d" % k, (0.36, 0.36, 0.36), (CX + sx * (AW_W / 2 + 0.25), YF + 0.16, AW_TOP + 0.02), mat="gold", shape="Ball")
+
 # ---------------- RoundTree_E pot (r 2.4, h 2.0), well away from the house
 PX, PY = 26.0, 0.0
 post("Pot_Body", 4.6, 1.85, PX, PY, 0.08, grp="pot")
@@ -444,7 +462,7 @@ place = {
         "Door": [{"region": dict(DOOR_LEAF, no_gold=True), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0], "move": [CX + 0.32, LEAF_DY, 0]}],
         "DoorHw": [{"region": dict(DOOR_LEAF, drop_tall=2.0, z=[0.0, 8.3]), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0],
                     "move": [CX + 0.32, LEAF_DY, 0]}],
-        "Awning": [{"region": {"drop_boxes": [[[-9, 9], [0, 6.0], [0, 9.5]]]}, "move": [CX - 0.13, DY, 0]}],
+        # Awning: dropped, the awning is skeleton parts now (검수 v4c)
         "Dormer": [{"move": [CX - 0.1, DY, DZ]}],
         "WinPane": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerPane"}],
         "Glass": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerGlass"}],
@@ -484,7 +502,11 @@ MAT = {
     "soil": 'p.Material = Enum.Material.Sand; p.Color = Color3.fromRGB(140, 100, 62)',
     "sky": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(150, 200, 240)',
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
-    "lamp": 'p.Material = Enum.Material.Neon; p.Color = Color3.fromRGB(255, 226, 150); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Parent = p',
+    # lamp glass: warm see-through glass by day (검수 v4c: no white Neon box); the PointLight is off in the place and
+    # WeatherFx switches it on at Dusk / Night (attribute LampLight on the part)
+    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Enabled = false; l.Parent = p',
+    "fabricY": 'p.Material = Enum.Material.Fabric; p.Color = Color3.fromRGB(250, 205, 72)',
+    "fabricC": 'p.Material = Enum.Material.Fabric; p.Color = Color3.fromRGB(255, 243, 212)',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
 }
 

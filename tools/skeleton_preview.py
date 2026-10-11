@@ -108,6 +108,8 @@ MATS = {
     "sky": flat_mat("sky", tuple(s2l(c / 255) for c in (150, 200, 240)), 0, 0.4),
     "wood": flat_mat("wood", tuple(s2l(c / 255) for c in (176, 118, 68)), 0, 0.8),
     "lamp": flat_mat("lamp", (1.0, 0.75, 0.35), 0, 0.3),
+    "fabricY": flat_mat("fabricY", tuple(s2l(c / 255) for c in (250, 205, 72)), 0, 0.9),
+    "fabricC": flat_mat("fabricC", tuple(s2l(c / 255) for c in (255, 243, 212)), 0, 0.9),
     "glass": flat_mat("glass", tuple(s2l(c / 255) for c in (170, 215, 245)), 0, 0.05, 0.45),
 }
 
