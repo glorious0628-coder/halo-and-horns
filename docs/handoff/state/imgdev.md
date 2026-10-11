@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12: 재료 아이콘 1차 10개 올림)
+
+- **UI 아이콘 1차 10개 올림**(최종 검수 승인, 직접 봄: 밝은/어두운 배경 깨끗·사람 없음): IconPetal 133887324126001·IconCaptainBadge 79235006547470·IconSeaShell 126461746451387·IconCrystalShard 79705802311397·IconMeadowHerb 86098124636549·IconCopperOre 119596801981491·IconOakLog 122711143611444·IconIronOre 100831679530995·IconSilverOre 114879087694979·IconMoonCrystal 106196598879661 (asset_ids.json 같은 이름). Config 반영 = 가지 `imgdev-icons1`(worktree ../Game-imgdev-icons, Config.UIArt.Parts 10줄) → 게임성 검수 → 최종 검수. 2차 5개(CrownDust 등)는 디자인 검수 시트 본 뒤 따로 승인.
+- 올린 원본 art/out/s2/icons_bag_cut/는 아직 안 지움(Config 반영 병합 뒤 판단).
+
 # 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 올리기 취소)
 
 - **D2 껍데기 메시 4개 올리기 취소**(디자인 검수 10/12: 이미지 생성 4가 EditableMesh로 올리기 없이 시험). 사용자가 선을 고르면 그때 정식 메시로 다시 요청. 준비해 둔 도구 `tools/upload_hull_meshes.py`(OBJ → EditableMesh → AssetService:CreateAssetAsync, 마우스 없이; 아직 한 번도 안 돌림 — 이 환경에서 CreateAssetAsync가 실제로 되는지 모름, 함수는 있음). C·C+ 올리기도 취소.
