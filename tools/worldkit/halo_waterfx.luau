@@ -4,7 +4,7 @@
 -- of each water sheet and its outward direction) and builds, per sheet, in Workspace.Map.Decor.HaloWaterFx:
 --   * a Beam (flowing streak texture, TextureSpeed > 0 = it moves down by itself, no script) from the lip to the pool / sea below,
 --     its plane facing outward, a little in front of the terrain water
---   * a mist ParticleEmitter at the foot (the default round soft particle: round puffs only, no rays)
+--   * a mist ParticleEmitter at the foot (PUFF = the built-in smoke puff: round only, no rays)
 --   * white foam puffs on the pool / sea where the sheet lands (round particles lying flat; the flat disc of 10/11 read as a plate)
 -- MODE "apply" (default) rebuilds the folder, "remove" deletes it, "plan" only counts. STREAK = the uploaded streak texture id ("" =
 -- the beam is left out and only mist + foam are made, so the look never invents a texture).
@@ -12,6 +12,7 @@
 local MODE = "__MODE__"
 if MODE ~= "plan" and MODE ~= "remove" then MODE = "apply" end
 local STREAK = "rbxassetid://111806947888357" -- art/ui/Halo_WaterfallStreaks.png (Firefly High, alpha from brightness: tools/streak_alpha.py)
+local PUFF = "rbxasset://textures/particles/smoke_main.dds" -- round soft puff; the default particle is a spiky sparkle (no rays)
 local CFG = {
 	Half = 4, -- the terrain sheet half width (halo_terrain CAS.Half)
 	Lip = 0.6, -- studs out from the sheet top where the strip starts
@@ -92,18 +93,17 @@ for _, s in sheets do
 	holder:SetAttribute("Why", "흐르는 폭포 물줄기·물보라(규칙 3, A23-120)")
 	holder.Parent = folder
 	local foot = base + out * landD + Vector3.new(0, landY - s.top + CFG.Lift, 0)
-	-- the strip lies on the sloped water: X = across the fall (width), Y = the surface normal
+	-- the strip lies on the sloped water. A non-FaceCamera beam spreads its width along the attachments' Y axis (beam bench
+	-- 10/11: X = side / Y = up stood up like a fin, X = run / Y = side lay flat), so X = down the fall, Y = across it
 	local down = (foot - lip).Unit
-	local normal = side:Cross(down).Unit
-	if normal.Y < 0 then normal = -normal end
 	local a0 = Instance.new("Attachment")
 	a0.Name = "Top"
-	a0.WorldCFrame = CFrame.fromMatrix(lip, side, normal)
-	a0.Parent = holder
+	a0.Parent = holder -- parent first: a World* set on a loose attachment becomes its local offset (10/11: beams drew at 2x)
+	a0.WorldCFrame = CFrame.fromMatrix(lip, down, side)
 	local a1 = Instance.new("Attachment")
 	a1.Name = "Bottom"
-	a1.WorldCFrame = CFrame.fromMatrix(foot, side, normal)
 	a1.Parent = holder
+	a1.WorldCFrame = CFrame.fromMatrix(foot, down, side)
 	if STREAK ~= "" then
 		local b = Instance.new("Beam")
 		b.Attachment0, b.Attachment1 = a0, a1
@@ -123,9 +123,10 @@ for _, s in sheets do
 	-- mist at the foot (round soft puffs)
 	local mist = Instance.new("Attachment")
 	mist.Name = "Mist"
-	mist.WorldPosition = foot + Vector3.new(0, 0.6, 0)
 	mist.Parent = holder
+	mist.WorldPosition = foot + Vector3.new(0, 0.6, 0)
 	local pe = Instance.new("ParticleEmitter")
+	pe.Texture = PUFF
 	pe.Rate = CFG.Mist.Rate
 	pe.Lifetime = CFG.Mist.Life
 	pe.Speed = CFG.Mist.Speed
@@ -141,9 +142,10 @@ for _, s in sheets do
 	-- velocity = the sprite faces up), white, fading out; no hard disc
 	local fa = Instance.new("Attachment")
 	fa.Name = "Foam"
-	fa.WorldPosition = Vector3.new(foot.X, landY + 0.15, foot.Z)
 	fa.Parent = holder
+	fa.WorldPosition = Vector3.new(foot.X, landY + 0.15, foot.Z)
 	local fe = Instance.new("ParticleEmitter")
+	fe.Texture = PUFF
 	fe.Rate = CFG.Foam.Rate
 	fe.Lifetime = NumberRange.new(0.8, 1.4)
 	fe.Speed = NumberRange.new(0.01, 0.02)

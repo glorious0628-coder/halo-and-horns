@@ -65,7 +65,14 @@ if MODE == "remove" then
 		for _, c in hold:GetChildren() do
 			if c.Name ~= "TerrainHalo" then
 				local dest = c:GetAttribute("From")
-				if dest == "Workspace" then c.Parent = workspace elseif decor then c.Parent = decor end
+				local mf = workspace:FindFirstChild("Map")
+				if dest == "Workspace" then
+					c.Parent = workspace
+				elseif typeof(dest) == "string" and string.sub(dest, 1, 4) == "Map." and mf and mf:FindFirstChild(string.sub(dest, 5)) then
+					c.Parent = mf[string.sub(dest, 5)]
+				elseif decor then
+					c.Parent = decor
+				end
 				back += 1
 			end
 		end
@@ -102,57 +109,95 @@ if not hold then
 		if f then f:SetAttribute("From", "Workspace") f.Parent = hold end
 	end
 end
+-- the old marble gate / sign / landmarks inside the box stand in the way of the grey gate: keep them too (every run, so a
+-- hold made before this rule also gets them)
+local mapf = workspace:FindFirstChild("Map")
+for _, fname in { "Gates", "Landmarks" } do
+	local f = mapf and mapf:FindFirstChild(fname)
+	if f then
+		for _, c in f:GetChildren() do
+			local p
+			if c:IsA("BasePart") then p = c.Position elseif c:IsA("Model") then p = c:GetPivot().Position end
+			if p and p.X > BOX.x0 and p.X < BOX.x1 and p.Z < BOX.z0 + 8 and p.Z > BOX.z1 then
+				c:SetAttribute("From", "Map." .. fname)
+				c.Parent = hold
+			end
+		end
+	end
+end
 if root then root:Destroy() end
 root = Instance.new("Folder")
 root.Name = "HaloV2"
 root:SetAttribute("Why", "A23-121 3단계 회색 상자: docs/design/halo_plan_v2_2026-10-11.json")
 root.Parent = workspace
 
--- terrain: clear the box, sea everywhere, then land columns (row runs of equal height + material merged)
+-- terrain: clear the box, sea everywhere, then every land column written voxel by voxel (WriteVoxels on the 4-stud grid).
+-- FillBlock with 2-stud layers inside 4-stud voxels left the surface 2 studs off (y=0 land sank to -2.3 under the sea,
+-- y=10 came out 12; 10/11 photos), so each voxel gets an exact occupancy: land up to the cell's height (the voxel holding
+-- the surface is partial), the top 4 studs in the cell's material, rock below; stream / pool beds sit on the voxel line
+-- under their height with water up to height + 1.2; the sea is sand at -20 with water up to WATER_TOP.
 local reg = region()
 T:FillBlock(reg.CFrame, reg.Size, Enum.Material.Air)
 local seaY0 = -20
-local function block(x0, x1, z, y0, y1, mat)
-	if y1 - y0 < 0.05 then return end
-	local cx, cz = (x0 + x1) / 2, z
-	T:FillBlock(CFrame.new(Vector3.new(cx, (y0 + y1) / 2, cz) + OFF), Vector3.new(x1 - x0, y1 - y0, D.cell), mat)
-end
 local A = D.alph
 local idx = {}
 for i = 1, #A do idx[string.sub(A, i, i)] = i - 1 end
--- the sea floor + sea water under the whole box
+-- the sea floor + sea water under the whole box (the grid below rewrites its own columns)
 T:FillBlock(CFrame.new(Vector3.new((BOX.x0 + BOX.x1) / 2, seaY0 - 2, (BOX.z0 + BOX.z1) / 2) + OFF),
 	Vector3.new(BOX.x1 - BOX.x0, 4, BOX.z0 - BOX.z1), Enum.Material.Sand)
 T:FillBlock(CFrame.new(Vector3.new((BOX.x0 + BOX.x1) / 2, (seaY0 + WATER_TOP) / 2, (BOX.z0 + BOX.z1) / 2) + OFF),
 	Vector3.new(BOX.x1 - BOX.x0, WATER_TOP - seaY0, BOX.z0 - BOX.z1), Enum.Material.Water)
-local cells, runs = 0, 0
-for r = 1, D.rows do
-	local hs, ms = D.h[r], D.m[r]
-	local z = D.z0 - (r - 1) * D.cell - D.cell / 2
-	local c = 1
-	while c <= D.cols do
-		local m = string.sub(ms, c, c)
-		local hv = idx[string.sub(hs, c, c)]
-		local e = c
-		while e + 1 <= D.cols and string.sub(ms, e + 1, e + 1) == m and string.sub(hs, e + 1, e + 1) == string.sub(hs, c, c) do e += 1 end
-		if m ~= "s" then
-			local y = hv - D.hoff
-			local x0 = D.x0 + (c - 1) * D.cell
-			local x1 = D.x0 + e * D.cell
-			-- rock body, then a 2-stud top of the cell's material, water on top of stream / pool beds
-			block(x0, x1, z, seaY0, y - 2, Enum.Material.Rock)
+local VY0, VY1 = -24, 96
+local NY = (VY1 - VY0) / 4
+local NX, NZ = D.cols, D.rows
+local zMin = D.z0 - NZ * D.cell
+local vreg = Region3.new(Vector3.new(D.x0, VY0, zMin) + OFF, Vector3.new(D.x0 + NX * D.cell, VY1, D.z0) + OFF)
+-- measured 10/11 (ReadVoxels + raycast): the drawn surface sits 2 studs above the fill level (a full voxel 8..12 under air
+-- reads 14, a half voxel 8..10 reads 12, the same for FillBlock), so every fill level here is the wanted height - SURF
+local SURF = 2
+local mats, occs = {}, {}
+local cells = 0
+local Air, Water, Rock, Mud, Sand = Enum.Material.Air, Enum.Material.Water, Enum.Material.Rock, Enum.Material.Mud, Enum.Material.Sand
+for ix = 1, NX do
+	local mx, ox = {}, {}
+	mats[ix], occs[ix] = mx, ox
+	for iy = 1, NY do
+		mx[iy], ox[iy] = {}, {}
+	end
+	for iz = 1, NZ do
+		local r = NZ - iz + 1 -- row 1 = the north edge (z0)
+		local m = string.sub(D.m[r], ix, ix)
+		local land, top, wtop
+		if m == "s" then
+			land, top, wtop = seaY0 - SURF, Sand, WATER_TOP
+		else
+			local y = idx[string.sub(D.h[r], ix, ix)] - D.hoff
+			cells += 1
 			if m == "w" then
-				block(x0, x1, z, y - 2, y, Enum.Material.Mud)
-				block(x0, x1, z, y, y + 1.2, Enum.Material.Water)
+				land, top, wtop = math.floor((y - 3) / 4) * 4, Mud, y + 1.2 -- bed on a voxel line, drawn 1..5 under y
 			else
-				block(x0, x1, z, y - 2, y, MAT[m] or Enum.Material.Grass)
+				land, top, wtop = y - SURF, MAT[m] or Enum.Material.Grass, nil
 			end
-			cells += e - c + 1
-			runs += 1
+			if land + SURF < WATER_TOP then wtop = math.max(wtop or WATER_TOP, WATER_TOP) end -- low shore cells stay under the sea
 		end
-		c = e + 1
+		for iy = 1, NY do
+			local yb = VY0 + (iy - 1) * 4
+			local lo = math.clamp((land - yb) / 4, 0, 1)
+			if lo > 0 then
+				mx[iy][iz] = (yb + 4 > land - 3) and top or Rock
+				ox[iy][iz] = lo
+			elseif wtop and wtop - SURF > yb then
+				mx[iy][iz] = Water
+				ox[iy][iz] = math.clamp((wtop - SURF - yb) / 4, 0, 1)
+			else
+				mx[iy][iz] = Air
+				ox[iy][iz] = 0
+			end
+		end
 	end
 end
+T:WriteVoxels(vreg, 4, mats, occs)
+local runs = NX * NZ
 
 -- grey building shells: walls 1 thick, a door hole on the door face, floor slabs for upper floors (with a stair hole),
 -- a roof slab; the ground floor is the Terrain (never a part)
@@ -297,5 +342,5 @@ for _, pd in D.fixed.pads do
 	local p = part(mk, pd.name, Vector3.new(8, 0.4, 8), CFrame.new(Vector3.new(pd.at[1], pd.at[2], pd.at[3]) + OFF), Color3.fromRGB(110, 220, 110))
 	p.CanCollide = false
 end
-return string.format("halo_blockout applied: terrain cells %d (%d runs), buildings %d, bridges %d, markers %d", cells, runs, nb, #D.bridges,
+return string.format("halo_blockout applied: terrain cells %d (%d columns, voxels), buildings %d, bridges %d, markers %d", cells, runs, nb, #D.bridges,
 	#mk:GetChildren())
