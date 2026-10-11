@@ -48,6 +48,8 @@ local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil
 -- shot 1 (검수 2026-10-07: seen from straight below the crown was only an orange ring): a front three-quarter view,
 -- 25 deg below the crown and 30 deg to its left, pushing in slowly; the crown's front (-Z, the glowing crack) faces it
 local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30), From = 330, To = 255 }
+-- shot 3a (A23-121, 검수 10/11): the Halo town cut flies through the new gate passage; offsets from SPOT.Halo
+local HALO_SHOT = { From = Vector3.new(0, -4, 140), To = Vector3.new(0, -2, 58) }
 local SKIP_GRACE = 1.5 -- seconds after the start when skip input is ignored
 
 local function needsFirstIntro()
@@ -247,7 +249,9 @@ local function run(token)
 	-- 3. shards fly to the castle of light and the horn den (11-17 s): close cuts only
 	say(TXT.Lines[2])
 	local gold = shard(SPOT.Gold, SPOT.Halo + Vector3.new(0, 55, 70))
-	if not shot(token, look(SPOT.Halo + Vector3.new(18, 14, 95), SPOT.Halo), look(SPOT.Halo + Vector3.new(6, 10, 70), SPOT.Halo), 3) then return end
+	-- A23-121 new Halo town (이미지 생성 1, WorldKit blockout 03_opening_start / 03b / 04): from over the bridge (world
+	-- (0, 12, -270)) straight down the middle of the gate passage (16 x 30, 12-14 high) to inside the gate (0, 14, -352)
+	if not shot(token, look(SPOT.Halo + HALO_SHOT.From, SPOT.Halo), look(SPOT.Halo + HALO_SHOT.To, SPOT.Halo), 3) then return end
 	flyTo(gold, SPOT.Halo + Vector3.new(0, 2, 4), 2.2)
 	if not wait(token, 2.3) then return end
 	burst(SPOT.Halo + Vector3.new(0, 2, 4), SPOT.Gold, 80)
