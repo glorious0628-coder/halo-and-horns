@@ -2,7 +2,8 @@
 cameras, for side-by-side checks (이미지 생성 3, 10/11, SPEC A23-120).
 
   blender --background --factory-startup --python tools/skeleton_preview.py -- <out_dir> [--parts parts.json]
-          [--glb a.glb ...] [--cx -0.25] [--px 1400] [--skip-glass-names WinPane,Glass]
+          [--glb a.glb ...] [--cx -0.25] [--px 1400] [--skip-names WinPane,Glass] [--cams <out>_cams.json]
+          [--marble block|cream]
 
 --parts: tools/skeleton_house07.py json (Blender frame). Marble = art/ui/halo_tile/Halo_TowerMarbleBlock_* box-mapped at
 9 studs a tile (HH_HaloMarbleBlock), gold = Halo_GoldTrim_* tinted (240,186,56) at 4 studs (HH_HaloGoldTrim), glass
@@ -27,6 +28,8 @@ ap.add_argument("--glb", nargs="*", default=[])
 ap.add_argument("--cx", type=float, default=-0.25)
 ap.add_argument("--px", type=int, default=1400)
 ap.add_argument("--skip-names", default="")
+ap.add_argument("--cams", help="close-up cameras json from the skeleton generator (<out>_cams.json)")
+ap.add_argument("--marble", default="block", choices=["block", "cream"])
 a = ap.parse_args(argv)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TILE = os.path.join(ROOT, "art", "ui", "halo_tile")
@@ -96,13 +99,14 @@ def s2l(c):
 
 
 GOLD = tuple(s2l(c / 255) for c in (240, 186, 56))
+MB, MS = {"block": ("Halo_TowerMarbleBlock", 9), "cream": ("Halo_TowerMarbleBlockCream", 12)}[a.marble]
 MATS = {
-    "marble": tex_mat("marble", os.path.join(TILE, "Halo_TowerMarbleBlock_color.png"), os.path.join(TILE, "Halo_TowerMarbleBlock_rough.png"), 9, bump=0.4),
-    "floor": tex_mat("floor", os.path.join(TILE, "Halo_TowerMarbleBlock_color.png"), os.path.join(TILE, "Halo_TowerMarbleBlock_rough.png"), 9, (0.85, 0.82, 0.78), bump=0.4),
+    "marble": tex_mat("marble", os.path.join(TILE, MB + "_color.png"), os.path.join(TILE, MB + "_rough.png"), MS, bump=0.4),
+    "floor": tex_mat("floor", os.path.join(TILE, MB + "_color.png"), os.path.join(TILE, MB + "_rough.png"), MS, (0.85, 0.82, 0.78), bump=0.4),
     "gold": tex_mat("gold", os.path.join(TILE, "Halo_GoldTrim_color.png"), os.path.join(TILE, "Halo_GoldTrim_rough.png"), 4, GOLD, 1.0),
-    "soil": flat_mat("soil", tuple(s2l(c / 255) for c in (139, 101, 66)), 0, 0.95),
+    "soil": flat_mat("soil", tuple(s2l(c / 255) for c in (140, 100, 62)), 0, 0.95),
     "sky": flat_mat("sky", tuple(s2l(c / 255) for c in (150, 200, 240)), 0, 0.4),
-    "wood": flat_mat("wood", tuple(s2l(c / 255) for c in (150, 94, 52)), 0, 0.8),
+    "wood": flat_mat("wood", tuple(s2l(c / 255) for c in (176, 118, 68)), 0, 0.8),
     "lamp": flat_mat("lamp", (1.0, 0.75, 0.35), 0, 0.3),
     "glass": flat_mat("glass", tuple(s2l(c / 255) for c in (170, 215, 245)), 0, 0.05, 0.45),
 }
@@ -176,7 +180,11 @@ C = a.cx
 for nm, yaw in (("front", 0), ("q34", 35), ("side", 90), ("back", 180)):
     t = math.radians(yaw)
     shot(nm, (C + 80 * math.sin(t), 80 * math.cos(t), 9.8), (C, 0, 9.8), ortho=24)
-shot("close_door", (C + 1.5, 17.0, 6.0), (C, 5.5, 5.4), lens=40)
-shot("close_window", (C - 9.5, 9.0, 8.0), (C - 6.0, 3.8, 7.6), lens=45)
-shot("close_base", (C - 10.5, 11.0, 3.0), (C - 6.0, 4.5, 1.5), lens=40)
+if a.cams:
+    for nm, (loc, look, lens) in json.load(open(a.cams)).items():
+        shot(nm, tuple(loc), tuple(look), lens=lens)
+else:   # skeleton v3 cameras
+    shot("close_door", (C + 1.5, 17.0, 6.0), (C, 5.5, 5.4), lens=40)
+    shot("close_window", (C - 9.5, 9.0, 8.0), (C - 6.0, 3.8, 7.6), lens=45)
+    shot("close_base", (C - 10.5, 11.0, 3.0), (C - 6.0, 4.5, 1.5), lens=40)
 print("[preview] ok", a.out, flush=True)

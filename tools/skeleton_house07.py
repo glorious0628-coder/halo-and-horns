@@ -1,22 +1,28 @@
-"""Studio skeleton v3 for HaloDomeHouse_07 + RoundTree_E pot (검수 10/11, SPEC A23-120 "건물 골격 먼저"; 이미지 생성 3).
+"""Studio skeleton v4 for HaloDomeHouse_07 + RoundTree_E pot (검수 10/11, SPEC A23-120 "건물 골격 먼저"; 이미지 생성 3).
 
-  py tools/skeleton_house07.py [--origin 3000,0,0] [--out build/skeleton_test_07.luau]
+  py tools/skeleton_house07.py [--origin 3000,0,0] [--out build/skeleton_test_07.luau] [--marble cream|block]
 
-v3 follows the 2D front (art/out/s2/halo/roofs/HaloDomeHouse_07_roof_v2.png) instead of the Tripo body:
-  - octagon with a wide front face (front 9.2, diagonals project ~0.3 of it as in the 2D), walls Z0..Z1 with real openings;
-  - arched door (5.0 x 8.15, A23-106) and arched windows: rectangle + half circle, gold frame arc, marble arch band that
-    also fills the hole corners, glass = rectangle + vertical strips under the arch, gold mullion + transom, sill,
-    keystone and imposts;
-  - pilasters on every corner turned along the corner bisector, gold capital / mid band / foot,
-    gold quatrefoil medallions in raised panels on the upper walls, marble piers flanking the door (the lanterns hang
-    on them), gold balls on the front face;
-  - rings with exact mitred corners (offset polygon): plinth, gold lip, gold foot ring, string course, gold band,
-    cornice + gold top;
-  - planter beds along the left (front-left, left, back-left) and right (right, back-right) walls where the Tripo plants
-    are, and a round front-right planter (gold base, rim, soil, gold quatrefoil / medallion); a top step + a low step at the door, gold blocks at the door foot, hollow inside (floor + ceiling slab), DoorFront.
-  Gold = Metal + MaterialVariant HH_HaloGoldTrim, marble = Marble + HH_HaloMarbleBlock (이미지 개발, building_variants).
-Also writes <out>.json (parts for tools/skeleton_preview.py) and <out>_place.json (where tools/skeleton_place.py moves the
-kept Tripo pieces: roof, door, door hardware, awning, dormer + its pane, lanterns (stray bits behind them dropped), the plants of the beds and the round planter).
+v4 follows the 2D front (art/out/s2/halo/roofs/HaloDomeHouse_07_roof_v2.png; wall width : wall height : roof = 1 : 0.81 : 0.33)
+and the 검수 v3 verdict (low and wide octagon, joined gold bands, visible diagonal windows, marble door reveal + thick gold
+arch, round pots with soil, marble 1판 vs cream 2판):
+  - octagon 16 wide (XS 8.0), front face 10.5 (HF 5.25), the front diagonals bent back 2.75 x 3.2 so they show in front view
+    like the 2D; the door stays 5.0 x 8.15 (A23-106) and the house grows around it;
+  - the marble tile's courses start at the TOP of each part (WorldKit probe 10/11), so every wall slab ends at the cornice
+    line Z1 and the gold bands sit on course lines counted down from Z1: impost band at the window springs (Z1 - 4.5, a
+    course line of both tiles), frieze band under the medallion panels, cornice + gold top, plinth + gold foot ring;
+    window sills and front pedestals also end on course lines (course = 9/8 studs for the 9-stud block, 1.5 for cream 12);
+  - arched windows: gold jambs + arc through the wall, glass only 0.12 inside, marble hood, gold keystone and sill;
+  - door: marble reveal lining inside the opening down to the recessed Tripo leaf + a 0.7 gold arch frame standing 0.3 out,
+    marble band outside; no more dark gap;
+  - corner pilasters with big gold capitals and a band on the impost line; marble pedestals with a gold cap and plaque at the
+    two front corners (the 2D blocks beside the door);
+  - round pots at the front corners (marble body, ring rim, sand soil 0.25 under the rim, gold foot and line, quatrefoil)
+    holding the front Tripo plants; troughs along the sides / back diagonals for the other plant clusters (each cluster is
+    scaled 1.15 and moved onto its bed's centre line); a half-round two-step stair (upright cylinders half in the wall);
+  - hollow inside (floor + ceiling slab), DoorFront in front of the steps.
+Gold = Metal + MaterialVariant HH_HaloGoldTrim, marble = Marble + HH_HaloMarbleBlock / HH_HaloMarbleBlock_Cream (이미지 개발).
+Also writes <out>.json (parts for tools/skeleton_preview.py), <out>_place.json (where tools/skeleton_place.py moves the
+kept Tripo pieces) and <out>_cams.json (close-up cameras for the preview).
 Frame: Blender of the parts GLB (x, y = front, z up, studs) -> Roblox (x, z, -y) + origin. Part axes are given as
 Blender vectors X (part x) and Y (part y); the Luau uses CFrame.fromMatrix.
 """
@@ -28,8 +34,10 @@ import os
 ap = argparse.ArgumentParser()
 ap.add_argument("--origin", default="3000,0,0")
 ap.add_argument("--out", default="build/skeleton_test_07.luau")
+ap.add_argument("--marble", default="cream", choices=["block", "cream"])   # 10/11 pick: cream 2판 + warm tint
 a = ap.parse_args()
 OX, OY, OZ = [float(v) for v in a.origin.split(",")]
+VARIANT, COURSE = {"block": ("HH_HaloMarbleBlock", 9 / 8), "cream": ("HH_HaloMarbleBlock_Cream", 1.5)}[a.marble]
 parts = []
 UP = (0.0, 0.0, 1.0)
 
@@ -63,16 +71,40 @@ def post(name, d, h, x, y, z0, mat="marble", grp="house"):
     add(name, (h, d, d), (x, y, z0 + h / 2), UP, (1.0, 0.0, 0.0), mat, "Cylinder", grp)
 
 
+def ring_blocks(name, x, y, r_in, w, z0, z1, n_seg=18, mat="marble", grp="house"):
+    """flat ring around an upright axis made of n_seg blocks (a hollow rim)"""
+    r_out = r_in + w
+    seg = 2 * r_out * math.tan(math.pi / n_seg) * 1.04
+    for k in range(n_seg):
+        t = 2 * math.pi * k / n_seg
+        d = (math.cos(t), math.sin(t), 0.0)
+        add("%s%d" % (name, k), (seg, z1 - z0, w), (x + d[0] * (r_in + w / 2), y + d[1] * (r_in + w / 2), (z0 + z1) / 2),
+            (-d[1], d[0], 0.0), UP, mat, grp=grp)
+
+
+def on_course(z_target):
+    """first course line (texture courses start at the part top, counted down from Z1) at or under z_target"""
+    return Z1 - math.ceil((Z1 - z_target) / COURSE - 1e-6) * COURSE
+
+
 # ---------------- plan (studs)
-CX = -0.25                     # house centre in x (the Tripo side windows / roof)
-YF, YB = 5.5, -5.85            # front / back wall planes (Tripo door plane 5.6)
-HF, HB = 4.6, 3.6              # half width of the front / back faces (2D: front face ~0.62 of the body width)
-XS = 7.0                       # side planes CX +- XS (Tripo 6.72; the kept side plants are pushed out 8 %)
-YD1, YD2 = 2.0, -2.3           # where the front / back diagonals meet the sides
-Z0, Z1 = 1.1, 12.8             # plinth top (= door sill) / cornice bottom (cornice top 13.7 = Tripo roof base)
+CX, CY = -0.25, -0.125         # plan centre = centre of the Tripo body (its roof / plants are placed from it)
+HF, XS, HB = 4.75, 7.6, 4.75   # half width of the front face / side planes / half width of the back face
+GROW = XS / 6.72               # house size / Tripo body size (side planes 6.72)
+DXF = DYF = XS - HF            # 45-degree diagonals (the Tripo roof's octagon), 2.85 across as the 2D front shows them
+YF, YB = CY + 5.725 * GROW, CY - 5.725 * GROW  # front / back wall planes (Tripo body 5.6 / -5.85)
+YD1, YD2 = YF - DYF, YB + DYF
+Z0 = 1.1                       # plinth top = door sill
+Z1 = Z0 + 10 * 9 / 8           # cornice bottom 12.35 (ten 9/8 courses; cornice top 13.25, the roof sits on it)
 T = 0.8                        # wall thickness
-DOOR_W, DOOR_H = 5.0, 8.15     # arched opening (the Tripo leaf is 4.9 x 8.0)
-WIN_W, WIN_Z0, WIN_SPRING = 1.7, 5.9, 8.5   # arched windows (2D: tall and narrow)
+DOOR_W, DOOR_H = 5.0, 8.15     # arched opening (A23-106); the Tripo leaf is 4.3 wide, its spring = the opening's
+IMP0 = Z1 - 4.5                # impost band 7.85 (a course line of both tiles) .. 8.2 = window spring line
+IMP1 = IMP0 + 0.35
+WIN_W, WIN_SPRING = 1.6, IMP1
+WIN_Z0 = on_course(5.6)        # window bottom on a course line (block 5.6, cream 4.85)
+FRZ0 = on_course(10.9)         # frieze band under the medallion panels (block 10.1, cream 10.85)
+FRZ1 = FRZ0 + 0.3
+PED_Z = Z1 - round((Z1 - 4.5) / COURSE) * COURSE   # front pedestal top (block 4.475, cream 4.85)
 V = [(CX - HF, YF), (CX - XS, YD1), (CX - XS, YD2), (CX - HB, YB), (CX + HB, YB), (CX + XS, YD2), (CX + XS, YD1), (CX + HF, YF)]
 EDGES = [  # (name, from, to, windows as u fractions)
     ("WallFrontLeft", V[0], V[1], [0.5]),
@@ -93,13 +125,17 @@ class Wall:
         self.L = math.hypot(x1 - x0, y1 - y0)
         self.u = ((x1 - x0) / self.L, (y1 - y0) / self.L, 0.0)
         n = (self.u[1], -self.u[0], 0.0)
-        if (CX - (x0 + x1) / 2) * n[0] + (0 - (y0 + y1) / 2) * n[1] > 0:
+        if (CX - (x0 + x1) / 2) * n[0] + (CY - (y0 + y1) / 2) * n[1] > 0:
             n = (-n[0], -n[1], 0.0)        # away from the centre
         self.n = n
 
     def at(self, uc, z, off=0.0):
         """point on the outer face at u = uc (from p0), height z, `off` outward along n"""
         return vadd(self.p0, vmul(self.u, uc), (0.0, 0.0, z), vmul(self.n, off))
+
+    def dist(self, x, y):
+        """how far (x, y) is outside the wall face"""
+        return (x - self.p0[0]) * self.n[0] + (y - self.p0[1]) * self.n[1]
 
     def slab(self, nm, u0, u1, z0, z1, depth=T, off=0.0, mat="marble"):
         """block on the wall plane, outer face `off` outside the wall face, going `depth` inward"""
@@ -125,15 +161,17 @@ class Wall:
 
 
 walls = {}
+win_gaps = {}
 for name, p0, p1, wins in EDGES:
     w = walls[name] = Wall(name, p0, p1)
     if name == "WallFront":
         holes = [(abs(p0[0] - CX), DOOR_W, Z0, Z0 + DOOR_H)]
     else:
         holes = [(f * w.L, WIN_W, WIN_Z0, WIN_SPRING + WIN_W / 2) for f in wins]
+    win_gaps[name] = [(uc - hw / 2 - 0.22, uc + hw / 2 + 0.22) for uc, hw, _, _ in holes]
     u = 0.0
     for k, (uc, hw, hz0, hz1) in enumerate(sorted(holes)):
-        w.slab("%s_C%d" % (name, k), u, uc - hw / 2, Z0, Z1)
+        w.slab("%s_C%d" % (name, k), u, uc - hw / 2, Z0, Z1)      # all wall slabs end at Z1: courses line up
         w.slab("%s_B%d" % (name, k), uc - hw / 2, uc + hw / 2, Z0, hz0)
         w.slab("%s_T%d" % (name, k), uc - hw / 2, uc + hw / 2, hz1, Z1)
         u = uc + hw / 2
@@ -144,84 +182,111 @@ def window(w, nm, uc):
     r = WIN_W / 2
     g = 0.22
     sp = WIN_SPRING
-    # glass: rectangle up to the spring + strips under the arch (recessed 0.3)
-    w.slab(nm + "_Glass", uc - r, uc + r, WIN_Z0, sp, 0.12, -0.3, "glass")
+    # glass: rectangle up to the spring + strips under the arch, only 0.12 inside so the front view shows it
+    w.slab(nm + "_Glass", uc - r, uc + r, WIN_Z0, sp, 0.1, -0.12, "glass")
     K = 6
     for k in range(K):
         a0, a1 = -r + 2 * r * k / K, -r + 2 * r * (k + 1) / K
         h = math.sqrt(max(r * r - min(abs(a0), abs(a1)) ** 2, 0.0)) if a0 * a1 > 0 else r
-        w.slab("%s_GlassArch%d" % (nm, k), uc + a0, uc + a1, sp, sp + h, 0.12, -0.3, "glass")
-    # gold frame: jambs + arc (through the wall, 0.12 out on both faces); marble arch band fills the hole corners, 0.2 out
+        w.slab("%s_GlassArch%d" % (nm, k), uc + a0, uc + a1, sp, sp + h, 0.1, -0.12, "glass")
+    # gold frame: jambs + arc through the wall, 0.15 out; marble hood over the arc; keystone, sill, mullion + transom
     for side, sg in (("L", -1), ("R", 1)):
         u0 = uc + sg * r
-        w.slab(nm + "_Jamb" + side, min(u0, u0 + sg * g), max(u0, u0 + sg * g), WIN_Z0 - 0.1, sp, T + 0.24, 0.12, "gold")
-        w.slab(nm + "_Impost" + side, min(u0 + sg * g, u0 + sg * (g + 0.5)), max(u0 + sg * g, u0 + sg * (g + 0.5)),
-               sp - 0.12, sp + 0.14, 0.45, 0.25, "gold")
-    w.arc(nm + "_FrameArc", uc, sp, r, g, T + 0.24, 0.12, 9, "gold")
-    w.arc(nm + "_ArchBand", uc, sp, r + g - 0.02, r * 0.42 + 0.22, T + 0.4, 0.4, 9, "marble")
-    w.slab(nm + "_Key", uc - 0.24, uc + 0.24, sp + r + g + 0.1, sp + r + g + 0.75, 0.7, 0.5, "gold")
-    w.slab(nm + "_Sill", uc - r - 0.45, uc + r + 0.45, WIN_Z0 - 0.38, WIN_Z0 - 0.08, 0.75, 0.35, "gold")
-    w.slab(nm + "_SillStone", uc - r - 0.3, uc + r + 0.3, WIN_Z0 - 0.8, WIN_Z0 - 0.38, 0.55, 0.25, "marble")
-    w.slab(nm + "_BarV", uc - 0.05, uc + 0.05, WIN_Z0, sp + r, 0.1, -0.22, "gold")
-    w.slab(nm + "_BarH", uc - r, uc + r, sp - 0.05, sp + 0.05, 0.1, -0.22, "gold")
+        w.slab(nm + "_Jamb" + side, min(u0, u0 + sg * g), max(u0, u0 + sg * g), WIN_Z0 - 0.1, sp, T + 0.3, 0.15, "gold")
+    w.arc(nm + "_FrameArc", uc, sp, r, g, T + 0.3, 0.15, 9, "gold")
+    w.arc(nm + "_Hood", uc, sp, r + g - 0.02, 0.3, T + 0.45, 0.32, 9, "marble")
+    w.slab(nm + "_Key", uc - 0.24, uc + 0.24, sp + r + g + 0.05, sp + r + g + 0.7, 0.75, 0.5, "gold")
+    w.slab(nm + "_Sill", uc - r - 0.4, uc + r + 0.4, WIN_Z0 - 0.3, WIN_Z0, 0.75, 0.35, "gold")
+    w.slab(nm + "_SillStone", uc - r - 0.28, uc + r + 0.28, WIN_Z0 - 0.7, WIN_Z0 - 0.3, 0.55, 0.25, "marble")
+    w.slab(nm + "_BarV", uc - 0.05, uc + 0.05, WIN_Z0, sp + r, 0.08, -0.06, "gold")
+    w.slab(nm + "_BarH", uc - r, uc + r, sp - 0.05, sp + 0.05, 0.08, -0.06, "gold")
 
 
+med_s = min(1.15, (Z1 - FRZ1 - 0.35) / 1.05)
 for name, p0, p1, wins in EDGES:
     w = walls[name]
     for k, f in enumerate(wins):
         window(w, "%s_Win%d" % (name, k), f * w.L)
     if name != "WallFront":
-        w.quatrefoil(name + "_Medal", w.L / 2, 11.65, 1.15)
-        u0, u1, z0, z1, b = 0.95, w.L - 0.95, 10.85, 12.45, 0.18   # raised panel frame around the medallion
-        w.slab(name + "_PanelB", u0, u1, z0, z0 + b, 0.3, 0.12)
-        w.slab(name + "_PanelT", u0, u1, z1 - b, z1, 0.3, 0.12)
-        w.slab(name + "_PanelL", u0, u0 + b, z0 + b, z1 - b, 0.3, 0.12)
-        w.slab(name + "_PanelR", u1 - b, u1, z0 + b, z1 - b, 0.3, 0.12)
+        zc = (FRZ1 + Z1) / 2
+        w.quatrefoil(name + "_Medal", w.L / 2, zc, med_s)
+        u0, u1, z0, z1, b = 0.95, w.L - 0.95, FRZ1 + 0.15, Z1 - 0.12, 0.16   # raised marble panel around the medallion
+        if z1 - z0 > 1.0:
+            w.slab(name + "_PanelB", u0, u1, z0, z0 + b, 0.3, 0.12)
+            w.slab(name + "_PanelT", u0, u1, z1 - b, z1, 0.3, 0.12)
+            w.slab(name + "_PanelL", u0, u0 + b, z0 + b, z1 - b, 0.3, 0.12)
+            w.slab(name + "_PanelR", u1 - b, u1, z0 + b, z1 - b, 0.3, 0.12)
+        # impost band: one gold line on the window springs, broken only by the window frames (the pilasters cover the corners)
+        u = 0.0
+        for g0, g1 in sorted(win_gaps[name]) + [(w.L, w.L)]:
+            w.slab("%s_Impost%d" % (name, int(u * 10)), u, g0, IMP0, IMP1, 0.5, 0.18, "gold")
+            u = g1
 
-# ---------------- door: arched opening with a gold frame and a marble band
+# ---------------- door: marble reveal down to the recessed leaf, thick gold arch frame, marble band
 wf = walls["WallFront"]
 DU = abs(V[7][0] - CX)          # door centre along the front edge
 DR = DOOR_W / 2
-DSP = Z0 + DOOR_H - DR          # spring line
+DSP = Z0 + DOOR_H - DR          # spring line 6.75
+LEAF_R = 2.05                   # reveal edge 0.1 over the Tripo leaf (4.3 wide, same spring) so no gap shows
+LEAF_OFF = -0.4                 # leaf front face this far inside the wall face
+GW = 0.7                        # gold frame width
 for side, sg in (("A", 1), ("B", -1)):
     u0 = DU + sg * DR
-    wf.slab("Door_Jamb" + side, min(u0, u0 + sg * 0.5), max(u0, u0 + sg * 0.5), Z0, DSP, T + 0.3, 0.18, "gold")
-    wf.slab("Door_FootBlock" + side, min(u0 + sg * 0.45, u0 + sg * 1.45), max(u0 + sg * 0.45, u0 + sg * 1.45),
+    wf.slab("Door_Reveal" + side, min(u0, u0 - sg * (DR - LEAF_R)), max(u0, u0 - sg * (DR - LEAF_R)), Z0, DSP, T + 0.25, 0.25)
+    wf.slab("Door_Jamb" + side, min(u0, u0 + sg * GW), max(u0, u0 + sg * GW), Z0, DSP, T + 0.3, 0.3, "gold")
+    wf.slab("Door_FootBlock" + side, min(u0 + sg * GW, u0 + sg * (GW + 0.75)), max(u0 + sg * GW, u0 + sg * (GW + 0.75)),
             Z0, Z0 + 1.7, 0.9, 0.5, "gold")
-wf.arc("Door_FrameArc", DU, DSP, DR, 0.5, T + 0.3, 0.18, 12, "gold")
-wf.arc("Door_ArchBand", DU, DSP, DR + 0.48, 0.8, T + 0.3, 0.3, 12, "marble")
-# wooden backing behind the Tripo leaf (its arch is narrower than the opening); no collision, the leaf is the door
-wf.slab("Door_Back", DU - DR, DU + DR, Z0, DSP, 0.15, -1.15, "wood")
+wf.arc("Door_RevealArc", DU, DSP, LEAF_R, DR - LEAF_R, T + 0.25, 0.25, 12, "marble")
+wf.arc("Door_FrameArc", DU, DSP, DR, GW, T + 0.3, 0.3, 14, "gold")
+wf.arc("Door_ArchBand", DU, DSP, DR + GW - 0.02, 0.45, T + 0.2, 0.2, 14, "marble")
+wf.slab("Door_Threshold", DU - LEAF_R, DU + LEAF_R, Z0 - 0.02, Z0 + 0.1, -LEAF_OFF + 0.05, 0.05)
+# light wooden backing behind the leaf (no collision) so no gap ever shows the dark inside
+wf.slab("Door_Back", DU - LEAF_R, DU + LEAF_R, Z0, DSP, 0.1, LEAF_OFF - 1.15, "wood")
 for k in range(8):
-    a0, a1 = -DR + DOOR_W * k / 8, -DR + DOOR_W * (k + 1) / 8
-    h = math.sqrt(max(DR * DR - min(abs(a0), abs(a1)) ** 2, 0.0)) if a0 * a1 > 0 else DR
-    wf.slab("Door_BackArch%d" % k, DU + a0, DU + a1, DSP, DSP + h, 0.15, -1.15, "wood")
-wf.slab("Door_Key", DU - 0.3, DU + 0.3, DSP + DR + 0.5, DSP + DR + 1.15, 0.6, 0.35, "gold")
-PIER_U = 3.95   # marble piers flanking the door frame; the Tripo lanterns hang on them
-for side, sg in (("A", 1), ("B", -1)):
-    uc = DU + sg * PIER_U
-    wf.slab("DoorPier" + side, uc - 0.6, uc + 0.6, Z0, Z1, 0.9, 0.5)
-    wf.slab("DoorPierCap" + side, uc - 0.75, uc + 0.75, Z1 - 1.0, Z1, 1.1, 0.65, "gold")
-    wf.slab("DoorPierBand" + side, uc - 0.7, uc + 0.7, 9.25, 9.55, 1.0, 0.6, "gold")
-    wf.slab("DoorPierFoot" + side, uc - 0.75, uc + 0.75, Z0, Z0 + 0.4, 1.1, 0.65, "gold")
-    wf.slab("DoorPierPlaque" + side, uc - 0.32, uc + 0.32, Z0 + 1.0, Z0 + 2.1, 0.1, 0.6, "gold")
-for k, (du, z) in enumerate(((2.9, 11.5), (-2.9, 11.5), (3.6, 10.5), (-3.6, 10.5))):
+    a0, a1 = -LEAF_R + 2 * LEAF_R * k / 8, -LEAF_R + 2 * LEAF_R * (k + 1) / 8
+    h = math.sqrt(max(LEAF_R * LEAF_R - min(abs(a0), abs(a1)) ** 2, 0.0)) if a0 * a1 > 0 else LEAF_R
+    wf.slab("Door_BackArch%d" % k, DU + a0, DU + a1, DSP, DSP + h, 0.1, LEAF_OFF - 1.15, "wood")
+for k, (du, z) in enumerate(((3.5, Z1 - 0.75), (-3.5, Z1 - 0.75), (3.7, FRZ0 + 0.75), (-3.7, FRZ0 + 0.75))):
     add("FrontBall%d" % k, (0.5, 0.5, 0.5), wf.at(DU + du, z, 0.2), mat="gold", shape="Ball")
 
 # ---------------- hollow inside
 add("FloorInside", (2 * XS - 0.6, (YF - YB) - 0.6, 0.3), (CX, (YF + YB) / 2, Z0 - 0.15), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
 add("CeilingSlab", (2 * XS + 0.4, (YF - YB) + 0.4, 0.5), (CX, (YF + YB) / 2, Z1 + 0.25), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "marble")
 
-# ---------------- pilasters (turned along the corner bisector)
+# ---------------- pilasters: big gold capital, band on the impost line, gold foot. They stay inside the cornice line (the
+# 2D cornice is the widest part of the walls). The two front ones face the front (the lanterns hang on them) and stand on
+# the front pedestals; the others turn along the corner bisector.
+PIL_OUT = 0.45                 # pilaster face this far outside the corner
 for i, (x, y) in enumerate(V):
     wa, wb = walls[EDGES[i - 1][0]], walls[EDGES[i][0]]
-    bis = norm(vadd(wa.n, wb.n))
+    if i in (0, 7):
+        bis, wd, z0 = (0.0, 1.0, 0.0), 1.5, PED_Z + 0.35
+    else:
+        bis, wd, z0 = norm(vadd(wa.n, wb.n)), 1.3, Z0
     along = (-bis[1], bis[0], 0.0)
-    c = (x + bis[0] * 0.15, y + bis[1] * 0.15)
-    add("Pilaster%d" % i, (1.45, Z1 - Z0, 1.2), (c[0] + bis[0] * 0.1, c[1] + bis[1] * 0.1, (Z0 + Z1) / 2), along, UP)
-    add("PilasterCap%d" % i, (1.85, 1.0, 1.6), (c[0] + bis[0] * 0.2, c[1] + bis[1] * 0.2, Z1 - 0.5), along, UP, "gold")
-    add("PilasterBand%d" % i, (1.65, 0.3, 1.4), (c[0] + bis[0] * 0.15, c[1] + bis[1] * 0.15, 9.4), along, UP, "gold")
-    add("PilasterFoot%d" % i, (1.7, 0.4, 1.45), (c[0] + bis[0] * 0.15, c[1] + bis[1] * 0.15, Z0 + 0.2), along, UP, "gold")
+
+    def pc(face_out, depth):
+        o = face_out - depth / 2
+        return (x + bis[0] * o, y + bis[1] * o)
+
+    add("Pilaster%d" % i, (wd, Z1 - z0, 1.2), (*pc(PIL_OUT, 1.2), (z0 + Z1) / 2), along, UP)
+    add("PilasterCap%d" % i, (wd + 0.4, 1.0, 1.5), (*pc(PIL_OUT + 0.2, 1.5), Z1 - 0.5), along, UP, "gold")
+    add("PilasterCapTop%d" % i, (wd + 0.55, 0.18, 1.6), (*pc(PIL_OUT + 0.27, 1.6), Z1 - 0.09), along, UP, "gold")
+    add("PilasterBand%d" % i, (wd + 0.2, IMP1 - IMP0, 1.4), (*pc(PIL_OUT + 0.1, 1.4), (IMP0 + IMP1) / 2), along, UP, "gold")
+    if i not in (0, 7):
+        add("PilasterFoot%d" % i, (wd + 0.25, 0.4, 1.45), (*pc(PIL_OUT + 0.1, 1.45), Z0 + 0.2), along, UP, "gold")
+
+# front pedestals (the 2D blocks beside the door, the feet of the front pilasters): marble block, gold cap, plaque, foot
+PED_W, PED_FRONT = 1.8, YF + 1.1
+for nm, i in (("PedestalL", 0), ("PedestalR", 7)):
+    x, y = V[i]
+    sx = -1 if i == 0 else 1
+    pc = (x + sx * 0.1, (PED_FRONT + YF - 0.6) / 2)
+    dep = PED_FRONT - (YF - 0.6)
+    add(nm, (PED_W, PED_Z, dep), (pc[0], pc[1], PED_Z / 2))
+    add(nm + "_Cap", (PED_W + 0.25, 0.35, dep + 0.25), (pc[0], pc[1], PED_Z + 0.175), mat="gold")
+    add(nm + "_Foot", (PED_W + 0.2, 0.55, dep + 0.2), (pc[0], pc[1], 0.275), mat="gold")
+    add(nm + "_Plaque", (0.7, 1.2, 0.1), (pc[0], PED_FRONT + 0.03, 2.0), mat="gold")
 
 
 # ---------------- rings with mitred corners
@@ -248,21 +313,20 @@ def ring(prefix, d, z0, z1, depth, mat, skip=()):
 
 
 ring("Plinth", 1.2, 0.0, Z0, 2.0, "marble")
-ring("FootRing", 1.4, 0.0, 0.45, 0.5, "gold")
-ring("StringCourse", 0.28, 10.25, 10.6, 0.7, "marble", ("WallFront",))
-ring("Cornice", 0.6, Z1, Z1 + 0.7, 1.4, "marble")
-ring("CorniceGold", 0.72, Z1 + 0.7, Z1 + 0.9, 0.6, "gold")
+ring("FootRing", 1.4, 0.0, 0.55, 0.5, "gold")            # one unbroken gold foot line all round
+ring("Frieze", 0.15, FRZ0, FRZ1, 0.45, "gold")           # the second gold line, front face too
+ring("Cornice", 0.85, Z1, Z1 + 0.7, 1.65, "marble")
+ring("CorniceGold", 0.97, Z1 + 0.7, Z1 + 0.9, 0.75, "gold")
 
-# ---------------- door steps
-add("StepTop", (DOOR_W + 1.6, Z0, 1.5), (CX, YF + 0.75, Z0 / 2))
-add("StepLow", (DOOR_W + 2.8, Z0 / 2, 1.1), (CX, YF + 2.05, Z0 / 4))
-add("StepTopEdge", (DOOR_W + 1.7, 0.12, 0.25), (CX, YF + 1.45, Z0 - 0.06), mat="gold")
+# ---------------- half-round two-step stair (upright cylinders, half in the wall)
+post("StepTop", 6.6, Z0 - 0.01, CX, YF, 0.0)
+post("StepLow", 8.4, Z0 / 2, CX, YF, 0.0)
 
-# ---------------- planter beds (the Tripo plants wrap the left and right sides) + the round front-right planter
+
+# ---------------- planter troughs along the sides / back diagonals + round pots at the front corners
 def bed(prefix, names, d_out, h, medal_on=()):
     """trough along the listed consecutive walls: outer wall at d_out, soil up to the house wall, open ends capped"""
     idx = [i for i, e in enumerate(EDGES) if e[0] in names]
-    full = offset_poly(d_out)
 
     def ends(i, d):
         w = walls[EDGES[i][0]]
@@ -282,10 +346,10 @@ def bed(prefix, names, d_out, h, medal_on=()):
     for i in idx:
         en = EDGES[i][0]
         strip("%s_Wall_%s" % (prefix, en), i, d_out, 0.45, 0.0, h - 0.25, "marble")
-        strip("%s_Rim_%s" % (prefix, en), i, d_out + 0.12, 0.7, h - 0.25, h, "marble")
+        strip("%s_Rim_%s" % (prefix, en), i, d_out + 0.12, 0.6, h - 0.25, h, "marble")
         strip("%s_GoldBase_%s" % (prefix, en), i, d_out + 0.1, 0.4, 0.0, 0.55, "gold")
         strip("%s_GoldLine_%s" % (prefix, en), i, d_out + 0.05, 0.3, h - 0.42, h - 0.3, "gold")
-        strip("%s_Soil_%s" % (prefix, en), i, d_out - 0.4, d_out - 0.4, h - 0.4, h - 0.1, "soil")
+        strip("%s_Soil_%s" % (prefix, en), i, d_out - 0.45, d_out - 0.45, h - 0.55, h - 0.25, "soil")
         if en in medal_on:
             w = walls[en]
             p0, p1 = ends(i, d_out)
@@ -304,23 +368,32 @@ def bed(prefix, names, d_out, h, medal_on=()):
             add("%s_CapGold%d" % (prefix, vi), (d_out + 0.2, 0.55, 0.55), (x + w.n[0] * d_out / 2, y + w.n[1] * d_out / 2, 0.275), w.n, UP, "gold")
 
 
-bed("BedL", ("WallFrontLeft", "WallLeft", "WallBackLeft"), 2.1, 2.6, ("WallFrontLeft",))
-bed("BedR", ("WallBackRight", "WallRight"), 2.1, 2.4, ("WallRight",))
-PLANTERS = [("PlanterR", 5.2, 5.6, 4.0, 2.3)]
-for nm, x, y, d, h in PLANTERS:
-    post(nm, d, h - 0.3, x, y, 0.0)
-    post(nm + "_Rim", d + 0.3, 0.3, x, y, h - 0.3)
-    post(nm + "_GoldBase", d + 0.35, 0.6, x, y, 0.0, "gold")
-    post(nm + "_GoldRimLine", d + 0.34, 0.1, x, y, h - 0.42, "gold")
-    post(nm + "_Soil", d - 0.35, 0.12, x, y, h - 0.05, "soil")
+BED_D = 1.8                    # narrow side troughs: the 2D base is only a little wider than the walls
+BEDS = [("BedL", ("WallLeft", "WallBackLeft"), 3.0, ("WallLeft",)), ("BedR", ("WallBackRight", "WallRight"), 2.75, ("WallRight",))]
+for nm, names, h, medal in BEDS:
+    bed(nm, names, BED_D, h, medal)
+
+
+# round pots in front of the front corners (the 2D beds): partly sunk into the diagonal walls, the pedestals stand before
+# their inner ends as in the 2D
+POTS = [("PotL", (CX - 6.6, YF - 0.3), 4.2, 3.0), ("PotR", (CX + 6.6, YF - 0.3), 4.0, 2.65)]
+pot_xy = {}
+for nm, (x, y), d, h in POTS:
+    pot_xy[nm] = (x, y)
+    post(nm, d, h - 0.4, x, y, 0.0)                                  # body
+    post(nm + "_Soil", d - 0.25, 0.15, x, y, h - 0.4, "soil")        # soil 0.25 under the rim top
+    ring_blocks(nm + "_Rim", x, y, d / 2 - 0.12, 0.34, h - 0.4, h)  # hollow rim so the soil shows
+    post(nm + "_GoldBase", d + 0.35, 0.55, x, y, 0.0, "gold")
+    post(nm + "_GoldLine", d + 0.06, 0.12, x, y, h - 0.75, "gold")
     fy = y + d / 2 + 0.02
     for k, (dx, dz) in enumerate(((1, 0), (-1, 0), (0, 1), (0, -1))):
-        disk("%s_Lobe%d" % (nm, k), 0.5, 0.14, (x + dx * 0.3, fy, 1.3 + dz * 0.3), (0.0, 1.0, 0.0))
-    disk(nm + "_Core", 0.4, 0.2, (x, fy + 0.03, 1.3), (0.0, 1.0, 0.0))
+        disk("%s_Lobe%d" % (nm, k), 0.5, 0.14, (x + dx * 0.3, fy, h * 0.45 + dz * 0.3), (0.0, 1.0, 0.0))
+    disk(nm + "_Core", 0.4, 0.2, (x, fy + 0.03, h * 0.45), (0.0, 1.0, 0.0))
 
 # lamp glass inside the kept Tripo lantern frames (Neon + PointLight; the Tripo lamp glass is stone-coloured and was cut)
-for nm, x in (("LampGlassL", CX - 3.92), ("LampGlassR", CX + 3.98)):
-    add(nm, (0.62, 0.85, 0.62), (x, YF + 0.95, 7.45), mat="lamp")
+LANT_U, LANT_Y = HF - 0.35, YF + PIL_OUT   # lanterns hang on the front faces of the front pilasters
+for nm, x in (("LampGlassL", CX - LANT_U + 0.03), ("LampGlassR", CX + LANT_U + 0.03)):
+    add(nm, (0.62, 0.85, 0.62), (x, LANT_Y + 0.7, 7.45), mat="lamp")
 
 # ---------------- RoundTree_E pot (r 2.4, h 2.0), well away from the house
 PX, PY = 26.0, 0.0
@@ -333,38 +406,80 @@ for k in range(4):
     n = (math.cos(ang), math.sin(ang), 0.0)
     add("Pot_Plaque%d" % k, (0.6, 0.9, 0.12), (PX + 2.32 * n[0], PY + 2.32 * n[1], 1.05), (-n[1], n[0], 0.0), UP, "sky", grp="pot")
 
-# ---------------- where the kept Tripo pieces go (tools/skeleton_place.py)
-DOOR_LEAF = {"arch": [-0.85, DSP, 2.42], "no_white": True}   # Tripo leaf centre x -0.85: drop old frame bits and stone flecks
+# ---------------- where the kept Tripo pieces go (tools/skeleton_place.py; keep coordinates = v3 frame)
+V3_YF = 5.5                       # front plane the v3 rules were made for
+DY = YF - V3_YF
+DZ = (Z1 + 0.9) - 13.7            # cornice top moved down (roof, dormer)
+DOOR_LEAF = {"arch": [-0.85, 6.75, 2.42], "no_white": True}   # Tripo leaf centre x -0.85: drop old frame bits and stone flecks
 DORMER_BOX = {"z": [11.0, 13.5], "y": [4.0, 9.0], "x": [-1.9, 1.9]}
+LEAF_DY = (YF + LEAF_OFF) - 5.57  # v3 leaf front was at 5.57
+
+
+def cluster(old_c, wall, d_target):
+    """plants cluster rule: scale 1.15 about its own centre (base stays on the ground), then put its centre d_target
+    outside `wall` at the place the cluster had, grown like the house (x 1.2 about the plan centre)"""
+    nx, ny = CX + GROW * (old_c[0] - CX), CY + GROW * (old_c[1] - CY)
+    w = walls[wall]
+    k = d_target - w.dist(nx, ny)
+    nx, ny = nx + w.n[0] * k, ny + w.n[1] * k
+    return {"scale": [1.15, 1.15, 1.15], "about": [old_c[0], old_c[1], 0.0],
+            "move": [round(nx - old_c[0], 3), round(ny - old_c[1], 3), 0.0]}
+
+
+def into_pot(old_c, pot):
+    x, y = pot_xy[pot]
+    return {"scale": [1.15, 1.15, 1.15], "about": [old_c[0], old_c[1], 0.0], "move": [round(x - old_c[0], 3), round(y - old_c[1], 3), 0.0]}
+
+
 place = {
-    "note": "kept Tripo pieces of HaloDomeHouse_07 on the v3 skeleton (Blender frame of the parts GLB)",
+    "note": "kept Tripo pieces of HaloDomeHouse_07 on the v4 skeleton (Blender frame of the parts GLB)",
     "kinds": {
-        # the planked leaf is 3.7 wide around x -0.2 (the rest of the Tripo door was its reveal): widen it 15 % and centre it
-        "Door": [{"region": dict(DOOR_LEAF, no_gold=True), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0], "move": [CX + 0.2, 0, 0]}],
+        # the planked leaf is 3.7 wide around x -0.2 (the rest of the Tripo door was its reveal): widen it 15 %, centre it, recess it
+        "Door": [{"region": dict(DOOR_LEAF, no_gold=True), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0], "move": [CX + 0.32, LEAF_DY, 0]}],
         "DoorHw": [{"region": dict(DOOR_LEAF, drop_tall=2.0, z=[0.0, 8.3]), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0],
-                    "move": [CX + 0.2, 0, 0]}],
-        "Awning": [{"region": {"drop_boxes": [[[-9, 9], [0, 6.0], [0, 9.5]]]}, "move": [CX - 0.13, 0, 0]}],
-        "Dormer": [{"move": [CX - 0.1, 0, 0]}],
-        "WinPane": [{"region": DORMER_BOX, "move": [CX - 0.1, 0, 0], "rename": "DormerPane"}],
-        "Glass": [{"region": DORMER_BOX, "move": [CX - 0.1, 0, 0], "rename": "DormerGlass"}],
-        "Roof": [{"scale": [1.12, 1.08, 1.0], "about": [CX, (YF + YB) / 2, 13.6]}],
-        "Lanterns": [{"region": {"x": [-20, -0.5], "y": [4.0, 20]}, "align": {"cx": CX - 3.95, "ymin": YF + 0.25}, "rename": "LanternL"},
-                     {"region": {"x": [0.5, 20], "y": [4.0, 20]}, "align": {"cx": CX + 3.95, "ymin": YF + 0.25}, "rename": "LanternR"}],
-        "Plants": [{"region": {"near": [5.0, 5.65, 3.0], "y": [2.5, 20]}, "rename": "PlantsR"},
-                   {"scale": [1.08, 1.06, 1.0], "about": [CX, (YF + YB) / 2, 0.0], "rename": "PlantsBed"}],
+                    "move": [CX + 0.32, LEAF_DY, 0]}],
+        "Awning": [{"region": {"drop_boxes": [[[-9, 9], [0, 6.0], [0, 9.5]]]}, "move": [CX - 0.13, DY, 0]}],
+        "Dormer": [{"move": [CX - 0.1, DY, DZ]}],
+        "WinPane": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerPane"}],
+        "Glass": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerGlass"}],
+        # roof: its eave outline (keep GLB, 10/11) is x -8.1..7.4, y -7.15..6.0 around (-0.62, -0.575); as in the 2D the eaves
+        # stop just inside the cornice line (0.3 past the walls), centred on the plan
+        "Roof": [{"scale": [round((XS + 0.3) / 7.75, 4), round(((YF - YB) / 2 + 0.3) / 6.575, 4), 1.0], "about": [-0.62, -0.575, 13.7],
+                  "move": [round(CX + 0.62, 3), round(CY + 0.575, 3), round(DZ, 3)]}],
+        "Lanterns": [{"region": {"x": [-20, -0.5], "y": [4.0, 20]}, "align": {"cx": CX - LANT_U, "ymin": LANT_Y}, "rename": "LanternL"},
+                     {"region": {"x": [0.5, 20], "y": [4.0, 20]}, "align": {"cx": CX + LANT_U, "ymin": LANT_Y}, "rename": "LanternR"}],
+        "Plants": [  # cluster centres measured on the keep GLB (10/11)
+            dict(into_pot((4.84, 5.78), "PotR"), region={"near": [5.0, 5.65, 3.0], "y": [2.5, 20]}, rename="PlantsR"),
+            dict(into_pot((-6.53, 2.72), "PotL"), region={"near": [-6.4, 3.4, 2.0]}, rename="PlantsL"),
+            dict(cluster((-8.45, -0.77), "WallLeft", BED_D * 0.5), region={"x": [-20, -7.0], "y": [-3.6, 2.2]}, rename="PlantsSideL"),
+            dict(cluster((-6.67, -6.25), "WallBackLeft", BED_D * 0.5), region={"x": [-20, -3.0], "y": [-20, -3.6]}, rename="PlantsBackL"),
+            dict(cluster((8.34, -1.77), "WallRight", BED_D * 0.5), region={"x": [7.0, 20], "y": [-3.0, 2.5]}, rename="PlantsSideR"),
+            dict(cluster((6.53, -5.04), "WallBackRight", BED_D * 0.5), region={"x": [3.0, 20], "y": [-20, -2.0]}, rename="PlantsBackR"),
+        ],
     },
 }
 
+# close-up cameras for tools/skeleton_preview.py (Blender frame)
+wl = walls["WallFrontLeft"]
+wc = wl.at(wl.L / 2, 7.4)
+pl = pot_xy["PotL"]
+cams = {
+    "close_door": [[CX + 1.5, YF + 11.5, 6.0], [CX, YF, 5.4], 40],
+    "close_window": [[wc[0] + wl.n[0] * 7.0, wc[1] + wl.n[1] * 7.0, 8.2], [wc[0], wc[1], 7.4], 45],
+    "close_base": [[pl[0] - 2.5, pl[1] + 8.0, 3.2], [pl[0] + 1.5, pl[1] - 0.5, 1.6], 40],
+}
+
 # ---------------- Luau
+MARBLE = 'p.Material = Enum.Material.Marble; p.MaterialVariant = "%s"; p.Color = Color3.fromRGB' % VARIANT
 MAT = {
-    "marble": 'p.Material = Enum.Material.Marble; p.MaterialVariant = "HH_HaloMarbleBlock"; p.Color = Color3.fromRGB(255, 252, 245)',
-    "floor": 'p.Material = Enum.Material.Marble; p.MaterialVariant = "HH_HaloMarbleBlock"; p.Color = Color3.fromRGB(235, 228, 215)',
+    "marble": MARBLE + '(255, 244, 222)',   # warm tint (WorldKit 10/11: the cream tile alone reads grey in the WorldKit light)
+    "floor": MARBLE + '(238, 226, 205)',
     "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(240, 186, 56)',
-    "soil": 'p.Material = Enum.Material.Ground; p.Color = Color3.fromRGB(139, 101, 66)',
+    "soil": 'p.Material = Enum.Material.Sand; p.Color = Color3.fromRGB(140, 100, 62)',
     "sky": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(150, 200, 240)',
-    "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(150, 94, 52); p.CanCollide = false',
+    "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
     "lamp": 'p.Material = Enum.Material.Neon; p.Color = Color3.fromRGB(255, 226, 150); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Parent = p',
-    "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(170, 215, 245); p.Transparency = 0.35; p.Reflectance = 0.2',
+    "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
 }
 
 
@@ -372,11 +487,12 @@ def r3(v):  # Blender vector -> Roblox
     return (v[0], v[2], -v[1])
 
 
-L = ['-- skeleton v3 (generated by tools/skeleton_house07.py, 이미지 생성 3 10/11, SPEC A23-120). WorldKit only.',
+L = ['-- skeleton v4 (generated by tools/skeleton_house07.py --marble %s, 이미지 생성 3 10/11, SPEC A23-120). WorldKit only.' % a.marble,
      'if game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil") then error("WRONG STUDIO: main") end',
      'local root = workspace:FindFirstChild("SkeletonTest") or Instance.new("Folder"); root.Name = "SkeletonTest"; root.Parent = workspace',
      'for _, n in {"House07_Skeleton", "Tree_Pot_Skeleton"} do local o = root:FindFirstChild(n); if o then o:Destroy() end end',
      'local house = Instance.new("Model"); house.Name = "House07_Skeleton"; house.Parent = root',
+     'house:SetAttribute("SkeletonVersion", 4); house:SetAttribute("Marble", "%s")' % VARIANT,
      'local pot = Instance.new("Model"); pot.Name = "Tree_Pot_Skeleton"; pot.Parent = root',
      'local function mk(parent, name, shape, sx, sy, sz, x, y, z, ax, ay, az, bx, by, bz, mat)',
      '  local p = Instance.new("Part"); p.Name = name; p.Anchored = true; p.TopSurface = Enum.SurfaceType.Smooth; p.BottomSurface = Enum.SurfaceType.Smooth',
@@ -391,13 +507,17 @@ for p in parts:
     X, Y = r3(p["X"]), r3(p["Y"])
     L.append('mk(%s, "%s", "%s", %.3f, %.3f, %.3f, %.3f, %.3f, %.3f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, "%s")' % (
         p["grp"], p["name"], p["shape"], *p["size"], OX + x, OY + z, OZ - y, *X, *Y, p["mat"]))
-L.append('local d = Instance.new("Attachment"); d.Name = "DoorFront"; d.Position = Vector3.new(0, %.2f, 0); d.Parent = house:FindFirstChild("StepLow")' % (Z0 / 4))
+L.append('local d = Instance.new("Attachment"); d.Name = "DoorFront"; d.Parent = house:FindFirstChild("StepLow"); '
+         'd.WorldPosition = Vector3.new(%.3f, %.3f, %.3f)' % (OX + CX, OY + Z0 / 2, OZ - (YF + 3.4)))
 L.append('local n = 0; for _, q in root:GetDescendants() do if q:IsA("BasePart") then n += 1 end end')
-L.append('return "SkeletonTest v3 built: " .. n .. " parts"')
+L.append('return "SkeletonTest v4 built: " .. n .. " parts"')
 os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
 open(a.out, "w", encoding="utf-8").write("\n".join(L) + "\n")
 base = os.path.splitext(a.out)[0]
 json.dump(parts, open(base + ".json", "w"), indent=0)
 json.dump(place, open(base + "_place.json", "w"), indent=1)
+json.dump(cams, open(base + "_cams.json", "w"), indent=1)
+print("[skeleton] v4 %s course %.3f: Z1 %.3f win %.3f imp %.2f frieze %.3f pedestal %.3f" % (VARIANT, COURSE, Z1, WIN_Z0, IMP0, FRZ0, PED_Z))
 print("[skeleton] parts", len(parts), "(house %d, pot %d) ->" % (sum(p["grp"] == "house" for p in parts),
       sum(p["grp"] == "pot" for p in parts)), a.out)
+print("[skeleton] pots", {k: (round(v[0], 2), round(v[1], 2)) for k, v in pot_xy.items()})
