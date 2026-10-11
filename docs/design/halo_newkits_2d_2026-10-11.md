@@ -15,3 +15,11 @@
 - Hedge는 받침 없이 앞면 Medium 2장(`HaloKit_Hedge_nb_a/b_front.png`)을 새로 뽑아 긴 블록형 a 채택(b는 둥근 덤불이라 제외, 길이 2종은 배율로). 프롬프트 `art/prompts/HaloKit_Hedge_nb_*_front.txt`는 생성기에 없음(브라우저에서 직접, 위 설명 참고).
 - 내 판정: 6종 4면 모양·색·이끼·금 장식 일치, 깨짐·떠 있는 조각·얼굴 무늬·글자·레이 없음 → 통과. **주의**: WateringCan 오른쪽(주둥이가 카메라 반대쪽) 면은 샤워기 머리가 뚜껑 위에 뜬 원통처럼 읽혀 약함 → Tripo에는 앞·뒤·왼쪽 3면 우선, 필요하면 오른쪽만 다시.
 - 파트 몫(카페 탁자·초 상자·무기고 통·알림판·디딤돌·물통)은 앞면 Medium 1장(`kits_new`)만 참고용으로 유지. Cauldron은 검수 말대로 CSG가 안 될 때만.
+
+## 4면 High 3차: 화분·화단·난간 덤불 + 종 + 벽등 머리 (10/11 밤, 최종 검수/디자인 검수 순서 ②→①→③)
+- 폴더 `art/out/s2/halo/kits_mv3/`, 시트 `art/review/s2/halo_kits3_mv_{1,2,3}.jpg`(앞|뒤|왼|오른), 후보 `halo_kits3_med.jpg`, 벽등 머리 `halo_walllamp_head_4views.jpg`, 물뿌리개 오른쪽 수정 `halo_wateringcan_right_fix.jpg`(앞|전|후).
+- ② 종만 따로: Medium 후보 3(m1~m3) 중 m3(넓게 퍼진 고전 종, 추 보임) 채택 → High 앞면(`HaloKit_BellOnly_front_HQ_src.png`) + 뒤·왼·오른 High. 4면 높이·모양·추·고리 일치.
+- ① 뒤·왼·오른 High 27장: PotFlowers A·C·D·E·F, Planter A·D·E, Balustrade_F(위 덤불). 앞면은 기존 HQ(`variants/`,`variants4/`). 모두 앞면과 모양·색·꽃 자리 일치, 깨짐·떠 있는 조각·얼굴 무늬·글자·레이 없음(내 눈).
+- ③ 벽등: 받침 앞·뒤 Medium(`HaloKit_WallLampBase_{front,back}_m.png`, Studio 참고, 뒤는 앞과 거의 같은 면이라 약함) + 머리(랜턴+고리)만 기존 High 4면에서 잘라 회색 1024에 가운데 놓은 4장(`HaloKit_WallLampHead_*.png`, 0크레딧).
+- 물뿌리개 오른쪽(디자인 검수 지시) High 다시: 손잡이가 앞, 리본은 손잡이 꼭대기, 주둥이는 몸통 뒤에 가려 끝만 보임 → 앞면 높이와 맞음(`kits_mv3/HaloKit_WateringCan_right_v2.png`, kits_mv2의 옛 right 대신 이것 사용).
+- 크레딧: 종 앞 5 + 종 3면 15 + 물뿌리개 5 + 27장 135 = 160. 오늘 밤 합계 약 575(무기 28+소품 4면 7종 140+6종 120+이번 160+사고 15), 표시 잔액 약 4,190.
