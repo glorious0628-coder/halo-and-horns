@@ -1,3 +1,15 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 갱신: ID 점검·재질 3종 검수 라운드)
+
+## 지금 기다리는 것 / 다음 일 (이 블록이 맨 위 최신)
+1. **금(HH_HaloGoldTrim) 2차 시험** — 1차(금속 1.0/0.7 × 거칠기 0.15~0.35 × 밝은 색)는 `art/review/imgdev/gold_candidates_sheet_2026-10-11.jpg`: **금속을 올릴수록 하늘 파랑을 비춰 올리브색**, BASE(0.7·0.35·255,175,25)가 오히려 제일 주황빛 노랑. 2D(밝은 노랑+흰 반짝임)와는 아직 멂.
+   다음 후보 제안: 금속 0.5(맵 137160255192059)·거칠기 0.15(109029776386025)·색 (255,205,50)/(255,215,70), 금속 0.7·거칠기 0.15·색 (255,215,70). 검수가 시트 보고 정함.
+   도구: `tools/gold_candidates_test.luau`(판 2개 SUN/SHADE 짓기) + `tools/gold_candidates_capture.py`(촬영). **UiSandbox가 열려 있고 시험 판(workspace.GoldCandTest + MaterialService HH_GoldCand_*)이 남아 있음** — 끝나면 `gold_candidates_test.luau`를 MODE=clean으로 돌려 지우기(파일 저장은 안 함).
+2. **HH_Fabric v2** 올림 완료(color 76316272601072 / normal 102973991596175(v1과 같음) / rough 119858177335377; asset_ids `Halo_Fabric2_*`). 메인 MV ID 교체는 **메인 반영 1에 직접 요청**(아직 안 함). v2가 메인 Play 사진에서 확인된 뒤 v1 color·rough 파일·기록 삭제(normal은 공용이라 삭제 금지).
+3. 직조 밤 사진 — WorldKit 촬영은 이미지 생성 1 차례와 안 겹치게 검수에 따로 신청.
+4. Tex_*_FF3 5장(uploaded_review_pending) 3×3 시트를 다음 재질 시트에 같이.
+5. 기록: `art/review/imgdev/id_audit_2026-10-11.md`(표 A~D, §9). 크림 대리석 approved, 금 redo, 직조 v2 통과.
+6. 아래 옛 큐(빛 마을 지붕 맵, 집·가게 SA 적용, A23-105 사진)는 그대로 유효.
+
 # 이미지 개발 — 상태 (2026-10-11 저녁, 새 세션이 정리하고 쉼; 사용량 19:00 리셋까지)
 
 ## 다음 큐 (순서대로, 전부 남의 입력을 기다림)
