@@ -5304,11 +5304,16 @@ Config.Loot = {
 		-- A23-34: a weapon found while bare-handed is equipped at once (power change)
 		BareEquip = "[%s] equipped! Power %s → %s",
 		BareEquipEn = "[%s] equipped! Power %s → %s",
-		EnhanceOk = "Enhance success! %s +%d → +%d (attack %d%% → %d%%)",
-		EnhanceFailDown = "Enhance failed… %s +%d → +%d (your weapon is safe)",
-		EnhanceFailKeep = "Enhance failed… but %s stays +%d!",
+		-- 게임성 검수 10/12 (bag photo: "Enhance success! Wooden Sword +0 → +1 (attack…" cut at the column; A23-130 the
+		-- result only - the sound and the colour tell success / failure, the confirm already says weapons never break).
+		-- The callers' arguments stay (LootService, Panels: name, before, after, attack % before, after - the extra ones
+		-- unused). MoveOk gets (from name, its level left, to name, its new level): only the weapon that took the
+		-- enhance shows (%.0s prints nothing) - two long names did not fit one line
+		EnhanceOk = "%s +%d → +%d!",
+		EnhanceFailDown = "%s +%d → +%d", -- red (kind "bad") with ScrollFail: the lower number says it failed
+		EnhanceFailKeep = "%s stays +%d", -- (kind "info" with ScrollFail)
 		EnhanceMax = "Already at max enhance (+%d).",
-		MoveOk = "Transfer success! %s +%d · %s +%d",
+		MoveOk = "%.0s%.0s%s +%d!",
 		MoveFail = "Transfer failed… %s stays +%d.",
 		MoveSame = "Pick a different weapon.",
 		MoveNothing = "There is no enhance to move.",

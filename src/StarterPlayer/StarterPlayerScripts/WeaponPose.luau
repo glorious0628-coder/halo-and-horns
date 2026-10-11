@@ -17,6 +17,7 @@ local UserInputService = game:GetService("UserInputService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
+local Ground = require(Shared:WaitForChild("Ground")) -- the walking ground (the staff foot)
 
 local WeaponPose = {}
 local C = nil
@@ -46,6 +47,11 @@ local T = {
 	Gap = { 0.45, 0.9 }, GapPad = 0.05, OverlapShare = 0.8,
 	ShoulderX = 0.972, -- the place rig's shoulder joint x on UpperTorso (WeaponPose.BodyScale)
 	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.ProbeStep: every frame measured, the worst printed)
+	-- 게임성 검수 10/12 (메인 반영 1 photo, the user's avatar: the staff tip 0.27 / 0.26 over the sole - the server sizes
+	-- the shaft from the rig at rest, the live pose holds the hand a little higher): a staff's hand goal moves up or down
+	-- until its Shaft's foot rests StaffGap (= CharacterVisuals STAFF.FootGap) over the ground under it - StaffFix of the
+	-- gap a frame, at most StaffMax either way; no ground within StaffReach (a jump): back towards 0
+	StaffGap = 0.08, StaffFix = 0.5, StaffMax = 0.4, StaffReach = 8,
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
 
@@ -229,6 +235,28 @@ end
 -- its held axis (-Z) along Aim, +Y to the right shoulder, solved like the two-hand hilt (the left arm keeps its hold).
 -- A23-128 (the warriors' one-hand swords at the side): an optional Pole (torso space) bends the elbow low and close
 -- instead of T.PoleRight's down and out
+-- (pure) the next lift of a staff's hand goal: footY = its Shaft's foot now, groundY = the ground under it (nil = none
+-- within StaffReach); gap = the foot's wanted height over the ground (StaffGap x the body's size)
+function WeaponPose.StaffLift(lift, footY, groundY, gap)
+	lift = tonumber(lift) or 0
+	if type(footY) ~= "number" or type(groundY) ~= "number" then return lift * (1 - T.StaffFix) end
+	local off = footY - groundY - (tonumber(gap) or T.StaffGap) -- > 0: floating, < 0: in the ground
+	return math.clamp(lift - off * T.StaffFix, -T.StaffMax, T.StaffMax)
+end
+
+-- a staff's lift this frame from its Shaft (the server's WeaponModel: Staff / CrookStaff), else 0
+function WeaponPose.StaffStep(st, model)
+	local shaft = model and model:FindFirstChild("Shaft")
+	if not (shaft and shaft:IsA("BasePart")) then
+		st.StaffLift = nil
+		return 0
+	end
+	local foot = (shaft.CFrame * CFrame.new(0, -shaft.Size.Y / 2, 0)).Position
+	local hit = Ground.Cast(foot, 2, T.StaffReach)
+	st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, hit and hit.Position.Y or nil, T.StaffGap)
+	return st.StaffLift
+end
+
 function WeaponPose.OneHand(char, st, def, model)
 	local oh, fx = def.OneHand, C and C.Fx
 	if typeof(oh.Hilt) ~= "Vector3" or typeof(oh.Aim) ~= "Vector3" then return false end
@@ -246,8 +274,9 @@ function WeaponPose.OneHand(char, st, def, model)
 	local right = fx.ArmGeometry(st, "Right")
 	if not right then return false end
 	local torso = torsoPart.CFrame
-	local rGoal = WeaponPose.TwoHandGoals(torso, oh, gripOf(hand, "RightGripAttachment", T.RightGrip), T.LeftGrip,
-		(torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0, WeaponPose.BodyScale(right))
+	local lift = WeaponPose.StaffStep(st, model) -- a staff: its foot on the ground (0 for the other weapons)
+	local rGoal = WeaponPose.TwoHandGoals(torso + Vector3.new(0, lift, 0), oh, gripOf(hand, "RightGripAttachment", T.RightGrip),
+		T.LeftGrip, (torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0, WeaponPose.BodyScale(right))
 	local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight
 	local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(pole))
 	if type(pose) ~= "table" then return false end
