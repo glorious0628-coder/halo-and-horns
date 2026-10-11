@@ -87,6 +87,21 @@ class Source:
         self.FC = (A + B + C) / 3
         self.strict = False                              # True: a ray that finds no accepted face leaves the texel empty
 
+    def tri_hsv(self):
+        """hue (deg), saturation, value of each triangle's base colour at its UV centre"""
+        import colorsys
+        out = np.zeros((len(self.T), 3))
+        uvc = self.UV.mean(1)
+        for k, tx in enumerate(self.tex):
+            sel = self.S == k
+            if not sel.any() or "color" not in tx:
+                continue
+            arr = tx["color"]
+            H, W = arr.shape[:2]
+            c = arr[np.clip((uvc[sel, 1] * H).astype(int), 0, H - 1), np.clip((uvc[sel, 0] * W).astype(int), 0, W - 1)]
+            out[sel] = [(h * 360, s_, v) for h, s_, v in (colorsys.rgb_to_hsv(*q) for q in c)]
+        return out
+
     def skip_where(self, mask):
         """rays pass through these triangles too (e.g. oblique faces, lumps standing out of a plank surface)"""
         self.bad = self.bad | mask
@@ -234,6 +249,7 @@ def bake(obj, src, size=1024, ray=None, relief=True, pad=4):
         nt /= np.linalg.norm(nt, axis=1, keepdims=True)
         N[rows[ok], cols[ok]] = nt * 0.5 + 0.5
     filled[rows[ok], cols[ok]] = True
+    hit_mask = filled.copy()                                     # texels that took Tripo paint directly (no bleed)
     covered = np.zeros((size, size), bool)
     covered[rows, cols] = True
     outs = [C, R[..., None].repeat(3, 2), Mt[..., None].repeat(3, 2), N]
@@ -255,7 +271,7 @@ def bake(obj, src, size=1024, ray=None, relief=True, pad=4):
     MR = np.zeros((size, size, 3))
     MR[..., 1] = R3[..., 0]
     MR[..., 2] = M3[..., 0]
-    return {"C": C, "R": R3, "M": M3, "N": N, "MR": MR, "hit": float(ok.mean())}
+    return {"C": C, "R": R3, "M": M3, "N": N, "MR": MR, "hit": float(ok.mean()), "hit_mask": hit_mask, "covered": covered}
 
 
 def _shift_min(m, k):
@@ -314,6 +330,83 @@ def clean_thin_gold(maps, k=6, vert=24):
     maps["MR"][..., 1] = maps["R"][..., 0]
     maps["MR"][..., 2] = maps["M"][..., 0]
     return int(thin.sum())
+
+
+def clean_hues(maps, ranges, s_min=0.1, grow=2, vert=24):
+    """texels whose hue (deg) is in one of ranges (and saturation > s_min) are things painted over the planks in Tripo's
+    texture (a cauldron's green sparkles): grown by `grow` texels and filled with the plank colour around them (tall box
+    average of the other texels). Returns the number of texels changed."""
+    C = maps["C"]
+    mx, mn = C.max(2), C.min(2)
+    sat = np.where(mx > 1e-6, (mx - mn) / np.maximum(mx, 1e-6), 0)
+    r, g, b = C[..., 0], C[..., 1], C[..., 2]
+    d = np.maximum(mx - mn, 1e-6)
+    h = np.where(mx == r, ((g - b) / d) % 6, np.where(mx == g, (b - r) / d + 2, (r - g) / d + 4)) * 60
+    bad = np.zeros(sat.shape, bool)
+    for h0, h1 in ranges:
+        bad |= (h >= h0) & (h <= h1) & (sat > s_min)
+    bad = _shift_max(bad, grow)
+    maps["hue_mask"] = bad
+    if not bad.any():
+        return 0
+    good = (~bad).astype(float)
+
+    def boxv(a):
+        c = np.cumsum(np.pad(a, ((vert + 1, vert), (0, 0)) + ((0, 0),) * (a.ndim - 2), mode="edge"), 0)
+        v = c[2 * vert + 1:] - c[:-2 * vert - 1]
+        return v + np.roll(v, 2, 1) + np.roll(v, -2, 1) + np.roll(v, 1, 1) + np.roll(v, -1, 1)
+
+    wsum = boxv(good)
+    for key in ("C", "R", "M", "N"):
+        a = maps[key]
+        bg = boxv(a * good[..., None]) / np.maximum(wsum, 1e-6)[..., None]
+        a[bad] = bg[bad]
+    maps["N"][bad] = (0.5, 0.5, 1.0)
+    maps["MR"][..., 1] = maps["R"][..., 0]
+    maps["MR"][..., 2] = maps["M"][..., 0]
+    return int(bad.sum())
+
+
+def fill_mask(maps, mask, vert=24):
+    """texels in mask take the average of the unmasked texels in a tall box around them (planks run up and down)"""
+    if not mask.any():
+        return 0
+    good = (~mask).astype(float)
+
+    def boxv(a):
+        c = np.cumsum(np.pad(a, ((vert + 1, vert), (0, 0)) + ((0, 0),) * (a.ndim - 2), mode="edge"), 0)
+        v = c[2 * vert + 1:] - c[:-2 * vert - 1]
+        return v + np.roll(v, 2, 1) + np.roll(v, -2, 1) + np.roll(v, 1, 1) + np.roll(v, -1, 1)
+
+    todo = mask.copy()
+    while todo.any() and vert <= mask.shape[0]:
+        wsum = boxv(good)
+        ok = todo & (wsum > 0.5)
+        for key in ("C", "R", "M", "N"):
+            a = maps[key]
+            bg = boxv(a * good[..., None]) / np.maximum(wsum, 1e-6)[..., None]
+            a[ok] = bg[ok]
+        todo &= ~ok
+        vert *= 2                                         # wide holes: a taller box
+    maps["N"][mask] = (0.5, 0.5, 1.0)
+    maps["MR"][..., 1] = maps["R"][..., 0]
+    maps["MR"][..., 2] = maps["M"][..., 0]
+    return int(mask.sum())
+
+
+def mirror_fill(maps, extra=None):
+    """texels of the slab that got no Tripo paint (hidden behind something in front of the door) or are in `extra` take the
+    paint of their mirror texel across the door's middle (u = 0.5) when that one was painted directly"""
+    hm = maps["hit_mask"]
+    bad = maps["covered"] & ~hm
+    if extra is not None:
+        bad |= extra
+    src = hm[:, ::-1] & ~(extra[:, ::-1] if extra is not None else False)
+    take = bad & src
+    for key in ("C", "R", "M", "N", "MR"):
+        a = maps[key]
+        a[take] = a[:, ::-1][take]
+    return int(take.sum())
 
 
 def save_maps(maps, work, name):

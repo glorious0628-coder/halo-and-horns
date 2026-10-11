@@ -27,6 +27,7 @@ ap.add_argument("name")
 ap.add_argument("--metal", default=None, help="item types for metal_ornaments (default: the params \"metal\" list)")
 ap.add_argument("--no-preview", action="store_true")
 ap.add_argument("--size", default="1024")
+ap.add_argument("--lantern-only", action="store_true", help="rebuild only the lantern template in the last deco_fix.glb")
 a = ap.parse_args()
 N = a.name
 B = os.path.join(ROOT, "build", "deco", N)
@@ -47,54 +48,69 @@ def blender(script, *args):
 
 raw = os.path.join(B, "deco_raw.glb")
 rep = os.path.join(B, "deco_raw.json")
-print("[run] 1 cut + fix", flush=True)
-blender("house_deco.py", N, os.path.join(TOOLS, "house_deco", N + ".json"), raw, "--report", rep)
-R = json.load(open(rep, encoding="utf-8"))
-PRM = json.load(open(os.path.join(TOOLS, "house_deco", N + ".json"), encoding="utf-8"))
-# name patterns for piece_fix --only: "_" first, or "Dome" would also hit "HaloDomeHouse_.."
-dome_slot = PRM.get("dome", {}).get("slot", "Dome")
-# leaf, caps, lanterns are rebuilt in house_deco (exact shapes, Tripo paint / size): only the dome + extras go through piece_fix
-pieces = ["_" + dome_slot] + ["_" + e["name"] for e in PRM.get("extra", [])]
-PR_BIG = ["_" + e["name"] for e in PRM.get("extra", []) if e.get("big")]
-if "roof_fit" in R:                                         # octagonal dome: eaves onto the plan octagon, ribs on corners
-    plan = os.path.join(B, "roof_plan.json")
-    json.dump(R["roof_fit"]["plan"], open(plan, "w"), indent=1)
-    raw2 = os.path.join(B, "deco_raw_roof.glb")
-    print("[run] 1b roof_fit", flush=True)
-    blender("roof_fit.py", raw, raw2, plan, "--name", R["roof_fit"]["name"], "--report", os.path.join(ART, "roof_fit_report.json"),
-            "--corners", "radius")
-    raw = raw2
-fixed = os.path.join(B, "deco_fix.glb")
-print("[run] 2 piece_fix", flush=True)
-# Tripo's low-poly domes / leaves are made of long triangles: no sliver / pale cut (it made holes), crumbs still go
-big = [p for p in pieces if p == "_" + dome_slot or p in PR_BIG]
-small = [p for p in pieces if p not in big]
-mid = os.path.join(B, "deco_fix_big.glb")
-if dome_slot in R["pieces"] or "Dome" in R["pieces"] or PR_BIG:
-    blender("piece_fix.py", raw, mid, ART, "--only", *big, "--size", a.size, "--force-size", "--sliver", "1e9", "--pale-area", "1e9")
+if a.lantern_only:
+    lt, ltj = os.path.join(B, "lt_only.glb"), os.path.join(B, "lt_only.json")
+    blender("house_deco.py", N, os.path.join(TOOLS, "house_deco", N + ".json"), lt, "--report", ltj, "--only", "lantern")
+    blender("glb_swap.py", os.path.join(B, "deco_fix.glb"), lt, "_LanternT")
+    R0 = json.load(open(rep, encoding="utf-8"))
+    R0["pieces"]["Lantern"] = json.load(open(ltj, encoding="utf-8"))["pieces"].get("Lantern")
+    json.dump(R0, open(rep, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    R = R0
+    PRM = json.load(open(os.path.join(TOOLS, "house_deco", N + ".json"), encoding="utf-8"))
+    fixed = os.path.join(B, "deco_fix.glb")
+    parts = [fixed]
+    if PRM.get("metal", ["knocker"]) and os.path.isfile(os.path.join(B, "metal.glb")):
+        parts.append(os.path.join(B, "metal.glb"))
 else:
-    mid = raw
-if small:
-    blender("piece_fix.py", mid, fixed, ART, "--only", *small, "--size", "512", "--sliver", "1e9", "--pale-area", "1e9")
-else:
-    import shutil
-    shutil.copyfile(mid, fixed)
-print("[run] 3 metal", flush=True)
-orn = json.load(open(os.path.join(ROOT, "build", "skel_%s_ornaments.json" % N)))
-want = [t for t in a.metal.split(",") if t] if a.metal is not None else PRM.get("metal", ["knocker"])
-items = [dict(it) for it in orn["items"] if it["type"] in want]
-hw = list(R.get("hardware_at", []))
-for it in items:                       # knockers on the Tripo knocker spots (flattened paint under the exact ring)
-    if it["type"] == "knocker" and hw:
-        it["pos"] = hw.pop(0)
-parts = [fixed]
-if items:
-    spec = os.path.join(B, "metal_spec.json")
-    json.dump({"items": items}, open(spec, "w"), indent=1)
-    metal = os.path.join(B, "metal.glb")
-    single = "Leaf" in R["pieces"] and not R["pieces"]["Leaf"].get("double")
-    blender("metal_ornaments.py", spec, metal, *(["--snap", fixed, "%s_Leaf" % N] if single else []))
-    parts.append(metal)
+    print("[run] 1 cut + fix", flush=True)
+    blender("house_deco.py", N, os.path.join(TOOLS, "house_deco", N + ".json"), raw, "--report", rep)
+    R = json.load(open(rep, encoding="utf-8"))
+    PRM = json.load(open(os.path.join(TOOLS, "house_deco", N + ".json"), encoding="utf-8"))
+    # name patterns for piece_fix --only: "_" first, or "Dome" would also hit "HaloDomeHouse_.."
+    dome_slot = PRM.get("dome", {}).get("slot", "Dome")
+    # leaf, caps, lanterns are rebuilt in house_deco (exact shapes, Tripo paint / size): only the dome + extras go through piece_fix
+    pieces = ["_" + dome_slot] + ["_" + e["name"] for e in PRM.get("extra", [])] + (["_Sign"] if "sign" in PRM else [])
+    PR_BIG = ["_" + e["name"] for e in PRM.get("extra", []) if e.get("big")]
+    if "roof_fit" in R:                                         # octagonal dome: eaves onto the plan octagon, ribs on corners
+        plan = os.path.join(B, "roof_plan.json")
+        json.dump(R["roof_fit"]["plan"], open(plan, "w"), indent=1)
+        raw2 = os.path.join(B, "deco_raw_roof.glb")
+        print("[run] 1b roof_fit", flush=True)
+        blender("roof_fit.py", raw, raw2, plan, "--name", R["roof_fit"]["name"], "--report", os.path.join(ART, "roof_fit_report.json"),
+                "--corners", "radius")
+        raw = raw2
+    fixed = os.path.join(B, "deco_fix.glb")
+    print("[run] 2 piece_fix", flush=True)
+    # Tripo's low-poly domes / leaves are made of long triangles: no sliver / pale cut (it made holes), crumbs still go
+    big = [p for p in pieces if p == "_" + dome_slot or p in PR_BIG]
+    small = [p for p in pieces if p not in big]
+    mid = os.path.join(B, "deco_fix_big.glb")
+    dome_lathed = str(R["pieces"].get(dome_slot, {}).get("fix_shape", "")).startswith("lathe")   # baked in house_deco
+    if (dome_slot in R["pieces"] or "Dome" in R["pieces"]) and not dome_lathed or PR_BIG:
+        blender("piece_fix.py", raw, mid, ART, "--only", *big, "--size", a.size, "--force-size", "--sliver", "1e9", "--pale-area", "1e9")
+    else:
+        mid = raw
+    if small:
+        blender("piece_fix.py", mid, fixed, ART, "--only", *small, "--size", "512", "--sliver", "1e9", "--pale-area", "1e9")
+    else:
+        import shutil
+        shutil.copyfile(mid, fixed)
+    print("[run] 3 metal", flush=True)
+    orn = json.load(open(os.path.join(ROOT, "build", "skel_%s_ornaments.json" % N)))
+    want = [t for t in a.metal.split(",") if t] if a.metal is not None else PRM.get("metal", ["knocker"])
+    items = [dict(it) for it in orn["items"] if it["type"] in want]
+    hw = list(R.get("hardware_at", []))
+    for it in items:                       # knockers on the Tripo knocker spots (flattened paint under the exact ring)
+        if it["type"] == "knocker" and hw:
+            it["pos"] = hw.pop(0)
+    parts = [fixed]
+    if items:
+        spec = os.path.join(B, "metal_spec.json")
+        json.dump({"items": items}, open(spec, "w"), indent=1)
+        metal = os.path.join(B, "metal.glb")
+        single = "Leaf" in R["pieces"] and not R["pieces"]["Leaf"].get("double")
+        blender("metal_ornaments.py", spec, metal, *(["--snap", fixed, "%s_Leaf" % N] if single else []))
+        parts.append(metal)
 placed = os.path.join(B, "deco_placed.glb")
 print("[run] 4 place copies", flush=True)
 blender("house_deco_place.py", fixed, rep, placed)

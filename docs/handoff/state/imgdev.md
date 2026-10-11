@@ -1,3 +1,25 @@
+# 이미지 개발 — 상태 (2026-10-12 아침: 천 v3 후보 만듦, 판정 대기)
+
+- **천 v3 후보 a/b/c 파일로 만듦(올리기 안 함)**: tools/fabric_weave_v3.py → art/ui/halo_tile/fabric_v3/{a,b,c}/Halo_Fabric_{color,normal,rough}.png. 격자 대비 반(노멀 세기 반 포함) + 실 줄을 주기적 노이즈로 휘게 + 실마다 밝기·굵기 불균일 + 실 얼룩. a = 16실·휨 0.25, b = 24실(더 곱게)·휨 0.40, c = b + 대비 0.35. 비교 시트 art/review/imgdev/fabric_v3_compare_2026-10-12.jpg(v2 | a | b | c, 배너 파랑(104,170,240)에 해 왼쪽 위 단순 음영, 5×5·15×15칸) — v2는 규칙 격자가 보이고 v3는 격자 없이 천 결만. 디자인 검수 판정 대기 → 고르면 올리기 승인(최종 검수) 뒤 3장 올림 → WorldKit HH_Fabric 교체 + 낮 사진 비교 → 메인은 메인 반영 1.
+- 이미지 생성 1이 WorldKit 되살린 뒤에만 WorldKit·UiSandbox 일을 신청(최종 검수 10/12).
+
+# 이미지 개발 — 상태 (2026-10-12 정리 끝: PC 꺼짐 전)
+
+- 올리기 끝·push: 재료 아이콘 1차 10개(asset_ids 1ce5f4b), 매끈 대리석 color/rough. WorldKit MV 3개(금·매끈·천 v2)는 백업됨(build/wk_backup/20261011_215142 + 이미지 생성 1 전체). Play·창 열린 것 없음(UiSandbox 닫음). 가지 imgdev-icons1(96371ff0)은 게임성 검수 통과, 최종 검수 병합 대기(되감기·다시 쌓기 금지).
+- 주의: 로컬 `art/ui/halo_tile/marble_smooth/Halo_MarbleSmoothCream_rough.png`는 3판 다시 만든 파일이라 올라간 거칠기(76093268063395 = 2판)와 조금 다름(결 폭만) — push 안 함. 다시 올릴 일이 생기면 tools/marble_smooth_maps.py로 새로 만들고 새 ID로.
+- 다음: 2차 아이콘 5개(CrownDust·Glowcap·CraftRing·CraftTarget·CraftIngot) 승인 알림 오면 올리기(직접 보고 ≤10 한 번, UIArt 키 이름 그대로). 껍데기 메시 올리기·천 v3는 위 블록 참고.
+
+# 이미지 개발 — 상태 (2026-10-12: 재료 아이콘 1차 10개 올림)
+
+- **UI 아이콘 1차 10개 올림**(최종 검수 승인, 직접 봄: 밝은/어두운 배경 깨끗·사람 없음): IconPetal 133887324126001·IconCaptainBadge 79235006547470·IconSeaShell 126461746451387·IconCrystalShard 79705802311397·IconMeadowHerb 86098124636549·IconCopperOre 119596801981491·IconOakLog 122711143611444·IconIronOre 100831679530995·IconSilverOre 114879087694979·IconMoonCrystal 106196598879661 (asset_ids.json 같은 이름). Config 반영 = 가지 `imgdev-icons1`(worktree ../Game-imgdev-icons, Config.UIArt.Parts 10줄) → 게임성 검수 → 최종 검수. 2차 5개(CrownDust 등)는 디자인 검수 시트 본 뒤 따로 승인.
+- 올린 원본 art/out/s2/icons_bag_cut/는 아직 안 지움(Config 반영 병합 뒤 판단).
+
+# 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 올리기 취소)
+
+- **D2 껍데기 메시 4개 올리기 취소**(디자인 검수 10/12: 이미지 생성 4가 EditableMesh로 올리기 없이 시험). 사용자가 선을 고르면 그때 정식 메시로 다시 요청. 준비해 둔 도구 `tools/upload_hull_meshes.py`(OBJ → EditableMesh → AssetService:CreateAssetAsync, 마우스 없이; 아직 한 번도 안 돌림 — 이 환경에서 CreateAssetAsync가 실제로 되는지 모름, 함수는 있음). C·C+ 올리기도 취소.
+- 나중에 정식 올리기가 오면(이미지 생성 4 답): 파일 = build/prop_kit_hull/<Kit>_D2_035.obj / _060.obj (build/prop_kit_bake/*_D2_hull.obj는 옛 판, 쓰지 말 것). 축 Roblox 그대로·좌표 키트 원점 기준·삼각형만·법선 일부러 안쪽(뒤집지 말 것). 놓을 때 MeshPart.CFrame = 키트 피벗 * CFrame.new(OBJ 상자 중심)(도구가 centre를 기록), DoubleSided 끔, SmoothPlastic (74,50,36), CastShadow·CanCollide·CanQuery 끔. 올리기 전 렌더를 직접 봄.
+- 큐 비움. 낮은 우선: 천 v3 후보(아래).
+
 # 이미지 개발 — 상태 (2026-10-11 밤 9차: 천 v2 WorldKit·MV 3개 다시 넣음, 큐 비움)
 
 - WorldKit(재부팅 뒤) MV 다시 넣음·백업(build/wk_backup/20261011_215142 + 이미지 생성 1 전체 214754): 금 255,168,36·금속 0.5·거칠기 0.15, 매끈 대리석 3판, HH_Fabric v2. 디자인 검수 OK. **새 규칙(최종 검수): WorldKit에 큰 덩어리 넣을 때마다 `py tools/worldkit/wk_backup.py save --only <이름들>`.**

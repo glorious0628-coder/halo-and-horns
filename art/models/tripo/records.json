@@ -9114,7 +9114,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternC_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_C_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_C_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Lantern_A_web_hd_mv4": [
@@ -9136,7 +9137,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternA_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_A_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_A_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_A_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Lantern_B_web_hd_mv4": [
@@ -9158,7 +9160,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternB_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_B_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_B_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_B_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Lantern_D_web_hd_mv4": [
@@ -9180,7 +9183,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternD_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Lantern_E_web_hd_mv4": [
@@ -9202,7 +9206,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternE_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Lantern_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Lantern_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Lantern_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WallLamp_web_hd_mv4": [
@@ -9224,7 +9229,8 @@
     "back": "art/out/s2/halo/kits_mv/HaloKit_WallLamp_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/NEW_WallLamp_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WallLamp_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WallLamp_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Daisy_web_hd_mv4": [
@@ -9246,7 +9252,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotDaisy_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Lavender_web_hd_mv4": [
@@ -9268,7 +9275,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotLavender_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Rose_web_hd_mv4": [
@@ -9290,7 +9298,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotRose_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Sunflower_web_hd_mv4": [
@@ -9312,7 +9321,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotSunflower_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Tulip_web_hd_mv4": [
@@ -9334,7 +9344,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotTulip_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Topiary_C_web_hd_mv4": [
@@ -9356,7 +9367,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TopC_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Topiary_C_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Topiary_C_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Topiary_D_web_hd_mv4": [
@@ -9378,7 +9390,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TopD_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Topiary_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Topiary_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Topiary_E_web_hd_mv4": [
@@ -9400,7 +9413,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TopE_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Topiary_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Topiary_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_RoundTree_E_web_hd_mv4": [
@@ -9422,7 +9436,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TreeE_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_RoundTree_F_web_hd_mv4": [
@@ -9444,7 +9459,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TreeF_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_RoundTree_F_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_F_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_F_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_RoundTree_G_web_hd_mv4": [
@@ -9466,7 +9482,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TreeG_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_G_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_BenchB_web_hd_mv4": [
@@ -9488,7 +9505,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_BenchB_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_VegGarden_web_hd_mv4": [
@@ -9510,7 +9528,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonVeg_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_BreadStand_web_hd_mv4": [
@@ -9532,7 +9551,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonBread_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_FruitStall_web_hd_mv4": [
@@ -9554,7 +9574,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonFruit_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_FlowerCart_web_hd_mv4": [
@@ -9576,7 +9597,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_PotionCrate_web_hd_mv4": [
@@ -9598,7 +9620,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonPotion_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_Scarecrow_web_hd_mv4": [
@@ -9620,7 +9643,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonScare_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_FlowerBush_web_hd_mv4": [
@@ -9642,7 +9666,8 @@
     "back": "art/out/s2/halo/kits_mv/HaloKit_FlowerBush_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_FlowerBush_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_FlowerBush_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_FlowerBush_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_GatherBush_web_hd_mv4": [
@@ -9664,7 +9689,8 @@
     "back": "art/out/s2/halo/kits_mv/HaloKit_GatherBush_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_GatherBush_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_GatherBush_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_GatherBush_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_BellFrame_Bell_web_hd_mv4": [
@@ -9686,7 +9712,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_back.png"
    },
    "use": "bell only (frame/posts = Studio parts, tools/prop_kit.py BellFrame); Blender: swap rings/ribs for exact shapes, symmetric, bake C/N/R/M",
-   "file": "art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_BellFrame_Bell_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WallLamp_Head_web_hd_mv4": [
@@ -9708,7 +9735,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_back.png"
    },
    "use": "lamp head only (wall bracket = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WallLamp_Head_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WateringCan_web_hd_mv4": [
@@ -9730,7 +9758,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WateringCan_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WateringCan_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WateringCan_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_BreadBasket_web_hd_mv4": [
@@ -9752,7 +9781,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_BreadBasket_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_BreadBasket_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_BreadBasket_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_Hedge_web_hd_mv4": [
@@ -9774,7 +9804,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_Hedge_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_Hedge_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_Hedge_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WhiteRock_a_web_hd_mv4": [
@@ -9796,7 +9827,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WhiteRock_a_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WhiteRock_b_web_hd_mv4": [
@@ -9818,7 +9850,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WhiteRock_b_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WhiteRock_c_web_hd_mv4": [
@@ -9840,7 +9873,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WhiteRock_c_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_PotFlowers_A_web_hd_mv4": [
@@ -9862,7 +9896,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_PotFlowers_C_web_hd_mv4": [
@@ -9884,7 +9919,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_PotFlowers_D_web_hd_mv4": [
@@ -9906,7 +9942,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_PotFlowers_E_web_hd_mv4": [
@@ -9928,7 +9965,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_PotFlowers_F_web_hd_mv4": [
@@ -9950,7 +9988,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [
@@ -9972,7 +10011,733 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Planter_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  }
+ ],
+ "halo_houses15_deco_tripo_2026-10-12": [
+  {
+   "event": "blender_fix",
+   "at": "2026-10-12 01:29",
+   "by": "이미지 생성 3",
+   "rule": "A23-125 (Tripo -> Blender 손보기 -> Roblox 재질); 검수 10/11: 장식은 Tripo HD에서 잘라 Blender (metal_ornaments 처음부터 = 최종 불가)",
+   "source": "art/models/tripo/halo_houses/<house>/<house>_parts.glb (each house's own Tripo HD multiview job, already paid)",
+   "tools": [
+    "tools/house_deco_run.py",
+    "tools/house_deco.py",
+    "tools/proj_bake.py",
+    "tools/piece_fix.py",
+    "tools/house_deco_place.py",
+    "tools/glb_merge.py",
+    "tools/glb_swap.py",
+    "tools/metal_ornaments.py (knocker rings only)",
+    "tools/tripo_ortho.py"
+   ],
+   "method": {
+    "dome": "Tripo dome faces in a cylinder (stone band only at the foot dropped) -> per height band ring centre onto one axis + k=1,2 Fourier lopsidedness divided out (ribs kept) -> uniform scale to the slot R; octagonal (03): Tripo octagon box -> plan octagon box; piece_fix own C/N/R/M 1024",
+    "caps": "Tripo tower finial silhouette -> 16-sided lathe + Tripo paint projected (nearest point), one template copied to every tower",
+    "leaf": "Tripo leaf found on all objects (front-facing plank faces near the door; parts split's Door object often not the leaf) -> exact arched slab at the slot size + Tripo paint / roughness / metal / relief projected by strict front rays (oblique faces and lumps skipped), double doors mirrored",
+    "knobs": "lathe-turned knobs at the Tripo knob spots, Tripo median gold",
+    "knocker": "exact metal ring (metal_ornaments) on the Tripo knocker spot (approved swap)",
+    "lantern": "glass body measured on Tripo (front render rows + glow band), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions, 4 posts, arm + wall plate, open glass band sized to the skeleton LampGlass (1.05; never narrower than 0.7 glass); Tripo median gold"
+   },
+   "houses": {
+    "HaloDomeHouse_01": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_01/HaloDomeHouse_01_deco.glb",
+     "bytes": 1783612,
+     "params": "tools/house_deco/HaloDomeHouse_01.json",
+     "dome": {
+      "axis_lean_max": 0.067,
+      "ellipse_max": 0.078,
+      "radius_change_max": 0.111,
+      "tripo_base_R": 1.622,
+      "scale": 1.5721,
+      "faces": 318
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (252, 208, 38)",
+      "glass_from": "fallback 35-72 % of the box height",
+      "profile_from": "front render rows",
+      "scale": 0.767,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.488,
+       0.65
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 87 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.279,
+       "R": 2.002,
+       "bottom": 2.206,
+       "top": 9.4
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       1.1195,
+       4.2643
+      ]
+     ]
+    },
+    "HaloDomeHouse_02": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_02/HaloDomeHouse_02_deco.glb",
+     "bytes": 2391180,
+     "params": "tools/house_deco/HaloDomeHouse_02.json",
+     "dome": {
+      "axis_lean_max": 0.136,
+      "ellipse_max": 0.035,
+      "radius_change_max": 0.032,
+      "tripo_base_R": 6.989,
+      "scale": 0.88,
+      "faces": 1148
+     },
+     "caps": {
+      "fix": "lathe: 22 profile rings x 16 sides from the Tripo silhouette, paint projected (hit 100 %)",
+      "slots": {
+       "TowerDome0": 1.0079,
+       "TowerDome1": 1.0079,
+       "TowerDome2": 1.0079,
+       "TowerDome3": 1.0079
+      }
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (250, 199, 58)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.6568,
+      "glass_band_studs": [
+       -0.726,
+       0.726
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.56
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 85 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.103,
+       "R": 1.896,
+       "bottom": 3.385,
+       "top": 11.025
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.516,
+        6.411
+       ],
+       "R": 0.36,
+       "at": [
+        -0.6215,
+        4.0816
+       ]
+      },
+      {
+       "tripo_at": [
+        0.445,
+        6.367
+       ],
+       "R": 0.36,
+       "at": [
+        0.6215,
+        4.0816
+       ]
+      }
+     ]
+    },
+    "HaloDomeHouse_03": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_03/HaloDomeHouse_03_deco.glb",
+     "bytes": 2366520,
+     "params": "tools/house_deco/HaloDomeHouse_03.json",
+     "dome": {
+      "fix": "oct: Tripo's octagon box -> the plan octagon box -0.50 (x 1.103, y 0.944, z 1.023), facets / ribs kept",
+      "faces": 1288
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (248, 202, 44)",
+      "glass_from": "fallback 35-72 % of the box height",
+      "profile_from": "front render rows",
+      "scale": 1.3009,
+      "glass_band_studs": [
+       -0.722,
+       0.722
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.45
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 77 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.025,
+       "R": 1.57,
+       "bottom": 1.586,
+       "top": 7.319
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       1.0888,
+       5.4307
+      ]
+     ]
+    },
+    "HaloDomeHouse_04": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_04/HaloDomeHouse_04_deco.glb",
+     "bytes": 2842452,
+     "params": "tools/house_deco/HaloDomeHouse_04.json",
+     "dome": {
+      "axis_lean_max": 0.108,
+      "ellipse_max": 0.142,
+      "radius_change_max": 0.247,
+      "tripo_base_R": 7.03,
+      "scale": 0.8464,
+      "faces": 2347
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 70 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.054,
+       "R": 1.95,
+       "bottom": 1.752,
+       "top": 9.416
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.372,
+        5.293
+       ],
+       "R": 0.36,
+       "at": [
+        -0.5018,
+        4.9053
+       ]
+      },
+      {
+       "tripo_at": [
+        0.402,
+        5.567
+       ],
+       "R": 0.36,
+       "at": [
+        0.5018,
+        4.9053
+       ]
+      }
+     ]
+    },
+    "HaloDomeHouse_05": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_05/HaloDomeHouse_05_deco.glb",
+     "bytes": 426820,
+     "params": "tools/house_deco/HaloDomeHouse_05.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (237, 188, 52)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.5304,
+      "glass_band_studs": [
+       -0.549,
+       0.549
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.42
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 75 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.104,
+       "R": 2.27,
+       "bottom": 2.193,
+       "top": 10.085
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       1.1972,
+       4.5453
+      ]
+     ]
+    },
+    "HaloDomeHouse_06": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_06/HaloDomeHouse_06_deco.glb",
+     "bytes": 2334716,
+     "params": "tools/house_deco/HaloDomeHouse_06.json",
+     "dome": {
+      "axis_lean_max": 0.147,
+      "ellipse_max": 0.05,
+      "radius_change_max": 0.056,
+      "tripo_base_R": 6.98,
+      "scale": 1.1175,
+      "faces": 1035
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (247, 199, 55)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.6991,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.536,
+       0.583
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 78 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.037,
+       "R": 1.966,
+       "bottom": 2.957,
+       "top": 10.712
+      },
+      "double": true
+     },
+     "metal_knocker_at": [
+      [
+       -0.6331,
+       4.2842
+      ],
+      [
+       0.6332,
+       4.2842
+      ]
+     ]
+    },
+    "HaloDomeHouse_08": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_08/HaloDomeHouse_08_deco.glb",
+     "bytes": 2359932,
+     "params": "tools/house_deco/HaloDomeHouse_08.json",
+     "dome": {
+      "axis_lean_max": 0.155,
+      "ellipse_max": 0.062,
+      "radius_change_max": 0.057,
+      "tripo_base_R": 7.765,
+      "scale": 0.792,
+      "faces": 715
+     },
+     "caps": {
+      "fix": "lathe: 22 profile rings x 16 sides from the Tripo silhouette, paint projected (hit 100 %)",
+      "slots": {
+       "Finial0": 0.9067,
+       "Finial1": 0.9067,
+       "Finial2": 0.9067,
+       "Finial3": 0.9067
+      }
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (249, 206, 55)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.8373,
+      "glass_band_studs": [
+       -0.688,
+       0.688
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.428
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 83 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.192,
+       "R": 2.338,
+       "bottom": 3.879,
+       "top": 12.371
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.602,
+        7.413
+       ],
+       "R": 0.36,
+       "at": [
+        -0.6461,
+        4.444
+       ]
+      },
+      {
+       "tripo_at": [
+        0.51,
+        7.476
+       ],
+       "R": 0.36,
+       "at": [
+        0.6461,
+        4.444
+       ]
+      }
+     ]
+    },
+    "HaloDomeHouse_09": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_09/HaloDomeHouse_09_deco.glb",
+     "bytes": 582268,
+     "params": "tools/house_deco/HaloDomeHouse_09.json",
+     "dome": {
+      "axis_lean_max": 0.263,
+      "ellipse_max": 0.075,
+      "radius_change_max": 0.092,
+      "tripo_base_R": 6.12,
+      "scale": 1.3787,
+      "faces": 2534
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 22 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 199, 55)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 1.3034,
+      "glass_band_studs": [
+       -1.119,
+       1.119
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.481
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 78 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.12,
+       "R": 1.56,
+       "bottom": 1.85,
+       "top": 7.95
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       0.9563,
+       4.8589
+      ]
+     ]
+    },
+    "HaloDomeHouse_10": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_10/HaloDomeHouse_10_deco.glb",
+     "bytes": 2417648,
+     "params": "tools/house_deco/HaloDomeHouse_10.json",
+     "dome": {
+      "axis_lean_max": 0.243,
+      "ellipse_max": 0.058,
+      "radius_change_max": 0.083,
+      "tripo_base_R": 6.685,
+      "scale": 0.7106,
+      "faces": 679
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 198, 66)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.6515,
+      "glass_band_studs": [
+       -0.717,
+       0.717
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.445
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 80 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.082,
+       "R": 1.744,
+       "bottom": 2.703,
+       "top": 11.879
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -0.9029,
+       3.7832
+      ]
+     ]
+    },
+    "HaloDomeHouse_11": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_11/HaloDomeHouse_11_deco.glb",
+     "bytes": 418084,
+     "params": "tools/house_deco/HaloDomeHouse_11.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (242, 193, 61)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 1.3201,
+      "glass_band_studs": [
+       -1.121,
+       1.121
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.56
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 79 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.03,
+       "R": 1.934,
+       "bottom": 2.402,
+       "top": 9.3
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       0.7286,
+       4.4794
+      ]
+     ]
+    },
+    "HaloDomeHouse_12": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_12/HaloDomeHouse_12_deco.glb",
+     "bytes": 409600,
+     "params": "tools/house_deco/HaloDomeHouse_12.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (243, 190, 62)",
+      "glass_from": "glow faces, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.6496,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.509,
+       0.538
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 93 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.1,
+       "R": 2.2,
+       "bottom": 2.0,
+       "top": 9.2
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.51,
+        5.0
+       ],
+       "R": 0.274,
+       "at": [
+        -0.4007,
+        4.53
+       ]
+      },
+      {
+       "tripo_at": [
+        0.51,
+        5.0
+       ],
+       "R": 0.274,
+       "at": [
+        0.5961,
+        4.53
+       ]
+      }
+     ]
+    },
+    "HaloShop_Bakery": {
+     "file": "art/models/tripo/house_deco/HaloShop_Bakery/HaloShop_Bakery_deco.glb",
+     "bytes": 416484,
+     "params": "tools/house_deco/HaloShop_Bakery.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (235, 188, 80)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.7684,
+      "glass_band_studs": [
+       -0.631,
+       0.631
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.526
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 60 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -3.9,
+       "R": 1.6,
+       "bottom": 1.0,
+       "top": 10.3
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -3.3496,
+       4.4139
+      ]
+     ]
+    },
+    "HaloShop_Flower": {
+     "file": "art/models/tripo/house_deco/HaloShop_Flower/HaloShop_Flower_deco.glb",
+     "bytes": 434036,
+     "params": "tools/house_deco/HaloShop_Flower.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 198, 61)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.6712,
+      "glass_band_studs": [
+       -0.612,
+       0.612
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.43
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 71 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.179,
+       "R": 2.232,
+       "bottom": 1.331,
+       "top": 11.98
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -1.0607,
+       4.1773
+      ]
+     ]
+    },
+    "HaloShop_Juice": {
+     "file": "art/models/tripo/house_deco/HaloShop_Juice/HaloShop_Juice_deco.glb",
+     "bytes": 407232,
+     "params": "tools/house_deco/HaloShop_Juice.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (243, 201, 73)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.8526,
+      "glass_band_studs": [
+       -0.628,
+       0.628
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.56
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 89 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 8.239,
+       "R": 1.201,
+       "bottom": 1.923,
+       "top": 12.432
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       4.0411,
+       4.7776
+      ]
+     ]
+    },
+    "HaloShop_Potion": {
+     "file": "art/models/tripo/house_deco/HaloShop_Potion/HaloShop_Potion_deco.glb",
+     "bytes": 2353020,
+     "params": "tools/house_deco/HaloShop_Potion.json",
+     "dome": {
+      "axis_lean_max": 0.665,
+      "ellipse_max": 0.087,
+      "radius_change_max": 0.088,
+      "tripo_base_R": 7.21,
+      "scale": 0.8252,
+      "faces": 606
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (249, 201, 70)",
+      "glass_from": "fallback 35-72 % of the box height",
+      "profile_from": "front render rows",
+      "scale": 0.767,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.628,
+       0.628
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 88 %), 63282 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -5.423,
+       "R": 1.726,
+       "bottom": 1.207,
+       "top": 11.574
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -1.6719,
+       4.5852
+      ]
+     ]
+    }
+   },
+   "not_yet": [
+    "awning gold frames",
+    "Juice roof parasol",
+    "Bakery brick dome + chimney cupola",
+    "08 porch dome (no skeleton base)",
+    "drum arch windows (generator W 1.2 < 2D)",
+    "10 corner finials (no slots)",
+    "05 roof glass skylight",
+    "Flower shop gabled glass greenhouse roof (gold frame)",
+    "12 roof pergola cross beams (posts only now)",
+    "shop window goods: bread / fruit / potion shelves (stage 5, A23-117 reason)",
+    "shop sign boards (stage 5)",
+    "signs / plants (stage 5)"
+   ],
+   "review_1": "디자인 검수 10/12: domes / caps / doors / lanterns pass; redo 09 dome (dent, ivy-torn foot) -> lathe + exact ribs, 09 door smear (curved leaf: min_facing 0.1, max_out 0.6), potion door green specks (clean_hues), old knob ghosts round the new knobs -> Tripo paint under every new exact part erased and filled with planks",
+   "studio_step": "pending: one Import 3D (user click via 검수) -> WorldKit SkeletonTest + HaloV2.Buildings clones; LampGlass height = band",
+   "evidence": [
+    "art/review/img3/house_deco/houses_deco_a.jpg",
+    "art/review/img3/house_deco/houses_deco_b.jpg",
+    "art/review/img3/house_deco/houses_deco_c.jpg"
+   ],
+   "credits": 0
   }
  ]
 }

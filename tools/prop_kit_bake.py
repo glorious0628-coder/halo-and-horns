@@ -9,7 +9,7 @@ D2 = inverted hull (--hull): every solid part joined, pushed out --hull-t studs 
 
   blender --background --factory-startup --python tools/prop_kit_bake.py -- <out_dir> <kit.json> [...]
           [--px 1024] [--samples 128] [--ao 0.05] [--warm 0.78] [--cav 0.11] [--cvx 0.05] [--tag C]
-          [--hull] [--hull-t 0.035] [--preview]
+          [--hull] [--hull-t 0.035] [--hull-only] [--preview]
 
 Writes <out_dir>/<Kit>_C_mesh.obj, <Kit>_C_color.png, [<Kit>_D2_hull.obj], <Kit>_bake.json (tris, part counts, where the
 mesh centre sits in Roblox coordinates: MeshPart CFrame = kit pivot * CFrame.new(centre)), and with --preview Blender
@@ -42,6 +42,7 @@ ap.add_argument("--cvx", type=float, default=0.05, help="lightening on edges")
 ap.add_argument("--tag", default="C", help="output tag (C = 디자인 검수 values, e.g. Cs = stronger try)")
 ap.add_argument("--hull", action="store_true")
 ap.add_argument("--hull-t", type=float, default=0.035)
+ap.add_argument("--hull-only", action="store_true", help="only the D2 hull (<Kit>_D2_<t*1000>.obj), no colour bake")
 ap.add_argument("--preview", action="store_true")
 a = ap.parse_args(argv)
 a.out = os.path.abspath(a.out)
@@ -213,7 +214,8 @@ def make_hull(K, t):
 def export_obj(ob, path):
     select_only([ob], ob)
     bpy.ops.wm.obj_export(filepath=path, export_selected_objects=True, forward_axis="NEGATIVE_Z", up_axis="Y",
-                          export_materials=False, export_uv=True, export_normals=True, apply_modifiers=True)
+                          export_materials=False, export_uv=True, export_normals=True, apply_modifiers=True,
+                          export_triangulated_mesh=True)
 
 
 def r3(v):
@@ -287,6 +289,19 @@ def do_kit(path):
     if a.preview:
         setup_render(sc, 640, 32)
         preview(sc, obs, "A", os.path.join(a.out, name + "_prev_A.png"), mn, mx)
+    if a.hull_only:
+        tag = "D2_%03d" % round(a.hull_t * 1000)
+        h = make_hull(K, a.hull_t)
+        hmn, hmx = bounds([h])
+        stats.update({"tag": tag, "D2_tris": tris(h), "D2_thickness": a.hull_t, "D2_center_roblox": r3((hmn + hmx) / 2),
+                      "D2_size_roblox": [round(hmx.x - hmn.x, 4), round(hmx.z - hmn.z, 4), round(hmx.y - hmn.y, 4)]})
+        export_obj(h, os.path.join(a.out, "%s_%s.obj" % (name, tag)))
+        if a.preview:
+            setup_render(sc, 640, 32)
+            preview(sc, obs + [h], tag, os.path.join(a.out, "%s_prev_%s.png" % (name, tag)), mn, mx)
+        json.dump(stats, open(os.path.join(a.out, "%s_%s.json" % (name, tag)), "w"), indent=1)
+        print("[bake] done", json.dumps(stats), flush=True)
+        return
     bake_obs = [o for o in obs if o.get("pk_mat") in BAKE]
     if not bake_obs:
         print("[bake] nothing to bake in", name)

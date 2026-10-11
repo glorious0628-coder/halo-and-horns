@@ -1,12 +1,15 @@
 # 메인 반영 1 — 인계 상태 (2026-10-11)
 
-## 메인 Studio 상태 (2026-10-11 밤 23:30, 3번째 메인 반영 1)
-- PC가 꺼졌다 켜져 Studio를 다시 열었음(Start-Process roblox-studio:1+launchmode:edit+task:EditPlace+placeId:81671223175574+universeId:8570876289). 창 id는 열 때마다 바뀜 → `HH_MAIN_STUDIO=1 py tools/studio_mcp.py call list_roblox_studios '{}'` 후 `STUDIO_ID=<id>`. 지금 Edit, Play 정지, ServerStorage StudioFreshSave=true.
-- 코드: main **d0bcc6d2**(병합 3176b8fb 포함)까지 sync됨. 그 뒤 origin이 더 나아감(한손검 후속·가방·채집·제작 꺼짐 병합 예정) → `git fetch && git reset --keep origin/main` 뒤 `py tools/sync_to_studio.py`.
-- HH_Fabric v2 ID(Color 76316272601072, Roughness 119858177335377)는 Studio에 들어가 있음. Studio를 닫았다 다시 열면 클라우드판은 v1이라 이 ID 2개를 execute_luau로 다시 넣을 것.
-- 마지막 저장: **build/GoodEvil.rbxlx 2026-10-11 23:25:09, 43,786,932B, SHA256 dffacff7…56ec = place/GoodEvil.rbxlx(push b82e7de)**. 소스는 d0bcc6d2 판. 비교용 옛 파일 build/GoodEvil_2026-10-11_night.rbxlx(21:21, 75e5b6e6…).
-- 보고처: **최종 검수** (list_sessions에서 제목 "최종 검수"). 사진 결과의 디자인/게임성 검수로 가는 건 최종 검수가 정함.
-- 저장(Save to File As)은 마우스·키보드가 필요함: 검수 "전달함, 시작" 뒤 권한 요청은 **`robloxstudiobeta.exe`**(앱 이름 "Roblox Studio"로는 창이 마스크됨)로 하고, File 메뉴 → 마우스를 "다른 이름으로 파일에 저장"(약 108,333)에 올려 툴팁 확인 → 클릭 → 형식 드롭다운에서 rbxlx 선택 → 이름 칸에 GoodEvil 입력 후 자동완성 목록의 GoodEvil.rbxlx 클릭 → Enter → 덮어쓰기 "예". 끝나면 PowerShell ShowWindow로 창은 그대로 두거나 원래대로.
+## 메인 Studio 상태 (2026-10-12 새벽 01:50, 3번째 메인 반영 1 → 다음에게)
+- 창: place 81671223175574, Edit, Play 정지, StudioFreshSave=true. PC가 꺼지면 닫힘 → 다시 열기: `Start-Process "roblox-studio:1+launchmode:edit+task:EditPlace+placeId:81671223175574+universeId:8570876289"` 뒤 `HH_MAIN_STUDIO=1 py tools/studio_mcp.py call list_roblox_studios '{}'`로 창 id를 찾아 `STUDIO_ID=<id>`.
+- 다시 열면 클라우드판(옛 저장)이라 **코드 sync 필요**(`git fetch && git reset --keep origin/main` → `py tools/sync_to_studio.py`) + **HH_Fabric v2 ID 2개 다시**: MaterialService.HH_Fabric ColorMap rbxassetid://76316272601072, RoughnessMap rbxassetid://119858177335377 (execute_luau Edit). 둘 다 안 하면 옛 코드·v1 천.
+- 지금 Studio 코드 = main **37a5dc62** sync본(그 뒤 src 변경 없음 확인, origin/main 68fa4344). 최종 검수가 "마무리: 앞 sync·저장 취소, 아침 1번으로 미룸"이라 했지만 37a5dc62 sync·저장은 이미 끝났음.
+- **마지막 저장**: build/GoodEvil.rbxlx 2026-10-12 01:38:53, 43,971,218B, SHA256 d1b561a5…16cc = place/GoodEvil.rbxlx (push **21193b6**). 소스 37a5dc62 판, HH_Fabric v2·PackageLink 99 포함, 빛 마을은 그대로(A23-121). 이전 저장 b82e7de는 옛것.
+- 보고처: **최종 검수** (list_sessions 제목 "최종 검수"). 게임성 검수에도 사본.
+- 시험 스크립트(build/mainapply_2026-10-09b/, git 무시): play_merge11.py·play_merge11b.py(첫 미션·거위·쉼 카드·PvP), play_bag_main.py(가방), play_grips_main.py·play_tip_main.py·play_r1012b.py(한손검·지팡이 끝·R15·계단), play_r1012a.py(Hero·강화·모루 G·재료 팔기), play_chip.py(받기 칩, CLOSED=1), play_spawn.py·play_puddle.py(몹 생김·웅덩이·가방 재료 아이콘). 사진 docs/art/verification_2026-10-12/main_apply/*. 시험 Play는 늘 StudioFreshSave=true 유지.
+- 저장 요령(마우스·키보드 필요, 검수 "전달함, 시작" 뒤): 컴퓨터 제어 권한은 **`robloxstudiobeta.exe`** 이름으로 신청(앱 이름 "Roblox Studio"로는 창이 마스크됨). 먼저 PowerShell SetForegroundWindow로 메인 창 앞으로 → File 메뉴 클릭(22,42) → 마우스를 (108,333)에 올려 툴팁 "새 이름으로 활성 로컬 파일 저장" 확인 → 클릭 → 형식 드롭다운(413,403)→(255,440) rbxlx → 이름 칸(400,378) 삼중 클릭·Ctrl+A·"GoodEvil" 입력 → 자동완성 목록의 GoodEvil.rbxlx(181,419) 클릭 → Enter → 덮어쓰기 "예"(732,422). 끝나면 시간·해시·`</roblox>` 끝 확인 → place/ 복사 → push_paths.
+- 알게 된 것: 모루 G 프롬프트는 NPC Otto가 아니라 Map.Landmarks.ArtisanGuild.Anvil(MaxActivationDistance 12)에 있고 진짜 키(user_keyboard_input keyDown/keyUp G)로만 열림(Dispatch는 안 됨). HUD Hero 칸은 "Coming soon!"(창 없음). 첫 미션 뒤 자연으로 뜨는 Hallie "Lost Lunchbox!" 모달이 쉼 카드·PvP 카드를 막음 → 시험 땐 DebugCommand StoryDone "Lunch1".
+- 열린 문제(게임성 검수에 넘김): 계단에서 지팡이 끝 −0.12·경사 +0.51, 강화/받기 칩 잘림(고침 확인됨), 둘째 웅덩이 테두리 주변은 슬라임이 없어 못 봄, 첫 KO 킹 비교는 probe에 없음.
 
 ## 오늘 한 일 (사진: docs/art/verification_2026-10-11/main_apply/)
 skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bridge/(다리 위 스킬 원), twohand_horns/·twohand_horns2/·twohand_v2/·twohand_v2b/(grips9/ 포함)·twohand_v3/(쥐기), twohand_mage/(Lv25 마법사 창), halo_light_c2c/(낮·밤), halo_entrance/·halo_entrance2/(입구 전체).

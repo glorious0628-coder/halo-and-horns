@@ -38,7 +38,7 @@
 ## 3. 망치질과 끝 (최종 계약 10/12 — 게임성 검수·개발 4·개발 3 합의)
 - 숫자·규칙은 **`src/ReplicatedStorage/Shared/CraftMini.luau`(개발 4) 한 곳**: 서버(CraftService)와 화면이 같이 씀. 시험 `tools/test_craft_mini.py`.
 - **고정 일정:** 고리 i 목표 T_i = StartAt + i×Ring + (i−1)×Rest. 누름이 다음 고리를 옮기지 않음. 안 누른 고리는 Good 창이 닫히면(Closes) Miss.
-- c->s `CraftStrike(id, i, ms)` — **누를 때만**, ms = 누른 때 − T_i(+ = 늦게). 서버는 고리마다 처음 것만 `{ Ms, At = 서버 시각 }`으로 적음(i = 1..5 정수, ms 숫자).
+- c->s `CraftStrike(id, i, ms)` — **누를 때만**, ms = 누른 때 − T_i(+ = 늦게). 서버는 고리마다 처음 것만 `{ Ms, At = 서버 시각 }`으로 적음(i = 1..5 정수, ms 숫자 −400..400 — 밖이면 안 받음).
 - c->s `CraftFinish(id)` — 끝(또는 Skip = 바로 Finish = +0). 서버가 `CraftMini.Accept(strikes, StartAt, 핑 ms)`로 점수: 서버가 잰 (At − T_i) − ms 가 −50..250 + 1.5×핑 밖이면 그 칸 Miss, 안 온 칸 Miss, 앞 칸보다 Rest 안 지나 온 것 Miss. 판정 |ms − 40| ≤ 70 / 130 / 200, 3/2/1/0점, 13 이상 +2, 9 이상 +1.
 - 덤: 5개가 모두 같은 ms면 +0(기록 `CraftBot`), 판정은 됐는데 도착이 안 맞은 칸 수 기록(`CraftMismatch`).
 - 시간 넘음(StartAt + 20초)·나감·KO = 그 자리에서 +0 완성(재료 안 잃음). 결과 넣기·XP·Made·Pend 비우기·CraftResult·CraftInfo·Crafted 신호는 모든 끝에서 같음.
@@ -64,6 +64,8 @@
 
 ## 8. 구현 (10/12, 가지 `dev3-craft`)
 - `src/ServerScriptService/CraftService.luau`(망치질은 `Shared/CraftMini` require), Config(`Config.Features.Crafting`·`Config.Craft`·`Config.CraftXPToNext`; 망치질 숫자는 Config에 없음), Net 원격 6개, Main 두 목록(GatherService 다음). CraftMini.luau·test_craft_mini.py는 개발 4 dev4-craft 44dba035와 같은 파일.
-- 시험 `tools/test_craft.py`: 100 named·변이 55/55(핑 = 시작·두드림·지금 중 큰 값, 개발 4 44dba035)(도착이 안 맞으면 Miss·핑 무시·일정 틀림·서버 시각 대신 클라 시각 변이 포함). test_craft_mini 45·16/16.
+- 시험 `tools/test_craft.py`: 101 named·변이 56/56(핑 = 시작·두드림·지금 중 큰 값, 개발 4 44dba035)(도착이 안 맞으면 Miss·핑 무시·일정 틀림·서버 시각 대신 클라 시각 변이 포함). test_craft_mini 45·16/16.
 - **켜는 가지에서 할 것(최종 검수 10/12):** 2배 XP 패스 설명(Config 약 4185 "Get 2x XP from everything you do")을 "Get 2x level XP, so you level up 2x faster. Crafting levels do not change. No stats are for sale."로 바꾸고, 시험에 '제작 켜짐이면 패스 글에 Crafting 줄' 정적 검사. 패스에 제작 XP를 넣을지는 최종 검수가 사용자에게 물음(답 바뀌면 다시).
 - 허용(−50..250 + 1.5×핑)은 CraftMini.T(Early·Late·JitterMul) — 숫자 하나로 조정.
+- **지표(게임성 검수 10/12):** 제작마다 Telemetry `CraftStrikeD`(값 = 두드림 (서버 ms − 클라 ms) 가장 큰 값, a = 가장 작은 값, b = 받은 두드림 수) → 10/17~20 시험 뒤 CraftMini 창(Early·Late·JitterMul) 조정. 베타는 지금 창 그대로. test_craft 102·58/58.
+- **켜기 전 고친 것(게임성 검수·최종 검수 10/12):** ②저장 `Craft.Pend = { Id, Plus, Gold, Mats }`(낸 것 그대로; Config.SanitizeCraft가 지킴) — 레시피가 사라졌으면 골드(`CraftRefund`, 2배 아님)·재료를 돌려줌 ③끝에 자리가 없으면 번 +N을 Pend.Plus에 남기고 다음 접속·다음 시작에 그 +N으로 ④Item은 전부 들어갈 때만, Gear는 끝에서 칸 상한(합 60·키 20)을 다시 보고 전부 아니면 대기 ⑤스위치가 꺼져 있으면 들어올 때 아무것도 읽거나 쓰지 않음 ⑥엉뚱한 세션 id의 Finish는 0.5초 제한을 쓰지 않음. ①무기 레시피는 개발 2 AddSpare/SpareRoom 뒤, W7·W9는 ClatterGem·KingJelly(Loot.Items에 아직 없음)·T9 뒤. test_craft 122·69/69, test_save_v4_tables 100·58/58.

@@ -43,7 +43,8 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
   pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122); a pot that hits a wall,
            pilaster, tower, pedestal, step, the door or another pot is moved the shortest way out (printed)
   steps    "half" (two half-round steps) | "three" (three straight steps, door + 3.0 wide) | "none"
-  top      {"type": "flat", "parapet": "solid"|"balustrade", "h", "skylight": [w, d, h] or null,
+  top      {"type": "flat", "parapet": "solid"|"balustrade", "h", "skylight": [w, d, h] or null, "skylight_deco": bool (only
+            the marble base here, the glass house is a decoration),
             "topiary": [[x, y], ...], roof extras:
             "hip": {"h", "eave": 1.5, "chimney": [x, y, w, h]} (rect plan: blue slate SmoothPlastic (90,140,210) hip roof,
             gold hip lines + ridge + ball finial; use "parapet": "none"), "pergola": {"w", "d", "h", "columns": 4|6, "x", "y"},
@@ -872,11 +873,12 @@ if TOP["type"] == "flat":
     if sk:
         sw_, sd_, sh_ = sk
         add("Skylight_Base", (sw_ + 0.6, 0.6, sd_ + 0.6), (0, 0, ZT + 0.5), mat="marble")
-        add("Skylight_Glass", (sw_, sh_, sd_), (0, 0, ZT + 0.8 + sh_ / 2), mat="glass")
-        for k, (dx, dy) in enumerate(((-1, -1), (-1, 1), (1, -1), (1, 1))):
-            add("Skylight_Post%d" % k, (0.18, sh_ + 0.1, 0.18), (dx * sw_ / 2, dy * sd_ / 2, ZT + 0.8 + sh_ / 2), mat="gold")
-        add("Skylight_Ridge", (sw_ + 0.2, 0.18, 0.18), (0, 0, ZT + 0.85 + sh_), mat="gold")
-        ball("Skylight_Ball", 0.4, (0, 0, ZT + 1.1 + sh_))
+        if not TOP.get("skylight_deco"):                  # else the glass house is a decoration (tools/house_deco.py roofglass)
+            add("Skylight_Glass", (sw_, sh_, sd_), (0, 0, ZT + 0.8 + sh_ / 2), mat="glass")
+            for k, (dx, dy) in enumerate(((-1, -1), (-1, 1), (1, -1), (1, 1))):
+                add("Skylight_Post%d" % k, (0.18, sh_ + 0.1, 0.18), (dx * sw_ / 2, dy * sd_ / 2, ZT + 0.8 + sh_ / 2), mat="gold")
+            add("Skylight_Ridge", (sw_ + 0.2, 0.18, 0.18), (0, 0, ZT + 0.85 + sh_), mat="gold")
+            ball("Skylight_Ball", 0.4, (0, 0, ZT + 1.1 + sh_))
     for i, (x, y) in enumerate(TOP.get("topiary", [])):
         post("TopiaryPot%d" % i, 1.4, 0.9, x, y, ZT + 0.2)
         post("TopiaryPotGold%d" % i, 1.5, 0.15, x, y, ZT + 1.0, "gold")

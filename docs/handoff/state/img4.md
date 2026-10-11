@@ -1,7 +1,16 @@
 # 이미지 생성 4 — 상태 (2026-10-12 00:30)
 
-## 지금 상태 한 줄
-**Tripo 묶음 1(26)·2(14) 끝 — 잔액 15,765(web 2). 비교 시험 시트 보냄(디자인 검수 고름 기다림). 디자인 검수 "다시" 6개 WorldKit 적용 끝, Studio 사진은 다음 슬롯. 다음 = 디자인 검수 답 → 올리기 승인(최종 검수) → C·D2 Studio 칸, Tripo 모델 Blender 손보기.**
+## 지금 상태 한 줄 (10/12 01:45, PC 꺼짐 전 정리)
+**파트 소품 '다시' 묶음 끝(디자인 검수 통과, 가마솥 Slate). 기본 B(모든 파트 그림자) 적용. ★ 선 비교는 사용자 고름 기다림. Tripo 손보기 1차: `tools/tripo_touchup.py` + `tools/tripo_touchup_halo.sh`(39개 목록) → `art/models/tripo/touchup/<키>/`(GLB + C/N/R/M 1024 + 앞·왼·뒤·오른 미리보기, 디스크만). 38개 끝, 내 눈 확인은 꽃 화분 5개만(데이지 --tol 0.25로 다시). 아직 못 본 것 33개 → `py tools/tripo_touchup_sheet.py <out.jpg> <키…>`로 시트 보고 디자인 검수에.**
+- 실패 1: HaloVar4_Lantern_B — 머리 자르는 높이에서 전부 잘림(cut 12956, 남은 면 0 → smart_project 실패). Lantern_B 키트 Head 파트 최저 높이 vs Tripo 등불 높이 비교해서 고칠 것.
+- 다음: ① 33개 시트 확인(남은 Tripo 화분 찌꺼기·크기·떠 있는 것) ② 디자인 검수 → 최종 검수 올리기 승인 → 이미지 개발 올림 → Studio 재질 낮·밤 사진 ③ records.json에 손보기 기록(touchup 이벤트) ④ Rose 화분 몸통이 2D보다 좁음(위가 무거움).
+- WorldKit 백업: build/wk_backup/20261012_013528 (HaloPropKits 최신, 가마솥 Slate 포함).
+
+## 배운 것 (10/12)
+- 실제 땅 C2c 빛에서 어두운 회색(Metal·SmoothPlastic)은 하늘빛을 받아 남색으로 보임 → 숯 회색은 거친 Slate + 따뜻한 회색(110,100,92).
+- Neon은 하얗게 번짐 → 물약 같은 빛나는 면은 한 단계 진한 색(60,196,170)으로.
+- 최종 검수 10/12: 짧은 확인 사진도 규칙 6대로 매번 최종 검수에 짧게 신청(잠깐 준 '묻지 말고' 허락은 취소됨 — 다른 세션의 WorldKit 사용을 알 수 없음).
+- Blender 미리보기 해 그림자가 통나무 옆면을 꼬인 띠로 보이게 함 → 판정은 Studio 사진으로.
 
 ## 비교 시험 (사용자 "그림자가 없어서 이상한 건가, 뭔가 선이 없어 보여")
 - 시트: `art/review/img4/compare_1011_sheet.jpg` (사진 64장 `art/review/img4/compare_1011/`, 디스크만). 소품 4 = BenchA·Lantern_A·Beehive·Planter_D__Body.
@@ -22,6 +31,7 @@
 ## Tripo
 - 묶음 1: 26개 1,430점(records `<키>_web_hd_mv4`). 묶음 2: 14개 770점(종만·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리), 잔액 15,765, 원본 시트 `art/review/img4/tripo_b2_raw.jpg`. 파일 `art/models/tripo/web/<키>_HD_src.glb`. Tripo GLB 앞 = Blender +x(tools/compare_3d_render.py 주석).
 - 남은 것: Planter_A·Planter_E·Balustrade_F 덤불 — 이미지 생성 2 2D 끝(kits_mv3), 디자인 검수 통과 확인 + 최종 검수 승인 뒤.
+- **파일 이름(10/12):** 4면 결과 = `art/models/tripo/web/<키>_MV4_HD_src.glb` (40개). 처음 받을 때 `<키>_HD_src.glb`로 저장해 옛 단일면 결과 29개를 덮어씀 → git에 있던 12개는 HEAD에서, 없던 17개는 Tripo 계정(옛 task)에서 다시 받아 되살림. 앞으로 내려받기 이름에 꼭 `_MV4` 같은 꼬리.
 - 방법: scratchpad `tripo_srv.py`(8766)·`tripo_dl.py`(8767) — 세션 끝나면 사라짐. 단계는 메모리 tripo-web-in-app-browser + 위 묶음 기록.
 
 ## 다음

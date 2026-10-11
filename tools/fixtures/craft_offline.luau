@@ -41,7 +41,7 @@ local function cWorld(o)
 		table.insert(w.Notices, { Player = p, Key = key, Kind = kind, Text = "KEY:" .. tostring(key) })
 	end
 	w.Tele = {}
-	w.Reg.TelemetryService = { Custom = function(p, name, v) table.insert(w.Tele, { P = p, Name = name, V = v }) end }
+	w.Reg.TelemetryService = { Custom = function(p, name, v, a, b) table.insert(w.Tele, { P = p, Name = name, V = v, A = a, B = b }) end }
 	local anvil = newInstance("Part", w)
 	anvil.Position = vec(0, 0, 0)
 	w.Anvil = anvil
@@ -259,7 +259,7 @@ runGroup("start", function()
 	check(w.C.TryStart(p, "W1") == "ok", "everything there: ok", "")
 	check(d.BankGold == 90 and d.Items.Jelly == 195 and d.Items.CopperOre == 78 and w.Spent[1].Why == "Craft",
 		"the gold (source Craft) and the materials go at the start", show({ d.BankGold, d.Items.Jelly, d.Items.CopperOre }))
-	check(d.Craft.Pend == "W1", "the save remembers the craft (Craft.Pend)", tostring(d.Craft.Pend))
+	check(type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "W1" and d.Craft.Pend.Gold == 10, "the save remembers the craft (Craft.Pend)", show(d.Craft.Pend))
 	local s = last(fired(w, "CraftSession", p))
 	check(s and s.Recipe == "W1" and s.Strikes == 5 and s.Ring == 1.2 and s.Rest == 0.35 and s.StartAt == serverNow(w) + 0.8,
 		"CraftSession { Id, Recipe, Strikes 5, Ring 1.2, Rest 0.35, StartAt = server time + 0.8 }", show(s))
@@ -295,11 +295,16 @@ runGroup("hammer", function()
 		and res.LvUp == false, "five Perfects: +2; CraftResult { Recipe, Kind, Tier, Plus, XP, Lv, LvUp }", show(res))
 	check(#res.Grades == 5 and res.Grades[1] == "Perfect" and res.Grades[5] == "Perfect", "Grades x5", show(res.Grades))
 	check(#w.Spares == 1 and w.Spares[1].Tier == 1 and w.Spares[1].Plus == 2, "the weapon goes to the spares (AddSpare 1, +2)", "")
-	check(d.Craft.Pend == "" and d.Craft.Made.W1 == 1 and d.Craft.Smith.XP == 10, "Pend cleared, Made.W1 = 1, 10 craft XP", show(d.Craft))
+	check(d.Craft.Pend == nil and d.Craft.Made.W1 == 1 and d.Craft.Smith.XP == 10, "Pend cleared, Made.W1 = 1, 10 craft XP", show(d.Craft))
 	local info = last(fired(w, "CraftInfo", p))
 	check(info and info.Role == "Smith" and info.Lv == 1 and info.XP == 10 and info.Need == 40 and info.Made.W1 == 1,
 		"CraftInfo { Role, Lv, XP, Need, Made } after the craft", show(info))
 	check(#w.Crafted == 1 and w.Crafted[1].Id == "W1" and w.Crafted[1].Plus == 2, "Crafted(player, W1, 2)", "")
+	local sd = nil
+	for _, e in w.Tele do if e.Name == "CraftStrikeD" and e.P == p then sd = e end end
+	check(sd and sd.V == 50 and sd.A == 50 and sd.B == 5,
+		"CraftStrikeD logged per craft: the biggest / smallest (server ms - client ms) and how many strikes (50 / 50 / 5 at ping 0.1)",
+		sd and string.format("%s %s %s", tostring(sd.V), tostring(sd.A), tostring(sd.B)) or "none")
 
 	startAndHammer(w, p, { 40, 150, 220, false, 45 })
 	res = last(fired(w, "CraftResult", p))
@@ -373,6 +378,8 @@ runGroup("hammer", function()
 	check(w.C.Strike(o, sess.Id, 0, 30) == "ring" and w.C.Strike(o, sess.Id, 6, 30) == "ring" and w.C.Strike(o, sess.Id, 1.5, 30) == "ring",
 		"ring 0 / 6 / 1.5: refused", "")
 	check(w.C.Strike(o, sess.Id, 1, "30") == "ms" and w.C.Strike(o, sess.Id, 1, 0 / 0) == "ms", "a text or NaN offset: refused", "")
+	check(w.C.Strike(o, sess.Id, 1, 401) == "ms" and w.C.Strike(o, sess.Id, 1, -401) == "ms" and w.C.Session(o).Strikes[1] == nil,
+		"an offset beyond 400 ms: refused (CraftMini.T.MaxMs; the ring stays open)", "")
 	check(w.C.Strike(o, sess.Id, 1, 30) == "ok" and w.C.Strike(o, sess.Id, 1, -400) == "again", "one strike a ring (the first stays)", "")
 	check(w.C.Session(o).Strikes[1].Ms == 30 and w.C.Session(o).Strikes[1].At == serverNow(w), "the strike notes { Ms, At = server time }", "")
 	check(w.C.Finish(o, sess.Id + 1) == "session" and w.C.Finish(o, sess.Id) == "ok" and w.C.Finish(o, sess.Id) == "session",
@@ -391,30 +398,99 @@ runGroup("ends", function()
 	local w = cWorld()
 	local p, d = smith(w, 1)
 	w.C.TryStart(p, "W2")
+	check(type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "W2" and d.Craft.Pend.Plus == -1 and d.Craft.Pend.Gold == 40
+		and d.Craft.Pend.Mats.Jelly == 10 and d.Craft.Pend.Mats.CopperOre == 4, "the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
+		show(d.Craft.Pend))
 	w:Advance(0.8 + 20 + 0.1)
-	check(d.Craft.Pend == "" and d.Craft.Made.W2 == 1 and last(w.Spares).Tier == 2 and last(w.Spares).Plus == 0
+	check(d.Craft.Pend == nil and d.Craft.Made.W2 == 1 and last(w.Spares).Tier == 2 and last(w.Spares).Plus == 0
 		and w.C.Session(p) == nil, "no Finish by StartAt + 20 s: made at +0", show(d.Craft))
 	local q, dq = smith(w, 2)
 	w.C.TryStart(q, "W1")
 	w:Leave(q)
-	check(dq.Craft.Pend == "" and dq.Craft.Made.W1 == 1, "a leave mid-craft: made at +0 before the save goes", show(dq.Craft))
+	check(dq.Craft.Pend == nil and dq.Craft.Made.W1 == 1, "a leave mid-craft: made at +0 before the save goes", show(dq.Craft))
 	local k, dk = smith(w, 3)
 	w.C.TryStart(k, "W1")
 	w.Reg.PlayerService.CharacterDied:Fire(k)
-	check(dk.Craft.Pend == "" and dk.Craft.Made.W1 == 1, "a KO mid-craft: made at +0", "")
+	check(dk.Craft.Pend == nil and dk.Craft.Made.W1 == 1, "a KO mid-craft: made at +0", "")
+	local function craftWith(pend)
+		return { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {}, Pend = pend }
+	end
 	-- a craft the server stopped in the middle of
-	local j, dj = smith(w, 4, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {}, Pend = "W2" } })
-	check(dj.Craft.Pend == "" and dj.Craft.Made.W2 == 1 and last(w.Spares).P == j and last(w.Spares).Plus == 0,
-		"a join with Craft.Pend = W2 finishes it at +0 (paid already)", show(dj.Craft))
-	local u, du = smith(w, 5, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {}, Pend = "Nope" } })
-	check(du.Craft.Pend == "" and count(du.Craft.Made) == 0, "an unknown Pend is dropped", "")
+	local j, dj = smith(w, 4, { Craft = craftWith({ Id = "W2", Plus = -1, Gold = 40, Mats = { Jelly = 10 } }) })
+	check(dj.Craft.Pend == nil and dj.Craft.Made.W2 == 1 and last(w.Spares).P == j and last(w.Spares).Plus == 0,
+		"a join with a never-hammered W2 finishes it at +0 (paid already)", show(dj.Craft))
+	local h, dh = smith(w, 7, { Craft = craftWith({ Id = "W2", Plus = 2, Gold = 40, Mats = { Jelly = 10 } }) })
+	check(dh.Craft.Pend == nil and last(w.Spares).P == h and last(w.Spares).Plus == 2, "an earned +2 waiting in the save comes as +2", "")
+	-- a recipe gone by now: everything paid comes back
+	local u, du = smith(w, 5, { BankGold = 1000, Craft = craftWith({ Id = "Nope", Plus = 1, Gold = 123, Mats = { Jelly = 7, CopperOre = 150 } }) })
+	check(du.Craft.Pend == nil and count(du.Craft.Made) == 0 and du.BankGold == 1123 and du.Items.Jelly == 200 + 7
+		and du.Items.CopperOre == 80 + 150, "an unknown recipe pays back the gold and every material (150 in two parts)", show({ du.BankGold, du.Items.Jelly, du.Items.CopperOre }))
+	local refundGold = nil
+	for _, g in w.Gold do if g.P == u then refundGold = g end end
+	check(refundGold and refundGold.Src == "CraftRefund", "the gold comes back as CraftRefund (never doubled by a pass)", "")
+	-- the result does not fit at the join: it waits, with its +N
 	w.SpareFull = true
-	local f, df = smith(w, 6, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {}, Pend = "W1" } })
-	check(df.Craft.Pend == "W1" and keysFor(w, f)[1] == "Config.Craft.Text.Full", "no room at the join: it stays pending (Full notice)", "")
+	local f, df = smith(w, 6, { Craft = craftWith({ Id = "W1", Plus = 2, Gold = 10, Mats = { Jelly = 5 } }) })
+	check(type(df.Craft.Pend) == "table" and df.Craft.Pend.Plus == 2 and keysFor(w, f)[1] == "Config.Craft.Text.Full",
+		"no room at the join: it stays pending with its +2 (Full notice)", show(df.Craft.Pend))
 	check(w.C.TryStart(f, "W1") == "busy", "... and a new craft waits", "")
 	w.SpareFull = false
 	w:Advance(4)
-	check(w.C.TryStart(f, "W1") == "ok" and df.Craft.Made.W1 == 1, "room again: the pending one is made first, then the new one starts", show(df.Craft))
+	check(w.C.TryStart(f, "W1") == "ok" and df.Craft.Made.W1 == 1 and last(w.Spares).P == f and last(w.Spares).Plus == 2,
+		"room again: the waiting one is made first at its +2, then the new one starts", show(df.Craft))
+	-- the spares fill up during the hammer: the earned +2 is kept, never lost
+	local g, dg = smith(w, 8)
+	check(w.C.TryStart(g, "W1") == "ok", "start", "")
+	w.SpareFull = true
+	hammer(w, g, HONEST)
+	check(type(dg.Craft.Pend) == "table" and dg.Craft.Pend.Plus == 2 and dg.Craft.Made.W1 == nil, "full at the Finish: +2 earned and kept in the save", show(dg.Craft.Pend))
+	w.SpareFull = false
+	w:Advance(61)
+	check(w.C.TryStart(g, "W1") == "ok" and last(w.Spares).P == g and last(w.Spares).Plus == 2, "the next start pays the +2 first", "")
+end)
+
+------------------------------------------------------------------ switched off: nothing written at a join
+runGroup("off", function()
+	local w = cWorld({ Off = true })
+	local pend = { Id = "W1", Plus = 1, Gold = 10, Mats = { Jelly = 5 } }
+	local p, d = smith(w, 1, { Craft = { Smith = { Lv = 3, XP = 7 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {}, Pend = deepCopy(pend) } })
+	check(type(d.Craft.Pend) == "table" and d.Craft.Pend.Plus == 1 and d.Craft.Pend.Id == "W1" and #w.Spares == 0
+		and #fired(w, "CraftInfo", p) == 0, "switch off: a waiting craft is left as it is, no CraftInfo", show(d.Craft.Pend))
+	local q, dq = smith(w, 2)
+	check(dq.Craft.Pend == nil and dq.Craft.Smith.Lv == 1, "switch off: a save without a craft gets nothing written", show(dq.Craft))
+end)
+
+------------------------------------------------------------------ gear / item results: all or nothing (rows come with ⑥ / ④)
+runGroup("results", function()
+	local w = cWorld({ EditConfig = function(c)
+		c.Craft.Recipes.T1 = { Role = "Smith", Kind = "Item", Item = "Jelly", N = 3, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
+		c.Craft.Recipes.G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
+	end })
+	local p, d = smith(w, 1)
+	d.Items.Jelly = 990
+	check(w.C.TryStart(p, "T1") == "ok", "an item recipe starts with room for 3", "")
+	d.Items.Jelly = 998
+	hammer(w, p, HONEST)
+	check(d.Items.Jelly == 998 and type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "T1", "only 1 of 3 would fit: nothing given, it waits", show(d.Items.Jelly))
+	d.Items.Jelly = 10
+	w:Advance(61)
+	w.C.Settle(p, d)
+	check(d.Items.Jelly == 13 and d.Craft.Pend == nil, "room again: all 3 at once", tostring(d.Items.Jelly))
+	local q, dq = smith(w, 2)
+	dq.Gear = { Own = { ["Ring:1:0"] = 20, ["Ring:2:0"] = 20, ["Ring:3:0"] = 19 }, On = { Armor = "", Ring = "" }, Pet = {} }
+	check(w.C.TryStart(q, "G1") == "ok", "a gear recipe starts with 59 of 60 things", "")
+	dq.Gear.Own["Ring:3:0"] = 20
+	hammer(w, q, HONEST)
+	check(dq.Gear.Own["Armor:1:2"] == nil and type(dq.Craft.Pend) == "table", "60 of 60 at the Finish: no 61st thing, it waits", show(dq.Gear.Own))
+	dq.Gear.Own["Ring:3:0"] = 10
+	w.C.Settle(q, dq)
+	check(dq.Gear.Own["Armor:1:2"] == 1 and dq.Craft.Pend == nil, "room again: the armor +2 goes in", show(dq.Gear.Own))
+	local r, dr = smith(w, 3)
+	dr.Gear = { Own = { ["Armor:1:0"] = 19 }, On = { Armor = "", Ring = "" }, Pet = {} }
+	check(w.C.TryStart(r, "G1") == "ok", "start", "")
+	dr.Gear.Own["Armor:1:0"] = 20
+	w.C.Finish(r, last(fired(w, "CraftSession", r)).Id)
+	check(dr.Gear.Own["Armor:1:0"] == 20 and type(dr.Craft.Pend) == "table", "a full key (20) at the Finish: no 21st, it waits", show(dr.Gear.Own))
 end)
 
 ------------------------------------------------------------------ craft XP
@@ -457,8 +533,10 @@ runGroup("remotes", function()
 	check(w.C.Session(p).Strikes[1] == nil, "CraftStrike without its ms or with a text id: ignored", "")
 	w:Remote("CraftFinish", p, sess.Id, "x")
 	check(w.C.Session(p) ~= nil, "CraftFinish with two arguments: ignored (the session stays open)", "")
+	w:Remote("CraftFinish", p, sess.Id + 7)
 	w:Remote("CraftFinish", p, sess.Id)
-	check(w.C.Session(p) == nil and last(fired(w, "CraftResult", p)).Plus == 0, "CraftFinish(id) right away: +0", "")
+	check(w.C.Session(p) == nil and last(fired(w, "CraftResult", p)).Plus == 0,
+		"a wrong id's Finish does not use up the limit: the real CraftFinish(id) right after is taken (+0)", "")
 	w.Gap = 3
 	w:Remote("CraftStart", p, "W1")
 	check(#fired(w, "CraftSession", p) == 2, "3 s later: a new session", "")

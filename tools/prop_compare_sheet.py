@@ -16,7 +16,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KITS = ["HaloReasonHQ_BenchA", "HaloVar4_Lantern_A", "NEW_Beehive", "HaloVar4_Planter_D__Body"]
 ROWS = [("day", 5), ("day", 15), ("night", 5), ("night", 15)]
 LABEL = {"2D": "2D 그림", "A": "A 지금", "Abl": "A (Blender)", "B": "B 땅+그림자", "B2": "B2 +Diffuse 0.3", "C": "C 색 굽기",
-         "Cs": "C+ 진하게", "D1": "D1 Highlight 선", "D2": "D2 껍데기 선"}
+         "Cs": "C+ 진하게", "D1": "D1 Highlight 선", "D2": "D2 껍데기 선", "D2t": "B + 선 얇게(0.035)",
+         "D2T": "B + 선 굵게(0.06)"}
 PREV = {"Abl": "A"}      # sheet column -> tools/prop_kit_bake.py preview name
 ROWL = {("day", 5): "낮 5칸", ("day", 15): "낮 15칸", ("night", 5): "밤 5칸", ("night", 15): "밤 15칸"}
 
@@ -47,8 +48,10 @@ def main():
     ap.add_argument("--cols", default="2D,A,B,B2,D1,Abl,C,Cs,D2")
     ap.add_argument("--cell", type=int, default=230)
     ap.add_argument("--note", action="append", default=[])
+    ap.add_argument("--rows", default="day5,day15,night5,night15")
     a = ap.parse_args()
     kits = a.kits or KITS
+    ROWS = [(r.rstrip("0123456789"), int(r.lstrip("adghinty"))) for r in a.rows.split(",")]
     cols = a.cols.split(",")
     S, LW, TH = a.cell, 90, 34
     f1, f2, f3 = font(20), font(16), font(15)

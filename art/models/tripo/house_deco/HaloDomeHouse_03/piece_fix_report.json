@@ -1,0 +1,31 @@
+{
+ "HaloDomeHouse_03_Dome_t00": {
+  "faces_in": 140,
+  "slivers_pale": 0,
+  "faces_out": 140
+ },
+ "HaloDomeHouse_03_Dome_t01": {
+  "faces_in": 485,
+  "slivers_pale": 0,
+  "faces_out": 485
+ },
+ "HaloDomeHouse_03_Dome_t10": {
+  "faces_in": 169,
+  "slivers_pale": 0,
+  "faces_out": 169
+ },
+ "HaloDomeHouse_03_Dome_t11": {
+  "faces_in": 494,
+  "slivers_pale": 0,
+  "faces_out": 494
+ },
+ "_parts": {
+  "HaloDomeHouse_03_Dome": {
+   "tiles_joined": 4,
+   "island_faces_cut": 0,
+   "tris": 1288,
+   "maps": 1024,
+   "uv_fill": 0.596
+  }
+ }
+}

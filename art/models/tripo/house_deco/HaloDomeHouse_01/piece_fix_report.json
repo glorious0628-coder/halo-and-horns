@@ -1,0 +1,31 @@
+{
+ "HaloDomeHouse_01_CupolaDome_t00": {
+  "faces_in": 123,
+  "slivers_pale": 0,
+  "faces_out": 123
+ },
+ "HaloDomeHouse_01_CupolaDome_t01": {
+  "faces_in": 123,
+  "slivers_pale": 0,
+  "faces_out": 123
+ },
+ "HaloDomeHouse_01_CupolaDome_t10": {
+  "faces_in": 61,
+  "slivers_pale": 0,
+  "faces_out": 61
+ },
+ "HaloDomeHouse_01_CupolaDome_t11": {
+  "faces_in": 11,
+  "slivers_pale": 0,
+  "faces_out": 11
+ },
+ "_parts": {
+  "HaloDomeHouse_01_CupolaDome": {
+   "tiles_joined": 4,
+   "island_faces_cut": 1,
+   "tris": 317,
+   "maps": 1024,
+   "uv_fill": 0.626
+  }
+ }
+}

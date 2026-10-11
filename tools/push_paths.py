@@ -143,8 +143,16 @@ def main():
         print(f"push 거절({attempt + 1}/5), 새 origin/main 위에서 다시 만들어요")
     else:
         sys.exit("push 실패: 5번 모두 거절됐어요")
-    git("fetch", "-q", "origin")
+    fetch_quietly()
     sync_head()
+
+
+def fetch_quietly():
+    """the push already landed: a network blip here must not turn it into a failure"""
+    r = subprocess.run(["git", "fetch", "-q", "origin"], capture_output=True, text=True, encoding="utf-8",
+                       errors="replace")
+    if r.returncode != 0:
+        print("주의: git fetch 실패 - 공유 HEAD는 다음에 맞춰요:", r.stderr.strip()[:200])
 
 
 ZERO = "0" * 40
@@ -263,6 +271,53 @@ def prune_empty_dirs(path):
         d = os.path.dirname(d)
 
 
+def blobs_at(rev, paths):
+    """{path: blob or None} for each path in rev's tree (one `git cat-file --batch-check`); a folder counts as None"""
+    if not paths:
+        return {}
+    r = subprocess.run(["git", "cat-file", "--batch-check"], capture_output=True,
+                       input="".join(f"{rev}:{p}\n" for p in paths).encode("utf-8"))
+    lines = r.stdout.decode("utf-8", errors="replace").splitlines()
+    if r.returncode != 0 or len(lines) != len(paths):
+        raise RuntimeError("git cat-file --batch-check failed")
+    out = {}
+    for p, line in zip(paths, lines):
+        parts = line.split(" ")
+        out[p] = parts[0] if len(parts) == 3 and parts[1] == "blob" else None
+    return out
+
+
+def snap(p):
+    try:
+        st = os.stat(p)
+    except OSError:
+        return None
+    return (st.st_size, st.st_mtime_ns) if os.path.isfile(p) else None
+
+
+def fix_name_case(p, cache):
+    """Windows: the bytes are right but the file on disk has another letter case (a case-only rename). True = renamed"""
+    d = os.path.dirname(p) or "."
+    base = os.path.basename(p)
+    names = cache.get(d)
+    if names is None:
+        try:
+            names = os.listdir(d)
+        except OSError:
+            names = []
+        cache[d] = names
+    if base in names:
+        return False
+    actual = next((n for n in names if n.casefold() == base.casefold()), None)
+    if actual is None:
+        return False
+    tmp = os.path.join(d, actual + ".push_paths_case")
+    os.rename(os.path.join(d, actual), tmp)
+    os.rename(tmp, p)
+    cache[d] = [n for n in names if n != actual] + [base]
+    return True
+
+
 def sync_head():
     """Move the shared HEAD (and index) to origin/main without ever reverting or removing anyone's work.
 
@@ -270,17 +325,39 @@ def sync_head():
     `git reset --keep`. When a stale .git/index.lock blocked the reset, or the caller's tool timeout killed the script
     half way, files stayed reverted or deleted in the working tree (이미지 생성 3 lost new tools twice, src/ files were
     left at old versions). Now a file only ever moves FORWARD, so a kill at any point is harmless and a rerun
-    finishes the job:
-      - one run at a time (a lock file next to the index; HEAD is checked again right before the reset)
-      - for each path origin changed since HEAD: working bytes == origin -> nothing; working bytes == ANY version the
-        path had between HEAD and origin (or absent where one of those versions was absent) -> write origin's version
-        (or remove it, and empty folders, when origin removed it); anything else is someone's edit -> never touched,
-        listed so they merge before pushing it. A file saved (or created) while this runs counts as an edit.
+    finishes the job (two adversarial review rounds, offline scenario tests):
+      - one run at a time (a lock file with the owner's pid next to the index); HEAD/origin are read again under it
+      - every path ANY commit in HEAD..origin touched (merges included, `log -m`), not only the net diff, so a file a
+        killed run moved part way is finished even when origin later put the path back
+      - working bytes == origin's -> nothing (only a wrong letter case on disk is fixed); working bytes == any version
+        the path had in HEAD..origin or at HEAD (absent counts when the path was absent then) -> write origin's
+        version (or remove it, and empty folders); anything else is someone's edit -> never touched, listed so they
+        merge before pushing it. A file saved (or created) while this runs counts as an edit, checked again right
+        before each write.
       - deletions go first, so a case-only rename on Windows ends with the new name, not with no file
       - then `git reset --mixed origin/main` moves HEAD + index only (never the working tree)
-    HEAD stays put while a clean file could not move forward (open in another program) - moving
-    it would make the old bytes look like an edit - and when HEAD has local commits that origin lacks."""
+    HEAD stays put while a clean file could not move forward (open in another program) - moving it would make the
+    old bytes look like an edit - and when HEAD has local commits that origin lacks."""
     head = git("rev-parse", "HEAD")
+    new = git("rev-parse", "origin/main")
+    if head == new:
+        print("HEAD...origin/main = 0\t0")
+        return
+    lock = git("rev-parse", "--git-path", "push_paths_sync.lock")
+    if not take_sync_lock(lock):
+        print("다른 세션이 공유 HEAD를 맞추는 중이라 건너뛰었어요 (올린 것은 origin에 안전해요)")
+        return
+    try:
+        sync_locked()
+    finally:
+        try:
+            os.remove(lock)
+        except OSError:
+            pass
+
+
+def sync_locked():
+    head = git("rev-parse", "HEAD")  # read again: another run may have moved it while we waited
     new = git("rev-parse", "origin/main")
     if head == new:
         print("HEAD...origin/main = 0\t0")
@@ -289,47 +366,26 @@ def sync_head():
         print("주의: 공유 HEAD에 origin에 없는 로컬 커밋이 있어요. 지워질 수 있어서 HEAD를 옮기지 않았어요 - 검수에 알려 주세요.")
         print("HEAD...origin/main =", git("rev-list", "--left-right", "--count", "HEAD...origin/main"))
         return
-    lock = git("rev-parse", "--git-path", "push_paths_sync.lock")
-    if not take_sync_lock(lock):
-        print("다른 세션이 공유 HEAD를 맞추는 중이라 건너뛰었어요 (올린 것은 origin에 안전해요)")
+    lg = subprocess.run(["git", "log", "-m", "--format=", "--raw", "-z", "--no-renames", "--no-abbrev",
+                         f"{head}..{new}"], capture_output=True)
+    if lg.returncode != 0:
+        print("주의: git log 실패 - 공유 HEAD를 그대로 뒀어요:", lg.stderr.decode(errors="replace")[:200])
         return
-    try:
-        sync_locked(head, new)
-    finally:
-        try:
-            os.remove(lock)
-        except OSError:
-            pass
-
-
-def sync_locked(head, new):
-    if git("rev-parse", "HEAD") != head:
-        print("공유 HEAD가 방금 바뀌어서 이번에는 건너뛰었어요")
-        return
-    r = subprocess.run(["git", "diff", "--raw", "-z", "--no-renames", "--no-abbrev", head, new], capture_output=True)
-    lg = subprocess.run(["git", "log", "--format=", "--raw", "-z", "--no-renames", "--no-abbrev", f"{head}..{new}"],
-                        capture_output=True)
-    if r.returncode != 0 or lg.returncode != 0:
-        print("주의: git diff/log 실패 - 공유 HEAD를 그대로 뒀어요:", (r.stderr + lg.stderr).decode(errors="replace")[:200])
-        return
-    versions = {}  # path -> every blob (None = absent) the path had in head..new
-    for p, ob, nb, _ in parse_raw(lg.stdout):
+    versions, odd = {}, set()  # path -> every blob (None = absent) the path had in head..new
+    for p, ob, nb, ok in parse_raw(lg.stdout):
         versions.setdefault(p, set()).update((ob, nb))
-    changes, skipped = [], []
-    for p, ob, nb, ok in parse_raw(r.stdout):
-        if ok:
-            changes.append((p, ob, nb))
-        else:
-            skipped.append(p)  # a symlink / submodule: leave it to a person
-    changes.sort(key=lambda c: (c[2] is not None, c[0]))  # deletions first (case-only renames on Windows)
-    files = [p for p, _, _ in changes if os.path.isfile(p)]
-    stat0 = {}
-    for p in files:
-        try:
-            st = os.stat(p)
-            stat0[p] = (st.st_size, st.st_mtime_ns)
-        except OSError:
-            pass
+        if not ok:
+            odd.add(p)  # a symlink / submodule: leave it to a person
+    paths = sorted(p for p in versions if p not in odd)
+    try:
+        target = blobs_at(new, paths)
+        at_head = blobs_at(head, paths)
+    except RuntimeError as e:
+        print("주의:", e, "- 공유 HEAD를 그대로 뒀어요")
+        return
+    changes = sorted(((p, target[p]) for p in paths), key=lambda c: (c[1] is not None, c[0]))  # deletions first
+    files = [p for p, _ in changes if os.path.isfile(p)]
+    stat0 = {p: snap(p) for p in files}
     cur = {}
     if files:
         out = subprocess.run(["git", "hash-object", "--stdin-paths"], capture_output=True,
@@ -339,23 +395,19 @@ def sync_locked(head, new):
         else:  # a file git cannot read (locked by another program): hash one by one
             for p in files:
                 cur[p] = git("hash-object", p, check=False) or "unreadable"
-    rawok = raw_is_checkout([p for p, _, nb in changes if nb is not None])
+    rawok = raw_is_checkout([p for p, nb in changes if nb is not None])
     reader = BlobReader()
     moved, kept, blocked = 0, [], []  # blocked = a clean (or unreadable) file that could not move forward
     done = set()  # casefolded paths this run wrote or removed
+    names = {}  # folder -> names on disk (letter case)
     try:
-        for p, ob, nb in changes:
-            seen = versions.get(p, set()) | {ob}
+        for p, nb in changes:
+            seen = versions[p] | {at_head[p]}
             mine = p.casefold() in done
             if os.path.isfile(p):
-                try:
-                    st = os.stat(p)
-                    same = stat0.get(p) == (st.st_size, st.st_mtime_ns)
-                except OSError:
-                    same = False
                 if mine:
                     have = git("hash-object", p, check=False) or "unreadable"
-                elif not same:
+                elif snap(p) != stat0.get(p):
                     kept.append(p)  # saved or created while this ran: someone is working on it
                     continue
                 else:
@@ -370,11 +422,17 @@ def sync_locked(head, new):
                 kept.append(p)  # a link or something odd: a person decides
                 continue
             else:
-                if p in stat0 and not mine:
+                if stat0.get(p) is not None and not mine:
                     kept.append(p)  # removed while this ran
                     continue
                 have = None
             if have == nb:
+                if nb is not None:
+                    try:
+                        if fix_name_case(p, names):
+                            moved += 1
+                    except OSError:
+                        blocked.append(p)
                 continue
             if have == "unreadable":
                 blocked.append(p)
@@ -385,6 +443,9 @@ def sync_locked(head, new):
             tmp = p + ".push_paths_tmp"
             try:
                 if nb is None:
+                    if not mine and snap(p) != stat0.get(p):
+                        kept.append(p)
+                        continue
                     os.remove(p)
                     prune_empty_dirs(p)
                 else:
@@ -403,8 +464,12 @@ def sync_locked(head, new):
                         continue
                     with open(tmp, "wb") as f:
                         f.write(data)
+                    if not mine and snap(p) != stat0.get(p):  # saved while we read the blob
+                        os.remove(tmp)
+                        kept.append(p)
+                        continue
                     os.replace(tmp, p)  # never a half-written file
-            except OSError as e:  # open in Studio / an editor, or a file where a folder must go
+            except OSError as e:  # open in Studio / an editor
                 print(f"주의: {p} 를 못 바꿨어요({e.__class__.__name__}) - 그대로 둠")
                 try:
                     if os.path.exists(tmp):
@@ -437,10 +502,10 @@ def sync_locked(head, new):
                   r.stderr.strip()[:200])
     if moved:
         print(f"origin에서 바뀐 깨끗한 파일 {moved}개를 새 판으로 맞췄어요")
-    if kept or skipped:
-        print(f"주의: origin에서도 바뀐 파일 {len(kept) + len(skipped)}개는 누군가 고치는 중이라 그대로 뒀어요"
+    if kept or odd:
+        print(f"주의: origin에서도 바뀐 파일 {len(kept) + len(odd)}개는 누군가 고치는 중이라 그대로 뒀어요"
               " (올리기 전에 origin 판과 합치세요):")
-        for p in (kept + skipped)[:20]:
+        for p in (kept + sorted(odd))[:20]:
             print("  ", p)
     print("HEAD...origin/main =", git("rev-list", "--left-right", "--count", "HEAD...origin/main"))
 
@@ -449,7 +514,7 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["--sync"]:
         sys.stdout.reconfigure(encoding="utf-8")
         os.chdir(git("rev-parse", "--show-toplevel"))
-        git("fetch", "-q", "origin")
+        fetch_quietly()
         sync_head()
     else:
         main()

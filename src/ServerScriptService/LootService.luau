@@ -193,6 +193,7 @@ local function addItem(player, data, id, n)
 		-- full (or only part of a multi-count drop fits): say so instead of dropping the rest silently (throttled, B7);
 		-- only materials can be sold at the anvil, scrolls are used from the item list
 		local fmt = def.Kind == "Material" and TXT.ItemFull or TXT.ItemFullUse
+		if def.Kind == "Material" and def.Source ~= nil then fmt = TXT.ItemFullKeep or fmt end -- not sold at the Forge
 		fullNotice(player, id, string.format(fmt, def.Name, LOOT.ItemCap))
 	end
 	if given <= 0 then return 0 end

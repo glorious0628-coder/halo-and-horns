@@ -42,5 +42,13 @@
     ]
    ]
   ]
+ },
+ "roofglass": {
+  "type": "gable",
+  "wall_h": 1.6,
+  "ridge_h": 3.2,
+  "mull_front": 3,
+  "rafters": 3,
+  "inset": 0.3
  }
 }

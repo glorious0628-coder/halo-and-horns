@@ -44,9 +44,24 @@
 - (21:40) 사용자 재로그인 완료("로그인했어") → 이미지 생성 2(Firefly)·4(Tripo)에 이어가라 보냄. img2 남은 High 목록: 화분 8종×3 + Balustrade_F 덤불 3 + 종 몸체 4면 4 + WateringCan right 1 ≈ 160크레딧.
 - (22:20) **사용자 지시(이번 세션):** "계속 일해. 내가 검수해야만 다음으로 갈 수 있으면 정리하고 컴퓨터 꺼. 내 검수를 미루고 일할 수 있으면 계속." → 사용자 확인 필요한 것은 목록으로 모아 두고 다른 일 계속. 모든 세션이 사용자만 기다릴 때만: 정리(상태 파일·push) → PC 끄기(shutdown /s /t 60).
 - (22:20) index.lock 원인 = ChatGPT 앱 git status(사용자가 지움). push_paths 0c340cf: 앞으로만 맞추기 + `--sync`. 공유 HEAD = origin. 병합 대기: golden-egg-client 3d95925a(먼저) → dev3-v4-tables e5c8bb08, 내 반박 검토 워크플로 w3jgufgba 결과 뒤.
-- **사용자에게 물을 것(미룸, 모아서 한 번에):** ① 2배 XP 패스가 제작 XP에도 들어가야 하나(지금 설계 = 안 듦, 글은 "level XP"로 고침) ② 게임 아이콘 새 후보 고르기(이미지 생성 2 Medium 후보 나온 뒤) ③ roblox_success_gap 질문 3개(조용한 공개·신분증·2단계·보증금 / 광고비 / 주간 진영 행사 시간) — roblox-policy-check 결과 뒤.
+- **사용자에게 물을 것(미룸, 모아서 한 번에):** ① 2배 XP 패스가 제작 XP에도 들어가야 하나(지금 설계 = 안 듦, 글은 "level XP"로 고침) ② 게임 아이콘: C_m2(얼굴 크게, 추천) vs B_m1(전신+하늘·밤) — art/review/s2/gameicon_medium_cands.jpg·_150px.jpg, 고르면 High 1장 ④ 소품 바깥선: 없음(B, 지금) / 얇은 선(추천) / 굵은 선 — art/review/img4/star_1012_sheet.jpg ⑤ 집 장식 Import 3D 클릭 1번: WorldKit 창 → 위 메뉴 Avatar(또는 Home) → Import 3D → art/models/tripo/house_deco/HaloHouses15_Deco_v1.glb(24 MB, 87부품, 디자인 검수 통과 fix1) → 설정 그대로 Import → 이미지 생성 3에 '넣음'(not_yet 장식 합쳐 한 파일이 되면 그것으로) ③ roblox_success_gap 질문 3개(조용한 공개·신분증·2단계·보증금 / 광고비 / 주간 진영 행사 시간) — roblox-policy-check 결과 뒤.
 - 병합 순서: golden-egg 3d95925a → v4-tables e5c8bb08 → 묶음 ①(0325d628+6fc3ba52) → onehand-2(끝 커밋 기다림: 자세 a23c7e4a + 뿔 마법사·궁수 부호) → dev3-gather(꺼짐) → dev4-bag. 반박 검토 워크플로 w3jgufgba, w47n34coa.
 - (23:10) **병합 끝 main 3176b8fb:** golden-egg 3d95925a → v4-tables e5c8bb08 → lesstext 0325d628 → lesstext-server 6fc3ba52 (반박 검토 결함 0, 합친 나무에서 compile 17 + egg_fx·save_v4·return·pause_card·onboarding·town_quests·first_steps·a23_14 통과). 메인 반영 1에 sync·PC 사진·Save As 보냄(화면 OK 줌). golden-egg Eggs 모드 낮은 것 1개 → 개발 1(Mode 켜기 전). 다음: dev4-bag(ORDER 한 줄 맞춘 뒤) → onehand-2(끝 커밋) → dev3-gather.
 - push_paths v3 46e56f3(리뷰 6개 반영, 41 + 23/24 시험) — 재검토 워크플로 waw96jyfs 도는 중.
 - (00:10 10/12) **병합 끝 main d688f360:** onehand-2 0dc6c46d → dev4-bag 597e5faf → dev3-gather 520e8cb7(꺼짐) → dev3-craft 22cda7d5(꺼짐). 합친 나무 시험 17 + a23_14 통과, 반박 검토 결함 0(낮은 것 4 → 개발 4). 메인 반영 1 sync·사진 보냄(Save As는 사진 뒤 따로). 앞 병합 사진에서 받기 칩 "+150..." 잘림 → 개발 1. place 저장 b82e7de(SHA dffacff7…, 23:25).
 - 다음 병합 후보: dev3-craft b868d6ce(켜기 전 고칠 것), spawnclear 새 판(개발 2), dev4-gather 9e42277c·dev4-craft 6ecc3197, 개발 4 bag 낮은 것 가지.
+- (02:30 10/12) **병합 끝 main 96ec45ad (7개):** spawnclear 358867c7(Config 끝 덧붙임 충돌 둘 다 살림 — scratchpad merge_chain2.py) → dev3-craft b868d6ce → reward-chip a5de2b9f → golden-egg eebeebd3 → dev4-gather bb2cdbfe → dev4-craft 5d4fc6f3 → photo-1012 40159fe9. 시험 36 + a23_14, 반박 검토 결함 0. 낮은 것: Puddle Pass(개발 2), 알 Near·MineAt(개발 1). 메인 반영 1 sync·사진 7가지 보냄, Save는 그 뒤 신청.
+- push_paths v4 4138156(2차 반박 검토 반영: log -m, 범위 안 모든 경로, 이름 대소문자, 쓰기 직전 확인).
+- 화면 규칙: 이미지 생성 4에 '30초 사진 묻지 않기' 잠깐 줬다 취소 — 규칙 6 그대로.
+
+## 10/12 새벽 마무리 (사용자: "정리하고 컴퓨터 꺼줘, 아침에 다시") — 아침에 먼저 읽기
+- main = 37a5dc62. 밤사이 병합: 3176b8fb(황금 알 화면·v4 표·글자 줄이기·쉼 카드) → d688f360(한손검 후속·가방·채집/제작 서버 꺼짐) → 96ec45ad(spawnclear·제작 고친 판·보상 칩·알 고침·가방 2·채집/망치질 화면·지팡이 끝·강화 줄) → 7e6afeb1(알 판정·웅덩이 테두리) → 37a5dc62(가방 아이콘 10개 ID). 매번 합친 나무에서 시험 + 반박 검토 워크플로.
+- 메인 Studio: 96ec45ad까지 sync·사진 통과(spawn probe 0, 칩·강화 줄 안 잘림, 팔기 494 정확, Otto = 모루 프롬프트). **아침 1번: 메인 반영 1이 37a5dc62 sync → 웅덩이 probe + 가방 아이콘 사진 → Save to File As(마우스·키보드 1분) → place/ push.** 마지막 place 저장 = b82e7de(23:25, d0bcc6d2 판).
+- 병합 대기: fix/lesstext-server 6adf2c82(서버 글 판정표 src 25개, 게임성 검수 sweep 중), test_town_quests 'Pick' 정규식 고침(개발 2 작은 가지), 아이콘 2차 5개(디자인 검수 시트 → 내 승인 → 이미지 개발 올림 → Config 가지).
+- 개발 몫 낮은 것: 지팡이 끝 계단 −0.12·경사 +0.51(개발 1), HUD Hero 칸 'Coming soon!'(숨김/잠금 판단, 게임성 검수), 폰 레일은 폰 라운드.
+- **사용자에게 아침에 물을 것(한 번에):** ① 게임 아이콘 C_m2(추천) vs B_m1 ② 소품 바깥선 없음/얇게(추천)/굵게 ③ 2배 XP 패스가 제작 XP에도? ④ Import 3D 1번(WorldKit, 집 장식 glb — 이미지 생성 3이 not_yet 장식 합친 파일 준비 중) ⑤ roblox_success_gap 질문 3개.
+- 도구: push_paths v4 4138156(앞으로만 맞추기, 반박 검토 2번). 공유 HEAD = origin 유지. index.lock 원인이던 ChatGPT 앱은 사용자가 지움.
+- 크레딧(대략): Firefly 잔액 ~3,700 예상(무기 84장·아이콘 진행 중), Tripo 15,765(웹 2).
+- (01:38) 무기 4면 112장 디자인 검수 통과 → **Tripo 무기 28개(≈1,540점) 승인, 아침에 이미지 생성 4가 시작**(Blender 날 두께 = 개발 1 쥐기 비율 공식). 새 집 7채 4면은 Garden7 오른쪽 1장 남음.
+- (01:39) 아침 병합 1번: fix/spawnclear-rim **0a1e3e75**(town_quests Pick 정규식 고침 포함, 게임성 검수 통과 — main의 town_quests STATIC 빨강 풀림). 판정표 6adf2c82 sweep은 아침에 다시.
+- (01:43) **정정: 메인 Studio 저장 이미 끝** — 메인 반영 1이 37a5dc62 sync·확인(probe 전 구역 0, 웅덩이 테두리 안 0, 가방 아이콘 8칸 그림) 후 Save As 01:38:53, SHA d1b561a5… = place/, push 21193b6. 아침 1번은 spawnclear-rim 0a1e3e75 병합부터.

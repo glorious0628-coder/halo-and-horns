@@ -1,18 +1,24 @@
-# 디자인 검수 — 상태 (2026-10-12 새벽)
+# 디자인 검수 — 상태 (2026-10-12, PC 끄기 전 정리)
 
 - 역할: `role_prompts/13_design_review.md`. 보고처 = 최종 검수('모든 것 검수'). 세션 id는 list_sessions로.
-- 확정값(최종 검수): 금 (255,168,36), 금속 0.5·거칠기 0.15.
-- 판정 기준 추가(사용자 10/11 "그림자가 없어서 이상한 건가, 뭔가 선이 없어 보여"): 파트 소품은 2D처럼 가장자리 어둠·홈 그늘·선이 보여야 함.
-- Tripo 4면 판정 기준: 4장 모두 똑바른 정면 카메라·같은 높이·같은 방향(무기 손잡이 아래). 옆면이 앞면 복사거나 3/4 비스듬이면 다시.
+- 확정값: 금 (255,168,36), 금속 0.5·거칠기 0.15.
+- 판정 기준: 파트 소품은 2D처럼 그늘·홈이 보여야 함 → 기본 = B(모든 소품 파트 CastShadow + 실제 땅 C2c에서 사진). 바깥선은 사용자 선택 대기(그동안 선 없이).
+- Tripo 4면 기준: 4장 모두 똑바른 정면 카메라·같은 높이·같은 방향(무기 손잡이 아래). 옆면이 앞면 복사거나 3/4 비스듬이면 다시.
 
-## 끝난 판정
-- 이미지 생성 1: 땅·길 3차 통과(5단계로: 계단 발치 흰 번짐, 계단 옆 바위면, 턱 → 옹벽). 턱 = 높이 4 넘는 곳만 Limestone. 집·가게 골격 16채 자리 통과(`art/review/world/halo_v2/houses/sheet_houses.jpg`). h_05 검은 땅 = 겉 잔디 1칸 밑 Rock 비침 → 2칸(897d329) 통과.
-- 이미지 개발: 매끈 크림 대리석 3판 통과(WorldKit MV `HH_HaloMarbleSmooth_Cream`), HH_Fabric v2 WorldKit 적용 통과. 기록: 천 v2 배너가 멀리서 모눈처럼 보임 → 나중 v3 후보(낮은 우선).
-- 이미지 생성 2: 키트 4면 1~3차 통과분 → Tripo 묶음 1·2(이미지 생성 4). Planter_E 왼쪽 = 오른쪽 좌우 뒤집기. 무기 High 앞면 28장 통과. 무기 4면: 전사 7(+돌린 앞면 5)·궁수 6 통과, 마법사 LightMage T2·T3·DarkMage T3 통과.
-- 이미지 생성 4: 파트 소품 Studio 시트 5장 — 통과 다수, 다시 = 칠한 흰 나무 회색 결(벌통·게시판·무기고·양초 상자), 장작, 방패 걸이(바퀴처럼), 솥(순검정·물약), 벽등 뒤.
+## 사용자에게 물을 것(최종 검수가 아침에 한 번에)
+- ★ 바깥선: `art/review/img4/star_1012_sheet.jpg` — 내 추천 얇은 선 또는 선 없음.
+- ★ 게임 아이콘: `art/review/s2/gameicon_medium_cands.jpg` — C_m2(추천, 얼굴 크게) vs B_m1(전신). 고르면 High 1장 + 512.
+- 집 15채 장식 Studio 넣기 = 사용자 Import 3D 1번(`art/models/tripo/house_deco/HaloHouses15_Deco_v1.glb`).
 
-## 기다리는 것
-- 이미지 생성 2: 가방 아이콘 High 11(Petal m1·CaptainBadge m1·SeaShell m1·CrystalShard m1·MeadowHerb m1·CopperOre m1·OakLog m1·IronOre m1·SilverOre m1·MoonCrystal m2·CrownDust m1) + Glowcap 새 후보 2(1UP 버섯 닮음 피하기) → 잘라내기 시트. 망치질 CraftRing·CraftTarget·CraftIngot(후보 → High 15). 마법사 옆면 6장 다시(LightMage T1·DarkMage T1·T2 left/right, 30). 중립 무기 27장. 새 집 7채 21장. 게임 아이콘 Medium 후보.
-- 업로드 승인 요청(최종 검수): 아이콘 12 + 망치질 3 = 15개(잘라내기 시트 확인 뒤).
-- 이미지 생성 4: 다시 한 소품 줄 사진 + 밋밋함 비교 시트(2D|A|B 메인 C2c 빛|C Blender 곡률·AO SurfaceAppearance|D1 Highlight|D2 뒤집힌 껍데기). C·D2 올리기 약 9개 승인 여부는 최종 검수.
-- 이미지 생성 3: Tripo HD 장식 Blender 손보기(A23-125 세 단계·12항목).
+## 끝난 판정 (10/11~12)
+- 이미지 생성 1: 땅·길 3차 통과, 집·가게 골격 16채 자리 통과, h_05 검은 땅(겉 잔디 1칸 밑 Rock 비침 → 2칸) 통과. 턱 = 높이 4 넘는 곳만 Limestone. 5단계 목록: 계단 발치 흰 번짐, 계단 옆 바위면, 턱 → 옹벽.
+- 이미지 개발: 매끈 크림 대리석 3판, HH_Fabric v2 WorldKit, 금 MV 확정값. 가방 아이콘 1차 10개 올림(ID `art/ui/asset_ids.json`, Config 가지 imgdev-icons1 → 게임성 검수). 기록: 천 v2 배너 멀리서 모눈 → 나중 v3(낮은 우선).
+- 이미지 생성 2: 키트 4면 1~3차 통과(Tripo 묶음 1·2), 무기 High 앞면 28 + 4면 112장 전부 통과(Tripo 무기 28개 승인 요청함 ≈ 1,540점), 새 집 6채 4면 통과, 가방 아이콘 11 잘라내기 통과.
+- 이미지 생성 3: 집 15채 장식 1차 + fix1 통과(Tripo HD → Blender 2단계). 빠진 장식 records not_yet: 05 채광창·꽃 가게 유리 온실·12 퍼걸러·진열창 물건·간판.
+- 이미지 생성 4: 파트 소품 시트 5장 + '다시' 묶음 전부 통과(칠한 나무 4·벽등·빨랫줄·장작·방패 걸이·솥 Slate 110,100,92). B 마을 전체 적용(afd3fa1).
+
+## 기다리는 것 (아침에 이어서)
+- 이미지 생성 2: Garden7 right 1장(발코니를 맨 위 층으로, 5 OK) → 새 집 7채 4면 끝. Glowcap m4·CraftRing m1·Target m1·Ingot m1 High 4장 + IconCrownDust → 잘라내기 시트 → 내가 통과 → 최종 검수에 보여 주면 2차 올리기 5개 바로 승인(이미지 개발).
+- 이미지 생성 3: Studio 넣은 뒤 3단계(Roblox 재질) 판정 — 집마다 C2c 낮 5·15칸·밤 15칸 2D 옆, 09 돔(단색 금) vs 다른 돔 반짝임 나란히.
+- 이미지 생성 4: Tripo 묶음 1·2 결과(3단계: Blender 손보기 + Studio 재질 낮·밤, 2D 옆, 12항목).
+- Tripo 무기 28개(≈1,540점) = 최종 검수 **승인, 아침에 시작**, 돌릴 세션 = 이미지 생성 4(Blender 날 두께는 개발 1 쥐기 비율 공식 받아서). 결과 오면 3단계·12항목 판정.

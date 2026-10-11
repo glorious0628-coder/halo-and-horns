@@ -63,10 +63,14 @@ ap.add_argument("name")
 ap.add_argument("params")
 ap.add_argument("out")
 ap.add_argument("--report", help="default <out>.json")
+ap.add_argument("--only", default="", help="comma list of dome,caps,lantern,door: run only these sections")
 a = ap.parse_args(argv)
 ROOT = os.environ.get("HH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # HH_ROOT: run a private copy of tools/
 NAME = a.name
 PR = json.load(open(a.params, encoding="utf-8"))
+if a.only:
+    _keep = set(a.only.split(","))
+    PR = {k: v for k, v in PR.items() if k not in ("dome", "caps", "lantern", "door", "extra") or k in _keep}
 SLOTS = {it["name"][len(NAME) + 1:]: it for it in json.load(open(os.path.join(ROOT, "build", "skel_%s_ornaments.json" % NAME)))["items"]}
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=os.path.join(ROOT, "art", "models", "tripo", "halo_houses", NAME, NAME + "_parts.glb"))
@@ -492,10 +496,81 @@ elif "dome" in PR:
         k = sl["R"] / Rt * d.get("r_mul", 1.0)
         M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4) @ \
             Matrix.Translation((-axis[0], -axis[1], -zb))
+        if d.get("fix") == "lathe":
+            # a dented panel / a torn foot (ivy over the Tripo dome, house 09): the dome is turned again on a lathe from
+            # its own silhouette (48 sides), the foot below "base_cut" studs made a plain straight band, and Tripo's paint
+            # (gold, rib lines, shine) is projected from the nearest point; no relief taken (the dent would come back)
+            apply(ps, Matrix.Translation((-axis[0], -axis[1], -zb)))
+            prof = lathe_profile(ps, d.get("bands", 40))
+            bc = d.get("base_cut", 0.0)
+            if bc > 0:
+                rb = float(np.interp(bc, [z_ for _, z_ in prof], [r_ for r_, _ in prof]))
+                prof = [(rb, 0.0), (rb, bc)] + [(r_, z_) for r_, z_ in prof if z_ > bc]
+            dl = proj_bake.lathe(prof, seg=48, name="%s_%s" % (NAME, d.get("slot", "Dome")))
+            # ribs: as many as the spec says (the 2D), turned to where Tripo's dark rib lines are (mid height)
+            spec_top = json.load(open(os.path.join(ROOT, "tools", "house_specs", NAME + ".json"), encoding="utf-8")).get("top", {})
+            nrib = int(d.get("ribs", spec_top.get("ribs", 8)))
+            angs, gold_rgb = [], []
+            zt = max(z_ for _, z_ in prof)
+            for o in ps:
+                hsv = face_hsv(o)
+                c = centres(o)
+                hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+                isg = (hh >= 25) & (hh <= 55) & (ss > 0.45)
+                mid = (c[:, 2] > 0.25 * zt) & (c[:, 2] < 0.6 * zt)
+                dark = isg & (vv < 0.6) & mid
+                angs += list(np.degrees(np.arctan2(c[dark, 1], c[dark, 0])) % (360.0 / nrib))
+                gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[isg & (vv > 0.45)]]
+            if angs:
+                hist, ed = np.histogram(angs, bins=36, range=(0, 360.0 / nrib))
+                phase = float((ed[np.argmax(hist)] + ed[np.argmax(hist) + 1]) / 2)
+            else:
+                phase = 0.0
+            me = bpy.data.meshes.new(NAME + "_DomeRibs")
+            bm = bmesh.new()
+            rib_w, rib_out = d.get("rib_w", 0.22), d.get("rib_out", 0.1)
+            rmax = max(r_ for r_, _ in prof)
+            path = [(r_, z_) for r_, z_ in prof if z_ >= bc and r_ > 0.18 * rmax]
+            for kr in range(nrib):
+                th = math.radians(phase + kr * 360.0 / nrib)
+                rows = []
+                for r_, z_ in path:
+                    a_ = (rib_w / 2) / max(r_, 1e-3)
+                    rows.append([bm.verts.new(((r_ + o_) * math.cos(th + sgn * a_), (r_ + o_) * math.sin(th + sgn * a_), z_))
+                                 for sgn, o_ in ((-1, -0.02), (-1, rib_out), (1, rib_out), (1, -0.02))])
+                for r0_, r1_ in zip(rows, rows[1:]):
+                    for q_ in range(3):
+                        bm.faces.new((r0_[q_], r0_[q_ + 1], r1_[q_ + 1], r1_[q_]))
+                if rows:                                   # end caps
+                    bm.faces.new(rows[0][::-1])
+                    bm.faces.new(rows[-1])
+            bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+            bm.to_mesh(me)
+            bm.free()
+            ribs = bpy.data.objects.new("%s_%sRibs" % (NAME, d.get("slot", "Dome")), me)
+            bpy.context.scene.collection.objects.link(ribs)
+            gr = np.array([255, 168, 36]) / 255.0               # the approved gold (HH_HaloGoldTrim part colour) for a plain dome
+            gm = bpy.data.materials.new(NAME + "_DomeGold")
+            gm.use_nodes = True
+            pb_ = gm.node_tree.nodes["Principled BSDF"]
+            pb_.inputs["Base Color"].default_value = (*[c_ / 12.92 if c_ <= 0.04045 else ((c_ + 0.055) / 1.055) ** 2.4 for c_ in gr], 1)
+            pb_.inputs["Metallic"].default_value = 1.0
+            pb_.inputs["Roughness"].default_value = 0.28
+            dl.data.materials.append(gm)
+            ribs.data.materials.append(gm)
+            me.shade_smooth()
+            for o in ps:
+                bpy.data.objects.remove(o)
+            ps = [dl, ribs]
+            mp = {"hit": 1.0}
+            M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
+            rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, plain foot band %.2f, %d exact ribs at Tripo's " \
+                               "rib angle (phase %.1f deg), approved gold 255,168,36 (plain; Studio gold MaterialVariant)" % (len(prof), bc, nrib, phase)
         apply(ps, M)
         for o in ps:
             o.name = o.data.name = o.name.replace("DomeTmp", d.get("slot", "Dome"))
-        tidy_normals(ps)
+        if d.get("fix") != "lathe":
+            tidy_normals(ps)
         out_objs += ps
         rep.update({"tripo_base_R": round(Rt, 3), "scale": round(k, 4), "tripo_axis": [round(float(v), 3) for v in axis],
                     "slot": d.get("slot", "Dome"), "faces": sum(len(o.data.polygons) for o in ps)})
@@ -733,6 +808,11 @@ if "lantern" in PR:
                 gz0, gz1 = ip["glass"]
                 glass_src = "front render (pale glow rows)"
             profile_src = "front render rows"
+            Ht = z1 - z0                                          # the lantern's whole height (drop .. finial)
+            if gz1 - gz0 < 0.42 * Ht:                             # only the bright core was found: glass ~ half of it
+                gcm = (gz0 + gz1) / 2
+                gz0, gz1 = gcm - 0.25 * Ht, gcm + 0.25 * Ht
+                glass_src += ", widened to 50 % of the lantern height"
         else:
             profile_src = "mesh faces"
         g0, g1 = gz0 - gzc, gz1 - gzc
@@ -750,7 +830,12 @@ if "lantern" in PR:
             r0 = float(np.interp(g0, prof[:, 1], prof[:, 0]))
             r1 = float(np.interp(g1, prof[:, 1], prof[:, 0]))
         r0, r1 = max(r0, 0.25), max(r1, 0.25)
+        r_lo, r_hi = sorted((r0, r1))                         # the family shape: the body widens to the top
+        r1, r0 = r_hi, max(r_lo, 0.75 * r_hi)
         hb = g1 - g0
+        # size: the open glass band = the skeleton's LampGlass height (1.05), never narrower than the glass (0.7 wide)
+        k = L.get("glass_h", 1.05) / max(hb, 1e-3)
+        k = max(k, L.get("min_half", 0.42) / r0)
         base = [(0.0, g0 - 0.46 * hb), (r0 * 0.22, g0 - 0.40 * hb), (r0 * 0.45, g0 - 0.26 * hb), (r0 * 0.6, g0 - 0.16 * hb),
                 (r0 * 1.15, g0 - 0.1 * hb), (r0 * 1.15, g0)]
         cap = [(r1 * 1.32, g1), (r1 * 1.32, g1 + 0.06 * hb), (r1 * 0.42, g1 + 0.34 * hb), (r1 * 0.24, g1 + 0.37 * hb),
@@ -878,6 +963,10 @@ if "door" in PR and door_src and leaf_slots:
     _wood_y = y_leaf
     tri_src.skip_where((tri_src.FN[:, 1] < D.get("min_facing", 0.45)) | (tri_src.FC[:, 1] > _wood_y + D.get("max_out", 0.22)))
     tri_src.strict = True
+    if D.get("skip_hues"):                              # things painted in front of the leaf (a cauldron's green glow)
+        th = tri_src.tri_hsv()
+        for h0, h1 in D["skip_hues"]:
+            tri_src.skip_where((th[:, 0] >= h0) & (th[:, 0] <= h1) & (th[:, 1] > D.get("skip_sat", 0.25)))
     for b in D.get("skip_boxes", []):
         inb = np.ones(len(tri_src.FC), bool)
         for k, (lo_, hi_) in enumerate(b):
@@ -916,11 +1005,20 @@ if "door" in PR and door_src and leaf_slots:
     tri_src.query = lambda P, ray=None, back=0.6: _orig_query(xf(P), ray, RAY_BACK)
     maps = proj_bake.bake(tmp, tri_src, size=D.get("size", 512), ray=(0, -1, 0), relief=True)
     cleaned = proj_bake.clean_thin_gold(maps, k=D["clean_px"]) if D.get("clean_px") else 0
+    if D.get("mirror_fill"):                           # hidden by a thing in front (potion shop cauldron): the mirror half
+        hue_m = None
+        if D.get("clean_hues"):
+            proj_bake.clean_hues(maps, D["clean_hues"], D.get("clean_sat", 0.1))
+            hue_m = maps.get("hue_mask")
+        for u0_, u1_, v0_, v1_ in D.get("mirror_uv", []):  # leaf UV boxes forced to take the mirror half's paint
+            S_ = maps["C"].shape[0]
+            mb = np.zeros((S_, S_), bool)
+            mb[int((1 - v1_) * S_):int((1 - v0_) * S_), int(u0_ * S_):int(u1_ * S_)] = True
+            hue_m = mb if hue_m is None else (hue_m | mb)
+        cleaned += proj_bake.mirror_fill(maps, hue_m)
+    elif D.get("clean_hues"):
+        cleaned += proj_bake.clean_hues(maps, D["clean_hues"], D.get("clean_sat", 0.1))
     bpy.data.objects.remove(tmp)
-    mat = proj_bake.save_maps(maps, WORK, NAME + "_Leaf")
-    for o in leaf_objs:
-        o.data.materials.append(mat)
-        out_objs.append(o)
     hw_at = []
     for b in D.get("knockers", D.get("flatten_boxes", [])):      # Tripo knocker / knob spots -> exact metal parts there
         P = allv(leaf_srcs + [o for o in SRC if o.name.endswith("_DoorHw")])
@@ -1004,13 +1102,296 @@ if "door" in PR and door_src and leaf_slots:
         out_objs.append(kn)
         rep_k = REPORT.setdefault("knobs", [])
         rep_k.append({"tripo_at": [round(float(kc[0]), 3), round(float(kc[1]), 3)], "R": round(float(rk * kk), 3), "at": [sx, sz]})
+    # where the exact parts go (metal knocker rings, lathe knobs) Tripo's own paint of the old part is erased and the
+    # planks above / below fill it, so no ghost of the old knob shows round the new one (디자인 검수 10/12)
+    S_ = maps["C"].shape[0]
+    yy, xx = np.mgrid[0:S_, 0:S_]
+    erase = np.zeros((S_, S_), bool)
+    spots = [(x_, z_, D.get("knocker_erase", 0.75)) for x_, z_ in REPORT.get("hardware_at", [])]
+    spots += [(k_["at"][0], k_["at"][1], k_["R"] * D.get("knob_erase", 1.9)) for k_ in REPORT.get("knobs", [])]
+    if D.get("mirror_fill"):                         # the mirror fill copied the old knocker's paint across: erase there too
+        spots += [(2 * cs[0] - x_, z_, r_) for x_, z_, r_ in spots]
+    for x_, z_, r_ in spots:
+        u_, v_ = uv_of(x_, z_)
+        cu, cv = u_ * S_, (1 - v_) * S_
+        ru = r_ / W * 0.96 * S_
+        rv = r_ / H * 0.96 * S_
+        erase |= ((xx + 0.5 - cu) / ru) ** 2 + ((yy + 0.5 - cv) / rv) ** 2 <= 1
+    erased = proj_bake.fill_mask(maps, erase)
+    mat = proj_bake.save_maps(maps, WORK, NAME + "_Leaf")
+    for o in leaf_objs:
+        o.data.materials.append(mat)
+        out_objs.append(o)
     rep = {"tripo_leaf": {"cx": round(float(cx), 3), "R": round(float(Rt), 3), "bottom": round(float(bot_t), 3), "top": round(float(top_t), 3)},
+           "erased_under_parts": erased,
            "fix": "rebuilt as an exact arched slab (%s, R %.2f, t %.2f) + Tripo paint / rough / metal / relief projected from the "
                   "front (hit %.0f %%), %d thin gold drip texels filled with plank colour" % (
                       "double, 2 halves" if double else "single", Rs, t, 100 * maps["hit"], cleaned),
            "double": bool(double), "maps": D.get("size", 512)}
     REPORT["pieces"]["Leaf"] = rep
     print("[deco] door", rep, flush=True)
+
+# ------------------------------------------------------------------ skeleton boxes (for the pieces below)
+SKEL = json.load(open(os.path.join(ROOT, "build", "skel_%s.json" % NAME)))
+
+
+def skel_box(prefix, exact=False):
+    """axis-aligned box (min, max) of the skeleton parts whose name starts with prefix (or equals it)"""
+    lo = np.array([1e9] * 3)
+    hi = -lo
+    for p_ in SKEL:
+        if not (p_["name"] == prefix if exact else p_["name"].startswith(prefix)):
+            continue
+        X = np.array(p_["X"], float)
+        Y = np.array(p_["Y"], float)
+        Z = np.cross(X, Y)
+        c = np.array(p_["pos"], float)
+        sx, sy, sz = p_["size"]
+        for a_ in (-0.5, 0.5):
+            for b_ in (-0.5, 0.5):
+                for c_ in (-0.5, 0.5):
+                    q = c + X * a_ * sx + Y * b_ * sy + Z * c_ * sz
+                    lo, hi = np.minimum(lo, q), np.maximum(hi, q)
+    return (lo, hi) if lo[0] < 1e8 else None
+
+
+def plain_mat(name, rgb, metal, rough, alpha=1.0):
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    pb = m.node_tree.nodes["Principled BSDF"]
+    pb.inputs["Base Color"].default_value = (*[c_ / 255.0 for c_ in rgb], 1)
+    pb.inputs["Metallic"].default_value = metal
+    pb.inputs["Roughness"].default_value = rough
+    return m
+
+
+# ------------------------------------------------------------------ shop sign board (Tripo cut + mirror fix)
+if "sign" in PR:
+    # the ornate gold plaque over the awning: cut from the Tripo body (the wall behind it dropped), made left-right
+    # symmetric about its own middle, scaled by the house scale and put on the front wall where the skeleton has room
+    G = PR["sign"]
+    ps = cut("SignTmp", dict(G, no_white=False, no_leaf=True))
+    if ps:
+        wy, gy = [], []
+        for o in ps:
+            hsv = face_hsv(o)
+            nrm = np.array([p_.normal[:] for p_ in o.data.polygons]).reshape(-1, 3)
+            hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+            wy += list(centres(o)[(ss < 0.12) & (vv > 0.7) & (nrm[:, 1] > 0.6), 1])
+            gy += list(centres(o)[(hh >= 25) & (hh <= 55) & (ss > 0.45), 1])
+        wall_g = float(np.percentile([w for w in wy if w < np.median(gy) - 0.1], 80)) if gy and len(wy) > 4 else None
+        if wall_g is not None:
+            for o in ps:
+                keep = centres(o)[:, 1] > wall_g + 0.06
+                bm = bmesh.new()
+                bm.from_mesh(o.data)
+                bm.faces.ensure_lookup_table()
+                bmesh.ops.delete(bm, geom=[f for f in bm.faces if not keep[f.index]], context="FACES")
+                bmesh.ops.delete(bm, geom=[v_ for v_ in bm.verts if not v_.link_faces], context="VERTS")
+                bm.to_mesh(o.data)
+                bm.free()
+            ps = [o for o in ps if len(o.data.polygons)]
+        lo, hi = bbox(ps)
+        gcx = G.get("cx", float(np.median([c_[0] for o in ps for c_ in centres(o)])))
+        for o in ps:
+            mirror_fix(o, gcx, G.get("keep", "+x"))
+        ps = [o for o in ps if len(o.data.polygons)]
+        lo, hi = bbox(ps)
+        T = G["target"]                                    # skeleton: centre x, bottom z, wall face y, width
+        k = T["w"] / (hi[0] - lo[0])
+        apply(ps, Matrix.Translation((T["cx"], T["y"], T["zb"])) @ Matrix.Scale(k, 4) @ Matrix.Translation((-gcx, -lo[1], -lo[2])))
+        tidy_normals(ps)
+        for o in ps:
+            o.name = o.data.name = o.name.replace("SignTmp", "Sign")
+        out_objs += ps
+        lo2, hi2 = bbox(ps)
+        REPORT["pieces"]["Sign"] = {"fix": "Tripo plaque cut (wall behind dropped at y %s), mirror about x = %.2f kept %s, scale %.3f"
+                                    % (None if wall_g is None else round(wall_g, 2), gcx, G.get("keep", "+x"), k),
+                                    "box": [[round(float(v), 2) for v in lo2], [round(float(v), 2) for v in hi2]],
+                                    "faces": sum(len(o.data.polygons) for o in ps)}
+        print("[deco] sign", REPORT["pieces"]["Sign"], flush=True)
+
+# ------------------------------------------------------------------ shop window goods (projected backdrop)
+if "display" in PR:
+    # what Tripo shows behind the shop window (bread / fruit / potion shelves) is projected from the front onto an exact
+    # panel standing behind the skeleton's shop glass (window glass and frame faces passed through): Tripo's paint +
+    # relief, the opening's exact size
+    Q = PR["display"]
+    g = skel_box("Shop_Glass")
+    if g is not None:
+        (gx0, gy0, gz0), (gx1, gy1, gz1) = g
+        top = max(gz1, (skel_box("Shop_Glass") or g)[1][2])
+        yb = gy0 - Q.get("depth", 0.55)
+        (tx0, tx1), (ty0, ty1), (tz0, tz1) = Q["box"]
+        outline = [(gx1, gz0), (gx1, top), (gx0, top), (gx0, gz0)]
+        W_, H_ = gx1 - gx0, top - gz0
+
+        def uv_d(x, z):
+            return (0.02 + 0.96 * (x - gx0) / W_, 0.02 + 0.96 * (z - gz0) / H_)
+
+        pan = slab(NAME + "_Display", outline, yb, 0.1, uv_d, uv_d(gx0 + 0.1, gz0 + 0.1))
+        srcs = []
+        for o in SRC:
+            if not _textured(o) or "_Awning" in o.name:
+                continue
+            c = centres(o)
+            m = (c[:, 0] >= tx0) & (c[:, 0] <= tx1) & (c[:, 1] >= ty0) & (c[:, 1] <= ty1) & (c[:, 2] >= tz0) & (c[:, 2] <= tz1)
+            n_ = take(o, m, o.name + "_DispSrc")
+            if n_:
+                srcs.append(n_)
+        src_d = proj_bake.Source(srcs)
+        th = src_d.tri_hsv()                                # glass panes (pale blue) and the gold window frame let rays through
+        glass = (th[:, 0] > 175) & (th[:, 0] < 240) & (th[:, 1] > 0.08)
+        src_d.skip_where(glass | (src_d.FN[:, 1] < 0.2))
+        src_d.strict = True
+        yt_mid = float((allv(srcs)[:, 1].max() + allv(srcs)[:, 1].min()) / 2)
+        back_ = float((allv(srcs)[:, 1].max() - allv(srcs)[:, 1].min()) / 2 + 0.6)
+
+        def xf_d(P):
+            xt = tx1 - (P[:, 0] - gx0) / W_ * (tx1 - tx0) if Q.get("flip_x", False) else tx0 + (P[:, 0] - gx0) / W_ * (tx1 - tx0)
+            zt = tz0 + (P[:, 2] - gz0) / H_ * (tz1 - tz0)
+            return np.c_[xt, np.full(len(P), yt_mid), zt]
+
+        _oq = src_d.query
+        src_d.query = lambda P, ray=None, back=0.6: _oq(xf_d(P), ray, back_)
+        tmpd = slab(NAME + "_DispBake", outline, yb, 0.1, uv_d, uv_d(gx0 + 0.1, gz0 + 0.1))
+        mp = proj_bake.bake(tmpd, src_d, size=Q.get("size", 512), ray=(0, -1, 0), relief=True)
+        bpy.data.objects.remove(tmpd)
+        pan.data.materials.append(proj_bake.save_maps(mp, WORK, NAME + "_Display"))
+        out_objs.append(pan)
+        for o in srcs:
+            bpy.data.objects.remove(o)
+        REPORT["pieces"]["Display"] = {"fix": "exact panel %.2f x %.2f behind the shop glass (y %.2f) + Tripo window contents "
+                                       "projected from the front (glass / frame passed through, hit %.0f %%)" % (W_, H_, yb, 100 * mp["hit"]),
+                                       "tripo_box": Q["box"]}
+        print("[deco] display", REPORT["pieces"]["Display"], flush=True)
+
+# ------------------------------------------------------------------ roof glass (skylight / greenhouse): exact frame
+if "roofglass" in PR:
+    # Tripo's roof lantern (05: a hipped glass skylight on a gold curb) / greenhouse (flower shop: a gabled glass house,
+    # ridge front to back, finials) measured on Tripo, built exact on the skeleton's Skylight_Base: gold bars + glass
+    R_ = PR["roofglass"]
+    b = skel_box("Skylight_Base", exact=True)
+    if b is not None:
+        (bx0, by0, bz0), (bx1, by1, bz1) = b
+        ins = R_.get("inset", 0.3)
+        x0, x1, y0, y1, z0 = bx0 + ins, bx1 - ins, by0 + ins, by1 - ins, bz1
+        W_, D_ = x1 - x0, y1 - y0
+        bw = R_.get("bar", 0.14)
+        gm_ = bpy.data.meshes.new(NAME + "_RoofFrame")
+        bm = bmesh.new()
+        gl = bpy.data.meshes.new(NAME + "_RoofGlass")
+        bg = bmesh.new()
+
+        def bar(a, b):
+            box_obj(bm, a, b, bw)
+
+        def pane(pts):
+            vs = [bg.verts.new(p_) for p_ in pts]
+            bg.faces.new(vs)
+
+        cx_, cy_ = (x0 + x1) / 2, (y0 + y1) / 2
+        if R_["type"] == "hip":
+            ch = R_.get("curb_h", 0.45)
+            H_ = R_.get("h", 1.3)
+            tw, td = W_ * R_.get("top_w", 0.6), D_ * R_.get("top_d", 0.35)
+            # curb: a gold box band
+            cm = bpy.data.meshes.new("curb")
+            bmc = bmesh.new()
+            bmesh.ops.create_cube(bmc, size=1.0)
+            bmesh.ops.scale(bmc, vec=(W_ + 0.1, D_ + 0.1, ch), verts=bmc.verts)
+            bmesh.ops.translate(bmc, vec=(cx_, cy_, z0 + ch / 2), verts=bmc.verts)
+            bmc.to_mesh(cm)
+            bmc.free()
+            bm.from_mesh(cm)
+            zb_, zt_ = z0 + ch, z0 + ch + H_
+            B4 = [(x0, y0, zb_), (x1, y0, zb_), (x1, y1, zb_), (x0, y1, zb_)]
+            T4 = [(cx_ - tw / 2, cy_ - td / 2, zt_), (cx_ + tw / 2, cy_ - td / 2, zt_), (cx_ + tw / 2, cy_ + td / 2, zt_), (cx_ - tw / 2, cy_ + td / 2, zt_)]
+            for k_ in range(4):
+                bar(B4[k_], B4[(k_ + 1) % 4])
+                bar(T4[k_], T4[(k_ + 1) % 4])
+                bar(B4[k_], T4[k_])
+                pane([B4[k_], B4[(k_ + 1) % 4], T4[(k_ + 1) % 4], T4[k_]])
+            pane(T4[::-1])
+            for (a0, a1, b0, b1), nm_ in (((B4[3], B4[2], T4[3], T4[2]), R_.get("mull_front", 3)), ((B4[0], B4[1], T4[0], T4[1]), R_.get("mull_front", 3)),
+                                         ((B4[1], B4[2], T4[1], T4[2]), R_.get("mull_side", 2)), ((B4[0], B4[3], T4[0], T4[3]), R_.get("mull_side", 2))):
+                for j in range(1, nm_ + 1):
+                    f = j / (nm_ + 1)
+                    bar(tuple(np.array(a0) + (np.array(a1) - np.array(a0)) * f), tuple(np.array(b0) + (np.array(b1) - np.array(b0)) * f))
+            if R_.get("finial", True):
+                fz = zt_
+                fo = proj_bake.lathe([(0.0, 0.0), (0.18, 0.02), (0.22, 0.1), (0.1, 0.18), (0.1, 0.24), (0.3, 0.42), (0.32, 0.55),
+                                      (0.24, 0.72), (0.0, 0.86)], seg=16, name=NAME + "_RoofFinial")
+                fo.data.transform(Matrix.Translation((cx_, cy_, fz)))
+                fin_objs = [fo]
+            else:
+                fin_objs = []
+        else:                                            # gable: ridge along y (front to back), the gable faces the front
+            wh = R_.get("wall_h", 0.9)
+            rh = R_.get("ridge_h", 3.6)
+            za, zr = z0 + wh, z0 + wh + rh
+            C = [(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0)]
+            Cw = [(x, y, za) for x, y, _ in C]
+            Rf, Rb = (cx_, y1, zr), (cx_, y0, zr)        # front (+y) / back ridge ends
+            for k_ in range(4):
+                bar(C[k_], C[(k_ + 1) % 4])
+                bar(C[k_], Cw[k_])
+            bar(Cw[0], Cw[1])
+            bar(Cw[2], Cw[3])
+            bar(Cw[1], Cw[2])
+            bar(Cw[3], Cw[0])
+            bar(Rf, Rb)
+            for (l_, r_), rr_ in (((Cw[3], Cw[2]), Rf), ((Cw[0], Cw[1]), Rb)):   # gable rafters
+                bar(l_, rr_)
+                bar(r_, rr_)
+            nr = R_.get("rafters", 3)                    # roof rafters between the gables, both slopes
+            for j in range(1, nr + 1):
+                yj = y0 + (y1 - y0) * j / (nr + 1)
+                bar((x0, yj, za), (cx_, yj, zr))
+                bar((x1, yj, za), (cx_, yj, zr))
+                bar((x0, yj, z0), (x0, yj, za))
+                bar((x1, yj, z0), (x1, yj, za))
+            nm_ = R_.get("mull_front", 3)                # gable mullions (front and back)
+            for yg, top_ in ((y1, Rf), (y0, Rb)):
+                for j in range(1, nm_ + 1):
+                    xj = x0 + W_ * j / (nm_ + 1)
+                    zt_ = za + rh * (1 - abs(xj - cx_) / (W_ / 2))
+                    bar((xj, yg, z0), (xj, yg, zt_))
+                bar((x0, yg, za + rh * 0.35), (x1, yg, za + rh * 0.35)) if R_.get("transom", True) else None
+            # glass: low walls, two roof slopes, two gable triangles
+            pane([C[0], C[1], Cw[1], Cw[0]])
+            pane([C[2], C[3], Cw[3], Cw[2]])
+            pane([C[1], C[2], Cw[2], Cw[1]])
+            pane([C[3], C[0], Cw[0], Cw[3]])
+            pane([Cw[0], Rb, Rf, Cw[3]])
+            pane([Cw[1], Cw[2], Rf, Rb])
+            pane([Cw[3], Cw[2], Rf])
+            pane([Cw[0], Rb, Cw[1]])
+            fin_objs = []
+            for k_, (fx, fy, fz) in enumerate([Rf, Rb] + ([(x, y, za) for x, y, _ in C] if R_.get("corner_finials", True) else [])):
+                sc_ = 1.0 if k_ < 2 else 0.7
+                fo = proj_bake.lathe([(0.0, 0.0), (0.16 * sc_, 0.02), (0.2 * sc_, 0.1), (0.09 * sc_, 0.2), (0.24 * sc_, 0.38),
+                                      (0.26 * sc_, 0.5), (0.12 * sc_, 0.7), (0.0, 0.95 * sc_)], seg=16, name="%s_RoofFinial%d" % (NAME, k_))
+                fo.data.transform(Matrix.Translation((fx, fy, fz)))
+                fin_objs.append(fo)
+        bm.to_mesh(gm_)
+        bm.free()
+        bg.to_mesh(gl)
+        bg.free()
+        fr = bpy.data.objects.new(NAME + "_RoofFrame", gm_)
+        bpy.context.scene.collection.objects.link(fr)
+        go = bpy.data.objects.new(NAME + "_RoofGlass", gl)
+        bpy.context.scene.collection.objects.link(go)
+        gold_m = plain_mat(NAME + "_RoofGold", (255, 168, 36), 1.0, 0.28)
+        fr.data.materials.append(gold_m)
+        for fo in fin_objs:
+            fo.data.materials.append(gold_m)
+        go.data.materials.append(plain_mat(NAME + "_RoofGlassMat", (150, 205, 245), 0.0, 0.05, alpha=0.35))
+        tidy_normals([fr] + fin_objs)
+        out_objs += [fr, go] + fin_objs
+        REPORT["pieces"]["RoofGlass"] = {"fix": "%s roof glass built exact on Skylight_Base %.1f x %.1f (Tripo proportions in params): "
+                                         "gold bars %.2f, glass panes, finials" % (R_["type"], W_, D_, bw)}
+        print("[deco] roofglass", REPORT["pieces"]["RoofGlass"], flush=True)
 
 # ------------------------------------------------------------------ extras (awning frames, parasols, brick domes ...)
 for ex in PR.get("extra", []):
