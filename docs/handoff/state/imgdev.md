@@ -1,6 +1,7 @@
 # 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 올리기 취소)
 
 - **D2 껍데기 메시 4개 올리기 취소**(디자인 검수 10/12: 이미지 생성 4가 EditableMesh로 올리기 없이 시험). 사용자가 선을 고르면 그때 정식 메시로 다시 요청. 준비해 둔 도구 `tools/upload_hull_meshes.py`(OBJ → EditableMesh → AssetService:CreateAssetAsync, 마우스 없이; 아직 한 번도 안 돌림 — 이 환경에서 CreateAssetAsync가 실제로 되는지 모름, 함수는 있음). C·C+ 올리기도 취소.
+- 나중에 정식 올리기가 오면(이미지 생성 4 답): 파일 = build/prop_kit_hull/<Kit>_D2_035.obj / _060.obj (build/prop_kit_bake/*_D2_hull.obj는 옛 판, 쓰지 말 것). 축 Roblox 그대로·좌표 키트 원점 기준·삼각형만·법선 일부러 안쪽(뒤집지 말 것). 놓을 때 MeshPart.CFrame = 키트 피벗 * CFrame.new(OBJ 상자 중심)(도구가 centre를 기록), DoubleSided 끔, SmoothPlastic (74,50,36), CastShadow·CanCollide·CanQuery 끔. 올리기 전 렌더를 직접 봄.
 - 큐 비움. 낮은 우선: 천 v3 후보(아래).
 
 # 이미지 개발 — 상태 (2026-10-11 밤 9차: 천 v2 WorldKit·MV 3개 다시 넣음, 큐 비움)
