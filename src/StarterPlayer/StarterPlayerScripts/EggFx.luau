@@ -352,11 +352,19 @@ local function removeEgg(part)
 	if not hidAt and not rec.Returning and rec.Plopped then
 		-- 최종 검수 10/11: an egg I picked without a preview (the server's PickRadius has +0.5) is mine, not "someone
 		-- else's": it was within reach of me (MineSlack) and my EggCarry rose within MineWindow s of its removal
-		-- (either order) - then my own pickup sound in Step is the only one
+		-- (either order) - then my own pickup sound in Step is the only one. 최종 검수 10/12: "within reach" counts where I
+		-- walked the last MoveWindow s too (S.Trail) - an egg picked in passing is removed after I walked on
 		local root = myRoot()
-		local d = root and Vector3.new(root.Position.X - rec.To.X, 0, root.Position.Z - rec.To.Z).Magnitude or math.huge
-		local gone = { To = rec.To, Returned = false, At = os.clock(),
-			Near = d <= num(eggCfg().PickRadius, 4.5) + num(lookCfg().MineSlack, 1) }
+		local reach = num(eggCfg().PickRadius, 4.5) + num(lookCfg().MineSlack, 1)
+		local function within(p)
+			return typeof(p) == "Vector3" and Vector3.new(p.X - rec.To.X, 0, p.Z - rec.To.Z).Magnitude <= reach
+		end
+		local near = root ~= nil and within(root.Position)
+		for _, s in S.Trail do
+			if near then break end
+			near = within(s.Pos)
+		end
+		local gone = { To = rec.To, Returned = false, At = os.clock(), Near = near }
 		S.Gone[gone] = true
 		task.delay(num(lookCfg().GoneWait, 0.25), function()
 			S.Gone[gone] = nil
@@ -643,8 +651,13 @@ function EggFx.Step()
 	local carry = num(LocalPlayer:GetAttribute("EggCarry"), 0)
 	if carry > S.Carry and active then
 		S.Picked = true
-		S.MineAt = os.clock() -- removeEgg: a ground egg gone near me right now was mine (no "someone picked it" pop)
-		if os.clock() - (S.PreviewAt or -math.huge) > 1 then play("EggPickup", nil, "GoldPickup") end
+		if os.clock() - (S.PreviewAt or -math.huge) > 1 then
+			-- an egg I got without a preview: a ground egg gone near me right now was mine (removeEgg: no "someone picked
+			-- it" pop). 최종 검수 10/12: not after a preview (that egg is hidden already) - or someone else's egg next to
+			-- me in the same half second lost its pop
+			S.MineAt = os.clock()
+			play("EggPickup", nil, "GoldPickup")
+		end
 	end
 	S.Carry = carry
 	stepEggs(now, me)

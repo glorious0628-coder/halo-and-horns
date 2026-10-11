@@ -193,9 +193,17 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and "gone.Returned = true" in egg, ""),
         ("최종 검수 10/11: an egg I picked without a preview (near me, my EggCarry rose within MineWindow) gets no "
          "'someone picked it' pop / sound - only my own pickup sound",
-         "Near = d <= num(eggCfg().PickRadius, 4.5) + num(lookCfg().MineSlack, 1) }" in egg
+         "local reach = num(eggCfg().PickRadius, 4.5) + num(lookCfg().MineSlack, 1)" in egg
          and "if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end" in egg
          and "S.MineAt = os.clock()" in egg, ""),
+        # 최종 검수 10/12: an egg picked in passing (removed after I walked on) is still mine; a previewed pickup sets
+        # no MineAt (someone else's egg beside me keeps its pop)
+        ("최종 검수 10/12: 'near' also counts where I walked the last MoveWindow s (S.Trail)",
+         "local near = root ~= nil and within(root.Position)" in egg and "for _, s in S.Trail do" in egg
+         and "near = within(s.Pos)" in egg and "Near = near }" in egg, ""),
+        ("최종 검수 10/12: MineAt only for a pickup without a preview",
+         re.search(r"if os\.clock\(\) - \(S\.PreviewAt or -math\.huge\) > 1 then\n(?:\t+--[^\n]*\n)*\t+S\.MineAt = os\.clock\(\)\n"
+                   r"\t+play\(\"EggPickup\", nil, \"GoldPickup\"\)", egg) is not None and egg.count("S.MineAt = os.clock()") == 1, ""),
         ("EggFx: the pickup preview hides at once and shows again after PredictHold s",
          "S.Hidden[rec.Id] = now" in egg and "now - hidAt > num(lk.PredictHold, 0.6)" in egg, ""),
         ("EggFx: a preview the server turned down is not retried for RetryAfter s (no flicker)",
@@ -260,6 +268,10 @@ MUTATIONS = [
     ("EGG", "a frame error warns every frame", "if not ok then warnThrottled(tostring(err)) end",
      'if not ok then warn("[EggFx] " .. tostring(err)) end'),
     ("EGG", "a 'picked' pop without waiting for a return", "if gone.Returned then return end", ""),
+    ("EGG", "an egg picked in passing pops as someone else's (only my spot now counts)", "\t\t\tnear = within(s.Pos)\n", ""),
+    ("EGG", "a previewed pickup hides others' pops too (MineAt for every pickup)",
+     "\t\tif os.clock() - (S.PreviewAt or -math.huge) > 1 then\n",
+     "\t\tS.MineAt = os.clock()\n\t\tif os.clock() - (S.PreviewAt or -math.huge) > 1 then\n"),
     ("EGG", "my own pickup also pops as someone else's (the sound twice)",
      "if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end -- mine", ""),
     ("EGG", "'+N' for everyone's delivery", "if data.UserId ~= LocalPlayer.UserId then return end", ""),
