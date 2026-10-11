@@ -20,6 +20,17 @@
   - 되돌리기(remove)는 보관 때 자리(Corner 속성, 없으면 옛 y0 -24)로 붙임.
   - WorldKit에 함께 있는 것: Workspace.HaloV2(Buildings·Bridges·Markers·AvatarRefs), Workspace.BeamTest(x -3000, 띠 시험대)
 
+- **④ 건물 골격 (내 몫: 성문·성문 동쪽 탑·전망 탑·무기고; 집·가게·대성당·빛 성은 이미지 생성 3)** — 10/11 WorldKit에 지음, 사진 대기
+  - `py tools/worldkit/skeleton_civic_run.py [--only Gate,...] [--mode remove]` (창 필요 없음) ← `tools/skeleton_civic.py`(계획 자세 x,z,yaw,ground_y에서 생성). 파트 빼기(CSG) 진짜 구멍, 대리석 크림 12 + 금 트림(255,175,25), 무기고 지붕은 파란 대용.
+  - 회색 상자 자리에 바꿔 끼움: HaloV2.Buildings.<id>(회색은 ServerStorage.HaloGrayHold, 마스터 ServerStorage.HaloSkeletons). `halo_blockout` 다시 지어도 계획 자세 같으면 마스터를 복제(Skeleton 속성, PlanPose "x,z,yaw,ground").
+  - 성문: 50×16×48, 통로 16×30(광선 통과), 탑 지름 14 ×2(금 돔·첨탑·배너·창), 아치 대리석+금, 메달리온, 금 코니스. **PrimaryPart = Lintel(앞 반쪽 금 코니스, 중심 y+4 → 월드 (0,-330), MapBuilder placeGate와 맞음)**. 6단계에서 모델 이름을 Gate_HaloTown으로.
+  - 탑 12(46, 문 4×7 진짜): GateEast = 닫힌 갤러리 8창, Lookout = 열린 발코니(바닥 WalkGround 태그·난간·기둥 8, 눈높이 +4.8) 약 50.
+  - 무기고 16×12: 승인 2D 없음 → 이미지 생성 2에 시안 요청(검수 전달).
+  - 사진: `py tools/worldkit/skeleton_civic_shots.py [--prep]`(창 복원 = 새 검수 "전달함, 시작" 뒤) → `art/review/world/halo_v2/skeleton/`, 시트 `py tools/worldkit/skeleton_civic_sheet.py`(콘셉트 2D | 사진).
+  - 계획 높이 KINDS: 성문 44→48, 탑 36→46, 전망 탑 50.
+  - 앞으로: 사진 판정 → 고침, 대성당·빛 성 등은 이미지 생성 3, 5단계 재료(섬 아랫면 바위·흰 바위·디딤돌) 아직.
+  - 보고처: **새 검수 = local_94cfa4bc-942c-4ac1-97a4-e9f609739523** (이전 local_78581314는 물러남).
+
 ## 폭포 물줄기 (5단계 재료)
 - High 최종 업로드 `rbxassetid://111806947888357` (`art/ui/Halo_WaterfallStreaks.png`, approved.json·asset_ids.json 기록, 5 크레딧)
 - `tools/worldkit/halo_waterfx.luau` STREAK 넣음, 경사 물 램프 따라 착지점(9/9), 거품 원판 → 둥근 물보라 파티클, 띠 넓고 밝게. WorldKit에 적용됨(옛 지형 위).
@@ -35,7 +46,7 @@
 - 메인 4차 적용, 옛 plan json(`halo_layout_plan_2026-10-10.json`, `tools/halo_layout.py`) 고치기, 대성당 v2·성문 v3·탑 조립본 배치
 
 ## 큐
-1. 회색 상자 1.5배 ★ 판정 대기(검수 → 사용자). 12 대성당은 계단 위에서 다시 찍을 수 있음
+1. ④ 골격 사진 28장 + 시트(창 요청 대기) → 판정 → 고침. (③ 회색 상자는 사용자 OK)
 2. 폭포: 5단계에서 plan v2 falls로 새 지형에 다시 놓고 사진(고친 halo_waterfx)
 3. (4단계 골격은 이미지 생성 3, 5단계 입히기 같이)
 
