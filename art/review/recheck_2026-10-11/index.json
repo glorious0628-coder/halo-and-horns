@@ -1,0 +1,1434 @@
+[
+ {
+  "name": "HaloDomeHouse_01",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_01.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_02",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_02.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_03",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_03.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_04",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_04.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_05",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_05.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_06",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_06.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_07",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_07.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_08",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_08.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_09",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_09.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_10",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_10.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_11",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_11.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloDomeHouse_12",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloDomeHouse_12.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloFlowerPotHQ_Daisy",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloFlowerPotHQ_Daisy.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloFlowerPotHQ_Lavender",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloFlowerPotHQ_Lavender.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloFlowerPotHQ_Rose",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloFlowerPotHQ_Rose.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloFlowerPotHQ_Sunflower",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloFlowerPotHQ_Sunflower.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloFlowerPotHQ_Tulip",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloFlowerPotHQ_Tulip.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_CathBody",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathBody.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_CathDome",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathDome.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_CathDoorFrame",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathDoorFrame.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_CathDoorLeaf",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathDoorLeaf.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_CathTowerA",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathTowerA.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match prefers +X by only 0.009 (kept))"
+ },
+ {
+  "name": "HaloPart_CathTowerB",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathTowerB.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_CathWindow",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_CathWindow.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateArch",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateArch.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateDomeL",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateDomeL.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateDomeR",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateDomeR.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateDoorLeafL",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateDoorLeafL.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateDoorLeafR",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateDoorLeafR.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateLantern",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateLantern.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateTowerL",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateTowerL.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_GateTowerR",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_GateTowerR.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_TowerBody",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_TowerBody.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_TowerDome",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_TowerDome.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match prefers +X by only 0.004 (kept))"
+ },
+ {
+  "name": "HaloPart_TowerDoorFrame",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_TowerDoorFrame.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_TowerDoorLeaf",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_TowerDoorLeaf.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloPart_TowerWindow",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloPart_TowerWindow.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_BenchA",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_BenchA.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_BenchB",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_BenchB.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_BenchC",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_BenchC.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_BreadStand",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_BreadStand.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_Clothesline",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_Clothesline.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_FlowerCart",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_FlowerCart.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_FruitStall",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_FruitStall.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_GuardPost",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_GuardPost.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_PotionCrate",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_PotionCrate.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_RackShieldSword",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_RackShieldSword.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers -Y by only 0.006 (kept))"
+ },
+ {
+  "name": "HaloReasonHQ_Scarecrow",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_Scarecrow.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloReasonHQ_VegGarden",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_VegGarden.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers -Y by only 0.042 (kept))"
+ },
+ {
+  "name": "HaloReasonHQ_Woodpile",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloReasonHQ_Woodpile.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloShop_Bakery",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloShop_Bakery.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloShop_Flower",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloShop_Flower.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloShop_Juice",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloShop_Juice.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloShop_Potion",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloShop_Potion.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_Lantern_E",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_Lantern_E.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers +X by only 0.014 (kept))"
+ },
+ {
+  "name": "HaloVar3_Planter_E",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_Planter_E.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_PotFlowers_E",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_PotFlowers_E.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers -X by only 0.008 (kept))"
+ },
+ {
+  "name": "HaloVar3_PotFlowers_F",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_PotFlowers_F.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_RoundTree_E",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_RoundTree_E.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_RoundTree_F",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_RoundTree_F.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_RoundTree_G",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_RoundTree_G.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_Topiary_C",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_Topiary_C.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_Topiary_D",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_Topiary_D.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar3_Topiary_E",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar3_Topiary_E.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers -Y by only 0.003 (kept))"
+ },
+ {
+  "name": "HaloVar4_Lantern_A",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_Lantern_A.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar4_Lantern_B",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_Lantern_B.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar4_Lantern_C",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_Lantern_C.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar4_Lantern_D",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_Lantern_D.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar4_Planter_A",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_Planter_A.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers -Y by only 0.018 (kept))"
+ },
+ {
+  "name": "HaloVar4_Planter_D",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_Planter_D.jpg",
+  "status": "ok",
+  "note": "front +Y (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match agrees)"
+ },
+ {
+  "name": "HaloVar4_PotFlowers_A",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_PotFlowers_A.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers +X by only 0.006 (kept))"
+ },
+ {
+  "name": "HaloVar4_PotFlowers_C",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_PotFlowers_C.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers +X by only 0.008 (kept))"
+ },
+ {
+  "name": "HaloVar4_PotFlowers_D",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/HaloVar4_PotFlowers_D.jpg",
+  "status": "ok",
+  "note": "front +Y, uncertain (name rule: *_parts.glb (house_parts.py) faces +Y; 2D match prefers +X by only 0.001 (kept))"
+ },
+ {
+  "name": "Halo_Cathedral",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Cathedral.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_CloudBush",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_CloudBush.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_DomeHouseA",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_DomeHouseA.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_DomeHouseB",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_DomeHouseB.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_FarArch",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_FarArch.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Gate",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Gate.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Islet",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Islet.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Lantern",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Lantern.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Planter",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Planter.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match prefers +Y by only 0.005 (kept))"
+ },
+ {
+  "name": "Halo_PotFlowers",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_PotFlowers.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_RoundTree",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_RoundTree.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Shop",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Shop.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Statue",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Statue.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Topiary",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Topiary.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Tower",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Tower.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Halo_Tower_v2",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Halo_Tower_v2.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "NPC_HaloBakerGranny",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/NPC_HaloBakerGranny.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "NPC_HaloBright",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/NPC_HaloBright.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "NPC_HaloFlowerGirl",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/NPC_HaloFlowerGirl.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "NPC_HaloJuiceMan",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/NPC_HaloJuiceMan.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "NPC_HaloSirGleam",
+  "zone": "Halo",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/NPC_HaloSirGleam.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Town_Halo_Fountain3",
+  "zone": "Halo",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Town_Halo_Fountain3.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match prefers +Y by only 0.002 (kept))"
+ },
+ {
+  "name": "Kit_X_Anvil",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_Anvil.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_BannerHalo",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_BannerHalo.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_BannerHorns",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_BannerHorns.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_Bench",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_Bench.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_Brazier",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_Brazier.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_Forge",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_Forge.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_Lamp",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_Lamp.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_X_PotionCart",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_PotionCart.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.038 (kept))"
+ },
+ {
+  "name": "Kit_X_StallBlue",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_StallBlue.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.006 (kept))"
+ },
+ {
+  "name": "Kit_X_StallGreen",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_StallGreen.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.009 (kept))"
+ },
+ {
+  "name": "Kit_X_StallRed",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_X_StallRed.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.010 (kept))"
+ },
+ {
+  "name": "Town_Halo_Fountain",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Town_Halo_Fountain.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: default glTF front -Y; 2D match agrees)"
+ },
+ {
+  "name": "X_Altar",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/X_Altar.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web X_*_HD.glb faces -Y (2D match 3/3 in the 10/11 run); 2D match agrees)"
+ },
+ {
+  "name": "X_GooseNest",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/X_GooseNest.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web X_*_HD.glb faces -Y (2D match 3/3 in the 10/11 run); 2D match agrees)"
+ },
+ {
+  "name": "X_GuildHall",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/X_GuildHall.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "X_MarketArch",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/X_MarketArch.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web X_*_HD.glb faces -Y (2D match 3/3 in the 10/11 run); 2D match agrees)"
+ },
+ {
+  "name": "X_NoticeBoard",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/X_NoticeBoard.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web X_*_HD.glb faces -Y (2D match 3/3 in the 10/11 run); 2D match agrees)"
+ },
+ {
+  "name": "X_SupporterBoard",
+  "zone": "Crossroads",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/X_SupporterBoard.jpg",
+  "status": "no_glb",
+  "note": "NO GLB (none recorded)"
+ },
+ {
+  "name": "Town_Horns_Castle_v6mv",
+  "zone": "Horns",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Town_Horns_Castle_v6mv.jpg",
+  "status": "ok",
+  "note": "front +Y (manual: set after looking at all 4 sides vs the 2D (name rule: default glTF front -Y; 2D match prefers +Y by only 0.012 (kept)))"
+ },
+ {
+  "name": "Kit_M_BushA",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_BushA.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_BushB",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_BushB.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_CrownShrine",
+  "zone": "Meadow",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_CrownShrine.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_CrystalPile",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_CrystalPile.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_Fence",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_Fence.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_FlowerCart",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_FlowerCart.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.002 (kept))"
+ },
+ {
+  "name": "Kit_M_FlowersA",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_FlowersA.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: API *_LOD.glb (decimated, not turned) faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_FlowersB",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_FlowersB.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: API *_LOD.glb (decimated, not turned) faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_JellyRock",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_JellyRock.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers +Y by only 0.031 (kept))"
+ },
+ {
+  "name": "Kit_M_LogBench",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_LogBench.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_Mushrooms",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_Mushrooms.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_PicnicBasket",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_PicnicBasket.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.015 (kept))"
+ },
+ {
+  "name": "Kit_M_Pinwheel",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_Pinwheel.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_PuddleRim",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_PuddleRim.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers +Y by only 0.003 (kept))"
+ },
+ {
+  "name": "Kit_M_SignPost",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_SignPost.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_M_Stump",
+  "zone": "Meadow",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_M_Stump.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.017 (kept))"
+ },
+ {
+  "name": "Kit_W_Banner",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_Banner.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_BushA",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_BushA.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_BushB",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_BushB.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_CampFence",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_CampFence.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_Campfire_Fire",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_Campfire_Fire.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_Crates",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_Crates.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_FallenLog",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_FallenLog.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_Fern",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_Fern.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_LanternPost",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_LanternPost.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_LogStool",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_LogStool.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match prefers -X by only 0.005 (kept))"
+ },
+ {
+  "name": "Kit_W_LootSack",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_LootSack.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_MossRock",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_MossRock.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_Mushrooms",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_Mushrooms.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_SignPost",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_SignPost.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Kit_W_StepStones",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_StepStones.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match prefers +Y by only 0.034 (kept))"
+ },
+ {
+  "name": "Kit_W_Stump",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Kit_W_Stump.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.047 (kept))"
+ },
+ {
+  "name": "W_Boulder_A",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Boulder_A.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "W_Boulder_B",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Boulder_B.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "W_GiantTree",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_GiantTree.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "W_Tent_A",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Tent_A.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers +Y by only 0.025 (kept))"
+ },
+ {
+  "name": "W_Tent_B",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Tent_B.jpg",
+  "status": "ok",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; 2D match prefers -X by only 0.037 (kept))"
+ },
+ {
+  "name": "W_Totem",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Totem.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "W_Tree_A",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Tree_A.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "W_Tree_B",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Tree_B.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "W_Tree_C",
+  "zone": "Woods",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/W_Tree_C.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Crown_Broken_B",
+  "zone": "crown",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Crown_Broken_B.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "K_CrownShard_v2",
+  "zone": "crown",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/K_CrownShard_v2.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "BatGoblin",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/BatGoblin.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "GhostKing",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/GhostKing.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "GhostMinion",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/GhostMinion.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Goblin",
+  "zone": "monster",
+  "inputs": "unknown",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Goblin.jpg",
+  "status": "ok_no_2d",
+  "note": "front -Y, uncertain (name rule: default glTF front -Y; no 2D match available); no 2D source (unknown)"
+ },
+ {
+  "name": "GoblinBrute",
+  "zone": "monster",
+  "inputs": "unknown",
+  "sheet": "art/review/recheck_2026-10-11/sheets/GoblinBrute.jpg",
+  "status": "ok_no_2d",
+  "note": "front -Y, uncertain (name rule: default glTF front -Y; no 2D match available); no 2D source (unknown)"
+ },
+ {
+  "name": "GoldenGoose",
+  "zone": "monster",
+  "inputs": "unknown",
+  "sheet": "art/review/recheck_2026-10-11/sheets/GoldenGoose.jpg",
+  "status": "ok_no_2d",
+  "note": "front -Y, uncertain (name rule: default glTF front -Y; no 2D match available); no 2D source (none recorded)"
+ },
+ {
+  "name": "LittleGhost",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/LittleGhost.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "PetBabySlime",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/PetBabySlime.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "PumpkinKing",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/PumpkinKing.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "PumpkinSlime",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/PumpkinSlime.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Skeleton",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Skeleton.jpg",
+  "status": "ok_no_2d",
+  "note": "front +X, uncertain (name rule: raw Tripo GLB faces +X; no 2D match available); no 2D source (art/out/Skeleton_Clothed.png)"
+ },
+ {
+  "name": "SkeletonArcher",
+  "zone": "monster",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/SkeletonArcher.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "SkeletonKnight",
+  "zone": "monster",
+  "inputs": "unknown",
+  "sheet": "art/review/recheck_2026-10-11/sheets/SkeletonKnight.jpg",
+  "status": "ok_no_2d",
+  "note": "front -Y, uncertain (name rule: default glTF front -Y; no 2D match available); no 2D source (unknown)"
+ },
+ {
+  "name": "Slime / BigSlime (SlimeCube)",
+  "zone": "monster",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Slime_BigSlime_SlimeCube.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "SlimeKing (King Slime)",
+  "zone": "monster",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/SlimeKing_King_Slime.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: web *_LOD / *_HD_plain (glb_decimate --rotz -90) faces -Y; 2D match agrees)"
+ },
+ {
+  "name": "SlingshotGoblin",
+  "zone": "monster",
+  "inputs": "multiview",
+  "sheet": "art/review/recheck_2026-10-11/sheets/SlingshotGoblin.jpg",
+  "status": "ok",
+  "note": "front +X (name rule: raw Tripo GLB faces +X; 2D match agrees)"
+ },
+ {
+  "name": "Acc_HaloR3",
+  "zone": "other",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Acc_HaloR3.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: default glTF front -Y; 2D match prefers +Y by only 0.008 (kept))"
+ },
+ {
+  "name": "Acc_HaloR4",
+  "zone": "other",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Acc_HaloR4.jpg",
+  "status": "ok",
+  "note": "front -Y, uncertain (name rule: default glTF front -Y; 2D match prefers +Y by only 0.020 (kept))"
+ },
+ {
+  "name": "Acc_HaloR5",
+  "zone": "other",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Acc_HaloR5.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: default glTF front -Y; 2D match agrees)"
+ },
+ {
+  "name": "Acc_HornsR3",
+  "zone": "other",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Acc_HornsR3.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: default glTF front -Y; 2D match agrees)"
+ },
+ {
+  "name": "Acc_HornsR4",
+  "zone": "other",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Acc_HornsR4.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: default glTF front -Y; 2D match agrees)"
+ },
+ {
+  "name": "Acc_HornsR5",
+  "zone": "other",
+  "inputs": "single_front",
+  "sheet": "art/review/recheck_2026-10-11/sheets/Acc_HornsR5.jpg",
+  "status": "ok",
+  "note": "front -Y (name rule: default glTF front -Y; 2D match agrees)"
+ }
+]
