@@ -42,9 +42,9 @@ def build(n):
         ph = 2 * np.pi * (kx * x + ky * y) / n + amp * periodic_noise(n, r, sig)
         d = np.angle(np.exp(1j * (ph - np.pi)))        # signed distance to the line, -pi..pi
         return np.exp(-(d ** 2) / (2 * width ** 2))
-    v1 = vein(1, 2, 0.9, 0.05, 7, 3.0)
-    v2 = vein(2, -1, 0.8, 0.035, 19, 4.0)
-    lum = 1.0 + 0.006 * soft + 0.004 * mid - 0.034 * v1 - 0.020 * v2
+    v1 = vein(1, 2, 0.45, 0.06, 7, 2.5)
+    v2 = vein(2, -1, 0.4, 0.045, 19, 3.0)
+    lum = 1.0 + 0.006 * soft + 0.004 * mid - 0.020 * v1 - 0.011 * v2
     warm = 0.006 * periodic_noise(n, rng, 4.0)          # tiny hue drift: warm <-> cool
     col = np.empty((n, n, 3))
     col[..., 0] = base[0] * lum * (1 + warm)

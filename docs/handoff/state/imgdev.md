@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 5차: 매끈한 크림 대리석)
+
+- **HH_HaloMarbleSmooth_Cream(소품용, 줄눈 없음) — 판정 대기.** 맵 tools/marble_smooth_maps.py(주기 노이즈, 색 227~242 아주 은은, 긴 결 2줄) → art/ui/halo_tile/marble_smooth/. 올림 2장: color 99912622204711, rough 76093268063395 (asset_ids `Halo_MarbleSmoothCream_color/_rough`; 첫 판 114611278221629·137526286825414는 결이 고리 모양이라 버림 — 안 쓰는 옛 ID). 노멀 131597673772642(평평)·금속 87489921567476(0) 재사용. StudsPerTile 8 시험. 시트 art/review/imgdev/marble_smooth_sheet_2026-10-11.jpg (평소/블록/매끈 × 낮 해·그늘·밤, C2c 빛, 2D 화분 옆). 소견: 해 아래 거의 민무늬(2D 화분의 은은한 결보다 약간 더 평평), 밤에 결이 희미하게 보임. 더 보이게 하려면 tools/marble_smooth_maps.py 결 세기(0.020·0.011)만 올림.
+- **판정 통과되면:** WorldKit에 MV HH_HaloMarbleSmooth_Cream 만들기(tools/marble_smooth_test.luau 위쪽 MV 부분을 building_variants_halo.json 항목으로) → 이미지 생성 4에 이름 알림. 아직 WorldKit엔 안 만들었음. UiSandbox 창은 닫음(시험물·빛 원래대로 확인).
+- (앞의 금 확정·FF3 기록 블록은 그대로 유효.)
+
 # 이미지 개발 — 상태 (2026-10-11 밤 4차: FF3 판정 기록)
 
 - **FF3 판정(검수 직접 봄) approved.json 기록 끝:** LeafyGrass·MeadowDirt = approved. Grass·GrassShade·MeadowFlowers = redo(풀 덩어리·꽃 반복; 다시 그릴 땐 덩어리 작게·대비 낮게·불규칙, 꽃은 드물게 무리로 또는 3D 꽃 덤불). 초원 = 4번째 구역이라 지금은 기록만, 초원 차례에 다시. 게임에 쓰는 중이라 대체품 승인 전 손대지 않음(이미지 생성 쪽이 다시 그림).

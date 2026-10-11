@@ -29,9 +29,9 @@ end
 mv.BaseMaterial = Enum.Material.Marble
 mv.MaterialPattern = Enum.MaterialPattern.Regular
 mv.StudsPerTile = STUDS
-mv.ColorMap = "rbxassetid://114611278221629"
+mv.ColorMap = "rbxassetid://99912622204711"
 mv.NormalMap = "rbxassetid://131597673772642"
-mv.RoughnessMap = "rbxassetid://137526286825414"
+mv.RoughnessMap = "rbxassetid://76093268063395"
 mv.MetalnessMap = "rbxassetid://87489921567476"
 mv.Parent = MS
 
@@ -103,8 +103,8 @@ for _, b in ipairs(BOARDS) do
 		tl.Size = UDim2.fromOffset(980, 90)
 		tl.Position = UDim2.fromOffset(1024 * (i - 1) + 22, 10)
 		tl.Parent = sg
-		local camPos = (base * CFrame.new(cx, -1, -18)).Position
-		local lookAt = (base * CFrame.new(cx, -1, 0)).Position
+		local camPos = (base * CFrame.new(cx, -1.5, -11)).Position
+		local lookAt = (base * CFrame.new(cx, -1.5, 0)).Position
 		table.insert(cols, { key = c.key, cam = { camPos.X, camPos.Y, camPos.Z }, look = { lookAt.X, lookAt.Y, lookAt.Z } })
 	end
 	info[b.name] = cols
