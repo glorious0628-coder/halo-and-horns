@@ -32,3 +32,12 @@
 - 문서: golden_egg_2026-10-11, gameplay_remaining_2026-10-11(감사 결과 + 사용자 답), roblox_success_gap_2026-10-11(성공 조건 비교·사용자 질문 3개: 11월 중순 조용한 공개+신분증·2단계·보증금 / 광고비 / 주간 진영 행사 시간 — **게시 나이 규칙 확인 워크플로(roblox-policy-check) 결과 뒤에 물음**), server_text_verdicts, halo_plan_v2_review.
 - 돌고 있는 워크플로: dev1-branches-retest(lesstext 0325d628·onehand bf982c05), spawnclear 재시험, meme-pack-en 재개, crown-war-content(왕관전 거위 말고 콘텐츠), roblox-policy-check. 홈페이지 고치기(사용자 OK) = 백그라운드 에이전트.
 - 병합 대기: fix/lesstext(+lesstext-server 249a68a0 같이), fix/onehand(33272a46까지, 게임성 검수가 새 커밋 시험), fix/spawnclear. 병합 뒤 메인 반영 1 사진 + HH_Fabric v2 낮·밤 + Save As.
+
+## 10/11 밤 끝 (PC 배터리로 꺼졌다 켜진 뒤, 클리어 전) — 먼저 읽기
+- 나 = 최종 검수. 보고 길: 이미지 생성 1~4·이미지 개발 → **디자인 검수**, 게임성 개발 1~4 → **게임성 검수**, 둘이 통과시킨 것만 나에게. 나는 사용자·SPEC·병합·화면 조작 "전달함, 시작"·유료 묶음 승인. 세션 id는 list_sessions(13개: 나, 디자인 검수, 게임성 검수, 메인 반영 1, 게임성 개발 1~4, 이미지 개발, 이미지 생성 1~4). 재시작 뒤 전 세션에 "이어서" 보냄.
+- **병합 대기:** 묶음① fix/lesstext 0325d628 + fix/lesstext-server 249a68a0(개발 2가 ReturnService MinGap 고칠 것) + fix/onehand 33272a46 → 게임성 검수 "병합 가능" 오면 merge-tree+commit-tree로 main → 메인 반영 1 sync·PC Play 사진(전사 앞·3/4·옆, 마법사 지팡이 발끝 전신, 거위 화면, 첫 미션) + Save(화면 조작 = 사용자 권한 창). 묶음② fix/spawnclear는 '고쳐서 다시'(docs/review/spawnclear_review_2026-10-11.md). 그 뒤 fix/golden-egg-client, dev4-bag/gather, dev3-v4-tables.
+- **WorldKit:** 꺼지면서 저장 안 한 HaloV2 사라짐 → 이미지 생성 1이 스크립트로 다시 짓는 중(전달함 줌) → 이미지 생성 3·4·이미지 개발이 다시 넣음. 그 뒤 이미지 생성 1 사진 16장, 이미지 생성 4 다시 찍기 3분(순서: 1 → 4), 디자인 검수의 소품 밋밋함 비교 A/B/C/D(사용자 지적 "선이 없어 보여").
+- **메인 Studio:** 다시 열림(place 81671223175574, Edit, origin/main sync, HH_Fabric v2 다시 넣음, 미저장). 저장본 build/GoodEvil_2026-10-11_night.rbxlx(21:21) 있음.
+- **유료 승인한 것:** Tripo 묶음 1 26개 ≈ 1,430점(이미지 생성 4가 돌리는 중, 재시작 뒤 확인), 묶음 2(41개)는 이미지 생성 2의 4면 63장(≈315크레딧)이 디자인 검수 통과하면. 무기 High 28장 끝(디자인 검수 판정 대기).
+- **사용자 결정 오늘 밤:** SPEC A23-131~138 + 홈페이지 고침 완료(glorious.ai.kr 12/1). 사용자 할 일: 10/17 전 계정 나이 확인·2단계, 등급 설문 제출(답안 docs/design/maturity_questionnaire_draft_2026-10-11.md), 공개 날 1,000 R$ 보증금, 광고비 약 25만 원. Anthropic 신청서 답 2개(각 500자) 줬음.
+- **문서:** golden_egg, crown_war_content, memes_en, roblox_success_gap(할 일 20개 — 베타 전 것: 상점 가격 GetProductInfo, 한국어 글꼴 세트, 썸네일·아이콘·영상, 채팅 없는 신호·이모트, 코드 입력, 베타 숫자판, Lv25 이후 할 일 → 아직 담당에 안 나눔: 다음에 게임성 검수·디자인 검수와 나눌 것), roblox_publish_rules, gameplay_remaining, server_text_verdicts, halo_plan_v2_review.
