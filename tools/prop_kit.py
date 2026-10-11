@@ -1019,6 +1019,750 @@ def bell_frame():
     ball("Clapper", 0.28, 0, 0, 2.36, "gold", cc=False)
 
 
+# ---------------------------------------------------------------- kits: chunk 3 (guard post, wood shed, clothesline, rack, fountain)
+def cap_bowl(n, d, depth, y_rim, x=0.0, y=0.0, m="marble", **kw):
+    """Solid bowl = spherical cap under a flat top at y_rim (sphere AND box below the rim), exact round."""
+    a = d / 2
+    Rs = (a * a + depth * depth) / (2 * depth)
+    zc = y_rim - depth + Rs
+    below = cut(box, n + "_cut", d + 0.4, d + 0.4, depth + 0.2, x, y, y_rim - depth - 0.1, m)
+    return part(n, "Ball", (2 * Rs, 2 * Rs, 2 * Rs), (x, y, zc), EX, UP, m, ops=[("and", [below])], **kw)
+
+
+def stripes_disc(n, d, t, centre, nrm, cols, count=3):
+    """Round shield face: white disc + vertical blue stripes cut to the circle (CSG AND), facing nrm."""
+    X, _ = face_axes(nrm)
+    part(n, "Cylinder", (t, d, d), centre, nrm, UP, "cloth", c=cols[0], cc=False)
+    w = d / (2 * count + 1)
+    for k in range(count):
+        u = -d / 2 + w * (2 * k + 1.5)
+        disc = cut(part, "%s_d%d" % (n, k), "Cylinder", (t + 0.2, d, d), centre, nrm, UP, "cloth")
+        part("%s_S%d" % (n, k), "Block", (w, d, t + 0.02), vadd(centre, vmul(X, u)), X, UP, "cloth", c=cols[1], cc=False,
+             ops=[("and", [disc])])
+
+
+@kit("HaloReasonHQ_GuardPost", 12.0, "art/out/s2/halo/props4/HaloProp4_ReasonGuard_front.png",
+     note="small wall lantern heads are parts for now (Tripo heads come with the lamp batch)")
+def guard_post():
+    R = 2.8
+    cyl("Plinth", 2 * R + 0.6, 0.4, 0, 0, 0)
+    box("PlinthFront", 2 * R + 0.6, 1.8, 0.4, 0, R - 0.6, 0)
+    box("PlinthBand", 2 * R + 0.2, 1.84, 0.08, 0, R - 0.6, 0.34, "gold")
+    # body: round back + flat front, an arched service window cut into the front
+    WW, WZ, WH = 3.2, 1.7, 2.6                       # window width, sill, straight height (+ half-round top)
+    def win():
+        return [cut(box, "WinHole", WW, 3.0, WH, 0, R, WZ), cut(part, "WinTop", "Cylinder", (3.0, WW, WW), (0, R, WZ + WH), EY, UP, "marble")]
+    cyl("Body", 2 * R, 7.1, 0, 0, 0.4, "mblock", ops=[("minus", win())])
+    box("Front", 2 * R, 1.6, 7.1, 0, R - 0.8, 0.4, "mblock", ops=[("minus", win())])
+    box("NicheBack", WW, 0.14, WH + WW / 2, 0, R - 1.45, WZ, "wood", cc=False)
+    for k in range(3):
+        box("Shelf%d" % k, WW - 0.1, 0.5, 0.08, 0, R - 1.15, WZ + 0.9 + 0.8 * k, "wood", cc=False)
+    box("Counter", WW + 0.3, 1.2, 0.24, 0, R - 0.25, WZ - 0.24, "wood")
+    box("CounterFront", WW + 0.3, 0.12, WZ - 0.4, 0, R + 0.3, 0.4, "wood")
+    box("CounterGold", WW + 0.3, 0.06, 0.26, 0, R + 0.36, WZ - 0.25, "gold", cc=False)
+    # gold arch band round the window
+    part("WinArch", "Cylinder", (0.12, WW + 0.36, WW + 0.36), (0, R + 0.02, WZ + WH), EY, UP, "gold", cc=False,
+         ops=[("minus", [cut(part, "AB_i", "Cylinder", (0.3, WW, WW), (0, R + 0.02, WZ + WH), EY, UP, "gold"),
+                         cut(box, "AB_low", WW + 0.6, 0.4, 2.0, 0, R + 0.02, WZ + WH - 2.0, "gold")])])
+    for sx in (-1, 1):
+        box("WinJamb%d" % sx, 0.16, 0.12, WH, sx * (WW / 2 + 0.08), R + 0.02, WZ, "gold", cc=False)
+    # striped awning over the window (Fabric), scalloped edge = half discs
+    ang = math.radians(28)
+    nrm = (0.0, math.sin(ang), math.cos(ang))
+    down = (0.0, math.cos(ang), -math.sin(ang))
+    top = (0.0, R + 0.05, WZ + WH + 0.35)
+    n_str = 7
+    for k in range(n_str):
+        x = -1.7 + 3.4 / n_str * (k + 0.5)
+        col = (110, 170, 235) if k % 2 == 0 else (250, 248, 240)
+        part("Awning%d" % k, "Block", (3.4 / n_str, 0.08, 1.3), vadd((x, 0, 0), top, vmul(down, 0.65)), EX, nrm, "cloth", c=col, cc=False)
+        edge = vadd((x, 0, 0), top, vmul(down, 1.3))
+        part("Scallop%d" % k, "Cylinder", (0.06, 3.4 / n_str, 3.4 / n_str), vadd(edge, (0, 0.02, -0.0)), EY, UP, "cloth", c=col, cc=False)
+    # pilasters at the front corners with small wall lanterns
+    for sx in (-1, 1):
+        x = sx * (R - 0.35)
+        box("Pilaster%d" % sx, 0.7, 0.5, 7.1, x, R - 0.05, 0.4, "marble")
+        box("PilasterCap%d" % sx, 0.86, 0.66, 0.2, x, R - 0.05, 7.3, "gold")
+        box("LampArm%d" % sx, 0.12, 0.5, 0.12, x, R + 0.4, 4.4, "gold", cc=False)
+        lantern_head("Lamp%d" % sx, x, R + 0.6, 3.5, s=0.2, gh=0.42, hang=True)
+    # cornice, drum, dome, finial
+    cyl("CorniceGold", 2 * R + 0.2, 0.18, 0, 0, 7.5, "gold")
+    box("CorniceFront", 2 * R + 0.2, 1.7, 0.18, 0, R - 0.8, 7.5, "gold")
+    cyl("Cornice", 2 * R + 0.4, 0.3, 0, 0, 7.68, "marble")
+    box("CorniceFrontM", 2 * R + 0.4, 1.8, 0.3, 0, R - 0.8, 7.68, "marble")
+    cyl("Drum", 2 * R - 0.6, 0.5, 0, 0, 7.98, "marble")
+    cyl("DrumGold", 2 * R - 0.4, 0.12, 0, 0, 8.4, "gold")
+    dome("Dome", 2 * R - 0.6, 0, 0, 8.48, "gold")
+    zt = 8.48 + R - 0.3
+    cyl("FinialBase", 0.7, 0.2, 0, 0, zt - 0.05, "gold")
+    ball("FinialBall", 0.75, 0, 0, zt + 0.5, "gold", cc=False)
+    spike("FinialSpike", 0, 0, zt + 0.8, 12.0 - zt - 0.8, 0.28)
+    # notice sign on the viewer's right (-x): two posts + framed board
+    sx = -1
+    for k, dx in enumerate((-0.85, 0.85)):
+        box("SignPost%d" % k, 0.3, 0.3, 4.2, sx * 4.2 + dx, R - 0.6, 0.0, "marble")
+        gold_ball("SignBall%d" % k, 0.3, sx * 4.2 + dx, R - 0.6, 4.2, neck=False)
+    box("SignBoard", 1.5, 0.12, 1.9, sx * 4.2, R - 0.6, 1.9, "paint", c=(250, 246, 236))
+    box("SignFrame", 1.7, 0.08, 2.1, sx * 4.2, R - 0.68, 1.8, "gold", cc=False)
+
+
+@kit("HaloReasonHQ_Woodpile", 4.9, "art/out/s2/halo/props4/HaloProp4_ReasonWood_front.png")
+def woodpile():
+    W, D = 6.0, 2.9
+    box("Floor", W, D, 0.35, 0, 0, 0, "marble")
+    box("FloorBand", W + 0.04, D + 0.04, 0.08, 0, 0, 0.22, "gold")
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (W / 2 - 0.25), sy * (D / 2 - 0.25)
+            box("Post%d%d" % (sx, sy), 0.42, 0.42, 3.25, x, y, 0.35, "wood")
+            box("PostBand%d%d" % (sx, sy), 0.48, 0.48, 0.1, x, y, 1.6, "gold", cc=False)
+            box("PostCap%d%d" % (sx, sy), 0.5, 0.5, 0.12, x, y, 3.6, "gold", cc=False)
+    for sy in (-1, 1):
+        box("Beam%d" % sy, W, 0.3, 0.3, 0, sy * (D / 2 - 0.25), 3.6, "wood")
+    for sx in (-1, 1):
+        box("BeamS%d" % sx, 0.3, D, 0.3, sx * (W / 2 - 0.25), 0, 3.6, "wood")
+    gable_roof("Roof", D + 0.4, W + 0.2, 1.0, 0, 0, 3.9, ridge="x", over=0.3, t=0.16, m="marble")
+    for sx in (-1, 1):
+        inlay("Gable%d" % sx, (sx * (W / 2 + 0.1), 0, 4.2), (sx, 0, 0), 0.9, 0.35, "rect", fr=0.06)
+        gold_ball("RidgeBall%d" % sx, 0.3, sx * (W / 2 + 0.35), 0, 4.95, neck=False)
+    # log stack: rows of logs lying front-back, pale wood with a darker end ring
+    rows = ((0.4, 6), (1.1, 5), (1.8, 6), (2.5, 5))
+    for r, (z, n) in enumerate(rows):
+        span = W - 1.2
+        d = span / 6
+        for k in range(n):
+            x = -span / 2 + d * (k + 0.5 + (0.5 if n == 5 else 0))
+            part("Log%d_%d" % (r, k), "Cylinder", (D - 0.7, d * 0.95, d * 0.95), (x, 0, z + d * 0.47), EY, UP, "woodcream", c=(232, 196, 140))
+            for sy in (-1, 1):
+                part("LogEnd%d_%d_%d" % (r, k, sy), "Cylinder", (0.03, d * 0.6, d * 0.6), (x, sy * (D / 2 - 0.34), z + d * 0.47), EY, UP,
+                     "wood", c=(196, 150, 96), cc=False)
+
+
+@kit("HaloReasonHQ_Clothesline", 4.7, "art/out/s2/halo/props4/HaloProp4_ReasonCloth_front.png")
+def clothesline():
+    for sx in (-1, 1):
+        x = sx * 4.3
+        pedestal("Post%d" % sx, 1.0, 1.0, 4.1, x, 0.0, plinth=0.3)
+        inlay("PostWin%d" % sx, (x, 0.5, 1.8), EY, 0.3, 1.1, "rect", fr=0.06)
+        inlay("PostWinB%d" % sx, (x, -0.5, 1.8), (0, -1, 0), 0.3, 1.1, "rect", fr=0.06)
+        z = cap("PostCap%d" % sx, 1.0, 1.0, x, 0, 4.1, t=0.16)
+        gold_ball("PostBall%d" % sx, 0.55, x, 0, z)
+    # rope with a little sag (two runs)
+    zr, sag = 3.9, 0.35
+    rod("RopeL", (3.8, 0, zr), (0, 0, zr - sag), 0.08, "rope", cc=False)
+    rod("RopeR", (0, 0, zr - sag), (-3.8, 0, zr), 0.08, "rope", cc=False)
+    blue, white, sky = (110, 170, 235), (250, 248, 240), (170, 210, 245)
+    towels = ((2.85, 1.25, 1.9, white, blue), (1.55, 0.85, 1.25, sky, None), (0.35, 1.3, 2.0, blue, white), (-0.95, 0.85, 1.3, white, None),
+              (-2.15, 1.2, 1.9, white, blue))
+    for k, (x, w, h, c0, c1) in enumerate(towels):
+        zt = zr - sag * (1 - abs(x) / 3.8)
+        box("Towel%d" % k, w, 0.05, h, x, 0.0, zt - h, "cloth", c=c0, cc=False)
+        if c1:
+            for j in range(2):
+                box("TowelStripe%d_%d" % (k, j), w * 0.18, 0.06, h, x - w * 0.25 + j * w * 0.5, 0.0, zt - h, "cloth", c=c1, cc=False)
+        for sxp in (-1, 1):
+            box("Peg%d_%d" % (k, sxp), 0.06, 0.12, 0.2, x + sxp * w * 0.35, 0.0, zt - 0.12, "wood", cc=False)
+    # baskets with folded towels at both ends (in front of the posts)
+    for k, x in enumerate((3.2, -3.2)):
+        box("Basket%d" % k, 1.7, 1.2, 0.8, x, 1.0, 0, "woodcream", c=(230, 200, 150))
+        box("BasketRim%d" % k, 1.78, 1.28, 0.12, x, 1.0, 0.72, "gold", cc=False)
+        for j, col in enumerate((white, blue, white)):
+            box("Folded%d_%d" % (k, j), 1.3, 0.9, 0.18, x, 1.0, 0.84 + j * 0.18, "cloth", c=col, cc=False)
+
+
+@kit("HaloReasonHQ_RackShieldSword", 4.9, "art/out/s2/halo/props4/HaloProp4_ReasonRack_front.png")
+def rack_shield_sword():
+    for sx in (-1, 1):
+        x = sx * 2.3
+        pedestal("Pillar%d" % sx, 0.75, 0.75, 4.1, x, 0.0, plinth=0.3)
+        for k, f in enumerate(FACES[:2]):
+            inlay("PillarWin%d%d" % (sx, k), vadd((x, 0, 2.2), vmul(f, 0.375)), f, 0.22, 1.2, "rect", fr=0.05)
+        z = cap("PillarCap%d" % sx, 0.75, 0.75, x, 0, 4.1, t=0.14)
+        gold_ball("PillarBall%d" % sx, 0.46, x, 0, z)
+        # pennant on a gold arm outside the pillar
+        px = x + sx * 0.75
+        rod("PennantArm%d" % sx, (x + sx * 0.38, 0, 3.75), (px + sx * 0.1, 0, 3.75), 0.08, "gold", cc=False)
+        box("Pennant%d" % sx, 0.5, 0.05, 1.0, px, 0, 2.75, "cloth", c=(110, 170, 235), cc=False)
+        box("PennantStripe%d" % sx, 0.14, 0.06, 1.0, px, 0, 2.75, "cloth", c=(250, 248, 240), cc=False)
+        part("PennantTip%d" % sx, "Block", (0.354, 0.354, 0.05), (px, 0, 2.75), norm((1, 0, 1)), norm((-1, 0, 1)), "cloth",
+             c=(110, 170, 235), cc=False)
+    box("TopBeam", 3.9, 0.5, 0.36, 0, 0, 3.75, "marble")
+    box("TopBeamBand", 3.9, 0.54, 0.07, 0, 0, 3.7, "gold", cc=False)
+    box("LowBeam", 3.9, 0.5, 0.3, 0, 0, 0.3, "marble")
+    box("MidBar", 3.9, 0.16, 0.16, 0, 0.12, 2.2, "wood", cc=False)
+    # five wooden practice swords hanging point-down from the top beam
+    for k in range(5):
+        x = -1.4 + 0.7 * k
+        box("Grip%d" % k, 0.12, 0.12, 0.42, x, 0.12, 3.25, "wooddk", cc=False)
+        ball("Pommel%d" % k, 0.2, x, 0.12, 3.72, "blue", cc=False)
+        box("Guard%d" % k, 0.5, 0.14, 0.1, x, 0.12, 3.15, "gold", cc=False)
+        box("Blade%d" % k, 0.2, 0.06, 1.2, x, 0.12, 1.95, "wood", cc=False)
+        part("Tip%d" % k, "Block", (0.141, 0.141, 0.06), (x, 0.12, 1.95), norm((1, 0, 1)), norm((-1, 0, 1)), "wood", cc=False)
+    # two round shields leaning in front, white with blue stripes, gold rim + boss, wooden back
+    for k, x in enumerate((-0.9, 0.9)):
+        c = (x, 0.55, 1.0)
+        nrm = norm((0.0, 1.0, 0.25))
+        stripes_disc("Shield%d" % k, 1.5, 0.06, c, nrm, ((250, 248, 240), (110, 170, 235)))
+        part("ShieldBack%d" % k, "Cylinder", (0.12, 1.5, 1.5), vadd(c, vmul(nrm, -0.09)), nrm, UP, "wood")
+        ring("ShieldRim%d" % k, 1.6, 1.42, 0.14, c[0], c[1], c[2], "gold", axis=nrm, cc=False)
+        ball("ShieldBoss%d" % k, 0.36, *vadd(c, vmul(nrm, 0.05)), "gold", cc=False)
+
+
+@kit("Town_Halo_Fountain3", 12.85, "art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png",
+     note="keep the model name Town_Halo_Fountain3: FountainFx draws the water by that name (fractions of 16 x 16 x 12.85)")
+def fountain3():
+    H = 12.85
+    # basin wall (two tiers + coping) round the pool: outer d 16, inner d 14.56 (FountainFx pool R 0.45 x 16)
+    ring("WallLo", 16.0, 14.4, 0.9, 0, 0, 0.45, "marble")
+    ring("WallBand", 15.7, 14.5, 0.14, 0, 0, 0.97, "gold")
+    ring("WallHi", 15.5, 14.56, 1.0, 0, 0, 1.54, "marble")
+    ring("Coping", 15.8, 14.4, 0.3, 0, 0, 2.19, "marble")
+    cyl("PoolFloor", 14.6, 0.3, 0, 0, 0, "marble")
+    cyl("Water", 14.56, 0.06, 0, 0, 2.06, "water", cc=False)
+    for k in range(4):
+        a = math.radians(45 + 90 * k)
+        x, y = 7.55 * math.cos(a), 7.55 * math.sin(a)
+        rot = math.degrees(a) + 90
+        box("Pier%d" % k, 1.6, 1.6, 2.7, x, y, 0.0, "marble", rot=rot)
+        box("PierBand%d" % k, 1.66, 1.66, 0.1, x, y, 2.6, "gold", rot=rot, cc=False)
+        box("PierCap%d" % k, 1.8, 1.8, 0.2, x, y, 2.7, "marble", rot=rot)
+        out = (math.cos(a), math.sin(a), 0.0)
+        plate("PierPlate%d" % k, 0.45, 0.8, 0.05, vadd((x, y, 1.35), vmul(out, 0.8)), out, "gold")
+        gold_ball("PierBall%d" % k, 0.95, x, y, 2.9)
+    # centre: pedestal, middle bowl (water 0.53 H, rim R 0.25 x 16), stem, top bowl (water 0.75 H, rim R 0.15 x 16), finial
+    cyl("PedFoot", 2.8, 0.5, 0, 0, 0.3, "marble")
+    cyl("Ped", 2.1, 3.3, 0, 0, 0.8, "marble")
+    cyl("PedCollar", 2.4, 0.35, 0, 0, 3.6, "gold")
+    cyl("Stem1", 1.5, 1.2, 0, 0, 3.9, "marble")
+    ym = 0.53 * H + 0.08
+    cap_bowl("BowlMid", 8.0, 2.3, ym, m="marble")
+    ring("BowlMidBand", 8.1, 7.0, 0.45, 0, 0, ym - 0.45, "gold", cc=False)
+    ring("BowlMidRim", 8.15, 7.3, 0.18, 0, 0, ym + 0.02, "marble")
+    cyl("BowlMidWater", 7.3, 0.04, 0, 0, ym - 0.02, "water", cc=False)
+    cyl("Stem2", 1.0, 1.6, 0, 0, ym, "marble")
+    cyl("Stem2Collar", 1.3, 0.3, 0, 0, ym + 0.4, "gold")
+    yt = 0.75 * H + 0.06
+    cap_bowl("BowlTop", 4.8, 1.4, yt, m="marble")
+    ring("BowlTopBand", 4.88, 4.1, 0.3, 0, 0, yt - 0.3, "gold", cc=False)
+    ring("BowlTopRim", 4.9, 4.3, 0.14, 0, 0, yt + 0.02, "marble")
+    cyl("BowlTopWater", 4.3, 0.04, 0, 0, yt - 0.02, "water", cc=False)
+    cyl("Spout", 0.75, 0.75, 0, 0, yt, "marble")
+    cyl("SpoutCollar", 0.9, 0.2, 0, 0, yt + 0.55, "gold")
+    ball("TopBall", 1.3, 0, 0, 0.85 * H, "gold", cc=False)
+    spike("TopSpike", 0, 0, 0.85 * H + 0.55, H - 0.85 * H - 0.55, 0.36)
+
+
+# ---------------------------------------------------------------- kits: chunk 4 = (가+나) bodies (the plant / bread / veg on top is a
+# Tripo piece; a body kit is named <Kit>__Body so halo_props_place.py does not swap it in before the plant is added)
+def octa(n, w, h, x, y, z0, m="marble", **kw):
+    """Regular octagonal prism, flat-to-flat w, faces toward 0 / 45 / 90 ... deg (box AND the box turned 45 deg)."""
+    other = cut(box, n + "_r", w, w, h + 0.02, x, y, z0 - 0.01, m, rot=45)
+    return box(n, w, w, h, x, y, z0, m, ops=[("and", [other])], **kw)
+
+
+def soil(n, d, x, y, z, shape="round", m="soil"):
+    """Soil / moss top a little under the rim (the Tripo plant stands on it)."""
+    if shape == "round":
+        cyl(n, d, 0.06, x, y, z - 0.06, m, cc=False)
+    elif shape == "oct":
+        octa(n, d, 0.06, x, y, z - 0.06, m, cc=False)
+    else:
+        box(n, d[0], d[1], 0.06, x, y, z - 0.06, m, cc=False)
+
+
+def foot(n, d, h, x=0.0, y=0.0, z0=0.0):
+    """Round gold-ringed foot of a vase / bowl. Returns the top z."""
+    cyl(n + "Gold", d + 0.12, 0.12, x, y, z0, "gold")
+    cyl(n, d, h, x, y, z0 + 0.12, "marble")
+    cyl(n + "Ring", d * 0.8, 0.1, x, y, z0 + 0.12 + h, "gold", cc=False)
+    return z0 + 0.22 + h
+
+
+def round_inlays(n, r, z, count, w, h, kind="arch", a0=0.0, fr=0.05):
+    for k in range(count):
+        nrm = hdir(a0 + 360.0 / count * k)
+        inlay("%s%d" % (n, k), vadd((0, 0, z), vmul(nrm, r * 0.97)), nrm, w, h, kind, fr=fr)
+
+
+@kit("HaloFlowerPotHQ_Daisy__Body", 1.65, "art/out/s2/halo/props4/HaloProp4_PotDaisy_front.png")
+def pot_daisy():
+    w = 2.7
+    octa("BandLo", w + 0.12, 0.16, 0, 0, 0, "gold")
+    octa("Body", w, 1.26, 0, 0, 0.16)
+    octa("Rim", w + 0.1, 0.12, 0, 0, 1.42, "gold")
+    octa("Lip", w + 0.2, 0.1, 0, 0, 1.54)
+    side = w * math.tan(math.radians(22.5))
+    for k in range(8):
+        nrm = hdir(45 * k)
+        frame_panel("Panel%d_" % k, vadd((0, 0, 0.8), vmul(nrm, w / 2)), nrm, side * 0.6, 0.72, fr=0.05)
+        a = math.radians(22.5 + 45 * k)
+        rc = (w / 2) / math.cos(math.radians(22.5))
+        ball("Corner%d" % k, 0.24, rc * math.sin(a), rc * math.cos(a), 1.74, "gold", cc=False)
+    soil("Soil", w - 0.1, 0, 0, 1.62, "oct")
+
+
+@kit("HaloFlowerPotHQ_Tulip__Body", 1.55, "art/out/s2/halo/props4/HaloProp4_PotTulip_front.png")
+def pot_tulip():
+    w = 2.3
+    box("Band", w + 0.1, w + 0.1, 0.14, 0, 0, 0, "gold")
+    box("Body", w, w, 1.26, 0, 0, 0.14)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (w / 2 - 0.15), sy * (w / 2 - 0.15)
+            box("Post%d%d" % (sx, sy), 0.4, 0.4, 1.4, x, y, 0.0)
+            gold_ball("PostBall%d%d" % (sx, sy), 0.26, x, y, 1.4, neck=False)
+    for k, f in enumerate(FACES):
+        frame_panel("Panel%d_" % k, vadd((0, 0, 0.75), vmul(f, w / 2)), f, w * 0.55, 0.7, fr=0.05)
+        for sxp in (-1, 1):
+            X, _ = face_axes(f)
+            plate("Strip%d%d" % (k, sxp), 0.08, 1.0, 0.04, vadd((0, 0, 0.72), vmul(f, w / 2 + 0.05), vmul(X, sxp * (w / 2 - 0.15))), f, "gold")
+    box("Rim", w + 0.06, w + 0.06, 0.1, 0, 0, 1.4, "marble")
+    soil("Soil", (w - 0.3, w - 0.3), 0, 0, 1.5, "box")
+
+
+@kit("HaloFlowerPotHQ_Sunflower__Body", 1.4, "art/out/s2/halo/props4/HaloProp4_PotSunflower_front.png")
+def pot_sunflower():
+    cyl("Lo", 1.85, 0.5, 0, 0, 0)
+    cyl("Hi", 2.0, 0.85, 0, 0, 0.5)
+    ring("Band0", 1.97, 1.7, 0.16, 0, 0, 0.18, "gold")
+    ring("Band1", 2.12, 1.8, 0.18, 0, 0, 1.05, "gold")
+    ring("Lip", 2.08, 1.7, 0.1, 0, 0, 1.38)
+    for k in range(10):                                     # stave seams
+        nrm = hdir(36 * k)
+        plate("Seam%d" % k, 0.03, 0.55, 0.02, vadd((0, 0, 0.62), vmul(nrm, 0.99)), nrm, "marble", c=(232, 220, 196))
+    soil("Soil", 1.9, 0, 0, 1.38)
+
+
+@kit("HaloFlowerPotHQ_Rose__Body", 1.5, "art/out/s2/halo/props4/HaloProp4_PotRose_front.png")
+def pot_rose():
+    z = foot("Foot", 1.1, 0.25)
+    cyl("Stem", 0.8, 0.25, 0, 0, z, "marble")
+    cap_bowl("Bowl", 3.0, 0.95, 1.45)
+    ring("Rim", 3.1, 2.75, 0.14, 0, 0, 1.45, "gold")
+    soil("Soil", 2.8, 0, 0, 1.44)
+
+
+@kit("HaloFlowerPotHQ_Lavender__Body", 2.3, "art/out/s2/halo/props4/HaloProp4_PotLavender_front.png")
+def pot_lavender():
+    z = foot("Foot", 1.0, 0.28)
+    cyl("Stem", 0.7, 0.2, 0, 0, z, "marble")
+    bc = z + 0.2 + 0.72
+    ball("Bulb", 1.6, 0, 0, bc, "marble")
+    for k, ax in enumerate((EX, EY)):
+        ring("Rib%d" % k, 1.63, 1.55, 0.06, 0, 0, bc, "gold", axis=ax, cc=False)
+    cyl("Neck", 1.0, 0.38, 0, 0, bc + 0.6, "marble")
+    ring("Lip", 1.24, 0.9, 0.14, 0, 0, bc + 1.0, "gold")
+    soil("Soil", 0.92, 0, 0, bc + 0.98)
+
+
+@kit("HaloVar4_PotFlowers_A__Body", 1.75, "art/out/s2/halo/variants4/HaloVar4_PotFlowers_A_HQ_src.png")
+def potflowers_a():
+    z = foot("Foot", 1.25, 0.3)
+    cyl("Stem", 0.7, 0.25, 0, 0, z, "marble")
+    cap_bowl("Bowl", 2.5, 1.05, 1.68)
+    ring("Rim", 2.6, 2.25, 0.16, 0, 0, 1.66, "gold")
+    soil("Soil", 2.3, 0, 0, 1.66)
+
+
+@kit("HaloVar4_PotFlowers_C__Body", 2.1, "art/out/s2/halo/variants4/HaloVar4_PotFlowers_C_HQ_src.png")
+def potflowers_c():
+    z = foot("Foot", 1.0, 0.3)
+    cyl("Stem", 0.55, 0.3, 0, 0, z, "marble")
+    ring("Knot", 0.75, 0.5, 0.14, 0, 0, z + 0.2, "gold", cc=False)
+    cap_bowl("Bowl", 1.7, 0.85, 1.55)
+    cyl("Upper", 1.7, 0.4, 0, 0, 1.55)
+    ring("Rim", 1.86, 1.5, 0.14, 0, 0, 1.98, "gold")
+    for k in range(6):
+        nrm = hdir(30 + 60 * k)
+        plate("Rib%d" % k, 0.07, 0.5, 0.04, vadd((0, 0, 1.68), vmul(nrm, 0.85)), nrm, "gold")
+    soil("Soil", 1.55, 0, 0, 1.96)
+
+
+@kit("HaloVar4_PotFlowers_D__Body", 1.4, "art/out/s2/halo/variants4/HaloVar4_PotFlowers_D_HQ_src.png")
+def potflowers_d():
+    z = foot("Foot", 1.6, 0.25)
+    cap_bowl("Bowl", 3.2, 0.85, 1.32)
+    ring("Rim", 3.3, 2.95, 0.16, 0, 0, 1.3, "gold")
+    soil("Soil", 3.0, 0, 0, 1.3)
+
+
+@kit("HaloVar3_PotFlowers_E__Body", 1.95, "art/out/s2/halo/variants/HaloVar3_PotFlowers_E_HQ_src.png")
+def potflowers_e():
+    z = foot("Foot", 1.35, 0.4)
+    cyl("Stem", 0.9, 0.2, 0, 0, z, "marble")
+    cap_bowl("Bowl", 2.6, 0.75, 1.4)
+    cyl("Band", 2.6, 0.45, 0, 0, 1.4)
+    round_inlays("Win", 1.3, 1.62, 6, 0.16, 0.26, "arch", a0=0, fr=0.04)
+    ring("Rim", 2.72, 2.35, 0.16, 0, 0, 1.9, "gold")
+    soil("Soil", 2.4, 0, 0, 1.88)
+
+
+@kit("HaloVar3_PotFlowers_F__Body", 2.45, "art/out/s2/halo/variants/HaloVar3_PotFlowers_F_HQ_src.png")
+def potflowers_f():
+    cyl("Base", 1.5, 0.3, 0, 0, 0)
+    cyl("BaseGold", 1.6, 0.08, 0, 0, 0.3, "gold")
+    cyl("Stem", 0.55, 0.45, 0, 0, 0.38)
+    ball("Knot", 0.62, 0, 0, 0.62, "marble")
+    ring("KnotRing", 0.7, 0.5, 0.1, 0, 0, 0.82, "gold", cc=False)
+    cap_bowl("Bowl", 1.7, 0.7, 1.6)
+    cyl("Upper", 1.7, 0.7, 0, 0, 1.6)
+    round_inlays("Win", 0.85, 1.95, 4, 0.18, 0.4, "arch", a0=0, fr=0.04)
+    ring("Rim", 1.86, 1.5, 0.14, 0, 0, 2.33, "gold")
+    soil("Soil", 1.55, 0, 0, 2.3)
+
+
+@kit("HaloVar4_Planter_A__Body", 2.75, "art/out/s2/halo/variants4/HaloVar4_Planter_A_HQ_src.png")
+def planter_a():
+    w = 4.2
+    box("Band", w + 0.14, w + 0.14, 0.16, 0, 0, 0, "gold")
+    box("Body", w, w, 2.0, 0, 0, 0.16)
+    box("Rim", w + 0.12, w + 0.12, 0.12, 0, 0, 2.16, "gold")
+    for k, f in enumerate(FACES):
+        frame_panel("Panel%d_" % k, vadd((0, 0, 1.15), vmul(f, w / 2)), f, w * 0.62, 1.2, fr=0.07)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (w / 2 - 0.2), sy * (w / 2 - 0.2)
+            box("Post%d%d" % (sx, sy), 0.62, 0.62, 2.4, x, y, 0.0)
+            box("PostCap%d%d" % (sx, sy), 0.72, 0.72, 0.12, x, y, 2.4, "gold")
+            gold_ball("PostBall%d%d" % (sx, sy), 0.52, x, y, 2.52, neck=False)
+    soil("Soil", (w - 0.4, w - 0.4), 0, 0, 2.22, "box")
+
+
+@kit("HaloVar4_Planter_D__Body", 1.8, "art/out/s2/halo/variants4/HaloVar4_Planter_D_HQ_src.png")
+def planter_d():
+    w = 2.9
+    octa("Band", w + 0.14, 0.16, 0, 0, 0, "gold")
+    octa("Body", w, 1.4, 0, 0, 0.16)
+    octa("Rim", w + 0.12, 0.14, 0, 0, 1.56, "gold")
+    side = w * math.tan(math.radians(22.5))
+    for k in range(8):
+        nrm = hdir(45 * k)
+        frame_panel("Panel%d_" % k, vadd((0, 0, 0.86), vmul(nrm, w / 2)), nrm, side * 0.6, 0.8, fr=0.05)
+    soil("Soil", w - 0.2, 0, 0, 1.68, "oct")
+
+
+@kit("HaloVar3_Planter_E__Body", 2.9, "art/out/s2/halo/variants/HaloVar3_Planter_E_HQ_src.png")
+def planter_e():
+    W, D = 5.6, 3.0
+    box("Band", W + 0.12, D + 0.12, 0.14, 0, 0, 0, "gold")
+    box("Lower", W, D, 1.3, 0, 0, 0.14)
+    box("LowerRim", W + 0.1, D + 0.1, 0.12, 0, 0, 1.44, "gold")
+    for k, u in enumerate((-1.7, -0.6, 0.6, 1.7)):
+        inlay("WinF%d" % k, (u, D / 2, 0.8), EY, 0.18, 0.4, "arch", fr=0.04)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (W / 2 - 0.25), sy * (D / 2 - 0.25)
+            box("Post%d%d" % (sx, sy), 0.6, 0.6, 1.8, x, y, 0.0)
+            inlay("PostWin%d%d" % (sx, sy), (x, y + sy * 0.3, 0.95), (0, sy, 0), 0.14, 0.4, "arch", fr=0.035)
+            onion("PostDome%d%d" % (sx, sy), 0.5, x, y, 1.8, tip=0.22)
+    soil("SoilLo", (W - 0.6, D - 0.5), 0, 0, 1.56, "box")
+    # upper tier at the back
+    box("Upper", 3.4, 1.6, 0.95, 0, -0.55, 1.56)
+    box("UpperRim", 3.5, 1.7, 0.1, 0, -0.55, 2.5, "gold")
+    for sx in (-1, 1):
+        box("UpPost%d" % sx, 0.5, 0.5, 1.3, sx * 1.6, -0.55, 1.56)
+        onion("UpDome%d" % sx, 0.45, sx * 1.6, -0.55, 2.86, tip=0.2)
+    soil("SoilHi", (3.0, 1.2), 0, -0.55, 2.6, "box")
+
+
+def tree_planter(d, h):
+    cyl("BandLo", d + 0.12, 0.16, 0, 0, 0, "gold")
+    cyl("Body", d, h - 0.3, 0, 0, 0.16)
+    round_inlays("Win", d / 2, h * 0.5, 6, 0.18, 0.38, "arch", a0=0, fr=0.04)
+    ring("BandHi", d + 0.14, d - 0.3, 0.16, 0, 0, h - 0.14, "gold")
+    soil("Grass", d - 0.25, 0, 0, h - 0.04, m="leaf")
+
+
+@kit("HaloVar3_RoundTree_E__Body", 1.3, "art/out/s2/halo/props4/HaloProp4_TreeE_front.png")
+def tree_e_body():
+    tree_planter(3.4, 1.3)
+
+
+@kit("HaloVar3_RoundTree_F__Body", 1.35, "art/out/s2/halo/props4/HaloProp4_TreeF_front.png")
+def tree_f_body():
+    tree_planter(3.7, 1.35)
+
+
+@kit("HaloVar3_RoundTree_G__Body", 1.25, "art/out/s2/halo/props4/HaloProp4_TreeG_front.png")
+def tree_g_body():
+    tree_planter(3.3, 1.25)
+
+
+@kit("HaloVar3_Topiary_C__Body", 1.7, "art/out/s2/halo/props4/HaloProp4_TopC_front.png")
+def topiary_c_body():
+    z = foot("Foot", 0.95, 0.22)
+    cap_bowl("Bowl", 1.6, 0.45, 0.95)
+    cyl("Wall", 1.6, 0.6, 0, 0, 0.95)
+    round_inlays("Win", 0.8, 1.22, 4, 0.14, 0.3, "arch", a0=0, fr=0.035)
+    ring("Rim", 1.72, 1.4, 0.14, 0, 0, 1.6, "gold")
+    soil("Moss", 1.45, 0, 0, 1.6, m="leaf")
+
+
+@kit("HaloVar3_Topiary_D__Body", 1.75, "art/out/s2/halo/props4/HaloProp4_TopD_front.png")
+def topiary_d_body():
+    w = 2.0
+    octa("Band", w + 0.12, 0.16, 0, 0, 0, "gold")
+    octa("Body", w, 1.4, 0, 0, 0.16)
+    octa("Rim", w + 0.12, 0.14, 0, 0, 1.56, "gold")
+    side = w * math.tan(math.radians(22.5))
+    for k in range(8):
+        nrm = hdir(45 * k)
+        inlay("Win%d" % k, vadd((0, 0, 0.86), vmul(nrm, w / 2)), nrm, side * 0.35, 0.5, "arch", fr=0.035)
+    soil("Moss", w - 0.2, 0, 0, 1.68, "oct", m="leaf")
+
+
+@kit("HaloVar3_Topiary_E__Body", 3.0, "art/out/s2/halo/props4/HaloProp4_TopE_front.png")
+def topiary_e_body():
+    z = foot("Foot", 1.4, 0.45)
+    cap_bowl("Bowl", 3.4, 1.3, 2.35)
+    cyl("Wall", 3.4, 0.45, 0, 0, 2.35)
+    round_inlays("Win", 1.7, 2.0, 4, 0.22, 0.45, "arch", a0=0, fr=0.045)
+    ring("Rim", 3.55, 3.1, 0.18, 0, 0, 2.8, "gold")
+    for k in range(4):
+        a = math.radians(45 + 90 * k)
+        onion("RimDome%d" % k, 0.42, 1.62 * math.sin(a), 1.62 * math.cos(a), 2.89, tip=0.2)
+    soil("Moss", 3.1, 0, 0, 2.86, m="leaf")
+
+
+@kit("HaloReasonHQ_BenchB__Body", 3.3, "art/out/s2/halo/props4/HaloProp4_BenchB_front.png")
+def bench_b_body():
+    # round planter at the viewer's left end (+x), armrest end at -x
+    px = 2.45
+    cyl("PlanterBand", 1.92, 0.14, px, -0.1, 0, "gold")
+    cyl("Planter", 1.8, 1.55, px, -0.1, 0.14)
+    round_inlays_at = [(px + 0.9 * math.sin(math.radians(a)), -0.1 + 0.9 * math.cos(math.radians(a)), a) for a in (0, 90, 180, 270)]
+    for k, (x, y, a) in enumerate(round_inlays_at):
+        inlay("PlanterWin%d" % k, (x, y, 0.8), hdir(a), 0.2, 0.45, "arch", fr=0.04)
+    ring("PlanterRim", 1.94, 1.6, 0.14, px, -0.1, 1.62, "gold")
+    soil("PlanterSoil", 1.62, px, -0.1, 1.68)
+    x = -2.45
+    pedestal("Leg", 1.1, 1.7, 1.45, x, 0.0)
+    box("LegTop", 1.18, 1.78, 0.1, x, 0.0, 1.45, "gold")
+    inlay("LegWin", (x, 0.85, 0.85), EY, 0.34, 0.62, "arch")
+    inlay("LegWinS", (x - 0.55, 0.0, 0.85), (-1, 0, 0), 0.34, 0.62, "arch")
+    pedestal("Post", 0.85, 0.8, 1.45, x, -0.48, 1.55, band=False, plinth=0.12)
+    z = cap("PostCap", 0.85, 0.8, x, -0.48, 3.0)
+    gold_ball("PostBall", 0.62, x, -0.48, z)
+    # inner post beside the planter (holds the seat and back)
+    pedestal("PostP", 0.6, 0.8, 2.75, px - 1.15, -0.48, 0.0, plinth=0.12)
+    z = cap("PostPCap", 0.6, 0.8, px - 1.15, -0.48, 2.75)
+    gold_ball("PostPBall", 0.5, px - 1.15, -0.48, z)
+    box("SeatLeg", 0.5, 1.3, 1.39, px - 1.15, 0.2, 0.0)
+    planks("Seat", 3.1, 1.4, 3, 0.16, -0.55, 0.78, -0.55, 1.55)
+    for k in range(3):
+        zc = 1.85 + k * 0.36
+        part("Back%d" % k, "Block", (3.1, 0.3, 0.14), (-0.55, -0.62 - (zc - 1.6) * 0.14, zc), EX, norm((0, -0.14, 1)), "wood")
+
+
+@kit("HaloReasonHQ_VegGarden__Body", 1.15, "art/out/s2/halo/props4/HaloProp4_ReasonVeg_front.png")
+def veg_body():
+    W, D, H, t = 7.6, 4.6, 1.05, 0.4
+    for k, (w, d, x, y) in enumerate(((W, t, 0, D / 2 - t / 2), (W, t, 0, -D / 2 + t / 2), (t, D - 2 * t, W / 2 - t / 2, 0), (t, D - 2 * t, -W / 2 + t / 2, 0))):
+        box("Wall%d" % k, w, d, H, x, y, 0, "mblock")
+    box("RimF", W + 0.06, t + 0.06, 0.1, 0, D / 2 - t / 2, H, "gold")
+    box("RimB", W + 0.06, t + 0.06, 0.1, 0, -D / 2 + t / 2, H, "gold")
+    box("RimL", t + 0.06, D - 2 * t, 0.1, W / 2 - t / 2, 0, H, "gold")
+    box("RimR", t + 0.06, D - 2 * t, 0.1, -W / 2 + t / 2, 0, H, "gold")
+    box("Soil", W - 2 * t, D - 2 * t, H - 0.15, 0, 0, 0, "soil", cc=False)
+    for k, u in enumerate((-2.6, -0.9, 0.9, 2.6)):
+        inlay("WinF%d" % k, (u, D / 2, 0.52), EY, 0.18, 0.42, "rect", fr=0.04)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (W / 2 - 0.25), sy * (D / 2 - 0.25)
+            box("Post%d%d" % (sx, sy), 0.6, 0.6, 1.3, x, y, 0, "marble")
+            box("PostCap%d%d" % (sx, sy), 0.7, 0.7, 0.1, x, y, 1.3, "gold")
+
+
+@kit("HaloReasonHQ_BreadStand__Body", 3.7, "art/out/s2/halo/props4/HaloProp4_ReasonBread_front.png")
+def bread_body():
+    W, D = 6.6, 2.3
+    box("Plinth", W + 0.2, D + 0.2, 0.2, 0, 0, 0)
+    box("PlinthBand", W + 0.06, D + 0.06, 0.08, 0, 0, 0.2, "gold")
+    box("Counter", W, D, 1.5, 0, 0, 0.28)
+    box("CounterTop", W + 0.16, D + 0.16, 0.14, 0, 0, 1.78, "marble")
+    box("CounterGold", W + 0.1, D + 0.1, 0.08, 0, 0, 1.7, "gold")
+    frame_panel("PanelF", (0, D / 2, 1.0), EY, W * 0.7, 0.9, fr=0.07)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (W / 2 - 0.3), sy * (D / 2 - 0.3)
+            box("Post%d%d" % (sx, sy), 0.16, 0.16, 1.9, x, y, 1.92, "gold")
+            gold_ball("PostBall%d%d" % (sx, sy), 0.28, x, y, 3.82, neck=False)
+    for k, z in enumerate((2.55, 3.25)):
+        box("Shelf%d" % k, W - 0.4, D - 0.5, 0.1, 0, -0.05, z, "wood")
+        box("ShelfLip%d" % k, W - 0.4, 0.05, 0.12, 0, D / 2 - 0.3, z + 0.05, "gold", cc=False)
+    blue, white = (110, 170, 235), (250, 248, 240)
+    for k, x in enumerate((-1.4, 1.4)):
+        box("Cloth%d" % k, 1.1, 0.05, 0.9, x, D / 2 + 0.06, 1.0, "cloth", c=white, cc=False)
+        for j in range(2):
+            box("ClothS%d_%d" % (k, j), 0.2, 0.06, 0.9, x - 0.3 + 0.6 * j, D / 2 + 0.065, 1.0, "cloth", c=blue, cc=False)
+        part("ClothTip%d" % k, "Block", (0.78, 0.78, 0.05), (x, D / 2 + 0.06, 1.0), norm((1, 0, 1)), norm((-1, 0, 1)), "cloth", c=white, cc=False)
+
+
+def awning(n, W, D, z_back, z_front, y_back, y_front, count, cols=((110, 170, 235), (250, 248, 240))):
+    """Striped cloth awning sloping from (y_back, z_back) to (y_front, z_front) + a scalloped front edge."""
+    p0, p1 = (0.0, y_back, z_back), (0.0, y_front, z_front)
+    L = math.sqrt(dot(vsub(p1, p0), vsub(p1, p0)))
+    down = norm(vsub(p1, p0))
+    nrm = cross(EX, down)
+    if nrm[2] < 0:
+        nrm = vmul(nrm, -1)
+    for k in range(count):
+        x = -W / 2 + W / count * (k + 0.5)
+        c = cols[k % 2]
+        part("%s%d" % (n, k), "Block", (W / count, 0.08, L), vadd((x, 0, 0), vmul(vadd(p0, p1), 0.5)), EX, nrm, "cloth", c=c, cc=False)
+        part("%sScal%d" % (n, k), "Cylinder", (0.06, W / count, W / count), (x, y_front + 0.02, z_front), EY, UP, "cloth", c=c, cc=False)
+
+
+@kit("HaloReasonHQ_FruitStall__Body", 8.6, "art/out/s2/halo/props4/HaloProp4_ReasonFruit_front.png")
+def fruit_body():
+    W, D = 5.2, 2.8
+    box("Plinth", W + 0.2, D + 0.2, 0.25, 0, 0, 0)
+    box("Counter", W, D, 1.9, 0, 0, 0.25, "wood")
+    for k in range(3):
+        box("CounterPanel%d" % k, W / 3 - 0.2, 0.05, 1.4, -W / 3 + W / 3 * k, D / 2 + 0.02, 0.5, "woodcream", cc=False)
+    box("CounterTop", W + 0.16, D + 0.16, 0.14, 0, 0, 2.15, "marble")
+    box("CounterGold", W + 0.1, D + 0.1, 0.08, 0, 0, 2.07, "gold")
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (W / 2 - 0.25), sy * (D / 2 - 0.25)
+            box("Post%d%d" % (sx, sy), 0.5, 0.5, 8.0 if sy < 0 else 6.2, x, y, 0.0)
+            box("PostBand%d%d" % (sx, sy), 0.56, 0.56, 0.1, x, y, 2.3, "gold", cc=False)
+            ztop = 8.0 if sy < 0 else 6.2
+            box("PostCap%d%d" % (sx, sy), 0.6, 0.6, 0.12, x, y, ztop, "gold")
+            gold_ball("PostBall%d%d" % (sx, sy), 0.4, x, y, ztop + 0.12, neck=False)
+    box("BackBeam", W, 0.4, 0.4, 0, -D / 2 + 0.25, 7.6)
+    box("FrontBeam", W, 0.4, 0.4, 0, D / 2 - 0.25, 5.8)
+    awning("Awning", W + 0.4, D, 8.05, 6.0, -D / 2, D / 2 + 0.5, 7)
+    # tilted fruit crates on the counter, fruit = balls
+    fruit = ((255, 150, 40), (130, 200, 60), (225, 60, 50), (70, 90, 200))
+    for k in range(3):
+        cx = -1.6 + 1.6 * k
+        tilt = norm((0, 0.35, 1))
+        cc_ = (cx, 0.1, 2.75)
+        part("Crate%d" % k, "Block", (1.4, 0.5, 1.4), cc_, EX, tilt, "woodcream", c=(225, 190, 140))
+        top = vadd(cc_, vmul(tilt, 0.25))
+        across = cross(EX, tilt)
+        for i in range(3):
+            for j in range(3):
+                q = vadd(top, vmul(EX, -0.42 + 0.42 * i), vmul(across, -0.42 + 0.42 * j), vmul(tilt, 0.12))
+                ball("Fruit%d_%d%d" % (k, i, j), 0.42, q[0], q[1], q[2], "paint", c=fruit[(k + i + j) % len(fruit)], cc=False)
+
+
+def wheel(n, d, x, y, z, axis=EY, spokes=8):
+    ring(n + "Rim", d, d - 0.22, 0.16, x, y, z, "gold", axis=axis)
+    part(n + "Hub", "Cylinder", (0.3, 0.36, 0.36), (x, y, z), axis, UP, "gold")
+    for k in range(spokes):
+        a = math.radians(360.0 / spokes * k)
+        u = vadd(vmul(EX if abs(axis[0]) < 0.5 else EY, math.cos(a)), vmul(UP, math.sin(a)))
+        rod("%sSpoke%d" % (n, k), (x, y, z), vadd((x, y, z), vmul(u, d / 2 - 0.1)), 0.08, "wood", cc=False)
+
+
+@kit("HaloReasonHQ_FlowerCart__Body", 4.8, "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_front.png")
+def flowercart_body():
+    # wheel on +x = the viewer's left, handles to -x (2D front)
+    W, D = 4.2, 2.0
+    box("Bed", W, D, 0.2, 0, 0, 1.0, "wood")
+    for k, (w, d, x, y) in enumerate(((W, 0.14, 0, D / 2 - 0.07), (W, 0.14, 0, -D / 2 + 0.07), (0.14, D, W / 2 - 0.07, 0), (0.14, D, -W / 2 + 0.07, 0))):
+        box("Side%d" % k, w, d, 1.0, x, y, 1.2, "wood")
+    for k, x in enumerate((-1.2, 0.0, 1.2)):
+        box("PanelF%d" % k, 1.0, 0.04, 0.6, x, D / 2 + 0.02, 1.4, "blue", cc=False)
+        box("PanelFG%d" % k, 1.1, 0.03, 0.7, x, D / 2 + 0.005, 1.35, "gold", cc=False)
+    box("RimF", W + 0.06, 0.2, 0.08, 0, D / 2 - 0.07, 2.2, "gold", cc=False)
+    box("RimB", W + 0.06, 0.2, 0.08, 0, -D / 2 + 0.07, 2.2, "gold", cc=False)
+    soil("Soil", (W - 0.3, D - 0.3), 0, 0, 2.05, "box")
+    wheel("WheelF", 1.9, 1.1, D / 2 + 0.2, 0.95)
+    wheel("WheelB", 1.9, 1.1, -D / 2 - 0.2, 0.95)
+    rod("Axle", (1.1, D / 2 + 0.2, 0.95), (1.1, -D / 2 - 0.2, 0.95), 0.14, "gold", cc=False)
+    for sy in (-1, 1):
+        box("Leg%d" % sy, 0.2, 0.2, 1.0, -W / 2 + 0.3, sy * (D / 2 - 0.15), 0.0, "wood")
+        rod("Handle%d" % sy, (-W / 2, sy * 0.7, 1.35), (-W / 2 - 1.6, sy * 0.7, 1.55), 0.12, "wood")
+        ball("HandleEnd%d" % sy, 0.2, -W / 2 - 1.65, sy * 0.7, 1.56, "gold", cc=False)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            box("AwPost%d%d" % (sx, sy), 0.12, 0.12, 2.3, sx * (W / 2 - 0.2), sy * (D / 2 - 0.15), 2.2, "gold")
+    awning("Aw", W + 0.2, D, 4.7, 4.3, -D / 2 - 0.1, D / 2 + 0.2, 6)
+    gold_ball("Finial", 0.3, 0, -0.1, 4.75)
+
+
+@kit("HaloReasonHQ_PotionCrate__Body", 3.5, "art/out/s2/halo/props4/HaloProp4_ReasonPotion_front.png")
+def potion_body():
+    W, D, H = 3.6, 2.1, 1.5
+    box("Crate", W, D, H, 0.3, 0, 0, "woodcream", c=(226, 190, 140))
+    for k in range(3):
+        box("Plank%d" % k, W, 0.03, 0.04, 0.3, D / 2 + 0.01, 0.4 + 0.45 * k, "wood", cc=False)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            box("Corner%d%d" % (sx, sy), 0.2, 0.2, H + 0.02, 0.3 + sx * (W / 2 - 0.08), sy * (D / 2 - 0.08), 0, "gold", cc=False)
+    box("BandTop", W + 0.04, D + 0.04, 0.12, 0.3, 0, H - 0.16, "gold", cc=False)
+    blue, white = (110, 170, 235), (250, 248, 240)
+    box("Cloth", 1.6, 0.05, 0.9, 0.3, D / 2 + 0.06, 0.55, "cloth", c=white, cc=False)
+    for j in range(3):
+        box("ClothS%d" % j, 0.22, 0.06, 0.9, 0.3 - 0.5 + 0.5 * j, D / 2 + 0.065, 0.55, "cloth", c=blue, cc=False)
+    part("ClothTip", "Block", (1.13, 1.13, 0.05), (0.3, D / 2 + 0.06, 0.55), norm((1, 0, 1)), norm((-1, 0, 1)), "cloth", c=white, cc=False)
+    cols = ((90, 150, 245), (245, 120, 170), (90, 210, 110), (90, 220, 230), (250, 200, 80))
+    for k, (x, y, d) in enumerate(((-0.9, 0.3, 0.75), (-0.1, -0.2, 0.85), (0.7, 0.35, 0.7), (1.4, -0.25, 0.8), (0.3, 0.45, 0.6))):
+        zc = H + d / 2
+        ball("Flask%d" % k, d, x, y, zc, "glass", c=cols[k])
+        cyl("FlaskNeck%d" % k, d * 0.35, d * 0.4, x, y, zc + d * 0.4, "glass", c=cols[k], cc=False)
+        cyl("FlaskCollar%d" % k, d * 0.42, 0.06, x, y, zc + d * 0.45, "gold", cc=False)
+        cyl("Cork%d" % k, d * 0.3, 0.18, x, y, zc + d * 0.8, "wood", cc=False)
+        ball("FlaskGlow%d" % k, d * 0.7, x, y, zc - d * 0.05, "neon", c=cols[k], cc=False)
+    # sign post at the viewer's right end (-x)
+    sxp = -W / 2 - 0.1
+    pedestal("SignPost", 0.5, 0.5, 3.2, sxp, -0.4, plinth=0.2)
+    gold_ball("SignPostBall", 0.32, sxp, -0.4, 3.2, neck=False)
+    rod("SignArm", (sxp, -0.4, 2.9), (sxp - 1.0, -0.4, 2.9), 0.1, "gold", cc=False)
+    box("SignBoard", 0.08, 0.9, 0.7, sxp - 0.7, -0.4, 2.05, "paint", c=(250, 246, 236), rot=90)
+    box("SignFrame", 0.06, 1.0, 0.8, sxp - 0.7, -0.38, 2.0, "gold", rot=90, cc=False)
+
+
+@kit("NEW_Hedge__Body", 1.75, "art/out/s2/halo/kits_new/HaloKit_Hedge_b_front.png")
+def hedge_body():
+    W, D = 6.4, 1.5
+    box("Band", W + 0.12, D + 0.12, 0.14, 0, 0, 0, "gold")
+    box("Body", W, D, 1.0, 0, 0, 0.14)
+    box("Rim", W + 0.1, D + 0.1, 0.12, 0, 0, 1.14, "gold")
+    frame_panel("PanelF", (0, D / 2, 0.64), EY, W * 0.7, 0.6, fr=0.05)
+    frame_panel("PanelB", (0, -D / 2, 0.64), (0, -1, 0), W * 0.7, 0.6, fr=0.05)
+    soil("Soil", (W - 0.3, D - 0.3), 0, 0, 1.24, "box")
+    for sx in (-1, 1):
+        x = sx * (W / 2 + 0.35)
+        box("End%d" % sx, 0.8, 0.8, 1.6, x, 0, 0)
+        box("EndBand%d" % sx, 0.86, 0.86, 0.1, x, 0, 0.12, "gold")
+        inlay("EndWin%d" % sx, (x, 0.4, 0.85), EY, 0.18, 0.5, "arch", fr=0.04)
+        z = cap("EndCap%d" % sx, 0.8, 0.8, x, 0, 1.6, t=0.12)
+        onion("EndDome%d" % sx, 0.55, x, 0, z, tip=0.25)
+
+
+@kit("NEW_Cauldron", 3.5, "art/out/s2/halo/kits_new/HaloKit_Cauldron_front.png", note="all parts (CSG pot); steam = particles outside the model")
+def cauldron():
+    cyl("Base", 3.2, 0.45, 0, 0, 0, "marble")
+    cyl("BaseTop", 3.0, 0.08, 0, 0, 0.45, "marble")
+    for k in range(8):
+        nrm = hdir(22.5 + 45 * k)
+        plate("BaseGold%d" % k, 0.35, 0.3, 0.05, vadd((0, 0, 0.22), vmul(nrm, 1.6)), nrm, "gold")
+    for k in range(3):
+        a = math.radians(90 + 120 * k)
+        box("Foot%d" % k, 0.35, 0.35, 0.5, 0.85 * math.cos(a), 0.85 * math.sin(a), 0.45, "iron", rot=math.degrees(a))
+    R, zc, zo = 1.3, 1.8, 2.6
+    top = cut(box, "PotTop", 3.0, 3.0, 2.0, 0, 0, zo, "iron")
+    inner = cut(ball, "PotIn", 2 * R - 0.24, 0, 0, zc, "iron")
+    ball("Pot", 2 * R, 0, 0, zc, "iron", ops=[("minus", [top, inner])])
+    ro = math.sqrt(R * R - (zo - zc) ** 2)
+    ring("Rim", 2 * ro + 0.24, 2 * ro - 0.18, 0.2, 0, 0, zo + 0.06, "gold")
+    zb = zc + 0.45
+    rb = math.sqrt(R * R - (zb - zc) ** 2)
+    ring("Belt", 2 * rb + 0.1, 2 * rb - 0.3, 0.16, 0, 0, zb, "gold", cc=False)
+    for k in range(6):
+        a = math.radians(60 * k)
+        ball("Stud%d" % k, 0.14, (rb + 0.04) * math.cos(a), (rb + 0.04) * math.sin(a), zb, "gold", cc=False)
+    for sx in (-1, 1):
+        ring("Handle%d" % sx, 0.6, 0.38, 0.12, sx * (R + 0.08), 0, zc + 0.35, "iron", axis=EY, cc=False)
+    cyl("Brew", 2 * ro - 0.25, 0.06, 0, 0, zo - 0.22, "neon", c=(110, 235, 200), cc=False)
+    for k, (x, y, d) in enumerate(((0.3, 0.2, 0.3), (-0.35, -0.1, 0.24), (0.05, -0.4, 0.2), (-0.2, 0.35, 0.18))):
+        ball("Bubble%d" % k, d, x, y, zo - 0.18, "glass", c=(170, 250, 220), cc=False)
+
+
 # ---------------------------------------------------------------- output
 MAT_LUA = {
     "marble": None,   # set from --marble

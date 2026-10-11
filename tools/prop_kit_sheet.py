@@ -27,6 +27,7 @@ MV = {"HaloReasonHQ_BenchA": "BenchA", "HaloReasonHQ_BenchB": "BenchB", "HaloRea
 
 
 def refs(kit):
+    kit = kit.replace("__Body", "")
     if kit in MV:
         out = []
         for v in ("front", "left", "back", "right"):
