@@ -98,6 +98,7 @@ local T = {
 	MenuNickname = "Nickname",
 	MenuWelcome = "Meet the Guide",
 	MenuItems = "Items",
+	MenuBag = "Bag", -- H-1
 	MenuMap = "Map",
 	WelcomePrevious = "Back",
 	WelcomeNext = "Next",
@@ -1559,7 +1560,8 @@ end
 BUILDERS.Menu = function(parent)
 	local entries = {
 		{ Text = T.MenuTravel, Id = "Travel" },
-		{ Text = T.MenuItems, Id = "Items" },
+		-- 게임성 검수 10/12: the menu opens the bag once it exists (one item window); the old list only without it
+		BUILDERS.Bag and { Text = T.MenuBag, Id = "Bag" } or { Text = T.MenuItems, Id = "Items" },
 		{ Text = T.MenuRebirth, Id = "Rebirth" },
 		{ Text = T.MenuClass, Id = "Class" },
 		{ Text = T.MenuShop, Id = "Shop" },
@@ -1625,7 +1627,7 @@ BUILDERS.Menu = function(parent)
 		end)
 		b.TextSize = 22
 		if id == "Rebirth" then rebirthBtn = b end
-		if id == "Items" then itemsBtn = b end
+		if id == "Items" or id == "Bag" then itemsBtn = b end
 	end
 
 	addText(parent, T.MenuAltarHint, { Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
@@ -2262,6 +2264,7 @@ ITEMS = {
 -- (+0..MaxEnhance) are kept; anything else is ignored (the server keeps unknown ids in the save, the list hides them).
 function ITEMS.OnInventory(payload)
 	if type(payload) ~= "table" then return end
+	ITEMS.Raw = payload -- H-1: the bag (BagUI) takes this copy when its own listener came too late (Panels.LastInventory)
 	local loot = Config.Loot
 	local items, enh = {}, {}
 	if type(payload.Items) == "table" then
@@ -2291,6 +2294,11 @@ function ITEMS.OnInventory(payload)
 	ITEMS.Version += 1
 	ITEMS.CheckPending()
 	if currentId == "Items" then ITEMS.Rebuild(true) end -- the blacksmith polls ITEMS.Data in its update
+end
+
+-- H-1 bag: the last "Inventory" payload as it came (BagUI validates it; nil before the first one)
+function Panels.LastInventory()
+	return ITEMS.Raw
 end
 
 -- A23-79: another window's look at the cached "Inventory" payload (KingDiary's candy jar): the count of one item id

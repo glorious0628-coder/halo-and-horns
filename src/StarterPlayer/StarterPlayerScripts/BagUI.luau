@@ -40,7 +40,6 @@ local TXT = {
 	Sorts = { Default = "Newest", Name = "Name", Grade = "Grade", Kind = "Type" },
 	Worn = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", PetGear = "Pet" }, -- one short word per slot (UiSandbox 10/12: "Pet gear" ran into "Ring")
 	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
-	Slow = "No answer yet. Try again.",
 	Attack = "Attack %s",
 	Power = "Power %s → %s",
 	PowerNow = "Power %s",
@@ -92,7 +91,7 @@ local L = {
 		Enhance = "Scroll", Transfer = "Scroll", Material = "Material" },
 	Worn = { "Weapon", "Armor", "Ring", "PetGear" },
 	GapMargin = 0.15, -- s over Config.RateLimits[remote] (the server drops a 2nd request inside it without a reply)
-	PendingTimeout = 3, -- s without an answer -> TXT.Slow
+	PendingTimeout = 3, -- s without an answer -> the request stops waiting (quietly)
 	MaxFrom = 3, -- monster names on the 'From:' line
 }
 
@@ -113,6 +112,7 @@ local S = {
 	Result = nil, ResultAt = -math.huge, -- the last scroll result Panels got (Panels.LastEnhance)
 	Shown = {}, -- [tab] = true: shown since the window opened (its new things count as seen when it is left)
 }
+local pullInventory -- (defined with the data below)
 local VIEW = {} -- the open window: Kit, Parent, Body, Grid, Detail, Bar, Tabs = { [tab] = button }, Sig
 
 ---------------------------------------------------------------------------------------------------- small helpers
@@ -227,7 +227,9 @@ function BagUI.Cells(ctx)
 	for _, item in type(qs.Order) == "table" and qs.Order or {} do
 		local def = type(qs.Items) == "table" and qs.Items[item] or nil
 		local n = math.floor(num(type(ctx.Potions) == "table" and ctx.Potions[item], 0))
-		if type(def) == "table" and def.Use == "Potion" and n >= 1 then
+		-- 게임성 검수 10/12: a quick slot potion keeps its slot at 0 (its quick slot buttons stay reachable - KO1 'Put
+		-- the potion in a quick slot' after drinking them all; Drink is off, the icon dimmed)
+		if type(def) == "table" and def.Use == "Potion" then
 			seqNew({ Key = "P:" .. item, Kind = "Potion", Id = item, Plus = 0, Count = n, Grade = "Common",
 				Name = tx(def, "Name"), Icon = def.Icon, Seq = math.floor(num(iseq["Potion" .. tostring(def.Kind)], 0)) })
 		end
@@ -453,8 +455,7 @@ function BagUI.Detail(cell, ctx)
 			if pending and pending.Kind == "Use" and not pending.Answered then
 				act(go, tx(TXT, "Checking"), false, "Free")
 			elseif ctx.Combat then
-				act(go, tx(TXT, "InFight"), false, "Free")
-				view.Status = { Text = tx(TXT, "ScrollCombat"), Color = "Bad" }
+				act(go, tx(TXT, "InFight"), false, "Free") -- the button says why (A23-130: no second line)
 			else
 				act(go, tx(TXT, go), pending == nil, "Free")
 			end
@@ -562,6 +563,15 @@ function BagUI.OnInventory(payload)
 	BagUI.Redraw()
 end
 
+-- 게임성 검수 10/12: the Inventory push can reach Panels' listener before this one is bound; take Panels' copy then
+pullInventory = function()
+	if S.Version > 0 then return end
+	local panels = C and C.Panels
+	if type(panels) ~= "table" or type(panels.LastInventory) ~= "function" then return end
+	local ok, payload = pcall(panels.LastInventory)
+	if ok and type(payload) == "table" then pcall(BagUI.OnInventory, payload) end
+end
+
 local function bind()
 	local function hook(r)
 		r.OnClientEvent:Connect(function(payload)
@@ -656,7 +666,7 @@ local function checkPending()
 		if done then
 			p.Answered, changed = true, true
 		elseif now - p.SentAt >= L.PendingTimeout then
-			S.Pending, S.Note = nil, tx(TXT, "Slow")
+			S.Pending = nil -- 게임성 검수 10/12: a refusal already got the server's toast; no second line (A23-130)
 			return true
 		end
 	end
@@ -758,7 +768,7 @@ end
 -- the corner words of a cell: count bottom-right (not at 1), +N top-left
 local function corners(box, cell)
 	local z = (tonumber(box.ZIndex) or 1) + 3
-	if cell.Count > 1 then
+	if cell.Count > 1 or (cell.Kind == "Potion" and cell.Count <= 0) then
 		label(box, tostring(cell.Count), L.Size.Count, Color3.new(1, 1, 1), { Name = "Count", AnchorPoint = Vector2.new(1, 1),
 			Position = UDim2.new(1, -4, 1, -1), Size = UDim2.new(1, -8, 0, L.Size.Count + 2), TextXAlignment = Enum.TextXAlignment.Right,
 			TextWrapped = false, ZIndex = z, Style = "Number" })
@@ -898,6 +908,10 @@ local function drawGrid(area, all, list, cols)
 			{ Text = cell.Name, Color = cell.Color })
 		box.LayoutOrder = i
 		corners(box, cell)
+		if cell.Kind == "Potion" and cell.Count <= 0 then
+			local icon = box:FindFirstChild("Icon")
+			if icon then icon.ImageTransparency = 0.55 end
+		end
 		if S.Mode then
 			if not BagUI.CellEnabled(S.Mode, cell) then
 				box.ImageTransparency = 0.55
@@ -1097,6 +1111,32 @@ function BagUI.Redraw()
 	if VIEW.Bar then drawBar(VIEW.Bar) end
 end
 
+-- the detail column again (a request answered, the fight tag, a potion's cooldown), its scroll kept; anything that
+-- changes the grid (a scroll step dropping back, the picked thing gone) redraws the whole body
+function BagUI.RedrawDetail()
+	local d = VIEW.Detail
+	if not (VIEW.Kit and d and d.Parent) then return end
+	checkPending()
+	local all = BagUI.Cells(context())
+	if validMode(S.Mode, all) ~= S.Mode then
+		BagUI.Redraw()
+		return
+	end
+	local picked = nil
+	for _, c in all do
+		if c.Key == S.Sel then picked = c end
+	end
+	if not S.Mode and (not picked or picked.Tab ~= S.Tab) then
+		BagUI.Redraw()
+		return
+	end
+	local y = d.CanvasPosition.Y
+	VIEW.Picked = picked
+	drawDetail(d, all, picked)
+	d.CanvasPosition = Vector2.new(0, y)
+	VIEW.Sig = BagUI.LiveSig(picked)
+end
+
 -- the window's content width and the grid area's height (du; not measured yet: the asked width, 0)
 function BagUI.LayoutSize()
 	local parent = VIEW.Parent
@@ -1193,6 +1233,10 @@ end
 local function build(parent, kit, arg)
 	VIEW = { Kit = kit, Parent = parent, Tabs = {} }
 	S.Shown = {}
+	pullInventory()
+	-- 게임성 검수 10/12: Panels hands every rebuild (a size change) the arg of its last Open; one arg table is applied
+	-- once, so a rebuild never jumps back to the opening tab / a cancelled scroll step
+	if arg == S.LastArg then arg = nil else S.LastArg = arg end
 	if type(arg) == "table" and table.find(L.Tabs, arg.Tab) then
 		S.Tab, S.Mode = arg.Tab, nil
 		if type(arg.Select) == "string" then S.Sel = arg.Select end
@@ -1241,7 +1285,14 @@ local function build(parent, kit, arg)
 	VIEW.Bar = bottom
 	-- data changes redraw in place (Rebuild = false: no full window rebuild)
 	kit.OnAttr(function(name)
-		if BagUI.Watch[name] then
+		if BagUI.WatchBar[name] then -- 게임성 검수 10/12: a coin picked up repaints the gold line, not the grid
+			if VIEW.BarQueued then return end
+			VIEW.BarQueued = true
+			task.defer(function()
+				VIEW.BarQueued = false
+				if VIEW.Kit == kit and VIEW.Bar then drawBar(VIEW.Bar) end
+			end)
+		elseif BagUI.Watch[name] then
 			if VIEW.Queued then return end
 			VIEW.Queued = true
 			task.defer(function()
@@ -1265,13 +1316,14 @@ local function build(parent, kit, arg)
 			changed = true
 			if S.Pending and S.Pending.Kind == "Use" then checkPending() end
 		end
-		if changed or BagUI.LiveSig(VIEW.Picked) ~= VIEW.Sig then BagUI.Redraw() end
+		if changed or BagUI.LiveSig(VIEW.Picked) ~= VIEW.Sig then BagUI.RedrawDetail() end
 	end
 end
 
 -- attributes that redraw the open bag
 BagUI.Watch = { WeaponOwnedMask = true, WeaponTier = true, WeaponEnhance = true, Level = true, Class = true, Faction = true,
-	HPPotionCount = true, MPPotionCount = true, BankGold = true, CarriedGold = true, DataLoaded = true, QuickSlots = true }
+	HPPotionCount = true, MPPotionCount = true, DataLoaded = true, QuickSlots = true }
+BagUI.WatchBar = { BankGold = true, CarriedGold = true } -- only the gold line
 
 local function cleanup()
 	local conn = VIEW.SizeConn
@@ -1310,7 +1362,9 @@ function BagUI.Init(registry)
 	}) == true
 end
 
-function BagUI.Start() end
+function BagUI.Start()
+	pullInventory()
+end
 
 -- offline tests
 BagUI._T = { TXT = TXT, L = L, S = S }

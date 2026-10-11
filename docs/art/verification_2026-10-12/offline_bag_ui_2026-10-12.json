@@ -1,5 +1,5 @@
 {
-  "checks": 130,
+  "checks": 141,
   "failed": 0,
   "mutations": [
     {
@@ -13,7 +13,37 @@
       "caught": true
     },
     {
-      "name": "empty potions show",
+      "name": "an empty potion loses its slot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a rebuild applies the open arg again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a coin redraws the whole grid",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "gold no longer watched",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a live change redraws the grid",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Panels' payload never taken",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the menu opens the old list",
       "applied": true,
       "caught": true
     },
@@ -179,6 +209,11 @@
     },
     {
       "name": "a count of 1 is written",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty potion shows no 0",
       "applied": true,
       "caught": true
     },

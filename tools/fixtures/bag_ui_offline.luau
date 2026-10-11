@@ -170,6 +170,7 @@ local BagUI = bf()
 
 local reg = {}
 local root, update = nil, nil -- the open window's body and its 0.25 s update (set when it is built)
+local openArg = nil -- the arg of the last Panels.Open (Panels hands it to every rebuild)
 local fired, rebuilds = {}, 0
 local attrFns = {}
 local buttons = {}
@@ -192,7 +193,7 @@ kit = {
 		if not root then return end
 		reg.Bag.Cleanup()
 		for _, ch in root:GetChildren() do ch:Destroy() end
-		update = reg.Bag.Build(root, kit, nil)
+		update = reg.Bag.Build(root, kit, openArg)
 	end,
 	OnAttr = function(f) table.insert(attrFns, f) end,
 }
@@ -249,6 +250,13 @@ local UIKit = {
 }
 BagUI.Init({ Panels = panels, UIKit = UIKit, Settings = Settings, QuickSlots = QuickSlots })
 local T = BagUI._T
+do -- Panels clears the built window's kit.OnAttr callbacks on cleanup (REG.CleanupBuilt)
+	local realCleanup = reg.Bag.Cleanup
+	reg.Bag.Cleanup = function()
+		table.clear(attrFns)
+		realCleanup()
+	end
+end
 local TXT = T.TXT
 
 ------------------------------------------------------------------ 0. registered
@@ -276,7 +284,8 @@ local byKey = {}
 for _, c in cells do byKey[c.Key] = c end
 check(byKey["W:1"] and byKey["W:2"] and byKey["W:4"] and not byKey["W:3"], "owned weapons (mask bits) only", "")
 check(byKey["W:2"].Equipped and byKey["W:2"].Plus == 3 and not byKey["W:1"].Equipped, "the equipped weapon and each weapon's own +N")
-check(byKey["P:HP"] and byKey["P:HP"].Count == 5 and not byKey["P:MP"], "potions with stock show, an empty kind does not")
+check(byKey["P:HP"] and byKey["P:HP"].Count == 5 and byKey["P:MP"] and byKey["P:MP"].Count == 0,
+	"every quick slot potion has its slot, an empty one at 0 (게임성 검수 10/12: its quick slots stay reachable)")
 check(not byKey["I:Nope"], "unknown item ids never show")
 check(byKey["I:Jelly"].Tab == "Material" and byKey["I:Enh70"].Tab == "Scroll" and byKey["P:HP"].Tab == "Use" and byKey["W:4"].Tab == "Gear",
 	"each kind on its tab (Gear · Use · Scrolls · Materials)")
@@ -422,7 +431,8 @@ check(action(v, "Enhance").Text == "Checking…" and not action(v, "Enhance").En
 v = detail(nil, { Mode = { Item = "Move30", From = 4, To = 1 } })
 check(action(v, "Move").Enabled and lineWith(v, "30% chance"), "transfer confirm: Move + the chance")
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 }, Combat = true })
-check(not action(v, "Enhance").Enabled and v.Status and v.Status.Color == "Bad", "a fight: the confirm is off and says why")
+check(not action(v, "Enhance").Enabled and action(v, "Enhance").Text == "In a fight" and v.Status == nil,
+	"a fight: the confirm is off and its button says why (no second line)")
 
 ------------------------------------------------------------------ 7. data
 BagUI.OnInventory({ Items = { Jelly = 12, Enh70 = 2, Bogus = 3, SlimeCore = -1 }, Enhance = { 0, 3, 0, 1 }, Seen = { Slime = true, Nope = true },
@@ -497,6 +507,13 @@ check(T.S.Mode == nil and T.S.Tab == "Scroll" and T.S.Sel == "I:Enh70", "Cancel 
 -- potions + quick slots
 find(root, "Tab_Use").OnClick()
 check(find(root, "Cell_P:HP") ~= nil and find(root, "Act_Drink") and find(root, "Quick1"), "Use: the potion with Drink + quick slots 1 2 3")
+local mpCell = find(root, "Cell_P:MP")
+check(mpCell and find(mpCell, "Count") and find(mpCell, "Count").Text == "0" and find(mpCell, "Icon").ImageTransparency > 0.3,
+	"an empty potion keeps its slot: 0, dimmed (its quick slots stay reachable)")
+mpCell.OnClick()
+check(find(root, "Act_Drink") and not find(root, "Act_Drink").Enabled and find(root, "Quick1") ~= nil,
+	"the empty potion: Drink off, quick slot buttons there")
+find(root, "Cell_P:HP").OnClick()
 local before = #fired
 find(root, "Act_Drink").OnClick()
 check(#fired == before + 1 and fired[#fired][1] == "UsePotion" and fired[#fired][2] == "HP", "Drink sends UsePotion(HP)")
@@ -518,6 +535,11 @@ check(settings.BagWide == true and rebuilds == rb + 1, "the size button saves wi
 check(find(root, "Size"):FindFirstChild("Glyph").Image == "GlyphShrink", "wide shows the shrink glyph")
 settings.BagWide = false
 check(find(root, "Gold").Text == "1,234", "the gold line = bank + carried", find(root, "Gold").Text)
+attrs.BankGold = 2000
+local g0 = find(root, "Grid")
+for _, f in attrFns do f("BankGold") end
+check(find(root, "Gold").Text == "2,034" and find(root, "Grid") == g0, "a coin repaints the gold line only, not the grid",
+	find(root, "Gold").Text)
 -- new things: a tab count, the dot, seen when the tab is left
 BagUI.OnInventory({ Items = { Jelly = 14, Enh70 = 2, Bone = 1 }, Enhance = { 0, 3, 0, 1 },
 	ItemSeq = { Jelly = 12, Enh70 = 6, PotionHP = 3, Bone = 13 }, WeaponSeq = { 1, 4, 0, 2 } })
@@ -553,13 +575,31 @@ reg.Bag.Cleanup()
 for _, ch in root:GetChildren() do ch:Destroy() end
 update = reg.Bag.Build(root, kit, { Use = "Jelly" })
 check(T.S.Mode == nil, "arg.Use with a material is ignored")
+-- the open arg is used once: a rebuild (size change) keeps the tab I moved to
+openArg = { Tab = "Use" }
+reg.Bag.Cleanup()
+for _, ch in root:GetChildren() do ch:Destroy() end
+update = reg.Bag.Build(root, kit, openArg)
+check(T.S.Tab == "Use", "opened on its arg's tab")
+find(root, "Tab_Gear").OnClick()
+kit.Rebuild()
+check(T.S.Tab == "Gear", "a rebuild with the same open arg keeps the tab I moved to (게임성 검수 10/12)", T.S.Tab)
+openArg = nil
 -- a fight flips the buttons in place
 find(root, "Tab_Gear").OnClick()
 find(root, "Cell_W:1").OnClick()
 attrs.InCombatUntil = NOW + 5
+local gridBefore = find(root, "Grid")
 update()
 check(find(root, "Act_Equip").Text == "In a fight", "the 0.25 s update shows the fight tag")
+check(find(root, "Grid") == gridBefore, "a live change repaints the detail only (the grid stays)")
 attrs.InCombatUntil = 0
+update()
+find(root, "Act_Equip").OnClick()
+check(T.S.Pending ~= nil, "an equip waits for its answer")
+CLOCK += 4
+update()
+check(T.S.Pending == nil and textIn(root, "No answer") == nil, "no answer: it stops waiting quietly (the server's toast says why)")
 -- an item with no icon art yet: its name's first letter in its colour, not a blank slot (UiSandbox 10/12)
 BagUI.OnInventory({ Items = { Jelly = 14, Enh70 = 2, Bone = 1, Petal = 6 }, Enhance = { 0, 3, 0, 1 },
 	ItemSeq = { Jelly = 12, Enh70 = 6, PotionHP = 3, Bone = 13, Petal = 14 }, WeaponSeq = { 1, 4, 0, 2 } })
@@ -569,5 +609,17 @@ check(petal and find(petal, "Letter") and find(petal, "Letter").Text == "F", "no
 	petal and find(petal, "Letter") and find(petal, "Letter").Text)
 local jelly = find(root, "Cell_I:Jelly")
 check(jelly and find(jelly, "Letter") == nil, "an item with art shows its icon, no letter")
+
+-- a payload that reached Panels before this module bound its listener: taken from Panels (LastInventory)
+local bf2 = assert(loadstring(BAG_SOURCE, "=BagUI2"))
+setfenv(bf2, env)
+local Bag2 = bf2()
+local reg2 = {}
+Bag2.Init({ Panels = { Register = function(id, opts) reg2[id] = opts return true end,
+	LastInventory = function() return { Items = { Jelly = 7 }, Enhance = {}, ItemSeq = { Jelly = 1 }, WeaponSeq = {} } end },
+	UIKit = UIKit, Settings = Settings, QuickSlots = QuickSlots })
+local root2 = newObj("Frame", { Name = "FixedBody2", AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540) })
+reg2.Bag.Build(root2, kit, { Tab = "Material" })
+check(find(root2, "Cell_I:Jelly") ~= nil, "a payload Panels got first is taken from Panels (LastInventory)")
 
 print(string.format("BAG_UI_SUMMARY checks=%d failed=%d", checks, failed))
