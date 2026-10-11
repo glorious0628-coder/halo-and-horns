@@ -28,7 +28,7 @@ Config.Goose.Egg = {
 }
 ```
 
-## 3. 땅의 알 — `workspace.GooseEggs` (Folder, 서버가 만들고 비움)
+## 3. 땅의 알 — `workspace.Effects.GooseEggs` (Folder, 서버가 만들고 비움; `Util.GetFolder(workspace, "Effects")` 아래)
 - 땅에 있는 알 하나 = 고정 부품 하나(Anchored, CanCollide·CanQuery·CanTouch 끔, PointLight·Highlight 없음). 부품 CFrame =
   **내려앉을 자리**(땅 위). 화면은 이 부품을 `LocalTransparencyModifier = 1`로 숨기고 자기 모형을 그려요.
 - 속성:
@@ -60,7 +60,7 @@ Config.Goose.Egg = {
 - 뜻이 바뀜: `GooseRescue` = 빛(둥지) 점수, `GoosePoach` = 뿔(수레) 점수 — Eggs 모드에서는 **정수**.
 - 새로: `GooseOvertimeUntil`(왕관 알 연장전이 끝나는 시각, 없으면 0). 화면은 이때 막대 시계를 왕관 + 금색으로 바꾸고 째깍 소리는 이 시각 기준.
 
-## 6. 거위 모형 — `workspace.GoldenGoose` 속성
+## 6. 거위 모형 — `workspace.Effects.GoldenGoose` 속성 (지금 자리 그대로)
 - `Act` = "Walk" / "Nap" / "Alert" / "Chase" / "Lay", `ActUntil` = 그 행동이 끝나는 시각. 화면: Nap = Zzz 아이콘·코골이, Alert = "!"
   아이콘·꽥(쫓기 1초 전), Chase = 쫓는 동안. 늦게 온 사람도 보이게 속성으로 둬요.
 - 머리 위 "Golden Goose" 글(`GooseLabel`)은 지워요(설계 '지울 것').
