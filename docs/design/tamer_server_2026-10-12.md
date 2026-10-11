@@ -3,8 +3,9 @@
 근거: `crafting_market_2026-10-11.md` §4 조련사(연구력 = 조련사가 잡은 몬스터 가족마다 1점, 단계 50/150/400/1000/2500, 소환 = 연구 2단계 + 재료 → 그 가족 펫·능력치 게임 안 랜덤·로벅스 없음, 베타는 3D가 있는 슬라임 가족만, Pet Treat = 펫 XP +20·거래 가능·펫은 못 팖), A23-115·A23-127(조련사 = 펫 쪽)·A23-133(펫 장비도 장인 — ⑥)·A23-139(제작 XP 패스 2배·장인만), `save_v4_tables`(Research {Pts, Sum}, Pets.List[uid].Roll {Spd 5..10}), `craft_server_2026-10-12.md`(레시피 표·망치질). 스위치: Config.Features.Crafting(소환·간식 레시피)·새 `Config.Features.Research`(연구 세기, 장인 길드와 같이 켬).
 
 ## 1. 연구력 (TamerService, 새 서버 모듈 — 개발 3)
-- 조련사(`Config.IsTamer(class, faction)`)가 돈 받는 처치(`MonsterKilled`, MinorShare 아님)마다 `Research.Pts[가족] += 1`, 가족 = `Config.QuestKind(kind)`(슬라임·왕자·꽃슬라임·킹 = Slime 가족). 자동 전투 처치도 셈(펫이 대신 싸우는 직업, A23-39).
-- 단계 = `Config.Tamer.Research.Stages = { 50, 150, 400, 1000, 2500 }`. s->c `TamerInfo { Pts, Stage, Sum }`(들어올 때·바뀔 때 1초에 1번까지).
+- 조련사(`Config.IsTamer(class, faction)`, 직업 고른 뒤)가 돈 받는 처치(`MonsterKilled`, MinorShare 아님)마다 `Research.Pts[가족] += 1`. 가족 = `Config.MonsterFamily(kind)` = `Config.Research.Family` 표(왕자·꽃슬라임·킹 → Slime, 고블린 3종 → Goblin, 해골 4종 → Skeleton, 유령 3종 → Ghost), 없으면 `Config.QuestKind`(호박 슬라임 = Slime, 소라게 = CoralCrab). QuestKind만 쓰면 왕자·킹이 따로 세져서 표를 더함. 자동 전투 처치도 셈(펫이 대신 싸우는 직업, A23-39). 가족 64개·점수 1e7 상한(save v4).
+- 단계 = `Config.Research.Stages = { 50, 150, 400, 1000, 2500 }`(`Config.ResearchStage(pts)`). 새 단계 = 알림 키 `Config.Research.Text.Stage`(args: 가족 이름 키, 단계) 한 번 + 신호 `StageUp(player, family, stage)`. s->c `TamerInfo { Pts, Stage, Sum, Stages }`(들어올 때·바뀔 때 1초에 1번까지, 새 단계·소환은 바로).
+- **됨(2026-10-12, 이 가지):** `TamerService.luau`, `tools/test_tamer_research.py`(52 확인·변이 26/26).
 
 ## 2. 소환 = 제작 레시피 `Kind = "Pet"` (CraftService — 개발 3)
 - `S1 = { Role = "Tame", Kind = "Pet", Family = "Slime", Species = "BabySlime", Research = 150, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 }`.
@@ -12,7 +13,7 @@
 - 끝: 능력치 `Spd = 서버 무작위 5..8 + 망치질 +N`(최대 10, 로벅스·뽑기 없음 — 실력이 조금 올려 줌) → **PetService.SummonPet(player, species, { Spd })** → `Research.Sum[Family] += 1`.
 
 ## 3. 펫 간식 Pet Treat
-- 레시피 `T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Petal = 2 }, XP = 10 }`(3 + 망치질 +N개). 아이템 `PetTreat`: Kind "Treat", Source "Craft"(오토 한 번에 팔기 제외, 거래소 대상).
+- 레시피 `T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Petal = 2 }, XP = 10 }`(crafting_market §4 그대로; 채집 설계 §1은 '간식 = 약초' 방향이라 Petal 대신 Herb 2도 가능 — 검수 판단)(3 + 망치질 +N개). 아이템 `PetTreat`: Kind "Treat", Source "Craft"(오토 한 번에 팔기 제외, 거래소 대상).
 - 먹이기: c->s `FeedPet(uid)` — 펫 주인 누구나(조련사만 아님), 간식 1개 → **PetService.AddPetXP(player, uid, 20)**(처치 XP와 같은 레벨업), 최대 레벨 펫은 거절(`PetMax`), 0.5초에 1번.
 
 ## 4. 개발 2 파일에 필요한 것 (질문 — 내가 넣을지, 네가 넣을지)
@@ -28,3 +29,4 @@
 ## 6. 검수에게
 - 소환 능력치 = 무작위 5..8 + 망치질 +N(최대 10): '실력이 조금 올려 줌'으로 제안(설계 §4는 5~10 무작위만). 숫자 판단 부탁.
 - 간식 XP +20, 소환 재료·골드·연구 150(2단계)은 설계 §4 그대로.
+- 간식 재료: Jelly 5 + Petal 2(설계 §4) 또는 Jelly 5 + Herb 2(채집 설계 방향). 답 없으면 설계 §4대로.

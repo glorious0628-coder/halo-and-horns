@@ -1,0 +1,674 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 52,
+  "failedChecks": 0,
+  "namedChecks": 52,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.Research is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "stages 50 / 150 / 400 / 1000 / 2500 (crafting_market §4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ResearchStage: the stage the points reach",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ResearchStage: junk = 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every slime (Prince, Flower, King, Pumpkin) is the Slime family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "other families: the table, else the quest kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "an unknown kind has no family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every family the table makes has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the stage line takes (family, stage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TamerInfo at most once a second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "the tamer's join: one TamerInfo (no points yet, the stages)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "a free rider's share (MinorShare) gives none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "an unknown kind gives none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "auto combat kills count (the pet fights for this class)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "only the tamer researches (not a Halo archer, an alchemist, or a class not picked yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "no TamerInfo for others",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "junk kills are ignored without an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "a broken Research table is repaired, then counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "Points / Stage read the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "a new family past MaxKeys (64) is not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "... with room again, it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "a counter never goes past MaxCount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "49 points: no stage yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "50 points: one stage line (key; args = the family's name key, \"1\")",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "a new stage: TamerInfo at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "a family without a name reaches its stage without a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "StageUp(player, family, stage) fires",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "150 points: stage 2 (the summon stage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "the first change after a quiet second: TamerInfo at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "more within the second: they wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "... then one TamerInfo with all of them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "nothing more without a change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "a leave forgets the wait without an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "AddSummon: Sum + 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "... and TamerInfo shows it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "junk: false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "switch off: no points, no TamerInfo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 5,
+  "staticFailures": [],
+  "mutations": {
+    "total": 26,
+    "applied": 26,
+    "caught": 26,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Features.Research is off",
+          "off :: switch off: no points, no TamerInfo"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: stage 2 at 100",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ResearchStage: the stage the points reach",
+          "config :: stages 50 / 150 / 400 / 1000 / 2500 (crafting_market §4)",
+          "points :: the tamer's join: one TamerInfo (no points yet, the stages)",
+          "stages :: 150 points: stage 2 (the summon stage)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: the Prince is its own family",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: every slime (Prince, Flower, King, Pumpkin) is the Slime family",
+          "points :: 1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+          "points :: a free rider's share (MinorShare) gives none",
+          "points :: an unknown kind gives none",
+          "points :: auto combat kills count (the pet fights for this class)",
+          "points :: junk kills are ignored without an error"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: no quest-kind fallback",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: every slime (Prince, Flower, King, Pumpkin) is the Slime family",
+          "config :: other families: the table, else the quest kind"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: unknown kinds have a family",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: an unknown kind has no family",
+          "points :: an unknown kind gives none"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: stage one too early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ResearchStage: the stage the points reach",
+          "stages :: 150 points: stage 2 (the summon stage)",
+          "stages :: 49 points: no stage yet",
+          "stages :: StageUp(player, family, stage) fires",
+          "stages :: a new stage: TamerInfo at once"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "kill: the switch not checked",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: switch off: no points, no TamerInfo"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kill: free riders count",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: a free rider's share (MinorShare) gives none",
+          "points :: auto combat kills count (the pet fights for this class)",
+          "points :: junk kills are ignored without an error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "kill: everyone researches",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: no TamerInfo for others",
+          "points :: only the tamer researches (not a Halo archer, an alchemist, or a class not picked yet)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kill: class not picked counts",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: no TamerInfo for others",
+          "points :: only the tamer researches (not a Halo archer, an alchemist, or a class not picked yet)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kill: by kind, not family",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: 1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+          "points :: a free rider's share (MinorShare) gives none",
+          "points :: an unknown kind gives none",
+          "points :: auto combat kills count (the pet fights for this class)",
+          "points :: junk kills are ignored without an error",
+          "stages :: 150 points: stage 2 (the summon stage)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "kill: no key cap",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "caps :: ... with room again, it is",
+          "caps :: a new family past MaxKeys (64) is not counted"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kill: no count cap",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "caps :: a counter never goes past MaxCount"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kill: two points",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "caps :: ... with room again, it is",
+          "pace :: ... then one TamerInfo with all of them",
+          "points :: 1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+          "points :: Points / Stage read the save",
+          "points :: a broken Research table is repaired, then counted",
+          "points :: a free rider's share (MinorShare) gives none"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "kill: broken save not repaired",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: Points / Stage read the save",
+          "points :: a broken Research table is repaired, then counted",
+          "points :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stage: no line",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: 50 points: one stage line (key; args = the family's name key, \"1\")",
+          "stages :: a family without a name reaches its stage without a line",
+          "stages :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stage: a line every kill",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: 49 points: no stage yet",
+          "stages :: 50 points: one stage line (key; args = the family's name key, \"1\")",
+          "stages :: a family without a name reaches its stage without a line"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stage: unnamed families get a line",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: a family without a name reaches its stage without a line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "stage: no signal",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: StageUp(player, family, stage) fires"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "stage: info waits",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: a new stage: TamerInfo at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "info: no info at the join",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: the tamer's join: one TamerInfo (no points yet, the stages)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "info: every kill at once",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pace :: ... then one TamerInfo with all of them",
+          "pace :: more within the second: they wait",
+          "pace :: nothing more without a change"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "info: waits never sent",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pace :: ... then one TamerInfo with all of them",
+          "pace :: nothing more without a change"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "info: no stage list",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "summon: Sum not counted",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summons :: ... and TamerInfo shows it",
+          "summons :: AddSummon: Sum + 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "summon: info not sent",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summons :: ... and TamerInfo shows it"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "d6fd55a240d4e41f2083b118e0a9b5d2c39480ffef83c64792c48c7b68558191",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/TamerService.luau": "0f14a0546c918921b4c5a03dfcdd17ea43d0a2895eef20d7baa00abdec7d9cea"
+  },
+  "fixtureSHA256": "5b39094eb99063687d578847444d53952028187ffd88121ec9930b7e1d9f406a",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Tamer research (docs/design/tamer_server_2026-10-12.md §1, crafting_market §4, A23-115): switch Config.Features.Research off; the tamer (artisan Archer, class picked) gets 1 point per paid kill (not MinorShare; auto too) in Config.MonsterFamily (every slime = Slime); stages 50/150/400/1000/2500, one keyed line per new stage (named families), StageUp signal; TamerInfo { Pts, Stage, Sum, Stages } at join and after changes (once a second, a new stage / summon at once); 64 families, MaxCount; AddSummon.",
+  "limitations": "The summon / Pet Treat recipes (CraftService) and the PetService side (SummonPet, AddPetXP, the Roll speed) come in the next chunk after 게임성 개발 2 agrees; the research window is client work."
+}

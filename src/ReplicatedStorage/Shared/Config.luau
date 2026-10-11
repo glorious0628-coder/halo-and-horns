@@ -8373,6 +8373,49 @@ Config.Alchemy = {
 }
 Config.RateLimits.UseTonic = 1
 
+----------------------------------------------------------------- tamer research (게임성 개발 3, 2026-10-12)
+-- TamerService; contract docs/design/tamer_server_2026-10-12.md (crafting_market §4, A23-115). The pet tamer
+-- (Config.IsTamer: the artisan Archer) gets 1 research point for every kill it is paid for (MonsterKilled, not a
+-- MinorShare; auto combat too) in that monster's family (Config.MonsterFamily: Family below, else Config.QuestKind).
+-- Stages = the points each stage needs; a summon recipe (Config.Craft.Recipes, Kind "Pet") asks for its Research
+-- points. Saved in data.Research.Pts (Config.SanitizeResearch: at most Config.SaveV4.MaxKeys families). Switched by
+-- Config.Features.Research (off; on with the artisan guild, 검수).
+Config.Features.Research = false
+Config.Research = {
+	Stages = { 50, 150, 400, 1000, 2500 },
+	InfoEvery = 1, -- TamerInfo goes at most once a second (a new stage at once)
+	-- the kinds that are not their own family (the rest: Config.QuestKind, e.g. a pumpkin slime is a Slime already)
+	Family = {
+		BigSlime = "Slime", FlowerSlime = "Slime", SlimeKing = "Slime",
+		GoblinBrute = "Goblin", SlingshotGoblin = "Goblin",
+		SkeletonArcher = "Skeleton", SkeletonKnight = "Skeleton", CaptainClatter = "Skeleton",
+		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost",
+	},
+	Text = {
+		Stage = "%s research: stage %s!", -- (family name, stage) a new stage
+		Names = { Slime = "Slime", Goblin = "Goblin", Skeleton = "Skeleton", Ghost = "Ghost" }, -- family names (a family
+		-- without one never gets the stage line)
+	},
+}
+
+-- the research family of a monster kind (nil for a kind the game does not know)
+function Config.MonsterFamily(kind)
+	if type(kind) ~= "string" or Config.MonsterTypes[kind] == nil then return nil end
+	local fam = Config.Research.Family[kind]
+	if type(fam) == "string" then return fam end
+	return Config.QuestKind(kind)
+end
+
+-- the research stage the points reach (0 = not stage 1 yet .. #Stages)
+function Config.ResearchStage(pts)
+	local stage = 0
+	if type(pts) ~= "number" then return 0 end -- NaN passes no stage
+	for i, need in Config.Research.Stages do
+		if pts >= need then stage = i else break end
+	end
+	return stage
+end
+
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
 -- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3

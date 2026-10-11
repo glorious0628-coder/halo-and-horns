@@ -67,6 +67,8 @@ Net.Names = {
 	"CraftInfo", -- { Role, Lv, XP, Need, Made } at join and after every craft
 	-- 게임성 개발 3 (2026-10-12) alchemy tonics (BuffService), client -> server:
 	"UseTonic", -- (itemId: a Config.Alchemy.Tonics item) drink one; the running ones are the attributes Buff_<itemId>
+	-- 게임성 개발 3 (2026-10-12) tamer research (TamerService), server -> client (owner only, the tamer):
+	"TamerInfo", -- { Pts = { [family] = points }, Stage = { [family] = 0..5 }, Sum = { [family] = summons }, Stages }
 }
 
 Net.GameStateDefaults = {
