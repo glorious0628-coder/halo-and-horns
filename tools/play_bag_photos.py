@@ -4,6 +4,8 @@ DebugCommand gives a few weapons / scrolls / materials / potions and gold, the I
 and the server's OpenPanel remote moves it between tabs / a scroll step (no mouse, no keyboard). A Settings echo turns
 on the wide bag + the grade sort for the last photos. Probes (window size, cells, words) + photos at each step, the
 console's errors, then Play stops (finally) and the fresh-save flag is cleared.
+Then (게임성 검수 10/12) an empty MP potion's slot and, with Studio's own input (user_mouse_input in my test Play, no
+desktop mouse), a click on Gear and on the size button: the rebuilt window must stay on Gear.
 Usage: STUDIO_NAME=UiSandbox py tools/play_bag_photos.py [outdir-name]   (own test Play only: 최종 검수 approves first)
 Out: docs/art/verification_2026-10-12/bag_ui/<outdir-name or pc>/"""
 import base64
@@ -104,6 +106,31 @@ R:WaitForChild("Settings"):FireClient(p, { Seq = 900000 + math.random(1, 9999), 
 return "settings BagWide=" .. tostring(s.BagWide) .. " BagSort=" .. s.BagSort
 """
 
+# client: the input path of a named bag object (for Studio's user_mouse_input in my own test Play)
+PATH = r"""
+local p = game:GetService("Players").LocalPlayer
+for _, d in p:FindFirstChildOfClass("PlayerGui"):GetDescendants() do
+	if d.Name == "%s" and d:IsA("GuiButton") and d:FindFirstAncestor("PanelsModal") then
+		local full = d:GetFullName()
+		local pg = p:FindFirstChildOfClass("PlayerGui"):GetFullName()
+		return "LocalPlayer.PlayerGui" .. string.sub(full, #pg + 1)
+	end
+end
+return "none"
+"""
+
+# client: which bag tab is open (the worn row is the Gear tab's)
+TAB_NOW = r"""
+local pg = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
+for _, d in pg:GetDescendants() do
+	if d.Name == "Worn" and d:FindFirstAncestor("PanelsModal") then return "Gear (worn row shown)" end
+end
+for _, d in pg:GetDescendants() do
+	if string.sub(d.Name, 1, 7) == "Cell_P:" and d:FindFirstAncestor("PanelsModal") then return "Use (potions shown)" end
+end
+return "other"
+"""
+
 # client: the open window, its size, the bag's cells / words, anything cut off
 PROBE = r"""
 local HttpService = game:GetService("HttpService")
@@ -188,6 +215,27 @@ def main():
         shot(c, "07_materials_wide_grade", '{ Tab = "Material" }')
         shot(c, "08_gear_wide", '{ Tab = "Gear" }')
         note(lua(c, WIDE % ("false", "Default"), "Server"))
+        time.sleep(1)
+        # 게임성 검수 10/12 #1: an empty potion keeps its slot (0, dimmed, quick slots there)
+        note("debug: " + lua(c, DEBUG % '{ "MPPotionCount", 0 }', "Server"))
+        shot(c, "09_use_mp_zero", '{ Tab = "Use", Select = "P:MP" }')
+        # 게임성 검수 10/12 #2: move to Gear (a click in my own test Play, Studio's input - no desktop mouse), then the
+        # size button rebuilds the window with the same open arg: it must stay on Gear
+        gear = lua(c, PATH % "Tab_Gear", "Client")
+        note("Tab_Gear path: " + gear)
+        if gear.startswith("LocalPlayer."):
+            c.call("user_mouse_input", {"datamodel_type": "Client", "actions": [
+                {"action": "moveTo", "instance_path": gear}, {"action": "mouseButtonClick", "mouse_button": "left"}]})
+            time.sleep(1.0)
+            note("after the Gear click: " + lua(c, TAB_NOW, "Client"))
+            size = lua(c, PATH % "Size", "Client")
+            if size.startswith("LocalPlayer."):
+                c.call("user_mouse_input", {"datamodel_type": "Client", "actions": [
+                    {"action": "moveTo", "instance_path": size}, {"action": "mouseButtonClick", "mouse_button": "left"}]})
+                time.sleep(1.5)
+                note("after the size button: " + lua(c, TAB_NOW, "Client"))
+                note(f"probe 10: " + lua(c, PROBE, "Client"))
+                save(c, "10_after_size_still_gear")
         con = text_of(c.call("get_console_output", {}))
         errs = [ln for ln in con.splitlines() if any(k in ln.lower() for k in ("error", "failed", "warn", "infinite yield"))]
         note("console: " + "\n".join(errs[-30:]))
