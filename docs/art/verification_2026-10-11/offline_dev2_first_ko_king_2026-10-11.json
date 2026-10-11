@@ -1,0 +1,3778 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 314,
+  "failedChecks": 0,
+  "namedChecks": 300,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "setup: the meadow spot and the Crossroads (a town)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.FirstKOKing on (its own table: game dev 3's Config.FirstKO untouched)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "game dev 3's Config.FirstKO names a story quest, its KO row before its rematch row (no keys of ours in it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.FirstKO.Step = the row waiting for Event FirstKO (a listed happening)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.FirstKO.RematchStep = one Personal kill of our King in its own zone (what a retry King's kill reports)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the King Slime (a boss kind, never in the regular pool)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "one hit below Lv 10; the quest opens below that (its start level always gets the KO)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "x MaxHealth >= 10 (the Guard cap), the first King hard to kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the first KO gets up no later than a normal KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the meadow (not a town)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the get-up leaves the player hurt (a potion is worth drinking)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the practice kill pays a small kind's XP / gold (the quest pays the real reward)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "BossClear keeps the bodies apart but never blocks the hill for the field King's stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the save field (additive, false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Version stays 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no quest named: the service does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "the quest at Config.FirstKO.Step: the first King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "every row between the KO and the rematch: nothing",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "the quest at Config.FirstKO.RematchStep: the retry King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "CurrentStep nil (not started / done / waiting for [Claim]): nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "rows outside: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "Lv OneHitBelow - 1: still the first KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "Lv OneHitBelow on the KO row: never one-shot, the quest is told",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "the account had its first KO: the quest is told (no King)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "the rematch at any level, after the KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "CurrentStep is asked for game dev 3's quest only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "a kaiju (Siren / Active) never: its KO is the kaiju event's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "only queued for the kaiju: the King still comes (its hits stay plain: at stake)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "Enabled = false: the KO row is a Tell row, the rematch row has nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "an extra row before the rematch: the old rematch row has no King, the new one has the retry King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "the KO row moved: the first King follows it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "a throwing CurrentStep: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "... and no King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "no StoryQuestService: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stage",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "one personal King Slime for the player on the KO row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "SpawnPersonal opts: FirstHP, Quiet, Strike, OnKilled, SpawnDistance (no Practice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "Near (never the home-town spot) and Hold = DropTime + FirstLeapAfter (A23-113: its first leap lands one cycle after the drop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "A23-113: the first King's circle grows LeapGrow after each miss (up to LeapGrowMax)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "a quiet King; model attributes FirstKO / DropAt / DropTime / DropRadius = LandRadius (the client's drop and circle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "only one King at a time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "never a field (event) King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "the account had its KO (Tell): no King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "setup: another zone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "no King in town / another zone / dead / off the King rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "walking into the meadow brings it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "the field King within BossClear: no personal King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "the field King 30 studs away (still by its hill marker): the personal King comes (a slime nearby is fine)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "never inside a town",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "a living King is never doubled",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "with a Landmark: only within Radius of it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "inside the Radius now",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "after a failed spawn: wait SpawnGap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "then try again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "no ground by the player: no King, no retry before SpawnGap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "then it comes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "a reused old King is sent home (not adopted)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "then a fresh King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "a reused King of ours (already given a stage) is sent home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "a personal King Slime without our hook is sent home",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "the owner in a town: its King goes home (leaving)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "back in the meadow: not at once (SpawnGap)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "then the King comes again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "a King whose time ran out: no new drop at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "then a new one after SpawnGap",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spawn",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "no hit before the landing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "still in the air",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "the landing thud knocks the owner out in one hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "the hit number shows the HP really lost (no 2000)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "at the Died event (not claimed yet) the get-up delay is already known",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "out of LandRadius: the landing misses",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "its next landed hit knocks out in one hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "the drop's circle: 9.4 studs from it is hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "the drop's circle: 9.6 studs from it is not (outside LandRadius - Grace)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "20 studs above the landing: no thud",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "a 90% Guard cannot save it (OneHitMult x MaxHealth)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "a shielded hit leaves no first KO waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "after the KO row: the King's own damage only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "and the next check sends it home (floating away)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one hit",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "setup: a pouch and a bank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "the King's landing knocks the player out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "nothing reported before the Died event",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "KO fx: First, the King's name, nothing lost, no tip, RespawnIn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "one KO fx",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "StoryQuestService.Event(player, \"FirstKO\", { Kind = SlimeKing }) once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "the quest moved to its next row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "no gold lost (pouch, bank)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "no XP / level change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "the KO is not counted (data.KOs)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "FirstKODone + FirstKO(player) once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "KnockedOut (telemetry) once, By Monster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "the King floats home (leaving, no splat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "no MonsterKilled anywhere",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "the next KO is a normal one and does not name the King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "FirstKODone already: a normal KO, no signal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "a throwing StoryQuestService.Event: still the lossless first KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "control: a wanted monster KO loses pouch gold and stars",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "lossless",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "setup: a sack and 2 stars",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "the King still comes (the quest goes on)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "at stake: the landing is a plain King hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "no first KO waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "the normal KO: the knight's PvP KO, the sack resolved, the stars gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "the knight is credited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "no first KO used up, nothing reported",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "control: nothing at stake = the one hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a grudge sack alone: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "control 2: Bounty 0 and no stars = the one hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "wanted stars alone: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a bounty alone: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "queued for the kaiju: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a PvP hit just before: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "the fight is over: the next King hit is the one hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "then the lossless first KO (no PvP credit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "the attacker of a PvP fight: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "setup: the first KO waits for its Died event",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "at stake now: no first-KO delay at the Died event",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "the claim says no: a normal wanted KO (the stars and a pouch share go)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing stake check: plain hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing stars check: plain hit, no first KO waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing stars check at the Died event: no first-KO delay, no claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing combat tag check: plain hit, no first KO waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing combat tag check at the Died event: no first-KO delay, no claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing kaiju check: plain hit, no first KO waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "a failing kaiju check at the Died event: no first-KO delay, no claim",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "at stake",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "each player on the KO row has an own King; a player off it none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "my King's landing never hits a bystander (off the row)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "each King lands on its own owner",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "my King hitting another player on the KO row: plain damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "the first KO; the quest moved on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "the rows after the KO: no King, nothing told again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "stuck on the KO row: no King, not told at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "told again after SpawnGap (Event FirstKO, no King)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "not again before the next SpawnGap (no tell every tick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "then it moves on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "too strong for the one hit: the row passes, no King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "a second KO is a normal KO (no signal, no First)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "another monster's KO is never the first KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "a Died event later than ClaimGrace: not claimed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "the flag is saved data (a rejoin keeps it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "once and only mine",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "a held get-up: delay + CFrame",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "Back studs from where it fell, away from the King, Lift above the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "facing where the King was",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "in the meadow, right by the fall (not the town spawn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "a leaping King: gets up Back studs away from its DropFrom",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "water behind: gets up where it fell",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "never a get-up in a town",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "no ground hit: the flat floor (Y 0) + Lift",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "no dry ground: the normal spawn after the same delay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "a cosmetic swap keeps the get-up and the HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "the get-up spawn: HealthFrac of MaxHealth (no loss: gold / XP stay)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "only once: the next spawn is a normal one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "the get-up never heals",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "a normal KO's spawn: full HP as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "an unused get-up expires after Keep s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "get-up",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "not up before the first KO's delay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "up after RespawnIn (2 s here)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "spawnSpot = the held get-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "the respawn stands at spawnSpot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "a cosmetic swap keeps its own pivot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "a normal KO waits RespawnTime",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "up after RespawnTime (3 s)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "spawnSpot = the zone spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "no service: nothing held",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "a throwing service: nothing held (warned)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player service",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the model rounds like Util.RoundDamage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "1 potion wins: 80-110% uptime, drunk at 40-60% HP, >= 5% HP left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "2 potions win comfortably: 70-110% uptime, >= 15% HP left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "FirstKORetry(Lv3 Halo Warrior T1) = Seconds x 4 dmg/s, HitPct + regen x 1.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "bare hands: the punch (no class); Horns (no regen): HitPct",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "never under MinHP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "setup: the tier, its +N and the level rule each change the King's HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the retry King's HP: the best usable weapon (tier 2) with its +3, not the weapon in hand (tier 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the retry King's HP = FirstKORetry of the player",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "a normal (not quiet) practice personal King: Practice = Retry.PayAs, the strike / kill hooks, Near, Hold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "A23-113: the retry King's drop hits inside its circle like a leap (Hit x MaxHealth)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "its hit = Hit x MaxHealth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "a landing's mult: Hit x MaxHealth x mult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "its kill: MonsterKilled(owner, { Kind SlimeKing, ZoneId SlimeMeadow, Personal, Practice })",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "it pays the PayAs kind's XP / gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "then KingBeaten(player, true); no FirstKO report; one death pop",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the quest is done: no new King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "a stuck rematch row: no second King (no farm)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "once the row changed, the rematch King may come again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "a KO by the retry King is a normal KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the retry King leaves when its owner falls (a retry starts fresh)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the first King killed anyway: Event FirstKO { Beaten = true }, no MonsterKilled",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "the quest moved on; it was no KO; KingBeaten(player, false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "retry numbers",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a landed hit of a record with a strike hook goes to the hook (not Def.Damage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "the field King (no hook) deals its own Damage with its kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a throwing hook is warned, no fallback damage",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a personal record keeps Quiet / Strike / OnKilled",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a zone / event monster never",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "only true / functions count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "Practice = a monster kind (true / unknown: its own kind), only when asked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a quiet King: no MonsterKilled, its service told once, the death pop, out of the owner's set, no respawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "its contributors are cleared",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "the field King: paid to its contributor as before (not personal, no respawn)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a personal monster without Quiet / Practice still fires MonsterKilled (Personal) with its own pay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a practice King (one hit): Personal + Practice, still a SlimeKing in SlimeMeadow, the Slime Prince's XP / gold, no war points",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "MonsterKilled first (the quest's Kill row), then its service",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "setup: the King's RewardMinHits is 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a personal King with fewer than RewardMinHits hits still pays its owner (only the owner can hit it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "the field King still needs RewardMinHits own hits (A23-27)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a throwing hook after a loud kill: warned, the kill already paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "SpawnPersonal -> model, record; the hooks passed on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "opts.Distance studs in front",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "one living personal King per player: the same model + record",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a bad Distance: the default 8; no Quiet unless asked; Practice passed on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "Hold: its first swing waits for the landing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "Hold is capped at 10 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "no / bad Hold: untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "Near + no ground by the player: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "without Near: the old home-zone fallback",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "RemovePersonal: a living personal monster leaves (fade, leaving)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "not twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "never a zone / event monster (the field King)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "GroundAt = the monsters' groundPoint",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "GroundAt: bad numbers -> nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "a quiet King's lifetime end: it goes home (no splat)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "any other personal monster: as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "no other warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster service",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "setup: a manual practice King kill",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "FinisherService: no King finisher card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "LootService: no boss drops (cores, jelly, scrolls, potions)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "no field-boss defeat: no KingDefeat fx",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "control: a non-practice King kill offers the finisher card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "control: ... and rolls the King's drops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "QuestService: a practice kill counts for no daily job (not even 'Slime Prince x3')",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "control: another personal King kill counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "no war points (a personal kill)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "no boss credit",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: KO1 started at its KO row: the first King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: the King lands: one-hit KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: the short lossless KO screen",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: the KO moved KO1 to its next row (StoryQuestService.Event FirstKO)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: nothing lost (the row's top-up may add gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: gets up hurt (a potion to buy and drink)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "setup: the rows between are Event rows",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "no King on the rows between the KO and the rematch",
+      "pass": 7,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: the shop / drink rows passed: the rematch row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: the retry King (not quiet, a practice King)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: its kill finishes KO1 (the Personal Kill row counted it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: the quest pays its reward (gold, XP, the scroll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: no finisher card, no boss drops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1: quest done: no more Kings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "setup: an extra row before the rematch",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: KO1 started at its KO row: the first King",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: the King lands: one-hit KO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: the short lossless KO screen",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: the KO moved KO1 to its next row (StoryQuestService.Event FirstKO)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: nothing lost (the row's top-up may add gold)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: gets up hurt (a potion to buy and drink)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: the shop / drink rows passed: the rematch row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: the retry King (not quiet, a practice King)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: its kill finishes KO1 (the Personal Kill row counted it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: the quest pays its reward (gold, XP, the scroll)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: no finisher card, no boss drops",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "KO1 + a row: quest done: no more Kings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "setup: KO1 at its KO row, the KO already had",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "the KO already had: the row passes at the next check (no King)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "quest KO1",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "FirstKOService in Main INIT_ORDER",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "FirstKOService in START_ORDER before PlayerService",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "DebugCommand FirstKO",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "a leaver: no pending KO, no get-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "no King for a leaver",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "Debug outside Studio refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "Studio Debug 'first': the first King without the quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "after it: the retry King (forced first, KO had)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "Debug 'reset': the first KO again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "Debug 'retry': the retry King without the quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "Debug 'off': back to the quest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "main and lifecycle",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "retry numbers",
+      "Text": "retry sweep: 729 builds; no potion falls >= 1.36 s short (9 no-potion wins at 80% vs a 1.6 s King); 1 potion leaves >= 13% HP; 2 potions >= 19%"
+    },
+    {
+      "Group": "retry numbers",
+      "Text": "Lv3 Halo Warrior T1: MaxHP 187, King HP 68, King hit 20 (10.5%)"
+    }
+  ],
+  "staticChecks": 28,
+  "staticFailures": [],
+  "mutations": {
+    "total": 151,
+    "applied": 151,
+    "caught": 151,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "quiet for a zone monster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "note": "spawnMonster A23-110 record fields missing; update the test extractor.",
+        "newFailingChecks": [],
+        "newFailingCount": 0
+      },
+      {
+        "mutation": "practice for a zone monster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": true,
+        "note": "spawnMonster A23-110 record fields missing; update the test extractor.",
+        "newFailingChecks": [],
+        "newFailingCount": 0
+      },
+      {
+        "mutation": "any quest step is the KO step",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: QuestService: a practice kill counts for no daily job (not even 'Slime Prince x3')",
+          "no boss credit :: group ran to the end without a Lua error",
+          "no boss credit :: setup: a manual practice King kill",
+          "once and only mine :: each player on the KO row has an own King; a player off it none",
+          "once and only mine :: my King's landing never hits a bystander (off the row)",
+          "once and only mine :: the rows after the KO: no King, nothing told again"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "the KO row never",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a bounty alone: plain hit",
+          "at stake :: a grudge sack alone: plain hit",
+          "at stake :: at stake: the landing is a plain King hit",
+          "at stake :: control 2: Bounty 0 and no stars = the one hit",
+          "at stake :: control: nothing at stake = the one hit"
+        ],
+        "newFailingCount": 64
+      },
+      {
+        "mutation": "any quest step is the rematch",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: each player on the KO row has an own King; a player off it none",
+          "once and only mine :: my King's landing never hits a bystander (off the row)",
+          "once and only mine :: the rows after the KO: no King, nothing told again",
+          "once and only mine :: then it moves on",
+          "quest KO1 :: no King on the rows between the KO and the rematch",
+          "retry numbers :: once the row changed, the rematch King may come again"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "no rematch step",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: group ran to the end without a Lua error",
+          "quest KO1 :: KO1: the retry King (not quiet, a practice King)",
+          "quest KO1 :: group ran to the end without a Lua error",
+          "retry numbers :: group ran to the end without a Lua error",
+          "retry numbers :: the retry King's HP = FirstKORetry of the player",
+          "retry numbers :: the retry King's HP: the best usable weapon (tier 2) with its +3, not the weapon in hand (tier 1)"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "the KO step hard-coded as 1",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stage :: the KO row moved: the first King follows it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the rematch step hard-coded as 4",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: group ran to the end without a Lua error",
+          "quest KO1 :: KO1: the retry King (not quiet, a practice King)",
+          "quest KO1 :: group ran to the end without a Lua error",
+          "quest KO1 :: no King on the rows between the KO and the rematch",
+          "retry numbers :: group ran to the end without a Lua error",
+          "retry numbers :: the retry King's HP = FirstKORetry of the player"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "disabled still sends the first King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stage :: Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row",
+          "stage :: Enabled = false: the KO row is a Tell row, the rematch row has nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "disabled still sends the retry King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stage :: Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row",
+          "stage :: Enabled = false: the KO row is a Tell row, the rematch row has nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "disabled strands the KO row",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stage :: Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row",
+          "stage :: Enabled = false: the KO row is a Tell row, the rematch row has nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "another quest's step asked",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a bounty alone: plain hit",
+          "at stake :: a grudge sack alone: plain hit",
+          "at stake :: at stake: the landing is a plain King hit",
+          "at stake :: control 2: Bounty 0 and no stars = the one hit",
+          "at stake :: control: nothing at stake = the one hit"
+        ],
+        "newFailingCount": 71
+      },
+      {
+        "mutation": "a throwing CurrentStep breaks the stage",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stage :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "one-shot twice (Done ignored)",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "main and lifecycle :: after it: the retry King (forced first, KO had)",
+          "once and only mine :: not again before the next SpawnGap (no tell every tick)",
+          "once and only mine :: stuck on the KO row: no King, not told at once",
+          "once and only mine :: then it moves on",
+          "once and only mine :: told again after SpawnGap (Event FirstKO, no King)",
+          "quest KO1 :: setup: KO1 at its KO row, the KO already had"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "one-shot at any level",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: too strong for the one hit: the row passes, no King",
+          "stage :: Lv OneHitBelow on the KO row: never one-shot, the quest is told"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a kaiju gets a King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stage :: a kaiju (Siren / Active) never: its KO is the kaiju event's"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a queued kaiju-to-be refused",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: queued for the kaiju: plain hit",
+          "stage :: only queued for the kaiju: the King still comes (its hits stay plain: at stake)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "any zone",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: no King in town / another zone / dead / off the King rows",
+          "spawn :: walking into the meadow brings it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "in town too",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: never inside a town"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "landmark radius ignored",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: with a Landmark: only within Radius of it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "joins the field King's fight",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: the field King within BossClear: no personal King"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any monster blocks it",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: the field King 30 studs away (still by its hill marker): the personal King comes (a slime nearby is fine)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a dead player gets a King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: no King in town / another zone / dead / off the King rows",
+          "spawn :: walking into the meadow brings it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "one-shot for anyone",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: my King hitting another player on the KO row: plain damage"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "raised after the step ended",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one hit :: after the KO row: the King's own damage only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not lethal",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing stars check at the Died event: no first-KO delay, no claim",
+          "at stake :: control 2: Bounty 0 and no stars = the one hit",
+          "at stake :: control: nothing at stake = the one hit",
+          "at stake :: setup: the first KO waits for its Died event"
+        ],
+        "newFailingCount": 57
+      },
+      {
+        "mutation": "Guard can save it",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one hit :: a 90% Guard cannot save it (OneHitMult x MaxHealth)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pending after the damage",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing stars check at the Died event: no first-KO delay, no claim",
+          "at stake :: setup: the first KO waits for its Died event",
+          "at stake :: then the lossless first KO (no PvP credit)",
+          "get-up :: Back studs from where it fell, away from the King, Lift above the ground"
+        ],
+        "newFailingCount": 45
+      },
+      {
+        "mutation": "a ForceField hit still claims",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one hit :: a shielded hit leaves no first KO waiting"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry hits like the first",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest KO1 :: KO1: the retry King (not quiet, a practice King)",
+          "quest KO1 :: group ran to the end without a Lua error",
+          "retry numbers :: A23-113: the retry King's drop hits inside its circle like a leap (Hit x MaxHealth)",
+          "retry numbers :: a landing's mult: Hit x MaxHealth x mult",
+          "retry numbers :: its hit = Hit x MaxHealth"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "retry hit ignores the landing's mult",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a landing's mult: Hit x MaxHealth x mult"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no KO screen name (no kind)",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: KO fx: First, the King's name, nothing lost, no tip, RespawnIn",
+          "lossless :: KnockedOut (telemetry) once, By Monster"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a sack carrier's way out",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a grudge sack alone: plain hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "wanted stars ignored",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: wanted stars alone: plain hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bounty ignored",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a bounty alone: plain hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the combat tag never read",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing combat tag check: plain hit, no first KO waiting",
+          "at stake :: the attacker of a PvP fight: plain hit",
+          "at stake :: then the lossless first KO (no PvP credit)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a PvP fight ignored",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: the attacker of a PvP fight: plain hit",
+          "at stake :: then the lossless first KO (no PvP credit)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the kaiju queue ignored",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: queued for the kaiju: plain hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a failing check is no stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing stake check: plain hit"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a failing stars check is no stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing stars check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing stars check: plain hit, no first KO waiting"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a failing combat-tag check is no stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing combat tag check: plain hit, no first KO waiting"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a failing kaiju check is no stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check: plain hit, no first KO waiting"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "strike ignores the stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a bounty alone: plain hit",
+          "at stake :: a failing combat tag check: plain hit, no first KO waiting",
+          "at stake :: a failing kaiju check: plain hit, no first KO waiting",
+          "at stake :: a failing stake check: plain hit",
+          "at stake :: a failing stars check: plain hit, no first KO waiting"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "the claim ignores the stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing stars check at the Died event: no first-KO delay, no claim",
+          "at stake :: the claim says no: a normal wanted KO (the stars and a pouch share go)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the Died delay ignores the stake",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing stars check at the Died event: no first-KO delay, no claim",
+          "at stake :: at stake now: no first-KO delay at the Died event"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no landing thud",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a bounty alone: plain hit",
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing combat tag check: plain hit, no first KO waiting",
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check: plain hit, no first KO waiting"
+        ],
+        "newFailingCount": 70
+      },
+      {
+        "mutation": "landing reaches anywhere",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one hit :: 20 studs above the landing: no thud",
+          "one hit :: out of LandRadius: the landing misses",
+          "one hit :: the drop's circle: 9.6 studs from it is not (outside LandRadius - Grace)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "landing circle without grace",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one hit :: the drop's circle: 9.6 studs from it is not (outside LandRadius - Grace)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the retry drop never hits",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: A23-113: the retry King's drop hits inside its circle like a leap (Hit x MaxHealth)",
+          "retry numbers :: a landing's mult: Hit x MaxHealth x mult",
+          "retry numbers :: its hit = Hit x MaxHealth"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no drop circle radius",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: a quiet King; model attributes FirstKO / DropAt / DropTime / DropRadius = LandRadius (the client's drop and circle)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the first King never grows",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: A23-113: the first King's circle grows LeapGrow after each miss (up to LeapGrowMax)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gets up toward the King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: a leaping King: gets up Back studs away from its DropFrom"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no drop attributes",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: a quiet King; model attributes FirstKO / DropAt / DropTime / DropRadius = LandRadius (the client's drop and circle)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the first King not quiet",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest KO1 :: KO1 + a row: the King lands: one-hit KO",
+          "quest KO1 :: KO1: the King lands: one-hit KO",
+          "retry numbers :: the first King killed anyway: Event FirstKO { Beaten = true }, no MonsterKilled",
+          "spawn :: SpawnPersonal opts: FirstHP, Quiet, Strike, OnKilled, SpawnDistance (no Practice)",
+          "spawn :: a quiet King; model attributes FirstKO / DropAt / DropTime / DropRadius = LandRadius (the client's drop and circle)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the retry King quiet again (the quest never counts it)",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: QuestService: a practice kill counts for no daily job (not even 'Slime Prince x3')",
+          "no boss credit :: group ran to the end without a Lua error",
+          "no boss credit :: setup: a manual practice King kill",
+          "quest KO1 :: KO1 + a row: its kill finishes KO1 (the Personal Kill row counted it)",
+          "quest KO1 :: KO1 + a row: quest done: no more Kings",
+          "quest KO1 :: KO1 + a row: the quest pays its reward (gold, XP, the scroll)"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "the retry King not a practice King (boss credit)",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: FinisherService: no King finisher card",
+          "no boss credit :: LootService: no boss drops (cores, jelly, scrolls, potions)",
+          "no boss credit :: QuestService: a practice kill counts for no daily job (not even 'Slime Prince x3')",
+          "no boss credit :: control: another personal King kill counts",
+          "no boss credit :: setup: a manual practice King kill",
+          "quest KO1 :: KO1 + a row: no finisher card, no boss drops"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "no strike hook",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a bounty alone: plain hit",
+          "at stake :: a grudge sack alone: plain hit",
+          "at stake :: at stake: the landing is a plain King hit",
+          "at stake :: control 2: Bounty 0 and no stars = the one hit",
+          "at stake :: control: nothing at stake = the one hit"
+        ],
+        "newFailingCount": 47
+      },
+      {
+        "mutation": "no kill hook",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a normal (not quiet) practice personal King: Practice = Retry.PayAs, the strike / kill hooks, Near, Hold",
+          "retry numbers :: a stuck rematch row: no second King (no farm)",
+          "retry numbers :: once the row changed, the rematch King may come again",
+          "retry numbers :: the first King killed anyway: Event FirstKO { Beaten = true }, no MonsterKilled",
+          "retry numbers :: the quest moved on; it was no KO; KingBeaten(player, false)",
+          "retry numbers :: then KingBeaten(player, true); no FirstKO report; one death pop"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "home-town fallback allowed",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a normal (not quiet) practice personal King: Practice = Retry.PayAs, the strike / kill hooks, Near, Hold",
+          "spawn :: Near (never the home-town spot) and Hold = DropTime + FirstLeapAfter (A23-113: its first leap lands one cycle after the drop)",
+          "spawn :: no ground by the player: no King, no retry before SpawnGap",
+          "spawn :: then it comes"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "swings before the landing",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a normal (not quiet) practice personal King: Practice = Retry.PayAs, the strike / kill hooks, Near, Hold",
+          "spawn :: Near (never the home-town spot) and Hold = DropTime + FirstLeapAfter (A23-113: its first leap lands one cycle after the drop)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "first leap right at the drop",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a normal (not quiet) practice personal King: Practice = Retry.PayAs, the strike / kill hooks, Near, Hold",
+          "spawn :: Near (never the home-town spot) and Hold = DropTime + FirstLeapAfter (A23-113: its first leap lands one cycle after the drop)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry King has the first HP",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: the retry King's HP = FirstKORetry of the player",
+          "retry numbers :: the retry King's HP: the best usable weapon (tier 2) with its +3, not the weapon in hand (tier 1)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "two Kings at once",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "quest KO1 :: KO1 + a row: quest done: no more Kings",
+          "quest KO1 :: KO1: quest done: no more Kings",
+          "retry numbers :: a stuck rematch row: no second King (no farm)",
+          "retry numbers :: once the row changed, the rematch King may come again",
+          "retry numbers :: the quest is done: no new King",
+          "spawn :: a living King is never doubled"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "no spawn gap",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: after a failed spawn: wait SpawnGap",
+          "spawn :: no ground by the player: no King, no retry before SpawnGap"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "lifetime end re-drops at once",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: a King whose time ran out: no new drop at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "King stays after the step",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one hit :: and the next check sends it home (floating away)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a King kept while its owner is in town",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: back in the meadow: not at once (SpawnGap)",
+          "spawn :: the owner in a town: its King goes home (leaving)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry HP from the weapon in hand",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: the retry King's HP: the best usable weapon (tier 2) with its +3, not the weapon in hand (tier 1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry HP ignores the +N",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: the retry King's HP: the best usable weapon (tier 2) with its +3, not the weapon in hand (tier 1)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a foreign personal King adopted",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: a personal King Slime without our hook is sent home"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a stale King of ours adopted",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spawn :: a personal King Slime without our hook is sent home",
+          "spawn :: a reused King of ours (already given a stage) is sent home"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the first King beaten is not reported",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: the first King killed anyway: Event FirstKO { Beaten = true }, no MonsterKilled",
+          "retry numbers :: the quest moved on; it was no KO; KingBeaten(player, false)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the first King beaten reported as a KO",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: the first King killed anyway: Event FirstKO { Beaten = true }, no MonsterKilled"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no KingBeaten",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: group ran to the end without a Lua error",
+          "retry numbers :: then KingBeaten(player, true); no FirstKO report; one death pop"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "KingBeaten says retry always",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: the quest moved on; it was no KO; KingBeaten(player, false)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a stuck KO row never told again",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: not again before the next SpawnGap (no tell every tick)",
+          "once and only mine :: then it moves on",
+          "once and only mine :: told again after SpawnGap (Event FirstKO, no King)",
+          "once and only mine :: too strong for the one hit: the row passes, no King",
+          "quest KO1 :: the KO already had: the row passes at the next check (no King)",
+          "stage :: Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the KO row told every tick",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: not again before the next SpawnGap (no tell every tick)",
+          "once and only mine :: then it moves on"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a told row still gets a King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: then it moves on",
+          "once and only mine :: told again after SpawnGap (Event FirstKO, no King)",
+          "once and only mine :: too strong for the one hit: the row passes, no King",
+          "quest KO1 :: the KO already had: the row passes at the next check (no King)",
+          "spawn :: the account had its KO (Tell): no King",
+          "stage :: Enabled = false: no King; the KO row passes (Event FirstKO), nothing for the rematch row"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "one rematch win ignored",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a stuck rematch row: no second King (no farm)",
+          "retry numbers :: once the row changed, the rematch King may come again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Beaten never set",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: a stuck rematch row: no second King (no farm)",
+          "retry numbers :: once the row changed, the rematch King may come again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Beaten never cleared",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: once the row changed, the rematch King may come again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "any death is the first KO",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "once and only mine :: a Died event later than ClaimGrace: not claimed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "claimed twice",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: FirstKODone already: a normal KO, no signal"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Done never saved",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: FirstKODone + FirstKO(player) once",
+          "main and lifecycle :: after it: the retry King (forced first, KO had)",
+          "once and only mine :: not again before the next SpawnGap (no tell every tick)",
+          "once and only mine :: stuck on the KO row: no King, not told at once",
+          "once and only mine :: the first KO; the quest moved on",
+          "once and only mine :: the flag is saved data (a rejoin keeps it)"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "Event FirstKO missing",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: StoryQuestService.Event(player, \"FirstKO\", { Kind = SlimeKing }) once",
+          "lossless :: the quest moved to its next row",
+          "once and only mine :: not again before the next SpawnGap (no tell every tick)",
+          "once and only mine :: stuck on the KO row: no King, not told at once",
+          "once and only mine :: the first KO; the quest moved on",
+          "once and only mine :: then it moves on"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "Event with another name",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: StoryQuestService.Event(player, \"FirstKO\", { Kind = SlimeKing }) once",
+          "lossless :: the quest moved to its next row",
+          "once and only mine :: the first KO; the quest moved on",
+          "once and only mine :: the rows after the KO: no King, nothing told again",
+          "once and only mine :: then it moves on",
+          "once and only mine :: told again after SpawnGap (Event FirstKO, no King)"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "a throwing Event breaks the KO",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: a throwing StoryQuestService.Event: still the lossless first KO"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no FirstKO signal",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: then the lossless first KO (no PvP credit)",
+          "lossless :: FirstKODone + FirstKO(player) once",
+          "lossless :: a throwing StoryQuestService.Event: still the lossless first KO",
+          "lossless :: the next KO is a normal one and does not name the King",
+          "main and lifecycle :: after it: the retry King (forced first, KO had)",
+          "once and only mine :: a second KO is a normal KO (no signal, no First)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "the King stays after the KO",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: the King floats home (leaving, no splat)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the King splats (not leaving)",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: the King floats home (leaving, no splat)",
+          "one hit :: and the next check sends it home (floating away)",
+          "spawn :: the owner in a town: its King goes home (leaving)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "get-up toward the King",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: Back studs from where it fell, away from the King, Lift above the ground",
+          "get-up :: a leaping King: gets up Back studs away from its DropFrom",
+          "get-up :: no dry ground: the normal spawn after the same delay",
+          "get-up :: water behind: gets up where it fell"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "get-up not lifted",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: Back studs from where it fell, away from the King, Lift above the ground",
+          "get-up :: no ground hit: the flat floor (Y 0) + Lift"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "get-up in town",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: never a get-up in a town"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no fall-back to the spot itself",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "get-up kept forever",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: an unused get-up expires after Keep s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no delay before the claim",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a failing combat tag check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing kaiju check at the Died event: no first-KO delay, no claim",
+          "at stake :: a failing stars check at the Died event: no first-KO delay, no claim",
+          "at stake :: setup: the first KO waits for its Died event",
+          "one hit :: at the Died event (not claimed yet) the get-up delay is already known",
+          "player service :: up after RespawnIn (2 s here)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "get-up never cleared",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: only once: the next spawn is a normal one",
+          "get-up :: the get-up spawn: HealthFrac of MaxHealth (no loss: gold / XP stay)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "HP not lowered after the get-up",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: the get-up spawn: HealthFrac of MaxHealth (no loss: gold / XP stay)",
+          "quest KO1 :: KO1 + a row: gets up hurt (a potion to buy and drink)",
+          "quest KO1 :: KO1: gets up hurt (a potion to buy and drink)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the get-up heals",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: the get-up never heals"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a cosmetic swap uses the get-up",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "get-up :: a cosmetic swap keeps the get-up and the HP"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Debug outside Studio",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "main and lifecycle :: Debug outside Studio refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Debug reset keeps the save flag",
+        "file": "src/ServerScriptService/FirstKOService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "main and lifecycle :: Debug 'reset': the first KO again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "first KO from Lv 1 only",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: a PvP hit just before: plain hit",
+          "at stake :: a bounty alone: plain hit",
+          "at stake :: a grudge sack alone: plain hit",
+          "at stake :: at stake: the landing is a plain King hit",
+          "at stake :: control 2: Bounty 0 and no stars = the one hit",
+          "at stake :: control: nothing at stake = the one hit"
+        ],
+        "newFailingCount": 63
+      },
+      {
+        "mutation": "BossClear wide again",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: BossClear keeps the bodies apart but never blocks the hill for the field King's stay",
+          "spawn :: the field King 30 studs away (still by its hill marker): the personal King comes (a slime nearby is fine)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gets up with full HP",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the get-up leaves the player hurt (a potion is worth drinking)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "practice pays the King's own XP",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the practice kill pays a small kind's XP / gold (the quest pays the real reward)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "save field missing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the save field (additive, false)",
+          "once and only mine :: the flag is saved data (a rejoin keeps it)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry King too strong (the old 2-potion King)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 1 potion wins: 80-110% uptime, drunk at 40-60% HP, >= 5% HP left",
+          "retry numbers :: 2 potions win comfortably: 70-110% uptime, >= 15% HP left"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry King hits a bit harder",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 2 potions win comfortably: 70-110% uptime, >= 15% HP left"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "retry King hits a bit softer",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry King too weak",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+          "retry numbers :: 2 potions win comfortably: 70-110% uptime, >= 15% HP left"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "retry ignores the +N",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+          "retry numbers :: setup: the tier, its +N and the level rule each change the King's HP"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "FirstKORetry reads the quest's table",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: group ran to the end without a Lua error",
+          "no boss credit :: no service warnings (pcall-swallowed handler errors)",
+          "quest KO1 :: KO1: the retry King (not quiet, a practice King)",
+          "quest KO1 :: group ran to the end without a Lua error",
+          "quest KO1 :: no service warnings (pcall-swallowed handler errors)",
+          "retry numbers :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "retry ignores regen",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+          "retry numbers :: FirstKORetry(Lv3 Halo Warrior T1) = Seconds x 4 dmg/s, HitPct + regen x 1.5"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "retry ignores the faction bonus",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "retry ignores the class",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+          "retry numbers :: 1 potion wins: 80-110% uptime, drunk at 40-60% HP, >= 5% HP left",
+          "retry numbers :: 2 potions win comfortably: 70-110% uptime, >= 15% HP left"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "retry ignores the swing speed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "retry numbers :: 0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds",
+          "retry numbers :: 0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+          "retry numbers :: 1 potion wins: 80-110% uptime, drunk at 40-60% HP, >= 5% HP left",
+          "retry numbers :: 2 potions win comfortably: 70-110% uptime, >= 15% HP left",
+          "retry numbers :: bare hands: the punch (no class); Horns (no regen): HitPct"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "no first-KO claim",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: then the lossless first KO (no PvP credit)",
+          "get-up :: Back studs from where it fell, away from the King, Lift above the ground",
+          "get-up :: a held get-up: delay + CFrame",
+          "get-up :: facing where the King was",
+          "get-up :: group ran to the end without a Lua error",
+          "lossless :: FirstKODone + FirstKO(player) once"
+        ],
+        "newFailingCount": 39
+      },
+      {
+        "mutation": "first KO runs the whole pipeline",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: then the lossless first KO (no PvP credit)",
+          "lossless :: KO fx: First, the King's name, nothing lost, no tip, RespawnIn",
+          "lossless :: KnockedOut (telemetry) once, By Monster",
+          "lossless :: a throwing StoryQuestService.Event: still the lossless first KO",
+          "lossless :: one KO fx",
+          "lossless :: the KO is not counted (data.KOs)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "first KO keeps the King as the source",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: the next KO is a normal one and does not name the King"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no First flag",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: then the lossless first KO (no PvP credit)",
+          "lossless :: KO fx: First, the King's name, nothing lost, no tip, RespawnIn",
+          "lossless :: a throwing StoryQuestService.Event: still the lossless first KO",
+          "quest KO1 :: KO1 + a row: the short lossless KO screen",
+          "quest KO1 :: KO1: the short lossless KO screen"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "first KO screen with the normal wait",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: KO fx: First, the King's name, nothing lost, no tip, RespawnIn"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "first KO screen to everyone",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "at stake :: group ran to the end without a Lua error",
+          "lossless :: KO fx: First, the King's name, nothing lost, no tip, RespawnIn",
+          "lossless :: a throwing StoryQuestService.Event: still the lossless first KO",
+          "lossless :: one KO fx",
+          "once and only mine :: a second KO is a normal KO (no signal, no First)",
+          "quest KO1 :: KO1 + a row: the short lossless KO screen"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "first KO not telemetry",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "lossless :: KnockedOut (telemetry) once, By Monster"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "strike hook ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a landed hit of a record with a strike hook goes to the hook (not Def.Damage)",
+          "monster service :: a throwing hook is warned, no fallback damage",
+          "monster service :: the field King (no hook) deals its own Damage with its kind"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "quiet kill still pays",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a personal King with fewer than RewardMinHits hits still pays its owner (only the owner can hit it)",
+          "monster service :: a personal monster without Quiet / Practice still fires MonsterKilled (Personal) with its own pay",
+          "monster service :: a practice King (one hit): Personal + Practice, still a SlimeKing in SlimeMeadow, the Slime Prince's XP / gold, no war points",
+          "monster service :: a quiet King: no MonsterKilled, its service told once, the death pop, out of the owner's set, no respawn",
+          "monster service :: a throwing hook after a loud kill: warned, the kill already paid",
+          "monster service :: the field King still needs RewardMinHits own hits (A23-27)"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "quiet kill not told",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a quiet King: no MonsterKilled, its service told once, the death pop, out of the owner's set, no respawn",
+          "retry numbers :: the first King killed anyway: Event FirstKO { Beaten = true }, no MonsterKilled",
+          "retry numbers :: the quest moved on; it was no KO; KingBeaten(player, false)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "quiet kill no splat",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a quiet King: no MonsterKilled, its service told once, the death pop, out of the owner's set, no respawn"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a loud personal kill not told",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: MonsterKilled first (the quest's Kill row), then its service",
+          "monster service :: a throwing hook after a loud kill: warned, the kill already paid",
+          "monster service :: no other warnings",
+          "retry numbers :: a stuck rematch row: no second King (no farm)",
+          "retry numbers :: once the row changed, the rematch King may come again",
+          "retry numbers :: then KingBeaten(player, true); no FirstKO report; one death pop"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "practice kind not checked",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: Practice = a monster kind (true / unknown: its own kind), only when asked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "practice kill not flagged",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a practice King (one hit): Personal + Practice, still a SlimeKing in SlimeMeadow, the Slime Prince's XP / gold, no war points",
+          "no boss credit :: FinisherService: no King finisher card",
+          "no boss credit :: LootService: no boss drops (cores, jelly, scrolls, potions)",
+          "no boss credit :: QuestService: a practice kill counts for no daily job (not even 'Slime Prince x3')",
+          "no boss credit :: control: another personal King kill counts",
+          "no boss credit :: setup: a manual practice King kill"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "practice kill pays the King's XP / gold",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a practice King (one hit): Personal + Practice, still a SlimeKing in SlimeMeadow, the Slime Prince's XP / gold, no war points",
+          "retry numbers :: it pays the PayAs kind's XP / gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a personal King needs 3 hits (2 skill hits: no quest kill)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: MonsterKilled first (the quest's Kill row), then its service",
+          "monster service :: a personal King with fewer than RewardMinHits hits still pays its owner (only the owner can hit it)",
+          "monster service :: a practice King (one hit): Personal + Practice, still a SlimeKing in SlimeMeadow, the Slime Prince's XP / gold, no war points",
+          "monster service :: a throwing hook after a loud kill: warned, the kill already paid",
+          "monster service :: the field King still needs RewardMinHits own hits (A23-27)",
+          "quest KO1 :: KO1 + a row: its kill finishes KO1 (the Personal Kill row counted it)"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "every monster pays one-hit contributors",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a throwing hook after a loud kill: warned, the kill already paid",
+          "monster service :: the field King still needs RewardMinHits own hits (A23-27)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "SpawnPersonal drops the hooks",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: SpawnPersonal -> model, record; the hooks passed on",
+          "monster service :: a bad Distance: the default 8; no Quiet unless asked; Practice passed on",
+          "monster service :: a quiet King's lifetime end: it goes home (no splat)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "SpawnPersonal drops Practice",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a bad Distance: the default 8; no Quiet unless asked; Practice passed on"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SpawnPersonal no record",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: SpawnPersonal -> model, record; the hooks passed on",
+          "monster service :: group ran to the end without a Lua error",
+          "monster service :: one living personal King per player: the same model + record",
+          "monster service :: opts.Distance studs in front"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Distance ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: opts.Distance studs in front"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Near ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: Near + no ground by the player: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Hold ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: Hold is capped at 10 s",
+          "monster service :: Hold: its first swing waits for the landing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Hold not capped",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: Hold is capped at 10 s"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a quiet King splats at its lifetime end",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: a quiet King's lifetime end: it goes home (no splat)",
+          "monster service :: any other personal monster: as before"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "RemovePersonal removes a zone monster",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster service :: never a zone / event monster (the field King)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a practice kill gives a finisher card",
+        "file": "src/ServerScriptService/FinisherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: FinisherService: no King finisher card",
+          "quest KO1 :: KO1 + a row: no finisher card, no boss drops",
+          "quest KO1 :: KO1: no finisher card, no boss drops"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a practice kill rolls boss drops",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: LootService: no boss drops (cores, jelly, scrolls, potions)",
+          "quest KO1 :: KO1 + a row: no finisher card, no boss drops",
+          "quest KO1 :: KO1: no finisher card, no boss drops"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a practice kill counts for daily jobs",
+        "file": "src/ServerScriptService/QuestService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "no boss credit :: QuestService: a practice kill counts for no daily job (not even 'Slime Prince x3')",
+          "no boss credit :: control: another personal King kill counts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "get-up spot ignored",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player service :: spawnSpot = the held get-up"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "get-up delay ignored",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player service :: up after RespawnIn (2 s here)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "respawn not at the spot",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "player service :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not in Main INIT",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "main and lifecycle :: FirstKOService in Main INIT_ORDER"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "not in Main START",
+        "file": "src/ServerScriptService/Main.server.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "main and lifecycle :: FirstKOService in START_ORDER before PlayerService"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "9f0cd9c5ccd37a96c6977ac2b6ecf4ed413c8b94264722f23ed8544073a478dd",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/RankingService.luau": "6f626bec812ec8edec524152ce42d0086b66709e6a5657fee97376ad55f70f6e",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/PvPService.luau": "59f2ce526e31c2cac0ff00ce62fa38bde23e61036a91b42e5e8844f200ad27f1",
+    "src/ServerScriptService/GrudgeService.luau": "b42981e97f8dcc8f4ff263a7bdea0712095cd7b090e8510e9c07be065360e6e3",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/LootService.luau": "4d305fa008ba3ef77fb88503a178d0b715a83be193cc1f152208c076ec79bdfd",
+    "src/ServerScriptService/CombatService.luau": "d783fd6fa24e04def8da78ca72659295420ba4b771fa284978d23a427d88f0ec",
+    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
+    "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d",
+    "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479",
+    "src/ServerScriptService/KaijuService.luau": "507adb6941b9fb1e40598c27d061ed51def5ef64286f50c3c00585ff8c9d3444",
+    "src/ServerScriptService/FirstKOService.luau": "31c1a7d1e56afa7160efb4b5b8b45ed132160a2f39591cbcbb1dbb4d0ea473cb",
+    "src/ServerScriptService/MonsterService.luau": "5eafcf62f94f096f95c5d6cc21f2d23c94ba845e3511be9204c86225455cde94",
+    "src/ServerScriptService/Main.server.luau": "f296c784034c65ac764b12aa8fbeb8167d48af74b89f9d2a8dfcde5d4231cdce",
+    "src/ServerScriptService/StoryQuestService.luau": "fe2772848aec297272d7ca49a2a31dc5aacfcd15c8d5ae0e6530c6b2aa20e62a",
+    "src/ServerScriptService/FinisherService.luau": "664b72b99582fb4ade811529e09b9679f883488b0963aee08bb0c973f1da2dc1",
+    "src/ServerScriptService/QuestService.luau": "bdcefb492f43deabc275a25181c6e70443c8145f85dda13e2b3fe31987f794b6"
+  },
+  "fixtureSHA256": "5b824ee921df19e8e627e893ea09bdf03171dc87614399d6d704c4176476bc9d",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-110: Config.FirstKO { Quest, Step, RematchStep } (game dev 3) + Config.FirstKOKing { Enabled, Kind SlimeKing, OneHitBelow 10, Zone, Landmark?, Radius, BossClear, SpawnDistance, DropTime, LandRadius, FirstHP, OneHitMult, RespawnIn, ClaimGrace, GetUp { Back, Lift, Keep, HealthFrac }, SpawnGap, Tick, Retry { Seconds, HitPct, MinHP, PayAs } } + Config.FirstKORetry + data.FirstKODone. FirstKOService: StageOf (StoryQuestService.CurrentStep == Step -> First (FirstKODone false, below OneHitBelow) else Tell (Event FirstKO every SpawnGap, no King), == RematchStep -> Retry (one win per session while the row stays); Enabled = false: Tell at Step, nothing at RematchStep), the retry HP from Config.BestUsableWeapon + its +N, a King whose owner is in a town goes home, atStake (sack, stars, bounty, PvP tag, kaiju state, a failing check: plain hits, no claim), Tick (the first King: SpawnPersonal { HP, Quiet, Distance, Strike, OnKilled, Near, Hold }; the retry King: { HP, Distance, Strike, OnKilled, Near, Hold, Practice = PayAs }; model attributes FirstKO / DropAt / DropTime / DropRadius = LandRadius), the landing thud after DropTime for both Kings inside LandRadius - BossLeap.Grace, Hold = DropTime + FirstLeapAfter, the first King's LeapGrow / LeapGrowMax (A23-113 ①: its leaps' circles grow after misses), strike(rec, target, mult) (first = MaxHealth x OneHitMult, retry = MaxHealth x FirstKORetry.Hit x mult, others = Def.Damage x mult; the first KO gets up away from DropFrom), ClaimKO (death pipeline: FirstKODone + not at stake, King leaves, get-up, StoryQuestService.Event(player, 'FirstKO', { Kind }), signal FirstKO), GetUp (PlayerService delay + CFrame; the get-up spawn sets HealthFrac x MaxHealth once), the quiet King killed: Event FirstKO { Beaten = true }. CombatService: claimFirstKO first; a claimed KO only sends Fx KO { By, Name, Faction '', Lost 0, Sack false, RespawnIn, First = true } + KnockedOut. MonsterService: rec.Quiet / _strike / _onKilled / Practice, a personal monster's kill needs no RewardMinHits and tells _onKilled after MonsterKilled, a practice kill = info.Practice + the PayAs kind's XP / gold, SpawnPersonal(...) -> model, rec (Near: no home-zone fallback; Hold: no swing before; a quiet one's lifetime end floats away), RemovePersonal, GroundAt. FinisherService / LootService / QuestService skip info.Practice. PlayerService: getUp delay + spawnSpot.",
+  "limitations": "Offline doubles: the MonsterService AI (chase, wind-up timing, SEP rings), the client drop / KO screen and real Roblox Died ordering are not run; the retry numbers are checked with a fight model (King every 1.5-1.6 s, potion 30% / 10 s, uptime 60-110%), not a real fight. The shop / quick-slot / drink happenings of the KO1 rows between the KO and the rematch are reported by hand in the quest group (game dev 3's tools/test_potions.py covers the hooks). Studio play by 메인 반영 1 (or DebugCommand FirstKO first / retry)."
+}

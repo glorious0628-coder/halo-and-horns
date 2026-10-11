@@ -4183,6 +4183,26 @@ Config.LandShadow = {
 	Color = Color3.fromRGB(46, 24, 34),
 }
 
+-- A23-113 ① the server half of the circle (게임성 개발 2, MonsterService LEAP; docs/design/boss_leap_2026-10-11.md): per
+-- monster kind a big landing with the LandShadow attributes (DropAt last, DropTime = Warn, DropRadius, DropPos, plus
+-- DropFrom / DropHeight for the leap's arc). The rule never changes: Warn s later every player whose root is within
+-- DropRadius - Grace studs of DropPos (flat, YRange up / down) and a valid target (a boss's new-player rules, towns, zone,
+-- water; a personal monster: its owner only) is hit, nobody else. DropRadius = Config.LandShadow.Radius[kind] (else
+-- Default) + a personal King's LeapGrow after each miss (FirstKOService's first King: it keeps hopping until it lands).
+--   Mode "Leap" (the King Slime): every attack is a leap onto the ground where its target stands when it starts (within
+--     Range studs; the body moves there at once and clients draw it falling there, Fx dropLift); between leaps it never
+--     swings. Cycle = s from one leap's start to the next (default Config.Monsters.AttackCooldown) and Mult = x its hit
+--     (default Cycle / AttackCooldown), so standing still costs what the plain swings did; stepping out costs nothing.
+--   Mode "Slam" (Captain Clatter): every Every-th attack is a slam around itself (it stays) instead of a swing, Mult x hit.
+Config.BossLeap = {
+	Enabled = true,
+	Kinds = {
+		SlimeKing = { Mode = "Leap", Range = 14, Warn = 1, Height = 12 },
+		CaptainClatter = { Mode = "Slam", Every = 3, Warn = 1, Mult = 2 },
+	},
+	Grace = 0.5, YRange = 12, RetryDelay = 0.5,
+}
+
 Config.BossThud = {
 	Kinds = { SlimeKing = true },
 	HopRate = 0.55, HopRatio = 0.2, HopMax = 2,
@@ -7771,6 +7791,13 @@ Config.FirstKOKing = {
 	-- leave a new player at the hill marker without a King for minutes
 	BossClear = 24,
 	SpawnDistance = 6, DropTime = 1.2, LandRadius = 10,
+	-- A23-113 ①: the first King's leaps (Config.BossLeap) grow LeapGrow studs after each one that missed, up to LeapGrowMax
+	-- more: by the third a player cannot step out in the second it shows (it keeps hopping until it lands, "결국 맞힘")
+	LeapGrow = 6, LeapGrowMax = 18,
+	-- s after the drop before both Kings' first leap (A23-113 ①): it lands FirstLeapAfter + Warn (1) = 1.8 s after the drop
+	-- (which hits inside its circle), then one every 1.5 s - the old pace (first swing 0.28 s after the drop, then every
+	-- 1.5 s) with the first hit 0.28 s sooner, which the retry numbers below still pass
+	FirstLeapAfter = 0.8,
 	FirstHP = 5000, -- the first King is not meant to fall (killed anyway: Event "FirstKO" with Beaten = true, the row counts)
 	OneHitMult = 20, -- x MaxHealth: still >= 2 x MaxHealth through the 90% Guard cap (SKL-3)
 	RespawnIn = 3, -- s before the get-up (the KO screen's 3-2-1)
@@ -7782,10 +7809,12 @@ Config.FirstKOKing = {
 	-- the retry King: HP = Seconds of the player's own basic attacks (the best weapon the save may use, with its +N), each
 	-- hit HitPct of MaxHealth (+ regen, FirstKORetry). One HP potion is the lesson: KO1 may leave a player with only one
 	-- (one purchase of any kind passes its buy row, the drink row may use it). tools/test_first_ko_king.py, 729 builds
-	-- (3 classes x Halo / Horns / Neutral x Lv 1-9 x tier 1-3 x +0 / +3 / +5), a potion = 30% / 10 s drunk at 40-60% HP:
-	--   no potion LOSES at 60-80% uptime against a King every 1.5 s and at 60-70% against one every 1.6 s (>= 1.38 s
+	-- (3 classes x Halo / Horns / Neutral x Lv 1-9 x tier 1-3 x +0 / +3 / +5), a potion = 30% / 10 s drunk at 40-60% HP,
+	-- a player who never steps out of a circle (A23-113 ①: the drop hits, the first leap 1.8 s later, then every 1.5 s):
+	--   no potion LOSES at 60-80% uptime against a King every 1.5 s and at 60-70% against one every 1.6 s (>= 1.36 s
 	--   short); at 80% against a 1.6 s King only 9 builds of 729 win without a potion;
-	--   1 potion WINS at 80-110% uptime (King every 1.5 s) with >= 7% HP left; 2 potions win at 70-110% with >= 19% left.
+	--   1 potion WINS at 80-110% uptime (King every 1.5 s) with >= 13% HP left; 2 potions win at 70-110% with >= 19% left.
+	--   Stepping out of the circles wins without potions (the rematch lesson, A23-113).
 	--   (Seconds 18 / HitPct 0.09 needed 2 potions; 16.5 / 0.075 leaves 342 no-potion wins at 80% vs a 1.6 s King.)
 	-- PayAs = the kind whose XP / gold its kill pays (the Slime Prince's; the quest pays the real reward)
 	Retry = { Seconds = 17, HitPct = 0.075, MinHP = 40, PayAs = "BigSlime" },

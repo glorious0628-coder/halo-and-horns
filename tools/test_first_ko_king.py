@@ -29,7 +29,7 @@ DataStore or Roblox API calls; mutations run on in-memory copies of the sources 
 
 Spec: docs/SPEC_ADDENDUM.md A23-110 (A23-109, A23-27 boss rules), docs/design/first_ko_quest_2026-10-10.md (game dev 3).
 Usage: py tools/test_first_ko_king.py [--no-mutations] [--luau path/to/luau.exe]
-Report: docs/art/verification_2026-10-10/offline_dev2_first_ko_king_2026-10-10.json
+Report: docs/art/verification_2026-10-11/offline_dev2_first_ko_king_2026-10-11.json (A23-113 ① landings; was ..._2026-10-10.json)
 """
 from __future__ import annotations
 
@@ -142,17 +142,19 @@ MUTATIONS = [
      "if type(r) == \"table\" then return false end"),
     ("a dead player gets a King", F, "\tif not Util.IsAlive(player) then return false end\n\tlocal root", "\tlocal root"),
     # --- the hits
-    ("one-shot for anyone", F, "\tif target ~= owner or not e or e.Rec ~= rec then return hitBase(rec, target) end\n",
-     "\tif not e or e.Rec ~= rec then return hitBase(rec, target) end\n"),
-    ("raised after the step ended", F, "\tif stage ~= e.Stage then return hitBase(rec, target) end",
-     "\tif false then return hitBase(rec, target) end"),
+    ("one-shot for anyone", F, "\tif target ~= owner or not e or e.Rec ~= rec then return hitBase(rec, target, mult) end\n",
+     "\tif not e or e.Rec ~= rec then return hitBase(rec, target, mult) end\n"),
+    ("raised after the step ended", F, "\tif stage ~= e.Stage then return hitBase(rec, target, mult) end",
+     "\tif false then return hitBase(rec, target, mult) end"),
     ("not lethal", F, "hum.MaxHealth * math.max(10, num(FK.OneHitMult, 20))", "hum.MaxHealth * 0.5"),
     ("Guard can save it", F, "hum.MaxHealth * math.max(10, num(FK.OneHitMult, 20))", "hum.MaxHealth * 1.05"),
     ("pending after the damage", F, PEND, "\t\tlocal applied"),
     ("a ForceField hit still claims", F,
      "\t\tif hum.Health > 0 and ST.Pending[target] == pend then ST.Pending[target] = nil end", ""),
-    ("retry hits like the first", F, "return S.CombatService.DamagePlayer(target, hum.MaxHealth * retryOf(target).Hit, nil, false, rec.Kind)",
+    ("retry hits like the first", F, "return S.CombatService.DamagePlayer(target, hum.MaxHealth * retryOf(target).Hit * mult, nil, false, rec.Kind)",
      "return S.CombatService.DamagePlayer(target, hum.MaxHealth * 20, nil, false, rec.Kind)"),
+    ("retry hit ignores the landing's mult", F, "hum.MaxHealth * retryOf(target).Hit * mult, nil, false, rec.Kind)",
+     "hum.MaxHealth * retryOf(target).Hit, nil, false, rec.Kind)"),
     ("no KO screen name (no kind)", F, "hum.MaxHealth * math.max(10, num(FK.OneHitMult, 20)), nil,\n\t\t\tfalse, rec.Kind)",
      "hum.MaxHealth * math.max(10, num(FK.OneHitMult, 20)), nil,\n\t\t\tfalse, nil)"),
     # --- nothing at stake (no way out of a sack / stars / bounty / PvP / kaiju queue loss)
@@ -169,15 +171,21 @@ MUTATIONS = [
      "if (okW and num(stars) >= 1) or num(player:GetAttribute(\"Bounty\")) > 0 then return true end"),
     ("a failing combat-tag check is no stake", F, "\tif not okP or fight then return true end\n", "\tif okP and fight then return true end\n"),
     ("a failing kaiju check is no stake", F, "\treturn not okK or (st ~= \"None\" and st ~= nil)\n", "\treturn okK and (st ~= \"None\" and st ~= nil)\n"),
-    ("strike ignores the stake", F, "\tif stage == \"First\" and atStake(target) then return hitBase(rec, target) end", ""),
+    ("strike ignores the stake", F, "\tif stage == \"First\" and atStake(target) then return hitBase(rec, target, mult) end", ""),
     ("the claim ignores the stake", F, "or data.FirstKODone == true or atStake(victim) then return nil end",
      "or data.FirstKODone == true then return nil end"),
     ("the Died delay ignores the stake", F, "data.FirstKODone ~= true and not atStake(player) then return { Delay",
      "data.FirstKODone ~= true then return { Delay"),
     # --- the landing
-    ("no landing thud", F, "\t\ttask.delay(math.max(0, num(FK.DropTime, 1.2)), function()\n\t\t\tlocal okL, err = pcall(land, player, rec)",
-     "\t\ttask.delay(math.max(0, num(FK.DropTime, 1.2)), function()\n\t\t\tlocal okL, err = true, nil"),
-    ("landing reaches anywhere", F, "\tif Util.FlatDistance(p, k) > num(FK.LandRadius, 10) or math.abs(p.Y - k.Y) > 12 then return end\n", ""),
+    ("no landing thud", F, "\ttask.delay(math.max(0, num(FK.DropTime, 1.2)), function()\n\t\tlocal okL, err = pcall(land, player, rec)",
+     "\ttask.delay(math.max(0, num(FK.DropTime, 1.2)), function()\n\t\tlocal okL, err = true, nil"),
+    ("landing reaches anywhere", F, "\tif Util.FlatDistance(p, k) > math.max(0, num(FK.LandRadius, 10) - grace) or math.abs(p.Y - k.Y) > 12 then return end\n", ""),
+    ("landing circle without grace", F, "math.max(0, num(FK.LandRadius, 10) - grace)", "num(FK.LandRadius, 10)"),
+    ("the retry drop never hits", F, "\tif not e or e.Rec ~= rec or not rec.Alive then return end\n\tlocal root, kroot",
+     "\tif not e or e.Rec ~= rec or e.Stage ~= \"First\" or not rec.Alive then return end\n\tlocal root, kroot"),
+    ("no drop circle radius", F, "\t\tmodel:SetAttribute(\"DropRadius\", num(FK.LandRadius, 10))\n", ""),
+    ("the first King never grows", F, "\t\topts.LeapGrow, opts.LeapGrowMax = math.max(0, num(FK.LeapGrow, 6)), math.max(0, num(FK.LeapGrowMax, 18))\n", ""),
+    ("gets up toward the King", F, "\tif typeof(leap) == \"Vector3\" and Util.FlatDistance(leap, at) > 0.5 then return leap end\n", ""),
     ("no drop attributes", F, "\t\tmodel:SetAttribute(\"DropAt\", Util.Now())\n", ""),
     # --- the King
     ("the first King not quiet", F, "\t\topts.Quiet = true\n", "\t\topts.Quiet = false\n"),
@@ -186,7 +194,9 @@ MUTATIONS = [
     ("no strike hook", F, HOOKS, "Distance = num(FK.SpawnDistance, 6), OnKilled = onKilled, Near = true,"),
     ("no kill hook", F, HOOKS, "Distance = num(FK.SpawnDistance, 6), Strike = strike, Near = true,"),
     ("home-town fallback allowed", F, HOOKS, "Distance = num(FK.SpawnDistance, 6), Strike = strike, OnKilled = onKilled,"),
-    ("swings before the landing", F, "\t\tHold = math.max(0, num(FK.DropTime, 1.2)) }", "\t\tHold = 0 }"),
+    ("swings before the landing", F, "\t\tHold = math.max(0, num(FK.DropTime, 1.2)) + math.max(0, num(FK.FirstLeapAfter, 0.5)) }", "\t\tHold = 0 }"),
+    ("first leap right at the drop", F, "\t\tHold = math.max(0, num(FK.DropTime, 1.2)) + math.max(0, num(FK.FirstLeapAfter, 0.5)) }",
+     "\t\tHold = math.max(0, num(FK.DropTime, 1.2)) }"),
     ("retry King has the first HP", F, "local opts = { HP = first and math.max(1, num(FK.FirstHP, 5000)) or retryOf(player).HP,",
      "local opts = { HP = math.max(1, num(FK.FirstHP, 5000)),"),
     ("two Kings at once", F, "\tif e or stage == nil or now < (ST.NextAt[player] or 0) then return end",
@@ -364,7 +374,7 @@ SUITE = Suite(
     mark="FIRST_KO_KING",
     fixture=ROOT / "tools/fixtures/first_ko_king_offline.luau",
     world=ROOT / "tools/fixtures/dev2_world.luau",
-    out=ROOT / "docs/art/verification_2026-10-10/offline_dev2_first_ko_king_2026-10-10.json",
+    out=ROOT / "docs/art/verification_2026-10-11/offline_dev2_first_ko_king_2026-10-11.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-110: Config.FirstKO { Quest, Step, RematchStep } (game dev 3) + Config.FirstKOKing { Enabled, Kind SlimeKing, "
              "OneHitBelow 10, Zone, Landmark?, Radius, BossClear, SpawnDistance, DropTime, LandRadius, FirstHP, OneHitMult, "
@@ -375,8 +385,10 @@ SUITE = Suite(
              "RematchStep), the retry HP from Config.BestUsableWeapon + its +N, a King whose owner is in a town goes home, atStake (sack, stars, bounty, PvP tag, kaiju "
              "state, a failing check: plain hits, no claim), Tick (the first King: SpawnPersonal { HP, Quiet, Distance, Strike, "
              "OnKilled, Near, Hold }; the retry King: { HP, Distance, Strike, OnKilled, Near, Hold, Practice = PayAs }; model attributes "
-             "FirstKO / DropAt / DropTime), the landing thud after DropTime, strike (first = MaxHealth x OneHitMult, retry = "
-             "MaxHealth x FirstKORetry.Hit, others = Def.Damage), ClaimKO (death pipeline: FirstKODone + not at stake, King leaves, "
+             "FirstKO / DropAt / DropTime / DropRadius = LandRadius), the landing thud after DropTime for both Kings inside "
+             "LandRadius - BossLeap.Grace, Hold = DropTime + FirstLeapAfter, the first King's LeapGrow / LeapGrowMax (A23-113 "
+             "①: its leaps' circles grow after misses), strike(rec, target, mult) (first = MaxHealth x OneHitMult, retry = "
+             "MaxHealth x FirstKORetry.Hit x mult, others = Def.Damage x mult; the first KO gets up away from DropFrom), ClaimKO (death pipeline: FirstKODone + not at stake, King leaves, "
              "get-up, StoryQuestService.Event(player, 'FirstKO', { Kind }), signal FirstKO), GetUp (PlayerService delay + "
              "CFrame; the get-up spawn sets HealthFrac x MaxHealth once), the quiet King killed: Event FirstKO { Beaten = true }. "
              "CombatService: claimFirstKO first; a claimed KO only sends Fx KO { By, Name, Faction '', Lost 0, Sack false, "
