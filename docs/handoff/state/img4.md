@@ -1,7 +1,7 @@
 # 이미지 생성 4 — 상태 (2026-10-12 00:30)
 
 ## 지금 상태 한 줄
-**Tripo 묶음 1(26)·2(14) 끝 — 잔액 15,765(web 2). 비교 시험 시트 보냄(디자인 검수 고름 기다림). 디자인 검수 "다시" 6개 WorldKit 적용 끝, Studio 사진은 다음 슬롯. 다음 = 디자인 검수 답 → 올리기 승인(최종 검수) → C·D2 Studio 칸, Tripo 모델 Blender 손보기.**
+**10/12 01시: 기본 B 적용(58종 모든 파트 그림자, 마을 다시 배치). C·C+ 버림. ★ 선 비교(B | 얇게 0.035 | 굵게 0.06, EditableMesh 임시 = 안 올림) `art/review/img4/star_1012_sheet.jpg` → 디자인 검수 → 최종 검수 → 사용자 고름. '다시' 6개 Studio 사진 `studio_redo_1012.jpg` 디자인 검수 판정 기다림. 사용자가 선을 고르면 그 굵기 4개(build/prop_kit_hull/<Kit>_D2_<035|060>.obj)만 이미지 개발에 넘김.**
 
 ## 비교 시험 (사용자 "그림자가 없어서 이상한 건가, 뭔가 선이 없어 보여")
 - 시트: `art/review/img4/compare_1011_sheet.jpg` (사진 64장 `art/review/img4/compare_1011/`, 디스크만). 소품 4 = BenchA·Lantern_A·Beehive·Planter_D__Body.
