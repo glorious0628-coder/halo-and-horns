@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12: 천 v3b 통과)
+
+- **천 v3b 통과(디자인 검수)**: WorldKit HH_Fabric 적용 끝·사진 push. 메인 교체 한 줄(color 130243612742018 / normal 78044174442027 / rough 111200474370652)은 디자인 검수가 최종 검수 → 메인 반영 1로 넘김. **메인 교체 확인 뒤**: v2 맵 ID(76316272601072·102973991596175(normal은 v1과 공용이었음)·119858177335377)와 art/ui/halo_tile/fabric_v2 파일을 안 쓰는 ID로 기록·정리(삭제 전 확인).
+- MCP 이름 주의: 지금 WorldKit 창은 STUDIO_NAME=Game으로 잡힘(WorldKit.rbxlx 맞음).
+
 # 이미지 개발 — 상태 (2026-10-12: 천 v3b 올림·WorldKit 적용, 낮 사진 대기)
 
 - **천 v3b 올림(승인, 직접 봄)**: color 130243612742018·normal 78044174442027·rough 111200474370652 (asset_ids `Halo_Fabric3b_*`). WorldKit HH_Fabric에 넣음(v2 ID: color 76316272601072·normal 102973991596175·rough 119858177335377 = 되돌릴 값) + 백업(wk_backup). **다음: 성문 배너 원경(fabric_v2_day_a 자리) + 100% 크롭 낮 사진 = 최종 검수에 화면 신청 → 디자인 검수.** 너무 민무늬면 v3a(내 눈, 알리기만). 통과면 메인 교체는 메인 반영 1(ID 3개 + MaterialService HH_Fabric ColorMap/NormalMap/RoughnessMap 한 줄로 넘김). 그 뒤 v2 맵 파일·기록 정리(normal v2는 v1과 공용이었음 — 삭제 전 확인).
