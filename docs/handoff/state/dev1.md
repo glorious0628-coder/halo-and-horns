@@ -25,6 +25,8 @@
 
 10. **fix/photo-1012 471d099c** (main 0696ccc4에서, wt_onehand 재사용 — onehand-2는 병합됨): ① 지팡이 끝이 사진에서 0.27/0.26 뜸 → WeaponPose.StaffStep/StaffLift(화면이 Shaft 끝→땅 재서 손 목표 보정, ±0.4) — 서버 HipHeight 식은 맞았음(PotionMerchant 부품 위치가 낡음: 몸 크기 1.06, 연결점 기준 윗몸통 3.441·키 5.46; 크기 1이면 ~5.15라 H 5.2 그대로; grip_reference §5-1 바로잡음). ② 가방 강화 칩 → Config.Loot.Text EnhanceOk/FailDown/FailKeep/MoveOk 결과만(인자 그대로), tools/test_enhance_lines.py. 게임성 검수·개발 2에 알림.
 
+11. **main 96ec45ad에 병합됨:** golden-egg-client(eebeebd3까지)·onehand-2·photo-1012·reward-chip. **fix/egg-mine cef8f3f6** (wt_goldegg, main 8e6b7288에서): Eggs 켜기 전 낮은 것 — Near에 S.Trail 포함, MineAt은 미리 보기 없는 줍기만. test_egg_fx 55·29/29. 게임성 검수에 보고.
+
 ## 기다리는 것
 - 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(eebeebd3) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
 - 사진(병합 뒤 메인 반영 1): 마법사 지팡이 tip-foot 다시(목표 0.05~0.15, 기본 R15도), 가방 강화 성공·실패 칩, 카드 연 채 첫 미션 받기(동전 +150), 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
