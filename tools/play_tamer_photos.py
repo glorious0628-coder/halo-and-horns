@@ -6,7 +6,7 @@ gives materials, Pet Treats and gold; the server fires TamerInfo (research point
 and a pet at the top level, and a CraftSession + CraftResult.Pet (the summon's line). OpenPanel("Craft" | "Pet") opens
 the windows; Studio's own input (user_mouse_input in my test Play, no desktop mouse) presses the Research tab once.
 Probes + photos at each step, the console's errors, then Play stops (finally) and the fresh-save flag is cleared.
-Usage: STUDIO_ID=<UiSandbox id> py tools/play_tamer_photos.py [outdir-name]   (own test Play only: 최종 검수 approves first)
+Usage: STUDIO_ID=<UiSandbox id> py tools/play_tamer_photos.py [outdir-name] [--no-click]   (own test Play only: 최종 검수 approves first)
 Out: docs/art/verification_2026-10-12/tamer/<outdir-name or pc>/"""
 import base64
 import io
@@ -18,7 +18,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from studio_mcp import Client  # noqa: E402
 
-OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-12", "tamer", sys.argv[1] if len(sys.argv) > 1 else "pc")
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+NO_CLICK = "--no-click" in sys.argv  # a run approved without in-game clicks: the Research tab photo is skipped
+OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-12", "tamer", ARGS[0] if ARGS else "pc")
 LOG = []
 
 
@@ -193,7 +195,7 @@ def main():
         shot(c, "02_summon_research_short")
         send(c, "TamerInfo", "{ Pts = { Slime = 160, Goblin = 40 }, Sum = { Slime = 1 }, " + STAGES + " }")
         shot(c, "03_summon_research_ok")
-        if click(c, "Tab_Research"):
+        if not NO_CLICK and click(c, "Tab_Research"):
             shot(c, "04_research_tab", 1.0)
         send(c, "PetList", '{ Equipped = "P1", List = { { Uid = "P1", Sp = "BabySlime", Lv = 3, XP = 10, Need = 45, Name = "", Lean = "",'
              ' Roll = { Spd = 8 } }, { Uid = "P2", Sp = "BabySlime", Lv = 10, XP = 0, Need = 0, Name = "Good Buddy", Lean = "Good" } } }')
