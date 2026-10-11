@@ -1,0 +1,9 @@
+{
+ "note": "A23-120 (user 10/11 '건물 골격 먼저'): Halo town buildings = Studio part skeleton + tile MaterialVariants (this list) + Tripo trim parts. Parts set MaterialVariant = Name (no override of the base material). tools/building_variants.py writes the Luau. StudsPerTile starts at 8; 이미지 생성 3 sets it from the house 07 skeleton in WorldKit.",
+ "variants": [
+  {"name": "HH_HaloMarbleBlock", "base": "Marble", "studsPerTile": 8, "pattern": "Regular",
+   "source": "art/ui/halo_tile/Halo_TowerMarbleBlock_* (uploaded by 이미지 생성 1, art/models/worldkit/halo_tower_marble_maps_2026-10-10.json)",
+   "color": "rbxassetid://133937959661245", "normal": "rbxassetid://126193858276827",
+   "rough": "rbxassetid://82509703836879", "metal": "rbxassetid://87489921567476"}
+ ]
+}

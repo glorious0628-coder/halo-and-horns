@@ -1273,6 +1273,7 @@ end
 
 local function onMonsterKilled(player, info)
 	if type(info) ~= "table" then return end
+	if info.Practice == true then return end -- A23-110: the retry King (a practice King) counts for no daily job
 	local data = getData(player)
 	if not data then return end
 	local step = getStep(player)

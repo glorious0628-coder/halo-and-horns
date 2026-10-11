@@ -555,10 +555,9 @@ for wname, cxw, czw, n in CLUSTERS:
             HOUSES.append(e)
             houses += 1
 
-# ---- watch towers (망루): only on cliff edges looking out to the sea or over a bend; never between the gate and the cathedral dome
-towers = 0
+# ---- watch towers (망루, 검수 10/10 + A23-117): only where a watch is needed, four of them, three kinds (A watch tower / B open lookout /
+# C gold tower, tools/tower_assemble.py --variant), no two of a kind near each other, never between the gate and the cathedral dome
 edge_cells = [(x, z) for (x, z), (v, w, m, t) in COL.items() if t == "top" and any(tagv(x + dx, z + dz)[0] == "cliff" for dx, dz in ((8, 0), (-8, 0), (0, 8), (0, -8)))]
-TOWER_TRY = [(CX(-548) + 50, -548, 1.3)] + [(x, z, rng.choice((0.8, 0.9, 1.0, 1.1, 1.2))) for x, z in rng.sample(edge_cells, min(900, len(edge_cells)))]
 
 
 def blocks_dome(x, z):
@@ -570,22 +569,23 @@ def blocks_dome(x, z):
     return abs(a1 - a2) < math.radians(9) and math.hypot(x - gx, z - gz) < math.hypot(cat["x"] - gx, cat["z"] - gz)
 
 
-for x, z, s_ in TOWER_TRY:
-    if towers >= 6:
-        break
-    if z > -440 or blocks_dome(x, z) or zone_of(x, z) == "cathedral":  # the cathedral hill has its own dome; a tower there closed the west walk
-        continue
-    if any(e["kind"].startswith("DomeHouse") and math.hypot(e["x"] - x, e["z"] - z) < 26 for e in P):  # no tower squeezed between houses
-        continue
-    if any(e["kind"] == "Tower" and math.hypot(e["x"] - x, e["z"] - z) < 45 for e in P):
-        continue
-    if cat and math.hypot(cat["x"] - x, cat["z"] - z) < 56:
-        continue
-    if any(e["kind"] == "Tower" and abs(e["x"] + x) < 20 and abs(e["z"] - z) < 20 for e in P):
-        continue
-    for dx, dz in ((0, 0), (4, 0), (-4, 0), (0, 4), (0, -4)):
-        if put_reach("Tower", x + dx, z + dz, face_to(x, z, CX(z), z) + rng.uniform(-20, 20), s_,
-               why="망루: 바다·아래 단을 지켜보는 경비 자리" if towers else "광장 동쪽 굽이 망루: 길 꺾이는 곳 표지(규칙 6)"):
+TOWER_SPOTS = [  # (centre x, z, kind, scale, why)
+    (CX(-548) + 50, -548, "C", 1.0, "광장 동쪽 굽이 망루: 길이 꺾이는 곳 표지·광장 지킴(규칙 6)"),
+    (-176, -676, "A", 1.0, "서쪽 바다 망루: 서쪽 전망대 옆, 바다 쪽 경계"),
+    (-176, -398, "B", 1.0, "서쪽 동네 바다 전망 망루: 열린 아래층에서 운하·바다를 봄(동네 사람 쉼터)"),
+    (182, -470, "A", 0.95, "동쪽 동네 바다 망루: 동쪽 바다 쪽 경계"),
+]
+towers = 0
+for tx, tz, tkind, s_, why in TOWER_SPOTS:
+    cands = sorted(((x, z) for (x, z), (v, w, m, t) in COL.items() if t == "top" and math.hypot(x - tx, z - tz) < 34),
+                   key=lambda c: math.hypot(c[0] - tx, c[1] - tz))
+    cands = [(tx, tz)] + cands
+    for x, z in cands:
+        if blocks_dome(x, z) or (cat and math.hypot(cat["x"] - x, cat["z"] - z) < 56):
+            continue
+        if any(e["kind"] == "Tower" and e.get("tower_kind") == tkind and math.hypot(e["x"] - x, e["z"] - z) < 90 for e in P):
+            continue
+        if put_reach("Tower", x, z, face_to(x, z, CX(z), z) + rng.uniform(-20, 20), s_, why=why, tower_kind=tkind):
             towers += 1
             break
 
@@ -710,7 +710,7 @@ def tree_group(cx_, cz_, n, why):
     for _ in range(12):
         a_ = rng.uniform(0, 2 * math.pi)
         r_ = rng.uniform(8, 13)
-        k_ = rng.choice(("CloudBush", "CloudBush", "PotFlowers"))
+        k_ = rng.choice(("PotFlowers", "Planter", "Planter"))  # user 10/11: no white cloud puffs ("꽃도 아니고 뭉탱이") -> flowers under the trees
         put_v(k_, cx_ + r_ * math.cos(a_), cz_ + r_ * math.sin(a_), rng.uniform(0, 360), vs(), pad=0.3, why="나무 무리 밑 꽃·덤불(3겹 심기)")
     return got
 
@@ -736,16 +736,18 @@ for x, z in rng.sample(edge_cells, min(1500, len(edge_cells))):
 # cliff-edge cloud bushes (island edges: the densest part, A23-76)
 done = 0
 for _ in range(5000):
-    if done >= 60 or not edge_cells:
+    if done >= 40 or not edge_cells:
         break
     x, z = rng.choice(edge_cells)
-    if tagv(x, z)[0] != "top" or any(e["kind"] == "CloudBush" and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(8, 16) for e in P):
+    if tagv(x, z)[0] != "top" or any(e["kind"] in ("Topiary", "PotFlowers") and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(9, 16) for e in P):
         continue
-    if put_v("CloudBush", x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.4), pad=0.2, why="절벽 가장자리 덤불(가장자리 채우기·떨어짐 막는 느낌)"):
+    k_ = rng.choice(("Topiary", "Topiary", "PotFlowers"))
+    if put_v(k_, x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.2), pad=0.2,
+             why="절벽 가장자리 " + ("다듬은 나무" if k_ == "Topiary" else "꽃 화분") + "(가장자리 채우기·떨어짐 막는 느낌)"):
         done += 1
 # gather bushes (게임에 가져올 것 1): the reserved spots get their bush now
 for sp in SPOTS["gather"]:
-    put("CloudBush", sp["x"], sp["z"], rng.uniform(0, 360), rng.uniform(1.1, 1.3), pad=0.1, noreserve=True, why="채집 덤불: 매일 숨은 꽃·재료")
+    put("Topiary", sp["x"], sp["z"], rng.uniform(0, 360), rng.uniform(1.1, 1.3), pad=0.1, noreserve=True, why="채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)")
 # flower garden islands: pots and beds on the garden wings
 for _ in range(400):
     w = rng.choice([w_ for w_ in WINGS if WING_ZONE[w_[0]] == "garden"])
@@ -759,8 +761,9 @@ for sp in SPOTS["scene"]:
     put("PotFlowers", sp["x"] - 2 * math.sin(a_), sp["z"] + 2 * math.cos(a_), rng.uniform(0, 360), vs(), pad=0.1, noreserve=True, why="작은 장면 꽃: " + sp["what"])
 
 # ---------------------------------------------------------------- backdrop (beyond the land rect, no collision, nobody can stand there: #64)
-BACK = [("Islet", -250, -430, 1.0), ("Islet", 268, -480, 1.25), ("Islet", -232, -610, 0.85), ("Islet", 244, -660, 1.1),
-        ("FarArch", -305, -530, 0.9), ("FarArch", 286, -372, 1.15), ("FarArch", 30, -770, 1.4)]
+# user 10/11: the small rock-and-bush islets in the sea looked like scraps ("쫌쫌따리들 보기 싫음") -> gone; only the three far arches stay,
+# big and clear (the lookouts look at them)
+BACK = [("FarArch", -305, -530, 1.6), ("FarArch", 286, -372, 1.8), ("FarArch", 30, -770, 2.2)]
 for kind, x, z, s in BACK:
     P.append(dict(kind=kind, x=x, z=z, y=-1.2, yaw=rng.uniform(0, 360), s=s, backdrop=True, why="먼 바다 배경(전망대에서 보는 섬·아치)", zone="sea"))
 
@@ -926,7 +929,7 @@ print("refused:", {f"{k[0]}:{k[1]}": v for k, v in sorted(WHY.items()) if k[0] i
 print("bridges:", [(b["name"], b["span"]) for b in BRIDGES])
 print(f"walkable columns {len(cells)}, reachable from the spawn {len(seen)}, unreachable {len(unreach)} {by_wing}")
 print("   unreachable at:", sorted({(X0 + c[0] * R, Z0 + c[1] * R) for c in unreach})[:20])
-want = {"Statue": 7, "Shop": 4, "Tower": 6, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
+want = {"Statue": 7, "Shop": 4, "Tower": 4, "DomeHouseA": 6, "DomeHouseB": 6, "Stairs": 4, "Cathedral": 1, "Fountain": 1}
 for k, v in want.items():
     if count.get(k, 0) != v:
         print(f"!! {k}: placed {count.get(k, 0)} of {v}")

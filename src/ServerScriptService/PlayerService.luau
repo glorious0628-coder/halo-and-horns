@@ -165,6 +165,26 @@ local function spawnCFrame(zoneId, faceOut)
 	return CFrame.new(z.Spawn + Vector3.new(0, 4, 0))
 end
 
+-- A23-110: a get-up a service holds for this player (FirstKOService.GetUp: the lossless first KO gets up near where it
+-- fell after its own delay) -> { Delay = s, CFrame = CFrame? } or nil
+local function getUp(player)
+	local svc = S and S.FirstKOService
+	if type(svc) ~= "table" or type(svc.GetUp) ~= "function" then return nil end
+	local ok, g = pcall(svc.GetUp, player)
+	if not ok then
+		loopWarn("GetUp", g)
+		return nil
+	end
+	return type(g) == "table" and g or nil
+end
+
+-- where a real (re)spawn stands: the held get-up (A23-110), else the zone spawn (A23-68 #1 / zone_check_halo #43)
+local function spawnSpot(player)
+	local g = getUp(player)
+	if g and typeof(g.CFrame) == "CFrame" then return g.CFrame end
+	return spawnCFrame(respawnZoneId(player), firstMissionOpen(player))
+end
+
 -- CR-H2: tell ZoneService's movement check that the server is about to move this player (no false "teleport" log)
 local function markTeleported(player, seconds)
 	local zs = S.ZoneService
@@ -408,7 +428,11 @@ local function bindCharacterDeath(player, character, humanoid)
 		if handled or not ready[player] or player.Parent == nil or player.Character ~= character then return end
 		handled = true
 		PlayerService.CharacterDied:Fire(player, character)
-		task.delay(Config.Player.RespawnTime, function()
+		-- A23-110: a held get-up comes after its own delay (the first KO's 3-2-1), anything else after RespawnTime
+		local g = getUp(player)
+		local upIn = g and tonumber(g.Delay) or nil
+		if not upIn or upIn ~= upIn or upIn < 0 or upIn > 30 then upIn = Config.Player.RespawnTime end
+		task.delay(upIn, function()
 			if player.Parent and player.Character == character and ready[player] then loadCharacter(player) end
 		end)
 	end
@@ -471,7 +495,7 @@ local function onCharacterAdded(player, character)
 	applyStats(player, humanoid, true)
 	if context then humanoid.Health = math.min(context.Health, humanoid.MaxHealth) end
 	if not context then markTeleported(player, (Config.AntiCheat and Config.AntiCheat.SpawnGrace) or 2) end -- CR-H2
-	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context) or spawnCFrame(respawnZoneId(player), firstMissionOpen(player)))
+	character:PivotTo(context and cosmeticPivot(character, humanoid, root, context) or spawnSpot(player))
 
 	PlayerService.CharacterSpawned:Fire(player, character, humanoid, context ~= nil)
 	if context and player.Character == character and character.Parent and humanoid.Health > 0 then

@@ -1,0 +1,192 @@
+{
+  "status": "passed",
+  "checks": 52,
+  "failedChecks": [],
+  "staticFailures": [],
+  "mutations": {
+    "total": 16,
+    "applied": 16,
+    "caught": 16,
+    "results": [
+      {
+        "mutation": "the season is on again",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "Enabled is false",
+        "failures": [
+          "CHECK_FAIL Config.Halloween.Enabled is false as shipped (the season is hidden) :: true",
+          "CHECK_FAIL SeasonOn: Halloween is off, no season is on :: ",
+          "CHECK_FAIL HauntedHollow: its middle and its spawn read as Outskirts (the zone is gone) :: HauntedHollow"
+        ]
+      },
+      {
+        "mutation": "the news says Halloween",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "no Halloween line",
+        "failures": [
+          "CHECK_FAIL no quest, daily, tutorial, help, board or deed text names pumpkins, haunted places, Halloween or candy :: Help.News.2.Lines.1 = Halloween: the Pumpkin Patch and the new Haunted H",
+          "CHECK_FAIL the news window has no Halloween line :: your beta save carries over to the full launch. everyone who joins before the launch gets the beta pioneer title. halloween: the pumpkin patch and the new haunted hollow with ghosts and the ghost king. new players get their first weapon from the blacksmith before the first hunt. new settings window: change your keys, sound effects and screen shake."
+        ]
+      },
+      {
+        "mutation": "the news names December 19",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "December 19",
+        "failures": [
+          "CHECK_FAIL the news window names no launch date that moved (December 19) :: your beta save carries over to the full launch on december 19. everyone who joins before the launch gets the beta pioneer title. new players get their first weapon from the blacksmith before the first hunt. new settings window: change your keys, sound effects and screen shake."
+        ]
+      },
+      {
+        "mutation": "the news forgets the beta",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "the beta lines stay",
+        "failures": [
+          "CHECK_FAIL the beta lines stay (the save carries over, Beta Pioneer) :: your save is kept. everyone who joins before the launch gets the beta pioneer title. new players get their first weapon from the blacksmith before the first hunt. new settings window: change your keys, sound effects and screen shake."
+        ]
+      },
+      {
+        "mutation": "a quest guides to the patch",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "points at a hidden zone",
+        "failures": [
+          "CHECK_FAIL no quest, daily, tutorial, help, board or deed text names pumpkins, haunted places, Halloween or candy :: StoryQuests.Defs.H3.Steps.2.Guide = PumpkinPatch",
+          "CHECK_FAIL no story quest step points at a hidden zone or a Halloween kind :: H3.2:PumpkinPatch"
+        ]
+      },
+      {
+        "mutation": "a quest says candy",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "names pumpkins",
+        "failures": [
+          "CHECK_FAIL no quest, daily, tutorial, help, board or deed text names pumpkins, haunted places, Halloween or candy :: StoryQuests.Defs.H3.Finish = Sir Gleam: Is it still helping? Have some candy!"
+        ]
+      },
+      {
+        "mutation": "the candy bag is offered",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "candy bag is not offered",
+        "failures": [
+          "CHECK_FAIL lost & found: the candy bag is not offered, the other three are :: "
+        ]
+      },
+      {
+        "mutation": "a pumpkin slime without its season",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "lives outside the two fields",
+        "failures": [
+          "CHECK_FAIL PumpkinSlime (no season) lives outside the two fields :: PumpkinPatch",
+          "CHECK_FAIL exactly the six Halloween kinds are seasonal :: 5",
+          "CHECK_FAIL PumpkinSlime is kept (data stays) and is a Halloween kind :: PumpkinSlime"
+        ]
+      },
+      {
+        "mutation": "the live switch is gone",
+        "target": "Config",
+        "applied": true,
+        "caught": true,
+        "expect": "live switch Halloween",
+        "failures": [
+          "CHECK_FAIL the live switch Halloween still exists :: "
+        ]
+      },
+      {
+        "mutation": "the minimap draws a season that is off (lands)",
+        "target": "MiniMap",
+        "applied": true,
+        "caught": true,
+        "expect": "skips lands and roads",
+        "failures": [
+          "MiniMap.readRects skips lands and roads of a season that is off"
+        ]
+      },
+      {
+        "mutation": "the minimap draws a season that is off (zones)",
+        "target": "MiniMap",
+        "applied": true,
+        "caught": true,
+        "expect": "skips the zones",
+        "failures": [
+          "MiniMap skips the zones of a season that is off"
+        ]
+      },
+      {
+        "mutation": "the minimap helper reads another season",
+        "target": "MiniMap",
+        "applied": true,
+        "caught": true,
+        "expect": "has seasonOff",
+        "failures": [
+          "MiniMap has seasonOff (Config.SeasonOn)"
+        ]
+      },
+      {
+        "mutation": "the big map draws a seasonal land",
+        "target": "WorldMap",
+        "applied": true,
+        "caught": true,
+        "expect": "WorldMap draws a land",
+        "failures": [
+          "WorldMap draws a land only while its season is on"
+        ]
+      },
+      {
+        "mutation": "the diary row ignores the switch",
+        "target": "QuestBook",
+        "applied": true,
+        "caught": true,
+        "expect": "follow Enabled",
+        "failures": [
+          "QuestBook: the King Diary / candy jar rows follow Enabled and EndsAt"
+        ]
+      },
+      {
+        "mutation": "the live switch can turn the season on",
+        "target": "SwitchService",
+        "applied": true,
+        "caught": true,
+        "expect": "can only turn the season off",
+        "failures": [
+          "the live switch Halloween can only turn the season off (ANDed with the Config value)"
+        ]
+      },
+      {
+        "mutation": "the candy bag ignores its season",
+        "target": "LostFoundService",
+        "applied": true,
+        "caught": true,
+        "expect": "offers an item only while",
+        "failures": [
+          "LostFoundService offers an item only while its season is on"
+        ]
+      }
+    ]
+  },
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "402a818d826d19a513e4f15d6dbd9affab25fc2bb3b882d8e67508cb49692c60",
+    "src/StarterPlayer/StarterPlayerScripts/MiniMap.luau": "fc916d56f133b7bd3cd143ff732165ce735618510207c398f2aaff4cf4df24fc",
+    "src/StarterPlayer/StarterPlayerScripts/WorldMap.luau": "e28e3f298c8cf1c772c403a7d6593d7fad809c05dbb763cd9a79802130a5dfd2",
+    "src/StarterPlayer/StarterPlayerScripts/QuestBook.luau": "73f466603e3167e941133d517b5d38f384eff4deacf7809ec5f88e747e334a44",
+    "src/ServerScriptService/HalloweenService.luau": "28a85b9f636fde698c971e484b51ade893b02dad1c0dd0e3990047ae319a8e34",
+    "src/ServerScriptService/LostFoundService.luau": "87ef8287bdc7bd17021c689bf0e33265797a4ef45c73fe2f89c0390fb1b9becb",
+    "src/ServerScriptService/SwitchService.luau": "1a268a27b6f5e78c8f6090fef432cccbe26be42064abb339fbe017195c889395"
+  },
+  "fixtureSHA256": "cd88e4b3bd9455400a36eeba31eadfd555e324ed7315840eb9e37ad59ee3f5df",
+  "studioCalls": 0,
+  "contract": "The hidden Pumpkin Patch and Haunted Hollow, offline (게임성 개발 3, 2026-10-11, SPEC A23-119), plus mutations.\n\nThe user moved the public beta to 2026-12-01 and skips the Halloween season: the two seasonal fields are HIDDEN with one Config\nvalue, Config.Halloween.Enabled = false (no code and no data is deleted; docs/design/halloween_hidden_2026-10-11.md). The real\nConfig.luau as shipped (no season override) is loaded with engine doubles (tools/fixtures/halloween_hidden_offline.luau) and must\nshow: both zones are gone from ZoneAt, every Halloween kind is off, the candy bag is not offered, no quest / daily / tutorial / help /\nboard / deed text or objective names the hidden fields, the news window has no Halloween line and no launch date that moved.\nThe static part reads the client and server sources that decide what is drawn or run (MiniMap, WorldMap, QuestBook, HalloweenService,\nLostFoundService, SwitchService).",
+  "limitations": "The land and the props of the two fields stay in the saved place (nothing is deleted): the world side (image generation 1) replaces them when the new zone is built. What a client draws is read as source text, not run."
+}

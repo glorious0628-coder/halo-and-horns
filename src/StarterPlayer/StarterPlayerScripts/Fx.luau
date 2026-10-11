@@ -1543,8 +1543,10 @@ function WOBBLE.step(dt)
 						st.Mesh.Size = Vector3.new(st.Base.X * sx, st.Base.Y * sy, st.Base.Z * sx)
 						half = st.Base.Y * 0.5
 					end
+					-- A23-110: a King dropping from the sky (DropAt / DropTime) is drawn that far up (LandShadow draws its circle)
+					local drop = WOBBLE.dropLift(model, st)
 					-- bottom stays on the floor, Sink studs into it (no visible gap under the jelly)
-					st.Joint.C1 = CFrame.new(0, -(hop + (sy - 1) * half) + WOBBLE.Sink, 0)
+					st.Joint.C1 = CFrame.new(0, -(hop + drop + (sy - 1) * half) + WOBBLE.Sink, 0)
 					if not foreign then
 						WOBBLE.placeShadow(model, st.Root, st, pop * (hopMax > 0 and 1 - 0.35 * (hop / hopMax) or 1))
 					end
@@ -1641,7 +1643,9 @@ local function onMonsterAttack(model)
 	later(lungeAt, function()
 		if model.Parent then Feel.dust(root, h, rh) end
 	end)
-	if MOTION.Thuds(model) then -- the King Slime: its attack hop lands with a bigger thud (back at rest = on the floor)
+	-- the King Slime: its attack hop lands with a bigger thud (back at rest = on the floor); never another player's own
+	-- King (A23-110 first KO: only its owner sees it, Feel.isForeign)
+	if MOTION.Thuds(model) and not Feel.isForeign(model) then
 		local landAt = 0
 		for _, s in steps do landAt += s[2] end
 		later(landAt, function()
@@ -1986,6 +1990,27 @@ end
 -- camera follow never sees it), the thud sound, a round dust ring
 MOTION.THUD = type(Config.BossThud) == "table" and Config.BossThud or {}
 MOTION.Bump = { Mag = 0, At = -math.huge, Dur = 0, Bound = false, LastAt = -math.huge, LastMul = 0, Bind = "HaloHornsFxThud" }
+
+-- A23-110 (개발 2 FirstKOService): a monster with DropAt (server time) / DropTime falls from DROP_HEIGHT studs up,
+-- faster and faster (height x (1 - u^2)), and lands with the big thud once (not for a drop long over at the join, never
+-- for another player's own King). Returns the studs up now (0 = on the ground)
+WOBBLE.DROP_HEIGHT = 40
+function WOBBLE.dropLift(model, st)
+	local at, dur = model:GetAttribute("DropAt"), model:GetAttribute("DropTime")
+	if type(at) ~= "number" or type(dur) ~= "number" or dur <= 0 then return 0 end
+	local u = (workspace:GetServerTimeNow() - at) / dur
+	if u >= 1 then
+		if st.DropLanded ~= at then
+			st.DropLanded = at
+			if u < 1.5 and not Feel.isForeign(model) then
+				pcall(MOTION.Thud, st.Root, st.H, asNum(MOTION.THUD.AttackMul, 1.4))
+			end
+		end
+		return 0
+	end
+	u = math.max(0, u)
+	return WOBBLE.DROP_HEIGHT * (1 - u * u)
+end
 
 -- true for a monster whose kind thuds (the King Slime)
 function MOTION.Thuds(model)

@@ -4,7 +4,7 @@
 
 ## 사용자가 직접 할 것 (짧은 순서대로)
 1. **크롬 연결 + Roblox Creator 탭 맨 앞에 두기 (약 45분 건드리지 않기)** — 소리 만들기가 스킬 소리 42개(시전 18 + 맞음 18 + 공통 신호 5 + 먼 종소리 1)를 올림. 크롬 툴바 Claude 아이콘으로 연결, Darugi_S2 로그인 확인.
-2. **WorldKit 3D 가져오기 — 빵집 할머니 NPC 1개**: 3D 가져오기 → 주소창에 `C:\Users\glori\Documents\Roblox\Game\art\models\tripo\import_now` → 파일 1개 → Import. (밤사이 이미지 생성 3의 집 3D가 통과되면 같은 폴더에 더 모여 있을 수 있음 — 그 폴더 전부 한 번에.)
+2. **WorldKit 3D 가져오기 — import_now 폴더 전부 한 번에**: 3D 가져오기 → 주소창에 `C:\Users\glori\Documents\Roblox\Game\art\models\tripo\import_now` → Ctrl+A → 열기 → Import. 밤사이 모인 것: 새 성문 조립본, 새 대성당 v2, 빵집 할머니 NPC, 새 집 12채(검수 통과), 가게 4채(통과하면). 가져온 뒤 이미지 생성 1이 재질 붙이고 사진 → 검수 → 4차 메인 적용.
 3. **메인 Studio 저장 허락** — 밤사이 sync된 코드(무기 쥐는 법·스킬 아이콘·말풍선 등)를 메인 반영 1이 저장(마우스·키보드 1~2분).
 4. **정해 줄 것 2개 (스킬 공정, A23-116 / docs/design/skills18_2026-10-10.md 맨 아래):**
    - 빛 스킬 자기 회복 상한 30% vs 뿔 흡혈 3% → 추천: 자기 회복은 둘 다 3%, 빛이 친구 치유(30%)만 그대로.
