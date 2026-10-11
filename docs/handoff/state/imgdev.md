@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 6차: 매끈한 대리석 3판 판정 대기)
+
+- **3판(결 2배·회갈색·가늘게) color 140510838680155 올림, 사진 끝**(시트 art/review/imgdev/marble_smooth_r3_sheet_2026-10-11.jpg, 해 100% 크롭 …_r3_sun100_…jpg; 2판 사진 marblesmooth_r2/). 디자인 검수 판정 대기. **WorldKit MV HH_HaloMarbleSmooth_Cream은 지금 2판 color 99912622204711** → 통과되면 color만 140510838680155로 바꾸고(rough 76093268063395·노멀·금속 그대로) building_variants_halo.json 항목 color·use 갱신, 2판 color는 안 쓰는 옛 ID(asset_ids `Halo_MarbleSmoothCream_color_r2`). 이미지 생성 4는 이름 HH_HaloMarbleSmooth_Cream으로 씀(알림 보냄).
+- UiSandbox 시험물·MV 지우고 빛 원래대로 확인(B 1.8·반사 0.3·16.8시), 창은 강제 종료(저장 안 함).
+
 # 이미지 개발 — 상태 (2026-10-11 밤 5차: 매끈한 크림 대리석)
 
 - **HH_HaloMarbleSmooth_Cream(소품용, 줄눈 없음) — 판정 대기.** 맵 tools/marble_smooth_maps.py(주기 노이즈, 색 227~242 아주 은은, 긴 결 2줄) → art/ui/halo_tile/marble_smooth/. 올림 2장: color 99912622204711, rough 76093268063395 (asset_ids `Halo_MarbleSmoothCream_color/_rough`; 첫 판 114611278221629·137526286825414는 결이 고리 모양이라 버림 — 안 쓰는 옛 ID). 노멀 131597673772642(평평)·금속 87489921567476(0) 재사용. StudsPerTile 8 시험. 시트 art/review/imgdev/marble_smooth_sheet_2026-10-11.jpg (평소/블록/매끈 × 낮 해·그늘·밤, C2c 빛, 2D 화분 옆). 소견: 해 아래 거의 민무늬(2D 화분의 은은한 결보다 약간 더 평평), 밤에 결이 희미하게 보임. 더 보이게 하려면 tools/marble_smooth_maps.py 결 세기(0.020·0.011)만 올림.
