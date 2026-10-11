@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 8차: PC 재부팅 뒤 대기)
+
+- **PC가 꺼졌다 켜져 Studio 창 전부 닫힘(최종 검수).** WorldKit의 금 MV·매끈 대리석 MV는 이미지 생성 1이 바탕을 다시 지은 뒤 **내가 다시 넣기**: 금 = `tools/gold_trim_apply.luau`(MODE apply; MV가 없으면 먼저 `tools/building_variants.py`로 MV 만들기), 매끈 = `tools/marble_smooth_mv.luau`(MV 만들기, 맵 3판). 둘 다 WorldKit(STUDIO_NAME=WorldKit, Edit)에서. 보고는 **디자인 검수**로.
+- 대기 중: ① 빛 값 표·굽기 조언은 보냄(docs/design/light_compare_worldkit_vs_main_2026-10-11.md). ② 소품 C·D2 약 9개 올리기 = 최종 검수 승인 뒤, 직접 보고 ≤10 한 번.
+- 매끈한 대리석 3판 통과 끝(WorldKit MV color 140510838680155; 이미지 생성 4가 prop_kit 기본으로 씀).
+
 # 이미지 개발 — 상태 (2026-10-11 밤 7차: 매끈한 대리석 3판 결 통과·WorldKit 적용)
 
 - **3판 결 통과(디자인 검수), WorldKit MV HH_HaloMarbleSmooth_Cream color = 140510838680155 로 바꿈.** 옛 ID(r1·r2) asset_ids에 `_r1/_r2`로 기록. 디자인 검수가 r3 시트 그늘·밤 원통에 흰 선을 물음 → 답: 같은 자리 선이 BLOCK 칸에도 있음(맵 무관, 화면 겹침/장면). 재촬영은 창 슬롯 필요(요청 오면 최종 검수에).
