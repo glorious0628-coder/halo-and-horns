@@ -601,7 +601,23 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
     off = wp.split("function WeaponPose.OffHand(", 1)[-1].split("\nend\n", 1)[0]
     cv = src["CV"]
     gear = re.search(r"local GEAR = \{ Size = " + NUM + ", Gap = " + NUM + r" \}", cv)
-    return [
+
+    # 최종 검수 10/11 (the two warriors stood alike): the Paladin tall (Waist / Neck >= 0 = back / chin up, this table's
+    # sign) and the Berserker leaning in and hunched (Waist <= -6, Neck < 0), his tip lower than the Paladin's
+    def hold(key: str, joint: str):
+        m = re.search(r"\n\t" + key + r" = \{[^\n]*?Hold = \{([^\n]*?)\} \},", src["CONFIG"])
+        j = m and re.search(joint + r" = \{ " + NUM + ", " + NUM + ", " + NUM, m.group(1))
+        return float(j[1]) if j else 0.0
+    halo, horns = row(src["CONFIG"], "Warrior_Halo"), row(src["CONFIG"], "Warrior_Horns")
+    elev = [math.degrees(math.atan2(r["Aim"][1], -r["Aim"][2])) if r else 0.0 for r in (halo, horns)]
+    stance = [
+        ("최종 검수 10/11: the Paladin stands tall (Waist, Neck >= 0), the Berserker leans in and hunches (Waist <= -6, "
+         "Neck < 0), his tip lower", hold("Warrior_Halo", "Waist") >= 0 and hold("Warrior_Halo", "Neck") >= 0
+         and hold("Warrior_Horns", "Waist") <= -6 and hold("Warrior_Horns", "Neck") < 0 and elev[1] < elev[0] - 3,
+         f"Halo {hold('Warrior_Halo', 'Waist')}/{hold('Warrior_Halo', 'Neck')} {elev[0]:.0f} deg, Horns "
+         f"{hold('Warrior_Horns', 'Waist')}/{hold('Warrior_Horns', 'Neck')} {elev[1]:.0f} deg"),
+    ]
+    return stance + [
         ("검수 10/11: the Neutral gear sits small just over the head / hat (markFloor defined before it, half size or less)",
          gear is not None and float(gear[1]) <= 0.6 and float(gear[2]) <= 0.5
          and 0 < cv.find("local function markFloor(") < cv.find("local function buildNeutralGear(head, sc, character)")
@@ -653,16 +669,16 @@ MUTATIONS = [
     ("CONFIG", "the Paladin's elbow tucked into the side", "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) }",
      "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(-0.6, -0.6, 0.8) }"),
     ("CONFIG", "the Berserker's wrist bent hard (the old 35 deg tip, the hand high)",
-     "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.7, -0.7)",
+     "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.6, -0.7)",
      "OneHand = { Hilt = Vector3.new(1.65, -0.6, -0.65), Aim = Vector3.new(0.1, 0.56, -0.82)"),
     ("CONFIG", "the Berserker's hand down at the thigh", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65)",
      "OneHand = { Hilt = Vector3.new(1.0, -1.3, -0.3)"),
     ("CONFIG", "the Berserker's great sword again", 'Warrior_Horns = { Weapon = "DarkSword",', 'Warrior_Horns = { Weapon = "GreatSword",'),
-    ("CONFIG", "the Berserker's two-hand grip again", "Aim = Vector3.new(0.1, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },",
-     "Aim = Vector3.new(0.1, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) },\n"
+    ("CONFIG", "the Berserker's two-hand grip again", "Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },",
+     "Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) },\n"
      "\t\tTwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },"),
-    ("CONFIG", "the Berserker's tip pointing down", "Aim = Vector3.new(0.1, 0.7, -0.7)", "Aim = Vector3.new(0.1, -0.3, -0.9)"),
-    ("CONFIG", "the Berserker's sword straight up", "Aim = Vector3.new(0.1, 0.7, -0.7)", "Aim = Vector3.new(0.1, 1, -0.2)"),
+    ("CONFIG", "the Berserker's tip pointing down", "Aim = Vector3.new(0.1, 0.6, -0.7)", "Aim = Vector3.new(0.1, -0.3, -0.9)"),
+    ("CONFIG", "the Berserker's sword straight up", "Aim = Vector3.new(0.1, 0.6, -0.7)", "Aim = Vector3.new(0.1, 1, -0.2)"),
     # 검수 10/11: the dark sword = buildSword's size and place
     ("CV", "the dark sword's handle longer than the Paladin's", "local D = { Handle = 1.2,", "local D = { Handle = 1.8,"),
     ("CV", "the dark blade bigger", "Size = Vector3.new(0.25, bladeLen, 0.6) * sc,\n\t\tMaterial = w.Material, Color = color:Lerp(D.Dark, D.Shade),",
@@ -683,8 +699,10 @@ MUTATIONS = [
     ("CV", "A23-133: a long baton", "local shaftLen = 1.8", "local shaftLen = 3.4"),
     ("CV", "the dark guard twice as wide", "CFrame = L * CFrame.new(s * 0.27 * sc,", "CFrame = L * CFrame.new(s * 0.7 * sc,"),
     ("CV", "a big pommel", "Size = Vector3.new(0.36, 0.36, 0.36) * sc", "Size = Vector3.new(0.8, 0.8, 0.8) * sc"),
-    ("CONFIG", "the Berserker's left arm held up", 'Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },',
-     'Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, LeftShoulder = { 40, 0, 0 } },'),
+    ("CONFIG", "최종 검수 10/11: the Berserker stands like the Paladin again",
+     "Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },", "Hold = { Waist = { 5, 0, 0 } },"),
+    ("CONFIG", "the Berserker's left arm held up", 'Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },',
+     'Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 }, LeftShoulder = { 40, 0, 0 } },'),
     ("WP", "the row's Pole ignored", 'local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight', "local pole = T.PoleRight"),
     ("CV", "the dark sword never made", "function SHAPES.DarkSword(grip, sc, w, color)", "function SHAPES.DarkSword_(grip, sc, w, color)"),
     ("CONFIG", "a hand-on-hip sinks into the waist", "OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage",

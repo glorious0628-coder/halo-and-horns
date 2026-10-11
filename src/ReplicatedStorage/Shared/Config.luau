@@ -5794,13 +5794,16 @@ Config.ClassGrips = {
 	-- 검수 10/11 (fix/onehand review): the forearm and the hand stay OUT of the torso / hip (the hand just outside the
 	-- hanging arm's line, at the waist, a little ahead; the elbow back near the hanging arm's line, not tucked in), the
 	-- wrist nearly straight (<= 30 degrees), the handle and pommel clear of the swinging thigh
+	-- 최종 검수 10/11 (the two sides stood alike; GDD §0 angel / devil): the Paladin stands tall, chest out and chin up
+	-- (Waist / Neck +3 = leaning back, this table's sign), the Berserker leans in and hunches (Waist -10, Neck -6: head
+	-- down) with his tip lower (40 degrees); the grips stay the same (the hands live in torso space)
 	-- Paladin: the straight sword, its tip ahead and 45 degrees up
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 }, Neck = { 3, 0, 0 } },
 		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
-	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 45 degrees up
+	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 40 degrees up
 	-- and a touch out
-	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
+	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
 	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
