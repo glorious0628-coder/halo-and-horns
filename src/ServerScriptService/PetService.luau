@@ -211,24 +211,35 @@ function PetService.GiveTamerPet(player, quiet)
 	return grant(player, TAMER.Pet, "", "", not quiet and TXT.PetGot or nil, true)
 end
 
+-- a well-formed EquipPet the server turned down (the tamer's put-away, too fast, not ready yet, a pet it does not own):
+-- the owner's window gets the true list back (game dev 1's report: it may already show the change), at most once every
+-- Config.Pets.ListEvery s (sendListSoon), so a held button never floods it
+local function equipRefused(player)
+	local data = getData(player)
+	if not data then return end
+	PetService.Sanitize(data)
+	sendListSoon(player, data)
+end
+
 -- PET-2 c->s "EquipPet"(uid): an owned pet of a known species is the one that follows; "" puts it away (saved, PET-2b),
--- except for the tamer (검수 2026-10-09: the pet is its weapon; PetList CanPutAway = false)
+-- except for the tamer (검수 2026-10-09: the pet is its weapon; PetList CanPutAway = false). A well-formed one turned
+-- down sends the list back (equipRefused); a malformed one is ignored
 local function onEquip(player, ...)
 	if select("#", ...) ~= 1 then return end
 	local uid = ...
 	if type(uid) ~= "string" or #uid > LIMIT.UidLen then return end
 	if not S.PlayerService.IsReady(player) or not Util.RateLimit(player, "EquipPet", num(Config.RateLimits.EquipPet, 0.5)) then
-		return
+		return equipRefused(player)
 	end
 	local data = getData(player)
 	if not data then return end
 	local pets = PetService.Sanitize(data)
 	if uid == "" then
-		if isTamer(player, data) then return end
+		if isTamer(player, data) then return equipRefused(player) end
 		pets.Equipped, pets.Away = {}, true
 	else
 		local p = pets.List[uid]
-		if not p or not known(p.Sp) then return end
+		if not p or not known(p.Sp) then return equipRefused(player) end
 		pets.Equipped, pets.Away = { uid }, false
 	end
 	publish(player, data)

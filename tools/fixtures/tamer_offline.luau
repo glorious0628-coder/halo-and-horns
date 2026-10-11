@@ -338,16 +338,27 @@ runGroup("pet levels and equip", function()
 	equip:Fire(p, uid)
 	check(d.Pets.Equipped[1] == uid and p:GetAttribute("EquippedPet") == "BabySlime", "EquipPet uid: it follows again")
 	w:Advance(1)
+	local nf = #w.Fired
 	equip:Fire(p, "P999")
+	local back = lists(nf)
+	check(#back == 1 and back[1].Equipped == uid, "an unknown uid: refused, the true list sent back (the window resyncs)", #back)
 	w:Advance(1)
+	nf = #w.Fired
 	equip:Fire(p, 5)
 	w:Advance(1)
 	equip:Fire(p, "", "extra")
 	check(d.Pets.Equipped[1] == uid, "an unknown uid / a number / extra arguments: ignored")
+	check(#lists(nf) == 0, "a malformed EquipPet (a number, extra arguments): no list (never answered)", #lists(nf))
 	w:Advance(1)
+	nf = #w.Fired
 	equip:Fire(p, uid)
 	equip:Fire(p, "")
 	check(d.Pets.Equipped[1] == uid, "too fast (rate limit): ignored")
+	check(#lists(nf) == 1, "the accepted one sent its list; the refused one waits ListEvery (no flood)", #lists(nf))
+	for _ = 1, 5 do equip:Fire(p, "") end
+	w:Advance(C0.Pets.ListEvery + 0.01)
+	local held = lists(nf)
+	check(#held == 2 and held[2].Equipped == uid, "a held button: one list back ListEvery later, with the truth (still out)", #held)
 	-- catch-up: the quest is done with a pick but the pet is missing (an old save, a crash)
 	local w2 = bareWorld()
 	local q, e = w2:Join(402, { Faction = "Horns", Class = "Mage",
@@ -421,9 +432,13 @@ runGroup("put away", function()
 	local tuid = babySlimes(h)[1]
 	local tequip = wt.Net.Get("EquipPet").OnServerEvent
 	wt:Advance(1)
+	local tf = #wt.Fired
 	tequip:Fire(t, "")
 	check(h.Pets.Equipped[1] == tuid and h.Pets.Away == false and t:GetAttribute("EquippedPet") == "BabySlime",
 		"the tamer: EquipPet \"\" is ignored", show(h.Pets))
+	local tback = lastList(wt, t, tf)
+	check(tback and tback.Equipped == tuid and tback.CanPutAway == false, "... and its list comes back (still out, no put-away)",
+		show(tback))
 	local tl = lastList(wt, t)
 	check(tl and tl.CanPutAway == false and tl.Equipped == tuid, "the tamer's PetList: CanPutAway false", show(tl))
 	-- leaving the tamer: the list says it may be put away now, and it can
