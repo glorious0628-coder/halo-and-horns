@@ -183,7 +183,9 @@ end
 local function ringOn() return L.AIM.Ring ~= nil and L.AIM.Ring.Parent == workspace end
 
 -- 0. the numbers
-check(AF ~= nil and AF.ServerHint == false, "Config.AutoFace.ServerHint = false (CombatService takes no pick yet)", AF and AF.ServerHint)
+check(AF ~= nil and AF.ServerHint == true, "Config.AutoFace.ServerHint = true (CombatService takes the pick, dev2 4da8ba09)", AF and AF.ServerHint)
+-- sections 1-6 check the rule without the hint (it still runs for auto swings and while the flag is off)
+AF.ServerHint = false
 check(AF.SkipDeg == 10 and AF.TurnTime >= 0.06 and AF.TurnTime <= 0.1, "turn: skipped within 10 deg, takes 0.06-0.1 s (SPEC ②)",
 	tostring(AF.SkipDeg) .. " " .. tostring(AF.TurnTime))
 check(AF.KeepFor >= 1 and AF.Inside < 1 and AF.Inside >= 0.85, "keep ~1.5 s, new picks a little inside the range", AF.KeepFor .. " " .. AF.Inside)
