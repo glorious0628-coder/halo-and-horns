@@ -59,7 +59,7 @@ MUTATIONS = [
     ("PET", "no fallback before the first PetList", "\t\tif type(sp) == \"string\" and sp ~= \"\" then\n", "\t\tif false then\n"),
     ("PET", "no speed line", "if row.Speed > 0 then line ..= ", "if false then line ..= "),
     ("CONFIG", "the species has no name", "Name = \"Baby Slime\", Icon = \"IconPetBabySlime\"", "Icon = \"IconPetBabySlime\""),
-    ("MAIN", "the window is never loaded", "\"KingDiary\", \"PetWindow\", \"QuestBook\",", "\"KingDiary\", \"QuestBook\","),
+    ("MAIN", "the window is never loaded", "\"KingDiary\", \"PetWindow\", \"SkillBook\",", "\"KingDiary\", \"SkillBook\","),
 ]
 
 

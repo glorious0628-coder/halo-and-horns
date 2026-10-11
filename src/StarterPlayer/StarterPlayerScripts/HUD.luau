@@ -5603,6 +5603,13 @@ function L.WindowKey(action)
 		L.WindowSoon(action)
 		return true
 	end
+	-- A23-113 ③: a key whose menu tile is still locked (K before the first skill) only wiggles that tile, like a press
+	for _, def in L.Tiles do
+		if def.Key == action and L.TileLocked(def.Id) then
+			L.TileWiggle(def.Id)
+			return true
+		end
+	end
 	if not (open or inputAllowed()) or throttled("windowKey", 0.25) then return true end
 	local ok, err
 	if type(panels.CurrentId) == "function" and panels.CurrentId() == target then

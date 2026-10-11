@@ -1,0 +1,119 @@
+{
+  "checks": 56,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "Z / X rows with their flags off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Q / Z get the X faction line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Horns Q / Z line missing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the artisan X line missing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the saved slots ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a rebirth does not open the slots",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the cooldown never shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "MP never short",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no cost in the numbers",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no faction icon first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the punch shows as Attack",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no Mage MP per hit",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no faction perks",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "marks not shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "[Where to hunt] goes nowhere",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "[Change keys] on touch",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the state never repaints",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "MP changes rebuild the whole window",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the faction line in plain gold",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the window is never loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "K opens the window while its tile is locked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no window icon",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "BB9 스킬 창 (게임성 개발 1, 2026-10-11; SPEC A23-49 / A23-71 / A23-113 / A23-116, design\ndocs/design/skill_kit_beta_2026-10-06.md §6-4, docs/design/skills18_2026-10-10.md \"스킬 창 글(진영 줄)\"), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and SkillBook.luau in tools/fixtures/skill_book_offline.luau\n(Players / RunService / UserInputService / Panels / UIKit / Keybinds doubles). Checks: the window \"Skills\" is\nregistered (the HUD's Skills tile and K open it) and rebuilds on class / faction / level / slots / rebirths / weapon\nwhile MP and cooldowns repaint in place; rows = the basic attack then Q, and Z / X only while their flags are on; each\nskill row has its faction's name (Config.SkillDef), the numbers line (MP · cooldown · shape · hit) and the faction\nline (Q / Z QZHalo / QZHorns, X XHalo / XHorns / XArtisan, none for the artisan Q / Z or with no side); icons in the\nSkillBar order; the live state Ready / seconds left / Need MP / Unlocks at Lv N (+ [Where to hunt] -> Travel), learned\nby the saved SkillSlots, the level or a rebirth; the attack row (punch bare-handed, the class pattern, Mage MP per\nhit, the weapon icon, the tamer's weapon); the passive part (class stats, faction perks, fall / redeem marks);\nkeyboards get the key in the name and [Change keys] -> Settings Keys, touch gets neither. Static: ClientMain loads\nSkillBook after Panels; the HUD tile opens \"Skills\"; a locked tile's window key only wiggles; the window icon.\nMutations: each must be caught.",
+  "studioCalls": 0
+}
