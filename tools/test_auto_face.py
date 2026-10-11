@@ -12,7 +12,7 @@ round FxShockRing art sized to the body on the floor, gone when the target dies 
 combat's standing facing keeps the server's aim, shows no ring and waits while my attacks keep a target; Swing / Release
 carry my pick (arg 1). With ServerHint true: the kept target (until it dies / leaves Range), score (closeness within
 Inside x Range, front, screen centre, a monster winding up at me within AttackerReach first), nothing behind me farther
-than BackNear. Static: the call sites; ServerHint stays false while CombatService.Swing takes no pick.
+than BackNear. Static: the call sites; ServerHint on exactly when CombatService takes the pick (HINT.Pick).
 Mutations: each must be caught.
 
 Usage: py tools/test_auto_face.py
@@ -79,7 +79,7 @@ MUTATIONS = [
      "\t\tif L.AIM.RingFor == nil then -- a new target: size to its body\n"),
     ("HUD", "the ring floats at the root", "t.Position.Y - up + 0.1", "t.Position.Y + 0.1"),
     ("HUD", "Swing goes without my pick", "\tfire(\"Swing\", target)\n", "\tfire(\"Swing\")\n"),
-    ("CONFIG", "ServerHint on while the server takes no pick", "\tServerHint = false,\n", "\tServerHint = true,\n"),
+    ("CONFIG", "ServerHint off although the server takes the pick", "\tServerHint = true,\n", "\tServerHint = false,\n"),
     ("CONFIG", "a slow turn", "TurnTime = 0.08,", "TurnTime = 0.3,"),
 ]
 
@@ -120,11 +120,11 @@ def run(src: dict) -> tuple[int, int, str]:
         ok = all(src[key].count(n) == 1 for n in needles)
         out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + name
         failed += 0 if ok else 1
-    # the server takes no pick yet -> ServerHint must stay false (flip it together with the CombatService change)
-    no_pick = "function CombatService.Swing(player, isManual)\n" in src["COMBAT"]
-    hint_off = re.search(r"\n\tServerHint = false,\n", src["CONFIG"]) is not None
-    ok = hint_off or not no_pick
-    out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + "ServerHint stays false while CombatService.Swing takes no pick"
+    # the flag follows the server: on once CombatService takes the pick (HINT.Pick), off while it takes none
+    takes_pick = "function HINT.Pick(player, pos, range, hint)" in src["COMBAT"]
+    hint_on = re.search(r"\n\tServerHint = true,\n", src["CONFIG"]) is not None
+    ok = hint_on == takes_pick
+    out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + "ServerHint on exactly when CombatService takes the pick"
     failed += 0 if ok else 1
     return (int(m[1]) if m else 0) + len(STATIC) + 1, failed, out
 

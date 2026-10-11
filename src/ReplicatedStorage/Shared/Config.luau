@@ -4083,7 +4083,7 @@ end
 -- up an attack (WindupAt, server time) within AttackerFor s and stands within AttackerReach studs; a monster behind me
 -- (look . dir < BackDot) farther than BackNear studs is never picked
 Config.AutoFace = {
-	ServerHint = false,
+	ServerHint = true,
 	KeepFor = 1.5, Inside = 0.95, BackDot = -0.2, BackNear = 6,
 	WDist = 1, WFront = 0.8, WScreen = 0.5, WAttacker = 1.5, AttackerReach = 9, AttackerFor = 2,
 	SkipDeg = 10, TurnTime = 0.08, SwingHold = 0.35,
