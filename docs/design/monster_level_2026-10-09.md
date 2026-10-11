@@ -2,6 +2,8 @@
 
 근거: `docs/design/system_review_round1_2026-10-09.md` #6(이름표 위험 색). 가지 `dev2-mlevel`(dev2-mobs3 위) → main 병합 c87215c7.
 
+> 메모(10/11, A23-119): 아래 표의 핼러윈 칸(호박 슬라임·유령·두 대왕)은 호박밭·유령 숲이 숨겨져(`Config.Halloween.Enabled = false`) 지금 안 나온다. 새 구역 몬스터 레벨은 구역이 정해질 때 더한다(슬라임 없음, A23-123).
+
 ## 서버(끝)
 - 모든 몬스터 모델(일반·개인·이벤트·보스)에 속성 **`Level`** = `Config.MonsterLevel(kind)`. 스폰할 때 한 번 달아요. 싸움 판정은 이 값을 읽지 않아요.
 - `Config.MonsterLevels`(구역 띠 안: 초원 1~9, 숲 10~24, 유적 25+, 핼러윈 밭은 Lv1 밭):

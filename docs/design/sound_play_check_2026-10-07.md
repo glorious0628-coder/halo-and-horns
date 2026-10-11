@@ -1,5 +1,7 @@
 # 소리 연결 뒤 Play 확인 목록 (2026-10-07, 소리 만들기)
 
+> 기록용(10/07 당시). 이 목록이 가리키던 붙여 넣기 문서(`sound_wiring_onepass_2026-10-07.md`)는 연결이 끝나(ab708339) 10/11에 지움 — 값은 `Config.Audio`. 10/08 Play 확인 결과는 `docs/art/verification_2026-10-08/sound_play/`. 새 소리 확인 목록은 `sound_gaps_2026-10-10.md`.
+
 `sound_wiring_onepass_2026-10-07.md`를 넣은 뒤, 메인 Studio Play(PC + 폰 흉내)에서 위에서부터 확인한다. 소리가 안 나면 먼저 `py tools/sfx_wiring_check.py`(옛 id 0·빈 칸 0인지), 그다음 그 이벤트 연결을 본다. 빨리 띄우기 = 서버 Command Bar `game.ServerScriptService.DebugCommand:Invoke("Player1", "<키>", 값)`(Studio 전용, Main.server.luau).
 
 ## 1. 처음 10분 (가장 먼저)

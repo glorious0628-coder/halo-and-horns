@@ -2,7 +2,7 @@
 
 사용자 결정 A23-39: 장인 길드의 3번째 직업 '사냥꾼(궁수)'을 **펫 조련사**로 바꾼다. 내부 직업 id는 그대로 `Archer`, 장인 길드(`Neutral`)일 때만 이름·모습·공격 연출이 바뀐다. 수치는 궁수 표 그대로(균형 변화 없음). 오프라인 검사: `py tools/test_tamer.py`(93검사, 변이 36/36, 자체 검토 확인 4건 반영), 맨손 시작 검사와 같은 가짜 세계(`tools/fixtures/dev2_combat_world.luau`)를 쓴다.
 
-> 2026-10-09 검수: 베타에선 장인 길드 진영이 꺼져 있어(`Config.Features.NeutralFaction = false`, A23-57) 새 플레이어는 조련사를 고를 수 없다. 아기 슬라임 펫은 누구나 이야기 서브 'The Lost Baby Slime'(`Pet1`, PET-4, main ae1fa582)로 받는다. 게임 글은 영어만(A23-48).
+> 2026-10-09 검수: 지금은 장인 길드 진영이 꺼져 있어(`Config.Features.NeutralFaction = false`, A23-57) 새 플레이어는 조련사를 고를 수 없다. (10/11 A23-119: 공개 베타 12/1에는 장인 길드(중립)가 **함께 들어가므로** 이 스위치는 그때 켠다 — '베타에선 꺼짐'은 낡음.) 아기 슬라임 펫은 누구나 이야기 서브 'The Lost Baby Slime'(`Pet1`, PET-4, main ae1fa582)로 받는다. 게임 글은 영어만(A23-48).
 
 ## 1. 판정
 - `Config.IsTamer(classId, factionId)` = `Archer` + `Neutral`일 때만 true. 설정은 `Config.Tamer`(Config 끝 블록).

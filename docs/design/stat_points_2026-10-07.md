@@ -1,5 +1,6 @@
 # 스탯 찍기 — 직접 또는 자동 (A23-69, 2026-10-07)
 
+> 날짜(베타 10/24 마감·정식 12/19)는 낡음 — 기능 마감 11/24·베타 12/1·정식 2027년 1월 말(A23-119).
 > 근거 코드: origin/main 277ed95. 줄 번호는 그 커밋 기준입니다. dev2 브랜치는 이 영역을 바꾸지 않습니다.
 > 이 문서는 SPEC A23-69가 가리키는 `docs/design/stat_points_2026-10-07.md`의 본문입니다. 앞선 설계안 3개(simple / depth / fair)와 그 비평을 합친 최종판입니다. **기본은 fair**이고, PvP 계산과 연결 구조는 simple에서, 줄마다 보이는 결과 숫자는 depth에서 가져왔습니다.
 > 2026-10-09 검수(지금 상태): 1단계(`Config.Stats`·`CombatPowerOf`·저장 필드 Stats)는 main에 있고 `Config.Features.StatPoints = false`예요. 2단계 `StatService`는 `origin/dev2-stats2`(4cc19dbe)에 보관만 — main 아님(검수 10/07 '보관만', `docs/handoff/dev2_2026-10-07_evening.md`). Hero 창(E)은 아직 'Coming soon'이라 [Stats] 탭이 없어요. 아래 §7-3 날짜는 10/07 계획이에요.

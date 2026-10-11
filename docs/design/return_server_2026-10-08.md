@@ -40,6 +40,7 @@
 - 기록: `InviteService.InviteJoined(invitee, inviterId, inviter?)`, 10분 같이 있으면 `PlayedTogether(inviter, invitee)` 한 번, `WentToFriend(player, zone)`.
 
 ## #4 호박 대왕 일기 + 사탕 단지
+> 메모(10/11, A23-119): 이 절은 핼러윈 철 전용이라 호박밭·유령 숲 숨김(`Config.Halloween.Enabled = false`) 동안 새 쪽·사탕이 안 생긴다. 날짜(10/31~11/09)는 지난 계획이고 철은 내년 10월에 다시 본다.
 - 대왕(호박·유령)을 함께 잡으면(그 처치가 보상을 준 UserId = HalloweenService.KingDefeated의 목록) 다음 쪽이 열림. **오늘 날짜 쪽까지만**
   (10/31 = 1쪽 … 11/08 = 9쪽, 10/31 전에는 1쪽까지). 늦게 와도 대왕 한 번에 한 쪽씩 몰아 읽기. 시즌(11/09 0시) 뒤에는 새 쪽 없음.
   - 속성 `DiaryPages`, Fx `DiaryPage` { Page, Today, Late }, 9쪽 → 칭호 **Party Guest 2026** + Fx `DiaryDone` {} 한 번(색종이).

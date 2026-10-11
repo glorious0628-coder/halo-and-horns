@@ -44,6 +44,7 @@
 - 이야기가 없는 옛 세이브가 Lv10 이상이면 `StoryQuests.SkipChapters`({Lv10 → 2장까지, Lv25 → 3장까지})대로 그 장까지만 Done, 다음 장부터 시작(예전에는 Main 전체를 Done으로 해서 3장을 넣으면 통째로 건너뛰었다). 한 번만(`First.Migrated`), 지난 보상·점수 없음.
 
 ## 7. A23-57 장인 진영 스위치
+> 메모(10/11, A23-119): 장인 길드(중립)는 공개 베타 12/1에 **함께 들어간다**. 이 스위치(`NeutralFaction = false`)는 장인 기능이 준비되면 켜는 것이고, 아래 '베타에서 끔'은 낡음.
 - `Config.Features = { NeutralFaction = false }`, `Config.FeatureOn(name)`, `Config.Pickable(factionId)` = 새로 고를 수 있는 진영(빛·뿔, 장인은 스위치가 켜졌을 때만).
 - 서버: FactionService 진영 고르기(`ChooseFaction`)·제단(`SwitchFaction` 대상) — 장인 요청은 다른 잘못된 요청처럼 무시 + 로그 한 줄(10초 묶음). ProgressionService 환생 대상 장인도 거절 + 로그. StoryQuestService는 장인 전용 서브(N1 장인의 손놀림, N2 길드 보급 장부)를 주지 않는다. **코드·데이터는 지우지 않는다**, 이미 장인인 시험 저장은 그대로(진영·N3 유지).
 - `Config.FactionOrder`는 그대로(개발 1의 고르기 화면이 스위치를 읽어 카드 2장).
