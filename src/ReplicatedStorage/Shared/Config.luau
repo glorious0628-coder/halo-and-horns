@@ -1733,13 +1733,22 @@ end
 -- ONLY Terrain, workspace.Map.Ground, the bridges (Map.Decor children "Bridge_*"; in a Decor "*Props" kit folder the
 -- cells / their models whose name has "Bridge") and every instance tagged Tag (CollectionService) - a building's floor,
 -- a yard or later an inside built from parts. Other decor parts are never ground. Shared.Ground caches the raycast
--- params (rebuilt on a tag change, a new Map, or every Refresh s for a late MapBuilder pass).
-Config.Ground = { Tag = "WalkGround", Refresh = 5 }
+-- params (rebuilt on a tag change, a new Map, or every Refresh s for a late MapBuilder pass). 게임성 검수 10/13
+-- (e27_stairs: the Light Mage's staff 2..3.3 studs over the Halo town's stairs - Halo_Stairs is a kit piece, the rays
+-- went through it): a kit piece whose name carries one of KitWalk is walking ground like the bridges; a floor or a deck
+-- is still tagged WalkGround by the world builder (an untagged "Floor" stays decor)
+Config.Ground = { Tag = "WalkGround", Refresh = 5, KitWalk = { "Bridge", "Stairs", "Steps", "Ramp" } }
 
 -- the instances a ground raycast includes (pure): terrain, then the map's Ground, its bridges, then `tagged` (the
 -- instances carrying Config.Ground.Tag, in any order; nil = none). map = workspace.Map or nil
 function Config.GroundRoots(terrain, map, tagged)
 	local list = {}
+	local function walkPiece(name) -- a kit piece people walk on (Config.Ground.KitWalk in its name)
+		for _, w in Config.Ground.KitWalk do
+			if string.find(name, w, 1, true) then return true end
+		end
+		return false
+	end
 	if terrain then table.insert(list, terrain) end
 	if map then
 		local ground = map:FindFirstChild("Ground")
@@ -1750,13 +1759,13 @@ function Config.GroundRoots(terrain, map, tagged)
 				if string.sub(d.Name, 1, 7) == "Bridge_" then
 					table.insert(list, d)
 				elseif string.sub(d.Name, -5) == "Props" then
-					-- 검수 10/10: the world kits' bridges (Decor.HaloProps.Cell_*.Halo_ArchBridge_*)
+					-- 검수 10/10: the world kits' bridges (Decor.HaloProps.Cell_*.Halo_ArchBridge_*); 10/13 their stairs too
 					for _, cell in d:GetChildren() do
-						if string.find(cell.Name, "Bridge", 1, true) then
+						if walkPiece(cell.Name) then
 							table.insert(list, cell)
 						else
 							for _, m in cell:GetChildren() do
-								if string.find(m.Name, "Bridge", 1, true) then table.insert(list, m) end
+								if walkPiece(m.Name) then table.insert(list, m) end
 							end
 						end
 					end
