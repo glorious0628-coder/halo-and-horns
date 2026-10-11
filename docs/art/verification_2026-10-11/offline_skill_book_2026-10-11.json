@@ -1,5 +1,5 @@
 {
-  "checks": 59,
+  "checks": 63,
   "failed": 0,
   "mutations": [
     {
@@ -104,6 +104,16 @@
     },
     {
       "name": "the style's white wins over the colours",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the attack row gets an empty state column again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every state column wide",
       "applied": true,
       "caught": true
     },

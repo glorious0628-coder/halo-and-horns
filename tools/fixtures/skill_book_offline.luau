@@ -256,6 +256,15 @@ check(unstyled == 0 and titles > 0 and bodies > 0, "every label takes a UIKit te
 check(textOf("Name").Style == "Title" and textOf("Numbers").Style == "Body" and pl.Style == "Body",
 	"names Title, numbers and passive lines Body", textOf("Numbers").Style)
 check(findText(W.QZHalo).TextColor3 == Config.Factions.Halo.Color, "the style keeps the faction line colour")
+-- layout (main photo skillbook_v2: 17 du too tall): the attack row has no state column, a skill row a narrow one
+local stateFrames = {}
+for _, o in made do if o.ClassName == "Frame" and o.Name == "State" then table.insert(stateFrames, o) end end
+check(#stateFrames == 1, "only the skill row has a state column (not the attack row)", #stateFrames)
+local sw = stateFrames[1] and stateFrames[1].Size and stateFrames[1].Size.Args[2]
+check(sw == 110, "a learned skill's state column is narrow (110)", sw)
+local infos = {}
+for _, o in made do if o.ClassName == "Frame" and o.Name == "Info" then table.insert(infos, o.Size.Args[2]) end end
+check(infos[1] == -(64 + 12) and infos[2] == -(64 + 110 + 24), "the attack words take the free room", infos[1])
 -- live repaint
 attrs.Mana = 5
 update()
@@ -273,6 +282,9 @@ check(hunt ~= nil, "a slot not learned: [Where to hunt]")
 if hunt then hunt.OnClick() end
 check(opened[1] and opened[1][1] == "Travel", "[Where to hunt] opens Travel (its Recommended zone)", opened[1] and opened[1][1])
 check(btn("Change keys") == nil, "touch: no [Change keys]")
+local lockedW = nil
+for _, o in made do if o.ClassName == "Frame" and o.Name == "State" then lockedW = o.Size.Args[2] end end
+check(lockedW == 150, "a locked row's column fits [Where to hunt] (150)", lockedW)
 check(findText("[Z]") == nil and hasText("Halo Slam"), "touch: no key in the name")
 UIS.KeyboardEnabled = true
 attrs.Level, attrs.SkillSlots = 6, 1

@@ -40,7 +40,9 @@ local T = {
 	SlotIndex = { Q = 1, Z = 2, X = 3 },
 	Unlock = { Q = 5, Z = 15, X = 25 }, -- A23-71; Config.Skills.Unlock wins
 	Reuse = { Blacksmith = "Warrior", Alchemist = "Mage" }, -- the artisan kits borrow the base class's Q / Z art
-	Icon = 64, RowH = 84, RightW = 150, ButtonH = 40, -- du; a row >= 64 on phones (BB9)
+	Icon = 64, RowH = 76, RightW = 150, StateW = 110, ButtonH = 40, Pad = 6, -- du; a row >= 64 on phones (BB9)
+	-- RightW: a locked row (the [Where to hunt] button), StateW: Ready / seconds / Need MP; the attack row has no state
+	-- column (its words take the room: main photo skillbook_v2, the window ran 17 du past its height)
 	Name = 20, Body = 16, Small = 15, -- text px (>= 15, 검수 10/10)
 	-- game text: English only (A23-48), short and easy; the skill words live in Config.Skills.Text
 	Text = {
@@ -392,7 +394,7 @@ local function drawRow(kit, parent, row, ctx)
 	corner.Parent = f
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
-	pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 8), UDim.new(0, 8)
+	pad.PaddingTop, pad.PaddingBottom = UDim.new(0, T.Pad), UDim.new(0, T.Pad)
 	pad.Parent = f
 	list(f, 12, true)
 	f.Parent = parent
@@ -401,7 +403,8 @@ local function drawRow(kit, parent, row, ctx)
 	local mid = Instance.new("Frame")
 	mid.Name = "Info"
 	mid.BackgroundTransparency = 1
-	mid.Size = UDim2.new(1, -(T.Icon + T.RightW + 24), 0, 0)
+	local rightW = row.Slot == "Attack" and 0 or (row.Locked and T.RightW or T.StateW)
+	mid.Size = UDim2.new(1, -(T.Icon + rightW + (rightW > 0 and 24 or 12)), 0, 0)
 	mid.AutomaticSize = Enum.AutomaticSize.Y
 	mid.LayoutOrder = kit.NextOrder()
 	list(mid, 3)
@@ -418,15 +421,15 @@ local function drawRow(kit, parent, row, ctx)
 		fl.Name = "FactionLine"
 	end
 	-- right: the live state (+ [Where to hunt] while locked)
+	if row.Slot == "Attack" then return end
 	local right = Instance.new("Frame")
 	right.Name = "State"
 	right.BackgroundTransparency = 1
-	right.Size = UDim2.new(0, T.RightW, 0, 0)
+	right.Size = UDim2.new(0, rightW, 0, 0)
 	right.AutomaticSize = Enum.AutomaticSize.Y
 	right.LayoutOrder = kit.NextOrder()
 	list(right, 6)
 	right.Parent = f
-	if row.Slot == "Attack" then return end
 	local view = { Row = row }
 	view.State = label(kit, right, "", T.Body, kit.Theme.SubText, true)
 	view.State.Name = "StateText"
@@ -461,7 +464,7 @@ local function drawPassive(kit, parent, ctx)
 		corner.Parent = box
 		local pad = Instance.new("UIPadding")
 		pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 12), UDim.new(0, 12)
-		pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 8), UDim.new(0, 8)
+		pad.PaddingTop, pad.PaddingBottom = UDim.new(0, T.Pad), UDim.new(0, T.Pad)
 		pad.Parent = box
 		list(box, 3)
 		box.Parent = parent
