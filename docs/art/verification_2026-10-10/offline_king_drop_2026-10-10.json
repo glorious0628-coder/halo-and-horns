@@ -1,9 +1,9 @@
 {
-  "checks": 11,
+  "checks": 20,
   "failed": 0,
   "static": [
     {
-      "check": "the slime joint adds the drop height",
+      "check": "the slime joint adds the drop height and the leap's sideways offset (in the joint's frame)",
       "ok": true
     },
     {
@@ -40,9 +40,34 @@
       "name": "a small thud",
       "applied": true,
       "caught": true
+    },
+    {
+      "name": "every leap falls from the sky",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no sideways move (the King pops at the spot)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the sideways move runs backwards",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a flat arc",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ground difference ignored",
+      "applied": true,
+      "caught": true
     }
   ],
   "status": "passed",
-  "contract": "First-KO King drop (게임성 개발 1, SPEC A23-110 + 개발 2 FirstKOService), offline.\n\nRuns, in the official Luau CLI, the CURRENT Fx.luau WOBBLE.dropLift cut out of Fx.luau with doubles: a monster with\nDropAt (server time) / DropTime is drawn DROP_HEIGHT studs up at DropAt and falls faster and faster\n(height x (1 - u^2)) to the ground at DropAt + DropTime; it lands with the big thud (AttackMul) exactly once; a drop\nalready long over at the join (u >= 1.5) lands silently; another player's own King (Feel.isForeign) never thuds; no\nDropAt / DropTime = on the ground. Static: the slime joint adds the drop height; the King's attack-hop thud skips\nanother player's own King; LandShadow draws the circle from the same attributes. Mutations: each must be caught.",
+  "contract": "First-KO King drop (게임성 개발 1, SPEC A23-110 + 개발 2 FirstKOService), offline.\n\nRuns, in the official Luau CLI, the CURRENT Fx.luau WOBBLE.dropLift cut out of Fx.luau with doubles: a monster with\nDropAt (server time) / DropTime is drawn DROP_HEIGHT studs up at DropAt and falls faster and faster\n(height x (1 - u^2)) to the ground at DropAt + DropTime; it lands with the big thud (AttackMul) exactly once; a drop\nalready long over at the join (u >= 1.5) lands silently; another player's own King (Feel.isForeign) never thuds; no\nDropAt / DropTime = on the ground. A23-113 ① leap (개발 2 MonsterService LEAP, docs/design/boss_leap_2026-10-11.md):\nwith DropHeight the King leaps a low arc from DropFrom to DropPos (the body already stands at DropPos): at the start it\nis drawn at DropFrom on the ground (offset = DropFrom - DropPos, the ground's height difference), at mid time\nDropHeight up and half way, at the end on the spot with the thud once; DropHeight 0 with DropFrom = DropPos (Captain\nClatter's slam) = no lift; DropHeight without DropFrom = an arc in place; no DropHeight = the old sky fall (KO1's first\ndrop). Static: the slime joint adds the drop height and turns the sideways offset into the joint's frame; the King's\nattack-hop thud skips another player's own King; LandShadow draws the circle from the same attributes. Mutations:\neach must be caught.",
   "studioCalls": 0
 }
