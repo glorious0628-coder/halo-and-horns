@@ -356,12 +356,15 @@ local function paintState(kit, view, ctx)
 	view.State.TextColor3 = kit.Theme[STATE_COLOR[kind or ""] or "SubText"] or kit.Theme.SubText
 end
 
+-- the key beside the name (keyboards); none for a slot not learned yet (its state says the level) or a key that is not
+-- live (검수 10/11: Z / X with their flags off showed "[None]")
 local function keyOf(row, ctx)
-	if not ctx.Keyboard then return nil end
+	if not ctx.Keyboard or row.Locked then return nil end
 	local kb = C and C.Keybinds
 	if type(kb) ~= "table" or type(kb.Label) ~= "function" then return nil end
 	local ok, k = pcall(kb.Label, row.Action)
-	if ok and type(k) == "string" and k ~= "" then return k end
+	local kbc = type(Config.Keybinds) == "table" and Config.Keybinds or {}
+	if ok and type(k) == "string" and k ~= "" and k ~= kbc.None and k ~= kbc.NoneEn then return k end
 	return nil
 end
 

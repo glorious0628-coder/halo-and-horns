@@ -1,5 +1,5 @@
 {
-  "checks": 65,
+  "checks": 67,
   "failed": 0,
   "mutations": [
     {
@@ -134,6 +134,16 @@
     },
     {
       "name": "Panels ignores KeepScroll",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "[None] for a key that is not live",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a locked slot shows its key",
       "applied": true,
       "caught": true
     },

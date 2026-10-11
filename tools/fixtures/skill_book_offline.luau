@@ -274,8 +274,15 @@ attrs.Mana, attrs.SkillReadyAt = 100, NOW + 1.5
 update()
 check(st.Text == "1.5 s", "after a cast: seconds left", st.Text)
 attrs.SkillReadyAt = 0
--- locked + touch
+-- 검수 10/11: no "[None]" - a key that is not live, or a slot not learned yet, shows no key
+keyLabels.SkillQ = Config.Keybinds.None
+open()
+check(findText("[" .. Config.Keybinds.None .. "]") == nil and hasText("Halo Slam"), "a key that is not live shows no '[None]'")
+keyLabels.SkillQ = "Z"
 attrs.Level, attrs.SkillSlots = 2, 0
+open()
+check(findText("Halo Slam  [Z]") == nil and hasText("Halo Slam"), "a slot not learned yet shows no key (keyboards)")
+-- locked + touch
 UIS.KeyboardEnabled = false
 open()
 local hunt = btn(W.WhereToHunt)

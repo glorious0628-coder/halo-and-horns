@@ -76,6 +76,8 @@ MUTATIONS = [
     ("BOOK", "every state column wide", "(row.Locked and T.RightW or T.StateW)", "T.RightW"),
     ("BOOK", "the scroll jumps on a level up", "		KeepScroll = true,", "		KeepScroll = false,"),
     ("PANELS", "Panels ignores KeepScroll", "queueRebuild(o ~= nil and o.KeepScroll == true)", "queueRebuild()"),
+    ("BOOK", "[None] for a key that is not live", "k ~= kbc.None and k ~= kbc.NoneEn then return k end", "true then return k end"),
+    ("BOOK", "a locked slot shows its key", "if not ctx.Keyboard or row.Locked then return nil end", "if not ctx.Keyboard then return nil end"),
     ("MAIN", "the window is never loaded", "\"PetWindow\", \"SkillBook\", \"QuestBook\",", "\"PetWindow\", \"QuestBook\","),
     ("HUD", "K opens the window while its tile is locked", "\t\tif def.Key == action and L.TileLocked(def.Id) then\n",
      "\t\tif false then\n"),
