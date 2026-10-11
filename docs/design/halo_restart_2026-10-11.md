@@ -104,7 +104,7 @@
 - **걷는 바닥 태그:** 파트로 만든 바닥(골격 건물 1층, 마당, 나중 실내)도 땅으로 치게 한다.
   - 서버 = 게임성 개발 2: MonsterService, ZoneService, KaijuService
   - 클라 = 게임성 개발 1: LandShadow, SkillFx, Fx
-  - 태그 이름은 `WalkGround`(Config.Ground.Tag)로 정했다. 클라는 끝났다(c45ed8c6, 공용 모듈 Shared/Ground.luau). 서버는 개발 2가 Ground.Params()로 바꾼다. 서버가 바뀌기 전까지 마을 바닥은 Terrain으로 만든다.
+  - 태그 이름은 `WalkGround`(Config.Ground.Tag)로 정했다. 클라는 끝났다(c45ed8c6, 공용 모듈 Shared/Ground.luau). 서버도 끝났다(e1213b53: MonsterService·KaijuService·ZoneService가 Ground.Params()를 쓴다). 이제 골격 건물 바닥·마당을 파트로 만들고 `WalkGround` 태그를 달면 클라·서버 모두 땅으로 본다(그림자·스킬 원·몬스터 발밑·물 구조·첫 KO).
 - **6단계 직전 고정점 일괄 고침:** 구역 사각형, NPC, 동상, 발판, 폭포 소리, 큰 지도, 미니맵.
   - Config와 시험 = 게임성 개발 1·2
   - 그림(큰 지도) = 이미지 생성 2
