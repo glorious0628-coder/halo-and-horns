@@ -18,3 +18,4 @@
    - 다음은 dev2-healfair(A23-126)다.
 4. **이미지 생성 2(추가):** 무기고 2D 끝(앞 High 1 + 왼·뒤 Medium 2, 시트 art/review/s2/halo_armory_views.jpg) → 판정 후 이미지 생성 1(무기고 골격)에게 넘김. 지금 4면 큐 1번 등불 A~E(High 15장 = 75크레딧) 진행 중.
 5. **이미지 생성 3:** ④ 골격 1묶음(집 02·05·09·03) Blender 시트 art/review/img3/houses/houses_batch1_blender.jpg → 판정 필요. 생성기 tools/skeleton_house.py + tools/house_specs/*.json. 사용자 클릭 요청: WorldKit Import 3D로 halo_houses_batch1_ornaments.glb (HaloDomeHouse_07_fixed.glb는 사용자가 이미 한 번 가져왔음 — 3이 아직 그 메시지를 못 받은 듯, 중복이면 하나만). 질문: plan 자리(House_Hill1 등)에 어느 집을 놓을지 → 정해진 것 없으면 3이 2D 크기로 짝지어 제안하게 하면 됨.
+6. **게임성 개발 2(추가):** origin/dev2-healfair 8001260f(A23-126: 자기 치유 3%/3초 HaloSelfHealCapPct, 원거리 Q 치유 중심 나 기준 12칸, test_skill_signals 142·변이 51/51) + origin/dev2-goosemut 680d2350(test_a23_14의 동등 변이 하나 빼기, 시험 파일만) → 검증·병합 필요. 개발 2 큐가 비었음 — 다음 일(새 구역 몬스터 표 Config 초안 등)을 줘야 함.
