@@ -1,22 +1,14 @@
-# 이미지 생성 2 — 인계 (2026-10-11 낮, 옛 세션 → 새 세션)
-## 지금 상태 한 줄
-빛 성 2차(F1~F4)는 **안 그림**(받았지만 인계 지시로 중단). 나머지 큐는 아래. 앞으로 보고는 새 검수 `local_78581314-72d6-4b45-90b3-1bb6431efa7f`.
-## 끝낸 것 (전부 푸시됨, 시트 art/review/s2/)
-- 스킬 Q·Z·X 아이콘 18개: `art/out/s2/skills_final/Skill_<Class>_<Q|Z|X>_<Halo|Horns>.png` — 이미지 개발이 올려 연결 끝(ae9be2a, aef108a).
-- 빛 마을 '이유 소품' 14 + 꽃 화분 5 + 꽃 덤불 3 + 생울타리 2 = 24종 고급 앞면 → 이미지 생성 3에 전달(표 `docs/design/halo_reason_props_handoff_2026-10-10.md`). 이미지 생성 3의 대기 메시지 2건(표 다시 보기, 덤불 5)은 그쪽이 깨면 처리.
-- 빛 성 1차(돔 있음, `art/out/s2/halo/castle/`)는 버림 예정. 1차-돔없음(성당 조사) 4장 `art/out/s2/halo/castle2/HaloCastleCath_{A,B,C,D}.png`, 시트 `halo_castle_cathedral_concepts.jpg` — 사용자 "사진처럼 현실적, 판타지 아님"이라 2차 요청. 확정본에서 십자가(A 박공·C 문루)는 빼고 별·후광·날개로, 장난감 느낌 더 세게(검수 메모).
-- 새 구역(A23-119): 수정 동굴 숲 + 산호 해안 = 베타(숨긴 두 구역 자리), 사탕 골짜기·바람 협곡/열기구 고원 = 그다음 후보. 시안 세트(고급 12) `art/out/s2/zones_set/{crystal,coral}/`, 몬스터 시트 4장 `art/out/s2/zones_set/monsters/`(검수 선택 대기), 콘셉트들 `art/out/s2/zones_new/`.
-## 다음 큐 (순서)
-1. **빛 성 2차 F1~F4 (Medium 4)** — 프롬프트 `docs/design/halo_castle_cathedral_directions_2026-10-11.md` 맨 아래 '2차' F1~F4 그대로(참조 이미지 없이 `__runNoRef`, 각 950자 미만). 확인: 돔 0·빛살 0·십자가 0·땅 높이 큰 문과 마당·장난감 그림체. 탑 꼭대기 100% 확대 확인 후 시트 → 검수. 뽑힌 1장은 옆·뒤·위(평면) 시안(같은 그림체) → 부품(본관·탑·성문·성벽).
-2. 새 구역 몬스터: 검수가 고른 시트로 마리별 앞·옆·뒤 시안 → 이미지 생성 3(Tripo). 수정 B·산호 A를 추천함.
-3. 빛 마을 조감 시안 1~2장 + 새로 생기는 건물 종류 2D 앞면(SPEC A23-121, 이미지 생성 1의 새 구역 지도가 나온 뒤; `docs/design/halo_restart_2026-10-11.md`).
-4. 대기: 수정 동굴·산호 해안 나머지 부품 시안(검수 요청 시), 뿔 성(A23-112 대칭 콘셉트가 나온 뒤).
-## Firefly / 도구 상태
-- 내장 브라우저 탭 id `seed`, https://firefly.adobe.com/generate/image. **사용자가 Adobe 로그인 완료**(10/11). 새 턴마다 `mcp__Claude_Browser__resize_window` 1440x900 먼저(안 하면 레이아웃 깨짐). 페이지를 다시 열면 `tools/_firefly_helpers.js`를 javascript_exec에 붙여 넣어 도우미를 다시 심기. 한 번에 한 루프만(두 루프 = 중복 생성). JS 호출은 ≤40초(`__sleep(36000)`).
-- 프롬프트 <1000자(넘으면 조용히 실패). 후보 = Medium(0), 확정 = High(5). 고른 후보를 High로 다시 그릴 땐 그 Adobe 생성 파일의 `previewUrl`(asset_get_presigned_urls)을 참조로 쓰면 모양 유지.
-- 받기: `asset_search`(entityScope GenAIAsset, sortBy createDate, limit) → 시간순 매핑(생성시각 ≈ 클릭 로그 −수 초; 로그 시각은 UTC) → `asset_get_presigned_urls`(sourceType acp) → `py tools/_dl_urls.py <폴더> <접두사>`(폴더의 `urls.txt` = '이름 토큰' 줄). 참조 업로드: `asset_initialize_file_upload` → curl -L PUT → `asset_finalize_file_upload` → presignedAssetUrl(몇 시간 유효). 10/11 낮 Adobe 커넥터가 몇 분 서버 오류였음(재시도로 복구).
-- 누끼: `tools/cutout_flat.py`(cutout tol40 soft10 holes + edge_fix) — 둥근 배지 아이콘은 이걸로 충분.
-- 푸시: 공유 트리라 `py tools/push_paths.py -m "제목" <경로들>`(느리면 백그라운드로 돌리고 `HEAD`가 찍힐 때까지 기다림). `art/prompts` 같은 폴더 통째 푸시 주의(남이 고친 파일도 같이 올라감).
-- 크레딧: 오늘 High 약 330장 이상 사용(페이지에서 잔액 못 읽음). 잔액은 검수에 따로 알린 적 없음 — 500 근처면 검수에 알림.
-## 막힌 것
-- 없음. (로그아웃되면 사용자가 브라우저 판에서 Adobe 로그인 — 내가 입력하면 안 됨; 창이 최소화돼 있으면 페이지가 안 그려짐.)
+# 이미지 생성 2 — 인계 (2026-10-11 저녁, 검수 지시로 비움)
+## 지금 상태
+- 벤치 B left2 High 1장 완료·푸시(8326341) — 검수 판정 대기.
+- 무기 9종×T1~T3 Medium 27장 생성·푸시(247ff89) — 검수가 고를 칸 대기(고른 것만 나중에 High 5크레딧). 표 `docs/design/weapon_t13_candidates_2026-10-11.md`, 시트 `art/review/s2/weapons_t13_*.jpg`.
+- 보고는 검수 `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`(send_message, 인자 session_id).
+## 기다리는 것
+- 검수의 무기 칸 선택·High 승인, 뿔 전사 최종(앞·뒤·옆 HQ)을 한손검으로 다시 그릴지 결정(옛 HQ는 대검).
+- 이전 큐(빛 성 2차 F1~F4, 새 구역 몬스터, 빛 마을 조감) 상태는 옛 인계 `git log -- docs/handoff/state/img2.md`의 앞 버전 참고(검수가 새 우선순위 줄 때까지 보류).
+## Firefly / 도구 메모
+- 내장 브라우저 탭 `seed`(firefly.adobe.com/generate/image), **로그인 됨**(10/11 저녁, 사용자). 로그인이 풀리면 사용자가 직접(내가 입력 금지). 새 턴마다 `resize_window` 1440x900. 페이지를 다시 열면 `tools/_firefly_helpers.js`(참조 없음 `__runNoRef`)를 javascript_exec에 붙여 심기. 참조는 `__setRef(url,name)`만 따로 정의(helpers에 있음).
+- 품질 선택 `sp-picker[2]`: 클릭이 안 먹으면 `p.value='high'; p.dispatchEvent(new Event('change',{bubbles:true,composed:true}))` 후 라벨 '높음' 확인. 모델은 로그인 뒤 Gemini로 돌아가니 gpt-image-2.5-prism 다시 선택.
+- 받기: asset_search(GenAIAsset, createDate) → asset_get_presigned_urls(id,sourceType acp) → curl `downloadUrl`; 참조 업로드 asset_initialize_file_upload(file_size 대략)→curl PUT→asset_finalize_file_upload(filename·directory_asset_id·transfer_document)→presignedAssetUrl.
+- 크레딧 표시 4770/10000(10/11 저녁, 다음 재설정 11/4). 500 근처면 검수에 알림.
+- 푸시는 `py tools/push_paths.py -m "제목" <경로>`.
