@@ -13,7 +13,9 @@ local D = game:GetService("HttpService"):JSONDecode([[__DATA__]])
 local SS = game:GetService("ServerStorage")
 local T = workspace.Terrain
 local OFF = Vector3.new(D.offset[1], 0, D.offset[2])
-local BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -48, y1 = 96 }
+-- the box follows the plan's land (③ 3차: the town grew 1.5x); OLD_BOX = where the first apply (10/11) copied the old Halo
+local BOX = { x0 = D.box[1] - 2, x1 = D.box[2] + 2, z0 = D.box[3] + 2, z1 = D.box[4] - 2, y0 = -48, y1 = 96 }
+local OLD_BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -24 }
 local MAT = {
 	g = Enum.Material.Grass, d = Enum.Material.Ground, c = Enum.Material.Concrete, b = Enum.Material.Cobblestone,
 	p = Enum.Material.Pavement, t = Enum.Material.Slate, w = Enum.Material.Mud, r = Enum.Material.Rock, n = Enum.Material.Sand,
@@ -71,8 +73,10 @@ if MODE == "remove" then
 			if typeof(corner) == "Vector3" then
 				corner = Vector3int16.new(corner.X, corner.Y, corner.Z)
 			else
-				local _, c0 = cells16(-24)
-				corner = c0
+				local reg0 = Region3.new(Vector3.new(OLD_BOX.x0, OLD_BOX.y0, OLD_BOX.z1) + OFF, Vector3.new(OLD_BOX.x1, BOX.y1, OLD_BOX.z0) + OFF)
+					:ExpandToGrid(4)
+				local lo = reg0.CFrame.Position - reg0.Size / 2
+				corner = Vector3int16.new(math.floor(lo.X / 4), math.floor(lo.Y / 4), math.floor(lo.Z / 4))
 			end
 			T:PasteRegion(tr, corner, true)
 		end

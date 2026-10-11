@@ -22,21 +22,22 @@ TEMPLATE = os.path.join(ROOT, "tools", "worldkit", "halo_blockout.luau")
 OUT = os.path.join(ROOT, "build", "wk", "halo_blockout_apply.lua")
 
 CELL = 4
-X0, X1 = -212, 212
+X0, X1 = -212, 212  # set from the plan's land in main() (③ 3차: the town grew 1.5x); north edge Z0 stays at the gate
 Z0, Z1 = -324, -712  # north edge (gate side) .. south edge
+EDGE = 32  # grid margin round the land: the 20-stud sea ring + its rim + air
 HOFF = 20  # stored height = round(y) + HOFF
 ALPH = "".join(chr(c) for c in range(48, 48 + 80) if chr(c) not in "\\\"'`[]")  # safe chars
 # material codes
 M = dict(sea="s", grass="g", dirt="d", road1="c", road2="b", road3="p", stair="t", water="w", rock="r", sand="n")
-SLOPES = {  # y -> y_to along this line
+SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them like the plan)
     "market": ((12, -450), (112, -470)),
     "garden_homes": ((-96, -612), (-170, -672)),
     "cliff_homes": ((96, -540), (166, -630)),
 }
 DIST_MAT = {"training": "dirt", "arrival": "grass"}
-PAVED_R = dict(fountain=30, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
+PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
-CLIFF_Z = -640  # rock lip on the south shore
+CLIFF_Z = -760  # rock lip on the south shore
 SEA_R = 5  # sea ring width in cells (20 studs) round the coast
 
 
@@ -66,6 +67,20 @@ def main():
     plan = json.load(open(PLAN, encoding="utf-8"))
     land = [tuple(p) for p in plan["land"]]
     dists = plan["districts"]
+    global X0, X1, Z1
+    X0 = int(math.floor((min(p[0] for p in land) - EDGE) / CELL)) * CELL
+    X1 = int(math.ceil((max(p[0] for p in land) + EDGE) / CELL)) * CELL
+    Z1 = int(math.floor((min(p[1] for p in land) - EDGE) / CELL)) * CELL
+    g = plan["frame"].get("grow")
+    if g:
+        def grow(x, z):
+            if abs(x) > g["core_x"]:
+                x = math.copysign(g["core_x"] + (abs(x) - g["core_x"]) * g["kx"], x)
+            if z < g["core_z"]:
+                z = g["core_z"] + (z - g["core_z"]) * g["kz"]
+            return x, z
+        for k in list(SLOPES):
+            SLOPES[k] = tuple(grow(*q) for q in SLOPES[k])
     cols = (X1 - X0) // CELL
     rows = (Z0 - Z1) // CELL
     H = [[None] * cols for _ in range(rows)]
@@ -201,6 +216,12 @@ def main():
 
     # 10/11 검수 (③ 사진 05-06 "거의 잔디"): paved circles (white marble + gold lines = road1) round the fountain and the
     # spawn so the square reads as a square at once; water and stairs inside keep their own look
+    for y in plan.get("yards", []):
+        for r in range(rows):
+            for c in range(cols):
+                x, z = cxz(r, c)
+                if math.hypot(x - y["at"][0], z - y["at"][1]) <= y["r"] and MAT[r][c] not in ("sea", "water", "stair"):
+                    MAT[r][c] = "road2"
     fpool = next(p for p in plan["water"]["pools"] if p["id"] == "fountain")
     PAVED = [(fpool["at"][0], fpool["at"][1], PAVED_R["fountain"]), (0, -420, PAVED_R["spawn"])]
     for (px, pz, pr) in PAVED:
@@ -278,6 +299,77 @@ def main():
                 else:
                     SEA_TIER[r][c] = 0
 
+    # walking times (③ 3차 target: gate -> cathedral ~30 s, spawn -> any home <= 45 s at WalkSpeed 16): Dijkstra on the grid,
+    # 8 neighbours, blocked by sea / water (bridges excepted) / building footprints (the gate passage excepted) and by steps
+    # steeper than 1 stud per stud
+    import heapq
+    blocked = [[MAT[r][c] in ("sea", "water") for c in range(cols)] for r in range(rows)]
+    for br in plan["bridges"]:
+        for r in range(rows):
+            for c in range(cols):
+                x, z = cxz(r, c)
+                if math.hypot(x - br["at"][0], z - br["at"][1]) <= br["len"] / 2 + 3:
+                    blocked[r][c] = False
+    for b in plan["buildings"]:
+        fp = [tuple(p) for p in b["footprint"]]
+        xs, zs = [p[0] for p in fp], [p[1] for p in fp]
+        for r in range(rows):
+            for c in range(cols):
+                x, z = cxz(r, c)
+                if min(xs) <= x <= max(xs) and min(zs) <= z <= max(zs) and inside((x, z), fp):
+                    if not (b["kind"] == "Gate" and abs(x - b["x"]) < b["door_size"][0] / 2):
+                        blocked[r][c] = True
+
+    def cell_of(x, z):
+        return int((Z0 - z) // CELL), int((x - X0) // CELL)
+
+    def walk_from(x, z):
+        D = [[math.inf] * cols for _ in range(rows)]
+        r0, c0 = cell_of(x, z)
+        D[r0][c0] = 0.0
+        pq = [(0.0, r0, c0)]
+        while pq:
+            dd, r, c = heapq.heappop(pq)
+            if dd > D[r][c]:
+                continue
+            for dr in (-1, 0, 1):
+                for dc in (-1, 0, 1):
+                    rr, cc = r + dr, c + dc
+                    if (dr or dc) and 0 <= rr < rows and 0 <= cc < cols and not blocked[rr][cc]:
+                        step = CELL * (1.4142 if dr and dc else 1.0)
+                        if abs(H[rr][cc] - H[r][c]) > step:
+                            continue
+                        nd = dd + math.hypot(step, H[rr][cc] - H[r][c])
+                        if nd < D[rr][cc]:
+                            D[rr][cc] = nd
+                            heapq.heappush(pq, (nd, rr, cc))
+        return D
+
+    def at_door(D, b):
+        x, z = b["door_at"][0] + b["door_dir"][0] * 3, b["door_at"][1] + b["door_dir"][1] * 3
+        r, c = cell_of(x, z)
+        best = math.inf
+        for dr in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                if 0 <= r + dr < rows and 0 <= c + dc < cols:
+                    best = min(best, D[r + dr][c + dc])
+        return best / 16.0
+
+    from_gate = walk_from(0, -346)
+    from_spawn = walk_from(0, -416)
+    walk = {}
+    for b in plan["buildings"]:
+        if b["kind"] == "Gate":
+            continue
+        walk[b["id"]] = dict(from_spawn_s=round(at_door(from_spawn, b), 1), from_gate_s=round(at_door(from_gate, b), 1))
+    homes = {k: v for k, v in walk.items() if k.startswith("House")}
+    worst = max(homes.items(), key=lambda kv: kv[1]["from_spawn_s"])
+    print(f"[walk] gate -> cathedral {walk['Cathedral']['from_gate_s']} s (target ~30), farthest home {worst[0]} "
+          f"{worst[1]['from_spawn_s']} s from spawn (target <= 45), unreachable: "
+          f"{[k for k, v in walk.items() if v['from_spawn_s'] == math.inf] or 0}")
+    with open(os.path.join(ROOT, "art", "review", "world", "halo_v2", "walk_times.json"), "w", encoding="utf-8") as f:
+        json.dump(dict(speed=16, note="seconds along the walkable terrain grid (blockout raster)", walk=walk), f, ensure_ascii=False, indent=1)
+
     # encode
     hrows, mrows = [], []
     for r in range(rows):
@@ -295,7 +387,7 @@ def main():
         mrows.append("".join(ms))
 
     ox, oz = (float(v) for v in a.offset.split(","))
-    data = dict(cell=CELL, x0=X0, z0=Z0, cols=cols, rows=rows, hoff=HOFF, alph=ALPH, h=hrows, m=mrows,
+    data = dict(cell=CELL, x0=X0, z0=Z0, cols=cols, rows=rows, hoff=HOFF, alph=ALPH, h=hrows, m=mrows, box=[X0, X1, Z0, Z1],
                 offset=[ox, oz], buildings=plan["buildings"], bridges=plan["bridges"], roads=[
                     dict(id=r["id"], pts=r["pts"], w=r["w"]) for r in plan["roads"] if r["id"] in ("main", "loop", "plaza_castle")],
                 falls=plan["water"]["falls"], pools=plan["water"]["pools"],

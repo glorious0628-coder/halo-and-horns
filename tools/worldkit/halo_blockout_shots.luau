@@ -46,23 +46,21 @@ end
 local g = part(av, "Avatar_Gate", Vector3.new(2, 5, 1), CFrame.new(4, gy(4, -334) + 2.5, -334), Color3.fromRGB(255, 200, 40))
 g.Material = Enum.Material.Neon
 
-absShot("00_bridge_approach", { 0, 6, -280 }, { 0, 10, -400 })
-absShot("01_gate_in_eye", { 0, 5, -316 }, { 6, 6, -460 })
-shot("02_spawn_eye", 0, -416, 4.5, 20, -540, 6)
--- opening camera v2 (검수 10/11): SPOT.Halo (0,16,-410) + (0,-4,140) -> (0,-2,58): from the bridge straight through the
--- middle of the 16 x 30 passage (y 12 -> 14), looking at SPOT.Halo
-absShot("03_opening_start", { 0, 12, -270 }, { 0, 16, -410 })
-absShot("03b_opening_mid", { 0, 13, -320 }, { 0, 16, -410 })
-absShot("04_opening_end", { 0, 14, -352 }, { 0, 16, -410 })
-shot("05_plaza_eye", 0, -496, 4.5, 40, -560, 4)
-shot("06_plaza_high", -30, -470, 40, 20, -550, 0)
-shot("07_market_eye", 20, -432, 4.5, 90, -480, 4)
-shot("08_market_hill", 100, -442, 4.5, 150, -400, 6)
-shot("09_training", -34, -418, 4.5, -130, -430, 3)
-shot("10_castle", -60, -508, 5, -140, -532, 12)
-shot("11_garden", -36, -572, 4.5, -130, -640, 4)
-shot("12_cathedral", 30, -560, 5, 72, -652, 20)
-shot("13_cliff_homes", 92, -538, 5, 160, -585, 6)
+-- the town shots come from the plan (tools/worldkit/halo_blockout_shots.py fills __SHOTS__): a point is { x, z, h } with
+-- h above the ground there, or { x, y, z, abs = true }
+local SPEC = game:GetService("HttpService"):JSONDecode([==[__SHOTS__]==])
+local function pt(q)
+	if q.abs then return { q.x, q.y, q.z } end
+	return { q.x, gy(q.x, q.z) + q.h, q.z }
+end
+local towerSpecs = {}
+for _, sp in SPEC do
+	if sp.tower then
+		table.insert(towerSpecs, sp)
+	else
+		table.insert(shots, { name = sp.name, cam = pt(sp.cam), look = pt(sp.look) })
+	end
+end
 -- the lookout tower top (검수 10/11: at the parapet edge, tilted 15-20 deg down): eye = roof + 4.5, 5 studs out toward the view
 do
 	local tw = root.Buildings.Tower_Lookout.Roof
@@ -73,12 +71,11 @@ do
 		local dir = (h * math.cos(math.rad(tilt)) - Vector3.new(0, math.sin(math.rad(tilt)), 0))
 		absShot(name, { cam.X, cam.Y, cam.Z }, { cam.X + dir.X * 100, cam.Y + dir.Y * 100, cam.Z + dir.Z * 100 })
 	end
-	towerShot("14_lookout_view", 60, -490, 18) -- market + fountain square ahead, the cathedral (grey 70x70x54 box) at the right edge
-	towerShot("14b_lookout_sea", 240, -720, 30) -- the island edge, the sea ring and the clouds below
+	for _, sp in towerSpecs do
+		towerShot(sp.name, sp.aim[1], sp.aim[2], sp.tilt)
+	end
 end
-absShot("15_top", { 0, 400, -500 }, { 0, 0, -518 })
-absShot("16_aerial_south", { -40, 230, -250 }, { 10, 0, -540 })
-absShot("17_aerial_north", { 60, 230, -800 }, { 0, 0, -500 })
+-- 15-17 (from above) are in SPEC
 
 -- beam test bench (far from everything: x -3000)
 local tb = workspace:FindFirstChild("BeamTest")
@@ -127,6 +124,5 @@ pe.Rate, pe.Lifetime, pe.Speed = 40, NumberRange.new(2, 3), NumberRange.new(3)
 pe.Size = NumberSequence.new(2)
 pe.Color = ColorSequence.new(Color3.new(1, 1, 1))
 pe.Parent = pa
-absShot("90_beamtest_high", { -3000, 90, 45 }, { -3000, 50, 0 })
-absShot("91_beamtest_low", { -3000, 58, 40 }, { -3000, 50, 0 })
+-- beam bench shots: py tools/worldkit/halo_blockout_shots.py --bench
 return game:GetService("HttpService"):JSONEncode(shots)

@@ -28,19 +28,25 @@ STORY = [
 ]
 
 # ---------------------------------------------------------------- land + districts (polygons in x, z)
-# 10/11 검수 ③ 2차 ("위에서 여전히 네모"): the island is pulled in from the box (x +-214, z -322..-714) so a 26-30 stud sea
-# rings it; the shoreline is drawn in the FINAL coordinates (after SHRINK below): 4 big capes (the entry neck the bridge
-# lands on, NE hill cape, SE lookout cape, SW garden cape), bays NW (stream mouth, W1), NE (gate tower - hill), E
-# (hill - cliff homes) and a west inlet (training - castle), a ragged cliff coast at the back (south); every edge < 40.
-LAND = [(-30, -325), (30, -325), (46, -328), (58, -336), (62, -350), (66, -364), (74, -376), (84, -378), (94, -370),
-        (98, -356), (110, -350), (128, -352), (146, -358), (162, -366), (176, -376), (186, -392), (186, -410), (178, -428),
-        (170, -444), (160, -458), (152, -470), (152, -482), (162, -490), (174, -498), (182, -514), (180, -536), (186, -556),
-        (182, -576), (178, -596), (178, -614), (180, -632), (174, -650), (166, -664), (152, -674), (134, -678), (118, -684),
-        (98, -680), (80, -688), (58, -682), (36, -688), (14, -680), (-8, -686), (-30, -678), (-50, -684), (-68, -676),
-        (-90, -680), (-110, -678), (-128, -674), (-144, -668), (-160, -656), (-174, -640), (-178, -620), (-184, -600),
-        (-180, -582), (-184, -564), (-188, -540), (-184, -516), (-180, -500), (-172, -490), (-160, -484), (-158, -472),
-        (-168, -462), (-168, -446), (-162, -430), (-156, -412), (-152, -398), (-140, -384), (-126, -372), (-110, -364),
-        (-96, -358), (-84, -350), (-76, -342), (-70, -336), (-58, -330), (-44, -327)]
+# Shoreline in FINAL coordinates (after the grow below). 10/11 검수 ③ 2차 drew it (passed: "둥글고 들쭉날쭉"): 4 big capes
+# (the entry neck the bridge lands on, NE hill cape, SE lookout cape, SW garden cape), bays NW (stream mouth, W1), NE (gate
+# tower - hill), E (hill - cliff homes) and a west inlet (training - castle), a ragged cliff coast at the back (south).
+# ③ 3차 grew it with the town (x 1.5/0.86, z 1.5/0.90 outside the core) and split every edge >= 26 with a small wiggle.
+LAND = [(-30, -325), (-10, -325), (10, -325), (30, -325), (50, -328), (71, -336), (78, -350), (85, -364), (99, -376),
+        (117, -378), (134, -370), (141, -356), (162, -350), (178, -349), (193, -352), (208, -359), (225, -358),
+        (240, -357), (253, -366), (264, -373), (277, -376), (295, -392), (295, -410), (281, -428), (267, -447),
+        (260, -460), (249, -470), (235, -490), (235, -510), (253, -523), (274, -537), (278, -551), (288, -563),
+        (290, -582), (284, -600), (285, -618), (295, -633), (293, -650), (288, -667), (280, -683), (281, -700),
+        (286, -715), (281, -730), (280, -745), (284, -760), (282, -776), (274, -790), (264, -800), (260, -813),
+        (250, -825), (235, -830), (219, -828), (204, -837), (191, -844), (176, -847), (159, -839), (141, -840),
+        (127, -851), (110, -853), (91, -846), (71, -843), (55, -851), (36, -853), (14, -840), (-8, -850),
+        (-30, -837), (-45, -839), (-57, -847), (-75, -844), (-89, -833), (-109, -832), (-127, -840), (-145, -840),
+        (-162, -837), (-177, -829), (-193, -830), (-209, -830), (-221, -820), (-234, -808), (-249, -800),
+        (-264, -789), (-274, -773), (-274, -756), (-281, -740), (-290, -725), (-291, -707), (-283, -693),
+        (-284, -677), (-290, -662), (-291, -647), (-291, -626), (-298, -607), (-300, -586), (-291, -567),
+        (-286, -554), (-284, -540), (-270, -523), (-249, -513), (-246, -493), (-263, -477), (-266, -463),
+        (-263, -450), (-253, -430), (-242, -412), (-235, -398), (-214, -384), (-201, -381), (-190, -372),
+        (-177, -364), (-162, -364), (-138, -358), (-117, -350), (-103, -342), (-92, -336), (-71, -330), (-47, -327)]
 
 DISTRICTS = [
     dict(id="arrival", name="들어오는 마당", y=0, color=(236, 226, 196),
@@ -130,7 +136,7 @@ KINDS = {
     "Shop": (24, 15, 18, 1, 9, (5, 7.5)),
     "HouseA": (24, 22, 26, 2, 7, (4, 7)),
     "HouseB": (26, 18, 28, 2, 7.5, (4, 7)),
-    "Castle": (64, 40, 34, 3, 10, (8, 10)),
+    "Castle": (100, 70, 44, 3, 12, (10, 12)),  # 10/11 ③ 3차: new castle of light (F3 line), was 64 x 40
     "Cathedral": (70, 70, 54, 1, 24, (10, 14)),
     "Armory": (16, 12, 12, 1, 8, (5, 7)),
 }
@@ -142,7 +148,7 @@ BUILDINGS = [
     ("Shop_Potion", "Shop", "market", 34, -470, (14, -440), "물약 가게: 스폰에서 보이게 북서를 봄"),
     ("Shop_Bakery", "Shop", "market", 82, -442, (66, -470), "빵집: 골목 북쪽"),
     ("Shop_Juice", "Shop", "market", 106, -482, (72, -482), "주스 가게: 골목 동쪽 끝"),
-    ("Shop_Flower", "Shop", "market", 52, -500, (62, -472), "꽃 가게: 광장으로 내려가는 모퉁이"),
+    ("Shop_Flower", "Shop", "market", 44, -500, (62, -472), "꽃 가게: 광장으로 내려가는 모퉁이"),
     ("House_Hill1", "HouseA", "market_hill", 128, -386, (146, -410), "언덕 동네 1"),
     ("House_Hill2", "HouseB", "market_hill", 162, -410, (138, -420), "언덕 동네 2"),
     ("House_Hill3", "HouseA", "market_hill", 146, -450, (150, -400), "언덕 동네 3"),
@@ -153,9 +159,9 @@ BUILDINGS = [
     ("House_Cliff2", "HouseA", "cliff_homes", 152, -522, (130, -556), "절벽 마을 아래 단(18) 2"),
     ("House_Cliff3", "HouseA", "cliff_homes", 176, -556, (200, -556), "바다를 보는 집"),
     ("House_Cliff4", "HouseB", "cliff_homes", 168, -616, (150, -580), "절벽 마을 위 단(22) 1"),
-    ("House_Cliff5", "HouseA", "cliff_homes", 136, -640, (150, -596), "절벽 마을 위 단(22) 2"),
+    ("House_Cliff5", "HouseA", "cliff_homes", 128, -620, (150, -596), "절벽 마을 위 단(22) 2"),
     ("House_Garden1", "HouseA", "garden_homes", -118, -604, (-100, -628), "정원 마을 1"),
-    ("House_Garden2", "HouseB", "garden_homes", -156, -626, (-140, -646), "정원 마을 2"),
+    ("House_Garden2", "HouseB", "garden_homes", -148, -622, (-140, -646), "정원 마을 2"),
     ("House_Garden3", "HouseA", "garden_homes", -164, -664, (-210, -680), "바다를 보는 집"),
     ("House_Garden4", "HouseB", "garden_homes", -112, -670, (-130, -642), "정원 마을 4"),
     ("Tower_Lookout", "Tower", "lookout", 178, -654, (150, -668), "전망 탑: 북동 모서리(검수 10/11 ③ 사진 14 — 광장은 대성당 북동 모서리 너머로만 보여서 여기, 꼭대기 눈높이 75)"),
@@ -181,7 +187,6 @@ FIXED_KEEP = [
     ("스폰-문 통로", None, "|x|≤12, z -330..-432 와 (0,-420) 반경 12는 비움(큰 길만, 소품·NPC·동상 없음)"),
     ("Bright", (18, -424), "Config.TownNpcs Bright (통로 밖, 스폰에서 18)"),
     ("이동 발판", (-24, -357), "Map.Pads Pad_Halo_SlimeMeadow (-24,0.7,-357) / Pad_Halo_GoblinWoods (24,0.7,-357) 그대로"),
-    ("구역 상자", None, "Config.Zones.HaloTown x -200..200, z -700..-330 그대로(넘침 없음). 가장 높은 땅 Y 34 < 물 구조 MaxRise 42"),
     ("월드맵 라벨", (0, -400), "WorldMap.luau HaloTown"),
 ]
 # (what, now, new (x, y, z) or None, Config / code to change)
@@ -194,6 +199,10 @@ FIXED_MOVE = [
     ("Folk2 꽃", (6.6, -489.63), (58, 8, -490), "Config.TownNpcs Folk2 At/Look(62,-472)/Y 8"),
     ("Folk4 분수", (46, -556), (36, 10, -548), "Config.TownNpcs Folk4 At/Look(22,-540)/Y 10; 분수 이름 Town_Halo_Fountain3"),
     ("폭포 소리 6곳", None, None, "Config.Audio.Ambient.Waterfall.Spots → W1 (-70,1,-340), W2 (-44,20,-592), W3 (194,10,-566) 3곳(또는 Decor 아래 이름 …Waterfall)"),
+    ("구역 상자·섬 땅·경계 (③ 3차)", None, None,
+     f"땅이 x {min(p[0] for p in LAND)}..{max(p[0] for p in LAND)}, z {min(p[1] for p in LAND)}..{max(p[1] for p in LAND)}로 커짐 → "
+     "Config.Zones.HaloTown Center/Size(안전 구역·음악·Enter 퀘스트·튕겨내기·몬스터 추적), Map.Land IslandHalo, Map.Bounds MinX/MinZ(-260/-720), "
+     "Outskirts Size, 미니맵·큰 지도 범위를 같이 넓힘. 가장 높은 땅 Y 34 < 물 구조 MaxRise 42 그대로. 이웃 초원 z -240..240과 안 겹침"),
     ("RoadNorthIsland 띠", None, None, "미니맵 x -8..8, z -600..-330 → 새 큰 길 따라(성문→스폰→시장→광장→대성당)"),
     ("큰 지도·미니맵", None, None, "WorldMapV2 그림(이미지 생성 2) + Halo MapTiles 다시 찍기(6단계 직전)"),
     ("훈련장 (새)", None, (-100, 2, -444), "새 Landmark TrainingYard + 허수아비 표적(게임성 개발: 첫 기술 퀘스트가 여기를 가리키게)"),
@@ -213,10 +222,11 @@ SCENES = [
 ]
 
 
-# ---------------------------------------------------------------- shrink (10/11 검수 ③ 2차)
+# ---------------------------------------------------------------- grow (10/11 검수 ③ 3차, 사용자 "빛 마을 너무 작은 거 아니야?")
 # The entry core stays exactly where the code expects it (gate, spawn, Bright, Sir Gleam, pads: |x| <= 40 and z >= -440);
-# everything outside it is pulled toward the core (x 0.82, z 0.88) so the island sits inside the box with a sea ring.
-SHRINK = dict(core_x=40, core_z=-440, kx=0.86, kz=0.90)
+# everything outside it is spread out 1.5x from the 10/11 stage-1 map (the island floats now, so no box limits it):
+# ~560 x 540 studs of land, about the meadow / woods size. Building sizes do not scale; the space between them does.
+SHRINK = dict(core_x=40, core_z=-440, kx=1.5, kz=1.5)
 
 
 def shrink(x, z):
@@ -235,15 +245,59 @@ for _r in ROADS:
 WATER["stream"] = [shrink(*p) for p in WATER["stream"]]
 for _w in WATER["pools"] + WATER["falls"] + BRIDGES:
     _w["at"] = shrink(*_w["at"])
-for _w in WATER["falls"]:
-    if _w["id"] == "W3":
-        _w["at"] = (180, -558)  # on the new east coast (the cliff-homes edge)
 BUILDINGS = [(i, k, dd, *shrink(x, z), shrink(*f), n) for (i, k, dd, x, z, f, n) in BUILDINGS]
 for _f in FIRST10:
     _f["at"] = shrink(*_f["at"])
 ROUTE = [shrink(*p) for p in ROUTE]
 FIXED_MOVE = [(w, now, (shrink(new[0], new[2])[0], new[1], shrink(new[0], new[2])[1]) if new else None, cfg) for (w, now, new, cfg) in FIXED_MOVE]
 SCENES = [(n, shrink(*at), v) for (n, at, v) in SCENES]
+
+# ---------------------------------------------------------------- ③ 3차 additions, in FINAL coordinates (not grown)
+# 7 more homes where the story has people living (market hill, cliff homes, garden homes); the bigger town must not look
+# empty (A23-76 dense edges): alleys, small yards and ponds per district come with them.
+BUILDINGS += [
+    ("House_Hill4", "HouseB", "market_hill", 234, -444, (214, -430), "언덕 동네 4: 언덕 마당을 봄"),
+    ("House_Cliff6", "HouseA", "cliff_homes", 178, -656, (205, -644), "절벽 마을 위 단: 비탈길을 봄"),
+    ("House_Cliff7", "HouseB", "cliff_homes", 140, -656, (160, -634), "절벽 마을 아래 단: 골목을 봄"),
+    ("House_Cliff8", "HouseA", "cliff_homes", 256, -668, (236, -654), "바다 쪽 끝 집(W3 폭포 옆)"),
+    ("House_Garden5", "HouseA", "garden_homes", -244, -690, (-214, -716), "정원 마을 서쪽 끝"),
+    ("House_Garden6", "HouseB", "garden_homes", -110, -748, (-132, -742), "정원 마을 연못 집"),
+    ("House_Garden7", "HouseA", "garden_homes", -192, -808, (-176, -782), "정원 마을 남쪽 바다 집"),
+]
+for _r in ROADS:
+    if _r["id"] == "castle_wall":
+        _r["pts"] = [(-212, -636), (-258, -606), (-272, -566)]  # round the 100 x 70 castle
+SCENES = [(n, (-272, -566) if n == "성벽 전망" else at, v) for (n, at, v) in SCENES]
+ROADS += [
+    dict(id="market_lane", name="시장 뒷골목", w=6, grade=3, pts=[(62, -476), (92, -456), (118, -472), (124, -500), (96, -522)],
+         note="빵집·주스 가게 앞을 도는 골목(큰 길에서 들어가 다시 큰 길로)"),
+    dict(id="hill_alley", name="언덕 마당 골목", w=6, grade=3, pts=[(181, -420), (205, -430), (228, -432)], note="언덕 마당 → 언덕 집 2·3·4"),
+    dict(id="cliff_lower", name="절벽 아래 골목", w=6, grade=3, pts=[(127, -602), (140, -628), (156, -636)], note="절벽 집 7, 쉼참"),
+    dict(id="cliff_south", name="절벽 남쪽 골목", w=5, grade=3, pts=[(220, -692), (196, -698)], note="절벽 집 5"),
+    dict(id="cliff_upper", name="절벽 위 골목", w=6, grade=3, pts=[(205, -644), (232, -642), (244, -656)], note="절벽 집 3·8, W3 웅덩이 옆"),
+    dict(id="cliff_top", name="절벽 집 2 계단", w=5, grade=3, pts=[(166, -614), (184, -590), (198, -578)], note="절벽 집 2"),
+    dict(id="garden_west", name="정원 서쪽 골목", w=6, grade=3, pts=[(-199, -755), (-210, -738), (-232, -708)], note="정원 집 2·5"),
+    dict(id="garden_sea", name="정원 바다 골목", w=5, grade=3, pts=[(-199, -755), (-230, -756), (-250, -772), (-246, -784)], note="정원 집 3(바다를 봄)"),
+    dict(id="garden_pond", name="연못 골목", w=6, grade=3, pts=[(-157, -728), (-138, -744), (-128, -750)], note="연못 집 6"),
+    dict(id="garden_south", name="정원 남쪽 골목", w=5, grade=3, pts=[(-157, -728), (-165, -760), (-170, -790)], note="정원 집 4·7"),
+    dict(id="lookout_end", name="전망 탑 앞", w=6, grade=3, pts=[(199, -788), (222, -772), (236, -766)], note="전망 탑 문"),
+]
+# small yards (cobble circles: x, z, r) so each district has a place to stand, and more water
+YARDS = [
+    dict(id="hill_yard", at=(208, -426), r=9, note="언덕 마당"),
+    dict(id="castle_court", at=(-160, -522), r=14, note="성 앞 마당"),
+    dict(id="cliff_yard", at=(226, -646), r=8, note="절벽 위 마당"),
+    dict(id="cliff_landing", at=(152, -640), r=6, note="절벽 아래 쉼참"),
+    dict(id="garden_yard", at=(-214, -742), r=9, note="정원 마을 마당"),
+    dict(id="lookout_yard", at=(232, -770), r=8, note="전망 탑 앞 마당"),
+    dict(id="market_corner", at=(112, -488), r=7, note="시장 뒷골목 모퉁이"),
+    dict(id="cathedral_court", at=(85, -708), r=14, note="대성당 앞 마당(큰 계단 위)"),
+]
+WATER["pools"] += [
+    dict(id="garden_pond", at=(-120, -775), r=6, y=13, note="정원 마을 연못"),
+    dict(id="hill_spring", at=(198, -372), r=4, y=14, note="언덕 동네 작은 샘"),
+    dict(id="cliff_pool", at=(262, -640), r=5, y=18, note="W3 폭포 위 웅덩이"),
+]
 
 
 # ---------------------------------------------------------------- geometry
@@ -377,6 +431,35 @@ def checks(blds):
         for j in range(i + 1, len(blds)):
             if poly_overlap(footprint(blds[i]), footprint(blds[j]), gap=4):
                 msgs.append(f"겹침(4 띄움): {blds[i]['id']} - {blds[j]['id']}")
+    # ③ 3차: roads / alleys / pools must not run through a building (door spurs of that building and the gate passage excepted)
+    def fp_dist(pt, fp):
+        if inside(pt, fp):
+            return -1.0
+        return min(seg_dist(pt, fp[i], fp[(i + 1) % 4]) for i in range(4))
+    for r in ROADS:
+        for b in blds:
+            if b["kind"] == "Gate" or r["id"] == "door_" + b["id"]:
+                continue
+            fp = footprint(b)
+            hit = False
+            for i in range(len(r["pts"]) - 1):
+                (ax, az), (bx, bz) = r["pts"][i], r["pts"][i + 1]
+                n = max(1, int(math.hypot(bx - ax, bz - az) // 2))
+                for k in range(n + 1):
+                    if i == 0 and k == 0 and r["id"].startswith("door_"):
+                        continue
+                    t = k / n
+                    if fp_dist((ax + (bx - ax) * t, az + (bz - az) * t), fp) < r["w"] / 2 - 0.5:
+                        hit = True
+                        break
+                if hit:
+                    break
+            if hit:
+                msgs.append(f"길이 건물을 지남: {r['id']} - {b['id']}")
+    for w in WATER["pools"]:
+        for b in blds:
+            if fp_dist(tuple(w["at"]), footprint(b)) < w["r"]:
+                msgs.append(f"물이 건물에 걸림: {w['id']} - {b['id']}")
     # the spawn-gate corridor (|x|<=12, z -330..-432) and the spawn circle stay clear (the gate itself is the passage)
     for b in blds:
         if b["kind"] == "Gate":
@@ -434,20 +517,26 @@ def checks(blds):
     road = sum(r["w"] * math.hypot(r["pts"][i + 1][0] - r["pts"][i][0], r["pts"][i + 1][1] - r["pts"][i][1])
                for r in ROADS for i in range(len(r["pts"]) - 1))
     squares = 0.55 * area(DIST["plaza"]["poly"]) + 0.35 * area(DIST["arrival"]["poly"]) + 0.6 * area(DIST["training"]["poly"])
+    squares += sum(math.pi * y["r"] ** 2 for y in YARDS)
     pave = (road + squares) / land
     return msgs, pairs, land, pave, sight
 
 
 # ---------------------------------------------------------------- drawing
-S = 2.4
+S = 2.0
 PAD = 40
-MW = int(400 * S) + PAD * 2
-MH = int(370 * S) + PAD * 2
-PANEL = 560
+# the frame follows the land (③ 3차: the town grew past the old x -200..200, z -330..-700 box)
+MINX = math.floor(min(p[0] for p in LAND) / 50) * 50 - 10
+MAXX = math.ceil(max(p[0] for p in LAND) / 50) * 50 + 10
+MAXZ = -310
+MINZ = math.floor(min(p[1] for p in LAND) / 50) * 50 - 10
+MW = int((MAXX - MINX) * S) + PAD * 2
+MH = int((MAXZ - MINZ) * S) + PAD * 2
+PANEL = 600
 
 
 def P(x, z):
-    return (PAD + (x + 200) * S, PAD + (-330 - z) * S)
+    return (PAD + (x - MINX) * S, PAD + (MAXZ - z) * S)
 
 
 def font(sz, bold=False):
@@ -487,6 +576,10 @@ def draw_map(blds):
         if r["grade"] == 1:
             for i in range(len(r["pts"]) - 1):
                 d.line([P(*r["pts"][i]), P(*r["pts"][i + 1])], fill=(214, 176, 60, 160), width=2)
+    for y in YARDS:
+        cx, cy = P(*y["at"])
+        rr = y["r"] * S
+        d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], fill=(214, 200, 168), outline=(150, 130, 100))
     # bridges
     for b in BRIDGES:
         cx, cy = P(*b["at"])
@@ -546,10 +639,10 @@ def draw_map(blds):
         d.regular_polygon((cx, cy, 7), 4, fill=(250, 210, 40), outline=(120, 90, 0))
     # compass + scale
     d.text((PAD, 8), "북 = 성문·교차로 다리 (z -330)   ·   1칸 = 50스터드   ·   Y = 땅 높이", fill=(20, 40, 70), font=font(15, True))
-    for gx in range(-200, 201, 50):
-        d.line([P(gx, -330), P(gx, -334)], fill=(20, 40, 70), width=1)
-        d.text((P(gx, -330)[0] - 10, MH - PAD + 6), str(gx), fill=(20, 40, 70), font=font(11))
-    for gz in range(-350, -701, -50):
+    for gx in range(MINX + 10, MAXX - 9, 50):
+        d.line([P(gx, MAXZ), P(gx, MAXZ - 4)], fill=(20, 40, 70), width=1)
+        d.text((P(gx, MAXZ)[0] - 10, MH - PAD + 6), str(gx), fill=(20, 40, 70), font=font(11))
+    for gz in range(-350, MINZ, -50):
         d.text((4, P(0, gz)[1] - 7), str(gz), fill=(20, 40, 70), font=font(11))
     return im, d
 
@@ -558,7 +651,7 @@ def draw_panel(im, d, blds, stats):
     x0 = MW + 16
     y = 14
     d.rectangle([MW, 0, MW + PANEL, MH], fill=(250, 248, 242))
-    d.text((x0, y), "빛 마을 v2 — 1단계 이야기와 구역", fill=(30, 30, 30), font=font(22, True)); y += 38
+    d.text((x0, y), f"빛 마을 v2 — 구역 (③ 3차: 1.5배, 땅 {stats['land'] / 1000:.0f}천 st²)", fill=(30, 30, 30), font=font(22, True)); y += 38
     d.text((x0, y), "첫 10분 고리 (분홍 번호)", fill=(200, 30, 110), font=font(16, True)); y += 26
     for s in FIRST10:
         d.text((x0 + 6, y), f"{s['n']}. {s['what']}", fill=(40, 40, 40), font=font(14)); y += 21
@@ -573,9 +666,16 @@ def draw_panel(im, d, blds, stats):
     for b in blds:
         cnt[b["kind"]] = cnt.get(b["kind"], 0) + 1
     houses = cnt.get("HouseA", 0) + cnt.get("HouseB", 0)
-    d.text((x0, y), "건물 22채 (빨간 짧은 선 = 문 방향)", fill=(30, 30, 30), font=font(16, True)); y += 26
+    d.text((x0, y), f"건물 {len(blds)}채 (빨간 짧은 선 = 문 방향)", fill=(30, 30, 30), font=font(16, True)); y += 26
+    hd = {}
+    for b in blds:
+        if b["kind"].startswith("House"):
+            hd[b["district"]] = hd.get(b["district"], 0) + 1
+    cw, cd = KINDS["Castle"][0], KINDS["Castle"][1]
     lines = [f"성문 1 · 탑 {cnt.get('Tower', 0)} (성문 동쪽 1, 전망 1)", f"가게 {cnt.get('Shop', 0)} (물약·빵·주스·꽃, 시장 골목 한 줄)",
-             f"집 {houses} = 시장 위 3 · 절벽 5 · 정원 4", "기사단 성 1 (64×40, 3층, 돔 없음) · 무기고 1", "대성당 1 (70×70, 언덕 Y30, 축에서 동쪽)"]
+             f"집 {houses} = 시장 위 {hd.get('market_hill', 0)} · 절벽 {hd.get('cliff_homes', 0)} · 정원 {hd.get('garden_homes', 0)}",
+             f"빛 성 1 ({cw}×{cd}, 3층, 돔 없음) · 무기고 1", "대성당 1 (70×70, 언덕 Y30, 축에서 동쪽)",
+             f"골목 {len([r for r in ROADS if r['grade'] == 3 and not r['id'].startswith('door_')])} · 작은 마당 {len(YARDS)} · 연못·샘 {len(WATER['pools'])}"]
     for ln in lines:
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(14)); y += 21
     y += 8
@@ -585,7 +685,7 @@ def draw_panel(im, d, blds, stats):
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
     y += 8
     d.text((x0, y), "고정점", fill=(30, 30, 30), font=font(16, True)); y += 26
-    for ln in ["그대로: 다리·성문(0,-330)·스폰(0,-420)·Bright·이동 발판 2(초록)·구역 상자",
+    for ln in ["그대로: 다리·성문(0,-330)·스폰(0,-420)·Bright·Gleam·이동 발판 2(초록) / 구역 상자는 넓힘",
                "빨간 점선 = 스폰-문 통로(|x|≤12) 비움 → 영웅상·Gleam만 옆으로",
                "옮김(검은 네모): 영웅상·Gleam·물약 상인·Folk1~4 / 폭포 소리 3곳",
                "새로: 훈련장 표적·표시 · 걷는 바닥은 전부 Terrain"]:
@@ -615,7 +715,8 @@ def main():
         note="빛 마을 v2 1단계 '이야기와 구역' (SPEC A23-121, 이미지 생성 1, 2026-10-11). 옛 섬·옛 plan은 쓰지 않음. 좌표 x,z(스터드), "
              "북 = z -330 성문/교차로 다리. y = 그 구역 땅 높이(y_to = 경사 끝). 건물 yaw = 문이 보는 방향(0 = 북 +z, 90 = 동 +x). "
              "3단계 회색 상자와 4단계 골격은 이 값을 쓴다.",
-        frame=dict(x=[-200, 200], z=[-700, -330], north="z -330 (gate, Crossroads bridge)"),
+        frame=dict(x=[min(p[0] for p in LAND), max(p[0] for p in LAND)], z=[min(p[1] for p in LAND), max(p[1] for p in LAND)],
+                   north="z -330 (gate, Crossroads bridge)", grow=SHRINK),
         story=STORY,
         first_10_minutes=FIRST10,
         first_10_route=[list(p) for p in ROUTE],
@@ -624,6 +725,7 @@ def main():
         roads=[{**r, "pts": [list(p) for p in r["pts"]]} for r in ROADS],
         water={**WATER, "stream": [list(p) for p in WATER["stream"]]},
         bridges=BRIDGES,
+        yards=[{**y, "at": list(y["at"])} for y in YARDS],
         buildings=blds,
         scenes=[dict(name=n, at=list(a), view=v) for n, a, v in SCENES],
         fixed_points=dict(keep=[dict(name=n, at=list(a) if a else None, code=c) for n, a, c in FIXED_KEEP],
