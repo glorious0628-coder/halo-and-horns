@@ -59,8 +59,8 @@ Net.Names = {
 	-- (GatherService after each gather and at PlayerReady; the client's GatherView dims my resting nodes)
 	-- 게임성 개발 3 (2026-10-12) crafting (CraftService, docs/design/craft_server_2026-10-12.md §4), client -> server:
 	"CraftStart", -- (recipeId: a Config.Craft.Recipes id)
-	"CraftStrike", -- (sessionId: number, i: 1..5) at every ring end, in order (the server times it)
-	"CraftFinish", -- (sessionId: number, hits: { offset ms (+ = late) | false } x 5)
+	"CraftStrike", -- (sessionId: number, i: 1..5, ms: the press offset, + = late) on a press; the server notes its own time
+	"CraftFinish", -- (sessionId: number) the hammer is over (or Skip): the server grades the strikes (Shared/CraftMini)
 	-- server -> client (owner only):
 	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
 	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp }

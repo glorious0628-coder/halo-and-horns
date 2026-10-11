@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 108,
+  "checks": 110,
   "failedChecks": 0,
-  "namedChecks": 94,
+  "namedChecks": 96,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -33,7 +33,13 @@
     },
     {
       "group": "config",
-      "check": "hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter",
+      "check": "no hammer numbers in Config (one place: Shared/CraftMini)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the shared hammer (CraftMini.T): 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, 20 s time-up",
       "pass": 1,
       "fail": 0
     },
@@ -58,24 +64,6 @@
     {
       "group": "config",
       "check": "gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
-      "check": "grades: |ms - 40| <= 70 Perfect, <= 130 Great, <= 200 Good, else Miss",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
-      "check": "no press / NaN / text / beyond 400 ms = Miss",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
-      "check": "+N: 15 / 13 points +2, 12 / 9 points +1, 8 / 0 points +0",
       "pass": 1,
       "fail": 0
     },
@@ -297,7 +285,7 @@
     },
     {
       "group": "hammer",
-      "check": "Perfect, Great, Good, Miss, Perfect = 9 points: +1",
+      "check": "Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
       "pass": 1,
       "fail": 0
     },
@@ -309,7 +297,13 @@
     },
     {
       "group": "hammer",
-      "check": "claims ~650 ms away from the server's timing: all Miss, +0",
+      "check": "Skip (Finish right away): +0, made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "claims ~700 ms off the arrival: all Miss, +0",
       "pass": 1,
       "fail": 0
     },
@@ -327,31 +321,37 @@
     },
     {
       "group": "hammer",
-      "check": "ring 2 claimed 295 ms off the server's timing: inside 300, kept",
+      "check": "395 ms later than claimed (inside 400): kept",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "hammer",
-      "check": "305 ms off: Miss",
+      "check": "405 ms later than claimed: Miss",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "hammer",
-      "check": "ring 1 has half the ping more room (340 ms off: kept)",
+      "check": "45 ms earlier than claimed (inside 50): kept",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "hammer",
-      "check": "ring 1 355 ms off: Miss",
+      "check": "55 ms earlier than claimed: Miss",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "hammer",
-      "check": "a ring the server did not time is a Miss, and every later one too (strikes come in order only)",
+      "check": "with no ping the window is 250 ms (260 off: Miss)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a press the server never got is a Miss (the next ones still count)",
       "pass": 1,
       "fail": 0
     },
@@ -363,25 +363,31 @@
     },
     {
       "group": "hammer",
-      "check": "strike 2 before strike 1: refused",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "hammer",
       "check": "another session's id: refused",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "hammer",
-      "check": "strike 1",
+      "check": "ring 0 / 6 / 1.5: refused",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "hammer",
-      "check": "strike 2 only 0.2 s later: too fast",
+      "check": "a text or NaN offset: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "one strike a ring (the first stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "the strike notes { Ms, At = server time }",
       "pass": 1,
       "fail": 0
     },
@@ -531,13 +537,19 @@
     },
     {
       "group": "remotes",
-      "check": "CraftStrike with a missing or fractional ring number: ignored",
+      "check": "CraftStrike without its ms or with a text id: ignored",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "remotes",
-      "check": "a hits table with six entries: every ring a Miss, made at +0",
+      "check": "CraftFinish with two arguments: ignored (the session stays open)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftFinish(id) right away: +0",
       "pass": 1,
       "fail": 0
     },
@@ -573,12 +585,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 12,
+  "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 60,
-    "applied": 60,
-    "caught": 60,
+    "total": 53,
+    "applied": 53,
+    "caught": 53,
     "skipped": false,
     "results": [
       {
@@ -660,79 +672,6 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "config: no lag fix",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: grades: |ms - 40| <= 70 Perfect, <= 130 Great, <= 200 Good, else Miss",
-          "config :: hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter",
-          "hammer :: Perfect, Great, Good, Miss, Perfect = 9 points: +1"
-        ],
-        "newFailingCount": 3
-      },
-      {
-        "mutation": "config: Perfect 90",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: grades: |ms - 40| <= 70 Perfect, <= 130 Great, <= 200 Good, else Miss",
-          "config :: hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "config: +2 at 12",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: +N: 15 / 13 points +2, 12 / 9 points +1, 8 / 0 points +0",
-          "config :: hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "config: +1 at 8",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "config: 30 s time-up",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter",
-          "ends :: no Finish by StartAt + 20 s: made at +0"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "config: tolerance 400",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter",
-          "hammer :: 305 ms off: Miss",
-          "hammer :: ring 1 355 ms off: Miss"
-        ],
-        "newFailingCount": 3
-      },
-      {
         "mutation": "config: W1 costs 20",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
@@ -770,30 +709,6 @@
           "config :: gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)"
         ],
         "newFailingCount": 1
-      },
-      {
-        "mutation": "config: grade ignores the lag fix",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: grades: |ms - 40| <= 70 Perfect, <= 130 Great, <= 200 Good, else Miss",
-          "hammer :: Perfect, Great, Good, Miss, Perfect = 9 points: +1"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "config: grade: no Great",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "config :: grades: |ms - 40| <= 70 Perfect, <= 130 Great, <= 200 Good, else Miss",
-          "hammer :: Perfect, Great, Good, Miss, Perfect = 9 points: +1"
-        ],
-        "newFailingCount": 2
       },
       {
         "mutation": "config: XP at Lv30 goes on",
@@ -1041,88 +956,97 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "strike: any order",
-        "file": "src/ServerScriptService/CraftService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "hammer :: a ring the server did not time is a Miss, and every later one too (strikes come in order only)",
-          "hammer :: strike 2 before strike 1: refused"
-        ],
-        "newFailingCount": 2
-      },
-      {
-        "mutation": "strike: no gap",
-        "file": "src/ServerScriptService/CraftService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "hammer :: strike 2 only 0.2 s later: too fast"
-        ],
-        "newFailingCount": 1
-      },
-      {
         "mutation": "strike: any session id",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "hammer :: a text or NaN offset: refused",
           "hammer :: another session's id: refused",
-          "hammer :: strike 1"
+          "hammer :: one strike a ring (the first stays)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
-        "mutation": "finish: claims never checked",
+        "mutation": "strike: ring 6 taken",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: 305 ms off: Miss",
+          "hammer :: ring 0 / 6 / 1.5: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "strike: a second press replaces the first",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: one strike a ring (the first stays)",
+          "hammer :: the strike notes { Ms, At = server time }"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "strike: the client's own time",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: 405 ms later than claimed: Miss",
+          "hammer :: 55 ms earlier than claimed: Miss",
           "hammer :: CraftMismatch logged (5)",
-          "hammer :: a ring the server did not time is a Miss, and every later one too (strikes come in order only)",
-          "hammer :: claims ~650 ms away from the server's timing: all Miss, +0",
-          "hammer :: ring 1 355 ms off: Miss"
+          "hammer :: claims ~700 ms off the arrival: all Miss, +0",
+          "hammer :: the strike notes { Ms, At = server time }",
+          "hammer :: with no ping the window is 250 ms (260 off: Miss)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
-        "mutation": "finish: no jitter room",
+        "mutation": "finish: any lie fits (huge ping)",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: ring 1 has half the ping more room (340 ms off: kept)",
-          "hammer :: ring 2 claimed 295 ms off the server's timing: inside 300, kept"
+          "hammer :: 405 ms later than claimed: Miss",
+          "hammer :: CraftMismatch logged (5)",
+          "hammer :: claims ~700 ms off the arrival: all Miss, +0",
+          "hammer :: with no ping the window is 250 ms (260 off: Miss)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
-        "mutation": "finish: ring 1 without the ping",
+        "mutation": "finish: the ping ignored",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: ring 1 has half the ping more room (340 ms off: kept)"
+          "hammer :: 395 ms later than claimed (inside 400): kept"
         ],
         "newFailingCount": 1
       },
       {
-        "mutation": "finish: ring 1 no extra room",
+        "mutation": "finish: a wrong schedule",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: ring 1 has half the ping more room (340 ms off: kept)"
+          "hammer :: 395 ms later than claimed (inside 400): kept",
+          "hammer :: 45 ms earlier than claimed (inside 50): kept",
+          "hammer :: Crafted(player, W1, 2)",
+          "hammer :: Grades x5",
+          "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
+          "hammer :: a press the server never got is a Miss (the next ones still count)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 9
       },
       {
         "mutation": "finish: twice",
@@ -1133,12 +1057,12 @@
         "newFailingChecks": [
           "hammer :: 6 points: +0 (still made, nothing lost)",
           "hammer :: Finish: the right id only, once",
+          "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
+          "hammer :: Skip (Finish right away): +0, made",
           "remotes :: 3 s later: a new session",
-          "remotes :: a hits table with six entries: every ring a Miss, made at +0",
-          "remotes :: an honest hammer through the remotes: +2",
-          "start :: six crafts in a minute, the seventh waits"
+          "remotes :: CraftFinish(id) right away: +0"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "finish: bots get their +N",
@@ -1176,7 +1100,7 @@
           "ends :: room again: the pending one is made first, then the new one starts",
           "hammer :: Pend cleared, Made.W1 = 1, 10 craft XP"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "end: Made not counted",
@@ -1294,17 +1218,6 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "remote: any keys in the hits table",
-        "file": "src/ServerScriptService/CraftService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "remotes :: a hits table with six entries: every ring a Miss, made at +0"
-        ],
-        "newFailingCount": 1
-      },
-      {
         "mutation": "remote: extra arguments taken",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
@@ -1326,6 +1239,28 @@
           "remotes :: CraftStart again within 3 s: rate limited before any check (no Busy notice)"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: a two-argument Finish taken",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: CraftFinish with two arguments: ignored (the session stays open)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: a text strike id taken",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: CraftStrike without its ms or with a text id: ignored"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -1333,15 +1268,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e820c3709b675dd9eb36a2c8fa6a77f7ca36bc224327e28840770fae12ec9e72",
+    "src/ReplicatedStorage/Shared/Config.luau": "9d72e6505842fa4997b151687e08b8f57c9ec88800ca59ee6275935bf895278b",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ReplicatedStorage/Shared/CraftMini.luau": "63cae32dd4462a042756775b2dad81ccd7a35d49ad125f4ec74d1676cc20189d",
     "src/ServerScriptService/LootService.luau": "59a7fdc40f90eb44f238c6caf97fa3df0efeeb88ac08e3cc995b37c961382415",
-    "src/ServerScriptService/CraftService.luau": "f9a57c5c4da599ca8c69e84a27c79b385ea51e4be43db87297b3b4e73081fea0"
+    "src/ServerScriptService/CraftService.luau": "3d33b4f8d69c30ad4827bf14df65d36a6765cfd534957b14f2d450776c5f17ce"
   },
-  "fixtureSHA256": "7e89031f9313acb222005d2fc244f6634d7956f6a0c7a7c011a3295da2896b8d",
+  "fixtureSHA256": "3a8615aace5d5346e154b6c12e7176d757057321d37f879aed6e3ff40a753a8e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12): switch Config.Features.Crafting off; Neutral only, the role's recipes only (Warrior Smith / Mage Alch / Archer Tame); 12 studs from the role's workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt = server + 0.8 }; CraftStrike timed by the server, in order, >= 0.25 s apart; a claim beyond 250 ms + jitter (ping x 0.5, max 150; ring 1 + ping x 0.5) of the server's timing = Miss; |ms - 40| <= 70 / 130 / 200; points >= 13 +2, >= 9 +1; five equal claims +0 (CraftBot); time-up / leave / KO +0; Pend at join finishes at +0 (stays while there is no room, retried at the next start); the result to the spares (AddSpare); W7 / W9 off until Clatter Gem / Royal Jelly / T9; craft XP per role 40 x Lv^1.5, Lv30 cap, not doubled; CraftResult / CraftInfo; key-only notices.",
+  "contract": "Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer = Shared/CraftMini): switch Config.Features.Crafting off; Neutral only, the role's recipes only (Warrior Smith / Mage Alch / Archer Tame); 12 studs from the role's workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt = server + 0.8 }; CraftStrike timed by the server, in order, >= 0.25 s apart; a claim beyond 250 ms + jitter (ping x 0.5, max 150; ring 1 + ping x 0.5) of the server's timing = Miss; |ms - 40| <= 70 / 130 / 200; points >= 13 +2, >= 9 +1; five equal claims +0 (CraftBot); time-up / leave / KO +0; Pend at join finishes at +0 (stays while there is no room, retried at the next start); the result to the spares (AddSpare); W7 / W9 off until Clatter Gem / Royal Jelly / T9; craft XP per role 40 x Lv^1.5, Lv30 cap, not doubled; CraftResult / CraftInfo; key-only notices.",
   "limitations": "AddSpare / SpareRoom are doubles until 게임성 개발 2's C1 (Spares, v4); gear (⑥), tonics (④) and pet treats (⑤) add recipe rows later; the client hammer (게임성 개발 4) is played by the test from the offsets; no real network jitter. Artisan fame (Rep, ⑦) is not counted yet."
 }

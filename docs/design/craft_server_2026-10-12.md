@@ -35,20 +35,20 @@
 5. 결과 자리 있음: Weapon = 여분 칸(`LootService.SpareRoom(player, tier, 2)` — 키 20·합 60, +2까지 들어갈 자리), Gear = Gear.Own 키 20·합 60, Item = ItemCap. 없으면 Full.
 - 통과: **재료·골드를 그 자리에서 뺌**(`LootService.TakeItem`·`ProgressionService.SpendGold(…, "Craft")`) + `data.Craft.Pend = recipeId`(저장에 남는 짧은 글자 — 서버가 죽거나 나가도 다음 접속에 +0으로 완성) → s->c `CraftSession`.
 
-## 3. 끝 (c->s `CraftFinish(id, hits)`)
-- id = 지금 세션 id, 세션 하나에 한 번. hits = 숫자 5개(각 고리의 어긋남 ms, + = 늦게) 또는 false(안 누름). 숫자는 −400..400만, 다른 모양이면 그 칸 Miss.
-- **두드림마다 서버가 시각을 잼(게임성 검수 10/12, 매크로 막기):** 고리 하나가 끝날 때마다(눌렀으면 누른 순간, 안 눌렀으면 고리가 넘어가는 순간) c->s `CraftStrike(id, i)`. 서버는 받은 시각(`GetServerTimeNow`)을 i번째로 적음(순서대로만, 앞 두드림보다 최소 0.25초 뒤, 세션당 5번까지). Finish의 i번째 어긋남(클라가 잰 값)과 서버가 잰 값 — i=1: (받은 때 − 핑/2) − (StartAt + Ring), i>1: 받은 때(i) − 받은 때(i−1) − Rest − Ring(핑이 지워짐) — 의 차이가 250ms + 흔들림(핑×0.5, 최대 150ms; i=1은 핑×0.5 더)보다 크면 **그 칸 Miss**(기록 `CraftMismatch`). 서버가 못 받은 두드림도 Miss. 그래서 8초 기다렸다 가짜 어긋남을 보내는 스크립트는 통하지 않는다(진짜 시각에 맞춰 누르는 완벽한 매크로만 남음 — 차이가 +0~+2라 감수, A23-56).
-- 점수(서버가 다시 셈, 클라 점수 안 믿음): e = |ms − 40|(입력 늦음 보정) → Perfect ≤ 70 · Great ≤ 130 · Good ≤ 200 · 그 밖·false = Miss. 3/2/1/0 합 ≥ 13 → **+2**, ≥ 9 → **+1**, 그 밖 **+0**.
-- 사람 같지 않음: 5개가 모두 같은 숫자면 +0 + 기록 `CraftBot`.
-- 시간 넘음: StartAt + 20초 안에 Finish 없음 → +0으로 완성. 나감·죽음도 +0으로 완성(재료는 이미 냄).
-- 완성: 결과 넣기(Weapon → `LootService.AddSpare(player, tier, plus)`, Gear → Gear.Own, Item → GrantItems) → 제작 XP(레벨 오르면 여러 번) → `Craft.Made[id] += 1`, `Craft.Pend = ""` → s->c `CraftResult` + `CraftInfo` → 신호 `CraftService.Crafted(player, recipeId, plus)`(퀘스트·명성 ⑦이 들음).
+## 3. 망치질과 끝 (최종 계약 10/12 — 게임성 검수·개발 4·개발 3 합의)
+- 숫자·규칙은 **`src/ReplicatedStorage/Shared/CraftMini.luau`(개발 4) 한 곳**: 서버(CraftService)와 화면이 같이 씀. 시험 `tools/test_craft_mini.py`.
+- **고정 일정:** 고리 i 목표 T_i = StartAt + i×Ring + (i−1)×Rest. 누름이 다음 고리를 옮기지 않음. 안 누른 고리는 Good 창이 닫히면(Closes) Miss.
+- c->s `CraftStrike(id, i, ms)` — **누를 때만**, ms = 누른 때 − T_i(+ = 늦게). 서버는 고리마다 처음 것만 `{ Ms, At = 서버 시각 }`으로 적음(i = 1..5 정수, ms 숫자).
+- c->s `CraftFinish(id)` — 끝(또는 Skip = 바로 Finish = +0). 서버가 `CraftMini.Accept(strikes, StartAt, 핑 ms)`로 점수: 서버가 잰 (At − T_i) − ms 가 −50..250 + 1.5×핑 밖이면 그 칸 Miss, 안 온 칸 Miss, 앞 칸보다 Rest 안 지나 온 것 Miss. 판정 |ms − 40| ≤ 70 / 130 / 200, 3/2/1/0점, 13 이상 +2, 9 이상 +1.
+- 덤: 5개가 모두 같은 ms면 +0(기록 `CraftBot`), 판정은 됐는데 도착이 안 맞은 칸 수 기록(`CraftMismatch`).
+- 시간 넘음(StartAt + 20초)·나감·KO = 그 자리에서 +0 완성(재료 안 잃음). 결과 넣기·XP·Made·Pend 비우기·CraftResult·CraftInfo·Crafted 신호는 모든 끝에서 같음.
 
-## 4. 화면 계약 (개발 4 제안 그대로 + 조금 더한 칸)
-- c->s `CraftStart(recipeId: string)` · `CraftStrike(id: number, i: 1..5)`(고리 끝마다, 순서대로) · `CraftFinish(id: number, hits: { number|false ×5 })`
-- s->c `CraftSession { Id, Recipe, Strikes = 5, Ring = 1.2, Rest = 0.35, StartAt }` — StartAt = `workspace:GetServerTimeNow()` + 0.8.
-- s->c `CraftResult { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades = { "Perfect"|"Great"|"Good"|"Miss" ×5 }, XP, Lv, LvUp }` (Tier·Plus·Grades는 개발 4 안 그대로; Recipe·Kind·XP·Lv·LvUp을 더함).
-- s->c `CraftInfo { Role, Lv, XP, Need, Made = { [recipeId] = n } }` — 들어올 때·결과 뒤(제작 창이 레벨·잠긴 레시피를 그림). 레시피 표 자체는 Config(클라도 읽음).
-- 거절 = 알림 키 `Config.Craft.Text.{NeedLevel, NeedMats, NeedGold, Far, Busy, Full, Auto, NotArtisan}`. 결과 글("+1 Iron Sword")은 화면이 CraftResult로 만듦(서버 문장 없음).
+## 4. 화면 계약
+- c->s `CraftStart(recipeId: string)` · `CraftStrike(id: number, i: 1..5, ms: number)` · `CraftFinish(id: number)`
+- s->c `CraftSession { Id, Recipe, Strikes, Ring, Rest, StartAt }` — StartAt = `workspace:GetServerTimeNow()` + CraftMini.T.Lead.
+- s->c `CraftResult { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades = { ×5 }, XP, Lv, LvUp }`.
+- s->c `CraftInfo { Role, Lv, XP, Need, Made = { [recipeId] = n } }` — 들어올 때·결과 뒤. 레시피 표는 Config(클라도 읽음).
+- 거절 = 알림 키 `Config.Craft.Text.{NeedLevel, NeedMats, NeedGold, Far, Busy, Full, Auto, NotArtisan}`. 결과 글은 화면이 CraftResult로 만듦.
 
 ## 5. 저장
 - `data.Craft = { Smith/Alch/Tame = { Lv, XP }, Rep, Made, Pend }` — Pend는 짧은 글자라 v4 sanitize(모르는 납작한 칸 보존)가 그대로 지킴. 들어올 때 Pend가 알려진 레시피면 +0으로 완성, 모르는 글자면 비움.
@@ -63,6 +63,7 @@
 스위치·장인만·역할만·Lv·재료·골드·자리 거리·자동 전투·세션 하나·분당 수·재료 먼저 빠짐·Pend 저장·점수 경계(70/130/200 ± 보정 40)·13/9점·모두 같은 수 = +0·너무 이른 Finish 거절·시간 넘음 +0·나감 +0·다음 접속 Pend 완성·XP 곡선·레벨업 여러 번·Lv30 상한·Made·CraftResult/CraftInfo 모양·알림은 키만·없는 재료 레시피 꺼짐·AddSpare 없으면 무기 거절.
 
 ## 8. 구현 (10/12, 가지 `dev3-craft`)
-- `src/ServerScriptService/CraftService.luau`, Config(`Config.Features.Crafting`·`Config.Craft`·`Config.CraftXPToNext`·`Config.CraftGrade`·`Config.CraftPlus`), Net 원격 6개, Main 두 목록(GatherService 다음).
-- 시험 `tools/test_craft.py`: 94 named·변이 60/60(차이 > 허용 = Miss 변이 포함). 회귀 18개 통과.
-- **검수에게 하나:** 허용 250ms(+흔들림)면 실제로 근처(약 ±250ms 안)에 누른 것은 거짓 어긋남으로 Perfect로 올릴 수 있다(예: 실제 +290ms Miss를 40ms라고). 연속 두드림 간격은 핑이 지워져 흔들림이 보통 50ms 안이라 120ms로 줄여도 사람은 거의 안 걸림 — `Config.Craft.Hammer.TolMs` 한 숫자라 정하면 바꿈.
+- `src/ServerScriptService/CraftService.luau`(망치질은 `Shared/CraftMini` require), Config(`Config.Features.Crafting`·`Config.Craft`·`Config.CraftXPToNext`; 망치질 숫자는 Config에 없음), Net 원격 6개, Main 두 목록(GatherService 다음). CraftMini.luau·test_craft_mini.py는 개발 4 dev4-craft 1634e079와 같은 파일.
+- 시험 `tools/test_craft.py`: 96 named·변이 53/53(도착이 안 맞으면 Miss·핑 무시·일정 틀림·서버 시각 대신 클라 시각 변이 포함). test_craft_mini 42·14/14.
+- **켜는 가지에서 할 것(최종 검수 10/12):** 2배 XP 패스 설명(Config 약 4185 "Get 2x XP from everything you do")을 "Get 2x level XP, so you level up 2x faster. Crafting levels do not change. No stats are for sale."로 바꾸고, 시험에 '제작 켜짐이면 패스 글에 Crafting 줄' 정적 검사. 패스에 제작 XP를 넣을지는 최종 검수가 사용자에게 물음(답 바뀌면 다시).
+- 허용(−50..250 + 1.5×핑)은 CraftMini.T(Early·Late·JitterMul) — 숫자 하나로 조정.

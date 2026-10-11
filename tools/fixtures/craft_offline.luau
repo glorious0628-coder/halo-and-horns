@@ -57,6 +57,8 @@ local function cWorld(o)
 	end
 	w.Spent = {}
 	w.Ping = 0.1
+	w.Services.ReplicatedStorage.Shared.CraftMini = "CraftMini"
+	w.Mini = w:Load("CraftMini", CRAFTMINI_SOURCE)
 	w:Service("LootService", LOOT_SOURCE)
 	w:Service("CraftService", CRAFT_SOURCE)
 	local L = w.Reg.LootService
@@ -129,30 +131,36 @@ end
 
 local function serverNow(w) return w.Time + 0.25 end
 
--- play the open session like the client: offsets = real press offsets (ms, false = no press: the ring moves on at its
--- end + 0.2 s); o.Claim = what the client says (default = offsets); o.Skip = { [i] = true } rings whose CraftStrike never
--- arrives; o.First = { i, ... } send these strikes first (out of order); returns the Finish answer
+-- play the open session like the client (fixed schedule, Shared/CraftMini): offsets = real press offsets from each ring's
+-- target (ms, false = no press: no strike); a strike arrives half the ping later. o.Claim = the ms the client says (default
+-- = offsets); o.Skip = { [i] = true } presses whose strike never arrives; o.ByRemote = through the remotes; returns the
+-- Finish answer and the session
 local function hammer(w, p, offsets, o)
 	o = o or {}
 	local sess = last(fired(w, "CraftSession", p))
-	local H = w.Config.Craft.Hammer
 	local half = w.Ping / 2
-	local start = sess.StartAt
+	local claim = o.Claim or offsets
 	for i = 1, 5 do
-		local ringEnd = start + H.Ring
-		local press = offsets[i] and (ringEnd + offsets[i] / 1000) or (ringEnd + 0.2)
-		local arrive = press + half
-		w:Advance(arrive - serverNow(w))
-		if not (o.Skip and o.Skip[i]) then w.C.Strike(p, sess.Id, i) end
-		start = press + H.Rest
+		if offsets[i] then
+			local arrive = w.Mini.Target(sess.StartAt, i) + offsets[i] / 1000 + half
+			w:Advance(arrive - serverNow(w))
+			if not (o.Skip and o.Skip[i]) then
+				if o.ByRemote then
+					w.Gap = 0
+					w:Remote("CraftStrike", p, sess.Id, i, claim[i])
+				else
+					w.C.Strike(p, sess.Id, i, claim[i])
+				end
+			end
+		end
 	end
-	w:Advance(half)
+	w:Advance(math.max(0, w.Mini.Ends(sess.StartAt) - serverNow(w)))
 	local r
-	if o.ByRemote then -- the real remote path (its argument checks), right away
+	if o.ByRemote then
 		w.Gap = 0
-		w:Remote("CraftFinish", p, sess.Id, o.Claim or offsets)
+		w:Remote("CraftFinish", p, sess.Id)
 	else
-		r = w.C.Finish(p, sess.Id, o.Claim or offsets)
+		r = w.C.Finish(p, sess.Id)
 	end
 	w:Flush()
 	return r, sess
@@ -176,10 +184,10 @@ runGroup("config", function()
 	check(K.MaxLv == 30 and K.MaxLv == C.SaveV4.CraftMaxLv and K.XPBase == 40 and K.XPExp == 1.5, "craft Lv 1..30 (same as the save repair), 40 x Lv^1.5", "")
 	check(C.CraftXPToNext(1) == 40 and C.CraftXPToNext(2) == 113 and C.CraftXPToNext(29) == 6246 and C.CraftXPToNext(30) == 0
 		and C.CraftXPToNext(0) == 40, "XP to next: Lv1 40, Lv2 113, Lv29 6246, Lv30 none", show({ C.CraftXPToNext(1), C.CraftXPToNext(2), C.CraftXPToNext(29) }))
-	local H = K.Hammer
-	check(H.Strikes == 5 and H.Ring == 1.2 and H.Rest == 0.35 and H.Lead == 0.8 and H.LagMs == 40 and H.Perfect == 70 and H.Great == 130
-		and H.Good == 200 and H.Plus2 == 13 and H.Plus1 == 9 and H.Timeout == 20 and H.TolMs == 250 and H.JitterMaxMs == 150,
-		"hammer: 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, +40 ms, 70 / 130 / 200, 13 / 9 points, 20 s, 250 ms + jitter", show(H))
+	check(K.Hammer == nil and C.CraftGrade == nil and C.CraftPlus == nil, "no hammer numbers in Config (one place: Shared/CraftMini)", "")
+	local M = execute("CraftMini", CRAFTMINI_SOURCE, nativeEnv())
+	check(M.T.Strikes == 5 and M.T.Ring == 1.2 and M.T.Rest == 0.35 and M.T.Lead == 0.8 and M.T.Timeout == 20,
+		"the shared hammer (CraftMini.T): 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, 20 s time-up", show(M.T))
 	check(K.Range == 12 and K.StartsPerMinute == 6 and C.RateLimits.CraftStart == 3, "12 studs, 6 starts a minute, one start every 3 s", "")
 	local want = { W1 = { 1, 1, 10, 10 }, W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
 		W6 = { 6, 20, 7500, 900 }, W7 = { 7, 25, 22500, 2000 }, W9 = { 9, 30, 60000, 4000 } }
@@ -192,17 +200,6 @@ runGroup("config", function()
 	check(K.Recipes.W1.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 8 and K.Recipes.W6.Mats.SilverOre == 12
 		and K.Recipes.W9.Mats.MoonCrystal == 20 and K.Recipes.W3.Mats.SeaShell == nil and K.Recipes.W5.Mats.CrystalShard == nil,
 		"gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)", "")
-	local g = C.CraftGrade
-	check(g(40) == "Perfect" and g(110) == "Perfect" and g(-30) == "Perfect" and g(111) == "Great" and g(-31) == "Great"
-		and g(170) == "Great" and g(171) == "Good" and g(240) == "Good" and g(-160) == "Good" and g(241) == "Miss" and g(-161) == "Miss",
-		"grades: |ms - 40| <= 70 Perfect, <= 130 Great, <= 200 Good, else Miss", "")
-	check(g(false) == "Miss" and g(nil) == "Miss" and g(0 / 0) == "Miss" and g("40") == "Miss" and g(401) == "Miss" and g(400) == "Miss",
-		"no press / NaN / text / beyond 400 ms = Miss", "")
-	local P = C.CraftPlus
-	check(P({ "Perfect", "Perfect", "Perfect", "Perfect", "Perfect" }) == 2 and P({ "Perfect", "Perfect", "Perfect", "Perfect", "Good" }) == 2
-		and P({ "Perfect", "Perfect", "Perfect", "Great", "Good" }) == 1 and P({ "Perfect", "Perfect", "Perfect", "Miss", "Miss" }) == 1
-		and P({ "Perfect", "Great", "Good", "Good", "Miss" }) == 0 and P({ "Miss", "Miss", "Miss", "Miss", "Miss" }) == 0,
-		"+N: 15 / 13 points +2, 12 / 9 points +1, 8 / 0 points +0", "")
 	for _, key in { "NotArtisan", "NeedLevel", "NeedMats", "NeedGold", "Far", "Busy", "Full", "Auto" } do
 		check(type(K.Text[key]) == "string" and K.Text[key] ~= "", "a short text for every refusal", key)
 	end
@@ -304,59 +301,62 @@ runGroup("hammer", function()
 		"CraftInfo { Role, Lv, XP, Need, Made } after the craft", show(info))
 	check(#w.Crafted == 1 and w.Crafted[1].Id == "W1" and w.Crafted[1].Plus == 2, "Crafted(player, W1, 2)", "")
 
-	w:Advance(61)
 	startAndHammer(w, p, { 40, 150, 220, false, 45 })
 	res = last(fired(w, "CraftResult", p))
 	check(res.Plus == 1 and res.Grades[2] == "Great" and res.Grades[3] == "Good" and res.Grades[4] == "Miss",
-		"Perfect, Great, Good, Miss, Perfect = 9 points: +1", show(res.Grades))
+		"Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1", show(res.Grades))
 	startAndHammer(w, p, { 40, 150, 220, false, false })
 	check(last(fired(w, "CraftResult", p)).Plus == 0, "6 points: +0 (still made, nothing lost)", "")
+	check(w.C.TryStart(p, "W1") == "ok" and w.C.Finish(p, last(fired(w, "CraftSession", p)).Id) == "ok"
+		and last(fired(w, "CraftResult", p)).Plus == 0, "Skip (Finish right away): +0, made", "")
 
-	-- a script that waits and then claims good numbers
+	-- a script that presses whenever and claims good numbers: the arrival gives it away
 	local liar, dl = smith(w, 2)
 	local before = #w.Tele
 	startAndHammer(w, liar, { 700, 700, 700, 700, 700 }, { Claim = HONEST })
 	res = last(fired(w, "CraftResult", liar))
-	check(res.Plus == 0 and res.Grades[1] == "Miss" and res.Grades[5] == "Miss", "claims ~650 ms away from the server's timing: all Miss, +0",
-		show(res.Grades))
+	check(res.Plus == 0 and res.Grades[1] == "Miss" and res.Grades[5] == "Miss", "claims ~700 ms off the arrival: all Miss, +0", show(res.Grades))
 	local mm = 0
 	for i = before + 1, #w.Tele do if w.Tele[i].Name == "CraftMismatch" then mm = w.Tele[i].V end end
 	check(mm == 5, "CraftMismatch logged (5)", tostring(mm))
-	check(dl.Craft.Made.W1 == 1 and #w.Spares >= 4, "the liar still gets the +0 item (nothing lost)", "")
+	check(dl.Craft.Made.W1 == 1, "the liar still gets the +0 item (nothing lost)", "")
 
-	-- the tolerance: ping 0.1 -> 250 + 50 ms (ring 1: + 50 more)
-	local t1 = smith(w, 3)
-	startAndHammer(w, t1, { 30, 335, 40, 20, 60 }, { Claim = { 30, 40, 40, 20, 60 } })
-	check(last(fired(w, "CraftResult", t1)).Grades[2] == "Perfect", "ring 2 claimed 295 ms off the server's timing: inside 300, kept", "")
-	local t2 = smith(w, 4)
-	startAndHammer(w, t2, { 30, 345, 40, 20, 60 }, { Claim = { 30, 40, 40, 20, 60 } })
-	check(last(fired(w, "CraftResult", t2)).Grades[2] == "Miss", "305 ms off: Miss", "")
-	local t3 = smith(w, 5)
-	startAndHammer(w, t3, { 380, 50, 40, 20, 60 }, { Claim = { 40, 50, 40, 20, 60 } })
-	check(last(fired(w, "CraftResult", t3)).Grades[1] == "Perfect", "ring 1 has half the ping more room (340 ms off: kept)", "")
-	local t4 = smith(w, 6)
-	startAndHammer(w, t4, { 395, 50, 40, 20, 60 }, { Claim = { 40, 50, 40, 20, 60 } })
-	check(last(fired(w, "CraftResult", t4)).Grades[1] == "Miss", "ring 1 355 ms off: Miss", "")
+	-- the window (ping 0.1 s: the arrival is 50 ms late; server - client may be -50 .. 250 + 1.5 x 100 ms)
+	local function one(id, actual, claim)
+		local x = smith(w, id)
+		local offs, cl = { 30, 50, 40, 20, 60 }, { 30, 50, 40, 20, 60 }
+		offs[2], cl[2] = actual, claim
+		startAndHammer(w, x, offs, { Claim = cl })
+		return last(fired(w, "CraftResult", x)).Grades[2]
+	end
+	check(one(3, 385, 40) == "Perfect", "395 ms later than claimed (inside 400): kept", "")
+	check(one(4, 395, 40) == "Miss", "405 ms later than claimed: Miss", "")
+	check(one(5, -50, 45) == "Perfect", "45 ms earlier than claimed (inside 50): kept", "")
+	check(one(6, -60, 45) == "Miss", "55 ms earlier than claimed: Miss", "")
+	local slow = smith(w, 10)
+	w.Ping = 0
+	startAndHammer(w, slow, { 30, 260, 40, 20, 60 }, { Claim = { 30, 0, 40, 20, 60 } })
+	w.Ping = 0.1
+	check(last(fired(w, "CraftResult", slow)).Grades[2] == "Miss", "with no ping the window is 250 ms (260 off: Miss)", "")
 
-	-- strikes the server never got
+	-- strikes the server never got, rings, repeats, bad ms
 	local sk = smith(w, 7)
 	startAndHammer(w, sk, HONEST, { Skip = { [3] = true } })
 	local g = last(fired(w, "CraftResult", sk)).Grades
-	check(g[1] == "Perfect" and g[2] == "Perfect" and g[3] == "Miss" and g[4] == "Miss" and g[5] == "Miss",
-		"a ring the server did not time is a Miss, and every later one too (strikes come in order only)", show(g))
-	-- order and gaps
-	local o, dor = smith(w, 8)
+	check(g[3] == "Miss" and g[4] == "Perfect" and g[5] == "Perfect", "a press the server never got is a Miss (the next ones still count)", show(g))
+	local o = smith(w, 8)
 	check(w.C.TryStart(o, "W1") == "ok", "start", "")
 	local sess = last(fired(w, "CraftSession", o))
-	w:Advance(sess.StartAt + 1.24 - serverNow(w))
-	check(w.C.Strike(o, sess.Id, 2) == "order", "strike 2 before strike 1: refused", "")
-	check(w.C.Strike(o, sess.Id + 1, 1) == "session", "another session's id: refused", "")
-	check(w.C.Strike(o, sess.Id, 1) == "ok", "strike 1", "")
-	w:Advance(0.2)
-	check(w.C.Strike(o, sess.Id, 2) == "fast", "strike 2 only 0.2 s later: too fast", "")
-	check(w.C.Finish(o, sess.Id + 1, HONEST) == "session" and w.C.Finish(o, sess.Id, HONEST) == "ok"
-		and w.C.Finish(o, sess.Id, HONEST) == "session", "Finish: the right id only, once", "")
-	-- five equal claims: not a person
+	w:Advance(w.Mini.Target(sess.StartAt, 1) + 0.08 - serverNow(w))
+	check(w.C.Strike(o, sess.Id + 1, 1, 30) == "session", "another session's id: refused", "")
+	check(w.C.Strike(o, sess.Id, 0, 30) == "ring" and w.C.Strike(o, sess.Id, 6, 30) == "ring" and w.C.Strike(o, sess.Id, 1.5, 30) == "ring",
+		"ring 0 / 6 / 1.5: refused", "")
+	check(w.C.Strike(o, sess.Id, 1, "30") == "ms" and w.C.Strike(o, sess.Id, 1, 0 / 0) == "ms", "a text or NaN offset: refused", "")
+	check(w.C.Strike(o, sess.Id, 1, 30) == "ok" and w.C.Strike(o, sess.Id, 1, -400) == "again", "one strike a ring (the first stays)", "")
+	check(w.C.Session(o).Strikes[1].Ms == 30 and w.C.Session(o).Strikes[1].At == serverNow(w), "the strike notes { Ms, At = server time }", "")
+	check(w.C.Finish(o, sess.Id + 1) == "session" and w.C.Finish(o, sess.Id) == "ok" and w.C.Finish(o, sess.Id) == "session",
+		"Finish: the right id only, once", "")
+	-- five equal offsets: not a person
 	local bot = smith(w, 9)
 	local tb = #w.Tele
 	startAndHammer(w, bot, { 40, 40, 40, 40, 40 })
@@ -430,12 +430,14 @@ runGroup("remotes", function()
 	w:Remote("CraftStart", p, "W1")
 	local sess = last(fired(w, "CraftSession", p))
 	check(sess ~= nil, "CraftStart(W1) opens a session", "")
-	w:Remote("CraftStrike", p, sess.Id)
-	w:Remote("CraftStrike", p, sess.Id, 1.5)
-	check(#w.C.Session(p).Strikes == 0, "CraftStrike with a missing or fractional ring number: ignored", "")
-	-- an honest hammer whose Finish carries six entries: the table is refused whole (every ring a Miss)
-	hammer(w, p, HONEST, { ByRemote = true, Claim = { 30, 50, 40, 20, 60, 40 } })
-	check(w.C.Session(p) == nil and last(fired(w, "CraftResult", p)).Plus == 0, "a hits table with six entries: every ring a Miss, made at +0", "")
+	w.Gap = 0
+	w:Remote("CraftStrike", p, sess.Id, 1)
+	w:Remote("CraftStrike", p, tostring(sess.Id), 1, 40)
+	check(w.C.Session(p).Strikes[1] == nil, "CraftStrike without its ms or with a text id: ignored", "")
+	w:Remote("CraftFinish", p, sess.Id, "x")
+	check(w.C.Session(p) ~= nil, "CraftFinish with two arguments: ignored (the session stays open)", "")
+	w:Remote("CraftFinish", p, sess.Id)
+	check(w.C.Session(p) == nil and last(fired(w, "CraftResult", p)).Plus == 0, "CraftFinish(id) right away: +0", "")
 	w.Gap = 3
 	w:Remote("CraftStart", p, "W1")
 	check(#fired(w, "CraftSession", p) == 2, "3 s later: a new session", "")

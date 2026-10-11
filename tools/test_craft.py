@@ -1,18 +1,18 @@
 """Artisan crafting (CraftService, 게임성 개발 3, 2026-10-12), offline.
 
-Contract docs/design/craft_server_2026-10-12.md (게임성 검수 OK 10/12; the hammer screen = 게임성 개발 4's
-hammer_minigame_2026-10-12.md): only artisans (Neutral) craft, only their role's recipes (Warrior Smith, Mage Alch, Archer
-Tame), within 12 studs of their workbench (tag CraftStation, else the Crossroads anvil), auto combat off, 6 starts a
-minute, craft level / materials / gold / room checked, the gold (source Craft) and materials taken at the start with
-Craft.Pend in the save; five hammer rings (1.2 s, 0.35 s rest, 0.8 s lead), every ring end timed by the server
-(CraftStrike, in order, >= 0.25 s apart), a claimed offset further than 250 ms + the ping jitter from the server's own
-timing = Miss; grades |ms - 40| <= 70 / 130 / 200, points 3 / 2 / 1 / 0, >= 13 +2, >= 9 +1; five equal claims +0; time-up,
-leave, KO = +0; a join with Pend finishes it at +0 (stays pending while there is no room); the weapon goes to the spares
-(LootService.AddSpare, 게임성 개발 2; weapon recipes off without it, W7 / W9 off until their drops and T9 exist); craft XP
-per role 40 x Lv^1.5 up to Lv30, never doubled; CraftSession / CraftResult / CraftInfo; notices are keys only. Runs the
-CURRENT Config, Util, LootService and CraftService on tools/fixtures/dev2_kit.luau + tools/fixtures/dev3_world.luau with
-tools/fixtures/craft_offline.luau and the installed official Luau CLI. No Studio, network, DataStore or Roblox API calls;
-mutations run on in-memory copies of the sources.
+Contract docs/design/craft_server_2026-10-12.md (게임성 검수 OK 10/12; the hammer = 게임성 개발 4's shared
+src/ReplicatedStorage/Shared/CraftMini.luau, tested by tools/test_craft_mini.py): only artisans (Neutral) craft, only their
+role's recipes (Warrior Smith, Mage Alch, Archer Tame), within 12 studs of their workbench (tag CraftStation, else the
+Crossroads anvil), auto combat off, 6 starts a minute, craft level / materials / gold / room checked, the gold (source
+Craft) and materials taken at the start with Craft.Pend in the save; the hammer on a fixed schedule from StartAt =
+server time + CraftMini.T.Lead: CraftStrike(id, i, ms) on a press notes { Ms, At } once per ring, CraftFinish(id) grades
+with CraftMini.Accept (an arrival that does not fit the claimed ms is a Miss, a missing strike is a Miss); five equal
+offsets +0; Skip = Finish at once = +0; time-up, leave, KO = +0; a join with Pend finishes it at +0 (stays pending while
+there is no room); the weapon goes to the spares (LootService.AddSpare, 게임성 개발 2; weapon recipes off without it, W7 /
+W9 off until their drops and T9 exist); craft XP per role 40 x Lv^1.5 up to Lv30, never doubled; CraftSession /
+CraftResult / CraftInfo; notices are keys only. Runs the CURRENT Config, Util, CraftMini, LootService and CraftService on
+tools/fixtures/dev2_kit.luau + tools/fixtures/dev3_world.luau with tools/fixtures/craft_offline.luau and the installed
+official Luau CLI. No Studio, network, DataStore or Roblox API calls; mutations run on in-memory copies of the sources.
 
 Usage: py tools/test_craft.py [--no-mutations] [--luau path/to/luau.exe]
 Report: docs/art/verification_2026-10-12/offline_dev3_craft_2026-10-12.json
@@ -26,6 +26,7 @@ from dev2_offline import ROOT, SHARED, SSS, Suite, read, run, strip_comments
 FILES = {
     "CONFIG_SOURCE": SHARED / "Config.luau",
     "UTIL_SOURCE": SHARED / "Util.luau",
+    "CRAFTMINI_SOURCE": SHARED / "CraftMini.luau",
     "LOOT_SOURCE": SSS / "LootService.luau",
     "CRAFT_SOURCE": SSS / "CraftService.luau",
 }
@@ -37,24 +38,16 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
-    # --- the table
+    # --- the table (the hammer's own numbers: tools/test_craft_mini.py)
     ("config: on by default", C, "Config.Features.Crafting = false\n", "Config.Features.Crafting = true\n"),
     ("config: archers are blacksmiths", C, "Roles = { Warrior = \"Smith\", Mage = \"Alch\", Archer = \"Tame\" },", "Roles = { Warrior = \"Smith\", Mage = \"Alch\", Archer = \"Smith\" },"),
     ("config: Lv40", C, "\tMaxLv = 30,\n\tXPBase = 40,", "\tMaxLv = 40,\n\tXPBase = 40,"),
     ("config: XP x 50", C, "\tXPBase = 40,\n\tXPExp = 1.5,", "\tXPBase = 50,\n\tXPExp = 1.5,"),
     ("config: range 15", C, "\tRange = 12, -- studs from the role's workbench", "\tRange = 15, -- studs from the role's workbench"),
     ("config: 10 starts a minute", C, "\tStartsPerMinute = 6,\n", "\tStartsPerMinute = 10,\n"),
-    ("config: no lag fix", C, "Lead = 0.8, LagMs = 40,", "Lead = 0.8, LagMs = 0,"),
-    ("config: Perfect 90", C, "LagMs = 40, Perfect = 70,", "LagMs = 40, Perfect = 90,"),
-    ("config: +2 at 12", C, "Plus2 = 13, Plus1 = 9,", "Plus2 = 12, Plus1 = 9,"),
-    ("config: +1 at 8", C, "Plus2 = 13, Plus1 = 9,", "Plus2 = 13, Plus1 = 8,"),
-    ("config: 30 s time-up", C, "Timeout = 20, MaxMs = 400,", "Timeout = 30, MaxMs = 400,"),
-    ("config: tolerance 400", C, "\t\tTolMs = 250, JitterMaxMs = 150,", "\t\tTolMs = 400, JitterMaxMs = 150,"),
     ("config: W1 costs 20", C, "Tier = 1, Lv = 1, Gold = 10,", "Tier = 1, Lv = 1, Gold = 20,"),
     ("config: W3 at craft Lv1", C, "Tier = 3, Lv = 5, Gold = 200,", "Tier = 3, Lv = 1, Gold = 200,"),
     ("config: Sea Shell back in W3", C, "Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }", "Mats = { SlimeCore = 6, Jelly = 20, SeaShell = 10 }"),
-    ("config: grade ignores the lag fix", C, "\tlocal e = math.abs(ms - H.LagMs)\n", "\tlocal e = math.abs(ms)\n"),
-    ("config: grade: no Great", C, "\tif e <= H.Great then return \"Great\" end\n", ""),
     ("config: XP at Lv30 goes on", C, "\tif l ~= l or l >= K.MaxLv then return 0 end\n", "\tif l ~= l then return 0 end\n"),
     # --- recipes on / off
     ("recipe: unknown materials allowed", R, "\t\tif not Config.Loot.Items[item] then return nil end\n", ""),
@@ -74,19 +67,19 @@ MUTATIONS = [
     ("start: gold never paid", R, "\tif not S.ProgressionService.SpendGold(player, r.Gold, \"Craft\") then\n", "\tif false then\n"),
     ("start: materials kept", R, "\t\tif not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, \"take \" .. item .. \" failed after the check\") end\n", ""),
     ("start: nothing pending in the save", R, "\tc.Pend = id\n", ""),
-    ("start: no lead time", R, "StartAt = serverNow() + H.Lead, Strikes = {} }", "StartAt = serverNow(), Strikes = {} }"),
+    ("start: no lead time", R, "StartAt = serverNow() + T.Lead, Strikes = {} }", "StartAt = serverNow(), Strikes = {} }"),
     ("start: no time-up", R, "\t\tif ST.Open[player] == sess then closeAtZero(player, \"Timeout\") end\n", ""),
     ("start: the stuck pending one never retried", R, "\tif not ST.Open[player] and pend ~= \"\" and type(K().Recipes[pend]) == \"table\" then complete(player, data, pend, 0, misses(), 0) end\n", ""),
     # --- strikes
-    ("strike: any order", R, "\tif i ~= #sess.Strikes + 1 or i > H.Strikes then return \"order\" end\n", "\tif i > H.Strikes then return \"order\" end\n"),
-    ("strike: no gap", R, "\tif t - last < H.MinGap then return \"fast\" end\n", ""),
-    ("strike: any session id", R, "\tif not sess or sess.Id ~= sid or sess.Done then return \"session\" end\n\tlocal H = K().Hammer\n\tif i ~= #sess.Strikes", "\tif not sess or sess.Done then return \"session\" end\n\tlocal H = K().Hammer\n\tif i ~= #sess.Strikes"),
+    ("strike: any session id", R, "\tif not sess or sess.Id ~= sid or sess.Done then return \"session\" end\n\tif type(i)", "\tif not sess or sess.Done then return \"session\" end\n\tif type(i)"),
+    ("strike: ring 6 taken", R, "or i < 1 or i > CraftMini.T.Strikes then return \"ring\" end", "or i < 1 or i > 99 then return \"ring\" end"),
+    ("strike: a second press replaces the first", R, "\tif sess.Strikes[i] then return \"again\" end\n", ""),
+    ("strike: the client's own time", R, "\tsess.Strikes[i] = { Ms = ms, At = serverNow() }\n", "\tsess.Strikes[i] = { Ms = ms, At = CraftMini.Target(sess.StartAt, i) + ms / 1000 }\n"),
     # --- finish
-    ("finish: claims never checked", R, "\t\t\tif m and math.abs(claim - m) <= tol then\n", "\t\t\tif true then\n"),
-    ("finish: no jitter room", R, "\tlocal jitter = math.min(ping * 1000 * 0.5, H.JitterMaxMs)\n", "\tlocal jitter = 0\n"),
-    ("finish: ring 1 without the ping", R, "\tif i == 1 then return ((t - ping / 2) - (sess.StartAt + H.Ring)) * 1000 end\n", "\tif i == 1 then return (t - (sess.StartAt + H.Ring)) * 1000 end\n"),
-    ("finish: ring 1 no extra room", R, "\t\t\tlocal tol = H.TolMs + jitter + (i == 1 and ping * 1000 * 0.5 or 0)\n", "\t\t\tlocal tol = H.TolMs + jitter\n"),
-    ("finish: twice", R, "\tsess.Done = true\n\tST.Open[player] = nil\n\tlocal ping", "\tlocal ping"),
+    ("finish: any lie fits (huge ping)", R, "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player))\n", "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, 1000)\n"),
+    ("finish: the ping ignored", R, "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player))\n", "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, 0)\n"),
+    ("finish: a wrong schedule", R, "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player))\n", "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt - 1, pingMs(player))\n"),
+    ("finish: twice", R, "\tsess.Done = true\n\tST.Open[player] = nil\n\tlocal grades", "\tlocal grades"),
     ("finish: bots get their +N", R, "\t\tif same then\n\t\t\tplus = 0\n", "\t\tif same then\n"),
     ("finish: no mismatch log", R, "\tif mismatch > 0 then tele(player, \"CraftMismatch\", mismatch) end\n", ""),
     # --- the end
@@ -101,9 +94,10 @@ MUTATIONS = [
     ("end: a stopped craft never finishes", R, "\t\t\telseif not complete(player, data, c.Pend, 0, misses(), 0) then\n", "\t\t\telseif false then\n"),
     ("end: an unknown Pend stays", R, "\t\t\tif type(K().Recipes[c.Pend]) ~= \"table\" then\n\t\t\t\tc.Pend = \"\"\n", "\t\t\tif type(K().Recipes[c.Pend]) ~= \"table\" then\n"),
     # --- remotes
-    ("remote: any keys in the hits table", R, "if type(k) ~= \"number\" or k ~= math.floor(k) or k < 1 or k > K().Hammer.Strikes then return nil end", "if false then return nil end"),
     ("remote: extra arguments taken", R, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal id = ...\n", "\tlocal id = ...\n"),
     ("remote: no start rate limit", R, "\tif not Util.RateLimit(player, \"CraftStart\", num(Config.RateLimits.CraftStart, 3)) then return end\n", ""),
+    ("remote: a two-argument Finish taken", R, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal sid = ...\n", "\tlocal sid = ...\n"),
+    ("remote: a text strike id taken", R, "\tlocal sid, i, ms = ...\n\tif type(sid) ~= \"number\" then return end\n", "\tlocal sid, i, ms = ...\n\tsid = tonumber(sid) or sid\n"),
 ]
 
 
@@ -134,6 +128,8 @@ def static() -> tuple[int, list[str]]:
     check(not re.search(r"MarketplaceService|PromptPurchase|Robux|AddXP|GetXPMult|GetGoldMult", craft),
           "no purchase path, no hunting XP, no pass multiplier in crafting")
     check(not re.search(r'"[A-Z][a-z]+ [a-z]+ [a-z]+[^"]*"', craft), "no English sentence in CraftService (keys only)")
+    check('require(Shared:WaitForChild("CraftMini"))' in craft and not re.search(r"Lag|Windows|PlusAt|Ring = \d", craft.split("local CraftService = {}", 1)[1].replace("T.Ring", "")),
+          "CraftService takes the hammer's numbers and rules from Shared/CraftMini only")
     config = read(SHARED / "Config.luau")
     check("Config.Features = { NeutralFaction = false, Market = false, StatPoints = false }" in config,
           "the Config.Features line is untouched (other suites' mutations use it)")
@@ -146,7 +142,7 @@ SUITE = Suite(
     world=ROOT / "tools/fixtures/dev3_world.luau",
     out=ROOT / "docs/art/verification_2026-10-12/offline_dev3_craft_2026-10-12.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12): switch Config.Features.Crafting off; "
+    contract="Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer = Shared/CraftMini): switch Config.Features.Crafting off; "
              "Neutral only, the role's recipes only (Warrior Smith / Mage Alch / Archer Tame); 12 studs from the role's "
              "workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / "
              "room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt "

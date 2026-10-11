@@ -8184,12 +8184,9 @@ Config.ChoiceCard.Kinds.ShardBloom = {
 -- the result (+0 / +1 / +2 from the hammer) comes at the end, a leave / KO / time-out finishes it at +0, and the save's
 -- Craft.Pend finishes it at +0 on the next join if the server stops in between. A craft level per role (data.Craft.<role>
 -- = { Lv, XP }), XP to the next = floor(XPBase x Lv ^ XPExp), at most MaxLv; the 2x XP pass does not touch it.
--- Hammer: Strikes rings of Ring s (Rest s between), the first ring at StartAt = server time + Lead. Grade of an offset
--- (ms, + = late): e = |ms - LagMs| -> Perfect <= Perfect, Great <= Great, Good <= Good, else Miss; points 3 / 2 / 1 / 0,
--- sum >= Plus2 -> +2, >= Plus1 -> +1. Every ring end sends CraftStrike: the server times it (the first from StartAt minus
--- half the ping, each next from the one before) and a claimed offset further than TolMs + the ping jitter (ping x 0.5, at
--- most JitterMaxMs; the first ring once more) from that is a Miss. Five equal claims = +0 (not a person). No Finish by
--- StartAt + Timeout = +0. Recipes[id] = { Role, Kind "Weapon" | "Gear" | "Item", Tier?, Slot?, Item?, N?, Lv, Gold, Mats,
+-- The hammer's numbers and rules live in Shared/CraftMini.luau (게임성 개발 4, the one place the screen and the server share:
+-- a fixed ring schedule, CraftStrike(id, i, ms) on a press, CraftFinish(id) scores with CraftMini.Accept). No Finish by
+-- StartAt + CraftMini.T.Timeout = +0. Recipes[id] = { Role, Kind "Weapon" | "Gear" | "Item", Tier?, Slot?, Item?, N?, Lv, Gold, Mats,
 -- XP }; a recipe with a material id missing from Config.Loot.Items is off (new drops switch it on). Weapons go to the
 -- spare weapons (LootService.AddSpare, 게임성 개발 2) and stay off until that exists. Switched by
 -- Config.Features.Crafting (off; on with the artisan guild, 검수).
@@ -8202,9 +8199,6 @@ Config.Craft = {
 	Range = 12, -- studs from the role's workbench (CollectionService tag StationTag, attribute Role; else the Crossroads anvil)
 	StationTag = "CraftStation",
 	StartsPerMinute = 6,
-	Hammer = { Strikes = 5, Ring = 1.2, Rest = 0.35, Lead = 0.8, LagMs = 40, Perfect = 70, Great = 130, Good = 200,
-		Points = { Perfect = 3, Great = 2, Good = 1, Miss = 0 }, Plus2 = 13, Plus1 = 9, Timeout = 20, MaxMs = 400,
-		TolMs = 250, JitterMaxMs = 150, MinGap = 0.25 },
 	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
 	Recipes = {
 		W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 },
@@ -8236,27 +8230,6 @@ function Config.CraftXPToNext(lv)
 	local l = math.floor(tonumber(lv) or 1)
 	if l ~= l or l >= K.MaxLv then return 0 end
 	return math.floor(K.XPBase * math.max(1, l) ^ K.XPExp)
-end
-
--- the grade of one hammer offset (ms, + = late; anything but a finite number = Miss)
-function Config.CraftGrade(ms)
-	local H = Config.Craft.Hammer
-	if type(ms) ~= "number" then return "Miss" end -- NaN fails every comparison below: a Miss too
-	local e = math.abs(ms - H.LagMs)
-	if e <= H.Perfect then return "Perfect" end
-	if e <= H.Great then return "Great" end
-	if e <= H.Good then return "Good" end
-	return "Miss"
-end
-
--- the +N of a list of grades (Points summed: >= Plus2 -> 2, >= Plus1 -> 1, else 0)
-function Config.CraftPlus(grades)
-	local H = Config.Craft.Hammer
-	local sum = 0
-	for _, g in grades do sum += H.Points[g] or 0 end
-	if sum >= H.Plus2 then return 2 end
-	if sum >= H.Plus1 then return 1 end
-	return 0
 end
 
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)

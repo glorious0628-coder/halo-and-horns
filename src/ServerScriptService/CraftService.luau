@@ -6,15 +6,15 @@
 --     no open session, StartsPerMinute, auto combat off, within Range of the role's workbench, craft level, materials,
 --     gold, room for the result. Then the gold and materials go at once and data.Craft.Pend = recipeId (a stop in between
 --     finishes the craft at +0 on the next join) -> s->c CraftSession { Id, Recipe, Strikes, Ring, Rest, StartAt }.
---   * CraftStrike(id, i) at every ring end, in order: the server notes its own time. CraftFinish(id, hits): every claimed
---     offset is checked against the server's own timing of that ring (Config.Craft.Hammer TolMs + the ping jitter); a
---     ring the server did not time, or a claim too far off, is a Miss. Five equal claims = +0. Grades / +N:
---     Config.CraftGrade / Config.CraftPlus. No Finish by StartAt + Timeout, a leave or a KO = +0.
+--   * The hammer = Shared/CraftMini (fixed ring schedule): CraftStrike(id, i, ms) on a press notes { Ms, At = server
+--     time } once per ring; CraftFinish(id) grades them with CraftMini.Accept (a strike whose arrival does not fit its
+--     claimed offset, or one that never came, is a Miss). Five equal offsets = +0. No Finish by StartAt +
+--     CraftMini.T.Timeout, a leave or a KO = +0.
 --   * The end: the result goes in (Weapon -> LootService.AddSpare, Gear -> data.Gear.Own, Item -> LootService.GrantItems),
 --     craft XP for the role (levels up while it can, at most MaxLv), Craft.Made[id] + 1, Pend cleared -> s->c CraftResult
 --     + CraftInfo, signal Crafted(player, recipeId, plus).
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
---   CraftService.TryStart(player, id) / Strike(player, sid, i) / Finish(player, sid, hits) -> "ok" | reason (the remote
+--   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
 --   handlers; public for the offline test) · RecipeOn(id) · Session(player)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -24,6 +24,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Net = require(Shared:WaitForChild("Net"))
 local Util = require(Shared:WaitForChild("Util"))
+local CraftMini = require(Shared:WaitForChild("CraftMini")) -- the hammer's numbers and rules (게임성 개발 4, shared with the screen)
 
 local CraftService = {}
 CraftService.Crafted = Util.Signal.new() -- (player, recipeId, plus)
@@ -213,7 +214,7 @@ end
 
 local function misses()
 	local out = {}
-	for i = 1, K().Hammer.Strikes do out[i] = "Miss" end
+	for i = 1, CraftMini.T.Strikes do out[i] = "Miss" end
 	return out
 end
 
@@ -303,70 +304,49 @@ function CraftService.TryStart(player, id)
 	c.Pend = id
 	table.insert(recent, now)
 	ST.Serial += 1
-	local H = K().Hammer
-	local sess = { Id = ST.Serial, Recipe = id, StartAt = serverNow() + H.Lead, Strikes = {} }
+	local T = CraftMini.T
+	local sess = { Id = ST.Serial, Recipe = id, StartAt = serverNow() + T.Lead, Strikes = {} }
 	ST.Open[player] = sess
-	fire(player, "CraftSession", { Id = sess.Id, Recipe = id, Strikes = H.Strikes, Ring = H.Ring, Rest = H.Rest, StartAt = sess.StartAt })
-	task.delay(H.Lead + H.Timeout, function()
+	fire(player, "CraftSession", { Id = sess.Id, Recipe = id, Strikes = T.Strikes, Ring = T.Ring, Rest = T.Rest, StartAt = sess.StartAt })
+	task.delay(T.Lead + T.Timeout, function()
 		if ST.Open[player] == sess then closeAtZero(player, "Timeout") end
 	end)
 	return "ok"
 end
 
-function CraftService.Strike(player, sid, i)
+-- a press: the first strike of ring i is noted with the server's time (CraftMini.Accept checks it at the Finish)
+function CraftService.Strike(player, sid, i, ms)
 	local sess = ST.Open[player]
 	if not sess or sess.Id ~= sid or sess.Done then return "session" end
-	local H = K().Hammer
-	if i ~= #sess.Strikes + 1 or i > H.Strikes then return "order" end
-	local t = serverNow()
-	local last = sess.Strikes[i - 1] or (sess.StartAt - H.MinGap)
-	if t - last < H.MinGap then return "fast" end
-	sess.Strikes[i] = t
+	if type(i) ~= "number" or i ~= math.floor(i) or i < 1 or i > CraftMini.T.Strikes then return "ring" end
+	if sess.Strikes[i] then return "again" end
+	if type(ms) ~= "number" or ms ~= ms then return "ms" end
+	sess.Strikes[i] = { Ms = ms, At = serverNow() }
 	return "ok"
 end
 
-local function pingOf(player)
+local function pingMs(player)
 	local ok, p = pcall(function() return player:GetNetworkPing() end)
-	return math.clamp(ok and num(p) or 0, 0, 1)
+	return math.clamp((ok and num(p) or 0) * 1000, 0, 1000)
 end
 
--- the server's own timing of ring i in ms (nil = the server did not time it, or the ring before)
-local function measured(sess, i, ping)
-	local H = K().Hammer
-	local t = sess.Strikes[i]
-	if not t then return nil end
-	if i == 1 then return ((t - ping / 2) - (sess.StartAt + H.Ring)) * 1000 end
-	local prev = sess.Strikes[i - 1]
-	if not prev then return nil end
-	return (t - prev - H.Rest - H.Ring) * 1000
-end
-
-function CraftService.Finish(player, sid, hits)
+-- the end of the hammer: CraftMini.Accept grades the strikes that came (a missing or a made-up one is a Miss); five
+-- equal offsets are not a person (+0). A Finish right away (Skip) = every ring a Miss = +0
+function CraftService.Finish(player, sid)
 	local sess = ST.Open[player]
 	if not sess or sess.Id ~= sid or sess.Done then return "session" end
-	local H = K().Hammer
 	sess.Done = true
 	ST.Open[player] = nil
-	local ping = pingOf(player)
-	local jitter = math.min(ping * 1000 * 0.5, H.JitterMaxMs)
-	local grades, claims, mismatch = {}, {}, 0
-	for i = 1, H.Strikes do
-		local claim = type(hits) == "table" and hits[i] or nil
-		local g = "Miss"
-		if type(claim) == "number" then
-			table.insert(claims, claim)
-			local m = measured(sess, i, ping)
-			local tol = H.TolMs + jitter + (i == 1 and ping * 1000 * 0.5 or 0)
-			if m and math.abs(claim - m) <= tol then
-				g = Config.CraftGrade(claim)
-			else
-				mismatch += 1
-			end
+	local grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player))
+	local claims, mismatch = {}, 0
+	for i = 1, CraftMini.T.Strikes do
+		local s = sess.Strikes[i]
+		if s then
+			table.insert(claims, s.Ms)
+			if grades[i] == "Miss" and CraftMini.Grade(s.Ms) ~= "Miss" then mismatch += 1 end
 		end
-		grades[i] = g
 	end
-	local plus = Config.CraftPlus(grades)
-	if #claims == H.Strikes then
+	if #claims == CraftMini.T.Strikes then
 		local same = true
 		for i = 2, #claims do
 			if claims[i] ~= claims[1] then same = false end
@@ -400,31 +380,18 @@ local function onStart(player, ...)
 end
 
 local function onStrike(player, ...)
-	if select("#", ...) ~= 2 then return end
-	local sid, i = ...
-	if type(sid) ~= "number" or type(i) ~= "number" then return end -- Strike takes only the next whole ring of the open id
-	CraftService.Strike(player, sid, i)
-end
-
-local function validHits(hits)
-	if type(hits) ~= "table" then return nil end
-	for k in hits do -- only the keys 1..Strikes (a sixth entry or a named key refuses the whole table)
-		if type(k) ~= "number" or k ~= math.floor(k) or k < 1 or k > K().Hammer.Strikes then return nil end
-	end
-	local out = {}
-	for i = 1, K().Hammer.Strikes do
-		local v = hits[i]
-		out[i] = (type(v) == "number" and v == v and math.abs(v) <= K().Hammer.MaxMs) and v or false
-	end
-	return out
+	if select("#", ...) ~= 3 then return end
+	local sid, i, ms = ...
+	if type(sid) ~= "number" then return end
+	CraftService.Strike(player, sid, i, ms)
 end
 
 local function onFinish(player, ...)
-	if select("#", ...) ~= 2 then return end
-	local sid, hits = ...
-	if type(sid) ~= "number" or sid ~= sid then return end
+	if select("#", ...) ~= 1 then return end
+	local sid = ...
+	if type(sid) ~= "number" then return end
 	if not Util.RateLimit(player, "CraftFinish", num(Config.RateLimits.CraftFinish, 0.5)) then return end
-	CraftService.Finish(player, sid, validHits(hits) or {})
+	CraftService.Finish(player, sid)
 end
 
 ------------------------------------------------------------------ service
