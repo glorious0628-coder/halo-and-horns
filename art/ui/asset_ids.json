@@ -1085,5 +1085,13 @@
   "HaloTile_Halo_GoldTrim_rough": "rbxassetid://82910627301523",
   "Halo_WaterfallStreaks": "rbxassetid://111806947888357",
   "HaloTile_Halo_TowerMarbleBlockCream_color": "rbxassetid://80357186990466",
-  "HaloTile_Halo_TowerMarbleBlockCream_normal": "rbxassetid://73394105072257"
+  "HaloTile_Halo_TowerMarbleBlockCream_normal": "rbxassetid://73394105072257",
+  "Halo_GoldTest_brush_normal": "rbxassetid://125756221288759",
+  "Halo_GoldTest_hammer_normal": "rbxassetid://90366091252809",
+  "Halo_GoldTest_rough15": "rbxassetid://109029776386025",
+  "Halo_GoldTest_rough35": "rbxassetid://128833041727597",
+  "Halo_GoldTest_rough45": "rbxassetid://126170707480354",
+  "Halo_GoldTest_roughvar": "rbxassetid://134307597496156",
+  "Halo_GoldTest_metal50": "rbxassetid://137160255192059",
+  "Halo_GoldTest_metal70": "rbxassetid://139091750772198"
 }
