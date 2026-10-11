@@ -57,3 +57,45 @@
 ## 4. 다음 (같은 기준으로)
 - A23-108 쥐기 9조합을 같은 probe로 다시 재고, 이상한 것 목록을 만들어요(fore가 45° 아래 = 팔뚝을 따라 누움, dHand가 0.2 넘음).
 - 공격·스킬 몸짓의 쥐기도 같은 기준이에요.
+
+## 5. 무기 길이 (A23-133, 2026-10-11 밤)
+> 사용자: "지금은 무기가 너무 길어서 잡는 위치가 이상해" + "캐릭터가 뭔가를 하는 것들은 자세 같은 것들 다 검색해서".
+> 검수: 아바타 키 대비 무기 길이·날:손잡이 비율·손 위치를 검·지팡이·활·망치마다 숫자로 정하고 시험으로 지킨다. 이미지 생성 2의 무기 High 그림 비율도 이 숫자를 쓴다.
+
+### 5-1. 아바타 키 (우리 place에서 잼)
+- `place/GoodEvil.rbxlx`의 기본 R15(Workspace NPCs `PotionMerchant`)를 쟀어요. 발바닥 0, UpperTorso 가운데 3.21, 어깨 관절 3.81, 머리 꼭대기 **5.18칸**(크기 1). 아래에서 **H = 5.2칸**으로 써요.
+- 공개 자료도 비슷해요. 기본 Roblox 캐릭터 키는 약 5~5.5칸이고, R15 키 조절은 95~105%예요([DevForum "Fetch Player Height"](https://devforum.roblox.com/t/fetch-player-height/2205072), [Roblox 문서 Body scale](https://create.roblox.com/docs/art/accessories/body-scale)).
+- 고친 것: 한 손 시험(`test_one_hand_grips`)은 몸통 가운데를 3.9칸으로 어림했어요. 실제는 3.21칸이에요. 그래서 긴 지팡이는 발끝이 땅에 0.2~0.5칸 박혔을 수 있어요. 손이 지팡이를 쥐는 자리를 발끝에서 2.8칸까지로 줄였어요(`STAFF.FootMax` 3.4 → 2.8). 이제 발끝은 땅 위 약 0.06칸이에요.
+
+### 5-2. 찾은 참고
+| 무엇 | 숫자 | 출처 |
+|---|---|---|
+| **Roblox 공식 장비(gear) 1,942개** | Roblox가 GitHub에 올린 장비 파일에서 손잡이 파트(Handle) 길이와 `Tool.Grip` 위치를 쟀어요(파트 상자 기준이라 그림보다 조금 클 수 있어요). **칼 249개:** 길이 중간값 5.0칸(4.0~5.25가 가운데 절반), 손은 자루 끝에서 12%(9~16%). **지팡이 55개:** 5.4칸, 손은 가운데 근처(가까운 끝에서 44%). **활 34개(석궁 뺌):** 5.25칸, 손은 한가운데(50%). **마법봉 22개:** 2.8칸. **망치 12개(전투 망치):** 4.75칸, 손은 자루 끝에서 27% | [Roblox/Catalog (GitHub)](https://github.com/Roblox/Catalog) |
+| **Roblox Linked Sword**(기본 칼, 가장 많이 쓰인 칼) | 손잡이 파트 1 × 0.8 × **4칸**, 그립 위치 (0, 0, -1.5) → 손이 자루 끝에서 0.5칸 = **12.5%**. 키 5칸 아바타의 0.8배 | [Catalog 125013769.rbxmx](https://github.com/Roblox/Catalog/blob/master/Items/Gear/125013769.rbxmx), [DevForum Linked Sword 해설](https://devforum.roblox.com/t/attempting-to-decipher-the-script-of-the-linked-sword-default-sword/2388604) |
+| 실제 한손검(아밍 소드) | 전체 95cm 안팎(사람 키의 약 0.53배), 날이 전체의 약 80%, 손잡이는 약 10cm(손 하나 폭) | [Kult of Athena Lockwood Type XV](https://www.kultofathena.com/product/lockwood-swords-type-xv-arming-sword/), [Reliks Angus Trim Arming Sword](https://www.reliks.com/Products.aspx?pid=3009) |
+| 실제 두 손 검 | 겨드랑이 높이 = 키의 약 0.76배(Vadi). 한손검은 이보다 짧아요 | [Guy Windsor "Size Matters"](https://guywindsor.net/2012/08/size-matters-longsword-length/) |
+| 지팡이 | 걷는 지팡이·막대는 어깨~눈 높이(키의 0.8~0.95배), 쿼터스태프는 키 + 손 하나 | [Home of Poi "Staff length"](https://www.homeofpoi.com/en/community/forums/topics/869476/Staff-length-question), [Wikipedia Quarterstaff](https://en.wikipedia.org/wiki/Quarterstaff) |
+| 활 | 리커브 활은 어른에게 62~70인치(키의 약 0.9~1.0배). 손은 한가운데 손잡이 | [Sportsman's 리커브 활 길이 표](https://www.sportsmans.com/recurve-bow-length-size-chart) |
+| 게임 무기 크기 정하기 | 기준 무기 하나를 캐릭터 키와 나란히 놓고 정한다. 정확한 길이보다 손잡이·날 자리가 맞는 게 더 중요하다. 두 손 무기는 한 손 무기보다 크게 | [Beyond Skyrim 무기 그림 안내](https://wiki.beyondskyrim.org/wiki/Arcane_University:Weapons_(2D)) |
+
+- **못 찾은 것:** Swordburst·Dungeon Quest·World // Zero 같은 인기 Roblox RPG의 무기 크기 숫자는 공개 자료가 없었어요. 그래서 Roblox 공식 장비 실측을 'Roblox 게임 기준'으로 썼어요. 애니메이션 쥐는 자리는 §1(실제 쥐기·대기 동작 자료)과 같아요.
+- **Roblox 손이 커요:** 우리 아바타 주먹은 손잡이 방향으로 1.03칸이에요(키의 20%, 실제 사람은 약 5%). 그래서 손잡이는 1.2칸보다 짧게 못 해요. 날:손잡이부 비율은 실제 칼(4:1)보다 작은 1.4~2.1 : 1이 돼요. 그래도 Roblox 칼처럼 보여요(Linked Sword도 손잡이부가 전체의 약 1/4).
+
+### 5-3. 정한 숫자 (H = 5.2칸; 시험 `tools/test_one_hand_grips.py` A23-133 줄)
+| 무기 | 길이 (H 대비) | 손 위치 | 그 밖 |
+|---|---|---|---|
+| 한손검(빛 전사 Sword) | 자루 끝~칼끝 **0.74~0.88H**(3.85~4.55칸; 1단계 ≈ Linked Sword) | 자루 끝에서 13~16% | 날:손잡이부 1.7~2.1 : 1, 날밑 폭 1.2칸(전체의 약 1/3), 날 폭 0.6칸(약 1/7) |
+| 어두운 한손검(뿔 전사 DarkSword) | 폼멜 포함 **0.80~0.93H**(4.13~4.83칸) | 18~21% | 날:손잡이부 1.4~1.8 : 1 |
+| 지팡이(빛·어둠 마법사) | 구슬 포함 **0.85~1.0H**(막대 3.95~4.5칸) | 발끝에서 62~71% | 구슬 지름 0.55~0.9칸(길이의 약 1/8), 발끝은 땅 위 약 0.06칸 |
+| 활(레인저) | **0.6~0.95H**(3.1~4.9칸) | 한가운데 | — |
+| 짧은 활(그림자 사냥꾼) | 활의 0.75배 = **0.45~0.71H** | 한가운데 | 15° 기울임 |
+| 대장장이 망치 | **0.42H**(자루 1.9 + 머리 반 0.3) | 자루 아래에서 26% | 머리 폭 1.1칸(전체의 1/2) |
+| 조련사 막대 | **0.41~0.45H** | 자루 아래에서 30% | — |
+- 시험 범위: 검 0.72~0.95H·손 10~22%·날 1.3~2.5배, 지팡이 0.82~1.03H·손 55~75%, 활 0.55~0.97H·짧은 활 0.72H 이하, 망치 0.35~0.55H·손 15~33%, 막대 0.3~0.6H. 단계가 올라가도 길이가 줄지 않아요.
+- 만드는 법: `Config.Weapons` Length(3~6.5)는 단계 순서로만 쓰고, `CharacterVisuals`의 `LEN` 표가 무기마다 칸 수로 줄여요(`tierLen`). 바꾸기 전 검은 4.45~7.95칸(0.86~1.53H), 지팡이는 구슬 포함 0.93~1.19H, 활은 0.58~1.25H였어요.
+
+### 5-4. 그림(이미지 생성 2 무기 High)에 쓰는 비율
+- 검: 전체 길이 = 키의 0.75~0.9배. 날 : 손잡이부(손잡이+날밑+폼멜) ≈ **2 : 1**. 날밑 폭 ≈ 전체의 1/3, 날 폭 ≈ 전체의 1/7. 손잡이는 주먹 하나보다 조금 길게.
+- 지팡이: 구슬 포함 키의 0.85~1.0배, 구슬 ≈ 길이의 1/8, 쥐는 자리 = 발끝에서 약 2/3.
+- 활: 키의 0.6~0.95배(짧은 활 0.45~0.7배), 쥐는 자리 = 한가운데.
+- 대장장이 망치: 키의 0.4~0.5배, 머리 폭 ≈ 전체의 1/2, 쥐는 자리 = 자루 아래 1/4.

@@ -615,9 +615,21 @@ local function fist(grip)
 	return grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y = the hand's -Z, +Z = towards the elbow (the body)
 end
 
+-- A23-133 (user 10/11 "무기가 너무 길어서 잡는 위치가 이상해"; references docs/design/grip_reference_2026-10-11.md §5):
+-- held lengths as a share of the avatar's height (the place's default R15 = 5.18 studs at scale 1). Config.Weapons Length
+-- (3 .. 6.5) only orders the tiers; tierLen squeezes it into each kind's studs: the blade (a sword 0.75 .. 0.9 of the
+-- height with its handle and guard - Roblox's Linked Sword is 4 studs, the gear swords' median 5), the staff shaft (0.85
+-- .. 1.0 with its orb), the bow (0.6 .. 0.95; the gear bows' median 5.25)
+local LEN = { From = { 3, 6.5 }, Blade = { 2.4, 3.1 }, Staff = { 3.95, 4.5 }, Bow = { 3.1, 4.9 } }
+local function tierLen(w, to)
+	local t = math.clamp(((tonumber(w.Length) or LEN.From[1]) - LEN.From[1]) / (LEN.From[2] - LEN.From[1]), 0, 1)
+	return to[1] + (to[2] - to[1]) * t
+end
+
 local function buildSword(grip, sc, w, color)
 	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward
 	local handleLen = 1.2
+	local bladeLen = tierLen(w, LEN.Blade)
 	local handle = accPart({
 		Name = "Handle", Size = Vector3.new(0.3, handleLen, 0.3) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = L,
@@ -628,26 +640,27 @@ local function buildSword(grip, sc, w, color)
 		CFrame = L * CFrame.new(0, (handleLen / 2 + 0.125) * sc, 0),
 	})
 	local blade = accPart({
-		Name = "Blade", Size = Vector3.new(0.25, w.Length, 0.6) * sc,
+		Name = "Blade", Size = Vector3.new(0.25, bladeLen, 0.6) * sc,
 		Material = w.Material, Color = color,
-		CFrame = L * CFrame.new(0, (handleLen / 2 + 0.25 + w.Length / 2) * sc, 0),
+		CFrame = L * CFrame.new(0, (handleLen / 2 + 0.25 + bladeLen / 2) * sc, 0),
 	})
 	return { handle, guard, blade }, blade
 end
 
 -- 검수 10/11 (grip sheet: the hand near the foot, the staff leaning out; reference: a staff is held upright close to
 -- the body a little above its middle, grip_reference_2026-10-11.md §1): the hand StaffGrip of the length up from the foot,
--- but never more than StaffFoot studs above the foot (a tall staff would sink into the ground: WeaponPose OneHand holds
--- the hand about 3.6 studs above the feet). User 10/11 "마법봉 너무 크지 않니?" (reference: a staff reaches from the
--- shoulder to the top of the head): Len + PerTier x tier studs long (4.35 .. 5.4), held Grip of it up from the foot so
--- the foot rests near the ground; the orb Orb + OrbPerTier x tier across
-local STAFF = { Grip = 0.72, FootMin = 2.4, FootMax = 3.4, Len = 4.2, PerTier = 0.15, Orb = 0.5, OrbPerTier = 0.05 }
+-- but never more than FootMax studs above the foot (a tall staff would sink into the ground: WeaponPose OneHand holds
+-- the hand about 2.9 studs above the feet). User 10/11 "마법봉 너무 크지 않니?" (reference: a staff reaches from the
+-- shoulder to the top of the head): held Grip of it up from the foot so the foot rests near the ground; the orb Orb +
+-- OrbPerTier x tier across. A23-133: the shaft LEN.Staff long (3.95 .. 4.5, with the orb 0.85 .. 1.0 of the height);
+-- FootMax 2.8 (was 3.4: the place rig's UpperTorso centre is 3.21 studs up, not the old 3.9 estimate, so it sank the foot)
+local STAFF = { Grip = 0.72, FootMin = 2.4, FootMax = 2.8, Orb = 0.5, OrbPerTier = 0.05 }
 local function staffLow(shaftLen)
 	return math.clamp(shaftLen * STAFF.Grip, STAFF.FootMin, STAFF.FootMax)
 end
 
 local function buildStaff(grip, sc, w, color, tier)
-	local shaftLen = STAFF.Len + STAFF.PerTier * tier
+	local shaftLen = tierLen(w, LEN.Staff)
 	local base = fist(grip) -- the shaft centreline passes through the actual hand grip
 	local low = staffLow(shaftLen) -- studs from the foot up to the hand
 	local shaft = accPart({
@@ -671,7 +684,7 @@ local function buildStaff(grip, sc, w, color, tier)
 end
 
 local function buildBow(grip, sc, w, color, scale, tilt)
-	local H = w.Length * (tonumber(scale) or 1) -- A23-108: the Shadow Hunter's short bow is smaller and held tilted
+	local H = tierLen(w, LEN.Bow) * (tonumber(scale) or 1) -- A23-108: the Shadow Hunter's short bow is smaller and held tilted
 	local half = math.rad(50)
 	local R = H / (2 * math.sin(half))
 	local sag = R * (1 - math.cos(half))
@@ -749,6 +762,7 @@ local SHAPES = {}
 -- and the blade shaded towards black (Shade of the way). Code shape until the P3 weapon models (Tripo) replace it.
 function SHAPES.DarkSword(grip, sc, w, color)
 	local D = { Handle = 1.2, Dark = Color3.fromRGB(34, 26, 34), Shade = 0.35, Sweep = 25 }
+	local bladeLen = tierLen(w, LEN.Blade) -- A23-133: buildSword's blade
 	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward (as buildSword)
 	local parts = {}
 	table.insert(parts, accPart({
@@ -763,9 +777,9 @@ function SHAPES.DarkSword(grip, sc, w, color)
 		}))
 	end
 	local blade = accPart({
-		Name = "Blade", Size = Vector3.new(0.25, w.Length, 0.6) * sc,
+		Name = "Blade", Size = Vector3.new(0.25, bladeLen, 0.6) * sc,
 		Material = w.Material, Color = color:Lerp(D.Dark, D.Shade),
-		CFrame = L * CFrame.new(0, (D.Handle / 2 + 0.25 + w.Length / 2) * sc, 0),
+		CFrame = L * CFrame.new(0, (D.Handle / 2 + 0.25 + bladeLen / 2) * sc, 0),
 	})
 	table.insert(parts, blade)
 	table.insert(parts, accPart({
@@ -797,7 +811,7 @@ end
 
 -- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
 function SHAPES.CrookStaff(grip, sc, w, color, tier)
-	local shaftLen = STAFF.Len + STAFF.PerTier * tier
+	local shaftLen = tierLen(w, LEN.Staff)
 	local base, low = fist(grip), staffLow(shaftLen)
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.28, shaftLen, 0.28) * sc,
