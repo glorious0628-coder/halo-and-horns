@@ -920,7 +920,12 @@ local function drawGrid(area, all, list, cols)
 		end
 		if S.Mode then
 			if not BagUI.CellEnabled(S.Mode, cell) then
-				box.ImageTransparency = 0.55
+				-- the slot art is an ImageButton; without it UIKit's code slot is a TextButton (최종 검수 10/12)
+				if box:IsA("ImageButton") or box:IsA("ImageLabel") then
+					box.ImageTransparency = 0.55
+				else
+					box.BackgroundTransparency = 0.55
+				end
 				local icon = box:FindFirstChild("Icon")
 				if icon then icon.ImageTransparency = 0.55 end
 			end
@@ -952,7 +957,8 @@ local function drawDetail(frame, all, picked)
 	})
 	VIEW.DetailSig = nil
 	if not view.Title then return view end
-	local list = Instance.new("UIListLayout")
+	-- one layout for the column (최종 검수 10/12: clear() keeps layouts, so a new one per redraw piled up)
+	local list = frame:FindFirstChildOfClass("UIListLayout") or Instance.new("UIListLayout")
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.Padding = UDim.new(0, 6)
 	list.HorizontalAlignment = Enum.HorizontalAlignment.Center

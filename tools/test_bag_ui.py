@@ -104,6 +104,12 @@ MUTATIONS = [
      "\t\telseif false then\n"),
     ("BAG", "a gathered material shows a sell price (게임성 검수 10/12)", "if def and def.Source == nil and num(def.Sell, 0) > 0 then",
      "if def and num(def.Sell, 0) > 0 then"),
+    ("BAG", "a new detail layout every redraw (최종 검수 10/12)",
+     "local list = frame:FindFirstChildOfClass(\"UIListLayout\") or Instance.new(\"UIListLayout\")", "local list = Instance.new(\"UIListLayout\")"),
+    ("BAG", "a code slot gets ImageTransparency (최종 검수 10/12)", "\t\t\t\tif box:IsA(\"ImageButton\") or box:IsA(\"ImageLabel\") then\n",
+     "\t\t\t\tif true then\n"),
+    ("PANELS", "the rail on touch too (최종 검수 10/12)", "\tif not UserInputService.TouchEnabled and type(tiles) == \"table\" and type(tiles.Y) == \"number\" then\n",
+     "\tif type(tiles) == \"table\" and type(tiles.Y) == \"number\" then\n"),
     ("PANELS", "the Forge sell-all counts gathered things (게임성 검수 10/12)",
      "\t\tif def.Kind == \"Material\" and def.Source == nil then\n\t\t\tlocal n = ITEMS.Count(items, id)",
      "\t\tif def.Kind == \"Material\" then\n\t\t\tlocal n = ITEMS.Count(items, id)"),
@@ -145,8 +151,9 @@ def static(src: dict) -> list[tuple[str, bool]]:
          and "return table.clone(ITEMS.Result), ITEMS.ResultAt" in src["PANELS"]),
         ("Panels: LastInventory hands out the last Inventory payload (a push before the bag bound)",
          "function Panels.LastInventory()\n\treturn ITEMS.Raw\nend" in src["PANELS"] and "\tITEMS.Raw = payload" in src["PANELS"]),
-        ("Panels: a window ends above the HUD icon row on a short screen (게임성 검수 10/12)",
-         "local room = tiles.Y * (h / hl.H) - FRAME.RailGap - (top + hang)" in src["PANELS"]
+        ("Panels: a window ends above the HUD icon row on a short PC screen, same units, never on touch (최종 검수 10/12)",
+         "if not UserInputService.TouchEnabled and type(tiles) == \"table\" and type(tiles.Y) == \"number\" then" in src["PANELS"]
+         and "local room = tiles.Y - FRAME.RailGap - (top + hang)" in src["PANELS"] and "h / hl.H" not in src["PANELS"]
          and "if room >= FRAME.RailMinRoom and room < availH then availH = room end" in src["PANELS"]),
         ("Panels: the Forge's sell-all total counts monster materials only (a Source = not in the sell-all, 게임성 검수 10/12)",
          "\t\tif def.Kind == \"Material\" and def.Source == nil then\n\t\t\tlocal n = ITEMS.Count(items, id)" in src["PANELS"]

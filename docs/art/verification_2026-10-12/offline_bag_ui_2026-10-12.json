@@ -1,5 +1,5 @@
 {
-  "checks": 144,
+  "checks": 147,
   "failed": 0,
   "mutations": [
     {
@@ -224,6 +224,21 @@
     },
     {
       "name": "a gathered material shows a sell price (게임성 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new detail layout every redraw (최종 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a code slot gets ImageTransparency (최종 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the rail on touch too (최종 검수 10/12)",
       "applied": true,
       "caught": true
     },

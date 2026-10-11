@@ -1109,11 +1109,13 @@ local function layoutRoot()
 	local hang = FRAME.TitleH / 2
 	local availH = math.max(220, h - top - 12 - hang)
 	-- 게임성 검수 10/12 (UiSandbox 1920x656): the window ends above the HUD's icon row (Bag · Map · Hero …) when that
-	-- still leaves a usable window (HUD.Layout.Rects.tiles, scaled to this canvas if the units differ)
+	-- still leaves a usable window (HUD.Layout.Rects.tiles)
+	-- 최종 검수 10/12: HUD.Layout is in these same MainGui units (no rescaling), and touch layouts keep their full window
+	-- (the phone round decides the rail there: a 844x390 phone lost 21% and a bigger phone got a smaller window)
 	local hl = C and type(C.HUD) == "table" and C.HUD.Layout or nil
 	local tiles = type(hl) == "table" and type(hl.Rects) == "table" and hl.Rects.tiles or nil
-	if type(tiles) == "table" and type(tiles.Y) == "number" and type(hl.H) == "number" and hl.H > 0 then
-		local room = tiles.Y * (h / hl.H) - FRAME.RailGap - (top + hang)
+	if not UserInputService.TouchEnabled and type(tiles) == "table" and type(tiles.Y) == "number" then
+		local room = tiles.Y - FRAME.RailGap - (top + hang)
 		if room >= FRAME.RailMinRoom and room < availH then availH = room end
 	end
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
