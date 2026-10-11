@@ -1,0 +1,10 @@
+A23-105 lamps (이미지 개발 2026-10-11, UiSandbox own test Play, MCP only)
+Setup copied from WorldKit's 23 marked lamps (Models Halo_Lantern / Halo_ArchBridge_* / Gate_HaloTown with attribute
+LampLight = true, a PointLight inside, Enabled false in Edit): 3 test lantern Models built the same way.
+LocalPlayer DayPhasePreview -> PointLight.Enabled of the 3 lamps:
+  Day   -> false,false,false
+  Dusk  -> true,true,true
+  Night -> true,true,true
+  Day   -> false,false,false
+Photos in this folder are not a look check (UiSandbox has no town; the guide dialog was open). The night look = 메인 반영 1's
+next main Play (rain day / rain night / under a roof), asked 2026-10-11.
