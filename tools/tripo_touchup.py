@@ -49,7 +49,7 @@ argv = sys.argv[sys.argv.index("--") + 1:]
 ap = argparse.ArgumentParser()
 ap.add_argument("job")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
-ap.add_argument("--part", default="", help="kind part: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
+ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
 ap.add_argument("--fit", default="h=1", help="h=<height> or w=<width> in studs (ontop: w=<factor of the body length>)")
 ap.add_argument("--body", default="")
 ap.add_argument("--tris", type=int, default=8000)
@@ -57,6 +57,8 @@ ap.add_argument("--px", type=int, default=1024)
 ap.add_argument("--rotz", type=float, default=90.0)
 ap.add_argument("--out", default=os.path.join(ROOT, "art", "models", "tripo", "touchup"))
 ap.add_argument("--preview", action="store_true")
+ap.add_argument("--calib", action="store_true", help="plant: try to match Tripo's gold rim to the body top (off: unreliable, 10/12)")
+ap.add_argument("--below-all", action="store_true", help="plant: cut every face under the body top (no hanging leaves; Tripo pot wider than the body)")
 ap.add_argument("--tol", type=float, default=0.06, help="studs kept clear round the body")
 ap.add_argument("--tolz", type=float, default=0.05, help="plant: how far over the body top the cut reaches")
 ap.add_argument("--dust", type=int, default=4, help="drop loose islands with fewer faces (specks; petals are bigger)")
@@ -120,7 +122,10 @@ if a.body:
     bpy.context.scene.collection.children.link(coll)
     body_obs = build_kit(K, coll)
     if a.kind == "head":
-        heads = [o for o in body_obs if o.name.startswith("Head")]
+        pre = a.part.split(",") if a.part else ["Head"]       # Lantern_B: Globe,Core,Equator,Meridian,TopCap,TopBall
+        heads = [o for o in body_obs if any(o.name.startswith(q) for q in pre)]
+        if not heads:
+            raise SystemExit("no kit parts named %s in %s" % (pre, a.body))
         hmn, _ = bounds(heads)
         stats["head_cut_z"] = round(hmn.z, 3)
         body_obs = [o for o in body_obs if o not in heads]
@@ -151,6 +156,28 @@ elif a.kind == "ontop":
 else:
     s = val / (size0[2] if key == "h" else max(size0[0], size0[1]))
     me.transform(Matrix.Scale(s, 4))
+    if a.kind == "plant" and body_obs and a.calib:
+        # match Tripo's pot to the part body: the top of Tripo's gold rim (outermost gold faces in the lower part)
+        # goes to the body top, so the two rims do not show double (PotFlowers_D, Topiary_E 10/12)
+        me.update()
+        hsv = PB.Source([src]).tri_hsv()
+        me.calc_loop_triangles()
+        P = np.array([t.center[:] for t in me.loop_triangles])
+        H = P[:, 2].max()
+        rad = np.hypot(P[:, 0], P[:, 1])
+        low = P[:, 2] < 0.75 * H
+        gold = (hsv[:, 0] > 28) & (hsv[:, 0] < 58) & (hsv[:, 1] > 0.4) & (hsv[:, 2] > 0.4) & low
+        if gold.sum() > 30:
+            outer = gold & (rad > 0.7 * rad[low].max())
+            if outer.sum() > 10:
+                rim = np.percentile(P[outer, 2], 97)
+                _, bmx = bounds(body_obs)
+                k = bmx.z / rim
+                if 0.6 < k < 1.6:
+                    me.transform(Matrix.Scale(k, 4))
+                    s *= k
+                    stats["rim_calib"] = {"tripo_rim": round(float(rim), 3), "body_top": round(bmx.z, 3), "k": round(k, 3)}
+                    log("rim calib k %.3f (tripo rim %.2f -> body top %.2f)" % (k, rim, bmx.z))
 me.update()
 stats["scale"] = round(s, 4)
 stats["src_tris"] = tris(src)
@@ -180,7 +207,7 @@ if a.kind == "plant":
         return max(r) if r else -1.0
     for f in bm.faces:
         c = f.calc_center_median()
-        if c.z < ztop + a.tolz and math.hypot(c.x, c.y) < r_at(c.z) + a.tol:
+        if c.z < ztop + a.tolz and (a.below_all or math.hypot(c.x, c.y) < r_at(c.z) + a.tol):
             kill.append(f)
 elif a.kind == "goods":
     from mathutils.bvhtree import BVHTree

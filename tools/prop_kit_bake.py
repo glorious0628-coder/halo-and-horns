@@ -43,6 +43,8 @@ ap.add_argument("--tag", default="C", help="output tag (C = 디자인 검수 val
 ap.add_argument("--hull", action="store_true")
 ap.add_argument("--hull-t", type=float, default=0.035)
 ap.add_argument("--hull-only", action="store_true", help="only the D2 hull (<Kit>_D2_<t*1000>.obj), no colour bake")
+ap.add_argument("--hull-min", type=float, default=0.0, help="hull only round parts whose smallest size >= this (디자인 검수 10/12: 0.12 = no seams / thin bands / window frames)")
+ap.add_argument("--hull-big", type=float, default=0.0, help="... and whose largest size >= this (0.3)")
 ap.add_argument("--preview", action="store_true")
 a = ap.parse_args(argv)
 a.out = os.path.abspath(a.out)
@@ -61,8 +63,10 @@ def lin(rgb):
 
 
 def select_only(obs, active):
+    bpy.context.view_layer.update()
     for o in bpy.context.view_layer.objects:
-        o.select_set(False)
+        if o is not None:                     # removed objects can linger as None until the layer refreshes
+            o.select_set(False)
     for o in obs:
         o.select_set(True)
     bpy.context.view_layer.objects.active = active
@@ -176,7 +180,17 @@ def make_hull(K, t):
     coll = bpy.data.collections.new("hull_src")
     bpy.context.scene.collection.children.link(coll)
     obs = build_kit(K, coll, segments=24)
-    keep = [o for o in obs if o.get("pk_mat") not in NO_HULL]
+    size = {t["n"]: t["size"] for t in K["parts"]}
+
+    def big(o):
+        n = o.name
+        if len(n) > 4 and n[-4] == "." and n[-3:].isdigit():   # Blender's .001 on repeated part names
+            n = n[:-4]
+        sz = size.get(n)
+        if sz is None:                       # CSG-renamed objects keep the part name; unknown = keep
+            return True
+        return min(sz) >= a.hull_min and max(sz) >= a.hull_big
+    keep = [o for o in obs if o.get("pk_mat") not in NO_HULL and big(o)]
     for o in obs:
         if o not in keep:
             bpy.data.objects.remove(o)
@@ -293,7 +307,7 @@ def do_kit(path):
         tag = "D2_%03d" % round(a.hull_t * 1000)
         h = make_hull(K, a.hull_t)
         hmn, hmx = bounds([h])
-        stats.update({"tag": tag, "D2_tris": tris(h), "D2_thickness": a.hull_t, "D2_center_roblox": r3((hmn + hmx) / 2),
+        stats.update({"tag": tag, "D2_tris": tris(h), "D2_thickness": a.hull_t, "hull_min": a.hull_min, "hull_big": a.hull_big, "D2_center_roblox": r3((hmn + hmx) / 2),
                       "D2_size_roblox": [round(hmx.x - hmn.x, 4), round(hmx.z - hmn.z, 4), round(hmx.y - hmn.y, 4)]})
         export_obj(h, os.path.join(a.out, "%s_%s.obj" % (name, tag)))
         if a.preview:
