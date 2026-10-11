@@ -1044,6 +1044,9 @@ for p in parts:
         p["name"], p["shape"], *p["size"], OX + x, OY + z, OZ - y, *X, *Y, p["mat"]))
 L.append('local d = Instance.new("Attachment"); d.Name = "DoorFront"; d.Parent = house:FindFirstChild("FloorInside"); '
          'd.WorldPosition = Vector3.new(%.3f, %.3f, %.3f)' % (OX + CXD, OY + Z0 / 2, OZ - (YF + DOOR_W / 2 + 2.5)))
+L.append('do local CS = game:GetService("CollectionService"); for _, q in house:GetDescendants() do if q:IsA("BasePart") then '
+         'for _, pt in {"^StepLow", "^StepTop", "^Step%d", "^FloorInside", "^FloorStorey", "^RoofDeck", "^Plinth", "_Slab$"} do '
+         'if string.match(q.Name, pt) then CS:AddTag(q, "WalkGround"); break end end end end end')   # walkable parts (10/12)
 L.append('local n = 0; for _, q in house:GetDescendants() do if q:IsA("BasePart") then n += 1 end end')
 L.append('return "%s skeleton built: " .. n .. " parts"' % NAME)
 os.makedirs(os.path.dirname(os.path.abspath(OUT)), exist_ok=True)
