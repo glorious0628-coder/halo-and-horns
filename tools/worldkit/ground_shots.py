@@ -132,7 +132,31 @@ def door_spec():
     return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
 
 
-shots = door_spec() if "--doors" in sys.argv else spec()
+def review2_spec():
+    """--review2 (검수 10/11 밤, plan v2 고침 뒤): ground, roads and heights of the fixed plan"""
+    B = {b["id"]: b for b in PLAN["buildings"]}
+    cat, look = B["Cathedral"], B["Tower_Lookout"]
+    b4 = bridge["B4"]["at"]
+    out = [
+        ("r2_01_gate_eye", ab(0, 6, -343), ab(cat["x"], 40, cat["z"])),
+        ("r2_02_plaza_eye", g(*toward(fx, fz, 0, -420, 50), 4.5), g(fx, fz, 3.0)),
+        ("r2_03_plaza_high", g(fx + 46, fz + 46, 58), g(fx, fz, 0)),
+        ("r2_04_stairs_low", g(30, -625, 8), g(80, -675, 4)),
+        ("r2_05_stairs_mid", g(112, -668, 6), g(40, -686, 4)),
+        ("r2_06_stairs_top", g(70, -724, 8), g(40, -640, 0)),
+        ("r2_07_stairs_side", g(150, -640, 42), g(70, -680, 0)),
+        ("r2_08_cliff_tiers", g(118, -598, 26), g(210, -660, 0)),
+        ("r2_09_cliff_lookout_lane", g(198, -700, 8), g(218, -772, 4)),
+        ("r2_10_lookout_to_cathedral", ab(look["x"] - 5, look["ground_y"] + 41, look["z"]), ab(cat["x"], cat["ground_y"] + 20, cat["z"])),
+        ("r2_11_lookout_yard", g(205, -800, 6), ab(cat["x"], cat["ground_y"] + 30, cat["z"])),
+        ("r2_12_garden_B4", g(b4[0] + 22, b4[1] + 16, 8), g(b4[0], b4[1], 0)),
+        ("r2_13_pads", ab(0, 34, -398), ab(0, 0, -357)),
+        ("r2_14_top", ab(CX, 540, CZ + 2), ab(CX, 0, CZ)),
+    ]
+    return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
+
+
+shots = door_spec() if "--doors" in sys.argv else review2_spec() if "--review2" in sys.argv else spec()
 only = [a for a in sys.argv[1:] if not a.startswith("--")]
 if only:
     shots = [s for s in shots if any(s["name"].startswith(o) for o in only)]
