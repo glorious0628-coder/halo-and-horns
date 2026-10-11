@@ -9,7 +9,7 @@ Reads docs/design/halo_plan_v2_2026-10-11.json and rasterizes it on a 4-stud gri
   * the stream: a channel 2 below its own falling profile, filled with water; pools; the sea outside the land
   * the underside: per cell a rock depth (cone from the sea ring's outer rim + hashed stalactites) -> data "und"
 Then writes build/wk/halo_blockout_apply.lua = tools/worldkit/halo_blockout.luau with the data filled in.
-usage: py tools/halo_blockout.py [--mode apply|remove|plan] [--offset X,Z]
+usage: py tools/halo_blockout.py [--mode apply|terrain|remove|plan] [--offset X,Z]   (terrain: Terrain only, HaloV2 kept)
 """
 import argparse
 import json
@@ -25,7 +25,7 @@ OUT = os.path.join(ROOT, "build", "wk", "halo_blockout_apply.lua")
 CELL = 4
 X0, X1 = -212, 212  # set from the plan's land in main() (③ 3차: the town grew 1.5x); north edge Z0 stays at the gate
 Z0, Z1 = -324, -712  # north edge (gate side) .. south edge
-EDGE = 32  # grid margin round the land: the 20-stud sea ring + its rim + air
+EDGE = 32  # grid margin round the land: the 16-stud sea ring + its 16-stud rim (2차 10/11)
 HOFF = 20  # stored height = round(y) + HOFF
 ALPH = "".join(chr(c) for c in range(48, 48 + 80) if chr(c) not in "\\\"'`[]")  # safe chars
 # material codes
@@ -39,17 +39,22 @@ DIST_MAT = {"training": "dirt", "arrival": "grass"}
 PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
 CLIFF_Z = -760  # rock lip on the south shore
-SEA_R = 5  # sea ring width in cells (20 studs) round the coast
-# pointed floating-rock underside (10/11 검수): per cell the rock depth in studs that hangs below the ground / ring floor
-UND_K = 0.9  # depth = edge distance (studs) * UND_K (a cone), +-UND_JIT random shake
-UND_MAX = 70  # cone cap in studs
-UND_JIT = 0.15
-UND_STAL_P = 0.045  # a cell is a stalactite when its hash is below this ...
-UND_STAL_MIN_D = 24  # ... and it is farther than this (studs) from the edge
-UND_STAL_ADD = (10, 28)  # stalactite adds 10..28 studs; the 4 neighbours get UND_STAL_NB of that
-UND_STAL_NB = 0.4
-UND_CAP = UND_MAX + 28  # hard cap (studs)
-UND_UNIT = 2  # one ALPH char = 2 studs of depth (the Luau reads D.und_unit)
+SEA_R = 4  # sea ring width in cells (16 studs) round the coast (2차 10/11: was 5; the rim beyond it is RIM_W cells)
+RIM_W = 4  # rock rim cells outside the water: 2 cells showed see-through holes at distance (terrain LOD) -> 4 (16 studs)
+# pointed floating-rock underside (10/11 검수; 2차 10/11 17:10: the cone capped at 70 left a flat bottom with an even comb of
+# short spikes -> longer toward the middle, a few big spikes + medium + small ones at uneven lengths and spacing)
+UND_CENTER = 105  # base depth in studs at the farthest-from-edge cell: UND_CENTER * dn ** UND_POW (dn = edge distance / max)
+UND_POW = 0.9
+UND_WOB = 0.22  # low-frequency wobble of the base (+-)
+UND_JIT = 0.12  # per-cell shake
+UND_BIG = dict(n=6, min_dn=0.35, gap=90, L=(50, 110), R=(22, 36))  # a few big spikes (studs)
+UND_MED = dict(n=22, min_dn=0.12, gap=34, L=(16, 42), R=(9, 16))
+UND_STAL_P = 0.05  # small: a cell is a stalactite when its hash is below this ...
+UND_STAL_MIN_D = 12  # ... and it is farther than this (studs) from the edge
+UND_STAL_ADD = (5, 16)  # small stalactite adds 5..16 studs; the 4 neighbours get UND_STAL_NB of that
+UND_STAL_NB = 0.35
+UND_UNIT = 3  # one ALPH char = 3 studs of depth (the Luau reads D.und_unit)
+UND_CAP = 72 * UND_UNIT  # hard cap (studs), ALPH has 74 chars
 
 
 def hash01(r, c, seed):
@@ -92,16 +97,47 @@ def underside(active, rows, cols):
                     if nd < dist[rr][cc]:
                         dist[rr][cc] = nd
                         heapq.heappush(pq, (nd, rr, cc))
+    dmax = max((dist[r][c] for r in range(rows) for c in range(cols) if active[r][c]), default=1.0) or 1.0
+    ph = [hash01(0, 0, 40 + i) * 6.2832 for i in range(3)]
     und = [[0.0] * cols for _ in range(rows)]
-    extra = [[0.0] * cols for _ in range(rows)]
     for r in range(rows):
         for c in range(cols):
             if not active[r][c]:
                 continue
-            d_st = (dist[r][c] - 0.5) * CELL
-            base = min(UND_MAX, d_st * UND_K) * (1.0 + UND_JIT * (2.0 * hash01(r, c, 1) - 1.0))
-            und[r][c] = base
-            if hash01(r, c, 2) < UND_STAL_P and d_st > UND_STAL_MIN_D:
+            dn = dist[r][c] / dmax
+            x, z = c * CELL, -r * CELL
+            wob = (math.sin(x / 53.0 + ph[0]) + math.sin(z / 41.0 + ph[1]) + math.sin((x + z) / 67.0 + ph[2])) / 3.0
+            und[r][c] = UND_CENTER * dn ** UND_POW * (1.0 + UND_WOB * wob) * (1.0 + UND_JIT * (2.0 * hash01(r, c, 1) - 1.0))
+    # big and medium spikes: candidates in hash order, kept apart by `gap`, pointed cones of radius R adding up to L
+    cand = sorted(((hash01(r, c, 7), r, c) for r in range(rows) for c in range(cols) if active[r][c]))
+    spikes, counts = [], []
+    for k, spec in enumerate((UND_BIG, UND_MED)):
+        got = []
+        for _, r, c in cand:
+            if len(got) >= spec["n"]:
+                break
+            if dist[r][c] / dmax < spec["min_dn"]:
+                continue
+            if any(math.hypot((r - r2) * CELL, (c - c2) * CELL) < spec["gap"] for r2, c2, _, _ in spikes):
+                continue
+            L = spec["L"][0] + (spec["L"][1] - spec["L"][0]) * hash01(r, c, 11 + k)
+            R = spec["R"][0] + (spec["R"][1] - spec["R"][0]) * hash01(r, c, 13 + k)
+            R = min(R, dist[r][c] * CELL)  # never wider than the rock above it
+            got.append((r, c, L, R))
+            spikes.append((r, c, L, R))
+        counts.append(len(got))
+    for r0, c0, L, R in spikes:
+        n = int(R // CELL) + 1
+        for r in range(r0 - n, r0 + n + 1):
+            for c in range(c0 - n, c0 + n + 1):
+                if 0 <= r < rows and 0 <= c < cols and active[r][c]:
+                    t = math.hypot((r - r0) * CELL, (c - c0) * CELL) / max(R, 1.0)
+                    if t < 1.0:
+                        und[r][c] += L * (1.0 - t) ** 1.6
+    extra = [[0.0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            if active[r][c] and hash01(r, c, 2) < UND_STAL_P and (dist[r][c] - 0.5) * CELL > UND_STAL_MIN_D:
                 add = UND_STAL_ADD[0] + (UND_STAL_ADD[1] - UND_STAL_ADD[0]) * hash01(r, c, 3)
                 extra[r][c] += add
                 for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
@@ -112,6 +148,7 @@ def underside(active, rows, cols):
         for c in range(cols):
             if active[r][c]:
                 und[r][c] = max(0.0, min(UND_CAP, und[r][c] + extra[r][c]))
+    print(f"[blockout] underside spikes big {counts[0]} medium {counts[1]}, dmax {dmax * CELL:.0f} studs")
     return und
 
 
@@ -362,9 +399,9 @@ def main():
             if MAT[r][c] == "sea" and DL[r][c] is not None:
                 x, z = cxz(r, c)
                 ring = min(SEA_R, int((-326 - z) // CELL))
-                if DL[r][c] > ring:
+                if ring == 0 or DL[r][c] >= ring + RIM_W:
                     SEA_TIER[r][c] = 4
-                elif DL[r][c] == ring:
+                elif DL[r][c] >= ring:  # 2차: the rim is RIM_W cells wide so no water face shows from the side
                     SEA_TIER[r][c] = 3
                 elif z > BEACH_Z and abs(x) > 24 and DL[r][c] <= 3:
                     SEA_TIER[r][c] = 1
@@ -447,6 +484,37 @@ def main():
     # pointed rock underside: depth under every cell that is land or inside the sea ring (SEA_TIER != 4)
     active = [[MAT[r][c] != "sea" or SEA_TIER[r][c] != 4 for c in range(cols)] for r in range(rows)]
     UND = underside(active, rows, cols)
+    # 2차 10/11: a low beach cell (water on top in the Luau) next to the open sky (sea tier 4, the entry neck where the ring
+    # narrows to nothing) showed a thin water edge: keep those cells dry (surface 0.5 above the -1.2 water)
+    dry = 0
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] != "sea" and H[r][c] is not None and H[r][c] < 0.5:
+                if any(0 <= r + dr < rows and 0 <= c + dc < cols and MAT[r + dr][c + dc] == "sea" and SEA_TIER[r + dr][c + dc] == 4
+                       for dr in (-1, 0, 1) for dc in (-1, 0, 1)):
+                    H[r][c] = 0.5
+                    dry += 1
+    print(f"[blockout] dry edge cells {dry}")
+    # 2차 10/11: the deep ring water (floor -24) must never sit beside air under the shore. Land within 3 cells (8 neighbours)
+    # of ring water gets rock down to the ring's bottom (-30, the Luau RIM_DOWN) + 4; the ring cells do it in the Luau
+    near = [[None] * cols for _ in range(rows)]
+    q = deque()
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] == "sea" and SEA_TIER[r][c] in (0, 1, 2):
+                near[r][c] = 0
+                q.append((r, c))
+    while q:
+        r, c = q.popleft()
+        if near[r][c] >= 3:
+            continue
+        for dr in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                rr, cc = r + dr, c + dc
+                if 0 <= rr < rows and 0 <= cc < cols and near[rr][cc] is None and MAT[rr][cc] != "sea":
+                    near[rr][cc] = near[r][c] + 1
+                    q.append((rr, cc))
+                    UND[rr][cc] = min(UND_CAP, max(UND[rr][cc], H[rr][cc] - 2 + 30 + 4 + 6 * (3 - near[rr][cc])))
     und_max = max(max(row) for row in UND)
     print(f"[blockout] underside depth max {und_max:.1f} studs (cap {UND_CAP}), unit {UND_UNIT}")
 

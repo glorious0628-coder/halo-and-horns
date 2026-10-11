@@ -1,7 +1,7 @@
 """ground_shots.py (이미지 생성 1, 2026-10-11): WorldKit photos of the walking-ground skeleton (plaza, roads, stairs, yards, bridges)
 and of the floating island's underside, in the C2c day light (tools/halo_light_sim.luau; restored in a finally block).
 Window restore = a screen step: only after 검수 "전달함, 시작".
-usage: py tools/worldkit/ground_shots.py [name-prefix ...] [--prep] [--nolight]      (--prep: only print the shot list)
+usage: py tools/worldkit/ground_shots.py [name-prefix ...] [--prep] [--nolight] [--nobloom]      (--prep: only print the shot list)
 Output: art/review/world/halo_v2/ground/<name>.jpg   (SK_OUT overrides the folder)"""
 import ctypes, json, math, os, shutil, subprocess, sys, time
 
@@ -41,20 +41,23 @@ def spec():
     out.append(("ground_plaza_eye", g(sx, sz, 4.5), g(fx, fz, 3.0)))
     out.append(("ground_plaza_high", g(fx + 46, fz + 46, 58), g(fx, fz, 0)))
     out.append(("ground_main_arrival", ab(0, 6, -343), g(8, -440, 2)))
-    out.append(("ground_main_cathedral_stairs", g(44.2, -650.0, 5), g(74, -675, 6)))      # Stair_main_83..87 climb
+    out.append(("ground_main_cathedral_stairs", g(29.0, -637.0, 14), g(74, -675, 8)))     # Stair_main_83..87 climb (2차: back + up, was in the cliff)
     out.append(("ground_castle_stairs", g(-140.2, -475.3, 5), g(-147, -510, 6)))           # Stair_to_castle_2..5
     out.append(("ground_castle_court", g(-160 + 26, -522 + 26, 10), g(-160, -522, 1)))
     out.append(("ground_bridge_B1", g(bridge["B1"]["at"][0] + 20, bridge["B1"]["at"][1] + 20, 7), g(bridge["B1"]["at"][0], bridge["B1"]["at"][1], 1)))
     out.append(("ground_bridge_B3_stairs", g(-30, -556, 12), g(-66, -572, 8)))
     out.append(("ground_stones_cliff", g(150, -615, 7), g(140, -628, 0)))
-    out.append(("ground_hill_yard", g(yard["hill_yard"]["at"][0] + 16, yard["hill_yard"]["at"][1] + 14, 8), g(yard["hill_yard"]["at"][0], yard["hill_yard"]["at"][1], 0)))
+    hx, hz = yard["hill_yard"]["at"]
+    cx_, cz_ = toward(hx, hz, fx, fz, 30)  # 2차: from the plaza side (was inside a house box)
+    out.append(("ground_hill_yard", g(cx_, cz_, 16), g(hx, hz, 0)))
     out.append(("ground_top", ab(CX, 540, CZ + 2), ab(CX, 0, CZ)))
     out.append(("under_south", ab(CX - 20, -50, LZ0 - 340), ab(CX, -45, CZ)))
     out.append(("under_east", ab(LX1 + 420, -50, CZ), ab(CX, -45, CZ)))
     out.append(("under_diag", ab(LX1 + 280, -25, LZ0 - 260), ab(CX, -45, CZ)))
     out.append(("under_below", ab(CX, -330, CZ), ab(CX, -45, CZ)))
     out.append(("under_side_close", ab(LX1 + 110, -40, CZ + 80), ab(LX1 - 40, -50, CZ + 80)))
-    return [dict(name=n, cam=c, look=l) for n, c, l in out]
+    pull = ("ground_main_cathedral_stairs", "ground_hill_yard")  # only these get the in-front-of-the-wall pull
+    return [dict(name=n, cam=c, look=l, clear=n in pull) for n, c, l in out]
 
 
 LUAU = r'''
@@ -73,8 +76,26 @@ local function pt(q)
 	if q.abs then return { q.x, q.y, q.z } end
 	return { q.x, gy(q.x, q.z) + q.h, q.z }
 end
+-- 2차 10/11: a camera behind a wall / inside the cliff is pulled toward the look point, in front of the first hit
+local all = RaycastParams.new()
+all.FilterType = Enum.RaycastFilterType.Exclude
+local mk = workspace:FindFirstChild("HaloV2") and workspace.HaloV2:FindFirstChild("Markers")
+all.FilterDescendantsInstances = mk and { mk } or {}
+all.IgnoreWater = true
+local function clear(cam, look)
+	local a = Vector3.new(look[1], look[2] + 1.5, look[3])
+	local d = Vector3.new(cam[1], cam[2], cam[3]) - a
+	local h = workspace:Raycast(a, d, all)
+	if not h then return cam end
+	local p = h.Position - d.Unit * 2
+	return { p.X, p.Y, p.Z }
+end
 local shots = {}
-for _, sp in SPEC do table.insert(shots, { name = sp.name, cam = pt(sp.cam), look = pt(sp.look) }) end
+for _, sp in SPEC do
+	local c, l = pt(sp.cam), pt(sp.look)
+	if sp.clear then c = clear(c, l) end
+	table.insert(shots, { name = sp.name, cam = c, look = l })
+end
 return game:GetService("HttpService"):JSONEncode(shots)
 '''
 
@@ -129,6 +150,8 @@ try:
         sim = open("tools/halo_light_sim.luau", encoding="utf-8").read()
         sim = sim.replace('"%s"', '"C2c"', 1).replace('"%s"', '"day"', 1)
         print(run_luau(sim).strip()[:200])
+        if "--nobloom" in sys.argv:  # 2차: check whether a white blur is the C2c bloom (restore puts the bloom back)
+            print(run_luau('local b = game.Lighting:FindFirstChild("ImgDevBloom") if b then b.Enabled = false end return "bloom off"'))
     u.ShowWindow(h, 4)
     time.sleep(1.5)
     for i, s in enumerate(shots):
@@ -136,7 +159,7 @@ try:
         if os.path.exists(src):
             os.remove(src)
         r = mcp("screen_capture", {"capture_id": s["name"], "camera_position": s["cam"], "look_at_position": s["look"]})
-        dst = os.path.join(OUT, s["name"] + ".jpg")
+        dst = os.path.join(OUT, s["name"] + ("_nobloom" if "--nobloom" in sys.argv else "") + ".jpg")
         if os.path.exists(src):
             shutil.copy(src, dst)
             os.remove(src)

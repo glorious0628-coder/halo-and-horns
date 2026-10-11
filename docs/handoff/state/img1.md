@@ -35,6 +35,13 @@
   - 앞으로: 사진 판정 → 고침, 대성당·빛 성 등은 이미지 생성 3, 5단계 재료(섬 아랫면 바위·흰 바위·디딤돌) 아직.
   - 보고처: **새 검수 = local_94cfa4bc-942c-4ac1-97a4-e9f609739523** (이전 local_78581314는 물러남).
 
+## 10/11 17:15 새 검수(local_d522c0f1) 차례 — 사진 16장 + 섬 아랫면 2차
+- api/skeleton-ground·island-underside 내용 = main(daf40946 스쿼시), 브랜치 삭제 가능. WorldKit은 `build/WorldKit.rbxlx`(15:20 저장) 열어서 다 있음(HaloV2 Buildings 29·Ground 1440) — 다시 지을 필요 없었음. 열 때 `Start-Process <Studio exe> WorldKit.rbxlx -WindowStyle Minimized`, 사진 도구는 SW_SHOWNOACTIVATE라 앞으로 안 끌어옴.
+- `py tools/halo_blockout.py --mode terrain` 새로 만듦: 지형만 다시 씀(HaloV2 회색 상자·골격·Ground 파트 그대로). apply는 HaloV2를 지우므로 쓰면 skeleton_civic_run·skeleton_ground_run도 다시.
+- 섬 2차(검수 ③): 물 띠 4칸(16) + 바위 테 4칸(16, 2칸은 멀리서 LOD 구멍), 테 위 물보다 2.8~5.8 높게, 띠·물가 3칸 땅은 -30 아래까지 바위. 아랫면 = 가운데로 갈수록 깊게(105·dn^0.9, 흔들림) + 큰 뾰족 6 + 중간 22 + 작은 것, 깊이 최대 216(VY0 -232, UND_UNIT 3). 옆 물-공기 맞닿음 1454 → 14(남은 14는 시냇물 윗면이 둑보다 1칸 높음, 섬 안쪽, 옛날부터).
+- 사진 자리: hill_yard(광장 쪽 30, 높이 16), cathedral_stairs(뒤·위로) + 벽 앞으로 당기기(두 장만). `--nobloom` 추가.
+- 원인 찾음: plaza_high 흰 얼룩 = 지형 포장(Concrete→GE_HaloPave, r40)이 분수 원판 파트(r40, 두께 0.5, 윗면 10.15) 사이로 솟음(블룸 아님, nobloom 사진도 같음). bridge_B1 검은 덩어리 = 훈련장 지형 Ground + MaterialVariant GE_Ground가 C2c 빛에서 거의 검게(재질 빠진 것 아님).
+
 ## 폭포 물줄기 (5단계 재료)
 - High 최종 업로드 `rbxassetid://111806947888357` (`art/ui/Halo_WaterfallStreaks.png`, approved.json·asset_ids.json 기록, 5 크레딧)
 - `tools/worldkit/halo_waterfx.luau` STREAK 넣음, 경사 물 램프 따라 착지점(9/9), 거품 원판 → 둥근 물보라 파티클, 띠 넓고 밝게. WorldKit에 적용됨(옛 지형 위).

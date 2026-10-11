@@ -5,6 +5,7 @@
 --         shells at real size with door holes (floors stay Terrain: the code only counts Terrain and Bridge_* as ground),
 --         bridges (Workspace.HaloV2.Bridges.Bridge_B1..), fixed-point markers and avatar-size blocks. Re-run = rebuild.
 -- remove: deletes Workspace.HaloV2, puts the old Terrain region and the old decor back.
+-- terrain: rewrites only the Terrain of the box (keeps HaloV2: grey boxes, skeletons, Ground parts).
 -- plan  : counts only.
 if string.find(game.Name, "GoodEvil") or game.PlaceId == 81671223175574 then error("main Studio: halo_blockout is WorldKit-only") end
 if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 실행하세요.") end
@@ -146,11 +147,14 @@ for _, fname in { "Gates", "Landmarks" } do
 		end
 	end
 end
-if root then root:Destroy() end
-root = Instance.new("Folder")
-root.Name = "HaloV2"
-root:SetAttribute("Why", "A23-121 3단계 회색 상자: docs/design/halo_plan_v2_2026-10-11.json")
-root.Parent = workspace
+-- terrain: rewrite only the Terrain (sea ring / rim / underside); HaloV2 (grey boxes, skeletons, Ground parts) stays
+if MODE ~= "terrain" then
+	if root then root:Destroy() end
+	root = Instance.new("Folder")
+	root.Name = "HaloV2"
+	root:SetAttribute("Why", "A23-121 3단계 회색 상자: docs/design/halo_plan_v2_2026-10-11.json")
+	root.Parent = workspace
+end
 
 -- terrain: clear the box, sea everywhere, then every land column written voxel by voxel (WriteVoxels on the 4-stud grid).
 -- FillBlock with 2-stud layers inside 4-stud voxels left the surface 2 studs off (y=0 land sank to -2.3 under the sea,
@@ -164,11 +168,14 @@ local seaY0 = -24 -- the deep sea floor (dark basalt)
 -- sea tiers from halo_blockout.py: 0 deep, 1 sand shelf off the north beach, 2 cliff foot, 3 the ring's rock rim (dry, just
 -- above the water), 4 nothing (outside the ring the islands float: no water, no base)
 local SEA_FLOOR = { [0] = { -24, Enum.Material.Basalt }, [1] = { -6, Enum.Material.Sand }, [2] = { -14, Enum.Material.Basalt },
-	[3] = { -0.4, Enum.Material.Rock } }
+	[3] = { 1.6, Enum.Material.Rock } }
+-- 2차 10/11 (검수: from the side the sea ring hung as a blue water wall): the rim is 4 cells wide (2 showed LOD holes), stands 1.8..4.8 above the
+-- water (uneven per cell) and its rock goes down past the sea floor into the underside, so the water ends inside rock
+local RIM_DOWN = seaY0 - 6
 local A = D.alph
 local idx = {}
 for i = 1, #A do idx[string.sub(A, i, i)] = i - 1 end
-local VY0, VY1 = -112, 96 -- -112: the deepest underside stalactite (ground ~ -2, depth <= 98) stays inside
+local VY0, VY1 = -232, 96 -- -232: the deepest underside spike (ground ~ 0, depth <= 216, 2차 10/11) stays inside
 local NY = (VY1 - VY0) / 4
 local NX, NZ = D.cols, D.rows
 local zMin = D.z0 - NZ * D.cell
@@ -201,6 +208,8 @@ for ix = 1, NX do
 				und = 0
 			else
 				land, top, wtop = tier[1] - SURF, tier[2], (k ~= 3) and WATER_TOP or nil
+				if k == 3 then land += ((ix * 7 + iz * 13) % 4) * 1.0 end -- uneven rocky top
+				und = land - RIM_DOWN + und -- every ring cell (water floor or rim) goes down past the sea floor
 			end
 		else
 			local y = idx[string.sub(D.h[r], ix, ix)] - D.hoff
@@ -237,6 +246,7 @@ for ix = 1, NX do
 	end
 end
 T:WriteVoxels(vreg, 4, mats, occs)
+if MODE == "terrain" then return "halo_blockout terrain only: " .. cells .. " land cells, VY0 " .. VY0 end
 local runs = NX * NZ
 
 -- grey building shells: walls 1 thick, a door hole on the door face, floor slabs for upper floors (with a stair hole),
