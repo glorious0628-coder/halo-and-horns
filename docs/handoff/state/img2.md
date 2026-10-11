@@ -1,5 +1,6 @@
 # 이미지 생성 2 — 인계 (2026-10-11 저녁, 검수 지시로 비움)
 ## 지금 상태
+- (10/11 밤) 무기 v2 27장 + 뿔 전사 최종 3장 Medium 완료, 시트 5장·표(`docs/design/weapon_t13_candidates_2026-10-11.md` v2 절) → 검수 보고함. 검수가 고른 칸만 High(5×N). Firefly 품질 선택기: `p.value='medium'`+change 이벤트로 바꿈(클릭 선택은 안 먹음; 확인은 화면 라벨 '중간').
 - 벤치 B left2 High 1장 완료·푸시(8326341) — 검수 판정 대기.
 - 무기 9종×T1~T3 Medium 27장 생성·푸시(247ff89) — 검수가 고를 칸 대기(고른 것만 나중에 High 5크레딧). 표 `docs/design/weapon_t13_candidates_2026-10-11.md`, 시트 `art/review/s2/weapons_t13_*.jpg`.
 - 보고는 검수 `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`(send_message, 인자 session_id).

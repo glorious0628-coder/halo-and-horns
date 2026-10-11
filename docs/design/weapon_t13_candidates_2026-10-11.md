@@ -42,3 +42,10 @@
 | Neutral_PetTamer T1 | `art/out/s2/weapons_t13/Weapon_Neutral_PetTamer_T1.png` | `art/prompts/Weapon_Neutral_PetTamer_T1.txt` | `Weapon_Tamer_T1_cut.png` | 통과(호루라기 가지) |
 | Neutral_PetTamer T2 | `art/out/s2/weapons_t13/Weapon_Neutral_PetTamer_T2.png` | `art/prompts/Weapon_Neutral_PetTamer_T2.txt` | `Weapon_Tamer_T2_cut.png` | 통과(청록 리본·발바닥 장식) |
 | Neutral_PetTamer T3 | `art/out/s2/weapons_t13/Weapon_Neutral_PetTamer_T3.png` | `art/prompts/Weapon_Neutral_PetTamer_T3.txt` | `Weapon_Tamer_T3_cut.png` | 통과(쇠 공 끝·호루라기) |
+
+## v2 (10/11 밤): HQ 앞면을 스타일 참조로 건 Medium 재생성 — 27칸 + 뿔 전사 최종 3장
+- v1(참조 없음)은 그림체가 HQ와 안 맞아 보류. v2 = 같은 진영·직업 HQ 앞면을 '스타일 참조만'으로 걸고 모양은 v1 유지(뿔 전사는 한손검이라 빛 성기사 HQ 검을 참조, 연금술사는 펫조련사 HQ 지팡이 참조). 단계 문구: T1 금·금속 거의 없음 / T2 나무·천 / T3 둔한 강철·작은 장식.
+- 대장장이 T3: 금 띠·고리 뺌(쇠 띠만). 연금술사 T1~T3: 지팡이 하나(병은 위에 달림/끼움, 옆에 따로 없음).
+- 파일 `art/out/s2/weapons_t13_v2/Weapon_<키>_T<n>_v2.png`, 프롬프트 `art/prompts/Weapon_<키>_T<n>_v2.txt`, 생성기 `tools/_weapon_t13_v2_prompts.py`, 시트 `tools/_weapon_t13_v2_sheets.py`.
+- 시트 `art/review/s2/weapons_t13v2_{warrior,mage,archer,neutral}.jpg`, 뿔 전사 최종 `weapons_t13v2_berserker_final.jpg`(a 잎모양 넓은 날 / b 톱니 곧은 날+주황 보석 / c 두꺼운 식칼형). 내 추천 **b**(HQ의 톱니·용암 금·뿔 가드 결, 한손검).
+- 100% 크롭(대장장이 T2 머리·연금술사 T1 병·뿔 최종 b 가드): 조각 깨짐·떠 있는 조각·글자·레이 없음. 모두 통과 판정(내 눈). Halo_Paladin_T1_v2 한 장만 실수로 High(5크레딧)로 나감, 나머지 29장 Medium(0).
