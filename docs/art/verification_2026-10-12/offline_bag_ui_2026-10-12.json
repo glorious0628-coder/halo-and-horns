@@ -1,5 +1,5 @@
 {
-  "checks": 128,
+  "checks": 130,
   "failed": 0,
   "mutations": [
     {
@@ -179,6 +179,11 @@
     },
     {
       "name": "a count of 1 is written",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no letter for an icon without art",
       "applied": true,
       "caught": true
     },

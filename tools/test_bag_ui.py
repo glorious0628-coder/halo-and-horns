@@ -89,6 +89,8 @@ MUTATIONS = [
     ("BAG", "no empty slots", "\tfor i = #list + 1, total do\n", "\tfor i = 1, 0 do\n"),
     ("BAG", "no worn row", "\tif S.Tab == \"Gear\" then top = drawWorn(area, all, cols) end\n", ""),
     ("BAG", "a count of 1 is written", "\tif cell.Count > 1 then\n", "\tif cell.Count > 0 then\n"),
+    ("BAG", "no letter for an icon without art", "\t\telseif type(mark) == \"table\" and type(mark.Text) == \"string\" then\n",
+     "\t\telseif false then\n"),
     ("BAG", "leaving a tab never clears its new things", "\t\tmarkSeen(S.Tab)\n\t\tS.Mode, S.Result = nil, nil\n", "\t\tS.Mode, S.Result = nil, nil\n"),
     ("BAG", "the fight tag never repaints", "local parts = { inCombat() and \"c\" or \"\",", "local parts = { \"\","),
     ("BAG", "Drink sends nothing", "if ok and def and send(\"UsePotion\", nil, def.Kind) then", "if false then"),

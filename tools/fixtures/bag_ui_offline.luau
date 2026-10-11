@@ -234,6 +234,7 @@ local UIKit = {
 		return b
 	end,
 	ItemIcon = function(id, props)
+		if id == "Petal" then return nil end -- an item whose icon is not drawn yet (UiSandbox 10/12)
 		local o = artObj("ImageLabel", "Icon:" .. tostring(id), props)
 		o.ItemId = id
 		return o
@@ -411,7 +412,7 @@ check(lineWith(v, "From: ") == nil, "no defeated monster that drops it: no From 
 v = detail(nil, { Mode = { Item = "Enh70" } })
 check(lineWith(v, "Pick a weapon.") and action(v, "Cancel") and not action(v, "Enhance"), "a scroll step: pick a weapon, Cancel")
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 } })
-check(lineWith(v, "+3 → +4\n70% chance") and action(v, "Enhance").Enabled, "enhance confirm: before → after + the chance before sending",
+check(lineWith(v, "\n+3 → +4 · 70% chance") and action(v, "Enhance").Enabled, "enhance confirm: before → after + the chance before sending",
 	v.Lines[1] and v.Lines[1].Text)
 check(lineWith(v, "Weapons never break") ~= nil, "a +1 or more weapon: a fail may drop it one step (safe)")
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 1 } })
@@ -558,5 +559,15 @@ find(root, "Cell_W:1").OnClick()
 attrs.InCombatUntil = NOW + 5
 update()
 check(find(root, "Act_Equip").Text == "In a fight", "the 0.25 s update shows the fight tag")
+attrs.InCombatUntil = 0
+-- an item with no icon art yet: its name's first letter in its colour, not a blank slot (UiSandbox 10/12)
+BagUI.OnInventory({ Items = { Jelly = 14, Enh70 = 2, Bone = 1, Petal = 6 }, Enhance = { 0, 3, 0, 1 },
+	ItemSeq = { Jelly = 12, Enh70 = 6, PotionHP = 3, Bone = 13, Petal = 14 }, WeaponSeq = { 1, 4, 0, 2 } })
+find(root, "Tab_Material").OnClick()
+local petal = find(root, "Cell_I:Petal")
+check(petal and find(petal, "Letter") and find(petal, "Letter").Text == "F", "no icon art: the first letter (Flower Petal = F)",
+	petal and find(petal, "Letter") and find(petal, "Letter").Text)
+local jelly = find(root, "Cell_I:Jelly")
+check(jelly and find(jelly, "Letter") == nil, "an item with art shows its icon, no letter")
 
 print(string.format("BAG_UI_SUMMARY checks=%d failed=%d", checks, failed))

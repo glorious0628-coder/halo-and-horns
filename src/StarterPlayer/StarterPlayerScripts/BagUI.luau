@@ -53,8 +53,8 @@ local TXT = {
 	PickEnhance = "Pick a weapon.",
 	PickFrom = "Pick the weapon to take + from.",
 	PickTo = "Pick the weapon to get +%d.",
-	ConfirmEnh = "%s +%d → +%d\n%d%% chance",
-	ConfirmMove = "%s +%d → %s +%d\n%d%% chance",
+	ConfirmEnh = "%s\n+%d → +%d · %d%% chance", -- UiSandbox 10/12: "+0 → +1" no longer breaks in the 200 du column
+	ConfirmMove = "%s +%d →\n%s +%d · %d%% chance",
 	FailDown = "A fail may drop it 1 step. Weapons never break!",
 	FailKeep = "Nothing changes on a fail.",
 	SellsFor = "Sells for %s each",
@@ -74,6 +74,7 @@ local L = {
 	Narrow = 4, Wide = 8, -- columns (A23-32: 4 <-> 8 or more)
 	TabH = 40, BarH = 40, RowGap = 8, Round = 38, CoinW = 26,
 	WornCap = 18, -- the worn row's word under each slot
+	WornInset = 6, -- du: the worn row starts this far in, each word reaches this far past its slot (UiSandbox: "Weapo")
 	Big = 84, -- the detail's slot
 	BtnH = 40, QuickW = 46,
 	Size = { Name = 19, Body = 16, Small = 15, Count = 16, Tab = 18 },
@@ -722,8 +723,9 @@ local function colorOf(name)
 	return th.Text
 end
 
--- one approved grade slot (an ImageButton when onClick) with the icon in its Inner box; nil art = UIKit's fallback
-local function slot(parent, gradeId, icon, size, onClick, name)
+-- one approved grade slot (an ImageButton when onClick) with the icon in its Inner box; nil art = UIKit's fallback.
+-- mark = { Text, Color }: what shows when the icon has no art yet (UiSandbox 10/12: Petal / Captain's Badge were blank)
+local function slot(parent, gradeId, icon, size, onClick, name, mark)
 	local kit = ui()
 	local part = gradeId and L.Slot[gradeId] or "SlotEmpty"
 	local box
@@ -740,7 +742,15 @@ local function slot(parent, gradeId, icon, size, onClick, name)
 		local props = { Name = "Icon", Position = UDim2.fromScale(L.Inner.X, L.Inner.Y), Size = UDim2.fromScale(L.Inner.W, L.Inner.H),
 			ScaleType = Enum.ScaleType.Fit, ZIndex = (tonumber(box.ZIndex) or 1) + 1 }
 		local img = kit.ItemIcon(icon, props)
-		if img then img.Parent = box end
+		if img then
+			img.Parent = box
+		elseif type(mark) == "table" and type(mark.Text) == "string" then
+			local letter = string.upper(string.match(mark.Text, "%w") or "?")
+			label(box, letter, math.floor(size * 0.42), typeof(mark.Color) == "Color3" and mark.Color or Color3.new(1, 1, 1),
+				{ Name = "Letter", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+					Size = UDim2.fromScale(L.Inner.W, L.Inner.H), TextXAlignment = Enum.TextXAlignment.Center,
+					TextWrapped = false, ZIndex = props.ZIndex, Style = "Number" })
+		end
 	end
 	return box
 end
@@ -770,12 +780,21 @@ local function corners(box, cell)
 end
 
 local function selectStroke(box)
+	local f = Instance.new("Frame")
+	f.Name = "Picked"
+	f.BackgroundTransparency = 1
+	f.Position = UDim2.fromOffset(3, 3)
+	f.Size = UDim2.new(1, -6, 1, -6)
+	f.ZIndex = (tonumber(box.ZIndex) or 1) + 4
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0.14, 0)
+	c.Parent = f
 	local st = Instance.new("UIStroke")
-	st.Name = "Picked"
 	st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	st.Color = colorOf("Gold")
 	st.Thickness = 3
-	st.Parent = box
+	st.Parent = f
+	f.Parent = box
 end
 
 local function clear(frame)
@@ -825,6 +844,7 @@ local function drawWorn(parent, all, cols)
 	local frame = Instance.new("Frame")
 	frame.Name = "Worn"
 	frame.BackgroundTransparency = 1
+	frame.Position = UDim2.fromOffset(L.WornInset, 0)
 	frame.Size = UDim2.new(0, gridW(cols) - L.Scroll, 0, L.Cell + L.WornCap)
 	frame.Parent = parent
 	local weapon = nil
@@ -835,7 +855,7 @@ local function drawWorn(parent, all, cols)
 		local x = (i - 1) * (L.Cell + L.Gap)
 		local box
 		if kind == "Weapon" and weapon then
-			box = slot(frame, weapon.Grade, weapon.Icon, L.Cell, function() tap(weapon) end, "Worn" .. kind)
+			box = slot(frame, weapon.Grade, weapon.Icon, L.Cell, function() tap(weapon) end, "Worn" .. kind, { Text = weapon.Name })
 			corners(box, { Count = 1, Plus = weapon.Plus, Equipped = false })
 			if S.Sel == weapon.Key and not S.Mode then selectStroke(box) end
 		else
@@ -845,7 +865,7 @@ local function drawWorn(parent, all, cols)
 		-- the word fits its own column (UiSandbox 10/12: fixed 15 du words ran into each other): scaled down to the
 		-- name tag floor (12 px), never past the slot + the gap
 		label(frame, tx(TXT.Worn, kind), L.Size.Small, colorOf("Sub"), { Name = "WornCap" .. kind,
-			Position = UDim2.fromOffset(x - math.floor(L.Gap / 2), L.Cell + 2), Size = UDim2.fromOffset(L.Cell + L.Gap, L.WornCap - 2),
+			Position = UDim2.fromOffset(x - L.WornInset, L.Cell + 2), Size = UDim2.fromOffset(L.Cell + 2 * L.WornInset, L.WornCap - 2),
 			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, TextScaled = true, Style = "NameTag" })
 	end
 	return L.Cell + L.WornCap + L.RowGap
@@ -874,7 +894,8 @@ local function drawGrid(area, all, list, cols)
 	grid.Parent = area
 	VIEW.Grid = grid
 	for i, cell in list do
-		local box = slot(grid, cell.Grade, cell.Icon, L.Cell, function() tap(cell) end, "Cell_" .. cell.Key)
+		local box = slot(grid, cell.Grade, cell.Icon, L.Cell, function() tap(cell) end, "Cell_" .. cell.Key,
+			{ Text = cell.Name, Color = cell.Color })
 		box.LayoutOrder = i
 		corners(box, cell)
 		if S.Mode then
@@ -921,7 +942,7 @@ local function drawDetail(frame, all, picked)
 		order += 1
 		return order
 	end
-	local big = slot(frame, view.Grade, view.Icon, L.Big, nil, "Big")
+	local big = slot(frame, view.Grade, view.Icon, L.Big, nil, "Big", { Text = view.Title, Color = view.Color })
 	big.LayoutOrder = nextOrder()
 	if view.Plus or view.Count then corners(big, { Count = view.Count or 1, Plus = view.Plus or 0 }) end
 	label(frame, view.Title, L.Size.Name, view.Color or colorOf("Text"), { Name = "Name", Size = UDim2.new(1, 0, 0, 0),
