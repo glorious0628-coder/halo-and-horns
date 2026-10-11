@@ -83,6 +83,13 @@ class Source:
         ar = np.linalg.norm(np.cross(B - A, C - A), axis=1) / 2
         le = np.max(np.stack([np.linalg.norm(B - A, axis=1), np.linalg.norm(C - B, axis=1), np.linalg.norm(A - C, axis=1)]), 0)
         self.bad = (le ** 2 / np.maximum(2 * ar, 1e-12) > 12) & (le > 0.2)
+        self.FN = np.cross(B - A, C - A) / np.maximum(2 * ar, 1e-12)[:, None]   # unit face normals
+        self.FC = (A + B + C) / 3
+        self.strict = False                              # True: a ray that finds no accepted face leaves the texel empty
+
+    def skip_where(self, mask):
+        """rays pass through these triangles too (e.g. oblique faces, lumps standing out of a plank surface)"""
+        self.bad = self.bad | mask
 
     def query(self, P, ray=None, back=0.6):
         """P (n, 3) points -> (tri index, barycentric (n, 3)); -1 where nothing was hit"""
@@ -100,7 +107,9 @@ class Source:
                         break
                     o_ = hit[0] + d * 1e-3
                     hit = self.bvh.ray_cast(o_, d, back * 4)
-                if hit[0] is None:
+                if hit[0] is not None and self.bad[hit[2]]:
+                    hit = (None, None, None, None)
+                if hit[0] is None and not self.strict:
                     hit = self.bvh.find_nearest(p)
             else:
                 hit = self.bvh.find_nearest(p)
@@ -225,8 +234,12 @@ def bake(obj, src, size=1024, ray=None, relief=True, pad=4):
         nt /= np.linalg.norm(nt, axis=1, keepdims=True)
         N[rows[ok], cols[ok]] = nt * 0.5 + 0.5
     filled[rows[ok], cols[ok]] = True
+    covered = np.zeros((size, size), bool)
+    covered[rows, cols] = True
     outs = [C, R[..., None].repeat(3, 2), Mt[..., None].repeat(3, 2), N]
-    for _ in range(pad):                                         # bleed past the island edges
+    it = 0
+    while it < pad or ((covered & ~filled).any() and it < 4 * size):   # bleed past the island edges; strict-ray holes
+        it += 1
         acc = [np.zeros_like(o) for o in outs]
         cnt = np.zeros((size, size))
         for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)):

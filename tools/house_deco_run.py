@@ -19,7 +19,8 @@ import os
 import subprocess
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.environ.get("HH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # HH_ROOT: run a private copy of tools/
+TOOLS = os.path.dirname(os.path.abspath(__file__))
 BL = r"C:\Users\glori\Tools\blender-5.2.2-windows-x64\blender.exe"
 ap = argparse.ArgumentParser()
 ap.add_argument("name")
@@ -35,7 +36,7 @@ os.makedirs(ART, exist_ok=True)
 
 
 def blender(script, *args):
-    cmd = [BL, "--background", "--factory-startup", "--python", os.path.join(ROOT, "tools", script), "--"] + list(args)
+    cmd = [BL, "--background", "--factory-startup", "--python", os.path.join(TOOLS, script), "--"] + list(args)
     r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     lines = [l for l in r.stdout.splitlines() if l.startswith("[") and not l.startswith("[gltf") or "Error" in l or "Traceback" in l]
     print("\n".join("  " + l for l in lines[-40:]), flush=True)
@@ -47,9 +48,9 @@ def blender(script, *args):
 raw = os.path.join(B, "deco_raw.glb")
 rep = os.path.join(B, "deco_raw.json")
 print("[run] 1 cut + fix", flush=True)
-blender("house_deco.py", N, os.path.join(ROOT, "tools", "house_deco", N + ".json"), raw, "--report", rep)
+blender("house_deco.py", N, os.path.join(TOOLS, "house_deco", N + ".json"), raw, "--report", rep)
 R = json.load(open(rep, encoding="utf-8"))
-PRM = json.load(open(os.path.join(ROOT, "tools", "house_deco", N + ".json"), encoding="utf-8"))
+PRM = json.load(open(os.path.join(TOOLS, "house_deco", N + ".json"), encoding="utf-8"))
 # name patterns for piece_fix --only: "_" first, or "Dome" would also hit "HaloDomeHouse_.."
 dome_slot = PRM.get("dome", {}).get("slot", "Dome")
 # leaf, caps, lanterns are rebuilt in house_deco (exact shapes, Tripo paint / size): only the dome + extras go through piece_fix

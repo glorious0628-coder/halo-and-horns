@@ -64,7 +64,7 @@ ap.add_argument("params")
 ap.add_argument("out")
 ap.add_argument("--report", help="default <out>.json")
 a = ap.parse_args(argv)
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.environ.get("HH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # HH_ROOT: run a private copy of tools/
 NAME = a.name
 PR = json.load(open(a.params, encoding="utf-8"))
 SLOTS = {it["name"][len(NAME) + 1:]: it for it in json.load(open(os.path.join(ROOT, "build", "skel_%s_ornaments.json" % NAME)))["items"]}
@@ -319,7 +319,7 @@ def copy_obj(o, name):
 out_objs = []
 COPIES = []          # templates (caps, lantern) placed after piece_fix by tools/house_deco_place.py (shared maps)
 
-sys.path.insert(0, os.path.join(ROOT, "tools"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import proj_bake  # noqa: E402
 
 WORK = os.path.join(ROOT, "art", "models", "tripo", "house_deco", NAME)
@@ -368,23 +368,56 @@ door_src = [o for o in SRC if o.name.endswith("_Door")]
 leaf_slots = [v for k, v in SLOTS.items() if v["type"] == "leaf"]
 
 
-def wood_leaf(o, D):
-    """the wooden leaf inside Tripo's Door object (it also holds bits of the gold arch frame and the white jamb):
-    x bounds = 1 / 99 % of the brown plank faces, top = their 99 %; returns (cx, R, bottom, top) unless given in D"""
-    hsv = face_hsv(o)
-    c = centres(o)
-    h, s_, v = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
-    wood = (h >= 12) & (h <= 42) & (s_ >= 0.35) & (v >= 0.2) & (v <= 0.78)
-    q = c[wood] if wood.sum() > 20 else c
-    x0, x1 = np.percentile(q[:, 0], [1, 99])
-    cx = D.get("cx", (x0 + x1) / 2)
-    R = D.get("R", (x1 - x0) / 2)
-    return cx, R, D.get("bottom", float(np.percentile(q[:, 2], 0.5))), D.get("top", float(np.percentile(q[:, 2], 99.5)))
+def _textured(o):
+    return any(n.type == "TEX_IMAGE" and n.image for m in o.data.materials if m and m.use_nodes for n in m.node_tree.nodes)
+
+
+def door_leaf_source(D):
+    """Tripo's door leaf. The parts split's Door object is often not the leaf (house 03: steps + frame bits; the planks
+    sit in the Body tiles), so the leaf is found on all objects: front-facing plank-brown faces near the door (x hint =
+    the DoorHw / Door object centre, or D["hint_x"]). Returns (cx, R, bottom, top, y_leaf, source objects) where the
+    source objects hold every face of the leaf box (planks + hardware on them) for the projection; D overrides any value."""
+    hint_objs = [o for o in SRC if o.name.endswith("_DoorHw")] or door_src
+    hx = D.get("hint_x", float(np.mean(allv(hint_objs)[:, 0])) if hint_objs else 0.0)
+    pts = []
+    for o in SRC:
+        if not _textured(o) or "_Glass" in o.name or "_WinPane" in o.name or "_Awning" in o.name:
+            continue
+        hsv = face_hsv(o)
+        c = centres(o)
+        nrm = np.array([p_.normal[:] for p_ in o.data.polygons]).reshape(-1, 3)
+        h, s_, v = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+        wood = (h >= 10) & (h <= 45) & (s_ >= 0.3) & (v >= 0.18) & (v <= 0.92) & (nrm[:, 1] > 0.6)
+        wood &= (np.abs(c[:, 0] - hx) < D.get("hint_r", 3.2)) & (c[:, 2] > 0.2) & (c[:, 2] < 14)
+        pts.append(c[wood])
+    q = np.concatenate(pts) if pts else np.zeros((0, 3))
+    if len(q) < 8:
+        q = allv(door_src)
+    # the leaf plane: the most common front depth of those faces (drop shelves / pots further out or in)
+    yl = D.get("y_leaf", float(np.median(q[:, 1])))
+    q = q[np.abs(q[:, 1] - yl) < 0.6]
+    x0, x1 = np.percentile(q[:, 0], [2, 98])
+    cx = D.get("cx", float((x0 + x1) / 2))
+    R = D.get("R", float((x1 - x0) / 2))
+    bot = D.get("bottom", float(np.percentile(q[:, 2], 1)))
+    top = D.get("top", float(np.percentile(q[:, 2], 99)))
+    srcs = []
+    for o in SRC:
+        if not _textured(o) or "_Glass" in o.name or "_WinPane" in o.name or "_Awning" in o.name:
+            continue
+        c = centres(o)
+        m = (np.abs(c[:, 0] - cx) <= R + 0.15) & (c[:, 2] >= bot - 0.15) & (c[:, 2] <= top + 0.15) & (np.abs(c[:, 1] - yl) < 0.7)
+        n = take(o, m, o.name + "_LeafSrc")
+        if n:
+            srcs.append(n)
+    return cx, R, bot, top, yl, srcs
 
 
 HS = 1.0
 if door_src and leaf_slots:
-    _cx, _R, _b, _t = wood_leaf(door_src[0], PR.get("door", {}))
+    _cx, _R, _b, _t, _yl, _srcs = door_leaf_source(PR.get("door", {}))
+    for _o in _srcs:
+        bpy.data.objects.remove(_o)
     ls = leaf_slots[0]
     HS = (ls["c"][1] + ls["R"] - ls["bottom"]) / (_t - _b)
 REPORT["house_scale"] = round(HS, 4)
@@ -428,17 +461,22 @@ if "dome" in PR and PR["dome"].get("fix") == "oct":
         zb = P[:, 2].min()
         low = P[P[:, 2] <= zb + 0.15 * (P[:, 2].max() - zb)]
         poly = plan_poly(d.get("offset", -0.6))
-        half_t = float(np.percentile(np.abs(low[:, 0] - d["c"][0]), 99))
-        half_s = max(abs(x) for x, _ in poly)
-        k = half_s / half_t
+        x0t, x1t = np.percentile(low[:, 0], [1, 99])
+        y0t, y1t = np.percentile(low[:, 1], [1, 99])
+        ctx, cty = (x0t + x1t) / 2, (y0t + y1t) / 2
+        hx_s = max(abs(x) for x, _ in poly)
+        hy_s = max(abs(y) for _, y in poly)
+        kx, ky = hx_s / ((x1t - x0t) / 2), hy_s / ((y1t - y0t) / 2)
+        kz = (kx + ky) / 2
+        # left-right symmetric: every vertex's |x - ctx| averaged with its mirror partner is not needed for the fit;
+        # the per-axis fit keeps Tripo's 8 facets and ribs and puts its eave box on the plan octagon's box
         sl = SLOTS[d.get("slot", "Dome")]
-        apply(ps, Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4) @
-              Matrix.Translation((-d["c"][0], -d["c"][1], -zb)))
+        apply(ps, Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @
+              Matrix.Diagonal((kx, ky, kz, 1.0)) @ Matrix.Translation((-ctx, -cty, -zb)))
         tidy_normals(ps)
         out_objs += ps
-        REPORT["roof_fit"] = {"name": "_Dome_", "plan": {"roof": {"center": [sl["pos"][0], sl["pos"][1]], "poly": poly}}}
-        rep = {"fix": "oct: uniform scale by the eave width, then tools/roof_fit.py onto the plan octagon %+.2f" % d.get("offset", -0.6),
-               "scale": round(k, 4), "faces": sum(len(o.data.polygons) for o in ps)}
+        rep = {"fix": "oct: Tripo's octagon box -> the plan octagon box %+.2f (x %.3f, y %.3f, z %.3f), facets / ribs kept" % (
+            d.get("offset", -0.6), kx, ky, kz), "faces": sum(len(o.data.polygons) for o in ps)}
         REPORT["pieces"]["Dome"] = rep
         print("[deco] dome (oct)", rep, flush=True)
 elif "dome" in PR:
@@ -532,7 +570,7 @@ if "lantern" in PR:
         for o in ps:
             hsv = face_hsv(o)
             nrm = np.array([p_.normal[:] for p_ in o.data.polygons]).reshape(-1, 3)
-            sel = (hsv[:, 1] < 0.15) & (hsv[:, 2] > 0.7) & (nrm[:, 1] > 0.7)
+            sel = (hsv[:, 1] < 0.15) & (hsv[:, 2] > 0.7) & (nrm[:, 1] > 0.5)
             wy += list(centres(o)[sel, 1])
         if len(wy) >= 4:
             wall_t = float(np.percentile(wy, 80))
@@ -554,7 +592,7 @@ if "lantern" in PR:
             hsv = face_hsv(o)
             c = centres(o)
             h, s_, v = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
-            glow = (v > 0.8) & (s_ < 0.5) & ((h < 70) | (s_ < 0.12))
+            glow = (v > 0.8) & (s_ > 0.12) & (s_ < 0.6) & (h >= 28) & (h <= 72)
             gold = (h >= 25) & (h <= 55) & (s_ > 0.5) & (v > 0.55)
             glow_c.append(c[glow])
             gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[gold]]
@@ -573,7 +611,10 @@ if "lantern" in PR:
             me = o.data
             me.calc_loop_triangles()
             V = np.array([v_.co[:] for v_ in me.vertices])
-            T = np.array([t_.vertices[:] for t_ in me.loop_triangles])
+            hsv = face_hsv(o)                                      # lantern faces only: gold metal or warm glass
+            hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+            lamp = ((hh >= 20) & (hh <= 60) & (ss > 0.35) & (vv > 0.35)) | ((vv > 0.8) & (ss > 0.12) & (hh >= 28) & (hh <= 72))
+            T = np.array([t_.vertices[:] for t_ in me.loop_triangles if lamp[t_.polygon_index]])
             if len(T):
                 A, B, C = V[T[:, 0]], V[T[:, 1]], V[T[:, 2]]
                 ar = np.linalg.norm(np.cross(B - A, C - A), axis=1) / 2
@@ -689,8 +730,8 @@ if "door" in PR and door_src and leaf_slots:
     # exact arched slab (straight jambs, semicircle top, the slot's size) and projects Tripo's own paint, roughness, metal
     # and relief (as a normal map) onto it with a ray from the front: the planks / hinges are Tripo's, the shape is exact
     D = PR["door"]
+    cx, Rt, bot_t, top_t, y_leaf, leaf_srcs = door_leaf_source(D)
     src = door_src[0]
-    cx, Rt, bot_t, top_t = wood_leaf(src, D)
     spring_t = top_t - Rt
     sl0 = leaf_slots[0]
     double = sl0.get("half") is not None or D.get("double", False)
@@ -714,8 +755,19 @@ if "door" in PR and door_src and leaf_slots:
         return (0.02 + 0.96 * (x - (cs[0] - Rs)) / W, 0.02 + 0.96 * (z - bs) / H)
 
     back_uv = uv_of(cs[0] + Rs * 0.55, bs + 0.4)                # a plank spot for the back / edges
-    tri_src = proj_bake.Source([src])
-    yt_front = float(allv([src])[:, 1].max()) + 0.5
+    tri_src = proj_bake.Source(leaf_srcs)
+    # only the plank surface and the flat hardware on it take part: oblique faces (knob sides, shards hanging off them)
+    # and lumps standing out of the planks (Tripo's knobs: the exact ones go on top) are passed through; empty texels
+    # are filled from their neighbours
+    _hsv = face_hsv(src)
+    _h, _s, _v = _hsv[:, 0] * 360, _hsv[:, 1], _hsv[:, 2]
+    _wood = (_h >= 12) & (_h <= 42) & (_s >= 0.35) & (_v >= 0.2) & (_v <= 0.78)
+    _wood_y = y_leaf
+    tri_src.skip_where((tri_src.FN[:, 1] < D.get("min_facing", 0.45)) | (tri_src.FC[:, 1] > _wood_y + D.get("max_out", 0.22)))
+    tri_src.strict = True
+    _ys = allv(leaf_srcs)[:, 1]
+    yt_front = float((_ys.max() + _ys.min()) / 2)               # ray from in front of the whole object, right through it
+    RAY_BACK = float((_ys.max() - _ys.min()) / 2 + 0.6)
     if double:
         right = [(x, z) for x, z in arc if x >= cs[0] - 1e-6]
         left = [(x, z) for x, z in arc if x <= cs[0] + 1e-6]
@@ -743,9 +795,9 @@ if "door" in PR and door_src and leaf_slots:
         return np.c_[xt, np.full(len(P), yt_front), zt]
 
     _orig_query = tri_src.query
-    tri_src.query = lambda P, ray=None, back=0.6: _orig_query(xf(P), ray, back)
+    tri_src.query = lambda P, ray=None, back=0.6: _orig_query(xf(P), ray, RAY_BACK)
     maps = proj_bake.bake(tmp, tri_src, size=D.get("size", 512), ray=(0, -1, 0), relief=True)
-    cleaned = proj_bake.clean_thin_gold(maps, k=D.get("clean_px", 6)) if D.get("clean_px", 6) else 0
+    cleaned = proj_bake.clean_thin_gold(maps, k=D["clean_px"]) if D.get("clean_px") else 0
     bpy.data.objects.remove(tmp)
     mat = proj_bake.save_maps(maps, WORK, NAME + "_Leaf")
     for o in leaf_objs:
@@ -753,7 +805,7 @@ if "door" in PR and door_src and leaf_slots:
         out_objs.append(o)
     hw_at = []
     for b in D.get("knockers", D.get("flatten_boxes", [])):      # Tripo knocker / knob spots -> exact metal parts there
-        P = allv([src])
+        P = allv(leaf_srcs + [o for o in SRC if o.name.endswith("_DoorHw")])
         inb = np.ones(len(P), bool)
         for k, (lo_, hi_) in enumerate(b):
             inb &= (P[:, k] >= lo_) & (P[:, k] <= hi_)
@@ -767,11 +819,11 @@ if "door" in PR and door_src and leaf_slots:
     REPORT["leaf_front"] = round(float(fs), 4)
     # round door knobs (double doors): Tripo's lumpy knob -> a lathe-turned exact knob with Tripo's paint, on its spot
     knob_mat = None
-    hw_objs = [o for o in SRC if o.name.endswith("_Door") or o.name.endswith("_DoorHw")]
+    hw_objs = leaf_srcs + [o for o in SRC if o.name.endswith("_DoorHw")]
     KN_KEPT = []                                     # the knob centre on the kept half (Tripo frame)
     for b in D.get("knobs", []):
         P = allv(hw_objs)
-        inb = P[:, 1] > float(np.median(allv([src])[:, 1])) + 0.12
+        inb = P[:, 1] > y_leaf + 0.12
         for k, (lo_, hi_) in enumerate(b):
             inb &= (P[:, k] >= lo_) & (P[:, k] <= hi_)
         if inb.any():
@@ -781,7 +833,7 @@ if "door" in PR and door_src and leaf_slots:
                 KN_KEPT.append(c_)
     for ki, b in enumerate(D.get("knobs", [])):
         P = allv(hw_objs)
-        inb = P[:, 1] > float(np.median(allv([src])[:, 1])) + 0.12       # standing out of the planks
+        inb = P[:, 1] > y_leaf + 0.12       # standing out of the planks
         for k, (lo_, hi_) in enumerate(b):
             inb &= (P[:, k] >= lo_) & (P[:, k] <= hi_)
         if not inb.any():
