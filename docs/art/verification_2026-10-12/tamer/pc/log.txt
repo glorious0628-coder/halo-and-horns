@@ -1,0 +1,37 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false EquippedPet= PetLv=0 PetRoll=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Neutral Class=Archer ClassChosen=true EquippedPet=BabySlime PetLv=1 PetRoll=0
+debug: Gold=ok Item=40 Item=6 Item=4 Item=3
+state: DataLoaded=true Faction=Neutral Class=Archer ClassChosen=true EquippedPet=BabySlime PetLv=1 PetRoll=0
+sent TamerInfo
+sent OpenPanel
+probe 01_tamer_make_tab: {"Words":["Title:Crafting","Level:Pet Tamer Lv 1","Text:0 / 40","Tab_Make:Make","Label:Make","Tab_Research:Research","Label:Research","Name:Baby Slime","Lv:Lv 1","Letter:P","Name:Pet Treat","Lv:Lv 1","Name:Baby Slime","Grade:★ Common","Line1:Speed +5–8%","Line2:Slime research 120 / 150","Name:Jelly","Count:40 / 30","Name:Slime Core","Count:6 / 5","Cost:100","Note1:+40 craft XP","Status:Go to your workbench.","Forge:Make","Label:Make","Gold:1,234"],"Window":"292x314 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\tamer\pc\01_tamer_make_tab.png
+sent OpenPanel
+probe 02_summon_research_short: {"Words":["Title:Crafting","Level:Pet Tamer Lv 1","Text:0 / 40","Tab_Make:Make","Label:Make","Tab_Research:Research","Label:Research","Name:Baby Slime","Lv:Lv 1","Letter:P","Name:Pet Treat","Lv:Lv 1","Name:Baby Slime","Grade:★ Common","Line1:Speed +5–8%","Line2:Slime research 120 / 150","Name:Jelly","Count:40 / 30","Name:Slime Core","Count:6 / 5","Cost:100","Note1:+40 craft XP","Status:Go to your workbench.","Forge:Make","Label:Make","Gold:1,234"],"Window":"292x314 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\tamer\pc\02_summon_research_short.png
+sent TamerInfo
+probe 03_summon_research_ok: {"Words":["Title:Crafting","Level:Pet Tamer Lv 1","Text:0 / 40","Tab_Make:Make","Label:Make","Tab_Research:Research","Label:Research","Name:Baby Slime","Lv:Lv 1","Letter:P","Name:Pet Treat","Lv:Lv 1","Name:Baby Slime","Grade:★ Common","Line1:Speed +5–8%","Line2:Slime research 160 / 150","Name:Jelly","Count:40 / 30","Name:Slime Core","Count:6 / 5","Cost:100","Note1:+40 craft XP","Status:Go to your workbench.","Forge:Make","Label:Make","Gold:1,234"],"Window":"292x314 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\tamer\pc\03_summon_research_ok.png
+Tab_Research path: LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.FixedBody.Tabs.Tab_Research
+probe 04_research_tab: {"Words":["Title:Crafting","Level:Pet Tamer Lv 1","Text:0 / 40","Tab_Make:Make","Label:Make","Tab_Research:Research","Label:Research","Name:Slime","Stage:Stage 2","Text:160 / 400","Name:Goblin","Stage:Stage 0","Text:40 / 50","Name:Skeleton","Stage:Stage 0","Text:0 / 50","Name:Ghost","Stage:Stage 0","Text:0 / 50","Gold:1,234"],"Window":"292x314 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\tamer\pc\04_research_tab.png
+sent PetList
+sent OpenPanel
+probe 05_pet_roll_feed: {"Words":["Title:Pets","TextLabel:Baby Slime","TextLabel:Lv 3 · Walk speed +9%","TextLabel:Born with +8% speed","Text:10/45 XP","TextLabel:Following you","Feed:Feed (3)","Label:Feed (3)","TextLabel:Good Buddy","TextLabel:Lv 10 · Follow: +10% speed","Text:MAX","Button:Follow me","Label:Follow me","Feed:Feed (3)","Label:Feed (3)"],"Window":"408x181 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\tamer\pc\05_pet_roll_feed.png
+sent CraftSession
+sent CraftResult
+probe 06_summon_result: ring {"Cut":[],"Words":["Result:Baby Slime +9% speed","Label:Skip"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\tamer\pc\06_summon_result.png
+console: [ServerErrorService] started
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Goblin_86969d1c-332d-4889-ab56-123455c9280f.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.GoblinBrute_2b302594-5a3c-447f-ba4b-3d92f98b4f15.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Skeleton_static.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] ServerError = 566 (Heartbeat, tick # ms, Slow)
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+play stopped
+fresh off
