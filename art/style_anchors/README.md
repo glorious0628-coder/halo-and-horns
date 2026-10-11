@@ -1,5 +1,7 @@
 # 그림체 기준 그림 (SPEC A23-80 ②, 검수 2026-10-08)
 
+> 2026-10-11 검수 추가: ① 호박밭(`prop_pumpkin`)·유령 숲(`prop_hollow`) 기준은 두 구역이 내년 10월까지 숨겨져(A23-119) 지금은 안 쓴다 — 지우지 않고 보관. 그 자리의 새 구역(수정 동굴·산호 해안, A23-123) 기준은 시안 `art/out/s2/zones_set/`. ② 빛 마을은 처음부터 다시 짓는 중이라(A23-121) 아래 `prop_halo`·옛 마을 소품 기준은 '재료로만'. ③ 3D 참조는 Tripo HD H3.1 **앞·뒤·좌·우 4면**(A23-122)으로 넣고 Blender 손보기가 필수(A23-125). ④ 옛 그림(UIP_*, `art/out/v1`)과 노출 사본 참조 금지는 그대로(AGENTS Hard rule 1).
+
 새 그림·새 3D를 만들 때 해당 기준 그림을 Firefly/Tripo 참조로 넣는다. 옛 그림(UIP_*, art/out/v1, 노출 사본 4장, 치비 코스튬)은 참조 금지.
 
 - `ui_icon.png` ← `art/ui/IconPotionHP.png` (복사함) — UI 아이콘 기준(→ art/style_anchors/ui_icon.png): 묶음 1 스타일 보드 마스터. 남색 굵은 외곽, 광택, 작은 금 장식. 보조 = art/ui/IconSkills.png(사용자 '너무 좋아'). 참조 금지 = UIP_* 전부, Codex 10/03 Weapon 1024 파일
