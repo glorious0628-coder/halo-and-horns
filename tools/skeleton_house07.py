@@ -22,7 +22,8 @@ arch, round pots with soil, marble 1판 vs cream 2판):
   - hollow inside (floor + ceiling slab), DoorFront in front of the steps.
 Gold = Metal + MaterialVariant HH_HaloGoldTrim, marble = Marble + HH_HaloMarbleBlock / HH_HaloMarbleBlock_Cream (이미지 개발).
 Also writes <out>.json (parts for tools/skeleton_preview.py), <out>_place.json (where tools/skeleton_place.py moves the
-kept Tripo pieces) and <out>_cams.json (close-up cameras for the preview).
+kept Tripo pieces), <out>_cams.json (close-up cameras for the preview) and <out>_ornaments.json (knocker, hinges and
+lantern frames for tools/metal_ornaments.py; Blender-made, exact circles — no Tripo hardware).
 Frame: Blender of the parts GLB (x, y = front, z up, studs) -> Roblox (x, z, -y) + origin. Part axes are given as
 Blender vectors X (part x) and Y (part y); the Luau uses CFrame.fromMatrix.
 """
@@ -396,10 +397,14 @@ for nm, (x, y), d, h in POTS:
         disk("%s_Lobe%d" % (nm, k), 0.5, 0.14, (x + dx * 0.3, fy, h * 0.45 + dz * 0.3), (0.0, 1.0, 0.0))
     disk(nm + "_Core", 0.4, 0.2, (x, fy + 0.03, h * 0.45), (0.0, 1.0, 0.0))
 
-# lamp glass inside the kept Tripo lantern frames (Neon + PointLight; the Tripo lamp glass is stone-coloured and was cut)
+# lanterns: gold frames made in Blender (tools/metal_ornaments.py, 검수 10/11 "round and straight metal by script, not
+# Tripo"); the glass inside them is this skeleton part (Glass + PointLight for WeatherFx)
 LANT_U, LANT_Y = HF - 0.35, YF + PIL_OUT   # lanterns hang on the front faces of the front pilasters
-for nm, x in (("LampGlassL", CX - LANT_U + 0.03), ("LampGlassR", CX + LANT_U + 0.03)):
-    add(nm, (0.62, 0.85, 0.62), (x, LANT_Y + 0.7, 7.45), mat="lamp")
+LANT_W, LANT_H, LANT_POST, LANT_Z = 0.9, 1.15, 0.09, 7.6
+LANT_C = LANT_Y + 0.25 + LANT_W / 2        # glass box centre (y): bracket arm 0.25 off the pilaster
+for nm, x in (("LampGlassL", CX - LANT_U), ("LampGlassR", CX + LANT_U)):
+    g = LANT_W - 2 * LANT_POST - 0.02
+    add(nm, (g, LANT_H - 0.1, g), (x, LANT_C, LANT_Z), mat="lamp")
 
 # ---------------- awning (검수 v4c: the Tripo awning reads as a small gold lump; its map is cut into gold-orange islands,
 # so a recolour would need a new texture upload + re-import): cream / yellow striped cloth of parts, Fabric, matte, a
@@ -458,10 +463,8 @@ def into_pot(old_c, pot):
 place = {
     "note": "kept Tripo pieces of HaloDomeHouse_07 on the v4 skeleton (Blender frame of the parts GLB)",
     "kinds": {
-        # the planked leaf is 3.7 wide around x -0.2 (the rest of the Tripo door was its reveal): widen it 15 %, centre it, recess it
-        "Door": [{"region": dict(DOOR_LEAF, no_gold=True), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0], "move": [CX + 0.32, LEAF_DY, 0]}],
-        "DoorHw": [{"region": dict(DOOR_LEAF, drop_tall=2.0, z=[0.0, 8.3]), "scale": [1.15, 1, 1], "about": [-0.2, 0, 0],
-                    "move": [CX + 0.32, LEAF_DY, 0]}],
+        # Door: dropped too, the leaf is a Blender plank door now (the Tripo leaf had holes where its old hardware was cut)
+        # DoorHw and Lanterns: dropped, knocker / hinges / lantern frames are Blender ornaments now (<out>_ornaments.json)
         # Awning: dropped, the awning is skeleton parts now (검수 v4c)
         "Dormer": [{"move": [CX - 0.1, DY, DZ]}],
         "WinPane": [{"region": DORMER_BOX, "move": [CX - 0.1, DY, DZ], "rename": "DormerPane"}],
@@ -470,8 +473,6 @@ place = {
         # stop just inside the cornice line (0.3 past the walls), centred on the plan
         "Roof": [{"scale": [round((XS + 0.3) / 7.75, 4), round(((YF - YB) / 2 + 0.3) / 6.575, 4), 1.0], "about": [-0.62, -0.575, 13.7],
                   "move": [round(CX + 0.62, 3), round(CY + 0.575, 3), round(DZ, 3)]}],
-        "Lanterns": [{"region": {"x": [-20, -0.5], "y": [4.0, 20]}, "align": {"cx": CX - LANT_U, "ymin": LANT_Y}, "rename": "LanternL"},
-                     {"region": {"x": [0.5, 20], "y": [4.0, 20]}, "align": {"cx": CX + LANT_U, "ymin": LANT_Y}, "rename": "LanternR"}],
         "Plants": [  # cluster centres measured on the keep GLB (10/11)
             dict(into_pot((4.84, 5.78), "PotR"), region={"near": [5.0, 5.65, 3.0], "y": [2.5, 20]}, rename="PlantsR"),
             dict(into_pot((-6.53, 2.72), "PotL"), region={"near": [-6.4, 3.4, 2.0]}, rename="PlantsL"),
@@ -480,6 +481,33 @@ place = {
             dict(cluster((8.34, -1.77), "WallRight", BED_D * 0.5), region={"x": [7.0, 20], "y": [-3.0, 2.5]}, rename="PlantsSideR"),
             dict(cluster((6.53, -5.04), "WallBackRight", BED_D * 0.5), region={"x": [3.0, 20], "y": [-20, -2.0]}, rename="PlantsBackR"),
         ],
+    },
+}
+
+# Blender metal ornaments for tools/metal_ornaments.py (Blender frame): knocker on the latch side (+x, as in the 2D),
+# two strap hinges on the -x edge, the two lantern frames; snapped onto the Tripo leaf by the tool
+LEAF_HALF, LEAF_FRONT = 2.15, YF + LEAF_OFF
+KN = (CX + 0.97, Z0 + 3.6)
+orn = {
+    "note": "house 07 metal ornaments (skeleton v4), positions from tools/skeleton_house07.py",
+    "items": [
+        {"type": "leaf", "name": "H07_Leaf", "c": [CX, DSP], "R": LEAF_HALF, "bottom": Z0 + 0.1, "front": LEAF_FRONT, "t": 0.32},
+        {"type": "knocker", "name": "H07_Knocker", "pos": [KN[0], KN[1]], "face_y": LEAF_FRONT},
+        {"type": "hinge", "name": "H07_HingeTop", "edge": [CX - LEAF_HALF + 0.1, Z0 + 5.4], "dir": 1, "face_y": LEAF_FRONT},
+        {"type": "hinge", "name": "H07_HingeLow", "edge": [CX - LEAF_HALF + 0.1, Z0 + 1.8], "dir": 1, "face_y": LEAF_FRONT},
+        {"type": "lantern", "name": "H07_LanternL", "pos": [CX - LANT_U, LANT_C, LANT_Z], "w": LANT_W, "hgt": LANT_H,
+         "post": LANT_POST, "wall_y": LANT_Y},
+        {"type": "lantern", "name": "H07_LanternR", "pos": [CX + LANT_U, LANT_C, LANT_Z], "w": LANT_W, "hgt": LANT_H,
+         "post": LANT_POST, "wall_y": LANT_Y},
+    ],
+    "shots": {  # name: [camera, look at, ortho width or null, lens]
+        "door_front": [[CX, YF + 30, Z0 + 3.9], [CX, YF, Z0 + 3.9], 6.2, None],
+        "door_side": [[CX + 30, LEAF_FRONT + 0.3, Z0 + 3.9], [CX, LEAF_FRONT + 0.3, Z0 + 3.9], 6.2, None],
+        "knocker_close": [[KN[0] + 1.6, LEAF_FRONT + 2.6, KN[1] + 0.9], [KN[0], LEAF_FRONT, KN[1]], None, 50],
+        "hinge_close": [[CX - 1.0, LEAF_FRONT + 2.8, Z0 + 6.2], [CX - LEAF_HALF + 0.8, LEAF_FRONT, Z0 + 5.4], None, 50],
+        "lantern_front": [[CX + LANT_U, LANT_C + 30, LANT_Z + 0.5], [CX + LANT_U, LANT_C, LANT_Z + 0.5], 3.4, None],
+        "lantern_side": [[CX + LANT_U + 30, LANT_C, LANT_Z + 0.5], [CX + LANT_U, LANT_C, LANT_Z + 0.5], 3.4, None],
+        "lantern_close": [[CX + LANT_U + 2.2, LANT_C + 3.2, LANT_Z + 1.3], [CX + LANT_U, LANT_C, LANT_Z + 0.4], None, 45],
     },
 }
 
@@ -545,6 +573,7 @@ base = os.path.splitext(a.out)[0]
 json.dump(parts, open(base + ".json", "w"), indent=0)
 json.dump(place, open(base + "_place.json", "w"), indent=1)
 json.dump(cams, open(base + "_cams.json", "w"), indent=1)
+json.dump(orn, open(base + "_ornaments.json", "w"), indent=1)
 print("[skeleton] v4 %s course %.3f: Z1 %.3f win %.3f imp %.2f frieze %.3f pedestal %.3f" % (VARIANT, COURSE, Z1, WIN_Z0, IMP0, FRZ0, PED_Z))
 print("[skeleton] parts", len(parts), "(house %d, pot %d) ->" % (sum(p["grp"] == "house" for p in parts),
       sum(p["grp"] == "pot" for p in parts)), a.out)
