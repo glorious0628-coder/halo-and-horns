@@ -522,6 +522,142 @@ def checks(blds):
     return msgs, pairs, land, pave, sight
 
 
+# ---------------------------------------------------------------- stage 5 dressing list (검수 10/11: 재료 목록 미리)
+# What each district gets in stage 5 (입히기). Kit names = tools/halo_props_list.txt (Tripo, 이미지 생성 3) + the building
+# parts in WorldKit ServerStorage.ImportHold; acnh rules (docs/design/acnh_halo_layout_rules_2026-10-10.md) by number.
+# Paths everywhere: grade 1 = white marble + gold line (Concrete -> 이미지 개발 MaterialVariant), grade 2 / yards =
+# cobble (another stone), grade 3 = stepping stones in grass; steep cells = stairs (HaloStairs_1-5 on the big ones).
+# Lamps: auto spots below (Lantern A-E mixed, >= 2 kinds per district, +-15 deg, x0.87-1.15, warm, on at Dusk/Night).
+KIT = dict(
+    lamps=["HaloVar4_Lantern_A", "HaloVar4_Lantern_B", "HaloVar4_Lantern_C", "HaloVar4_Lantern_D", "HaloVar3_Lantern_E"],
+    rails=["HaloVar4_Balustrade_A", "HaloVar4_Balustrade_B", "HaloVar4_Balustrade_C", "HaloVar4_Balustrade_D", "HaloVar3_Balustrade_E",
+           "HaloVar3_Balustrade_F"],
+    planters=["HaloVar4_Planter_A", "HaloVar4_Planter_D", "HaloVar3_Planter_E"],
+    pots=["HaloVar4_PotFlowers_A", "HaloVar4_PotFlowers_C", "HaloVar4_PotFlowers_D", "HaloVar3_PotFlowers_E", "HaloVar3_PotFlowers_F",
+          "HaloFlowerPotHQ_Daisy", "HaloFlowerPotHQ_Lavender", "HaloFlowerPotHQ_Rose", "HaloFlowerPotHQ_Sunflower", "HaloFlowerPotHQ_Tulip"],
+    trees=["HaloVar3_RoundTree_E", "HaloVar3_RoundTree_F", "HaloVar3_RoundTree_G"],
+    topiary=["HaloVar3_Topiary_C", "HaloVar3_Topiary_D", "HaloVar3_Topiary_E"],
+    benches=["HaloReasonHQ_BenchA", "HaloReasonHQ_BenchB", "HaloReasonHQ_BenchC"],
+    flags=["HaloFlagpole_1", "HaloFlagpole_2", "HaloFlagpole_3"],
+    new_needed=["꽃 덤불·생울타리 (이미지 생성 3, 2D -> 3D 진행 중; 구름 덤불은 사용자 \"뭉탱이\"로 뺌)", "흰 바위 2~3종 (절벽 발치·물가)",
+                "디딤돌 (정원 길)", "작은 다리·징검다리 (연못·샘)", "떠 있는 섬 아랫면 뾰족 바위 (검수 ③ 2차)"],
+)
+DRESSING = {
+    "arrival": dict(paths="큰 길 흰 대리석+금 테 (통로 |x|<=12는 곧게, 소품 없음), 북쪽은 모래 해변",
+                    plants="W1 폭포 옆(서) 나무 무리 3 + 흰 바위, 영웅상 둘레 꽃 고리, 해변 쪽은 낮은 풀",
+                    props="GuardPost (성문 동쪽 탑 옆: 문지기), Flagpole_1 (탑 옆, 짝 없음), 해변 쪽 낮은 Balustrade, PotFlowers",
+                    water="W1 1단 폭포 -> 바다 (halo_waterfx), 시냇물 하구",
+                    edge="동쪽 큰 탑+등불 1 / 서쪽 W1 폭포+나무 무리+등불 2 (규칙 7)",
+                    light="성문 안쪽 채움 빛 (FILL_LIGHTS, 앞면 햇빛 0%)", empty="스폰 원 둘레 잔디 (통로 밖)"),
+    "market": dict(paths="큰 길 대리석 + 시장 뒷골목 조약돌, 모퉁이 마당", plants="골목 끝 꽃 화단 (주황·흰), 가게 사이 화분",
+                   props="가게마다 이유 있는 것: 물약=PotionCrate, 빵=BreadStand, 주스=FruitStall, 꽃=FlowerCart; 가게 차양·간판 (ImportHold 가게 4 parts)",
+                   water="-", edge="골목 끝 낮은 난간 + 꽃 화단", light="골목 등불 (자동)", empty="뒷골목 안쪽 작은 잔디"),
+    "market_hill": dict(paths="조약돌 골목·계단 (시장 8 -> 언덕 14)", plants="북동 곶 가장자리 나무 무리, 집마다 화분 (주황·크림)",
+                        props="Clothesline·Woodpile·VegGarden (사는 집), BenchB (북동 곶 벤치 = 교차로 다리 경치), 언덕 마당 화단",
+                        water="언덕 샘 (작은 바위 샘)", edge="단 턱 (시장보다 6 높음) + Balustrade", light="마당 등불 1, 곶 벤치 작은 빛",
+                        empty="곶 앞 잔디"),
+    "training": dict(paths="흙 마당 (Ground), 고리길 조약돌", plants="마당 가장자리만 낮은 덤불 (가운데는 비움)",
+                     props="Scarecrow 3 (첫 기술 시험 표적, 훈련장 표시 (-130,-446)), RackShieldSword, Flagpole_2, 관람 계단 (HaloStairs) 장면",
+                     water="동쪽 시냇물 + 다리 B1·B2 (모양 다름)", edge="동쪽 시냇물 / 남쪽 성 축대", light="마당 모서리 등불 2",
+                     empty="흙 마당 가운데 (기술 시험 자리)"),
+    "castle": dict(paths="성 앞 마당 조약돌 + 성 큰 계단 (HaloStairs_3) + 성벽 곁길", plants="Topiary 2종 섞어 성 앞 (짝 금지), 성벽 아래 나무 무리",
+                   props="Flagpole_3 x2 (높이 다르게), 성벽 곁길 Balustrade, 끝 = 성벽 전망 벤치 (서쪽 바다)", water="-",
+                   edge="축대 벽 + 성벽", light="성 정면 아래 은은한 빛 2, 곁길 등불", empty="성 뒤 잔디 (성 뒤 마당)"),
+    "plaza": dict(paths="포장 원 r40 안에 잔디 섬·화단 (들쭉날쭉, 규칙 5)", plants="광장 가장자리 꽃 화단 (분홍·흰·금), 서쪽 시냇물 건너 나무",
+                  props="Town_Halo_Fountain3 (2단 분수), BenchA·C, Planter, PhotoDisc 1, Folk4 자리", water="분수",
+                  edge="광장 둘레 낮은 화단, 서쪽 시냇물", light="광장 둘레 등불 (자동, 짝 없이)", empty="광장 남동쪽 잔디 섬"),
+    "garden": dict(paths="디딤돌", plants="생울타리 + 연보라·흰 꽃, 웅덩이 건너편 나무 (물 앞엔 안 둠)",
+                   props="BenchA (폭포 웅덩이 벤치 장면), Topiary", water="W2 계단 폭포 3단 (지그재그) + 정원 웅덩이",
+                   edge="생울타리 + 웅덩이", light="장면 작은 빛 1", empty="웅덩이 옆 잔디"),
+    "garden_homes": dict(paths="디딤돌 골목, 정원 마당 조약돌",
+                         plants="해바라기 노랑·데이지 흰 덩어리, 나무 줄 (서쪽 바다 쪽), 채집 덤불 5곳 (매일 2~3곳)",
+                         props="VegGarden·Clothesline·Woodpile, FlowerPotHQ Sunflower·Daisy, 연못 징검다리 (새로)", water="정원 연못",
+                         edge="나무 줄 + 낮은 울타리", light="마당 등불 1, 골목 등불", empty="연못 북쪽 잔디"),
+    "cathedral": dict(paths="큰 계단 (HaloStairs_3/5) -> 대성당 앞 마당 대리석", plants="Topiary 3종 섞어 (줄 세우기 금지), 흰·연보라 꽃",
+                      props="대성당 뒤 바다 전망 벤치 + Balustrade, PhotoDisc (계단 꼭대기)", water="대성당 샘 -> W2 머리",
+                      edge="언덕 축대 + 계단 폭포 (서)", light="대성당 아래 은은한 빛 (uplights)", empty="대성당 동쪽 잔디"),
+    "cliff_homes": dict(paths="조약돌 골목·계단 (18 -> 22)", plants="분홍·흰 꽃, 절벽 발치 나무·흰 바위 (10~20칸 불규칙)",
+                        props="Clothesline·PotFlowers, BenchC (절벽 마을 발코니 장면), 동쪽 절벽 Balustrade", water="W3 2단 폭포 + 웅덩이",
+                        edge="절벽 + 둔덕", light="골목 등불, 발코니 작은 빛", empty="절벽 아래 쉼참 옆 잔디"),
+    "lookout": dict(paths="전망 탑 앞 마당", plants="가장자리 8칸 안엔 낮은 것만 (하늘·흰 꽃)", props="전망 탑 (ImportHold 탑 A/B/C), BenchB, PhotoDisc",
+                    water="-", edge="난간 + 탑", light="탑 아래 은은한 빛", empty="탑 남쪽 잔디"),
+}
+# the gate's inner face never gets direct sun (front_sun 0%): warm fill lights there (검수 10/11), outside the spawn corridor
+FILL_LIGHTS = [
+    dict(at=(-15, -347), kind="등불 (따뜻한 PointLight)", note="성문 안쪽 서"),
+    dict(at=(17, -349), kind="등불 (따뜻한 PointLight)", note="성문 안쪽 동 (서쪽과 거리 다르게)"),
+    dict(at=(-21, -353), kind="낮은 등불", note="성문 안쪽 서 둘째"),
+    dict(at=(0, -342.5), kind="SurfaceLight (낮엔 약하게)", note="성문 안쪽 면 전체, 위쪽 띠"),
+]
+
+
+def lamp_spots(blds):
+    """auto lamp spots (rule 6): along the main and grade-2 roads every 25-40 studs (uneven), sides switched irregularly,
+    on the outer side of every bend > 25 deg, one per yard; never in the spawn corridor, on water or in a footprint"""
+    gaps = [28, 36, 25, 40, 31, 34, 27, 38]
+    sides = [1, -1, -1, 1, -1, 1, 1, -1, 1, -1]
+    spots = []
+    fps = [footprint(b) for b in blds]
+
+    def ok(x, z):
+        if abs(x) <= 13 and -432 <= z <= -330:
+            return False
+        if not inside((x, z), LAND):
+            return False
+        for fp in fps:
+            if inside((x, z), fp) or min(seg_dist((x, z), fp[i], fp[(i + 1) % 4]) for i in range(4)) < 2:
+                return False
+        st = WATER["stream"]
+        for i in range(len(st) - 1):
+            if seg_dist((x, z), st[i], st[i + 1]) < WATER["stream_w"][i] / 2 + 1.5:
+                return False
+        for w in WATER["pools"]:
+            if math.hypot(x - w["at"][0], z - w["at"][1]) < w["r"] + 1.5:
+                return False
+        return all(math.hypot(x - q[0], z - q[1]) >= 8 for q in spots)
+
+    k = 0
+    for r in ROADS:
+        if r["grade"] > 2:
+            continue
+        pts = r["pts"]
+        off = r["w"] / 2 + 2.5
+        acc, nxt = 0.0, gaps[k % len(gaps)] / 2
+        for i in range(len(pts) - 1):
+            (ax, az), (bx, bz) = pts[i], pts[i + 1]
+            L = math.hypot(bx - ax, bz - az)
+            if L < 1e-6:
+                continue
+            ux, uz = (bx - ax) / L, (bz - az) / L
+            d = 0.0
+            while acc + (L - d) >= nxt:
+                d += nxt - acc
+                acc = 0.0
+                sd = sides[k % len(sides)]
+                x, z = ax + ux * d - uz * off * sd, az + uz * d + ux * off * sd
+                if ok(x, z):
+                    spots.append((round(x, 1), round(z, 1)))
+                k += 1
+                nxt = gaps[k % len(gaps)]
+            acc += L - d
+            # bend: the outer side of the turn at pts[i + 1]
+            if i + 2 < len(pts):
+                cx_, cz_ = pts[i + 2][0] - bx, pts[i + 2][1] - bz
+                Lc = math.hypot(cx_, cz_)
+                if Lc > 1e-6:
+                    turn = math.degrees(math.atan2(ux * cz_ / Lc - uz * cx_ / Lc, ux * cx_ / Lc + uz * cz_ / Lc))
+                    if abs(turn) > 25:
+                        out_s = -1 if turn > 0 else 1
+                        x, z = bx - uz * off * out_s, bz + ux * off * out_s
+                        if ok(x, z):
+                            spots.append((round(x, 1), round(z, 1)))
+    for y in YARDS:
+        x, z = y["at"][0] + y["r"] * 0.7, y["at"][1] + y["r"] * 0.7
+        if ok(x, z):
+            spots.append((round(x, 1), round(z, 1)))
+    return spots
+
+
 # ---------------------------------------------------------------- front sunlight (검수 10/11, 이미지 개발: fronts in shade)
 # The main world's day: DayCycleService turns Lighting.ClockTime; WarService sets GeographicLatitude 35. Measured in Studio
 # (Lighting:GetSunDirection, lat 35, 10/11): sun(t) = (0.9799 cos h, 0.9799 sin h, 0.1994), h = 15 deg x (t - 6): it rises
@@ -617,7 +753,7 @@ def shade(c, k):
     return tuple(max(0, min(255, int(v * k))) for v in c)
 
 
-def draw_map(blds):
+def draw_map(blds, lamps=()):
     im = Image.new("RGB", (MW + PANEL, MH), (120, 186, 222))
     d = ImageDraw.Draw(im, "RGBA")
     # sea texture: soft rings around the island are skipped (no rays); plain sea + a light shore
@@ -703,6 +839,13 @@ def draw_map(blds):
         if new and now:
             cx, cy = P(new[0], new[2])
             d.rectangle([cx - 5, cy - 5, cx + 5, cy + 5], fill=(30, 30, 30))
+    # stage 5 lamps (small warm dots) and the gate's fill lights (orange)
+    for x, z in lamps:
+        cx, cy = P(x, z)
+        d.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=(255, 214, 90), outline=(150, 110, 20))
+    for f in FILL_LIGHTS:
+        cx, cy = P(*f["at"])
+        d.ellipse([cx - 4, cy - 4, cx + 4, cy + 4], fill=(255, 140, 40), outline=(140, 60, 0))
     # scenes
     for name, at, _ in SCENES:
         cx, cy = P(*at)
@@ -776,6 +919,8 @@ def main():
     for k, v in sight.items():
         print("[gate view]", k, v)
     sun = front_sun(blds)
+    lamps = lamp_spots(blds)
+    print(f"[dressing] lamp spots {len(lamps)}, fill lights {len(FILL_LIGHTS)}, districts {len(DRESSING)}")
     for k, v in sorted(sun.items(), key=lambda kv: kv[1]["front_lit_pct"]):
         print("[front sun]", k, v)
     for m in msgs:
@@ -783,7 +928,7 @@ def main():
     stats = dict(pave=pave, pairs=pairs, issues=len([m for m in msgs if not m.startswith("거울")]), land=land, sun=sun)
     print(f"[plan] land {land:.0f} st² · paving ~{pave * 100:.1f}% · mirror pairs {pairs} · buildings {len(blds)} · issues {stats['issues']}")
     os.makedirs(OUT_DIR, exist_ok=True)
-    im, d = draw_map(blds)
+    im, d = draw_map(blds, lamps)
     draw_panel(im, d, blds, stats)
     im.save(OUT_MAP)
     plan = dict(
@@ -801,6 +946,12 @@ def main():
         water={**WATER, "stream": [list(p) for p in WATER["stream"]]},
         bridges=BRIDGES,
         yards=[{**y, "at": list(y["at"])} for y in YARDS],
+        dressing=dict(note="5단계 입히기 재료 목록(검수 10/11). 키트 이름 = tools/halo_props_list.txt, 규칙 = acnh 12규칙", kit=KIT,
+                      by_district=DRESSING, lamps=[list(p) for p in lamps],
+                      fill_lights=[{**f, "at": list(f["at"])} for f in FILL_LIGHTS],
+                      uplights=["Cathedral 앞 마당 바닥 2(은은히 위로)", "Tower_GateEast 아래 1", "Tower_Lookout 아래 1", "Castle 정면 아래 2"],
+                      photo_discs=["대성당 계단 꼭대기", "다리 B1 위", "폭포 웅덩이 벤치", "전망 탑 꼭대기", "성벽 전망", "북동 곶 벤치"],
+                      gather_bushes="정원 마을 5곳(매일 2~3곳, 플레이어마다 다름) - 동작은 베타 다듬기"),
         buildings=blds,
         scenes=[dict(name=n, at=list(a), view=v) for n, a, v in SCENES],
         fixed_points=dict(keep=[dict(name=n, at=list(a) if a else None, code=c) for n, a, c in FIXED_KEEP],

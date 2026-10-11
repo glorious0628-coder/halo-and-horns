@@ -15,6 +15,8 @@
   - **③ 3차 = 1.5배 (A23-124, 사용자 "빛 마을 너무 작은 거 아니야?", 10/11 13:10 WorldKit에 지음)**: SHRINK → kx=kz=1.5(가운데 고정). 땅 x -300..295, z -321..-853(26.5만 st²). 해안선 = 2차 모양을 같이 늘리고 긴 변 나눔. 더함(최종 좌표, `halo_plan_v2.py` "③ 3차 additions"): 집 7(언덕4·절벽6~8·정원5~7, 집 19), 빛 성 KINDS 100×70×44, 골목 10, YARDS 8, 연못·샘 3, 광장 포장 r40. 새 검사: 길·물이 건물을 지남. 걷는 시간(`halo_blockout.py` 격자 Dijkstra → `art/review/world/halo_v2/walk_times.json`): 성문→대성당 25.7초, 가장 먼 집 29.6초. 격자·BOX는 땅에서 자동(EDGE 32), 사진 자리도 계획에서 자동(`halo_blockout_shots.py`, `--prep`은 창 없이 목록만). 사진 `blockout_sheet_x15.jpg` → 검수 ★ 대기.
   - 6단계 때 넓힐 것: HaloTown 구역 상자, Map.Land IslandHalo, Map.Bounds(MinX -260/MinZ -720 → 땅 -300/-853), Outskirts, 미니맵·큰 지도(고정점 표 "구역 상자·섬 땅·경계").
   - 전망 탑 = (247,-761), 사진 자리 = 탑 꼭대기(눈높이 75), 광장·분수·대성당·바다 광선 통과.
+  - 앞면 햇빛 % (checks.front_sun, 위도 35 하루 해 길): 해는 늘 +z로 11.5° 기움 → 남향 면 직접 해 0. 성문 안쪽 0%, 벽은 최선이어도 평균 세기 30% → **검수: 방향 안 바꿈, 빛 설정은 이미지 개발 몫**.
+  - 5단계 재료 목록 = plan json `dressing`(구역 11개: 길 재질·식물·이유 있는 소품(halo_props_list 이름)·물·경계·빛·빈 잔디, KIT, 새로 필요한 것, 등불 자리 48 자동(규칙 6), 성문 안쪽 채움 빛 4, uplights, PhotoDisc 6, 채집 덤불).
   - 되돌리기(remove)는 보관 때 자리(Corner 속성, 없으면 옛 y0 -24)로 붙임.
   - WorldKit에 함께 있는 것: Workspace.HaloV2(Buildings·Bridges·Markers·AvatarRefs), Workspace.BeamTest(x -3000, 띠 시험대)
 
