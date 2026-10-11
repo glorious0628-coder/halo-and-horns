@@ -1,5 +1,5 @@
 {
-  "checks": 18,
+  "checks": 20,
   "failed": 0,
   "mutations": [
     {
@@ -58,7 +58,17 @@
       "caught": true
     },
     {
-      "name": "a clamped right arm still posed",
+      "name": "a clamped solve drops the pose (the hanging left hand)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the blade in world space (turns with nothing)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the probe samples once per print",
       "applied": true,
       "caught": true
     },
@@ -79,6 +89,6 @@
     }
   ],
   "status": "passed",
-  "contract": "Two hands on the Berserker's great sword (게임성 개발 1, 2026-10-11; SPEC A23-108, 검수 10/11; user 10/11 \"대검을 잡는\n게 이상한데? 손바닥 위에 올려놓은 느낌\"; references docs/design/grip_reference_2026-10-11.md), offline.\n\nGeometry: the CURRENT Config.ClassGrips.Warrior_Horns.TwoHand (Hilt, Aim, Gap) through a Python copy of\nWeaponPose.TwoHandGoals and Fx's two-bone arm solve (Feel.solveArm) on the R15 rig of place/GoodEvil.rbxlx (UpperTorso\nshoulders (+-0.972, 0.598, 0); arm attachments: shoulder (-+0.501, 0.419), elbow (0, -0.355) / (0, 0.275), wrist\n(0, -0.532) / (0, 0.132), grip (0, -0.158)), at scale 1 and 0.85, with blocky hands (1 stud along the handle) and small\nones (0.4). For each hand: the solve is in reach (wrist distance <= 92% of the arm), the grip point (where a Roblox tool\nhandle runs) lies on the handle line (<= 0.2 studs), the hand's -Z (the held axis) lies along the blade (<= 10 deg),\nthe forearm crosses the handle (45..135 deg - not lying along the forearm, the \"on the palm\" look), the left hand is\nbelow the right one by the gap. The blade passes just over the right shoulder (the shoulder plane z = 0 at x 0.8..1.5,\ny 0.85..1.5, above the torso top 0.8) and rises up and back (115..145 deg). The great sword's handle reaches past the\nleft hand (CharacterVisuals SHAPES.GreatSword: top / below). Static: WeaponPose drives both arms from TwoHandGoals,\nright arm first (out of reach = no pose), the grip point lands on the line (CFrame.new(-gripPos)), the up turns to the\nshoulder, the fade, the gap from the hands' sizes. Mutations: each must be caught. The look = 메인 반영 photos.",
+  "contract": "Two hands on the Berserker's great sword (게임성 개발 1, 2026-10-11; SPEC A23-108, 검수 10/11; user 10/11 \"대검을 잡는\n게 이상한데? 손바닥 위에 올려놓은 느낌\"; references docs/design/grip_reference_2026-10-11.md), offline.\n\nGeometry: the CURRENT Config.ClassGrips.Warrior_Horns.TwoHand (Hilt, Aim, Gap) through a Python copy of\nWeaponPose.TwoHandGoals and Fx's two-bone arm solve (Feel.solveArm) on the R15 rig of place/GoodEvil.rbxlx (UpperTorso\nshoulders (+-0.972, 0.598, 0); arm attachments: shoulder (-+0.501, 0.419), elbow (0, -0.355) / (0, 0.275), wrist\n(0, -0.532) / (0, 0.132), grip (0, -0.158)), at scale 1 and 0.85, with blocky hands (1 stud along the handle) and small\nones (0.4). For each hand: the solve is in reach (wrist distance <= 92% of the arm), the grip point (where a Roblox tool\nhandle runs) lies on the handle line (<= 0.2 studs), the hand's -Z (the held axis) lies along the blade (<= 10 deg),\nthe forearm crosses the handle (45..135 deg - not lying along the forearm, the \"on the palm\" look), the left hand is\nbelow the right one by the gap. The blade passes just over the right shoulder (the shoulder plane z = 0 at x 0.8..1.5,\ny 0.85..1.5, above the torso top 0.8) and rises up and back (115..145 deg). The great sword's handle reaches past the\nleft hand (CharacterVisuals SHAPES.GreatSword: top / below). Static: WeaponPose drives both arms from TwoHandGoals in\ntorso space (walk / run / jump keep the hands on: the arm swing is replaced), out of reach = the closest reach (never\na dropped frame), the grip point lands on the line (CFrame.new(-gripPos)), the up turns to the shoulder, the fade, the\ngap from the hands' sizes, the Studio probe (GripProbe) measures every frame and prints the worst. Mutations: each\nmust be caught. The look and the walk sequence = 메인 반영 photos + probe lines.",
   "studioCalls": 0
 }

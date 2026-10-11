@@ -44,7 +44,7 @@ local T = {
 	RightGrip = Vector3.new(0, -0.158, 0), LeftGrip = Vector3.new(0, -0.158, 0),
 	PoleRight = Vector3.new(0.7, -0.7, 0.2), Pole = Vector3.new(-0.7, -0.7, 0.2),
 	Gap = { 0.45, 0.8 }, GapPad = 0.05,
-	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.Probe)
+	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.ProbeStep: every frame measured, the worst printed)
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
 
@@ -150,8 +150,10 @@ end
 -- hand's grip point (Left/RightGripAttachment, where a Roblox tool's handle runs) sits on the hilt line and the hand's
 -- -Z (the axis a held weapon runs along, CharacterVisuals fist()) lies along the blade, its +Y (towards the wrist)
 -- turned to its own shoulder, so the handle passes through both fists. The right hand leads (the weapon is welded to
--- it), the left one is Gap lower towards the pommel (the two hands side by side: their sizes along the handle). A
--- solve out of reach leaves the arms to the hold / the Animator.
+-- it), the left one is Gap lower towards the pommel (the two hands side by side: their sizes along the handle). The
+-- goals live in torso space and the arm joints are torso-relative, so walking / running / jumping (the Animator's arm
+-- swing is replaced, not added) keeps both hands on the handle; a goal out of reach takes the closest reach that frame
+-- (검수 10/11 walk photos: a dropped solve let the left hand hang for a frame).
 function WeaponPose.TwoHandGoals(torso, th, rightGrip, leftGrip, rightShoulder, leftShoulder, gap)
 	local aim = torso:VectorToWorldSpace(th.Aim.Unit)
 	local hilt = torso * th.Hilt
@@ -193,9 +195,9 @@ function WeaponPose.TwoHand(char, st, def, model)
 		gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), (torso * right.Shoulder.C0).Position,
 		(torso * left.Shoulder.C0).Position, gap)
 	local rPose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
-	if type(rPose) ~= "table" or rPose.Clamped then return false end
 	local lPose = fx.SolveArm(left, torso, lGoal, torso:VectorToWorldSpace(T.Pole))
-	local poses = { Right = rPose, Left = (type(lPose) == "table" and not lPose.Clamped) and lPose or nil }
+	if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end
+	local poses = { Right = rPose, Left = lPose }
 	for joint, w in T.TwoKeys do
 		local m, pose = st.Joints[joint], poses[w[1]]
 		if m and pose and typeof(pose[w[2]]) == "CFrame" then
@@ -207,7 +209,7 @@ function WeaponPose.TwoHand(char, st, def, model)
 			st.Base[joint], st.Last[joint] = base, out
 		end
 	end
-	return poses.Left ~= nil
+	return not (rPose.Clamped or lPose.Clamped)
 end
 
 local function poseChar(char, player, dt)
@@ -257,12 +259,13 @@ local function poseChar(char, player, dt)
 	if type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end
 end
 
--- Studio only (검수 10/11 grip measurements; 메인 반영 sets the LocalPlayer attribute GripProbe = true): every
--- ProbeEvery s, my own held weapon measured on the real parts (the pose is client-side, the server never sees it) -
--- per hand: dHand = the hand's centre to the weapon line, dGrip = its grip attachment to the line, axis = its held
--- axis (-Z) against the line, fore = the forearm against the line (degrees, 0..90). The line = the weapon's Handle
--- part when it has one (two-hand swords), else through the right grip along the right hand's -Z
-function WeaponPose.Probe(char, model, key)
+-- Studio only (검수 10/11 grip measurements; 메인 반영 sets the LocalPlayer attribute GripProbe = true): my own held
+-- weapon measured EVERY FRAME on the real parts (the pose is client-side, the server never sees it), one console line
+-- per ProbeEvery s with this frame's value and the window's worst (walk / run / jump included) - per hand: dHand = the
+-- hand's centre to the weapon line, dGrip = its grip attachment to the line, axis = its held axis (-Z) against the
+-- line, fore = the forearm against the line (degrees, 0..90). The line = the weapon's Handle part when it has one (two-
+-- hand swords), else through the right grip along the right hand's -Z. Returns { Right = {..}, Left = {..} }
+function WeaponPose.Measure(char, model)
 	local function at(hand, att)
 		local a = hand:FindFirstChild(att)
 		return (a and a:IsA("Attachment")) and a.WorldPosition or hand.Position
@@ -283,18 +286,44 @@ function WeaponPose.Probe(char, model, key)
 	local function ang(v)
 		return math.deg(math.acos(math.clamp(math.abs(v.Unit:Dot(dir)), 0, 1)))
 	end
-	local parts = { string.format("[WeaponPose] probe %s", tostring(key)) }
+	local out = {}
 	for _, side in { "Right", "Left" } do
 		local hand, lower = char:FindFirstChild(side .. "Hand"), char:FindFirstChild(side .. "LowerArm")
 		if hand and lower then
-			table.insert(parts, string.format("%s dHand=%.2f dGrip=%.2f axis=%.0f fore=%.0f size=%.2f,%.2f,%.2f", side,
-				off(hand.Position), off(at(hand, side .. "GripAttachment")), ang(hand.CFrame.LookVector),
-				ang(lower.CFrame.UpVector), hand.Size.X, hand.Size.Y, hand.Size.Z))
+			out[side] = { dHand = off(hand.Position), dGrip = off(at(hand, side .. "GripAttachment")),
+				axis = ang(hand.CFrame.LookVector), fore = ang(lower.CFrame.UpVector) }
 		end
 	end
-	local line = table.concat(parts, " | ")
-	print(line)
-	return line
+	return out
+end
+
+function WeaponPose.ProbeStep(me, now)
+	local char = me.Character
+	local model = char and char:FindFirstChild(T.Model)
+	if not model then return end
+	local m = WeaponPose.Measure(char, model)
+	if not m then return end
+	local P = S.Probe or { Max = {}, N = 0, At = now }
+	S.Probe = P
+	P.N += 1
+	for side, v in m do
+		local w = P.Max[side] or { dHand = 0, dGrip = 0, axis = 0, foreLo = 90, foreHi = 0 }
+		P.Max[side] = w
+		w.dHand, w.dGrip, w.axis = math.max(w.dHand, v.dHand), math.max(w.dGrip, v.dGrip), math.max(w.axis, v.axis)
+		w.foreLo, w.foreHi = math.min(w.foreLo, v.fore), math.max(w.foreHi, v.fore)
+	end
+	if now - P.At < T.ProbeEvery then return end
+	local key = Config.ClassGripKey(model:GetAttribute("Class") or me:GetAttribute("Class"), me:GetAttribute("Faction"))
+	local parts = { string.format("[WeaponPose] probe %s frames=%d", tostring(key), P.N) }
+	for _, side in { "Right", "Left" } do
+		local v, w = m[side], P.Max[side]
+		if v and w then
+			table.insert(parts, string.format("%s dHand=%.2f(max %.2f) dGrip=%.2f(max %.2f) axis=%.0f(max %.0f) fore=%.0f(%.0f..%.0f)",
+				side, v.dHand, w.dHand, v.dGrip, w.dGrip, v.axis, w.axis, v.fore, w.foreLo, w.foreHi))
+		end
+	end
+	print(table.concat(parts, " | "))
+	S.Probe = nil
 end
 
 function WeaponPose.Step(dt)
@@ -304,15 +333,7 @@ function WeaponPose.Step(dt)
 		pick()
 	end
 	local me = Players.LocalPlayer
-	if RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true and now - (S.ProbeAt or -math.huge) >= T.ProbeEvery then
-		S.ProbeAt = now
-		local char = me.Character
-		local model = char and char:FindFirstChild(T.Model)
-		if model then
-			local key = Config.ClassGripKey(model:GetAttribute("Class") or me:GetAttribute("Class"), me:GetAttribute("Faction"))
-			pcall(WeaponPose.Probe, char, model, key)
-		end
-	end
+	if RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true then pcall(WeaponPose.ProbeStep, me, now) end
 	for char, player in S.Set do
 		local ok, err = pcall(poseChar, char, player, math.clamp(tonumber(dt) or 0, 0, 0.1))
 		if not ok then

@@ -10,9 +10,11 @@ handle runs) lies on the handle line (<= 0.2 studs), the hand's -Z (the held axi
 the forearm crosses the handle (45..135 deg - not lying along the forearm, the "on the palm" look), the left hand is
 below the right one by the gap. The blade passes just over the right shoulder (the shoulder plane z = 0 at x 0.8..1.5,
 y 0.85..1.5, above the torso top 0.8) and rises up and back (115..145 deg). The great sword's handle reaches past the
-left hand (CharacterVisuals SHAPES.GreatSword: top / below). Static: WeaponPose drives both arms from TwoHandGoals,
-right arm first (out of reach = no pose), the grip point lands on the line (CFrame.new(-gripPos)), the up turns to the
-shoulder, the fade, the gap from the hands' sizes. Mutations: each must be caught. The look = 메인 반영 photos.
+left hand (CharacterVisuals SHAPES.GreatSword: top / below). Static: WeaponPose drives both arms from TwoHandGoals in
+torso space (walk / run / jump keep the hands on: the arm swing is replaced), out of reach = the closest reach (never
+a dropped frame), the grip point lands on the line (CFrame.new(-gripPos)), the up turns to the shoulder, the fade, the
+gap from the hands' sizes, the Studio probe (GripProbe) measures every frame and prints the worst. Mutations: each
+must be caught. The look and the walk sequence = 메인 반영 photos + probe lines.
 
 Usage: py tools/test_two_hand_grip.py
 Report: docs/art/verification_2026-10-11/offline_two_hand_grip_2026-10-11.json
@@ -161,7 +163,16 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         ("the left hand is Gap lower on the line", "goal(hilt - aim * gap, leftGrip, leftShoulder)" in wp, ""),
         ("the gap comes from the hands' sizes along the handle",
          "local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad," in body, ""),
-        ("the right arm leads: out of reach = no two-hand pose", 'if type(rPose) ~= "table" or rPose.Clamped then return false end' in body, ""),
+        ("out of reach still poses (the closest reach): the hands never drop for a frame (검수 10/11 walk photos)",
+         'if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end' in body
+         and ".Clamped then return" not in body, ""),
+        ("walk / run / jump: the goals and the elbows live in torso space (the arm swing is replaced, not added)",
+         "local aim = torso:VectorToWorldSpace(th.Aim.Unit)\n\tlocal hilt = torso * th.Hilt" in wp
+         and "torso:VectorToWorldSpace(T.PoleRight)" in body and "torso:VectorToWorldSpace(T.Pole)" in body
+         and "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
+        ("Studio probe measures every frame and prints the worst (walk sequences)",
+         'if RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true then pcall(WeaponPose.ProbeStep, me, now) end' in wp
+         and "w.dHand, w.dGrip, w.axis = math.max(w.dHand, v.dHand), math.max(w.dGrip, v.dGrip), math.max(w.axis, v.axis)" in wp, ""),
         ("both arms fade in with the pose weight", "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
         ("the arms are kept like the hold's (handed back on release)", "st.Base[joint], st.Last[joint] = base, out" in body, ""),
     ]
@@ -187,8 +198,10 @@ MUTATIONS = [
      "CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z)"),
     ("WP", "the left hand on top of the right", "goal(hilt - aim * gap, leftGrip, leftShoulder)", "goal(hilt, leftGrip, leftShoulder)"),
     ("WP", "never run", '\tif type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end\n', ""),
-    ("WP", "a clamped right arm still posed", 'if type(rPose) ~= "table" or rPose.Clamped then return false end',
-     'if type(rPose) ~= "table" then return false end'),
+    ("WP", "a clamped solve drops the pose (the hanging left hand)", 'if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end',
+     'if type(rPose) ~= "table" or type(lPose) ~= "table" or lPose.Clamped then return false end'),
+    ("WP", "the blade in world space (turns with nothing)", "local aim = torso:VectorToWorldSpace(th.Aim.Unit)", "local aim = th.Aim.Unit"),
+    ("WP", "the probe samples once per print", "pcall(WeaponPose.ProbeStep, me, now) end", "pcall(WeaponPose.ProbeStep, me, now + 99) end"),
     ("WP", "no fade", "local out = base:Lerp(pose[w[2]], st.W)", "local out = pose[w[2]]"),
     ("WP", "a fixed gap", "local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad,", "local gap = math.clamp(0.45,"),
     ("FX", "no shared solver", "Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames\n", "\n"),
