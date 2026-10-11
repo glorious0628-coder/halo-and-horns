@@ -6,6 +6,8 @@
 ## main에 병합됨 (main 37a5dc62까지)
 onehand·onehand-2, golden-egg(3d95925a·eebeebd3·egg-mine cef8f3f6), v4-tables, lesstext + lesstext-server 6fc3ba52, dev4-bag + fix/bag-2, dev3-gather, dev3-craft b868d6ce, spawnclear 358867c7 + rim e1429fba, reward-chip, dev4-gather bb2cdbfe, dev4-craft 5d4fc6f3, photo-1012 40159fe9, imgdev-icons1. 메인 반영 1 96ec45ad 사진: spawn probe 프롭 안 0·Play 8회 0, 받기 칩·강화 줄 안 잘림, 재료 팔기 494 = +494, 오토 G(모루 프롬프트 12칸) 열림 — 통과.
 
+메인 반영 1 37a5dc62 probe: 프롭 안 0, 빈 시도 비율 숲 Goblin 68.5%·Brute 60.4%, 초원 Slime 80.6%·BigSlime 72.3%, 폐허 98~99% → 내 오프라인 실측(잃은 면적 32%·36%·17%·24%·1% 안)과 몇 % 안에서 맞음 = spawnclear 끝. 웅덩이 테두리 안 슬라임 0, 가방 재료 아이콘 8칸 그림.
+
 ## 아침에 할 것 (순서)
 1. **fix/spawnclear-rim 0a1e3e75 = 병합 가능**(town_quests 정규식 한 커밋, 1035·STATIC 8/8·변이 244/244) — 최종 검수에 알림(전달됨).
 2. **fix/lesstext-server 6adf2c82(개발 2 서버 글 판정표, src 25개) sweep 마저:** 시험 병합 ec3588f9(main 37a5dc62 위, scratchpad ls_merge.txt·ls_list.txt 163개). 지금까지 134개 통과, 실패 2개 = test_costume_physics·test_skin_binding_studio(이름상 Studio/옛 의상 파일 필요 — main에서도 같은지 확인할 것). 남은 약 27개(셋째 폴더) 돌리고 → 반박 리뷰(소리만 내는 빈 글 Notify는 Audio.NotifySound가 Sound로 재생, UIKit은 빈 글 무시 — 확인함) → 병합 가능 보고. main이 그 사이 바뀌면 merge-tree 다시.
