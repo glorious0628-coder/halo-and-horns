@@ -57,9 +57,9 @@ local ZONE = {
 	HauntedHollow = { Amb = { 0.95, 1, 1.45 }, Bright = 0.45, Exp = 0.2, Tint = rgb(214, 206, 255), Sat = 0.05,
 		Con = 0.08, CC = 0.02,
 		Dusk = { Clock = 18.9, Fog = rgb(66, 58, 108), FogStart = 60, FogEnd = 340, Clouds = rgb(118, 100, 168) } },
-	-- pale limestone town: dimmer sun so the white tiles do not burn out
-	HaloTown = { Amb = { 1.06, 1.04, 0.95 }, Bright = 0.88, Exp = -0.12, Tint = rgb(255, 246, 228), Sat = 0.06, Con = 0.05,
-		CC = 0 },
+	-- C2c (검수 10/11, docs/design/halo_zonelook_values_2026-10-11.md): the new cream-marble town in a soft warm light
+	HaloTown = { Amb = { 1.45, 1.36, 1.32 }, Bright = 1.0, Exp = 0.15, Tint = rgb(255, 248, 236), Sat = 0.08, Con = 0.04,
+		CC = 0.02, Specular = 0.8 },
 	-- quality 7 (이미지 생성 1 cdaaeaa, 2026-10-07): the dark basalt den read near black on phones (day mean 0.17, night
 	-- ~0.03): warmer, brighter light by day and a night lift (NightExp 1.6, 검수 2026-10-07 from real captures: 1.9 made
 	-- the night as bright and red as the day; 1.6 keeps it near the meadow night)
