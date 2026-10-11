@@ -73,7 +73,23 @@ local TUNE = {
 			Archer = { Launch = 0.18, Contact = 0.4 },
 			PetDash = { Contact = 0.35 }, -- A23-39 pet tamer: the pet dashes into the area
 		},
+		-- A23-116 (skills18 §0): the Z / X skills' times (Fx "Skill" ContactDelay / LaunchDelay; SkillService starts a
+		-- pull / push at Contact) by class or style (the pet tamer: Config.Tamer.SkillStyle). The Q values for now: each
+		-- slot is tuned here (SKILL.Motion)
+		Z = {
+			Warrior = { Contact = 0.24 },
+			Mage = { Launch = 0.35, Contact = 0.35 },
+			Archer = { Launch = 0.18, Contact = 0.4 },
+			PetDash = { Contact = 0.35 },
+		},
+		X = {
+			Warrior = { Contact = 0.24 },
+			Mage = { Launch = 0.35, Contact = 0.35 },
+			Archer = { Launch = 0.18, Contact = 0.4 },
+			PetDash = { Contact = 0.35 },
+		},
 	},
+	HEALED_MAX = 5, -- A23-116: the Fx Healed signal lists the nearest 5 healed players (the client's heal sparkles)
 }
 
 ------------------------------------------------------------------ per-player state (session only)
@@ -782,12 +798,13 @@ end
 
 -- Halo skill support: every Halo player alive within `radius` of `center` (the caster too) heals HaloHealPct of the HP
 -- the cast really removed, at most HaloHealCapPct of their MaxHealth per 3 s from this caster. Returns the OTHER
--- players healed (Released.Healed). A whiff heals nothing.
+-- players healed (Released.Healed) and, A23-116, the UserIds of everyone whose HP really went up (the caster too), the
+-- TUNE.HEALED_MAX nearest to `center`, nearest first (the Fx Healed signal). A whiff heals nothing.
 function SKILL.Heal(player, center, radius, total)
-	local healed = {}
+	local healed, got = {}, {}
 	local skill = Config.BasicSkill or {}
 	if type(total) ~= "number" or total <= 0 or perksOf(player).ReleaseSupport ~= true or faction(player) ~= "Halo" then
-		return healed
+		return healed, {}
 	end
 	for _, a in S.PlayerService.GetReadyPlayers() do
 		if a.Parent and faction(a) == "Halo" and Util.IsAlive(a) then
@@ -801,10 +818,14 @@ function SKILL.Heal(player, center, radius, total)
 				if a ~= player and amount > 0 then
 					table.insert(healed, a)
 				end
+				if amount > 0 then table.insert(got, { Id = a.UserId, D = Util.FlatDistance(aRoot.Position, center) }) end
 			end
 		end
 	end
-	return healed
+	table.sort(got, function(x, y) return x.D < y.D or (x.D == y.D and x.Id < y.Id) end)
+	local ids = {}
+	for i = 1, math.min(#got, TUNE.HEALED_MAX) do ids[i] = got[i].Id end
+	return healed, ids
 end
 
 -- Horns skill life steal: Lifesteal of the HP the cast removed, at most LifestealCapPct of the caster's MaxHealth (an
@@ -820,6 +841,15 @@ function SKILL.Steal(player, total)
 	local amount = want > 0 and CombatService.HealPlayer(player, want) or 0
 	SKILL.Book("Steal", player, player, amount)
 	return amount
+end
+
+-- A23-116: the contact / launch times (s from the press) of a skill slot ("Q" | "Z" | "X") for a class id or a style
+-- (TUNE.MOTION: Q = its Release row). nil, nil = none (the clients' own defaults)
+function SKILL.Motion(slot, classId, style)
+	local rows = (slot == "Q" or slot == "Z" or slot == "X") and TUNE.MOTION[slot == "Q" and "Release" or slot] or nil
+	local m = rows and rows[style or classId]
+	if type(m) ~= "table" then return nil, nil end
+	return m.Contact, m.Launch
 end
 
 -- a manual skill press (UseSkill): auto combat yields to it like to a manual swing
@@ -1287,11 +1317,11 @@ function CombatService.Release(player, isAuto, hint)
 	end
 
 	-- 6. Halo skill support heals the Halo players inside the blast (self included) from the HP really removed (a whiff
-	-- heals nothing); SKL-2: per ally through the 3 s window (SKILL.Heal)
-	local healed = SKILL.Heal(player, center, radius, total)
+	-- heals nothing); SKL-2: per ally through the 3 s window (SKILL.Heal). A23-116: healedIds = the Fx Healed signal
+	local healed, healedIds = SKILL.Heal(player, center, radius, total)
 
-	-- 7. lifesteal (Horns) on the total; SKL-2: the skills' 3 s window (SKILL.Steal)
-	SKILL.Steal(player, total)
+	-- 7. lifesteal (Horns) on the total; SKL-2: the skills' 3 s window (SKILL.Steal). A23-116: stole = the Fx Stole signal
+	local stole = SKILL.Steal(player, total)
 
 	-- 8. activity
 	if not isAuto then
@@ -1316,6 +1346,10 @@ function CombatService.Release(player, isAuto, hint)
 		Auto = isAuto,
 		Total = shownTotal, -- the big number = the sum of the hit numbers shown
 		Hits = hits,
+		-- A23-116 common signals, only what the server really restored: the UserIds whose HP this cast's heal raised
+		-- (the caster too, the nearest 5 first) and the HP the Horns life steal gave the caster (0 = none)
+		Healed = healedIds,
+		Stole = stole,
 	})
 	CombatService.Released:Fire(player, {
 		Slot = "Q", -- SKL-2: Z / X casts (SkillService) fire this signal with their own slot
