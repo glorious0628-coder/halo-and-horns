@@ -616,6 +616,60 @@ runGroup("ground and room probes", function()
 		tostring(boxes[#boxes].Params.CollisionGroup))
 end)
 
+-- halo_restart 2026-10-11 '걷는 바닥 태그': a floor tagged Config.Ground.Tag ("WalkGround") is walking ground for the
+-- rescue (Config.GroundRoots, the rule MonsterService and the clients' Ground.luau use)
+runGroup("walk ground tag", function()
+	local w = zoneWorld()
+	w.Tagged = {}
+	w.Services.CollectionService = { GetTagged = function(_, tag) return w.Tagged[tag] or {} end }
+	local function inst(class, name, parent)
+		local i = newInstance(class, w)
+		i.Name = name
+		i.Parent = parent
+		return i
+	end
+	local map = inst("Folder", "Map", w.WS)
+	local plate = inst("Part", "Plate", inst("Folder", "Ground", map))
+	local decor = inst("Folder", "Decor", map)
+	local props = inst("Folder", "HaloProps", decor)
+	local house = inst("Model", "House07", inst("Model", "Cell_0_-512", props))
+	local floor = inst("Part", "Floor", house)
+	local roof = inst("Part", "Roof", house)
+	local kitDeck = inst("Part", "Deck", inst("Model", "Halo_ArchBridge_1", inst("Model", "Cell_1_-500", props)))
+	local yard = inst("Part", "Yard", w.WS) -- a tagged floor outside workspace.Map
+	w.Tagged[w.Config.Ground.Tag] = { floor, yard }
+	check(w.Config.Ground.Tag == "WalkGround", "the tag is Config.Ground.Tag = WalkGround (game dev 1's Ground.luau)")
+	local casts = {}
+	w.WS.Raycast = function(_, origin, dir, params)
+		table.insert(casts, { Origin = origin, Dir = dir, Params = params })
+		return w.NextHit
+	end
+	local G = w.Real.Ground
+	local function hitOn(i)
+		w.NextHit = { Position = vec(1, 2, 3), Normal = vec(0, 1, 0), Material = "Material.WoodPlanks", Instance = i }
+		return G(vec(1, 62, 3), 70)
+	end
+	check(hitOn(floor).Walkable == true, "a WalkGround-tagged floor inside a Halo prop: a landing spot")
+	check(hitOn(roof).Walkable == false, "the same house's roof (not tagged): still no landing spot")
+	check(hitOn(kitDeck).Walkable == true, "a world-kit bridge (Decor.HaloProps cell's ...Bridge... model): a landing spot")
+	check(hitOn(yard).Walkable == true and hitOn(plate).Walkable == true and hitOn(w.Terrain).Walkable == true,
+		"a tagged floor outside the Map, Map.Ground and Terrain: landing spots")
+	local list = casts[1].Params.FilterDescendantsInstances
+	check(#list == 3 and list[1] == w.Terrain and list[2] == map and list[3] == yard,
+		"the ray list: Terrain, the Map, then tagged floors outside the Map (one inside is already under the Map)", tostring(#list))
+	-- a floor tagged later: seen once the params are rebuilt (5 s)
+	local porch = inst("Part", "Porch", house)
+	w.Tagged[w.Config.Ground.Tag] = { floor, yard, porch }
+	check(hitOn(porch).Walkable == false, "tagged just now: not yet (the roots are kept 5 s)")
+	w.Clock += 6
+	check(hitOn(porch).Walkable == true, "... a landing spot after the rebuild")
+	-- tags unreadable: only the map's own ground, never thrown
+	w.Services.CollectionService = { GetTagged = function() error("offline tags down") end }
+	w.Clock += 6
+	local ok, h = pcall(hitOn, floor)
+	check(ok and h.Walkable == false and hitOn(plate).Walkable == true, "tags unreadable: tagged floors drop out, Map.Ground stays", "")
+end)
+
 runGroup("end to end on the engine doubles", function()
 	local w = zoneWorld()
 	local map = newInstance("Folder", w)

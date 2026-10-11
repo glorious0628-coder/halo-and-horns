@@ -290,6 +290,16 @@ function Util.TaggedSpot(tag, key)
 	return nil
 end
 
+-- every instance carrying the CollectionService tag (e.g. Config.Ground.Tag "WalkGround" for the servers' ground rays,
+-- Config.GroundRoots); {} on any failure, never throws
+function Util.Tagged(tag)
+	if type(tag) ~= "string" then return {} end
+	local ok, list = pcall(function()
+		return game:GetService("CollectionService"):GetTagged(tag)
+	end)
+	return (ok and type(list) == "table") and list or {}
+end
+
 function Util.PlayersExcept(player)
 	local out = {}
 	for _, p in Players:GetPlayers() do

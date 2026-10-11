@@ -9,7 +9,7 @@ PhysicsService), with the installed official Luau CLI. No Studio, network, DataS
 in-memory copies of the sources only.
 
 Usage: py tools/test_water_rescue.py [--no-mutations] [--luau path/to/luau.exe]
-Report: docs/art/verification_2026-10-10/offline_dev2_water_rescue_2026-10-10.json
+Report: docs/art/verification_2026-10-11/offline_dev2_water_rescue_2026-10-11.json (WalkGround; was ..._2026-10-10.json)
 """
 from __future__ import annotations
 
@@ -117,10 +117,10 @@ MUTATIONS = [
      ''),
     ('ray params never rebuilt', Z, 'now - waterProbe.ParamsAt < 5',
      'true'),
-    ('any Decor child is a bridge', Z, '(parent.Name == "Decor" and string.sub(node.Name, 1, 7) == "Bridge_")',
-     '(parent.Name == "Decor")'),
-    ('any Ground is the map ground', Z, '(node.Name == "Ground" and parent.Name == "Map" and parent.Parent == workspace)',
-     '(node.Name == "Ground")'),
+    # (the bridge / Ground names live in Config.GroundRoots since the WalkGround tag, 2026-10-11)
+    ('any Decor child is a bridge', C, '\t\t\t\tif string.sub(d.Name, 1, 7) == "Bridge_" then\n\t\t\t\t\ttable.insert(list, d)',
+     '\t\t\t\tif true then\n\t\t\t\t\ttable.insert(list, d)'),
+    ('any Ground is the map ground', Z, '\t\tif roots[node] then return true end', '\t\tif roots[node] or node.Name == "Ground" then return true end'),
     ('a room error reads as room', Z, 'return ok and type(parts) == "table" and #parts == 0',
      'return not ok or #parts == 0'),
     ('non-colliding parts take the room', Z, '\tpcall(function() overlap.RespectCanCollide = true end)\n',
@@ -157,6 +157,18 @@ MUTATIONS = [
      ''),
     ('water review: MaxRise below the Halo top tier', C, '\tMaxRise = 42, -- ... and at most this far',
      '\tMaxRise = 30, -- ... and at most this far'),
+    # halo_restart 2026-10-11 '걷는 바닥 태그' (WalkGround)
+    ('tagged floors are no landing spot', Z, 'for _, inst in Config.GroundRoots(workspace.Terrain, map, tagged) do roots[inst] = true end',
+     'for _, inst in Config.GroundRoots(workspace.Terrain, map, {}) do roots[inst] = true end'),
+    ('tagged floors outside the Map unseen', Z, '\t\tif not inMap then table.insert(list, inst) end', '\t\tif false then table.insert(list, inst) end'),
+    ('tagged floors inside the Map listed twice', Z, '\t\tif not inMap then table.insert(list, inst) end', '\t\ttable.insert(list, inst)'),
+    ('every map part is a landing spot', Z, '\t\tif roots[node] then return true end', '\t\tif node ~= nil then return true end'),
+    ('the hit part itself never checked', Z, '\tlocal node = inst\n\twhile node ~= nil and node ~= workspace do\n\t\tif roots[node] then return true end',
+     '\tlocal node = inst.Parent\n\twhile node ~= nil and node ~= workspace do\n\t\tif roots[node] then return true end'),
+    ('roots never kept', Z, '\twaterProbe.Roots = roots\n', ''),
+    ('the tag from nowhere', Z, 'local tagged = Util.Tagged((Config.Ground or {}).Tag or "WalkGround")', 'local tagged = Util.Tagged("Ground")'),
+    ('Util.Tagged throws', U, '\tlocal ok, list = pcall(function()\n\t\treturn game:GetService("CollectionService"):GetTagged(tag)\n\tend)',
+     '\tlocal ok, list = true, game:GetService("CollectionService"):GetTagged(tag)'),
 ]
 
 
@@ -170,6 +182,12 @@ def static_checks(sources: dict[str, str]) -> tuple[int, list[str]]:
             failures.append(message)
 
     zone, cfg = sources[Z], sources[C]
+    walk = function_block(zone, "local function walkableHit(")
+    check("Bridge_" not in walk and "roots[node]" in walk,
+          "walkableHit: one ground rule (Config.GroundRoots roots from waterParams), no list of its own")
+    wp = function_block(zone, "local function waterParams(")
+    check('Config.GroundRoots(workspace.Terrain, map, tagged)' in wp and 'Util.Tagged((Config.Ground or {}).Tag or "WalkGround")' in wp,
+          "waterParams: the roots = Config.GroundRoots with the WalkGround tag")
     upd = function_block(zone, "local function updateZone(")
     a, b = upd.find("applyZone(player, zone, root.Position)"), upd.find("pcall(waterTick, player, root)")
     check(0 <= a < b, "updateZone: the water tick runs after the gates and applyZone, in its own pcall")
@@ -203,9 +221,11 @@ def static() -> tuple[int, list[str]]:
 SUITE = Suite(
     mark="WATERRESCUE",
     fixture=ROOT / "tools/fixtures/water_rescue_offline.luau",
-    out=ROOT / "docs/art/verification_2026-10-10/offline_dev2_water_rescue_2026-10-10.json",
+    out=ROOT / "docs/art/verification_2026-10-11/offline_dev2_water_rescue_2026-10-11.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="zone_check_halo #11 / #62 / #63: ZoneService.updateZone runs waterTick (pcall) after the gates and applyZone. "
+    contract="halo_restart 10/11 WalkGround: a landing spot is Terrain or a part under Config.GroundRoots (Map.Ground, the bridges, "
+             "Config.Ground.Tag-tagged floors; tagged floors outside the Map join the ray list; rebuilt every 5 s). "
+             "zone_check_halo #11 / #62 / #63: ZoneService.updateZone runs waterTick (pcall) after the gates and applyZone. "
              "In a town zone or within Config.WaterRescue.Margin studs of a town rect, a live player whose root is in "
              "Terrain water (ReadVoxelChannels at the root, RootSlack) for Seconds in a row (a dry spell of DryReset "
              "restarts it; a new character restarts it) is moved to the nearest dry land: rings of downward rays "
