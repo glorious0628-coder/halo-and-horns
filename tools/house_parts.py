@@ -477,6 +477,6 @@ for o in bpy.context.scene.objects:
         tris[o.name] = len(o.data.loop_triangles)
 info["parts"] = {k: dict(v, tris=tris.get(k)) for k, v in pinfo.items()}
 info["tris_total"] = sum(tris.values())
-json.dump(info, open(os.path.join(OUTD, NAME + "_parts.json"), "w", encoding="utf-8"), indent=1)
+json.dump(info, open(os.path.join(OUTD, NAME + "_parts.json"), "w", encoding="utf-8"), indent=1, default=float)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUTD, NAME + "_A.blend"))
 print("[parts] ok", NAME, tris, flush=True)

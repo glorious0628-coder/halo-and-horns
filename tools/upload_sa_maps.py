@@ -27,6 +27,8 @@ def main():
     ap.add_argument("--port", type=int, default=8766)
     ap.add_argument("--pause", type=float, default=20.0, help="seconds between batches")
     ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--stale-from", help="with --replace: only keys whose id still equals the one in this older "
+                    "asset_ids copy (resume a stopped replace run without uploading the done ones again)")
     ap.add_argument("--replace", action="store_true", help="upload again even when SA_<name>_<T> is recorded (rebaked maps; "
                     "the old id is overwritten in asset_ids, the old one is printed)")
     a = ap.parse_args()
@@ -40,7 +42,12 @@ def main():
     files = [f"{n}_{t}.png" for n in names for t in a.tags if os.path.isfile(os.path.join(folder, f"{n}_{t}.png"))]
     with open(IDS, encoding="utf-8") as f:
         ids = json.load(f)
-    todo = [f for f in files if a.replace or "SA_" + f[:-4] not in ids]
+    stale = None
+    if a.stale_from:
+        with open(a.stale_from, encoding="utf-8") as f:
+            stale = json.load(f)
+    todo = [f for f in files if "SA_" + f[:-4] not in ids or (a.replace and (stale is None
+            or ids.get("SA_" + f[:-4]) == stale.get("SA_" + f[:-4])))]
     if a.replace:
         for f in todo:
             if "SA_" + f[:-4] in ids:

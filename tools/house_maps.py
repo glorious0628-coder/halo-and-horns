@@ -21,6 +21,8 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = os.path.abspath(sys.argv[1])
 extra = sys.argv[2:]
+if "--gold-hue-min" not in extra:
+    extra += ["--gold-hue-min", "34"]  # light wood (benches, counters, doors) sits at hue 30-32, gold at 35-44 (Juice shop 2D, 10/11)
 for cp in sorted(glob.glob(os.path.join(D, "*_color.png"))):
     part = os.path.basename(cp)[: -len("_color.png")]
     size = Image.open(cp).size[0]
@@ -32,7 +34,9 @@ for cp in sorted(glob.glob(os.path.join(D, "*_color.png"))):
     metal = np.asarray(Image.open(os.path.join(tmp, part + "_metal.png"))).astype(np.float32) / 255
     rough = np.asarray(Image.open(os.path.join(tmp, part + "_rough.png"))).astype(np.float32) / 255
     if part.endswith("_Awning"):
-        rough = np.where(metal > 0.3, rough, 0.88)
+        # cloth: yellow stripes have the gold colour, so no metal at all on the awning part
+        metal = metal * 0
+        rough = rough * 0 + 0.88
     if part.endswith("_Door"):
         # the wood leaf: no metal (its hardware is the _DoorHw part); light wood reads as gold by colour
         metal = metal * 0
