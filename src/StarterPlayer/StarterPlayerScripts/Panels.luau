@@ -47,6 +47,7 @@ local FRAME = {
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
 		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
+	RailGap = 8, RailMinRoom = 300, -- du: the window stops this far above the HUD icon row, if it keeps this much height
 }
 local BODY_FONT = Enum.Font.GothamMedium
 local WARN_INTERVAL = 10
@@ -1107,6 +1108,14 @@ local function layoutRoot()
 	-- the ribbon hangs half above the plate: keep it under the top bar
 	local hang = FRAME.TitleH / 2
 	local availH = math.max(220, h - top - 12 - hang)
+	-- 게임성 검수 10/12 (UiSandbox 1920x656): the window ends above the HUD's icon row (Bag · Map · Hero …) when that
+	-- still leaves a usable window (HUD.Layout.Rects.tiles, scaled to this canvas if the units differ)
+	local hl = C and type(C.HUD) == "table" and C.HUD.Layout or nil
+	local tiles = type(hl) == "table" and type(hl.Rects) == "table" and hl.Rects.tiles or nil
+	if type(tiles) == "table" and type(tiles.Y) == "number" and type(hl.H) == "number" and hl.H > 0 then
+		local room = tiles.Y * (h / hl.H) - FRAME.RailGap - (top + hang)
+		if room >= FRAME.RailMinRoom and room < availH then availH = room end
+	end
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
 	-- H-1 (게임성 개발 4): a registered window may ask for its own width (the bag's narrow / wide), never past the max
 	local want = currentId ~= nil and REG.Opts[currentId] ~= nil and REG.Opts[currentId].Width or nil

@@ -139,6 +139,9 @@ def static(src: dict) -> list[tuple[str, bool]]:
          and "return table.clone(ITEMS.Result), ITEMS.ResultAt" in src["PANELS"]),
         ("Panels: LastInventory hands out the last Inventory payload (a push before the bag bound)",
          "function Panels.LastInventory()\n\treturn ITEMS.Raw\nend" in src["PANELS"] and "\tITEMS.Raw = payload" in src["PANELS"]),
+        ("Panels: a window ends above the HUD icon row on a short screen (게임성 검수 10/12)",
+         "local room = tiles.Y * (h / hl.H) - FRAME.RailGap - (top + hang)" in src["PANELS"]
+         and "if room >= FRAME.RailMinRoom and room < availH then availH = room end" in src["PANELS"]),
         ("Panels: the menu opens the bag once it exists (one item window)",
          'BUILDERS.Bag and { Text = T.MenuBag, Id = "Bag" } or { Text = T.MenuItems, Id = "Items" },' in src["PANELS"]
          and 'if id == "Items" or id == "Bag" then itemsBtn = b end' in src["PANELS"]),
