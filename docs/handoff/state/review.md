@@ -41,3 +41,6 @@
 - **유료 승인한 것:** Tripo 묶음 1 26개 ≈ 1,430점(이미지 생성 4가 돌리는 중, 재시작 뒤 확인), 묶음 2(41개)는 이미지 생성 2의 4면 63장(≈315크레딧)이 디자인 검수 통과하면. 무기 High 28장 끝(디자인 검수 판정 대기).
 - **사용자 결정 오늘 밤:** SPEC A23-131~138 + 홈페이지 고침 완료(glorious.ai.kr 12/1). 사용자 할 일: 10/17 전 계정 나이 확인·2단계, 등급 설문 제출(답안 docs/design/maturity_questionnaire_draft_2026-10-11.md), 공개 날 1,000 R$ 보증금, 광고비 약 25만 원. Anthropic 신청서 답 2개(각 500자) 줬음.
 - **문서:** golden_egg, crown_war_content, memes_en, roblox_success_gap(할 일 20개 — 베타 전 것: 상점 가격 GetProductInfo, 한국어 글꼴 세트, 썸네일·아이콘·영상, 채팅 없는 신호·이모트, 코드 입력, 베타 숫자판, Lv25 이후 할 일 → 아직 담당에 안 나눔: 다음에 게임성 검수·디자인 검수와 나눌 것), roblox_publish_rules, gameplay_remaining, server_text_verdicts, halo_plan_v2_review.
+- (21:40) 사용자 재로그인 완료("로그인했어") → 이미지 생성 2(Firefly)·4(Tripo)에 이어가라 보냄. img2 남은 High 목록: 화분 8종×3 + Balustrade_F 덤불 3 + 종 몸체 4면 4 + WateringCan right 1 ≈ 160크레딧.
+- (22:20) **사용자 지시(이번 세션):** "계속 일해. 내가 검수해야만 다음으로 갈 수 있으면 정리하고 컴퓨터 꺼. 내 검수를 미루고 일할 수 있으면 계속." → 사용자 확인 필요한 것은 목록으로 모아 두고 다른 일 계속. 모든 세션이 사용자만 기다릴 때만: 정리(상태 파일·push) → PC 끄기(shutdown /s /t 60).
+- (22:20) index.lock 원인 = ChatGPT 앱 git status(사용자가 지움). push_paths 0c340cf: 앞으로만 맞추기 + `--sync`. 공유 HEAD = origin. 병합 대기: golden-egg-client 3d95925a(먼저) → dev3-v4-tables e5c8bb08, 내 반박 검토 워크플로 w3jgufgba 결과 뒤.
