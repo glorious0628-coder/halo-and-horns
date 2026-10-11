@@ -67,15 +67,15 @@ DISTRICTS = [
          why="꽃 키우는 사람들이 사는 남서쪽 조용한 동네. 집 4채가 마당·꽃밭과 함께, 1채는 바다를 본다.",
          flowers=["해바라기 노랑", "데이지 흰"], edge="나무 줄 + 낮은 울타리"),
     dict(id="cathedral", name="대성당 언덕", y=30, color=(232, 222, 242),
-         poly=[(-24, -600), (40, -590), (96, -600), (106, -650), (82, -694), (0, -698), (-54, -690), (-58, -640)],
-         why="왕관 조각을 지키는 곳이라 마을에서 가장 높다. 축에서 동쪽으로 비켜 서서 성문에서 바로 보인다(A23-112). 광장에서 큰 계단으로 오른다.",
+         poly=[(-24, -600), (40, -590), (104, -602), (112, -652), (96, -694), (0, -698), (-54, -690), (-58, -640)],
+         why="왕관 조각을 지키는 곳이라 마을에서 가장 높다. 축에서 동쪽으로 70 비켜 서서(A23-112) 성문에서 비스듬히 보이고, 큰 길은 광장에서 한 번 굽어 큰 계단으로 오른다. 서쪽 끝에 샘.",
          flowers=["흰", "연보라"], edge="언덕 축대 + 계단 폭포(서)"),
     dict(id="cliff_homes", name="동쪽 절벽 마을", y=18, y_to=22, color=(250, 214, 222),
          poly=[(84, -516), (126, -506), (170, -482), (192, -520), (195, -590), (184, -640), (140, -650), (106, -630), (96, -596), (80, -560)],
          why="바다를 보는 집 5채가 두 단(18·22)에 2~3채씩 무리. 절벽 끝 폭포가 바다로 떨어진다.",
          flowers=["분홍", "흰"], edge="절벽 + 둔덕"),
     dict(id="lookout", name="동남 전망대", y=34, color=(226, 236, 250),
-         poly=[(110, -656), (184, -646), (174, -690), (116, -696)],
+         poly=[(118, -658), (184, -646), (174, -690), (122, -696)],
          why="마을에서 가장 높은 곳에서 바다와 마을 전체를 본다. 전망 탑 하나, 가장자리 8 안에는 낮은 것만.",
          flowers=["하늘", "흰"], edge="난간 + 탑"),
 ]
@@ -83,8 +83,8 @@ DISTRICTS = [
 # ---------------------------------------------------------------- roads (polylines), width = studs
 ROADS = [
     dict(id="main", name="큰 길(첫 10분 뼈대)", w=20, grade=1,
-         pts=[(0, -336), (0, -362), (4, -400), (8, -426), (34, -448), (60, -470), (72, -496), (44, -524), (26, -560), (30, -588), (34, -612)],
-         note="성문 → 영웅상(둘로 갈라져 감쌈) → 스폰 → 시장 골목 → 분수 광장 → 대성당 큰 계단"),
+         pts=[(0, -336), (0, -362), (2, -400), (6, -426), (34, -448), (60, -470), (72, -496), (44, -524), (22, -552), (40, -578), (62, -596), (70, -614)],
+         note="성문 → 스폰(통로는 곧게) → 시장 골목 → 분수 광장(서쪽으로 돌아) → 동쪽으로 굽어 대성당 큰 계단"),
     dict(id="loop", name="훈련장 고리길", w=14, grade=2,
          pts=[(-4, -430), (-30, -436), (-48, -434), (-76, -440), (-100, -444), (-112, -424), (-96, -402), (-70, -384), (-50, -372), (-24, -366), (-8, -362)],
          note="스폰 → 다리 B1 → 훈련장 → 다리 B2 → 영웅상 → 성문(첫 10분 고리)"),
@@ -93,7 +93,7 @@ ROADS = [
     dict(id="to_hill", name="시장 위 언덕 계단", w=10, grade=2, pts=[(96, -458), (116, -444), (134, -420), (146, -396)], note="시장(8) → 언덕 동네(14)"),
     dict(id="to_cliff", name="절벽 마을 비탈", w=10, grade=2, pts=[(74, -536), (98, -548), (124, -556), (150, -576), (160, -608)], note="광장(10) → 절벽 마을(18 → 22)"),
     dict(id="to_garden", name="정원 길", w=8, grade=2, pts=[(-30, -566), (-56, -590), (-86, -616), (-118, -632), (-146, -650)], note="광장 → 정원 쉼터 → 정원 마을"),
-    dict(id="to_lookout", name="전망대 길", w=6, grade=3, pts=[(84, -640), (116, -662), (146, -672)], note="대성당 언덕(30) → 전망대(34)"),
+    dict(id="to_lookout", name="전망대 길", w=6, grade=3, pts=[(104, -628), (114, -646), (130, -664), (146, -672)], note="대성당 언덕(30) → 전망대(34)"),
     dict(id="castle_wall", name="성벽 전망 곁길", w=5, grade=3, pts=[(-150, -560), (-176, -540), (-186, -514)], note="막다른 끝 = 서쪽 바다 전망(보상)"),
     dict(id="hill_point", name="북동 곶 곁길", w=5, grade=3, pts=[(150, -392), (170, -380)], note="막다른 끝 = 교차로 다리 보이는 벤치"),
 ]
@@ -139,7 +139,7 @@ BUILDINGS = [
     ("House_Hill3", "HouseA", "market_hill", 146, -450, (150, -400), "언덕 동네 3"),
     ("Armory", "Armory", "training", -130, -414, (-108, -440), "기사단 무기고(작은 1층)"),
     ("Castle", "Castle", "castle", -136, -530, (-116, -470), "기사단 성: 문이 북쪽 훈련장 쪽"),
-    ("Cathedral", "Cathedral", "cathedral", 36, -652, (32, -590), "대성당: 문이 북쪽 광장 쪽, 축에서 동쪽으로 비킴"),
+    ("Cathedral", "Cathedral", "cathedral", 72, -652, (66, -590), "대성당: 문이 북쪽 큰 계단 쪽, 축에서 동쪽으로 72 비킴(검수 10/11)"),
     ("House_Cliff1", "HouseB", "cliff_homes", 112, -532, (96, -548), "절벽 마을 아래 단(18) 1"),
     ("House_Cliff2", "HouseA", "cliff_homes", 152, -522, (130, -556), "절벽 마을 아래 단(18) 2"),
     ("House_Cliff3", "HouseA", "cliff_homes", 176, -556, (200, -556), "바다를 보는 집"),
@@ -346,6 +346,39 @@ def checks(blds):
     for name, now, new, _ in FIXED_MOVE:
         if new and abs(new[0]) <= 12 and -432 <= new[2] <= -330:
             msgs.append(f"통로 안 고정점: {name}")
+    # what the gate shows: from the eye inside the gate (0, 6, -345) how much of each tall building rises above
+    # everything in front of it (ground heights from the districts, building tops = ground + h)
+    eye = (0.0, 6.0, -345.0)
+    sight = {}
+    for tgt in blds:
+        if tgt["kind"] not in ("Cathedral", "Castle", "Tower"):
+            continue
+        dist = math.hypot(tgt["x"] - eye[0], tgt["z"] - eye[2])
+        top_ang = (tgt["ground_y"] + tgt["h"] - eye[1]) / dist
+        base_ang = (tgt["ground_y"] - eye[1]) / dist
+        block = base_ang
+        by = None
+        for o in blds:
+            if o is tgt or o["kind"] == "Gate":
+                continue
+            od = math.hypot(o["x"] - eye[0], o["z"] - eye[2])
+            if od >= dist:
+                continue
+            # does the line eye -> target pass this footprint? sample along it
+            hit = False
+            for k in range(1, 60):
+                t = k / 60 * (od + 15) / dist
+                px, pz = eye[0] + (tgt["x"] - eye[0]) * t, eye[2] + (tgt["z"] - eye[2]) * t
+                if inside((px, pz), footprint(o)):
+                    hit = True
+                    break
+            if hit:
+                a = (o["ground_y"] + o["h"] - eye[1]) / od
+                if a > block:
+                    block, by = a, o["id"]
+        seen = max(0.0, min(1.0, (top_ang - block) / max(top_ang - base_ang, 1e-6)))
+        sight[tgt["id"]] = dict(angle_from_axis=round(math.degrees(math.atan2(tgt["x"], -(tgt["z"] - eye[2]))), 1),
+                                visible_share=round(seen, 2), hidden_by=by)
     # mirror pairs: same kind within 12 studs of the x-mirrored other
     pairs = 0
     for i in range(len(blds)):
@@ -360,7 +393,7 @@ def checks(blds):
                for r in ROADS for i in range(len(r["pts"]) - 1))
     squares = 0.55 * area(DIST["plaza"]["poly"]) + 0.35 * area(DIST["arrival"]["poly"]) + 0.6 * area(DIST["training"]["poly"])
     pave = (road + squares) / land
-    return msgs, pairs, land, pave
+    return msgs, pairs, land, pave, sight
 
 
 # ---------------------------------------------------------------- drawing
@@ -525,7 +558,9 @@ def draw_panel(im, d, blds, stats):
 def main():
     blds = build_list()
     ROADS.extend(door_spurs(blds))
-    msgs, pairs, land, pave = checks(blds)
+    msgs, pairs, land, pave, sight = checks(blds)
+    for k, v in sight.items():
+        print("[gate view]", k, v)
     for m in msgs:
         print("[check]", m)
     stats = dict(pave=pave, pairs=pairs, issues=len([m for m in msgs if not m.startswith("거울")]), land=land)
@@ -553,6 +588,7 @@ def main():
                           move=[dict(name=n, now=list(a) if a else None, new_xyz=list(b) if b else None, code=c) for n, a, b, c in FIXED_MOVE],
                           ground_rule=GROUND_RULE, pads=[dict(name="Pad_Halo_SlimeMeadow", at=[-24, 0.7, -357]), dict(name="Pad_Halo_GoblinWoods", at=[24, 0.7, -357])],
                           names=dict(fountain="Town_Halo_Fountain3", lamps="LampLight 속성/태그", collision="DecorPlayerOnly")),
+        gate_view=sight,
         checks=dict(paving_share=round(pave, 3), mirror_pairs=pairs, issues=msgs, land_area=round(land)),
         rules="A23-112 비대칭, A23-117 구역·이유, A23-106/120 진짜 문·빈 속, 성 돔 없음, 빛살 무늬 금지, acnh 12규칙",
     )
