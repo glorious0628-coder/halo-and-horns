@@ -131,8 +131,8 @@ BRIDGES = [
 
 # ---------------------------------------------------------------- buildings: kind -> footprint (w, d), height, floors, floor height, door (w, h)
 KINDS = {
-    "Gate": (50, 16, 44, 1, 30, (16, 30)),
-    "Tower": (12, 12, 36, 3, 8, (4, 7)),
+    "Gate": (50, 16, 48, 1, 30, (16, 30)),          # ④ skeleton (10/11): 44 -> 48 with the gold domes + finials, passage 16 x 30 kept
+    "Tower": (12, 12, 46, 3, 8, (4, 7)),           # ④: 36 was the gallery line; with the gold dome, finial 46 (halo ring 47)
     "Shop": (24, 15, 18, 1, 9, (5, 7.5)),
     "HouseA": (24, 22, 26, 2, 7, (4, 7)),
     "HouseB": (26, 18, 28, 2, 7.5, (4, 7)),
@@ -378,6 +378,7 @@ def build_list():
         yaw = round(math.degrees(math.atan2(dx, dz)) / 5) * 5
         dd = DIST[dist]
         gy = dd["y"]
+        h = {"Tower_Lookout": 50}.get(bid, h)  # ④: the open belvedere + dome + finial
         out.append(dict(id=bid, kind=kind, district=dist, x=x, z=z, ground_y=gy, yaw=yaw,
                         door_dir=[round(math.sin(math.radians(yaw)), 3), round(math.cos(math.radians(yaw)), 3)],
                         door_compass=compass(math.sin(math.radians(yaw)), math.cos(math.radians(yaw))),

@@ -2873,7 +2873,7 @@
    "door_compass": "북",
    "w": 50,
    "d": 16,
-   "h": 44,
+   "h": 48,
    "floors": 1,
    "floor_h": 30,
    "door_size": [
@@ -2921,7 +2921,7 @@
    "door_compass": "남서",
    "w": 12,
    "d": 12,
-   "h": 36,
+   "h": 46,
    "floors": 3,
    "floor_h": 8,
    "door_size": [
@@ -3881,7 +3881,7 @@
    "door_compass": "남서",
    "w": 12,
    "d": 12,
-   "h": 36,
+   "h": 50,
    "floors": 3,
    "floor_h": 8,
    "door_size": [
@@ -4549,7 +4549,7 @@
   },
   "Tower_Lookout": {
    "angle_from_axis": 30.7,
-   "visible_share": 0.0,
+   "visible_share": 0.16,
    "hidden_by": "House_Cliff1"
   }
  },
@@ -4568,7 +4568,7 @@
      "face": "남(안쪽)"
     },
     "Tower_GateEast": {
-     "front_lit_pct": 32,
+     "front_lit_pct": 31,
      "strength_pct": 9,
      "main": true,
      "face": "남서"
