@@ -1,0 +1,31 @@
+{
+ "HaloShop_Bakery_Sign_t00": {
+  "faces_in": 40,
+  "slivers_pale": 0,
+  "faces_out": 40
+ },
+ "HaloShop_Bakery_Sign_t01": {
+  "faces_in": 182,
+  "slivers_pale": 0,
+  "faces_out": 182
+ },
+ "HaloShop_Bakery_Sign_t10": {
+  "faces_in": 6,
+  "slivers_pale": 0,
+  "faces_out": 6
+ },
+ "HaloShop_Bakery_Sign_t11": {
+  "faces_in": 146,
+  "slivers_pale": 0,
+  "faces_out": 146
+ },
+ "_parts": {
+  "HaloShop_Bakery_Sign": {
+   "tiles_joined": 4,
+   "island_faces_cut": 10,
+   "tris": 364,
+   "maps": 512,
+   "uv_fill": 0.618
+  }
+ }
+}

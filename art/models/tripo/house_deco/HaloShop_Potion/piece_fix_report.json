@@ -1,31 +1,26 @@
 {
- "HaloShop_Potion_Dome_t00": {
-  "faces_in": 105,
+ "HaloShop_Potion_Sign_t00": {
+  "faces_in": 22,
   "slivers_pale": 0,
-  "faces_out": 105
+  "faces_out": 22
  },
- "HaloShop_Potion_Dome_t01": {
-  "faces_in": 72,
+ "HaloShop_Potion_Sign_t10": {
+  "faces_in": 160,
   "slivers_pale": 0,
-  "faces_out": 72
+  "faces_out": 160
  },
- "HaloShop_Potion_Dome_t10": {
-  "faces_in": 351,
+ "HaloShop_Potion_Sign_t11": {
+  "faces_in": 10,
   "slivers_pale": 0,
-  "faces_out": 351
- },
- "HaloShop_Potion_Dome_t11": {
-  "faces_in": 78,
-  "slivers_pale": 0,
-  "faces_out": 78
+  "faces_out": 10
  },
  "_parts": {
-  "HaloShop_Potion_Dome": {
-   "tiles_joined": 4,
-   "island_faces_cut": 0,
-   "tris": 606,
-   "maps": 1024,
-   "uv_fill": 0.607
+  "HaloShop_Potion_Sign": {
+   "tiles_joined": 3,
+   "island_faces_cut": 22,
+   "tris": 170,
+   "maps": 512,
+   "uv_fill": 0.405
   }
  }
 }

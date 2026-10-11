@@ -1165,6 +1165,16 @@ def plain_mat(name, rgb, metal, rough, alpha=1.0):
     return m
 
 
+def sign_gold(objs):
+    """the median Tripo gold of a piece (0..255), for plain plates that sit next to its paint"""
+    rgb = []
+    for o in objs:
+        h_ = face_hsv(o)
+        sel = (h_[:, 0] * 360 >= 25) & (h_[:, 0] * 360 <= 55) & (h_[:, 1] > 0.45) & (h_[:, 2] > 0.4)
+        rgb += [colorsys.hsv_to_rgb(*q) for q in h_[sel]]
+    return tuple(255 * np.median(np.array(rgb), 0)) if rgb else (255, 168, 36)
+
+
 # ------------------------------------------------------------------ shop sign board (Tripo cut + mirror fix)
 if "sign" in PR:
     # the ornate gold plaque over the awning: cut from the Tripo body (the wall behind it dropped), made left-right
@@ -1181,8 +1191,28 @@ if "sign" in PR:
             gy += list(centres(o)[(hh >= 25) & (hh <= 55) & (ss > 0.45), 1])
         wall_g = float(np.percentile([w for w in wy if w < np.median(gy) - 0.1], 80)) if gy and len(wy) > 4 else None
         if wall_g is not None:
+            # the plaque's own panel is pale and sits near the wall plane: inside the gold frame's outline keep what is
+            # less than 0.35 behind the wall plane (the panel); outside it drop everything not standing out of the wall
+            gxz = np.concatenate([centres(o)[(lambda h_: (h_[:, 0] * 360 >= 25) & (h_[:, 0] * 360 <= 55) & (h_[:, 1] > 0.45))(face_hsv(o))][:, [0, 2]]
+                                  for o in ps])
+            fx0, fx1 = np.percentile(gxz[:, 0], [2, 98])
+            fz0, fz1 = np.percentile(gxz[:, 1], [2, 98])
             for o in ps:
-                keep = centres(o)[:, 1] > wall_g + 0.06
+                c_ = centres(o)
+                inside = (c_[:, 0] > fx0) & (c_[:, 0] < fx1) & (c_[:, 2] > fz0) & (c_[:, 2] < fz1)
+                keep = (c_[:, 1] > wall_g + 0.06) | (inside & (c_[:, 1] > wall_g - 0.35))
+                bm = bmesh.new()
+                bm.from_mesh(o.data)
+                bm.faces.ensure_lookup_table()
+                bmesh.ops.delete(bm, geom=[f for f in bm.faces if not keep[f.index]], context="FACES")
+                bmesh.ops.delete(bm, geom=[v_ for v_ in bm.verts if not v_.link_faces], context="VERTS")
+                bm.to_mesh(o.data)
+                bm.free()
+            ps = [o for o in ps if len(o.data.polygons)]
+        if G.get("drop_pale"):                            # a gold plaque: pale bits left in it are wall shards
+            for o in ps:
+                h_ = face_hsv(o)
+                keep = ~((h_[:, 1] < 0.12) & (h_[:, 2] > 0.7))
                 bm = bmesh.new()
                 bm.from_mesh(o.data)
                 bm.faces.ensure_lookup_table()
@@ -1192,7 +1222,9 @@ if "sign" in PR:
                 bm.free()
             ps = [o for o in ps if len(o.data.polygons)]
         lo, hi = bbox(ps)
-        gcx = G.get("cx", float(np.median([c_[0] for o in ps for c_ in centres(o)])))
+        gx_all = np.concatenate([centres(o)[(lambda h_: (h_[:, 0] * 360 >= 25) & (h_[:, 0] * 360 <= 55) & (h_[:, 1] > 0.45))(face_hsv(o)), 0]
+                                 for o in ps])
+        gcx = G.get("cx", float(np.mean(np.percentile(gx_all, [1, 99]))) if len(gx_all) > 10 else float((lo[0] + hi[0]) / 2))
         for o in ps:
             mirror_fix(o, gcx, G.get("keep", "+x"))
         ps = [o for o in ps if len(o.data.polygons)]
@@ -1204,6 +1236,128 @@ if "sign" in PR:
         for o in ps:
             o.name = o.data.name = o.name.replace("SignTmp", "Sign")
         out_objs += ps
+        if G.get("panel_poly"):                         # a plate outline given in the params (x, z after fitting)
+            ol_ = [tuple(q) for q in G["panel_poly"]]
+            P_ = allv(ps)
+            yb_ = float(np.percentile(P_[:, 1], 30))
+            plate = slab(NAME + "_PlaqueBack", ol_ if _ccw(ol_) else ol_[::-1], yb_, 0.12, lambda x, z: (0.5, 0.5), (0.5, 0.5))
+            plate.data.materials.append(plain_mat(NAME + "_SignGold", sign_gold(ps), 1.0, 0.3))
+            tidy_normals([plate])
+            out_objs.append(plate)
+        elif G.get("back_panel", True):
+            # an exact plain-gold plate behind the Tripo frame (Tripo's panel has holes where its shine was pale), cut to
+            # the sign's own front silhouette: the faces projected on x-z, inside holes filled, shrunk 0.15 so the frame
+            # hides its edge; built as row strips
+            res = 0.05
+            P_ = allv(ps)
+            x0_, x1_ = P_[:, 0].min() - 0.2, P_[:, 0].max() + 0.2
+            z0_, z1_ = P_[:, 2].min() - 0.2, P_[:, 2].max() + 0.2
+            nx_, nz_ = int((x1_ - x0_) / res) + 1, int((z1_ - z0_) / res) + 1
+            mask = np.zeros((nz_, nx_), bool)
+            # only the plaque's own front: gold faces looking forward, near the front plane (not the dome / wall behind)
+            ylist = []
+            for o in ps:
+                h_ = face_hsv(o)
+                nrm_ = np.array([p_.normal[:] for p_ in o.data.polygons]).reshape(-1, 3)
+                g_ = (h_[:, 0] * 360 >= 25) & (h_[:, 0] * 360 <= 55) & (h_[:, 1] > 0.35) & (nrm_[:, 1] > 0.5)
+                ylist += list(centres(o)[g_, 1])
+            ythr = float(np.percentile(ylist, 40)) - G.get("panel_depth", 0.3) if ylist else -1e9
+            for o in ps:
+                me = o.data
+                me.calc_loop_triangles()
+                V_ = np.array([v_.co[:] for v_ in me.vertices])
+                h_ = face_hsv(o)
+                nrm_ = np.array([p_.normal[:] for p_ in me.polygons]).reshape(-1, 3)
+                cy_ = centres(o)[:, 1]
+                okf = (h_[:, 0] * 360 >= 20) & (h_[:, 0] * 360 <= 60) & (h_[:, 1] > 0.25) & (nrm_[:, 1] > 0.3) & (cy_ >= ythr)
+                for t_ in me.loop_triangles:
+                    if not okf[t_.polygon_index]:
+                        continue
+                    T_ = V_[list(t_.vertices)][:, [0, 2]]
+                    a_ = ((T_ - [x0_, z0_]) / res)
+                    c0, r0 = np.floor(a_.min(0)).astype(int)
+                    c1, r1 = np.ceil(a_.max(0)).astype(int)
+                    if c1 < c0 or r1 < r0:
+                        continue
+                    xs_, zs_ = np.meshgrid(np.arange(c0, c1 + 1) + 0.5, np.arange(r0, r1 + 1) + 0.5)
+                    d_ = (a_[1, 1] - a_[2, 1]) * (a_[0, 0] - a_[2, 0]) + (a_[2, 0] - a_[1, 0]) * (a_[0, 1] - a_[2, 1])
+                    if abs(d_) < 1e-9:
+                        continue
+                    l0 = ((a_[1, 1] - a_[2, 1]) * (xs_ - a_[2, 0]) + (a_[2, 0] - a_[1, 0]) * (zs_ - a_[2, 1])) / d_
+                    l1 = ((a_[2, 1] - a_[0, 1]) * (xs_ - a_[2, 0]) + (a_[0, 0] - a_[2, 0]) * (zs_ - a_[2, 1])) / d_
+                    ins = (l0 >= -0.05) & (l1 >= -0.05) & (1 - l0 - l1 >= -0.05)
+                    rr_ = np.clip(np.arange(r0, r1 + 1), 0, nz_ - 1)
+                    cc_ = np.clip(np.arange(c0, c1 + 1), 0, nx_ - 1)
+                    sub_ = mask[rr_[:, None], cc_[None, :]]
+                    sub_ |= ins
+                    mask[rr_[:, None], cc_[None, :]] = sub_
+            def _grow(m, k, grow=True):
+                for _ in range(k):
+                    m2 = m.copy()
+                    if grow:
+                        m2[1:] |= m[:-1]; m2[:-1] |= m[1:]; m2[:, 1:] |= m[:, :-1]; m2[:, :-1] |= m[:, 1:]
+                    else:
+                        m2[1:] &= m[:-1]; m2[:-1] &= m[1:]; m2[:, 1:] &= m[:, :-1]; m2[:, :-1] &= m[:, 1:]
+                    m = m2
+                return m
+            kc_ = int(G.get("panel_close", 0.0) / res)
+            mask = _grow(mask, kc_)                      # close gaps (a hole open at the bottom edge)
+            # inside = not reachable from the border through empty cells
+            out_ = np.zeros_like(mask)
+            stack = [(0, c) for c in range(nx_)] + [(nz_ - 1, c) for c in range(nx_)] + [(r, 0) for r in range(nz_)] + [(r, nx_ - 1) for r in range(nz_)]
+            while stack:
+                r, c = stack.pop()
+                if 0 <= r < nz_ and 0 <= c < nx_ and not out_[r, c] and not mask[r, c]:
+                    out_[r, c] = True
+                    stack += [(r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)]
+            fill = _grow(~out_, kc_ + int(G.get("panel_inset", 0.15) / res), grow=False)   # undo the closing, then shrink
+            # the biggest connected part only (the plaque), stray bits dropped
+            lab = np.zeros(fill.shape, int)
+            best_, bestn, cur = 0, 0, 0
+            for r0_ in range(nz_):
+                for c0_ in range(nx_):
+                    if fill[r0_, c0_] and not lab[r0_, c0_]:
+                        cur += 1
+                        st_, n_ = [(r0_, c0_)], 0
+                        lab[r0_, c0_] = cur
+                        while st_:
+                            r, c = st_.pop()
+                            n_ += 1
+                            for rr, cc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):
+                                if 0 <= rr < nz_ and 0 <= cc < nx_ and fill[rr, cc] and not lab[rr, cc]:
+                                    lab[rr, cc] = cur
+                                    st_.append((rr, cc))
+                        if n_ > bestn:
+                            best_, bestn = cur, n_
+            fill = lab == best_
+            yb_ = (ythr + G.get("panel_depth", 0.3) * 0.5) if ylist else float(np.percentile(P_[:, 1], 30))
+            me2 = bpy.data.meshes.new(NAME + "_PlaqueBack")
+            bm2 = bmesh.new()
+            nq = 0
+            for r in range(nz_):
+                cols_ = np.nonzero(fill[r])[0]
+                if not len(cols_):
+                    continue
+                runs = np.split(cols_, np.nonzero(np.diff(cols_) > 1)[0] + 1)
+                for run in runs:
+                    if len(run) < 3:
+                        continue
+                    xa, xb = x0_ + run[0] * res, x0_ + (run[-1] + 1) * res
+                    za, zb = z0_ + r * res, z0_ + (r + 1) * res
+                    vs = [bm2.verts.new(q) for q in ((xa, yb_, za), (xb, yb_, za), (xb, yb_, zb), (xa, yb_, zb))]
+                    vb = [bm2.verts.new((q.co.x, yb_ - 0.12, q.co.z)) for q in vs]
+                    bm2.faces.new(vs)
+                    bm2.faces.new(vb[::-1])
+                    nq += 1
+            bmesh.ops.remove_doubles(bm2, verts=bm2.verts, dist=1e-5)
+            bmesh.ops.recalc_face_normals(bm2, faces=bm2.faces)
+            bm2.to_mesh(me2)
+            bm2.free()
+            plate = bpy.data.objects.new(NAME + "_PlaqueBack", me2)
+            bpy.context.scene.collection.objects.link(plate)
+            plate.data.materials.append(plain_mat(NAME + "_SignGold", sign_gold(ps), 1.0, 0.3))
+            out_objs.append(plate)
+            REPORT.setdefault("pieces", {}).setdefault("SignPlate", {"strips": nq, "cell": res})
         lo2, hi2 = bbox(ps)
         REPORT["pieces"]["Sign"] = {"fix": "Tripo plaque cut (wall behind dropped at y %s), mirror about x = %.2f kept %s, scale %.3f"
                                     % (None if wall_g is None else round(wall_g, 2), gcx, G.get("keep", "+x"), k),

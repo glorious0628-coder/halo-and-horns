@@ -1,0 +1,31 @@
+{
+ "HaloShop_Juice_Sign_t00": {
+  "faces_in": 6,
+  "slivers_pale": 0,
+  "faces_out": 6
+ },
+ "HaloShop_Juice_Sign_t01": {
+  "faces_in": 22,
+  "slivers_pale": 0,
+  "faces_out": 22
+ },
+ "HaloShop_Juice_Sign_t10": {
+  "faces_in": 76,
+  "slivers_pale": 0,
+  "faces_out": 76
+ },
+ "HaloShop_Juice_Sign_t11": {
+  "faces_in": 84,
+  "slivers_pale": 0,
+  "faces_out": 84
+ },
+ "_parts": {
+  "HaloShop_Juice_Sign": {
+   "tiles_joined": 4,
+   "island_faces_cut": 0,
+   "tris": 188,
+   "maps": 512,
+   "uv_fill": 0.612
+  }
+ }
+}
