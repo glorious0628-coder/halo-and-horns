@@ -1,5 +1,13 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
+## 지금 (10/11 18:10, 비우기 전) — 먼저 읽기
+- 검수 = **local_d522c0f1-07cf-4db1-b178-5f335a56db7c** (모든 것 검수). 보고는 send_message로 묶음마다 한 번.
+- **WorldKit Studio 열려 있음(최소화)**, `build/WorldKit.rbxlx`(15:20 저장)를 연 것 + 오늘 고친 지형·Ground. **파일 저장 안 함** — 닫혀서 잃으면 창 없이 다시: `py tools/halo_blockout.py --mode terrain` → build/wk/halo_blockout_apply.lua를 execute_luau(STUDIO_NAME=WorldKit, Edit) → `py tools/worldkit/skeleton_ground_run.py`. 열 때는 `Start-Process <Studio exe> build\WorldKit.rbxlx -WindowStyle Minimized`(검수 허락 뒤), 사진 도구는 창을 앞으로 안 끌어옴(SW_SHOWNOACTIVATE), 끝나면 최소화.
+- 끝낸 묶음(검수 보고함): 섬 2차(통과), 광장 원판 아래 지형 1칸·훈련장 모래(e39c823), 구획 지도 + A23-117 이유 칸 + 문 앞 턱·건물 받침 고침(5d9c471).
+- **기다리는 것:** 검수 답 — 5d9c471 묶음 판정 + 다음 일 지시. 내가 제안한 다음 일 = 5단계 입히기 준비(plan `dressing.by_district` 글을 소품 하나하나 `why` 칸으로 쪼개기, A23-117).
+- **이미지 개발 부탁:** HH_Fabric 밤 사진을 내 WorldKit 촬영 때 같이 찍고 싶어함 → 내 다음 WorldKit 촬영 차례가 정해지면 검수에 먼저 알릴 것.
+- 메인 Studio(81671223175574)는 절대 안 건드림, 옛 메인 4차 적용 안 함.
+
 ## 지금 일: A23-121 빛 마을 처음부터 다시 (`docs/design/halo_restart_2026-10-11.md`)
 - ① 이야기와 구역: **끝, 사용자 OK "지도 괜찮아"(10/11)**. 대성당 동쪽(72,-652, 축에서 13°) + 큰 길 광장에서 굽힘 반영됨.
   - 계획 `docs/design/halo_plan_v2_2026-10-11.json` ← `py -X utf8 tools/halo_plan_v2.py` (지도 `art/review/world/halo_v2/halo_plan_v2_map.png`)
