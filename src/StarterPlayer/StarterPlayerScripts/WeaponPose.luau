@@ -212,6 +212,46 @@ function WeaponPose.TwoHand(char, st, def, model)
 	return not (rPose.Clamped or lPose.Clamped)
 end
 
+-- 검수 10/11 (grip sheet: staffs held near their foot and leaning out, the flask lying on the palm; references in
+-- docs/design/grip_reference_2026-10-11.md §1-4/5): a one-hand weapon placed from the weapon too. def.OneHand = { Hilt
+-- = the right grip point, Aim = the weapon's long axis, in UpperTorso space }: the right hand's grip point on the line,
+-- its held axis (-Z) along Aim, +Y to the right shoulder, solved like the two-hand hilt (the left arm keeps its hold)
+function WeaponPose.OneHand(char, st, def, model)
+	local oh, fx = def.OneHand, C and C.Fx
+	if typeof(oh.Hilt) ~= "Vector3" or typeof(oh.Aim) ~= "Vector3" then return false end
+	if type(fx) ~= "table" or type(fx.SolveArm) ~= "function" or type(fx.ArmGeometry) ~= "function" then return false end
+	local torsoPart, hand = char:FindFirstChild("UpperTorso"), char:FindFirstChild("RightHand")
+	if not (torsoPart and hand and model) then return false end
+	for i = 1, 3 do
+		local joint = T.TwoJoints[i]
+		local m = st.Joints[joint]
+		if not (m and m.Parent) then
+			st.Joints[joint] = findJoint(char, joint)
+			st.Base[joint], st.Last[joint] = nil, nil
+		end
+	end
+	local right = fx.ArmGeometry(st, "Right")
+	if not right then return false end
+	local torso = torsoPart.CFrame
+	local rGoal = WeaponPose.TwoHandGoals(torso, oh, gripOf(hand, "RightGripAttachment", T.RightGrip), T.LeftGrip,
+		(torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0)
+	local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
+	if type(pose) ~= "table" then return false end
+	for i = 1, 3 do
+		local joint = T.TwoJoints[i]
+		local m, w = st.Joints[joint], T.TwoKeys[joint]
+		if m and typeof(pose[w[2]]) == "CFrame" then
+			local cur = m.Transform
+			local last = st.Last[joint]
+			local base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur
+			local out = base:Lerp(pose[w[2]], st.W)
+			m.Transform = out
+			st.Base[joint], st.Last[joint] = base, out
+		end
+	end
+	return not pose.Clamped
+end
+
 local function poseChar(char, player, dt)
 	local st = S.Chars[char]
 	if not st then
@@ -256,7 +296,11 @@ local function poseChar(char, player, dt)
 			st.Base[joint], st.Last[joint] = base, out
 		end
 	end
-	if type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end
+	if type(def.TwoHand) == "table" then
+		WeaponPose.TwoHand(char, st, def, model)
+	elseif type(def.OneHand) == "table" then
+		WeaponPose.OneHand(char, st, def, model)
+	end
 end
 
 -- Studio only (검수 10/11 grip measurements; 메인 반영 sets the LocalPlayer attribute GripProbe = true): my own held

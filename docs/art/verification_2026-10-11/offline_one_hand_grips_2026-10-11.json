@@ -1,0 +1,54 @@
+{
+  "checks": 28,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the Light Mage's staff leaning out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the staff across the chest",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Dark Mage's staff slanted far",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the flask held out of reach",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old right-arm hold kept",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hand near the foot again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a tall staff sinks into the ground",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the flask on the palm again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never run",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "One-hand weapons placed from the weapon (게임성 개발 1, 2026-10-11; 검수 10/11 grip sheet: the staffs held near their\nfoot and leaning out, the flask lying on the palm; references docs/design/grip_reference_2026-10-11.md §1), offline.\n\nGeometry (the same Python copy of WeaponPose.TwoHandGoals and Fx's two-bone solve as tools/test_two_hand_grip.py, the\nplace's R15 rig, scale 1 and 0.85) for the CURRENT Config.ClassGrips Mage_Halo / Mage_Horns / Mage_Neutral OneHand\n(Hilt, Aim): the arm reaches (<= 92%), the grip point lies on the weapon line (<= 0.2), the held axis along the weapon\n(<= 10 deg), the forearm crosses the weapon (45..135 deg); the staffs stand upright (the Light Mage's within 5 deg, the\nDark Mage's slanted forward at most 15 deg) beside the body (the hand outside the torso, the line clear of it); the flask\nstands upright in front of the chest. CharacterVisuals: a staff is held StaffGrip of its length up from the foot (>= half\nway for every staff up to 6 studs) and its foot never sinks under the ground nor floats more than 1.3 studs (hand height\nfrom the Hilt and an UpperTorso centre ~3.9 studs above the feet - an estimate, checked in the Studio photos); the flask's\nfist wraps the neck, the round body hangs under it, the cork above. Static: WeaponPose runs OneHand when a row has no\nTwoHand, writes only the right arm, fades with the pose weight; the three rows keep no right-arm hold angles. Mutations:\neach must be caught.",
+  "studioCalls": 0
+}

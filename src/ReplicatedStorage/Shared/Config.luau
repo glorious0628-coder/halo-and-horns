@@ -5582,15 +5582,18 @@ Config.ClassGrips = {
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
-	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, RightElbow = { 68, 0, 0 },
-		LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -20, 0, 0 } } },
+	-- 검수 10/11 + grip_reference §1: the staff stands upright at the side, close to the body (OneHand: the right hand placed
+	-- from the staff, WeaponPose; studs in UpperTorso space), held a little above its middle (CharacterVisuals staffLow)
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 },
+		LeftWrist = { -20, 0, 0 } }, OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
-		RightShoulder = { 14, 0, 6 }, RightElbow = { 56, 0, 0 }, LeftShoulder = { 14, 0, -20 } } },
+		LeftShoulder = { 14, 0, -20 } }, OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { RightShoulder = { 16, 0, 10 }, RightElbow = { 74, 0, 0 },
-		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } } },
+	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask)
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },

@@ -628,10 +628,19 @@ local function buildSword(grip, sc, w, color)
 	return { handle, guard, blade }, blade
 end
 
+-- 검수 10/11 (grip sheet: the hand near the foot, the staff leaning out; reference: a staff is held upright close to
+-- the body a little above its middle, grip_reference_2026-10-11.md §1): the hand StaffGrip of the length up from the foot,
+-- but never more than StaffFoot studs above the foot (a tall staff would sink into the ground: WeaponPose OneHand holds
+-- the hand about 3.6 studs above the feet)
+local STAFF = { Grip = 0.55, FootMin = 2.4, FootMax = 3.3 }
+local function staffLow(shaftLen)
+	return math.clamp(shaftLen * STAFF.Grip, STAFF.FootMin, STAFF.FootMax)
+end
+
 local function buildStaff(grip, sc, w, color, tier)
 	local shaftLen = w.Length + 1.5
 	local base = fist(grip) -- the shaft centreline passes through the actual hand grip
-	local low = shaftLen * 0.4 -- the hand a little below the middle; the foot near the ground
+	local low = staffLow(shaftLen) -- studs from the foot up to the hand
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.3, shaftLen, 0.3) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR,
@@ -771,7 +780,7 @@ end
 -- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
 function SHAPES.CrookStaff(grip, sc, w, color, tier)
 	local shaftLen = w.Length + 1.5
-	local base, low = fist(grip), shaftLen * 0.4
+	local base, low = fist(grip), staffLow(shaftLen)
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.28, shaftLen, 0.28) * sc,
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
@@ -793,23 +802,26 @@ function SHAPES.CrookStaff(grip, sc, w, color, tier)
 	return { shaft, hook, orb }, orb
 end
 
--- Alchemist: a round flask in the right hand (glass, a neck and a cork; the brew in the tier colour)
+-- Alchemist: a round flask in the right hand (glass, a neck and a cork; the brew in the tier colour). 검수 10/11 (it lay
+-- on the palm; reference: a bottle is held by its neck, the fingers wrapped round it, grip_reference §1): the fist wraps
+-- the NECK, the round body hangs under the fist, the cork on top
 function SHAPES.Flask(grip, sc, w, color, tier)
 	local d = 0.75 + 0.04 * tier
-	local base = fist(grip) -- upright on the fist: the round body on the hand, the neck and cork above
+	local neckLen = 0.5
+	local base = fist(grip) -- the neck's centre in the fist (+Y = up with the forearm forward)
 	local ball = accPart({
 		Name = "Flask", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Glass, Color = color, Transparency = 0.25,
-		CFrame = base * CFrame.new(0, (d / 2 + 0.05) * sc, 0),
+		CFrame = base * CFrame.new(0, -(neckLen / 2 + d / 2 - 0.05) * sc, 0),
 	})
 	local neck = accPart({
-		Name = "Neck", Size = Vector3.new(0.22, 0.35, 0.22) * sc,
+		Name = "Neck", Size = Vector3.new(0.22, neckLen, 0.22) * sc,
 		Material = Enum.Material.Glass, Color = Color3.fromRGB(220, 235, 240), Transparency = 0.3,
-		CFrame = base * CFrame.new(0, (d + 0.2) * sc, 0),
+		CFrame = base,
 	})
 	local cork = accPart({
 		Name = "Cork", Size = Vector3.new(0.26, 0.14, 0.26) * sc,
-		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = base * CFrame.new(0, (d + 0.42) * sc, 0),
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = base * CFrame.new(0, (neckLen / 2 + 0.07) * sc, 0),
 	})
 	addLight(ball, color, 6 * sc, 1)
 	return { ball, neck, cork }, ball
