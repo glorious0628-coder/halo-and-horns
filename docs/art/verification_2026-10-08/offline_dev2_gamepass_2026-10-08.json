@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 186,
+  "checks": 191,
   "failedChecks": 0,
-  "namedChecks": 185,
+  "namedChecks": 190,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -1116,17 +1116,92 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "craft XP pass",
+      "check": "CraftService reads one pass, once: the 2x XP pass",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft XP pass",
+      "check": "the pass value is used in the craft XP line only (never the count, the +N or the result)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft XP pass",
+      "check": "payOut (the result: weapon, gear, items) never reads a pass",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft XP pass",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft XP pass",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 25,
   "staticFailures": [],
   "mutations": {
-    "total": 87,
-    "applied": 87,
-    "caught": 87,
+    "total": 91,
+    "applied": 91,
+    "caught": 91,
     "skipped": false,
     "results": [
+      {
+        "mutation": "craft: the result count x the pass",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft XP pass :: CraftService reads one pass, once: the 2x XP pass",
+          "craft XP pass :: payOut (the result: weapon, gear, items) never reads a pass"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "craft: the +N x the pass",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft XP pass :: the pass value is used in the craft XP line only (never the count, the +N or the result)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "craft: the 2x Gold pass on craft XP",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft XP pass :: CraftService reads one pass, once: the 2x XP pass"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "craft: XP x the pass twice",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft XP pass :: the pass value is used in the craft XP line only (never the count, the +N or the result)"
+        ],
+        "newFailingCount": 1
+      },
       {
         "mutation": "2x Gold for sales",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
@@ -2239,13 +2314,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ce439e76da4e1a35dfa7960e9650ef4748fca5b9dad3d7b1799616d0ebdcbe7a",
-    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
+    "src/ReplicatedStorage/Shared/Config.luau": "8c1ccd5799009b0093f21b8003765d00005ef5a806fd076f4dc49ee36bf9a007",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/ProgressionService.luau": "6cc014f14f2f7db3a431f3090ee4b9a961b52c79f63c880c714e50d54316badb",
     "src/ServerScriptService/MonetizationService.luau": "7918534f8721e876179035a0863a54a2faa40704aab7fa8ba035fe06306b7c11",
-    "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
+    "src/ServerScriptService/KaijuService.luau": "ed86b7afc17d8d3fc6c3c07729067bce368595643ef87d28b1e30f28fbc896a8",
+    "src/ServerScriptService/CraftService.luau": "59ff53422d45950753fa80abd664ad81729fb5477308403cbe303dff38785aa9"
   },
-  "fixtureSHA256": "6aec4b4a547bd2aed3ff67984e95b10f3e75168d6a10a45c642b9e9036d31523",
+  "fixtureSHA256": "8278dd57191508ed01801b75925b0e4243a2530b71153d823d2f8fcc337f0530",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
