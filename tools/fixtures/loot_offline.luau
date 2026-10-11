@@ -1784,12 +1784,25 @@ runGroup("enhance", function()
 	-- precise failure paths
 	f.Data.WeaponEnhance[1] = 5
 	f:Give("Enh70", 2)
-	f.Script = { 0.95, 0.1 } -- fail, then drop
+	f.Script, f.Notices = { 0.95, 0.1 }, {} -- fail, then drop
 	f:Use("Enh70", 1)
 	check(f:Enh(1) == 4, "failed scroll with drop roll < 0.5 loses exactly one level", f:Enh(1))
-	f.Script = { 0.95, 0.6 } -- fail, keep
+	-- 게임성 검수 10/12 (A23-99: a loss is always said): the result toasts stay - the Bag window draws no result line
+	local wname = f.Config.WeaponName(1, "Warrior", "Halo")
+	local downLine = string.format(L.Text.EnhanceFailDown, wname, 5, 4)
+	local downKind = nil
+	for _, e in f.Notices do if e.Text == downLine then downKind = e.Kind end end
+	check(f:Noticed(downLine) == 1 and downKind == "bad", "a drop says '+5 → +4' in red (kind bad)", show({ f.Notices[1] and f.Notices[1].Text, downKind }))
+	f.Script, f.Notices = { 0.95, 0.6 }, {} -- fail, keep
 	f:Use("Enh70", 1)
 	check(f:Enh(1) == 4, "failed scroll with drop roll >= 0.5 keeps the level", f:Enh(1))
+	check(f:Noticed(string.format(L.Text.EnhanceFailKeep, wname, 4)) == 1, "a kept level says 'stays +4'",
+		show({ f.Notices[1] and f.Notices[1].Text }))
+	f.Script, f.Notices = { 0 }, {} -- success
+	f:Give("Enh70", 1)
+	f:Use("Enh70", 1)
+	check(f:Enh(1) == 4 + L.Items.Enh70.Plus and f:Noticed(string.format(L.Text.EnhanceOk, wname, 4, f:Enh(1))) == 1,
+		"a success says '+4 → +N!'", show({ f.Notices[1] and f.Notices[1].Text }))
 	f.Script = {}
 	f.Data.WeaponEnhance[1] = 0
 	f:Give("Enh10", 1)
@@ -1935,8 +1948,8 @@ runGroup("transfer", function()
 	local have = f:Count("Move70")
 	a, b = move(4, 2, 0.95)
 	check(a == 4 and b == 2 and f:Count("Move70") == have, "failure leaves both, consumes the scroll (1 given, 1 used)", show({ a, b }))
-	check(f:Noticed(string.format(L.Text.MoveFail, f.Config.WeaponName(1, "Warrior", "Halo"), 4)) == 0,
-		"no MoveFail toast (A23-130: the open Items window shows it from Fx Enhance)")
+	check(f:Noticed(string.format(L.Text.MoveFail, f.Config.WeaponName(1, "Warrior", "Halo"), 4)) == 1,
+		"MoveFail toast (게임성 검수 10/12: the Bag window draws no result line, so the server says it)")
 	-- equipped attribute follows when the equipped tier is the source or the target
 	f:Set("WeaponTier", 2)
 	a, b = move(4, 3, 0)

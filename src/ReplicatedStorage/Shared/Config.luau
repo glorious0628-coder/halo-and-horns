@@ -5403,15 +5403,16 @@ Config.Announce = {
 		GhostKingLeave = "The Ghost King faded away. See you next time!",
 		GhostKingLeaveEn = "The Ghost King faded away. See you next time!",
 		-- J Captain Clatter (FieldBossService key Clatter)
-		ClatterAppear = "Captain Clatter is here!",
-		ClatterAppearEn = "Captain Clatter is here!",
+		-- 게임성 검수 10/12: the appear toast names the place (Config.Zones[...].Name, test_field_boss checks it)
+		ClatterAppear = "Captain Clatter is here! (Skeleton Ruins)",
+		ClatterAppearEn = "Captain Clatter is here! (Skeleton Ruins)",
 		ClatterDefeat = "Captain Clatter was defeated!",
 		ClatterDefeatEn = "Captain Clatter was defeated!",
 		ClatterLeave = "Captain Clatter left.",
 		ClatterLeaveEn = "Captain Clatter left.",
 		-- the King Slime boss (A23-84 the slime family's dad, A23-85 he raises the two kids alone; scary but playful)
-		SlimeKingAppear = "King Slime is here!",
-		SlimeKingAppearEn = "King Slime is here!",
+		SlimeKingAppear = "King Slime is here! (Squishy Meadow)",
+		SlimeKingAppearEn = "King Slime is here! (Squishy Meadow)",
 		SlimeKingDefeat = "King Slime was defeated!",
 		SlimeKingDefeatEn = "King Slime was defeated!",
 		SlimeKingLeave = "King Slime went home.",

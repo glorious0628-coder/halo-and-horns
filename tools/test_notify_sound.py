@@ -55,10 +55,15 @@ ROUTES = [
     ("ShopService.luau", "alreadyOwned and \"\" or string.format(Config.Text.WeaponBought", "Equip"),
     # A23-130: a potion buy has no text any more, the Spend sound stays (empty-text Notify)
     ("ShopService.luau", "Net.Notify(player, \"\", \"good\", nil", "Spend"),
-    ("AttendanceService.luau", "notify(player, \"\", \"reward\"", "RankUp"),
+    ("AttendanceService.luau", "notify(player, table.remove(lines, 1) or string.format(TXT.Days", "RankUp"),
     ("DiaryService.luau", "pcall(Net.Notify, player, \"\", \"reward\"", "RankUp"),
-    # A23-130: enhance / transfer results and a Bag equip have no toast (the Items window shows the result line);
-    # their sounds come from Fx Enhance (ScrollSuccess / ScrollFail) and Fx Upgrade (Equip) in Audio.luau
+    # 게임성 검수 10/12: enhance / transfer results keep their toast + sound (the Bag window draws no result line)
+    ("LootService.luau", "TXT.EnhanceOk", "ScrollSuccess"),
+    ("LootService.luau", "TXT.EnhanceFailDown", "ScrollFail"),
+    ("LootService.luau", "TXT.EnhanceFailKeep", "ScrollFail"),
+    ("LootService.luau", "TXT.MoveOk", "ScrollSuccess"),
+    ("LootService.luau", "TXT.MoveFail", "ScrollFail"),
+    # A23-130: a Bag equip has no toast; its sound comes from Fx Upgrade (Equip) in Audio.luau
     # sound_gaps_2026-10-07 C1: no "reward" line outside the quest ends may fall back to QuestDone
     ("LootService.luau", "TXT.DuplicateWeapon, weaponName(player, tier)", "GoldPickup"),
     ("LootService.luau", "TXT.FirstWeapon, name", "None"),

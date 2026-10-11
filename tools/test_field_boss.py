@@ -102,6 +102,11 @@ MUTATIONS = [
      "\tKinds = { BigSlime = true, CaptainClatter = true },"),
     ("Prince renamed back", C, "BigSlime = { Name = \"Slime Prince\"", "BigSlime = { Name = \"King Slime\""),
     ("a mom line", C, "SlimeKingLeaveEn = \"King Slime went home.\"", "SlimeKingLeaveEn = \"King Slime went home to mom.\""),
+    # 게임성 검수 10/12: the appear toast says where
+    ("the King Slime appear line without its place", C, "SlimeKingAppear = \"King Slime is here! (Squishy Meadow)\"",
+     "SlimeKingAppear = \"King Slime is here!\""),
+    ("the Clatter appear line without its place", C, "ClatterAppearEn = \"Captain Clatter is here! (Skeleton Ruins)\"",
+     "ClatterAppearEn = \"Captain Clatter is here!\""),
     ("King in the regular pool", C, "Zone = \"SlimeMeadow\", Count = 0, Boss = true,", "Zone = \"SlimeMeadow\", Count = 2, Boss = true,"),
     # 검수 2026-10-09: the shrine marker part, the hill's MaxY
     ("no marker part", K, "\t\tif part == nil and d:IsA(\"BasePart\") and (d.Name == attr or v == true) then part = d end\n", ""),

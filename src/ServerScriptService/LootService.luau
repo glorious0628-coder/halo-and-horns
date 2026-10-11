@@ -498,11 +498,18 @@ local function useEnhance(player, data, id, def, tier)
 	end
 	data.WeaponEnhance[tier] = after
 	publish(player, data)
+	-- 게임성 검수 10/12: the result toast stays (A23-99: a loss must be said): the Bag window sends UseItem itself and
+	-- draws no result line (Panels' Items result line shows only while that window is open)
 	if success then
 		firstMax(player, data, tier, after)
+		notify(player, string.format(TXT.EnhanceOk, name, before, after,
+			math.floor(Config.EnhanceMult(before) * 100 + 0.5), math.floor(Config.EnhanceMult(after) * 100 + 0.5)), "reward",
+			"ScrollSuccess")
+	elseif after < before then
+		notify(player, string.format(TXT.EnhanceFailDown, name, before, after), "bad", "ScrollFail")
+	else
+		notify(player, string.format(TXT.EnhanceFailKeep, name, before), "info", "ScrollFail")
 	end
-	-- A23-130: no result toast: the open Items window shows the same line (Panels ITEMS.ResultText from the Fx below,
-	-- Loot.Text EnhanceOk / EnhanceFailDown / EnhanceFailKeep) and the Fx plays ScrollSuccess / ScrollFail
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
 	LootService.Enhanced:Fire(player, tier, before, after, success, id)
 end
@@ -525,8 +532,10 @@ local function useTransfer(player, data, id, def, fromTier, toTier)
 		data.WeaponEnhance[toTier] = after
 		data.WeaponEnhance[fromTier] = amount - (after - target)
 		firstMax(player, data, toTier, after) -- after both tiers are saved
+		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward", "ScrollSuccess")
+	else
+		notify(player, string.format(TXT.MoveFail, fromName, amount), "info", "ScrollFail") -- 게임성 검수 10/12: said in the Bag too
 	end
-	-- A23-130: no result toast: the Items window shows MoveOk / MoveFail and the Fx plays the sound
 	publish(player, data)
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = toTier, From = fromTier, Before = target, After = after, Success = success, Move = true })
 end
