@@ -6004,6 +6004,17 @@ Config.UIArt = {
 		IconPouch = { Id = "rbxassetid://130257832801072", Size = Vector2.new(512, 512) }, -- Firefly redraw 2026-10-06 (carried gold / Halo auto-bank perk)
 		IconPotionHP = { Id = "rbxassetid://108192030084262", Size = Vector2.new(512, 512) }, -- Firefly master (bundle 1)
 		IconPotionMP = { Id = "rbxassetid://94345565073683", Size = Vector2.new(512, 512) }, -- Firefly (bundle 8)
+		-- bag / crafting material icons, round 1 (이미지 개발 2026-10-12, 디자인 검수 pass; art/out/s2/icons_bag_cut)
+		IconPetal = { Id = "rbxassetid://133887324126001", Size = Vector2.new(512, 512) },
+		IconCaptainBadge = { Id = "rbxassetid://79235006547470", Size = Vector2.new(512, 512) },
+		IconSeaShell = { Id = "rbxassetid://126461746451387", Size = Vector2.new(512, 512) },
+		IconCrystalShard = { Id = "rbxassetid://79705802311397", Size = Vector2.new(512, 512) },
+		IconMeadowHerb = { Id = "rbxassetid://86098124636549", Size = Vector2.new(512, 512) },
+		IconCopperOre = { Id = "rbxassetid://119596801981491", Size = Vector2.new(512, 512) },
+		IconOakLog = { Id = "rbxassetid://122711143611444", Size = Vector2.new(512, 512) },
+		IconIronOre = { Id = "rbxassetid://100831679530995", Size = Vector2.new(512, 512) },
+		IconSilverOre = { Id = "rbxassetid://114879087694979", Size = Vector2.new(512, 512) },
+		IconMoonCrystal = { Id = "rbxassetid://106196598879661", Size = Vector2.new(512, 512) },
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
 		IconAttack = { Id = "rbxassetid://74944938867654", Size = Vector2.new(512, 512) }, -- Firefly sword (bundle 5)
 		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
