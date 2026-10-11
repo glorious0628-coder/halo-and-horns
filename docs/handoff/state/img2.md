@@ -9,6 +9,7 @@
 1. **Garden7 right 한 장 더**(5 크레딧): 발코니를 맨 위 창 층(y≈425, 앞·뒤·왼과 같은 높이)으로 올리고, 그 아래 가운데 층은 아치 창 + 꽃상자. 참조 = Garden7 front(`gVvrKEvoqthUOMHf` presign 만료 시 asset_search로 다시), 이전 right_v3 프롬프트 수정. 결과 `HaloNewHouse_Garden7_right_v4.png`. 통과하면 새 집 7채 4면 끝 → Tripo는 이미지 생성 3(집 장식).
 2. **고른 High 4장(20크레딧)**: Glowcap **m4**, **CraftRing m1**, **CraftTarget m1**, **CraftIngot m1** (Medium 파일 `icons_bag/IconGlowcap_m4.png`, `icons_craft/Craft*_m1.png`; 프롬프트 `art/prompts/IconGlowcap.txt` + Craft 큐 프롬프트, 참조 = 고른 Medium). High로 받아 `tools/cutout_flat.py`(Ring은 `--holes` 가운데 투명, 바깥 남색 외곽선 유지) → 밝은·어두운 바탕 + 64·128px 시트에 가방 아이콘 11종과 함께 → 디자인 검수. Craft는 금 ~(255,168,36), 광선 없음.
 3. **게임 아이콘 = C_m2 확정(SPEC A23-139)**: High 1장(5) → 512×512 마무리(네모 꽉 채움, 투명 아님, 글자 없음) + 150px 줄인 것 같이 시트 → 디자인 검수. 올리기는 최종 검수 승인.
+3b. **새 아이콘 5종(디자인 검수 10/12)**: IconPetTreat, IconMightTonic(빨강/주황·불꽃 방울 마개), IconGuardTonic(파랑·방패 마개), IconLuckyTonic(초록·네잎클로버 마개), IconWisdomTonic(보라·별 마개). 물약 4병은 병 모양 하나(둥근 플라스크+굵은 목, 체력·마나 병과 겹치지 않게). 프롬프트 `art/prompts/Icon<이름>_m1/m2.txt`, 큐 `art/prompts/img2_icons_bag2_queue_2026-10-12.json`(ref=IconJelly `RieuC2wy2mPEtait`, 만료 시 새로). Medium 2장씩(10) 한 시트 → 디자인 검수가 고름 → High 5장(25) → 컷아웃(Inner 76~436) + 48px 시트(Glowcap·Craft·CrownDust와 한 장). 큐 순서: 맨 앞 6건 → 이 10건 Medium 먼저 돌려도 됨(0크레딧).
 4. 올리기는 이미지 개발이 함(내가 올리지 않음).
 5. 크레딧: 오늘 밤 약 1,400 사용, 표시 잔액 약 3,400 추정(정확치는 Firefly 화면). 500 근처면 알림.
 ## Firefly / 도구 메모
