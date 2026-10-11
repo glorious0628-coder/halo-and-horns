@@ -1,0 +1,1215 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 557,
+  "failedChecks": 0,
+  "namedChecks": 117,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "body sizes",
+      "check": "Slime body = r 1.5, h 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "BigSlime body = r 2.7, h 5.4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "SlimeKing body = r 4.8, h 9.6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "Goblin body = r 1.25, h 5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "GoblinBrute body = r 1.875, h 7.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "GhostMinion body = r 0.75, h 4.2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "the body starts 0.5 above the ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "body sizes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "the tree centre: blocked (the old centre ray never saw this mesh)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "the same spot without a body (walks): still walkable ground",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "the body edge 0.05 inside the trunk box side: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "the body edge 0.05 outside: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "the other side, 0.05 inside: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "the other side, 0.05 outside: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "1.70 studs off the box corner: free (the round body, not its box)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "1.41 studs off the box corner: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "test spot is outside the unturned box",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "inside the turned footprint: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "test spot is inside the unturned box",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "test spot is outside the turned box",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "outside the turned footprint: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "one prop: edges, corners, rotation",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "under a canopy at 6: a Shard Slime (3 tall) fits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "under a canopy at 6: a Slime Prince (5.4) fits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "under a canopy at 6: the King Slime (9.6) does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "under a canopy at 6: a Goblin Brute (7.5) does not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "a floating Ghost Minion (to 4.2) touches a branch at 4.0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "a Shard Slime (to 3) passes under it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "on a road (top 0.2): free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "on a rug (top 0.45, under the 0.5 foot gap): free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "a tilted log's middle: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "under its raised end (log bottom ~4.8): free (not its bounding box)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "4 studs beside the log: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "an invisible collidable post: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "just beside the post: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "just touching the post: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "height: canopies, floating, flat parts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "inside an invisible non-collidable helper: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "inside a Map.Zones box (even half see-through): free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "on a Map.Pads pad (1 tall): free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "on a bridge deck by its rail: free, standing on the deck (y 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "on a WalkGround stage by its lantern: free (on the floor, y 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "a rock in Map.Gates: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "a tree 3 folders deep: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "a part inside a part: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "CR-L14 kept: a solid decor rock still blocks the plain ground point",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what counts",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "the far end of a long wall: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "the other end, body over its side: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "a post in the next cell, 0.7 from the body edge inside: blocked",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "1 stud farther: free",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the grid",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "the test forest is dense (old rule: >= 25% of picks inside props)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "every pick inside the meadow",
+      "pass": 345,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "no pick has a prop inside its body (sampling oracle)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "the forest still leaves room: >= 300 of 400 passes found a spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "MonsterService.PickSpawnPoint(King): no prop inside",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "PickSpawnPoint: nil for a missing / unknown kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pickSpawnPoint in a forest",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every try blocked",
+      "check": "no spawn this pass (never a random point inside the cover)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every try blocked",
+      "check": "the throttled warning names props",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every try blocked",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every try blocked",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "the marked spot itself: the King's body reaches the shrine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "the King still appears",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "the King never stands in the shrine",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "in its zone",
+      "pass": 30,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "a spot inside a rock: a free spot of the meadow",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "MaxY: the hill-top spot (30) still works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bosses (SpawnEvent)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "partners (MOB3.Spot)",
+      "check": "Skeleton Archer spawns beside a Skeleton Knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "partners (MOB3.Spot)",
+      "check": "a partner never stands in a stone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "partners (MOB3.Spot)",
+      "check": "the gap is still used",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "partners (MOB3.Spot)",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "partners (MOB3.Spot)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "partners (MOB3.Spot)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal monsters (SpawnPersonal)",
+      "check": "front blocked: a free side instead",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal monsters (SpawnPersonal)",
+      "check": "every side blocked + Near: nothing spawned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal monsters (SpawnPersonal)",
+      "check": "every side blocked, no Near: the home-town spot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal monsters (SpawnPersonal)",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "personal monsters (SpawnPersonal)",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "nothing built before the first spawn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "the first spawn builds it at once (no yield, no job)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "30 s later: the old index still serves (no rebuild yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "no rebuild job before 60 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "61 s: the job is queued, the old index serves meanwhile",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "one background job",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "no second job while one runs",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "the background rebuild yields (task.wait every 400 parts)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "after the job: the new rock blocks",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "the next round 60 s later picks up the next rock",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "a failed rebuild keeps the old index",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "a failed rebuild is warned (throttled)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: first build, background rebuilds",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: no Map yet",
+      "check": "no Map: nothing built, tried again next time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: no Map yet",
+      "check": "the Map appears: built at the next spawn (no 60 s wait)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: no Map yet",
+      "check": "no warnings",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: no Map yet",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "the index: no Map yet",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walks keep the old rule",
+      "check": "a walk target under a tree mesh: still ground (only new monsters are kept out)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walks keep the old rule",
+      "check": "def nil = no body check",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walks keep the old rule",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "walks keep the old rule",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [
+    {
+      "Group": "pickSpawnPoint in a forest",
+      "Text": "forest of 1400 props: the old rule left 130 of 273 ground picks inside a prop"
+    },
+    {
+      "Group": "pickSpawnPoint in a forest",
+      "Text": "pickSpawnPoint: 345 picks, 55 none this pass, 0 inside a prop"
+    },
+    {
+      "Group": "partners (MOB3.Spot)",
+      "Text": "partner spots in a ring of 11 stones: 7 found, 0 inside a stone"
+    }
+  ],
+  "staticChecks": 16,
+  "staticFailures": [],
+  "mutations": {
+    "total": 35,
+    "applied": 35,
+    "caught": 35,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "pickSpawnPoint: no body check",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "every try blocked :: no spawn this pass (never a random point inside the cover)",
+          "every try blocked :: the throttled warning names props",
+          "pickSpawnPoint in a forest :: MonsterService.PickSpawnPoint(King): no prop inside",
+          "pickSpawnPoint in a forest :: no pick has a prop inside its body (sampling oracle)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "SpawnEvent: no body check",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bosses (SpawnEvent) :: the King never stands in the shrine"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "MOB3.Spot partner: no body check",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "partners (MOB3.Spot) :: a partner never stands in a stone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "SpawnPersonal: no body check",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "personal monsters (SpawnPersonal) :: every side blocked + Near: nothing spawned",
+          "personal monsters (SpawnPersonal) :: every side blocked, no Near: the home-town spot",
+          "personal monsters (SpawnPersonal) :: front blocked: a free side instead"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "groundPoint ignores def",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bosses (SpawnEvent) :: the King never stands in the shrine",
+          "bosses (SpawnEvent) :: the marked spot itself: the King's body reaches the shrine",
+          "every try blocked :: no spawn this pass (never a random point inside the cover)",
+          "every try blocked :: the throttled warning names props",
+          "height: canopies, floating, flat parts :: a floating Ghost Minion (to 4.2) touches a branch at 4.0",
+          "height: canopies, floating, flat parts :: a tilted log's middle: blocked"
+        ],
+        "newFailingCount": 36
+      },
+      {
+        "mutation": "the walks get the body check too",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one prop: edges, corners, rotation :: the same spot without a body (walks): still walkable ground",
+          "pickSpawnPoint in a forest :: the test forest is dense (old rule: >= 25% of picks inside props)",
+          "walks keep the old rule :: a walk target under a tree mesh: still ground (only new monsters are kept out)",
+          "walks keep the old rule :: def nil = no body check"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "non-collidable parts never count (the old rule)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "every try blocked :: no spawn this pass (never a random point inside the cover)",
+          "every try blocked :: the throttled warning names props",
+          "height: canopies, floating, flat parts :: a floating Ghost Minion (to 4.2) touches a branch at 4.0",
+          "height: canopies, floating, flat parts :: a tilted log's middle: blocked",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Goblin Brute (7.5) does not",
+          "height: canopies, floating, flat parts :: under a canopy at 6: the King Slime (9.6) does not"
+        ],
+        "newFailingCount": 27
+      },
+      {
+        "mutation": "invisible helpers count",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what counts :: inside an invisible non-collidable helper: free"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bridges / WalkGround count as props",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what counts :: on a WalkGround stage by its lantern: free (on the floor, y 3)",
+          "what counts :: on a bridge deck by its rail: free, standing on the deck (y 2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Map.Pads counts as props",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what counts :: on a Map.Pads pad (1 tall): free"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Map.Zones counts as props",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what counts :: inside a Map.Zones box (even half see-through): free",
+          "what counts :: on a Map.Pads pad (1 tall): free",
+          "what counts :: on a WalkGround stage by its lantern: free (on the floor, y 3)",
+          "what counts :: on a bridge deck by its rail: free, standing on the deck (y 2)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "only Decor / Landmarks (other folders missed)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what counts :: a rock in Map.Gates: blocked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "parts inside parts missed",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what counts :: a part inside a part: blocked"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "roads and decks block (no foot gap)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "body sizes :: the body starts 0.5 above the ground",
+          "height: canopies, floating, flat parts :: on a road (top 0.2): free",
+          "height: canopies, floating, flat parts :: on a rug (top 0.45, under the 0.5 foot gap): free"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "height ignored (canopies block slimes)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "height: canopies, floating, flat parts :: a Shard Slime (to 3) passes under it",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Shard Slime (3 tall) fits",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Slime Prince (5.4) fits",
+          "height: canopies, floating, flat parts :: under its raised end (log bottom ~4.8): free (not its bounding box)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "height too low (a King under a low canopy)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "height: canopies, floating, flat parts :: a floating Ghost Minion (to 4.2) touches a branch at 4.0",
+          "height: canopies, floating, flat parts :: a tilted log's middle: blocked",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Goblin Brute (7.5) does not",
+          "height: canopies, floating, flat parts :: under a canopy at 6: the King Slime (9.6) does not",
+          "pickSpawnPoint in a forest :: MonsterService.PickSpawnPoint(King): no prop inside",
+          "pickSpawnPoint in a forest :: no pick has a prop inside its body (sampling oracle)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "Float ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "body sizes :: GhostMinion body = r 0.75, h 4.2",
+          "height: canopies, floating, flat parts :: a floating Ghost Minion (to 4.2) touches a branch at 4.0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "radius ignored (centre only)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bosses (SpawnEvent) :: the King never stands in the shrine",
+          "bosses (SpawnEvent) :: the marked spot itself: the King's body reaches the shrine",
+          "height: canopies, floating, flat parts :: just touching the post: blocked",
+          "one prop: edges, corners, rotation :: 1.41 studs off the box corner: blocked",
+          "one prop: edges, corners, rotation :: the body edge 0.05 inside the trunk box side: blocked",
+          "one prop: edges, corners, rotation :: the other side, 0.05 inside: blocked"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "scale ignored in height",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "body sizes :: BigSlime body = r 2.7, h 5.4",
+          "body sizes :: GhostMinion body = r 0.75, h 4.2",
+          "body sizes :: GoblinBrute body = r 1.875, h 7.5",
+          "body sizes :: SlimeKing body = r 4.8, h 9.6",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Goblin Brute (7.5) does not",
+          "height: canopies, floating, flat parts :: under a canopy at 6: the King Slime (9.6) does not"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "upright boxes as their bounding box (corners block)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one prop: edges, corners, rotation :: outside the turned footprint: free",
+          "one prop: edges, corners, rotation :: the body edge 0.05 outside: free",
+          "one prop: edges, corners, rotation :: the other side, 0.05 outside: free",
+          "pickSpawnPoint in a forest :: the forest still leaves room: >= 300 of 400 passes found a spot"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "rotation ignored (world axes)",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "one prop: edges, corners, rotation :: 1.41 studs off the box corner: blocked",
+          "one prop: edges, corners, rotation :: inside the turned footprint: blocked",
+          "one prop: edges, corners, rotation :: outside the turned footprint: free",
+          "one prop: edges, corners, rotation :: the body edge 0.05 outside: free",
+          "one prop: edges, corners, rotation :: the other side, 0.05 outside: free",
+          "partners (MOB3.Spot) :: a partner never stands in a stone"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "tilted parts by bounding box only",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "height: canopies, floating, flat parts :: under its raised end (log bottom ~4.8): free (not its bounding box)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "tilted parts never block",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "height: canopies, floating, flat parts :: a tilted log's middle: blocked",
+          "pickSpawnPoint in a forest :: MonsterService.PickSpawnPoint(King): no prop inside",
+          "pickSpawnPoint in a forest :: no pick has a prop inside its body (sampling oracle)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "vertical range ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "height: canopies, floating, flat parts :: a Shard Slime (to 3) passes under it",
+          "height: canopies, floating, flat parts :: on a road (top 0.2): free",
+          "height: canopies, floating, flat parts :: on a rug (top 0.45, under the 0.5 foot gap): free",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Shard Slime (3 tall) fits",
+          "height: canopies, floating, flat parts :: under a canopy at 6: a Slime Prince (5.4) fits"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "only the centre cell is searched",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "partners (MOB3.Spot) :: a partner never stands in a stone",
+          "pickSpawnPoint in a forest :: MonsterService.PickSpawnPoint(King): no prop inside",
+          "pickSpawnPoint in a forest :: no pick has a prop inside its body (sampling oracle)",
+          "the grid :: a post in the next cell, 0.7 from the body edge inside: blocked"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "big props only in their centre cell",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "every try blocked :: no spawn this pass (never a random point inside the cover)",
+          "every try blocked :: the throttled warning names props",
+          "one prop: edges, corners, rotation :: the body edge 0.05 inside the trunk box side: blocked",
+          "one prop: edges, corners, rotation :: the other side, 0.05 inside: blocked",
+          "partners (MOB3.Spot) :: a partner never stands in a stone",
+          "personal monsters (SpawnPersonal) :: front blocked: a free side instead"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "never rebuilt",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: first build, background rebuilds :: a failed rebuild is warned (throttled)",
+          "the index: first build, background rebuilds :: a failed rebuild keeps the old index",
+          "the index: first build, background rebuilds :: after the job: the new rock blocks",
+          "the index: first build, background rebuilds :: no second job while one runs",
+          "the index: first build, background rebuilds :: one background job",
+          "the index: first build, background rebuilds :: the background rebuild yields (task.wait every 400 parts)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "rebuilt but never swapped in",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: first build, background rebuilds :: a failed rebuild keeps the old index",
+          "the index: first build, background rebuilds :: after the job: the new rock blocks",
+          "the index: first build, background rebuilds :: the next round 60 s later picks up the next rock"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a failed rebuild clears the index",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: first build, background rebuilds :: a failed rebuild keeps the old index"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Busy never cleared",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: first build, background rebuilds :: a failed rebuild is warned (throttled)",
+          "the index: first build, background rebuilds :: a failed rebuild keeps the old index",
+          "the index: first build, background rebuilds :: the next round 60 s later picks up the next rock"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "rebuilt in the foreground",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: first build, background rebuilds :: 61 s: the job is queued, the old index serves meanwhile",
+          "the index: first build, background rebuilds :: no second job while one runs",
+          "the index: first build, background rebuilds :: one background job"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "no Map at first: never retried",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: no Map yet :: no Map: nothing built, tried again next time",
+          "the index: no Map yet :: the Map appears: built at the next spawn (no 60 s wait)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "background rebuild never yields",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "the index: first build, background rebuilds :: the background rebuild yields (task.wait every 400 parts)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "every try blocked: a random point anyway",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "every try blocked :: no spawn this pass (never a random point inside the cover)",
+          "every try blocked :: the throttled warning names props",
+          "pickSpawnPoint in a forest :: MonsterService.PickSpawnPoint(King): no prop inside",
+          "pickSpawnPoint in a forest :: no pick has a prop inside its body (sampling oracle)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the public probe passes no kind",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pickSpawnPoint in a forest :: MonsterService.PickSpawnPoint(King): no prop inside"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "6810c7011c265d37f472d0da0b63d066d244b969bfd4ccdea6b63e98cb7ff63a",
+    "src/ServerScriptService/MonsterService.luau": "1d88fa3f150b26883bc0faf8eb6f6b8453aaa0a0e47a2fa91d3b8642fdc635c3"
+  },
+  "fixtureSHA256": "f6d04f17c2a1a5bc3427ca4f208aec78da8442ad52c616b47e88de509398c5b6",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-129: a new monster's body (flat radius SEP.RadiusOf, height Slime 3 x Scale / Humanoid 5 x Scale + Float, from 0.5 above the ground) never overlaps a BasePart under workspace.Map (collidable or not, any folder, upright boxes exact, tilted ones conservative), except the walking ground (Config.GroundRoots incl. bridges and WalkGround tags), Map.Ground / Zones / Pads and invisible non-collidable helpers; flat parts under the 0.5 foot gap never block. pickSpawnPoint skips such tries (never the crowded fallback; every try blocked = nil), SpawnEvent / MOB3.Spot / SpawnPersonal pass the body, the walks do not. Index built at the first spawn (retried while there is no Map), rebuilt every 60 s in the background (yielding), old one kept on a failed rebuild.",
+  "limitations": "A map double under vertical rays (no real Terrain, meshes as their boxes, no CollisionFidelity); the real map is checked by tools/spawn_clear_probe.luau in Studio (main apply session)."
+}
