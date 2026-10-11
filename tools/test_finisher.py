@@ -56,8 +56,8 @@ MUTATIONS = [
      "\t\tif true then\n\t\t\trecord._manualAt = record._manualAt or {}\n"),
     ("Manual ignores the window", M, "i.Manual = manualAt[e.Player] ~= nil and now - manualAt[e.Player] <= window",
      "i.Manual = manualAt[e.Player] ~= nil"),
-    ("the kill keeps the manual hits", M, "rec._contributors, rec._hits, rec._dmg, rec._manualAt = {}, {}, {}, {}",
-     "rec._contributors, rec._hits, rec._dmg = {}, {}, {}"),
+    ("the kill keeps the manual hits", M, "rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt = {}, {}, {}, {}, {}",
+     "rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}"),
     ("a refused hit marked manual", M, "\tif record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end",
      "\tif record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then\n"
      "\t\tif manual == true then record._manualAt = record._manualAt or {}; record._manualAt[player] = os.clock() end\n"

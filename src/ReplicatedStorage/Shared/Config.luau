@@ -4510,8 +4510,9 @@ Config.FieldBosses = {
 	Crowd = { PerHunter = 0.5, Max = 10, Radius = 50, Window = 15, Every = 0.5, Rise = 2, SoloSeconds = 120 },
 	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
 	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
+	-- (Spawn = the place's KingSpawn marker, 검수 2026-10-11: the old hill-top spot is inside the shrine's footprint)
 	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
-		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0,
+		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426, 26.1, -160.5), MinLevel = 0,
 		MaxY = 40 }, -- the hill-top shrine stands above normal ground (MonsterService.SpawnEvent opts.MaxY)
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): every 20 min, stays 6 min, a ruins spawn
 	-- point until 검수's tool marks ClatterSpawn. The chip shows from Lv25. On a defeat every paid contributor: +War own
@@ -8289,6 +8290,25 @@ function Config.CraftXPToNext(lv)
 	if l ~= l or l >= K.MaxLv then return 0 end
 	return math.floor(K.XPBase * math.max(1, l) ^ K.XPExp)
 end
+
+-- A23-129 (게임성 개발 2): what keeps a new monster's body out (MonsterService CLEAR; 검수 2026-10-11 spawnclear review).
+-- TreeRule: a world-kit tree (a Model with exactly one TrunkPost and one mesh named here) blocks a disc of Base x the
+-- mesh's wider plan size round the TrunkPost, from the ground up to Canopy x its height, plus the mesh box above that
+-- (measured on the place 72a5f19b: 90% of the trunk / root geometry at body height, the canopy bottom). Any other mesh
+-- (W_GiantTree, town trees, bushes, boulders) keeps its full box. PassRule: a NON-collidable part whose name has a Pass
+-- word (and no NotPass word) never blocks: ground cover and effects, not props (A23-129 = trees, rocks, buildings, fences)
+Config.SpawnClear = {
+	TreeRule = true,
+	Trees = {
+		W_Tree_A = { Base = 0.26, Canopy = 0.26 },
+		W_Tree_B = { Base = 0.36, Canopy = 0.36 },
+		W_Tree_C = { Base = 0.34, Canopy = 0.46 },
+	},
+	PassRule = true,
+	Pass = { "Flower", "Grass", "Tuft", "Clover", "Lily", "Petal", "Puddle", "Wisp", "RedEye", "GlowEye", "Sparkle", "Mist",
+		"Falls", "Foam", "StepStone" },
+	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box" }, -- a flower cart / pot is furniture
+}
 
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save

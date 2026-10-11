@@ -120,8 +120,8 @@ MUTATIONS = [
      "local raw = math.min(D * releaseMult, capPct * vHum.MaxHealth)"),
     ("Q damage not booked", CO, "\t\t\t\t\tSKILL.Book(\"Hit\", player, vp, applied)\n", ""),
     ("heal per cast (no window)", CO,
-     "local room = SKILL.Room(\"Heal\", player, a, (skill.HaloHealCapPct or 0.30) * aHum.MaxHealth)",
-     "local room = (skill.HaloHealCapPct or 0.30) * aHum.MaxHealth"),
+     "local room = SKILL.Room(\"Heal\", player, a, capPct * aHum.MaxHealth)",
+     "local room = capPct * aHum.MaxHealth"),
     ("steal per cast (no window)", CO,
      "local room = SKILL.Room(\"Steal\", player, player, lifestealCapBase(player, hum) * (perks.LifestealCapPct or 0))",
      "local room = lifestealCapBase(player, hum) * (perks.LifestealCapPct or 0)"),
@@ -192,7 +192,7 @@ def static() -> tuple[int, list[str]]:
     combat = read(SSS / "CombatService.luau")
     release = function_block(combat, "function CombatService.Release(")
     check("applyLifesteal(" not in release and "SKILL.Steal(player, total)" in release
-          and "SKILL.Heal(player, center, radius, total)" in release, "Q heals / steals through the window")
+          and "SKILL.Heal(player, healAt, healR, total)" in release, "Q heals / steals through the window")
     swing = function_block(combat, "function CombatService.Swing(")
     check("applyLifesteal(player, perks, totalDealt)" in swing, "basic swings keep their own per-swing lifesteal")
     return count, failures
