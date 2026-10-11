@@ -95,8 +95,12 @@ runGroup("pause card: chapter end", function()
 	check(#cards(w, p) == 3, "the fight is over: the card comes", #cards(w, p))
 end)
 
+-- A23-130: the client shows only the chapter card, so the shipped Config.Return.Cards sends no Daily / War card (next
+-- group); these two groups turn both kinds back on and check the card rules the switch keeps
+local function allCards(c) c.Return.Cards = { Chapter = true, Daily = true, War = true } end
+
 runGroup("pause card: the day's dailies", function()
-	local w = retWorld()
+	local w = retWorld({ EditConfig = allCards })
 	local p, d = hero(w, 1)
 	w.Reg.DiaryService.TomorrowLine = function() return nil end -- no diary page waiting
 	w.Pinned[p] = { ShortName = "King Slimes", Story = { Guide = "SlimeMeadow" } }
@@ -135,7 +139,7 @@ runGroup("pause card: the day's dailies", function()
 end)
 
 runGroup("pause card: crown war end", function()
-	local w = retWorld()
+	local w = retWorld({ EditConfig = allCards })
 	local p = hero(w, 1)
 	local q = hero(w, 2)
 	local r = hero(w, 3)
@@ -159,6 +163,34 @@ runGroup("pause card: crown war end", function()
 	w.Reg.WarService.RoundEnded:Fire("Horns", "Siege", { [p] = 31 })
 	w:Advance(2)
 	check(#cards(w, p) == 2, "30 minutes later: a war card again", #cards(w, p))
+end)
+
+runGroup("pause card: A23-130 only the chapter card is sent", function()
+	local w = retWorld()
+	local C = w.Config.Return.Cards
+	check(type(C) == "table" and C.Chapter == true and C.Daily == false and C.War == false,
+		"Config.Return.Cards: Chapter on, Daily and War off (the client shows only the chapter card)", show(C))
+	local p = hero(w, 1)
+	w.Pinned[p] = { ShortName = "King Slimes", Story = { Guide = "SlimeMeadow" } }
+	w:Advance(20 * 60) -- 20 minutes into the session (a war card would be allowed)
+	p:SetAttribute("DailyClaims", 3)
+	w:Advance(2)
+	check(#cards(w, p) == 0, "the third daily: no card", #cards(w, p))
+	local moments = w:FxOf("OptInMoment", p)
+	check(#moments == 1 and moments[1].Data.Why == "Daily", "the daily moment still offers the opt-in (Fx OptInMoment Daily)",
+		show({ #moments, moments[1] and moments[1].Data }))
+	w.Reg.WarService.RoundEnded:Fire("Halo", "Contest", { [p] = 35 })
+	w:Advance(2)
+	check(#cards(w, p) == 0, "a crown-war end with chest points: no card", #cards(w, p))
+	w.Reg.StoryQuestService.QuestDone:Fire(p, "M1_4")
+	w:Advance(2)
+	local c = lastCard(w, p)
+	check(#cards(w, p) == 1 and c.Why == "Chapter", "a chapter end right after: its card comes (the dropped kinds took no MinGap)",
+		show(c))
+	p:SetAttribute("DailyClaims", 0)
+	p:SetAttribute("DailyClaims", 3)
+	w:Advance(2)
+	check(#w:FxOf("OptInMoment", p) == 1, "the next daily: no second opt-in (once a session)", #w:FxOf("OptInMoment", p))
 end)
 
 runGroup("welcome back", function()

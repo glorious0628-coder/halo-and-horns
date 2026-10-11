@@ -42,9 +42,8 @@ local TUT_TEXT = Config.Plural(string.format(TUT_CFG.QuestText, TUT_TARGET))
 local TUT_ZONE = TUT_CFG.GuideZone
 local TUT_MESSAGES = TUT_CFG.Text or {}
 local TUT_SHORT = TUT_CFG.ShortNames or {} -- 검수 2026-10-07: each row's ShortName (the phone HUD quest row, <= 14)
-local TUT_START_TEXT = TUT_MESSAGES.QuestStart or "First mission: %s! (Reward: %s gold)" -- (TUT_TEXT, gold)
-local TUT_READY_TEXT = TUT_MESSAGES.QuestReady or "First mission done! Press [Claim]."
-local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "First mission reward +%s gold! Check your next goal."
+-- A23-130 (user 2026-10-11 "삭제해 달랬는데 아직 있네"): no start / ready lines; the claim says only the reward
+local TUT_CLAIMED_TEXT = TUT_MESSAGES.Claimed or "+%s gold"
 local RESUME_DELAY_ON_SPAWN = 1
 local RESUME_DELAY_ON_CLASS = 0.5
 
@@ -496,7 +495,6 @@ end
 
 local function setStep(player, step)
 	if not getData(player) then return end
-	local previous = getStep(player)
 	S.PlayerService.SetStat(player, "TutorialStep", step)
 	dirty[player] = true -- step 0/1 guidance is published too, even before there is a kill quest
 	-- defensive mirror in case TutorialStep is missing from Config.Data.Mirrored
@@ -507,9 +505,7 @@ local function setStep(player, step)
 		if S.ZoneService.GetZoneId(player) == TUT_ZONE then
 			setStep(player, STEP_QUEST) -- already standing in the meadow
 		end
-	elseif step == STEP_QUEST and previous ~= STEP_QUEST then
-		Net.Notify(player, string.format(TUT_START_TEXT, TUT_TEXT, Util.FormatNumber(TUT_GOLD)), "good")
-	end
+	end -- A23-130: the hunt starts without a line (the pinned row shows it)
 end
 
 local function canWelcome(player)
@@ -677,21 +673,16 @@ local function tutorialKill(player, info)
 	if cur >= TUT_TARGET or not TUTORIAL_KINDS[Config.QuestKind(info.Kind)] or info.Personal == true
 		or info.ZoneId ~= TUT_ZONE then return end
 	cur += 1
-	S.PlayerService.SetStat(player, "TutorialKills", cur)
+	S.PlayerService.SetStat(player, "TutorialKills", cur) -- A23-130: 5/5 without a line (the row's [Claim] shows it)
 	dirty[player] = true
-	if cur >= TUT_TARGET then
-		Net.Notify(player, string.format(TUT_READY_TEXT), "good")
-	end
 end
 
 -- auto = the F10-4 safety net paid it (Tutorial.AutoClaimSeconds after 5/5 without a claim)
 function claimTutorial(player, auto)
 	if getStep(player) ~= STEP_QUEST then return end
 	if getTutorialKills(getData(player)) < TUT_TARGET then return end
-	-- A23-34 / A23-74: M1_1 (show the jelly to the smith) needs a smithy visit made after this claim, as the Claimed line
-	-- says: the first-weapon visit before the hunt never finishes it from the meadow. A save that owns a better weapon
-	-- than the first one already gets the "check the gear" lines instead of the next-weapon promise.
-	local armed = bit32.band(math.floor(num(getData(player).WeaponOwnedMask, 0)), bit32.bnot(1)) ~= 0
+	-- A23-34 / A23-74: M1_1 (show the jelly to the smith) needs a smithy visit made after this claim: the first-weapon
+	-- visit before the hunt never finishes it from the meadow (the pinned row sends the player there)
 	S.PlayerService.SetStat(player, "BlacksmithVisited", false)
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
 	TUT_READY_AT[player] = nil
@@ -700,11 +691,8 @@ function claimTutorial(player, auto)
 	if TUT_XP > 0 then
 		S.ProgressionService.AddXP(player, TUT_XP)
 	end
-	local text = auto and (TUT_MESSAGES.AutoClaimed or TUT_CLAIMED_TEXT) or TUT_CLAIMED_TEXT
-	if armed then
-		text = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)
-	end
-	Net.Notify(player, string.format(text, Util.FormatNumber(gotGold)), "reward", auto and 6 or nil, "QuestDone")
+	-- A23-130: the reward only, the same for a [Claim] and the F10-4 safety net
+	Net.Notify(player, string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), "reward", nil, "QuestDone")
 end
 
 -- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).
@@ -799,7 +787,7 @@ local function tutorialEntry(player, data)
 		entry.ShortName = TUT_SHORT.Travel
 	elseif step == STEP_QUEST then
 		entry.Progress, entry.Target = getTutorialKills(data), TUT_TARGET
-		entry.Text = if entry.Progress >= TUT_TARGET then TUT_READY_TEXT else TUT_TEXT
+		entry.Text = TUT_TEXT -- A23-130: at 5/5 too (no "Press [Claim]": the row's [Claim] shows it)
 		entry.ShortName = TUT_SHORT.Quest
 		entry.RewardGold, entry.RewardXP = TUT_GOLD, TUT_XP
 		entry.CanClaim, entry.ShowProgress = true, true

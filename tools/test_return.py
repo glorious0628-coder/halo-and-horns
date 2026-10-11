@@ -121,6 +121,13 @@ MUTATIONS = [
     ("cannot is never asked again", R, "os.time() - r.OptInAt < num(N.RetryCannot, 30 * 86400)", "true"),
     ("the card's opt-in also as its own Fx", R, "\tif not inCard then fx(player, \"OptInMoment\", { Why = why }) end\n",
      "\tfx(player, \"OptInMoment\", { Why = why })\n"),
+    # A23-130: a card kind the client no longer shows is not sent (no MinGap taken); the daily opt-in moment stays
+    ("a switched-off card kind still sent", R, "\tif type(R.Cards) == \"table\" and R.Cards[why] == false then\n",
+     "\tif false then\n"),
+    ("the daily opt-in lost with its card", R, "\t\t\t\tif player.Parent ~= nil then optInMoment(player, \"Daily\", false) end\n",
+     "\t\t\t\tlocal _ = player\n"),
+    ("the shipped config sends the daily card", C, "Cards = { Chapter = true, Daily = false, War = false },",
+     "Cards = { Chapter = true, Daily = true, War = false },"),
     ("an unknown opt-in result saved", R, "\tif not data or (result ~= \"shown\" and result ~= \"cannot\") then return end\n",
      "\tif not data then return end\n"),
     ("no asked list", R, "\t\tlocal ok, err = pcall(store.SetAsync, store, tostring(userId), { At = os.time() })\n", "\t\tlocal ok, err = true, nil\n"),

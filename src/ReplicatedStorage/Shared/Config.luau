@@ -1427,6 +1427,7 @@ Config.Goose = {
 	Interval = 600, -- one goose every 10 min...
 	OffsetFromWarEnd = 300, -- ...starting 5 min before each war round end (something happens every 5 min)
 	Duration = 60,
+	StartSeconds = 2, -- A23-130: the start line (Text.Start) shows this long, once per goose
 	Position = Vector3.new(-30, 0, 30), -- Crossroads plaza (safe zone); MapBuilder builds the perch here
 	HoverHeight = 4, -- goose body center = Position + (0, HoverHeight, 0)
 	HitRadius = 4, -- added to a class's Range when checking whether a swing reaches the goose
@@ -1452,13 +1453,12 @@ Config.Goose = {
 	-- the winner reward, no war points, no cheer star; a gauge not filled = the tie path (LoserShare 40% + 1 cheer star).
 	CoopPerPerson = 20,
 	CoopWinShare = 0.7,
-	-- English texts (string.format). Mode name: Halo "Team Rescue", Horns "Team Poach" (rescue / poach flavour of GooseStart).
+	-- English texts (string.format). Mode name: Halo "Team Rescue", Horns "Team Poach".
 	Text = {
+		-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): NotifyAll at the start, one short line for StartSeconds,
+		-- once per goose in every mode (the top gauge tells the rest: no co-op band, no line when the mode is fixed later)
+		Start = "Golden Goose!",
 		NeedManual = "Only players who hit the Golden Goose themselves %d+ times get the reward! (Auto Battle hits don't count)", -- (MinManualHits)
-		CoopStart = { -- NotifyAll when the event becomes co-op (at start, or when the first faction player appears)
-			Halo = "The Golden Goose is in the Crossroads!\nOnly Knights here: Team Rescue. Fill the gauge together!",
-			Horns = "The Golden Goose is in the Crossroads!\nOnly the Horn Legion here: Team Poach. Fill the gauge together!",
-		},
 		CoopFull = { -- NotifyAll once when the gauge is full (MinManualHits)
 			Halo = "Gauge full! Team Rescue done.\nHit it yourself %d+ times before the end for a reward!",
 			Horns = "Gauge full! Team Poach done.\nHit it yourself %d+ times before the end for a reward!",
@@ -2616,7 +2616,7 @@ Config.Tutorial = {
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
-	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
+	-- first sees it, also right after a rejoin) is paid automatically with Text.Claimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
 	-- A23-68 (user 2026-10-07, early churn): RespawnInMeadow: while the first mission runs (accepted, not claimed) a KO
 	-- respawns at the meadow entrance; #4 FoldOthers: until the first [Claim] every other quest-list row is sent with
@@ -2659,27 +2659,18 @@ Config.Tutorial = {
 		-- 3rd idea round #3: %s = the faction guide's name (Welcome[faction].Name), there is no guide NPC to look for
 		Welcome = "Tap here: first quest from %s", WelcomeEn = "Tap here: first quest from %s",
 		Travel = "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)", -- A23-88
-		QuestStart = "First mission: %s! (Reward: %s gold)",
-		QuestReady = "Supply road mission done! Press [Claim].",
+		-- A23-130 (user 2026-10-11): no line when the hunt starts or reaches 5/5 (QuestStart / QuestReady removed)
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
 		Forge = "Go to Otto's Forge in the Crossroads", -- A23-88: walking; Otto hands over the first weapon (zone_check_halo #44: the Forge is outside the town)
 		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
-		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
-		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
-		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
-		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		-- A23-130 (user 2026-10-11): the claim line is the reward only, for a [Claim] and the F10-4 safety net alike
+		-- (the old thank-you / next-weapon / "check the gear" variants are gone)
+		Claimed = "+%s gold",
 		-- the row after the claim while still bare-handed (no story row yet; A23-74 gives the weapon before that)
 		VisitBlacksmith = "Get your first weapon · Crossroads Forge",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",
-		-- the claim lines for a save that owns a better weapon than the first one already (no "new weapon" promise); the
-		-- VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
-		ClaimedArmed = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
-		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
-		AutoClaimedArmed = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
-		AutoClaimedArmedEn = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
+		-- the VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
 		VisitBlacksmithArmed = "Check the weapons · Crossroads Forge",
 		VisitBlacksmithArmedEn = "Check the weapons · Crossroads Forge",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
@@ -6662,7 +6653,6 @@ Config.Story = {
 		Horns = "The Horn Legion won the crown this round! The sky glows crimson.\n(Gold and XP +25%% for 10 minutes)",
 	},
 	WarDraw = "Nobody won the crown this round!",
-	GooseStart = "A Golden Goose with a Crown Shard landed in the Crossroads!\nKnights rescue it. The Horn Legion poaches it!",
 	GooseResult = {
 		Halo = "The Knights rescued the Golden Goose! The shard shines with light again.",
 		Horns = "The Horn Legion poached the Golden Goose! The shard turned dark.",
@@ -7449,6 +7439,9 @@ Config.Return = {
 	CombatWaitSeconds = 3, -- a card that comes in a fight waits for the fight to end (this often, at most this many times)
 	CombatWaitTries = 10,
 	War = { MinSession = 900, MinGap = 1800 }, -- a crown-war end: only after 15 minutes of play, at most one in 30 minutes
+	-- A23-130 (fix/lesstext: PauseCard shows only the chapter card): the kinds sent at all; false = not sent and no MinGap
+	-- taken (Daily still offers the notification opt-in through Fx OptInMoment)
+	Cards = { Chapter = true, Daily = false, War = false },
 	WelcomeAfter = 6 * 3600, -- "Welcome back!" when the last leave was at least this long ago (after the first mission)
 	WelcomeDelay = 4, -- s after the join (the HUD is up by then)
 	NextZone = "GoblinWoods", -- the next-goal row "Lv10 · Goblin Woods" travels there

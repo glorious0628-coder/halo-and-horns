@@ -36,8 +36,8 @@ MUTATIONS = [
     ("Config: no Forge step", C, "Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },",
      "Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },"),
     ("Config: the claim line promises the first weapon again", C,
-     "\t\tClaimed = \"Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!\",",
-     "\t\tClaimed = \"Thanks for guarding the supply road! +%s gold. Get your first weapon at the Crossroads Forge.\","),
+     "\t\tClaimed = \"+%s gold\",",
+     "\t\tClaimed = \"+%s gold. Get your first weapon at the Crossroads Forge.\","),
     ("Config: M1_1 pays nothing", C,
      "Big brothers always grab the biggest bite!\",\n\t\t\tReward = { Gold = 1 },", "Big brothers always grab the biggest bite!\","),
     # --- [Accept]: the Forge first for a bare-handed player
@@ -95,9 +95,21 @@ MUTATIONS = [
     # --- the claim: the visit cleared, the next-weapon line
     ("claim: keeps the forge visit", Q, "\tS.PlayerService.SetStat(player, \"BlacksmithVisited\", false)\n\tsetStep(player, TUT_DONE)",
      "\tsetStep(player, TUT_DONE)"),
-    ("claim: 'armed' = owns the first weapon (the old rule)", Q,
-     "\tlocal armed = bit32.band(math.floor(num(getData(player).WeaponOwnedMask, 0)), bit32.bnot(1)) ~= 0\n",
-     "\tlocal armed = bit32.btest(math.floor(num(getData(player).WeaponOwnedMask, 0)), 1)\n"),
+    # A23-130 (user 2026-10-11): no line when the hunt starts or at 5/5, the row keeps the mission line
+    ("hunt start: the old First mission line", Q,
+     "\tend -- A23-130: the hunt starts without a line (the pinned row shows it)",
+     "\telseif step == STEP_QUEST then\n\t\tNet.Notify(player, \"First mission: \" .. TUT_TEXT, \"good\")\n\tend"),
+    ("5/5: the old Press [Claim] line", Q,
+     "\tS.PlayerService.SetStat(player, \"TutorialKills\", cur) -- A23-130",
+     "\tif cur >= TUT_TARGET then Net.Notify(player, \"Supply road mission done! Press [Claim].\", \"good\") end\n"
+     "\tS.PlayerService.SetStat(player, \"TutorialKills\", cur) -- A23-130"),
+    ("5/5: the row says Press [Claim]", Q,
+     "\t\tentry.Text = TUT_TEXT -- A23-130",
+     "\t\tentry.Text = if entry.Progress >= TUT_TARGET then \"Supply road mission done! Press [Claim].\" else TUT_TEXT --"),
+    # A23-130: one reward-only claim line for every save
+    ("claim: the old thank-you line", Q,
+     "\tNet.Notify(player, string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), \"reward\", nil, \"QuestDone\")",
+     "\tNet.Notify(player, \"Thanks for guarding the supply road! +\" .. Util.FormatNumber(gotGold) .. \" gold.\", \"reward\", nil, \"QuestDone\")"),
     # --- old saves never stay bare-handed
     ("late: no late gift", Q, "\tFORGE.LateGift(player, data, step) -- A23-74", "\t-- A23-74"),
     ("late: at the welcome / Forge step too", Q,
@@ -158,7 +170,7 @@ SUITE = Suite(
              "glowing travel pad (or Map -> Travel)' (ShortName 'To the meadow'), no weapon window, no automatic trip; any "
              "arrival in the meadow (the pad, Map -> Travel, a walk) starts the hunt (step 2). The claim always clears "
              "BlacksmithVisited (M1_1 = a new visit: Otto's lines, Gold 1, then the shop where the 150 gold buy tier 2) "
-             "and says Claimed (next weapon) unless a better weapon is owned (ClaimedArmed). Old saves at steps 1 / 2 / "
+             "and says only the reward (A23-130 Claimed '+%s gold', no line at the hunt start or 5/5). Old saves at steps 1 / 2 / "
              "99, class chosen, bare-handed without tier 1 get the gift at the join (once a session; never at steps 0 / "
              "3, never when armed). No anvil: the gift at once. The Forge step survives a save / load.",
     limitations="Offline doubles for Players, characters, the anvil part, ZoneService (Travel / ZoneChanged) and the "

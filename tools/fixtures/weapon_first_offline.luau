@@ -173,9 +173,8 @@ runGroup("config", function()
 	-- the 150 gold: the next weapon (tier 2, Lv1) now that the first one is in hand
 	check(TC.QuestRewardGold == 150 and C.Weapons[2].Price == TC.QuestRewardGold and C.Weapons[2].MinLevel == 1,
 		"the first mission's 150 gold = the tier-2 price, usable at Lv1", show({ TC.QuestRewardGold, C.Weapons[2].Price }))
-	check(string.find(TC.Text.Claimed, "new weapon", 1, true) ~= nil and string.find(TC.Text.AutoClaimed, "new weapon", 1, true) ~= nil
-		and string.find(TC.Text.Claimed, "first weapon", 1, true) == nil, "the claim lines point to the next weapon",
-		show({ TC.Text.Claimed, TC.Text.AutoClaimed }))
+	check(TC.Text.Claimed == "+%s gold" and TC.Text.AutoClaimed == nil and TC.Text.ClaimedArmed == nil,
+		"A23-130: one claim line, the reward only", show({ TC.Text.Claimed, TC.Text.AutoClaimed }))
 	local M11 = C.StoryQuests.Defs.M1_1
 	check(M11.GiveWeapon == 1 and M11.Reward and M11.Reward.Gold == 1 and M11.Steps[1].Obj.Key == "BlacksmithVisited",
 		"M1_1: the visit with the jelly, Gold 1, the gift kept as the safety net", show({ M11.GiveWeapon, M11.Reward }))
@@ -247,17 +246,30 @@ runGroup("weapon first", function()
 	check(grow.Text == T.Text.Travel and grow.ShortName == T.ShortNames.Travel and grow.TutorialStep == 1 and grow.CanClaim == false,
 		"the step-1 row teaches the pad / the map", show(grow))
 	-- the player's own travel (the pad and Map -> Travel both call ZoneService.Travel) lands in the meadow: the hunt
+	local nHunt = #w.Notices
 	w.Registry.ZoneService.Travel(p, "SlimeMeadow", false)
 	w:Flush()
 	check(w.ZoneOf[p] == "SlimeMeadow" and step(p) == T.Steps.Quest, "the travel pad / the map: the hunt (step 2)", show({ w.ZoneOf[p], step(p) }))
-	for _ = 1, 5 do w:Drop(p, "Slime") end
+	-- A23-130 (user 2026-10-11 "삭제해 달랬는데 아직 있네"): the hunt starts without a line, 5/5 too; the row keeps the mission
+	check(#w:NoticesFor(p, nHunt) == 0, "A23-130: no 'First mission: ...' line when the hunt starts", show(w:NoticesFor(p, nHunt)))
+	for _ = 1, 4 do w:Drop(p, "Slime") end
+	w:Flush()
+	local row4 = ((w:Rows(p) or {})[1] or {}).Text
+	local nReady = #w.Notices
+	w:Drop(p, "Slime")
+	w:Flush()
 	check(d.TutorialKills == 5, "5 slimes with the weapon", d.TutorialKills)
+	check(#w:NoticesFor(p, nReady) == 0, "A23-130: no 'Press [Claim]' line at 5/5", show(w:NoticesFor(p, nReady)))
+	local row5 = (w:Rows(p) or {})[1] or {}
+	check(type(row4) == "string" and row5.Text == row4 and row5.CanClaim == true and row5.Progress == 5
+		and not string.find(row5.Text, "Claim", 1, true), "A23-130: at 5/5 the row keeps the mission line (its [Claim] shows it)",
+		show({ row4, row5.Text, row5.Progress }))
 	-- the claim: 150 gold, the visit cleared, the next-weapon line
 	local n2 = #w.Notices
 	w:ClaimFirst(p)
 	check(step(p) == 99 and d.BankGold == 150 and d.BlacksmithVisited == false, "the claim: 150 gold, the forge visit cleared",
 		show({ step(p), d.BankGold, d.BlacksmithVisited }))
-	check(count(w:NoticesFor(p, n2), string.format(T.Text.Claimed, "150")) == 1, "the claim line: 150 buys a new weapon",
+	check(count(w:NoticesFor(p, n2), string.format(T.Text.Claimed, "150")) == 1, "the claim line: +150 gold (A23-130)",
 		show(w:NoticesFor(p, n2)))
 	-- M1_1: the jelly to Otto (a new visit), his lines, then the shop where the 150 gold buy tier 2
 	w.Story.Refresh(p)
@@ -497,9 +509,10 @@ runGroup("claim", function()
 	local w = forgeWorld()
 	local T = w.Config.Tutorial
 	local cases = {
-		{ Id = 1, Tier = 1, Mask = 1, Line = T.Text.Claimed, Name = "tier 1 only: 150 buys a new weapon" },
-		{ Id = 2, Tier = 2, Mask = 3, Line = T.Text.ClaimedArmed, Name = "tier 2 owned: 'check the gear'" },
-		{ Id = 3, Tier = 8, Mask = 129, Line = T.Text.ClaimedArmed, Name = "the jackpot owned: 'check the gear'" },
+		-- A23-130 (user 2026-10-11): the same reward-only line for every save
+		{ Id = 1, Tier = 1, Mask = 1, Line = T.Text.Claimed, Name = "tier 1 only: +150 gold" },
+		{ Id = 2, Tier = 2, Mask = 3, Line = T.Text.Claimed, Name = "tier 2 owned: +150 gold" },
+		{ Id = 3, Tier = 8, Mask = 129, Line = T.Text.Claimed, Name = "the jackpot owned: +150 gold" },
 	}
 	for _, c in cases do
 		local p, d = w:Newbie(c.Id, { Tutorial = 2, Tier = c.Tier, Mask = c.Mask, Zone = "SlimeMeadow",
@@ -509,14 +522,14 @@ runGroup("claim", function()
 		check(step(p) == 99 and d.BlacksmithVisited == false and count(w:NoticesFor(p, n), string.format(c.Line, "150")) == 1,
 			c.Name .. " (the visit cleared)", show(w:NoticesFor(p, n)))
 	end
-	-- the F10-4 safety net pays with the next-weapon line too
+	-- the F10-4 safety net pays with the same reward-only line
 	local p, d = w:Newbie(9, { Tutorial = 2, Tier = 1, Mask = 1, Zone = "SlimeMeadow", Data = { TutorialKills = 5 } })
 	local n = #w.Notices
 	w:QuestTick()
 	w:Advance(T.AutoClaimSeconds + 1)
 	w:QuestTick()
-	check(step(p) == 99 and d.BankGold == 150 and count(w:NoticesFor(p, n), string.format(T.Text.AutoClaimed, "150")) == 1,
-		"the auto claim: AutoClaimed (next weapon)", show(w:NoticesFor(p, n)))
+	check(step(p) == 99 and d.BankGold == 150 and count(w:NoticesFor(p, n), string.format(T.Text.Claimed, "150")) == 1
+		and #w:NoticesFor(p, n) == 1, "the auto claim: the same +150 gold line, nothing else", show(w:NoticesFor(p, n)))
 end)
 
 ------------------------------------------------------------------ 7. the save keeps the Forge step
