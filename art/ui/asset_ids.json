@@ -1110,5 +1110,7 @@
   "HaloTile_Halo_TowerMarbleBlock_metal": "rbxassetid://87489921567476",
   "Halo_Fabric2_color": "rbxassetid://76316272601072",
   "Halo_Fabric2_normal": "rbxassetid://102973991596175",
-  "Halo_Fabric2_rough": "rbxassetid://119858177335377"
+  "Halo_Fabric2_rough": "rbxassetid://119858177335377",
+  "Halo_MarbleSmoothCream_color": "rbxassetid://114611278221629",
+  "Halo_MarbleSmoothCream_rough": "rbxassetid://137526286825414"
 }
