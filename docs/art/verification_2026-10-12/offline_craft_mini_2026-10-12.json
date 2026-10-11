@@ -1,5 +1,5 @@
 {
-  "checks": 42,
+  "checks": 45,
   "failed": 0,
   "mutations": [
     {
@@ -9,6 +9,16 @@
     },
     {
       "name": "Accept skips the server check",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "only the ping now counts (게임성 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a strike's own ping ignored",
       "applied": true,
       "caught": true
     },
