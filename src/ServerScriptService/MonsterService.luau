@@ -1729,6 +1729,31 @@ function MonsterService.RemoveEvent(rec, fade, leaving)
 	return true
 end
 
+-- A23-113 ⑦ (FieldBossService, a field boss's HP follows its hunters): a living event monster's new MaxHP; its HP keeps
+-- the same fraction (rounded, never below 1 here) and the bar follows. true when it changed
+function MonsterService.SetEventMaxHP(rec, maxHP)
+	if type(rec) ~= "table" or rec.Event ~= true or not rec.Alive then return false end
+	if type(maxHP) ~= "number" or maxHP ~= maxHP or maxHP <= 0 or maxHP == math.huge then return false end
+	local old = tonumber(rec.MaxHP) or 0
+	if old <= 0 or math.abs(maxHP - old) < 1e-6 then return false end
+	local frac = math.clamp((tonumber(rec.HP) or 0) / old, 0, 1)
+	rec.MaxHP = maxHP
+	rec.HP = math.max(1, math.floor(frac * maxHP + 0.5))
+	updateBar(rec)
+	return true
+end
+
+-- A23-113 ⑦: a copy of every player's own damage on this monster so far (A23-27 _dmg: overkill excluded; players who
+-- left stay in it until the kill)
+function MonsterService.DamageTotals(rec)
+	local out = {}
+	if type(rec) ~= "table" or type(rec._dmg) ~= "table" then return out end
+	for p, d in rec._dmg do
+		if typeof(p) == "Instance" and type(d) == "number" and d > 0 then out[p] = d end
+	end
+	return out
+end
+
 -- A23-110: removes a living personal monster without rewards, like RemoveEvent (FirstKOService: the King leaves after
 -- the first KO, or when its quest step is over); true when it was removed
 function MonsterService.RemovePersonal(rec, fade, leaving)
