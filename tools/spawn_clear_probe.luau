@@ -7,6 +7,11 @@
 -- points the old way (Util.RandomPointInZone + MonsterService.GroundAt: ground + the CR-L14 centre ray only) = "before".
 -- Every point is checked against every map prop by a test written here (sampled body points inside a part's box and the
 -- part's own points inside the body; nothing shared with the game's index). Expected: after = 0 overlaps everywhere.
+-- 검수 2026-10-11 (spawnclear review): the props follow the same rules as the game (written again here): world-kit trees
+-- (one TrunkPost + a mesh named in Config.SpawnClear.Trees) = a trunk-base disc up to the canopy bottom + the box above,
+-- non-collidable ground cover / effects named in Config.SpawnClear.Pass are not props, bridges and WalkGround models are
+-- walked (only tagged floor parts skipped). Per zone it also prints the share of free spawn tries (before / after, each
+-- regular kind) and the spread fallback rate (a starved player's 6 ring tries all blocked).
 local PICKS = 500
 local FOOT = 0.5
 
@@ -23,15 +28,37 @@ end
 local map = workspace:FindFirstChild("Map")
 if not map then return "no workspace.Map" end
 
--- the props: every BasePart under Map but the walking ground and its contents, Ground / Zones / Pads, invisible
--- non-collidable helpers
+-- the props: every BasePart under Map but Ground / Zones / Pads, WalkGround-tagged floor parts, invisible non-collidable
+-- helpers and non-collidable ground cover / effects (Config.SpawnClear.Pass)
 local skip = {}
-for _, g in Config.GroundRoots(workspace.Terrain, map, CS:GetTagged((Config.Ground or {}).Tag or "WalkGround")) do
-	skip[g] = true
+for _, t in CS:GetTagged((Config.Ground or {}).Tag or "WalkGround") do
+	if t:IsA("BasePart") then skip[t] = true end
 end
 for _, n in { "Ground", "Zones", "Pads" } do
 	local f = map:FindFirstChild(n)
 	if f then skip[f] = true end
+end
+local SCF = Config.SpawnClear or {}
+local function hasWord(name, list)
+	for _, k in list or {} do
+		if string.find(name, k, 1, true) then return true end
+	end
+	return false
+end
+local function passes(d)
+	return SCF.PassRule ~= false and not d.CanCollide and hasWord(d.Name, SCF.Pass) and not hasWord(d.Name, SCF.NotPass)
+end
+-- a world-kit tree mesh: its parent holds exactly one TrunkPost and it as the one known upright tree mesh
+local function treeOf(d)
+	local trees = SCF.Trees or {}
+	if SCF.TreeRule == false or not d:IsA("MeshPart") or type(trees[d.Name]) ~= "table" or not d.Parent then return nil end
+	local posts, meshes, post = 0, 0, nil
+	for _, c in d.Parent:GetChildren() do
+		if c:IsA("BasePart") and c.Name == "TrunkPost" then posts += 1; post = c end
+		if c:IsA("MeshPart") and type(trees[c.Name]) == "table" then meshes += 1 end
+	end
+	if posts ~= 1 or meshes ~= 1 or math.abs(d.CFrame.UpVector.Y) < 0.999 then return nil end
+	return trees[d.Name], post
 end
 local function skipped(inst)
 	local p = inst
@@ -43,22 +70,42 @@ local function skipped(inst)
 end
 local props, cells = {}, {}
 local CELL = 32
-for _, d in map:GetDescendants() do
-	if d:IsA("BasePart") and not skipped(d) and not (d.Transparency >= 0.95 and not d.CanCollide) then
-		local s = d.Size
-		local pr = { Part = d, CF = d.CFrame, Size = s, Reach = s.Magnitude / 2 }
-		table.insert(props, pr)
-		local c = pr.CF.Position
-		for cx = math.floor((c.X - pr.Reach) / CELL), math.floor((c.X + pr.Reach) / CELL) do
-			for cz = math.floor((c.Z - pr.Reach) / CELL), math.floor((c.Z + pr.Reach) / CELL) do
-				local k = cx .. ":" .. cz
-				cells[k] = cells[k] or {}
-				table.insert(cells[k], pr)
-			end
+local trees, passed = 0, 0
+local function addProp(pr)
+	table.insert(props, pr)
+	local c = pr.CF.Position
+	for cx = math.floor((c.X - pr.Reach) / CELL), math.floor((c.X + pr.Reach) / CELL) do
+		for cz = math.floor((c.Z - pr.Reach) / CELL), math.floor((c.Z + pr.Reach) / CELL) do
+			local k = cx .. ":" .. cz
+			cells[k] = cells[k] or {}
+			table.insert(cells[k], pr)
 		end
 	end
 end
-table.insert(out, "props counted: " .. #props)
+for _, d in map:GetDescendants() do
+	if d:IsA("BasePart") and not skipped(d) and not (d.Transparency >= 0.95 and not d.CanCollide) then
+		local s = d.Size
+		local share, post = treeOf(d)
+		if passes(d) then
+			passed += 1
+		elseif share then
+			trees += 1
+			local lo = d.Position.Y - s.Y / 2
+			local cut = lo + share.Canopy * s.Y
+			local r = share.Base * math.max(s.X, s.Z)
+			local pp = post.Position
+			addProp({ Part = d, Disc = { X = pp.X, Z = pp.Z, R = r, Lo = lo, Hi = cut }, CF = CFrame.new(pp.X, (lo + cut) / 2, pp.Z),
+				Reach = r })
+			local cf = d.CFrame - d.Position + Vector3.new(d.Position.X, (cut + lo + s.Y) / 2, d.Position.Z)
+			local top = Vector3.new(s.X, lo + s.Y - cut, s.Z)
+			addProp({ Part = d, CF = cf, Size = top, Reach = top.Magnitude / 2 })
+		else
+			addProp({ Part = d, CF = d.CFrame, Size = s, Reach = s.Magnitude / 2 })
+		end
+	end
+end
+table.insert(out, string.format("props counted: %d (%d kit trees as trunk disc + canopy box, %d ground-cover parts left out)",
+	#props, trees, passed))
 
 local function bodyOf(def)
 	local s = tonumber(def.Scale) or 1
@@ -78,7 +125,13 @@ local function hitAt(g, def)
 		for cz = math.floor((g.Z - r) / CELL), math.floor((g.Z + r) / CELL) do
 			for _, pr in cells[cx .. ":" .. cz] or {} do
 				local c = pr.CF.Position
-				if not seen[pr] and math.abs(c.X - g.X) <= pr.Reach + r and math.abs(c.Z - g.Z) <= pr.Reach + r then
+				local disc = pr.Disc
+				if disc and not seen[pr] then
+					seen[pr] = true
+					if hi > disc.Lo and lo < disc.Hi and math.sqrt((g.X - disc.X) ^ 2 + (g.Z - disc.Z) ^ 2) < disc.R + r * 0.97 then
+						return pr.Part
+					end
+				elseif not seen[pr] and math.abs(c.X - g.X) <= pr.Reach + r and math.abs(c.Z - g.Z) <= pr.Reach + r then
 					seen[pr] = true
 					for _, y in { lo + 0.02, (lo + hi) / 2, hi - 0.02 } do
 						for _, rr in { 0, r * 0.5, r * 0.97 } do
@@ -191,6 +244,45 @@ for _, zid in order do
 	table.insert(out, string.format("  before: %d ground points, %d inside a prop with a %s body (%.0f%%)%s", oldN, oldBad, big,
 		oldN > 0 and oldBad * 100 / oldN or 0, noGround > 0 and (", " .. noGround .. " with no ground at all") or ""))
 	if #tops > 0 then table.insert(out, "    most: " .. table.concat(tops, " | ")) end
+	-- 검수 2026-10-11: the share of free spawn tries per kind (plain ground = before, the body rule = after) and the
+	-- spread fallback rate (a starved player at a random walkable spot: all SpawnSpread.Tries ring tries blocked)
+	local SP = Config.SpawnSpread or {}
+	local minD, maxD, tries = SP.MinDist or 18, SP.MaxDist or 28, SP.Tries or 6
+	local inset = Config.Monsters.SpawnInset
+	local function inZone(v)
+		return math.abs(v.X - zone.Center.X) <= zone.Size.X / 2 - inset and math.abs(v.Z - zone.Center.Z) <= zone.Size.Z / 2 - inset
+	end
+	for _, kind in kinds do
+		local ground, free = 0, 0
+		for i = 1, PICKS do
+			local pt = Util.RandomPointInZone(zone, inset)
+			if MS.GroundAt(pt.X, pt.Z) then
+				ground += 1
+				if MS.GroundAt(pt.X, pt.Z, kind) then free += 1 end
+			end
+			if i % 25 == 0 then task.wait() end
+		end
+		local spots, stuck = 0, 0
+		for i = 1, 200 do
+			local pt = Util.RandomPointInZone(zone, inset)
+			if MS.GroundAt(pt.X, pt.Z) then
+				spots += 1
+				local any = false
+				for _ = 1, tries do
+					local a, d = math.random() * math.pi * 2, minD + math.random() * (maxD - minD)
+					local v = Vector3.new(pt.X + math.cos(a) * d, 0, pt.Z + math.sin(a) * d)
+					if inZone(v) and MS.GroundAt(v.X, v.Z, kind) then
+						any = true
+						break
+					end
+				end
+				if not any then stuck += 1 end
+			end
+			if i % 10 == 0 then task.wait() end
+		end
+		table.insert(out, string.format("  %-16s free tries %.1f%% of ground (%d/%d), spread fallback %.1f%% (%d of %d spots)", kind,
+			ground > 0 and free * 100 / ground or 0, free, ground, spots > 0 and stuck * 100 / spots or 0, stuck, spots))
+	end
 end
 table.insert(out, string.format("first pick incl. the index build: %.1f ms", firstMs or -1))
 table.insert(out, total == 0 and "RESULT OK: no new monster inside a prop" or ("RESULT FAIL: " .. total .. " picks inside a prop"))

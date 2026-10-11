@@ -278,7 +278,8 @@ MUTATIONS = [
     ("spawn ignores the other's size", M, "radius + (rec._radius or SEP.Radius.Slime) + SEP.SpawnGap", "radius + SEP.SpawnGap"),
     ("dead monsters block spawns", M, "local root = rec.Alive and rec.Root or nil\n\t\tif root and root.Parent\n",
      "local root = rec.Root\n\t\tif root and root.Parent\n"),
-    ("boss spawns on a monster", M, "\t\t\t\tif SEP.Clear(g, body) then\n", "\t\t\t\tif true then\n"),
+    ("boss spawns on a monster", M, "\t\t\tif g and Config.ZoneAt(g).Id == def.Zone then\n\t\t\t\tif SEP.Clear(g, body) then\n",
+     "\t\t\tif g and Config.ZoneAt(g).Id == def.Zone then\n\t\t\t\tif true then\n"),
     ("crowded boss spawn lost", M, "\t\tpos = pos or crowded\n", ""),
     # target hold (review 2026-10-08: two players side by side)
     ("no target hold time", M, "\t\tand (now < (rec._targetAt or -math.huge) + SEP.TargetHold\n", "\t\tand (false\n"),

@@ -363,22 +363,31 @@ end
 -- CR-L14 centre ray above only sees collidable, queryable parts of Map.Decor / Landmarks, but the world kits' trees,
 -- bushes and rocks are CanQuery = false meshes (a visible mesh without collision + an invisible collidable post) that no
 -- raycast or GetPartBoundsInBox ever returns. So the server keeps its own index of prop boxes: every BasePart under
--- workspace.Map except the walking ground (Config.GroundRoots: Terrain, Map.Ground, the bridges, WalkGround tags), the
--- Map children named in SKIP and invisible non-collidable helpers (zone boxes, anchors, mist). The body is a column of
+-- workspace.Map except Map.Ground, WalkGround-tagged floor parts, the Map children named in SKIP, invisible
+-- non-collidable helpers (zone boxes, anchors, mist) and non-collidable ground cover / effects by name
+-- (Config.SpawnClear.Pass: flowers, step stones, waterfall sheets, wisps). Bridges and tagged models are walked: their
+-- rails, posts and lamps block, their deck never does (it is the ground there, under the FOOT gap). A world-kit tree (a
+-- Model with one TrunkPost and a mesh named in Config.SpawnClear.Trees) blocks a disc round its trunk up to the canopy
+-- bottom plus its mesh box above that (검수 2026-10-11: the full box closed half of the woods). The body is a column of
 -- flat radius SEP.RadiusOf(def) from FOOT above the ground up to its height (buildRig: Slime 3 x Scale, Humanoid
 -- 5 x Scale, + Float), so flat things whose top stays under FOOT (roads, decks, water planes) never count. A spawn try
 -- whose body overlaps a prop is skipped like water (groundPoint def). The index is a CELL-stud grid built at the first
--- spawn, then rebuilt every REFRESH s in the background (task.wait every YIELD parts; the old one serves meanwhile).
+-- spawn (a failed first build leaves an empty one), then rebuilt in the background when the Map changed (its
+-- DescendantAdded / Removing), checked every REFRESH s; a rebuild yields every BUDGET s, the old index serves meanwhile.
 local CLEAR = {
 	FOOT = 0.5,
 	CELL = 16,
 	REFRESH = 60,
-	YIELD = 400,
+	BUDGET = 0.002, -- s of work between two task.wait() of a background rebuild
 	HEIGHT = { Slime = 3, Humanoid = 5 },
 	SKIP = { Ground = true, Zones = true, Pads = true }, -- Map children that are never props
 	Grid = nil, -- [cell key] = { entry, ... }; nil = not built yet (or no Map)
 	At = -math.huge,
 	Busy = false,
+	Map = nil, -- the Map the index was built from
+	Dirty = false, -- that Map changed (or the last rebuild failed): rebuilt at the next check
+	Watched = false, -- its DescendantAdded / Removing are connected (unwatched = rebuilt at every check)
+	Conns = {},
 }
 
 -- flat radius and height (studs) of a monster kind's body
@@ -410,10 +419,68 @@ function CLEAR.Entry(part)
 		Lo = p.Y - ey, Hi = p.Y + ey }
 end
 
+-- true for a non-collidable ground-cover / effect part named in Config.SpawnClear.Pass and in no NotPass word (knee-high
+-- flowers, step stones, waterfall sheets and foam, wisps): it never blocks a spawn
+function CLEAR.Passes(part)
+	local SC = Config.SpawnClear
+	if type(SC) ~= "table" or SC.PassRule == false or part.CanCollide then return false end
+	local name = part.Name
+	for _, k in SC.NotPass or {} do
+		if string.find(name, k, 1, true) then return false end
+	end
+	for _, k in SC.Pass or {} do
+		if string.find(name, k, 1, true) then return true end
+	end
+	return false
+end
+
+-- the world-kit tree among one instance's children: exactly one BasePart named TrunkPost and exactly one MeshPart named
+-- in Config.SpawnClear.Trees -> { Mesh, Post, Base, Canopy }; else nil (any mesh keeps its full box)
+function CLEAR.TreeOf(kids)
+	local SC = Config.SpawnClear
+	if type(SC) ~= "table" or SC.TreeRule == false or type(SC.Trees) ~= "table" then return nil end
+	local post, mesh, shape = nil, nil, nil
+	for _, c in kids do
+		if c:IsA("BasePart") then
+			if c.Name == "TrunkPost" then
+				if post then return nil end
+				post = c
+			elseif c:IsA("MeshPart") and type(SC.Trees[c.Name]) == "table" then
+				if mesh then return nil end
+				mesh, shape = c, SC.Trees[c.Name]
+			end
+		end
+	end
+	if not post or not mesh then return nil end
+	return { Mesh = mesh, Post = post, Base = tonumber(shape.Base) or 0, Canopy = tonumber(shape.Canopy) or 0 }
+end
+
+-- the entries of a tree (TreeOf): a disc of Base x the mesh's wider plan size round the TrunkPost, from the mesh bottom
+-- up to Canopy x its height, and the mesh box above that height; a tilted mesh (or a zero share) keeps its full box
+function CLEAR.TreeEntries(t)
+	local e = CLEAR.Entry(t.Mesh)
+	if not e then return {} end
+	if e.Vert == 0 or t.Base <= 0 or t.Canopy <= 0 then return { e } end
+	local plan = 0
+	for i, h in e.Half do
+		if i ~= e.Vert then plan = math.max(plan, h * 2) end
+	end
+	local cut = e.Lo + t.Canopy * e.Half[e.Vert] * 2
+	local p, r = t.Post.CFrame.Position, t.Base * plan
+	local out = { { Part = t.Mesh, Disc = true, R = r, X = p.X, Y = (e.Lo + cut) / 2, Z = p.Z, EX = r, EZ = r, Lo = e.Lo,
+		Hi = cut } }
+	if cut < e.Hi then
+		e.Lo = cut
+		table.insert(out, e)
+	end
+	return out
+end
+
 -- true when the body column (flat radius r around (x, z), from lo up to hi) overlaps the entry's box
 function CLEAR.Overlap(e, x, z, r, lo, hi)
 	if e.Hi <= lo or e.Lo >= hi then return false end
 	local dx, dz = x - e.X, z - e.Z
+	if e.Disc then return dx * dx + dz * dz < (e.R + r) * (e.R + r) end -- a tree's trunk base (TreeEntries)
 	if math.abs(dx) >= e.EX + r or math.abs(dz) >= e.EZ + r then return false end
 	if e.Vert ~= 0 then
 		-- an upright box (trees, bushes, rocks, walls): the circle against its flat rectangle
@@ -436,57 +503,97 @@ function CLEAR.Overlap(e, x, z, r, lo, hi)
 	return true
 end
 
--- a new index of the props under workspace.Map (nil without a Map); yieldEvery = task.wait() after that many parts
-function CLEAR.Build(yieldEvery)
+-- a new index of the props under workspace.Map and that Map (nil without a Map); yielding = a background rebuild
+-- (task.wait() after every BUDGET s of work)
+function CLEAR.Build(yielding)
 	local map = workspace:FindFirstChild("Map")
 	if not map then return nil end
 	local skip = {}
-	for _, g in Config.GroundRoots(workspace.Terrain, map, Util.Tagged((Config.Ground or {}).Tag or "WalkGround")) do
-		skip[g] = true
+	local ground = map:FindFirstChild("Ground")
+	if ground then skip[ground] = true end
+	-- 검수 2026-10-11 (spawnclear review): only the walking floors are skipped (a tagged part); tagged models and the
+	-- bridges are walked, so their rails, posts and lamps block while a deck under the body never does (the FOOT gap)
+	for _, t in Util.Tagged((Config.Ground or {}).Tag or "WalkGround") do
+		if t:IsA("BasePart") then skip[t] = true end
 	end
 	for _, c in map:GetChildren() do
 		if CLEAR.SKIP[c.Name] then skip[c] = true end
 	end
-	local grid, n, cell = {}, 0, CLEAR.CELL
+	local grid, cell, t0 = {}, CLEAR.CELL, os.clock()
+	local function add(e)
+		for cx = math.floor((e.X - e.EX) / cell), math.floor((e.X + e.EX) / cell) do
+			for cz = math.floor((e.Z - e.EZ) / cell), math.floor((e.Z + e.EZ) / cell) do
+				local k = CLEAR.Key(cx, cz)
+				local list = grid[k]
+				if list then table.insert(list, e) else grid[k] = { e } end
+			end
+		end
+	end
 	local function walk(inst)
-		for _, c in inst:GetChildren() do
+		local kids = inst:GetChildren()
+		local tree = CLEAR.TreeOf(kids)
+		for _, c in kids do
 			if not skip[c] then
 				if c:IsA("BasePart") then
-					local e = CLEAR.Entry(c)
-					if e then
-						for cx = math.floor((e.X - e.EX) / cell), math.floor((e.X + e.EX) / cell) do
-							for cz = math.floor((e.Z - e.EZ) / cell), math.floor((e.Z + e.EZ) / cell) do
-								local k = CLEAR.Key(cx, cz)
-								local list = grid[k]
-								if list then table.insert(list, e) else grid[k] = { e } end
-							end
-						end
+					if tree and c == tree.Mesh then
+						for _, e in CLEAR.TreeEntries(tree) do add(e) end
+					elseif not CLEAR.Passes(c) then
+						local e = CLEAR.Entry(c)
+						if e then add(e) end
 					end
-					n += 1
-					if yieldEvery and n % yieldEvery == 0 then task.wait() end
+					if yielding and os.clock() - t0 >= CLEAR.BUDGET then
+						task.wait()
+						t0 = os.clock()
+					end
 				end
 				walk(c)
 			end
 		end
 	end
 	walk(map)
-	return grid
+	return grid, map
 end
 
--- the current index: built at once the first time (and while there is no Map yet), afterwards rebuilt in the
--- background every REFRESH s
+-- watches `map` (once per Map object): anything added to it or removed from it marks the index dirty
+function CLEAR.Watch(map)
+	if CLEAR.Map == map and CLEAR.Watched then return end
+	for _, c in CLEAR.Conns do pcall(function() c:Disconnect() end) end
+	CLEAR.Conns, CLEAR.Map = {}, map
+	local function mark() CLEAR.Dirty = true end
+	CLEAR.Watched = pcall(function()
+		table.insert(CLEAR.Conns, map.DescendantAdded:Connect(mark))
+		table.insert(CLEAR.Conns, map.DescendantRemoving:Connect(mark))
+	end)
+end
+
+-- the current index: built at once the first time (and while there is no Map yet); a failed first build leaves an empty
+-- index, so later spawns take the background path instead of a full build on every try. Afterwards, checked every
+-- REFRESH s, a background rebuild while the Map changed (or is unwatched / gone); the new index replaces the old one
+-- only when the build worked and its Map is still in the workspace.
 function CLEAR.Index()
 	local now = os.clock()
 	if CLEAR.Grid == nil then
 		CLEAR.At = now
-		local ok, grid = pcall(CLEAR.Build)
-		if ok then CLEAR.Grid = grid else warnThrottled("spawnclear", "spawn clearance index: " .. tostring(grid)) end
-	elseif not CLEAR.Busy and now - CLEAR.At >= CLEAR.REFRESH then
-		CLEAR.At, CLEAR.Busy = now, true
+		local ok, grid, map = pcall(CLEAR.Build)
+		if not ok then
+			warnThrottled("spawnclear", "spawn clearance index: " .. tostring(grid))
+			CLEAR.Grid, CLEAR.Dirty = {}, true
+		elseif grid then
+			CLEAR.Grid, CLEAR.Dirty = grid, false
+			CLEAR.Watch(map)
+		end
+	elseif not CLEAR.Busy and now - CLEAR.At >= CLEAR.REFRESH
+		and (CLEAR.Dirty or not CLEAR.Watched or CLEAR.Map == nil or CLEAR.Map.Parent ~= workspace) then
+		CLEAR.At, CLEAR.Busy, CLEAR.Dirty = now, true, false
 		task.spawn(function()
-			local ok, grid = pcall(CLEAR.Build, CLEAR.YIELD)
-			if ok and grid then CLEAR.Grid = grid end
-			if not ok then warnThrottled("spawnclear", "spawn clearance index: " .. tostring(grid)) end
+			local ok, grid, map = pcall(CLEAR.Build, true)
+			if ok and grid and map.Parent == workspace then
+				CLEAR.Grid = grid
+				CLEAR.Watch(map)
+			else
+				CLEAR.Dirty = true -- the old index stays; tried again at the next check
+				if not ok then warnThrottled("spawnclear", "spawn clearance index: " .. tostring(grid)) end
+			end
 			CLEAR.Busy = false
 		end)
 	end
@@ -1881,6 +1988,24 @@ function MonsterService.SpawnEvent(kind, opts)
 				crowded = crowded or g
 			end
 		end
+		-- 검수 2026-10-11 (spawnclear review): every try within Radius has a prop in the body (the King's shrine marker is
+		-- 0.5 stud clear): rings farther out (Radius + 3 / 6 / 9, 12 directions) before a normal spawn point of the zone
+		for ring = 1, (pos or crowded) and 0 or 3 do
+			local d = radius + 3 * ring
+			for k = 0, 11 do
+				local a = k * math.pi / 6
+				local x, z = near.X + math.cos(a) * d, near.Z + math.sin(a) * d
+				local g = groundPoint(x, z, opts.MaxY, def)
+				if g and Config.ZoneAt(g).Id == def.Zone then
+					if SEP.Clear(g, body) then
+						pos = g
+						break
+					end
+					crowded = crowded or g
+				end
+			end
+			if pos then break end
+		end
 		pos = pos or crowded
 	end
 	if not pos then pos = pickSpawnPoint(def) end
@@ -1935,10 +2060,12 @@ function MonsterService.RemovePersonal(rec, fade, leaving)
 end
 
 -- A23-110: walkable ground under (x, z) as the monsters see it (groundPoint): the point, or nil + true when nothing is
--- hit there (a bare test place: flat ground), nil + false for water / a ridge / solid decor
-function MonsterService.GroundAt(x, z)
+-- hit there (a bare test place: flat ground), nil + false for water / a ridge / solid decor. kind (optional, A23-129,
+-- tools/spawn_clear_probe.luau): nil + false too when a map prop stands inside that kind's body there
+function MonsterService.GroundAt(x, z, kind)
 	if type(x) ~= "number" or type(z) ~= "number" or x ~= x or z ~= z then return nil, false end
-	return groundPoint(x, z)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return groundPoint(x, z, nil, def)
 end
 
 -- A23-129 (read-only, tools/spawn_clear_probe.luau): a spawn point for a zone monster kind exactly as a new one would
@@ -1969,7 +2096,9 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 	if not dist or dist ~= dist or dist < 2 or dist > 40 then dist = PERSONAL_DISTANCE end
 
 	-- ~8 studs in front of the player on walkable ground (then the sides / behind); fallback: the home-zone spawn.
-	-- A23-129: a side with a map prop inside the body is skipped (all four blocked + Near: nil, the caller tries again)
+	-- A23-129: a spot with a map prop inside the body is skipped; 검수 2026-10-11: all four blocked -> 12 directions at
+	-- dist and at 1.5 x dist, the front first (the First-KO King by a tree); all blocked + Near: nil (the caller retries)
+	local def = Config.MonsterTypes[monsterId]
 	local pos, faceTo
 	local root = Util.GetRoot(player)
 	if root then
@@ -1977,11 +2106,20 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		local flat = Vector3.new(look.X, 0, look.Z)
 		flat = flat.Magnitude > 0.01 and flat.Unit or Vector3.new(0, 0, -1)
 		local base = root.Position
-		local def = Config.MonsterTypes[monsterId]
-		for _, ang in { 0, math.pi / 2, -math.pi / 2, math.pi } do
+		local tries = {}
+		for _, ang in { 0, math.pi / 2, -math.pi / 2, math.pi } do table.insert(tries, { ang, dist }) end
+		for ring = 1, 2 do
+			for k = 0, 11 do
+				-- 0, +30, -30, +60, -60, ... 180 degrees; the first ring skips the four sides tried above
+				local deg = math.ceil(k / 2) * 30 * (k % 2 == 1 and 1 or -1)
+				if ring == 2 or deg % 90 ~= 0 then table.insert(tries, { math.rad(deg), ring == 1 and dist or dist * 1.5 }) end
+			end
+		end
+		for _, t in tries do
+			local ang = t[1]
 			local c, s = math.cos(ang), math.sin(ang)
 			local dir = Vector3.new(flat.X * c - flat.Z * s, 0, flat.X * s + flat.Z * c)
-			local p = base + dir * dist
+			local p = base + dir * t[2]
 			local g, noHit = groundPoint(p.X, p.Z, nil, def)
 			if g then
 				pos = g
@@ -1997,8 +2135,10 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		local faction = player:GetAttribute("Faction")
 		local zone = Config.Zones[Config.HomeZoneId(type(faction) == "string" and faction or "None")] or Config.Zones.Crossroads
 		local p = zone.Spawn + Vector3.new(0, 0, -PERSONAL_DISTANCE)
-		local y, water = probeGround(p.X, p.Z)
-		pos = Vector3.new(p.X, (y and not water) and y or 0, p.Z)
+		-- 검수 2026-10-11: the town spot keeps the body out of props too (blocked = no spawn this time)
+		local g, noHit = groundPoint(p.X, p.Z, nil, def)
+		if not g and not noHit then return nil end
+		pos = g or Vector3.new(p.X, 0, p.Z)
 		faceTo = faceTo or zone.Spawn
 	end
 

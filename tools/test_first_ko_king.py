@@ -300,7 +300,7 @@ MUTATIONS = [
     ("SpawnPersonal drops the hooks", MO, "\t\tQuiet = opts.Quiet == true, -- A23-110 (see spawnMonster)\n", ""),
     ("SpawnPersonal drops Practice", MO, "\t\tPractice = opts.Practice,\n", ""),
     ("SpawnPersonal no record", MO, "\tend)\n\treturn rec.Model, rec\nend", "\tend)\n\treturn rec.Model\nend"),
-    ("Distance ignored", MO, "\t\t\tlocal p = base + dir * dist\n", "\t\t\tlocal p = base + dir * PERSONAL_DISTANCE\n"),
+    ("Distance ignored", MO, "do table.insert(tries, { ang, dist }) end", "do table.insert(tries, { ang, PERSONAL_DISTANCE }) end"),
     ("Near ignored", MO, "\tif not pos and opts.Near == true then return nil end", "\tif false then return nil end"),
     ("Hold ignored", MO, "if hold and hold == hold and hold > 0 then rec._nextAttackAt = os.clock() + math.min(hold, 10) end",
      "if false then rec._nextAttackAt = 0 end"),

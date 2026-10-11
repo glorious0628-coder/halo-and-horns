@@ -1342,10 +1342,15 @@ runGroup("monster service", function()
 		show(rc and rc._nextAttackAt))
 	local _, rn = api.SpawnPersonal(w:Hunter(104, "Halo", { Step = false }), "SlimeKing", { Hold = 0 / 0 })
 	check(rn and rn._nextAttackAt == nil, "no / bad Hold: untouched")
-	-- Near = by the player or nothing (never the home-zone spot)
+	-- Near = by the player or nothing (never the home-zone spot); A23-129 (검수 2026-10-11): the town spot goes through
+	-- groundPoint with the body too, so here only that spot is walkable
 	local made2 = {}
+	local home = w.Config.Zones[w.Config.HomeZoneId("Halo")].Spawn
 	local api2 = execute("MonsterService.personal", MON_PERSONAL_EXTRACT, w:Env(), w.Config, w.Util, {}, 8, 120,
-		function() return nil, false end, function() return 0, false end,
+		function(x, z)
+			if math.abs(x - home.X) < 0.01 and math.abs(z - (home.Z - 8)) < 0.01 then return vec(x, 0, z), false end
+			return nil, false
+		end, function() return 0, false end,
 		function(kind, opts)
 			local m = newInstance("Model", w)
 			m.Parent = folder
@@ -1357,7 +1362,7 @@ runGroup("monster service", function()
 	local nm, nr = api2.SpawnPersonal(p, "SlimeKing", { Near = true })
 	check(nm == nil and nr == nil and #made2 == 0, "Near + no ground by the player: nothing", show(#made2))
 	local fm = api2.SpawnPersonal(p, "SlimeKing", {})
-	check(fm ~= nil and #made2 == 1, "without Near: the old home-zone fallback", show(#made2))
+	check(fm ~= nil and #made2 == 1, "without Near: the home-zone fallback (its spot is walkable here)", show(#made2))
 	-- RemovePersonal / GroundAt
 	check(api.RemovePersonal(rec3, true, true) == true and rec3.Gone and rec3.Gone.Leaving == true and rec3.Gone.Fade == true,
 		"RemovePersonal: a living personal monster leaves (fade, leaving)")
