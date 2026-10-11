@@ -5052,8 +5052,8 @@ end
 -- (M1_1) and hands the first weapon over before the shop shows. Near the anvil the prompt is pressed for me; farther
 -- away the guide beam shows the way (no shop).
 L.Smith = { Prompt = "HHC_BlacksmithPrompt", Reach = 12,
-	Travel = "Go to the Crossroads and find the Forge anvil.", Guide = "Forge",
-	Walk = "Walk to the Forge anvil and press its button." }
+	Travel = "The Forge is in the Crossroads.", Guide = "Forge", -- A23-130: shorter
+	Walk = "Walk to the Forge anvil." }
 
 function L.PressAnvil()
 	local anvil = L.BlacksmithTarget()
