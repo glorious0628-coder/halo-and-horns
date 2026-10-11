@@ -1,0 +1,17 @@
+{
+ "name": "HaloDomeHouse_09",
+ "src2d": "art/out/s2/halo/houses/HaloDomeHouse_09_front_HQ_src.png",
+ "note": "round tower, one tall storey + a short upper storey (window over the awning), ribbed gold dome with a ball finial, blue/white awning, two front pots",
+ "plan": {"shape": "round", "R": 8.0, "seg": 20},
+ "Z0": 1.1,
+ "storeys": [{"h": 10.0, "win": {"w": 1.7, "type": "arch"}, "walls": {"@3": [0.5], "@-3": [0.5], "@6": [0.5], "@-6": [0.5], "@10": [0.5]}},
+             {"h": 4.5, "win": {"w": 1.6, "type": "arch"}, "walls": {"front": [0.5]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false},
+ "pilasters": false,
+ "pedestals": true,
+ "awning": {"w": 7.0, "colors": [[110, 165, 232], [255, 255, 252]], "n": 7},
+ "pots": [[-6.8, 8.6, 4.2, 2.6], [6.8, 8.6, 4.2, 2.6]],
+ "steps": "half",
+ "medals": [],
+ "top": {"type": "dome", "dome_h": 7.0, "ribs": 10}
+}

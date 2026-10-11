@@ -30,6 +30,9 @@ ap.add_argument("--px", type=int, default=1400)
 ap.add_argument("--skip-names", default="")
 ap.add_argument("--cams", help="close-up cameras json from the skeleton generator (<out>_cams.json)")
 ap.add_argument("--marble", default="block", choices=["block", "cream"])
+ap.add_argument("--ortho", type=float, default=24.0, help="ortho width of the four whole views (studs)")
+ap.add_argument("--cz", type=float, default=9.8, help="height the whole views look at")
+ap.add_argument("--cloth", default="250,205,72;255,243,212", help="awning stripe colours (skeleton_house cloth0;cloth1)")
 a = ap.parse_args(argv)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TILE = os.path.join(ROOT, "art", "ui", "halo_tile")
@@ -109,10 +112,15 @@ MATS = {
     "wood": flat_mat("wood", tuple(s2l(c / 255) for c in (176, 118, 68)), 0, 0.8),
     "lamp": flat_mat("lamp", (1.0, 0.75, 0.35), 0, 0.3),
     "fabricY": flat_mat("fabricY", tuple(s2l(c / 255) for c in (250, 205, 72)), 0, 0.9),
+    "cloth0": flat_mat("cloth0", tuple(s2l(c / 255) for c in (250, 205, 72)), 0, 0.6),
+    "cloth1": flat_mat("cloth1", tuple(s2l(c / 255) for c in (255, 243, 212)), 0, 0.6),
     "fabricC": flat_mat("fabricC", tuple(s2l(c / 255) for c in (255, 243, 212)), 0, 0.9),
     "glass": flat_mat("glass", tuple(s2l(c / 255) for c in (170, 215, 245)), 0, 0.05, 0.45),
 }
 
+CL = [tuple(s2l(int(c) / 255) for c in part.split(",")) for part in a.cloth.split(";")]
+MATS["cloth0"] = flat_mat("cloth0b", CL[0], 0, 0.6)
+MATS["cloth1"] = flat_mat("cloth1b", CL[1], 0, 0.6)
 if a.parts:
     bms = {}
     for p in json.load(open(a.parts)):
@@ -181,7 +189,7 @@ def shot(name, loc, look, ortho=None, lens=35):
 C = a.cx
 for nm, yaw in (("front", 0), ("q34", 35), ("side", 90), ("back", 180)):
     t = math.radians(yaw)
-    shot(nm, (C + 80 * math.sin(t), 80 * math.cos(t), 9.8), (C, 0, 9.8), ortho=24)
+    shot(nm, (C + 80 * math.sin(t), 80 * math.cos(t), a.cz), (C, 0, a.cz), ortho=a.ortho)
 if a.cams:
     for nm, (loc, look, lens) in json.load(open(a.cams)).items():
         shot(nm, tuple(loc), tuple(look), lens=lens)

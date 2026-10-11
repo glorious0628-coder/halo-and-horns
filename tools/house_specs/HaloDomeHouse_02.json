@@ -1,0 +1,17 @@
+{
+ "name": "HaloDomeHouse_02",
+ "src2d": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_src.png",
+ "note": "square body with corner towers + finials, one tall storey, double door, round drum with 3 arched windows, ribbed gold dome; plan HouseA 24 x 22 x 26",
+ "plan": {"shape": "rect", "W": 19.0, "D": 17.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 12.0, "win": {"w": 1.8, "type": "arch"}, "walls": {"front": [0.18, 0.82], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": true},
+ "pilasters": false,
+ "towers": {"w": 2.8, "h_extra": 2.4, "finial": true},
+ "pedestals": true,
+ "awning": {"w": 7.6, "colors": [[250, 205, 72], [255, 243, 212]], "n": 7},
+ "pots": [[-7.2, 10.3, 3.6, 2.6]],
+ "steps": "half",
+ "medals": [["front", 0.18, 10.9], ["front", 0.82, 10.9], ["left", 0.5, 11.2], ["right", 0.5, 11.2]],
+ "top": {"type": "drum_dome", "R": 6.2, "h": 4.6, "seg": 20, "windows": 3, "dome_h": 6.6, "ribs": 8}
+}

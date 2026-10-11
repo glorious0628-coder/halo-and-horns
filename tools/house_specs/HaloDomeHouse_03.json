@@ -1,0 +1,17 @@
+{
+ "name": "HaloDomeHouse_03",
+ "src2d": "art/out/s2/halo/houses/HaloDomeHouse_03_front_HQ_src.png",
+ "note": "octagon, two storeys (arched windows on both, one over the awning), gold corner pilasters with storey bands, ribbed gold dome with a spike finial, blue/white awning, two pots",
+ "plan": {"shape": "oct", "HF": 5.0, "XS": 8.0, "DY": 3.0, "D": 15.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 9.5, "win": {"w": 1.6, "type": "arch"}, "walls": {"front_l": [0.5], "front_r": [0.5], "left": [0.5], "right": [0.5], "back": [0.5]}},
+             {"h": 6.0, "win": {"w": 1.6, "type": "arch"}, "walls": {"front": [0.5], "front_l": [0.5], "front_r": [0.5], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false},
+ "pilasters": true,
+ "pedestals": true,
+ "awning": {"w": 6.8, "colors": [[110, 165, 232], [255, 255, 252]], "n": 7},
+ "pots": [[-7.0, 7.2, 4.0, 2.6], [7.0, 7.2, 4.0, 2.6]],
+ "steps": "half",
+ "medals": [],
+ "top": {"type": "dome", "dome_h": 6.4, "ribs": 8}
+}

@@ -1,0 +1,16 @@
+{
+ "name": "HaloDomeHouse_05",
+ "src2d": "art/out/s2/halo/roofs/HaloDomeHouse_05_roof_v2.png",
+ "note": "wide low body, one storey, single door, blue/white awning, flat roof with gold-capped parapet, glass skylight, four topiary pots; plan HouseB 26 x 18 x 28 (low: the roof garden fills the height)",
+ "plan": {"shape": "rect", "W": 26.0, "D": 16.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 11.0, "win": {"w": 1.9, "type": "arch"}, "walls": {"front": [0.2, 0.8], "left": [0.5], "right": [0.5], "back": [0.25, 0.5, 0.75]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false},
+ "pilasters": true,
+ "pedestals": true,
+ "awning": {"w": 7.4, "colors": [[110, 165, 232], [255, 255, 252]], "n": 7},
+ "pots": [[-8.6, 9.6, 4.6, 2.6], [8.6, 9.6, 4.6, 2.6]],
+ "steps": "half",
+ "medals": [],
+ "top": {"type": "flat", "parapet": "solid", "h": 1.4, "skylight": [6.0, 3.6, 1.6], "topiary": [[-9.5, 5.5], [-5.5, 5.5], [5.5, 5.5], [9.5, 5.5]]}
+}

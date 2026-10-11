@@ -14,8 +14,12 @@ arguments (all optional except the position):
             it hangs from (bracket arm from there), "post" 0.09
   arch_window : a dormer / blind arched window with an exact arch, as four objects (<name>_Surround marble, _Frame gold,
             _Glass, _Pane): "pos": [x, y_front, z_bottom], "W" opening width 1.5, "spring" z of the spring line, "pier" 0.45
-            marble round the frame, "frame" 0.16 gold width, "depth" 1.6, "recess" 0.25
-  leaf    : an arched plank door leaf (wood) with an exact arch: "c": [x, z] arch centre (spring line), "R" half width,
+            marble round the frame, "frame" 0.16 gold width, "depth" 1.6, "recess" 0.25, "yaw" degrees (turned about
+            the vertical through pos; the window's front is +y before the turn)
+  dome    : gold dome by revolution (exact): "pos": [x, y, z_base], "R", "h", "onion": bool, "ribs" 8 (raised gold ribs),
+            base ring + finial
+  finial  : gold finial (ball + ring + spike): "pos": [x, y, z_base], "d"
+  leaf    : an arched plank door leaf (wood) with an exact arch ("half": -1 / +1 = one leaf of a double door): "c": [x, z] arch centre (spring line), "R" half width,
             "bottom" z, "front" y of the plank faces, "t" thickness 0.32, "planks" 5, "gap" 0.06, "groove" 0.1
 Each item becomes one joined mesh object named "Orn_<name>" with one material: "OrnGold" (metal 1, roughness 0.3,
 base colour 255,175,25 = HH_HaloGoldTrim's part colour) or, for a leaf, "OrnWood" (176,112,58, roughness 0.75; Studio:
@@ -281,16 +285,23 @@ def leaf(it):
             pts.append((x, arc_z(x) - inset))
         return pts
 
-    p.prism(outline(xc - R, xc + R), yf - groove, t - groove)            # back board, full arch
-    w = 2 * R / n
+    half = it.get("half")
+    xa, xb = (xc - R, xc + R) if not half else ((xc, xc + R - 0.02) if half > 0 else (xc - R + 0.02, xc))
+    if half:
+        xa, xb = (xa + 0.025, xb) if half > 0 else (xa, xb - 0.025)        # a thin gap between the two leaves
+        n = max(2, n // 2)
+    p.prism(outline(xa, xb), yf - groove, t - groove)                      # back board
+    w = (xb - xa) / n
     for i in range(n):                                                  # planks with grooves between them
-        x0, x1 = xc - R + w * i + gap / 2, xc - R + w * (i + 1) - gap / 2
+        x0, x1 = xa + w * i + gap / 2, xa + w * (i + 1) - gap / 2
         p.prism(outline(x0, x1, gap / 2), yf, groove + 0.01)
     return p.finish(smooth=False, mat=WOOD)
 
 
 def arch_window(it):
-    x, yf, zb = it["pos"]
+    px, py, zb = it["pos"]
+    yaw = it.get("yaw")
+    x, yf = (0.0, 0.0) if yaw is not None else (px, py)
     W, zs = it.get("W", 1.5), it["spring"]
     pier, fr, depth, rec = it.get("pier", 0.45), it.get("frame", 0.16), it.get("depth", 1.6), it.get("recess", 0.25)
     R = W / 2
@@ -329,10 +340,77 @@ def arch_window(it):
     pn = Piece(nm + "_Pane")
     pn.prism(arch(R, zb + 0.2), yf - rec + 0.02, 0.02)
     out.append(pn.finish(smooth=False, mat=PANE))
+    if yaw is not None:
+        M = Matrix.Translation((px, py, 0.0)) @ Matrix.Rotation(math.radians(yaw), 4, "Z")
+        for o in out:
+            o.data.transform(M)
     return out
 
 
-MAKE = {"knocker": knocker, "hinge": hinge, "lantern": lantern, "leaf": leaf, "arch_window": arch_window}
+def revolve(p, prof, centre, seg=48):
+    """surface of revolution of a (r, z) profile (bottom to top) about the vertical through centre"""
+    cx, cy, cz = centre
+    rings = []
+    for r, z in prof:
+        rings.append([p.bm.verts.new((cx + r * math.cos(2 * math.pi * k / seg), cy + r * math.sin(2 * math.pi * k / seg), cz + z))
+                      for k in range(seg)])
+    for i in range(len(rings) - 1):
+        A, B = rings[i], rings[i + 1]
+        for k in range(seg):
+            p.bm.faces.new((A[k], A[(k + 1) % seg], B[(k + 1) % seg], B[k]))
+    p.bm.faces.new(list(reversed(rings[0])))
+
+
+def dome(it):
+    x, y, z = it["pos"]
+    R, H, onion, nrib = it["R"], it.get("h", it["R"]), it.get("onion", False), it.get("ribs", 8)
+    K = 24
+    prof = []
+    for i in range(K + 1):
+        s_ = i / K
+        if onion:
+            r = R * (1 + 0.16 * math.sin(math.pi * min(1.0, s_ * 1.3))) * math.sqrt(max(0.0, 1 - s_ ** 1.7))
+        else:
+            r = R * math.cos(s_ * math.pi / 2)
+        zz = H * (s_ if onion else math.sin(s_ * math.pi / 2))
+        prof.append((max(r, 0.02), zz))
+    p = Piece(it.get("name", "Dome"))
+    revolve(p, prof, (x, y, z))
+    for j in range(nrib):                                   # raised ribs following the profile
+        t = 2 * math.pi * j / nrib + math.pi / nrib
+        d = Vector((math.cos(t), math.sin(t), 0.0))
+        side = Vector((-d.y, d.x, 0.0)) * 0.13
+        strip = []
+        for r, zz in prof[:-2]:
+            c = Vector((x, y, z)) + d * (r - 0.02) + Vector((0, 0, zz))
+            out = d * 0.16
+            strip.append([p.bm.verts.new(c - side), p.bm.verts.new(c + side), p.bm.verts.new(c + side + out), p.bm.verts.new(c - side + out)])
+        for i in range(len(strip) - 1):
+            A, B = strip[i], strip[i + 1]
+            for k in range(4):
+                p.bm.faces.new((A[k], A[(k + 1) % 4], B[(k + 1) % 4], B[k]))
+    p.torus(R + 0.06, 0.16, (x, y, z + 0.1), "xy", 64, 10)   # base ring
+    zt = z + H
+    p.cyl(0.7, 0.3, (x, y, zt + 0.1), "z", 24)
+    p.ball(0.62, (x, y, zt + 0.55))
+    p.torus(0.22, 0.06, (x, y, zt + 0.92), "xy", 24, 8)
+    p.cone(0.3, 0.0, 0.9, (x, y, zt + 1.4), 16)
+    p.ball(0.22, (x, y, zt + 1.05))
+    return p.finish()
+
+
+def finial(it):
+    x, y, z = it["pos"]
+    d = it.get("d", 0.5)
+    p = Piece(it.get("name", "Finial"))
+    p.ball(d, (x, y, z + d / 2))
+    p.torus(d * 0.35, d * 0.08, (x, y, z + d * 1.02), "xy", 24, 8)
+    p.cone(d * 0.5, 0.0, d * 1.4, (x, y, z + d * 1.7), 16)
+    return p.finish()
+
+
+MAKE = {"knocker": knocker, "hinge": hinge, "lantern": lantern, "leaf": leaf, "arch_window": arch_window, "dome": dome,
+        "finial": finial}
 made = []
 for it in spec["items"]:
     r = MAKE[it["type"]](it)
