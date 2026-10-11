@@ -35,11 +35,16 @@ local T = {
 		RightWrist = { "RightHand", "RightLowerArm" }, LeftShoulder = { "LeftUpperArm", "UpperTorso" },
 		LeftElbow = { "LeftLowerArm", "LeftUpperArm" }, LeftWrist = { "LeftHand", "LeftLowerArm" } },
 	Shoulders = { RightShoulder = true, LeftShoulder = true },
-	-- two hands: the joints the solve reads / writes, the R15 default LeftGripAttachment spot, the default elbow side
+	-- two hands: the joints the solve reads / writes (joint -> { arm, solve key }), the R15 default grip spots
+	-- (place rig: Left/RightGripAttachment (0, -0.158, 0)), the elbows' sides (torso space: down and out), the gap
+	-- between the hands (their sizes along the handle + a pad, clamped by TwoHand.Gap or this)
 	TwoJoints = { "RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow", "LeftWrist" },
-	TwoKeys = { LeftShoulder = "Shoulder", LeftElbow = "Elbow", LeftWrist = "Wrist" },
-	LeftGrip = Vector3.new(0, -0.158, 0),
-	Pole = Vector3.new(-0.7, -0.7, 0.2), -- torso space: the left elbow down and out
+	TwoKeys = { RightShoulder = { "Right", "Shoulder" }, RightElbow = { "Right", "Elbow" }, RightWrist = { "Right", "Wrist" },
+		LeftShoulder = { "Left", "Shoulder" }, LeftElbow = { "Left", "Elbow" }, LeftWrist = { "Left", "Wrist" } },
+	RightGrip = Vector3.new(0, -0.158, 0), LeftGrip = Vector3.new(0, -0.158, 0),
+	PoleRight = Vector3.new(0.7, -0.7, 0.2), Pole = Vector3.new(-0.7, -0.7, 0.2),
+	Gap = { 0.45, 0.8 }, GapPad = 0.05,
+	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.Probe)
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
 
@@ -138,18 +143,40 @@ local function pick()
 	S.Set = set
 end
 
--- A23-108 two hands (검수 10/11, the Berserker's great sword; class_grips_a23_108 §2 "두 손 무기는 오른손에 붙이고 왼손은
--- 클라 몸짓이 자루로"): after the hold, the left hand goes to its spot on the weapon's part (def.TwoHand = { Part,
--- Along = the share of the part's length from its centre along its +Y, Pole = the elbow's side in torso space }),
--- solved with Fx's bow arm solver (the real bone lengths of this avatar). This frame's right hand comes from the
--- torso through the right arm's joints (their Transforms were just written), so the two hands never drift apart;
--- the weapon's offset from the right hand is read from the welded parts (constant). Out of reach = no left pose.
+-- A23-108 two hands (검수 10/11; user 10/11 "대검을 잡는 게 이상한데? 손바닥 위에 올려놓은 느낌"; references in
+-- docs/design/grip_reference_2026-10-11.md): the pose starts from the SWORD, not from arm angles. def.TwoHand =
+-- { Hilt = the right grip point, Aim = the blade, in UpperTorso space; Gap = { min, max } studs between the two grip
+-- points }. Both hands are solved onto the hilt with Fx's two-bone arm solver (this avatar's real bone lengths): each
+-- hand's grip point (Left/RightGripAttachment, where a Roblox tool's handle runs) sits on the hilt line and the hand's
+-- -Z (the axis a held weapon runs along, CharacterVisuals fist()) lies along the blade, its +Y (towards the wrist)
+-- turned to its own shoulder, so the handle passes through both fists. The right hand leads (the weapon is welded to
+-- it), the left one is Gap lower towards the pommel (the two hands side by side: their sizes along the handle). A
+-- solve out of reach leaves the arms to the hold / the Animator.
+function WeaponPose.TwoHandGoals(torso, th, rightGrip, leftGrip, rightShoulder, leftShoulder, gap)
+	local aim = torso:VectorToWorldSpace(th.Aim.Unit)
+	local hilt = torso * th.Hilt
+	local function goal(point, gripPos, shoulder)
+		local up = shoulder - point
+		up -= aim * up:Dot(aim)
+		if up.Magnitude < 1e-3 then up = torso.UpVector - aim * torso.UpVector:Dot(aim) end
+		up = up.Unit
+		local z = -aim
+		return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)
+	end
+	return goal(hilt, rightGrip, rightShoulder), goal(hilt - aim * gap, leftGrip, leftShoulder), hilt, aim
+end
+
+local function gripOf(handPart, name, fallback)
+	local a = handPart:FindFirstChild(name)
+	return (a and a:IsA("Attachment")) and a.Position or fallback
+end
+
 function WeaponPose.TwoHand(char, st, def, model)
 	local th, fx = def.TwoHand, C and C.Fx
+	if typeof(th.Hilt) ~= "Vector3" or typeof(th.Aim) ~= "Vector3" then return false end
 	if type(fx) ~= "table" or type(fx.SolveArm) ~= "function" or type(fx.ArmGeometry) ~= "function" then return false end
 	local torsoPart, hand, leftHand = char:FindFirstChild("UpperTorso"), char:FindFirstChild("RightHand"), char:FindFirstChild("LeftHand")
-	local part = model:FindFirstChild(type(th.Part) == "string" and th.Part or "Handle", true)
-	if not (torsoPart and hand and leftHand and part and part:IsA("BasePart")) then return false end
+	if not (torsoPart and hand and leftHand and model) then return false end
 	for _, joint in T.TwoJoints do
 		local m = st.Joints[joint]
 		if not (m and m.Parent) then
@@ -160,29 +187,27 @@ function WeaponPose.TwoHand(char, st, def, model)
 	local right, left = fx.ArmGeometry(st, "Right"), fx.ArmGeometry(st, "Left")
 	if not (right and left) then return false end
 	local torso = torsoPart.CFrame
-	local handCF = torso * right.Shoulder.C0 * st.Joints.RightShoulder.Transform * right.Shoulder.C1:Inverse()
-		* right.Elbow.C0 * st.Joints.RightElbow.Transform * right.Elbow.C1:Inverse()
-		* right.Wrist.C0 * st.Joints.RightWrist.Transform * right.Wrist.C1:Inverse()
-	local spot = handCF * hand.CFrame:ToObjectSpace(part.CFrame) * CFrame.new(0, part.Size.Y * (tonumber(th.Along) or 0), 0)
-	local gripAt = leftHand:FindFirstChild("LeftGripAttachment")
-	local gripPos = (gripAt and gripAt:IsA("Attachment")) and gripAt.Position or T.LeftGrip
-	-- the left hand turned like the right one (both wrap the same grip), its grip point on the spot
-	local goal = CFrame.new(spot.Position) * handCF.Rotation * CFrame.new(-gripPos)
-	local p = typeof(th.Pole) == "Vector3" and th.Pole or T.Pole
-	local pose = fx.SolveArm(left, torso, goal, torso:VectorToWorldSpace(p))
-	if type(pose) ~= "table" or pose.Clamped then return false end
-	for joint, key in T.TwoKeys do
-		local m = st.Joints[joint]
-		if m and typeof(pose[key]) == "CFrame" then
+	local g = type(th.Gap) == "table" and th.Gap or T.Gap
+	local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad, tonumber(g[1]) or 0.45, tonumber(g[2]) or 0.8)
+	local rGoal, lGoal = WeaponPose.TwoHandGoals(torso, th, gripOf(hand, "RightGripAttachment", T.RightGrip),
+		gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), (torso * right.Shoulder.C0).Position,
+		(torso * left.Shoulder.C0).Position, gap)
+	local rPose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
+	if type(rPose) ~= "table" or rPose.Clamped then return false end
+	local lPose = fx.SolveArm(left, torso, lGoal, torso:VectorToWorldSpace(T.Pole))
+	local poses = { Right = rPose, Left = (type(lPose) == "table" and not lPose.Clamped) and lPose or nil }
+	for joint, w in T.TwoKeys do
+		local m, pose = st.Joints[joint], poses[w[1]]
+		if m and pose and typeof(pose[w[2]]) == "CFrame" then
 			local cur = m.Transform
 			local last = st.Last[joint]
 			local base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur
-			local out = base:Lerp(pose[key], st.W)
+			local out = base:Lerp(pose[w[2]], st.W)
 			m.Transform = out
 			st.Base[joint], st.Last[joint] = base, out
 		end
 	end
-	return true
+	return poses.Left ~= nil
 end
 
 local function poseChar(char, player, dt)
@@ -232,11 +257,61 @@ local function poseChar(char, player, dt)
 	if type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end
 end
 
+-- Studio only (검수 10/11 grip measurements; 메인 반영 sets the LocalPlayer attribute GripProbe = true): every
+-- ProbeEvery s, my own held weapon measured on the real parts (the pose is client-side, the server never sees it) -
+-- per hand: dHand = the hand's centre to the weapon line, dGrip = its grip attachment to the line, axis = its held
+-- axis (-Z) against the line, fore = the forearm against the line (degrees, 0..90). The line = the weapon's Handle
+-- part when it has one (two-hand swords), else through the right grip along the right hand's -Z
+function WeaponPose.Probe(char, model, key)
+	local function at(hand, att)
+		local a = hand:FindFirstChild(att)
+		return (a and a:IsA("Attachment")) and a.WorldPosition or hand.Position
+	end
+	local rh = char:FindFirstChild("RightHand")
+	if not rh then return nil end
+	local handle = model:FindFirstChild("Handle")
+	local p0, dir
+	if handle and handle:IsA("BasePart") then
+		p0, dir = handle.Position, handle.CFrame.UpVector
+	else
+		p0, dir = at(rh, "RightGripAttachment"), rh.CFrame.LookVector
+	end
+	local function off(p)
+		local v = p - p0
+		return (v - dir * v:Dot(dir)).Magnitude
+	end
+	local function ang(v)
+		return math.deg(math.acos(math.clamp(math.abs(v.Unit:Dot(dir)), 0, 1)))
+	end
+	local parts = { string.format("[WeaponPose] probe %s", tostring(key)) }
+	for _, side in { "Right", "Left" } do
+		local hand, lower = char:FindFirstChild(side .. "Hand"), char:FindFirstChild(side .. "LowerArm")
+		if hand and lower then
+			table.insert(parts, string.format("%s dHand=%.2f dGrip=%.2f axis=%.0f fore=%.0f size=%.2f,%.2f,%.2f", side,
+				off(hand.Position), off(at(hand, side .. "GripAttachment")), ang(hand.CFrame.LookVector),
+				ang(lower.CFrame.UpVector), hand.Size.X, hand.Size.Y, hand.Size.Z))
+		end
+	end
+	local line = table.concat(parts, " | ")
+	print(line)
+	return line
+end
+
 function WeaponPose.Step(dt)
 	local now = os.clock()
 	if now - S.PickAt >= T.Pick then
 		S.PickAt = now
 		pick()
+	end
+	local me = Players.LocalPlayer
+	if RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true and now - (S.ProbeAt or -math.huge) >= T.ProbeEvery then
+		S.ProbeAt = now
+		local char = me.Character
+		local model = char and char:FindFirstChild(T.Model)
+		if model then
+			local key = Config.ClassGripKey(model:GetAttribute("Class") or me:GetAttribute("Class"), me:GetAttribute("Faction"))
+			pcall(WeaponPose.Probe, char, model, key)
+		end
 	end
 	for char, player in S.Set do
 		local ok, err = pcall(poseChar, char, player, math.clamp(tonumber(dt) or 0, 0, 0.1))

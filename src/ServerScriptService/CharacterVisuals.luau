@@ -725,23 +725,26 @@ end
 -- (a table, not locals: buildWeapon finds them by kind; offline extracts of buildWeapon without it keep the old shapes)
 local SHAPES = {}
 
--- Berserker: a broad great sword (longer, wider blade, a long two-hand grip)
+-- Berserker: a broad great sword (longer, wider blade, a long two-hand grip). 검수 10/11 (two hands): the handle runs
+-- 0.6 above the right grip (the guard sits on it) and HandleBelow under it, room for the left hand one hand lower
+-- (WeaponPose TwoHand Gap <= 0.8 + half a blocky hand); the guard and blade stay where they were
 function SHAPES.GreatSword(grip, sc, w, color)
 	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward
-	local handleLen, bladeLen = 1.7, w.Length * 1.3
+	local top, below, bladeLen = 0.6, 1.5, w.Length * 1.3
+	local handleLen = top + below
 	local handle = accPart({
 		Name = "Handle", Size = Vector3.new(0.32, handleLen, 0.32) * sc,
-		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = L * CFrame.new(0, -0.25 * sc, 0),
+		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = L * CFrame.new(0, (top - handleLen / 2) * sc, 0),
 	})
 	local guard = accPart({
 		Name = "Guard", Size = Vector3.new(1.6, 0.3, 0.45) * sc,
 		Material = Enum.Material.Metal, Color = DARK_METAL,
-		CFrame = L * CFrame.new(0, (handleLen / 2 - 0.25 + 0.15) * sc, 0),
+		CFrame = L * CFrame.new(0, (top + 0.15) * sc, 0),
 	})
 	local blade = accPart({
 		Name = "Blade", Size = Vector3.new(0.3, bladeLen, 0.95) * sc,
 		Material = w.Material, Color = color,
-		CFrame = L * CFrame.new(0, (handleLen / 2 - 0.25 + 0.3 + bladeLen / 2) * sc, 0),
+		CFrame = L * CFrame.new(0, (top + 0.3 + bladeLen / 2) * sc, 0),
 	})
 	return { handle, guard, blade }, blade
 end

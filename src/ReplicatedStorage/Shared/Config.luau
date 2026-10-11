@@ -5570,12 +5570,14 @@ Config.ClassGrips = {
 	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
 	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 20, 0, 4 }, RightElbow = { 44, 0, 0 },
 		RightWrist = { -12, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
-	-- Berserker: two hands on the great sword (검수 10/11): the hilt in front of the chest, the blade up and back over the
-	-- right shoulder, a low stance; the left hand goes onto the handle below the right one (TwoHand: WeaponPose solves
-	-- the left arm onto Part at Along x its length from the centre - the right hand holds 0.25 above the centre, so
-	-- -0.24 = 0.66 studs lower at scale 1). Angles picked by FK on the R15 rig (tools/test_two_hand_grip.py)
-	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 70, 60, -50 },
-		RightElbow = { 80, 0, 0 }, RightWrist = { 40, 0, 0 } }, TwoHand = { Part = "Handle", Along = -0.24 } },
+	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
+	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
+	-- hand lower towards the pommel, the hilt in front of the chest, a heavy blade laid back over the shoulder). TwoHand
+	-- (WeaponPose): Hilt = the right grip point and Aim = the blade in UpperTorso space (studs; R15 shoulders at x +-0.97,
+	-- y 0.6; the torso top y 0.8) - the blade passes just over the right shoulder at (1.1, 1.05, 0.05); both arms are
+	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
+	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
+		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.8 } } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },

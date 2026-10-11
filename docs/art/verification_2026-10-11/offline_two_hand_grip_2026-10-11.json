@@ -1,39 +1,74 @@
 {
-  "checks": 13,
+  "checks": 18,
   "failed": 0,
   "mutations": [
-    {
-      "name": "the old one-hand shoulder rest",
-      "applied": true,
-      "caught": true
-    },
-    {
-      "name": "the left hand above the right one",
-      "applied": true,
-      "caught": true
-    },
-    {
-      "name": "the left hand off the end of the handle",
-      "applied": true,
-      "caught": true
-    },
     {
       "name": "the blade straight up",
       "applied": true,
       "caught": true
     },
     {
-      "name": "the hilt out at the side",
+      "name": "the blade across the chest (the photo)",
       "applied": true,
       "caught": true
     },
     {
-      "name": "the hilt too far from the left hand",
+      "name": "the hilt too far ahead",
       "applied": true,
       "caught": true
     },
     {
-      "name": "the wrong part",
+      "name": "the hilt at the belly, the left hand out of reach",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hands far apart",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hands overlapping",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old short handle",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the grip point off the line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hand turned along the handle",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the left hand on top of the right",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never run",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a clamped right arm still posed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fade",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a fixed gap",
       "applied": true,
       "caught": true
     },
@@ -41,34 +76,9 @@
       "name": "no shared solver",
       "applied": true,
       "caught": true
-    },
-    {
-      "name": "never solved",
-      "applied": true,
-      "caught": true
-    },
-    {
-      "name": "a clamped solve stretches the arm",
-      "applied": true,
-      "caught": true
-    },
-    {
-      "name": "no fade in",
-      "applied": true,
-      "caught": true
-    },
-    {
-      "name": "last frame's hand (the hands drift apart while moving)",
-      "applied": true,
-      "caught": true
-    },
-    {
-      "name": "the handle renamed",
-      "applied": true,
-      "caught": true
     }
   ],
   "status": "passed",
-  "contract": "Two hands on the Berserker's great sword (게임성 개발 1, 2026-10-11; SPEC A23-108, 검수 10/11;\ndocs/design/class_grips_a23_108_2026-10-10.md: \"두 손(오른손 위·왼손 아래 자루 끝)\", §2 \"왼손은 클라 몸짓이 자루로\"), offline.\n\nGeometry (Python FK on the R15 rig of place/GoodEvil.rbxlx: shoulder (+-0.972, 0.598, 0) on UpperTorso, upper arm\n(0.501, -0.774, 0), lower arm (0, -0.807, 0), wrist -> grip (0, -0.29, 0); joint offsets = CFrame.Angles(rx, ry, rz)\nin degrees, the weapon along the hand's -Z = \"rx sum 90 = upright\", Config.ClassGrips note) with the CURRENT\nConfig.ClassGrips.Warrior_Horns and CharacterVisuals SHAPES.GreatSword (handle length / centre): the right hand holds\nthe hilt in front of the chest near the middle; the blade rises up and back and crosses the shoulder plane over the\nright shoulder; TwoHand puts the left hand on the handle below the right one; the left wrist is inside the left arm's\nreach (the solve is not clamped). Static: WeaponPose solves the left arm after the hold with Fx's arm solver (this\nframe's right hand from the torso through the right arm joints), skips a clamped solve, fades in with the pose weight;\nFx shares SolveArm / ArmGeometry / JointFrames; the great sword's grip part is named \"Handle\". Mutations: each must be\ncaught. The look itself = 메인 반영 Play photos (stand / walk, after merge).",
+  "contract": "Two hands on the Berserker's great sword (게임성 개발 1, 2026-10-11; SPEC A23-108, 검수 10/11; user 10/11 \"대검을 잡는\n게 이상한데? 손바닥 위에 올려놓은 느낌\"; references docs/design/grip_reference_2026-10-11.md), offline.\n\nGeometry: the CURRENT Config.ClassGrips.Warrior_Horns.TwoHand (Hilt, Aim, Gap) through a Python copy of\nWeaponPose.TwoHandGoals and Fx's two-bone arm solve (Feel.solveArm) on the R15 rig of place/GoodEvil.rbxlx (UpperTorso\nshoulders (+-0.972, 0.598, 0); arm attachments: shoulder (-+0.501, 0.419), elbow (0, -0.355) / (0, 0.275), wrist\n(0, -0.532) / (0, 0.132), grip (0, -0.158)), at scale 1 and 0.85, with blocky hands (1 stud along the handle) and small\nones (0.4). For each hand: the solve is in reach (wrist distance <= 92% of the arm), the grip point (where a Roblox tool\nhandle runs) lies on the handle line (<= 0.2 studs), the hand's -Z (the held axis) lies along the blade (<= 10 deg),\nthe forearm crosses the handle (45..135 deg - not lying along the forearm, the \"on the palm\" look), the left hand is\nbelow the right one by the gap. The blade passes just over the right shoulder (the shoulder plane z = 0 at x 0.8..1.5,\ny 0.85..1.5, above the torso top 0.8) and rises up and back (115..145 deg). The great sword's handle reaches past the\nleft hand (CharacterVisuals SHAPES.GreatSword: top / below). Static: WeaponPose drives both arms from TwoHandGoals,\nright arm first (out of reach = no pose), the grip point lands on the line (CFrame.new(-gripPos)), the up turns to the\nshoulder, the fade, the gap from the hands' sizes. Mutations: each must be caught. The look = 메인 반영 photos.",
   "studioCalls": 0
 }
