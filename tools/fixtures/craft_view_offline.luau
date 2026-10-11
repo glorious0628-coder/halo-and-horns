@@ -178,7 +178,9 @@ end
 local vf = assert(loadstring(VIEW_SOURCE, "=CraftView"))
 setfenv(vf, env)
 local View = vf()
-View.Init({ UIKit = UIKit, Fx = Fx })
+local panelsOpen, panelsClosed = true, 0
+local Panels = { IsOpen = function() return panelsOpen end, Close = function() panelsOpen = false; panelsClosed += 1 end }
+View.Init({ UIKit = UIKit, Fx = Fx, Panels = Panels })
 View.Start()
 
 local sessionR = find(remotes, "CraftSession")
@@ -189,6 +191,7 @@ check(#sessionR.OnClientEvent.Fns == 1 and #resultR.OnClientEvent.Fns == 1, "Cra
 local START = NOW + 0.8
 sessionR.OnClientEvent:Fire({ Id = 7, Recipe = "W3", Strikes = 5, Ring = 1.2, Rest = 0.35, StartAt = START })
 check(View.IsOpen() and find(gui, "CraftRing") ~= nil, "a CraftSession opens the ring screen")
+check(panelsClosed == 1 and not panelsOpen, "the open window (the craft window) closes under the ring screen (UiSandbox 10/12)")
 local b = bound.HH_CraftStrike
 check(b and table.find(b.Keys, "KeyCode.Space") and b.Priority >= 2000, "Space is the strike (bound above the jump)")
 check(b and b.Fn(nil, "UserInputState.Begin") == "ContextActionResult.Sink", "Space is sunk while the ring is open (no jump)")

@@ -46,7 +46,7 @@ local V = {
 	Word = 40, -- du: the grade word
 	ResultSize = 30,
 	SkipW = 160, SkipH = 48,
-	Dim = 0.35, -- the backdrop's transparency
+	Dim = 0.25, -- the backdrop's transparency (UiSandbox 10/12: 0.35 let an open window show through)
 	ZIndex = 60,
 	Hold = 1.6, -- s the result line stays
 	ResultWait = 6, -- s to wait for CraftResult after Finish before closing quietly
@@ -394,6 +394,12 @@ function CraftView.Begin(session, practice)
 	local startAt = tonumber(session.StartAt)
 	if not startAt or startAt ~= startAt then return false end
 	if S.Session then CraftView.Close() end
+	-- the window it was started from (the craft window) or any other closes: nothing shows through the ring screen
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.IsOpen) == "function" and type(panels.Close) == "function" then
+		local ok, open = pcall(panels.IsOpen)
+		if ok and open then pcall(panels.Close) end
+	end
 	S.Session = { Id = session.Id, StartAt = startAt, Practice = practice == true }
 	S.Grades, S.Sent, S.Finished, S.ResultAt = {}, {}, nil, nil
 	if not build() then
