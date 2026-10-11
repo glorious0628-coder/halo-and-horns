@@ -934,6 +934,30 @@ for ex, zs_ in segs_v.items():
         WALLS.append([ex, a_ - R / 2, ex, b_ + R / 2])
 print("edge walls:", len(WALLS), "runs, total length", round(sum(abs(w[2] - w[0]) + abs(w[3] - w[1]) for w in WALLS)))
 
+# ---------------------------------------------------------------- building frames (SPEC A23-120 보강, user "건물 골격 먼저"): every building
+# gets its footprint, floor height / floors and its door (direction, ground point, size) so 이미지 생성 3 builds the Studio part frame
+# to exactly these numbers and the swap keeps the same name and place. Front = kit -Z turned by yaw -> world (-sin yaw, -cos yaw).
+BUILD = {  # kind: (floors, floor height, door w, door h)
+    "DomeHouseA": (2, 7.0, 4.0, 7.0), "DomeHouseB": (2, 7.5, 4.0, 7.0), "Shop": (1, 9.0, 5.0, 7.5), "Tower": (3, 8.0, 4.0, 7.0),
+    "Cathedral": (1, 24.0, 10.0, 14.0), "Castle": (3, 10.0, 8.0, 10.0), "Gate": (1, 20.3, 14.0, 20.3),
+}
+for e in P:
+    b = BUILD.get(e["kind"])
+    if not b or e.get("backdrop"):
+        continue
+    k = KIND[e["kind"]]
+    yaw = math.radians(e["yaw"])
+    fx, fz = -math.sin(yaw), -math.cos(yaw)
+    w, d = k["w"] * e["s"], k["d"] * e["s"]
+    floors, fh, dw, dh = b
+    if e["kind"] == "Tower" and e.get("tower_kind") == "B":
+        floors = 2
+    e["building"] = dict(w=round(w, 1), d=round(d, 1), h=round(k["h"] * e["s"], 1), floors=floors, floor_h=fh,
+                         door_dir=[round(fx, 3), round(fz, 3)], door_at=[round(e["x"] + fx * d / 2, 2), round(e["z"] + fz * d / 2, 2)],
+                         door_size=[dw, dh], door_local=[0, 0, round(-d / 2, 2)], ground_y=e["y"],
+                         note="pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)")
+print("building frames:", sum(1 for e in P if e.get("building")))
+
 # ---------------------------------------------------------------- report + files
 count = {}
 for e in P:

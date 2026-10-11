@@ -150,7 +150,33 @@
     0
    ],
    "why": "마을 입구: 교차로 다리에서 들어오는 문",
-   "zone": "gate"
+   "zone": "gate",
+   "building": {
+    "w": 50.4,
+    "d": 31.5,
+    "h": 48.3,
+    "floors": 1,
+    "floor_h": 20.3,
+    "door_dir": [
+     -0.0,
+     1.0
+    ],
+    "door_at": [
+     -0.0,
+     -330.05
+    ],
+    "door_size": [
+     14.0,
+     20.3
+    ],
+    "door_local": [
+     0,
+     0,
+     -15.75
+    ],
+    "ground_y": 0.2,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Cathedral",
@@ -160,7 +186,33 @@
    "yaw": 180.0,
    "s": 1.0,
    "why": "빛 진영의 대성당: 마을의 목표 지점·랜드마크(문에서 돔이 보임)",
-   "zone": "cathedral"
+   "zone": "cathedral",
+   "building": {
+    "w": 69.9,
+    "d": 70.0,
+    "h": 53.5,
+    "floors": 1,
+    "floor_h": 24.0,
+    "door_dir": [
+     -0.0,
+     1.0
+    ],
+    "door_at": [
+     -38.0,
+     -625.0
+    ],
+    "door_size": [
+     10.0,
+     14.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -35.0
+    ],
+    "ground_y": 33.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Castle",
@@ -175,7 +227,33 @@
     0,
     0,
     21.5
-   ]
+   ],
+   "building": {
+    "w": 64.0,
+    "d": 40.0,
+    "h": 40.0,
+    "floors": 3,
+    "floor_h": 10.0,
+    "door_dir": [
+     -0.0,
+     1.0
+    ],
+    "door_at": [
+     150.0,
+     -480.0
+    ],
+    "door_size": [
+     8.0,
+     10.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -20.0
+    ],
+    "ground_y": 30.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Stairs",
@@ -346,7 +424,33 @@
    "s": 2.0,
    "why": "물약 가게: 사냥 나가기 전 마지막 가게(문에서 차양이 보임)",
    "zone": "shops",
-   "shopkind": "Potion"
+   "shopkind": "Potion",
+   "building": {
+    "w": 24.0,
+    "d": 15.0,
+    "h": 28.6,
+    "floors": 1,
+    "floor_h": 9.0,
+    "door_dir": [
+     -0.985,
+     -0.174
+    ],
+    "door_at": [
+     24.99,
+     -467.3
+    ],
+    "door_size": [
+     5.0,
+     7.5
+    ],
+    "door_local": [
+     0,
+     0,
+     -7.5
+    ],
+    "ground_y": 9.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Shop",
@@ -357,7 +461,33 @@
    "s": 1.9,
    "why": "빵집: 마을 사람들 아침 빵",
    "zone": "shops",
-   "shopkind": "Bakery"
+   "shopkind": "Bakery",
+   "building": {
+    "w": 22.8,
+    "d": 14.2,
+    "h": 27.2,
+    "floors": 1,
+    "floor_h": 9.0,
+    "door_dir": [
+     0.978,
+     -0.208
+    ],
+    "door_at": [
+     -11.24,
+     -475.48
+    ],
+    "door_size": [
+     5.0,
+     7.5
+    ],
+    "door_local": [
+     0,
+     0,
+     -7.12
+    ],
+    "ground_y": 9.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Shop",
@@ -368,7 +498,33 @@
    "s": 1.75,
    "why": "주스 가게: 광장 가는 길 목 축이기",
    "zone": "shops",
-   "shopkind": "Juice"
+   "shopkind": "Juice",
+   "building": {
+    "w": 21.0,
+    "d": 13.1,
+    "h": 25.0,
+    "floors": 1,
+    "floor_h": 9.0,
+    "door_dir": [
+     -0.961,
+     -0.276
+    ],
+    "door_at": [
+     43.22,
+     -497.81
+    ],
+    "door_size": [
+     5.0,
+     7.5
+    ],
+    "door_local": [
+     0,
+     0,
+     -6.56
+    ],
+    "ground_y": 9.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Shop",
@@ -379,7 +535,33 @@
    "s": 1.8,
    "why": "꽃집: 집 마당·성당 꽃을 대는 곳",
    "zone": "shops",
-   "shopkind": "Flower"
+   "shopkind": "Flower",
+   "building": {
+    "w": 21.6,
+    "d": 13.5,
+    "h": 25.7,
+    "floors": 1,
+    "floor_h": 9.0,
+    "door_dir": [
+     0.951,
+     -0.309
+    ],
+    "door_at": [
+     1.85,
+     -488.09
+    ],
+    "door_size": [
+     5.0,
+     7.5
+    ],
+    "door_local": [
+     0,
+     0,
+     -6.75
+    ],
+    "ground_y": 9.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseA",
@@ -389,7 +571,33 @@
    "yaw": 250.5,
    "s": 2.024,
    "why": "주민 집",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 24.3,
+    "d": 22.7,
+    "h": 30.6,
+    "floors": 2,
+    "floor_h": 7.0,
+    "door_dir": [
+     0.943,
+     0.334
+    ],
+    "door_at": [
+     -115.32,
+     -395.22
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -11.33
+    ],
+    "ground_y": 3.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseB",
@@ -399,7 +607,33 @@
    "yaw": 294.8,
    "s": 1.886,
    "why": "주민 집",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 26.4,
+    "d": 17.9,
+    "h": 32.6,
+    "floors": 2,
+    "floor_h": 7.5,
+    "door_dir": [
+     0.908,
+     -0.419
+    ],
+    "door_at": [
+     -99.87,
+     -372.76
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -8.96
+    ],
+    "ground_y": 3.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseA",
@@ -409,7 +643,33 @@
    "yaw": 71.0,
    "s": 1.751,
    "why": "주민 집 (바다 보는 창)",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 21.0,
+    "d": 19.6,
+    "h": 26.4,
+    "floors": 2,
+    "floor_h": 7.0,
+    "door_dir": [
+     -0.946,
+     -0.326
+    ],
+    "door_at": [
+     -174.27,
+     -393.19
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -9.81
+    ],
+    "ground_y": 3.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseB",
@@ -419,7 +679,33 @@
    "yaw": 74.4,
    "s": 1.779,
    "why": "주민 집",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 24.9,
+    "d": 16.9,
+    "h": 30.8,
+    "floors": 2,
+    "floor_h": 7.5,
+    "door_dir": [
+     -0.963,
+     -0.269
+    ],
+    "door_at": [
+     118.86,
+     -668.27
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -8.45
+    ],
+    "ground_y": 30.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseA",
@@ -429,7 +715,33 @@
    "yaw": 294.6,
    "s": 1.968,
    "why": "주민 집",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 23.6,
+    "d": 22.0,
+    "h": 29.7,
+    "floors": 2,
+    "floor_h": 7.0,
+    "door_dir": [
+     0.909,
+     -0.416
+    ],
+    "door_at": [
+     -106.98,
+     -499.59
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -11.02
+    ],
+    "ground_y": 12.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseB",
@@ -439,7 +751,33 @@
    "yaw": 90.7,
    "s": 1.846,
    "why": "주민 집 (바다 보는 창)",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 25.8,
+    "d": 17.5,
+    "h": 31.9,
+    "floors": 2,
+    "floor_h": 7.5,
+    "door_dir": [
+     -1.0,
+     0.012
+    ],
+    "door_at": [
+     -149.77,
+     -518.89
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -8.77
+    ],
+    "ground_y": 12.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseA",
@@ -449,7 +787,33 @@
    "yaw": 75.8,
    "s": 1.851,
    "why": "주민 집",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 22.2,
+    "d": 20.7,
+    "h": 28.0,
+    "floors": 2,
+    "floor_h": 7.0,
+    "door_dir": [
+     -0.969,
+     -0.245
+    ],
+    "door_at": [
+     148.95,
+     -584.54
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -10.37
+    ],
+    "ground_y": 26.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseB",
@@ -459,7 +823,33 @@
    "yaw": 256.7,
    "s": 1.775,
    "why": "주민 집 (바다 보는 창)",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 24.8,
+    "d": 16.9,
+    "h": 30.7,
+    "floors": 2,
+    "floor_h": 7.5,
+    "door_dir": [
+     0.973,
+     0.23
+    ],
+    "door_at": [
+     146.21,
+     -592.06
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -8.43
+    ],
+    "ground_y": 26.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseA",
@@ -469,7 +859,33 @@
    "yaw": 253.1,
    "s": 1.785,
    "why": "주민 집 — 혼자 있는 집, 작은 테라스",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 21.4,
+    "d": 20.0,
+    "h": 27.0,
+    "floors": 2,
+    "floor_h": 7.0,
+    "door_dir": [
+     0.957,
+     0.291
+    ],
+    "door_at": [
+     -97.44,
+     -418.09
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -10.0
+    ],
+    "ground_y": 3.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseB",
@@ -479,7 +895,33 @@
    "yaw": 290.7,
    "s": 1.999,
    "why": "주민 집 — 혼자 있는 집, 작은 테라스",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 28.0,
+    "d": 19.0,
+    "h": 34.6,
+    "floors": 2,
+    "floor_h": 7.5,
+    "door_dir": [
+     0.935,
+     -0.353
+    ],
+    "door_at": [
+     -86.12,
+     -511.36
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -9.5
+    ],
+    "ground_y": 12.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseA",
@@ -489,7 +931,33 @@
    "yaw": 75.3,
    "s": 1.851,
    "why": "주민 집 — 혼자 있는 집, 작은 테라스",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 22.2,
+    "d": 20.7,
+    "h": 28.0,
+    "floors": 2,
+    "floor_h": 7.0,
+    "door_dir": [
+     -0.967,
+     -0.254
+    ],
+    "door_at": [
+     135.97,
+     -660.63
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -10.37
+    ],
+    "ground_y": 30.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "DomeHouseB",
@@ -499,7 +967,33 @@
    "yaw": 286.3,
    "s": 1.834,
    "why": "주민 집 — 혼자 있는 집, 작은 테라스",
-   "zone": "homes"
+   "zone": "homes",
+   "building": {
+    "w": 25.7,
+    "d": 17.4,
+    "h": 31.7,
+    "floors": 2,
+    "floor_h": 7.5,
+    "door_dir": [
+     0.96,
+     -0.281
+    ],
+    "door_at": [
+     -78.64,
+     -375.45
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -8.71
+    ],
+    "ground_y": 3.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Tower",
@@ -510,7 +1004,33 @@
    "s": 1.0,
    "why": "광장 동쪽 굽이 망루: 길이 꺾이는 곳 표지·광장 지킴(규칙 6)",
    "zone": "plaza",
-   "tower_kind": "C"
+   "tower_kind": "C",
+   "building": {
+    "w": 11.5,
+    "d": 11.4,
+    "h": 36.0,
+    "floors": 3,
+    "floor_h": 8.0,
+    "door_dir": [
+     -1.0,
+     0.014
+    ],
+    "door_at": [
+     88.3,
+     -545.92
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -5.7
+    ],
+    "ground_y": 20.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Tower",
@@ -521,7 +1041,33 @@
    "s": 1.0,
    "why": "서쪽 바다 망루: 서쪽 전망대 옆, 바다 쪽 경계",
    "zone": "garden",
-   "tower_kind": "A"
+   "tower_kind": "A",
+   "building": {
+    "w": 11.5,
+    "d": 11.4,
+    "h": 36.0,
+    "floors": 3,
+    "floor_h": 8.0,
+    "door_dir": [
+     1.0,
+     0.028
+    ],
+    "door_at": [
+     -164.3,
+     -685.84
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -5.7
+    ],
+    "ground_y": 26.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Tower",
@@ -532,7 +1078,33 @@
    "s": 1.0,
    "why": "서쪽 동네 바다 전망 망루: 열린 아래층에서 운하·바다를 봄(동네 사람 쉼터)",
    "zone": "homes",
-   "tower_kind": "B"
+   "tower_kind": "B",
+   "building": {
+    "w": 11.5,
+    "d": 11.4,
+    "h": 36.0,
+    "floors": 2,
+    "floor_h": 8.0,
+    "door_dir": [
+     1.0,
+     0.019
+    ],
+    "door_at": [
+     -176.3,
+     -397.89
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -5.7
+    ],
+    "ground_y": 3.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Tower",
@@ -543,7 +1115,33 @@
    "s": 0.95,
    "why": "훈련장 망루: 훈련장과 동쪽 바다를 지켜봄(기사단 성 아래)",
    "zone": "training",
-   "tower_kind": "A"
+   "tower_kind": "A",
+   "building": {
+    "w": 10.9,
+    "d": 10.8,
+    "h": 34.2,
+    "floors": 3,
+    "floor_h": 8.0,
+    "door_dir": [
+     -0.996,
+     0.087
+    ],
+    "door_at": [
+     156.61,
+     -405.53
+    ],
+    "door_size": [
+     4.0,
+     7.0
+    ],
+    "door_local": [
+     0,
+     0,
+     -5.42
+    ],
+    "ground_y": 5.0,
+    "note": "pivot = bottom centre; front = local -Z; door at ground level, nothing in front (A23-120)"
+   }
   },
   {
    "kind": "Lantern",
@@ -1175,453 +1773,378 @@
   },
   {
    "kind": "RoundTree",
-   "x": -109.41,
-   "z": -685.37,
+   "x": -107.21,
+   "z": -677.49,
    "y": 33.0,
-   "yaw": 158.2,
-   "s": 1.014,
+   "yaw": 27.0,
+   "s": 0.856,
    "why": "꽃 정원 숲",
    "zone": "cathedral"
   },
   {
-   "kind": "Planter",
-   "x": -102.13,
-   "z": -678.92,
+   "kind": "PotFlowers",
+   "x": -104.37,
+   "z": -683.96,
    "y": 33.0,
-   "yaw": 168.7,
-   "s": 1.124,
+   "yaw": 266.9,
+   "s": 1.147,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "cathedral",
-   "flower_kit": "HaloVar_Planter_D"
-  },
-  {
-   "kind": "Planter",
-   "x": -124.75,
-   "z": -675.11,
-   "y": 26.0,
-   "yaw": 309.1,
-   "s": 0.873,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "garden",
-   "flower_kit": "HaloVar_Planter_B"
-  },
-  {
-   "kind": "Planter",
-   "x": -105.49,
-   "z": -672.25,
-   "y": 33.0,
-   "yaw": 243.0,
-   "s": 0.986,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "cathedral",
-   "flower_kit": "HaloVar_Planter_D"
+   "flower_kit": "HaloVar3_PotFlowers_F"
   },
   {
    "kind": "RoundTree",
-   "x": -101.62,
-   "z": -469.93,
+   "x": -99.09,
+   "z": -473.76,
    "y": 12.0,
-   "yaw": 76.8,
-   "s": 0.859,
+   "yaw": 217.5,
+   "s": 0.861,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "RoundTree",
-   "x": -95.14,
-   "z": -479.67,
+   "x": -92.96,
+   "z": -480.67,
    "y": 12.0,
-   "yaw": 56.8,
-   "s": 0.866,
+   "yaw": 79.2,
+   "s": 0.939,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "RoundTree",
-   "x": -85.68,
-   "z": -491.2,
+   "x": -93.65,
+   "z": -469.14,
    "y": 12.0,
-   "yaw": 38.6,
-   "s": 0.996,
+   "yaw": 131.5,
+   "s": 0.886,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "PotFlowers",
-   "x": -96.87,
-   "z": -486.18,
+   "x": -101.71,
+   "z": -478.62,
    "y": 12.0,
-   "yaw": 143.8,
-   "s": 1.119,
+   "yaw": 336.1,
+   "s": 1.056,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "homes",
+   "flower_kit": "HaloVar4_PotFlowers_A"
+  },
+  {
+   "kind": "RoundTree",
+   "x": -86.82,
+   "z": -489.74,
+   "y": 12.0,
+   "yaw": 58.2,
+   "s": 0.924,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
+  },
+  {
+   "kind": "RoundTree",
+   "x": -97.28,
+   "z": -352.46,
+   "y": 3.0,
+   "yaw": 262.3,
+   "s": 0.928,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
+  },
+  {
+   "kind": "RoundTree",
+   "x": -106.2,
+   "z": -349.38,
+   "y": 3.0,
+   "yaw": 88.1,
+   "s": 0.874,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -90.92,
+   "z": -352.33,
+   "y": 3.0,
+   "yaw": 9.1,
+   "s": 1.082,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "homes",
    "flower_kit": "HaloVar_PotFlowers_A"
   },
   {
    "kind": "RoundTree",
-   "x": -102.83,
-   "z": -348.62,
-   "y": 3.0,
-   "yaw": 286.4,
-   "s": 0.886,
+   "x": -141.41,
+   "z": -469.5,
+   "y": 12.0,
+   "yaw": 227.1,
+   "s": 0.94,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "RoundTree",
-   "x": -92.32,
-   "z": -353.6,
-   "y": 3.0,
-   "yaw": 146.6,
-   "s": 1.033,
+   "x": 135.3,
+   "z": -568.98,
+   "y": 26.0,
+   "yaw": 164.9,
+   "s": 1.247,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
+   "kind": "PotFlowers",
+   "x": 123.2,
+   "z": -583.38,
+   "y": 26.0,
+   "yaw": 270.3,
+   "s": 0.931,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "homes",
+   "flower_kit": "HaloVar4_PotFlowers_A"
+  },
+  {
    "kind": "RoundTree",
-   "x": 152.05,
-   "z": -358.54,
+   "x": 81.79,
+   "z": -367.97,
    "y": 5.0,
-   "yaw": 233.3,
-   "s": 1.188,
+   "yaw": 214.8,
+   "s": 1.098,
    "why": "훈련장 바람막이 나무",
    "zone": "training"
   },
   {
    "kind": "Planter",
-   "x": 143.41,
-   "z": -363.53,
+   "x": 83.2,
+   "z": -378.16,
    "y": 5.0,
-   "yaw": 78.6,
-   "s": 1.111,
+   "yaw": 179.5,
+   "s": 0.987,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "training",
    "flower_kit": "HaloVar4_Planter_D"
   },
   {
    "kind": "RoundTree",
-   "x": -142.02,
-   "z": -468.52,
-   "y": 12.0,
-   "yaw": 357.3,
-   "s": 0.896,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -153.01,
-   "z": -483.58,
-   "y": 12.95,
-   "yaw": 228.3,
-   "s": 0.882,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 120.82,
-   "z": -645.6,
-   "y": 30.0,
-   "yaw": 352.8,
-   "s": 1.033,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 120.33,
-   "z": -638.15,
-   "y": 30.0,
-   "yaw": 131.4,
-   "s": 0.933,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "Planter",
-   "x": 111.5,
-   "z": -651.58,
-   "y": 30.0,
-   "yaw": 265.4,
-   "s": 1.132,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar3_Planter_E"
-  },
-  {
-   "kind": "Planter",
-   "x": 111.57,
-   "z": -641.76,
-   "y": 30.0,
-   "yaw": 31.0,
-   "s": 1.063,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_Planter_A"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 144.03,
-   "z": -616.98,
-   "y": 26.0,
-   "yaw": 117.2,
-   "s": 1.221,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "Planter",
-   "x": 133.52,
-   "z": -613.02,
-   "y": 26.0,
-   "yaw": 324.8,
-   "s": 1.119,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_Planter_A"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 80.78,
-   "z": -379.31,
+   "x": 149.4,
+   "z": -357.51,
    "y": 5.0,
-   "yaw": 161.0,
-   "s": 1.195,
+   "yaw": 211.8,
+   "s": 1.052,
    "why": "훈련장 바람막이 나무",
    "zone": "training"
   },
   {
-   "kind": "RoundTree",
-   "x": 81.32,
-   "z": -368.39,
+   "kind": "PotFlowers",
+   "x": 141.96,
+   "z": -362.8,
    "y": 5.0,
-   "yaw": 280.4,
-   "s": 1.022,
-   "why": "훈련장 바람막이 나무",
-   "zone": "training"
-  },
-  {
-   "kind": "Planter",
-   "x": 89.21,
-   "z": -374.28,
-   "y": 5.0,
-   "yaw": 138.7,
-   "s": 1.117,
+   "yaw": 71.1,
+   "s": 0.873,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "training",
-   "flower_kit": "HaloVar_Planter_C"
+   "flower_kit": "HaloVar4_PotFlowers_C"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 142.89,
+   "z": -367.49,
+   "y": 5.0,
+   "yaw": 228.9,
+   "s": 0.951,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "training",
+   "flower_kit": "HaloVar4_PotFlowers_C"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 150.19,
+   "z": -368.76,
+   "y": 6.82,
+   "yaw": 352.6,
+   "s": 0.954,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "training",
+   "flower_kit": "HaloVar4_PotFlowers_C"
   },
   {
    "kind": "RoundTree",
-   "x": 83.34,
-   "z": -571.31,
-   "y": 20.0,
-   "yaw": 8.2,
-   "s": 0.955,
-   "why": "섬 가장자리 숲",
-   "zone": "plaza"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 80.75,
-   "z": -579.26,
-   "y": 20.0,
-   "yaw": 196.6,
-   "s": 0.899,
-   "why": "섬 가장자리 숲",
-   "zone": "plaza"
+   "x": -154.66,
+   "z": -649.73,
+   "y": 26.0,
+   "yaw": 277.1,
+   "s": 1.116,
+   "why": "꽃 정원 숲",
+   "zone": "garden"
   },
   {
    "kind": "Planter",
-   "x": 77.8,
-   "z": -562.73,
-   "y": 20.0,
-   "yaw": 258.9,
-   "s": 0.948,
+   "x": -154.5,
+   "z": -660.23,
+   "y": 26.0,
+   "yaw": 277.1,
+   "s": 1.092,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "plaza",
+   "zone": "garden",
    "flower_kit": "HaloVar_Planter_B"
   },
   {
    "kind": "RoundTree",
-   "x": -157.92,
-   "z": -650.69,
+   "x": 181.08,
+   "z": -609.34,
    "y": 26.0,
-   "yaw": 25.4,
-   "s": 0.979,
-   "why": "꽃 정원 숲",
-   "zone": "garden"
-  },
-  {
-   "kind": "RoundTree",
-   "x": -149.82,
-   "z": -651.56,
-   "y": 26.0,
-   "yaw": 113.2,
-   "s": 0.931,
-   "why": "꽃 정원 숲",
-   "zone": "garden"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -159.42,
-   "z": -659.71,
-   "y": 26.0,
-   "yaw": 349.6,
-   "s": 0.887,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "garden",
-   "flower_kit": "HaloVar3_PotFlowers_E"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 43.96,
-   "z": -464.06,
-   "y": 9.0,
-   "yaw": 352.0,
-   "s": 0.908,
-   "why": "섬 가장자리 숲",
-   "zone": "shops"
-  },
-  {
-   "kind": "Planter",
-   "x": 29.29,
-   "z": -451.09,
-   "y": 9.0,
-   "yaw": 81.0,
-   "s": 0.941,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "shops",
-   "flower_kit": "HaloVar_Planter_C"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 41.05,
-   "z": -454.66,
-   "y": 9.0,
-   "yaw": 57.6,
-   "s": 0.902,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "shops",
-   "flower_kit": "HaloVar3_PotFlowers_E"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 181.6,
-   "z": -566.25,
-   "y": 26.0,
-   "yaw": 72.7,
-   "s": 1.151,
+   "yaw": 257.8,
+   "s": 0.876,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "RoundTree",
-   "x": 170.67,
-   "z": -564.58,
-   "y": 26.0,
-   "yaw": 50.3,
-   "s": 1.072,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "RoundTree",
-   "x": -27.66,
-   "z": -411.31,
+   "x": -28.74,
+   "z": -415.22,
    "y": 0.2,
-   "yaw": 210.1,
-   "s": 0.927,
+   "yaw": 191.0,
+   "s": 1.233,
    "why": "섬 가장자리 숲",
    "zone": "gate"
   },
   {
    "kind": "RoundTree",
-   "x": -22.15,
-   "z": -417.36,
+   "x": -17.79,
+   "z": -415.78,
    "y": 0.2,
-   "yaw": 110.0,
-   "s": 0.861,
+   "yaw": 212.2,
+   "s": 0.952,
    "why": "섬 가장자리 숲",
    "zone": "gate"
-  },
-  {
-   "kind": "Planter",
-   "x": -24.04,
-   "z": -402.6,
-   "y": 0.2,
-   "yaw": 218.0,
-   "s": 0.96,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "gate",
-   "flower_kit": "HaloVar_Planter_A"
   },
   {
    "kind": "PotFlowers",
-   "x": -32.21,
-   "z": -422.3,
+   "x": -26.03,
+   "z": -403.49,
    "y": 0.2,
-   "yaw": 307.0,
-   "s": 1.116,
+   "yaw": 200.0,
+   "s": 0.928,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "gate",
-   "flower_kit": "HaloVar_PotFlowers_B"
+   "flower_kit": "HaloVar4_PotFlowers_C"
   },
   {
    "kind": "RoundTree",
-   "x": 70.59,
-   "z": -387.52,
+   "x": 74.69,
+   "z": -389.61,
    "y": 5.0,
-   "yaw": 129.2,
-   "s": 1.165,
+   "yaw": 148.5,
+   "s": 1.0,
    "why": "훈련장 바람막이 나무",
    "zone": "training"
   },
   {
    "kind": "PotFlowers",
-   "x": 76.36,
-   "z": -392.73,
+   "x": 82.73,
+   "z": -388.34,
    "y": 5.0,
-   "yaw": 43.3,
-   "s": 1.114,
+   "yaw": 150.3,
+   "s": 0.931,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "training",
    "flower_kit": "HaloVar4_PotFlowers_C"
   },
   {
    "kind": "PotFlowers",
-   "x": 79.77,
-   "z": -388.38,
+   "x": 67.09,
+   "z": -395.81,
    "y": 5.0,
-   "yaw": 194.6,
-   "s": 1.103,
+   "yaw": 55.3,
+   "s": 1.0,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "training",
    "flower_kit": "HaloVar4_PotFlowers_C"
   },
   {
    "kind": "RoundTree",
-   "x": 137.89,
-   "z": -568.05,
+   "x": 184.06,
+   "z": -569.84,
    "y": 26.0,
-   "yaw": 358.4,
-   "s": 1.001,
+   "yaw": 170.6,
+   "s": 1.053,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 154.97,
+   "z": -561.4,
+   "y": 26.0,
+   "yaw": 255.8,
+   "s": 0.877,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 162.88,
+   "z": -559.99,
+   "y": 26.0,
+   "yaw": 171.7,
+   "s": 0.862,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "Planter",
-   "x": 147.42,
-   "z": -562.52,
+   "x": 146.45,
+   "z": -564.17,
    "y": 26.0,
-   "yaw": 269.6,
-   "s": 1.074,
+   "yaw": 181.7,
+   "s": 1.103,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "homes",
    "flower_kit": "HaloVar_Planter_A"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 127.88,
+   "z": -412.87,
+   "y": 5.0,
+   "yaw": 339.9,
+   "s": 1.013,
+   "why": "훈련장 바람막이 나무",
+   "zone": "training"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 127.2,
+   "z": -404.56,
+   "y": 5.0,
+   "yaw": 337.2,
+   "s": 1.085,
+   "why": "훈련장 바람막이 나무",
+   "zone": "training"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 119.78,
+   "z": -414.73,
+   "y": 5.0,
+   "yaw": 165.2,
+   "s": 0.993,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "training",
+   "flower_kit": "HaloVar4_PotFlowers_C"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 139.37,
+   "z": -416.41,
+   "y": 5.0,
+   "yaw": 30.0,
+   "s": 0.89,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "training",
+   "flower_kit": "HaloVar4_PotFlowers_C"
   },
   {
    "kind": "RoundTree",
@@ -1634,610 +2157,555 @@
    "zone": "cathedral"
   },
   {
-   "kind": "Planter",
-   "x": 3.46,
-   "z": -654.09,
-   "y": 33.0,
-   "yaw": 83.4,
-   "s": 1.058,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "cathedral",
-   "flower_kit": "HaloVar4_Planter_D"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 0.41,
-   "z": -669.22,
-   "y": 33.0,
-   "yaw": 215.8,
-   "s": 1.084,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "cathedral",
-   "flower_kit": "HaloVar3_PotFlowers_F"
-  },
-  {
    "kind": "RoundTree",
-   "x": -27.4,
-   "z": -368.14,
-   "y": 0.44,
-   "yaw": 167.4,
-   "s": 0.947,
-   "why": "섬 가장자리 숲",
-   "zone": "gate"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -32.45,
-   "z": -356.18,
-   "y": 0.2,
-   "yaw": 9.5,
-   "s": 1.094,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "gate",
-   "flower_kit": "HaloVar_PotFlowers_B"
-  },
-  {
-   "kind": "RoundTree",
-   "x": -71.04,
-   "z": -355.97,
+   "x": -68.51,
+   "z": -360.98,
    "y": 3.0,
-   "yaw": 103.3,
-   "s": 0.899,
+   "yaw": 339.7,
+   "s": 0.907,
    "why": "동네 가장자리 그늘 숲",
    "zone": "homes"
   },
   {
    "kind": "RoundTree",
-   "x": -65.99,
-   "z": -364.36,
-   "y": 3.0,
-   "yaw": 214.2,
-   "s": 1.065,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "RoundTree",
-   "x": -11.33,
-   "z": -580.07,
+   "x": -6.76,
+   "z": -572.52,
    "y": 20.0,
-   "yaw": 286.0,
-   "s": 1.184,
+   "yaw": 332.6,
+   "s": 1.192,
    "why": "섬 가장자리 숲",
    "zone": "plaza"
   },
   {
    "kind": "RoundTree",
-   "x": -7.05,
-   "z": -569.46,
-   "y": 20.0,
-   "yaw": 304.9,
-   "s": 1.034,
-   "why": "섬 가장자리 숲",
-   "zone": "plaza"
+   "x": 93.51,
+   "z": -679.86,
+   "y": 30.0,
+   "yaw": 5.9,
+   "s": 0.935,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 98.86,
+   "z": -688.18,
+   "y": 30.0,
+   "yaw": 66.1,
+   "s": 1.096,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
   },
   {
    "kind": "PotFlowers",
-   "x": -4.51,
-   "z": -580.85,
-   "y": 20.0,
-   "yaw": 156.0,
-   "s": 1.016,
+   "x": 89.14,
+   "z": -692.07,
+   "y": 30.0,
+   "yaw": 46.9,
+   "s": 0.984,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "plaza",
-   "flower_kit": "HaloVar4_PotFlowers_D"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 92.83,
-   "z": -687.41,
-   "y": 30.0,
-   "yaw": 9.1,
-   "s": 0.912,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 95.62,
-   "z": -677.14,
-   "y": 30.0,
-   "yaw": 26.7,
-   "s": 0.99,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
+   "zone": "homes",
+   "flower_kit": "HaloVar4_PotFlowers_A"
   },
   {
    "kind": "PotFlowers",
-   "x": 93.97,
-   "z": -693.72,
+   "x": 88.55,
+   "z": -674.26,
    "y": 30.0,
-   "yaw": 147.8,
-   "s": 1.092,
+   "yaw": 315.3,
+   "s": 0.928,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "homes",
    "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 98.56,
-   "z": -692.51,
-   "y": 30.0,
-   "yaw": 130.4,
-   "s": 0.944,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 99.22,
-   "z": -687.72,
-   "y": 30.0,
-   "yaw": 263.1,
-   "s": 0.938,
-   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 116.21,
-   "z": -684.66,
-   "y": 30.0,
-   "yaw": 298.2,
-   "s": 1.062,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
-  },
-  {
-   "kind": "RoundTree",
-   "x": 106.91,
-   "z": -685.04,
-   "y": 30.0,
-   "yaw": 91.3,
-   "s": 1.079,
-   "why": "동네 가장자리 그늘 숲",
-   "zone": "homes"
   },
   {
    "kind": "Planter",
-   "x": 124.98,
-   "z": -686.71,
+   "x": 94.79,
+   "z": -671.06,
    "y": 30.0,
-   "yaw": 172.9,
-   "s": 1.025,
+   "yaw": 335.6,
+   "s": 0.917,
    "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
    "zone": "homes",
    "flower_kit": "HaloVar3_Planter_E"
   },
   {
-   "kind": "PotFlowers",
-   "x": 166,
-   "z": -378,
-   "y": 5.81,
-   "yaw": 171.6,
-   "s": 0.998,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "training",
-   "flower_kit": "HaloVar4_PotFlowers_C"
+   "kind": "RoundTree",
+   "x": 97.55,
+   "z": -420.16,
+   "y": 5.0,
+   "yaw": 175.4,
+   "s": 0.858,
+   "why": "훈련장 바람막이 나무",
+   "zone": "training"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 85.24,
+   "z": -420.4,
+   "y": 5.0,
+   "yaw": 272.7,
+   "s": 0.875,
+   "why": "훈련장 바람막이 나무",
+   "zone": "training"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 187.75,
+   "z": -514.87,
+   "y": 30.0,
+   "yaw": 294.1,
+   "s": 0.874,
+   "why": "섬 가장자리 숲",
+   "zone": "castle"
+  },
+  {
+   "kind": "Planter",
+   "x": 188.73,
+   "z": -504.62,
+   "y": 30.0,
+   "yaw": 248.6,
+   "s": 1.094,
+   "why": "나무 무리 밑 꽃·덤불(3겹 심기)",
+   "zone": "castle",
+   "flower_kit": "HaloVar_Planter_D"
+  },
+  {
+   "kind": "RoundTree",
+   "x": 132.7,
+   "z": -690.13,
+   "y": 30.0,
+   "yaw": 174.4,
+   "s": 1.033,
+   "why": "동네 가장자리 그늘 숲",
+   "zone": "homes"
   },
   {
    "kind": "PotFlowers",
-   "x": -110,
+   "x": 146,
+   "z": -558,
+   "y": 26.0,
+   "yaw": 14.2,
+   "s": 1.01,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar4_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -102,
+   "z": -650,
+   "y": 33.0,
+   "yaw": 305.2,
+   "s": 1.099,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "cathedral",
+   "flower_kit": "HaloVar_PotFlowers_C"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -130,
+   "z": -682,
+   "y": 26.0,
+   "yaw": 169.7,
+   "s": 1.164,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "garden",
+   "flower_kit": "HaloVar_PotFlowers_B"
+  },
+  {
+   "kind": "Topiary",
+   "x": 154,
+   "z": -414,
+   "y": 5.0,
+   "yaw": 354.6,
+   "s": 1.044,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "training"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 94,
+   "z": -658,
+   "y": 30.0,
+   "yaw": 88.2,
+   "s": 1.161,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 106,
+   "z": -454,
+   "y": 12.0,
+   "yaw": 69.2,
+   "s": 1.021,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "castle",
+   "flower_kit": "HaloVar4_PotFlowers_C"
+  },
+  {
+   "kind": "Topiary",
+   "x": 78,
+   "z": -582,
+   "y": 20.0,
+   "yaw": 346.8,
+   "s": 1.143,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "plaza"
+  },
+  {
+   "kind": "Topiary",
+   "x": -130,
+   "z": -534,
+   "y": 12.0,
+   "yaw": 96.6,
+   "s": 1.151,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -106,
+   "z": -670,
+   "y": 33.0,
+   "yaw": 267.2,
+   "s": 1.022,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "cathedral",
+   "flower_kit": "HaloVar3_PotFlowers_F"
+  },
+  {
+   "kind": "Topiary",
+   "x": 62,
+   "z": -502,
+   "y": 9.0,
+   "yaw": 213.8,
+   "s": 0.98,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "shops"
+  },
+  {
+   "kind": "Topiary",
+   "x": 194,
+   "z": -518,
+   "y": 30.0,
+   "yaw": 3.1,
+   "s": 0.976,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "castle"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -162,
+   "z": -518,
+   "y": 12.0,
+   "yaw": 24.0,
+   "s": 1.192,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -150,
    "z": -466,
    "y": 12.0,
-   "yaw": 112.2,
-   "s": 1.174,
+   "yaw": 184.7,
+   "s": 1.079,
    "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
    "zone": "homes",
    "flower_kit": "HaloVar4_PotFlowers_A"
   },
   {
    "kind": "Topiary",
-   "x": -186,
-   "z": -410,
-   "y": 3.0,
-   "yaw": 251.5,
-   "s": 1.162,
+   "x": 94,
+   "z": -538,
+   "y": 20.0,
+   "yaw": 175.9,
+   "s": 1.008,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "plaza"
+  },
+  {
+   "kind": "Topiary",
+   "x": 190,
+   "z": -602,
+   "y": 26.0,
+   "yaw": 234.0,
+   "s": 1.172,
    "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
    "zone": "homes"
   },
   {
    "kind": "Topiary",
-   "x": -102,
-   "z": -690,
-   "y": 33.0,
-   "yaw": 204.1,
-   "s": 1.096,
+   "x": 110,
+   "z": -510,
+   "y": 30.0,
+   "yaw": 13.6,
+   "s": 0.954,
    "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "cathedral"
+   "zone": "castle"
   },
   {
    "kind": "Topiary",
-   "x": 130,
-   "z": -358,
+   "x": 110,
+   "z": -362,
    "y": 5.0,
-   "yaw": 119.4,
-   "s": 1.081,
+   "yaw": 59.5,
+   "s": 1.09,
    "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
    "zone": "training"
   },
   {
+   "kind": "Topiary",
+   "x": -74,
+   "z": -426,
+   "y": 3.0,
+   "yaw": 95.9,
+   "s": 1.012,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
    "kind": "PotFlowers",
-   "x": 66,
-   "z": -502,
+   "x": 190,
+   "z": -474,
+   "y": 30.0,
+   "yaw": 216.8,
+   "s": 1.128,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "castle",
+   "flower_kit": "HaloVar4_PotFlowers_C"
+  },
+  {
+   "kind": "Topiary",
+   "x": -166,
+   "z": -486,
+   "y": 12.0,
+   "yaw": 126.1,
+   "s": 0.998,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -54,
+   "z": -454,
    "y": 9.0,
-   "yaw": 359.9,
-   "s": 1.107,
+   "yaw": 82.8,
+   "s": 1.093,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "shops",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 50,
+   "z": -474,
+   "y": 9.0,
+   "yaw": 4.1,
+   "s": 1.12,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "shops",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -150,
+   "z": -582,
+   "y": 22.0,
+   "yaw": 124.5,
+   "s": 0.952,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_E"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -114,
+   "z": -682,
+   "y": 33.0,
+   "yaw": 18.0,
+   "s": 0.987,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_F"
+  },
+  {
+   "kind": "Topiary",
+   "x": -158,
+   "z": -422,
+   "y": 3.0,
+   "yaw": 316.3,
+   "s": 1.015,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
+   "kind": "Topiary",
+   "x": 34,
+   "z": -338,
+   "y": 0.2,
+   "yaw": 0.3,
+   "s": 1.042,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "gate"
+  },
+  {
+   "kind": "Topiary",
+   "x": 86,
+   "z": -574,
+   "y": 20.0,
+   "yaw": 186.3,
+   "s": 0.989,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "plaza"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 150,
+   "z": -622,
+   "y": 26.0,
+   "yaw": 50.4,
+   "s": 1.199,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar4_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 38,
+   "z": -450,
+   "y": 9.0,
+   "yaw": 145.6,
+   "s": 1.008,
    "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
    "zone": "shops",
    "flower_kit": "HaloVar_PotFlowers_A"
   },
   {
    "kind": "Topiary",
-   "x": -182,
-   "z": -354,
+   "x": 130,
+   "z": -646,
+   "y": 30.0,
+   "yaw": 68.2,
+   "s": 1.01,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 74,
+   "z": -410,
+   "y": 5.0,
+   "yaw": 241.3,
+   "s": 1.16,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "training",
+   "flower_kit": "HaloVar4_PotFlowers_C"
+  },
+  {
+   "kind": "Topiary",
+   "x": -74,
+   "z": -406,
    "y": 3.0,
-   "yaw": 252.5,
+   "yaw": 222.1,
+   "s": 1.101,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
+   "kind": "Topiary",
+   "x": 190,
+   "z": -498,
+   "y": 30.0,
+   "yaw": 6.6,
+   "s": 1.0,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "castle"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -106,
+   "z": -466,
+   "y": 12.0,
+   "yaw": 12.3,
+   "s": 1.016,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -2,
+   "z": -546,
+   "y": 20.0,
+   "yaw": 322.0,
+   "s": 1.037,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "plaza",
+   "flower_kit": "HaloVar4_PotFlowers_D"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -114,
+   "z": -342,
+   "y": 3.0,
+   "yaw": 4.4,
+   "s": 1.169,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "Topiary",
+   "x": 38,
+   "z": -386,
+   "y": 0.2,
+   "yaw": 306.7,
+   "s": 1.141,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "gate"
+  },
+  {
+   "kind": "Topiary",
+   "x": 94,
+   "z": -642,
+   "y": 30.0,
+   "yaw": 35.8,
+   "s": 0.969,
+   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": 114,
+   "z": -638,
+   "y": 30.0,
+   "yaw": 165.0,
+   "s": 1.063,
+   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
+   "zone": "homes",
+   "flower_kit": "HaloVar_PotFlowers_A"
+  },
+  {
+   "kind": "Topiary",
+   "x": -142,
+   "z": -342,
+   "y": 3.0,
+   "yaw": 129.5,
    "s": 1.035,
    "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
    "zone": "homes"
   },
   {
    "kind": "Topiary",
-   "x": 110,
-   "z": -490,
-   "y": 30.0,
-   "yaw": 282.7,
-   "s": 1.061,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "castle"
-  },
-  {
-   "kind": "Topiary",
-   "x": -162,
-   "z": -422,
-   "y": 3.0,
-   "yaw": 66.0,
-   "s": 1.123,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes"
-  },
-  {
-   "kind": "Topiary",
-   "x": 110,
-   "z": -474,
-   "y": 30.0,
-   "yaw": 100.9,
-   "s": 1.101,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "castle"
-  },
-  {
-   "kind": "Topiary",
-   "x": 38,
-   "z": -350,
-   "y": 0.2,
-   "yaw": 356.2,
-   "s": 1.192,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "gate"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -170,
-   "z": -486,
-   "y": 12.0,
-   "yaw": 117.9,
-   "s": 0.99,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar4_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 78,
-   "z": -522,
-   "y": 9.0,
-   "yaw": 11.0,
-   "s": 1.125,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "shops",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -110,
-   "z": -594,
-   "y": 22.0,
-   "yaw": 195.9,
-   "s": 1.053,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "garden",
-   "flower_kit": "HaloVar_PotFlowers_B"
-  },
-  {
-   "kind": "Topiary",
-   "x": 150,
-   "z": -622,
-   "y": 26.0,
-   "yaw": 198.6,
-   "s": 1.087,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes"
-  },
-  {
-   "kind": "Topiary",
-   "x": -146,
-   "z": -582,
-   "y": 22.0,
-   "yaw": 10.9,
-   "s": 0.95,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "garden"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 182,
-   "z": -470,
-   "y": 30.0,
-   "yaw": 129.4,
-   "s": 1.178,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "castle",
-   "flower_kit": "HaloVar4_PotFlowers_C"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -70,
-   "z": -418,
-   "y": 3.0,
-   "yaw": 117.8,
-   "s": 1.113,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "Topiary",
-   "x": -146,
-   "z": -682,
-   "y": 26.0,
-   "yaw": 36.9,
-   "s": 1.055,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "garden"
-  },
-  {
-   "kind": "Topiary",
-   "x": 38,
-   "z": -378,
-   "y": 0.2,
-   "yaw": 61.5,
-   "s": 1.002,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "gate"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 98,
-   "z": -418,
-   "y": 5.0,
-   "yaw": 199.1,
-   "s": 0.974,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "training",
-   "flower_kit": "HaloVar4_PotFlowers_C"
-  },
-  {
-   "kind": "Topiary",
-   "x": -106,
-   "z": -530,
-   "y": 12.0,
-   "yaw": 272.5,
-   "s": 0.988,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -150,
-   "z": -534,
-   "y": 12.0,
-   "yaw": 178.8,
-   "s": 1.125,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar4_PotFlowers_A"
-  },
-  {
-   "kind": "Topiary",
-   "x": 186,
-   "z": -486,
-   "y": 30.0,
-   "yaw": 327.1,
-   "s": 0.952,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "castle"
-  },
-  {
-   "kind": "Topiary",
-   "x": 190,
-   "z": -594,
-   "y": 26.0,
-   "yaw": 169.6,
-   "s": 1.133,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 126,
-   "z": -610,
-   "y": 26.0,
-   "yaw": 10.5,
-   "s": 1.036,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar4_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -126,
-   "z": -654,
-   "y": 26.0,
-   "yaw": 274.6,
-   "s": 1.192,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "garden",
-   "flower_kit": "HaloVar_PotFlowers_B"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -174,
-   "z": -422,
-   "y": 3.0,
-   "yaw": 282.3,
-   "s": 1.014,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "Topiary",
-   "x": 94,
-   "z": -650,
-   "y": 30.0,
-   "yaw": 345.9,
-   "s": 1.032,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 110,
-   "z": -458,
-   "y": 12.0,
-   "yaw": 42.5,
-   "s": 1.163,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "castle",
-   "flower_kit": "HaloVar_PotFlowers_C"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -26,
-   "z": -506,
-   "y": 9.0,
-   "yaw": 98.5,
-   "s": 1.037,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "shops",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -78,
-   "z": -350,
-   "y": 3.0,
-   "yaw": 104.6,
-   "s": 1.026,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar4_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -110,
-   "z": -342,
-   "y": 3.0,
-   "yaw": 201.9,
-   "s": 0.965,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "Topiary",
-   "x": 138,
-   "z": -414,
-   "y": 5.0,
-   "yaw": 289.8,
-   "s": 1.055,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "training"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 138,
-   "z": -558,
-   "y": 26.0,
-   "yaw": 85.7,
-   "s": 1.143,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar_PotFlowers_A"
-  },
-  {
-   "kind": "Topiary",
-   "x": -6,
-   "z": -550,
-   "y": 20.0,
-   "yaw": 316.7,
-   "s": 1.047,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "plaza"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 122,
-   "z": -590,
-   "y": 26.0,
-   "yaw": 167.6,
-   "s": 0.964,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar4_PotFlowers_A"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 38,
-   "z": -394,
-   "y": 0.2,
-   "yaw": 84.8,
-   "s": 1.153,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "gate",
-   "flower_kit": "HaloVar_PotFlowers_B"
-  },
-  {
-   "kind": "Topiary",
-   "x": -122,
-   "z": -346,
-   "y": 3.0,
-   "yaw": 102.8,
-   "s": 1.192,
-   "why": "절벽 가장자리 다듬은 나무(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": 138,
-   "z": -638,
-   "y": 29.2,
-   "yaw": 88.2,
-   "s": 0.99,
-   "why": "절벽 가장자리 꽃 화분(가장자리 채우기·떨어짐 막는 느낌)",
-   "zone": "homes",
-   "flower_kit": "HaloVar4_PotFlowers_A"
-  },
-  {
-   "kind": "Topiary",
    "x": -150,
    "z": -410,
    "y": 3.0,
-   "yaw": 256.1,
+   "yaw": 213.9,
    "s": 1.144,
    "why": "채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)",
    "zone": "homes"
@@ -2247,8 +2715,8 @@
    "x": 124,
    "z": -380,
    "y": 5.0,
-   "yaw": 121.8,
-   "s": 1.232,
+   "yaw": 194.4,
+   "s": 1.248,
    "why": "채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)",
    "zone": "training"
   },
@@ -2257,8 +2725,8 @@
    "x": -120,
    "z": -520,
    "y": 12.0,
-   "yaw": 202.9,
-   "s": 1.292,
+   "yaw": 172.7,
+   "s": 1.293,
    "why": "채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)",
    "zone": "homes"
   },
@@ -2267,8 +2735,8 @@
    "x": 188,
    "z": -580,
    "y": 26.0,
-   "yaw": 49.9,
-   "s": 1.105,
+   "yaw": 309.7,
+   "s": 1.16,
    "why": "채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)",
    "zone": "homes"
   },
@@ -2277,8 +2745,8 @@
    "x": -170,
    "z": -650,
    "y": 26.0,
-   "yaw": 307.2,
-   "s": 1.18,
+   "yaw": 331.2,
+   "s": 1.233,
    "why": "채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)",
    "zone": "garden"
   },
@@ -2287,194 +2755,227 @@
    "x": 110,
    "z": -670,
    "y": 30.0,
-   "yaw": 99.0,
-   "s": 1.192,
+   "yaw": 102.2,
+   "s": 1.295,
    "why": "채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)",
    "zone": "homes"
   },
   {
    "kind": "PotFlowers",
-   "x": -121.78,
-   "z": -659.29,
+   "x": -162.63,
+   "z": -644.69,
    "y": 26.0,
-   "yaw": 162.6,
-   "s": 0.977,
+   "yaw": 98.6,
+   "s": 0.882,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_E"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -151.85,
+   "z": -667.68,
+   "y": 26.0,
+   "yaw": 355.9,
+   "s": 1.135,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_F"
+  },
+  {
+   "kind": "Planter",
+   "x": -148.42,
+   "z": -677.96,
+   "y": 26.0,
+   "yaw": 331.9,
+   "s": 1.028,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar_Planter_B"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -145.28,
+   "z": -662.23,
+   "y": 26.0,
+   "yaw": 217.6,
+   "s": 1.021,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_E"
+  },
+  {
+   "kind": "Planter",
+   "x": -138.81,
+   "z": -652.22,
+   "y": 26.0,
+   "yaw": 163.4,
+   "s": 1.089,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar_Planter_B"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -146.45,
+   "z": -596.35,
+   "y": 22.0,
+   "yaw": 102.4,
+   "s": 0.981,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar4_PotFlowers_D"
+  },
+  {
+   "kind": "Planter",
+   "x": -135.4,
+   "z": -668.69,
+   "y": 26.0,
+   "yaw": 169.0,
+   "s": 1.1,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_Planter_E"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -128.47,
+   "z": -668.14,
+   "y": 26.0,
+   "yaw": 162.9,
+   "s": 1.133,
    "why": "꽃 정원 꽃",
    "zone": "garden",
    "flower_kit": "HaloVar_PotFlowers_B"
   },
   {
    "kind": "PotFlowers",
-   "x": -142.61,
-   "z": -673.89,
+   "x": -129.54,
+   "z": -655.92,
    "y": 26.0,
-   "yaw": 345.8,
-   "s": 1.057,
+   "yaw": 80.9,
+   "s": 1.015,
    "why": "꽃 정원 꽃",
    "zone": "garden",
-   "flower_kit": "HaloVar_PotFlowers_B"
+   "flower_kit": "HaloVar4_PotFlowers_D"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -127.83,
+   "z": -659.93,
+   "y": 26.0,
+   "yaw": 196.0,
+   "s": 1.002,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar4_PotFlowers_D"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -157.74,
+   "z": -673.67,
+   "y": 26.0,
+   "yaw": 226.7,
+   "s": 1.038,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_E"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -146.34,
+   "z": -579.26,
+   "y": 22.0,
+   "yaw": 348.5,
+   "s": 0.874,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar3_PotFlowers_E"
   },
   {
    "kind": "PotFlowers",
    "x": -146.21,
-   "z": -660.83,
-   "y": 26.0,
-   "yaw": 108.5,
-   "s": 1.122,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar3_PotFlowers_E"
-  },
-  {
-   "kind": "Planter",
-   "x": -147.51,
-   "z": -588.27,
+   "z": -586.28,
    "y": 22.0,
-   "yaw": 245.9,
-   "s": 0.951,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar3_Planter_E"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -146.97,
-   "z": -595.58,
-   "y": 22.0,
-   "yaw": 50.9,
-   "s": 1.124,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar4_PotFlowers_D"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -136.91,
-   "z": -649.35,
-   "y": 26.0,
-   "yaw": 294.7,
-   "s": 1.145,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar4_PotFlowers_D"
-  },
-  {
-   "kind": "PotFlowers",
-   "x": -158.18,
-   "z": -668.87,
-   "y": 26.0,
-   "yaw": 188.8,
-   "s": 1.127,
+   "yaw": 180.5,
+   "s": 0.936,
    "why": "꽃 정원 꽃",
    "zone": "garden",
    "flower_kit": "HaloVar3_PotFlowers_E"
   },
   {
    "kind": "PotFlowers",
-   "x": -179.97,
-   "z": -645.94,
+   "x": -162.43,
+   "z": -673.15,
    "y": 26.0,
-   "yaw": 150.9,
+   "yaw": 246.2,
+   "s": 0.898,
+   "why": "꽃 정원 꽃",
+   "zone": "garden",
+   "flower_kit": "HaloVar4_PotFlowers_D"
+  },
+  {
+   "kind": "PotFlowers",
+   "x": -184.32,
+   "z": -683.97,
+   "y": 26.0,
+   "yaw": 183.8,
    "s": 0.981,
    "why": "꽃 정원 꽃",
    "zone": "garden",
-   "flower_kit": "HaloVar3_PotFlowers_F"
+   "flower_kit": "HaloVar3_PotFlowers_E"
   },
   {
    "kind": "PotFlowers",
-   "x": -129.79,
-   "z": -679.24,
+   "x": -152.68,
+   "z": -684.34,
    "y": 26.0,
-   "yaw": 229.8,
-   "s": 0.978,
+   "yaw": 257.7,
+   "s": 1.099,
    "why": "꽃 정원 꽃",
    "zone": "garden",
    "flower_kit": "HaloVar_PotFlowers_B"
   },
   {
    "kind": "Planter",
-   "x": -157.66,
-   "z": -675.05,
+   "x": -121.0,
+   "z": -660.32,
    "y": 26.0,
-   "yaw": 249.0,
-   "s": 1.032,
+   "yaw": 310.4,
+   "s": 0.913,
    "why": "꽃 정원 꽃",
    "zone": "garden",
    "flower_kit": "HaloVar3_Planter_E"
-  },
-  {
-   "kind": "Planter",
-   "x": -150.84,
-   "z": -672.89,
-   "y": 26.0,
-   "yaw": 246.2,
-   "s": 0.887,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar_Planter_B"
-  },
-  {
-   "kind": "Planter",
-   "x": -138.37,
-   "z": -680.74,
-   "y": 26.0,
-   "yaw": 161.0,
-   "s": 0.921,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar3_Planter_E"
-  },
-  {
-   "kind": "Planter",
-   "x": -152.52,
-   "z": -684.58,
-   "y": 26.0,
-   "yaw": 349.5,
-   "s": 1.037,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar3_Planter_E"
-  },
-  {
-   "kind": "Planter",
-   "x": -143.16,
-   "z": -654.13,
-   "y": 26.0,
-   "yaw": 35.8,
-   "s": 0.891,
-   "why": "꽃 정원 꽃",
-   "zone": "garden",
-   "flower_kit": "HaloVar_Planter_B"
   },
   {
    "kind": "PotFlowers",
-   "x": -185.21,
-   "z": -684.33,
+   "x": -162.09,
+   "z": -650.96,
    "y": 26.0,
-   "yaw": 19.4,
-   "s": 0.971,
+   "yaw": 261.0,
+   "s": 0.991,
    "why": "꽃 정원 꽃",
    "zone": "garden",
-   "flower_kit": "HaloVar3_PotFlowers_F"
+   "flower_kit": "HaloVar_PotFlowers_B"
   },
   {
-   "kind": "PotFlowers",
-   "x": -129.75,
-   "z": -684.85,
+   "kind": "Planter",
+   "x": -137.24,
+   "z": -680.4,
    "y": 26.0,
-   "yaw": 145.2,
-   "s": 0.959,
+   "yaw": 4.9,
+   "s": 1.013,
    "why": "꽃 정원 꽃",
    "zone": "garden",
-   "flower_kit": "HaloVar3_PotFlowers_F"
+   "flower_kit": "HaloVar3_Planter_E"
   },
   {
    "kind": "Lantern",
    "x": -156.67,
    "z": -504.63,
    "y": 12.0,
-   "yaw": 8.7,
-   "s": 0.958,
+   "yaw": 358.8,
+   "s": 0.92,
    "why": "작은 장면 불빛: cascade pool bench",
    "zone": "homes"
   },
@@ -2483,8 +2984,8 @@
    "x": -160.39,
    "z": -507.96,
    "y": 12.0,
-   "yaw": 14.5,
-   "s": 1.101,
+   "yaw": 183.0,
+   "s": 1.12,
    "why": "작은 장면 꽃: cascade pool bench",
    "zone": "homes",
    "flower_kit": "HaloVar_PotFlowers_A"
@@ -2494,8 +2995,8 @@
    "x": 157.22,
    "z": -607.7,
    "y": 26.0,
-   "yaw": 359.2,
-   "s": 1.094,
+   "yaw": 9.1,
+   "s": 1.088,
    "why": "작은 장면 불빛: cascade side bench",
    "zone": "homes"
   },
@@ -2504,8 +3005,8 @@
    "x": 161.92,
    "z": -609.43,
    "y": 26.0,
-   "yaw": 226.2,
-   "s": 1.028,
+   "yaw": 73.5,
+   "s": 0.943,
    "why": "작은 장면 꽃: cascade side bench",
    "zone": "homes",
    "flower_kit": "HaloVar_PotFlowers_A"
@@ -2515,8 +3016,8 @@
    "x": -98.91,
    "z": -398.12,
    "y": 3.0,
-   "yaw": 11.2,
-   "s": 1.118,
+   "yaw": 3.5,
+   "s": 0.973,
    "why": "작은 장면 불빛: canal view bench",
    "zone": "homes"
   },
@@ -2525,8 +3026,8 @@
    "x": -96.08,
    "z": -394.0,
    "y": 3.0,
-   "yaw": 55.5,
-   "s": 1.038,
+   "yaw": 229.5,
+   "s": 1.127,
    "why": "작은 장면 꽃: canal view bench",
    "zone": "homes",
    "flower_kit": "HaloVar_PotFlowers_A"
@@ -2536,8 +3037,8 @@
    "x": 154.8,
    "z": -393.66,
    "y": 5.0,
-   "yaw": 359.3,
-   "s": 1.084,
+   "yaw": 11.6,
+   "s": 0.951,
    "why": "작은 장면 불빛: sea balcony",
    "zone": "training"
   },
@@ -2546,8 +3047,8 @@
    "x": 158.22,
    "z": -390.01,
    "y": 5.0,
-   "yaw": 22.7,
-   "s": 0.894,
+   "yaw": 344.1,
+   "s": 0.914,
    "why": "작은 장면 꽃: sea balcony",
    "zone": "training",
    "flower_kit": "HaloVar4_PotFlowers_C"
@@ -2557,8 +3058,8 @@
    "x": -86.63,
    "z": -624.72,
    "y": 33.0,
-   "yaw": 356.5,
-   "s": 0.973,
+   "yaw": 347.9,
+   "s": 0.95,
    "why": "작은 장면 불빛: top-tier west edge, sea view",
    "zone": "cathedral"
   },
@@ -2567,8 +3068,8 @@
    "x": 86.45,
    "z": -406.42,
    "y": 5.0,
-   "yaw": 348.4,
-   "s": 1.005,
+   "yaw": 357.8,
+   "s": 1.02,
    "why": "작은 장면 불빛: angel niche by the training ground",
    "zone": "training"
   },
@@ -2577,8 +3078,8 @@
    "x": 87.51,
    "z": -411.31,
    "y": 5.0,
-   "yaw": 248.2,
-   "s": 1.093,
+   "yaw": 232.7,
+   "s": 1.033,
    "why": "작은 장면 꽃: angel niche by the training ground",
    "zone": "training",
    "flower_kit": "HaloVar4_PotFlowers_C"
@@ -2588,7 +3089,7 @@
    "x": -305,
    "z": -530,
    "y": -1.2,
-   "yaw": 99.12274406777269,
+   "yaw": 320.064073770498,
    "s": 1.6,
    "backdrop": true,
    "why": "먼 바다 배경(전망대에서 보는 섬·아치)",
@@ -2599,7 +3100,7 @@
    "x": 286,
    "z": -372,
    "y": -1.2,
-   "yaw": 188.39111231511274,
+   "yaw": 96.89073700463338,
    "s": 1.8,
    "backdrop": true,
    "why": "먼 바다 배경(전망대에서 보는 섬·아치)",
@@ -2610,7 +3111,7 @@
    "x": 30,
    "z": -770,
    "y": -1.2,
-   "yaw": 130.7174203813672,
+   "yaw": 100.95259944712231,
    "s": 2.2,
    "backdrop": true,
    "why": "먼 바다 배경(전망대에서 보는 섬·아치)",
@@ -3252,10 +3753,10 @@
   "Lantern": 28,
   "Balustrade": 7,
   "BannerPole": 3,
-  "PotFlowers": 61,
-  "Planter": 27,
-  "Topiary": 36,
-  "RoundTree": 33,
+  "PotFlowers": 64,
+  "Planter": 17,
+  "Topiary": 37,
+  "RoundTree": 30,
   "FarArch": 3
  },
  "spots": {

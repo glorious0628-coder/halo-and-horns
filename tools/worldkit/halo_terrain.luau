@@ -103,7 +103,8 @@ local STONES = { { 146, -626, 26.8 }, { 142, -630, 27.6 }, { 142, -634, 28.4 }, 
 local LAWNS = { { 12, -560, 7 }, { 54, -584, 6 }, { 26, -538, 5 }, { -22, -636, 8 }, { -8, -668, 6 },
 	{ 19, -486, 6 } } -- the last one: the shop-street fork (4th pass, rule 6): the road splits round a statue island and meets again
 -- garden paths (4th pass, rule 6 "곁길"): narrow paved paths from the road / a court out to a small scene or a lookout: { x0, z0, x1, z1 }
-local PATHS = { { -160, -506, -146, -502 }, { 160, -610, 158, -602 }, { -90, -626, -58, -646 }, { 118, -474, 126, -474 }, { -180, -664, -166, -666 }, { 134, -688, 130, -670 } }
+local PATHS = { { 76, -372, 112, -432 }, -- the way to the castle: from the gate-side bridge (BAE) across the training ground to the castle bridge (BABE)
+	{ -160, -506, -146, -502 }, { 160, -610, 158, -602 }, { -90, -626, -58, -646 }, { 118, -474, 126, -474 }, { -180, -664, -166, -666 }, { 134, -688, 130, -670 } }
 local PATH_HALF = 3.2
 local function onPath(x, z)
 	for _, p in PATHS do
