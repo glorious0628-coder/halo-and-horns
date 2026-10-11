@@ -5,7 +5,9 @@ clips that exist; each side clip fits its class (Len <= SwingInterval x SWING_FI
 Len, every joint is a real R15 joint, consecutive keys stay under 180 degrees apart per axis (the slerp rule), its
 strike key sits on the class's contact time (Paladin = SLASH_CONTACT, Light Mage = CAST_DELAY) so the slash / cast art
 and the sound still land on it; Feel.playAttack takes the side clips (not for a style like bare hands / the pet) by the
-attacker's Faction attribute. Mutations: each must be caught. The look is checked in Studio photos (메인 반영 1).
+attacker's Faction attribute. A23-128 (검수 10/11): the warriors' one-hand sword clips (Paladin / Berserker) never put
+the empty left fist on the hilt beside the right (the free arm balances) and their notes say no both hands / great
+sword. Mutations: each must be caught. The look is checked in Studio photos (메인 반영 1).
 
 Usage: py tools/test_side_clips.py
 Report: docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.json
@@ -28,6 +30,7 @@ STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST
           "BerserkerRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "DarkMageRelease": ("RELEASE_CONTACT.Mage", "Mage"),
           "RangerRelease": ("RELEASE_LAUNCH.Archer", "Archer"), "ShadowHunterRelease": ("RELEASE_LAUNCH.Archer", "Archer")}
 # Z / X (A23-108 ⑤, off until the 10/20 check): one strike key each, inside the clip
+ONE_HAND = ("PaladinSwing", "PaladinRelease", "PaladinZ", "PaladinX", "BerserkerRelease", "BerserkerZ", "BerserkerX")
 ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX", "BerserkerZ", "DarkMageZ", "RangerZ", "ShadowHunterZ",
       "BerserkerX", "DarkMageX", "RangerX", "ShadowHunterX"}
 
@@ -106,6 +109,27 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
         c = clip(fx, name)
         strikes = [kt for kt, ease, _ in (c[1] if c else []) if ease == "In"]
         out.append((f"{name}: one strike key inside the clip", c is not None and len(strikes) == 1 and 0 < strikes[0] < c[0]))
+    # A23-128 one-hand swords (검수 10/11 fix/onehand review): the warriors' clips never close the empty left fist on the
+    # hilt next to the right one (in no key do both arms sit together: shoulders' forward < 20 deg apart, elbows <= 20
+    # apart, and side swings parallel (< 20 apart) or mirrored to meet in the middle (sum < 30)), and the notes over
+    # them say no both hands / two-hand / great sword
+    for name in ONE_HAND:
+        c = clip(fx, name)
+        bad = []
+        for t, _, js in (c[1] if c else []):
+            ls, rs = js.get("LeftShoulder"), js.get("RightShoulder")
+            le, re_ = js.get("LeftElbow", (0, 0, 0)), js.get("RightElbow", (0, 0, 0))
+            if ls and rs and abs(ls[0] - rs[0]) < 20 and abs(le[0] - re_[0]) <= 20 and (abs(ls[2] - rs[2]) < 20
+                                                                                    or abs(ls[2] + rs[2]) < 30):
+                bad.append(t)
+        start = fx.find(f"\t\t{name} = {{ Len")
+        note = []
+        for ln in reversed(fx[:start].split("\n")[:-1]):
+            if not ln.strip().startswith("--"):
+                break
+            note.append(ln.lower())
+        out.append((f"A23-128 {name}: the free left arm balances (no fist on the hilt), no 'both hands' / great sword "
+                    "in its note", c is not None and not bad and not re.search(r"both hands|two-hand|great sword", " ".join(note))))
     out += [
         ("Fx \"Skill\" plays the Z / X move (only those slots)", "handlers.Skill = function(data)" in fx
          and 'if slot ~= "Z" and slot ~= "X" then return end' in fx and "pcall(Feel.playAttack, ctx.Char, classId, slot," in fx),
@@ -127,6 +151,17 @@ MUTATIONS = [
     ("the Light Mage clip too long", "LightMageSwing = { Len = 0.68,", "LightMageSwing = { Len = 1.68,"),
     ("a row for no class", "\t\tMage_Halo = { Swing = \"LightMageSwing\",", "\t\tMage_Sky = { Swing = \"LightMageSwing\","),
     ("the Light Mage's Q strikes early", '\t\t\t{ 0.35, "In", { Waist = { -18, 0, 0 }', '\t\t\t{ 0.3, "In", { Waist = { -18, 0, 0 }'),
+    # A23-128 (검수 10/11): the old two-hand grips on the one-hand swords
+    ("the Paladin's Q: both fists on the hilt again", "RightWrist = { -80, 0, 0 }, LeftShoulder = { 58, 0, -12 }, LeftElbow = { 70, 0, 0 } } },",
+     "RightWrist = { -80, 0, 0 }, LeftShoulder = { 168, 0, -6 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -80, 0, 0 } } },"),
+    ("the Berserker's Q: both fists at the smash", "LeftShoulder = { 10, 0, -46 }, LeftElbow = { 20, 0, 0 }",
+     "LeftShoulder = { 58, 0, 12 }, LeftElbow = { 8, 0, 0 }, LeftWrist = { -86, 0, 0 }"),
+    ("the Berserker's Z: both hands drag the blade", "LeftShoulder = { 46, 0, -26 }, LeftElbow = { 50, 0, 0 }",
+     "LeftShoulder = { 20, 0, 30 }, LeftElbow = { 30, 0, 0 }"),
+    ("the Berserker's X: the tip set down with both hands", "LeftShoulder = { 12, 0, -18 }, LeftElbow = { 40, 0, 0 }",
+     "LeftShoulder = { 40, 0, 6 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -60, 0, 0 }"),
+    ("the old 'both hands' note", "-- right hand (the left fist clenched low at the side;",
+     "-- right hand with both hands (the left fist clenched low at the side;"),
 ]
 
 

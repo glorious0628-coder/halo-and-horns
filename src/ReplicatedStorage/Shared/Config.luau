@@ -5785,22 +5785,22 @@ Config.QuickSlots = {
 -- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
 -- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
-	-- Paladin: straight sword ready in front, its tip up to the left (class_grips table; grip_reference §1-6 sword and
-	-- shield idle: the sword in front, the guard arm up) - OneHand from the sword; until his shield model exists the left
-	-- hand is a fist in front of the chest (OffHand, 검수 10/11)
+	-- A23-128 (user 2026-10-11 "한손검만 쓸 수 있게 하자", 검수 picked one-hand only): both warriors hold a ONE-hand
+	-- sword in the right hand, standing ready at the side (references docs/design/grip_reference_2026-10-11.md §1-8: the
+	-- fist wraps the handle - hammer / handshake grip - the hand in line with the hanging arm, the elbow bent low and
+	-- close, the forearm a little down and forward, the tip ahead and up). No sword across the body, no great sword, no
+	-- two-hand grip; the left hand is empty and hangs as Roblox's idle / walk move it (no OffHand: a shield comes with
+	-- its model). OneHand Pole = where the elbow bends (torso space; default WeaponPose T.PoleRight, down and out).
+	-- 검수 10/11 (fix/onehand review): the forearm and the hand stay OUT of the torso / hip (the hand just outside the
+	-- hanging arm's line, at the waist, a little ahead; the elbow back near the hanging arm's line, not tucked in), the
+	-- wrist nearly straight (<= 30 degrees), the handle and pommel clear of the swinging thigh
+	-- Paladin: the straight sword, its tip ahead and 45 degrees up
 	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
-		-- 검수 10/11 main photo: the blade hid the face -> laid further out (tip still up to the left, passing in front of
-		-- the chest, not the face)
-		OneHand = { Hilt = Vector3.new(0.85, -0.6, -0.6), Aim = Vector3.new(-0.8, 0.55, -0.2) },
-		OffHand = { At = Vector3.new(-0.3, 0.0, -0.95), Up = Vector3.new(-0.95, -0.3, 0.65), Fwd = Vector3.new(0, 1, 0) } },
-	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
-	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
-	-- hand lower towards the pommel, the hilt in front of the chest, a heavy blade laid back over the shoulder). TwoHand
-	-- (WeaponPose): Hilt = the right grip point and Aim = the blade in UpperTorso space (studs; R15 shoulders at x +-0.97,
-	-- y 0.6; the torso top y 0.8) - the blade passes just over the right shoulder at (1.1, 1.05, 0.05); both arms are
-	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
-	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
+	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 45 degrees up
+	-- and a touch out
+	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
 	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
