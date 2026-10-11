@@ -2774,10 +2774,11 @@ Config.StoryQuests = {
 		-- shown under the two choice buttons on the last page (what a pick does, before picking)
 		-- A23-58: picking against your own side lowers your own score (ChoiceHint keeps its two-number call; the
 		-- faction lines are what a client should show)
-		ChoiceHint = "Left: the angel side. Right: the devil side. Picking against your side lowers your score!",
-		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d (not very angel-like)", -- (Good.Points, Evil.Points)
-		ChoiceHintHorns = "Left: Infamy -%d (too nice) · Right: Infamy +%d", -- (Good.Points, Evil.Points)
-		ChoiceHintNeutral = "The Artisan Guild just saves your pick, with no good or evil points.",
+		-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): the card's line keeps only the score change
+		ChoiceHint = "Left: angel side · Right: devil side",
+		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d", -- (Good.Points, Evil.Points)
+		ChoiceHintHorns = "Left: Infamy -%d · Right: Infamy +%d", -- (Good.Points, Evil.Points)
+		ChoiceHintNeutral = "No good or evil points.",
 		OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d", -- A23-58 (points actually taken), ⑪ the guide says it
 		OffSideHorns = "Magpie: Too nice for a devil! Your call. Infamy -%d",
 		-- 3rd idea round #5: the same pick at 0 points (nothing to take) + the lean line after it
@@ -5292,6 +5293,11 @@ Config.Nudges = {
 	-- A23-130 (user 2026-10-11 photo, Golden Goose): only the top bar (gauge + "0 / 20") stays; the line under it
 	-- ("My points 0 · Knights, fill the gauge!" / the tug's "My points · hint") is gone (EventHUD updateGoose, TugSub)
 	GooseSub = false,
+	-- A23-130 sweep (docs/review/less_text_table_2026-10-11.md): the "Click to hit!" / "Tap to hit!" bubble over the attack
+	-- button after 5 s idle near a monster in the first mission (FirstSteps HINT.Step) - the button is on screen already
+	AttackHint = false,
+	-- the weapon merchant's 4 s farewell toast after a manual close ("Nothing you like? Take your time!", Panels WSHOP)
+	ShopFarewell = false,
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
 	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
 	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)

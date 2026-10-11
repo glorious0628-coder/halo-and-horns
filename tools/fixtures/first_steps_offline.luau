@@ -134,6 +134,10 @@ local env = setmetatable({
 local cfn = assert(loadstring(CONFIG_SOURCE, "=Config"))
 setfenv(cfn, env)
 Config = cfn()
+-- A23-130: the real Config has the attack hint off (Config.Nudges.AttackHint = false); its logic is checked switched on,
+-- the off switch at the end of the hint part
+local REAL_ATTACK_HINT = Config.Nudges and Config.Nudges.AttackHint
+Config.Nudges.AttackHint = true
 local sfn = assert(loadstring(STEPS_SOURCE, "=FirstSteps"))
 setfenv(sfn, env)
 local FS = sfn()
@@ -285,6 +289,20 @@ check(#W.Hints == 1 and W.Focus[#W.Focus] == false, "no marker after the kill", 
 player.Attrs.TutorialStep = 99
 step(6)
 check(#W.Hints == 1, "after the first mission: no hints", #W.Hints)
+-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): switched off, the attack hint never shows
+check(REAL_ATTACK_HINT == false, "A23-130: the real Config has the attack hint off (Config.Nudges.AttackHint)",
+	tostring(REAL_ATTACK_HINT))
+do
+	Config.Nudges.AttackHint = false
+	HINT.AttackShown, HINT.NearSince = false, nil
+	player.Attrs.TutorialStep = 1
+	local had = #W.Hints
+	step(12)
+	check(#W.Hints == had, "A23-130: AttackHint = false - idle near a monster in the first mission, no attack hint",
+		#W.Hints - had)
+	player.Attrs.TutorialStep = 99
+	Config.Nudges.AttackHint = true
+end
 
 -- 검수 10/09 (system review ②): the first PvP zone - three calm cards in a row, then the saved flag
 do

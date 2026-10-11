@@ -45,6 +45,8 @@ MUTATIONS = [
     ("the Forge walk says the zone", '(data.Spot == "Forge" and TXT.Forge) or ', ""),
     ("my swing does not restart the wait", "and mine(data) then\n\t\tHINT.NearSince = nil\n", "and mine(data) then\n"),
     ("the attack hint repeats", "\t\t\t\tHINT.AttackShown = true\n", ""),
+    # A23-130: the switch
+    ("the attack hint ignores its off switch", " and (Config.Nudges or {}).AttackHint ~= false then", " then"),
     ("the marker ignores my own slime", "(isMine and not bestMine) or ", ""),
     ("PvP cards for the Artisan Guild too", 'or attr("Faction", "") == "Neutral" then return end', "then return end"),
     ("PvP cards every visit", "\tif not ok or seen == true then return end\n", "\tif not ok then return end\n"),

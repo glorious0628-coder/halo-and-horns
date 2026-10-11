@@ -205,8 +205,9 @@ function HINT.Step(now)
 	end
 	local root = myRoot()
 	if not root then return end
-	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait)
-	if not HINT.AttackShown then
+	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait); A23-130: off while
+	-- Config.Nudges.AttackHint = false
+	if not HINT.AttackShown and (Config.Nudges or {}).AttackHint ~= false then
 		local _, d = HINT.Nearest(root.Position, HINT.Reach())
 		if d < math.huge then
 			HINT.NearSince = HINT.NearSince or now
