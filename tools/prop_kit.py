@@ -1926,7 +1926,8 @@ def build_lua(name, parts, marble):
           '  p.Size = Vector3.new(t[3], t[4], t[5])',
           '  p.CFrame = CFrame.fromMatrix(Vector3.new(t[6], t[7], t[8]), Vector3.new(t[9], t[10], t[11]), Vector3.new(t[12], t[13], t[14]))',
           '  p.Color = Color3.fromRGB(t[16], t[17], t[18]); mat(p, t[15])',
-          '  p.CanCollide = t[19]; p.CanTouch = false; if t[20] then p.CastShadow = false end',
+          # 디자인 검수 10/12 (comparison test B): every part casts a shadow; only glass / lamp / neon turn it off in mat()
+          '  p.CanCollide = t[19]; p.CanTouch = false',
           '  if t[21] then                 -- cutters may carry their own ops too (octagon holes)',
           '    local cur = p',
           '    for _, op in t[21] do',
