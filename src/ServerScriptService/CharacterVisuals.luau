@@ -631,18 +631,20 @@ end
 -- 검수 10/11 (grip sheet: the hand near the foot, the staff leaning out; reference: a staff is held upright close to
 -- the body a little above its middle, grip_reference_2026-10-11.md §1): the hand StaffGrip of the length up from the foot,
 -- but never more than StaffFoot studs above the foot (a tall staff would sink into the ground: WeaponPose OneHand holds
--- the hand about 3.6 studs above the feet)
-local STAFF = { Grip = 0.55, FootMin = 2.4, FootMax = 3.3 }
+-- the hand about 3.6 studs above the feet). User 10/11 "마법봉 너무 크지 않니?" (reference: a staff reaches from the
+-- shoulder to the top of the head): Len + PerTier x tier studs long (4.35 .. 5.4), held Grip of it up from the foot so
+-- the foot rests near the ground; the orb Orb + OrbPerTier x tier across
+local STAFF = { Grip = 0.72, FootMin = 2.4, FootMax = 3.4, Len = 4.2, PerTier = 0.15, Orb = 0.5, OrbPerTier = 0.05 }
 local function staffLow(shaftLen)
 	return math.clamp(shaftLen * STAFF.Grip, STAFF.FootMin, STAFF.FootMax)
 end
 
 local function buildStaff(grip, sc, w, color, tier)
-	local shaftLen = w.Length + 1.5
+	local shaftLen = STAFF.Len + STAFF.PerTier * tier
 	local base = fist(grip) -- the shaft centreline passes through the actual hand grip
 	local low = staffLow(shaftLen) -- studs from the foot up to the hand
 	local shaft = accPart({
-		Name = "Shaft", Size = Vector3.new(0.3, shaftLen, 0.3) * sc,
+		Name = "Shaft", Size = Vector3.new(0.25, shaftLen, 0.25) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR,
 		CFrame = base * CFrame.new(0, (shaftLen / 2 - low) * sc, 0),
 	})
@@ -651,7 +653,7 @@ local function buildStaff(grip, sc, w, color, tier)
 		Material = w.Material, Color = color,
 		CFrame = base * CFrame.new(0, (shaftLen - low - 0.05) * sc, 0),
 	})
-	local d = 0.7 + 0.1 * tier
+	local d = STAFF.Orb + STAFF.OrbPerTier * tier
 	local tip = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,
@@ -785,7 +787,7 @@ end
 
 -- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
 function SHAPES.CrookStaff(grip, sc, w, color, tier)
-	local shaftLen = w.Length + 1.5
+	local shaftLen = STAFF.Len + STAFF.PerTier * tier
 	local base, low = fist(grip), staffLow(shaftLen)
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.28, shaftLen, 0.28) * sc,
@@ -798,7 +800,7 @@ function SHAPES.CrookStaff(grip, sc, w, color, tier)
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
 		CFrame = top * CFrame.Angles(0, 0, math.rad(-60)) * CFrame.new(0, 0.4 * sc, 0),
 	})
-	local d = 0.55 + 0.08 * tier
+	local d = STAFF.Orb + STAFF.OrbPerTier * tier
 	local orb = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,

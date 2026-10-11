@@ -1,5 +1,5 @@
 {
-  "checks": 28,
+  "checks": 30,
   "failed": 0,
   "mutations": [
     {
@@ -33,7 +33,17 @@
       "caught": true
     },
     {
-      "name": "a tall staff sinks into the ground",
+      "name": "a staff sinks into the ground",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old tall staffs",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old big orb",
       "applied": true,
       "caught": true
     },

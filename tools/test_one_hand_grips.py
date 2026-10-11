@@ -54,12 +54,19 @@ def row(cfg: str, key: str):
 
 
 def staff_rule(cv: str):
-    m = re.search(r"local STAFF = \{ Grip = " + NUM + ", FootMin = " + NUM + ", FootMax = " + NUM + r" \}", cv)
-    uses = cv.count("staffLow(shaftLen)") >= 2 and "return math.clamp(shaftLen * STAFF.Grip, STAFF.FootMin, STAFF.FootMax)" in cv
-    return {"Grip": float(m[1]), "Min": float(m[2]), "Max": float(m[3])} if (m and uses) else None
+    m = re.search(r"local STAFF = \{ Grip = " + NUM + ", FootMin = " + NUM + ", FootMax = " + NUM + ", Len = " + NUM
+                  + ", PerTier = " + NUM + ", Orb = " + NUM + ", OrbPerTier = " + NUM + r" \}", cv)
+    uses = (cv.count("staffLow(shaftLen)") >= 2 and "return math.clamp(shaftLen * STAFF.Grip, STAFF.FootMin, STAFF.FootMax)" in cv
+            and cv.count("local shaftLen = STAFF.Len + STAFF.PerTier * tier") == 2
+            and cv.count("local d = STAFF.Orb + STAFF.OrbPerTier * tier") == 2)
+    if not (m and uses):
+        return None
+    v = [float(m[i]) for i in range(1, 8)]
+    return {"Grip": v[0], "Min": v[1], "Max": v[2], "Len": v[3], "Per": v[4], "Orb": v[5], "OrbPer": v[6]}
 
 
 def weapon_lengths(cfg: str):
+    """the weapon tiers (1..N) - the staff length now comes from STAFF.Len / PerTier per tier"""
     return [float(x) for x in re.findall(r"\n\t\{ Tier = \d, [^\n]*?Length = " + NUM, cfg)]
 
 
@@ -133,16 +140,21 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
     if rule and lens:
         hand_y = min(row(src["CONFIG"], "Mage_Halo")["Hilt"][1], row(src["CONFIG"], "Mage_Horns")["Hilt"][1])
         hand_above_feet = TORSO_ABOVE_FEET + hand_y
-        fracs, feet = [], []
-        for L in lens:
-            shaft = L + 1.5
+        fracs, feet, tops, orbs = [], [], [], []
+        for tier in range(1, len(lens) + 1):
+            shaft = rule["Len"] + rule["Per"] * tier
             low = min(max(shaft * rule["Grip"], rule["Min"]), rule["Max"])
             fracs.append((shaft, low / shaft))
             feet.append(hand_above_feet - low)
-        out.append(("a staff up to 6 studs is held at least half way up (the reference: a little above the middle)",
-                    all(f >= 0.5 for s, f in fracs if s <= 6.0), ", ".join(f"{s:g}:{f:.2f}" for s, f in fracs)))
+            tops.append(hand_above_feet - low + shaft)
+            orbs.append(rule["Orb"] + rule["OrbPer"] * tier)
+        out.append(("every staff is held above its middle (the reference)",
+                    all(f >= 0.5 for s, f in fracs), ", ".join(f"{s:g}:{f:.2f}" for s, f in fracs)))
         out.append(("the staff's foot never sinks into the ground nor floats more than 1.3 studs",
                     all(0.0 <= y <= 1.3 for y in feet), ", ".join(f"{y:.2f}" for y in feet)))
+        out.append(("user 10/11 '마법봉 너무 크지 않니?': the staff top between the shoulder (4.3) and just over the head (5.8)",
+                    all(4.3 <= t <= 5.8 for t in tops), ", ".join(f"{t:.2f}" for t in tops)))
+        out.append(("the staff orb stays hand sized (<= 0.9 studs)", all(d <= 0.9 for d in orbs), ", ".join(f"{d:.2f}" for d in orbs)))
     fk = flask(src["CV"])
     out.append(("the flask: the fist wraps the neck, the body hangs under it, the cork on top",
                 bool(fk and fk["Neck"] and fk["Ball"] and fk["Cork"]), f"{fk}"))
@@ -175,10 +187,12 @@ MUTATIONS = [
     ("CONFIG", "the flask held out of reach", "OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9)", "OneHand = { Hilt = Vector3.new(0.55, -0.05, -2.2)"),
     ("CONFIG", "the old right-arm hold kept", 'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { LeftShoulder',
      'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, LeftShoulder'),
-    ("CV", "the hand near the foot again", "local STAFF = { Grip = 0.55, FootMin = 2.4, FootMax = 3.3 }",
-     "local STAFF = { Grip = 0.4, FootMin = 0, FootMax = 99 }"),
-    ("CV", "a tall staff sinks into the ground", "local STAFF = { Grip = 0.55, FootMin = 2.4, FootMax = 3.3 }",
-     "local STAFF = { Grip = 0.55, FootMin = 2.4, FootMax = 5 }"),
+    ("CV", "the hand near the foot again", "local STAFF = { Grip = 0.72, FootMin = 2.4, FootMax = 3.4,",
+     "local STAFF = { Grip = 0.4, FootMin = 0, FootMax = 99,"),
+    ("CV", "a staff sinks into the ground", "local STAFF = { Grip = 0.72, FootMin = 2.4, FootMax = 3.4,",
+     "local STAFF = { Grip = 0.72, FootMin = 2.4, FootMax = 5,"),
+    ("CV", "the old tall staffs", "Len = 4.2, PerTier = 0.15,", "Len = 5.5, PerTier = 0.4,"),
+    ("CV", "the old big orb", "Orb = 0.5, OrbPerTier = 0.05 }", "Orb = 0.7, OrbPerTier = 0.1 }"),
     ("CV", "the flask on the palm again", "CFrame = base * CFrame.new(0, -(neckLen / 2 + d / 2 - 0.05) * sc, 0),",
      "CFrame = base * CFrame.new(0, (d / 2 + 0.05) * sc, 0),"),
     ("WP", "never run", '\telseif type(def.OneHand) == "table" then\n\t\tWeaponPose.OneHand(char, st, def, model)\n',
