@@ -47,8 +47,11 @@ MUTATIONS = [
      "\tif not s then return end\n\tS.Finished = os.clock()"),
     ("VIEW", "no Miss when a ring closes", "\t\tif not S.Grades[i] and t >= CraftMini.Closes(s.StartAt, i) then\n",
      "\t\tif false then\n"),
-    ("VIEW", "Space not sunk (jumps)", "return Enum.ContextActionResult.Sink -- no jump", "return Enum.ContextActionResult.Pass -- no jump"),
-    ("VIEW", "Space never unbound", "\t\tpcall(function() ContextActionService:UnbindAction(V.Action) end)\n", ""),
+    ("VIEW", "jumping stays on (Space / A jump)", "\t\t\tpcall(function() hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false) end)\n", ""),
+    ("VIEW", "jumping never comes back", "\t\tif hum then pcall(function() hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true) end) end\n", ""),
+    ("VIEW", "the jump key is no strike", "\t\t\tlast = os.clock()\n\t\t\tCraftView.Press()\n", "\t\t\tlast = os.clock()\n"),
+    ("VIEW", "a held jump key strikes every frame", "\t\t\tif os.clock() - last < V.JumpGap then return end\n", ""),
+    ("VIEW", "the jump listener never stops", "\t\tif UI.Jump then pcall(function() UI.Jump:Disconnect() end) end\n", ""),
     ("VIEW", "another session's result shown", "if not s or (payload.Id ~= s.Id and not payload.Practice) then return end",
      "if not s then return end"),
     ("VIEW", "never closes after the result", "\tif S.ResultAt and os.clock() - S.ResultAt >= V.Hold then\n",
@@ -81,6 +84,8 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("CraftView grades with the shared CraftMini (no own windows / points)",
          "CraftMini.Grade(ms)" in code and "CraftMini.Score(" in code and "Windows" not in code and "PlusAt" not in code
          and "Points" not in code),
+        ("no fixed key in CraftView (BB1: the jump request, whatever key the player uses; 게임성 검수 10/12)",
+         "Enum.KeyCode" not in code and "UserInputService.JumpRequest:Connect(" in code),
     ]
 
 

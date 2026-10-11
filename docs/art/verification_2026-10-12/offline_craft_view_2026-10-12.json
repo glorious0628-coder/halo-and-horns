@@ -1,5 +1,5 @@
 {
-  "checks": 41,
+  "checks": 45,
   "failed": 0,
   "mutations": [
     {
@@ -33,12 +33,27 @@
       "caught": true
     },
     {
-      "name": "Space not sunk (jumps)",
+      "name": "jumping stays on (Space / A jump)",
       "applied": true,
       "caught": true
     },
     {
-      "name": "Space never unbound",
+      "name": "jumping never comes back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the jump key is no strike",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a held jump key strikes every frame",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the jump listener never stops",
       "applied": true,
       "caught": true
     },

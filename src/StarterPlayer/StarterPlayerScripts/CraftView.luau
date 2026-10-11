@@ -3,12 +3,14 @@
 -- minigame on screen. The numbers and the grading are Shared/CraftMini (the server grades with the same functions).
 --   s->c CraftSession { Id, Recipe, Strikes, Ring, Rest, StartAt } opens it: a dimmed screen, the target circle in the
 --   middle, a gold ring shrinking onto it on the fixed schedule (CraftMini.Appear / Target / Closes), five dots below for
---   the five strikes and a [Skip] button. A press (left click / tap anywhere on it, or Space) while a ring is live is that
+--   the five strikes and a [Skip] button. A press (left click / tap anywhere on it, or the jump key) while a ring is live is that
 --   ring's strike: its grade word pops (Perfect / Great / Good / Miss), the dot takes its colour and c->s
 --   CraftStrike(Id, i, ms) goes out once per ring (ms = press - T_i on the server clock, + = late). A ring nobody pressed
 --   turns Miss when it closes. After the last ring (or [Skip]) c->s CraftFinish(Id); s->c CraftResult { Id, Plus, Grades,
 --   Kind, Tier?, Item? } shows one line ("+1 Iron Sword") and closes it.
---   While it is open the clicks are the overlay's (the HUD's attack ignores processed input) and Space is sunk (no jump).
+--   While it is open the clicks are the overlay's (the HUD's attack ignores processed input) and jumping is off: the jump
+--   request (Space / the pad's A / the phone's jump button - whatever the player's keys are, no fixed key here: BB1) is a
+--   strike instead (게임성 검수 10/12).
 -- Studio only: LocalPlayer attribute CraftPractice = true runs a local session (no server, graded here with CraftMini)
 -- for the UiSandbox photos. No other text than the grade words, Skip and the result line (A23-130). PC first (A23-98).
 -- Public API: CraftView.Init(C), CraftView.Start(), CraftView.IsOpen(), CraftView.Begin(session, practice),
@@ -16,7 +18,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local ContextActionService = game:GetService("ContextActionService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -51,7 +53,7 @@ local V = {
 	Hold = 1.6, -- s the result line stays
 	ResultWait = 6, -- s to wait for CraftResult after Finish before closing quietly
 	WordTime = 0.7, -- s a grade word stays
-	Action = "HH_CraftStrike", Priority = 3000, -- ContextActionService: Space is a strike (and no jump) while open
+	JumpGap = 0.2, -- s: one strike per jump press (a held jump key repeats its request)
 	Art = { Target = "CraftTarget", Ingot = "CraftIngot", Ring = "CraftRing" }, -- Config.UIArt keys (디자인 검수 10/12)
 	Colors = { Perfect = Color3.fromRGB(255, 200, 60), Great = Color3.fromRGB(110, 220, 120), Good = Color3.fromRGB(110, 170, 255),
 		Miss = Color3.fromRGB(140, 140, 150), Ring = Color3.fromRGB(255, 205, 80), Target = Color3.fromRGB(255, 150, 60) },
@@ -266,22 +268,31 @@ function CraftView.IsOpen()
 	return S.Session ~= nil
 end
 
-local function bindKeys(on)
+-- while the ring is open: no jumping (the character's own jump state off) and every jump request is a strike; back after
+local function holdJump(on)
 	if on then
-		pcall(function()
-			ContextActionService:BindActionAtPriority(V.Action, function(_, state)
-				if state == Enum.UserInputState.Begin then CraftView.Press() end
-				return Enum.ContextActionResult.Sink -- no jump, no other Space action while the ring is open
-			end, false, V.Priority, Enum.KeyCode.Space, Enum.KeyCode.ButtonA)
+		local hum = LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+		if hum then
+			pcall(function() hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, false) end)
+			UI.Humanoid = hum
+		end
+		local last = -math.huge
+		UI.Jump = UserInputService.JumpRequest:Connect(function()
+			if os.clock() - last < V.JumpGap then return end
+			last = os.clock()
+			CraftView.Press()
 		end)
 	else
-		pcall(function() ContextActionService:UnbindAction(V.Action) end)
+		if UI.Jump then pcall(function() UI.Jump:Disconnect() end) end
+		local hum = UI.Humanoid
+		if hum then pcall(function() hum:SetStateEnabled(Enum.HumanoidStateType.Jumping, true) end) end
+		UI.Jump, UI.Humanoid = nil, nil
 	end
 end
 
 function CraftView.Close()
 	S.Session, S.Finished, S.ResultAt = nil, nil, nil
-	bindKeys(false)
+	holdJump(false)
 	if UI.Conn then
 		pcall(function() UI.Conn:Disconnect() end)
 	end
@@ -406,7 +417,7 @@ function CraftView.Begin(session, practice)
 		S.Session = nil
 		return false
 	end
-	bindKeys(true)
+	holdJump(true)
 	UI.Conn = RunService.RenderStepped:Connect(function()
 		local ok, err = pcall(CraftView.Step)
 		if not ok then Util.Warn(TAG, "step: " .. tostring(err)) end

@@ -1,5 +1,5 @@
 -- ③-2 망치질 고리 화면 (게임성 개발 4, 2026-10-12): runs the real Config.luau, CraftMini.luau and CraftView.luau
--- (tools/test_craft_view.py) on doubles: a recording Instance tree, the craft remotes, ContextActionService, RunService,
+-- (tools/test_craft_view.py) on doubles: a recording Instance tree, the craft remotes, UserInputService.JumpRequest, a Humanoid, RunService,
 -- a server clock the test moves. Inputs: CONFIG_SOURCE, MINI_SOURCE, VIEW_SOURCE.
 local checks, failed = 0, 0
 local function check(ok, name, detail)
@@ -121,16 +121,20 @@ for _, n in { "CraftStrike", "CraftFinish", "CraftSession", "CraftResult" } do
 end
 local attrSig = {}
 local attrs = { Class = "Warrior", Faction = "Halo" }
+local jumpOn = true -- the Humanoid's Jumping state
+local hum = { SetStateEnabled = function(_, st, on) if st == "HumanoidStateType.Jumping" then jumpOn = on end end }
 local player = {
+	Character = { FindFirstChildOfClass = function(_, c) if c == "Humanoid" then return hum end return nil end },
 	GetAttribute = function(_, k) return attrs[k] end,
 	SetAttribute = function(_, k, v) attrs[k] = v; if attrSig[k] then attrSig[k]:Fire() end end,
 	GetAttributeChangedSignal = function(_, k) attrSig[k] = attrSig[k] or signal() return attrSig[k] end,
 }
-local bound = {}
-local CAS = {
-	BindActionAtPriority = function(_, name, fn, touch, prio, ...) bound[name] = { Fn = fn, Priority = prio, Keys = { ... } } end,
-	UnbindAction = function(_, name) bound[name] = nil end,
-}
+local UIS = { JumpRequest = signal() }
+local function liveJumps()
+	local n = 0
+	for _, r in UIS.JumpRequest.Recs or {} do if r.Live then n += 1 end end
+	return n
+end
 local stepped = signal()
 local studio = true
 local shared = { WaitForChild = function(_, n) return n end }
@@ -140,7 +144,7 @@ local game = { GetService = function(_, n)
 	if n == "Players" then return { LocalPlayer = player } end
 	if n == "ReplicatedStorage" then return RS end
 	if n == "RunService" then return { RenderStepped = stepped, IsStudio = function() return studio end } end
-	if n == "ContextActionService" then return CAS end
+	if n == "UserInputService" then return UIS end
 	return nil
 end }
 local sounds, shakes = {}, 0
@@ -192,9 +196,8 @@ local START = NOW + 0.8
 sessionR.OnClientEvent:Fire({ Id = 7, Recipe = "W3", Strikes = 5, Ring = 1.2, Rest = 0.35, StartAt = START })
 check(View.IsOpen() and find(gui, "CraftRing") ~= nil, "a CraftSession opens the ring screen")
 check(panelsClosed == 1 and not panelsOpen, "the open window (the craft window) closes under the ring screen (UiSandbox 10/12)")
-local b = bound.HH_CraftStrike
-check(b and table.find(b.Keys, "KeyCode.Space") and b.Priority >= 2000, "Space is the strike (bound above the jump)")
-check(b and b.Fn(nil, "UserInputState.Begin") == "ContextActionResult.Sink", "Space is sunk while the ring is open (no jump)")
+check(jumpOn == false, "jumping is off while the ring is open (Space / A / the jump button never jump)")
+check(liveJumps() == 1, "the jump request is listened to (it is the strike; no fixed key, BB1)")
 local root = find(gui, "CraftRing")
 check(root.ClassName == "TextButton" and root.Size ~= nil, "the screen itself is the button (clicks / taps never reach the HUD)")
 -- 2. presses
@@ -209,6 +212,7 @@ check(View.Press(T1 + 0.1) == nil and #fired == 1, "one strike per ring")
 check(find(root, "Dot1").BackgroundColor3 == View._T.V.Colors.Perfect and find(root, "Grade").Text == "Perfect",
 	"dot 1 turns Perfect, the word pops")
 check(sounds[#sounds] == "HammerPerfect" and shakes == 1, "Perfect: its sound + a small shake")
+-- (the jump request strikes the live ring: tested on a fresh session below)
 -- the rest between rings
 check(View.Press(CraftMini.Closes(START, 1) + 0.05) == nil, "a press in the rest is ignored")
 -- ring 2 nobody presses -> Miss when it closes
@@ -249,7 +253,7 @@ check(find(root, "Result").Text == "+1 " .. Config.WeaponName(3, "Warrior", "Hal
 check(find(root, "Skip").Visible == false and sounds[#sounds] == "CraftDone", "Skip hides, the done sound")
 CLOCK += 2
 View.Step(NOW)
-check(not View.IsOpen() and root.Destroyed and bound.HH_CraftStrike == nil, "it closes after the result (keys back to normal)")
+check(not View.IsOpen() and root.Destroyed and jumpOn == true and liveJumps() == 0, "it closes after the result (jumping back on)")
 -- 4. Skip online = Finish now
 fired = {}
 CLOCK += 1
@@ -285,7 +289,23 @@ sessionR.OnClientEvent:Fire({ Id = 9, StartAt = NOW - CraftMini.T.Ring + 0.03 })
 find(gui, "CraftRing").Activated:Fire()
 check(View._T.S.Grades[1] ~= nil and fired[#fired][1] == "CraftStrike", "a click / tap on the screen is the strike", View._T.S.Grades[1])
 View.Close()
-check(bound.HH_CraftStrike == nil, "Close unbinds Space")
+check(jumpOn == true and liveJumps() == 0, "Close turns jumping back on and stops listening")
+-- the jump key is a strike (once per press: a held key repeats its request)
+NOW = 9500
+fired = {}
+sessionR.OnClientEvent:Fire({ Id = 10, StartAt = NOW - CraftMini.T.Ring + 0.02 })
+UIS.JumpRequest:Fire()
+UIS.JumpRequest:Fire()
+local strikes = 0
+for _, f in fired do if f[1] == "CraftStrike" then strikes += 1 end end
+check(View._T.S.Grades[1] ~= nil and strikes == 1, "a jump request is one strike (repeats within 0.2 s ignored)", strikes)
+-- the key still held when ring 2 appears (its request repeats within 0.2 s): ring 2 is not struck by it
+NOW = CraftMini.Appear(NOW - CraftMini.T.Ring + 0.02, 2) + 0.05
+UIS.JumpRequest:Fire()
+check(View._T.S.Grades[2] == nil, "a held jump key does not strike the next ring as it appears", View._T.S.Grades[2])
+View.Close()
+UIS.JumpRequest:Fire()
+check(#fired == 1, "after Close a jump request does nothing", #fired)
 
 -- 7. the approved art once its keys exist (디자인 검수 10/12): CraftTarget + CraftIngot inside it + CraftRing
 check(find(gui, "Target") == nil, "")
