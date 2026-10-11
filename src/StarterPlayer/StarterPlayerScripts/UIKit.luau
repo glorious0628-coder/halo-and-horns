@@ -3373,15 +3373,28 @@ function UIKit.OnGameAttr(names, fn)
 	return conns
 end
 
------------------------------------------------------------------ language (A23-48: English only)
--- always "en" (kept for callers such as Keybinds' key labels)
+----------------------------------------------------------------- language (Korean mode, contract l10n_contract_2026-10-11 §1 / §3)
+-- fields, not locals (this file's top chunk is near the 200-locals limit)
+UIKit.L10n = require(Shared:WaitForChild("L10n"))
+UIKit.LangChanged = Util.Signal.new() -- fires (lang) when the player's language changes (attribute Lang / locale)
+
+-- "ko" / "en": the server's Lang attribute, else LocalPlayer.LocaleId ("ko*" -> "ko"); the same rule as the server's
 function UIKit.Lang()
-	return "en"
+	return UIKit.L10n.LangOf(LocalPlayer)
 end
 
--- a player text from a central table: t[key .. "En"] when a table still keeps both, else t[key]; extra args format it
+-- a player text from a central table. A table registered through L10n.Register (or a Config table) goes through
+-- L10n.T with its key path (Korean when the player reads Korean); any other table: t[key .. "En"] when a table still
+-- keeps both, else t[key]; extra args format it
 function UIKit.Tx(t, key, ...)
 	if type(t) ~= "table" then return "" end
+	if type(key) == "string" and (t[key] ~= nil or t[key .. "En"] ~= nil) then
+		local path = UIKit.L10n.PathOf(t)
+		if path ~= nil then
+			local args = select("#", ...) > 0 and { ... } or nil
+			return UIKit.L10n.T(path .. "." .. key, args, UIKit.Lang())
+		end
+	end
 	local s = t[key .. "En"] or t[key]
 	if type(s) ~= "string" then s = s == nil and "" or tostring(s) end
 	if select("#", ...) > 0 then
@@ -4036,12 +4049,28 @@ function UIKit.Start()
 	local me = game:GetService("Players").LocalPlayer
 	me:GetAttributeChangedSignal("TutorialStep"):Connect(function() UIKit.FlushBanners() end)
 
+	-- Korean mode §1: open windows / the HUD redraw on UIKit.LangChanged (attribute Lang from the server, or the locale)
+	UIKit.LangNow = UIKit.Lang()
+	local function langCheck()
+		local lang = UIKit.Lang()
+		if lang == UIKit.LangNow then return end
+		UIKit.LangNow = lang
+		UIKit.LangChanged:Fire(lang)
+	end
+	me:GetAttributeChangedSignal("Lang"):Connect(langCheck)
+	pcall(function() me:GetPropertyChangedSignal("LocaleId"):Connect(langCheck) end)
+
 	-- the remote normally exists already; never block the other client modules' Start on it
 	task.spawn(function()
 		local remote = Net.Get("Notify")
 		remote.OnClientEvent:Connect(function(payload)
 			if type(payload) ~= "table" then return end
 			local text = payload.Text
+			if payload.Key ~= nil then
+				-- a keyed line (Net.NotifyKey): written in my language; Text is only the English copy
+				local ok, s = pcall(UIKit.L10n.Msg, payload, UIKit.Lang())
+				if ok and type(s) == "string" and s ~= "" then text = s end
+			end
 			if type(text) ~= "string" or text == "" then return end
 			local duration = tonumber(payload.Duration)
 			if payload.Kind == "announce" then
