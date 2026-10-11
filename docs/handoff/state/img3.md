@@ -28,7 +28,7 @@
 - `Workspace.SkeletonTest`: House07_Skeleton 3판(478파트, 원점 3000,0,0, 앞 = -Z) + Tree_Pot_Skeleton(x 3026). 재질 변형 3종이 들어가 있음(building_variants 실행: 대리석 9 UPDATED, 크림 12·금 테 MADE).
 - 이미지 생성 1이 `HaloDomeHouse_07_keep`(옛 keep, 20노드)과 `HaloVar3_RoundTree_E_keep`을 SkeletonTest 옆(+x 30쪽)에 둠. 크기는 가져온 그대로.
   - 3판에 맞는 건 `placed_v3.glb`(import_now에 넣어 둠, 원점만 맞추면 골격과 맞음). 옛 keep을 쓰면 skeleton_place 규칙대로 옮겨야 함.
-- 3판 Studio 사진은 **아직 없음**(창 복원 허락은 받았으나 인계로 못 찍음).
+- 3판 Studio 사진(Tripo 조각 없이, 골격만): `art/review/img3/skeleton07/v3_studio/*.png`, 모음 `v3_studio_grid.jpg`. 등불 Neon 상자가 틀 없이 떠 보이는 건 조각을 아직 안 붙여서임.
 ## 숫자·경로
 - 시트: `art/review/img3/skeleton07/skeleton07_v3_compare.jpg`(3판), `skeleton07_compare.jpg`(2판).
 - 2D: `art/out/s2/halo/roofs/HaloDomeHouse_07_roof_v2.png`.
