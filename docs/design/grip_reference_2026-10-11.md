@@ -11,6 +11,9 @@
 | Roblox 도구 쥐기 | 도구 손잡이는 손의 그립 지점(R15 `RightGripAttachment`)에 맞춰 붙고, 방향은 `Tool.Grip`(GripPos·GripForward…) 한 CFrame이 정함. 좋은 값은 도구마다 직접 맞춰 봐야 함 | [Roblox 문서 "In-game tools"](https://create.roblox.com/docs/en-us/players/tools), [Tool.GripForward](https://create.roblox.com/docs/reference/engine/classes/Tool/GripForward), [DevForum "Tool grip is sideways"](https://devforum.roblox.com/t/tool-grip-is-sideways/1584419) |
 | 지팡이(빛·어둠 마법사) | 지팡이는 몸 가까이 곧게 세워 든다("팔의 연장처럼", 바깥으로 비스듬히 두지 않음). 손은 손목~가슴 높이, 팔꿈치는 조금 굽힘. 마법사 지팡이는 가운데보다 조금 위를 쥐고, 발끝은 땅 가까이 둔다 | [Cherry Tree "10 tips on using a hiking staff"](https://www.cherrytreecountryclothing.com/resources/10-useful-tips-on-using-a-hiking-staff/), [Wilderness "holding your walking pole"](https://www.wildernessmag.co.nz/?p=2859), [Walking stick guide](https://sftp.thewrap.com/post/walking-stick-guide-proper-use) |
 | 플라스크(연금술사) | 병은 목을 손가락으로 감싸 쥔다(full wrap). 몸통을 손바닥에 얹는 쥐기는 '보여 주기'용이라 쥔 느낌이 약하다. 손목을 조금 굽혀 병이 손에 붙어 떠 보이지 않게 한다 | [바텐더 병 목 잡기(ShortList)](https://www.shortlist.com/news/how-to-spin-and-pour-a-bottle-like-a-barman) — 그림 참고는 못 찾음, 손 쥐기 일반 설명 |
+| 검+방패 대기(팔라딘) | 평소 대기는 칼과 방패를 낮게, 전투 대기는 몸 앞에 든다. 방패 팔은 가슴 앞 45° 쯤, 칼 손은 방패 뒤 | [ORK 대기 동작 안내](https://forum.orkframework.com/d/5215-tutorial-ork-animations-using-mecanim-my-all-new-comprehensive-guide), [Nexus 검+방패 요청](https://forums.nexusmods.com/topic/4666325-armour-or-animations), [MocapOnline 대기 동작](https://mocaponline.com/blogs/mocap-news/idle-animation-game-dev-guide) |
+| 한 손 허리(대장장이·연금술사·조련사) | 손등이나 손바닥이 허리 옆에 닿고, 손목은 엉덩이뼈 위로 살짝 앞, 팔꿈치는 바깥으로(팔과 허리 사이 삼각형) | [Hand on hip drawing reference](https://library.peoplespharmacy.com/hand-hip-drawing-reference), [Fashion Drawing For Dummies](https://www.dummies.com/article/academics-the-arts/art-architecture/drawing/fashion-drawing/how-to-draw-hands-on-your-fashion-figures-171483) |
+| 활 대기(레인저·그림자 사냥꾼) | 대기 자세는 활을 옆에 세워 든다(당기지 않음). 3인칭은 활을 세워서 | [PoseMyArt 궁수 자세](https://posemy.art/blog/drawing-archer-poses/), [Kotaku 게임 궁술](https://kotaku.com/video-game-characters-are-terrible-at-archery-1836615271) |
 
 **우리 place에서 잰 값(`place/GoodEvil.rbxlx` R15):** `RightGripAttachment` = 손 안 (0, -0.158, 0), 방향 Angles(-90°, 0, 0). 어깨 관절은 UpperTorso (±0.972, 0.598, 0)에 있어요. 위팔은 0.92, 아래팔은 0.81. 우리 무기는 `CharacterVisuals.fist()`로 손의 -Z(주먹을 꿰뚫는 축)를 따라 붙어요.
 
@@ -28,6 +31,12 @@
 - 6칸 이하 지팡이는 발끝에서 절반 이상 위를 쥔다(`STAFF.Grip` 0.55). 긴 지팡이는 땅에 박히지 않게 손-발끝 거리를 3.3칸까지만 둔다. 발끝은 땅 위 0~1.3칸이다.
 - 플라스크는 주먹이 목을 감싸고, 몸통은 주먹 아래, 코르크는 위에 있다. 병은 곧게 가슴 앞에 든다.
 - 그립점-선 0.2 이하, 축 10° 이하, 팔뚝-무기 45~135°, 팔 닿기 92% 이하(대검과 같음).
+
+**빈 손 숫자 기준(같은 시험):**
+- 빈 손은 몸 위 점으로 간다(OffHand: 허리 = (-1.25, -0.65, 0.1), 가슴 앞 주먹, 가슴 앞 손바닥).
+- 팔은 35~92% 뻗는다. 손 중심은 몸통 상자 밖 0.15칸 이상이다(파고들지 않음).
+- 허리 손은 허리 옆에서 0.45칸 안에 닿는다.
+- 목표점은 아바타 몸 크기(어깨 관절 거리)에 맞춰 줄고 는다.
 
 ## 3. 만드는 법 (WeaponPose)
 - 자세를 팔 각도에서 시작하지 않아요. **칼 위치에서 시작해요:** `Config.ClassGrips.Warrior_Horns.TwoHand` = { Hilt(오른손 그립 지점), Aim(칼날 방향) — 몸통 기준 }. 한 손 무기는 `OneHand` = { Hilt, Aim }(빛·어둠 마법사, 연금술사)이고, 같은 계산으로 오른팔만 놓아요(왼팔은 각도 표 그대로).

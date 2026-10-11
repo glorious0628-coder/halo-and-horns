@@ -5567,9 +5567,12 @@ Config.QuickSlots = {
 -- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
 -- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
-	-- Paladin: straight sword ready in front, the left arm up as if holding a small round shield
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { RightShoulder = { 20, 0, 4 }, RightElbow = { 44, 0, 0 },
-		RightWrist = { -12, 0, 0 }, LeftShoulder = { 28, 0, -10 }, LeftElbow = { 58, 0, 0 } } },
+	-- Paladin: straight sword ready in front, its tip up to the left (class_grips table; grip_reference §1-6 sword and
+	-- shield idle: the sword in front, the guard arm up) - OneHand from the sword; until his shield model exists the left
+	-- hand is a fist in front of the chest (OffHand, 검수 10/11)
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(0.6, -0.5, -0.85), Aim = Vector3.new(-0.45, 0.8, -0.4) },
+		OffHand = { At = Vector3.new(-0.3, 0.0, -0.95), Up = Vector3.new(-0.95, -0.3, 0.65), Fwd = Vector3.new(0, 1, 0) } },
 	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
 	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
 	-- hand lower towards the pommel, the hilt in front of the chest, a heavy blade laid back over the shoulder). TwoHand
@@ -5578,22 +5581,25 @@ Config.ClassGrips = {
 	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
 	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
 		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },
-	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip
-	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
-		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },
+	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
+	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
+	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
+		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
 	-- 검수 10/11 + grip_reference §1: the staff stands upright at the side, close to the body (OneHand: the right hand placed
 	-- from the staff, WeaponPose; studs in UpperTorso space), held a little above its middle (CharacterVisuals staffLow)
-	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { LeftShoulder = { 36, 0, -16 }, LeftElbow = { 72, 0, 0 },
-		LeftWrist = { -20, 0, 0 } }, OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) } },
+	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) },
+		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
 		LeftShoulder = { 14, 0, -20 } }, OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
 	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask)
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { 44, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) } },
+	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) },
+		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },
@@ -5602,7 +5608,7 @@ Config.ClassGrips = {
 		LeftShoulder = { 30, 0, -10 }, LeftElbow = { 55, 0, 0 }, RightShoulder = { 10, 0, 6 } } },
 	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
 	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
-		RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 }, LeftElbow = { 46, 0, 0 } } },
+		RightWrist = { -30, 0, 0 } }, OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 }
 function Config.ClassGripKey(classId, faction)
 	if type(classId) ~= "string" then return nil end

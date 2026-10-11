@@ -64,9 +64,9 @@ def goal(point, grip, shoulder, aim, src_wp):
     z = tuple(-x for x in aim)
     x = cross(up, z)
     frame = (x, up, z)
-    if "CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z)" in src_wp:  # a mutation: the axes swapped
+    if "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z)" in src_wp:  # a mutation: the axes swapped
         frame = (up, x, z)
-    sign = 1.0 if "* CFrame.new(-gripPos)" in src_wp else -1.0
+    sign = 1.0 if "fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)" in src_wp or "up, up:Cross(z), z) * CFrame.new(-gripPos)" in src_wp else -1.0
     gx, gy, gz = (g * sign for g in grip)
     pos = sub(point, add(add(tuple(a * gx for a in frame[0]), frame[1], gy), frame[2], gz))
     return frame, pos
@@ -124,7 +124,8 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             worst["below"] = min(worst["below"], hd["Below"] + (hd["Pommel"] or 0) - (gap + hand_len / 2))
             worst["apart"] = min(worst["apart"], gap - min(hand_len, 0.45))
             worst["pommel"] = max(worst.get("pommel", 0.0), hd["Below"] - (gap + hand_len / 2))
-            for side, point in (("R", hilt), ("L", add(hilt, aim, -gap))):
+            hk = tuple(v * k for v in hilt)  # WeaponPose.BodyScale: the hilt scales with the body
+            for side, point in (("R", hk), ("L", add(hk, aim, -gap))):
                 shoulder, l1, l2, wc1, grip = rig(side, k)
                 frame, pos = goal(point, grip, shoulder, aim, wp)
                 wrist = to_world(frame, pos, wc1)
@@ -132,7 +133,7 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
                 eps = min(l1, l2) * 0.001
                 clamped = not (abs(l1 - l2) + eps <= d <= l1 + l2 - eps)
                 worst["reach"] = max(worst["reach"], 9.0 if clamped else d / (l1 + l2))
-                rel = sub(to_world(frame, pos, grip), hilt)
+                rel = sub(to_world(frame, pos, grip), hk)
                 off = sub(rel, tuple(x * dot(rel, aim) for x in aim))
                 worst["dist"] = max(worst["dist"], length(off))
                 worst["axis"] = max(worst["axis"], angle(tuple(-x for x in frame[2]), aim))
@@ -177,7 +178,8 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          'if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end' in body
          and ".Clamped then return" not in body, ""),
         ("walk / run / jump: the goals and the elbows live in torso space (the arm swing is replaced, not added)",
-         "local aim = torso:VectorToWorldSpace(th.Aim.Unit)\n\tlocal hilt = torso * th.Hilt" in wp
+         "local aim = torso:VectorToWorldSpace(th.Aim.Unit)\n\tlocal hilt = torso * (th.Hilt * (k or 1))" in wp
+         and "(torso * left.Shoulder.C0).Position, gap, WeaponPose.BodyScale(right))" in wp
          and "torso:VectorToWorldSpace(T.PoleRight)" in body and "torso:VectorToWorldSpace(T.Pole)" in body
          and "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
         ("Studio probe measures every frame and prints the worst (walk sequences)",
@@ -204,9 +206,8 @@ MUTATIONS = [
     ("CONFIG", "the hands overlapping", "Gap = { 0.45, 0.9 } } },", "Gap = { 0.1, 0.2 } } },"),
     ("CV", "a long bare handle under the left hand", "local top, below, bladeLen = 0.6, 1.15, w.Length * 1.3", "local top, below, bladeLen = 0.6, 2.0, w.Length * 1.3"),
     ("CV", "no pommel", 'Name = "Pommel", Shape = Enum.PartType.Ball', 'Name = "Knob", Shape = Enum.PartType.Ball'),
-    ("WP", "the grip point off the line", "* CFrame.new(-gripPos)", "* CFrame.new(gripPos)"),
-    ("WP", "the hand turned along the handle", "CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z)",
-     "CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z)"),
+    ("WP", "the grip point off the line", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(gripPos)"),
+    ("WP", "the hand turned along the handle", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z) * CFrame.new(-gripPos)"),
     ("WP", "the left hand on top of the right", "goal(hilt - aim * gap, leftGrip, leftShoulder)", "goal(hilt, leftGrip, leftShoulder)"),
     ("WP", "never run", '\tif type(def.TwoHand) == "table" then\n\t\tWeaponPose.TwoHand(char, st, def, model)\n', '\tif false then\n\t\tWeaponPose.TwoHand(char, st, def, model)\n'),
     ("WP", "a clamped solve drops the pose (the hanging left hand)", 'if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end',

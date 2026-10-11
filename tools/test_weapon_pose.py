@@ -95,7 +95,7 @@ check(Config.ClassGripKey("Mage", "Horns") == "Mage_Horns" and Config.ClassGripK
 check(WP.HoldFor("Mage", "Horns") == G.Mage_Horns and WP.HoldFor("Archer", "Neutral") == G.Archer_Neutral,
 	"HoldFor picks its own row", "")
 check(WP.HoldFor("Warrior", nil) == G.Warrior_Halo and WP.HoldFor("Nope", "Halo") == nil, "no side yet: the Halo row; unknown class: none", "")
-local d = G.Warrior_Halo
+local d = G.Warrior_Neutral -- 검수 10/11: the Paladin's arms are placed from the sword now (OneHand / OffHand)
 local a = WP.Angles(d, "RightShoulder", 1, false)
 check(a and a[1] == d.Hold.RightShoulder[1] and a[3] == d.Hold.RightShoulder[3], "Angles at full weight = the hold", a and a[1])
 a = WP.Angles(d, "RightShoulder", 0.5, false)
@@ -117,8 +117,8 @@ MUTATIONS = [
     ("WP", "no fallback without a side", '\tif type(def) ~= "table" and type(classId) == "string" then def = grips[classId .. "_Halo"] end\n', ""),
     ("WP", "the pose fights the attack clips", "\tif animating(char) then -- Fx's attack / hurt clip owns the joints now\n",
      "\tif false then\n"),
-    ("CONFIG", "two sides share a pose", '''	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
-		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },''', '''	Warrior_Neutral = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
+    ("CONFIG", "two sides share a pose", '''	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
+		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },''', '''	Warrior_Neutral = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
 		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.8 } } },'''),
     ("MAIN", "never loaded", '"QuickSlots", "WeaponPose", "LandShadow"', '"QuickSlots", "LandShadow"'),
 ]
