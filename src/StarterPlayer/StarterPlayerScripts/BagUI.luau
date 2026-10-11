@@ -521,7 +521,9 @@ function BagUI.Detail(cell, ctx)
 	else
 		local def = Config.Loot.Items[cell.Id]
 		line(tx(TXT, "Count", cell.Count))
-		if def and num(def.Sell, 0) > 0 then line(tx(TXT, "SellsFor", Util.FormatInt(math.floor(def.Sell)))) end
+		-- the Forge's sell-all takes monster materials only: a gathered / boss thing (a Source) shows no price until it can be
+		-- sold one at a time (SellItem, later) - 게임성 검수 10/12
+		if def and def.Source == nil and num(def.Sell, 0) > 0 then line(tx(TXT, "SellsFor", Util.FormatInt(math.floor(def.Sell)))) end
 		local from = dropsFrom(cell.Id, ctx.Seen)
 		if from then line(tx(TXT, "From", from), "Sub") end
 	end

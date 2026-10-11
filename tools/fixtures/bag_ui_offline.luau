@@ -416,6 +416,16 @@ v = detail(byKey["I:Jelly"])
 check(lineWith(v, "Sells for 2 each") and lineWith(v, "From: ") and #v.Actions == 0, "a material: its price + who drops it (seen monsters), no buttons")
 check(string.find(lineWith(v, "From: ").Text, Config.MonsterTypes.Slime.Short or Config.MonsterTypes.Slime.Name, 1, true) ~= nil,
 	"From: names a monster I defeated", lineWith(v, "From: ").Text)
+-- a gathered thing (a Source): no price line - the Forge's sell-all leaves it (게임성 검수 10/12)
+if Config.Loot.Items.Herb and Config.Loot.Items.Herb.Source then
+	local herb = BagUI.Cells(ctxOf({ Items = { Herb = 3 } }))
+	local hc = nil
+	for _, c in herb do if c.Key == "I:Herb" then hc = c end end
+	local hv = detail(hc)
+	check(hc and lineWith(hv, "Sells for") == nil and lineWith(hv, "×3") ~= nil, "a gathered material shows no sell price (the sell-all skips it)")
+else
+	check(false, "Config.Loot.Items.Herb with a Source (the gather server on main)")
+end
 v = detail(byKey["I:Jelly"], { Seen = {} })
 check(lineWith(v, "From: ") == nil, "no defeated monster that drops it: no From line")
 v = detail(nil, { Mode = { Item = "Enh70" } })

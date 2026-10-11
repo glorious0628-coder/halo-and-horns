@@ -2424,10 +2424,12 @@ function ITEMS.Owns(mask, tier)
 	return bit32.btest(mask, bit32.lshift(1, tier - 1))
 end
 
+-- what the blacksmith's sell-all really sells: monster materials only (게임성 검수 10/12, LootService: a thing with a Source -
+-- gathered "Gather", boss "Boss" - is sold one at a time later, never in the sell-all), so the count / gold match the pay
 function ITEMS.MaterialValue(items)
 	local count, gold = 0, 0
 	for id, def in Config.Loot.Items do
-		if def.Kind == "Material" then
+		if def.Kind == "Material" and def.Source == nil then
 			local n = ITEMS.Count(items, id)
 			count += n
 			gold += n * def.Sell
