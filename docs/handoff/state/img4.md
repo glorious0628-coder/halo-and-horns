@@ -1,7 +1,13 @@
 # 이미지 생성 4 — 상태 (2026-10-12 00:30)
 
 ## 지금 상태 한 줄
-**10/12 01시: 기본 B 적용(58종 모든 파트 그림자, 마을 다시 배치). C·C+ 버림. ★ 선 비교(B | 얇게 0.035 | 굵게 0.06, EditableMesh 임시 = 안 올림) `art/review/img4/star_1012_sheet.jpg` → 디자인 검수 → 최종 검수 → 사용자 고름. '다시' 6개 Studio 사진 `studio_redo_1012.jpg` 디자인 검수 판정 기다림. 사용자가 선을 고르면 그 굵기 4개(build/prop_kit_hull/<Kit>_D2_<035|060>.obj)만 이미지 개발에 넘김.**
+**10/12 01:10: 기본 B 적용(58종 모든 파트 그림자). ★ 선 비교(B | 얇게 0.035 | 굵게 0.06) 최종 검수 → 사용자 고름 기다림; 고르면 그 굵기 4개(build/prop_kit_hull/<Kit>_D2_<035|060>.obj)만 이미지 개발에 넘김. 디자인 검수 '다시' 묶음 끝(Woodpile·Rack 통과, 가마솥 = Slate 110,100,92 마지막 사진 보냄). 다음 = Tripo 모델 Blender 손보기.**
+
+## 배운 것 (10/12)
+- 실제 땅 C2c 빛에서 어두운 회색(Metal·SmoothPlastic)은 하늘빛을 받아 남색으로 보임 → 숯 회색은 거친 Slate + 따뜻한 회색(110,100,92).
+- Neon은 하얗게 번짐 → 물약 같은 빛나는 면은 한 단계 진한 색(60,196,170)으로.
+- 최종 검수 10/12: 짧은 확인 사진도 규칙 6대로 매번 최종 검수에 짧게 신청(잠깐 준 '묻지 말고' 허락은 취소됨 — 다른 세션의 WorldKit 사용을 알 수 없음).
+- Blender 미리보기 해 그림자가 통나무 옆면을 꼬인 띠로 보이게 함 → 판정은 Studio 사진으로.
 
 ## 비교 시험 (사용자 "그림자가 없어서 이상한 건가, 뭔가 선이 없어 보여")
 - 시트: `art/review/img4/compare_1011_sheet.jpg` (사진 64장 `art/review/img4/compare_1011/`, 디스크만). 소품 4 = BenchA·Lantern_A·Beehive·Planter_D__Body.
@@ -22,6 +28,7 @@
 ## Tripo
 - 묶음 1: 26개 1,430점(records `<키>_web_hd_mv4`). 묶음 2: 14개 770점(종만·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리), 잔액 15,765, 원본 시트 `art/review/img4/tripo_b2_raw.jpg`. 파일 `art/models/tripo/web/<키>_HD_src.glb`. Tripo GLB 앞 = Blender +x(tools/compare_3d_render.py 주석).
 - 남은 것: Planter_A·Planter_E·Balustrade_F 덤불 — 이미지 생성 2 2D 끝(kits_mv3), 디자인 검수 통과 확인 + 최종 검수 승인 뒤.
+- **파일 이름(10/12):** 4면 결과 = `art/models/tripo/web/<키>_MV4_HD_src.glb` (40개). 처음 받을 때 `<키>_HD_src.glb`로 저장해 옛 단일면 결과 29개를 덮어씀 → git에 있던 12개는 HEAD에서, 없던 17개는 Tripo 계정(옛 task)에서 다시 받아 되살림. 앞으로 내려받기 이름에 꼭 `_MV4` 같은 꼬리.
 - 방법: scratchpad `tripo_srv.py`(8766)·`tripo_dl.py`(8767) — 세션 끝나면 사라짐. 단계는 메모리 tripo-web-in-app-browser + 위 묶음 기록.
 
 ## 다음

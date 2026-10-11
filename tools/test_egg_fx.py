@@ -191,6 +191,11 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         ("EggFx: a removed ground egg waits GoneWait s for an EggReturn before a 'picked' pop",
          "task.delay(num(lookCfg().GoneWait, 0.25)" in egg and "if gone.Returned then return end" in egg
          and "gone.Returned = true" in egg, ""),
+        ("최종 검수 10/11: an egg I picked without a preview (near me, my EggCarry rose within MineWindow) gets no "
+         "'someone picked it' pop / sound - only my own pickup sound",
+         "Near = d <= num(eggCfg().PickRadius, 4.5) + num(lookCfg().MineSlack, 1) }" in egg
+         and "if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end" in egg
+         and "S.MineAt = os.clock()" in egg, ""),
         ("EggFx: the pickup preview hides at once and shows again after PredictHold s",
          "S.Hidden[rec.Id] = now" in egg and "now - hidAt > num(lk.PredictHold, 0.6)" in egg, ""),
         ("EggFx: a preview the server turned down is not retried for RetryAfter s (no flicker)",
@@ -255,6 +260,8 @@ MUTATIONS = [
     ("EGG", "a frame error warns every frame", "if not ok then warnThrottled(tostring(err)) end",
      'if not ok then warn("[EggFx] " .. tostring(err)) end'),
     ("EGG", "a 'picked' pop without waiting for a return", "if gone.Returned then return end", ""),
+    ("EGG", "my own pickup also pops as someone else's (the sound twice)",
+     "if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end -- mine", ""),
     ("EGG", "'+N' for everyone's delivery", "if data.UserId ~= LocalPlayer.UserId then return end", ""),
     ("HUD", "the explanation line under the bar again", "if type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\tsetVisible(ui.TugSub, false)",
      "if type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\tsetVisible(ui.TugSub, true)"),

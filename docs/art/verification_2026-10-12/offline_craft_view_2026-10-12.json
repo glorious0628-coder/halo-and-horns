@@ -1,0 +1,109 @@
+{
+  "checks": 45,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "two strikes on one ring",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the offset's sign flipped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "practice talks to the server",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a far too early press is sent",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Finish twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no Miss when a ring closes",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "jumping stays on (Space / A jump)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "jumping never comes back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the jump key is no strike",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a held jump key strikes every frame",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the jump listener never stops",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "another session's result shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never closes after the result",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "waits forever without a result",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Skip sends nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ring ignores the schedule",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no practice in Studio",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the screen is not a button",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an open window stays under the ring (UiSandbox 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the view is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "③-2 망치질 고리 화면 (게임성 개발 4, 2026-10-12; SPEC A23-56 / A23-127 / A23-130, design\ndocs/design/hammer_minigame_2026-10-12.md, contract 게임성 검수 10/12 + 개발 3 origin/dev3-craft), offline.\n\nRuns the CURRENT Config.luau, Shared/CraftMini.luau and CraftView.luau in the official Luau CLI\n(tools/fixtures/craft_view_offline.luau; a server clock the test moves, the craft remotes, ContextActionService). Checks:\nCraftSession / CraftResult bound at Init; a session opens the screen; Space is the strike and is sunk (no jump); the\nscreen itself is the button (clicks / taps never reach the HUD); a press before the first ring / in the rest does\nnothing; a press grades with CraftMini and sends CraftStrike(Id, i, ms) once per ring (40 ms = Perfect, 200 ms = Good);\nthe dot / word / sound / shake; a ring nobody pressed turns Miss without a strike; the ring's size follows the schedule\n(1.8x half way, 1x at the touch); CraftFinish(Id) once after the last ring; a result for another session is ignored; the\nresult line (\"+1 <weapon>\"), Skip hidden, the done sound, closing after it (Space unbound); Skip = CraftFinish now and\nclosing after a few seconds without an answer; the Studio practice (no remote, graded here, \"+2\"; its Skip just\ncloses); a click on the screen is the strike. Static: ClientMain loads CraftView; CraftView takes its numbers from\nCraftMini (no own windows). Mutations: each must be caught.",
+  "studioCalls": 0
+}

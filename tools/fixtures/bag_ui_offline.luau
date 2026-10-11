@@ -88,6 +88,9 @@ omt.__index = function(o, k)
 end
 omt.__newindex = function(o, k, v)
 	local p = rawget(o, "__p")
+	if k == "ImageTransparency" and (p.ClassName == "TextButton" or p.ClassName == "Frame") then
+		error("ImageTransparency is not a valid member of " .. p.ClassName)
+	end
 	if k == "Parent" then
 		if p.Parent then
 			local kids = rawget(p.Parent, "__p").Children
@@ -225,12 +228,13 @@ local function artObj(class, name, props)
 	if props and props.Parent then o.Parent = props.Parent end
 	return o
 end
+local missingSlotArt = false -- true: UIKit gives its code slot (a TextButton) instead of the slot art
 local UIKit = {
 	Gui = nil,
 	ArtImage = function(name, props) return artObj("ImageLabel", name, props) end,
 	ArtFrame = function(name, props) return artObj("Frame", name, props) end,
 	ArtButton = function(name, props, onClick)
-		local b = artObj("ImageButton", name, props)
+		local b = artObj(missingSlotArt and "TextButton" or "ImageButton", name, props)
 		b.OnClick = onClick
 		return b
 	end,
@@ -416,6 +420,16 @@ v = detail(byKey["I:Jelly"])
 check(lineWith(v, "Sells for 2 each") and lineWith(v, "From: ") and #v.Actions == 0, "a material: its price + who drops it (seen monsters), no buttons")
 check(string.find(lineWith(v, "From: ").Text, Config.MonsterTypes.Slime.Short or Config.MonsterTypes.Slime.Name, 1, true) ~= nil,
 	"From: names a monster I defeated", lineWith(v, "From: ").Text)
+-- a gathered thing (a Source): no price line - the Forge's sell-all leaves it (게임성 검수 10/12)
+if Config.Loot.Items.Herb and Config.Loot.Items.Herb.Source then
+	local herb = BagUI.Cells(ctxOf({ Items = { Herb = 3 } }))
+	local hc = nil
+	for _, c in herb do if c.Key == "I:Herb" then hc = c end end
+	local hv = detail(hc)
+	check(hc and lineWith(hv, "Sells for") == nil and lineWith(hv, "×3") ~= nil, "a gathered material shows no sell price (the sell-all skips it)")
+else
+	check(false, "Config.Loot.Items.Herb with a Source (the gather server on main)")
+end
 v = detail(byKey["I:Jelly"], { Seen = {} })
 check(lineWith(v, "From: ") == nil, "no defeated monster that drops it: no From line")
 v = detail(nil, { Mode = { Item = "Enh70" } })
@@ -609,6 +623,30 @@ check(petal and find(petal, "Letter") and find(petal, "Letter").Text == "F", "no
 	petal and find(petal, "Letter") and find(petal, "Letter").Text)
 local jelly = find(root, "Cell_I:Jelly")
 check(jelly and find(jelly, "Letter") == nil, "an item with art shows its icon, no letter")
+
+-- 최종 검수 10/12 ①: the detail column keeps one layout however often it redraws
+find(root, "Tab_Use").OnClick()
+for _ = 1, 12 do BagUI.RedrawDetail() end
+local layouts = 0
+for _, ch in find(root, "Detail"):GetChildren() do if ch.ClassName == "UIListLayout" then layouts += 1 end end
+check(layouts == 1, "the detail keeps one list layout over 12 redraws", layouts)
+-- ②: a scroll step dims UIKit's code slots too (no slot art = TextButtons, no ImageTransparency)
+missingSlotArt = true
+BagUI.OnInventory({ Items = { Jelly = 14, Enh70 = 2, Move70 = 1 }, Enhance = { 0, 3, 0, 1 },
+	ItemSeq = { Jelly = 12, Enh70 = 6, Move70 = 20 }, WeaponSeq = { 1, 4, 0, 2 } })
+find(root, "Tab_Scroll").OnClick()
+find(root, "Cell_I:Move70").OnClick()
+local okStep, errStep = pcall(function() find(root, "Act_Use").OnClick() end)
+check(okStep and T.S.Mode ~= nil, "a scroll step with code slots draws without an error", errStep)
+local anyDim = false
+for _, d in descendants(root) do
+	if type(d.Name) == "string" and string.sub(d.Name, 1, 5) == "Cell_" and d.ClassName == "TextButton" and d.BackgroundTransparency == 0.55 then
+		anyDim = true
+	end
+end
+check(anyDim, "the weapons a scroll can't use dim their code slot")
+find(root, "Act_Cancel").OnClick()
+missingSlotArt = false
 
 -- a payload that reached Panels before this module bound its listener: taken from Panels (LastInventory)
 local bf2 = assert(loadstring(BAG_SOURCE, "=BagUI2"))

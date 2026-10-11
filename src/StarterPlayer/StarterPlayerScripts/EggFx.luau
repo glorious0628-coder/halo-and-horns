@@ -34,6 +34,7 @@ local S = {
 	Trail = {}, -- { { T, Pos } }: my root over the last MoveWindow s
 	Folder = nil, Home = nil, Dots = {}, Icon = nil, Shields = {}, Flights = {},
 	Picked = false, -- I picked an egg this event (the last 3-2-1 ticks are for the pickers)
+	MineAt = -math.huge, -- os.clock() my EggCarry last rose
 	Carry = 0, StillAt = nil, StillPos = nil, WasActive = false,
 }
 
@@ -349,11 +350,18 @@ local function removeEgg(part)
 	S.Eggs[part] = nil
 	local hidAt = rec.Id ~= nil and S.Hidden[rec.Id] or nil
 	if not hidAt and not rec.Returning and rec.Plopped then
-		local gone = { To = rec.To, Returned = false }
+		-- 최종 검수 10/11: an egg I picked without a preview (the server's PickRadius has +0.5) is mine, not "someone
+		-- else's": it was within reach of me (MineSlack) and my EggCarry rose within MineWindow s of its removal
+		-- (either order) - then my own pickup sound in Step is the only one
+		local root = myRoot()
+		local d = root and Vector3.new(root.Position.X - rec.To.X, 0, root.Position.Z - rec.To.Z).Magnitude or math.huge
+		local gone = { To = rec.To, Returned = false, At = os.clock(),
+			Near = d <= num(eggCfg().PickRadius, 4.5) + num(lookCfg().MineSlack, 1) }
 		S.Gone[gone] = true
 		task.delay(num(lookCfg().GoneWait, 0.25), function()
 			S.Gone[gone] = nil
 			if gone.Returned then return end
+			if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end -- mine
 			pop(gone.To + Vector3.new(0, 1, 0), nil, 10)
 			playNear(gone.To, "EggPickup", "GoldPickup")
 		end)
@@ -635,6 +643,7 @@ function EggFx.Step()
 	local carry = num(LocalPlayer:GetAttribute("EggCarry"), 0)
 	if carry > S.Carry and active then
 		S.Picked = true
+		S.MineAt = os.clock() -- removeEgg: a ground egg gone near me right now was mine (no "someone picked it" pop)
 		if os.clock() - (S.PreviewAt or -math.huge) > 1 then play("EggPickup", nil, "GoldPickup") end
 	end
 	S.Carry = carry

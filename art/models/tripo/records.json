@@ -9114,7 +9114,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternC_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_C_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_C_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Lantern_A_web_hd_mv4": [
@@ -9136,7 +9137,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternA_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_A_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_A_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_A_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Lantern_B_web_hd_mv4": [
@@ -9158,7 +9160,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternB_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_B_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_B_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_B_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Lantern_D_web_hd_mv4": [
@@ -9180,7 +9183,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternD_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Lantern_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Lantern_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Lantern_E_web_hd_mv4": [
@@ -9202,7 +9206,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_LanternE_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Lantern_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Lantern_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Lantern_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WallLamp_web_hd_mv4": [
@@ -9224,7 +9229,8 @@
     "back": "art/out/s2/halo/kits_mv/HaloKit_WallLamp_back.png"
    },
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/NEW_WallLamp_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WallLamp_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WallLamp_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Daisy_web_hd_mv4": [
@@ -9246,7 +9252,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotDaisy_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Lavender_web_hd_mv4": [
@@ -9268,7 +9275,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotLavender_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Rose_web_hd_mv4": [
@@ -9290,7 +9298,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotRose_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Sunflower_web_hd_mv4": [
@@ -9312,7 +9321,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotSunflower_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloFlowerPotHQ_Tulip_web_hd_mv4": [
@@ -9334,7 +9344,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_PotTulip_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb"
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Topiary_C_web_hd_mv4": [
@@ -9356,7 +9367,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TopC_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Topiary_C_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Topiary_C_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Topiary_D_web_hd_mv4": [
@@ -9378,7 +9390,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TopD_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Topiary_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Topiary_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_Topiary_E_web_hd_mv4": [
@@ -9400,7 +9413,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TopE_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_Topiary_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_Topiary_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_RoundTree_E_web_hd_mv4": [
@@ -9422,7 +9436,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TreeE_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_RoundTree_F_web_hd_mv4": [
@@ -9444,7 +9459,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TreeF_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_RoundTree_F_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_F_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_F_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_RoundTree_G_web_hd_mv4": [
@@ -9466,7 +9482,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_TreeG_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_G_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_BenchB_web_hd_mv4": [
@@ -9488,7 +9505,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_BenchB_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_VegGarden_web_hd_mv4": [
@@ -9510,7 +9528,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonVeg_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_BreadStand_web_hd_mv4": [
@@ -9532,7 +9551,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonBread_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_FruitStall_web_hd_mv4": [
@@ -9554,7 +9574,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonFruit_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_FlowerCart_web_hd_mv4": [
@@ -9576,7 +9597,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_PotionCrate_web_hd_mv4": [
@@ -9598,7 +9620,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonPotion_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloReasonHQ_Scarecrow_web_hd_mv4": [
@@ -9620,7 +9643,8 @@
     "back": "art/out/s2/halo/props4/HaloProp4_ReasonScare_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb"
+   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_FlowerBush_web_hd_mv4": [
@@ -9642,7 +9666,8 @@
     "back": "art/out/s2/halo/kits_mv/HaloKit_FlowerBush_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_FlowerBush_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_FlowerBush_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_FlowerBush_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_GatherBush_web_hd_mv4": [
@@ -9664,7 +9689,8 @@
     "back": "art/out/s2/halo/kits_mv/HaloKit_GatherBush_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_GatherBush_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_GatherBush_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_GatherBush_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_BellFrame_Bell_web_hd_mv4": [
@@ -9686,7 +9712,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_back.png"
    },
    "use": "bell only (frame/posts = Studio parts, tools/prop_kit.py BellFrame); Blender: swap rings/ribs for exact shapes, symmetric, bake C/N/R/M",
-   "file": "art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_BellFrame_Bell_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WallLamp_Head_web_hd_mv4": [
@@ -9708,7 +9735,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_back.png"
    },
    "use": "lamp head only (wall bracket = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
-   "file": "art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WallLamp_Head_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WateringCan_web_hd_mv4": [
@@ -9730,7 +9758,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WateringCan_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WateringCan_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WateringCan_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_BreadBasket_web_hd_mv4": [
@@ -9752,7 +9781,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_BreadBasket_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_BreadBasket_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_BreadBasket_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_Hedge_web_hd_mv4": [
@@ -9774,7 +9804,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_Hedge_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_Hedge_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_Hedge_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WhiteRock_a_web_hd_mv4": [
@@ -9796,7 +9827,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WhiteRock_a_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WhiteRock_b_web_hd_mv4": [
@@ -9818,7 +9850,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WhiteRock_b_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "NEW_WhiteRock_c_web_hd_mv4": [
@@ -9840,7 +9873,8 @@
     "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_back.png"
    },
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
-   "file": "art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb"
+   "file": "art/models/tripo/web/NEW_WhiteRock_c_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_PotFlowers_A_web_hd_mv4": [
@@ -9862,7 +9896,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_PotFlowers_C_web_hd_mv4": [
@@ -9884,7 +9919,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_PotFlowers_D_web_hd_mv4": [
@@ -9906,7 +9942,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_PotFlowers_E_web_hd_mv4": [
@@ -9928,7 +9965,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar3_PotFlowers_F_web_hd_mv4": [
@@ -9950,7 +9988,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [
@@ -9972,7 +10011,8 @@
     "back": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_back.png"
    },
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
-   "file": "art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb"
+   "file": "art/models/tripo/web/HaloVar4_Planter_D_MV4_HD_src.glb",
+   "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
   }
  ],
  "halo_houses15_deco_tripo_2026-10-12": [

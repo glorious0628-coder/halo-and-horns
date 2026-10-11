@@ -36,7 +36,9 @@ import json
 import math
 from pathlib import Path
 import re
+import subprocess
 import sys
+import tempfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import test_two_hand_grip as G  # noqa: E402  (the shared rig / goal / solve copies)
@@ -595,6 +597,61 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
     return out
 
 
+def staff_gap_ok(wp: str, cv: str) -> bool:
+    """WeaponPose T.StaffGap = CharacterVisuals STAFF.FootGap (the same wanted foot height)"""
+    a = re.search(r"StaffGap = " + NUM + ",", wp)
+    b = re.search(r"local STAFF = \{ FootGap = " + NUM + ",", cv)
+    return bool(a and b) and float(a[1]) == float(b[1])
+
+
+LIFT_HARNESS = r'''
+local T = { StaffGap = GAP, StaffFix = FIX, StaffMax = MAX }
+local WeaponPose = {}
+-- FUNC --
+local function run(foot0, ground, frames, lift0)
+	local lift = lift0 or 0
+	for _ = 1, frames do lift = WeaponPose.StaffLift(lift, foot0 + lift, ground, T.StaffGap) end
+	return lift
+end
+local function report(name, ok, detail) print((ok and "CHECK_OK " or "CHECK_FAIL ") .. name .. " :: " .. tostring(detail)) end
+local l = run(0.27, 0, 20)
+report("10/12 photo: a tip 0.27 over the ground settles StaffGap over it", math.abs(0.27 + l - T.StaffGap) < 0.005, 0.27 + l)
+l = run(-0.15, 0, 20)
+report("a tip in the ground comes up to StaffGap", math.abs(-0.15 + l - T.StaffGap) < 0.005, -0.15 + l)
+l = run(2, 0, 30)
+report("never more than StaffMax down (a far foot: a jump, a step)", l >= -T.StaffMax - 1e-9 and l <= -T.StaffMax + 1e-6, l)
+local d = 0.3
+for _ = 1, 10 do d = WeaponPose.StaffLift(d, 1, nil, T.StaffGap) end
+report("no ground under it: the lift goes back towards 0", math.abs(d) < 0.01, d)
+'''
+
+
+def staff_lift_checks(src: dict) -> list[tuple[str, bool, str]]:
+    wp = src["WP"]
+    fn = re.search(r"\nfunction WeaponPose\.StaffLift\(.*?\nend\n", wp, re.S)
+    vals = {k: re.search(k + r" = " + NUM, wp) for k in ("StaffGap", "StaffFix", "StaffMax")}
+    binary = ROOT / "build/luau_cli_0_741/luau.exe"
+    if not binary.exists():
+        binary = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
+    if not fn or not all(vals.values()):
+        return [("10/12: WeaponPose.StaffLift and T.StaffGap / StaffFix / StaffMax readable", False, "")]
+    code = (LIFT_HARNESS.replace("-- FUNC --", fn.group(0)).replace("GAP", vals["StaffGap"][1])
+            .replace("FIX", vals["StaffFix"][1]).replace("MAX", vals["StaffMax"][1]))
+    with tempfile.TemporaryDirectory() as d:
+        f = Path(d) / "staff_lift.luau"
+        f.write_text(code, encoding="utf-8")
+        r = subprocess.run([str(binary), str(f)], capture_output=True, text=True, encoding="utf-8", errors="replace")
+    out = []
+    for ln in r.stdout.splitlines():
+        if ln.startswith("CHECK_"):
+            ok = ln.startswith("CHECK_OK")
+            name, _, detail = ln.split(" ", 1)[1].partition(" :: ")
+            out.append((name, ok, detail))
+    if len(out) != 4 or r.returncode != 0:
+        out.append(("10/12: the StaffLift Luau run finished (4 checks)", False, (r.stderr or r.stdout)[-200:]))
+    return out
+
+
 def statics(src: dict) -> list[tuple[str, bool, str]]:
     wp = src["WP"]
     body = wp.split("function WeaponPose.OneHand(", 1)[-1].split("\nend\n", 1)[0]
@@ -641,8 +698,16 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          "return math.clamp(math.abs(c0.Position.X) / T.ShoulderX, 0.6, 1.4)" in wp
          and "CFrame.new(torso * (oh.At * (k or 1)))" in wp and "local hilt = torso * (th.Hilt * (k or 1))" in wp, ""),
         ("OneHand places the right hand from the weapon (TwoHandGoals) and writes only the right arm",
-         "local rGoal = WeaponPose.TwoHandGoals(torso, oh," in body and body.count("for i = 1, 3 do") == 2
+         "local rGoal = WeaponPose.TwoHandGoals(torso + Vector3.new(0, lift, 0), oh," in body and body.count("for i = 1, 3 do") == 2
          and "T.TwoJoints[i]" in body and "Left" not in body.replace("T.LeftGrip", ""), ""),
+        # 게임성 검수 10/12 (메인 반영 1 photo grips_low, the user's avatar: the staff tip 0.27 / 0.26 over the sole)
+        ("10/12: a staff's hand goal follows its Shaft's foot onto the ground (StaffStep: the foot cast down, StaffLift "
+         "applied to the goal, only the goal moves - the solve keeps the real torso)",
+         "local lift = WeaponPose.StaffStep(st, model)" in body
+         and "local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(pole))" in body
+         and "local foot = (shaft.CFrame * CFrame.new(0, -shaft.Size.Y / 2, 0)).Position" in wp
+         and "local hit = Ground.Cast(foot, 2, T.StaffReach)" in wp
+         and staff_gap_ok(wp, src["CV"]), ""),
         ("OneHand fades in with the pose weight", "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
         ("A23-128: OneHand bends the elbow to the row's Pole (else T.PoleRight)",
          'local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight' in body
@@ -653,7 +718,7 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
 
 
 def run(src: dict):
-    res = geometry(src) + statics(src)
+    res = geometry(src) + statics(src) + staff_lift_checks(src)
     lines = [("CHECK_OK " if ok else "CHECK_FAIL ") + name + (f" :: {d}" if d else "") for name, ok, d in res]
     return len(res), sum(0 if ok else 1 for _, ok, _ in res), lines
 
@@ -712,6 +777,15 @@ MUTATIONS = [
     ("CONFIG", "the Berserker's left arm held up", 'Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },',
      'Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 }, LeftShoulder = { 40, 0, 0 } },'),
     ("WP", "the row's Pole ignored", 'local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight', "local pole = T.PoleRight"),
+    # 게임성 검수 10/12 (the photo's floating staff tip)
+    ("WP", "the staff foot never fixed", "local lift = WeaponPose.StaffStep(st, model)", "local lift = 0"),
+    ("WP", "the lift pushes the wrong way", "return math.clamp(lift - off * T.StaffFix, -T.StaffMax, T.StaffMax)",
+     "return math.clamp(lift + off * T.StaffFix, -T.StaffMax, T.StaffMax)"),
+    ("WP", "no cap on the lift", "return math.clamp(lift - off * T.StaffFix, -T.StaffMax, T.StaffMax)", "return lift - off * T.StaffFix"),
+    ("WP", "a jump keeps the lift", "then return lift * (1 - T.StaffFix) end", "then return lift end"),
+    ("WP", "the solve moves with the goal (the torso lifted too)", "local pose = fx.SolveArm(right, torso, rGoal,",
+     "local pose = fx.SolveArm(right, torso + Vector3.new(0, lift, 0), rGoal,"),
+    ("WP", "a foot height other than the server's", "StaffGap = 0.08,", "StaffGap = 0.3,"),
     ("CV", "the dark sword never made", "function SHAPES.DarkSword(grip, sc, w, color)", "function SHAPES.DarkSword_(grip, sc, w, color)"),
     ("CONFIG", "a hand-on-hip sinks into the waist", "OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage",
      "OffHand = { At = Vector3.new(-0.6, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage"),

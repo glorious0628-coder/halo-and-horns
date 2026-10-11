@@ -4338,6 +4338,7 @@ Config.GooseEggFx = {
 	RetryAfter = 1.5, -- s: a preview the server turned down is not tried again sooner (no flicker)
 	MoveWindow = 0.5, MoveMin = 1, -- the preview needs MoveMin studs walked in MoveWindow s (the server's away rule)
 	GoneWait = 0.25,
+	MineSlack = 1, MineWindow = 0.5, -- 최종 검수 10/11: a removed egg within PickRadius + MineSlack of me while my EggCarry rose within MineWindow s = mine (no "someone picked it" pop)
 	SoundRange = 30,
 	PickSpeed = { 1, 1.12, 1.26 },
 	MarkHeight = 6,
@@ -4511,8 +4512,9 @@ Config.FieldBosses = {
 	Crowd = { PerHunter = 0.5, Max = 10, Radius = 50, Window = 15, Every = 0.5, Rise = 2, SoloSeconds = 120 },
 	-- the King Slime (A23-84; docs/design/king_slime_split_2026-10-08.md §3 / §3-1, 검수 OK 2026-10-08): the shrine's
 	-- KingSpawn, else the hill top (430, 14.6, -170) + 8 toward the path at 113 degrees
+	-- (Spawn = the place's KingSpawn marker, 검수 2026-10-11: the old hill-top spot is inside the shrine's footprint)
 	SlimeKing = { Enabled = true, Kind = "SlimeKing", FirstDelay = 180, Interval = 480, Lifetime = 300, Radius = 2,
-		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426.9, 14.6, -162.6), MinLevel = 0,
+		RetryDelay = 10, Attr = "KingSpawn", Hill = true, PathStep = 8, Spawn = Vector3.new(426, 26.1, -160.5), MinLevel = 0,
 		MaxY = 40 }, -- the hill-top shrine stands above normal ground (MonsterService.SpawnEvent opts.MaxY)
 	-- Captain Clatter (content_beyond_10min_2026-10-08 J, 검수 OK 2026-10-09): every 20 min, stays 6 min, a ruins spawn
 	-- point until 검수's tool marks ClatterSpawn. The chip shows from Lv25. On a defeat every paid contributor: +War own
@@ -5076,14 +5078,14 @@ Config.Loot = {
 		-- gathering (Config.Gather, GatherService; ids fixed: the market key I:<id> and the recipes use them). Icon keys named
 		-- by 디자인 검수 (10/11); the parts come with image session 2 -> image dev, until then the code fallback. CrownDust:
 		-- only from a Shard Bloom
-		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." },
-		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Sell it at the Forge." },
-		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Sell it at the Forge." },
-		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Sell it at the Forge." },
-		IronOre = { Kind = "Material", Name = "Iron Ore", Sell = 5, Color = Color3.fromRGB(130, 135, 145), Icon = "IconIronOre", Source = "Gather", Desc = "Sell it at the Forge." },
-		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Sell it at the Forge." },
-		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Sell it at the Forge." },
-		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Sell it at the Forge." },
+		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Artisans craft with it." },
+		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Artisans craft with it." },
+		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Artisans craft with it." },
+		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Artisans craft with it." },
+		IronOre = { Kind = "Material", Name = "Iron Ore", Sell = 5, Color = Color3.fromRGB(130, 135, 145), Icon = "IconIronOre", Source = "Gather", Desc = "Artisans craft with it." },
+		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Artisans craft with it." },
+		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Artisans craft with it." },
+		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Artisans craft with it." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5279,8 +5281,9 @@ Config.Loot = {
 		Potion = { HP = "HP Potion", MP = "MP Potion" },
 		PotionFull = "No room for %s.",
 		-- full-stack notices: at most once per item id (or potion kind) per player per FullNoticeSeconds, kind "info"
-		ItemFull = "%s is full (max %d).", -- materials
+		ItemFull = "%s is full (max %d).", -- materials (A23-130: the cap only, no sell / use tip)
 		ItemFullUse = "%s is full (max %d).", -- scrolls (not sellable)
+		ItemFullKeep = "%s is full (max %d).", -- gathered / crafted materials (a Source: not in the Forge's sell-all)
 		UseCombat = "You can't use scrolls in combat.",
 		EquipDead = "You can't change weapons while knocked out.",
 		RareWeapon = "%s weapon! You got %s!", -- grade name (Rare / Epic / Legendary), weapon
@@ -5302,11 +5305,16 @@ Config.Loot = {
 		-- A23-34: a weapon found while bare-handed is equipped at once (power change)
 		BareEquip = "[%s] equipped! Power %s → %s",
 		BareEquipEn = "[%s] equipped! Power %s → %s",
-		EnhanceOk = "Enhance success! %s +%d → +%d (attack %d%% → %d%%)",
-		EnhanceFailDown = "Enhance failed… %s +%d → +%d (your weapon is safe)",
-		EnhanceFailKeep = "Enhance failed… but %s stays +%d!",
+		-- 게임성 검수 10/12 (bag photo: "Enhance success! Wooden Sword +0 → +1 (attack…" cut at the column; A23-130 the
+		-- result only - the sound and the colour tell success / failure, the confirm already says weapons never break).
+		-- The callers' arguments stay (LootService, Panels: name, before, after, attack % before, after - the extra ones
+		-- unused). MoveOk gets (from name, its level left, to name, its new level): only the weapon that took the
+		-- enhance shows (%.0s prints nothing) - two long names did not fit one line
+		EnhanceOk = "%s +%d → +%d!",
+		EnhanceFailDown = "%s +%d → +%d", -- red (kind "bad") with ScrollFail: the lower number says it failed
+		EnhanceFailKeep = "%s stays +%d", -- (kind "info" with ScrollFail)
 		EnhanceMax = "Already at max enhance (+%d).",
-		MoveOk = "Transfer success! %s +%d · %s +%d",
+		MoveOk = "%.0s%.0s%s +%d!",
 		MoveFail = "Transfer failed… %s stays +%d.",
 		MoveSame = "Pick a different weapon.",
 		MoveNothing = "There is no enhance to move.",
@@ -8164,6 +8172,11 @@ Config.Gather = {
 	Double = 0.2,
 	Heavy = 200,
 	Ray = { From = 300, Length = 600 },
+	-- the jump watch (게임성 검수 10/12): samples every JumpSample s; a root that moved more than JumpStuds in one sample
+	-- (a teleport / fling, never a walk) cannot gather for AfterJump s
+	JumpSample = 0.5,
+	JumpStuds = 60,
+	AfterJump = 3,
 	Nodes = {
 		HerbBush = { Item = "Herb", Hold = 1.5, Action = "Pick", Plant = true, Zone = "SlimeMeadow", Color = Color3.fromRGB(140, 210, 255) },
 		CopperRock = { Item = "CopperOre", Hold = 2.0, Action = "Mine", Zone = "SlimeMeadow", Color = Color3.fromRGB(205, 125, 75) },
@@ -8298,6 +8311,25 @@ function Config.CraftXPToNext(lv)
 	return math.floor(K.XPBase * math.max(1, l) ^ K.XPExp)
 end
 
+-- A23-129 (게임성 개발 2): what keeps a new monster's body out (MonsterService CLEAR; 검수 2026-10-11 spawnclear review).
+-- TreeRule: a world-kit tree (a Model with exactly one TrunkPost and one mesh named here) blocks a disc of Base x the
+-- mesh's wider plan size round the TrunkPost, from the ground up to Canopy x its height, plus the mesh box above that
+-- (measured on the place 72a5f19b: 90% of the trunk / root geometry at body height, the canopy bottom). Any other mesh
+-- (W_GiantTree, town trees, bushes, boulders) keeps its full box. PassRule: a NON-collidable part whose name has a Pass
+-- word (and no NotPass word) never blocks: ground cover and effects, not props (A23-129 = trees, rocks, buildings, fences)
+Config.SpawnClear = {
+	TreeRule = true,
+	Trees = {
+		W_Tree_A = { Base = 0.26, Canopy = 0.26 },
+		W_Tree_B = { Base = 0.36, Canopy = 0.36 },
+		W_Tree_C = { Base = 0.34, Canopy = 0.46 },
+	},
+	PassRule = true,
+	Pass = { "Flower", "Grass", "Tuft", "Clover", "Lily", "Petal", "Puddle", "Wisp", "RedEye", "GlowEye", "Sparkle", "Mist",
+		"Falls", "Foam", "StepStone" },
+	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box" }, -- a flower cart / pot is furniture
+}
+
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
 -- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3
@@ -8413,6 +8445,14 @@ function Config.SanitizeCraft(t)
 	end
 	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
 	out.Made = V4.countMap(src.Made, L.MaxCount)
+	-- Pend (CraftService, 게임성 검수 10/12): a craft paid and not delivered yet = { Id = recipe id, Plus = -1 (not hammered
+	-- yet) | 0..2, Gold = what was paid, Mats = { [item] = n } paid } (a vanished recipe pays it back); anything else = none
+	known.Pend = true
+	local p = src.Pend
+	if type(p) == "table" and V4.key(p.Id) then
+		out.Pend = { Id = p.Id, Plus = V4.int(p.Plus, -1, 2) or -1, Gold = V4.int(p.Gold, 0, L.MaxCount) or 0,
+			Mats = V4.countMap(p.Mats, L.MaxCount) }
+	end
 	return V4.keepExtra(src, out, known)
 end
 

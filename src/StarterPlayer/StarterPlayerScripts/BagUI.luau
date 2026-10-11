@@ -521,7 +521,9 @@ function BagUI.Detail(cell, ctx)
 	else
 		local def = Config.Loot.Items[cell.Id]
 		line(tx(TXT, "Count", cell.Count))
-		if def and num(def.Sell, 0) > 0 then line(tx(TXT, "SellsFor", Util.FormatInt(math.floor(def.Sell)))) end
+		-- the Forge's sell-all takes monster materials only: a gathered / boss thing (a Source) shows no price until it can be
+		-- sold one at a time (SellItem, later) - 게임성 검수 10/12
+		if def and def.Source == nil and num(def.Sell, 0) > 0 then line(tx(TXT, "SellsFor", Util.FormatInt(math.floor(def.Sell)))) end
 		local from = dropsFrom(cell.Id, ctx.Seen)
 		if from then line(tx(TXT, "From", from), "Sub") end
 	end
@@ -918,7 +920,12 @@ local function drawGrid(area, all, list, cols)
 		end
 		if S.Mode then
 			if not BagUI.CellEnabled(S.Mode, cell) then
-				box.ImageTransparency = 0.55
+				-- the slot art is an ImageButton; without it UIKit's code slot is a TextButton (최종 검수 10/12)
+				if box:IsA("ImageButton") or box:IsA("ImageLabel") then
+					box.ImageTransparency = 0.55
+				else
+					box.BackgroundTransparency = 0.55
+				end
 				local icon = box:FindFirstChild("Icon")
 				if icon then icon.ImageTransparency = 0.55 end
 			end
@@ -950,7 +957,8 @@ local function drawDetail(frame, all, picked)
 	})
 	VIEW.DetailSig = nil
 	if not view.Title then return view end
-	local list = Instance.new("UIListLayout")
+	-- one layout for the column (최종 검수 10/12: clear() keeps layouts, so a new one per redraw piled up)
+	local list = frame:FindFirstChildOfClass("UIListLayout") or Instance.new("UIListLayout")
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.Padding = UDim.new(0, 6)
 	list.HorizontalAlignment = Enum.HorizontalAlignment.Center

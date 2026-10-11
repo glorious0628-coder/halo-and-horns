@@ -37,7 +37,8 @@ FILES = {"BAG": ROOT / "src/StarterPlayer/StarterPlayerScripts/BagUI.luau",
          "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
          "MAIN": ROOT / "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau",
          "HUD": ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau",
-         "PANELS": ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau"}
+         "PANELS": ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau",
+         "LOOT": ROOT / "src/ServerScriptService/LootService.luau"}
 FIXTURE = ROOT / "tools/fixtures/bag_ui_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
@@ -101,6 +102,17 @@ MUTATIONS = [
     ("BAG", "an empty potion shows no 0", "or (cell.Kind == \"Potion\" and cell.Count <= 0) then", "then"),
     ("BAG", "no letter for an icon without art", "\t\telseif type(mark) == \"table\" and type(mark.Text) == \"string\" then\n",
      "\t\telseif false then\n"),
+    ("BAG", "a gathered material shows a sell price (게임성 검수 10/12)", "if def and def.Source == nil and num(def.Sell, 0) > 0 then",
+     "if def and num(def.Sell, 0) > 0 then"),
+    ("BAG", "a new detail layout every redraw (최종 검수 10/12)",
+     "local list = frame:FindFirstChildOfClass(\"UIListLayout\") or Instance.new(\"UIListLayout\")", "local list = Instance.new(\"UIListLayout\")"),
+    ("BAG", "a code slot gets ImageTransparency (최종 검수 10/12)", "\t\t\t\tif box:IsA(\"ImageButton\") or box:IsA(\"ImageLabel\") then\n",
+     "\t\t\t\tif true then\n"),
+    ("PANELS", "the rail on touch too (최종 검수 10/12)", "\tif not UserInputService.TouchEnabled and type(tiles) == \"table\" and type(tiles.Y) == \"number\" then\n",
+     "\tif type(tiles) == \"table\" and type(tiles.Y) == \"number\" then\n"),
+    ("PANELS", "the Forge sell-all counts gathered things (게임성 검수 10/12)",
+     "\t\tif def.Kind == \"Material\" and def.Source == nil then\n\t\t\tlocal n = ITEMS.Count(items, id)",
+     "\t\tif def.Kind == \"Material\" then\n\t\t\tlocal n = ITEMS.Count(items, id)"),
     ("BAG", "leaving a tab never clears its new things", "\t\tmarkSeen(S.Tab)\n\t\tS.Mode, S.Result = nil, nil\n", "\t\tS.Mode, S.Result = nil, nil\n"),
     ("BAG", "the fight tag never repaints", "local parts = { inCombat() and \"c\" or \"\",", "local parts = { \"\","),
     ("BAG", "Drink sends nothing", "if ok and def and send(\"UsePotion\", nil, def.Kind) then", "if false then"),
@@ -139,9 +151,13 @@ def static(src: dict) -> list[tuple[str, bool]]:
          and "return table.clone(ITEMS.Result), ITEMS.ResultAt" in src["PANELS"]),
         ("Panels: LastInventory hands out the last Inventory payload (a push before the bag bound)",
          "function Panels.LastInventory()\n\treturn ITEMS.Raw\nend" in src["PANELS"] and "\tITEMS.Raw = payload" in src["PANELS"]),
-        ("Panels: a window ends above the HUD icon row on a short screen (게임성 검수 10/12)",
-         "local room = tiles.Y * (h / hl.H) - FRAME.RailGap - (top + hang)" in src["PANELS"]
+        ("Panels: a window ends above the HUD icon row on a short PC screen, same units, never on touch (최종 검수 10/12)",
+         "if not UserInputService.TouchEnabled and type(tiles) == \"table\" and type(tiles.Y) == \"number\" then" in src["PANELS"]
+         and "local room = tiles.Y - FRAME.RailGap - (top + hang)" in src["PANELS"] and "h / hl.H" not in src["PANELS"]
          and "if room >= FRAME.RailMinRoom and room < availH then availH = room end" in src["PANELS"]),
+        ("Panels: the Forge's sell-all total counts monster materials only (a Source = not in the sell-all, 게임성 검수 10/12)",
+         "\t\tif def.Kind == \"Material\" and def.Source == nil then\n\t\t\tlocal n = ITEMS.Count(items, id)" in src["PANELS"]
+         and "if def and def.Source ~= nil then def = nil end" in src["LOOT"]),
         ("Panels: the menu opens the bag once it exists (one item window)",
          'BUILDERS.Bag and { Text = T.MenuBag, Id = "Bag" } or { Text = T.MenuItems, Id = "Items" },' in src["PANELS"]
          and 'if id == "Items" or id == "Bag" then itemsBtn = b end' in src["PANELS"]),

@@ -86,7 +86,16 @@ runGroup("craft", function()
 	check(x.Later == 3 and x.Flag == true and x.Word == "ok" and x.Deep == nil and x.Huge == nil and count(x) == 8,
 		"an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
 		show(x))
-	local once = C.SanitizeCraft({ Smith = { Lv = 3, XP = 1 }, Rep = 5, Made = { A = 1 }, Later = 2 })
+	local pd = C.SanitizeCraft({ Pend = { Id = "W3", Plus = 2, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20 } } }).Pend
+	check(sameTable(pd, { Id = "W3", Plus = 2, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20 } }), "Pend: a paid craft is kept", show(pd))
+	local pc = C.SanitizeCraft({ Pend = { Id = "W1", Plus = 7, Gold = -5, Mats = "x" } }).Pend
+	check(pc.Plus == 2 and pc.Gold == 0 and sameTable(pc.Mats, {}), "Pend: Plus cut to 2, a negative gold 0, broken Mats {}", show(pc))
+	check(C.SanitizeCraft({ Pend = { Id = "W1", Plus = 0 / 0 } }).Pend.Plus == -1 and C.SanitizeCraft({ Pend = { Id = "W1", Plus = -9 } }).Pend.Plus == -1,
+		"Pend: NaN / below -1 = -1 (not hammered yet)", "")
+	check(C.SanitizeCraft({ Pend = "W1" }).Pend == nil and C.SanitizeCraft({ Pend = { Id = 5 } }).Pend == nil
+		and C.SanitizeCraft({ Pend = { Id = string.rep("w", 33) } }).Pend == nil and C.SanitizeCraft({}).Pend == nil,
+		"Pend: a text, a number id, a long id or none = no Pend", "")
+	local once = C.SanitizeCraft({ Smith = { Lv = 3, XP = 1 }, Rep = 5, Made = { A = 1 }, Later = 2, Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { Jelly = 10 } } })
 	check(sameTable(C.SanitizeCraft(once), once), "repairing twice = once (idempotent)", "")
 end)
 
