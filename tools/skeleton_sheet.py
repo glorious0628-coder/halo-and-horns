@@ -2,6 +2,7 @@
 100% crops of the door, a window, the top corner and the base band (이미지 생성 3, 10/11, SPEC A23-120).
 
   py tools/skeleton_sheet.py <2d.png> <tripo_dir> <skel_dir> <out.jpg> [--cx -0.25] [--title "..."] [--note "..."]
+        [--first "row title|label=path;label=path" ...] [--studio "row title|label=path;..." ...]
 
 tripo_dir / skel_dir = tools/skeleton_preview.py outputs (front.png etc.: ortho, 24 studs across, centre (cx, z 9.8)).
 Crop boxes are in studs on the front view (x, z; +x is on the image left); the 2D boxes are given in its own pixels.
@@ -19,6 +20,7 @@ ap.add_argument("--cx", type=float, default=-0.25)
 ap.add_argument("--title", default="")
 ap.add_argument("--note", default="")
 ap.add_argument("--studio", nargs="*", default=[], help="extra row(s) of Studio photos: 'row title|label=path;label=path'")
+ap.add_argument("--first", nargs="*", default=[], help="row(s) in the same form, put at the top")
 a = ap.parse_args()
 PX = 1400 / 24.0
 try:
@@ -72,14 +74,22 @@ close = [(n, Image.open(a.skel + "/%s.png" % f).convert("RGB").resize((560, 560)
 close += [(n, Image.open(a.tripo + "/%s.png" % f).convert("RGB").resize((560, 560), Image.LANCZOS))
           for n, f in (("Tripo판 문 가까이", "close_door"), ("Tripo판 창 가까이", "close_window"))]
 rows.append(("가까이 (원근)", close))
-for spec in a.studio:
-    title, items = spec.split("|", 1)
-    row = []
-    for it in items.split(";"):
-        lab, path = it.split("=", 1)
-        im = Image.open(path).convert("RGB")
-        row.append((lab, im.resize((int(im.width * 330 / im.height), 330), Image.LANCZOS)))
-    rows.append((title, row))
+
+
+def spec_rows(specs, h=330):
+    out = []
+    for spec in specs:
+        title, items = spec.split("|", 1)
+        row = []
+        for it in items.split(";"):
+            lab, path = it.split("=", 1)
+            im = Image.open(path).convert("RGB")
+            row.append((lab, im.resize((int(im.width * h / im.height), h), Image.LANCZOS)))
+        out.append((title, row))
+    return out
+
+
+rows = spec_rows(a.first, 520) + rows + spec_rows(a.studio)
 
 GAP, HEAD, CAP = 12, 40, 30
 W = max(sum(im.width for _, im in items) + GAP * (len(items) + 1) for _, items in rows)
