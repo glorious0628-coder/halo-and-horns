@@ -1078,5 +1078,9 @@
   "SA_HaloDomeHouse_07_WinPane_C": "rbxassetid://87455312703098",
   "SA_HaloDomeHouse_07_WinPane_N": "rbxassetid://120352193453555",
   "SA_HaloDomeHouse_07_WinPane_M": "rbxassetid://128192552555281",
-  "SA_HaloDomeHouse_07_WinPane_R": "rbxassetid://104763175807856"
+  "SA_HaloDomeHouse_07_WinPane_R": "rbxassetid://104763175807856",
+  "HaloTile_Halo_GoldTrim_color": "rbxassetid://94913368757526",
+  "HaloTile_Halo_GoldTrim_normal": "rbxassetid://131597673772642",
+  "HaloTile_Halo_GoldTrim_metal": "rbxassetid://91394364117916",
+  "HaloTile_Halo_GoldTrim_rough": "rbxassetid://82910627301523"
 }

@@ -1,9 +1,28 @@
 {
  "note": "A23-120 (user 10/11 '건물 골격 먼저'): Halo town buildings = Studio part skeleton + tile MaterialVariants (this list) + Tripo trim parts. Parts set MaterialVariant = Name (no override of the base material). tools/building_variants.py writes the Luau. StudsPerTile starts at 8; 이미지 생성 3 sets it from the house 07 skeleton in WorldKit.",
  "variants": [
-  {"name": "HH_HaloMarbleBlock", "base": "Marble", "studsPerTile": 8, "pattern": "Regular",
+  {
+   "name": "HH_HaloMarbleBlock",
+   "base": "Marble",
+   "studsPerTile": 9,
+   "pattern": "Regular",
    "source": "art/ui/halo_tile/Halo_TowerMarbleBlock_* (uploaded by 이미지 생성 1, art/models/worldkit/halo_tower_marble_maps_2026-10-10.json)",
-   "color": "rbxassetid://133937959661245", "normal": "rbxassetid://126193858276827",
-   "rough": "rbxassetid://82509703836879", "metal": "rbxassetid://87489921567476"}
+   "color": "rbxassetid://133937959661245",
+   "normal": "rbxassetid://126193858276827",
+   "rough": "rbxassetid://82509703836879",
+   "metal": "rbxassetid://87489921567476",
+   "studsNote": "이미지 생성 3 10/11: house 07 skeleton, about 6 block rows over the 8-stud door (concept 1.2-1.4 studs a row)"
+  },
+  {
+   "name": "HH_HaloGoldTrim",
+   "base": "Metal",
+   "studsPerTile": 4,
+   "pattern": "Regular",
+   "source": "art/ui/halo_tile/Halo_GoldTrim_{color,normal,metal,rough}.png (이미지 생성 3 10/11: near-white colour, the part Color (240,186,56) gives the gold; metal 1, roughness 0.25, flat normal)",
+   "color": "rbxassetid://94913368757526",
+   "normal": "rbxassetid://131597673772642",
+   "metal": "rbxassetid://91394364117916",
+   "rough": "rbxassetid://82910627301523"
+  }
  ]
 }
