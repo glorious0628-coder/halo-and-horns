@@ -97,7 +97,8 @@ def main() -> int:
                      "with no other field changes (v2 legendary, "
                      "enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
                      "finite-value save serialization guard and migration idempotence",
-                     "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly "
+                     "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.Claimed (A23-130: "
+                     "'+%s gold', the same line as a manual claim) exactly "
                      "Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the "
                      "Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; "
                      "never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
@@ -105,8 +106,8 @@ def main() -> int:
                      "(the Forge row 'Go to Otto's Forge', NO automatic trip: no Fx Travel, no lock, nobody moved); meadow kills "
                      "before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 'Travel to Squishy Meadow' "
                      "(2 in the meadow), once, no meadow trip; arriving in the meadow (the pad, Map -> Travel or a walk) -> the "
-                     "hunt; a save owning tier 1 -> step 1, no trip; every claim clears BlacksmithVisited, Claimed = the next "
-                     "weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); "
+                     "hunt; a save owning tier 1 -> step 1, no trip; every claim clears BlacksmithVisited, Claimed = the reward "
+                     "only for every save (A23-130); step 3 survives save/reload (4 = invalid -> 99); "
                      "RequestTutorial asks for no trip at any step; a KO at step 3 respawns at home"],
         "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. "
                        "F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); "

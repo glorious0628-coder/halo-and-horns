@@ -1046,7 +1046,7 @@ local function gooseWorld(roster)
 	f.GS = gs
 	local net = { GameState = function() return gs end }
 	function net.Notify(p, text, kind) table.insert(f.Notices, { Player = p, Text = text, Kind = kind }) end
-	function net.NotifyAll(text, kind) table.insert(f.All, { Text = text, Kind = kind }) end
+	function net.NotifyAll(text, kind, duration) table.insert(f.All, { Text = text, Kind = kind, Duration = duration }) end
 	function net.Fx(p, kind, data) table.insert(f.Fx, { Player = p, Kind = kind, Data = data }) end
 	local util = { Signal = { new = signal }, Now = function() return f.Now end, FormatNumber = tostring,
 		PlayerDisplayName = function(p) return p.Name end, Random = { NextNumber = function() return 0.999 end },
@@ -1153,6 +1153,24 @@ local GT = G.Text
 local function reward(level, faction, won, share)
 	return CONFIG.GooseReward(level, faction, won, false, share)
 end
+-- A23-130 (user 2026-10-11): the start is one short "Golden Goose!" banner for 2 s, once, in every mode (no co-op band)
+local function startLine(f)
+	local n, ok = 0, true
+	for _, e in f.All do
+		if e.Text == GT.Start then
+			n += 1
+			ok = ok and e.Kind == "announce" and e.Duration == 2
+		end
+		if string.find(e.Text, "Only ", 1, true) or string.find(e.Text, "landed in the Crossroads", 1, true) then ok = false end
+	end
+	return n == 1 and ok
+end
+
+runGroup("goose-start-line", function()
+	check(GT.Start == "Golden Goose!" and G.StartSeconds == 2, "Config.Goose.Text.Start = 'Golden Goose!', StartSeconds = 2",
+		show({ GT.Start, G.StartSeconds }))
+	check(GT.CoopStart == nil and CONFIG.Story.GooseStart == nil, "the old start texts are gone (co-op band, tug two-liner)")
+end)
 
 runGroup("goose-coop", function()
 	check(G.CoopPerPerson == 20 and G.CoopWinShare == 0.7 and G.MinManualHits == 3, "Config.Goose co-op numbers 20 / 0.7 / 3 manual hits",
@@ -1163,7 +1181,7 @@ runGroup("goose-coop", function()
 	local A = f.GS.Attrs
 	check(A.GooseActive == true and A.GooseMode == "Coop" and A.GooseCoopSide == "Halo" and A.GooseCoopTarget == 20
 		and A.GooseCoopPeople == 1, "only Halo on the server: GameState GooseMode Coop / Halo / target 20 / 1 person", show(A))
-	check(f:AllText(GT.CoopStart.Halo) == 1, "co-op start line announced (Halo: 함께 구조)")
+	check(startLine(f), "co-op start: one short line for 2 s (A23-130, no co-op band)", show(f.All))
 	check(f:Hit(f.H1, 9, true) == 18, "manual hits pull ManualCount 2 each", A.GooseRescue)
 	f:Tick()
 	check(f:AllText(string.format(GT.CoopFull.Halo, G.MinManualHits)) == 0, "no 'gauge full' line before the target")
@@ -1191,7 +1209,7 @@ runGroup("goose-coop", function()
 	-- solo Horns: 함께 밀렵, Horns reward shape
 	local h = gooseWorld({ { "R1", "Horns", 4 } })
 	h:Begin()
-	check(h.GS.Attrs.GooseCoopSide == "Horns" and h:AllText(GT.CoopStart.Horns) == 1, "only Horns: co-op for Horns (함께 밀렵)")
+	check(h.GS.Attrs.GooseCoopSide == "Horns" and startLine(h), "only Horns: co-op for Horns (함께 밀렵), the same short start line")
 	h:Hit(h.R1, 10, true)
 	local hf = h:End()
 	local rg, rx = reward(4, "Horns", true, 0.7)
@@ -1257,11 +1275,13 @@ runGroup("goose-modes", function()
 	check(p:Hit(late, 1, true) == 2, "the first eligible hit fixes the mode and counts")
 	check(p.GS.Attrs.GooseMode == "Coop" and p.GS.Attrs.GooseCoopSide == "Halo" and p.GS.Attrs.GooseCoopTarget == 20,
 		"Pending -> co-op for the first eligible faction", show(p.GS.Attrs))
-	check(p:AllText(GT.CoopStart.Halo) == 1, "the co-op line is announced when the mode is fixed")
+	check(startLine(p) and #p.All == 1, "A23-130: the mode fixed later adds no second line (the start line was the only one)",
+		show(p.All))
 	-- versus: both factions -> the normal tug, 100% / 40%, war points
 	local v = gooseWorld({ { "H1", "Halo", 2 }, { "R1", "Horns", 2 } })
 	v:Begin()
 	check(v.GS.Attrs.GooseMode == "Versus", "both factions present: Versus")
+	check(startLine(v), "versus start: the same short line for 2 s (A23-130, no two-line story text)", show(v.All))
 	v:Hit(v.H1, 5, true); v:Hit(v.R1, 3, true)
 	local vf = v:End()
 	check(vf.Result == "Halo" and vf.Info.Mode == "Versus", "versus winner by totals", show(vf.Info))

@@ -147,7 +147,7 @@ def static() -> tuple[int, list[str]]:
           f"the shown (earned) sources are the 2x Gold ones, never a transfer or a pre-boosted one ({sorted(sources)})")
     quest = strip_comments(read(SSS / "QuestService.luau"))
     for text in ("cg, cx = payReward(player, cg, cx)", "local gotGold = payReward(player,", "paidGold += (payReward(player, g, x))",
-                 "Util.FormatNumber(gotGold)), \"reward\", auto and 6 or nil", "Config.Text.QuestDone, Util.FormatNumber(gotGold)"):
+                 "string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), \"reward\", nil, \"QuestDone\"", "Config.Text.QuestDone, Util.FormatNumber(gotGold)"):
         check(text in quest, f"QuestService shows what payReward / the first mission added: {text}")
     check(quest.count("g, x = payReward(player, g, x)") == 2, "QuestService: the daily claim and the vacation show what was added")
     pay = function_block(quest, "local function payReward(")

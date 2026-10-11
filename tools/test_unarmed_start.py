@@ -246,10 +246,11 @@ def static() -> tuple[int, list[str]]:
     # A23-74: the first weapon comes at the Forge step, so every claim clears the earlier visit (M1_1 needs a new one)
     check('\tS.PlayerService.SetStat(player, "BlacksmithVisited", false)\n\tsetStep(player, TUT_DONE)' in quest,
           "the first-mission claim always clears an earlier anvil visit (behavior: test_weapon_first)")
-    check("if armed then\n\t\ttext = auto and (TUT_MESSAGES.AutoClaimedArmed or text) or (TUT_MESSAGES.ClaimedArmed or text)" in quest
+    # A23-130 (user 2026-10-11): the claim line is the reward only for every save (no armed / auto variants)
+    check("TUT_MESSAGES.ClaimedArmed" not in quest and "TUT_MESSAGES.AutoClaimed" not in quest
           and "hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith" in quest,
-          "a better weapon owned: the claim lines without the next-weapon promise; the first weapon owned: the row without "
-          "the first-weapon promise (behavior: test_weapon_first)")
+          "one reward-only claim line (A23-130); the first weapon owned: the row without the first-weapon promise "
+          "(behavior: test_weapon_first)")
     return count, failures
 
 

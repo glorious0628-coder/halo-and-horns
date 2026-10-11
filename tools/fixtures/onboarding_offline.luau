@@ -253,7 +253,8 @@ do
 	check(f.Data.TutorialStep == 3 and f.Data.TutorialKills == 0, "A23-74: the meadow before the Forge credits no kill")
 	check(f.Quest.ForgeGift(f.Player) == true and f.Data.TutorialStep == 2,
 		"A23-74: the gift moves the mission on (standing in the meadow: straight to the hunt)")
-	check(f.Notices[#f.Notices - 1] == TT.ForgeGift, "A23-74: Otto's gift line", tostring(f.Notices[#f.Notices - 1]))
+	check(f.Notices[#f.Notices] == TT.ForgeGift, "A23-74: Otto's gift line, the last one (A23-130: no 'First mission' line after it)",
+		tostring(f.Notices[#f.Notices]))
 	check(f.Quest.ForgeGift(f.Player) == false, "A23-74: no second gift after the Forge step")
 	f = fixture(); f:Choose(); f:Publish(); f:Arm()
 	f:Accept(); f:Publish()
@@ -335,12 +336,12 @@ do
 		"A23-74: a tier-1 owner's claim clears the anvil visit too (M1_1 needs a new one)")
 	local last = f.Notices[#f.Notices]
 	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)),
-		"A23-74: a tier-1 owner gets the next-weapon line", last)
+		"A23-130: a tier-1 owner gets the same reward-only line", last)
 	local h = saved(2, 5); h.Version, h.WeaponTier, h.WeaponOwnedMask, h.BlacksmithVisited = 3, 2, 3, true
 	local k = fixture(h)
 	k:Claim()
-	check(k.Data.BlacksmithVisited == false and k.Notices[#k.Notices] == string.format(T.ClaimedArmed, tostring(k.Config.Tutorial.QuestRewardGold)),
-		"A23-74: a save that owns the tier-2 weapon already: the 'check the gear' line", k.Notices[#k.Notices])
+	check(k.Data.BlacksmithVisited == false and k.Notices[#k.Notices] == string.format(T.Claimed, tostring(k.Config.Tutorial.QuestRewardGold)),
+		"A23-130: a save that owns the tier-2 weapon already: the same reward-only line", k.Notices[#k.Notices])
 	local g = fixture(saved(99, 5)) -- step 99, tier 1 owned, no visit yet: the row has no first-weapon promise
 	check(g.LastList[1].Text == T.VisitBlacksmithArmed, "a tier-1 owner's pinned row: 'check the weapons'", g.LastList[1].Text)
 end
@@ -796,25 +797,28 @@ do
 end
 -- F10-4 safety net (2026-10-06): while TutorialStep == 2 and TutorialKills >= 5, QuestService starts a timer
 -- (os.clock = f.Clock, from the first time this server sees it, also right after a rejoin); after
--- Config.Tutorial.AutoClaimSeconds it pays QuestRewardGold once with Text.AutoClaimed. A manual [받기] first clears
+-- Config.Tutorial.AutoClaimSeconds it pays QuestRewardGold once with Text.Claimed (A23-130: the same reward-only line as
+-- a [받기]). A manual [받기] first clears
 -- it, kills < 5 reset it, leaving clears it. The tutorial loop is the fixture's coroutine double (one tick per second).
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
 	local T = cfg.Tutorial
 	check(T.AutoClaimSeconds == 60, "F10-4 Config.Tutorial.AutoClaimSeconds is 60")
-	check(type(T.Text.AutoClaimed) == "string" and string.find(T.Text.AutoClaimed, "%s", 1, true) ~= nil
-		and T.Text.AutoClaimed ~= T.Text.Claimed, "F10-4 Text.AutoClaimed is its own line with the gold amount")
-	check(type(T.Text.AutoClaimedEn) == "string" and string.find(T.Text.AutoClaimedEn, "%s", 1, true) ~= nil,
-		"F10-4 Text.AutoClaimed has its English twin")
+	-- A23-130 (user 2026-10-11): the claim line is the reward only; no start / ready lines, no auto / armed variants
+	check(T.Text.Claimed == "+%s gold", "A23-130 Text.Claimed = '+%s gold' (the reward only)", T.Text.Claimed)
+	local gone = true
+	for _, k in { "QuestStart", "QuestReady", "AutoClaimed", "AutoClaimedEn", "ClaimedEn", "ClaimedArmed", "ClaimedArmedEn",
+		"AutoClaimedArmed", "AutoClaimedArmedEn" } do
+		if T.Text[k] ~= nil then gone = false end
+	end
+	check(gone, "A23-130 the old start / ready / thank-you lines are gone from Config.Tutorial.Text")
 end
 do
 	local function lines(f)
 		local gold = tostring(f.Config.Tutorial.QuestRewardGold)
-		local T = f.Config.Tutorial.Text
-		-- A23-74: only a save that owns a better weapon than the first one gets the lines without the next-weapon promise
-		-- (these Version 2 rows own tier 1 only after migrate: the next-weapon lines)
-		local armed = bit32.band(math.floor(tonumber(f.Data.WeaponOwnedMask) or 0), bit32.bnot(1)) ~= 0
-		return string.format(armed and T.AutoClaimedArmed or T.AutoClaimed, gold), string.format(armed and T.ClaimedArmed or T.Claimed, gold)
+		-- A23-130: the safety net and a [받기] say the same reward-only line
+		local line = string.format(f.Config.Tutorial.Text.Claimed, gold)
+		return line, line
 	end
 	local function count(f, text)
 		local n = 0
@@ -827,13 +831,11 @@ do
 			.. tostring(f.Data.BankGold) .. ", auto lines " .. count(f, auto) .. ", claimed lines " .. count(f, manual) .. "]"
 	end
 	local function unpaid(f) return f.Data.TutorialStep == 2 and f.Data.BankGold == 0 end
-	local function paidOnce(f, auto)
-		local autoText, manualText = lines(f)
-		return f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold
-			and count(f, autoText) == (if auto then 1 else 0) and count(f, manualText) == (if auto then 0 else 1)
+	local function paidOnce(f)
+		return f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold and count(f, (lines(f))) == 1
 	end
 
-	-- 1. 4/5 never starts it; at 5/5 it pays exactly AutoClaimSeconds later, once, with Text.AutoClaimed
+	-- 1. 4/5 never starts it; at 5/5 it pays exactly AutoClaimSeconds later, once, with Text.Claimed
 	local f = fixture(saved(2, 0))
 	local AUTO = f.Config.Tutorial.AutoClaimSeconds
 	for _ = 1, 4 do f:Kill() end
@@ -844,7 +846,7 @@ do
 	check(unpaid(f) and f.Data.TutorialKills == 5, "F10-4 no auto-claim before AutoClaimSeconds (59 s after 5/5)" .. state(f))
 	check(f.LastList[1].CanClaim == true, "F10-4 the [받기] row stays claimable while the safety net waits")
 	f:Advance(1)
-	check(paidOnce(f, true), "F10-4 at AutoClaimSeconds the safety net pays QuestRewardGold once with Text.AutoClaimed" .. state(f))
+	check(paidOnce(f, true), "F10-4 at AutoClaimSeconds the safety net pays QuestRewardGold once with the reward line" .. state(f))
 	local autoText = lines(f)
 	local entry = nil
 	for _, e in f.NoticeLog do if e.Text == autoText then entry = e end end
@@ -862,7 +864,7 @@ do
 	-- 2. a manual claim first: the normal Claimed line, and the safety net never pays afterwards
 	f = fixture(saved(2, 4)); f:Kill()
 	f:Advance(30); f:Claim()
-	check(paidOnce(f, false), "F10-4 a [받기] before the timer pays the normal Claimed line" .. state(f))
+	check(paidOnce(f, false), "F10-4 a [받기] before the timer pays once (the reward line)" .. state(f))
 	f:Advance(AUTO * 3)
 	check(paidOnce(f, false), "F10-4 after a manual claim the safety net never pays" .. state(f))
 	-- white-box: the claim also clears the timer (a later 5/5 at step 2 counts from 0, not from the first 5/5)
