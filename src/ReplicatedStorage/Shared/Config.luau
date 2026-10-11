@@ -209,7 +209,7 @@ Config.Data = {
 		SavedBullyAt = 0,
 		SavedStars = 0,
 		SavedStarsAt = 0,
-		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound }, Equipped = { uid }, Next = the
+		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound, Roll? }, Equipped = { uid }, Next = the
 		-- next uid number, Away = put away by the player (PET-2b: stays away after a rejoin; never the tamer).
 		-- TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
 		Pets = { List = {}, Equipped = {}, Next = 1, Away = false },
@@ -8103,6 +8103,234 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, tonumber(R.MaxHP) or 2500))
 	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
 	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
+end
+
+----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
+-- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
+-- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3
+-- server keeps them untouched). 게임성 개발 2's C1 then bumps Config.Data.Version to 4 on top (tier 9 = a 9-bit weapon
+-- mask) with Spares and Market. Later branches only add behaviour, never another shape. Rules: ids and numbers only (no
+-- player-facing text, A23-111 / A23-133); a repair never makes a value up (broken = the default or dropped, counts cut at
+-- the caps); a sane flat key this code does not know is kept (a later key needs no version bump); a thing lives in one
+-- place only (Gear.Own OR worn in Gear.On / Gear.Pet). Owners: Craft / Research / Gather / Gear / Buffs = 게임성 개발 3,
+-- Shop / EggHonorAt = 게임성 개발 2. The services keep their own caps when they write (e.g. 60 things in Gear.Own).
+Config.SaveV4 = {
+	KeyLen = 32, -- longest id key kept (recipe, monster family, tonic, pet uid)
+	SlotLen = 16, -- longest gear slot / kind name kept (letters only)
+	MaxKeys = 64, -- most keys kept in one id map (Craft.Made, Research.Pts / Sum, Gear.Own, Gear.Pet)
+	MaxCount = 10000000, -- a counter above this is cut (never a free huge number)
+	CraftRoles = { "Smith", "Alch", "Tame" }, -- Blacksmith, Alchemist, Tamer: one craft level each (a class change starts over)
+	CraftMaxLv = 30,
+	GearSlots = { "Armor", "Ring" }, -- the player's worn slots (Gear.On, always present)
+	GearMaxTier = 16,
+	OwnKeyMax = 20, -- Gear.Own: at most this many of one "<kind>:T:P" key
+	BuffMax = 2, -- Buffs: at most two tonics at once
+	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
+	ShopDayMax = 50, -- Shop.N: Otto's cheap materials a KST day (게임성 개발 2)
+	PetRollSpd = { 5, 10 }, -- Pets.List[uid].Roll.Spd: a summoned pet's walk bonus in whole % (PetService.Sanitize)
+}
+-- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
+-- Made (recipe id -> times made). Research: the tamer's points (Pts) and summons (Sum) per monster family (QuestKind).
+-- Gather: Day (KST DayIndex of N / Bloom / Gift), N (gathers today), Bloom (shard blooms today), Gift (crown dust others
+-- shared today), Total (gathers ever), FirstBloom (the sure first bloom came). Gear: Own["<kind>:T:P"] = n (kinds Armor,
+-- Ring, PetArmor, PetAcc), On.<slot> = "T:P" | "" (the player wears it), Pet[pet uid].<slot> = "T:P" (a pet wears it; kept
+-- outside Pets because PetService.Sanitize rebuilds every pet row). Buffs: tonic id -> os.time() it ends. Shop: Otto's
+-- cheap materials { Day, N }. EggHonorAt: os.time() of the last golden egg Honor / Infamy +5 (A23-134, once an hour)
+Config.Data.Defaults.Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {} }
+Config.Data.Defaults.Research = { Pts = {}, Sum = {} }
+Config.Data.Defaults.Gather = { Day = 0, N = 0, Bloom = 0, Gift = 0, Total = 0, FirstBloom = false }
+Config.Data.Defaults.Gear = { Own = {}, On = { Armor = "", Ring = "" }, Pet = {} }
+Config.Data.Defaults.Buffs = {}
+Config.Data.Defaults.Shop = { Day = 0, N = 0 }
+Config.Data.Defaults.EggHonorAt = 0
+
+-- the repair helpers of the v4 tables (one local for the whole set: Config's top chunk is near the 200 locals limit)
+local V4 = {}
+
+-- a whole number in lo..hi (a fraction floored), or nil for NaN / +-inf / anything that is not a number
+function V4.int(v, lo, hi)
+	if type(v) ~= "number" or v ~= v or v == math.huge or v == -math.huge then return nil end
+	return math.clamp(math.floor(v), lo, hi)
+end
+
+function V4.key(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.KeyLen
+end
+
+function V4.slot(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.SlotLen and string.match(k, "^%a+$") ~= nil
+end
+
+-- "T:P" -> "T:P" written plainly (tier 1..GearMaxTier, plus 0..Config.Loot.MaxEnhance), or nil
+function V4.tierPlus(s)
+	if type(s) ~= "string" or #s > 12 then return nil end
+	local t, p = string.match(s, "^(%d+):(%d+)$")
+	t, p = tonumber(t), tonumber(p)
+	if not t or not p or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.Loot.MaxEnhance then return nil end
+	return string.format("%d:%d", t, p)
+end
+
+-- the keys of a table that pass `ok`, sorted (the same save always keeps the same ones when a map is cut)
+function V4.sortedKeys(t, ok)
+	local keys = {}
+	if type(t) ~= "table" then return keys end
+	for k in t do
+		if ok(k) then table.insert(keys, k) end
+	end
+	table.sort(keys)
+	return keys
+end
+
+-- { [id] = count }: sane ids, whole counts 1..max (0 / broken dropped), at most MaxKeys ids
+function V4.countMap(src, max)
+	local out, kept = {}, 0
+	for _, k in V4.sortedKeys(src, V4.key) do
+		local n = V4.int(src[k], 0, max)
+		if n and n > 0 and kept < Config.SaveV4.MaxKeys then
+			out[k] = n
+			kept += 1
+		end
+	end
+	return out
+end
+
+-- copies the sane flat keys of `src` that `known` does not name (a short string key with a boolean, a finite number or
+-- a short string): a later version's new flat field survives this one
+function V4.keepExtra(src, out, known)
+	for k, v in src do
+		if V4.key(k) and not known[k] and out[k] == nil then
+			if type(v) == "boolean" or (type(v) == "string" and #v <= Config.SaveV4.KeyLen) then
+				out[k] = v
+			elseif V4.int(v, -math.huge, math.huge) ~= nil then
+				out[k] = v
+			end
+		end
+	end
+	return out
+end
+
+function Config.SanitizeCraft(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	local out, known = {}, { Rep = true, Made = true }
+	for _, role in L.CraftRoles do
+		known[role] = true
+		local r = type(src[role]) == "table" and src[role] or {}
+		out[role] = { Lv = V4.int(r.Lv, 1, L.CraftMaxLv) or 1, XP = V4.int(r.XP, 0, L.MaxCount) or 0 }
+	end
+	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
+	out.Made = V4.countMap(src.Made, L.MaxCount)
+	return V4.keepExtra(src, out, known)
+end
+
+function Config.SanitizeResearch(t)
+	local src = type(t) == "table" and t or {}
+	local out = { Pts = V4.countMap(src.Pts, Config.SaveV4.MaxCount), Sum = V4.countMap(src.Sum, Config.SaveV4.MaxCount) }
+	return V4.keepExtra(src, out, { Pts = true, Sum = true })
+end
+
+function Config.SanitizeGather(t)
+	local src = type(t) == "table" and t or {}
+	local out = { FirstBloom = src.FirstBloom == true }
+	for _, k in { "Day", "N", "Bloom", "Gift", "Total" } do
+		out[k] = V4.int(src[k], 0, Config.SaveV4.MaxCount) or 0
+	end
+	return V4.keepExtra(src, out, { Day = true, N = true, Bloom = true, Gift = true, Total = true, FirstBloom = true })
+end
+
+-- worn slots { [slot] = "T:P" }: letter slot names, plain "T:P" values; anything else dropped
+local function wornSlots(src)
+	local out = {}
+	if type(src) ~= "table" then return out end
+	for k, v in src do
+		local tp = V4.slot(k) and V4.tierPlus(v)
+		if tp then out[k] = tp end
+	end
+	return out
+end
+
+function Config.SanitizeGear(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	-- Own: "<kind>:T:P" written plainly ("Armor:01:0" and "Armor:1:0" are one key), counts 1..OwnKeyMax
+	local own, kept = {}, 0
+	for _, k in V4.sortedKeys(src.Own, function(k) return type(k) == "string" end) do
+		local kind, rest = string.match(k, "^(%a+):(.+)$")
+		local tp = kind and V4.slot(kind) and V4.tierPlus(rest)
+		local n = V4.int(src.Own[k], 0, L.OwnKeyMax)
+		if tp and n and n > 0 then
+			local key = kind .. ":" .. tp
+			if own[key] ~= nil then
+				own[key] = math.min(L.OwnKeyMax, own[key] + n)
+			elseif kept < L.MaxKeys then
+				own[key] = n
+				kept += 1
+			end
+		end
+	end
+	-- On: the player's slots, always present ("" = empty)
+	local on = wornSlots(src.On)
+	for _, slot in L.GearSlots do
+		if on[slot] == nil then on[slot] = "" end
+	end
+	-- Pet: per pet uid, only uids that still wear something
+	local pet, pets = {}, 0
+	for _, uid in V4.sortedKeys(src.Pet, V4.key) do
+		local worn = wornSlots(src.Pet[uid])
+		if next(worn) ~= nil and pets < L.MaxKeys then
+			pet[uid] = worn
+			pets += 1
+		end
+	end
+	return V4.keepExtra(src, { Own = own, On = on, Pet = pet }, { Own = true, On = true, Pet = true })
+end
+
+-- Buffs at `now` (os.time()): an end in the past is dropped, one later than now + BuffSeconds is cut to that (never a
+-- longer buff), at most BuffMax (the ones that end last)
+function Config.SanitizeBuffs(t, now)
+	local L = Config.SaveV4
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	local list = {}
+	if type(t) == "table" then
+		for id, v in t do
+			local ends = V4.int(v, 0, now + L.BuffSeconds)
+			if V4.key(id) and ends and ends > now then table.insert(list, { id, ends }) end
+		end
+	end
+	table.sort(list, function(a, b)
+		if a[2] ~= b[2] then return a[2] > b[2] end
+		return a[1] < b[1]
+	end)
+	local out = {}
+	for i = 1, math.min(#list, L.BuffMax) do
+		out[list[i][1]] = list[i][2]
+	end
+	return out
+end
+
+function Config.SanitizeShop(t)
+	local src = type(t) == "table" and t or {}
+	local out = { Day = V4.int(src.Day, 0, Config.SaveV4.MaxCount) or 0, N = V4.int(src.N, 0, Config.SaveV4.ShopDayMax) or 0 }
+	return V4.keepExtra(src, out, { Day = true, N = true })
+end
+
+-- EggHonorAt at `now`: a whole os.time() not after now (a future value = 0: a later hour is never promised)
+function Config.SanitizeEggHonorAt(v, now)
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	local at = V4.int(v, 0, 2 ^ 52) or 0
+	return at > now and 0 or at
+end
+
+-- every v4 table of a save, in place (DataService.fillDefaults, after the default fill)
+function Config.SanitizeSaveV4(d, now)
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	d.Craft = Config.SanitizeCraft(d.Craft)
+	d.Research = Config.SanitizeResearch(d.Research)
+	d.Gather = Config.SanitizeGather(d.Gather)
+	d.Gear = Config.SanitizeGear(d.Gear)
+	d.Buffs = Config.SanitizeBuffs(d.Buffs, now)
+	d.Shop = Config.SanitizeShop(d.Shop)
+	d.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)
 end
 
 return Config

@@ -1,0 +1,1262 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 105,
+  "failedChecks": 0,
+  "namedChecks": 96,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the save version stays 3 (게임성 개발 2's C1 bumps it to 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Craft: a level per role (Smith / Alch / Tame) + Rep + Made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Research = { Pts, Sum }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Gather = { Day, N, Bloom, Gift, Total, FirstBloom }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Gear = { Own, On { Armor, Ring }, Pet }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Buffs = {}, Shop = { Day, N }, EggHonorAt = 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no v4 table is mirrored to attributes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the defaults pass their own repair unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "nil / text / a number -> the default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "a good role is kept as it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "Lv 0 -> 1, a negative XP -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "Lv above 30 -> 30, a huge XP is cut to MaxCount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "Rep and Made kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "NaN Lv -> 1, inf XP -> 0 (never a free value)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "a broken role -> Lv1 XP0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "fractions are floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "-inf Rep -> 0, a broken Made -> {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "Made: counts >= 1 kept (floored), 0 / negative / NaN / text / long ids / number keys dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "Made keeps at most 64 ids (the first 64 in sorted order, always the same ones)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "repairing twice = once (idempotent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "craft",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "nil -> { Pts = {}, Sum = {} }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "Pts: good counts kept, negative / NaN dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "Sum: a huge count is cut to MaxCount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "an unknown flat key is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "broken maps -> empty maps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "research",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "nil / {} -> the default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a good Gather is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "a huge count is cut",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "an unknown flat key is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gather",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "nil / {} / text -> the default (On always has Armor and Ring)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "Own: good keys of every kind kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "On and Pet: good worn things kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "'Armor:01:0' and 'Armor:1:00' are written plainly and merged (3 + 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "tier 0 / tier 17 / plus 11 / a negative plus dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "a key without the plus / a non-letter kind / a number key / a 17-letter kind dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "0 / NaN / text counts dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "one key holds at most 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "a later kind (letters only) is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "a merged key is cut at 20 too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "Pet: an entry that wears nothing / a broken entry / a long uid dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "Pet keeps at most 64 pets (sorted)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "Own keeps at most 64 keys",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "an unknown flat key is kept, an unknown table is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "repairing twice = once (idempotent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gear",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "nil / text -> {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "a buff still running keeps its end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "an ended buff (in the past or ending now) is dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "only ended buffs -> {} (none comes back)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "an end later than now + 180 is cut to now + 180 (never a longer buff)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "at most two: the ones that end last",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "a tie is broken by the id (always the same two)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "NaN / text / inf ends, long ids and number keys dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "a fractional end is floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buffs",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "Shop nil -> { Day = 0, N = 0 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "Shop.N is cut at 50 (Otto's cheap materials a day)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "Shop: NaN / negative -> 0, an unknown flat key kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "EggHonorAt in the past is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "EggHonorAt = now is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "a future EggHonorAt -> 0 (a later hour is never promised)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "NaN / text / negative / inf -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "a fraction is floored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "shop and egg",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a v3 save stays v3 and keeps everything it had",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "it gains every v4 table with its default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "loading it again changes nothing (idempotent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a save's good v4 values come back as they were",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a broken table becomes its default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "the load uses the server clock: a long buff is cut, a future egg hour is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a brand-new save is v3 with the defaults",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "a good Roll { Spd = 7 } is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "the rest of the pet row is as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "5 and 10 are the ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "any other Roll shape drops the whole Roll (4 / 11 / 7.5 / NaN / inf / text / an extra key / {} / not a table)",
+      "pass": 10,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "a pet without a Roll stays without one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet roll",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 7,
+  "staticFailures": [],
+  "mutations": {
+    "total": 53,
+    "applied": 53,
+    "caught": 53,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: the version bumped to 4 here",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the save version stays 3 (게임성 개발 2's C1 bumps it to 4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: one craft level for all roles",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the defaults pass their own repair unchanged",
+          "craft :: group ran to the end without a Lua error",
+          "craft :: nil / text / a number -> the default",
+          "load :: a brand-new save is v3 with the defaults",
+          "load :: a broken table becomes its default",
+          "load :: it gains every v4 table with its default"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: craft Lv40",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys",
+          "craft :: Lv above 30 -> 30, a huge XP is cut to MaxCount"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: three buffs",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: a tie is broken by the id (always the same two)",
+          "buffs :: at most two: the ones that end last",
+          "config :: limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: Otto 60 a day",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys",
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0",
+          "shop and egg :: Shop.N is cut at 50 (Otto's cheap materials a day)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: no Ring slot",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the defaults pass their own repair unchanged",
+          "gear :: On and Pet: good worn things kept",
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+          "gear :: nil / {} / text -> the default (On always has Armor and Ring)",
+          "load :: a brand-new save is v3 with the defaults",
+          "load :: a broken table becomes its default"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "config: a default craft Lv0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Craft: a level per role (Smith / Alch / Tame) + Rep + Made",
+          "config :: the defaults pass their own repair unchanged",
+          "craft :: nil / text / a number -> the default",
+          "load :: a brand-new save is v3 with the defaults",
+          "load :: a broken table becomes its default",
+          "load :: it gains every v4 table with its default"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: no Gather default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Gather = { Day, N, Bloom, Gift, Total, FirstBloom }",
+          "config :: the defaults pass their own repair unchanged",
+          "gather :: nil / {} -> the default",
+          "load :: it gains every v4 table with its default"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: no EggHonorAt default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Buffs = {}, Shop = { Day, N }, EggHonorAt = 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the pet roll from 1%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys",
+          "pet roll :: any other Roll shape drops the whole Roll (4 / 11 / 7.5 / NaN / inf / text / an extra key / {} / not a table)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "helper: NaN passes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: NaN Lv -> 1, inf XP -> 0 (never a free value)",
+          "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true",
+          "shop and egg :: NaN / text / negative / inf -> 0",
+          "shop and egg :: Shop: NaN / negative -> 0, an unknown flat key kept"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "helper: inf passes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: NaN / text / inf ends, long ids and number keys dropped",
+          "craft :: NaN Lv -> 1, inf XP -> 0 (never a free value)",
+          "craft :: an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
+          "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "helper: no id length cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: NaN / text / inf ends, long ids and number keys dropped",
+          "craft :: Made: counts >= 1 kept (floored), 0 / negative / NaN / text / long ids / number keys dropped",
+          "craft :: an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
+          "gear :: Pet: an entry that wears nothing / a broken entry / a long uid dropped"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "helper: slot names with digits",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "helper: tier 0 allowed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+          "gear :: tier 0 / tier 17 / plus 11 / a negative plus dropped",
+          "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "helper: no plus cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+          "gear :: tier 0 / tier 17 / plus 11 / a negative plus dropped",
+          "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "helper: 'T:P' kept as written",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: 'Armor:01:0' and 'Armor:1:00' are written plainly and merged (3 + 2)",
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+          "gear :: a merged key is cut at 20 too",
+          "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "helper: count maps never cut",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: Made keeps at most 64 ids (the first 64 in sorted order, always the same ones)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "helper: 0 counts kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: Made: counts >= 1 kept (floored), 0 / negative / NaN / text / long ids / number keys dropped",
+          "research :: Pts: good counts kept, negative / NaN dropped"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "helper: unknown keys dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
+          "gather :: an unknown flat key is kept",
+          "gear :: an unknown flat key is kept, an unknown table is not",
+          "research :: an unknown flat key is kept",
+          "shop and egg :: Shop: NaN / negative -> 0, an unknown flat key kept"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "helper: unknown tables kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: an unknown flat key (number / boolean / short text) is kept for a later version; tables, inf and long keys are not",
+          "gear :: an unknown flat key is kept, an unknown table is not"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "craft: Lv without the cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: Lv above 30 -> 30, a huge XP is cut to MaxCount"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "craft: XP may go negative",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: Lv 0 -> 1, a negative XP -> 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "craft: Rep dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: Rep and Made kept",
+          "load :: a save's good v4 values come back as they were"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "craft: Made dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "craft :: Made keeps at most 64 ids (the first 64 in sorted order, always the same ones)",
+          "craft :: Made: counts >= 1 kept (floored), 0 / negative / NaN / text / long ids / number keys dropped",
+          "craft :: Rep and Made kept"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "research: Sum dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "research :: Sum: a huge count is cut to MaxCount"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gather: FirstBloom from any value",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true",
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gather: Total never repaired",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gather :: negative / NaN / inf / text -> 0, a fraction floored, FirstBloom only when it is true",
+          "gather :: nil / {} -> the default"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gear: no per-key cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: one key holds at most 20"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: a merged key over the cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: a merged key is cut at 20 too"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: a later key replaces the earlier one",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: 'Armor:01:0' and 'Armor:1:00' are written plainly and merged (3 + 2)",
+          "gear :: a merged key is cut at 20 too"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gear: Own never cut",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: Own keeps at most 64 keys"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: any kind name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: a key without the plus / a non-letter kind / a number key / a 17-letter kind dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: On without its slots",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the defaults pass their own repair unchanged",
+          "gear :: On and Pet: good worn things kept",
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+          "gear :: nil / {} / text -> the default (On always has Armor and Ring)",
+          "load :: a brand-new save is v3 with the defaults",
+          "load :: a broken table becomes its default"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "gear: empty pet entries kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: Pet: an entry that wears nothing / a broken entry / a long uid dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: pets never cut",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: Pet keeps at most 64 pets (sorted)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: worn values not checked",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
+          "gear :: Pet: an entry that wears nothing / a broken entry / a long uid dropped",
+          "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "buffs: ended buffs kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: only ended buffs -> {} (none comes back)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buffs: a long buff never cut",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: an end later than now + 180 is cut to now + 180 (never a longer buff)",
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "buffs: the earliest kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: at most two: the ones that end last"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buffs: no count cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buffs :: a tie is broken by the id (always the same two)",
+          "buffs :: at most two: the ones that end last"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "shop: N without the cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0",
+          "shop and egg :: Shop.N is cut at 50 (Otto's cheap materials a day)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "egg: a future hour kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0",
+          "shop and egg :: a future EggHonorAt -> 0 (a later hour is never promised)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "all: the load skips Gear",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "all: the load skips Buffs",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "all: the load skips EggHonorAt",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DataService: the v4 repair never runs",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)",
+          "load :: the load uses the server clock: a long buff is cut, a future egg hour is 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DataService: a v4 step in migrate",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: a brand-new save is v3 with the defaults",
+          "load :: a v3 save stays v3 and keeps everything it had"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pet: Roll dropped",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet roll :: 5 and 10 are the ends",
+          "pet roll :: a good Roll { Spd = 7 } is kept"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pet: Roll kept as it was",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet roll :: any other Roll shape drops the whole Roll (4 / 11 / 7.5 / NaN / inf / text / an extra key / {} / not a table)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: fractions allowed",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet roll :: any other Roll shape drops the whole Roll (4 / 11 / 7.5 / NaN / inf / text / an extra key / {} / not a table)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: no upper end",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet roll :: any other Roll shape drops the whole Roll (4 / 11 / 7.5 / NaN / inf / text / an extra key / {} / not a table)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: extra keys allowed",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet roll :: any other Roll shape drops the whole Roll (4 / 11 / 7.5 / NaN / inf / text / an extra key / {} / not a table)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "9a81ba51afac3af40a936116de6e891229c68d12c34174380848547720de5bf9",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/DataService.luau": "bcc20283d5258fc89af43961e12c1a1c6345eeba61a923bdb7f17cd5e6450217",
+    "src/ServerScriptService/PetService.luau": "7b989fa015080ca49e49466def1cdbeb886f172e906e26ce2c6fea343d8e37a3"
+  },
+  "fixtureSHA256": "d210535e8448163335be95ad475a7032f5247e4978efe8f55aa39ca8c42e5193",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Save v4 tables (docs/design/save_v4_tables_2026-10-11.md, agreed by 게임성 개발 2 + 3 2026-10-11): additive defaults with the version still 3 - Craft { Smith / Alch / Tame { Lv 1..30, XP }, Rep, Made (64 ids) }, Research { Pts, Sum } (64 families), Gather { Day, N, Bloom, Gift, Total, FirstBloom }, Gear { Own '<kind>:T:P' -> 1..20 (letters-only kinds, tier 1..16, plus 0..10, written plainly and merged, 64 keys), On { Armor, Ring always, '' = empty }, Pet { uid -> worn slots, 64 pets } }, Buffs { tonic -> end, ended dropped, cut to now + 180, the 2 that end last }, Shop { Day, N 0..50 }, EggHonorAt (a future hour = 0). A repair never makes a value up and keeps a sane unknown flat key; repairing twice = once. DataService.fillDefaults runs Config.SanitizeSaveV4(d, os.time()); PetService.Sanitize keeps Roll { Spd = 5..10 } only.",
+  "limitations": "No service writes these tables yet (GatherService, CraftService, GearService, the alchemy buffs, Otto's cheap materials and the golden egg come in their own branches). The version bump, Spares, Market and the 9-bit weapon mask are 게임성 개발 2's C1. The real DataStore load (the CR-L3 refusal of a newer record) is in tools/test_onboarding.py."
+}
