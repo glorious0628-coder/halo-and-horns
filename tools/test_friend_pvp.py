@@ -58,6 +58,11 @@ MUTATIONS = [
      "\tlocal okFriends, errFriends = true, nil\n"),
     ("a failed call counts as friends", P, "FRIEND.Pairs[key] = ok and res == true", "FRIEND.Pairs[key] = not ok or res == true"),
     ("the answer is never kept", P, "FRIEND.Pairs[key] = ok and res == true", "FRIEND.Pairs[key] = nil"),
+    ("a failed answer is not stored", P, "FRIEND.Pairs[key] = ok and res == true",
+     "if ok then FRIEND.Pairs[key] = res == true end"),
+    ("FRIEND.Ask's presence / ready guard removed", P,
+     "\tif not isPlaying(newcomer) or not isPlaying(other) or not PS.IsReady(newcomer) or not PS.IsReady(other) then return end\n",
+     ""),
     ("a known pair is asked again", P,
      "\tif FRIEND.Pairs[key] ~= nil or FRIEND.Asking[key] ~= nil then return end -- once per pair\n", ""),
     ("the pair key depends on who joined last", P, "\tlocal key = engageKey(newcomer, other)\n",
@@ -79,6 +84,11 @@ MUTATIONS = [
     ("the stomp hits the kaiju's friends", K,
      "\n\t\t\t\tand not friendOfKaiju(p, v) then -- A23-113 ①: in every zone, also where the stomp credits nobody", " then"),
     ("the kaiju's HP counts its friends", K, " and not friendOfKaiju(p, v) then\n\t\t\t\tn += 1", " then\n\t\t\t\tn += 1"),
+    ("the stomp spares the friend but marks the event contested", K,
+     "\n\t\t\t\tand not friendOfKaiju(p, v) then -- A23-113 ①: in every zone, also where the stomp credits nobody\n"
+     "\t\t\t\tlocal hum = Util.GetHumanoid(v)\n",
+     " then\n\t\t\t\tif friendOfKaiju(p, v) then contested = true end\n"
+     "\t\t\t\tlocal hum = not friendOfKaiju(p, v) and Util.GetHumanoid(v) or nil\n"),
     ("KaijuService never sees friends", K, "\tlocal ok, yes = pcall(pvp.AreFriends, p, v)\n\treturn ok and yes == true\nend",
      "\treturn false\nend"),
     # --- RankingService stays as it was (its own cache, the opposite failure rule)

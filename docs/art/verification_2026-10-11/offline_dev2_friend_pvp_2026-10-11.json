@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 82,
+  "checks": 95,
   "failedChecks": 0,
-  "namedChecks": 82,
+  "namedChecks": 95,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -99,7 +99,7 @@
     },
     {
       "group": "failed call",
-      "check": "the failed pair is not asked again while both stay",
+      "check": "the failed answer is stored (not friends): not asked again while both stay",
       "pass": 1,
       "fail": 0
     },
@@ -201,6 +201,42 @@
     },
     {
       "group": "spacing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "setup: the newcomer's first wave = 5 calls, the 6th pair waits 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "the later wave after the newcomer left: no call (nobody asks for a leaver)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "no stale answer is left for the rejoin (before its own answers)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "the rejoin asks all 6 pairs fresh (none are friends now)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -434,6 +470,48 @@
       "fail": 0
     },
     {
+      "group": "kaiju friend never contests",
+      "check": "only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "the stomp spares the friend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "control, a stranger near: HP bonus and stomped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "control: contested, the bonus is minted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "ranking unchanged",
       "check": "duel setup: PvPService asked once at the join",
       "pass": 1,
@@ -504,9 +582,9 @@
   "staticChecks": 18,
   "staticFailures": [],
   "mutations": {
-    "total": 19,
-    "applied": 19,
-    "caught": 19,
+    "total": 22,
+    "applied": 22,
+    "caught": 22,
     "skipped": false,
     "results": [
       {
@@ -544,13 +622,13 @@
         "crashed": false,
         "newFailingChecks": [
           "failed call :: IsFriendsWith threw: NOT friends (pcall; the hit is allowed)",
-          "failed call :: the failed pair is not asked again while both stay",
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
           "final gate :: DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
           "final gate :: a monster's hit on the friend still lands",
           "final gate :: the other way (a crit) = 0 too",
           "final gate :: …and no combat tag on either side"
         ],
-        "newFailingCount": 43
+        "newFailingCount": 49
       },
       {
         "mutation": "a failed call counts as friends",
@@ -560,7 +638,7 @@
         "crashed": false,
         "newFailingChecks": [
           "failed call :: IsFriendsWith threw: NOT friends (pcall; the hit is allowed)",
-          "failed call :: the failed pair is not asked again while both stay",
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
           "failed call :: …so A's swing hits B",
           "ranking unchanged :: IsFriendsWith failed: PvP not friends, the hit lands"
         ],
@@ -573,14 +651,39 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
           "final gate :: DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
           "final gate :: a monster's hit on the friend still lands",
           "final gate :: the other way (a crit) = 0 too",
           "final gate :: …and no combat tag on either side",
-          "friend cache :: A then B: the pair is cached both ways",
-          "friend cache :: B then A: CanAttack 'Friend'"
+          "friend cache :: A then B: the pair is cached both ways"
         ],
-        "newFailingCount": 32
+        "newFailingCount": 36
+      },
+      {
+        "mutation": "a failed answer is not stored",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "failed call :: …so A's swing hits B"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "FRIEND.Ask's presence / ready guard removed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave before the next wave :: no stale answer is left for the rejoin (before its own answers)",
+          "leave before the next wave :: the later wave after the newcomer left: no call (nobody asks for a leaver)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "a known pair is asked again",
@@ -589,9 +692,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "failed call :: …so A's swing hits B",
           "friend cache :: a known pair is never asked again (one call per pair)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 3
       },
       {
         "mutation": "the pair key depends on who joined last",
@@ -618,9 +723,10 @@
         "newFailingChecks": [
           "friend cache :: before the answer the pair is NOT friends (CanAttack allows the hit)",
           "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)",
+          "leave before the next wave :: no stale answer is left for the rejoin (before its own answers)",
           "swing :: before the friend answer arrives the swing hits (not friends yet)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "a late answer after a leave is kept",
@@ -643,9 +749,10 @@
           "leave and rejoin :: A's rejoin asks again too (the lower id of the pair)",
           "leave and rejoin :: B's rejoin asks again (2 calls) and gets the new answer",
           "leave and rejoin :: a leave during the call: the late answer is dropped, the rejoin asks again",
-          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)"
+          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "a leave drops only the lower id's pairs",
@@ -656,9 +763,10 @@
         "newFailingChecks": [
           "leave and rejoin :: A's rejoin asks again too (the lower id of the pair)",
           "leave and rejoin :: B's rejoin asks again (2 calls) and gets the new answer",
-          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)"
+          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "all calls at once on a full server",
@@ -667,10 +775,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "leave before the next wave :: setup: the newcomer's first wave = 5 calls, the 6th pair waits 1 s",
+          "leave before the next wave :: the later wave after the newcomer left: no call (nobody asks for a leaver)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)",
           "spacing :: a 7th player: 5 calls at once (Burst)…",
           "spacing :: …the 6th not yet…"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "the later waves never run",
@@ -679,9 +790,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)",
           "spacing :: …and 1 s later the rest"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "DamagePlayer lets friends hit",
@@ -705,9 +817,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
           "kaiju stomp :: a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "the kaiju's HP counts its friends",
@@ -716,7 +829,20 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+          "kaiju friend never contests :: only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
           "kaiju stomp :: the kaiju's HP counts E only (its friend F cannot fight it)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the stomp spares the friend but marks the event contested",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus"
         ],
         "newFailingCount": 1
       },
@@ -727,10 +853,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+          "kaiju friend never contests :: only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
           "kaiju stomp :: a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit",
           "kaiju stomp :: the kaiju's HP counts E only (its friend F cannot fight it)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "RankingService: a failed call is no longer friends",
@@ -783,7 +911,7 @@
     "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d",
     "src/ServerScriptService/KaijuService.luau": "507adb6941b9fb1e40598c27d061ed51def5ef64286f50c3c00585ff8c9d3444"
   },
-  "fixtureSHA256": "172c858f9873fcd005d8fda372277962ddedd4892e5414bc8a1248958abc11f8",
+  "fixtureSHA256": "0c5d8217ab9cddffffcf4b351801838a6a277b4aee60a96cc7275a9482caf138",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

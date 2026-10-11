@@ -140,11 +140,11 @@ runGroup("failed call", function()
 	w:RunSpawned()
 	check(w.FriendCalls == 1 and w.PvP.AreFriends(a, b) == false and w.PvP.CanAttack(a, b) == true,
 		"IsFriendsWith threw: NOT friends (pcall; the hit is allowed)", show({ w.FriendCalls, w.PvP.AreFriends(a, b) }))
-	w.FriendError = {}
-	w:Fighter(303, "Horns", { Pos = vec(0, 0, 8) }) -- a newcomer's join asks only its own pairs
+	w.FriendError = {} -- Roblox would answer "friends" now
+	w.PS.PlayerReady:Fire(b, w.Data[b]) -- B's join runs again: the failed pair is the only one it could ask
 	w:RunSpawned()
-	check(w.FriendCalls == 3 and w.PvP.AreFriends(a, b) == false, "the failed pair is not asked again while both stay",
-		w.FriendCalls)
+	check(w.FriendCalls == 1 and w.PvP.AreFriends(a, b) == false,
+		"the failed answer is stored (not friends): not asked again while both stay", show({ w.FriendCalls, w.PvP.AreFriends(a, b) }))
 	w:Swing(a)
 	check(hp(b) < 100, "…so A's swing hits B", hp(b))
 	check(#w.Warnings == 0, "a failed friend call is silent (no warning)", w.Warnings[1])
@@ -205,6 +205,33 @@ runGroup("spacing", function()
 	w:Advance(0.2)
 	w:RunSpawned()
 	check(w.FriendCalls == 21, "…and 1 s later the rest", w.FriendCalls)
+end)
+
+-- the newcomer leaves before its later wave: that wave asks nobody (FRIEND.Ask's presence / ready guard)
+runGroup("leave before the next wave", function()
+	local w = fightWorld()
+	local early = {}
+	for i = 1, 6 do table.insert(early, (w:Fighter(100 + i, i % 2 == 0 and "Halo" or "Horns", { Pos = vec(i * 30, 0, 0) }))) end
+	w:RunSpawned()
+	local n = w:Fighter(200, "Halo", { Pos = vec(0, 0, 300) })
+	w:RunSpawned()
+	check(w.FriendCalls == 20, "setup: the newcomer's first wave = 5 calls, the 6th pair waits 1 s", w.FriendCalls)
+	local last = early[6] -- 106: the pair of the later wave
+	w.Friends["106:200"] = true
+	w:Leave(n) -- before the later wave
+	w:Advance(1.1)
+	w:RunSpawned()
+	check(w.FriendCalls == 20, "the later wave after the newcomer left: no call (nobody asks for a leaver)", w.FriendCalls)
+	w.Friends["106:200"] = nil
+	local n2 = w:Fighter(200, "Halo", { Pos = vec(0, 0, 300) })
+	check(w.PvP.AreFriends(last, n2) == false, "no stale answer is left for the rejoin (before its own answers)")
+	w:RunSpawned()
+	w:Advance(1.1)
+	w:RunSpawned()
+	local friends = 0
+	for _, p in early do if w.PvP.AreFriends(p, n2) then friends += 1 end end
+	check(w.FriendCalls == 26 and friends == 0, "the rejoin asks all 6 pairs fresh (none are friends now)",
+		show({ w.FriendCalls, friends }))
 end)
 
 ------------------------------------------------------------------ 5. manual swings
@@ -338,6 +365,53 @@ runGroup("kaiju stomp", function()
 	w:KaijuTick(KJ.StompInterval)
 	check(hp(f) == 100 and hp(e) == 100 - 2 * dmg, "a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit",
 		show({ hp(f), hp(e) }))
+end)
+
+-- the ONLY Halo player near the Active kaiju is its friend: the event is never contested (stomp / HP count), so the kaiju
+-- survives with the uncontested line and no minted bonus. Control: the same with a stranger is contested.
+runGroup("kaiju friend never contests", function()
+	local function survive(friendly)
+		local w = rankWorld({ Kaiju = true, Friends = friendly and { ["101:201"] = true } or {} })
+		w.AllowWarn = { "missing", "zoom" }
+		local ws = w:Env().workspace
+		ws.Raycast = function() return nil end
+		ws.FindFirstChild = function() return nil end
+		local k = w:Join(201, "Horns", { Carried = 1000 })
+		k.CameraMaxZoomDistance = 30
+		local h = w:Join(101, "Halo")
+		w:RunSpawned()
+		w.PvP.DebugSetStars(k, KJ.StarsNeeded)
+		w:KaijuTick()
+		w:KaijuTick(KJ.SirenSeconds)
+		local K = w.Registry.KaijuService
+		local out = { Active = K.GetState(k) == "Active", Mult = K.GetHealthMult(k), Friends = w.PvP.AreFriends(k, h) }
+		local f0 = #w.Fx
+		w:KaijuTick(KJ.StompInterval)
+		out.Stomps = 0
+		for i = f0 + 1, #w.Fx do if w.Fx[i].Kind == "Stomp" then out.Stomps += 1 end end
+		out.HP = hp(h)
+		local n0, g0 = #w.Notices, #w.Gold
+		w:KaijuTick(KJ.Duration)
+		out.Bonus, out.Bank = 0, 0
+		for i = g0 + 1, #w.Gold do
+			local g = w.Gold[i]
+			if g.P == k and g.Src == "KaijuBonus" then out.Bonus += g.N end
+			if g.P == k and g.Src == "KaijuBank" then out.Bank += g.N end
+		end
+		for _, t in w:NoticesFor(k, n0) do if has(t, "You survived") then out.Line = t end end
+		return out
+	end
+	local f = survive(true)
+	check(f.Active and f.Friends and near(f.Mult, KJ.HPMult), "only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
+		show({ f.Mult, KJ.HPMult }))
+	check(f.Stomps == 1 and f.HP == 100, "the stomp spares the friend", show({ f.Stomps, f.HP }))
+	check(f.Line ~= nil and has(f.Line, "Nobody fought you") and f.Bonus == 0 and f.Bank == 1000,
+		"it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus", show(f))
+	local s = survive(false)
+	check(s.Active and not s.Friends and near(s.Mult, KJ.HPMult * (1 + KJ.HPPerNearbyHalo)) and s.HP < 100,
+		"control, a stranger near: HP bonus and stomped", show({ s.Mult, s.HP }))
+	check(s.Line ~= nil and not has(s.Line, "Nobody fought you") and s.Bonus > 0,
+		"control: contested, the bonus is minted", show(s))
 end)
 
 ------------------------------------------------------------------ 10. rankings: exactly as before
