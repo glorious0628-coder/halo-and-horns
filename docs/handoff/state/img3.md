@@ -11,7 +11,7 @@
 - 집 07 골격(skeleton_house07.py)도 네모 천장판이 팔각 대각 벽 밖으로 약 2칸(계산, 처마돌보다 약 0.8 더) 나감 — 승인판이라 안 고침, 검수 판정 기다림.
 
 ## 기다리는 것 / 다음 일 (10/11 저녁, 검수에 보고함 — push 16189b4e)
-- 기다림: ① 검수 판정(15채 4면·WorldKit 시트) ② 사용자 Import 3D 1번 `import_now/halo_houses15_ornaments.glb` → 가져오면 PivotTo + 재질 + 낮·밤 사진 ③ 이미지 개발이 WorldKit 금 MV(HH_HaloGoldTrim 금속 0.5·거칠기 0.15) + 금 파트 색 (255,195,45)로 바꾸는 중 → 바뀐 숫자 오면 `tools/skeleton_house.py` MAT["gold"] 색을 맞추고, 다음 집 07 사진을 2D 옆에 놓고 금 색 최종 확인(어긋나면 파트 색만) ④ 집 07 네모 천장판 고칠지 검수 답.
+- 기다림: ① 검수 판정(15채 4면·WorldKit 시트) ② 사용자 Import 3D 1번 `import_now/halo_houses15_ornaments.glb` → 가져오면 PivotTo + 재질 + 낮·밤 사진 ③ 이미지 개발이 WorldKit 금 MV(HH_HaloGoldTrim 금속 0.5·거칠기 0.15) + 금 파트 색 (255,195,45)로 바꾸는 중 → 집 07 비교 끝(10/11 저녁, 761ef61): 새 MV 반짝임은 좋지만 (255,195,45)는 2D보다 레몬빛 → 후보 시험 결과 **(255,168,36) 추천**(시트 `art/review/img3/skeleton07/house07_gold_candidates.jpg`, `house07_gold2_compare.jpg`), 이미지 개발에 보냄. 이미지 개발이 최종 값을 알려 주면 `tools/skeleton_house.py`·`skeleton_house07.py` MAT["gold"] 색을 그 값으로 바꾸고 push(지금 생성기는 255,175,25 그대로) ④ 집 07 네모 천장판 고칠지 검수 답.
 - 다음 큐(검수 10/11): A23-122 다시 만들기 `docs/review/3d_recheck_2026-10-11_result.md`(178개 다시, 통과 0) 순서대로.
   1. ② "모양은 쓸 만함, Blender 손보기만" 11개 — 2D 새 그림 없이: 원은 원으로·대칭·구멍/혹/떠 있는 조각 제거·부품 나누기·면 줄이기·C/N/R/M 4장 굽기 → records.json → WorldKit 낮·밤 사진 2D와 나란히 → 12항목 시트로 보고.
   2. ① 빛 마을 v2 70개 중 4면 2D가 이미 통과한 것부터 Tripo HD H3.1 멀티뷰 → Blender → Roblox 재질(예: 등불 정면 3개, 벤치 A·C 옆면 통과). 4면 2D 없는 것은 목록으로 검수에(이미지 생성 2가 그림). Tripo 묶음은 시작 전 개수·예상 포인트를 검수에 보내 승인.
