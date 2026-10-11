@@ -63,10 +63,14 @@ ap.add_argument("name")
 ap.add_argument("params")
 ap.add_argument("out")
 ap.add_argument("--report", help="default <out>.json")
+ap.add_argument("--only", default="", help="comma list of dome,caps,lantern,door: run only these sections")
 a = ap.parse_args(argv)
 ROOT = os.environ.get("HH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # HH_ROOT: run a private copy of tools/
 NAME = a.name
 PR = json.load(open(a.params, encoding="utf-8"))
+if a.only:
+    _keep = set(a.only.split(","))
+    PR = {k: v for k, v in PR.items() if k not in ("dome", "caps", "lantern", "door", "extra") or k in _keep}
 SLOTS = {it["name"][len(NAME) + 1:]: it for it in json.load(open(os.path.join(ROOT, "build", "skel_%s_ornaments.json" % NAME)))["items"]}
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=os.path.join(ROOT, "art", "models", "tripo", "halo_houses", NAME, NAME + "_parts.glb"))
@@ -733,6 +737,11 @@ if "lantern" in PR:
                 gz0, gz1 = ip["glass"]
                 glass_src = "front render (pale glow rows)"
             profile_src = "front render rows"
+            Ht = z1 - z0                                          # the lantern's whole height (drop .. finial)
+            if gz1 - gz0 < 0.42 * Ht:                             # only the bright core was found: glass ~ half of it
+                gcm = (gz0 + gz1) / 2
+                gz0, gz1 = gcm - 0.25 * Ht, gcm + 0.25 * Ht
+                glass_src += ", widened to 50 % of the lantern height"
         else:
             profile_src = "mesh faces"
         g0, g1 = gz0 - gzc, gz1 - gzc
@@ -750,7 +759,12 @@ if "lantern" in PR:
             r0 = float(np.interp(g0, prof[:, 1], prof[:, 0]))
             r1 = float(np.interp(g1, prof[:, 1], prof[:, 0]))
         r0, r1 = max(r0, 0.25), max(r1, 0.25)
+        r_lo, r_hi = sorted((r0, r1))                         # the family shape: the body widens to the top
+        r1, r0 = r_hi, max(r_lo, 0.75 * r_hi)
         hb = g1 - g0
+        # size: the open glass band = the skeleton's LampGlass height (1.05), never narrower than the glass (0.7 wide)
+        k = L.get("glass_h", 1.05) / max(hb, 1e-3)
+        k = max(k, L.get("min_half", 0.42) / r0)
         base = [(0.0, g0 - 0.46 * hb), (r0 * 0.22, g0 - 0.40 * hb), (r0 * 0.45, g0 - 0.26 * hb), (r0 * 0.6, g0 - 0.16 * hb),
                 (r0 * 1.15, g0 - 0.1 * hb), (r0 * 1.15, g0)]
         cap = [(r1 * 1.32, g1), (r1 * 1.32, g1 + 0.06 * hb), (r1 * 0.42, g1 + 0.34 * hb), (r1 * 0.24, g1 + 0.37 * hb),
@@ -878,6 +892,10 @@ if "door" in PR and door_src and leaf_slots:
     _wood_y = y_leaf
     tri_src.skip_where((tri_src.FN[:, 1] < D.get("min_facing", 0.45)) | (tri_src.FC[:, 1] > _wood_y + D.get("max_out", 0.22)))
     tri_src.strict = True
+    if D.get("skip_hues"):                              # things painted in front of the leaf (a cauldron's green glow)
+        th = tri_src.tri_hsv()
+        for h0, h1 in D["skip_hues"]:
+            tri_src.skip_where((th[:, 0] >= h0) & (th[:, 0] <= h1) & (th[:, 1] > D.get("skip_sat", 0.25)))
     for b in D.get("skip_boxes", []):
         inb = np.ones(len(tri_src.FC), bool)
         for k, (lo_, hi_) in enumerate(b):
@@ -916,6 +934,8 @@ if "door" in PR and door_src and leaf_slots:
     tri_src.query = lambda P, ray=None, back=0.6: _orig_query(xf(P), ray, RAY_BACK)
     maps = proj_bake.bake(tmp, tri_src, size=D.get("size", 512), ray=(0, -1, 0), relief=True)
     cleaned = proj_bake.clean_thin_gold(maps, k=D["clean_px"]) if D.get("clean_px") else 0
+    if D.get("clean_hues"):
+        cleaned += proj_bake.clean_hues(maps, D["clean_hues"], D.get("clean_sat", 0.1))
     bpy.data.objects.remove(tmp)
     mat = proj_bake.save_maps(maps, WORK, NAME + "_Leaf")
     for o in leaf_objs:
