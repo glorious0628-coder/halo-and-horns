@@ -1174,6 +1174,13 @@ local function build(parent, kit, arg)
 		S.Tab, S.Mode = arg.Tab, nil
 		if type(arg.Select) == "string" then S.Sel = arg.Select end
 	end
+	-- arg.Use = a scroll id: straight into its step (a scroll notice / Studio photos), with arg.Tier (enhance) or
+	-- arg.From / arg.To (transfer) already picked; the step drops back to what is valid (validMode)
+	local use = type(arg) == "table" and type(arg.Use) == "string" and Config.Loot.Items[arg.Use] or nil
+	if use and use.Kind ~= "Material" then
+		S.Tab, S.Sel, S.Result, S.Note = "Gear", "I:" .. arg.Use, nil, nil
+		S.Mode = { Item = arg.Use, Tier = tonumber(arg.Tier), From = tonumber(arg.From), To = tonumber(arg.To) }
+	end
 	-- tabs (the Panels capsules, gold = open: the same look as the quest and settings tabs)
 	local bar = Instance.new("Frame")
 	bar.Name = "Tabs"

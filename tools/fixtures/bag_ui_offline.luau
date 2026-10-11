@@ -540,6 +540,16 @@ for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" 
 check(#findAll(root, "^Empty$") > beforeEmpty, "a taller window fills more rows with empty slots", #findAll(root, "^Empty$"))
 root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540)
 for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
+-- opened straight on a scroll's step (arg.Use [+ Tier])
+reg.Bag.Cleanup()
+for _, ch in root:GetChildren() do ch:Destroy() end
+update = reg.Bag.Build(root, kit, { Use = "Enh70", Tier = 2 })
+check(T.S.Tab == "Gear" and T.S.Mode and T.S.Mode.Item == "Enh70" and T.S.Mode.Tier == 2 and find(root, "Act_Enhance") ~= nil,
+	"arg.Use opens the scroll's step on the weapons (with the picked weapon)")
+reg.Bag.Cleanup()
+for _, ch in root:GetChildren() do ch:Destroy() end
+update = reg.Bag.Build(root, kit, { Use = "Jelly" })
+check(T.S.Mode == nil, "arg.Use with a material is ignored")
 -- a fight flips the buttons in place
 find(root, "Tab_Gear").OnClick()
 find(root, "Cell_W:1").OnClick()
