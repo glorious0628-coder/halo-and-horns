@@ -538,6 +538,79 @@ for ci, cp in enumerate(PR.get("caps", [])):
     print("[deco] caps", rep, flush=True)
 
 # ------------------------------------------------------------------ wall lanterns
+def image_profile(L, cx):
+    """front-view profile of the lantern from build/deco/ortho/<NAME>/front.png: [(half width, z) ...] bottom -> top,
+    plus the glass band (rows that are mostly pale warm glow) when found; None if the render is missing"""
+    d_ = os.path.join(ROOT, "build", "deco", "ortho", NAME)
+    if not (os.path.isfile(os.path.join(d_, "front.png")) and os.path.isfile(os.path.join(d_, "frame.json"))):
+        return None
+    F = json.load(open(os.path.join(d_, "frame.json")))["views"]["front"]
+    bimg = bpy.data.images.load(os.path.join(d_, "front.png"))
+    bimg.colorspace_settings.name = "Non-Color"                 # raw PNG values
+    Ww, Hh = bimg.size
+    im = np.empty(Ww * Hh * bimg.channels, np.float32)
+    bimg.pixels.foreach_get(im)
+    im = im.reshape(Hh, Ww, bimg.channels)[::-1, :, :3]          # top row first, like the PNG
+    bpy.data.images.remove(bimg)
+    ua, umin, umax, us = F["u"]
+    va, vmin, vmax, vs = F["v"]
+    ppu = Hh / (vmax - vmin) if (vmax - vmin) > (umax - umin) else Ww / (umax - umin)
+
+    def col(x):
+        return Ww / 2 + (x - (umin + umax) / 2) * ppu * us
+
+    def row(z):
+        return Hh / 2 - (z - (vmin + vmax) / 2) * ppu * vs
+
+    (x0, x1), _, (z0, z1) = L["box"]
+    c0, c1 = sorted((int(col(x0)), int(col(x1))))
+    r0, r1 = int(row(z1)), int(row(z0))
+    sub_ = im[max(r0, 0):min(r1, Hh), max(c0, 0):min(c1, Ww)]
+    mx, mn = sub_.max(2), sub_.min(2)
+    sat = np.where(mx > 1e-6, (mx - mn) / np.maximum(mx, 1e-6), 0)
+    r_, g_, b_ = sub_[..., 0], sub_[..., 1], sub_[..., 2]
+    warm = (r_ >= g_) & (g_ >= b_)
+    lamp = warm & (((sat > 0.18) & (mx > 0.3)) | ((mx > 0.82) & (sat > 0.06)))     # gold, pale gold, warm glass
+    glow = warm & (mx > 0.82) & (sat > 0.06) & (sat < 0.35)
+    xc_px = col(cx) - max(c0, 0)
+    prof, grows = [], []
+    for i in range(sub_.shape[0] - 1, -1, -1):                  # bottom row first
+        z = (vmin + vmax) / 2 + (Hh / 2 - (max(r0, 0) + i)) / ppu
+        win = L.get("max_half", 1.4) * ppu
+        js = np.nonzero(lamp[i])[0]
+        js = js[np.abs(js - xc_px) <= win]
+        if len(js) < 2:
+            continue
+        left, right = xc_px - js.min(), js.max() - xc_px
+        if left < 1 or right < 1:                               # lantern pixels on both sides of the axis
+            continue
+        # symmetric lantern: the shorter side (a window frame or plant next to one side does not widen it); pale
+        # highlights inside (cap tops) do not matter, only the outer ends
+        half = min(left, right) / ppu
+        a_, b_ = int(xc_px - min(left, right)), int(xc_px + min(left, right)) + 1
+        prof.append((half, z))
+        grows.append((z, glow[i, max(a_, 0):b_].mean()))
+    if len(prof) < 10:
+        return None
+    pr = np.array(prof)
+    nb = 24                                                    # resample into 24 bands
+    edges = np.linspace(pr[:, 1].min(), pr[:, 1].max(), nb + 1)
+    out = []
+    for b in range(nb):
+        sel = (pr[:, 1] >= edges[b]) & (pr[:, 1] <= edges[b + 1])
+        if sel.any():
+            out.append((float(np.median(pr[sel, 0])), float((edges[b] + edges[b + 1]) / 2)))
+    G = np.array(grows)
+    glass = None
+    gl = G[G[:, 1] > 0.35, 0] if len(G) else np.zeros(0)
+    if len(gl) >= 4:
+        a0, a1 = float(np.percentile(gl, 5)), float(np.percentile(gl, 95))
+        Hb = z1 - z0
+        if 0.2 * Hb <= a1 - a0 <= 0.6 * Hb:
+            glass = (a0, a1)
+    return {"prof": out, "glass": glass}
+
+
 def box_obj(bm, a, b, w):
     """a square bar of width w from point a to point b (bmesh)"""
     a, b = Vector(a), Vector(b)
@@ -566,12 +639,17 @@ if "lantern" in PR:
     wall_t = None
     if ps:
         # the wall behind the lantern (pale faces looking to the front): its plane, then everything behind it dropped
-        wy = []
+        wy, ly = [], []
         for o in ps:
             hsv = face_hsv(o)
             nrm = np.array([p_.normal[:] for p_ in o.data.polygons]).reshape(-1, 3)
-            sel = (hsv[:, 1] < 0.15) & (hsv[:, 2] > 0.7) & (nrm[:, 1] > 0.5)
+            hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+            sel = (ss < 0.15) & (vv > 0.7) & (nrm[:, 1] > 0.5)
+            lamp_f = ((hh >= 20) & (hh <= 60) & (ss > 0.35) & (vv > 0.35))
             wy += list(centres(o)[sel, 1])
+            ly += list(centres(o)[lamp_f, 1])
+        if ly:
+            wy = [w for w in wy if w < float(np.median(ly)) - 0.2]
         if len(wy) >= 4:
             wall_t = float(np.percentile(wy, 80))
             for o in ps:
@@ -597,10 +675,16 @@ if "lantern" in PR:
             glow_c.append(c[glow])
             gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[gold]]
         G = np.concatenate(glow_c) if glow_c else np.zeros((0, 3))
+        bxz = L["box"][2]
+        Hb = bxz[1] - bxz[0]
+        gz0, gz1 = bxz[0] + 0.35 * Hb, bxz[0] + 0.72 * Hb          # usual glass share of a wall lantern (fallback)
+        glass_src = "fallback 35-72 % of the box height"
         if len(G) >= 6:
-            gz0, gz1 = np.percentile(G[:, 2], [5, 95])
-        else:
-            gz0, gz1 = np.percentile(P[:, 2], [35, 70])
+            a0, a1 = np.percentile(G[:, 2], [5, 95])
+            if 0.22 * Hb <= a1 - a0 <= 0.6 * Hb and bxz[0] + 0.2 * Hb <= (a0 + a1) / 2 <= bxz[0] + 0.8 * Hb:
+                gz0, gz1, glass_src = a0, a1, "glow faces"
+        if "glass_z" in L:
+            gz0, gz1, glass_src = L["glass_z"][0], L["glass_z"][1], "params"
         band = (P[:, 2] > gz0) & (P[:, 2] < gz1)
         hw = float(np.percentile(np.abs(P[band, 0] - cx), 95)) if band.any() else 0.6
         yc_t = float(P[:, 1].max()) - hw                          # body axis: its half width behind the front
@@ -613,7 +697,7 @@ if "lantern" in PR:
             V = np.array([v_.co[:] for v_ in me.vertices])
             hsv = face_hsv(o)                                      # lantern faces only: gold metal or warm glass
             hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
-            lamp = ((hh >= 20) & (hh <= 60) & (ss > 0.35) & (vv > 0.35)) | ((vv > 0.8) & (ss > 0.12) & (hh >= 28) & (hh <= 72))
+            lamp = (hh >= 18) & (hh <= 72) & (ss > 0.12) & (vv > 0.35)    # gold incl. its pale highlights, warm glass
             T = np.array([t_.vertices[:] for t_ in me.loop_triangles if lamp[t_.polygon_index]])
             if len(T):
                 A, B, C = V[T[:, 0]], V[T[:, 1]], V[T[:, 2]]
@@ -628,7 +712,8 @@ if "lantern" in PR:
         Qw = Q + np.array([cx, yc_t, gzc])
         Q = Q[np.all((Qw >= bx[:, 0] - 0.15) & (Qw <= bx[:, 1] + 0.15), axis=1)]
         Q = Q[Q[:, 1] > -hw * 0.6]                                 # front part only (the bracket is behind)
-        half = np.maximum(np.abs(Q[:, 0]), np.abs(Q[:, 1]))        # square "radius" = the larger of |x|, |y|
+        half = np.abs(Q[:, 0])                                     # square half width from the front view (x only:
+                                                                   # the body axis depth is not needed, the bracket is thin)
         z0, z1 = float(Q[:, 2].min()), float(Q[:, 2].max())
         edges = np.linspace(z0, z1, 25)
         prof = []
@@ -637,20 +722,44 @@ if "lantern" in PR:
             if sel.sum() >= 6:
                 prof.append((float(np.percentile(half[sel], 90)), float((edges[b] + edges[b + 1]) / 2)))
         prof = np.array(prof)
+        # better: the Tripo front render (tools/tripo_ortho.py, build/deco/ortho/<name>/front.png): per pixel row the
+        # outer ends of the lantern-coloured pixels (gold incl. pale highlights, warm glass) round the axis = its
+        # front-view half width; the mesh faces miss the cap's highlight-white rim
+        ip = image_profile(L, cx)
+        if ip is not None:
+            prof = np.array([(r_, z_ - gzc) for r_, z_ in ip["prof"]])
+            z0, z1 = float(prof[0, 1]), float(prof[-1, 1])
+            if ip.get("glass"):
+                gz0, gz1 = ip["glass"]
+                glass_src = "front render (pale glow rows)"
+            profile_src = "front render rows"
+        else:
+            profile_src = "mesh faces"
         g0, g1 = gz0 - gzc, gz1 - gzc
         k = HS * L.get("mul", 1.0)
         rr = math.sqrt(2)                                       # 4-sided lathe at 45 deg: corner radius = half width * sqrt 2
-        below = [(float(r) * rr, float(z)) for r, z in prof if z < g0]
-        above = [(float(r) * rr, float(z)) for r, z in prof if z > g1]
-        objs_l = []
-        if below:
-            objs_l.append(proj_bake.lathe([(0.0, z0)] + below + [(below[-1][0], g0)], seg=4, name=NAME + "_LanternBase"))
-        if above:
-            objs_l.append(proj_bake.lathe([(above[0][0], g1)] + above + [(0.0, z1)], seg=4, name=NAME + "_LanternCap"))
+        # the glass body is measured on Tripo (its band and its widths at the bottom / top); the cap, base and drop are
+        # the shape every Tripo wall lantern here shares (wide hip roof + finial, tray base, drop finial) built exact in
+        # those proportions: the cap's pale highlight made its measured outline unreliable
+        inb_ = prof[(prof[:, 1] >= g0) & (prof[:, 1] <= g1)]
+        if len(inb_) >= 4:
+            nb_ = max(1, len(inb_) // 4)
+            r0 = float(np.median(inb_[:nb_, 0]))
+            r1 = float(np.median(inb_[-nb_:, 0]))
+        else:
+            r0 = float(np.interp(g0, prof[:, 1], prof[:, 0]))
+            r1 = float(np.interp(g1, prof[:, 1], prof[:, 0]))
+        r0, r1 = max(r0, 0.25), max(r1, 0.25)
+        hb = g1 - g0
+        base = [(0.0, g0 - 0.46 * hb), (r0 * 0.22, g0 - 0.40 * hb), (r0 * 0.45, g0 - 0.26 * hb), (r0 * 0.6, g0 - 0.16 * hb),
+                (r0 * 1.15, g0 - 0.1 * hb), (r0 * 1.15, g0)]
+        cap = [(r1 * 1.32, g1), (r1 * 1.32, g1 + 0.06 * hb), (r1 * 0.42, g1 + 0.34 * hb), (r1 * 0.24, g1 + 0.37 * hb),
+               (r1 * 0.24, g1 + 0.41 * hb), (r1 * 0.16, g1 + 0.47 * hb), (0.0, g1 + 0.56 * hb)]
+        z0, z1 = base[0][1], cap[-1][1]
+        objs_l = [proj_bake.lathe([(r * rr, z) for r, z in base], seg=4, name=NAME + "_LanternBase"),
+                  proj_bake.lathe([(r * rr, z) for r, z in cap], seg=4, name=NAME + "_LanternCap")]
         for o in objs_l:                                     # the lathes' 4 corners on the diagonals: faces to the front
             o.data.transform(Matrix.Rotation(math.pi / 4, 4, "Z"))
-        r0 = float(np.interp(g0, prof[:, 1], prof[:, 0]))
-        r1 = float(np.interp(g1, prof[:, 1], prof[:, 0]))
         me = bpy.data.meshes.new(NAME + "_LanternPosts")
         bm = bmesh.new()
         pw = max(0.06 / k, 0.09 * (r0 + r1))
@@ -681,12 +790,13 @@ if "lantern" in PR:
         for o in ps:
             bpy.data.objects.remove(o)
         out_objs.append(lt)
-        rep = {"tripo": {"wall_y": None if wall_t is None else round(wall_t, 3),
+        rep = {"glass_from": glass_src, "tripo": {"wall_y": None if wall_t is None else round(wall_t, 3),
                          "axis_x": round(float(cx), 3), "axis_y": round(float(yc_t), 3), "glass_z": [round(float(gz0), 3), round(float(gz1), 3)],
                          "half_width": round(hw, 3), "height": round(z1 - z0, 3)},
-               "fix": "rebuilt exact: 4-sided lathe cap + base/drop from the Tripo silhouette (%d rings), 4 corner posts, arm + wall plate; "
-                      "open glass band for the skeleton LampGlass; gold = Tripo median (%d, %d, %d)" % ((len(prof),) + tuple(int(255 * c_) for c_ in gr)),
-               "scale": round(k, 4), "glass_band_studs": [round(g0 * k, 3), round(g1 * k, 3)],
+               "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, %d profile rows), hip-roof cap + finial, "
+                      "tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open "
+                      "glass band for the skeleton LampGlass; gold = Tripo median (%d, %d, %d)" % ((len(prof),) + tuple(int(255 * c_) for c_ in gr)),
+               "profile_from": profile_src, "scale": round(k, 4), "glass_band_studs": [round(g0 * k, 3), round(g1 * k, 3)],
                "body_half_width_studs": [round(r0 * k, 3), round(r1 * k, 3)]}
         for sn in L["slots"]:
             sl = SLOTS[sn]
@@ -768,6 +878,11 @@ if "door" in PR and door_src and leaf_slots:
     _wood_y = y_leaf
     tri_src.skip_where((tri_src.FN[:, 1] < D.get("min_facing", 0.45)) | (tri_src.FC[:, 1] > _wood_y + D.get("max_out", 0.22)))
     tri_src.strict = True
+    for b in D.get("skip_boxes", []):
+        inb = np.ones(len(tri_src.FC), bool)
+        for k, (lo_, hi_) in enumerate(b):
+            inb &= (tri_src.FC[:, k] >= lo_) & (tri_src.FC[:, k] <= hi_)
+        tri_src.skip_where(inb)
     _ys = allv(leaf_srcs)[:, 1]
     yt_front = float((_ys.max() + _ys.min()) / 2)               # ray from in front of the whole object, right through it
     RAY_BACK = float((_ys.max() - _ys.min()) / 2 + 0.6)
@@ -824,6 +939,7 @@ if "door" in PR and door_src and leaf_slots:
     knob_mat = None
     hw_objs = leaf_srcs + [o for o in SRC if o.name.endswith("_DoorHw")]
     KN_KEPT = []                                     # the knob centre on the kept half (Tripo frame)
+    KN_RK = []
     for b in D.get("knobs", []):
         P = allv(hw_objs)
         inb = P[:, 1] > y_leaf + 0.12
@@ -834,17 +950,34 @@ if "door" in PR and door_src and leaf_slots:
             c_ = ((q[:, 0].min() + q[:, 0].max()) / 2, (q[:, 2].min() + q[:, 2].max()) / 2)
             if (c_[0] - cx) * keep_sign > 0:
                 KN_KEPT.append(c_)
-    for ki, b in enumerate(D.get("knobs", [])):
+                KN_RK.append(max(q[:, 0].max() - q[:, 0].min(), q[:, 2].max() - q[:, 2].min()) / 2)
+    knob_list = D.get("knobs", [])
+    if D.get("knob_at"):
+        knob_list = [("at", xz) for xz in D["knob_at"]]
+    for ki, b in enumerate(knob_list):
+        if isinstance(b, tuple):                        # a given spot: a small box round it, no protrusion test
+            kc = (b[1][0], b[1][1])
+            rk = D.get("knob_r", 0.3)
+            P = allv(hw_objs)
+            sel_ = (np.abs(P[:, 0] - kc[0]) < 2 * rk) & (np.abs(P[:, 2] - kc[1]) < 2 * rk)
+            yk = float(np.median(P[sel_, 1])) if sel_.any() else y_leaf
+            q = None
+        else:
+            q = 0
         P = allv(hw_objs)
-        inb = P[:, 1] > y_leaf + 0.12       # standing out of the planks
-        for k, (lo_, hi_) in enumerate(b):
-            inb &= (P[:, k] >= lo_) & (P[:, k] <= hi_)
-        if not inb.any():
-            continue
-        q = P[inb]
-        kc = ((q[:, 0].min() + q[:, 0].max()) / 2, (q[:, 2].min() + q[:, 2].max()) / 2)
-        rk = max(q[:, 0].max() - q[:, 0].min(), q[:, 2].max() - q[:, 2].min()) / 2
-        yk = float(np.percentile(P[(np.abs(P[:, 0] - kc[0]) < 2 * rk) & (np.abs(P[:, 2] - kc[1]) < 2 * rk), 1], 50))
+        if q is not None:
+            inb = P[:, 1] > y_leaf + 0.12       # standing out of the planks
+            for k, (lo_, hi_) in enumerate(b):
+                inb &= (P[:, k] >= lo_) & (P[:, k] <= hi_)
+            if not inb.any():
+                continue
+            q = P[inb]
+            kc = ((q[:, 0].min() + q[:, 0].max()) / 2, (q[:, 2].min() + q[:, 2].max()) / 2)
+            rk = max(q[:, 0].max() - q[:, 0].min(), q[:, 2].max() - q[:, 2].min()) / 2
+            if mirror and KN_RK:
+                rk = KN_RK[0]
+            rk = float(np.clip(rk, 0.18 * Rt / Rs, 0.36 * Rt / Rs))   # 0.18 .. 0.36 studs once fitted
+            yk = float(np.percentile(P[(np.abs(P[:, 0] - kc[0]) < 2 * rk) & (np.abs(P[:, 2] - kc[1]) < 2 * rk), 1], 50))
         prof = [(rk * 0.8, 0.0), (rk * 0.95, 0.12 * rk), (rk, 0.35 * rk), (rk * 0.9, 0.62 * rk), (rk * 0.62, 0.86 * rk),
                 (rk * 0.3, 0.98 * rk), (0.0, 1.02 * rk)]
         kn = proj_bake.lathe(prof, seg=20, name="%s_Knob%d" % (NAME, ki))

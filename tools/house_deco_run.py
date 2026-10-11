@@ -101,6 +101,8 @@ blender("house_deco_place.py", fixed, rep, placed)
 final = os.path.join(ART, N + "_deco.glb")
 print("[run] 5 merge", flush=True)
 blender("glb_merge.py", final, placed, *parts[1:])
+if "Lantern" in R["pieces"]:                                # the rebuilt lantern alone, for the sheet's lantern column
+    blender("tripo_ortho.py", fixed, os.path.join(B, "v_lantern"), "--only", "LanternT", "--views", "front,side", "--px", "400")
 if not a.no_preview:
     print("[run] 6 preview", flush=True)
     cams = json.load(open(os.path.join(ROOT, "build", "skel_%s_cams.json" % N)))
