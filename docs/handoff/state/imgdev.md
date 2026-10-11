@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 9차: 천 v2 WorldKit·MV 3개 다시 넣음, 큐 비움)
+
+- WorldKit(재부팅 뒤) MV 다시 넣음·백업(build/wk_backup/20261011_215142 + 이미지 생성 1 전체 214754): 금 255,168,36·금속 0.5·거칠기 0.15, 매끈 대리석 3판, HH_Fabric v2. 디자인 검수 OK. **새 규칙(최종 검수): WorldKit에 큰 덩어리 넣을 때마다 `py tools/worldkit/wk_backup.py save --only <이름들>`.**
+- **다음(낮은 우선, 지금 큐보다 뒤): 천 v3 후보** — 디자인 검수 기록: 원경에서 직조가 '모눈/방충망'처럼 보임(fabric_v2_day_a 880~1040,20~600). 2D 배너 = 매끈한 천 + 은은한 결. 격자 대비 절반 + 불규칙 실 굵기(줄무늬 반복 깨기), 5·15칸 비교 한 장. 지금 메인 v2는 승인본이라 안 바꿈. 만드는 도구 tools/fabric_weave_maps.py.
+- 대기: 소품 C·D2 약 9개 올리기(최종 검수 승인 뒤, 직접 보고 ≤10 한 번). 이미지 생성 4는 A/B/C/D 시험 지시를 디자인 검수에서 다시 받아야 함.
+
 # 이미지 개발 — 상태 (2026-10-11 밤 8차: PC 재부팅 뒤 대기)
 
 - **PC가 꺼졌다 켜져 Studio 창 전부 닫힘(최종 검수).** WorldKit의 금 MV·매끈 대리석 MV는 이미지 생성 1이 바탕을 다시 지은 뒤 **내가 다시 넣기**: 금 = `tools/gold_trim_apply.luau`(MODE apply; MV가 없으면 먼저 `tools/building_variants.py`로 MV 만들기), 매끈 = `tools/marble_smooth_mv.luau`(MV 만들기, 맵 3판). 둘 다 WorldKit(STUDIO_NAME=WorldKit, Edit)에서. 보고는 **디자인 검수**로.
