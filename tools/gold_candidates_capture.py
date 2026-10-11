@@ -1,8 +1,8 @@
 """Photograph the gold candidates built by tools/gold_candidates_test.luau (이미지 개발 2026-10-11).
   STUDIO_NAME=UiSandbox py tools/gold_candidates_capture.py   (UiSandbox open in Edit; build the boards first)
 For each candidate key (BASE, A, B, C) it moves that candidate's parts to the middle of the SUN / SHADE boards (the other sets go
-400 studs up), then screen_capture (camera_position / look_at_position) at 14:00 (sun + shade) and 20:30 (+ a warm PointLight).
-Saves art/review/imgdev/goldcand/g3_<day|night>_<SUN|SHADE>_<key>.png (centre 960 px of the 1920x656 capture). Lighting is put back to 14:00.
+400 studs up), then screen_capture (camera_position / look_at_position) in the main Halo-town light (tools/halo_light_sim.luau, C2c day / night; sun + shade + a warm PointLight at night).
+Saves art/review/imgdev/goldcand/g3_<day|night>_<SUN|SHADE>_<key>.png (centre 960 px of the 1920x656 capture). Lighting is restored by tools/halo_light_restore.luau; the values used go to goldcand/lighting.txt. Build the boards (gold_candidates_test.luau) AFTER the day light is set (the SUN board faces the sun direction at build time).
 """
 import base64
 import io
@@ -15,21 +15,16 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 from PIL import Image  # noqa: E402
 from studio_mcp import Client  # noqa: E402
 
-KEYS = ["BASE", "A", "B", "C"]
-LIGHT = """local L=game:GetService("Lighting")
-L.ClockTime=%s
-L.Brightness=1.76
-L.Ambient=Color3.fromRGB(76,79,82)
-L.OutdoorAmbient=Color3.fromRGB(101,108,112)
-L.ExposureCompensation=-0.37
-return "ok" """
+KEYS = ["BASE", "D", "E", "F", "H"]   # same order as CANDS in gold_candidates_test.luau
+SIM = open(os.path.join(ROOT, "tools", "halo_light_sim.luau"), encoding="utf-8").read()
+RESTORE = open(os.path.join(ROOT, "tools", "halo_light_restore.luau"), encoding="utf-8").read()
 PREP = """local root=workspace.GoldCandTest
 for _,g in ipairs(root:GetDescendants()) do if g:IsA("SurfaceGui") then g:Destroy() end end
 for _,p in ipairs(root:GetChildren()) do if p:IsA("BasePart") and not p:GetAttribute("O") then p:SetAttribute("O",p.CFrame) end end
 return "prepped" """
 FOCUS = """local root=workspace.GoldCandTest
 local key="%s"
-local CX={BASE=-24,A=-8,B=8,C=24}
+local CX=%s
 for _,p in ipairs(root:GetChildren()) do
   if p:IsA("BasePart") and p:GetAttribute("O") then
     local o=p:GetAttribute("O")
@@ -56,6 +51,9 @@ p.CFrame=root.SUN_Wall:GetAttribute("O")*CFrame.new(0,3,-9) p.Parent=root
 local l=Instance.new("PointLight") l.Color=Color3.fromRGB(255,214,150) l.Brightness=3 l.Range=40 l.Parent=p return 1"""
 
 
+CX_LUA = "{" + ",".join(f"{k}={-8 * len(KEYS) + 16 * (i + 0.5)}" for i, k in enumerate(KEYS)) + "}"
+
+
 def main():
     out_dir = os.path.join(ROOT, "art", "review", "imgdev", "goldcand")
     os.makedirs(out_dir, exist_ok=True)
@@ -75,18 +73,21 @@ def main():
                     img.crop((w // 2 - 480, 0, w // 2 + 480, h)).save(os.path.join(out_dir, name + ".png"))
 
         lua(PREP)
-        for t, tn in ((14, "day"), (20.5, "night")):
-            lua(LIGHT % t)
+        lines = []
+        for tn in ("day", "night"):
+            lines.append(lua(SIM.replace('local CAND, PHASE = "%s", "%s"', 'local CAND, PHASE = "C2c", "' + tn + '"')))      # main Halo-town light (Neutral/Night x ZoneLook HaloTown C2c)
             if tn == "night":
                 lua(LAMP)
             for key in KEYS:
-                cams = json.loads(lua(FOCUS % key))
+                cams = json.loads(lua(FOCUS % (key, CX_LUA)))
                 for b in ("SUN", "SHADE"):
                     if tn == "night" and b == "SHADE":
                         continue
                     shot(f"g3_{tn}_{b}_{key}", cams[b]["cam"], cams[b]["look"])
         lua('local f=workspace.GoldCandTest:FindFirstChild("NightLamp") if f then f:Destroy() end return 1')
-        lua(LIGHT % 14)
+        lines.append(lua(RESTORE))
+        with open(os.path.join(out_dir, "lighting.txt"), "w", encoding="utf-8") as f:
+            f.write(chr(10).join(lines) + chr(10))
     finally:
         c.close()
 

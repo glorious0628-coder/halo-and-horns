@@ -1,9 +1,7 @@
 # 이미지 개발 — 상태 (2026-10-11 밤 갱신: ID 점검·재질 3종 검수 라운드)
 
 ## 지금 기다리는 것 / 다음 일 (이 블록이 맨 위 최신)
-1. **금(HH_HaloGoldTrim) 2차 시험** — 1차(금속 1.0/0.7 × 거칠기 0.15~0.35 × 밝은 색)는 `art/review/imgdev/gold_candidates_sheet_2026-10-11.jpg`: **금속을 올릴수록 하늘 파랑을 비춰 올리브색**, BASE(0.7·0.35·255,175,25)가 오히려 제일 주황빛 노랑. 2D(밝은 노랑+흰 반짝임)와는 아직 멂.
-   다음 후보 제안: 금속 0.5(맵 137160255192059)·거칠기 0.15(109029776386025)·색 (255,205,50)/(255,215,70), 금속 0.7·거칠기 0.15·색 (255,215,70). 검수가 시트 보고 정함.
-   도구: `tools/gold_candidates_test.luau`(판 2개 SUN/SHADE 짓기) + `tools/gold_candidates_capture.py`(촬영). **UiSandbox가 열려 있고 시험 판(workspace.GoldCandTest + MaterialService HH_GoldCand_*)이 남아 있음** — 끝나면 `gold_candidates_test.luau`를 MODE=clean으로 돌려 지우기(파일 저장은 안 함).
+1. **금(HH_HaloGoldTrim) 2차 끝(10/11 밤)** — 시트 `art/review/imgdev/gold_candidates_sheet2_2026-10-11.jpg`, 촬영 빛 = 메인 C2c(halo_light_sim) 낮 15.3시·밤 21시 + 그림 하늘. **빛을 메인과 맞추니 1차의 "탁한 겨자"는 대부분 UiSandbox 빛 탓이었음**: 햇빛면에서 BASE(0.7·0.35·255,175,25)는 이미 진한 금빛 노랑, D/E(금속0.5·0.15)는 레몬 노랑에 가깝고(E 255,215,70이 2D에 제일 근접), 그늘은 전부 탁한 노랑, 밤엔 BASE가 주황 갈색·D~F는 겨자 노랑. G(금속0.3) 후보는 0.3 금속 맵이 안 올라가 있어 빠짐(올리려면 검수 승인). 판정은 검수. 시험 판은 지웠고 UiSandbox는 닫음(저장 안 함). 다시 하려면 UiSandbox 열고(Start-Process RobloxStudioBeta.exe build/UiSandbox.rbxlx) 빛 sim 낮 적용 → gold_candidates_test.luau build → gold_candidates_capture.py.
 2. **HH_Fabric v2** 올림 완료(color 76316272601072 / normal 102973991596175(v1과 같음) / rough 119858177335377; asset_ids `Halo_Fabric2_*`). 메인 MV ID 교체는 **메인 반영 1에 직접 요청**(아직 안 함). v2가 메인 Play 사진에서 확인된 뒤 v1 color·rough 파일·기록 삭제(normal은 공용이라 삭제 금지).
 3. 직조 밤 사진 — WorldKit 촬영은 이미지 생성 1 차례와 안 겹치게 검수에 따로 신청.
 4. Tex_*_FF3 5장(uploaded_review_pending) 3×3 시트를 다음 재질 시트에 같이.

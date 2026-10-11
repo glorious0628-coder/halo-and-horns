@@ -23,14 +23,22 @@ end
 
 local COLOR = "rbxassetid://94913368757526"
 local NORMAL = "rbxassetid://131597673772642"
+-- Round 2 (검수 10/11): D/E/F/G/H. G (metal 0.3) needs a flat 0.3 metal map that is NOT uploaded yet -> left out until 검수 OKs the upload.
+-- plastic = true: SmoothPlastic with the plain part colour (the "painted yellow" baseline, no variant).
+local MET50 = "rbxassetid://137160255192059"
+local MET70 = "rbxassetid://139091750772198"
+local R15 = "rbxassetid://109029776386025"
+local R35 = "rbxassetid://128833041727597"
 local CANDS = {
-	{ key = "BASE", label = "BASE metal 0.7 / rough 0.35 / 255,175,25", metal = "rbxassetid://139091750772198", rough = "rbxassetid://128833041727597", col = Color3.fromRGB(255, 175, 25) },
-	{ key = "A", label = "A metal 1 / rough 0.25 / 255,195,40", metal = "rbxassetid://91394364117916", rough = "rbxassetid://82910627301523", col = Color3.fromRGB(255, 195, 40) },
-	{ key = "B", label = "B metal 1 / rough 0.15 / 255,205,50", metal = "rbxassetid://91394364117916", rough = "rbxassetid://109029776386025", col = Color3.fromRGB(255, 205, 50) },
-	{ key = "C", label = "C metal 0.7 / rough 0.15 / 255,205,40", metal = "rbxassetid://139091750772198", rough = "rbxassetid://109029776386025", col = Color3.fromRGB(255, 205, 40) },
+	{ key = "BASE", label = "BASE metal 0.7 / rough 0.35 / 255,175,25", metal = MET70, rough = R35, col = Color3.fromRGB(255, 175, 25) },
+	{ key = "D", label = "D metal 0.5 / rough 0.15 / 255,205,50", metal = MET50, rough = R15, col = Color3.fromRGB(255, 205, 50) },
+	{ key = "E", label = "E metal 0.5 / rough 0.15 / 255,215,70", metal = MET50, rough = R15, col = Color3.fromRGB(255, 215, 70) },
+	{ key = "F", label = "F metal 0.7 / rough 0.15 / 255,215,70", metal = MET70, rough = R15, col = Color3.fromRGB(255, 215, 70) },
+	{ key = "H", label = "H plastic / 255,205,60", plastic = true, col = Color3.fromRGB(255, 205, 60) },
 }
 
 for _, c in ipairs(CANDS) do
+	if c.plastic then continue end
 	local mv = Instance.new("MaterialVariant")
 	mv.Name = "HH_GoldCand_" .. c.key
 	mv.BaseMaterial = Enum.Material.Metal
@@ -55,7 +63,7 @@ local BOARDS = {
 	{ name = "SUN", origin = Vector3.new(0, 1500, 0), look = horiz },
 	{ name = "SHADE", origin = Vector3.new(0, 1500, 300), look = -horiz },
 }
-local W, H = 64, 24
+local W, H = 16 * #CANDS, 24
 local colW = W / #CANDS
 local info = {}
 for _, b in ipairs(BOARDS) do
@@ -68,8 +76,12 @@ for _, b in ipairs(BOARDS) do
 		p.Size = size
 		p.CFrame = base * localCf
 		if c then
-			p.Material = Enum.Material.Metal
-			p.MaterialVariant = "HH_GoldCand_" .. c.key
+			if c.plastic then
+				p.Material = Enum.Material.SmoothPlastic
+			else
+				p.Material = Enum.Material.Metal
+				p.MaterialVariant = "HH_GoldCand_" .. c.key
+			end
 			p.Color = c.col
 		else
 			p.Material = Enum.Material.Marble
