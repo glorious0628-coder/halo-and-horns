@@ -24,4 +24,8 @@ Specs were not run through the generator (no runner for it here); the reviewer s
 | all houses | lantern without pedestals (Juice) | 1 | `lanterns: true` independent of `pedestals`. |
 | all | upper-storey window height / bottom is fixed by the generator (bottom 4.6 under the storey line); 2D sometimes sits lower | many | `storeys[].win.bottom` / `h` override. |
 
+Built since (api/houses-gaps, not run - no Python here): `door.u`, `awning.u`, `shopwin` (Bakery/Potion/Juice specs), `balconies` (06/08/10),
+`window_boxes` (04/06/08/10/12), `top.hip` (11), `top.pergola` (12), `top.cupola` (01). Still open: sign plaque, gable, pavilion, porch canopy,
+arcade frieze, planter walls, 3-colour awning, lanterns without pedestals, win.bottom override, greenhouse roof, bakery dome/chimney.
+
 Biggest three for 이미지 생성 3 to build first: (1) off-centre door + shopfront display window (3 of 4 shops), (2) upper balcony/balustrade ring + window boxes (4 houses, 5 houses), (3) roof extras: hip roof / pergola / cupola / parasol pavilion (each once, but they define the skyline).

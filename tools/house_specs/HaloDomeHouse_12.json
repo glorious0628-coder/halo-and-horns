@@ -12,6 +12,8 @@
  "awning": {"w": 7.0, "colors": [[40, 62, 138], [255, 243, 212]], "n": 7},
  "pots": [[-8.2, 9.0, 4.4, 2.4], [8.2, 9.0, 4.4, 2.4]],
  "steps": "half",
+ "window_boxes": [["all", 1]],
  "medals": [],
- "top": {"type": "flat", "parapet": "balustrade", "h": 1.6, "skylight": null, "topiary": [[-8.0, 3.0], [8.0, 3.0]]}
+ "top": {"type": "flat", "parapet": "balustrade", "h": 1.6, "skylight": null, "topiary": [[-8.0, 3.0], [8.0, 3.0]],
+         "pergola": {"w": 10.0, "d": 6.0, "h": 5.5, "columns": 4, "y": -1.0}}
 }

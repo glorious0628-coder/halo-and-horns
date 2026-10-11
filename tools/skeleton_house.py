@@ -19,17 +19,28 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
            wall names: rect = front, right, back, left (front holds the door); oct = front, front_r, right, back_r,
            back, back_l, left, front_l; round = s0..s(seg-1) (the one facing +y is "front") and w0.. = the flat facets
            at "flats" (polar angle, 0 = +x, 90 = front; give them in the order you want w0, w1, ...); "@k" = k edges on
-  door     {"w", "h", "double": bool}
+  door     {"w", "h", "double": bool, "u": 0..1 along the front (default 0.5; u grows to the viewer's right = -x)}; reveal,
+           frame, leaf, pedestals, awning, steps, DoorFront follow it (a pedestal with no room beside an off-centre door
+           or next to the shopwin is skipped)
+  shopwin  {"u", "w", "h": glass height, "type": "arch" (flat segment top) | "rect", "counter": 2.0 studs above Z0}: one wide
+           display opening on the front: gold frame, marble counter + gold sill, glass, 2-3 gold mullions; skipped with a
+           warning if it overlaps the door, leaves the front or is too tall
+  balconies  [{"storey": k >= 1, "walls": [...], "depth": 1.4, "margin"}] floor slab + gold band under it + marble rail
+           with round balusters and gold cap at the bottom line of storey k (rect: between the margins + return rails)
+  window_boxes  [[wall or "all", storey (0 = ground) or "all"], ...] marble box + gold rim + soil under those windows
   pilasters  true / false (turned along the corner bisectors; big gold capitals, band on each storey line)
   towers   {"w", "h_extra", "dome": true (small gold ribbed dome cap, R = w / 2 + 0.2; else "finial": true = ball),
             "window": true (small arched window "win_w" 0.9 on the front face of the front towers)} square corner towers
            on a rect plan (house 02 / 04 style)
   pedestals  true: marble blocks with gold caps either side of the door (lanterns above them)
-  awning   {"w", "colors": [[r,g,b], [r,g,b]], "n"} striped SmoothPlastic cloth + scalloped valance
+  awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's)} striped SmoothPlastic cloth + scalloped valance
   pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122)
   steps    "half" (two half-round steps) | "three" (three straight steps, door + 3.0 wide) | "none"
   top      {"type": "flat", "parapet": "solid"|"balustrade", "h", "skylight": [w, d, h] or null,
-            "topiary": [[x, y], ...]} |
+            "topiary": [[x, y], ...], roof extras:
+            "hip": {"h", "eave": 1.5, "chimney": [x, y, w, h]} (rect plan: blue slate SmoothPlastic (90,140,210) hip roof,
+            gold hip lines + ridge + ball finial; use "parapet": "none"), "pergola": {"w", "d", "h", "columns": 4|6, "x", "y"},
+            "cupola": {"r", "h", "x", "y"} (6 marble posts + gold ring + small dome ornament)} |
            {"type": "drum_dome", "R", "h", "seg", "windows": n, "dome_h", "onion": bool} |
            {"type": "dome", "dome_h", "onion": bool}  (dome straight on the cornice of a round / oct plan)
   medals   [[wall, u, z], ...] raised gold quatrefoil medallions
@@ -104,10 +115,11 @@ else:
     # "flats": polar angles (deg, 0 = +x, 90 = front) of long flat facets for the windows (a window is a hole in ONE
     # wall edge, a 32-edge circle has edges ~1 stud wide); chord "flat_w" studs. The other edges share the rest evenly.
     FW = 2 * math.asin(min(0.9, P.get("flat_w", 3.2) / 2 / R))
-    FL = sorted((f if f >= math.degrees(a0) else f + 360.0) for f in P.get("flats", []))
+    FL = sorted(((f if f >= math.degrees(a0) else f + 360.0), i) for i, f in enumerate(P.get("flats", [])))   # w<i> = spec order
     STEP = ((a1 - a0) - len(FL) * FW) / max(1, SEG - 1 - len(FL))
     ANG, cur, ns = [], a0, 0
-    for wi, f in enumerate(FL + [None]):
+    for fi in FL + [None]:
+        f, wi = (None, None) if fi is None else fi
         end = a1 if f is None else math.radians(f) - FW / 2
         m = max(1, int(round((end - cur) / STEP))) if end - cur > 1e-6 else 0
         for k in range(m):
@@ -149,11 +161,12 @@ class Wall:
             return
         add(nm, (u1 - u0, z1 - z0, depth), self.at((u0 + u1) / 2, (z0 + z1) / 2, off - depth / 2), self.u, UP, mat)
 
-    def arc(self, nm, uc, zc, r_in, w, depth, off, n_seg, mat):
+    def arc(self, nm, uc, zc, r_in, w, depth, off, n_seg, mat, a0=0.0, a1=math.pi):
+        # a0..a1 = angle range from the +u axis (default 0..pi = half circle; the shop window uses a segment of a circle)
         r_out = r_in + w
-        seg_len = 2 * r_out * math.tan(math.pi / (2 * n_seg)) * 1.04
+        seg_len = 2 * r_out * math.tan((a1 - a0) / (2 * n_seg)) * 1.04
         for k in range(n_seg):
-            t = math.pi * (k + 0.5) / n_seg
+            t = a0 + (a1 - a0) * (k + 0.5) / n_seg
             d = vadd(vmul(self.u, math.cos(t)), vmul(UP, math.sin(t)))
             tan = vadd(vmul(self.u, -math.sin(t)), vmul(UP, math.cos(t)))
             add("%s%d" % (nm, k), (seg_len, w, depth), vadd(self.at(uc, zc, off - depth / 2), vmul(d, r_in + w / 2)), tan, d, mat)
@@ -190,14 +203,35 @@ def wall_name(nm):
 DOOR = S["door"]
 DOOR_W, DOOR_H = DOOR["w"], DOOR["h"]
 wf = walls["front"]
-DU = wf.L / 2
+DU = DOOR.get("u", 0.5) * wf.L                            # door centre along the front (u 0..1, default centred)
+OFFC = "u" in DOOR
 DR = DOOR_W / 2
 DSP = Z0 + DOOR_H - DR
+DOOR_HALF = DR + 0.7 + 0.75                               # door + gold jamb + foot block (half width)
 
 # holes per wall: door + windows of every storey (window bottom on a course line under the storey top)
 holes = {nm: [] for nm in EDGES}
 win_list = []
 holes["front"].append((DU, DOOR_W, Z0, Z0 + DOOR_H, "door"))
+
+# shopwin {u, w, h, type: "arch"|"rect", counter}: one wide display opening on the front (hole from Z0 + counter, h tall)
+SHOP = S.get("shopwin")
+SH = None
+if SHOP:
+    sh_w, sh_h = SHOP["w"], SHOP["h"]
+    sh_u = SHOP.get("u", 0.5) * wf.L
+    sh_kind = SHOP.get("type", "arch")
+    sh_zb = Z0 + SHOP.get("counter", 2.0)
+    sh_top = sh_zb + sh_h
+    if abs(sh_u - DU) < DOOR_HALF + sh_w / 2 + 0.5:
+        print("[house] WARNING: shopwin overlaps the door hole, skipped")
+    elif sh_u - sh_w / 2 - 1.2 < 0 or sh_u + sh_w / 2 + 1.2 > wf.L:
+        print("[house] WARNING: shopwin %.2f wide does not fit the front (%.2f long), skipped" % (sh_w, wf.L))
+    elif sh_top > Z_LINES[1] - 1.3:
+        print("[house] WARNING: shopwin too tall for the ground storey, skipped")
+    else:
+        SH = (sh_u, sh_w, sh_zb, sh_top, sh_kind)
+        holes["front"].append((sh_u, sh_w, sh_zb, sh_top, "shop"))
 for si, st in enumerate(STOREYS):
     zb, zt = Z_LINES[si], Z_LINES[si + 1]
     WS = st.get("win", {})
@@ -282,6 +316,55 @@ def window(w, nm, uc, ww, w0, sp, kind):
 
 for i, (nm, uc, ww, w0, sp, kind, si) in enumerate(win_list):
     window(walls[nm], "%s_Win%d_%d" % (nm, si, i), uc, ww, w0, sp, kind)
+
+
+def shop_window(w, uc, ww, zb, top, kind):
+    """wide display window: gold frame, marble counter + gold sill, glass, 2-3 gold mullions; an arched one has a flat
+    segment-of-a-circle top (rise = half the radius, max 1.6) with marble spandrel steps filling the hole corners"""
+    nm = "Shop"
+    r = ww / 2
+    g = 0.45
+    rise = min(r / 2, 1.6) if kind == "arch" else 0.0
+    sp = top - rise                                       # spring line (top of the straight part)
+    Rc = (r * r + rise * rise) / (2 * rise) if rise > 0 else 0.0
+    zc = sp + rise - Rc                                   # circle centre height
+    th = math.asin(min(1.0, r / Rc)) if rise > 0 else 0.0
+
+    def hin(d):                                           # inner arch height at distance d from the centre line
+        return zc + math.sqrt(max(Rc * Rc - d * d, 0.0)) if rise > 0 else top
+    w.slab(nm + "_Glass", uc - r, uc + r, zb, sp, 0.1, -0.12, "glass")
+    for side, sg in (("L", -1), ("R", 1)):
+        u0 = uc + sg * r
+        w.slab(nm + "_Jamb" + side, min(u0, u0 + sg * g), max(u0, u0 + sg * g), zb - 0.1, sp, T + 0.3, 0.15, "gold")
+    if rise > 0:
+        N = max(4, int(math.ceil(r / 0.3)))
+        for sg, sd in ((-1, "L"), (1, "R")):
+            for k in range(N):
+                d0, d1 = r * k / N, r * (k + 1) / N
+                w.slab("%s_Glass%s%d" % (nm, sd, k), uc + sg * d0 if sg > 0 else uc - d1, uc + sg * d1 if sg > 0 else uc - d0,
+                       sp, hin(d1), 0.1, -0.12, "glass")
+                zs = hin(d0)
+                w.slab("%s_Span%s%d" % (nm, sd, k), uc + sg * d0 if sg > 0 else uc - d1, uc + sg * d1 if sg > 0 else uc - d0,
+                       zs, top, T, 0.0, "marble")
+        w.arc(nm + "_FrameArc", uc, zc, Rc, g, T + 0.3, 0.15, max(12, int(ww * 3)), "gold", math.pi / 2 - th, math.pi / 2 + th)
+        w.arc(nm + "_Hood", uc, zc, Rc + g - 0.02, 0.4, T + 0.45, 0.32, max(12, int(ww * 3)), "marble", math.pi / 2 - th, math.pi / 2 + th)
+        w.slab(nm + "_Key", uc - 0.3, uc + 0.3, top + g + 0.05, top + g + 0.85, 0.8, 0.45, "gold")
+        w.slab(nm + "_KeyCap", uc - 0.42, uc + 0.42, top + g + 0.85, top + g + 1.05, 0.95, 0.6, "gold")
+    else:
+        w.slab(nm + "_Head", uc - r - g, uc + r + g, top, top + g, T + 0.3, 0.15, "gold")
+        w.slab(nm + "_HoodStone", uc - r - g - 0.2, uc + r + g + 0.2, top + g, top + g + 0.35, 0.6, 0.35, "marble")
+    # counter: gold sill line + marble counter top, a little wider than the opening
+    w.slab(nm + "_SillGold", uc - r - g - 0.3, uc + r + g + 0.3, zb - 0.55, zb - 0.35, 1.2, 0.6, "gold")
+    w.slab(nm + "_Counter", uc - r - g - 0.2, uc + r + g + 0.2, zb - 0.35, zb, 1.4, 0.7, "marble")
+    nmul = 2 if ww <= 6.0 else 3
+    for k in range(nmul):
+        bx = -r + ww * (k + 1) / (nmul + 1)
+        w.slab("%s_Mullion%d" % (nm, k), uc + bx - 0.07, uc + bx + 0.07, zb, hin(abs(bx)), 0.1, -0.05, "gold")
+    w.slab(nm + "_Transom", uc - r, uc + r, sp - 0.07, sp + 0.07, 0.1, -0.05, "gold")
+
+
+if SH:
+    shop_window(walls["front"], *SH)
 
 # ---------------------------------------------------------------- door
 GW = 0.7
@@ -407,6 +490,12 @@ if S.get("pedestals", True):
     pz = Z0 + 3.75
     for k, sx in enumerate((-1, 1)):
         x = CXD + sx * (DR + GW + 0.75 + 1.0)
+        if OFFC or SH:                                  # off-centre door / shop window: skip a pedestal that leaves the wall or hits the window
+            fx0, fx1 = sorted((wf.p0[0], wf.at(wf.L, 0)[0]))
+            ush = wf.at(SH[0], 0)[0] if SH else None
+            if x - 1.0 < fx0 + 1.2 or x + 1.0 > fx1 - 1.2 or (SH and abs(x - ush) < SH[1] / 2 + 0.45 + 0.4 + 1.0):
+                print("[house] pedestal %d skipped (no room beside the door)" % k)
+                continue
         add("Pedestal%d" % k, (1.8, pz, 2.0), (x, YF + 0.45, pz / 2))
         add("Pedestal%d_Cap" % k, (1.92, 0.35, 2.12), (x, YF + 0.45, pz + 0.175), mat="gold")
         add("Pedestal%d_Foot" % k, (2.0, 0.55, 2.2), (x, YF + 0.45, 0.275), mat="gold")
@@ -426,16 +515,17 @@ if AW:
     aw_len = math.hypot(AW_D, AW_DROP)
     aw_n = (0.0, AW_DROP / aw_len, AW_D / aw_len)
     sw = AW_W / AW_N
+    AWX = wf.at(AW["u"] * wf.L, 0)[0] if "u" in AW else CXD       # awning centre: the door's unless "u" is given
     for k in range(AW_N):
-        x = CXD - AW_W / 2 + sw * (k + 0.5)
+        x = AWX - AW_W / 2 + sw * (k + 0.5)
         m = "cloth%d" % (k % 2)
         add("Awning_Stripe%d" % k, (sw + 0.01, 0.15, aw_len), (x, YF + AW_D / 2, AW_TOP - AW_DROP / 2), (1.0, 0.0, 0.0), aw_n, m)
         add("Awning_Valance%d" % k, (sw + 0.01, 0.42, 0.12), (x, YF + AW_D + 0.02, AW_TOP - AW_DROP - 0.19), mat=m)
         disk("Awning_Scallop%d" % k, sw * 0.98, 0.14, (x, YF + AW_D + 0.02, AW_TOP - AW_DROP - 0.4), (0.0, 1.0, 0.0), m)
-    add("Awning_Rod", (AW_W + 0.4, 0.26, 0.26), (CXD, YF + 0.16, AW_TOP + 0.02), (1.0, 0.0, 0.0), UP, "gold", "Cylinder")
+    add("Awning_Rod", (AW_W + 0.4, 0.26, 0.26), (AWX, YF + 0.16, AW_TOP + 0.02), (1.0, 0.0, 0.0), UP, "gold", "Cylinder")
     for k, sx in enumerate((-1, 1)):
-        ball("Awning_BallFront%d" % k, 0.42, (CXD + sx * (AW_W / 2 + 0.05), YF + AW_D + 0.05, AW_TOP - AW_DROP))
-        ball("Awning_BallTop%d" % k, 0.36, (CXD + sx * (AW_W / 2 + 0.25), YF + 0.16, AW_TOP + 0.02))
+        ball("Awning_BallFront%d" % k, 0.42, (AWX + sx * (AW_W / 2 + 0.05), YF + AW_D + 0.05, AW_TOP - AW_DROP))
+        ball("Awning_BallTop%d" % k, 0.36, (AWX + sx * (AW_W / 2 + 0.25), YF + 0.16, AW_TOP + 0.02))
 else:
     cols = [[250, 205, 72], [255, 243, 212]]
 
@@ -465,6 +555,84 @@ for i, (nm, u, z) in enumerate(S.get("medals", [])):
     if nm in walls:
         walls[nm].quatrefoil("Medal%d" % i, u * walls[nm].L, z, 1.0)
 
+# ---------------------------------------------------------------- balconies + window boxes
+def edge_box(nm, w, p0, p1, z0, z1, dep, mat="marble", grow=0.0):
+    """box along a wall edge p0 -> p1 (xy points): outer face `grow` studs outside the p line, `dep` thick towards the wall"""
+    ln = math.hypot(p1[0] - p0[0], p1[1] - p0[1]) + 0.02
+    mx, my = (p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2
+    k = dep / 2 - grow
+    add(nm, (ln, z1 - z0, dep), (mx - w.n[0] * k, my - w.n[1] * k, (z0 + z1) / 2), w.u, UP, mat)
+
+
+BALC_SEEN = set()
+for bi, B in enumerate(S.get("balconies", [])):
+    # {"storey": k (1 = the first upper storey), "walls": [names or "@k"], "depth": 1.4, "margin": studs kept free at both
+    # ends of a rect wall (default 1.5, or half a tower + 0.1)}: floor slab + gold band under it + marble rail with gold cap
+    si = B["storey"]
+    if si < 1 or si >= len(STOREYS):
+        print("[house] WARNING: balcony storey %s must be 1..%d, skipped" % (si, len(STOREYS) - 1))
+        continue
+    dd = B.get("depth", 1.4)
+    zf = Z_LINES[si]
+    zs = zf + 0.4                                         # walking level (above the storey-line gold band)
+    Pb = offset_poly(dd)
+    for wn0 in B["walls"]:
+        nm = wall_name(wn0)
+        if nm not in walls:
+            continue
+        w = walls[nm]
+        if P["shape"] == "rect":
+            m = B.get("margin", (TW["w"] / 2 + 0.1) if TW else 1.5)
+            if w.L - 2 * m < 2.0:
+                print("[house] WARNING: balcony on %s too short, skipped" % nm)
+                continue
+            p0, p1 = w.at(m, 0, dd)[:2], w.at(w.L - m, 0, dd)[:2]
+        else:
+            i = EDGES.index(nm)
+            p0, p1 = Pb[i], Pb[(i + 1) % len(Pb)]
+        pre = "Balc%d_%s" % (bi, nm)
+        edge_box(pre + "_Slab", w, p0, p1, zf - 0.1, zs, dd, "floor")
+        edge_box(pre + "_Band", w, p0, p1, zf - 0.3, zf - 0.1, dd, "gold", 0.08)
+        edge_box(pre + "_RailBase", w, p0, p1, zs, zs + 0.25, 0.5, "marble", -0.15)
+        edge_box(pre + "_Rail", w, p0, p1, zs + 1.0, zs + 1.2, 0.5, "marble", -0.15)
+        edge_box(pre + "_RailCap", w, p0, p1, zs + 1.2, zs + 1.3, 0.6, "gold", -0.1)
+        ln = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+        nb = max(2, int(ln / 0.7))
+        for k in range(nb):
+            f = (k + 0.5) / nb
+            post("%s_Baluster%d" % (pre, k), 0.3, 0.75, p0[0] + (p1[0] - p0[0]) * f - w.n[0] * 0.4,
+                 p0[1] + (p1[1] - p0[1]) * f - w.n[1] * 0.4, zs + 0.25)
+        for k, pe in enumerate((p0, p1)):
+            px, py = pe[0] - w.n[0] * 0.4, pe[1] - w.n[1] * 0.4
+            if (round(px, 2), round(py, 2), zf) in BALC_SEEN:
+                continue
+            BALC_SEEN.add((round(px, 2), round(py, 2), zf))
+            add("%s_Post%d" % (pre, k), (0.6, 1.3, 0.6), (px, py, zs + 0.65), w.u, UP)
+            add("%s_PostCap%d" % (pre, k), (0.78, 0.15, 0.78), (px, py, zs + 1.375), w.u, UP, "gold")
+            if P["shape"] == "rect":                      # rect plan: a short return rail from the end post back to the wall
+                rl = dd - 0.3
+                cx_, cy_ = pe[0] - w.n[0] * (dd - rl / 2 - 0.0), pe[1] - w.n[1] * (dd - rl / 2 - 0.0)
+                add("%s_Return%d" % (pre, k), (rl, 0.95, 0.3), (cx_, cy_, zs + 0.725), w.n, UP)
+                add("%s_ReturnCap%d" % (pre, k), (rl, 0.1, 0.4), (cx_, cy_, zs + 1.25), w.n, UP, "gold")
+
+# window_boxes: [[wall or "all", storey index (0 = ground) or "all"], ...]: marble box + gold rim + soil under each window
+WBN = 0
+for wn0, sq in S.get("window_boxes", []):
+    wl = list(walls) if wn0 == "all" else [wall_name(wn0)]
+    for (nm, uc, ww, w0, sp, kind, si) in win_list:
+        if nm not in wl or (sq != "all" and si != sq):
+            continue
+        w = walls[nm]
+        bw = ww + 0.6
+        zt = w0 - 0.65
+        zb_ = max(zt - 0.6, Z_LINES[si] - 0.3)            # not lower than the storey ledge's underside
+        pre = "WBox%d_%s" % (WBN, nm)
+        WBN += 1
+        w.slab(pre + "_Box", uc - bw / 2, uc + bw / 2, zb_, zt, 0.7, 0.7, "marble")
+        w.slab(pre + "_Rim", uc - bw / 2 - 0.04, uc + bw / 2 + 0.04, zt - 0.12, zt, 0.78, 0.74, "gold")
+        w.slab(pre + "_Foot", uc - bw / 2 - 0.04, uc + bw / 2 + 0.04, zb_, zb_ + 0.1, 0.78, 0.74, "gold")
+        w.slab(pre + "_Soil", uc - bw / 2 + 0.15, uc + bw / 2 - 0.15, zt - 0.05, zt + 0.1, 0.5, 0.6, "soil")
+
 # ---------------------------------------------------------------- top
 TOP = S.get("top", {"type": "flat", "parapet": "solid", "h": 1.6})
 if TOP["type"] == "flat":
@@ -483,13 +651,14 @@ if TOP["type"] == "flat":
                 f = (k + 0.5) / nb
                 bx, by = p0[0] + (p1[0] - p0[0]) * f - w.n[0] * 0.45, p0[1] + (p1[1] - p0[1]) * f - w.n[1] * 0.45
                 post("Baluster_%s_%d" % (nm, k), 0.32, ph - 0.55, bx, by, ZT + 0.25)
-        else:
+        elif TOP.get("parapet") != "none":                # "none" = no parapet (a hip roof sits on the cornice)
             add("Parapet_%s" % nm, (L, ph, 0.7), (mx - w.n[0] * 0.35, my - w.n[1] * 0.35, ZT + ph / 2), w.u, UP)
             add("ParapetGold_%s" % nm, (L + 0.02, 0.2, 0.8), (mx - w.n[0] * 0.35, my - w.n[1] * 0.35, ZT + ph - 0.1), w.u, UP, "gold")
-    for i, (x, y) in enumerate(Pp):
+    for i, (x, y) in enumerate(Pp if TOP.get("parapet") != "none" else []):
         add("ParapetPost%d" % i, (1.1, ph + 0.5, 1.1), (x, y, ZT + (ph + 0.5) / 2))
         add("ParapetPostCap%d" % i, (1.3, 0.25, 1.3), (x, y, ZT + ph + 0.62), mat="gold")
-    add("RoofDeck", (max(xs) - min(xs) + 1.6, max(ys) - min(ys) + 1.6, 0.2), (0, 0, ZT + 0.1), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
+    if not TOP.get("hip"):                                # a hip roof has no walkable deck
+        add("RoofDeck", (max(xs) - min(xs) + 1.6, max(ys) - min(ys) + 1.6, 0.2), (0, 0, ZT + 0.1), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
     sk = TOP.get("skylight")
     if sk:
         sw_, sd_, sh_ = sk
@@ -503,6 +672,96 @@ if TOP["type"] == "flat":
         post("TopiaryPot%d" % i, 1.4, 0.9, x, y, ZT + 0.2)
         post("TopiaryPotGold%d" % i, 1.5, 0.15, x, y, ZT + 1.0, "gold")
         post("TopiarySoil%d" % i, 1.2, 0.1, x, y, ZT + 1.0, "soil")
+    # ---- roof extras (sub-keys of the flat top)
+    HIP = TOP.get("hip")                                  # {"h": rise, "eave": 1.5 overhang, "chimney": [x, y, w, h above the roof]}
+    if HIP and P["shape"] != "rect":
+        print("[house] WARNING: top.hip needs a rect plan, skipped")
+        HIP = None
+    if HIP:
+        eo = HIP.get("eave", 1.5)
+        Wb, Db = max(xs) - min(xs) + 2 * eo, max(ys) - min(ys) + 2 * eo
+        hh = HIP["h"]
+        Hm = min(Wb, Db) / 2                              # plan run of every face (equal pitch)
+        slope = math.hypot(Hm, hh)
+        sa, ca = hh / slope, Hm / slope
+        # four faces, each = strips (tilted slabs) whose length follows the hip line: full run in the middle, shorter near the ends
+        for fi, (nx, ny, Eh, A) in enumerate(((0, 1, Db / 2, Wb / 2), (0, -1, Db / 2, Wb / 2), (1, 0, Wb / 2, Db / 2), (-1, 0, Wb / 2, Db / 2))):
+            tt = (-ny, nx, 0.0)
+            nrm = (nx * sa, ny * sa, ca)
+            M = max(2, int(math.ceil(2 * A / 0.9)))
+            dx = 2 * A / M
+            for k in range(M):
+                s = -A + dx * (k + 0.5)
+                lr = Hm - max(0.0, abs(s) - (A - Hm))
+                if lr < 0.15:
+                    continue
+                r = Eh - lr / 2
+                pc_ = (nx * r + tt[0] * s - nrm[0] * 0.125, ny * r + tt[1] * s - nrm[1] * 0.125, ZT + hh * lr / (2 * Hm) - nrm[2] * 0.125)
+                add("Hip%d_%d" % (fi, k), (dx + 0.02, 0.25, lr / ca), pc_, tt, nrm, "slate")
+        rl2 = abs(Wb - Db) / 2
+        for ci, (sx_, sy_) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):
+            c0 = (sx_ * Wb / 2, sy_ * Db / 2, ZT)
+            c1 = (sx_ * rl2, 0.0, ZT + hh) if Wb >= Db else (0.0, sy_ * rl2, ZT + hh)
+            dv = (c1[0] - c0[0], c1[1] - c0[1], c1[2] - c0[2])
+            Xh = norm(dv)
+            Yh = norm(vadd(UP, vmul(Xh, -Xh[2])))
+            add("HipLine%d" % ci, (math.sqrt(sum(c * c for c in dv)) + 0.2, 0.3, 0.35),
+                ((c0[0] + c1[0]) / 2, (c0[1] + c1[1]) / 2, (c0[2] + c1[2]) / 2 + 0.05), Xh, Yh, "gold")
+        if rl2 > 0.1:
+            add("HipRidge", (2 * rl2 + 0.4, 0.35, 0.4), (0, 0, ZT + hh + 0.05), (1.0, 0.0, 0.0) if Wb >= Db else (0.0, 1.0, 0.0), UP, "gold")
+        for ei, (ex, ey) in enumerate(((0, 1), (0, -1), (1, 0), (-1, 0))):                     # gold fascia along the eaves
+            alongx = ex == 0
+            add("HipEave%d" % ei, ((Wb if alongx else Db) + 0.1, 0.35, 0.35), (ex * Wb / 2, ey * Db / 2, ZT + 0.1),
+                (1.0, 0.0, 0.0) if alongx else (0.0, 1.0, 0.0), UP, "gold")
+        post("HipFinialBase", 0.55, 0.6, 0.0, 0.0, ZT + hh, "gold")
+        ball("HipFinialBall", 0.95, (0.0, 0.0, ZT + hh + 1.05))
+        ch = HIP.get("chimney")
+        if ch:
+            ccx_, ccy_, cw_, chh_ = ch
+
+            def roof_z(px, py):
+                return ZT + min(hh, hh / Hm * min(Wb / 2 - abs(px), Db / 2 - abs(py)))
+            zlo = min(roof_z(ccx_ + a_ * cw_ / 2, ccy_ + b_ * cw_ / 2) for a_ in (-1, 1) for b_ in (-1, 1)) - 0.3
+            ztop = roof_z(ccx_, ccy_) + chh_
+            add("Chimney", (cw_, ztop - zlo, cw_), (ccx_, ccy_, (zlo + ztop) / 2))
+            add("Chimney_Band", (cw_ + 0.25, 0.25, cw_ + 0.25), (ccx_, ccy_, ztop - 0.8), mat="gold")
+            add("Chimney_Cap", (cw_ + 0.5, 0.3, cw_ + 0.5), (ccx_, ccy_, ztop + 0.15), mat="gold")
+    PG = TOP.get("pergola")                               # {"w", "d", "h", "columns": 4|6, "x", "y"}: gold columns, marble beams + rafters
+    if PG:
+        pw_, pd_, ph_ = PG["w"], PG["d"], PG["h"]
+        pcx, pcy = PG.get("x", 0.0), PG.get("y", 0.0)
+        z0p = ZT + 0.2
+        xl = [-pw_ / 2, pw_ / 2] if PG.get("columns", 4) <= 4 else [-pw_ / 2, 0.0, pw_ / 2]
+        for k, (a_, b_) in enumerate((a_, b_) for a_ in xl for b_ in (-pd_ / 2, pd_ / 2)):
+            post("Pergola_Col%d" % k, 0.55, ph_, pcx + a_, pcy + b_, z0p, "gold")
+            post("Pergola_ColBase%d" % k, 0.95, 0.35, pcx + a_, pcy + b_, z0p)
+            post("Pergola_ColCap%d" % k, 0.9, 0.3, pcx + a_, pcy + b_, z0p + ph_ - 0.3, "gold")
+        for k, b_ in enumerate((-pd_ / 2, pd_ / 2)):
+            add("Pergola_BeamX%d" % k, (pw_ + 1.2, 0.45, 0.5), (pcx, pcy + b_, z0p + ph_ + 0.225))
+        for k, a_ in enumerate(xl):
+            add("Pergola_BeamY%d" % k, (0.5, 0.4, pd_ + 1.2), (pcx + a_, pcy, z0p + ph_ + 0.65))
+        nr = int(pw_ / 1.0) + 1
+        for k in range(nr):
+            add("Pergola_Rafter%d" % k, (0.22, 0.28, pd_ + 1.4), (pcx - pw_ / 2 + pw_ * k / max(1, nr - 1), pcy, z0p + ph_ + 0.99))
+    CU = TOP.get("cupola")                                # {"r", "h", "x", "y"}: 6 marble posts + gold ring + small gold dome
+    if CU:
+        cr, chh_ = CU["r"], CU["h"]
+        ccx_, ccy_ = CU.get("x", 0.0), CU.get("y", 0.0)
+        z0c = ZT + 0.2
+        post("Cupola_Base", 2 * cr + 1.2, 0.4, ccx_, ccy_, z0c)
+        post("Cupola_BaseGold", 2 * cr + 1.35, 0.15, ccx_, ccy_, z0c + 0.4, "gold")
+        zp = z0c + 0.55
+        cpts = [(ccx_ + cr * math.cos(k * math.pi / 3), ccy_ + cr * math.sin(k * math.pi / 3)) for k in range(6)]
+        for k, (px, py) in enumerate(cpts):
+            post("Cupola_Post%d" % k, 0.5, chh_, px, py, zp)
+            post("Cupola_PostCap%d" % k, 0.7, 0.2, px, py, zp + chh_, "gold")
+        for k in range(6):
+            pa, pb = cpts[k], cpts[(k + 1) % 6]
+            dxy = (pb[0] - pa[0], pb[1] - pa[1], 0.0)
+            add("Cupola_Ring%d" % k, (math.hypot(dxy[0], dxy[1]) + 0.3, 0.4, 0.5), ((pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2, zp + chh_ + 0.4),
+                norm(dxy), UP, "gold")
+        orn_items.append({"type": "dome", "name": NAME + "_CupolaDome", "pos": [ccx_, ccy_, zp + chh_ + 0.6], "R": cr + 0.35,
+                          "h": (cr + 0.35) * 1.1, "ribs": 6, "fin": 0.4})
 else:
     zb = ZT
     if TOP["type"] == "drum_dome":
@@ -538,8 +797,9 @@ MAT = {
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
     "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Enabled = false; l.Parent = p',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
-    "cloth0": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[0]),
-    "cloth1": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[1]),
+    "slate": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(90, 140, 210)',
+    "cloth0": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[0]),
+    "cloth1": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[1]),
 }
 
 
