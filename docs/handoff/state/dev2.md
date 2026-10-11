@@ -1,33 +1,31 @@
-# 게임성 개발 2 — 상태 (2026-10-11, 세션 새로 열기 인계)
+# 게임성 개발 2 — 상태 (2026-10-11 저녁, 새 개발 2 세션)
 
-서버 전용(개발 3 휴식 → 서버는 개발 2 혼자). Studio 금지, main에 push 금지. 새 일 = origin/main에서 새 가지, worktree에서 pathspec 커밋.
-검증·병합은 검수: 가지가 준비되면 검수에 "가지·커밋·시험 명령·결과 파일"을 보낸다.
-시험은 동시에 3~4개까지만(PC 메모리). 변이 있는 긴 시험(test_a23_14 20~40분)은 혼자, 되도록 복사본 폴더에서. 시험이 덮어쓴 docs/art/verification_* 보고서는 `git checkout -- <파일>`로 하나씩 되돌린 뒤 커밋.
+서버 전용·Studio 금지·main push 금지 그대로.
 
-- a23_14 단독 재실행은 새 세션이 다시 돌림(10/11 인계 때 멈춤; 스킬 Q는 검수가 다시 시험해 병합).
+## 검증·병합 기다림 (검수) — 결과 파일은 docs/art/verification_2026-10-11/
+| 가지 | 커밋 | worktree | 시험 |
+|---|---|---|---|
+| dev2-bosshp ② 필드 보스 체력(검수 지적 6개 고친 판) | 209f5ff6 | Game-dev2-ci | test_field_boss 241·변이 98/98 |
+| dev2-landcircle ③ 바닥 원 서버(+halloween 패턴 고침) | 03603087 | Game-dev2-hint | test_boss_leap 48/48, test_first_ko_king 314, test_halloween 125/125 |
+| dev2-walkground ⑤ 걷는 바닥 태그 서버 | 0816a819 | (Game-dev2-ci에서 만듦, 지금 그 폴더는 bosshp) | test_walk_ground_server 10/10, test_water_rescue 70/70 |
+| dev2-petlist 펫 장착 거절 때 PetList | 80873fff | — | test_tamer 91/91 |
+| dev2-healfair A23-126 빛 치유 공정 | 8001260f | Game-dev2-pet | test_skill_signals 142·변이 51/51 |
+| dev2-goosemut a23_14 동등 변이 빼기 | 680d2350 | Game-dev2-snap | (시험 파일만) |
+- 모두 origin/main과, 서로와 충돌 없음(merge-tree). landcircle은 개발 1 dev1-leapfx(3a95f712)와 같이 병합 예정.
 
-## 병합 끝(10/10~11)
-quickslot, daycycle(+ZoneLook), firstko(b031b67d), hint(cc7ea4bd), skillq(515a1207).
+## 정한 숫자
+- ②: docs/design/field_boss_crowd_2026-10-11.md — King 2600(Lv5~8 T2)·클래터 20000(Lv25 T4), 1명당 +50%, 몫 = 처음 때린 때부터(최소 2초)·15초 창, 0.5초마다, 보상·진영 몫 = _share. 남은 판단: Lv30+ T5/T6 클래터 혼자 빠름(몫 상한).
+- ③: docs/design/boss_leap_2026-10-11.md.
+- A23-126: 자기 3%/3초, 친구 30%, 원거리 Q 나 기준 12칸.
 
-## 검증 기다림
-1. **친구 PvP 0(A23-113 ①)** — origin/dev2-friendpvp = 29c0aad5 (worktree Game-dev2). 기능 eb623013 + 검토 시험 보강(3건 끝, 커밋됨) + main 병합. 커밋 안 된 것 없음.
-   - PvPService FRIEND 캐시(접속 때 IsFriendsWith 한 번, pcall, 실패·모름 = 친구 아님, 나가면 지움) + AreFriends + CanAttack "Friend"(괴수 예외보다 먼저), CombatService.DamagePlayer 최종 관문, KaijuService 발구르기·countNearbyHalo에서 친구 뺌. RankingService 그대로.
-   - 시험: `py tools/test_friend_pvp.py`(95 체크·18 정적·22/22). 관련 31묶음 통과(eb623013 때, 하나씩): ranking, kaiju_town, skills, skills_x, swing_aim, grudge, town_quests, board, unarmed_start, tamer, first_ko_king, first_ko 등.
-   - 결과 파일: docs/art/verification_2026-10-11/offline_dev2_friend_pvp_2026-10-11.json
-   - 검수 판단 거리: 괴수 체력·'맞붙음'에서 친구를 뺀 것(친구는 괴수를 못 때리니까), 친구 답 오기 전 몇 초 안의 KO는 평소처럼 처리(순위는 원래 제외).
+## 다음
+- 개발 3 인계분: 한국어 모드 서버(빛 마을 뒤 + 개발 1 계약), 선택 거리 켜기(클라 창 먼저), 10/17 지표, 새 구역(수정 동굴 숲·산호 해안) 몬스터 표(시안 고른 뒤).
+- IDEA-TITLE 칭호 쌍 초안 확정 대기.
+- Game-dev2-hint에 stage된 빛 마을 도구 8개 = 옛 검수 시험 흔적, 건드리지 말 것(검수).
+- 검토는 API로: py tools/api_agent.py run --prompt-file <md> --out build/api_agent/<job> --model sonnet --max-usd 2 --make-worktree <가지> --allow-tests.
 
-## 다음 큐(순서)
-2. 필드 보스 체력 = 근처 사람 수(A23-113 ③): King·클래터 대장만(호박 대왕 빠짐, A23-119). 혼자 약 2분(Lv5~8, 1~2단계 무기), 둘레 1명당 더함(괴수 +15% 방식), 기여 보상 규칙 그대로.
-3. 바닥 그림자 원(A23-113 ②): King 착지(+클래터 대장 큰 공격) 약 1초 전 원, 원 밖이면 안 맞음(서버 판정), 위치·시간은 클라로(개발 1 그림). KO1 1단계 개인 King은 따라 뛰어 결국 맞힘, 재대결은 원 피하면 이김(FirstKOService·MonsterService landAttack 위에).
-4. 개발 3 인계분: origin/dev3 0e1ed92c `docs/handoff/dev3_to_dev2_2026-10-11.md` §3 — 한국어 모드 서버(A23-111, 빛 마을 뒤 + 개발 1 계약 먼저), 선택 거리 켜기 판단(Board·잃어버린 물건·킬 카드, 클라 창 먼저), 10/17 시험 뒤 지표 보기, 새 구역 몬스터 표. 같은 문서 §2: PvPService가 PlayerKO info.Stolen을 바꾸면 개발 3 쪽 SackMet이 읽음.
-5. 걷는 바닥 태그 서버(검수 큐, 자세한 건 검수에게).
-- 나중: 장인 서버(채집·제작·장비 칸·물약·펫 연구)는 빛 마을 끝난 뒤. 작은 것: PetService onEquip이 거절(조련사·0.5 s·준비 전)될 때도 PetList 한 번 보내기(개발 1 보고).
-- 사용자 결정 기다림(A23-116 공정 1·2): 빛 자기 회복 상한 3%/3초, Q 치유 중심 = 나 기준 12칸 → 정해지면 CombatService.SKILL.Heal / Config.BasicSkill.HaloHealCapPct.
-- IDEA-TITLE 칭호 쌍 초안: 공유 노트 dev2_idea_title_draft_2026-10-09.md, 검수 확정 대기.
-
-## worktree
-Game-dev2 = dev2-friendpvp(위), Game-dev2-ci = dev2-skillq(병합됨, 다음 일에 재사용), Game-dev2-hint = dev2-hint(병합됨), Game-dev2-pet = dev2-quickslot(병합됨). 각 worktree에 build/luau_cli_0_741 있음(hint는 복사본).
-
-## 참고
-- 하루·날씨 계약: 공유 노트 dev2_daycycle_zonelook_contract_2026-10-10.md. 긴 기록: 공유 노트 dev2_handover_2026-10-09_night.md.
-- 서버 글은 Config 글 표에서 키로(이어 붙이기 금지, 이름은 Name/Short/Title) — A23-111 대비.
+## 검수 갱신 (10/11 오후, 3번째 검수)
+- 병합: dev2-bosshp + dev2-landcircle(+dev1-leapfx) → main 028a937e. walkground·petlist·healfair·goosemut은 합친 트리 시험 중.
+- 할로윈 시험(test_halloween)은 병합 조건이 아님 — 사용자 10/11 "할로윈은 이제 테스트 안 해도 돼, 내년 10월".
+- Lv30+ 클래터 혼자 빨리 잡기: 베타엔 그대로(검수).
+- 큰 코드는 api_agent --write 브랜치로(사용자 "큰 작업 하되, 앤트로픽 API로 SDK로"). 다음: 새 구역 몬스터 표 Config 초안 → 한국어 모드 계약 v4 서버.
