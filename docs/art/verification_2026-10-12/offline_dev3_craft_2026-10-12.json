@@ -1,0 +1,1330 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 114,
+  "failedChecks": 0,
+  "namedChecks": 100,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.Crafting is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "artisan roles: Warrior Smith, Mage Alch, Archer Tame",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "craft Lv 1..30 (same as the save repair), 40 x Lv^1.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "XP to next: Lv1 40, Lv2 113, Lv29 6246, Lv30 none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no hammer numbers in Config (one place: Shared/CraftMini)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the shared hammer (CraftMini.T): 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, 20 s time-up",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "12 studs, 6 starts a minute, one start every 3 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "eight blacksmith recipes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "recipe tier / craft Lv / gold / XP as the design table",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a short text for every refusal",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "an unknown recipe is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "... and refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "the new drops (and T9) switch W7 / W9 on by themselves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "switch off: off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "a Knight cannot craft (NotArtisan, a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "an alchemist cannot make blacksmith recipes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "12.5 studs from the anvil: far",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "W3 needs craft Lv5: level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "1 copper of 2: mats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "9 gold of 10: gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "no spare room: full, nothing taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "auto combat on: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "everything there: ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "the gold (source Craft) and the materials go at the start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "the save remembers the craft (Craft.Pend)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "CraftSession { Id, Recipe, Strikes 5, Ring 1.2, Rest 0.35, StartAt = server time + 0.8 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "a second start while one is open: busy",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "a tagged workbench for my role replaces the anvil (the anvil is far now)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "next to my workbench: ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "six crafts in a minute, the seventh waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "a minute later: ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "start",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "five Perfects: +2; CraftResult { Recipe, Kind, Tier, Plus, XP, Lv, LvUp }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "Grades x5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "the weapon goes to the spares (AddSpare 1, +2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "Pend cleared, Made.W1 = 1, 10 craft XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "CraftInfo { Role, Lv, XP, Need, Made } after the craft",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "Crafted(player, W1, 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "6 points: +0 (still made, nothing lost)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "Skip (Finish right away): +0, made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "claims ~700 ms off the arrival: all Miss, +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "CraftMismatch logged (5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "the liar still gets the +0 item (nothing lost)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "395 ms later than claimed (inside 400): kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "405 ms later than claimed: Miss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "45 ms earlier than claimed (inside 50): kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "55 ms earlier than claimed: Miss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "with no ping the window is 250 ms (260 off: Miss)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a 300 ms ping at the session start widens the window at the end (300 ms off: kept)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a 300 ms ping when the strike came counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a 300 ms ping at the Finish counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "no ping anywhere: 300 ms off is a Miss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a press the server never got is a Miss (the next ones still count)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "another session's id: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "ring 0 / 6 / 1.5: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "a text or NaN offset: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "one strike a ring (the first stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "the strike notes { Ms, At = server time }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "Finish: the right id only, once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "five equal offsets (even on time): +0 and CraftBot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "no Finish by StartAt + 20 s: made at +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "a leave mid-craft: made at +0 before the save goes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "a KO mid-craft: made at +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "an unknown Pend is dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "no room at the join: it stays pending (Full notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "... and a new craft waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "room again: the pending one is made first, then the new one starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "35 + 10 XP: Lv2 with 5 over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "only the blacksmith role grows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "200 XP from Lv1: 40 + 113 used, Lv3 with 47",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "Lv30 stays 30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "the 2x XP pass does not touch craft XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "xp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftStart with two arguments: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftStart with a number: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftStart(W1) opens a session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftStrike without its ms or with a text id: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftFinish with two arguments: ignored (the session stays open)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftFinish(id) right away: +0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "3 s later: a new session",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "CraftStart again within 3 s: rate limited before any check (no Busy notice)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "an honest hammer through the remotes: +2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 13,
+  "staticFailures": [],
+  "mutations": {
+    "total": 55,
+    "applied": 55,
+    "caught": 55,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Features.Crafting is off",
+          "start :: switch off: off"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: archers are blacksmiths",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: artisan roles: Warrior Smith, Mage Alch, Archer Tame"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: Lv40",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: XP to next: Lv1 40, Lv2 113, Lv29 6246, Lv30 none",
+          "config :: craft Lv 1..30 (same as the save repair), 40 x Lv^1.5"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: XP x 50",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: XP to next: Lv1 40, Lv2 113, Lv29 6246, Lv30 none",
+          "config :: craft Lv 1..30 (same as the save repair), 40 x Lv^1.5",
+          "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft",
+          "xp :: 200 XP from Lv1: 40 + 113 used, Lv3 with 47",
+          "xp :: 35 + 10 XP: Lv2 with 5 over"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: range 15",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 12 studs, 6 starts a minute, one start every 3 s",
+          "start :: 1 copper of 2: mats",
+          "start :: 12.5 studs from the anvil: far",
+          "start :: 9 gold of 10: gold",
+          "start :: W3 needs craft Lv5: level",
+          "start :: auto combat on: refused"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "config: 10 starts a minute",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 12 studs, 6 starts a minute, one start every 3 s",
+          "start :: six crafts in a minute, the seventh waits"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: W1 costs 20",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: recipe tier / craft Lv / gold / XP as the design table",
+          "start :: the gold (source Craft) and the materials go at the start"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: W3 at craft Lv1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: recipe tier / craft Lv / gold / XP as the design table",
+          "start :: 1 copper of 2: mats",
+          "start :: 9 gold of 10: gold",
+          "start :: CraftSession { Id, Recipe, Strikes 5, Ring 1.2, Rest 0.35, StartAt = server time + 0.8 }",
+          "start :: W3 needs craft Lv5: level",
+          "start :: auto combat on: refused"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "config: Sea Shell back in W3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: XP at Lv30 goes on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: XP to next: Lv1 40, Lv2 113, Lv29 6246, Lv30 none"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "recipe: unknown materials allowed",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recipes :: W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "recipe: weapons without AddSpare",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recipes :: ... and refused",
+          "recipes :: no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: switch not checked",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: switch off: off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: anyone crafts",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: a Knight cannot craft (NotArtisan, a key)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: any role's recipe",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: an alchemist cannot make blacksmith recipes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: two sessions",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: ... and a new craft waits",
+          "start :: a second start while one is open: busy"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no minute cap",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: six crafts in a minute, the seventh waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: auto combat allowed",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: auto combat on: refused",
+          "start :: everything there: ok"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no distance",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: 1 copper of 2: mats",
+          "start :: 12.5 studs from the anvil: far",
+          "start :: 9 gold of 10: gold",
+          "start :: W3 needs craft Lv5: level",
+          "start :: a tagged workbench for my role replaces the anvil (the anvil is far now)",
+          "start :: auto combat on: refused"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "start: the tag ignored",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: a tagged workbench for my role replaces the anvil (the anvil is far now)",
+          "start :: next to my workbench: ok"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "start: no level check",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: 1 copper of 2: mats",
+          "start :: 9 gold of 10: gold",
+          "start :: CraftSession { Id, Recipe, Strikes 5, Ring 1.2, Rest 0.35, StartAt = server time + 0.8 }",
+          "start :: W3 needs craft Lv5: level",
+          "start :: auto combat on: refused",
+          "start :: everything there: ok"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "start: no materials check",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: 1 copper of 2: mats",
+          "start :: 9 gold of 10: gold",
+          "start :: auto combat on: refused",
+          "start :: everything there: ok",
+          "start :: no service warnings (pcall-swallowed handler errors)",
+          "start :: no spare room: full, nothing taken"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "start: no room check",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: auto combat on: refused",
+          "start :: everything there: ok",
+          "start :: no spare room: full, nothing taken"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "start: gold never paid",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: 9 gold of 10: gold",
+          "start :: auto combat on: refused",
+          "start :: everything there: ok",
+          "start :: no spare room: full, nothing taken",
+          "start :: the gold (source Craft) and the materials go at the start"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "start: materials kept",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: the gold (source Craft) and the materials go at the start"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: nothing pending in the save",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: the save remembers the craft (Craft.Pend)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: no lead time",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "start :: CraftSession { Id, Recipe, Strikes 5, Ring 1.2, Rest 0.35, StartAt = server time + 0.8 }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: no time-up",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: no Finish by StartAt + 20 s: made at +0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: the stuck pending one never retried",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: room again: the pending one is made first, then the new one starts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "strike: any session id",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: a text or NaN offset: refused",
+          "hammer :: another session's id: refused",
+          "hammer :: one strike a ring (the first stays)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "strike: ring 6 taken",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: ring 0 / 6 / 1.5: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "strike: a second press replaces the first",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: one strike a ring (the first stays)",
+          "hammer :: the strike notes { Ms, At = server time }"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "strike: the client's own time",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: 405 ms later than claimed: Miss",
+          "hammer :: 55 ms earlier than claimed: Miss",
+          "hammer :: CraftMismatch logged (5)",
+          "hammer :: claims ~700 ms off the arrival: all Miss, +0",
+          "hammer :: no ping anywhere: 300 ms off is a Miss",
+          "hammer :: the strike notes { Ms, At = server time }"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "finish: any lie fits (huge ping)",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: 405 ms later than claimed: Miss",
+          "hammer :: CraftMismatch logged (5)",
+          "hammer :: claims ~700 ms off the arrival: all Miss, +0",
+          "hammer :: no ping anywhere: 300 ms off is a Miss",
+          "hammer :: with no ping the window is 250 ms (260 off: Miss)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "finish: the ping now ignored",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: a 300 ms ping at the Finish counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: the start ping ignored",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: a 300 ms ping at the session start widens the window at the end (300 ms off: kept)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: a wrong schedule",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: 395 ms later than claimed (inside 400): kept",
+          "hammer :: 45 ms earlier than claimed (inside 50): kept",
+          "hammer :: Crafted(player, W1, 2)",
+          "hammer :: Grades x5",
+          "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
+          "hammer :: a 300 ms ping at the Finish counts"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "strike: the ping then not kept",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: a 300 ms ping when the strike came counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: twice",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: 6 points: +0 (still made, nothing lost)",
+          "hammer :: Finish: the right id only, once",
+          "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
+          "hammer :: Skip (Finish right away): +0, made",
+          "remotes :: 3 s later: a new session",
+          "remotes :: CraftFinish(id) right away: +0"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "finish: bots get their +N",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: five equal offsets (even on time): +0 and CraftBot"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish: no mismatch log",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftMismatch logged (5)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "end: Pend never cleared",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a KO mid-craft: made at +0",
+          "ends :: a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+          "ends :: a leave mid-craft: made at +0 before the save goes",
+          "ends :: no Finish by StartAt + 20 s: made at +0",
+          "ends :: room again: the pending one is made first, then the new one starts",
+          "hammer :: Pend cleared, Made.W1 = 1, 10 craft XP"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "end: Made not counted",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a KO mid-craft: made at +0",
+          "ends :: a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+          "ends :: a leave mid-craft: made at +0 before the save goes",
+          "ends :: no Finish by StartAt + 20 s: made at +0",
+          "ends :: room again: the pending one is made first, then the new one starts",
+          "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "end: no XP",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft",
+          "hammer :: Pend cleared, Made.W1 = 1, 10 craft XP",
+          "xp :: 200 XP from Lv1: 40 + 113 used, Lv3 with 47",
+          "xp :: 35 + 10 XP: Lv2 with 5 over",
+          "xp :: Lv30 stays 30",
+          "xp :: the 2x XP pass does not touch craft XP"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "end: one level at most",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: group ran to the end without a Lua error",
+          "hammer :: group ran to the end without a Lua error",
+          "recipes :: group ran to the end without a Lua error",
+          "remotes :: group ran to the end without a Lua error",
+          "start :: group ran to the end without a Lua error",
+          "xp :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "end: no Crafted signal",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: Crafted(player, W1, 2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "end: no CraftInfo after",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "end: leave loses the craft",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a leave mid-craft: made at +0 before the save goes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "end: KO loses the craft",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a KO mid-craft: made at +0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "end: a stopped craft never finishes",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+          "ends :: no room at the join: it stays pending (Full notice)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "end: an unknown Pend stays",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: an unknown Pend is dropped"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: extra arguments taken",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: CraftStart with a number: ignored",
+          "remotes :: CraftStart with two arguments: ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "remote: no start rate limit",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: CraftStart again within 3 s: rate limited before any check (no Busy notice)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: a two-argument Finish taken",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: CraftFinish with two arguments: ignored (the session stays open)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: a text strike id taken",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: CraftStrike without its ms or with a text id: ignored"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "9d72e6505842fa4997b151687e08b8f57c9ec88800ca59ee6275935bf895278b",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
+    "src/ServerScriptService/LootService.luau": "59a7fdc40f90eb44f238c6caf97fa3df0efeeb88ac08e3cc995b37c961382415",
+    "src/ServerScriptService/CraftService.luau": "1e657ac2156c8fa5e0eac59b274e60fff69a15cfc002c4b5ff1154b96a2705a3"
+  },
+  "fixtureSHA256": "ff24105291bc53f7db8b7764f55f5192a51203d147ea82747759c66fd757ad4d",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer = Shared/CraftMini): switch Config.Features.Crafting off; Neutral only, the role's recipes only (Warrior Smith / Mage Alch / Archer Tame); 12 studs from the role's workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt = server + 0.8 }; CraftStrike timed by the server, in order, >= 0.25 s apart; a claim beyond 250 ms + jitter (ping x 0.5, max 150; ring 1 + ping x 0.5) of the server's timing = Miss; |ms - 40| <= 70 / 130 / 200; points >= 13 +2, >= 9 +1; five equal claims +0 (CraftBot); time-up / leave / KO +0; Pend at join finishes at +0 (stays while there is no room, retried at the next start); the result to the spares (AddSpare); W7 / W9 off until Clatter Gem / Royal Jelly / T9; craft XP per role 40 x Lv^1.5, Lv30 cap, not doubled; CraftResult / CraftInfo; key-only notices.",
+  "limitations": "AddSpare / SpareRoom are doubles until 게임성 개발 2's C1 (Spares, v4); gear (⑥), tonics (④) and pet treats (⑤) add recipe rows later; the client hammer (게임성 개발 4) is played by the test from the offsets; no real network jitter. Artisan fame (Rep, ⑦) is not counted yet."
+}
