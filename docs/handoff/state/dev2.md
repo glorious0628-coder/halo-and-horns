@@ -33,6 +33,9 @@
   (MonsterDamage)·DamagePlayer SKL-3 가드 뒤(MonsterHurt), LootService.RollKill info.MatMult + rollRows 재료 줄만, ProgressionService
   처치 XP 뒤(HuntXP). 그 옆을 고치면 개발 3에 먼저 알리기. KingJelly·ClatterGem(Source "Boss")도 행운 물약에 오름 → 빼려면
   `def.Source == nil` 조건(게임성 검수 결정 대기, 개발 3에 알림).
+- 개발 3 ⑤ 조련사(dev3-tamer, 설계 docs/design/tamer_server_2026-10-12.md §4): 개발 3이 PetService.SummonPet·AddPetXP·속성 PetRoll·
+  PetSpeedBonus(species, lv, roll)·PetList Roll을 넣고 **내가 읽어 확인**(10/12 합의: grant 새 줄 부분 공유, 64개는 넣기 전에 거절,
+  roll은 sanitizeRoll, +3%는 Config). 해시 오면 바로 검토.
 
 ## worktree·도구
 - 가벼운 worktree: `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
