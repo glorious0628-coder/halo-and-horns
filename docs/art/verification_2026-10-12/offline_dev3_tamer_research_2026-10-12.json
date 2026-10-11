@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 102,
+  "checks": 107,
   "failedChecks": 0,
-  "namedChecks": 92,
+  "namedChecks": 97,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -558,15 +558,45 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "the story pick: Lean / Name on the gift slime, the summon stays as it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "only a summon owned: the story pick gives the story slime (a second pet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "catch-up: a summon is not the story pet, it comes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 7,
   "staticFailures": [],
   "mutations": {
-    "total": 51,
-    "applied": 51,
-    "caught": 51,
+    "total": 52,
+    "applied": 52,
+    "caught": 52,
     "skipped": false,
     "results": [
       {
@@ -910,7 +940,7 @@
           "summon pets :: PetGranted(player, uid, species)",
           "summon pets :: PetList rows carry Roll (the window's stats)"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 13
       },
       {
         "mutation": "summon: the roll not kept",
@@ -922,9 +952,11 @@
           "summon pets :: PetList rows carry Roll (the window's stats)",
           "summon pets :: a second baby slime: a new Bound pet with Roll { Spd = 7 }",
           "summon pets :: nothing follows: the summon comes out",
-          "summon pets :: the summon follows: PetRoll 7, then the speed refresh"
+          "summon pets :: the summon follows: PetRoll 7, then the speed refresh",
+          "summon vs story pet :: only a summon owned: the story pick gives the story slime (a second pet)",
+          "summon vs story pet :: the story pick: Lean / Name on the gift slime, the summon stays as it is"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "summon: not Bound",
@@ -961,6 +993,19 @@
           "summon pets :: still two pets"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "summon: a summon is the gift / story pet",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon vs story pet :: catch-up: a summon is not the story pet, it comes",
+          "summon vs story pet :: only a summon owned: the story pick gives the story slime (a second pet)",
+          "summon vs story pet :: the story pick: Lean / Name on the gift slime, the summon stays as it is"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "pets: no cap of 64",
@@ -1198,12 +1243,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d0fc3e5de4dc67ced59cedbeb6feee1e6728e743addf3b4e49206d957c916d57",
+    "src/ReplicatedStorage/Shared/Config.luau": "3980836b987d717ff67dadb9c7645b39fa868b44d626db9ec41bd2d0fe5ec057",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/TamerService.luau": "054748a11d59918f2a0dd0f7fcf5524d86f5498321877bcd26b50ab71dd0ff1c",
-    "src/ServerScriptService/PetService.luau": "84e35578d5f91cd0a09e9fe0550acc26ebf0a8f8c42530991dbb6bc95f8d2961"
+    "src/ServerScriptService/PetService.luau": "5a8c3921b043b517af23eb017685be1d096fbb467556eec7da807b036735014f"
   },
-  "fixtureSHA256": "2267f7afdb9cfd1702ffa88250564ec994b3ec1c72c2d647cd31bf69694bc68e",
+  "fixtureSHA256": "f4d9fd0e042151bf9d22c38488f679312999124ef2310f43fd2820dc906d6def",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

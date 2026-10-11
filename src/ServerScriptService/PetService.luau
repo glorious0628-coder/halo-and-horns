@@ -173,9 +173,10 @@ local function publish(player, data)
 	if type(pets) == "table" and type(pets.List) == "table" then sendList(player, data) end
 end
 
+-- the gift / story pet of a species (one each); a summoned pet (Roll, ⑤ tamer) is a pet of its own and never this one
 local function findSpecies(pets, species)
 	for uid, p in pets.List do
-		if p.Sp == species then return uid end
+		if p.Sp == species and p.Roll == nil then return uid end
 	end
 	return nil
 end
@@ -205,7 +206,7 @@ local function addPet(player, data, pets, row, text)
 end
 
 ------------------------------------------------------------------ A23-39 pet tamer
--- PET-4: a pet of `species` added once (an owned one is never duplicated; an owned one without a Lean / Name takes
+-- PET-4: a pet of `species` added once (an owned one - not a summon - is never duplicated; an owned one without a Lean / Name takes
 -- these), equipped when nothing is. lean = "Good" | "Evil" | "" (the story pick), name = the label over my pet ("" =
 -- none), text = the notice (nil = none). Returns the new uid, or nil when the player already had one.
 -- PET-2b M1: an owned pet the player put away stays away (a join, the catch-up, the story pick); bringOut = the tamer
@@ -305,9 +306,6 @@ local function onEquip(player, ...)
 	publish(player, data)
 end
 
--- PET-2: every kill its owner is paid for (MonsterKilled, auto combat too) gives the equipped pet XPPerKill pet XP;
--- a level up refreshes the walk speed (Config.PetSpeedBonus follows the level). A free rider's share (info.Minor,
--- MonsterService MinorShare) is not a paid kill (PET-2b L1, like LootService.RollKill).
 -- n pet XP into one pet row: levels up while it can (at MaxLv the XP is 0). nil = it is MaxLv already (nothing changes),
 -- else whether it levelled up
 local function giveXP(p, n)
@@ -325,6 +323,9 @@ local function giveXP(p, n)
 	return leveled
 end
 
+-- PET-2: every kill its owner is paid for (MonsterKilled, auto combat too) gives the equipped pet XPPerKill pet XP;
+-- a level up refreshes the walk speed (Config.PetSpeedBonus follows the level). A free rider's share (info.Minor,
+-- MonsterService MinorShare) is not a paid kill (PET-2b L1, like LootService.RollKill).
 local function onKilled(player, info)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(info) ~= "table" then return end
 	if info.Minor == true then return end

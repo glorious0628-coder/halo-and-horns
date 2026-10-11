@@ -173,11 +173,11 @@ runGroup("pet-publish-refresh", function()
 	check(refreshed[#refreshed].P == q and refreshed[#refreshed].Pet == "", "a join without a pet still publishes + refreshes (EquippedPet '')",
 		show({ refreshed[#refreshed].Pet, refreshed[#refreshed].Lv }))
 	check(p:GetAttribute("PetRoll") == 0 and q:GetAttribute("PetRoll") == 0, "PetRoll = 0 without a summoned pet", "")
-	-- ⑤ a summoned pet that follows: PetRoll = its Roll.Spd, set before the speed refresh
-	data[p].Pets.List.P1.Roll = { Spd = 9 }
+	-- ⑤ a summoned pet that follows (nothing else out: it comes out): PetRoll = its Roll.Spd, set before the speed refresh
 	data[p].Pets.Equipped = {}
-	pet.GiveTamerPet(p, true)
-	check(p:GetAttribute("PetRoll") == 9, "a pet with Roll.Spd 9 out: PetRoll = 9", tostring(p:GetAttribute("PetRoll")))
+	local sum = pet.SummonPet(p, "BabySlime", { Spd = 9 })
+	check(sum ~= nil and data[p].Pets.Equipped[1] == sum and p:GetAttribute("PetRoll") == 9, "a pet with Roll.Spd 9 out: PetRoll = 9",
+		tostring(p:GetAttribute("PetRoll")))
 end)
 
 runGroup("move-check", function()

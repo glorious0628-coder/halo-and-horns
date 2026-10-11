@@ -332,4 +332,33 @@ runGroup("feed", function()
 	check(off.T.Feed(o, "P1") == "off" and dob.Items.PetTreat == 2, "switch off: no feeding", "")
 end)
 
+------------------------------------------------------------------ a summon is never the gift / story pet (game dev 2 M1)
+runGroup("summon vs story pet", function()
+	local w = tWorld()
+	local G = w.Config.PetGrant
+	-- a tamer with the gift slime P1 and a summoned slime P2: the story pick names the gift one, never the summon
+	local p, d = player(w, 1)
+	local s = w.P.SummonPet(p, "BabySlime", { Spd = 8 })
+	w.Reg.StoryQuestService.Picked:Fire(p, G.Quest, "Care")
+	w:RunSpawned()
+	check(d.Pets.List.P1.Lean == "Good" and d.Pets.List.P1.Name == G.Names.Good and d.Pets.List[s].Lean == "" and d.Pets.List[s].Name == ""
+		and count(d.Pets.List) == 2, "the story pick: Lean / Name on the gift slime, the summon stays as it is", show(d.Pets.List.P1))
+	-- a knight with only a summoned slime: the story pet still comes (a new one)
+	local k, dk = player(w, 2, "Warrior", "Halo")
+	local ks = w.P.SummonPet(k, "BabySlime", { Spd = 6 })
+	w.Reg.StoryQuestService.Picked:Fire(k, G.Quest, "Minion")
+	w:RunSpawned()
+	local story = nil
+	for uid, pet in dk.Pets.List do if uid ~= ks then story = pet end end
+	check(count(dk.Pets.List) == 2 and story and story.Lean == "Evil" and story.Roll == nil and dk.Pets.List[ks].Lean == "",
+		"only a summon owned: the story pick gives the story slime (a second pet)", tostring(count(dk.Pets.List)))
+	-- the catch-up (a done story without its pet) is not fooled by a summon either
+	local roll = { P5 = { Sp = "BabySlime", Lv = 3, XP = 0, Name = "", Lean = "", Bound = true, Roll = { Spd = 9 } } }
+	local c, dc = player(w, 3, "Warrior", "Halo", { Pets = { List = roll, Equipped = { "P5" }, Next = 6, Away = false },
+		Story = { Done = { [G.Quest] = true }, Pick = { [G.Quest] = "Care" } } })
+	local got = nil
+	for uid, pet in dc.Pets.List do if uid ~= "P5" then got = pet end end
+	check(count(dc.Pets.List) == 2 and got and got.Lean == "Good" and got.Roll == nil, "catch-up: a summon is not the story pet, it comes", tostring(count(dc.Pets.List)))
+end)
+
 finish()

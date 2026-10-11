@@ -69,6 +69,7 @@ MUTATIONS = [
     ("summon: not Bound", PE, "Lean = \"\", Bound = true, Roll = r }, nil)", "Lean = \"\", Bound = false, Roll = r }, nil)"),
     ("summon: any roll", PE, "\tlocal r = sanitizeRoll(roll)\n\tif not r then return nil end\n", "\tlocal r = sanitizeRoll(roll) or { Spd = 5 }\n"),
     ("summon: unknown species", PE, "\tif not data or not known(species) then return nil end\n\tlocal r = sanitizeRoll(roll)", "\tif not data then return nil end\n\tlocal r = sanitizeRoll(roll)"),
+    ("summon: a summon is the gift / story pet", PE, "\t\tif p.Sp == species and p.Roll == nil then return uid end\n", "\t\tif p.Sp == species then return uid end\n"),
     ("pets: no cap of 64", PE, "\tif petCount(pets) >= LIMIT.Pets then return nil end\n", ""),
     ("pets: a 65th", PE, "\tif petCount(pets) >= LIMIT.Pets then return nil end\n", "\tif petCount(pets) > LIMIT.Pets then return nil end\n"),
     ("room: always", PE, "\treturn petCount(pets) < LIMIT.Pets\n", "\treturn true\n"),
