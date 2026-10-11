@@ -530,12 +530,14 @@ runGroup("x hop", function()
 	local d3 = dealtX(w, p, 3)
 	check(hitOf(w, m1) == d3 and hitOf(w, m2) == d3 and hitOf(w, m3) == 0, "the wind hits within 7 of the spot I left (x3), not 9 away",
 		show({ hitOf(w, m1), hitOf(w, m2), hitOf(w, m3), d3 }))
-	check(#w.Displaced == 2 and w.Displaced[1].Mode == "Push" and w.Displaced[1].Studs == 6, "the wind pushes them 6", #w.Displaced)
+	check(#w.Displaced == 0, "A23-116: the wind's push waits for the Archer's ContactDelay", #w.Displaced)
 	local sk = w:FxTo("Skill", p, f0)[1]
 	check(sk and sk.Shape == "Hop" and sk.To.Z == 10 and sk.Center.Z == 0 and sk.Radius == 7,
 		"Fx Skill { Shape Hop, To = the landing spot, Center = the spot I left, Radius 7 }", show(sk and { sk.Shape, sk.Radius }))
 	check(near(w.Skills.GuardOf(landing), 0.2) and near(landing:GetAttribute("GuardUntil"), w.Time + 4) and w.Skills.GuardOf(away) == 0,
 		"Halo friends within 12 of the landing spot: 20% for 4 s; one 25 away: none", show({ w.Skills.GuardOf(landing), w.Skills.GuardOf(away) }))
+	w:Advance(0.41)
+	check(#w.Displaced == 2 and w.Displaced[1].Mode == "Push" and w.Displaced[1].Studs == 6, "the wind pushes them 6", #w.Displaced)
 	-- a shorter hop (a wall 5 back), a refused one (under 3), 3 is enough
 	local w2 = xWorld()
 	local q = w2:Hero(1, { Class = "Archer", Faction = "Horns" })
