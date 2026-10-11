@@ -106,6 +106,8 @@ def apply_ops(ob, t, coll):
     for kind, lst in t.get("ops", []):
         for c in lst:
             co = make_obj(c, coll)
+            if c.get("ops"):
+                apply_ops(co, c, coll)
             mod = ob.modifiers.new("b", "BOOLEAN")
             mod.operation = "DIFFERENCE" if kind == "minus" else "INTERSECT"
             mod.object = co

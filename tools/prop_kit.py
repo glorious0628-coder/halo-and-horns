@@ -1263,11 +1263,26 @@ def octa(n, w, h, x, y, z0, m="marble", **kw):
 def soil(n, d, x, y, z, shape="round", m="soil"):
     """Soil / moss top a little under the rim (the Tripo plant stands on it)."""
     if shape == "round":
-        cyl(n, d, 0.06, x, y, z - 0.06, m, cc=False)
+        cyl(n, d, 0.07, x, y, z - 0.04, m, cc=False)
     elif shape == "oct":
-        octa(n, d, 0.06, x, y, z - 0.06, m, cc=False)
+        octa(n, d, 0.07, x, y, z - 0.04, m, cc=False)
     else:
-        box(n, d[0], d[1], 0.06, x, y, z - 0.06, m, cc=False)
+        box(n, d[0], d[1], 0.07, x, y, z - 0.04, m, cc=False)
+
+
+def rim_box(n, w, d, h, t, x, y, z0, m="gold", **kw):
+    """Square frame rim (box minus the inner box), t = frame width."""
+    hole = cut(box, n + "_in", w - 2 * t, d - 2 * t, h + 0.2, x, y, z0 - 0.1, m)
+    return box(n, w, d, h, x, y, z0, m, ops=[("minus", [hole])], **kw)
+
+
+def octa_ring(n, w, t, h, x, y, z0, m="gold", **kw):
+    """Octagonal frame rim: octagon w minus octagon w - 2 t."""
+    o = octa(n, w, h, x, y, z0, m, **kw)
+    inner = cut(octa, n + "_in", w - 2 * t, h + 0.2, x, y, z0 - 0.1, m)
+    P.remove(inner) if inner in P else None
+    o["ops"] = o.get("ops", []) + [["minus", [inner]]]
+    return o
 
 
 def foot(n, d, h, x=0.0, y=0.0, z0=0.0):
@@ -1289,8 +1304,8 @@ def pot_daisy():
     w = 2.7
     octa("BandLo", w + 0.12, 0.16, 0, 0, 0, "gold")
     octa("Body", w, 1.26, 0, 0, 0.16)
-    octa("Rim", w + 0.1, 0.12, 0, 0, 1.42, "gold")
-    octa("Lip", w + 0.2, 0.1, 0, 0, 1.54)
+    octa_ring("Rim", w + 0.1, 0.25, 0.12, 0, 0, 1.42, "gold")
+    octa_ring("Lip", w + 0.2, 0.3, 0.1, 0, 0, 1.54, "marble")
     side = w * math.tan(math.radians(22.5))
     for k in range(8):
         nrm = hdir(45 * k)
@@ -1316,8 +1331,8 @@ def pot_tulip():
         for sxp in (-1, 1):
             X, _ = face_axes(f)
             plate("Strip%d%d" % (k, sxp), 0.08, 1.0, 0.04, vadd((0, 0, 0.72), vmul(f, w / 2 + 0.05), vmul(X, sxp * (w / 2 - 0.15))), f, "gold")
-    box("Rim", w + 0.06, w + 0.06, 0.1, 0, 0, 1.4, "marble")
-    soil("Soil", (w - 0.3, w - 0.3), 0, 0, 1.5, "box")
+    rim_box("Rim", w + 0.06, w + 0.06, 0.1, 0.3, 0, 0, 1.4, "marble")
+    soil("Soil", (w - 0.3, w - 0.3), 0, 0, 1.46, "box")
 
 
 @kit("HaloFlowerPotHQ_Sunflower__Body", 1.4, "art/out/s2/halo/props4/HaloProp4_PotSunflower_front.png")
@@ -1327,9 +1342,6 @@ def pot_sunflower():
     ring("Band0", 1.97, 1.7, 0.16, 0, 0, 0.18, "gold")
     ring("Band1", 2.12, 1.8, 0.18, 0, 0, 1.05, "gold")
     ring("Lip", 2.08, 1.7, 0.1, 0, 0, 1.38)
-    for k in range(10):                                     # stave seams
-        nrm = hdir(36 * k)
-        plate("Seam%d" % k, 0.03, 0.55, 0.02, vadd((0, 0, 0.62), vmul(nrm, 0.99)), nrm, "marble", c=(232, 220, 196))
     soil("Soil", 1.9, 0, 0, 1.38)
 
 
@@ -1416,7 +1428,7 @@ def planter_a():
     w = 4.2
     box("Band", w + 0.14, w + 0.14, 0.16, 0, 0, 0, "gold")
     box("Body", w, w, 2.0, 0, 0, 0.16)
-    box("Rim", w + 0.12, w + 0.12, 0.12, 0, 0, 2.16, "gold")
+    rim_box("Rim", w + 0.12, w + 0.12, 0.12, 0.4, 0, 0, 2.16, "gold")
     for k, f in enumerate(FACES):
         frame_panel("Panel%d_" % k, vadd((0, 0, 1.15), vmul(f, w / 2)), f, w * 0.62, 1.2, fr=0.07)
     for sx in (-1, 1):
@@ -1433,7 +1445,7 @@ def planter_d():
     w = 2.9
     octa("Band", w + 0.14, 0.16, 0, 0, 0, "gold")
     octa("Body", w, 1.4, 0, 0, 0.16)
-    octa("Rim", w + 0.12, 0.14, 0, 0, 1.56, "gold")
+    octa_ring("Rim", w + 0.12, 0.3, 0.14, 0, 0, 1.56, "gold")
     side = w * math.tan(math.radians(22.5))
     for k in range(8):
         nrm = hdir(45 * k)
@@ -1446,7 +1458,7 @@ def planter_e():
     W, D = 5.6, 3.0
     box("Band", W + 0.12, D + 0.12, 0.14, 0, 0, 0, "gold")
     box("Lower", W, D, 1.3, 0, 0, 0.14)
-    box("LowerRim", W + 0.1, D + 0.1, 0.12, 0, 0, 1.44, "gold")
+    rim_box("LowerRim", W + 0.1, D + 0.1, 0.12, 0.35, 0, 0, 1.44, "gold")
     for k, u in enumerate((-1.7, -0.6, 0.6, 1.7)):
         inlay("WinF%d" % k, (u, D / 2, 0.8), EY, 0.18, 0.4, "arch", fr=0.04)
     for sx in (-1, 1):
@@ -1455,14 +1467,14 @@ def planter_e():
             box("Post%d%d" % (sx, sy), 0.6, 0.6, 1.8, x, y, 0.0)
             inlay("PostWin%d%d" % (sx, sy), (x, y + sy * 0.3, 0.95), (0, sy, 0), 0.14, 0.4, "arch", fr=0.035)
             onion("PostDome%d%d" % (sx, sy), 0.5, x, y, 1.8, tip=0.22)
-    soil("SoilLo", (W - 0.6, D - 0.5), 0, 0, 1.56, "box")
+    soil("SoilLo", (W - 0.7, D - 0.7), 0, 0, 1.5, "box")
     # upper tier at the back
     box("Upper", 3.4, 1.6, 0.95, 0, -0.55, 1.56)
-    box("UpperRim", 3.5, 1.7, 0.1, 0, -0.55, 2.5, "gold")
+    rim_box("UpperRim", 3.5, 1.7, 0.1, 0.25, 0, -0.55, 2.51, "gold")
     for sx in (-1, 1):
         box("UpPost%d" % sx, 0.5, 0.5, 1.3, sx * 1.6, -0.55, 1.56)
         onion("UpDome%d" % sx, 0.45, sx * 1.6, -0.55, 2.86, tip=0.2)
-    soil("SoilHi", (3.0, 1.2), 0, -0.55, 2.6, "box")
+    soil("SoilHi", (3.0, 1.2), 0, -0.55, 2.55, "box")
 
 
 def tree_planter(d, h):
@@ -1491,6 +1503,7 @@ def tree_g_body():
 @kit("HaloVar3_Topiary_C__Body", 1.7, "art/out/s2/halo/props4/HaloProp4_TopC_front.png")
 def topiary_c_body():
     z = foot("Foot", 0.95, 0.22)
+    cyl("Stem", 0.7, 0.2, 0, 0, z, "marble")
     cap_bowl("Bowl", 1.6, 0.45, 0.95)
     cyl("Wall", 1.6, 0.6, 0, 0, 0.95)
     round_inlays("Win", 0.8, 1.22, 4, 0.14, 0.3, "arch", a0=0, fr=0.035)
@@ -1503,7 +1516,7 @@ def topiary_d_body():
     w = 2.0
     octa("Band", w + 0.12, 0.16, 0, 0, 0, "gold")
     octa("Body", w, 1.4, 0, 0, 0.16)
-    octa("Rim", w + 0.12, 0.14, 0, 0, 1.56, "gold")
+    octa_ring("Rim", w + 0.12, 0.25, 0.14, 0, 0, 1.56, "gold")
     side = w * math.tan(math.radians(22.5))
     for k in range(8):
         nrm = hdir(45 * k)
@@ -1514,6 +1527,8 @@ def topiary_d_body():
 @kit("HaloVar3_Topiary_E__Body", 3.0, "art/out/s2/halo/props4/HaloProp4_TopE_front.png")
 def topiary_e_body():
     z = foot("Foot", 1.4, 0.45)
+    cyl("Stem", 1.0, 0.55, 0, 0, z, "marble")
+    ring("StemRing", 1.2, 0.9, 0.12, 0, 0, z + 0.3, "gold", cc=False)
     cap_bowl("Bowl", 3.4, 1.3, 2.35)
     cyl("Wall", 3.4, 0.45, 0, 0, 2.35)
     round_inlays("Win", 1.7, 2.0, 4, 0.22, 0.45, "arch", a0=0, fr=0.045)
@@ -1721,10 +1736,10 @@ def hedge_body():
     W, D = 6.4, 1.5
     box("Band", W + 0.12, D + 0.12, 0.14, 0, 0, 0, "gold")
     box("Body", W, D, 1.0, 0, 0, 0.14)
-    box("Rim", W + 0.1, D + 0.1, 0.12, 0, 0, 1.14, "gold")
+    rim_box("Rim", W + 0.1, D + 0.1, 0.12, 0.25, 0, 0, 1.14, "gold")
     frame_panel("PanelF", (0, D / 2, 0.64), EY, W * 0.7, 0.6, fr=0.05)
     frame_panel("PanelB", (0, -D / 2, 0.64), (0, -1, 0), W * 0.7, 0.6, fr=0.05)
-    soil("Soil", (W - 0.3, D - 0.3), 0, 0, 1.24, "box")
+    soil("Soil", (W - 0.4, D - 0.4), 0, 0, 1.2, "box")
     for sx in (-1, 1):
         x = sx * (W / 2 + 0.35)
         box("End%d" % sx, 0.8, 0.8, 1.6, x, 0, 0)
@@ -1834,7 +1849,7 @@ def build_lua(name, parts, marble):
           '  p.CFrame = CFrame.fromMatrix(Vector3.new(t[6], t[7], t[8]), Vector3.new(t[9], t[10], t[11]), Vector3.new(t[12], t[13], t[14]))',
           '  p.Color = Color3.fromRGB(t[16], t[17], t[18]); mat(p, t[15])',
           '  p.CanCollide = t[19]; p.CanTouch = false; if t[20] then p.CastShadow = false end',
-          '  if keep and t[21] then',
+          '  if t[21] then                 -- cutters may carry their own ops too (octagon holes)',
           '    local cur = p',
           '    for _, op in t[21] do',
           '      local others = {}',
