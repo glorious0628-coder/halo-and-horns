@@ -8405,32 +8405,33 @@
   "reviewV2": "검수 10/11 v2 통과(fabric_v2_tile_check 시트: 대비 6배에도 줄 없음). v2 올림 10/11. 메인 MV(HH_Fabric) ID 교체는 메인 반영 1에 요청 필요(메인 Play 사진 확인 뒤 v1 파일·기록 삭제; normal은 v1·v2 공용이라 삭제 금지)."
  },
  "HH_HaloGoldTrim": {
-  "status": "redo",
+  "status": "uploaded_review_pending",
   "date": "2026-10-11",
   "by": "이미지 개발",
   "tool": "이미지 생성 3 맵 + 이미지 개발 금 시험(tools/gold_trim_maps.py)",
   "files": [
    "art/ui/halo_tile/Halo_GoldTrim_color.png",
    "art/ui/halo_tile/Halo_GoldTrim_normal.png",
-   "art/ui/halo_tile/goldtest/Halo_GoldTest_rough35.png",
-   "art/ui/halo_tile/goldtest/Halo_GoldTest_metal70.png"
+   "art/ui/halo_tile/goldtest/Halo_GoldTest_rough15.png",
+   "art/ui/halo_tile/goldtest/Halo_GoldTest_metal50.png"
   ],
   "ids": {
    "color": "rbxassetid://94913368757526",
    "normal": "rbxassetid://131597673772642",
-   "rough": "rbxassetid://128833041727597",
-   "metal": "rbxassetid://139091750772198"
+   "rough": "rbxassetid://109029776386025",
+   "metal": "rbxassetid://137160255192059"
   },
   "partColor": [
    255,
-   175,
-   25
+   195,
+   45
   ],
   "materialVariant": "HH_HaloGoldTrim (Metal, StudsPerTile 4)",
   "test": "art/review/imgdev/gold_trim_test_2026-10-11.jpg",
   "inGame": "WorldKit에만(메인엔 아직 없음, 새 마을 들어갈 때 같이). UiSandbox는 옛 rough/metal.",
   "note": "업로드 성공 ≠ 그림 승인. 옛 맵 rough 82910627301523 / metal 91394364117916 (기록 HaloTile_Halo_GoldTrim_*).",
-  "review": "검수 10/11: 낮·밤 모두 탁한 겨자색, 2D(집 07 벽 금: 밝은 노랑+흰 반짝임)와 다름(A23-125). 후보 3개를 시험판에 나란히 → 2D 금과 같은 칸 비교 시트로 다시. 시험 스크립트 tools/gold_candidates_test.luau."
+  "review": "검수 10/11: 낮·밤 모두 탁한 겨자색, 2D(집 07 벽 금: 밝은 노랑+흰 반짝임)와 다름(A23-125). 후보 3개를 시험판에 나란히 → 2D 금과 같은 칸 비교 시트로 다시. 시험 스크립트 tools/gold_candidates_test.luau.",
+  "review2": "검수 10/11 밤 2차 판정: 금속 0.5 + 거칠기 0.15 + 색 (255,195,45) 작업값(2D 금 중간값 ~(234,176,69), 색상각 ~39° 따뜻한 금빛). 3차 시험 안 함 — 최종 확인은 다음 골격 사진(2D 옆). 어긋나면 색만 고침. 시트 art/review/imgdev/gold_candidates_sheet2_2026-10-11.jpg"
  },
  "HH_HaloMarbleBlock_Cream": {
   "status": "approved",
