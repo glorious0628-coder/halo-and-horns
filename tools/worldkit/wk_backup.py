@@ -121,6 +121,10 @@ end
 return "<<<" .. HS:JSONEncode({ items = items, terrain = ter, errors = errs, place = game.Name }) .. ">>>"
 ''')
     m = json.loads(meta)
+    m.setdefault("terrain", None)  # 이미지 개발 10/11: --no-terrain left the key out (Luau nil) -> KeyError before the manifest
+    m.setdefault("errors", [])
+    if not isinstance(m.get("items"), list):
+        m["items"] = []
     stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     d = os.path.join(OUT, stamp)
     os.makedirs(d, exist_ok=True)
@@ -152,7 +156,8 @@ return "<<<" .. HS:JSONEncode({ items = items, terrain = ter, errors = errs, pla
 
 
 def pick(stamp):
-    st = sorted(os.listdir(OUT)) if os.path.isdir(OUT) else []
+    # only finished backups (a folder without manifest.json is a failed / hand-made one)
+    st = sorted(s for s in os.listdir(OUT) if os.path.exists(os.path.join(OUT, s, "manifest.json"))) if os.path.isdir(OUT) else []
     if not st:
         raise SystemExit("no backups in " + OUT)
     return os.path.join(OUT, st[-1] if stamp == "latest" else stamp)
@@ -165,7 +170,13 @@ def load(stamp, only, replace, terrain, check):
     if terrain and man.get("terrain"):
         todo.append(dict(man["terrain"], name="terrain", parent="Terrain"))
     luau('shared.WKB = nil return "<<<ok>>>"')
+    seen = set()
     for it in todo:
+        # --replace: the FIRST item of a (parent, name) clears every old child of that name; later items with the same name
+        # (Workspace had 6 "Scene" models) are added beside it, never destroying the one just loaded
+        key = (it["parent"], it["name"])
+        mode = ("replace" if key not in seen else "add") if replace else "skip"
+        seen.add(key)
         s = base64.b64encode(open(os.path.join(d, it["file"]), "rb").read()).decode()
         luau('shared.WKB = {} return "<<<ok>>>"')
         for i in range(0, len(s), CHUNK):
@@ -190,9 +201,12 @@ if par == "Terrain" then
 	return "<<<terrain pasted>>>"
 end
 local P = par == "Workspace" and workspace or game:GetService(par)
-local old = P:FindFirstChild(name)
-if old then
-	if ''' + ("true" if replace else "false") + r''' then old:Destroy() else inst:Destroy() return "<<<skip " .. name .. " (exists)>>>" end
+local mode = "''' + mode + r'''"
+if mode == "replace" then
+	for _, c in P:GetChildren() do if c.Name == name then c:Destroy() end end
+elseif mode == "skip" and P:FindFirstChild(name) then
+	inst:Destroy()
+	return "<<<skip " .. name .. " (exists)>>>"
 end
 inst.Parent = P
 return "<<<loaded " .. par .. "." .. name .. " " .. (#inst:GetDescendants() + 1) .. ">>>"
@@ -212,6 +226,9 @@ def main():
         save(only, "--no-terrain" not in a)
     elif a[0] == "list":
         for s in sorted(os.listdir(OUT)) if os.path.isdir(OUT) else []:
+            if not os.path.exists(os.path.join(OUT, s, "manifest.json")):
+                print(s, "(no manifest: not a finished backup)")
+                continue
             m = json.load(open(os.path.join(OUT, s, "manifest.json"), encoding="utf-8"))
             print(s, len(m["items"]), "roots", "+ terrain" if m.get("terrain") else "")
     else:
