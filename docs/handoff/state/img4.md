@@ -1,10 +1,13 @@
-# 이미지 생성 4 — 상태 (2026-10-12 00:30)
+# 이미지 생성 4 — 상태 (2026-10-12 08:30)
 
-## 지금 상태 한 줄 (10/12 01:45, PC 꺼짐 전 정리)
-**파트 소품 '다시' 묶음 끝(디자인 검수 통과, 가마솥 Slate). 기본 B(모든 파트 그림자) 적용. ★ 선 비교는 사용자 고름 기다림. Tripo 손보기 1차: `tools/tripo_touchup.py` + `tools/tripo_touchup_halo.sh`(39개 목록) → `art/models/tripo/touchup/<키>/`(GLB + C/N/R/M 1024 + 앞·왼·뒤·오른 미리보기, 디스크만). 38개 끝, 내 눈 확인은 꽃 화분 5개만(데이지 --tol 0.25로 다시). 아직 못 본 것 33개 → `py tools/tripo_touchup_sheet.py <out.jpg> <키…>`로 시트 보고 디자인 검수에.**
-- 실패 1: HaloVar4_Lantern_B — 머리 자르는 높이에서 전부 잘림(cut 12956, 남은 면 0 → smart_project 실패). Lantern_B 키트 Head 파트 최저 높이 vs Tripo 등불 높이 비교해서 고칠 것.
-- 다음: ① 33개 시트 확인(남은 Tripo 화분 찌꺼기·크기·떠 있는 것) ② 디자인 검수 → 최종 검수 올리기 승인 → 이미지 개발 올림 → Studio 재질 낮·밤 사진 ③ records.json에 손보기 기록(touchup 이벤트) ④ Rose 화분 몸통이 2D보다 좁음(위가 무거움).
-- WorldKit 백업: build/wk_backup/20261012_013528 (HaloPropKits 최신, 가마솥 Slate 포함).
+## 지금 상태 (10/12 아침)
+- **바깥선 껍데기(A23-139, 0.035 안뒤집기 껍데기) 56개**: `build/prop_kit_hull035/<키>_D2_035.obj/.json`, 표 `docs/design/halo_prop_outlines_2026-10-12.md`, 시트 `art/review/img4/outline_hulls_fix_1012.jpg` → 디자인 검수 **통과**. 첫 묶음 10 = 이미지 개발이 올리는 중(최종 검수 승인) → ID 오면 실제 땅 C2c 낮 5·15칸 사진(화면 슬롯은 최종 검수에 신청; WorldKit은 이미지 생성 1이 되살린 뒤).
+- 바닥 검은 덩어리 원인 = 키트 부품 두 면이 같은 평면에 겹침 → `tools/prop_kit_coplanar.py`(검사) + `prop_kit.py` `defight()`(작은 부품 면 0.012칸 밀기, 3번까지 반복). 58키트 887면 → 0. **WorldKit HaloPropKits는 아직 옛 키트** → 되살아난 뒤 `py tools/prop_kit.py --all --apply` + halo_props_place + wk_backup (화면 신청).
+- 껍데기 바닥 규칙: 맨 아래 아래쪽 면 빼고 바닥 아래 0.01까지만(prop_kit_bake.py `make_hull`, tripo_touchup.py 바깥선 같은 규칙).
+- Tripo 소품 39개 손보기 + 바깥선(--outline 0.035) 다시 돌리는 중 → `py tools/tripo_touchup_sheet.py <out> <키…>` 시트 → 디자인 검수.
+- **무기 28개 Blender 손보기**: `tools/tripo_weapon_touchup.py`(길이·쥐는 점 = 개발 1 LEN/tierLen, 피벗 = 손, 칼은 날만 y 두께 ≥0.2, `--sym` 좌우 대칭 Paladin T2/T3·LightMage T3·Alchemist T2/T3, 3,500 삼각형, C/N/R/M 1024) → `art/models/tripo/weapons/<키>/`, 시트 `tools/tripo_weapon_sheet.py`(2D 4면 | 3D 4면). 연금술사 2D = 플라스크 지팡이 → 지팡이 길이·손 62%(게임 코드는 아직 플라스크, 개발 1 결정). 지팡이 2D 감은 손잡이 위치(LightMage T1·T3, 연금술사)는 코드 손 위치 66/62%와 다름 → 검수 결정.
+- WorldKit 백업: build/wk_backup/20261012_013528 (HaloPropKits, 가마솥 Slate 포함, 겹친 면 밀기 전).
+- 남은 것: records.json 손보기 기록(touchup 이벤트), Rose 화분 몸통이 2D보다 좁음, CSG 합치기로 파트 수 줄이기.
 
 ## 배운 것 (10/12)
 - 실제 땅 C2c 빛에서 어두운 회색(Metal·SmoothPlastic)은 하늘빛을 받아 남색으로 보임 → 숯 회색은 거친 Slate + 따뜻한 회색(110,100,92).

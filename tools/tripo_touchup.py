@@ -245,7 +245,9 @@ elif a.kind == "head":
     kill = [f for f in bm.faces if f.calc_center_median().z < zc]
 stats["faces_cut"] = len(kill)
 bmesh.ops.delete(bm, geom=kill, context="FACES")
-# dust: loose islands of a handful of faces
+# dust: loose islands of a handful of faces - weld first: the glTF import splits vertices at UV seams, so before the
+# weld whole strips of the real surface look like 1-3 face islands and were deleted as dust (holes, 10/12)
+bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
 bm.faces.index_update()
 islands, seen = [], set()
 for f in bm.faces:

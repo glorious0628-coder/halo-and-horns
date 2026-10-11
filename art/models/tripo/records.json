@@ -10760,6 +10760,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_Paladin_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 3.85 studs (개발 1 LEN/tierLen), pivot = hand at 16% from the bottom, blade depth x1.03, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.986,
+    0.352,
+    3.852
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_Paladin_T2_web_hd_mv4": [
@@ -10782,6 +10796,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_Paladin_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py --sym",
+   "what": "Tripo front turned to +y, length 3.95 studs (개발 1 LEN/tierLen), pivot = hand at 15% from the bottom, blade depth x1.80, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.261,
+    0.286,
+    3.95
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_Paladin_T3_web_hd_mv4": [
@@ -10804,6 +10832,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_Paladin_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py --sym",
+   "what": "Tripo front turned to +y, length 4.05 studs (개발 1 LEN/tierLen), pivot = hand at 20% from the bottom, blade depth x1.30, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.376,
+    0.31,
+    4.049
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T1_web_hd_mv4": [
@@ -10826,6 +10868,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_LightMage_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.731,
+    0.355,
+    4.422
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -10848,6 +10904,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_LightMage_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.943,
+    0.416,
+    4.543
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T3_web_hd_mv4": [
@@ -10870,6 +10940,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_LightMage_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py --sym",
+   "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3497 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.254,
+    0.642,
+    4.66
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -10892,6 +10976,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_Ranger_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 3.10 studs (개발 1 LEN/tierLen), pivot = hand at 50% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.609,
+    0.279,
+    3.097
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T2_web_hd_mv4": [
@@ -10914,6 +11012,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_Ranger_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 3.36 studs (개발 1 LEN/tierLen), pivot = hand at 50% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.578,
+    0.189,
+    3.361
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T3_web_hd_mv4": [
@@ -10936,6 +11048,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Halo_Ranger_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 3.61 studs (개발 1 LEN/tierLen), pivot = hand at 50% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.736,
+    0.257,
+    3.613
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
   }
  ],
  "Weapon_Horns_Berserker_T1_web_hd_mv4": [
@@ -10958,6 +11084,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_Berserker_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.15 studs (개발 1 LEN/tierLen), pivot = hand at 13% from the bottom, blade depth x1.08, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.128,
+    0.329,
+    4.152
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_Berserker_T2_web_hd_mv4": [
@@ -10980,6 +11120,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_Berserker_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.25 studs (개발 1 LEN/tierLen), pivot = hand at 18% from the bottom, blade depth x1.02, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.388,
+    0.351,
+    4.25
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_Berserker_T3_web_hd_mv4": [
@@ -11002,6 +11156,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_Berserker_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.35 studs (개발 1 LEN/tierLen), pivot = hand at 18% from the bottom, blade depth x1.59, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.589,
+    0.368,
+    4.353
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T1_web_hd_mv4": [
@@ -11024,6 +11192,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_DarkMage_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.851,
+    0.353,
+    4.42
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11046,6 +11228,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_DarkMage_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.949,
+    0.403,
+    4.538
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
@@ -11068,6 +11264,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_DarkMage_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.094,
+    0.437,
+    4.659
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -11090,6 +11300,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_ShadowHunter_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.33 studs (개발 1 LEN/tierLen), pivot = hand at 50% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.513,
+    0.159,
+    2.329
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T2_web_hd_mv4": [
@@ -11112,6 +11336,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_ShadowHunter_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.52 studs (개발 1 LEN/tierLen), pivot = hand at 50% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.551,
+    0.187,
+    2.519
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T3_web_hd_mv4": [
@@ -11134,6 +11372,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_ShadowHunter_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.71 studs (개발 1 LEN/tierLen), pivot = hand at 50% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.596,
+    0.2,
+    2.71
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "Weapon_Neutral_Blacksmith_T1_web_hd_mv4": [
@@ -11156,6 +11408,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_Blacksmith_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.20 studs (개발 1 LEN/tierLen), pivot = hand at 26% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.998,
+    0.365,
+    2.203
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T1/Weapon_Neutral_Blacksmith_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_Blacksmith_T2_web_hd_mv4": [
@@ -11178,6 +11444,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_Blacksmith_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.20 studs (개발 1 LEN/tierLen), pivot = hand at 26% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.931,
+    0.375,
+    2.199
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_Blacksmith_T3_web_hd_mv4": [
@@ -11200,6 +11480,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_Blacksmith_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.20 studs (개발 1 LEN/tierLen), pivot = hand at 26% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.171,
+    0.418,
+    2.199
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T3/Weapon_Neutral_Blacksmith_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T1_web_hd_mv4": [
@@ -11222,6 +11516,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_Alchemist_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.022,
+    0.457,
+    4.42
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -11244,6 +11552,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_Alchemist_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py --sym",
+   "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3498 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.766,
+    0.619,
+    4.541
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -11266,6 +11588,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_Alchemist_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py --sym",
+   "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.866,
+    0.694,
+    4.663
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
@@ -11288,6 +11624,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_PetTamer_T1_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.13 studs (개발 1 LEN/tierLen), pivot = hand at 30% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.384,
+    0.355,
+    2.129
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T1/Weapon_Neutral_PetTamer_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T2_web_hd_mv4": [
@@ -11310,6 +11660,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_PetTamer_T2_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.20 studs (개발 1 LEN/tierLen), pivot = hand at 30% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.407,
+    0.336,
+    2.2
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T2/Weapon_Neutral_PetTamer_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T3_web_hd_mv4": [
@@ -11332,6 +11696,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Neutral_PetTamer_T3_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 2.34 studs (개발 1 LEN/tierLen), pivot = hand at 30% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    0.435,
+    0.404,
+    2.34
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T3/Weapon_Neutral_PetTamer_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
   }
  ],
  "Weapon_Horns_Berserker_final_b_web_hd_mv4": [
@@ -11354,6 +11732,20 @@
    },
    "use": "held weapon: Blender touch-up next (blade thickness / grip by 게임성 개발 1's grip formula, symmetry, clean, decimate, bake C/N/R/M)",
    "file": "art/models/tripo/web/Weapon_Horns_Berserker_final_b_MV4_HD_src.glb"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_weapon_touchup.py",
+   "what": "Tripo front turned to +y, length 4.80 studs (개발 1 LEN/tierLen), pivot = hand at 21% from the bottom, blade depth x1.09, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
+   "size_studs": [
+    1.459,
+    0.407,
+    4.797
+   ],
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_final_b/Weapon_Horns_Berserker_final_b_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
   }
  ],
  "halo_houses_deco_extras_2026-10-12": [
