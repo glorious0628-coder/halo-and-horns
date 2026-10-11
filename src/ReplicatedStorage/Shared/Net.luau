@@ -54,6 +54,17 @@ Net.Names = {
 	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
 	"SetQuickSlot", -- A23-109 (게임성 개발 2): (slot 1..3, item: a Config.QuickSlots.Items key | "") QuickSlotService; the
 	-- answer is the owner's QuickSlots attribute (no reply remote)
+	-- 게임성 개발 3 (2026-10-11), server -> client:
+	"GatherState", -- owner only { Ready = { [GatherId] = workspace:GetServerTimeNow() it can be picked again }, N, Cap }
+	-- (GatherService after each gather and at PlayerReady; the client's GatherView dims my resting nodes)
+	-- 게임성 개발 3 (2026-10-12) crafting (CraftService, docs/design/craft_server_2026-10-12.md §4), client -> server:
+	"CraftStart", -- (recipeId: a Config.Craft.Recipes id)
+	"CraftStrike", -- (sessionId: number, i: 1..5, ms: the press offset, + = late) on a press; the server notes its own time
+	"CraftFinish", -- (sessionId: number) the hammer is over (or Skip): the server grades the strikes (Shared/CraftMini)
+	-- server -> client (owner only):
+	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
+	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp }
+	"CraftInfo", -- { Role, Lv, XP, Need, Made } at join and after every craft
 }
 
 Net.GameStateDefaults = {

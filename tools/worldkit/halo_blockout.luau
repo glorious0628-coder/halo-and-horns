@@ -19,7 +19,7 @@ local BOX = { x0 = D.box[1] - 2, x1 = D.box[2] + 2, z0 = D.box[3] + 2, z1 = D.bo
 local OLD_BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -24 }
 local MAT = {
 	g = Enum.Material.Grass, d = Enum.Material.Ground, c = Enum.Material.Concrete, b = Enum.Material.Cobblestone,
-	p = Enum.Material.Pavement, t = Enum.Material.Slate, w = Enum.Material.Mud, r = Enum.Material.Rock, n = Enum.Material.Sand,
+	p = Enum.Material.Pavement, t = Enum.Material.Slate, w = Enum.Material.Mud, r = Enum.Material.Rock, n = Enum.Material.Sand, l = Enum.Material.Limestone,
 }
 local COL = {
 	Gate = Color3.fromRGB(205, 195, 170), Tower = Color3.fromRGB(190, 190, 198), Shop = Color3.fromRGB(214, 200, 182),
@@ -227,8 +227,8 @@ for ix = 1, NX do
 			local yb = VY0 + (iy - 1) * 4
 			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
 			if lo > 0 then
-				if yb + 4 > land - 3 then
-					mx[iy][iz] = top
+				if yb + 4 > land - 7 then -- 디자인 검수 10/11 (h_05): top material 2 voxels deep; with 1 the Rock under a partly filled
+					mx[iy][iz] = top            -- top voxel showed through as dark brown patches on the slopes
 				elseif yb < bottom + 4 then
 					mx[iy][iz] = Basalt -- the lowest 1-2 voxels
 				else
@@ -363,7 +363,7 @@ rp.FilterDescendantsInstances = { T }
 rp.IgnoreWater = true
 for _, br in D.bridges do
 	local at = Vector3.new(br.at[1], 0, br.at[2]) + OFF
-	local dir = roadDir(Vector3.new(br.at[1], 0, br.at[2]))
+	local dir = br.dir and Vector3.new(br.dir[1], 0, br.dir[2]) or roadDir(Vector3.new(br.at[1], 0, br.at[2])) -- plan: its own road
 	local y = 0
 	for _, s in { -1, 1 } do
 		local hit = workspace:Raycast(at + dir * s * (br.len / 2 + 1) + Vector3.new(0, 120, 0), Vector3.new(0, -200, 0), rp)

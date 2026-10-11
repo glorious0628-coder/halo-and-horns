@@ -197,7 +197,7 @@ Config.Data = {
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
 		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow", PvPCards = false, Weather = true },
+			Cam = "Follow", PvPCards = false, Weather = true, BagWide = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -209,7 +209,7 @@ Config.Data = {
 		SavedBullyAt = 0,
 		SavedStars = 0,
 		SavedStarsAt = 0,
-		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound }, Equipped = { uid }, Next = the
+		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound, Roll? }, Equipped = { uid }, Next = the
 		-- next uid number, Away = put away by the player (PET-2b: stays away after a rejoin; never the tamer).
 		-- TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
 		Pets = { List = {}, Equipped = {}, Next = 1, Away = false },
@@ -4316,6 +4316,40 @@ Config.LandShadow = {
 	Color = Color3.fromRGB(46, 24, 34),
 }
 
+-- A23-131 / A23-134 황금 알 줍기, the client's look (EggFx.luau, 게임성 개발 1; the rules and numbers are the server's
+-- Config.Goose.Egg, 게임성 개발 2; contract docs/design/golden_egg_contract_2026-10-11.md). Kinds = the code egg when the
+-- server part has no mesh of its own (Size studs across, 1.3x tall; Glow = a round soft glow that wide, Breathe = the big
+-- egg's swell, Sparkle = round sparkles per s near the camera); ArcHeight = a flight's peak clamp(distance x [1], [2],
+-- [3]); PredictHold = s a previewed pickup stays hidden before it shows again (the server kept it); GoneWait = s a
+-- removed ground egg waits for an EggReturn before it pops as picked; SoundRange = studs others' egg sounds reach;
+-- PickSpeed = my pickup sound's pitch by the eggs held (1st / 2nd / 3rd). Text = the only marks it writes.
+Config.GooseEggFx = {
+	Kinds = {
+		Gold = { Size = 1.2, Color = Color3.fromRGB(255, 205, 60), Sparkle = 3 },
+		Bouncy = { Size = 1.2, Color = Color3.fromRGB(255, 228, 130), Sparkle = 4 },
+		Big = { Size = 2.4, Color = Color3.fromRGB(255, 190, 40), Breathe = 0.08, Sparkle = 5 },
+		Crown = { Size = 1.8, Color = Color3.fromRGB(255, 236, 150), Glow = 4.5, GlowAlpha = 0.86, Sparkle = 8 },
+		Feather = { Size = 0.9, Color = Color3.fromRGB(255, 246, 215), Sparkle = 2 },
+	},
+	ArcHeight = { 0.35, 1.5, 6 },
+	SparkleRange = 60,
+	NoPickAlpha = 0.6,
+	PredictHold = 0.6,
+	RetryAfter = 1.5, -- s: a preview the server turned down is not tried again sooner (no flicker)
+	MoveWindow = 0.5, MoveMin = 1, -- the preview needs MoveMin studs walked in MoveWindow s (the server's away rule)
+	GoneWait = 0.25,
+	SoundRange = 30,
+	PickSpeed = { 1, 1.12, 1.26 },
+	MarkHeight = 6,
+	Home = { Alpha = 0.75, CarryAlpha = 0.45, Height = 0.15 },
+	Boundary = { Dots = 48, Size = 0.7, Alpha = 0.35, Range = 160 },
+	Wobble = { Max = 18, Speed = 14 },
+	Return = { Time = 0.8, Range = 160 },
+	Deliver = { Time = 0.45, Rise = 4 },
+	Shield = { Size = 6, Alpha = 0.8, Range = 100 },
+	Text = { Alert = "!", Nap = "Zzz", Plus = "+%d" },
+}
+
 -- A23-113 ① the server half of the circle (게임성 개발 2, MonsterService LEAP; docs/design/boss_leap_2026-10-11.md): per
 -- monster kind a big landing with the LandShadow attributes (DropAt last, DropTime = Warn, DropRadius, DropPos, plus
 -- DropFrom / DropHeight for the leap's arc). The rule never changes: Warn s later every player whose root is within
@@ -4733,7 +4767,7 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eleven values incl. Music / Weather, Seq = 14)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the twelve values incl. Music / Weather / BagWide, Seq = 15)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
@@ -4744,7 +4778,10 @@ Config.Settings = {
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
-		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
+		-- A23-32 (H-1 bag, 게임성 개발 4): Default = newest first (the server's ItemSeq order), name, grade, type; an old
+		-- "Count" falls back to Default
+		BagSort = { Type = "Enum", Options = { "Default", "Name", "Grade", "Kind" } },
+		BagWide = { Type = "Bool" }, -- A23-32: the bag's wide (8 columns) look; the bag's own button (not a Settings row)
 		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-91: Follow = the console-style camera turns behind me while I walk (the default again since user 10/09; Free = Roblox's own)
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
@@ -4760,12 +4797,14 @@ Config.Settings = {
 		KeyBadges = "Key hints", KeyBadgesEn = "Key hints",
 		Lang = "Language", LangEn = "Language",
 		BagSort = "Bag order", BagSortEn = "Bag order",
+		BagWide = "Wide bag", BagWideEn = "Wide bag", -- not a row in the window (Order)
 		Cam = "Camera", CamEn = "Camera",
 		PvPCards = "PvP zone cards seen", PvPCardsEn = "PvP zone cards seen", -- not a row in the window (Order)
 		Options = {
 			All = "All", AllEn = "All", Off = "Off", OffEn = "Off", Near = "Nearby only", NearEn = "Nearby only",
 			Auto = "Auto", AutoEn = "Auto", ko = "한국어", koEn = "한국어", en = "English", enEn = "English",
-			Default = "Default", DefaultEn = "Default", Grade = "By grade", GradeEn = "By grade", Count = "By count", CountEn = "By count",
+			Default = "Newest", DefaultEn = "Newest", Grade = "By grade", GradeEn = "By grade", Name = "By name", NameEn = "By name",
+			Kind = "By type", KindEn = "By type",
 			Follow = "Follow", FollowEn = "Follow", Free = "Free", FreeEn = "Free",
 		},
 		On = "On", OnEn = "On",
@@ -5034,6 +5073,17 @@ Config.Loot = {
 		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
 		SeaShell = { Kind = "Material", Name = "Sea Shell", Sell = 4, Color = Color3.fromRGB(250, 205, 180), Icon = "IconSeaShell" }, -- Coral Coast
 		CrystalShard = { Kind = "Material", Name = "Crystal Shard", Sell = 8, Color = Color3.fromRGB(130, 210, 240), Icon = "IconCrystalShard" }, -- Crystal Cave Woods
+		-- gathering (Config.Gather, GatherService; ids fixed: the market key I:<id> and the recipes use them). Icon keys named
+		-- by 디자인 검수 (10/11); the parts come with image session 2 -> image dev, until then the code fallback. CrownDust:
+		-- only from a Shard Bloom
+		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." },
+		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Sell it at the Forge." },
+		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Sell it at the Forge." },
+		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Sell it at the Forge." },
+		IronOre = { Kind = "Material", Name = "Iron Ore", Sell = 5, Color = Color3.fromRGB(130, 135, 145), Icon = "IconIronOre", Source = "Gather", Desc = "Sell it at the Forge." },
+		SilverOre = { Kind = "Material", Name = "Silver Ore", Sell = 8, Color = Color3.fromRGB(210, 215, 225), Icon = "IconSilverOre", Source = "Gather", Desc = "Sell it at the Forge." },
+		MoonCrystal = { Kind = "Material", Name = "Moon Crystal", Sell = 10, Color = Color3.fromRGB(175, 165, 255), Icon = "IconMoonCrystal", Source = "Gather", Desc = "Sell it at the Forge." },
+		CrownDust = { Kind = "Material", Name = "Crown Dust", Sell = 8, Color = Color3.fromRGB(255, 215, 110), Icon = "IconCrownDust", Source = "Gather", Desc = "Sell it at the Forge." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5045,7 +5095,8 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
+		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy",
+		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -5633,6 +5684,15 @@ Config.Audio = {
 		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
 		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
 		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
+		-- A23-131 황금 알 줍기 (EggFx / Audio; design golden_egg §소리; files from 소리 만들기, "" until then = the stand-in in
+		-- brackets plays): others' egg sounds only within Config.GooseEggFx.SoundRange, Max / Gap keep 30 players quiet
+		EggPlop = { File = "EggPlop", Volume = 0.30, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.15 }, -- an egg lands (CandyPlop)
+		EggPickup = { File = "EggPickup", Volume = 0.42, Speed = { 1, 1 }, Max = 2, Gap = 0.15 }, -- a pickup, pitch 1 / 1.12 / 1.26 by eggs held (GoldPickup)
+		EggDeliverHalo = { File = "EggDeliverHalo", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- a Knight delivers: a clear bell (GoldPickup)
+		EggDeliverHorns = { File = "EggDeliverHorns", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- a Horn delivers: coins (GoldPickup)
+		EggBoing = { File = "EggBoing", Volume = 0.35, Speed = { 0.95, 1.1 }, Max = 2, Gap = 0.15 }, -- the bouncy egg hops away (silent)
+		CrownEgg = { File = "CrownEgg", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the crown egg is laid: a short fanfare (GooseHonk)
+		GooseSnore = { File = "GooseSnore", Volume = 0.35, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the goose naps (silent)
 		KaijuSiren = { File = "KaijuSiren", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B5 KaijuPhase -> 'Siren'; CountTick follows
 		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
 		-- the King Slime's landing thud (Config.BossThud, Fx): the kaiju stomp file lower and softer until its own file
@@ -5788,22 +5848,25 @@ Config.QuickSlots = {
 -- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
 -- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
-	-- Paladin: straight sword ready in front, its tip up to the left (class_grips table; grip_reference §1-6 sword and
-	-- shield idle: the sword in front, the guard arm up) - OneHand from the sword; until his shield model exists the left
-	-- hand is a fist in front of the chest (OffHand, 검수 10/11)
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
-		-- 검수 10/11 main photo: the blade hid the face -> laid further out (tip still up to the left, passing in front of
-		-- the chest, not the face)
-		OneHand = { Hilt = Vector3.new(0.85, -0.6, -0.6), Aim = Vector3.new(-0.8, 0.55, -0.2) },
-		OffHand = { At = Vector3.new(-0.3, 0.0, -0.95), Up = Vector3.new(-0.95, -0.3, 0.65), Fwd = Vector3.new(0, 1, 0) } },
-	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
-	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
-	-- hand lower towards the pommel, the hilt in front of the chest, a heavy blade laid back over the shoulder). TwoHand
-	-- (WeaponPose): Hilt = the right grip point and Aim = the blade in UpperTorso space (studs; R15 shoulders at x +-0.97,
-	-- y 0.6; the torso top y 0.8) - the blade passes just over the right shoulder at (1.1, 1.05, 0.05); both arms are
-	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
-	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },
+	-- A23-128 (user 2026-10-11 "한손검만 쓸 수 있게 하자", 검수 picked one-hand only): both warriors hold a ONE-hand
+	-- sword in the right hand, standing ready at the side (references docs/design/grip_reference_2026-10-11.md §1-8: the
+	-- fist wraps the handle - hammer / handshake grip - the hand in line with the hanging arm, the elbow bent low and
+	-- close, the forearm a little down and forward, the tip ahead and up). No sword across the body, no great sword, no
+	-- two-hand grip; the left hand is empty and hangs as Roblox's idle / walk move it (no OffHand: a shield comes with
+	-- its model). OneHand Pole = where the elbow bends (torso space; default WeaponPose T.PoleRight, down and out).
+	-- 검수 10/11 (fix/onehand review): the forearm and the hand stay OUT of the torso / hip (the hand just outside the
+	-- hanging arm's line, at the waist, a little ahead; the elbow back near the hanging arm's line, not tucked in), the
+	-- wrist nearly straight (<= 30 degrees), the handle and pommel clear of the swinging thigh
+	-- 최종 검수 10/11 (the two sides stood alike; GDD §0 angel / devil): the Paladin stands tall, chest out and chin up
+	-- (Waist / Neck +3 = leaning back, this table's sign), the Berserker leans in and hunches (Waist -10, Neck -6: head
+	-- down) with his tip lower (40 degrees); the grips stay the same (the hands live in torso space)
+	-- Paladin: the straight sword, its tip ahead and 45 degrees up
+	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 }, Neck = { 3, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
+	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 40 degrees up
+	-- and a touch out
+	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
 	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
@@ -5816,20 +5879,23 @@ Config.ClassGrips = {
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	-- 검수 10/11 main photo: the free left hand floated out at the side -> on the hip like the artisans (OffHand)
-	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 } },
+	-- 게임성 검수 10/11: Waist was +8 = leaning BACK (this table's sign) against the "hunched" note -> -8 (leaning in)
+	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },
 		OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
-	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask)
+	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask).
+	-- 게임성 검수 10/11: the elbow bends down and out (Pole) - the default bend tucked the upper arm into the side
 	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) },
+		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0), Pole = Vector3.new(1, -0.8, 0) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
 		RightShoulder = { 6, 0, 6 } } },
-	-- Shadow Hunter: low and quiet, the short bow upright and a little tilted in front
-	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },
+	-- Shadow Hunter: low and quiet, the short bow upright and a little tilted in front (게임성 검수 10/11: Waist +12 leaned
+	-- back against "low" -> -12, leaning in)
+	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { -12, 0, 0 }, Neck = { -8, 0, 0 },
 		LeftShoulder = { 30, 0, -10 }, LeftElbow = { 55, 0, 0 }, RightShoulder = { 10, 0, 6 } } },
 	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
 	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
@@ -8072,6 +8138,393 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, tonumber(R.MaxHP) or 2500))
 	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
 	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
+end
+
+----------------------------------------------------------------- gathering (게임성 개발 3, 2026-10-11)
+-- GatherService (contract docs/design/gather_server_2026-10-11.md, background gathering_2026-10-06.md). Everyone (Halo,
+-- Horns, artisans) the same: hold the interact key at a node (PromptRange studs) for Nodes[kind].Hold s -> 1 material,
+-- Double = the chance of 2. No XP, scroll, weapon or potion. A node rests Regrow s for the gatherer only (server memory).
+-- Server checks: the held time >= Hold x MinHoldRatio, root <-> node <= ServerRange, one gather per RateLimits.Gather s,
+-- my own node rest, DailyCap gathers a KST day (data.Gather.N), no hit from another player since the hold began.
+-- Plant nodes sometimes show a Shard Bloom (Bloom: the ChoiceCard ShardBloom). Heavy = gathers in one hour above which
+-- TelemetryService logs "GatherHeavy" (ids only). Spots[zone] = { { kind, u, v } } with u, v in 0..1 of the zone rectangle
+-- (Config.GatherSpotPos); WorldKit "GatherSpot" tagged parts (attribute Node = kind) replace a zone's list. Ray = the
+-- downward ground ray of a spot (from From studs up, Length studs long). Text = keys only on the wire (Net.NotifyKey,
+-- prompt attributes ActionKey / ObjectKey); no first-time hint line (A23-130, 게임성 개발 4).
+-- Switched by Config.Features.Gathering (off).
+-- Gathering (게임성 개발 3): the herb / ore nodes. Off = no node is built and every gather handler returns at once; on
+-- together with the artisan guild (검수)
+Config.Features.Gathering = false
+Config.Gather = {
+	DailyCap = 400,
+	MinHoldRatio = 0.8,
+	PromptRange = 8,
+	ServerRange = 12,
+	Regrow = 180,
+	Double = 0.2,
+	Heavy = 200,
+	Ray = { From = 300, Length = 600 },
+	Nodes = {
+		HerbBush = { Item = "Herb", Hold = 1.5, Action = "Pick", Plant = true, Zone = "SlimeMeadow", Color = Color3.fromRGB(140, 210, 255) },
+		CopperRock = { Item = "CopperOre", Hold = 2.0, Action = "Mine", Zone = "SlimeMeadow", Color = Color3.fromRGB(205, 125, 75) },
+		OakPile = { Item = "OakLog", Hold = 1.5, Action = "Pick", Zone = "GoblinWoods", Color = Color3.fromRGB(160, 115, 70) },
+		GlowcapPatch = { Item = "Glowcap", Hold = 1.5, Action = "Pick", Plant = true, Zone = "GoblinWoods", Color = Color3.fromRGB(80, 225, 205) },
+		IronRock = { Item = "IronOre", Hold = 2.0, Action = "Mine", Zone = "GoblinWoods", Color = Color3.fromRGB(130, 135, 145) },
+		SilverRock = { Item = "SilverOre", Hold = 2.0, Action = "Mine", Zone = "SkeletonRuins", Color = Color3.fromRGB(210, 215, 225) },
+		MoonCrystal = { Item = "MoonCrystal", Hold = 2.0, Action = "Mine", Zone = "SkeletonRuins", Color = Color3.fromRGB(175, 165, 255) },
+	},
+	-- gathering_2026-10-06 §2 stud spots in today's zone rectangles (the pumpkin-path clump dropped: the north-path
+	-- candidates make two clumps). Nodes >= 8 studs apart, none within 40 studs of the meadow spawn (230, 0), none on the
+	-- crown road (|z| <= 9). Studs in the comments.
+	Spots = {
+		SlimeMeadow = {
+			-- HerbBush: south-east of the watchtower (260, -200)
+			{ "HerbBush", 0.15, 0.1125 }, { "HerbBush", 0.1773, 0.125 }, { "HerbBush", 0.1455, 0.1417 }, -- (276,-186) (288,-180) (274,-172)
+			-- the north ring path (x 480-560, z -205): two clumps
+			{ "HerbBush", 0.6182, 0.0729 }, { "HerbBush", 0.6455, 0.08125 }, { "HerbBush", 0.6318, 0.05625 }, -- (482,-205) (494,-201) (488,-213)
+			{ "HerbBush", 0.75, 0.0729 }, { "HerbBush", 0.7773, 0.08125 }, { "HerbBush", 0.7636, 0.05625 }, -- (540,-205) (552,-201) (546,-213)
+			-- the pond's west edge (x 240-255, z 140-170)
+			{ "HerbBush", 0.0773, 0.7958 }, { "HerbBush", 0.0909, 0.8229 }, { "HerbBush", 0.075, 0.85 }, -- (244,142) (250,155) (243,168)
+			-- CopperRock: the King Slime hill's (430, -170) south-east slope
+			{ "CopperRock", 0.5364, 0.175 }, { "CopperRock", 0.5636, 0.1917 }, -- (446,-156) (458,-148)
+			{ "CopperRock", 0.5318, 0.2042 }, { "CopperRock", 0.5591, 0.2208 }, -- (444,-142) (456,-134)
+			-- in front of the woods bridge (x 615-640), off the road
+			{ "CopperRock", 0.9273, 0.4583 }, { "CopperRock", 0.9636, 0.4667 }, -- (618,-20) (634,-16)
+			{ "CopperRock", 0.9273, 0.5417 }, { "CopperRock", 0.9636, 0.5333 }, -- (618,20) (634,16)
+		},
+		GoblinWoods = {
+			-- OakPile: a ring of 16 studs around the goblin treehouse's old tree (960, -90)
+			{ "OakPile", 0.5542, 0.3269 }, { "OakPile", 0.5438, 0.3481 }, { "OakPile", 0.5208, 0.3577 }, { "OakPile", 0.4979, 0.3481 }, -- (976,-90) (971,-79) (960,-74) (949,-79)
+			{ "OakPile", 0.4875, 0.3269 }, { "OakPile", 0.4979, 0.3058 }, { "OakPile", 0.5208, 0.2962 }, { "OakPile", 0.5438, 0.3058 }, -- (944,-90) (949,-101) (960,-106) (971,-101)
+			-- GlowcapPatch: the woods' north ring path (z about -222), two clumps
+			{ "GlowcapPatch", 0.1458, 0.0731 }, { "GlowcapPatch", 0.1708, 0.0846 }, { "GlowcapPatch", 0.1958, 0.0692 }, { "GlowcapPatch", 0.1708, 0.0577 }, -- (780,-222) (792,-216) (804,-224) (792,-230)
+			{ "GlowcapPatch", 0.6875, 0.0731 }, { "GlowcapPatch", 0.7125, 0.0846 }, { "GlowcapPatch", 0.7375, 0.0692 }, { "GlowcapPatch", 0.7125, 0.0577 }, -- (1040,-222) (1052,-216) (1064,-224) (1052,-230)
+			-- IronRock: before the pass (x 1150-1180), off the road
+			{ "IronRock", 0.9208, 0.4423 }, { "IronRock", 0.95, 0.4538 }, { "IronRock", 0.9792, 0.4385 }, -- (1152,-30) (1166,-24) (1180,-32)
+			{ "IronRock", 0.9208, 0.5577 }, { "IronRock", 0.95, 0.5462 }, { "IronRock", 0.9792, 0.5615 }, -- (1152,30) (1166,24) (1180,32)
+		},
+		SkeletonRuins = {
+			-- SilverRock: a ring of 18 studs around the broken tower (1560, -70)
+			{ "SilverRock", 0.6115, 0.3793 }, { "SilverRock", 0.5942, 0.4069 }, { "SilverRock", 0.5596, 0.4069 }, -- (1578,-70) (1569,-54) (1551,-54)
+			{ "SilverRock", 0.5423, 0.3793 }, { "SilverRock", 0.5596, 0.3517 }, { "SilverRock", 0.5942, 0.3517 }, -- (1542,-70) (1551,-86) (1569,-86)
+			-- MoonCrystal: the south ring path (z 150-200), two clumps
+			{ "MoonCrystal", 0.3077, 0.7931 }, { "MoonCrystal", 0.3346, 0.8069 }, { "MoonCrystal", 0.3577, 0.7862 }, -- (1420,170) (1434,178) (1446,166)
+			{ "MoonCrystal", 0.6154, 0.7966 }, { "MoonCrystal", 0.6423, 0.8103 }, { "MoonCrystal", 0.6654, 0.7897 }, -- (1580,172) (1594,180) (1606,168)
+		},
+	},
+	-- Item = what a bloom pays (the card's rewards, the share, the wilt), Card = the ChoiceCard kind
+	Bloom = { Chance = 0.08, FirstAt = 5, DailyMax = 3, Radius = 40, GiftDailyMax = 10, Item = "CrownDust", Card = "ShardBloom" },
+	Text = {
+		Pick = "Pick",
+		Mine = "Mine",
+		DailyCap = "You gathered a lot today! Come back tomorrow!",
+		PvPCut = "A player hit you! Try again.",
+		BloomGift = "Someone shared a Shard Bloom! +1 Crown Dust",
+		BloomWilt = "The bloom closed up. +1 Crown Dust",
+	},
+}
+Config.RateLimits.Gather = 1
+
+-- a Config.Gather spot (u, v in 0..1 of the zone rectangle Config.Zones[zone].Center / Size) -> Vector3 with y = 0; nil
+-- for an unknown zone or u / v outside 0..1 (pure: GatherService and the offline test share it)
+function Config.GatherSpotPos(zone, u, v)
+	local z = type(zone) == "string" and Config.Zones[zone] or nil
+	if type(z) ~= "table" or type(u) ~= "number" or type(v) ~= "number" then return nil end
+	if not (u >= 0 and u <= 1 and v >= 0 and v <= 1) then return nil end -- NaN fails too
+	return Vector3.new(z.Center.X - z.Size.X / 2 + u * z.Size.X, 0, z.Center.Z - z.Size.Z / 2 + v * z.Size.Z)
+end
+
+-- the Shard Bloom (a plant node's sometimes-bloom): a timed card (time up = +1 crown dust, GatherService). Points through
+-- Deeds like every card (an artisan picks for the reward only)
+Config.ChoiceCard.Kinds.ShardBloom = {
+	Seconds = 120,
+	Title = "A Shard Bloom! It sparkles with crown dust. What will you do?",
+	Good = { Label = "Share it", Reward = { Item = "CrownDust", N = 2 }, Points = 1 },
+	Evil = { Label = "Keep it all", Reward = { Item = "CrownDust", N = 3 }, Points = 1 },
+}
+
+----------------------------------------------------------------- crafting (게임성 개발 3, 2026-10-12)
+-- CraftService (contract docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer screen is 게임성 개발 4's
+-- hammer_minigame_2026-10-12.md). Only artisans (faction Neutral) craft, each only the recipes of their role (Roles: the
+-- artisan class -> role). A craft never fails and never loses materials (A23-56): the gold and materials go at the start,
+-- the result (+0 / +1 / +2 from the hammer) comes at the end, a leave / KO / time-out finishes it at +0, and the save's
+-- Craft.Pend finishes it at +0 on the next join if the server stops in between. A craft level per role (data.Craft.<role>
+-- = { Lv, XP }), XP to the next = floor(XPBase x Lv ^ XPExp), at most MaxLv; the 2x XP pass does not touch it.
+-- The hammer's numbers and rules live in Shared/CraftMini.luau (게임성 개발 4, the one place the screen and the server share:
+-- a fixed ring schedule, CraftStrike(id, i, ms) on a press, CraftFinish(id) scores with CraftMini.Accept). No Finish by
+-- StartAt + CraftMini.T.Timeout = +0. Recipes[id] = { Role, Kind "Weapon" | "Gear" | "Item", Tier?, Slot?, Item?, N?, Lv, Gold, Mats,
+-- XP }; a recipe with a material id missing from Config.Loot.Items is off (new drops switch it on). Weapons go to the
+-- spare weapons (LootService.AddSpare, 게임성 개발 2) and stay off until that exists. Switched by
+-- Config.Features.Crafting (off; on with the artisan guild, 검수).
+Config.Features.Crafting = false
+Config.Craft = {
+	Roles = { Warrior = "Smith", Mage = "Alch", Archer = "Tame" },
+	MaxLv = 30,
+	XPBase = 40,
+	XPExp = 1.5,
+	Range = 12, -- studs from the role's workbench (CollectionService tag StationTag, attribute Role; else the Crossroads anvil)
+	StationTag = "CraftStation",
+	StartsPerMinute = 6,
+	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
+	Recipes = {
+		W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 },
+		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Jelly = 10, Petal = 3, CopperOre = 4 }, XP = 20 },
+		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }, XP = 60 },
+		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 20, BruteHorn = 10, IronOre = 8, OakLog = 4 }, XP = 150 },
+		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 30, KnightCrest = 12, IronOre = 15, OakLog = 6 }, XP = 400 },
+		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 30, Bone = 60, CaptainBadge = 1, SilverOre = 12 }, XP = 900 },
+		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 60, Bone = 100, CaptainBadge = 2, ClatterGem = 1, SilverOre = 25 }, XP = 2000 },
+		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 100, CaptainBadge = 6, ClatterGem = 3, KingJelly = 10, MoonCrystal = 20 }, XP = 4000 },
+	},
+	Text = {
+		NotArtisan = "Only artisans can make this.",
+		NeedLevel = "Your craft level is too low.",
+		NeedMats = "Not enough materials.",
+		NeedGold = "Not enough gold.",
+		Far = "Go to your workbench.",
+		Busy = "Finish this craft first.",
+		Full = "No room for it.",
+		Auto = "Turn off auto combat first.",
+	},
+}
+Config.RateLimits.CraftStart = 3
+Config.RateLimits.CraftFinish = 0.5
+
+-- XP from craft level `lv` to the next (Config.Craft.XPBase x lv ^ XPExp, floored; 0 at MaxLv: no next level)
+function Config.CraftXPToNext(lv)
+	local K = Config.Craft
+	local l = math.floor(tonumber(lv) or 1)
+	if l ~= l or l >= K.MaxLv then return 0 end
+	return math.floor(K.XPBase * math.max(1, l) ^ K.XPExp)
+end
+
+----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
+-- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
+-- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3
+-- server keeps them untouched). 게임성 개발 2's C1 then bumps Config.Data.Version to 4 on top (tier 9 = a 9-bit weapon
+-- mask) with Spares and Market. Later branches only add behaviour, never another shape. Rules: ids and numbers only (no
+-- player-facing text, A23-111 / A23-133); a repair never makes a value up (broken = the default or dropped, counts cut at
+-- the caps); a sane flat key this code does not know is kept (a later key needs no version bump); a thing lives in one
+-- place only (Gear.Own OR worn in Gear.On / Gear.Pet). Owners: Craft / Research / Gather / Gear / Buffs = 게임성 개발 3,
+-- Shop / EggHonorAt = 게임성 개발 2. The services keep their own caps when they write (e.g. 60 things in Gear.Own).
+Config.SaveV4 = {
+	KeyLen = 32, -- longest id key kept (recipe, monster family, tonic, pet uid)
+	SlotLen = 16, -- longest gear slot / kind name kept (letters only)
+	MaxKeys = 64, -- most keys kept in one id map (Craft.Made, Research.Pts / Sum, Gear.Own, Gear.Pet)
+	MaxCount = 10000000, -- a counter above this is cut (never a free huge number)
+	CraftRoles = { "Smith", "Alch", "Tame" }, -- Blacksmith, Alchemist, Tamer: one craft level each (a class change starts over)
+	CraftMaxLv = 30,
+	GearSlots = { "Armor", "Ring" }, -- the player's worn slots (Gear.On, always present)
+	GearMaxTier = 16,
+	OwnKeyMax = 20, -- Gear.Own: at most this many of one "<kind>:T:P" key
+	BuffMax = 2, -- Buffs: at most two tonics at once
+	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
+	ShopDayMax = 50, -- Shop.N: Otto's cheap materials a KST day (게임성 개발 2)
+	PetRollSpd = { 5, 10 }, -- Pets.List[uid].Roll.Spd: a summoned pet's walk bonus in whole % (PetService.Sanitize)
+}
+-- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
+-- Made (recipe id -> times made). Research: the tamer's points (Pts) and summons (Sum) per monster family (QuestKind).
+-- Gather: Day (KST DayIndex of N / Bloom / Gift), N (gathers today), Bloom (shard blooms today), Gift (crown dust others
+-- shared today), Total (gathers ever), FirstBloom (the sure first bloom came). Gear: Own["<kind>:T:P"] = n (kinds Armor,
+-- Ring, PetArmor, PetAcc), On.<slot> = "T:P" | "" (the player wears it), Pet[pet uid].<slot> = "T:P" (a pet wears it; kept
+-- outside Pets because PetService.Sanitize rebuilds every pet row). Buffs: tonic id -> os.time() it ends. Shop: Otto's
+-- cheap materials { Day, N }. EggHonorAt: os.time() of the last golden egg Honor / Infamy +5 (A23-134, once an hour)
+Config.Data.Defaults.Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {} }
+Config.Data.Defaults.Research = { Pts = {}, Sum = {} }
+Config.Data.Defaults.Gather = { Day = 0, N = 0, Bloom = 0, Gift = 0, Total = 0, FirstBloom = false }
+Config.Data.Defaults.Gear = { Own = {}, On = { Armor = "", Ring = "" }, Pet = {} }
+Config.Data.Defaults.Buffs = {}
+Config.Data.Defaults.Shop = { Day = 0, N = 0 }
+Config.Data.Defaults.EggHonorAt = 0
+
+-- the repair helpers of the v4 tables (one local for the whole set: Config's top chunk is near the 200 locals limit)
+local V4 = {}
+
+-- a whole number in lo..hi (a fraction floored), or nil for NaN / +-inf / anything that is not a number
+function V4.int(v, lo, hi)
+	if type(v) ~= "number" or v ~= v or v == math.huge or v == -math.huge then return nil end
+	return math.clamp(math.floor(v), lo, hi)
+end
+
+function V4.key(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.KeyLen
+end
+
+function V4.slot(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.SlotLen and string.match(k, "^%a+$") ~= nil
+end
+
+-- "T:P" -> "T:P" written plainly (tier 1..GearMaxTier, plus 0..Config.Loot.MaxEnhance), or nil
+function V4.tierPlus(s)
+	if type(s) ~= "string" or #s > 12 then return nil end
+	local t, p = string.match(s, "^(%d+):(%d+)$")
+	t, p = tonumber(t), tonumber(p)
+	if not t or not p or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.Loot.MaxEnhance then return nil end
+	return string.format("%d:%d", t, p)
+end
+
+-- the keys of a table that pass `ok`, sorted (the same save always keeps the same ones when a map is cut)
+function V4.sortedKeys(t, ok)
+	local keys = {}
+	if type(t) ~= "table" then return keys end
+	for k in t do
+		if ok(k) then table.insert(keys, k) end
+	end
+	table.sort(keys)
+	return keys
+end
+
+-- { [id] = count }: sane ids, whole counts 1..max (0 / broken dropped), at most MaxKeys ids
+function V4.countMap(src, max)
+	local out, kept = {}, 0
+	for _, k in V4.sortedKeys(src, V4.key) do
+		local n = V4.int(src[k], 0, max)
+		if n and n > 0 and kept < Config.SaveV4.MaxKeys then
+			out[k] = n
+			kept += 1
+		end
+	end
+	return out
+end
+
+-- copies the sane flat keys of `src` that `known` does not name (a short string key with a boolean, a finite number or
+-- a short string): a later version's new flat field survives this one
+function V4.keepExtra(src, out, known)
+	for k, v in src do
+		if V4.key(k) and not known[k] and out[k] == nil then
+			if type(v) == "boolean" or (type(v) == "string" and #v <= Config.SaveV4.KeyLen) then
+				out[k] = v
+			elseif V4.int(v, -math.huge, math.huge) ~= nil then
+				out[k] = v
+			end
+		end
+	end
+	return out
+end
+
+function Config.SanitizeCraft(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	local out, known = {}, { Rep = true, Made = true }
+	for _, role in L.CraftRoles do
+		known[role] = true
+		local r = type(src[role]) == "table" and src[role] or {}
+		out[role] = { Lv = V4.int(r.Lv, 1, L.CraftMaxLv) or 1, XP = V4.int(r.XP, 0, L.MaxCount) or 0 }
+	end
+	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
+	out.Made = V4.countMap(src.Made, L.MaxCount)
+	return V4.keepExtra(src, out, known)
+end
+
+function Config.SanitizeResearch(t)
+	local src = type(t) == "table" and t or {}
+	local out = { Pts = V4.countMap(src.Pts, Config.SaveV4.MaxCount), Sum = V4.countMap(src.Sum, Config.SaveV4.MaxCount) }
+	return V4.keepExtra(src, out, { Pts = true, Sum = true })
+end
+
+function Config.SanitizeGather(t)
+	local src = type(t) == "table" and t or {}
+	local out = { FirstBloom = src.FirstBloom == true }
+	for _, k in { "Day", "N", "Bloom", "Gift", "Total" } do
+		out[k] = V4.int(src[k], 0, Config.SaveV4.MaxCount) or 0
+	end
+	return V4.keepExtra(src, out, { Day = true, N = true, Bloom = true, Gift = true, Total = true, FirstBloom = true })
+end
+
+-- worn slots { [slot] = "T:P" }: letter slot names, plain "T:P" values; anything else dropped
+local function wornSlots(src)
+	local out = {}
+	if type(src) ~= "table" then return out end
+	for k, v in src do
+		local tp = V4.slot(k) and V4.tierPlus(v)
+		if tp then out[k] = tp end
+	end
+	return out
+end
+
+function Config.SanitizeGear(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	-- Own: "<kind>:T:P" written plainly ("Armor:01:0" and "Armor:1:0" are one key), counts 1..OwnKeyMax
+	local own, kept = {}, 0
+	for _, k in V4.sortedKeys(src.Own, function(k) return type(k) == "string" end) do
+		local kind, rest = string.match(k, "^(%a+):(.+)$")
+		local tp = kind and V4.slot(kind) and V4.tierPlus(rest)
+		local n = V4.int(src.Own[k], 0, L.OwnKeyMax)
+		if tp and n and n > 0 then
+			local key = kind .. ":" .. tp
+			if own[key] ~= nil then
+				own[key] = math.min(L.OwnKeyMax, own[key] + n)
+			elseif kept < L.MaxKeys then
+				own[key] = n
+				kept += 1
+			end
+		end
+	end
+	-- On: the player's slots, always present ("" = empty)
+	local on = wornSlots(src.On)
+	for _, slot in L.GearSlots do
+		if on[slot] == nil then on[slot] = "" end
+	end
+	-- Pet: per pet uid, only uids that still wear something
+	local pet, pets = {}, 0
+	for _, uid in V4.sortedKeys(src.Pet, V4.key) do
+		local worn = wornSlots(src.Pet[uid])
+		if next(worn) ~= nil and pets < L.MaxKeys then
+			pet[uid] = worn
+			pets += 1
+		end
+	end
+	return V4.keepExtra(src, { Own = own, On = on, Pet = pet }, { Own = true, On = true, Pet = true })
+end
+
+-- Buffs at `now` (os.time()): an end in the past is dropped, one later than now + BuffSeconds is cut to that (never a
+-- longer buff), at most BuffMax (the ones that end last)
+function Config.SanitizeBuffs(t, now)
+	local L = Config.SaveV4
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	local list = {}
+	if type(t) == "table" then
+		for id, v in t do
+			local ends = V4.int(v, 0, now + L.BuffSeconds)
+			if V4.key(id) and ends and ends > now then table.insert(list, { id, ends }) end
+		end
+	end
+	table.sort(list, function(a, b)
+		if a[2] ~= b[2] then return a[2] > b[2] end
+		return a[1] < b[1]
+	end)
+	local out = {}
+	for i = 1, math.min(#list, L.BuffMax) do
+		out[list[i][1]] = list[i][2]
+	end
+	return out
+end
+
+function Config.SanitizeShop(t)
+	local src = type(t) == "table" and t or {}
+	local out = { Day = V4.int(src.Day, 0, Config.SaveV4.MaxCount) or 0, N = V4.int(src.N, 0, Config.SaveV4.ShopDayMax) or 0 }
+	return V4.keepExtra(src, out, { Day = true, N = true })
+end
+
+-- EggHonorAt at `now`: a whole os.time() not after now. A future value (another server's clock a few seconds ahead) is cut
+-- to now, never to 0: the next hourly +5 may open a little late but never early (게임성 검수 2026-10-11)
+function Config.SanitizeEggHonorAt(v, now)
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	local at = V4.int(v, 0, 2 ^ 52) or 0
+	return math.min(at, now)
+end
+
+-- every v4 table of a save, in place (DataService.fillDefaults, after the default fill)
+function Config.SanitizeSaveV4(d, now)
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	d.Craft = Config.SanitizeCraft(d.Craft)
+	d.Research = Config.SanitizeResearch(d.Research)
+	d.Gather = Config.SanitizeGather(d.Gather)
+	d.Gear = Config.SanitizeGear(d.Gear)
+	d.Buffs = Config.SanitizeBuffs(d.Buffs, now)
+	d.Shop = Config.SanitizeShop(d.Shop)
+	d.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)
 end
 
 return Config

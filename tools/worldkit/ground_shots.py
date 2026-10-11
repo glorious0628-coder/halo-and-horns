@@ -132,7 +132,55 @@ def door_spec():
     return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
 
 
-shots = door_spec() if "--doors" in sys.argv else spec()
+def review2_spec():
+    """--review2 (검수 10/11 밤, plan v2 고침 뒤): ground, roads and heights of the fixed plan"""
+    B = {b["id"]: b for b in PLAN["buildings"]}
+    cat, look = B["Cathedral"], B["Tower_Lookout"]
+    b4 = bridge["B4"]["at"]
+    out = [
+        ("r2_01_gate_eye", ab(0, 6, -343), ab(cat["x"], 40, cat["z"])),
+        ("r2_02_plaza_eye", g(*toward(fx, fz, 0, -420, 50), 4.5), g(fx, fz, 3.0)),
+        ("r2_03_plaza_high", g(fx + 46, fz + 46, 58), g(fx, fz, 0)),
+        ("r2_04_stairs_low", g(30, -625, 8), g(80, -675, 4)),
+        ("r2_05_stairs_mid", g(112, -668, 6), g(40, -686, 4)),
+        ("r2_06_stairs_top", g(70, -724, 8), g(40, -640, 0)),
+        ("r2_07_stairs_side", g(10, -630, 40), g(72, -680, 0)),  # 3차: was inside a gray box (150,-640)
+        ("r2_08_cliff_tiers", g(160, -606, 6), g(185, -628, 2)),  # 3차: from the lower tier at the to_cliff flight
+        ("r2_09_cliff_lookout_lane", g(198, -700, 8), g(218, -772, 4)),
+        ("r2_10_lookout_to_cathedral", ab(look["x"] - 9, look["ground_y"] + 46, look["z"]), ab(cat["x"], cat["ground_y"] + 20, cat["z"])),
+        ("r2_11_lookout_yard", g(205, -800, 6), ab(cat["x"], cat["ground_y"] + 30, cat["z"])),
+        ("r2_12_garden_B4", g(b4[0] + 22, b4[1] + 16, 8), g(b4[0], b4[1], 0)),
+        ("r2_13_pads", ab(0, 34, -398), ab(0, 0, -357)),
+        ("r2_14_top", ab(CX, 380, CZ + 150), ab(CX, 0, CZ)),  # 3차: 540 straight down was hazy
+        ("r2_15_bridge_B4_close", g(b4[0] - 6, b4[1] + 14, 5), g(b4[0], b4[1], 1)),
+        ("r2_16_cliff_flight", g(196, -606, 8), g(176, -622, 2)),
+    ]
+    return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
+
+
+def houses_spec():
+    """--houses (10/11 밤): 이미지 생성 3's house / shop skeletons at their plan spots, one shot per group, from the door side"""
+    B = {b["id"]: b for b in PLAN["buildings"]}
+    out = []
+    for name, ids, dist, hgt in (("h_01_market", ("Shop_Potion", "Shop_Flower", "Shop_Bakery", "Shop_Juice"), 34, 22),
+                                  ("h_02_hill", ("House_Hill1", "House_Hill2", "House_Hill3"), 40, 26),
+                                  ("h_03_cliff_lower", ("House_Cliff1", "House_Cliff2"), 34, 18),
+                                  ("h_04_cliff_upper", ("House_Cliff3", "House_Cliff4", "House_Cliff5"), 44, 26),
+                                  ("h_05_garden", ("House_Garden1", "House_Garden2", "House_Garden3", "House_Garden4"), 50, 30)):
+        bs = [B[i] for i in ids]
+        cx, cz = sum(b["x"] for b in bs) / len(bs), sum(b["z"] for b in bs) / len(bs)
+        ux, uz = sum(b["door_dir"][0] for b in bs), sum(b["door_dir"][1] for b in bs)
+        n = math.hypot(ux, uz) or 1.0
+        out.append((name, g(cx + ux / n * dist, cz + uz / n * dist, hgt), g(cx, cz, 4)))
+    for bid in ("House_Hill1", "Shop_Bakery", "House_Garden3"):  # close door shots (05 the widest, a shop with an off-centre door, 07)
+        b = B[bid]
+        (ax, az), (ux, uz) = b["door_at"], b["door_dir"]
+        out.append(("h_door_" + bid, ab(ax + ux * 14 + uz * 4, b["ground_y"] + 6, az + uz * 14 - ux * 4), ab(ax, b["ground_y"] + 3, az)))
+    return [dict(name=n, cam=c, look=l, clear=False) for n, c, l in out]
+
+
+shots = (door_spec() if "--doors" in sys.argv else review2_spec() if "--review2" in sys.argv else
+         houses_spec() if "--houses" in sys.argv else spec())
 only = [a for a in sys.argv[1:] if not a.startswith("--")]
 if only:
     shots = [s for s in shots if any(s["name"].startswith(o) for o in only)]
@@ -175,7 +223,12 @@ try:
         src = os.path.join(TEMP, "studio_capture_0.jpeg")
         if os.path.exists(src):
             os.remove(src)
+        top = s["name"].endswith("_top")
+        if top:  # 디자인 검수 10/11: the WorldKit fog (190,170,140, 120..650) hazes the view from above -> off for this shot only
+            run_luau('local L = game.Lighting shared.GS_FOG = { L.FogStart, L.FogEnd } L.FogStart, L.FogEnd = 100000, 100001 return "fog off"')
         r = mcp("screen_capture", {"capture_id": s["name"], "camera_position": s["cam"], "look_at_position": s["look"]})
+        if top:
+            run_luau('local L = game.Lighting local f = shared.GS_FOG if f then L.FogStart, L.FogEnd = f[1], f[2] end return "fog back"')
         dst = os.path.join(OUT, s["name"] + ("_nobloom" if "--nobloom" in sys.argv else "") + ".jpg")
         if os.path.exists(src):
             shutil.copy(src, dst)

@@ -37,7 +37,7 @@ ap.add_argument("--views", default="front,q34,side,back",
                 help="whole views: front, q34, side (camera at +x = the viewer's left, as the 2D *_left.png), side_r (-x, "
                      "the viewer's right = 2D *_right.png), back, top")
 a = ap.parse_args(argv)
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.environ.get("HH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # HH_ROOT: run a private copy of tools/
 TILE = os.path.join(ROOT, "art", "ui", "halo_tile")
 bpy.ops.wm.read_factory_settings(use_empty=True)
 os.makedirs(a.out, exist_ok=True)

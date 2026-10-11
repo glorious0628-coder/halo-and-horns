@@ -383,11 +383,27 @@ function QuestTarget.StorySpot(key)
 	return typeof(spot) == "Vector3" and spot or nil
 end
 
--- the goose perch (MapBuilder GoosePerch), else Config.Goose.Position at hover height
+-- the goose perch (MapBuilder GoosePerch), else Config.Goose.Position at hover height. A23-131 황금 알 줍기
+-- (Config.Goose.Mode "Eggs", contract golden_egg_contract): carrying eggs -> my home (the nest / the cart,
+-- Config.Goose.Egg.Home); the event on with empty hands -> the goose itself; between events -> my home, else the ring
+-- centre (Config.Goose.Egg.Center, the fountain)
 local function gooseTarget()
+	local goose = type(Config.Goose) == "table" and Config.Goose or {}
+	if goose.Mode == "Eggs" then
+		local egg = type(goose.Egg) == "table" and goose.Egg or {}
+		local gs = ReplicatedStorage:FindFirstChild("GameState")
+		if gs and gs:GetAttribute("GooseActive") == true and num(LocalPlayer:GetAttribute("EggCarry"), 0) <= 0 then
+			local fx = workspace:FindFirstChild("Effects")
+			local g = fx and fx:FindFirstChild("GoldenGoose")
+			local part = g and (g:IsA("Model") and g.PrimaryPart or g:FindFirstChildWhichIsA("BasePart", true))
+			if part then return part end
+		end
+		local home = type(egg.Home) == "table" and egg.Home[myFaction()] or nil
+		if typeof(home) == "Vector3" then return home + K.Lift end
+		return (typeof(egg.Center) == "Vector3" and egg.Center or Vector3.zero) + K.Lift
+	end
 	local perch = resolvePart(mapChild("Landmarks", "GoosePerch"))
 	if perch then return perch end
-	local goose = type(Config.Goose) == "table" and Config.Goose or {}
 	if typeof(goose.Position) ~= "Vector3" then return nil end
 	return goose.Position + Vector3.new(0, num(goose.HoverHeight, 4), 0)
 end

@@ -400,13 +400,15 @@ runGroup("loot", function()
 	local function idx(id) return table.find(C.Loot.Order, id) or -1 end
 	check(idx("SlimeCore") < idx("SeaShell") and idx("SeaShell") < idx("GoblinTooth") and idx("BruteHorn") < idx("CrystalShard") and idx("CrystalShard") < idx("Bone"),
 		"the two materials sit in the list between their level neighbours")
+	-- a later round's own items are not this round's: gathering (게임성 개발 3, 2026-10-11) marks its materials Source = "Gather"
+	local function later(id) return type(items[id]) == "table" and items[id].Source == "Gather" end
 	local order = {}
-	for _, id in C.Loot.Order do if id ~= "SeaShell" and id ~= "CrystalShard" then table.insert(order, id) end end
+	for _, id in C.Loot.Order do if id ~= "SeaShell" and id ~= "CrystalShard" and not later(id) then table.insert(order, id) end end
 	local baseOrder = {}
 	for _, id in base.Loot.Order do table.insert(baseOrder, id) end
 	check(same(order, baseOrder), "Loot.Order without the two materials is the base order")
 	for id, it in items do
-		if base.Loot.Items[id] == nil and id ~= "SeaShell" and id ~= "CrystalShard" then check(false, "no other new item (" .. id .. ")") end
+		if base.Loot.Items[id] == nil and id ~= "SeaShell" and id ~= "CrystalShard" and not later(id) then check(false, "no other new item (" .. id .. ")") end
 	end
 end)
 

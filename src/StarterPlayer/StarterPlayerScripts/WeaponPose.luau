@@ -145,7 +145,8 @@ local function pick()
 end
 
 -- A23-108 two hands (검수 10/11; user 10/11 "대검을 잡는 게 이상한데? 손바닥 위에 올려놓은 느낌"; references in
--- docs/design/grip_reference_2026-10-11.md): the pose starts from the SWORD, not from arm angles. def.TwoHand =
+-- docs/design/grip_reference_2026-10-11.md). A23-128 (한손검만): no ClassGrips row has a TwoHand now - the code stays for
+-- a later two-hand weapon, and OneHand below shares its goals. The pose starts from the SWORD, not from arm angles. def.TwoHand =
 -- { Hilt = the right grip point, Aim = the blade, in UpperTorso space; Gap = { min, max } studs between the two grip
 -- points }. Both hands are solved onto the hilt with Fx's two-bone arm solver (this avatar's real bone lengths): each
 -- hand's grip point (Left/RightGripAttachment, where a Roblox tool's handle runs) sits on the hilt line and the hand's
@@ -225,7 +226,9 @@ end
 -- 검수 10/11 (grip sheet: staffs held near their foot and leaning out, the flask lying on the palm; references in
 -- docs/design/grip_reference_2026-10-11.md §1-4/5): a one-hand weapon placed from the weapon too. def.OneHand = { Hilt
 -- = the right grip point, Aim = the weapon's long axis, in UpperTorso space }: the right hand's grip point on the line,
--- its held axis (-Z) along Aim, +Y to the right shoulder, solved like the two-hand hilt (the left arm keeps its hold)
+-- its held axis (-Z) along Aim, +Y to the right shoulder, solved like the two-hand hilt (the left arm keeps its hold).
+-- A23-128 (the warriors' one-hand swords at the side): an optional Pole (torso space) bends the elbow low and close
+-- instead of T.PoleRight's down and out
 function WeaponPose.OneHand(char, st, def, model)
 	local oh, fx = def.OneHand, C and C.Fx
 	if typeof(oh.Hilt) ~= "Vector3" or typeof(oh.Aim) ~= "Vector3" then return false end
@@ -245,7 +248,8 @@ function WeaponPose.OneHand(char, st, def, model)
 	local torso = torsoPart.CFrame
 	local rGoal = WeaponPose.TwoHandGoals(torso, oh, gripOf(hand, "RightGripAttachment", T.RightGrip), T.LeftGrip,
 		(torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0, WeaponPose.BodyScale(right))
-	local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
+	local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight
+	local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(pole))
 	if type(pose) ~= "table" then return false end
 	for i = 1, 3 do
 		local joint = T.TwoJoints[i]

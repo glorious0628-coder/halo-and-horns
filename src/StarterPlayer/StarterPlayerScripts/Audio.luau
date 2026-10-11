@@ -151,6 +151,7 @@ local T = {
 	-- the world (sound_gaps B1-B10)
 	RespawnWithin = 60, -- s after my KO: my next character = Respawn
 	GooseEndRange = 120, -- studs: the goose's goodbye is heard this near
+	EggRange = 30, -- studs: others' egg deliveries / tags (A23-131; Config.GooseEggFx.SoundRange, EggFx's own sounds)
 	Stomp = { Full = 15, Zero = 60 }, -- studs: KaijuStomp x1 within Full, fading to silence at Zero
 	SpawnCalm = 3, -- s after a spawn / teleport: no ZoneEnterPvP
 	Jump = 40, -- studs moved between two polls = a teleport (pads, travel)
@@ -446,6 +447,17 @@ function Audio.Plan(kind, data, ctx)
 	elseif kind == "GooseEnd" then -- B3 { Pos, Winner, Coop } to everyone: heard near the goose only
 		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
 		if d ~= nil and d <= T.GooseEndRange then add(out, "GooseEnd", 0) end
+	elseif kind == "EggDeliver" or kind == "EggTag" then
+		-- A23-131 황금 알 (contract golden_egg_contract §7, to everyone): my delivery = my side's bell / coins; others' and
+		-- a tag only within EggRange studs, quieter (GoldPickup / CandyPlop stand in until the files exist)
+		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
+		local mine = kind == "EggDeliver" and own
+		if not mine and (d == nil or d > T.EggRange) then return out end
+		local event = kind == "EggTag" and "EggPlop"
+			or (data.Side == "Horns" and "EggDeliverHorns" or "EggDeliverHalo")
+		local def = SOUNDS[event]
+		local standIn = kind == "EggTag" and "CandyPlop" or "GoldPickup"
+		add(out, (type(def) == "table" and idOf(def.File)) and event or standIn, 0, { Others = not mine })
 	elseif kind == "Stomp" then -- B4 { UserId, Pos, Radius } to everyone: loud near the kaiju, silent far away
 		local d = type(ctx.Near) == "function" and typeof(data.Pos) == "Vector3" and ctx.Near(data.Pos) or nil
 		local v = d ~= nil and Audio.StompVolume(d) or 0
@@ -1208,7 +1220,16 @@ local function pollWorld()
 		end
 		tickFor("War", warEnds > 0, warEnds, t)
 		tickFor("Kaiju", gs:GetAttribute("KaijuPhase") == "Siren", num(gs:GetAttribute("KaijuEndsAt"), 0), t)
-		tickFor("Goose", gs:GetAttribute("GooseActive") == true and S.GooseHit, num(gs:GetAttribute("GooseEndsAt"), 0), t)
+		-- A23-131 Eggs mode (EggFx.TickFor): the 3-2-1 is for those who picked an egg this event, up to the crown egg's
+		-- overtime while it runs; the old tug: for the goose's hitters
+		local eggFx = C and C.EggFx
+		local picked, eggEnd = nil, nil
+		if type(eggFx) == "table" and type(eggFx.TickFor) == "function" then picked, eggEnd = eggFx.TickFor(gs) end
+		if picked ~= nil then
+			tickFor("Goose", gs:GetAttribute("GooseActive") == true and picked, num(eggEnd, 0), t)
+		else
+			tickFor("Goose", gs:GetAttribute("GooseActive") == true and S.GooseHit, num(gs:GetAttribute("GooseEndsAt"), 0), t)
+		end
 	end
 	local folder = root and workspace:FindFirstChild("Monsters")
 	local cam = workspace.CurrentCamera

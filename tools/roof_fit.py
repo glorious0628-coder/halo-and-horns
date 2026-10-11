@@ -1,7 +1,7 @@
 """Blender fix for a Tripo octagonal roof (SPEC A23-125 "Blender 손보기": symmetric things symmetric), 이미지 생성 3, 10/11.
 
   blender --background --factory-startup --python tools/roof_fit.py -- <in.glb> <out.glb> <plan.json> [--name _Roof]
-          [--report <json>]
+          [--report <json>] [--corners gold|radius]
 
 plan.json: {"roof": {"center": [x, y], "poly": [[x, y] x 8]}} (the octagon the eaves must follow; tools/skeleton_house07.py
 writes it into <out>_ornaments.json). The Tripo roof's eave outline is uneven and its 8 gold ribs are not at the body's
@@ -31,6 +31,9 @@ ap.add_argument("out")
 ap.add_argument("plan")
 ap.add_argument("--name", default="_Roof")
 ap.add_argument("--report")
+ap.add_argument("--corners", default="gold", choices=["gold", "radius"],
+                help="gold: rib angles from gold faces (a tiled roof with gold ribs, house 07); radius: the corners of the "
+                     "eave outline from the radius peaks of the lowest band (an all-gold faceted dome, tools/house_deco.py)")
 a = ap.parse_args(argv)
 plan = json.load(open(a.plan))["roof"]
 PC = np.array(plan["center"], float)
@@ -93,6 +96,24 @@ for i in order:
     if len(ribs) == 16:
         break
 ribs = sorted(ribs)
+if a.corners == "radius":                                    # one peak per plan corner in the lowest band's outline
+    lowb = V[V[:, 2] < zmin + 0.12 * (zmax - zmin)]
+    la_ = np.degrees(np.arctan2(lowb[:, 1] - apex[1], lowb[:, 0] - apex[0])) % 360
+    lr_ = np.hypot(lowb[:, 0] - apex[0], lowb[:, 1] - apex[1])
+    rb = np.zeros(360)
+    for t_, r_ in zip(la_, lr_):
+        rb[int(t_) % 360] = max(rb[int(t_) % 360], r_)
+    for i in range(360):                                     # empty degrees: the neighbours' value
+        if rb[i] == 0:
+            rb[i] = max(rb[(i - 1) % 360], rb[(i + 1) % 360])
+    sm = np.array([sum(rb[(i + j) % 360] * k[j + 12] for j in range(-12, 13)) for i in range(360)])
+    ribs = []
+    for i in np.argsort(-sm):
+        if all(min(abs(i - r), 360 - abs(i - r)) > 22 for r in ribs):
+            ribs.append(int(i))
+        if len(ribs) == len(POLY):
+            break
+    ribs = sorted(ribs)
 corners = sorted((math.degrees(math.atan2(y - PC[1], x - PC[0])) % 360) for x, y in POLY)
 mids = []
 for i in range(len(POLY)):                                   # face middles of the plan octagon

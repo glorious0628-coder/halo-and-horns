@@ -53,6 +53,18 @@
    "normal": "rbxassetid://102973991596175",
    "rough": "rbxassetid://138111432038584",
    "use": "cloth parts: Material Fabric + MaterialVariant HH_Fabric + Part.Color. Applied in the main Studio place 2026-10-11 (11 parts, saved in build/GoodEvil.rbxlx 15:19; place/GoodEvil.rbxlx copy NOT updated yet - 메인 반영 1 does Save As + place copy)."
+  },
+  {
+   "name": "HH_HaloMarbleSmooth_Cream",
+   "base": "Marble",
+   "studsPerTile": 8,
+   "pattern": "Regular",
+   "source": "tools/marble_smooth_maps.py -> art/ui/halo_tile/marble_smooth/Halo_MarbleSmoothCream_{color,rough}.png (이미지 개발 10/11, 검수: small props (bench legs, lamp posts, planter bodies) need smooth cream stone WITHOUT the 1.5-cell grout of HH_HaloMarbleBlock_Cream; periodic FFT-noise mottling + 2 long faint veins; normal = the flat gold normal, metal = the all-zero marble metal map)",
+   "color": "rbxassetid://140510838680155",
+   "normal": "rbxassetid://131597673772642",
+   "rough": "rbxassetid://76093268063395",
+   "metal": "rbxassetid://87489921567476",
+   "use": "props for tools/prop_kit.py (이미지 생성 4): Material Marble + this MaterialVariant + part Color (255,244,222). Round 3 color 140510838680155 PASSED (디자인 검수 10/11: thin grey-brown veins just visible in sun, like the 2D planter; art/review/imgdev/marble_smooth_r3_sun100_2026-10-11.jpg); applied in WorldKit. Unused old colour ids: round 2 99912622204711, round 1 114611278221629 (+ round 1 rough 137526286825414)."
   }
  ]
 }

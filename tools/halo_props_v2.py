@@ -216,7 +216,7 @@ SPEC = [
     A(-100, -800, "NEW_GatherBush", "채집 덤불 4: 남동 가장자리"),
     A(-90, -760, "NEW_GatherBush", "채집 덤불 5: 동쪽 가장자리(대성당 언덕 아래)"),
     # --- 대성당 언덕
-    Y("cathedral_court", -17, 6, "HaloVar3_Topiary_C", "대성당 앞 정원수(서): 3종 섞고 줄 세우기 금지"),
+    Y("cathedral_court", -20, -2, "HaloVar3_Topiary_C", "대성당 앞 정원수(서): 마당 가장자리, 계단 끝 길은 비움(디자인 검수 r2_06)"),
     Y("cathedral_court", 15, -5, "HaloVar3_Topiary_D", "대성당 앞 정원수(동, 거리 다르게)"),
     Y("cathedral_court", 18, 9, "HaloVar3_Topiary_E", "대성당 앞 정원수 셋째"),
     Y("cathedral_court", -13, -7, "HaloReasonHQ_PhotoDisc", "계단 꼭대기 사진 자리: 대성당 정면이 한 장에"),
@@ -426,8 +426,12 @@ def check(H, blds, props):
             a, b = props[i], props[j]
             if a["top"] or b["top"]:
                 continue
-            if math.hypot(a["at"][0] - b["at"][0], a["at"][1] - b["at"][1]) < (a["r"] + b["r"]) * 0.8:
+            dd = math.hypot(a["at"][0] - b["at"][0], a["at"][1] - b["at"][1])
+            if dd < (a["r"] + b["r"]) * 0.8:
                 msgs.append(f"소품끼리 겹침: {a['id']} {a['kit']} - {b['id']} {b['kit']}")
+            elif "lamp" in (a["cat"], b["cat"]) and "WallLamp" not in a["kit"] + b["kit"] and dd < a["r"] + b["r"] + 1.0:
+                # 디자인 검수 10/11 (r2_04): a lamp post keeps its full base radius + 1 clear of any prop
+                msgs.append(f"등불이 소품에 붙음: {a['id']} {a['kit']} - {b['id']} {b['kit']} ({dd:.1f})")
     # mirror pairs at a door: same kit, same distance out, opposite sides (wall lamps beside a door are the approved 2D)
     for b in blds:
         yw = math.radians(b["yaw"])

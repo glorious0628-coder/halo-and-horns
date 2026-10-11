@@ -1,0 +1,59 @@
+{
+ "note": "cut regions read off build/deco/ortho/<name>/*_grid.png (tools/tripo_ortho.py, Tripo parts GLB frame: front +Y, z up)",
+ "dome": {
+  "c": [
+   0.0,
+   0.0
+  ],
+  "z": [
+   29.3,
+   41.2
+  ],
+  "r": 6.4,
+  "no_white": true,
+  "no_leaf": true
+ },
+ "lantern": {
+  "box": [
+   [
+    3.5,
+    5.4
+   ],
+   [
+    2.91,
+    8.91
+   ],
+   [
+    8.9,
+    12.6
+   ]
+  ],
+  "no_leaf": true,
+  "mul": 0.62,
+  "slots": [
+   "Lantern0",
+   "Lantern1"
+  ]
+ },
+ "metal": [
+  "knocker"
+ ],
+ "door": {
+  "knockers": [
+   [
+    [
+     -1.4,
+     -0.1
+    ],
+    [
+     -20,
+     20
+    ],
+    [
+     5.4,
+     6.8
+    ]
+   ]
+  ]
+ }
+}

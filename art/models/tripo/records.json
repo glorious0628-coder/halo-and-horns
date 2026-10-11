@@ -9094,5 +9094,1604 @@
    },
    "credits": 0
   }
+ ],
+ "HaloVar4_Lantern_C_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f8976a51-4f83-4084-ab2d-180e9d47c2a0",
+   "balance_after": 17910,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_LanternC_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_LanternC_left2.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_LanternC_right.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_LanternC_back.png"
+   },
+   "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_C_HD_src.glb"
+  }
+ ],
+ "HaloVar4_Lantern_A_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "56bff5bb-7e96-4ded-93b4-cf237369cbc6",
+   "balance_after": 17855,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_LanternA_front2.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_LanternA_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_LanternA_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_LanternA_back.png"
+   },
+   "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_A_HD_src.glb"
+  }
+ ],
+ "HaloVar4_Lantern_B_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "4ce24003-de2b-4f4c-a836-11c854c7b237",
+   "balance_after": 17800,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_LanternB_front2.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_LanternB_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_LanternB_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_LanternB_back.png"
+   },
+   "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_B_HD_src.glb"
+  }
+ ],
+ "HaloVar4_Lantern_D_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "54da6c13-e6e4-4981-9c33-9c44c20d3425",
+   "balance_after": 17745,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_LanternD_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_LanternD_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_LanternD_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_LanternD_back.png"
+   },
+   "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_D_HD_src.glb"
+  }
+ ],
+ "HaloVar3_Lantern_E_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e0b34549-5856-4f85-a4d3-8a470401f4ba",
+   "balance_after": 17690,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_LanternE_front2.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_LanternE_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_LanternE_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_LanternE_back.png"
+   },
+   "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_Lantern_E_HD_src.glb"
+  }
+ ],
+ "NEW_WallLamp_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "ed58ac40-6e99-4fed-bd69-942f2b2a43d8",
+   "balance_after": 17635,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv/HaloKit_WallLamp_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv/HaloKit_WallLamp_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv/HaloKit_WallLamp_left.png",
+    "back": "art/out/s2/halo/kits_mv/HaloKit_WallLamp_back.png"
+   },
+   "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/NEW_WallLamp_HD_src.glb"
+  }
+ ],
+ "HaloFlowerPotHQ_Daisy_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "a2bf5455-659a-46c6-8df1-266ea2c5e587",
+   "balance_after": 17580,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_PotDaisy_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_PotDaisy_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_PotDaisy_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_PotDaisy_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb"
+  }
+ ],
+ "HaloFlowerPotHQ_Lavender_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d776279a-e8a3-4056-82a0-4dcecd60d15b",
+   "balance_after": 17525,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_PotLavender_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_PotLavender_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_PotLavender_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_PotLavender_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb"
+  }
+ ],
+ "HaloFlowerPotHQ_Rose_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "726e3a5a-f8bc-4e1c-8d59-3cac6fd69966",
+   "balance_after": 17470,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_PotRose_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_PotRose_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_PotRose_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_PotRose_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb"
+  }
+ ],
+ "HaloFlowerPotHQ_Sunflower_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "5f335c8b-9fa5-4fc0-86c5-76eeb12f4286",
+   "balance_after": 17415,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_PotSunflower_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_PotSunflower_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_PotSunflower_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_PotSunflower_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb"
+  }
+ ],
+ "HaloFlowerPotHQ_Tulip_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "330b1400-e6fc-44c3-b2bb-6d0828672cf3",
+   "balance_after": 17360,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_PotTulip_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_PotTulip_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_PotTulip_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_PotTulip_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb"
+  }
+ ],
+ "HaloVar3_Topiary_C_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "03530034-bb16-4a97-957f-76ea62a19a62",
+   "balance_after": 17305,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_TopC_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_TopC_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_TopC_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_TopC_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_C_HD_src.glb"
+  }
+ ],
+ "HaloVar3_Topiary_D_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6a65aad7-a1f5-43d6-ba25-f3fba03c3a61",
+   "balance_after": 17250,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_TopD_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_TopD_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_TopD_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_TopD_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_D_HD_src.glb"
+  }
+ ],
+ "HaloVar3_Topiary_E_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "9a8a4b07-1240-4233-a3c6-387a53a2f09e",
+   "balance_after": 17195,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_TopE_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_TopE_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_TopE_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_TopE_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_E_HD_src.glb"
+  }
+ ],
+ "HaloVar3_RoundTree_E_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "21274c50-35af-48c6-a68f-9c7116878414",
+   "balance_after": 17140,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_TreeE_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_TreeE_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_TreeE_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_TreeE_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_HD_src.glb"
+  }
+ ],
+ "HaloVar3_RoundTree_F_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f0cfe3aa-0f9c-4aaa-a385-45250e48dfb4",
+   "balance_after": 17085,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_TreeF_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_TreeF_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_TreeF_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_TreeF_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_F_HD_src.glb"
+  }
+ ],
+ "HaloVar3_RoundTree_G_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f50bb0cb-ab9c-49b7-a002-8db3dbb46822",
+   "balance_after": 17030,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_TreeG_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_TreeG_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_TreeG_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_TreeG_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_BenchB_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d488271e-8031-4ac3-8e2a-3c99f97c61f0",
+   "balance_after": 16975,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_BenchB_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_BenchB_right2.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_BenchB_left2_HQ.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_BenchB_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_VegGarden_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "79f4178d-9187-4f76-b0c2-b784ede0f6e1",
+   "balance_after": 16920,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_ReasonVeg_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_ReasonVeg_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_ReasonVeg_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_ReasonVeg_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_BreadStand_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b4c48a69-8f0a-4e77-be3e-e0eb1d25c91a",
+   "balance_after": 16865,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_ReasonBread_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_ReasonBread_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_ReasonBread_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_ReasonBread_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_FruitStall_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "49647159-03c9-4019-af6c-c10d84053bf2",
+   "balance_after": 16810,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_ReasonFruit_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_ReasonFruit_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_ReasonFruit_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_ReasonFruit_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_FlowerCart_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "a8571b75-121e-4f70-a59b-2ec813367385",
+   "balance_after": 16755,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_ReasonFlowerCart_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_PotionCrate_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "23b6a6b0-6f19-43b4-aac7-6e00f5846fb1",
+   "balance_after": 16700,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_ReasonPotion_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_ReasonPotion_left.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_ReasonPotion_right.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_ReasonPotion_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb"
+  }
+ ],
+ "HaloReasonHQ_Scarecrow_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "5d890437-9d08-4688-8cd7-6748c1d3f220",
+   "balance_after": 16645,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/props4/HaloProp4_ReasonScare_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/props4/HaloProp4_ReasonScare_right.png",
+    "right_slot": "art/out/s2/halo/props4/HaloProp4_ReasonScare_left.png",
+    "back": "art/out/s2/halo/props4/HaloProp4_ReasonScare_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb"
+  }
+ ],
+ "NEW_FlowerBush_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "67e029cc-b6bb-42b0-90a9-a972e489bb61",
+   "balance_after": 16590,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv/HaloKit_FlowerBush_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv/HaloKit_FlowerBush_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv/HaloKit_FlowerBush_left.png",
+    "back": "art/out/s2/halo/kits_mv/HaloKit_FlowerBush_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_FlowerBush_HD_src.glb"
+  }
+ ],
+ "NEW_GatherBush_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "79a7753c-ca87-4dc6-95bc-fd94ef4214b3",
+   "balance_after": 16535,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 21:40~22:45",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 1 26개 = 1,430점 (등불 머리 5 + 식물 17 + 허수아비 + 꽃덤불·채집덤불·벽등 머리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv/HaloKit_GatherBush_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv/HaloKit_GatherBush_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv/HaloKit_GatherBush_left.png",
+    "back": "art/out/s2/halo/kits_mv/HaloKit_GatherBush_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_GatherBush_HD_src.glb"
+  }
+ ],
+ "NEW_BellFrame_Bell_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "9bdbbfc8-7a0e-4a24-a326-1d4bd62d9018",
+   "balance_after": 16480,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_BellOnly_back.png"
+   },
+   "use": "bell only (frame/posts = Studio parts, tools/prop_kit.py BellFrame); Blender: swap rings/ribs for exact shapes, symmetric, bake C/N/R/M",
+   "file": "art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb"
+  }
+ ],
+ "NEW_WallLamp_Head_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "a731d352-9d33-4430-a60a-ee98f829b52c",
+   "balance_after": 16425,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_front.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_WallLampHead_back.png"
+   },
+   "use": "lamp head only (wall bracket = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
+   "file": "art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb"
+  }
+ ],
+ "NEW_WateringCan_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "0ac4c276-10e9-48bd-b244-4d9e7fbb4b61",
+   "balance_after": 16370,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_WateringCan_right_v2.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WateringCan_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WateringCan_HD_src.glb"
+  }
+ ],
+ "NEW_BreadBasket_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "737433c4-62a3-48bd-b39a-edf5162fed95",
+   "balance_after": 16315,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_BreadBasket_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_BreadBasket_HD_src.glb"
+  }
+ ],
+ "NEW_Hedge_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "c922b6d7-f9ac-404b-90a3-e48f7e94323b",
+   "balance_after": 16260,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_Hedge_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_Hedge_HD_src.glb"
+  }
+ ],
+ "NEW_WhiteRock_a_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d1c12925-5e05-427f-9620-97a3b106c3ea",
+   "balance_after": 16205,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_a_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb"
+  }
+ ],
+ "NEW_WhiteRock_b_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e57ab49b-1cb2-49f3-adb8-242e3499d7c7",
+   "balance_after": 16150,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_b_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb"
+  }
+ ],
+ "NEW_WhiteRock_c_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "2d75d822-c92f-40c7-99bd-b1672d1378c6",
+   "balance_after": 16095,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_front_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_left.png",
+    "back": "art/out/s2/halo/kits_mv2/HaloKit_WhiteRock_c_back.png"
+   },
+   "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
+   "file": "art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb"
+  }
+ ],
+ "HaloVar4_PotFlowers_A_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "83b11dea-1171-4be7-ac8a-8d257c7f52b2",
+   "balance_after": 16040,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_A_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_A_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb"
+  }
+ ],
+ "HaloVar4_PotFlowers_C_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "fa0bd3a2-15fe-4363-bafd-491ea499f294",
+   "balance_after": 15985,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_C_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_C_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb"
+  }
+ ],
+ "HaloVar4_PotFlowers_D_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "92fd2545-c17c-489c-bc39-e7c936eeabfd",
+   "balance_after": 15930,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_D_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_D_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb"
+  }
+ ],
+ "HaloVar3_PotFlowers_E_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "4cfc398c-f957-45c1-bd6f-73791796541c",
+   "balance_after": 15875,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants/HaloVar3_PotFlowers_E_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_E_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb"
+  }
+ ],
+ "HaloVar3_PotFlowers_F_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "8758e04d-cae5-4e03-b936-b72952d4eba7",
+   "balance_after": 15820,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants/HaloVar3_PotFlowers_F_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_PotFlowers_F_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb"
+  }
+ ],
+ "HaloVar4_Planter_D_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "64beef17-81d1-4458-a96f-6a509b2fca2d",
+   "balance_after": 15765,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 20000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-11 night (last job 23:15)",
+   "approval": "최종 검수 10/11 밤: Tripo 묶음 2 14개 = 770점 (종·벽등 머리·물뿌리개·화분꽃 A/C/D/E/F·화단 D·흰 바위 a/b/c·빵바구니·생울타리)",
+   "inputs": {
+    "front": "art/out/s2/halo/variants4/HaloVar4_Planter_D_HQ_src.png",
+    "left_slot(=object's own left)": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_right.png",
+    "right_slot": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_left.png",
+    "back": "art/out/s2/halo/kits_mv3/HaloKit_Planter_D_back.png"
+   },
+   "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
+   "file": "art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb"
+  }
+ ],
+ "halo_houses15_deco_tripo_2026-10-12": [
+  {
+   "event": "blender_fix",
+   "at": "2026-10-12 00:46",
+   "by": "이미지 생성 3",
+   "rule": "A23-125 (Tripo -> Blender 손보기 -> Roblox 재질); 검수 10/11: 장식은 Tripo HD에서 잘라 Blender (metal_ornaments 처음부터 = 최종 불가)",
+   "source": "art/models/tripo/halo_houses/<house>/<house>_parts.glb (each house's own Tripo HD multiview job, already paid)",
+   "tools": [
+    "tools/house_deco_run.py",
+    "tools/house_deco.py",
+    "tools/proj_bake.py",
+    "tools/piece_fix.py",
+    "tools/house_deco_place.py",
+    "tools/glb_merge.py",
+    "tools/glb_swap.py",
+    "tools/metal_ornaments.py (knocker rings only)",
+    "tools/tripo_ortho.py"
+   ],
+   "method": {
+    "dome": "Tripo dome faces in a cylinder (stone band only at the foot dropped) -> per height band ring centre onto one axis + k=1,2 Fourier lopsidedness divided out (ribs kept) -> uniform scale to the slot R; octagonal (03): Tripo octagon box -> plan octagon box; piece_fix own C/N/R/M 1024",
+    "caps": "Tripo tower finial silhouette -> 16-sided lathe + Tripo paint projected (nearest point), one template copied to every tower",
+    "leaf": "Tripo leaf found on all objects (front-facing plank faces near the door; parts split's Door object often not the leaf) -> exact arched slab at the slot size + Tripo paint / roughness / metal / relief projected by strict front rays (oblique faces and lumps skipped), double doors mirrored",
+    "knobs": "lathe-turned knobs at the Tripo knob spots, Tripo median gold",
+    "knocker": "exact metal ring (metal_ornaments) on the Tripo knocker spot (approved swap)",
+    "lantern": "glass body measured on Tripo (front render rows + glow band), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions, 4 posts, arm + wall plate, open glass band sized to the skeleton LampGlass (1.05; never narrower than 0.7 glass); Tripo median gold"
+   },
+   "houses": {
+    "HaloDomeHouse_01": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_01/HaloDomeHouse_01_deco.glb",
+     "bytes": 1787920,
+     "params": "tools/house_deco/HaloDomeHouse_01.json",
+     "dome": {
+      "axis_lean_max": 0.067,
+      "ellipse_max": 0.078,
+      "radius_change_max": 0.111,
+      "tripo_base_R": 1.622,
+      "scale": 1.5721,
+      "faces": 318
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (252, 208, 38)",
+      "glass_from": "fallback 35-72 % of the box height",
+      "profile_from": "front render rows",
+      "scale": 0.767,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.488,
+       0.65
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 87 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.279,
+       "R": 2.002,
+       "bottom": 2.206,
+       "top": 9.4
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       1.1195,
+       4.2643
+      ]
+     ]
+    },
+    "HaloDomeHouse_02": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_02/HaloDomeHouse_02_deco.glb",
+     "bytes": 2407672,
+     "params": "tools/house_deco/HaloDomeHouse_02.json",
+     "dome": {
+      "axis_lean_max": 0.136,
+      "ellipse_max": 0.035,
+      "radius_change_max": 0.032,
+      "tripo_base_R": 6.989,
+      "scale": 0.88,
+      "faces": 1148
+     },
+     "caps": {
+      "fix": "lathe: 22 profile rings x 16 sides from the Tripo silhouette, paint projected (hit 100 %)",
+      "slots": {
+       "TowerDome0": 1.0079,
+       "TowerDome1": 1.0079,
+       "TowerDome2": 1.0079,
+       "TowerDome3": 1.0079
+      }
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (250, 199, 58)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.6568,
+      "glass_band_studs": [
+       -0.726,
+       0.726
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.56
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 85 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.103,
+       "R": 1.896,
+       "bottom": 3.385,
+       "top": 11.025
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.516,
+        6.411
+       ],
+       "R": 0.36,
+       "at": [
+        -0.6215,
+        4.0816
+       ]
+      },
+      {
+       "tripo_at": [
+        0.445,
+        6.367
+       ],
+       "R": 0.36,
+       "at": [
+        0.6215,
+        4.0816
+       ]
+      }
+     ]
+    },
+    "HaloDomeHouse_03": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_03/HaloDomeHouse_03_deco.glb",
+     "bytes": 2381132,
+     "params": "tools/house_deco/HaloDomeHouse_03.json",
+     "dome": {
+      "fix": "oct: Tripo's octagon box -> the plan octagon box -0.50 (x 1.103, y 0.944, z 1.023), facets / ribs kept",
+      "faces": 1288
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (248, 202, 44)",
+      "glass_from": "fallback 35-72 % of the box height",
+      "profile_from": "front render rows",
+      "scale": 1.3009,
+      "glass_band_studs": [
+       -0.722,
+       0.722
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.45
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 77 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.025,
+       "R": 1.57,
+       "bottom": 1.586,
+       "top": 7.319
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       1.0888,
+       5.4307
+      ]
+     ]
+    },
+    "HaloDomeHouse_04": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_04/HaloDomeHouse_04_deco.glb",
+     "bytes": 2859424,
+     "params": "tools/house_deco/HaloDomeHouse_04.json",
+     "dome": {
+      "axis_lean_max": 0.108,
+      "ellipse_max": 0.142,
+      "radius_change_max": 0.247,
+      "tripo_base_R": 7.03,
+      "scale": 0.8464,
+      "faces": 2347
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 70 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.054,
+       "R": 1.95,
+       "bottom": 1.752,
+       "top": 9.416
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.372,
+        5.293
+       ],
+       "R": 0.36,
+       "at": [
+        -0.5018,
+        4.9053
+       ]
+      },
+      {
+       "tripo_at": [
+        0.402,
+        5.567
+       ],
+       "R": 0.36,
+       "at": [
+        0.5018,
+        4.9053
+       ]
+      }
+     ]
+    },
+    "HaloDomeHouse_05": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_05/HaloDomeHouse_05_deco.glb",
+     "bytes": 428268,
+     "params": "tools/house_deco/HaloDomeHouse_05.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (237, 188, 52)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.5304,
+      "glass_band_studs": [
+       -0.549,
+       0.549
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.42
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 75 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.104,
+       "R": 2.27,
+       "bottom": 2.193,
+       "top": 10.085
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       1.1972,
+       4.5453
+      ]
+     ]
+    },
+    "HaloDomeHouse_06": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_06/HaloDomeHouse_06_deco.glb",
+     "bytes": 2382016,
+     "params": "tools/house_deco/HaloDomeHouse_06.json",
+     "dome": {
+      "axis_lean_max": 0.147,
+      "ellipse_max": 0.05,
+      "radius_change_max": 0.056,
+      "tripo_base_R": 6.98,
+      "scale": 1.1175,
+      "faces": 1035
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (247, 199, 55)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.6991,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.536,
+       0.583
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 78 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.037,
+       "R": 1.966,
+       "bottom": 2.957,
+       "top": 10.712
+      },
+      "double": true
+     },
+     "metal_knocker_at": [
+      [
+       -0.6331,
+       4.2842
+      ],
+      [
+       0.6332,
+       4.2842
+      ]
+     ]
+    },
+    "HaloDomeHouse_08": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_08/HaloDomeHouse_08_deco.glb",
+     "bytes": 2369028,
+     "params": "tools/house_deco/HaloDomeHouse_08.json",
+     "dome": {
+      "axis_lean_max": 0.155,
+      "ellipse_max": 0.062,
+      "radius_change_max": 0.057,
+      "tripo_base_R": 7.765,
+      "scale": 0.792,
+      "faces": 715
+     },
+     "caps": {
+      "fix": "lathe: 22 profile rings x 16 sides from the Tripo silhouette, paint projected (hit 100 %)",
+      "slots": {
+       "Finial0": 0.9067,
+       "Finial1": 0.9067,
+       "Finial2": 0.9067,
+       "Finial3": 0.9067
+      }
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (249, 206, 55)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.8373,
+      "glass_band_studs": [
+       -0.688,
+       0.688
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.428
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 83 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.192,
+       "R": 2.338,
+       "bottom": 3.879,
+       "top": 12.371
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.602,
+        7.413
+       ],
+       "R": 0.36,
+       "at": [
+        -0.6461,
+        4.444
+       ]
+      },
+      {
+       "tripo_at": [
+        0.51,
+        7.476
+       ],
+       "R": 0.36,
+       "at": [
+        0.6461,
+        4.444
+       ]
+      }
+     ]
+    },
+    "HaloDomeHouse_09": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_09/HaloDomeHouse_09_deco.glb",
+     "bytes": 2131596,
+     "params": "tools/house_deco/HaloDomeHouse_09.json",
+     "dome": {
+      "axis_lean_max": 0.263,
+      "ellipse_max": 0.075,
+      "radius_change_max": 0.092,
+      "tripo_base_R": 6.12,
+      "scale": 1.3787,
+      "faces": 1369
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 22 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 199, 55)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 1.3034,
+      "glass_band_studs": [
+       -1.119,
+       1.119
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.481
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 51 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 0.12,
+       "R": 1.56,
+       "bottom": 1.85,
+       "top": 7.95
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       0.9563,
+       4.8589
+      ]
+     ]
+    },
+    "HaloDomeHouse_10": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_10/HaloDomeHouse_10_deco.glb",
+     "bytes": 2418048,
+     "params": "tools/house_deco/HaloDomeHouse_10.json",
+     "dome": {
+      "axis_lean_max": 0.243,
+      "ellipse_max": 0.058,
+      "radius_change_max": 0.083,
+      "tripo_base_R": 6.685,
+      "scale": 0.7106,
+      "faces": 679
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 198, 66)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.6515,
+      "glass_band_studs": [
+       -0.717,
+       0.717
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.445
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 80 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.082,
+       "R": 1.744,
+       "bottom": 2.703,
+       "top": 11.879
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -0.9029,
+       3.7832
+      ]
+     ]
+    },
+    "HaloDomeHouse_11": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_11/HaloDomeHouse_11_deco.glb",
+     "bytes": 424768,
+     "params": "tools/house_deco/HaloDomeHouse_11.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (242, 193, 61)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 1.3201,
+      "glass_band_studs": [
+       -1.121,
+       1.121
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.56
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 79 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.03,
+       "R": 1.934,
+       "bottom": 2.402,
+       "top": 9.3
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       0.7286,
+       4.4794
+      ]
+     ]
+    },
+    "HaloDomeHouse_12": {
+     "file": "art/models/tripo/house_deco/HaloDomeHouse_12/HaloDomeHouse_12_deco.glb",
+     "bytes": 432352,
+     "params": "tools/house_deco/HaloDomeHouse_12.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (243, 190, 62)",
+      "glass_from": "glow faces, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.6496,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.509,
+       0.538
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (double, 2 halves, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 93 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.1,
+       "R": 2.2,
+       "bottom": 2.0,
+       "top": 9.2
+      },
+      "double": true
+     },
+     "knobs": [
+      {
+       "tripo_at": [
+        -0.51,
+        5.0
+       ],
+       "R": 0.274,
+       "at": [
+        -0.4007,
+        4.53
+       ]
+      },
+      {
+       "tripo_at": [
+        0.51,
+        5.0
+       ],
+       "R": 0.274,
+       "at": [
+        0.5961,
+        4.53
+       ]
+      }
+     ]
+    },
+    "HaloShop_Bakery": {
+     "file": "art/models/tripo/house_deco/HaloShop_Bakery/HaloShop_Bakery_deco.glb",
+     "bytes": 424412,
+     "params": "tools/house_deco/HaloShop_Bakery.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (235, 188, 80)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.7684,
+      "glass_band_studs": [
+       -0.631,
+       0.631
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.526
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 60 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -3.9,
+       "R": 1.6,
+       "bottom": 1.0,
+       "top": 10.3
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -3.3496,
+       4.4139
+      ]
+     ]
+    },
+    "HaloShop_Flower": {
+     "file": "art/models/tripo/house_deco/HaloShop_Flower/HaloShop_Flower_deco.glb",
+     "bytes": 444632,
+     "params": "tools/house_deco/HaloShop_Flower.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 198, 61)",
+      "glass_from": "glow faces",
+      "profile_from": "front render rows",
+      "scale": 0.6712,
+      "glass_band_studs": [
+       -0.612,
+       0.612
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.43
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 71 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -0.179,
+       "R": 2.232,
+       "bottom": 1.331,
+       "top": 11.98
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -1.0607,
+       4.1773
+      ]
+     ]
+    },
+    "HaloShop_Juice": {
+     "file": "art/models/tripo/house_deco/HaloShop_Juice/HaloShop_Juice_deco.glb",
+     "bytes": 412556,
+     "params": "tools/house_deco/HaloShop_Juice.json",
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (243, 201, 73)",
+      "glass_from": "fallback 35-72 % of the box height, widened to 50 % of the lantern height",
+      "profile_from": "front render rows",
+      "scale": 0.8526,
+      "glass_band_studs": [
+       -0.628,
+       0.628
+      ],
+      "body_half_width_studs": [
+       0.42,
+       0.56
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 89 %), 0 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": 8.239,
+       "R": 1.201,
+       "bottom": 1.923,
+       "top": 12.432
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       4.0411,
+       4.7776
+      ]
+     ]
+    },
+    "HaloShop_Potion": {
+     "file": "art/models/tripo/house_deco/HaloShop_Potion/HaloShop_Potion_deco.glb",
+     "bytes": 2334664,
+     "params": "tools/house_deco/HaloShop_Potion.json",
+     "dome": {
+      "axis_lean_max": 0.665,
+      "ellipse_max": 0.087,
+      "radius_change_max": 0.088,
+      "tripo_base_R": 7.21,
+      "scale": 0.8252,
+      "faces": 606
+     },
+     "lantern": {
+      "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (249, 201, 70)",
+      "glass_from": "fallback 35-72 % of the box height",
+      "profile_from": "front render rows",
+      "scale": 0.767,
+      "glass_band_studs": [
+       -0.525,
+       0.525
+      ],
+      "body_half_width_studs": [
+       0.628,
+       0.628
+      ]
+     },
+     "leaf": {
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 88 %), 4205 thin gold drip texels filled with plank colour",
+      "tripo_leaf": {
+       "cx": -5.423,
+       "R": 1.726,
+       "bottom": 1.207,
+       "top": 11.574
+      },
+      "double": false
+     },
+     "metal_knocker_at": [
+      [
+       -1.6719,
+       4.5852
+      ]
+     ]
+    }
+   },
+   "not_yet": [
+    "awning gold frames",
+    "Juice roof parasol",
+    "Bakery brick dome + chimney cupola",
+    "08 porch dome (no skeleton base)",
+    "drum arch windows (generator W 1.2 < 2D)",
+    "10 corner finials (no slots)",
+    "signs / plants (stage 5)"
+   ],
+   "studio_step": "pending: one Import 3D (user click via 검수) -> WorldKit SkeletonTest + HaloV2.Buildings clones; LampGlass height = band",
+   "evidence": [
+    "art/review/img3/house_deco/houses_deco_a.jpg",
+    "art/review/img3/house_deco/houses_deco_b.jpg",
+    "art/review/img3/house_deco/houses_deco_c.jpg"
+   ],
+   "credits": 0
+  }
  ]
 }

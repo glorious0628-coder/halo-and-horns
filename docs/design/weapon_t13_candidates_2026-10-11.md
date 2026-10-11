@@ -49,3 +49,14 @@
 - 파일 `art/out/s2/weapons_t13_v2/Weapon_<키>_T<n>_v2.png`, 프롬프트 `art/prompts/Weapon_<키>_T<n>_v2.txt`, 생성기 `tools/_weapon_t13_v2_prompts.py`, 시트 `tools/_weapon_t13_v2_sheets.py`.
 - 시트 `art/review/s2/weapons_t13v2_{warrior,mage,archer,neutral}.jpg`, 뿔 전사 최종 `weapons_t13v2_berserker_final.jpg`(a 잎모양 넓은 날 / b 톱니 곧은 날+주황 보석 / c 두꺼운 식칼형). 내 추천 **b**(HQ의 톱니·용암 금·뿔 가드 결, 한손검).
 - 100% 크롭(대장장이 T2 머리·연금술사 T1 병·뿔 최종 b 가드): 조각 깨짐·떠 있는 조각·글자·레이 없음. 모두 통과 판정(내 눈). Halo_Paladin_T1_v2 한 장만 실수로 High(5크레딧)로 나감, 나머지 29장 Medium(0).
+
+## v3 맞춤 + High 앞면 28장 (10/11 밤, 검수 지시: 비율 숫자 반영)
+- 비율(게임성 개발 1): 검 0.75~0.9H·날:손잡이+날밑+폼멜≈2:1·날밑 폭≈전체 1/3·날 폭≈1/7, 지팡이 0.85~1.0H·구슬≈1/8, 활 0.6~0.95H, 대장장이 망치 0.4~0.5H·머리 폭≈1/2. `tools/_weapon_ratio_check.py`로 대충 잼(숫자는 참고, 눈으로 판정). 검 T2/T3·뿔 최종은 날:손잡이 0.62~0.75 → 맞음, 날 폭은 가는 편(0.08~0.13)이나 HQ 결과 같아 유지. 맞지 않은 7칸(Paladin T1·T2, Berserker T1, Blacksmith T2 …)을 Medium v3로 다시 뽑아 4칸 채택: Paladin T1 v3(손잡이 1/3, 십자 가지 날밑)·Paladin T2 v3·Berserker T1 v3·Blacksmith T2 v3(머리 폭 0.44). 나머지는 v2 유지.
+- High 앞면 28장(27칸 + 뿔 전사 최종 b): 위 채택본을 참조로 '같은 무기 그대로 깨끗하게 다시' High. 폴더 `art/out/s2/weapons_t13_hq/Weapon_<키>_HQ.png`, 시트 `art/review/s2/weapons_t13_hq_all.jpg`. 28장 모두 참조와 같은 모양·색, 깨짐·떠 있는 조각·글자·레이 없음(내 눈).
+- 사고 2건: ① LightMage T1 HQ 첫 시도가 참조 없이 나가 용암 도끼가 나옴(5크레딧 버림, `weapons_t13_hq_bad/`로 치움) → 다시 뽑아 통과. ② Berserker T3 HQ 첫 시도는 결과가 안 나옴(조용히 실패) → 다시 뽑아 통과. 합계 High 약 30장.
+- 방향: 검 T2·T3·Berserker T3는 손잡이가 위, 가지 검·지팡이는 반대 → Tripo 4면 때 방향만 맞추면 됨.
+
+## 4면(Tripo용) High — 뒤·왼·오른 (10/11 밤, 디자인 검수 승인 뒤)
+- 규칙(디자인 검수): 4장 모두 같은 방향(손잡이 아래·날 위), 같은 길이·높이, 옆면은 날 가는 선·활 몸통 두께. 앞면이 손잡이 위였던 칼 5자루(성기사 T2·T3, 뿔 T2·T3, 최종 b)는 앞면을 180도 돌린 High로 새로 뽑음(시트 `art/review/s2/weapons_flip_down.jpg`).
+- 폴더 `art/out/s2/weapons_t13_4v/Weapon_<키>_{front,back,left,right}.png`(front = 손잡이 아래 앞면; 칼 T1·지팡이·활·망치는 기존 HQ 그대로). 시트 `art/review/s2/weapons_4v_{warrior,mage,archer,neutral}.jpg`. 프롬프트는 브라우저 직접(앞면 참조 + '카메라만 돌려라, 정면 똑바로, 길이·높이·위치 같게', 종류별 옆면 설명: 칼=날이 가는 선·활=left는 줄 쪽 정면, right는 바깥 등 쪽 정면·지팡이=머리 옆모습·망치=머리 좁은 옆모습).
+- 마법사 약한 6장(고리 머리 옆면이 90도 아닌 3/4): LightMage T1 left·right, DarkMage T1 left·right, DarkMage T2 left·right.

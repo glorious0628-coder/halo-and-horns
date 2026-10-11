@@ -45,8 +45,9 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills" },
+		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
+	RailGap = 8, RailMinRoom = 300, -- du: the window stops this far above the HUD icon row, if it keeps this much height
 }
 local BODY_FONT = Enum.Font.GothamMedium
 local WARN_INTERVAL = 10
@@ -98,6 +99,7 @@ local T = {
 	MenuNickname = "Nickname",
 	MenuWelcome = "Meet the Guide",
 	MenuItems = "Items",
+	MenuBag = "Bag", -- H-1
 	MenuMap = "Map",
 	WelcomePrevious = "Back",
 	WelcomeNext = "Next",
@@ -1106,7 +1108,22 @@ local function layoutRoot()
 	-- the ribbon hangs half above the plate: keep it under the top bar
 	local hang = FRAME.TitleH / 2
 	local availH = math.max(220, h - top - 12 - hang)
+	-- 게임성 검수 10/12 (UiSandbox 1920x656): the window ends above the HUD's icon row (Bag · Map · Hero …) when that
+	-- still leaves a usable window (HUD.Layout.Rects.tiles, scaled to this canvas if the units differ)
+	local hl = C and type(C.HUD) == "table" and C.HUD.Layout or nil
+	local tiles = type(hl) == "table" and type(hl.Rects) == "table" and hl.Rects.tiles or nil
+	if type(tiles) == "table" and type(tiles.Y) == "number" and type(hl.H) == "number" and hl.H > 0 then
+		local room = tiles.Y * (h / hl.H) - FRAME.RailGap - (top + hang)
+		if room >= FRAME.RailMinRoom and room < availH then availH = room end
+	end
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
+	-- H-1 (게임성 개발 4): a registered window may ask for its own width (the bag's narrow / wide), never past the max
+	local want = currentId ~= nil and REG.Opts[currentId] ~= nil and REG.Opts[currentId].Width or nil
+	if type(want) == "function" then
+		local ok, v = pcall(want)
+		want = ok and v or nil
+	end
+	if type(want) == "number" and want == want then winW = math.max(280, math.min(want, WINDOW_MAX_W, w - 24)) end
 	-- 창 꾸미기: the plate is as tall as its content (a story page, a shop with two rows ... keeps the world visible
 	-- around it); registered fixed-body windows (tabs) keep the full height
 	local maxH = math.min(WINDOW_MAX_H, availH)
@@ -1552,7 +1569,8 @@ end
 BUILDERS.Menu = function(parent)
 	local entries = {
 		{ Text = T.MenuTravel, Id = "Travel" },
-		{ Text = T.MenuItems, Id = "Items" },
+		-- 게임성 검수 10/12: the menu opens the bag once it exists (one item window); the old list only without it
+		BUILDERS.Bag and { Text = T.MenuBag, Id = "Bag" } or { Text = T.MenuItems, Id = "Items" },
 		{ Text = T.MenuRebirth, Id = "Rebirth" },
 		{ Text = T.MenuClass, Id = "Class" },
 		{ Text = T.MenuShop, Id = "Shop" },
@@ -1618,7 +1636,7 @@ BUILDERS.Menu = function(parent)
 		end)
 		b.TextSize = 22
 		if id == "Rebirth" then rebirthBtn = b end
-		if id == "Items" then itemsBtn = b end
+		if id == "Items" or id == "Bag" then itemsBtn = b end
 	end
 
 	addText(parent, T.MenuAltarHint, { Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
@@ -2255,6 +2273,7 @@ ITEMS = {
 -- (+0..MaxEnhance) are kept; anything else is ignored (the server keeps unknown ids in the save, the list hides them).
 function ITEMS.OnInventory(payload)
 	if type(payload) ~= "table" then return end
+	ITEMS.Raw = payload -- H-1: the bag (BagUI) takes this copy when its own listener came too late (Panels.LastInventory)
 	local loot = Config.Loot
 	local items, enh = {}, {}
 	if type(payload.Items) == "table" then
@@ -2284,6 +2303,11 @@ function ITEMS.OnInventory(payload)
 	ITEMS.Version += 1
 	ITEMS.CheckPending()
 	if currentId == "Items" then ITEMS.Rebuild(true) end -- the blacksmith polls ITEMS.Data in its update
+end
+
+-- H-1 bag: the last "Inventory" payload as it came (BagUI validates it; nil before the first one)
+function Panels.LastInventory()
+	return ITEMS.Raw
 end
 
 -- A23-79: another window's look at the cached "Inventory" payload (KingDiary's candy jar): the count of one item id
@@ -3473,7 +3497,8 @@ end
 
 -- BB13: another client module adds its window. opts = { Build = fn(parent, kit, arg) -> update?, Title = string |
 -- fn() -> string, FixedBody = bool (a plain frame instead of the scrolling list), Rebuild = { [attr] = true } | false,
--- KeepScroll = bool (a Rebuild attribute keeps the scroll), Cleanup = fn() }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
+-- KeepScroll = bool (a Rebuild attribute keeps the scroll), Cleanup = fn(), Width = du | fn() -> du (H-1: the window's own
+-- width, at most the usual one) }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
 -- Keybinds.Start, the HUD [메뉴] squares show once their window is registered
 function Panels.Register(id, opts)
 	if type(id) ~= "string" or type(opts) ~= "table" or type(opts.Build) ~= "function" then
@@ -3552,7 +3577,7 @@ function Panels.Open(id, arg)
 		ITEMS.Result, ITEMS.Note = nil, nil -- a fresh item list starts without an old result line
 		WSHOP.Session = nil -- switching panels is not a manual shop farewell
 	end
-	if id == "Items" then ITEMS.Seen = true end -- B14: the menu glow stops once the list was seen
+	if id == "Items" or id == "Bag" then ITEMS.Seen = true end -- B14: the menu glow stops once the list (H-1: the bag) was seen
 	openedFromMenu = fromMenu
 	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
@@ -3651,6 +3676,12 @@ function Panels.OnEnhanceResult(data)
 	ITEMS.Result, ITEMS.ResultAt, ITEMS.Note = r, os.clock(), nil
 	ITEMS.CheckPending()
 	if currentId == "Items" then ITEMS.Rebuild(true) end
+end
+
+-- H-1 bag (BagUI): the last scroll result (the table above) and when it came (os.clock), nil before the first one
+function Panels.LastEnhance()
+	if not ITEMS.Result then return nil, nil end
+	return table.clone(ITEMS.Result), ITEMS.ResultAt
 end
 
 ------------------------------------------------------------------ loops / wiring

@@ -1,7 +1,15 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
 ## 지금 (10/11 밤, plan v2 검수 고침 끝, 비우기 전) — 먼저 읽기
-- 검수 = **local_d522c0f1-07cf-4db1-b178-5f335a56db7c** (모든 것 검수). 보고는 send_message로 묶음마다 한 번.
+- **10/11 밤 PC 꺼짐 → WorldKit 15:20 저장본으로 다시 열고 새 plan으로 다시 지음**(apply → civic → ground → props, CSG 실패 0). 이미지 생성 3·4·이미지 개발에 "다시 끼워 넣어도 됨" 알림.
+- **WorldKit 백업(마우스·키보드 없음):** `py tools/worldkit/wk_backup.py save [--only Workspace.HaloV2,ServerStorage.X] [--no-terrain]` → build/wk_backup/<시각>/*.rbxm + terrain.rbxm + manifest.json (SerializationService, execute_luau 90k 조각). `load latest [--only ..] [--replace] [--terrain] [--check]`. 시험: HaloV2 2534개 왕복 같음, 지형 붙여넣기 높이 같음. 전체(약 10 MB)는 약 10분, HaloV2+지형은 40초.
+- 사진 3차 16장 + 크롭 = review2/sheet_review2_v3.jpg·crops_review2_v3.jpg (806d6c0) → 디자인 검수에 아직 안 보냄(PC 꺼짐 전 찍음, 지금 WorldKit은 같은 plan으로 다시 지어서 같음). 바위 턱 491칸이 C2c에서 어둡게 넓게 보임 → 판정 때 같이 말할 것.
+- **10/11 21:56 전체 백업(3·4·이미지 개발 다 넣은 뒤)** build/wk_backup/20261011_215648 (55 roots + 지형, 10.7MB, SkeletonTest 15채·HaloPropKits·MV 포함). 그 전 21:47 = build/wk_backup/20261011_214754 (55 roots + 지형, 10.6MB; HaloPropKits·이미지 개발 MV 포함), 21:50 지형만(Limestone 턱 뒤). 되돌리기 `py tools/worldkit/wk_backup.py load <폴더|latest> --replace --terrain`. Ctrl+S 저장은 키보드라 안 함.
+- 땅·길 사진 3차 = 디자인 검수 **통과**. 턱: 높이 4 넘는 곳만 Limestone(FACE_DH 4, 344칸) — 다음 사진 차례에 r2_03·07 같은 자리 1장씩 보여 줄 것(창 허락 = 최종 검수). 위 사진(_top)은 안개 끄고 찍음(ground_shots).
+- **10/12 0시 현재 (비우기 전):** 집·가게 골격 16채 plan 자리(이미지 생성 3이 옮김, plan `buildings[].skeleton` origin·body·extent, f0fb1ac) = 디자인 검수 **통과**. 정원 검은 땅 = 겉 재질 1칸이라 밑 Rock이 비침 → 겉 재질 2칸(halo_blockout.luau `land - 7`, 897d329), 전·후 사진 cdb106a **통과**. 지형 백업 20261011_233356(겉 재질 2칸 뒤). 남은 것: 새 집 7채(Hill4·Cliff6·7·8·Garden5·6·7)는 아직 회색 상자(이미지 생성 3), 5단계 목록(옹벽·흰 번짐·Limestone 가장자리) plan `stage5_fixes`. 다음 사진 묶음 때 다른 사진의 검은 얼룩이 없어졌는지 같이 보기.
+- 사진 도구: `ground_shots.py --review2|--houses [이름]` (SK_OUT 폴더), 창 = 최종 검수 "전달함, 시작". 픽셀 광선 재질 읽기는 카메라 FOV 60, 뷰포트 1272×435 비율 = 사진 1920×656.
+- **보고처(10/11 사용자):** 그림·3D·월드 보고·사진 판정 = **디자인 검수**(list_sessions 이름). 화면 조작 허락("전달함, 시작")·유료 묶음·사용자 질문 = **최종 검수**(local_d522c0f1-07cf-4db1-b178-5f335a56db7c). send_message로 묶음마다 한 번.
+- 사진 14장(plan v2 고친 뒤, C2c 낮) = art/review/world/halo_v2/review2/sheet_review2.jpg (eb3ff89) → 디자인 검수 판정 대기. 다시 찍을 것: r2_10(탑 위 앞이 바닥에 막힘)·r2_14(위 전체 뿌염). 도구 `SK_OUT=art/review/world/halo_v2/review2 py -X utf8 tools/worldkit/ground_shots.py --review2 [이름]`.
 - **끝낸 것(e8bd29f + 353c72c, 검수에 보고함):** `docs/review/halo_plan_v2_review_2026-10-11.md` 결정 7개 + 진짜 16건 + 확인 안 한 21건 고침.
   - 걷는 속도 = Config.Player.WalkSpeed(20, plan `walk_speed`). 성문→대성당 **26.0초**(대성당 굽은 계단 `cathedral_stairs` w12, 세 번 꺾음, 자체 높이 `ys`, `rails=True` → 걷기 계산이 난간 칸을 막음 + 대각선 모서리 질러가기 금지). 새 구역 `cathedral_steps`(계단 사이 꽃 단 = 가까운 계단 높이, halo_blockout `terrace`). 대성당 (84,-772), 앞 마당 (82,-718).
   - 전망대 y 28(탑 꼭대기 78 < 대성당 84), 검사 "대성당보다 높은 땅/건물". 절벽 마을 = 진짜 두 단: `tiers` 위 단 22(집 3·4·5·6·8), 아래 18(1·2·7), 절벽-전망대 계단 `cliff_lookout`.
