@@ -1,5 +1,12 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
+## 10/12 07:30 걷는 땅 규칙 점검 (fix/stairs-ground, Config.Ground.KitWalk = Bridge·Stairs·Steps·Ramp, 대소문자 구분)
+- WorldKit은 06:20에 다른 세션이 파일 저장 후 다시 열었음 → MCP 이름이 "Game"이라 STUDIO_NAME=WorldKit 안 됨, `STUDIO_ID`(list_roblox_studios)로.
+- 내 몫 OK: Ground 걷는 면(길·계단·층계참·마당·광장 원판) 전부 WalkGround, 다리 4 태그+이름 Bridge_. 태그 없는 것 = 난간·길 금줄(nc)·마당 점(nc)·광장 테(nc) = 맞음. 성문·탑·무기고: 바닥은 지형, 전망대 BalconyFloor 태그.
+- 고침: 다리 난간 80개 Rail_Bridge_* → Rail_Brg*(WorldKit + skeleton_ground.py, 535a0be). 남은 Bridge 이름 = Markers/Keep_Bridge_Halo(표시용, 게임에 안 감).
+- 이미지 생성 3 몫(태그 없음): 문 계단 StepLow·StepTop 각 15 + Step# 3, 새 집 Floor1a/1b 각 9(Hill4·Cliff6~8·Garden5~7·Castle), FloorInside 14(House07 등), 받침 윗면 Plinth_*. 소품: P086 디딤돌 12개 태그 없음(5단계 진짜 키트 때 WalkGround).
+- **6단계 규칙:** Config는 Map.Ground 폴더를 통째로 땅으로 봄 → HaloV2.Ground를 Map.Ground로 옮길 때 Rails·*_line*·YardDot·*_Ring은 Decor로 빼기(아니면 난간이 땅). 걷는 파트는 태그 유지, Decor 아래 *Props 폴더에 Bridge·Stairs·Steps·Ramp 든 장식 이름 금지.
+
 ## 10/12 01:35 PC 끄기 전 마무리 (사용자 지시, 최종 검수)
 - **WorldKit 전체 백업 = `build/wk_backup/20261012_013528`** (56 roots + 지형, 11.1 MB, 오류 0; 다른 세션이 넣은 것 포함 — HaloV2·SkeletonTest·HaloDomeHouse_07_keep·HaloSkeletons·HaloPropKits·ImportHold·MV 21개·Lighting). WorldKit 파일 저장(Ctrl+S)은 안 함.
 - 켠 뒤 되살리기: WorldKit 열기(`build/WorldKit.rbxlx`, 창 = 최종 검수 허락) → `py tools/worldkit/wk_backup.py load latest --replace --terrain` (마우스·키보드 없음). 새 작업은 시작 안 했음.
