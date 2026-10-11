@@ -16,8 +16,9 @@ arguments (all optional except the position):
             _Glass, _Pane): "pos": [x, y_front, z_bottom], "W" opening width 1.5, "spring" z of the spring line, "pier" 0.45
             marble round the frame, "frame" 0.16 gold width, "depth" 1.6, "recess" 0.25, "yaw" degrees (turned about
             the vertical through pos; the window's front is +y before the turn)
-  dome    : gold dome by revolution (exact): "pos": [x, y, z_base], "R", "h", "onion": bool, "ribs" 8 (raised gold ribs),
-            base ring + finial
+  dome    : gold dome by revolution (exact): "pos": [x, y, z_base], "R", "h", "onion": bool, "ribs" 8 (raised gold ribs: own
+            object <name>_Ribs, "rib_w" 0.3 wide, "rib_out" 0.22 out of the surface, rounded top), base ring + finial
+            ("fin" 1.0 = finial scale, small for tower caps)
   finial  : gold finial (ball + ring + spike): "pos": [x, y, z_base], "d"
   leaf    : an arched plank door leaf (wood) with an exact arch ("half": -1 / +1 = one leaf of a double door): "c": [x, z] arch centre (spring line), "R" half width,
             "bottom" z, "front" y of the plank faces, "t" thickness 0.32, "planks" 5, "gap" 0.06, "groove" 0.1
@@ -374,29 +375,50 @@ def dome(it):
             r = R * math.cos(s_ * math.pi / 2)
         zz = H * (s_ if onion else math.sin(s_ * math.pi / 2))
         prof.append((max(r, 0.02), zz))
-    p = Piece(it.get("name", "Dome"))
+    nm = it.get("name", "Dome")
+    p = Piece(nm)
     revolve(p, prof, (x, y, z))
-    for j in range(nrib):                                   # raised ribs following the profile
+    rb = Piece(nm + "_Ribs")                                # ribs = their own object (same gold) so Studio can tune it
+    hw, rout = it.get("rib_w", 0.3) / 2, it.get("rib_out", 0.22)
+    sec = [(-hw, -0.04)]                                    # rib section (side, out of the surface): flat sides, rounded top
+    for i in range(9):
+        th = math.pi * (1 - i / 8)
+        sec.append((hw * math.cos(th), rout * 0.55 + rout * 0.45 * math.sin(th)))
+    sec.append((hw, -0.04))
+    r_min = hw / math.sin(math.pi / max(nrib, 2)) * 1.1     # stop where neighbouring ribs would run into each other
+    ipts = [i for i in range(len(prof) - 1) if prof[i][0] >= r_min]
+    for j in range(nrib if len(ipts) > 1 else 0):           # raised ribs following the profile
         t = 2 * math.pi * j / nrib + math.pi / nrib
         d = Vector((math.cos(t), math.sin(t), 0.0))
-        side = Vector((-d.y, d.x, 0.0)) * 0.13
-        strip = []
-        for r, zz in prof[:-2]:
-            c = Vector((x, y, z)) + d * (r - 0.02) + Vector((0, 0, zz))
-            out = d * 0.16
-            strip.append([p.bm.verts.new(c - side), p.bm.verts.new(c + side), p.bm.verts.new(c + side + out), p.bm.verts.new(c - side + out)])
-        for i in range(len(strip) - 1):
-            A, B = strip[i], strip[i + 1]
-            for k in range(4):
-                p.bm.faces.new((A[k], A[(k + 1) % 4], B[(k + 1) % 4], B[k]))
+        side = Vector((-d.y, d.x, 0.0))
+        rings = []
+        for i in ipts:
+            r, zz = prof[i]
+            ra, za = prof[max(i - 1, 0)]
+            rc, zc = prof[min(i + 1, len(prof) - 1)]
+            tr, tz = rc - ra, zc - za                       # profile tangent -> outward surface normal (tz, -tr)
+            ln = math.hypot(tr, tz) or 1.0
+            nrm = d * (tz / ln) + Vector((0.0, 0.0, -tr / ln))
+            c = Vector((x, y, z)) + d * r + Vector((0, 0, zz))
+            rings.append([rb.bm.verts.new(c + side * sx + nrm * oy) for sx, oy in sec])
+        M = len(sec)
+        for i in range(len(rings) - 1):
+            A, B = rings[i], rings[i + 1]
+            for k in range(M):
+                rb.bm.faces.new((A[k], A[(k + 1) % M], B[(k + 1) % M], B[k]))
+        rb.bm.faces.new(rings[0])                           # end caps
+        rb.bm.faces.new(list(reversed(rings[-1])))
     p.torus(R + 0.06, 0.16, (x, y, z + 0.1), "xy", 64, 10)   # base ring
-    zt = z + H
-    p.cyl(0.7, 0.3, (x, y, zt + 0.1), "z", 24)
-    p.ball(0.62, (x, y, zt + 0.55))
-    p.torus(0.22, 0.06, (x, y, zt + 0.92), "xy", 24, 8)
-    p.cone(0.3, 0.0, 0.9, (x, y, zt + 1.4), 16)
-    p.ball(0.22, (x, y, zt + 1.05))
-    return p.finish()
+    zt, fs = z + H, it.get("fin", 1.0)                      # fs scales the finial (small tower caps)
+    p.cyl(0.7 * fs, 0.3 * fs, (x, y, zt + 0.1 * fs), "z", 24)
+    p.ball(0.62 * fs, (x, y, zt + 0.55 * fs))
+    p.torus(0.22 * fs, 0.06 * fs, (x, y, zt + 0.92 * fs), "xy", 24, 8)
+    p.cone(0.3 * fs, 0.0, 0.9 * fs, (x, y, zt + 1.4 * fs), 16)
+    p.ball(0.22 * fs, (x, y, zt + 1.05 * fs))
+    if not rb.bm.verts:                                     # no ribs (too small / "ribs": 0): no empty object
+        rb.bm.free()
+        return p.finish()
+    return [p.finish(), rb.finish()]
 
 
 def finial(it):
