@@ -1,0 +1,21 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true
+practice at 1791728051.18
+probe ring: {"Dots":["Dot1=30,30,40","Dot2=30,30,40","Dot3=30,30,40","Dot4=30,30,40","Dot5=30,30,40"],"Words":["Label:Skip"],"Ring":"visible=true size=124","Screen":"1272x435"}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_ring\pc\01_ring_shrinking.png
+probe strike: {"Dots":["Dot1=140,140,150","Dot2=140,140,150","Dot3=30,30,40","Dot4=30,30,40","Dot5=30,30,40"],"Words":["Grade:Miss","Label:Skip"],"Ring":"visible=false size=90","Screen":"1272x435"}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_ring\pc\02_strike_word.png
+probe end: {"Dots":["Dot1=140,140,150","Dot2=140,140,150","Dot3=140,140,150","Dot4=140,140,150","Dot5=140,140,150"],"Words":["Result:+0","Label:Skip"],"Ring":"visible=false size=48","Screen":"1272x435"}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\craft_ring\pc\03_result.png
+after: no ring screen
+console: [ServerErrorService] started
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Goblin_86969d1c-332d-4889-ab56-123455c9280f.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.GoblinBrute_2b302594-5a3c-447f-ba4b-3d92f98b4f15.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Skeleton_static.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] ServerError = 560 (Heartbeat, tick # ms, Slow)
+play stopped
+fresh off
