@@ -4,7 +4,7 @@
 
 1. `AGENTS.md` → 이 파일 → `role_prompts/README.md` → 자기 역할 프롬프트.
 2. `state/<역할>.md`가 있으면 읽는다. 검수는 `state/review.md`.
-3. 가장 최신 `review_handoff_*.md`를 끝까지 읽는다. 현재 최신은 `review_handoff_2026-10-11d.md`.
+3. 가장 최신 `review_handoff_*.md`를 끝까지 읽는다. 현재 최신은 `review_handoff_2026-10-11e.md`(앞은 11d).
 
 - `role_prompts/`는 검수가 관리하는 시작 안내다. 모델 표·도구 이름·옛 작업 큐를 현재 실행 상태로 추정하지 않는다.
 - `state/`와 최신 검수 인계의 완료 표시는 근거 커밋·검증 결과·실제 Studio 상태를 구분해 읽는다. 파일 수정·푸시·Studio 반영·Play 검증은 각각 다른 상태다.
