@@ -1,7 +1,15 @@
-# 이미지 생성 4 — 상태 (2026-10-11 밤 2차)
+# 이미지 생성 4 — 상태 (2026-10-11 밤 3차, PC 재부팅 뒤)
 
 ## 지금 상태 한 줄
 **(가) 31종 전부 + NEW_Cauldron 파트로 끝, (가+나) 몸통 26종(<키>__Body) 끝. WorldKit HaloV2.Props.Real 103개(저장 안 함). 검수 기다림: ① Studio 사진 화면 "전달함, 시작" ② Tripo 묶음 1 승인.**
+
+## 10/11 밤 3차 (재부팅 뒤)
+- 대리석 기본 = HH_HaloMarbleSmooth_Cream(이미지 개발 MV, 8 studs) — prop_kit.py `--marble smooth`(1700569).
+- Studio 사진 1차 102장 `art/review/img4/studio_c1234/`(카메라가 멀어 작게 나옴) → 거리·간격 고침, 다시 찍기 3분은 이미지 생성 1이 WorldKit 바탕 다시 지은 뒤 최종 검수에 신청. WorldKit은 재부팅으로 닫힘 → HaloPropKits 다시 `py tools/prop_kit.py --all --apply` + `halo_props_place.py` 필요.
+- 보고: 소품 3D = **디자인 검수**, 화면·유료 = 최종 검수(모든 것 검수).
+- Tripo 묶음 1 승인 26개 ≈ 1,430점(등불 머리 5 + 식물 17 + 허수아비 + FlowerBush·GatherBush·WallLamp). 들어간 것: Lantern_C 1개(task f8976a51-4f83-4084-ab2d-180e9d47c2a0, 잔액 17,910). 재부팅으로 Tripo 로그아웃 → 최종 검수에 사용자 로그인 요청함.
+- 이어 돌리는 법: scratchpad `tripo_srv.py tripo_jobs.json`(127.0.0.1:8766, /load?job=<키> → window.name에 4장 → Tripo 페이지로 이동) → 4면 탭(767,187 css px) → 슬롯 앞/왼쪽/오른쪽/뒷면에 DataTransfer → 8K 끄기 → 지오메트리 및 텍스처: 면 수 칸 focus+select 후 computer type + Tab(식물 20000, 나머지 15000) → 4K·PBR·삼각형·울트라 메시 켜짐·조명 제거 꺼짐 확인 → "생성 55" 클릭 → 잔액·task id 기록.
+- 좌우 슬롯: Tripo 왼쪽 = 물체 자신의 왼쪽 = 2D *_right.png(기본). 예외(2D가 물체 기준 이름): Lantern_C(left2), PotionCrate → 왼쪽 슬롯에 *_left.
 
 ## 검수 결정 (10/11 밤)
 - 나누기 표 OK. **등불 56개 머리·벽등 머리·종 = Tripo**(이미 있는 4면 2D → HD 멀티뷰 → Blender에서 갈빗대·고리만 정확한 모양으로 바꿔 끼움 → C/N/R/M). 기둥·받침은 파트. 지금 파트 머리는 임시.
