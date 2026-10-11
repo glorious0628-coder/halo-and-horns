@@ -1,0 +1,80 @@
+{
+ "name": "HaloShop_Juice",
+ "scale": 35.81057374610473,
+ "size_studs": [
+  30.740829467773438,
+  35.1461181640625,
+  17.398204803466797
+ ],
+ "front": "+Y blender = -Z roblox",
+ "door": {
+  "center_x": 8.78179383277893,
+  "bottom_z": 1.7536640167236328,
+  "width": 4.499999523162842,
+  "height": 11.821015357971191,
+  "front_y": 2.1263887882232666,
+  "note": "DoorFront: Roblox position (x, 0, -front_y - 1) facing -Z; door leaf = <Name>_Door"
+ },
+ "parts": {
+  "HaloShop_Juice_Awning": {
+   "faces": 1873,
+   "tex": 1024,
+   "uv_fill": 0.595,
+   "tris": 1873
+  },
+  "HaloShop_Juice_Body_t00": {
+   "faces": 4890,
+   "tex": 1024,
+   "uv_fill": 0.453,
+   "tris": 4890
+  },
+  "HaloShop_Juice_Body_t10": {
+   "faces": 4841,
+   "tex": 1024,
+   "uv_fill": 0.432,
+   "tris": 4841
+  },
+  "HaloShop_Juice_Body_t11": {
+   "faces": 4989,
+   "tex": 1024,
+   "uv_fill": 0.457,
+   "tris": 4989
+  },
+  "HaloShop_Juice_Body_t01": {
+   "faces": 3647,
+   "tex": 1024,
+   "uv_fill": 0.539,
+   "tris": 3647
+  },
+  "HaloShop_Juice_Door": {
+   "faces": 147,
+   "tex": 512,
+   "uv_fill": 0.825,
+   "tris": 147
+  },
+  "HaloShop_Juice_Display": {
+   "faces": 2601,
+   "tex": 1024,
+   "uv_fill": 0.514,
+   "tris": 2601
+  },
+  "HaloShop_Juice_DoorHw": {
+   "faces": 13,
+   "tex": 512,
+   "uv_fill": 0.67,
+   "tris": 13
+  },
+  "HaloShop_Juice_WinPane": {
+   "faces": 253,
+   "tex": 512,
+   "uv_fill": 0.834,
+   "tris": 253
+  },
+  "HaloShop_Juice_Glass": {
+   "faces": 253,
+   "note": "Studio: Material Glass, Transparency 0.45, Reflectance 0.25",
+   "tris": 253
+  }
+ },
+ "tris_total": 23507
+}
