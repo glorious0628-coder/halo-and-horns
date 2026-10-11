@@ -1,0 +1,3268 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 430,
+  "failedChecks": 0,
+  "namedChecks": 430,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "switch",
+      "check": "Config.NewZones.Enabled is false as shipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "ZoneIds = CoralCoast, CrystalWoods (in this order)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "CoralCoast is in Config.Zones with Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "CoralCoast is a plain level-1 field: no PvP, no town, no faction, no level gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "CoralCoast Spawn is inside its rect",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "CrystalWoods is in Config.Zones with Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "CrystalWoods is a plain level-1 field: no PvP, no town, no faction, no level gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "CrystalWoods Spawn is inside its rect",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "SeasonOn(NewZones) is false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "the test override still turns it on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "Config.NewZonesApply exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "the Halloween switch is untouched",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCrab has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCrab is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "Jellyfish has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "Jellyfish is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "HermitCrab has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "HermitCrab is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalLizard has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalLizard is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CaveBat has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CaveBat is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "GlowMushroom has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "GlowMushroom is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalGolem has Season NewZones",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalGolem is not active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCrab effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCrab spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "Jellyfish effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "Jellyfish spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "HermitCrab effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "HermitCrab spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalLizard effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalLizard spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CaveBat effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CaveBat spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "GlowMushroom effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "GlowMushroom spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalGolem effective spawn count is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalGolem spawn target is 0 (also with 6 players in its field)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCoast is not in ZoneOrder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalWoods is not in ZoneOrder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "ZoneOrder is the base commit's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "NewZonesApply while off does nothing and says false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "ZoneAt over every existing zone rect (centre, corners, edges, 1 stud outside) = base commit 048127fa9e",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCoast rect reads as Outskirts while off, as on the base commit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalWoods rect reads as Outskirts while off, as on the base commit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCoast rect overlaps no other zone rect (Outskirts included)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CoralCoast lies east of Config.Map.Bounds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalWoods rect overlaps no other zone rect (Outskirts included)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "CrystalWoods lies east of Config.Map.Bounds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "every existing zone is unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "every existing monster kind is unchanged (numbers, zone, season)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "every existing loot table and item is unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "every existing bark, level and bubble family is unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "the only added monster kinds are the seven",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "MonsterTypeOrder without the new kinds is the base order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "every existing kind's spawn count and target are the base commit's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "ZoneMainMonster is unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "Enabled = true turns the season on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "each new zone is in ZoneOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "they are appended after the base order, in ZoneIds order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "NewZonesApply says true while on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "calling it twice adds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "ZoneAt of the centre of CoralCoast is CoralCoast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CoralCoast owns exactly the points inside its rect",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "ZoneAt of the centre of CrystalWoods is CrystalWoods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalWoods owns exactly the points inside its rect",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CoralCrab is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CoralCrab effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CoralCrab target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CoralCrab target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CoralCrab is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "Jellyfish is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "Jellyfish effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "Jellyfish target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "Jellyfish target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "Jellyfish is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "HermitCrab is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "HermitCrab effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "HermitCrab target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "HermitCrab target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "HermitCrab is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalLizard is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalLizard effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalLizard target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalLizard target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalLizard is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CaveBat is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CaveBat effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CaveBat target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CaveBat target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CaveBat is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "GlowMushroom is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "GlowMushroom effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "GlowMushroom target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "GlowMushroom target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "GlowMushroom is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalGolem is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalGolem effective count = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalGolem target without players = its Count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalGolem target with 4 players stays within Count .. Count x MaxZoneMult",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "CrystalGolem is an add-on kind (no Takes): outside the global cap, no base slot taken",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "with the switch on, ZoneAt over every existing zone rect is still the base commit's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "with the switch on, every existing kind keeps its count and target",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "on",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "3 kinds in Coral Coast, 4 in Crystal Cave Woods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab lives in CoralCoast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab walks (no Float)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish lives in CoralCoast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish floats (Float set)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab lives in CoralCoast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab walks (no Float)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard lives in CrystalWoods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard walks (no Float)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat lives in CrystalWoods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat floats (Float set)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom lives in CrystalWoods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom walks (no Float)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem lives in CrystalWoods",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem is not a slime shape (A23-123)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem ModelFrom / AnimFrom is an existing non-slime kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem has no slime in its name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem is not a boss",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem has no Ranged / Ambush / Pack / PartnerOf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem HP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem Damage is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem XP is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem Gold is a positive number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem Count is a whole number of 1 or more",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem Speed and Scale are positive",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem has its own level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem walks (no Float)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "the golem is big (Scale >= 1.8) and few (Count <= 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "the tougher kinds are bigger (Scale >= 1.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "the plain kinds are small (Scale < 1.2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCoast: with the level HP and XP rise strictly, Damage and Gold never fall",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalWoods: with the level HP and XP rise strictly, Damage and Gold never fall",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab (Plain, Lv8) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab HP = 60 lies between Slime 10 and Goblin 90",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab Damage = 4 lies between Slime 2 and Goblin 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab XP = 20 lies between Slime 5 and Goblin 28",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab Gold = 11 lies between Slime 3 and Goblin 16",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish (Plain, Lv9) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish HP = 65 lies between Slime 10 and Goblin 90",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish Damage = 5 lies between Slime 2 and Goblin 6",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish XP = 22 lies between Slime 5 and Goblin 28",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish Gold = 12 lies between Slime 3 and Goblin 16",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab (Big, Lv11) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab HP = 120 lies between BigSlime 40 and GoblinBrute 260",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab Damage = 7 lies between BigSlime 4 and GoblinBrute 12",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab XP = 36 lies between BigSlime 18 and GoblinBrute 70",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab Gold = 20 lies between BigSlime 10 and GoblinBrute 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard (Plain, Lv14) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard HP = 95 lies between Goblin 90 and Skeleton 450",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard Damage = 6 lies between Goblin 6 and Skeleton 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard XP = 30 lies between Goblin 28 and Skeleton 65",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard Gold = 17 lies between Goblin 16 and Skeleton 65",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat (Plain, Lv15) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat HP = 110 lies between Goblin 90 and Skeleton 450",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat Damage = 7 lies between Goblin 6 and Skeleton 14",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat XP = 34 lies between Goblin 28 and Skeleton 65",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat Gold = 19 lies between Goblin 16 and Skeleton 65",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom (Big, Lv17) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom HP = 200 lies between BigSlime 40 and GoblinBrute 260",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom Damage = 8 lies between BigSlime 4 and GoblinBrute 12",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom XP = 50 lies between BigSlime 18 and GoblinBrute 70",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom Gold = 28 lies between BigSlime 10 and GoblinBrute 40",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem (Big, Lv21) has a lower and an upper ladder neighbour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem HP = 480 lies between GoblinBrute 260 and SkeletonKnight 1300",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem Damage = 15 lies between GoblinBrute 12 and SkeletonKnight 24",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem XP = 110 lies between GoblinBrute 70 and SkeletonKnight 170",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem Gold = 75 lies between GoblinBrute 40 and SkeletonKnight 170",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CoralCrab is above every slime-family kind of Lv <= 5 (HP 40, XP 18) and above Lv5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "Jellyfish is above every slime-family kind of Lv <= 5 (HP 40, XP 18) and above Lv5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "HermitCrab is above every slime-family kind of Lv <= 5 (HP 40, XP 18) and above Lv5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard is at or above the Goblin (Lv12) and below the Skeleton Knight (Lv30) in HP, XP and level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat is at or above the Goblin (Lv12) and below the Skeleton Knight (Lv30) in HP, XP and level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "GlowMushroom is at or above the Goblin (Lv12) and below the Skeleton Knight (Lv30) in HP, XP and level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalGolem is at or above the Goblin (Lv12) and below the Skeleton Knight (Lv30) in HP, XP and level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CrystalLizard (plain) is below the Skeleton (Lv26)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "CaveBat (plain) is below the Skeleton (Lv26)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "a field holds at most 20 / 24 monsters (like the woods and ruins)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monsters",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CoralCrab has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CoralCrab rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CoralCrab drops its field's material SeaShell and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CoralCrab scroll / transfer / potion / weapon chances are at most Goblin's (Plain band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CoralCrab has no weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Jellyfish has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Jellyfish rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Jellyfish drops its field's material SeaShell and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Jellyfish scroll / transfer / potion / weapon chances are at most Goblin's (Plain band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Jellyfish has no weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "HermitCrab has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "HermitCrab rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "HermitCrab drops its field's material SeaShell and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "HermitCrab scroll / transfer / potion / weapon chances are at most GoblinBrute's (Big band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "HermitCrab has no weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalLizard has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalLizard rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalLizard drops its field's material CrystalShard and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalLizard scroll / transfer / potion / weapon chances are at most Goblin's (Plain band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalLizard has no weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CaveBat has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CaveBat rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CaveBat drops its field's material CrystalShard and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CaveBat scroll / transfer / potion / weapon chances are at most Goblin's (Plain band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CaveBat has no weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "GlowMushroom has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "GlowMushroom rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "GlowMushroom drops its field's material CrystalShard and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "GlowMushroom scroll / transfer / potion / weapon chances are at most GoblinBrute's (Big band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "GlowMushroom has no weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalGolem has a loot table",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalGolem rows are valid (existing items, P in (0, 1], whole N)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalGolem drops its field's material CrystalShard and not the other field's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalGolem scroll / transfer / potion / weapon chances are at most GoblinBrute's (Big band)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "the golem has a weapon row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "the golem's weapon tier is 4 or lower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "SeaShell is a Material with Sell > 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "SeaShell is in Config.Loot.Order once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "SeaShell has a name, an icon key and a colour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalShard is a Material with Sell > 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalShard is in Config.Loot.Order once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "CrystalShard has a name, an icon key and a colour",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Sea Shell sells between Jelly and Goblin Tooth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Crystal Shard sells between Goblin Tooth and Old Bone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "the two materials sit in the list between their level neighbours",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "Loot.Order without the two materials is the base order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CoralCrab has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "Jellyfish has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "HermitCrab has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalLizard has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CaveBat has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "GlowMushroom has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem has Lines",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Spot is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Hit is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Hit lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Low is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Low lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Idle is a non-empty list",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "CrystalGolem has a BubbleFamily whose BubbleArt key is set",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "the Coral Coast kinds share one bubble family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "the Crystal Cave Woods kinds share one bubble family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "the two fields have different bubble families",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "barks",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CoralCrab is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "Jellyfish is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "HermitCrab is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CrystalLizard is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CaveBat is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "GlowMushroom is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CrystalGolem is in MonsterTypeOrder once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "every kind is in MonsterTypeOrder exactly once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "Hermit Crab counts as a Coral Crab for quests (QuestAs resolves)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CoralCrab QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CoralCrab has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "Jellyfish QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "Jellyfish has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "HermitCrab QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "HermitCrab has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CrystalLizard QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CrystalLizard has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CaveBat QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CaveBat has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "GlowMushroom QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "GlowMushroom has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CrystalGolem QuestAs (if any) is an existing kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "CrystalGolem has no QuestAs of its own (only the Hermit Crab counts as a crab)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "the others count as themselves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "order",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CoralCoast Name is printable ASCII (plus ... and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CrystalWoods Name is printable ASCII (plus ... and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CoralCrab Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CoralCrab bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "Jellyfish Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "Jellyfish bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "HermitCrab Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "HermitCrab bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CrystalLizard Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CrystalLizard bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CaveBat Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CaveBat bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "GlowMushroom Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "GlowMushroom bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CrystalGolem Name / Short are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "CrystalGolem bark lines are printable ASCII (plus the ellipsis and ~)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "the text rule itself: ASCII + ellipsis + ~ pass, Korean / accents / control characters fail",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "text",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 0,
+  "staticFailures": [],
+  "mutations": {
+    "total": 55,
+    "applied": 55,
+    "caught": 55,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "the switch is on as shipped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: CaveBat effective spawn count is 0",
+          "off :: CaveBat is not active",
+          "off :: CaveBat spawn target is 0 (also with 6 players in its field)",
+          "off :: CoralCoast is not in ZoneOrder",
+          "off :: CoralCoast rect reads as Outskirts while off, as on the base commit",
+          "off :: CoralCrab effective spawn count is 0"
+        ],
+        "newFailingCount": 29
+      },
+      {
+        "mutation": "a zone without its season",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switch :: CoralCoast is in Config.Zones with Season NewZones"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a zone put into ZoneOrder unconditionally",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: CoralCoast is not in ZoneOrder",
+          "off :: NewZonesApply while off does nothing and says false",
+          "off :: ZoneOrder is the base commit's"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "NewZonesApply appends twice",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on :: calling it twice adds nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "NewZonesApply ignores the switch",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: CoralCoast is not in ZoneOrder",
+          "off :: CrystalWoods is not in ZoneOrder",
+          "off :: NewZonesApply while off does nothing and says false",
+          "off :: ZoneOrder is the base commit's"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a placeholder rect moved onto the meadow",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: CoralCoast lies east of Config.Map.Bounds",
+          "off :: CoralCoast rect overlaps no other zone rect (Outskirts included)",
+          "off :: CoralCoast rect reads as Outskirts while off, as on the base commit",
+          "on :: CoralCoast owns exactly the points inside its rect",
+          "on :: ZoneAt of the centre of CoralCoast is CoralCoast",
+          "switch :: CoralCoast Spawn is inside its rect"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "a placeholder rect inside the map bounds",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: CrystalWoods lies east of Config.Map.Bounds",
+          "off :: CrystalWoods rect overlaps no other zone rect (Outskirts included)",
+          "off :: CrystalWoods rect reads as Outskirts while off, as on the base commit",
+          "on :: CrystalWoods owns exactly the points inside its rect",
+          "on :: with the switch on, ZoneAt over every existing zone rect is still the base commit's",
+          "switch :: CrystalWoods Spawn is inside its rect"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the new zone has a level gate",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switch :: CrystalWoods is a plain level-1 field: no PvP, no town, no faction, no level gate"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an existing kind changed (Goblin HP)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: every existing monster kind is unchanged (numbers, zone, season)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an existing loot row changed (Brute horn)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: every existing loot table and item is unchanged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an existing bark changed (Goblin)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: every existing bark, level and bubble family is unchanged"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kind without Season",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: CoralCrab effective spawn count is 0",
+          "off :: CoralCrab has Season NewZones",
+          "off :: CoralCrab is not active",
+          "off :: CoralCrab spawn target is 0 (also with 6 players in its field)",
+          "on :: CoralCrab is an add-on kind (no Takes): outside the global cap, no base slot taken"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a slime shape",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CrystalLizard is not a slime shape (A23-123)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a slime model",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: Jellyfish ModelFrom / AnimFrom is an existing non-slime kind"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the golem is a boss",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CrystalGolem is not a boss"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a ranged kind",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CoralCrab has no Ranged / Ambush / Pack / PartnerOf"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the golem is small",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: the golem is big (Scale >= 1.8) and few (Count <= 3)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "too many golems",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: the golem is big (Scale >= 1.8) and few (Count <= 3)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the jellyfish stops floating",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: Jellyfish floats (Float set)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a model from a kind that does not exist",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CaveBat ModelFrom / AnimFrom is an existing non-slime kind"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the mushroom takes goblin slots",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "on :: GlowMushroom is an add-on kind (no Takes): outside the global cap, no base slot taken",
+          "on :: with the switch on, every existing kind keeps its count and target"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the hermit crab hits harder than the brute",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: HermitCrab Damage = 13 lies between BigSlime 4 and GoblinBrute 12"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the crab tougher than the goblin",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CoralCoast: with the level HP and XP rise strictly, Damage and Gold never fall",
+          "monsters :: CoralCrab HP = 160 lies between Slime 10 and Goblin 90"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the lizard's XP below the goblin",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CrystalLizard XP = 20 lies between Goblin 28 and Skeleton 65",
+          "monsters :: CrystalLizard is at or above the Goblin (Lv12) and below the Skeleton Knight (Lv30) in HP, XP and level"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the golem's XP above the knight",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CrystalGolem XP = 210 lies between GoblinBrute 70 and SkeletonKnight 170",
+          "monsters :: CrystalGolem is at or above the Goblin (Lv12) and below the Skeleton Knight (Lv30) in HP, XP and level"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the golem's gold is zero",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CrystalGolem Gold = 0 lies between GoblinBrute 40 and SkeletonKnight 170",
+          "monsters :: CrystalGolem Gold is a positive number",
+          "monsters :: CrystalWoods: with the level HP and XP rise strictly, Damage and Gold never fall"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stats fall inside a field (bat tougher than mushroom)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CrystalWoods: with the level HP and XP rise strictly, Damage and Gold never fall"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kind without its own level",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CoralCrab (Plain, Lv1) has a lower and an upper ladder neighbour",
+          "monsters :: CoralCrab has its own level",
+          "monsters :: CoralCrab is above every slime-family kind of Lv <= 5 (HP 40, XP 18) and above Lv5"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "levels not rising (jellyfish below the crab)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monsters :: CoralCoast: with the level HP and XP rise strictly, Damage and Gold never fall"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a kind twice in MonsterTypeOrder",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "order :: Jellyfish is in MonsterTypeOrder once",
+          "order :: every kind is in MonsterTypeOrder exactly once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a kind missing in MonsterTypeOrder",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: GlowMushroom effective spawn count is 0",
+          "off :: GlowMushroom spawn target is 0 (also with 6 players in its field)",
+          "on :: GlowMushroom effective count = its Count",
+          "on :: GlowMushroom target without players = its Count",
+          "on :: group ran to the end without a Lua error",
+          "order :: GlowMushroom is in MonsterTypeOrder once"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "HermitCrab QuestAs typo",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "order :: Hermit Crab counts as a Coral Crab for quests (QuestAs resolves)",
+          "order :: HermitCrab QuestAs (if any) is an existing kind"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a loot item id typo",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: HermitCrab drops its field's material SeaShell and not the other field's",
+          "loot :: HermitCrab rows are valid (existing items, P in (0, 1], whole N)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a loot chance above 1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CrystalGolem rows are valid (existing items, P in (0, 1], whole N)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a loot chance of 0",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: GlowMushroom rows are valid (existing items, P in (0, 1], whole N)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a scroll chance above the neighbour (crab Enh70)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CoralCrab scroll / transfer / potion / weapon chances are at most Goblin's (Plain band)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a transfer chance above the neighbour (hermit Move70)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: HermitCrab scroll / transfer / potion / weapon chances are at most GoblinBrute's (Big band)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a potion chance above the neighbour (jellyfish)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: Jellyfish scroll / transfer / potion / weapon chances are at most Goblin's (Plain band)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a weapon row on the mushroom",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: GlowMushroom has no weapon row"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the golem drops a tier 5 weapon",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CrystalGolem scroll / transfer / potion / weapon chances are at most GoblinBrute's (Big band)",
+          "loot :: the golem's weapon tier is 4 or lower"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the golem's weapon chance above the brute's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CrystalGolem scroll / transfer / potion / weapon chances are at most GoblinBrute's (Big band)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a material sells for nothing",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: Sea Shell sells between Jelly and Goblin Tooth",
+          "loot :: SeaShell is a Material with Sell > 0"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a material not in the item order",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: SeaShell is in Config.Loot.Order once",
+          "loot :: the two materials sit in the list between their level neighbours"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a material is not a Material",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CrystalShard is a Material with Sell > 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the crab drops the other field's material",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CoralCrab drops its field's material SeaShell and not the other field's"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a new loot table is missing (bat)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CaveBat has a loot table"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a missing bark line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "barks :: CoralCrab Low is a non-empty list"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a bark line that is not a string",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "barks :: CrystalGolem Idle lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind",
+          "text :: CrystalGolem bark lines are printable ASCII (plus the ellipsis and ~)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a bark line too long",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "barks :: Jellyfish Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a bark line shared with another kind",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "barks :: CoralCrab Spot lines are short (<= 24 chars; A23-74: <= 2 words, 12 letters) and not shared with another kind"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no bubble family",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "barks :: CoralCrab has a BubbleFamily whose BubbleArt key is set",
+          "barks :: the Coral Coast kinds share one bubble family"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a family without bubble art key",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "barks :: CaveBat has a BubbleFamily whose BubbleArt key is set",
+          "barks :: CrystalGolem has a BubbleFamily whose BubbleArt key is set",
+          "barks :: CrystalLizard has a BubbleFamily whose BubbleArt key is set",
+          "barks :: GlowMushroom has a BubbleFamily whose BubbleArt key is set"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "Korean in a name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "text :: CoralCrab Name / Short are printable ASCII (plus the ellipsis and ~)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a heart in a bark line",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "text :: GlowMushroom bark lines are printable ASCII (plus the ellipsis and ~)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "an accent in an item name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: CrystalShard has a name, an icon key and a colour"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "af4a34747244263b0e0d5e6c1e7a8ea1d3f4f4c484674b85a84356b379bba64d",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8"
+  },
+  "fixtureSHA256": "83327b16894eb684cf384cc4519ed3bf732f24c2cf2aa4ec1bfd9a880fac8588",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-119 / A23-123 new fields: Config.NewZones.Enabled is false as shipped; with it off the two zones (Coral Coast, Crystal Cave Woods, placeholder rects east of Config.Map.Bounds) are out of Config.ZoneOrder, the seven kinds (Season NewZones) are inactive with spawn count / target 0, and ZoneAt over every existing zone rect, every existing zone, kind, loot table, bark and level equal the base commit 048127fa9e; with it on Config.NewZonesApply appends the zones once (twice adds nothing), their centres resolve to them, the kinds get their Count, no existing point changes zone and no existing kind changes count. Kinds: no slime shape / model, no boss, no ranged; positive numbers; stats rise with MonsterLevel inside a field; HP / Damage / XP / Gold lie between the level neighbours on the plain ladder (Slime Lv2, Goblin Lv12, Skeleton Lv26; Scale < 1.2) or the big ladder (Slime Prince Lv5, Goblin Brute Lv18, Skeleton Knight Lv30; Scale >= 1.2), equal allowed; Float on Jellyfish / Cave Bat; golem Scale >= 1.8 and Count <= 3. Loot: every item exists, P in (0, 1], the field's material (Material, Sell > 0, in Config.Loot.Order), scroll / transfer / potion / weapon chances at most the Goblin's (plain) or Goblin Brute's (big), a weapon row (tier <= 4) only on the golem. Barks: 4 moments with short lines (<= 24 chars; A23-74 <= 2 words and 12 letters, not shared with another kind), a bubble family. MonsterTypeOrder once each, QuestAs resolves, English-only text (printable ASCII, the ellipsis and ~).",
+  "limitations": "Config data only: the spawn code (MonsterService), the maps / panels that read Config.ZoneOrder and the client bubbles are not run here (they are covered by test_map_v2, test_monster_bark and the season suites). The zone rects are placeholders: the real land, the 3D models, bubble art, item icons, minimap and music are not made yet."
+}

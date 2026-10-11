@@ -4,6 +4,8 @@
 local BANDS = { -- field -> { lowest, highest } level a monster there may have
 	SlimeMeadow = { 1, 9 }, PumpkinPatch = { 1, 12 }, HauntedHollow = { 1, 12 }, GoblinWoods = { 10, 24 },
 	SkeletonRuins = { 25, 40 },
+	-- A23-123 (2026-10-11): the NewZones fields (Config.NewZones, off as shipped): the meadow -> woods and woods -> ruins steps
+	CoralCoast = { 6, 14 }, CrystalWoods = { 12, 24 },
 }
 
 runGroup("levels", function()
@@ -25,6 +27,8 @@ runGroup("levels", function()
 	check(L("Skeleton") < L("SkeletonArcher") and L("SkeletonArcher") < L("SkeletonKnight")
 		and L("SkeletonKnight") < L("CaptainClatter"), "ruins: skeleton < archer < knight < captain")
 	check(L("PumpkinSlime") < L("PumpkinKing") and L("GhostMinion") < L("GhostKing"), "Halloween: the kings on top")
+	check(L("CoralCrab") < L("Jellyfish") and L("Jellyfish") < L("HermitCrab") and L("CrystalLizard") < L("CaveBat")
+		and L("CaveBat") < L("GlowMushroom") and L("GlowMushroom") < L("CrystalGolem"), "NewZones: the plain kind lowest, the big one on top")
 	-- a kind not listed: its zone's MinLevel
 	local w = newWorld({ EditConfig = function(c) c.MonsterLevels.Goblin = nil end })
 	check(w.Config.MonsterLevel("Goblin") == w.Config.Zones.GoblinWoods.MinLevel, "not listed: the zone's MinLevel")

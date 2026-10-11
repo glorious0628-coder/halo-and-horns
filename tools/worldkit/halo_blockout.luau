@@ -14,7 +14,7 @@ local SS = game:GetService("ServerStorage")
 local T = workspace.Terrain
 local OFF = Vector3.new(D.offset[1], 0, D.offset[2])
 -- the box follows the plan's land (③ 3차: the town grew 1.5x); OLD_BOX = where the first apply (10/11) copied the old Halo
-local BOX = { x0 = D.box[1] - 2, x1 = D.box[2] + 2, z0 = D.box[3] + 2, z1 = D.box[4] - 2, y0 = -48, y1 = 96 }
+local BOX = { x0 = D.box[1] - 2, x1 = D.box[2] + 2, z0 = D.box[3] + 2, z1 = D.box[4] - 2, y0 = -112, y1 = 96 }
 local OLD_BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -24 }
 local MAT = {
 	g = Enum.Material.Grass, d = Enum.Material.Ground, c = Enum.Material.Concrete, b = Enum.Material.Cobblestone,
@@ -168,7 +168,7 @@ local SEA_FLOOR = { [0] = { -24, Enum.Material.Basalt }, [1] = { -6, Enum.Materi
 local A = D.alph
 local idx = {}
 for i = 1, #A do idx[string.sub(A, i, i)] = i - 1 end
-local VY0, VY1 = -48, 96
+local VY0, VY1 = -112, 96 -- -112: the deepest underside stalactite (ground ~ -2, depth <= 98) stays inside
 local NY = (VY1 - VY0) / 4
 local NX, NZ = D.cols, D.rows
 local zMin = D.z0 - NZ * D.cell
@@ -179,6 +179,7 @@ local SURF = 2
 local mats, occs = {}, {}
 local cells = 0
 local Air, Water, Rock, Mud, Sand = Enum.Material.Air, Enum.Material.Water, Enum.Material.Rock, Enum.Material.Mud, Enum.Material.Sand
+local Basalt = Enum.Material.Basalt
 for ix = 1, NX do
 	local mx, ox = {}, {}
 	mats[ix], occs[ix] = mx, ox
@@ -189,11 +190,15 @@ for ix = 1, NX do
 		local r = NZ - iz + 1 -- row 1 = the north edge (z0)
 		local m = string.sub(D.m[r], ix, ix)
 		local land, top, wtop
+		-- rock hanging under the ground / ring floor (halo_blockout.py: D.und, chars of D.und_unit studs); at least the 4-stud
+		-- top layer stays so edge cells (depth 0..3) are not paper thin
+		local und = idx[string.sub(D.und[r], ix, ix)] * D.und_unit
 		if m == "s" then
 			local k = idx[string.sub(D.h[r], ix, ix)]
 			local tier = SEA_FLOOR[k]
 			if not tier then
 				land, top, wtop = VY0 - 8, Rock, nil -- nothing
+				und = 0
 			else
 				land, top, wtop = tier[1] - SURF, tier[2], (k ~= 3) and WATER_TOP or nil
 			end
@@ -207,13 +212,21 @@ for ix = 1, NX do
 			end
 			if land + SURF < WATER_TOP then wtop = math.max(wtop or WATER_TOP, WATER_TOP) end -- low shore cells stay under the sea
 		end
+		-- solid from `bottom` up to `land`: the SURF rule is not applied to the underside (hidden, <= 2 studs off is fine)
+		local bottom = math.max(land - math.max(und, 4), VY0)
 		for iy = 1, NY do
 			local yb = VY0 + (iy - 1) * 4
-			local lo = math.clamp((land - yb) / 4, 0, 1)
+			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
 			if lo > 0 then
-				mx[iy][iz] = (yb + 4 > land - 3) and top or Rock
+				if yb + 4 > land - 3 then
+					mx[iy][iz] = top
+				elseif yb < bottom + 4 then
+					mx[iy][iz] = Basalt -- the lowest 1-2 voxels
+				else
+					mx[iy][iz] = Rock
+				end
 				ox[iy][iz] = lo
-			elseif wtop and wtop - SURF > yb then
+			elseif wtop and yb >= land and wtop - SURF > yb then -- water only above the ground, never under the hanging rock
 				mx[iy][iz] = Water
 				ox[iy][iz] = math.clamp((wtop - SURF - yb) / 4, 0, 1)
 			else

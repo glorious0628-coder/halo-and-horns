@@ -1,13 +1,14 @@
-# 인계 폴더 — 무엇이 지금 기준인가 (검수 2026-10-09, 10/11 고침)
+# 인계 폴더 — 읽는 순서 (검수 2026-10-11)
 
-**이 폴더에서 지금 기준은 이 곳들이에요.**
-1. `role_prompts/` — 세션마다 시작 프롬프트(이름·모델·노력·첫 일). 표는 `role_prompts/README.md`(상시 8개 세션, 검수가 관리해요).
-2. `state/<역할>.md` — 세션별 상태(있으면).
-3. 가장 새 `review_handoff_*.md`(지금은 `review_handoff_2026-10-11b.md`) — 오늘 상태·세션 표·다음 일. 그 전 날짜 파일은 기록이에요.
-4. 10/11 새 기준 문서: `after_reset_2026-10-11.md`(리셋 뒤 할 큰 일), `api_agent_howto.md`(api_agent 쓰는 법), `agents_detail.md`(AGENTS.md 긴 설명), `docs/design/halo_restart_2026-10-11.md`(빛 마을 다시 짓기, A23-121).
+규칙 우선순위는 `AGENTS.md`의 "Which rule wins"를 따른다. 인계 파일은 현재 파일·브랜치·최신 사용자 결정과 대조한 뒤 쓴다.
 
-나머지 파일(`*_status_*`, `*_handoff_*`, `*_evening`, `*_night`, `account_switch_*`, `api_mode_start_*`, `next_account_*`, `session_prompts_*`, `main_apply_queue_*`, `review_restart_*` 등)은 **그날의 기록**이에요(헷갈릴 만한 파일은 맨 위에 '기록용' 한 줄). 옛 세션 id, 옛 담당, 옛 큐, 옛 허락, 옛 날짜(베타 10/31·마감 10/24·정식 12/19)가 적혀 있어도 오늘 일을 허락하지 않아요(AGENTS.md "Which rule wins" 6번과 같은 원칙). 세션 id는 새 문서에 쓰지 않아요(list_sessions로 찾기).
+1. `AGENTS.md` → 이 파일 → `role_prompts/README.md` → 자기 역할 프롬프트.
+2. `state/<역할>.md`가 있으면 읽는다. 검수는 `state/review.md`.
+3. 가장 최신 `review_handoff_*.md`를 끝까지 읽는다. 현재 최신은 `review_handoff_2026-10-11d.md`.
 
-- 규칙 순서: 사용자 최신 결정 → AGENTS.md → `docs/RELEASE_PLAN.md`(날짜는 A23-119가 이김) → `docs/SPEC_ADDENDUM.md` A23(번호 큰 것이 최신) → GDD.
-- 지금 날짜(A23-119): 베타 2026-12-01 11:00 KST(장인 길드 포함), 기능 마감 11/24, 정식 2027년 1월 말.
-- 세션 대화 끝부분(자동 추출)은 git에 없는 `build/handoff_<날짜>/<역할>_tail.md`에 있어요(10/09 16:11까지 = `build/handoff_2026-10-09b/`).
+- `role_prompts/`는 검수가 관리하는 시작 안내다. 모델 표·도구 이름·옛 작업 큐를 현재 실행 상태로 추정하지 않는다.
+- `state/`와 최신 검수 인계의 완료 표시는 근거 커밋·검증 결과·실제 Studio 상태를 구분해 읽는다. 파일 수정·푸시·Studio 반영·Play 검증은 각각 다른 상태다.
+- 그 밖의 날짜별 인계·설계·검토 문서는 기록이다. `after_reset_*` 등의 옛 큐·허락·사용량·종료 지시는 오늘 작업을 허락하지 않는다. `agents_detail.md`·`api_agent_howto.md`는 필요한 절만 참고한다.
+- 현재 도구로 이 프로젝트 또는 연결 worktree의 세션을 찾는다. Codex에서는 `list_threads` → `read_thread`/`wait_threads`, 사용자가 전달을 지시한 세션에는 `send_message_to_thread`를 쓴다. 세션 id는 문서에 저장하지 않는다.
+- 10/11 사용자 확인: 담당 작업 세션은 아직 새로 만들지 않았다. 최신 인계의 역할별 작업은 전달 대기이며 실행 중이 아니다.
+- 일정은 A23-119: 비공개 시험 10/17~20, 기능 마감 11/24, 공개 베타 12/1 11:00 KST(장인 길드 포함), 정식 2027년 1월 말.

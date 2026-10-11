@@ -1,31 +1,39 @@
-# 게임성 개발 2 — 상태 (2026-10-11 저녁, 새 개발 2 세션)
+# 게임성 개발 2 — 상태 (2026-10-11 19:00 리셋 전 정리)
 
-서버 전용·Studio 금지·main push 금지 그대로.
+서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). 큰 코드는 api_agent 쓰기 모드로 맡기고, 개발 2는 지휘·검증만 한다
+(사용자 "무거운 작업 다 api가"): `py tools/api_agent.py run --prompt-file P.md --out build/api_agent/<job> --model opus|sonnet
+--max-usd 5 --max-turns 60~80 --make-worktree <ref> --write --branch api/<이름> [--allow-run-modified-py]` → api/* 가지를 읽고
+시험한 뒤 검수에게 병합 요청. 보고처 = '모든 것 검수'(id는 list_sessions로).
 
-## 검증·병합 기다림 (검수) — 결과 파일은 docs/art/verification_2026-10-11/
-| 가지 | 커밋 | worktree | 시험 |
-|---|---|---|---|
-| dev2-bosshp ② 필드 보스 체력(검수 지적 6개 고친 판) | 209f5ff6 | Game-dev2-ci | test_field_boss 241·변이 98/98 |
-| dev2-landcircle ③ 바닥 원 서버(+halloween 패턴 고침) | 03603087 | Game-dev2-hint | test_boss_leap 48/48, test_first_ko_king 314, test_halloween 125/125 |
-| dev2-walkground ⑤ 걷는 바닥 태그 서버 | 0816a819 | (Game-dev2-ci에서 만듦, 지금 그 폴더는 bosshp) | test_walk_ground_server 10/10, test_water_rescue 70/70 |
-| dev2-petlist 펫 장착 거절 때 PetList | 80873fff | — | test_tamer 91/91 |
-| dev2-healfair A23-126 빛 치유 공정 | 8001260f | Game-dev2-pet | test_skill_signals 142·변이 51/51 |
-| dev2-goosemut a23_14 동등 변이 빼기 | 680d2350 | Game-dev2-snap | (시험 파일만) |
-- 모두 origin/main과, 서로와 충돌 없음(merge-tree). landcircle은 개발 1 dev1-leapfx(3a95f712)와 같이 병합 예정.
+## 오늘 main에 들어간 것 (10/11)
+dev2-bosshp(필드 보스 체력, 검수 지적 6개 고친 판) · dev2-landcircle(바닥 원 서버, +dev1-leapfx) · dev2-walkground ·
+dev2-petlist · dev2-healfair(A23-126) · dev2-goosemut · 새 구역 몬스터 표(api/dev2-newzones*, main 3acb3f18, 스위치
+Config.NewZones.Enabled = false). 쓴 api/dev2-newzones* 가지는 지움.
 
-## 정한 숫자
-- ②: docs/design/field_boss_crowd_2026-10-11.md — King 2600(Lv5~8 T2)·클래터 20000(Lv25 T4), 1명당 +50%, 몫 = 처음 때린 때부터(최소 2초)·15초 창, 0.5초마다, 보상·진영 몫 = _share. 남은 판단: Lv30+ T5/T6 클래터 혼자 빠름(몫 상한).
-- ③: docs/design/boss_leap_2026-10-11.md.
-- A23-126: 자기 3%/3초, 친구 30%, 원거리 Q 나 기준 12칸.
+## 돌고 있는 API 작업 (API 크레딧, 그대로 둬도 됨)
+1. **A23-127 설계 문서** — job `dev2_crafting_design`(opus $5/70턴) → 가지 `api/dev2-crafting-design`, 파일
+   `docs/design/crafting_market_2026-10-11.md`(장인만 제작·신화 등급·드롭표·오토/의뢰 다시 설계·전역 거래소·첫 10분·시험 이름·
+   열린 결정).
+2. **한국어 서버 A(기반)** — job `dev2_l10n_a`(opus $5/80턴, --allow-run-modified-py) → 가지 `api/dev2-l10n-a`, 기준
+   `origin/api/dev1-l10n-core` a8462d18(개발 1 L10n 중심, 검수 병합 요청 중). 범위: Lang 속성, PublicNameArg/hiddenNameArg·
+   KaijuHidden, 이름 키 도우미, 프롬프트 → Config.Text.Prompts + ActionKey/ObjectKey, 펫 기본 이름 "", 채팅·Kick 예외,
+   dev2_kit NotifyKey 대역, 시험 test_l10n_server_a(영어 글 한 글자도 그대로 비교).
+- 결과 보기: `py tools/api_agent.py status <job>`, `build/api_agent/<job>/result.md`.
 
-## 다음
-- 개발 3 인계분: 한국어 모드 서버(빛 마을 뒤 + 개발 1 계약), 선택 거리 켜기(클라 창 먼저), 10/17 지표, 새 구역(수정 동굴 숲·산호 해안) 몬스터 표(시안 고른 뒤).
-- IDEA-TITLE 칭호 쌍 초안 확정 대기.
-- Game-dev2-hint에 stage된 빛 마을 도구 8개 = 옛 검수 시험 흔적, 건드리지 말 것(검수).
-- 검토는 API로: py tools/api_agent.py run --prompt-file <md> --out build/api_agent/<job> --model sonnet --max-usd 2 --make-worktree <가지> --allow-tests.
+## 다음 큐 (순서, 검수 OK)
+1. A23-127 설계 문서 확인 → 검수에게 → 승인 뒤 서버 코드를 덩어리별 API 쓰기 작업(작업당 ≤ $5).
+2. 한국어 서버 A 확인(시험 다시 돌림) → 병합 요청. 그다음 **B**(알림 약 230곳·래퍼 17개 → NotifyKey, 서비스 묶음별 API
+   작업 2~3개) → **C**(퀘스트 TextKey/Countless·게시판 Named·KO Fx Kind/TipIndex/이름 Arg·거위 RareAnnounce·Bark 키·
+   SessionTitle id·이름표/몬스터 바 Gui 비우기·간판 TextKey+L10nText·현상수배판 BoardRows). B·C는 제작 덩어리 사이사이에.
+   규칙: 영어로 보이는 글은 한 글자도 바뀌면 안 됨 → 가지마다 "옛 글 = L10n.T(en)" 비교 시험. v4 확인 새 문제 4 항목
+   (KO Fx Name·TipIndex, Bark 키, SessionTitle, KaijuHidden, 펫 기본 이름, 퀘스트 TextKey/Countless)은 B·C 시험에.
+3. 남은 판단 없음(Lv30+ 클래터 혼자 빨리 = 베타엔 그대로, 새 구역 라이브 스위치 = 지금 필요 없음).
 
-## 검수 갱신 (10/11 오후, 3번째 검수)
-- 병합: dev2-bosshp + dev2-landcircle(+dev1-leapfx) → main 028a937e. walkground·petlist·healfair·goosemut은 합친 트리 시험 중.
-- 할로윈 시험(test_halloween)은 병합 조건이 아님 — 사용자 10/11 "할로윈은 이제 테스트 안 해도 돼, 내년 10월".
-- Lv30+ 클래터 혼자 빨리 잡기: 베타엔 그대로(검수).
-- 큰 코드는 api_agent --write 브랜치로(사용자 "큰 작업 하되, 앤트로픽 API로 SDK로"). 다음: 새 구역 몬스터 표 Config 초안 → 한국어 모드 계약 v4 서버.
+## worktree
+Game-dev2-ci, Game-dev2-hint(stage된 빛 마을 도구 8개 = 옛 검수 흔적, 건드리지 말 것), Game-dev2-pet, Game-dev2-snap —
+모두 병합 끝, 다음 일에 origin/main에서 새 가지로 재사용. 각 폴더에 build/luau_cli_0_741 있음.
+
+## 참고
+- 설계: docs/design/field_boss_crowd_2026-10-11.md, boss_leap_2026-10-11.md, new_zones_monsters_2026-10-11.md.
+- 시험이 덮어쓴 옛 docs/art/verification_* 보고서는 커밋 전에 되돌림. 새 결과는 날짜 파일로.
+- 파이썬 고칠 때 Bash 안 `\n`·`\t`가 바뀜 → Write로 스크립트 파일을 만들어 실행.

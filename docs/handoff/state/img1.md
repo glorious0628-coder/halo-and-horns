@@ -49,9 +49,14 @@
 ## 멈춘 것 (A23-121)
 - 메인 4차 적용, 옛 plan json(`halo_layout_plan_2026-10-10.json`, `tools/halo_layout.py`) 고치기, 대성당 v2·성문 v3·탑 조립본 배치
 
-## 큐
-1. ④ 골격 사진 28장 + 시트(창 요청 대기) → 판정 → 고침. (③ 회색 상자는 사용자 OK)
-2. 폭포: 5단계에서 plan v2 falls로 새 지형에 다시 놓고 사진(고친 halo_waterfx)
-3. (4단계 골격은 이미지 생성 3, 5단계 입히기 같이)
+## 큐 (10/11 15:20 정리 — 사용량 한도라 쉬는 중, 판정은 19:00 리셋 뒤)
+1. **WorldKit Studio가 15:20에 닫힘**(Roblox Studio 프로세스 0, `list_roblox_studios` = []). `build/WorldKit.rbxlx`는 15:20:26에 70MB로 저장됨 → **열면 지금까지 지은 것이 있을 가능성**(검수가 창 여는 단계를 "전달함, 시작"으로 허락해야 함). 열린 뒤 확인: `Workspace.HaloV2`(Buildings 29·Ground·Bridges·Markers), `ServerStorage.HaloSkeletons`·`HaloGrayHold`·`HaloV1Hold`. 비어 있으면 아래 순서로 **파일만으로 다시 지을 수 있음**(창 필요 없음, 전부 execute_luau, STUDIO_NAME=WorldKit):
+   `py tools/halo_blockout.py --mode apply` → build/wk/halo_blockout_apply.lua 실행 (러너 예: `build/.../runluau`, 또는 studio_mcp execute_luau) → `py tools/worldkit/skeleton_civic_run.py` → `py tools/worldkit/skeleton_ground_run.py`
+2. 사진 16장 아직 못 찍음(Studio 닫혀서): `py -X utf8 tools/worldkit/ground_shots.py`(--prep으로 자리 목록; C2c 낮 빛 바꿨다 원복 포함, 창 복원 "전달함, 시작" 뒤) → `art/review/world/halo_v2/ground/`. 본 것: 길 988·광장 원판 4·마당 16·계단 147·난간 220·다리 판 60 (총 1435조각, CSG 실패 0, WalkGround 태그 972+다리 3), 섬 아랫면 복셀 읽기(광장 아래 -56, 스폰 -80).
+3. 건물 골격 사진 판정·고칠 것(④ 통과, C2c 사진 통과) — 다음 건물 골격(집·가게·대성당·빛 성)은 이미지 생성 3.
+4. 5단계 입히기(꽃·덤불·생울타리·등불·소품·폭포 새 섬에) — 재료 목록 plan dressing, 새 섬 폭포는 plan falls로 halo_waterfx 다시.
+5. 6단계: 고정점 표 `docs/design/halo_fixed_points_v2_2026-10-11.md`대로 개발 1·2가 Config·시험 고침 → 메인 반영 1.
+6. 무기고 뒤 창 2개: 이미지 생성 2가 새 2D 뒤에 골격에 넣음. 성문 받침 등·작은 기둥·난간은 Tripo 4면 2D 큐.
+7. api_agent: 큰 코드는 `docs/handoff/api_agent_howto.md`대로(작업 폴더 만들기 느림 → 겹쳐 시작 금지). 이번에 만든 것: skeleton_ground($1.21), island_underside($0.38), 둘 다 main에 올림(daf4094), 브랜치 삭제 가능.
 
 ## 커밋 안 된 것: 없음 (공유 트리, push_paths 사용)

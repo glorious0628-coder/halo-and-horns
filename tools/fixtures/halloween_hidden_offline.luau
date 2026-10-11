@@ -63,7 +63,8 @@ check(Config.SeasonOn("Halloween", true) == true, "the test override still turns
 local zoneSeasonal, zoneCount = {}, 0
 for id, z in Config.Zones do
 	zoneCount += 1
-	if z.Season ~= nil then zoneSeasonal[id] = z.Season end
+	-- A23-123 (2026-10-11): the two NewZones fields are their own season (Config.NewZones, tools/test_new_zones.py)
+	if z.Season ~= nil and z.Season ~= "NewZones" then zoneSeasonal[id] = z.Season end
 end
 check(zoneSeasonal.PumpkinPatch == "Halloween" and zoneSeasonal.HauntedHollow == "Halloween" and next(zoneSeasonal, next(zoneSeasonal, next(zoneSeasonal))) == nil,
 	"only the two Halloween fields are seasonal zones (still in Config.Zones: nothing is deleted)", "")
@@ -79,7 +80,10 @@ end
 -- monsters: every seasonal kind is off, and nothing else lives in the two fields
 local seasonal = 0
 for kind, def in Config.MonsterTypes do
-	if def.Season ~= nil then
+	if def.Season == "NewZones" then
+		-- A23-123: the new fields' kinds (off as shipped too; their own suite is tools/test_new_zones.py)
+		check(Config.MonsterActive(kind) == false and not SEASONAL_ZONES[def.Zone], kind .. " (NewZones) is off and lives outside the two fields", tostring(def.Zone))
+	elseif def.Season ~= nil then
 		seasonal += 1
 		check(Config.MonsterActive(kind) == false, kind .. " does not spawn", tostring(Config.MonsterActive(kind)))
 	else
