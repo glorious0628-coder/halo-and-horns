@@ -48,3 +48,5 @@
 - 병합 순서: golden-egg 3d95925a → v4-tables e5c8bb08 → 묶음 ①(0325d628+6fc3ba52) → onehand-2(끝 커밋 기다림: 자세 a23c7e4a + 뿔 마법사·궁수 부호) → dev3-gather(꺼짐) → dev4-bag. 반박 검토 워크플로 w3jgufgba, w47n34coa.
 - (23:10) **병합 끝 main 3176b8fb:** golden-egg 3d95925a → v4-tables e5c8bb08 → lesstext 0325d628 → lesstext-server 6fc3ba52 (반박 검토 결함 0, 합친 나무에서 compile 17 + egg_fx·save_v4·return·pause_card·onboarding·town_quests·first_steps·a23_14 통과). 메인 반영 1에 sync·PC 사진·Save As 보냄(화면 OK 줌). golden-egg Eggs 모드 낮은 것 1개 → 개발 1(Mode 켜기 전). 다음: dev4-bag(ORDER 한 줄 맞춘 뒤) → onehand-2(끝 커밋) → dev3-gather.
 - push_paths v3 46e56f3(리뷰 6개 반영, 41 + 23/24 시험) — 재검토 워크플로 waw96jyfs 도는 중.
+- (00:10 10/12) **병합 끝 main d688f360:** onehand-2 0dc6c46d → dev4-bag 597e5faf → dev3-gather 520e8cb7(꺼짐) → dev3-craft 22cda7d5(꺼짐). 합친 나무 시험 17 + a23_14 통과, 반박 검토 결함 0(낮은 것 4 → 개발 4). 메인 반영 1 sync·사진 보냄(Save As는 사진 뒤 따로). 앞 병합 사진에서 받기 칩 "+150..." 잘림 → 개발 1. place 저장 b82e7de(SHA dffacff7…, 23:25).
+- 다음 병합 후보: dev3-craft b868d6ce(켜기 전 고칠 것), spawnclear 새 판(개발 2), dev4-gather 9e42277c·dev4-craft 6ecc3197, 개발 4 bag 낮은 것 가지.
