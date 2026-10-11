@@ -53,7 +53,7 @@ MUTATIONS = [
     ("VIEW", "bad ids kept", "if type(id) == \"string\" and #id <= 64 and t then", "if t then"),
     ("VIEW", "no cap on entries", "\t\t\tif n >= G.MaxIds then break end\n", ""),
     ("VIEW", "bound only at Start", "\tbind() -- before any Start", "\t-- before any Start"),
-    ("MAIN", "the view is never loaded", "\"QuestBook\", \"GatherView\",", "\"QuestBook\","),
+    ("MAIN", "the view is never loaded", "\"BagUI\", \"GatherView\",", "\"BagUI\","),
 ]
 
 
