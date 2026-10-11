@@ -9,7 +9,7 @@ No Studio, network, DataStore or Roblox API calls. Mutations run on in-memory co
 Spec: docs/SPEC_ADDENDUM.md A23-39 + 검수 2026-10-06 (tamer damage = Halo archer damage, the pet once, the free change
 once; bare-handed = punch rules with the pet look).
 Usage: py tools/test_tamer.py [--no-mutations] [--luau path/to/luau.exe]
-Report: docs/art/verification_2026-10-06/offline_dev2_tamer_2026-10-06.json
+Report: docs/art/verification_2026-10-11/offline_dev2_tamer_2026-10-11.json (EquipPet resync; was ..._2026-10-06.json)
 """
 from __future__ import annotations
 
@@ -38,9 +38,9 @@ MUTATIONS = [
     ("a put-away pet still levels", PE, "\tlocal uid = pets.Equipped[1]\n\tlocal p = uid and pets.List[uid] or nil\n\tif not p then return end\n\tlocal need",
      "\tlocal uid = next(pets.List)\n\tlocal p = uid and pets.List[uid] or nil\n\tif not p then return end\n\tlocal need"),
     ("no list to the owner", PE, "\t\tNet.Get(\"PetList\"):FireClient(player, { Equipped = pets.Equipped[1] or \"\", List = list,\n\t\t\tCanPutAway = not isTamer(player, data) })\n", ""),
-    ("cannot put it away", PE, "\tif uid == \"\" then\n\t\tif isTamer(player, data) then return end\n\t\tpets.Equipped, pets.Away = {}, true\n",
+    ("cannot put it away", PE, "\tif uid == \"\" then\n\t\tif isTamer(player, data) then return equipRefused(player) end\n\t\tpets.Equipped, pets.Away = {}, true\n",
      "\tif uid == \"\" then\n\t\treturn\n"),
-    ("any uid equips", PE, "\t\tif not p or not known(p.Sp) then return end\n\t\tpets.Equipped, pets.Away = { uid }, false",
+    ("any uid equips", PE, "\t\tif not p or not known(p.Sp) then return equipRefused(player) end\n\t\tpets.Equipped, pets.Away = { uid }, false",
      "\t\tpets.Equipped, pets.Away = { uid }, false"),
     ("no rate limit", PE, "or not Util.RateLimit(player, \"EquipPet\", num(Config.RateLimits.EquipPet, 0.5)) then", "then"),
     ("extra arguments allowed", PE, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal uid = ...", "\tlocal uid = ..."),
@@ -58,13 +58,13 @@ MUTATIONS = [
     ("M1 Away any truthy value", PE, "\tlocal away = pets.Away == true and #equipped == 0 and next(list) ~= nil\n",
      "\tlocal away = pets.Away ~= nil and pets.Away ~= false and #equipped == 0 and next(list) ~= nil\n"),
     ("M1 putting away is not saved", PE, "\t\tpets.Equipped, pets.Away = {}, true\n", "\t\tpets.Equipped, pets.Away = {}, false\n"),
-    ("M1 bringing it out keeps Away", PE, "\t\tif not p or not known(p.Sp) then return end\n\t\tpets.Equipped, pets.Away = { uid }, false",
-     "\t\tif not p or not known(p.Sp) then return end\n\t\tpets.Equipped = { uid }"),
+    ("M1 bringing it out keeps Away", PE, "\t\tif not p or not known(p.Sp) then return equipRefused(player) end\n\t\tpets.Equipped, pets.Away = { uid }, false",
+     "\t\tif not p or not known(p.Sp) then return equipRefused(player) end\n\t\tpets.Equipped = { uid }"),
     ("M1 the tamer's pet can stay away", PE, "return grant(player, TAMER.Pet, \"\", \"\", not quiet and TXT.PetGot or nil, true)",
      "return grant(player, TAMER.Pet, \"\", \"\", not quiet and TXT.PetGot or nil, false)"),
     ("M1 the tamer's pet out keeps Away", PE, "\t\t\tpets.Equipped, pets.Away = { have }, false\n", "\t\t\tpets.Equipped = { have }\n"),
     ("M1 the catch-up for an owned pet", PE, "\tif findSpecies(data.Pets, G.Species) then return end\n", ""),
-    ("M1 the tamer may put it away", PE, "\t\tif isTamer(player, data) then return end\n\t\tpets.Equipped, pets.Away = {}, true", "\t\tpets.Equipped, pets.Away = {}, true"),
+    ("M1 the tamer may put it away", PE, "\t\tif isTamer(player, data) then return equipRefused(player) end\n\t\tpets.Equipped, pets.Away = {}, true", "\t\tpets.Equipped, pets.Away = {}, true"),
     ("M1 CanPutAway always true", PE, "CanPutAway = not isTamer(player, data) })", "CanPutAway = true })"),
     ("M1 no list after a class change", PE, "\tif type(data.Pets) == \"table\" and type(data.Pets.List) == \"table\" then sendList(player, data) end\nend",
      "end"),
@@ -163,6 +163,16 @@ MUTATIONS = [
     ("the pet models are never published", PE, "\tlocal ok, err = pcall(PetService.PublishModels)\n", "\tlocal ok, err = true, nil\n"),
     ("scripts are copied with the model", PE, "\t\t\t\t\tif SCRIPT_CLASSES[d.ClassName] then d:Destroy() end\n", ""),
     ("a model is copied again every publish", PE, "if src and not folder:FindFirstChild(species) then", "if src then"),
+    # dev1 report 2026-10-11: a refused EquipPet sends the true list back (throttled), a malformed one is never answered
+    ("a refusal (too fast / not ready) stays silent", PE, "num(Config.RateLimits.EquipPet, 0.5)) then\n\t\treturn equipRefused(player)\n",
+     "num(Config.RateLimits.EquipPet, 0.5)) then\n\t\treturn\n"),
+    ("the tamer's refusal stays silent", PE, "\t\tif isTamer(player, data) then return equipRefused(player) end",
+     "\t\tif isTamer(player, data) then return end"),
+    ("an unknown uid stays silent", PE, "\t\tif not p or not known(p.Sp) then return equipRefused(player) end",
+     "\t\tif not p or not known(p.Sp) then return end"),
+    ("refusals flood the list", PE, "\tPetService.Sanitize(data)\n\tsendListSoon(player, data)\n", "\tPetService.Sanitize(data)\n\tsendList(player, data)\n"),
+    ("a malformed one is answered", PE, "\tif type(uid) ~= \"string\" or #uid > LIMIT.UidLen then return end\n",
+     "\tif type(uid) ~= \"string\" or #uid > LIMIT.UidLen then return equipRefused(player) end\n"),
 ]
 
 
@@ -199,7 +209,7 @@ SUITE = Suite(
     mark="TAMER",
     fixture=ROOT / "tools/fixtures/tamer_offline.luau",
     world=ROOT / "tools/fixtures/dev2_combat_world.luau",
-    out=ROOT / "docs/art/verification_2026-10-06/offline_dev2_tamer_2026-10-06.json",
+    out=ROOT / "docs/art/verification_2026-10-11/offline_dev2_tamer_2026-10-11.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-39 server: Config.IsTamer(class, faction) = Neutral + Archer. Config.Classes.Archer.Names.Neutral = "
              "'펫 조련사'; Config.WeaponName = Config.WeaponNames.Tamer (조련 지휘봉 줄) and WeaponArtKey 'Weapon_Tamer_T1..6' "

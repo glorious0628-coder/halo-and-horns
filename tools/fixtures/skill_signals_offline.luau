@@ -538,6 +538,9 @@ end)
 local function scene(base, cls, fac, big)
 	return withSources(base, function()
 		local w = sigWorld({ Hit = true, PvP = true })
+		-- A23-126 changed the Halo self-heal cap on purpose (3%): the 'same numbers' scene compares everything else, with
+		-- the old self cap (its own group checks the new rule)
+		if not base then w.Config.BasicSkill.HaloSelfHealCapPct = w.Config.BasicSkill.HaloHealCapPct end
 		local heals, L = {}, {}
 		local realHeal = w.Combat.HealPlayer
 		w.Combat.HealPlayer = function(pl, amount)
@@ -633,6 +636,89 @@ local function scene(base, cls, fac, big)
 		return { Lines = L, Damage = #w.Damage, Moves = #moves, Rel = #w.Rel, Heals = given }
 	end)
 end
+
+-- A23-126 (user 2026-10-11 "추천대로"): a Halo heal's share for the caster is at most 3% of its MaxHealth per 3 s (the Horns
+-- life steal cap), a friend's 30%; a ranged Q (Star Fall / Feather Rain) heals around the caster within 12, like Z / X
+runGroup("A23-126 heal fairness", function()
+	local C0 = sigWorld().Config
+	local B = C0.BasicSkill
+	check(B.HaloSelfHealCapPct == 0.03 and B.HaloHealCapPct == 0.30 and B.HaloHealRadius == 12
+		and C0.Factions.Horns.LifestealCapPct == B.HaloSelfHealCapPct, "self 3% (= Horns life steal), friends 30%, ranged Q around me 12",
+		show({ B.HaloSelfHealCapPct, B.HaloHealCapPct, B.HaloHealRadius }))
+	check(C0.Skills.Defs.Mage.Q.Halo.DescEn == "A big star falls on the closest monster. Heals you and friends."
+		and C0.Skills.Defs.Archer.Q.Halo.DescEn == "Gold arrows rain on the closest group. Heals you and friends.",
+		"Star Fall / Feather Rain lines: '...Heals you and friends.'")
+	local function world()
+		local w = sigWorld({})
+		w.Got = {}
+		local real = w.Combat.HealPlayer
+		w.Combat.HealPlayer = function(pl, amount)
+			local g = real(pl, amount)
+			table.insert(w.Got, { P = pl, A = amount, G = g })
+			return g
+		end
+		function w:HealOf(p, from)
+			local n = 0
+			for i = (from or 0) + 1, #self.Got do
+				if self.Got[i].P == p then n += self.Got[i].G or 0 end
+			end
+			return n
+		end
+		return w
+	end
+	local function hurt(w, p, max, hp)
+		w:Hum(p).MaxHealth, w:Hum(p).Health = max, hp
+	end
+	for _, cls in { "Warrior", "Mage", "Archer" } do
+		-- alone: the Q heals me (A23-126: the solo hunter gets it), at most 3% of my MaxHealth per 3 s, Q + Z together
+		local w = world()
+		local p = w:Hero(1, { Class = cls, Faction = "Halo", Tier = 6, Mask = 63, Level = 40 })
+		hurt(w, p, 1000, 100)
+		for i = 0, 4 do w:Monster("BigSlime", 5, i - 2, 999999) end
+		w:Use(p, "Q")
+		local q = w:HealOf(p)
+		check(q > 0 and q <= 30 + 1e-6, cls .. " Halo alone: the Q heals me, at most 3% (30 of 1000)", tostring(q))
+		local mark = #w.Got
+		w:Advance(0.6)
+		w:Use(p, "Z")
+		check(q + w:HealOf(p, mark) <= 30 + 1e-6, cls .. ": Q + Z within 3 s stay under the one 3% cap", tostring(q + w:HealOf(p, mark)))
+		w:Advance(3.2)
+		mark = #w.Got
+		w:Use(p, "Q")
+		check(w:HealOf(p, mark) > 0, cls .. ": 3 s later the cap has room again", tostring(w:HealOf(p, mark)))
+		-- a friend beside me: up to 30%
+		local w2 = world()
+		local p2 = w2:Hero(1, { Class = cls, Faction = "Halo", Tier = 6, Mask = 63, Level = 40 })
+		local f2 = w2:Hero(2, { Class = "Mage", Faction = "Halo", Pos = vec(0, 0, 3) })
+		hurt(w2, p2, 1000, 100)
+		hurt(w2, f2, 1000, 100)
+		for i = 0, 4 do w2:Monster("BigSlime", 5, i - 2, 999999) end
+		w2:Use(p2, "Q")
+		local mine, theirs = w2:HealOf(p2), w2:HealOf(f2)
+		check(mine <= 30 + 1e-6 and theirs > 30 and theirs <= 300 + 1e-6, cls .. ": a friend gets more than my 3% (up to 30%)",
+			show({ mine, theirs }))
+	end
+	-- the ranged Q heals around ME: a friend near me (far from the blast) is healed, one near the blast but 12+ from me not
+	for _, cls in { "Mage", "Archer" } do
+		local w = world()
+		local p = w:Hero(1, { Class = cls, Faction = "Halo", Tier = 6, Mask = 63, Level = 40 })
+		local nearMe = w:Hero(2, { Class = "Warrior", Faction = "Halo", Pos = vec(0, 0, 10.5) }) -- 10.5 behind me (in 12, past 9), 30 from the blast
+		local nearBlast = w:Hero(3, { Class = "Warrior", Faction = "Halo", Pos = vec(0, 0, -21) }) -- 1 from the blast, 21 from me
+		for _, pl in { nearMe, nearBlast } do hurt(w, pl, 1000, 100) end
+		w:Monster("BigSlime", 20, 0, 999999)
+		w:Use(p, "Q")
+		check(w:HealOf(nearMe) > 0 and w:HealOf(nearBlast) == 0, cls .. " Halo Q: heals around me (12), not around the blast",
+			show({ w:HealOf(nearMe), w:HealOf(nearBlast) }))
+	end
+	-- the Warrior's Q is around itself anyway (radius 9): a friend 10 away is not healed by its Q
+	local ww = world()
+	local pw = ww:Hero(1, { Class = "Warrior", Faction = "Halo", Tier = 6, Mask = 63, Level = 40 })
+	local far = ww:Hero(2, { Class = "Mage", Faction = "Halo", Pos = vec(0, 0, 10) })
+	hurt(ww, far, 1000, 100)
+	ww:Monster("BigSlime", 3, 0, 999999)
+	ww:Use(pw, "Q")
+	check(ww:HealOf(far) == 0, "Warrior Halo Q: still its own 9 around itself (a friend 10 away is not healed)", tostring(ww:HealOf(far)))
+end)
 
 runGroup("same numbers as before", function()
 	local old = withSources(true, function() return sigWorld().Combat.Kit.Motion end)

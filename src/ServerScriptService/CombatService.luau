@@ -803,7 +803,8 @@ function SKILL.Fit(want, room)
 end
 
 -- Halo skill support: every Halo player alive within `radius` of `center` (the caster too) heals HaloHealPct of the HP
--- the cast really removed, at most HaloHealCapPct of their MaxHealth per 3 s from this caster. Returns the OTHER
+-- the cast really removed, at most HaloHealCapPct of their MaxHealth per 3 s from this caster - the caster itself at
+-- most HaloSelfHealCapPct (A23-126: 3%, the Horns life steal cap; solo both sides heal alike). Returns the OTHER
 -- players healed (Released.Healed) and, A23-116, the UserIds of everyone whose HP really went up (the caster too), the
 -- TUNE.HEALED_MAX nearest to `center`, nearest first (the Fx Healed signal). A whiff heals nothing.
 function SKILL.Heal(player, center, radius, total)
@@ -817,7 +818,8 @@ function SKILL.Heal(player, center, radius, total)
 			local aRoot = Util.GetRoot(a)
 			local aHum = Util.GetHumanoid(a)
 			if aRoot and aHum and Util.FlatDistance(aRoot.Position, center) <= radius then
-				local room = SKILL.Room("Heal", player, a, (skill.HaloHealCapPct or 0.30) * aHum.MaxHealth)
+				local capPct = a == player and (skill.HaloSelfHealCapPct or 0.03) or (skill.HaloHealCapPct or 0.30)
+				local room = SKILL.Room("Heal", player, a, capPct * aHum.MaxHealth)
 				local want = SKILL.Fit((skill.HaloHealPct or 0.10) * total, room)
 				local amount = want > 0 and CombatService.HealPlayer(a, want) or 0
 				SKILL.Book("Heal", player, a, amount)
@@ -1324,7 +1326,10 @@ function CombatService.Release(player, isAuto, hint)
 
 	-- 6. Halo skill support heals the Halo players inside the blast (self included) from the HP really removed (a whiff
 	-- heals nothing); SKL-2: per ally through the 3 s window (SKILL.Heal). A23-116: healedIds = the Fx Healed signal
-	local healed, healedIds = SKILL.Heal(player, center, radius, total)
+	-- A23-126: a ranged Q (ReleaseCenter Target) heals around the caster within HaloHealRadius, like Z / X
+	local healAt, healR = center, radius
+	if c.ReleaseCenter == "Target" then healAt, healR = pos, skill.HaloHealRadius or 12 end
+	local healed, healedIds = SKILL.Heal(player, healAt, healR, total)
 
 	-- 7. lifesteal (Horns) on the total; SKL-2: the skills' 3 s window (SKILL.Steal). A23-116: stole = the Fx Stole signal
 	local stole = SKILL.Steal(player, total)
