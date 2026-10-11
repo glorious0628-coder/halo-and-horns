@@ -14,6 +14,17 @@
    "studsNote": "이미지 생성 3 10/11: house 07 skeleton, about 6 block rows over the 8-stud door (concept 1.2-1.4 studs a row)"
   },
   {
+   "name": "HH_HaloMarbleBlock_Cream",
+   "base": "Marble",
+   "studsPerTile": 12,
+   "pattern": "Regular",
+   "source": "art/ui/halo_tile/Halo_TowerMarbleBlockCream_* (이미지 개발 10/11, 검수: v2 of the marble block - brighter warm cream, grout contrast halved, veins softened, normal xy x0.55; rough / metal = the v1 files). Compare: art/review/imgdev/halo_marble_cream_compare_2026-10-11.jpg",
+   "color": "rbxassetid://80357186990466",
+   "normal": "rbxassetid://73394105072257",
+   "rough": "rbxassetid://82509703836879",
+   "metal": "rbxassetid://87489921567476"
+  },
+  {
    "name": "HH_HaloGoldTrim",
    "base": "Metal",
    "studsPerTile": 4,
