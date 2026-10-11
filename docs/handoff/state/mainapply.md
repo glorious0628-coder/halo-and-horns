@@ -5,7 +5,7 @@
 - 코드: origin/main **2406d35d** 시점까지 sync됨(스킬 창 SkillBook·걷는 바닥 Ground·대검/지팡이 쥐기·빛 마을 조명 C2c 포함). 공유 트리가 뒤처지면 `git fetch && git reset --keep origin/main` 뒤 `py tools/sync_to_studio.py`.
 - 마지막 저장: 2026-10-10 20:10:36(place/ 72a5f19). 그 뒤 월드 변경 없음, 코드 sync만 미저장 → 저장(Save to Roblox + Save As build/GoodEvil.rbxlx)은 새 검수 "전달함, 시작" 뒤에.
 - 빛 마을 4차 적용 중단(A23-121). 새 마을이 다 될 때까지 메인 빛 마을 건드리지 말 것.
-- 보고처: **새 '모든 것 검수' = local_94cfa4bc-942c-4ac1-97a4-e9f609739523**.
+- 보고처: '모든 것 검수' 세션(id는 list_sessions로 찾기).
 
 ## 오늘 한 일 (사진: docs/art/verification_2026-10-11/main_apply/)
 skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bridge/(다리 위 스킬 원), twohand_horns/·twohand_horns2/·twohand_v2/·twohand_v2b/(grips9/ 포함)·twohand_v3/(쥐기), twohand_mage/(Lv25 마법사 창), halo_light_c2c/(낮·밤), halo_entrance/·halo_entrance2/(입구 전체).
@@ -25,4 +25,4 @@ skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bri
 - Studio 사진 폴더: `docs/art/verification_2026-10-10/main_apply_morning/<이름>/`.
 
 ## 막힌 것 / 결정 대기
-- 없음. 새 검수(local_78581314) 큐 대기.
+- 없음. 검수 큐 대기.

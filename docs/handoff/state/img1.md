@@ -33,7 +33,7 @@
   - 사진 도구: `py tools/worldkit/skeleton_civic_shots.py [--prep]`(창 복원 = 새 검수 "전달함, 시작" 뒤) → `art/review/world/halo_v2/skeleton/`, 시트 `py tools/worldkit/skeleton_civic_sheet.py`(콘셉트 2D | 사진).
   - 계획 높이 KINDS: 성문 44→48, 탑 36→46, 전망 탑 50.
   - 앞으로: 사진 판정 → 고침, 대성당·빛 성 등은 이미지 생성 3, 5단계 재료(섬 아랫면 바위·흰 바위·디딤돌) 아직.
-  - 보고처: **새 검수 = local_94cfa4bc-942c-4ac1-97a4-e9f609739523** (이전 local_78581314는 물러남).
+  - 보고처: '모든 것 검수' 세션(id는 list_sessions로 찾기).
 
 ## 폭포 물줄기 (5단계 재료)
 - High 최종 업로드 `rbxassetid://111806947888357` (`art/ui/Halo_WaterfallStreaks.png`, approved.json·asset_ids.json 기록, 5 크레딧)
