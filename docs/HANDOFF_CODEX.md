@@ -28,7 +28,7 @@
 **화면 칸 규칙:** Studio Play는 한 번에 하나(겹치면 사진 하얘짐). 순서는 검수가 "전달함, 시작"으로.
 
 > (이전) 최신 인계 (2026-10-07 밤 23:00 컴퓨터 끄기 전) — 검수 작성
-사용자: "오후 11시까지 작업 정리하고 컴퓨터 꺼 줘" → 저장(22:39) 뒤 "컴퓨터도 꺼줘"로 22:43경 종료(`shutdown /s /f`, 검수). 세션별 밤 인계: `docs/handoff/*_2026-10-07_night.md`. 오늘 사용자 지적은 SPEC **A23-74**, 대조 결과는 `docs/review/main_studio_audit_2026-10-08.md`, 게시 체크리스트는 `docs/design/launch_ops_checklist.md`.
+사용자: "오후 11시까지 작업 정리하고 컴퓨터 꺼 줘" → 저장(22:39) 뒤 "컴퓨터도 꺼줘"로 22:43경 종료(`shutdown /s /f`, 검수). 세션별 밤 인계: `docs/handoff/*_2026-10-07_night.md` (10/11 지움, `git show 1a20b514:docs/handoff/<역할>_2026-10-07_night.md`). 오늘 사용자 지적은 SPEC **A23-74**, 대조 결과는 `docs/review/main_studio_audit_2026-10-08.md`, 게시 체크리스트는 `docs/design/launch_ops_checklist.md`.
 
 **메인 Studio(build/GoodEvil.rbxlx):** 21:22 저장본에 지도 v2 코드·지형·초원 3D 60·숲 키트 202·빛 마을 3D 나무·고갯길 3D 바위 70·묻힌 장식 16 고침·새 지형 타일 9·SunRays 끔·몬스터 색 3장이 들어감. 그 뒤 개발 1이 감사 고침(안내 버튼 자동 번역 끔, 제단 E 바로, 하늘 빌보드 안 씀) + **새 HUD(4f20a8b) + 말풍선 bark2(fb137f6)**까지 sync하고 PC·폰 Play 사진 → Ctrl+S → place/ 복사·commit 중이었음(개발 1 밤 인계에서 저장 시간 확인).
 
