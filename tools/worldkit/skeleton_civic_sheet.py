@@ -4,7 +4,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-D = os.path.join(ROOT, "art", "review", "world", "halo_v2", "skeleton")
+D = os.path.join(ROOT, os.environ.get("SK_OUT", "art/review/world/halo_v2/skeleton"))
 A = os.path.join(ROOT, "art", "out", "s2", "halo")
 ROWS = {
     "Gate": (["HaloProp_Gate_front_HQ_src.png", "HaloProp_Gate_left_HQ_src.png"],

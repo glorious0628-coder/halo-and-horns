@@ -7,7 +7,7 @@ import ctypes, json, math, os, shutil, subprocess, sys, time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.chdir(ROOT)
-OUT = "art/review/world/halo_v2/skeleton"
+OUT = os.environ.get("SK_OUT", "art/review/world/halo_v2/skeleton")
 os.makedirs(OUT, exist_ok=True)
 PLAN = json.load(open("docs/design/halo_plan_v2_2026-10-11.json", encoding="utf-8"))
 B = {b["id"]: b for b in PLAN["buildings"]}
