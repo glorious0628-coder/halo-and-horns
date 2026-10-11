@@ -1,4 +1,4 @@
--- gold_trim_apply (이미지 개발 2026-10-11): HH_HaloGoldTrim -> metal 0.5 + rough 0.15 + part Color (255,195,45).
+-- gold_trim_apply (이미지 개발 2026-10-11): HH_HaloGoldTrim -> metal 0.5 + rough 0.15 + part Color (255,168,36) (was 255,195,45: lemon next to the 2D, 이미지 생성 3 photo 10/11).
 -- 검수 10/11 night: final working gold (art/review/imgdev/gold_candidates_sheet2_2026-10-11.jpg, building_variants_halo.json).
 -- Run with Studio MCP execute_luau in an EDIT-mode place (WorldKit; STUDIO_NAME=WorldKit). Saves nothing, no Play, no window changes.
 --   MODE "survey": list the MaterialVariant maps + every part using HH_HaloGoldTrim, change nothing.
@@ -10,7 +10,7 @@ local ALLOW_MAIN = false -- 메인 반영 1: true only for the main place
 if (game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil")) and not ALLOW_MAIN then
 	error("WRONG STUDIO: main (ALLOW_MAIN is false)")
 end
-local NEW = { metal = "rbxassetid://137160255192059", rough = "rbxassetid://109029776386025", color = Color3.fromRGB(255, 195, 45) }
+local NEW = { metal = "rbxassetid://137160255192059", rough = "rbxassetid://109029776386025", color = Color3.fromRGB(255, 168, 36) }
 local OLD = { metal = "rbxassetid://139091750772198", rough = "rbxassetid://128833041727597", color = Color3.fromRGB(255, 175, 25) }
 local NAME = "HH_HaloGoldTrim"
 local MS = game:GetService("MaterialService")

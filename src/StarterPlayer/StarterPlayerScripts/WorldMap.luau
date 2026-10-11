@@ -111,6 +111,7 @@ local COL = {
 	Altar = Color3.fromRGB(205, 175, 255),
 	Market = Color3.fromRGB(255, 240, 180),
 	Nest = Color3.fromRGB(255, 225, 120),
+	Cart = Color3.fromRGB(230, 120, 110), -- A23-131: the Horn Legion's egg cart
 	Pad = Color3.fromRGB(80, 200, 255),
 	Goose = Color3.fromRGB(255, 210, 60),
 	Kaiju = Color3.fromRGB(255, 45, 45),
@@ -154,6 +155,7 @@ local TXT = {
 	Altar = "Altar of Fate",
 	Market = "Market",
 	Nest = "Golden Goose Nest",
+	Cart = "Egg Cart", -- A23-131: where the Horn Legion brings golden eggs
 	Pads = "Travel Pads",
 	Guild = "Artisan Guild",
 	Forge = "Forge", -- the same spot while the artisan guild is out of the game (Config.Features.NeutralFaction)
@@ -171,6 +173,7 @@ local GLYPH = {
 	Altar = "◆",
 	Market = "$", -- CR-L44 (was "⚖")
 	Nest = "◎",
+	Cart = "◎",
 	Pad = "▣",
 	Goose = "✪",
 	Kaiju = "K", -- CR-L44 (was "☠")
@@ -886,9 +889,16 @@ local function drawWorld()
 	if Config.FeatureOn("Market") then -- not in the beta: no "Market" on the map until it opens
 		landmark("Market", GLYPH.Market, COL.Market, marketPos, TXT.Market, 18)
 	end
-	local nestPos = type(Config.Goose) == "table" and Config.Goose.Position or nil
-	if typeof(nestPos) ~= "Vector3" then nestPos = Vector3.new(-30, 0, 30) end
-	landmark("Nest", GLYPH.Nest, COL.Nest, nestPos, TXT.Nest, 18)
+	local goose = type(Config.Goose) == "table" and Config.Goose or {}
+	local homes = goose.Mode == "Eggs" and type(goose.Egg) == "table" and type(goose.Egg.Home) == "table" and goose.Egg.Home or nil
+	if homes then -- A23-131 황금 알 줍기: the Knights' nest and the Horn Legion's egg cart (Config.Goose.Egg.Home)
+		if typeof(homes.Halo) == "Vector3" then landmark("Nest", GLYPH.Nest, COL.Nest, homes.Halo, TXT.Nest, 18) end
+		if typeof(homes.Horns) == "Vector3" then landmark("EggCart", GLYPH.Cart, COL.Cart, homes.Horns, TXT.Cart, 18) end
+	else
+		local nestPos = goose.Position
+		if typeof(nestPos) ~= "Vector3" then nestPos = Vector3.new(-30, 0, 30) end
+		landmark("Nest", GLYPH.Nest, COL.Nest, nestPos, TXT.Nest, 18)
+	end
 	local pads = type(mapCfg.Pads) == "table" and mapCfg.Pads or {}
 	local padCount, padSum = 0, Vector3.zero
 	for i, pad in pads do

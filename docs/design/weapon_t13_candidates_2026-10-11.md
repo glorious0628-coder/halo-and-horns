@@ -42,3 +42,16 @@
 | Neutral_PetTamer T1 | `art/out/s2/weapons_t13/Weapon_Neutral_PetTamer_T1.png` | `art/prompts/Weapon_Neutral_PetTamer_T1.txt` | `Weapon_Tamer_T1_cut.png` | 통과(호루라기 가지) |
 | Neutral_PetTamer T2 | `art/out/s2/weapons_t13/Weapon_Neutral_PetTamer_T2.png` | `art/prompts/Weapon_Neutral_PetTamer_T2.txt` | `Weapon_Tamer_T2_cut.png` | 통과(청록 리본·발바닥 장식) |
 | Neutral_PetTamer T3 | `art/out/s2/weapons_t13/Weapon_Neutral_PetTamer_T3.png` | `art/prompts/Weapon_Neutral_PetTamer_T3.txt` | `Weapon_Tamer_T3_cut.png` | 통과(쇠 공 끝·호루라기) |
+
+## v2 (10/11 밤): HQ 앞면을 스타일 참조로 건 Medium 재생성 — 27칸 + 뿔 전사 최종 3장
+- v1(참조 없음)은 그림체가 HQ와 안 맞아 보류. v2 = 같은 진영·직업 HQ 앞면을 '스타일 참조만'으로 걸고 모양은 v1 유지(뿔 전사는 한손검이라 빛 성기사 HQ 검을 참조, 연금술사는 펫조련사 HQ 지팡이 참조). 단계 문구: T1 금·금속 거의 없음 / T2 나무·천 / T3 둔한 강철·작은 장식.
+- 대장장이 T3: 금 띠·고리 뺌(쇠 띠만). 연금술사 T1~T3: 지팡이 하나(병은 위에 달림/끼움, 옆에 따로 없음).
+- 파일 `art/out/s2/weapons_t13_v2/Weapon_<키>_T<n>_v2.png`, 프롬프트 `art/prompts/Weapon_<키>_T<n>_v2.txt`, 생성기 `tools/_weapon_t13_v2_prompts.py`, 시트 `tools/_weapon_t13_v2_sheets.py`.
+- 시트 `art/review/s2/weapons_t13v2_{warrior,mage,archer,neutral}.jpg`, 뿔 전사 최종 `weapons_t13v2_berserker_final.jpg`(a 잎모양 넓은 날 / b 톱니 곧은 날+주황 보석 / c 두꺼운 식칼형). 내 추천 **b**(HQ의 톱니·용암 금·뿔 가드 결, 한손검).
+- 100% 크롭(대장장이 T2 머리·연금술사 T1 병·뿔 최종 b 가드): 조각 깨짐·떠 있는 조각·글자·레이 없음. 모두 통과 판정(내 눈). Halo_Paladin_T1_v2 한 장만 실수로 High(5크레딧)로 나감, 나머지 29장 Medium(0).
+
+## v3 맞춤 + High 앞면 28장 (10/11 밤, 검수 지시: 비율 숫자 반영)
+- 비율(게임성 개발 1): 검 0.75~0.9H·날:손잡이+날밑+폼멜≈2:1·날밑 폭≈전체 1/3·날 폭≈1/7, 지팡이 0.85~1.0H·구슬≈1/8, 활 0.6~0.95H, 대장장이 망치 0.4~0.5H·머리 폭≈1/2. `tools/_weapon_ratio_check.py`로 대충 잼(숫자는 참고, 눈으로 판정). 검 T2/T3·뿔 최종은 날:손잡이 0.62~0.75 → 맞음, 날 폭은 가는 편(0.08~0.13)이나 HQ 결과 같아 유지. 맞지 않은 7칸(Paladin T1·T2, Berserker T1, Blacksmith T2 …)을 Medium v3로 다시 뽑아 4칸 채택: Paladin T1 v3(손잡이 1/3, 십자 가지 날밑)·Paladin T2 v3·Berserker T1 v3·Blacksmith T2 v3(머리 폭 0.44). 나머지는 v2 유지.
+- High 앞면 28장(27칸 + 뿔 전사 최종 b): 위 채택본을 참조로 '같은 무기 그대로 깨끗하게 다시' High. 폴더 `art/out/s2/weapons_t13_hq/Weapon_<키>_HQ.png`, 시트 `art/review/s2/weapons_t13_hq_all.jpg`. 28장 모두 참조와 같은 모양·색, 깨짐·떠 있는 조각·글자·레이 없음(내 눈).
+- 사고 2건: ① LightMage T1 HQ 첫 시도가 참조 없이 나가 용암 도끼가 나옴(5크레딧 버림, `weapons_t13_hq_bad/`로 치움) → 다시 뽑아 통과. ② Berserker T3 HQ 첫 시도는 결과가 안 나옴(조용히 실패) → 다시 뽑아 통과. 합계 High 약 30장.
+- 방향: 검 T2·T3·Berserker T3는 손잡이가 위, 가지 검·지팡이는 반대 → Tripo 4면 때 방향만 맞추면 됨.

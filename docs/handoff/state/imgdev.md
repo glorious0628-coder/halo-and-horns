@@ -1,3 +1,38 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 9차: 천 v2 WorldKit·MV 3개 다시 넣음, 큐 비움)
+
+- WorldKit(재부팅 뒤) MV 다시 넣음·백업(build/wk_backup/20261011_215142 + 이미지 생성 1 전체 214754): 금 255,168,36·금속 0.5·거칠기 0.15, 매끈 대리석 3판, HH_Fabric v2. 디자인 검수 OK. **새 규칙(최종 검수): WorldKit에 큰 덩어리 넣을 때마다 `py tools/worldkit/wk_backup.py save --only <이름들>`.**
+- **다음(낮은 우선, 지금 큐보다 뒤): 천 v3 후보** — 디자인 검수 기록: 원경에서 직조가 '모눈/방충망'처럼 보임(fabric_v2_day_a 880~1040,20~600). 2D 배너 = 매끈한 천 + 은은한 결. 격자 대비 절반 + 불규칙 실 굵기(줄무늬 반복 깨기), 5·15칸 비교 한 장. 지금 메인 v2는 승인본이라 안 바꿈. 만드는 도구 tools/fabric_weave_maps.py.
+- 대기: 소품 C·D2 약 9개 올리기(최종 검수 승인 뒤, 직접 보고 ≤10 한 번). 이미지 생성 4는 A/B/C/D 시험 지시를 디자인 검수에서 다시 받아야 함.
+
+# 이미지 개발 — 상태 (2026-10-11 밤 8차: PC 재부팅 뒤 대기)
+
+- **PC가 꺼졌다 켜져 Studio 창 전부 닫힘(최종 검수).** WorldKit의 금 MV·매끈 대리석 MV는 이미지 생성 1이 바탕을 다시 지은 뒤 **내가 다시 넣기**: 금 = `tools/gold_trim_apply.luau`(MODE apply; MV가 없으면 먼저 `tools/building_variants.py`로 MV 만들기), 매끈 = `tools/marble_smooth_mv.luau`(MV 만들기, 맵 3판). 둘 다 WorldKit(STUDIO_NAME=WorldKit, Edit)에서. 보고는 **디자인 검수**로.
+- 대기 중: ① 빛 값 표·굽기 조언은 보냄(docs/design/light_compare_worldkit_vs_main_2026-10-11.md). ② 소품 C·D2 약 9개 올리기 = 최종 검수 승인 뒤, 직접 보고 ≤10 한 번.
+- 매끈한 대리석 3판 통과 끝(WorldKit MV color 140510838680155; 이미지 생성 4가 prop_kit 기본으로 씀).
+
+# 이미지 개발 — 상태 (2026-10-11 밤 7차: 매끈한 대리석 3판 결 통과·WorldKit 적용)
+
+- **3판 결 통과(디자인 검수), WorldKit MV HH_HaloMarbleSmooth_Cream color = 140510838680155 로 바꿈.** 옛 ID(r1·r2) asset_ids에 `_r1/_r2`로 기록. 디자인 검수가 r3 시트 그늘·밤 원통에 흰 선을 물음 → 답: 같은 자리 선이 BLOCK 칸에도 있음(맵 무관, 화면 겹침/장면). 재촬영은 창 슬롯 필요(요청 오면 최종 검수에).
+(아래 6차 블록의 '판정 대기'는 지남)
+
+- **3판(결 2배·회갈색·가늘게) color 140510838680155 올림, 사진 끝**(시트 art/review/imgdev/marble_smooth_r3_sheet_2026-10-11.jpg, 해 100% 크롭 …_r3_sun100_…jpg; 2판 사진 marblesmooth_r2/). 디자인 검수 판정 대기. **WorldKit MV HH_HaloMarbleSmooth_Cream은 지금 2판 color 99912622204711** → 통과되면 color만 140510838680155로 바꾸고(rough 76093268063395·노멀·금속 그대로) building_variants_halo.json 항목 color·use 갱신, 2판 color는 안 쓰는 옛 ID(asset_ids `Halo_MarbleSmoothCream_color_r2`). 이미지 생성 4는 이름 HH_HaloMarbleSmooth_Cream으로 씀(알림 보냄).
+- UiSandbox 시험물·MV 지우고 빛 원래대로 확인(B 1.8·반사 0.3·16.8시), 창은 강제 종료(저장 안 함).
+
+# 이미지 개발 — 상태 (2026-10-11 밤 5차: 매끈한 크림 대리석)
+
+- **HH_HaloMarbleSmooth_Cream(소품용, 줄눈 없음) — 판정 대기.** 맵 tools/marble_smooth_maps.py(주기 노이즈, 색 227~242 아주 은은, 긴 결 2줄) → art/ui/halo_tile/marble_smooth/. 올림 2장: color 99912622204711, rough 76093268063395 (asset_ids `Halo_MarbleSmoothCream_color/_rough`; 첫 판 114611278221629·137526286825414는 결이 고리 모양이라 버림 — 안 쓰는 옛 ID). 노멀 131597673772642(평평)·금속 87489921567476(0) 재사용. StudsPerTile 8 시험. 시트 art/review/imgdev/marble_smooth_sheet_2026-10-11.jpg (평소/블록/매끈 × 낮 해·그늘·밤, C2c 빛, 2D 화분 옆). 소견: 해 아래 거의 민무늬(2D 화분의 은은한 결보다 약간 더 평평), 밤에 결이 희미하게 보임. 더 보이게 하려면 tools/marble_smooth_maps.py 결 세기(0.020·0.011)만 올림.
+- **판정 통과되면:** WorldKit에 MV HH_HaloMarbleSmooth_Cream 만들기(tools/marble_smooth_test.luau 위쪽 MV 부분을 building_variants_halo.json 항목으로) → 이미지 생성 4에 이름 알림. 아직 WorldKit엔 안 만들었음. UiSandbox 창은 닫음(시험물·빛 원래대로 확인).
+- (앞의 금 확정·FF3 기록 블록은 그대로 유효.)
+
+# 이미지 개발 — 상태 (2026-10-11 밤 4차: FF3 판정 기록)
+
+- **FF3 판정(검수 직접 봄) approved.json 기록 끝:** LeafyGrass·MeadowDirt = approved. Grass·GrassShade·MeadowFlowers = redo(풀 덩어리·꽃 반복; 다시 그릴 땐 덩어리 작게·대비 낮게·불규칙, 꽃은 드물게 무리로 또는 3D 꽃 덤불). 초원 = 4번째 구역이라 지금은 기록만, 초원 차례에 다시. 게임에 쓰는 중이라 대체품 승인 전 손대지 않음(이미지 생성 쪽이 다시 그림).
+- 큐 비움. 다음 일 = 이미지 생성 1·3의 MV 요청이 오면.
+
+# 이미지 개발 — 상태 (2026-10-11 밤 3차: 금 파트 색 확정)
+
+- **금 파트 색 (255,168,36) 확정** (이미지 생성 3 집 07 사진 후보 4개를 내 눈으로도 봄: 195,45는 레몬·올리브빛, 250,155,30은 갈색 쪽, 168,36이 2D에 가장 가까움). WorldKit 4110개 적용 끝(저장 안 함). 생성기 상수 바꿀 곳: 이미지 생성 1(skeleton_civic·skeleton_ground GOLD_RGB), 이미지 생성 3(skeleton_house·house07·preview). 남은 차이 = Studio 금이 2D보다 어두움(빛·노출 쪽, 추측) — 조명 값 적용(ZoneLook HaloTown C2c) 뒤 다시 봄.
+
 # 이미지 개발 — 상태 (2026-10-11 밤 2차: 금 WorldKit 적용·FF3 시트)
 
 - **금 WorldKit 적용 끝(저장 안 함):** HH_HaloGoldTrim 파트 4110개 색 (255,195,45), MV 금속 137160255192059(0.5)·거칠기 109029776386025(0.15). 도구 `tools/gold_trim_apply.luau` (MODE survey/apply/undo, 메인은 ALLOW_MAIN 막음). 최종 확인 = 이미지 생성 3의 다음 집 07 사진(2D 옆) — 어긋나면 파트 색만. 메인엔 새 마을 들어갈 때 같이.

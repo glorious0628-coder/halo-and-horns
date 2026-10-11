@@ -8480,53 +8480,58 @@
   "note": "이미지 개발 10/11 기록 채움. 승인 기록(approved.json) 없이 올라가 있었음 — 검수가 승인 여부 확인 필요. 커밋 722f0ecd."
  },
  "Tex_Grass_FF3": {
-  "status": "uploaded_review_pending",
+  "status": "redo",
   "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
   "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
   "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
   "date": "2026-10-08",
   "file": "art/ui/Tex_Grass_FF3.png",
   "id": "rbxassetid://116841810719907",
-  "materialVariant": "GE_Grass"
+  "materialVariant": "GE_Grass",
+  "review": "검수 10/11 밤 3×3 시트 직접 봄: 이음매 OK, 그러나 밝은 풀 덩어리가 같은 모양으로 줄지어 반복. 다시 그릴 때: 덩어리 작게·대비 낮게·불규칙. 초원은 4번째 구역이라 지금은 기록만, 초원 차례에 다시. 게임에 쓰는 중 → 대체품 승인 전까지 손대지 않음."
  },
  "Tex_LeafyGrass_FF3": {
-  "status": "uploaded_review_pending",
+  "status": "approved",
   "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
   "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
   "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
   "date": "2026-10-08",
   "file": "art/out/terrain_v3/Tex_LeafyGrass_FF3.png",
   "id": "rbxassetid://96379070214723",
-  "materialVariant": "GE_LeafyGrass"
+  "materialVariant": "GE_LeafyGrass",
+  "review": "검수 10/11 밤 3×3 시트(art/review/imgdev/tex_ff3_tiled3x3_sheet_2026-10-11.jpg) 직접 봄: 이음매 OK, 반복 약함 → 통과."
  },
  "Tex_MeadowFlowers_FF3": {
-  "status": "uploaded_review_pending",
+  "status": "redo",
   "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
   "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
   "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
   "date": "2026-10-08",
   "file": "art/ui/Tex_MeadowFlowers_FF3.png",
   "id": "rbxassetid://112552326538919",
-  "materialVariant": "GE_MeadowFlowers"
+  "materialVariant": "GE_MeadowFlowers",
+  "review": "검수 10/11 밤 3×3 시트 직접 봄: 이음매 OK, 그러나 꽃이 격자 줄로 보임. 다시 그릴 때: 덩어리 작게·대비 낮게·불규칙, 꽃은 드물고 무리 지어(또는 꽃은 타일에서 빼고 3D 꽃 덤불로). 초원은 4번째 구역이라 지금은 기록만, 초원 차례에 다시. 게임에 쓰는 중 → 대체품 승인 전까지 손대지 않음."
  },
  "Tex_GrassShade_FF3": {
-  "status": "uploaded_review_pending",
+  "status": "redo",
   "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
   "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
   "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
   "date": "2026-10-08",
   "file": "art/ui/Tex_GrassShade_FF3.png",
   "id": "rbxassetid://100025729953105",
-  "materialVariant": "GE_MeadowShade"
+  "materialVariant": "GE_MeadowShade",
+  "review": "검수 10/11 밤 3×3 시트 직접 봄: 이음매 OK, 그러나 밝은 풀 덩어리가 같은 모양으로 줄지어 반복. 다시 그릴 때: 덩어리 작게·대비 낮게·불규칙. 초원은 4번째 구역이라 지금은 기록만, 초원 차례에 다시. 게임에 쓰는 중 → 대체품 승인 전까지 손대지 않음."
  },
  "Tex_MeadowDirt_FF3code": {
-  "status": "uploaded_review_pending",
+  "status": "approved",
   "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
   "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
   "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
   "date": "2026-10-08",
   "file": "art/ui/Tex_MeadowDirt_FF3code.png",
   "id": "rbxassetid://111724093383818",
-  "materialVariant": "GE_MeadowDirt"
+  "materialVariant": "GE_MeadowDirt",
+  "review": "검수 10/11 밤 3×3 시트(art/review/imgdev/tex_ff3_tiled3x3_sheet_2026-10-11.jpg) 직접 봄: 이음매 OK, 반복 약함 → 통과."
  }
 }

@@ -30,7 +30,7 @@ PLAN = json.load(open(os.path.join(ROOT, "docs", "design", "halo_plan_v2_2026-10
 BLD = {b["id"]: b for b in PLAN["buildings"]}
 MARBLE_VARIANT = "HH_HaloMarbleBlock_Cream"
 MARBLE_RGB = (255, 244, 222)
-GOLD_RGB = (255, 175, 25)       # 검수 10/11 (house 07 used 240,186,56)
+GOLD_RGB = (255, 168, 36)       # 이미지 개발 10/11 최종(cd1aaa3, 집 07 비교 통과); 전에는 255,175,25
 ROOF_RGB = (90, 163, 250)       # the blue of HaloDomeHouse_07_roof_v2 (median of its roof pixels)
 UP = (0.0, 0.0, 1.0)
 

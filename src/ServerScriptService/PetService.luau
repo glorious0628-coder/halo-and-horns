@@ -1,5 +1,5 @@
 -- PetService.luau : pets (A23-39; PET-2 levels / XP / EquipPet / the owner's pet list; PET-4 the lost baby slime).
--- Server-authoritative. Save (Config.Data.Defaults.Pets): List[uid] = { Sp, Lv, XP, Name, Lean, Bound },
+-- Server-authoritative. Save (Config.Data.Defaults.Pets): List[uid] = { Sp, Lv, XP, Name, Lean, Bound, Roll? },
 -- Equipped = { uid } (one pet in the beta), Next = the next uid number, Away = the player put the pet away (PET-2b: it
 -- stays away after a rejoin until EquipPet brings it back; never the tamer, whose pet is its weapon). Every client
 -- sees only the attributes EquippedPet (species id, "" = none), PetLv and PetForm ("" = the base look); the pet
@@ -55,6 +55,19 @@ local function isTamer(player, data)
 end
 
 ------------------------------------------------------------------ data
+-- save v4 (docs/design/save_v4_tables_2026-10-11.md): a summoned pet's in-game random stats { Spd = whole % in
+-- Config.SaveV4.PetRollSpd }; any other shape drops the whole Roll (a value is never made up)
+local function sanitizeRoll(r)
+	local range = Config.SaveV4 and Config.SaveV4.PetRollSpd
+	if type(r) ~= "table" or type(range) ~= "table" then return nil end
+	local spd = r.Spd
+	if type(spd) ~= "number" or spd ~= math.floor(spd) or spd < range[1] or spd > range[2] then return nil end
+	for k in r do
+		if k ~= "Spd" then return nil end
+	end
+	return { Spd = spd }
+end
+
 -- repairs data.Pets in place (a corrupted entry is dropped; an unknown species is kept but never equipped)
 function PetService.Sanitize(data)
 	local pets = type(data.Pets) == "table" and data.Pets or {}
@@ -71,6 +84,7 @@ function PetService.Sanitize(data)
 					Name = type(p.Name) == "string" and string.sub(p.Name, 1, LIMIT.NameLen) or "",
 					Lean = type(p.Lean) == "string" and string.sub(p.Lean, 1, LIMIT.NameLen) or "",
 					Bound = p.Bound == true,
+					Roll = sanitizeRoll(p.Roll),
 				}
 			end
 		end

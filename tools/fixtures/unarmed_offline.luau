@@ -84,16 +84,14 @@ runGroup("config", function()
 	for _, pair in {
 		{ C.Text, "BareHands" }, { C.Text, "WeaponFromQuest" }, { C.Loot.Text, "JackpotEquip" },
 		{ C.Loot.Text, "FirstScrollBare" }, { C.Loot.Text, "FirstWeapon" }, { C.Loot.Text, "FirstWeaponBag" },
-		{ C.Loot.Text, "BareEquip" }, { C.Tutorial.Text, "VisitBlacksmith" }, { C.Tutorial.Text, "Claimed" },
-		{ C.Tutorial.Text, "AutoClaimed" }, { C.Tutorial.Text, "ClaimedArmed" }, { C.Tutorial.Text, "AutoClaimedArmed" },
-		{ C.Tutorial.Text, "VisitBlacksmithArmed" },
+		{ C.Loot.Text, "BareEquip" }, { C.Tutorial.Text, "VisitBlacksmith" }, { C.Tutorial.Text, "VisitBlacksmithArmed" },
 	} do
 		check(same(pair[1][pair[2]], pair[1][pair[2] .. "En"]), "text " .. pair[2] .. " has KO + EN with the same placeholders")
 	end
-	-- A23-74: the first weapon is in hand before the hunt, so the claim line points to the next one (150 gold = tier 2)
-	check(not has(C.Tutorial.Text.Claimed, "Check the gear") and has(C.Tutorial.Text.Claimed, "new weapon")
-		and C.Tutorial.QuestRewardGold == C.Weapons[2].Price,
-		"first-mission line points to the next weapon (its reward = the tier-2 price)", C.Tutorial.Text.Claimed)
+	-- A23-74: the first weapon is in hand before the hunt, so the 150 gold = the tier-2 price; A23-130: the claim line
+	-- says only the reward
+	check(C.Tutorial.Text.Claimed == "+%s gold" and C.Tutorial.QuestRewardGold == C.Weapons[2].Price,
+		"first-mission line = the reward only (its reward = the tier-2 price)", C.Tutorial.Text.Claimed)
 	check(has(C.Text.WeaponFromQuest, "Guide's first quest") and not has(C.Text.WeaponFromQuest, "after your first mission"),
 		"the tier-1 refusal says the gift comes with the Guide's first quest", C.Text.WeaponFromQuest)
 	check(C.WeaponInfo[1].Source ~= "처음부터 가진 무기" and has(C.WeaponInfo[1].Source, "Blacksmith"),

@@ -1,8 +1,8 @@
 {
  "name": "HaloDomeHouse_02",
  "src2d": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_src.png",
- "note": "square body with tall corner towers (gold dome caps + a small arched window), one tall storey with wide arched windows, double door, three straight steps, round drum with 3 arched windows, ribbed gold dome; plan HouseA 24 x 22 x 26. 2D: glass ~2.3 wide / door 5.0 = 0.46, window centres 7.5 studs from the door centre",
- "plan": {"shape": "rect", "W": 21.0, "D": 17.0},
+ "note": "square body with tall corner towers (gold dome caps + a small arched window), one tall storey with wide arched windows, double door, three straight steps, round drum with 3 arched windows, ribbed gold dome; plan HouseA 24 x 22 x 26. 2D: glass ~2.3 wide / door 5.0 = 0.46, window centres 7.5 studs from the door centre | 10/11 저녁 (검수 판정): D 17.0 -> 12.6 (W 21.0, 2D side 0.59), pots y -2.20; top.R = 6.0",
+ "plan": {"shape": "rect", "W": 21.0, "D": 12.6},
  "Z0": 1.1,
  "storeys": [{"h": 12.0, "win": {"w": 2.3, "type": "arch", "h": 5.0, "gap": 3.8}, "walls": {"front": [0.143, 0.857], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
  "door": {"w": 5.0, "h": 8.15, "double": true},
@@ -10,8 +10,8 @@
  "towers": {"w": 2.8, "h_extra": 4.2, "dome": true, "window": true, "win_w": 0.9},
  "pedestals": true,
  "awning": {"w": 7.6, "colors": [[250, 205, 72], [255, 243, 212]], "n": 7},
- "pots": [[-7.3, 11.2, 3.2, 2.6]],
+ "pots": [[-7.3, 9.0, 3.2, 2.6]],
  "steps": "three",
  "medals": [["front", 0.143, 11.6], ["front", 0.857, 11.6], ["left", 0.5, 11.6], ["right", 0.5, 11.6]],
- "top": {"type": "drum_dome", "R": 6.2, "h": 4.6, "seg": 20, "windows": 3, "dome_h": 6.6, "ribs": 8}
+ "top": {"type": "drum_dome", "R": 6.0, "h": 4.6, "seg": 20, "windows": 3, "dome_h": 6.6, "ribs": 8}
 }

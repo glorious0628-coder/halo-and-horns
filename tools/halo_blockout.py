@@ -29,8 +29,9 @@ EDGE = 32  # grid margin round the land: the 16-stud sea ring + its 16-stud rim 
 HOFF = 20  # stored height = round(y) + HOFF
 ALPH = "".join(chr(c) for c in range(48, 48 + 80) if chr(c) not in "\\\"'`[]")  # safe chars
 # material codes
-M = dict(sea="s", grass="g", dirt="d", road1="c", road2="b", road3="p", stair="t", water="w", rock="r", sand="n")
-SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them like the plan)
+M = dict(sea="s", grass="g", dirt="d", road1="c", road2="b", road3="p", stair="t", water="w", rock="r", sand="n", limestone="l")
+SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them like the plan). Since the 10/11 review the plan
+    # carries its own district "slope" lines (FINAL coordinates) and these are only the fallback
     "market": ((12, -450), (112, -470)),
     "garden_homes": ((-96, -612), (-170, -672)),
     "cliff_homes": ((96, -540), (166, -630)),
@@ -38,6 +39,9 @@ SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them 
 DIST_MAT = {"training": "sand", "arrival": "grass"}  # 2차 10/11 검수: training was dirt (GE_Ground reads near black in C2c)
 PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
 APRON_D, APRON_RAMP = 8, 12  # level doorstep in front of every door, then a ramp back to the district slope (studs)
+APRON_SIDE = 8  # review 10/11: sideways blend width of the doorstep (its sides were steps)
+PAINT_IN = CELL  # 디자인 검수 10/11: road / yard / plaza terrain paint stops one cell inside the parts
+FACE_DH = 4.0  # 디자인 검수 10/11: only steps higher than 4 are rock faces (Limestone, light cream); lower ones stay grass slopes
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
@@ -195,6 +199,20 @@ def main():
             return x, z
         for k in list(SLOPES):
             SLOPES[k] = tuple(grow(*q) for q in SLOPES[k])
+    for d in dists:
+        if d.get("slope"):
+            SLOPES[d["id"]] = tuple(tuple(q) for q in d["slope"])
+    roads_by_id = {r["id"]: r for r in plan["roads"]}
+
+    def road_y(rd, p):
+        """height on a road with its own profile 'ys' at the centre-line point nearest p"""
+        pts = rd["pts"]
+        best = None
+        for i in range(len(pts) - 1):
+            t, dd = seg_t(p, pts[i], pts[i + 1])
+            if best is None or dd < best[0]:
+                best = (dd, rd["ys"][i] + (rd["ys"][i + 1] - rd["ys"][i]) * t)
+        return best[1]
     cols = (X1 - X0) // CELL
     rows = (Z0 - Z1) // CELL
     H = [[None] * cols for _ in range(rows)]
@@ -205,6 +223,13 @@ def main():
         return X0 + c * CELL + CELL / 2, Z0 - r * CELL - CELL / 2
 
     def dist_y(d, p):
+        # review 10/11: real tiers (cliff village 18 / 22) and the terrace hill face (each cell = the height of the nearest
+        # point of its stair, so the legs can not be cut by walking up the grass)
+        for tr in d.get("tiers", []):
+            if inside(p, [tuple(v) for v in tr["poly"]]):
+                return tr["y"]
+        if d.get("terrace"):
+            return road_y(roads_by_id[d["terrace"]], p)
         if d.get("y_to") is None:
             return d["y"]
         s0, s1 = SLOPES[d["id"]]
@@ -247,6 +272,7 @@ def main():
 
     # building pads: flatten under each footprint (+1 cell) to its ground_y
     PAD = set()
+    INFP = set()  # cells whose centre is inside a footprint (the gate passage excepted)
     for b in plan["buildings"]:
         fp = [tuple(p) for p in b["footprint"]]
         xs = [p[0] for p in fp]
@@ -257,10 +283,13 @@ def main():
                 if min(xs) - 6 <= x <= max(xs) + 6 and min(zs) - 6 <= z <= max(zs) + 6:
                     # 골격 다듬기 10/11: margin from the WALLS (was corner points only, so the slope reached the wall and the
                     # 4-stud voxels lifted the floor inside by up to 4 on sloped districts)
-                    if inside((x, z), fp) or min(seg_t((x, z), fp[i], fp[(i + 1) % len(fp)])[1] for i in range(len(fp))) < 5:
+                    infp = inside((x, z), fp)
+                    if infp or min(seg_t((x, z), fp[i], fp[(i + 1) % len(fp)])[1] for i in range(len(fp))) < 5:
                         if MAT[r][c] != "sea":
                             H[r][c] = b["ground_y"]
                             PAD.add((r, c))
+                            if infp and b["kind"] != "Gate":
+                                INFP.add((r, c))
     # 골격 다듬기 10/11: in sloped districts (market 4->8, garden 12->16, cliff 18->22) the ground in front of a door rose up to
     # 4 above the sill. A level doorstep apron (door width + 6, APRON_D deep) at ground_y, then a ramp back to the slope
     apron = 0
@@ -277,12 +306,15 @@ def main():
                 x, z = cxz(r, c)
                 u = (x - ax) * ux + (z - az) * uz
                 v = abs(-(x - ax) * uz + (z - az) * ux)
-                if 0 <= u <= APRON_D + APRON_RAMP and v <= half + (u - APRON_D) * 0.5 * (u > APRON_D):
-                    if u <= APRON_D:
+                # review 10/11: blend sideways too (the apron's sides were 3-4 stud steps): a soft edge APRON_SIDE wide
+                side = half + (u - APRON_D) * 0.5 * (u > APRON_D)
+                if 0 <= u <= APRON_D + APRON_RAMP and v <= side + APRON_SIDE:
+                    t_u = 0.0 if u <= APRON_D else (u - APRON_D) / APRON_RAMP
+                    t = max(t_u, min(1.0, max(0.0, (v - side) / APRON_SIDE)))
+                    if t <= 0.0:
                         H[r][c] = b["ground_y"]
                         PAD.add((r, c))
                     else:
-                        t = (u - APRON_D) / APRON_RAMP
                         H[r][c] = b["ground_y"] + (H[r][c] - b["ground_y"]) * t
                     apron += 1
     print(f"[blockout] door aprons: {apron} cells")
@@ -293,15 +325,15 @@ def main():
     stairs = 0
     for rd in sorted(plan["roads"], key=lambda r: -r["grade"]):  # grade 1 painted last (on top)
         pts = [tuple(p) for p in rd["pts"]]
-        prof = [ground_at(p) for p in pts]
+        prof = [ground_at(p) if not rd.get("ys") or rd["ys"][k] is None else rd["ys"][k] for k, p in enumerate(pts)]  # ys: None = ground
         if rd["id"].startswith("door_"):
             prof[0] = prof[1] = ground_at(pts[0])
         half = rd["w"] / 2
         for r in range(rows):
             for c in range(cols):
                 p = cxz(r, c)
-                if MAT[r][c] == "sea":
-                    continue
+                if MAT[r][c] == "sea" or (r, c) in INFP:
+                    continue  # review 10/11: a road (door spurs included) never repaints the floor inside a footprint
                 best = None
                 for i in range(len(pts) - 1):
                     t, dd = seg_t(p, pts[i], pts[i + 1])
@@ -314,6 +346,8 @@ def main():
                 seg_len = math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1])
                 slope = math.degrees(math.atan2(abs(prof[i + 1] - prof[i]), max(seg_len, 1e-6)))
                 H[r][c] = y
+                if best[0] > half - PAINT_IN:
+                    continue  # 디자인 검수 10/11: the paint stays one cell inside the parts (it bled white round them)
                 if slope > 24:
                     MAT[r][c] = "stair"
                     stairs += 1
@@ -361,7 +395,7 @@ def main():
         for r in range(rows):
             for c in range(cols):
                 x, z = cxz(r, c)
-                if math.hypot(x - y["at"][0], z - y["at"][1]) <= y["r"] and MAT[r][c] not in ("sea", "water", "stair"):
+                if math.hypot(x - y["at"][0], z - y["at"][1]) <= y["r"] - PAINT_IN and MAT[r][c] not in ("sea", "water", "stair"):
                     MAT[r][c] = "road2"
     fpool = next(p for p in plan["water"]["pools"] if p["id"] == "fountain")
     PAVED = [(fpool["at"][0], fpool["at"][1], PAVED_R["fountain"]), (0, -420, PAVED_R["spawn"])]
@@ -370,9 +404,10 @@ def main():
             for c in range(cols):
                 x, z = cxz(r, c)
                 if math.hypot(x - px, z - pz) <= pr and MAT[r][c] not in ("sea", "water", "stair"):
-                    MAT[r][c] = "road1"
+                    if math.hypot(x - px, z - pz) <= pr - PAINT_IN:
+                        MAT[r][c] = "road1"
                     if H[r][c] is not None:
-                        H[r][c] -= PAVED_SINK
+                        H[r][c] -= PAVED_SINK  # the sink keeps the full radius (tools/skeleton_ground G() tests the same cells)
     # shore: distance to the sea in cells (4-neighbour BFS)
     DS = [[None] * cols for _ in range(rows)]
     q = deque()
@@ -442,7 +477,7 @@ def main():
                 else:
                     SEA_TIER[r][c] = 0
 
-    # walking times (③ 3차 target: gate -> cathedral ~30 s, spawn -> any home <= 45 s at WalkSpeed 16): Dijkstra on the grid,
+    # walking times (③ 3차 target: gate -> cathedral ~30 s, spawn -> any home <= 45 s at Config.Player.WalkSpeed): Dijkstra on the grid,
     # 8 neighbours, blocked by sea / water (bridges excepted) / building footprints (the gate passage excepted) and by steps
     # steeper than 1 stud per stud
     import heapq
@@ -463,6 +498,33 @@ def main():
                     if not (b["kind"] == "Gate" and abs(x - b["x"]) < b["door_size"][0] / 2):
                         blocked[r][c] = True
 
+    # roads with rails (the cathedral switchback, 결정 1): the cells just outside the band are balustrades, so the walk can not
+    # step from one leg's flower terrace to the next; the road ends and any other road crossing the rail line stay open
+    on_road = set()
+    for rd in plan["roads"]:
+        pts = [tuple(p) for p in rd["pts"]]
+        for r in range(rows):
+            for c in range(cols):
+                if any(seg_t(cxz(r, c), pts[i], pts[i + 1])[1] <= rd["w"] / 2 for i in range(len(pts) - 1)):
+                    on_road.add((r, c))
+    railed = 0
+    for rd in plan["roads"]:
+        if not rd.get("rails"):
+            continue
+        pts = [tuple(p) for p in rd["pts"]]
+        half = rd["w"] / 2
+        for r in range(rows):
+            for c in range(cols):
+                p = cxz(r, c)
+                if (r, c) in on_road or blocked[r][c]:
+                    continue
+                dd = min(seg_t(p, pts[i], pts[i + 1])[1] for i in range(len(pts) - 1))
+                if dd <= half + CELL and min(math.hypot(p[0] - pts[0][0], p[1] - pts[0][1]),
+                                             math.hypot(p[0] - pts[-1][0], p[1] - pts[-1][1])) > half + CELL:
+                    blocked[r][c] = True
+                    railed += 1
+    print(f"[walk] rail cells {railed}")
+
     def cell_of(x, z):
         return int((Z0 - z) // CELL), int((x - X0) // CELL)
 
@@ -479,6 +541,8 @@ def main():
                 for dc in (-1, 0, 1):
                     rr, cc = r + dr, c + dc
                     if (dr or dc) and 0 <= rr < rows and 0 <= cc < cols and not blocked[rr][cc]:
+                        if dr and dc and (blocked[r][cc] or blocked[rr][c]):
+                            continue  # no corner cutting through a rail / wall line
                         step = CELL * (1.4142 if dr and dc else 1.0)
                         if abs(H[rr][cc] - H[r][c]) > step:
                             continue
@@ -496,8 +560,12 @@ def main():
             for dc in (-1, 0, 1):
                 if 0 <= r + dr < rows and 0 <= c + dc < cols:
                     best = min(best, D[r + dr][c + dc])
-        return best / 16.0
+        return best / speed
 
+    speed = float(plan.get("walk_speed") or 16)  # 검수 결정 1: Config.Player.WalkSpeed (20), was a hard-coded 16
+    if os.environ.get("HALO_DUMP"):  # debug: the walk grid for path checks (build/wk/blockout_grid.json)
+        with open(os.path.join(ROOT, "build", "wk", "blockout_grid.json"), "w") as f:
+            json.dump(dict(x0=X0, z0=Z0, cell=CELL, H=H, blocked=blocked, mat=MAT), f)
     from_gate = walk_from(0, -346)
     from_spawn = walk_from(0, -416)
     walk = {}
@@ -511,7 +579,8 @@ def main():
           f"{worst[1]['from_spawn_s']} s from spawn (target <= 45), unreachable: "
           f"{[k for k, v in walk.items() if v['from_spawn_s'] == math.inf] or 0}")
     with open(os.path.join(ROOT, "art", "review", "world", "halo_v2", "walk_times.json"), "w", encoding="utf-8") as f:
-        json.dump(dict(speed=16, note="seconds along the walkable terrain grid (blockout raster)", walk=walk), f, ensure_ascii=False, indent=1)
+        json.dump(dict(speed=speed, note="seconds along the walkable terrain grid (blockout raster), speed = Config.Player.WalkSpeed",
+                       walk=walk), f, ensure_ascii=False, indent=1)
 
     # pointed rock underside: depth under every cell that is land or inside the sea ring (SEA_TIER != 4)
     active = [[MAT[r][c] != "sea" or SEA_TIER[r][c] != 4 for c in range(cols)] for r in range(rows)]
@@ -549,6 +618,23 @@ def main():
                     UND[rr][cc] = min(UND_CAP, max(UND[rr][cc], H[rr][cc] - 2 + 30 + 4 + 6 * (3 - near[rr][cc])))
     und_max = max(max(row) for row in UND)
     print(f"[blockout] underside depth max {und_max:.1f} studs (cap {UND_CAP}), unit {UND_UNIT}")
+
+    # 디자인 검수 10/11 (r2_05·07): steep faces between levels (stair terraces, district steps) are rock, not smeared grass /
+    # white road paint
+    faces = 0
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] in ("sea", "water", "stair") or MAT[r][c].startswith("road") or (r, c) in PAD or H[r][c] is None:
+                continue
+            d = 0.0
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                rr, cc = r + dr, c + dc
+                if 0 <= rr < rows and 0 <= cc < cols and MAT[rr][cc] not in ("sea", "water") and H[rr][cc] is not None:
+                    d = max(d, H[r][c] - H[rr][cc])
+            if d > FACE_DH:
+                MAT[r][c] = "limestone"  # not Rock: Rock is dark and is the island underside too
+                faces += 1
+    print(f"[blockout] rock faces {faces}")
 
     # encode
     hrows, mrows, urows = [], [], []

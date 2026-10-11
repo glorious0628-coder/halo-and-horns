@@ -1,18 +1,18 @@
 {
  "name": "HaloShop_Juice",
  "src2d": "art/out/s2/halo/roofs/HaloShop_Juice_roof_v2.png",
- "note": "Shop (24 x 15 x 18). Rect body 20 x 13, ground storey 9.5: the door at the far left (door.u 0.25) and ONE wide rect stall opening to its right (shopwin u 0.675) as in the 2D, short upper tier with two small arched windows beside the sign, gold corner pilasters, yellow/cream awning over the stall only (awning.u 0.675), two corner planters with topiary, flat roof with a marble balustrade. No lantern pedestals. Missing: gold sign plaque, stall counter + juice jars + fruit crates, rooftop parasol pavilion (4 gold posts + blue/white canopy + fruit crates), ivy, lanterns without pedestals (see generator_gaps.md). Built from art/review/img3/HaloShop_Juice_check.jpg (2D panel); the 2D PNG is not in the worktree.",
- "plan": {"shape": "rect", "W": 20.0, "D": 13.0},
+ "note": "Shop (24 x 15 x 18). Rect body 20 x 13, ground storey 9.5: the door at the far left (door.u 0.25) and ONE wide rect stall opening to its right (shopwin u 0.675) as in the 2D, short upper tier with two small arched windows beside the sign, gold corner pilasters, yellow/cream awning over the stall only (awning.u 0.675), two corner planters with topiary, flat roof with a marble balustrade. No lantern pedestals. Missing: gold sign plaque, stall counter + juice jars + fruit crates, rooftop parasol pavilion (4 gold posts + blue/white canopy + fruit crates), ivy, lanterns without pedestals (see generator_gaps.md). Built from art/review/img3/HaloShop_Juice_check.jpg (2D panel); the 2D PNG is not in the worktree. | 10/11 저녁 (검수 판정): D 13.0 -> 12.0 (W 20.0, 2D side 0.44), pots y -0.50; pilasters = {\"finial\": true}; lanterns = [0.07, 0.93]",
+ "plan": {"shape": "rect", "W": 20.0, "D": 12.0},
  "Z0": 1.1,
- "storeys": [{"h": 9.5, "win": {"w": 5.0, "type": "rect"}, "walls": {"left": [0.5], "right": [0.5]}},
-             {"h": 5.0, "win": {"w": 1.5, "type": "arch"}, "walls": {"front": [0.2, 0.8], "back": [0.3, 0.7]}}],
- "door": {"w": 5.0, "h": 8.15, "double": false, "u": 0.25},
- "shopwin": {"u": 0.675, "w": 7.5, "h": 5.5, "type": "rect"},
- "pilasters": true,
+ "storeys": [{"h": 9.5, "win": {"w": 5.0, "type": "rect"}, "walls": {"left": [0.5], "right": [0.5]}}, {"h": 5.0, "win": {"w": 1.5, "type": "arch"}, "walls": {"front": [0.2, 0.8], "back": [0.3, 0.7]}}],
+ "door": {"w": 5.0, "h": 8.15, "double": false, "u": 0.27},
+ "shopwin": {"u": 0.69, "w": 7.5, "h": 5.5, "type": "rect"},
+ "pilasters": {"finial": true},
  "pedestals": false,
- "awning": {"w": 10.0, "u": 0.675, "colors": [[250, 205, 72], [255, 243, 212]], "n": 9},
- "pots": [[9.4, 8.2, 3.2, 2.6], [-9.0, 8.0, 3.2, 2.6]],
+ "awning": {"w": 9.0, "u": 0.69, "colors": [[250, 205, 72], [255, 243, 212]], "n": 9},
+ "pots": [[9.4, 7.7, 3.2, 2.6], [-9.0, 7.5, 3.2, 2.6]],
  "steps": "half",
  "medals": [],
- "top": {"type": "flat", "parapet": "balustrade", "h": 1.6, "skylight": null, "topiary": []}
+ "top": {"type": "flat", "parapet": "balustrade", "h": 1.6, "skylight": null, "topiary": []},
+ "lanterns": [0.07, 0.93]
 }

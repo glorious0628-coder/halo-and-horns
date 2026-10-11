@@ -72,16 +72,19 @@ a("|---|---|---|---|")
 hs = new_xyz("영웅상 HeroStatue")
 a("| 영웅상 HeroStatue | (0,0,-370) | `%s` (큰 길 통로 x ±12 안 밖; 높은 층이면 `StoryLandmark` 태그 + `Spot=\"HeroStatue\"`) | `Config.StoryQuests.Landmarks.HeroStatue` (3538); H6 Near 16 |" % v(*hs))
 g = new_xyz("Sir Gleam")
-a("| Sir Gleam | At (-10,0,-372) Look (0,0,-372) | At `%s`, Look 큰 길 쪽 `%s` | `Config.TownNpcs` Gleam (3724) |" % (v(*g), v(0, 0, g[2])))
+gl = mv["Sir Gleam"].get("look") or [0, g[2]]
+a("| Sir Gleam | At (-10,0,-372) Look (0,0,-372) | At `%s`, Look 큰 길 쪽 `%s` (영웅상 옆, 고리길 밖) | `Config.TownNpcs` Gleam (3724) |" % (v(*g), v(gl[0], 0, gl[1])))
 for nm, cid, line in (("물약 상인 PotionHalo", "PotionHalo", 3735), ("Folk3 빵집", "Folk3", 3730), ("Folk1 주스", "Folk1", 3726),
                       ("Folk2 꽃", "Folk2", 3728), ("Folk4 분수", "Folk4", 3732)):
     n = new_xyz(nm)
     now = mv[nm]["now"]
-    a("| %s | At (%s,0,%s) | At `%s` (Y %s; 12칸 안에서 팜/말함) | `Config.TownNpcs` %s (%d) — Look도 문 쪽으로 같이 |" % (nm, fm(now[0]), fm(now[1]), v(n[0], 0, n[2]), fm(n[1]), cid, line))
+    lk = mv[nm].get("look")
+    a("| %s | At (%s,0,%s) | At `%s` (Y %s; 12칸 안에서 팜/말함)%s | `Config.TownNpcs` %s (%d) |" % (
+        nm, fm(now[0]), fm(now[1]), v(n[0], 0, n[2]), fm(n[1]), (", Look `%s`" % v(lk[0], 0, lk[1])) if lk else "", cid, line))
 tr = new_xyz("훈련장 (새)")
-a("| 훈련장 표시 (새) | 없음 | `%s` (Landmark `TrainingYard` + 허수아비 표적; 첫 기술 퀘스트가 여기를 가리킴) | 새 Landmark, 게임성 개발 |" % v(*tr))
+a("| 훈련장 표시 (새) | 없음 | `%s` (Landmark `TrainingYard` + 허수아비 표적; M1_4 귀환 뒤 들르는 곳 — 퀘스트가 가리키게 할지는 코드 변경 요청, 검수 결정) | 새 Landmark, 게임성 개발 |" % v(*tr))
 wf = ["W1", "W2", "W3"]
-ys = {"W1": 1, "W2": 20, "W3": 10}
+ys = {w: falls[w].get("y", {"W1": 1, "W2": 20, "W3": 10}[w]) for w in ("W1", "W2", "W3")}
 spots = ", ".join(v(falls[w]["at"][0], ys[w], falls[w]["at"][1]) for w in wf)
 a("| 폭포 소리 | 6곳 (±188,3,-493) (±190,7,-582) (±190,11,-660) | 3곳 `%s` (W1 성문 서쪽 1단 → 바다, W2 계단 폭포 3단, W3 동쪽 절벽 2단) — 또는 `Map.Decor` 바로 아래 이름이 `…Waterfall`인 것 | `Config.Audio.Ambient.Waterfall.Spots` (5576) |" % spots)
 a("| 분수 | (22,..) 옛 | 풀 중심 `%s`, 반지름 %s (2단, 이름 `Town_Halo_Fountain3`) | 새 분수 모델(5단계) |" % (v(pools['fountain']['at'][0], pools['fountain']['y'], pools['fountain']['at'][1]), pools['fountain']['r']))

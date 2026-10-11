@@ -847,6 +847,16 @@ local function retarget()
 		S.target = t
 		return
 	end
+	-- A23-131 황금 알 줍기 (design "알을 들면 퀘스트 마름모가 집을 가리킨다"): while I carry golden eggs the marker points at
+	-- my home (EggFx.HomeTarget: the nest / the cart), whatever row is pinned
+	local egg = C and C.EggFx
+	if type(egg) == "table" and type(egg.HomeTarget) == "function" then
+		local ok, home = pcall(egg.HomeTarget)
+		if ok and typeof(home) == "Vector3" then
+			S.target = { Part = nil, Position = home, Tag = "EggHome", Claim = false }
+			return
+		end
+	end
 	local hud = C and C.HUD
 	if type(hud) == "table" and type(hud.QuestTarget) == "function" then
 		local ok, r = pcall(hud.QuestTarget)

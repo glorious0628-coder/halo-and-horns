@@ -1,7 +1,7 @@
 """Blender fix pass for kept Tripo pieces (SPEC A23-125 step 2 "Blender 손보기"), 이미지 생성 3, 10/11.
 
   blender --background --factory-startup --python tools/piece_fix.py -- <in.glb> <out.glb> <work_dir> --only <name part> ...
-          [--stats] [--flowers] [--sliver 8] [--pale-area 0.05] [--island 6] [--size 1024]
+          [--stats] [--flowers] [--sliver 8] [--pale-area 0.05] [--island 6] [--size 1024] [--force-size]
 
 For every mesh object whose name contains one of --only (others are passed through unchanged):
   1. cut slivers: triangles whose longest edge^2 / (2 area) > --sliver and whose longest edge > 0.2 studs (Tripo's long
@@ -42,6 +42,7 @@ ap.add_argument("--sliver", type=float, default=8.0)
 ap.add_argument("--pale-area", type=float, default=0.05)
 ap.add_argument("--island", type=int, default=6)
 ap.add_argument("--size", type=int, default=1024)
+ap.add_argument("--force-size", action="store_true", help="every part gets --size maps (default: 512 under 1200 tris)")
 a = ap.parse_args(argv)
 os.makedirs(a.work, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -317,7 +318,7 @@ for gname, members in groups.items():
     bpy.ops.object.mode_set(mode="OBJECT")
     uvl = me.uv_layers.active.data
     new = [np.array([uvl[li].uv[:] for li in t.loops]) for t in me.loop_triangles]
-    size = a.size if len(new) > 1200 else 512
+    size = a.size if (len(new) > 1200 or a.force_size) else 512
     outs = [np.zeros((size, size, 3), np.float32) for _ in range(3)]
     filled = np.zeros((size, size), bool)
     for P, Q, si in zip(new, old, tri_src):

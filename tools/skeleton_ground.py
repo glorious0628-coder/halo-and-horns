@@ -10,7 +10,7 @@ The Luau measures the ground on the Terrain (workspace:Raycast down on Terrain o
   * every walking part carries the CollectionService tag "WalkGround" (Config.Ground.Tag): road plates, stepping stones, plaza
     discs, yard discs, stairs, landings, and the Workspace.HaloV2.Bridges Bridge_* decks. Rails and gold trim are NOT ground;
   * materials as skeleton_civic.py: marble = Marble + MaterialVariant HH_HaloMarbleBlock_Cream + (255,244,222), gold = Metal +
-    HH_HaloGoldTrim + (255,175,25), cobble = Cobblestone (214,200,168), stepping stone = Slate (210,205,195);
+    HH_HaloGoldTrim + (255,168,36), cobble = Cobblestone (214,200,168), stepping stone = Slate (210,205,195);
   * grade 1 = marble plates + two gold lines, grade 2 = cobblestone plates, grade 3 = stepping stones (deterministic jitter from the
     id's letter codes); a bend > 8 deg gets an upright disc of diameter w; a 5-stud step steeper than 24 deg becomes real stairs
     (rise 0.5, tread 1.2) with a landing at each end and rails on both sides;
@@ -46,7 +46,7 @@ OX, OZ = (float(v) for v in args.offset.split(","))
 
 MARBLE_VARIANT = "HH_HaloMarbleBlock_Cream"
 MARBLE_RGB = (255, 244, 222)
-GOLD_RGB = (255, 175, 25)
+GOLD_RGB = (255, 168, 36)  # 이미지 개발 10/11 최종(cd1aaa3)
 COBBLE_RGB = (214, 200, 168)
 SLATE_RGB = (210, 205, 195)
 PLAZA_R = 40.0
@@ -54,6 +54,12 @@ SPAWN_AT = (0.0, -420.0)
 SPAWN_R = 14.0
 PASSAGE = (-12.0, 12.0, -432.0, -330.0)    # x0, x1, z0, z1
 PART_CAP = 4000
+# review 10/11: the plaza sink must use the blockout's own rule (a 4-stud cell is sunk when its CENTRE is within r), so G()
+# finds the cell the point is in and tests that centre (the exact point radius disagreed at the disc edge). Same grid as
+# tools/halo_blockout.py: X0 from the land, Z0 = -324, CELL 4
+import halo_blockout as HB  # noqa: E402
+GRID_X0 = int(math.floor((min(p[0] for p in PLAN["land"]) - HB.EDGE) / HB.CELL)) * HB.CELL
+GRID_Z0, GRID_CELL = HB.Z0, HB.CELL
 
 
 def fm(v):
@@ -75,9 +81,11 @@ def lua_data():
         " cap=%d," % PART_CAP,
         " fountain={x=%s,z=%s,r=%s}," % (fm(FOUNTAIN["at"][0] + OX), fm(FOUNTAIN["at"][1] + OZ), fm(PLAZA_R)),
         " spawn={x=%s,z=%s,r=%s}," % (fm(SPAWN_AT[0] + OX), fm(SPAWN_AT[1] + OZ), fm(SPAWN_R)),
-        " plaza_sink=1,",  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
+        " plaza_sink=1,",
+        " grid={x0=%s,z0=%s,cell=%s}," % (fm(GRID_X0 + OX), fm(GRID_Z0 + OZ), fm(GRID_CELL)),  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
         " passage={x0=%s,x1=%s,z0=%s,z1=%s}," % (fm(PASSAGE[0] + OX), fm(PASSAGE[1] + OX), fm(PASSAGE[2] + OZ), fm(PASSAGE[3] + OZ)),
         " yards={%s}," % yards,
+        " bridges={%s}," % ",".join('{x=%s,z=%s,r=%s}' % (fm(b["at"][0] + OX), fm(b["at"][1] + OZ), fm(b["len"] / 2 + 2)) for b in BRIDGES),
         " roads={",
         ",\n".join("  " + lua_road(r) for r in ROADS),
         " },",
@@ -144,8 +152,11 @@ local function G(x, z, quiet)
 	local hit = workspace:Raycast(Vector3.new(x, 200, z), Vector3.new(0, -400, 0), rp)
 	if hit then
 		-- inside a plaza disc the Terrain is plaza_sink lower (halo_blockout PAVED_SINK): measure as if it were not
+		local g = D.grid
+		local cx = g.x0 + (math.floor((x - g.x0) / g.cell) + 0.5) * g.cell
+		local cz = g.z0 - (math.floor((g.z0 - z) / g.cell) + 0.5) * g.cell
 		for _, c in { D.fountain, D.spawn } do
-			if (x - c.x) ^ 2 + (z - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
+			if (cx - c.x) ^ 2 + (cz - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
 		end
 		return hit.Position.Y
 	end
@@ -235,6 +246,10 @@ local function skipSeg(r, ax, az, bx, bz)
 	local mx, mz = (ax + bx) / 2, (az + bz) / 2
 	if r.id ~= "main" and (inRect(ax, az) or inRect(mx, mz) or inRect(bx, bz)) then return true end
 	if r.grade > 1 and (inDisc(mx, mz) or covered(mx, mz, r.grade)) then return true end
+	-- 디자인 검수 10/11 (r2_06): inside a yard the cobble disc is the floor (marble plates lay over it, lifted)
+	for _, y in D.yards do
+		if (mx - y.x) ^ 2 + (mz - y.z) ^ 2 < (y.r - 0.5) ^ 2 then return true end
+	end
 	return false
 end
 local function resample(pts, step)
@@ -326,6 +341,12 @@ if ONLY.roads or ONLY.stairs or ONLY.rails then
 		for k = 1, #P - 1 do
 			local a, b = P[k], P[k + 1]
 			local sg = { ok = a.h ~= nil and b.h ~= nil, stair = false }
+			-- 디자인 검수 10/11 (r2_12): the bridge deck is the road there; plates / stones / stairs over the stream channel made
+			-- a second rail and a lone post on the deck
+			local mx, mz = (a.x + b.x) / 2, (a.z + b.z) / 2
+			for _, bb in D.bridges do
+				if (mx - bb.x) ^ 2 + (mz - bb.z) ^ 2 < bb.r * bb.r then sg.ok = false end
+			end
 			if sg.ok then
 				local hd = math.sqrt((b.x - a.x) ^ 2 + (b.z - a.z) ^ 2)
 				local slope = math.deg(math.atan2(math.abs(b.h - a.h), math.max(hd, 0.01)))
@@ -421,6 +442,14 @@ ST.yards = function()
 	end
 end
 
+-- the turn at resampled point k is sharper than 20 degrees (the gold edge lines of the two plates would cross outside)
+local function sharp(P, k)
+	local a, p, b = P[k - 1], P[k], P[k + 1]
+	if not (a and p and b) then return false end
+	local d1x, d1z, d2x, d2z = p.x - a.x, p.z - a.z, b.x - p.x, b.z - p.z
+	return math.deg(math.abs(math.atan2(d1x * d2z - d1z * d2x, d1x * d2x + d1z * d2z))) > 20
+end
+
 ST.roads = function()
 	for _, r in D.roads do
 		local P, S, w = r.P, r.S, r.w
@@ -437,7 +466,7 @@ ST.roads = function()
 					local len = (B - A).Magnitude
 					local cf0 = CFrame.lookAt((A + B) / 2, B)
 					mk("roads", "Roads", r.name .. "_" .. k, BLK, Vector3.new(w, 0.5, len + 0.4), cf0 * CFrame.new(0, -0.25, 0), r.grade == 1 and "marble" or "cobble", "walk")
-					if r.grade == 1 then
+					if r.grade == 1 and not sharp(P, k) and not sharp(P, k + 1) then -- 디자인 검수 10/11 (r2_06): no gold X at sharp bends
 						for _, side in { -1, 1 } do
 							mk("roads", "Roads", r.name .. "_line" .. k .. (side < 0 and "L" or "R"), BLK, Vector3.new(0.35, 0.12, len + 0.2),
 								cf0 * CFrame.new(side * (w / 2 - 0.9), 0.06, 0), "gold", "deco")

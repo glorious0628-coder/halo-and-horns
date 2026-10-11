@@ -22,19 +22,19 @@
 | 무엇 | 지금 | 새 값 | 어디 |
 |---|---|---|---|
 | 영웅상 HeroStatue | (0,0,-370) | `Vector3.new(-34, 0, -388)` (큰 길 통로 x ±12 안 밖; 높은 층이면 `StoryLandmark` 태그 + `Spot="HeroStatue"`) | `Config.StoryQuests.Landmarks.HeroStatue` (3538); H6 Near 16 |
-| Sir Gleam | At (-10,0,-372) Look (0,0,-372) | At `Vector3.new(-22, 0, -368)`, Look 큰 길 쪽 `Vector3.new(0, 0, -368)` | `Config.TownNpcs` Gleam (3724) |
-| 물약 상인 PotionHalo | At (20.07,0,-468.17) | At `Vector3.new(24, 0, -467)` (Y 5; 12칸 안에서 팜/말함) | `Config.TownNpcs` PotionHalo (3735) — Look도 문 쪽으로 같이 |
-| Folk3 빵집 | At (-6.35,0,-476.52) | At `Vector3.new(94, 0, -461)` (Y 7; 12칸 안에서 팜/말함) | `Config.TownNpcs` Folk3 (3730) — Look도 문 쪽으로 같이 |
-| Folk1 주스 | At (38.42,0,-499.19) | At `Vector3.new(118, 0, -506)` (Y 8; 12칸 안에서 팜/말함) | `Config.TownNpcs` Folk1 (3726) — Look도 문 쪽으로 같이 |
-| Folk2 꽃 | At (6.6,0,-489.63) | At `Vector3.new(67, 0, -515)` (Y 8; 12칸 안에서 팜/말함) | `Config.TownNpcs` Folk2 (3728) — Look도 문 쪽으로 같이 |
-| Folk4 분수 | At (46,0,-556) | At `Vector3.new(36, 0, -602)` (Y 10; 12칸 안에서 팜/말함) | `Config.TownNpcs` Folk4 (3732) — Look도 문 쪽으로 같이 |
-| 훈련장 표시 (새) | 없음 | `Vector3.new(-130, 2, -446)` (Landmark `TrainingYard` + 허수아비 표적; 첫 기술 퀘스트가 여기를 가리킴) | 새 Landmark, 게임성 개발 |
-| 폭포 소리 | 6곳 (±188,3,-493) (±190,7,-582) (±190,11,-660) | 3곳 `Vector3.new(-85, 1, -340), Vector3.new(-46, 20, -668), Vector3.new(271, 10, -629)` (W1 성문 서쪽 1단 → 바다, W2 계단 폭포 3단, W3 동쪽 절벽 2단) — 또는 `Map.Decor` 바로 아래 이름이 `…Waterfall`인 것 | `Config.Audio.Ambient.Waterfall.Spots` (5576) |
+| Sir Gleam | At (-10,0,-372) Look (0,0,-372) | At `Vector3.new(-20, 0, -390)`, Look 큰 길 쪽 `Vector3.new(0, 0, -390)` (영웅상 옆, 고리길 밖) | `Config.TownNpcs` Gleam (3724) |
+| 물약 상인 PotionHalo | At (20.07,0,-468.17) | At `Vector3.new(32.5, 0, -483.5)` (Y 5; 12칸 안에서 팜/말함), Look `Vector3.new(31.7, 0, -472.3)` | `Config.TownNpcs` PotionHalo (3735) |
+| Folk3 빵집 | At (-6.35,0,-476.52) | At `Vector3.new(101.9, 0, -452.8)` (Y 6; 12칸 안에서 팜/말함), Look `Vector3.new(93.2, 0, -459.9)` | `Config.TownNpcs` Folk3 (3730) |
+| Folk1 주스 | At (38.42,0,-499.19) | At `Vector3.new(130, 0, -507)` (Y 8; 12칸 안에서 팜/말함), Look `Vector3.new(119.5, 0, -503)` | `Config.TownNpcs` Folk1 (3726) |
+| Folk2 꽃 | At (6.6,0,-489.63) | At `Vector3.new(66.4, 0, -514)` (Y 6; 12칸 안에서 팜/말함), Look `Vector3.new(69.2, 0, -503.1)` | `Config.TownNpcs` Folk2 (3728) |
+| Folk4 분수 | At (46,0,-556) | At `Vector3.new(36, 0, -596)` (Y 10; 12칸 안에서 팜/말함), Look `Vector3.new(22, 0, -590)` | `Config.TownNpcs` Folk4 (3732) |
+| 훈련장 표시 (새) | 없음 | `Vector3.new(-130, 2, -446)` (Landmark `TrainingYard` + 허수아비 표적; M1_4 귀환 뒤 들르는 곳 — 퀘스트가 가리키게 할지는 코드 변경 요청, 검수 결정) | 새 Landmark, 게임성 개발 |
+| 폭포 소리 | 6곳 (±188,3,-493) (±190,7,-582) (±190,11,-660) | 3곳 `Vector3.new(-85, 1, -340), Vector3.new(-38, 21, -699), Vector3.new(288, 12, -641)` (W1 성문 서쪽 1단 → 바다, W2 계단 폭포 3단, W3 동쪽 절벽 2단) — 또는 `Map.Decor` 바로 아래 이름이 `…Waterfall`인 것 | `Config.Audio.Ambient.Waterfall.Spots` (5576) |
 | 분수 | (22,..) 옛 | 풀 중심 `Vector3.new(22, 10, -590)`, 반지름 9 (2단, 이름 `Town_Halo_Fountain3`) | 새 분수 모델(5단계) |
 
 ## C. 넓힘 (땅이 커졌다: x -300..295, z -853..-325)
 
-섬이 이웃 땅과 안 겹침(초원 z -240..240, 십자로 ±150; 빛 마을은 z -330보다 남쪽). 가장 높은 땅 Y 34 < 물 구조 MaxRise 42 그대로.
+섬이 이웃 땅과 안 겹침(초원 z -240..240, 십자로 ±150; 빛 마을은 z -330보다 남쪽). 가장 높은 땅 Y 30 < 물 구조 MaxRise 42 그대로.
 
 | 무엇 | 지금 | 새 값 | 어디 |
 |---|---|---|---|
@@ -55,15 +55,15 @@
 | 건물 | 새 자리 (x, z) | 지반 Y |
 |---|---|---|
 | Gate | (0, -334) | 0 |
-| Tower_GateEast | (40, -350) | 0 |
-| Shop_Potion | (34, -485) | 4 |
-| Shop_Bakery | (103, -443) | 4 |
-| Shop_Juice | (139, -503) | 4 |
-| Shop_Flower | (46, -530) | 4 |
-| Armory | (-175, -414) | 2 |
-| Castle | (-184, -575) | 16 |
-| Cathedral | (88, -758) | 30 |
-| Tower_Lookout | (247, -761) | 34 |
+| Tower_GateEast | (39, -346) | 0 |
+| Shop_Potion | (40, -490) | 5 |
+| Shop_Bakery | (103, -443) | 6 |
+| Shop_Juice | (139, -503) | 8 |
+| Shop_Flower | (58, -519) | 6 |
+| Armory | (-175, -417) | 2 |
+| Castle | (-176, -574) | 16 |
+| Cathedral | (84, -772) | 30 |
+| Tower_Lookout | (233, -777) | 28 |
 
 ## F. 6단계에서 다시 돌릴 시험 (옛 json 경로가 박힌 것은 v2 json으로)
 

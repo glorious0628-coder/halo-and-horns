@@ -23,7 +23,7 @@ arguments (all optional except the position):
   leaf    : an arched plank door leaf (wood) with an exact arch ("half": -1 / +1 = one leaf of a double door): "c": [x, z] arch centre (spring line), "R" half width,
             "bottom" z, "front" y of the plank faces, "t" thickness 0.32, "planks" 5, "gap" 0.06, "groove" 0.1
 Each item becomes one joined mesh object named "Orn_<name>" with one material: "OrnGold" (metal 1, roughness 0.3,
-base colour 255,175,25 = HH_HaloGoldTrim's part colour) or, for a leaf, "OrnWood" (176,112,58, roughness 0.75; Studio:
+base colour 255,168,36 = HH_HaloGoldTrim's part colour) or, for a leaf, "OrnWood" (176,112,58, roughness 0.75; Studio:
 Material Wood). Lantern glass is not made here (a Glass part of the skeleton
 fills the frame: LampGlass). --snap: knocker and hinges are put flat on the first surface of <object> in <glb> hit by
 a ray from the front (+y) at their position (the Tripo door leaf), so they sit on the planks.
@@ -60,7 +60,7 @@ def s2l(c):
 GOLD = bpy.data.materials.new("OrnGold")
 GOLD.use_nodes = True
 _b = GOLD.node_tree.nodes["Principled BSDF"]
-_b.inputs["Base Color"].default_value = (*[s2l(c / 255) for c in (255, 175, 25)], 1)
+_b.inputs["Base Color"].default_value = (*[s2l(c / 255) for c in (255, 168, 36)], 1)
 _b.inputs["Metallic"].default_value = 1.0
 _b.inputs["Roughness"].default_value = 0.3
 def flat_mat(name, rgb, metal=0.0, rough=0.5, alpha=1.0):

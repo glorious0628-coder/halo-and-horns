@@ -1171,7 +1171,7 @@ local function onStoryAction(player, id, action, option, ...)
 			local pts = math.floor(num(pick.Points))
 			if pts > 0 then
 				pickScore(player, f, option, pts)
-			elseif not pick.Reply then
+			elseif not pick.Reply and not pick.Reward then -- A23-130: a reward pick shows its reward toast only
 				notify(player, option == "Good" and TXT.LeanGood or TXT.LeanEvil, "info") -- E5: no "+0", the shard leans
 			end
 			reply = pick.Reply -- A23-70: the other person answers (last, replyLater)
@@ -1184,7 +1184,7 @@ local function onStoryAction(player, id, action, option, ...)
 			local side = obj[option == "A" and "Good" or "Evil"]
 			if type(side) == "table" and side.Reply then
 				reply = side.Reply -- A23-70: the other person answers (last, replyLater)
-			else
+			elseif not (type(side) == "table" and side.Reward) then -- A23-130: a reward pick shows its reward toast only
 				notify(player, TXT.Recorded, "info")
 			end
 			changedMind(player, st, obj, option)

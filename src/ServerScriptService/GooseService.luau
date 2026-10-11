@@ -493,8 +493,8 @@ end
 
 -- A23-14: fix a "Pending" event's mode from who is on the server right now: both tug factions -> Versus, exactly one
 -- -> Coop for it (target from its ready headcount now), nobody -> stays Pending. Once fixed it never changes for this
--- event (no mid-event flips). announce = NotifyAll the co-op start line when this call made it co-op.
-local function fixMode(announce)
+-- event (no mid-event flips). A23-130: no line of its own (the start line was the only one; the top gauge shows the mode).
+local function fixMode()
 	if mode ~= "Pending" then return end
 	local halo, horns = factionCounts()
 	if halo > 0 and horns > 0 then
@@ -509,10 +509,6 @@ local function fixMode(announce)
 		return
 	end
 	publishMode()
-	if mode == "Coop" and announce then
-		local msg = txt("CoopStart", coop.Side)
-		if msg then pcall(Net.NotifyAll, msg) end
-	end
 end
 
 local function start()
@@ -527,7 +523,7 @@ local function start()
 	-- A23-14: mode first, so the HUD never shows an active goose with the previous event's mode
 	mode = "Pending"
 	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
-	fixMode(false)
+	fixMode()
 	publishMode()
 	publishTotals(true)
 	setGame("GooseEndsAt", endsAt)
@@ -544,8 +540,9 @@ local function start()
 	if not ok then
 		warnThrottled("spawn", "goose model failed: " .. tostring(err))
 	end
-	local startMsg = (mode == "Coop") and txt("CoopStart", coop.Side) or nil
-	Net.NotifyAll(startMsg or string.format(Config.Story.GooseStart))
+	-- A23-130: one short line for 2 s, the same in every mode
+	local line = txt("Start")
+	if line then pcall(Net.NotifyAll, line, "announce", math.max(0.5, tonumber(Config.Goose.StartSeconds) or 2)) end
 end
 
 -- forget a player's entry for this event; what they already pulled stays in the side totals (like a leaver)
@@ -716,7 +713,7 @@ local function tick()
 		finish()
 		return
 	end
-	if mode == "Pending" then fixMode(true) end -- e.g. the only player just picked a faction
+	if mode == "Pending" then fixMode() end -- e.g. the only player just picked a faction
 	if mode == "Coop" then
 		-- co-op: the goose slides toward the co-op side as the gauge fills (Halo = -X like a rescue lead)
 		local fill = math.clamp(sideTotal(coop.Side) / math.max(1, coop.Target), 0, 1)
@@ -800,7 +797,7 @@ function GooseService.RegisterHit(player, isManual)
 	if not isReady(player) then return 0 end
 	local f = factionOf(player)
 	if not isTugFaction(f) then return 0 end -- A6: Neutral swings on the goose count 0
-	if mode == "Pending" then fixMode(true) end -- first eligible hit before the next tick fixed the mode
+	if mode == "Pending" then fixMode() end -- first eligible hit before the next tick fixed the mode
 	if mode == "Coop" and f ~= coop.Side then
 		-- A23-14: the rival side arrived after this goose became co-op -> no pull this time, told once per event
 		if not coop.Told[player] then

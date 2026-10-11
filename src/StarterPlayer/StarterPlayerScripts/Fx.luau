@@ -284,13 +284,15 @@ local MOTION = {
 			{ 0.29, "Out", { Waist = { 0, -60, 0 }, Neck = { 0, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
-		-- A23-116 Q (docs/design/skills18_2026-10-10.md): the Berserker's Crater Smash - the great sword lifted in both
-		-- hands behind the head with a big lean back, a deep two-hand smash on RELEASE_CONTACT.Warrior, held, back up
+		-- A23-116 Q (docs/design/skills18_2026-10-10.md): the Berserker's Crater Smash - the dark sword lifted high in the
+		-- right hand behind the head with a big lean back, the free left arm reaching forward for balance (A23-128 one-hand
+		-- sword, 검수 10/11: no empty fist on the hilt), a deep smash on RELEASE_CONTACT.Warrior with the left arm flung
+		-- out behind, held, back up
 		BerserkerRelease = { Len = 0.7, Keys = {
 			{ 0, "Out", {} },
-			{ 0.14, "Out", { Waist = { 24, -6, 0 }, Neck = { -10, 4, 0 }, RightShoulder = { 172, 0, 10 }, RightElbow = { 90, 0, 0 }, RightWrist = { -90, 0, 0 }, LeftShoulder = { 166, 0, -4 }, LeftElbow = { 86, 0, 0 }, LeftWrist = { -90, 0, 0 } } },
-			{ 0.24, "In", { Waist = { -40, 0, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 60, 0, -14 }, RightElbow = { 6, 0, 0 }, RightWrist = { -86, 0, 0 }, LeftShoulder = { 58, 0, 12 }, LeftElbow = { 8, 0, 0 }, LeftWrist = { -86, 0, 0 } } },
-			{ 0.44, "Out", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 52, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 50, 0, 12 }, LeftElbow = { 12, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.14, "Out", { Waist = { 24, -6, 0 }, Neck = { -10, 4, 0 }, RightShoulder = { 172, 0, 10 }, RightElbow = { 90, 0, 0 }, RightWrist = { -90, 0, 0 }, LeftShoulder = { 70, 0, -22 }, LeftElbow = { 36, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -40, 0, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 60, 0, -14 }, RightElbow = { 6, 0, 0 }, RightWrist = { -86, 0, 0 }, LeftShoulder = { 10, 0, -46 }, LeftElbow = { 20, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 52, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 14, 0, -40 }, LeftElbow = { 24, 0, 0 } } },
 			{ 0.7, "InOut", {} },
 		} },
 		-- the Dark Mage's Purple Pop: crouched, the left palm sweeping low, then lifting something up on
@@ -324,12 +326,13 @@ local MOTION = {
 			{ 0.44, "InOut", {} },
 		} },
 		-- A23-116 Z (off until the 10/20 check): the Berserker's Fire Rake - the blade dragged low behind on the right,
-		-- a big upward cut to the left on the contact, then both arms haul it back over the right shoulder
+		-- a big upward cut to the left on the contact (the free left arm swung out to the left for balance; A23-128
+		-- one-hand sword, 검수 10/11), then the right arm hauls it back over the right shoulder
 		BerserkerZ = { Len = 0.75, Keys = {
 			{ 0, "Out", {} },
-			{ 0.14, "Out", { Waist = { 0, 25, 0 }, RightShoulder = { 20, 0, 40 }, RightElbow = { 10, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 20, 0, 30 }, LeftElbow = { 30, 0, 0 } } },
-			{ 0.24, "In", { Waist = { 0, -30, 0 }, RightShoulder = { 120, 0, -30 }, RightElbow = { 10, 0, 0 }, RightWrist = { -40, 0, 0 }, LeftShoulder = { 110, 0, -10 }, LeftElbow = { 20, 0, 0 } } },
-			{ 0.48, "Out", { Waist = { 0, -10, 0 }, RightShoulder = { 150, 0, 20 }, RightElbow = { 90, 0, 0 }, LeftShoulder = { 130, 0, 10 }, LeftElbow = { 80, 0, 0 } } },
+			{ 0.14, "Out", { Waist = { 0, 25, 0 }, RightShoulder = { 20, 0, 40 }, RightElbow = { 10, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 46, 0, -26 }, LeftElbow = { 50, 0, 0 } } },
+			{ 0.24, "In", { Waist = { 0, -30, 0 }, RightShoulder = { 120, 0, -30 }, RightElbow = { 10, 0, 0 }, RightWrist = { -40, 0, 0 }, LeftShoulder = { 20, 0, -50 }, LeftElbow = { 24, 0, 0 } } },
+			{ 0.48, "Out", { Waist = { 0, -10, 0 }, RightShoulder = { 150, 0, 20 }, RightElbow = { 90, 0, 0 }, LeftShoulder = { 34, 0, -24 }, LeftElbow = { 50, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
 		-- the Dark Mage's Flappy Zigzag: the crooked staff pulled back right, a quick side swing to the left (the bat
@@ -361,11 +364,12 @@ local MOTION = {
 			{ 0.36, "Out", { Waist = { -26, -60, 0 }, Neck = { 12, 60, 0 } } },
 			{ 0.44, "InOut", {} },
 		} },
-		-- A23-116 X (off until the 10/20 check): the Berserker's Rage Roar - the blade tip set down before the feet with
-		-- both hands, then the left arm flung wide, chest forward, head back (the roar), two shrugs, back up
+		-- A23-116 X (off until the 10/20 check): the Berserker's Rage Roar - the blade tip set down before the feet in the
+		-- right hand (the left fist clenched low at the side; A23-128 one-hand sword, 검수 10/11), then the left arm flung
+		-- wide, chest forward, head back (the roar), two shrugs, back up
 		BerserkerX = { Len = 0.75, Keys = {
 			{ 0, "Out", {} },
-			{ 0.2, "Out", { Waist = { -20, 0, 0 }, RightShoulder = { 40, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -60, 0, 0 }, LeftShoulder = { 40, 0, 6 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -60, 0, 0 } } },
+			{ 0.2, "Out", { Waist = { -20, 0, 0 }, RightShoulder = { 40, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -60, 0, 0 }, LeftShoulder = { 12, 0, -18 }, LeftElbow = { 40, 0, 0 } } },
 			{ 0.3, "In", { Waist = { -10, 0, 0 }, Neck = { 20, 0, 0 }, RightShoulder = { 30, 0, -4 }, RightElbow = { 10, 0, 0 }, RightWrist = { -50, 0, 0 }, LeftShoulder = { 90, 0, -80 }, LeftElbow = { 10, 0, 0 } } },
 			{ 0.42, "Out", { Waist = { -12, 0, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 34, 0, -4 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 96, 0, -84 }, LeftElbow = { 8, 0, 0 } } },
 			{ 0.55, "Out", { Waist = { -10, 0, 0 }, Neck = { 20, 0, 0 }, RightShoulder = { 30, 0, -4 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 90, 0, -80 }, LeftElbow = { 10, 0, 0 } } },
@@ -430,13 +434,14 @@ local MOTION = {
 			{ 0.5, "InOut", { Waist = { 0, 2, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { -35, 0, 0 }, LeftShoulder = { 30, 0, -12 }, LeftElbow = { 50, 0, 0 } } },
 			{ 0.68, "InOut", {} },
 		} },
-		-- A23-108 ⑤ Q (Shockwave) for the Paladin: both hands on the hilt, the sword raised high over the head, then
-		-- driven down into the ground in front (the light ring) on RELEASE_CONTACT.Warrior (0.24)
+		-- A23-108 ⑤ Q (Shockwave) for the Paladin: the sword raised high over the head in the right hand (A23-128 one-hand
+		-- sword, 검수 10/11: the free left arm forward for balance like PaladinSwing's, no empty fist on the hilt), then
+		-- driven down into the ground in front (the light ring) on RELEASE_CONTACT.Warrior (0.24), the left arm swung out
 		PaladinRelease = { Len = 0.7, Keys = {
 			{ 0, "Out", {} },
-			{ 0.16, "Out", { Waist = { 16, 0, 0 }, Neck = { -10, 0, 0 }, RightShoulder = { 170, 0, 6 }, RightElbow = { 70, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 168, 0, -6 }, LeftElbow = { 72, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
-			{ 0.24, "In", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 62, 0, -14 }, RightElbow = { 8, 0, 0 }, RightWrist = { -88, 0, 0 }, LeftShoulder = { 60, 0, 14 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -88, 0, 0 } } },
-			{ 0.44, "Out", { Waist = { -28, 0, 0 }, Neck = { 14, 0, 0 }, RightShoulder = { 54, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 52, 0, 12 }, LeftElbow = { 12, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.16, "Out", { Waist = { 16, 0, 0 }, Neck = { -10, 0, 0 }, RightShoulder = { 170, 0, 6 }, RightElbow = { 70, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 58, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -34, 0, 0 }, Neck = { 16, 0, 0 }, RightShoulder = { 62, 0, -14 }, RightElbow = { 8, 0, 0 }, RightWrist = { -88, 0, 0 }, LeftShoulder = { 34, 0, -34 }, LeftElbow = { 40, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -28, 0, 0 }, Neck = { 14, 0, 0 }, RightShoulder = { 54, 0, -12 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 30, 0, -30 }, LeftElbow = { 44, 0, 0 } } },
 			{ 0.7, "InOut", {} },
 		} },
 		-- A23-108 ⑤ Q (Meteor) for the Light Mage: the staff lifted to the sky (calling the light), then brought down

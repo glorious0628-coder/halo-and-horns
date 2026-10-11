@@ -209,7 +209,7 @@ Config.Data = {
 		SavedBullyAt = 0,
 		SavedStars = 0,
 		SavedStarsAt = 0,
-		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound }, Equipped = { uid }, Next = the
+		-- A23-39 / PET-2 pets (PetService): List[uid] = { Sp, Lv, XP, Name, Lean, Bound, Roll? }, Equipped = { uid }, Next = the
 		-- next uid number, Away = put away by the player (PET-2b: stays away after a rejoin; never the tamer).
 		-- TamerNotice = the one-time "the hunter became the pet tamer" notice (+ free class change) is done
 		Pets = { List = {}, Equipped = {}, Next = 1, Away = false },
@@ -1427,6 +1427,7 @@ Config.Goose = {
 	Interval = 600, -- one goose every 10 min...
 	OffsetFromWarEnd = 300, -- ...starting 5 min before each war round end (something happens every 5 min)
 	Duration = 60,
+	StartSeconds = 2, -- A23-130: the start line (Text.Start) shows this long, once per goose
 	Position = Vector3.new(-30, 0, 30), -- Crossroads plaza (safe zone); MapBuilder builds the perch here
 	HoverHeight = 4, -- goose body center = Position + (0, HoverHeight, 0)
 	HitRadius = 4, -- added to a class's Range when checking whether a swing reaches the goose
@@ -1452,13 +1453,12 @@ Config.Goose = {
 	-- the winner reward, no war points, no cheer star; a gauge not filled = the tie path (LoserShare 40% + 1 cheer star).
 	CoopPerPerson = 20,
 	CoopWinShare = 0.7,
-	-- English texts (string.format). Mode name: Halo "Team Rescue", Horns "Team Poach" (rescue / poach flavour of GooseStart).
+	-- English texts (string.format). Mode name: Halo "Team Rescue", Horns "Team Poach".
 	Text = {
+		-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): NotifyAll at the start, one short line for StartSeconds,
+		-- once per goose in every mode (the top gauge tells the rest: no co-op band, no line when the mode is fixed later)
+		Start = "Golden Goose!",
 		NeedManual = "Only players who hit the Golden Goose themselves %d+ times get the reward! (Auto Battle hits don't count)", -- (MinManualHits)
-		CoopStart = { -- NotifyAll when the event becomes co-op (at start, or when the first faction player appears)
-			Halo = "The Golden Goose is in the Crossroads!\nOnly Knights here: Team Rescue. Fill the gauge together!",
-			Horns = "The Golden Goose is in the Crossroads!\nOnly the Horn Legion here: Team Poach. Fill the gauge together!",
-		},
 		CoopFull = { -- NotifyAll once when the gauge is full (MinManualHits)
 			Halo = "Gauge full! Team Rescue done.\nHit it yourself %d+ times before the end for a reward!",
 			Horns = "Gauge full! Team Poach done.\nHit it yourself %d+ times before the end for a reward!",
@@ -2616,7 +2616,7 @@ Config.Tutorial = {
 	QuestRewardGold = 150, -- A23-3: enough for the wood weapon (150); buying stays optional
 	QuestRewardXP = 0,
 	-- F10-4 safety net (2026-10-06): a 5/5 first mission left unclaimed this long (counted from when this server
-	-- first sees it, also right after a rejoin) is paid automatically with Text.AutoClaimed. [받기] still comes first.
+	-- first sees it, also right after a rejoin) is paid automatically with Text.Claimed. [받기] still comes first.
 	AutoClaimSeconds = 60,
 	-- A23-68 (user 2026-10-07, early churn): RespawnInMeadow: while the first mission runs (accepted, not claimed) a KO
 	-- respawns at the meadow entrance; #4 FoldOthers: until the first [Claim] every other quest-list row is sent with
@@ -2659,27 +2659,18 @@ Config.Tutorial = {
 		-- 3rd idea round #3: %s = the faction guide's name (Welcome[faction].Name), there is no guide NPC to look for
 		Welcome = "Tap here: first quest from %s", WelcomeEn = "Tap here: first quest from %s",
 		Travel = "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)", -- A23-88
-		QuestStart = "First mission: %s! (Reward: %s gold)",
-		QuestReady = "Supply road mission done! Press [Claim].",
+		-- A23-130 (user 2026-10-11): no line when the hunt starts or reaches 5/5 (QuestStart / QuestReady removed)
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
 		Forge = "Go to Otto's Forge in the Crossroads", -- A23-88: walking; Otto hands over the first weapon (zone_check_halo #44: the Forge is outside the town)
 		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
-		-- A23-74: the first weapon is in hand already, so QuestRewardGold (150) is the NEXT weapon's price (tier 2 at Lv1);
-		-- the M1_1 visit (show the jelly) opens the weapon shop right after Otto's lines
-		Claimed = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
-		ClaimedEn = "Thanks for guarding the supply road! +%s gold. That buys a new weapon at the Forge!",
-		AutoClaimed = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
-		AutoClaimedEn = "Your first mission reward, +%s gold, is in your vault! That buys a new weapon at the Forge!",
+		-- A23-130 (user 2026-10-11): the claim line is the reward only, for a [Claim] and the F10-4 safety net alike
+		-- (the old thank-you / next-weapon / "check the gear" variants are gone)
+		Claimed = "+%s gold",
 		-- the row after the claim while still bare-handed (no story row yet; A23-74 gives the weapon before that)
 		VisitBlacksmith = "Get your first weapon · Crossroads Forge",
 		VisitBlacksmithEn = "Get your first weapon · Crossroads Forge",
-		-- the claim lines for a save that owns a better weapon than the first one already (no "new weapon" promise); the
-		-- VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
-		ClaimedArmed = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
-		ClaimedArmedEn = "Thanks for guarding the supply road! +%s gold. Check the gear at the Crossroads Forge.",
-		AutoClaimedArmed = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
-		AutoClaimedArmedEn = "Your first mission reward, +%s gold, is in your vault! Check the gear at the Crossroads Forge.",
+		-- the VisitBlacksmithArmed row is for a save that owns the first weapon (no first-weapon promise)
 		VisitBlacksmithArmed = "Check the weapons · Crossroads Forge",
 		VisitBlacksmithArmedEn = "Check the weapons · Crossroads Forge",
 		-- A23-3: next goal after the blacksmith visit (computed from existing state only; no new reward)
@@ -2774,10 +2765,11 @@ Config.StoryQuests = {
 		-- shown under the two choice buttons on the last page (what a pick does, before picking)
 		-- A23-58: picking against your own side lowers your own score (ChoiceHint keeps its two-number call; the
 		-- faction lines are what a client should show)
-		ChoiceHint = "Left: the angel side. Right: the devil side. Picking against your side lowers your score!",
-		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d (not very angel-like)", -- (Good.Points, Evil.Points)
-		ChoiceHintHorns = "Left: Infamy -%d (too nice) · Right: Infamy +%d", -- (Good.Points, Evil.Points)
-		ChoiceHintNeutral = "The Artisan Guild just saves your pick, with no good or evil points.",
+		-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): the card's line keeps only the score change
+		ChoiceHint = "Left: angel side · Right: devil side",
+		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d", -- (Good.Points, Evil.Points)
+		ChoiceHintHorns = "Left: Infamy -%d · Right: Infamy +%d", -- (Good.Points, Evil.Points)
+		ChoiceHintNeutral = "No good or evil points.",
 		OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d", -- A23-58 (points actually taken), ⑪ the guide says it
 		OffSideHorns = "Magpie: Too nice for a devil! Your call. Infamy -%d",
 		-- 3rd idea round #5: the same pick at 0 points (nothing to take) + the lean line after it
@@ -2838,7 +2830,9 @@ Config.StoryQuests = {
 		},
 		-- A23-70 (user 2026-10-07 "아 좋다"): the first good / evil moment, one small card right after the first [Claim]
 		-- (Pop = the card opens by itself once). No score either way (Points 0: the shard leans, the Choice sound and the
-		-- afterglow answer); every side may press both buttons. Reply = the kid's line after the pick. Then the Forge row.
+		-- afterglow answer); every side may press both buttons. Then the Forge row. A23-130 (user 2026-10-11 "너무 설명해주는
+		-- 게 많은 거 같애"): no Reply line after a pick any more (the kid's "Thank you! …"), only the reward toast ("+HP
+		-- Potion" / "+25 gold"); a pick with a Reward sends no lean / "saved" line either (StoryQuestService)
 		Lunch1 = {
 			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Pop = true,
 			Requires = { TutorialDone = true, NotDone = { "M1_1" } },
@@ -2846,9 +2840,9 @@ Config.StoryQuests = {
 				{ Text = "Return the lunchbox, or take a bite?", Panel = true,
 					Lines = { All = { "A slime dropped a lunchbox. It belongs to a kid at the Crossroads." } },
 					Obj = { Type = "Choice",
-						Good = { Label = "Give it back", Points = 0, Pick = "GiveBack", Reply = "Thank you! Here, take this potion.",
+						Good = { Label = "Give it back", Points = 0, Pick = "GiveBack",
 							Reward = { Potion = "HP", N = 1 } },
-						Evil = { Label = "One bite!", Points = 0, Pick = "Bite", Reply = "Yum! ...Nobody saw that, right?",
+						Evil = { Label = "One bite!", Points = 0, Pick = "Bite",
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
@@ -3319,9 +3313,9 @@ Config.StoryQuests = {
 				{ Text = "Pick up the lantern?", Panel = true,
 					Lines = { All = { "A goblin dropped his lantern on the bridge. It is still warm." } },
 					Obj = { Type = "Choice",
-						Good = { Label = "Hand it back", Points = 1, Reply = "A grateful grunt echoes from the trees.",
+						Good = { Label = "Hand it back", Points = 1, -- A23-130: no Reply line, the reward toast only
 							Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Finders keepers!", Points = 1, Reply = "The lantern glows brighter in your hands.",
+						Evil = { Label = "Finders keepers!", Points = 1,
 							Reward = { Potion = "HP", N = 3, Gold = 192 } },
 						Neutral = { A = "Hand it back", B = "Finders keepers!" } } },
 			},
@@ -4321,6 +4315,40 @@ Config.LandShadow = {
 	Color = Color3.fromRGB(46, 24, 34),
 }
 
+-- A23-131 / A23-134 황금 알 줍기, the client's look (EggFx.luau, 게임성 개발 1; the rules and numbers are the server's
+-- Config.Goose.Egg, 게임성 개발 2; contract docs/design/golden_egg_contract_2026-10-11.md). Kinds = the code egg when the
+-- server part has no mesh of its own (Size studs across, 1.3x tall; Glow = a round soft glow that wide, Breathe = the big
+-- egg's swell, Sparkle = round sparkles per s near the camera); ArcHeight = a flight's peak clamp(distance x [1], [2],
+-- [3]); PredictHold = s a previewed pickup stays hidden before it shows again (the server kept it); GoneWait = s a
+-- removed ground egg waits for an EggReturn before it pops as picked; SoundRange = studs others' egg sounds reach;
+-- PickSpeed = my pickup sound's pitch by the eggs held (1st / 2nd / 3rd). Text = the only marks it writes.
+Config.GooseEggFx = {
+	Kinds = {
+		Gold = { Size = 1.2, Color = Color3.fromRGB(255, 205, 60), Sparkle = 3 },
+		Bouncy = { Size = 1.2, Color = Color3.fromRGB(255, 228, 130), Sparkle = 4 },
+		Big = { Size = 2.4, Color = Color3.fromRGB(255, 190, 40), Breathe = 0.08, Sparkle = 5 },
+		Crown = { Size = 1.8, Color = Color3.fromRGB(255, 236, 150), Glow = 4.5, GlowAlpha = 0.86, Sparkle = 8 },
+		Feather = { Size = 0.9, Color = Color3.fromRGB(255, 246, 215), Sparkle = 2 },
+	},
+	ArcHeight = { 0.35, 1.5, 6 },
+	SparkleRange = 60,
+	NoPickAlpha = 0.6,
+	PredictHold = 0.6,
+	RetryAfter = 1.5, -- s: a preview the server turned down is not tried again sooner (no flicker)
+	MoveWindow = 0.5, MoveMin = 1, -- the preview needs MoveMin studs walked in MoveWindow s (the server's away rule)
+	GoneWait = 0.25,
+	SoundRange = 30,
+	PickSpeed = { 1, 1.12, 1.26 },
+	MarkHeight = 6,
+	Home = { Alpha = 0.75, CarryAlpha = 0.45, Height = 0.15 },
+	Boundary = { Dots = 48, Size = 0.7, Alpha = 0.35, Range = 160 },
+	Wobble = { Max = 18, Speed = 14 },
+	Return = { Time = 0.8, Range = 160 },
+	Deliver = { Time = 0.45, Rise = 4 },
+	Shield = { Size = 6, Alpha = 0.8, Range = 100 },
+	Text = { Alert = "!", Nap = "Zzz", Plus = "+%d" },
+}
+
 -- A23-113 ① the server half of the circle (게임성 개발 2, MonsterService LEAP; docs/design/boss_leap_2026-10-11.md): per
 -- monster kind a big landing with the LandShadow attributes (DropAt last, DropTime = Warn, DropRadius, DropPos, plus
 -- DropFrom / DropHeight for the leap's arc). The rule never changes: Warn s later every player whose root is within
@@ -5288,6 +5316,14 @@ Config.Nudges = {
 	QuestHead = false,
 	-- 검수 10/09 decision (docs/design/nudge_list_2026-10-09.md): client
 	WarIntro = false, -- "Crown War: win points for your side!" when the war bar first shows (HUD.ApplyFold)
+	-- A23-130 (user 2026-10-11 photo, Golden Goose): only the top bar (gauge + "0 / 20") stays; the line under it
+	-- ("My points 0 · Knights, fill the gauge!" / the tug's "My points · hint") is gone (EventHUD updateGoose, TugSub)
+	GooseSub = false,
+	-- A23-130 sweep (docs/review/less_text_table_2026-10-11.md): the "Click to hit!" / "Tap to hit!" bubble over the attack
+	-- button after 5 s idle near a monster in the first mission (FirstSteps HINT.Step) - the button is on screen already
+	AttackHint = false,
+	-- the weapon merchant's 4 s farewell toast after a manual close ("Nothing you like? Take your time!", Panels WSHOP)
+	ShopFarewell = false,
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
 	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
 	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
@@ -5631,6 +5667,15 @@ Config.Audio = {
 		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
 		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
 		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
+		-- A23-131 황금 알 줍기 (EggFx / Audio; design golden_egg §소리; files from 소리 만들기, "" until then = the stand-in in
+		-- brackets plays): others' egg sounds only within Config.GooseEggFx.SoundRange, Max / Gap keep 30 players quiet
+		EggPlop = { File = "EggPlop", Volume = 0.30, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.15 }, -- an egg lands (CandyPlop)
+		EggPickup = { File = "EggPickup", Volume = 0.42, Speed = { 1, 1 }, Max = 2, Gap = 0.15 }, -- a pickup, pitch 1 / 1.12 / 1.26 by eggs held (GoldPickup)
+		EggDeliverHalo = { File = "EggDeliverHalo", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- a Knight delivers: a clear bell (GoldPickup)
+		EggDeliverHorns = { File = "EggDeliverHorns", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- a Horn delivers: coins (GoldPickup)
+		EggBoing = { File = "EggBoing", Volume = 0.35, Speed = { 0.95, 1.1 }, Max = 2, Gap = 0.15 }, -- the bouncy egg hops away (silent)
+		CrownEgg = { File = "CrownEgg", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the crown egg is laid: a short fanfare (GooseHonk)
+		GooseSnore = { File = "GooseSnore", Volume = 0.35, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the goose naps (silent)
 		KaijuSiren = { File = "KaijuSiren", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B5 KaijuPhase -> 'Siren'; CountTick follows
 		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
 		-- the King Slime's landing thud (Config.BossThud, Fx): the kaiju stomp file lower and softer until its own file
@@ -5786,22 +5831,22 @@ Config.QuickSlots = {
 -- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
 -- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
 Config.ClassGrips = {
-	-- Paladin: straight sword ready in front, its tip up to the left (class_grips table; grip_reference §1-6 sword and
-	-- shield idle: the sword in front, the guard arm up) - OneHand from the sword; until his shield model exists the left
-	-- hand is a fist in front of the chest (OffHand, 검수 10/11)
+	-- A23-128 (user 2026-10-11 "한손검만 쓸 수 있게 하자", 검수 picked one-hand only): both warriors hold a ONE-hand
+	-- sword in the right hand, standing ready at the side (references docs/design/grip_reference_2026-10-11.md §1-8: the
+	-- fist wraps the handle - hammer / handshake grip - the hand in line with the hanging arm, the elbow bent low and
+	-- close, the forearm a little down and forward, the tip ahead and up). No sword across the body, no great sword, no
+	-- two-hand grip; the left hand is empty and hangs as Roblox's idle / walk move it (no OffHand: a shield comes with
+	-- its model). OneHand Pole = where the elbow bends (torso space; default WeaponPose T.PoleRight, down and out).
+	-- 검수 10/11 (fix/onehand review): the forearm and the hand stay OUT of the torso / hip (the hand just outside the
+	-- hanging arm's line, at the waist, a little ahead; the elbow back near the hanging arm's line, not tucked in), the
+	-- wrist nearly straight (<= 30 degrees), the handle and pommel clear of the swinging thigh
+	-- Paladin: the straight sword, its tip ahead and 45 degrees up
 	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
-		-- 검수 10/11 main photo: the blade hid the face -> laid further out (tip still up to the left, passing in front of
-		-- the chest, not the face)
-		OneHand = { Hilt = Vector3.new(0.85, -0.6, -0.6), Aim = Vector3.new(-0.8, 0.55, -0.2) },
-		OffHand = { At = Vector3.new(-0.3, 0.0, -0.95), Up = Vector3.new(-0.95, -0.3, 0.65), Fwd = Vector3.new(0, 1, 0) } },
-	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
-	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
-	-- hand lower towards the pommel, the hilt in front of the chest, a heavy blade laid back over the shoulder). TwoHand
-	-- (WeaponPose): Hilt = the right grip point and Aim = the blade in UpperTorso space (studs; R15 shoulders at x +-0.97,
-	-- y 0.6; the torso top y 0.8) - the blade passes just over the right shoulder at (1.1, 1.05, 0.05); both arms are
-	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
-	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
+	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 45 degrees up
+	-- and a touch out
+	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
 	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
@@ -6609,7 +6654,6 @@ Config.Story = {
 		Horns = "The Horn Legion won the crown this round! The sky glows crimson.\n(Gold and XP +25%% for 10 minutes)",
 	},
 	WarDraw = "Nobody won the crown this round!",
-	GooseStart = "A Golden Goose with a Crown Shard landed in the Crossroads!\nKnights rescue it. The Horn Legion poaches it!",
 	GooseResult = {
 		Halo = "The Knights rescued the Golden Goose! The shard shines with light again.",
 		Horns = "The Horn Legion poached the Golden Goose! The shard turned dark.",
@@ -7396,6 +7440,9 @@ Config.Return = {
 	CombatWaitSeconds = 3, -- a card that comes in a fight waits for the fight to end (this often, at most this many times)
 	CombatWaitTries = 10,
 	War = { MinSession = 900, MinGap = 1800 }, -- a crown-war end: only after 15 minutes of play, at most one in 30 minutes
+	-- A23-130 (fix/lesstext: PauseCard shows only the chapter card): the kinds sent at all; false = not sent and no MinGap
+	-- taken (Daily still offers the notification opt-in through Fx OptInMoment)
+	Cards = { Chapter = true, Daily = false, War = false },
 	WelcomeAfter = 6 * 3600, -- "Welcome back!" when the last leave was at least this long ago (after the first mission)
 	WelcomeDelay = 4, -- s after the join (the HUD is up by then)
 	NextZone = "GoblinWoods", -- the next-goal row "Lv10 · Goblin Woods" travels there
@@ -8081,5 +8128,233 @@ Config.SpawnClear = {
 		"Falls", "Foam", "StepStone" },
 	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box" }, -- a flower cart / pot is furniture
 }
+
+----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
+-- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
+-- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3
+-- server keeps them untouched). 게임성 개발 2's C1 then bumps Config.Data.Version to 4 on top (tier 9 = a 9-bit weapon
+-- mask) with Spares and Market. Later branches only add behaviour, never another shape. Rules: ids and numbers only (no
+-- player-facing text, A23-111 / A23-133); a repair never makes a value up (broken = the default or dropped, counts cut at
+-- the caps); a sane flat key this code does not know is kept (a later key needs no version bump); a thing lives in one
+-- place only (Gear.Own OR worn in Gear.On / Gear.Pet). Owners: Craft / Research / Gather / Gear / Buffs = 게임성 개발 3,
+-- Shop / EggHonorAt = 게임성 개발 2. The services keep their own caps when they write (e.g. 60 things in Gear.Own).
+Config.SaveV4 = {
+	KeyLen = 32, -- longest id key kept (recipe, monster family, tonic, pet uid)
+	SlotLen = 16, -- longest gear slot / kind name kept (letters only)
+	MaxKeys = 64, -- most keys kept in one id map (Craft.Made, Research.Pts / Sum, Gear.Own, Gear.Pet)
+	MaxCount = 10000000, -- a counter above this is cut (never a free huge number)
+	CraftRoles = { "Smith", "Alch", "Tame" }, -- Blacksmith, Alchemist, Tamer: one craft level each (a class change starts over)
+	CraftMaxLv = 30,
+	GearSlots = { "Armor", "Ring" }, -- the player's worn slots (Gear.On, always present)
+	GearMaxTier = 16,
+	OwnKeyMax = 20, -- Gear.Own: at most this many of one "<kind>:T:P" key
+	BuffMax = 2, -- Buffs: at most two tonics at once
+	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
+	ShopDayMax = 50, -- Shop.N: Otto's cheap materials a KST day (게임성 개발 2)
+	PetRollSpd = { 5, 10 }, -- Pets.List[uid].Roll.Spd: a summoned pet's walk bonus in whole % (PetService.Sanitize)
+}
+-- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
+-- Made (recipe id -> times made). Research: the tamer's points (Pts) and summons (Sum) per monster family (QuestKind).
+-- Gather: Day (KST DayIndex of N / Bloom / Gift), N (gathers today), Bloom (shard blooms today), Gift (crown dust others
+-- shared today), Total (gathers ever), FirstBloom (the sure first bloom came). Gear: Own["<kind>:T:P"] = n (kinds Armor,
+-- Ring, PetArmor, PetAcc), On.<slot> = "T:P" | "" (the player wears it), Pet[pet uid].<slot> = "T:P" (a pet wears it; kept
+-- outside Pets because PetService.Sanitize rebuilds every pet row). Buffs: tonic id -> os.time() it ends. Shop: Otto's
+-- cheap materials { Day, N }. EggHonorAt: os.time() of the last golden egg Honor / Infamy +5 (A23-134, once an hour)
+Config.Data.Defaults.Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {} }
+Config.Data.Defaults.Research = { Pts = {}, Sum = {} }
+Config.Data.Defaults.Gather = { Day = 0, N = 0, Bloom = 0, Gift = 0, Total = 0, FirstBloom = false }
+Config.Data.Defaults.Gear = { Own = {}, On = { Armor = "", Ring = "" }, Pet = {} }
+Config.Data.Defaults.Buffs = {}
+Config.Data.Defaults.Shop = { Day = 0, N = 0 }
+Config.Data.Defaults.EggHonorAt = 0
+
+-- the repair helpers of the v4 tables (one local for the whole set: Config's top chunk is near the 200 locals limit)
+local V4 = {}
+
+-- a whole number in lo..hi (a fraction floored), or nil for NaN / +-inf / anything that is not a number
+function V4.int(v, lo, hi)
+	if type(v) ~= "number" or v ~= v or v == math.huge or v == -math.huge then return nil end
+	return math.clamp(math.floor(v), lo, hi)
+end
+
+function V4.key(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.KeyLen
+end
+
+function V4.slot(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.SlotLen and string.match(k, "^%a+$") ~= nil
+end
+
+-- "T:P" -> "T:P" written plainly (tier 1..GearMaxTier, plus 0..Config.Loot.MaxEnhance), or nil
+function V4.tierPlus(s)
+	if type(s) ~= "string" or #s > 12 then return nil end
+	local t, p = string.match(s, "^(%d+):(%d+)$")
+	t, p = tonumber(t), tonumber(p)
+	if not t or not p or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.Loot.MaxEnhance then return nil end
+	return string.format("%d:%d", t, p)
+end
+
+-- the keys of a table that pass `ok`, sorted (the same save always keeps the same ones when a map is cut)
+function V4.sortedKeys(t, ok)
+	local keys = {}
+	if type(t) ~= "table" then return keys end
+	for k in t do
+		if ok(k) then table.insert(keys, k) end
+	end
+	table.sort(keys)
+	return keys
+end
+
+-- { [id] = count }: sane ids, whole counts 1..max (0 / broken dropped), at most MaxKeys ids
+function V4.countMap(src, max)
+	local out, kept = {}, 0
+	for _, k in V4.sortedKeys(src, V4.key) do
+		local n = V4.int(src[k], 0, max)
+		if n and n > 0 and kept < Config.SaveV4.MaxKeys then
+			out[k] = n
+			kept += 1
+		end
+	end
+	return out
+end
+
+-- copies the sane flat keys of `src` that `known` does not name (a short string key with a boolean, a finite number or
+-- a short string): a later version's new flat field survives this one
+function V4.keepExtra(src, out, known)
+	for k, v in src do
+		if V4.key(k) and not known[k] and out[k] == nil then
+			if type(v) == "boolean" or (type(v) == "string" and #v <= Config.SaveV4.KeyLen) then
+				out[k] = v
+			elseif V4.int(v, -math.huge, math.huge) ~= nil then
+				out[k] = v
+			end
+		end
+	end
+	return out
+end
+
+function Config.SanitizeCraft(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	local out, known = {}, { Rep = true, Made = true }
+	for _, role in L.CraftRoles do
+		known[role] = true
+		local r = type(src[role]) == "table" and src[role] or {}
+		out[role] = { Lv = V4.int(r.Lv, 1, L.CraftMaxLv) or 1, XP = V4.int(r.XP, 0, L.MaxCount) or 0 }
+	end
+	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
+	out.Made = V4.countMap(src.Made, L.MaxCount)
+	return V4.keepExtra(src, out, known)
+end
+
+function Config.SanitizeResearch(t)
+	local src = type(t) == "table" and t or {}
+	local out = { Pts = V4.countMap(src.Pts, Config.SaveV4.MaxCount), Sum = V4.countMap(src.Sum, Config.SaveV4.MaxCount) }
+	return V4.keepExtra(src, out, { Pts = true, Sum = true })
+end
+
+function Config.SanitizeGather(t)
+	local src = type(t) == "table" and t or {}
+	local out = { FirstBloom = src.FirstBloom == true }
+	for _, k in { "Day", "N", "Bloom", "Gift", "Total" } do
+		out[k] = V4.int(src[k], 0, Config.SaveV4.MaxCount) or 0
+	end
+	return V4.keepExtra(src, out, { Day = true, N = true, Bloom = true, Gift = true, Total = true, FirstBloom = true })
+end
+
+-- worn slots { [slot] = "T:P" }: letter slot names, plain "T:P" values; anything else dropped
+local function wornSlots(src)
+	local out = {}
+	if type(src) ~= "table" then return out end
+	for k, v in src do
+		local tp = V4.slot(k) and V4.tierPlus(v)
+		if tp then out[k] = tp end
+	end
+	return out
+end
+
+function Config.SanitizeGear(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	-- Own: "<kind>:T:P" written plainly ("Armor:01:0" and "Armor:1:0" are one key), counts 1..OwnKeyMax
+	local own, kept = {}, 0
+	for _, k in V4.sortedKeys(src.Own, function(k) return type(k) == "string" end) do
+		local kind, rest = string.match(k, "^(%a+):(.+)$")
+		local tp = kind and V4.slot(kind) and V4.tierPlus(rest)
+		local n = V4.int(src.Own[k], 0, L.OwnKeyMax)
+		if tp and n and n > 0 then
+			local key = kind .. ":" .. tp
+			if own[key] ~= nil then
+				own[key] = math.min(L.OwnKeyMax, own[key] + n)
+			elseif kept < L.MaxKeys then
+				own[key] = n
+				kept += 1
+			end
+		end
+	end
+	-- On: the player's slots, always present ("" = empty)
+	local on = wornSlots(src.On)
+	for _, slot in L.GearSlots do
+		if on[slot] == nil then on[slot] = "" end
+	end
+	-- Pet: per pet uid, only uids that still wear something
+	local pet, pets = {}, 0
+	for _, uid in V4.sortedKeys(src.Pet, V4.key) do
+		local worn = wornSlots(src.Pet[uid])
+		if next(worn) ~= nil and pets < L.MaxKeys then
+			pet[uid] = worn
+			pets += 1
+		end
+	end
+	return V4.keepExtra(src, { Own = own, On = on, Pet = pet }, { Own = true, On = true, Pet = true })
+end
+
+-- Buffs at `now` (os.time()): an end in the past is dropped, one later than now + BuffSeconds is cut to that (never a
+-- longer buff), at most BuffMax (the ones that end last)
+function Config.SanitizeBuffs(t, now)
+	local L = Config.SaveV4
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	local list = {}
+	if type(t) == "table" then
+		for id, v in t do
+			local ends = V4.int(v, 0, now + L.BuffSeconds)
+			if V4.key(id) and ends and ends > now then table.insert(list, { id, ends }) end
+		end
+	end
+	table.sort(list, function(a, b)
+		if a[2] ~= b[2] then return a[2] > b[2] end
+		return a[1] < b[1]
+	end)
+	local out = {}
+	for i = 1, math.min(#list, L.BuffMax) do
+		out[list[i][1]] = list[i][2]
+	end
+	return out
+end
+
+function Config.SanitizeShop(t)
+	local src = type(t) == "table" and t or {}
+	local out = { Day = V4.int(src.Day, 0, Config.SaveV4.MaxCount) or 0, N = V4.int(src.N, 0, Config.SaveV4.ShopDayMax) or 0 }
+	return V4.keepExtra(src, out, { Day = true, N = true })
+end
+
+-- EggHonorAt at `now`: a whole os.time() not after now (a future value = 0: a later hour is never promised)
+function Config.SanitizeEggHonorAt(v, now)
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	local at = V4.int(v, 0, 2 ^ 52) or 0
+	return at > now and 0 or at
+end
+
+-- every v4 table of a save, in place (DataService.fillDefaults, after the default fill)
+function Config.SanitizeSaveV4(d, now)
+	now = V4.int(now, 0, 2 ^ 52) or os.time()
+	d.Craft = Config.SanitizeCraft(d.Craft)
+	d.Research = Config.SanitizeResearch(d.Research)
+	d.Gather = Config.SanitizeGather(d.Gather)
+	d.Gear = Config.SanitizeGear(d.Gear)
+	d.Buffs = Config.SanitizeBuffs(d.Buffs, now)
+	d.Shop = Config.SanitizeShop(d.Shop)
+	d.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)
+end
 
 return Config

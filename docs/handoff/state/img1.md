@@ -1,10 +1,27 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
-## 지금 (10/11 18:10, 비우기 전) — 먼저 읽기
-- 검수 = **local_d522c0f1-07cf-4db1-b178-5f335a56db7c** (모든 것 검수). 보고는 send_message로 묶음마다 한 번.
-- **WorldKit Studio 열려 있음(최소화)**, `build/WorldKit.rbxlx`(15:20 저장)를 연 것 + 오늘 고친 지형·Ground. **파일 저장 안 함** — 닫혀서 잃으면 창 없이 다시: `py tools/halo_blockout.py --mode terrain` → build/wk/halo_blockout_apply.lua를 execute_luau(STUDIO_NAME=WorldKit, Edit) → `py tools/worldkit/skeleton_ground_run.py`. 열 때는 `Start-Process <Studio exe> build\WorldKit.rbxlx -WindowStyle Minimized`(검수 허락 뒤), 사진 도구는 창을 앞으로 안 끌어옴(SW_SHOWNOACTIVATE), 끝나면 최소화.
-- 끝낸 묶음(검수 보고함): 섬 2차(통과), 광장 원판 아래 지형 1칸·훈련장 모래(e39c823), 구획 지도 + A23-117 이유 칸 + 문 앞 턱·건물 받침 고침(5d9c471).
-- **기다리는 것:** 검수 답 — 5d9c471 묶음 판정 + 다음 일 지시. 내가 제안한 다음 일 = 5단계 입히기 준비(plan `dressing.by_district` 글을 소품 하나하나 `why` 칸으로 쪼개기, A23-117).
+## 지금 (10/11 밤, plan v2 검수 고침 끝, 비우기 전) — 먼저 읽기
+- **10/11 밤 PC 꺼짐 → WorldKit 15:20 저장본으로 다시 열고 새 plan으로 다시 지음**(apply → civic → ground → props, CSG 실패 0). 이미지 생성 3·4·이미지 개발에 "다시 끼워 넣어도 됨" 알림.
+- **WorldKit 백업(마우스·키보드 없음):** `py tools/worldkit/wk_backup.py save [--only Workspace.HaloV2,ServerStorage.X] [--no-terrain]` → build/wk_backup/<시각>/*.rbxm + terrain.rbxm + manifest.json (SerializationService, execute_luau 90k 조각). `load latest [--only ..] [--replace] [--terrain] [--check]`. 시험: HaloV2 2534개 왕복 같음, 지형 붙여넣기 높이 같음. 전체(약 10 MB)는 약 10분, HaloV2+지형은 40초.
+- 사진 3차 16장 + 크롭 = review2/sheet_review2_v3.jpg·crops_review2_v3.jpg (806d6c0) → 디자인 검수에 아직 안 보냄(PC 꺼짐 전 찍음, 지금 WorldKit은 같은 plan으로 다시 지어서 같음). 바위 턱 491칸이 C2c에서 어둡게 넓게 보임 → 판정 때 같이 말할 것.
+- **10/11 21:56 전체 백업(3·4·이미지 개발 다 넣은 뒤)** build/wk_backup/20261011_215648 (55 roots + 지형, 10.7MB, SkeletonTest 15채·HaloPropKits·MV 포함). 그 전 21:47 = build/wk_backup/20261011_214754 (55 roots + 지형, 10.6MB; HaloPropKits·이미지 개발 MV 포함), 21:50 지형만(Limestone 턱 뒤). 되돌리기 `py tools/worldkit/wk_backup.py load <폴더|latest> --replace --terrain`. Ctrl+S 저장은 키보드라 안 함.
+- 땅·길 사진 3차 = 디자인 검수 **통과**. 턱: 높이 4 넘는 곳만 Limestone(FACE_DH 4, 344칸) — 다음 사진 차례에 r2_03·07 같은 자리 1장씩 보여 줄 것(창 허락 = 최종 검수). 위 사진(_top)은 안개 끄고 찍음(ground_shots).
+- **보고처(10/11 사용자):** 그림·3D·월드 보고·사진 판정 = **디자인 검수**(list_sessions 이름). 화면 조작 허락("전달함, 시작")·유료 묶음·사용자 질문 = **최종 검수**(local_d522c0f1-07cf-4db1-b178-5f335a56db7c). send_message로 묶음마다 한 번.
+- 사진 14장(plan v2 고친 뒤, C2c 낮) = art/review/world/halo_v2/review2/sheet_review2.jpg (eb3ff89) → 디자인 검수 판정 대기. 다시 찍을 것: r2_10(탑 위 앞이 바닥에 막힘)·r2_14(위 전체 뿌염). 도구 `SK_OUT=art/review/world/halo_v2/review2 py -X utf8 tools/worldkit/ground_shots.py --review2 [이름]`.
+- **끝낸 것(e8bd29f + 353c72c, 검수에 보고함):** `docs/review/halo_plan_v2_review_2026-10-11.md` 결정 7개 + 진짜 16건 + 확인 안 한 21건 고침.
+  - 걷는 속도 = Config.Player.WalkSpeed(20, plan `walk_speed`). 성문→대성당 **26.0초**(대성당 굽은 계단 `cathedral_stairs` w12, 세 번 꺾음, 자체 높이 `ys`, `rails=True` → 걷기 계산이 난간 칸을 막음 + 대각선 모서리 질러가기 금지). 새 구역 `cathedral_steps`(계단 사이 꽃 단 = 가까운 계단 높이, halo_blockout `terrace`). 대성당 (84,-772), 앞 마당 (82,-718).
+  - 전망대 y 28(탑 꼭대기 78 < 대성당 84), 검사 "대성당보다 높은 땅/건물". 절벽 마을 = 진짜 두 단: `tiers` 위 단 22(집 3·4·5·6·8), 아래 18(1·2·7), 절벽-전망대 계단 `cliff_lookout`.
+  - 발판 둘레 12×12+2(`PADS`, `PAD_KEEP` 8): 고리길 남쪽으로, Tower_GateEast (39,-346) 문 남쪽, 채움 빛 2개 옮김, Sir Gleam (-20,-390). 검사: 길·건물·채움 빛·고정점·소품·등불 vs 발판.
+  - 다리 = 길-시냇물 교차점에 자동(`fix_bridges`, `BRIDGE_ROAD`), B4 새(정원 길), B2 len 16. 검사 "다리 없이 물 건넘"·"길이 물에 걸림"·"시냇물이 건물에 걸림"·"마당이 건물에 걸림". 샘·W2·정원 웅덩이·W3 자리 높이에 맞게.
+  - 구역 밖 = 모서리 + 받침 5 전부 안(`PAD_MARGIN`): 12채 옮김(+시장 위 언덕·정원 마을 다각형 넓힘), 자리는 scratchpad fit.py로 찾음. 받침 높이 다른 집 맞닿음 검사.
+  - 문 길(`door_spurs`): 문 5칸 앞 점에서 가까운 길, 자기 집·남의 집·발판을 모서리 하나로 돌아감. 자기 문 길은 0번 구간만 검사 제외. 블록아웃 길은 건물 안 칸을 안 칠함.
+  - 기울어진 구역 건물 받침 = 문 자리 땅 높이(시장 4→8·정원 12→16), 문 앞 턱 옆도 섞음(APRON_SIDE 8). 광장 원판 낮춤 규칙 = 두 도구 같은 칸 가운데 기준(skeleton_ground `D.grid`).
+  - 첫 10분 = 실제 흐름(스폰+Hallie 카드 → 성문 → 교차로 대장간 → 초원), 가게·훈련장은 `first_10_return`(M1_4). 이유 글 = 새 집 문서(halo_new_houses) 주민대로, 고정점 code 글 = 최종 숫자(`final_fixed`, 가게 NPC는 자기 문 옆). 큰 길은 분수 동쪽으로.
+  - 결과: plan 검사 0건, 소품 129 + 등불 56 검사 0건, 고장 넣어 시험 6가지 다 잡힘. 고정점 표 다시 만듦.
+- **WorldKit(열림, 파일 저장 안 함)에 새 계획 다 다시 지음(10/11 밤):** halo_blockout apply → skeleton_civic_run(4채) → skeleton_ground_run(1467조각, CSG 실패 0) → halo_props_place(185, 땅 못 찾음 0). 높이 재확인(계단 10→30, 두 단 18/22, 전망대 28). 집·가게·대성당·성은 회색 상자(이미지 생성 3 골격 대기, 자리가 바뀐 것: 가게 2·집 다수·성·대성당).
+- 사진은 아직(창 필요 → 검수 허락). 경로 확인 도구: `HALO_DUMP=1 py tools/halo_blockout.py` → build/wk/blockout_grid.json.
+- **이미지 생성 3과 집 크기 맞춤(10/11 밤):** 짝 = Hill1 05 · Hill2 11 · Hill3 01 · Cliff1 10 · Cliff2 08 · Cliff3 06 · Cliff4 03 · Cliff5 09 · Garden1 12 · Garden2 02 · Garden3 07 · Garden4 04 (새 집 자리 = Hill4·Cliff6·7·8·Garden5·6·7). 몸통 W×D·문 면 위치·가게 문 옆 비킴(빵 오른쪽 4.6, 주스 왼쪽 4.6, 물약 오른쪽 3.8)은 이미지 생성 3 메시지대로, 원점 = 문 면을 door_at에. 계산: 16채 겹침 0·길 0·구역 안. **검수 OK 오면 → plan에 집마다 진짜 크기(몸통 + 처마 1.2) 넣고 검사 다시.**
+- **기다리는 것:** 검수 판정. 개발 쪽에 넘길 것(검수 몫): 훈련장을 퀘스트가 가리키게 할지(코드 변경 요청), 고정점 표 B(NPC 새 At/Look).
 - **이미지 개발 부탁:** HH_Fabric 밤 사진을 내 WorldKit 촬영 때 같이 찍고 싶어함 → 내 다음 WorldKit 촬영 차례가 정해지면 검수에 먼저 알릴 것.
 - 메인 Studio(81671223175574)는 절대 안 건드림, 옛 메인 4차 적용 안 함.
 
@@ -57,8 +74,12 @@
 - 지도 `art/review/world/halo_v2/halo_props_map.png`(번호 = 표, 빨간 글씨 = 새 키트 NEW_ 18종). 구역 밖 가장자리 소품은 가까운 구역(zone)에 묶음.
 - 바꾼 것: 성문 경비 초소 = 성문 안쪽 **서쪽**(동쪽은 탑·발판·채움 빛, 비대칭).
 - 검수 사진 판정 → 5단계 할 일 = plan `dressing.stage5_fixes`(길 두 겹·반 잘린 디딤돌·하늘색 기둥 숨김·바위 테·LOD 점·폭포 v2).
-- **금 2차(이미지 개발, 10/11 저녁)**: WorldKit(저장 안 함)의 HH_HaloGoldTrim 파트 4110개 = 색 (255,195,45), MV 금속 0.5·거칠기 0.15. 되돌리기 `tools/gold_trim_apply.luau` MODE "undo". **내 생성기(skeleton_civic·skeleton_ground GOLD_RGB)는 아직 (255,175,25)** → 다시 돌리면 옛 금색으로 돌아감. 검수 통과 소식 오면 두 파일 GOLD_RGB = (255,195,45)로 고쳐 올림.
-- 다음: 검수 판정(새 키트 18종 중 무엇을 만들지 = 이미지 생성 2/3 몫) → WorldKit 놓기 도구(소품 = ImportHold/키트 모델, 높이는 지형에서).
+- **금 2차(이미지 개발, 10/11 저녁)**: WorldKit(저장 안 함)의 HH_HaloGoldTrim 파트 4110개 = 색 (255,195,45), MV 금속 0.5·거칠기 0.15. 되돌리기 `tools/gold_trim_apply.luau` MODE "undo". **내 생성기(skeleton_civic·skeleton_ground GOLD_RGB)는 아직 (255,175,25)** → 다시 돌리면 옛 금색으로 돌아감. → **최종 (255,168,36)(cd1aaa3) 확정, 두 파일 GOLD_RGB 고쳐 올림** — 이제 다시 돌려도 금색 같음.
+- **검수 판정(10/11): 소품 130 + 등불 44 통과.** 밀도는 5단계 사진에서 다시(분수 광장·대성당 언덕 잔디·전망대가 비어 보이면 이유 있는 것만 더함). 새 키트 18종 = **전부 만듦** → 목록 `docs/design/halo_new_prop_kits_2026-10-11.md`(2D 4면 이미지 생성 2, Tripo·Blender 이미지 생성 3, 검수가 넘김).
+- **WorldKit에 놓음(10/11 저녁, Edit, 파일 저장 안 함)**: `py tools/worldkit/halo_props_place.py [--mode remove]` → `Workspace.HaloV2.Props` = StandIn 96(옛 WorldKit3D 등불·화단·화분·나무·토피어리·난간을 키트 키×크기로 줄여 대신 놓음, 속성 StandIn — 자리·크기 보기용, 최종 모양 아님) + Placeholder 78(반투명 상자 + 이름: 파랑 41 = 만든 키트지만 Studio에 없음 HaloReasonHQ·Flagpole, 주황 37 = NEW). 땅 못 찾은 것 0, 탑 꼭대기 사진 원판은 탑 위. 속성 PropId·Kit·Why·Anchor.
+- 왜 진짜 키트가 아닌가: HaloVar4_*/HaloReasonHQ_*/FlowerPotHQ 모델은 파일(`art/models/tripo/halo_props/<이름>/*_parts.glb`)만 있고 WorldKit에 안 올라감 + 3D 재검사(`docs/review/3d_recheck_2026-10-11_result.md`) 178개 전부 '다시'. 고쳐진 키트가 Studio에 들어오면 STAND 표 대신 그 모델을 복제하게 바꿀 것.
+- 사진은 아직(창 신청 필요). 다음: 사진 → 밀도 판정 → stage5_fixes.
+- (옛) 다음: 검수 판정(새 키트 18종 중 무엇을 만들지 = 이미지 생성 2/3 몫) → WorldKit 놓기 도구(소품 = ImportHold/키트 모델, 높이는 지형에서).
 
 ## 10/11 18:00 구획·이유·골격 다듬기 (검수 지시)
 - 검수 판정: 섬 2차 통과. 5단계 할 일로 적음: **바위 테가 옆에서 검고 두꺼운 곧은 띠**(색·튀어나온 바위로 다듬기), **under_side_close 파란 점 2개**(LOD 티).
