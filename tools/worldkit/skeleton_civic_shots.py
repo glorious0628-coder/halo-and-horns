@@ -34,7 +34,7 @@ def spots():
 
         look = (cx, gy + h * 0.45, cz)
         big = bid == "Gate"
-        d = {"Gate": 80, "Tower_GateEast": 62, "Tower_Lookout": 66, "Armory": 30}[bid]
+        d = {"Gate": 80, "Tower_GateEast": 64, "Tower_Lookout": 70, "Armory": 30}[bid]
         add(bid + "_front", at(d, 0, h * 0.42), look)
         add(bid + "_34", at(d * 0.8, d * 0.65, h * 0.45), look)
         add(bid + "_side", at(0, d, h * 0.42), look)
@@ -55,9 +55,24 @@ def spots():
                 fx, fz = next(w for w in PLAN["water"]["pools"] if w["id"] == "fountain")["at"]
                 dx, dz = fx - cx, fz - cz
                 n = math.hypot(dx, dz)
-                add("Tower_Lookout_balcony_eye", (cx + dx / n * 5.0, gy + 36.9, cz + dz / n * 5.0), (fx, gy + 12.0, fz))
-                sx, sz = -dx / n, -dz / n
-                add("Tower_Lookout_balcony_sea", (cx + sx * 5.0, gy + 36.9, cz + sz * 5.0), (cx + sx * 90, gy + 20.0, cz + sz * 90))
+
+                def gap(wx, wz):
+                    """the camera stands in a gap between two columns (columns at local 22.5 + 45k deg; local +x = (-cos yaw, sin yaw),
+                    local +y = (sin yaw, cos yaw)): the gap direction closest to the world direction (wx, wz)"""
+                    best = None
+                    for k in range(8):
+                        ph = math.radians(45 * k)
+                        gx = math.cos(ph) * -math.cos(yaw) + math.sin(ph) * math.sin(yaw)
+                        gz = math.cos(ph) * math.sin(yaw) + math.sin(ph) * math.cos(yaw)
+                        dot = gx * wx + gz * wz
+                        if best is None or dot > best[0]:
+                            best = (dot, gx, gz)
+                    return best[1], best[2]
+
+                gx, gz = gap(dx / n, dz / n)
+                add("Tower_Lookout_balcony_eye", (cx + gx * 4.4, gy + 36.9, cz + gz * 4.4), (fx, gy + 12.0, fz))
+                gx, gz = gap(-dx / n, -dz / n)
+                add("Tower_Lookout_balcony_sea", (cx + gx * 4.4, gy + 36.9, cz + gz * 4.4), (cx + gx * 60, gy + 12.0, cz + gz * 60))
     return out
 
 

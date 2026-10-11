@@ -26,7 +26,8 @@
   - 성문: 50×16×48, 통로 16×30(광선 통과), 탑 지름 14 ×2(금 돔·첨탑·배너·창), 아치 대리석+금, 메달리온, 금 코니스. **PrimaryPart = Lintel(앞 반쪽 금 코니스, 중심 y+4 → 월드 (0,-330), MapBuilder placeGate와 맞음)**. 6단계에서 모델 이름을 Gate_HaloTown으로.
   - 탑 12(46, 문 4×7 진짜): GateEast = 닫힌 갤러리 8창, Lookout = 열린 발코니(바닥 WalkGround 태그·난간·기둥 8, 눈높이 +4.8) 약 50.
   - 무기고 16×12: 승인 2D 없음 → 이미지 생성 2에 시안 요청(검수 전달).
-  - 사진: `py tools/worldkit/skeleton_civic_shots.py [--prep]`(창 복원 = 새 검수 "전달함, 시작" 뒤) → `art/review/world/halo_v2/skeleton/`, 시트 `py tools/worldkit/skeleton_civic_sheet.py`(콘셉트 2D | 사진).
+  - 사진 28장 찍음(10/11 14:3x, 창은 이미 떠 있어 복원 없음): `art/review/world/halo_v2/skeleton/` + 시트 `sheet_all.jpg`·`sheet_<건물>.jpg`. 고친 것: 배너 Fabric→SmoothPlastic(스튜디오 빛에서 검게 나옴), 창 불투명 따뜻한 색(밤에 PointLight), 성문 위 후광 2겹, 발코니 카메라는 기둥 사이 틈에서.
+  - 사진 도구: `py tools/worldkit/skeleton_civic_shots.py [--prep]`(창 복원 = 새 검수 "전달함, 시작" 뒤) → `art/review/world/halo_v2/skeleton/`, 시트 `py tools/worldkit/skeleton_civic_sheet.py`(콘셉트 2D | 사진).
   - 계획 높이 KINDS: 성문 44→48, 탑 36→46, 전망 탑 50.
   - 앞으로: 사진 판정 → 고침, 대성당·빛 성 등은 이미지 생성 3, 5단계 재료(섬 아랫면 바위·흰 바위·디딤돌) 아직.
   - 보고처: **새 검수 = local_94cfa4bc-942c-4ac1-97a4-e9f609739523** (이전 local_78581314는 물러남).

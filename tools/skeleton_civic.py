@@ -243,6 +243,7 @@ def gate(sc):
         for sx in (-1, 1):
             sc.piece("FretH%s%d" % (nm, sx), "gold", box(sx * 6.1, s * 5.2, 32.9, 3.4, 0.4, 0.4))
             sc.piece("FretV%s%d" % (nm, sx), "gold", box(sx * 7.9, s * 5.2, 33.7, 0.4, 0.4, 2.0))
+    halo(sc, "Gate", 0, 0, WALL_T + 3.9, 9.6)
     # --- the two towers (diameter 14 body, 16 foot, gallery 15.4, gold domes), hollow, banners on both faces
     BORE = 12.2
     for sx, nm in ((-1, "L"), (1, "R")):
@@ -381,9 +382,10 @@ local STY = {
 	gold = function(p) p.Material = Enum.Material.Metal p.MaterialVariant = "HH_HaloGoldTrim" p.Color = GOLD end,
 	roof = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(__ROOF__) end,
 	wood = function(p) p.Material = Enum.Material.Wood p.Color = Color3.fromRGB(176, 118, 68) p.CanCollide = false end,
-	fabricB = function(p) p.Material = Enum.Material.Fabric p.Color = Color3.fromRGB(104, 170, 240) p.CanCollide = false end,
+	-- Fabric came out near-black in the WorldKit light (10/11 photos; img3 saw it on the awning): SmoothPlastic until the cause is known
+	fabricB = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(104, 170, 240) p.CanCollide = false end,
 	lamp = function(p)
-		p.Material = Enum.Material.Glass p.Color = Color3.fromRGB(255, 228, 160) p.Transparency = 0.3 p.CastShadow = false
+		p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(255, 220, 140) p.CastShadow = false
 		p:SetAttribute("LampLight", true)
 		local l = Instance.new("PointLight") l.Color = Color3.fromRGB(255, 214, 140) l.Brightness = 1.2 l.Range = 14 l.Enabled = false l.Parent = p
 	end,
