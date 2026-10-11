@@ -200,7 +200,7 @@ def tower(sc, pre, cx, cy, door_phi, lookout=False):
         halo(sc, pre, cx, cy, 45.7, 7.8)
     else:
         # open belvedere: floor on the corbel ring, parapet, eight columns, entablature, the same dome
-        sc.piece(pre + "BalconyFloor", "marble", cylz(cx, cy, 31.6, 32.2, 12.4))
+        sc.piece(pre + "BalconyFloor", "marble", cylz(cx, cy, 31.6, 32.2, 12.4), tag="WalkGround")  # Config.Ground.Tag: the photo spot floor
         tube(sc, pre + "Parapet", "marble", cx, cy, 32.2, 34.4, 12.0, 11.0)
         tube(sc, pre + "ParapetRail", "gold", cx, cy, 34.4, 34.9, 12.4, 10.8)
         for k in range(8):
@@ -402,6 +402,7 @@ local function piece(name, st, base, adds, cuts, flags)
 	STY[st](r)
 	if flags then
 		if flags.collide == false then r.CanCollide = false end
+		if flags.tag then game:GetService("CollectionService"):AddTag(r, flags.tag) end
 	end
 	r.TopSurface = Enum.SurfaceType.Smooth r.BottomSurface = Enum.SurfaceType.Smooth
 	r.Parent = M
