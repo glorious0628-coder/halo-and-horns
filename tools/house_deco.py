@@ -624,6 +624,9 @@ if "lantern" in PR:
                 u[sw], w_[sw] = 1 - u[sw], 1 - w_[sw]
                 pts.append(A[n] + (B[n] - A[n]) * u[:, None] + (C[n] - A[n]) * w_[:, None])
         Q = np.concatenate(pts)
+        bx = np.array(L["box"], float)                             # big triangles reach out of the box: clip to it
+        Qw = Q + np.array([cx, yc_t, gzc])
+        Q = Q[np.all((Qw >= bx[:, 0] - 0.15) & (Qw <= bx[:, 1] + 0.15), axis=1)]
         Q = Q[Q[:, 1] > -hw * 0.6]                                 # front part only (the bracket is behind)
         half = np.maximum(np.abs(Q[:, 0]), np.abs(Q[:, 1]))        # square "radius" = the larger of |x|, |y|
         z0, z1 = float(Q[:, 2].min()), float(Q[:, 2].max())

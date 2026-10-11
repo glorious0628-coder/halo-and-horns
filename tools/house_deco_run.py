@@ -103,7 +103,10 @@ print("[run] 5 merge", flush=True)
 blender("glb_merge.py", final, placed, *parts[1:])
 if not a.no_preview:
     print("[run] 6 preview", flush=True)
+    cams = json.load(open(os.path.join(ROOT, "build", "skel_%s_cams.json" % N)))
+    camf = os.path.join(B, "cams_door.json")                       # the sheet uses front, 3/4 and the door close-up only
+    json.dump({k: v for k, v in cams.items() if k == "close_door"}, open(camf, "w"), indent=1)
     blender("skeleton_preview.py", os.path.join(B, "preview"), "--parts", os.path.join(ROOT, "build", "skel_%s.json" % N),
-            "--glb", final, "--cams", os.path.join(ROOT, "build", "skel_%s_cams.json" % N), "--marble", "cream",
-            "--ortho", "30", "--cz", "12")
+            "--glb", final, "--cams", camf, "--marble", "cream", "--ortho", "30", "--cz", "12", "--views", "front,q34",
+            "--px", "900")
 print("[run] ok", final, flush=True)
