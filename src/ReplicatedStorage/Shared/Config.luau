@@ -565,6 +565,10 @@ end
 Config.BasicSkill = {
 	ManaCost = 20, Cooldown = 3, DamageMultiplier = 6, Radius = 9,
 	SwingImmediate = 0.5, PvPCapPct = 0.35, HaloHealPct = 0.10, HaloHealCapPct = 0.30,
+	-- A23-126 (user 2026-10-11 "추천대로"): a Halo heal's share for the caster itself is at most HaloSelfHealCapPct of its
+	-- MaxHealth per 3 s (= the Horns life steal cap, Factions.Horns.LifestealCapPct); a friend's stays HaloHealCapPct.
+	-- A ranged Q (Star Fall / Feather Rain: ReleaseCenter Target) heals around the caster within HaloHealRadius, like Z / X
+	HaloSelfHealCapPct = 0.03, HaloHealRadius = 12,
 }
 -- SKL-1 (A23-49, docs/design/skill_kit_beta_2026-10-06.md section 1 rules / 4 tables / 5 English / 8-1 shape): every
 -- class has three skills Q / Z / X, learned at Unlock (A23-71, user 2026-10-07: none at the start, Q Lv5, Z Lv15,
@@ -602,7 +606,7 @@ Config.Skills = {
 		},
 		Mage = {
 			Q = { Shape = "TargetCircle", Range = 35, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 35 },
-				Halo = { NameEn = "Star Fall", DescEn = "A big star falls on the closest monster. Friends near it get healed." },
+				Halo = { NameEn = "Star Fall", DescEn = "A big star falls on the closest monster. Heals you and friends." },
 				Horns = { NameEn = "Purple Pop", DescEn = "Purple bubbles pop up under the closest monster. Steal HP." } },
 			Z = { Shape = "Chain", Range = 35, Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true,
 				Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 },
@@ -617,7 +621,7 @@ Config.Skills = {
 		},
 		Archer = {
 			Q = { Shape = "TargetCircle", Range = 30, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 30 },
-				Halo = { NameEn = "Feather Rain", DescEn = "Gold arrows rain on the closest group. Friends there get healed." },
+				Halo = { NameEn = "Feather Rain", DescEn = "Gold arrows rain on the closest group. Heals you and friends." },
 				Horns = { NameEn = "Spark Shower", DescEn = "Shoot twice! Dark arrows rain on the closest group. Steal HP." } },
 			Z = { Shape = "Line", Range = 40, Len = 40, Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 },
 				Halo = { NameEn = "Comet Arrow", DescEn = "A giant gold arrow flies through a line. Heals you and friends." },

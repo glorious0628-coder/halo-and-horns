@@ -7,7 +7,7 @@ with tools/fixtures/skill_signals_offline.luau, plus CombatService.luau / SkillS
 network, DataStore or Roblox API calls. Mutations run on in-memory copies of the current sources only.
 
 Usage: py tools/test_skill_signals.py [--no-mutations] [--luau path/to/luau.exe]
-Report: docs/art/verification_2026-10-10/offline_dev2_skill_signals_2026-10-10.json
+Report: docs/art/verification_2026-10-11/offline_dev2_skill_signals_2026-10-11.json (A23-126; was ..._2026-10-10.json)
 """
 from __future__ import annotations
 
@@ -123,6 +123,13 @@ MUTATIONS = [
     ("the X row without the pet", CO,
      "\t\t\tArcher = { Launch = 0.18, Contact = 0.4 },\n\t\t\tPetDash = { Contact = 0.35 },\n\t\t},\n\t},\n",
      "\t\t\tArcher = { Launch = 0.18, Contact = 0.4 },\n\t\t},\n\t},\n"),
+    # A23-126 heal fairness
+    ("self heal at the friends' 30%", CO, "local capPct = a == player and (skill.HaloSelfHealCapPct or 0.03) or (skill.HaloHealCapPct or 0.30)",
+     "local capPct = skill.HaloHealCapPct or 0.30"),
+    ("ranged Q heals around the blast", CO, "\tif c.ReleaseCenter == \"Target\" then healAt, healR = pos, skill.HaloHealRadius or 12 end\n", ""),
+    ("ranged Q heals around me with the blast radius", CO, "healAt, healR = pos, skill.HaloHealRadius or 12", "healAt, healR = pos, radius"),
+    ("self cap 30% in Config", C, "\tHaloSelfHealCapPct = 0.03, HaloHealRadius = 12,", "\tHaloSelfHealCapPct = 0.30, HaloHealRadius = 12,"),
+    ("old Star Fall line", C, "A big star falls on the closest monster. Heals you and friends.", "A big star falls on the closest monster. Friends near it get healed."),
 ]
 
 
@@ -162,7 +169,7 @@ SUITE = Suite(
     mark="SKILLSIG",
     fixture=ROOT / "tools/fixtures/skill_signals_offline.luau",
     world=ROOT / "tools/fixtures/dev2_combat_world.luau",
-    out=ROOT / "docs/art/verification_2026-10-10/offline_dev2_skill_signals_2026-10-10.json",
+    out=ROOT / "docs/art/verification_2026-10-11/offline_dev2_skill_signals_2026-10-11.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-116 server part (skills18 §0, game dev 2): Fx Release (Q), Fx Skill (Z / X, also a field's first tick) "
              "and Fx SkillTick carry Healed = { UserId } (the Halo players whose HP this cast's heal really raised, the "

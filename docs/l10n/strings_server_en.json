@@ -225,7 +225,7 @@
  },
  {
   "key": "Config.Skills.Defs.Archer.Q.Halo.DescEn",
-  "en": "Gold arrows rain on the closest group. Friends there get healed.",
+  "en": "Gold arrows rain on the closest group. Heals you and friends.",
   "where": "Config.Skills",
   "args": [],
   "max": 83
@@ -288,7 +288,7 @@
  },
  {
   "key": "Config.Skills.Defs.Mage.Q.Halo.DescEn",
-  "en": "A big star falls on the closest monster. Friends near it get healed.",
+  "en": "A big star falls on the closest monster. Heals you and friends.",
   "where": "Config.Skills",
   "args": [],
   "max": 88
