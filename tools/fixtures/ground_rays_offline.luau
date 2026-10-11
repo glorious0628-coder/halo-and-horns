@@ -57,15 +57,17 @@ local lamp = node("Lamp_1")
 local groundF = node("Ground")
 local floor = node("HaloHouse07_Floor")
 local yard = node("Yard_1")
+local stairs = node("Halo_Stairs") -- 게임성 검수 10/13 (e27_stairs)
 local map = node("Map", {
 	groundF,
-	node("Decor", { oldBridge, lamp, node("HaloProps", { node("Cell_1", { tree, arch, floor }), cellBridge }) }),
+	node("Decor", { oldBridge, lamp, node("HaloProps", { node("Cell_1", { tree, arch, floor, stairs }), cellBridge }) }),
 })
 check(Config.Ground and Config.Ground.Tag == "WalkGround", "the tag is WalkGround (server and client agree)", Config.Ground and Config.Ground.Tag)
 local set, n = names(Config.GroundRoots(terrain, map, nil))
 check(set.Terrain and set.Ground and set.Bridge_Halo, "Terrain, Map.Ground and Decor Bridge_* are ground", "")
 check(set.Halo_ArchBridge_1, "the kit's arch bridge (HaloProps.Cell_*.Halo_ArchBridge_*) is ground", "")
 check(set.Cell_Bridge_2, "a kit cell that is itself a bridge is ground", "")
+check(set.Halo_Stairs, "10/13: the kit's stairs (HaloProps.Cell_*.Halo_Stairs) are ground (the staff stood 2..3 studs over them)", "")
 check(not set.Halo_Tree_3 and not set.Lamp_1 and not set.HaloProps and not set.Cell_1 and not set.HaloHouse07_Floor,
 	"other props, folders and untagged floors are not ground", "")
 set, n = names(Config.GroundRoots(terrain, map, { floor, yard }))
