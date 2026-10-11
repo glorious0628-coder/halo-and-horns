@@ -14,6 +14,7 @@ import argparse
 import glob
 import json
 import os
+import re
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GLASS = {"Transparency": 0.45, "Reflectance": 0.25}
@@ -114,6 +115,8 @@ def main():
     ap.add_argument("--out")
     ap.add_argument("--glass", default="", help="extra glass part names (comma list) besides *_Glass")
     ap.add_argument("--ids", default=os.path.join(ROOT, "art", "ui", "asset_ids.json"), help="id record (tests)")
+    ap.add_argument("--skip", default="", help="regex of part names to leave out (A23-120: '_Body_t\d+$' - the walls "
+                    "are a part skeleton with tile MaterialVariants now)")
     a = ap.parse_args()
     with open(a.ids, encoding="utf-8") as f:
         ids = json.load(f)
@@ -125,6 +128,8 @@ def main():
         for p in glob.glob(os.path.join(folder, "*_[CNMR].png")):
             names.add(os.path.basename(p)[:-6])
         for n in sorted(names):
+            if a.skip and re.search(a.skip, n):
+                continue
             if n.endswith("_Glass"):
                 glass.add(n)
                 continue
