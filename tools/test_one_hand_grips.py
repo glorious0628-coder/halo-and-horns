@@ -605,8 +605,10 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
     # 최종 검수 10/11 (the two warriors stood alike): the Paladin tall (Waist / Neck >= 0 = back / chin up, this table's
     # sign) and the Berserker leaning in and hunched (Waist <= -6, Neck < 0), his tip lower than the Paladin's
     def hold(key: str, joint: str):
-        m = re.search(r"\n\t" + key + r" = \{[^\n]*?Hold = \{([^\n]*?)\} \},", src["CONFIG"])
-        j = m and re.search(joint + r" = \{ " + NUM + ", " + NUM + ", " + NUM, m.group(1))
+        m = re.search(r"\n\t" + key + r" = \{(.*?)\n\t(?:--|\w+_\w+ = \{|\})", src["CONFIG"], re.S)  # the row (as row())
+        body = m.group(1) if m else ""
+        h = body.split("Hold = {", 1)[1].split("OneHand", 1)[0].split("OffHand", 1)[0] if "Hold = {" in body else ""
+        j = re.search(joint + r" = \{ " + NUM, h)
         return float(j[1]) if j else 0.0
     halo, horns = row(src["CONFIG"], "Warrior_Halo"), row(src["CONFIG"], "Warrior_Horns")
     elev = [math.degrees(math.atan2(r["Aim"][1], -r["Aim"][2])) if r else 0.0 for r in (halo, horns)]
@@ -616,6 +618,12 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and hold("Warrior_Horns", "Waist") <= -6 and hold("Warrior_Horns", "Neck") < 0 and elev[1] < elev[0] - 3,
          f"Halo {hold('Warrior_Halo', 'Waist')}/{hold('Warrior_Halo', 'Neck')} {elev[0]:.0f} deg, Horns "
          f"{hold('Warrior_Horns', 'Waist')}/{hold('Warrior_Horns', 'Neck')} {elev[1]:.0f} deg"),
+        # 게임성 검수 10/11: +Waist = leaning BACK here, so every Horns row leans in or stays (<= 0) and every Halo row
+        # stands tall or stays (>= 0) - the Dark Mage (+8) and the Shadow Hunter (+12) leaned back against their notes
+        ("게임성 검수 10/11: the Horn Legion's rows lean in (Waist <= 0), the Knights' stand tall (Waist >= 0) - "
+         "+Waist leans back in ClassGrips",
+         all(hold(c + "_Horns", "Waist") <= 0 and hold(c + "_Halo", "Waist") >= 0 for c in ("Warrior", "Mage", "Archer")),
+         ", ".join(f"{c} {hold(c + '_Halo', 'Waist'):g}/{hold(c + '_Horns', 'Waist'):g}" for c in ("Warrior", "Mage", "Archer"))),
     ]
     return stance + [
         ("검수 10/11: the Neutral gear sits small just over the head / hat (markFloor defined before it, half size or less)",
@@ -710,8 +718,13 @@ MUTATIONS = [
     ("CONFIG", "the old left-arm hold kept (Tamer)", "RightWrist = { -30, 0, 0 } }, OffHand", "RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 } }, OffHand"),
     ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6)", "OneHand = { Hilt = Vector3.new(0.2, -0.3, -0.6)"),
     ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, -0.2) },", "Aim = Vector3.new(0, 1, -0.8) },"),
-    ("CONFIG", "the Dark Mage's free hand out at the side again", "Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 } },",
-     "Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 }, LeftShoulder = { 14, 0, -20 } },"),
+    ("CONFIG", "the Dark Mage's free hand out at the side again", "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },",
+     "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 }, LeftShoulder = { 14, 0, -20 } },"),
+    # 게임성 검수 10/11: the Horns rows leaned back against their notes
+    ("CONFIG", "the Dark Mage leans back again", "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },",
+     "Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 } },"),
+    ("CONFIG", "the Shadow Hunter leans back again", "Hold = { Waist = { -12, 0, 0 }, Neck = { -8, 0, 0 },",
+     "Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },"),
     ("CV", "the big floating gear again", "local GEAR = { Size = 0.55, Gap = 0.35 }", "local GEAR = { Size = 1, Gap = 1.6 }"),
     ("CV", "the gear ignores the hat / hair", "buildNeutralGear(head, sc, character), character, head)", "buildNeutralGear(head, sc), character, head)"),
     ("CONFIG", "게임성 검수 10/11: the flask's upper arm tucked into the side again",
