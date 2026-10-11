@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 1143,
+  "checks": 1169,
   "failedChecks": 0,
-  "namedChecks": 113,
+  "namedChecks": 132,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -531,25 +531,43 @@
     },
     {
       "group": "bloom",
+      "check": "(the giver stands more than 40 studs from the bloom now)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
       "check": "Share it: I get 2 Crown Dust (the card)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "bloom",
-      "check": "a player 39 studs away (any side) gets 1",
+      "check": "a player 39 studs from the bloom (any side) gets 1",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "bloom",
-      "check": "a player 41 studs away gets nothing",
+      "check": "a player 41 studs from the bloom gets nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a player next to the giver, far from the bloom, gets nothing (no share carried to a town)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "bloom",
       "check": "a player who took 10 gifts today gets nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
+      "check": "a KO'd player, one without a class or one not ready yet gets nothing",
       "pass": 1,
       "fail": 0
     },
@@ -615,6 +633,12 @@
     },
     {
       "group": "bloom",
+      "check": "a giver standing at the bloom gets the card's 2 only (never a share +1 too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "bloom",
       "check": "a draw of 0 on a rock: no bloom (rocks never bloom)",
       "pass": 1,
       "fail": 0
@@ -633,6 +657,96 @@
     },
     {
       "group": "bloom",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a player not ready yet gathers nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a hold that began before the player was ready does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "Try itself refuses a player not ready",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a seated player (a vehicle / seat) gathers nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "standing up again: it counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "right after a jump of more than 60 studs: moved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "3 s later: it counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "48 studs in one sample (not a jump) does not block",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "the bag says it went in: the gather counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "... and the node rests (no free second pick)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a gathered material's text never says 'sell it at the Forge'",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "its full-bag line does not send the player to the Forge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a full bag of herbs says it is full, without the Forge",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -687,12 +801,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 10,
+  "staticChecks": 11,
   "staticFailures": [],
   "mutations": {
-    "total": 74,
-    "applied": 74,
-    "caught": 74,
+    "total": 86,
+    "applied": 86,
+    "caught": 86,
     "skipped": false,
     "results": [
       {
@@ -807,10 +921,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: a player 39 studs from the bloom (any side) gets 1",
           "bloom :: the 5th gather on a rock: no bloom",
+          "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice",
           "config :: node kinds: item, hold, Pick / Mine, plant, zone as the contract"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "config: bloom 10%",
@@ -853,7 +970,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bloom :: a player 41 studs away gets nothing",
+          "bloom :: a player 41 studs from the bloom gets nothing",
           "config :: bloom: 8%, sure at the 5th, 3 a day, 40 studs, 10 gifts a day"
         ],
         "newFailingCount": 2
@@ -912,9 +1029,10 @@
         "newFailingChecks": [
           "bloom :: Keep it all: I get 3, nobody else anything",
           "bloom :: Share it: I get 2 Crown Dust (the card)",
+          "bloom :: a giver standing at the bloom gets the card's 2 only (never a share +1 too)",
           "config :: the Shard Bloom card: timed 120 s, Share = 2, Keep it all = 3, 1 point"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "config: the card waits forever",
@@ -1160,7 +1278,7 @@
           "gather :: a trigger right after the release still counts",
           "gather :: a trigger without a hold that began (an instant fire) gives nothing"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 9
       },
       {
         "mutation": "try: a stale release counts",
@@ -1220,9 +1338,10 @@
           "gather :: picked again once 180 s have passed",
           "gather :: still resting 179 s after the pick",
           "gather :: switch off at run time: nothing",
-          "gather :: the same node again at once: nothing (it rests for me)"
+          "gather :: the same node again at once: nothing (it rests for me)",
+          "rules :: ... and the node rests (no free second pick)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
       },
       {
         "mutation": "try: no daily cap",
@@ -1275,7 +1394,7 @@
           "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
           "bloom :: a draw under 8% blooms again"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 16
       },
       {
         "mutation": "try: a full bag still counts",
@@ -1301,9 +1420,10 @@
           "gather :: picked again once 180 s have passed",
           "gather :: still resting 179 s after the pick",
           "gather :: switch off at run time: nothing",
-          "gather :: the same node again at once: nothing (it rests for me)"
+          "gather :: the same node again at once: nothing (it rests for me)",
+          "rules :: ... and the node rests (no free second pick)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "try: the day count never grows",
@@ -1319,7 +1439,7 @@
           "limits :: a full bag: nothing given, nothing counted",
           "limits :: a new KST day: the count starts over (Total keeps going)"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 13
       },
       {
         "mutation": "try: no artisan sparkle",
@@ -1364,10 +1484,11 @@
         "crashed": false,
         "newFailingChecks": [
           "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: a giver standing at the bloom gets the card's 2 only (never a share +1 too)",
           "bloom :: the next day blooms again",
           "limits :: a new KST day: the count starts over (Total keeps going)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "try: no first-gather log",
@@ -1423,9 +1544,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bloom :: the 5th gather on a rock: no bloom"
+          "bloom :: a draw of 0 on a rock: no bloom (rocks never bloom)",
+          "bloom :: a player 39 studs from the bloom (any side) gets 1",
+          "bloom :: the 5th gather on a rock: no bloom",
+          "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "bloom: the card's answer ignored",
@@ -1437,10 +1561,11 @@
           "bloom :: ... with the BloomWilt notice (a key)",
           "bloom :: 120 s without a pick: +1 Crown Dust",
           "bloom :: a draw under 8% blooms again",
-          "bloom :: a third bloom",
-          "bloom :: while the card is open a herb still gathers but never blooms or counts a bloom"
+          "bloom :: a player 39 studs from the bloom (any side) gets 1",
+          "bloom :: a player next to the giver, far from the bloom, gets nothing (no share carried to a town)",
+          "bloom :: a third bloom"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 8
       },
       {
         "mutation": "bloom: no daily max",
@@ -1499,7 +1624,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bloom :: a player 39 studs away (any side) gets 1",
+          "bloom :: a player 39 studs from the bloom (any side) gets 1",
           "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice"
         ],
         "newFailingCount": 2
@@ -1511,11 +1636,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bloom :: Keep it all: I get 3, nobody else anything",
-          "bloom :: Share it: I get 2 Crown Dust (the card)",
-          "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice"
+          "bloom :: a giver standing at the bloom gets the card's 2 only (never a share +1 too)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 1
       },
       {
         "mutation": "share: any distance",
@@ -1524,9 +1647,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "bloom :: a player 41 studs away gets nothing"
+          "bloom :: a player 41 studs from the bloom gets nothing",
+          "bloom :: a player next to the giver, far from the bloom, gets nothing (no share carried to a town)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "share: no gift cap",
@@ -1561,6 +1685,147 @@
           "bloom :: 120 s without a pick: +1 Crown Dust"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "ready: a hold before ready is noted",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a hold that began before the player was ready does not count",
+          "rules :: a seated player (a vehicle / seat) gathers nothing",
+          "rules :: standing up again: it counts"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "ready: Try ignores ready",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: Try itself refuses a player not ready",
+          "rules :: a seated player (a vehicle / seat) gathers nothing",
+          "rules :: standing up again: it counts"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "seat: seated players gather",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a seated player (a vehicle / seat) gathers nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "jump: never blocks",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: 3 s later: it counts",
+          "rules :: right after a jump of more than 60 studs: moved"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "jump: never marked",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: 3 s later: it counts",
+          "rules :: right after a jump of more than 60 studs: moved"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "jump: 40 studs is a jump",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: 48 studs in one sample (not a jump) does not block"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "grant: counted from the returned rows",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: ... and the node rests (no free second pick)",
+          "rules :: the bag says it went in: the gather counts"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "share: around the giver",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a player 39 studs from the bloom (any side) gets 1",
+          "bloom :: a player next to the giver, far from the bloom, gets nothing (no share carried to a town)",
+          "bloom :: the receiver hears BloomGift (a key, no name); the giver no gather notice"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "share: KO'd players get one",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a KO'd player, one without a class or one not ready yet gets nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "share: classless players get one",
+        "file": "src/ServerScriptService/GatherService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "bloom :: a KO'd player, one without a class or one not ready yet gets nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: herbs sold at the Forge",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a gathered material's text never says 'sell it at the Forge'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "text: the full line sends to the Forge",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a full bag of herbs says it is full, without the Forge"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "grant: 100 at once",
@@ -1607,14 +1872,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "4a4b3f88e1917d754f1a776c506c01c180aeb735ff12d8b3ff28c096ff4aec28",
+    "src/ReplicatedStorage/Shared/Config.luau": "ba4ddf80772cc1e2d86ea22b316c9fc1135b06cd66562fec49081afdc4ad10a7",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/LootService.luau": "59a7fdc40f90eb44f238c6caf97fa3df0efeeb88ac08e3cc995b37c961382415",
+    "src/ServerScriptService/LootService.luau": "cc98aa790dd427fa78bbe60a8c4951e62be002ec7b56c305d639b94d1ead9156",
     "src/ServerScriptService/Deeds.luau": "ef54e177229e0155e119ea7d8c54da813ad50561251410e46e00c120665384eb",
     "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f",
-    "src/ServerScriptService/GatherService.luau": "b1f31849819c086b1900c16ec6c5b9393704b999d5288c39481d3e5cf1e92251"
+    "src/ServerScriptService/GatherService.luau": "cdbd7dd77e2f63467ff774dae3e7fd617ca2f34f04065aa1f1ad6870dd1c3b79"
   },
-  "fixtureSHA256": "2d8fc0d20e89e9576118f9664decfad67ff5ce889a40ef08bce2dd2e3651974f",
+  "fixtureSHA256": "cee53b3835fecd48be31a5fa4b94672238e60ae0bd3f28559edf8825fd819351",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -56,7 +56,7 @@ MUTATIONS = [
     ("start: switch not checked", R, "\tif not on() then return \"off\" end\n", ""),
     ("start: anyone crafts", R, "\tif type(data) ~= \"table\" or data.Faction ~= \"Neutral\" or data.ClassChosen ~= true then return nil end\n\treturn K().Roles[data.Class]\n", "\treturn K().Roles[data.Class]\n"),
     ("start: any role's recipe", R, "\tif not role or role ~= r.Role then\n", "\tif not role then\n"),
-    ("start: two sessions", R, "\tif ST.Open[player] or craftOf(data).Pend ~= \"\" then\n", "\tif false then\n"),
+    ("start: two sessions", R, "\tif ST.Open[player] or type(craftOf(data).Pend) == \"table\" then\n", "\tif false then\n"),
     ("start: no minute cap", R, "\tif #recent >= K().StartsPerMinute then\n", "\tif false then\n"),
     ("start: auto combat allowed", R, "\tif player:GetAttribute(\"AutoCombatUnlocked\") == true and player:GetAttribute(\"AutoCombatEnabled\") == true then\n", "\tif false then\n"),
     ("start: no distance", R, "\tif not root or not bench or (root.Position - bench.Position).Magnitude > K().Range then\n", "\tif not root or not bench then\n"),
@@ -66,14 +66,15 @@ MUTATIONS = [
     ("start: no room check", R, "\tif not room(player, data, r) then\n", "\tif false then\n"),
     ("start: gold never paid", R, "\tif not S.ProgressionService.SpendGold(player, r.Gold, \"Craft\") then\n", "\tif false then\n"),
     ("start: materials kept", R, "\t\tif not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, \"take \" .. item .. \" failed after the check\") end\n", ""),
-    ("start: nothing pending in the save", R, "\tc.Pend = id\n", ""),
+    ("start: nothing pending in the save", R, "\tc.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats) }\n", ""),
     ("start: no lead time", R, "StartAt = serverNow() + T.Lead, Strikes = {},", "StartAt = serverNow(), Strikes = {},"),
     ("start: no time-up", R, "\t\tif ST.Open[player] == sess then closeAtZero(player, \"Timeout\") end\n", ""),
-    ("start: the stuck pending one never retried", R, "\tif not ST.Open[player] and pend ~= \"\" and type(K().Recipes[pend]) == \"table\" then complete(player, data, pend, 0, misses(), 0) end\n", ""),
+    ("start: the stuck pending one never retried", R, "\tif not ST.Open[player] and type(craftOf(data).Pend) == \"table\" then CraftService.Settle(player, data) end\n", ""),
     # --- strikes
     ("strike: any session id", R, "\tif not sess or sess.Id ~= sid or sess.Done then return \"session\" end\n\tif type(i)", "\tif not sess or sess.Done then return \"session\" end\n\tif type(i)"),
     ("strike: ring 6 taken", R, "or i < 1 or i > CraftMini.T.Strikes then return \"ring\" end", "or i < 1 or i > 99 then return \"ring\" end"),
     ("strike: a second press replaces the first", R, "\tif sess.Strikes[i] then return \"again\" end\n", ""),
+    ("strike: any offset size", R, "or math.abs(ms) > CraftMini.T.MaxMs then return \"ms\" end", "then return \"ms\" end"),
     ("strike: the client's own time", R, "\tsess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }\n", "\tsess.Strikes[i] = { Ms = ms, At = CraftMini.Target(sess.StartAt, i) + ms / 1000, Ping = pingMs(player) }\n"),
     # --- finish
     ("finish: any lie fits (huge ping)", R, "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player), sess.StartPing)\n", "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, 1000, sess.StartPing)\n"),
@@ -83,9 +84,11 @@ MUTATIONS = [
     ("strike: the ping then not kept", R, "\tsess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }\n", "\tsess.Strikes[i] = { Ms = ms, At = serverNow() }\n"),
     ("finish: twice", R, "\tsess.Done = true\n\tST.Open[player] = nil\n\tlocal grades", "\tlocal grades"),
     ("finish: bots get their +N", R, "\t\tif same then\n\t\t\tplus = 0\n", "\t\tif same then\n"),
+    ("finish: no strike-d metric", R, "\tif dN > 0 then tele(player, \"CraftStrikeD\", math.floor(dMax + 0.5), math.floor(dMin + 0.5), dN) end\n", ""),
+    ("finish: d measured the wrong way", R, "\t\t\tlocal d = (s.At - CraftMini.Target(sess.StartAt, i)) * 1000 - s.Ms\n", "\t\t\tlocal d = s.Ms - (s.At - CraftMini.Target(sess.StartAt, i)) * 1000\n"),
     ("finish: no mismatch log", R, "\tif mismatch > 0 then tele(player, \"CraftMismatch\", mismatch) end\n", ""),
     # --- the end
-    ("end: Pend never cleared", R, "\tc.Pend = \"\"\n\tc.Made[recipeId]", "\tc.Made[recipeId]"),
+    ("end: Pend never cleared", R, "\tc.Pend = nil\n\tc.Made[recipeId]", "\tc.Made[recipeId]"),
     ("end: Made not counted", R, "\tc.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1\n", ""),
     ("end: no XP", R, "\tlocal lv, up = addXP(c, r.Role, r.XP)\n", "\tlocal lv, up = roleRec(c, r.Role).Lv, false\n"),
     ("end: one level at most", R, "\twhile rr.Lv < K().MaxLv do\n", "\tif rr.Lv < K().MaxLv then\n"),
@@ -93,9 +96,20 @@ MUTATIONS = [
     ("end: no CraftInfo after", R, "\t\tsendInfo(player, data)\n\tend\n\tCraftService.Crafted", "\tend\n\tCraftService.Crafted"),
     ("end: leave loses the craft", R, "\t\tcloseAtZero(player, \"Leave\")\n", ""),
     ("end: KO loses the craft", R, "\t\t\tcloseAtZero(player, \"KO\")\n", ""),
-    ("end: a stopped craft never finishes", R, "\t\t\telseif not complete(player, data, c.Pend, 0, misses(), 0) then\n", "\t\t\telseif false then\n"),
-    ("end: an unknown Pend stays", R, "\t\t\tif type(K().Recipes[c.Pend]) ~= \"table\" then\n\t\t\t\tc.Pend = \"\"\n", "\t\t\tif type(K().Recipes[c.Pend]) ~= \"table\" then\n"),
+    ("end: a stopped craft never finishes", R, "if type(data.Craft) == \"table\" and type(data.Craft.Pend) == \"table\" and CraftService.Settle(player, data) == \"wait\" then", "if false then"),
+    ("end: an unknown Pend stays", R, "\tif type(K().Recipes[p.Id]) ~= \"table\" then\n\t\tc.Pend = nil\n", "\tif type(K().Recipes[p.Id]) ~= \"table\" then\n"),
     # --- remotes
+    ("refund: no gold back", R, "\t\tif gold > 0 then pcall(S.ProgressionService.AddBankGold, player, gold, \"CraftRefund\") end\n", ""),
+    ("refund: no materials back", R, "\t\tif #list > 0 then pcall(S.LootService.GrantItems, player, list, nil, \"CraftRefund\") end\n", ""),
+    ("refund: rows over 99", R, "\t\t\t\ttable.insert(list, { Id = item, N = math.min(99, left) })\n", "\t\t\t\ttable.insert(list, { Id = item, N = left })\n"),
+    ("refund: a doubled source", R, "pcall(S.ProgressionService.AddBankGold, player, gold, \"CraftRefund\")", "pcall(S.ProgressionService.AddBankGold, player, gold, \"Monster\")"),
+    ("pend: the earned +N forgotten", R, "\tif type(c.Pend) == \"table\" and c.Pend.Id == recipeId then c.Pend.Plus = plus end\n", ""),
+    ("pend: a waiting craft always +0", R, "return complete(player, data, p.Id, math.max(0, math.floor(num(p.Plus))), misses(), 0) and \"done\" or \"wait\"", "return complete(player, data, p.Id, 0, misses(), 0) and \"done\" or \"wait\""),
+    ("off: the join writes when off", R, "\t\tif type(data) ~= \"table\" or not on() then return end\n", "\t\tif type(data) ~= \"table\" then return end\n"),
+    ("item: a part of it given", R, "\tif before + n > Config.Loot.ItemCap then return false end -- never a part of it\n", ""),
+    ("gear: no caps at the end", R, "\t\tif sum >= ST.GearSum or math.floor(num(own[key])) >= Config.SaveV4.OwnKeyMax then return false end\n", ""),
+    ("gear: only the sum at the end", R, "\t\tif sum >= ST.GearSum or math.floor(num(own[key])) >= Config.SaveV4.OwnKeyMax then return false end\n", "\t\tif sum >= ST.GearSum then return false end\n"),
+    ("finish limit: any id uses it", R, "\tif not sess or sess.Id ~= sid then return end -- a stale / wrong id never uses up the limit of the real Finish\n", ""),
     ("remote: extra arguments taken", R, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal id = ...\n", "\tlocal id = ...\n"),
     ("remote: no start rate limit", R, "\tif not Util.RateLimit(player, \"CraftStart\", num(Config.RateLimits.CraftStart, 3)) then return end\n", ""),
     ("remote: a two-argument Finish taken", R, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal sid = ...\n", "\tlocal sid = ...\n"),
@@ -149,7 +163,7 @@ SUITE = Suite(
              "workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / "
              "room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt "
              "= server + 0.8 }; CraftStrike timed by the server, in order, >= 0.25 s apart; a claim beyond 250 ms + jitter "
-             "(ping x 0.5, max 150; ring 1 + ping x 0.5) of the server's timing = Miss; |ms - 40| <= 70 / 130 / 200; points "
+             "(CraftMini: server ms - client ms outside -50 .. 250 + 1.5 x the biggest ping) = Miss; |ms - 40| <= 70 / 130 / 200; points "
              ">= 13 +2, >= 9 +1; five equal claims +0 (CraftBot); time-up / leave / KO +0; Pend at join finishes at +0 "
              "(stays while there is no room, retried at the next start); the result to the spares (AddSpare); W7 / W9 "
              "off until Clatter Gem / Royal Jelly / T9; craft XP per role 40 x Lv^1.5, Lv30 cap, not doubled; CraftResult "
