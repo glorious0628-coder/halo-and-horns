@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-12 정리 끝: PC 꺼짐 전)
+
+- 올리기 끝·push: 재료 아이콘 1차 10개(asset_ids 1ce5f4b), 매끈 대리석 color/rough. WorldKit MV 3개(금·매끈·천 v2)는 백업됨(build/wk_backup/20261011_215142 + 이미지 생성 1 전체). Play·창 열린 것 없음(UiSandbox 닫음). 가지 imgdev-icons1(96371ff0)은 게임성 검수 통과, 최종 검수 병합 대기(되감기·다시 쌓기 금지).
+- 주의: 로컬 `art/ui/halo_tile/marble_smooth/Halo_MarbleSmoothCream_rough.png`는 3판 다시 만든 파일이라 올라간 거칠기(76093268063395 = 2판)와 조금 다름(결 폭만) — push 안 함. 다시 올릴 일이 생기면 tools/marble_smooth_maps.py로 새로 만들고 새 ID로.
+- 다음: 2차 아이콘 5개(CrownDust·Glowcap·CraftRing·CraftTarget·CraftIngot) 승인 알림 오면 올리기(직접 보고 ≤10 한 번, UIArt 키 이름 그대로). 껍데기 메시 올리기·천 v3는 위 블록 참고.
+
 # 이미지 개발 — 상태 (2026-10-12: 재료 아이콘 1차 10개 올림)
 
 - **UI 아이콘 1차 10개 올림**(최종 검수 승인, 직접 봄: 밝은/어두운 배경 깨끗·사람 없음): IconPetal 133887324126001·IconCaptainBadge 79235006547470·IconSeaShell 126461746451387·IconCrystalShard 79705802311397·IconMeadowHerb 86098124636549·IconCopperOre 119596801981491·IconOakLog 122711143611444·IconIronOre 100831679530995·IconSilverOre 114879087694979·IconMoonCrystal 106196598879661 (asset_ids.json 같은 이름). Config 반영 = 가지 `imgdev-icons1`(worktree ../Game-imgdev-icons, Config.UIArt.Parts 10줄) → 게임성 검수 → 최종 검수. 2차 5개(CrownDust 등)는 디자인 검수 시트 본 뒤 따로 승인.
