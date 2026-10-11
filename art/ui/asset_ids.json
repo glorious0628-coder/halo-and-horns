@@ -1066,5 +1066,17 @@
   "SA_HaloShop_Potion_WinPane_C": "rbxassetid://102981146801560",
   "SA_HaloShop_Potion_WinPane_N": "rbxassetid://108010302404416",
   "SA_HaloShop_Potion_WinPane_M": "rbxassetid://128192552555281",
-  "SA_HaloShop_Potion_WinPane_R": "rbxassetid://104763175807856"
+  "SA_HaloShop_Potion_WinPane_R": "rbxassetid://104763175807856",
+  "SA_HaloDomeHouse_07_Door_C": "rbxassetid://118973135980635",
+  "SA_HaloDomeHouse_07_Door_N": "rbxassetid://128221468877679",
+  "SA_HaloDomeHouse_07_Door_M": "rbxassetid://128192552555281",
+  "SA_HaloDomeHouse_07_Door_R": "rbxassetid://86637233029771",
+  "SA_HaloDomeHouse_07_DoorHw_C": "rbxassetid://136898417889485",
+  "SA_HaloDomeHouse_07_DoorHw_N": "rbxassetid://117875696635596",
+  "SA_HaloDomeHouse_07_DoorHw_M": "rbxassetid://133200692727102",
+  "SA_HaloDomeHouse_07_DoorHw_R": "rbxassetid://110416629726956",
+  "SA_HaloDomeHouse_07_WinPane_C": "rbxassetid://87455312703098",
+  "SA_HaloDomeHouse_07_WinPane_N": "rbxassetid://120352193453555",
+  "SA_HaloDomeHouse_07_WinPane_M": "rbxassetid://128192552555281",
+  "SA_HaloDomeHouse_07_WinPane_R": "rbxassetid://104763175807856"
 }
