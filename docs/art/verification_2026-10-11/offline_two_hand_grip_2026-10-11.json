@@ -1,0 +1,74 @@
+{
+  "checks": 13,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the old one-hand shoulder rest",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the left hand above the right one",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the left hand off the end of the handle",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the blade straight up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hilt out at the side",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hilt too far from the left hand",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the wrong part",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no shared solver",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never solved",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a clamped solve stretches the arm",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fade in",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "last frame's hand (the hands drift apart while moving)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the handle renamed",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Two hands on the Berserker's great sword (게임성 개발 1, 2026-10-11; SPEC A23-108, 검수 10/11;\ndocs/design/class_grips_a23_108_2026-10-10.md: \"두 손(오른손 위·왼손 아래 자루 끝)\", §2 \"왼손은 클라 몸짓이 자루로\"), offline.\n\nGeometry (Python FK on the R15 rig of place/GoodEvil.rbxlx: shoulder (+-0.972, 0.598, 0) on UpperTorso, upper arm\n(0.501, -0.774, 0), lower arm (0, -0.807, 0), wrist -> grip (0, -0.29, 0); joint offsets = CFrame.Angles(rx, ry, rz)\nin degrees, the weapon along the hand's -Z = \"rx sum 90 = upright\", Config.ClassGrips note) with the CURRENT\nConfig.ClassGrips.Warrior_Horns and CharacterVisuals SHAPES.GreatSword (handle length / centre): the right hand holds\nthe hilt in front of the chest near the middle; the blade rises up and back and crosses the shoulder plane over the\nright shoulder; TwoHand puts the left hand on the handle below the right one; the left wrist is inside the left arm's\nreach (the solve is not clamped). Static: WeaponPose solves the left arm after the hold with Fx's arm solver (this\nframe's right hand from the torso through the right arm joints), skips a clamped solve, fades in with the pose weight;\nFx shares SolveArm / ArmGeometry / JointFrames; the great sword's grip part is named \"Handle\". Mutations: each must be\ncaught. The look itself = 메인 반영 Play photos (stand / walk, after merge).",
+  "studioCalls": 0
+}
