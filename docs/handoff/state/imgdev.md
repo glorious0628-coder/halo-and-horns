@@ -3,9 +3,9 @@
 ## 지금 기다리는 것 / 다음 일 (이 블록이 맨 위 최신)
 1. **금(HH_HaloGoldTrim) 확정(검수 10/11 밤)**: 금속 0.5(Halo_GoldTest_metal50 137160255192059) + 거칠기 0.15(Halo_GoldTest_rough15 109029776386025) + 파트 색 **(255,195,45)** — building_variants_halo.json·approved.json·asset_ids에 적음(3차 시험 안 함). 최종 확인은 **다음 골격 사진(이미지 생성 3 집 07 등)을 2D 옆에 놓고** — 어긋나면 파트 색만 고침. WorldKit·UiSandbox MV는 아직 옛 맵(0.7/0.35)이라, 적용은 이미지 생성 3·1이 WorldKit에서 `tools/building_variants.py`로 MV 다시 만들 때 같이(요청 오면 내가 Luau 만들기). 메인엔 금 MV 아직 없음(새 마을 들어갈 때). 시트 `gold_candidates_sheet2_2026-10-11.jpg`, 촬영 도구 `tools/gold_candidates_{test.luau,capture.py}`(UiSandbox 열기: Start-Process RobloxStudioBeta.exe build/UiSandbox.rbxlx; 빛은 halo_light_sim C2c). UiSandbox는 지금 닫혀 있음.
 2. **HH_Fabric v2** 올림 완료·메인 반영 1이 메인 Studio MV ID 교체(color 76316272601072, rough 119858177335377; 미저장 — 낮·밤 Play 사진·Save As는 급한 병합 Play 때 같이, 검수가 확인되면 알려줌 → 그때 v1 color·rough 파일·기록 정리, normal 공용이라 삭제 금지). 맵 ID(color 76316272601072 / normal 102973991596175(v1과 같음) / rough 119858177335377; asset_ids `Halo_Fabric2_*`). 메인 MV ID 교체는 **메인 반영 1에 직접 요청**(아직 안 함). v2가 메인 Play 사진에서 확인된 뒤 v1 color·rough 파일·기록 삭제(normal은 공용이라 삭제 금지).
-3. 직조 밤 사진 — WorldKit 촬영은 이미지 생성 1 차례와 안 겹치게 검수에 따로 신청.
+3. 직조 밤 사진 — 메인 Play 사진(메인 반영 1)으로 대신 확인 예정; WorldKit 촬영이 따로 필요하면 이미지 생성 1 차례와 안 겹치게 검수에 신청.
 4. Tex_*_FF3 5장(uploaded_review_pending) 3×3 시트를 다음 재질 시트에 같이.
-5. 기록: `art/review/imgdev/id_audit_2026-10-11.md`(표 A~D, §9). 크림 대리석 approved, 금 redo, 직조 v2 통과.
+5. 기록: `art/review/imgdev/id_audit_2026-10-11.md`(표 A~D, §9). 크림 대리석 approved, 금 작업값 확정(최종 확인 대기), 직조 v2 통과(메인 확인 대기).
 6. 아래 옛 큐(빛 마을 지붕 맵, 집·가게 SA 적용, A23-105 사진)는 그대로 유효.
 
 # 이미지 개발 — 상태 (2026-10-11 저녁, 새 세션이 정리하고 쉼; 사용량 19:00 리셋까지)
