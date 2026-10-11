@@ -8353,6 +8353,14 @@ function Config.SanitizeCraft(t)
 	end
 	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
 	out.Made = V4.countMap(src.Made, L.MaxCount)
+	-- Pend (CraftService, 게임성 검수 10/12): a craft paid and not delivered yet = { Id = recipe id, Plus = -1 (not hammered
+	-- yet) | 0..2, Gold = what was paid, Mats = { [item] = n } paid } (a vanished recipe pays it back); anything else = none
+	known.Pend = true
+	local p = src.Pend
+	if type(p) == "table" and V4.key(p.Id) then
+		out.Pend = { Id = p.Id, Plus = V4.int(p.Plus, -1, 2) or -1, Gold = V4.int(p.Gold, 0, L.MaxCount) or 0,
+			Mats = V4.countMap(p.Mats, L.MaxCount) }
+	end
 	return V4.keepExtra(src, out, known)
 end
 

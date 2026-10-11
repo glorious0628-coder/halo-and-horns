@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 116,
+  "checks": 136,
   "failedChecks": 0,
-  "namedChecks": 102,
+  "namedChecks": 122,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -453,6 +453,12 @@
     },
     {
       "group": "ends",
+      "check": "the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
       "check": "no Finish by StartAt + 20 s: made at +0",
       "pass": 1,
       "fail": 0
@@ -471,19 +477,31 @@
     },
     {
       "group": "ends",
-      "check": "a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+      "check": "a join with a never-hammered W2 finishes it at +0 (paid already)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ends",
-      "check": "an unknown Pend is dropped",
+      "check": "an earned +2 waiting in the save comes as +2",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "ends",
-      "check": "no room at the join: it stays pending (Full notice)",
+      "check": "an unknown recipe pays back the gold and every material (150 in two parts)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "the gold comes back as CraftRefund (never doubled by a pass)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "no room at the join: it stays pending with its +2 (Full notice)",
       "pass": 1,
       "fail": 0
     },
@@ -495,7 +513,25 @@
     },
     {
       "group": "ends",
-      "check": "room again: the pending one is made first, then the new one starts",
+      "check": "room again: the waiting one is made first at its +2, then the new one starts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "full at the Finish: +2 earned and kept in the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ends",
+      "check": "the next start pays the +2 first",
       "pass": 1,
       "fail": 0
     },
@@ -507,6 +543,90 @@
     },
     {
       "group": "ends",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "switch off: a waiting craft is left as it is, no CraftInfo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "switch off: a save without a craft gets nothing written",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "an item recipe starts with room for 3",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "only 1 of 3 would fit: nothing given, it waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "room again: all 3 at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "a gear recipe starts with 59 of 60 things",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "60 of 60 at the Finish: no 61st thing, it waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "room again: the armor +2 goes in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "start",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "a full key (20) at the Finish: no 21st, it waits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "results",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -585,7 +705,7 @@
     },
     {
       "group": "remotes",
-      "check": "CraftFinish(id) right away: +0",
+      "check": "a wrong id's Finish does not use up the limit: the real CraftFinish(id) right after is taken (+0)",
       "pass": 1,
       "fail": 0
     },
@@ -624,9 +744,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 58,
-    "applied": 58,
-    "caught": 58,
+    "total": 69,
+    "applied": 69,
+    "caught": 69,
     "skipped": false,
     "results": [
       {
@@ -637,9 +757,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: Config.Features.Crafting is off",
+          "off :: switch off: a waiting craft is left as it is, no CraftInfo",
           "start :: switch off: off"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "config: archers are blacksmiths",
@@ -715,9 +836,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: recipe tier / craft Lv / gold / XP as the design table",
-          "start :: the gold (source Craft) and the materials go at the start"
+          "start :: the gold (source Craft) and the materials go at the start",
+          "start :: the save remembers the craft (Craft.Pend)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "config: W3 at craft Lv1",
@@ -954,9 +1076,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "start :: the save remembers the craft (Craft.Pend)"
+          "ends :: full at the Finish: +2 earned and kept in the save",
+          "ends :: the next start pays the +2 first",
+          "ends :: the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
+          "results :: 60 of 60 at the Finish: no 61st thing, it waits",
+          "results :: a full key (20) at the Finish: no 21st, it waits",
+          "results :: only 1 of 3 would fit: nothing given, it waits"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 9
       },
       {
         "mutation": "start: no lead time",
@@ -987,9 +1114,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ends :: room again: the pending one is made first, then the new one starts"
+          "ends :: room again: the waiting one is made first at its +2, then the new one starts",
+          "ends :: the next start pays the +2 first"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "strike: any session id",
@@ -1101,14 +1229,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ends :: full at the Finish: +2 earned and kept in the save",
+          "ends :: the next start pays the +2 first",
           "hammer :: 395 ms later than claimed (inside 400): kept",
           "hammer :: 45 ms earlier than claimed (inside 50): kept",
           "hammer :: Crafted(player, W1, 2)",
-          "hammer :: Grades x5",
-          "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
-          "hammer :: a 300 ms ping at the Finish counts"
+          "hammer :: Grades x5"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 15
       },
       {
         "mutation": "strike: the ping then not kept",
@@ -1128,14 +1256,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "ends :: the next start pays the +2 first",
           "hammer :: 6 points: +0 (still made, nothing lost)",
           "hammer :: Finish: the right id only, once",
           "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
           "hammer :: Skip (Finish right away): +0, made",
-          "remotes :: 3 s later: a new session",
-          "remotes :: CraftFinish(id) right away: +0"
+          "remotes :: 3 s later: a new session"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "finish: bots get their +N",
@@ -1189,13 +1317,13 @@
         "crashed": false,
         "newFailingChecks": [
           "ends :: a KO mid-craft: made at +0",
-          "ends :: a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+          "ends :: a join with a never-hammered W2 finishes it at +0 (paid already)",
           "ends :: a leave mid-craft: made at +0 before the save goes",
+          "ends :: an earned +2 waiting in the save comes as +2",
           "ends :: no Finish by StartAt + 20 s: made at +0",
-          "ends :: room again: the pending one is made first, then the new one starts",
-          "hammer :: Pend cleared, Made.W1 = 1, 10 craft XP"
+          "ends :: room again: the waiting one is made first at its +2, then the new one starts"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 17
       },
       {
         "mutation": "end: Made not counted",
@@ -1205,10 +1333,10 @@
         "crashed": false,
         "newFailingChecks": [
           "ends :: a KO mid-craft: made at +0",
-          "ends :: a join with Craft.Pend = W2 finishes it at +0 (paid already)",
+          "ends :: a join with a never-hammered W2 finishes it at +0 (paid already)",
           "ends :: a leave mid-craft: made at +0 before the save goes",
           "ends :: no Finish by StartAt + 20 s: made at +0",
-          "ends :: room again: the pending one is made first, then the new one starts",
+          "ends :: room again: the waiting one is made first at its +2, then the new one starts",
           "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft"
         ],
         "newFailingCount": 8
@@ -1238,12 +1366,12 @@
         "newFailingChecks": [
           "ends :: group ran to the end without a Lua error",
           "hammer :: group ran to the end without a Lua error",
+          "off :: group ran to the end without a Lua error",
           "recipes :: group ran to the end without a Lua error",
           "remotes :: group ran to the end without a Lua error",
-          "start :: group ran to the end without a Lua error",
-          "xp :: group ran to the end without a Lua error"
+          "results :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "end: no Crafted signal",
@@ -1296,10 +1424,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ends :: a join with Craft.Pend = W2 finishes it at +0 (paid already)",
-          "ends :: no room at the join: it stays pending (Full notice)"
+          "ends :: a join with a never-hammered W2 finishes it at +0 (paid already)",
+          "ends :: an earned +2 waiting in the save comes as +2",
+          "ends :: an unknown recipe pays back the gold and every material (150 in two parts)",
+          "ends :: no room at the join: it stays pending with its +2 (Full notice)",
+          "ends :: the gold comes back as CraftRefund (never doubled by a pass)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 5
       },
       {
         "mutation": "end: an unknown Pend stays",
@@ -1308,9 +1439,139 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "ends :: an unknown Pend is dropped"
+          "ends :: an unknown recipe pays back the gold and every material (150 in two parts)"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "refund: no gold back",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: an unknown recipe pays back the gold and every material (150 in two parts)",
+          "ends :: the gold comes back as CraftRefund (never doubled by a pass)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "refund: no materials back",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: an unknown recipe pays back the gold and every material (150 in two parts)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "refund: rows over 99",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: an unknown recipe pays back the gold and every material (150 in two parts)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "refund: a doubled source",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: the gold comes back as CraftRefund (never doubled by a pass)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pend: the earned +N forgotten",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: full at the Finish: +2 earned and kept in the save",
+          "ends :: the next start pays the +2 first",
+          "results :: room again: the armor +2 goes in"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "pend: a waiting craft always +0",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ends :: an earned +2 waiting in the save comes as +2",
+          "ends :: no room at the join: it stays pending with its +2 (Full notice)",
+          "ends :: room again: the waiting one is made first at its +2, then the new one starts",
+          "ends :: the next start pays the +2 first",
+          "results :: room again: the armor +2 goes in"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "off: the join writes when off",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: switch off: a waiting craft is left as it is, no CraftInfo"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "item: a part of it given",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "results :: only 1 of 3 would fit: nothing given, it waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gear: no caps at the end",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "results :: 60 of 60 at the Finish: no 61st thing, it waits",
+          "results :: a full key (20) at the Finish: no 21st, it waits"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gear: only the sum at the end",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "results :: a full key (20) at the Finish: no 21st, it waits"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "finish limit: any id uses it",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: 3 s later: a new session",
+          "remotes :: a wrong id's Finish does not use up the limit: the real CraftFinish(id) right after is taken (+0)"
+        ],
+        "newFailingCount": 2
       },
       {
         "mutation": "remote: extra arguments taken",
@@ -1363,16 +1624,16 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ba4ddf80772cc1e2d86ea22b316c9fc1135b06cd66562fec49081afdc4ad10a7",
+    "src/ReplicatedStorage/Shared/Config.luau": "a0ee7351c55a312f3c6f25e37eeda0e4cbd2f1f11c123c99b52472637784cd83",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "cc98aa790dd427fa78bbe60a8c4951e62be002ec7b56c305d639b94d1ead9156",
-    "src/ServerScriptService/CraftService.luau": "0d8c2dfec5c378beabba9c80e35ef74368f0b0e032bfe7299e5b1e4f87bad9d9"
+    "src/ServerScriptService/CraftService.luau": "cf3716b3c308f6d6099ea211460dbb23484845632045ad516e8d8d9746210ca5"
   },
-  "fixtureSHA256": "80f99d4d4e8f921f3477cdb6d927235c50dc15491101de6d8ac6b06671ecb677",
+  "fixtureSHA256": "93ea1c5689fcd647797962b7cd6360f780b4d0292ce59984327ca62b8d3f88b8",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer = Shared/CraftMini): switch Config.Features.Crafting off; Neutral only, the role's recipes only (Warrior Smith / Mage Alch / Archer Tame); 12 studs from the role's workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt = server + 0.8 }; CraftStrike timed by the server, in order, >= 0.25 s apart; a claim beyond 250 ms + jitter (ping x 0.5, max 150; ring 1 + ping x 0.5) of the server's timing = Miss; |ms - 40| <= 70 / 130 / 200; points >= 13 +2, >= 9 +1; five equal claims +0 (CraftBot); time-up / leave / KO +0; Pend at join finishes at +0 (stays while there is no room, retried at the next start); the result to the spares (AddSpare); W7 / W9 off until Clatter Gem / Royal Jelly / T9; craft XP per role 40 x Lv^1.5, Lv30 cap, not doubled; CraftResult / CraftInfo; key-only notices.",
+  "contract": "Crafting (docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer = Shared/CraftMini): switch Config.Features.Crafting off; Neutral only, the role's recipes only (Warrior Smith / Mage Alch / Archer Tame); 12 studs from the role's workbench (tag CraftStation, else the anvil); auto combat off; 6 starts a minute; craft Lv / materials / gold / room; gold (Craft) + materials at the start, Craft.Pend saved; CraftSession { Id, Recipe, 5, 1.2, 0.35, StartAt = server + 0.8 }; CraftStrike timed by the server, in order, >= 0.25 s apart; a claim beyond 250 ms + jitter (CraftMini: server ms - client ms outside -50 .. 250 + 1.5 x the biggest ping) = Miss; |ms - 40| <= 70 / 130 / 200; points >= 13 +2, >= 9 +1; five equal claims +0 (CraftBot); time-up / leave / KO +0; Pend at join finishes at +0 (stays while there is no room, retried at the next start); the result to the spares (AddSpare); W7 / W9 off until Clatter Gem / Royal Jelly / T9; craft XP per role 40 x Lv^1.5, Lv30 cap, not doubled; CraftResult / CraftInfo; key-only notices.",
   "limitations": "AddSpare / SpareRoom are doubles until 게임성 개발 2's C1 (Spares, v4); gear (⑥), tonics (④) and pet treats (⑤) add recipe rows later; the client hammer (게임성 개발 4) is played by the test from the offsets; no real network jitter. Artisan fame (Rep, ⑦) is not counted yet."
 }

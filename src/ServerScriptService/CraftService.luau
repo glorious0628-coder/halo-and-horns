@@ -4,8 +4,9 @@
 -- never loses materials (A23-56); no waiting timer. Switched by Config.Features.Crafting (off).
 --   * CraftStart(recipeId): switch, a known recipe whose materials all exist, alive + class + Neutral + the recipe's role,
 --     no open session, StartsPerMinute, auto combat off, within Range of the role's workbench, craft level, materials,
---     gold, room for the result. Then the gold and materials go at once and data.Craft.Pend = recipeId (a stop in between
---     finishes the craft at +0 on the next join) -> s->c CraftSession { Id, Recipe, Strikes, Ring, Rest, StartAt }.
+--     gold, room for the result. Then the gold and materials go at once and data.Craft.Pend = { Id, Plus = -1, Gold, Mats }
+--     (what was paid; a stop in between finishes the craft on the next join at its +N, or at +0 if never hammered; a
+--     recipe gone by then pays it all back) -> s->c CraftSession { Id, Recipe, Strikes, Ring, Rest, StartAt }.
 --   * The hammer = Shared/CraftMini (fixed ring schedule): CraftStrike(id, i, ms) on a press notes { Ms, At = server
 --     time } once per ring; CraftFinish(id) grades them with CraftMini.Accept (a strike whose arrival does not fit its
 --     claimed offset, or one that never came, is a Miss). Five equal offsets = +0. No Finish by StartAt +
@@ -15,7 +16,7 @@
 --     + CraftInfo, signal Crafted(player, recipeId, plus).
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
 --   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
---   handlers; public for the offline test) · RecipeOn(id) · Session(player)
+--   handlers; public for the offline test) · RecipeOn(id) · Session(player) · Settle(player, data) (a waiting craft)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
@@ -90,7 +91,6 @@ local function craftOf(data)
 	if type(data.Craft) ~= "table" then data.Craft = Config.SanitizeCraft(data.Craft) end
 	local c = data.Craft
 	if type(c.Made) ~= "table" then c.Made = {} end
-	if type(c.Pend) ~= "string" then c.Pend = "" end
 	return c
 end
 
@@ -169,11 +169,21 @@ local function payOut(player, data, r, plus)
 		if type(data.Gear) ~= "table" then data.Gear = Config.SanitizeGear(data.Gear) end
 		local own = data.Gear.Own
 		local key = gearKey(r, plus)
+		local sum = 0
+		for _, n in own do sum += math.floor(num(n)) end
+		-- the caps again at the end (the bag may have filled during the hammer): all of it or nothing
+		if sum >= ST.GearSum or math.floor(num(own[key])) >= Config.SaveV4.OwnKeyMax then return false end
 		own[key] = math.floor(num(own[key])) + 1
 		return true
 	end
-	local ok, gained = pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = math.max(1, math.floor(num(r.N, 1))) } }, nil, "Craft")
-	return ok and type(gained) == "table" and #gained > 0
+	local n = math.max(1, math.floor(num(r.N, 1)))
+	local function have()
+		return type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
+	end
+	local before = have()
+	if before + n > Config.Loot.ItemCap then return false end -- never a part of it
+	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n } }, nil, "Craft")
+	return have() - before >= n
 end
 
 local function sendInfo(player, data)
@@ -203,9 +213,11 @@ end
 local function complete(player, data, recipeId, plus, grades, sid)
 	local r = K().Recipes[recipeId]
 	if type(r) ~= "table" then return false end
-	if not payOut(player, data, r, plus) then return false end
 	local c = craftOf(data)
-	c.Pend = ""
+	-- an earned +N is kept in the save if the result does not fit now (the next try pays that +N, never less)
+	if type(c.Pend) == "table" and c.Pend.Id == recipeId then c.Pend.Plus = plus end
+	if not payOut(player, data, r, plus) then return false end
+	c.Pend = nil
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
 	local lv, up = addXP(c, r.Role, r.XP)
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
@@ -222,6 +234,32 @@ local function misses()
 	local out = {}
 	for i = 1, CraftMini.T.Strikes do out[i] = "Miss" end
 	return out
+end
+
+-- a craft paid and not delivered (Craft.Pend): finished at its earned +N (+0 if it was never hammered), or - when the
+-- recipe is gone (a later update) - everything paid comes back (A23-56: materials are never lost). Returns "done",
+-- "refund", "wait" (the result does not fit yet: it stays) or "none"
+function CraftService.Settle(player, data)
+	local c = craftOf(data)
+	local p = c.Pend
+	if type(p) ~= "table" then return "none" end
+	if type(K().Recipes[p.Id]) ~= "table" then
+		c.Pend = nil
+		local gold = math.floor(num(p.Gold))
+		if gold > 0 then pcall(S.ProgressionService.AddBankGold, player, gold, "CraftRefund") end
+		local list = {}
+		for item, n in type(p.Mats) == "table" and p.Mats or {} do
+			local left = math.floor(num(n))
+			while Config.Loot.Items[item] and left > 0 do
+				table.insert(list, { Id = item, N = math.min(99, left) })
+				left -= 99
+			end
+		end
+		if #list > 0 then pcall(S.LootService.GrantItems, player, list, nil, "CraftRefund") end
+		tele(player, "CraftRefund", 1)
+		return "refund"
+	end
+	return complete(player, data, p.Id, math.max(0, math.floor(num(p.Plus))), misses(), 0) and "done" or "wait"
 end
 
 -- close the open session at +0 (time-up, leave, KO); a result that does not fit stays pending in the save
@@ -250,9 +288,8 @@ function CraftService.TryStart(player, id)
 		return "role"
 	end
 	-- a craft paid earlier whose result did not fit (bag full at a join) gets one more try first
-	local pend = craftOf(data).Pend
-	if not ST.Open[player] and pend ~= "" and type(K().Recipes[pend]) == "table" then complete(player, data, pend, 0, misses(), 0) end
-	if ST.Open[player] or craftOf(data).Pend ~= "" then
+	if not ST.Open[player] and type(craftOf(data).Pend) == "table" then CraftService.Settle(player, data) end
+	if ST.Open[player] or type(craftOf(data).Pend) == "table" then
 		notify(player, "Busy")
 		return "busy"
 	end
@@ -307,7 +344,7 @@ function CraftService.TryStart(player, id)
 	for item, n in r.Mats do
 		if not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, "take " .. item .. " failed after the check") end
 	end
-	c.Pend = id
+	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats) }
 	table.insert(recent, now)
 	ST.Serial += 1
 	local T = CraftMini.T
@@ -403,6 +440,8 @@ local function onFinish(player, ...)
 	if select("#", ...) ~= 1 then return end
 	local sid = ...
 	if type(sid) ~= "number" then return end
+	local sess = ST.Open[player]
+	if not sess or sess.Id ~= sid then return end -- a stale / wrong id never uses up the limit of the real Finish
 	if not Util.RateLimit(player, "CraftFinish", num(Config.RateLimits.CraftFinish, 0.5)) then return end
 	CraftService.Finish(player, sid)
 end
@@ -424,17 +463,12 @@ function CraftService.Start()
 	Net.Get("CraftStrike").OnServerEvent:Connect(guard("CraftStrike", onStrike))
 	Net.Get("CraftFinish").OnServerEvent:Connect(guard("CraftFinish", onFinish))
 	S.PlayerService.PlayerReady:Connect(guard("ready", function(player, data)
-		if type(data) ~= "table" then return end
-		local c = craftOf(data)
-		if c.Pend ~= "" then
-			-- a craft the server stopped in the middle of: paid already, finished now at +0 (an unknown id is dropped)
-			if type(K().Recipes[c.Pend]) ~= "table" then
-				c.Pend = ""
-			elseif not complete(player, data, c.Pend, 0, misses(), 0) then
-				notify(player, "Full")
-			end
+		-- switched off: nothing is read or written (a waiting craft waits for the switch)
+		if type(data) ~= "table" or not on() then return end
+		if type(data.Craft) == "table" and type(data.Craft.Pend) == "table" and CraftService.Settle(player, data) == "wait" then
+			notify(player, "Full")
 		end
-		if on() then sendInfo(player, data) end
+		sendInfo(player, data)
 	end))
 	S.PlayerService.PlayerLeaving:Connect(guard("leave", function(player)
 		closeAtZero(player, "Leave")
