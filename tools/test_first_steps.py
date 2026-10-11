@@ -48,8 +48,13 @@ MUTATIONS = [
     # A23-130: the switch
     ("the attack hint ignores its off switch", " and (Config.Nudges or {}).AttackHint ~= false then", " then"),
     ("the marker ignores my own slime", "(isMine and not bestMine) or ", ""),
-    ("PvP cards for the Artisan Guild too", 'or attr("Faction", "") == "Neutral" then return end', "then return end"),
-    ("PvP cards every visit", "\tif not ok or seen == true then return end\n", "\tif not ok then return end\n"),
+    ("PvP cards for the Artisan Guild too", '\tif attr("Faction", "") == "Neutral" then return false end\n', ""),
+    ("PvP cards every visit", "\treturn ok and seen ~= true\n", "\treturn ok\n"),
+    # 게임성 검수 10/12 (A23-130): the server's "PvP zone!" line and the first PvP card never together
+    ("the 'PvP zone!' line over the open first card", "\tif PVP.Step == 1 then return true end\n", ""),
+    ("the 'PvP zone!' line with the entry that opens the card", "\treturn PVP.Step == 0 and PVP.Wanted()\n", "\treturn false\n"),
+    ("the 'PvP zone!' line never again", "\treturn PVP.Step == 0 and PVP.Wanted()\n", "\treturn true\n"),
+    ("every line held back", 'payload.Key == "EnteredPvP")) then return false end', 'payload.Key == "EnteredPvP")) then return true end'),
     ("PvP cards: the flag never saved", '\tcall("Settings", "Set", "PvPCards", true)\n', ""),
     ("PvP card: the flag saved again on every close", "\tif why ~= PVP.Why or PVP.Step ~= 1 then return end\n",
      "\tif why ~= PVP.Why then return end\n"),
@@ -101,12 +106,20 @@ def main():
         rows.append({"mutation": name, "applied": applied, "caught": caught, "failures": why[:3]})
         print(f"mutation {'caught' if caught else ('NOT CAUGHT' if applied else 'NOT APPLIED')}: {name}")
     cm = CLIENT_MAIN.read_text(encoding="utf-8-sig")
+    uikit = (ROOT / "src/StarterPlayer/StarterPlayerScripts/UIKit.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     order = re.search(r"local ORDER = \{([^}]*)\}", cm)
     names = re.findall(r'"([A-Za-z]+)"', order[1]) if order else []
     static = [
         ("ClientMain loads FirstSteps before SkillBar and Audio",
          "FirstSteps" in names and names.index("FirstSteps") < names.index("SkillBar") < names.index("Audio")),
         ("the travel line is English", 'Travel = "Off to %s!"' in steps),
+        # 게임성 검수 10/12: the hookups the fixture cannot run (Start)
+        ("FirstSteps adds PVP.SkipToast to UIKit.NotifyFilters",
+         "table.insert(ui.NotifyFilters, PVP.SkipToast)" in steps),
+        ("UIKit's Notify hookup asks UIKit.NotifyFilters before a toast / banner",
+         "for _, skip in UIKit.NotifyFilters do" in uikit and "if okSkip and yes == true then return end" in uikit
+         and uikit.find("for _, skip in UIKit.NotifyFilters do") < uikit.find('if payload.Kind == "announce" then')
+         and "UIKit.NotifyFilters = {}" in uikit),
     ]
     for name, good in static:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)

@@ -316,10 +316,17 @@ do
 	setAttrs({ Faction = "Halo", ZonePvP = false })
 	P.Check()
 	check(#shown == 0, "a safe zone: no PvP card", #shown)
+	-- 게임성 검수 10/12 (A23-130): the server's "PvP zone!" line (Config.Text.EnteredPvP) never comes with the first card
+	local L = Config.Text.EnteredPvP
+	check(P.SkipToast({ Text = L, Kind = "bad" }, L) == true,
+		"10/12: the 'PvP zone!' line of the entry that opens the first card is held back (it may come before ZonePvP)")
+	check(P.SkipToast({ Text = "Something else" }, "Something else") == false, "10/12: other lines show")
 	player.Attrs.ZonePvP = true
 	P.Check()
 	check(#shown == 1 and shown[1][1] == "Tip" and shown[1][2].Text == P.Text and shown[1][2].Why == "PvPIntro",
 		"first PvP zone: the card as a calm Tip card", shown[1] and shown[1][2].Text)
+	check(P.SkipToast({ Text = L }, L) == true and P.SkipToast({ Key = "EnteredPvP" }, "Zone de PvP !") == true,
+		"10/12: while the first card waits / is open: no 'PvP zone!' line (keyed lines too)")
 	P.Check()
 	check(#shown == 1, "no second start while the card waits", #shown)
 	P.OnShown("Tip", "OK", "Other")
@@ -327,15 +334,18 @@ do
 	P.OnShown("Tip", "Backdrop", "PvPIntro")
 	check(#shown == 1, "the card closed -> no second card", #shown)
 	check(#saved == 1 and saved[1][1] == "PvPCards" and saved[1][2] == true, "the card closed -> PvPCards saved", #saved)
+	check(P.SkipToast({ Text = L }, L) == false, "10/12: the card closed - the next entry's line shows")
 	P.OnShown("Tip", "OK", "PvPIntro")
 	check(#shown == 1 and #saved == 1, "done: nothing more", #saved)
 	P.Step = 0
 	P.Check()
 	check(#shown == 1, "a later visit (saved flag): no card", #shown)
+	check(P.SkipToast({ Text = L }, L) == false, "10/12: a later visit (saved flag): the line shows")
 	seen = false
 	player.Attrs.Faction = "Neutral"
 	P.Check()
 	check(#shown == 1, "the Artisan Guild (can't be attacked): no card", #shown)
+	check(P.SkipToast({ Text = L }, L) == false, "10/12: the Artisan Guild gets no card, so nothing is held back")
 	local lines = {}
 	for line in string.gmatch(P.Text, "[^\n]+") do table.insert(lines, line) end
 	check(P.Cards == nil and #lines == 2 and string.find(lines[1], "fight", 1, true) ~= nil

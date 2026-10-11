@@ -261,14 +261,29 @@ end
 local PVP = { Title = "PvP zone", Why = "PvPIntro", Step = 0,
 	Text = "Other players can fight you here!\nKnocked out? You can lose pocket gold. Towns keep it safe." }
 
-function PVP.Check()
-	if PVP.Step > 0 or attr("ZonePvP", false) ~= true or attr("Faction", "") == "Neutral" then return end
+-- the card would open for me now (not the Guild, my Settings loaded, PvPCards not set yet)
+function PVP.Wanted()
+	if attr("Faction", "") == "Neutral" then return false end
 	local st = C and C.Settings
-	if type(st) ~= "table" or type(st.Get) ~= "function" or (type(st.Loaded) == "function" and not st.Loaded()) then return end
+	if type(st) ~= "table" or type(st.Get) ~= "function" or (type(st.Loaded) == "function" and not st.Loaded()) then return false end
 	local ok, seen = pcall(st.Get, "PvPCards")
-	if not ok or seen == true then return end
+	return ok and seen ~= true
+end
+
+function PVP.Check()
+	if PVP.Step > 0 or attr("ZonePvP", false) ~= true or not PVP.Wanted() then return end
 	PVP.Step = 1
 	PVP.Show()
+end
+
+-- 게임성 검수 10/12 (A23-130, one explanation at a time): the server's "PvP zone!" line (Config.Text.EnteredPvP) does not
+-- come with my first PvP card - while it waits / is open (Step 1) or when this entry opens it (the line may arrive before
+-- ZonePvP); from the next entry on (the card seen) the line shows as before. A UIKit.NotifyFilters entry.
+function PVP.SkipToast(payload, text)
+	local line = type(Config.Text) == "table" and Config.Text.EnteredPvP or nil
+	if not ((line ~= nil and text == line) or (type(payload) == "table" and payload.Key == "EnteredPvP")) then return false end
+	if PVP.Step == 1 then return true end
+	return PVP.Step == 0 and PVP.Wanted()
 end
 
 function PVP.Show()
@@ -287,6 +302,8 @@ function FirstSteps.Start()
 		LocalPlayer:GetAttributeChangedSignal("ZonePvP"):Connect(PVP.Check)
 		local card = C and C.PauseCard
 		if type(card) == "table" and type(card.Shown) == "table" then card.Shown:Connect(PVP.OnShown) end
+		local ui = C and C.UIKit
+		if type(ui) == "table" and type(ui.NotifyFilters) == "table" then table.insert(ui.NotifyFilters, PVP.SkipToast) end
 	end)
 	if not okPvp then warn("[FirstSteps] PvP cards hookup failed: " .. tostring(errPvp)) end
 	task.spawn(function()
