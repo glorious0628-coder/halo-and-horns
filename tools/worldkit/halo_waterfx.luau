@@ -5,7 +5,7 @@
 --   * a Beam (flowing streak texture, TextureSpeed > 0 = it moves down by itself, no script) from the lip to the pool / sea below,
 --     its plane facing outward, a little in front of the terrain water
 --   * a mist ParticleEmitter at the foot (the default round soft particle: round puffs only, no rays)
---   * a thin white foam ring floating on the pool / sea where the sheet lands
+--   * white foam puffs on the pool / sea where the sheet lands (round particles lying flat; the flat disc of 10/11 read as a plate)
 -- MODE "apply" (default) rebuilds the folder, "remove" deletes it, "plan" only counts. STREAK = the uploaded streak texture id ("" =
 -- the beam is left out and only mist + foam are made, so the look never invents a texture).
 
@@ -20,7 +20,8 @@ local CFG = {
 	Speed = 1.4, -- beam texture speed (studs / s, downward)
 	Length = 7, -- beam texture length (studs per repeat)
 	Mist = { Rate = 14, Life = NumberRange.new(1.2, 2.0), Size = 3.2, Speed = NumberRange.new(1.5, 3) },
-	Foam = { Thick = 0.25, Extra = 3 }, -- foam ring: a flat disc a bit wider than the sheet
+	Foam = { Rate = 18, Size = 2.6 }, -- foam puffs at the landing (round, flat on the water)
+	Width = 3, -- the streak strip is this much wider than the terrain sheet (it read too thin on 10/11)
 	WaterColor = Color3.fromRGB(215, 240, 255),
 }
 if game:GetService("RunService"):IsRunning() then error("Edit 모드에서만 실행하세요.") end
@@ -110,12 +111,12 @@ for _, s in sheets do
 		b.TextureMode = Enum.TextureMode.Wrap
 		b.TextureLength = CFG.Length
 		b.TextureSpeed = CFG.Speed
-		b.Width0, b.Width1 = CFG.Half * 2, CFG.Half * 2 + 0.6
+		b.Width0, b.Width1 = CFG.Half * 2 + CFG.Width, CFG.Half * 2 + CFG.Width + 1
 		b.FaceCamera = false
-		b.LightEmission = 0.25
+		b.LightEmission = 0.6
 		b.LightInfluence = 0.8
 		b.Color = ColorSequence.new(CFG.WaterColor)
-		b.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(0.85, 0.1), NumberSequenceKeypoint.new(1, 0.45) })
+		b.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(0.85, 0), NumberSequenceKeypoint.new(1, 0.35) })
 		b.Segments = 6
 		b.Parent = holder
 	end
@@ -136,18 +137,25 @@ for _, s in sheets do
 	pe.Acceleration = Vector3.new(0, 1.2, 0)
 	pe.EmissionDirection = Enum.NormalId.Top
 	pe.Parent = mist
-	-- foam ring on the water where it lands (a flat white disc, half see-through)
-	local foam = Instance.new("Part")
-	foam.Name = "Foam"
-	foam.Shape = Enum.PartType.Cylinder
-	foam.Anchored, foam.CanCollide, foam.CanQuery, foam.CanTouch = true, false, false, false
-	foam.Material = Enum.Material.SmoothPlastic
-	foam.Color = Color3.fromRGB(245, 252, 255)
-	foam.Transparency = 0.45
-	local d = CFG.Half * 2 + CFG.Foam.Extra
-	foam.Size = Vector3.new(CFG.Foam.Thick, d, d)
-	foam.CFrame = CFrame.new(Vector3.new(foot.X, landY + 0.08, foot.Z)) * CFrame.Angles(0, 0, math.rad(90))
-	foam.Parent = holder
+	-- foam puffs where it lands: round particles lying flat on the water (Orientation VelocityPerpendicular + upward
+	-- velocity = the sprite faces up), white, fading out; no hard disc
+	local fa = Instance.new("Attachment")
+	fa.Name = "Foam"
+	fa.WorldPosition = Vector3.new(foot.X, landY + 0.15, foot.Z)
+	fa.Parent = holder
+	local fe = Instance.new("ParticleEmitter")
+	fe.Rate = CFG.Foam.Rate
+	fe.Lifetime = NumberRange.new(0.8, 1.4)
+	fe.Speed = NumberRange.new(0.01, 0.02)
+	fe.EmissionDirection = Enum.NormalId.Top
+	fe.Orientation = Enum.ParticleOrientation.VelocityPerpendicular
+	fe.SpreadAngle = Vector2.new(0, 0)
+	fe.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, CFG.Foam.Size * 0.6), NumberSequenceKeypoint.new(1, CFG.Foam.Size * 1.2) })
+	fe.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
+	fe.Color = ColorSequence.new(Color3.fromRGB(250, 253, 255))
+	fe.LightEmission = 0.3
+	fe.Rotation = NumberRange.new(0, 360)
+	fe.Parent = fa
 	made += 1
 end
 return string.format("halo_waterfx applied: %d of %d sheets (beam %s)", made, #sheets, STREAK ~= "" and "on" or "OFF - no streak texture yet")
