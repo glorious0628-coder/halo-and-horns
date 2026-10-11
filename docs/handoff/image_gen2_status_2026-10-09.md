@@ -141,3 +141,4 @@
 - 성 시안: 검수 지시로 일시 중지(성당 조사 오면 다시, 돔 금지 — 앞서 그린 4장은 모두 돔 있어서 버림 예정).
 - 빛 성 콘셉트 v3(돔 0개, 검수 성당 조사 프롬프트 그대로, Medium 4): `art/out/s2/halo/castle2/HaloCastleCath_{A,B,C,D}.png`, 시트 `art/review/s2/halo_castle_cathedral_concepts.jpg` (이전 돔 있던 `art/out/s2/halo/castle/`는 버림 예정). 4장 탑 꼭대기 확대 확인: 둥근 돔·둥근 머리 없음.
 - 하늘 섬 → 바람 협곡/열기구 고원(Medium 2): `art/out/s2/zones_new/NewZoneConcept_Wind3_{Canyon,Balloon}.png`, 시트 `art/review/s2/new_zone_wind_concepts.jpg`(떠 있는 섬·구름 바다·흰 대리석·금 없음, 몬스터 실루엣=바람 양·바람 요정·깃털 새).
+- 수정 동굴 숲·산호 해안 구역 시안 세트(A23-93, 고급 12장 = 60크레딧; 앞서 고른 v2 콘셉트를 참조로 같은 그림체·빛): `art/out/s2/zones_set/crystal/CrystalZone_{1_Overview,2_Entrance,3_Landmark,4_HuntGround,5_Edges,6_WaterPath}.png`, `art/out/s2/zones_set/coral/CoralZone_*.png`, 시트 `art/review/s2/zone_set_crystal.jpg`·`zone_set_coral.jpg`. 몬스터 시안은 이어서(중간 4장).
