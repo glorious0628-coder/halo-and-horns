@@ -25,6 +25,12 @@ dev3-gather 켜기 전 고칠 것: 1) 채집 재료 팔 곳 없음(LootService 6
 - 실제 지도(내가 잼, 새 CLEAR 코드를 place 72a5f19b 부품 위에서 그대로 실행, scratch spawn2/rv2_measure.py·json): 설계 검사관 추천 규칙과 판정 일치 98~99.9%(다른 곳은 전부 꽃·풀 Pass로 새 코드가 더 풀어 줌), 옛 규칙 대비 잃은 면적: 숲 고블린 32.0%(추천 예상 32.6%, 옛 가지 45.7%), 브루트 36.0%(37.0%/49.8%), 초원 슬라임 17.1%, 빅 슬라임 23.9%, 폐허 0.4~0.8%. 첫 KO 킹 '모두 막힘' 11.5% → 4.1%(24곳), 킹 언덕 60칸 안 19.4% → 10.5% — 실패 시 FirstKOService가 SpawnGap 4초 뒤 그때 위치로 다시 시도 → 몇 초 늦을 뿐.
 - 메인 반영 1: 병합·sync 뒤 tools/spawn_clear_probe.luau를 메인 Studio Edit에서 돌려 위 숫자와 비교 + 숲·초원 몹 생김 사진.
 
+## main 3176b8fb 병합 뒤 (최종 검수: golden-egg → v4-tables → lesstext → lesstext-server 병합 끝) — 보낼 것
+- 개발 2: **fix/spawnclear가 이제 Config.luau 끝에서 충돌**(v4-tables와 둘 다 파일 끝에 붙임) → main 다시 받아 고친 커밋 → 내가 compile + spawn_clear·first_ko_king만 다시 → 최종 검수에 병합 가능(실측·시험 14개 결과는 위).
+- 개발 4: dev4-bag·dev4-gather = ClientMain ORDER 한 줄 충돌 → main 다시 받기(EggFx 다음 줄 + BagUI) → 내가 compile + bag_ui → 병합 가능.
+- 개발 1(최종 검수 발견, Eggs 모드 켜기 전): 서버 +0.5 여유로 미리보기 없이 주운 알 → 내 발밑에 '남이 주움' 팝+소리 두 번(EggFx 346-359·634-639) → EggCarry 오를 때 S.MineAt 기록, removeEgg에서 PickRadius+0.5 안이거나 MineAt 최근이면 팝·소리 건너뜀.
+- 최종 검수: onehand-2 끝 = 0dc6c46d(이미 '병합 가능' 보냄 — 보고 4개 메시지), spawnclear 실측·시험 14개, 묶음 ① a23_14 99/99, dev3-craft 22cda7d5 시험 결과.
+
 ## 결정·전달 끝
 - 한 번에 팔기 = 몬스터 재료만(개발 2·3). 2배 XP 패스 글: 제작 켜는 가지에서 "Get 2x level XP, so you level up 2x faster. Crafting levels do not change. No stats are for sale."(개발 3).
 - 망치질 계약(개발 4 dev4-craft 48dff273 + 개발 3 제작 서버): 두드림마다 CraftStrike, d ∈ [−50, 250+1.5×핑], Finish(Id)만, Skip = +0, 나가기·20초 = +0 저장. 핑은 세션 시작 때와 지금 중 큰 값(개발 4에 제안).
