@@ -52,6 +52,7 @@ local V = {
 	ResultWait = 6, -- s to wait for CraftResult after Finish before closing quietly
 	WordTime = 0.7, -- s a grade word stays
 	Action = "HH_CraftStrike", Priority = 3000, -- ContextActionService: Space is a strike (and no jump) while open
+	Art = { Target = "CraftTarget", Ingot = "CraftIngot", Ring = "CraftRing" }, -- Config.UIArt keys (디자인 검수 10/12)
 	Colors = { Perfect = Color3.fromRGB(255, 200, 60), Great = Color3.fromRGB(110, 220, 120), Good = Color3.fromRGB(110, 170, 255),
 		Miss = Color3.fromRGB(140, 140, 150), Ring = Color3.fromRGB(255, 205, 80), Target = Color3.fromRGB(255, 150, 60) },
 	-- Config.Sounds keys (silent until 소리 만들기 adds them; Fx.PlaySound skips a missing id)
@@ -62,7 +63,7 @@ local V = {
 -- S.Session = { Id, StartAt, Practice } while open; Grades[i] = the grade shown (nil until pressed / closed); Sent[i] = the
 -- strike went out; Finished = CraftFinish sent (or the practice ended) at os.clock(); Result = the line shown
 local S = { Session = nil, Grades = {}, Sent = {}, Finished = nil, ResultAt = nil, Remotes = {}, Started = false }
-local UI = {} -- Root, Ring, RingStroke, Target, Dots = { [i] = Frame }, Word, WordAt, Result, Skip, Conn
+local UI = {} -- Root, Ring, Target, Dots = { [i] = Frame }, Word, WordAt, Result, Skip, Conn
 
 local function tx(t, key, ...)
 	local ui = C and C.UIKit
@@ -148,35 +149,54 @@ local function build()
 	root.ZIndex = V.ZIndex
 	root.Activated:Connect(function() CraftView.Press() end)
 	UI.Root = root
-	local target = Instance.new("Frame")
-	target.Name = "Target"
-	target.AnchorPoint = Vector2.new(0.5, 0.5)
-	target.Position = UDim2.fromScale(0.5, 0.45)
-	target.Size = UDim2.fromOffset(V.Target, V.Target)
-	target.BackgroundColor3 = Color3.fromRGB(40, 22, 14)
-	target.BackgroundTransparency = 0.15
-	target.ZIndex = V.ZIndex + 1
-	round(target)
-	local ts = Instance.new("UIStroke")
-	ts.Color = V.Colors.Target
-	ts.Thickness = 3
-	ts.Parent = target
+	-- the approved art once 이미지 개발 adds the keys (디자인 검수 10/12: CraftTarget · CraftIngot · CraftRing), else the
+	-- UIKit-style code circles (new functional screen exception)
+	local art = function(key, props)
+		if type(ui.ArtImage) ~= "function" then return nil end
+		local ok, img = pcall(ui.ArtImage, key, props)
+		return (ok and typeof(img) == "Instance") and img or nil
+	end
+	local pos = UDim2.fromScale(0.5, 0.45)
+	local target = art(V.Art.Target, { Name = "Target", AnchorPoint = Vector2.new(0.5, 0.5), Position = pos,
+		Size = UDim2.fromOffset(V.Target, V.Target), ZIndex = V.ZIndex + 1 })
+	if not target then
+		target = Instance.new("Frame")
+		target.Name = "Target"
+		target.AnchorPoint = Vector2.new(0.5, 0.5)
+		target.Position = pos
+		target.Size = UDim2.fromOffset(V.Target, V.Target)
+		target.BackgroundColor3 = Color3.fromRGB(40, 22, 14)
+		target.BackgroundTransparency = 0.15
+		target.ZIndex = V.ZIndex + 1
+		round(target)
+		local ts = Instance.new("UIStroke")
+		ts.Color = V.Colors.Target
+		ts.Thickness = 3
+		ts.Parent = target
+	end
+	local ingot = art(V.Art.Ingot, { Name = "Ingot", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.7, 0.7), ZIndex = V.ZIndex + 1 })
+	if ingot then ingot.Parent = target end
 	target.Parent = root
 	UI.Target = target
-	local ring = Instance.new("Frame")
-	ring.Name = "Ring"
-	ring.AnchorPoint = Vector2.new(0.5, 0.5)
-	ring.Position = target.Position
-	ring.BackgroundTransparency = 1
-	ring.Visible = false
-	ring.ZIndex = V.ZIndex + 2
-	round(ring)
-	local rs = Instance.new("UIStroke")
-	rs.Color = V.Colors.Ring
-	rs.Thickness = 5
-	rs.Parent = ring
+	local ring = art(V.Art.Ring, { Name = "Ring", AnchorPoint = Vector2.new(0.5, 0.5), Position = pos, Visible = false,
+		ZIndex = V.ZIndex + 2 })
+	if not ring then
+		ring = Instance.new("Frame")
+		ring.Name = "Ring"
+		ring.AnchorPoint = Vector2.new(0.5, 0.5)
+		ring.Position = pos
+		ring.BackgroundTransparency = 1
+		ring.Visible = false
+		ring.ZIndex = V.ZIndex + 2
+		round(ring)
+		local rs = Instance.new("UIStroke")
+		rs.Color = V.Colors.Ring
+		rs.Thickness = 5
+		rs.Parent = ring
+	end
 	ring.Parent = root
-	UI.Ring, UI.RingStroke = ring, rs
+	UI.Ring = ring
 	UI.Dots = {}
 	local n = CraftMini.T.Strikes
 	local rowW = n * V.Dot + (n - 1) * V.DotGap

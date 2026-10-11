@@ -284,4 +284,21 @@ check(View._T.S.Grades[1] ~= nil and fired[#fired][1] == "CraftStrike", "a click
 View.Close()
 check(bound.HH_CraftStrike == nil, "Close unbinds Space")
 
+-- 7. the approved art once its keys exist (디자인 검수 10/12): CraftTarget + CraftIngot inside it + CraftRing
+check(find(gui, "Target") == nil, "")
+UIKit.ArtImage = function(name, props)
+	local o = newObj("ImageLabel", { Image = name })
+	for k, v in props do if k ~= "Parent" then o[k] = v end end
+	return o
+end
+NOW = 10000
+player:SetAttribute("CraftPractice", true)
+local scr = find(gui, "CraftRing")
+check(find(scr, "Target").Image == "CraftTarget" and find(find(scr, "Target"), "Ingot").Image == "CraftIngot"
+	and find(scr, "Ring").Image == "CraftRing", "with the art: target, ingot on it, ring = the approved images")
+View.Step(CraftMini.Appear(NOW + CraftMini.T.Lead, 1) + 0.6)
+check(find(scr, "Ring").Visible and math.abs(find(scr, "Ring").Size.Args[1] - 120 * 1.8) < 0.01, "the art ring shrinks the same way")
+View.Close()
+UIKit.ArtImage = nil
+
 print(string.format("CRAFT_VIEW_SUMMARY checks=%d failed=%d", checks, failed))
