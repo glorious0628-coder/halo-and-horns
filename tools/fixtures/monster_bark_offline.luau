@@ -152,8 +152,11 @@ local real = {} -- [key] = { Id, Size, TextRect } as uploaded
 -- family's slime bubble until then (checked below); the others each have their own
 local PENDING_ART = { CaptainClatter = "BarkBubbleSkeleton", -- SlimeKing art uploaded 2026-10-09 (98179139339766)
 	FlowerSlime = "BarkBubbleSlime", SlingshotGoblin = "BarkBubbleGoblin", SkeletonArcher = "BarkBubbleSkeleton" } -- + A23-87
+-- A23-123 (2026-10-11): the NewZones kinds (off as shipped) have no bubble art at all yet: the round code bubble
+local NO_ART = { CoralCrab = true, Jellyfish = true, HermitCrab = true, CrystalLizard = true, CaveBat = true, GlowMushroom = true, CrystalGolem = true }
 local kindCount, badArt, tight = 0, {}, {}
 for kind in Config.MonsterTypes do
+	if NO_ART[kind] then continue end
 	kindCount += 1
 	if PENDING_ART[kind] then continue end
 	local key = "BarkBubble" .. kind
@@ -178,6 +181,7 @@ check(kindCount == 17 and #badArt == 0, "all 12 BarkBubble<Kind> (+ the King Sli
 check(#tight == 0, "every uploaded bubble's TextRect fits 2 lines at TextMin and is at least 40 px wide", table.concat(tight, ","))
 local ownNow = {}
 for kind in Config.MonsterTypes do
+	if NO_ART[kind] then continue end
 	local keys = B.ArtKeys(kind)
 	if keys[1] ~= (PENDING_ART[kind] or ("BarkBubble" .. kind)) or table.find(keys, "BarkBubble") then table.insert(ownNow, kind) end
 end

@@ -1666,6 +1666,18 @@ Config.Zones = {
 		MinLevel = 25, PvP = false, Town = false, Faction = nil,
 		PvPArea = { Name = "Crown Pit", Center = Vector3.new(1660, 0, 0), Size = Vector3.new(200, 0, 240), LootMult = 1.25 },
 		FloorColor = Color3.fromRGB(135, 125, 108), FloorMaterial = Enum.Material.Slate, Spawn = Vector3.new(1280, 0, 0) },
+	-- A23-119 / A23-123 (게임성 개발 2, 2026-10-11, docs/design/new_zones_monsters_2026-10-11.md): the two new fields that
+	-- take the hidden Halloween fields' place, Season = "NewZones" (Config.NewZones.Enabled, false as shipped). They are
+	-- NOT in Config.ZoneOrder while the switch is off (Config.NewZonesApply adds them when it is on), so ZoneAt, the maps
+	-- (MiniMap / WorldMap / MapBuilder / tools/preview_map.lua) and the v2 layout see nothing new. TODO (world side): the
+	-- real rects + land pieces; until then a PLACEHOLDER rect east of Config.Map.Bounds (x > 1840) that overlaps no zone.
+	-- No level gate (like the Halloween fields): Coral Coast Lv 8-11, Crystal Cave Woods Lv 14-21 recommended.
+	CoralCoast = { Id = "CoralCoast", Name = "Coral Coast", Center = Vector3.new(2300, 0, 300), Size = Vector3.new(200, 0, 180),
+		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "NewZones",
+		FloorColor = Color3.fromRGB(235, 215, 160), FloorMaterial = Enum.Material.Sand, Spawn = Vector3.new(2220, 0, 300) },
+	CrystalWoods = { Id = "CrystalWoods", Name = "Crystal Cave Woods", Center = Vector3.new(2300, 0, -300), Size = Vector3.new(230, 0, 190),
+		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "NewZones",
+		FloorColor = Color3.fromRGB(90, 150, 140), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(2210, 0, -300) },
 	-- = Config.Map.Bounds
 	Outskirts = { Id = "Outskirts", Name = "Outskirts", Center = Vector3.new(790, 0, 0), Size = Vector3.new(2100, 0, 1440),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil,
@@ -1942,8 +1954,11 @@ Config.SpawnSpread = { Enabled = true, StarvedThreshold = 2, MinDist = 18, MaxDi
 
 -- seasonal kinds sit right after the base kind of their zone (drop table / UI order); they spawn only while their
 -- season is on (Config.MonsterActive / Config.EffectiveMonsterCounts)
-Config.MonsterTypeOrder = { "Slime", "FlowerSlime", "PumpkinSlime", "BigSlime", "SlimeKing", "PumpkinKing", "Goblin",
-	"SlingshotGoblin", "BatGoblin", "GoblinBrute", "GhostMinion", "LittleGhost", "GhostKing", "Skeleton", "SkeletonArcher",
+-- (the NewZones families sit on the level ladder: Coral Coast after the meadow, Crystal Cave Woods after the woods)
+Config.MonsterTypeOrder = { "Slime", "FlowerSlime", "PumpkinSlime", "BigSlime", "SlimeKing", "PumpkinKing",
+	"CoralCrab", "Jellyfish", "HermitCrab", "Goblin",
+	"SlingshotGoblin", "BatGoblin", "GoblinBrute", "GhostMinion", "LittleGhost", "GhostKing",
+	"CrystalLizard", "CaveBat", "GlowMushroom", "CrystalGolem", "Skeleton", "SkeletonArcher",
 	"SkeletonKnight", "CaptainClatter" }
 -- Name = full name (nametag, lore); Short = short name for quest / HUD lines (optional: use `def.Short or def.Name`)
 -- Season = Config[Season].Enabled gates the kind; Takes = { [baseKind] = n } slots of a base kind it replaces while on;
@@ -2070,6 +2085,40 @@ Config.MonsterTypes = {
 	GhostKing = { Name = "Ghost King", Short = "Ghost King", Zone = "HauntedHollow", Count = 0, Boss = true, Season = "Halloween",
 		ContributorWindow = 120, RewardMinHits = 3, RewardMinDamageFrac = 0.005, XPCapBelowLevel = 8, ModelFrom = "LittleGhost",
 		HP = 9000, Damage = 8, XP = 300, Gold = 150, Speed = 7, Shape = "Humanoid", Scale = 1.8, Color = Color3.fromRGB(200, 190, 255), Float = 2.2 },
+	-- A23-119 / A23-123 new fields (게임성 개발 2, 2026-10-11; docs/design/new_zones_monsters_2026-10-11.md): Season =
+	-- "NewZones" = inert while Config.NewZones.Enabled is false (no spawn, no drop list row, Config.MonsterActive). No
+	-- slimes (A23-123), no ranged kind (A23-87 switch), no boss. Numbers sit between the neighbours of the same level
+	-- (plain kinds between Slime Lv2 / Goblin Lv12 / Skeleton Lv26, the big ones between Slime Prince Lv5 / Goblin
+	-- Brute Lv18 / Skeleton Knight Lv30). No 3D yet: each borrows an existing model (ModelFrom) in its own tint
+	-- (TODO: own Tripo models, A23-96 / A23-125). Add-on kinds (no Takes): outside MonsterDensity.GlobalCap like the
+	-- Halloween fields' kinds (Config.MonsterOutsideCap).
+	-- Coral Coast (Lv 8-11): crab = the plain melee kind, jellyfish floats, hermit crab = the tougher one (counted as a
+	-- crab by quests)
+	CoralCrab = { Name = "Coral Crab", Short = "Coral Crab", Zone = "CoralCoast", Count = 8, Season = "NewZones",
+		HP = 60, Damage = 4, XP = 20, Gold = 11, Speed = 11, Shape = "Humanoid", Scale = 0.9, Color = Color3.fromRGB(240, 110, 90),
+		ModelFrom = "Goblin", AnimFrom = "Goblin" },
+	Jellyfish = { Name = "Jellyfish", Short = "Jellyfish", Zone = "CoralCoast", Count = 5, Season = "NewZones",
+		HP = 65, Damage = 5, XP = 22, Gold = 12, Speed = 9, Shape = "Humanoid", Scale = 0.9, Color = Color3.fromRGB(255, 170, 225),
+		ModelFrom = "LittleGhost", Float = 1.5 },
+	HermitCrab = { Name = "Hermit Crab", Short = "Hermit Crab", Zone = "CoralCoast", Count = 3, Season = "NewZones", QuestAs = "CoralCrab",
+		HP = 120, Damage = 7, XP = 36, Gold = 20, Speed = 9, Shape = "Humanoid", Scale = 1.3, Color = Color3.fromRGB(210, 160, 110),
+		ModelFrom = "GoblinBrute", AnimFrom = "GoblinBrute" },
+	-- Crystal Cave Woods (Lv 14-21): lizards small, quick and many; the cave bat flies (Float); the glowing mushroom is a
+	-- slow tank; the crystal golem is the big one (regular pool, few, NOT a field boss). The crystal hedgehog is the
+	-- field's story-quest pet, not a monster (TODO, like the meadow's Baby Slime PET-4)
+	CrystalLizard = { Name = "Crystal Lizard", Short = "Crystal Lizard", Zone = "CrystalWoods", Count = 9, Season = "NewZones",
+		HP = 95, Damage = 6, XP = 30, Gold = 17, Speed = 14, Shape = "Humanoid", Scale = 0.8, Color = Color3.fromRGB(110, 210, 230),
+		ModelFrom = "Goblin", AnimFrom = "Goblin" },
+	CaveBat = { Name = "Cave Bat", Short = "Cave Bat", Zone = "CrystalWoods", Count = 5, Season = "NewZones",
+		HP = 110, Damage = 7, XP = 34, Gold = 19, Speed = 13, Shape = "Humanoid", Scale = 0.8, Color = Color3.fromRGB(95, 80, 140),
+		ModelFrom = "LittleGhost", Float = 2 },
+	-- "Glowing" (not "Glow"): the Warrior's Z skill is "Glow Lasso" and skill names share no word with a monster
+	GlowMushroom = { Name = "Glowing Mushroom", Short = "Mushroom", Zone = "CrystalWoods", Count = 4, Season = "NewZones",
+		HP = 200, Damage = 8, XP = 50, Gold = 28, Speed = 8, Shape = "Humanoid", Scale = 1.2, Color = Color3.fromRGB(180, 140, 255),
+		ModelFrom = "GoblinBrute", AnimFrom = "GoblinBrute" },
+	CrystalGolem = { Name = "Crystal Golem", Short = "Crystal Golem", Zone = "CrystalWoods", Count = 2, Season = "NewZones",
+		HP = 480, Damage = 15, XP = 110, Gold = 75, Speed = 8, Shape = "Humanoid", Scale = 1.9, Color = Color3.fromRGB(140, 200, 255),
+		ModelFrom = "SkeletonKnight", AnimFrom = "SkeletonKnight" },
 }
 
 -- the kind quests / tutorial / story objectives count a kill as (a pumpkin slime counts as a slime)
@@ -2103,9 +2152,13 @@ Config.Barks = {
 	-- shared 9-slice BarkBubble (user "말풍선 가로로 길쭉한 거 말고": drawn small its body stays ~2.4 : 1).
 	BubbleFamily = { Slime = "Slime", FlowerSlime = "Slime", BigSlime = "Slime", SlimeKing = "Slime", PumpkinSlime = "Pumpkin", PumpkinKing = "Pumpkin",
 		Goblin = "Goblin", SlingshotGoblin = "Goblin", BatGoblin = "Goblin", GoblinBrute = "Goblin", Skeleton = "Skeleton", SkeletonArcher = "Skeleton", SkeletonKnight = "Skeleton", CaptainClatter = "Skeleton",
-		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost" },
+		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost",
+		-- NewZones (A23-123): no bubble art yet (the keys below are not in Config.UIArt) = the round code bubble
+		CrystalLizard = "Crystal", CaveBat = "Crystal", GlowMushroom = "Crystal", CrystalGolem = "Crystal",
+		CoralCrab = "Coral", Jellyfish = "Coral", HermitCrab = "Coral" },
 	BubbleArt = { Slime = "BarkBubbleSlime", Pumpkin = "BarkBubblePumpkinSlime", Goblin = "BarkBubbleGoblin",
-		Skeleton = "BarkBubbleSkeleton", Ghost = "BarkBubbleGhostMinion" },
+		Skeleton = "BarkBubbleSkeleton", Ghost = "BarkBubbleGhostMinion",
+		Crystal = "BarkBubbleCrystalLizard", Coral = "BarkBubbleCoralCrab" },
 	LowAt = 0.3, -- HP fraction for Low (once per life)
 	IdleEvery = 10, -- s between Idle rolls (no target, a player within IdleNear)
 	IdleNear = 40,
@@ -2208,6 +2261,50 @@ Config.Barks = {
 			Hit = { "Ow-ooh!", "Hoo-ouch!" },
 			Low = { "Ooh… fading…" },
 			Idle = { "OOOH~", "Ooh-hoo-hoo~" },
+		},
+		-- NewZones (A23-123, 2026-10-11): Coral Coast
+		CoralCrab = { -- a busy little crab
+			Spot = { "Snip snip!", "Pinch time!" },
+			Hit = { "Ow, claw!", "Bubble-ow!" },
+			Low = { "Sidestep!" },
+			Idle = { "Snip~", "Sand nap~" },
+		},
+		Jellyfish = { -- a wobbly, floaty jelly of the sea
+			Spot = { "Bloop-bloop!", "Wiggle!" },
+			Hit = { "Zap-ow!", "Jiggle-ow!" },
+			Low = { "Drifting…" },
+			Idle = { "Float~", "Wibble~" },
+		},
+		HermitCrab = { -- loves its shell house
+			Spot = { "My shell!", "Knock knock!" },
+			Hit = { "Thunk!", "Shell bonk!" },
+			Low = { "Hide time!" },
+			Idle = { "Cozy shell~", "Peek~" },
+		},
+		-- NewZones: Crystal Cave Woods
+		CrystalLizard = { -- quick and sparkly
+			Spot = { "Skitter!", "Sparkle!" },
+			Hit = { "Tink!", "Chip-ow!" },
+			Low = { "Zip away!" },
+			Idle = { "Skitter~", "Lick lick~" },
+		},
+		CaveBat = { -- a sleepy cave bat
+			Spot = { "Eep-eep!", "Squeak!" },
+			Hit = { "Squeak-ow!", "Ow, wings!" },
+			Low = { "Flutter…" },
+			Idle = { "Hang… zzz", "Squeak~" },
+		},
+		GlowMushroom = { -- a chubby, sleepy glow
+			Spot = { "Pop-pop!", "Spore-y?" },
+			Hit = { "Squash-ow!", "Puff!" },
+			Low = { "Dim glow…" },
+			Idle = { "Glow glow~", "Mush mush~" },
+		},
+		CrystalGolem = { -- big, slow, a little grumpy
+			Spot = { "RUMBLE!", "Who taps?" },
+			Hit = { "CRACK? No.", "BONK!" },
+			Low = { "Crumble…" },
+			Idle = { "Rumble~", "Big yawn." },
 		},
 		PumpkinKing = { -- a jolly pumpkin king
 			Spot = { "HA-HA!", "Welcome!" },
@@ -2430,6 +2527,33 @@ Config.Halloween = {
 		GhostKingZero = "Truce! No kings beaten here yet. Party anyway. Come on in!",
 	},
 }
+
+-- A23-119 / A23-123 (게임성 개발 2, 2026-10-11; docs/design/new_zones_monsters_2026-10-11.md): the two new fields that
+-- replace the hidden Halloween fields - Coral Coast (CoralCrab / Jellyfish / HermitCrab) and Crystal Cave Woods
+-- (CrystalLizard / CaveBat / GlowMushroom / CrystalGolem). One switch, the Halloween season's own path: every new zone and
+-- kind carries Season = "NewZones", so Config.SeasonOn("NewZones") = this Enabled gates them (Config.MonsterActive /
+-- EffectiveMonsterCounts / MonsterTargets = 0, Panels' drop list, the client maps skip a season that is off).
+-- false (as shipped) = nothing changes in the running game. The zones also stay out of Config.ZoneOrder until it is on
+-- (Config.NewZonesApply), so ZoneAt, MapBuilder's floor markers and the v2 map layout are untouched.
+-- Before turning it on (TODO): the real zone rects + land pieces (world side; the Config.Zones rects are placeholders east
+-- of Config.Map.Bounds), the 3D models, the minimap / zone art, music, bubble art, item icons.
+Config.NewZones = {
+	Enabled = false,
+	ZoneIds = { "CoralCoast", "CrystalWoods" }, -- appended to Config.ZoneOrder (in this order) while Enabled
+}
+
+-- puts the new zones at the end of Config.ZoneOrder (once each) while their season is on; true when they are in.
+-- Runs once below when this module loads; a test that turns Enabled on after loading calls it itself.
+function Config.NewZonesApply()
+	if not Config.SeasonOn("NewZones") then return false end
+	for _, id in Config.NewZones.ZoneIds do
+		if type(Config.Zones[id]) == "table" and table.find(Config.ZoneOrder, id) == nil then
+			table.insert(Config.ZoneOrder, id)
+		end
+	end
+	return true
+end
+Config.NewZonesApply()
 
 -- the "unit" monster used for quest targets / rewards and Config.HuntValue
 Config.ZoneMainMonster ={ SlimeMeadow = "Slime", GoblinWoods = "Goblin", SkeletonRuins = "Skeleton" }
@@ -4903,6 +5027,10 @@ Config.Loot = {
 		-- J: Captain Clatter's badge (a week's first kill always gives one; the T6 commission needs it, A23-86 L)
 		CaptainBadge = { Kind = "Material", Name = "Captain's Badge", Sell = 200, Color = Color3.fromRGB(220, 190, 110), Icon = "IconCaptainBadge" },
 		Candy = { Kind = "Material", Name = "Candy", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
+		-- NewZones (A23-123): one material per new field, priced between its level neighbours (Jelly 2 / Goblin Tooth 6 /
+		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
+		SeaShell = { Kind = "Material", Name = "Sea Shell", Sell = 4, Color = Color3.fromRGB(250, 205, 180), Icon = "IconSeaShell" }, -- Coral Coast
+		CrystalShard = { Kind = "Material", Name = "Crystal Shard", Sell = 8, Color = Color3.fromRGB(130, 210, 240), Icon = "IconCrystalShard" }, -- Crystal Cave Woods
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -4914,7 +5042,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "SlimeCore", "GoblinTooth", "BruteHorn", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
+		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -5034,6 +5162,52 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.08 },
 			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
 			{ Weapon = 4, P = 0.05, BelowLevel = { Item = "Candy", N = 3 } },
+		},
+		-- NewZones (A23-123; rolled only once the kinds spawn): the field's material + scroll / transfer / potion rows no
+		-- higher than the neighbour of the same level (plain kinds <= the Goblin's rows, the tougher ones <= the Goblin
+		-- Brute's); only the golem has a weapon row (T4, below the brute's)
+		CoralCrab = {
+			{ Item = "SeaShell", P = 0.35 },
+			{ Item = "Enh70", P = 0.01 }, { Item = "Enh30", P = 0.0025 }, { Item = "Enh10", P = 0.0006 },
+			{ Item = "Move70", P = 0.003 }, { Item = "Move30", P = 0.0008 }, { Item = "Move10", P = 0.0002 },
+			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+		},
+		Jellyfish = {
+			{ Item = "SeaShell", P = 0.3 },
+			{ Item = "Enh70", P = 0.01 }, { Item = "Enh30", P = 0.0025 }, { Item = "Enh10", P = 0.0006 },
+			{ Item = "Move70", P = 0.003 }, { Item = "Move30", P = 0.0008 }, { Item = "Move10", P = 0.0002 },
+			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+		},
+		HermitCrab = {
+			{ Item = "SeaShell", P = 0.5, N = 2 },
+			{ Item = "Enh70", P = 0.03 }, { Item = "Enh30", P = 0.008 }, { Item = "Enh10", P = 0.002 },
+			{ Item = "Move70", P = 0.01 }, { Item = "Move30", P = 0.003 }, { Item = "Move10", P = 0.0007 },
+			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+		},
+		CrystalLizard = {
+			{ Item = "CrystalShard", P = 0.3 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+		},
+		CaveBat = {
+			{ Item = "CrystalShard", P = 0.3 },
+			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
+			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
+			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+		},
+		GlowMushroom = {
+			{ Item = "CrystalShard", P = 0.4 },
+			{ Item = "Enh70", P = 0.02 }, { Item = "Enh30", P = 0.0055 }, { Item = "Enh10", P = 0.0014 },
+			{ Item = "Move70", P = 0.0067 }, { Item = "Move30", P = 0.0018 }, { Item = "Move10", P = 0.0005 },
+			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+		},
+		CrystalGolem = {
+			{ Item = "CrystalShard", P = 0.6, N = 2 },
+			{ Item = "Enh70", P = 0.05 }, { Item = "Enh30", P = 0.014 }, { Item = "Enh10", P = 0.0035 },
+			{ Item = "Move70", P = 0.017 }, { Item = "Move30", P = 0.0047 }, { Item = "Move10", P = 0.0012 },
+			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
+			{ Weapon = 4, P = 0.003 },
 		},
 	},
 	-- "레벨1 몬스터" jackpot (user 2026-10-05): any player level, auto kills included, golden x GoldenMult. Pumpkin
@@ -7733,6 +7907,10 @@ Config.MonsterLevels = {
 	PumpkinSlime = 3, GhostMinion = 6, LittleGhost = 7, PumpkinKing = 10, GhostKing = 12,
 	Goblin = 12, BatGoblin = 13, SlingshotGoblin = 14, GoblinBrute = 18,
 	Skeleton = 26, SkeletonArcher = 28, SkeletonKnight = 30, CaptainClatter = 32,
+	-- NewZones (A23-123; Season "NewZones", off as shipped): Coral Coast Lv 8-11 (meadow -> woods step), Crystal Cave
+	-- Woods Lv 14-21 (woods -> ruins step)
+	CoralCrab = 8, Jellyfish = 9, HermitCrab = 11,
+	CrystalLizard = 14, CaveBat = 15, GlowMushroom = 17, CrystalGolem = 21,
 }
 
 function Config.MonsterLevel(kind)
