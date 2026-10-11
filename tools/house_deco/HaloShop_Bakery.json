@@ -96,7 +96,11 @@
     -3.05,
     11.3
    ]
-  ]
+  ],
+  "panel_back": -0.22,
+  "panel_shade": 1.0,
+  "panel_rough": 0.35,
+  "drop_spikes": false
  },
  "display": {
   "box": [

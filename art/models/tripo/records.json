@@ -11886,11 +11886,11 @@
     "art/review/img3/house_deco/houses_deco_extras.jpg"
    ],
    "notes": [
-    "shop goods look faint behind the skeleton Shop_Glass (Glass, transparency 0.3): a clearer glass (0.6) would show them - 디자인 검수 to decide",
     "greenhouse plants inside = stage 5 plants"
    ],
    "studio_step": "pending: second import file after 디자인 검수 (05 / Flower / Bakery skeletons re-inserted first)",
-   "credits": 0
+   "credits": 0,
+   "review_1": "디자인 검수 10/12: pass + 3 fixes -> shop glass only Transparency 0.6 / Reflectance 0.05 (generator 'shopglass'), Bakery sign V wedge = plate at the panel's front in the median gold, Potion sign X spikes cut (drop_boxes) + small gap closing; plain materials now sRGB -> linear (previews were washed out)"
   }
  ]
 }

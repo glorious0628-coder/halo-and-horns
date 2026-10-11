@@ -1159,7 +1159,8 @@ def plain_mat(name, rgb, metal, rough, alpha=1.0):
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     pb = m.node_tree.nodes["Principled BSDF"]
-    pb.inputs["Base Color"].default_value = (*[c_ / 255.0 for c_ in rgb], 1)
+    pb.inputs["Base Color"].default_value = (*[(c_ / 255.0) / 12.92 if c_ / 255.0 <= 0.04045 else ((c_ / 255.0 + 0.055) / 1.055) ** 2.4
+                                               for c_ in rgb], 1)                    # sRGB 0..255 -> linear
     pb.inputs["Metallic"].default_value = metal
     pb.inputs["Roughness"].default_value = rough
     return m
@@ -1209,6 +1210,42 @@ if "sign" in PR:
                 bm.to_mesh(o.data)
                 bm.free()
             ps = [o for o in ps if len(o.data.polygons)]
+        if G.get("drop_spikes", True):                    # long thin shards (Tripo leaf / ornament spikes) out
+            for o in ps:
+                me = o.data
+                V_ = np.array([v_.co[:] for v_ in me.vertices])
+                bad = []
+                for f_ in me.polygons:
+                    vs_ = V_[list(f_.vertices)]
+                    if len(vs_) < 3:
+                        continue
+                    e_ = [np.linalg.norm(vs_[(k + 1) % len(vs_)] - vs_[k]) for k in range(len(vs_))]
+                    ar_ = max(f_.area, 1e-9)
+                    if max(e_) ** 2 / (2 * ar_) > G.get("spike_ratio", 7.0) and max(e_) > G.get("spike_len", 0.25):
+                        bad.append(f_.index)
+                if bad:
+                    bm = bmesh.new()
+                    bm.from_mesh(me)
+                    bm.faces.ensure_lookup_table()
+                    bmesh.ops.delete(bm, geom=[bm.faces[k] for k in bad], context="FACES")
+                    bmesh.ops.delete(bm, geom=[v_ for v_ in bm.verts if not v_.link_faces], context="VERTS")
+                    bm.to_mesh(me)
+                    bm.free()
+        for b in G.get("drop_boxes", []):                  # named bits to cut (Tripo frame)
+            for o in ps:
+                c_ = centres(o)
+                inb = np.ones(len(c_), bool)
+                for k, (lo_, hi_) in enumerate(b):
+                    inb &= (c_[:, k] >= lo_) & (c_[:, k] <= hi_)
+                if inb.any():
+                    bm = bmesh.new()
+                    bm.from_mesh(o.data)
+                    bm.faces.ensure_lookup_table()
+                    bmesh.ops.delete(bm, geom=[f for f in bm.faces if inb[f.index]], context="FACES")
+                    bmesh.ops.delete(bm, geom=[v_ for v_ in bm.verts if not v_.link_faces], context="VERTS")
+                    bm.to_mesh(o.data)
+                    bm.free()
+        ps = [o for o in ps if len(o.data.polygons)]
         if G.get("drop_pale"):                            # a gold plaque: pale bits left in it are wall shards
             for o in ps:
                 h_ = face_hsv(o)
@@ -1239,9 +1276,10 @@ if "sign" in PR:
         if G.get("panel_poly"):                         # a plate outline given in the params (x, z after fitting)
             ol_ = [tuple(q) for q in G["panel_poly"]]
             P_ = allv(ps)
-            yb_ = float(np.percentile(P_[:, 1], 30))
+            yb_ = float(np.percentile(P_[:, 1], 30)) - G.get("panel_back", 0.0)
             plate = slab(NAME + "_PlaqueBack", ol_ if _ccw(ol_) else ol_[::-1], yb_, 0.12, lambda x, z: (0.5, 0.5), (0.5, 0.5))
-            plate.data.materials.append(plain_mat(NAME + "_SignGold", sign_gold(ps), 1.0, 0.3))
+            plate.data.materials.append(plain_mat(NAME + "_SignGold", tuple(c_ * G.get("panel_shade", 1.0) for c_ in sign_gold(ps)),
+                                                  G.get("panel_metal", 0.45), G.get("panel_rough", 0.3)))
             tidy_normals([plate])
             out_objs.append(plate)
         elif G.get("back_panel", True):
@@ -1355,7 +1393,7 @@ if "sign" in PR:
             bm2.free()
             plate = bpy.data.objects.new(NAME + "_PlaqueBack", me2)
             bpy.context.scene.collection.objects.link(plate)
-            plate.data.materials.append(plain_mat(NAME + "_SignGold", sign_gold(ps), 1.0, 0.3))
+            plate.data.materials.append(plain_mat(NAME + "_SignGold", sign_gold(ps), G.get("panel_metal", 0.45), 0.3))
             out_objs.append(plate)
             REPORT.setdefault("pieces", {}).setdefault("SignPlate", {"strips": nq, "cell": res})
         lo2, hi2 = bbox(ps)
