@@ -8177,6 +8177,88 @@ Config.ChoiceCard.Kinds.ShardBloom = {
 	Evil = { Label = "Keep it all", Reward = { Item = "CrownDust", N = 3 }, Points = 1 },
 }
 
+----------------------------------------------------------------- crafting (게임성 개발 3, 2026-10-12)
+-- CraftService (contract docs/design/craft_server_2026-10-12.md, 게임성 검수 OK 10/12; the hammer screen is 게임성 개발 4's
+-- hammer_minigame_2026-10-12.md). Only artisans (faction Neutral) craft, each only the recipes of their role (Roles: the
+-- artisan class -> role). A craft never fails and never loses materials (A23-56): the gold and materials go at the start,
+-- the result (+0 / +1 / +2 from the hammer) comes at the end, a leave / KO / time-out finishes it at +0, and the save's
+-- Craft.Pend finishes it at +0 on the next join if the server stops in between. A craft level per role (data.Craft.<role>
+-- = { Lv, XP }), XP to the next = floor(XPBase x Lv ^ XPExp), at most MaxLv; the 2x XP pass does not touch it.
+-- Hammer: Strikes rings of Ring s (Rest s between), the first ring at StartAt = server time + Lead. Grade of an offset
+-- (ms, + = late): e = |ms - LagMs| -> Perfect <= Perfect, Great <= Great, Good <= Good, else Miss; points 3 / 2 / 1 / 0,
+-- sum >= Plus2 -> +2, >= Plus1 -> +1. Every ring end sends CraftStrike: the server times it (the first from StartAt minus
+-- half the ping, each next from the one before) and a claimed offset further than TolMs + the ping jitter (ping x 0.5, at
+-- most JitterMaxMs; the first ring once more) from that is a Miss. Five equal claims = +0 (not a person). No Finish by
+-- StartAt + Timeout = +0. Recipes[id] = { Role, Kind "Weapon" | "Gear" | "Item", Tier?, Slot?, Item?, N?, Lv, Gold, Mats,
+-- XP }; a recipe with a material id missing from Config.Loot.Items is off (new drops switch it on). Weapons go to the
+-- spare weapons (LootService.AddSpare, 게임성 개발 2) and stay off until that exists. Switched by
+-- Config.Features.Crafting (off; on with the artisan guild, 검수).
+Config.Features.Crafting = false
+Config.Craft = {
+	Roles = { Warrior = "Smith", Mage = "Alch", Archer = "Tame" },
+	MaxLv = 30,
+	XPBase = 40,
+	XPExp = 1.5,
+	Range = 12, -- studs from the role's workbench (CollectionService tag StationTag, attribute Role; else the Crossroads anvil)
+	StationTag = "CraftStation",
+	StartsPerMinute = 6,
+	Hammer = { Strikes = 5, Ring = 1.2, Rest = 0.35, Lead = 0.8, LagMs = 40, Perfect = 70, Great = 130, Good = 200,
+		Points = { Perfect = 3, Great = 2, Good = 1, Miss = 0 }, Plus2 = 13, Plus1 = 9, Timeout = 20, MaxMs = 400,
+		TolMs = 250, JitterMaxMs = 150, MinGap = 0.25 },
+	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
+	Recipes = {
+		W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 },
+		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Jelly = 10, Petal = 3, CopperOre = 4 }, XP = 20 },
+		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }, XP = 60 },
+		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 20, BruteHorn = 10, IronOre = 8, OakLog = 4 }, XP = 150 },
+		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 30, KnightCrest = 12, IronOre = 15, OakLog = 6 }, XP = 400 },
+		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 30, Bone = 60, CaptainBadge = 1, SilverOre = 12 }, XP = 900 },
+		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 60, Bone = 100, CaptainBadge = 2, ClatterGem = 1, SilverOre = 25 }, XP = 2000 },
+		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 100, CaptainBadge = 6, ClatterGem = 3, KingJelly = 10, MoonCrystal = 20 }, XP = 4000 },
+	},
+	Text = {
+		NotArtisan = "Only artisans can make this.",
+		NeedLevel = "Your craft level is too low.",
+		NeedMats = "Not enough materials.",
+		NeedGold = "Not enough gold.",
+		Far = "Go to your workbench.",
+		Busy = "Finish this craft first.",
+		Full = "No room for it.",
+		Auto = "Turn off auto combat first.",
+	},
+}
+Config.RateLimits.CraftStart = 3
+Config.RateLimits.CraftFinish = 0.5
+
+-- XP from craft level `lv` to the next (Config.Craft.XPBase x lv ^ XPExp, floored; 0 at MaxLv: no next level)
+function Config.CraftXPToNext(lv)
+	local K = Config.Craft
+	local l = math.floor(tonumber(lv) or 1)
+	if l ~= l or l >= K.MaxLv then return 0 end
+	return math.floor(K.XPBase * math.max(1, l) ^ K.XPExp)
+end
+
+-- the grade of one hammer offset (ms, + = late; anything but a finite number = Miss)
+function Config.CraftGrade(ms)
+	local H = Config.Craft.Hammer
+	if type(ms) ~= "number" then return "Miss" end -- NaN fails every comparison below: a Miss too
+	local e = math.abs(ms - H.LagMs)
+	if e <= H.Perfect then return "Perfect" end
+	if e <= H.Great then return "Great" end
+	if e <= H.Good then return "Good" end
+	return "Miss"
+end
+
+-- the +N of a list of grades (Points summed: >= Plus2 -> 2, >= Plus1 -> 1, else 0)
+function Config.CraftPlus(grades)
+	local H = Config.Craft.Hammer
+	local sum = 0
+	for _, g in grades do sum += H.Points[g] or 0 end
+	if sum >= H.Plus2 then return 2 end
+	if sum >= H.Plus1 then return 1 end
+	return 0
+end
+
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
 -- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3

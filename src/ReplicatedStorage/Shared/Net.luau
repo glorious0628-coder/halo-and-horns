@@ -57,6 +57,14 @@ Net.Names = {
 	-- 게임성 개발 3 (2026-10-11), server -> client:
 	"GatherState", -- owner only { Ready = { [GatherId] = workspace:GetServerTimeNow() it can be picked again }, N, Cap }
 	-- (GatherService after each gather and at PlayerReady; the client's GatherView dims my resting nodes)
+	-- 게임성 개발 3 (2026-10-12) crafting (CraftService, docs/design/craft_server_2026-10-12.md §4), client -> server:
+	"CraftStart", -- (recipeId: a Config.Craft.Recipes id)
+	"CraftStrike", -- (sessionId: number, i: 1..5) at every ring end, in order (the server times it)
+	"CraftFinish", -- (sessionId: number, hits: { offset ms (+ = late) | false } x 5)
+	-- server -> client (owner only):
+	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
+	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp }
+	"CraftInfo", -- { Role, Lv, XP, Need, Made } at join and after every craft
 }
 
 Net.GameStateDefaults = {

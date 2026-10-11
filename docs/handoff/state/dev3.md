@@ -10,7 +10,7 @@
 
 ## 지금 (10/12 새벽)
 - **`dev3-craft`**(dev3-gather 520e8cb7 위) 37113fa4: ③ 제작 서버 설계 `docs/design/craft_server_2026-10-12.md` — 게임성 검수 판단 대기(숫자·펫 장비 역할·Spares 의존). 개발 4 망치질 계약 그대로 받음(false = +200ms 확인 요청). 개발 2에 AddSpare/SpareRoom·KingJelly/ClatterGem 부탁.
-- 다음 할 일: CraftService.luau + Config.Craft + test_craft.py(설계 §7) 코드.
+- 코드 끝: CraftService(dev3-craft), test_craft 94·60/60. 무기 결과는 개발 2 AddSpare/SpareRoom 뒤(그 전엔 무기 레시피 꺼짐). 다음: ④ 연금 버프 물약(같은 레시피 표에 Kind Item 줄 + Buffs).
 
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.
