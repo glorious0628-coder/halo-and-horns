@@ -15,6 +15,7 @@
 | 한 손 허리(대장장이·연금술사·조련사) | 손등이나 손바닥이 허리 옆에 닿고, 손목은 엉덩이뼈 위로 살짝 앞, 팔꿈치는 바깥으로(팔과 허리 사이 삼각형) | [Hand on hip drawing reference](https://library.peoplespharmacy.com/hand-hip-drawing-reference), [Fashion Drawing For Dummies](https://www.dummies.com/article/academics-the-arts/art-architecture/drawing/fashion-drawing/how-to-draw-hands-on-your-fashion-figures-171483) |
 | 활 대기(레인저·그림자 사냥꾼) | 대기 자세는 활을 옆에 세워 든다(당기지 않음). 3인칭은 활을 세워서 | [PoseMyArt 궁수 자세](https://posemy.art/blog/drawing-archer-poses/), [Kotaku 게임 궁술](https://kotaku.com/video-game-characters-are-terrible-at-archery-1836615271) |
 | §1-8 한손검(A23-128, 두 전사) | 한손검은 주먹이 자루를 감싼다(해머 쥐기, 또는 엄지·검지 쪽을 조금 세운 악수 쥐기). 무거운 칼일수록 손목을 고정하는 해머 쥐기. 한손 무기 대기 동작은 칼을 오른손 옆에 두고 걷기·서기가 이어짐. 대결 자세에서는 칼 쪽이 앞, 빈손은 뒤로 — 우리 대기에서는 빈손을 그냥 내림 | [Virtus Martialis "Gripping swords"](https://virtusmartialis.substack.com/p/gripping-swords), [sword-site "handshake grip"](https://sword-site.com/thread/114/hold-sword-handshake-grip-nonsense), [Skyrim 한손 대기 동작 모드](https://www.nexusmods.com/skyrim/mods/109608), [Steam 한손검 자세 토론](https://steamcommunity.com/app/362490/discussions/0/4039228198241300759) — 칼을 옆에 든 대기 그림 참고는 못 찾음, 쥐기 설명 + 대기 동작 목록 |
+| §1-9 한 손 망치 내려치기(대장장이 Q, 게임성 검수 10/11) | 한 손 망치는 머리 위 어깨 뒤에서 앞쪽으로 세로로 내려친다. 빈손은 두 번째 때리는 팔이 아니라 앞쪽 받침이나 균형을 잡는 팔이다(두 손을 모으는 것은 두 손 도끼 이야기) | [Vintage Story 포럼 '한 손 망치 동작'](https://www.vintagestory.at/forums/topic/17784-proposed-change-to-the-hammer-animation-for-realism-and-seizure-avoidance/), [AGS 포럼 '도끼·망치 동작'](https://www.adventuregamestudio.co.uk/forums/index.php?msg=521318) — 그림 참고는 못 찾음, 설명만 |
 
 **우리 place에서 잰 값(`place/GoodEvil.rbxlx` R15):** `RightGripAttachment` = 손 안 (0, -0.158, 0), 방향 Angles(-90°, 0, 0). 어깨 관절은 UpperTorso (±0.972, 0.598, 0)에 있어요. 위팔은 0.92, 아래팔은 0.81. 우리 무기는 `CharacterVisuals.fist()`로 손의 -Z(주먹을 꿰뚫는 축)를 따라 붙어요.
 
@@ -66,6 +67,7 @@
 - `place/GoodEvil.rbxlx`의 기본 R15(Workspace NPCs `PotionMerchant`)를 쟀어요. 발바닥 0, UpperTorso 가운데 3.21, 어깨 관절 3.81, 머리 꼭대기 **5.18칸**(크기 1). 아래에서 **H = 5.2칸**으로 써요.
 - 공개 자료도 비슷해요. 기본 Roblox 캐릭터 키는 약 5~5.5칸이고, R15 키 조절은 95~105%예요([DevForum "Fetch Player Height"](https://devforum.roblox.com/t/fetch-player-height/2205072), [Roblox 문서 Body scale](https://create.roblox.com/docs/art/accessories/body-scale)).
 - 고친 것: 한 손 시험(`test_one_hand_grips`)은 몸통 가운데를 3.9칸으로 어림했어요. 실제는 3.21칸이에요. 그래서 긴 지팡이는 발끝이 땅에 0.2~0.5칸 박혔을 수 있어요. 손이 지팡이를 쥐는 자리를 발끝에서 2.8칸까지로 줄였어요(`STAFF.FootMax` 3.4 → 2.8). 이제 발끝은 땅 위 약 0.06칸이에요.
+- 게임성 검수 10/11: 그 2.8칸은 기본 R15에만 맞아요. 이제 서버가 지팡이를 만들 때 **그 아바타 몸으로 손 높이를 재요** (`CharacterVisuals.staffHandHeight` = HipHeight + 뿌리 절반 + 뿌리→윗몸통 쉬는 자리 + 손잡이 높이 × 몸 비율). 발끝은 땅 위 0.08칸(`STAFF.FootGap`), 손은 막대의 50~80% 높이 안. 몸을 못 읽으면(R6·옷 모델) 옛 2.8칸. 시험: 기본·긴 다리·키 0.9(좁은 어깨)·키 1.05 아바타 모두 발끝 0.08~0.25칸. 쓰지 않던 `STAFF.Grip`·`FootMin`은 지움.
 
 ### 5-2. 찾은 참고
 | 무엇 | 숫자 | 출처 |
@@ -99,3 +101,8 @@
 - 지팡이: 구슬 포함 키의 0.85~1.0배, 구슬 ≈ 길이의 1/8, 쥐는 자리 = 발끝에서 약 2/3.
 - 활: 키의 0.6~0.95배(짧은 활 0.45~0.7배), 쥐는 자리 = 한가운데.
 - 대장장이 망치: 키의 0.4~0.5배, 머리 폭 ≈ 전체의 1/2, 쥐는 자리 = 자루 아래 1/4.
+
+### 5-5. 시험 빈 곳 메움 (게임성 검수 10/11)
+- 위팔: 한 손 쥐기마다 위팔 아래쪽 절반(가운데→팔꿈치)이 몸통·엉덩이 상자에서 0.15칸 이상 떨어져요(내린 팔은 0.22). 연금술사 플라스크 팔이 0.14로 옆구리에 붙어서 팔꿈치를 아래·바깥으로(`Pole` (1, -0.8, 0)) 돌려 0.19로 고쳤어요.
+- 두 손 간격: 한손 동작(빛·뿔 전사, 대장장이)의 모든 순간에 두 손 잡는 점이 1.2칸 이상 떨어져요(관절 각도로 손 위치를 계산; 같은 손잡이를 두 주먹이 같이 쥐면 약 1칸). 지금 가장 가까운 순간은 PaladinZ 1.75칸.
+- 대장장이 Q(`WarriorRelease`): 왼팔이 오른팔과 똑같이 머리 위로 올라가 두 손으로 쥔 것처럼 보였어요 → §1-9대로 왼팔은 앞 아래 받침 → 옆으로 균형.

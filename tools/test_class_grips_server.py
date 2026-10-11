@@ -35,7 +35,7 @@ def checks(cv: str, cfg: str) -> list[tuple[str, bool]]:
          and 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)' in cv),
         ("... and the old rule without a row", 'or ((Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon)' in cv),
         ("a SHAPES builder is used by its kind", "local shape = type(SHAPES) == \"table\" and SHAPES[kind] or nil" in cv
-         and "parts, main = shape(grip, sc, w, color, tier)" in cv),
+         and "parts, main = shape(grip, sc, w, color, tier, staffHand)" in cv),  # 게임성 검수 10/11: + the staff hand height
         ("both bows in the left hand", 'local left = kind == "Bow" or kind == "ShortBow"' in cv),
         ("both bows get the arrow muzzle", 'if kind == "Bow" or kind == "ShortBow" then' in cv),
         ("both bows publish the bow rest the archer pose reads (HandBowRest)", 'if kind == "Bow" or kind == "ShortBow" then -- both bows' in cv

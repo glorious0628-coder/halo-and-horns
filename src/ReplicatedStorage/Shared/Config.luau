@@ -5818,9 +5818,10 @@ Config.ClassGrips = {
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
-	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask)
+	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask).
+	-- 게임성 검수 10/11: the elbow bends down and out (Pole) - the default bend tucked the upper arm into the side
 	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0) },
+		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0), Pole = Vector3.new(1, -0.8, 0) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },

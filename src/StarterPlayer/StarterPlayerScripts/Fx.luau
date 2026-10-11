@@ -252,11 +252,16 @@ local MOTION = {
 			{ 0.48, "InOut", { Waist = { -4, 12, 2 }, Neck = { 2, -6, 0 }, RightShoulder = { 24, 0, -15 }, RightElbow = { 26, 0, 0 } } },
 			{ 0.68, "InOut", {} },
 		} },
-		WarriorRelease = { Len = 0.7, Keys = { -- overhead wind-up with the free arm balancing -> ground smash
+		-- the one-hand overhead smash (the Blacksmith's hammer Q; the class default): the right hand takes the tool back
+		-- over the shoulder, then down in a vertical arc in front. 게임성 검수 10/11 (A23-128 one hand): the free left arm
+		-- no longer mirrors it overhead (that read as the other hand on the tool too) - it steadies low in front on the wind-up and swings
+		-- out to the side for balance on the hit (references: a one-hand hammer swings vertically, head back over the
+		-- shoulder, the off hand a support or counterweight, never a second striking arm - grip_reference §1-9)
+		WarriorRelease = { Len = 0.7, Keys = {
 			{ 0, "Out", {} },
-			{ 0.16, "Out", { Waist = { 20, -10, 0 }, Neck = { -8, 6, 0 }, RightShoulder = { 168, 0, 12 }, RightElbow = { 95, 0, 0 }, RightWrist = { -100, 0, 0 }, LeftShoulder = { 160, 0, -12 }, LeftElbow = { 70, 0, 0 } } },
-			{ 0.24, "In", { Waist = { -32, 6, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 58, 0, -12 }, RightElbow = { 6, 0, 0 }, RightWrist = { -75, 0, 0 }, LeftShoulder = { 55, 0, 12 }, LeftElbow = { 12, 0, 0 } } },
-			{ 0.44, "Out", { Waist = { -26, 4, 0 }, Neck = { 15, 0, 0 }, RightShoulder = { 48, 0, -10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -58, 0, 0 }, LeftShoulder = { 45, 0, 10 }, LeftElbow = { 15, 0, 0 } } },
+			{ 0.16, "Out", { Waist = { 18, -10, 0 }, Neck = { -8, 6, 0 }, RightShoulder = { 168, 0, 12 }, RightElbow = { 95, 0, 0 }, RightWrist = { -100, 0, 0 }, LeftShoulder = { 40, 0, -20 }, LeftElbow = { 30, 0, 0 } } },
+			{ 0.24, "In", { Waist = { -30, 6, 0 }, Neck = { 18, 0, 0 }, RightShoulder = { 58, 0, -12 }, RightElbow = { 6, 0, 0 }, RightWrist = { -75, 0, 0 }, LeftShoulder = { 18, 0, -40 }, LeftElbow = { 20, 0, 0 } } },
+			{ 0.44, "Out", { Waist = { -24, 4, 0 }, Neck = { 15, 0, 0 }, RightShoulder = { 48, 0, -10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -58, 0, 0 }, LeftShoulder = { 20, 0, -34 }, LeftElbow = { 22, 0, 0 } } },
 			{ 0.7, "InOut", {} },
 		} },
 		MageSwing = { Len = 0.68, Keys = { -- left palm gathers; right wrist points the staff tip forward
@@ -4479,7 +4484,8 @@ function Fx.Animating(char)
 	return st ~= nil and Feel.Active[st] == true
 end
 
--- A23-108 two hands (WeaponPose: the Berserker's left hand on the great sword): the bow's two-bone arm solver, shared
+-- A23-108 (WeaponPose: OneHand / OffHand place the hands from the weapon / the body; TwoHand stays for a later two-hand
+-- weapon - A23-128 took the great sword away): the bow's two-bone arm solver, shared
 Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames
 
 function Fx.Init(registry)
