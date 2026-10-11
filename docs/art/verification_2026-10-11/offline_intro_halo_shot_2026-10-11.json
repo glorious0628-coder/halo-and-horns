@@ -1,0 +1,49 @@
+{
+  "checks": 7,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the old shot from the side",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "ends outside the gate",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "hits the passage ceiling",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "starts off the bridge",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the cut ignores HALO_SHOT",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "looks somewhere else",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the gold shard moved",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "flies away from the town",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Opening shot 3a through the new Halo gate (게임성 개발 1, 2026-10-11; A23-121, 검수 10/11: 이미지 생성 1's WorldKit\nblockout photos art/review/world/halo_v2/blockout/03_opening_start, 03b, 04), offline / static.\n\nReads the CURRENT Intro.luau: HALO_SHOT offsets from SPOT.Halo, the Halo cut uses them and still looks at SPOT.Halo,\nthe gold shard still starts at SPOT.Halo + (0, 55, 70). Geometry in world studs (halo_restart_2026-10-11.md fixed\npoints): the start hangs over Bridge_Halo (z -150..-330, deck y ~0.2, width 22) well above the deck; the end is\njust inside the gate (Gate_HaloTown z -330, passage 16 wide x 30 long = z -315..-345) toward the town; on every step\nthrough the passage the camera keeps to the middle (|x| <= 2) at 12..14 high; it moves toward the town. Mutations:\neach must be caught.",
+  "studioCalls": 0
+}
