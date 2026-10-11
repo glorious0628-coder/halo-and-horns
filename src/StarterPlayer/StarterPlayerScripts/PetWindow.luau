@@ -174,7 +174,8 @@ function PetWindow.Feed(uid)
 	return (pcall(remote.FireServer, remote, uid))
 end
 
-local function label(kit, parent, text, size, color, width)
+-- style = a UIKit text style (게임성 검수 10/12: the small lines took the UIKit floor like every other window's)
+local function label(kit, parent, text, size, color, width, style)
 	local l = Instance.new("TextLabel")
 	l.BackgroundTransparency = 1
 	l.Size = width or UDim2.new(1, 0, 0, 0)
@@ -187,6 +188,11 @@ local function label(kit, parent, text, size, color, width)
 	l.Text = text
 	l.LayoutOrder = kit.NextOrder()
 	l.Parent = parent
+	local ui = C and C.UIKit
+	if style and type(ui) == "table" and type(ui.StyleText) == "function" then
+		pcall(ui.StyleText, l, style)
+		l.TextColor3 = color
+	end
 	return l
 end
 
@@ -226,13 +232,16 @@ local function petRow(kit, parent, row)
 	f.BackgroundColor3 = kit.Palette.Button
 	f.BackgroundTransparency = row.Equipped and 0.45 or 0.65
 	f.BorderSizePixel = 0
-	f.Size = UDim2.new(1, 0, 0, T.Icon + 20 + (row.Feed and T.ButtonH + 4 or 0))
+	-- the row grows with its words / buttons (the styled lines and [Feed] made it taller than the icon)
+	f.Size = UDim2.new(1, 0, 0, T.Icon + 20)
+	f.AutomaticSize = Enum.AutomaticSize.Y
 	f.LayoutOrder = kit.NextOrder()
 	local corner = Instance.new("UICorner")
 	corner.CornerRadius = UDim.new(0, 12)
 	corner.Parent = f
 	local pad = Instance.new("UIPadding")
 	pad.PaddingLeft, pad.PaddingRight = UDim.new(0, 10), UDim.new(0, 10)
+	pad.PaddingTop, pad.PaddingBottom = UDim.new(0, 6), UDim.new(0, 6)
 	pad.Parent = f
 	list(f, 12, true)
 	f.Parent = parent
@@ -241,7 +250,8 @@ local function petRow(kit, parent, row)
 	local mid = Instance.new("Frame")
 	mid.Name = "Info"
 	mid.BackgroundTransparency = 1
-	mid.Size = UDim2.new(1, -(T.Icon + T.ButtonW + 24), 1, -12)
+	mid.Size = UDim2.new(1, -(T.Icon + T.ButtonW + 24), 0, 0)
+	mid.AutomaticSize = Enum.AutomaticSize.Y
 	mid.LayoutOrder = kit.NextOrder()
 	list(mid, 4)
 	mid.Parent = f
@@ -251,8 +261,8 @@ local function petRow(kit, parent, row)
 	name.TextTruncate = Enum.TextTruncate.AtEnd
 	local line = string.format(T.Text.Level, row.Lv)
 	if row.Speed > 0 then line ..= " · " .. string.format(row.Equipped and T.Text.Speed or T.Text.SpeedRest, row.Speed) end
-	label(kit, mid, line, 16, kit.Theme.SubText)
-	if row.Roll then label(kit, mid, string.format(T.Text.Born, row.Roll), 15, kit.Theme.SubText) end
+	label(kit, mid, line, 16, kit.Theme.SubText, nil, "Body")
+	if row.Roll then label(kit, mid, string.format(T.Text.Born, row.Roll), 16, kit.Theme.SubText, nil, "Body") end
 	if row.XP ~= nil or row.Max then
 		local ui = C and C.UIKit
 		if type(ui) == "table" and type(ui.Bar) == "function" then
@@ -270,12 +280,13 @@ local function petRow(kit, parent, row)
 	local right = Instance.new("Frame")
 	right.Name = "Actions"
 	right.BackgroundTransparency = 1
-	right.Size = UDim2.new(0, T.ButtonW, 1, -12)
+	right.Size = UDim2.new(0, T.ButtonW, 0, 0)
+	right.AutomaticSize = Enum.AutomaticSize.Y
 	right.LayoutOrder = kit.NextOrder()
 	list(right, 4)
 	right.Parent = f
 	if row.Equipped then
-		local tag = label(kit, right, T.Text.Following, 15, kit.Theme.Gold)
+		local tag = label(kit, right, T.Text.Following, 16, kit.Theme.Gold, nil, "Body")
 		tag.TextXAlignment = Enum.TextXAlignment.Center
 	end
 	local text, uid, color = nil, nil, nil

@@ -1,5 +1,5 @@
 {
-  "checks": 20,
+  "checks": 22,
   "failed": 0,
   "mutations": [
     {
@@ -49,6 +49,21 @@
     },
     {
       "name": "the treat count never updates",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the small lines below the UIKit floor",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a styled line loses its colour",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the row keeps the icon's height",
       "applied": true,
       "caught": true
     },

@@ -120,6 +120,7 @@ local UIKit = {
 		local b = { ClassName = "Frame", Name = props.Name, Text = props.Text, Label = label }
 		return b, function(f) b.Fill = f end, label
 	end,
+	StyleText = function(l, style) l.Style = style; l.TextColor3 = "styled" end,
 }
 PetWindow.Init({ Panels = panels, UIKit = UIKit })
 PetWindow.Start()
@@ -177,6 +178,18 @@ check(has(texts(), "Born with +7% speed") and not has(texts(), "Born with +0% sp
 local bornCount = 0
 for _, s in texts() do if string.find(s, "Born with", 1, true) then bornCount += 1 end end
 check(bornCount == 1, "no line for a pet without a roll", bornCount)
+-- 게임성 검수 10/12: the small lines take the UIKit text floor (style Body) and keep their colour; the rows grow with them
+local styled, rowsAuto = {}, true
+for _, o in made do
+	if o.ClassName == "TextLabel" and (string.find(o.Text or "", "Born with", 1, true) or string.find(o.Text or "", "Walk speed", 1, true)
+		or o.Text == "Following you") then
+		table.insert(styled, (o.Style == "Body" and o.TextColor3 ~= "styled") and "ok" or tostring(o.Style))
+	end
+	if o.ClassName == "Frame" and o.Name and string.sub(o.Name, 1, 4) == "Pet_" and o.AutomaticSize ~= "AutomaticSize.Y" then rowsAuto = false end
+end
+check(#styled == 3 and not table.find(styled, "nil") and not table.find(styled, "Body"), "the level, born and following lines: style Body, own colour",
+	table.concat(styled, ","))
+check(rowsAuto, "a pet row grows with its lines and buttons")
 
 -- 2. research off: no feed button
 check(btnNamed("Feed") == nil and rows[1].Feed == nil, "research off (Config.Features.Research): no [Feed]")

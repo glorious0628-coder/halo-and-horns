@@ -37,7 +37,8 @@ MUTATIONS = [
      "Equipped = on, Speed = math.floor(Config.PetSpeedBonus(sp, lv) * 100 + 0.5), Roll = roll,"),
     ("PET", "the follower's PetRoll ignored", "\t\t\tlocal roll = rollOf(ctx.PetRoll)\n", "\t\t\tlocal roll = nil\n"),
     ("PET", "a roll of 0 counts", "return n > 0 and math.floor(n) or nil", "return math.floor(n)"),
-    ("PET", "no born line", "\tif row.Roll then label(kit, mid, string.format(T.Text.Born, row.Roll), 15, kit.Theme.SubText) end\n", ""),
+    ("PET", "no born line",
+     "\tif row.Roll then label(kit, mid, string.format(T.Text.Born, row.Roll), 16, kit.Theme.SubText, nil, \"Body\") end\n", ""),
     ("PET", "a PetRoll change keeps the old window", "PetLv = true, PetRoll = true,", "PetLv = true,"),
     ("PET", "feed while research is off", "return type(Config.FeatureOn) == \"function\" and Config.FeatureOn(\"Research\") == true and R ~= nil",
      "return R ~= nil"),
@@ -46,6 +47,10 @@ MUTATIONS = [
     ("PET", "feed twice within the gap", "or not feedOn() or os.clock() - S.FeedAt < T.Gap then return false end",
      "or not feedOn() then return false end"),
     ("PET", "the treat count never updates", "\t\tshown = n\n\t\tPetWindow.PaintFeeds(n)\n", "\t\tshown = n\n"),
+    ("PET", "the small lines below the UIKit floor", "\tlabel(kit, mid, line, 16, kit.Theme.SubText, nil, \"Body\")\n",
+     "\tlabel(kit, mid, line, 16, kit.Theme.SubText)\n"),
+    ("PET", "a styled line loses its colour", "\t\tpcall(ui.StyleText, l, style)\n\t\tl.TextColor3 = color\n", "\t\tpcall(ui.StyleText, l, style)\n"),
+    ("PET", "the row keeps the icon's height", "\tf.AutomaticSize = Enum.AutomaticSize.Y\n", ""),
     ("PET", "the live count turns the top level on", "kit.SetEnabled(f.Button, n >= 1 and not f.Max)", "kit.SetEnabled(f.Button, n >= 1)"),
 ]
 
