@@ -28,7 +28,7 @@
 | A74-01 | 프롤로그 검은 띠 없앰(PC·폰) | ◐ | 코드는 들어갔습니다(IntroBars 0). 사진은 PC만 있고, 폰은 20:56 로그(bars=[])뿐입니다 | 개발 1 (폰 사진) |
 | A74-02 | 한국어 팀 알림 → 영어 | ◐ | 코드와 인스턴스는 들어갔습니다(HookTeamLine, ChatLocalization []). cf78a4d 뒤에 한국어 로케일로 Play해서 확인한 기록이 없습니다 | 개발 1 |
 | A74-08 | 미니맵이 이동 방향으로 돎 | ◐ | A23-66 코드는 있습니다. 하지만 A74-03(카메라가 등 뒤로) 조건이 빠졌고, 16:24 뒤 PC·폰 사진이 없습니다 | 개발 1 |
-| D71-02 | 첫 스킬 뒤에만 자동 전투, 배운 스킬만 사용 | ◐ | 코드는 들어갔습니다(SkillService 잠금, S0 SkillHit). Lv5 Play 확인은 당시 개발 1 인계(10/11 정리로 지운 dev1_handoff_2026-10-07.md)에 남아 있었습니다 | 개발 1 |
+| D71-02 | 첫 스킬 뒤에만 자동 전투, 배운 스킬만 사용 | ◐ | 코드는 들어갔습니다(SkillService 잠금, S0 SkillHit). Lv5 Play 확인은 당시 개발 1 인계(dev1_handoff_2026-10-07.md, 기록)에 남아 있었습니다 | 개발 1 |
 | SND-02 | 새 효과음 업로드·연결표 전달 | ◐ | 57개 가운데 30개만 Config에 연결됐습니다. SkillLearn·GooseArrive·Spend·RankUp은 아직 ""입니다. md에도 "연결은 나중"으로 적혀 있습니다 | 개발 1 (서버 이벤트는 개발 2) |
 | X-PLACE | place/ = build/ (AGENTS 규칙 3) | ❌ | place/는 14:06본입니다. 스크립트 88/105만 origin/main과 같고 FountainFx가 없습니다. WorldKit3D는 20개이고 MeadowKit과 새 지형이 없습니다 | 개발 1 |
 
