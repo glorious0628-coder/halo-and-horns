@@ -42,6 +42,17 @@
     25
    ],
    "use": "이미지 개발 10/11 gold test (art/review/imgdev/gold_trim_test_2026-10-11.jpg): metal 1 reflected the blue sky -> olive; now metalness 0.7 (Halo_GoldTest_metal70) + roughness 0.35 (Halo_GoldTest_rough35), flat normal; gold parts Color (255,175,25) (was 240,186,56; R:G 1.24-1.28 on screen vs the 2D 1.33). Alternative J (255,160,20) = more amber. Old maps: rough 82910627301523, metal 91394364117916."
+  },
+  {
+   "name": "HH_Fabric",
+   "base": "Fabric",
+   "studsPerTile": 2,
+   "pattern": "Regular",
+   "source": "tools/fabric_weave_maps.py -> art/ui/halo_tile/fabric/Halo_Fabric_{color,normal,rough}.png (이미지 개발 10/11: Enum.Material.Fabric's own albedo is dark grey and ignores Part.Color; this near-white plain weave takes the part colour)",
+   "color": "rbxassetid://117704901835962",
+   "normal": "rbxassetid://102973991596175",
+   "rough": "rbxassetid://138111432038584",
+   "use": "cloth parts: Material Fabric + MaterialVariant HH_Fabric + Part.Color. NOT yet applied in the main place (needs 검수 OK after the WorldKit photo)."
   }
  ]
 }

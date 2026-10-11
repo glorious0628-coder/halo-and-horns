@@ -1093,5 +1093,8 @@
   "Halo_GoldTest_rough45": "rbxassetid://126170707480354",
   "Halo_GoldTest_roughvar": "rbxassetid://134307597496156",
   "Halo_GoldTest_metal50": "rbxassetid://137160255192059",
-  "Halo_GoldTest_metal70": "rbxassetid://139091750772198"
+  "Halo_GoldTest_metal70": "rbxassetid://139091750772198",
+  "Halo_Fabric_color": "rbxassetid://117704901835962",
+  "Halo_Fabric_normal": "rbxassetid://102973991596175",
+  "Halo_Fabric_rough": "rbxassetid://138111432038584"
 }
