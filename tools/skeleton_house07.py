@@ -109,9 +109,9 @@ V = [(CX - HF, YF), (CX - XS, YD1), (CX - XS, YD2), (CX - HB, YB), (CX + HB, YB)
 EDGES = [  # (name, from, to, windows as u fractions)
     ("WallFrontLeft", V[0], V[1], [0.5]),
     ("WallLeft", V[1], V[2], [0.5]),
-    ("WallBackLeft", V[2], V[3], []),
+    ("WallBackLeft", V[2], V[3], [0.5]),
     ("WallBack", V[3], V[4], [0.3, 0.7]),
-    ("WallBackRight", V[4], V[5], []),
+    ("WallBackRight", V[4], V[5], [0.5]),
     ("WallRight", V[5], V[6], [0.5]),
     ("WallFrontRight", V[6], V[7], [0.5]),
     ("WallFront", V[7], V[0], []),  # the door (this edge runs +x -> -x)
@@ -155,9 +155,12 @@ class Wall:
             add("%s%d" % (nm, k), (seg_len, w, depth), c, tan, d, mat)
 
     def quatrefoil(self, nm, uc, zc, s=1.0):
+        """raised medallion (검수 v4: no flat stickers): gold rim lip, marble boss 0.26 out, gold quatrefoil 0.2 more"""
+        disk(nm + "_Rim", 1.3 * s, 0.14, self.at(uc, zc, 0.07), self.n)
+        disk(nm + "_Boss", 1.1 * s, 0.26, self.at(uc, zc, 0.13), self.n, "marble")
         for k, (du, dz) in enumerate(((1, 0), (-1, 0), (0, 1), (0, -1))):
-            disk("%s_Lobe%d" % (nm, k), 0.46 * s, 0.14, self.at(uc + du * 0.27 * s, zc + dz * 0.27 * s, 0.07), self.n)
-        disk(nm + "_Core", 0.36 * s, 0.2, self.at(uc, zc, 0.1), self.n)
+            disk("%s_Lobe%d" % (nm, k), 0.42 * s, 0.2, self.at(uc + du * 0.25 * s, zc + dz * 0.25 * s, 0.36), self.n)
+        disk(nm + "_Core", 0.34 * s, 0.3, self.at(uc, zc, 0.41), self.n)
 
 
 walls = {}
@@ -195,27 +198,30 @@ def window(w, nm, uc):
         w.slab(nm + "_Jamb" + side, min(u0, u0 + sg * g), max(u0, u0 + sg * g), WIN_Z0 - 0.1, sp, T + 0.3, 0.15, "gold")
     w.arc(nm + "_FrameArc", uc, sp, r, g, T + 0.3, 0.15, 9, "gold")
     w.arc(nm + "_Hood", uc, sp, r + g - 0.02, 0.3, T + 0.45, 0.32, 9, "marble")
-    w.slab(nm + "_Key", uc - 0.24, uc + 0.24, sp + r + g + 0.05, sp + r + g + 0.7, 0.75, 0.5, "gold")
+    w.slab(nm + "_Key", uc - 0.26, uc + 0.26, sp + r + g + 0.05, sp + r + g + 0.75, 0.8, 0.45, "gold")   # keystone + a cap
+    w.slab(nm + "_KeyCap", uc - 0.36, uc + 0.36, sp + r + g + 0.75, sp + r + g + 0.92, 0.95, 0.6, "gold")
     w.slab(nm + "_Sill", uc - r - 0.4, uc + r + 0.4, WIN_Z0 - 0.3, WIN_Z0, 0.75, 0.35, "gold")
     w.slab(nm + "_SillStone", uc - r - 0.28, uc + r + 0.28, WIN_Z0 - 0.7, WIN_Z0 - 0.3, 0.55, 0.25, "marble")
     w.slab(nm + "_BarV", uc - 0.05, uc + 0.05, WIN_Z0, sp + r, 0.08, -0.06, "gold")
     w.slab(nm + "_BarH", uc - r, uc + r, sp - 0.05, sp + 0.05, 0.08, -0.06, "gold")
 
 
-med_s = min(1.15, (Z1 - FRZ1 - 0.35) / 1.05)
+med_s = min(1.0, (Z1 - FRZ1 - 0.12) / 1.3)
+MEDALS = ("WallFrontLeft", "WallFrontRight", "WallLeft", "WallRight", "WallBack")   # as in the 2D: a few, between the windows
 for name, p0, p1, wins in EDGES:
     w = walls[name]
     for k, f in enumerate(wins):
         window(w, "%s_Win%d" % (name, k), f * w.L)
-    if name != "WallFront":
+    if name in MEDALS:
         zc = (FRZ1 + Z1) / 2
         w.quatrefoil(name + "_Medal", w.L / 2, zc, med_s)
         u0, u1, z0, z1, b = 0.95, w.L - 0.95, FRZ1 + 0.15, Z1 - 0.12, 0.16   # raised marble panel around the medallion
-        if z1 - z0 > 1.0:
+        if z1 - z0 > 1.3 * med_s + 0.4:
             w.slab(name + "_PanelB", u0, u1, z0, z0 + b, 0.3, 0.12)
             w.slab(name + "_PanelT", u0, u1, z1 - b, z1, 0.3, 0.12)
             w.slab(name + "_PanelL", u0, u0 + b, z0 + b, z1 - b, 0.3, 0.12)
             w.slab(name + "_PanelR", u1 - b, u1, z0 + b, z1 - b, 0.3, 0.12)
+    if name != "WallFront":
         # impost band: one gold line on the window springs, broken only by the window frames (the pilasters cover the corners)
         u = 0.0
         for g0, g1 in sorted(win_gaps[name]) + [(w.L, w.L)]:
