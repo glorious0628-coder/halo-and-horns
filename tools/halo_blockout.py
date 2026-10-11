@@ -7,6 +7,7 @@ Reads docs/design/halo_plan_v2_2026-10-11.json and rasterizes it on a 4-stud gri
   * roads: the road's own height profile (heights at its points, linear in between) -> ramps; cells steeper than 24 deg
     are marked as stairs (Slate) so the photos show where real stairs must go
   * the stream: a channel 2 below its own falling profile, filled with water; pools; the sea outside the land
+  * the underside: per cell a rock depth (cone from the sea ring's outer rim + hashed stalactites) -> data "und"
 Then writes build/wk/halo_blockout_apply.lua = tools/worldkit/halo_blockout.luau with the data filled in.
 usage: py tools/halo_blockout.py [--mode apply|remove|plan] [--offset X,Z]
 """
@@ -39,6 +40,79 @@ PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fo
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
 CLIFF_Z = -760  # rock lip on the south shore
 SEA_R = 5  # sea ring width in cells (20 studs) round the coast
+# pointed floating-rock underside (10/11 검수): per cell the rock depth in studs that hangs below the ground / ring floor
+UND_K = 0.9  # depth = edge distance (studs) * UND_K (a cone), +-UND_JIT random shake
+UND_MAX = 70  # cone cap in studs
+UND_JIT = 0.15
+UND_STAL_P = 0.045  # a cell is a stalactite when its hash is below this ...
+UND_STAL_MIN_D = 24  # ... and it is farther than this (studs) from the edge
+UND_STAL_ADD = (10, 28)  # stalactite adds 10..28 studs; the 4 neighbours get UND_STAL_NB of that
+UND_STAL_NB = 0.4
+UND_CAP = UND_MAX + 28  # hard cap (studs)
+UND_UNIT = 2  # one ALPH char = 2 studs of depth (the Luau reads D.und_unit)
+
+
+def hash01(r, c, seed):
+    """deterministic integer hash of a cell -> 0..1 (no random module)"""
+    n = ((r + 1) * 73856093) ^ ((c + 1) * 19349663) ^ ((seed + 1) * 83492791)
+    n &= 0xFFFFFFFF
+    n ^= n >> 13
+    n = (n * 0x5BD1E995) & 0xFFFFFFFF
+    n ^= n >> 15
+    n = (n * 0x27D4EB2D) & 0xFFFFFFFF
+    n ^= n >> 16
+    return n / 4294967296.0
+
+
+def underside(active, rows, cols):
+    """UND[r][c] = rock depth in studs under every active cell (0 for inactive cells). Edge distance = chamfer distance
+    (orthogonal 1, diagonal 1.4142 cells) from the nearest inactive cell / the grid border; a cell next to the edge is 0.5 cell
+    from it."""
+    import heapq
+    dist = [[math.inf] * cols for _ in range(rows)]
+    pq = []
+    for r in range(rows):
+        for c in range(cols):
+            if not active[r][c]:
+                dist[r][c] = 0.0
+                pq.append((0.0, r, c))
+            elif r in (0, rows - 1) or c in (0, cols - 1):
+                dist[r][c] = 1.0  # the grid border counts as an edge
+                pq.append((1.0, r, c))
+    heapq.heapify(pq)
+    while pq:
+        dd, r, c = heapq.heappop(pq)
+        if dd > dist[r][c]:
+            continue
+        for dr in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                rr, cc = r + dr, c + dc
+                if (dr or dc) and 0 <= rr < rows and 0 <= cc < cols:
+                    nd = dd + (1.4142 if dr and dc else 1.0)
+                    if nd < dist[rr][cc]:
+                        dist[rr][cc] = nd
+                        heapq.heappush(pq, (nd, rr, cc))
+    und = [[0.0] * cols for _ in range(rows)]
+    extra = [[0.0] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            if not active[r][c]:
+                continue
+            d_st = (dist[r][c] - 0.5) * CELL
+            base = min(UND_MAX, d_st * UND_K) * (1.0 + UND_JIT * (2.0 * hash01(r, c, 1) - 1.0))
+            und[r][c] = base
+            if hash01(r, c, 2) < UND_STAL_P and d_st > UND_STAL_MIN_D:
+                add = UND_STAL_ADD[0] + (UND_STAL_ADD[1] - UND_STAL_ADD[0]) * hash01(r, c, 3)
+                extra[r][c] += add
+                for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    rr, cc = r + dr, c + dc
+                    if 0 <= rr < rows and 0 <= cc < cols and active[rr][cc]:
+                        extra[rr][cc] += add * UND_STAL_NB
+    for r in range(rows):
+        for c in range(cols):
+            if active[r][c]:
+                und[r][c] = max(0.0, min(UND_CAP, und[r][c] + extra[r][c]))
+    return und
 
 
 def inside(pt, poly):
@@ -370,10 +444,17 @@ def main():
     with open(os.path.join(ROOT, "art", "review", "world", "halo_v2", "walk_times.json"), "w", encoding="utf-8") as f:
         json.dump(dict(speed=16, note="seconds along the walkable terrain grid (blockout raster)", walk=walk), f, ensure_ascii=False, indent=1)
 
+    # pointed rock underside: depth under every cell that is land or inside the sea ring (SEA_TIER != 4)
+    active = [[MAT[r][c] != "sea" or SEA_TIER[r][c] != 4 for c in range(cols)] for r in range(rows)]
+    UND = underside(active, rows, cols)
+    und_max = max(max(row) for row in UND)
+    print(f"[blockout] underside depth max {und_max:.1f} studs (cap {UND_CAP}), unit {UND_UNIT}")
+
     # encode
-    hrows, mrows = [], []
+    hrows, mrows, urows = [], [], []
     for r in range(rows):
         hs, ms = [], []
+        urows.append("".join(ALPH[min(len(ALPH) - 1, int(round(UND[r][c] / UND_UNIT)))] for c in range(cols)))
         for c in range(cols):
             if MAT[r][c] == "sea":
                 hs.append(ALPH[SEA_TIER[r][c]])  # 0 deep sea, 1 sand shelf off the north beach, 2 cliff foot
@@ -387,7 +468,7 @@ def main():
         mrows.append("".join(ms))
 
     ox, oz = (float(v) for v in a.offset.split(","))
-    data = dict(cell=CELL, x0=X0, z0=Z0, cols=cols, rows=rows, hoff=HOFF, alph=ALPH, h=hrows, m=mrows, box=[X0, X1, Z0, Z1],
+    data = dict(cell=CELL, x0=X0, z0=Z0, cols=cols, rows=rows, hoff=HOFF, alph=ALPH, h=hrows, m=mrows, und=urows, und_unit=UND_UNIT, box=[X0, X1, Z0, Z1],
                 offset=[ox, oz], buildings=plan["buildings"], bridges=plan["bridges"], roads=[
                     dict(id=r["id"], pts=r["pts"], w=r["w"]) for r in plan["roads"] if r["id"] in ("main", "loop", "plaza_castle")],
                 falls=plan["water"]["falls"], pools=plan["water"]["pools"],
