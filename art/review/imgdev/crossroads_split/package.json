@@ -1,0 +1,42 @@
+{
+ "X_GooseNest": {
+  "sheet": "art/review/imgdev/crossroads_split/X_GooseNest.jpg",
+  "mode": "maps",
+  "tris": 9204,
+  "tiles": 1,
+  "maps": [
+   "C",
+   "M",
+   "N",
+   "R"
+  ],
+  "normal": "own (Tripo) + per-material detail (img1 recipe)",
+  "two_d": "art/out/hq/HQ_X_GooseNest.png",
+  "crops": [
+   [
+    768,
+    448
+   ],
+   [
+    832,
+    704
+   ],
+   [
+    320,
+    576
+   ],
+   [
+    1024,
+    1152
+   ]
+  ],
+  "seams": [],
+  "bundle": null,
+  "sa_files": {
+   "C": "art/ui/sa_crossroads/X_GooseNest_C.png",
+   "N": "art/ui/sa_crossroads/X_GooseNest_N.png",
+   "M": "art/ui/sa_crossroads/X_GooseNest_M.png",
+   "R": "art/ui/sa_crossroads/X_GooseNest_R.png"
+  }
+ }
+}
