@@ -14,7 +14,9 @@ if MODE ~= "plan" and MODE ~= "remove" then MODE = "apply" end
 local STREAK = "rbxassetid://111806947888357" -- art/ui/Halo_WaterfallStreaks.png (Firefly High, alpha from brightness: tools/streak_alpha.py)
 local CFG = {
 	Half = 4, -- the terrain sheet half width (halo_terrain CAS.Half)
-	Lip = 0.6, -- studs in front of the terrain water face
+	Lip = 0.6, -- studs out from the sheet top where the strip starts
+	Walk = 14, -- how far out (studs) to look for the landing
+	Lift = 0.25, -- strip height above the water surface
 	Speed = 1.4, -- beam texture speed (studs / s, downward)
 	Length = 7, -- beam texture length (studs per repeat)
 	Mist = { Rate = 14, Life = NumberRange.new(1.2, 2.0), Size = 3.2, Speed = NumberRange.new(1.5, 3) },
@@ -51,23 +53,34 @@ local rp = RaycastParams.new()
 rp.FilterType = Enum.RaycastFilterType.Exclude
 rp.FilterDescendantsInstances = { folder }
 rp.IgnoreWater = true
+local rpw = RaycastParams.new()
+rpw.FilterType = Enum.RaycastFilterType.Exclude
+rpw.FilterDescendantsInstances = { folder }
+rpw.IgnoreWater = false
 local made = 0
 for _, s in sheets do
 	local out = Vector3.new(s.dx, 0, s.dz).Unit
 	local side = Vector3.new(-out.Z, 0, out.X)
-	local lip = Vector3.new(s.x, s.top, s.z) + out * CFG.Lip
-	-- where the sheet lands: the ground / pool floor under a point just out from the lip, then the water surface above it
-	local hit = workspace:Raycast(lip + out * 1.5 + Vector3.new(0, 1, 0), Vector3.new(0, -80, 0), rp)
-	local floorY = hit and hit.Position.Y or (s.top - 8)
-	local waterHit = workspace:Raycast(lip + out * 1.5 + Vector3.new(0, 1, 0), Vector3.new(0, -80, 0), (function()
-		local p = RaycastParams.new()
-		p.FilterType = Enum.RaycastFilterType.Exclude
-		p.FilterDescendantsInstances = { folder }
-		p.IgnoreWater = false
-		return p
-	end)())
-	local landY = waterHit and math.max(waterHit.Position.Y, floorY) or floorY
-	if s.top - landY < 1.5 then continue end
+	-- the terrain sheets are sloped water ramps (~6 studs out from the top), not vertical walls: walk outward along the
+	-- water surface (ground where there is no water) and land where it stops dropping
+	local base = Vector3.new(s.x, s.top, s.z)
+	local function surfY(d)
+		local p = base + out * d + Vector3.new(0, 1.5, 0)
+		local h = workspace:Raycast(p, Vector3.new(0, -80, 0), rpw)
+		return h and h.Position.Y or (s.top - 80)
+	end
+	local lipY = surfY(CFG.Lip)
+	local landD, landY = CFG.Lip, lipY
+	for d = CFG.Lip + 0.5, CFG.Walk, 0.5 do
+		local y = surfY(d)
+		if y > landY - 0.15 then
+			if landY < lipY - 1 then break end -- already dropped and now flat / rising: this is the pool
+		else
+			landD, landY = d, y
+		end
+	end
+	if lipY - landY < 1.5 then continue end
+	local lip = base + out * CFG.Lip + Vector3.new(0, lipY - s.top + CFG.Lift, 0)
 
 	local holder = Instance.new("Part")
 	holder.Name = "Fall_" .. s.name
@@ -77,14 +90,18 @@ for _, s in sheets do
 	holder.CFrame = CFrame.new(lip)
 	holder:SetAttribute("Why", "흐르는 폭포 물줄기·물보라(규칙 3, A23-120)")
 	holder.Parent = folder
+	local foot = base + out * landD + Vector3.new(0, landY - s.top + CFG.Lift, 0)
+	-- the strip lies on the sloped water: X = across the fall (width), Y = the surface normal
+	local down = (foot - lip).Unit
+	local normal = side:Cross(down).Unit
+	if normal.Y < 0 then normal = -normal end
 	local a0 = Instance.new("Attachment")
 	a0.Name = "Top"
-	a0.WorldCFrame = CFrame.lookAt(lip, lip + out) -- the attachment's look = outward: the beam plane faces out (FaceCamera off)
+	a0.WorldCFrame = CFrame.fromMatrix(lip, side, normal)
 	a0.Parent = holder
 	local a1 = Instance.new("Attachment")
 	a1.Name = "Bottom"
-	local foot = Vector3.new(lip.X, landY + 0.3, lip.Z) + out * 0.8
-	a1.WorldCFrame = CFrame.lookAt(foot, foot + out)
+	a1.WorldCFrame = CFrame.fromMatrix(foot, side, normal)
 	a1.Parent = holder
 	if STREAK ~= "" then
 		local b = Instance.new("Beam")
