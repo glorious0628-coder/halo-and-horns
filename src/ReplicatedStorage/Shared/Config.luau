@@ -48,6 +48,10 @@ function Config.Plural(text)
 	return text
 end
 
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-1): words of the shared L10n module. Join = the
+-- separator of a list message { Join = { msg, ... } } (reward lists), key "Config.L10n.Join"
+Config.L10n = { Join = " · ", JoinEn = " · " }
+
 ----------------------------------------------------------------- player / data
 Config.Player = {
 	WalkSpeed = 20,

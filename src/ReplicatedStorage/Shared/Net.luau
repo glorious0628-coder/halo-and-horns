@@ -139,6 +139,26 @@ function Net.NotifyAll(text, kind, duration, sound)
 	Net.Get("Notify"):FireAllClients({ Text = text, Kind = kind or "announce", Duration = duration, Sound = sound })
 end
 
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-3): a keyed line { Key, Args, Named } that every client
+-- writes in its own language (L10n.Msg); Text = the English copy (old clients / logs; a client with Key never uses it).
+-- args = array (pre-formatted numbers as strings, §4), named = { Unit = ..., ... }. In Studio an unknown key errors.
+local function keyPayload(key, args, named, kind, duration, sound)
+	local L10n = require(script.Parent:WaitForChild("L10n"))
+	if RunService:IsStudio() and (type(key) ~= "string" or L10n.Get(key, "en") == key) then
+		error("Net.NotifyKey: unknown text key " .. tostring(key), 3)
+	end
+	return { Key = key, Args = args, Named = named, Kind = kind, Duration = duration, Sound = sound,
+		Text = L10n.Msg({ Key = key, Args = args, Named = named }, "en") }
+end
+
+function Net.NotifyKey(player, key, args, kind, duration, sound, named)
+	Net.Get("Notify"):FireClient(player, keyPayload(key, args, named, kind or "info", duration, sound))
+end
+
+function Net.NotifyAllKey(key, args, kind, duration, sound, named)
+	Net.Get("Notify"):FireAllClients(keyPayload(key, args, named, kind or "announce", duration, sound))
+end
+
 -- player == nil -> FireAllClients
 function Net.Fx(player, kind, data)
 	if player then
