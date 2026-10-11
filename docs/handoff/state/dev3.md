@@ -22,7 +22,8 @@
   - 됨 7ac7dad5: 연구력 `TamerService`(조련사 처치 → 가족 점수, Config.MonsterFamily·ResearchStage, 단계 알림 키 + StageUp, TamerInfo, AddSummon), 스위치 `Config.Features.Research = false`. test_tamer_research 52·26/26.
   - 됨 3f58ecdb: 소환 S1(Kind "Pet", 무작위 5~8 + 망치질, 최대 10 — 검수 OK)·간식 T1(Jelly 5 + Petal 2 → 3)·FeedPet(+20)·PetService 4개(개발 2 합의, 개발 2 읽어 확인 대기)·행운 물약 Source 없는 재료만(88d53831). 설계 §7.
   - dev3-alchemy ba91630f: test_gamepass 고침(CraftService는 제작 XP 줄에서만 XP2 패스) → dev3-craft2·dev3-tamer에 merge로 받음.
-  - 클라 남은 것(개발 4·1): PetWindow Roll 속도 숫자, 연구 창, 소환 결과, 간식 버튼.
+  - 8e67dbcf 간식 재료 = Jelly 5 + Herb 2(검수). f8dc5efc 개발 2 M1·L1(소환 펫은 선물·이야기 펫 아님, giveXP 주석). 개발 2 PetService 확인 통과.
+  - 클라 남은 것(개발 4·1, 검수가 나눔): PetWindow Roll 속도 숫자, 연구 창, 소환 결과, 간식 버튼.
   - 다음: ⑥ 방어구·반지·펫 장비 칸(Gear, 전투력, 펫 장비 = 조련사).
 
 ## 다음 (04_dev3.md 순서)
