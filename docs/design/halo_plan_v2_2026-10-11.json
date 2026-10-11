@@ -4149,7 +4149,186 @@
   "paving_share": 0.189,
   "mirror_pairs": 0,
   "issues": [],
-  "land_area": 265020
+  "land_area": 265020,
+  "front_sun": {
+   "note": "앞면 햇빛 %: 낮 7-17시 중 앞면이 해를 직접 받는 몫(n·s > 0.05, 다른 건물·높은 땅 그림자 뺌, 앞면 9점 평균). 세기 %: 하루 평균 n·s(100 = 하루 종일 해를 정면으로). 위도 35(WarService), 해는 늘 +z(북, 성문 쪽)로 11.5° 기움 → -z(남)를 보는 면은 직접 해 0. 성문은 안쪽 면(마을이 보는 면).",
+   "by_building": {
+    "Gate": {
+     "front_lit_pct": 0,
+     "strength_pct": 0,
+     "main": true,
+     "face": "남(안쪽)"
+    },
+    "Tower_GateEast": {
+     "front_lit_pct": 32,
+     "strength_pct": 9,
+     "main": true,
+     "face": "남서"
+    },
+    "Shop_Potion": {
+     "front_lit_pct": 53,
+     "strength_pct": 22,
+     "main": true,
+     "face": "북서"
+    },
+    "Shop_Bakery": {
+     "front_lit_pct": 24,
+     "strength_pct": 6,
+     "main": true,
+     "face": "남서"
+    },
+    "Shop_Juice": {
+     "front_lit_pct": 41,
+     "strength_pct": 28,
+     "main": true,
+     "face": "서"
+    },
+    "Shop_Flower": {
+     "front_lit_pct": 50,
+     "strength_pct": 25,
+     "main": true,
+     "face": "북동"
+    },
+    "House_Hill1": {
+     "front_lit_pct": 41,
+     "strength_pct": 16,
+     "main": false,
+     "face": "남동"
+    },
+    "House_Hill2": {
+     "front_lit_pct": 44,
+     "strength_pct": 25,
+     "main": false,
+     "face": "서"
+    },
+    "House_Hill3": {
+     "front_lit_pct": 90,
+     "strength_pct": 20,
+     "main": false,
+     "face": "북"
+    },
+    "Armory": {
+     "front_lit_pct": 41,
+     "strength_pct": 16,
+     "main": true,
+     "face": "남동"
+    },
+    "Castle": {
+     "front_lit_pct": 66,
+     "strength_pct": 21,
+     "main": true,
+     "face": "북"
+    },
+    "Cathedral": {
+     "front_lit_pct": 100,
+     "strength_pct": 20,
+     "main": true,
+     "face": "북"
+    },
+    "House_Cliff1": {
+     "front_lit_pct": 31,
+     "strength_pct": 13,
+     "main": false,
+     "face": "남서"
+    },
+    "House_Cliff2": {
+     "front_lit_pct": 28,
+     "strength_pct": 9,
+     "main": false,
+     "face": "남서"
+    },
+    "House_Cliff3": {
+     "front_lit_pct": 41,
+     "strength_pct": 28,
+     "main": false,
+     "face": "동"
+    },
+    "House_Cliff4": {
+     "front_lit_pct": 53,
+     "strength_pct": 22,
+     "main": false,
+     "face": "북서"
+    },
+    "House_Cliff5": {
+     "front_lit_pct": 47,
+     "strength_pct": 28,
+     "main": false,
+     "face": "북동"
+    },
+    "House_Garden1": {
+     "front_lit_pct": 28,
+     "strength_pct": 9,
+     "main": false,
+     "face": "남동"
+    },
+    "House_Garden2": {
+     "front_lit_pct": 13,
+     "strength_pct": 2,
+     "main": false,
+     "face": "남"
+    },
+    "House_Garden3": {
+     "front_lit_pct": 38,
+     "strength_pct": 23,
+     "main": false,
+     "face": "서"
+    },
+    "House_Garden4": {
+     "front_lit_pct": 50,
+     "strength_pct": 25,
+     "main": false,
+     "face": "북서"
+    },
+    "Tower_Lookout": {
+     "front_lit_pct": 42,
+     "strength_pct": 21,
+     "main": true,
+     "face": "남서"
+    },
+    "House_Hill4": {
+     "front_lit_pct": 54,
+     "strength_pct": 29,
+     "main": false,
+     "face": "북서"
+    },
+    "House_Cliff6": {
+     "front_lit_pct": 43,
+     "strength_pct": 30,
+     "main": false,
+     "face": "북동"
+    },
+    "House_Cliff7": {
+     "front_lit_pct": 44,
+     "strength_pct": 26,
+     "main": false,
+     "face": "북동"
+    },
+    "House_Cliff8": {
+     "front_lit_pct": 46,
+     "strength_pct": 29,
+     "main": false,
+     "face": "북서"
+    },
+    "House_Garden5": {
+     "front_lit_pct": 33,
+     "strength_pct": 16,
+     "main": false,
+     "face": "남동"
+    },
+    "House_Garden6": {
+     "front_lit_pct": 43,
+     "strength_pct": 30,
+     "main": false,
+     "face": "서"
+    },
+    "House_Garden7": {
+     "front_lit_pct": 47,
+     "strength_pct": 24,
+     "main": false,
+     "face": "북동"
+    }
+   }
+  }
  },
  "rules": "A23-112 비대칭, A23-117 구역·이유, A23-106/120 진짜 문·빈 속, 성 돔 없음, 빛살 무늬 금지, acnh 12규칙"
 }

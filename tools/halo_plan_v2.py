@@ -522,6 +522,76 @@ def checks(blds):
     return msgs, pairs, land, pave, sight
 
 
+# ---------------------------------------------------------------- front sunlight (검수 10/11, 이미지 개발: fronts in shade)
+# The main world's day: DayCycleService turns Lighting.ClockTime; WarService sets GeographicLatitude 35. Measured in Studio
+# (Lighting:GetSunDirection, lat 35, 10/11): sun(t) = (0.9799 cos h, 0.9799 sin h, 0.1994), h = 15 deg x (t - 6): it rises
+# in +x (east), sets in -x, and always leans +z (north, the gate side) by 11.5 deg -> a face looking -z (south) never gets
+# direct sun. Day phase 7-17 runs at an even pace (Config.DayCycle.Pace: 960 s), so hours weigh the same.
+SUN_LAT = 35
+MAIN_FRONTS = ["Gate", "Shop_Potion", "Shop_Bakery", "Shop_Juice", "Shop_Flower", "Cathedral", "Castle", "Tower_GateEast",
+               "Armory", "Tower_Lookout"]
+
+
+def sun_dir(t):
+    h = math.radians(15 * (t - 6))
+    return (0.9799 * math.cos(h), 0.9799 * math.sin(h), 0.1994)
+
+
+def front_sun(blds):
+    """per building: share of the Day phase (7-17) its front face gets direct sun (n.s > 0.05 and not shadowed by other
+    buildings or higher district ground), and the mean strength (n.s averaged over the day, 1 = facing the sun all day).
+    The gate is checked on its INNER face (the one the town sees)."""
+    tops = [(b, footprint(b), b["ground_y"] + b["h"]) for b in blds]
+    maxtop = max(t for _, _, t in tops)
+    dpolys = [(dd["poly"], max(dd["y"], dd.get("y_to") or dd["y"])) for dd in DISTRICTS]
+    times = [7 + 0.25 * i for i in range(41)]
+    out = {}
+    for b in blds:
+        yaw = math.radians(b["yaw"])
+        nx, nz = math.sin(yaw), math.cos(yaw)
+        if b["kind"] == "Gate":
+            nx, nz = -nx, -nz
+        # sample points on the front face: 3 across x 3 up, 0.6 out from the wall
+        rx, rz = nz, -nx
+        cx, cz = b["x"] + nx * (b["d"] / 2 + 0.6), b["z"] + nz * (b["d"] / 2 + 0.6)
+        pts = [(cx + rx * f * b["w"] * 0.35, b["ground_y"] + hh, cz + rz * f * b["w"] * 0.35)
+               for f in (-1, 0, 1) for hh in (2.5, b["h"] * 0.5, b["h"] - 2)]
+        others = [(o, fp, top) for o, fp, top in tops if o is not b and math.hypot(o["x"] - b["x"], o["z"] - b["z"]) < 260]
+        lit_w, strength = 0.0, 0.0
+        for t in times:
+            sx, sy, sz = sun_dir(t)
+            ns = nx * sx + nz * sz
+            if ns <= 0.05:
+                continue
+            strength += ns / len(times)
+            free = 0
+            for px, py, pz in pts:
+                blocked = False
+                k = 2.0
+                while k < 260:
+                    qx, qy, qz = px + sx * k, py + sy * k, pz + sz * k
+                    if qy > maxtop + 2 and qy > 40:
+                        break
+                    for o, fp, top in others:
+                        if qy < top and abs(qx - o["x"]) < 60 and abs(qz - o["z"]) < 60 and inside((qx, qz), fp):
+                            blocked = True
+                            break
+                    if not blocked:
+                        for poly, gy in dpolys:
+                            if qy < gy and inside((qx, qz), poly):
+                                blocked = True
+                                break
+                    if blocked:
+                        break
+                    k += 3.0
+                if not blocked:
+                    free += 1
+            lit_w += free / len(pts) / len(times)
+        out[b["id"]] = dict(front_lit_pct=round(lit_w * 100), strength_pct=round(strength * 100), main=b["id"] in MAIN_FRONTS,
+                            face=compass(nx, nz) + ("(안쪽)" if b["kind"] == "Gate" else ""))
+    return out
+
+
 # ---------------------------------------------------------------- drawing
 S = 2.0
 PAD = 40
@@ -692,7 +762,9 @@ def draw_panel(im, d, blds, stats):
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
     y += 8
     d.text((x0, y), "검사", fill=(30, 30, 30), font=font(16, True)); y += 26
+    low = sorted([(v["front_lit_pct"], k) for k, v in stats.get("sun", {}).items() if v["main"]])[:3]
     for ln in [f"포장 약 {stats['pave'] * 100:.0f}% (목표 ≤35%) · 거울 짝 {stats['pairs']}",
+               "앞면 햇빛 낮은 주요 건물: " + ", ".join(f"{k} {p}%" for p, k in low),
                f"겹침·땅 밖·문 앞 길 먼 것: {stats['issues']}건", "노란 마름모 = 작은 장면·사진 자리 8곳", "검은 네모 = 옮긴 고정점의 새 자리"]:
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
 
@@ -703,9 +775,12 @@ def main():
     msgs, pairs, land, pave, sight = checks(blds)
     for k, v in sight.items():
         print("[gate view]", k, v)
+    sun = front_sun(blds)
+    for k, v in sorted(sun.items(), key=lambda kv: kv[1]["front_lit_pct"]):
+        print("[front sun]", k, v)
     for m in msgs:
         print("[check]", m)
-    stats = dict(pave=pave, pairs=pairs, issues=len([m for m in msgs if not m.startswith("거울")]), land=land)
+    stats = dict(pave=pave, pairs=pairs, issues=len([m for m in msgs if not m.startswith("거울")]), land=land, sun=sun)
     print(f"[plan] land {land:.0f} st² · paving ~{pave * 100:.1f}% · mirror pairs {pairs} · buildings {len(blds)} · issues {stats['issues']}")
     os.makedirs(OUT_DIR, exist_ok=True)
     im, d = draw_map(blds)
@@ -733,7 +808,10 @@ def main():
                           ground_rule=GROUND_RULE, pads=[dict(name="Pad_Halo_SlimeMeadow", at=[-24, 0.7, -357]), dict(name="Pad_Halo_GoblinWoods", at=[24, 0.7, -357])],
                           names=dict(fountain="Town_Halo_Fountain3", lamps="LampLight 속성/태그", collision="DecorPlayerOnly")),
         gate_view=sight,
-        checks=dict(paving_share=round(pave, 3), mirror_pairs=pairs, issues=msgs, land_area=round(land)),
+        checks=dict(paving_share=round(pave, 3), mirror_pairs=pairs, issues=msgs, land_area=round(land),
+                    front_sun=dict(note="앞면 햇빛 %: 낮 7-17시 중 앞면이 해를 직접 받는 몫(n·s > 0.05, 다른 건물·높은 땅 그림자 뺌, 앞면 9점 평균). "
+                                        "세기 %: 하루 평균 n·s(100 = 하루 종일 해를 정면으로). 위도 35(WarService), 해는 늘 +z(북, 성문 쪽)로 11.5° 기움 "
+                                        "→ -z(남)를 보는 면은 직접 해 0. 성문은 안쪽 면(마을이 보는 면).", by_building=sun)),
         rules="A23-112 비대칭, A23-117 구역·이유, A23-106/120 진짜 문·빈 속, 성 돔 없음, 빛살 무늬 금지, acnh 12규칙",
     )
     with open(OUT_JSON, "w", encoding="utf-8", newline="") as f:
