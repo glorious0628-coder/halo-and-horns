@@ -2,6 +2,7 @@
 buildings = part skeleton + tile MaterialVariant + Tripo trim parts).
 
   py tools/building_variants.py [art/models/worldkit/building_variants_halo.json] [--out build/building_variants.luau]
+                                [--only HH_Fabric[,HH_...]]   # a Luau that makes / updates just those variants
 The Luau creates each MaterialVariant in MaterialService by Name (or updates the one that is there: maps, base
 material, StudsPerTile, pattern), never overrides a base material, and lists the parts that already use it. ALLOW_MAIN
 is false: the main place refuses it until 메인 반영 1 sets it (practice Studios: WorldKit, UiSandbox).
@@ -55,11 +56,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src", nargs="?", default=os.path.join(ROOT, "art", "models", "worldkit", "building_variants_halo.json"))
     ap.add_argument("--out", default=os.path.join(ROOT, "build", "building_variants.luau"))
+    ap.add_argument("--only", default="", help="comma-separated variant names; the rest are left alone (main place: smallest change)")
     a = ap.parse_args()
     with open(a.src, encoding="utf-8") as f:
         data = json.load(f)
     rows = []
+    only = {x.strip() for x in a.only.split(",") if x.strip()}
+    if only and not only <= {v["name"] for v in data["variants"]}:
+        raise SystemExit("unknown variant in --only: " + ", ".join(sorted(only - {v["name"] for v in data["variants"]})))
     for v in data["variants"]:
+        if only and v["name"] not in only:
+            continue
         fields = [f"name = {q(v['name'])}", f"base = {q(v['base'])}", f"studs = {float(v['studsPerTile'])}",
                   f"pattern = {q(v.get('pattern', 'Regular'))}", f"color = {q(v['color'])}"]
         fields += [f"{k} = {q(v[k])}" for k in ("normal", "rough", "metal") if v.get(k)]
