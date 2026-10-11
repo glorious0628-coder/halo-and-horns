@@ -1,0 +1,79 @@
+{
+  "checks": 42,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "an offset that its arrival disproves still counts (게임성 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Accept skips the server check",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no early limit",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "ping not counted",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no input delay forgiven",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Perfect window wider",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Good window narrower",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a strict boundary",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "+2 line moved",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "+1 line moved",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the schedule ignores the rest",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rings close at their target",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the rest has a live ring",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "unknown grades score",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "③ 망치질 판정 공용 모듈 (게임성 개발 4, 2026-10-12; SPEC A23-56 / A23-127 / A23-133, design\ndocs/design/hammer_minigame_2026-10-12.md, 게임성 검수 10/12 계약 고침), offline.\n\nRuns the CURRENT src/ReplicatedStorage/Shared/CraftMini.luau in the official Luau CLI (tools/fixtures/craft_mini_offline.luau).\nChecks: the agreed numbers (5 strikes, 1.2 s rings, 0.35 s rest, 40 ms forgiven, windows 70 / 130 / 200 ms, 20 s timeout);\nthe fixed schedule (T_i, appear, close, the live ring and its shrink, nothing in the rest / before / after); every grade\nboundary both sides (+40 forgiven) and Miss for no press / not a number / out of range; the score lines 13 (+2) and 9 (+1)\nand +0 never failing; the server check (at most 50 ms earlier, 250 ms later + 1.5 x ping); a whole session (a real\nplayer's Perfects, missing / late strikes, made-up Perfect numbers sent at the wrong times, a claimed offset its arrival\ndisproves, strikes too close, no strikes = Skip = +0). Mutations: each must be caught (above all: 'an offset that its\narrival disproves still counts', 게임성 검수 10/12).",
+  "studioCalls": 0
+}
