@@ -210,7 +210,9 @@ MUTATIONS = [
     ("goose rest: none", "QUEST_SOURCE", " and not (gooseResting and rt.Id == \"Goose\") then", " then"),
     ("goose rest: the day is never marked", "QUEST_SOURCE", "\tif kind == \"Daily\" and t.Id == \"Goose\" then data.GooseDay = today end\n", ""),
     ("goose rest: the same day rests too", "QUEST_SOURCE", " and num(data.GooseDay) ~= today\n", "\n"),
-    ("goose rest: a mark of 0 rests", "QUEST_SOURCE", "kind == \"Daily\" and num(data.GooseDay) > 0\n", "kind == \"Daily\"\n"),
+    # (removed 2026-10-11 '게임성 개발 2': "goose rest: a mark of 0 rests" deleted the `num(data.GooseDay) > 0` guard, an
+    # equivalent mutation - GooseDay 0 is the KST day 0, so `today - 0 <= GooseRestDays` never holds on a real clock; it
+    # stayed MISSED alone too (95/96, Game-dev2-snap 10/11), not a concurrency flake. The guard stays as a cheap safety.)
     ("goose rest: zero days", "CONFIG_SOURCE", "\tGooseRestDays = 1,", "\tGooseRestDays = 0,"),
     ("goose rest: three days", "CONFIG_SOURCE", "\tGooseRestDays = 1,", "\tGooseRestDays = 3,"),
     ("goose rest: no save field", "CONFIG_SOURCE", "Config.Data.Defaults.GooseDay = 0", "Config.Data.Defaults.GooseDay_ = 0"),
