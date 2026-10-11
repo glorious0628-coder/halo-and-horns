@@ -54,7 +54,7 @@ MUTATIONS = [
     ("config: 20 gifts a day", C, "GiftDailyMax = 10, Item = \"CrownDust\"", "GiftDailyMax = 20, Item = \"CrownDust\""),
     ("config: a first hint again", C, "\t\tBloomWilt = \"The bloom closed up. +1 Crown Dust\",\n", "\t\tBloomWilt = \"The bloom closed up. +1 Crown Dust\",\n\t\tFirstHint = \"Hold to pick!\",\n"),
     ("config: herb sells for 2", C, "Name = \"Meadow Herb\", Sell = 1,", "Name = \"Meadow Herb\", Sell = 2,"),
-    ("config: the gathered items out of the bag order", C, ",\n\t\t\"Herb\", \"CopperOre\", \"OakLog\", \"Glowcap\", \"IronOre\", \"SilverOre\", \"MoonCrystal\", \"CrownDust\" },", " },"),
+    ("config: the gathered items out of the bag order", C, "\t\t\"Herb\", \"CopperOre\", \"OakLog\", \"Glowcap\", \"IronOre\", \"SilverOre\", \"MoonCrystal\", \"CrownDust\",\n", ""),
     ("config: share pays 3", C, "Good = { Label = \"Share it\", Reward = { Item = \"CrownDust\", N = 2 }", "Good = { Label = \"Share it\", Reward = { Item = \"CrownDust\", N = 3 }"),
     ("config: the card waits forever", C, "Config.ChoiceCard.Kinds.ShardBloom = {\n\tSeconds = 120,\n", "Config.ChoiceCard.Kinds.ShardBloom = {\n"),
     ("config: a spot on the crown road", C, "{ \"CopperRock\", 0.9273, 0.4583 }", "{ \"CopperRock\", 0.9273, 0.4917 }"),

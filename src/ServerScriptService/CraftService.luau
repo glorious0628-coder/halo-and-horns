@@ -157,7 +157,7 @@ local function room(player, data, r)
 		return true
 	end
 	local have = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
-	return have + math.max(1, math.floor(num(r.N, 1))) <= Config.Loot.ItemCap
+	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 
 -- the result goes in; false = it did not fit (the craft stays pending)
@@ -176,7 +176,7 @@ local function payOut(player, data, r, plus)
 		own[key] = math.floor(num(own[key])) + 1
 		return true
 	end
-	local n = math.max(1, math.floor(num(r.N, 1)))
+	local n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus))) -- items: N + the hammer's +N
 	local function have()
 		return type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
 	end

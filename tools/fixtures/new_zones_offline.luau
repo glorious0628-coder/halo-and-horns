@@ -401,7 +401,10 @@ runGroup("loot", function()
 	check(idx("SlimeCore") < idx("SeaShell") and idx("SeaShell") < idx("GoblinTooth") and idx("BruteHorn") < idx("CrystalShard") and idx("CrystalShard") < idx("Bone"),
 		"the two materials sit in the list between their level neighbours")
 	-- a later round's own items are not this round's: gathering (게임성 개발 3, 2026-10-11) marks its materials Source = "Gather"
-	local function later(id) return type(items[id]) == "table" and items[id].Source == "Gather" end
+	local function later(id)
+		local src = type(items[id]) == "table" and items[id].Source
+		return src == "Gather" or src == "Craft" -- the gathering and crafting rounds (게임성 개발 3)
+	end
 	local order = {}
 	for _, id in C.Loot.Order do if id ~= "SeaShell" and id ~= "CrystalShard" and not later(id) then table.insert(order, id) end end
 	local baseOrder = {}

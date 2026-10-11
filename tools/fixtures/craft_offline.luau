@@ -191,7 +191,9 @@ runGroup("config", function()
 	check(K.Range == 12 and K.StartsPerMinute == 6 and C.RateLimits.CraftStart == 3, "12 studs, 6 starts a minute, one start every 3 s", "")
 	local want = { W1 = { 1, 1, 10, 10 }, W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
 		W6 = { 6, 20, 7500, 900 }, W7 = { 7, 25, 22500, 2000 }, W9 = { 9, 30, 60000, 4000 } }
-	check(count(K.Recipes) == 8, "eight blacksmith recipes", tostring(count(K.Recipes)))
+	local smithRows = 0
+	for _, r in K.Recipes do if r.Role == "Smith" then smithRows += 1 end end
+	check(smithRows == 8, "eight blacksmith recipes", tostring(smithRows))
 	for id, x in want do
 		local r = K.Recipes[id]
 		check(r and r.Role == "Smith" and r.Kind == "Weapon" and r.Tier == x[1] and r.Lv == x[2] and r.Gold == x[3] and r.XP == x[4],
@@ -468,14 +470,14 @@ runGroup("results", function()
 	end })
 	local p, d = smith(w, 1)
 	d.Items.Jelly = 990
-	check(w.C.TryStart(p, "T1") == "ok", "an item recipe starts with room for 3", "")
+	check(w.C.TryStart(p, "T1") == "ok", "an item recipe starts with room for 3 + the best +2", "")
 	d.Items.Jelly = 998
 	hammer(w, p, HONEST)
-	check(d.Items.Jelly == 998 and type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "T1", "only 1 of 3 would fit: nothing given, it waits", show(d.Items.Jelly))
+	check(d.Items.Jelly == 998 and type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "T1", "only 1 of 5 would fit: nothing given, it waits", show(d.Items.Jelly))
 	d.Items.Jelly = 10
 	w:Advance(61)
 	w.C.Settle(p, d)
-	check(d.Items.Jelly == 13 and d.Craft.Pend == nil, "room again: all 3 at once", tostring(d.Items.Jelly))
+	check(d.Items.Jelly == 15 and d.Craft.Pend == nil, "room again: all of it at once (3 + the earned +2 = 5)", tostring(d.Items.Jelly))
 	local q, dq = smith(w, 2)
 	dq.Gear = { Own = { ["Ring:1:0"] = 20, ["Ring:2:0"] = 20, ["Ring:3:0"] = 19 }, On = { Armor = "", Ring = "" }, Pet = {} }
 	check(w.C.TryStart(q, "G1") == "ok", "a gear recipe starts with 59 of 60 things", "")

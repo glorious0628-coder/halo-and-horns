@@ -1,0 +1,720 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 62,
+  "failedChecks": 0,
+  "namedChecks": 53,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.Tonics is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "3 minutes, two at a time (the same numbers as the save repair), one drink a second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "four tonics (no speed tonic in the beta)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "tonic effects: Might +10% hits, Guard -10% hurt, Lucky x1.25 materials, Wisdom +10% XP",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a tonic item: Kind Tonic, Source Craft (never in the Forge's sell-all), a name, an icon key, in the bag order",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "alchemist recipes A1..A4: one bottle (+ the hammer's +N), craft Lv 1 / 3 / 8 / 12, gold 20 / 30 / 60 / 100",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "gathered herbs / glowcaps in the tonics (no Sea Shell / Crystal Shard)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "two short refusal texts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "switch off: nothing to drink, Mult 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "not a tonic: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "at the join every Buff_<tonic> is 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "one Might Tonic: a bottle goes, data.Buffs.MightTonic = now + 180",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "the attribute Buff_MightTonic = the server time it ends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "the same tonic again starts its 3 minutes over (never longer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "a second, different tonic: ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "a third different one waits (two at a time), the bottle stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "TwoMax notice (a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "refreshing one of the two is fine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "3 minutes later: the attributes go to 0 and the ended tonics leave the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "after they ran out a new one fits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "no bottle left: NoTonic (a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "a player not ready: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "a KO'd player: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "every drink logs TonicUse",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "use",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "no tonic: every Mult is 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "Might x1.1 hits, Wisdom x1.1 XP; the others stay 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "Guard x0.9 hurt, Lucky x1.25 materials",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "one player's tonic never helps another",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "switch off at run time: Mult 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "ended: 1 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "no player: 1 (never throws)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mult",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "a tonic still running at the join shows and works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "... and runs out on time",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "a tonic that ended before the join does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote",
+      "check": "UseTonic with two arguments or a number: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote",
+      "check": "UseTonic(MightTonic): one drunk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote",
+      "check": "a second drink within a second: rate limited",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote",
+      "check": "a second later: drunk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remote",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a draw of 0.35 misses the slime's 30% jelly row without a tonic",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "with a Lucky Tonic the jelly row is 37.5%: 0.35 hits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "a scroll row stays as it was (0.3%: a draw of 0.0035 misses even with the tonic)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "loot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 9,
+  "staticFailures": [],
+  "mutations": {
+    "total": 30,
+    "applied": 30,
+    "caught": 30,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Features.Tonics is off",
+          "use :: switch off: nothing to drink, Mult 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: 4 minutes",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 3 minutes, two at a time (the same numbers as the save repair), one drink a second",
+          "mult :: ended: 1 again",
+          "use :: 3 minutes later: the attributes go to 0 and the ended tonics leave the save",
+          "use :: after they ran out a new one fits",
+          "use :: every drink logs TonicUse",
+          "use :: no bottle left: NoTonic (a key)"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "config: three at a time",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 3 minutes, two at a time (the same numbers as the save repair), one drink a second",
+          "use :: TwoMax notice (a key)",
+          "use :: a third different one waits (two at a time), the bottle stays",
+          "use :: after they ran out a new one fits"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: Might +20%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: tonic effects: Might +10% hits, Guard -10% hurt, Lucky x1.25 materials, Wisdom +10% XP",
+          "join :: a tonic still running at the join shows and works",
+          "mult :: Might x1.1 hits, Wisdom x1.1 XP; the others stay 1"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: Guard helps in PvP too",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: tonic effects: Might +10% hits, Guard -10% hurt, Lucky x1.25 materials, Wisdom +10% XP",
+          "mult :: Guard x0.9 hurt, Lucky x1.25 materials"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Lucky x1.5",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: tonic effects: Might +10% hits, Guard -10% hurt, Lucky x1.25 materials, Wisdom +10% XP",
+          "mult :: Guard x0.9 hurt, Lucky x1.25 materials"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Wisdom on gold",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: tonic effects: Might +10% hits, Guard -10% hurt, Lucky x1.25 materials, Wisdom +10% XP",
+          "mult :: Might x1.1 hits, Wisdom x1.1 XP; the others stay 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: tonics sold at the Forge",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a tonic item: Kind Tonic, Source Craft (never in the Forge's sell-all), a name, an icon key, in the bag order"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: A1 at craft Lv2",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: alchemist recipes A1..A4: one bottle (+ the hammer's +N), craft Lv 1 / 3 / 8 / 12, gold 20 / 30 / 60 / 100"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: tonics out of the bag order",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a tonic item: Kind Tonic, Source Craft (never in the Forge's sell-all), a name, an icon key, in the bag order"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: the switch not checked",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: switch off: nothing to drink, Mult 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: any item drinks",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: every drink logs TonicUse",
+          "use :: not a tonic: refused"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "use: not-ready players drink",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: a player not ready: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: KO'd players drink",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: a KO'd player: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: no bottle needed",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: no bottle left: NoTonic (a key)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: no limit of two",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: TwoMax notice (a key)",
+          "use :: a third different one waits (two at a time), the bottle stays",
+          "use :: after they ran out a new one fits"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "use: the same tonic counts against the limit",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: every drink logs TonicUse",
+          "use :: refreshing one of the two is fine"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "use: the bottle stays",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remote :: UseTonic(MightTonic): one drunk",
+          "remote :: a second later: drunk",
+          "use :: every drink logs TonicUse",
+          "use :: no bottle left: NoTonic (a key)",
+          "use :: one Might Tonic: a bottle goes, data.Buffs.MightTonic = now + 180",
+          "use :: the same tonic again starts its 3 minutes over (never longer)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "use: no end time",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: with a Lucky Tonic the jelly row is 37.5%: 0.35 hits",
+          "mult :: Guard x0.9 hurt, Lucky x1.25 materials",
+          "mult :: Might x1.1 hits, Wisdom x1.1 XP; the others stay 1",
+          "use :: TwoMax notice (a key)",
+          "use :: a third different one waits (two at a time), the bottle stays",
+          "use :: after they ran out a new one fits"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "use: no attribute",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: the attribute Buff_MightTonic = the server time it ends"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: never runs out on screen",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: 3 minutes later: the attributes go to 0 and the ended tonics leave the save"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "use: no telemetry",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "use :: every drink logs TonicUse"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mult: ended tonics still count",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join :: a tonic that ended before the join does nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mult: any stat",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mult :: Guard x0.9 hurt, Lucky x1.25 materials",
+          "mult :: Might x1.1 hits, Wisdom x1.1 XP; the others stay 1",
+          "mult :: one player's tonic never helps another"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "mult: the switch not checked",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "mult :: switch off at run time: Mult 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "join: nothing shown",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join :: ... and runs out on time",
+          "join :: a tonic still running at the join shows and works",
+          "join :: a tonic that ended before the join does nothing",
+          "use :: at the join every Buff_<tonic> is 0"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "remote: extra arguments taken",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remote :: UseTonic with two arguments or a number: ignored",
+          "remote :: UseTonic(MightTonic): one drunk"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "remote: no rate limit",
+        "file": "src/ServerScriptService/BuffService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remote :: a second drink within a second: rate limited",
+          "remote :: a second later: drunk"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "loot: Lucky on every row",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: a scroll row stays as it was (0.3%: a draw of 0.0035 misses even with the tonic)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: Lucky never asked",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "loot :: with a Lucky Tonic the jelly row is 37.5%: 0.35 hits"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "8c1ccd5799009b0093f21b8003765d00005ef5a806fd076f4dc49ee36bf9a007",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/LootService.luau": "b427096f06419dc337a116b14589ac05b3ed36222c5f9261872927ad6d73ef4e",
+    "src/ServerScriptService/BuffService.luau": "006bebe3e25f689014abad6d52f43b3fdc417d72cb69c4c1277331abc0f5eb0a"
+  },
+  "fixtureSHA256": "6ac52d0a90c766ef0688508461feceb94f5c6d8dae4ae2dbe5aafe7f9785ec72",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Alchemy tonics (docs/design/alchemy_server_2026-10-12.md, A23-133): switch Config.Features.Tonics off; Might x1.1 hits on monsters, Guard x0.9 monster hits, Lucky x1.25 material rows only, Wisdom x1.1 kill XP; 180 s, two at a time, the same again starts over; UseTonic(item) for a ready living player with a bottle; data.Buffs end times, Buff_<item> attributes (server time, 0 = none), cleared on time and shown at a join; recipes A1..A4 (Alch, one bottle + the hammer's +N, craft Lv 1 / 3 / 8 / 12); items Kind Tonic, Source Craft; key-only notices; one drink a second.",
+  "limitations": "The Might / Guard / Wisdom hooks in CombatService and ProgressionService are checked statically (those modules are not run here); the bag's Drink button and a tonic quick slot are client work (게임성 개발 4 / 1); the market (게임성 개발 2) is where non-alchemists will buy them."
+}
