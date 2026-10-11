@@ -119,7 +119,7 @@ MUTATIONS = [
      "\tif false then\n"),
     ("CONFIG", "two sides share a pose", '''	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },''', '''	Warrior_Neutral = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.4, -0.75, -0.65), Aim = Vector3.new(0.1, 0.56, -0.82), Pole = Vector3.new(0.4, -0.9, 0.3) } },'''),
+		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },'''),
     ("MAIN", "never loaded", '"QuickSlots", "WeaponPose", "LandShadow"', '"QuickSlots", "LandShadow"'),
 ]
 
