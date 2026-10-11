@@ -39,7 +39,13 @@ for nm, h in pack["houses"].items():
                                                                   ", ".join('"%s"' % i for i in SHORT.get(nm, []))))
 mn, mx = pack["roblox_bbox"]["min"], pack["roblox_bbox"]["max"]
 code = '''if game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil") then error("WRONG STUDIO: main") end
+-- the importer names the root after the glTF scene ("Scene", several of them in WorldKit): take the one holding our parts
 local M = workspace:FindFirstChild("%s", true)
+if not M then
+  for _, c in workspace:GetChildren() do
+    if c ~= workspace:FindFirstChild("SkeletonTest") and c ~= workspace:FindFirstChild("HaloV2") and c:FindFirstChild("HaloDomeHouse_02_Dome", true) then M = c end
+  end
+end
 if not M then return "imported model %s not found" end
 local H = {%s}
 local EMIN, EMAX = Vector3.new(%g, %g, %g), Vector3.new(%g, %g, %g)
