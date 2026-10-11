@@ -57,6 +57,7 @@
 - 지도 `art/review/world/halo_v2/halo_props_map.png`(번호 = 표, 빨간 글씨 = 새 키트 NEW_ 18종). 구역 밖 가장자리 소품은 가까운 구역(zone)에 묶음.
 - 바꾼 것: 성문 경비 초소 = 성문 안쪽 **서쪽**(동쪽은 탑·발판·채움 빛, 비대칭).
 - 검수 사진 판정 → 5단계 할 일 = plan `dressing.stage5_fixes`(길 두 겹·반 잘린 디딤돌·하늘색 기둥 숨김·바위 테·LOD 점·폭포 v2).
+- **금 2차(이미지 개발, 10/11 저녁)**: WorldKit(저장 안 함)의 HH_HaloGoldTrim 파트 4110개 = 색 (255,195,45), MV 금속 0.5·거칠기 0.15. 되돌리기 `tools/gold_trim_apply.luau` MODE "undo". **내 생성기(skeleton_civic·skeleton_ground GOLD_RGB)는 아직 (255,175,25)** → 다시 돌리면 옛 금색으로 돌아감. 검수 통과 소식 오면 두 파일 GOLD_RGB = (255,195,45)로 고쳐 올림.
 - 다음: 검수 판정(새 키트 18종 중 무엇을 만들지 = 이미지 생성 2/3 몫) → WorldKit 놓기 도구(소품 = ImportHold/키트 모델, 높이는 지형에서).
 
 ## 10/11 18:00 구획·이유·골격 다듬기 (검수 지시)
