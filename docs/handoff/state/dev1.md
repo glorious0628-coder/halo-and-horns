@@ -21,9 +21,11 @@
 
 8. **(PC 재부팅 뒤) fix/onehand-2 6d449153** (33272a46 위, 게임성 검수 후속 6개, 게임성 검수에 보고): WarriorRelease 왼팔 = 받침·균형(grip_reference §1-9), CharacterVisuals `staffHandHeight`(아바타 몸으로 손 높이 → 발끝 땅 위 0.08, STAFF.Grip·FootMin 지움), 시험 빈 곳(위팔 ≥0.15 → 연금술사 Pole (1,-0.8,0); FK 두 손 간격 ≥1.2), 옛 대검 주석. 4번(진영 대기 자세): 최종 검수 OK → **a23c7e4a**(빛 Hold Waist +3·Neck +3, 뿔 Waist -10·Neck -6, 뿔 Aim (0.1,0.6,-0.7) ≈ 40°; ClassGrips Hold는 +rx = 뒤로 젖힘 — 질문 때 부호를 반대로 썼던 것 정정해 알림). **0dc6c46d**: 뿔 마법사 Waist +8→-8, 뿔 궁수 +12→-12(같은 부호 실수, main에도 있던 것), 시험 '뿔 줄 Waist ≤ 0·빛 줄 ≥ 0'. 6번 Legend 길이 = 의도(힘 T3~T4). fix/golden-egg-client **3d95925a**: EggFx 경고 10초에 한 번. **eebeebd3**: 미리 보기 없이 내가 주운 알에 '남이 주움' 팝·소리 안 냄(MineAt + Near, AND).
 
+9. **fix/reward-chip a5de2b9f** (main에서, worktree wt_lesstext 재사용 — fix/lesstext는 병합됨): 첫 미션 '+150 gold'가 카드 연 채 '★ +150...'로 잘림(병합 사진 06_claim) → UIKit NOTIFY.CoinLine(골드뿐인 보상 줄 = IconCoin + '+N', 형식은 Config.Tutorial.Text.Claimed·StoryQuests.Text.ChoiceGold) + art 캡슐 TextFits 넓히기. 시험 test_reward_chip 12·7/7 등. 게임성 검수에 보고. 알게 된 것: test_audio는 다른 시험과 동시에 돌리면 시간 재는 2개가 흔들림 → 혼자 돌릴 것. test_english 'twins drift apart' 변이는 main에서도 0번 일치(원래 실패).
+
 ## 기다리는 것
 - 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(eebeebd3) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
-- 사진(병합 뒤 메인 반영 1): 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
+- 사진(병합 뒤 메인 반영 1): 카드 연 채 첫 미션 받기(동전 +150), 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
 - 새 SPEC: A23-137(거위 4시간마다·예고 칩 = 다음 거위 시각 → 황금 알 화면 EventHUD 칩 손볼 것, 지시 오면), A23-138(밈 묶음 = fix/meme-en-client, 급한 병합 뒤 지시 오면; Smokey → Rose 36곳).
 - 개발 2: 황금 알 약속 답(장인 알 들고 다니나, 깃털 Kind, "Bring 2 eggs…" Notify) + 서버 GooseEggs → 그 뒤 진짜 서버로 Play 확인·폰 확인(메인 반영 1), 약속이 바뀌면 EggFx 맞춤.
 - 서버 줄(끔 52·짧게 60)은 개발 2 몫. tools/_weapon_prompts.py 뿔 전사 문구는 이미지 생성 2 몫.
