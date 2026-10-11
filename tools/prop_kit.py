@@ -787,9 +787,13 @@ def stepping_stones():
             for sy in (-1, 1):
                 q = rotz((sx * (w / 2 - r), sy * (d / 2 - r), 0.0), rot)
                 cyl("Stone%dC%d%d" % (k, sx, sy), 2 * r, h, x + q[0], y + q[1], 0.0, "stone", cc=False)
-        for j, ang in enumerate((40 + 70 * k, 210 + 50 * k)):
+        # moss: flat, uneven patches tucked under one or two edges (round green balls in pairs read as a face, 디자인 검수 10/11)
+        for j, (ang, dd) in enumerate(((35 + 83 * k, 0.55), (160 + 61 * k, 0.4))[: 1 + k % 2]):
             a = math.radians(ang)
-            ball("Moss%d_%d" % (k, j), 0.3, x + math.cos(a) * w * 0.5, y + math.sin(a) * d * 0.5, 0.1, "leaf", cc=False)
+            cyl("Moss%d_%d" % (k, j), dd, 0.07, x + math.cos(a) * w * 0.46, y + math.sin(a) * d * 0.46, 0.0, "leaf",
+                c=(108, 150, 70), cc=False)
+            cyl("Moss%d_%db" % (k, j), dd * 0.6, 0.06, x + math.cos(a + 0.5) * w * 0.52, y + math.sin(a + 0.5) * d * 0.52, 0.0,
+                "leaf", c=(120, 165, 78), cc=False)
 
 
 # ---------------------------------------------------------------- kits: chunk 2 (lamps, bell)
