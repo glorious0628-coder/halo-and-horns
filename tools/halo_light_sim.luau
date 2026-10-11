@@ -26,6 +26,10 @@ local C = {
 	C1 = { Amb = { 1.35, 1.25, 1.0 }, Bright = 0.95, Exp = 0.05, Tint = rgb(255, 244, 226), Sat = 0.06, Con = 0.05, CC = 0 },
 	C2 = { Amb = { 1.5, 1.38, 1.05 }, Bright = 1.0, Exp = 0.15, Spec = 0.8, Tint = rgb(255, 242, 222), Sat = 0.08, Con = 0.04,
 		CC = 0.02 },
+	C2b = { Amb = { 1.5, 1.38, 1.2 }, Bright = 1.0, Exp = 0.15, Spec = 0.8, Tint = rgb(255, 246, 228), Sat = 0.08, Con = 0.04,
+		CC = 0.02 },
+	C2c = { Amb = { 1.45, 1.36, 1.32 }, Bright = 1.0, Exp = 0.15, Spec = 0.8, Tint = rgb(255, 248, 236), Sat = 0.08, Con = 0.04,
+		CC = 0.02 },
 	C3 = { Amb = { 1.3, 1.22, 1.0 }, Bright = 0.95, Exp = 0.1, Diff = 0.8, Tint = rgb(255, 244, 226), Sat = 0.06, Con = 0.05,
 		CC = 0 },
 }
