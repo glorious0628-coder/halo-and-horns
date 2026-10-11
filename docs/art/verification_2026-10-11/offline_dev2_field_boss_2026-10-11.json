@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 220,
+  "checks": 241,
   "failedChecks": 0,
-  "namedChecks": 216,
+  "namedChecks": 237,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -951,7 +951,13 @@
     },
     {
       "group": "crowd numbers",
-      "check": "Crowd: +50% per hunter, up to 10, within 50 studs, damage of the last 15 s vs a 120 s pace, every 2 s",
+      "check": "Crowd: +50% per hunter, up to 10, within 50 studs, damage vs a 120 s pace (Rise 2 s, Window 15 s), every 0.5 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd numbers",
+      "check": "counted at every tick (no first-seconds discount at the solo price)",
       "pass": 1,
       "fail": 0
     },
@@ -963,19 +969,19 @@
     },
     {
       "group": "crowd numbers",
-      "check": "one hunter's HP: King 2000, Clatter 9000",
+      "check": "one hunter's HP: King 2600, Clatter 20000",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "crowd numbers",
-      "check": "King alone: about 2 min",
+      "check": "King alone (T2): about 2 min",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "crowd numbers",
-      "check": "Clatter alone: about 2 min",
+      "check": "Clatter alone (Lv25 T4): about 2 min",
       "pass": 1,
       "fail": 0
     },
@@ -1035,6 +1041,18 @@
     },
     {
       "group": "crowd numbers",
+      "check": "the retry King's cap is Retry.MaxHP (not the field King's HP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd numbers",
+      "check": "unset: at most 2500 (the old King HP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd numbers",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -1065,19 +1083,19 @@
     },
     {
       "group": "crowd hp",
-      "check": "one hunter (however strong): 2000",
+      "check": "one hunter (however strong): 2600",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "crowd hp",
-      "check": "the count waits Every s",
+      "check": "the count waits Every (0.5) s",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "crowd hp",
-      "check": "two full hunters: 3000, still half",
+      "check": "two full hunters: 3900, the fraction kept",
       "pass": 1,
       "fail": 0
     },
@@ -1125,7 +1143,7 @@
     },
     {
       "group": "crowd hp",
-      "check": "a hunter who stopped 14 s ago still counts",
+      "check": "a hunter who stopped 14 s ago (far over its pace) still counts",
       "pass": 1,
       "fail": 0
     },
@@ -1137,13 +1155,13 @@
     },
     {
       "group": "crowd hp",
-      "check": "weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)",
+      "check": "weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "crowd hp",
-      "check": "13 full hunters count as 10: 2000 x 5.5",
+      "check": "13 full hunters count as 10: 2600 x 5.5",
       "pass": 1,
       "fail": 0
     },
@@ -1161,13 +1179,13 @@
     },
     {
       "group": "crowd hp",
-      "check": "the next King: 2000 again",
+      "check": "the next King: 2600 again",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "crowd hp",
-      "check": "Clatter with three hunters: 18000",
+      "check": "Clatter with three hunters: 40000",
       "pass": 1,
       "fail": 0
     },
@@ -1179,6 +1197,72 @@
     },
     {
       "group": "crowd hp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "one hunter at its pace: 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "a newcomer's first half second counts little (Rise 2 s: no burst)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "one small hit: a small share (never a whole hunter)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "a hunter who stopped 6 s ago fades slowly (no instant drop)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "solo: 120 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "on / off play (8 s on, 8 s off) is never faster than steady play",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "crowd ramp",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -1203,7 +1287,7 @@
     },
     {
       "group": "crowd rule per boss",
-      "check": "ByDamage = false: five heads -> 2000 x 3",
+      "check": "ByDamage = false: five heads -> 2600 x 3",
       "pass": 1,
       "fail": 0
     },
@@ -1215,6 +1299,48 @@
     },
     {
       "group": "crowd rule per boss",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
+      "check": "the early hunter (7.5% at the solo HP, 1.5% of the grown total) is paid in full",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
+      "check": "... and on the paid list (weekly badge, titles, war points)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
+      "check": "the side share counts the Halo hunter's 7.5% of the boss (not 1.6% of raw damage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
+      "check": "a fixed boss: under 2% is still the minor share",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
+      "check": "a record without _share: raw damage / MaxHP (7000 paid, 300 minor)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "reward share",
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
@@ -1304,13 +1430,18 @@
       "fail": 0
     }
   ],
-  "findings": [],
+  "findings": [
+    {
+      "Group": "crowd ramp",
+      "Text": "crowd fights (King, every hunter at the pace): solo 120 s, 10 from the start 62.5 s, 10 joining at 30 s 76 s, 10 on / off 69.5 s"
+    }
+  ],
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 87,
-    "applied": 87,
-    "caught": 87,
+    "total": 98,
+    "applied": 98,
+    "caught": 98,
     "skipped": false,
     "results": [
       {
@@ -1479,10 +1610,10 @@
           "clatter war pool :: group ran to the end without a Lua error",
           "crowd hp :: group ran to the end without a Lua error",
           "crowd monster api :: group ran to the end without a Lua error",
-          "crowd rule per boss :: group ran to the end without a Lua error",
-          "defeat :: group ran to the end without a Lua error"
+          "crowd ramp :: group ran to the end without a Lua error",
+          "crowd rule per boss :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 14
       },
       {
         "mutation": "no Defeated signal",
@@ -1980,14 +2111,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd hp :: a hunter who stopped 14 s ago still counts",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
           "crowd hp :: dead: counted again",
           "crowd hp :: not ready: counted again"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 16
       },
       {
         "mutation": "share not capped at 1",
@@ -2000,8 +2131,8 @@
           "crowd hp :: 1 HP stays 1 when the crowd leaves (gone players not counted)",
           "crowd hp :: 57 studs away: counted again",
           "crowd hp :: 57 studs away: not counted",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd hp :: a hunter who stopped 14 s ago still counts"
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts"
         ],
         "newFailingCount": 15
       },
@@ -2012,9 +2143,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)"
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
+          "crowd ramp :: a hunter who stopped 6 s ago fades slowly (no instant drop)",
+          "crowd ramp :: a newcomer's first half second counts little (Rise 2 s: no burst)",
+          "crowd ramp :: one small hit: a small share (never a whole hunter)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 4
       },
       {
         "mutation": "ByDamage = false ignored",
@@ -2023,7 +2157,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd rule per boss :: ByDamage = false: five heads -> 2000 x 3"
+          "crowd rule per boss :: ByDamage = false: five heads -> 2600 x 3"
         ],
         "newFailingCount": 1
       },
@@ -2035,7 +2169,7 @@
         "crashed": false,
         "newFailingChecks": [
           "crowd hp :: ... and 16 s ago no more",
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)"
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)"
         ],
         "newFailingCount": 2
       },
@@ -2046,9 +2180,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: a hunter who stopped 14 s ago still counts"
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
+          "crowd ramp :: a hunter who stopped 6 s ago fades slowly (no instant drop)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "baseline = the newest snapshot",
@@ -2057,14 +2192,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd hp :: a hunter who stopped 14 s ago still counts",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
           "crowd hp :: dead: counted again",
           "crowd hp :: not ready: counted again"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 16
       },
       {
         "mutation": "pace from the current MaxHP",
@@ -2073,7 +2208,103 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)"
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
+          "crowd ramp :: ... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "no rise floor (a burst counts whole)",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd ramp :: a newcomer's first half second counts little (Rise 2 s: no burst)",
+          "crowd ramp :: one small hit: a small share (never a whole hunter)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a newcomer measured from the window start",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd ramp :: ... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the first count after 2 s",
+        "file": "src/ServerScriptService/FieldBossService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "reward bar on raw damage",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reward share :: ... and on the paid list (weekly badge, titles, war points)",
+          "reward share :: the early hunter (7.5% at the solo HP, 1.5% of the grown total) is paid in full"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "side share on raw damage",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reward share :: the side share counts the Halo hunter's 7.5% of the boss (not 1.6% of raw damage)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no share kept",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reward share :: ... and on the paid list (weekly badge, titles, war points)",
+          "reward share :: the early hunter (7.5% at the solo HP, 1.5% of the grown total) is paid in full",
+          "reward share :: the side share counts the Halo hunter's 7.5% of the boss (not 1.6% of raw damage)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "share against the solo HP",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reward share :: the side share counts the Halo hunter's 7.5% of the boss (not 1.6% of raw damage)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "no fallback without _share",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "reward share :: a record without _share: raw damage / MaxHP (7000 paid, 300 minor)"
         ],
         "newFailingCount": 1
       },
@@ -2084,9 +2315,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)"
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
+          "crowd ramp :: ... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)",
+          "crowd ramp :: a hunter who stopped 6 s ago fades slowly (no instant drop)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "radius ignored",
@@ -2139,7 +2374,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd rule per boss :: ... and its own Max (3)"
         ],
         "newFailingCount": 2
@@ -2162,25 +2397,29 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd hp :: a hunter who stopped 14 s ago still counts",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
           "crowd hp :: dead: counted again",
           "crowd hp :: not ready: counted again"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 13
       },
       {
-        "mutation": "counted every tick",
+        "mutation": "Every ignored (every 2 s)",
         "file": "src/ServerScriptService/FieldBossService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: the count waits Every s"
+          "crowd hp :: the HP bar follows",
+          "crowd hp :: two full hunters: 3900, the fraction kept",
+          "crowd ramp :: ... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 5
       },
       {
         "mutation": "base from a doubled HP",
@@ -2191,12 +2430,12 @@
         "newFailingChecks": [
           "crowd hp :: ... and 16 s ago no more",
           "crowd hp :: 1 HP stays 1 when the crowd leaves (gone players not counted)",
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
           "crowd hp :: 57 studs away: not counted",
-          "crowd hp :: Clatter with three hunters: 18000"
+          "crowd hp :: Clatter with three hunters: 40000"
         ],
-        "newFailingCount": 19
+        "newFailingCount": 23
       },
       {
         "mutation": "old snapshots kept for the next boss",
@@ -2205,8 +2444,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd rule per boss :: ByDamage = false: five heads -> 2000 x 3",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd rule per boss :: ByDamage = false: five heads -> 2600 x 3",
           "crowd rule per boss :: its own Crowd table wins: +100% per hunter"
         ],
         "newFailingCount": 3
@@ -2218,14 +2457,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd hp :: a hunter who stopped 14 s ago still counts",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
           "crowd hp :: dead: counted again",
           "crowd hp :: not ready: counted again"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 17
       },
       {
         "mutation": "own crowd table ignored",
@@ -2248,11 +2487,11 @@
           "crowd hp :: 57 studs away: counted again",
           "crowd hp :: dead: counted again",
           "crowd hp :: not ready: counted again",
-          "crowd hp :: two full hunters: 3000, still half",
+          "crowd hp :: two full hunters: 3900, the fraction kept",
           "crowd monster api :: rounded (100 / 300 of 200 = 66.7 -> 67)",
           "crowd monster api :: x3 keeps half"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 8
       },
       {
         "mutation": "HP may round to 0",
@@ -2319,14 +2558,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
-          "crowd hp :: a hunter who stopped 14 s ago still counts",
-          "crowd hp :: not ready: counted again",
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
           "crowd monster api :: DamageTotals is a copy (a snapshot never moves with the record)",
-          "crowd monster api :: DamageTotals: positive numbers of players only"
+          "crowd monster api :: DamageTotals: positive numbers of players only",
+          "crowd ramp :: ... and fully within a few seconds (Rise 2 s), not over the 15 s window"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 9
       },
       {
         "mutation": "zero damage in the totals",
@@ -2340,7 +2579,7 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "King HP 2500 again",
+        "mutation": "King HP 2000 (T1 / T2 mean)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
@@ -2348,27 +2587,28 @@
         "newFailingChecks": [
           "crowd hp :: ... and 16 s ago no more",
           "crowd hp :: 1 HP stays 1 when the crowd leaves (gone players not counted)",
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
           "crowd hp :: 57 studs away: not counted",
           "crowd hp :: a bystander adds nothing"
         ],
-        "newFailingCount": 24
+        "newFailingCount": 25
       },
       {
-        "mutation": "Clatter HP 20000 again",
+        "mutation": "Clatter HP 9000 (T3+0)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
           "clatter config :: Captain Clatter: a ruins boss on the knight",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd numbers :: Clatter alone: about 2 min",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd numbers :: Clatter alone (Lv25 T4): about 2 min",
           "crowd numbers :: an average hunter's DPS = the pace within 15% (shares near 1)",
-          "crowd numbers :: one hunter's HP: King 2000, Clatter 9000"
+          "crowd numbers :: one hunter's HP: King 2600, Clatter 20000",
+          "reward share :: a fixed boss: under 2% is still the minor share"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 8
       },
       {
         "mutation": "crowd +15%",
@@ -2377,14 +2617,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: 13 full hunters count as 10: 2000 x 5.5",
+          "crowd hp :: 13 full hunters count as 10: 2600 x 5.5",
           "crowd hp :: 57 studs away: counted again",
-          "crowd hp :: Clatter with three hunters: 18000",
-          "crowd hp :: a hunter who stopped 14 s ago still counts",
+          "crowd hp :: Clatter with three hunters: 40000",
+          "crowd hp :: a hunter who stopped 14 s ago (far over its pace) still counts",
           "crowd hp :: dead: counted again",
           "crowd hp :: not ready: counted again"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 13
       },
       {
         "mutation": "crowd window 60 s",
@@ -2394,10 +2634,40 @@
         "crashed": false,
         "newFailingChecks": [
           "crowd hp :: ... and 16 s ago no more",
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)",
-          "crowd numbers :: Crowd: +50% per hunter, up to 10, within 50 studs, damage of the last 15 s vs a 120 s pace, every 2 s"
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
+          "crowd numbers :: Crowd: +50% per hunter, up to 10, within 50 studs, damage vs a 120 s pace (Rise 2 s, Window 15 s), every 0.5 s"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "crowd every 2 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd hp :: the HP bar follows",
+          "crowd hp :: two full hunters: 3900, the fraction kept",
+          "crowd numbers :: Crowd: +50% per hunter, up to 10, within 50 studs, damage vs a 120 s pace (Rise 2 s, Window 15 s), every 0.5 s",
+          "crowd numbers :: counted at every tick (no first-seconds discount at the solo price)",
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "crowd rise 15 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd numbers :: Crowd: +50% per hunter, up to 10, within 50 studs, damage vs a 120 s pace (Rise 2 s, Window 15 s), every 0.5 s",
+          "crowd ramp :: ... and fully within a few seconds (Rise 2 s), not over the 15 s window",
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)"
+        ],
+        "newFailingCount": 4
       },
       {
         "mutation": "solo pace 60 s",
@@ -2406,11 +2676,25 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 3200, not 6000)",
-          "crowd numbers :: Crowd: +50% per hunter, up to 10, within 50 studs, damage of the last 15 s vs a 120 s pace, every 2 s",
-          "crowd numbers :: an average hunter's DPS = the pace within 15% (shares near 1)"
+          "crowd hp :: weak hitters add their small share (1 + 4 x 0.3 = 2.2 -> 4160, not 7800)",
+          "crowd numbers :: Crowd: +50% per hunter, up to 10, within 50 studs, damage vs a 120 s pace (Rise 2 s, Window 15 s), every 0.5 s",
+          "crowd numbers :: an average hunter's DPS = the pace within 15% (shares near 1)",
+          "crowd ramp :: 10 hunters from the start: about 66 s (the doc; the first 2 s ramp)",
+          "crowd ramp :: 10 hunters joining at 30 s: 30 + about 0.75 x 66 s (no late-crowd discount)",
+          "crowd ramp :: solo: 120 s"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "retry King capped by the field King",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "crowd numbers :: the retry King's cap is Retry.MaxHP (not the field King's HP)"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -2418,18 +2702,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "bcd391e15013a9377b8f6ea9b7055cdd37fc8fa6db5d86ba29bfe5090ff707c5",
+    "src/ReplicatedStorage/Shared/Config.luau": "c1dbef4d52790f86b4d340d03a5416023fcef7a6de6139f29dc60ae3cabe61ac",
     "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
     "src/ReplicatedStorage/Shared/Net.luau": "7cf8e277fe2267425e3f51e200aca951f0ada9900137e3c7fab4b78396dc81b0",
     "src/ServerScriptService/Main.server.luau": "f296c784034c65ac764b12aa8fbeb8167d48af74b89f9d2a8dfcde5d4231cdce",
-    "src/ServerScriptService/FieldBossService.luau": "89bc04293868de3f32ab322b2b212bb03bf6a8728b1ea1f6657c9375d2cce84f",
-    "src/ServerScriptService/MonsterService.luau": "81c86110975fb0f872c771eb3774be872740695a6620d3e579dc760a64806c3c",
+    "src/ServerScriptService/FieldBossService.luau": "e380a7b13780ba940f6f98338ee56597c40e5554b79718ae5d5b330918c1a661",
+    "src/ServerScriptService/MonsterService.luau": "5b924134b91f5cf4c894349a581842a66cdcf6f3ab9c5869e2f80a7f35f01064",
     "src/ServerScriptService/CombatService.luau": "d783fd6fa24e04def8da78ca72659295420ba4b771fa284978d23a427d88f0ec"
   },
-  "fixtureSHA256": "1a6e3e5691e8f0ea9ac720e8a8444308951a94363866c2056994fb08db9d733c",
+  "fixtureSHA256": "a6d3260e2f58096e766ff74c404e5a822fcace7291e6aa0b9e2e8e12003a0769",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Field bosses (Config.FieldBosses; the King Slime A23-84/85, king_slime_split §3): one of each on the server, first slot FirstDelay s after start, then every Interval s from its last appearance, a due slot waits for a ready hunter in its zone, stays Lifetime s; spot Attr on workspace.Map > (Hill) HillTop + 8 toward HillPathFoot (flat) > Spawn > a zone spawn point, Radius; no ground = retry in RetryDelay s; defeat = Fx KingDefeat { Key, Kind, Pos, Contributors (numbers) } to all + <Key>Defeat + Defeated(key, kind, ids, rec); time up / lost model = RemoveEvent(fade, leaving) + <Key>Leave; GameState <Key>Active / EndsAt / NextAt. King Slime: 180 / 480 / 300 s, KingSpawn, hill. BigSlime = Slime Prince; the card is SlimeKing's. A23-113 ⑦ crowd HP: def HP = one hunter about 2 min (King 2000 Lv 5-8 T1-2, Clatter 9000 Lv25 T3, by the solo DPS model on the current Config); every 2 s hunters = the shares added up (in tenths, 1..10) of the ready, alive players within 50 studs: own damage over the last 15 s / one hunter's pace (def HP / 120 s), at most 1 (ByDamage = false: 1 each); MaxHP = def HP x (1 + 0.5 x (hunters - 1)), the HP fraction kept (MonsterService.SetEventMaxHP: event monsters only, rounded, never below 1 HP; DamageTotals = a copy); a boss's own Crowd wins, false = off.",
+  "contract": "Field bosses (Config.FieldBosses; the King Slime A23-84/85, king_slime_split §3): one of each on the server, first slot FirstDelay s after start, then every Interval s from its last appearance, a due slot waits for a ready hunter in its zone, stays Lifetime s; spot Attr on workspace.Map > (Hill) HillTop + 8 toward HillPathFoot (flat) > Spawn > a zone spawn point, Radius; no ground = retry in RetryDelay s; defeat = Fx KingDefeat { Key, Kind, Pos, Contributors (numbers) } to all + <Key>Defeat + Defeated(key, kind, ids, rec); time up / lost model = RemoveEvent(fade, leaving) + <Key>Leave; GameState <Key>Active / EndsAt / NextAt. King Slime: 180 / 480 / 300 s, KingSpawn, hill. BigSlime = Slime Prince; the card is SlimeKing's. A23-113 ⑦ crowd HP (+ 검수 bosshp_verify fixes): def HP = one hunter about 2 min (King 2600 Lv 5-8 T2, Clatter 20000 Lv25 T4, by the solo DPS model on the current Config); every 0.5 s hunters = the shares added up (in tenths, 1..10) of the ready, alive players within 50 studs: own damage over the last 15 s / one hunter's pace (def HP / 120 s) over the time since its first hit in the window (at least Rise 2 s: comes fast, fades slow, no on / off gain), at most 1 (ByDamage = false: 1 each); MaxHP = def HP x (1 + 0.5 x (hunters - 1)), the HP fraction kept (MonsterService.SetEventMaxHP: event monsters only, rounded, never below 1 HP; DamageTotals = a copy); a boss's own Crowd wins, false = off. The reward bar and the side share read each hit as a share of the MaxHP it had then (MonsterService _share; no _share = damage / MaxHP). The retry King's cap is Retry.MaxHP (2500).",
   "limitations": "MonsterService (SpawnEvent ground pick, kill payout, model borrow), PlayerService, ZoneService and AnnounceService are doubles; the client (boss chip, minimap icon) and the shrine placement are not here. The solo DPS model is an average (75% uptime, no perks / enhancement / pets); real fight times need play."
 }
