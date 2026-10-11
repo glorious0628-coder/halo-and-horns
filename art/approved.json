@@ -8336,5 +8336,15 @@
    },
    "concepts": "art/out/s2/halo/castle5/HaloCastleF3c_C1..C4.png (C2 chosen); base F3 art/out/s2/halo/castle3/HaloCastleFant_F3.png",
    "note": "빛 성 확정(사용자 10/11 F3c C2). 날개 한 쌍, 가운데 첨탑+후광, 장미창, 금문 세로 패널+꽃, 평평한 마당, 별/뾰족 끝. 몸통·탑·벽은 Studio 골격(A23-120/122), 장식 부품만 Tripo. 위 시안은 약간 원근이 있음."
+ },
+ "Halo_Aerial_A3": {
+   "status": "approved-by-user",
+   "date": "2026-10-11",
+   "approvalQuote": "추천!",
+   "tool": "Adobe Firefly GPT Image 2.5 Sunburst; candidates Medium (0); final = High (5)",
+   "original": "art/out/s2/halo/aerial/HaloAerial_A3_final_src.png",
+   "concept": "art/out/s2/halo/aerial/HaloAerial_3.png (A3, 확정 구도)",
+   "plan": "art/out/s2/halo/aerial/ref_plan.png / docs/design/halo_plan_v2_2026-10-11.json",
+   "note": "빛 마을 조감 확정(10/11 A3). 2차 = A3 구도 그대로 + 서쪽 성을 C2 날개 성당-성으로, 돔·십자가 0. 위치는 지도 v2 배치."
  }
 }
