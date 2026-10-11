@@ -11,7 +11,8 @@
    "normal": "rbxassetid://126193858276827",
    "rough": "rbxassetid://82509703836879",
    "metal": "rbxassetid://87489921567476",
-   "studsNote": "이미지 생성 3 10/11: house 07 skeleton, about 6 block rows over the 8-stud door (concept 1.2-1.4 studs a row)"
+   "studsNote": "이미지 생성 3 10/11: house 07 skeleton, about 6 block rows over the 8-stud door (concept 1.2-1.4 studs a row)",
+   "use": "NOT USED in the Halo town skeleton (9-stud pick lost to the cream 12-stud map); kept only so existing parts do not break."
   },
   {
    "name": "HH_HaloMarbleBlock_Cream",
@@ -22,7 +23,8 @@
    "color": "rbxassetid://80357186990466",
    "normal": "rbxassetid://73394105072257",
    "rough": "rbxassetid://82509703836879",
-   "metal": "rbxassetid://87489921567476"
+   "metal": "rbxassetid://87489921567476",
+   "use": "CHOSEN (이미지 생성 3 10/11, art/review/img3/skeleton07/skeleton07_v4_compare.jpg, 4fcfe53): wall parts Color (255,244,222), floor parts (238,226,205) - the plain cream map reads grey in WorldKit light. Grout starts at each part's top edge."
   },
   {
    "name": "HH_HaloGoldTrim",
