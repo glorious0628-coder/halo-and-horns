@@ -327,7 +327,7 @@ function CraftService.Strike(player, sid, i, ms)
 	if not sess or sess.Id ~= sid or sess.Done then return "session" end
 	if type(i) ~= "number" or i ~= math.floor(i) or i < 1 or i > CraftMini.T.Strikes then return "ring" end
 	if sess.Strikes[i] then return "again" end
-	if type(ms) ~= "number" or ms ~= ms then return "ms" end
+	if type(ms) ~= "number" or ms ~= ms or math.abs(ms) > CraftMini.T.MaxMs then return "ms" end
 	sess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }
 	return "ok"
 end

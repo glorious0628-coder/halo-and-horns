@@ -74,6 +74,7 @@ MUTATIONS = [
     ("strike: any session id", R, "\tif not sess or sess.Id ~= sid or sess.Done then return \"session\" end\n\tif type(i)", "\tif not sess or sess.Done then return \"session\" end\n\tif type(i)"),
     ("strike: ring 6 taken", R, "or i < 1 or i > CraftMini.T.Strikes then return \"ring\" end", "or i < 1 or i > 99 then return \"ring\" end"),
     ("strike: a second press replaces the first", R, "\tif sess.Strikes[i] then return \"again\" end\n", ""),
+    ("strike: any offset size", R, "or math.abs(ms) > CraftMini.T.MaxMs then return \"ms\" end", "then return \"ms\" end"),
     ("strike: the client's own time", R, "\tsess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }\n", "\tsess.Strikes[i] = { Ms = ms, At = CraftMini.Target(sess.StartAt, i) + ms / 1000, Ping = pingMs(player) }\n"),
     # --- finish
     ("finish: any lie fits (huge ping)", R, "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, pingMs(player), sess.StartPing)\n", "\tlocal grades, _, plus = CraftMini.Accept(sess.Strikes, sess.StartAt, 1000, sess.StartPing)\n"),

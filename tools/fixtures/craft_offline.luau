@@ -373,6 +373,8 @@ runGroup("hammer", function()
 	check(w.C.Strike(o, sess.Id, 0, 30) == "ring" and w.C.Strike(o, sess.Id, 6, 30) == "ring" and w.C.Strike(o, sess.Id, 1.5, 30) == "ring",
 		"ring 0 / 6 / 1.5: refused", "")
 	check(w.C.Strike(o, sess.Id, 1, "30") == "ms" and w.C.Strike(o, sess.Id, 1, 0 / 0) == "ms", "a text or NaN offset: refused", "")
+	check(w.C.Strike(o, sess.Id, 1, 401) == "ms" and w.C.Strike(o, sess.Id, 1, -401) == "ms" and w.C.Session(o).Strikes[1] == nil,
+		"an offset beyond 400 ms: refused (CraftMini.T.MaxMs; the ring stays open)", "")
 	check(w.C.Strike(o, sess.Id, 1, 30) == "ok" and w.C.Strike(o, sess.Id, 1, -400) == "again", "one strike a ring (the first stays)", "")
 	check(w.C.Session(o).Strikes[1].Ms == 30 and w.C.Session(o).Strikes[1].At == serverNow(w), "the strike notes { Ms, At = server time }", "")
 	check(w.C.Finish(o, sess.Id + 1) == "session" and w.C.Finish(o, sess.Id) == "ok" and w.C.Finish(o, sess.Id) == "session",
