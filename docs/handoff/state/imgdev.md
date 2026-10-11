@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12 아침: 천 v3 후보 만듦, 판정 대기)
+
+- **천 v3 후보 a/b/c 파일로 만듦(올리기 안 함)**: tools/fabric_weave_v3.py → art/ui/halo_tile/fabric_v3/{a,b,c}/Halo_Fabric_{color,normal,rough}.png. 격자 대비 반(노멀 세기 반 포함) + 실 줄을 주기적 노이즈로 휘게 + 실마다 밝기·굵기 불균일 + 실 얼룩. a = 16실·휨 0.25, b = 24실(더 곱게)·휨 0.40, c = b + 대비 0.35. 비교 시트 art/review/imgdev/fabric_v3_compare_2026-10-12.jpg(v2 | a | b | c, 배너 파랑(104,170,240)에 해 왼쪽 위 단순 음영, 5×5·15×15칸) — v2는 규칙 격자가 보이고 v3는 격자 없이 천 결만. 디자인 검수 판정 대기 → 고르면 올리기 승인(최종 검수) 뒤 3장 올림 → WorldKit HH_Fabric 교체 + 낮 사진 비교 → 메인은 메인 반영 1.
+- 이미지 생성 1이 WorldKit 되살린 뒤에만 WorldKit·UiSandbox 일을 신청(최종 검수 10/12).
+
 # 이미지 개발 — 상태 (2026-10-12 정리 끝: PC 꺼짐 전)
 
 - 올리기 끝·push: 재료 아이콘 1차 10개(asset_ids 1ce5f4b), 매끈 대리석 color/rough. WorldKit MV 3개(금·매끈·천 v2)는 백업됨(build/wk_backup/20261011_215142 + 이미지 생성 1 전체). Play·창 열린 것 없음(UiSandbox 닫음). 가지 imgdev-icons1(96371ff0)은 게임성 검수 통과, 최종 검수 병합 대기(되감기·다시 쌓기 금지).
