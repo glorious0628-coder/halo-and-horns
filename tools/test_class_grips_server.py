@@ -49,6 +49,7 @@ def checks(cv: str, cfg: str) -> list[tuple[str, bool]]:
 
 MUTATIONS = [
     ("the hammer never made", "function SHAPES.Hammer(", "function SHAPES.Hammer_("),
+    ("A23-128: the dark one-hand sword never made", "function SHAPES.DarkSword(", "function SHAPES.DarkSword_("),
     ("ClassGrips ignored", 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)', "local kind = (false)"),
     ("the short bow in the right hand", 'local left = kind == "Bow" or kind == "ShortBow"', 'local left = kind == "Bow"'),
     ("the short bow has no bow rest", 'if kind == "Bow" or kind == "ShortBow" then -- both bows', 'if kind == "Bow" then -- both bows'),

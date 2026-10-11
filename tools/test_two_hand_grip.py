@@ -1,20 +1,17 @@
-"""Two hands on the Berserker's great sword (게임성 개발 1, 2026-10-11; SPEC A23-108, 검수 10/11; user 10/11 "대검을 잡는
-게 이상한데? 손바닥 위에 올려놓은 느낌"; references docs/design/grip_reference_2026-10-11.md), offline.
+"""The two-hand grip code (WeaponPose.TwoHand) and A23-128 "no two-hand warrior" (게임성 개발 1, 2026-10-11; SPEC A23-108,
+검수 10/11; user 10/11 "대검을 잡는 게 이상한데? 손바닥 위에 올려놓은 느낌" -> A23-128 user 10/11 "한손검만 쓸 수 있게
+하자"; references docs/design/grip_reference_2026-10-11.md), offline.
 
-Geometry: the CURRENT Config.ClassGrips.Warrior_Horns.TwoHand (Hilt, Aim, Gap) through a Python copy of
-WeaponPose.TwoHandGoals and Fx's two-bone arm solve (Feel.solveArm) on the R15 rig of place/GoodEvil.rbxlx (UpperTorso
+A23-128: no Config.ClassGrips row holds a weapon in two hands (no TwoHand) and nothing holds a great sword (no ClassGrips
+Weapon "GreatSword", no CharacterVisuals SHAPES.GreatSword); both warriors hold a one-hand sword (OneHand - its
+geometry is tools/test_one_hand_grips.py). The two-hand code stays for later weapons, so its statics stay: WeaponPose
+drives both arms from TwoHandGoals in torso space (walk / run / jump keep the hands on: the arm swing is replaced), out
+of reach = the closest reach (never a dropped frame), the grip point lands on the line (CFrame.new(-gripPos)), the up
+turns to the shoulder, the fade, the gap from the hands' sizes, the Studio probe (GripProbe) measures every frame and
+prints the worst. This file also holds the shared Python copies of the R15 rig of place/GoodEvil.rbxlx (UpperTorso
 shoulders (+-0.972, 0.598, 0); arm attachments: shoulder (-+0.501, 0.419), elbow (0, -0.355) / (0, 0.275), wrist
-(0, -0.532) / (0, 0.132), grip (0, -0.158)), at scale 1 and 0.85, with blocky hands (1 stud along the handle) and small
-ones (0.4). For each hand: the solve is in reach (wrist distance <= 92% of the arm), the grip point (where a Roblox tool
-handle runs) lies on the handle line (<= 0.2 studs), the hand's -Z (the held axis) lies along the blade (<= 10 deg),
-the forearm crosses the handle (45..135 deg - not lying along the forearm, the "on the palm" look), the left hand is
-below the right one by the gap. The blade passes just over the right shoulder (the shoulder plane z = 0 at x 0.8..1.5,
-y 0.85..1.5, above the torso top 0.8) and rises up and back (115..145 deg). The great sword's handle reaches past the
-left hand (CharacterVisuals SHAPES.GreatSword: top / below). Static: WeaponPose drives both arms from TwoHandGoals in
-torso space (walk / run / jump keep the hands on: the arm swing is replaced), out of reach = the closest reach (never
-a dropped frame), the grip point lands on the line (CFrame.new(-gripPos)), the up turns to the shoulder, the fade, the
-gap from the hands' sizes, the Studio probe (GripProbe) measures every frame and prints the worst. Mutations: each
-must be caught. The look and the walk sequence = 메인 반영 photos + probe lines.
+(0, -0.532) / (0, 0.132), grip (0, -0.158)) and of WeaponPose.TwoHandGoals that test_one_hand_grips.py imports.
+Mutations: each must be caught.
 
 Usage: py tools/test_two_hand_grip.py
 Report: docs/art/verification_2026-10-11/offline_two_hand_grip_2026-10-11.json
@@ -77,88 +74,26 @@ def to_world(frame, pos, local):
     return add(add(add(pos, x, local[0]), y, local[1]), z, local[2])
 
 
-def config_row(cfg: str):
-    m = re.search(r"\n\tWarrior_Horns = \{[^\n]*\n\t\tTwoHand = \{ Hilt = Vector3\.new\(" + NUM + ", " + NUM + ", " + NUM
-                  + r"\), Aim = Vector3\.new\(" + NUM + ", " + NUM + ", " + NUM + r"\), Gap = \{ " + NUM + ", " + NUM
-                  + r" \} \} \},", cfg)
-    if not m:
-        return None
-    v = [float(m[i]) for i in range(1, 9)]
-    return {"Hilt": tuple(v[0:3]), "Aim": unit(tuple(v[3:6])), "Gap": (v[6], v[7])}
-
-
-def handle(cv: str):
-    m = re.search(r"function SHAPES\.GreatSword\(grip, sc, w, color\)(.*?)\nend", cv, re.S)
-    if not m:
-        return None
-    t = re.search(r"local top, below, bladeLen = " + NUM + ", " + NUM + r", w\.Length \* 1\.3", m.group(1))
-    named = 'Name = "Handle"' in m.group(1)
-    pommel = re.search(r'Name = "Pommel", Shape = Enum\.PartType\.Ball, Size = Vector3\.new\(' + NUM + r",[^}]*CFrame = L \* "
-                       r"CFrame\.new\(0, -\(below \+ " + NUM + r"\) \* sc, 0\)", m.group(1), re.S)
-    # the pommel's reach past the handle's end = its centre offset + its radius
-    extra = float(pommel[2]) + float(pommel[1]) / 2 if pommel else None
-    return {"Top": float(t[1]), "Below": float(t[2]), "Named": named, "Pommel": extra} if t else None
+def class_grips(cfg: str) -> str:
+    return cfg[cfg.find("Config.ClassGrips = {"):cfg.find("function Config.ClassGripKey")]
 
 
 def geometry(src: dict) -> list[tuple[str, bool, str]]:
-    row, hd = config_row(src["CONFIG"]), handle(src["CV"])
-    out = [("Warrior_Horns TwoHand (Hilt, Aim, Gap) and the great sword handle are readable", bool(row and hd), "")]
-    if not out[0][1]:
-        return out
-    hilt, aim, (gmin, gmax) = row["Hilt"], row["Aim"], row["Gap"]
-    wp = src["WP"]
-    left_on_top = "goal(hilt, leftGrip, leftShoulder)" in wp
-    elev = math.degrees(math.atan2(aim[1], -aim[2]))
-    out.append(("the blade rises up and back (115..145 deg from forward)", 115 <= elev <= 145, f"{elev:.0f}"))
-    cross_at = add(hilt, aim, -hilt[2] / aim[2]) if aim[2] > 0.05 else None
-    out.append(("the blade passes just over the right shoulder (above the torso top)",
-                cross_at is not None and 0.8 <= cross_at[0] <= 1.5 and max(0.85, TORSO_TOP) <= cross_at[1] <= 1.5,
-                f"{cross_at and tuple(round(x, 2) for x in cross_at)}"))
-    out.append(("the hilt is in front of the chest", hilt[2] <= -0.5 and abs(hilt[0]) <= 0.6 and -0.4 <= hilt[1] <= 0.6,
-                f"{hilt}"))
-    worst = {"reach": 0.0, "dist": 0.0, "axis": 0.0, "fore": (180.0, 0.0), "below": 9.0, "apart": 9.0}
-    for k in (1.0, 0.85):
-        for hand_len in (1.0, 0.4):
-            # WeaponPose: the left hand at the handle's foot (half its length up), never closer than 0.8 of the sizes
-            gap = 0.0 if left_on_top else min(max(max(hd["Below"] - hand_len / 2 - 0.05, hand_len * 0.8), gmin), gmax)
-            worst["below"] = min(worst["below"], hd["Below"] + (hd["Pommel"] or 0) - (gap + hand_len / 2))
-            worst["apart"] = min(worst["apart"], gap - min(hand_len, 0.45))
-            worst["pommel"] = max(worst.get("pommel", 0.0), hd["Below"] - (gap + hand_len / 2))
-            hk = tuple(v * k for v in hilt)  # WeaponPose.BodyScale: the hilt scales with the body
-            for side, point in (("R", hk), ("L", add(hk, aim, -gap))):
-                shoulder, l1, l2, wc1, grip = rig(side, k)
-                frame, pos = goal(point, grip, shoulder, aim, wp)
-                wrist = to_world(frame, pos, wc1)
-                d = length(sub(wrist, shoulder))
-                eps = min(l1, l2) * 0.001
-                clamped = not (abs(l1 - l2) + eps <= d <= l1 + l2 - eps)
-                worst["reach"] = max(worst["reach"], 9.0 if clamped else d / (l1 + l2))
-                rel = sub(to_world(frame, pos, grip), hk)
-                off = sub(rel, tuple(x * dot(rel, aim) for x in aim))
-                worst["dist"] = max(worst["dist"], length(off))
-                worst["axis"] = max(worst["axis"], angle(tuple(-x for x in frame[2]), aim))
-                # the elbow of the two-bone solve (pole: down and out), then the forearm against the handle
-                pole = (0.7 if side == "R" else -0.7, -0.7, 0.2)
-                ax = unit(sub(wrist, shoulder))
-                along = (d * d + l1 * l1 - l2 * l2) / (2 * d)
-                h = math.sqrt(max(0.0, l1 * l1 - along * along))
-                bend = unit(sub(pole, tuple(x * dot(pole, ax) for x in ax)))
-                elbow = add(add(shoulder, ax, along), bend, h)
-                fore = angle(sub(wrist, elbow), aim)
-                worst["fore"] = (min(worst["fore"][0], fore), max(worst["fore"][1], fore))
-    out.append(("both arms reach (wrist <= 92% of the arm; scale 1 / 0.85, blocky / small hands)",
-                worst["reach"] <= 0.92, f"{worst['reach']:.2f}"))
-    out.append(("each grip point lies on the handle line (<= 0.2 studs)", worst["dist"] <= 0.2, f"{worst['dist']:.3f}"))
-    out.append(("each hand's held axis lies along the blade (<= 10 deg)", worst["axis"] <= 10, f"{worst['axis']:.1f}"))
-    out.append(("the forearms cross the handle (45..135 deg), not lying along it",
-                45 <= worst["fore"][0] and worst["fore"][1] <= 135, f"{worst['fore'][0]:.0f}..{worst['fore'][1]:.0f}"))
-    out.append(("the left hand sits below the right one, side by side (gap >= a small hand)", worst["apart"] >= 0,
-                f"{worst['apart']:.2f}"))
-    out.append(("the handle (+ its pommel) reaches past the left hand", hd["Named"] and worst["below"] >= 0.1,
-                f"{worst['below']:.2f}"))
-    out.append(("the left hand rests near the pommel (<= 0.3 studs of bare handle under it; reference)",
-                hd["Pommel"] is not None and worst.get("pommel", 9) <= 0.3, f"{worst.get('pommel', 9):.2f}"))
-    return out
+    """A23-128 (user 10/11 "한손검만"): no two-hand weapon, no great sword; both warriors hold a one-hand sword"""
+    block, cv = class_grips(src["CONFIG"]), src["CV"]
+    rows = re.findall(r"\n\t(\w+_\w+) = \{ Weapon = \"(\w+)\"", block)
+    warriors = {k: w for k, w in rows if k.startswith("Warrior_")}
+    halo = re.search(r"\n\tWarrior_Halo = \{[^\n]*\n\t\tOneHand = \{ Hilt = ", block)
+    horns = re.search(r"\n\tWarrior_Horns = \{[^\n]*\n\t\tOneHand = \{ Hilt = ", block)
+    return [
+        ("ClassGrips is readable (nine rows)", len(rows) == 9, f"{len(rows)}"),
+        ("A23-128: no ClassGrips row holds a weapon in two hands (no TwoHand)", "TwoHand" not in block, ""),
+        ("A23-128: no great sword (ClassGrips Weapon, CharacterVisuals SHAPES)",
+         all(w != "GreatSword" for _, w in rows) and "SHAPES.GreatSword" not in cv, f"{warriors}"),
+        ("A23-128: the Paladin holds the straight Sword, the Berserker the DarkSword, each in one hand (OneHand)",
+         warriors.get("Warrior_Halo") == "Sword" and warriors.get("Warrior_Horns") == "DarkSword"
+         and halo is not None and horns is not None, f"{warriors}"),
+    ]
 
 
 def statics(src: dict) -> list[tuple[str, bool, str]]:
@@ -197,15 +132,13 @@ def run(src: dict):
 
 
 MUTATIONS = [
-    ("CONFIG", "the blade straight up", "Aim = Vector3.new(0.85, 0.85, 0.75)", "Aim = Vector3.new(0, 1, 0.05)"),
-    ("CONFIG", "the blade across the chest (the photo)", "Aim = Vector3.new(0.85, 0.85, 0.75)", "Aim = Vector3.new(0.85, 0.55, -0.1)"),
-    ("CONFIG", "the hilt too far ahead", "Hilt = Vector3.new(0.25, 0.2, -0.7)", "Hilt = Vector3.new(0.25, 0.2, -1.6)"),
-    ("CONFIG", "the hilt at the belly, the left hand out of reach", "Hilt = Vector3.new(0.25, 0.2, -0.7)",
-     "Hilt = Vector3.new(0.3, -0.6, -0.9)"),
-    ("CONFIG", "the hands far apart", "Gap = { 0.45, 0.9 } } },", "Gap = { 1.4, 1.6 } } },"),
-    ("CONFIG", "the hands overlapping", "Gap = { 0.45, 0.9 } } },", "Gap = { 0.1, 0.2 } } },"),
-    ("CV", "a long bare handle under the left hand", "local top, below, bladeLen = 0.6, 1.15, w.Length * 1.3", "local top, below, bladeLen = 0.6, 2.0, w.Length * 1.3"),
-    ("CV", "no pommel", 'Name = "Pommel", Shape = Enum.PartType.Ball', 'Name = "Knob", Shape = Enum.PartType.Ball'),
+    # A23-128 (user 10/11 "한손검만"): the great sword / two-hand grip never comes back
+    ("CONFIG", "the Berserker's great sword again", 'Warrior_Horns = { Weapon = "DarkSword",', 'Warrior_Horns = { Weapon = "GreatSword",'),
+    ("CONFIG", "the Berserker's two-hand grip again", "OneHand = { Hilt = Vector3.new(1.4, -0.75, -0.65)",
+     "TwoHand = { Hilt = Vector3.new(1.4, -0.75, -0.65)"),
+    ("CONFIG", "the Paladin's sword out of his hand", 'Warrior_Halo = { Weapon = "Sword",', 'Warrior_Halo = { Weapon = "Hammer",'),
+    ("CV", "the great sword shape again", "function SHAPES.DarkSword(grip, sc, w, color)",
+     "function SHAPES.GreatSword(grip, sc, w, color) end\nfunction SHAPES.DarkSword(grip, sc, w, color)"),
     ("WP", "the grip point off the line", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(gripPos)"),
     ("WP", "the hand turned along the handle", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)", "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z) * CFrame.new(-gripPos)"),
     ("WP", "the left hand on top of the right", "goal(hilt - aim * gap, leftGrip, leftShoulder)", "goal(hilt, leftGrip, leftShoulder)"),

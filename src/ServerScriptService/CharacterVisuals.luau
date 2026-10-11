@@ -743,34 +743,37 @@ end
 -- (a table, not locals: buildWeapon finds them by kind; offline extracts of buildWeapon without it keep the old shapes)
 local SHAPES = {}
 
--- Berserker: a broad great sword (longer, wider blade, a long two-hand grip). 검수 10/11 (two hands): the handle runs
--- 0.6 above the right grip (the guard sits on it) and HandleBelow under it, room for the left hand one hand lower
--- (WeaponPose TwoHand Gap <= 0.8 + half a blocky hand); the guard and blade stay where they were
-function SHAPES.GreatSword(grip, sc, w, color)
-	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward
-	local top, below, bladeLen = 0.6, 1.15, w.Length * 1.3
-	local handleLen = top + below
-	local handle = accPart({
-		Name = "Handle", Size = Vector3.new(0.32, handleLen, 0.32) * sc,
-		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = L * CFrame.new(0, (top - handleLen / 2) * sc, 0),
-	})
-	local guard = accPart({
-		Name = "Guard", Size = Vector3.new(1.6, 0.3, 0.45) * sc,
-		Material = Enum.Material.Metal, Color = DARK_METAL,
-		CFrame = L * CFrame.new(0, (top + 0.15) * sc, 0),
-	})
+-- A23-128 (user 2026-10-11 "한손검만"): the Berserker's dark ONE-hand sword (the great sword and its two-hand grip are
+-- gone). Held like the Paladin's sword (buildSword: the handle centred on the right grip, the blade ahead along the
+-- fist, the same size), but dark: a dark wrapped handle with a round pommel, a guard swept towards the blade in a V
+-- and the blade shaded towards black (Shade of the way). Code shape until the P3 weapon models (Tripo) replace it.
+function SHAPES.DarkSword(grip, sc, w, color)
+	local D = { Handle = 1.2, Dark = Color3.fromRGB(34, 26, 34), Shade = 0.35, Sweep = 25 }
+	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward (as buildSword)
+	local parts = {}
+	table.insert(parts, accPart({
+		Name = "Handle", Size = Vector3.new(0.3, D.Handle, 0.3) * sc,
+		Material = Enum.Material.Fabric, Color = D.Dark, CFrame = L,
+	}))
+	for _, s in { -1, 1 } do -- the two halves of the guard, their outer ends swept up towards the blade
+		table.insert(parts, accPart({
+			Name = "Guard", Size = Vector3.new(0.65, 0.22, 0.4) * sc,
+			Material = Enum.Material.Metal, Color = DARK_METAL,
+			CFrame = L * CFrame.new(s * 0.27 * sc, (D.Handle / 2 + 0.14) * sc, 0) * CFrame.Angles(0, 0, math.rad(s * D.Sweep)),
+		}))
+	end
 	local blade = accPart({
-		Name = "Blade", Size = Vector3.new(0.3, bladeLen, 0.95) * sc,
-		Material = w.Material, Color = color,
-		CFrame = L * CFrame.new(0, (top + 0.3 + bladeLen / 2) * sc, 0),
+		Name = "Blade", Size = Vector3.new(0.25, w.Length, 0.6) * sc,
+		Material = w.Material, Color = color:Lerp(D.Dark, D.Shade),
+		CFrame = L * CFrame.new(0, (D.Handle / 2 + 0.25 + w.Length / 2) * sc, 0),
 	})
-	-- 검수 10/11 (reference: the left hand rests near the pommel): a round pommel closes the handle's lower end
-	local pommel = accPart({
-		Name = "Pommel", Shape = Enum.PartType.Ball, Size = Vector3.new(0.42, 0.42, 0.42) * sc,
+	table.insert(parts, blade)
+	table.insert(parts, accPart({
+		Name = "Pommel", Shape = Enum.PartType.Ball, Size = Vector3.new(0.36, 0.36, 0.36) * sc,
 		Material = Enum.Material.Metal, Color = DARK_METAL,
-		CFrame = L * CFrame.new(0, -(below + 0.12) * sc, 0),
-	})
-	return { handle, guard, blade, pommel }, blade
+		CFrame = L * CFrame.new(0, -(D.Handle / 2 + 0.1) * sc, 0),
+	}))
+	return parts, blade
 end
 
 -- Blacksmith: a short smithing hammer (a wooden handle, a heavy metal head with a band in the tier colour)

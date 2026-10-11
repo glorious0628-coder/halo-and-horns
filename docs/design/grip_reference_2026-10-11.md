@@ -14,6 +14,7 @@
 | 검+방패 대기(팔라딘) | 평소 대기는 칼과 방패를 낮게, 전투 대기는 몸 앞에 든다. 방패 팔은 가슴 앞 45° 쯤, 칼 손은 방패 뒤 | [ORK 대기 동작 안내](https://forum.orkframework.com/d/5215-tutorial-ork-animations-using-mecanim-my-all-new-comprehensive-guide), [Nexus 검+방패 요청](https://forums.nexusmods.com/topic/4666325-armour-or-animations), [MocapOnline 대기 동작](https://mocaponline.com/blogs/mocap-news/idle-animation-game-dev-guide) |
 | 한 손 허리(대장장이·연금술사·조련사) | 손등이나 손바닥이 허리 옆에 닿고, 손목은 엉덩이뼈 위로 살짝 앞, 팔꿈치는 바깥으로(팔과 허리 사이 삼각형) | [Hand on hip drawing reference](https://library.peoplespharmacy.com/hand-hip-drawing-reference), [Fashion Drawing For Dummies](https://www.dummies.com/article/academics-the-arts/art-architecture/drawing/fashion-drawing/how-to-draw-hands-on-your-fashion-figures-171483) |
 | 활 대기(레인저·그림자 사냥꾼) | 대기 자세는 활을 옆에 세워 든다(당기지 않음). 3인칭은 활을 세워서 | [PoseMyArt 궁수 자세](https://posemy.art/blog/drawing-archer-poses/), [Kotaku 게임 궁술](https://kotaku.com/video-game-characters-are-terrible-at-archery-1836615271) |
+| §1-8 한손검(A23-128, 두 전사) | 한손검은 주먹이 자루를 감싼다(해머 쥐기, 또는 엄지·검지 쪽을 조금 세운 악수 쥐기). 무거운 칼일수록 손목을 고정하는 해머 쥐기. 한손 무기 대기 동작은 칼을 오른손 옆에 두고 걷기·서기가 이어짐. 대결 자세에서는 칼 쪽이 앞, 빈손은 뒤로 — 우리 대기에서는 빈손을 그냥 내림 | [Virtus Martialis "Gripping swords"](https://virtusmartialis.substack.com/p/gripping-swords), [sword-site "handshake grip"](https://sword-site.com/thread/114/hold-sword-handshake-grip-nonsense), [Skyrim 한손 대기 동작 모드](https://www.nexusmods.com/skyrim/mods/109608), [Steam 한손검 자세 토론](https://steamcommunity.com/app/362490/discussions/0/4039228198241300759) — 칼을 옆에 든 대기 그림 참고는 못 찾음, 쥐기 설명 + 대기 동작 목록 |
 
 **우리 place에서 잰 값(`place/GoodEvil.rbxlx` R15):** `RightGripAttachment` = 손 안 (0, -0.158, 0), 방향 Angles(-90°, 0, 0). 어깨 관절은 UpperTorso (±0.972, 0.598, 0)에 있어요. 위팔은 0.92, 아래팔은 0.81. 우리 무기는 `CharacterVisuals.fist()`로 손의 -Z(주먹을 꿰뚫는 축)를 따라 붙어요.
 
@@ -32,6 +33,13 @@
 - 플라스크는 주먹이 목을 감싸고, 몸통은 주먹 아래, 코르크는 위에 있다. 병은 곧게 가슴 앞에 든다.
 - 그립점-선 0.2 이하, 축 10° 이하, 팔뚝-무기 45~135°, 팔 닿기 92% 이하(대검과 같음).
 
+**한손검 숫자 기준(A23-128, 같은 시험; 대검·두 손 쥐기는 뺌 — `test_two_hand_grip.py`가 다시 생기지 않는지 봄):**
+- 빛 전사 = 곧은 칼(Sword), 뿔 전사 = 어두운 한손검(DarkSword). 두 손 쥐기(TwoHand)·대검 없음.
+- 손은 오른쪽 옆, 내린 팔과 같은 줄(손잡이 x 1.2~1.6), 허리 높이(y -1.0~-0.5), 조금 앞(z -0.9~-0.4).
+- 칼끝은 앞·위 30~60°(빛 45°, 뿔 35°). 몸을 가로지르지 않음(x 0~0.3), 칼 선이 몸통을 지나지 않음.
+- 팔꿈치는 아래로 몸 가까이(Pole, x 1.45 이하, 손보다 위·뒤). 왼손은 비우고 내림(OffHand·왼팔 각도 없음).
+- 그립점-선 0.2 이하, 축 10° 이하, 팔뚝-칼 45~135°, 팔 닿기 92% 이하.
+
 **빈 손 숫자 기준(같은 시험):**
 - 빈 손은 몸 위 점으로 간다(OffHand: 허리 = (-1.25, -0.65, 0.1), 가슴 앞 주먹, 가슴 앞 손바닥).
 - 팔은 35~92% 뻗는다. 손 중심은 몸통 상자 밖 0.15칸 이상이다(파고들지 않음).
@@ -39,7 +47,7 @@
 - 목표점은 아바타 몸 크기(어깨 관절 거리)에 맞춰 줄고 는다.
 
 ## 3. 만드는 법 (WeaponPose)
-- 자세를 팔 각도에서 시작하지 않아요. **칼 위치에서 시작해요:** `Config.ClassGrips.Warrior_Horns.TwoHand` = { Hilt(오른손 그립 지점), Aim(칼날 방향) — 몸통 기준 }. 한 손 무기는 `OneHand` = { Hilt, Aim }(빛·어둠 마법사, 연금술사)이고, 같은 계산으로 오른팔만 놓아요(왼팔은 각도 표 그대로).
+- 자세를 팔 각도에서 시작하지 않아요. **칼 위치에서 시작해요:** 두 손 무기는 `TwoHand` = { Hilt(오른손 그립 지점), Aim(칼날 방향) — 몸통 기준 }(A23-128로 지금은 쓰는 줄 없음, 코드만 남김). 한 손 무기는 `OneHand` = { Hilt, Aim, Pole(팔꿈치 굽는 쪽, 없으면 아래·바깥) }(두 전사, 빛·어둠 마법사, 연금술사)이고, 같은 계산으로 오른팔만 놓아요(왼팔은 각도 표 그대로).
 - 두 팔 모두 Fx의 두 마디 팔 계산(활과 같은 계산, 아바타의 실제 뼈 길이)으로 손을 그 자리에 놓아요. 손의 -Z는 칼날을 따라가고, +Y(손목 쪽)는 자기 어깨 쪽을 향해요.
 - Studio 측정: 플레이어 속성 `GripProbe = true`이면 Studio에서만 2초마다 콘솔에 `[WeaponPose] probe <조합> | Right dHand=… dGrip=… axis=… fore=… | Left …`가 찍혀요(실제 부품에서 잼).
 
