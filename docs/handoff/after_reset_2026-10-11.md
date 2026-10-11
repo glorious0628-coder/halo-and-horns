@@ -27,5 +27,5 @@
 - 9조합 빈 손 IK 마무리(개발 1이 하던 dev1-grips9)
 
 ## 4. 정리 (검수)
-- AGENTS.md 줄이기: 초안이 `build/api_agent/agents_slim/notes/`에 있다. 사용자 규칙이 빠지지 않았는지 확인한 뒤 적용한다.
+- ~~AGENTS.md 줄이기~~ → 적용 끝(10/11 줄인 판 + `docs/handoff/agents_detail.md`). 남은 것은 사용자 규칙이 빠지지 않았는지 검수가 한 번 대조하는 일.
 - 리셋 전에 한 병합·판정은 `docs/handoff/review3_inbox_2026-10-11.md`를 본다.

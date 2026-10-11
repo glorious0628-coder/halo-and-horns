@@ -1,6 +1,7 @@
 # 검수 인계 — 2026-10-09 낮 (이 계정 주간 90%, 10/12 21:00 KST 초기화)
 
-> 2026-10-09 검수: 지금 기준은 맨 아래 §10(그 위 §8·§9는 오후 기록)과 `docs/handoff/role_prompts/`예요. §1~§7은 시간순 기록이고, 이 파일의 세션 id(§9 것 포함)는 모두 옛것이라 list_sessions로 찾아요. 아래 첫 줄의 읽는 순서(account_switch를 프롬프트 틀로)도 옛것 — 새 세션은 `role_prompts/` 파일로 만들어요.
+> **기록용(2026-10-11 정리):** 지금 기준은 `docs/handoff/review_handoff_2026-10-11b.md`와 `docs/handoff/role_prompts/`예요. 아래 날짜(베타 10/31·마감 10/24·정식 12/19)·세션 10개·호박밭/유령 숲 일정·"API 모드 안 씀"은 낡았어요(A23-119·123, 10/11 role_prompts). 이 파일이 가리키는 `account_switch_2026-10-08_2100.md` 등 옛 인계 파일은 지웠어요. SPEC·`tools/claude_doc_api.py`가 이 파일을 가리켜 남겨 둬요.
+> (옛 안내) 2026-10-09 검수: 지금 기준은 맨 아래 §10(그 위 §8·§9는 오후 기록)과 `docs/handoff/role_prompts/`예요. §1~§7은 시간순 기록이고, 이 파일의 세션 id(§9 것 포함)는 모두 옛것이라 list_sessions로 찾아요. 아래 첫 줄의 읽는 순서(account_switch를 프롬프트 틀로)도 옛것 — 새 세션은 `role_prompts/` 파일로 만들어요.
 
 사용량이 끝나서 세션이 멈추거나 계정을 바꾸면 **이 파일 → AGENTS.md → docs/handoff/account_switch_2026-10-08_2100.md(세션 프롬프트 틀) → SPEC A23-86~90** 순서로 읽는다.
 
