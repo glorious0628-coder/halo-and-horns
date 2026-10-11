@@ -10,6 +10,9 @@ usage: py tools/halo_plan_v2.py
 import json
 import math
 import os
+import sys
+
+import halo_props_v2 as HP
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -646,7 +649,7 @@ KIT = dict(
 DRESSING = {
     "arrival": dict(paths="큰 길 흰 대리석+금 테 (통로 |x|<=12는 곧게, 소품 없음), 북쪽은 모래 해변",
                     plants="W1 폭포 옆(서) 나무 무리 3 + 흰 바위, 영웅상 둘레 꽃 고리, 해변 쪽은 낮은 풀",
-                    props="GuardPost (성문 동쪽 탑 옆: 문지기), Flagpole_1 (탑 옆, 짝 없음), 해변 쪽 낮은 Balustrade, PotFlowers",
+                    props="GuardPost (성문 안쪽 서쪽: 문지기 — 동쪽은 탑이라 비대칭, 동쪽 발판·채움 빛 피함), Flagpole_1 (탑 옆, 짝 없음), 영웅상 꽃 고리",
                     water="W1 1단 폭포 -> 바다 (halo_waterfx), 시냇물 하구",
                     edge="동쪽 큰 탑+등불 1 / 서쪽 W1 폭포+나무 무리+등불 2 (규칙 7)",
                     light="성문 안쪽 채움 빛 (FILL_LIGHTS, 앞면 햇빛 0%)", empty="스폰 원 둘레 잔디 (통로 밖)"),
@@ -683,6 +686,17 @@ DRESSING = {
     "lookout": dict(paths="전망 탑 앞 마당", plants="가장자리 8칸 안엔 낮은 것만 (하늘·흰 꽃)", props="전망 탑 (ImportHold 탑 A/B/C), BenchB, PhotoDisc",
                     water="-", edge="난간 + 탑", light="탑 아래 은은한 빛", empty="탑 남쪽 잔디"),
 }
+# 검수 10/11 사진 판정에서 5단계로 미룬 것 (입힐 때 같이 고침)
+STAGE5_FIXES = [
+    "길 두 겹 금지: door_House_Garden3 오른쪽처럼 헤링본 포장(지형) 위에 두꺼운 흰 디딤돌이 또 깔린 곳 — 포장 길이면 디딤돌 빼고, "
+    "디딤돌 길은 잔디 위에만·얇게·땅에 반쯤 묻게 (skeleton_ground 3등급 돌 + halo_blockout 3등급 포장 중 하나만)",
+    "반 잘린 디딤돌: door_House_Cliff4·Garden3 — 층 턱·땅에 파묻힌 돌은 턱 위로 올리거나 뺌",
+    "빵집·주스 사진의 하늘색 기둥 = 표시 판(Markers)이면 OK, 6단계 전에 숨김 확인",
+    "바위 테가 옆에서 검고 두꺼운 곧은 띠 → 색·튀어나온 바위로 다듬기",
+    "under_side_close 파란 점 2개(LOD 티) 지우기",
+    "섬 받침 -48 평평 → 뾰족한 떠 있는 바위 아랫면 (2차 됨, 사진 확인)",
+    "새 섬 폭포: halo_waterfx가 옛 HaloTerrainStore Waterfalls를 읽음 → plan v2 falls(W1·W2·W3)로 바꿈",
+]
 # the gate's inner face never gets direct sun (front_sun 0%): warm fill lights there (검수 10/11), outside the spawn corridor
 FILL_LIGHTS = [
     dict(at=(-15, -347), kind="등불 (따뜻한 PointLight)", note="성문 안쪽 서"),
@@ -715,6 +729,11 @@ def lamp_spots(blds):
         for w in WATER["pools"]:
             if math.hypot(x - w["at"][0], z - w["at"][1]) < w["r"] + 1.5:
                 return False
+        # 5단계 (10/11): never in the middle of another road, alley or door path
+        for r2 in ROADS:
+            for i in range(len(r2["pts"]) - 1):
+                if seg_dist((x, z), r2["pts"][i], r2["pts"][i + 1]) < r2["w"] / 2 + 0.6:
+                    return False
         return all(math.hypot(x - q[0], z - q[1]) >= 8 for q in spots)
 
     k = 0
@@ -735,9 +754,11 @@ def lamp_spots(blds):
                 d += nxt - acc
                 acc = 0.0
                 sd = sides[k % len(sides)]
-                x, z = ax + ux * d - uz * off * sd, az + uz * d + ux * off * sd
-                if ok(x, z):
-                    spots.append((round(x, 1), round(z, 1)))
+                for sd2 in (sd, -sd):  # the other side when this one is an alley / door path / building
+                    x, z = ax + ux * d - uz * off * sd2, az + uz * d + ux * off * sd2
+                    if ok(x, z):
+                        spots.append((round(x, 1), round(z, 1), r["id"]))
+                        break
                 k += 1
                 nxt = gaps[k % len(gaps)]
             acc += L - d
@@ -751,11 +772,11 @@ def lamp_spots(blds):
                         out_s = -1 if turn > 0 else 1
                         x, z = bx - uz * off * out_s, bz + ux * off * out_s
                         if ok(x, z):
-                            spots.append((round(x, 1), round(z, 1)))
+                            spots.append((round(x, 1), round(z, 1), r["id"]))
     for y in YARDS:
         x, z = y["at"][0] + y["r"] * 0.7, y["at"][1] + y["r"] * 0.7
         if ok(x, z):
-            spots.append((round(x, 1), round(z, 1)))
+            spots.append((round(x, 1), round(z, 1), y["id"]))
     return spots
 
 
@@ -941,7 +962,7 @@ def draw_map(blds, lamps=()):
             cx, cy = P(new[0], new[2])
             d.rectangle([cx - 5, cy - 5, cx + 5, cy + 5], fill=(30, 30, 30))
     # stage 5 lamps (small warm dots) and the gate's fill lights (orange)
-    for x, z in lamps:
+    for x, z, _src in lamps:
         cx, cy = P(x, z)
         d.ellipse([cx - 3, cy - 3, cx + 3, cy + 3], fill=(255, 214, 90), outline=(150, 110, 20))
     for f in FILL_LIGHTS:
@@ -1098,10 +1119,14 @@ def main():
     blds = build_list()
     ROADS.extend(door_spurs(blds))
     msgs, pairs, land, pave, sight = checks(blds)
+    lamps = lamp_spots(blds)
+    props = HP.resolve(sys.modules[__name__], blds, lamps)
+    pmsgs = HP.check(sys.modules[__name__], blds, props)
+    msgs += pmsgs
+    print(f"[props] {sum(1 for p in props if not p.get('auto'))} props + {sum(1 for p in props if p.get('auto'))} lamps, issues {len(pmsgs)}")
     for k, v in sight.items():
         print("[gate view]", k, v)
     sun = front_sun(blds)
-    lamps = lamp_spots(blds)
     print(f"[dressing] lamp spots {len(lamps)}, fill lights {len(FILL_LIGHTS)}, districts {len(DRESSING)}")
     for k, v in sorted(sun.items(), key=lambda kv: kv[1]["front_lit_pct"]):
         print("[front sun]", k, v)
@@ -1114,6 +1139,7 @@ def main():
     draw_panel(im, d, blds, stats)
     im.save(OUT_MAP)
     draw_district_map(blds).save(OUT_DMAP)
+    HP.draw(sys.modules[__name__], blds, props, pmsgs).save(HP.OUT_PMAP)
     plan = dict(
         note="빛 마을 v2 1단계 '이야기와 구역' (SPEC A23-121, 이미지 생성 1, 2026-10-11). 옛 섬·옛 plan은 쓰지 않음. 좌표 x,z(스터드), "
              "북 = z -330 성문/교차로 다리. y = 그 구역 땅 높이(y_to = 경사 끝). 건물 yaw = 문이 보는 방향(0 = 북 +z, 90 = 동 +x). "
@@ -1130,7 +1156,12 @@ def main():
         bridges=BRIDGES,
         yards=[{**y, "at": list(y["at"])} for y in YARDS],
         dressing=dict(note="5단계 입히기 재료 목록(검수 10/11). 키트 이름 = tools/halo_props_list.txt, 규칙 = acnh 12규칙", kit=KIT,
-                      by_district=DRESSING, lamps=[list(p) for p in lamps],
+                      by_district=DRESSING, lamps=[[p[0], p[1]] for p in lamps],
+                      props_note="A23-117: 소품 하나하나 = 키트·자리(x,z)·yaw(보는 쪽, 0 = 북)·크기·무엇에 붙었나(anchor)·이유(why). "
+                                 "P = 손으로 정한 것(tools/halo_props_v2.py SPEC), L = 자동 등불(규칙 6). 높이는 놓을 때 지형에서 읽음(ground_y는 구역 높이). "
+                                 "NEW_ 키트 = 아직 없는 것(new_kits), 지도 art/review/world/halo_v2/halo_props_map.png",
+                      props=props, new_kits={k: v[0] for k, v in HP.NEW_KITS.items()},
+                      stage5_fixes=STAGE5_FIXES,
                       fill_lights=[{**f, "at": list(f["at"])} for f in FILL_LIGHTS],
                       uplights=["Cathedral 앞 마당 바닥 2(은은히 위로)", "Tower_GateEast 아래 1", "Tower_Lookout 아래 1", "Castle 정면 아래 2"],
                       photo_discs=["대성당 계단 꼭대기", "다리 B1 위", "폭포 웅덩이 벤치", "전망 탑 꼭대기", "성벽 전망", "북동 곶 벤치"],
