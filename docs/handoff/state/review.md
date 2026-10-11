@@ -64,3 +64,4 @@
 - 크레딧(대략): Firefly 잔액 ~3,700 예상(무기 84장·아이콘 진행 중), Tripo 15,765(웹 2).
 - (01:38) 무기 4면 112장 디자인 검수 통과 → **Tripo 무기 28개(≈1,540점) 승인, 아침에 이미지 생성 4가 시작**(Blender 날 두께 = 개발 1 쥐기 비율 공식). 새 집 7채 4면은 Garden7 오른쪽 1장 남음.
 - (01:39) 아침 병합 1번: fix/spawnclear-rim **0a1e3e75**(town_quests Pick 정규식 고침 포함, 게임성 검수 통과 — main의 town_quests STATIC 빨강 풀림). 판정표 6adf2c82 sweep은 아침에 다시.
+- (01:43) **정정: 메인 Studio 저장 이미 끝** — 메인 반영 1이 37a5dc62 sync·확인(probe 전 구역 0, 웅덩이 테두리 안 0, 가방 아이콘 8칸 그림) 후 Save As 01:38:53, SHA d1b561a5… = place/, push 21193b6. 아침 1번은 spawnclear-rim 0a1e3e75 병합부터.
