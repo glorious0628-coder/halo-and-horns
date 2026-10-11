@@ -1,5 +1,5 @@
 {
-  "checks": 98,
+  "checks": 108,
   "failed": 0,
   "mutations": [
     {
@@ -149,6 +149,41 @@
     },
     {
       "name": "tight captions keep the styled text floor",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the workbench prompt for every player",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the prompt's words never written",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an unknown key shown as itself",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a prompt added after the tag gets no words",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the prompts ignore a faction / class change",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the prompts ignore the language",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a bench tagged later is never watched",
       "applied": true,
       "caught": true
     },

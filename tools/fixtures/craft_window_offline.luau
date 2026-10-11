@@ -127,7 +127,9 @@ end
 local CLOCK = 100
 local attrs = { Class = "Warrior", Faction = "Neutral", ClassChosen = true, Level = 1, BankGold = 1200, CarriedGold = 34,
 	AutoCombatUnlocked = false, AutoCombatEnabled = false }
-local player = { GetAttribute = function(_, k) return attrs[k] end }
+local attrSig = {} -- [attribute] = the module's change handler
+local player = { GetAttribute = function(_, k) return attrs[k] end,
+	GetAttributeChangedSignal = function(_, k) return { Connect = function(_, f) attrSig[k] = f end } end }
 local rootPos = vec(0, 0, 0)
 local hasRoot = true
 local alive = true
@@ -143,7 +145,11 @@ local Util = {
 	IsAlive = function() return alive end,
 }
 local L10nReg = {}
-local L10n = { Register = function(path, t) L10nReg[path] = t return t end }
+local WORDS = { en = { ["Config.Craft.Text.Prompt"] = "Craft", ["Config.Craft.Text.Stations.Smith"] = "Anvil",
+	["Config.Craft.Text.Stations.Alch"] = "Cauldron" }, ko = { ["Config.Craft.Text.Prompt"] = "제작", ["Config.Craft.Text.Stations.Smith"] = "모루" } }
+local curLang = "en"
+local L10n = { Register = function(path, t) L10nReg[path] = t return t end,
+	T = function(key, _, lang) return (WORDS[lang] or WORDS.en)[key] or key end, LangOf = function() return curLang end }
 local handlers = {}
 local remotes = { FindFirstChild = function(_, name)
 	return { IsA = function(_, c) return c == "RemoteEvent" end,
@@ -156,7 +162,25 @@ local function benchPart(role, x)
 	return { Position = vec(x, 0, 0), IsA = function(_, c) return c == "BasePart" end,
 		GetAttribute = function(_, k) return k == "Role" and role or nil end }
 end
-local CS = { GetTagged = function(_, tag) return tag == Config.Craft.StationTag and benches or {} end }
+local tagAdded, tagRemoved = nil, nil
+local CS = { GetTagged = function(_, tag) return tag == Config.Craft.StationTag and benches or {} end,
+	GetInstanceAddedSignal = function() return { Connect = function(_, f) tagAdded = f end } end,
+	GetInstanceRemovedSignal = function() return { Connect = function(_, f) tagRemoved = f end } end }
+-- a workbench part with the server's "CraftPrompt" (ActionText / ObjectText "", the two keys as attributes)
+local function promptPart(action, object)
+	local a = { ActionKey = action, ObjectKey = object }
+	return { Name = "CraftPrompt", ActionText = "", ObjectText = "", Enabled = true,
+		IsA = function(_, c) return c == "ProximityPrompt" end, GetAttribute = function(_, k) return a[k] end }
+end
+local function station(role, x, prompt)
+	local s = { Position = vec(x, 0, 0), Kids = {}, Prompt = prompt }
+	s.IsA = function(_, c) return c == "BasePart" end
+	s.GetAttribute = function(_, k) return k == "Role" and role or nil end
+	s.FindFirstChild = function(_, n) return s.Kids[n] end
+	s.ChildAdded = { Connect = function(_, f) s.OnChild = f return { Disconnect = function() s.OnChild = nil end } end }
+	if prompt then s.Kids.CraftPrompt = prompt end
+	return s
+end
 local anvil = nil -- the Crossroads anvil part while it exists
 local function node(children)
 	return { FindFirstChild = function(_, n) return children[n] end }
@@ -175,6 +199,11 @@ local mods = { Config = Config, Util = Util, L10n = L10n }
 
 local env = setmetatable(table.clone(base), { __index = getfenv() })
 env.game, env.Instance, env.workspace = game, Instance, ws
+-- the doubles with an IsA method are Instances (benches, prompts, the recording tree)
+env.typeof = function(v)
+	if type(v) == "table" and type(v.IsA) == "function" then return "Instance" end
+	return typeof(v)
+end
 env.require = function(n) return mods[n] end
 env.os = setmetatable({ clock = function() return CLOCK end }, { __index = os })
 local spawned = {}
@@ -221,6 +250,7 @@ local function artObj(class, name, props)
 	return o
 end
 local barFraction = nil
+local langFn = nil -- UIKit.LangChanged's handler
 local UIKit = {
 	ArtImage = function(name, props) return artObj("ImageLabel", name, props) end,
 	ArtFrame = function(name, props) return artObj("Frame", name, props) end,
@@ -241,6 +271,8 @@ local UIKit = {
 		return o
 	end,
 	StyleText = function(l, style) l.Style = style end,
+	Lang = function() return curLang end,
+	LangChanged = { Connect = function(_, f) langFn = f end },
 	Tx = function(t, key, ...)
 		local s = t[key .. "En"] or t[key]
 		if type(s) ~= "string" then return "" end
@@ -531,8 +563,44 @@ attrs.Faction = "Neutral"
 close()
 -- the poll loop
 check(#spawned == 0, "no loop before Start")
+local smithP = promptPart("Config.Craft.Text.Prompt", "Config.Craft.Text.Stations.Smith")
+local alchP = promptPart("Config.Craft.Text.Prompt", "Config.Craft.Text.Stations.Alch")
+local oddP = promptPart("Config.Craft.Text.Nope", nil)
+benches = { station("Smith", 400, smithP), station("Alch", 420, alchP), station("Smith", 440, oddP) }
+attrs.Faction, attrs.Class, attrs.ClassChosen = "Neutral", "Warrior", true
 CraftWindow.Start()
 CraftWindow.Start()
 check(#spawned == 1, "Start runs one watch loop")
+
+
+------------------------------------------------------------------ 6. the workbench prompts (개발 3 dev3-craft2: CraftPrompt with ActionKey / ObjectKey)
+local w1, w2 = CraftWindow.Words("Config.Craft.Text.Prompt", "Config.Craft.Text.Stations.Smith", "en")
+check(w1 == "Craft" and w2 == "Anvil", "the prompt's words from its keys", w1 .. "/" .. w2)
+w1, w2 = CraftWindow.Words("Config.Craft.Text.Nope", nil, "en")
+check(w1 == "" and w2 == "", "an unknown / missing key is no word (never the key itself)")
+check(smithP.ActionText == "Craft" and smithP.ObjectText == "Anvil" and alchP.ObjectText == "Cauldron",
+	"Start writes every bench's words", smithP.ActionText .. "/" .. smithP.ObjectText)
+check(oddP.ActionText == "" and oddP.ObjectText == "", "a bench with unknown keys keeps its blank words")
+check(smithP.Enabled == true and alchP.Enabled == false, "a blacksmith sees the anvil's prompt, not the cauldron's")
+attrs.Faction = "Halo"
+attrSig.Faction()
+check(smithP.Enabled == false and alchP.Enabled == false, "not an artisan: no workbench prompt (it would only say NotArtisan)")
+attrs.Faction, attrs.Class = "Neutral", "Mage"
+attrSig.Class()
+check(smithP.Enabled == false and alchP.Enabled == true, "an alchemist: the cauldron's prompt only")
+curLang = "ko"
+langFn("ko")
+check(alchP.ActionText == "제작" and smithP.ObjectText == "모루", "the language changes the words", alchP.ActionText)
+curLang = "en"
+local late = station("Alch", 500, nil)
+tagAdded(late)
+local lateP = promptPart("Config.Craft.Text.Prompt", "Config.Craft.Text.Stations.Alch")
+late.Kids.CraftPrompt = lateP
+late.OnChild(lateP)
+check(lateP.ActionText == "Craft" and lateP.ObjectText == "Cauldron" and lateP.Enabled == true,
+	"a bench tagged later and its prompt added after the tag get the words")
+tagRemoved(late)
+check(late.OnChild == nil, "a bench that leaves stops being watched")
+attrs.Class = "Warrior"
 
 print(string.format("CRAFT_WINDOW_SUMMARY checks=%d failed=%d", checks, failed))

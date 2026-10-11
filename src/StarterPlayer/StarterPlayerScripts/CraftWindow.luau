@@ -10,11 +10,15 @@
 --             and [Forge] -> c->s CraftStart(recipeId). The server answers CraftSession: CraftView's ring screen opens
 --             and closes this window; after the ring this window opens again on the same recipe
 --   bottom  : my gold (bank + carried; a craft spends carried first, then the bank - ProgressionService.SpendGold)
--- Opened by the menu (artisans only, while Config.Features.Crafting is on) and by the server's OpenPanel("Craft").
+-- Opened by the menu (artisans only, while Config.Features.Crafting is on) and by the server's OpenPanel("Craft") (a
+-- workbench's "CraftPrompt": the server's ProximityPrompt on each CraftStation part with ActionText / ObjectText "" and
+-- the keys ActionKey / ObjectKey - this module writes its words in my language and shows it only to an artisan of the
+-- bench's Role, 개발 3 dev3-craft2).
 -- Display only: CraftService.TryStart checks it all again and its refusals come as notices (no second line here, A23-130).
 -- Text: short English in TXT (L10n key "CraftWindow.TXT.*", A23-111); names through Config (UIKit.Tx). PC first (A23-98).
 -- Public API: CraftWindow.Init(C), CraftWindow.Start(), CraftWindow.IsReady(), CraftWindow.CanOpen(), CraftWindow.Open(id?),
--- CraftWindow.OnInfo(payload), CraftWindow.Forge(id), CraftWindow.Watch(); pure: CraftWindow.RoleOf(ctx),
+-- CraftWindow.OnInfo(payload), CraftWindow.Forge(id), CraftWindow.Watch(), CraftWindow.RefreshStations(); pure:
+-- CraftWindow.Words(actionKey, objectKey, lang), CraftWindow.RoleOf(ctx),
 -- CraftWindow.Entries(ctx) -> entries, CraftWindow.Reason(entry, ctx) -> Config.Craft.Text key?, CraftWindow.Detail(entry,
 -- ctx) -> view, CraftWindow.LevelView(ctx) -> { Text, Bar, Fraction }
 local Players = game:GetService("Players")
@@ -69,11 +73,13 @@ local L = {
 	PendingTimeout = 3, -- s without CraftSession -> the start stops waiting (a refusal came as a notice)
 	Poll = 0.25, -- s: the ring watch (reopen after it)
 	Anvil = { "Map", "Landmarks", "ArtisanGuild", "Anvil" }, -- the server's fallback bench (ShopService.Anvil)
+	Prompt = "CraftPrompt", ActionKey = "ActionKey", ObjectKey = "ObjectKey", -- the bench's prompt (CraftService)
 }
 
 -- state: Info = the last CraftInfo (validated); Sel = the picked recipe id; Await = a start sent { Id, At, Phase =
 -- "sent" | "ring" } (the ring screen opened -> this window comes back after it); ReadyAt = os.clock() of the next start
-local S = { Ready = false, Info = nil, InfoVer = 0, Sel = nil, Await = nil, ReadyAt = 0, LastArg = nil, Started = false }
+local S = { Ready = false, Info = nil, InfoVer = 0, Sel = nil, Await = nil, ReadyAt = 0, LastArg = nil, Started = false,
+	Stations = {} } -- [bench part] = its ChildAdded connection (the prompt the server adds)
 local VIEW = {} -- the open window: Kit, Parent, Head, Body, Bottom, List, Detail, Sig
 
 ---------------------------------------------------------------------------------------------------- small helpers
@@ -810,6 +816,84 @@ local function hook(name, fn)
 	end)
 end
 
+---------------------------------------------------------------------------------------------------- workbench prompts
+-- the prompt's two words from its keys (a missing / empty / unknown key = no word; GatherView.Words' rule)
+function CraftWindow.Words(actionKey, objectKey, language)
+	local function word(key)
+		if type(key) ~= "string" or key == "" then return "" end
+		local ok, out = pcall(L10n.T, key, nil, language)
+		if not ok or type(out) ~= "string" or out == key then return "" end -- an unknown key comes back as itself
+		return out
+	end
+	return word(actionKey), word(objectKey)
+end
+
+local function lang()
+	local ui = C and C.UIKit
+	if type(ui) == "table" and type(ui.Lang) == "function" then
+		local ok, l = pcall(ui.Lang)
+		if ok and (l == "ko" or l == "en") then return l end
+	end
+	local ok, l = pcall(L10n.LangOf, LocalPlayer)
+	return ok and l or "en"
+end
+
+-- one workbench: its prompt's words, and the prompt only for an artisan of the bench's role (another player would only
+-- get the NotArtisan notice from it)
+local function applyStation(part)
+	if typeof(part) ~= "Instance" or not part:IsA("BasePart") then return end
+	local prompt = part:FindFirstChild(L.Prompt)
+	if not (prompt and prompt:IsA("ProximityPrompt")) then return end
+	local action, object = CraftWindow.Words(prompt:GetAttribute(L.ActionKey), prompt:GetAttribute(L.ObjectKey), lang())
+	if action ~= "" and prompt.ActionText ~= action then prompt.ActionText = action end
+	if object ~= "" and prompt.ObjectText ~= object then prompt.ObjectText = object end
+	local mine = CraftWindow.RoleOf({ Faction = attr("Faction"), ClassChosen = attr("ClassChosen") == true, Class = attr("Class") })
+	local show = mine ~= nil and mine == part:GetAttribute("Role")
+	if prompt.Enabled ~= show then prompt.Enabled = show end
+end
+
+-- every workbench again (my faction / class or the language changed)
+function CraftWindow.RefreshStations()
+	local ok, list = pcall(function() return CollectionService:GetTagged(Config.Craft.StationTag) end)
+	for _, part in ok and list or {} do
+		local okPart, err = pcall(applyStation, part)
+		if not okPart then Util.Warn(TAG, "station: " .. tostring(err)) end
+	end
+end
+
+-- a bench that streams in / is tagged later, and its prompt that the server adds after the tag
+local function watchStation(part)
+	if typeof(part) ~= "Instance" or not part:IsA("BasePart") or S.Stations[part] then return end
+	S.Stations[part] = part.ChildAdded:Connect(function(child)
+		if child.Name == L.Prompt then pcall(applyStation, part) end
+	end)
+	pcall(applyStation, part)
+end
+
+local function watchStations()
+	local tag = Config.Craft.StationTag
+	local ok, list = pcall(function() return CollectionService:GetTagged(tag) end)
+	for _, part in ok and list or {} do watchStation(part) end
+	pcall(function()
+		CollectionService:GetInstanceAddedSignal(tag):Connect(watchStation)
+		CollectionService:GetInstanceRemovedSignal(tag):Connect(function(part)
+			local conn = S.Stations[part]
+			if conn then pcall(function() conn:Disconnect() end) end
+			S.Stations[part] = nil
+		end)
+	end)
+	for name in CraftWindow.RoleAttrs do
+		LocalPlayer:GetAttributeChangedSignal(name):Connect(CraftWindow.RefreshStations)
+	end
+	local ui = C and C.UIKit
+	if type(ui) == "table" and ui.LangChanged and type(ui.LangChanged.Connect) == "function" then
+		ui.LangChanged:Connect(CraftWindow.RefreshStations)
+	end
+end
+
+-- the attributes that decide my craft role (the prompts follow them)
+CraftWindow.RoleAttrs = { Faction = true, Class = true, ClassChosen = true }
+
 function CraftWindow.IsReady()
 	return S.Ready
 end
@@ -843,6 +927,7 @@ end
 function CraftWindow.Start()
 	if S.Started then return end
 	S.Started = true
+	watchStations()
 	task.spawn(function()
 		while true do
 			task.wait(L.Poll)

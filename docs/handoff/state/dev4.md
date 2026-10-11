@@ -22,7 +22,7 @@ GatherView.luau(노드 글 ActionKey/ObjectKey, 나만 쉬는 노드 흐리게).
 ## ③-3 제작 창 — dev4-craft (게임성 검수 보고 대기)
 - `CraftWindow.luau`(Panels 창 "Craft": 제작 Lv+XP 막대, 내 역할 레시피 목록, 재료 have/need·골드·이유 한 줄 = Config.Craft.Text, [Forge] = CraftStart, 고리 끝나면 같은 레시피로 다시 열림, 자리 거리 Far), Panels(opts.Menu 메뉴 줄 · 아이콘 IconHammer), ClientMain ORDER(CraftView 다음). 설계 hammer 문서 §6.
 - 시험 `tools/test_craft_window.py` 97·31/31. UiSandbox 사진 pc(10장, 잘림 3개 고침) → 고친 뒤 사진 pc2(2번째 칸 요청함). 사진 `tools/play_craft_window_photos.py <폴더> [--click]`(UiSandbox, 최종 검수 승인 뒤).
-- 개발 3에 요청할 것: CraftInfo `On`(지금 되는 레시피 id), 꺼진 레시피 시작 알림, 작업대 G 프롬프트 → OpenPanel("Craft").
+- 개발 3이 넣음(origin/dev3-craft2 e16569cf, 게임성 검수 시험 중): CraftInfo.On, NotReady 알림, CraftStation마다 "CraftPrompt"(ActionKey/ObjectKey) → OpenPanel("Craft"). 화면 쪽: 프롬프트 글을 내 언어로 쓰고 그 역할 장인에게만 보이게(CraftWindow.RefreshStations) — 시험 108·39/39.
 
 ## 그 뒤 큐
 - ④ 연금 계약(개발 3 origin/dev3-alchemy 09a149d0, 설계 docs/design/alchemy_server_2026-10-12.md §4, 스위치 Config.Features.Tonics 꺼짐): Loot.Items Kind "Tonic" 4종(MightTonic·GuardTonic·LuckyTonic·WisdomTonic, Icon IconMightTonic…) → 가방 Use 탭 [Drink] = c->s UseTonic(itemId), 거절 Config.Alchemy.Text.TwoMax / NoTonic. 도는 물약 = 속성 Buff_<itemId>(끝 서버 시각, 0 없음) → 작은 아이콘·남은 시간(3분, 2개까지). 레시피 A1~A4(Kind Item, 결과 병 수 = N + 망치 +N). 퀵슬롯 물약은 개발 2·1(검수가 순서).
