@@ -8319,7 +8319,8 @@ Config.SpawnClear = {
 	PassRule = true,
 	Pass = { "Flower", "Grass", "Tuft", "Clover", "Lily", "Petal", "Puddle", "Wisp", "RedEye", "GlowEye", "Sparkle", "Mist",
 		"Falls", "Foam", "StepStone" },
-	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box" }, -- a flower cart / pot is furniture
+	-- a flower cart / pot is furniture; a puddle's stone rim (Kit_M_PuddleRim, 최종 검수 2026-10-12) is a rock
+	NotPass = { "Cart", "Pot", "Stand", "Basket", "Box", "Rim" },
 }
 
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
