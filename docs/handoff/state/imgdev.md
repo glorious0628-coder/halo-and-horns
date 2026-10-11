@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 1묶음 10개 ID 기록·전달)
+
+- **껍데기 메시 10개 올림(사용자 3D 가져오기) -> ID 읽음·임시 파트 지움**(WorldKit Workspace Hull_* 10개 destroyed, 남은 0). 기록: art/models/worldkit/prop_hull_assets.json(키트별 D2_hull_035, D2_centre_035 = OBJ 상자 중심, import_pos) + asset_ids.json `PropHull035_<키트>`. 메시 피벗 = 상자 중심(크기 OBJ와 같음) -> 놓을 때 MeshPart.CFrame = 키트 피벗 * CFrame.new(D2_centre_035). 나머지 46개는 사진 판정 뒤 10개씩.
+
 # 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 10개 = 사용자 가져오기 대기)
 
 - **껍데기 메시 1묶음 10개(최종 검수 승인, 이미지 생성 4 "고침 뒤, 올려")**: CreateAssetAsync는 이 Studio에서 "not available yet"(올라간 것 없음). -> **사용자가 WorldKit(창 이름 'Game')에서 3D 가져오기**: 폴더 C:/Users/glori/Documents/Roblox/Game/build/hull_import (Hull_<키>.obj 10개, Ctrl+A). 들어오면 `STUDIO_NAME=Game py tools/read_imported_hulls.py --clean` -> MeshId·위치 읽고 art/models/worldkit/prop_hull_assets.json 기록 + 임시 파트 지움 -> 이미지 생성 4에 ID + 피벗(import_pos vs D2_centre 비교)을 돌려줌. 나머지 46개는 사진 판정 뒤 10개씩 다음 가져오기에.
