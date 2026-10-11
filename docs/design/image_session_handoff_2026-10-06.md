@@ -1,6 +1,7 @@
 # 이미지 세션 인계 (검토 세션, 2026-10-06)
 
 새 "이미지" 세션이 그림을 맡을 때 먼저 읽는 문서. 규칙의 원본은 `AGENTS.md`(Art workflow·Hard rules)와 `docs/design/visual_direction_2026-10-05.md`(스타일·묶음 0–21), 프롬프트는 `docs/design/firefly_prompt_pack_2026-10-05.md`.
+> 10/11 갱신(Firefly 요령 절은 지금도 쓸 만, 나머지는 기록용): 3D는 Tripo HD H3.1 앞·뒤·좌·우 4면 → Blender 손보기(필수) → Roblox 재질(A23-122·125), 건물 큰 덩어리는 Studio 파트 골격(A23-120), 3D 생산은 이미지 생성 3. 이미지 생성 1은 세계·장소 배치(`build/WorldKit.rbxlx`). 구역 순서 빛 → 뿔 → 교차로 → 초원 → 새 구역(수정 동굴·산호 해안) → 숲 → (유적)(A23-119), 호박밭·유령 숲은 내년 10월까지 숨김. 고른 최종 그림은 High(5)·후보는 Medium(0)은 그대로.
 > 2026-10-09 검수: '이미지 세션' = 지금 **이미지 생성 1**(세계·장소 디자인 리드, 큰 세계 그림, 3D 세계 키트·Tripo, WorldKit — AGENTS Roles). 자잘한 그림은 이미지 생성 2, '검토 세션' = 검수, 메인 Studio 반영은 메인 반영 1. 지금 할 일은 `docs/handoff/role_prompts/06_img1.md`, `docs/design/halo_town_plan_2026-10-09.md`.
 
 ## 역할 나누기

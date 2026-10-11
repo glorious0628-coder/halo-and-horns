@@ -1,5 +1,7 @@
 # 빛 마을 계획 (시안 → 땅 + 소품 + 배치) — 이미지 생성 1, 2026-10-09 (검수 A23-97 후속, 사용자 구역 순서 ①)
 
+> 기록용(낡음) 10/11: 사용자가 빛 마을을 처음부터 다시 하라고 했다(A23-121) — 지금 계획은 `docs/design/halo_restart_2026-10-11.md`(+ `halo_plan_v2_2026-10-11.json`, `halo_fixed_points_v2_2026-10-11.md`). 이 문서의 '건물·탑·문·성채·집을 전부 새 Tripo로' 표와 단 높이·순서는 **따르지 않는다**: 건물 몸통(벽·바닥·계단·기둥)은 Studio 파트 골격 + 타일 MaterialVariant(A23-120), Tripo는 장식·식물·조각만, Tripo는 HD H3.1 멀티뷰 4면 → Blender 손보기(필수) → Roblox 재질(A23-122·125), 큰 성은 돔 없이(A23-120). 시안에서 읽은 것(흰 대리석·금·하늘색 천)과 분수 이름 계약(`Town_Halo_Fountain3`)만 참고.
+
 시안: `art/review/s2/place_HaloTown_sheet.jpg` (원본 `art/out/s2/places/HaloTown_{whole,p1_entrance,p2_landmark,p3_plaza,p4_edge,p5_road}_src.png`).
 지금 모델 대조: `art/review/world/halo_kit_old_3d_sheet_2026-10-09.jpg`(가져와 둔 Town_Halo_* 15종 3D 렌더) → **전부 옛 화풍(구름 받침·회색 돌·날개 장식·파란 망토 기사)이라 시안(흰 대리석 + 금 돔 + 후광 링 + 하늘색 천)과 안 맞는다 → 마을 건물·탑·문·성채·동상·다리·분수·나무는 새 Tripo로 다시 만든다.** (분수·가로등 같은 작은 것도 시안 모양으로.)
 

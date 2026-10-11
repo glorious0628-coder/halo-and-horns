@@ -1,5 +1,7 @@
 # 빛 마을 apply 계획 — 메인 반영 1 (2026-10-10)
 
+> 기록용(낡음) 10/11: 이 apply 계획은 **멈춤** — 빛 마을 처음부터 다시(A23-121), 메인 중간 적용 없음, 새 마을은 6단계에서 한 번에(`halo_restart_2026-10-11.md`, 고정점은 `halo_fixed_points_v2_2026-10-11.md`). 옛 plan 기준 점검·되돌리기 메모로만 본다. 규칙(공유 트리는 `py tools/push_paths.py`, Save to File As → 해시 → `place/` 복사, Publish 금지)은 AGENTS.md 그대로.
+
 근거: `docs/design/halo_town_plan_2026-10-09.md`, 점검표 `docs/design/zone_check_halo_2026-10-10.md`(mainapply 줄: #13 #14 #15 #29 #48 #52 #66 #67 #68 #69, 그리고 #3·#8 Bridge_Halo). 시작 조건 = 이미지 생성 1의 가져오기 묶음(새 Tripo 모델이 WorldKit3D에 들어오고 kit_args가 준비됨). 그 전에는 메인 Studio 땅·모델을 안 건드린다.
 
 ## 0. 앞 점검 (Edit, 저장 전 상태 기록)

@@ -1,5 +1,7 @@
 # 잃어버린 물건 (Lost & Found) — 서버 (게임성 개발 3, 2026-10-10)
 
+> 10/11 갱신: 호박밭(핼러윈) 줄 'Lost Candy Bag'은 호박밭·유령 숲 숨김(A23-119)으로 안 나옴(`halloween_hidden_2026-10-11.md`). 새 구역(수정 동굴·산호 해안)에 물건을 더할지는 그 구역을 만들 때 정한다.
+
 `docs/design/content_beyond_10min_2026-10-08.md` §C, 빛 마을 점검표 #45. 코드: `src/ServerScriptService/LostFoundService.luau`, 설정 `Config.LostFound` + 카드 4종 `Config.ChoiceCard.Kinds.Lost*`, 퀘스트 목록 연결 `QuestService.publish`. 시험: `py tools/test_lost_found.py`.
 
 **기본은 꺼짐** (`Config.LostFound.Enabled = false`). RELEASE_PLAN이 "먼저 뺄 것"으로 적은 항목이고, 퀘스트 창이 새 줄 종류 `Find`를 그리고 물건 그림 4장이 들어와야 켜진다. 켜는 것은 검수 결정(또는 실시간 스위치).

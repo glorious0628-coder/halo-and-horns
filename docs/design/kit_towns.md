@@ -1,5 +1,7 @@
 # 빛의 성채·뿔 소굴 키트 목록 (A23-47, 이미지 생성 1 초안 2026-10-06)
 
+> 10/11 갱신(기록용 초안): 빛 마을은 처음부터 다시(A23-121, `halo_restart_2026-10-11.md`) — 아래 표와 `halo_town_plan_2026-10-09.md`의 '건물을 새 Tripo로' 방식은 낡음. 건물 큰 덩어리는 Studio 파트 골격 → 타일·금 입히기 → Tripo 장식(A23-120), Tripo는 HD H3.1 4면 → Blender 손보기(필수) → Roblox 재질(A23-122·125). 뿔 마을은 빛 마을 다음 차례.
+
 > 2026-10-09 검수: 지금 기준은 구역별 계획 — 빛 마을 `halo_town_plan_2026-10-09.md`(지금 구역 ①), 뿔 마을 `horns_town_plan_2026-10-09.md`(②). 시안 묶음(전체 1 + 부분 5, A23-93)대로 새 Tripo 모델(Halo_*·Horns_*)을 만든다 — 옛 Town_Halo_*는 시안과 안 맞아 임시로만 놓였고(zone_swap), 옛 Town_Horns_*는 시안과 대조해 쓸지 정함. 다른 구역 키트는 빌려 쓰지 않음(A23-96·97). 아래 표는 첫 초안.
 
 순서: 장면 시안(`art/prompts/Scene_HaloTown.txt`, `Scene_HornsTown.txt`) + 건물별 개성 시안(`art/prompts/Town_<Halo|Horns>_*.txt`, `Spawn_*.txt`) → 검수 100% → 사용자 → 고른 시안의 물건을 **한 장에 하나씩** 2D(3/4 앞모습, 전체가 그림 안, 단색 회색 배경, 글자 없음) → 누끼 → Tripo(중요 건물 multiview) → Blender 정면 렌더 비교 → WorldKit → ~~게임성 개발 1~~ 메인 반영 1(메인 Studio, 10/08부터).
