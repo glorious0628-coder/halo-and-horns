@@ -1,3 +1,10 @@
+# 이미지 개발 — 상태 (2026-10-12 오전: 큐)
+
+1. **천 v3b 고름(디자인 검수)** → 올리기 3장(fabric_v3/b)은 최종 검수 승인 뒤 → WorldKit HH_Fabric에 넣고 성문 배너 원경(fabric_v2_day_a와 같은 자리) + 100% 크롭. 너무 민무늬면 v3a로(내 눈, 알리기만). 사진은 이미지 생성 1이 WorldKit 되살린 뒤 화면 신청.
+2. **소품 바깥선 = 얇은 선 0.035 확정(사용자).** 이미지 생성 4가 껍데기 메시 묶음(≤10씩)을 넘기면 → 최종 검수 승인 확인 → 직접 보고 올림 → ID 돌려줌. 도구 tools/upload_hull_meshes.py(--thick 035; CreateAssetAsync가 이 환경에서 되는지는 첫 1개로 확인, 안 되면 최종 검수에 알리고 3D 가져오기(화면) 길을 물음). 규칙은 아래 '껍데기' 줄.
+3. **게임 아이콘 C_m2 High 마무리**가 오면 최종 검수 승인 뒤 올림.
+4. 2차 아이콘 5개(CrownDust·Glowcap·CraftRing·CraftTarget·CraftIngot) 승인 알림 오면 올림. 가지 imgdev-icons1(96371ff0)은 병합 대기.
+
 # 이미지 개발 — 상태 (2026-10-12 아침: 천 v3 후보 만듦, 판정 대기)
 
 - **천 v3 후보 a/b/c 파일로 만듦(올리기 안 함)**: tools/fabric_weave_v3.py → art/ui/halo_tile/fabric_v3/{a,b,c}/Halo_Fabric_{color,normal,rough}.png. 격자 대비 반(노멀 세기 반 포함) + 실 줄을 주기적 노이즈로 휘게 + 실마다 밝기·굵기 불균일 + 실 얼룩. a = 16실·휨 0.25, b = 24실(더 곱게)·휨 0.40, c = b + 대비 0.35. 비교 시트 art/review/imgdev/fabric_v3_compare_2026-10-12.jpg(v2 | a | b | c, 배너 파랑(104,170,240)에 해 왼쪽 위 단순 음영, 5×5·15×15칸) — v2는 규칙 격자가 보이고 v3는 격자 없이 천 결만. 디자인 검수 판정 대기 → 고르면 올리기 승인(최종 검수) 뒤 3장 올림 → WorldKit HH_Fabric 교체 + 낮 사진 비교 → 메인은 메인 반영 1.
