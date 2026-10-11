@@ -9,18 +9,25 @@ Writes <out> (Luau for WorldKit: Workspace.SkeletonTest.<name>_Skeleton), <out>.
 
 Spec (all lengths in studs; see tools/house_specs/*.json):
   name, src2d                      the 2D the house follows
-  plan     {"shape": "rect", "W", "D"} | {"shape": "oct", "HF", "XS", "DY", "D"} | {"shape": "round", "R", "seg"}
+  plan     {"shape": "rect", "W", "D"} | {"shape": "oct", "HF", "XS", "DY", "D"} |
+           {"shape": "round", "R", "seg" (32 = smooth), "flats": [polar deg, ...], "flat_w": 3.2 studs}
   Z0       plinth top = door sill (1.1)
-  storeys  [{"h", "win": {"w", "type": "arch"|"rect"}, "walls": {wall name: [u fractions]}}]   (bottom first)
+  storeys  [{"h", "win": {"w": glass width, "type": "arch"|"rect", "h": max glass height 4.6, "gap": 1.1 under the storey
+           line, "by_wall": {wall: w}}, "walls": {wall name: [u fractions]}}]   (bottom first); the gold frame, hood,
+           keystone, sill scale with w (g = 0.1 w + 0.08), two bars when w > 2.4; a window that does not fit its wall
+           edge (minus 0.3) is skipped with a warning
            wall names: rect = front, right, back, left (front holds the door); oct = front, front_r, right, back_r,
-           back, back_l, left, front_l; round = s0..s(seg-1), s0 faces front
+           back, back_l, left, front_l; round = s0..s(seg-1) (the one facing +y is "front") and w0.. = the flat facets
+           at "flats" (polar angle, 0 = +x, 90 = front; give them in the order you want w0, w1, ...); "@k" = k edges on
   door     {"w", "h", "double": bool}
   pilasters  true / false (turned along the corner bisectors; big gold capitals, band on each storey line)
-  towers   {"w", "h_extra", "finial": true} square corner towers on a rect plan (house 02 / 04 style)
+  towers   {"w", "h_extra", "dome": true (small gold ribbed dome cap, R = w / 2 + 0.2; else "finial": true = ball),
+            "window": true (small arched window "win_w" 0.9 on the front face of the front towers)} square corner towers
+           on a rect plan (house 02 / 04 style)
   pedestals  true: marble blocks with gold caps either side of the door (lanterns above them)
   awning   {"w", "colors": [[r,g,b], [r,g,b]], "n"} striped SmoothPlastic cloth + scalloped valance
   pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122)
-  steps    "half" (two half-round steps) | "none"
+  steps    "half" (two half-round steps) | "three" (three straight steps, door + 3.0 wide) | "none"
   top      {"type": "flat", "parapet": "solid"|"balustrade", "h", "skylight": [w, d, h] or null,
             "topiary": [[x, y], ...]} |
            {"type": "drum_dome", "R", "h", "seg", "windows": n, "dome_h", "onion": bool} |
@@ -94,8 +101,25 @@ else:
     R, SEG = P["R"], P.get("seg", 16)
     half = math.asin(min(0.95, (S["door"]["w"] / 2 + 1.6) / R))
     a0, a1 = math.pi / 2 + half, math.pi / 2 - half + 2 * math.pi        # from the front-left corner round the back
-    V = [(R * math.cos(a0 + (a1 - a0) * k / (SEG - 1)), R * math.sin(a0 + (a1 - a0) * k / (SEG - 1))) for k in range(SEG)]
-    NAMES = ["s%d" % k for k in range(SEG)]               # the one facing +y is renamed "front" below
+    # "flats": polar angles (deg, 0 = +x, 90 = front) of long flat facets for the windows (a window is a hole in ONE
+    # wall edge, a 32-edge circle has edges ~1 stud wide); chord "flat_w" studs. The other edges share the rest evenly.
+    FW = 2 * math.asin(min(0.9, P.get("flat_w", 3.2) / 2 / R))
+    FL = sorted((f if f >= math.degrees(a0) else f + 360.0) for f in P.get("flats", []))
+    STEP = ((a1 - a0) - len(FL) * FW) / max(1, SEG - 1 - len(FL))
+    ANG, cur, ns = [], a0, 0
+    for wi, f in enumerate(FL + [None]):
+        end = a1 if f is None else math.radians(f) - FW / 2
+        m = max(1, int(round((end - cur) / STEP))) if end - cur > 1e-6 else 0
+        for k in range(m):
+            ANG.append((cur + (end - cur) * k / m, "s%d" % ns))
+            ns += 1
+        if f is None:
+            break
+        ANG.append((end, "w%d" % wi))                     # flat facet wi: from here to the next vertex (end + FW)
+        cur = end + FW
+    ANG.append((a1, "s%d" % ns))
+    V = [(R * math.cos(t), R * math.sin(t)) for t, _ in ANG]
+    NAMES = [n for _, n in ANG]                           # the one facing +y is renamed "front" below
 YF = max(y for _, y in V)
 Z0 = S.get("Z0", 1.1)
 T = 0.8
@@ -176,21 +200,25 @@ win_list = []
 holes["front"].append((DU, DOOR_W, Z0, Z0 + DOOR_H, "door"))
 for si, st in enumerate(STOREYS):
     zb, zt = Z_LINES[si], Z_LINES[si + 1]
-    ww = st.get("win", {}).get("w", 1.6)
-    kind = st.get("win", {}).get("type", "arch")
-    # window: top 1.0 under the storey line (room for keystone + band), height up to 4.6, bottom on a course line
-    top = zt - 1.1
-    hgt = min(st["h"] - 1.9, 4.6)
+    WS = st.get("win", {})
+    kind = WS.get("type", "arch")
+    # window: top "gap" (1.1) under the storey line (room for keystone + band), height "h" (up to 4.6, bottom on a
+    # course line); "w" = glass width, "by_wall" {wall: w} = another width on single walls
+    top = zt - WS.get("gap", 1.1)
+    hgt = min(st["h"] - 1.9, WS.get("h", 4.6))
     w0 = zt - math.ceil((zt - (top - hgt)) / COURSE - 1e-6) * COURSE
     w0 = max(w0, zb + 0.9)
-    sp = top - ww / 2 if kind == "arch" else top
-    for nm, us in st.get("walls", {}).items():
-        nm = wall_name(nm)
+    for nm0, us in st.get("walls", {}).items():
+        nm = wall_name(nm0)
         if nm not in walls:
             continue
+        ww = WS.get("by_wall", {}).get(nm0, WS.get("by_wall", {}).get(nm, WS.get("w", 1.6)))
+        sp = top - ww / 2 if kind == "arch" else top
         for f in us:
             uc = f * walls[nm].L
-            top = sp + ww / 2 if kind == "arch" else sp
+            if uc - ww / 2 - 0.3 < 0 or uc + ww / 2 + 0.3 > walls[nm].L:       # must fit the wall edge (minus 0.3)
+                print("[house] WARNING: window %.2f wide does not fit wall %s (%.2f long), skipped" % (ww, nm, walls[nm].L))
+                continue
             holes[nm].append((uc, ww, w0, top, kind))
             win_list.append((nm, uc, ww, w0, sp, kind, si))
 for nm in EDGES:
@@ -222,28 +250,33 @@ for nm in EDGES:
 
 def window(w, nm, uc, ww, w0, sp, kind):
     r = ww / 2
-    g = 0.22
+    g = 0.1 * ww + 0.08                           # gold frame width scales with the window (0.22 at w 1.4, 0.31 at w 2.3)
+    hood = 0.12 * ww + 0.12                       # marble hood width over the frame
+    kw = 0.12 + 0.05 * ww                         # keystone half width
+    ov = 0.5 * g + 0.25                           # sill overhang beyond the glass edge
     top = sp + (r if kind == "arch" else 0)
     w.slab(nm + "_Glass", uc - r, uc + r, w0, sp, 0.1, -0.12, "glass")
     for side, sg in (("L", -1), ("R", 1)):
         u0 = uc + sg * r
         w.slab(nm + "_Jamb" + side, min(u0, u0 + sg * g), max(u0, u0 + sg * g), w0 - 0.1, sp, T + 0.3, 0.15, "gold")
     if kind == "arch":
-        K = 6
+        K = max(6, int(ww * 4))
         for k in range(K):
             a0, a1 = -r + 2 * r * k / K, -r + 2 * r * (k + 1) / K
             h = math.sqrt(max(r * r - min(abs(a0), abs(a1)) ** 2, 0.0)) if a0 * a1 > 0 else r
             w.slab("%s_GlassArch%d" % (nm, k), uc + a0, uc + a1, sp, sp + h, 0.1, -0.12, "glass")
-        w.arc(nm + "_FrameArc", uc, sp, r, g, T + 0.3, 0.15, 9, "gold")
-        w.arc(nm + "_Hood", uc, sp, r + g - 0.02, 0.3, T + 0.45, 0.32, 9, "marble")
+        w.arc(nm + "_FrameArc", uc, sp, r, g, T + 0.3, 0.15, max(9, int(ww * 5)), "gold")
+        w.arc(nm + "_Hood", uc, sp, r + g - 0.02, hood, T + 0.45, 0.32, max(9, int(ww * 5)), "marble")
     else:
         w.slab(nm + "_Head", uc - r - g, uc + r + g, sp, sp + g, T + 0.3, 0.15, "gold")
-        w.slab(nm + "_HoodStone", uc - r - 0.4, uc + r + 0.4, sp + g, sp + g + 0.35, 0.6, 0.35, "marble")
-    w.slab(nm + "_Key", uc - 0.26, uc + 0.26, top + g + 0.05, top + g + 0.75, 0.8, 0.45, "gold")
-    w.slab(nm + "_KeyCap", uc - 0.36, uc + 0.36, top + g + 0.75, top + g + 0.92, 0.95, 0.6, "gold")
-    w.slab(nm + "_Sill", uc - r - 0.4, uc + r + 0.4, w0 - 0.3, w0, 0.75, 0.35, "gold")
-    w.slab(nm + "_SillStone", uc - r - 0.28, uc + r + 0.28, w0 - 0.7, w0 - 0.3, 0.55, 0.25)
-    w.slab(nm + "_BarV", uc - 0.05, uc + 0.05, w0, top, 0.08, -0.06, "gold")
+        w.slab(nm + "_HoodStone", uc - r - g - 0.2, uc + r + g + 0.2, sp + g, sp + g + 0.35, 0.6, 0.35, "marble")
+    w.slab(nm + "_Key", uc - kw, uc + kw, top + g + 0.05, top + g + 0.75, 0.8, 0.45, "gold")
+    w.slab(nm + "_KeyCap", uc - kw - 0.1, uc + kw + 0.1, top + g + 0.75, top + g + 0.92, 0.95, 0.6, "gold")
+    w.slab(nm + "_Sill", uc - r - ov, uc + r + ov, w0 - 0.3, w0, 0.75, 0.35, "gold")
+    w.slab(nm + "_SillStone", uc - r - ov + 0.12, uc + r + ov - 0.12, w0 - 0.7, w0 - 0.3, 0.55, 0.25)
+    bars = [0.0] if ww <= 2.4 else [-ww / 6, ww / 6]       # wide window: two vertical bars (three panes)
+    for k, bx in enumerate(bars):
+        w.slab("%s_BarV%d" % (nm, k), uc + bx - 0.05, uc + bx + 0.05, w0, sp + math.sqrt(max(r * r - bx * bx, 0.0)) if kind == "arch" else top, 0.08, -0.06, "gold")
     w.slab(nm + "_BarH", uc - r, uc + r, sp - 0.05, sp + 0.05, 0.08, -0.06, "gold")
 
 
@@ -354,10 +387,19 @@ if TW and P["shape"] == "rect":
             add("TowerBand%d_%d" % (i, k), (tw + 0.3, 0.45, tw + 0.3), (x, y, z), mat="gold")
         add("TowerCap%d" % i, (tw + 0.5, 0.4, tw + 0.5), (x, y, th + 0.2))
         add("TowerFoot%d" % i, (tw + 0.4, 0.55, tw + 0.4), (x, y, 0.275), mat="gold")
-        if TW.get("finial", True):
+        if TW.get("dome", False):                      # small gold dome cap (ornament) with a small finial of its own
+            dr = tw / 2 + 0.2
+            orn_items.append({"type": "dome", "name": "%s_TowerDome%d" % (NAME, i), "pos": [x, y, th + 0.4], "R": dr,
+                              "h": dr * TW.get("dome_h", 1.1), "ribs": 6, "fin": TW.get("fin", 0.45)})
+        elif TW.get("finial", True):
             post("TowerFinialBase%d" % i, tw * 0.55, 0.5, x, y, th + 0.4, "gold")
             ball("TowerFinialBall%d" % i, tw * 0.5, (x, y, th + 1.15))
             orn_items.append({"type": "finial", "name": "%s_Finial%d" % (NAME, i), "pos": [x, y, th + 1.4], "d": tw * 0.32})
+        if TW.get("window", False) and y > 0:          # small arched window on the front (+y) face of the front towers
+            ww_ = TW.get("win_w", 0.9)
+            orn_items.append({"type": "arch_window", "name": "%s_TowerWin%d" % (NAME, i), "pos": [x, y + tw / 2, ZT + 0.6],
+                              "yaw": 0, "W": ww_, "spring": ZT + 0.6 + TW.get("win_h", 1.6), "pier": 0.25, "frame": 0.1,
+                              "depth": 0.9, "recess": 0.2})
 
 # ---------------------------------------------------------------- pedestals + lanterns
 LANT_W, LANT_H = 0.9, 1.15
@@ -401,6 +443,10 @@ else:
 if S.get("steps", "half") == "half":
     post("StepTop", DOOR_W + 1.6, Z0 - 0.01, CXD, YF, 0.0)
     post("StepLow", DOOR_W + 3.4, Z0 / 2, CXD, YF, 0.0)
+elif S.get("steps") == "three":                         # three straight steps (0.37 high, 0.9 deep, door + 3.0 wide), top one flush with the plinth
+    for k in range(3):
+        sh = Z0 - 0.01 - 0.37 * k
+        add("Step%d" % k, (DOOR_W + 3.0, sh, 0.9), (CXD, YF + 1.2 + 0.9 * (k + 0.5), sh / 2))
 for i, (x, y, d, h) in enumerate(S.get("pots", [])):
     post("Pot%d" % i, d, h - 0.4, x, y, 0.0)
     post("Pot%d_Soil" % i, d - 0.25, 0.15, x, y, h - 0.4, "soil")
