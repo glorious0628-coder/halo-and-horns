@@ -11,7 +11,7 @@
    (부품 64 + 유리 16; Mesh_0이면 부모 이름으로 찾음). 몸통(Body_t**) 맵은 A23-120으로 안 씀 — id만 장부에 있음.
 4. **A23-105 사진 1번** — 새 마을(A23-121)이 메인에 들어간 뒤 메인 반영 1이 처마 밑 + 밤 등불 사진. 그것 말고 WeatherFx는 끝
    (메인 비 사진 rain_preview/sheet.jpg 확인함; DayPhasePreview는 WeatherFx만 속이고 하늘 밝기는 안 바꿈 = 원래 설계).
-5. 스킬 Z·X 아이콘 SkillBar 사진(컴퓨터 한가할 때, UiSandbox Lv25, Z·X 꺼져 있으면 시험용으로만 켬). id 12개는 이미 들어감.
+5. ~~스킬 Z·X 아이콘 SkillBar 사진~~ 끝(10/11 새 세션): art/review/imgdev/skillbar_lv25_2026-10-11.jpg (빛 Paladin Lv25, 간격 Q/Z 8 · Z/X 8.8 · X/공격 13.8 px). X Guardian 투구 옆 노란 호 3줄 → 빛살 규칙 판단 검수에 물음.
 
 ## 만든 MaterialVariant (building_variants_halo.json, main e2f466f·077dffd)
 - `HH_HaloMarbleBlock` Marble 9 studs — color 133937959661245 normal 126193858276827 rough 82509703836879 metal 87489921567476
@@ -38,4 +38,4 @@ building_variants.py, zone_split_batch.py(--gold-v-min, no_gold 마스크), deco
   옛 브랜치 imgdev-tilereveal/-v2/-artisan-soon/-photos/-photos2는 버린 것.
 
 ## 막힌 것 / 기다리는 것
-- 이미지 생성 3: 지붕 맵, 대리석 판 고르기. 사용자: WorldKit 가져오기 클릭(아침).
+- 이미지 생성 3(새 세션, state/img3.md 큐 6): 4판에서 대리석 판 고르기 + 집 07·11 Roof 맵 굽기 → 판 이름·칸 수·Roof 폴더를 한 줄로 보내 줌. (10/11: WorldKit에 HH_HaloMarbleBlock 9칸·HH_HaloGoldTrim 적용됨, 집 07 골격 금 파트 = Metal + GoldTrim + (240,186,56), f686324) 사용자: WorldKit 가져오기 클릭(아침).
