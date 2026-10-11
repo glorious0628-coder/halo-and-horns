@@ -5784,6 +5784,14 @@ end
 -- A23-113 ③: tile id -> true once open (stays open this session), false = locked at the first check (its opening pops)
 L.TileSeen = {}
 
+-- 게임성 검수 10/13 (A23-99 less hand-holding: the Hero tile only said "Coming soon!"): a tile has something to open
+-- now - its window (Panels), the ranking list, the map or the invite; one that has not (Hero until its window, BB8)
+-- stays locked like the others, its own name under the lock, a press only wiggles
+function L.TileOpens(def)
+	if def.Map or def.Invite or def.Id == "Ranking" then return true end
+	return L.TileWindow(def) ~= nil
+end
+
 -- lock / unlock each tile by the rule (Config.HudReveal.TileShows); the lock pops away when one opens in play
 function L.RefreshLocks()
 	if not ui.tiles then return end
@@ -5793,17 +5801,29 @@ function L.RefreshLocks()
 		local id = t.Def.Id
 		local was = L.TileSeen[id]
 		local open = was == true or Config.HudReveal.TileShows(id, st)
+		local opens = L.TileOpens(t.Def)
 		if open then
-			if was == false and ready then L.TilePop(t.Button) end -- opened in play (not at the join)
+			if was == false and ready and opens then L.TilePop(t.Button) end -- opened in play (not at the join)
 			L.TileSeen[id] = true
 		elseif was == nil then
 			L.TileSeen[id] = false
 		end
-		if t.Lock and t.Lock.Locked ~= not open then pcall(t.Lock.Set, not open, Config.HudReveal.TileWord(id)) end
+		local locked = not (open and opens)
+		local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id) -- (nothing to open: its name)
+		if t.Lock and (t.Lock.Locked ~= locked or (locked and t.LockWord ~= word)) then
+			pcall(t.Lock.Set, locked, word)
+			t.LockWord = word
+		end
 	end
 	for _, f in ui.foldTiles or {} do -- the phones' fold copies follow their tile
 		local open = L.TileSeen[f.Def.Id] ~= false
-		if f.Lock and f.Lock.Locked ~= not open then pcall(f.Lock.Set, not open, Config.HudReveal.TileWord(f.Def.Id)) end
+		local opens = L.TileOpens(f.Def)
+		local locked = not (open and opens)
+		local word = (open and not opens) and f.Def.Text or Config.HudReveal.TileWord(f.Def.Id)
+		if f.Lock and (f.Lock.Locked ~= locked or (locked and f.LockWord ~= word)) then
+			pcall(f.Lock.Set, locked, word)
+			f.LockWord = word
+		end
 	end
 end
 
