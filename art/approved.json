@@ -8322,5 +8322,19 @@
   "file": "art/ui/Halo_WaterfallStreaks.png",
   "asset_id": "rbxassetid://111806947888357",
   "note": "폭포 Beam 물줄기 무늬(세로로 이어짐, 3x3 이음매 없음). 512로 줄이고 밝기→투명도(tools/streak_alpha.py). halo_waterfx.luau STREAK. 검수 m1 OK 2026-10-11."
+ },
+ "Halo_Castle_F3c_C2": {
+   "status": "approved-by-user",
+   "date": "2026-10-11",
+   "approvalQuote": "나도 C2!",
+   "tool": "Adobe Firefly GPT Image 2.5 Sunburst; candidates Medium (0); final + left/back/top = High (5 each, 4 total)",
+   "original": "art/out/s2/halo/castle6/HaloCastle_C2_final_src.png",
+   "views": {
+     "left": "art/out/s2/halo/castle6/HaloCastle_C2_left_src.png",
+     "back": "art/out/s2/halo/castle6/HaloCastle_C2_back_src.png",
+     "top": "art/out/s2/halo/castle6/HaloCastle_C2_top_src.png"
+   },
+   "concepts": "art/out/s2/halo/castle5/HaloCastleF3c_C1..C4.png (C2 chosen); base F3 art/out/s2/halo/castle3/HaloCastleFant_F3.png",
+   "note": "빛 성 확정(사용자 10/11 F3c C2). 날개 한 쌍, 가운데 첨탑+후광, 장미창, 금문 세로 패널+꽃, 평평한 마당, 별/뾰족 끝. 몸통·탑·벽은 Studio 골격(A23-120/122), 장식 부품만 Tripo. 위 시안은 약간 원근이 있음."
  }
 }
