@@ -23,9 +23,11 @@
 
 9. **fix/reward-chip a5de2b9f** (main에서, worktree wt_lesstext 재사용 — fix/lesstext는 병합됨): 첫 미션 '+150 gold'가 카드 연 채 '★ +150...'로 잘림(병합 사진 06_claim) → UIKit NOTIFY.CoinLine(골드뿐인 보상 줄 = IconCoin + '+N', 형식은 Config.Tutorial.Text.Claimed·StoryQuests.Text.ChoiceGold) + art 캡슐 TextFits 넓히기. 시험 test_reward_chip 12·7/7 등. 게임성 검수에 보고. 알게 된 것: test_audio는 다른 시험과 동시에 돌리면 시간 재는 2개가 흔들림 → 혼자 돌릴 것. test_english 'twins drift apart' 변이는 main에서도 0번 일치(원래 실패).
 
+10. **fix/photo-1012 471d099c** (main 0696ccc4에서, wt_onehand 재사용 — onehand-2는 병합됨): ① 지팡이 끝이 사진에서 0.27/0.26 뜸 → WeaponPose.StaffStep/StaffLift(화면이 Shaft 끝→땅 재서 손 목표 보정, ±0.4) — 서버 HipHeight 식은 맞았음(PotionMerchant 부품 위치가 낡음: 몸 크기 1.06, 연결점 기준 윗몸통 3.441·키 5.46; 크기 1이면 ~5.15라 H 5.2 그대로; grip_reference §5-1 바로잡음). ② 가방 강화 칩 → Config.Loot.Text EnhanceOk/FailDown/FailKeep/MoveOk 결과만(인자 그대로), tools/test_enhance_lines.py. 게임성 검수·개발 2에 알림.
+
 ## 기다리는 것
 - 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(eebeebd3) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
-- 사진(병합 뒤 메인 반영 1): 카드 연 채 첫 미션 받기(동전 +150), 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
+- 사진(병합 뒤 메인 반영 1): 마법사 지팡이 tip-foot 다시(목표 0.05~0.15, 기본 R15도), 가방 강화 성공·실패 칩, 카드 연 채 첫 미션 받기(동전 +150), 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
 - 새 SPEC: A23-137(거위 4시간마다·예고 칩 = 다음 거위 시각 → 황금 알 화면 EventHUD 칩 손볼 것, 지시 오면), A23-138(밈 묶음 = fix/meme-en-client, 급한 병합 뒤 지시 오면; Smokey → Rose 36곳).
 - 개발 2: 황금 알 약속 답(장인 알 들고 다니나, 깃털 Kind, "Bring 2 eggs…" Notify) + 서버 GooseEggs → 그 뒤 진짜 서버로 Play 확인·폰 확인(메인 반영 1), 약속이 바뀌면 EggFx 맞춤.
 - 서버 줄(끔 52·짧게 60)은 개발 2 몫. tools/_weapon_prompts.py 뿔 전사 문구는 이미지 생성 2 몫.
