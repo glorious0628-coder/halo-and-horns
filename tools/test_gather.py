@@ -125,7 +125,10 @@ MUTATIONS = [
     ("share: KO'd players get one", G, "\t\tlocal data = r and S.PlayerService.IsReady(other) and Util.IsAlive(other) and getData(other)\n", "\t\tlocal data = r and S.PlayerService.IsReady(other) and getData(other)\n"),
     ("share: classless players get one", G, "\t\tif data and data.ClassChosen == true and (r.Position - center).Magnitude", "\t\tif data and (r.Position - center).Magnitude"),
     ("text: herbs sold at the Forge", C, 'Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Artisans craft with it." }', 'Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." }'),
-    ("text: the full line sends to the Forge", L, "\t\tif def.Kind == \"Material\" and def.Source ~= nil then fmt = TXT.ItemFullKeep or fmt end -- not sold at the Forge\n", ""),
+    # (A23-130 made ItemFull itself the short line, so dropping the ItemFullKeep switch is no longer visible; the mutation
+    # puts the Forge back into ItemFullKeep instead)
+    ("text: the full line sends to the Forge", C, 'ItemFullKeep = "%s is full (max %d).",',
+     'ItemFullKeep = "%s is full (max %d). Sell it at the Forge.",'),
     # --- LootService.GrantItems
     ("grant: 100 at once", L, "\t\tif type(id) == \"string\" and n >= 1 and n <= 99 then\n", "\t\tif type(id) == \"string\" and n >= 1 then\n"),
     # (no 'n >= 1 removed' mutation: addItem gives 0 for n <= 0, so it is equivalent)

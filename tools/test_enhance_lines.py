@@ -135,8 +135,8 @@ MUTATIONS = [
      'EnhanceFailDown = "Enhance failed… %s +%d → +%d (your weapon is safe)",'),
     ("CONFIG", "both names in the transfer line", 'MoveOk = "%.0s%.0s%s +%d!",', 'MoveOk = "Transfer success! %s +%d · %s +%d",'),
     ("CONFIG", "the new level lost", 'EnhanceOk = "%s +%d → +%d!",', 'EnhanceOk = "%s upgraded!",'),
-    ("LOOT", "a call with other arguments", "string.format(TXT.EnhanceFailKeep, name, before)",
-     "string.format(TXT.EnhanceFailKeep, before, name)"),
+    # (A23-130 server lines: LootService no longer toasts these, so the argument mutation targets Panels' result line)
+    ("PANELS", "a call with other arguments", 'f("EnhanceFailKeep", name, r.Before)', 'f("EnhanceFailKeep", r.Before, name)'),
 ]
 
 
