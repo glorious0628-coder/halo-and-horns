@@ -6,7 +6,7 @@ cameras, for side-by-side checks (이미지 생성 3, 10/11, SPEC A23-120).
           [--marble block|cream]
 
 --parts: tools/skeleton_house07.py json (Blender frame). Marble = art/ui/halo_tile/Halo_TowerMarbleBlock_* box-mapped at
-9 studs a tile (HH_HaloMarbleBlock), gold = Halo_GoldTrim_* tinted (240,186,56) at 4 studs (HH_HaloGoldTrim), glass
+9 studs a tile (HH_HaloMarbleBlock), gold = Halo_GoldTrim_* tinted (255,175,25) at 4 studs (HH_HaloGoldTrim), glass
 see-through. Only parts of group "house" are drawn. --glb: models drawn with their own materials.
 Renders front / q34 / side / back (ortho, 24 studs across) and three perspective close-ups (door, window, base corner).
 """
@@ -98,7 +98,7 @@ def s2l(c):
     return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
 
 
-GOLD = tuple(s2l(c / 255) for c in (240, 186, 56))
+GOLD = tuple(s2l(c / 255) for c in (255, 175, 25))
 MB, MS = {"block": ("Halo_TowerMarbleBlock", 9), "cream": ("Halo_TowerMarbleBlockCream", 12)}[a.marble]
 MATS = {
     "marble": tex_mat("marble", os.path.join(TILE, MB + "_color.png"), os.path.join(TILE, MB + "_rough.png"), MS, bump=0.4),

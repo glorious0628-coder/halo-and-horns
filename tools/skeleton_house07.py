@@ -407,7 +407,7 @@ for nm, x in (("LampGlassL", CX - LANT_U), ("LampGlassR", CX + LANT_U)):
     add(nm, (g, LANT_H - 0.1, g), (x, LANT_C, LANT_Z), mat="lamp")
 
 # ---------------- awning (검수 v4c: the Tripo awning reads as a small gold lump; its map is cut into gold-orange islands,
-# so a recolour would need a new texture upload + re-import): cream / yellow striped cloth of parts, Fabric, matte, a
+# so a recolour would need a new texture upload + re-import): cream / yellow striped cloth of parts, SmoothPlastic (Fabric read as a dark check in WorldKit, 검수 10/11), a
 # scalloped valance, a gold rod at the wall and gold balls at the corners, as in the 2D. Sits under the dormer.
 AW_W, AW_D, AW_TOP, AW_DROP, AW_N = 7.4, 2.3, 10.55, 1.2, 7
 aw_len = math.hypot(AW_D, AW_DROP)
@@ -530,15 +530,15 @@ MARBLE = 'p.Material = Enum.Material.Marble; p.MaterialVariant = "%s"; p.Color =
 MAT = {
     "marble": MARBLE + '(255, 244, 222)',   # warm tint (WorldKit 10/11: the cream tile alone reads grey in the WorldKit light)
     "floor": MARBLE + '(238, 226, 205)',
-    "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(240, 186, 56)',
+    "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 175, 25)',
     "soil": 'p.Material = Enum.Material.Sand; p.Color = Color3.fromRGB(140, 100, 62)',
     "sky": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(150, 200, 240)',
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
     # lamp glass: warm see-through glass by day (검수 v4c: no white Neon box); the PointLight is off in the place and
     # WeatherFx switches it on at Dusk / Night (attribute LampLight on the part)
     "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Enabled = false; l.Parent = p',
-    "fabricY": 'p.Material = Enum.Material.Fabric; p.Color = Color3.fromRGB(250, 205, 72)',
-    "fabricC": 'p.Material = Enum.Material.Fabric; p.Color = Color3.fromRGB(255, 243, 212)',
+    "fabricY": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(250, 205, 72)',
+    "fabricC": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(255, 243, 212)',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
 }
 
