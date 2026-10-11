@@ -1,5 +1,7 @@
 # 3D 다시 검수 — 1단계 목록 (2026-10-11, SPEC A23-122)
 
+> 판정은 끝났다: 결과 `docs/review/3d_recheck_2026-10-11_result.md`(179개 중 178개 다시, 통과 0). 아래 '아직 안 했다'는 목록을 만든 시점 문장이다.
+
 검수가 하나씩 판정할 수 있게, 지금 쓰거나 쓸 3D를 모았다. 판정(통과/다시)은 아직 안 했다. 자세한 값은 `docs/review/3d_recheck_2026-10-11_inventory.json`(287개, 필드 설명은 맨 아래).
 
 - 기준 파일: `art/models/tripo/records.json`, 메인 `place/GoodEvil.rbxlx`(10/10 20:12 저장), `build/WorldKit.rbxlx`(10/11 10:52 저장), 메시 id 장부 `art/models/worldkit/import*_assets*.json`·`art/models/new_asset_ids.json`, `art/models/tripo/import_now/`, `tools/halo_props_list.txt`, `docs/design/halo_restart_2026-10-11.md`, `docs/handoff/state/img1.md`·`img3.md`, `art/review/**`.
