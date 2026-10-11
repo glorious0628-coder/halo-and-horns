@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 140,
+  "checks": 151,
   "failedChecks": 0,
-  "namedChecks": 126,
+  "namedChecks": 137,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -105,7 +105,13 @@
     },
     {
       "group": "recipes",
-      "check": "... and refused",
+      "check": "... and refused with NotReady (a key)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "an unknown recipe id: refused without a word",
       "pass": 1,
       "fail": 0
     },
@@ -268,6 +274,12 @@
     {
       "group": "hammer",
       "check": "Pend cleared, Made.W1 = 1, 10 craft XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hammer",
+      "check": "CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
       "pass": 1,
       "fail": 0
     },
@@ -762,15 +774,69 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "a tagged workbench gets one Craft prompt (no words; ActionKey / ObjectKey)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "a workbench of an unknown role gets none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "never two prompts on one workbench",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "a blacksmith at the anvil: OpenPanel Craft + CraftInfo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "a Knight or an alchemist at the anvil: NotArtisan, no window",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "someone else's prompt is not ours",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "switch off: no prompt",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "workbench",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 72,
-    "applied": 72,
-    "caught": 72,
+    "total": 82,
+    "applied": 82,
+    "caught": 82,
     "skipped": false,
     "results": [
       {
@@ -782,9 +848,10 @@
         "newFailingChecks": [
           "config :: Config.Features.Crafting is off",
           "off :: switch off: a waiting craft is left as it is, no CraftInfo",
-          "start :: switch off: off"
+          "start :: switch off: off",
+          "workbench :: switch off: no prompt"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "config: archers are blacksmiths",
@@ -910,9 +977,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
           "recipes :: W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "recipe: weapons without AddSpare",
@@ -921,7 +989,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "recipes :: ... and refused",
+          "recipes :: ... and refused with NotReady (a key)",
           "recipes :: no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off"
         ],
         "newFailingCount": 2
@@ -945,9 +1013,10 @@
         "crashed": false,
         "newFailingChecks": [
           "start :: a Knight cannot craft (NotArtisan, a key)",
+          "workbench :: a Knight or an alchemist at the anvil: NotArtisan, no window",
           "xp :: a Knight's waiting craft: the item comes, no craft XP"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "start: any role's recipe",
@@ -1430,7 +1499,7 @@
           "remotes :: group ran to the end without a Lua error",
           "results :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "end: no Crafted signal",
@@ -1636,6 +1705,121 @@
         "newFailingCount": 2
       },
       {
+        "mutation": "info: no On list",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "info: On lists every recipe",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: a switched-off recipe says nothing",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recipes :: ... and refused with NotReady (a key)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "start: an unknown id says NotReady",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "recipes :: an unknown recipe id: refused without a word"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bench: no prompts",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "workbench :: a Knight or an alchemist at the anvil: NotArtisan, no window",
+          "workbench :: a blacksmith at the anvil: OpenPanel Craft + CraftInfo",
+          "workbench :: a tagged workbench gets one Craft prompt (no words; ActionKey / ObjectKey)",
+          "workbench :: never two prompts on one workbench",
+          "workbench :: someone else's prompt is not ours"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "bench: two prompts",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "workbench :: never two prompts on one workbench"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bench: any role",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "workbench :: a workbench of an unknown role gets none"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bench: anyone opens the window",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "workbench :: a Knight or an alchemist at the anvil: NotArtisan, no window"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "bench: no window",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "workbench :: a blacksmith at the anvil: OpenPanel Craft + CraftInfo",
+          "workbench :: someone else's prompt is not ours"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "bench: when off too",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "workbench :: switch off: no prompt"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "remote: extra arguments taken",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
@@ -1686,13 +1870,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "8c1ccd5799009b0093f21b8003765d00005ef5a806fd076f4dc49ee36bf9a007",
+    "src/ReplicatedStorage/Shared/Config.luau": "6d5a25fc50a0301c7e6c1487528a0d4fcfda7982f0bd87949dba375b188c8b18",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "b427096f06419dc337a116b14589ac05b3ed36222c5f9261872927ad6d73ef4e",
-    "src/ServerScriptService/CraftService.luau": "59ff53422d45950753fa80abd664ad81729fb5477308403cbe303dff38785aa9"
+    "src/ServerScriptService/CraftService.luau": "0f8363991f59b331de5abe308aabdc129917231b3418d3e2b4ea28bc95e9ce4c"
   },
-  "fixtureSHA256": "84f09dc67e79dedd9bf8d5e6096aff1a9020a9c28281066436b01b16a8677fcb",
+  "fixtureSHA256": "98fa658d66b14d47e7b2df3d6ba87ab140560915c8dd1160a2e4574ba0127479",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
