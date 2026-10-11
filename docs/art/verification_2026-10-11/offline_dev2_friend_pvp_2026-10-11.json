@@ -1,0 +1,920 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 95,
+  "failedChecks": 0,
+  "namedChecks": 95,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "friend cache",
+      "check": "the join only queues the friend check (no web call inside PlayerReady)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "before the answer the pair is NOT friends (CanAttack allows the hit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "the background job asks IsFriendsWith once for the pair",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "A then B: the pair is cached both ways",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "CanAttack: false, 'Friend' both ways",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "AreFriends reads the cache only (never asks Roblox)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "AreFriends: self / nil / not a player = false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "a third player: 2 new calls (A:C, B:C), not friends, A may hit C",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "a known pair is never asked again (one call per pair)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "a same-side friend stays 'SameFaction', a Neutral friend 'Neutral', self 'Self'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "B then A: one call, cached both ways (join order does not matter)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "B then A: CanAttack 'Friend'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "friend cache",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failed call",
+      "check": "IsFriendsWith threw: NOT friends (pcall; the hit is allowed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failed call",
+      "check": "the failed answer is stored (not friends): not asked again while both stay",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failed call",
+      "check": "…so A's swing hits B",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failed call",
+      "check": "a failed friend call is silent (no warning)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failed call",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "failed call",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "setup: friends",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "after B left, the old answer is gone (the rejoin is not friends before its answer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "B's rejoin asks again (2 calls) and gets the new answer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "A's rejoin asks again too (the lower id of the pair)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "a leave during the call: the late answer is dropped, the rejoin asks again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave and rejoin",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spacing",
+      "check": "6 players: 15 pairs, each asked once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spacing",
+      "check": "a 7th player: 5 calls at once (Burst)…",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spacing",
+      "check": "…the 6th not yet…",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spacing",
+      "check": "…and 1 s later the rest",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spacing",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spacing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "setup: the newcomer's first wave = 5 calls, the 6th pair waits 1 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "the later wave after the newcomer left: no call (nobody asks for a leaver)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "no stale answer is left for the rejoin (before its own answers)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "the rejoin asks all 6 pairs fresh (none are friends now)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "leave before the next wave",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "A's swing in a PvP area: the friend B takes 0, the stranger C is hit (as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "the Swing Fx carries no hit number on the friend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "the friend is not combat-tagged, no KO credit, no PlayerDamaged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "B's swing at A: 0 (Horns -> Halo friend)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "before the friend answer arrives the swing hits (not friends yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "after the answer the next swing deals 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "not friends: the swing hits and credits A as before",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "swing",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "Q: the friend 0, the stranger hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "Z (line): the friend 0, the stranger hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "Z (chain): the friend 0, the stranger hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "X (roar): the friend 0, the stranger hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "X (hop wind): the friend 0, the stranger hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "X (field) ticks: the friend inside 0 (players never), the slime is hit every tick",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "skills",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "…and no combat tag on either side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "the other way (a crit) = 0 too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "a stranger still takes the hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "a monster's hit on the friend still lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "final gate",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju exception",
+      "check": "a Halo stranger may hit the Active kaiju (exception); its Halo friend may not ('Friend' wins)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju exception",
+      "check": "the kaiju never hits its friend either",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju exception",
+      "check": "the kaiju's swing: its friend takes 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju exception",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju exception",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "setup: F is the kaiju's friend, E is not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "the kaiju is active",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "the kaiju's HP counts E only (its friend F cannot fight it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "setup: the kaiju stomped once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "a stomp in a PvP zone: the friend 0, the stranger the stomp",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "the stranger's stomp credits the kaiju; the friend's nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju stomp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "the stomp spares the friend",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "control, a stranger near: HP bonus and stomped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "control: contested, the bonus is minted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju friend never contests",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "duel setup: PvPService asked once at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "a friend's hit = 0 (and RankingService is not asked by it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "CanAttack 'Friend' in the ranking world too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "a friend KO (HandleKO): the stat only, no board, reason Friend (as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "IsFriendsWith failed: PvP not friends, the hit lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "…but the ranking still counts the failed pair as friends (no board points, its own rule)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "RankingService's own call fails again: still friends for the boards (never cached)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "strangers: the hit lands",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "strangers: a fair KO reaches the weekly Honor board",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ranking unchanged",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 18,
+  "staticFailures": [],
+  "mutations": {
+    "total": 22,
+    "applied": 22,
+    "caught": 22,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "CanAttack ignores friends",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "friend cache :: B then A: CanAttack 'Friend'",
+          "friend cache :: CanAttack: false, 'Friend' both ways",
+          "kaiju exception :: a Halo stranger may hit the Active kaiju (exception); its Halo friend may not ('Friend' wins)",
+          "kaiju exception :: the kaiju never hits its friend either",
+          "ranking unchanged :: CanAttack 'Friend' in the ranking world too",
+          "swing :: the Swing Fx carries no hit number on the friend"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "the kaiju exception wins over friends",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju exception :: a Halo stranger may hit the Active kaiju (exception); its Halo friend may not ('Friend' wins)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "nobody asks at the join",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failed call :: IsFriendsWith threw: NOT friends (pcall; the hit is allowed)",
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "final gate :: DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
+          "final gate :: a monster's hit on the friend still lands",
+          "final gate :: the other way (a crit) = 0 too",
+          "final gate :: …and no combat tag on either side"
+        ],
+        "newFailingCount": 49
+      },
+      {
+        "mutation": "a failed call counts as friends",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failed call :: IsFriendsWith threw: NOT friends (pcall; the hit is allowed)",
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "failed call :: …so A's swing hits B",
+          "ranking unchanged :: IsFriendsWith failed: PvP not friends, the hit lands"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "the answer is never kept",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "final gate :: DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
+          "final gate :: a monster's hit on the friend still lands",
+          "final gate :: the other way (a crit) = 0 too",
+          "final gate :: …and no combat tag on either side",
+          "friend cache :: A then B: the pair is cached both ways"
+        ],
+        "newFailingCount": 36
+      },
+      {
+        "mutation": "a failed answer is not stored",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "failed call :: …so A's swing hits B"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "FRIEND.Ask's presence / ready guard removed",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave before the next wave :: no stale answer is left for the rejoin (before its own answers)",
+          "leave before the next wave :: the later wave after the newcomer left: no call (nobody asks for a leaver)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "a known pair is asked again",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "failed call :: the failed answer is stored (not friends): not asked again while both stay",
+          "failed call :: …so A's swing hits B",
+          "friend cache :: a known pair is never asked again (one call per pair)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the pair key depends on who joined last",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "final gate :: DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
+          "final gate :: a monster's hit on the friend still lands",
+          "final gate :: the other way (a crit) = 0 too",
+          "final gate :: …and no combat tag on either side",
+          "friend cache :: A then B: the pair is cached both ways",
+          "friend cache :: CanAttack: false, 'Friend' both ways"
+        ],
+        "newFailingCount": 23
+      },
+      {
+        "mutation": "before the answer the pair counts as friends",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "friend cache :: before the answer the pair is NOT friends (CanAttack allows the hit)",
+          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)",
+          "leave before the next wave :: no stale answer is left for the rejoin (before its own answers)",
+          "swing :: before the friend answer arrives the swing hits (not friends yet)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "a late answer after a leave is kept",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave and rejoin :: a leave during the call: the late answer is dropped, the rejoin asks again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a leave keeps the pair",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave and rejoin :: A's rejoin asks again too (the lower id of the pair)",
+          "leave and rejoin :: B's rejoin asks again (2 calls) and gets the new answer",
+          "leave and rejoin :: a leave during the call: the late answer is dropped, the rejoin asks again",
+          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "a leave drops only the lower id's pairs",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave and rejoin :: A's rejoin asks again too (the lower id of the pair)",
+          "leave and rejoin :: B's rejoin asks again (2 calls) and gets the new answer",
+          "leave and rejoin :: after B left, the old answer is gone (the rejoin is not friends before its answer)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "all calls at once on a full server",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave before the next wave :: setup: the newcomer's first wave = 5 calls, the 6th pair waits 1 s",
+          "leave before the next wave :: the later wave after the newcomer left: no call (nobody asks for a leaver)",
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)",
+          "spacing :: a 7th player: 5 calls at once (Burst)…",
+          "spacing :: …the 6th not yet…"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the later waves never run",
+        "file": "src/ServerScriptService/PvPService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "leave before the next wave :: the rejoin asks all 6 pairs fresh (none are friends now)",
+          "spacing :: …and 1 s later the rest"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DamagePlayer lets friends hit",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "final gate :: DamagePlayer(friend, 1000, A) = 0: no damage, no KO, no PlayerDamaged",
+          "final gate :: a monster's hit on the friend still lands",
+          "final gate :: the other way (a crit) = 0 too",
+          "final gate :: …and no combat tag on either side",
+          "ranking unchanged :: a friend's hit = 0 (and RankingService is not asked by it)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the stomp hits the kaiju's friends",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+          "kaiju stomp :: a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "the kaiju's HP counts its friends",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+          "kaiju friend never contests :: only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
+          "kaiju stomp :: the kaiju's HP counts E only (its friend F cannot fight it)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "the stomp spares the friend but marks the event contested",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "KaijuService never sees friends",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju friend never contests :: it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus",
+          "kaiju friend never contests :: only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
+          "kaiju stomp :: a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit",
+          "kaiju stomp :: the kaiju's HP counts E only (its friend F cannot fight it)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "RankingService: a failed call is no longer friends",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranking unchanged :: RankingService's own call fails again: still friends for the boards (never cached)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "RankingService: friend KOs score",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ranking unchanged :: RankingService's own call fails again: still friends for the boards (never cached)",
+          "ranking unchanged :: a friend KO (HandleKO): the stat only, no board, reason Friend (as before)",
+          "ranking unchanged :: …but the ranking still counts the failed pair as friends (no board points, its own rule)"
+        ],
+        "newFailingCount": 3
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "df8dba7a3ae25828887c8af53f8ab0dc87bab21f3bc55db614bfc4593d2a2ae2",
+    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
+    "src/ServerScriptService/CombatService.luau": "4a26e1e76e6742bbc3a8768cf00fae3f065d43de06edad784048961e3bdf5812",
+    "src/ServerScriptService/LootService.luau": "4d305fa008ba3ef77fb88503a178d0b715a83be193cc1f152208c076ec79bdfd",
+    "src/ServerScriptService/StoryQuestService.luau": "fe2772848aec297272d7ca49a2a31dc5aacfcd15c8d5ae0e6530c6b2aa20e62a",
+    "src/ServerScriptService/PvPService.luau": "59f2ce526e31c2cac0ff00ce62fa38bde23e61036a91b42e5e8844f200ad27f1",
+    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
+    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
+    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ServerScriptService/CharacterVisuals.luau": "68a7a28592a695fc76a37ac8728238361ae8a0f5b595282b5a5149978adf8479",
+    "src/ServerScriptService/DamageWindow.luau": "8cb6d6feb34b2582ecb0597fe3ee50d93ccdd5b330945f44a2740a28f41d457f",
+    "src/ServerScriptService/SkillService.luau": "4cf5a2e8efc95cb99cc3138db33135d6b49b5d6763cbca5a3ed880d621d16a48",
+    "src/ServerScriptService/MonsterService.luau": "bd1f9b73ffb0e333c54330f0a83d992655fff527207551d64cbd4c5494d5aa8c",
+    "src/ServerScriptService/RankingService.luau": "6f626bec812ec8edec524152ce42d0086b66709e6a5657fee97376ad55f70f6e",
+    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
+    "src/ServerScriptService/GrudgeService.luau": "b42981e97f8dcc8f4ff263a7bdea0712095cd7b090e8510e9c07be065360e6e3",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
+    "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d",
+    "src/ServerScriptService/KaijuService.luau": "507adb6941b9fb1e40598c27d061ed51def5ef64286f50c3c00585ff8c9d3444"
+  },
+  "fixtureSHA256": "0c5d8217ab9cddffffcf4b351801838a6a277b4aee60a96cc7275a9482caf138",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-113 ①: Roblox friends never damage each other, on different sides and inside PvP areas: manual swings, Q / Z / X (line, chain, roar, hop wind; fields never hit players) and the kaiju's stomp (in every zone). PvPService asks Player:IsFriendsWith once per pair in the background when the second of the two is ready (join order free; 5 calls in a row, the next 5 one second later), pcall, a failed call = not friends, not friends until the answer; the answer is kept until one of them leaves (a rejoin asks again; a late answer after a leave is dropped). PvPService.AreFriends reads the cache only. CanAttack returns false, 'Friend' after Self / NotReady / Dead / Neutral / SameFaction and before the Halo-vs-Active-kaiju exception; CombatService.DamagePlayer is the last gate (a friend's hit = 0: no combat tag, no KO credit, no PlayerDamaged). KaijuService's stomp skips the kaiju's friends and its HP count does not count them. RankingService is unchanged (its own cache; a failed call counts as friends there, friend KOs score nothing).",
+  "limitations": "The real IsFriendsWith web call, its timing and Roblox's own throttling are not run offline (the kit's Player double answers at once; a call in flight is simulated by a leave inside the double). A friend KO can still happen from hits that landed before the answer arrived (a few seconds after the second join); it stays off the boards as before. The client (aim hints, hit numbers) is unchanged."
+}

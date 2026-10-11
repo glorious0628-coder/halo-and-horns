@@ -25,6 +25,7 @@ def kaiju_bindings(sources: dict[str, str]) -> dict[str, str]:
     out["KAIJU_COUNT_EXTRACT"] = (
         "local Config, Util, S, readyPlayers, factionOf = ...\n"
         + function_block(kaiju, "local function inFactionTown(")
+        + function_block(kaiju, "local function friendOfKaiju(")  # A23-113 ①: friends of the kaiju never count
         + function_block(kaiju, "local function countNearbyHalo(")
         + "\nreturn countNearbyHalo\n")
     return out
