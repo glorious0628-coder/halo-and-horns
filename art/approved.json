@@ -8395,10 +8395,11 @@
   "materialVariant": "HH_Fabric (Fabric 기본, StudsPerTile 2) — art/models/worldkit/building_variants_halo.json",
   "test": "art/review/imgdev/hh_fabric_test_2026-10-11.jpg (색 96% 통과)",
   "inGame": "메인 Studio에 적용(Fabric 파트 11개), build/GoodEvil.rbxlx 15:19 저장. place/ 복사는 아직(메인 반영 1).",
-  "note": "업로드 성공 ≠ 그림 승인. 검수가 materials3_sheet.jpg로 직접 보고 정함."
+  "note": "업로드 성공 ≠ 그림 승인. 검수가 materials3_sheet.jpg로 직접 보고 정함.",
+  "review": "검수 10/11 조건부: 3×3에서 타일마다 밝은 세로 줄(스레드 한 가닥이 튐) → v2 맵 art/ui/halo_tile/fabric_v2/ (tools/fabric_weave_maps.py 스레드 편차 ±0.035 → 균형 ±0.010). v2는 아직 안 올림 — 메인에 들어간 v1(117704901835962…)은 새 판 올릴 때까지 그대로."
  },
  "HH_HaloGoldTrim": {
-  "status": "uploaded_review_pending",
+  "status": "redo",
   "date": "2026-10-11",
   "by": "이미지 개발",
   "tool": "이미지 생성 3 맵 + 이미지 개발 금 시험(tools/gold_trim_maps.py)",
@@ -8422,10 +8423,11 @@
   "materialVariant": "HH_HaloGoldTrim (Metal, StudsPerTile 4)",
   "test": "art/review/imgdev/gold_trim_test_2026-10-11.jpg",
   "inGame": "WorldKit에만(메인엔 아직 없음, 새 마을 들어갈 때 같이). UiSandbox는 옛 rough/metal.",
-  "note": "업로드 성공 ≠ 그림 승인. 옛 맵 rough 82910627301523 / metal 91394364117916 (기록 HaloTile_Halo_GoldTrim_*)."
+  "note": "업로드 성공 ≠ 그림 승인. 옛 맵 rough 82910627301523 / metal 91394364117916 (기록 HaloTile_Halo_GoldTrim_*).",
+  "review": "검수 10/11: 낮·밤 모두 탁한 겨자색, 2D(집 07 벽 금: 밝은 노랑+흰 반짝임)와 다름(A23-125). 후보 3개를 시험판에 나란히 → 2D 금과 같은 칸 비교 시트로 다시. 시험 스크립트 tools/gold_candidates_test.luau."
  },
  "HH_HaloMarbleBlock_Cream": {
-  "status": "uploaded_review_pending",
+  "status": "approved",
   "date": "2026-10-11",
   "by": "이미지 개발",
   "tool": "Halo_TowerMarbleBlock(v1)을 더 밝은 크림으로 다시 만든 판(줄눈 대비 절반, 맥 약하게, 노멀 xy×0.55)",
@@ -8454,7 +8456,8 @@
   "materialVariant": "HH_HaloMarbleBlock_Cream (Marble, StudsPerTile 12)",
   "test": "art/review/imgdev/halo_marble_cream_compare_2026-10-11.jpg",
   "inGame": "WorldKit·UiSandbox. 이미지 생성 3이 집 07 골격에 고름(skeleton07_v4_compare.jpg). 메인엔 아직 없음.",
-  "note": "업로드 성공 ≠ 그림 승인."
+  "note": "업로드 성공 ≠ 그림 승인.",
+  "approvedBy": "검수 10/11 (materials3_sheet.jpg 직접 봄: 2D보다 약간 회색빛, 괜찮음)"
  },
  "Halo_FloorMarbleB": {
   "status": "uploaded_review_pending",
@@ -8468,5 +8471,55 @@
   "materialVariant": "GE_HaloPave (Pavement, StudsPerTile 16)",
   "inGame": "메인 Studio MaterialService에 있음(GE_HaloPave).",
   "note": "이미지 개발 10/11 기록 채움. 승인 기록(approved.json) 없이 올라가 있었음 — 검수가 승인 여부 확인 필요. 커밋 722f0ecd."
+ },
+ "Tex_Grass_FF3": {
+  "status": "uploaded_review_pending",
+  "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
+  "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
+  "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
+  "date": "2026-10-08",
+  "file": "art/ui/Tex_Grass_FF3.png",
+  "id": "rbxassetid://116841810719907",
+  "materialVariant": "GE_Grass"
+ },
+ "Tex_LeafyGrass_FF3": {
+  "status": "uploaded_review_pending",
+  "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
+  "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
+  "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
+  "date": "2026-10-08",
+  "file": "art/out/terrain_v3/Tex_LeafyGrass_FF3.png",
+  "id": "rbxassetid://96379070214723",
+  "materialVariant": "GE_LeafyGrass"
+ },
+ "Tex_MeadowFlowers_FF3": {
+  "status": "uploaded_review_pending",
+  "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
+  "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
+  "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
+  "date": "2026-10-08",
+  "file": "art/ui/Tex_MeadowFlowers_FF3.png",
+  "id": "rbxassetid://112552326538919",
+  "materialVariant": "GE_MeadowFlowers"
+ },
+ "Tex_GrassShade_FF3": {
+  "status": "uploaded_review_pending",
+  "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
+  "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
+  "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
+  "date": "2026-10-08",
+  "file": "art/ui/Tex_GrassShade_FF3.png",
+  "id": "rbxassetid://100025729953105",
+  "materialVariant": "GE_MeadowShade"
+ },
+ "Tex_MeadowDirt_FF3code": {
+  "status": "uploaded_review_pending",
+  "by": "이미지 생성 1 (파생), 이미지 개발 업로드",
+  "tool": "색 이동·다시 칠함(FF2/FF 기반, art/out/terrain_v3, 0 크레딧)",
+  "note": "초원 지형 v3c — 사용자 \"너무 초록, 입체적이지 않아\" 뒤 재작업(img1_2026-10-08.md 62행). 이전에는 승인 칸이 없었음; 이미지 개발 10/11 칸 만듦, 검수가 다음 시트에서 직접 보고 정함. 게임·MaterialVariant에서 쓰는 중(바꾸지 않음).",
+  "date": "2026-10-08",
+  "file": "art/ui/Tex_MeadowDirt_FF3code.png",
+  "id": "rbxassetid://111724093383818",
+  "materialVariant": "GE_MeadowDirt"
  }
 }

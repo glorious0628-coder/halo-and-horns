@@ -34,9 +34,14 @@ def build(n, threads):
     h_weft = across_f * (0.55 + 0.45 * along_f)
     h = np.where(warp_over, 0.35 + 0.65 * h_warp, 0.35 + 0.65 * h_weft)
     # per-thread brightness variation and fuzz (periodic: indices wrap with the tile)
-    tw = rng.uniform(-1, 1, threads)
-    tf = rng.uniform(-1, 1, threads)
-    var = np.where(warp_over, tw[iu % threads], tf[iv % threads]) * 0.035
+    rng.uniform(-1, 1, threads)   # keep the rng stream (fuzz) identical to v1
+    rng.uniform(-1, 1, threads)
+    # v2 (검수 10/11: one bright vertical thread repeated per tile): the old +-0.035 spread let one random thread stand out as
+    # a bright column in the 3x3. Now a balanced, zero-mean, shuffled spread of +-0.010 (no outlier thread, same fuzz).
+    bal = (np.arange(threads) - (threads - 1) / 2) / ((threads - 1) / 2)       # -1..1 evenly spaced
+    tw = rng.permutation(bal)
+    tf = rng.permutation(bal)
+    var = np.where(warp_over, tw[iu % threads], tf[iv % threads]) * 0.010
     fuzz = rng.standard_normal((n, n))
     fz = np.real(np.fft.ifft2(np.fft.fft2(fuzz) * np.exp(-2 * np.pi ** 2 * ((np.fft.fftfreq(n)[None, :] * 1.2) ** 2 + (np.fft.fftfreq(n)[:, None] * 1.2) ** 2))))
     fz = (fz - fz.mean()) / (fz.std() + 1e-9) * 0.012
