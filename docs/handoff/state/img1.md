@@ -1,7 +1,8 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
 ## 지금 (10/11 밤, plan v2 검수 고침 끝, 비우기 전) — 먼저 읽기
-- 검수 = **local_d522c0f1-07cf-4db1-b178-5f335a56db7c** (모든 것 검수). 보고는 send_message로 묶음마다 한 번.
+- **보고처(10/11 사용자):** 그림·3D·월드 보고·사진 판정 = **디자인 검수**(list_sessions 이름). 화면 조작 허락("전달함, 시작")·유료 묶음·사용자 질문 = **최종 검수**(local_d522c0f1-07cf-4db1-b178-5f335a56db7c). send_message로 묶음마다 한 번.
+- 사진 14장(plan v2 고친 뒤, C2c 낮) = art/review/world/halo_v2/review2/sheet_review2.jpg (eb3ff89) → 디자인 검수 판정 대기. 다시 찍을 것: r2_10(탑 위 앞이 바닥에 막힘)·r2_14(위 전체 뿌염). 도구 `SK_OUT=art/review/world/halo_v2/review2 py -X utf8 tools/worldkit/ground_shots.py --review2 [이름]`.
 - **끝낸 것(e8bd29f + 353c72c, 검수에 보고함):** `docs/review/halo_plan_v2_review_2026-10-11.md` 결정 7개 + 진짜 16건 + 확인 안 한 21건 고침.
   - 걷는 속도 = Config.Player.WalkSpeed(20, plan `walk_speed`). 성문→대성당 **26.0초**(대성당 굽은 계단 `cathedral_stairs` w12, 세 번 꺾음, 자체 높이 `ys`, `rails=True` → 걷기 계산이 난간 칸을 막음 + 대각선 모서리 질러가기 금지). 새 구역 `cathedral_steps`(계단 사이 꽃 단 = 가까운 계단 높이, halo_blockout `terrace`). 대성당 (84,-772), 앞 마당 (82,-718).
   - 전망대 y 28(탑 꼭대기 78 < 대성당 84), 검사 "대성당보다 높은 땅/건물". 절벽 마을 = 진짜 두 단: `tiers` 위 단 22(집 3·4·5·6·8), 아래 18(1·2·7), 절벽-전망대 계단 `cliff_lookout`.
