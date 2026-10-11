@@ -41,4 +41,14 @@
 2. 화면: 고리 창(대체 모양) + 입력(PC 클릭·Space, 폰 탭) + 판정 글자 + 결과 줄, UiSandbox 사진.
 3. 서버 계약 합의 뒤 CraftStart/Finish 연결, 그림·소리 오면 바꿔 끼움.
 
+## 6. 제작 창 (③-3, 10/12, `CraftWindow.luau`)
+- Panels 창 "Craft"(제목 Crafting, 아이콘 승인 IconHammer). 여는 길: 메뉴 'Crafting'(장인 = 진영 Neutral·반 고름, `Config.Features.Crafting` 켜짐일 때만) + 서버 `OpenPanel("Craft")`(작업대 G 프롬프트는 개발 3 몫).
+- 위: 내 장인 반 이름 + 제작 Lv("Blacksmith Lv 3") + XP 막대(ArtBar, "52 / 207", 끝 Lv은 "Max").
+- 왼쪽 목록: 내 역할 레시피만, 낮은 Lv부터. 칸 = 가방과 같은 등급 슬롯 그림 + 결과 아이콘, 이름, "Lv N"(내 제작 Lv보다 높으면 빨강), 지금 만들 수 있으면 금색 체크. 재료가 게임에 없는 레시피(W7·W9)와 Gear(이름 없음)는 안 보임. 서버가 CraftInfo에 `On`(지금 만들 수 있는 id)을 보내면 그것만.
+- 오른쪽: 큰 칸, 이름·등급, 공격력(+0, 내 사냥 Lv 기준), 사용 Lv이 높으면 "Use from Lv N", 재료 줄(아이콘·이름·가진 수 / 필요 수, 모자라면 빨강), 골드(모자라면 빨강), "+N craft XP", "Made N", 못 하는 이유 한 줄(서버 알림 글 그대로 `Config.Craft.Text`, 서버 순서: NotArtisan → Auto → Far → NeedLevel → NeedMats → NeedGold), [Forge](연금 Brew, 조련 Make).
+- [Forge] = `CraftStart(recipeId)` 한 번(기다리는 동안 "Checking…", 3초 안에 답 없으면 거절 알림이 뜬 것 → 버튼 돌아옴, 서버 간격 3초 + 0.15). 서버가 CraftSession을 보내면 고리 화면이 이 창을 닫고, 고리가 끝나면 이 창이 같은 레시피로 다시 열림(다른 창이 열려 있으면 안 끼어듦).
+- 거리: 내 역할 자리(태그 CraftStation, 속성 Role) 중 가장 가까운 것, 없으면 교차로 모루 — 12스터드 넘으면 Far. 보이는 자리가 없으면 서버가 정함(안 막음).
+- 개발 3에 요청: ① CraftInfo에 `On`(지금 시작이 되는 레시피 id 목록: 무기는 AddSpare 전까지 꺼짐 → 목록에서 숨김) ② 꺼진 레시피 시작은 지금 알림 없이 끝남("recipe") — `On`이 있으면 안 눌림 ③ 작업대 프롬프트(G) → `OpenPanel("Craft")`.
+- 시험 `tools/test_craft_window.py`(오프라인, 변이), 사진 `tools/play_craft_window_photos.py`(UiSandbox).
+
 출처: [The Forge 망치 단계 공략(roonby)](https://roonby.com/2025/11/27/how-to-get-masterwork-crafting-quality-the-forge-roblox-guide/amp/), [The Forge 시작 안내(PC Gamer)](https://www.pcgamer.com/roblox/the-forge-tips/), [Jacksmith](https://www.seeles.ai/games/simulation/jacksmith-the-fantasy-blacksmith-adventure), [osu! Overall difficulty](https://osu.ppy.sh/wiki/en/Beatmap/Overall_difficulty), [Wartales 대장장이 토론](https://steamcommunity.com/app/1527950/discussions/0/3803900924524303775), [타격감: flash·shake·particle](https://eastondev.com/blog/en/posts/dev/20260521-game-feedback-feel/), [Unity hit stop 입문](https://uhiyama-lab.com/en/notes/unity/unity-game-feel-hit-feedback/), [공격 애니메이션 분해(slynyrd)](https://www.slynyrd.com/blog/2025/5/23/pixelblog-56-top-down-character-attack-animation), [타격 애니메이션 원칙(80.lv)](https://80.lv/articles/separation-compensation-principle-in-strikes-animation?amp=1), [Mabinogi 대장장이](https://wiki.mabinogiworld.com/view/Blacksmith).

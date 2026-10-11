@@ -145,7 +145,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("Panels: a registered window may ask for its own width (opts.Width)",
          "local want = currentId ~= nil and REG.Opts[currentId] ~= nil and REG.Opts[currentId].Width or nil" in src["PANELS"]
          and "if type(want) == \"number\" and want == want then winW = math.max(280, math.min(want, WINDOW_MAX_W, w - 24)) end" in src["PANELS"]),
-        ("Panels: the bag has the bag icon", 'Bag = "IconBag" },' in src["PANELS"]),
+        ("Panels: the bag has the bag icon", 'Bag = "IconBag"' in src["PANELS"]),
         ("Panels: opening the bag stops the B14 scroll glow", 'if id == "Items" or id == "Bag" then ITEMS.Seen = true end' in src["PANELS"]),
         ("Panels: LastEnhance hands out the last scroll result", "function Panels.LastEnhance()" in src["PANELS"]
          and "return table.clone(ITEMS.Result), ITEMS.ResultAt" in src["PANELS"]),

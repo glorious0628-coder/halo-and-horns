@@ -1,0 +1,169 @@
+{
+  "checks": 98,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "another role's recipes show",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a recipe with a material not in the game shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Gear without names shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "short materials not marked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the gold ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the level lock ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the server's On list ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "another role's CraftInfo counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "auto combat is no reason",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "reasons out of the server's order",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Forge while a start waits",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Forge with a reason against it",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no interval after a start",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the window never comes back after the ring",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "it pushes in over another window",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a refusal waits forever",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bench's role ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no anvil fallback",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "far with nothing in sight",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the open arg applied on every rebuild",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the update never redraws",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "new materials not in the redraw signature",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the menu for everyone",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the menu while crafting is off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "CraftInfo bound only later",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a CraftInfo without a role taken",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Checking… never shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty window keeps its empty columns",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the counts under the detail's scroll bar",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "tight captions keep the styled text floor",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the menu ignores opts.Menu",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the window is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "③-3 제작 창 (게임성 개발 4, 2026-10-12; SPEC A23-127 / A23-56 / A23-130 / A23-111, contract\ndocs/design/craft_server_2026-10-12.md §4: CraftStart(recipeId), CraftInfo { Role, Lv, XP, Need, Made, On? }), offline.\n\nRuns the CURRENT Config.luau and CraftWindow.luau in the official Luau CLI (tools/fixtures/craft_window_offline.luau;\nthe CraftInfo remote, Panels, UIKit, CraftView.IsOpen, CollectionService benches and the Crossroads anvil are doubles).\nChecks: the Panels window \"Craft\" (title, width, L10n table, CraftInfo bound at Init); the menu entry only for an artisan\n(faction Neutral, class chosen) while Config.Features.Crafting is on; my role's recipes only (Warrior Smith, Mage Alch,\nArcher Tame), lowest level first, a recipe with a material not in the game / Gear (no names yet) hidden, the server's\nOn list; materials in the loot order with have / need; gold; the craft level lock (CraftInfo of my role only); the\nrefusal reasons in the server's order (NotArtisan, Auto, Far, NeedLevel, NeedMats, NeedGold) with the server's own\nnotice texts; the header (Blacksmith Lv N, XP / next, Max); the detail (attack, use-from level, craft XP, made, Forge /\nBrew / Make, Checking… while a start waits, off inside the start interval); the window (rows, the gold rim, the ready\ncheck, a locked row's red level, the gold line, a tap picks); Forge = CraftStart(recipeId) once; the ring opening and\nclosing brings the window back on the same recipe (not over another window); no answer in 3 s = back after the\ninterval; the bench distance (my role's nearest CraftStation, else the anvil, nothing in sight = not far); auto combat;\nthe Inventory push / gold / CraftInfo redraw in place; the open arg once; a non-artisan sees the server's line.\nStatic: ClientMain loads CraftWindow after Panels; it sends CraftStart only; no fixed key; Panels' menu takes opts.Menu\nand the window's icon is the approved IconHammer. Mutations: each must be caught.",
+  "studioCalls": 0
+}
