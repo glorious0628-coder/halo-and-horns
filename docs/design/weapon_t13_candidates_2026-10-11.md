@@ -9,7 +9,7 @@
 - 공통 판정: HQ 9종(장난감 통통)보다 **현실적·가는 결**(특히 빛/뿔 T3 검·활). 고급(High)으로 올릴 때 HQ 앞면 시트를 참조로 걸어 통통하게 맞추길 권함.
 
 ## 벤치 B left2 (등불·벤치 재작업)
-- 시트 `art/review/s2/halo_benchB_left2_cands.jpg`: 참조 없이 Medium 4장(m1~m4) = 모두 불합격(조각이 떠 있거나 분리). **앞면+right2 합성 참조를 건 Medium 2장(r1,r2)** = 화분이 앞, 뒤 기둥·등받이, 좌석이 받침 위에서 옆으로 나온 진짜 옆면. **r2 추천**(등받이 곡선·좌석 다리 보임). 파일 `art/out/s2/halo/props4/HaloProp4_BenchB_left2_{r1,r2}.png`. 확정하려면 High 1장(5크레딧) 필요 → 검수 OK 대기.
+- 시트 `art/review/s2/halo_benchB_left2_cands.jpg`: 참조 없이 Medium 4장(m1~m4) = 모두 불합격(조각이 떠 있거나 분리). **앞면+right2 합성 참조를 건 Medium 2장(r1,r2)** = 화분이 앞, 뒤 기둥·등받이, 좌석이 받침 위에서 옆으로 나온 진짜 옆면. **r2 추천**(등받이 곡선·좌석 다리 보임). 파일 `art/out/s2/halo/props4/HaloProp4_BenchB_left2_{r1,r2}.png`. **High 1장(5크레딧, 검수 OK) 완료: `HaloProp4_BenchB_left2_HQ.png`**(r2 구도, 참조 = 앞면+right2 합성). 시트 `art/review/s2/halo_benchB_left2_HQ.jpg`(왼 right2, 오 새 left2). 내 판정: 화분 앞·기둥 금 공·등받이 뒤·좌석이 마블 받침 위, 떠 있는 조각 없음 → 통과.
 
 ## 27칸 표
 
