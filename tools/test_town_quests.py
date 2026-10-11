@@ -466,7 +466,9 @@ def static() -> tuple[int, list[str]]:
     # 검수 2026-10-07: every story pick has its side (SK2's Guard / Take were missing: no change of mind)
     side = re.search(r"^local SIDE = \{(.*?)\}", story, re.S | re.M)
     side_keys = set(re.findall(r'(\w+) = "(?:Good|Evil)"', side.group(1))) if side else set()
-    picks = set(re.findall(r'Pick = "(\w+)"', config))
+    # only the story table (Config.Gather.Text has a button label 'Pick = "Pick"', 2026-10-12)
+    sq = re.search(r"^Config\.StoryQuests = \{.*?^\}", config, re.S | re.M)
+    picks = set(re.findall(r'Pick = "(\w+)"', sq.group(0))) if sq else set()
     check(bool(picks) and picks <= side_keys,
           f"every Pick in Config.StoryQuests has a side in SIDE (missing: {sorted(picks - side_keys)})")
     # A23-64: the afterglow leaves from one place (afterglow, through Net.Fx) and TownPick is set in one place
