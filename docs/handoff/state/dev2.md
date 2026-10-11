@@ -29,6 +29,10 @@
    (대사·Speakers·'Bright & Smokey' 등; 초상화 키 PTR_TownSmokey는 그림 쪽과 맞춰서). 개발 1은 fix/meme-en-client.
 - 알아 둘 것: 한 번에 팔기 = 몬스터 재료만(개발 3이 dev3-gather fec0cc68에 `def.Source ~= nil` 건너뛰기로 넣음, main에 있음).
   화면의 팔기 합계 골드는 개발 4 몫.
+- 개발 3 연금 물약 ④(origin/dev3-alchemy 09a149d0, 시험 중)가 내 파일에 BuffService.Mult 줄 4개: CombatService.damageMonster 맨 앞
+  (MonsterDamage)·DamagePlayer SKL-3 가드 뒤(MonsterHurt), LootService.RollKill info.MatMult + rollRows 재료 줄만, ProgressionService
+  처치 XP 뒤(HuntXP). 그 옆을 고치면 개발 3에 먼저 알리기. KingJelly·ClatterGem(Source "Boss")도 행운 물약에 오름 → 빼려면
+  `def.Source == nil` 조건(게임성 검수 결정 대기, 개발 3에 알림).
 
 ## worktree·도구
 - 가벼운 worktree: `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
