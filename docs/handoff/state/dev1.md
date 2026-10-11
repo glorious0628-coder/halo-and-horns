@@ -37,6 +37,8 @@
 
 13. **10/13 아침:** test_audio(fix/pvp-toast, 혼자) 통과 362 — 보고함. **fix/staff-slope-hero 2179efa9** (wt_onehand, main c5168d76에서): StaffStep 끝 둘레 5점 중 가장 높은 땅(StaffRing) + GripProbe 'Staff tip-ground/lift' 줄(r1012b 'tip-foot'은 발바닥 기준이라 경사 판단 불가), HUD L.TileOpens: 열 창 없는 칸(Hero)은 잠금 유지('Lv 2' → 'Hero', 팝 없음, 흔들림만). 관련 시험 28개 통과. 게임성 검수에 보고, 사진 부탁(Hero 칸, 계단·경사 GripProbe).
 
+14. **fix/stairs-ground 3099197e** (wt_onehand, main 7578bc15에서; staff-slope-hero·pvp-toast는 병합됨): 빛 계단 위 지팡이 2~3칸 뜸 = Config.GroundRoots가 Props 키트 조각 중 'Bridge'만 땅 → Config.Ground.KitWalk {Bridge, Stairs, Steps, Ramp}. 태그 없는 Floor는 장식 그대로. 새 빛 마을(메인 Studio) 다른 폴더 계단·바닥은 월드 쪽 확인(최종 검수에 전달 부탁). test_ground_rays 24·19/19 등 통과. 게임성 검수에 보고.
+
 ## 기다리는 것
 - 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(eebeebd3) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
 - 사진(병합 뒤 메인 반영 1): 마법사 지팡이 tip-foot 다시(목표 0.05~0.15, 기본 R15도), 가방 강화 성공·실패 칩, 카드 연 채 첫 미션 받기(동전 +150), 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
