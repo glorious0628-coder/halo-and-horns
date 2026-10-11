@@ -72,7 +72,7 @@ local DETOUR_SECONDS = 2
 local DETOUR_TRIES = 4
 local CHASE_STUCK_GIVEUP = 2 -- stuck this many times on one target -> give up and go home
 
--- ground probing (A11-R1: Include only Terrain, Map.Ground and the Map.Decor "Bridge_*" models)
+-- ground probing (A11-R1: Include only Config.GroundRoots: Terrain, Map.Ground, the bridges, "WalkGround" tags)
 local GROUND_RAY_TOP = 150 -- above every ridge top
 local GROUND_RAY_LENGTH = 320
 local GROUND_MIN_Y, GROUND_MAX_Y = -2, 26 -- walkable ground (zone ground top Y = 0; 검수 2026-10-09: the meadow v4 hunting grass rises in 3 layers to 17.4, so up to 26); lower = shore
@@ -295,23 +295,15 @@ local function clampToZone(zone, p)
 	)
 end
 
--- A11-R1: ground raycasts only see Terrain, workspace.Map.Ground and the bridge models (rebuilt every few seconds
--- so a late MapBuilder pass is picked up). Water is NOT ignored, so a hit on the sea/river reports Material Water.
+-- A11-R1: ground raycasts only see the walking ground (rebuilt every few seconds so a late MapBuilder pass is picked
+-- up): Config.GroundRoots = Terrain, workspace.Map.Ground, the bridges and (halo_restart 2026-10-11) every instance
+-- tagged Config.Ground.Tag "WalkGround" - the one rule the clients' Ground.luau uses too. Water is NOT ignored, so a
+-- hit on the sea/river reports Material Water.
 local function getGroundParams()
 	local now = os.clock()
 	if groundParams and now - groundParamsAt < GROUND_PARAMS_REFRESH then return groundParams end
-	local list = { workspace.Terrain }
-	local map = workspace:FindFirstChild("Map")
-	if map then
-		local ground = map:FindFirstChild("Ground")
-		if ground then table.insert(list, ground) end
-		local decor = map:FindFirstChild("Decor")
-		if decor then
-			for _, c in decor:GetChildren() do
-				if string.sub(c.Name, 1, 7) == "Bridge_" then table.insert(list, c) end
-			end
-		end
-	end
+	local list = Config.GroundRoots(workspace.Terrain, workspace:FindFirstChild("Map"),
+		Util.Tagged((Config.Ground or {}).Tag or "WalkGround"))
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Include
 	params.FilterDescendantsInstances = list

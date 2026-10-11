@@ -1,0 +1,300 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 23,
+  "failedChecks": 0,
+  "namedChecks": 23,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "monster ground",
+      "check": "Include, water NOT ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "Terrain, Map.Ground, Decor Bridge_*",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "the world kits' bridges (a *Props cell / a cell's model named ...Bridge...)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "every WalkGround-tagged floor (inside a prop, outside the Map)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "never the other props, the house or the whole Map",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "a tagged bridge listed once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "kept between rays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "rebuilt after GROUND_PARAMS_REFRESH: a new tag is seen",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "tags unreadable: no tagged floors, Map.Ground stays (never thrown)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "no workspace.Map: Terrain + the tagged floors",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "monster ground",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju ground",
+      "check": "the kaiju stomp sees the same ground as the monsters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju ground",
+      "check": "same list, same order (Config.GroundRoots + the WalkGround tag)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju ground",
+      "check": "tags unreadable: never thrown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju ground",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "kaiju ground",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Util.Tagged",
+      "check": "the tagged instances / {} for an unused tag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Util.Tagged",
+      "check": "a bad tag (not text): {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Util.Tagged",
+      "check": "CollectionService failing: {}, never thrown",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Util.Tagged",
+      "check": "a non-table answer: {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Util.Tagged",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "Util.Tagged",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 10,
+    "applied": 10,
+    "caught": 10,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "monsters: no tagged floors",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju ground :: same list, same order (Config.GroundRoots + the WalkGround tag)",
+          "kaiju ground :: the kaiju stomp sees the same ground as the monsters",
+          "monster ground :: every WalkGround-tagged floor (inside a prop, outside the Map)",
+          "monster ground :: no workspace.Map: Terrain + the tagged floors",
+          "monster ground :: rebuilt after GROUND_PARAMS_REFRESH: a new tag is seen"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "monsters: the whole Map is ground",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju ground :: same list, same order (Config.GroundRoots + the WalkGround tag)",
+          "kaiju ground :: the kaiju stomp sees the same ground as the monsters",
+          "monster ground :: Terrain, Map.Ground, Decor Bridge_*",
+          "monster ground :: a tagged bridge listed once",
+          "monster ground :: every WalkGround-tagged floor (inside a prop, outside the Map)",
+          "monster ground :: never the other props, the house or the whole Map"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "monsters: water ignored",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster ground :: Include, water NOT ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "monsters: never cached",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster ground :: kept between rays",
+          "monster ground :: rebuilt after GROUND_PARAMS_REFRESH: a new tag is seen"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "monsters: never rebuilt",
+        "file": "src/ServerScriptService/MonsterService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "monster ground :: rebuilt after GROUND_PARAMS_REFRESH: a new tag is seen",
+          "monster ground :: tags unreadable: no tagged floors, Map.Ground stays (never thrown)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kaiju: no tagged floors",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju ground :: same list, same order (Config.GroundRoots + the WalkGround tag)",
+          "kaiju ground :: the kaiju stomp sees the same ground as the monsters"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kaiju: old bridge-only list",
+        "file": "src/ServerScriptService/KaijuService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "kaiju ground :: same list, same order (Config.GroundRoots + the WalkGround tag)",
+          "kaiju ground :: the kaiju stomp sees the same ground as the monsters"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "Util.Tagged throws",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Util.Tagged :: CollectionService failing: {}, never thrown",
+          "kaiju ground :: tags unreadable: never thrown",
+          "monster ground :: tags unreadable: no tagged floors, Map.Ground stays (never thrown)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "Util.Tagged passes a non-table",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Util.Tagged :: a non-table answer: {}"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "Util.Tagged takes any tag",
+        "file": "src/ReplicatedStorage/Shared/Util.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "Util.Tagged :: a bad tag (not text): {}"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "b89a6cb23eb72ea0f7f3fbe399540da4b41a64f50809f0daa2f0f62300275c2c",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/MonsterService.luau": "6ce640d9dbdb7f2ddb9ed9e1a8cfac1ec82828885aa8aab5d40ff7349f543039",
+    "src/ServerScriptService/KaijuService.luau": "ed86b7afc17d8d3fc6c3c07729067bce368595643ef87d28b1e30f28fbc896a8"
+  },
+  "fixtureSHA256": "7d8f7b7e983276e21f43d873d61a687b6cbb5cd98997ac5cd3e84b424d51035d",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "halo_restart 2026-10-11: MonsterService.getGroundParams (Include, water not ignored, cached GROUND_PARAMS_REFRESH s) and KaijuService.groundTargets = Config.GroundRoots(workspace.Terrain, workspace.Map, Util.Tagged(Config.Ground.Tag)): Terrain, Map.Ground, Decor Bridge_*, the *Props kits' bridge cells / models, every WalkGround-tagged instance once; never other props or the whole Map; tags unreadable = none (never thrown). ZoneService.waterParams / walkableHit use the same roots (static here, run in test_water_rescue).",
+  "limitations": "Instance doubles (no real raycasts); MonsterService's groundPoint / occupied and the kaiju stomp ring themselves are not run here (test_monster_spacing / test_kaiju_town); the clients' Ground.luau is game dev 1's test_ground_rays."
+}

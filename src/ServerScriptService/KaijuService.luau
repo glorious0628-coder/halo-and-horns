@@ -16,7 +16,7 @@
 --    Halo damage share); otherwise it is Cancelled. Its pouch is escrowed by a PlayerLeaving handler that runs first
 --    (ahead of ProgressionService's leave banking), so the carried gold reaches the pool like a KO; public
 --    WillSettleOnLeave tells other services such a leave is coming. CR-M13: stomps outside PvP zones carry no attacker.
--- A11-R1: the stomp's ground raycast includes only Terrain, workspace.Map.Ground and Map.Decor "Bridge_*" models.
+-- A11-R1: the stomp's ground raycast includes only Config.GroundRoots (Terrain, Map.Ground, the bridges, "WalkGround" tags).
 -- A12: a transformed kaiju may zoom out to KAIJU_CAMERA_ZOOM; the previous limit is restored when the event ends.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -248,23 +248,11 @@ local function computeHealthMult(p)
 	return Config.Kaiju.HPMult * (1 + Config.Kaiju.HPPerNearbyHalo * nearby)
 end
 
--- A11-R1: ground = Terrain + workspace.Map.Ground + bridge models (workspace.Map.Decor children named "Bridge_*")
+-- A11-R1: ground = Config.GroundRoots: Terrain + workspace.Map.Ground + the bridges + (halo_restart 2026-10-11) every
+-- instance tagged Config.Ground.Tag "WalkGround" (the one walking-ground rule of MonsterService and the clients)
 local function groundTargets()
-	local list = { workspace.Terrain }
-	local map = workspace:FindFirstChild("Map")
-	if map then
-		local ground = map:FindFirstChild("Ground")
-		if ground then table.insert(list, ground) end
-		local decor = map:FindFirstChild("Decor")
-		if decor then
-			for _, child in decor:GetChildren() do
-				if string.sub(child.Name, 1, 7) == "Bridge_" then
-					table.insert(list, child)
-				end
-			end
-		end
-	end
-	return list
+	return Config.GroundRoots(workspace.Terrain, workspace:FindFirstChild("Map"),
+		Util.Tagged((Config.Ground or {}).Tag or "WalkGround"))
 end
 
 -- ground point below a position (for the stomp ring); falls back to the map ground plane (Y = 0)

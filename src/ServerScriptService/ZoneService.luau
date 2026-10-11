@@ -404,15 +404,29 @@ function waterProbe.Surface(pos)
 	return top
 end
 
--- the ray / overlap params (Terrain + workspace.Map; water NOT ignored; non-colliding parts ignored), rebuilt every 5 s so
--- a MapBuilder.Rebuild() (a new workspace.Map) is picked up, like MonsterService's ground params
+-- the ray / overlap params (Terrain + workspace.Map + "WalkGround"-tagged floors outside it; water NOT ignored;
+-- non-colliding parts ignored) and the walking-ground roots (Config.GroundRoots, the rule MonsterService and the clients'
+-- Ground.luau use), rebuilt every 5 s so a MapBuilder.Rebuild() (a new workspace.Map) or a new tag is picked up
 local function waterParams()
 	local now = os.clock()
 	if waterProbe.Params and now - waterProbe.ParamsAt < 5 then return waterProbe.Params, waterProbe.Overlap end
 	local map = workspace:FindFirstChild("Map")
+	local tagged = Util.Tagged((Config.Ground or {}).Tag or "WalkGround")
+	local roots = {}
+	for _, inst in Config.GroundRoots(workspace.Terrain, map, tagged) do roots[inst] = true end
+	waterProbe.Roots = roots
+	local list = map and { workspace.Terrain, map } or { workspace.Terrain }
+	for _, inst in tagged do
+		local node, inMap = inst, false
+		while node ~= nil and not inMap do
+			inMap = map ~= nil and node == map
+			node = node.Parent
+		end
+		if not inMap then table.insert(list, inst) end -- a tagged floor outside workspace.Map is seen too
+	end
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Include
-	params.FilterDescendantsInstances = map and { workspace.Terrain, map } or { workspace.Terrain }
+	params.FilterDescendantsInstances = list
 	params.IgnoreWater = false
 	pcall(function() params.RespectCanCollide = true end)
 	local overlap = OverlapParams.new()
@@ -433,19 +447,17 @@ local function waterParams()
 	return params, overlap
 end
 
--- true when a ray hit is walkable map ground: Terrain, a part under workspace.Map.Ground or under a Map.Decor "Bridge_*"
--- model (MonsterService's ground set). Roofs, props, walls and travel pads are never landing spots.
+-- true when a ray hit is walking ground: Terrain or a part inside one of the roots waterParams() keeps (Config.GroundRoots:
+-- workspace.Map.Ground, the bridges, "WalkGround"-tagged floors). Roofs, props, walls and travel pads are never landing
+-- spots.
 local function walkableHit(inst)
 	if typeof(inst) ~= "Instance" then return false end
 	if inst:IsA("Terrain") then return true end
+	local roots = type(waterProbe.Roots) == "table" and waterProbe.Roots or {}
 	local node = inst
-	while node.Parent and node.Parent ~= workspace do
-		local parent = node.Parent
-		if (node.Name == "Ground" and parent.Name == "Map" and parent.Parent == workspace)
-			or (parent.Name == "Decor" and string.sub(node.Name, 1, 7) == "Bridge_") then
-			return true
-		end
-		node = parent
+	while node ~= nil and node ~= workspace do
+		if roots[node] then return true end
+		node = node.Parent
 	end
 	return false
 end
