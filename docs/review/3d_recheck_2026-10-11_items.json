@@ -1,0 +1,3324 @@
+{
+ "render": [
+  {
+   "name": "HaloDomeHouse_01",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloDomeHouse_01_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_01/HaloDomeHouse_01_parts.glb",
+   "tris": 24277,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_01_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_02",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_recolor.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_02/HaloDomeHouse_02_parts.glb",
+   "tris": 23236,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_02_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_03",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_03_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_03/HaloDomeHouse_03_parts.glb",
+   "tris": 23865,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_03_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_04",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_04_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_04/HaloDomeHouse_04_parts.glb",
+   "tris": 24326,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_04_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_05",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloDomeHouse_05_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_05/HaloDomeHouse_05_parts.glb",
+   "tris": 23652,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_05_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_06",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_06_front_HQ_recolor.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_06/HaloDomeHouse_06_parts.glb",
+   "tris": 24515,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_06_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_07",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloDomeHouse_07_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_07/HaloDomeHouse_07_parts.glb",
+   "tris": 23601,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_07_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_08",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_08/HaloDomeHouse_08_parts.glb",
+   "tris": 24330,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_08_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_09",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_09_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_09/HaloDomeHouse_09_parts.glb",
+   "tris": 23893,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_09_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_10",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/houses/HaloDomeHouse_10_front_HQ_recolor.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_10/HaloDomeHouse_10_parts.glb",
+   "tris": 24254,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_10_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_11",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloDomeHouse_11_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_11/HaloDomeHouse_11_parts.glb",
+   "tris": 23663,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_11_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloDomeHouse_12",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloDomeHouse_12_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloDomeHouse_12/HaloDomeHouse_12_parts.glb",
+   "tris": 23950,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloDomeHouse_12_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloFlowerPotHQ_Daisy",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Daisy.png",
+   "glb": "art/models/tripo/halo_props/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_parts.glb",
+   "tris": 7994,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlowerPotHQ_Daisy_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlowerPotHQ_Lavender",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Lavender.png",
+   "glb": "art/models/tripo/halo_props/HaloFlowerPotHQ_Lavender/HaloFlowerPotHQ_Lavender_parts.glb",
+   "tris": 7998,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlowerPotHQ_Lavender_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlowerPotHQ_Rose",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Rose.png",
+   "glb": "art/models/tripo/halo_props/HaloFlowerPotHQ_Rose/HaloFlowerPotHQ_Rose_parts.glb",
+   "tris": 8007,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlowerPotHQ_Rose_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlowerPotHQ_Sunflower",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Sunflower.png",
+   "glb": "art/models/tripo/halo_props/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_parts.glb",
+   "tris": 8000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlowerPotHQ_Sunflower_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlowerPotHQ_Tulip",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Tulip.png",
+   "glb": "art/models/tripo/halo_props/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_parts.glb",
+   "tris": 8000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlowerPotHQ_Tulip_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloPart_CathBody",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathBody_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathBody_HD_LOD.glb",
+   "tris": 19999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathBody_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_CathDome",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathDome_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathDome_HD_LOD.glb",
+   "tris": 19999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathDome_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "HaloPart_CathDoorFrame",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathDoorFrame_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathDoorFrame_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathDoorFrame_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_CathDoorLeaf",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathDoorLeaf_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathDoorLeaf_HD_LOD.glb",
+   "tris": 8999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathDoorLeaf_compare.jpg",
+   "notes": "multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "HaloPart_CathTowerA",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathTowerA_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathTowerA_HD_LOD.glb",
+   "tris": 11999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathTowerA_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_CathTowerB",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathTowerB_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathTowerB_HD_LOD.glb",
+   "tris": 11999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathTowerB_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_CathWindow",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathWindow_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathWindow_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathWindow_compare.jpg",
+   "notes": "multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "HaloPart_GateArch",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateArch_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateArch_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateArch_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_GateDomeL",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateDomeL_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateDomeL_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateDomeL_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "HaloPart_GateDomeR",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateDomeR_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateDomeR_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateDomeR_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "HaloPart_GateDoorLeafL",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateDoorLeafL_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateDoorLeafL_HD_LOD.glb",
+   "tris": 8999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateDoorLeafL_compare.jpg",
+   "notes": "multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "HaloPart_GateDoorLeafR",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateDoorLeafR_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateDoorLeafR_HD_LOD.glb",
+   "tris": 8999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateDoorLeafR_compare.jpg",
+   "notes": "multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "HaloPart_GateLantern",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateLantern_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateLantern_HD_LOD.glb",
+   "tris": 5999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateLantern_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "HaloPart_GateTowerL",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "4 slots, mixed (front slot got the left image, back empty) — records note",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateTowerL_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateTowerL_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateTowerL_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part); multiview but not the 4 views A23-122 asks for (4 slots, mixed (front slot got the left image, back empty) — records note)"
+  },
+  {
+   "name": "HaloPart_GateTowerR",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_GateTowerR_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_GateTowerR_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/GateTowerR_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_TowerBody",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_TowerBody_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_TowerBody_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/TowerBody_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_TowerDome",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_TowerDome_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_TowerDome_HD_LOD.glb",
+   "tris": 12000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/TowerDome_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "HaloPart_TowerDoorFrame",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_TowerDoorFrame_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_TowerDoorFrame_HD_LOD.glb",
+   "tris": 7998,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/TowerDoorFrame_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body part)"
+  },
+  {
+   "name": "HaloPart_TowerDoorLeaf",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_TowerDoorLeaf_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_TowerDoorLeaf_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/TowerDoorLeaf_compare.jpg",
+   "notes": "multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "HaloPart_TowerWindow",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_TowerWindow_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_TowerWindow_HD_LOD.glb",
+   "tris": 7999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/TowerWindow_compare.jpg",
+   "notes": "multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "HaloReasonHQ_BenchA",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_BenchA.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_BenchA/HaloReasonHQ_BenchA_parts.glb",
+   "tris": 6036,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_BenchA_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_BenchB",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_BenchB.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_BenchB/HaloReasonHQ_BenchB_parts.glb",
+   "tris": 8018,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_BenchB_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_BenchC",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_BenchC.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_BenchC/HaloReasonHQ_BenchC_parts.glb",
+   "tris": 5038,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_BenchC_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_BreadStand",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_BreadStand.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_BreadStand/HaloReasonHQ_BreadStand_parts.glb",
+   "tris": 10045,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_BreadStand_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_Clothesline",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_Clothesline.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_Clothesline/HaloReasonHQ_Clothesline_parts.glb",
+   "tris": 8567,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_Clothesline_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_FlowerCart",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_FlowerCart.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_FlowerCart/HaloReasonHQ_FlowerCart_parts.glb",
+   "tris": 10188,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_FlowerCart_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_FruitStall",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_FruitStall.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_FruitStall/HaloReasonHQ_FruitStall_parts.glb",
+   "tris": 10206,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_FruitStall_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_GuardPost",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_GuardPost.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_parts.glb",
+   "tris": 12084,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_GuardPost_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_PotionCrate",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_PotionCrate.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_parts.glb",
+   "tris": 8156,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_PotionCrate_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_RackShieldSword",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_RackShieldSword.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_RackShieldSword/HaloReasonHQ_RackShieldSword_parts.glb",
+   "tris": 8365,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_RackShieldSword_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_Scarecrow",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_Scarecrow.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_Scarecrow/HaloReasonHQ_Scarecrow_parts.glb",
+   "tris": 6076,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_Scarecrow_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_VegGarden",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_VegGarden.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_VegGarden/HaloReasonHQ_VegGarden_parts.glb",
+   "tris": 10022,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_VegGarden_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloReasonHQ_Woodpile",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_Woodpile.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_Woodpile/HaloReasonHQ_Woodpile_parts.glb",
+   "tris": 8079,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_Woodpile_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloShop_Bakery",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_houses/HaloShop_Bakery/HaloShop_Bakery_parts.glb",
+   "tris": 23657,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloShop_Bakery_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloShop_Flower",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloShop_Flower_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloShop_Flower/HaloShop_Flower_parts.glb",
+   "tris": 23041,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloShop_Flower_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloShop_Juice",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/roofs/HaloShop_Juice_roof_v2.png",
+   "glb": "art/models/tripo/halo_houses/HaloShop_Juice/HaloShop_Juice_parts.glb",
+   "tris": 23507,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloShop_Juice_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloShop_Potion",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/shops/HaloShop_Potion_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_houses/HaloShop_Potion/HaloShop_Potion_parts.glb",
+   "tris": 23613,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloShop_Potion_check.jpg",
+   "notes": "A23-120 skeleton candidate (building body: swap the Tripo Body_t** for a Studio skeleton; keep roof/door/window/awning parts); parts GLB (tools/house_build.sh) in import_now; WorldKit ServerStorage.ImportHold per state/img1.md (not in the saved build/WorldKit.rbxlx)"
+  },
+  {
+   "name": "HaloVar3_Lantern_E",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Lantern_E_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Lantern_E/HaloVar3_Lantern_E_parts.glb",
+   "tris": 5022,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Lantern_E_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_Planter_E",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Planter_E_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Planter_E/HaloVar3_Planter_E_parts.glb",
+   "tris": 8032,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Planter_E_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_PotFlowers_E",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_PotFlowers_E_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_PotFlowers_E/HaloVar3_PotFlowers_E_parts.glb",
+   "tris": 7000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_PotFlowers_E_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_PotFlowers_F",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_PotFlowers_F_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_parts.glb",
+   "tris": 7027,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_PotFlowers_F_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_RoundTree_E",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_RoundTree_E_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_RoundTree_E/HaloVar3_RoundTree_E_parts.glb",
+   "tris": 10024,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_RoundTree_E_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_RoundTree_F",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_RoundTree_F_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_RoundTree_F/HaloVar3_RoundTree_F_parts.glb",
+   "tris": 10008,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_RoundTree_F_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_RoundTree_G",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_RoundTree_G_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_RoundTree_G/HaloVar3_RoundTree_G_parts.glb",
+   "tris": 10014,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_RoundTree_G_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_Topiary_C",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Topiary_C_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Topiary_C/HaloVar3_Topiary_C_parts.glb",
+   "tris": 8015,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Topiary_C_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_Topiary_D",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Topiary_D_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Topiary_D/HaloVar3_Topiary_D_parts.glb",
+   "tris": 8016,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Topiary_D_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_Topiary_E",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Topiary_E_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Topiary_E/HaloVar3_Topiary_E_parts.glb",
+   "tris": 8000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Topiary_E_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Lantern_A",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Lantern_A_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Lantern_A/HaloVar4_Lantern_A_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Lantern_A_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Lantern_B",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Lantern_B_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Lantern_B/HaloVar4_Lantern_B_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Lantern_B_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Lantern_C",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Lantern_C_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Lantern_C/HaloVar4_Lantern_C_parts.glb",
+   "tris": 4999,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Lantern_C_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Lantern_D",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Lantern_D_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Lantern_D/HaloVar4_Lantern_D_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Lantern_D_check.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Planter_A",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Planter_A_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Planter_A/HaloVar4_Planter_A_parts.glb",
+   "tris": 7994,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Planter_A_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Planter_D",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Planter_D_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Planter_D/HaloVar4_Planter_D_parts.glb",
+   "tris": 7999,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Planter_D_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_PotFlowers_A",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_A_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_PotFlowers_A/HaloVar4_PotFlowers_A_parts.glb",
+   "tris": 7049,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_PotFlowers_A_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_PotFlowers_C",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_C_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_PotFlowers_C/HaloVar4_PotFlowers_C_parts.glb",
+   "tris": 7017,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_PotFlowers_C_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_PotFlowers_D",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_PotFlowers_D_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_parts.glb",
+   "tris": 7011,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_PotFlowers_D_check.jpg",
+   "notes": "A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "Halo_Cathedral",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/HaloProp_Cathedral_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Cathedral_HD_LOD.glb",
+   "tris": 11000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Cathedral_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 23132 tris; used GLB 11000"
+  },
+  {
+   "name": "Halo_CloudBush",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_CloudBush_front_v2_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_CloudBush_v2_HD_LOD.glb",
+   "tris": 1800,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/CloudBush_v2_compare.jpg",
+   "notes": "v2 (poly 15000) used; user 10/11 \"뭉탱이\": cloud bushes taken out of the Halo plan; one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6)"
+  },
+  {
+   "name": "Halo_DomeHouseA",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/HaloProp_DomeHouseA_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_DomeHouseA_HD_LOD.glb",
+   "tris": 8000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/DomeHouseA_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 11097 tris; used GLB 8000"
+  },
+  {
+   "name": "Halo_DomeHouseB",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/HaloProp_DomeHouseB_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_DomeHouseB_HD_LOD.glb",
+   "tris": 8000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/DomeHouseB_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 13006 tris; used GLB 8000"
+  },
+  {
+   "name": "Halo_FarArch",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_FarArch_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_FarArch_HD_LOD.glb",
+   "tris": 2500,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/FarArch_compare.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 4770 tris; used GLB 2500"
+  },
+  {
+   "name": "Halo_Gate",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/HaloProp_Gate_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Gate_HD_LOD.glb",
+   "tris": 10000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Gate_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 16084 tris; used GLB 10000"
+  },
+  {
+   "name": "Halo_Islet",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Islet_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Islet_HD_LOD.glb",
+   "tris": 2499,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Islet_compare.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 4725 tris; used GLB 2499"
+  },
+  {
+   "name": "Halo_Lantern",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Lantern_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Lantern_HD_LOD.glb",
+   "tris": 600,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Lantern_compare.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 2528 tris; used GLB 600"
+  },
+  {
+   "name": "Halo_Planter",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Planter_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Planter_v2_HD_LOD.glb",
+   "tris": 4494,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Planter_v2_compare.jpg",
+   "notes": "v2 (poly 15000) used; v1 broke apart; A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6)"
+  },
+  {
+   "name": "Halo_PotFlowers",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_PotFlowers_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_PotFlowers_v2_HD_LOD.glb",
+   "tris": 2996,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/PotFlowers_v2_compare.jpg",
+   "notes": "v2 (poly 15000) used; A23-120 partial: round pot/box body -> skeleton; plants stay Tripo; one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6)"
+  },
+  {
+   "name": "Halo_RoundTree",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_RoundTree_front_v2_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_RoundTree_v2_HD_LOD.glb",
+   "tris": 5000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/RoundTree_v2_compare.jpg",
+   "notes": "v2 (poly 15000) used; one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6)"
+  },
+  {
+   "name": "Halo_Shop",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/HaloProp_Shop_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Shop_HD_LOD.glb",
+   "tris": 7998,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Shop_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 12886 tris; used GLB 7998"
+  },
+  {
+   "name": "Halo_Statue",
+   "zone": "Halo",
+   "kind": "statue",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/HaloProp_Statue_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Statue_v2_HD_LOD.glb",
+   "tris": 2999,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/Statue_v2_compare.jpg",
+   "notes": "v2 (front+back) used; the 4-view v1 grew a second window; HeroStatue fixed point (plan v2 moves it to (-34,-388)); multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "Halo_Topiary",
+   "zone": "Halo",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Topiary_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Topiary_v2_HD_LOD.glb",
+   "tris": 3500,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Topiary_v2_compare.jpg",
+   "notes": "v2 (poly 15000) used; one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6)"
+  },
+  {
+   "name": "Halo_Tower",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/halo/HaloProp_Tower_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Tower_HD_LOD.glb",
+   "tris": 6998,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Tower_compare.jpg",
+   "notes": "A23-120 skeleton candidate (building body); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 11380 tris; used GLB 6998"
+  },
+  {
+   "name": "Halo_Tower_v2",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/HaloProp_Tower_v2_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Tower_v2_HD_LOD.glb",
+   "tris": 9000,
+   "used_in": [
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/Tower_v2_compare.jpg",
+   "notes": "GLB only (+ build/import_all/6_sixth/H7_CrownTower.glb); maybe the base of import_now TowerA/B/C_Assembled (not verified); A23-120 skeleton candidate (building body)"
+  },
+  {
+   "name": "NPC_HaloBakerGranny",
+   "zone": "Halo",
+   "kind": "npc",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/npc/NPC_HaloBakerGranny_A_src.png",
+   "glb": "art/models/tripo/web/NPC_HaloBakerGranny_HD_LOD.glb",
+   "tris": 7998,
+   "used_in": [
+    "worldkit",
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/npc/NPC_BakerGranny_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "NPC_HaloBright",
+   "zone": "Halo",
+   "kind": "npc",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/npc/NPC_HaloBright_A_src.png",
+   "glb": "art/models/tripo/web/NPC_HaloBright_HD_LOD.glb",
+   "tris": 8000,
+   "used_in": [
+    "worldkit",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/npc/NPC_Bright_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "NPC_HaloFlowerGirl",
+   "zone": "Halo",
+   "kind": "npc",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/npc/NPC_HaloFlowerGirl_C_src.png",
+   "glb": "art/models/tripo/web/NPC_HaloFlowerGirl_HD_LOD.glb",
+   "tris": 7999,
+   "used_in": [
+    "worldkit",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/npc/NPC_FlowerGirl_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "NPC_HaloJuiceMan",
+   "zone": "Halo",
+   "kind": "npc",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/npc/NPC_HaloJuiceMan_A_src.png",
+   "glb": "art/models/tripo/web/NPC_HaloJuiceMan_HD_LOD.glb",
+   "tris": 7998,
+   "used_in": [
+    "worldkit",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/npc/NPC_JuiceMan_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "NPC_HaloSirGleam",
+   "zone": "Halo",
+   "kind": "npc",
+   "inputs": "multiview",
+   "views": "front+left+right+back",
+   "image_2d": "art/out/s2/npc/NPC_HaloSirGleam_A_src.png",
+   "glb": "art/models/tripo/web/NPC_HaloSirGleam_HD_LOD.glb",
+   "tris": 8000,
+   "used_in": [
+    "worldkit",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/npc/NPC_SirGleam_compare.jpg",
+   "notes": ""
+  },
+  {
+   "name": "Town_Halo_Fountain3",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Fountain_HD_LOD.glb",
+   "tris": 10000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/Fountain_compare.jpg",
+   "notes": "Halo town 3-tier fountain; name Town_Halo_Fountain3 is a fixed point (FountainFx); one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_Anvil",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_Anvil_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_Anvil_raw.glb",
+   "tris": 2824,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_BannerHalo",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_BannerHalo_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_BannerHalo_raw.glb",
+   "tris": 2888,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_BannerHorns",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_BannerHorns_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_BannerHorns_raw.glb",
+   "tris": 2949,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_Bench",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_Bench_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_Bench_raw.glb",
+   "tris": 2668,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_Brazier",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_Brazier_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_Brazier_raw.glb",
+   "tris": 2760,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_Forge",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_Forge_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_Forge_raw.glb",
+   "tris": 2704,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_Lamp",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_Lamp_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_Lamp_raw.glb",
+   "tris": 2854,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_PotionCart",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_PotionCart_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_PotionCart_raw.glb",
+   "tris": 2652,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_StallBlue",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_StallRed_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_StallBlue_raw.glb",
+   "tris": 2840,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "recolour copy of Kit_X_StallRed (awning colour only, git 37dfdf3e, 0 points) -> own model per A23-96; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_StallGreen",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_StallRed_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_StallGreen_raw.glb",
+   "tris": 2840,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "recolour copy of Kit_X_StallRed (git 37dfdf3e, 0 points) -> own model per A23-96; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_X_StallRed",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_StallRed_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_StallRed_raw.glb",
+   "tris": 2840,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Town_Halo_Fountain",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Town_Halo_Fountain.png",
+   "glb": "art/models/tripo/web_fixed/Town_Halo_Fountain_R2_fixed.glb",
+   "tris": 9700,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/town3b/tripo_web_test_smart_vs_hd.jpg (group sheet)",
+   "notes": "the Crossroads hub fountain (borrowed Halo design; remake_list P2 \"own Crossroads fountain\"); one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9643 tris; used GLB 9700"
+  },
+  {
+   "name": "X_Altar",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_X_Altar.png",
+   "glb": "art/models/tripo/web/X_Altar_HD.glb",
+   "tris": 9674,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/3b_hd/3b_tex_sheet_1.jpg (+ _2, _3; group texture sheet) (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "X_GooseNest",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_X_GooseNest.png",
+   "glb": "art/models/tripo/web/X_GooseNest_HD.glb",
+   "tris": 9204,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/3b_hd/3b_tex_sheet_1.jpg (+ _2, _3; group texture sheet) (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "X_GuildHall",
+   "zone": "Crossroads",
+   "kind": "building",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/town3/X_GuildHall_src.png",
+   "glb": "art/models/tripo/X_GuildHall_raw.glb",
+   "tris": 9025,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/town3/batch3a_2d_vs_3d.jpg (group sheet)",
+   "notes": "A23-120 skeleton candidate (building body); one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "X_MarketArch",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_X_MarketArch.png",
+   "glb": "art/models/tripo/web/X_MarketArch_HD.glb",
+   "tris": 9576,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/3b_hd/3b_tex_sheet_1.jpg (+ _2, _3; group texture sheet) (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "X_NoticeBoard",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_X_NoticeBoard.png",
+   "glb": "art/models/tripo/web/X_NoticeBoard_HD.glb",
+   "tris": 8747,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/3b_hd/3b_tex_sheet_1.jpg (+ _2, _3; group texture sheet) (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "X_SupporterBoard",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_X_NoticeBoard.png",
+   "glb": null,
+   "tris": null,
+   "used_in": [
+    "main"
+   ],
+   "sheet": "art/review/3b_hd/3b_tex_sheet_1.jpg (+ _2, _3; group texture sheet) (group sheet)",
+   "notes": "X_NoticeBoard mesh with a recoloured gold texture (materials_redo_list 10/10) -> own model per remake_list P2; one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "Town_Horns_Castle_v6mv",
+   "zone": "Horns",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/hq/HQ_Town_Horns_Castle_v4B.png",
+   "glb": "art/models/tripo/web_fixed/Town_Horns_Castle_v6mv_tiles.glb",
+   "tris": 38432,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/town5/horns_castle_mix_compare.jpg",
+   "notes": "main Landmarks/HornsCastle (9 tiles); front = v4B 2D, back = new rear 2D (only 2 views); A23-120 skeleton candidate (building body); multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "Kit_M_BushA",
+   "zone": "Meadow",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/BushA_src.png",
+   "glb": "art/models/tripo/Kit_M_BushA_raw.glb",
+   "tris": 2789,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_BushB",
+   "zone": "Meadow",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/BushB_src.png",
+   "glb": "art/models/tripo/Kit_M_BushB_raw.glb",
+   "tris": 2820,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_CrownShrine",
+   "zone": "Meadow",
+   "kind": "statue",
+   "inputs": "multiview",
+   "views": "front+side+back",
+   "image_2d": "art/out/hq/HQ_M_CrownShrine_front.png",
+   "glb": "art/models/tripo/web/Kit_M_CrownShrine_HD_capped.glb",
+   "tris": 19915,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_meadow/crown_shrine_3d_compare.jpg",
+   "notes": "top capped (hack fix) -> remake_list P2; multiview but not the 4 views A23-122 asks for (front+side+back); Tripo output 19781 tris; used GLB 19915"
+  },
+  {
+   "name": "Kit_M_CrystalPile",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/CrystalPile_src.png",
+   "glb": "art/models/tripo/Kit_M_CrystalPile_raw.glb",
+   "tris": 2817,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_Fence",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_Fence.png",
+   "glb": "art/models/tripo/Kit_M_Fence_raw.glb",
+   "tris": 2768,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_FlowerCart",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/FlowerCart_src.png",
+   "glb": "art/models/tripo/Kit_M_FlowerCart_raw.glb",
+   "tris": 2714,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_FlowersA",
+   "zone": "Meadow",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/FlowersA_src.png",
+   "glb": "art/models/tripo/Kit_M_FlowersA_LOD.glb",
+   "tris": 596,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "main uses the 596-tri LOD (Kit_M_FlowersA_LOD) in Meadow and Woods; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_FlowersB",
+   "zone": "Meadow",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/FlowersB_src.png",
+   "glb": "art/models/tripo/Kit_M_FlowersB_LOD.glb",
+   "tris": 598,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "main uses the 598-tri LOD (Kit_M_FlowersB_LOD) in Meadow and Woods; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_JellyRock",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_JellyRock.png",
+   "glb": "art/models/tripo/Kit_M_JellyRock_raw.glb",
+   "tris": 2904,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_LogBench",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_LogBench.png",
+   "glb": "art/models/tripo/Kit_M_LogBench_raw.glb",
+   "tris": 2884,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_Mushrooms",
+   "zone": "Meadow",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/Mushrooms_src.png",
+   "glb": "art/models/tripo/Kit_M_Mushrooms_raw.glb",
+   "tris": 2928,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_PicnicBasket",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/meadow/PicnicBasket_src.png",
+   "glb": "art/models/tripo/Kit_M_PicnicBasket_raw.glb",
+   "tris": 2872,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow16_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_Pinwheel",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_Pinwheel.png",
+   "glb": "art/models/tripo/Kit_M_Pinwheel_raw.glb",
+   "tris": 2808,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_PuddleRim",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_PuddleRim.png",
+   "glb": "art/models/tripo/Kit_M_PuddleRim_raw.glb",
+   "tris": 2930,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_SignPost",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_SignPost.png",
+   "glb": "art/models/tripo/Kit_M_SignPost_fill.glb",
+   "tris": 2862,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "hollow jelly cube filled (hack fix) -> remake_list P2; also borrowed by the Crossroads (x3); one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_M_Stump",
+   "zone": "Meadow",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Meadow_Stump.png",
+   "glb": "art/models/tripo/Kit_M_Stump_raw.glb",
+   "tris": 2825,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_meadow/meadow8b_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_Banner",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_Banner.png",
+   "glb": "art/models/tripo/web/Kit_W_Banner_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/town5/hollow6_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9538 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_BushA",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_BushA.png",
+   "glb": "art/models/tripo/web/Kit_W_BushA_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9500 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_BushB",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_BushB.png",
+   "glb": "art/models/tripo/web/Kit_W_BushB_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9604 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_CampFence",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/CampFence_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_CampFence_raw.glb",
+   "tris": 2791,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "tips painted (hack fix) -> remake_list P2 \"CampFence fresh\"; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_Campfire_Fire",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Woods_Campfire_FB2.png",
+   "glb": "art/models/tripo/Kit_W_Campfire_Fire_raw.glb",
+   "tris": 2839,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/campfire3d/campfire_2d_vs_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_Crates",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/Crates_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_Crates_raw.glb",
+   "tris": 2838,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_FallenLog",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/FallenLog_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_FallenLog_raw.glb",
+   "tris": 2926,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_Fern",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_Fern.png",
+   "glb": "art/models/tripo/web/Kit_W_Fern_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9820 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_LanternPost",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/LanternPost_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_LanternPost_raw.glb",
+   "tris": 2728,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_LogStool",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_LogStool.png",
+   "glb": "art/models/tripo/web/Kit_W_LogStool_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods_camp3_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9510 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_LootSack",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/LootSack_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_LootSack_raw.glb",
+   "tris": 2912,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_MossRock",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_MossRock.png",
+   "glb": "art/models/tripo/web/Kit_W_MossRock_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9758 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_Mushrooms",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_Mushrooms.png",
+   "glb": "art/models/tripo/web/Kit_W_Mushrooms_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods6_3d.jpg",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9664 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_SignPost",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/SignPost_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_SignPost_raw.glb",
+   "tris": 2879,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Kit_W_StepStones",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Kit_W_StepStones.png",
+   "glb": "art/models/tripo/web/Kit_W_StepStones_LOD.glb",
+   "tris": 3000,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods_camp3_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo; Tripo output 9796 tris; used GLB 3000"
+  },
+  {
+   "name": "Kit_W_Stump",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/woods/Stump_HQ_src.png",
+   "glb": "art/models/tripo/Kit_W_Stump_raw.glb",
+   "tris": 2772,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods8_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Boulder_A",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Boulder_A.png",
+   "glb": "art/models/tripo/W_Boulder_A_raw.glb",
+   "tris": 1468,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Boulder_B",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Boulder_B.png",
+   "glb": "art/models/tripo/W_Boulder_B_raw.glb",
+   "tris": 1429,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_GiantTree",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_GiantTree.png",
+   "glb": "art/models/tripo/W_GiantTree_raw.glb",
+   "tris": 9788,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Tent_A",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Tent_A.png",
+   "glb": "art/models/tripo/W_Tent_A_raw.glb",
+   "tris": 9444,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Tent_B",
+   "zone": "Woods",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Tent_B.png",
+   "glb": "art/models/tripo/W_Tent_B_raw.glb",
+   "tris": 9372,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Totem",
+   "zone": "Woods",
+   "kind": "statue",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Totem.png",
+   "glb": "art/models/tripo/W_Totem_raw.glb",
+   "tris": 2854,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Tree_A",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Tree_A.png",
+   "glb": "art/models/tripo/W_Tree_A_raw.glb",
+   "tris": 1451,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Tree_B",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Tree_B.png",
+   "glb": "art/models/tripo/W_Tree_B_raw.glb",
+   "tris": 1457,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "W_Tree_C",
+   "zone": "Woods",
+   "kind": "plant",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_W_Tree_C.png",
+   "glb": "art/models/tripo/W_Tree_C_vines.glb",
+   "tris": 1452,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/kit_woods/woods_big_2d_vs_3d.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Crown_Broken_B",
+   "zone": "crown",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_Crown_Broken_B.png",
+   "glb": "art/models/tripo/Crown_Broken_B_backfix.glb",
+   "tris": 9764,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/opening/crown_B2_2d_vs_3d.jpg",
+   "notes": "main Landmarks/CrownOfBalance + opening crown; back repainted (hack fix) -> remake_list P2; remake requested (user 10/10: one broken crown); one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "K_CrownShard_v2",
+   "zone": "crown",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/hq/HQ_K_CrownShard.png",
+   "glb": "art/models/tripo/web/K_CrownShard_HD_plain.glb",
+   "tris": 9368,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/opening/crown_shard_3d.jpg",
+   "notes": "fountain shard at the Crossroads; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "BatGoblin",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/CON_BatGoblin.png",
+   "glb": "art/models/tripo/MonsterBatGoblin_raw.glb",
+   "tris": 17224,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "rigged + 7 clips; one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "GhostKing",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/CON_GhostKing_A2_src.png",
+   "glb": "art/models/tripo/MonsterGhostKing_raw.glb",
+   "tris": 19668,
+   "used_in": [
+    "main"
+   ],
+   "sheet": "art/review/ghost3d_tripo_sheet.jpg (group sheet)",
+   "notes": "Haunted Hollow hidden (A23-119); one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "GhostMinion",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/CON_GhostMinion_A1_src.png",
+   "glb": "art/models/tripo/MonsterGhostMinion_raw.glb",
+   "tris": 17102,
+   "used_in": [
+    "main"
+   ],
+   "sheet": "art/review/ghost3d_tripo_sheet.jpg (group sheet)",
+   "notes": "Haunted Hollow hidden (A23-119); one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "Goblin",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "unknown",
+   "views": null,
+   "image_2d": "unknown",
+   "glb": "art/models/Goblin.glb",
+   "tris": 14504,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "tone-fixed texture; remake_list P1 #7"
+  },
+  {
+   "name": "GoblinBrute",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "unknown",
+   "views": null,
+   "image_2d": "unknown",
+   "glb": "art/models/GoblinBrute.glb",
+   "tris": 14009,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "tone-fixed texture; remake_list P1 #7"
+  },
+  {
+   "name": "GoldenGoose",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "unknown",
+   "views": null,
+   "image_2d": null,
+   "glb": "art/models/GoldenGoose.glb",
+   "tris": 14276,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "no records.json entry (made 2026-10-03, git c7cbe40d, old account); Crossroads goose"
+  },
+  {
+   "name": "LittleGhost",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/CON_LittleGhost.png",
+   "glb": "art/models/tripo/MonsterLittleGhost_raw.glb",
+   "tris": 17402,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "Haunted Hollow hidden (A23-119); one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "PetBabySlime",
+   "zone": "monster",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/Pet_BabySlime.png",
+   "glb": "art/models/tripo/PetBabySlime_raw.glb",
+   "tris": 11320,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "pet; one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "PumpkinKing",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/CON_PumpkinKing.png",
+   "glb": "art/models/tripo/MonsterPumpkinKing_raw.glb",
+   "tris": 19614,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "Pumpkin Patch hidden (A23-119); one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "PumpkinSlime",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/CON_PumpkinSlime.png",
+   "glb": "art/models/tripo/MonsterPumpkinSlime_raw.glb",
+   "tris": 17308,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "Halloween monster; Pumpkin Patch hidden (A23-119); one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers)"
+  },
+  {
+   "name": "Skeleton",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/Skeleton_Clothed.png",
+   "glb": "art/models/tripo/SkeletonClothed_raw.glb",
+   "tris": 11410,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "rig/animations: records MonsterSkeleton (MonsterSkeleton_*.glb); texture tone-fixed (art/models/tone/Skeleton_basecolor_tone.png); remake_list P1 #7 (regenerate at HD); one image only -> A23-122 4-view remake if kept as Tripo; place match by name only (mesh id not in the asset ledgers); 2D source file not on disk (old 2D deleted in the 10/06 art cleanup)"
+  },
+  {
+   "name": "SkeletonArcher",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/mon3/hq/MON_SkeletonArcherB_HQ_src.png",
+   "glb": "art/models/tripo/web/Mon_SkeletonArcherB_v2_HD_src.glb",
+   "tris": 14406,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/SkeletonArcherB_v2_3d_compare.jpg",
+   "notes": "v2 used (v1 had a face on the back of the head); static mesh, borrows Skeleton clips (remake_list P1 #6); multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "SkeletonKnight",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "unknown",
+   "views": null,
+   "image_2d": "unknown",
+   "glb": "art/models/SkeletonKnight.glb",
+   "tris": 14508,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "also the field boss Captain Clatter (ModelFrom SkeletonKnight, x2.2); tone-fixed texture; remake_list P1 #4/#7"
+  },
+  {
+   "name": "Slime / BigSlime (SlimeCube)",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/CON_SlimeCube.png",
+   "glb": "art/models/tripo/MonsterSlimeCube_backfix.glb",
+   "tris": 17548,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/monsters_back_check_2026-10-08.jpg (back check only)",
+   "notes": "used as Slime (Shard Slime) and BigSlime (Slime Prince, + Blender KingCrown); Flower Slime borrows it (ModelFrom Slime); back face flattened in Blender (MonsterSlimeCube_backfix.glb); remake_list P1 #1/#2/#3; one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "SlimeKing (King Slime)",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "multiview",
+   "views": "front+side+back",
+   "image_2d": "art/out/s2/king/KingSlimeMV_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Mon_KingSlime_HD_plain.glb",
+   "tris": 14334,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/king_slime_3d_compare.jpg",
+   "notes": "remake_list P1 #5 (bumps; fresh pink multiview); multiview but not the 4 views A23-122 asks for (front+side+back)"
+  },
+  {
+   "name": "SlingshotGoblin",
+   "zone": "monster",
+   "kind": "monster",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/mon3/hq/MON_SlingshotGoblin_HQ_src.png",
+   "glb": "art/models/tripo/web/Mon_SlingshotGoblin_v2_HD_src.glb",
+   "tris": 14283,
+   "used_in": [
+    "main",
+    "worldkit"
+   ],
+   "sheet": "art/review/monsters/SlingshotGoblin_v2_3d_compare.jpg",
+   "notes": "v2 used (v1 had a face on the back of the head); static mesh, borrows Goblin clips (remake_list P1 #6); multiview but not the 4 views A23-122 asks for (front+back)"
+  },
+  {
+   "name": "Acc_HaloR3",
+   "zone": "other",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "3/4 view (one image)",
+   "image_2d": "art/out/acc/HaloR3_34.png",
+   "glb": "art/models/acc/Acc_HaloR3.glb",
+   "tris": 1922,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/acc/acc_final10.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Acc_HaloR4",
+   "zone": "other",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "3/4 view (one image)",
+   "image_2d": "art/out/acc/HaloR4_34.png",
+   "glb": "art/models/acc/Acc_HaloR4.glb",
+   "tris": 1926,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/acc/acc_final10.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Acc_HaloR5",
+   "zone": "other",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "3/4 view (one image)",
+   "image_2d": "art/out/acc/HaloR5_34.png",
+   "glb": "art/models/acc/Acc_HaloR5.glb",
+   "tris": 1970,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/acc/acc_final10.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Acc_HornsR3",
+   "zone": "other",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "3/4 view (one image)",
+   "image_2d": "art/out/acc/HornsR3_34.png",
+   "glb": "art/models/acc/Acc_HornsR3.glb",
+   "tris": 1938,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/acc/acc_final10.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Acc_HornsR4",
+   "zone": "other",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "3/4 view (one image)",
+   "image_2d": "art/out/acc/HornsR4_34.png",
+   "glb": "art/models/acc/Acc_HornsR4.glb",
+   "tris": 1964,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/acc/acc_final10.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "Acc_HornsR5",
+   "zone": "other",
+   "kind": "other",
+   "inputs": "single_front",
+   "views": "3/4 view (one image)",
+   "image_2d": "art/out/acc/HornsR5_34.png",
+   "glb": "art/models/acc/Acc_HornsR5.glb",
+   "tris": 1958,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/acc/acc_final10.jpg (group sheet)",
+   "notes": "one image only -> A23-122 4-view remake if kept as Tripo"
+  }
+ ],
+ "skeleton_auto": [
+  {
+   "name": "Halo_ArchBridge",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "multiview",
+   "views": "front+back",
+   "image_2d": "art/out/s2/halo/HaloProp_ArchBridge_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_ArchBridge_HD_LOD.glb",
+   "tris": 4964,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/ArchBridge_compare.jpg",
+   "notes": "A23-120 skeleton candidate (bridge); multiview but not the 4 views A23-122 asks for (front+back); current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6)"
+  },
+  {
+   "name": "Halo_Balustrade",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Balustrade_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Balustrade_HD_LOD.glb",
+   "tris": 800,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Balustrade_compare.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 2578 tris; used GLB 800"
+  },
+  {
+   "name": "Halo_BannerPole",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_BannerPole_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_BannerPole_HD_LOD.glb",
+   "tris": 800,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/BannerPole_compare.jpg",
+   "notes": "A23-120 skeleton candidate (flag pole); one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 2684 tris; used GLB 800"
+  },
+  {
+   "name": "Halo_Stairs",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/HaloProp_Stairs_front_HQ_src.png",
+   "glb": "art/models/tripo/web/Halo_Stairs_HD_LOD.glb",
+   "tris": 1500,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/world/halo_new/Stairs_compare.jpg",
+   "notes": "A23-120 skeleton candidate (stairs); one image only -> A23-122 4-view remake if kept as Tripo; current main Halo kit (10/10); replaced when Halo v2 goes in (A23-121 stage 6); Tripo output 3360 tris; used GLB 1500"
+  },
+  {
+   "name": "Kit_X_Curb",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/kit/crossroads/X_Curb_src.png",
+   "glb": "art/models/tripo/kit_crossroads/Kit_X_Curb_raw.glb",
+   "tris": 2852,
+   "used_in": [
+    "main",
+    "main_storage",
+    "worldkit"
+   ],
+   "sheet": "art/review/tripo_batch2/crossroads_props_2d_vs_3d.jpg (group sheet)",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "X_PadBase",
+   "zone": "Crossroads",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/town3/X_PadBase_src.png",
+   "glb": "art/models/tripo/X_PadBase_raw.glb",
+   "tris": 2871,
+   "used_in": [
+    "main",
+    "main_storage"
+   ],
+   "sheet": "art/review/town3/batch3a_2d_vs_3d.jpg (group sheet)",
+   "notes": "A23-120 skeleton candidate (plinth / platform); one image only -> A23-122 4-view remake if kept as Tripo"
+  },
+  {
+   "name": "HaloBridge_1",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "side (one image)",
+   "image_2d": "art/out/s2/halo/bridges/HaloBridge_1_side_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloBridge_1/HaloBridge_1_parts.glb",
+   "tris": 8512,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloBridge_1_check.jpg",
+   "notes": "A23-120 skeleton candidate (bridge); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloBridge_2",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "side (one image)",
+   "image_2d": "art/out/s2/redo/HaloBridge_2_side_v2.png",
+   "glb": "art/models/tripo/halo_props/HaloBridge_2/HaloBridge_2_parts.glb",
+   "tris": 9162,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloBridge_2_check.jpg",
+   "notes": "A23-120 skeleton candidate (bridge); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloBridge_3",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "side (one image)",
+   "image_2d": "art/out/s2/halo/bridges/HaloBridge_3_side_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloBridge_3/HaloBridge_3_parts.glb",
+   "tris": 12036,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloBridge_3_check.jpg",
+   "notes": "A23-120 skeleton candidate (bridge); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlagpole_1",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/poles/HaloFlagpole_1_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloFlagpole_1/HaloFlagpole_1_parts.glb",
+   "tris": 5067,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlagpole_1_check.jpg",
+   "notes": "A23-120 skeleton candidate (flag pole); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlagpole_2",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/poles/HaloFlagpole_2_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloFlagpole_2/HaloFlagpole_2_parts.glb",
+   "tris": 5058,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlagpole_2_check.jpg",
+   "notes": "A23-120 skeleton candidate (flag pole); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloFlagpole_3",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/redo/HaloFlagpole_3_front_v2.png",
+   "glb": "art/models/tripo/halo_props/HaloFlagpole_3/HaloFlagpole_3_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloFlagpole_3_check.jpg",
+   "notes": "A23-120 skeleton candidate (flag pole); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloPart_CathStairs",
+   "zone": "Halo",
+   "kind": "building",
+   "inputs": "multiview",
+   "views": "front+left+right+back (inferred from 2D files present, not stated in records)",
+   "image_2d": "art/out/s2/halo/parts/HaloPart_CathStairs_front_HQ_src.png",
+   "glb": "art/models/tripo/web/HaloPart_CathStairs_HD_LOD.glb",
+   "tris": 8999,
+   "used_in": [
+    "import_hold",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/world/halo_new/parts/CathStairs_compare.jpg",
+   "notes": "A23-120 skeleton candidate (stairs)"
+  },
+  {
+   "name": "HaloReasonHQ_PhotoDisc",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/reason_hq/HaloReasonHQ_PhotoDisc.png",
+   "glb": "art/models/tripo/halo_props/HaloReasonHQ_PhotoDisc/HaloReasonHQ_PhotoDisc_parts.glb",
+   "tris": 3999,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloReasonHQ_PhotoDisc_check.jpg",
+   "notes": "A23-120 skeleton candidate (plinth / platform); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloStairs_1",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/stairs/HaloStairs_1_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloStairs_1/HaloStairs_1_parts.glb",
+   "tris": 8502,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloStairs_1_check.jpg",
+   "notes": "A23-120 skeleton candidate (stairs); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloStairs_2",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/stairs/HaloStairs_2_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloStairs_2/HaloStairs_2_parts.glb",
+   "tris": 8376,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloStairs_2_check.jpg",
+   "notes": "A23-120 skeleton candidate (stairs); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloStairs_3",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/stairs/HaloStairs_3_front_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloStairs_3/HaloStairs_3_parts.glb",
+   "tris": 11999,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloStairs_3_check.jpg",
+   "notes": "A23-120 skeleton candidate (stairs); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloStairs_4",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/redo/HaloStairs_4_front.png",
+   "glb": "art/models/tripo/halo_props/HaloStairs_4/HaloStairs_4_parts.glb",
+   "tris": 8764,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloStairs_4_check.jpg",
+   "notes": "A23-120 skeleton candidate (stairs); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloStairs_5",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/redo/HaloStairs_5_front.png",
+   "glb": "art/models/tripo/halo_props/HaloStairs_5/HaloStairs_5_parts.glb",
+   "tris": 12000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloStairs_5_check.jpg",
+   "notes": "A23-120 skeleton candidate (stairs); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_Balustrade_E",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Balustrade_E_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Balustrade_E/HaloVar3_Balustrade_E_parts.glb",
+   "tris": 5061,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Balustrade_E_check.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar3_Balustrade_F",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants/HaloVar3_Balustrade_F_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar3_Balustrade_F/HaloVar3_Balustrade_F_parts.glb",
+   "tris": 6017,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar3_Balustrade_F_check.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Balustrade_A",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Balustrade_A_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Balustrade_A/HaloVar4_Balustrade_A_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Balustrade_A_check.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Balustrade_B",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Balustrade_B_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Balustrade_B/HaloVar4_Balustrade_B_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Balustrade_B_check.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Balustrade_C",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Balustrade_C_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Balustrade_C/HaloVar4_Balustrade_C_parts.glb",
+   "tris": 4999,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Balustrade_C_check.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  },
+  {
+   "name": "HaloVar4_Balustrade_D",
+   "zone": "Halo",
+   "kind": "prop",
+   "inputs": "single_front",
+   "views": "front",
+   "image_2d": "art/out/s2/halo/variants4/HaloVar4_Balustrade_D_HQ_src.png",
+   "glb": "art/models/tripo/halo_props/HaloVar4_Balustrade_D/HaloVar4_Balustrade_D_parts.glb",
+   "tris": 5000,
+   "used_in": [
+    "built_parts_only",
+    "planned_halo_v2"
+   ],
+   "sheet": "art/review/img3/HaloVar4_Balustrade_D_check.jpg",
+   "notes": "A23-120 skeleton candidate (railing / border); one image only -> A23-122 4-view remake if kept as Tripo; parts GLB built by tools/prop_build.sh (art/models/tripo/halo_props/<Name>/); not in saved main/WorldKit; img3 check sheet not yet sent to 검수"
+  }
+ ]
+}
