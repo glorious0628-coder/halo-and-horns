@@ -1,0 +1,89 @@
+{
+  "checks": 27,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the key itself shown as a word",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no object word",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "always English",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rest never ends",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a resting prompt stays on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fade",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "sparkles stay on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an emitter that was off comes back on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the poll never brings a node back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "nodes added later are skipped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a late folder is never found",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the language change is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "bad ids kept",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no cap on entries",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "bound only at Start",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the view is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "② 채집 G 꾹 화면 (게임성 개발 4, 2026-10-12; SPEC A23-119 / A23-127 / A23-133 / A23-130, contract 개발 3\norigin/dev3-gather docs/design/gather_server_2026-10-11.md §7), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau, L10n.luau and GatherView.luau in tools/fixtures/gather_view_offline.luau\n(a workspace with Map.GatherNodes, the GatherState remote, a TextKo / UIKit language double). Checks: GatherState is bound at\nInit; the prompt's ActionText / ObjectText come from its ActionKey / ObjectKey (Pick / Mine + the item name; Korean for a\nKorean reader, a stale Korean line falls back to English, an unknown key is no word - never the key itself); nodes already\nthere when the folder appears and nodes added later get their words and rest; a node resting for me (Ready time in the\nfuture) has its prompt off, its parts faded (LocalTransparencyModifier), its sparkle / light out; it comes back when the\ntime passes (an emitter that was off stays off); the words follow a language change; a removed node is forgotten; the\nstate keeps string ids with real times only (at most MaxIds), a bad payload is ignored. Static: ClientMain loads\nGatherView; it sends no remote; no English word is written in it. Mutations: each must be caught.",
+  "studioCalls": 0
+}
