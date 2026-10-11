@@ -20,7 +20,10 @@
 - `dev3-craft2`(dev3-alchemy 위): 개발 4 부탁 3개 — CraftInfo.On, NotReady 알림, 작업대 Craft 프롬프트 → OpenPanel("Craft").
 - **⑤ 조련사 = 가지 `dev3-tamer`**(dev3-craft2 위): 설계 `docs/design/tamer_server_2026-10-12.md`(6264f469) — 개발 2에 PetService 4개(SummonPet·AddPetXP·PetRoll 속도·PetList Roll) 누가 넣을지 질문, 게임성 검수에 소환 능력치(5..8 + 망치질, 최대 10)·간식 재료(Petal/Herb) 판단 질문.
   - 됨 7ac7dad5: 연구력 `TamerService`(조련사 처치 → 가족 점수, Config.MonsterFamily·ResearchStage, 단계 알림 키 + StageUp, TamerInfo, AddSummon), 스위치 `Config.Features.Research = false`. test_tamer_research 52·26/26.
-  - 다음: 답 오면 소환 레시피 S1(Kind "Pet")·Pet Treat T1·FeedPet → 그다음 ⑥ 장비 칸.
+  - 됨 3f58ecdb: 소환 S1(Kind "Pet", 무작위 5~8 + 망치질, 최대 10 — 검수 OK)·간식 T1(Jelly 5 + Petal 2 → 3)·FeedPet(+20)·PetService 4개(개발 2 합의, 개발 2 읽어 확인 대기)·행운 물약 Source 없는 재료만(88d53831). 설계 §7.
+  - dev3-alchemy ba91630f: test_gamepass 고침(CraftService는 제작 XP 줄에서만 XP2 패스) → dev3-craft2·dev3-tamer에 merge로 받음.
+  - 클라 남은 것(개발 4·1): PetWindow Roll 속도 숫자, 연구 창, 소환 결과, 간식 버튼.
+  - 다음: ⑥ 방어구·반지·펫 장비 칸(Gear, 전투력, 펫 장비 = 조련사).
 
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.
