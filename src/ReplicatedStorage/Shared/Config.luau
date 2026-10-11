@@ -5611,7 +5611,9 @@ Config.ClassGrips = {
 	-- shield idle: the sword in front, the guard arm up) - OneHand from the sword; until his shield model exists the left
 	-- hand is a fist in front of the chest (OffHand, 검수 10/11)
 	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.6, -0.5, -0.85), Aim = Vector3.new(-0.45, 0.8, -0.4) },
+		-- 검수 10/11 main photo: the blade hid the face -> laid further out (tip still up to the left, passing in front of
+		-- the chest, not the face)
+		OneHand = { Hilt = Vector3.new(0.85, -0.6, -0.6), Aim = Vector3.new(-0.8, 0.55, -0.2) },
 		OffHand = { At = Vector3.new(-0.3, 0.0, -0.95), Up = Vector3.new(-0.95, -0.3, 0.65), Fwd = Vector3.new(0, 1, 0) } },
 	-- Berserker: two hands on the great sword, the blade resting on the right shoulder (검수 10/11 + user "손바닥 위에 올려
 	-- 놓은 느낌" -> references docs/design/grip_reference_2026-10-11.md: right hand just under the guard, the left about one
@@ -5632,8 +5634,10 @@ Config.ClassGrips = {
 		OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) },
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
-	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 },
-		LeftShoulder = { 14, 0, -20 } }, OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) } },
+	-- 검수 10/11 main photo: the free left hand floated out at the side -> on the hip like the artisans (OffHand)
+	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { 8, 0, 0 }, Neck = { -5, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) },
+		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
 	-- handed), the left hand on the hip
 	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask)
