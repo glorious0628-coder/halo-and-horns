@@ -69,7 +69,7 @@ else:
     # name patterns for piece_fix --only: "_" first, or "Dome" would also hit "HaloDomeHouse_.."
     dome_slot = PRM.get("dome", {}).get("slot", "Dome")
     # leaf, caps, lanterns are rebuilt in house_deco (exact shapes, Tripo paint / size): only the dome + extras go through piece_fix
-    pieces = ["_" + dome_slot] + ["_" + e["name"] for e in PRM.get("extra", [])]
+    pieces = ["_" + dome_slot] + ["_" + e["name"] for e in PRM.get("extra", [])] + (["_Sign"] if "sign" in PRM else [])
     PR_BIG = ["_" + e["name"] for e in PRM.get("extra", []) if e.get("big")]
     if "roof_fit" in R:                                         # octagonal dome: eaves onto the plan octagon, ribs on corners
         plan = os.path.join(B, "roof_plan.json")

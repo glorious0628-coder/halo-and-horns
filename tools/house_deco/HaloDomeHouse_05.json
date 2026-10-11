@@ -42,5 +42,15 @@
     ]
    ]
   ]
+ },
+ "roofglass": {
+  "type": "hip",
+  "curb_h": 0.6,
+  "h": 1.2,
+  "top_w": 0.55,
+  "top_d": 0.45,
+  "mull_front": 3,
+  "mull_side": 2,
+  "inset": 0.3
  }
 }

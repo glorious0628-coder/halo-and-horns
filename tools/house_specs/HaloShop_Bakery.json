@@ -1,18 +1,102 @@
 {
  "name": "HaloShop_Bakery",
  "src2d": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
- "note": "Shop (24 x 15 x 18). Rect body 20 x 13.5, a 9.5-stud ground storey: ONE big arched shop window on the viewer's left (shopwin u 0.26) and the door at the right (door.u 0.75) as in the 2D, a short upper tier with the small arched window over the sign, gold corner pilasters, one lantern pedestal (the other has no room), wide blue/white awning over the whole front (awning.u 0.5), two corner planters with topiary, flat roof with a solid parapet. Missing: gold sign plaque, raised arched gable with the round-top window, brick-red dome + chimney lantern tower, baker's display shelves, ivy on the corner posts (see generator_gaps.md). Built from art/review/img3/HaloShop_Bakery_check.jpg (2D panel); the 2D PNG is not in the worktree. | 10/11 저녁 (검수 판정): D 13.5 -> 12.0 (W 20.0, 2D side 0.52), pots y -0.75; pilasters = {\"finial\": true}",
- "plan": {"shape": "rect", "W": 20.0, "D": 12.0},
+ "note": "Shop (24 x 15 x 18). Rect body 20 x 13.5, a 9.5-stud ground storey: ONE big arched shop window on the viewer's left (shopwin u 0.26) and the door at the right (door.u 0.75) as in the 2D, a short upper tier with the small arched window over the sign, gold corner pilasters, one lantern pedestal (the other has no room), wide blue/white awning over the whole front (awning.u 0.5), two corner planters with topiary, flat roof with a solid parapet. Missing: gold sign plaque, raised arched gable with the round-top window, brick-red dome + chimney lantern tower, baker's display shelves, ivy on the corner posts (see generator_gaps.md). Built from art/review/img3/HaloShop_Bakery_check.jpg (2D panel); the 2D PNG is not in the worktree. | 10/11 저녁 (검수 판정): D 13.5 -> 12.0 (W 20.0, 2D side 0.52), pots y -0.75; pilasters = {\"finial\": true} | 10/12 (최종 검수 빠진 장식): front upper window removed: the sign board goes over the awning (2D: sign under a gable window the skeleton has no gable for)",
+ "plan": {
+  "shape": "rect",
+  "W": 20.0,
+  "D": 12.0
+ },
  "Z0": 1.1,
- "storeys": [{"h": 9.5, "win": {"w": 2.8, "type": "arch"}, "walls": {"left": [0.3, 0.7], "right": [0.3, 0.7], "back": [0.3, 0.7]}}, {"h": 4.5, "win": {"w": 1.6, "type": "arch"}, "walls": {"front": [0.5]}}],
- "door": {"w": 5.0, "h": 8.15, "double": false, "u": 0.73},
- "shopwin": {"u": 0.26, "w": 5.6, "h": 5.4, "type": "arch"},
- "pilasters": {"finial": true},
+ "storeys": [
+  {
+   "h": 9.5,
+   "win": {
+    "w": 2.8,
+    "type": "arch"
+   },
+   "walls": {
+    "left": [
+     0.3,
+     0.7
+    ],
+    "right": [
+     0.3,
+     0.7
+    ],
+    "back": [
+     0.3,
+     0.7
+    ]
+   }
+  },
+  {
+   "h": 4.5,
+   "win": {
+    "w": 1.6,
+    "type": "arch"
+   },
+   "walls": {}
+  }
+ ],
+ "door": {
+  "w": 5.0,
+  "h": 8.15,
+  "double": false,
+  "u": 0.73
+ },
+ "shopwin": {
+  "u": 0.26,
+  "w": 5.6,
+  "h": 5.4,
+  "type": "arch"
+ },
+ "pilasters": {
+  "finial": true
+ },
  "pedestals": true,
- "lanterns": [0.07, 0.93],
- "awning": {"w": 16.0, "u": 0.5, "colors": [[110, 165, 232], [255, 255, 252]], "n": 13},
- "pots": [[9.0, 7.65, 3.2, 2.4], [-9.2, 7.85, 3.2, 2.4]],
+ "lanterns": [
+  0.07,
+  0.93
+ ],
+ "awning": {
+  "w": 16.0,
+  "u": 0.5,
+  "colors": [
+   [
+    110,
+    165,
+    232
+   ],
+   [
+    255,
+    255,
+    252
+   ]
+  ],
+  "n": 13
+ },
+ "pots": [
+  [
+   9.0,
+   7.65,
+   3.2,
+   2.4
+  ],
+  [
+   -9.2,
+   7.85,
+   3.2,
+   2.4
+  ]
+ ],
  "steps": "half",
  "medals": [],
- "top": {"type": "flat", "parapet": "solid", "h": 1.2, "skylight": null, "topiary": []}
+ "top": {
+  "type": "flat",
+  "parapet": "solid",
+  "h": 1.2,
+  "skylight": null,
+  "topiary": []
+ }
 }
