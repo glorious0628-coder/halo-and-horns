@@ -1,4 +1,4 @@
-"""Offline test for tools/api_agent.py (no network, fake client): tool boundaries, cost cap, turn cap, path escapes,
+"""Offline test for tools/api_agent.py (no network, fake client): tool boundaries, read_image (limits, resize, cap), cost cap, turn cap, path escapes,
 redaction, prompt-cache placement and the status/list commands.
 
   py tools/test_api_agent.py
@@ -250,6 +250,71 @@ def tools_checks(base, repo):
         check(f"run_test blocked: {p} {args}", e, t)
 
 
+def image_checks(base, repo):
+    """read_image: repo-only png/jpg/webp, long edge cut to 1568 px, size/pixel limits, per-run cap (검수 10/11)"""
+    import base64
+    from PIL import Image
+    os.makedirs(os.path.join(repo, "img"), exist_ok=True)
+    Image.new("RGBA", (100, 50), (255, 0, 0, 128)).save(os.path.join(repo, "img", "small.png"))
+    Image.new("RGB", (3000, 2000), (0, 128, 255)).save(os.path.join(repo, "img", "big.jpg"), quality=80)
+    Image.new("RGB", (1000, 2400), (10, 200, 10)).save(os.path.join(repo, "img", "tall.webp"))
+    Image.new("RGB", (8, 8)).save(os.path.join(repo, "img", "pic.bmp"))
+    open(os.path.join(repo, "img", "fake.png"), "w").write("not an image\n")
+    Image.new("RGB", (8, 8)).save(os.path.join(repo, ".env.png"))
+    Image.new("RGB", (8, 8)).save(os.path.join(repo, ".git", "x.png"))
+    Image.new("RGB", (8, 8)).save(os.path.join(base, "outside.png"))
+    Image.new("RGB", (8, 8)).save(os.path.join(base, "outside_dir", "far.png"))  # reached only through the junction
+    out = os.path.join(base, "jobs", "timg")
+    os.makedirs(out)
+    T = A.Tools(repo, out, False, A.Redactor([FAKE_KEY]), max_images=3)
+
+    def decoded(blocks):
+        img = [b for b in blocks if b.get("type") == "image"][0]["source"]
+        return img["media_type"], Image.open(io.BytesIO(base64.b64decode(img["data"])))
+
+    t, e = T.call("read_image", {"path": "img/small.png"})
+    ok = not e and isinstance(t, list) and [b["type"] for b in t] == ["text", "image"]
+    check("read_image png -> text + image blocks", ok, t if not ok else "")
+    if ok:
+        media, im = decoded(t)
+        check("read_image small png kept size + alpha", media == "image/png" and im.size == (100, 50) and im.mode == "RGBA",
+              (media, im.size, im.mode))
+        check("read_image text: original and sent size", "original 100x50" in t[0]["text"] and "sent 100x50" in t[0]["text"]
+              and "scaled down" not in t[0]["text"], t[0]["text"])
+    t, e = T.call("read_image", {"path": "img/big.jpg"})
+    ok = not e and isinstance(t, list)
+    check("read_image big jpg ok", ok, t)
+    if ok:
+        media, im = decoded(t)
+        check("read_image long edge cut to 1568", media == "image/jpeg" and im.size == (1568, 1045), (media, im.size))
+        check("read_image text says scaled down", "original 3000x2000" in t[0]["text"] and "sent 1568x1045" in t[0]["text"]
+              and "scaled down" in t[0]["text"], t[0]["text"])
+    t, e = T.call("read_image", {"path": "img/tall.webp"})
+    ok = not e and isinstance(t, list)
+    check("read_image webp ok (tall: height cut)", ok and decoded(t)[1].size == (653, 1568), t if not ok else decoded(t)[1].size)
+    for p in ["../outside.png", os.path.join(base, "outside.png"), ".env.png", ".git/x.png", "img/../../outside.png",
+              "linked/far.png", "img/pic.bmp", "a.txt", "img/fake.png", "img/none.png", "img"]:
+        t, e = T.call("read_image", {"path": p})
+        check(f"read_image blocked: {p}", e and isinstance(t, str) and t.startswith("Error"), t)
+    old = dict(A.LIMITS)
+    try:
+        T2 = A.Tools(repo, out, False, A.Redactor([FAKE_KEY]))  # T is at its cap already
+        A.LIMITS["image_file_bytes_max"] = 100
+        t, e = T2.call("read_image", {"path": "img/big.jpg"})
+        check("read_image: file too large", e and "too large" in t, t)
+        A.LIMITS.update(old)
+        A.LIMITS["image_pixels_max"] = 1000
+        t, e = T2.call("read_image", {"path": "img/big.jpg"})
+        check("read_image: too many pixels", e and "too large" in t, t)
+    finally:
+        A.LIMITS.clear()
+        A.LIMITS.update(old)
+    check("refused reads do not count", len(T.images_sent) == 3 and T2.images_sent == [], (T.images_sent, T2.images_sent))
+    t, e = T.call("read_image", {"path": "img/small.png"})
+    check("read_image cap (3) reached", e and "cap" in t, t)
+    check("cap: still 3 sent", T.images_sent == ["img/small.png", "img/big.jpg", "img/tall.webp"], T.images_sent)
+
+
 def run_args(base, job, prompt, *extra):
     pf = os.path.join(base, "prompt.md")
     open(pf, "w", encoding="utf-8").write(prompt)
@@ -311,6 +376,23 @@ def loop_checks(base, repo):
     check("turns: stopped at 3", m["status"] == "stopped_turns" and len(fc.messages.calls) == 3, (m["status"], len(fc.messages.calls)))
     check("turns: wrap-up before last call", "[runner]" in json.dumps(fc.messages.calls[2]["messages"][-1]))
 
+    # read_image in a run: the image goes to the model, the transcript keeps no base64, usage.json counts it, --max-images
+    fc = FakeClient([tool_step([("read_image", {"path": "img/small.png"}), ("read_image", {"path": "img/big.jpg"})]),
+                     end_step("SAW IT")])
+    m = A.run_job(run_args(base, "img", "look", "--repo-dir", repo, "--max-images", "1"), client=fc, key=FAKE_KEY)
+    sent = fc.messages.calls[1]["messages"][2]["content"]
+    first, second = sent[0], sent[1]
+    check("run img: image block reaches the model", isinstance(first["content"], list)
+          and first["content"][1]["type"] == "image" and len(first["content"][1]["source"]["data"]) > 100, first)
+    check("run img: --max-images 1 refuses the 2nd", second.get("is_error") is True and "cap" in second["content"], second)
+    trans = open(os.path.join(A.JOBS_ROOT, "img", "transcript.jsonl"), encoding="utf-8").read()
+    check("run img: transcript has no base64", "base64 chars omitted" in trans
+          and first["content"][1]["source"]["data"][:40] not in trans, len(trans))
+    u = json.load(open(os.path.join(A.JOBS_ROOT, "img", "usage.json"), encoding="utf-8"))
+    check("run img: usage.json images + cap", u["images"] == ["img/small.png"] and u["max_images"] == 1 and m["status"] == "done", u)
+    check("run img: system prompt names the cap", "at most 1 images" in fc.messages.calls[0]["system"][0]["text"])
+    check("read_image tool listed", any(t["name"] == "read_image" for t in fc.messages.calls[0]["tools"]))
+
     # refusal, haiku/opus names
     fc = FakeClient([end_step("", stop="refusal")])
     m = A.run_job(run_args(base, "refuse", "go", "--repo-dir", repo, "--model", "haiku"), client=fc, key=FAKE_KEY)
@@ -352,6 +434,7 @@ def main():
         repo = make_repo(base)
 
         tools_checks(base, repo)
+        image_checks(base, repo)
         loop_checks(base, repo)
     finally:
         A.JOBS_ROOT = old_root
