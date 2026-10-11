@@ -69,6 +69,7 @@
 ## 10/12 아침 (06:00~)
 - 사용자 답 = SPEC A23-139(아이콘 C_m2, 소품 얇은 선, 2배 XP 패스는 제작 XP도·제작은 장인 길드만). 사용자가 Import 3D(집 장식 v1)·Tripo·Firefly 로그인 함. 병합 50c03c82(town_quests 정규식, src 0).
 - 사용자 지시(07:00쯤): "검수할 것 남겨두고 계속, 1시간 30분 뒤 확인" → 사용자 확인 거리는 여기 '사용자에게 보여 줄 것'에 모으고 일 계속.
-- **사용자에게 보여 줄 것(돌아오면):** ① 이미지 생성 2 세션 열고 브라우저 창 보이기 Ctrl+Shift+B 한 번(Firefly 숨김이라 화면이 안 그려짐, 로그인은 이미 함) → 이미지 생성 2에 '열었음' ② WorldKit Studio 창(제목 '…WorldKit.rbxlx - Roblox Studio') 한 번 클릭(포커스 없으면 screen_capture가 멈춤) → 이미지 생성 3 집 사진
+- **사용자에게 보여 줄 것(돌아오면):** ① 이미지 생성 2 세션 열고 브라우저 창 보이기 Ctrl+Shift+B 한 번(Firefly 숨김이라 화면이 안 그려짐, 로그인은 이미 함) → 이미지 생성 2에 '열었음' ② WorldKit Studio 창(제목 '…WorldKit.rbxlx - Roblox Studio') 한 번 클릭(포커스 없으면 screen_capture가 멈춤) → 이미지 생성 3 집 사진 ③ 같은 WorldKit 창에서 Import 3D → 폴더 C:/Users/glori/Documents/Roblox/Game/build/hull_import → Ctrl+A(OBJ 10개) → 열기 → Import (소품 바깥선 1묶음; 이미지 개발이 ID 읽고 임시 파트 지움)
 - (07:07) 메인 저장 c92bd9b(07:06:18, SHA 4a92c18e…, 소스 e272933e, 천 v3b 포함). 병합 50c03c82(town_quests 시험), e272933e(pvp-toast·staff-slope-hero). 남은 낮은 것: 빛 마법사 Halo_Stairs 위 지팡이 2~3.3 뜸(개발 1).
 - (08:05) 병합 30832896: dev4-craft c35905ee·stairs-ground 3099197e·dev3-alchemy ba91630f·dev3-craft2 e0556202(전부 꺼짐 + 계단 땅). **lesstext-server 1f42e88f = 고쳐서 다시**(강화·옮기기 결과 토스트 5개 지웠는데 Bag 창이 결과를 안 그림 → 실패로 +N 떨어져도 글 0; 낮은 것: 보스 등장 위치 없음, 출석 14일 장인 글 없음) → 게임성 검수 경유 개발 2.
+- (08:47) 병합 44d03729(lesstext-server 8c8dc44d, 결과 토스트 되살림). 메인 저장 7fc9082(08:46:17, SHA a2007e08…, 소스 44d03729). 대기: dev3-tamer b3972a6b(반박 검토 wehjlcaxh) + dev4-tamer bcd6ef5a(dev4-craft 위).
