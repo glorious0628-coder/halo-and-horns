@@ -19,6 +19,8 @@
 | 원한 자루 칩 | "Grudge Sack 1.2K · 30s (shrinks only in PvP zones)" | "Grudge Sack 1.2K · 30s" | EventHUD TXT.Sack |
 | 내가 괴수일 때 | "You are a Kaiju! Last 2:00 to become a legend" | "You're the Kaiju! Last 2:00" | EventHUD TXT.KaijuSelf |
 | 대장간 버튼을 멀리서 눌렀을 때 | "Go to the Crossroads and find the Forge anvil." / "Walk to the Forge anvil and press its button." | "The Forge is in the Crossroads." / "Walk to the Forge anvil." | HUD L.Smith |
+| 첫 PvP 구역 안전 카드 | 카드 3장 연달아 | 1장 2줄: "Other players can fight you here!" / "Knocked out? You can lose pocket gold. Towns keep it safe." | FirstSteps PVP.Text + PauseCard Tip 2줄 (검수 10/11) |
+| "Saved! / Next time" 카드 | 장 끝·일일 3개 끝·전쟁 끝 | 장 끝만(일일·전쟁 카드 안 띄움, 알림 동의 순간은 그대로) | PauseCard `T.PauseWhy` (검수 10/11) |
 
 ## 1. 화면(클라이언트) 표
 | # | 어디 (파일·키) | 언제 | 문구 | 판정 | 이유 / 한 것 |
@@ -55,8 +57,8 @@
 | 30 | Keybinds 토스트 | 설정에서 키 바꿀 때 | 겹침·바꿈·못 씀 | 남김 | 내 행동의 답 |
 | 31 | SettingsUI IntroUnsafe | 위험한 곳에서 오프닝 | 실패 | 남김 | 실패 |
 | 32 | FirstSteps 이동 줄 | 강제 이동 | "Off to Squishy Meadow!  3" | 남김 | 지금 일어나는 일(3초) |
-| 33 | FirstSteps PVP 카드 | 첫 PvP 구역 한 번 | 카드 3장: "Other players can fight you here." / "If you get knocked out, you can lose some pocket gold." / "Keep gold safe in the bank! …" | 남김(검수 판단) | A23-99 '한 번 PvP 안전 카드'. 3장 연달아라 많으면 1장으로 합치기 제안(시험 고쳐야 함) |
-| 34 | PauseCard Pause / Back | 장 끝·일일 끝·전쟁 끝 / 6시간 뒤 | "Saved! / Next time: …", "Welcome back! / Next: …" | 남김(검수 판단) | A23-79 사용자 승인 기능. 너무 잦으면 '장 끝'만 남기기 제안 |
+| 33 | FirstSteps PVP 카드 | 첫 PvP 구역 한 번 | 전: 카드 3장 연달아. 후: 1장 2줄 "Other players can fight you here!" / "Knocked out? You can lose pocket gold. Towns keep it safe." | 짧게(검수 10/11) | A23-99 한 번뿐인 안전 카드 1장. PauseCard Tip이 2줄까지 받음(TipLines=2) |
+| 34 | PauseCard Pause / Back | 장 끝 / 6시간 뒤 | "Saved! / Next time: …", "Welcome back! / Next: …" | 일일·전쟁 끝 카드 끔(검수 10/11), 장 끝·Welcome back 남김 | A23-79 사용자 승인 문구라 지우지 않음. `T.PauseWhy = { Chapter = true }`, 안 띄운 일일 카드의 OptIn은 ComeBack으로 그대로 넘김(서버는 안 바꿈) |
 | 35 | QuestMarker 마름모·거리, QuestTarget 이름 | 늘 | "%dm", "Forge", "Slime Pond" … | 남김 | A23-99 퀘스트 줄+마름모+거리 |
 | 36 | MonsterLabels | 늘 | 몬스터 이름·HP | 남김 | 정보(설명 아님) |
 | 37 | QuickSlots BagHint | (안 쓰임) | "Put an item in slot 1, 2 or 3." | 해당 없음 | 코드에서 안 씀 |

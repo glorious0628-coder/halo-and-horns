@@ -3,6 +3,8 @@
 -- SAVED (a chapter's end, the three daily tasks done, a crown war's end; 게임성 개발 2) - shows "Saved!" / "Next time:
 -- <Next>" with [Keep playing] and [OK]: the same size and the same look (stopping is as easy as going on), either one
 -- closes it, a tap beside it too. No clock, no countdown, nothing starts by itself, never a purchase button (A23-79).
+-- 검수 10/11 (A23-130 less text): only a chapter's end shows it (T.PauseWhy); the daily / war cards are dropped, and a
+-- dropped card's OptIn still hands the opt-in moment to ComeBack (it waits for a calm screen itself).
 -- Fx "WelcomeBack" { Next = "<goal>", Zone = "<zone id>"? } - the first spawn after 6 h away - shows "Welcome back!" /
 -- "Next: <Next>" with [Go] (the existing Travel channel to Zone; the server checks level, combat, stars) and [OK].
 -- 게임성 개발 3's contract (return_server_2026-10-08.md): the daily card also carries Tomorrow ("New dailies" / "King Diary
@@ -39,7 +41,9 @@ local T = {
 	HurtCalm = 5, -- s after losing health: no card in the middle of a fight
 	Poll = 0.5,
 	NextMax = 60, -- characters of the goal shown
-	TipMax = 120, -- characters of a tip's words
+	TipMax = 120, -- characters of a tip's words (each line)
+	TipLines = 2, -- lines of a tip (A23-130: the PvP card = the danger line + one short line)
+	PauseWhy = { Chapter = true }, -- the server's whys that get the "Saved!" card (검수 10/11: a chapter's end only)
 	TomorrowMax = 40, -- characters of the daily card's tomorrow line
 	ZoneMax = 40,
 	Busy = { "Intro", "FactionPicker", "ClassPicker", "WorldMap", "PlayerListUI" }, -- client modules with IsOpen()
@@ -76,6 +80,18 @@ local function clean(text, max)
 		s = string.sub(s, 1, utf8.offset(s, max + 1) - 1) .. "…"
 	end
 	return s
+end
+
+-- a tip's words: up to TipLines lines, each cleaned like the goal (empty lines dropped)
+local function cleanLines(text, max, lines)
+	if type(text) ~= "string" then return nil end
+	local out = {}
+	for line in string.gmatch(text, "[^\n]+") do
+		local s = clean(line, max)
+		if s then table.insert(out, s) end
+		if #out >= lines then break end
+	end
+	return #out > 0 and table.concat(out, "\n") or nil
 end
 
 local function isOpen(m)
@@ -297,6 +313,10 @@ function PauseCard.Show(kind, data)
 	local nextGoal = clean(data.Next, T.NextMax)
 	local card = { Kind = kind, At = os.clock(), Why = type(data.Why) == "string" and data.Why or nil }
 	if kind == "Pause" then
+		if card.Why and not T.PauseWhy[card.Why] then
+			if data.OptIn == true then comeBack("OptIn", card.Why) end -- the server spent the moment on this card
+			return false
+		end
 		card.Title = T.Text.PauseTitle
 		card.Body = nextGoal and string.format(T.Text.PauseNext, nextGoal) or T.Text.PausePlain
 		local tomorrow = clean(data.Tomorrow, T.TomorrowMax)
@@ -313,7 +333,7 @@ function PauseCard.Show(kind, data)
 	elseif kind == "Tip" then
 		-- A23-81: a one-time tip from a client module ({ Title?, Text, Go = { Text, Window, Arg? } }): [Go] opens that
 		-- window (e.g. Settings on its Keys tab), [OK] closes; it waits for a calm screen like every card
-		local text = clean(data.Text, T.TipMax)
+		local text = cleanLines(data.Text, T.TipMax, T.TipLines)
 		if not text then return false end
 		card.Title = clean(data.Title, T.NextMax) or T.Text.TipTitle
 		card.Body = text
