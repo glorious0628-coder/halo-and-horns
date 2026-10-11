@@ -65,10 +65,7 @@ local T = {
 		ChangeKeys = "Change keys",
 		-- used only when Config.Skills.Text misses a word
 		Ready = "Ready", NeedMP = "Need MP", UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt",
-		Cost = "Costs %d MP", Cooldown = "%s s cooldown",
 	},
-	Shape = { SelfCircle = "Circle", TargetCircle = "Circle", Roar = "Circle", Line = "Line", Chain = "Chain",
-		Field = "Field", Hop = "Hop" },
 }
 local S = { Ready = false }
 local VIEW = { Rows = {} } -- the open window's skill rows: { Row, State = TextLabel, Button = GuiObject? }
@@ -154,25 +151,13 @@ function SkillBook.FactionLine(slot, faction)
 end
 
 -- "Costs 20 MP · 3 s cooldown · Area 9 · Hit x6"
+-- the shared skill numbers (Config.SkillNumbers: the same line the server's words use - a chain of Hits targets jumps
+-- Hits - 1 times, 검수 10/11) + the hit multiplier
 local function numbersLine(def)
-	local parts = {}
-	if num(def.MP, 0) > 0 then table.insert(parts, string.format(word("Cost"), math.floor(num(def.MP, 0)))) end
-	if num(def.CD, 0) > 0 then table.insert(parts, string.format(word("Cooldown"), short(def.CD))) end
-	local shape = T.Shape[def.Shape or ""]
-	if shape == "Circle" and num(def.Radius, 0) > 0 then
-		table.insert(parts, string.format(word("ShapeCircle"), math.floor(num(def.Radius, 0))))
-	elseif shape == "Line" and num(def.Len, 0) > 0 then
-		table.insert(parts, string.format(word("ShapeLine"), math.floor(num(def.Len, 0))))
-	elseif shape == "Chain" and num(def.Hits, 0) > 0 then
-		table.insert(parts, string.format(word("ShapeChain"), math.floor(num(def.Hits, 0))))
-	elseif shape == "Field" and num(def.Duration, 0) > 0 then
-		table.insert(parts, string.format(word("ShapeField"), math.floor(num(def.Duration, 0))))
-	elseif shape == "Hop" and num(def.Hop, 0) > 0 then
-		table.insert(parts, string.format(word("ShapeHop"), math.floor(num(def.Hop, 0))))
-	end
+	local line = type(Config.SkillNumbers) == "function" and Config.SkillNumbers(def) or ""
 	local mult = num(def.Mult, 0)
-	if mult > 0 then table.insert(parts, string.format(T.Text.Hit, short(mult))) end
-	return table.concat(parts, " · ")
+	if mult > 0 then line ..= (line ~= "" and " · " or "") .. string.format(T.Text.Hit, short(mult)) end
+	return line
 end
 
 local function skillRow(slot, ctx)
@@ -518,6 +503,7 @@ function SkillBook.Init(registry)
 		-- what changes the rows (the live state - Mana, SkillReadyAt* - repaints in the update instead)
 		Rebuild = { Class = true, Faction = true, Level = true, SkillSlots = true, Rebirths = true, WeaponTier = true,
 			FallMarks = true, RedeemMarks = true },
+		KeepScroll = true, -- 검수 10/11: a level up / new weapon while scrolled down keeps the place
 		Build = build,
 		Cleanup = cleanup,
 	}) == true

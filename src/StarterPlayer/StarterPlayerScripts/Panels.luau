@@ -3473,7 +3473,7 @@ end
 
 -- BB13: another client module adds its window. opts = { Build = fn(parent, kit, arg) -> update?, Title = string |
 -- fn() -> string, FixedBody = bool (a plain frame instead of the scrolling list), Rebuild = { [attr] = true } | false,
--- Cleanup = fn() }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
+-- KeepScroll = bool (a Rebuild attribute keeps the scroll), Cleanup = fn() }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
 -- Keybinds.Start, the HUD [메뉴] squares show once their window is registered
 function Panels.Register(id, opts)
 	if type(id) ~= "string" or type(opts) ~= "table" or type(opts.Build) ~= "function" then
@@ -3724,7 +3724,10 @@ function Panels.Start()
 		elseif currentId == "Menu" and name == "TutorialStep" then
 			queueRebuild()
 		elseif currentId and REG.WantsRebuild(currentId, name) then
-			queueRebuild()
+			-- 검수 10/11: a registered window with KeepScroll redraws its data where the player was (a level up while
+			-- the skill window is scrolled down kept jumping it to the top)
+			local o = REG.Opts[currentId]
+			queueRebuild(o ~= nil and o.KeepScroll == true)
 		elseif currentId == "Items" and ITEMS.Attrs[name] then
 			ITEMS.CheckPending() -- an equip answer is the WeaponTier change itself
 			queueRebuild(true) -- B14: data refresh: scroll kept, no input guard

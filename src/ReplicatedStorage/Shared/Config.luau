@@ -422,8 +422,8 @@ Config.Classes = {
 	Warrior = {
 		Id = "Warrior",
 		Names = { Halo = "Paladin", Horns = "Berserker", Neutral = "Blacksmith", None = "Warrior" },
-		Desc = "Hits every enemy around you at once. Very tough!",
-		PickLine = "Get close and smash everything around", -- addendum A7-4 (picker card action line)
+		Desc = "Hits every enemy in front of you at once. Very tough!", -- 검수 10/11: A23-61 front half
+		PickLine = "Get close and smash everything in front", -- addendum A7-4 (picker card action line)
 		Weapon = "Sword",
 		HealthMult = 1.3, Damage = 1.0, SwingInterval = 1.0,
 		Pattern = "Around", -- every valid target within Range of self
@@ -436,7 +436,7 @@ Config.Classes = {
 		Ranged = false, PvPMult = 1.0,
 		WalkSpeedMult = 1.0,
 		ReleaseMult = 1.0, -- tuning knob: multiplies this class's release damage
-		Stats = { "HP ×1.3", "ATK ×1.0", "Hits all around" },
+		Stats = { "HP ×1.3", "ATK ×1.0", "Hits all in front" },
 		DisplayStats = { HP = 4, Atk = 3, Spd = 2 }, -- picker card bars (체력 / 공격 / 속도), 5-point scale, cosmetic only
 	},
 	Mage = {

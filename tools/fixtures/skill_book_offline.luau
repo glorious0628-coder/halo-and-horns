@@ -145,6 +145,7 @@ check(rb.Class and rb.Faction and rb.Level and rb.SkillSlots and rb.Rebirths and
 	"it rebuilds when the class / faction / level / slots / rebirths / weapon change")
 check(not rb.Mana and not rb.SkillReadyAt, "MP and cooldowns repaint in place (no rebuild)")
 check(reg.Skills.Title == "Skills", "the title is Skills", reg.Skills.Title)
+check(reg.Skills.KeepScroll == true, "a level up / new weapon redraw keeps the scroll (검수 10/11)", reg.Skills.KeepScroll)
 
 -- 1. which rows
 local rows = SkillBook.Rows(ctx())
@@ -172,8 +173,8 @@ all = SkillBook.Rows(ctx({ Preview = true, Faction = "Neutral", Class = "Warrior
 check(rowOf(all, "Q").Name == "Hammer Quake" and rowOf(all, "Q").FactionLine == nil, "the blacksmith's Q has no faction line")
 check(rowOf(all, "X").FactionLine == W.XArtisan, "the artisan X has the XArtisan line", rowOf(all, "X").FactionLine)
 all = SkillBook.Rows(ctx({ Preview = true, Faction = "Halo", Class = "Mage" }))
-check(string.find(rowOf(all, "Z").Numbers, "Jumps 4", 1, true) and string.find(rowOf(all, "X").Numbers, "Field 5 s", 1, true) ~= nil,
-	"Chain / Field shapes", rowOf(all, "X").Numbers)
+check(string.find(rowOf(all, "Z").Numbers, "Jumps 3", 1, true) and string.find(rowOf(all, "X").Numbers, "Field 5 s", 1, true) ~= nil,
+	"Chain (4 targets = 3 jumps, Config.SkillNumbers) / Field shapes", rowOf(all, "X").Numbers)
 check(rowOf(SkillBook.Rows(ctx({ Faction = "None" })), "Q").FactionLine == nil, "no side yet: no faction line")
 
 -- 3. icons (the SkillBar order)

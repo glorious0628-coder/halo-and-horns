@@ -169,17 +169,17 @@
  },
  {
   "key": "Config.Classes.Warrior.Desc",
-  "en": "Hits every enemy around you at once. Very tough!",
+  "en": "Hits every enemy in front of you at once. Very tough!",
   "where": "Config.Classes",
   "args": [],
-  "max": 62
+  "max": 68
  },
  {
   "key": "Config.Classes.Warrior.PickLine",
-  "en": "Get close and smash everything around",
+  "en": "Get close and smash everything in front",
   "where": "Config.Classes",
   "args": [],
-  "max": 48
+  "max": 50
  },
  {
   "key": "Config.Classes.Warrior.Stats.1",
@@ -197,10 +197,10 @@
  },
  {
   "key": "Config.Classes.Warrior.Stats.3",
-  "en": "Hits all around",
+  "en": "Hits all in front",
   "where": "Config.Classes",
   "args": [],
-  "max": 19
+  "max": 22
  },
  {
   "key": "Config.Skills.Defs.Alchemist.Q.DescEn",
@@ -9363,10 +9363,10 @@
  },
  {
   "key": "Config.Help.News.1.Lines.1",
-  "en": "Your beta save carries over to the full launch on December 19.",
+  "en": "Your beta save carries over to the full launch.",
   "where": "Config.Help",
   "args": [],
-  "max": 80
+  "max": 61
  },
  {
   "key": "Config.Help.News.1.Lines.2",
@@ -9384,20 +9384,13 @@
  },
  {
   "key": "Config.Help.News.2.Lines.1",
-  "en": "Halloween: the Pumpkin Patch and the new Haunted Hollow with ghosts and the Ghost King.",
-  "where": "Config.Help",
-  "args": [],
-  "max": 113
- },
- {
-  "key": "Config.Help.News.2.Lines.2",
   "en": "New players get their first weapon from the Blacksmith before the first hunt.",
   "where": "Config.Help",
   "args": [],
   "max": 100
  },
  {
-  "key": "Config.Help.News.2.Lines.3",
+  "key": "Config.Help.News.2.Lines.2",
   "en": "New Settings window: change your keys, sound effects and screen shake.",
   "where": "Config.Help",
   "args": [],

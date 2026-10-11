@@ -1,5 +1,5 @@
 {
-  "checks": 63,
+  "checks": 65,
   "failed": 0,
   "mutations": [
     {
@@ -43,7 +43,17 @@
       "caught": true
     },
     {
-      "name": "no cost in the numbers",
+      "name": "own numbers again (not Config.SkillNumbers)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the chain counts targets as jumps",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no hit multiplier",
       "applied": true,
       "caught": true
     },
@@ -114,6 +124,16 @@
     },
     {
       "name": "every state column wide",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the scroll jumps on a level up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Panels ignores KeepScroll",
       "applied": true,
       "caught": true
     },
