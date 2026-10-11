@@ -17,6 +17,7 @@ local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
+local Ground = require(Shared:WaitForChild("Ground")) -- the walking ground (Config.Ground: terrain, Map.Ground, bridges, WalkGround tag)
 
 local LandShadow = {}
 local LocalPlayer = Players.LocalPlayer
@@ -66,14 +67,7 @@ function LandShadow.Look(plan, now)
 end
 
 local function groundUnder(pos)
-	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Include
-	local list = { workspace.Terrain }
-	local map = workspace:FindFirstChild("Map")
-	local ground = map and map:FindFirstChild("Ground")
-	table.insert(list, ground or map)
-	params.FilterDescendantsInstances = list
-	local hit = workspace:Raycast(pos + Vector3.new(0, 6, 0), Vector3.new(0, -80, 0), params)
+	local hit = Ground.Cast(pos, 6, 80)
 	return hit and hit.Position or (pos - Vector3.new(0, 3, 0))
 end
 

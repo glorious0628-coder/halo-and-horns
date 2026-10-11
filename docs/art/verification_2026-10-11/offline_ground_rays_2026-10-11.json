@@ -1,0 +1,94 @@
+{
+  "checks": 23,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "kit bridges left out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every kit prop counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a bridge cell left out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the old bridges dropped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "tagged parts ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "tagged parts listed twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Map.Ground dropped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "another tag name",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a tag change waits for the refresh",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new Map waits for the refresh",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never refreshed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rebuilt every ray",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "water ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Cast starts at pos",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "LandShadow back to its own list",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "SkillFx back to its own list",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Fx back to its own list",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "The walking ground (게임성 개발 1; 검수 2026-10-10: bridges; 2026-10-11 걷는 바닥 태그,\ndocs/design/halo_restart_2026-10-11.md 'WalkGround'), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau (Config.Ground, Config.GroundRoots) and the Shared Ground.luau\nin tools/fixtures/ground_rays_offline.luau. The Include list holds Terrain, Map.Ground, Decor children named Bridge_*,\nin a Decor \"*Props\" kit folder the cells / their models whose names hold \"Bridge\", and every instance tagged\n\"WalkGround\" (listed once) - never the other props or untagged floors. Ground.Params: Include, water not ignored,\ncached between rays, rebuilt at once on a tag added / removed or a new Map, and after Config.Ground.Refresh s.\nGround.Cast(pos, up, down). Static: LandShadow, SkillFx and Fx find the ground only through Ground.Cast (no ground\nlist of their own). Mutations: each must be caught.",
+  "studioCalls": 0
+}

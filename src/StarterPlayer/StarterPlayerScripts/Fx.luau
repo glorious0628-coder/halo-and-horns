@@ -19,6 +19,7 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
 local Net = require(Shared:WaitForChild("Net"))
+local Ground = require(Shared:WaitForChild("Ground")) -- the walking ground (Config.Ground)
 
 local LocalPlayer = Players.LocalPlayer
 
@@ -742,48 +743,11 @@ local function addLight(part, color, brightness, range)
 end
 
 ----------------------------------------------------------------- ground height (rings sit on the floor)
--- addendum A11-R1: ground raycasts include ONLY Terrain, workspace.Map.Ground and the bridge models
--- (workspace.Map.Decor children named "Bridge_*", and in a Decor "*Props" kit folder the cells' models named "*Bridge*",
--- e.g. HaloProps.Cell_*.Halo_ArchBridge_*); zone floor parts are invisible and non-queryable.
-local rayParams = RaycastParams.new()
-rayParams.FilterType = Enum.RaycastFilterType.Include
-local rayMap = nil
-local rayCheckedAt = -math.huge
-
-local function refreshRayFilter(map)
-	local list = { workspace.Terrain }
-	if map then
-		local ground = map:FindFirstChild("Ground")
-		if ground then table.insert(list, ground) end
-		local decor = map:FindFirstChild("Decor")
-		if decor then
-			for _, d in decor:GetChildren() do
-				if string.sub(d.Name, 1, 7) == "Bridge_" then
-					table.insert(list, d)
-				elseif string.sub(d.Name, -5) == "Props" then
-					-- 검수 10/10: the world kits' bridges (Decor.HaloProps.Cell_*.Halo_ArchBridge_*) carry the rings too
-					for _, cell in d:GetChildren() do
-						for _, m in cell:GetChildren() do
-							if string.find(m.Name, "Bridge", 1, true) then table.insert(list, m) end
-						end
-						if string.find(cell.Name, "Bridge", 1, true) then table.insert(list, cell) end
-					end
-				end
-			end
-		end
-	end
-	rayParams.FilterDescendantsInstances = list
-end
-
+-- addendum A11-R1 + 걷는 바닥 (2026-10-11): Shared.Ground (Config.GroundRoots) - Terrain, workspace.Map.Ground, the
+-- bridges (Decor "Bridge_*", the kits' "*Bridge*" cells / models) and every part tagged WalkGround; zone floor parts are
+-- invisible and non-queryable, other decor is never ground.
 local function groundY(pos)
-	local map = workspace:FindFirstChild("Map")
-	local now = os.clock()
-	if map ~= rayMap or now - rayCheckedAt > 5 then
-		rayMap = map
-		rayCheckedAt = now
-		refreshRayFilter(map)
-	end
-	local hit = workspace:Raycast(pos + Vector3.new(0, 3, 0), Vector3.new(0, -80, 0), rayParams)
+	local hit = Ground.Cast(pos, 3, 80)
 	if hit then return hit.Position.Y end
 	return 0.05 -- terrain top is Y = 0 inside zones (A11)
 end

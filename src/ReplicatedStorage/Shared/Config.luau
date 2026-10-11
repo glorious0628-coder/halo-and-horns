@@ -1709,6 +1709,52 @@ function Config.HomeZoneId(factionId)
 	return "Crossroads" -- "Neutral" (addendum A6) and "None"
 end
 
+-- the walking ground (A11-R1 + docs/design/halo_restart_2026-10-11.md '걷는 바닥', 2026-10-11): ground raycasts see
+-- ONLY Terrain, workspace.Map.Ground, the bridges (Map.Decor children "Bridge_*"; in a Decor "*Props" kit folder the
+-- cells / their models whose name has "Bridge") and every instance tagged Tag (CollectionService) - a building's floor,
+-- a yard or later an inside built from parts. Other decor parts are never ground. Shared.Ground caches the raycast
+-- params (rebuilt on a tag change, a new Map, or every Refresh s for a late MapBuilder pass).
+Config.Ground = { Tag = "WalkGround", Refresh = 5 }
+
+-- the instances a ground raycast includes (pure): terrain, then the map's Ground, its bridges, then `tagged` (the
+-- instances carrying Config.Ground.Tag, in any order; nil = none). map = workspace.Map or nil
+function Config.GroundRoots(terrain, map, tagged)
+	local list = {}
+	if terrain then table.insert(list, terrain) end
+	if map then
+		local ground = map:FindFirstChild("Ground")
+		if ground then table.insert(list, ground) end
+		local decor = map:FindFirstChild("Decor")
+		if decor then
+			for _, d in decor:GetChildren() do
+				if string.sub(d.Name, 1, 7) == "Bridge_" then
+					table.insert(list, d)
+				elseif string.sub(d.Name, -5) == "Props" then
+					-- 검수 10/10: the world kits' bridges (Decor.HaloProps.Cell_*.Halo_ArchBridge_*)
+					for _, cell in d:GetChildren() do
+						if string.find(cell.Name, "Bridge", 1, true) then
+							table.insert(list, cell)
+						else
+							for _, m in cell:GetChildren() do
+								if string.find(m.Name, "Bridge", 1, true) then table.insert(list, m) end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	local seen = {}
+	for _, inst in list do seen[inst] = true end
+	for _, inst in type(tagged) == "table" and tagged or {} do
+		if not seen[inst] then
+			seen[inst] = true
+			table.insert(list, inst)
+		end
+	end
+	return list
+end
+
 Config.Map = {
 	-- invisible walls only: NEVER a ground plate covering Bounds (it would cover the sea and rivers: A10-V3-1). Map v2:
 	-- 60 studs of sea past the lands east / west, 20 past the town ends (= the big map picture UIP_WorldMapV2 covers x

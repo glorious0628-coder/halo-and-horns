@@ -16,6 +16,7 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
+local Ground = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Ground")) -- the walking ground (Config.Ground)
 
 local SkillFx = {}
 local LocalPlayer = Players.LocalPlayer
@@ -140,17 +141,9 @@ function SkillFx.Get(kind, life)
 end
 
 ----------------------------------------------------------------- the ground
-local RAY = RaycastParams.new()
-RAY.FilterType = Enum.RaycastFilterType.Include
-
--- the ground under pos -> point, normal (Terrain + workspace.Map.Ground, else the map)
+-- the ground under pos -> point, normal (Shared.Ground: terrain, Map.Ground, bridges, parts tagged WalkGround)
 function SkillFx.Ground(pos)
-	local map = workspace:FindFirstChild("Map")
-	local list = { workspace.Terrain }
-	local g = map and map:FindFirstChild("Ground")
-	if g or map then table.insert(list, g or map) end
-	RAY.FilterDescendantsInstances = list
-	local hit = workspace:Raycast(pos + Vector3.new(0, 6, 0), Vector3.new(0, -80, 0), RAY)
+	local hit = Ground.Cast(pos, 6, 80)
 	if hit then return hit.Position, hit.Normal end
 	return Vector3.new(pos.X, pos.Y, pos.Z), Vector3.yAxis
 end

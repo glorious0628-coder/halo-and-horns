@@ -85,12 +85,15 @@ end }
 local LocalPlayer = { UserId = 7, Character = { FindFirstChild = function(_, n) if n == "HumanoidRootPart" then return { Position = MY } end end } }
 local function service(name)
 	if name == "Players" then return { LocalPlayer = LocalPlayer } end
-	if name == "ReplicatedStorage" then return { WaitForChild = function() return { WaitForChild = function() return "Config" end } end } end
+	if name == "ReplicatedStorage" then return { WaitForChild = function() return { WaitForChild = function(_, n) return n end } end } end
 	return { RenderStepped = { Connect = function() end } }
 end
+local GroundDouble = { Cast = function(pos, up, down) -- Shared.Ground double: the same ray on the workspace double
+	return ws:Raycast(pos + Vector3.new(0, up or 3, 0), Vector3.new(0, -(down or 80), 0))
+end }
 local env = {
 	game = { GetService = function(_, n) return service(n) end },
-	require = function() return Config end,
+	require = function(n) if n == "Ground" then return GroundDouble end return Config end,
 	workspace = ws, Vector3 = Vector3, CFrame = CFrame, Instance = Instance, Enum = EnumT, typeof = function(v)
 		if type(v) == "table" and getmetatable(v) == V3 then return "Vector3" end
 		return type(v)

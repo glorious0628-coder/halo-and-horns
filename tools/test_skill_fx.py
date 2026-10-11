@@ -153,11 +153,14 @@ local services = {
 		return { Play = function() for k, v in goal do inst[k] = v end end, Cancel = function() end }
 	end },
 	UserInputService = setmetatable({}, { __index = function(_, k) if k == "TouchEnabled" then return TOUCH end end }),
-	ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function() return "Config" end } end },
+	ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function(_, n) return n end } end },
 }
+local GroundDouble = { Cast = function(pos, up, down) -- Shared.Ground double: the same ray on the workspace double
+	return ws:Raycast(pos + Vector3.new(0, up or 3, 0), Vector3.new(0, -(down or 80), 0))
+end }
 local env = {
 	game = { GetService = function(_, n) return services[n] end },
-	require = function() return Config end,
+	require = function(n) if n == "Ground" then return GroundDouble end return Config end,
 	workspace = ws, Instance = Instance, Vector3 = Vector3, CFrame = CFrame, Enum = EnumT,
 	RaycastParams = { new = function() return {} end },
 	Color3 = base.Color3, ColorSequence = base.ColorSequence, NumberSequence = base.NumberSequence,
