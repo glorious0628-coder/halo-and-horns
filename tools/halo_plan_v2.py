@@ -10,6 +10,7 @@ usage: py tools/halo_plan_v2.py
 import json
 import math
 import os
+import re
 import sys
 
 import halo_props_v2 as HP
@@ -21,13 +22,23 @@ OUT_JSON = os.path.join(ROOT, "docs", "design", "halo_plan_v2_2026-10-11.json")
 OUT_DIR = os.path.join(ROOT, "art", "review", "world", "halo_v2")
 OUT_MAP = os.path.join(OUT_DIR, "halo_plan_v2_map.png")
 
+def config_walk_speed():
+    """Config.Player.WalkSpeed (검수 결정 1: walking times at the game's own speed, it was a hard-coded 16)"""
+    src = open(os.path.join(ROOT, "src", "ReplicatedStorage", "Shared", "Config.luau"), encoding="utf-8").read()
+    m = re.search(r"Config\.Player\s*=\s*\{[^}]*?WalkSpeed\s*=\s*(\d+(?:\.\d+)?)", src)
+    return float(m.group(1)) if m else 16.0
+
+
+WALK_SPEED = config_walk_speed()
+
 # ---------------------------------------------------------------- the town story
 STORY = [
     "빛 마을(Halo Citadel)은 하늘에서 깨진 왕관 조각 하나가 떨어진 곳이다. 조각은 언덕 위 대성당이 지키고, 기사단은 서쪽 성에서 마을과 바다를 지킨다.",
-    "새 친구는 교차로 다리를 건너 북쪽 성문으로 들어온다. 문 안에서 영웅상과 기사 Sir Gleam이 맞고, 몇 걸음 앞에서 길잡이 Bright가 기다린다.",
-    "바로 옆 시장 골목에서 물약을 사고, 시냇물 다리를 건너 기사단 훈련장에서 첫 기술을 시험한 뒤, 다른 다리로 돌아 성문을 나가 교차로로 간다(첫 10분 고리).",
+    "새 친구는 진영을 고르면 마을 한가운데 길(스폰)에 선다. Hallie 카드가 첫 할 일을 알려 준다: 교차로 대장간 Otto에게 무기를 받고 슬라임 5마리.",
+    "그래서 첫 걸음은 곧장 북쪽 성문(84스터드)으로 나가 교차로 대장간 → 초원이다. 문 안에서 영웅상과 기사 Sir Gleam이 배웅한다.",
+    "첫 장(M1)을 마치고 'Go to your town'으로 돌아오면 그때 시장 골목에서 물약을 사고, 시냇물 다리 B1을 건너 기사단 훈련장을 들르고, B2로 돌아 성문으로 다시 나간다(돌아와 들르는 고리).",
     "마을 사람들은 세 동네에 산다: 시장 위 언덕(가게 주인들), 동쪽 절벽 마을(바다를 보는 집), 남서쪽 정원 마을(꽃 키우는 집). 분수 광장이 모든 길이 만나는 마을 한가운데다.",
-    "시냇물은 대성당 샘에서 시작해 정원 쉼터로 계단 폭포를 이루고, 북쪽으로 흘러 성문 옆 바다로 떨어진다. 그래서 문에 들어서면 폭포와 언덕 위 대성당이 함께 보인다.",
+    "시냇물은 대성당 샘에서 시작해 정원 쉼터로 계단 폭포를 이루고, 북쪽으로 흘러 성문 옆 바다로 떨어진다. 문에 들어서면 정면 멀리 언덕 위 대성당, 왼쪽으로 돌면 W1 폭포가 보인다.",
 ]
 
 # ---------------------------------------------------------------- land + districts (polygons in x, z)
@@ -54,11 +65,11 @@ LAND = [(-30, -325), (-10, -325), (10, -325), (30, -325), (50, -328), (71, -336)
 DISTRICTS = [
     dict(id="arrival", name="들어오는 마당", y=0, color=(236, 226, 196),
          poly=[(-44, -328), (46, -328), (56, -380), (49, -438), (12, -447), (-30, -440), (-40, -400)],
-         why="교차로 다리가 닿는 곳. 성문·영웅상·Sir Gleam·스폰·Bright가 모두 여기라 새 친구가 길을 잃지 않는다. 문에서 폭포(서)와 언덕 위 대성당(남동)이 보인다.",
+         why="교차로 다리가 닿는 곳. 성문·영웅상·Sir Gleam·스폰·이동 발판이 모두 여기라 새 친구가 길을 잃지 않는다. 문에서 정면 멀리 언덕 위 대성당(남, 조금 동), 왼쪽(서)에 W1 폭포.",
          flowers=["흰", "연금", "하늘"], edge="성문 양쪽: 동쪽 큰 탑+등불 1, 서쪽 폭포+나무 무리+등불 2(거울 짝 없음)"),
     dict(id="market", name="시장 골목", y=4, y_to=8, color=(246, 210, 160),
          poly=[(49, -438), (58, -418), (110, -428), (126, -470), (114, -506), (70, -512), (28, -496), (12, -450)],
-         why="Bright 바로 다음 할 일이 물약이라 스폰에서 40스터드 안에 물약 가게. 가게 4채가 한 골목에 각자 각도로 선다(A23-112). 골목은 0→8로 살짝 오른다.",
+         why="__MARKET_WHY__",
          flowers=["주황", "흰"], edge="골목 끝 꽃 화단 + 낮은 난간"),
     dict(id="market_hill", name="시장 위 언덕 동네", y=14, color=(250, 228, 196),
          poly=[(108, -362), (176, -376), (182, -420), (166, -468), (128, -470), (112, -430)],
@@ -66,7 +77,7 @@ DISTRICTS = [
          flowers=["주황", "크림"], edge="단 턱(시장보다 6 높음) + 계단 1곳"),
     dict(id="training", name="기사단 훈련장", y=2, color=(214, 222, 170),
          poly=[(-56, -394), (-52, -440), (-66, -480), (-150, -486), (-172, -446), (-152, -404), (-100, -394)],
-         why="첫 10분의 셋째 할 일(첫 기술 시험). 성문에서 다리 하나 건너면 바로라 시험 뒤 곧장 문으로 나간다. 평평하고 넓은 흙 마당에 허수아비·과녁.",
+         why="첫 장(M1_4 'Go to your town') 뒤 돌아와 기술을 연습하는 곳. 스폰에서 다리 B1 하나 건너면 바로, B2로 돌아 성문으로 나간다. 평평하고 넓은 흙 마당에 허수아비·과녁.",
          flowers=["노랑", "흰"], edge="동쪽은 시냇물, 남쪽은 성 축대(단 턱 14)"),
     dict(id="castle", name="기사단 성", y=16, color=(200, 212, 232),
          poly=[(-150, -490), (-66, -488), (-72, -532), (-96, -566), (-152, -572), (-191, -556), (-195, -502)],
@@ -86,7 +97,7 @@ DISTRICTS = [
          flowers=["해바라기 노랑", "데이지 흰"], edge="나무 줄 + 낮은 울타리"),
     dict(id="cathedral", name="대성당 언덕", y=30, color=(232, 222, 242),
          poly=[(-24, -600), (40, -590), (104, -602), (112, -652), (96, -694), (0, -698), (-54, -690), (-58, -640)],
-         why="왕관 조각을 지키는 곳이라 마을에서 가장 높다. 축에서 동쪽으로 70 비켜 서서(A23-112) 성문에서 비스듬히 보이고, 큰 길은 광장에서 한 번 굽어 큰 계단으로 오른다. 서쪽 끝에 샘.",
+         why="__CATHEDRAL_WHY__",
          flowers=["흰", "연보라"], edge="언덕 축대 + 계단 폭포(서)"),
     dict(id="cliff_homes", name="동쪽 절벽 마을", y=18, y_to=22, color=(250, 214, 222),
          poly=[(84, -516), (126, -506), (170, -482), (192, -520), (195, -590), (184, -640), (140, -650), (106, -630), (96, -596), (80, -560)],
@@ -128,7 +139,7 @@ WATER = dict(
 
 BRIDGES = [
     dict(id="B1", at=(-48, -434), len=16, kind="아치 돌다리", note="스폰 → 훈련장(첫 10분)"),
-    dict(id="B2", at=(-56, -376), len=12, kind="작은 나무 다리", note="훈련장 → 성문 돌아가는 길"),
+    dict(id="B2", at=(-56, -376), len=16, kind="작은 나무 다리", note="훈련장 → 성문 돌아가는 길"),  # review: 12 < stream 11 + 3
     dict(id="B3", at=(-58, -528), len=14, kind="금 난간 다리", note="광장 → 성 뒤 마당"),
 ]
 
@@ -171,17 +182,28 @@ BUILDINGS = [
 ]
 
 # ---------------------------------------------------------------- the first 10 minutes + fixed points
+# 검수 결정 4 (10/11): the real flow of the game (Config.Tutorial / Welcome / M1): the Hallie card sends the new player
+# straight out of the gate to the Crossroads Forge (Otto, first weapon) and the meadow (5 slimes). The shops and the training
+# yard are the return visit at M1_4 "Go to your town" (FIRST10_RETURN). at = None: outside the town (not drawn on the map)
 FIRST10 = [
-    dict(n=1, at=(0, -420), what="도착(스폰, 성문 쪽을 봄)", fixed="Config.Zones.HaloTown.Spawn (0,0,-420) 그대로"),
-    dict(n=2, at=(18, -424), what="길잡이 Bright", fixed="Config.TownNpcs Bright (18,-424) 그대로"),
-    dict(n=3, at=(24, -458), what="물약 가게(물약 상인)", fixed="PotionHalo (20.07,-468.17) → (24,-458) 옮김"),
-    dict(n=4, at=(-100, -444), what="기사단 훈련장(첫 기술 시험)", fixed="새 자리: 코드에 훈련장 표적/표시가 아직 없음"),
-    dict(n=5, at=(0, -336), what="성문 → 교차로 다리", fixed="Config.Map.Gates HaloTown (0,0,-330) 그대로"),
+    dict(n=1, at=(0, -420), what="도착(스폰, 성문 쪽을 봄) + Hallie 카드(화면): 첫 할 일 = 대장간 Otto 무기 → 슬라임 5",
+         fixed="Config.Zones.HaloTown.Spawn (0,0,-420) 그대로 · Config.Tutorial.Welcome.Halo (월드 NPC 없음)"),
+    dict(n=2, at=(0, -336), what="성문 → 교차로 다리 (스폰에서 84스터드, 걸어서 약 4초)", fixed="Config.Map.Gates HaloTown (0,0,-330) 그대로"),
+    dict(n=3, at=None, what="교차로 대장간 Otto: 첫 무기 (Tutorial.Steps.Forge, M1_1)", fixed="교차로 (빛 마을 밖)"),
+    dict(n=4, at=None, what="초원: 슬라임 5 → 첫 사냥·레벨 (M1_2·M1_3)", fixed="SlimeMeadow (빛 마을 밖)"),
+]
+FIRST10_RETURN = [
+    dict(n="R1", at=(0, -336), what="M1_4 'Go to your town': 성문으로 돌아옴", fixed="Enter OwnTown"),
+    dict(n="R2", at=(0, -420), what="Hallie에게 보고(화면 패널)", fixed="M1_4 Talk (Panel)"),
+    dict(n="R3", at=None, what="시장 골목 물약 가게(물약 상인)", fixed="PotionHalo (새 자리는 fixed_points.move)"),
+    dict(n="R4", at=(-130, -446), what="다리 B1 → 기사단 훈련장(기술 연습)", fixed="새 Landmark TrainingYard (퀘스트 연결은 코드 변경 요청 = 검수)"),
+    dict(n="R5", at=(0, -346), what="다리 B2로 돌아 성문 → 다음 장", fixed="-"),
 ]
 
-# the walk itself (the road points between the stops): 1 -> 2 -> 3 -> back over B1 -> 4 -> round over B2 -> 5
-ROUTE = [(0, -420), (18, -424), (24, -458), (8, -436), (-30, -436), (-48, -434), (-76, -440), (-100, -444), (-112, -424),
-         (-96, -402), (-70, -384), (-56, -376), (-24, -366), (-8, -362), (0, -346)]
+# the first walk (spawn -> gate) and the return loop (gate -> spawn -> potion -> B1 -> training -> B2 -> gate), FINAL coordinates
+ROUTE = [(0, -420), (0, -346)]
+ROUTE_RETURN = [(0, -346), (0, -420), None, (8, -436), (-30, -436), (-52, -434), (-94, -440), (-130, -446), (-148, -424),
+                (-124, -402), (-85, -386), (-55, -377), (-26, -374), (-6, -374), (0, -346)]
 
 FIXED_KEEP = [
     ("Bridge_Halo", (0, -330), "Map.Decor.Bridge_Halo (0,-150)→(0,-330) 폭 22, 갑판 Y ~0.2: 교차로로 나가는 유일한 길"),
@@ -195,7 +217,7 @@ FIXED_KEEP = [
 # (what, now, new (x, y, z) or None, Config / code to change)
 FIXED_MOVE = [
     ("영웅상 HeroStatue", (0, -370), (-34, 0, -388), "Config.StoryQuests.Landmarks.HeroStatue (통로 |x|≤12 안이라 서쪽으로 비킴, 큰 길을 봄; H6 Near 16)"),
-    ("Sir Gleam", (-10, -372), (-22, 0, -368), "Config.TownNpcs Gleam At/Look(0,-372) (통로 밖으로 12 비킴, 문 길 옆 그대로)"),
+    ("Sir Gleam", (-10, -372), (-20, 0, -390), "Config.TownNpcs Gleam At/Look(0,-390) (통로 밖, 영웅상 옆에서 큰 길을 봄 — 옛 (-22,-368)은 고리길 위)"),
     ("물약 상인 PotionHalo", (20.07, -468.17), (24, 5, -458), "Config.TownNpcs PotionHalo At/Look(14,-440)/Y 5 (12칸 안 판매 그대로)"),
     ("Folk3 빵집", (-6.35, -476.52), (76, 7, -454), "Config.TownNpcs Folk3 At/Look(66,-470)/Y 7"),
     ("Folk1 주스", (38.42, -499.19), (92, 8, -484), "Config.TownNpcs Folk1 At/Look(72,-482)/Y 8"),
@@ -208,7 +230,7 @@ FIXED_MOVE = [
      "Outskirts Size, 미니맵·큰 지도 범위를 같이 넓힘. 가장 높은 땅 Y 34 < 물 구조 MaxRise 42 그대로. 이웃 초원 z -240..240과 안 겹침"),
     ("RoadNorthIsland 띠", None, None, "미니맵 x -8..8, z -600..-330 → 새 큰 길 따라(성문→스폰→시장→광장→대성당)"),
     ("큰 지도·미니맵", None, None, "WorldMapV2 그림(이미지 생성 2) + Halo MapTiles 다시 찍기(6단계 직전)"),
-    ("훈련장 (새)", None, (-100, 2, -444), "새 Landmark TrainingYard + 허수아비 표적(게임성 개발: 첫 기술 퀘스트가 여기를 가리키게)"),
+    ("훈련장 (새)", None, (-100, 2, -444), "새 Landmark TrainingYard + 허수아비 표적(M1_4 귀환 뒤 들르는 곳. 퀘스트가 여기를 가리키게 할지는 코드 변경 요청 = 검수 결정)"),
     ("오프닝 카메라", None, None, "Intro.luau (18,30,-315)→(6,26,-340), 조각 (0,18,-406): 새 성문 통로 16×30이면 그대로, 3단계 사진으로 확인"),
 ]
 GROUND_RULE = "걷는 바닥은 전부 Terrain(마당·길·광장·건물 앞·다리 끝 땅). 파트 바닥은 땅으로 안 침(MonsterService·ZoneService·KaijuService·LandShadow·SkillFx·Fx). 개발의 WalkGround 태그 전까지 건물 1층 바닥도 Terrain 위에 바로 문턱. 다리만 Decor.Bridge_* 이름."
@@ -249,9 +271,7 @@ WATER["stream"] = [shrink(*p) for p in WATER["stream"]]
 for _w in WATER["pools"] + WATER["falls"] + BRIDGES:
     _w["at"] = shrink(*_w["at"])
 BUILDINGS = [(i, k, dd, *shrink(x, z), shrink(*f), n) for (i, k, dd, x, z, f, n) in BUILDINGS]
-for _f in FIRST10:
-    _f["at"] = shrink(*_f["at"])
-ROUTE = [shrink(*p) for p in ROUTE]
+# FIRST10 / ROUTE are written in FINAL coordinates since the 10/11 review (no grow)
 FIXED_MOVE = [(w, now, (shrink(new[0], new[2])[0], new[1], shrink(new[0], new[2])[1]) if new else None, cfg) for (w, now, new, cfg) in FIXED_MOVE]
 SCENES = [(n, shrink(*at), v) for (n, at, v) in SCENES]
 
@@ -303,6 +323,133 @@ WATER["pools"] += [
 ]
 
 
+# ---------------------------------------------------------------- 검수 plan v2 결과 (10/11 저녁, docs/review/halo_plan_v2_review_2026-10-11.md)
+# FINAL coordinates. 결정 1 walking speed 20 (Config.Player.WalkSpeed) -> the cathedral climb becomes a switchback stair (the
+# island does not grow); 2 the cathedral stands on the highest ground (lookout 34 -> 28); 3 the cliff village gets two real
+# tiers 18 / 22; 4 the first 10 minutes = the real flow (spawn -> Hallie card -> gate -> Crossroads Forge -> meadow; shops and
+# training yard on the M1_4 "Go to your town" return); 5 the two travel pads keep 12 x 12 + 2 clear; 6 B3 ends at the castle
+# court, the garden road crosses on B4; 7 every footprint (+5 pad margin) sits inside its own district.
+PADS = [("Pad_Halo_SlimeMeadow", (-24, -357)), ("Pad_Halo_GoblinWoods", (24, -357))]
+PAD_KEEP = 8  # half side of the keep-clear square: the 10 x 10 pad -> 12 x 12 + 2 studs round it
+PAD_MARGIN = 5  # 결정 7: the flattened pad round a footprint (halo_blockout flattens 5 from the walls)
+
+
+def pad_box(c, grow=0.0):
+    k = PAD_KEEP + grow
+    return [(c[0] - k, c[1] - k), (c[0] + k, c[1] - k), (c[0] + k, c[1] + k), (c[0] - k, c[1] + k)]
+
+
+def _road(rid):
+    return next(r for r in ROADS if r["id"] == rid)
+
+
+def _dist(did):
+    return next(d for d in DISTRICTS if d["id"] == did)
+
+
+def _bld(bid, x, z, faces):
+    global BUILDINGS
+    BUILDINGS = [(i, k, dd, x, z, faces, n) if i == bid else (i, k, dd, bx, bz, f, n) for (i, k, dd, bx, bz, f, n) in BUILDINGS]
+
+
+# 결정 5: the loop road's east end runs 2+ studs south of the SlimeMeadow pad box (centre line z <= -373 for x -39..-9)
+_road("loop")["pts"] = [(-4, -430), (-30, -436), (-52.0, -434), (-94.0, -440), (-130.0, -446.0), (-148.0, -424), (-124.0, -402),
+                        (-85.0, -386), (-55.0, -377), (-26, -374), (-6, -374)]
+# 결정 1: the main road stops at the plaza's south edge; a 12-wide switchback stair climbs the hill face in three legs
+# (10 -> 30 over ~200 studs instead of 70) to the cathedral court, which moves south with the cathedral
+ROADS.append(dict(id="cathedral_stairs", name="대성당 굽은 계단", w=12, grade=1,
+                  pts=[(40, -647), (100, -660), (107, -668), (100, -676), (42, -682), (35, -690), (42, -698), (70, -704), (80, -714)],
+                  rails=True, note="광장(10) → 대성당 앞 마당(30): 언덕 앞면을 세 번 꺾어 오름(결정 1), 꺾는 곳마다 쉼참, 양옆 난간"))
+_st = _road("cathedral_stairs")
+_cum = [0.0]
+for _i in range(len(_st["pts"]) - 1):
+    _cum.append(_cum[-1] + math.hypot(_st["pts"][_i + 1][0] - _st["pts"][_i][0], _st["pts"][_i + 1][1] - _st["pts"][_i][1]))
+_st["ys"] = [round(10 + 20 * min(c / _cum[-2], 1.0), 2) for c in _cum]  # own height profile (halo_blockout uses it): even climb, flat into the court
+# 결정 6: B3 / plaza_castle ends at the castle court (it never reached the castle's back)
+_road("plaza_castle")["pts"] = [(-30, -575.0), (-64.0, -572.0), (-100.0, -560.0), (-124.0, -548.0), (-148, -530)]
+_road("plaza_castle")["note"] = "광장 → 다리 B3 → 성 앞 마당(동쪽에서 들어감)"
+# the garden road crosses the stream on B4 below the new garden pool (it ran over the W2 fall with no bridge)
+_road("to_garden")["pts"] = [(-30, -629.0), (-58, -640), (-90, -656), (-104, -676), (-109.0, -704.0), (-157.0, -728.0), (-199.0, -755.0)]
+_road("to_garden")["note"] = "광장 → 다리 B4 → 정원 쉼터 → 정원 마을"
+# 결정 3: a stair lane from the upper cliff tier (22) up to the lookout (28)
+ROADS.append(dict(id="cliff_lookout", name="절벽-전망대 계단", w=5, grade=3, pts=[(220, -692), (216, -724), (214, -752), (222, -772)],
+                  note="절벽 위 단(22) → 전망대(28)"))
+
+# the cathedral spring sits fully on the hill (it straddled the cliff), W2 falls over the hill edge into the new garden pool
+WATER["stream"] = [(-14, -706), (-36, -700), (-56, -690), (-72, -662), (-79.0, -614.0), (-67.0, -572.0), (-55.0, -530.0), (-55.0, -485.0),
+                   (-52.0, -440), (-55.0, -410), (-64.0, -382), (-79.0, -352), (-85.0, -336)]
+WATER["stream_w"] = [4, 5, 6, 7, 8, 9, 9, 10, 10, 10, 11, 12, 13]
+for _p in WATER["pools"]:
+    if _p["id"] == "spring":
+        _p.update(at=(-14, -706), r=6, note="대성당 샘(언덕 위)")
+    elif _p["id"] == "garden_pool":
+        _p.update(at=(-56, -690), r=8, note="정원 쉼터 웅덩이(W2 끝)")
+    elif _p["id"] == "cliff_pool":
+        _p.update(at=(270, -642), r=5, y=22, note="W3 폭포 위 웅덩이(절벽 위 단)")
+for _f in WATER["falls"]:
+    if _f["id"] == "W2":
+        _f.update(at=(-38, -699), note="대성당 샘 → 언덕 끝 → 정원 쉼터 웅덩이, 계단 폭포 3단")
+    elif _f["id"] == "W3":
+        _f.update(at=(288, -641), drop="22 → 바다", note="절벽 위 단 웅덩이 → 동쪽 바다, 2단")
+# bridges: B1-B3 keep their roads, B4 is new; every bridge's spot is the road / stream crossing (fix_bridges, B2 was 2.75 off)
+BRIDGES.append(dict(id="B4", at=(-72, -650), len=14, kind="낮은 돌다리", note="광장 → 정원 쉼터 (정원 길)"))
+BRIDGE_ROAD = {"B1": "loop", "B2": "loop", "B3": "plaza_castle", "B4": "to_garden"}
+
+# 결정 2: the lookout drops to 28 (tower top 78 < the cathedral's 84), the cathedral moves south for the stair court
+_dist("lookout")["y"] = 28
+_dist("lookout")["why"] = "마을과 바다가 가장 넓게 보이는 곳(대성당보다는 낮음). 전망 탑 하나, 섬 가장자리 8 안에는 낮은 것만."
+_dist("cathedral")["poly"] = [(-24, -680.0), (24, -686), (30, -710), (72, -710), (96, -692), (118, -684), (138, -686), (148.0, -758.0),
+                              (124.0, -821.0), (0, -827.0), (-61.0, -815.0), (-67.0, -740.0)]
+# the hill face between the plaza and the cathedral: terraces stepped by the stair legs (halo_blockout: each cell takes the
+# height of the nearest point of the stair, so a leg can not be cut by walking up the grass)
+DISTRICTS.insert(DISTRICTS.index(_dist("cathedral")), dict(
+    id="cathedral_steps", name="대성당 계단 언덕", y=10, y_to=30, terrace="cathedral_stairs", color=(238, 226, 236),
+    poly=[(26, -658), (55.0, -651.5), (82, -622), (100, -626), (118, -650), (118, -684), (96, -692), (72, -710), (30, -710)],
+    why="광장에서 대성당까지 언덕 앞면. 굽은 계단이 세 번 꺾어 오르고, 계단 사이는 꽃 단. 오르는 동안 광장·바다가 점점 넓게 보인다.",
+    flowers=["흰", "연보라", "금"], edge="계단 사이 꽃 단(턱 = 계단 높이)"))
+YARDS = [dict(y, at=(82, -718)) if y["id"] == "cathedral_court" else y for y in YARDS]
+YARDS = [dict(y, at=(118, -472)) if y["id"] == "market_corner" else y for y in YARDS]
+# 결정 3: the cliff village = a lower tier 18 (north-west: houses 1, 2, 7) and an upper tier 22 (east and south: 3, 4, 5, 6, 8),
+# joined by to_cliff; the cathedral / cliff polygons no longer overlap at x 126-143
+_c = _dist("cliff_homes")
+_c.pop("y_to", None)
+_c["poly"] = [(106.0, -554.0), (169.0, -539.0), (235.0, -503.0), (268.0, -560.0), (272.5, -665.0), (256.0, -740.0), (190.0, -755.0),
+              (150, -735), (138, -676), (100.0, -620.0)]
+_c["tiers"] = [dict(id="upper", name="위 단", y=22,
+                    poly=[(186, -590), (270, -584), (272.5, -665), (256, -740), (190, -755), (150, -735), (158, -690), (159, -640), (175, -622)])]
+_c["edge"] = "절벽 + 두 단 사이 턱 4(비탈길 to_cliff로 오름)"
+# slope lines of the y -> y_to districts (were halo_blockout SLOPES in stage-1 coordinates; the plan owns them now)
+_dist("market")["slope"] = [(12, -455), (148, -485)]
+_dist("garden_homes")["slope"] = [(-124, -698), (-235, -788)]
+# 결정 7: two districts widen to the coast where their edge house had no room inward (House_Hill4, House_Garden7)
+_dist("market_hill")["poly"] = [(142.0, -362), (244.0, -376), (262, -418), (238, -480), (172.0, -485.0), (148.0, -430)]
+_dist("garden_homes")["poly"] = [(-130.0, -647.0), (-208.0, -644.0), (-266.5, -683.0), (-257.5, -782.0), (-215, -818), (-178, -828),
+                                 (-94.0, -812.0), (-79.0, -743.0), (-124.0, -704.0)]
+# 결정 7 + review: buildings that stuck out of their district / faced the wrong way (positions found by tools/_halo_fit.py)
+_bld("Cathedral", 84, -772, (84, -700))
+_bld("House_Cliff3", 244, -614, (226, -646))  # door to the cliff yard (it faced the sea with the path behind the house)
+for _id, _x, _z in (("Tower_GateEast", 39, -346), ("Shop_Potion", 40, -490), ("Shop_Flower", 58, -519), ("House_Hill1", 170, -389),
+                    ("Armory", -175, -417), ("Castle", -176, -574), ("House_Hill4", 231, -448), ("House_Cliff6", 180, -655), ("House_Cliff7", 142, -656),
+                    ("House_Cliff8", 248, -674), ("House_Garden5", -242, -691), ("House_Garden7", -190, -804), ("Tower_Lookout", 233, -777)):
+    _b = next(t for t in BUILDINGS if t[0] == _id)
+    _yaw = math.atan2(_b[5][0] - _b[3], _b[5][1] - _b[4])  # same door direction after the move
+    _bld(_id, _x, _z, (_x + math.sin(_yaw) * 30, _z + math.cos(_yaw) * 30))
+_bld("Tower_GateEast", 39, -346, (39, -400))  # 결정 5: door to the south so its path goes round the GoblinWoods pad (it faced into it)
+_bld("House_Cliff7", 142, -656, (142 + math.sin(math.radians(60)) * 30, -656 + math.cos(math.radians(60)) * 30))  # yaw 40 -> 60: room for the tier step to Cliff6
+# the main road crossed the fountain basin (centre line 9 from it, half width 10): it now passes east of the fountain
+_road("main")["pts"] = [(0, -336), (0, -362), (2, -400), (6, -426), (34, -452.0), (70.0, -485.0), (88.0, -524.0), (60, -562), (54, -604), (40, -647.0)]
+_road("main")["note"] = "성문 → 스폰(통로는 곧게) → 시장 골목 → 분수 광장(분수 동쪽으로) → 광장 남쪽 끝에서 대성당 굽은 계단"
+for _f in WATER["falls"]:
+    _f["y"] = {"W1": 1, "W2": 21, "W3": 12}[_f["id"]]  # sound / FX height (halfway down each fall)
+_road("cliff_lookout")["pts"] = [(220, -692), (206, -712), (208, -748), (222, -772)]
+_road("lookout_end")["pts"] = [(199, -788), (210, -785), (220, -782)]
+_road("lookout_end")["note"] = "전망 탑 문 앞 마당"
+YARDS = [dict(y, at=(214, -786)) if y["id"] == "lookout_yard" else y for y in YARDS]
+SCENES = [(n, (233, -777) if n == "전망 탑 꼭대기" else at, v) for (n, at, v) in SCENES]
+SCENES = [(n, (266, -604) if n == "절벽 마을 발코니" else (146, -524) if n == "시장 끝 꽃 화분 탁자" else
+           (-80, -676) if n == "폭포 웅덩이 벤치" else at, v) for (n, at, v) in SCENES]
+
+
 # ---------------------------------------------------------------- A23-117 '이유' 칸 (검수 10/11 17:30): every district says what it does,
 # every building / yard / bridge / photo scene says who uses it and why it stands there. A missing why is a check issue.
 DIST_JOB = {
@@ -315,61 +462,63 @@ DIST_JOB = {
     "garden": "쉬어 가는 곳 — 폭포 웅덩이 벤치",
     "garden_homes": "꽃 키우는 사람들이 사는 곳",
     "cathedral": "기도하는 곳 — 왕관 조각을 지킴",
-    "cliff_homes": "대성당 일꾼들이 사는 곳",
+    "cliff_homes": "대성당 일꾼과 바다를 보는 사람들이 사는 곳",
+    "cathedral_steps": "대성당으로 오르는 길 — 굽은 계단과 꽃 단",
     "lookout": "내려다보는 곳 — 마을·바다 사진 자리",
 }
 WHY_B = {
     "Gate": "교차로 다리에서 마을로 들어오는 하나뿐인 문. 문지기가 지킨다",
     "Tower_GateEast": "문지기 망루: 다리로 오는 사람을 높이서 본다(동쪽에만, 비대칭)",
-    "Shop_Potion": "첫 10분 둘째 할 일(Bright 다음 물약). 스폰에서 보이는 첫 가게",
-    "Shop_Bakery": "빵집 할머니(Folk3) 가게. 언덕 동네에서 내려오는 계단 바로 앞",
+    "Shop_Potion": "물약 상인 가게: 첫 장 뒤 돌아와(M1_4) 처음 들르는 가게. 스폰에서 동쪽(시장 쪽)으로 돌면 보인다",
+    "Shop_Bakery": "빵집 할머니(Folk3) 가게. 언덕 동네 계단 아래 뒷골목 입구",
     "Shop_Juice": "주스 아저씨(Folk1) 가게. 골목 끝, 구경하고 쉬어 가는 자리",
-    "Shop_Flower": "꽃 가게(Folk2). 광장으로 내려가는 모퉁이, 정원 마을 꽃을 받아 판다",
+    "Shop_Flower": "꽃 가게(Folk2). 시장 골목에서 광장으로 올라가는 모퉁이, 정원 마을 꽃을 받아 판다",
     "House_Hill1": "빵집 할머니 집: 가게로 내려가는 계단이 가장 가깝다",
     "House_Hill2": "주스 아저씨 집: 언덕 마당 옆",
-    "House_Hill3": "물약 상인 집: 시장 쪽을 본다",
-    "House_Hill4": "꽃 가게 주인 집: 언덕 마당 화분을 돌본다 (A23-124 새 집)",
-    "Armory": "기사단 무기고: 훈련장 바로 옆이라 무기를 꺼내 바로 연습한다(Sir Gleam 훈련 시작)",
+    "House_Hill3": "물약 상인 집: 문은 언덕 마당 쪽, 뒤창이 시장을 내려다본다",
+    "House_Hill4": "약초꾼 부부 집: 시장 물약 가게에 약초를 대 준다 (A23-124 새 집, 2D 그대로)",
+    "Armory": "기사단 무기고: 훈련장 바로 옆이라 무기를 꺼내 바로 연습한다",
     "Castle": "기사단 성: 훈련장을 내려다보고 서쪽 바다를 지킨다. 문은 훈련장 쪽",
-    "Cathedral": "왕관 조각을 지키는 대성당: 마을에서 가장 높은 언덕",
-    "House_Cliff1": "종지기 집: 대성당 가는 비탈 아래",
-    "House_Cliff2": "성가대 선생님 집",
-    "House_Cliff3": "바다를 그리는 화가 집: 창이 바다 쪽",
-    "House_Cliff4": "대성당 정원사 집: 위 단, 대성당과 가깝다",
-    "House_Cliff5": "촛불 만드는 사람 집: 대성당에 초를 댄다",
-    "House_Cliff6": "별 보는 사람 집: 위 단, 전망대 가까이 (A23-124 새 집)",
-    "House_Cliff7": "성가대 아이들 집: 아래 골목 (A23-124 새 집)",
-    "House_Cliff8": "폭포지기 집: W3 폭포 옆, 물길을 돌본다 (A23-124 새 집)",
+    "Cathedral": "왕관 조각을 지키는 대성당: 마을에서 가장 높은 언덕(Y30, 꼭대기 84 = 마을에서 가장 높음), 굽은 계단 위",
+    "House_Cliff1": "성가대 아이들 집: 아래 단, 대성당 가는 비탈 아래",
+    "House_Cliff2": "성가대 선생님 집: 아래 단",
+    "House_Cliff3": "바다를 그리는 화가 집: 위 단, 문은 절벽 위 마당 쪽, 창이 바다 쪽",
+    "House_Cliff4": "대성당 정원사 집: 위 단 남쪽, 전망대 계단 옆",
+    "House_Cliff5": "촛불 만드는 사람 집: 위 단 서쪽, 대성당 언덕이 가장 가깝다(초를 댐)",
+    "House_Cliff6": "비탈길 우편배달 소년 집: 위 단, 비탈길 to_cliff 바로 옆(매일 마을을 한 바퀴) (A23-124 새 집, 2D 그대로)",
+    "House_Cliff7": "골목 종지기 할아버지 집: 아래 골목, 해 질 녘 종을 친다 (A23-124 새 집, 2D 그대로)",
+    "House_Cliff8": "늙은 뱃사공 집: 위 단 바다 쪽 끝, 테라스 망원경으로 하늘 바다의 배를 센다 (A23-124 새 집, 2D 그대로)",
     "House_Garden1": "정원사 집: 꽃 가게에 꽃을 댄다, 광장에서 가장 가깝다",
     "House_Garden2": "씨앗 모으는 사람 집",
-    "House_Garden3": "물러난 늙은 기사 집: 성이 보이는 바닷가",
+    "House_Garden3": "물러난 늙은 기사 집: 서쪽 바닷가, 문이 바다 쪽",
     "House_Garden4": "벌 치는 사람 집: 꽃밭 가운데",
-    "House_Garden5": "약초 키우는 사람 집: 서쪽 끝 (물약 가게에 약초를 댐, A23-124 새 집)",
-    "House_Garden6": "연못 집: 연꽃을 돌본다 (A23-124 새 집)",
-    "House_Garden7": "정원 마을 이장 집: 남쪽 바다 쪽 끝 (A23-124 새 집)",
-    "Tower_Lookout": "전망 탑: 마을·바다를 내려다보는 사진 자리, 하늘 다리로 오는 것을 지켜본다",
+    "House_Garden5": "꽃 농부 집: 서쪽 끝, 정원 마을 꽃 화분을 키운다 (A23-124 새 집, 2D 그대로)",
+    "House_Garden6": "연못 낚시꾼 집: 연못 물고기·개구리 이야기를 좋아한다 (A23-124 새 집, 2D 그대로)",
+    "House_Garden7": "별 보는 학자 집: 남쪽 바닷가 끝, 밤마다 왕관 조각 별을 기록한다 (A23-124 새 집, 2D 그대로)",
+    "Tower_Lookout": "전망 탑: 마을·바다를 가장 넓게 내려다보는 사진 자리(대성당보다 낮음, 전망대 안쪽)",
 }
 WHY_YARD = {
     "hill_yard": "언덕 집 2·3·4가 같이 쓰는 마당(빨랫줄·화분)",
     "castle_court": "기사들이 모이는 성 문 앞 마당",
-    "cliff_yard": "절벽 위 집 3·8 앞 마당, W3 웅덩이 옆",
+    "cliff_yard": "절벽 위 단 마당: 화가 집(3) 문 앞, 뱃사공 집(8)과 같이 씀",
     "cliff_landing": "절벽 비탈 오르다 쉬는 쉼참",
-    "garden_yard": "정원 집 2·5 사이 꽃밭 일하는 자리",
+    "garden_yard": "정원 서쪽 골목 옆 공동 꽃밭 마당(집 2·3·5가 같이 씀)",
     "lookout_yard": "전망 탑에 오르기 전 모이는 곳",
-    "market_corner": "뒷골목 모퉁이 노점·수레 자리",
-    "cathedral_court": "큰 계단 위, 기도하러 온 사람들이 모이는 대성당 앞",
+    "market_corner": "뒷골목이 꺾이는 모퉁이(빵집·주스 가게 사이) 노점·수레 자리",
+    "cathedral_court": "굽은 계단 위, 기도하러 온 사람들이 모이는 대성당 앞",
 }
 WHY_BRIDGE = {
     "B1": "첫 10분: 스폰에서 훈련장으로 시냇물을 건너는 곳",
     "B2": "훈련 뒤 성문으로 돌아가는 고리길이 시냇물을 건너는 곳",
-    "B3": "광장에서 성 뒤 마당으로 가는 지름길",
+    "B3": "광장에서 성 앞 마당으로 동쪽에서 들어가는 곁길",
+    "B4": "광장에서 정원 쉼터·정원 마을로 가는 길이 시냇물을 건너는 곳(W2 폭포 아래)",
 }
 WHY_SCENE = {
     "폭포 웅덩이 벤치": "정원 쉼터에서 쉬는 사람 자리",
     "성벽 전망": "성벽 곁길 막다른 끝의 보상(서쪽 바다)",
     "북동 곶 벤치": "언덕 동네 사람이 교차로 다리를 보는 자리",
     "시장 끝 꽃 화분 탁자": "장 본 사람이 골목을 내려다보며 쉬는 자리",
-    "절벽 마을 발코니": "절벽 마을 사람이 동쪽 바다와 W3를 보는 자리",
+    "절벽 마을 발코니": "절벽 위 단 사람이 동쪽 바다와 남쪽 W3 폭포를 보는 자리",
     "대성당 뒤 바다 전망": "기도 뒤 조용히 바다를 보는 자리",
     "전망 탑 꼭대기": "마을 전체 사진 자리",
     "훈련장 관람 계단": "훈련을 구경하는 자리",
@@ -379,9 +528,10 @@ for _d in DISTRICTS:
     if _d["id"] == "training":
         _d["why"] = _d["why"].replace("흙 마당", "모래 마당")  # 10/11 2차: the yard terrain is Sand (GE_Ground read near black)
     if _d["id"] == "cliff_homes":
-        _d["why"] = "대성당 일꾼(종지기·성가대·정원사·초 만드는 사람)이 대성당 가까운 절벽에 산다. 집 8채가 두 단(18·22)에 무리. 절벽 끝 폭포가 바다로 떨어진다."
+        _d["why"] = ("대성당 일꾼(성가대·정원사·초 만드는 사람·종지기)과 바다를 보는 사람(화가·뱃사공)이 산다. 집 8채가 진짜 두 단: "
+                     "아래 단 18(집 1·2·7) · 위 단 22(집 3·4·5·6·8), 비탈길 to_cliff로 오른다. 위 단 끝 W3 폭포가 바다로 떨어진다.")
     if _d["id"] == "garden_homes":
-        _d["why"] = "꽃 키우는 사람들이 사는 남서쪽 조용한 동네. 집 7채가 마당·꽃밭·연못과 함께, 2채는 바다를 본다."
+        _d["why"] = "꽃 키우는 사람들이 사는 남서쪽 조용한 동네. 집 7채가 마당·꽃밭·연못과 함께, 2채(집 3·7)는 바닷가에 선다."
 for _y in YARDS:
     _y["why"] = WHY_YARD.get(_y["id"], "")
 for _b in BRIDGES:
@@ -419,8 +569,8 @@ def seg_dist(p, a, b):
     return math.hypot(px - (ax + t * dx), pz - (az + t * dz))
 
 
-def footprint(b):
-    w, d = b["w"], b["d"]
+def footprint(b, grow=0.0):
+    w, d = b["w"] + 2 * grow, b["d"] + 2 * grow
     yaw = math.radians(b["yaw"])
     fx, fz = math.sin(yaw), math.cos(yaw)  # door direction (x, z)
     rx, rz = fz, -fx  # right
@@ -458,6 +608,34 @@ def compass(dx, dz):
 DIST = {d["id"]: d for d in DISTRICTS}
 
 
+def road_profile_at(r, p):
+    """height on road r's centre line nearest to p (roads with their own 'ys' only)"""
+    best = None
+    for i in range(len(r["pts"]) - 1):
+        (ax, az), (bx, bz) = r["pts"][i], r["pts"][i + 1]
+        dx, dz = bx - ax, bz - az
+        t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - az) * dz) / max(dx * dx + dz * dz, 1e-9)))
+        dd = math.hypot(p[0] - ax - t * dx, p[1] - az - t * dz)
+        if best is None or dd < best[0]:
+            best = (dd, r["ys"][i] + (r["ys"][i + 1] - r["ys"][i]) * t)
+    return best[1]
+
+
+def dist_height(dd, p):
+    """ground height of district dd at p: tiers, terrace (nearest stair point), slope line, else its y"""
+    for t in dd.get("tiers", []):
+        if inside(p, t["poly"]):
+            return t["y"]
+    if dd.get("terrace"):
+        return road_profile_at(next(r for r in ROADS if r["id"] == dd["terrace"]), p)
+    if dd.get("y_to") is not None and dd.get("slope"):
+        (ax, az), (bx, bz) = dd["slope"]
+        dx, dz = bx - ax, bz - az
+        t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - az) * dz) / max(dx * dx + dz * dz, 1e-9)))
+        return dd["y"] + (dd["y_to"] - dd["y"]) * t
+    return dd["y"]
+
+
 def build_list():
     out = []
     for bid, kind, dist, x, z, faces, note in BUILDINGS:
@@ -466,6 +644,10 @@ def build_list():
         yaw = round(math.degrees(math.atan2(dx, dz)) / 5) * 5
         dd = DIST[dist]
         gy = dd["y"]
+        if dd.get("tiers") or dd.get("y_to") is not None:
+            # review: on sloped / tiered districts the pad takes the ground height at the door (was the district's low y, up to
+            # 3.9 below the ground round it) -> the pad cut and the doorstep apron shrink to under 1 stud
+            gy = round(dist_height(dd, (x + math.sin(math.radians(yaw)) * d / 2, z + math.cos(math.radians(yaw)) * d / 2)))
         h = {"Tower_Lookout": 50}.get(bid, h)  # ④: the open belvedere + dome + finial
         out.append(dict(id=bid, kind=kind, district=dist, x=x, z=z, ground_y=gy, yaw=yaw,
                         door_dir=[round(math.sin(math.radians(yaw)), 3), round(math.cos(math.radians(yaw)), 3)],
@@ -478,32 +660,180 @@ def build_list():
     return out
 
 
+def nearest_on(r, p):
+    best = None
+    for i in range(len(r["pts"]) - 1):
+        (ax, az), (bx, bz) = r["pts"][i], r["pts"][i + 1]
+        dx, dz = bx - ax, bz - az
+        t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - az) * dz) / max(dx * dx + dz * dz, 1e-9)))
+        q = (ax + t * dx, az + t * dz)
+        dd = math.hypot(q[0] - p[0], q[1] - p[1]) - r["w"] / 2
+        if best is None or dd < best[0]:
+            best = (dd, q)
+    return best
+
+
+def seg_clear(a, b, polys, step=1.0):
+    n = max(1, int(math.hypot(b[0] - a[0], b[1] - a[1]) / step))
+    for k in range(n + 1):
+        p = (a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n)
+        if any(inside(p, q) for q in polys):
+            return False
+    return True
+
+
 def door_spurs(blds):
-    """a garden path (grade 3, 4 wide) from every door to the nearest grade 1-2 road point"""
+    """a garden path (grade 3, 4 wide) from every door to a road. Review 10/11: the target is the road point nearest to the
+    step 5 out of the door (not to the door), and the path goes round its own house, the other houses and the two pad boxes
+    with one corner waypoint when the straight line would cut through them"""
     spurs = []
+    W = 4
     for b in blds:
         door = b["door_at"]
+        near = sorted(((*nearest_on(r, door), r["id"]) for r in ROADS), key=lambda t: t[0])
+        b["door_to_path"] = round(max(near[0][0], 0), 1)
+        b["path_from"] = near[0][2]
+        if near[0][0] <= 3:
+            continue
+        yaw = math.radians(b["yaw"])
+        step = (door[0] + math.sin(yaw) * 5, door[1] + math.cos(yaw) * 5)
+        obst = [footprint(o, W / 2 + 0.5) for o in blds] + [pad_box(c, W / 2 + 0.5) for _, c in PADS]
+        wide = [footprint(o, W / 2 + 2.5) for o in blds] + [pad_box(c, W / 2 + 2.5) for _, c in PADS]
+        cands = sorted(((*nearest_on(r, step), r["id"]) for r in ROADS), key=lambda t: t[0])[:5]
         best = None
-        for r in ROADS:
-            if r["grade"] == 3 and not r["id"].startswith("castle") and not r["id"].startswith("hill"):
-                pass
-            for i in range(len(r["pts"]) - 1):
-                (ax, az), (bx, bz) = r["pts"][i], r["pts"][i + 1]
-                dx, dz = bx - ax, bz - az
-                t = max(0.0, min(1.0, ((door[0] - ax) * dx + (door[1] - az) * dz) / max(dx * dx + dz * dz, 1e-9)))
-                q = (ax + t * dx, az + t * dz)
-                dist = math.hypot(q[0] - door[0], q[1] - door[1]) - r["w"] / 2
-                if best is None or dist < best[0]:
-                    best = (dist, q, r["id"])
-        b["door_to_path"] = round(max(best[0], 0), 1)
-        b["path_from"] = best[2]
-        if best[0] > 3:
-            yaw = math.radians(b["yaw"])
-            step = (door[0] + math.sin(yaw) * 5, door[1] + math.cos(yaw) * 5)
-            spurs.append(dict(id="door_" + b["id"], name="문 앞 길", w=4, grade=3,
-                              pts=[(door[0], door[1]), step, (round(best[1][0], 1), round(best[1][1], 1))],
-                              note=f"{b['id']} 문 → {best[2]} ({best[0]:.0f})"))
+        for dd, q, rid in cands:
+            if seg_clear(step, q, obst):
+                pths = [[step, q]]
+            else:  # one corner waypoint round whatever the straight line hits
+                hit = [k for k, o in enumerate(obst) if not seg_clear(step, q, [o])]
+                pths = [[step, c, q] for k in hit for c in wide[k]
+                        if inside(c, LAND) and not any(inside(c, o) for o in obst) and seg_clear(step, c, obst) and seg_clear(c, q, obst)]
+            for pts in pths:
+                ln = sum(math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]) for i in range(len(pts) - 1))
+                if best is None or ln < best[0]:
+                    best = (ln, pts, rid)
+        if best is None:  # nothing clear: straight (the checks flag it)
+            best = (0, [step, cands[0][1]], cands[0][2])
+        spurs.append(dict(id="door_" + b["id"], name="문 앞 길", w=W, grade=3,
+                          pts=[(door[0], door[1])] + [(round(p[0], 1), round(p[1], 1)) for p in best[1]],
+                          note=f"{b['id']} 문 → {best[2]} ({best[0]:.0f})"))
     return spurs
+
+
+def seg_cross(a, b, c, d):
+    """intersection point of segments ab and cd, or None"""
+    r = (b[0] - a[0], b[1] - a[1])
+    s = (d[0] - c[0], d[1] - c[1])
+    den = r[0] * s[1] - r[1] * s[0]
+    if abs(den) < 1e-9:
+        return None
+    t = ((c[0] - a[0]) * s[1] - (c[1] - a[1]) * s[0]) / den
+    u = ((c[0] - a[0]) * r[1] - (c[1] - a[1]) * r[0]) / den
+    if 0 <= t <= 1 and 0 <= u <= 1:
+        return (a[0] + t * r[0], a[1] + t * r[1])
+    return None
+
+
+def stream_crossings(r):
+    st = WATER["stream"]
+    out = []
+    for i in range(len(r["pts"]) - 1):
+        for j in range(len(st) - 1):
+            p = seg_cross(r["pts"][i], r["pts"][i + 1], st[j], st[j + 1])
+            if p:
+                out.append((p, j))
+    return out
+
+
+def fix_bridges():
+    """every bridge sits on its road's stream crossing (B2 was 2.75 off, its west end over water)"""
+    for br in BRIDGES:
+        rd = next(r for r in ROADS if r["id"] == BRIDGE_ROAD[br["id"]])
+        xs = stream_crossings(rd)
+        if xs:
+            p, j = min(xs, key=lambda t: math.hypot(t[0][0] - br["at"][0], t[0][1] - br["at"][1]))
+            br["at"] = (round(p[0], 1), round(p[1], 1))
+            br["road"] = rd["id"]
+            br["stream_w"] = WATER["stream_w"][j]
+
+
+def road_samples(r, step=1.0):
+    for i in range(len(r["pts"]) - 1):
+        (ax, az), (bx, bz) = r["pts"][i], r["pts"][i + 1]
+        n = max(1, int(math.hypot(bx - ax, bz - az) / step))
+        for k in range(n + 1):
+            yield i, (ax + (bx - ax) * k / n, az + (bz - az) * k / n)
+
+
+def review_checks(blds, fp_dist):
+    """검수 plan v2 결과 (10/11): pads, bridges, roads on water, stream through houses, the cathedral highest, pads of
+    different heights touching"""
+    msgs = []
+    for name, c in PADS:
+        box = pad_box(c)
+        for r in ROADS:
+            if any(fp_dist(p, box) < r["w"] / 2 for _, p in road_samples(r)):
+                msgs.append(f"길이 이동 발판 둘레에: {r['id']} - {name}")
+        for b in blds:
+            if poly_overlap(footprint(b), box):
+                msgs.append(f"건물이 이동 발판 둘레에: {b['id']} - {name}")
+        for f in FILL_LIGHTS:
+            if fp_dist(f["at"], box) < 1:
+                msgs.append(f"채움 빛이 이동 발판 둘레에: {f['note']} - {name}")
+        for n2, _now, new, _c in FIXED_MOVE:
+            if new and fp_dist((new[0], new[2]), box) < 2.5:
+                msgs.append(f"고정점이 이동 발판 둘레에: {n2} - {name}")
+    # fixed NPCs / statue off every road band (Sir Gleam stood in the loop road)
+    for n2, _now, new, _c in FIXED_MOVE:
+        if not new or n2.startswith("훈련장"):  # the training mark is a yard spot, not a body
+            continue
+        for r in ROADS:
+            dd = min(seg_dist((new[0], new[2]), r["pts"][i], r["pts"][i + 1]) for i in range(len(r["pts"]) - 1)) - r["w"] / 2
+            if dd < 1.5:
+                msgs.append(f"고정점이 길 위: {n2} - {r['id']} ({dd:.1f})")
+    # every road / stream crossing has a bridge within len / 2 (the garden road ran over W2 with none)
+    for r in ROADS:
+        for p, _j in stream_crossings(r):
+            if not any(math.hypot(p[0] - br["at"][0], p[1] - br["at"][1]) <= br["len"] / 2 for br in BRIDGES):
+                msgs.append(f"다리 없이 물 건넘: {r['id']} ({p[0]:.0f},{p[1]:.0f})")
+    for br in BRIDGES:
+        if br.get("stream_w") and br["len"] < br["stream_w"] + 3:
+            msgs.append(f"다리가 짧음: {br['id']} {br['len']} < 물 폭 {br['stream_w']} + 3")
+    for w in WATER["pools"]:
+        if w["id"] == "fountain":
+            continue
+        for r in ROADS:
+            if any(math.hypot(p[0] - w["at"][0], p[1] - w["at"][1]) < w["r"] + r["w"] / 2 for _, p in road_samples(r)):
+                msgs.append(f"길이 물에 걸림: {r['id']} - {w['id']}")
+    st = WATER["stream"]
+    for b in blds:
+        fp = footprint(b)
+        for i in range(len(st) - 1):
+            if any(fp_dist(p, fp) < WATER["stream_w"][i] / 2 for _, p in road_samples(dict(pts=[st[i], st[i + 1]]))):
+                msgs.append(f"시냇물이 건물에 걸림: {b['id']}")
+                break
+    for y in YARDS:
+        for b in blds:
+            if fp_dist(tuple(y["at"]), footprint(b)) < y["r"]:
+                msgs.append(f"마당이 건물에 걸림: {y['id']} - {b['id']}")
+    # 결정 2: the cathedral's ground is the highest ground and its top the highest top
+    cat = next(b for b in blds if b["kind"] == "Cathedral")
+    for dd in DISTRICTS:
+        if dd["id"] in (cat["district"], "cathedral_steps"):
+            continue
+        top = max([dd["y"], dd.get("y_to") or dd["y"]] + [t["y"] for t in dd.get("tiers", [])])
+        if top >= cat["ground_y"]:
+            msgs.append(f"대성당보다 높은 땅: {dd['id']} {top}")
+    for b in blds:
+        if b is not cat and b["ground_y"] + b["h"] >= cat["ground_y"] + cat["h"]:
+            msgs.append(f"대성당보다 높은 건물: {b['id']} {b['ground_y'] + b['h']}")
+    # pads of different heights must not touch (both are flattened PAD_MARGIN round the walls)
+    for i in range(len(blds)):
+        for j in range(i + 1, len(blds)):
+            a, b = blds[i], blds[j]
+            if a["ground_y"] != b["ground_y"] and poly_overlap(footprint(a, PAD_MARGIN), footprint(b, PAD_MARGIN)):
+                msgs.append(f"받침 높이 다른데 맞닿음: {a['id']} {a['ground_y']} - {b['id']} {b['ground_y']}")
+    return msgs
 
 
 def checks(blds):
@@ -525,7 +855,8 @@ def checks(blds):
         fp = footprint(b)
         if b["kind"] != "Gate" and not all(inside(p, LAND) for p in fp):  # the gate stands on the bridge end
             msgs.append(f"땅 밖: {b['id']}")
-        if not inside((b["x"], b["z"]), DIST[b["district"]]["poly"]):
+        # 결정 7: all four corners of the footprint + its 5-stud pad inside the own district (the centre alone let 4 stick out)
+        if b["kind"] != "Gate" and not all(inside(p, DIST[b["district"]]["poly"]) for p in footprint(b, PAD_MARGIN)):
             msgs.append(f"구역 밖: {b['id']} ({b['district']})")
         if b["door_to_path"] > 40:
             msgs.append(f"문 앞 길 멀다: {b['id']} {b['door_to_path']:.0f}")
@@ -540,16 +871,17 @@ def checks(blds):
         return min(seg_dist(pt, fp[i], fp[(i + 1) % 4]) for i in range(4))
     for r in ROADS:
         for b in blds:
-            if b["kind"] == "Gate" or r["id"] == "door_" + b["id"]:
+            if b["kind"] == "Gate":
                 continue
+            own = r["id"] == "door_" + b["id"]
             fp = footprint(b)
             hit = False
             for i in range(len(r["pts"]) - 1):
                 (ax, az), (bx, bz) = r["pts"][i], r["pts"][i + 1]
                 n = max(1, int(math.hypot(bx - ax, bz - az) // 2))
                 for k in range(n + 1):
-                    if i == 0 and k == 0 and r["id"].startswith("door_"):
-                        continue
+                    if (own and i == 0) or (i == 0 and k == 0 and r["id"].startswith("door_")):
+                        continue  # review: only the own door step (segment 0) may touch its house, not the whole spur
                     t = k / n
                     if fp_dist((ax + (bx - ax) * t, az + (bz - az) * t), fp) < r["w"] / 2 - 0.5:
                         hit = True
@@ -562,6 +894,7 @@ def checks(blds):
         for b in blds:
             if fp_dist(tuple(w["at"]), footprint(b)) < w["r"]:
                 msgs.append(f"물이 건물에 걸림: {w['id']} - {b['id']}")
+    msgs += review_checks(blds, fp_dist)
     # the spawn-gate corridor (|x|<=12, z -330..-432) and the spawn circle stay clear (the gate itself is the passage)
     for b in blds:
         if b["kind"] == "Gate":
@@ -677,7 +1010,10 @@ DRESSING = {
                          plants="해바라기 노랑·데이지 흰 덩어리, 나무 줄 (서쪽 바다 쪽), 채집 덤불 5곳 (매일 2~3곳)",
                          props="VegGarden·Clothesline·Woodpile, FlowerPotHQ Sunflower·Daisy, 연못 징검다리 (새로)", water="정원 연못",
                          edge="나무 줄 + 낮은 울타리", light="마당 등불 1, 골목 등불", empty="연못 북쪽 잔디"),
-    "cathedral": dict(paths="큰 계단 (HaloStairs_3/5) -> 대성당 앞 마당 대리석", plants="Topiary 3종 섞어 (줄 세우기 금지), 흰·연보라 꽃",
+    "cathedral_steps": dict(paths="굽은 계단 대리석+금 테 (다리 3개, 꺾는 곳마다 쉼참 + 난간)", plants="계단 사이 꽃 단 (흰·연보라·금), 단 턱 아래 낮은 덤불",
+                            props="꺾는 쉼참마다 벤치 또는 화분 하나 (짝 없이)", water="-", edge="단 턱 = 계단 높이 (단마다 다른 꽃)",
+                            light="계단 등불 (자동)", empty="맨 아래 단 동쪽 잔디"),
+    "cathedral": dict(paths="굽은 계단 끝 -> 대성당 앞 마당 대리석", plants="Topiary 3종 섞어 (줄 세우기 금지), 흰·연보라 꽃",
                       props="대성당 뒤 바다 전망 벤치 + Balustrade, PhotoDisc (계단 꼭대기)", water="대성당 샘 -> W2 머리",
                       edge="언덕 축대 + 계단 폭포 (서)", light="대성당 아래 은은한 빛 (uplights)", empty="대성당 동쪽 잔디"),
     "cliff_homes": dict(paths="조약돌 골목·계단 (18 -> 22)", plants="분홍·흰 꽃, 절벽 발치 나무·흰 바위 (10~20칸 불규칙)",
@@ -696,12 +1032,13 @@ STAGE5_FIXES = [
     "under_side_close 파란 점 2개(LOD 티) 지우기",
     "섬 받침 -48 평평 → 뾰족한 떠 있는 바위 아랫면 (2차 됨, 사진 확인)",
     "새 섬 폭포: halo_waterfx가 옛 HaloTerrainStore Waterfalls를 읽음 → plan v2 falls(W1·W2·W3)로 바꿈",
+    "대성당 굽은 계단(cathedral_stairs, rails=True): 다리(leg) 양옆 난간을 끊김 없이 — 꽃 단을 넘어 질러가지 못하게(걷는 시간 계산이 난간을 막힘으로 침)",
 ]
 # the gate's inner face never gets direct sun (front_sun 0%): warm fill lights there (검수 10/11), outside the spawn corridor
 FILL_LIGHTS = [
     dict(at=(-15, -347), kind="등불 (따뜻한 PointLight)", note="성문 안쪽 서"),
-    dict(at=(17, -349), kind="등불 (따뜻한 PointLight)", note="성문 안쪽 동 (서쪽과 거리 다르게)"),
-    dict(at=(-21, -353), kind="낮은 등불", note="성문 안쪽 서 둘째"),
+    dict(at=(18, -345), kind="등불 (따뜻한 PointLight)", note="성문 안쪽 동 (서쪽과 거리 다르게)"),  # 결정 5: was (17,-349) on the pad box edge
+    dict(at=(-20, -345), kind="낮은 등불", note="성문 안쪽 서 둘째"),  # 결정 5: was (-21,-353) on the SlimeMeadow pad box
     dict(at=(0, -342.5), kind="SurfaceLight (낮엔 약하게)", note="성문 안쪽 면 전체, 위쪽 띠"),
 ]
 
@@ -716,6 +1053,8 @@ def lamp_spots(blds):
 
     def ok(x, z):
         if abs(x) <= 13 and -432 <= z <= -330:
+            return False
+        if any(inside((x, z), pad_box(c, 1)) for _, c in PADS):  # 결정 5
             return False
         if not inside((x, z), LAND):
             return False
@@ -883,6 +1222,12 @@ def draw_map(blds, lamps=()):
     for dd in DISTRICTS:
         k = 1.0 - min(dd["y"], 34) / 34 * 0.22
         d.polygon([P(*p) for p in dd["poly"]], fill=shade(dd["color"], k) + (255,), outline=(120, 110, 90, 255))
+        for t in dd.get("tiers", []):  # 결정 3: a real upper tier (darker, outlined, its own label)
+            k2 = 1.0 - min(t["y"], 34) / 34 * 0.22
+            d.polygon([P(*p) for p in t["poly"]], fill=shade(dd["color"], k2 * 0.93) + (255,), outline=(90, 70, 60, 255), width=2)
+            xs, zs = [p[0] for p in t["poly"]], [p[1] for p in t["poly"]]
+            tx, ty = P(max(xs) - 52, max(zs) - 4)
+            d.text((tx, ty), f"{t['name']} Y{t['y']}", fill=(60, 40, 30), font=font(14, True))
     # water
     st = WATER["stream"]
     for i in range(len(st) - 1):
@@ -942,13 +1287,21 @@ def draw_map(blds, lamps=()):
         d.rounded_rectangle([cx - w / 2 - 5, cy - h / 2 - 4, cx + w / 2 + 5, cy + h / 2 + 6], 6, fill=(255, 255, 255, 190))
         d.multiline_text((cx - w / 2, cy - h / 2), txt, fill=(40, 30, 20), font=f, align="center")
     # first 10 minutes
-    route = ROUTE
-    for i in range(len(route) - 1):
-        d.line([P(*route[i]), P(*route[i + 1])], fill=(220, 40, 120, 200), width=3)
-    for s in FIRST10:
+    for route, col in ((ROUTE_RETURN, (120, 60, 200, 170)), (ROUTE, (220, 40, 120, 220))):
+        for i in range(len(route) - 1):
+            d.line([P(*route[i]), P(*route[i + 1])], fill=col, width=3)
+    for s in FIRST10 + FIRST10_RETURN:
+        if not s.get("at"):
+            continue
+        ret = str(s["n"]).startswith("R")
         cx, cy = P(*s["at"])
-        d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=(220, 40, 120), outline=(255, 255, 255), width=2)
-        d.text((cx - 5, cy - 11), str(s["n"]), fill=(255, 255, 255), font=font(17, True))
+        if ret:
+            cx, cy = cx + 16, cy + 10  # the return marks sit beside the first-walk ones (same spots for R1 / R2)
+        col = (120, 60, 200) if ret else (220, 40, 120)
+        d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], fill=col, outline=(255, 255, 255), width=2)
+        f = font(13 if ret else 17, True)
+        bb = d.textbbox((0, 0), str(s["n"]), font=f)
+        d.text((cx - (bb[2] - bb[0]) / 2, cy - (bb[3] - bb[1]) / 2 - 4), str(s["n"]), fill=(255, 255, 255), font=f)
     # the spawn-gate corridor (kept clear) and the fixed points
     a, b = P(-12, -330), P(12, -432)
     for yy in range(int(a[1]), int(b[1]), 10):
@@ -1068,9 +1421,10 @@ def draw_panel(im, d, blds, stats):
     y = 14
     d.rectangle([MW, 0, MW + PANEL, MH], fill=(250, 248, 242))
     d.text((x0, y), f"빛 마을 v2 — 구역 (③ 3차: 1.5배, 땅 {stats['land'] / 1000:.0f}천 st²)", fill=(30, 30, 30), font=font(22, True)); y += 38
-    d.text((x0, y), "첫 10분 고리 (분홍 번호)", fill=(200, 30, 110), font=font(16, True)); y += 26
-    for s in FIRST10:
-        d.text((x0 + 6, y), f"{s['n']}. {s['what']}", fill=(40, 40, 40), font=font(14)); y += 21
+    d.text((x0, y), "첫 10분 (분홍) · 첫 장 뒤 돌아와 들름 (보라 R)", fill=(200, 30, 110), font=font(16, True)); y += 26
+    for s in FIRST10 + FIRST10_RETURN:
+        t = f"{s['n']}. {s['what']}"
+        d.text((x0 + 6, y), t if len(t) <= 44 else t[:43] + "…", fill=(40, 40, 40), font=font(13)); y += 19
     y += 8
     d.text((x0, y), "구역 (Y = 높이, 꽃 색)", fill=(30, 30, 30), font=font(16, True)); y += 26
     for dd in DISTRICTS:
@@ -1115,9 +1469,61 @@ def draw_panel(im, d, blds, stats):
         d.text((x0 + 6, y), ln, fill=(40, 40, 40), font=font(13)); y += 20
 
 
+VENDORS = [("물약 상인 PotionHalo", "PotionHalo", "Shop_Potion", -4), ("Folk3 빵집", "Folk3", "Shop_Bakery", -4),
+           ("Folk1 주스", "Folk1", "Shop_Juice", -4), ("Folk2 꽃", "Folk2", "Shop_Flower", 4)]  # (name, Config id, shop, side of the door)
+FIXED_LOOK = {}
+
+
+def final_fixed(blds):
+    """review 10/11: the vendor NPCs stand beside their own shop door looking out (the stage-1 spots were grown with the
+    town but the shops moved), and every code string is written from the final numbers (some kept pre-1.5x text)"""
+    global FIXED_MOVE
+    B = {b["id"]: b for b in blds}
+    f = {w["id"]: w for w in WATER["falls"]}
+    fp = next(p for p in WATER["pools"] if p["id"] == "fountain")
+    out = []
+    for name, now, new, cfg in FIXED_MOVE:
+        v = next((v for v in VENDORS if v[0] == name), None)
+        if v:
+            b = B[v[2]]
+            yw = math.radians(b["yaw"])
+            fx, fz = math.sin(yw), math.cos(yw)
+            x, z = b["door_at"][0] + fz * v[3] + fx * 1.5, b["door_at"][1] - fx * v[3] + fz * 1.5
+            look = (round(b["door_at"][0] + fx * 12, 1), round(b["door_at"][1] + fz * 12, 1))
+            new = (round(x, 1), b["ground_y"], round(z, 1))
+            cfg = (f"Config.TownNpcs {v[1]} At ({new[0]},{new[1]},{new[2]}) Look ({look[0]},{look[1]}): {b['id']} 문 "
+                   f"{'오른쪽' if v[3] > 0 else '왼쪽'}, 거리 쪽을 봄 (12칸 안 판매·말하기 그대로)")
+            FIXED_LOOK[name] = look
+        elif name.startswith("Folk4"):
+            new, look = (36, 10, -596), tuple(fp["at"])
+            cfg = f"Config.TownNpcs Folk4 At (36,10,-596) Look ({look[0]},{look[1]}): 분수 동쪽, 분수를 봄; 분수 이름 Town_Halo_Fountain3"
+            FIXED_LOOK[name] = look
+        elif name == "Sir Gleam":
+            FIXED_LOOK[name] = (0, new[2])
+        elif name.startswith("폭포 소리"):
+            cfg = "Config.Audio.Ambient.Waterfall.Spots → " + ", ".join(
+                f"{k} ({f[k]['at'][0]},{f[k]['y']},{f[k]['at'][1]})" for k in ("W1", "W2", "W3")) + " 3곳(또는 Decor 아래 이름 …Waterfall)"
+        out.append((name, now, new, cfg))
+    FIXED_MOVE = out
+
+
 def main():
     blds = build_list()
+    final_fixed(blds)
+    pot = next(b for b in blds if b["id"] == "Shop_Potion")
+    ROUTE_RETURN[2] = tuple(pot["door_at"])
+    pd = math.hypot(pot["door_at"][0], pot["door_at"][1] + 420)
+    DIST["market"]["why"] = (f"가게 4채가 한 골목에 각자 각도로 선다(A23-112). 물약 가게 문은 스폰에서 약 {pd:.0f}스터드(걸어서 약 "
+                             f"{pd / WALK_SPEED:.0f}초): 첫 장 뒤 돌아와(M1_4) 처음 들르는 곳. 골목은 4→8로 살짝 오른다.")
+    cat = next(b for b in blds if b["id"] == "Cathedral")
+    DIST["cathedral"]["why"] = (f"왕관 조각을 지키는 곳이라 마을에서 가장 높다(Y{cat['ground_y']}, 꼭대기 {cat['ground_y'] + cat['h']}). "
+                                f"축에서 동쪽으로 {cat['x']:.0f} 비켜 서서(A23-112) 성문에서 비스듬히 보이고, 광장 남쪽 끝에서 굽은 계단이 "
+                                "세 번 꺾어 오른다(결정 1). 서쪽 끝에 샘.")
+    for s in FIRST10_RETURN:
+        if s["n"] == "R3":
+            s["at"] = tuple(pot["door_at"])
     ROADS.extend(door_spurs(blds))
+    fix_bridges()
     msgs, pairs, land, pave, sight = checks(blds)
     lamps = lamp_spots(blds)
     props = HP.resolve(sys.modules[__name__], blds, lamps)
@@ -1148,7 +1554,12 @@ def main():
                    north="z -330 (gate, Crossroads bridge)", grow=SHRINK),
         story=STORY,
         first_10_minutes=FIRST10,
+        first_10_return=FIRST10_RETURN,
         first_10_route=[list(p) for p in ROUTE],
+        return_route=[list(p) for p in ROUTE_RETURN],
+        walk_speed=WALK_SPEED,
+        pads=dict(keep_half=PAD_KEEP, note="결정 5: 발판 둘레 12×12 + 2 = 길·등불·문 길·소품·건물 없음",
+                  at={n: list(c) for n, c in PADS}),
         land=[list(p) for p in LAND],
         districts=[{k: (v if k != "poly" else [list(p) for p in v]) for k, v in dd.items() if k != "color"} for dd in DISTRICTS],
         roads=[{**r, "pts": [list(p) for p in r["pts"]]} for r in ROADS],
@@ -1169,7 +1580,8 @@ def main():
         buildings=blds,
         scenes=[dict(name=n, at=list(a), view=v, why=WHY_SCENE.get(n, "")) for n, a, v in SCENES],
         fixed_points=dict(keep=[dict(name=n, at=list(a) if a else None, code=c) for n, a, c in FIXED_KEEP],
-                          move=[dict(name=n, now=list(a) if a else None, new_xyz=list(b) if b else None, code=c) for n, a, b, c in FIXED_MOVE],
+                          move=[dict(name=n, now=list(a) if a else None, new_xyz=list(b) if b else None, code=c,
+                                     look=list(FIXED_LOOK[n]) if n in FIXED_LOOK else None) for n, a, b, c in FIXED_MOVE],
                           ground_rule=GROUND_RULE, pads=[dict(name="Pad_Halo_SlimeMeadow", at=[-24, 0.7, -357]), dict(name="Pad_Halo_GoblinWoods", at=[24, 0.7, -357])],
                           names=dict(fountain="Town_Halo_Fountain3", lamps="LampLight 속성/태그", collision="DecorPlayerOnly")),
         gate_view=sight,

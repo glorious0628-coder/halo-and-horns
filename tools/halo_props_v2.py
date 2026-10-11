@@ -111,7 +111,7 @@ SPEC = [
     # --- 들어오는 마당: 성문 = 경비 자리·깃발, 영웅상 꽃 고리, 폭포 쪽 자연
     A(-35, -347, "HaloReasonHQ_GuardPost", "문지기 초소: 다리로 들어오는 사람을 맞는 경비 자리(서쪽에만 — 동쪽엔 탑, 비대칭)", face=(-35, -320)),
     A(29, -343, "HaloFlagpole_1", "성문 깃발: 다리에서 보면 여기가 빛 진영 마을임을 알림(탑 옆 하나, 짝 없음)"),
-    A(-41, -383, "HaloVar4_PotFlowers_A", "영웅상 꽃 고리: 마을이 영웅을 기림(흰)"),
+    A(-43, -391, "HaloVar4_PotFlowers_A", "영웅상 꽃 고리: 마을이 영웅을 기림(흰)"),
     A(-28, -394, "HaloVar3_PotFlowers_E", "영웅상 꽃 고리: 마을이 영웅을 기림(연금)"),
     A(-38, -395, "HaloFlowerPotHQ_Daisy", "영웅상 꽃 고리: 마을이 영웅을 기림(하늘·흰)"),
     A(-58, -337, "HaloVar3_RoundTree_E", "W1 폭포 옆 나무 무리: 성문 서쪽 끝 = 섬 가장자리(규칙 7, 동쪽 탑과 다르게)"),
@@ -120,7 +120,6 @@ SPEC = [
     A(-71, -330, "NEW_WhiteRock", "W1 폭포 발치 흰 바위: 물가 자연, 나무 무리 아래 층(규칙 10)"),
     # --- 시장 골목: 가게마다 파는 것이 밖에 보인다
     D("Shop_Potion", 6, 2, "HaloReasonHQ_PotionCrate", "물약 병 상자: 물약 상인이 가게 밖에 내놓은 물약(첫 10분 둘째 할 일 표시)", yaw=-20),
-    D("Shop_Potion", 10, 2.5, "HaloReasonHQ_PotionCrate", "물약 병 상자 둘째(쌓아 둔 새 병)", yaw=25),
     D("Shop_Potion", -8, 3, "NEW_Cauldron", "물약 솥: 가게 옆에서 물약을 끓임(김 = 멀리서도 물약 가게)"),
     D("Shop_Bakery", 6.5, 2.5, "HaloReasonHQ_BreadStand", "빵 진열대: 빵집 할머니(Folk3)가 밖에 빵을 내놓음"),
     D("Shop_Bakery", 9.5, 4, "NEW_BreadBasket", "빵 바구니: 진열대 옆 갓 구운 빵"),
@@ -133,7 +132,7 @@ SPEC = [
     D("Shop_Flower", -5.0, 1.3, "HaloFlowerPotHQ_Tulip", "파는 화분 줄(튤립): 꽃 가게 앞"),
     D("Shop_Flower", -7.3, 1.8, "HaloFlowerPotHQ_Rose", "파는 화분 줄(장미): 꽃 가게 앞"),
     D("Shop_Flower", -9.6, 1.2, "HaloFlowerPotHQ_Lavender", "파는 화분 줄(라벤더): 꽃 가게 앞"),
-    Y("market_corner", -1, -1, "HaloVar4_Planter_D", "뒷골목 모퉁이 화단: 꽃 가게가 키우는 주황·흰 꽃, 골목이 꺾이는 곳 표시"),
+    Y("market_corner", -5, -6, "HaloVar4_Planter_D", "뒷골목 모퉁이 화단: 빵집·주스 가게 사이 골목이 꺾이는 곳 표시(주황·흰, 안쪽)"),
     S("시장 끝 꽃 화분 탁자", 0, 0, "NEW_CafeTable", "장 본 사람이 골목을 내려다보며 쉬는 탁자(작은 장면)"),
     S("시장 끝 꽃 화분 탁자", 2.5, 1.5, "HaloVar4_PotFlowers_C", "탁자 위·옆 꽃 화분(작은 장면)"),
     S("시장 끝 꽃 화분 탁자", -3.5, -0.5, "HaloReasonHQ_BenchC", "탁자 벤치: 골목을 보고 앉음", face=(124, -500)),
@@ -182,10 +181,10 @@ SPEC = [
     A(2, -603, "HaloReasonHQ_BenchA", "분수 보며 쉬는 벤치 둘째(각도 다르게)", face=(22, -590)),
     A(-22, -566, "HaloVar4_Planter_A", "광장 둘레 화단(분홍): 광장 가장자리 표시"),
     A(64, -632, "HaloVar3_Planter_E", "광장 둘레 화단(흰·금): 대성당 큰 계단 앞 갈림"),
-    A(-60, -600, "HaloVar3_RoundTree_F", "시냇물 건너편 나무: 물 뒤에 심음(규칙 10), 광장 서쪽 경계"),
+    A(-92, -598, "HaloVar3_RoundTree_F", "시냇물 건너편(서쪽) 나무: 광장에서 보면 물 뒤에 심음(규칙 10), 광장 서쪽 경계"),
     # --- 정원 쉼터
-    S("폭포 웅덩이 벤치", 0, 0, "HaloReasonHQ_BenchA", "폭포 웅덩이 벤치: 정원 쉼터에서 W2 계단 폭포를 보며 쉼", face=(-46, -668)),
-    S("폭포 웅덩이 벤치", -9, 8, "HaloVar3_Topiary_E", "쉼터 정원수: 벤치 뒤 그늘"),
+    S("폭포 웅덩이 벤치", 0, 0, "HaloReasonHQ_BenchA", "폭포 웅덩이 벤치: 정원 쉼터에서 웅덩이 너머 W2 계단 폭포를 보며 쉼", face=(-38, -699)),
+    S("폭포 웅덩이 벤치", -7, -7, "HaloVar3_Topiary_E", "쉼터 정원수: 벤치 뒤 그늘"),
     A(-112, -690, "NEW_Hedge", "쉼터 둘레 생울타리: 정원 쉼터 경계(남서)"),
     A(-104, -652, "NEW_Hedge", "쉼터 둘레 생울타리(북서, 길이 다르게)"),
     A(-36, -650, "HaloVar3_RoundTree_E", "웅덩이 건너편 나무: 물 앞이 아니라 물 뒤(규칙 10)"),
@@ -206,8 +205,8 @@ SPEC = [
     W("garden_pond", 40, "NEW_WhiteRock", "연못 가 흰 바위: 물가 자연"),
     D("House_Garden7", -8, 6, "HaloReasonHQ_Clothesline", "이장 집 마당 빨랫줄", yaw=15),
     D("House_Garden7", 5.5, 3, "NEW_NoticeBoard", "마을 알림판: 이장 집 앞(오늘 채집 덤불·행사 알림 자리)"),
-    Y("garden_yard", -8, -6, "HaloReasonHQ_VegGarden", "정원 마당 공동 텃밭: 집 2·5 사이 꽃밭 일하는 자리", yaw=10),
-    Y("garden_yard", 6, 8, "HaloReasonHQ_Woodpile", "정원 마당 장작더미: 집 2·5가 같이 씀"),
+    Y("garden_yard", -8, -6, "HaloReasonHQ_VegGarden", "정원 마당 공동 텃밭: 집 2·3·5가 같이 일하는 꽃밭", yaw=10),
+    Y("garden_yard", -9, 4, "HaloReasonHQ_Woodpile", "정원 마당 장작더미: 집 2·3·5가 같이 씀"),
     A(-264, -712, "HaloVar3_RoundTree_G", "서쪽 바다 쪽 나무 줄(무리 1): 정원 마을 가장자리"),
     A(-262, -729, "HaloVar3_RoundTree_E", "서쪽 바다 쪽 나무 무리 1 둘째"),
     A(-245, -795, "HaloVar3_RoundTree_F", "남서 모서리 나무 무리 2: 바다 집 뒤"),
@@ -238,9 +237,9 @@ SPEC = [
     D("House_Cliff7", 9, 5, "HaloReasonHQ_Clothesline", "빨랫줄: 성가대 아이들 옷", yaw=-10),
     D("House_Cliff8", 5, 1.6, "NEW_WaterBuckets", "물통·갈퀴: 폭포지기가 W3 물길을 돌봄"),
     Y("cliff_yard", -3, -7, "HaloVar4_Planter_D", "절벽 위 마당 화단(분홍·흰): 집 3·8 앞"),
-    Y("cliff_landing", 5, -3, "HaloReasonHQ_BenchB", "비탈 쉼참 벤치: 절벽 비탈 오르다 쉬는 자리", face=(100, -600)),
-    S("절벽 마을 발코니", 8, -8, "HaloReasonHQ_BenchC", "절벽 사람들이 동쪽 바다와 W3 폭포를 보는 벤치", face=(330, -680)),
-    S("절벽 마을 발코니", 14, -9, "HaloVar4_Balustrade_A", "절벽 끝 난간: 떨어짐 막이", yaw=90),
+    Y("cliff_landing", -6, 4, "HaloReasonHQ_BenchB", "비탈 쉼참 벤치: 절벽 비탈 오르다 쉬는 자리", face=(100, -600)),
+    S("절벽 마을 발코니", 4, -3, "HaloReasonHQ_BenchC", "절벽 위 단 사람들이 동쪽 바다와 남쪽 W3 폭포를 보는 벤치", face=(330, -640)),
+    S("절벽 마을 발코니", 9, -2, "HaloVar4_Balustrade_A", "절벽 끝 난간: 떨어짐 막이", yaw=90),
     W("cliff_pool", 210, "NEW_WhiteRock", "W3 폭포 위 웅덩이 흰 바위: 물가 자연"),
     A(272, -582, "HaloVar3_RoundTree_E", "동쪽 절벽 발치 나무 무리: 섬 가장자리"),
     A(264, -567, "HaloVar3_RoundTree_G", "동쪽 절벽 발치 나무 무리(둘째)"),
@@ -334,14 +333,23 @@ def resolve(H, blds, lamps):
 
 
 # ---------------------------------------------------------------- checks
-FIXED_SPOTS = [("HeroStatue", (-34, -388), 4), ("Sir Gleam", (-22, -368), 2.5), ("Bright", (18, -424), 2.5),
-               ("PotionHalo", (24, -467), 2.5), ("Folk3", (94, -461), 2.5), ("Folk1", (118, -506), 2.5), ("Folk2", (67, -515), 2.5),
-               ("Folk4", (36, -602), 2.5), ("Pad_SlimeMeadow", (-24, -357), 4), ("Pad_GoblinWoods", (24, -357), 4),
-               ("TrainingMark", (-130, -446), 3)]
+
+
+
+def fixed_spots(H):
+    """the fixed bodies from the plan's final fixed points (review 10/11: this list was hard-coded with old spots); the two
+    travel pads are boxes (결정 5: 12 x 12 + 2 kept clear), checked apart"""
+    out = [("Bright", (18, -424), 2.5), ("TrainingMark", (-130, -446), 3)]
+    for name, _now, new, _c in H.FIXED_MOVE:
+        if new and (name.startswith(("영웅상", "Sir Gleam", "물약 상인", "Folk"))):
+            out.append((name.split()[-1] if name.startswith("영웅상") else name, (new[0], new[2]), 4 if name.startswith("영웅상") else 2.5))
+    return out
 
 
 def check(H, blds, props):
     msgs = []
+    FIXED_SPOTS = fixed_spots(H)
+    pads = [(n, H.pad_box(c)) for n, c in H.PADS]
     known = kit_names() | set(NEW_KITS) | set(EXISTING)
     fps = [(b, H.footprint(b)) for b in blds]
 
@@ -409,6 +417,9 @@ def check(H, blds, props):
         for name, at, fr in FIXED_SPOTS:
             if math.hypot(pt[0] - at[0], pt[1] - at[1]) < (r + fr) * 0.9 and not p["top"]:
                 msgs.append(f"소품이 고정점에 겹침: {tag} - {name}")
+        for name, box in pads:
+            if fp_dist(pt, box) < r:
+                msgs.append(f"소품이 이동 발판 둘레에: {tag} - {name}")
     # props on props
     for i in range(len(props)):
         for j in range(i + 1, len(props)):

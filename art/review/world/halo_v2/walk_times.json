@@ -1,118 +1,118 @@
 {
- "speed": 16,
- "note": "seconds along the walkable terrain grid (blockout raster)",
+ "speed": 20.0,
+ "note": "seconds along the walkable terrain grid (blockout raster), speed = Config.Player.WalkSpeed",
  "walk": {
   "Tower_GateEast": {
-   "from_spawn_s": 4.2,
-   "from_gate_s": 2.0
+   "from_spawn_s": 3.7,
+   "from_gate_s": 1.8
   },
   "Shop_Potion": {
-   "from_spawn_s": 3.9,
-   "from_gate_s": 8.4
+   "from_spawn_s": 3.6,
+   "from_gate_s": 7.2
   },
   "Shop_Bakery": {
-   "from_spawn_s": 6.6,
-   "from_gate_s": 9.0
+   "from_spawn_s": 5.3,
+   "from_gate_s": 7.3
   },
   "Shop_Juice": {
-   "from_spawn_s": 9.9,
-   "from_gate_s": 12.9
+   "from_spawn_s": 7.9,
+   "from_gate_s": 10.3
   },
   "Shop_Flower": {
-   "from_spawn_s": 7.6,
-   "from_gate_s": 12.0
+   "from_spawn_s": 5.7,
+   "from_gate_s": 9.3
   },
   "House_Hill1": {
-   "from_spawn_s": 14.0,
-   "from_gate_s": 15.8
+   "from_spawn_s": 11.0,
+   "from_gate_s": 12.5
   },
   "House_Hill2": {
-   "from_spawn_s": 14.5,
-   "from_gate_s": 16.3
+   "from_spawn_s": 11.6,
+   "from_gate_s": 13.1
   },
   "House_Hill3": {
-   "from_spawn_s": 13.4,
-   "from_gate_s": 15.2
+   "from_spawn_s": 10.7,
+   "from_gate_s": 12.2
   },
   "Armory": {
-   "from_spawn_s": 10.8,
-   "from_gate_s": 12.3
+   "from_spawn_s": 8.6,
+   "from_gate_s": 9.9
   },
   "Castle": {
-   "from_spawn_s": 14.2,
-   "from_gate_s": 17.1
+   "from_spawn_s": 11.2,
+   "from_gate_s": 13.6
   },
   "Cathedral": {
-   "from_spawn_s": 21.2,
-   "from_gate_s": 25.7
-  },
-  "House_Cliff1": {
-   "from_spawn_s": 15.3,
-   "from_gate_s": 19.8
-  },
-  "House_Cliff2": {
-   "from_spawn_s": 19.2,
-   "from_gate_s": 21.0
-  },
-  "House_Cliff3": {
-   "from_spawn_s": 23.4,
-   "from_gate_s": 25.2
-  },
-  "House_Cliff4": {
-   "from_spawn_s": 23.9,
-   "from_gate_s": 28.4
-  },
-  "House_Cliff5": {
-   "from_spawn_s": 22.2,
-   "from_gate_s": 26.7
-  },
-  "House_Garden1": {
-   "from_spawn_s": 21.5,
+   "from_spawn_s": 22.5,
    "from_gate_s": 26.0
   },
+  "House_Cliff1": {
+   "from_spawn_s": 12.3,
+   "from_gate_s": 15.9
+  },
+  "House_Cliff2": {
+   "from_spawn_s": 15.5,
+   "from_gate_s": 17.0
+  },
+  "House_Cliff3": {
+   "from_spawn_s": 17.9,
+   "from_gate_s": 20.5
+  },
+  "House_Cliff4": {
+   "from_spawn_s": 19.2,
+   "from_gate_s": 22.8
+  },
+  "House_Cliff5": {
+   "from_spawn_s": 17.8,
+   "from_gate_s": 21.4
+  },
+  "House_Garden1": {
+   "from_spawn_s": 17.6,
+   "from_gate_s": 21.2
+  },
   "House_Garden2": {
-   "from_spawn_s": 24.7,
-   "from_gate_s": 29.2
+   "from_spawn_s": 20.1,
+   "from_gate_s": 23.7
   },
   "House_Garden3": {
-   "from_spawn_s": 29.5,
-   "from_gate_s": 34.0
+   "from_spawn_s": 24.0,
+   "from_gate_s": 27.6
   },
   "House_Garden4": {
-   "from_spawn_s": 26.4,
-   "from_gate_s": 30.9
-  },
-  "Tower_Lookout": {
-   "from_spawn_s": 30.5,
-   "from_gate_s": 35.0
-  },
-  "House_Hill4": {
-   "from_spawn_s": 14.9,
-   "from_gate_s": 16.7
-  },
-  "House_Cliff6": {
-   "from_spawn_s": 20.2,
+   "from_spawn_s": 21.0,
    "from_gate_s": 24.6
   },
+  "Tower_Lookout": {
+   "from_spawn_s": 22.7,
+   "from_gate_s": 26.3
+  },
+  "House_Hill4": {
+   "from_spawn_s": 11.7,
+   "from_gate_s": 13.2
+  },
+  "House_Cliff6": {
+   "from_spawn_s": 16.4,
+   "from_gate_s": 20.0
+  },
   "House_Cliff7": {
-   "from_spawn_s": 17.7,
-   "from_gate_s": 22.2
+   "from_spawn_s": 14.5,
+   "from_gate_s": 18.1
   },
   "House_Cliff8": {
-   "from_spawn_s": 23.7,
-   "from_gate_s": 27.5
+   "from_spawn_s": 18.7,
+   "from_gate_s": 22.3
   },
   "House_Garden5": {
-   "from_spawn_s": 25.2,
-   "from_gate_s": 29.7
+   "from_spawn_s": 20.1,
+   "from_gate_s": 23.7
   },
   "House_Garden6": {
-   "from_spawn_s": 23.8,
-   "from_gate_s": 28.3
+   "from_spawn_s": 18.9,
+   "from_gate_s": 22.5
   },
   "House_Garden7": {
-   "from_spawn_s": 28.5,
-   "from_gate_s": 33.0
+   "from_spawn_s": 22.4,
+   "from_gate_s": 26.0
   }
  }
 }

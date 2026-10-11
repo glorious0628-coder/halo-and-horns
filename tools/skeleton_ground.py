@@ -54,6 +54,12 @@ SPAWN_AT = (0.0, -420.0)
 SPAWN_R = 14.0
 PASSAGE = (-12.0, 12.0, -432.0, -330.0)    # x0, x1, z0, z1
 PART_CAP = 4000
+# review 10/11: the plaza sink must use the blockout's own rule (a 4-stud cell is sunk when its CENTRE is within r), so G()
+# finds the cell the point is in and tests that centre (the exact point radius disagreed at the disc edge). Same grid as
+# tools/halo_blockout.py: X0 from the land, Z0 = -324, CELL 4
+import halo_blockout as HB  # noqa: E402
+GRID_X0 = int(math.floor((min(p[0] for p in PLAN["land"]) - HB.EDGE) / HB.CELL)) * HB.CELL
+GRID_Z0, GRID_CELL = HB.Z0, HB.CELL
 
 
 def fm(v):
@@ -75,7 +81,8 @@ def lua_data():
         " cap=%d," % PART_CAP,
         " fountain={x=%s,z=%s,r=%s}," % (fm(FOUNTAIN["at"][0] + OX), fm(FOUNTAIN["at"][1] + OZ), fm(PLAZA_R)),
         " spawn={x=%s,z=%s,r=%s}," % (fm(SPAWN_AT[0] + OX), fm(SPAWN_AT[1] + OZ), fm(SPAWN_R)),
-        " plaza_sink=1,",  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
+        " plaza_sink=1,",
+        " grid={x0=%s,z0=%s,cell=%s}," % (fm(GRID_X0 + OX), fm(GRID_Z0 + OZ), fm(GRID_CELL)),  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
         " passage={x0=%s,x1=%s,z0=%s,z1=%s}," % (fm(PASSAGE[0] + OX), fm(PASSAGE[1] + OX), fm(PASSAGE[2] + OZ), fm(PASSAGE[3] + OZ)),
         " yards={%s}," % yards,
         " roads={",
@@ -144,8 +151,11 @@ local function G(x, z, quiet)
 	local hit = workspace:Raycast(Vector3.new(x, 200, z), Vector3.new(0, -400, 0), rp)
 	if hit then
 		-- inside a plaza disc the Terrain is plaza_sink lower (halo_blockout PAVED_SINK): measure as if it were not
+		local g = D.grid
+		local cx = g.x0 + (math.floor((x - g.x0) / g.cell) + 0.5) * g.cell
+		local cz = g.z0 - (math.floor((g.z0 - z) / g.cell) + 0.5) * g.cell
 		for _, c in { D.fountain, D.spawn } do
-			if (x - c.x) ^ 2 + (z - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
+			if (cx - c.x) ^ 2 + (cz - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
 		end
 		return hit.Position.Y
 	end
