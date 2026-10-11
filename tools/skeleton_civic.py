@@ -270,65 +270,119 @@ def gate(sc):
 
 # =========================================================================================================== ARMORY
 def armory(sc):
+    """Armory v2 (검수 10/11 판정 3): follows art/review/s2/halo_armory_views.jpg (front / left / back, approved): blue hip roof
+    (모임지붕) with a gold ridge, hip lines, eave line and a gold finial, a gold shield medallion above the double arched door
+    (gold ring knockers + hinges), two barred arched windows on the front and one on each side (the back windows are being redrawn
+    by 이미지 생성 2), two lanterns beside the door, gold band + corner / door-flank / back pilasters with gold capitals and feet.
+    Scale: 2D front 440 px = 16 studs -> 27.5 px per stud (wall 6.9, cornice to 8.4, roof rise 3.6, finial to ~14)."""
     W, D = 16.0, 12.0
-    WH = 8.6                      # wall top (cornice top)
-    # --- walls: hollow box, ceiling slab 0.6, door + windows through
-    DOOR_W, DOOR_H = 5.0, 7.0
-    cuts = [zbox(0, 0, -0.5, 8.0, W - 1.6, D - 1.6)]
-    cuts += arch_cut(0, 0, math.radians(90), -0.3, DOOR_W, DOOR_H - DOOR_W / 2 + 0.3, 3.0, 5.9)
-    wins = []
-    for x in (-5.4, 5.4):
-        wins.append((x, 6.0, math.radians(90)))
-        wins.append((x * 0.8, -6.0, math.radians(270)))
-    wins.append((8.0, 0.0, 0.0))
-    wins.append((-8.0, 0.0, math.radians(180)))
+    WH = 8.4                       # cornice top = roof base
+    WALL = 7.6                     # wall top (the marble cornice slab 7.6..8.4 sits on it)
+    DW, DS, DR = 4.4, 4.2, 2.2     # door: width, straight part, arch radius -> 6.4 tall (taller than the 5-stud avatar)
+    DOOR_H = DS + DR
+    PH = math.pi / 2
+    # ---- walls: hollow, ceiling slab, door + windows through
+    wins = [(-5.6, 6.0, PH), (5.6, 6.0, PH), (8.0, 0.0, 0.0), (-8.0, 0.0, math.pi)]   # front 2, sides 1 (back: later)
+    WZ0, WS, WR = 3.0, 1.35, 0.75                                                      # window sill, straight, arch radius (top 5.1)
+    cuts = [zbox(0, 0, -0.5, 7.0, W - 1.6, D - 1.6)]
+    cuts += arch_cut(0, 0, PH, -0.3, DW, DS + 0.3, 3.0, 5.9)
     for x, y, phi in wins:
-        # a point on the wall plane: cutter centre moved inward by 0.6 along the wall normal
-        cuts += arch_cut(x - math.cos(phi) * 0.0, y - math.sin(phi) * 0.0, phi, 3.0, 2.0, 3.2, 3.0, -0.6)
-    sc.piece("Walls", "marble", zbox(0, 0, -0.3, WH, W, D), (), cuts)
-    # --- door: gold frame, wood leaf (no collision), threshold step
-    arch_frame(sc, "DoorFrame", "gold", 0, 0, math.radians(90), 0.0, DOOR_W, DOOR_H - DOOR_W / 2, 0.7, 1.2, 6.15)
-    dx, dy = 0, 5.55
-    sc.piece("DoorLeaf", "wood", box(dx, dy, (DOOR_H - DOOR_W / 2) / 2, DOOR_W - 0.5, 0.3, DOOR_H - DOOR_W / 2),
-             [cyld(dx, dy, DOOR_H - DOOR_W / 2, DOOR_W - 0.5, 0.3, 0, 1)])
-    sc.piece("Threshold", "marble", zbox(0, 6.9, -0.3, 0.3, DOOR_W + 1.6, 1.8))
-    # --- windows: gold frame + glass
+        cuts += arch_cut(x, y, phi, WZ0, 2 * WR, WS, 3.0, -0.6)
+    sc.piece("Walls", "marble", zbox(0, 0, -0.3, WALL, W, D), (), cuts)
+    sc.piece("CorniceSlab", "marble", zbox(0, 0, WALL, WH, W + 1.0, D + 1.0))
+    sc.piece("CorniceGold", "gold", zbox(0, 0, WALL - 0.35, WALL + 0.1, W + 1.3, D + 1.3), (), [zbox(0, 0, WALL - 0.6, WALL + 0.4, W - 1.0, D - 1.0)])
+    # ---- plinth (two marble steps) + gold foot ring, gold band at 2.7 around the walls (cut at the door)
+    door_slot = arch_cut(0, 0, PH, -0.6, DW + 0.4, DS + 0.5, 4.0, 6.2)
+    sc.piece("Plinth", "marble", zbox(0, 0, -0.3, 0.9, W + 0.9, D + 0.9), (), [zbox(0, 0, -0.5, 1.1, W - 1.0, D - 1.0), *door_slot])
+    sc.piece("PlinthGold", "gold", zbox(0, 0, 0.9, 1.25, W + 0.5, D + 0.5), (), [zbox(0, 0, 0.7, 1.5, W - 0.8, D - 0.8), *door_slot])
+    sc.piece("BandGold", "gold", zbox(0, 0, 2.5, 2.95, W + 0.3, D + 0.3), (), [zbox(0, 0, 2.3, 3.2, W - 0.6, D - 0.6), *door_slot])
+    # ---- pilasters: 4 corners, 2 flanking the door, 2 more on the back; gold capital + gold foot
+    P = [(sx * (W / 2 + 0.05), sy * (D / 2 + 0.05)) for sx in (-1, 1) for sy in (-1, 1)]
+    P += [(-3.5, D / 2 + 0.05), (3.5, D / 2 + 0.05), (-2.7, -D / 2 - 0.05), (2.7, -D / 2 - 0.05)]
+    for k, (px, py) in enumerate(P):
+        w = 1.2 if k < 4 else 1.0
+        sc.piece("Pilaster%d" % k, "marble", zbox(px, py, 1.1, WALL - 0.4, w, w))
+        sc.piece("PilasterCap%d" % k, "gold", zbox(px, py, WALL - 0.7, WALL - 0.1, w + 0.55, w + 0.55))
+        sc.piece("PilasterFoot%d" % k, "gold", zbox(px, py, 1.1, 1.6, w + 0.4, w + 0.4))
+    # ---- door: marble arch band, thin gold arch inside it, gold feet blocks, wood double leaf, hinges + ring knockers
+    arch_frame(sc, "DoorBand", "marble", 0, 0, PH, 0.0, DW, DS, 0.65, 0.5, 6.12)
+    arch_frame(sc, "DoorGold", "gold", 0, 0, PH, 0.0, DW, DS, 0.22, 0.7, 6.2)
+    for sx in (-1, 1):
+        sc.piece("DoorFoot%d" % sx, "gold", zbox(sx * (DW / 2 + 0.55), 6.25, 0.0, 1.0, 0.9, 0.9))
+    for sx, nm in ((-1, "L"), (1, "R")):
+        sc.piece("DoorLeaf" + nm, "wood", zbox(sx * (DW / 4 + 0.02), 5.6, -0.1, DS, DW / 2 - 0.05, 0.28))
+    sc.piece("DoorArchTop", "wood", cyld(0, 5.6, DS, DW - 0.1, 0.28, 0, 1), (), [zbox(0, 5.6, DS - 3.0, DS, DW + 1.0, 4.0)])
+    sc.piece("DoorSeam", "gold", zbox(0, 5.78, 0.0, DOOR_H - 0.2, 0.08, 0.1))
+    for sx in (-1, 1):
+        for k, z in enumerate((1.4, 3.7)):
+            sc.piece("Hinge%d_%d" % (sx, k), "gold", zbox(sx * (DW / 2 - 0.5), 5.8, z - 0.15, z + 0.15, 0.9, 0.1))
+        sc.piece("Knocker%d" % sx, "gold", cyld(sx * 0.55, 5.85, 3.0, 0.8, 0.14, 0, 1), (), [cyld(sx * 0.55, 5.85, 3.0, 0.5, 0.4, 0, 1)])
+    # ---- medallion above the door (breaks the cornice): gold rim, marble disk, gold shield, two crossed swords
+    MZ = 7.7
+    sc.piece("MedalRim", "gold", cyld(0, 6.35, MZ, 3.4, 0.55, 0, 1), (), [cyld(0, 6.35, MZ, 2.8, 0.8, 0, 1)])
+    sc.piece("MedalDisk", "marble", cyld(0, 6.3, MZ, 2.9, 0.4, 0, 1))
+    sc.piece("MedalShield", "gold", cyld(0, 6.6, MZ, 1.5, 0.3, 0, 1))
+    for s, nm in ((-1, "A"), (1, "B")):
+        a = math.radians(45 * s)
+        sc.piece("MedalSword" + nm, "gold", S("box", (2.3, 0.2, 0.22), (0, 6.75, MZ), (math.cos(a), 0, math.sin(a)), (0, 1, 0)))
+    sc.piece("MedalBottom", "gold", zbox(0, 6.45, MZ - 2.0, MZ - 1.5, 0.9, 0.4))
+    # ---- windows: marble surround, gold keystone + side blocks + sill, barred dark-blue pane
     for k, (x, y, phi) in enumerate(wins):
         nx, ny = math.cos(phi), math.sin(phi)
-        arch_frame(sc, "WinFrame%d" % k, "gold", x, y, phi, 3.0, 2.0, 3.2, 0.34, 0.5, 0.05)
-        pane(sc, "WinGlass%d" % k, "lamp", x, y, phi, 3.0, 2.0, 3.2, -0.45)
-        sc.piece("WinSill%d" % k, "gold", rbox(x + nx * 0.2, y + ny * 0.2, 2.85, 3.0, 0.7, 0.3, phi))
-    # --- gold foot band and cornice band (rings around the walls)
-    sc.piece("FootBand", "gold", zbox(0, 0, -0.3, 0.6, W + 0.5, D + 0.5), (),
-             [zbox(0, 0, -0.5, 1.0, W - 1.0, D - 1.0), *arch_cut(0, 0, math.radians(90), -0.5, DOOR_W, 1.6, 4.0, 6.0)])
-    sc.piece("CorniceBand", "gold", zbox(0, 0, WH - 0.7, WH, W + 0.6, D + 0.6), (), [zbox(0, 0, WH - 1.0, WH + 0.5, W - 0.6, D - 0.6)])
-    # --- corner pilasters (marble, gold caps) at the four corners
+        tx, ty = math.sin(phi), -math.cos(phi)
+        arch_frame(sc, "WinBand%d" % k, "marble", x, y, phi, WZ0, 2 * WR, WS, 0.4, 0.5, 0.1)
+        pane(sc, "WinGlass%d" % k, "glassD", x, y, phi, WZ0, 2 * WR, WS, -0.45)
+        for j in (-1, 0, 1):
+            sc.piece("WinBar%d_%d" % (k, j), "iron", rbox(x + nx * 0.0 + tx * j * 0.42, y + ny * 0.0 + ty * j * 0.42, WZ0 + (WS + WR) / 2, 0.1, 0.12, WS + WR, phi))
+        sc.piece("WinKey%d" % k, "gold", rbox(x + nx * 0.2, y + ny * 0.2, WZ0 + WS + WR + 0.75, 0.55, 0.3, 0.7, phi))
+        sc.piece("WinSill%d" % k, "gold", rbox(x + nx * 0.25, y + ny * 0.25, WZ0 - 0.15, 2 * WR + 1.2, 0.6, 0.3, phi))
+        for s in (-1, 1):
+            sc.piece("WinStud%d_%d" % (k, s), "gold", rbox(x + nx * 0.2 + tx * s * (WR + 0.55), y + ny * 0.2 + ty * s * (WR + 0.55), WZ0 + WS, 0.42, 0.28, 0.42, phi))
+    # ---- lanterns beside the door (gold frame, warm glass, light at dusk)
+    for sx in (-1, 1):
+        lx, ly, lz = sx * 4.2, 6.7, 4.4
+        sc.piece("LanternArm%d" % sx, "gold", zbox(lx, 6.3, lz + 0.45, lz + 0.7, 0.2, 0.9))
+        sc.piece("LanternCap%d" % sx, "gold", zbox(lx, ly, lz + 0.55, lz + 0.85, 0.85, 0.85))
+        sc.piece("LanternFoot%d" % sx, "gold", zbox(lx, ly, lz - 0.7, lz - 0.45, 0.7, 0.7))
+        sc.piece("LanternLamp%d" % sx, "lamp", zbox(lx, ly, lz - 0.45, lz + 0.55, 0.55, 0.55))
+        for cx_, cy_ in ((-1, -1), (1, -1), (-1, 1), (1, 1)):
+            sc.piece("LanternBar%d_%d%d" % (sx, cx_, cy_), "gold", zbox(lx + cx_ * 0.3, ly + cy_ * 0.3, lz - 0.45, lz + 0.55, 0.1, 0.1))
+    # ---- roof: hip roof (blue stand-in) = a block minus four slope-plane cutters; gold hip lines, ridge, eave line, finial
+    RISE, RIDGE = 3.6, 2.6                    # ridge half length 2.6 (the 2D front shows a short ridge)
+    EX, EY = W / 2 + 0.95, D / 2 + 0.95       # eave half sizes at z = WH (overhang 0.95)
+    thf, the = math.atan2(RISE, EY), math.atan2(RISE, EX - RIDGE)
+    BIG = 60.0
+    cutters = []
+    for s in (1, -1):    # front / back planes through the eave edge y = s EY and the ridge line y = 0
+        n = (0, s * math.sin(thf), math.cos(thf))
+        d = (0, -s * math.cos(thf), math.sin(thf))
+        p0 = (0, s * EY / 2, WH + RISE / 2)
+        cutters.append(S("box", (BIG, BIG, 12.0), (p0[0] + n[0] * 6, p0[1] + n[1] * 6, p0[2] + n[2] * 6), (1, 0, 0), d))
+    for s in (1, -1):    # hip ends through x = s EX and the ridge end x = s RIDGE
+        n = (s * math.sin(the), 0, math.cos(the))
+        d = (-s * math.cos(the), 0, math.sin(the))
+        p0 = (s * (EX + RIDGE) / 2, 0, WH + RISE / 2)
+        cutters.append(S("box", (BIG, BIG, 12.0), (p0[0] + n[0] * 6, p0[1] + n[1] * 6, p0[2] + n[2] * 6), (0, 1, 0), d))
+    sc.piece("Roof", "roof", zbox(0, 0, WH - 0.15, WH + RISE + 0.6, 2 * EX, 2 * EY), (), cutters)
+    sc.piece("EaveGold", "gold", zbox(0, 0, WH - 0.05, WH + 0.38, 2 * EX + 0.14, 2 * EY + 0.14), (), [zbox(0, 0, WH - 0.3, WH + 0.6, 2 * EX - 0.5, 2 * EY - 0.5)])
+    # hip lines: gold bars from the four eave corners to the ridge ends
     for sx in (-1, 1):
         for sy in (-1, 1):
-            sc.piece("Pilaster%d%d" % (sx, sy), "marble", zbox(sx * (W / 2 + 0.1), sy * (D / 2 + 0.1), 0.6, WH - 0.7, 1.1, 1.1))
-            sc.piece("PilasterCap%d%d" % (sx, sy), "gold", zbox(sx * (W / 2 + 0.1), sy * (D / 2 + 0.1), WH - 1.4, WH - 0.7, 1.5, 1.5))
-    # --- roof: gable along x, blue tile stand-in slabs, gold ridge + finials, marble gable ends (two wedges each)
-    RISE = 3.7
-    EAVE_Y = D / 2 + 0.9
-    th = math.atan2(RISE, EAVE_Y)
-    sl = math.hypot(EAVE_Y, RISE) + 0.3
-    for s, nm in ((1, "F"), (-1, "B")):
-        ny, nz = s * math.sin(th), math.cos(th)
-        yc = s * EAVE_Y / 2 + ny * 0.22
-        zc = WH + RISE / 2 + nz * 0.22
-        sc.piece("Roof" + nm, "roof", S("box", (W + 1.4, sl, 0.45), (0, yc, zc), (1, 0, 0), (0, -s * math.cos(th), math.sin(th))))
-    sc.piece("Ridge", "gold", box(0, 0, WH + RISE + 0.12, W + 1.8, 0.8, 0.5))
-    for sx in (-1, 1):
-        sc.piece("RidgeBall%d" % sx, "gold", ball(sx * (W / 2 + 1.0), 0, WH + RISE + 0.2, 0.9))
-        for s in (1, -1):
-            sc.piece("Gable%d%s" % (sx, "F" if s > 0 else "B"), "marble", wedge(sx * (W / 2 - 0.45), s * (D / 2 - 0.1) / 2, WH + RISE / 2 - 0.1, 0.8, RISE + 0.2,
-                                                                          D / 2 - 0.1, -s))
-    # --- hanging blue pennant on a gold arm at the front-right corner (the shop signs of the 2D)
-    sc.piece("SignArm", "gold", box(W / 2 + 1.2, D / 2 + 0.1, 7.2, 2.4, 0.3, 0.3))
-    sc.piece("SignChain0", "gold", box(W / 2 + 1.9, D / 2 + 0.1, 6.7, 0.12, 0.12, 1.0))
-    sc.piece("SignCloth", "fabricB", box(W / 2 + 1.9, D / 2 + 0.1, 4.9, 1.7, 0.14, 3.0))
-    sc.piece("SignRim", "gold", box(W / 2 + 1.9, D / 2 + 0.16, 3.35, 1.9, 0.12, 0.2))
-    sc.piece("SignShield", "gold", cyld(W / 2 + 1.9, D / 2 + 0.22, 5.1, 1.1, 0.18, 0, 1))
+            a = (sx * EX, sy * EY, WH + 0.2)
+            b = (sx * RIDGE, 0, WH + RISE + 0.1)
+            v = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+            L = math.sqrt(sum(c * c for c in v))
+            X = tuple(c / L for c in v)
+            Y = (-X[1], X[0], 0)
+            ny_ = math.sqrt(Y[0] ** 2 + Y[1] ** 2)
+            Y = (Y[0] / ny_, Y[1] / ny_, 0)
+            mid = tuple((a[i] + b[i]) / 2 for i in range(3))
+            sc.piece("HipLine%d%d" % (sx, sy), "gold", S("box", (L, 0.42, 0.34), mid, X, Y))
+    sc.piece("Ridge", "gold", zbox(0, 0, WH + RISE - 0.05, WH + RISE + 0.4, 2 * RIDGE + 0.8, 0.55))
+    sc.piece("FinialBase", "gold", cylz(0, 0, WH + RISE + 0.35, WH + RISE + 0.8, 1.5))
+    sc.piece("FinialBall", "gold", ball(0, 0, WH + RISE + 1.15, 1.0))
+    sc.piece("FinialSpike", "gold", cylz(0, 0, WH + RISE + 1.3, WH + RISE + 3.0, 0.4))
+    sc.piece("FinialTip", "gold", ball(0, 0, WH + RISE + 3.05, 0.6))
 
 
 BUILDINGS = {"Gate": ("gate", gate), "Tower_GateEast": ("tower", None), "Tower_Lookout": ("tower", None), "Armory": ("armory", armory)}
@@ -383,6 +437,8 @@ local STY = {
 	roof = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(__ROOF__) end,
 	wood = function(p) p.Material = Enum.Material.Wood p.Color = Color3.fromRGB(176, 118, 68) p.CanCollide = false end,
 	-- Fabric came out near-black in the WorldKit light (10/11 photos; img3 saw it on the awning): SmoothPlastic until the cause is known
+	glassD = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(38, 64, 112) p.CastShadow = false end,
+	iron = function(p) p.Material = Enum.Material.Metal p.Color = Color3.fromRGB(70, 76, 92) end,
 	fabricB = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(104, 170, 240) p.CanCollide = false end,
 	lamp = function(p)
 		p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(255, 220, 140) p.CastShadow = false

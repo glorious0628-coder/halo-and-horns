@@ -138,7 +138,7 @@ KINDS = {
     "HouseB": (26, 18, 28, 2, 7.5, (4, 7)),
     "Castle": (100, 70, 44, 3, 12, (10, 12)),  # 10/11 ③ 3차: new castle of light (F3 line), was 64 x 40
     "Cathedral": (70, 70, 54, 1, 24, (10, 14)),
-    "Armory": (16, 12, 12, 1, 8, (5, 7)),
+    "Armory": (16, 12, 14, 1, 8, (4.4, 6.4)),      # ④: approved 2D (art/review/s2/halo_armory_views.jpg): hip roof + finial 14, door 4.4 x 6.4 (> avatar 5)
 }
 
 # (id, kind, district, x, z, faces=(x, z) the door looks at, note)
@@ -541,6 +541,8 @@ KIT = dict(
     benches=["HaloReasonHQ_BenchA", "HaloReasonHQ_BenchB", "HaloReasonHQ_BenchC"],
     flags=["HaloFlagpole_1", "HaloFlagpole_2", "HaloFlagpole_3"],
     new_needed=["꽃 덤불·생울타리 (이미지 생성 3, 2D -> 3D 진행 중; 구름 덤불은 사용자 \"뭉탱이\"로 뺌)", "흰 바위 2~3종 (절벽 발치·물가)",
+                "성문 받침 위 등 4 + 작은 받침 기둥 4 + 낮은 난간 (성문 2D 앞면 양쪽, 4면 2D 큐 · ④ 골격에는 안 넣음)",
+                "무기고: 통·상자·무기 걸이(RackShieldSword), 문 옆 벽등 2 (골격에는 단순 틀만)",
                 "디딤돌 (정원 길)", "작은 다리·징검다리 (연못·샘)", "떠 있는 섬 아랫면 뾰족 바위 (검수 ③ 2차)"],
 )
 DRESSING = {
