@@ -436,10 +436,10 @@ local STY = {
 	gold = function(p) p.Material = Enum.Material.Metal p.MaterialVariant = "HH_HaloGoldTrim" p.Color = GOLD end,
 	roof = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(__ROOF__) end,
 	wood = function(p) p.Material = Enum.Material.Wood p.Color = Color3.fromRGB(176, 118, 68) p.CanCollide = false end,
-	-- Fabric came out near-black in the WorldKit light (10/11 photos; img3 saw it on the awning): SmoothPlastic until the cause is known
 	glassD = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(38, 64, 112) p.CastShadow = false end,
 	iron = function(p) p.Material = Enum.Material.Metal p.Color = Color3.fromRGB(70, 76, 92) end,
-	fabricB = function(p) p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(104, 170, 240) p.CanCollide = false end,
+	-- banners: Fabric + MaterialVariant HH_Fabric (이미지 개발's bright woven fabric, passed 10/11; plain Fabric came out near-black here)
+	fabricB = function(p) p.Material = Enum.Material.Fabric p.MaterialVariant = "HH_Fabric" p.Color = Color3.fromRGB(104, 170, 240) p.CanCollide = false end,
 	lamp = function(p)
 		p.Material = Enum.Material.SmoothPlastic p.Color = Color3.fromRGB(255, 220, 140) p.CastShadow = false
 		p:SetAttribute("LampLight", true)
