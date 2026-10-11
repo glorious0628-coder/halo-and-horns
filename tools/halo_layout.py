@@ -710,7 +710,7 @@ def tree_group(cx_, cz_, n, why):
     for _ in range(12):
         a_ = rng.uniform(0, 2 * math.pi)
         r_ = rng.uniform(8, 13)
-        k_ = rng.choice(("CloudBush", "CloudBush", "PotFlowers"))
+        k_ = rng.choice(("PotFlowers", "Planter", "Planter"))  # user 10/11: no white cloud puffs ("꽃도 아니고 뭉탱이") -> flowers under the trees
         put_v(k_, cx_ + r_ * math.cos(a_), cz_ + r_ * math.sin(a_), rng.uniform(0, 360), vs(), pad=0.3, why="나무 무리 밑 꽃·덤불(3겹 심기)")
     return got
 
@@ -736,16 +736,18 @@ for x, z in rng.sample(edge_cells, min(1500, len(edge_cells))):
 # cliff-edge cloud bushes (island edges: the densest part, A23-76)
 done = 0
 for _ in range(5000):
-    if done >= 60 or not edge_cells:
+    if done >= 40 or not edge_cells:
         break
     x, z = rng.choice(edge_cells)
-    if tagv(x, z)[0] != "top" or any(e["kind"] == "CloudBush" and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(8, 16) for e in P):
+    if tagv(x, z)[0] != "top" or any(e["kind"] in ("Topiary", "PotFlowers") and math.hypot(e["x"] - x, e["z"] - z) < rng.uniform(9, 16) for e in P):
         continue
-    if put_v("CloudBush", x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.4), pad=0.2, why="절벽 가장자리 덤불(가장자리 채우기·떨어짐 막는 느낌)"):
+    k_ = rng.choice(("Topiary", "Topiary", "PotFlowers"))
+    if put_v(k_, x, z, rng.uniform(0, 360), rng.uniform(0.95, 1.2), pad=0.2,
+             why="절벽 가장자리 " + ("다듬은 나무" if k_ == "Topiary" else "꽃 화분") + "(가장자리 채우기·떨어짐 막는 느낌)"):
         done += 1
 # gather bushes (게임에 가져올 것 1): the reserved spots get their bush now
 for sp in SPOTS["gather"]:
-    put("CloudBush", sp["x"], sp["z"], rng.uniform(0, 360), rng.uniform(1.1, 1.3), pad=0.1, noreserve=True, why="채집 덤불: 매일 숨은 꽃·재료")
+    put("Topiary", sp["x"], sp["z"], rng.uniform(0, 360), rng.uniform(1.1, 1.3), pad=0.1, noreserve=True, why="채집 덤불: 매일 숨은 꽃·재료(진짜 꽃 덤불 모델이 오면 바꿔 낌)")
 # flower garden islands: pots and beds on the garden wings
 for _ in range(400):
     w = rng.choice([w_ for w_ in WINGS if WING_ZONE[w_[0]] == "garden"])
@@ -759,8 +761,9 @@ for sp in SPOTS["scene"]:
     put("PotFlowers", sp["x"] - 2 * math.sin(a_), sp["z"] + 2 * math.cos(a_), rng.uniform(0, 360), vs(), pad=0.1, noreserve=True, why="작은 장면 꽃: " + sp["what"])
 
 # ---------------------------------------------------------------- backdrop (beyond the land rect, no collision, nobody can stand there: #64)
-BACK = [("Islet", -250, -430, 1.0), ("Islet", 268, -480, 1.25), ("Islet", -232, -610, 0.85), ("Islet", 244, -660, 1.1),
-        ("FarArch", -305, -530, 0.9), ("FarArch", 286, -372, 1.15), ("FarArch", 30, -770, 1.4)]
+# user 10/11: the small rock-and-bush islets in the sea looked like scraps ("쫌쫌따리들 보기 싫음") -> gone; only the three far arches stay,
+# big and clear (the lookouts look at them)
+BACK = [("FarArch", -305, -530, 1.6), ("FarArch", 286, -372, 1.8), ("FarArch", 30, -770, 2.2)]
 for kind, x, z, s in BACK:
     P.append(dict(kind=kind, x=x, z=z, y=-1.2, yaw=rng.uniform(0, 360), s=s, backdrop=True, why="먼 바다 배경(전망대에서 보는 섬·아치)", zone="sea"))
 
