@@ -28,6 +28,8 @@
   - 무기고 16×12: 승인 2D 없음 → 이미지 생성 2에 시안 요청(검수 전달).
   - 사진 28장 찍음(10/11 14:3x, 창은 이미 떠 있어 복원 없음): `art/review/world/halo_v2/skeleton/` + 시트 `sheet_all.jpg`·`sheet_<건물>.jpg`. 고친 것: 배너 Fabric→SmoothPlastic(스튜디오 빛에서 검게 나옴), 창 불투명 따뜻한 색(밤에 PointLight), 성문 위 후광 2겹, 발코니 카메라는 기둥 사이 틈에서.
   - **검수 판정(10/11) ④ 통과 + 고칠 것 4개**: ① 벽 차가움·② 금 올리브 = **WorldKit 기본 빛이 칙칙해서**(값은 그대로 맞음): C2c 낮(`tools/halo_light_sim.luau` C2c day → 사진 → `halo_light_restore.luau`)로 찍으면 크림 대리석 + 밝은 금(`art/review/world/halo_v2/skeleton_c2c/`). 사진은 앞으로 C2c로(`SK_OUT=… py tools/worldkit/skeleton_civic_shots.py`). ③ 무기고를 승인 2D(`art/review/s2/halo_armory_views.jpg`)에 맞춰 다시(모임지붕·문 위 금 방패 메달·쇠창살 아치 창·문 옆 등·금 띠·기둥, 113조각; 뒤 창은 이미지 생성 2 새 2D 뒤). ④ 성문 받침 위 등·작은 받침 기둥·난간, 무기고 통·상자·걸이·벽등 → plan dressing `new_needed`.
+  - **다음 일(검수 10/11 ⑤ 준비)**: ① 광장·길·마당·계단·난간 파트 골격(WalkGround 태그) → api_agent `skeleton_ground`(branch `api/skeleton-ground`, 프롬프트 `build/api_agent_prompts/skeleton_ground.md`), ② 떠 있는 섬 아랫면 뾰족한 바위 → api_agent `island_underside`(branch `api/island-underside`), ③ 고정점 표 → **끝**(`docs/design/halo_fixed_points_v2_2026-10-11.md`, 생성 `tools/halo_fixed_points.py`). api 결과는 `build/api_agent/<job>/result.md`, 받는 법: `git fetch origin api/<이름>` → 결과 파일을 확인 → WorldKit 적용(생성기 실행기 `tools/worldkit/skeleton_ground_run.py`). 시작이 느리면(큰 작업 폴더 만들기 10분) 겹쳐 시작하지 말 것(--overwrite로 두 번째 시도가 첫 시도의 폴더를 지움).
+  - 배너: Fabric + MaterialVariant HH_Fabric(이미지 개발 통과)로 되돌림.
   - 사진 도구: `py tools/worldkit/skeleton_civic_shots.py [--prep]`(창 복원 = 새 검수 "전달함, 시작" 뒤) → `art/review/world/halo_v2/skeleton/`, 시트 `py tools/worldkit/skeleton_civic_sheet.py`(콘셉트 2D | 사진).
   - 계획 높이 KINDS: 성문 44→48, 탑 36→46, 전망 탑 50.
   - 앞으로: 사진 판정 → 고침, 대성당·빛 성 등은 이미지 생성 3, 5단계 재료(섬 아랫면 바위·흰 바위·디딤돌) 아직.
