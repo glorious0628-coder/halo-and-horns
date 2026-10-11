@@ -5,6 +5,11 @@
 - 사용자 "급한 일 3개 순서는 네가 정해" → 검수 순서: ① A23-130 거위 글·보상 말풍선(개발 1 화면 fix/lesstext + 개발 2 서버 fix/lesstext-server, 같이 병합) → ② A23-129 몹 생김 자리(개발 2 fix/spawnclear) → ③ A23-128 한손검(개발 1 fix/onehand) → ④ A23-130 남은 글 전부 훑기 표(개발 1). 병합마다 메인 반영 1이 sync·PC Play 사진, 저장은 급한 반영이 다 끝난 뒤 한 번.
 - 나머지 4개 세션은 11e §4(11d §4 표) 일을 받음. 이미지 생성 2에 11e §5 판정(벤치 B left2 다시) 전달.
 - (검수 /clear 뒤) 사용자 "클리어 애들한테도": 검수는 자기가 start_session으로 만든 세션만 비울 수 있음(Ctrl+N 세션은 거부) → 7개 세션 모두에 "묶음 끝·보고 뒤 state/<역할>.md 적고 push → clear_session(self), 일 중간·Studio/Play/Tripo 잡고 있으면 안 비움" 전달. 비운 세션에 보낼 땐 역할 파일 이름을 같이 적는다.
+- **A23-131 황금 알 줍기**(사용자 결정, SPEC push) → 설계 워크플로 golden-egg-design(wf_d2dcef6f-58d) 결과로 `docs/design/golden_egg_2026-10-11.md` 쓰고, 새 규칙(빼앗기 등)만 사용자 확인 → 개발 2 서버·개발 1 화면·그림.
+- 검사 워크플로 대기: lesstext(wf_fc9e3c63-3bf, Game-rv3lite c1c44b61), onehand(wf_6de06261-b0c, Game-rv4lite 6d78b38b), halo 계획(wf_f324997b-7af). 통과하면 둘 다 병합 → 메인 반영 1 sync·Play 사진(+HH_Fabric v2 낮·밤 사진·Save As 같이).
+- 이미지 생성 3 16189b4e(집 골격 15): 구조 통과, 비율(깊이 0.7×폭)·모서리 기둥·장식은 Tripo HD에서 잘라 Blender(A23-125, metal_ornaments 처음부터 = 최종 불가)·창 개수·등불 LampLight·07 천장판 고침 → 다시 사진. GLB Import 클릭 요청 보류.
+- 이미지 생성 1 9565c83(소품 130·등불 44 why): 통과, 새 키트 18종 전부 만들기(목록 파일 → 이미지 생성 2·3), 지금 있는 소품 WorldKit 배치 중.
+- 사용자가 만든 빈 세션 3개 "검수 세션 대기"는 필요할 때만 씀.
 - 이미지 생성 1 5d9c471(구획 지도·A23-117 이유·문 앞 턱): 사진·지도 직접 봄 1차 통과, 숫자·코드는 검사 워크플로 halo-plan-v2-review(wf_f324997b-7af) 결과 대기 → 고칠 것만 전달. 다음 일 = 5단계 소품마다 why(시작함, 비우고 새로 시작). 사진 메모: 포장 위 디딤돌 두 겹·반 잘린 디딤돌 → 5단계.
 - 이미지 생성 2: 벤치 B left2 HQ 통과. 무기 27 Medium = 모양 OK·그림체가 HQ(통통)와 다름 → HQ 참조로 Medium 다시, 대장장이 T3 단순하게, 연금술사는 지팡이만, 뿔 전사 최종 룩 한손검 새로, 고른 칸만 High(~150크레딧 OK). Firefly 약 4765.
 - 이미지 개발: Fabric v2 올림(color·rough 새 ID, normal 같은 ID) → 메인 MV 교체는 이미지 개발이 메인 반영 1에 직접 요청. 금 1차 = 넷 다 2D보다 탁함 → 2차 D~H(금속 0~0.7·밝은 색) + UiSandbox 빛을 메인 C2c로 맞춰 다시.
