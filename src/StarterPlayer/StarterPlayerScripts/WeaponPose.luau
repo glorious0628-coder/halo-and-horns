@@ -145,7 +145,8 @@ local function pick()
 end
 
 -- A23-108 two hands (검수 10/11; user 10/11 "대검을 잡는 게 이상한데? 손바닥 위에 올려놓은 느낌"; references in
--- docs/design/grip_reference_2026-10-11.md): the pose starts from the SWORD, not from arm angles. def.TwoHand =
+-- docs/design/grip_reference_2026-10-11.md). A23-128 (한손검만): no ClassGrips row has a TwoHand now - the code stays for
+-- a later two-hand weapon, and OneHand below shares its goals. The pose starts from the SWORD, not from arm angles. def.TwoHand =
 -- { Hilt = the right grip point, Aim = the blade, in UpperTorso space; Gap = { min, max } studs between the two grip
 -- points }. Both hands are solved onto the hilt with Fx's two-bone arm solver (this avatar's real bone lengths): each
 -- hand's grip point (Left/RightGripAttachment, where a Roblox tool's handle runs) sits on the hilt line and the hand's

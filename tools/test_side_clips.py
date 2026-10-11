@@ -15,6 +15,7 @@ Report: docs/art/verification_2026-10-10/offline_side_clips_2026-10-10.json
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 import re
 import sys
@@ -30,9 +31,50 @@ STRIKE = {"PaladinSwing": ("SLASH_CONTACT", "Warrior"), "LightMageSwing": ("CAST
           "BerserkerRelease": ("RELEASE_CONTACT.Warrior", "Warrior"), "DarkMageRelease": ("RELEASE_CONTACT.Mage", "Mage"),
           "RangerRelease": ("RELEASE_LAUNCH.Archer", "Archer"), "ShadowHunterRelease": ("RELEASE_LAUNCH.Archer", "Archer")}
 # Z / X (A23-108 ⑤, off until the 10/20 check): one strike key each, inside the clip
-ONE_HAND = ("PaladinSwing", "PaladinRelease", "PaladinZ", "PaladinX", "BerserkerRelease", "BerserkerZ", "BerserkerX")
+ONE_HAND = ("PaladinSwing", "PaladinRelease", "PaladinZ", "PaladinX", "BerserkerRelease", "BerserkerZ", "BerserkerX",
+            # 게임성 검수 10/11: the class defaults too (the Berserker's swing, the Blacksmith's one-hand hammer Q)
+            "WarriorSwing", "WarriorRelease")
 ZX = {"PaladinZ", "PaladinX", "LightMageZ", "LightMageX", "BerserkerZ", "DarkMageZ", "RangerZ", "ShadowHunterZ",
       "BerserkerX", "DarkMageX", "RangerX", "ShadowHunterX"}
+# 게임성 검수 10/11 (the angle test alone missed close hands): the place R15's arm chain (test_two_hand_grip RIG; the
+# upper arm's shoulder joint -> elbow (s x 0.501, -0.774), forearm -0.807, wrist -> grip -0.29) posed by each key's
+# CFrame.Angles(x, y, z) from the hanging rest (the clip adds on top of idle) - the two grip points stay HAND_GAP apart
+# (two fists side by side on one hilt are about 1 stud apart; the hanging arms 2.95)
+HAND_GAP = 1.2
+SHOULDER = (0.972, 0.598)
+
+
+def _rot(axis: int, deg: float):
+    c, s = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+    if axis == 0:
+        return ((1, 0, 0), (0, c, -s), (0, s, c))
+    if axis == 1:
+        return ((c, 0, s), (0, 1, 0), (-s, 0, c))
+    return ((c, -s, 0), (s, c, 0), (0, 0, 1))
+
+
+def _mm(a, b):
+    return tuple(tuple(sum(a[i][k] * b[k][j] for k in range(3)) for j in range(3)) for i in range(3))
+
+
+def _mv(a, v):
+    return tuple(sum(a[i][k] * v[k] for k in range(3)) for i in range(3))
+
+
+def _angles(t):
+    t = t or (0, 0, 0)
+    return _mm(_mm(_rot(0, t[0]), _rot(1, t[1])), _rot(2, t[2]))  # CFrame.Angles(x, y, z) = Rx * Ry * Rz
+
+
+def grip_point(js: dict, side: str):
+    """the side's grip point in UpperTorso space for one key's joint angles"""
+    s = 1 if side == "Right" else -1
+    r1 = _angles(js.get(side + "Shoulder"))
+    elbow = tuple(a + b for a, b in zip((s * SHOULDER[0], SHOULDER[1], 0.0), _mv(r1, (s * 0.501, -0.774, 0.0))))
+    r2 = _mm(r1, _angles(js.get(side + "Elbow")))
+    wrist = tuple(a + b for a, b in zip(elbow, _mv(r2, (0.0, -0.807, 0.0))))
+    r3 = _mm(r2, _angles(js.get(side + "Wrist")))
+    return tuple(a + b for a, b in zip(wrist, _mv(r3, (0.0, -0.29, 0.0))))
 
 
 def clip(fx: str, name: str):
@@ -130,6 +172,9 @@ def checks(fx: str, cfg: str) -> list[tuple[str, bool]]:
             note.append(ln.lower())
         out.append((f"A23-128 {name}: the free left arm balances (no fist on the hilt), no 'both hands' / great sword "
                     "in its note", c is not None and not bad and not re.search(r"both hands|two-hand|great sword", " ".join(note))))
+        gaps = [math.dist(grip_point(js, "Right"), grip_point(js, "Left")) for _, _, js in (c[1] if c else [])]
+        out.append((f"게임성 검수 10/11 {name}: the two hands >= {HAND_GAP} studs apart in every key (forward kinematics; "
+                    f"min {min(gaps) if gaps else 0:.2f})", bool(gaps) and min(gaps) >= HAND_GAP))
     out += [
         ("Fx \"Skill\" plays the Z / X move (only those slots)", "handlers.Skill = function(data)" in fx
          and 'if slot ~= "Z" and slot ~= "X" then return end' in fx and "pcall(Feel.playAttack, ctx.Char, classId, slot," in fx),
@@ -162,6 +207,13 @@ MUTATIONS = [
      "LeftShoulder = { 40, 0, 6 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -60, 0, 0 }"),
     ("the old 'both hands' note", "-- right hand (the left fist clenched low at the side;",
      "-- right hand with both hands (the left fist clenched low at the side;"),
+    # 게임성 검수 10/11: the Paladin's Z cut with the left fist brought to the hilt (angles a little apart, hands together)
+    ("the Paladin's Z: the left fist beside the right at the cut",
+     "RightWrist = { -50, 0, -20 }, LeftShoulder = { 70, 0, -10 }, LeftElbow = { 10, 0, 0 } } },",
+     "RightWrist = { -50, 0, -20 }, LeftShoulder = { 30, 0, 52 }, LeftElbow = { 50, 0, 0 } } },"),
+    # 게임성 검수 10/11: the Blacksmith's one-hand hammer Q (WarriorRelease) mirrored both arms at the smash
+    ("the Blacksmith's Q: both arms mirrored at the smash again", "LeftShoulder = { 18, 0, -40 }, LeftElbow = { 20, 0, 0 }",
+     "LeftShoulder = { 55, 0, 12 }, LeftElbow = { 12, 0, 0 }"),
 ]
 
 
