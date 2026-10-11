@@ -23,34 +23,34 @@
    "tris": 233
   },
   "HaloDomeHouse_07_Body_t01": {
-   "faces": 5321,
+   "faces": 5413,
    "tex": 1024,
-   "uv_fill": 0.555,
-   "tris": 5321
+   "uv_fill": 0.571,
+   "tris": 5413
   },
   "HaloDomeHouse_07_Body_t00": {
-   "faces": 5155,
+   "faces": 5221,
    "tex": 1024,
-   "uv_fill": 0.511,
-   "tris": 5155
+   "uv_fill": 0.517,
+   "tris": 5221
   },
   "HaloDomeHouse_07_Body_t10": {
-   "faces": 5967,
+   "faces": 6029,
    "tex": 1024,
    "uv_fill": 0.457,
-   "tris": 5967
+   "tris": 6029
   },
   "HaloDomeHouse_07_Body_t11": {
-   "faces": 5671,
+   "faces": 5717,
    "tex": 1024,
-   "uv_fill": 0.478,
-   "tris": 5671
+   "uv_fill": 0.48,
+   "tris": 5717
   },
   "HaloDomeHouse_07_WinPane": {
-   "faces": 547,
+   "faces": 281,
    "tex": 512,
-   "uv_fill": 0.773,
-   "tris": 547
+   "uv_fill": 0.874,
+   "tris": 281
   },
   "HaloDomeHouse_07_Awning": {
    "faces": 352,
@@ -65,10 +65,10 @@
    "tris": 74
   },
   "HaloDomeHouse_07_Glass": {
-   "faces": 547,
+   "faces": 281,
    "note": "Studio: Material Glass, Transparency 0.45, Reflectance 0.25",
-   "tris": 547
+   "tris": 281
   }
  },
- "tris_total": 23867
+ "tris_total": 23601
 }
