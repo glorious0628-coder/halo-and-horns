@@ -1901,6 +1901,15 @@ runGroup("effects-auto", function()
 	local w2 = rankWorld()
 	local q = w2:Join(102, "Halo", { Data = { AutoCombatUnlocked = true, AutoCombatEnabled = true, Outlaw = OUT(2962) } })
 	check(w2.Data[q].AutoCombatEnabled == false, "joining as an outlaw with auto combat saved ON: OFF", tostring(w2.Data[q].AutoCombatEnabled))
+	-- 게임성 검수 2026-10-12: the outlaw week starting while auto is ON = one line (OutlawStart says "no Auto"), not two
+	local st = rankWorld({ Studio = true })
+	local o = st:Join(-2, "Horns", { Data = { AutoCombatUnlocked = true, AutoCombatEnabled = true } })
+	st.Ranking.Credit(o, "PvP", 3)
+	st.Ranking.DebugSettle()
+	check(o:GetAttribute("Outlaw") == true and st.Data[o].AutoCombatEnabled == false
+		and st:CountNotices(o, string.format(R0.Text.OutlawStart, 1)) == 1 and st:CountNotices(o, R0.Text.OutlawAutoOff) == 0,
+		"the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
+		show({ o:GetAttribute("Outlaw"), st.Data[o].AutoCombatEnabled, st:CountNotices(o, R0.Text.OutlawAutoOff) }))
 end)
 
 ------------------------------------------------------------------ 24. the red '무법자' on the nametag (CharacterVisuals)
