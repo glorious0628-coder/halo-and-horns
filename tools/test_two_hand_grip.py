@@ -93,7 +93,11 @@ def handle(cv: str):
         return None
     t = re.search(r"local top, below, bladeLen = " + NUM + ", " + NUM + r", w\.Length \* 1\.3", m.group(1))
     named = 'Name = "Handle"' in m.group(1)
-    return {"Top": float(t[1]), "Below": float(t[2]), "Named": named} if t else None
+    pommel = re.search(r'Name = "Pommel", Shape = Enum\.PartType\.Ball, Size = Vector3\.new\(' + NUM + r",[^}]*CFrame = L \* "
+                       r"CFrame\.new\(0, -\(below \+ " + NUM + r"\) \* sc, 0\)", m.group(1), re.S)
+    # the pommel's reach past the handle's end = its centre offset + its radius
+    extra = float(pommel[2]) + float(pommel[1]) / 2 if pommel else None
+    return {"Top": float(t[1]), "Below": float(t[2]), "Named": named, "Pommel": extra} if t else None
 
 
 def geometry(src: dict) -> list[tuple[str, bool, str]]:
@@ -115,9 +119,11 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
     worst = {"reach": 0.0, "dist": 0.0, "axis": 0.0, "fore": (180.0, 0.0), "below": 9.0, "apart": 9.0}
     for k in (1.0, 0.85):
         for hand_len in (1.0, 0.4):
-            gap = 0.0 if left_on_top else min(max(hand_len + 0.05, gmin), gmax)
-            worst["below"] = min(worst["below"], hd["Below"] - (gap + hand_len / 2))
+            # WeaponPose: the left hand at the handle's foot (half its length up), never closer than 0.8 of the sizes
+            gap = 0.0 if left_on_top else min(max(max(hd["Below"] - hand_len / 2 - 0.05, hand_len * 0.8), gmin), gmax)
+            worst["below"] = min(worst["below"], hd["Below"] + (hd["Pommel"] or 0) - (gap + hand_len / 2))
             worst["apart"] = min(worst["apart"], gap - min(hand_len, 0.45))
+            worst["pommel"] = max(worst.get("pommel", 0.0), hd["Below"] - (gap + hand_len / 2))
             for side, point in (("R", hilt), ("L", add(hilt, aim, -gap))):
                 shoulder, l1, l2, wc1, grip = rig(side, k)
                 frame, pos = goal(point, grip, shoulder, aim, wp)
@@ -147,7 +153,10 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
                 45 <= worst["fore"][0] and worst["fore"][1] <= 135, f"{worst['fore'][0]:.0f}..{worst['fore'][1]:.0f}"))
     out.append(("the left hand sits below the right one, side by side (gap >= a small hand)", worst["apart"] >= 0,
                 f"{worst['apart']:.2f}"))
-    out.append(("the handle reaches past the left hand", hd["Named"] and worst["below"] >= 0.1, f"{worst['below']:.2f}"))
+    out.append(("the handle (+ its pommel) reaches past the left hand", hd["Named"] and worst["below"] >= 0.1,
+                f"{worst['below']:.2f}"))
+    out.append(("the left hand rests near the pommel (<= 0.3 studs of bare handle under it; reference)",
+                hd["Pommel"] is not None and worst.get("pommel", 9) <= 0.3, f"{worst.get('pommel', 9):.2f}"))
     return out
 
 
@@ -161,8 +170,9 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          "return CFrame.new(point) * CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z) * CFrame.new(-gripPos)" in wp
          and "local up = shoulder - point\n\t\tup -= aim * up:Dot(aim)" in wp and "local z = -aim" in wp, ""),
         ("the left hand is Gap lower on the line", "goal(hilt - aim * gap, leftGrip, leftShoulder)" in wp, ""),
-        ("the gap comes from the hands' sizes along the handle",
-         "local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad," in body, ""),
+        ("the left hand goes to the handle's foot (its size up), never onto the right hand",
+         "local foot = hand.CFrame:ToObjectSpace(handle.CFrame) * Vector3.new(0, -handle.Size.Y / 2, 0)" in body
+         and "gap = math.max((foot.Z - grip.Z) - leftHand.Size.Z / 2 - T.GapPad, (hand.Size.Z + leftHand.Size.Z) / 2 * T.OverlapShare)" in body, ""),
         ("out of reach still poses (the closest reach): the hands never drop for a frame (검수 10/11 walk photos)",
          'if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end' in body
          and ".Clamped then return" not in body, ""),
@@ -190,9 +200,10 @@ MUTATIONS = [
     ("CONFIG", "the hilt too far ahead", "Hilt = Vector3.new(0.25, 0.2, -0.7)", "Hilt = Vector3.new(0.25, 0.2, -1.6)"),
     ("CONFIG", "the hilt at the belly, the left hand out of reach", "Hilt = Vector3.new(0.25, 0.2, -0.7)",
      "Hilt = Vector3.new(0.3, -0.6, -0.9)"),
-    ("CONFIG", "the hands far apart", "Gap = { 0.45, 0.8 } } },", "Gap = { 1.4, 1.6 } } },"),
-    ("CONFIG", "the hands overlapping", "Gap = { 0.45, 0.8 } } },", "Gap = { 0.1, 0.2 } } },"),
-    ("CV", "the old short handle", "local top, below, bladeLen = 0.6, 1.5, w.Length * 1.3", "local top, below, bladeLen = 0.6, 1.1, w.Length * 1.3"),
+    ("CONFIG", "the hands far apart", "Gap = { 0.45, 0.9 } } },", "Gap = { 1.4, 1.6 } } },"),
+    ("CONFIG", "the hands overlapping", "Gap = { 0.45, 0.9 } } },", "Gap = { 0.1, 0.2 } } },"),
+    ("CV", "a long bare handle under the left hand", "local top, below, bladeLen = 0.6, 1.15, w.Length * 1.3", "local top, below, bladeLen = 0.6, 2.0, w.Length * 1.3"),
+    ("CV", "no pommel", 'Name = "Pommel", Shape = Enum.PartType.Ball', 'Name = "Knob", Shape = Enum.PartType.Ball'),
     ("WP", "the grip point off the line", "* CFrame.new(-gripPos)", "* CFrame.new(gripPos)"),
     ("WP", "the hand turned along the handle", "CFrame.fromMatrix(Vector3.zero, up:Cross(z), up, z)",
      "CFrame.fromMatrix(Vector3.zero, up, up:Cross(z), z)"),
@@ -204,7 +215,7 @@ MUTATIONS = [
     ("WP", "the probe samples once per print", "pcall(WeaponPose.ProbeStep, me, now) end", "pcall(WeaponPose.ProbeStep, me, now + 99) end"),
     ("WP", "no fade", "local m, pose = st.Joints[joint], poses[w[1]]\n\t\tif m and pose and typeof(pose[w[2]]) == \"CFrame\" then\n\t\t\tlocal cur = m.Transform\n\t\t\tlocal last = st.Last[joint]\n\t\t\tlocal base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur\n\t\t\tlocal out = base:Lerp(pose[w[2]], st.W)",
      "local m, pose = st.Joints[joint], poses[w[1]]\n\t\tif m and pose and typeof(pose[w[2]]) == \"CFrame\" then\n\t\t\tlocal cur = m.Transform\n\t\t\tlocal last = st.Last[joint]\n\t\t\tlocal base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur\n\t\t\tlocal out = pose[w[2]]"),
-    ("WP", "a fixed gap", "local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad,", "local gap = math.clamp(0.45,"),
+    ("WP", "a fixed gap", "local foot = hand.CFrame:ToObjectSpace(handle.CFrame) * Vector3.new(0, -handle.Size.Y / 2, 0)", "local foot = Vector3.zero"),
     ("FX", "no shared solver", "Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames\n", "\n"),
 ]
 

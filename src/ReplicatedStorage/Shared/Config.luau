@@ -5577,7 +5577,7 @@ Config.ClassGrips = {
 	-- y 0.6; the torso top y 0.8) - the blade passes just over the right shoulder at (1.1, 1.05, 0.05); both arms are
 	-- solved onto the hilt (tools/test_two_hand_grip.py measures fist-to-handle distance and axis angle)
 	Warrior_Horns = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 } },
-		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.8 } } },
+		TwoHand = { Hilt = Vector3.new(0.25, 0.2, -0.7), Aim = Vector3.new(0.85, 0.85, 0.75), Gap = { 0.45, 0.9 } } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
 		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },

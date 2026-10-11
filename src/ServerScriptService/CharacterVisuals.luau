@@ -739,7 +739,7 @@ local SHAPES = {}
 -- (WeaponPose TwoHand Gap <= 0.8 + half a blocky hand); the guard and blade stay where they were
 function SHAPES.GreatSword(grip, sc, w, color)
 	local L = grip * CFrame.Angles(-math.pi / 2, 0, 0) -- +Y of L points forward
-	local top, below, bladeLen = 0.6, 1.5, w.Length * 1.3
+	local top, below, bladeLen = 0.6, 1.15, w.Length * 1.3
 	local handleLen = top + below
 	local handle = accPart({
 		Name = "Handle", Size = Vector3.new(0.32, handleLen, 0.32) * sc,
@@ -755,7 +755,13 @@ function SHAPES.GreatSword(grip, sc, w, color)
 		Material = w.Material, Color = color,
 		CFrame = L * CFrame.new(0, (top + 0.3 + bladeLen / 2) * sc, 0),
 	})
-	return { handle, guard, blade }, blade
+	-- 검수 10/11 (reference: the left hand rests near the pommel): a round pommel closes the handle's lower end
+	local pommel = accPart({
+		Name = "Pommel", Shape = Enum.PartType.Ball, Size = Vector3.new(0.42, 0.42, 0.42) * sc,
+		Material = Enum.Material.Metal, Color = DARK_METAL,
+		CFrame = L * CFrame.new(0, -(below + 0.12) * sc, 0),
+	})
+	return { handle, guard, blade, pommel }, blade
 end
 
 -- Blacksmith: a short smithing hammer (a wooden handle, a heavy metal head with a band in the tier colour)

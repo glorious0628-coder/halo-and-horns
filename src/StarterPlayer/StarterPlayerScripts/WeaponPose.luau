@@ -43,7 +43,7 @@ local T = {
 		LeftShoulder = { "Left", "Shoulder" }, LeftElbow = { "Left", "Elbow" }, LeftWrist = { "Left", "Wrist" } },
 	RightGrip = Vector3.new(0, -0.158, 0), LeftGrip = Vector3.new(0, -0.158, 0),
 	PoleRight = Vector3.new(0.7, -0.7, 0.2), Pole = Vector3.new(-0.7, -0.7, 0.2),
-	Gap = { 0.45, 0.8 }, GapPad = 0.05,
+	Gap = { 0.45, 0.9 }, GapPad = 0.05, OverlapShare = 0.8,
 	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.ProbeStep: every frame measured, the worst printed)
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
@@ -190,7 +190,16 @@ function WeaponPose.TwoHand(char, st, def, model)
 	if not (right and left) then return false end
 	local torso = torsoPart.CFrame
 	local g = type(th.Gap) == "table" and th.Gap or T.Gap
-	local gap = math.clamp((hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad, tonumber(g[1]) or 0.45, tonumber(g[2]) or 0.8)
+	-- 검수 10/11 (reference: the left hand near the pommel): the left hand sits at the lower end of the weapon's Handle
+	-- (its own half length up from the end), never closer to the right hand than OverlapShare of their sizes
+	local gap = (hand.Size.Z + leftHand.Size.Z) / 2 + T.GapPad
+	local handle = model:FindFirstChild("Handle")
+	if handle and handle:IsA("BasePart") then
+		local grip = gripOf(hand, "RightGripAttachment", T.RightGrip)
+		local foot = hand.CFrame:ToObjectSpace(handle.CFrame) * Vector3.new(0, -handle.Size.Y / 2, 0)
+		gap = math.max((foot.Z - grip.Z) - leftHand.Size.Z / 2 - T.GapPad, (hand.Size.Z + leftHand.Size.Z) / 2 * T.OverlapShare)
+	end
+	gap = math.clamp(gap, tonumber(g[1]) or 0.45, tonumber(g[2]) or 0.9)
 	local rGoal, lGoal = WeaponPose.TwoHandGoals(torso, th, gripOf(hand, "RightGripAttachment", T.RightGrip),
 		gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), (torso * right.Shoulder.C0).Position,
 		(torso * left.Shoulder.C0).Position, gap)
