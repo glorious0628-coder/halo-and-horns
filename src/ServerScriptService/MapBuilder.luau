@@ -659,8 +659,11 @@ local function ensureAltarPrompt(altar)
 		prompt.Name = "AltarPrompt"
 		built = 1
 	end
-	prompt.ActionText = "Switch side"
-	prompt.ObjectText = "Altar of Fate"
+	-- Korean mode §5-3: the words live in Config.Text.Prompts; ActionKey / ObjectKey = their keys (the client's prompt hook)
+	prompt.ActionText = Config.Text.Prompts.SwitchSide
+	prompt.ObjectText = Config.Text.Prompts.AltarOfFate
+	prompt:SetAttribute("ActionKey", "Config.Text.Prompts.SwitchSide")
+	prompt:SetAttribute("ObjectKey", "Config.Text.Prompts.AltarOfFate")
 	-- 검수 2026-10-08: E opens it at once like the forge / potion / board prompts (the side switch asks again in its window)
 	prompt.HoldDuration = 0
 	prompt.AutoLocalize = false
@@ -813,7 +816,9 @@ local function ensureJobBoards(ctx, folder)
 			local prompt = host:FindFirstChild("BoardPrompt")
 			if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
 			if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = "BoardPrompt" end
-			prompt.ActionText, prompt.ObjectText = "Look at jobs", "Job Board"
+			prompt.ActionText, prompt.ObjectText = Config.Text.Prompts.LookAtJobs, Config.Text.Prompts.JobBoard
+			prompt:SetAttribute("ActionKey", "Config.Text.Prompts.LookAtJobs")
+			prompt:SetAttribute("ObjectKey", "Config.Text.Prompts.JobBoard")
 			prompt.KeyboardKeyCode = Enum.KeyCode.E -- the standard interact key (the skill is Q)
 			prompt.HoldDuration, prompt.MaxActivationDistance = 0, math.min(12, tonumber(B.Range) or 14)
 			prompt.RequiresLineOfSight = false
@@ -844,7 +849,10 @@ local function ensureMerchantPrompt(merchant, tune)
 	local prompt = root:FindFirstChild(tune.PotionMerchantPrompt)
 	if prompt and not prompt:IsA("ProximityPrompt") then retire(prompt, "_Old"); prompt = nil end
 	if not prompt then prompt = Instance.new("ProximityPrompt"); prompt.Name = tune.PotionMerchantPrompt end
-	prompt.ActionText, prompt.ObjectText = "Buy potions", tune.PotionMerchantLabel or "Potion Seller" -- ⑪ Fizzby
+	local words = Config.Text.Prompts
+	prompt.ActionText, prompt.ObjectText = words.BuyPotions, tune.PotionMerchantLabel or words.PotionSeller -- ⑪ Fizzby
+	prompt:SetAttribute("ActionKey", "Config.Text.Prompts.BuyPotions")
+	prompt:SetAttribute("ObjectKey", tune.PotionMerchantLabel and "Config.Vitals.PotionMerchantLabel" or "Config.Text.Prompts.PotionSeller")
 	prompt.KeyboardKeyCode = Enum.KeyCode.E -- standard interact key; the skill is Q only
 	prompt.HoldDuration, prompt.MaxActivationDistance = 0, tune.PotionMerchantDistance -- a shop opens on a tap
 	prompt.RequiresLineOfSight, prompt.Enabled = false, true

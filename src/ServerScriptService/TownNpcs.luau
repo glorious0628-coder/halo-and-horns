@@ -138,13 +138,24 @@ local function ensurePrompt(npc, entry, C, vitals)
 		prompt = Instance.new("ProximityPrompt")
 		prompt.Name = name
 	end
+	-- Korean mode §5-3: the words live in Config.Text.Prompts; ActionKey / ObjectKey = the keys of the texts written here
+	-- (an entry label of Config.TownNpcs.List -> its own key; a label from nowhere -> no ObjectKey, the client keeps it)
+	local words = Config.Text.Prompts
+	local at = type(C) == "table" and C == Config.TownNpcs and type(C.List) == "table" and table.find(C.List, entry) or nil
+	local labelKey = (at and type(entry.Label) == "string") and ("Config.TownNpcs.List." .. at .. ".Label") or nil
 	if entry.Merchant == true then
-		prompt.ActionText, prompt.ObjectText = "Buy potions", entry.Label or vitals.PotionMerchantLabel or "Potion Seller"
+		prompt.ActionText, prompt.ObjectText = words.BuyPotions, entry.Label or vitals.PotionMerchantLabel or words.PotionSeller
 		prompt.MaxActivationDistance = num(vitals.PotionMerchantDistance, 12)
+		prompt:SetAttribute("ActionKey", "Config.Text.Prompts.BuyPotions")
+		prompt:SetAttribute("ObjectKey", entry.Label and labelKey
+			or (vitals.PotionMerchantLabel and vitals == Config.Vitals and "Config.Vitals.PotionMerchantLabel")
+			or (not entry.Label and not vitals.PotionMerchantLabel and "Config.Text.Prompts.PotionSeller") or nil)
 	else
-		prompt.ActionText, prompt.ObjectText = "Talk", entry.Label or entry.Story
+		prompt.ActionText, prompt.ObjectText = words.Talk, entry.Label or entry.Story
 		prompt.MaxActivationDistance = num(C.PromptDistance, 10)
 		prompt:SetAttribute("StoryNpcId", entry.Story)
+		prompt:SetAttribute("ActionKey", "Config.Text.Prompts.Talk")
+		prompt:SetAttribute("ObjectKey", entry.Label and labelKey or nil)
 	end
 	prompt.KeyboardKeyCode = Enum.KeyCode.G -- the client's Keybinds retargets every prompt to the player's Interact key
 	prompt.HoldDuration = 0

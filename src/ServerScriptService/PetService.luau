@@ -54,6 +54,26 @@ local function isTamer(player, data)
 	return data.ClassChosen == true and Config.IsTamer(data.Class, data.Faction)
 end
 
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-3): a default pet name is saved as "". The default of
+-- a pet = the story name Config.PetGrant.Names[Lean] of the PetGrant species with a Good / Evil lean (key
+-- "Config.PetGrant.Names.<Lean>"); nil = no default (an empty name then means no story name: the client shows the
+-- species name and no tag, as before). Returns key, English text.
+function PetService.DefaultName(species, lean)
+	local G = Config.PetGrant
+	if type(G) ~= "table" or species ~= G.Species or (lean ~= "Good" and lean ~= "Evil") then return nil, nil end
+	local text = type(G.Names) == "table" and G.Names[lean] or nil
+	if type(text) ~= "string" or text == "" then return nil, nil end
+	return "Config.PetGrant.Names." .. lean, text
+end
+
+-- the English name the server shows for a saved pet (PetList Name): the saved name, else its default, else ""
+function PetService.DisplayName(p)
+	if type(p) ~= "table" then return "" end
+	if type(p.Name) == "string" and p.Name ~= "" then return p.Name end
+	local _, text = PetService.DefaultName(p.Sp, p.Lean)
+	return text or ""
+end
+
 ------------------------------------------------------------------ data
 -- repairs data.Pets in place (a corrupted entry is dropped; an unknown species is kept but never equipped)
 function PetService.Sanitize(data)
@@ -72,6 +92,10 @@ function PetService.Sanitize(data)
 					Lean = type(p.Lean) == "string" and string.sub(p.Lean, 1, LIMIT.NameLen) or "",
 					Bound = p.Bound == true,
 				}
+				-- Korean mode §5-3: a save from before keeps its default name in English -> "" (once: "" stays "")
+				local e = list[uid]
+				local _, default = PetService.DefaultName(e.Sp, e.Lean)
+				if default ~= nil and e.Name == default then e.Name = "" end
 			end
 		end
 	end
@@ -110,8 +134,11 @@ local function sendList(player, data)
 	LIST.Last[player] = os.clock()
 	local list = {}
 	for uid, p in pets.List do
-		table.insert(list, { Uid = uid, Sp = p.Sp, Lv = p.Lv, XP = p.XP, Need = PetService.XPToNext(p.Lv), Name = p.Name,
-			Lean = p.Lean })
+		-- Korean mode §5-3: Name = the English name as before (PetWindow / PetFollow show it raw), NameKey = its key while
+		-- the saved name is the default "" (game dev 1: show L10n.T(NameKey) when present)
+		local key = (p.Name == "") and (PetService.DefaultName(p.Sp, p.Lean)) or nil
+		table.insert(list, { Uid = uid, Sp = p.Sp, Lv = p.Lv, XP = p.XP, Need = PetService.XPToNext(p.Lv),
+			Name = PetService.DisplayName(p), NameKey = key, Lean = p.Lean })
 	end
 	table.sort(list, function(a, b) return a.Uid < b.Uid end)
 	pcall(function()
@@ -181,7 +208,10 @@ local function grant(player, species, lean, name, text, bringOut)
 		local p = pets.List[have]
 		local changed = false
 		if p.Lean == "" and lean ~= "" then p.Lean, changed = lean, true end
-		if p.Name == "" and name ~= "" then p.Name, changed = name, true end
+		-- Korean mode §5-3: the default name of the pet's lean stays "" (PetService.DisplayName shows it again)
+		if p.Name == "" and name ~= "" and name ~= select(2, PetService.DefaultName(species, p.Lean)) then
+			p.Name, changed = name, true
+		end
 		if #pets.Equipped == 0 and (bringOut or not pets.Away) then
 			pets.Equipped, pets.Away = { have }, false
 			changed = true
@@ -194,6 +224,7 @@ local function grant(player, species, lean, name, text, bringOut)
 		uid = "P" .. tostring(pets.Next)
 		pets.Next += 1
 	until pets.List[uid] == nil
+	if name == select(2, PetService.DefaultName(species, lean)) then name = "" end -- Korean mode §5-3: saved as ""
 	pets.List[uid] = { Sp = species, Lv = 1, XP = 0, Name = name, Lean = lean, Bound = true }
 	if #pets.Equipped == 0 then pets.Equipped, pets.Away = { uid }, false end
 	publish(player, data)

@@ -47,6 +47,21 @@ function AnnounceService.PublicName(player, honorific)
 	return Util.PlayerDisplayName(player) .. (honorific == true and T.Honorific or "")
 end
 
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-1): the same choice as PublicName as a name argument
+-- every client writes in its own language: { Who = nickname, Hon = true? } when PublicName gives the name, { Hidden =
+-- faction id | "None", Hon = true? } when it gives "A member of the <faction>" ("None" = "Someone": no / unknown
+-- faction). L10n.Msg of it in English == PublicName(player, honorific) (tools/test_l10n_server_a.py). Not a Player -> nil.
+function AnnounceService.PublicNameArg(player, honorific)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return nil end
+	local hon = honorific == true or nil
+	if isHidden(player) then
+		local id = player:GetAttribute("Faction")
+		local known = type(id) == "string" and id ~= "None" and Config.Factions[id] ~= nil
+		return { Hidden = known and id or "None", Hon = hon }
+	end
+	return { Who = Util.PlayerDisplayName(player), Hon = hon }
+end
+
 -- BB37: true when this player's server-wide lines use "<faction> 한 명" (the bounty line picks its hidden variant)
 function AnnounceService.IsHidden(player)
 	return typeof(player) == "Instance" and player:IsA("Player") and isHidden(player)

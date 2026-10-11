@@ -129,6 +129,14 @@ local function hiddenName(faction)
 	return f and string.format(Config.Announce.Text.HiddenName, f.Name) or Config.Announce.Text.Someone
 end
 
+-- Korean mode (contract §5-1): hiddenName as a name argument { Hidden = faction id | "None" } (L10n.Msg in English ==
+-- hiddenName(faction)); RankingService.HiddenNameArg for the board rows of part B
+local function hiddenNameArg(faction)
+	local known = type(faction) == "string" and faction ~= "None" and Config.Factions[faction] ~= nil
+	return { Hidden = known and faction or "None" }
+end
+RankingService.HiddenNameArg = hiddenNameArg
+
 local function publicName(p)
 	local A = S.AnnounceService
 	if A and A.PublicName then

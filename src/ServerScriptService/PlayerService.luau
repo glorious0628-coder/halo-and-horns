@@ -515,6 +515,7 @@ end
 ------------------------------------------------------------------ join
 local function onJoin(player)
 	if ready[player] or joining[player] or finalizing[player] then return end
+	PlayerService.ApplyLang(player, nil) -- Korean mode §1: from the Roblox locale at once (the save may change it below)
 	applyCameraLimits(player) -- A12: before the first character
 	joining[player] = true
 	local ok, data = pcall(S.DataService.Load, player)
@@ -534,7 +535,7 @@ local function onJoin(player)
 	joining[player] = nil
 	if player.Parent == nil then return end
 	if data == nil then
-		player:Kick(string.format(Config.Text.LoadFailed))
+		player:Kick(PlayerService.TextFor(player, "Config.Text.LoadFailed")) -- Korean mode §5-4: the player's language
 		return
 	end
 
@@ -547,6 +548,8 @@ local function onJoin(player)
 			player:SetAttribute(key, v)
 		end
 	end
+	-- Korean mode §1: the saved Settings.Lang ("ko" / "en"; "Auto" / missing = the locale), before DataLoaded / PlayerReady
+	PlayerService.ApplyLang(player, type(data.Settings) == "table" and data.Settings.Lang or nil)
 	-- A saved nickname is untrusted until the global reservation and current text filter are verified.
 	player:SetAttribute("Nickname", "")
 	player:SetAttribute("NicknameVerified", false)
@@ -732,6 +735,42 @@ end
 
 function PlayerService.IsReady(player)
 	return player ~= nil and ready[player] == true
+end
+
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §1): the player's language "ko" / "en". saved = the
+-- saved Settings.Lang: "ko" / "en" win; "Auto" / missing / anything else -> the Roblox locale (LocaleId "ko*" -> "ko")
+function PlayerService.LangFor(player, saved)
+	if saved == "ko" or saved == "en" then return saved end
+	local ok, loc = pcall(function() return player.LocaleId end)
+	if ok and type(loc) == "string" and string.lower(string.sub(loc, 1, 2)) == "ko" then return "ko" end
+	return "en"
+end
+
+-- sets the attribute Lang every client and L10n.LangOf read: at the join, right after the save loads (before DataLoaded /
+-- PlayerReady) and on every settings save (SettingsService). Returns the language.
+function PlayerService.ApplyLang(player, saved)
+	local lang = PlayerService.LangFor(player, saved)
+	local ok, err = pcall(function() player:SetAttribute("Lang", lang) end)
+	if not ok then Util.Warn(TAG, "Lang attribute: " .. tostring(err)) end
+	return lang
+end
+
+-- §5-4: a line only the server can write for ONE player (Kick) in that player's language: L10n.T(key, args,
+-- L10n.LangOf(player)). L10n is looked up when needed; without it the English text of the Config key (never the key)
+function PlayerService.TextFor(player, key, args)
+	local ok, text = pcall(function()
+		local L10n = require(ReplicatedStorage.Shared:FindFirstChild("L10n"))
+		return L10n.T(key, args, L10n.LangOf(player))
+	end)
+	if ok and type(text) == "string" and text ~= key then return text end
+	local node = Config
+	for part in string.gmatch(string.sub(key, #"Config." + 1), "[^%.]+") do
+		node = type(node) == "table" and (node[part] or node[tonumber(part) or part .. "En"]) or nil
+	end
+	if type(node) ~= "string" then return key end
+	if type(args) ~= "table" or #args == 0 then return node end
+	local okF, out = pcall(string.format, node, table.unpack(args))
+	return okF and out or node
 end
 
 function PlayerService.GetReadyPlayers()

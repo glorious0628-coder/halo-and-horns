@@ -119,11 +119,24 @@ local function getGameState()
 	return gameState
 end
 
-local function publish(phaseName, userId, name, endsAt)
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-1): the faction id when the kaiju's public name is the
+-- hidden "A member of the <faction>" ("None" = "Someone"), "" when it is the real name (GameState KaijuHidden)
+local function publicHidden(p)
+	local A = S.AnnounceService
+	if A and A.PublicNameArg then
+		local ok, arg = pcall(A.PublicNameArg, p)
+		if ok and type(arg) == "table" then return type(arg.Hidden) == "string" and arg.Hidden or "" end
+	end
+	return ""
+end
+
+-- hidden: KaijuHidden next to KaijuName (set and cleared together; KaijuName stays the English public name for now)
+local function publish(phaseName, userId, name, endsAt, hidden)
 	local gs = getGameState()
 	if not gs then return end
 	gs:SetAttribute("KaijuUserId", userId)
 	gs:SetAttribute("KaijuName", name)
+	gs:SetAttribute("KaijuHidden", type(hidden) == "string" and hidden or "")
 	gs:SetAttribute("KaijuEndsAt", endsAt)
 	gs:SetAttribute("KaijuPhase", phaseName) -- last, so clients see a consistent set when the phase flips
 end
@@ -393,7 +406,7 @@ local function beginSiren()
 			lethalHit = false
 			lastMaxHealth = 0
 			setState(p, "Siren")
-			publish("Siren", p.UserId, kaijuName, phaseEndsAt) -- CR-L23: EventHUD's siren banner is the only announcement
+			publish("Siren", p.UserId, kaijuName, phaseEndsAt, publicHidden(p)) -- CR-L23: EventHUD's siren banner is the only announcement
 		elseif states[p] == "Queued" then
 			setState(p, "None")
 		end
@@ -413,7 +426,7 @@ local function activate(p)
 	lastStomp = os.clock()
 	setState(p, "Active") -- before Justice/Player refresh: they read GetState / GetHealthMult
 	kaijuName = publicName(p) -- BB37: the name as it is now (hidden / shown since the siren)
-	publish("Active", p.UserId, kaijuName, phaseEndsAt)
+	publish("Active", p.UserId, kaijuName, phaseEndsAt, publicHidden(p))
 	call("JusticeService", "RefreshScale", p) -- x3 visual (capped by Config.Justice.MaxVisualScale)
 	call("PlayerService", "RefreshCharacter", p, true) -- full heal at the transformation
 	sampleMaxHealth(p)
@@ -619,7 +632,7 @@ function KaijuService.Init(registry)
 		player:GetAttributeChangedSignal("HideAnnounceName"):Connect(function()
 			if player == current and phase ~= "None" then
 				kaijuName = publicName(player)
-				publish(phase, player.UserId, kaijuName, phaseEndsAt)
+				publish(phase, player.UserId, kaijuName, phaseEndsAt, publicHidden(player))
 			end
 		end)
 	end)

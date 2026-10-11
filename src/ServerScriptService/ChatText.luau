@@ -34,11 +34,21 @@ function ChatText.English(message)
 	return string.sub(message, defEnd + 1), key
 end
 
--- our team line and its colour for this player; nil while on the auto-assigned "Choosing a side" team
+-- our team line and its colour for this player; nil while on the auto-assigned "Choosing a side" team.
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-4): a legacy chat line to ONE player is written in
+-- that player's language, L10n.T("Config.ChatText.Joined", { team name }, L10n.LangOf(player)) (the team name stays
+-- English, §5-4); without the L10n module the English line as before
 function ChatText.TeamLine(player)
 	local team = player and player.Team
 	if not team or team.AutoAssignable then return nil end
-	return string.format(Config.ChatText.Joined, team.Name), team.TeamColor.Color
+	local ok, line = pcall(function()
+		local L10n = require(ReplicatedStorage:WaitForChild("Shared"):FindFirstChild("L10n"))
+		return L10n.T("Config.ChatText.Joined", { team.Name }, L10n.LangOf(player))
+	end)
+	if not ok or type(line) ~= "string" or line == "Config.ChatText.Joined" then
+		line = string.format(Config.ChatText.Joined, team.Name)
+	end
+	return line, team.TeamColor.Color
 end
 
 -- a legacy Speaker is a plain table: a field on it wins over its shared methods

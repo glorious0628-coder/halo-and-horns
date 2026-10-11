@@ -181,6 +181,9 @@ function M.EnsureBlacksmithPrompt()
 		prompt.Name = BLACKSMITH.PromptName
 	end
 	prompt.ActionText, prompt.ObjectText = Config.Text.BlacksmithPromptAction, Config.Text.BlacksmithPromptObject
+	-- Korean mode §5-3: the keys of the same two texts (the client's prompt hook writes them in the player's language)
+	prompt:SetAttribute("ActionKey", "Config.Text.BlacksmithPromptAction")
+	prompt:SetAttribute("ObjectKey", "Config.Text.BlacksmithPromptObject")
 	prompt.KeyboardKeyCode = Enum.KeyCode.E -- standard interact key; the skill is Q only (2026-10-06 playtest)
 	prompt.HoldDuration, prompt.MaxActivationDistance = 0, BLACKSMITH.Distance -- a shop opens on a tap, no hold
 	prompt.RequiresLineOfSight, prompt.Enabled = false, true

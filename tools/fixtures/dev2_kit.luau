@@ -476,6 +476,15 @@ local function newWorld(opts)
 	local util = execute("Util", UTIL_SOURCE, w:Env())
 	modules.Util = util
 	w.Util = util
+	-- Korean mode: the REAL shared L10n (this world's Config; TextKo missing = English) when the suite binds L10N_SOURCE;
+	-- then require(Shared.L10n) works for the services and NotifyKey's Text is the real English copy
+	if type(L10N_SOURCE) == "string" then
+		local lenv = w:Env()
+		lenv.script = { Parent = shared }
+		modules.L10n = execute("L10n", L10N_SOURCE, lenv)
+		shared.L10n = "L10n"
+		w.L10n = modules.L10n
+	end
 	-- Net double: remotes record FireClient / FireAllClients; Notify / NotifyAll / Fx are logged
 	local remotes = {}
 	local net = { Names = {} }
@@ -494,6 +503,22 @@ local function newWorld(opts)
 		table.insert(w.Notices, { Player = player, Text = text, Kind = kind, Sound = sound })
 	end
 	function net.NotifyAll(text, kind, secs, sound) table.insert(w.All, { Text = text, Kind = kind, Sound = sound }) end
+	-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-3): keyed lines are logged like Notify /
+	-- NotifyAll with Text = the English copy the real Net sends (the real L10n.Msg when the suite binds L10N_SOURCE, else
+	-- the key), so fixtures that read .Text keep working when a call moves to NotifyKey
+	local function englishOf(key, args, named)
+		local L10n = modules.L10n
+		if L10n then return L10n.Msg({ Key = key, Args = args, Named = named }, "en") end
+		return key
+	end
+	function net.NotifyKey(player, key, args, kind, secs, sound, named)
+		table.insert(w.Notices, { Player = player, Key = key, Args = args, Named = named, Kind = kind, Sound = sound,
+			Text = englishOf(key, args, named) })
+	end
+	function net.NotifyAllKey(key, args, kind, secs, sound, named)
+		table.insert(w.All, { Key = key, Args = args, Named = named, Kind = kind, Sound = sound,
+			Text = englishOf(key, args, named) })
+	end
 	function net.Fx(player, kind, data) table.insert(w.Fx, { Player = player, Kind = kind, Data = data }) end
 	modules.Net = net
 	w.Net, w.Remotes, w.GameState = net, remotes, gameState

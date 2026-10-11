@@ -6,7 +6,8 @@
 -- Remotes:
 --   c->s "SetSettings"(blob?): zero args = "send me mine"; else one table with at most Config.Settings.MaxBlobKeys
 --     top-level keys, blob.Seq = an integer clamped to 0..2^31. Needs PlayerService.IsReady and Util.RateLimit
---     (Config.RateLimits.SetSettings); a dropped call gets no answer. Saves Config.SanitizeSettings(blob) and echoes.
+--     (Config.RateLimits.SetSettings); a dropped call gets no answer. Saves Config.SanitizeSettings(blob) and echoes;
+--     the saved Lang sets the player's Lang attribute again (PlayerService.ApplyLang, Korean mode §1).
 --   s->c "Settings" { Seq, Settings } to the owner only: the echo of every accepted call (Seq of that blob, 0 for "send
 --     me mine") and once on PlayerReady (Seq 0). The client ignores echoes older than its newest sent Seq.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -77,6 +78,12 @@ local function onSetSettings(player, ...)
 		for id, key in after do if before[id] ~= key then changed += 1 end end
 		for id in before do if after[id] == nil then changed += 1 end end
 		if changed > 0 then SettingsService.KeysChanged:Fire(player, changed) end
+		-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §1): every settings save sets the Lang attribute again
+		local ps = S.PlayerService
+		if type(ps.ApplyLang) == "function" then
+			local ok, err = pcall(ps.ApplyLang, player, data.Settings.Lang)
+			if not ok then Util.Warn(TAG, "ApplyLang: " .. tostring(err)) end
+		end
 	end
 	send(player, seq, SettingsService.Get(player))
 end

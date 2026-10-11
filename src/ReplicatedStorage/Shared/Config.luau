@@ -487,6 +487,51 @@ function Config.ClassName(classId, factionId)
 	return c.Names[factionId] or c.Names.None
 end
 
+-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §2 / §5-1): name messages { Key = "<table path>.<field>" }
+-- for the shared L10n module, the same pick as the string functions: L10n.Msg(Config.WeaponNameKey(t, c, f), "en") ==
+-- Config.WeaponName(t, c, f), ClassNameKey == ClassName, TitleKey(id) == Config.TitleDefs[id].Name, RankTitleKey ==
+-- GetTitle, MonsterNameKey(kind) == Config.MonsterTypes[kind].Name (tools/test_l10n_server_a.py). An id they do not know
+-- -> Config.Text.UnknownName ("?").
+function Config.WeaponNameKey(tier, classId, factionId)
+	if tier == 0 then return { Key = "Config.Text.BareHands" } end
+	local list = (Config.IsTamer(classId, factionId) and "Tamer")
+		or (type(classId) == "string" and Config.WeaponNames[classId] ~= nil and classId) or "Warrior"
+	local n = type(tier) == "number" and Config.WeaponNames[list][tier] or nil
+	if n == nil or tier ~= math.floor(tier) then return { Key = "Config.Text.UnknownName" } end
+	local key = "Config.WeaponNames." .. list .. "." .. string.format("%d", tier)
+	if type(n) == "table" then
+		return { Key = key .. "." .. ((type(factionId) == "string" and n[factionId] ~= nil) and factionId or "None") }
+	end
+	return { Key = key }
+end
+
+function Config.ClassNameKey(classId, factionId)
+	local id = (type(classId) == "string" and Config.Classes[classId] ~= nil) and classId or "Warrior"
+	local names = Config.Classes[id].Names
+	return { Key = "Config.Classes." .. id .. ".Names." .. ((type(factionId) == "string" and names[factionId] ~= nil) and factionId or "None") }
+end
+
+-- a Config.TitleDefs title (BB16 TitleSel / owned titles)
+function Config.TitleKey(id)
+	local def = (type(id) == "string" and id ~= "" and not string.find(id, ".", 1, true)) and Config.TitleDefs[id] or nil
+	if type(def) == "table" and type(def.Name) == "string" then return { Key = "Config.TitleDefs." .. id .. ".Name" } end
+	return { Key = "Config.Text.UnknownName" }
+end
+
+-- the faction rank title of Config.GetTitle: (message, rank 1..5; 0 for None)
+function Config.RankTitleKey(factionId, honor, infamy)
+	local title, rank = Config.GetTitle(factionId, honor, infamy)
+	if rank == 0 then return { Key = "Config.Titles.None" }, 0 end
+	if type(title) ~= "string" then return { Key = "Config.Text.UnknownName" }, rank end
+	return { Key = "Config.Titles." .. factionId .. "." .. rank }, rank
+end
+
+function Config.MonsterNameKey(kind)
+	local def = (type(kind) == "string" and not string.find(kind, ".", 1, true)) and Config.MonsterTypes[kind] or nil
+	if type(def) == "table" and type(def.Name) == "string" then return { Key = "Config.MonsterTypes." .. kind .. ".Name" } end
+	return { Key = "Config.Text.UnknownName" }
+end
+
 -- A23-14 class change (user 2026-10-05): below Lv FreeKeepLevelBelow a free change keeps level and XP (the server
 -- then never spends a ticket, even when one was requested); from that level on: free = back to Lv 1 / XP 0,
 -- change ticket = level kept. Server: ClassService.onChangeClass. Client previews use Config.ClassChangeKeepsLevel.
@@ -6499,6 +6544,12 @@ Config.Text = {
 	WeaponSold = "Sold %s! Gold +%s", -- (weaponName, gold)
 	BlacksmithPromptAction = "See weapons",
 	BlacksmithPromptObject = "Forge",
+	-- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-3): the other ProximityPrompt words. MapBuilder /
+	-- TownNpcs / ShopService still write the English ActionText / ObjectText and add the attributes ActionKey / ObjectKey
+	-- (the key of the same text) for the client's prompt hook
+	Prompts = { SwitchSide = "Switch side", AltarOfFate = "Altar of Fate", LookAtJobs = "Look at jobs", JobBoard = "Job Board",
+		BuyPotions = "Buy potions", PotionSeller = "Potion Seller", Talk = "Talk" },
+	UnknownName = "?", -- Config.WeaponNameKey / ClassNameKey / TitleKey / MonsterNameKey for an id they do not know
 	PotionShopFar = "Get close to the Potion Seller to buy.",
 	-- ⑪ (lines_pack §1-3): the shop windows' greeting line (game dev 1: the top of WeaponShop / PotionShop); calm, no
 	-- "hurry / sale" words next to a buy button
