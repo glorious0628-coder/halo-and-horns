@@ -1,3 +1,19 @@
+# 이미지 개발 — 상태 (2026-10-12: 천 v3b 통과)
+
+- **천 v3b 통과(디자인 검수)**: WorldKit HH_Fabric 적용 끝·사진 push. 메인 교체 한 줄(color 130243612742018 / normal 78044174442027 / rough 111200474370652)은 디자인 검수가 최종 검수 → 메인 반영 1로 넘김. **메인 교체 확인 뒤**: v2 맵 ID(76316272601072·102973991596175(normal은 v1과 공용이었음)·119858177335377)와 art/ui/halo_tile/fabric_v2 파일을 안 쓰는 ID로 기록·정리(삭제 전 확인).
+- MCP 이름 주의: 지금 WorldKit 창은 STUDIO_NAME=Game으로 잡힘(WorldKit.rbxlx 맞음).
+
+# 이미지 개발 — 상태 (2026-10-12: 천 v3b 올림·WorldKit 적용, 낮 사진 대기)
+
+- **천 v3b 올림(승인, 직접 봄)**: color 130243612742018·normal 78044174442027·rough 111200474370652 (asset_ids `Halo_Fabric3b_*`). WorldKit HH_Fabric에 넣음(v2 ID: color 76316272601072·normal 102973991596175·rough 119858177335377 = 되돌릴 값) + 백업(wk_backup). **다음: 성문 배너 원경(fabric_v2_day_a 자리) + 100% 크롭 낮 사진 = 최종 검수에 화면 신청 → 디자인 검수.** 너무 민무늬면 v3a(내 눈, 알리기만). 통과면 메인 교체는 메인 반영 1(ID 3개 + MaterialService HH_Fabric ColorMap/NormalMap/RoughnessMap 한 줄로 넘김). 그 뒤 v2 맵 파일·기록 정리(normal v2는 v1과 공용이었음 — 삭제 전 확인).
+
+# 이미지 개발 — 상태 (2026-10-12 오전: 큐)
+
+1. **천 v3b 고름(디자인 검수)** → 올리기 3장(fabric_v3/b)은 최종 검수 승인 뒤 → WorldKit HH_Fabric에 넣고 성문 배너 원경(fabric_v2_day_a와 같은 자리) + 100% 크롭. 너무 민무늬면 v3a로(내 눈, 알리기만). 사진은 이미지 생성 1이 WorldKit 되살린 뒤 화면 신청.
+2. **소품 바깥선 = 얇은 선 0.035 확정(사용자).** 이미지 생성 4가 껍데기 메시 묶음(≤10씩)을 넘기면 → 최종 검수 승인 확인 → 직접 보고 올림 → ID 돌려줌. 도구 tools/upload_hull_meshes.py(--thick 035; CreateAssetAsync가 이 환경에서 되는지는 첫 1개로 확인, 안 되면 최종 검수에 알리고 3D 가져오기(화면) 길을 물음). 규칙은 아래 '껍데기' 줄.
+3. **게임 아이콘 C_m2 High 마무리**가 오면 최종 검수 승인 뒤 올림.
+4. 2차 아이콘 5개(CrownDust·Glowcap·CraftRing·CraftTarget·CraftIngot) 승인 알림 오면 올림. 가지 imgdev-icons1(96371ff0)은 병합 대기.
+
 # 이미지 개발 — 상태 (2026-10-12 아침: 천 v3 후보 만듦, 판정 대기)
 
 - **천 v3 후보 a/b/c 파일로 만듦(올리기 안 함)**: tools/fabric_weave_v3.py → art/ui/halo_tile/fabric_v3/{a,b,c}/Halo_Fabric_{color,normal,rough}.png. 격자 대비 반(노멀 세기 반 포함) + 실 줄을 주기적 노이즈로 휘게 + 실마다 밝기·굵기 불균일 + 실 얼룩. a = 16실·휨 0.25, b = 24실(더 곱게)·휨 0.40, c = b + 대비 0.35. 비교 시트 art/review/imgdev/fabric_v3_compare_2026-10-12.jpg(v2 | a | b | c, 배너 파랑(104,170,240)에 해 왼쪽 위 단순 음영, 5×5·15×15칸) — v2는 규칙 격자가 보이고 v3는 격자 없이 천 결만. 디자인 검수 판정 대기 → 고르면 올리기 승인(최종 검수) 뒤 3장 올림 → WorldKit HH_Fabric 교체 + 낮 사진 비교 → 메인은 메인 반영 1.

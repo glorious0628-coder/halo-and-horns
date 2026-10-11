@@ -1,4 +1,4 @@
-# 게임성 개발 2 — 상태 (2026-10-12 새벽)
+# 게임성 개발 2 — 상태 (2026-10-12 아침)
 
 서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). 큰 코드는 api_agent 쓰기 모드로 맡길 수 있음
 (`py tools/api_agent.py run --prompt-file P.md --out build/api_agent/<job> --model opus|sonnet --max-usd 5 --max-turns 60~80
@@ -6,15 +6,13 @@
 **보고처 = '게임성 검수'**(id는 list_sessions). 최종 검수 = '최종 검수'. 보고는 묶음마다 한 번. 대화가 길어지면 이 파일 적고 push → clear_session("self").
 
 ## 병합됨 / 검토 대기
-- main에 들어감: fix/lesstext-server 6fc3ba52(MinGap), fix/spawnclear 358867c7(main 96ec45ad).
-- **검토 대기 1: fix/lesstext-server 6adf2c82** — 서버 글 판정표(A23-130 §2) 본 커밋 becb9cc9 + main 두 번 합침 + 시험 고침
+- main에 들어감: fix/lesstext-server 6fc3ba52(MinGap), fix/spawnclear 358867c7(main 96ec45ad), fix/spawnclear-rim 0a1e3e75.
+- **검토 대기: fix/lesstext-server 1f42e88f** (보고한 가지 = 다시 쌓지 말고 위에 커밋만) — 6adf2c82 위에 무법자 주 시작 2줄 → 1줄
+  (게임성 검수 10/12 결정: RankingService.OutlawToldAt, CombatService가 10초 안이면 OutlawAutoOff 건너뜀; ranking 487·187/187).
+  6adf2c82까지 = 서버 글 판정표(A23-130 §2) 본 커밋 becb9cc9 + main 두 번 합침 + 시험 고침
   (test_town_quests 'Pick' 정규식 = main에서도 실패하던 것, test_enhance_lines·test_gather 변이). 판정 갈린 줄 결정·안 한 것 목록은
-  게임성 검수에 보낸 보고 그대로(OutlawStart+AutoOff 2줄, 첫 PvP 카드 겹침, 남의 무기 자랑 토스트(클라), 사이렌 칩(클라),
+  게임성 검수에 보낸 보고 그대로(첫 PvP 카드 겹침, 남의 무기 자랑 토스트(클라), 사이렌 칩(클라),
   Tut.Text.Travel/Welcome 경계선, 할로윈 왕 수다). 전체 오프라인: 실패 = 파일 없는 3개(place_english·shop_layout·rank_marks)뿐.
-- **검토 대기 2: fix/spawnclear-rim 0a1e3e75** — e1429fba NotPass에 "Rim"(초원 Kit_M_PuddleRim 돌 테두리 막음, spawn_clear
-  630·63/63) + 0a1e3e75 test_town_quests 'Pick' 정규식(판정표 가지 cef7850b와 같은 줄; main 초록 만들기, town_quests 1223·244/244).
-  게임성 검수가 rim 시험 통과 → 최종 검수에 올림(10/12 01시대). 10/12 01:45 PC 꺼짐(사용자) — 아침에 여기서 이어서.
-  병합 뒤 메인 반영 1이 tools/spawn_clear_probe.luau 실행(검수 실측: 숲 고블린 잃은 면적 32.0%, 브루트 36.0%, 킹 막힘 4.1%).
 
 ## 다음 큐
 1. **황금 알 줍기** Goose.Mode="Eggs" — 설계 `docs/design/golden_egg_2026-10-11.md` + SPEC A23-131·134·137(4시간마다 30점 등).

@@ -49,10 +49,10 @@
    "studsPerTile": 2,
    "pattern": "Regular",
    "source": "tools/fabric_weave_maps.py -> art/ui/halo_tile/fabric/Halo_Fabric_{color,normal,rough}.png (이미지 개발 10/11: Enum.Material.Fabric's own albedo is dark grey and ignores Part.Color; this near-white plain weave takes the part colour)",
-   "color": "rbxassetid://117704901835962",
-   "normal": "rbxassetid://102973991596175",
-   "rough": "rbxassetid://138111432038584",
-   "use": "cloth parts: Material Fabric + MaterialVariant HH_Fabric + Part.Color. Applied in the main Studio place 2026-10-11 (11 parts, saved in build/GoodEvil.rbxlx 15:19; place/GoodEvil.rbxlx copy NOT updated yet - 메인 반영 1 does Save As + place copy)."
+   "color": "rbxassetid://130243612742018",
+   "normal": "rbxassetid://78044174442027",
+   "rough": "rbxassetid://111200474370652",
+   "use": "cloth parts: Material Fabric + MaterialVariant HH_Fabric + Part.Color. Applied in the main Studio place 2026-10-11 (11 parts, saved in build/GoodEvil.rbxlx 15:19; place/GoodEvil.rbxlx copy NOT updated yet - 메인 반영 1 does Save As + place copy). | 10/12: v3b maps (tools/fabric_weave_v3.py b; 디자인 검수 pass, no grid, soft cloth grain): color 130243612742018 / normal 78044174442027 / rough 111200474370652, applied in WorldKit; main replacement = 메인 반영 1. v2 (color 76316272601072 / normal 102973991596175 / rough 119858177335377) becomes unused after the main swap is confirmed."
   },
   {
    "name": "HH_HaloMarbleSmooth_Cream",
