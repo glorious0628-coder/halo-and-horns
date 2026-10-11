@@ -17,3 +17,4 @@
    - 남은 판단: Lv30+ T5·T6 사냥꾼이 클래터를 혼자 빨리 잡는 문제(몫 상한 1).
    - 다음은 dev2-healfair(A23-126)다.
 4. **이미지 생성 2(추가):** 무기고 2D 끝(앞 High 1 + 왼·뒤 Medium 2, 시트 art/review/s2/halo_armory_views.jpg) → 판정 후 이미지 생성 1(무기고 골격)에게 넘김. 지금 4면 큐 1번 등불 A~E(High 15장 = 75크레딧) 진행 중.
+5. **이미지 생성 3:** ④ 골격 1묶음(집 02·05·09·03) Blender 시트 art/review/img3/houses/houses_batch1_blender.jpg → 판정 필요. 생성기 tools/skeleton_house.py + tools/house_specs/*.json. 사용자 클릭 요청: WorldKit Import 3D로 halo_houses_batch1_ornaments.glb (HaloDomeHouse_07_fixed.glb는 사용자가 이미 한 번 가져왔음 — 3이 아직 그 메시지를 못 받은 듯, 중복이면 하나만). 질문: plan 자리(House_Hill1 등)에 어느 집을 놓을지 → 정해진 것 없으면 3이 2D 크기로 짝지어 제안하게 하면 됨.
