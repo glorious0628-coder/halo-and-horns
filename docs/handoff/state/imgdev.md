@@ -38,4 +38,6 @@ building_variants.py, zone_split_batch.py(--gold-v-min, no_gold 마스크), deco
   옛 브랜치 imgdev-tilereveal/-v2/-artisan-soon/-photos/-photos2는 버린 것.
 
 ## 막힌 것 / 기다리는 것
-- 이미지 생성 3(새 세션, state/img3.md 큐 6): 4판에서 대리석 판 고르기 + 집 07·11 Roof 맵 굽기 → 판 이름·칸 수·Roof 폴더를 한 줄로 보내 줌. (10/11: WorldKit에 HH_HaloMarbleBlock 9칸·HH_HaloGoldTrim 적용됨, 집 07 골격 금 파트 = Metal + GoldTrim + (240,186,56), f686324) 사용자: WorldKit 가져오기 클릭(아침).
+- 큐 1 지붕 맵: 이미지 생성 3(10/11) — 집 07·11 지붕은 몸통 타일 맵(Body_t00~t11)을 같이 쓰는 조각이라 따로 구운 Roof 맵이 아직 없음. 따로 굽기 순서를 검수에 묻는 중(A23-122 3D 재검수와 겹침). 폴더 이름 오면 upload_sa_maps.py.
+- 큐 2 대리석: 끝(36ef441) — 크림 12칸, 벽 (255,244,222)·바닥 (238,226,205), 9칸 안 씀.
+- 10/11 추가: tools/api_agent.py read_image(2257314, 시험 149/0, haiku 실제 1번 ~$0.0008).
