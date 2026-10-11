@@ -32,3 +32,16 @@
 | Lavender 연보라 라벤더(배불뚝이 항아리) | HaloFlowerPotHQ_Lavender.png | 대성당 언덕 — 계단·성당 앞 |
 | Daisy 빨강·흰 데이지(육각 화분) | HaloFlowerPotHQ_Daisy.png | 꽃 정원 — 정원 길 가장자리 |
 | Sunflower 작은 해바라기(둥근 통+금 띠) | HaloFlowerPotHQ_Sunflower.png | 기사 훈련장 — 훈련장 가장자리 |
+
+## 꽃 덤불 3종 + 생울타리 2종 (구름 덤불 자리·채집 덤불 6곳, 10/11) — 검수 승인, 고급
+그림: `art/out/s2/halo/bushes_hq/HaloBushHQ_<이름>.png` (1024², 앞면), 시트 `art/review/s2/halo_bushes_hq_check.jpg`. 진짜 잎·꽃이 보이는 쪽(둥근 덩어리 아님).
+
+| 이름 | 파일 | 자리 / Why |
+|---|---|---|
+| Hydrangea 수국 덤불(파랑·흰) | HaloBushHQ_Hydrangea.png | 구름 덤불 자리 — 광장·집 앞 모퉁이 |
+| Rose 장미 덤불(분홍·크림) | HaloBushHQ_Rose.png | 사는 동네·꽃집 둘레 |
+| WhiteBlossom 흰 꽃 관목 | HaloBushHQ_WhiteBlossom.png | 채집 덤불 6곳 — 길가·성벽 밑 |
+| HedgeBlue 파란·흰 꽃 생울타리 | HaloBushHQ_HedgeBlue.png | 길 가장자리 줄(양 끝 열림, 줄지어 놓기) |
+| HedgePink 분홍 장미 생울타리 | HaloBushHQ_HedgePink.png | 정원·집 마당 경계(상자 모양, 줄지어 놓기) |
+
+- 3D: 잎 위주라 **Tripo poly 15,000 이상으로 뽑은 뒤 `tools/halo_lod2.sh`로 줄이기**(검수 지시, 가지·잎이 깨지지 않게).
