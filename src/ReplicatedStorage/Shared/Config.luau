@@ -4321,6 +4321,40 @@ Config.LandShadow = {
 	Color = Color3.fromRGB(46, 24, 34),
 }
 
+-- A23-131 / A23-134 황금 알 줍기, the client's look (EggFx.luau, 게임성 개발 1; the rules and numbers are the server's
+-- Config.Goose.Egg, 게임성 개발 2; contract docs/design/golden_egg_contract_2026-10-11.md). Kinds = the code egg when the
+-- server part has no mesh of its own (Size studs across, 1.3x tall; Glow = a round soft glow that wide, Breathe = the big
+-- egg's swell, Sparkle = round sparkles per s near the camera); ArcHeight = a flight's peak clamp(distance x [1], [2],
+-- [3]); PredictHold = s a previewed pickup stays hidden before it shows again (the server kept it); GoneWait = s a
+-- removed ground egg waits for an EggReturn before it pops as picked; SoundRange = studs others' egg sounds reach;
+-- PickSpeed = my pickup sound's pitch by the eggs held (1st / 2nd / 3rd). Text = the only marks it writes.
+Config.GooseEggFx = {
+	Kinds = {
+		Gold = { Size = 1.2, Color = Color3.fromRGB(255, 205, 60), Sparkle = 3 },
+		Bouncy = { Size = 1.2, Color = Color3.fromRGB(255, 228, 130), Sparkle = 4 },
+		Big = { Size = 2.4, Color = Color3.fromRGB(255, 190, 40), Breathe = 0.08, Sparkle = 5 },
+		Crown = { Size = 1.8, Color = Color3.fromRGB(255, 236, 150), Glow = 4.5, GlowAlpha = 0.86, Sparkle = 8 },
+		Feather = { Size = 0.9, Color = Color3.fromRGB(255, 246, 215), Sparkle = 2 },
+	},
+	ArcHeight = { 0.35, 1.5, 6 },
+	SparkleRange = 60,
+	NoPickAlpha = 0.6,
+	PredictHold = 0.6,
+	RetryAfter = 1.5, -- s: a preview the server turned down is not tried again sooner (no flicker)
+	MoveWindow = 0.5, MoveMin = 1, -- the preview needs MoveMin studs walked in MoveWindow s (the server's away rule)
+	GoneWait = 0.25,
+	SoundRange = 30,
+	PickSpeed = { 1, 1.12, 1.26 },
+	MarkHeight = 6,
+	Home = { Alpha = 0.75, CarryAlpha = 0.45, Height = 0.15 },
+	Boundary = { Dots = 48, Size = 0.7, Alpha = 0.35, Range = 160 },
+	Wobble = { Max = 18, Speed = 14 },
+	Return = { Time = 0.8, Range = 160 },
+	Deliver = { Time = 0.45, Rise = 4 },
+	Shield = { Size = 6, Alpha = 0.8, Range = 100 },
+	Text = { Alert = "!", Nap = "Zzz", Plus = "+%d" },
+}
+
 -- A23-113 ① the server half of the circle (게임성 개발 2, MonsterService LEAP; docs/design/boss_leap_2026-10-11.md): per
 -- monster kind a big landing with the LandShadow attributes (DropAt last, DropTime = Warn, DropRadius, DropPos, plus
 -- DropFrom / DropHeight for the leap's arc). The rule never changes: Warn s later every player whose root is within
@@ -5630,6 +5664,15 @@ Config.Audio = {
 		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
 		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
 		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
+		-- A23-131 황금 알 줍기 (EggFx / Audio; design golden_egg §소리; files from 소리 만들기, "" until then = the stand-in in
+		-- brackets plays): others' egg sounds only within Config.GooseEggFx.SoundRange, Max / Gap keep 30 players quiet
+		EggPlop = { File = "EggPlop", Volume = 0.30, Speed = { 0.95, 1.08 }, Max = 2, Gap = 0.15 }, -- an egg lands (CandyPlop)
+		EggPickup = { File = "EggPickup", Volume = 0.42, Speed = { 1, 1 }, Max = 2, Gap = 0.15 }, -- a pickup, pitch 1 / 1.12 / 1.26 by eggs held (GoldPickup)
+		EggDeliverHalo = { File = "EggDeliverHalo", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- a Knight delivers: a clear bell (GoldPickup)
+		EggDeliverHorns = { File = "EggDeliverHorns", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 0.15 }, -- a Horn delivers: coins (GoldPickup)
+		EggBoing = { File = "EggBoing", Volume = 0.35, Speed = { 0.95, 1.1 }, Max = 2, Gap = 0.15 }, -- the bouncy egg hops away (silent)
+		CrownEgg = { File = "CrownEgg", Volume = 0.55, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- the crown egg is laid: a short fanfare (GooseHonk)
+		GooseSnore = { File = "GooseSnore", Volume = 0.35, Speed = { 1, 1 }, Max = 1, Gap = 2 }, -- the goose naps (silent)
 		KaijuSiren = { File = "KaijuSiren", Volume = 0.70, Speed = { 1, 1 }, Max = 1, Gap = 30 }, -- B5 KaijuPhase -> 'Siren'; CountTick follows
 		KaijuStomp = { File = "KaijuStomp", Volume = 0.45, Speed = { 0.97, 1.03 }, Max = 2, Gap = 1 }, -- B4 Fx Stomp: Volume x1 within 15 studs -> 0 at 60
 		-- the King Slime's landing thud (Config.BossThud, Fx): the kaiju stomp file lower and softer until its own file

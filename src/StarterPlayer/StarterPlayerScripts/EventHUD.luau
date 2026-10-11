@@ -108,6 +108,8 @@ local AC = {
 local TXT = {
 	GooseNext = "Golden Goose %s", -- the phone's next-event line is 150 px
 	GooseTitle = "Golden Goose Tug! %s",
+	EggScore = "%d", -- A23-131 황금 알 (Eggs mode): a side's points on the bar
+	EggCoop = "%d / %d", -- ... co-op: our points / the goal
 	Rescue = "Rescue %d",
 	Poach = "Poach %d",
 	MyCount = "My hits %d",
@@ -595,6 +597,16 @@ local function build()
 		Size = UDim2.new(1 - 2 * sideK, -(tugLeftX + 10 + 4), 1, -4),
 		ZIndex = 6,
 	}, 14, ui.Tug)
+	ui.TugCenterInk = ui.TugCenterText.TextColor3 -- A23-131: the clock goes gold in the crown egg's overtime, then back
+	-- A23-131: the approved crown (Config.UIArt.Parts.Crown) left of the clock in the overtime; nil = the gold clock alone
+	ui.TugCrown = Art.image("Crown", {
+		Name = "OvertimeCrown",
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.new(0.5, -22, 0.5, 0),
+		Size = UDim2.fromOffset(22, 15),
+		Visible = false,
+		ZIndex = 7,
+	}, ui.Tug)
 	ui.TugSub = Art.text("light", {
 		Name = "GooseSub",
 		AnchorPoint = Vector2.new(0.5, 0),
@@ -952,6 +964,29 @@ local function updateGoose(now)
 		local timeLeft = Util.FormatTime(num(gsAttr("GooseEndsAt", 0)) - now)
 		local faction = myAttr("Faction", "None")
 		local mine = math.floor(math.max(0, num(myAttr("GooseCount", 0))))
+		-- A23-131 황금 알 줍기 (Config.Goose.Mode "Eggs", EggFx.Bar; contract golden_egg_contract §5): the bar alone - the
+		-- Knights' points left (gold fill), the Horn Legion's right, the time in the middle; co-op = "50 / 160" in that
+		-- side's colour; the crown egg's overtime = the crown icon and a gold clock. No line under it (A23-130).
+		local eggFx = C and C.EggFx
+		if type(eggFx) == "table" and type(eggFx.On) == "function" and eggFx.On() then
+			setVisible(ui.TugSub, false)
+			local b = eggFx.Bar({ Rescue = rescue, Poach = poach, EndsAt = gsAttr("GooseEndsAt", 0),
+				OvertimeUntil = gsAttr("GooseOvertimeUntil", 0), Mode = gsAttr("GooseMode", "Versus"),
+				CoopSide = gsAttr("GooseCoopSide", "None"), CoopTarget = gsAttr("GooseCoopTarget", 0) }, now)
+			local col = (b.Coop and b.Side == "Horns") and AC.WarHorns or AC.WarHalo
+			if ui.TugLeft.BackgroundColor3 ~= col then ui.TugLeft.BackgroundColor3 = col end
+			setVisible(ui.TugRight, not b.Coop)
+			ui.TugLeft.Size = UDim2.fromScale(b.Fill, 1)
+			setVisible(ui.TugLeft, b.Fill > 0.001)
+			setText(ui.TugLeftText, b.Coop and string.format(TXT.EggCoop, b.Left, b.Right) or string.format(TXT.EggScore, b.Left))
+			setText(ui.TugRightText, b.Coop and "" or string.format(TXT.EggScore, b.Right))
+			setText(ui.TugCenterText, Util.FormatTime(b.Seconds))
+			local clock = b.Overtime and GOLD or ui.TugCenterInk
+			if clock and ui.TugCenterText.TextColor3 ~= clock then ui.TugCenterText.TextColor3 = clock end
+			if ui.TugCrown then setVisible(ui.TugCrown, b.Overtime) end
+			return
+		end
+		if ui.TugCrown then setVisible(ui.TugCrown, false) end
 		-- A23-14 "함께 구조 / 함께 밀렵": only one tug side is on the server, so its own total fills toward
 		-- GooseCoopTarget in that side's colour (no rival bar, no "줄다리기" title). Texts: Config.Goose.Text.Hud*.
 		local gt = Config.Goose and Config.Goose.Text
