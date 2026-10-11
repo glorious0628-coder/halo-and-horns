@@ -1,0 +1,38 @@
+[
+ {
+  "key": "IconGlowcap_HQ",
+  "ref": "Glowcap_m4",
+  "quality": "high",
+  "prompt": "Use the attached image as the exact design reference: redraw this same game icon object with the same shape, colors, proportions and details as a clean finest-quality version, keeping the thick dark navy outline with a crisp hard edge, no glow or light rays, one single object centered filling 70 percent of a square with a wide margin on a plain flat medium gray background, shadowless, no text, no face."
+ },
+ {
+  "key": "CraftRing_HQ",
+  "ref": "CraftRing_m1",
+  "quality": "high",
+  "prompt": "Use the attached image as the exact design reference: redraw this same game icon object with the same shape, colors, proportions and details as a clean finest-quality version, keeping the thick dark navy outline with a crisp hard edge, no glow or light rays, one single object centered filling 75 percent of a square with a wide margin on a plain flat medium gray background, shadowless, no text, no face. The center of the ring stays completely empty."
+ },
+ {
+  "key": "CraftTarget_HQ",
+  "ref": "CraftTarget_m1",
+  "quality": "high",
+  "prompt": "Use the attached image as the exact design reference: redraw this same game icon object with the same shape, colors, proportions and details as a clean finest-quality version, keeping the thick dark navy outline with a crisp hard edge, no glow or light rays, one single object centered filling 75 percent of a square with a wide margin on a plain flat medium gray background, shadowless, no text, no face."
+ },
+ {
+  "key": "CraftIngot_HQ",
+  "ref": "CraftIngot_m1",
+  "quality": "high",
+  "prompt": "Use the attached image as the exact design reference: redraw this same game icon object with the same shape, colors, proportions and details as a clean finest-quality version, keeping the thick dark navy outline with a crisp hard edge, no glow or light rays, one single object centered filling 75 percent of a square with a wide margin on a plain flat medium gray background, shadowless, no text, no face."
+ },
+ {
+  "key": "HaloNewHouse_Garden7_right_v4",
+  "ref": "Garden7_front",
+  "quality": "high",
+  "prompt": "Use the attached image as the exact design reference of this house and only turn the camera around it; keep every shape, proportion, color, roof and decoration identical. The camera is straight-on at mid-height, exactly perpendicular to the described wall (no corner view, no diagonal). Show the RIGHT side wall straight-on: the front with the door is at the LEFT edge. A narrow tall three-story cream marble tower house with a blue cone roof and gold star weathervane; every window is an arch window with a flower box. The ONLY balcony is one small gold railing balcony in the middle of this wall facing the camera on the TOP window floor, at the same height as the highest windows just under the roof. The middle floor below has just an arch window with a flower box, no balcony. Whole house in frame, wide margin, centered, plain flat medium gray background, shadowless. Same glossy chunky toy-like render, cream marble, blue tiles, gold trim. No people, no faces, no lettering, no light rays."
+ },
+ {
+  "key": "GameIcon_C_HQ",
+  "ref": "GameIcon_C_m2",
+  "quality": "high",
+  "prompt": "Use the attached image as the exact design reference: redraw this same game icon with the same character, shapes, colors, proportions, background and composition as a clean finest-quality version. The picture fills the whole square edge to edge as a full-bleed game thumbnail, no transparent area, no border frame, no text, no letters, no light rays."
+ }
+]
