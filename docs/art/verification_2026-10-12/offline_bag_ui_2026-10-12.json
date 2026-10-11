@@ -1,5 +1,5 @@
 {
-  "checks": 122,
+  "checks": 124,
   "failed": 0,
   "mutations": [
     {
@@ -194,6 +194,16 @@
     },
     {
       "name": "no text table",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the size watcher is never dropped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a taller window never redraws",
       "applied": true,
       "caught": true
     },
