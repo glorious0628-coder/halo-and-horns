@@ -264,20 +264,24 @@ end
 -- per ProbeEvery s with this frame's value and the window's worst (walk / run / jump included) - per hand: dHand = the
 -- hand's centre to the weapon line, dGrip = its grip attachment to the line, axis = its held axis (-Z) against the
 -- line, fore = the forearm against the line (degrees, 0..90). The line = the weapon's Handle part when it has one (two-
--- hand swords), else through the right grip along the right hand's -Z. Returns { Right = {..}, Left = {..} }
+-- hand swords), else through the holding hand's grip along its -Z (GripHand; * marks it in the line). Returns
+-- { Right = {..}, Left = {..} }
 function WeaponPose.Measure(char, model)
 	local function at(hand, att)
 		local a = hand:FindFirstChild(att)
 		return (a and a:IsA("Attachment")) and a.WorldPosition or hand.Position
 	end
-	local rh = char:FindFirstChild("RightHand")
-	if not rh then return nil end
+	-- the hand the server welded the weapon to (CharacterVisuals GripHand: the bows sit in the left hand)
+	local holdName = model:GetAttribute("GripHand")
+	holdName = (holdName == "LeftHand" or holdName == "RightHand") and holdName or "RightHand"
+	local holder = char:FindFirstChild(holdName)
+	if not holder then return nil end
 	local handle = model:FindFirstChild("Handle")
 	local p0, dir
 	if handle and handle:IsA("BasePart") then
 		p0, dir = handle.Position, handle.CFrame.UpVector
 	else
-		p0, dir = at(rh, "RightGripAttachment"), rh.CFrame.LookVector
+		p0, dir = at(holder, (holdName == "LeftHand" and "Left" or "Right") .. "GripAttachment"), holder.CFrame.LookVector
 	end
 	local function off(p)
 		local v = p - p0
@@ -291,7 +295,7 @@ function WeaponPose.Measure(char, model)
 		local hand, lower = char:FindFirstChild(side .. "Hand"), char:FindFirstChild(side .. "LowerArm")
 		if hand and lower then
 			out[side] = { dHand = off(hand.Position), dGrip = off(at(hand, side .. "GripAttachment")),
-				axis = ang(hand.CFrame.LookVector), fore = ang(lower.CFrame.UpVector) }
+				axis = ang(hand.CFrame.LookVector), fore = ang(lower.CFrame.UpVector), Holds = hand == holder }
 		end
 	end
 	return out
@@ -318,8 +322,8 @@ function WeaponPose.ProbeStep(me, now)
 	for _, side in { "Right", "Left" } do
 		local v, w = m[side], P.Max[side]
 		if v and w then
-			table.insert(parts, string.format("%s dHand=%.2f(max %.2f) dGrip=%.2f(max %.2f) axis=%.0f(max %.0f) fore=%.0f(%.0f..%.0f)",
-				side, v.dHand, w.dHand, v.dGrip, w.dGrip, v.axis, w.axis, v.fore, w.foreLo, w.foreHi))
+			table.insert(parts, string.format("%s%s dHand=%.2f(max %.2f) dGrip=%.2f(max %.2f) axis=%.0f(max %.0f) fore=%.0f(%.0f..%.0f)",
+				side, v.Holds and "*" or "", v.dHand, w.dHand, v.dGrip, w.dGrip, v.axis, w.axis, v.fore, w.foreLo, w.foreHi))
 		end
 	end
 	print(table.concat(parts, " | "))
