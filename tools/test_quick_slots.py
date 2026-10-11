@@ -72,8 +72,9 @@ def statics(src: dict) -> list[dict]:
         {"check": "the bag (Items, no scroll chosen) shows the quick items rows", "ok":
          "if not mode and C and type(C.QuickSlots) == \"table\" and type(C.QuickSlots.BagRows) == \"function\" then" in src["PANELS"]
          and "pcall(C.QuickSlots.BagRows, parent, REG.Kit())" in src["PANELS"]},
-        {"check": "A23-110 KO1 rows: Guide QuickSlot opens the bag, PotionShop shows the way to the seller", "ok":
-         'if g == "PotionShop" or g == "QuickSlot" then' in src["HUD"] and 'panels.Open("Items")' in src["HUD"]
+        {"check": "A23-110 KO1 rows: Guide QuickSlot opens the bag (H-1: Bag on its Use tab), PotionShop shows the way to the seller", "ok":
+         'if g == "PotionShop" or g == "QuickSlot" then' in src["HUD"]
+         and 'panels.Open(bag and "Bag" or "Items", bag and { Tab = "Use" } or nil)' in src["HUD"]
          and "pcall(vitals.ShowShopWay)" in src["HUD"] and "function VitalsUI.ShowShopWay()" in src["VITALS"]},
         {"check": "A23-110 KO1: while PotionSip is set a full bar may still drink (the server's practice sip)", "ok":
          'if player:GetAttribute(sip) == true then return count, "Use", true end' in src["VITALS"]

@@ -45,7 +45,7 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills" },
+		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 }
 local BODY_FONT = Enum.Font.GothamMedium
@@ -1107,6 +1107,13 @@ local function layoutRoot()
 	local hang = FRAME.TitleH / 2
 	local availH = math.max(220, h - top - 12 - hang)
 	local winW = math.max(280, math.min(WINDOW_MAX_W, w - 24))
+	-- H-1 (게임성 개발 4): a registered window may ask for its own width (the bag's narrow / wide), never past the max
+	local want = currentId ~= nil and REG.Opts[currentId] ~= nil and REG.Opts[currentId].Width or nil
+	if type(want) == "function" then
+		local ok, v = pcall(want)
+		want = ok and v or nil
+	end
+	if type(want) == "number" and want == want then winW = math.max(280, math.min(want, WINDOW_MAX_W, w - 24)) end
 	-- 창 꾸미기: the plate is as tall as its content (a story page, a shop with two rows ... keeps the world visible
 	-- around it); registered fixed-body windows (tabs) keep the full height
 	local maxH = math.min(WINDOW_MAX_H, availH)
@@ -3473,7 +3480,8 @@ end
 
 -- BB13: another client module adds its window. opts = { Build = fn(parent, kit, arg) -> update?, Title = string |
 -- fn() -> string, FixedBody = bool (a plain frame instead of the scrolling list), Rebuild = { [attr] = true } | false,
--- KeepScroll = bool (a Rebuild attribute keeps the scroll), Cleanup = fn() }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
+-- KeepScroll = bool (a Rebuild attribute keeps the scroll), Cleanup = fn(), Width = du | fn() -> du (H-1: the window's own
+-- width, at most the usual one) }. Call it in the module's Init (ClientMain ORDER after "Panels"): window keys go live at
 -- Keybinds.Start, the HUD [메뉴] squares show once their window is registered
 function Panels.Register(id, opts)
 	if type(id) ~= "string" or type(opts) ~= "table" or type(opts.Build) ~= "function" then
@@ -3552,7 +3560,7 @@ function Panels.Open(id, arg)
 		ITEMS.Result, ITEMS.Note = nil, nil -- a fresh item list starts without an old result line
 		WSHOP.Session = nil -- switching panels is not a manual shop farewell
 	end
-	if id == "Items" then ITEMS.Seen = true end -- B14: the menu glow stops once the list was seen
+	if id == "Items" or id == "Bag" then ITEMS.Seen = true end -- B14: the menu glow stops once the list (H-1: the bag) was seen
 	openedFromMenu = fromMenu
 	REG.Arg = arg -- BB13: a registered window's Build gets it (e.g. Settings { Tab = "Keys" })
 	currentId = id
@@ -3651,6 +3659,12 @@ function Panels.OnEnhanceResult(data)
 	ITEMS.Result, ITEMS.ResultAt, ITEMS.Note = r, os.clock(), nil
 	ITEMS.CheckPending()
 	if currentId == "Items" then ITEMS.Rebuild(true) end
+end
+
+-- H-1 bag (BagUI): the last scroll result (the table above) and when it came (os.clock), nil before the first one
+function Panels.LastEnhance()
+	if not ITEMS.Result then return nil, nil end
+	return table.clone(ITEMS.Result), ITEMS.ResultAt
 end
 
 ------------------------------------------------------------------ loops / wiring

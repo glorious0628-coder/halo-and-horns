@@ -5327,7 +5327,9 @@ function L.StoryTap(st, zone, panels)
 	if g == "PotionShop" or g == "QuickSlot" then
 		local vitals = C and C.VitalsUI
 		if g == "QuickSlot" then
-			if panels and panels.Open then panels.Open("Items") end
+			-- H-1: the bag on its Use tab (the potion picked, its quick slot buttons right there); the old list until then
+			local bag = panels and type(panels.Has) == "function" and panels.Has("Bag")
+			if panels and panels.Open then panels.Open(bag and "Bag" or "Items", bag and { Tab = "Use" } or nil) end
 		elseif type(vitals) == "table" and type(vitals.ShowShopWay) == "function" then
 			pcall(vitals.ShowShopWay)
 		end

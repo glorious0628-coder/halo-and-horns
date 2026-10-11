@@ -1,0 +1,224 @@
+{
+  "checks": 122,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "unowned weapons show",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the equipped flag lost",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "empty potions show",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every item Common",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "spares never parsed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "everything is new",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Newest = oldest first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "grade sort ignores the grade",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "wide never wider",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a squeezed window keeps 8 columns",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a full bar may drink",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no cooldown on the potion",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a +Max weapon can be enhanced",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a +0 source can send",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the source can't be dropped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a +Max step never drops back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the confirm hides the chance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fail line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "scrolls during a fight",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "equip below MinLevel",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "weapon swap during a fight",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no power change",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no quick slot row",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "From names unseen monsters",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the payload keeps unknown ids",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every payload resets the base",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "two equips at once",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the weapon change never answers",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Use does not switch to the weapons",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Cancel forgets the scroll",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the sort is not saved",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the size does not relayout",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no empty slots",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no worn row",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a count of 1 is written",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "leaving a tab never clears its new things",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the fight tag never repaints",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink sends nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no text table",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bag is never loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Panels ignores the bag's width",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bag never stops the scroll glow",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the KO1 quick slot row opens the old list",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "H-1 가방 창 (게임성 개발 4, 2026-10-12; SPEC A23-32 / A23-19 / A23-99 / A23-130 / A23-98 / A23-127 / A23-133, design\ndocs/design/beta_basics_2026-10-05.md BB7 'user decision 2026-10-06'), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and BagUI.luau in tools/fixtures/bag_ui_offline.luau (Players /\nInstance tree / Panels / UIKit / Settings / QuickSlots doubles). Checks: the window \"Bag\" is registered (fixed body,\nredraws itself, its own narrow / wide width <= 780 du, an L10n text table); the model - owned weapons with their own\n+N and the equipped one, potions with stock, known items only, the tab of each kind, the BB6 grades, spares\n('tier:plus', A23-127), new = gained after the first data and not looked at; the four sorts (Newest = the server's order\nnumbers, Name, Grade, Type) are the Settings.BagSort options and BagWide is a saved Bool; columns 4 / 8 (>= 3 when the\nwindow is squeezed); the potion button (cooldown, full, the KO1 sip, none left, busy); the scroll steps (enhance:\n+Max can't be picked; transfer: source +1 or more, receiver below +Max, tap the source again to drop it; a step drops\nback when its weapon / scroll is gone); the detail column (Equipped / Equip / From Lv N / In a fight / Checking…, the\npower change, a potion's Drink + quick slots, a scroll's Use, a material's price + seen monsters that drop it, the\nconfirm with before → after + chance + the fail result before anything is sent); the Inventory payload filter and the\n'new' base; the window itself (four tabs, the worn row with empty armor / ring / pet gear places, grade slots, +N /\ncount / equipped marks, empty slots filling the rows, tap = pick, Equip -> EquipWeapon once until the answer, Use ->\npick -> Enhance -> UseItem, Cancel, Drink -> UsePotion, quick slot set / clear, the sort cycle, the size toggle, the\ngold line, tab counts and dots of new things that clear when the tab is left, the fight tag repainting in place).\nStatic: ClientMain loads BagUI after Panels; Panels gives a registered window its own width, has the bag icon, stops the\nB14 glow when the bag opens and hands out the last scroll result; the HUD Bag tile / I key open \"Bag\" (Items until\nthen); the KO1 quick slot row opens the bag on Use. Mutations: each must be caught.",
+  "studioCalls": 0
+}
