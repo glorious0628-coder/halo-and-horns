@@ -616,7 +616,8 @@ ST.bridges = function()
 			for _, sx in { -1, 1 } do
 				local A = d.CFrame:PointToWorldSpace(Vector3.new(sx * half, d.Size.Y / 2 + 0.3, -d.Size.Z / 2))
 				local B = d.CFrame:PointToWorldSpace(Vector3.new(sx * half, d.Size.Y / 2 + 0.3, d.Size.Z / 2))
-				railPath("bridges", "Rail_" .. d.Name .. (sx < 0 and "L" or "R"), { A, B })
+				-- "Brg", not "Bridge": a kit piece named with Config.Ground.KitWalk is walking ground in the game (10/12)
+				railPath("bridges", "Rail_" .. (string.gsub(d.Name, "^Bridge_", "Brg")) .. (sx < 0 and "L" or "R"), { A, B })
 			end
 		end
 	end
