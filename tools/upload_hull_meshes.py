@@ -32,8 +32,8 @@ return "RES " .. tostring(res) .. " ID " .. tostring(id)
 '''
 
 
-def hull(kit, t):
-    f = os.path.join(ROOT, "build", "prop_kit_hull", "%s_D2_%s.obj" % (kit, t))
+def hull(kit, t, d="prop_kit_hull"):
+    f = os.path.join(ROOT, "build", d, "%s_D2_%s.obj" % (kit, t))
     vs, ts = [], []
     for ln in open(f, encoding="utf-8"):
         if ln.startswith("v "):
@@ -55,6 +55,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--kits", required=True)
     ap.add_argument("--thick", default="035")
+    ap.add_argument("--dir", default="prop_kit_hull", help="folder under build/ (the 0.035 outline run: prop_kit_hull035)")
     ap.add_argument("--dry", action="store_true")
     ap.add_argument("--replace", action="store_true")
     a = ap.parse_args()
@@ -65,7 +66,7 @@ def main():
             if f"D2_hull_{t}" in rec.get(kit, {}) and not a.replace:
                 print("skip (recorded)", kit, t)
                 continue
-            lit, c, nv, nt = hull(kit, t)
+            lit, c, nv, nt = hull(kit, t, a.dir)
             print(kit, t, "verts", nv, "tris", nt, "centre", [round(x, 4) for x in c])
             todo.append((kit, t, lit, c))
     if a.dry or not todo:
