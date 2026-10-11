@@ -299,6 +299,8 @@ local function context()
 end
 
 ----------------------------------------------------------------- drawing
+-- 검수 10/11 (main photo: ~11 px in a short PC window): every label takes the UIKit text style (Title for names /
+-- titles / the state, Body for the rest), whose floors are real screen px (PC 18 px Body), then gets its colour back
 local function label(kit, parent, text, size, color, bold)
 	local l = Instance.new("TextLabel")
 	l.BackgroundTransparency = 1
@@ -312,6 +314,11 @@ local function label(kit, parent, text, size, color, bold)
 	l.Text = text
 	l.LayoutOrder = kit.NextOrder()
 	l.Parent = parent
+	local ui = C and C.UIKit
+	if type(ui) == "table" and type(ui.StyleText) == "function" then
+		pcall(ui.StyleText, l, bold and "Title" or "Body")
+		l.TextColor3 = color
+	end
 	return l
 end
 
@@ -460,7 +467,8 @@ local function drawPassive(kit, parent, ctx)
 		box.Parent = parent
 		local fd = sec.Faction and type(Config.Factions) == "table" and Config.Factions[sec.Faction] or nil
 		label(kit, box, sec.Title, T.Body, (fd and fd.Color) or kit.Theme.Text, true)
-		for _, line in sec.Lines do label(kit, box, "• " .. line, T.Small, kit.Theme.SubText) end
+		-- one wrapped paragraph (five bullet rows made the window too tall once the text floors grew)
+		label(kit, box, table.concat(sec.Lines, " · "), T.Small, kit.Theme.SubText).Name = "PassiveLines"
 	end
 end
 

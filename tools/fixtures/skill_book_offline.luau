@@ -82,6 +82,11 @@ local panels = { Register = function(id, opts) reg[id] = opts return true end }
 local arts = {}
 local UIKit = {
 	ArtId = function(name) return arts[name] end,
+	StyleText = function(l, style)
+		l.Style = style
+		l.TextColor3 = "white" -- the real style paints the words; the window puts its colour back
+		return l
+	end,
 	ArtImage = function(name, props)
 		local o = { ClassName = "ImageLabel", Image = name, Name = props.Name }
 		table.insert(made, o)
@@ -239,7 +244,18 @@ check(opened[1] and opened[1][1] == "Settings" and type(opened[1][2]) == "table"
 local icons = 0
 for _, o in made do if o.ClassName == "ImageLabel" and o.Image == "Skill_Warrior_Q" then icons += 1 end end
 check(icons == 1, "the Q icon falls back to the art that exists", icons)
-check(findText("Passive") ~= nil and findText("• " .. Config.Factions.Halo.Perks[1]) ~= nil, "the passive part is drawn")
+local pl = findText(Config.Factions.Halo.Perks[1])
+check(findText("Passive") ~= nil and pl ~= nil and pl.Name == "PassiveLines" and string.find(pl.Text, Config.Factions.Halo.Perks[1], 1, true) == 1
+	and string.find(pl.Text, Config.Factions.Halo.Perks[2], 1, true) ~= nil, "the passive part is drawn (one paragraph per section)")
+-- the text floors (검수 10/11): every label goes through UIKit.StyleText and keeps its own colour
+local unstyled, titles, bodies = 0, 0, 0
+for _, o in texts() do
+	if o.Style == "Title" then titles += 1 elseif o.Style == "Body" then bodies += 1 else unstyled += 1 end
+end
+check(unstyled == 0 and titles > 0 and bodies > 0, "every label takes a UIKit text style (real px floors)", unstyled)
+check(textOf("Name").Style == "Title" and textOf("Numbers").Style == "Body" and pl.Style == "Body",
+	"names Title, numbers and passive lines Body", textOf("Numbers").Style)
+check(findText(W.QZHalo).TextColor3 == Config.Factions.Halo.Color, "the style keeps the faction line colour")
 -- live repaint
 attrs.Mana = 5
 update()

@@ -1,5 +1,5 @@
 {
-  "checks": 56,
+  "checks": 59,
   "failed": 0,
   "mutations": [
     {
@@ -94,6 +94,16 @@
     },
     {
       "name": "the faction line in plain gold",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "plain labels again (tiny text in short PC windows)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the style's white wins over the colours",
       "applied": true,
       "caught": true
     },
