@@ -8,11 +8,13 @@
 - A23-110 첫 KO King 떨어지는 그림 + 남의 King 쿵 없음(ae592b44, 서버 DropAt 없으면 무동작).
 - A23-108 무기 쥐는 법 9개(dev1-grips2, 검수 병합 390918f1).
 - 서버 대상 힌트 켜기 `Config.AutoFace.ServerHint = true` + auto_face 시험(이 인계 커밋에 같이; 브랜치 dev1-hint c4d86650와 같은 내용).
+- (새 세션 10/11) BB9 스킬 창 SkillBook.luau + 진영 줄(dfea1c5d, test_skill_book 56·22/22): 칸 잠김 동안 K는 칸만 흔듦.
+- (새 세션 10/11) 걷는 바닥: Config.Ground.Tag = "WalkGround", Config.GroundRoots, Shared/Ground.luau; LandShadow·SkillFx·Fx 사용(c45ed8c6, test_ground_rays 23·17/17). 서버 3곳은 개발 2 몫(공유 노트 dev1_walkground_contract_2026-10-11.md).
 
 ## 다음 큐 (순서대로)
 1. 메인 반영 사진 확인 뒤 고칠 것: Q·Z·X 6키트 1초 검사, 쥐기 9조합, 메뉴 칸 자물쇠, King 떨어지기.
 2. 스킬 소리 41개 연결(소리 만들기가 id 보내면): Config.Audio.Files/Sounds + Audio.luau(시전·맞음, 같은 슬롯 같은 음량, 장판 틱 -6dB).
-3. 스킬 창 진영 줄: Config.Skills.Text.QZHalo / QZHorns(개발 3이 넣음)를 스킬 창에.
+3. ~~스킬 창 진영 줄~~ 끝(dfea1c5d). 사진 확인 뒤 손볼 것만.
 4. 개발 2가 Z·X 패킷에 ContactDelay·LaunchDelay·HitDelay, Q·Z·X에 Healed·Stole을 넣으면 SkillFx가 바로 씀(필드 이름 그대로).
 5. 장인 기능 클라(채집·제작·망치질·장비 칸·물약·펫 연구) — 빛 마을 끝난 뒤 검수가 순서 줌.
 6. 나중: 광전사 대검 두 손 쥐기, 슬롯별 화면 흔들림 세기, 한국어 모드(docs/design/l10n_client_2026-10-10.md, 빛 마을 뒤).
