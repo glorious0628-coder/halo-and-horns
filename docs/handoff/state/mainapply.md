@@ -10,7 +10,7 @@
 ## 오늘 한 일 (사진: docs/art/verification_2026-10-11/main_apply/)
 skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bridge/(다리 위 스킬 원), twohand_horns/·twohand_horns2/·twohand_v2/·twohand_v2b/(grips9/ 포함)·twohand_v3/(쥐기), twohand_mage/(Lv25 마법사 창), halo_light_c2c/(낮·밤), halo_entrance/·halo_entrance2/(입구 전체).
 - 시험 스크립트(git 무시): build/mainapply_2026-10-09b/ play_skillbook.py, play_bridge.py, play_twohand.py, play_grips_v2.py(9조합+GripProbe), play_v3.py(마법사+조명+입구; SKIPGRIP=1). **임시 Tmp 스크립트 없이 execute_luau 직접**(캐릭터 시험: Level·SkillSlots·WeaponTier 속성을 서버에서 올림, 조합 변경은 Faction/Class 속성, 조명은 `ServerScriptService.DebugCommand:Invoke("", "Clock", 시)`, 이동은 VISIT(x,z,yaw)).
-- 알려진 것: 연금술사는 속성 전환으로 probe 키가 Warrior_Neutral로 나옴(진짜 직업 선택 경로 필요).
+- 알려진 것: 직업 id는 Warrior/Mage/Archer뿐(연금술사 = Mage+Neutral, 대장장이 = Warrior+Neutral, 조련사 = Archer+Neutral). "Alchemist"를 Class로 넣으면 Warrior로 떨어짐(개발 1 설명). 연금술사 사진은 twohand_v2/grips9/Neutral_Mage_front.png(probe Mage_Neutral: Right dGrip=0.00).
 
 ## 큐
 1. 새 검수가 병합한 뒤 sync 부탁 → sync·Play 오류 0·사진.
