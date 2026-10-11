@@ -966,6 +966,11 @@ runGroup("ground cover and effects never block (검수 2026-10-11)", function()
 	check(not fits(w, 500, 0, SLIME), "a collidable part named Flower...: blocked (only non-collidable ones pass)")
 	prop(w.Decor, "Kit_M_PotFlowers", 520, 0, 3, 3, 3, 0)
 	check(not fits(w, 520, 0, SLIME), "flowers in a pot (NotPass 'Pot'): blocked")
+	-- 최종 검수 2026-10-12: a puddle passes, its stone rim (non-collidable, 8.2 x 2.5 x 8.2 in the meadow) blocks
+	part(w.Decor, "Puddle", { x = 540, y = 0.05, z = 0, sx = 6, sy = 0.1, sz = 6, col = false, query = false, class = "Part" })
+	check(fits(w, 540, 0, SLIME), "a puddle: free")
+	prop(w.Decor, "Kit_M_PuddleRim", 560, 0, 8.2, 2.5, 8.2, 0)
+	check(not fits(w, 560, 0, SLIME), "a puddle's stone rim (NotPass 'Rim', non-collidable): blocked")
 	SCF.PassRule = false
 	w.G.CLEAR.Grid = nil
 	local off = not fits(w, 400, 0, PRINCE)

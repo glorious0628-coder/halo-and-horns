@@ -170,6 +170,7 @@ MUTATIONS = [
     # ground cover / effects
     ("pass rule ignores CanCollide", M, "SC.PassRule == false or part.CanCollide then return false end",
      "SC.PassRule == false then return false end"),
+    ("a puddle rim passes (NotPass without Rim)", C, '"Basket", "Box", "Rim" },', '"Basket", "Box" },'),
     ("NotPass ignored", M, "\tfor _, k in SC.NotPass or {} do\n\t\tif string.find(name, k, 1, true) then return false end\n\tend\n", ""),
     ("pass rule never applies", M, "\t\t\t\t\telseif not CLEAR.Passes(c) then", "\t\t\t\t\telseif true then"),
     ("pass switch ignored", M, "if type(SC) ~= \"table\" or SC.PassRule == false or part.CanCollide then",
