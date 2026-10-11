@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 10개 = 사용자 가져오기 대기)
+
+- **껍데기 메시 1묶음 10개(최종 검수 승인, 이미지 생성 4 "고침 뒤, 올려")**: CreateAssetAsync는 이 Studio에서 "not available yet"(올라간 것 없음). -> **사용자가 WorldKit(창 이름 'Game')에서 3D 가져오기**: 폴더 C:/Users/glori/Documents/Roblox/Game/build/hull_import (Hull_<키>.obj 10개, Ctrl+A). 들어오면 `STUDIO_NAME=Game py tools/read_imported_hulls.py --clean` -> MeshId·위치 읽고 art/models/worldkit/prop_hull_assets.json 기록 + 임시 파트 지움 -> 이미지 생성 4에 ID + 피벗(import_pos vs D2_centre 비교)을 돌려줌. 나머지 46개는 사진 판정 뒤 10개씩 다음 가져오기에.
+- 스튜디오 이름 주의: WorldKit = STUDIO_NAME=Game.
+
 # 이미지 개발 — 상태 (2026-10-12: 천 v3b 통과)
 
 - **천 v3b 통과(디자인 검수)**: WorldKit HH_Fabric 적용 끝·사진 push. 메인 교체 한 줄(color 130243612742018 / normal 78044174442027 / rough 111200474370652)은 디자인 검수가 최종 검수 → 메인 반영 1로 넘김. **메인 교체 확인 뒤**: v2 맵 ID(76316272601072·102973991596175(normal은 v1과 공용이었음)·119858177335377)와 art/ui/halo_tile/fabric_v2 파일을 안 쓰는 ID로 기록·정리(삭제 전 확인).
