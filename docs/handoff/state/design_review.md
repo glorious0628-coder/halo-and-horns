@@ -11,8 +11,11 @@
 - 이미지 생성 2 키트 4면 1차: FlowerBush·GatherBush·벽등 머리(잘라서) 통과 → Tripo 묶음(이미지 생성 4가 돌림, 최종 검수 승인 26개 ≈ 1,430점).
 - 이미지 생성 2 키트 4면 2차(2ea2872): WhiteRock a·b·c·BreadBasket·Hedge 통과(묶음 2 조건).
 
+- 이미지 생성 2 4면 3차: 종·벽등 머리·WateringCan right_v2·PotFlowers A·C·D·E·F·Planter D 통과(Tripo 묶음 2). 무기 High 앞면 28장 통과(비율 도구 HQ로 다시 돌림 + 크롭 6곳).
+
 ## 기다리는 것
-- 이미지 생성 2: 종만 4면(High 20 OK), 벽등 머리 자른 4장, 벽등 받침 앞·뒤 Medium, WateringCan right High 1장(5 OK), 무기 High 28장(`art/review/s2/weapons_t13_hq_all.jpg`, 비율 숫자와 같이).
+- 이미지 생성 2 순서(최종 검수 확정): 다시 7장(Planter_A front, Planter_E front·left·right, Balustrade_F front·left·right — 3/4 카메라) → 가방 재료 아이콘 12(Medium 시트 → 내가 고름 → High 60 → 잘라내기 시트 → 올리기 12개는 최종 검수 승인) → 무기 뒤·왼·오른 84장(손잡이 아래로 통일, 직업마다 시트) → 새 집 7채 왼·오른·뒤 21장 → 게임 아이콘 Medium 후보.
+- 아이콘 키: IconPetal·IconCaptainBadge·IconSeaShell·IconCrystalShard·IconMeadowHerb·IconCopperOre·IconOakLog·IconGlowcap·IconIronOre·IconSilverOre·IconMoonCrystal·IconCrownDust (게임성 개발 4에 알림).
 - 이미지 생성 4: 소품 사진 + 밋밋함 비교 시트(소품 BenchA·Lantern_A·Beehive·Planter 1; 2D|A 지금|B 메인 C2c 빛|C Blender 곡률·AO SurfaceAppearance|D1 Highlight|D2 뒤집힌 껍데기; 낮·밤, 5·15칸, 파트·삼각형·텍스처 수). 빛 표 = `docs/design/light_compare_worldkit_vs_main_2026-10-11.md`. 우연한 얼굴(Lantern_A_q34 오른쪽 아래 흰 덩어리+초록 점) 고침 확인.
 - C·D2 올리기 약 9개 = 최종 검수 승인 대기.
 - 이미지 생성 3: Tripo HD 장식(돔·문짝·등불·차양 틀) Blender 손보기 — A23-125 세 단계·12항목.
