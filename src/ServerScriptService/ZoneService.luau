@@ -36,7 +36,7 @@ local WARN_INTERVAL = 10
 local MAX_DEST_LENGTH = 64
 local RESCUE_Y = -20 -- addendum A10: below this (anywhere) -> home spawn
 local ENEMY_TOWN_FALLBACK = "You can't enter the other side's town!" -- used only if Config.Text.EnemyTown is missing
-local KAIJU_TOWN_FALLBACK = "A Kaiju can't enter towns!" -- TODO(config): Config.Text.KaijuNoTown (used if present)
+local KAIJU_TOWN_FALLBACK = "A Kaiju can't enter towns!" -- used only if Config.Text.KaijuNoTown is missing
 
 local S = nil
 local zoneIds = {} -- [Player] = cached zone id
@@ -320,9 +320,8 @@ local function applyZone(player, zone, pos)
 	player:SetAttribute("ZonePvP", pvp)
 	if pvp and not wasPvP and os.clock() - (pvpNoteAt[player] or -math.huge) >= PVP_NOTE_GAP then
 		pvpNoteAt[player] = os.clock()
-		if getFaction(player) == "Neutral" then
-			notify(player, fmt("EnteredPvPNeutral"), "info") -- CR-L24: 장인 길드 is immune to PvP
-		else
+		-- A23-130: the Artisan Guild is immune to PvP, so no line for it (EnteredPvPNeutral off; the HUD chip says it)
+		if getFaction(player) ~= "Neutral" then
 			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
 		end
 	elseif not pvp and wasPvP and (Config.Nudges or {}).EnteredSafe ~= false then
@@ -790,8 +789,7 @@ function ZoneService.Travel(player, destId, instant)
 	local start = os.clock()
 	local token = {}
 	channels[player] = { Token = token, Start = start } -- CR-L18
-	player:SetAttribute("TravelingUntil", Util.Now() + Config.Travel.ChannelSeconds)
-	notify(player, fmt("Traveling"), "info")
+	player:SetAttribute("TravelingUntil", Util.Now() + Config.Travel.ChannelSeconds) -- the HUD travel bar (no toast, A23-130)
 	task.delay(Config.Travel.ChannelSeconds, function()
 		local ch = channels[player]
 		if not ch or ch.Token ~= token then return end -- cancelled by the zone loop, or the player left

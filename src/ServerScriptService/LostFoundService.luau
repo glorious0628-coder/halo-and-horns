@@ -285,9 +285,7 @@ function LostFoundService.Deliver(player)
 	st.Holding = nil
 	CARRY[player] = nil
 	local parts, paid = pay(player, rewardOf(data, h))
-	local T = cfg().Text or {}
-	local line = h.Side == "Good" and T.GoodDone or (h.Leg == "Vault" and T.TrophyDone or T.FeeDone)
-	table.insert(parts, 1, string.format(line or "%s", d and d.Name or h.Id))
+	-- A23-130: the reward parts only (no NPC thank-you lead); nothing paid = no line
 	notify(player, table.concat(parts, " · "), "reward")
 	dirty(player)
 	LostFoundService.Delivered:Fire(player, h.Id, h.Side, h.Leg, paid)

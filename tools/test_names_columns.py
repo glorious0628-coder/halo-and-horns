@@ -83,7 +83,7 @@ MUTATIONS = [
     ("RebirthAnnounce adds its own honorific (doubled)", "CONFIG_SOURCE",
      'RebirthAnnounce = "%s was reborn! (Rebirth #%d)"', 'RebirthAnnounce = "%s~h was reborn! (Rebirth #%d)"'),
     ("MostWanted drops the name", "CONFIG_SOURCE",
-     'MostWanted = "%s is now the Most Wanted!', 'MostWanted = "%.0sA player is now the Most Wanted!'),
+     'MostWanted = "Most Wanted: %s', 'MostWanted = "Most Wanted: %.0sA player'),
     ("HiddenName without 'A member of the'", "CONFIG_SOURCE", 'HiddenName = "A member of the %s", HiddenNameEn', 'HiddenName = "%s", HiddenNameEn'),
     # BB12
     ("power column reads the level", "PLAYER_SOURCE",
@@ -123,13 +123,12 @@ def static() -> tuple[int, list[str]]:
                 raw_names.append(f"{path.name}: {line.strip()}")
     check(not raw_names, f"BB37 acceptance: no NotifyAll line uses Util.PlayerDisplayName: {raw_names}")
     sites = {
-        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r"NotifyAll\(bountyLine\(killer, bounty\)\)",
-                            r"NotifyAll\(bountyLine\(a, bounty\)\)",
-                            r'"BountyAnnounceHidden" or "BountyAnnounce", publicName\(p, true\)',
-                            r"wanted, \{ P = p, Name = publicName\(p\)"],
-        "GrudgeService.luau": [r'fmt\("GrudgeAvengedAll", publicName\(killer, true\), publicName\(thief, true\)\)'],
-        "ProgressionService.luau": [r"Config\.Text\.RebirthAnnounce, publicName\(player, true\)"],
-        "GooseService.luau": [r"Config\.Text\.RareAnnounce, publicName\(p, true\)"],
+        # A23-130 (server text verdicts 2026-10-11): the bounty brag, GrudgeAvengedAll, RebirthAnnounce and RareAnnounce
+        # NotifyAll lines are off; their services keep the publicName helper (checked below) for the next server-wide line
+        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r"wanted, \{ P = p, Name = publicName\(p\)"],
+        "GrudgeService.luau": [],
+        "ProgressionService.luau": [],
+        "GooseService.luau": [],
         "KaijuService.luau": [r"kaijuName = publicName\(p\)"],
     }
     for name, patterns in sites.items():

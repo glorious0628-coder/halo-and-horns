@@ -616,14 +616,15 @@ do
 	check(#orr.Events == 0 and last(o) == "HP is full.", "A23-110 a step waiting for another happening took a sip")
 	-- the step waits for the drink: a sip at full HP counts, keeps the potion, the HP and the cooldown
 	local s = fixture(); local sr = watch(s, "PotionUsed"); s:Stock(3, 3); s.Humanoid.Health = s.Humanoid.MaxHealth
-	local ready0 = s.Attrs.HPPotionReadyAt
+	local ready0, said0 = s.Attrs.HPPotionReadyAt, #s.Notices
 	s:Use("HP")
 	check(s.Data.HPPotionCount == 3 and s.Humanoid.Health == s.Humanoid.MaxHealth and #sr.Events == 1 and sr.Events[1].Name == "PotionUsed"
-		and sr.Events[1].Info.Practice == true and sr.Events[1].Info.Kind == "HP" and last(s) == s.Config.Text.PotionPractice
-		and s.Attrs.HPPotionReadyAt == ready0, "A23-110 a practice sip at full HP: counted, potion kept, no cooldown", tostring(last(s)))
+		and sr.Events[1].Info.Practice == true and sr.Events[1].Info.Kind == "HP" and #s.Notices == said0
+		and s.Attrs.HPPotionReadyAt == ready0, "A23-110 a practice sip at full HP: counted, potion kept, no cooldown (A23-130: no line)",
+		tostring(last(s)))
 	s.Vitals.DebugSetMana(s.Player, s.Config.Vitals.MaxMana); s:Use("MP")
 	check(s.Data.MPPotionCount == 3 and #sr.Events == 2 and sr.Events[2].Info.Practice == true and sr.Events[2].Info.Kind == "MP"
-		and last(s) == s.Config.Text.PotionPractice, "A23-110 a practice sip at full MP: counted, potion kept")
+		and last(s) ~= s.Config.Text.PotionPractice, "A23-110 a practice sip at full MP: counted, potion kept (no line)")
 	-- no potion in the bag: nothing to sip (the refusal comes first)
 	local e = fixture(); local er = watch(e, "PotionUsed"); e.Humanoid.Health = e.Humanoid.MaxHealth
 	e:Use("HP")

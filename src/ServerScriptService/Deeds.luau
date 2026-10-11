@@ -155,15 +155,12 @@ function Deeds.Say(player, side, stat, change, mine, down, full)
 		if not ok then Util.Warn(TAG, "notify: " .. tostring(err)) end
 	end
 	local halo = stat == "Honor"
+	-- A23-130: only a loss keeps a line (no 0-point lean line, no "full for today" line)
 	if not mine then
 		if change < 0 then
 			say(string.format(halo and STORY.OffSideHalo or STORY.OffSideHorns, -change), "info")
-		else
-			say((halo and STORY.OffSideHaloZero or STORY.OffSideHornsZero) .. " " .. (side == "Good" and STORY.LeanGood or STORY.LeanEvil), "info")
 		end
 		if down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, "info") end
-	elseif full then
-		say(Config.Deeds.Text.Full, "info")
 	end
 end
 

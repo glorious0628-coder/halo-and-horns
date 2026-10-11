@@ -357,8 +357,9 @@ runGroup("the walk's end: the bench", function()
 		"a good turn-in: 2 HP + 2 MP potions + the day's first scroll", show({ grants, d.Items }))
 	check(#w.XPs == 1 and w.XPs[1].N == xp and #w.Gold == 0, "XP = 2 minutes of hunting at Lv5 (" .. xp .. "), no gold", show({ plain(w.XPs), #w.Gold }))
 	local line = notices(w, p)
-	check(string.find(line, "Thank you for the Lost Teddy! Here is a little gift.", 1, true) and string.find(line, "HP Potion", 1, true)
-		and string.find(line, "XP", 1, true), "the line says what it paid", line)
+	-- A23-130 (server text verdicts 2026-10-11): the reward parts only, no NPC thank-you lead
+	check(not string.find(line, "Thank you", 1, true) and string.find(line, "HP Potion", 1, true)
+		and string.find(line, "XP", 1, true), "the line says what it paid (no thank-you lead)", line)
 	check(#w.LF.Rows(p, d) == 0 and w.Delivered[1].Id == "Teddy" and w.Delivered[1].Side == "Good" and w.Delivered[1].Leg == "Bench"
 		and w.Delivered[1].Res.XP == xp and w.Delivered[1].Res.Gold == 0, "the row is gone; Delivered says what was paid", show(w.Delivered[1] and w.Delivered[1].Res))
 	check(w.LF.Deliver(p) == false and #w.XPs == 1, "nothing is paid twice", "")
@@ -384,7 +385,8 @@ runGroup("the walk's end: the fee and the vault", function()
 	local gold = w.Config.HuntValue(12, 2)
 	check(#w.Gold == 1 and w.Gold[1].N == gold and w.Gold[1].Src == "Choice" and #w.XPs == 0 and #w.Grants == 0,
 		"2 minutes of gold at Lv12 (" .. gold .. ") as source Choice, no XP, no items", show(plain(w.Gold)))
-	check(string.find(notices(w, p), "Cheeky! Here's a coin for the Lost Teddy.", 1, true) ~= nil, "Cheeky! Here's a coin", notices(w, p))
+	check(string.find(notices(w, p), "Cheeky!", 1, true) == nil and string.find(notices(w, p), "+" .. w.Util.FormatNumber(gold) .. " gold", 1, true) ~= nil,
+		"the fee line is the gold only (no 'Cheeky!')", notices(w, p))
 	-- the vault: the player's OWN town
 	local halo = lfWorld()
 	local h, hd = hero(halo, 2, "Halo", 20)
@@ -399,7 +401,8 @@ runGroup("the walk's end: the fee and the vault", function()
 	local g2 = halo.Config.HuntValue(20, 2)
 	check(#halo.Delivered == 1 and halo.Delivered[1].Leg == "Vault" and halo.Gold[1].N == g2 and halo.Gold[1].Src == "Choice",
 		"the Halo town: the trophy is stashed, 2 minutes of gold", show(plain(halo.Gold)))
-	check(string.find(notices(halo, h), "The Grab Club Badge is in your vault now.", 1, true) ~= nil, "the vault line", notices(halo, h))
+	check(string.find(notices(halo, h), "in your vault now", 1, true) == nil and string.find(notices(halo, h), "+" .. halo.Util.FormatNumber(g2) .. " gold", 1, true) ~= nil,
+		"the vault line is the gold only", notices(halo, h))
 	local horns = lfWorld()
 	local u, ud = hero(horns, 3, "Horns", 20)
 	findNow(horns, u, "SkeletonRuins")

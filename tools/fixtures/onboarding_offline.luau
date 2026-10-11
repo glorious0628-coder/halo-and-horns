@@ -253,8 +253,10 @@ do
 	check(f.Data.TutorialStep == 3 and f.Data.TutorialKills == 0, "A23-74: the meadow before the Forge credits no kill")
 	check(f.Quest.ForgeGift(f.Player) == true and f.Data.TutorialStep == 2,
 		"A23-74: the gift moves the mission on (standing in the meadow: straight to the hunt)")
-	check(f.Notices[#f.Notices] == TT.ForgeGift, "A23-74: Otto's gift line, the last one (A23-130: no 'First mission' line after it)",
-		tostring(f.Notices[#f.Notices]))
+	-- A23-130 (server text verdicts 2026-10-11): no Otto line (LootService's 'First weapon' line answers), no 'First mission'
+	local otto = 0
+	for _, n in f.Notices do if n == TT.ForgeGift then otto += 1 end end
+	check(otto == 0, "A23-74: the gift says no Otto line (A23-130)", tostring(f.Notices[#f.Notices]))
 	check(f.Quest.ForgeGift(f.Player) == false, "A23-74: no second gift after the Forge step")
 	f = fixture(); f:Choose(); f:Publish(); f:Arm()
 	f:Accept(); f:Publish()

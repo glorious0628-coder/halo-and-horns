@@ -10,7 +10,13 @@ local WATER = -1.2 -- Config.Map.WaterTop = halo_terrain G.WaterTop
 
 local function zoneWorld(opts)
 	opts = opts or {}
-	local w = newWorld({ EditConfig = opts.EditConfig })
+	-- A23-130 (server text verdicts 2026-10-11): the shipped Config has WaterRescue.Toast = false (the shore says it);
+	-- these groups test the line itself, so they turn it on unless opts.Shipped
+	local edit = opts.EditConfig
+	local w = newWorld({ EditConfig = function(c)
+		if opts.Shipped ~= true then c.WaterRescue.Toast = true end
+		if edit then edit(c) end
+	end })
 	w.Kaiju, w.Ready, w.List, w.ParamsMade, w.OverlapMade = {}, {}, {}, 0, 0
 	w.Groups = { Players = true } -- PlayerService registers Config.Player.CollisionGroup at start
 	w.Services.PhysicsService = { IsCollisionGroupRegistered = function(_, n) return w.Groups[n] == true end }
@@ -236,7 +242,8 @@ runGroup("8 s in a row in a canal", function()
 end)
 
 runGroup("Toast off", function()
-	local w = zoneWorld({ EditConfig = function(c) c.WaterRescue.Toast = false end })
+	local w = zoneWorld({ Shipped = true })
+	check(w.Config.WaterRescue.Toast == false, "the shipped Config: WaterRescue.Toast = false (A23-130)", w.Config.WaterRescue.Toast)
 	fakeProbes(w, canal)
 	local s = swimmer(w, 1, vec(0, -0.5, -500))
 	rescueNow(w, { s })

@@ -489,7 +489,7 @@ function M.TryRebirth(player, factionId)
 	elseif mark == "Redeem" then
 		Net.Notify(player, string.format(Config.Story.Redeem), "announce")
 	end
-	Net.NotifyAll(string.format(Config.Text.RebirthAnnounce, publicName(player, true), newRebirths))
+	-- A23-130: no server-wide "was reborn" banner (RebirthAnnounce); the Rebirth Fx shows it to everyone near
 	M.Rebirthed:Fire(player, newRebirths, { From = old, To = factionId, Bonus = bonus, Mark = mark })
 	return true, nil
 end

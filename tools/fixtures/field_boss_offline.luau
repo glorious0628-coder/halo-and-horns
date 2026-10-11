@@ -166,7 +166,14 @@ runGroup("config", function()
 		check(not string.find(t, "mom", 1, true) and not string.find(t, "mother", 1, true) and not string.find(t, "wife", 1, true),
 			"A23-85 no mom line: " .. k, t)
 	end
-	check(string.find(A.Text.SlimeKingAppear, "Who's bothering my kids?!", 1, true) ~= nil, "appear line = the dad line")
+	-- A23-130 (server text verdicts 2026-10-11): the appear toast is one short line, no NPC voice or how-to
+	-- 게임성 검수 10/12: and where (its zone's own name)
+	local kz = C.Zones[C.MonsterTypes.SlimeKing.Zone].Name
+	check(A.Text.SlimeKingAppear == "King Slime is here! (" .. kz .. ")" and A.Text.SlimeKingAppearEn == A.Text.SlimeKingAppear,
+		"appear line = 'King Slime is here! (Squishy Meadow)'", A.Text.SlimeKingAppear)
+	local cz = C.Zones[C.MonsterTypes.CaptainClatter.Zone].Name
+	check(A.Text.ClatterAppear == "Captain Clatter is here! (" .. cz .. ")" and A.Text.ClatterAppearEn == A.Text.ClatterAppear,
+		"appear line = 'Captain Clatter is here! (Skeleton Ruins)'", A.Text.ClatterAppear)
 	check(A.Events.SlimeKingAppear.Toast == true and A.Events.SlimeKingLeave.Toast ~= true, "toast only when it appears")
 	check(C.Barks.BubbleFamily.SlimeKing == "Slime" and type(C.Barks.Lines.SlimeKing) == "table", "slime bubbles + dad lines")
 	check(C.Audio.SoftKinds.SlimeKing == true, "soft hit sound")

@@ -31,7 +31,7 @@ function VitalsService.TrySpendMana(player, amount, silent)
 		local now = workspace:GetServerTimeNow()
 		if not silent and now - st.NoticeAt >= 2 then
 			st.NoticeAt = now
-			Net.Notify(player, (TUNE.MerchantEnabled == true and "Not enough MP. Drink an MP potion!") or "Not enough MP. Wait a moment and it refills.", "bad")
+			Net.Notify(player, Config.Text.NoMana, "bad")
 		end
 		return false
 	end
@@ -60,8 +60,7 @@ local function practiceSip(player, kind)
 	if type(story) ~= "table" or type(story.Wants) ~= "function" or type(story.Event) ~= "function" then return false end
 	local okWants, wants = pcall(story.Wants, player, "PotionUsed")
 	if not okWants or wants ~= true then return false end
-	pcall(story.Event, player, "PotionUsed", { Kind = kind, Practice = true })
-	Net.Notify(player, Config.Text.PotionPractice, "good")
+	pcall(story.Event, player, "PotionUsed", { Kind = kind, Practice = true }) -- A23-130: no line, the quest row moves on
 	return true
 end
 
@@ -71,7 +70,7 @@ local function usePotion(player, kind)
 	local st = states[player]
 	if not st then return end
 	if player:GetAttribute("KaijuState") == "Active" or player:GetAttribute("KaijuState") == "Siren" then
-		Net.Notify(player, "You can't use potions as a Kaiju.", "bad")
+		Net.Notify(player, Config.Text.PotionKaiju, "bad")
 		return
 	end
 	local now = workspace:GetServerTimeNow()
@@ -82,7 +81,7 @@ local function usePotion(player, kind)
 	local count = type(data) == "table" and data[stockKey]
 	if type(count) ~= "number" or count ~= count or count < 1 or count > TUNE.PotionInventoryCap
 		or count ~= math.floor(count) then
-		Net.Notify(player, (TUNE.MerchantEnabled == true and "No potions left. Buy some from the Potion Seller.") or "No potions left. The potion shop isn't open yet.", "bad")
+		Net.Notify(player, Config.Text.PotionNone, "bad")
 		return
 	end
 	local humanoid = Util.GetHumanoid(player)
@@ -90,7 +89,7 @@ local function usePotion(player, kind)
 	if kind == "HP" then
 		if humanoid.Health >= humanoid.MaxHealth then
 			if practiceSip(player, kind) then return end
-			Net.Notify(player, "HP is full.", "info")
+			Net.Notify(player, Config.Text.PotionHPFull, "info")
 			return
 		end
 		local before = humanoid.Health
@@ -99,7 +98,7 @@ local function usePotion(player, kind)
 	else
 		if st.Mana >= TUNE.MaxMana then
 			if practiceSip(player, kind) then return end
-			Net.Notify(player, "MP is full.", "info")
+			Net.Notify(player, Config.Text.PotionMPFull, "info")
 			return
 		end
 		local before = st.Mana
@@ -110,8 +109,7 @@ local function usePotion(player, kind)
 	S.PlayerService.SetStat(player, stockKey, count - 1)
 	st[key] = now + TUNE.PotionCooldown
 	publish(player, st)
-	S.PlayerService.MarkActive(player)
-	Net.Notify(player, "Used a " .. kind .. " potion!", "good")
+	S.PlayerService.MarkActive(player) -- A23-130: no "Used a potion" line (the bar, the slot count and the Potion sound say it)
 	-- A23-110: the King's Hop quest waits for the first drink (only a real use gets here)
 	local story = S.StoryQuestService
 	if type(story) == "table" and type(story.Event) == "function" then

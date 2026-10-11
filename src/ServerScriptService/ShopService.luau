@@ -108,8 +108,8 @@ local function onUpgradeWeapon(player, selectedTier)
 	S.PlayerService.SetStat(player, "BlacksmithVisited", true) -- A23-4: a verified anvil trade counts as the visit
 	S.PlayerService.MarkActive(player)
 	local weaponName = Config.WeaponName(selectedTier, S.ClassService.GetClass(player), faction)
-	local equipFmt = (Config.Loot and Config.Loot.Text and Config.Loot.Text.Equip) or Config.Text.WeaponBought
-	Net.Notify(player, string.format(alreadyOwned and equipFmt or Config.Text.WeaponBought, weaponName), alreadyOwned and "info" or "reward",
+	-- A23-130: re-equipping an owned weapon says nothing (the row shows Equipped); the Equip sound stays
+	Net.Notify(player, alreadyOwned and "" or string.format(Config.Text.WeaponBought, weaponName), alreadyOwned and "info" or "reward",
 		nil, "Equip")
 	if tier ~= selectedTier then Net.Fx(player, "Upgrade", { Tier = selectedTier }) end
 end
@@ -340,7 +340,8 @@ function M.BuyPotion(player, kind, amount)
 	end
 	S.PlayerService.SetStat(player, key, count + amount)
 	S.PlayerService.MarkActive(player)
-	Net.Notify(player, string.format(Config.Text.PotionBought, kind, amount), "good", nil, "Spend")
+	-- A23-130: no text (the potion panel and the quick slot show the count); the Spend sound stays
+	Net.Notify(player, "", "good", nil, "Spend")
 	-- A23-110: the King's Hop quest waits for the first purchase (a failed buy never gets here)
 	local story = S.StoryQuestService
 	if type(story) == "table" and type(story.Event) == "function" then

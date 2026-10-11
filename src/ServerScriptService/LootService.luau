@@ -299,7 +299,7 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		if g.Rank >= ((Config.Announce and Config.Announce.MinWeaponGrade) or 3) then
 			announce(player, "RareWeapon", { Weapon = tier, Monster = kind }, tier)
 		end
-		if before then notify(player, string.format(TXT.BareEquip, name, formatNumber(before), formatNumber(after)), "reward", "None") end
+		-- A23-130: no second "[X] equipped! Power" line (the HUD Stronger! banner and the power count-up show it)
 	end
 end
 
@@ -502,6 +502,8 @@ local function useEnhance(player, data, id, def, tier)
 	end
 	data.WeaponEnhance[tier] = after
 	publish(player, data)
+	-- 게임성 검수 10/12: the result toast stays (A23-99: a loss must be said): the Bag window sends UseItem itself and
+	-- draws no result line (Panels' Items result line shows only while that window is open)
 	if success then
 		firstMax(player, data, tier, after)
 		notify(player, string.format(TXT.EnhanceOk, name, before, after,
@@ -536,7 +538,7 @@ local function useTransfer(player, data, id, def, fromTier, toTier)
 		firstMax(player, data, toTier, after) -- after both tiers are saved
 		notify(player, string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after), "reward", "ScrollSuccess")
 	else
-		notify(player, string.format(TXT.MoveFail, fromName, amount), "info", "ScrollFail")
+		notify(player, string.format(TXT.MoveFail, fromName, amount), "info", "ScrollFail") -- 게임성 검수 10/12: said in the Bag too
 	end
 	publish(player, data)
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = toTier, From = fromTier, Before = target, After = after, Success = success, Move = true })
@@ -589,7 +591,7 @@ local function onEquipWeapon(player, tier, ...)
 	if S.CombatService.IsInCombat(player) then notify(player, TXT.EquipCombat, "bad"); return end
 	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals rebuilds the model; WeaponEnhance follows
 	S.PlayerService.MarkActive(player)
-	notify(player, string.format(TXT.Equip, weaponName(player, tier)), "info", "Equip")
+	-- A23-130: no "%s equipped!" line (the Bag row and the model show it); Fx Upgrade plays the Equip sound
 	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
 end
 

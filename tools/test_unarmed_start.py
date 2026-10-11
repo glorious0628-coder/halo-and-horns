@@ -159,8 +159,7 @@ MUTATIONS = [
     ("bare equip ignores the level", L,
      "if math.floor(num(data.WeaponTier, 0)) ~= 0 or not Config.WeaponUsable(tier, level) then return nil end",
      "if math.floor(num(data.WeaponTier, 0)) ~= 0 then return nil end"),
-    ("power line from the new weapon's power", L, "return Config.CombatPowerOf(player, 0, 0), Config.CombatPowerOf",
-     "return Config.CombatPowerOf(player, tier, 0), Config.CombatPowerOf"),
+    # (no "power line" mutation: A23-130 took 'Power X → Y' out of the first-weapon line; the HUD count-up shows it)
     ("the gift is paid again to a legacy save", L,
      "if not data or not validTier(tier) or owns(data, tier) then return nil end", "if not data or not validTier(tier) then return nil end"),
     ("the gift is paid again while another weapon is held", L,
@@ -175,10 +174,8 @@ MUTATIONS = [
     ("a drop is not equipped bare-handed", L,
      "\tlocal before, after = equipIfBare(player, data, tier)\n\tif isJackpot then",
      "\tlocal before, after = nil, nil\n\tif isJackpot then"),
-    ("bare jackpot says 'equip it in the menu'", L,
-     "notify(player, before and string.format(TXT.JackpotEquip, name, formatNumber(before), formatNumber(after))\n"
-     "\t\t\tor string.format(TXT.JackpotSelf, name), \"reward\", before and \"None\" or \"Equip\")",
-     "notify(player, string.format(TXT.JackpotSelf, name), \"reward\", \"Equip\")"),
+    # (no "bare jackpot" text mutation: A23-130 made JackpotEquip and JackpotSelf the same short line; its sound is
+    # test_notify_sound's)
     ("gift saved without the attribute mirror", L,
      "ensureTables(data)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), "
      "bit32.lshift(1, tier - 1)))",
@@ -195,10 +192,8 @@ MUTATIONS = [
     ("debug reset keeps the starter", L, "\tmask = math.floor(num(mask, 0))\n", "\tmask = bit32.bor(math.floor(num(mask, 0)), 1)\n"),
     # --- StoryQuestService
     ("M1_1 completion never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
-    ("weapon line before the story lines", ST,
-     "\tnotify(player, def.Finish or msg, \"reward\", \"QuestDone\")\n\tif def.Finish then notify(player, msg, \"reward\", \"None\") end\n"
-     "\t-- Reward.Item (e.g. Pip1's scroll)",
-     "\tlocal finishLine = def.Finish or msg\n\t-- Reward.Item (e.g. Pip1's scroll)"),
+    ("the quest's reward line dropped (the weapon line alone)", ST, "\tnotify(player, msg, \"reward\", \"QuestDone\")\n",
+     "\tlocal _ = msg\n"),
     # --- JusticeService / PvPService / CharacterVisuals
     # A23-69: the CombatPower attribute, PvP's fallback and the Tab list all use Config.CombatPowerOf, which clamps the tier
     # for every power number (JusticeService's own levelAndTier now feeds only the faction sum GetPower: tools/test_stats.py)

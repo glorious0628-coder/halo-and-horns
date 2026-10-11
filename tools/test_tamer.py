@@ -92,7 +92,7 @@ MUTATIONS = [
      "\tpets.List[uid] = { Sp = species, Lv = 1, XP = 0, Name = name, Lean = \"\", Bound = true }"),
     ("a second baby slime", PE, "\tlocal have = findSpecies(pets, species)\n\tif have then\n", "\tlocal have = nil\n\tif have then\n"),
     ("an owned pet never takes the lean", PE, "\t\tif p.Lean == \"\" and lean ~= \"\" then p.Lean, changed = lean, true end\n", ""),
-    ("the tamer line for everyone", PE, "(G.Text or {}).Got)", "TXT.PetGot)"),
+    # (no "the tamer line for everyone" mutation: A23-130 made both pet lines 'New pet: Baby Slime!')
     ("minion is Good", C, "Picks = { Care = \"Good\", Minion = \"Evil\", A = \"Good\", B = \"Evil\" },",
      "Picks = { Care = \"Good\", Minion = \"Good\", A = \"Good\", B = \"Evil\" },"),
     ("12 slimes", C, "Obj = { Type = \"Kill\", Kind = \"Slime\", Zone = \"SlimeMeadow\", Count = 8 } },\n\t\t\t\t{ Text = \"A lost Baby Slime!",

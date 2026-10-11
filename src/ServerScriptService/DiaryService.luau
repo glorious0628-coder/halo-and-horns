@@ -93,12 +93,13 @@ local function onKingBeaten(player)
 	publish(player, d)
 	local ok, err = pcall(Net.Fx, player, "DiaryPage", { Page = page, Today = today, Late = late })
 	if not ok then Util.Warn(TAG, "fx: " .. tostring(err)) end
-	notify(player, string.format(TXT.Page or "King Diary: page %d!", page), "reward", "None")
+	-- A23-130: no page toast, the client card "Page N is open!" says it (Fx DiaryPage)
 	DiaryService.PageOpened:Fire(player, page, late)
 	if page >= PAGES and not d.Done then
 		d.Done = true
 		if grantTitle(player, D.Title) then
-			notify(player, string.format(TXT.NewTitle or "New title: %s!", Config.TitleDefs[D.Title].Name), "reward", "RankUp")
+			-- A23-130: the DiaryDone popup names the title; only its RankUp sound comes from here
+			pcall(Net.Notify, player, "", "reward", nil, "RankUp")
 		end
 		local okDone, errDone = pcall(Net.Fx, player, "DiaryDone", {})
 		if not okDone then Util.Warn(TAG, "done fx: " .. tostring(errDone)) end

@@ -596,7 +596,7 @@ function M.ForgeGift(player)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or getStep(player) ~= STEP_FORGE then return false end
 	local data = getData(player)
 	if not data or data.ClassChosen ~= true then return false end
-	Net.Notify(player, TUT_MESSAGES.ForgeGift or "Take this weapon!", "info")
+	-- A23-130: no Otto line, LootService's "First weapon" line and the Stronger! moment answer
 	local loot = S.LootService
 	if loot and type(loot.GrantFirstWeapon) == "function" then
 		local ok, err = pcall(loot.GrantFirstWeapon, player, 1)
@@ -865,8 +865,9 @@ local function publish(player)
 	end
 	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
 	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
-	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE and (Config.Nudges or {}).GuideDone ~= false then
-		Net.Notify(player, TUT_MESSAGES.GuideDone or "That's all from me! Now hunt and get stronger.", "good")
+	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE and (Config.Nudges or {}).GuideDone ~= false
+		and type(TUT_MESSAGES.GuideDone) == "string" then
+		Net.Notify(player, TUT_MESSAGES.GuideDone, "good")
 	end
 	hadNextGoal[player] = hasGoal or nil
 	local locked = not dailiesOpen(data)
@@ -1144,11 +1145,7 @@ local function onClaimQuest(player, slot)
 
 	local claims = num(S.PlayerService.AddStat(player, "DailyClaims", 1))
 	if claims == Config.Quests.Slots then
-		payChest(player, data)
-		-- P8: say once that the day's homework is done (DailyClaims resets with the KST day, so this is once a day)
-		task.delay(2, function()
-			if player.Parent then pcall(Net.Notify, player, Config.Text.DailyAllDone, "good", 6) end
-		end)
+		payChest(player, data) -- A23-130: no DailyAllDone line after the chest (reward lines only)
 	end
 end
 

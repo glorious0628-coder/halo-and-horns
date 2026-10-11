@@ -62,6 +62,13 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    # 게임성 검수 10/12 (A23-99): an enhance / transfer result is always said (the Bag window draws no result line)
+    ("no enhance drop toast", "LOOT_SOURCE",
+     "\t\tnotify(player, string.format(TXT.EnhanceFailDown, name, before, after), \"bad\", \"ScrollFail\")\n", ""),
+    ("an enhance drop toast not red", "LOOT_SOURCE", "TXT.EnhanceFailDown, name, before, after), \"bad\"",
+     "TXT.EnhanceFailDown, name, before, after), \"info\""),
+    ("no transfer fail toast", "LOOT_SOURCE",
+     "\t\tnotify(player, string.format(TXT.MoveFail, fromName, amount), \"info\", \"ScrollFail\")", "\t\tlocal _ = 0"),
     # 검수 2026-10-09: a free rider's share (info.Minor) rolls nothing
     ("a free rider rolls drops", "LOOT_SOURCE", "\tif info.Minor == true then return nil end -- a free rider's share", "\tdo end -- a free rider's share"),
     ("enhance failure may go below +0", "LOOT_SOURCE",

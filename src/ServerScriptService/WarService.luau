@@ -5,6 +5,7 @@
 -- hold the blessing; per-capita scores use FactionService.GetCounts (Halo vs Horns only), averaged over the round
 -- (CR-M19). One monster kill adds its WarPoints to the faction pool once, split between contributors (CR-M18).
 local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
@@ -395,10 +396,14 @@ local function endRound(mode, haloScore, hornsScore, halo, horns, curHalo, curHo
 	if mode ~= "Idle" then
 		-- sound_gaps B6: the crown goes to a side = CrownHalo / CrownHorns for everyone (the client holds the war-chest
 		-- coins 1.5 s); a draw has no sound
+		-- A23-130: the blessing line goes to the winning side only (the +25% is theirs); everyone else gets the sound
+		-- alone (empty text); a draw says nothing (WarDraw off)
 		if winner ~= "None" and Config.Story.WarWin[winner] then
-			Net.NotifyAll(string.format(Config.Story.WarWin[winner]), nil, nil, winner == "Halo" and "CrownHalo" or "CrownHorns")
-		else
-			Net.NotifyAll(string.format(Config.Story.WarDraw), nil, nil, "None")
+			local line = string.format(Config.Story.WarWin[winner])
+			local sound = winner == "Halo" and "CrownHalo" or "CrownHorns"
+			for _, p in Players:GetPlayers() do
+				pcall(Net.Notify, p, p:GetAttribute("Faction") == winner and line or "", "announce", nil, sound)
+			end
 		end
 	end
 

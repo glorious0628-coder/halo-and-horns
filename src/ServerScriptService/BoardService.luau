@@ -255,7 +255,6 @@ local function finish(player, data, index)
 	-- -1 on the other (A23-58), inside the day's six points; the job's gold and XP keep coming when the day is full
 	local deed = h.Side == "Kind" and "Good" or "Evil"
 	local okD, stat, change, mine, down, full = pcall(S.Deeds.Add, player, deed, 1)
-	notify(player, h.Side == "Kind" and T.LeanKind or T.LeanSneaky, "info")
 	if okD then
 		if change > 0 then notify(player, string.format(T.Score or "%s +%d", stat, change), "good") end
 		pcall(S.Deeds.Say, player, deed, stat, change, mine, down, full)

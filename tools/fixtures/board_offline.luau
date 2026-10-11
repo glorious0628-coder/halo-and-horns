@@ -223,8 +223,9 @@ runGroup("take and finish", function()
 	w:KillAt(p, "BigSlime")
 	check(#st.Held == 0 and (d.BankGold or 0) == bank + 36 and #w.XP >= 1 and w.XP[#w.XP].N == 60,
 		"2 Slime Princes: paid at once (36 gold + 60 XP), the job leaves", show({ st.Held, (d.BankGold or 0) - bank }))
-	check(said(w, p, n0, string.format(B0.Text.Done, "36", "60")) and said(w, p, n0, B0.Text.LeanKind),
-		"lines: 'Job done! +36 gold · +60 XP' and 'Your shard leaned to the light.'", show(w:NoticesFor(p, n0)))
+	-- A23-130: no lean line any more ('Your shard leaned to the light.'), the score line says it
+	check(said(w, p, n0, string.format(B0.Text.Done, "36", "60")) and not said(w, p, n0, B0.Text.LeanKind),
+		"lines: 'Job done! +36 gold · +60 XP', no lean line", show(w:NoticesFor(p, n0)))
 	check(d.Story.N.Kind == 1 and (d.Honor or 0) == honor + 1 and (d.Infamy or 0) == infamy and st.Done == 1,
 		"the side is counted (Kind 1); A23-86: a Halo's Kind job is one deed, Honor +1 (own side), no Infamy", show({ d.Story.N, d.Honor, d.Infamy }))
 	check(said(w, p, n0, "Honor +1") and d.Deeds.N == 1, "the score line 'Honor +1' and one point on the ledger", show({ d.Deeds, w:NoticesFor(p, n0) }))
@@ -244,10 +245,10 @@ runGroup("take and finish", function()
 	local n2 = #w.Notices
 	w:Gold(p, 15, "Monster")
 	check(d.Story.N.Sneaky == 1 and #st.Held == 2, "40 hunting gold: done (Sneaky 1)", show(d.Story.N))
-	check(said(w, p, n2, B0.Text.LeanSneaky) and not said(w, p, n2, B0.Text.LeanKind), "a Sneaky job: 'Your shard leaned to the dark.'",
+	check(not said(w, p, n2, B0.Text.LeanSneaky) and not said(w, p, n2, B0.Text.LeanKind), "a Sneaky job: no lean line (A23-130)",
 		show(w:NoticesFor(p, n2)))
-	check((d.Honor or 0) == honor and d.Deeds.N == 1 and string.find(table.concat(w:NoticesFor(p, n2), "|"), "not very angel-like", 1, true) ~= nil,
-		"A23-86: a Halo's Sneaky job costs Honor 1 (A23-58), the guide says so, and a loss does not use the ledger", show({ d.Honor, honor, d.Deeds, w:NoticesFor(p, n2) }))
+	check((d.Honor or 0) == honor and d.Deeds.N == 1 and said(w, p, n2, "Honor -1"),
+		"A23-86: a Halo's Sneaky job costs Honor 1 (A23-58), the loss line 'Honor -1' says so, and a loss does not use the ledger", show({ d.Honor, honor, d.Deeds, w:NoticesFor(p, n2) }))
 	local arrival = L0.MeadowArrival
 	w:KillAt(p, "Slime", vec(arrival.X + 80, 0, arrival.Z))
 	check(st.Held[1].P == 0, "a slime far from the arrival does not count", st.Held[1].P)

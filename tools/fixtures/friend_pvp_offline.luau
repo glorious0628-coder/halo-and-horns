@@ -398,19 +398,19 @@ runGroup("kaiju friend never contests", function()
 			if g.P == k and g.Src == "KaijuBonus" then out.Bonus += g.N end
 			if g.P == k and g.Src == "KaijuBank" then out.Bank += g.N end
 		end
-		for _, t in w:NoticesFor(k, n0) do if has(t, "You survived") then out.Line = t end end
+		for _, t in w:NoticesFor(k, n0) do if has(t, "Survived!") then out.Line = t end end
 		return out
 	end
 	local f = survive(true)
 	check(f.Active and f.Friends and near(f.Mult, KJ.HPMult), "only its friend near: the kaiju's HP has no Halo bonus (x HPMult)",
 		show({ f.Mult, KJ.HPMult }))
 	check(f.Stomps == 1 and f.HP == 100, "the stomp spares the friend", show({ f.Stomps, f.HP }))
-	check(f.Line ~= nil and has(f.Line, "Nobody fought you") and f.Bonus == 0 and f.Bank == 1000,
-		"it survives uncontested: the 'Nobody fought you' line, the pouch banked, no minted bonus", show(f))
+	check(f.Line ~= nil and has(f.Line, "Survived! +1K gold") and f.Bonus == 0 and f.Bank == 1000,
+		"it survives uncontested: the 'Survived! +1K gold' line (A23-130: one short line), the pouch banked, no minted bonus", show(f))
 	local s = survive(false)
 	check(s.Active and not s.Friends and near(s.Mult, KJ.HPMult * (1 + KJ.HPPerNearbyHalo)) and s.HP < 100,
 		"control, a stranger near: HP bonus and stomped", show({ s.Mult, s.HP }))
-	check(s.Line ~= nil and not has(s.Line, "Nobody fought you") and s.Bonus > 0,
+	check(s.Line ~= nil and has(s.Line, "Survived!") and s.Bonus > 0,
 		"control: contested, the bonus is minted", show(s))
 end)
 

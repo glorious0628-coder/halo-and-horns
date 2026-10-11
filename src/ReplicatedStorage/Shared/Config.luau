@@ -1458,7 +1458,8 @@ Config.Goose = {
 		-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): NotifyAll at the start, one short line for StartSeconds,
 		-- once per goose in every mode (the top gauge tells the rest: no co-op band, no line when the mode is fixed later)
 		Start = "Golden Goose!",
-		NeedManual = "Only players who hit the Golden Goose themselves %d+ times get the reward! (Auto Battle hits don't count)", -- (MinManualHits)
+		Label = "Golden Goose", -- the goose's name tag (GooseService billboard)
+		NeedManual = "No reward: hit it yourself %d+ times", -- (MinManualHits)
 		CoopFull = { -- NotifyAll once when the gauge is full (MinManualHits)
 			Halo = "Gauge full! Team Rescue done.\nHit it yourself %d+ times before the end for a reward!",
 			Horns = "Gauge full! Team Poach done.\nHit it yourself %d+ times before the end for a reward!",
@@ -1470,8 +1471,8 @@ Config.Goose = {
 		CoopFail = "The gauge wasn't filled, so the Golden Goose flew away!", -- NotifyAll at the end, gauge not filled
 		RivalLeft = "The other side all left, so the team rule decides it. %s", -- (CoopResult / CoopFail) tug whose rival left
 		RivalWait = { -- to a rival who tries to pull during co-op (once per event), keyed by the CO-OP side
-			Halo = "This Golden Goose is the Knights' Team Rescue. From the next goose it's a tug-of-war again!",
-			Horns = "This Golden Goose is the Horn Legion's Team Poach. From the next goose it's a tug-of-war again!",
+			Halo = "Not your goose this time.",
+			Horns = "Not your goose this time.",
 		},
 		CoopReward = { -- (gold, xp) personal toast for a co-op success
 			Halo = "Team Rescue reward! +%s gold +%s XP",
@@ -1929,7 +1930,7 @@ Config.WaterRescue = {
 	MaxSlope = 40, -- degrees; players walk up to 46 (PlayerService MAX_SLOPE_ANGLE)
 	Lift = 4, -- the root is put at least this far above the landing spot (like a zone spawn)
 	AvoidMaterials = { "CrackedLava" }, -- Horns Den's painted lava strips are floor, never a landing spot
-	Toast = true, -- Text.WaterRescue after the move (false = silent)
+	Toast = false, -- Text.WaterRescue after the move (false = silent); A23-130: off, the shore says it
 }
 
 ----------------------------------------------------------------- monsters
@@ -2767,9 +2768,9 @@ Config.StoryQuests = {
 		Reward = "%s done! +%s gold",
 		RewardXP = "%s done! +%s gold · +%s XP",
 		RewardOnlyXP = "%s done! +%s XP",
-		Unlocked = "Auto Battle unlocked! Turn it on or off with {Auto} (phone: the Auto button).", -- {Auto}: BB1 key token (server fills)
-		Good = "The shard leans toward the light (Honor +%d)",
-		Evil = "The shard leans toward the dark (Infamy +%d)",
+		Unlocked = "Auto Battle unlocked!", -- A23-130: the Auto button shows itself, the S4 row gives the key
+		Good = "Honor +%d",
+		Evil = "Infamy +%d",
 		Recorded = "Your choice is saved.",
 		-- shown under the two choice buttons on the last page (what a pick does, before picking)
 		-- A23-58: picking against your own side lowers your own score (ChoiceHint keeps its two-number call; the
@@ -2779,14 +2780,14 @@ Config.StoryQuests = {
 		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d", -- (Good.Points, Evil.Points)
 		ChoiceHintHorns = "Left: Infamy -%d · Right: Infamy +%d", -- (Good.Points, Evil.Points)
 		ChoiceHintNeutral = "No good or evil points.",
-		OffSideHalo = "Hallie: Hmm… not very angel-like! Honor -%d", -- A23-58 (points actually taken), ⑪ the guide says it
-		OffSideHorns = "Magpie: Too nice for a devil! Your call. Infamy -%d",
+		OffSideHalo = "Honor -%d", -- A23-58 (points actually taken); A23-130: the loss only, no guide voice
+		OffSideHorns = "Infamy -%d",
 		-- 3rd idea round #5: the same pick at 0 points (nothing to take) + the lean line after it
 		OffSideHaloZero = "Hallie: Hmm… not very angel-like!", OffSideHornsZero = "Magpie: Too nice for a devil!",
-		RankDownHalo = "Your rank went down. Do good deeds to get it back!",
-		RankDownHorns = "Your rank went down. Do devilish deeds to get it back!",
-		GooseFirstHalo = "Your first Golden Goose rescue! (Honor +%d)",
-		GooseFirstHorns = "Your first Golden Goose poach! (Infamy +%d)",
+		RankDownHalo = "Rank down!",
+		RankDownHorns = "Rank down!",
+		GooseFirstHalo = "Honor +%d",
+		GooseFirstHorns = "Infamy +%d",
 		Next = "Next",
 		Ok = "Got it",
 		Later = "Later",
@@ -2868,7 +2869,7 @@ Config.StoryQuests = {
 			Kind = "Sub", Title = "The Shard's Gift", ShortName = "Shard's gift", Speaker = "Shard", Requires = { Skill = "X" },
 			Start = "Shard: You grew strong. Come to the Crossroads fountain.",
 			Steps = {
-				{ Text = "Go to the Crossroads fountain (tap for directions)", Guide = "Fountain",
+				{ Text = "Go to the Crossroads fountain", Guide = "Fountain",
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "How will you use your power?", Panel = true,
 					Lines = { All = { "You grew strong. Your side's power woke up in you.\nHow will you use it?" } },
@@ -2946,7 +2947,7 @@ Config.StoryQuests = {
 			Start = "They say a Crown Shard is stuck in the Crossroads fountain. Go look!\n(Tap the quest line for directions)",
 			Steps = {
 				-- user 2026-10-05 ("균형의 분수가 뭐야? 튜토리얼이 없어서 엥?"): walk up to the fountain, then talk
-				{ Text = "Go to the Crossroads fountain (tap for directions)", Guide = "Fountain",
+				{ Text = "Go to the Crossroads fountain", Guide = "Fountain",
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
@@ -3926,8 +3927,8 @@ Config.Board = {
 		LeanKind = "Your shard leaned to the light.",
 		LeanSneaky = "Your shard leaned to the dark.",
 		Score = "%s +%d", -- A23-86: ("Honor" | "Infamy", points) one deed of the daily ledger
-		Bonus = "5th job today! +%s",
-		Full = "You carry 3 jobs. Finish one first!",
+		Bonus = "Bonus: +%s",
+		Full = "Max 3 jobs.",
 		Hint = "Job Board · tap for directions",
 		HintShort = "Job Board", -- ShortName of the hint row (phone quest row)
 	},
@@ -5294,29 +5295,29 @@ Config.Loot = {
 		Got = "+%s",
 		GotN = "+%s ×%d",
 		Potion = { HP = "HP Potion", MP = "MP Potion" },
-		PotionFull = "Your potions are full, so you couldn't take the %s.",
+		PotionFull = "No room for %s.",
 		-- full-stack notices: at most once per item id (or potion kind) per player per FullNoticeSeconds, kind "info"
-		ItemFull = "%s is full (max %d). You can sell it at the Forge.", -- materials
-		ItemFullUse = "%s is full (max %d). Use some from your Bag.", -- scrolls (not sellable)
+		ItemFull = "%s is full (max %d).", -- materials (A23-130: the cap only, no sell / use tip)
+		ItemFullUse = "%s is full (max %d).", -- scrolls (not sellable)
 		ItemFullKeep = "%s is full (max %d).", -- gathered / crafted materials (a Source: not in the Forge's sell-all)
 		UseCombat = "You can't use scrolls in combat.",
 		EquipDead = "You can't change weapons while knocked out.",
 		RareWeapon = "%s weapon! You got %s!", -- grade name (Rare / Epic / Legendary), weapon
-		DuplicateWeapon = "You already have %s → it became %s gold.",
-		JackpotSelf = "Legendary weapon [%s]! Equip it from your Bag.",
+		DuplicateWeapon = "%s again! +%s gold", -- (weapon, gold)
+		JackpotSelf = "Legendary weapon [%s]!",
 		-- A23-34: the same jackpot found bare-handed is equipped at once
-		JackpotEquip = "Legendary weapon [%s] equipped! Power %s → %s",
-		JackpotEquipEn = "Legendary weapon [%s] equipped! Power %s → %s",
+		JackpotEquip = "Legendary weapon [%s]!",
+		JackpotEquipEn = "Legendary weapon [%s]!",
 		FirstScroll = "You got a scroll! Enhance your weapon from your Bag. (Your weapon is safe even if it fails)",
 		-- A23-34: the same one-time hint while still bare-handed (no weapon to enhance yet)
 		FirstScrollBare = "You got a scroll! The Blacksmith gives you your first weapon. Then enhance it from your Bag.",
 		FirstScrollBareEn = "You got a scroll! The Blacksmith gives you your first weapon. Then enhance it from your Bag.",
 		-- A23-34: the M1_1 gift (LootService.GrantFirstWeapon). Bare-handed: equipped at once with the power change;
 		-- a player who already bought a weapon gets it in the bag (no equip, no power change).
-		FirstWeapon = "You got your first weapon, [%s]! Power %s → %s",
-		FirstWeaponEn = "You got your first weapon, [%s]! Power %s → %s",
-		FirstWeaponBag = "The Blacksmith also gave you [%s]. Find it in your Bag.",
-		FirstWeaponBagEn = "The Blacksmith also gave you [%s]. Find it in your Bag.",
+		FirstWeapon = "First weapon: [%s]!",
+		FirstWeaponEn = "First weapon: [%s]!",
+		FirstWeaponBag = "New weapon: [%s]!",
+		FirstWeaponBagEn = "New weapon: [%s]!",
 		-- A23-34: a weapon found while bare-handed is equipped at once (power change)
 		BareEquip = "[%s] equipped! Power %s → %s",
 		BareEquipEn = "[%s] equipped! Power %s → %s",
@@ -5418,19 +5419,20 @@ Config.Announce = {
 		GhostKingLeave = "The Ghost King faded away. See you next time!",
 		GhostKingLeaveEn = "The Ghost King faded away. See you next time!",
 		-- J Captain Clatter (FieldBossService key Clatter)
-		ClatterAppear = "Captain Clatter is on patrol in the ruins!",
-		ClatterAppearEn = "Captain Clatter is on patrol in the ruins!",
-		ClatterDefeat = "Captain Clatter sat down at last. \"Is my shift over?\"",
-		ClatterDefeatEn = "Captain Clatter sat down at last. \"Is my shift over?\"",
-		ClatterLeave = "Captain Clatter marched off. Still on duty!",
-		ClatterLeaveEn = "Captain Clatter marched off. Still on duty!",
+		-- 게임성 검수 10/12: the appear toast names the place (Config.Zones[...].Name, test_field_boss checks it)
+		ClatterAppear = "Captain Clatter is here! (Skeleton Ruins)",
+		ClatterAppearEn = "Captain Clatter is here! (Skeleton Ruins)",
+		ClatterDefeat = "Captain Clatter was defeated!",
+		ClatterDefeatEn = "Captain Clatter was defeated!",
+		ClatterLeave = "Captain Clatter left.",
+		ClatterLeaveEn = "Captain Clatter left.",
 		-- the King Slime boss (A23-84 the slime family's dad, A23-85 he raises the two kids alone; scary but playful)
-		SlimeKingAppear = "King Slime: \"Who's bothering my kids?!\" Go to King Slime Hill!",
-		SlimeKingAppearEn = "King Slime: \"Who's bothering my kids?!\" Go to King Slime Hill!",
-		SlimeKingDefeat = "King Slime: \"Okay, okay! Dad needs a nap!\"",
-		SlimeKingDefeatEn = "King Slime: \"Okay, okay! Dad needs a nap!\"",
-		SlimeKingLeave = "King Slime: \"Hmph! Bedtime, kids!\"",
-		SlimeKingLeaveEn = "King Slime: \"Hmph! Bedtime, kids!\"",
+		SlimeKingAppear = "King Slime is here! (Squishy Meadow)",
+		SlimeKingAppearEn = "King Slime is here! (Squishy Meadow)",
+		SlimeKingDefeat = "King Slime was defeated!",
+		SlimeKingDefeatEn = "King Slime was defeated!",
+		SlimeKingLeave = "King Slime went home.",
+		SlimeKingLeaveEn = "King Slime went home.",
 		NameHidden = "Announcements and rankings now show your side's name instead of your name.",
 		NameShown = "Announcements and rankings now show your name.",
 		MenuShow = "My name in announcements and rankings: shown",
@@ -6707,8 +6709,8 @@ Config.Story = {
 	},
 	-- format strings (always through string.format)
 	WarWin = {
-		Halo = "The Knights of Light won the crown this round! The sky glows gold.\n(Gold and XP +25%% for 10 minutes)",
-		Horns = "The Horn Legion won the crown this round! The sky glows crimson.\n(Gold and XP +25%% for 10 minutes)",
+		Halo = "Crown won! Gold, XP +25%%", -- A23-130: to the winning side only (WarService)
+		Horns = "Crown won! Gold, XP +25%%",
 	},
 	WarDraw = "Nobody won the crown this round!",
 	GooseResult = {
@@ -6718,15 +6720,15 @@ Config.Story = {
 	},
 	-- (GooseNoRival removed by A23-14: a goose with no rival is now a "Team Rescue", texts in Config.Goose.Text)
 	KaijuSiren = "Alert! %s is being swallowed by the Crown Shard's darkness! A Kaiju in 10 seconds!",
-	KaijuStart = "Kaiju %s is here! Knights can attack it anywhere!",
+	KaijuStart = "Kaiju %s is here!",
 	KaijuDefeated = "The Knights defeated the Kaiju %s! They share a %s gold reward.", -- (name, gold actually paid: CR-L19)
 	KaijuDefeatedNoReward = "The Kaiju %s was defeated.", -- CR-L19: (name) nobody was paid
 	KaijuSurvived = "The Kaiju %s survived to the end! A Legendary Villain is born!",
 	SurviveTitle = "Legendary Villain",
 	GrayLegendTitle = "Gray Legend",
 	RebirthIntro = "Rebirth lets you pick your Crown Shard again. Which side will you be reborn on?",
-	Fall = "Fall: the halo cracked and horns grew. (Gold +5%% forever · torn black cape)",
-	Redeem = "Redeem: the horns broke and a cracked halo rose. (XP +5%% forever)",
+	Fall = "Fall: Gold +5%% · black cape",
+	Redeem = "Redeem: XP +5%% forever",
 	SackLore = "Stolen gold carries a grudge. If a knight catches the thief, it comes back at 120%%!",
 }
 
@@ -6750,7 +6752,7 @@ Config.Text = {
 	LoadFailed = "We couldn't load your save. Please rejoin in a moment.",
 	SaveLoading = "Loading your save…", -- A23-48 batch: a load waits for a retry (another server's lock / a DataStore error)
 	NeedLevel = "You need Lv %d or higher to enter!",
-	EnteredPvP = "PvP zone! Watch out for the other sides.",
+	EnteredPvP = "PvP zone!",
 	EnteredPvPNeutral = "PvP zone, but the Artisan Guild can't be attacked.", -- CR-L24: Neutral entering a PvP zone ("info")
 	EnteredSafe = "Safe zone.",
 	Banked = "Put %s gold in your vault.",
@@ -6762,24 +6764,24 @@ Config.Text = {
 	WeaponNeedLevel = "You can buy this weapon from Lv %d.", -- purchase gate (an owned one: EquipNeedLevel)
 	-- A23-28: equipping keeps MinLevel too (also after a rebirth / Lv5+ free class change)
 	EquipNeedLevel = "You can use this weapon from Lv %d.", EquipNeedLevelEn = "You can use this weapon from Lv %d.",
-	WeaponAutoSwap = "That weapon needs Lv %d → switched to %s.",
-	WeaponAutoSwapEn = "That weapon needs Lv %d → switched to %s.",
+	WeaponAutoSwap = "Needs Lv %d. Now using %s.",
+	WeaponAutoSwapEn = "Needs Lv %d. Now using %s.",
 	-- A23-34: bare hands (weapon tier 0)
 	BareHands = "Bare hands", BareHandsEn = "Bare hands",
 	-- A23-74: the first weapon comes right after the Guide's first quest is accepted (the Forge step)
-	WeaponFromQuest = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
-	WeaponFromQuestEn = "The Blacksmith gives you your first weapon for free. Take the Guide's first quest!",
+	WeaponFromQuest = "Not sold. Quest reward.",
+	WeaponFromQuestEn = "Not sold. Quest reward.",
 	WeaponUsableNow = "You can now use %s! Equip it at the Forge or from your Bag.",
 	WeaponUsableNowEn = "You can now use %s! Equip it at the Forge or from your Bag.",
 	NeedFaction = "Pick a side first.",
 	-- ShopService (blacksmith / potion merchant)
-	WeaponShopFar = "Get close to the Forge anvil to buy weapons.",
+	WeaponShopFar = "Too far from the Forge.",
 	WeaponNotSold = "The Forge doesn't sell this weapon.",
-	WeaponSellFar = "Get close to the Forge anvil to sell weapons.",
+	WeaponSellFar = "Too far from the Forge.",
 	WeaponSold = "Sold %s! Gold +%s", -- (weaponName, gold)
 	BlacksmithPromptAction = "See weapons",
 	BlacksmithPromptObject = "Forge",
-	PotionShopFar = "Get close to the Potion Seller to buy.",
+	PotionShopFar = "Too far from the Potion Seller.",
 	-- ⑪ (lines_pack §1-3): the shop windows' greeting line (game dev 1: the top of WeaponShop / PotionShop); calm, no
 	-- "hurry / sale" words next to a buy button
 	ForgeGreeting = "Otto: Clang, clang… done. Cocoa time.",
@@ -6787,53 +6789,59 @@ Config.Text = {
 	PotionStockFull = "You can hold up to %d of each potion.", -- (PotionInventoryCap)
 	PotionBought = "Bought %s potion ×%d!", -- (kind, amount)
 	PotionPractice = "Cheers! The potion stays in your bag.", -- A23-110: a drink at full HP / MP while the quest step waits for it
+	-- A23-130 §2 (server text verdicts 2026-10-11): VitalsService lines (were hard-coded there)
+	NoMana = "Not enough MP.",
+	PotionKaiju = "You can't use potions as a Kaiju.",
+	PotionNone = "No potions left.",
+	PotionHPFull = "HP is full.",
+	PotionMPFull = "MP is full.",
 	-- PvP
 	Plundered = "%s stole %s gold from you!\nIf a knight catches the thief within 45 s, you get 120%% back.",
-	PlunderGain = "Put %s gold in your Grudge Sack!\nKeep it: survive 45 s in a PvP zone. (Wanted stars: %d)",
-	PlunderTooSoon = "You just robbed this player. You can't rob them again for 3 minutes.",
+	PlunderGain = "+%s gold in Grudge Sack!", -- (gold)
+	PlunderTooSoon = "Too soon to rob them again.",
 	HonorGain = "Honor +%d",
 	AutoSleepy = "The shard is sleepy… Take a step? (Auto Battle rests in 30 s)", -- P2
 	AutoRestOn = "You seem away, so Auto Battle is resting. Move and it starts again.",
 	AutoRestOff = "Welcome back! Auto Battle is on again.",
 	AutoChoiceWait = "A choice card is waiting. Pick one and Auto Battle starts again.",
-	GraduateStart = "Sprout graduate! You can fight other sides in 60 s", -- A23-18
+	GraduateStart = "Sprout Shield ends in 60 s!", -- A23-18
 	GraduateEnd = "Now you can fight the other sides!",
-	BoldStrong = "You beat a stronger foe! Honor, Infamy and war points ×2",
-	BoldWeak = "A weaker foe: Honor, Infamy and war points are halved.",
+	BoldStrong = "Stronger foe! Points ×2",
+	BoldWeak = "Weaker foe: points halved.",
 	BountyGain = "Got a %s gold bounty! Honor +%d",
 	BountyAnnounce = "[Knights of Light] %s got a %s gold bounty!", -- BB37: AnnounceService.PublicName(p, true)
 	-- BB37 (검수): a hidden knight is already "A member of the Knights of Light", so no "[Knights of Light]" prefix
 	BountyAnnounceHidden = "%s got a %s gold bounty!",
 	BountyAnnounceHiddenEn = "%s got a %s gold bounty!",
 	BullyBountyGain = "Got a %s gold bully bounty!",
-	MostWanted = "%s is now the Most Wanted! Bounty: %s gold", -- BB37: PublicName(p, true)
-	BullyKO = "Bully KO! No reward, size and ATK -15%% (bully level %d)",
+	MostWanted = "Most Wanted: %s · Bounty %s gold", -- BB37: PublicName(p, true)
+	BullyKO = "Bully KO! No reward. ATK -15%%",
 	BullyVictim = "A bully knocked you out. You lost nothing!",
 	BullyDecay = "Your bully level went down (level %d)",
-	BullyNoAuto = "No Auto Battle during a bully penalty. It comes back when your bully levels are gone.", -- A23-22
-	BullyAutoOff = "Unfair PvP penalty: Auto Battle is off. XP and drops are halved too.", -- A23-22 (auto was ON)
-	BullyPenaltyEnd = "Your bully penalty is over! Auto Battle, XP and drops are back.", -- A23-22
-	BullyPenaltyEndEn = "Your bully penalty is over! Auto Battle, XP and drops are back.",
-	BullyPenaltyEndNoAuto = "Your bully penalty is over! XP and drops are back to normal.", -- auto combat not unlocked yet
-	BullyPenaltyEndNoAutoEn = "Your bully penalty is over! XP and drops are back to normal.",
-	Revenge = "Get revenge on %s! ATK +25%% for 90 s",
+	BullyNoAuto = "No Auto during bully penalty.", -- A23-22
+	BullyAutoOff = "Bully penalty: no Auto, half rewards", -- A23-22 (auto was ON)
+	BullyPenaltyEnd = "Bully penalty over! Auto is back.", -- A23-22
+	BullyPenaltyEndEn = "Bully penalty over! Auto is back.",
+	BullyPenaltyEndNoAuto = "Bully penalty over!", -- auto combat not unlocked yet
+	BullyPenaltyEndNoAutoEn = "Bully penalty over!",
+	Revenge = "Revenge! ATK +25%%",
 	RevengeDone = "Revenge done!",
 	-- grudge sack
 	SackPaid = "You kept the Grudge Sack! Got %s gold",
 	SackLost = "You lost the Grudge Sack!",
-	GrudgeRefund = "%s got your Grudge Sack back! %s gold went to your vault!",
-	GrudgeReturned = "The thief went down, so your stolen %s gold came back to your vault.",
-	GrudgeMail = "Grudge mail! Your stolen %s gold came back to your vault.", -- P3
+	GrudgeRefund = "Stolen gold back: +%s", -- (gold)
+	GrudgeReturned = "Stolen gold back: +%s",
+	GrudgeMail = "Stolen gold back: +%s", -- P3
 	DailyAllDone = "All done for today! You can rest now without missing out. Want more? Enjoy story quests or hunting.", -- P8
 	GhostHoldOk = "Your ghost grabbed the thief! Their hold time +%d s (max +%d s)", -- A23-18
-	GhostHoldMax = "This sack can't be held any longer (max +%d s).",
-	GhostHeld = "A grudge ghost is holding you! You must survive longer.",
+	GhostHoldMax = "Max hold reached.",
+	GhostHeld = "Ghost holds you!",
 	GhostButton = "Ghost grab ({GhostHold})", -- BB1 key token: the key part shows only on keyboards
 	GhostWait = "Grab again in %d s",
 	AvengerBonus = "Avenger bonus +%s gold!",
 	GrudgeAvengedAll = "%s took the Grudge Sack back from %s!", -- BB37: PublicName(killer, true), PublicName(thief, true)
 	-- travel / blocks
-	TravelBlockedStars = "With 3 or more Wanted stars, you have to run away on foot!",
+	TravelBlockedStars = "Too many Wanted stars to teleport!",
 	TravelBlockedCombat = "You can't do that in combat.",
 	TravelBlockedSack = "You can't teleport while carrying a Grudge Sack!",
 	TravelBlockedKaiju = "A Kaiju can't teleport!",
@@ -6842,20 +6850,20 @@ Config.Text = {
 	BlockedSack = "You can't do that while carrying a Grudge Sack.",
 	BlockedKaiju = "You can't do that during a Kaiju event.",
 	BlockedStars = "You need zero Wanted stars to do that.",
-	BlockedBully = "You can join the Artisan Guild after all your bully levels are gone.", -- CR-L9: altar / rebirth to Neutral with bully stacks
+	BlockedBully = "Not while you are a bully.", -- CR-L9: altar / rebirth to Neutral with bully stacks
 	WaitRespawn = "You can do that after you respawn.", -- CR-L30: travel / class / rebirth / altar while dead
 	-- faction / class / tickets
-	UnderdogSignOn = "Bonus for joining the smaller side: +%d gold!",
-	SwitchDoneFree = "You joined the %s! (Price of switching: %s back to 0)",
+	UnderdogSignOn = "Smaller side bonus: +%d gold!",
+	SwitchDoneFree = "%s back to 0.", -- (score name)
 	SwitchDoneTicket = "You joined the %s! (Ticket used, points kept)",
 	SwitchCooldown = "You can switch sides again in %s.",
-	NoTicket = "You have no change ticket. Get one at Menu > Ticket Shop.",
-	TicketSaving = "Saving your ticket purchase. Please tap again in a moment.", -- CR-L25: UseTicket returned "Pending"
-	ClassChangedFree = "You changed your class to %s! You start again from Lv 1.", -- free change from Lv ClassChange.FreeKeepLevelBelow on
-	ClassChangedFreeKeep = "You changed your class to %s! (Level kept: under Lv%d)", -- A23-14 (className, FreeKeepLevelBelow)
+	NoTicket = "No change ticket.",
+	TicketSaving = "Still saving. Try again soon.", -- CR-L25: UseTicket returned "Pending"
+	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
+	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
 	ClassChangeRuleF = "Change class later in Menu. Free: level kept below Lv%d. Ticket: level always kept.", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
-	ClassChangedTicket = "You changed your class to %s! (Ticket used, level kept)",
+	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
 	ClassTicketGot = "You got 1 Class Change Ticket!",
@@ -6863,30 +6871,31 @@ Config.Text = {
 	ProductNotReady = "This item isn't ready yet.",
 	-- rebirth
 	RebirthNeed = "You need Lv %d to be reborn.",
-	RebirthDone = "Rebirth done! Only your level starts over; gold, weapons and items stay. Gold and XP +%d%% forever", -- A23-14
+	RebirthDone = "Reborn! Gold, XP +%d%%", -- A23-14
 	RebirthAnnounce = "%s was reborn! (Rebirth #%d)", -- BB37: PublicName(p, true)
 	-- quests
 	QuestDone = "Extra quest done! +%s gold",
 	DailyReady = "Daily quest done! Press [Claim].",
 	DailyClaimed = "Daily reward! +%s gold +%s XP",
-	DailyChest = "3 daily quests done! Bonus chest +%s gold +%s XP",
-	DailyChestTicket = "A Class Change Ticket came out of the bonus chest!",
-	DailyAutoPaid = "Yesterday's unclaimed daily rewards went to your vault. (+%s gold)",
+	DailyChest = "Bonus chest! +%s gold +%s XP",
+	DailyChestTicket = "+1 Class Change Ticket!",
+	DailyAutoPaid = "Daily rewards! +%s gold",
 	VacationClaimed = "Vacation bonus! +%s gold +%s XP",
 	-- war
 	WarChest = "War chest! +%s gold",
 	-- goose
 	GooseReward = "Golden Goose reward! +%s gold +%s XP",
-	GooseCheer = "Cheer Star +1 (%d/5): at 5, your next goose reward is rare!",
+	GooseCheer = "Cheer Star %d/5", -- (stars) added to the reward line
 	RareToast = "Rare reward! ×5",
 	RareAnnounce = "%s got a rare Golden Goose reward!", -- BB37: PublicName(p, true)
 	-- kaiju
 	KaijuQueued = "Another Kaiju is out. You'll transform when it's over!",
 	KaijuReward = "Kaiju hunt reward +%s gold!",
-	KaijuSurviveReward = "You survived! Pouch gold ×1.5 = %s gold to your vault!",
+	KaijuSurviveReward = "Survived! +%s gold to vault",
 	-- addendum A3 (review fixes)
 	AutoUnderAttack = "You're under attack! Hit back with the Attack button", -- M3: auto ON + took PvP damage (once per 60 s)
 	EnemyTown = "You can't enter the other side's town!", -- L1: bounced to Crossroads (also Neutral in either town)
+	KaijuNoTown = "A Kaiju can't enter towns!", -- ZoneService (was its hard-coded fallback)
 	WaterRescue = "Splash! Back on dry land.", -- zone_check_halo #62: ZoneService water rescue (Config.WaterRescue.Toast)
 	-- addendum A7-3 (next goal, client)
 	Unlocked = "Unlocked! %s", -- (unlockText)
@@ -7017,22 +7026,22 @@ Config.Ranking = {
 		OutlawChipEn = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
 		RewardChip = "This week's %s #%d: XP and drops +10%% (until Monday)", -- (board name, rank)
 		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
-		OutlawStart = "Last week's Unfair PvP #%d: you are an outlaw this week!\nNo Auto Battle, half XP and drops, double bounty (until Monday).",
-		OutlawStartEn = "Last week's Unfair PvP #%d: you are an outlaw this week!\nNo Auto Battle, half XP and drops, double bounty (until Monday).",
-		OutlawEnd = "Your outlaw week is over! Auto Battle is back.",
-		OutlawEndEn = "Your outlaw week is over! Auto Battle is back.",
-		OutlawEndNoAuto = "Your outlaw week is over! XP and drops are back to normal.", -- auto combat not unlocked yet
-		OutlawEndNoAutoEn = "Your outlaw week is over! XP and drops are back to normal.",
+		OutlawStart = "Outlaw week: no Auto, half rewards, 2x bounty",
+		OutlawStartEn = "Outlaw week: no Auto, half rewards, 2x bounty",
+		OutlawEnd = "Outlaw week over! Auto is back.",
+		OutlawEndEn = "Outlaw week over! Auto is back.",
+		OutlawEndNoAuto = "Outlaw week over!", -- auto combat not unlocked yet
+		OutlawEndNoAutoEn = "Outlaw week over!",
 		-- (still a bully at the end of the outlaw week: no line here; CombatService says BullyPenaltyEnd when the stacks go)
-		OutlawNoAuto = "Outlaws can't use Auto Battle (until Monday).",
-		OutlawNoAutoEn = "Outlaws can't use Auto Battle (until Monday).",
-		OutlawAutoOff = "Outlaw: Auto Battle is off and XP and drops are halved (until Monday).",
-		OutlawAutoOffEn = "Outlaw: Auto Battle is off and XP and drops are halved (until Monday).",
-		RewardStart = "Last week's %s #%d! XP and drops +10%% and a title this week (until Monday).", -- (board name, rank)
-		RewardStartEn = "Last week's %s #%d! XP and drops +10%% and a title this week (until Monday).",
+		OutlawNoAuto = "No Auto for outlaws.",
+		OutlawNoAutoEn = "No Auto for outlaws.",
+		OutlawAutoOff = "Outlaw: no Auto, half rewards",
+		OutlawAutoOffEn = "Outlaw: no Auto, half rewards",
+		RewardStart = "%s #%d! New title · XP, drops +10%%", -- (board name, rank)
+		RewardStartEn = "%s #%d! New title · XP, drops +10%%",
 		-- a top-3 player who switched faction since: the title is given, the bonus waits for that faction
-		RewardStartOff = "Last week's %s #%d! You got the title.\nXP and drops +10%% only while in the %s (until Monday).", -- (board, rank, faction)
-		RewardStartOffEn = "Last week's %s #%d! You got the title.\nXP and drops +10%% only while in the %s (until Monday).",
+		RewardStartOff = "%s #%d! New title", -- (board, rank, faction)
+		RewardStartOffEn = "%s #%d! New title",
 		ArtisanGain = "+%d Artisan Fame", ArtisanGainEn = "+%d Artisan Fame",
 		-- BB11 town board (PvPService.updateBoard; 검수 2026-10-06): this server's weekly boards + one wanted line.
 		-- RichText: the red outlaw tag is fixed text, names are escaped. Row = (rank, name, value).
@@ -7278,14 +7287,14 @@ Config.Tamer = {
 	SkillStyle = "PetDash", -- skill Q Fx: the pet dashes into the target area
 	Text = {
 		PetName = "Baby Slime", PetNameEn = "Baby Slime",
-		PetGot = "A Baby Slime became your pet! Now your pet fights for you.",
-		PetGotEn = "A Baby Slime became your pet! Now your pet fights for you.",
+		PetGot = "New pet: Baby Slime!",
+		PetGotEn = "New pet: Baby Slime!",
 		-- once, for a save that was the artisan hunter before A23-39 (with one free class change)
-		Became = "The hunter is now the Pet Tamer!\nWant another class? Use the free Class Change Ticket you got.",
-		BecameEn = "The hunter is now the Pet Tamer!\nWant another class? Use the free Class Change Ticket you got.",
+		Became = "You're a Pet Tamer now! +1 ticket",
+		BecameEn = "You're a Pet Tamer now! +1 ticket",
 		-- below Config.ClassChange.FreeKeepLevelBelow a free change keeps the level anyway (no ticket button there)
-		BecameFree = "The hunter is now the Pet Tamer! You can change your class for free.",
-		BecameFreeEn = "The hunter is now the Pet Tamer! You can change your class for free.",
+		BecameFree = "You're a Pet Tamer now!",
+		BecameFreeEn = "You're a Pet Tamer now!",
 	},
 	-- the class card / picker lines for the tamer (Config.ClassCard)
 	Card = {
@@ -7801,7 +7810,7 @@ Config.Invite = {
 	SeasonZone = "SlimeMeadow",
 	Text = {
 		NotHere = "Your friend is not on this server.",
-		Away = "Your friend is exploring far away. Try again soon!",
+		Away = "Your friend is far away.",
 		OtherTown = "Your friend is in the other side's town.",
 		SproutPvP = "Your friend is in a PvP zone. Come at Lv %d!",
 		SameZone = "You're already there!",
@@ -7915,9 +7924,9 @@ Config.Commission = {
 		[6] = { Gold = 30000, Items = { KnightCrest = 30, Bone = 60, CaptainBadge = 1 }, ShowLevel = 25 }, -- Lv30 (the Captain's Badge: Captain Clatter's weekly gift, 검수 2026-10-09)
 	},
 	Text = {
-		Done = "Otto made your %s!",
-		NeedLevel = "Otto says: come back at Lv %d!",
-		NeedMaterials = "Otto needs more materials for this one.",
+		Done = "%s equipped!",
+		NeedLevel = "You need Lv %d.",
+		NeedMaterials = "Not enough materials.",
 		Owned = "You already have this weapon.",
 		GoalLabel = { [4] = "Golden weapon", [5] = "Crystal weapon", [6] = "Spirit weapon" },
 		GoalMaterial = "Next goal · %s: %s %d/%d · %s/%s gold",
@@ -8081,7 +8090,7 @@ Config.PetGrant = {
 	Quest = "Pet1", Species = "BabySlime",
 	Picks = { Care = "Good", Minion = "Evil", A = "Good", B = "Evil" },
 	Names = { Good = "Good Buddy", Evil = "Little Minion" },
-	Text = { Got = "A Baby Slime joined you! It hops along behind you." },
+	Text = { Got = "New pet: Baby Slime!" },
 }
 
 ----------------------------------------------------------------- A23-110 the first KO King (게임성 개발 2)

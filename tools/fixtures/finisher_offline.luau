@@ -203,8 +203,9 @@ runGroup("Captain Clatter's card", function()
 	check(e.Item == "Enh70" and e.N == 0 and e.Gold == CC.Help.Worth and (w.Data[p].BankGold or 0) == CC.Help.Worth,
 		"a full bag: the scroll paid at its Worth (300)", show(e))
 	local lines = w:NoticesFor(p)
-	check(table.concat(lines, " | "):find(CC.Text.HelpDone, 1, true) ~= nil,
-		"his own HelpDone line", table.concat(lines, " | "))
+	-- A23-130: the gains only, no HelpDone story line
+	check(table.concat(lines, " | "):find(CC.Text.HelpDone, 1, true) == nil and table.concat(lines, " | "):find("+300 gold", 1, true) ~= nil,
+		"the gains line (+300 gold), no HelpDone line", table.concat(lines, " | "))
 	-- room in the bag: the scroll itself
 	local q = w:Hero(152, { Faction = "Horns" })
 	local b2 = w:King({ Kind = "CaptainClatter" })
@@ -213,8 +214,9 @@ runGroup("Captain Clatter's card", function()
 	local c2 = w:Cards(q)[1]
 	w:Pick(q, c2.Id, "Tickle")
 	local e2 = w:Ends(q)[1]
-	check(e2.Gold == CC.Tickle.Gold and e2.N == 0 and table.concat(w:NoticesFor(q), " | "):find(CC.Text.TickleDone, 1, true) ~= nil,
-		"Tickle: 300 bank gold and his TickleDone line", show(e2))
+	check(e2.Gold == CC.Tickle.Gold and e2.N == 0 and table.concat(w:NoticesFor(q), " | "):find(CC.Text.TickleDone, 1, true) == nil
+		and table.concat(w:NoticesFor(q), " | "):find("+300 gold", 1, true) ~= nil,
+		"Tickle: 300 bank gold, the gains line only (no TickleDone line)", show(e2))
 end)
 
 ------------------------------------------------------------------ Captain Clatter's free riders (검수 2026-10-09)
@@ -415,8 +417,8 @@ runGroup("picks", function()
 	check(#e == 1 and e[1].Id == c.Id and e[1].Pick == "Help" and e[1].Stat == "Honor" and e[1].Score == 1 and e[1].N == 2
 		and e[1].Gold == 0, "FinisherEnd says what happened", show(e[1]))
 	local lines = w:NoticesFor(h, n0)
-	check(#lines == 1 and has(lines[1], CARD.Text.HelpDone) and has(lines[1], "Jelly") and has(lines[1], "Honor +1"),
-		"one line: 'It hops home happy! · +Jelly ×2 · Honor +1'", show(lines))
+	check(#lines == 1 and not has(lines[1], CARD.Text.HelpDone) and lines[1] == "+Jelly ×2 · Honor +1",
+		"one line: '+Jelly ×2 · Honor +1' (A23-130: no story part)", show(lines))
 	check(w:SoundsFor(h, n0)[1] == "None", "the pick line is silent (never QuestDone; the client plays the pick)",
 		show(w:SoundsFor(h, n0)))
 	check(w:MetricsOf(h, m0) == "FinisherPick:Halo:Halo", "metric FinisherPick (Halo, my faction Halo)", w:MetricsOf(h, m0))
@@ -431,17 +433,16 @@ runGroup("picks", function()
 	check(#w.GoldCalls == g0 + 1 and w.GoldCalls[#w.GoldCalls].Source == "Finisher", "the gold's source is Finisher",
 		tostring(w.GoldCalls[#w.GoldCalls] and w.GoldCalls[#w.GoldCalls].Source))
 	local l2 = w:NoticesFor(h2, n2)
-	check(#l2 == 2 and has(l2[1], CARD.Text.TickleDone) and has(l2[1], "+4 gold") and not has(l2[1], "Honor")
-		and l2[2] == string.format(C0F.StoryQuests.Text.OffSideHalo, 1), "Tickle line + the off-side line (Honor -1)", show(l2))
+	check(#l2 == 2 and l2[1] == "+4 gold" and l2[2] == string.format(C0F.StoryQuests.Text.OffSideHalo, 1) and l2[2] == "Honor -1",
+		"the gold line + the off-side loss line 'Honor -1'", show(l2))
 	check(w:Ends(h2)[1].Score == -1 and w:Ends(h2)[1].Gold == CARD.Tickle.Gold, "FinisherEnd: Score -1, Gold 4", show(w:Ends(h2)[1]))
-	-- Halo + Tickle at Honor 0: nothing to take (never below 0), the zero line
+	-- Halo + Tickle at Honor 0: nothing to take (never below 0); A23-130: no zero / lean line, the gold line only
 	local h3 = w:Hero(143, { Faction = "Halo" })
 	local _, c3 = w:Offer(h3)
 	local n3 = #w.Notices
 	w:Pick(h3, c3.Id, "Tickle")
-	check((w.Data[h3].Honor or 0) == 0 and w:NoticesFor(h3, n3)[2] == C0F.StoryQuests.Text.OffSideHaloZero .. " "
-		.. C0F.StoryQuests.Text.LeanEvil,
-		"Halo Tickle at Honor 0: stays 0, the zero line", show(w:NoticesFor(h3, n3)))
+	check((w.Data[h3].Honor or 0) == 0 and #w:NoticesFor(h3, n3) == 1 and w:NoticesFor(h3, n3)[1] == "+4 gold",
+		"Halo Tickle at Honor 0: stays 0, the gold line only", show(w:NoticesFor(h3, n3)))
 	-- Horns + Tickle: Infamy +1; Horns + Help: Infamy -1
 	local r = w:Hero(144, { Faction = "Horns", Data = { Infamy = 2 } })
 	local _, c4 = w:Offer(r)
@@ -492,8 +493,8 @@ runGroup("daily cap", function()
 	local lx = w:NoticesFor(h, nx)
 	check(w.Data[h].Honor == cap and w:Jelly(h) == j + 2 and w:Ends(h)[cap + 1].Score == 0, "past the cap: the Jelly, no point",
 		show({ w.Data[h].Honor, w:Jelly(h) - j }))
-	check(#lx == 2 and not has(lx[1], "Honor") and lx[2] == FIN.Text.HintFull, "past the cap: no points line + 'No more points today'",
-		show(lx))
+	check(#lx == 1 and not has(lx[1], "Honor") and not has(lx[1], FIN.Text.HintFull),
+		"past the cap: no points, one gains line (A23-130: no 'No more points today' line)", show(lx))
 	-- an off-side drop is not limited by the cap (and uses none of it)
 	local _, c7 = w:Offer(h)
 	w:Pick(h, c7.Id, "Tickle")

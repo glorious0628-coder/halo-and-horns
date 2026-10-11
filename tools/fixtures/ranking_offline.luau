@@ -1635,13 +1635,11 @@ runGroup("bb37-lines", function()
 		end
 		return nil
 	end
+	-- A23-130 (server text verdicts 2026-10-11): no server-wide bounty brag any more (the hunter gets BountyGain)
 	local hidden = bountyKO(true)
-	check(hidden ~= nil and has(hidden, string.format(C0.Announce.Text.HiddenName, C0.Factions.Halo.Name) .. " got a")
-		and not has(hidden, "[" .. C0.Factions.Halo.Name .. "]") and not has(hidden, "P101"),
-		"a hidden knight's bounty line: 'A member of the Knights of Light got …' without the '[Knights of Light]' prefix", hidden)
+	check(hidden == nil, "a hidden knight's bounty: no server-wide line", hidden)
 	local shown = bountyKO(false)
-	check(shown ~= nil and has(shown, "[" .. C0.Factions.Halo.Name .. "]") and has(shown, "P101" .. C0.Announce.Text.Honorific .. " got a"),
-		"a shown knight's bounty line keeps the prefix", shown)
+	check(shown == nil, "a shown knight's bounty: no server-wide line either", shown)
 	check(type(T.BountyAnnounceHiddenEn) == "string" and not has(T.BountyAnnounceHidden, "["), "BountyAnnounceHidden KO/EN without a prefix")
 	-- the kaiju's public name follows a hide toggle during the event (GameState KaijuName + the end line)
 	local w = rankWorld({ Kaiju = true })
@@ -1669,7 +1667,7 @@ runGroup("bb37-lines", function()
 	w:KaijuTick(C0.Kaiju.Duration)
 	local survived = nil
 	for _, n in w.All do if has(n.Text, "survived to the end") then survived = n.Text end end
-	check(survived == string.format(C0.Story.KaijuSurvived, hiddenName), "the end line uses the name as it is at the end (hidden)", survived)
+	check(survived == nil, "no server-wide 'survived to the end' banner (A23-130: the kaiju's own reward line)", survived)
 	w.AllowWarn = { "missing", "zoom" }
 end)
 
@@ -1903,6 +1901,15 @@ runGroup("effects-auto", function()
 	local w2 = rankWorld()
 	local q = w2:Join(102, "Halo", { Data = { AutoCombatUnlocked = true, AutoCombatEnabled = true, Outlaw = OUT(2962) } })
 	check(w2.Data[q].AutoCombatEnabled == false, "joining as an outlaw with auto combat saved ON: OFF", tostring(w2.Data[q].AutoCombatEnabled))
+	-- 게임성 검수 2026-10-12: the outlaw week starting while auto is ON = one line (OutlawStart says "no Auto"), not two
+	local st = rankWorld({ Studio = true })
+	local o = st:Join(-2, "Horns", { Data = { AutoCombatUnlocked = true, AutoCombatEnabled = true } })
+	st.Ranking.Credit(o, "PvP", 3)
+	st.Ranking.DebugSettle()
+	check(o:GetAttribute("Outlaw") == true and st.Data[o].AutoCombatEnabled == false
+		and st:CountNotices(o, string.format(R0.Text.OutlawStart, 1)) == 1 and st:CountNotices(o, R0.Text.OutlawAutoOff) == 0,
+		"the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
+		show({ o:GetAttribute("Outlaw"), st.Data[o].AutoCombatEnabled, st:CountNotices(o, R0.Text.OutlawAutoOff) }))
 end)
 
 ------------------------------------------------------------------ 24. the red '무법자' on the nametag (CharacterVisuals)

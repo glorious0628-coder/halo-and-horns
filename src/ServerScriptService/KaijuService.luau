@@ -30,8 +30,6 @@ local GROUND_RAY_LENGTH = 120
 local KAIJU_CAMERA_ZOOM = 60 -- A12: "kaiju may use 60 while transformed, then restore"
 -- candidates for Config.Kaiju (G1): survive bonus cap in minutes of Config.HuntValue at the kaiju's level
 local SURVIVE_BONUS_MINUTES = 20
-local TXT_SURVIVE_CAPPED = "You survived! Pouch gold + bonus (max) = %s gold to your vault!"
-local TXT_SURVIVE_UNCONTESTED = "You survived! Nobody fought you, so only %s gold goes to your vault (no bonus)."
 
 local KaijuService = {}
 KaijuService.KaijuStarted = Util.Signal.new() -- (player)
@@ -438,7 +436,6 @@ local function survive(p)
 		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", p, carried, "Kaiju")) or 0))
 		local fullBonus = math.max(0, math.floor(taken * Config.Kaiju.SurviveBankMult) - taken) -- minted part
 		local bonus = opposed and math.min(fullBonus, math.max(0, math.floor(capGold * passMult))) or 0
-		local capped = bonus < fullBonus
 		-- A23-75: the carried gold banked is the player's own ("KaijuBank", never 2x); the minted bonus is "KaijuBonus"
 		-- (never 2x either: see passMult above). The line shows what was added.
 		if taken > 0 then call("ProgressionService", "AddBankGold", p, taken, "KaijuBank") end
@@ -446,14 +443,8 @@ local function survive(p)
 		local amount = taken + bonus
 		p:SetAttribute("SessionTitle", Config.Story.SurviveTitle) -- session only
 		call("WarService", "AddFactionPoints", "Horns", Config.Kaiju.HornsWarPoints)
-		local text = Config.Text.KaijuSurviveReward
-		if not opposed then
-			text = TXT_SURVIVE_UNCONTESTED
-		elseif capped then
-			text = TXT_SURVIVE_CAPPED
-		end
-		Net.Notify(p, string.format(text, Util.FormatNumber(amount)), "reward", nil, "GoldPickup")
-		Net.NotifyAll(string.format(Config.Story.KaijuSurvived, name))
+		-- A23-130: one short reward line (no pouch math, no server-wide "Legendary Villain" banner)
+		Net.Notify(p, string.format(Config.Text.KaijuSurviveReward, Util.FormatNumber(amount)), "reward", nil, "GoldPickup")
 	end)
 	if not ok then warnThrottled("survive", "survive reward failed: " .. tostring(err)) end
 	finish(p, "Survived", participants)
@@ -554,10 +545,7 @@ local function updateQueue()
 		local ok, err = pcall(function()
 			if states[p] == nil and isEligible(p) then
 				table.insert(queue, p)
-				setState(p, "Queued")
-				if current ~= nil then
-					Net.Notify(p, string.format(Config.Text.KaijuQueued), "info")
-				end
+				setState(p, "Queued") -- A23-130: no advance line (the siren chip warns when it is my turn)
 			end
 		end)
 		if not ok then warnThrottled("queue", "queue error: " .. tostring(err)) end
@@ -793,15 +781,7 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 	end)
 	if not ok then warnThrottled("defeat", "defeat reward failed: " .. tostring(err)) end
 
-	local okSend, sendErr = pcall(function()
-		if paid > 0 then
-			Net.NotifyAll(string.format(Config.Story.KaijuDefeated, name, Util.FormatNumber(paid)))
-		else
-			-- CR-L19: nobody was paid -> no "보상 N골드" line
-			Net.NotifyAll(string.format(Config.Story.KaijuDefeatedNoReward or "The Kaiju %s was defeated.", name))
-		end
-	end)
-	if not okSend then warnThrottled("send", "defeat broadcast failed: " .. tostring(sendErr)) end
+	-- A23-130: no server-wide defeat banner (the paid knights got KaijuReward, the kaiju its KO screen)
 	finish(victim, "Defeated", participants, leaving)
 end
 

@@ -922,8 +922,7 @@ function AUTO_IDLE.SetResting(p, on)
 		label.Parent = bb
 		bb.Parent = head
 	end
-	pcall(Net.Notify, p, Config.Text[on and "AutoRestOn" or "AutoRestOff"], "info")
-end
+end -- A23-130: no AutoRestOn / AutoRestOff line (the Zzz label shows it)
 
 -- true while the auto loop must wait: idle rest (with the 30 s warning first) or a pending choice card
 function AUTO_IDLE.Check(p)
@@ -944,10 +943,7 @@ function AUTO_IDLE.Check(p)
 	end
 	if p:GetAttribute("AutoResting") == true then AUTO_IDLE.SetResting(p, false) end
 	if idle >= cfg.AutoIdleSeconds - cfg.AutoIdleWarnSeconds then
-		if not AUTO_IDLE.Warned[p] then
-			AUTO_IDLE.Warned[p] = true
-			pcall(Net.Notify, p, Config.Text.AutoSleepy, "info", cfg.AutoIdleWarnSeconds)
-		end
+		AUTO_IDLE.Warned[p] = true -- A23-130: no AutoSleepy line
 	else
 		AUTO_IDLE.Warned[p] = nil
 	end
@@ -1569,8 +1565,15 @@ local function onPlayerReady(player, _data)
 		if now and not wasBully and player:GetAttribute("AutoCombatEnabled") == true and S.PlayerService.IsReady(player) then
 			S.PlayerService.SetStat(player, "AutoCombatEnabled", false)
 			local outlawOnly = (tonumber(player:GetAttribute("BullyStacks")) or 0) < 1
-			-- sound_gaps C3: the AutoOff sound (the attribute) is enough, no Deny on top
-			Net.Notify(player, outlawOnly and Config.Ranking.Text.OutlawAutoOff or Config.Text.BullyAutoOff, "bad", nil, "None")
+			-- 게임성 검수 2026-10-12: the outlaw week's start line (RankingService, a moment ago) already says "no Auto": one
+			-- line, not two (a join as an outlaw keeps this line, it has no start line)
+			local ranking = S.RankingService
+			local toldAt = outlawOnly and fromOutlaw and type(ranking) == "table" and type(ranking.OutlawToldAt) == "function"
+				and ranking.OutlawToldAt(player)
+			if not (type(toldAt) == "number" and os.clock() - toldAt < 10) then
+				-- sound_gaps C3: the AutoOff sound (the attribute) is enough, no Deny on top
+				Net.Notify(player, outlawOnly and Config.Ranking.Text.OutlawAutoOff or Config.Text.BullyAutoOff, "bad", nil, "None")
+			end
 		elseif wasBully and not now and not fromOutlaw and (tonumber(player:GetAttribute("BullyStacks")) or 0) <= 0 then
 			local unlocked = player:GetAttribute("AutoCombatUnlocked") == true
 			Net.Notify(player, unlocked and Config.Text.BullyPenaltyEnd or Config.Text.BullyPenaltyEndNoAuto, "good")

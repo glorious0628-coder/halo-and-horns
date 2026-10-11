@@ -192,17 +192,20 @@ end
 
 -- every milestone up to `days` (titles once; TitleService / GrantLook ignore what is owned). loud = the claim that just
 -- reached `days`: one line for the milestone of exactly that day, one for each new title / look / frame
+-- A23-130: a milestone day's fanfare (RankUp) rides on its first reward line (frame / title / my side's look); only a day
+-- with none of them for me (게임성 검수 10/12: the artisan guild at 14 days gets no Halo / Horns look) says "N days collected!"
 local function milestones(player, days, loud)
+	local lines, hit = {}, false
 	for _, m in A.Milestones or {} do
 		local at = math.floor(num(m.Days))
 		if at > 0 and at <= days then
 			local newTitle = m.Title and grantTitle(player, m.Title)
 			if loud and at == days then
-				notify(player, string.format(TXT.Days or "%d days collected!", at), "reward", "RankUp")
-				if m.Border then notify(player, TXT.NewBorder or "New name frame!", "reward", "None") end
+				hit = true
+				if m.Border then table.insert(lines, TXT.NewBorder or "New name frame!") end
 			end
 			if loud and newTitle then
-				notify(player, string.format(TXT.NewTitle or "New title: %s!", Config.TitleDefs[m.Title].Name), "reward", "None")
+				table.insert(lines, string.format(TXT.NewTitle or "New title: %s!", Config.TitleDefs[m.Title].Name))
 			end
 		end
 	end
@@ -210,9 +213,13 @@ local function milestones(player, days, loud)
 	for _, id in grantLooks(player, days) do
 		local look = Config.Looks[id]
 		if loud and look.Faction == faction then
-			notify(player, string.format(TXT.NewLook or "New look: %s!", tostring(look.Name or id)), "reward", "None")
+			table.insert(lines, string.format(TXT.NewLook or "New look: %s!", tostring(look.Name or id)))
 		end
 	end
+	if hit then
+		notify(player, table.remove(lines, 1) or string.format(TXT.Days or "%d days collected!", days), "reward", "RankUp")
+	end
+	for _, line in lines do notify(player, line, "reward", "None") end
 end
 
 ------------------------------------------------------------------ claim

@@ -136,8 +136,11 @@ runGroup("a week, day by day", function()
 	check(d.Titles.Regular ~= nil and p:GetAttribute("TitlesOwned"):find("Regular") ~= nil,
 		"7 days collected: the stat-free title 'Regular'", show(d.Titles))
 	local lines = w:NoticesFor(p, before)
-	check(table.find(lines, "7 days collected!") and table.find(lines, "New title: Regular!"),
-		"7 days: one milestone line + one title line", show(lines))
+	-- A23-130: the milestone fanfare rides on its reward line (no "7 days collected!", no empty notice)
+	local sounds = w:SoundsFor(p, before)
+	local at = table.find(lines, "New title: Regular!")
+	check(at ~= nil and sounds[at] == "RankUp" and not table.find(lines, "7 days collected!") and not table.find(lines, ""),
+		"7 days: one title line with the RankUp fanfare", show({ lines, sounds }))
 	check(attrs(p) == "days=7 slot=1 ready=false", "after the box the board starts at slot 1 again", attrs(p))
 	w:ToDay(1)
 	claim(w, p)
@@ -284,8 +287,17 @@ runGroup("milestones and attendance looks", function()
 	check(table.concat(ids, ",") == "HaloSprout,HornsSprout", "14 days: both factions' 14-day looks (never a sold one)",
 		table.concat(ids, ","))
 	local lines = w:NoticesFor(p, before)
-	check(table.find(lines, "14 days collected!") and table.find(lines, "New look: Sprout Halo!")
-		and not table.find(lines, "New look: Sprout Horns!"), "the lines name my own faction's look only", show(lines))
+	check(table.find(lines, "New look: Sprout Halo!") and w:SoundsFor(p, before)[table.find(lines, "New look: Sprout Halo!")] == "RankUp"
+		and not table.find(lines, "New look: Sprout Horns!") and not table.find(lines, "14 days collected!"),
+		"the lines name my own faction's look only (it carries the fanfare)", show(lines))
+	-- 게임성 검수 10/12: the artisan guild (Neutral) gets no Halo / Horns look at 14 days -> one "14 days collected!" line
+	local nn, dn = hero(w, 4, { Data = { Faction = "Neutral", Attendance = { Days = 13, LastDay = 0, Slot = 7 } } })
+	local fromN = #w.Notices
+	claim(w, nn)
+	local nLines, nSounds = w:NoticesFor(nn, fromN), w:SoundsFor(nn, fromN)
+	local nAt = table.find(nLines, "14 days collected!")
+	check(nAt ~= nil and nSounds[nAt] == "RankUp" and not table.find(nLines, "") and not table.find(nLines, "New look: Sprout Halo!"),
+		"Neutral at 14 days: '14 days collected!' with the fanfare (never a sound with no words)", show({ nLines, nSounds }))
 	-- a save that already has 120 days (e.g. the titles came later): everything up to 120, silently, at join
 	local q, dq = hero(w, 2, { Data = { Faction = "Horns", Attendance = { Days = 120, LastDay = 0, Slot = 4 } } })
 	check(dq.Titles.Regular and dq.Titles.SuperRegular and dq.Titles.MegaRegular, "120 days: every attendance title at join",
@@ -298,10 +310,10 @@ runGroup("milestones and attendance looks", function()
 	-- the 28-day frame
 	local r, dr = hero(w, 3, { Data = { Attendance = { Days = 27, LastDay = 0, Slot = 7 } } })
 	claim(w, r)
-	check(table.find(w:NoticesFor(r), "28 days collected!") and table.find(w:NoticesFor(r), "New name frame!")
+	check(not table.find(w:NoticesFor(r), "") and table.find(w:NoticesFor(r), "New name frame!")
 		and r:GetAttribute("AttendDays") == 28, "28 days: the name frame line + AttendDays 28 for the nametag",
 		show(w:NoticesFor(r)))
-	local _ = { d, dr }
+	local _ = { d, dr, dn }
 end)
 
 runGroup("without A23-75's looks (main today)", function()

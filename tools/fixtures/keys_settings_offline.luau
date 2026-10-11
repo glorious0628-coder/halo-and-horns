@@ -801,11 +801,12 @@ runGroup("keylabel-fillkeys", function()
 	check(C.KeyLabel(nil) == "None" and C.KeyLabel(5) == "None", "KeyLabel(nil / non-string) = None")
 	check(C.KeyLabel("", true) == "None" and C.KeyLabel("One", true) == "1", "KeyLabel English: '' -> None")
 	-- server-side token fill (StoryQuestService uses Config.FillKeys(text, Config.KeyMap(keys, nil)))
+	-- A23-130 (server text verdicts 2026-10-11): the unlock line is the reward only; the next quest row carries the key
 	local unlocked = C.StoryQuests.Text.Unlocked
-	check(string.find(unlocked, "{Auto}", 1, true) ~= nil and string.find(unlocked, "with R ", 1, true) == nil,
-		"the auto-combat unlock text carries the {Auto} token, no fixed R", unlocked)
-	check(string.find(C.FillKeys(unlocked, C.KeyMap({}, nil)), "with R (", 1, true) ~= nil, "{Auto} -> R by default")
-	check(string.find(C.FillKeys(unlocked, C.KeyMap({ Auto = "V" }, nil)), "with V (", 1, true) ~= nil, "{Auto} -> the player's key (V)")
+	check(unlocked == "Auto Battle unlocked!" and string.find(unlocked, "{", 1, true) == nil and string.find(unlocked, "with R", 1, true) == nil,
+		"the auto-combat unlock line is short (no key, no how-to)", unlocked)
+	check(C.FillKeys("Turn on with {Auto}", C.KeyMap({}, nil)) == "Turn on with R", "{Auto} -> R by default")
+	check(C.FillKeys("Turn on with {Auto}", C.KeyMap({ Auto = "V" }, nil)) == "Turn on with V", "{Auto} -> the player's key (V)")
 	local stepText = nil
 	for _, q in C.StoryQuests.Defs or {} do
 		for _, st in q.Steps or {} do

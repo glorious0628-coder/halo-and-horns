@@ -21,7 +21,7 @@ local Util = require(ReplicatedStorage.Shared.Util)
 local Net = require(ReplicatedStorage.Shared.Net)
 
 local TAG = "GooseService"
-local GOOSE_LABEL = "Golden Goose" -- billboard text (TECH_SPEC §4.16; English since A23-48)
+local GOOSE_LABEL = Config.Goose.Text.Label -- billboard text (TECH_SPEC §4.16; English since A23-48)
 local CUSTOM_FOLDER = (Config.CustomModels and Config.CustomModels.FolderName) or "CustomModels" -- A1
 local CUSTOM_ID = (Config.CustomModels and Config.CustomModels.GooseId) or "GoldenGoose" -- A1
 -- review fix (anti-AFK): rewards (and GooseFinished participation) need this many ACCEPTED manual counts this event;
@@ -581,21 +581,20 @@ local function rewardPlayer(p, result, f, share, judged)
 	xp = math.floor(xp * (prog and type(prog.PrivateMult) == "function" and tonumber(prog.PrivateMult()) or 1))
 	if xp > 0 then xp = tonumber(call("ProgressionService", "AddXP", p, xp)) or xp end
 	local msg = (share ~= nil) and txt("CoopReward", f, Util.FormatNumber(gold), Util.FormatNumber(xp)) or nil
-	Net.Notify(p, msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp)), "reward", nil,
-		"GoldPickup")
+	msg = msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp))
 
-	if rare then
-		Net.Fx(p, "Rare", { Gold = gold, XP = xp })
-		Net.NotifyAll(string.format(Config.Text.RareAnnounce, publicName(p, true)), "info")
-	end
-
-	if not won then -- loss or tie: +1 cheer star
+	if not won then -- loss or tie: +1 cheer star (A23-130: said on the reward line, one toast)
 		local cheer = getNum(p, "CheerStars")
 		if cheer < Config.Goose.CheerStarsForRare then
 			local newCount = call("PlayerService", "AddStat", p, "CheerStars", 1)
 			cheer = tonumber(newCount) or (cheer + 1)
 		end
-		Net.Notify(p, string.format(Config.Text.GooseCheer, math.floor(cheer)), "info")
+		msg ..= " · " .. string.format(Config.Text.GooseCheer, math.floor(cheer))
+	end
+	Net.Notify(p, msg, "reward", nil, "GoldPickup")
+
+	if rare then -- A23-130: the winner's Rare Fx only, no server-wide brag line (RareAnnounce)
+		Net.Fx(p, "Rare", { Gold = gold, XP = xp })
 	end
 	GooseService.GooseRewarded:Fire(p, { Won = won, Rare = rare == true, Gold = gold, XP = xp, Level = level,
 		Mode = judged == "Coop" and "Coop" or "Versus" })
@@ -661,13 +660,8 @@ local function finish()
 	if judged == "Versus" and result ~= "Tie" then -- A23-14: co-op never gives war points
 		call("WarService", "AddFactionPoints", result, Config.Goose.WinWarPoints)
 	end
+	-- A23-130: no result banner (the top bar and the reward lines say it); GooseEnd = the end visual + the big sound
 	local okSend, sendErr = pcall(function()
-		local msg = nil
-		if judged == "Coop" and isTugFaction(side) then
-			msg = success and txt("CoopResult", side) or txt("CoopFail")
-			if msg and rivalLeft then msg = txt("RivalLeft", nil, msg) or msg end
-		end
-		Net.NotifyAll(msg or string.format(Config.Story.GooseResult[result]))
 		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop") })
 	end)
 	if not okSend then warnThrottled("send", "goose result broadcast failed: " .. tostring(sendErr)) end
@@ -720,8 +714,7 @@ local function tick()
 		sideTarget = ((coop.Side == "Halo") and -1 or 1) * fill * MAX_SIDE_OFFSET
 		if not coop.Full and fill >= 1 then
 			coop.Full = true -- totals never go down, so a full gauge stays a success until the timer ends
-			local msg = txt("CoopFull", coop.Side, MIN_MANUAL_HITS)
-			if msg then pcall(Net.NotifyAll, msg, "good") end
+			-- A23-130: no "Gauge full!" line, the top bar shows it
 		end
 	else
 		local total = rescue + poach

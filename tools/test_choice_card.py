@@ -93,7 +93,11 @@ MUTATIONS = [
     ("the count resets", K, "\tst.N[kind][side] = math.min(1000000, math.max(0, math.floor(num(st.N[kind][side]))) + 1)\n", "\tst.N[kind][side] = 1\n"),
     ("a time up pays", K, "\tif side and d and data then\n", "\tif d and data then\n\t\tside = side or \"Good\"\n"),
     ("the Evil option pays the Good reward", K, "\t\tlocal given, gold, id, xp = pay(player, concrete(player, o.Reward))\n", "\t\tlocal given, gold, id, xp = pay(player, concrete(player, d.Good.Reward))\n"),
-    ("the full-day line is missing", D, "\telseif full then\n\t\tsay(Config.Deeds.Text.Full, \"info\")\n", "\telseif false then\n"),
+    # A23-130: the full-day line is off; putting it back must fail
+    ("the full-day line back", D, "\t\tif down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n\tend\n",
+     "\t\tif down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n\telseif full then\n"
+     "\t\tsay(Config.Deeds.Text.Full, \"info\")\n\tend\n"),
+    ("the choice label back", K, "\t\tlocal parts = {}", "\t\tlocal parts = { TXT.GoodDone }"),
     ("no off-side line", D, "\tif not mine then\n\t\tif change < 0 then", "\tif false then\n\t\tif change < 0 then"),
     ("no rank line", D, "\t\tif down then say(halo and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n", ""),
     ("the end is not sent", K, "\tif player.Parent == Players then fx(player, \"CardEnd\", out) end\n", ""),
@@ -103,7 +107,7 @@ MUTATIONS = [
     ("a not-ready player gets a card", K, "\tif not data or not S.PlayerService.IsReady(player) then return false, \"notready\" end\n", ""),
     ("any kind", K, "\tif not d then return false, \"kind\" end\n", ""),
     # --- config
-    ("config: the cap line is different", C, 'Text = { Full = "Your shard is full for today. Come back tomorrow!" },', 'Text = { Full = "You are done." },'),
+    # (no "cap line is different" mutation: A23-130 turned the Deeds full-day line off, Config.Deeds.Text.Full is unused)
     ("config: no card rate limit", C, "Config.RateLimits.CardAction = 0.3\n", ""),
     # --- A23-113 #8: Deeds.Booked (the daily 'Choice' counts every deed)
     ("Booked never fires for my own side", D, "\t\tDeeds.Booked:Fire(player, side, got, true)\n", ""),

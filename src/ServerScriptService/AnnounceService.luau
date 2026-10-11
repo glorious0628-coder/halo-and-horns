@@ -151,8 +151,7 @@ end
 local function onSetName(player, hide, ...)
 	if select("#", ...) ~= 0 or type(hide) ~= "boolean" then return end
 	if not S.PlayerService.IsReady(player) or not Util.RateLimit(player, "SetAnnounceName", Config.RateLimits.SetAnnounceName or 0.5) then return end
-	S.PlayerService.SetStat(player, "HideAnnounceName", hide)
-	pcall(Net.Notify, player, hide and A.Text.NameHidden or A.Text.NameShown, "info")
+	S.PlayerService.SetStat(player, "HideAnnounceName", hide) -- A23-130: no toast, the settings row shows the state
 	-- BB10: ranking rows follow the choice at once (every board row is rewritten with the hidden flag)
 	local ranking = S.RankingService
 	if type(ranking) == "table" and type(ranking.MarkHideChanged) == "function" then

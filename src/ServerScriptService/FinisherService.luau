@@ -133,7 +133,7 @@ local function finish(player, card, option)
 		out.N, out.Gold = n, gold
 		local stat, change, mine, down = applyScore(player, option)
 		out.Stat, out.Score = stat, change
-		local parts = { (option == "Help" and c.Text.HelpDone or c.Text.TickleDone) or "" }
+		local parts = {} -- A23-130: the gains only (no HelpDone / TickleDone story line)
 		local item = Config.Loot.Items[c.Help.Item]
 		if n > 0 then
 			table.insert(parts, n > 1 and string.format(Config.Loot.Text.GotN, item and item.Name or c.Help.Item, n)
@@ -141,19 +141,14 @@ local function finish(player, card, option)
 		end
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
 		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
-		notify(player, table.concat(parts, " · "), "reward", "None") -- the pick's own sound is the client's (FinisherEnd)
+		if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end -- the pick's own sound is the client's (FinisherEnd)
+		-- A23-130: a loss keeps its line (OffSide "Honor -N", RankDown); no 0-point lean line, no "full today" line
 		if stat ~= "None" and not mine then
 			local f = sideOf(player)
 			if change < 0 then
 				notify(player, string.format(f == "Halo" and STORY.OffSideHalo or STORY.OffSideHorns, -change), "info")
-			else
-				-- as a story pick at the A23-58 floor: the guide's line, then the shard leans (3rd idea round #5)
-				notify(player, (f == "Halo" and STORY.OffSideHaloZero or STORY.OffSideHornsZero) .. " "
-					.. (SIDE[option] == "Good" and STORY.LeanGood or STORY.LeanEvil), "info")
 			end
 			if down then notify(player, f == "Halo" and STORY.RankDownHalo or STORY.RankDownHorns, "info") end
-		elseif mine and change <= 0 and points() > 0 then
-			notify(player, TXT.HintFull, "info")
 		end
 	end
 	if player.Parent == Players then fx(player, "FinisherEnd", out) end

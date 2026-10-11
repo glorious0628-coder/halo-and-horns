@@ -107,16 +107,16 @@ def run_pure(src: dict):
 
 def statics(src: dict) -> list[tuple[str, bool]]:
     loot, panels = src["LOOT"], src["PANELS"]
-    # 개발 2 10/12 (A23-130 server lines): LootService may stop toasting these (the bag window's result line shows them);
-    # every call left must pass the arguments the formats expect
+    # 게임성 검수 10/12: LootService toasts all of them (the Bag window draws no result line); every call passes the
+    # arguments the formats expect
     calls = {"TXT.EnhanceOk": "string.format(TXT.EnhanceOk, name, before, after,",
              "TXT.EnhanceFailDown": "string.format(TXT.EnhanceFailDown, name, before, after)",
              "TXT.EnhanceFailKeep": "string.format(TXT.EnhanceFailKeep, name, before)",
              "TXT.MoveOk": "string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after)"}
     return [
-        ("LootService (where it still sends them) passes (name, before, after, attack %, attack %) / (name, before, after) "
+        ("LootService sends each once with (name, before, after, attack %, attack %) / (name, before, after) "
          "/ (name, before) / (from, left, to, after)",
-         all(loot.count(key) == loot.count(call) for key, call in calls.items())),
+         all(loot.count(key) == 1 and loot.count(call) == 1 for key, call in calls.items())),
         ("Panels' result line passes the same", 'f("EnhanceOk", name, r.Before, r.After,' in panels
          and 'f("MoveOk", fromName, left, name, r.After)' in panels and 'f("EnhanceFailKeep", name, r.Before)' in panels),
     ]
@@ -137,6 +137,7 @@ MUTATIONS = [
     ("CONFIG", "the new level lost", 'EnhanceOk = "%s +%d → +%d!",', 'EnhanceOk = "%s upgraded!",'),
     ("LOOT", "a call with other arguments", "string.format(TXT.EnhanceFailKeep, name, before)",
      "string.format(TXT.EnhanceFailKeep, before, name)"),
+    ("PANELS", "a Panels call with other arguments", 'f("EnhanceFailKeep", name, r.Before)', 'f("EnhanceFailKeep", r.Before, name)'),
 ]
 
 

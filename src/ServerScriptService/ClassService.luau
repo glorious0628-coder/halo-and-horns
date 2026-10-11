@@ -155,8 +155,7 @@ local function onChangeClass(player, classId, useTicket, gender)
 	ClassService.ClassChanged:Fire(player, classId, old)
 	local name = Config.ClassName(classId, factionOf(player))
 	if keepLevel then
-		local below = math.floor(tonumber(Config.ClassChange.FreeKeepLevelBelow) or 0)
-		notify(player, "ClassChangedFreeKeep", "good", name, below)
+		notify(player, "ClassChangedFreeKeep", "good", name)
 	else
 		notify(player, useTicket and "ClassChangedTicket" or "ClassChangedFree", "good", name)
 	end

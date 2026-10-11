@@ -298,15 +298,6 @@ local function victimStruckFirst(victim, killer, now)
 		and now - e.T <= Config.Ranking.DefenseWindowSeconds
 end
 
--- BB37 (검수): the bounty line; a hidden knight is "빛의 기사단 한 명" already, so the hidden line has no faction prefix
-local function bountyLine(p, bounty)
-	local A = S.AnnounceService
-	local okHidden, hidden = false, false
-	if A and A.IsHidden then okHidden, hidden = pcall(A.IsHidden, p) end
-	if not okHidden then hidden = p:GetAttribute("HideAnnounceName") == true end
-	return fmt(hidden == true and "BountyAnnounceHidden" or "BountyAnnounce", publicName(p, true), Util.FormatNumber(bounty))
-end
-
 -- BB10: the ranking verdict of one PvP KO ({ Fair, Unfair?, Exempt?, Reason? }; { Fair = false } without RankingService)
 local function judgeKO(killer, victim, facts)
 	local R = S.RankingService
@@ -744,11 +735,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 	notify(victim, fmt("Revenge", Util.PlayerDisplayName(killer)), "info")
 	local killerRevenge = revenge[killer]
 	if killerRevenge and killerRevenge.Target == victim then
-		local wasActive = now < killerRevenge.Until
-		clearRevenge(killer)
-		if wasActive then
-			notify(killer, fmt("RevengeDone"), "good")
-		end
+		clearRevenge(killer) -- A23-130: no "Revenge done!" line (the KO and its reward lines answer)
 	end
 
 	local info
@@ -759,7 +746,6 @@ function PvPService.HandleKO(victim, killer, ctx)
 		-- 4. bully KO: no plunder, stars, honor/infamy, bounty or war points
 		local n = math.floor(tonumber(Justice.AddBullyStack(killer)) or 0)
 		notify(killer, fmt("BullyKO", n), "bad", "None") -- a consequence, not a refused press
-		notify(victim, fmt("BullyVictim"), "info")
 		refreshStarAttrs(killer) -- bounty doubles while a bully
 		info = { Kind = "Bully", Bully = true, VictimStars = starsBefore, Stolen = 0, Bounty = 0, Rewarded = false }
 	else
@@ -797,8 +783,8 @@ function PvPService.HandleKO(victim, killer, ctx)
 						-- sound_gaps B2: Victim / Thief = UserIds (the client plays Plunder for the victim, GoldPickup for the thief)
 						Net.Fx(nil, "Plunder", { From = from, To = to, Amount = stolen, Victim = victim.UserId, Thief = killer.UserId })
 					end
-					notify(victim, fmt("Plundered", Util.PlayerDisplayName(killer), Util.FormatNumber(stolen)), "bad", "None")
-					notify(killer, fmt("PlunderGain", Util.FormatNumber(stolen), stars[killer] or 0), "reward", "GoldPickup")
+					-- A23-130: the victim's KO card says who and how much (no Plundered line); the thief gets the gain only
+					notify(killer, fmt("PlunderGain", Util.FormatNumber(stolen)), "reward", "GoldPickup")
 				end
 			end
 			if stolen == 0 and pairOk then
@@ -851,9 +837,7 @@ function PvPService.HandleKO(victim, killer, ctx)
 			if bounty > 0 or honor > 0 then
 				notify(killer, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward", "GoldPickup")
 			end
-			if starsBefore >= P.GlowStars and bounty > 0 then
-				Net.NotifyAll(bountyLine(killer, bounty))
-			end
+			-- A23-130: no server-wide bounty brag (BountyAnnounce); the hunter has the line above
 			info = {
 				Kind = "Bounty", Bully = false, VictimStars = starsBefore,
 				Stolen = 0, Bounty = bounty, Rewarded = pairOk, BoldMult = bold,
@@ -965,8 +949,7 @@ local function tickPlayer(p, now)
 		graceUntil[p] = nil
 		local data = S.PlayerService.GetData(p)
 		if type(data) == "table" then data.GraduateGraceUntil = 0 end
-		setAttr(p, "GraduateGraceUntil", 0)
-		notify(p, fmt("GraduateEnd"), "info")
+		setAttr(p, "GraduateGraceUntil", 0) -- A23-130: no GraduateEnd line (the HUD countdown chip goes away)
 	end
 	setAttr(p, "Rookie", rookieAttr(p))
 
@@ -1065,9 +1048,6 @@ local function payLeaveBounty(player)
 	end
 	if honor > 0 then grantFame(a, "Honor", honor, verdict, player) end
 	notify(a, fmt("BountyGain", Util.FormatNumber(bounty), honor), "reward", "GoldPickup")
-	if s >= Config.PvP.GlowStars and bounty > 0 then
-		Net.NotifyAll(bountyLine(a, bounty))
-	end
 	return true
 end
 

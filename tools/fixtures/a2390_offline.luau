@@ -72,18 +72,18 @@ runGroup("zone PvP follows the position", function()
 	-- 검수 10/09 (nudge_list C, "너무 친절해"): no "Safe zone." line by default (Config.Nudges.SafeZone = false)
 	check(p.Attrs.ZonePvP == false and #H.notes == 1, "back to the ring: ZonePvP false, no 'Safe zone.' line (Nudges.EnteredSafe)", #H.notes)
 	check(H.ZoneService.IsPvPZone(p) == false and #H.changed == 1, "IsPvPZone: the ring; still one ZoneChanged")
-	-- a Neutral gets its own line
+	-- A23-130 (server text verdicts 2026-10-11): a Neutral is immune, so no line at all (EnteredPvPNeutral off)
 	local n = w:NewPlayer(2)
 	H.faction[n] = "Neutral"
 	w:Step(n, 1700, 0)
-	check(H.notes[2] and H.notes[2].P == n and H.notes[2].Text == "EnteredPvPNeutral", "a Neutral entering the pit: the immune line")
+	check(#H.notes == 1 and n.Attrs.ZonePvP == true, "a Neutral entering the pit: ZonePvP true, no line (immune)", #H.notes)
 	-- 검수 10/09: the pit's edge is crossed often - one PvP line per 20 s per player
 	w:Step(p, 1700, 0)
-	check(#H.notes == 2 and p.Attrs.ZonePvP == true, "back into the pit within 20 s: ZonePvP true, no second PvP line", #H.notes)
+	check(#H.notes == 1 and p.Attrs.ZonePvP == true, "back into the pit within 20 s: ZonePvP true, no second PvP line", #H.notes)
 	w.Clock += 21
 	w:Step(p, 1300, 0)
 	w:Step(p, 1700, 0)
-	check(#H.notes == 3 and H.notes[3].Text == "EnteredPvP", "20 s later: the PvP line again", #H.notes)
+	check(#H.notes == 2 and H.notes[2].Text == "EnteredPvP", "20 s later: the PvP line again", #H.notes)
 	-- Config.Nudges.EnteredSafe = true brings the line back
 	local s = zoneWorld({ EditConfig = function(c) c.Nudges.EnteredSafe = true end })
 	local sp = s:NewPlayer(9)

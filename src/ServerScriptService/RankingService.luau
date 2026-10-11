@@ -62,6 +62,7 @@ local ST = {
 	ReadNext = {}, -- [board] = os.clock() of the next global read
 	WarnAt = {}, -- [key] = os.clock() of the last throttled warning
 	SeenOutlaw = weak(), -- [Player] = true once this server showed the player as an outlaw (for the OutlawEnd notice)
+	OutlawToldAt = weak(), -- [Player] = os.clock() of the outlaw week's start line (RankingService.OutlawToldAt)
 	-- the STUDIO season on a save whose ranking belongs to a live season (the working Studio uses the live saves):
 	-- this session's points and results live here and are never saved, so a Studio test never touches live data
 	Shadow = weak(), -- [Player] = the session's Rank table
@@ -848,6 +849,7 @@ local function applySettle(p, doc)
 			if type(ol) ~= "table" or ol.WeekId ~= effect or ol.Season ~= season then
 				data.Outlaw = { WeekId = effect, Season = season }
 				pcall(Net.Notify, p, string.format(TXT.OutlawStart, r), "bad", 8)
+				ST.OutlawToldAt[p] = os.clock()
 			end
 		elseif r and R.Boards[board].Reward and (best == nil or r < best.Rank) then
 			best = { Board = board, Rank = r }
@@ -978,6 +980,12 @@ end
 
 ------------------------------------------------------------------ debug (Studio season only)
 -- DebugCommand "RankSettle": settles THIS week's server board now and applies it at once (results act this week)
+-- 게임성 검수 2026-10-12: os.clock() of the outlaw week's start line to this player, or nil. That line already says "no
+-- Auto", so CombatService skips its own auto-off line right after it (one line, not two).
+function RankingService.OutlawToldAt(p)
+	return ST.OutlawToldAt[p]
+end
+
 function RankingService.DebugSettle()
 	if RankingService.EffectiveSeason() ~= "STUDIO" then return "STUDIO season only" end
 	local doc = serverDoc(week() - 1, week())
@@ -1040,7 +1048,7 @@ end
 
 local function forget(p)
 	for _, t in { ST.Dirty, ST.Force, ST.LastWrite, ST.Pending, ST.LastWeek, ST.HideQueue, ST.Gen, ST.Writing, ST.SeenOutlaw,
-		ST.Shadow, ST.StudioResult } do
+		ST.Shadow, ST.StudioResult, ST.OutlawToldAt } do
 		t[p] = nil
 	end
 	ST.Written[p.UserId] = nil

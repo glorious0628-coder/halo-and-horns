@@ -92,8 +92,9 @@ runGroup("config", function()
 	-- says only the reward
 	check(C.Tutorial.Text.Claimed == "+%s gold" and C.Tutorial.QuestRewardGold == C.Weapons[2].Price,
 		"first-mission line = the reward only (its reward = the tier-2 price)", C.Tutorial.Text.Claimed)
-	check(has(C.Text.WeaponFromQuest, "Guide's first quest") and not has(C.Text.WeaponFromQuest, "after your first mission"),
-		"the tier-1 refusal says the gift comes with the Guide's first quest", C.Text.WeaponFromQuest)
+	-- A23-130 (server text verdicts 2026-10-11): the refusal reason only, the quest line covers the next step
+	check(C.Text.WeaponFromQuest == "Not sold. Quest reward." and C.Text.WeaponFromQuestEn == C.Text.WeaponFromQuest,
+		"the tier-1 refusal is short: 'Not sold. Quest reward.'", C.Text.WeaponFromQuest)
 	check(C.WeaponInfo[1].Source ~= "처음부터 가진 무기" and has(C.WeaponInfo[1].Source, "Blacksmith"),
 		"tier 1 source = the blacksmith's gift", C.WeaponInfo[1].Source)
 end)
@@ -417,10 +418,14 @@ runGroup("gift", function()
 		p:GetAttribute("WeaponOwnedMask"))
 	check(d.WeaponSeq and d.WeaponSeq[1] == 1 and d.ItemSeqNext == 1, "(a) the gift is noted once in '얻은 순' (no double count)",
 		show({ d.WeaponSeq and d.WeaponSeq[1], d.ItemSeqNext }))
-	local iFinish = indexOf(list, C0.StoryQuests.Defs.M1_1.Finish)
-	local iWeapon = indexOf(list, line)
-	check(iWeapon ~= nil, "(a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)", show(list))
-	check(iFinish ~= nil and iWeapon ~= nil and iFinish < iWeapon, "(a) the weapon line comes after the blacksmith's line")
+	-- A23-130: no blacksmith (Finish) line; the quest's reward line, then the weapon line
+	local iDone, iWeapon = nil, indexOf(list, line)
+	for i, t in list do
+		if iDone == nil and string.find(t, " done!", 1, true) then iDone = i end
+	end
+	check(iWeapon ~= nil and indexOf(list, C0.StoryQuests.Defs.M1_1.Finish) == nil, "(a) notice 'First weapon: [Twig]!', no Finish line",
+		show(list))
+	check(iDone ~= nil and iWeapon ~= nil and iDone < iWeapon, "(a) the weapon line comes after the quest's reward line", show(list))
 	check(#w:FxOf("Upgrade", fx0) == 1 and w:FxOf("Upgrade", fx0)[1].Data.Tier == 1, "(a) the equip Fx (Upgrade, Tier 1)")
 	check(w.Justice.GetCombatPower(p) == 300, "(a) power attribute source: Lv2 T1 = 300", w.Justice.GetCombatPower(p))
 	w:Buy(p, 2)
@@ -508,9 +513,10 @@ runGroup("drops", function()
 		show({ d.WeaponOwnedMask, d.WeaponTier }))
 	local jname = C0.WeaponName(8, "Warrior", "Halo")
 	local line = string.format(C0.Loot.Text.JackpotEquip, jname, "0", tostring(C0.CombatPower(1, 8, 0)))
-	check(indexOf(notices(w, p, n0), line) ~= nil, "one jackpot line: equipped with the power change", show(notices(w, p, n0)))
-	check(indexOf(notices(w, p, n0), string.format(C0.Loot.Text.JackpotSelf, jname)) == nil,
-		"no 'equip it in the menu' line for a weapon already in hand")
+	-- A23-130: the same short line in hand or not ('Legendary weapon [X]!'), never 'equip it from your Bag'
+	local jl = 0
+	for _, t in notices(w, p, n0) do if t == line then jl += 1 end end
+	check(jl == 1 and not has(line, "Bag"), "one jackpot line: 'Legendary weapon [X]!'", show(notices(w, p, n0)))
 	-- an armed player's jackpot stays in the bag
 	local w2 = bareWorld()
 	local q, e = w2:Join(602, { Level = 1, Tier = 2, Mask = 2, Tutorial = 0 })
