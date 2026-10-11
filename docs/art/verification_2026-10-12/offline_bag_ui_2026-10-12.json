@@ -1,5 +1,5 @@
 {
-  "checks": 142,
+  "checks": 147,
   "failed": 0,
   "mutations": [
     {
@@ -219,6 +219,31 @@
     },
     {
       "name": "no letter for an icon without art",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a gathered material shows a sell price (게임성 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new detail layout every redraw (최종 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a code slot gets ImageTransparency (최종 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the rail on touch too (최종 검수 10/12)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Forge sell-all counts gathered things (게임성 검수 10/12)",
       "applied": true,
       "caught": true
     },
