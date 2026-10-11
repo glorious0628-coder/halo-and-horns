@@ -1857,7 +1857,8 @@ def cauldron():
     for sx in (-1, 1):
         ring("Handle%d" % sx, 0.6, 0.38, 0.12, sx * (R + 0.08), 0, zc + 0.35, "ironblue", axis=EY, cc=False)
     # brew: glowing surface just over the gold rim top, so it shows from eye height (2D key point)
-    cyl("Brew", 2 * ro - 0.2, 0.1, 0, 0, zo + 0.14, "neon", c=(110, 235, 190), cc=False)
+    # Neon blooms towards white: a deeper teal reads as the 2D's glowing blue-green (디자인 검수 10/12 ~90,220,190)
+    cyl("Brew", 2 * ro - 0.2, 0.1, 0, 0, zo + 0.14, "neon", c=(60, 196, 170), cc=False)
     for k, (x, y, d, col) in enumerate(((0.25, 0.15, 0.46, (120, 235, 150)), (-0.3, -0.05, 0.36, (140, 225, 250)),
                                          (0.0, -0.4, 0.3, (120, 235, 150)), (-0.15, 0.4, 0.28, (140, 225, 250)),
                                          (0.5, -0.2, 0.24, (140, 225, 250)), (-0.55, 0.3, 0.2, (120, 235, 150)))):
