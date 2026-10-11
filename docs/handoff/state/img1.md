@@ -1,5 +1,9 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
+## 10/12 01:35 PC 끄기 전 마무리 (사용자 지시, 최종 검수)
+- **WorldKit 전체 백업 = `build/wk_backup/20261012_013528`** (56 roots + 지형, 11.1 MB, 오류 0; 다른 세션이 넣은 것 포함 — HaloV2·SkeletonTest·HaloDomeHouse_07_keep·HaloSkeletons·HaloPropKits·ImportHold·MV 21개·Lighting). WorldKit 파일 저장(Ctrl+S)은 안 함.
+- 켠 뒤 되살리기: WorldKit 열기(`build/WorldKit.rbxlx`, 창 = 최종 검수 허락) → `py tools/worldkit/wk_backup.py load latest --replace --terrain` (마우스·키보드 없음). 새 작업은 시작 안 했음.
+
 ## 지금 (10/11 밤, plan v2 검수 고침 끝, 비우기 전) — 먼저 읽기
 - **10/11 밤 PC 꺼짐 → WorldKit 15:20 저장본으로 다시 열고 새 plan으로 다시 지음**(apply → civic → ground → props, CSG 실패 0). 이미지 생성 3·4·이미지 개발에 "다시 끼워 넣어도 됨" 알림.
 - **WorldKit 백업(마우스·키보드 없음):** `py tools/worldkit/wk_backup.py save [--only Workspace.HaloV2,ServerStorage.X] [--no-terrain]` → build/wk_backup/<시각>/*.rbxm + terrain.rbxm + manifest.json (SerializationService, execute_luau 90k 조각). `load latest [--only ..] [--replace] [--terrain] [--check]`. 시험: HaloV2 2534개 왕복 같음, 지형 붙여넣기 높이 같음. 전체(약 10 MB)는 약 10분, HaloV2+지형은 40초.
