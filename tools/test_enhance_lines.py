@@ -107,12 +107,16 @@ def run_pure(src: dict):
 
 def statics(src: dict) -> list[tuple[str, bool]]:
     loot, panels = src["LOOT"], src["PANELS"]
+    # 개발 2 10/12 (A23-130 server lines): LootService may stop toasting these (the bag window's result line shows them);
+    # every call left must pass the arguments the formats expect
+    calls = {"TXT.EnhanceOk": "string.format(TXT.EnhanceOk, name, before, after,",
+             "TXT.EnhanceFailDown": "string.format(TXT.EnhanceFailDown, name, before, after)",
+             "TXT.EnhanceFailKeep": "string.format(TXT.EnhanceFailKeep, name, before)",
+             "TXT.MoveOk": "string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after)"}
     return [
-        ("LootService still passes (name, before, after, attack %, attack %) / (name, before, after) / (name, before) / "
-         "(from, left, to, after)", "string.format(TXT.EnhanceOk, name, before, after," in loot
-         and "string.format(TXT.EnhanceFailDown, name, before, after)" in loot
-         and "string.format(TXT.EnhanceFailKeep, name, before)" in loot
-         and "string.format(TXT.MoveOk, fromName, data.WeaponEnhance[fromTier], toName, after)" in loot),
+        ("LootService (where it still sends them) passes (name, before, after, attack %, attack %) / (name, before, after) "
+         "/ (name, before) / (from, left, to, after)",
+         all(loot.count(key) == loot.count(call) for key, call in calls.items())),
         ("Panels' result line passes the same", 'f("EnhanceOk", name, r.Before, r.After,' in panels
          and 'f("MoveOk", fromName, left, name, r.After)' in panels and 'f("EnhanceFailKeep", name, r.Before)' in panels),
     ]
@@ -131,6 +135,8 @@ MUTATIONS = [
      'EnhanceFailDown = "Enhance failed… %s +%d → +%d (your weapon is safe)",'),
     ("CONFIG", "both names in the transfer line", 'MoveOk = "%.0s%.0s%s +%d!",', 'MoveOk = "Transfer success! %s +%d · %s +%d",'),
     ("CONFIG", "the new level lost", 'EnhanceOk = "%s +%d → +%d!",', 'EnhanceOk = "%s upgraded!",'),
+    ("LOOT", "a call with other arguments", "string.format(TXT.EnhanceFailKeep, name, before)",
+     "string.format(TXT.EnhanceFailKeep, before, name)"),
 ]
 
 
