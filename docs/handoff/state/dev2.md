@@ -7,7 +7,9 @@
 
 ## 병합됨 / 검토 대기
 - main에 들어감: fix/lesstext-server 6fc3ba52(MinGap), fix/spawnclear 358867c7(main 96ec45ad), fix/spawnclear-rim 0a1e3e75.
-- **검토 대기: fix/lesstext-server 1f42e88f** (보고한 가지 = 다시 쌓지 말고 위에 커밋만) — 6adf2c82 위에 무법자 주 시작 2줄 → 1줄
+- **검토 대기: fix/lesstext-server 8c8dc44d** (10/12 게임성 검수 되돌림 고침: 강화 결과 토스트 5개 되살림(Bag 창은 결과 줄 없음,
+  A23-99), 보스 등장 줄에 구역 이름, 출석 이정표 팡파르는 첫 보상 줄에·보상 줄 없으면(중립 14일) 'N days collected!'.
+  보고함.) 1f42e88f까지: (보고한 가지 = 다시 쌓지 말고 위에 커밋만) — 6adf2c82 위에 무법자 주 시작 2줄 → 1줄
   (게임성 검수 10/12 결정: RankingService.OutlawToldAt, CombatService가 10초 안이면 OutlawAutoOff 건너뜀; ranking 487·187/187).
   6adf2c82까지 = 서버 글 판정표(A23-130 §2) 본 커밋 becb9cc9 + main 두 번 합침 + 시험 고침
   (test_town_quests 'Pick' 정규식 = main에서도 실패하던 것, test_enhance_lines·test_gather 변이). 판정 갈린 줄 결정·안 한 것 목록은
