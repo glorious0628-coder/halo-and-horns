@@ -496,10 +496,81 @@ elif "dome" in PR:
         k = sl["R"] / Rt * d.get("r_mul", 1.0)
         M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4) @ \
             Matrix.Translation((-axis[0], -axis[1], -zb))
+        if d.get("fix") == "lathe":
+            # a dented panel / a torn foot (ivy over the Tripo dome, house 09): the dome is turned again on a lathe from
+            # its own silhouette (48 sides), the foot below "base_cut" studs made a plain straight band, and Tripo's paint
+            # (gold, rib lines, shine) is projected from the nearest point; no relief taken (the dent would come back)
+            apply(ps, Matrix.Translation((-axis[0], -axis[1], -zb)))
+            prof = lathe_profile(ps, d.get("bands", 40))
+            bc = d.get("base_cut", 0.0)
+            if bc > 0:
+                rb = float(np.interp(bc, [z_ for _, z_ in prof], [r_ for r_, _ in prof]))
+                prof = [(rb, 0.0), (rb, bc)] + [(r_, z_) for r_, z_ in prof if z_ > bc]
+            dl = proj_bake.lathe(prof, seg=48, name="%s_%s" % (NAME, d.get("slot", "Dome")))
+            # ribs: as many as the spec says (the 2D), turned to where Tripo's dark rib lines are (mid height)
+            spec_top = json.load(open(os.path.join(ROOT, "tools", "house_specs", NAME + ".json"), encoding="utf-8")).get("top", {})
+            nrib = int(d.get("ribs", spec_top.get("ribs", 8)))
+            angs, gold_rgb = [], []
+            zt = max(z_ for _, z_ in prof)
+            for o in ps:
+                hsv = face_hsv(o)
+                c = centres(o)
+                hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+                isg = (hh >= 25) & (hh <= 55) & (ss > 0.45)
+                mid = (c[:, 2] > 0.25 * zt) & (c[:, 2] < 0.6 * zt)
+                dark = isg & (vv < 0.6) & mid
+                angs += list(np.degrees(np.arctan2(c[dark, 1], c[dark, 0])) % (360.0 / nrib))
+                gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[isg & (vv > 0.45)]]
+            if angs:
+                hist, ed = np.histogram(angs, bins=36, range=(0, 360.0 / nrib))
+                phase = float((ed[np.argmax(hist)] + ed[np.argmax(hist) + 1]) / 2)
+            else:
+                phase = 0.0
+            me = bpy.data.meshes.new(NAME + "_DomeRibs")
+            bm = bmesh.new()
+            rib_w, rib_out = d.get("rib_w", 0.22), d.get("rib_out", 0.1)
+            rmax = max(r_ for r_, _ in prof)
+            path = [(r_, z_) for r_, z_ in prof if z_ >= bc and r_ > 0.18 * rmax]
+            for kr in range(nrib):
+                th = math.radians(phase + kr * 360.0 / nrib)
+                rows = []
+                for r_, z_ in path:
+                    a_ = (rib_w / 2) / max(r_, 1e-3)
+                    rows.append([bm.verts.new(((r_ + o_) * math.cos(th + sgn * a_), (r_ + o_) * math.sin(th + sgn * a_), z_))
+                                 for sgn, o_ in ((-1, -0.02), (-1, rib_out), (1, rib_out), (1, -0.02))])
+                for r0_, r1_ in zip(rows, rows[1:]):
+                    for q_ in range(3):
+                        bm.faces.new((r0_[q_], r0_[q_ + 1], r1_[q_ + 1], r1_[q_]))
+                if rows:                                   # end caps
+                    bm.faces.new(rows[0][::-1])
+                    bm.faces.new(rows[-1])
+            bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+            bm.to_mesh(me)
+            bm.free()
+            ribs = bpy.data.objects.new("%s_%sRibs" % (NAME, d.get("slot", "Dome")), me)
+            bpy.context.scene.collection.objects.link(ribs)
+            gr = np.array([255, 168, 36]) / 255.0               # the approved gold (HH_HaloGoldTrim part colour) for a plain dome
+            gm = bpy.data.materials.new(NAME + "_DomeGold")
+            gm.use_nodes = True
+            pb_ = gm.node_tree.nodes["Principled BSDF"]
+            pb_.inputs["Base Color"].default_value = (*[c_ / 12.92 if c_ <= 0.04045 else ((c_ + 0.055) / 1.055) ** 2.4 for c_ in gr], 1)
+            pb_.inputs["Metallic"].default_value = 1.0
+            pb_.inputs["Roughness"].default_value = 0.28
+            dl.data.materials.append(gm)
+            ribs.data.materials.append(gm)
+            me.shade_smooth()
+            for o in ps:
+                bpy.data.objects.remove(o)
+            ps = [dl, ribs]
+            mp = {"hit": 1.0}
+            M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
+            rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, plain foot band %.2f, %d exact ribs at Tripo's " \
+                               "rib angle (phase %.1f deg), approved gold 255,168,36 (plain; Studio gold MaterialVariant)" % (len(prof), bc, nrib, phase)
         apply(ps, M)
         for o in ps:
             o.name = o.data.name = o.name.replace("DomeTmp", d.get("slot", "Dome"))
-        tidy_normals(ps)
+        if d.get("fix") != "lathe":
+            tidy_normals(ps)
         out_objs += ps
         rep.update({"tripo_base_R": round(Rt, 3), "scale": round(k, 4), "tripo_axis": [round(float(v), 3) for v in axis],
                     "slot": d.get("slot", "Dome"), "faces": sum(len(o.data.polygons) for o in ps)})
@@ -934,13 +1005,20 @@ if "door" in PR and door_src and leaf_slots:
     tri_src.query = lambda P, ray=None, back=0.6: _orig_query(xf(P), ray, RAY_BACK)
     maps = proj_bake.bake(tmp, tri_src, size=D.get("size", 512), ray=(0, -1, 0), relief=True)
     cleaned = proj_bake.clean_thin_gold(maps, k=D["clean_px"]) if D.get("clean_px") else 0
-    if D.get("clean_hues"):
+    if D.get("mirror_fill"):                           # hidden by a thing in front (potion shop cauldron): the mirror half
+        hue_m = None
+        if D.get("clean_hues"):
+            proj_bake.clean_hues(maps, D["clean_hues"], D.get("clean_sat", 0.1))
+            hue_m = maps.get("hue_mask")
+        for u0_, u1_, v0_, v1_ in D.get("mirror_uv", []):  # leaf UV boxes forced to take the mirror half's paint
+            S_ = maps["C"].shape[0]
+            mb = np.zeros((S_, S_), bool)
+            mb[int((1 - v1_) * S_):int((1 - v0_) * S_), int(u0_ * S_):int(u1_ * S_)] = True
+            hue_m = mb if hue_m is None else (hue_m | mb)
+        cleaned += proj_bake.mirror_fill(maps, hue_m)
+    elif D.get("clean_hues"):
         cleaned += proj_bake.clean_hues(maps, D["clean_hues"], D.get("clean_sat", 0.1))
     bpy.data.objects.remove(tmp)
-    mat = proj_bake.save_maps(maps, WORK, NAME + "_Leaf")
-    for o in leaf_objs:
-        o.data.materials.append(mat)
-        out_objs.append(o)
     hw_at = []
     for b in D.get("knockers", D.get("flatten_boxes", [])):      # Tripo knocker / knob spots -> exact metal parts there
         P = allv(leaf_srcs + [o for o in SRC if o.name.endswith("_DoorHw")])
@@ -1024,7 +1102,28 @@ if "door" in PR and door_src and leaf_slots:
         out_objs.append(kn)
         rep_k = REPORT.setdefault("knobs", [])
         rep_k.append({"tripo_at": [round(float(kc[0]), 3), round(float(kc[1]), 3)], "R": round(float(rk * kk), 3), "at": [sx, sz]})
+    # where the exact parts go (metal knocker rings, lathe knobs) Tripo's own paint of the old part is erased and the
+    # planks above / below fill it, so no ghost of the old knob shows round the new one (디자인 검수 10/12)
+    S_ = maps["C"].shape[0]
+    yy, xx = np.mgrid[0:S_, 0:S_]
+    erase = np.zeros((S_, S_), bool)
+    spots = [(x_, z_, D.get("knocker_erase", 0.75)) for x_, z_ in REPORT.get("hardware_at", [])]
+    spots += [(k_["at"][0], k_["at"][1], k_["R"] * D.get("knob_erase", 1.9)) for k_ in REPORT.get("knobs", [])]
+    if D.get("mirror_fill"):                         # the mirror fill copied the old knocker's paint across: erase there too
+        spots += [(2 * cs[0] - x_, z_, r_) for x_, z_, r_ in spots]
+    for x_, z_, r_ in spots:
+        u_, v_ = uv_of(x_, z_)
+        cu, cv = u_ * S_, (1 - v_) * S_
+        ru = r_ / W * 0.96 * S_
+        rv = r_ / H * 0.96 * S_
+        erase |= ((xx + 0.5 - cu) / ru) ** 2 + ((yy + 0.5 - cv) / rv) ** 2 <= 1
+    erased = proj_bake.fill_mask(maps, erase)
+    mat = proj_bake.save_maps(maps, WORK, NAME + "_Leaf")
+    for o in leaf_objs:
+        o.data.materials.append(mat)
+        out_objs.append(o)
     rep = {"tripo_leaf": {"cx": round(float(cx), 3), "R": round(float(Rt), 3), "bottom": round(float(bot_t), 3), "top": round(float(top_t), 3)},
+           "erased_under_parts": erased,
            "fix": "rebuilt as an exact arched slab (%s, R %.2f, t %.2f) + Tripo paint / rough / metal / relief projected from the "
                   "front (hit %.0f %%), %d thin gold drip texels filled with plank colour" % (
                       "double, 2 halves" if double else "single", Rs, t, 100 * maps["hit"], cleaned),

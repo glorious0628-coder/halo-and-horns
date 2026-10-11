@@ -85,7 +85,8 @@ else:
     big = [p for p in pieces if p == "_" + dome_slot or p in PR_BIG]
     small = [p for p in pieces if p not in big]
     mid = os.path.join(B, "deco_fix_big.glb")
-    if dome_slot in R["pieces"] or "Dome" in R["pieces"] or PR_BIG:
+    dome_lathed = str(R["pieces"].get(dome_slot, {}).get("fix_shape", "")).startswith("lathe")   # baked in house_deco
+    if (dome_slot in R["pieces"] or "Dome" in R["pieces"]) and not dome_lathed or PR_BIG:
         blender("piece_fix.py", raw, mid, ART, "--only", *big, "--size", a.size, "--force-size", "--sliver", "1e9", "--pale-area", "1e9")
     else:
         mid = raw

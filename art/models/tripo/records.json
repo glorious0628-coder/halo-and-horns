@@ -10018,7 +10018,7 @@
  "halo_houses15_deco_tripo_2026-10-12": [
   {
    "event": "blender_fix",
-   "at": "2026-10-12 00:46",
+   "at": "2026-10-12 01:29",
    "by": "이미지 생성 3",
    "rule": "A23-125 (Tripo -> Blender 손보기 -> Roblox 재질); 검수 10/11: 장식은 Tripo HD에서 잘라 Blender (metal_ornaments 처음부터 = 최종 불가)",
    "source": "art/models/tripo/halo_houses/<house>/<house>_parts.glb (each house's own Tripo HD multiview job, already paid)",
@@ -10044,7 +10044,7 @@
    "houses": {
     "HaloDomeHouse_01": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_01/HaloDomeHouse_01_deco.glb",
-     "bytes": 1787920,
+     "bytes": 1783612,
      "params": "tools/house_deco/HaloDomeHouse_01.json",
      "dome": {
       "axis_lean_max": 0.067,
@@ -10087,7 +10087,7 @@
     },
     "HaloDomeHouse_02": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_02/HaloDomeHouse_02_deco.glb",
-     "bytes": 2407672,
+     "bytes": 2391180,
      "params": "tools/house_deco/HaloDomeHouse_02.json",
      "dome": {
       "axis_lean_max": 0.136,
@@ -10157,7 +10157,7 @@
     },
     "HaloDomeHouse_03": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_03/HaloDomeHouse_03_deco.glb",
-     "bytes": 2381132,
+     "bytes": 2366520,
      "params": "tools/house_deco/HaloDomeHouse_03.json",
      "dome": {
       "fix": "oct: Tripo's octagon box -> the plan octagon box -0.50 (x 1.103, y 0.944, z 1.023), facets / ribs kept",
@@ -10196,7 +10196,7 @@
     },
     "HaloDomeHouse_04": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_04/HaloDomeHouse_04_deco.glb",
-     "bytes": 2859424,
+     "bytes": 2842452,
      "params": "tools/house_deco/HaloDomeHouse_04.json",
      "dome": {
       "axis_lean_max": 0.108,
@@ -10243,7 +10243,7 @@
     },
     "HaloDomeHouse_05": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_05/HaloDomeHouse_05_deco.glb",
-     "bytes": 428268,
+     "bytes": 426820,
      "params": "tools/house_deco/HaloDomeHouse_05.json",
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (237, 188, 52)",
@@ -10278,7 +10278,7 @@
     },
     "HaloDomeHouse_06": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_06/HaloDomeHouse_06_deco.glb",
-     "bytes": 2382016,
+     "bytes": 2334716,
      "params": "tools/house_deco/HaloDomeHouse_06.json",
      "dome": {
       "axis_lean_max": 0.147,
@@ -10325,7 +10325,7 @@
     },
     "HaloDomeHouse_08": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_08/HaloDomeHouse_08_deco.glb",
-     "bytes": 2369028,
+     "bytes": 2359932,
      "params": "tools/house_deco/HaloDomeHouse_08.json",
      "dome": {
       "axis_lean_max": 0.155,
@@ -10395,7 +10395,7 @@
     },
     "HaloDomeHouse_09": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_09/HaloDomeHouse_09_deco.glb",
-     "bytes": 2131596,
+     "bytes": 582268,
      "params": "tools/house_deco/HaloDomeHouse_09.json",
      "dome": {
       "axis_lean_max": 0.263,
@@ -10403,7 +10403,7 @@
       "radius_change_max": 0.092,
       "tripo_base_R": 6.12,
       "scale": 1.3787,
-      "faces": 1369
+      "faces": 2534
      },
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 22 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 199, 55)",
@@ -10420,7 +10420,7 @@
       ]
      },
      "leaf": {
-      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 51 %), 0 thin gold drip texels filled with plank colour",
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 78 %), 0 thin gold drip texels filled with plank colour",
       "tripo_leaf": {
        "cx": 0.12,
        "R": 1.56,
@@ -10438,7 +10438,7 @@
     },
     "HaloDomeHouse_10": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_10/HaloDomeHouse_10_deco.glb",
-     "bytes": 2418048,
+     "bytes": 2417648,
      "params": "tools/house_deco/HaloDomeHouse_10.json",
      "dome": {
       "axis_lean_max": 0.243,
@@ -10481,7 +10481,7 @@
     },
     "HaloDomeHouse_11": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_11/HaloDomeHouse_11_deco.glb",
-     "bytes": 424768,
+     "bytes": 418084,
      "params": "tools/house_deco/HaloDomeHouse_11.json",
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 23 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (242, 193, 61)",
@@ -10516,7 +10516,7 @@
     },
     "HaloDomeHouse_12": {
      "file": "art/models/tripo/house_deco/HaloDomeHouse_12/HaloDomeHouse_12_deco.glb",
-     "bytes": 432352,
+     "bytes": 409600,
      "params": "tools/house_deco/HaloDomeHouse_12.json",
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (243, 190, 62)",
@@ -10569,7 +10569,7 @@
     },
     "HaloShop_Bakery": {
      "file": "art/models/tripo/house_deco/HaloShop_Bakery/HaloShop_Bakery_deco.glb",
-     "bytes": 424412,
+     "bytes": 416484,
      "params": "tools/house_deco/HaloShop_Bakery.json",
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (235, 188, 80)",
@@ -10604,7 +10604,7 @@
     },
     "HaloShop_Flower": {
      "file": "art/models/tripo/house_deco/HaloShop_Flower/HaloShop_Flower_deco.glb",
-     "bytes": 444632,
+     "bytes": 434036,
      "params": "tools/house_deco/HaloShop_Flower.json",
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (246, 198, 61)",
@@ -10639,7 +10639,7 @@
     },
     "HaloShop_Juice": {
      "file": "art/models/tripo/house_deco/HaloShop_Juice/HaloShop_Juice_deco.glb",
-     "bytes": 412556,
+     "bytes": 407232,
      "params": "tools/house_deco/HaloShop_Juice.json",
      "lantern": {
       "fix": "rebuilt exact: glass body measured on Tripo (band + bottom / top widths, 24 profile rows), hip-roof cap + finial, tray base + drop in the shared Tripo lantern proportions (4-sided lathes), 4 corner posts, arm + wall plate; open glass band for the skeleton LampGlass; gold = Tripo median (243, 201, 73)",
@@ -10674,7 +10674,7 @@
     },
     "HaloShop_Potion": {
      "file": "art/models/tripo/house_deco/HaloShop_Potion/HaloShop_Potion_deco.glb",
-     "bytes": 2334664,
+     "bytes": 2353020,
      "params": "tools/house_deco/HaloShop_Potion.json",
      "dome": {
       "axis_lean_max": 0.665,
@@ -10699,7 +10699,7 @@
       ]
      },
      "leaf": {
-      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 88 %), 4205 thin gold drip texels filled with plank colour",
+      "fix": "rebuilt as an exact arched slab (single, R 2.15, t 0.32) + Tripo paint / rough / metal / relief projected from the front (hit 88 %), 63282 thin gold drip texels filled with plank colour",
       "tripo_leaf": {
        "cx": -5.423,
        "R": 1.726,
@@ -10723,8 +10723,14 @@
     "08 porch dome (no skeleton base)",
     "drum arch windows (generator W 1.2 < 2D)",
     "10 corner finials (no slots)",
+    "05 roof glass skylight",
+    "Flower shop gabled glass greenhouse roof (gold frame)",
+    "12 roof pergola cross beams (posts only now)",
+    "shop window goods: bread / fruit / potion shelves (stage 5, A23-117 reason)",
+    "shop sign boards (stage 5)",
     "signs / plants (stage 5)"
    ],
+   "review_1": "디자인 검수 10/12: domes / caps / doors / lanterns pass; redo 09 dome (dent, ivy-torn foot) -> lathe + exact ribs, 09 door smear (curved leaf: min_facing 0.1, max_out 0.6), potion door green specks (clean_hues), old knob ghosts round the new knobs -> Tripo paint under every new exact part erased and filled with planks",
    "studio_step": "pending: one Import 3D (user click via 검수) -> WorldKit SkeletonTest + HaloV2.Buildings clones; LampGlass height = band",
    "evidence": [
     "art/review/img3/house_deco/houses_deco_a.jpg",

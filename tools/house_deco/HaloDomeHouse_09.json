@@ -11,7 +11,9 @@
   ],
   "r": 8.6,
   "no_white": true,
-  "no_leaf": true
+  "no_leaf": true,
+  "fix": "lathe",
+  "base_cut": 1.1
  },
  "lantern": {
   "box": [
@@ -58,6 +60,8 @@
   "cx": 0.12,
   "R": 1.56,
   "bottom": 1.85,
-  "top": 7.95
+  "top": 7.95,
+  "min_facing": 0.1,
+  "max_out": 0.6
  }
 }

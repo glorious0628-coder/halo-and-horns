@@ -65,8 +65,18 @@
   "skip_sat": 0.1,
   "clean_hues": [
    [
-    70,
+    55,
     200
+   ]
+  ],
+  "clean_sat": 0.05,
+  "mirror_fill": true,
+  "mirror_uv": [
+   [
+    0.02,
+    0.48,
+    0.08,
+    0.58
    ]
   ]
  }
