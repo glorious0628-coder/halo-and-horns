@@ -1,4 +1,7 @@
-# 이미지 개발 — 상태 (2026-10-11 밤 6차: 매끈한 대리석 3판 판정 대기)
+# 이미지 개발 — 상태 (2026-10-11 밤 7차: 매끈한 대리석 3판 결 통과·WorldKit 적용)
+
+- **3판 결 통과(디자인 검수), WorldKit MV HH_HaloMarbleSmooth_Cream color = 140510838680155 로 바꿈.** 옛 ID(r1·r2) asset_ids에 `_r1/_r2`로 기록. 디자인 검수가 r3 시트 그늘·밤 원통에 흰 선을 물음 → 답: 같은 자리 선이 BLOCK 칸에도 있음(맵 무관, 화면 겹침/장면). 재촬영은 창 슬롯 필요(요청 오면 최종 검수에).
+(아래 6차 블록의 '판정 대기'는 지남)
 
 - **3판(결 2배·회갈색·가늘게) color 140510838680155 올림, 사진 끝**(시트 art/review/imgdev/marble_smooth_r3_sheet_2026-10-11.jpg, 해 100% 크롭 …_r3_sun100_…jpg; 2판 사진 marblesmooth_r2/). 디자인 검수 판정 대기. **WorldKit MV HH_HaloMarbleSmooth_Cream은 지금 2판 color 99912622204711** → 통과되면 color만 140510838680155로 바꾸고(rough 76093268063395·노멀·금속 그대로) building_variants_halo.json 항목 color·use 갱신, 2판 color는 안 쓰는 옛 ID(asset_ids `Halo_MarbleSmoothCream_color_r2`). 이미지 생성 4는 이름 HH_HaloMarbleSmooth_Cream으로 씀(알림 보냄).
 - UiSandbox 시험물·MV 지우고 빛 원래대로 확인(B 1.8·반사 0.3·16.8시), 창은 강제 종료(저장 안 함).
