@@ -2,7 +2,7 @@
 not change, no reply line). Own test Play with a FRESH in-memory save (PC): faction / class -> the guide's first quest ->
 the anvil's first weapon -> 5 slimes -> [Claim] -> the Lunch1 sub ("Lost Lunchbox!", Requires TutorialDone, a Choice
 panel) -> StoryAction("Lunch1", "Choose", "Evil") (the remote's real argument order: quest id, action, option) -> the
-reply line ("Yum! ...Nobody saw that, right?"), +25 bank gold, the sub moves on; and what a call without the quest id
+reward toast only ("+25 gold"; A23-130 removed the "Yum!" reply line), +25 bank gold, the sub moves on; and what a call without the quest id
 does (StoryAction("Choose", "Evil") = nothing, the film call). Captures + probes; Play stopped in finally.
 Usage: py tools/play_lunch_check.py pc|phone   Out: docs/art/verification_2026-10-08/lunch_check/<mode>/
 (after the reply-order fix: the answer is polled on screen for 3 s and photographed when it shows)"""
@@ -140,7 +140,7 @@ def main():
         seen_at, p1, t0 = None, {}, time.time()
         while time.time() - t0 < 3.0:
             p1 = probe(c, "watching for the answer")
-            if any("Yum" in t for t in p1.get("Texts", [])):
+            if any("+25 gold" in t for t in p1.get("Texts", [])):
                 seen_at = time.time() - t0
                 psc.save(c, "02_answer_on_screen")
                 break
@@ -148,16 +148,16 @@ def main():
         psc.note(f"answer seen after {seen_at} s" if seen_at is not None else "answer never seen in 3 s")
         time.sleep(1.0)
         held = probe(c, "1 s later")
-        results["the answer is still on screen 1 s later"] = any("Yum" in t for t in held.get("Texts", []))
+        results["the answer is still on screen 1 s later"] = any("+25 gold" in t for t in held.get("Texts", []))
         after = lunch_state(c)
         psc.note("lunch after [One bite!]: " + after)
         if seen_at is None:
             psc.save(c, "02_after_bite")
-        p1 = {"Texts": ["Yum"]} if seen_at is not None else p1
+        p1 = {"Texts": ["+25 gold"]} if seen_at is not None else p1
         bank1 = psc.attr(psc.lua(c, psc.STATE, "Server"), "BankGold")
         psc.note(f"bank gold {bank0} -> {bank1}")
         results["[One bite!] is recorded (Pick Bite) and the card moves on"] = after != before and "Bite" in after
-        results["the reply line shows (Yum! ...)"] = any("Yum" in t for t in p1.get("Texts", []))
+        results["the reward toast shows (+25 gold; A23-130: no reply line)"] = any("+25 gold" in t for t in p1.get("Texts", []))
         try:
             results["+25 bank gold"] = int(bank1) - int(bank0) == 25
         except (TypeError, ValueError):

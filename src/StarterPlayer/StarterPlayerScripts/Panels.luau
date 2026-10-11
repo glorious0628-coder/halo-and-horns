@@ -2987,9 +2987,9 @@ end
 local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, CalmSeconds = 4, Toasted = nil,
 	Face = { Size = 104, Short = 68, Gap = 12 }, -- portrait width (px): PC / short phone screens (height < 520)
 	Text = {
-		RowShard = "A shard is talking to you — tap to see",
-		RowOther = "Someone wants to talk — tap to see",
-		HintLean = "No points here. Your shard just leans to the light or the dark.", -- E5: both picks 0 points
+		RowShard = "Your shard is talking", -- A23-130: shorter (was "... — tap to see")
+		RowOther = "Someone wants to talk",
+		HintLean = "No points.", -- E5: both picks 0 points (A23-130: shorter)
 		HintHave = " (you have %d)", -- round 3 #5: my own side's points now, after the hint
 	},
 }
@@ -3566,7 +3566,9 @@ function Panels.Open(id, arg)
 end
 
 function Panels.Close(manual)
-	local farewell = manual == true and currentId == "WeaponShop" and WSHOP.Farewell() or nil
+	-- A23-130: the merchant's farewell toast is off while Config.Nudges.ShopFarewell = false
+	local farewell = manual == true and currentId == "WeaponShop" and (Config.Nudges or {}).ShopFarewell ~= false
+		and WSHOP.Farewell() or nil
 	-- A picker's automatic close must not discard an earlier server welcome waiting on replicated attributes.
 	if currentId == "Welcome" or manual == true or not pickerOpen() then WELCOME.PendingOpen = false end
 	currentId = nil

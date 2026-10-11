@@ -324,31 +324,47 @@ Card.Show("Tip", { Text = "Hello" })
 check("a tip without a window: only [OK]", BUTTONS.OK ~= nil and BUTTONS.Go == nil)
 click("OK")
 check("[OK] on a tip opens nothing", #OPENED == 1)
+Card.Show("Tip", { Text = "Line one!\n  Line   two.\n\nLine three" })
+check("A23-130: a tip keeps two lines (each cleaned), a third is dropped", text("Body") == "Line one!\nLine two.", text("Body"))
+click("OK")
 
--- 6) 게임성 개발 3's contract (return_server_2026-10-08.md): the daily card's Tomorrow line + OptIn, [Go] counted
+-- 6) 게임성 개발 3's contract (return_server_2026-10-08.md): the Tomorrow line + OptIn, [Go] counted; 검수 10/11 (A23-130):
+-- "Saved!" only at a chapter's end - the daily / war cards are dropped, a dropped daily card's OptIn still goes out
 reset()
 local CB = {}
 Cdouble.ComeBack = { Metric = function(id) table.insert(CB, "Metric:" .. tostring(id)) return true end,
 	OptIn = function(why) table.insert(CB, "OptIn:" .. tostring(why)) return true end }
 FX:Fire("PauseCard", { Why = "Daily", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
-check("the daily card: the next goal, then tomorrow's line", text("Body") == "Next time: Hunt and get stronger!\nTomorrow: New dailies",
+check("A23-130: the daily card is not shown (a chapter's end only)", not Card.IsOpen() and cards() == 0
+	and Card.Waiting() == false, cards())
+check("the dropped daily card still hands over the opt-in moment 'Daily', once", #CB == 1 and CB[1] == "OptIn:Daily",
+	table.concat(CB, ","))
+table.clear(CB)
+FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", OptIn = false })
+check("a dropped card with OptIn false: no moment", #CB == 0 and not Card.IsOpen(), table.concat(CB, ","))
+FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", OptIn = "yes" })
+check("a dropped card: OptIn must be true (a string is not)", #CB == 0 and not Card.IsOpen(), table.concat(CB, ","))
+FX:Fire("PauseCard", { Why = "War", Next = "Goal" })
+check("A23-130: the war card is not shown", not Card.IsOpen() and cards() == 0 and #SHOWN == 0, cards())
+FX:Fire("PauseCard", { Why = "Chapter", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
+check("a chapter card: the next goal, then tomorrow's line", text("Body") == "Next time: Hunt and get stronger!\nTomorrow: New dailies",
 	text("Body"))
 check("no opt-in moment while the card is open", #CB == 0, table.concat(CB, ","))
 click("OK")
 check("the card closed -> the opt-in moment 'Daily', once", #CB == 1 and CB[1] == "OptIn:Daily" and not Card.IsOpen(), table.concat(CB, ","))
 table.clear(CB)
-FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", Tomorrow = "King Diary page 3", OptIn = false })
+FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "King Diary page 3", OptIn = false })
 check("the King Diary page as tomorrow's line", text("Body") == "Next time: Goal\nTomorrow: King Diary page 3", text("Body"))
 click("Keep")
 check("OptIn false: no moment", #CB == 0, table.concat(CB, ","))
-FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", OptIn = "yes" })
+FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", OptIn = "yes" })
 card().Activated:Fire()
 flush()
 check("OptIn must be true (a string is not)", #CB == 0, table.concat(CB, ","))
 FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "<b>" .. string.rep("z", 50) })
 check("tomorrow's line cleaned and cut at 40", text("Body") == "Next time: Goal\nTomorrow: b" .. string.rep("z", 39) .. "…", text("Body"))
 click("OK")
-FX:Fire("PauseCard", { Why = "War", Next = "Goal", Tomorrow = "   " })
+FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "   " })
 check("an empty tomorrow line adds nothing", text("Body") == "Next time: Goal", text("Body"))
 click("OK")
 FX:Fire("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })

@@ -205,8 +205,9 @@ function HINT.Step(now)
 	end
 	local root = myRoot()
 	if not root then return end
-	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait)
-	if not HINT.AttackShown then
+	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait); A23-130: off while
+	-- Config.Nudges.AttackHint = false
+	if not HINT.AttackShown and (Config.Nudges or {}).AttackHint ~= false then
 		local _, d = HINT.Nearest(root.Position, HINT.Reach())
 		if d < math.huge then
 			HINT.NearSince = HINT.NearSince or now
@@ -253,14 +254,12 @@ function FirstSteps.Init(registry)
 end
 
 ----------------------------------------------------------------- 검수 10/09 (system review ②) the first PvP zone
--- the first time I walk into a PvP zone (not the Artisan Guild: nobody can fight it), three calm cards one after the
--- other (PauseCard "Tip", each waits for a calm screen); after the last one the Settings flag PvPCards (saved with my
--- account) keeps them from coming again. Shown only from the place: no button sends me anywhere
-local PVP = { Title = "PvP zone", Why = "PvPIntro", Step = 0, Cards = {
-	"Other players can fight you here.",
-	"If you get knocked out, you can lose some pocket gold.",
-	"Keep gold safe in the bank! Walk into any town and your pocket gold is saved.",
-} }
+-- the first time I walk into a PvP zone (not the Artisan Guild: nobody can fight it), one calm card (PauseCard "Tip", it
+-- waits for a calm screen; 검수 10/11 A23-130: the three cards became one - the danger line + one short line); once it
+-- is closed the Settings flag PvPCards (saved with my account) keeps it from coming again. Shown only from the place: no
+-- button sends me anywhere
+local PVP = { Title = "PvP zone", Why = "PvPIntro", Step = 0,
+	Text = "Other players can fight you here!\nKnocked out? You can lose pocket gold. Towns keep it safe." }
 
 function PVP.Check()
 	if PVP.Step > 0 or attr("ZonePvP", false) ~= true or attr("Faction", "") == "Neutral" then return end
@@ -273,19 +272,14 @@ function PVP.Check()
 end
 
 function PVP.Show()
-	call("PauseCard", "Show", "Tip", { Title = PVP.Title, Text = PVP.Cards[PVP.Step], Why = PVP.Why })
+	call("PauseCard", "Show", "Tip", { Title = PVP.Title, Text = PVP.Text, Why = PVP.Why })
 end
 
--- a card of mine was closed (PauseCard.Shown: kind, button, why): the next one, or the flag after the last
+-- my card was closed (PauseCard.Shown: kind, button, why): the flag, once
 function PVP.OnShown(_kind, _button, why)
-	if why ~= PVP.Why or PVP.Step < 1 or PVP.Step > #PVP.Cards then return end
-	if PVP.Step < #PVP.Cards then
-		PVP.Step += 1
-		PVP.Show()
-	else
-		PVP.Step = #PVP.Cards + 1
-		call("Settings", "Set", "PvPCards", true)
-	end
+	if why ~= PVP.Why or PVP.Step ~= 1 then return end
+	PVP.Step = 2
+	call("Settings", "Set", "PvPCards", true)
 end
 
 function FirstSteps.Start()

@@ -118,8 +118,8 @@ local TXT = {
 	HintNeutral = "The Artisan Guild sits out the tug", -- addendum A6
 	KaijuChip = "Kaiju %s %s",
 	SirenLeft = "%ds",
-	Sack = "Grudge Sack %s · %ds (shrinks only in PvP zones)",
-	KaijuSelf = "You are a Kaiju! Last %s to become a legend",
+	Sack = "Grudge Sack %s · %ds", -- A23-130: the "(shrinks only in PvP zones)" explanation is gone
+	KaijuSelf = "You're the Kaiju! Last %s", -- A23-130: shorter (was "... to become a legend")
 	Revenge = "Revenge: %s · %s",
 	Luck = "Today's Luck · Rare %s%%", -- A23-18 (events taken part in today, KST day)
 	-- 검수 10/09 (UI clutter review: 'Rare 5%' meant nothing to kids): the chip says the bonus over the base rare chance
@@ -958,7 +958,8 @@ local function updateGoose(now)
 	if gsAttr("GooseActive", false) == true then
 		setVisible(ui.GooseChip, false)
 		setVisible(ui.Tug, true)
-		setVisible(ui.TugSub, true)
+		-- A23-130: the bar alone (Config.Nudges.GooseSub = false hides the "My points …" line under it)
+		setVisible(ui.TugSub, not (type(Config.Nudges) == "table" and Config.Nudges.GooseSub == false))
 		local rescue = math.max(0, num(gsAttr("GooseRescue", 0)))
 		local poach = math.max(0, num(gsAttr("GoosePoach", 0)))
 		local timeLeft = Util.FormatTime(num(gsAttr("GooseEndsAt", 0)) - now)

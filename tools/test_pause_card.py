@@ -57,6 +57,14 @@ MUTATIONS = [
     ("WelcomeBackGo never counted", "\t\tif id == \"Go\" and card.Kind == \"Back\" then comeBack(\"Metric\", \"WelcomeBackGo\") end\n", ""),
     ("every [Go] counted as WelcomeBackGo", "\t\tif id == \"Go\" and card.Kind == \"Back\" then comeBack(", "\t\tif id == \"Go\" then comeBack("),
     ("Waiting always false", "\treturn S.Pending ~= nil\n", "\treturn false\n"),
+    # 검수 10/11 (A23-130): "Saved!" only at a chapter's end; a tip of two lines
+    ("the daily / war card still shows", "\t\tif card.Why and not T.PauseWhy[card.Why] then\n", "\t\tif false then\n"),
+    ("a dropped daily card loses its opt-in",
+     "\t\t\tif data.OptIn == true then comeBack(\"OptIn\", card.Why) end -- the server spent the moment on this card\n", ""),
+    ("a dropped card: any OptIn value counts", "if data.OptIn == true then comeBack(\"OptIn\", card.Why)",
+     "if data.OptIn then comeBack(\"OptIn\", card.Why)"),
+    ("a tip keeps every line", "\t\tif #out >= lines then break end\n", ""),
+    ("a tip on one line", "local text = cleanLines(data.Text, T.TipMax, T.TipLines)", "local text = clean(data.Text, T.TipMax)"),
 ]
 
 

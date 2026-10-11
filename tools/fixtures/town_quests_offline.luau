@@ -393,21 +393,23 @@ runGroup("a23-70 lunchbox", function()
 	w.Story.Refresh(p)
 	w:Flush()
 	check(w:Opens(0) == opens + 1, "a refresh never opens it again", w:Opens(0) - opens)
-	-- [Give it back]: +1 HP potion, the kid's thanks, the Choice sound, no Honor and no lean line
+	-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): no Reply line after a pick, the reward toast only
+	local LT = w.Config.Loot.Text
+	local potionLine = string.format(LT.Got, LT.Potion.HP)
+	local goldLine = string.format(T.ChoiceGold, "25")
+	check(L.Steps[1].Obj.Good.Reply == nil and L.Steps[1].Obj.Evil.Reply == nil, "Config: Lunch1 has no Reply line",
+		show({ L.Steps[1].Obj.Good.Reply, L.Steps[1].Obj.Evil.Reply }))
+	-- [Give it back]: +1 HP potion (its reward toast), the Choice sound, no Honor, no lean line, no thanks line
 	local n0, fx0, hp, honor = #w.Notices, #w.Fx, d.HPPotionCount or 0, d.Honor or 0
 	w:Act(p, "Lunch1", "Choose", "Good")
-	check(not has(w:NoticesFor(p, n0), L.Steps[1].Obj.Good.Reply),
-		"10/08: the answer waits (not with the gold / done lines while the card is still open)", show(w:NoticesFor(p, n0)))
-	w:Advance(0.2)
-	check(not has(w:NoticesFor(p, n0), L.Steps[1].Obj.Good.Reply), "... still waiting 0.2 s later (the card closes first)",
-		show(w:NoticesFor(p, n0)))
-	w:Advance(0.2)
+	local first = w:NoticesFor(p, n0)
+	w:Advance(0.4)
 	local lines = w:NoticesFor(p, n0)
-	check(#lines > 0 and lines[#lines] == L.Steps[1].Obj.Good.Reply,
-		"... and comes 0.35 s later as the newest line (it stays while a window keeps only the newest)", show(lines))
+	check(has(lines, potionLine), "Give it back: the reward toast '" .. potionLine .. "'", show(lines))
+	check(#lines == #first, "... and nothing comes after it (no thanks line 0.35 s later)", show({ first, lines }))
 	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 == true,
 		"Give it back: +1 HP potion, Honor unchanged, done", show({ d.HPPotionCount, d.Honor, d.Story.Done.Lunch1 }))
-	check(has(lines, L.Steps[1].Obj.Good.Reply) and not has(lines, T.LeanGood), "the kid thanks you (no lean line)", show(lines))
+	check(not has(lines, T.LeanGood) and not has(lines, T.Recorded), "no lean / saved line (the reward says it)", show(lines))
 	local fx = nil
 	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then fx = w.Fx[i].Data end end
 	check(fx and fx.Option == "Good", "Fx Choice { Option = 'Good' }", show(fx))
@@ -417,10 +419,10 @@ runGroup("a23-70 lunchbox", function()
 	w:Act(p2, "Lunch1", "Choose", "Evil")
 	w:Advance(0.4)
 	local bite = w:NoticesFor(p2, n2)
-	check(#bite > 0 and bite[#bite] == L.Steps[1].Obj.Evil.Reply, "One bite: 'Yum!' is the last line", show(bite))
-	check((d2.BankGold or 0) == bank + 25 and (d2.Honor or 0) == 0 and (d2.Infamy or 0) == 0
-		and has(w:NoticesFor(p2, n2), L.Steps[1].Obj.Evil.Reply), "One bite: +25 gold, 'Yum!…', no score",
-		show({ (d2.BankGold or 0) - bank, d2.Honor, d2.Infamy, w:NoticesFor(p2, n2) }))
+	check(has(bite, goldLine) and not has(bite, T.LeanEvil), "One bite: the reward toast '" .. goldLine .. "', no lean line",
+		show(bite))
+	check((d2.BankGold or 0) == bank + 25 and (d2.Honor or 0) == 0 and (d2.Infamy or 0) == 0,
+		"One bite: +25 gold, no score", show({ (d2.BankGold or 0) - bank, d2.Honor, d2.Infamy, bite }))
 	-- a Horns player may give it back
 	local p3, d3 = fresh(1705, "Horns", 99)
 	local hp3 = d3.HPPotionCount or 0
@@ -428,18 +430,17 @@ runGroup("a23-70 lunchbox", function()
 	w:Advance(0.4)
 	check((d3.HPPotionCount or 0) == hp3 + 1 and (d3.Infamy or 0) == 0 and d3.Story.Pick.Lunch1 == "GiveBack",
 		"a Horns player can give it back too", show({ d3.HPPotionCount, d3.Infamy, d3.Story.Pick.Lunch1 }))
-	-- the artisan guild (Neutral: A / B): its answer waits and comes last the same way
+	-- the artisan guild (Neutral: A / B): the reward toast only, no "Your choice is saved." line (A23-130)
 	local p4, d4 = fresh(1706, "Neutral", 99)
 	if w:Track(d4, "Lunch1") ~= nil then
 		local n4 = #w.Notices
 		w:Act(p4, "Lunch1", "Choose", "B")
-		local early = w:NoticesFor(p4, n4)
 		w:Advance(0.4)
 		local late = w:NoticesFor(p4, n4)
-		check(not has(early, L.Steps[1].Obj.Evil.Reply) and #late > 0 and late[#late] == L.Steps[1].Obj.Evil.Reply
-			and d4.Story.Pick.Lunch1 == "B", "a Neutral B pick: the answer waits and comes last", show({ early, late }))
+		check(has(late, goldLine) and not has(late, T.Recorded) and d4.Story.Pick.Lunch1 == "B",
+			"a Neutral B pick: the reward toast, no saved line", show(late))
 	else
-		check(true, "a Neutral B pick: the answer waits and comes last (the guild is off: no card)")
+		check(true, "a Neutral B pick: the reward toast, no saved line (the guild is off: no card)")
 	end
 end)
 
