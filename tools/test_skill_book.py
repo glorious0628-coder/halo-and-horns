@@ -81,7 +81,7 @@ MUTATIONS = [
     ("MAIN", "the window is never loaded", "\"PetWindow\", \"SkillBook\", \"QuestBook\",", "\"PetWindow\", \"QuestBook\","),
     ("HUD", "K opens the window while its tile is locked", "\t\tif def.Key == action and L.TileLocked(def.Id) then\n",
      "\t\tif false then\n"),
-    ("PANELS", "no window icon", "Diary = \"IconDiary\", Skills = \"IconSkills\" },", "Diary = \"IconDiary\" },"),
+    ("PANELS", "no window icon", "Diary = \"IconDiary\", Skills = \"IconSkills\",", "Diary = \"IconDiary\","),
 ]
 
 
@@ -103,7 +103,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("a locked tile's window key only wiggles it (A23-113 ③)",
          re.search(r"\t\tif def\.Key == action and L\.TileLocked\(def\.Id\) then\n\t\t\tL\.TileWiggle\(def\.Id\)\n\t\t\treturn true\n",
                    src["HUD"]) is not None),
-        ("the window has the Skills icon", 'Skills = "IconSkills" },' in src["PANELS"]),
+        ("the window has the Skills icon", 'Skills = "IconSkills",' in src["PANELS"]),
         ("Panels: a KeepScroll window's data redraw keeps the scroll",
          "\t\t\tlocal o = REG.Opts[currentId]\n\t\t\tqueueRebuild(o ~= nil and o.KeepScroll == true)\n" in src["PANELS"]),
         ("the Skills tile stays locked until the first skill (Config.HudReveal)",

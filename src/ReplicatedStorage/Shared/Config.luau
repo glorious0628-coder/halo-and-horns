@@ -197,7 +197,7 @@ Config.Data = {
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
 		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow", PvPCards = false, Weather = true },
+			Cam = "Follow", PvPCards = false, Weather = true, BagWide = false },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -4766,7 +4766,7 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the eleven values incl. Music / Weather, Seq = 14)
+	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the twelve values incl. Music / Weather / BagWide, Seq = 15)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
@@ -4777,7 +4777,10 @@ Config.Settings = {
 		Tags = { Type = "Enum", Options = { "All", "Near", "Off" } },
 		KeyBadges = { Type = "Bool" }, -- user 2026-10-08: off by default (keys can be changed anyway; the row turns them on)
 		Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
-		BagSort = { Type = "Enum", Options = { "Default", "Grade", "Count" } },
+		-- A23-32 (H-1 bag, 게임성 개발 4): Default = newest first (the server's ItemSeq order), name, grade, type; an old
+		-- "Count" falls back to Default
+		BagSort = { Type = "Enum", Options = { "Default", "Name", "Grade", "Kind" } },
+		BagWide = { Type = "Bool" }, -- A23-32: the bag's wide (8 columns) look; the bag's own button (not a Settings row)
 		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-91: Follow = the console-style camera turns behind me while I walk (the default again since user 10/09; Free = Roblox's own)
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
@@ -4793,12 +4796,14 @@ Config.Settings = {
 		KeyBadges = "Key hints", KeyBadgesEn = "Key hints",
 		Lang = "Language", LangEn = "Language",
 		BagSort = "Bag order", BagSortEn = "Bag order",
+		BagWide = "Wide bag", BagWideEn = "Wide bag", -- not a row in the window (Order)
 		Cam = "Camera", CamEn = "Camera",
 		PvPCards = "PvP zone cards seen", PvPCardsEn = "PvP zone cards seen", -- not a row in the window (Order)
 		Options = {
 			All = "All", AllEn = "All", Off = "Off", OffEn = "Off", Near = "Nearby only", NearEn = "Nearby only",
 			Auto = "Auto", AutoEn = "Auto", ko = "한국어", koEn = "한국어", en = "English", enEn = "English",
-			Default = "Default", DefaultEn = "Default", Grade = "By grade", GradeEn = "By grade", Count = "By count", CountEn = "By count",
+			Default = "Newest", DefaultEn = "Newest", Grade = "By grade", GradeEn = "By grade", Name = "By name", NameEn = "By name",
+			Kind = "By type", KindEn = "By type",
 			Follow = "Follow", FollowEn = "Follow", Free = "Free", FreeEn = "Free",
 		},
 		On = "On", OnEn = "On",

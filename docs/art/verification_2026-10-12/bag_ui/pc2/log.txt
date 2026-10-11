@@ -1,0 +1,52 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 WeaponTier=0 WeaponOwnedMask=0 HPPotionCount=0 MPPotionCount=0 BankGold=0 CarriedGold=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 WeaponTier=0 WeaponOwnedMask=0 HPPotionCount=0 MPPotionCount=0 BankGold=0 CarriedGold=0
+debug: Level=ok WeaponOwnedMask=ok HPPotionCount=ok MPPotionCount=ok Gold=ok Item=3 Item=1 Item=2 Item=24 Item=6 Item=3 Item=5 Item=2 Item=1 Item=9
+fired EquipWeapon
+state: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=20 WeaponTier=2 WeaponOwnedMask=75 HPPotionCount=5 MPPotionCount=3 BankGold=0 CarriedGold=1234
+I key: Bag
+probe 01_gear_narrow: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","N:2","Tab_Scroll:Scrolls","Label:Scrolls","N:3","Tab_Material:Materials","Label:Materials","N:7","WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet","Name:Dawn Sword","Grade:★★★★★ Legendary","Line1:Attack 1,380","Line2:Crafted by artisans (full launch)","Act_Equip:From Lv 40","Label:From Lv 40","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":4,"Empty":16,"Window":"258x293 px at 507,20","Cut":["WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\01_gear_narrow.png
+{ Tab = "Gear", Select = "W:4" } -> opened the bag
+probe 02_gear_pick_t4: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","N:2","Tab_Scroll:Scrolls","Label:Scrolls","N:3","Tab_Material:Materials","Label:Materials","N:7","WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet","Name:Goblin Thief's Golden Sword","Grade:★★★ Rare","Line1:Attack 121","Line2:Power 775 → 1,877","Line3:Rare drop from Goblins and Goblin Brutes, or a Forge commission","Act_Equip:Equip","Label:Equip","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":4,"Empty":16,"Window":"258x293 px at 507,20","Cut":["WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\02_gear_pick_t4.png
+{ Tab = "Scroll" } -> opened the bag
+probe 03_scrolls: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","N:2","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","N:7","Count:2","Count:3","Count:2","Name:Transfer Scroll 70%","Grade:★★ Fine","Line1:×2","Line2:Moves all + to another weapon · 70%","Act_Use:Use","Label:Use","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":3,"Empty":21,"Window":"258x293 px at 507,20","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\03_scrolls.png
+{ Use = "Enh70", Tier = 2 } -> opened the bag
+probe 04_enhance_confirm: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","N:2","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","N:7","WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet","Name:Enhance Scroll 70%","Line1:Wooden Sword\n+0 → +1 · 70% chance","Line2:Nothing changes on a fail.","Act_Enhance:Enhance","Label:Enhance","Act_Cancel:Cancel","Label:Cancel","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":4,"Empty":16,"Window":"258x293 px at 507,20","Cut":["WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\04_enhance_confirm.png
+{ Tab = "Use" } -> opened the bag
+probe 05_use_potion: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","N:7","Count:3","Count:5","Count:3","Name:MP Potion","Grade:★ Common","Line1:×3","Act_Drink:Full","Label:Full","QuickTitle:Quick slot","Quick1:1","Label:1","Quick2:2","Label:2","Quick3:3","Label:3","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":2,"Empty":22,"Window":"258x293 px at 507,20","Cut":["QuickTitle:Quick slot"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\05_use_potion.png
+{ Tab = "Material", Select = "I:Jelly" } -> opened the bag
+probe 06_materials: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","Count:9","Letter:C","Count:2","Count:5","Count:3","Letter:F","Count:6","Count:24","Count:24","Name:Jelly","Grade:★ Common","Line1:×24","Line2:Sells for 2 each","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":7,"Empty":17,"Window":"258x293 px at 507,20","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\06_materials.png
+settings BagWide=true BagSort=Grade
+{ Tab = "Material" } -> opened the bag
+probe 07_materials_wide_grade: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","Letter:C","Count:2","Count:3","Letter:F","Count:6","Count:9","Count:24","Count:5","Count:24","Name:Jelly","Grade:★ Common","Line1:×24","Line2:Sells for 2 each","Gold:1,234","SortName:Grade"],"Viewport":"1272x437","Cells":7,"Empty":41,"Window":"388x293 px at 442,20","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\07_materials_wide_grade.png
+{ Tab = "Gear" } -> opened the bag
+probe 08_gear_wide: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet","Name:Dawn Sword","Grade:★★★★★ Legendary","Line1:Attack 1,380","Line2:Crafted by artisans (full launch)","Act_Equip:From Lv 40","Label:From Lv 40","Gold:1,234","SortName:Grade"],"Viewport":"1272x437","Cells":4,"Empty":36,"Window":"388x293 px at 442,20","Cut":["WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\08_gear_wide.png
+settings BagWide=false BagSort=Default
+debug: MPPotionCount=ok
+{ Tab = "Use", Select = "P:MP" } -> opened the bag
+probe 09_use_mp_zero: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","Count:0","Count:5","Name:MP Potion","Grade:★ Common","Line1:×0","Act_Drink:Drink","Label:Drink","QuickTitle:Quick slot","Quick1:1","Label:1","Quick2:2","Label:2","Quick3:3","Label:3","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":2,"Empty":22,"Window":"258x293 px at 507,20","Cut":["QuickTitle:Quick slot"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\09_use_mp_zero.png
+Tab_Gear path: LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.FixedBody.Tabs.Tab_Gear
+after the Gear click: Gear (worn row shown)
+after the size button: Gear (worn row shown)
+probe 10: {"Words":["Tab_Gear:Gear","Label:Gear","Tab_Use:Use","Label:Use","Tab_Scroll:Scrolls","Label:Scrolls","Tab_Material:Materials","Label:Materials","WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet","Name:Dawn Sword","Grade:★★★★★ Legendary","Line1:Attack 1,380","Line2:Crafted by artisans (full launch)","Act_Equip:From Lv 40","Label:From Lv 40","Gold:1,234","SortName:Newest"],"Viewport":"1272x437","Cells":4,"Empty":36,"Window":"388x293 px at 442,20","Cut":["WornCapWeapon:Weapon","WornCapArmor:Armor","WornCapRing:Ring","WornCapPetGear:Pet"]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4w\docs\art\verification_2026-10-12\bag_ui\pc2\10_after_size_still_gear.png
+console: [ServerErrorService] started
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Goblin_86969d1c-332d-4889-ab56-123455c9280f.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.GoblinBrute_2b302594-5a3c-447f-ba4b-3d92f98b4f15.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Skeleton_static.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] ServerError = 605 (Heartbeat, tick # ms, Slow)
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+play stopped
+fresh off
