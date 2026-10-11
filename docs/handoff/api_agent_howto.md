@@ -8,6 +8,7 @@
 - **코드 쓰기(브랜치로 받음):**
   `py tools/api_agent.py run --prompt-file P.md --out build/api_agent/<job> --model sonnet --max-usd 5 --max-turns 60 --make-worktree origin/main --write --branch api/<이름>`
 - 이미지도 볼 수 있음(read_image, 한 번에 40장까지 `--max-images`). `--out`은 새 이름(`--overwrite`로 덮음).
+- `--make-worktree`는 **sparse**(src·tools·docs·AGENTS.md·.gitignore만, 약 470MB·20초). 그림이 필요하면 `--sparse-extra art/review/<폴더>/`(여러 번 가능), 통째로는 `--full-checkout`(6GB·수 분). sparse에선 art가 필요한 시험이 가짜 실패(알려진 것: `test_rank_marks` STATIC_FAILURE).
 - 상태: `py tools/api_agent.py status <job>` · 목록과 누적 비용: `py tools/api_agent.py list`.
 
 ## 프롬프트 요령 (P.md)

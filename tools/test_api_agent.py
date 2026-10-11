@@ -202,7 +202,7 @@ def tools_checks(base, repo):
     A.WORKTREE_ROOT = os.path.join(base, "wt")
     try:
         p = os.path.join(A.WORKTREE_ROOT, "j1")
-        made = A.prepare_worktree(src, "HEAD", p)
+        made = A.prepare_worktree(src, "HEAD", p, sparse=False)
         check("worktree made + Luau CLI copied", os.path.isfile(os.path.join(made, "build", "luau_cli_0_741", "luau.exe"))
               and os.path.isfile(os.path.join(made, "f.txt")))
         ok, msg = A.drop_worktree(src, p)
@@ -346,7 +346,7 @@ def write_checks(base):
     old_wt = A.WORKTREE_ROOT
     A.WORKTREE_ROOT = os.path.join(base, "wtw")
     try:
-        wt = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "tw"))
+        wt = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "tw"), sparse=False)
         out = os.path.join(base, "jobs", "tw")
         os.makedirs(out)
         red = A.Redactor([FAKE_KEY])
@@ -455,7 +455,7 @@ def write_checks(base):
         check("write: worktree dropped", ok, msg2)
 
         # push_branch: api/<name> only
-        wt2 = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "tw2"))
+        wt2 = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "tw2"), sparse=False)
         for b in ["main", "master", "api/../main", "api/", "api", "feature/x", "api/a b", "api/x.lock", "api/x..y", "refs/heads/main",
                   "api/x;rm", "origin/api/x", "api/" + "x" * 80, "", None, "API/x"]:
             ok, note = A.push_branch(wt2, b)
@@ -544,6 +544,90 @@ def write_checks(base):
             shutil.rmtree(os.path.join(A.JOBS_ROOT, "bad"), ignore_errors=True)
         check("origin never got another branch", sorted(g(origin, "for-each-ref", "--format=%(refname)").stdout.split())
               == ["refs/heads/api/t1", "refs/heads/api/t3", "refs/heads/main"])
+    finally:
+        A.WORKTREE_ROOT = old_wt
+
+
+def sparse_checks(base):
+    """--make-worktree is sparse by default (검수 2026-10-11: the full checkout is ~6 GB / 10 minutes): /src /tools /docs /AGENTS.md
+    /.gitignore, --sparse-extra adds paths, --full-checkout restores everything; bad extras are refused before anything exists"""
+    from PIL import Image
+    g = lambda repo, *a: subprocess.run(["git", "-C", repo, *a], capture_output=True, text=True, encoding="utf-8")  # noqa: E731
+    src = os.path.join(base, "spsrc")
+    subprocess.run(["git", "init", "-q", src], check=True)
+    for k, v in (("user.name", "Test"), ("user.email", "t@example.com"), ("core.autocrlf", "false"), ("commit.gpgsign", "false")):
+        g(src, "config", k, v)
+    for rel in ["AGENTS.md", ".gitignore", "src/a.luau", "tools/t.py", "docs/d.md", "art/big.bin", "art/review/pic/p.txt",
+                "art/review/other/q.txt", "place/x.rbxlx", "root.txt"]:
+        full = os.path.join(src, rel)
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(full, "w") as f:
+            f.write("build/\n" if rel == ".gitignore" else rel + "\n")
+    Image.new("RGB", (40, 30), (200, 40, 40)).save(os.path.join(src, "art", "review", "pic", "p.png"))
+    g(src, "add", "-A")
+    g(src, "commit", "-q", "-m", "init")
+    ex = lambda wt, rel: os.path.exists(os.path.join(wt, *rel.split("/")))  # noqa: E731
+    old_wt = A.WORKTREE_ROOT
+    A.WORKTREE_ROOT = os.path.join(base, "wtsp")
+    try:
+        check("sparse patterns: defaults", A.sparse_patterns() == ["/src/", "/tools/", "/docs/", "/AGENTS.md", "/.gitignore"], A.sparse_patterns())
+        check("sparse patterns: extras anchored", A.sparse_patterns(["art/review/pic/", "root.txt"])[-2:] == ["/art/review/pic/", "/root.txt"])
+        wt = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "s1"))
+        check("sparse: the default folders are there", all(ex(wt, x) for x in ["AGENTS.md", ".gitignore", "src/a.luau", "tools/t.py", "docs/d.md"]))
+        check("sparse: art/, place/ and root files are not", not any(ex(wt, x) for x in ["art", "place", "root.txt", "art/big.bin"]))
+        check("sparse: git status is clean (no phantom deletions)", g(wt, "status", "--porcelain").stdout.strip() == "", g(wt, "status", "--porcelain").stdout)
+        check("sparse: the shared repo keeps every file and is not sparse", all(ex(src, x) for x in ["art/big.bin", "place/x.rbxlx", "root.txt"])
+              and g(src, "config", "--get", "core.sparseCheckout").stdout.strip() == "", g(src, "config", "--get", "core.sparseCheckout").stdout)
+        ok, msg = A.drop_worktree(src, wt)
+        check("sparse: worktree dropped", ok and not os.path.exists(wt), msg)
+
+        wt = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "s2"), extra=["art/review/pic/", "root.txt"])
+        check("sparse-extra: a folder and a file are added", ex(wt, "art/review/pic/p.png") and ex(wt, "art/review/pic/p.txt") and ex(wt, "root.txt"))
+        check("sparse-extra: siblings stay out", not ex(wt, "art/review/other/q.txt") and not ex(wt, "art/big.bin"))
+        T = A.Tools(wt, os.path.join(base, "jobs"), True, A.Redactor([FAKE_KEY]))
+        t, e = T.call("read_image", {"path": "art/review/pic/p.png"})
+        check("sparse-extra: read_image reaches the extra picture", not e and isinstance(t, list) and t[1]["type"] == "image", t)
+        t, e = T.call("read_file", {"path": "art/big.bin"})
+        check("sparse: a file outside the sparse set is simply not there", e and "not found" in t, t)
+        A.drop_worktree(src, wt)
+
+        wt = A.prepare_worktree(src, "HEAD", os.path.join(A.WORKTREE_ROOT, "s3"), sparse=False)
+        check("full checkout: everything is there", all(ex(wt, x) for x in ["art/big.bin", "place/x.rbxlx", "root.txt", "art/review/other/q.txt"]))
+        A.drop_worktree(src, wt)
+
+        for bad in ["../x", "/abs", "C:/x", ".env", ".env.local", "a/.git/b", ".git", ".tripo/x", "a*b", "!x", "a\\b", "", "art/../src", "./art",
+                    "a//b", "a?b", "a[b]", "#c", "x\x00y", None, 5, "id_rsa", "keys/a.pem"]:
+            try:
+                A.sparse_patterns([bad])
+                check(f"sparse-extra refused: {bad!r}", False, "no SystemExit")
+            except SystemExit:
+                check(f"sparse-extra refused: {bad!r}", True)
+
+        # through run_job: patterns reach usage.json and the system prompt; wrong option combinations stop first
+        fc = FakeClient([end_step("done")])
+        A.run_job(run_args(base, "spjob", "look", "--repo-dir", src, "--make-worktree", "HEAD", "--sparse-extra", "art/review/pic/"),
+                  client=fc, key=FAKE_KEY)
+        u = json.load(open(os.path.join(A.JOBS_ROOT, "spjob", "usage.json"), encoding="utf-8"))
+        check("run: usage.json lists the sparse patterns", u.get("sparse") == ["/src/", "/tools/", "/docs/", "/AGENTS.md", "/.gitignore", "/art/review/pic/"], u.get("sparse"))
+        sysm = fc.messages.calls[0]["system"][0]["text"]
+        check("run: the model is told the worktree is sparse", "SPARSE" in sysm and "/art/review/pic/" in sysm and "test_rank_marks" in sysm)
+        check("run: the sparse worktree is gone afterwards", u.get("worktree_removed") is True)
+        fc = FakeClient([end_step("done")])
+        A.run_job(run_args(base, "fulljob", "look", "--repo-dir", src, "--make-worktree", "HEAD", "--full-checkout"), client=fc, key=FAKE_KEY)
+        u = json.load(open(os.path.join(A.JOBS_ROOT, "fulljob", "usage.json"), encoding="utf-8"))
+        check("run --full-checkout: no sparse note", u.get("sparse") is None and "SPARSE" not in fc.messages.calls[0]["system"][0]["text"], u.get("sparse"))
+        for extra, label in [(["--sparse-extra", "art/"], "--sparse-extra without --make-worktree"),
+                             (["--full-checkout"], "--full-checkout without --make-worktree"),
+                             (["--make-worktree", "HEAD", "--full-checkout", "--sparse-extra", "art/"], "--sparse-extra with --full-checkout"),
+                             (["--make-worktree", "HEAD", "--sparse-extra", "../x"], "a bad --sparse-extra")]:
+            try:
+                A.run_job(run_args(base, "badsp", "x", "--repo-dir", src, *extra), client=FakeClient([end_step("x")]), key=FAKE_KEY)
+                check(label, False, "no SystemExit")
+            except SystemExit:
+                check(label + " refused", not os.path.exists(os.path.join(A.WORKTREE_ROOT, "badsp")))
+            shutil.rmtree(os.path.join(A.JOBS_ROOT, "badsp"), ignore_errors=True)
+        check("no worktree left behind", [x for x in g(src, "worktree", "list").stdout.splitlines() if "wtsp" in x] == [],
+              g(src, "worktree", "list").stdout)
     finally:
         A.WORKTREE_ROOT = old_wt
 
@@ -670,6 +754,7 @@ def main():
         image_checks(base, repo)
         loop_checks(base, repo)
         write_checks(base)
+        sparse_checks(base)
     finally:
         A.JOBS_ROOT = old_root
         shutil.rmtree(base, ignore_errors=True)

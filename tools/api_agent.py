@@ -2,7 +2,8 @@
 
   py tools/api_agent.py run --prompt-file <md> --out build/api_agent/<job>/ [--model sonnet|opus|haiku]
                             [--max-usd N] [--max-turns N] [--max-images N] [--repo-dir <path> [--allow-tests]]
-                            [--make-worktree <ref> [--write --branch api/<name> [--allow-run-modified-py]]]
+                            [--make-worktree <ref> [--sparse-extra <path> ...] [--full-checkout]
+                               [--write --branch api/<name> [--allow-run-modified-py]]]
   py tools/api_agent.py status <job|out-dir>
   py tools/api_agent.py list
 
@@ -13,6 +14,10 @@ Heavy read/review jobs go here instead of app usage (검수 2026-10-10). The mod
 No other writes, no network tool, no Studio. Every path is resolved and must stay inside --repo-dir;
 .env*, .git/ and .tripo/ are never readable. The key is read in memory and redacted from every log.
 
+--make-worktree is SPARSE by default (검수 2026-10-11: the full checkout is ~10,000 files / 6 GB and took 10 minutes): only /src
+/tools /docs /AGENTS.md /.gitignore are checked out (about 470 MB). --sparse-extra <repo path> (repeatable, e.g. art/review/x/) adds
+more, for jobs that must look at pictures; --full-checkout restores the whole tree. In a sparse worktree tests that need art
+files fail with a fake STATIC_FAILURE - known case: tools/test_rank_marks.py (art GLBs are not there).
 Write mode (검수 2026-10-11, user: bigger jobs may run on API credits): --write --make-worktree <ref> --branch api/<name>.
 Inside that temporary detached worktree ONLY the model also gets write_file, edit_file (exact string), delete_file and
 git_commit (explicit paths, the runner appends the Co-Authored-By line) and may run_test. It cannot push: when the run ends
@@ -87,6 +92,8 @@ WRITE_DENY_EXT = {".exe", ".dll", ".bat", ".cmd", ".ps1", ".sh", ".com", ".msi",
                   ".scr", ".reg", ".cpl", ".wsf", ".hta"}
 # a file of these kinds that differs from the base commit blocks run_test (a test is code that runs as the user)
 RISKY_EXT = {".py", ".pyw", ".pth", ".bat", ".cmd", ".ps1", ".sh", ".vbs", ".wsf", ".hta"}
+SPARSE_DEFAULT = ["/src/", "/tools/", "/docs/", "/AGENTS.md", "/.gitignore"]
+SPARSE_EXTRA_RE = re.compile(r"^[A-Za-z0-9가-힣 _.()+,=@-]+(/[A-Za-z0-9가-힣 _.()+,=@-]+)*/?$")
 BRANCH_RE = re.compile(r"^api/[A-Za-z0-9][A-Za-z0-9._-]{0,59}$")
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp"}
 DENY_PARTS = {".git", ".tripo", ".ssh", ".aws"}
@@ -885,6 +892,14 @@ def run_job(args, client=None, key=None):
         if not (write and args.make_worktree and valid_branch(branch)):
             raise SystemExit("write mode needs --write --make-worktree <ref> --branch api/<name> "
                              "(name: letters, digits, . _ - ; never main)")
+    extras = list(getattr(args, "sparse_extra", None) or [])
+    full = bool(getattr(args, "full_checkout", False))
+    if (extras or full) and not args.make_worktree:
+        raise SystemExit("--sparse-extra / --full-checkout need --make-worktree <ref>")
+    if extras and full:
+        raise SystemExit("--sparse-extra is for the sparse worktree; --full-checkout already has everything")
+    if extras:
+        sparse_patterns(extras)  # validate before anything exists
     if args.make_worktree:
         worktree = os.path.join(WORKTREE_ROOT, job_name)
         if os.path.exists(worktree):
@@ -903,7 +918,7 @@ def run_job(args, client=None, key=None):
     try:
         wctx = None
         if worktree:
-            repo, allow_tests = prepare_worktree(src_repo, args.make_worktree, worktree), True
+            repo, allow_tests = prepare_worktree(src_repo, args.make_worktree, worktree, sparse=not full, extra=extras), True
             if write:
                 base = subprocess.run(["git", "-C", repo, "rev-parse", "HEAD"], capture_output=True, text=True,
                                       encoding="utf-8", errors="replace").stdout.strip()
@@ -923,13 +938,36 @@ def run_job(args, client=None, key=None):
                 print(f"WARNING temporary worktree not removed: {msg}", file=sys.stderr)
 
 
-def prepare_worktree(src_repo, ref, path):
-    """A detached worktree at ref + a copy of the git-ignored Luau CLI the offline tests use (build/ is not in git)."""
+def sparse_patterns(extra=()):
+    """the sparse-checkout patterns (non-cone, anchored): the defaults + validated repository-relative extras"""
+    pats = list(SPARSE_DEFAULT)
+    for x in extra or ():
+        if not isinstance(x, str) or not SPARSE_EXTRA_RE.match(x) or ".." in x.split("/") or "." in x.split("/") \
+                or x.startswith("/") or any(part.lower() in DENY_PARTS or DENY_NAME_RE.match(part) for part in x.split("/")):
+            raise SystemExit(f"--sparse-extra: not an allowed repository-relative path: {x!r}")
+        pat = "/" + x.strip("/") + ("/" if x.endswith("/") else "")
+        if pat not in pats:
+            pats.append(pat)
+    return pats
+
+
+def prepare_worktree(src_repo, ref, path, sparse=True, extra=()):
+    """A detached worktree at ref (sparse by default: /src /tools /docs /AGENTS.md /.gitignore + extra) + a copy of the
+    git-ignored Luau CLI the offline tests use (build/ is not in git)."""
     import shutil
+    pats = sparse_patterns(extra) if sparse else None
     os.makedirs(WORKTREE_ROOT, exist_ok=True)
-    r = subprocess.run(["git", "-C", src_repo, "worktree", "add", "--detach", path, ref], capture_output=True, text=True, encoding="utf-8", errors="replace")
+    cmd = ["git", "-C", src_repo, "worktree", "add"] + (["--no-checkout"] if sparse else []) + ["--detach", path, ref]
+    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if r.returncode != 0:
         raise SystemExit(f"git worktree add failed: {r.stderr.strip()}")
+    if sparse:
+        # python subprocess: no MSYS path conversion, so '/src/' stays '/src/'
+        for step in (["sparse-checkout", "set", "--no-cone", *pats], ["checkout", "-q", "-f", "HEAD"]):
+            r = subprocess.run(["git", "-C", path, *step], capture_output=True, text=True, encoding="utf-8", errors="replace")
+            if r.returncode != 0:
+                drop_worktree(src_repo, path)
+                raise SystemExit(f"git {step[0]} failed: {r.stderr.strip()}")
     for base in (main_tree_of(src_repo), ROOT):
         cli = os.path.join(base or "", LUAU_CLI)
         if base and os.path.isdir(cli):
@@ -957,6 +995,8 @@ def loop(args, client, redact, out, prompt, model, job_name, repo, worktree, all
             "tokens": {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0},
             "prompt_file": os.path.abspath(args.prompt_file), "repo_dir": repo, "worktree": worktree,
             "run_test": allow_tests, "notes": [], "started": now(), "updated": None, "error": None}
+    if worktree:
+        meta["sparse"] = None if getattr(args, "full_checkout", False) else sparse_patterns(getattr(args, "sparse_extra", None))
     if wctx:
         meta["write"] = {"branch": wctx.branch, "ref": wctx.ref, "base": wctx.base, "allow_run_modified_py": wctx.allow_modified_py}
     job = Job(out, meta, redact)
@@ -971,6 +1011,10 @@ def loop(args, client, redact, out, prompt, model, job_name, repo, worktree, all
         repo=repo.replace("\\", "/"), read_max=LIMITS["read_lines_max"], grep_max=LIMITS["grep_max"],
         tests="available (temporary worktree)" if allow_tests else "off for this job",
         img_edge=LIMITS["image_long_edge"], img_max=tools.max_images, branch=wctx.branch if wctx else "")
+    if worktree and not getattr(args, "full_checkout", False):
+        pats = sparse_patterns(getattr(args, "sparse_extra", None))
+        system_text += ("\nThis worktree is SPARSE: only " + ", ".join(pats) + " exist; other paths (art/, place/, ...) are not "
+                        "checked out. A test that needs art files fails with a fake STATIC_FAILURE (known: tools/test_rank_marks.py).")
     if wctx and not wctx.allow_modified_py:
         system_text += ("\nrun_test is refused while any script file (.py ...) differs from the base commit; commit such "
                         "changes anyway - the reviewer runs the tests.")
@@ -1174,6 +1218,10 @@ def parser():
     r.add_argument("--repo-dir", help="repository to read (default: this checkout)")
     r.add_argument("--allow-tests", action="store_true", help="allow run_test in --repo-dir (never the shared main tree)")
     r.add_argument("--make-worktree", metavar="REF", help="read and test in a temporary detached worktree at REF")
+    r.add_argument("--sparse-extra", action="append", metavar="PATH", help="with --make-worktree: also check out this repository "
+                   "path (a folder ends with /), repeatable, e.g. art/review/recheck_2026-10-11/")
+    r.add_argument("--full-checkout", action="store_true", help="with --make-worktree: the whole tree instead of the sparse "
+                   "default (~10,000 files / 6 GB, minutes)")
     r.add_argument("--write", action="store_true", help="write mode: write_file/edit_file/delete_file/git_commit in the "
                    "temporary worktree (needs --make-worktree and --branch)")
     r.add_argument("--branch", metavar="api/<name>", help="write mode: the branch the runner pushes the commits to")
