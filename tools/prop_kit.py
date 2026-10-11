@@ -518,7 +518,7 @@ def flagpole_2():
 @kit("HaloFlagpole_3", 12.0, "art/out/s2/halo/poles/HaloFlagpole_3_front_HQ_src.png")
 def flagpole_3():
     box("Step0", 4.8, 4.8, 0.6, 0, 0, 0, "marble")
-    box("Step0Band", 4.86, 4.86, 0.1, 0, 0, 0.5, "gold")
+    box("Step0Band", 4.86, 4.86, 0.1, 0, 0, 0.48, "gold")
     box("Step1", 4.1, 4.1, 1.5, 0, 0, 0.6, "marble")
     for k, nrm in enumerate((EY, (0, -1, 0), EX, (-1, 0, 0))):
         c = vadd((0, 0, 1.35), vmul(nrm, 2.05))
@@ -575,7 +575,7 @@ def candle_crate():
             box("Corner%d%d" % (sx, sy), 0.18, 0.18, H + 0.04, sx * (W / 2 - 0.07), sy * (D / 2 - 0.07), 0, "gold")
             ball("Stud%d%d" % (sx, sy), 0.14, sx * (W / 2 - 0.02), sy * (D / 2 + 0.0), H * 0.5, "gold", cc=False)
     for sy in (-1, 1):
-        box("BandTop%d" % sy, W + 0.02, 0.06, 0.12, 0, sy * (D / 2 + 0.01), H - 0.12, "gold", cc=False)
+        box("BandTop%d" % sy, W + 0.02, 0.06, 0.12, 0, sy * (D / 2 + 0.01), H - 0.14, "gold", cc=False)
         box("BandBot%d" % sy, W + 0.02, 0.06, 0.12, 0, sy * (D / 2 + 0.01), 0.02, "gold", cc=False)
     # diagonal brace on the front
     part("Brace", "Block", (math.hypot(W - 0.4, H - 0.4), 0.16, 0.05), (0, D / 2 + 0.025, H / 2), norm((W - 0.4, 0, H - 0.4)),
@@ -610,7 +610,7 @@ def armory_barrels():
         for sy in (-1, 1):
             box("CrateCorner%d%d" % (sx, sy), 0.2, 0.2, S + 0.02, x + sx * (S / 2 - 0.08), y + sy * (S / 2 - 0.08), 0, "gold", cc=False)
     for sz in (0, 1):
-        box("CrateBand%d" % sz, S + 0.04, S + 0.04, 0.14, x, y, sz * (S - 0.14), "gold", cc=False)
+        box("CrateBand%d" % sz, S + 0.04, S + 0.04, 0.14, x, y, 0.02 + sz * (S - 0.18), "gold", cc=False)
     for k, sgn in enumerate((1, -1)):
         a = norm((sgn * 1.0, 0, 1.0))
         part("CrateX%d" % k, "Block", (S * 1.15, 0.18, 0.06), (x, y + S / 2 + 0.06 + 0.02 * k, S / 2), a, norm((-a[2], 0, a[0])), "woodcream", cc=False)
@@ -630,7 +630,7 @@ def beehive():
     z = 0.5
     for k in range(2):
         box("Box%d" % k, W, D, 0.82, 0, 0, z, "woodcream")
-        box("BoxBand%d" % k, W + 0.06, D + 0.06, 0.1, 0, 0, z + 0.72, "gold", cc=False)
+        box("BoxBand%d" % k, W + 0.06, D + 0.06, 0.1, 0, 0, z + 0.7, "gold", cc=False)
         for sx in (-1, 1):
             for sy in (-1, 1):
                 box("BoxEdge%d%d%d" % (k, sx, sy), 0.12, 0.12, 0.82, sx * (W / 2 - 0.03), sy * (D / 2 - 0.03), z, "gold", cc=False)
@@ -656,7 +656,7 @@ def notice_board():
         inlay("PostWin%d" % sx, (x, 0.31, 2.9), EY, 0.18, 1.1, "arch", fr=0.045)
         box("PostTop%d" % sx, 0.72, 0.72, 0.1, x, 0, 4.5, "gold")
     box("Lintel", 4.3, 0.85, 0.42, 0, 0, 4.6, "marble")
-    box("LintelBand", 4.36, 0.91, 0.08, 0, 0, 4.6, "gold")
+    box("LintelBand", 4.36, 0.91, 0.08, 0, 0, 4.62, "gold")
     gable_roof("Roof", 1.3, 4.4, 0.72, 0, 0, 5.02, ridge="x", over=0.3, t=0.13)
     for sx in (-1, 1):
         inlay("GableWin%d" % sx, (sx * 2.2, 0, 5.3), (sx, 0, 0), 0.14, 0.3, "arch", fr=0.04)
@@ -856,7 +856,7 @@ FACES = (EY, (0.0, -1.0, 0.0), EX, (-1.0, 0.0, 0.0))
 def lantern_a():
     box("Plinth", 1.5, 1.5, 0.3, 0, 0, 0)
     box("Step", 1.25, 1.25, 0.2, 0, 0, 0.3)
-    box("StepBand", 1.3, 1.3, 0.07, 0, 0, 0.43, "gold")
+    box("StepBand", 1.3, 1.3, 0.07, 0, 0, 0.41, "gold")
     box("Base", 1.0, 1.0, 1.05, 0, 0, 0.5)
     for k, f in enumerate(FACES):
         frame_panel("BasePanel%d_" % k, vadd((0, 0, 1.02), vmul(f, 0.5)), f, 0.6, 0.62, fr=0.05)
@@ -876,7 +876,7 @@ def lantern_a():
 def lantern_b():
     box("Plinth", 3.6, 3.6, 0.25, 0, 0, 0)
     box("Step", 3.3, 3.3, 0.2, 0, 0, 0.25)
-    box("StepBand", 3.36, 3.36, 0.08, 0, 0, 0.37, "gold")
+    box("StepBand", 3.36, 3.36, 0.08, 0, 0, 0.35, "gold")
     box("Block", 2.9, 2.9, 2.95, 0, 0, 0.45)
     for k, f in enumerate(FACES):
         frame_panel("Panel%d_" % k, vadd((0, 0, 1.9), vmul(f, 1.45)), f, 1.5, 2.0, fr=0.09)
@@ -900,7 +900,7 @@ def lamp_post(n, h_shaft, z_base=0.0):
     """Square post of lamps C / D: plinth, base block with a gold panel, shaft with outline panels, cap."""
     box(n + "Plinth", 1.25, 1.25, 0.3, 0, 0, z_base)
     box(n + "Step", 1.05, 1.05, 0.2, 0, 0, z_base + 0.3)
-    box(n + "StepBand", 1.1, 1.1, 0.07, 0, 0, z_base + 0.43, "gold")
+    box(n + "StepBand", 1.1, 1.1, 0.07, 0, 0, z_base + 0.41, "gold")
     box(n + "Base", 0.85, 0.85, 1.0, 0, 0, z_base + 0.5)
     for k, f in enumerate(FACES):
         frame_panel("%sBasePanel%d_" % (n, k), vadd((0, 0, z_base + 1.0), vmul(f, 0.425)), f, 0.46, 0.56, fr=0.045)
@@ -961,7 +961,7 @@ def lantern_d():
 def lantern_e():
     box("Plinth", 3.0, 3.0, 0.3, 0, 0, 0)
     box("Step", 2.7, 2.7, 0.25, 0, 0, 0.3)
-    box("StepBand", 2.76, 2.76, 0.08, 0, 0, 0.47, "gold")
+    box("StepBand", 2.76, 2.76, 0.08, 0, 0, 0.45, "gold")
     box("Block", 2.35, 2.35, 2.85, 0, 0, 0.55)
     for k, f in enumerate(FACES):
         inlay("Win%d" % k, vadd((0, 0, 1.95), vmul(f, 1.175)), f, 0.62, 1.05, "rect", fr=0.09)
