@@ -16,6 +16,7 @@ local Net = require(Shared:WaitForChild("Net"))
 local LocalPlayer = Players.LocalPlayer
 
 local UIKit = {}
+UIKit.NotifyFilters = {} -- fn(payload, text) -> true = that Notify line is not shown (see the Notify hookup in Start)
 
 UIKit.Gui = nil -- ScreenGui "MainGui", created in Init
 
@@ -4115,6 +4116,12 @@ function UIKit.Start()
 				if ok and type(s) == "string" and s ~= "" then text = s end
 			end
 			if type(text) ~= "string" or text == "" then return end
+			-- 게임성 검수 10/12 (A23-130: one explanation on screen at a time): a module may hold a line back while it
+			-- says the same thing (UIKit.NotifyFilters: fn(payload, text) -> true = skip; FirstSteps' first PvP card)
+			for _, skip in UIKit.NotifyFilters do
+				local okSkip, yes = pcall(skip, payload, text)
+				if okSkip and yes == true then return end
+			end
 			local duration = tonumber(payload.Duration)
 			if payload.Kind == "announce" then
 				-- A23-3 / A23-9: world banners (goose / war / kaiju / bounty) wait until the first mission is
