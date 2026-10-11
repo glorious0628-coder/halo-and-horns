@@ -8,6 +8,10 @@
 2. **`dev3-gather`**(dev3-v4-tables 위) — 채집 서버: `GatherService.luau`, `LootService.GrantItems`, Config(재료 8종·노드 7종·자리 54·Shard Bloom 카드, 스위치 `Config.Features.Gathering = false`), Net `GatherState`, Main 두 목록. 시험 test_gather(113 named, 변이 74/74). 화면은 개발 4 `dev4-gather`(GatherView) — 모양 맞춤 확인함(GatherState, GatherPrompt, ActionKey/ObjectKey, Enabled 안 건드림, FirstHint 없음).
 - API 작업 `dev3_gather`(opus)는 PC가 꺼지며 47턴 $4.11에서 멈춤(Config만 씀, 커밋 없음) → 그 Config를 가져와 나머지는 직접 씀. api 작업 상태는 'running'으로 남아 있지만 죽은 작업. 임시 worktree는 지움.
 
+## 지금 (10/12 새벽)
+- **`dev3-craft`**(dev3-gather 520e8cb7 위) 37113fa4: ③ 제작 서버 설계 `docs/design/craft_server_2026-10-12.md` — 게임성 검수 판단 대기(숫자·펫 장비 역할·Spares 의존). 개발 4 망치질 계약 그대로 받음(false = +200ms 확인 요청). 개발 2에 AddSpare/SpareRoom·KingJelly/ClatterGem 부탁.
+- 다음 할 일: CraftService.luau + Config.Craft + test_craft.py(설계 §7) 코드.
+
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.
 ④ 연금 버프 물약(Buffs 저장 있음) ⑤ 조련사 연구(Research, Pets Roll) ⑥ 방어구·반지·펫 장비(Gear, 전투력 반영 A23-133) ⑦ 장인 명성·계급(Craft.Rep) ⑧ 장인 첫 10분.
