@@ -35,6 +35,11 @@ local T = {
 		RightWrist = { "RightHand", "RightLowerArm" }, LeftShoulder = { "LeftUpperArm", "UpperTorso" },
 		LeftElbow = { "LeftLowerArm", "LeftUpperArm" }, LeftWrist = { "LeftHand", "LeftLowerArm" } },
 	Shoulders = { RightShoulder = true, LeftShoulder = true },
+	-- two hands: the joints the solve reads / writes, the R15 default LeftGripAttachment spot, the default elbow side
+	TwoJoints = { "RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow", "LeftWrist" },
+	TwoKeys = { LeftShoulder = "Shoulder", LeftElbow = "Elbow", LeftWrist = "Wrist" },
+	LeftGrip = Vector3.new(0, -0.158, 0),
+	Pole = Vector3.new(-0.7, -0.7, 0.2), -- torso space: the left elbow down and out
 }
 local S = { Chars = {}, PickAt = -math.huge, Set = {}, Started = false } -- Chars[char] = { Joints, Base, Last, W, Key }
 
@@ -133,6 +138,53 @@ local function pick()
 	S.Set = set
 end
 
+-- A23-108 two hands (검수 10/11, the Berserker's great sword; class_grips_a23_108 §2 "두 손 무기는 오른손에 붙이고 왼손은
+-- 클라 몸짓이 자루로"): after the hold, the left hand goes to its spot on the weapon's part (def.TwoHand = { Part,
+-- Along = the share of the part's length from its centre along its +Y, Pole = the elbow's side in torso space }),
+-- solved with Fx's bow arm solver (the real bone lengths of this avatar). This frame's right hand comes from the
+-- torso through the right arm's joints (their Transforms were just written), so the two hands never drift apart;
+-- the weapon's offset from the right hand is read from the welded parts (constant). Out of reach = no left pose.
+function WeaponPose.TwoHand(char, st, def, model)
+	local th, fx = def.TwoHand, C and C.Fx
+	if type(fx) ~= "table" or type(fx.SolveArm) ~= "function" or type(fx.ArmGeometry) ~= "function" then return false end
+	local torsoPart, hand, leftHand = char:FindFirstChild("UpperTorso"), char:FindFirstChild("RightHand"), char:FindFirstChild("LeftHand")
+	local part = model:FindFirstChild(type(th.Part) == "string" and th.Part or "Handle", true)
+	if not (torsoPart and hand and leftHand and part and part:IsA("BasePart")) then return false end
+	for _, joint in T.TwoJoints do
+		local m = st.Joints[joint]
+		if not (m and m.Parent) then
+			st.Joints[joint] = findJoint(char, joint)
+			st.Base[joint], st.Last[joint] = nil, nil
+		end
+	end
+	local right, left = fx.ArmGeometry(st, "Right"), fx.ArmGeometry(st, "Left")
+	if not (right and left) then return false end
+	local torso = torsoPart.CFrame
+	local handCF = torso * right.Shoulder.C0 * st.Joints.RightShoulder.Transform * right.Shoulder.C1:Inverse()
+		* right.Elbow.C0 * st.Joints.RightElbow.Transform * right.Elbow.C1:Inverse()
+		* right.Wrist.C0 * st.Joints.RightWrist.Transform * right.Wrist.C1:Inverse()
+	local spot = handCF * hand.CFrame:ToObjectSpace(part.CFrame) * CFrame.new(0, part.Size.Y * (tonumber(th.Along) or 0), 0)
+	local gripAt = leftHand:FindFirstChild("LeftGripAttachment")
+	local gripPos = (gripAt and gripAt:IsA("Attachment")) and gripAt.Position or T.LeftGrip
+	-- the left hand turned like the right one (both wrap the same grip), its grip point on the spot
+	local goal = CFrame.new(spot.Position) * handCF.Rotation * CFrame.new(-gripPos)
+	local p = typeof(th.Pole) == "Vector3" and th.Pole or T.Pole
+	local pose = fx.SolveArm(left, torso, goal, torso:VectorToWorldSpace(p))
+	if type(pose) ~= "table" or pose.Clamped then return false end
+	for joint, key in T.TwoKeys do
+		local m = st.Joints[joint]
+		if m and typeof(pose[key]) == "CFrame" then
+			local cur = m.Transform
+			local last = st.Last[joint]
+			local base = (last and same(cur, last)) and (st.Base[joint] or cur) or cur
+			local out = base:Lerp(pose[key], st.W)
+			m.Transform = out
+			st.Base[joint], st.Last[joint] = base, out
+		end
+	end
+	return true
+end
+
 local function poseChar(char, player, dt)
 	local st = S.Chars[char]
 	if not st then
@@ -177,6 +229,7 @@ local function poseChar(char, player, dt)
 			st.Base[joint], st.Last[joint] = base, out
 		end
 	end
+	if type(def.TwoHand) == "table" then WeaponPose.TwoHand(char, st, def, model) end
 end
 
 function WeaponPose.Step(dt)

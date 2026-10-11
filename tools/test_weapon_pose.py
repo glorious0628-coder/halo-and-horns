@@ -118,8 +118,8 @@ MUTATIONS = [
     ("WP", "the pose fights the attack clips", "\tif animating(char) then -- Fx's attack / hurt clip owns the joints now\n",
      "\tif false then\n"),
     ("CONFIG", "two sides share a pose", '''	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 },
-		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },''', '''	Warrior_Neutral = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 72, 0, 26 },
-		RightElbow = { 112, 0, 0 }, RightWrist = { -18, 0, 0 }, LeftShoulder = { 12, 0, -8 } } },'''),
+		LeftShoulder = { 0, 0, -14 }, LeftElbow = { 42, 0, 0 } } },''', '''	Warrior_Neutral = { Weapon = "GreatSword", Walk = 0.5, Hold = { Waist = { 5, 0, 0 }, RightShoulder = { 70, 60, -50 },
+		RightElbow = { 80, 0, 0 }, RightWrist = { 40, 0, 0 } }, TwoHand = { Part = "Handle", Along = -0.24 } },'''),
     ("MAIN", "never loaded", '"QuickSlots", "WeaponPose", "LandShadow"', '"QuickSlots", "LandShadow"'),
 ]
 

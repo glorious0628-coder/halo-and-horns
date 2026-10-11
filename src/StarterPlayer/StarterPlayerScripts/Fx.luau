@@ -4457,6 +4457,9 @@ function Fx.Animating(char)
 	return st ~= nil and Feel.Active[st] == true
 end
 
+-- A23-108 two hands (WeaponPose: the Berserker's left hand on the great sword): the bow's two-bone arm solver, shared
+Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames
+
 function Fx.Init(registry)
 	C = registry
 end
