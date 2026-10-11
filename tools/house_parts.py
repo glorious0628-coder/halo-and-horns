@@ -278,7 +278,12 @@ for k in np.nonzero(pane)[0]:
     c = Vector(cen[k])
     nl = sum(area[j] for (_, j, _) in kd_leaf.find_range(c, 0.025 * Hh)) if leafc.any() else 0.0
     na = sum(area[j] for (_, j, _) in kd_all.find_range(c, 0.025 * Hh))
-    keep[k] = nl < 0.12 * max(na, 1e-12)
+    # blue glazed roof tiles (houses 07, 11) have the glass colour too: a window is a small pane in a frame, a roof is a
+    # big field of it -> drop faces whose surroundings (8 % of the height) are mostly glass-coloured (이미지 생성 3, 10/11)
+    wide = kd_all.find_range(c, 0.08 * Hh)
+    wa = sum(area[j] for (_, j, _) in wide)
+    wg = sum(area[j] for (_, j, _) in wide if glassc[j])
+    keep[k] = nl < 0.12 * max(na, 1e-12) and wg < 0.55 * max(wa, 1e-12)
 ngroups = int(keep.sum())
 part[keep] = "WinPane"
 print("[parts] window pane groups", ngroups, flush=True)
