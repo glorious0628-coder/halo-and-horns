@@ -170,3 +170,7 @@ No domes: every roof and tower top is a steep pointed spire, cone or pyramid. Fa
 ```
 No domes: every roof and tower top is a steep pointed spire or crystal point. Fantasy concept art of a crystal rose cathedral-castle, front-left three-quarter view, on one thin white slab, plain light gray background. White marble Gothic hall with a giant glowing sky-blue crystal flower window over a huge deep pointed-arch entrance at ground level, gold doors open, flat paved forecourt. Towers of uneven heights end in tall clear crystal spires glowing softly from inside; one tower is much taller. Terraced hanging gardens with flowers on the right side, two thin waterfalls falling into round pools beside the forecourt. Winged knight statues guard the steps. Small crystals float near the tallest spire with a gold halo ring. Glossy chunky toy-like 3D game art, kid-friendly, bold simple shapes, soft light, no flags, no crosses, no light rays.
 ```
+
+## 2차 결과 (사용자 2026-10-11)
+- 사용자: "3번이 좋은데 건물 느낌나게 다시 만들으라고 행" → **F3 고름**(시트 `art/review/s2/halo_castle_fantasy_concepts.jpg`).
+- 다시 그리기 F3b(이미지 생성 2, Medium 4): 날개를 정면의 평평한 판이 아니라 건물의 일부(날개 모양 버팀벽·날개 지붕·탑 옆 날개 벽, 두꺼운 돌 + 금테)로 만든다. 성당 덩어리가 날개보다 커 보이게 한다. 가운데 첨탑 + 후광, 장미창, 땅 높이 큰 금문 + 평평한 마당을 넣는다. 살짝 비대칭으로 한다. 돔·빛살·십자가는 0이다(꼭대기는 별·후광).
