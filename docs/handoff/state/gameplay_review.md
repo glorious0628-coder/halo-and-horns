@@ -10,7 +10,8 @@ onehand·onehand-2, golden-egg(3d95925a·eebeebd3·egg-mine cef8f3f6), v4-tables
 1. **fix/spawnclear-rim 0a1e3e75 = 병합 가능**(town_quests 정규식 한 커밋, 1035·STATIC 8/8·변이 244/244) — 최종 검수에 알림(전달됨).
 2. **fix/lesstext-server 6adf2c82(개발 2 서버 글 판정표, src 25개) sweep 마저:** 시험 병합 ec3588f9(main 37a5dc62 위, scratchpad ls_merge.txt·ls_list.txt 163개). 지금까지 134개 통과, 실패 2개 = test_costume_physics·test_skin_binding_studio(이름상 Studio/옛 의상 파일 필요 — main에서도 같은지 확인할 것). 남은 약 27개(셋째 폴더) 돌리고 → 반박 리뷰(소리만 내는 빈 글 Notify는 Audio.NotifySound가 Sound로 재생, UIKit은 빈 글 무시 — 확인함) → 병합 가능 보고. main이 그 사이 바뀌면 merge-tree 다시.
 3. 못 보낸 메시지(10개 제한): 개발 2 — OutlawStart + OutlawAutoOff 동시 2줄 → 한 줄("Outlaw! Auto is off." 같은), 판정표 다른 결정은 그대로 받음. 개발 2·3·4 '지금 마무리'는 최종 검수가 대신 보냄.
-4. 개발 1(전달됨): 지팡이 끝 계단 −0.12·경사 +0.51(경사 Ground.Cast 법선), HUD Hero 칸 'Coming soon!' → 잠금 표시·글 없음(Hero 창 BB8 전까지), 첫 PvP 카드 + 'PvP zone!' 겹침 → 카드 뜰 땐 토스트 건너뜀.
+4. **fix/pvp-toast 2dec3bdf 시험**(개발 1, 'PvP zone!' 겹침: UIKit.NotifyFilters + FirstSteps PVP.SkipToast; 개발 1이 first_steps 57·32/32 등 통과, test_audio는 아직) → compile + first_steps·audio·notify_sound·toast_queue 돌리고 병합 가능 보고.
+5. 개발 1(전달됨): 지팡이 끝 계단 −0.12·경사 +0.51(경사 Ground.Cast 법선), HUD Hero 칸 'Coming soon!' → 잠금 표시·글 없음(Hero 창 BB8 전까지), 첫 PvP 카드 + 'PvP zone!' 겹침 → 카드 뜰 땐 토스트 건너뜀.
 
 ## 결정
 - 한 번에 팔기 = 몬스터 재료만(Source 채집 "Gather"·보스 "Boss" 제외, SellItem은 Source 상관없이). 화면 합계도 같은 규칙.
