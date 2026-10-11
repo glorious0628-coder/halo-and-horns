@@ -142,3 +142,31 @@ No domes: all roofs and tower tops are steep pointed spires, cones or pyramids. 
 - D | 둥근 돔·구근 모양 금지 — 네 안 중 둥근 머리가 나올 위험이 가장 큼. 사그라다 파밀리아의 탑 끝은 둥근 구슬 장식이고 가운데 탑들도 머리가 둥긂. 'spindle'(가운데가 불룩한 모양), 'egg-shaped' 아치, 'jewel-like' 끝, 별의 'short rounded points'가 모두 둥근 머리나 구근 모양을 부름. 제목의 '알 모양'도 같음. → 탑은 'stacked straight cylinder stages, each ending in a sharp gold crystal point'로, 아치는 'tall pointed-arch'로, 별은 'flat five-point star with short sharp points'로 바꿈. 제목은 '네 바늘탑 뾰족 아치 정문'으로 바꿈. 영감 설명에 사그라다의 둥근 탑 머리와 녹아내린 듯한
 - D | 땅 높이의 진짜 큰 정문 — 아치 X 34-46이 안쪽 두 탑 사이 벽 전체 폭이라 링 3개가 들어갈 자리가 없음. 장미창(지름 6, 중심 Y 25)과 방패 문장이 아치 링 꼭대기와 겹침. 옆 니치 4칸 폭에 4칸 오목 자리를 내면 테두리가 0칸임. → 왼쪽 날개를 X 0-14로 줄이고 가운데 칸을 16칸(X 30-46)으로 넓힘. 문은 X 33-43(10칸) × Y 2-20, 바깥 링은 X 30-46. 장미창 중심은 Y 28, 방패는 박공 꼭대기로 옮김. 옆 니치 오목 자리는 3×8로 함.
 - D | 파트 골격 + 타일 방식 / 성 느낌 — 가우디식 조각 표면(백합·비둘기 부조가 사방에 있음)은 타일 + 파트 방식과 맞지 않음. 왼쪽 날개를 빼면 교회로 읽힘. → 부조는 아치 위를 두르는 띠 한 부품으로만 함. 성가퀴는 왼쪽 기사 날개와 가운데 큰 탑 통로에 둠.
+
+## 2차: 성당 + 판타지 (사용자 2026-10-11 "빛 성 시안이 판타지 스럽지 않아 성당 + 판타지스러움 이게 좋으")
+
+1차 4장(art/review/s2/halo_castle_cathedral_concepts.jpg)은 성당 뼈대는 좋지만 사진처럼 현실적이었다. 2차는 성당 뼈대에 판타지를 더한다. 판타지 요소: 떠 있는 첨탑·후광 고리, 날개 모양 버팀벽·정면, 수정 첨탑, 빛나는 장미창·스테인드글라스, 떠다니는 수정·둥근 빛 구슬·작은 별, 빛나는 다리, 공중 정원, 성에서 떨어지는 폭포. 규칙은 그대로다: 돔 없음, 빛살 없음, 십자가 없음, 깃발 없음, 비대칭, 땅 높이 큰 문과 마당, 장난감 그림체.
+
+### F1
+
+```
+No domes: every roof and tower top is a steep pointed spire, cone or pyramid. Fantasy concept art of a celestial angel knights' cathedral-castle, front-left three-quarter view, on one thin white slab, plain light gray background. Two unequal front towers: the left very tall and slender with a lacy gold-banded spire, the right lower with a sky-blue spire. A steep gable with a glowing six-petal flower window over a huge deep pointed-arch entrance at ground level, gold doors open, flat paved forecourt. Fantasy: giant white stone angel wings folded along the hall as buttresses, a big gold halo ring floating around the tall spire, small floating crystal shards and soft glowing orbs, stained glass glowing warm, a slim waterfall from a high balcony into a basin, winged knight statues by the door. Glossy chunky toy-like 3D game art, kid-friendly, bold simple shapes, soft light, no flags, no crosses, no light rays.
+```
+
+### F2
+
+```
+No domes: every roof and tower top is a steep pointed spire or cone. Fantasy concept art of a floating-spire knights' citadel with cathedral windows, front-left three-quarter view, on one thin white slab, plain light gray background. Round white towers of different heights; above each, its sky-blue spire hovers in the air with a small gap, ringed by a thin gold halo. A gatehouse of two unequal towers around a huge deep pointed-arch entrance at ground level, gold gate raised, flat paved forecourt. Behind, a tall chapel hall with a glowing flower rose window and a bell tower whose crystal spire floats above it. A glowing translucent sky-blue bridge links two towers. Tiny floating stones with flowers drift near the walls. Glossy chunky toy-like 3D game art, kid-friendly, bold simple shapes, soft light, no flags, no crosses, no light rays.
+```
+
+### F3
+
+```
+No domes: every roof and tower top is a steep pointed spire, cone or pyramid. Fantasy concept art of an angel-wing cathedral-castle, front view slightly from the left, on one thin white slab, plain light gray background. The whole front is shaped like two huge white feathered wings rising up and framing a tall central spire, the left wing taller than the right. Between the wings a huge deep pointed-arch entrance at ground level, gold doors open, flat paved forecourt, a glowing flower rose window above. Feather-shaped pointed pinnacles line the wing tops, gold trim on every feather edge. A large gold halo ring floats behind the central spire. Small glowing stars and soft orbs float around. Side halls with sky-blue pointed roofs, low on one side, higher on the other. Glossy chunky toy-like 3D game art, kid-friendly, bold simple shapes, soft light, no flags, no crosses, no light rays.
+```
+
+### F4
+
+```
+No domes: every roof and tower top is a steep pointed spire or crystal point. Fantasy concept art of a crystal rose cathedral-castle, front-left three-quarter view, on one thin white slab, plain light gray background. White marble Gothic hall with a giant glowing sky-blue crystal flower window over a huge deep pointed-arch entrance at ground level, gold doors open, flat paved forecourt. Towers of uneven heights end in tall clear crystal spires glowing softly from inside; one tower is much taller. Terraced hanging gardens with flowers on the right side, two thin waterfalls falling into round pools beside the forecourt. Winged knight statues guard the steps. Small crystals float near the tallest spire with a gold halo ring. Glossy chunky toy-like 3D game art, kid-friendly, bold simple shapes, soft light, no flags, no crosses, no light rays.
+```
