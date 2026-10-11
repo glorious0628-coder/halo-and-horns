@@ -1,7 +1,10 @@
 # 이미지 생성 4 — 상태 (2026-10-12 00:30)
 
-## 지금 상태 한 줄
-**10/12 01:10: 기본 B 적용(58종 모든 파트 그림자). ★ 선 비교(B | 얇게 0.035 | 굵게 0.06) 최종 검수 → 사용자 고름 기다림; 고르면 그 굵기 4개(build/prop_kit_hull/<Kit>_D2_<035|060>.obj)만 이미지 개발에 넘김. 디자인 검수 '다시' 묶음 끝(Woodpile·Rack 통과, 가마솥 = Slate 110,100,92 마지막 사진 보냄). 다음 = Tripo 모델 Blender 손보기.**
+## 지금 상태 한 줄 (10/12 01:45, PC 꺼짐 전 정리)
+**파트 소품 '다시' 묶음 끝(디자인 검수 통과, 가마솥 Slate). 기본 B(모든 파트 그림자) 적용. ★ 선 비교는 사용자 고름 기다림. Tripo 손보기 1차: `tools/tripo_touchup.py` + `tools/tripo_touchup_halo.sh`(39개 목록) → `art/models/tripo/touchup/<키>/`(GLB + C/N/R/M 1024 + 앞·왼·뒤·오른 미리보기, 디스크만). 38개 끝, 내 눈 확인은 꽃 화분 5개만(데이지 --tol 0.25로 다시). 아직 못 본 것 33개 → `py tools/tripo_touchup_sheet.py <out.jpg> <키…>`로 시트 보고 디자인 검수에.**
+- 실패 1: HaloVar4_Lantern_B — 머리 자르는 높이에서 전부 잘림(cut 12956, 남은 면 0 → smart_project 실패). Lantern_B 키트 Head 파트 최저 높이 vs Tripo 등불 높이 비교해서 고칠 것.
+- 다음: ① 33개 시트 확인(남은 Tripo 화분 찌꺼기·크기·떠 있는 것) ② 디자인 검수 → 최종 검수 올리기 승인 → 이미지 개발 올림 → Studio 재질 낮·밤 사진 ③ records.json에 손보기 기록(touchup 이벤트) ④ Rose 화분 몸통이 2D보다 좁음(위가 무거움).
+- WorldKit 백업: build/wk_backup/20261012_011018(HaloPropKits, 가마솥 Slate까지). 01:45 백업은 Studio 응답 없어 실패.
 
 ## 배운 것 (10/12)
 - 실제 땅 C2c 빛에서 어두운 회색(Metal·SmoothPlastic)은 하늘빛을 받아 남색으로 보임 → 숯 회색은 거친 Slate + 따뜻한 회색(110,100,92).
