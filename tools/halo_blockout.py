@@ -35,8 +35,10 @@ SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them 
     "garden_homes": ((-96, -612), (-170, -672)),
     "cliff_homes": ((96, -540), (166, -630)),
 }
-DIST_MAT = {"training": "dirt", "arrival": "grass"}
+DIST_MAT = {"training": "sand", "arrival": "grass"}  # 2차 10/11 검수: training was dirt (GE_Ground reads near black in C2c)
 PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
+PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
+# height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
 CLIFF_Z = -760  # rock lip on the south shore
 SEA_R = 4  # sea ring width in cells (16 studs) round the coast (2차 10/11: was 5; the rim beyond it is RIM_W cells)
@@ -341,6 +343,8 @@ def main():
                 x, z = cxz(r, c)
                 if math.hypot(x - px, z - pz) <= pr and MAT[r][c] not in ("sea", "water", "stair"):
                     MAT[r][c] = "road1"
+                    if H[r][c] is not None:
+                        H[r][c] -= PAVED_SINK
     # shore: distance to the sea in cells (4-neighbour BFS)
     DS = [[None] * cols for _ in range(rows)]
     q = deque()

@@ -75,6 +75,7 @@ def lua_data():
         " cap=%d," % PART_CAP,
         " fountain={x=%s,z=%s,r=%s}," % (fm(FOUNTAIN["at"][0] + OX), fm(FOUNTAIN["at"][1] + OZ), fm(PLAZA_R)),
         " spawn={x=%s,z=%s,r=%s}," % (fm(SPAWN_AT[0] + OX), fm(SPAWN_AT[1] + OZ), fm(SPAWN_R)),
+        " plaza_sink=1,",  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
         " passage={x0=%s,x1=%s,z0=%s,z1=%s}," % (fm(PASSAGE[0] + OX), fm(PASSAGE[1] + OX), fm(PASSAGE[2] + OZ), fm(PASSAGE[3] + OZ)),
         " yards={%s}," % yards,
         " roads={",
@@ -141,7 +142,13 @@ rp.FilterDescendantsInstances = { workspace.Terrain }
 rp.IgnoreWater = true
 local function G(x, z, quiet)
 	local hit = workspace:Raycast(Vector3.new(x, 200, z), Vector3.new(0, -400, 0), rp)
-	if hit then return hit.Position.Y end
+	if hit then
+		-- inside a plaza disc the Terrain is plaza_sink lower (halo_blockout PAVED_SINK): measure as if it were not
+		for _, c in { D.fountain, D.spawn } do
+			if (x - c.x) ^ 2 + (z - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
+		end
+		return hit.Position.Y
+	end
 	if not quiet then N.nohit += 1 end
 	return nil
 end
