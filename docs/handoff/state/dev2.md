@@ -44,7 +44,9 @@
 2. **저장 v4 표**(개발 3과 합의, `origin/dev3-v4-tables:docs/design/save_v4_tables_2026-10-11.md`).
 3. `api/dev2-l10n-a` 필수 시험·보완 → 병합 요청. 제작 설계 `api/dev2-crafting-design` ea0ce9bc 정리(A23-127).
 4. 한국어 서버 B·C(알림 → NotifyKey 등).
-- 참고: Smokey 새 이름 = 'Rose'(A23-138) — 서버 글에 Smokey가 나오면 같이 바꿀 것.
+5. **A23-138 영어 밈 묶음 서버 쪽** = 새 가지 fix/meme-en-server(급한 병합들 뒤): `docs/design/memes_en_2026-10-11.md` 서버 글,
+   칭호 'Legendary Villain' → 'Final Boss'(Config.Story.SurviveTitle), 박쥐 기술 'Flappy Zigzag' → 'Bat Zigzag', NPC 'Smokey' → 'Rose'
+   (대사·Speakers·'Bright & Smokey' 등; 초상화 키 PTR_TownSmokey는 그림 쪽과 맞춰서). 개발 1은 fix/meme-en-client.
 
 ## worktree·도구
 - 가벼운 worktree: `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
