@@ -1,7 +1,15 @@
-# 이미지 생성 4 — 상태 (2026-10-11 밤 3차, PC 재부팅 뒤)
+# 이미지 생성 4 — 상태 (2026-10-11 밤 4차)
 
 ## 지금 상태 한 줄
-**(가) 31종 전부 + NEW_Cauldron 파트로 끝, (가+나) 몸통 26종(<키>__Body) 끝. WorldKit HaloV2.Props.Real 103개(저장 안 함). 검수 기다림: ① Studio 사진 화면 "전달함, 시작" ② Tripo 묶음 1 승인.**
+**Tripo 묶음 1 26개 끝(1,430점, 잔액 16,535, records `<키>_web_hd_mv4`, 파일 art/models/tripo/web/<키>_HD_src.glb). WorldKit 소품 58종 다시 넣음(Real 103). 다음 = 디자인 검수 비교 시험 1장(A·B·C·D1·D2) + Blender 손보기. 사진 다시 찍기 3분 최종 검수 승인 기다림.**
+
+## 디자인 검수 비교 시험 (10/11 밤, 사용자 "그림자가 없어서 이상한 건가, 뭔가 선이 없어 보여")
+- 소품 4: HaloReasonHQ_BenchA · HaloVar4_Lantern_A(머리 임시 파트) · NEW_Beehive · 화분 하나(2D와 가장 닮은 것). 대리석 HH_HaloMarbleSmooth_Cream + 금 HH_HaloGoldTrim.
+- 칸: 2D | A 지금 | B 빛 마을 실제 땅 위 + 모든 파트 CastShadow + C2c 빛(+한 가지 더: Diffuse 0.3 또는 ShadowSoftness 0.1) | C Blender 색 한 장 굽기(대리석 바탕 + AO 높이 4~6 %·최저 0.78·회갈색 + 곡률 -10/+5 %, 선형 곱) → MeshPart + SurfaceAppearance | D1 Highlight 바깥선(진한 갈색, Fill 1, Occluded) | D2 뒤집힌 껍데기 BenchA.
+- 줄: C2c 낮·밤(등불 켬), 거리 5·15칸, 같은 카메라. 아래에 파트·삼각형·텍스처·Highlight 수, 폰 성능(추측이면 추측).
+- 순서: A·B·D1 먼저(올리기 없음), C·D2 굽기는 지금, 올리기(약 9개)는 최종 검수 승인 뒤 이미지 개발.
+- 같이 고칠 것: studio_c1234/HaloVar4_Lantern_A_q34.png 오른쪽 아래 흰 둥근 덩어리 + 초록 점 = 애벌레 얼굴 → NEW_SteppingStones 이끼 공(2개씩) → 공 빼고 납작한 이끼 조각으로.
+- 결과 시트 1장 + 추천 → 디자인 검수.
 
 ## 10/11 밤 3차 (재부팅 뒤)
 - 대리석 기본 = HH_HaloMarbleSmooth_Cream(이미지 개발 MV, 8 studs) — prop_kit.py `--marble smooth`(1700569).
