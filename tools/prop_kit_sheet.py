@@ -61,6 +61,7 @@ def main():
     ap.add_argument("--renders", default=os.path.join(ROOT, "build", "prop_kit", "preview"))
     ap.add_argument("--cell", type=int, default=260)
     ap.add_argument("--label", default="Blender")
+    ap.add_argument("--views", default="front,left,back,right", help="Studio photos: front,q34,back,night")
     a = ap.parse_args()
     C = a.cell
     font = ImageFont.load_default()
@@ -70,12 +71,12 @@ def main():
         cells = [fit(Image.open(p), C) if p else Image.new("RGB", (C, C), (40, 40, 40)) for p in r]
         while len(cells) < 4:
             cells.append(Image.new("RGB", (C, C), (40, 40, 40)))
-        for v in ("front", "left", "back", "right"):
+        for v in a.views.split(","):
             p = os.path.join(a.renders, "%s_%s.png" % (k, v))
-            cells.append(fit(Image.open(p), C) if os.path.exists(p) else Image.new("RGB", (C, C), (90, 30, 30)))
+            cells.append(fit(Image.open(p), C) if os.path.exists(p) else Image.new("RGB", (C, C), (40, 40, 40)))
         row = Image.new("RGB", (C * 8 + 8, C + 18), (30, 30, 32))
         d = ImageDraw.Draw(row)
-        d.text((4, 2), "%s   2D (front/left/back/right) | %s (front/left/back/right)" % (k, a.label), fill=(255, 255, 255), font=font)
+        d.text((4, 2), "%s   2D (front/left/back/right) | %s (%s)" % (k, a.label, a.views.replace(",", "/")), fill=(255, 255, 255), font=font)
         for i, c in enumerate(cells):
             row.paste(c, (i * C + (8 if i >= 4 else 0), 18))
         rows.append(row)

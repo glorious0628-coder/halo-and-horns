@@ -37,12 +37,12 @@ for _, n in names do
 		local m = k:Clone()
 		local _, s = m:GetBoundingBox()
 		local w = math.max(s.X, s.Z)
-		x += w / 2 + 3
+		x += w / 2 + 10
 		m:PivotTo(CFrame.new(x, Y, Z0))
 		m.Parent = root
 		local cf, sz = m:GetBoundingBox()
 		table.insert(out, string.format('"%%s":[%%.2f,%%.2f,%%.2f,%%.2f,%%.2f,%%.2f]', n, cf.X, cf.Y, cf.Z, sz.X, sz.Y, sz.Z))
-		x += w / 2 + 3
+		x += w / 2 + 10
 	end
 end
 local floor = Instance.new("Part"); floor.Name = "Floor"; floor.Anchored = true
@@ -104,7 +104,7 @@ def main():
         luau(c, sim("day"))
         for n, (cx, cy, cz, sx, sy, sz) in boxes.items():
             size = max(sx, sy, sz)
-            dist = size * 1.9 + 3
+            dist = size * 1.05 + 1.5
             look = [cx, cy, cz]
             for v in a.views.split(","):
                 az, el = VIEWS[v]
@@ -120,7 +120,7 @@ def main():
                 if "Lantern" not in n and "Lamp" not in n:
                     continue
                 size = max(sx, sy, sz)
-                dist = size * 1.9 + 3
+                dist = size * 1.05 + 1.5
                 d = (-math.sin(math.radians(35)), math.sin(math.radians(14)), -math.cos(math.radians(35)))
                 cam = [cx + d[0] * dist, cy + d[1] * dist, cz + d[2] * dist]
                 square(grab(c, n + "_night", cam, [cx, cy, cz])).save(os.path.join(a.out, "%s_night.png" % n))
