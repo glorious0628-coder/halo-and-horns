@@ -28,10 +28,19 @@ STORY = [
 ]
 
 # ---------------------------------------------------------------- land + districts (polygons in x, z)
-LAND = [(-150, -340), (-62, -335), (-30, -326), (30, -326), (92, -338), (150, -346), (186, -372), (178, -420),
-        (193, -470), (186, -520), (196, -580), (189, -640), (176, -690), (120, -698), (60, -692), (0, -699),
-        (-70, -690), (-130, -697), (-181, -676), (-193, -620), (-186, -560), (-197, -500), (-188, -452),
-        (-171, -412), (-186, -372)]
+# 10/11 검수 ③ 2차 ("위에서 여전히 네모"): the island is pulled in from the box (x +-214, z -322..-714) so a 26-30 stud sea
+# rings it; the shoreline is drawn in the FINAL coordinates (after SHRINK below): 4 big capes (the entry neck the bridge
+# lands on, NE hill cape, SE lookout cape, SW garden cape), bays NW (stream mouth, W1), NE (gate tower - hill), E
+# (hill - cliff homes) and a west inlet (training - castle), a ragged cliff coast at the back (south); every edge < 40.
+LAND = [(-30, -325), (30, -325), (46, -328), (58, -336), (62, -350), (66, -364), (74, -376), (84, -378), (94, -370),
+        (98, -356), (110, -350), (128, -352), (146, -358), (162, -366), (176, -376), (186, -392), (186, -410), (178, -428),
+        (170, -444), (160, -458), (152, -470), (152, -482), (162, -490), (174, -498), (182, -514), (180, -536), (186, -556),
+        (182, -576), (178, -596), (178, -614), (180, -632), (174, -650), (166, -664), (152, -674), (134, -678), (118, -684),
+        (98, -680), (80, -688), (58, -682), (36, -688), (14, -680), (-8, -686), (-30, -678), (-50, -684), (-68, -676),
+        (-90, -680), (-110, -678), (-128, -674), (-144, -668), (-160, -656), (-174, -640), (-178, -620), (-184, -600),
+        (-180, -582), (-184, -564), (-188, -540), (-184, -516), (-180, -500), (-172, -490), (-160, -484), (-158, -472),
+        (-168, -462), (-168, -446), (-162, -430), (-156, -412), (-152, -398), (-140, -384), (-126, -372), (-110, -364),
+        (-96, -358), (-84, -350), (-76, -342), (-70, -336), (-58, -330), (-44, -327)]
 
 DISTRICTS = [
     dict(id="arrival", name="들어오는 마당", y=0, color=(236, 226, 196),
@@ -144,12 +153,12 @@ BUILDINGS = [
     ("House_Cliff2", "HouseA", "cliff_homes", 152, -522, (130, -556), "절벽 마을 아래 단(18) 2"),
     ("House_Cliff3", "HouseA", "cliff_homes", 176, -556, (200, -556), "바다를 보는 집"),
     ("House_Cliff4", "HouseB", "cliff_homes", 168, -616, (150, -580), "절벽 마을 위 단(22) 1"),
-    ("House_Cliff5", "HouseA", "cliff_homes", 128, -620, (150, -596), "절벽 마을 위 단(22) 2"),
+    ("House_Cliff5", "HouseA", "cliff_homes", 136, -640, (150, -596), "절벽 마을 위 단(22) 2"),
     ("House_Garden1", "HouseA", "garden_homes", -118, -604, (-100, -628), "정원 마을 1"),
-    ("House_Garden2", "HouseB", "garden_homes", -148, -622, (-140, -646), "정원 마을 2"),
+    ("House_Garden2", "HouseB", "garden_homes", -156, -626, (-140, -646), "정원 마을 2"),
     ("House_Garden3", "HouseA", "garden_homes", -164, -664, (-210, -680), "바다를 보는 집"),
     ("House_Garden4", "HouseB", "garden_homes", -112, -670, (-130, -642), "정원 마을 4"),
-    ("Tower_Lookout", "Tower", "lookout", 156, -676, (120, -662), "전망 탑"),
+    ("Tower_Lookout", "Tower", "lookout", 178, -654, (150, -668), "전망 탑: 북동 모서리(검수 10/11 ③ 사진 14 — 광장은 대성당 북동 모서리 너머로만 보여서 여기, 꼭대기 눈높이 75)"),
 ]
 
 # ---------------------------------------------------------------- the first 10 minutes + fixed points
@@ -199,9 +208,42 @@ SCENES = [
     ("시장 끝 꽃 화분 탁자", (118, -500), "골목을 내려다봄"),
     ("절벽 마을 발코니", (188, -600), "동쪽 바다 + W3"),
     ("대성당 뒤 바다 전망", (40, -694), "남쪽 바다"),
-    ("전망 탑 꼭대기", (156, -676), "마을 전체(사진 자리)"),
+    ("전망 탑 꼭대기", (178, -654), "마을 전체(사진 자리): 광장·대성당·바다"),
     ("훈련장 관람 계단", (-150, -470), "허수아비 마당을 봄"),
 ]
+
+
+# ---------------------------------------------------------------- shrink (10/11 검수 ③ 2차)
+# The entry core stays exactly where the code expects it (gate, spawn, Bright, Sir Gleam, pads: |x| <= 40 and z >= -440);
+# everything outside it is pulled toward the core (x 0.82, z 0.88) so the island sits inside the box with a sea ring.
+SHRINK = dict(core_x=40, core_z=-440, kx=0.86, kz=0.90)
+
+
+def shrink(x, z):
+    c, cz = SHRINK["core_x"], SHRINK["core_z"]
+    if abs(x) > c:
+        x = math.copysign(c + (abs(x) - c) * SHRINK["kx"], x)
+    if z < cz:
+        z = cz + (z - cz) * SHRINK["kz"]
+    return round(x, 1), round(z, 1)
+
+
+for _d in DISTRICTS:
+    _d["poly"] = [shrink(*p) for p in _d["poly"]]
+for _r in ROADS:
+    _r["pts"] = [shrink(*p) for p in _r["pts"]]
+WATER["stream"] = [shrink(*p) for p in WATER["stream"]]
+for _w in WATER["pools"] + WATER["falls"] + BRIDGES:
+    _w["at"] = shrink(*_w["at"])
+for _w in WATER["falls"]:
+    if _w["id"] == "W3":
+        _w["at"] = (180, -558)  # on the new east coast (the cliff-homes edge)
+BUILDINGS = [(i, k, dd, *shrink(x, z), shrink(*f), n) for (i, k, dd, x, z, f, n) in BUILDINGS]
+for _f in FIRST10:
+    _f["at"] = shrink(*_f["at"])
+ROUTE = [shrink(*p) for p in ROUTE]
+FIXED_MOVE = [(w, now, (shrink(new[0], new[2])[0], new[1], shrink(new[0], new[2])[1]) if new else None, cfg) for (w, now, new, cfg) in FIXED_MOVE]
+SCENES = [(n, shrink(*at), v) for (n, at, v) in SCENES]
 
 
 # ---------------------------------------------------------------- geometry

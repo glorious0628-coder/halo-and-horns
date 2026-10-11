@@ -13,7 +13,7 @@ local D = game:GetService("HttpService"):JSONDecode([[__DATA__]])
 local SS = game:GetService("ServerStorage")
 local T = workspace.Terrain
 local OFF = Vector3.new(D.offset[1], 0, D.offset[2])
-local BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -24, y1 = 96 }
+local BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -48, y1 = 96 }
 local MAT = {
 	g = Enum.Material.Grass, d = Enum.Material.Ground, c = Enum.Material.Concrete, b = Enum.Material.Cobblestone,
 	p = Enum.Material.Pavement, t = Enum.Material.Slate, w = Enum.Material.Mud, r = Enum.Material.Rock, n = Enum.Material.Sand,
@@ -24,16 +24,24 @@ local COL = {
 	Cathedral = Color3.fromRGB(222, 218, 232), Armory = Color3.fromRGB(176, 166, 150),
 }
 local WATER_TOP = -1.2
+-- 10/11: a wide sea round the box was tried and dropped (검수: the island floats like the other zones); apply still clears
+-- what that try left (300 studs round the box, y -34..2)
+local WIDE = 300
+local function clearWideSea()
+	local cx, cz = (BOX.x0 + BOX.x1) / 2, (BOX.z0 + BOX.z1) / 2
+	T:FillBlock(CFrame.new(Vector3.new(cx, -16, cz) + OFF), Vector3.new(BOX.x1 - BOX.x0 + WIDE * 2, 36, BOX.z0 - BOX.z1 + WIDE * 2),
+		Enum.Material.Air)
+end
 
-local function region()
-	local a = Vector3.new(BOX.x0, BOX.y0, BOX.z1) + OFF
+local function region(y0)
+	local a = Vector3.new(BOX.x0, y0 or BOX.y0, BOX.z1) + OFF
 	local b = Vector3.new(BOX.x1, BOX.y1, BOX.z0) + OFF
 	-- Region3 needs a multiple of 4 and a grid alignment
 	return Region3.new(a, b):ExpandToGrid(4)
 end
 
-local function cells16()
-	local reg = region()
+local function cells16(y0)
+	local reg = region(y0)
 	local lo = reg.CFrame.Position - reg.Size / 2
 	local hi = reg.CFrame.Position + reg.Size / 2
 	local a = Vector3int16.new(math.floor(lo.X / 4), math.floor(lo.Y / 4), math.floor(lo.Z / 4))
@@ -53,11 +61,19 @@ end
 if MODE == "remove" then
 	if root then root:Destroy() end
 	if hold then
+		clearWideSea()
 		local reg = region()
 		T:FillBlock(reg.CFrame, reg.Size, Enum.Material.Air)
 		local tr = hold:FindFirstChild("TerrainHalo")
 		if tr then
-			local _, corner = cells16()
+			-- the copy's own corner (a hold made before the deep sea of 10/11 was copied with y0 = -24)
+			local corner = hold:GetAttribute("Corner")
+			if typeof(corner) == "Vector3" then
+				corner = Vector3int16.new(corner.X, corner.Y, corner.Z)
+			else
+				local _, c0 = cells16(-24)
+				corner = c0
+			end
 			T:PasteRegion(tr, corner, true)
 		end
 		local decor = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Decor")
@@ -88,7 +104,8 @@ if not hold then
 	hold.Name = "HaloV1Hold"
 	hold:SetAttribute("Why", "A23-121: 옛 빛 마을(지형 복사본 + 장식). halo_blockout remove로 되돌림")
 	hold.Parent = SS
-	local r16 = cells16()
+	local r16, c16 = cells16()
+	hold:SetAttribute("Corner", Vector3.new(c16.X, c16.Y, c16.Z))
 	local ok, tr = pcall(function() return T:CopyRegion(r16) end)
 	if ok and tr then tr.Name = "TerrainHalo" tr.Parent = hold end
 	local decor = workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("Decor")
@@ -138,16 +155,16 @@ root.Parent = workspace
 -- under their height with water up to height + 1.2; the sea is sand at -20 with water up to WATER_TOP.
 local reg = region()
 T:FillBlock(reg.CFrame, reg.Size, Enum.Material.Air)
-local seaY0 = -20
+clearWideSea()
+local seaY0 = -24 -- the deep sea floor (dark basalt)
+-- sea tiers from halo_blockout.py: 0 deep, 1 sand shelf off the north beach, 2 cliff foot, 3 the ring's rock rim (dry, just
+-- above the water), 4 nothing (outside the ring the islands float: no water, no base)
+local SEA_FLOOR = { [0] = { -24, Enum.Material.Basalt }, [1] = { -6, Enum.Material.Sand }, [2] = { -14, Enum.Material.Basalt },
+	[3] = { -0.4, Enum.Material.Rock } }
 local A = D.alph
 local idx = {}
 for i = 1, #A do idx[string.sub(A, i, i)] = i - 1 end
--- the sea floor + sea water under the whole box (the grid below rewrites its own columns)
-T:FillBlock(CFrame.new(Vector3.new((BOX.x0 + BOX.x1) / 2, seaY0 - 2, (BOX.z0 + BOX.z1) / 2) + OFF),
-	Vector3.new(BOX.x1 - BOX.x0, 4, BOX.z0 - BOX.z1), Enum.Material.Sand)
-T:FillBlock(CFrame.new(Vector3.new((BOX.x0 + BOX.x1) / 2, (seaY0 + WATER_TOP) / 2, (BOX.z0 + BOX.z1) / 2) + OFF),
-	Vector3.new(BOX.x1 - BOX.x0, WATER_TOP - seaY0, BOX.z0 - BOX.z1), Enum.Material.Water)
-local VY0, VY1 = -24, 96
+local VY0, VY1 = -48, 96
 local NY = (VY1 - VY0) / 4
 local NX, NZ = D.cols, D.rows
 local zMin = D.z0 - NZ * D.cell
@@ -169,7 +186,13 @@ for ix = 1, NX do
 		local m = string.sub(D.m[r], ix, ix)
 		local land, top, wtop
 		if m == "s" then
-			land, top, wtop = seaY0 - SURF, Sand, WATER_TOP
+			local k = idx[string.sub(D.h[r], ix, ix)]
+			local tier = SEA_FLOOR[k]
+			if not tier then
+				land, top, wtop = VY0 - 8, Rock, nil -- nothing
+			else
+				land, top, wtop = tier[1] - SURF, tier[2], (k ~= 3) and WATER_TOP or nil
+			end
 		else
 			local y = idx[string.sub(D.h[r], ix, ix)] - D.hoff
 			cells += 1

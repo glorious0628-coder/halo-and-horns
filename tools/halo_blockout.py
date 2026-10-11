@@ -34,6 +34,10 @@ SLOPES = {  # y -> y_to along this line
     "cliff_homes": ((96, -540), (166, -630)),
 }
 DIST_MAT = {"training": "dirt", "arrival": "grass"}
+PAVED_R = dict(fountain=30, spawn=14)  # paved circle radii: round the plan's fountain pool and the spawn (0, -420)
+BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
+CLIFF_Z = -640  # rock lip on the south shore
+SEA_R = 5  # sea ring width in cells (20 studs) round the coast
 
 
 def inside(pt, poly):
@@ -113,6 +117,7 @@ def main():
         return 0
 
     # building pads: flatten under each footprint (+1 cell) to its ground_y
+    PAD = set()
     for b in plan["buildings"]:
         fp = [tuple(p) for p in b["footprint"]]
         xs = [p[0] for p in fp]
@@ -124,6 +129,7 @@ def main():
                     if inside((x, z), fp) or min(math.hypot(x - px, z - pz) for px, pz in fp) < 3:
                         if MAT[r][c] != "sea":
                             H[r][c] = b["ground_y"]
+                            PAD.add((r, c))
     base = [row[:] for row in H]
 
     # roads: own height profile, painted, ramps; stairs where steeper than 24 deg
@@ -193,13 +199,92 @@ def main():
                     H[r][c] = pool["y"] - 1.6
                     MAT[r][c] = "water"
 
+    # 10/11 검수 (③ 사진 05-06 "거의 잔디"): paved circles (white marble + gold lines = road1) round the fountain and the
+    # spawn so the square reads as a square at once; water and stairs inside keep their own look
+    fpool = next(p for p in plan["water"]["pools"] if p["id"] == "fountain")
+    PAVED = [(fpool["at"][0], fpool["at"][1], PAVED_R["fountain"]), (0, -420, PAVED_R["spawn"])]
+    for (px, pz, pr) in PAVED:
+        for r in range(rows):
+            for c in range(cols):
+                x, z = cxz(r, c)
+                if math.hypot(x - px, z - pz) <= pr and MAT[r][c] not in ("sea", "water", "stair"):
+                    MAT[r][c] = "road1"
+    # shore: distance to the sea in cells (4-neighbour BFS)
+    DS = [[None] * cols for _ in range(rows)]
+    q = deque()
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] == "sea":
+                DS[r][c] = 0
+                q.append((r, c))
+    while q:
+        r, c = q.popleft()
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            rr, cc = r + dr, c + dc
+            if 0 <= rr < rows and 0 <= cc < cols and DS[rr][cc] is None:
+                DS[rr][cc] = DS[r][c] + 1
+                q.append((rr, cc))
+    beach = cliff = 0
+    for r in range(rows):
+        for c in range(cols):
+            x, z = cxz(r, c)
+            d = DS[r][c]
+            if MAT[r][c] in ("sea", "water", "stair") or (r, c) in PAD or d is None:
+                continue
+            # sandy beach on the bridge side (north shore, low land, not the gate): slopes into the sea
+            if z > BEACH_Z and abs(x) > 30 and H[r][c] <= 4 and d <= BEACH_W and not MAT[r][c].startswith("road"):
+                H[r][c] = min(H[r][c], -2.0 + (d - 1) * 1.0)  # 1 stud per cell: -2 (shallow), -1, 0, 1
+                MAT[r][c] = "sand"
+                beach += 1
+            # the back (south) is a cliff coast: a rock lip on the top edge
+            elif z < CLIFF_Z and d == 1 and H[r][c] >= 8:
+                MAT[r][c] = "rock"
+                cliff += 1
+    print(f"[blockout] paved circles {len(PAVED)}, beach cells {beach}, cliff lip cells {cliff}")
+    # sea depth tiers (10/11: the shallow -20 sand bed showed through the clear water as a square slab from above, so the
+    # sea is deep and dark; only a sand shelf off the north beach and a ledge at the cliff feet)
+    DL = [[None] * cols for _ in range(rows)]
+    q = deque()
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] != "sea":
+                DL[r][c] = 0
+                q.append((r, c))
+    while q:
+        r, c = q.popleft()
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            rr, cc = r + dr, c + dc
+            if 0 <= rr < rows and 0 <= cc < cols and DL[rr][cc] is None:
+                DL[rr][cc] = DL[r][c] + 1
+                q.append((rr, cc))
+    # 10/11 검수 ③ 2차 (passed, "떠 있는 섬 그대로"): the sea is a ring SEA_R cells wide round the coast, a rock rim on its
+    # outer edge holds the water, beyond it nothing (the islands float in the sky like the other zones); the base under the
+    # island + ring follows the outline (stage 5 shapes it into a pointed floating-rock underside). The ring narrows to
+    # nothing toward the box's north edge where the bridge lands on the entry neck.
+    SEA_TIER = [[4] * cols for _ in range(rows)]
+    for r in range(rows):
+        for c in range(cols):
+            if MAT[r][c] == "sea" and DL[r][c] is not None:
+                x, z = cxz(r, c)
+                ring = min(SEA_R, int((-326 - z) // CELL))
+                if DL[r][c] > ring:
+                    SEA_TIER[r][c] = 4
+                elif DL[r][c] == ring:
+                    SEA_TIER[r][c] = 3
+                elif z > BEACH_Z and abs(x) > 24 and DL[r][c] <= 3:
+                    SEA_TIER[r][c] = 1
+                elif DL[r][c] <= 1:
+                    SEA_TIER[r][c] = 2
+                else:
+                    SEA_TIER[r][c] = 0
+
     # encode
     hrows, mrows = [], []
     for r in range(rows):
         hs, ms = [], []
         for c in range(cols):
             if MAT[r][c] == "sea":
-                hs.append(ALPH[0])
+                hs.append(ALPH[SEA_TIER[r][c]])  # 0 deep sea, 1 sand shelf off the north beach, 2 cliff foot
                 ms.append(M["sea"])
             else:
                 v = int(round(H[r][c])) + HOFF

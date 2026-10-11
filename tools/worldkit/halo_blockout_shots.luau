@@ -49,8 +49,11 @@ g.Material = Enum.Material.Neon
 absShot("00_bridge_approach", { 0, 6, -280 }, { 0, 10, -400 })
 absShot("01_gate_in_eye", { 0, 5, -316 }, { 6, 6, -460 })
 shot("02_spawn_eye", 0, -416, 4.5, 20, -540, 6)
-absShot("03_opening_start", { 18, 30, -315 }, { 0, 18, -406 })
-absShot("04_opening_end", { 6, 26, -340 }, { 0, 18, -406 })
+-- opening camera v2 (검수 10/11): SPOT.Halo (0,16,-410) + (0,-4,140) -> (0,-2,58): from the bridge straight through the
+-- middle of the 16 x 30 passage (y 12 -> 14), looking at SPOT.Halo
+absShot("03_opening_start", { 0, 12, -270 }, { 0, 16, -410 })
+absShot("03b_opening_mid", { 0, 13, -320 }, { 0, 16, -410 })
+absShot("04_opening_end", { 0, 14, -352 }, { 0, 16, -410 })
 shot("05_plaza_eye", 0, -496, 4.5, 40, -560, 4)
 shot("06_plaza_high", -30, -470, 40, 20, -550, 0)
 shot("07_market_eye", 20, -432, 4.5, 90, -480, 4)
@@ -60,7 +63,19 @@ shot("10_castle", -60, -508, 5, -140, -532, 12)
 shot("11_garden", -36, -572, 4.5, -130, -640, 4)
 shot("12_cathedral", 30, -560, 5, 72, -652, 20)
 shot("13_cliff_homes", 92, -538, 5, 160, -585, 6)
-shot("14_lookout_view", 152, -668, 8, 20, -480, 0)
+-- the lookout tower top (검수 10/11: at the parapet edge, tilted 15-20 deg down): eye = roof + 4.5, 5 studs out toward the view
+do
+	local tw = root.Buildings.Tower_Lookout.Roof
+	local top = tw.Position + Vector3.new(0, tw.Size.Y / 2 + 4.5, 0)
+	local function towerShot(name, aimX, aimZ, tilt)
+		local h = (Vector3.new(aimX, top.Y, aimZ) - top).Unit
+		local cam = top + h * 5
+		local dir = (h * math.cos(math.rad(tilt)) - Vector3.new(0, math.sin(math.rad(tilt)), 0))
+		absShot(name, { cam.X, cam.Y, cam.Z }, { cam.X + dir.X * 100, cam.Y + dir.Y * 100, cam.Z + dir.Z * 100 })
+	end
+	towerShot("14_lookout_view", 60, -490, 18) -- market + fountain square ahead, the cathedral (grey 70x70x54 box) at the right edge
+	towerShot("14b_lookout_sea", 240, -720, 30) -- the island edge, the sea ring and the clouds below
+end
 absShot("15_top", { 0, 400, -500 }, { 0, 0, -518 })
 absShot("16_aerial_south", { -40, 230, -250 }, { 10, 0, -540 })
 absShot("17_aerial_north", { 60, 230, -800 }, { 0, 0, -500 })
