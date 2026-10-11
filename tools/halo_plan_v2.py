@@ -662,7 +662,36 @@ def build_list():
         yaw = math.radians(b["yaw"])
         b["door_at"] = [round(b["x"] + math.sin(yaw) * b["d"] / 2, 1), round(b["z"] + math.cos(yaw) * b["d"] / 2, 1)]
         b["footprint"] = [[round(p[0], 1), round(p[1], 1)] for p in footprint(b)]
+        sk = SKELETONS.get(b["id"])
+        if sk:
+            # 최종 검수 10/11: the real skeleton (이미지 생성 3) stands with its door face ON the plan door_at; its body centre is
+            # door_at - forward x face - right x side (side = how far the door sits right of the body centre, seen from the front;
+            # right seen from the front = the plan's (cos yaw, -sin yaw)). Extent = body + eaves EAVES, front steps STEPS.
+            house, W, Dd, face, side = sk
+            fx, fz = math.sin(yaw), math.cos(yaw)
+            rx, rz = fz, -fx
+            cx = b["door_at"][0] - fx * face - rx * side
+            cz = b["door_at"][1] - fz * face - rz * side
+            back, front, half = (Dd - face) + EAVES, face + STEPS, W / 2 + EAVES
+            ext = [(cx + rx * sx * half + fx * t, cz + rz * sx * half + fz * t) for sx, t in ((-1, -back), (1, -back), (1, front), (-1, front))]
+            body = [(cx + rx * sx * half + fx * t, cz + rz * sx * half + fz * t) for sx, t in ((-1, -back), (1, -back), (1, face), (-1, face))]
+            b["skeleton"] = dict(house=house, body_w=W, body_d=Dd, door_face=face, door_side=side, origin=[round(cx, 2), round(cz, 2)],
+                                 extent=[[round(p[0], 2), round(p[1], 2)] for p in ext], body=[[round(p[0], 2), round(p[1], 2)] for p in body],
+                                 note="origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4")
     return out
+
+
+# 최종 검수 10/11 집↔자리 짝 OK (이미지 생성 3): plan id -> (house, body W, body D, door face from the body centre, door side offset
+# seen from the front: + = right). Round / octagon houses: W = D = the diameter / the flat-to-flat span. The 7 new homes come later.
+SKELETONS = {
+    "House_Hill1": ("05", 26, 15.6, 7.8, 0), "House_Hill2": ("11", 20, 12.4, 6.2, 0), "House_Hill3": ("01", 16.4, 16.4, 7.1, 0),
+    "House_Cliff1": ("10", 15.6, 10.3, 5.15, 0), "House_Cliff2": ("08", 19, 13.1, 6.55, 0), "House_Cliff3": ("06", 14.4, 14.4, 5.92, 0),
+    "House_Cliff4": ("03", 16, 11.2, 5.6, 0), "House_Cliff5": ("09", 16, 16, 6.87, 0), "House_Garden1": ("12", 21, 13, 6.5, 0),
+    "House_Garden2": ("02", 21, 12.6, 6.3, 0), "House_Garden3": ("07", 16, 13, 6.5, 0), "House_Garden4": ("04", 16, 11.2, 5.6, 0),
+    "Shop_Bakery": ("Bakery", 20, 12, 6.0, 4.6), "Shop_Juice": ("Juice", 20, 12, 6.0, -4.6), "Shop_Potion": ("Potion", 19, 11.4, 5.7, 3.8),
+    "Shop_Flower": ("Flower", 18, 10.8, 5.4, 0),
+}
+EAVES, STEPS = 1.2, 4.0
 
 
 def nearest_on(r, p):
@@ -846,6 +875,50 @@ def review_checks(blds, fp_dist):
     return msgs
 
 
+def skeleton_checks(blds, fp_dist):
+    """the real skeleton extents (body + eaves + front steps): clear of the other buildings (2), every road but the own door
+    path, water, yards, the pads, 2 inside the coast, inside the own district, and inside the flattened pad + doorstep"""
+    msgs = []
+    ext = {b["id"]: b["skeleton"]["extent"] for b in blds if b.get("skeleton")}
+    for b in blds:
+        e = ext.get(b["id"])
+        if not e:
+            continue
+        e = [tuple(p) for p in e]
+        bd = [tuple(p) for p in b["skeleton"]["body"]]  # body + eaves: the front steps may meet a road / yard (that is the doorstep)
+        for o in blds:
+            if o is not b and poly_overlap(e, [tuple(p) for p in ext.get(o["id"], footprint(o))], gap=2):
+                msgs.append(f"골격이 이웃과 붙음: {b['id']} - {o['id']}")
+        for r in ROADS:
+            if r["id"] == "door_" + b["id"]:
+                continue
+            if any(fp_dist(p, bd) < r["w"] / 2 - 0.5 for _, p in road_samples(r, 1.0)):
+                msgs.append(f"골격에 길이 걸림: {b['id']} - {r['id']}")
+        for w in WATER["pools"]:
+            if fp_dist(tuple(w["at"]), e) < w["r"]:
+                msgs.append(f"골격에 물이 걸림: {b['id']} - {w['id']}")
+        st = WATER["stream"]
+        for i in range(len(st) - 1):
+            if any(fp_dist(p, e) < WATER["stream_w"][i] / 2 for _, p in road_samples(dict(pts=[st[i], st[i + 1]]), 1.0)):
+                msgs.append(f"골격에 시냇물이 걸림: {b['id']}")
+                break
+        for y in YARDS:
+            if fp_dist(tuple(y["at"]), bd) < y["r"]:
+                msgs.append(f"골격에 마당이 걸림: {b['id']} - {y['id']}")
+        for n, c in PADS:
+            if poly_overlap(e, pad_box(c)):
+                msgs.append(f"골격이 발판 둘레에: {b['id']} - {n}")
+        if not all(inside(p, LAND) and min(seg_dist(p, LAND[i], LAND[(i + 1) % len(LAND)]) for i in range(len(LAND))) >= 2 for p in e):
+            msgs.append(f"골격이 섬 끝 2 안: {b['id']}")
+        if not all(inside(p, DIST[b["district"]]["poly"]) for p in e):
+            msgs.append(f"골격이 구역 밖: {b['id']}")
+        # the flattened ground: the pad (footprint + PAD_MARGIN) and the doorstep apron in front of the door
+        pad = footprint(b, PAD_MARGIN - 0.5)
+        if not all(inside(p, pad) for p in e):
+            msgs.append(f"골격이 받침 밖: {b['id']}")
+    return msgs
+
+
 def checks(blds):
     msgs = []
     for b in blds:
@@ -905,6 +978,7 @@ def checks(blds):
             if fp_dist(tuple(w["at"]), footprint(b)) < w["r"]:
                 msgs.append(f"물이 건물에 걸림: {w['id']} - {b['id']}")
     msgs += review_checks(blds, fp_dist)
+    msgs += skeleton_checks(blds, fp_dist)
     # the spawn-gate corridor (|x|<=12, z -330..-432) and the spawn circle stay clear (the gate itself is the passage)
     for b in blds:
         if b["kind"] == "Gate":

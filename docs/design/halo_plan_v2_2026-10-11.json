@@ -7035,6 +7035,54 @@
      -488.3
     ]
    ],
+   "skeleton": {
+    "house": "Potion",
+    "body_w": 19,
+    "body_d": 11.4,
+    "door_face": 5.7,
+    "door_side": 3.8,
+    "origin": [
+     35.76,
+     -489.97
+    ],
+    "extent": [
+     [
+      28.98,
+      -500.75
+     ],
+     [
+      48.38,
+      -491.7
+     ],
+     [
+      41.36,
+      -476.66
+     ],
+     [
+      21.97,
+      -485.7
+     ]
+    ],
+    "body": [
+     [
+      28.98,
+      -500.75
+     ],
+     [
+      48.38,
+      -491.7
+     ],
+     [
+      43.05,
+      -480.28
+     ],
+     [
+      23.66,
+      -489.33
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 11.1,
    "path_from": "main"
   },
@@ -7084,6 +7132,54 @@
      -455.5
     ]
    ],
+   "skeleton": {
+    "house": "Bakery",
+    "body_w": 20,
+    "body_d": 12,
+    "door_face": 6.0,
+    "door_side": 4.6,
+    "origin": [
+     106.18,
+     -446.6
+    ],
+    "extent": [
+     [
+      119.48,
+      -445.97
+     ],
+     [
+      100.08,
+      -434.77
+     ],
+     [
+      91.48,
+      -449.66
+     ],
+     [
+      110.88,
+      -460.86
+     ]
+    ],
+    "body": [
+     [
+      119.48,
+      -445.97
+     ],
+     [
+      100.08,
+      -434.77
+     ],
+     [
+      93.48,
+      -446.2
+     ],
+     [
+      112.88,
+      -457.4
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 6.3,
    "path_from": "market_lane"
   },
@@ -7133,6 +7229,54 @@
      -515.0
     ]
    ],
+   "skeleton": {
+    "house": "Juice",
+    "body_w": 20,
+    "body_d": 12,
+    "door_face": 6.0,
+    "door_side": -4.6,
+    "origin": [
+     137.5,
+     -498.4
+    ],
+    "extent": [
+     [
+      144.7,
+      -509.6
+     ],
+     [
+      144.7,
+      -487.2
+     ],
+     [
+      127.5,
+      -487.2
+     ],
+     [
+      127.5,
+      -509.6
+     ]
+    ],
+    "body": [
+     [
+      144.7,
+      -509.6
+     ],
+     [
+      144.7,
+      -487.2
+     ],
+     [
+      131.5,
+      -487.2
+     ],
+     [
+      131.5,
+      -509.6
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 5.1,
    "path_from": "market_lane"
   },
@@ -7182,6 +7326,54 @@
      -506.0
     ]
    ],
+   "skeleton": {
+    "house": "Flower",
+    "body_w": 18,
+    "body_d": 10.8,
+    "door_face": 5.4,
+    "door_side": 0,
+    "origin": [
+     59.2,
+     -517.32
+    ],
+    "extent": [
+     [
+      47.06,
+      -516.88
+     ],
+     [
+      63.77,
+      -528.58
+     ],
+     [
+      72.95,
+      -515.47
+     ],
+     [
+      56.24,
+      -503.77
+     ]
+    ],
+    "body": [
+     [
+      47.06,
+      -516.88
+     ],
+     [
+      63.77,
+      -528.58
+     ],
+     [
+      70.66,
+      -518.75
+     ],
+     [
+      53.94,
+      -507.05
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 8.7,
    "path_from": "main"
   },
@@ -7231,6 +7423,54 @@
      -386.9
     ]
    ],
+   "skeleton": {
+    "house": "05",
+    "body_w": 26,
+    "body_d": 15.6,
+    "door_face": 7.8,
+    "door_side": 0,
+    "origin": [
+     172.42,
+     -391.09
+    ],
+    "extent": [
+     [
+      174.66,
+      -374.42
+     ],
+     [
+      156.4,
+      -396.18
+     ],
+     [
+      172.34,
+      -409.55
+     ],
+     [
+      190.59,
+      -387.79
+     ]
+    ],
+    "body": [
+     [
+      174.66,
+      -374.42
+     ],
+     [
+      156.4,
+      -396.18
+     ],
+     [
+      169.27,
+      -406.98
+     ],
+     [
+      187.53,
+      -385.22
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 11.4,
    "path_from": "to_hill"
   },
@@ -7280,6 +7520,54 @@
      -424.9
     ]
    ],
+   "skeleton": {
+    "house": "11",
+    "body_w": 20,
+    "body_d": 12.4,
+    "door_face": 6.2,
+    "door_side": 0,
+    "origin": [
+     220.29,
+     -410.7
+    ],
+    "extent": [
+     [
+      230.34,
+      -419.6
+     ],
+     [
+      224.54,
+      -397.96
+     ],
+     [
+      207.54,
+      -402.52
+     ],
+     [
+      213.34,
+      -424.15
+     ]
+    ],
+    "body": [
+     [
+      230.34,
+      -419.6
+     ],
+     [
+      224.54,
+      -397.96
+     ],
+     [
+      211.4,
+      -401.48
+     ],
+     [
+      217.2,
+      -423.12
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 15.4,
    "path_from": "hill_alley"
   },
@@ -7329,6 +7617,54 @@
      -443.0
     ]
    ],
+   "skeleton": {
+    "house": "01",
+    "body_w": 16.4,
+    "body_d": 16.4,
+    "door_face": 7.1,
+    "door_side": 0,
+    "origin": [
+     199.38,
+     -451.07
+    ],
+    "extent": [
+     [
+      189.1,
+      -460.71
+     ],
+     [
+      207.83,
+      -462.35
+     ],
+     [
+      209.71,
+      -440.83
+     ],
+     [
+      190.98,
+      -439.2
+     ]
+    ],
+    "body": [
+     [
+      189.1,
+      -460.71
+     ],
+     [
+      207.83,
+      -462.35
+     ],
+     [
+      209.36,
+      -444.82
+     ],
+     [
+      190.64,
+      -443.18
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 11.9,
    "path_from": "hill_alley"
   },
@@ -7525,6 +7861,54 @@
      -593.6
     ]
    ],
+   "skeleton": {
+    "house": "10",
+    "body_w": 15.6,
+    "body_d": 10.3,
+    "door_face": 5.15,
+    "door_side": 0,
+    "origin": [
+     145.24,
+     -580.76
+    ],
+    "extent": [
+     [
+      156.1,
+      -582.63
+     ],
+     [
+      143.37,
+      -569.9
+     ],
+     [
+      132.41,
+      -580.86
+     ],
+     [
+      145.14,
+      -593.59
+     ]
+    ],
+    "body": [
+     [
+      156.1,
+      -582.63
+     ],
+     [
+      143.37,
+      -569.9
+     ],
+     [
+      135.24,
+      -578.04
+     ],
+     [
+      147.96,
+      -590.76
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 16.1,
    "path_from": "to_cliff"
   },
@@ -7574,6 +7958,54 @@
      -578.9
     ]
    ],
+   "skeleton": {
+    "house": "08",
+    "body_w": 19,
+    "body_d": 13.1,
+    "door_face": 6.55,
+    "door_side": 0,
+    "origin": [
+     205.46,
+     -566.63
+    ],
+    "extent": [
+     [
+      218.67,
+      -566.42
+     ],
+     [
+      201.14,
+      -554.15
+     ],
+     [
+      190.64,
+      -569.14
+     ],
+     [
+      208.17,
+      -581.41
+     ]
+    ],
+    "body": [
+     [
+      218.67,
+      -566.42
+     ],
+     [
+      201.14,
+      -554.15
+     ],
+     [
+      192.94,
+      -565.86
+     ],
+     [
+      210.46,
+      -578.14
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 4.5,
    "path_from": "cliff_top"
   },
@@ -7623,6 +8055,54 @@
      -629.5
     ]
    ],
+   "skeleton": {
+    "house": "06",
+    "body_w": 14.4,
+    "body_d": 14.4,
+    "door_face": 5.92,
+    "door_side": 0,
+    "origin": [
+     241.46,
+     -618.37
+    ],
+    "extent": [
+     [
+      253.57,
+      -614.19
+     ],
+     [
+      239.03,
+      -605.79
+     ],
+     [
+      229.23,
+      -622.76
+     ],
+     [
+      243.77,
+      -631.16
+     ]
+    ],
+    "body": [
+     [
+      253.57,
+      -614.19
+     ],
+     [
+      239.03,
+      -605.79
+     ],
+     [
+      231.23,
+      -619.3
+     ],
+     [
+      245.77,
+      -627.7
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 16.6,
    "path_from": "cliff_upper"
   },
@@ -7672,6 +8152,54 @@
      -701.3
     ]
    ],
+   "skeleton": {
+    "house": "03",
+    "body_w": 16,
+    "body_d": 11.2,
+    "door_face": 5.6,
+    "door_side": 0,
+    "origin": [
+     230.57,
+     -700.88
+    ],
+    "extent": [
+     [
+      225.1,
+      -710.93
+     ],
+     [
+      241.78,
+      -703.15
+     ],
+     [
+      234.85,
+      -688.29
+     ],
+     [
+      218.17,
+      -696.06
+     ]
+    ],
+    "body": [
+     [
+      225.1,
+      -710.93
+     ],
+     [
+      241.78,
+      -703.15
+     ],
+     [
+      236.54,
+      -691.91
+     ],
+     [
+      219.86,
+      -699.69
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 4.0,
    "path_from": "to_cliff"
   },
@@ -7721,6 +8249,54 @@
      -693.7
     ]
    ],
+   "skeleton": {
+    "house": "09",
+    "body_w": 16,
+    "body_d": 16,
+    "door_face": 6.87,
+    "door_side": 0,
+    "origin": [
+     174.94,
+     -707.06
+    ],
+    "extent": [
+     [
+      161.13,
+      -707.86
+     ],
+     [
+      174.14,
+      -720.87
+     ],
+     [
+      189.13,
+      -705.88
+     ],
+     [
+      176.12,
+      -692.87
+     ]
+    ],
+    "body": [
+     [
+      161.13,
+      -707.86
+     ],
+     [
+      174.14,
+      -720.87
+     ],
+     [
+      186.31,
+      -708.71
+     ],
+     [
+      173.29,
+      -695.69
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 14.2,
    "path_from": "cliff_south"
   },
@@ -7770,6 +8346,54 @@
      -688.1
     ]
    ],
+   "skeleton": {
+    "house": "12",
+    "body_w": 21,
+    "body_d": 13,
+    "door_face": 6.5,
+    "door_side": 0,
+    "origin": [
+     -154.43,
+     -689.68
+    ],
+    "extent": [
+     [
+      -149.26,
+      -676.66
+     ],
+     [
+      -168.43,
+      -690.08
+     ],
+     [
+      -157.99,
+      -704.99
+     ],
+     [
+      -138.82,
+      -691.57
+     ]
+    ],
+    "body": [
+     [
+      -149.26,
+      -676.66
+     ],
+     [
+      -168.43,
+      -690.08
+     ],
+     [
+      -160.28,
+      -701.71
+     ],
+     [
+      -141.12,
+      -688.29
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 22.7,
    "path_from": "to_garden"
   },
@@ -7819,6 +8443,54 @@
      -717.0
     ]
    ],
+   "skeleton": {
+    "house": "02",
+    "body_w": 21,
+    "body_d": 12.6,
+    "door_face": 6.3,
+    "door_side": 0,
+    "origin": [
+     -201.05,
+     -715.58
+    ],
+    "extent": [
+     [
+      -192.63,
+      -704.53
+     ],
+     [
+      -214.61,
+      -712.53
+     ],
+     [
+      -208.53,
+      -729.26
+     ],
+     [
+      -186.54,
+      -721.26
+     ]
+    ],
+    "body": [
+     [
+      -192.63,
+      -704.53
+     ],
+     [
+      -214.61,
+      -712.53
+     ],
+     [
+      -209.89,
+      -725.5
+     ],
+     [
+      -187.91,
+      -717.5
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 15.7,
    "path_from": "garden_west"
   },
@@ -7868,6 +8540,54 @@
      -791.0
     ]
    ],
+   "skeleton": {
+    "house": "07",
+    "body_w": 16,
+    "body_d": 13,
+    "door_face": 6.5,
+    "door_side": 0,
+    "origin": [
+     -230.19,
+     -777.58
+    ],
+    "extent": [
+     [
+      -219.81,
+      -783.59
+     ],
+     [
+      -226.1,
+      -766.3
+     ],
+     [
+      -243.21,
+      -772.52
+     ],
+     [
+      -236.91,
+      -789.81
+     ]
+    ],
+    "body": [
+     [
+      -219.81,
+      -783.59
+     ],
+     [
+      -226.1,
+      -766.3
+     ],
+     [
+      -239.45,
+      -771.15
+     ],
+     [
+      -233.15,
+      -788.45
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 8.0,
    "path_from": "garden_sea"
   },
@@ -7917,6 +8637,54 @@
      -785.1
     ]
    ],
+   "skeleton": {
+    "house": "04",
+    "body_w": 16,
+    "body_d": 11.2,
+    "door_face": 5.6,
+    "door_side": 0,
+    "origin": [
+     -149.99,
+     -782.19
+    ],
+    "extent": [
+     [
+      -153.62,
+      -793.03
+     ],
+     [
+      -138.55,
+      -782.48
+     ],
+     [
+      -147.96,
+      -769.05
+     ],
+     [
+      -163.03,
+      -779.6
+     ]
+    ],
+    "body": [
+     [
+      -153.62,
+      -793.03
+     ],
+     [
+      -138.55,
+      -782.48
+     ],
+     [
+      -145.66,
+      -772.32
+     ],
+     [
+      -160.74,
+      -782.88
+     ]
+    ],
+    "note": "origin = body centre (floor 0, sill 1.1); door face on door_at; extent = body + eaves 1.2, front + steps 4"
+   },
    "door_to_path": 12.0,
    "path_from": "garden_south"
   },
