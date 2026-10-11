@@ -17,7 +17,7 @@
 ## 폭포 물줄기 (5단계 재료)
 - High 최종 업로드 `rbxassetid://111806947888357` (`art/ui/Halo_WaterfallStreaks.png`, approved.json·asset_ids.json 기록, 5 크레딧)
 - `tools/worldkit/halo_waterfx.luau` STREAK 넣음, 경사 물 램프 따라 착지점(9/9), 거품 원판 → 둥근 물보라 파티클, 띠 넓고 밝게. WorldKit에 적용됨(옛 지형 위).
-- **사진 아직**: 창 복원 요청 보냄(옛 검수, 답 없음). `tools/worldkit/waterfx_shots.py`(build/wk 복사본)로 3장 = `art/review/world/halo_new/waterfx/waterfx_EC_1~3.jpg`. 첫 사진(waterfx_EC_last.jpg): 거품판이 접시 같고 띠가 거의 안 보였음 → 고친 뒤 미확인. 띠 방향(물 위에 누움)도 사진으로 확인.
+- **사진 10/11 12:21 (고친 뒤 3장)**: `art/review/world/halo_new/waterfx/waterfx_EC_1~3.jpg`, 모음 `waterfx_EC_crop3.jpg` (도구 `tools/worldkit/waterfx_shots.py`). 결과: 접시 거품판은 사라짐 OK. **하지만 물줄기 띠(Beam)와 물보라 파티클이 사진에 안 보임** → 다음 할 일: Edit 모드 캡처에서 Beam/파티클이 안 그려지는지(Play 캡처로 확인), 띠가 지형 물 표면 아래 묻혔는지(Lift 0.25 → 0.8), 띠 방향(fromMatrix X=옆, Y=법선)이 맞는지 시험용 Part 위 Beam으로 확인.
 - 회색 상자 지은 뒤에는 새 지형에 폭포가 다시 생겨야 함(halo_waterfx는 HaloTerrainStore "Waterfalls"를 읽음 — 새 지형엔 없음 → 5단계에서 plan v2 falls로 바꿀 것).
 
 ## WorldKit에 있는 것
