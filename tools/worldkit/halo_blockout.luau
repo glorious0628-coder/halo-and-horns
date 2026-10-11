@@ -262,7 +262,16 @@ local function label(parent, adornee, text, h)
 	bg.Parent = parent
 end
 local nb = 0
+-- 10/11 stage 4: a skeleton master (tools/skeleton_civic.py, ServerStorage.HaloSkeletons) replaces the grey box when its plan pose
+-- (x, z, yaw, ground_y) still matches the plan and the apply is not offset; otherwise the grey box is built
+local skMasters = SS:FindFirstChild("HaloSkeletons")
 for _, b in D.buildings do
+	local sk = skMasters and OFF.Magnitude == 0 and skMasters:FindFirstChild(b.id)
+	if sk and sk:GetAttribute("PlanPose") == string.format("%g,%g,%g,%g", b.x, b.z, b.yaw, b.ground_y) then
+		sk:Clone().Parent = bf
+		nb += 1
+		continue
+	end
 	local m = Instance.new("Model")
 	m.Name = b.id
 	for k, v in { Kind = b.kind, District = b.district, Floors = b.floors, FloorH = b.floor_h, Note = b.note } do m:SetAttribute(k, v) end
