@@ -16,3 +16,4 @@
    - origin/dev2-landcircle 03603087: test_halloween 패턴을 고쳤다. dev1-leapfx 3a95f712와 같이 병합한다.
    - 남은 판단: Lv30+ T5·T6 사냥꾼이 클래터를 혼자 빨리 잡는 문제(몫 상한 1).
    - 다음은 dev2-healfair(A23-126)다.
+4. **이미지 생성 2(추가):** 무기고 2D 끝(앞 High 1 + 왼·뒤 Medium 2, 시트 art/review/s2/halo_armory_views.jpg) → 판정 후 이미지 생성 1(무기고 골격)에게 넘김. 지금 4면 큐 1번 등불 A~E(High 15장 = 75크레딧) 진행 중.
