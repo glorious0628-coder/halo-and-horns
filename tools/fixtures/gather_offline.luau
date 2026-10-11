@@ -225,13 +225,16 @@ runGroup("config", function()
 			"node kinds: item, hold, Pick / Mine, plant, zone as the contract", kind .. " " .. show(d))
 	end
 	local sells = { Herb = 1, CopperOre = 2, OakLog = 3, Glowcap = 4, IronOre = 5, SilverOre = 8, MoonCrystal = 10, CrownDust = 8 }
+	-- the icon keys 디자인 검수 named (10/11, via 게임성 개발 4)
+	local icons = { Herb = "IconMeadowHerb", CopperOre = "IconCopperOre", OakLog = "IconOakLog", Glowcap = "IconGlowcap",
+		IronOre = "IconIronOre", SilverOre = "IconSilverOre", MoonCrystal = "IconMoonCrystal", CrownDust = "IconCrownDust" }
 	local order = {}
 	for i, id in C.Loot.Order do order[id] = i end
 	for id, sell in sells do
 		local it = C.Loot.Items[id]
 		check(it ~= nil and it.Kind == "Material" and it.Sell == sell and it.Source == "Gather" and type(it.Name) == "string"
-			and it.Name ~= "" and it.Icon == "Icon" .. id and order[id] ~= nil,
-			"the 8 materials: Material, sell price, a name, an Icon<Id> key, in the bag order", id .. " " .. show(it))
+			and it.Name ~= "" and it.Icon == icons[id] and order[id] ~= nil,
+			"the 8 materials: Material, sell price, a name, the named icon key, in the bag order", id .. " " .. show(it))
 	end
 	local per = {}
 	for zone, list in G.Spots do

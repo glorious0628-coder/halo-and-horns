@@ -5039,9 +5039,10 @@ Config.Loot = {
 		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
 		SeaShell = { Kind = "Material", Name = "Sea Shell", Sell = 4, Color = Color3.fromRGB(250, 205, 180), Icon = "IconSeaShell" }, -- Coral Coast
 		CrystalShard = { Kind = "Material", Name = "Crystal Shard", Sell = 8, Color = Color3.fromRGB(130, 210, 240), Icon = "IconCrystalShard" }, -- Crystal Cave Woods
-		-- gathering (Config.Gather, GatherService; ids fixed: the market key I:<id> and the recipes use them). Icons not drawn
-		-- yet (Icon<Id> parts come with image session 2; until then the code fallback). CrownDust: only from a Shard Bloom
-		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconHerb", Source = "Gather", Desc = "Sell it at the Forge." },
+		-- gathering (Config.Gather, GatherService; ids fixed: the market key I:<id> and the recipes use them). Icon keys named
+		-- by 디자인 검수 (10/11); the parts come with image session 2 -> image dev, until then the code fallback. CrownDust:
+		-- only from a Shard Bloom
+		Herb = { Kind = "Material", Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." },
 		CopperOre = { Kind = "Material", Name = "Copper Ore", Sell = 2, Color = Color3.fromRGB(205, 125, 75), Icon = "IconCopperOre", Source = "Gather", Desc = "Sell it at the Forge." },
 		OakLog = { Kind = "Material", Name = "Oak Log", Sell = 3, Color = Color3.fromRGB(160, 115, 70), Icon = "IconOakLog", Source = "Gather", Desc = "Sell it at the Forge." },
 		Glowcap = { Kind = "Material", Name = "Glowcap", Sell = 4, Color = Color3.fromRGB(80, 225, 205), Icon = "IconGlowcap", Source = "Gather", Desc = "Sell it at the Forge." },
