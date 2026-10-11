@@ -28,12 +28,14 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
   balconies  [{"storey": k >= 1, "walls": [...], "depth": 1.4, "margin"}] floor slab + gold band under it + marble rail
            with round balusters and gold cap at the bottom line of storey k (rect: between the margins + return rails)
   window_boxes  [[wall or "all", storey (0 = ground) or "all"], ...] marble box + gold rim + soil under those windows
-  pilasters  true / false (turned along the corner bisectors; big gold capitals, band on each storey line)
+  pilasters  true / false / {"w": 2.0, "out": 0.6, "finial": bool}: rect = fat square corner piers (faces along the walls,
+           gold capital, foot, storey bands; on to the roof as a fat parapet post or a block + cap on a dome roof, gold ball
+           if finial); oct / round = 1.5 strips along the corner bisectors (house 07 style)
   towers   {"w", "h_extra", "dome": true (small gold ribbed dome cap, R = w / 2 + 0.2; else "finial": true = ball),
             "window": true (small arched window "win_w" 0.9 on the front face of the front towers)} square corner towers
            on a rect plan (house 02 / 04 style)
-  pedestals  true: marble blocks with gold caps either side of the door (lanterns above them); a pedestal in front of a
-           ground-floor front window is cut down under the sill with a gold ball (10/11)
+  pedestals  true: low step posts with a gold cap + ball either side of the steps (the 2D, 10/11 저녁); "tall": house 07's
+           4.85 blocks with a plaque (cut down under the sill of a ground-floor front window); the lanterns hang on the wall
   lanterns [u, ...] wall lanterns along the front (0..1 like door.u) instead of the pedestal ones (shops); a lantern that
            would sit in a corner pilaster / tower is moved out in front of it
   awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's), "top"} striped
@@ -49,7 +51,8 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
            {"type": "drum_dome", "R", "h", "seg", "windows": n, "dome_h", "onion": bool} |
            {"type": "dome", "dome_h", "onion": bool}  (dome straight on the cornice of a round / oct plan)
   medals   [[wall, u, z], ...] raised gold quatrefoil medallions
-Marble = Marble + HH_HaloMarbleBlock_Cream (255,244,222), gold = Metal + HH_HaloGoldTrim (255,175,25) (검수 10/11).
+Marble = Marble + HH_HaloMarbleBlock_Cream (255,244,222), gold = Metal + HH_HaloGoldTrim (255,168,36; MV metal 0.5 /
+rough 0.15, 검수 10/11 저녁).
 """
 import argparse
 import json
@@ -486,11 +489,29 @@ ring("Cornice", 1.2, Z1, Z1 + 0.7, 2.0, "marble")
 ring("CorniceGold", 1.32, Z1 + 0.7, Z1 + 0.9, 0.85, "gold")
 ZT = Z1 + 0.9                                           # top of the cornice
 
-# ---------------------------------------------------------------- pilasters / towers
+# ---------------------------------------------------------------- corner piers (pilasters) / towers
+# rect plan: square piers on the corners, faces along the walls, PIER w wide and `out` proud of both walls (검수 10/11 저녁:
+# the 2D corners are fat white piers with gold capitals; the old 1.3 strips on the bisector read as a thin gold line);
+# oct / round plan: a strip turned along the corner bisector (house 07 style), 1.3 wide
+PIL = S.get("pilasters", True)
+PIER = {"w": 2.0, "out": 0.6, "finial": False}
+if isinstance(PIL, dict):
+    PIER.update(PIL)
 PIL_OUT = 0.85
-if S.get("pilasters", True):
+PIERS = {}                                              # vertex -> (x, y, width) of the pier, for the tops
+if PIL:
     for i, (x, y) in enumerate(V):
         wa, wb = walls[EDGES[i - 1]], walls[EDGES[i]]
+        if P["shape"] == "rect":
+            s_, o_ = PIER["w"], PIER["out"]
+            cx_, cy_ = x + (wa.n[0] + wb.n[0]) * (o_ - s_ / 2), y + (wa.n[1] + wb.n[1]) * (o_ - s_ / 2)
+            add("Pilaster%d" % i, (s_, Z1 - Z0, s_), (cx_, cy_, (Z0 + Z1) / 2))
+            add("PilasterCap%d" % i, (s_ + 0.35, 0.9, s_ + 0.35), (cx_, cy_, Z1 - 0.45), mat="gold")
+            add("PilasterFoot%d" % i, (s_ + 0.25, 0.4, s_ + 0.25), (cx_, cy_, Z0 + 0.2), mat="gold")
+            for si in range(1, len(STOREYS)):
+                add("PilasterBand%d_%d" % (i, si), (s_ + 0.2, 0.35, s_ + 0.2), (cx_, cy_, Z_LINES[si] + 0.27), mat="gold")
+            PIERS[i] = (cx_, cy_, s_)
+            continue
         bis = norm(vadd(wa.n, wb.n))
         along = (-bis[1], bis[0], 0.0)
         wd = 1.3
@@ -503,6 +524,13 @@ if S.get("pilasters", True):
         add("PilasterFoot%d" % i, (wd + 0.25, 0.4, 1.45), (*pc(PIL_OUT + 0.1, 1.45), Z0 + 0.2), along, UP, "gold")
         for si in range(1, len(STOREYS)):
             add("PilasterBand%d_%d" % (i, si), (wd + 0.2, 0.35, 1.4), (*pc(PIL_OUT + 0.1, 1.4), Z_LINES[si] + 0.27), along, UP, "gold")
+        PIERS[i] = (*pc(PIL_OUT, 1.2), wd)
+    if P["shape"] == "rect":                            # a window frame running into a corner pier
+        reach = PIER["w"] - PIER["out"] + 0.05
+        for (nm, uc, ww, w0, sp, kind, si) in win_list:
+            g = 0.1 * ww + 0.08
+            if uc - ww / 2 - g < reach or uc + ww / 2 + g > walls[nm].L - reach:
+                print("[house] WARNING: window on %s at u %.2f runs into a corner pier" % (nm, uc))
 TW = S.get("towers")
 if TW and P["shape"] == "rect":
     tw, hx = TW["w"], TW.get("h_extra", 3.0)
@@ -596,6 +624,7 @@ def lantern_at(k, x):
     lc = (x, y, DSP + 0.6)
     g = LANT_W - 0.2
     add("LampGlass%d" % k, (g, LANT_H - 0.1, g), lc, mat="lamp")
+    add("LampCore%d" % k, (0.36, 0.5, 0.36), lc, mat="neon")       # warm Neon core: the 2D lanterns glow day and night
     orn_items.append({"type": "lantern", "name": "%s_Lantern%d" % (NAME, k), "pos": list(lc), "w": LANT_W, "hgt": LANT_H,
                       "post": 0.09, "wall_y": YF})
 
@@ -603,9 +632,12 @@ def lantern_at(k, x):
 # ---------------------------------------------------------------- pedestals + lanterns
 LANT_W, LANT_H = 0.9, 1.15
 LANTS = S.get("lanterns")                               # [u, ...] wall lanterns along the front (0..1 like door.u); replaces the pedestal ones
-if S.get("pedestals", True):
+PED = S.get("pedestals", True)                          # true = low step posts with a gold ball (the 2D), "tall" = house 07's
+TALL = PED == "tall"
+PW = 1.8 if TALL else 1.5
+if PED:
     for k, sx in enumerate((-1, 1)):
-        x = CXD + sx * (DR + GW + 0.75 + 1.0)
+        x = CXD + sx * (DR + GW + 0.75 + PW / 2 + 0.1)
         if OFFC or SH:                                  # off-centre door / shop window: skip a pedestal that leaves the wall or hits the window
             fx0, fx1 = sorted((wf.p0[0], wf.at(wf.L, 0)[0]))
             ush = wf.at(SH[0], 0)[0] if SH else None
@@ -614,17 +646,18 @@ if S.get("pedestals", True):
                 continue
         # a pedestal in front of a ground-floor window is cut down under its sill stone (a low post with a gold ball, as
         # the 2D step posts); the full one (07) stood 4.85 high and hid half the window (08, 12, Flower)
-        pz = Z0 + 3.75
-        low = [w0 for wx, hw, w0 in front_win_x() if abs(x - wx) < 1.0 + hw]
-        if low:
+        pz = Z0 + 3.75 if TALL else Z0 + 1.4
+        low = [w0 for wx, hw, w0 in front_win_x() if abs(x - wx) < PW / 2 + 0.1 + hw]
+        if TALL and low:
             pz = max(Z0 + 1.2, min(low) - 0.7 - 0.45)
-        add("Pedestal%d" % k, (1.8, pz, 2.0), (x, YF + 0.45, pz / 2))
-        add("Pedestal%d_Cap" % k, (1.92, 0.35, 2.12), (x, YF + 0.45, pz + 0.175), mat="gold")
-        add("Pedestal%d_Foot" % k, (2.0, 0.55, 2.2), (x, YF + 0.45, 0.275), mat="gold")
+        pd = PW + 0.2
+        add("Pedestal%d" % k, (PW, pz, pd), (x, YF + pd / 2 - 0.55, pz / 2))
+        add("Pedestal%d_Cap" % k, (PW + 0.12, 0.35, pd + 0.12), (x, YF + pd / 2 - 0.55, pz + 0.175), mat="gold")
+        add("Pedestal%d_Foot" % k, (PW + 0.2, 0.55, pd + 0.2), (x, YF + pd / 2 - 0.55, 0.275), mat="gold")
         if pz > 3.0:
-            add("Pedestal%d_Plaque" % k, (0.7, 1.2, 0.1), (x, YF + 1.48, 2.0), mat="gold")
-        if low:
-            ball("Pedestal%d_Ball" % k, 0.8, (x, YF + 0.45, pz + 0.35 + 0.38))
+            add("Pedestal%d_Plaque" % k, (0.7, 1.2, 0.1), (x, YF + pd - 0.5, 2.0), mat="gold")
+        if pz <= 3.0:
+            ball("Pedestal%d_Ball" % k, 0.8, (x, YF + pd / 2 - 0.55, pz + 0.35 + 0.38))
         if LANTS is None:
             lantern_at(k, x)
 for k, u in enumerate(LANTS or []):
@@ -802,6 +835,14 @@ if TOP["type"] == "flat":
         if turn >= 25.0 or since >= 5.0 or i == 0 and P["shape"] != "round":
             POST_I.append(i)
             since = 0.0
+    POST_AT = {}                                        # vertex -> (x, y, width) of the roof post
+    for i in POST_I:
+        x, y, pw_ = Pp[i][0], Pp[i][1], 1.1
+        if i in PIERS and P["shape"] == "rect":           # the corner pier carries on as a fat roof post (outer face 1.0 out)
+            pw_ = PIERS[i][2]
+            na_, nb_ = walls[EDGES[i - 1]].n, walls[EDGES[i]].n
+            x, y = V[i][0] + (na_[0] + nb_[0]) * (1.0 - pw_ / 2), V[i][1] + (na_[1] + nb_[1]) * (1.0 - pw_ / 2)
+        POST_AT[i] = (x, y, pw_)
     for i, nm in enumerate(EDGES):
         w = walls[nm]
         p0, p1 = Pp[i], Pp[(i + 1) % len(Pp)]
@@ -814,17 +855,17 @@ if TOP["type"] == "flat":
             for k in range(nb):
                 f = (k + 0.5) / nb
                 bx, by = p0[0] + (p1[0] - p0[0]) * f - w.n[0] * 0.45, p0[1] + (p1[1] - p0[1]) * f - w.n[1] * 0.45
-                if any(math.hypot(bx - Pp[j][0], by - Pp[j][1]) < 0.85 for j in POST_I):
+                if any(max(abs(bx - qx), abs(by - qy)) < qw / 2 + 0.2 for qx, qy, qw in POST_AT.values()):
                     continue                              # no baluster inside a post
                 post("Baluster_%s_%d" % (nm, k), 0.32, ph - 0.55, bx, by, ZT + 0.25)
         elif TOP.get("parapet") != "none":                # "none" = no parapet (a hip roof sits on the cornice)
             add("Parapet_%s" % nm, (L, ph, 0.7), (mx - w.n[0] * 0.35, my - w.n[1] * 0.35, ZT + ph / 2), w.u, UP)
             add("ParapetGold_%s" % nm, (L + 0.02, 0.2, 0.8), (mx - w.n[0] * 0.35, my - w.n[1] * 0.35, ZT + ph - 0.1), w.u, UP, "gold")
-    for i, (x, y) in enumerate(Pp if TOP.get("parapet") != "none" else []):
-        if i not in POST_I:
-            continue
-        add("ParapetPost%d" % i, (1.1, ph + 0.5, 1.1), (x, y, ZT + (ph + 0.5) / 2))
-        add("ParapetPostCap%d" % i, (1.3, 0.25, 1.3), (x, y, ZT + ph + 0.62), mat="gold")
+    for i, (x, y, pw_) in (POST_AT.items() if TOP.get("parapet") != "none" else []):
+        add("ParapetPost%d" % i, (pw_, ph + 0.5, pw_), (x, y, ZT + (ph + 0.5) / 2))
+        add("ParapetPostCap%d" % i, (pw_ + 0.2, 0.25, pw_ + 0.2), (x, y, ZT + ph + 0.62), mat="gold")
+        if i in PIERS and PIER["finial"]:
+            ball("ParapetPostBall%d" % i, 0.9, (x, y, ZT + ph + 0.75 + 0.45))
     if not TOP.get("hip"):                                # a hip roof has no walkable deck
         poly_slab("RoofDeck", 0.8, ZT + 0.1, 0.2, "floor")
     sk = TOP.get("skylight")
@@ -931,6 +972,11 @@ if TOP["type"] == "flat":
         orn_items.append({"type": "dome", "name": NAME + "_CupolaDome", "pos": [ccx_, ccy_, zp + chh_ + 0.6], "R": cr + 0.35,
                           "h": (cr + 0.35) * 1.1, "ribs": 6, "fin": 0.4})
 else:
+    for i, (px_, py_, pw_) in PIERS.items():             # dome / drum roofs: each pier ends in a short block + gold cap
+        add("PierTop%d" % i, (pw_, 1.1, pw_), (px_, py_, ZT + 0.55))
+        add("PierTopCap%d" % i, (pw_ + 0.2, 0.3, pw_ + 0.2), (px_, py_, ZT + 1.25), mat="gold")
+        if PIER["finial"]:
+            ball("PierTopBall%d" % i, 0.9, (px_, py_, ZT + 1.4 + 0.45))
     zb = ZT
     if TOP["type"] == "drum_dome":
         R_, H_, seg = TOP["R"], TOP["h"], TOP.get("seg", 16)
@@ -946,12 +992,12 @@ else:
             dd = (math.cos(t), math.sin(t), 0.0)
             orn_items.append({"type": "arch_window", "name": "%s_DrumWin%d" % (NAME, k), "pos": [dd[0] * (R_ + 0.05), dd[1] * (R_ + 0.05), zb + 0.8],
                               "yaw": math.degrees(t) - 90, "W": 1.2, "spring": zb + H_ - 1.6, "pier": 0.3, "frame": 0.14, "depth": 0.9, "recess": 0.2})
-        add("DrumBase", (2 * R_ + 0.8, 0.5, 2 * R_ + 0.8), (0, 0, zb + 0.25), mat="marble", shape="Block")
+        post("DrumBase", 2 * R_ + 0.8, 0.5, 0.0, 0.0, zb)
         add("DrumTopGold", (0.35, 2 * R_ + 0.6, 2 * R_ + 0.6), (0, 0, zb + H_ - 0.1), UP, (1.0, 0.0, 0.0), "gold", "Cylinder")
         zb += H_
         dome_r = R_ + 0.15
     else:
-        dome_r = max(abs(x) for x, _ in V) + 0.6
+        dome_r = min(max(abs(x) for x, _ in V), max(abs(y) for _, y in V)) + 0.6   # a plan shallower than wide: the dome fits the depth
     orn_items.append({"type": "dome", "name": NAME + "_Dome", "pos": [0.0, 0.0, zb], "R": dome_r, "h": TOP.get("dome_h", dome_r * 1.05),
                       "onion": TOP.get("onion", False), "ribs": TOP.get("ribs", 8)})
 
@@ -960,10 +1006,11 @@ MARBLE = 'p.Material = Enum.Material.Marble; p.MaterialVariant = "HH_HaloMarbleB
 MAT = {
     "marble": MARBLE + "(255, 244, 222)",
     "floor": MARBLE + '(238, 226, 205); game:GetService("CollectionService"):AddTag(p, "WalkGround")',
-    "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 175, 25)',
+    "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 168, 36)',
     "soil": 'p.Material = Enum.Material.Sand; p.Color = Color3.fromRGB(140, 100, 62)',
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
-    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Enabled = false; l.Parent = p',
+    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 2.5; l.Range = 16; l.Shadows = false; l.Enabled = false; l.Parent = p',
+    "neon": 'p.Material = Enum.Material.Neon; p.Color = Color3.fromRGB(255, 205, 120); p.CanCollide = false',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
     "slate": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(90, 140, 210)',
     "cloth0": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[0]),
@@ -987,7 +1034,7 @@ L = ['-- %s skeleton (generated by tools/skeleton_house.py from %s, 이미지 �
      '  p.CFrame = CFrame.fromMatrix(Vector3.new(x, y, z), Vector3.new(ax, ay, az), Vector3.new(bx, by, bz))']
 for i, (k, v) in enumerate(MAT.items()):
     L.append('  %s mat == "%s" then %s' % ("if" if i == 0 else "elseif", k, v))
-L += ['  end', '  if mat == "glass" or mat == "lamp" then p.CastShadow = false end', '  p.Parent = parent; return p', 'end']
+L += ['  end', '  if mat == "glass" or mat == "lamp" or mat == "neon" then p.CastShadow = false end', '  p.Parent = parent; return p', 'end']
 for p in parts:
     x, y, z = p["pos"]
     X, Y = r3(p["X"]), r3(p["Y"])

@@ -20,6 +20,7 @@ ap.add_argument("out")
 ap.add_argument("names", nargs="+")
 ap.add_argument("--renders", default="art/review/img3/houses")
 ap.add_argument("--tile", type=int, default=300)
+ap.add_argument("--studio", action="store_true", help="3D tiles are WorldKit photos (wide, sky + ground): centre square crop, no content box")
 a = ap.parse_args()
 T = a.tile
 VIEWS = [("front", "front"), ("left", "side"), ("right", "side_r"), ("back", "back")]
@@ -55,7 +56,10 @@ for n in a.names:
         src[v] = "art/out/s2/halo/houses_mv/%s_%s.png" % (n, v)
     rend = {v: os.path.join(a.renders, n, r + ".png") for v, r in VIEWS}
     ims3 = {v: Image.open(p) for v, p in rend.items() if os.path.exists(p)}
-    boxes = {v: content_box(im) for v, im in ims3.items()}
+    if a.studio:                                          # same centre square for the four photos (same camera distance)
+        boxes = {v: ((im.width - im.height) // 2, 0, (im.width + im.height) // 2, im.height) for v, im in ims3.items()}
+    else:
+        boxes = {v: content_box(im) for v, im in ims3.items()}
     # one scale for the four skeleton views: the tallest / widest of them fills the tile
     s3 = min(min((T - 12) / (b[2] - b[0]), (T - 12) / (b[3] - b[1])) for b in boxes.values()) if boxes else 1.0
     tiles = []
@@ -73,7 +77,7 @@ W = 8 * T + 9 * 4
 H = head + len(rows) * (T + 26)
 sheet = Image.new("RGB", (W, H), (24, 24, 30))
 d = ImageDraw.Draw(sheet)
-d.text((8, 6), "집 골격 4면 — 2D | 골격 (앞 · 왼쪽에서 · 오른쪽에서 · 뒤), tools/skeleton_house.py + skeleton_preview.py", fill=(235, 235, 235), font=FONT)
+d.text((8, 6), "집 골격 4면 — 2D | 골격 (앞 · 왼쪽에서 · 오른쪽에서 · 뒤), " + ("WorldKit C2c 낮 (다른 집 숨김)" if a.studio else "tools/skeleton_house.py + skeleton_preview.py"), fill=(235, 235, 235), font=FONT)
 for r, (n, tiles) in enumerate(rows):
     y = head + r * (T + 26)
     d.text((8, y + 2), n, fill=(255, 210, 120), font=SMALL)

@@ -6,7 +6,7 @@ cameras, for side-by-side checks (이미지 생성 3, 10/11, SPEC A23-120).
           [--marble block|cream]
 
 --parts: tools/skeleton_house07.py json (Blender frame). Marble = art/ui/halo_tile/Halo_TowerMarbleBlock_* box-mapped at
-9 studs a tile (HH_HaloMarbleBlock), gold = Halo_GoldTrim_* tinted (255,175,25) at 4 studs (HH_HaloGoldTrim), glass
+9 studs a tile (HH_HaloMarbleBlock), gold = Halo_GoldTrim_* tinted (255,168,36) at 4 studs (HH_HaloGoldTrim), glass
 see-through. Only parts of group "house" are drawn. --glb: models drawn with their own materials.
 Renders front / q34 / side / back (ortho, 24 studs across) and three perspective close-ups (door, window, base corner).
 """
@@ -104,7 +104,7 @@ def s2l(c):
     return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
 
 
-GOLD = tuple(s2l(c / 255) for c in (255, 175, 25))
+GOLD = tuple(s2l(c / 255) for c in (255, 168, 36))
 MB, MS = {"block": ("Halo_TowerMarbleBlock", 9), "cream": ("Halo_TowerMarbleBlockCream", 12)}[a.marble]
 MATS = {
     "marble": tex_mat("marble", os.path.join(TILE, MB + "_color.png"), os.path.join(TILE, MB + "_rough.png"), MS, bump=0.4),
@@ -114,6 +114,7 @@ MATS = {
     "sky": flat_mat("sky", tuple(s2l(c / 255) for c in (150, 200, 240)), 0, 0.4),
     "wood": flat_mat("wood", tuple(s2l(c / 255) for c in (176, 118, 68)), 0, 0.8),
     "lamp": flat_mat("lamp", (1.0, 0.75, 0.35), 0, 0.3),
+    "neon": flat_mat("neon", (1.0, 0.62, 0.2), 0, 0.3),
     "fabricY": flat_mat("fabricY", tuple(s2l(c / 255) for c in (250, 205, 72)), 0, 0.9),
     "cloth0": flat_mat("cloth0", tuple(s2l(c / 255) for c in (250, 205, 72)), 0, 0.6),
     "cloth1": flat_mat("cloth1", tuple(s2l(c / 255) for c in (255, 243, 212)), 0, 0.6),

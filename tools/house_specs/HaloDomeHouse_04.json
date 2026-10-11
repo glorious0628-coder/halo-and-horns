@@ -1,16 +1,16 @@
 {
  "name": "HaloDomeHouse_04",
  "src2d": "art/out/s2/halo/houses/HaloDomeHouse_04_front_HQ_src.png",
- "note": "HouseA (24 x 22 x 26, tall dome). Square body 16 x 14, one tall storey, double arched door between two arched windows, gold corner pilasters, one gold medal above the door, two big front flower pots, tall gold ONION dome on a short square-ish base (drum_dome with no drum windows + onion true). No awning, no lantern pedestals in the 2D. Missing: window boxes under every window, small ball finials on the corner posts, arcade frieze under the cornice, small medals over the windows (see generator_gaps.md). Built from art/review/img3/HaloDomeHouse_04_check.jpg (2D panel); the 2D PNG and side view are not in the worktree.",
- "plan": {"shape": "rect", "W": 16.0, "D": 14.0},
+ "note": "HouseA (24 x 22 x 26, tall dome). Square body 16 x 14, one tall storey, double arched door between two arched windows, gold corner pilasters, one gold medal above the door, two big front flower pots, tall gold ONION dome on a short square-ish base (drum_dome with no drum windows + onion true). No awning, no lantern pedestals in the 2D. Missing: window boxes under every window, small ball finials on the corner posts, arcade frieze under the cornice, small medals over the windows (see generator_gaps.md). Built from art/review/img3/HaloDomeHouse_04_check.jpg (2D panel); the 2D PNG and side view are not in the worktree. | 10/11 저녁 (검수 판정): D 14.0 -> 11.2 (W 16.0, 2D side 0.75), pots y -1.40; top.R = 5.8; pilasters = {\"finial\": true}",
+ "plan": {"shape": "rect", "W": 16.0, "D": 11.2},
  "Z0": 1.1,
  "storeys": [{"h": 12.0, "win": {"w": 1.9, "type": "arch"}, "walls": {"front": [0.18, 0.82], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
  "door": {"w": 5.0, "h": 8.15, "double": true},
- "pilasters": true,
+ "pilasters": {"finial": true},
  "pedestals": false,
  "steps": "half",
- "pots": [[-6.9, 8.6, 3.8, 2.6], [6.9, 8.6, 3.8, 2.6]],
+ "pots": [[-6.9, 7.2, 3.8, 2.6], [6.9, 7.2, 3.8, 2.6]],
  "window_boxes": [["all", 0]],
  "medals": [["front", 0.5, 11.3]],
- "top": {"type": "drum_dome", "R": 6.2, "h": 1.6, "seg": 20, "windows": 0, "dome_h": 9.0, "onion": true, "ribs": 8}
+ "top": {"type": "drum_dome", "R": 5.8, "h": 1.6, "seg": 20, "windows": 0, "dome_h": 9.0, "onion": true, "ribs": 8}
 }

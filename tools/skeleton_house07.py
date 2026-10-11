@@ -256,9 +256,40 @@ for k in range(8):
 for k, (du, z) in enumerate(((3.5, Z1 - 0.75), (-3.5, Z1 - 0.75), (3.7, FRZ0 + 0.75), (-3.7, FRZ0 + 0.75))):
     add("FrontBall%d" % k, (0.5, 0.5, 0.5), wf.at(DU + du, z, 0.2), mat="gold", shape="Ball")
 
-# ---------------- hollow inside
-add("FloorInside", (2 * XS - 0.6, (YF - YB) - 0.6, 0.3), (CX, (YF + YB) / 2, Z0 - 0.15), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
-add("CeilingSlab", (2 * XS + 0.4, (YF - YB) + 0.4, 0.5), (CX, (YF + YB) / 2, Z1 + 0.25), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "marble")
+# ---------------- hollow inside: floor + ceiling as strips inside the octagon (검수 10/11 저녁: the old bounding-box
+# ceiling stuck about 2 studs out past the diagonal walls); the strip over the plan centre keeps the plain name
+def oct_slab(nm, d, zc, th, mat, tol=0.5):
+    Pp = []
+    for i in range(len(V)):
+        na, nb = walls[EDGES[i - 1][0]].n, walls[EDGES[i][0]].n
+        k = d / (1 + na[0] * nb[0] + na[1] * nb[1])
+        Pp.append((V[i][0] + (na[0] + nb[0]) * k, V[i][1] + (na[1] + nb[1]) * k))
+
+    def span(y):
+        cut = []
+        for i in range(len(Pp)):
+            (x0, y0), (x1, y1) = Pp[i], Pp[(i + 1) % len(Pp)]
+            if y0 != y1 and (y0 - y) * (y1 - y) <= 0:
+                cut.append(x0 + (x1 - x0) * (y - y0) / (y1 - y0))
+        return (min(cut), max(cut)) if len(cut) >= 2 else None
+    py = [y for _, y in Pp]
+    y0, yend, k = min(py) + 0.02, max(py) - 0.02, 0
+    while y0 < yend - 0.05:
+        for h in (3.0, 2.0, 1.0, 0.5):
+            y1 = min(y0 + h, yend)
+            s0, s1 = span(y0), span(y1)
+            if s0 and s1 and abs(s0[0] - s1[0]) <= tol and abs(s0[1] - s1[1]) <= tol:
+                break
+        if s0 and s1 and min(s0[1], s1[1]) - max(s0[0], s1[0]) > 0.05:
+            a_, b_ = max(s0[0], s1[0]), min(s0[1], s1[1])
+            add(nm if y0 <= CY < y1 else "%s_%d" % (nm, k), (b_ - a_, y1 - y0, th), ((a_ + b_) / 2, (y0 + y1) / 2, zc),
+                (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), mat)
+            k += 1
+        y0 = y1
+
+
+oct_slab("FloorInside", -0.3, Z0 - 0.15, 0.3, "floor")
+oct_slab("CeilingSlab", 0.2, Z1 + 0.25, 0.5, "marble")
 
 # ---------------- pilasters: big gold capital, band on the impost line, gold foot. They stay inside the cornice line (the
 # 2D cornice is the widest part of the walls). The two front ones face the front (the lanterns hang on them) and stand on
@@ -530,13 +561,13 @@ MARBLE = 'p.Material = Enum.Material.Marble; p.MaterialVariant = "%s"; p.Color =
 MAT = {
     "marble": MARBLE + '(255, 244, 222)',   # warm tint (WorldKit 10/11: the cream tile alone reads grey in the WorldKit light)
     "floor": MARBLE + '(238, 226, 205)',
-    "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 175, 25)',
+    "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 168, 36)',
     "soil": 'p.Material = Enum.Material.Sand; p.Color = Color3.fromRGB(140, 100, 62)',
     "sky": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(150, 200, 240)',
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
     # lamp glass: warm see-through glass by day (검수 v4c: no white Neon box); the PointLight is off in the place and
     # WeatherFx switches it on at Dusk / Night (attribute LampLight on the part)
-    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 1.2; l.Range = 14; l.Enabled = false; l.Parent = p',
+    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 2.5; l.Range = 16; l.Shadows = false; l.Enabled = false; l.Parent = p',
     "fabricY": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(250, 205, 72)',
     "fabricC": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(255, 243, 212)',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',

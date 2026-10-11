@@ -1,21 +1,28 @@
-# 이미지 생성 3 — 상태 (2026-10-11 저녁, 새 세션)
+# 이미지 생성 3 — 상태 (2026-10-11 밤)
 ## 지금 상태 한 줄
-**④ 골격 15채 검증 끝(10/11 저녁), 검수 판정 + 사용자 Import 3D 1번 기다림.** 세 API 브랜치(houses-b1-fix b56640ad·house-specs-b2 2f6a241f·houses-gaps a253481e)는 내용이 전부 main(4183f827·8e45c792·398da10f)에 있음 — 다시 병합 안 함. 생성기 고침 10가지(records.json `halo_houses15_skeleton_v2_2026-10-11`). 4면 시트 `art/review/img3/houses/houses_4view_{a,b,c}.jpg`, WorldKit C2c 낮·밤 시트 `houses_studio_c2c_{a,b,c}.jpg`. 장식 합본 `import_now/halo_houses15_ornaments.glb`(159부품, WorldKit 자리 맞춤) 가져오기 기다림.
-## 10/11 저녁 검증 (새 세션)
-- 겹침 검사(부품 OBB + 원통, 0.12칸 넘는 것): 171 → 102 묶음. 남은 것은 일부러 붙인 이음(쐐기돌-층 띠, 계단-바닥, 07과 같은 받침-벽기둥).
-- 고친 것: 둥근·팔각 바닥/천장/옥상 판 삐짐(poly_slab), 화분 자동 비키기(clear_pot), 창 가리는 받침 낮춤+금 공, 벽기둥 속 등불 앞으로, 차양 높이 제한, 둥근 옥상 난간 기둥, 06 창 상자 w0~w3, 11 굴뚝 자리·벽 높이, 가게 벽 등불 `lanterns`, 08 화분, 작은 돔 면 줄임(198k tris).
-- WorldKit: SkeletonTest에 15채(앞 줄 z 60 x 2940~3192, 뒤 줄 z 115 x 2940~3156, 36칸 간격) + HouseRows_Ground. 빛·카메라는 되돌림. 사진 `art/review/img3/houses/studio_c2c/`(디스크만).
-- 가져온 뒤 할 일: 합본은 원점 3000,0,0 기준 → 가져온 모델 PivotTo(07 때 식: roblox = (-x_b, z_b, y_b) + T, 문 상자로 T 풀기) → 금 = Metal+HH_HaloGoldTrim (255,175,25), Leaf = Wood, Glass = Glass 0.3 → 낮·밤 사진.
-- 남은 2D 차이(검수 판정 필요): 옆·뒤 창 수가 2D보다 많은 집(01·09), 2D 옆면 깊이가 더 얕음(가게들), 식물·담쟁이·간판·박공·파라솔·온실·벽돌 돔 없음, 04·Juice 등불 없음.
-- 옛 시트 `houses_all15_blender.jpg`·`houses_batch1_blender.jpg`·옛 합본 `halo_houses_batch1_ornaments.glb`는 지움(새 시트·합본으로 바뀜).
-- 집 07 골격(skeleton_house07.py)도 네모 천장판이 팔각 대각 벽 밖으로 약 2칸(계산, 처마돌보다 약 0.8 더) 나감 — 승인판이라 안 고침, 검수 판정 기다림.
+**④ 골격 15채 v3 (검수 판정 1·2·4·6·7 고침) 끝, 검수 보고함 → 다음 = 3번 Tripo 장식.** records.json `halo_houses15_skeleton_v3_2026-10-11`. 4면 시트 `art/review/img3/houses/houses_4view_v3_{a,b,c}.jpg`, WorldKit C2c 낮·밤 `houses_studio_c2c_v3_{a,b,c}.jpg`(사진 `studio_c2c_v2/`, 디스크만). WorldKit SkeletonTest 15채 = v3(앞 줄 z 60 x 2940~3192, 뒤 줄 z 115 x 2940~3156, 36칸 간격, + HouseRows_Ground, 등불 네온 심지 LampCore). 집 07 천장·바닥판 팔각 띠로 바꿔 끼움. 금 = (255,168,36) 최종(이미지 개발 적용 cd1aaa3, 검수 확정값 195,45에서 집 07 비교로 바뀜 — 검수에 알림; 생성기·07·미리보기·metal_ornaments 반영).
 
-## 기다리는 것 / 다음 일 (10/11 저녁, 검수에 보고함 — push 16189b4e)
-- 기다림: ① 검수 판정(15채 4면·WorldKit 시트) ② 사용자 Import 3D 1번 `import_now/halo_houses15_ornaments.glb` → 가져오면 PivotTo + 재질 + 낮·밤 사진 ③ 이미지 개발이 WorldKit 금 MV(HH_HaloGoldTrim 금속 0.5·거칠기 0.15) + 금 파트 색 (255,195,45)로 바꾸는 중 → 집 07 비교 끝(10/11 저녁, 761ef61): 새 MV 반짝임은 좋지만 (255,195,45)는 2D보다 레몬빛 → 후보 시험 결과 **(255,168,36) 추천**(시트 `art/review/img3/skeleton07/house07_gold_candidates.jpg`, `house07_gold2_compare.jpg`), 이미지 개발에 보냄. 이미지 개발이 최종 값을 알려 주면 `tools/skeleton_house.py`·`skeleton_house07.py` MAT["gold"] 색을 그 값으로 바꾸고 push(지금 생성기는 255,175,25 그대로) ④ 집 07 네모 천장판 고칠지 검수 답.
-- 다음 큐(검수 10/11): A23-122 다시 만들기 `docs/review/3d_recheck_2026-10-11_result.md`(178개 다시, 통과 0) 순서대로.
-  1. ② "모양은 쓸 만함, Blender 손보기만" 11개 — 2D 새 그림 없이: 원은 원으로·대칭·구멍/혹/떠 있는 조각 제거·부품 나누기·면 줄이기·C/N/R/M 4장 굽기 → records.json → WorldKit 낮·밤 사진 2D와 나란히 → 12항목 시트로 보고.
-  2. ① 빛 마을 v2 70개 중 4면 2D가 이미 통과한 것부터 Tripo HD H3.1 멀티뷰 → Blender → Roblox 재질(예: 등불 정면 3개, 벤치 A·C 옆면 통과). 4면 2D 없는 것은 목록으로 검수에(이미지 생성 2가 그림). Tripo 묶음은 시작 전 개수·예상 포인트를 검수에 보내 승인.
-- 규칙(검수 10/11): 묶음 보고 뒤 대화가 길면 이 파일 갱신·push → clear_session("self") → AGENTS 읽기 순서로 다시 시작. Tripo가 돌거나 일 중간이면 비우지 않음.
+## 검수 판정 (10/11 저녁, 16189b4e 본 뒤) — 처리 상태
+- 통과: 골격 구조(벽·층·창·문 구멍·속 빔) + 겹침 고친 10가지.
+- 1) 비율: 깊이 = 앞 폭 × 2D 옆면 비율(0.6~0.7), 최소 10 — **했음**(둥근 01·06·09는 원통이라 그대로). 바뀐 바닥 크기 표는 이미지 생성 1에 보냄(10/11 밤, 답 기다림).
+- 2) 굵은 모서리 기둥 — **했음**(네모 집 2.0칸, 팔각은 07처럼 1.3 띠).
+- 3) 장식 = A23-125대로 다시 — **다음 일**(아래).
+- 4) 01·09 창 2D 개수, 04(2D 등불 없음)·Juice 등불, 등불 밤빛 — **했음**.
+- 5) 꽃 가게 온실 지붕(유리 파트 + 금 틀)·박공 = 골격으로 — **아직**(생성기 기능 추가 필요).
+- 6) 집 07 천장판 — **했음**. 7) 금 색 — **했음**(최종 255,168,36).
+- 바닥 크기(W × D, 둥근 = 지름): 01 16.4 원, 02 21×12.6, 03 16×11.2(팔각), 04 16×11.2, 05 26×15.6, 06 14.4 원, 08 19×13.1, 09 16 원, 10 15.6×10.3(팔각), 11 20×12.4, 12 21×13, Bakery 20×12, Flower 18×10.8, Juice 20×12, Potion 19×11.4 (+ 기둥·처마 바깥 약 1.2, 앞 계단·화분 약 4).
+
+## 다음 일 3번: Tripo 장식 (돈 안 듦 — 이미 있는 HD 멀티뷰 15개)
+- 재료: `art/models/tripo/web/<집>_HD_src.glb` → 이미 나눈 `art/models/tripo/halo_houses/<집>/<집>_parts.glb`(Door·DoorHw·Awning·WinPane·Glass·Body_t00~t11, 부품마다 맵). 돔·첨탑은 Body 타일 안에 있음.
+- 잘라 낼 것: 돔·첨탑(꼭지), 문짝, 등불, 차양 틀, 파라솔(Juice), 벽돌 돔(Bakery). 천 차양 몸은 Studio Fabric 그대로. 식물·담쟁이·간판은 5단계.
+- 도구: `tools/skeleton_keep.py`(house 모드: Roof z ≥ roof_z, Lanterns 상자, Door·DoorHw 유지) → `tools/skeleton_place.py`(골격 자리로 scale/move/align; 생성기가 place.json을 써야 함 — skeleton_house.py에 아직 없음, skeleton_house07.py `_place.json` 참고) → Blender 손보기: 돔 = 원으로(roof_fit.py처럼 극좌표 맞춤, 갈빗대 대칭), 문고리·경첩 = metal_ornaments 정확한 모양으로 바꿔 끼우기 OK, 등불 = 대칭, 떠 있는 조각·구멍 제거(`tools/piece_fix.py`) → 부품마다 C/N/R/M 굽기(piece_fix) → records.json → 합본(glb_merge @오프셋) → 검수 경유 사용자 Import 3D → PivotTo·재질 → 낮·밤 사진.
+- 그다음: `docs/review/3d_recheck_2026-10-11_result.md` ② 'Blender만' 11개 → ① 빛 마을 v2(4면 2D 통과한 것부터, Tripo 묶음은 개수·포인트 검수 승인).
+- 규칙(검수 10/11): 묶음 보고 뒤 대화가 길면 이 파일 갱신·push → clear_session("self"). Tripo가 돌거나 일 중간이면 비우지 않음.
+
+## 이전 기록 (10/11 저녁 검증 v2, 16189b4e)
+- 세 API 브랜치(houses-b1-fix b56640ad·house-specs-b2 2f6a241f·houses-gaps a253481e) 내용은 main(4183f827·8e45c792·398da10f)에 있음 — 다시 병합 안 함.
+- v2 고침: 둥근·팔각 바닥/천장 삐짐(poly_slab), 화분 자동 비키기(clear_pot), 받침 낮춤, 벽기둥 속 등불, 차양 높이 제한, 둥근 옥상 난간 기둥, 06 창 상자, 11 굴뚝·벽 높이, 가게 벽 등불, 작은 돔 면 줄임. records `halo_houses15_skeleton_v2_2026-10-11`.
+- 겹침 검사: `py tools/skeleton_overlap.py <skel json 폴더> [0.12]` (부품 OBB + 원통, 일부러 붙인 이음은 뺌).
 
 ## 4판에서 바꾼 것 (검수 판정 6 + 측정)
 - 몸통: 2D 실루엣(벽 폭 : 처마 위 = 1 : 0.86, 기둥 포함)을 다시 재 보니 옛 목표 XS 8.0·HF 5.25는 너무 납작(0.74) → **XS 7.6, HF 4.75, 대각 45°(2.85×2.85, Tripo 지붕 팔각과 같음), 깊이 = Tripo×1.13, Z1 12.35(처마 위 13.25)**. 실루엣 비 ≈ 0.80. 문 5.0×8.15 그대로.

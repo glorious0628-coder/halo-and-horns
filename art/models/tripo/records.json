@@ -9055,5 +9055,44 @@
    "worldkit": "Workspace.SkeletonTest.<name>_Skeleton, 앞 줄 z 60 (x 2940~3192, 36칸 간격), 뒤 줄 z 115 (x 2940~3156) + HouseRows_Ground",
    "credits": 0
   }
+ ],
+ "halo_houses15_skeleton_v3_2026-10-11": [
+  {
+   "event": "skeleton_fix",
+   "at": "2026-10-11 19:00",
+   "by": "이미지 생성 3",
+   "after_review": "검수 판정(16189b4e 뒤): 골격 구조·겹침 10가지 통과, 2D와 같은 집으로는 아직 안 읽힘 -> 1·2·4·6·7번 고침",
+   "changes": [
+    "깊이 = 앞 폭 x 2D 옆면 비율(0.6~0.7로 묶음), 10칸 아래로 안 줄임: 02 17->12.6, 03 15->11.2, 04 14->11.2, 05 16->15.6, 08 17->13.1, 10 15->10.3, 11 14.5->12.4, 12 15->13, Bakery 13.5->12, Flower 12.5->10.8, Juice 13->12, Potion 13->11.4 (둥근 01·06·09는 원통이라 그대로). 앞 화분은 앞벽과 함께 뒤로",
+    "모서리 기둥: 네모 집은 굵은 흰 기둥(2.0칸, 벽 밖 0.6) + 금 머리·발·층 띠, 지붕 위로 굵은 난간 기둥 또는 돔 지붕 위 기둥 머리(+금 공 04·10·Bakery·Juice·Potion), 11에도 기둥",
+    "계단 옆 받침 = 2D처럼 낮은 기둥 + 금 공(옛 4.85 높이 받침은 'tall' 선택지로만, 집 07 방식)",
+    "01·09 창 = 2D 개수(앞 2·옆 1·1·뒤 2, 앞 창은 문 가까이로), Juice 벽 등불 2D 자리, 04는 2D에 등불 없음",
+    "03·10 받침 빼고 벽 등불(앞벽이 짧아 받침이 벽기둥 속), 02 드럼 R 6.0, 04 R 5.8, 팔각 위 돔은 깊이에 맞춤, 드럼 받침 원형",
+    "등불: PointLight 2.5/16 + 네온 심지(LampCore, 2D 등불처럼 늘 켜진 빛) -> 밤 사진에 불빛 보임",
+    "금 = Metal + HH_HaloGoldTrim (255,168,36): 검수가 195,45로 정했으나 집 07 2D 비교에서 레몬빛 -> 후보 시험(255,168,36 가장 가까움) -> 이미지 개발 최종 적용(WorldKit 4110파트, cd1aaa3), 생성기·07·미리보기·metal_ornaments 맞춤. MV 금속 0.5·거칠기 0.15",
+    "집 07(skeleton_house07.py) 네모 천장·바닥판 -> 팔각 안 띠 판(WorldKit House07_Skeleton에 바꿔 끼움: 옛 2개 -> 28개)",
+    "가게 문·차양·창 자리를 굵은 기둥에 안 닿게(Bakery 문 u .73·차양 16, Juice 문 .27·진열창 .69·차양 9, Potion 문 .7, Flower 창 .16/.84·차양 10.4, 01 차양 7.2)"
+   ],
+   "overlap_check": "171 -> 98 묶음(남은 것 = 쐐기돌-층 띠·계단-바닥 같은 이음, 0.33칸 이하 닿음, 10 발코니 판이 팔각 기둥을 지나감)",
+   "ornaments": "metal_ornaments.py로 처음부터 만든 돔·문짝·등불 틀은 최종 아님(검수: Tripo 단계 빠짐) -> 다음 일: 집 Tripo HD 멀티뷰 15개에서 잘라 Blender 손보기 + C/N/R/M 굽기. import_now 합본은 지움(가져오기 보류)",
+   "evidence": {
+    "4view": [
+     "art/review/img3/houses/houses_4view_v3_a.jpg",
+     "art/review/img3/houses/houses_4view_v3_b.jpg",
+     "art/review/img3/houses/houses_4view_v3_c.jpg"
+    ],
+    "worldkit_c2c": [
+     "art/review/img3/houses/houses_studio_c2c_v3_a.jpg",
+     "art/review/img3/houses/houses_studio_c2c_v3_b.jpg",
+     "art/review/img3/houses/houses_studio_c2c_v3_c.jpg"
+    ],
+    "worldkit_photos": "art/review/img3/houses/studio_c2c_v2/{day,night}/ (디스크만)",
+    "gold": [
+     "art/review/img3/skeleton07/house07_gold2_compare.jpg",
+     "art/review/img3/skeleton07/house07_gold_candidates.jpg"
+    ]
+   },
+   "credits": 0
+  }
  ]
 }

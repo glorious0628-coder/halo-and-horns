@@ -1,16 +1,15 @@
 {
  "name": "HaloDomeHouse_11",
  "src2d": "art/out/s2/halo/roofs/HaloDomeHouse_11_roof_v2.png",
- "note": "HouseB (26 x 18 x 28, wide/low). Low cottage body 20 x 14.5, one 9-stud storey, single arched door with lantern pedestals, an arched window each side of the door, flower planters left/right in front (two wide pots). No awning in the 2D. Roof in the 2D is a blue tiled HIP roof with a gold ridge finial and a chimney: the generator cannot make it, so the top is the closest flat roof with a solid gold-capped parapet. Missing: tiled hip roof, chimney, corbels under the eaves, climbing ivy / low curved planter walls (see generator_gaps.md). Built from art/review/img3/HaloDomeHouse_11_check.jpg (2D panel); the 2D PNG and side view are not in the worktree.",
- "plan": {"shape": "rect", "W": 20.0, "D": 14.5},
+ "note": "HouseB (26 x 18 x 28, wide/low). Low cottage body 20 x 14.5, one 9-stud storey, single arched door with lantern pedestals, an arched window each side of the door, flower planters left/right in front (two wide pots). No awning in the 2D. Roof in the 2D is a blue tiled HIP roof with a gold ridge finial and a chimney: the generator cannot make it, so the top is the closest flat roof with a solid gold-capped parapet. Missing: tiled hip roof, chimney, corbels under the eaves, climbing ivy / low curved planter walls (see generator_gaps.md). Built from art/review/img3/HaloDomeHouse_11_check.jpg (2D panel); the 2D PNG and side view are not in the worktree. | 10/11 저녁 (검수 판정): D 14.5 -> 12.4 (W 20.0, 2D side 0.62), pots y -1.05; pilasters = true",
+ "plan": {"shape": "rect", "W": 20.0, "D": 12.4},
  "Z0": 1.1,
  "storeys": [{"h": 9.6, "win": {"w": 1.9, "type": "arch"}, "walls": {"front": [0.14, 0.86], "left": [0.5], "right": [0.5], "back": [0.25, 0.75]}}],
  "door": {"w": 5.0, "h": 8.15, "double": false},
- "pilasters": false,
+ "pilasters": true,
  "pedestals": true,
  "steps": "half",
- "pots": [[-8.6, 8.8, 4.6, 2.4], [8.6, 8.8, 4.6, 2.4]],
+ "pots": [[-8.6, 7.75, 4.6, 2.4], [8.6, 7.75, 4.6, 2.4]],
  "medals": [],
- "top": {"type": "flat", "parapet": "none", "h": 1.0, "skylight": null, "topiary": [],
-         "hip": {"h": 5.5, "eave": 1.5, "chimney": [-7.5, -1.5, 1.8, 2.6]}}
+ "top": {"type": "flat", "parapet": "none", "h": 1.0, "skylight": null, "topiary": [], "hip": {"h": 5.5, "eave": 1.5, "chimney": [-7.5, -1.28, 1.8, 2.6]}}
 }
