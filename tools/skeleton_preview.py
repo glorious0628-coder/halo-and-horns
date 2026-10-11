@@ -116,6 +116,7 @@ MATS = {
     "cloth1": flat_mat("cloth1", tuple(s2l(c / 255) for c in (255, 243, 212)), 0, 0.6),
     "fabricC": flat_mat("fabricC", tuple(s2l(c / 255) for c in (255, 243, 212)), 0, 0.9),
     "glass": flat_mat("glass", tuple(s2l(c / 255) for c in (170, 215, 245)), 0, 0.05, 0.45),
+    "slate": flat_mat("slate", tuple(s2l(c / 255) for c in (90, 140, 210)), 0, 0.5),
 }
 
 CL = [tuple(s2l(int(c) / 255) for c in part.split(",")) for part in a.cloth.split(";")]

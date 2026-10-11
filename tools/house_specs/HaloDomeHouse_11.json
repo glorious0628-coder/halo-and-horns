@@ -11,5 +11,6 @@
  "steps": "half",
  "pots": [[-8.6, 8.8, 4.6, 2.4], [8.6, 8.8, 4.6, 2.4]],
  "medals": [],
- "top": {"type": "flat", "parapet": "solid", "h": 1.0, "skylight": null, "topiary": []}
+ "top": {"type": "flat", "parapet": "none", "h": 1.0, "skylight": null, "topiary": [],
+         "hip": {"h": 5.5, "eave": 1.5, "chimney": [5.0, -2.0, 1.8, 2.6]}}
 }

@@ -12,6 +12,8 @@
  "awning": {"w": 6.8, "colors": [[110, 165, 232], [214, 240, 222]], "n": 7},
  "pots": [[-7.6, 9.2, 3.6, 2.6], [7.6, 9.2, 3.6, 2.6]],
  "steps": "half",
+ "balconies": [{"storey": 1, "walls": ["front_l", "front", "front_r"], "depth": 1.4}],
+ "window_boxes": [["left", 1], ["right", 1], ["back", 1]],
  "medals": [],
  "top": {"type": "drum_dome", "R": 4.6, "h": 1.2, "seg": 16, "windows": 0, "dome_h": 7.5, "onion": true, "ribs": 8}
 }

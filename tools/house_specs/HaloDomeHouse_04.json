@@ -10,6 +10,7 @@
  "pedestals": false,
  "steps": "half",
  "pots": [[-6.9, 8.6, 3.8, 2.6], [6.9, 8.6, 3.8, 2.6]],
+ "window_boxes": [["all", 0]],
  "medals": [["front", 0.5, 11.3]],
  "top": {"type": "drum_dome", "R": 6.2, "h": 1.6, "seg": 20, "windows": 0, "dome_h": 9.0, "onion": true, "ribs": 8}
 }
