@@ -19,7 +19,9 @@ dev3-gather 켜기 전 고칠 것: 1) 채집 재료 팔 곳 없음(LootService 6
 - 허용 숫자(TolMs, 개발 3 질문 답): 1번 두드림 = 250ms + 1.5×핑(세션 시작·지금·받을 때 중 큰 핑), **2~5번 = 앞 두드림과의 간격으로 비교, 120ms**(핑이 지워짐). 시험에 '실제 +290ms를 40ms로 속임 → Miss' 변이.
 
 ## 못 보낸 보고 — 최종 검수에 (spawnclear)
-- **병합 가능 fix/spawnclear a86ca243**(5e524e70·c54f4bfb·a86ca243). 시험 병합 f51720a0 충돌 0, src 2개 compile OK. spawn_clear 179·62/62 + 관련 13개(Game-gprev3 결과 확인 후 적기).
+- **병합 가능 fix/spawnclear a86ca243**(5e524e70·c54f4bfb·a86ca243). 시험 병합 f51720a0 충돌 0, src 2개 compile OK. 시험 14개 모두 통과(변이 포함): spawn_clear 179·62/62, first_ko_king 300·151/151, monster_spacing 271·126/126, tutorial_spawn 45·24/24, field_boss 237·98/98, boss_leap 81·48/48, mobs3 69·32/32, monster_level 27·11/11, walk_ground_server 23·10/10, skills 151·88/88, finisher 135·69/69, a2390 45·25/25, friend_pvp 95·22/22, ko_screen 52·30/30. **a86ca243이 main의 test_skills·test_finisher 낡은 패턴을 고침** → 병합되면 main 시험 문제(아래)도 풀림.
+- 묶음 ① a23_14 변이판 끝: 291·변이 99/99 통과 → 묶음 ① 완전 확인(최종 검수에 알릴 것).
+- dev3-craft **22cda7d5**: 개발 3이 개발 4 CraftMini(같은 파일 해시 f51e808e)를 그대로 씀 → 위 '판정 하나로'는 이미 됨. 시험 중(Game-gprev 96e3650f). TolMs 질문은 내가 '베타는 지금 창 그대로 + 두드림 어긋남 기록(지표)으로 10/17 시험 뒤 조정'으로 정함(2~5번 간격 120ms는 일정하게 늦게 누르는 속임은 못 막아서 효과 작음).
 - 실제 지도(내가 잼, 새 CLEAR 코드를 place 72a5f19b 부품 위에서 그대로 실행, scratch spawn2/rv2_measure.py·json): 설계 검사관 추천 규칙과 판정 일치 98~99.9%(다른 곳은 전부 꽃·풀 Pass로 새 코드가 더 풀어 줌), 옛 규칙 대비 잃은 면적: 숲 고블린 32.0%(추천 예상 32.6%, 옛 가지 45.7%), 브루트 36.0%(37.0%/49.8%), 초원 슬라임 17.1%, 빅 슬라임 23.9%, 폐허 0.4~0.8%. 첫 KO 킹 '모두 막힘' 11.5% → 4.1%(24곳), 킹 언덕 60칸 안 19.4% → 10.5% — 실패 시 FirstKOService가 SpawnGap 4초 뒤 그때 위치로 다시 시도 → 몇 초 늦을 뿐.
 - 메인 반영 1: 병합·sync 뒤 tools/spawn_clear_probe.luau를 메인 Studio Edit에서 돌려 위 숫자와 비교 + 숲·초원 몹 생김 사진.
 
