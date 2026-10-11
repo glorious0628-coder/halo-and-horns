@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-11 밤 3차: 금 파트 색 확정)
+
+- **금 파트 색 (255,168,36) 확정** (이미지 생성 3 집 07 사진 후보 4개를 내 눈으로도 봄: 195,45는 레몬·올리브빛, 250,155,30은 갈색 쪽, 168,36이 2D에 가장 가까움). WorldKit 4110개 적용 끝(저장 안 함). 생성기 상수 바꿀 곳: 이미지 생성 1(skeleton_civic·skeleton_ground GOLD_RGB), 이미지 생성 3(skeleton_house·house07·preview). 남은 차이 = Studio 금이 2D보다 어두움(빛·노출 쪽, 추측) — 조명 값 적용(ZoneLook HaloTown C2c) 뒤 다시 봄.
+
 # 이미지 개발 — 상태 (2026-10-11 밤 2차: 금 WorldKit 적용·FF3 시트)
 
 - **금 WorldKit 적용 끝(저장 안 함):** HH_HaloGoldTrim 파트 4110개 색 (255,195,45), MV 금속 137160255192059(0.5)·거칠기 109029776386025(0.15). 도구 `tools/gold_trim_apply.luau` (MODE survey/apply/undo, 메인은 ALLOW_MAIN 막음). 최종 확인 = 이미지 생성 3의 다음 집 07 사진(2D 옆) — 어긋나면 파트 색만. 메인엔 새 마을 들어갈 때 같이.

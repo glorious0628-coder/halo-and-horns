@@ -38,10 +38,10 @@
    "rough": "rbxassetid://109029776386025",
    "partColor": [
     255,
-    195,
-    45
+    168,
+    36
    ],
-   "use": "WORKING VALUE (검수 10/11 밤, gold round 2 in the main Halo-town light, art/review/imgdev/gold_candidates_sheet2_2026-10-11.jpg): metalness 0.5 (Halo_GoldTest_metal50) + roughness 0.15 (Halo_GoldTest_rough15) + part Color (255,195,45) (2D gold median ~(234,176,69), hue ~39deg = warm gold, not lemon). Final check = the next skeleton photo next to the 2D (house 07 etc.); if it is off only the part Color changes. Previous values (metal 0.7 / rough 0.35 / 255,175,25) were mustard under the wrong UiSandbox light; old maps rough 82910627301523 / metal 91394364117916."
+   "use": "WORKING VALUE (검수 10/11 밤, gold round 2 in the main Halo-town light, art/review/imgdev/gold_candidates_sheet2_2026-10-11.jpg): metalness 0.5 (Halo_GoldTest_metal50) + roughness 0.15 (Halo_GoldTest_rough15) + part Color (255,168,36) (10/11 night: 255,195,45 read lemon next to the 2D in 이미지 생성 3 house 07 photos, art/review/img3/skeleton07/house07_gold_candidates.jpg; 168,36 closest; was 255,195,45; 2D gold median ~(234,176,69), hue ~39deg = warm gold, not lemon). Final check = the next skeleton photo next to the 2D (house 07 etc.); if it is off only the part Color changes. Previous values (metal 0.7 / rough 0.35 / 255,175,25) were mustard under the wrong UiSandbox light; old maps rough 82910627301523 / metal 91394364117916."
   },
   {
    "name": "HH_Fabric",
