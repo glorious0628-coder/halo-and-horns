@@ -1,10 +1,20 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
-## 지금 (10/11 18:10, 비우기 전) — 먼저 읽기
+## 지금 (10/11 밤, plan v2 검수 고침 끝, 비우기 전) — 먼저 읽기
 - 검수 = **local_d522c0f1-07cf-4db1-b178-5f335a56db7c** (모든 것 검수). 보고는 send_message로 묶음마다 한 번.
-- **WorldKit Studio 열려 있음(최소화)**, `build/WorldKit.rbxlx`(15:20 저장)를 연 것 + 오늘 고친 지형·Ground. **파일 저장 안 함** — 닫혀서 잃으면 창 없이 다시: `py tools/halo_blockout.py --mode terrain` → build/wk/halo_blockout_apply.lua를 execute_luau(STUDIO_NAME=WorldKit, Edit) → `py tools/worldkit/skeleton_ground_run.py`. 열 때는 `Start-Process <Studio exe> build\WorldKit.rbxlx -WindowStyle Minimized`(검수 허락 뒤), 사진 도구는 창을 앞으로 안 끌어옴(SW_SHOWNOACTIVATE), 끝나면 최소화.
-- 끝낸 묶음(검수 보고함): 섬 2차(통과), 광장 원판 아래 지형 1칸·훈련장 모래(e39c823), 구획 지도 + A23-117 이유 칸 + 문 앞 턱·건물 받침 고침(5d9c471).
-- **기다리는 것:** 검수 답 — 5d9c471 묶음 판정 + 다음 일 지시. 내가 제안한 다음 일 = 5단계 입히기 준비(plan `dressing.by_district` 글을 소품 하나하나 `why` 칸으로 쪼개기, A23-117).
+- **끝낸 것(e8bd29f + 353c72c, 검수에 보고함):** `docs/review/halo_plan_v2_review_2026-10-11.md` 결정 7개 + 진짜 16건 + 확인 안 한 21건 고침.
+  - 걷는 속도 = Config.Player.WalkSpeed(20, plan `walk_speed`). 성문→대성당 **26.0초**(대성당 굽은 계단 `cathedral_stairs` w12, 세 번 꺾음, 자체 높이 `ys`, `rails=True` → 걷기 계산이 난간 칸을 막음 + 대각선 모서리 질러가기 금지). 새 구역 `cathedral_steps`(계단 사이 꽃 단 = 가까운 계단 높이, halo_blockout `terrace`). 대성당 (84,-772), 앞 마당 (82,-718).
+  - 전망대 y 28(탑 꼭대기 78 < 대성당 84), 검사 "대성당보다 높은 땅/건물". 절벽 마을 = 진짜 두 단: `tiers` 위 단 22(집 3·4·5·6·8), 아래 18(1·2·7), 절벽-전망대 계단 `cliff_lookout`.
+  - 발판 둘레 12×12+2(`PADS`, `PAD_KEEP` 8): 고리길 남쪽으로, Tower_GateEast (39,-346) 문 남쪽, 채움 빛 2개 옮김, Sir Gleam (-20,-390). 검사: 길·건물·채움 빛·고정점·소품·등불 vs 발판.
+  - 다리 = 길-시냇물 교차점에 자동(`fix_bridges`, `BRIDGE_ROAD`), B4 새(정원 길), B2 len 16. 검사 "다리 없이 물 건넘"·"길이 물에 걸림"·"시냇물이 건물에 걸림"·"마당이 건물에 걸림". 샘·W2·정원 웅덩이·W3 자리 높이에 맞게.
+  - 구역 밖 = 모서리 + 받침 5 전부 안(`PAD_MARGIN`): 12채 옮김(+시장 위 언덕·정원 마을 다각형 넓힘), 자리는 scratchpad fit.py로 찾음. 받침 높이 다른 집 맞닿음 검사.
+  - 문 길(`door_spurs`): 문 5칸 앞 점에서 가까운 길, 자기 집·남의 집·발판을 모서리 하나로 돌아감. 자기 문 길은 0번 구간만 검사 제외. 블록아웃 길은 건물 안 칸을 안 칠함.
+  - 기울어진 구역 건물 받침 = 문 자리 땅 높이(시장 4→8·정원 12→16), 문 앞 턱 옆도 섞음(APRON_SIDE 8). 광장 원판 낮춤 규칙 = 두 도구 같은 칸 가운데 기준(skeleton_ground `D.grid`).
+  - 첫 10분 = 실제 흐름(스폰+Hallie 카드 → 성문 → 교차로 대장간 → 초원), 가게·훈련장은 `first_10_return`(M1_4). 이유 글 = 새 집 문서(halo_new_houses) 주민대로, 고정점 code 글 = 최종 숫자(`final_fixed`, 가게 NPC는 자기 문 옆). 큰 길은 분수 동쪽으로.
+  - 결과: plan 검사 0건, 소품 129 + 등불 56 검사 0건, 고장 넣어 시험 6가지 다 잡힘. 고정점 표 다시 만듦.
+- **WorldKit(열림, 파일 저장 안 함)에 새 계획 다 다시 지음(10/11 밤):** halo_blockout apply → skeleton_civic_run(4채) → skeleton_ground_run(1467조각, CSG 실패 0) → halo_props_place(185, 땅 못 찾음 0). 높이 재확인(계단 10→30, 두 단 18/22, 전망대 28). 집·가게·대성당·성은 회색 상자(이미지 생성 3 골격 대기, 자리가 바뀐 것: 가게 2·집 다수·성·대성당).
+- 사진은 아직(창 필요 → 검수 허락). 경로 확인 도구: `HALO_DUMP=1 py tools/halo_blockout.py` → build/wk/blockout_grid.json.
+- **기다리는 것:** 검수 판정. 개발 쪽에 넘길 것(검수 몫): 훈련장을 퀘스트가 가리키게 할지(코드 변경 요청), 고정점 표 B(NPC 새 At/Look).
 - **이미지 개발 부탁:** HH_Fabric 밤 사진을 내 WorldKit 촬영 때 같이 찍고 싶어함 → 내 다음 WorldKit 촬영 차례가 정해지면 검수에 먼저 알릴 것.
 - 메인 Studio(81671223175574)는 절대 안 건드림, 옛 메인 4차 적용 안 함.
 
