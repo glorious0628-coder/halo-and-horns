@@ -9,3 +9,9 @@
 - 대상: FlowerBush·GatherBush·WallLamp·Beehive·Telescope·Easel·BellFrame. 앞면 Medium을 참조로 High 재생성(`HaloKit_<키>_front_HQ_src.png`) → 그 HQ 앞면을 참조로 뒤·왼·오른 High(`HaloKit_<키>_{back,left,right}.png`), 폴더 `art/out/s2/halo/kits_mv/`. 28장 High = 140크레딧.
 - 프롬프트 `art/prompts/HaloKit_<키>_{back,left,right}.txt`, 생성기 `tools/_halo_kit_mv_prompts.py`, 시트 `tools/_halo_kit_mv_sheet.py` → `art/review/s2/halo_kits_mv_{1,2}.jpg`(앞|뒤|왼|오른), 앞면만 `halo_kits_front_HQ.jpg`.
 - 내 판정: 6종 통과(형태·색·금 장식 4면 일치, 깨짐·떠 있는 조각·얼굴 무늬·글자·레이 없음). **Beehive는 주의**: 앞면은 박공(문구멍이 있는 삼각 면)인데 옆·뒤는 한쪽으로 기운 외쪽지붕처럼 나옴(지붕 모양 불일치) → Tripo 전에 지붕을 박공으로 맞춰 다시(옆면 2~3장 재생성) 권함.
+
+## 4면 High 2차: Tripo 몫 6종 (10/11 밤, 검수 지시 순서 ① 흰 바위 3종 ② 빵 바구니 ③ 물뿌리개 ④ 생울타리)
+- WhiteRock_a/b/c·BreadBasket·WateringCan·Hedge. 앞면 Medium(`kits_new`) → High 앞면(`HaloKit_<키>_front_HQ_src.png`) → 뒤·왼·오른 High. 폴더 `art/out/s2/halo/kits_mv2/`, 시트 `art/review/s2/halo_kits2_mv_{1,2}.jpg`, 앞면만 `halo_kits2_front_HQ.jpg`. 24장 High = 120크레딧.
+- Hedge는 받침 없이 앞면 Medium 2장(`HaloKit_Hedge_nb_a/b_front.png`)을 새로 뽑아 긴 블록형 a 채택(b는 둥근 덤불이라 제외, 길이 2종은 배율로). 프롬프트 `art/prompts/HaloKit_Hedge_nb_*_front.txt`는 생성기에 없음(브라우저에서 직접, 위 설명 참고).
+- 내 판정: 6종 4면 모양·색·이끼·금 장식 일치, 깨짐·떠 있는 조각·얼굴 무늬·글자·레이 없음 → 통과. **주의**: WateringCan 오른쪽(주둥이가 카메라 반대쪽) 면은 샤워기 머리가 뚜껑 위에 뜬 원통처럼 읽혀 약함 → Tripo에는 앞·뒤·왼쪽 3면 우선, 필요하면 오른쪽만 다시.
+- 파트 몫(카페 탁자·초 상자·무기고 통·알림판·디딤돌·물통)은 앞면 Medium 1장(`kits_new`)만 참고용으로 유지. Cauldron은 검수 말대로 CSG가 안 될 때만.
