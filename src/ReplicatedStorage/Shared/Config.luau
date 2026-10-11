@@ -7385,6 +7385,9 @@ Config.Return = {
 	CombatWaitSeconds = 3, -- a card that comes in a fight waits for the fight to end (this often, at most this many times)
 	CombatWaitTries = 10,
 	War = { MinSession = 900, MinGap = 1800 }, -- a crown-war end: only after 15 minutes of play, at most one in 30 minutes
+	-- A23-130 (fix/lesstext: PauseCard shows only the chapter card): the kinds sent at all; false = not sent and no MinGap
+	-- taken (Daily still offers the notification opt-in through Fx OptInMoment)
+	Cards = { Chapter = true, Daily = false, War = false },
 	WelcomeAfter = 6 * 3600, -- "Welcome back!" when the last leave was at least this long ago (after the first mission)
 	WelcomeDelay = 4, -- s after the join (the HUD is up by then)
 	NextZone = "GoblinWoods", -- the next-goal row "Lv10 · Goblin Woods" travels there

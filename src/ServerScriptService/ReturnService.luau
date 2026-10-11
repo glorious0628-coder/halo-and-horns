@@ -195,6 +195,16 @@ local function sendCard(player, why, tries)
 end
 
 local function queueCard(player, why)
+	-- A23-130: a card kind the client no longer shows (Config.Return.Cards[why] == false, PauseCard T.PauseWhy) is not
+	-- sent, so it never takes the MinGap of a card that shows; the Daily moment still offers the opt-in (Fx OptInMoment)
+	if type(R.Cards) == "table" and R.Cards[why] == false then
+		if why == "Daily" then
+			task.delay(num(R.CardDelay, 1.5), function()
+				if player.Parent ~= nil then optInMoment(player, "Daily", false) end
+			end)
+		end
+		return
+	end
 	task.delay(num(R.CardDelay, 1.5), sendCard, player, why, 0)
 end
 
