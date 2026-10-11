@@ -214,12 +214,15 @@ check(View._T.S.Grades[2] == "Miss" and #fired == 1, "a ring nobody pressed turn
 -- ring 3 late
 local T3 = CraftMini.Target(START, 3)
 check(View.Press(T3 + 0.2) == "Good" and fired[#fired][3] == 3 and fired[#fired][4] == 200, "200 ms late = Good, CraftStrike(Id, 3, 200)")
+-- ring 4 pressed the moment it appears (1.2 s early): a Miss here, nothing sent (the server refuses |ms| > 400)
+local sentBefore = #fired
+check(View.Press(CraftMini.Appear(START, 4) + 0.05) == "Miss" and #fired == sentBefore, "a press far too early = Miss, not sent", #fired - sentBefore)
 -- the ring's size follows the schedule
-local T4a = CraftMini.Appear(START, 4)
-View.Step(T4a + 0.6)
+local T5a = CraftMini.Appear(START, 5)
+View.Step(T5a + 0.6)
 local ring = find(root, "Ring")
 check(ring.Visible and math.abs(ring.Size.Args[1] - 120 * 1.8) < 0.01, "half way: the ring is 1.8x the target", ring.Size.Args[1])
-View.Step(CraftMini.Target(START, 4))
+View.Step(CraftMini.Target(START, 5))
 check(math.abs(find(root, "Ring").Size.Args[1] - 120) < 0.01, "at the touch: the ring is the target's size")
 -- the end: Finish once
 View.Step(CraftMini.Ends(START) + 0.01)

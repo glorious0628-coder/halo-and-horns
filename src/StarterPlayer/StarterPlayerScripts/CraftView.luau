@@ -283,7 +283,9 @@ function CraftView.Press(t)
 	showWord(grade)
 	fx("PlaySound", V.Sounds[grade])
 	if V.Shake[grade] then fx("Shake", V.Shake[grade], 0.15) end
-	if not s.Practice and not S.Sent[i] then
+	-- a press far too early (|ms| > MaxMs, e.g. right as the ring appears) is a Miss here and is not sent: the server
+	-- refuses such numbers (개발 3 ac2bc7f7) and the ring it never got is a Miss there too (no mashing)
+	if not s.Practice and not S.Sent[i] and math.abs(ms) <= CraftMini.T.MaxMs then
 		S.Sent[i] = true
 		fire("CraftStrike", s.Id, i, math.floor(ms + 0.5))
 	end
