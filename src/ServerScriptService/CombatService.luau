@@ -373,6 +373,75 @@ local function turnTo(root, pos, target)
 	return { Position = pos, CFrame = { LookVector = look } }
 end
 
+-- A23-91 server target hint (dev2 2026-10-10): a MANUAL Swing / Release carries the client's pick (HUD.PickTarget; arg 1
+-- = the monster Model). It counts only when it is the Model of an entry of the attack's own filter, monstersNear (alive,
+-- mine or nobody's, the zone level gate, a boss's HitPad), searched within Range + Slack (the client saw it a moment
+-- earlier), and not a hidden ambusher (the client never picks one). Anything else (a player's character, a part, a dead /
+-- far / someone else's monster, a wrong type) is ignored and the attack aims as before (A23-61). Only the hint gets the
+-- slack: every other target is still searched within Range. The attack aims at it unless it is within KeepDeg of the
+-- facing (HINT.Aim: a facing for the hit math only, the real root is never written). Auto combat never has a hint.
+-- Lead 2026-10-10: a pick may only change which MONSTERS a press hits, never which enemy players or the goose. So the
+-- pick is ignored (today's swing runs unchanged) whenever the same press without it would hit an enemy player or the
+-- goose (HINT.SwingPvP / HINT.QPvP), and an attack that does use it hits monsters only.
+local HINT = { Slack = 2, KeepDeg = 10 }
+
+-- the monstersNear entry { Rec, Pos, Dist } of a valid hint, else nil
+function HINT.Pick(player, pos, range, hint)
+	if typeof(hint) ~= "Instance" or not hint:IsA("Model") or hint:GetAttribute("Hidden") == true then return nil end
+	for _, e in monstersNear(player, pos, range + HINT.Slack) do
+		if e.Rec.Model == hint then
+			if e.Rec._hidden == true then return nil end -- MonsterService MOB3.Hide: waiting in the flowers
+			return e
+		end
+	end
+	return nil
+end
+
+-- the facing for a valid hint: within KeepDeg of the real facing the root itself, else a facing toward the pick for the
+-- hit math only. The real root is never written here (the client owns its character and already turned to its pick; a
+-- server write from the position the server last saw snaps a walking player back).
+function HINT.Aim(root, pos, e)
+	if inAim(root, e.Pos, HINT.KeepDeg) then return root end
+	local look = Vector3.new(e.Pos.X - pos.X, 0, e.Pos.Z - pos.Z).Unit -- inAim: at least 1 stud away here
+	return { Position = pos, CFrame = { LookVector = look } }
+end
+
+-- true when this manual swing WITHOUT a pick would hit an enemy player or the goose (then the pick is ignored): one of
+-- them inside the real front half (frontTarget's player / goose parts: Around / Multi / Splash choose them there), or,
+-- for Splash, one inside the blast at today's centre (the nearest monster of the real front half). Nothing in front:
+-- today's swing turns to a monster (monsters only) or whiffs.
+function HINT.SwingPvP(player, root, pos, w, range, goosePos, gooseReach)
+	if #aimed(playersNear(player, pos, range), root, w.AimCone) > 0 then return true end
+	if goosePos ~= nil and Util.FlatDistance(goosePos, pos) <= range + gooseReach and inAim(root, goosePos, w.AimCone) then
+		return true
+	end
+	if w.Pattern ~= "Splash" then return false end
+	local m0 = aimed(monstersNear(player, pos, range), root, w.AimCone)[1]
+	if not m0 then return false end
+	local radius = w.Splash or 0
+	return #playersNear(player, m0.Pos, radius) > 0
+		or (goosePos ~= nil and Util.FlatDistance(goosePos, m0.Pos) <= radius + gooseReach)
+end
+
+-- the same for a manual skill Q centred on its target (Release, ReleaseCenter "Target"; Q never counts the goose): an
+-- enemy inside the real front half within range, or one inside the blast at today's centre - the nearest monster of the
+-- real front half, or me when no monster at all is within range (a monster elsewhere: today's Q turns, monsters only)
+function HINT.QPvP(player, root, pos, range, cone, radius)
+	if #aimed(playersNear(player, pos, range), root, cone) > 0 then return true end
+	local m0 = aimed(monstersNear(player, pos, range), root, cone)[1]
+	local center = m0 and m0.Pos or (monstersNear(player, pos, range)[1] == nil and pos) or nil
+	return center ~= nil and #playersNear(player, center, radius) > 0
+end
+
+-- monstersNear entries with the hint first and no second copy of it
+function HINT.First(e, list)
+	local out = { e }
+	for _, m in list do
+		if m.Rec ~= e.Rec then table.insert(out, m) end
+	end
+	return out
+end
+
 -- other alive Halo players within the party-aura radius of the attacker
 local function countAuraAllies(attacker, radius)
 	if type(radius) ~= "number" or radius <= 0 then
@@ -842,7 +911,8 @@ function AUTO_IDLE.Check(p)
 end
 
 ------------------------------------------------------------------ swing (public)
-function CombatService.Swing(player, isManual)
+-- hint (optional, manual swings only): the client's pick, a monster Model (A23-91, HINT)
+function CombatService.Swing(player, isManual, hint)
 	if isManual ~= true and not autoReady(player) then return end -- auto only while auto combat is ON
 	isManual = isManual == true
 	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player)
@@ -886,8 +956,15 @@ function CombatService.Swing(player, isManual)
 	-- inside the real front half the swing aims at the nearest monster within Range in any direction (the client
 	-- FaceTarget rule) and turns the root to it; a turned swing hits monsters only (players and the goose keep the
 	-- front-half rule)
+	-- A23-91 server target hint: a valid client pick wins over both (HINT) unless the press without it would hit an enemy
+	-- player or the goose (then today's swing runs unchanged); a swing on the pick hits monsters only and never writes the
+	-- real root. Auto swings never carry one
 	local aimRoot, turned = root, false
-	if not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then
+	local hinted = isManual and HINT.Pick(player, pos, range, hint) or nil
+	if hinted and HINT.SwingPvP(player, root, pos, w, range, goosePos, gooseReach) then hinted = nil end
+	if hinted then
+		aimRoot, turned = HINT.Aim(root, pos, hinted), true -- monsters only
+	elseif not frontTarget(player, root, pos, w, range, isManual, goosePos, gooseReach) then
 		local near = monstersNear(player, pos, range)[1]
 		if near then
 			aimRoot = turnTo(root, pos, near.Pos)
@@ -922,6 +999,7 @@ function CombatService.Swing(player, isManual)
 				pickPos, pickDist, pickIsGoose = goosePos, d, true
 			end
 		end
+		if hinted then pickPos = hinted.Pos end -- A23-91: the orb goes to the client's pick (monsters only)
 		if pickPos then
 			center = pickPos
 			monsters = monstersNear(player, center, radius)
@@ -939,7 +1017,9 @@ function CombatService.Swing(player, isManual)
 		local maxTargets = w.Targets or 0
 		local candidates = {}
 		for _, m in aimed(monstersNear(player, pos, range), aimRoot, w.AimCone) do
-			table.insert(candidates, { Kind = "M", Entry = m, Pos = m.Pos, Dist = m.Dist })
+			if not (hinted and m.Rec == hinted.Rec) then -- A23-91: the pick goes first (below), once
+				table.insert(candidates, { Kind = "M", Entry = m, Pos = m.Pos, Dist = m.Dist })
+			end
 		end
 		if isManual and not turned then
 			for _, v in aimed(playersNear(player, pos, range), root, w.AimCone) do
@@ -953,6 +1033,9 @@ function CombatService.Swing(player, isManual)
 			end
 		end
 		table.sort(candidates, byDist)
+		if hinted then
+			table.insert(candidates, 1, { Kind = "M", Entry = hinted, Pos = hinted.Pos, Dist = hinted.Dist })
+		end
 		for i, cand in candidates do
 			if maxTargets > 0 and i > maxTargets then
 				break
@@ -971,6 +1054,7 @@ function CombatService.Swing(player, isManual)
 		end
 	else -- "Around" (default): everything within Range of self, in front of me (AimCone; turned: the new front half)
 		monsters = aimed(monstersNear(player, pos, range), aimRoot, w.AimCone)
+		if hinted then monsters = HINT.First(hinted, monsters) end -- A23-91: the pick even at Range + Slack, nobody else
 		if isManual and not turned then
 			victims = aimed(playersNear(player, pos, range), aimRoot, w.AimCone)
 		end
@@ -1070,7 +1154,8 @@ function CombatService.Swing(player, isManual)
 end
 
 ------------------------------------------------------------------ release (public)
-function CombatService.Release(player, isAuto)
+-- hint (optional, manual casts only): the client's pick, a monster Model (A23-91, HINT; a Target-centred skill only)
+function CombatService.Release(player, isAuto, hint)
 	if isAuto == true and not autoReady(player) then return end -- auto skills only while auto combat is ON
 	isAuto = isAuto == true
 	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player)
@@ -1105,23 +1190,32 @@ function CombatService.Release(player, isAuto)
 	if c.ReleaseCenter == "Target" then
 		local range = c.Range or 10
 		local bestPos, bestDist = nil, math.huge
-		local nearMon = aimed(monstersNear(player, pos, range), root, c.AimCone)
-		if nearMon[1] then
-			bestPos, bestDist = nearMon[1].Pos, nearMon[1].Dist
-		end
-		if not isAuto then
-			local nearPl = aimed(playersNear(player, pos, range), root, c.AimCone)
-			if nearPl[1] and nearPl[1].Dist < bestDist then
-				bestPos, bestDist = nearPl[1].Pos, nearPl[1].Dist
+		-- A23-91 server target hint: a manual cast goes to a valid client pick (the swing's HINT rule) unless the cast
+		-- without it would hit an enemy player (HINT.QPvP: then today's Q runs unchanged); a blast on the pick hits monsters
+		-- only and never writes the root. Auto casts never carry one
+		local hinted = not isAuto and HINT.Pick(player, pos, range, hint) or nil
+		if hinted and HINT.QPvP(player, root, pos, range, c.AimCone, skill.Radius or 9) then hinted = nil end
+		if hinted then
+			bestPos, turnedQ = hinted.Pos, true -- monsters only
+		else
+			local nearMon = aimed(monstersNear(player, pos, range), root, c.AimCone)
+			if nearMon[1] then
+				bestPos, bestDist = nearMon[1].Pos, nearMon[1].Dist
 			end
-		end
-		-- A23-61 server aim (검수 2026-10-07): nothing aimed -> the nearest monster within range in any direction (the
-		-- client FaceTarget rule; the root turns to it), the swing's rule
-		if not bestPos then
-			local nearQ = monstersNear(player, pos, range)[1]
-			if nearQ then
-				bestPos = nearQ.Pos
-				turnedQ = turnTo(root, pos, nearQ.Pos) ~= root
+			if not isAuto then
+				local nearPl = aimed(playersNear(player, pos, range), root, c.AimCone)
+				if nearPl[1] and nearPl[1].Dist < bestDist then
+					bestPos, bestDist = nearPl[1].Pos, nearPl[1].Dist
+				end
+			end
+			-- A23-61 server aim (검수 2026-10-07): nothing aimed -> the nearest monster within range in any direction (the
+			-- client FaceTarget rule; the root turns to it), the swing's rule
+			if not bestPos then
+				local nearQ = monstersNear(player, pos, range)[1]
+				if nearQ then
+					bestPos = nearQ.Pos
+					turnedQ = turnTo(root, pos, nearQ.Pos) ~= root
+				end
 			end
 		end
 		if bestPos then
@@ -1483,9 +1577,10 @@ local function onClassChanged(player, _newClass, _oldClass)
 end
 
 ------------------------------------------------------------------ remotes
--- one queued manual swing that fires as soon as the shared cooldown is ready (addendum H3)
-local function queueManualSwing(player)
-	local request = { Character = Util.GetCharacter(player), Class = cls(player).Id, Faction = faction(player) }
+-- one queued manual swing that fires as soon as the shared cooldown is ready (addendum H3); it keeps the press's pick
+-- (A23-91 hint, checked again when it fires)
+local function queueManualSwing(player, hint)
+	local request = { Character = Util.GetCharacter(player), Class = cls(player).Id, Faction = faction(player), Hint = hint }
 	pendingManual[player] = request
 	local tries = 0
 	local function attempt()
@@ -1506,12 +1601,15 @@ local function queueManualSwing(player)
 			return
 		end
 		pendingManual[player] = nil
-		CombatService.Swing(player, true)
+		CombatService.Swing(player, true, request.Hint)
 	end
 	task.delay(math.max(0, (nextSwingAt[player] or 0) - os.clock()), attempt)
 end
 
-local function onSwingRemote(player)
+-- hint = the client's pick (A23-91; validated in CombatService.Swing). More arguments than that: the press still swings,
+-- without the pick
+local function onSwingRemote(player, hint, ...)
+	if select("#", ...) ~= 0 then hint = nil end
 	if not S.PlayerService.IsReady(player) or player:GetAttribute("ClassChosen") ~= true then
 		return
 	end
@@ -1525,15 +1623,17 @@ local function onSwingRemote(player)
 	end
 	local remaining = (nextSwingAt[player] or 0) - os.clock()
 	if remaining <= 0 then
-		CombatService.Swing(player, true)
+		CombatService.Swing(player, true, hint)
 	elseif remaining <= MANUAL_GRACE then
 		-- queue a single jitter-early press; holding a button never starts a server attack loop
-		queueManualSwing(player)
+		queueManualSwing(player, hint)
 	end
 	-- otherwise an early repeat of a manual swing: silently ignored
 end
 
-local function onReleaseRemote(player)
+-- hint = the client's pick for the skill Q (A23-91; validated in CombatService.Release), extra arguments as for Swing
+local function onReleaseRemote(player, hint, ...)
+	if select("#", ...) ~= 0 then hint = nil end
 	if not S.PlayerService.IsReady(player) then
 		return
 	end
@@ -1543,9 +1643,9 @@ local function onReleaseRemote(player)
 	lastManualAt[player] = os.clock()
 	local skills = S.SkillService
 	if skills and type(skills.Cast) == "function" then
-		skills.Cast(player, "Q", false) -- SKL-2: the shared 0.5 s gap / one queued press / the refusal words
+		skills.Cast(player, "Q", false, hint) -- SKL-2: the shared 0.5 s gap / one queued press / the refusal words
 	else
-		CombatService.Release(player, false) -- MarkActive inside
+		CombatService.Release(player, false, hint) -- MarkActive inside
 	end
 end
 
