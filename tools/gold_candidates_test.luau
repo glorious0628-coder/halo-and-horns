@@ -6,7 +6,7 @@
 --   rough 0.25 82910627301523 (old), rough 0.15 109029776386025, rough 0.35 128833041727597
 -- Columns (left to right): BASE = the current look (metal 0.7 / rough 0.35 / 255,175,25) ; A = metal 1 / rough 0.25 / 255,195,40 ;
 -- B = metal 1 / rough 0.15 / 255,205,50 ; C = metal 0.7 / rough 0.15 / 255,205,40. Rows = disc, sphere, bar (like the first gold test).
--- Wall = HH_HaloMarbleBlock_Cream with wall Color (255,244,222), the same wall as house 07.
+-- Two boards (SUN faces the sun, SHADE away). Wall = HH_HaloMarbleBlock_Cream with wall Color (255,244,222), the same wall as house 07.
 local MODE = "__MODE__"
 local MS = game:GetService("MaterialService")
 local ROOT_NAME = "GoldCandTest"
@@ -46,56 +46,66 @@ local root = Instance.new("Folder")
 root.Name = ROOT_NAME
 root.Parent = workspace
 
-local ORIGIN = Vector3.new(0, 300, 0) -- high above the map so nothing else is in the shot
+-- two boards far above the map: SUN faces the sun (horizontal sun direction), SHADE faces away. Front = local -Z.
+local sunDir = game:GetService("Lighting"):GetSunDirection()
+local horiz = Vector3.new(sunDir.X, 0, sunDir.Z)
+if horiz.Magnitude < 0.05 then horiz = Vector3.new(0, 0, -1) end
+horiz = horiz.Unit
+local BOARDS = {
+	{ name = "SUN", origin = Vector3.new(0, 1500, 0), look = horiz },
+	{ name = "SHADE", origin = Vector3.new(0, 1500, 300), look = -horiz },
+}
 local W, H = 64, 24
-local wall = Instance.new("Part")
-wall.Name = "Wall"
-wall.Anchored = true
-wall.Size = Vector3.new(W, H, 2)
-wall.Position = ORIGIN
-wall.Material = Enum.Material.Marble
-wall.MaterialVariant = "HH_HaloMarbleBlock_Cream"
-wall.Color = Color3.fromRGB(255, 244, 222)
-wall.Parent = root
-
--- the wall faces -Z (front surface at ORIGIN.Z - 1); items sit on it, camera looks along +Z from z = ORIGIN.Z - 40
-local frontZ = ORIGIN.Z - 1
-local sg = Instance.new("SurfaceGui")
-sg.Face = Enum.NormalId.Front
-sg.Adornee = wall
-sg.CanvasSize = Vector2.new(1024 * #CANDS, 400)
-sg.Parent = wall
 local colW = W / #CANDS
-for i, c in ipairs(CANDS) do
-	local cx = ORIGIN.X - W / 2 + colW * (i - 0.5)
-	local function mk(name, shape, size, pos)
+local info = {}
+for _, b in ipairs(BOARDS) do
+	local base = CFrame.lookAt(b.origin, b.origin + b.look)
+	local function put(name, shape, size, localCf, c)
 		local p = Instance.new("Part")
-		p.Name = c.key .. "_" .. name
+		p.Name = b.name .. "_" .. name
 		p.Anchored = true
 		p.Shape = shape
 		p.Size = size
-		p.CFrame = pos
-		p.Material = Enum.Material.Metal
-		p.MaterialVariant = "HH_GoldCand_" .. c.key
-		p.Color = c.col
-		p.CastShadow = true
+		p.CFrame = base * localCf
+		if c then
+			p.Material = Enum.Material.Metal
+			p.MaterialVariant = "HH_GoldCand_" .. c.key
+			p.Color = c.col
+		else
+			p.Material = Enum.Material.Marble
+			p.MaterialVariant = "HH_HaloMarbleBlock_Cream"
+			p.Color = Color3.fromRGB(255, 244, 222)
+		end
 		p.Parent = root
 		return p
 	end
-	-- disc (cylinder lying on the wall: axis along Z)
-	mk("Disc", Enum.PartType.Cylinder, Vector3.new(1, 6, 6), CFrame.new(cx - 3, ORIGIN.Y + 5, frontZ - 0.5) * CFrame.Angles(0, math.rad(90), 0))
-	mk("Ball", Enum.PartType.Ball, Vector3.new(4, 4, 4), CFrame.new(cx + 3, ORIGIN.Y + 5, frontZ - 2))
-	mk("Bar", Enum.PartType.Block, Vector3.new(12, 1.4, 1), CFrame.new(cx, ORIGIN.Y - 1.5, frontZ - 0.5))
-	-- a taller vertical trim piece (like the gold edge bands of house 07)
-	mk("Post", Enum.PartType.Block, Vector3.new(1.4, 8, 1), CFrame.new(cx + 5.5, ORIGIN.Y - 6, frontZ - 0.5))
-	local tl = Instance.new("TextLabel")
-	tl.BackgroundColor3 = Color3.fromRGB(20, 28, 48)
-	tl.TextColor3 = Color3.fromRGB(255, 255, 255)
-	tl.Font = Enum.Font.GothamBold
-	tl.TextScaled = true
-	tl.Text = c.label
-	tl.Size = UDim2.fromOffset(980, 90)
-	tl.Position = UDim2.fromOffset(1024 * (i - 1) + 22, 10)
-	tl.Parent = sg
+	local wall = put("Wall", Enum.PartType.Block, Vector3.new(W, H, 2), CFrame.new(), nil)
+	local sg = Instance.new("SurfaceGui")
+	sg.Face = Enum.NormalId.Front
+	sg.CanvasSize = Vector2.new(1024 * #CANDS, 400)
+	sg.Parent = wall
+	local cols = {}
+	for i, c in ipairs(CANDS) do
+		local cx = -W / 2 + colW * (i - 0.5)
+		-- items stand out of the wall front (local z -1 .. -3)
+		put(c.key .. "_Disc", Enum.PartType.Cylinder, Vector3.new(1, 6, 6), CFrame.new(cx - 3, 2, -1.5) * CFrame.Angles(0, math.rad(90), 0), c)
+		put(c.key .. "_Ball", Enum.PartType.Ball, Vector3.new(4, 4, 4), CFrame.new(cx + 3.2, 2, -3), c)
+		put(c.key .. "_Bar", Enum.PartType.Block, Vector3.new(12, 1.4, 1), CFrame.new(cx, -3.5, -1.5), c)
+		put(c.key .. "_Post", Enum.PartType.Block, Vector3.new(1.4, 8, 1), CFrame.new(cx + 5.5, -8, -1.5), c)
+		local tl = Instance.new("TextLabel")
+		tl.BackgroundColor3 = Color3.fromRGB(20, 28, 48)
+		tl.TextColor3 = Color3.fromRGB(255, 255, 255)
+		tl.Font = Enum.Font.GothamBold
+		tl.TextScaled = true
+		tl.Text = c.label
+		tl.Size = UDim2.fromOffset(980, 90)
+		tl.Position = UDim2.fromOffset(1024 * (i - 1) + 22, 10)
+		tl.Parent = sg
+		local camPos = (base * CFrame.new(cx, -2, -16)).Position
+		local lookAt = (base * CFrame.new(cx, -2, 0)).Position
+		table.insert(cols, { key = c.key, cam = { camPos.X, camPos.Y, camPos.Z }, look = { lookAt.X, lookAt.Y, lookAt.Z } })
+	end
+	info[b.name] = cols
 end
-print("gold candidates built at", ORIGIN, "camera: look at", ORIGIN, "from", ORIGIN + Vector3.new(0, 0, -45))
+print("gold candidates built; sun dir", sunDir)
+return game:GetService("HttpService"):JSONEncode(info)

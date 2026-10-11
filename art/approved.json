@@ -8396,7 +8396,13 @@
   "test": "art/review/imgdev/hh_fabric_test_2026-10-11.jpg (색 96% 통과)",
   "inGame": "메인 Studio에 적용(Fabric 파트 11개), build/GoodEvil.rbxlx 15:19 저장. place/ 복사는 아직(메인 반영 1).",
   "note": "업로드 성공 ≠ 그림 승인. 검수가 materials3_sheet.jpg로 직접 보고 정함.",
-  "review": "검수 10/11 조건부: 3×3에서 타일마다 밝은 세로 줄(스레드 한 가닥이 튐) → v2 맵 art/ui/halo_tile/fabric_v2/ (tools/fabric_weave_maps.py 스레드 편차 ±0.035 → 균형 ±0.010). v2는 아직 안 올림 — 메인에 들어간 v1(117704901835962…)은 새 판 올릴 때까지 그대로."
+  "review": "검수 10/11 조건부: 3×3에서 타일마다 밝은 세로 줄(스레드 한 가닥이 튐) → v2 맵 art/ui/halo_tile/fabric_v2/ (tools/fabric_weave_maps.py 스레드 편차 ±0.035 → 균형 ±0.010). v2는 아직 안 올림 — 메인에 들어간 v1(117704901835962…)은 새 판 올릴 때까지 그대로.",
+  "idsV2": {
+   "color": "rbxassetid://76316272601072",
+   "normal": "rbxassetid://102973991596175 (v1과 같은 파일 = 같은 ID)",
+   "rough": "rbxassetid://119858177335377"
+  },
+  "reviewV2": "검수 10/11 v2 통과(fabric_v2_tile_check 시트: 대비 6배에도 줄 없음). v2 올림 10/11. 메인 MV(HH_Fabric) ID 교체는 메인 반영 1에 요청 필요(메인 Play 사진 확인 뒤 v1 파일·기록 삭제; normal은 v1·v2 공용이라 삭제 금지)."
  },
  "HH_HaloGoldTrim": {
   "status": "redo",
