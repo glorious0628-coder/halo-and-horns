@@ -33,6 +33,9 @@ ap.add_argument("--marble", default="block", choices=["block", "cream"])
 ap.add_argument("--ortho", type=float, default=24.0, help="ortho width of the four whole views (studs)")
 ap.add_argument("--cz", type=float, default=9.8, help="height the whole views look at")
 ap.add_argument("--cloth", default="250,205,72;255,243,212", help="awning stripe colours (skeleton_house cloth0;cloth1)")
+ap.add_argument("--views", default="front,q34,side,back",
+                help="whole views: front, q34, side (camera at +x = the viewer's left, as the 2D *_left.png), side_r (-x, "
+                     "the viewer's right = 2D *_right.png), back, top")
 a = ap.parse_args(argv)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TILE = os.path.join(ROOT, "art", "ui", "halo_tile")
@@ -188,8 +191,12 @@ def shot(name, loc, look, ortho=None, lens=35):
 
 
 C = a.cx
-for nm, yaw in (("front", 0), ("q34", 35), ("side", 90), ("back", 180)):
-    t = math.radians(yaw)
+YAW = {"front": 0, "q34": 35, "side": 90, "back": 180, "side_r": 270}
+for nm in a.views.split(","):
+    if nm == "top":                                       # straight down, front at the bottom of the picture
+        shot(nm, (C, -0.001, a.cz + 80), (C, 0, 0), ortho=a.ortho)
+        continue
+    t = math.radians(YAW[nm])
     shot(nm, (C + 80 * math.sin(t), 80 * math.cos(t), a.cz), (C, 0, a.cz), ortho=a.ortho)
 if a.cams:
     for nm, (loc, look, lens) in json.load(open(a.cams)).items():

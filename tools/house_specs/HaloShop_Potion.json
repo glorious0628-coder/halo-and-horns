@@ -8,7 +8,7 @@
  "door": {"w": 5.0, "h": 8.15, "double": false, "u": 0.73},
  "shopwin": {"u": 0.3, "w": 6.0, "h": 5.8, "type": "arch"},
  "pilasters": true,
- "pedestals": true,
+ "pedestals": true, "lanterns": [0.08, 0.52, 0.93],
  "awning": {"w": 15.0, "u": 0.5, "colors": [[110, 165, 232], [255, 255, 252]], "n": 11},
  "pots": [[8.6, 8.2, 3.2, 2.4], [-8.6, 8.4, 3.2, 2.4]],
  "steps": "half",

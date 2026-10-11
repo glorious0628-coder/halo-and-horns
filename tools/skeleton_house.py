@@ -32,9 +32,14 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
   towers   {"w", "h_extra", "dome": true (small gold ribbed dome cap, R = w / 2 + 0.2; else "finial": true = ball),
             "window": true (small arched window "win_w" 0.9 on the front face of the front towers)} square corner towers
            on a rect plan (house 02 / 04 style)
-  pedestals  true: marble blocks with gold caps either side of the door (lanterns above them)
-  awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's)} striped SmoothPlastic cloth + scalloped valance
-  pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122)
+  pedestals  true: marble blocks with gold caps either side of the door (lanterns above them); a pedestal in front of a
+           ground-floor front window is cut down under the sill with a gold ball (10/11)
+  lanterns [u, ...] wall lanterns along the front (0..1 like door.u) instead of the pedestal ones (shops); a lantern that
+           would sit in a corner pilaster / tower is moved out in front of it
+  awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's), "top"} striped
+           Fabric + HH_Fabric cloth + scalloped valance; without "top" it is kept under a front storey ledge / balcony / the cornice
+  pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122); a pot that hits a wall,
+           pilaster, tower, pedestal, step, the door or another pot is moved the shortest way out (printed)
   steps    "half" (two half-round steps) | "three" (three straight steps, door + 3.0 wide) | "none"
   top      {"type": "flat", "parapet": "solid"|"balustrade", "h", "skylight": [w, d, h] or null,
             "topiary": [[x, y], ...], roof extras:
@@ -50,6 +55,7 @@ import argparse
 import json
 import math
 import os
+import re
 
 ap = argparse.ArgumentParser()
 ap.add_argument("spec")
@@ -399,16 +405,9 @@ for k, z in enumerate((Z0 + 0.25 * DOOR_H, Z0 + 0.68 * DOOR_H)):
     orn_items.append({"type": "hinge", "name": "%s_Hinge%d" % (NAME, k), "edge": [CXD - LEAF_R, z], "dir": 1,
                       "len": min(1.35, LEAF_R * 0.65), "face_y": LEAF_FRONT})
 
-# ---------------------------------------------------------------- floors / ceilings (hollow inside, WalkGround floor)
 xs, ys = [x for x, _ in V], [y for _, y in V]
-add("FloorInside", (max(xs) - min(xs) - 1.2, max(ys) - min(ys) - 1.2, 0.3), (0, 0, Z0 - 0.15), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
-for si in range(1, len(STOREYS)):
-    add("FloorStorey%d" % si, (max(xs) - min(xs) - 1.2, max(ys) - min(ys) - 1.2, 0.3), (0, 0, Z_LINES[si] - 0.15),
-        (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
-add("CeilingSlab", (max(xs) - min(xs) + 0.4, max(ys) - min(ys) + 0.4, 0.5), (0, 0, Z1 + 0.25), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0))
 
 
-# ---------------------------------------------------------------- rings
 def offset_poly(d, poly=None):
     poly = poly or V
     out = []
@@ -419,6 +418,50 @@ def offset_poly(d, poly=None):
         k = d / (1 + na[0] * nb[0] + na[1] * nb[1])
         out.append((poly[i][0] + (na[0] + nb[0]) * k, poly[i][1] + (na[1] + nb[1]) * k))
     return out
+
+
+def poly_slab(nm, d, zc, th, mat="marble", tol=0.5):
+    """flat slab filling the plan polygon offset by d (studs, < 0 = inside the wall line). rect: one block (the old
+    bounding box); round / oct: strips along x whose ends stay inside the polygon, so no square corner pokes out of the
+    body (10/11 check: the bounding-box floor/ceiling stuck 1.3-3.2 studs out of houses 01/03/06/09/10). The strip over
+    the plan centre keeps the plain name (DoorFront hangs on FloorInside)."""
+    Pp = offset_poly(d)
+    px, py = [x for x, _ in Pp], [y for _, y in Pp]
+    if P["shape"] == "rect":
+        add(nm, (max(px) - min(px), max(py) - min(py), th), ((max(px) + min(px)) / 2, (max(py) + min(py)) / 2, zc),
+            (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), mat)
+        return
+
+    def span(y):
+        cut = []
+        for i in range(len(Pp)):
+            (x0, y0), (x1, y1) = Pp[i], Pp[(i + 1) % len(Pp)]
+            if y0 != y1 and (y0 - y) * (y1 - y) <= 0:
+                cut.append(x0 + (x1 - x0) * (y - y0) / (y1 - y0))
+        return (min(cut), max(cut)) if len(cut) >= 2 else None
+    y0, yend, k = min(py) + 0.02, max(py) - 0.02, 0
+    while y0 < yend - 0.05:
+        for h in (3.0, 2.0, 1.0, 0.5):                 # widest strip whose two ends move less than tol (gaps stay under the wall / cornice)
+            y1 = min(y0 + h, yend)
+            s0, s1 = span(y0), span(y1)
+            if s0 and s1 and abs(s0[0] - s1[0]) <= tol and abs(s0[1] - s1[1]) <= tol:
+                break
+        if s0 and s1 and min(s0[1], s1[1]) - max(s0[0], s1[0]) > 0.05:
+            a_, b_ = max(s0[0], s1[0]), min(s0[1], s1[1])
+            add(nm if y0 <= 0 < y1 else "%s_%d" % (nm, k), (b_ - a_, y1 - y0, th), ((a_ + b_) / 2, (y0 + y1) / 2, zc),
+                (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), mat)
+            k += 1
+        y0 = y1
+
+
+# ---------------------------------------------------------------- floors / ceilings (hollow inside, WalkGround floor)
+poly_slab("FloorInside", -0.6, Z0 - 0.15, 0.3, "floor")
+for si in range(1, len(STOREYS)):
+    poly_slab("FloorStorey%d" % si, -0.6, Z_LINES[si] - 0.15, 0.3, "floor")
+poly_slab("CeilingSlab", 0.2, Z1 + 0.25, 0.5)
+
+
+# ---------------------------------------------------------------- rings
 
 
 def ring(prefix, d, z0, z1, depth, mat, skip=()):
@@ -484,10 +527,83 @@ if TW and P["shape"] == "rect":
                               "yaw": 0, "W": ww_, "spring": ZT + 0.6 + TW.get("win_h", 1.6), "pier": 0.25, "frame": 0.1,
                               "depth": 0.9, "recess": 0.2})
 
+# ---------------------------------------------------------------- clearance helpers (pedestals, lanterns, pots; 10/11 check)
+def footprint(p):
+    """2D footprint + height range of an upright part: ("c", (x, y), r) for a post (X = up), ("r", (x, y), u, hu, hv) for a
+    block standing up (Y = up); None for anything tilted"""
+    (x, y, z), sz = p["pos"], p["size"]
+    if abs(p["X"][2]) > 0.99:
+        return ("c", (x, y), sz[1] / 2), z - sz[0] / 2, z + sz[0] / 2
+    if abs(p["Y"][2]) > 0.99:
+        u = norm((p["X"][0], p["X"][1], 0.0))
+        return ("r", (x, y), u, sz[0] / 2, sz[2] / 2), z - sz[1] / 2, z + sz[1] / 2
+    return None, 0.0, 0.0
+
+
+def push_out(c, r, fp):
+    """penetration of a circle (c, r) into a footprint and the unit direction that frees it (0, None if clear)"""
+    if fp[0] == "c":
+        dx, dy = c[0] - fp[1][0], c[1] - fp[1][1]
+        dd = math.hypot(dx, dy)
+        return (r + fp[2] - dd, (dx / dd, dy / dd) if dd > 1e-6 else (0.0, 1.0)) if dd < r + fp[2] else (0.0, None)
+    _, (cx, cy), u, hu, hv = fp
+    v = (-u[1], u[0])
+    lu, lv = (c[0] - cx) * u[0] + (c[1] - cy) * u[1], (c[0] - cx) * v[0] + (c[1] - cy) * v[1]
+    qu, qv = max(-hu, min(hu, lu)), max(-hv, min(hv, lv))
+    if (qu, qv) != (lu, lv):                              # centre outside the rectangle
+        du, dv = lu - qu, lv - qv
+        dd = math.hypot(du, dv)
+        if dd >= r:
+            return 0.0, None
+        return r - dd, ((du * u[0] + dv * v[0]) / dd, (du * u[1] + dv * v[1]) / dd)
+    pu, pv = hu - abs(lu) + r, hv - abs(lv) + r
+    if pu < pv:
+        s = 1.0 if lu >= 0 else -1.0
+        return pu, (s * u[0], s * u[1])
+    s = 1.0 if lv >= 0 else -1.0
+    return pv, (s * v[0], s * v[1])
+
+
+def obstacles(prefixes, z0, z1, walls_too=False):
+    out = []
+    for p in parts:
+        nm = p["name"]
+        m = walls_too and re.match(r"(.+)_(C|G|GL|GR|GT)\d+(_\d+)?$", nm)
+        if not (nm.startswith(prefixes) or m and m.group(1) in walls):
+            continue
+        fp, a_, b_ = footprint(p)
+        if fp and b_ > z0 + 0.02 and a_ < z1 - 0.02:
+            out.append((nm, fp))
+    return out
+
+
+def front_win_x():
+    """ground-storey windows on the front: (x centre, half width incl. frame and sill, glass bottom)"""
+    return [(wf.at(uc, 0)[0], ww / 2 + 0.1 * ww + 0.08 + 0.5, w0) for (nm, uc, ww, w0, sp, kind, si) in win_list
+            if nm == "front" and si == 0]
+
+
+def lantern_at(k, x):
+    """wall lantern at the door's spring height + 0.6; pushed out (+y) of a corner pilaster / tower it would sit in"""
+    y = YF + 0.25 + LANT_W / 2 + 0.05
+    obs = obstacles(("Pilaster", "Tower"), DSP + 0.6 - LANT_H / 2, DSP + 0.6 + LANT_H / 2)
+    for _ in range(40):
+        if not any(push_out((x, y), LANT_W / 2 + 0.05, fp)[0] > 0.01 for _, fp in obs):
+            break
+        y += 0.05
+    if y > YF + 0.8:
+        print("[house] lantern %d moved %.2f out to clear a pilaster" % (k, y - (YF + 0.75)))
+    lc = (x, y, DSP + 0.6)
+    g = LANT_W - 0.2
+    add("LampGlass%d" % k, (g, LANT_H - 0.1, g), lc, mat="lamp")
+    orn_items.append({"type": "lantern", "name": "%s_Lantern%d" % (NAME, k), "pos": list(lc), "w": LANT_W, "hgt": LANT_H,
+                      "post": 0.09, "wall_y": YF})
+
+
 # ---------------------------------------------------------------- pedestals + lanterns
 LANT_W, LANT_H = 0.9, 1.15
+LANTS = S.get("lanterns")                               # [u, ...] wall lanterns along the front (0..1 like door.u); replaces the pedestal ones
 if S.get("pedestals", True):
-    pz = Z0 + 3.75
     for k, sx in enumerate((-1, 1)):
         x = CXD + sx * (DR + GW + 0.75 + 1.0)
         if OFFC or SH:                                  # off-centre door / shop window: skip a pedestal that leaves the wall or hits the window
@@ -496,21 +612,40 @@ if S.get("pedestals", True):
             if x - 1.0 < fx0 + 1.2 or x + 1.0 > fx1 - 1.2 or (SH and abs(x - ush) < SH[1] / 2 + 0.45 + 0.4 + 1.0):
                 print("[house] pedestal %d skipped (no room beside the door)" % k)
                 continue
+        # a pedestal in front of a ground-floor window is cut down under its sill stone (a low post with a gold ball, as
+        # the 2D step posts); the full one (07) stood 4.85 high and hid half the window (08, 12, Flower)
+        pz = Z0 + 3.75
+        low = [w0 for wx, hw, w0 in front_win_x() if abs(x - wx) < 1.0 + hw]
+        if low:
+            pz = max(Z0 + 1.2, min(low) - 0.7 - 0.45)
         add("Pedestal%d" % k, (1.8, pz, 2.0), (x, YF + 0.45, pz / 2))
         add("Pedestal%d_Cap" % k, (1.92, 0.35, 2.12), (x, YF + 0.45, pz + 0.175), mat="gold")
         add("Pedestal%d_Foot" % k, (2.0, 0.55, 2.2), (x, YF + 0.45, 0.275), mat="gold")
-        add("Pedestal%d_Plaque" % k, (0.7, 1.2, 0.1), (x, YF + 1.48, 2.0), mat="gold")
-        lc = (x, YF + 0.25 + LANT_W / 2 + 0.05, DSP + 0.6)
-        g = LANT_W - 0.2
-        add("LampGlass%d" % k, (g, LANT_H - 0.1, g), lc, mat="lamp")
-        orn_items.append({"type": "lantern", "name": "%s_Lantern%d" % (NAME, k), "pos": list(lc), "w": LANT_W, "hgt": LANT_H,
-                          "post": 0.09, "wall_y": YF})
+        if pz > 3.0:
+            add("Pedestal%d_Plaque" % k, (0.7, 1.2, 0.1), (x, YF + 1.48, 2.0), mat="gold")
+        if low:
+            ball("Pedestal%d_Ball" % k, 0.8, (x, YF + 0.45, pz + 0.35 + 0.38))
+        if LANTS is None:
+            lantern_at(k, x)
+for k, u in enumerate(LANTS or []):
+    lantern_at(k, wf.at(u * wf.L, 0)[0])
 
 # ---------------------------------------------------------------- awning
 AW = S.get("awning")
 if AW:
     AW_W, AW_D, AW_DROP, AW_N = AW.get("w", DOOR_W + 2.4), AW.get("d", 2.3), AW.get("drop", 1.2), AW.get("n", 7)
     AW_TOP = AW.get("top", DSP + DR + GW + 0.9)
+    if "top" not in AW:                                 # rod + balls stay under a front storey ledge, a front balcony, the cornice
+        lim = [(Z1 - 0.25, "cornice")]
+        for si in range(1, len(STOREYS)):
+            if Z_LINES[si] >= DSP + DR + 0.8:           # the storey ledge runs across the front (see the rings)
+                lim.append((Z_LINES[si] - 0.6, "storey ledge %d" % si))
+            if any(B["storey"] == si and "front" in [wall_name(n) for n in B["walls"]] for B in S.get("balconies", [])):
+                lim.append((Z_LINES[si] - 0.55, "balcony %d" % si))
+        zl, why = min(lim)
+        if zl < AW_TOP:
+            print("[house] awning top %.2f -> %.2f (under the %s)" % (AW_TOP, zl, why))
+            AW_TOP = zl
     cols = AW.get("colors", [[250, 205, 72], [255, 243, 212]])
     aw_len = math.hypot(AW_D, AW_DROP)
     aw_n = (0.0, AW_DROP / aw_len, AW_D / aw_len)
@@ -537,7 +672,26 @@ elif S.get("steps") == "three":                         # three straight steps (
     for k in range(3):
         sh = Z0 - 0.01 - 0.37 * k
         add("Step%d" % k, (DOOR_W + 3.0, sh, 0.9), (CXD, YF + 1.2 + 0.9 * (k + 0.5), sh / 2))
+def clear_pot(i, x, y, r, h):
+    """move a pot (outer rim radius r) the shortest way out of walls, pilasters, towers, pedestals, steps, the door and
+    earlier pots (the plinth and foot ring may run under it); the spec x, y is the 2D guess (10/11 check: pots sat 0.5-1.2
+    studs inside pedestals, pilasters and walls on 11 houses)"""
+    obs = obstacles(("Pedestal", "Pilaster", "Step", "Door_FootBlock", "Door_Jamb", "Door_Reveal", "Tower", "Pot"), 0.0, h, True)
+    x0, y0, last = x, y, ""
+    for _ in range(80):
+        pen, dv, nm = max(((*push_out((x, y), r, fp), nm) for nm, fp in obs), key=lambda t: t[0], default=(0.0, None, ""))
+        if pen <= 0.02:
+            break
+        x, y, last = x + dv[0] * (pen + 0.02), y + dv[1] * (pen + 0.02), nm
+    else:
+        print("[house] WARNING: pot %d still hits %s" % (i, last))
+    if math.hypot(x - x0, y - y0) > 0.05:
+        print("[house] pot %d moved (%+.2f, %+.2f) -> (%.2f, %.2f) to clear %s" % (i, x - x0, y - y0, x, y, last))
+    return x, y
+
+
 for i, (x, y, d, h) in enumerate(S.get("pots", [])):
+    x, y = clear_pot(i, x, y, d / 2 + 0.22, h)
     post("Pot%d" % i, d, h - 0.4, x, y, 0.0)
     post("Pot%d_Soil" % i, d - 0.25, 0.15, x, y, h - 0.4, "soil")
     seg = 18
@@ -638,6 +792,16 @@ TOP = S.get("top", {"type": "flat", "parapet": "solid", "h": 1.6})
 if TOP["type"] == "flat":
     ph = TOP.get("h", 1.6)
     Pp = offset_poly(0.9)
+    # parapet posts on the real corners (turn >= 25 deg) and every 5 studs round a curve; a 32-edge round plan used to get
+    # a post on every edge with the balusters run into them (10/11 check)
+    POST_I, since = [], 0.0
+    for i in range(len(Pp)):
+        na, nb = walls[EDGES[i - 1]].n, walls[EDGES[i]].n
+        turn = math.degrees(math.acos(max(-1.0, min(1.0, na[0] * nb[0] + na[1] * nb[1]))))
+        since += math.hypot(Pp[i][0] - Pp[i - 1][0], Pp[i][1] - Pp[i - 1][1]) if i else 0.0
+        if turn >= 25.0 or since >= 5.0 or i == 0 and P["shape"] != "round":
+            POST_I.append(i)
+            since = 0.0
     for i, nm in enumerate(EDGES):
         w = walls[nm]
         p0, p1 = Pp[i], Pp[(i + 1) % len(Pp)]
@@ -650,15 +814,19 @@ if TOP["type"] == "flat":
             for k in range(nb):
                 f = (k + 0.5) / nb
                 bx, by = p0[0] + (p1[0] - p0[0]) * f - w.n[0] * 0.45, p0[1] + (p1[1] - p0[1]) * f - w.n[1] * 0.45
+                if any(math.hypot(bx - Pp[j][0], by - Pp[j][1]) < 0.85 for j in POST_I):
+                    continue                              # no baluster inside a post
                 post("Baluster_%s_%d" % (nm, k), 0.32, ph - 0.55, bx, by, ZT + 0.25)
         elif TOP.get("parapet") != "none":                # "none" = no parapet (a hip roof sits on the cornice)
             add("Parapet_%s" % nm, (L, ph, 0.7), (mx - w.n[0] * 0.35, my - w.n[1] * 0.35, ZT + ph / 2), w.u, UP)
             add("ParapetGold_%s" % nm, (L + 0.02, 0.2, 0.8), (mx - w.n[0] * 0.35, my - w.n[1] * 0.35, ZT + ph - 0.1), w.u, UP, "gold")
     for i, (x, y) in enumerate(Pp if TOP.get("parapet") != "none" else []):
+        if i not in POST_I:
+            continue
         add("ParapetPost%d" % i, (1.1, ph + 0.5, 1.1), (x, y, ZT + (ph + 0.5) / 2))
         add("ParapetPostCap%d" % i, (1.3, 0.25, 1.3), (x, y, ZT + ph + 0.62), mat="gold")
     if not TOP.get("hip"):                                # a hip roof has no walkable deck
-        add("RoofDeck", (max(xs) - min(xs) + 1.6, max(ys) - min(ys) + 1.6, 0.2), (0, 0, ZT + 0.1), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), "floor")
+        poly_slab("RoofDeck", 0.8, ZT + 0.1, 0.2, "floor")
     sk = TOP.get("skylight")
     if sk:
         sw_, sd_, sh_ = sk

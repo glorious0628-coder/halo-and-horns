@@ -365,7 +365,8 @@ def revolve(p, prof, centre, seg=48):
 def dome(it):
     x, y, z = it["pos"]
     R, H, onion, nrib = it["R"], it.get("h", it["R"]), it.get("onion", False), it.get("ribs", 8)
-    K = 24
+    # fewer faces on small domes (10/11: a 1.6-stud tower cap had the 4.5k triangles of a 12-stud dome)
+    SEG, K = (48, 24) if R >= 3.0 else ((32, 16) if R >= 1.6 else (24, 12))
     prof = []
     for i in range(K + 1):
         s_ = i / K
@@ -377,7 +378,7 @@ def dome(it):
         prof.append((max(r, 0.02), zz))
     nm = it.get("name", "Dome")
     p = Piece(nm)
-    revolve(p, prof, (x, y, z))
+    revolve(p, prof, (x, y, z), SEG)
     rb = Piece(nm + "_Ribs")                                # ribs = their own object (same gold) so Studio can tune it
     hw, rout = it.get("rib_w", 0.3) / 2, it.get("rib_out", 0.22)
     sec = [(-hw, -0.04)]                                    # rib section (side, out of the surface): flat sides, rounded top
@@ -408,7 +409,7 @@ def dome(it):
                 rb.bm.faces.new((A[k], A[(k + 1) % M], B[(k + 1) % M], B[k]))
         rb.bm.faces.new(rings[0])                           # end caps
         rb.bm.faces.new(list(reversed(rings[-1])))
-    p.torus(R + 0.06, 0.16, (x, y, z + 0.1), "xy", 64, 10)   # base ring
+    p.torus(R + 0.06, 0.16, (x, y, z + 0.1), "xy", SEG + 16, 10 if R >= 3.0 else 8)   # base ring
     zt, fs = z + H, it.get("fin", 1.0)                      # fs scales the finial (small tower caps)
     p.cyl(0.7 * fs, 0.3 * fs, (x, y, zt + 0.1 * fs), "z", 24)
     p.ball(0.62 * fs, (x, y, zt + 0.55 * fs))

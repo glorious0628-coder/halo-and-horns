@@ -1,6 +1,15 @@
-# 이미지 생성 3 — 상태 (2026-10-11, 새 세션)
+# 이미지 생성 3 — 상태 (2026-10-11 저녁, 새 세션)
 ## 지금 상태 한 줄
-**집 07 골격 4판 끝(10/11 새 세션), 검수 판정 기다림.** 시트 `art/review/img3/skeleton07/skeleton07_v4_compare.jpg`. 대리석은 **크림 2판(HH_HaloMarbleBlock_Cream 12칸) + 파트 색 (255,244,222)** 로 고름 → 이미지 개발에 알림. WorldKit SkeletonTest = 4판 크림 수정판(600파트). Tripo 조각은 `import_now/HaloDomeHouse_07_placed_v4.glb`(사용자 가져오기 기다림, 검수 경유).
+**④ 골격 15채 검증 끝(10/11 저녁), 검수 판정 + 사용자 Import 3D 1번 기다림.** 세 API 브랜치(houses-b1-fix b56640ad·house-specs-b2 2f6a241f·houses-gaps a253481e)는 내용이 전부 main(4183f827·8e45c792·398da10f)에 있음 — 다시 병합 안 함. 생성기 고침 10가지(records.json `halo_houses15_skeleton_v2_2026-10-11`). 4면 시트 `art/review/img3/houses/houses_4view_{a,b,c}.jpg`, WorldKit C2c 낮·밤 시트 `houses_studio_c2c_{a,b,c}.jpg`. 장식 합본 `import_now/halo_houses15_ornaments.glb`(159부품, WorldKit 자리 맞춤) 가져오기 기다림.
+## 10/11 저녁 검증 (새 세션)
+- 겹침 검사(부품 OBB + 원통, 0.12칸 넘는 것): 171 → 102 묶음. 남은 것은 일부러 붙인 이음(쐐기돌-층 띠, 계단-바닥, 07과 같은 받침-벽기둥).
+- 고친 것: 둥근·팔각 바닥/천장/옥상 판 삐짐(poly_slab), 화분 자동 비키기(clear_pot), 창 가리는 받침 낮춤+금 공, 벽기둥 속 등불 앞으로, 차양 높이 제한, 둥근 옥상 난간 기둥, 06 창 상자 w0~w3, 11 굴뚝 자리·벽 높이, 가게 벽 등불 `lanterns`, 08 화분, 작은 돔 면 줄임(198k tris).
+- WorldKit: SkeletonTest에 15채(앞 줄 z 60 x 2940~3192, 뒤 줄 z 115 x 2940~3156, 36칸 간격) + HouseRows_Ground. 빛·카메라는 되돌림. 사진 `art/review/img3/houses/studio_c2c/`(디스크만).
+- 가져온 뒤 할 일: 합본은 원점 3000,0,0 기준 → 가져온 모델 PivotTo(07 때 식: roblox = (-x_b, z_b, y_b) + T, 문 상자로 T 풀기) → 금 = Metal+HH_HaloGoldTrim (255,175,25), Leaf = Wood, Glass = Glass 0.3 → 낮·밤 사진.
+- 남은 2D 차이(검수 판정 필요): 옆·뒤 창 수가 2D보다 많은 집(01·09), 2D 옆면 깊이가 더 얕음(가게들), 식물·담쟁이·간판·박공·파라솔·온실·벽돌 돔 없음, 04·Juice 등불 없음.
+- 옛 시트 `houses_all15_blender.jpg`·`houses_batch1_blender.jpg`·옛 합본 `halo_houses_batch1_ornaments.glb`는 지움(새 시트·합본으로 바뀜).
+- 집 07 골격(skeleton_house07.py)도 네모 천장판이 팔각 대각 벽 밖으로 약 2칸(계산, 처마돌보다 약 0.8 더) 나감 — 승인판이라 안 고침, 검수 판정 기다림.
+
 ## 4판에서 바꾼 것 (검수 판정 6 + 측정)
 - 몸통: 2D 실루엣(벽 폭 : 처마 위 = 1 : 0.86, 기둥 포함)을 다시 재 보니 옛 목표 XS 8.0·HF 5.25는 너무 납작(0.74) → **XS 7.6, HF 4.75, 대각 45°(2.85×2.85, Tripo 지붕 팔각과 같음), 깊이 = Tripo×1.13, Z1 12.35(처마 위 13.25)**. 실루엣 비 ≈ 0.80. 문 5.0×8.15 그대로.
 - 타일 줄눈: WorldKit 시험(10/11) — **MaterialVariant 줄눈은 파트마다 맨 위 가장자리에서 시작**. 그래서 벽 판은 전부 Z1에서 끝나고, 금 띠·창 아래·받침 높이는 Z1에서 줄 수(9칸 = 9/8, 크림 = 1.5)로 셈. `--marble cream|block`이 높이를 다시 셈.

@@ -11,7 +11,7 @@
  "towers": {"w": 2.8, "h_extra": 1.6, "finial": true},
  "pedestals": true,
  "steps": "half",
- "pots": [[-7.2, 9.8, 4.0, 2.6], [7.2, 9.8, 4.0, 2.6]],
+ "pots": [[-7.4, 12.2, 3.6, 2.6], [7.4, 12.2, 3.6, 2.6]],
  "balconies": [{"storey": 1, "walls": ["front", "left", "right"], "depth": 1.4}],
  "window_boxes": [["back", 1], ["left", 0], ["right", 0]],
  "medals": [],
