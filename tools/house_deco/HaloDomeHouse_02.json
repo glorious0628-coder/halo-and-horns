@@ -1,0 +1,93 @@
+{
+ "note": "cut boxes read off build/deco/ortho/HaloDomeHouse_02/*_grid.png (Tripo parts GLB frame)",
+ "dome": {
+  "c": [
+   0.0,
+   -0.6
+  ],
+  "z": [
+   20.0,
+   30.5
+  ],
+  "r": 7.3,
+  "slot": "Dome",
+  "no_white": true
+ },
+ "caps": [
+  {
+   "src": {
+    "c": [
+     9.6,
+     3.7
+    ],
+    "z": [
+     16.9,
+     20.5
+    ],
+    "r": 1.7
+   },
+   "slots": [
+    "TowerDome0",
+    "TowerDome1",
+    "TowerDome2",
+    "TowerDome3"
+   ],
+   "fit": "house"
+  }
+ ],
+ "lantern": {
+  "box": [
+   [
+    3.35,
+    5.3
+   ],
+   [
+    4.55,
+    6.9
+   ],
+   [
+    7.0,
+    10.7
+   ]
+  ],
+  "mul": 0.62,
+  "slots": [
+   "Lantern0",
+   "Lantern1"
+  ]
+ },
+ "door": {
+  "double": true,
+  "knobs": [
+   [
+    [
+     -1.0,
+     -0.05
+    ],
+    [
+     -20,
+     20
+    ],
+    [
+     5.8,
+     7.2
+    ]
+   ],
+   [
+    [
+     0.05,
+     1.0
+    ],
+    [
+     -20,
+     20
+    ],
+    [
+     5.8,
+     7.2
+    ]
+   ]
+  ]
+ },
+ "metal": []
+}

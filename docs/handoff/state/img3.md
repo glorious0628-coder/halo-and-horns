@@ -1,6 +1,13 @@
-# 이미지 생성 3 — 상태 (2026-10-11 밤)
+# 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄
-**④ 골격 15채 v3 (검수 판정 1·2·4·6·7 고침) 끝, 검수 보고함 → 다음 = 3번 Tripo 장식.** records.json `halo_houses15_skeleton_v3_2026-10-11`. 4면 시트 `art/review/img3/houses/houses_4view_v3_{a,b,c}.jpg`, WorldKit C2c 낮·밤 `houses_studio_c2c_v3_{a,b,c}.jpg`(사진 `studio_c2c_v2/`, 디스크만). WorldKit SkeletonTest 15채 = v3(앞 줄 z 60 x 2940~3192, 뒤 줄 z 115 x 2940~3156, 36칸 간격, + HouseRows_Ground, 등불 네온 심지 LampCore). 집 07 천장·바닥판 팔각 띠로 바꿔 끼움. 금 = (255,168,36) 최종(이미지 개발 적용 cd1aaa3, 검수 확정값 195,45에서 집 07 비교로 바뀜 — 검수에 알림; 생성기·07·미리보기·metal_ornaments 반영).
+**3번 Tripo 장식 = 새 도구로 15채 돌리는 중** (`tools/house_deco_run.py`, 아래). ④ 골격 15채 v3는 검수 보고 끝(records `halo_houses15_skeleton_v3_2026-10-11`, 시트 `art/review/img3/houses/houses_4view_v3_{a,b,c}.jpg`). **보고 = 디자인 검수**(최종 검수 10/11 밤 지시). **WorldKit**: PC 배터리로 꺼짐 → 저장 안 한 SkeletonTest 사라짐. 골격 다시 넣기는 이미지 생성 1이 바탕을 다시 지은 뒤 알려 주면, **plan v2 최신 자리**(e8bd29f·353c72c: 꽃 가게 광장 밖, 대성당 (84,-772), 절벽 두 단 18/22, 받침 높이 = 문 자리 높이)로.
+
+## 3번 장식 도구 (10/11 밤, A23-125: Tripo HD에서 잘라 → Blender 손보기)
+- `py tools/house_deco_run.py <집>` = ① `tools/house_deco.py`(자르기 + 손보기 + 골격 자리 맞춤, 값 = `tools/house_deco/<집>.json`) ② (팔각 돔만) `tools/roof_fit.py --corners radius` ③ `tools/piece_fix.py`(돔만: 부스러기 빼고 1024 맵 굽기, 얇은 삼각형 지우기 끔 — 켜면 Tripo 큰 면까지 지워 구멍) ④ `tools/metal_ornaments.py`(고리 문고리만, Tripo 문고리 자리에) ⑤ `tools/house_deco_place.py`(탑 꼭지·등불 복사) ⑥ `tools/glb_merge.py` → `art/models/tripo/house_deco/<집>/<집>_deco.glb`(+ 맵 png) ⑦ `tools/skeleton_preview.py` → `build/deco/<집>/preview/`.
+- 자를 값 읽기: `tools/tripo_ortho.py <parts.glb> <dir> [--only 이름]` = 칸 눈금 정면·옆·위 사진(`build/deco/ortho/<집>/`).
+- 손보기 내용: **돔** = Tripo 돔(흰 띠는 발치 0.8칸만 빼기 — 금 반사도 흰색이라 전부 빼면 구멍) → 높이 띠마다 원 중심을 한 축으로 + k=1,2 찌그러짐만 펴기(갈빗대 유지) → 밑 반지름 = 골격 R. 팔각 돔(03) = 폭으로 맞춘 뒤 roof_fit(모서리 = 반지름 봉우리). **탑 꼭지/종탑 꼭지** = Tripo 실루엣 → 선반(lathe) 16면으로 다시 + Tripo 색 투영(`tools/proj_bake.py`). **문짝** = 정확한 아치 판(slot 크기)에 Tripo 판자·경첩 그림·요철(노멀)을 앞에서 투영, 얇은 금 흘림은 판자 색으로 메움, 쌍문은 좌우 대칭. **손잡이**(쌍문) = 선반 돌린 공 + Tripo 금 중앙값. **고리 문고리** = metal_ornaments 정확한 고리(Tripo 고리 자리). **등불** = Tripo 등불 재기(뒤 벽면 자동 빼기, 빛나는 유리 띠, 실루엣) → 4면 선반 지붕·받침 + 기둥 4 + 팔·벽판, 유리 자리는 비움(골격 LampGlass·LampCore가 밤빛), 금 = Tripo 중앙값.
+- 아직 안 한 것(2묶음): 차양 금 틀, 파라솔(Juice 옥상), 벽돌 돔 + 굴뚝 종탑(Bakery), 08 문 위 작은 돔(골격에 받침 없음), 드럼 창(arch_window: 골격 W 1.2가 2D·Tripo 약 3.5보다 작음 → 생성기 크기부터), 10 모서리 꼭지(골격 자리 없음), 간판·식물 = 5단계.
+- 집 02 미리보기 통과 수준(돔 매끈, 꼭지 둥글게, 등불 모양, 문 대칭). 나머지 14채는 `build/deco/<집>/run.log`·preview 확인 중.
 
 ## 검수 판정 (10/11 저녁, 16189b4e 본 뒤) — 처리 상태
 - 통과: 골격 구조(벽·층·창·문 구멍·속 빔) + 겹침 고친 10가지.
@@ -17,10 +24,8 @@
 - Hill1(A)=05 · Hill2(B)=11 · Hill3(A)=01 · Garden4(B)=04 · Cliff1(B)=10 · Cliff2(A)=08 · Cliff3(A)=06 · Cliff4(B)=03 · Cliff5(A)=09 · Garden1(A)=12 · Garden2(B)=02 · Garden3(A, 바닷가)=07. 새 집 7채 자리 = Hill4·Cliff6·Cliff7·Cliff8·Garden5·Garden6·Garden7(이미지 생성 1 고침: Hill4 약초꾼 부부·Garden5 꽃 농부 2D 있음, docs/design/halo_new_houses_2026-10-11.md). 이미지 생성 1 검사: 16채 서로 안 겹침, 길 안 막음, B 칸 깊이 여유. 검수 OK 기다림 → OK 나면 이미지 생성 1에 알리기.
 - 원점: 문 면을 door_at에 맞춤(이미지 생성 1 요청). 문 면 = 몸통 가운데에서 01 7.10 · 02 6.30 · 03 5.60 · 04 5.60 · 05 7.80 · 06 5.92 · 08 6.55 · 09 6.87 · 10 5.15 · 11 6.20 · 12 6.50 · 빵 6.00 · 꽃 5.40 · 주스 6.00 · 물약 5.70. 가게 문 옆 치우침(문 앞에서 볼 때): 빵 오른쪽 4.6, 주스 왼쪽 4.6, 물약 오른쪽 3.8.
 
-## 다음 일 3번: Tripo 장식 (돈 안 듦 — 이미 있는 HD 멀티뷰 15개)
-- 재료: `art/models/tripo/web/<집>_HD_src.glb` → 이미 나눈 `art/models/tripo/halo_houses/<집>/<집>_parts.glb`(Door·DoorHw·Awning·WinPane·Glass·Body_t00~t11, 부품마다 맵). 돔·첨탑은 Body 타일 안에 있음.
-- 잘라 낼 것: 돔·첨탑(꼭지), 문짝, 등불, 차양 틀, 파라솔(Juice), 벽돌 돔(Bakery). 천 차양 몸은 Studio Fabric 그대로. 식물·담쟁이·간판은 5단계.
-- 도구: `tools/skeleton_keep.py`(house 모드: Roof z ≥ roof_z, Lanterns 상자, Door·DoorHw 유지) → `tools/skeleton_place.py`(골격 자리로 scale/move/align; 생성기가 place.json을 써야 함 — skeleton_house.py에 아직 없음, skeleton_house07.py `_place.json` 참고) → Blender 손보기: 돔 = 원으로(roof_fit.py처럼 극좌표 맞춤, 갈빗대 대칭), 문고리·경첩 = metal_ornaments 정확한 모양으로 바꿔 끼우기 OK, 등불 = 대칭, 떠 있는 조각·구멍 제거(`tools/piece_fix.py`) → 부품마다 C/N/R/M 굽기(piece_fix) → records.json → 합본(glb_merge @오프셋) → 검수 경유 사용자 Import 3D → PivotTo·재질 → 낮·밤 사진.
+## 다음 일 (3번 장식 뒤)
+- 15채 장식 시트 → 디자인 검수 → 통과하면 WorldKit에 골격 + 장식 GLB(사용자 Import 3D, 검수 경유) → C2c 낮·밤 사진.
 - 그다음: `docs/review/3d_recheck_2026-10-11_result.md` ② 'Blender만' 11개 → ① 빛 마을 v2(4면 2D 통과한 것부터, Tripo 묶음은 개수·포인트 검수 승인).
 - 규칙(검수 10/11): 묶음 보고 뒤 대화가 길면 이 파일 갱신·push → clear_session("self"). Tripo가 돌거나 일 중간이면 비우지 않음.
 
