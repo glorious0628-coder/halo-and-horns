@@ -19,7 +19,7 @@ local BOX = { x0 = D.box[1] - 2, x1 = D.box[2] + 2, z0 = D.box[3] + 2, z1 = D.bo
 local OLD_BOX = { x0 = -214, x1 = 214, z0 = -322, z1 = -714, y0 = -24 }
 local MAT = {
 	g = Enum.Material.Grass, d = Enum.Material.Ground, c = Enum.Material.Concrete, b = Enum.Material.Cobblestone,
-	p = Enum.Material.Pavement, t = Enum.Material.Slate, w = Enum.Material.Mud, r = Enum.Material.Rock, n = Enum.Material.Sand,
+	p = Enum.Material.Pavement, t = Enum.Material.Slate, w = Enum.Material.Mud, r = Enum.Material.Rock, n = Enum.Material.Sand, l = Enum.Material.Limestone,
 }
 local COL = {
 	Gate = Color3.fromRGB(205, 195, 170), Tower = Color3.fromRGB(190, 190, 198), Shop = Color3.fromRGB(214, 200, 182),

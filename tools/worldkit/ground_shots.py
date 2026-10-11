@@ -201,7 +201,12 @@ try:
         src = os.path.join(TEMP, "studio_capture_0.jpeg")
         if os.path.exists(src):
             os.remove(src)
+        top = s["name"].endswith("_top")
+        if top:  # 디자인 검수 10/11: the WorldKit fog (190,170,140, 120..650) hazes the view from above -> off for this shot only
+            run_luau('local L = game.Lighting shared.GS_FOG = { L.FogStart, L.FogEnd } L.FogStart, L.FogEnd = 100000, 100001 return "fog off"')
         r = mcp("screen_capture", {"capture_id": s["name"], "camera_position": s["cam"], "look_at_position": s["look"]})
+        if top:
+            run_luau('local L = game.Lighting local f = shared.GS_FOG if f then L.FogStart, L.FogEnd = f[1], f[2] end return "fog back"')
         dst = os.path.join(OUT, s["name"] + ("_nobloom" if "--nobloom" in sys.argv else "") + ".jpg")
         if os.path.exists(src):
             shutil.copy(src, dst)

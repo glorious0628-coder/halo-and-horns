@@ -29,7 +29,7 @@ EDGE = 32  # grid margin round the land: the 16-stud sea ring + its 16-stud rim 
 HOFF = 20  # stored height = round(y) + HOFF
 ALPH = "".join(chr(c) for c in range(48, 48 + 80) if chr(c) not in "\\\"'`[]")  # safe chars
 # material codes
-M = dict(sea="s", grass="g", dirt="d", road1="c", road2="b", road3="p", stair="t", water="w", rock="r", sand="n")
+M = dict(sea="s", grass="g", dirt="d", road1="c", road2="b", road3="p", stair="t", water="w", rock="r", sand="n", limestone="l")
 SLOPES = {  # y -> y_to along this line (stage-1 coordinates; main() grows them like the plan). Since the 10/11 review the plan
     # carries its own district "slope" lines (FINAL coordinates) and these are only the fallback
     "market": ((12, -450), (112, -470)),
@@ -41,7 +41,7 @@ PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fo
 APRON_D, APRON_RAMP = 8, 12  # level doorstep in front of every door, then a ramp back to the district slope (studs)
 APRON_SIDE = 8  # review 10/11: sideways blend width of the doorstep (its sides were steps)
 PAINT_IN = CELL  # 디자인 검수 10/11: road / yard / plaza terrain paint stops one cell inside the parts
-FACE_DH = 2.5  # a land cell more than this above a neighbour is a rock face (the upper rim of every step)
+FACE_DH = 4.0  # 디자인 검수 10/11: only steps higher than 4 are rock faces (Limestone, light cream); lower ones stay grass slopes
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
@@ -632,7 +632,7 @@ def main():
                 if 0 <= rr < rows and 0 <= cc < cols and MAT[rr][cc] not in ("sea", "water") and H[rr][cc] is not None:
                     d = max(d, H[r][c] - H[rr][cc])
             if d > FACE_DH:
-                MAT[r][c] = "rock"
+                MAT[r][c] = "limestone"  # not Rock: Rock is dark and is the island underside too
                 faces += 1
     print(f"[blockout] rock faces {faces}")
 
