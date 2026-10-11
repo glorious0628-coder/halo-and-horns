@@ -395,7 +395,7 @@ for _, mv in D.fixed.move do
 	if mv.new_xyz then marker("Move_" .. mv.name, mv.new_xyz[1], mv.new_xyz[3], Color3.fromRGB(40, 150, 255), mv.name) end
 end
 for _, s in D.first10 do
-	if s.n ~= 1 then marker("First10_" .. s.n, s.at[1], s.at[2], Color3.fromRGB(255, 80, 160), s.n .. " " .. s.what) end
+	if s.n ~= 1 and s.at then marker("First10_" .. s.n, s.at[1], s.at[2], Color3.fromRGB(255, 80, 160), s.n .. " " .. s.what) end
 end
 for _, pd in D.fixed.pads do
 	local p = part(mk, pd.name, Vector3.new(8, 0.4, 8), CFrame.new(Vector3.new(pd.at[1], pd.at[2], pd.at[3]) + OFF), Color3.fromRGB(110, 220, 110))
