@@ -215,6 +215,15 @@ local function inFactionTown(v)
 	return ok and inTown == true
 end
 
+-- A23-113 ①: a Roblox friend of the kaiju (PvPService.AreFriends, the cached answer) is never stomped and cannot hit
+-- it, so it neither raises the kaiju's HP nor makes the event contested
+local function friendOfKaiju(p, v)
+	local pvp = S and S.PvPService
+	if type(pvp) ~= "table" or type(pvp.AreFriends) ~= "function" then return false end
+	local ok, yes = pcall(pvp.AreFriends, p, v)
+	return ok and yes == true
+end
+
 local function countNearbyHalo(p)
 	local root = Util.GetRoot(p)
 	if not root then return 0 end
@@ -223,7 +232,7 @@ local function countNearbyHalo(p)
 	for _, v in readyPlayers() do
 		if v ~= p and factionOf(v) == "Halo" and Util.IsAlive(v) and not inFactionTown(v) then
 			local r = Util.GetRoot(v)
-			if r and Util.FlatDistance(r.Position, pos) <= Config.Kaiju.NearbyRadius then
+			if r and Util.FlatDistance(r.Position, pos) <= Config.Kaiju.NearbyRadius and not friendOfKaiju(p, v) then
 				n += 1
 			end
 		end
@@ -473,7 +482,8 @@ local function stomp(p)
 			if r and Util.FlatDistance(r.Position, pos) <= Config.Kaiju.StompRadius
 				and call("PvPService", "IsShielded", v) ~= true -- rookie shield or graduation grace (A23-18)
 				and v:GetAttribute("Protected") ~= true
-				and call("ZoneService", "IsTown", v) ~= true then
+				and call("ZoneService", "IsTown", v) ~= true
+				and not friendOfKaiju(p, v) then -- A23-113 ①: in every zone, also where the stomp credits nobody
 				local hum = Util.GetHumanoid(v)
 				if hum and hum.Health > 0 then
 					contested = true -- a Halo player stood in stomp range: the kaiju faced real opposition

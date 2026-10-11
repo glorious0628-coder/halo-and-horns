@@ -1,6 +1,6 @@
--- PvPService.luau : PvP rules (CanAttack, rookie / spawn protection), bully detection, KO outcomes
--- (plunder -> grudge sack, honor, bounty), Wanted stars + bounty, revenge marks and the Most Wanted board.
--- Server only. See TECH_SPEC §4.13 and SPEC_ADDENDUM A6 / A10-V3-3.
+-- PvPService.luau : PvP rules (CanAttack, rookie / spawn protection, A23-113 ① Roblox friends), bully detection, KO
+-- outcomes (plunder -> grudge sack, honor, bounty), Wanted stars + bounty, revenge marks and the Most Wanted board.
+-- Server only. See TECH_SPEC §4.13 and SPEC_ADDENDUM A6 / A10-V3-3 / A23-113.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -47,6 +47,13 @@ local dmgLog = {}
 -- hit either way, A / B = the two players } (a new fight starts after GUARD.EngageGap without a hit)
 local engage = {}
 local revenge = {} -- [Player] = { Target = Player, Until = os.clock() }
+-- A23-113 ① (user 2026-10-10): Roblox friends never damage each other, whatever their sides and zones. Pairs["<lo>:<hi>"
+-- UserIds] = the pair's one IsFriendsWith answer (a failed call = false), asked in the background when the second of
+-- the two becomes ready on this server (join order does not matter) and kept until one of them leaves (a rejoin asks
+-- again). Asking[key] = the token of the call in flight (a leave drops it, so its late answer is thrown away). A pair
+-- without an answer yet is not friends. Burst calls one after another, the next Burst Gap s later (a full server).
+-- RankingService keeps its own cache for the boards (there a failed call counts as friends).
+local FRIEND = { Pairs = {}, Asking = {}, Burst = 5, Gap = 1 }
 
 -- CR-M4: pair state (minted KO reward, repeat-KO log, claimed bully bounty) lives in the saved PairCD of the player
 -- it belongs to, so a server hop or rejoin cannot reset it (pairReady / logKO below; pruned by PlayerService)
@@ -425,6 +432,62 @@ local function clearRevengeInvolving(p)
 	end
 end
 
+------------------------------------------------------------------ friends (A23-113 ①)
+-- one pair's IsFriendsWith call (it yields and can throw: pcall; a failed call = not friends). The answer is kept only
+-- while this call is still the pair's current one (FRIEND.Drop on a leave in between throws it away)
+function FRIEND.Ask(newcomer, other)
+	local key = engageKey(newcomer, other)
+	if FRIEND.Pairs[key] ~= nil or FRIEND.Asking[key] ~= nil then return end -- once per pair
+	local PS = S.PlayerService
+	if not isPlaying(newcomer) or not isPlaying(other) or not PS.IsReady(newcomer) or not PS.IsReady(other) then return end
+	local token = {}
+	FRIEND.Asking[key] = token
+	local ok, res = pcall(function() return newcomer:IsFriendsWith(other.UserId) end)
+	if FRIEND.Asking[key] ~= token then return end -- one of them left meanwhile
+	FRIEND.Asking[key] = nil
+	FRIEND.Pairs[key] = ok and res == true
+end
+
+-- the newcomer's pairs with every other ready player, in the background: Burst calls in a row (each waits for its own
+-- answer), the next Burst Gap s later
+function FRIEND.Join(newcomer)
+	local others = {}
+	for _, o in S.PlayerService.GetReadyPlayers() do
+		if o ~= newcomer then table.insert(others, o) end
+	end
+	for first = 1, #others, FRIEND.Burst do
+		local batch = {}
+		for i = first, math.min(#others, first + FRIEND.Burst - 1) do table.insert(batch, others[i]) end
+		local function run()
+			for _, o in batch do
+				local ok, err = pcall(FRIEND.Ask, newcomer, o)
+				if not ok then Util.Warn(TAG, "friend check failed: " .. tostring(err)) end
+			end
+		end
+		local wave = (first - 1) / FRIEND.Burst
+		if wave == 0 then task.spawn(run) else task.delay(wave * FRIEND.Gap, run) end
+	end
+end
+
+-- a leaver's answers and calls in flight are forgotten, so a rejoin asks again
+function FRIEND.Drop(player)
+	local id = tostring(player.UserId)
+	for _, list in { FRIEND.Pairs, FRIEND.Asking } do
+		for key in list do
+			local lo, hi = string.match(key, "^([^:]+):([^:]+)$")
+			if lo == id or hi == id then list[key] = nil end
+		end
+	end
+end
+
+-- A23-113 ①: true when the two players are Roblox friends (this server's cached answer: never yields, never asks)
+function PvPService.AreFriends(a, b)
+	if typeof(a) ~= "Instance" or typeof(b) ~= "Instance" or a == b or not a:IsA("Player") or not b:IsA("Player") then
+		return false
+	end
+	return FRIEND.Pairs[engageKey(a, b)] == true
+end
+
 ------------------------------------------------------------------ public API
 function PvPService.GetStars(player)
 	return (player and stars[player]) or 0
@@ -558,6 +621,10 @@ function PvPService.CanAttack(attacker, victim)
 	end
 	if not isFighter(fa) or not isFighter(fv) or fa == fv then
 		return false, "SameFaction"
+	end
+	-- A23-113 ①: Roblox friends never hit each other, in any zone (before the kaiju exception: a friend kaiju too)
+	if PvPService.AreFriends(attacker, victim) then
+		return false, "Friend"
 	end
 	-- kaiju exception: Halo may hit the Active kaiju in any zone (rookies allowed, protection ignored), except from inside
 	-- a faction town (user 2026-10-10, 빛 마을 점검 #41: Halo Citadel / Horns Den are no fortress; the Crossroads fight
@@ -1031,6 +1098,11 @@ local function onPlayerReady(player, data)
 	if restored > 0 then
 		refreshStarAttrs(player)
 	end
+	-- A23-113 ①: ask Roblox about this newcomer and every player already here (background)
+	local okFriends, errFriends = pcall(FRIEND.Join, player)
+	if not okFriends then
+		Util.Warn(TAG, "friend checks failed: " .. tostring(errFriends))
+	end
 end
 
 local function cleanupPlayer(player)
@@ -1051,6 +1123,7 @@ end
 
 local function onPlayerLeaving(player, data)
 	graceUntil[player], wasRookie[player] = nil, nil
+	FRIEND.Drop(player) -- A23-113 ①: a rejoin asks again
 	-- CR-M11: runs before KaijuService's handler (init order) and while JusticeService still reports the bully
 	-- stacks (CR-L1 defers their cleanup)
 	local okPay, paid = pcall(payLeaveBounty, player)

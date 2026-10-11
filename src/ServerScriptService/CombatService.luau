@@ -527,6 +527,12 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 	if attacker and (not PVP_FACTIONS[faction(attacker)] or not PVP_FACTIONS[faction(victim)]) then
 		return 0
 	end
+	-- A23-113 ①: the last gate of every player-to-player hit (swings, Q / Z / X, a kaiju stomp in a PvP zone): Roblox
+	-- friends deal 0 (PvPService's cached answer; no combat tag, no KO credit, no PlayerDamaged)
+	local pvp = attacker and S.PvPService
+	if pvp and type(pvp.AreFriends) == "function" and pvp.AreFriends(attacker, victim) == true then
+		return 0
+	end
 	if not Util.IsAlive(victim) then
 		return 0
 	end

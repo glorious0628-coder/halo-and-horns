@@ -352,7 +352,10 @@ local function duel(o)
 	local k = w:Join(101, o.KillerFaction or "Halo", { Power = o.KillerPower or 1000, Attrs = o.KillerAttrs })
 	local v = w:Join(202, o.VictimFaction or "Horns", { Power = o.VictimPower or 1000, AccountAge = o.VictimAge,
 		Playtime = o.VictimPlay, Carried = o.Carried, Attrs = o.VictimAttrs })
-	w:RunSpawned() -- join-time background jobs (grudge mail)
+	w:RunSpawned() -- join-time background jobs (grudge mail, PvPService's A23-113 friend check of the pair)
+	-- A23-113 ①: PvPService asked IsFriendsWith once at the join (its own cache); FriendCalls from here on counts only
+	-- RankingService's calls (its board cache), as before
+	w.JoinFriendCalls, w.FriendCalls = w.FriendCalls, 0
 	return w, k, v
 end
 
