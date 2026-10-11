@@ -8318,9 +8318,10 @@ Config.Craft = {
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
 		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
-		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N)
+		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
+		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
 		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
-		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Petal = 2 }, XP = 10 },
+		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Herb = 2 }, XP = 10 },
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",

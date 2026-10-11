@@ -126,6 +126,7 @@ MUTATIONS = [
     # --- ⑤ the tamer's recipes (summon S1 = Kind Pet, Pet Treats T1)
     ("config: S1 at research stage 1", C, "Family = \"Slime\", Research = 150,", "Family = \"Slime\", Research = 50,"),
     ("config: T1 makes two", C, "Item = \"PetTreat\", N = 3,", "Item = \"PetTreat\", N = 2,"),
+    ("config: treats from petals (hunting only)", C, "Mats = { Jelly = 5, Herb = 2 }, XP = 10 },", "Mats = { Jelly = 5, Petal = 2 }, XP = 10 },"),
     ("config: Pet Treats sold at the Forge", C, "Icon = \"IconPetTreat\", Source = \"Craft\",", "Icon = \"IconPetTreat\","),
     ("pet: on without the research switch", R, "\t\tif not (Config.FeatureOn(\"Research\") and type(r.Species) == \"string\"", "\t\tif not (type(r.Species) == \"string\""),
     ("pet: on without PetService", R, "\t\t\tand type(r.Family) == \"string\" and type(r.Spd) == \"table\" and P and type(P.SummonPet) == \"function\"\n", "\t\t\tand type(r.Family) == \"string\" and type(r.Spd) == \"table\"\n"),

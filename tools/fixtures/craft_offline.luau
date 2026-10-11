@@ -661,8 +661,8 @@ runGroup("tamer", function()
 	check(S1 and S1.Role == "Tame" and S1.Kind == "Pet" and S1.Species == "BabySlime" and S1.Family == "Slime" and S1.Research == C.Research.Stages[2]
 		and S1.Spd[1] == 5 and S1.Spd[2] == 8 and S1.Gold == 100 and S1.Mats.Jelly == 30 and S1.Mats.SlimeCore == 5 and S1.Lv == 1 and S1.XP == 40,
 		"S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4)", show(S1))
-	check(T1 and T1.Role == "Tame" and T1.Kind == "Item" and T1.Item == "PetTreat" and T1.N == 3 and T1.Mats.Jelly == 5 and T1.Mats.Petal == 2,
-		"T1: Jelly 5 + Petal 2 -> 3 Pet Treats (+ the hammer's +N)", show(T1))
+	check(T1 and T1.Role == "Tame" and T1.Kind == "Item" and T1.Item == "PetTreat" and T1.N == 3 and T1.Mats.Jelly == 5 and T1.Mats.Herb == 2
+		and T1.Mats.Petal == nil, "T1: Jelly 5 + Herb 2 (gathered, 게임성 검수 10/12) -> 3 Pet Treats (+ the hammer's +N)", show(T1))
 	local it = C.Loot.Items.PetTreat
 	local inOrder = false
 	for _, id in C.Loot.Order do if id == "PetTreat" then inOrder = true end end
@@ -749,7 +749,10 @@ runGroup("tamer", function()
 	-- Pet Treats: 3 + the hammer's +N
 	local t = tamerWorld()
 	local r, dr = smith(t, 5, nil, "Archer")
-	check(t.C.TryStart(r, "T1") == "ok", "T1 starts (no research needed)", "")
+	check(t.C.TryStart(r, "T1") == "mats", "no herbs: NeedMats", "")
+	dr.Items.Herb = 2
+	local st = t.C.TryStart(r, "T1")
+	check(st == "ok" and (dr.Items.Herb or 0) == 0, "T1 starts with 2 herbs (no research needed)", tostring(st) .. " " .. tostring(dr.Items.Herb))
 	hammer(t, r, HONEST)
 	check(dr.Items.PetTreat == 5 and dr.Craft.Tame.XP == 10, "3 + 2 = 5 Pet Treats, 10 craft XP", tostring(dr.Items.PetTreat))
 end)

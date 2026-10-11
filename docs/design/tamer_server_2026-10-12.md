@@ -34,6 +34,6 @@
 ## 7. 합의·결정 (2026-10-12) — 됨
 - **게임성 검수:** 소환 속도 = 무작위 5~8%(정수) + 망치질 +0/+1/+2, 최대 10% — 그대로 넣음(`S1.Spd = { 5, 8 }`, `Config.SaveV4.PetRollSpd[2]` 상한). 행운 물약 = Source 없는 몬스터 재료 줄만(보스·채집·제작 제외).
 - **게임성 개발 2:** PetService 4개는 개발 3이 넣고 개발 2가 읽어 확인. 맞춘 모양: 새 펫 줄은 `addPet` 한 곳(grant·SummonPet 같이 씀), 64마리는 넣기 **전에** 막음(HasRoom), 거절 = nil(모르는 종·`sanitizeRoll` 실패·64), XP 고리는 `giveXP(p, n)`(onKilled는 거르기만), `AddPetXP(uid, n)` = 내 펫 + 정수 > 0만, 최대 레벨이면 그대로 레벨 반환, `PetRoll` 속성 → `Config.WalkSpeed(..., petRoll)` → `PetSpeedBonus(sp, lv, roll)`(Lv1 roll%, MaxLv roll% + `Config.Pets.RollGrow` 0.03, roll 0/nil = 옛 줄), `PetList` 줄에 `Roll`.
-- 간식 재료는 답이 없어 설계 §4대로 **Jelly 5 + Petal 2**.
+- 간식 재료 = **Jelly 5 + Herb 2**(게임성 검수 10/12: 채집 → 제작 고리, Petal은 사냥만으로 다 되는 걸 피함). Herb가 없으면 레시피 꺼짐 규칙 그대로.
 - **남은 클라 몫(개발 4·1):** PetWindow 82·101줄 `Config.PetSpeedBonus(sp, lv)`에 Roll(`p.Roll and p.Roll.Spd`, 따라오는 펫은 `PetRoll` 속성)을 넘겨야 창 숫자가 맞음. 연구 창(TamerInfo), 소환 결과(CraftResult.Pet), 간식 주기 버튼(FeedPet).
 - 시험: test_tamer_research(연구·소환 펫·펫 XP·간식) / test_craft(S1·T1, 대역) / test_pet_speed(roll) / test_alchemy(보스 재료) / test_tamer·test_gamepass 패턴 맞춤.

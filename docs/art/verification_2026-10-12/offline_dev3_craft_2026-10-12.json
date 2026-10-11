@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 175,
+  "checks": 176,
   "failedChecks": 0,
-  "namedChecks": 161,
+  "namedChecks": 162,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -837,7 +837,7 @@
     },
     {
       "group": "tamer",
-      "check": "T1: Jelly 5 + Petal 2 -> 3 Pet Treats (+ the hammer's +N)",
+      "check": "T1: Jelly 5 + Herb 2 (gathered, 게임성 검수 10/12) -> 3 Pet Treats (+ the hammer's +N)",
       "pass": 1,
       "fail": 0
     },
@@ -951,7 +951,13 @@
     },
     {
       "group": "tamer",
-      "check": "T1 starts (no research needed)",
+      "check": "no herbs: NeedMats",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "tamer",
+      "check": "T1 starts with 2 herbs (no research needed)",
       "pass": 1,
       "fail": 0
     },
@@ -978,9 +984,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 96,
-    "applied": 96,
-    "caught": 96,
+    "total": 97,
+    "applied": 97,
+    "caught": 97,
     "skipped": false,
     "results": [
       {
@@ -1273,7 +1279,7 @@
           "start :: no service warnings (pcall-swallowed handler errors)",
           "start :: no spare room: full, nothing taken"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 10
       },
       {
         "mutation": "start: no room check",
@@ -1315,9 +1321,10 @@
         "crashed": false,
         "newFailingChecks": [
           "start :: the gold (source Craft) and the materials go at the start",
-          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)"
+          "tamer :: 150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)",
+          "tamer :: T1 starts with 2 herbs (no research needed)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "start: nothing pending in the save",
@@ -2000,9 +2007,22 @@
         "crashed": false,
         "newFailingChecks": [
           "tamer :: 3 + 2 = 5 Pet Treats, 10 craft XP",
-          "tamer :: T1: Jelly 5 + Petal 2 -> 3 Pet Treats (+ the hammer's +N)"
+          "tamer :: T1: Jelly 5 + Herb 2 (gathered, 게임성 검수 10/12) -> 3 Pet Treats (+ the hammer's +N)"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "config: treats from petals (hunting only)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "tamer :: T1 starts with 2 herbs (no research needed)",
+          "tamer :: T1: Jelly 5 + Herb 2 (gathered, 게임성 검수 10/12) -> 3 Pet Treats (+ the hammer's +N)",
+          "tamer :: no herbs: NeedMats"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "config: Pet Treats sold at the Forge",
@@ -2206,13 +2226,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d0fc3e5de4dc67ced59cedbeb6feee1e6728e743addf3b4e49206d957c916d57",
+    "src/ReplicatedStorage/Shared/Config.luau": "3980836b987d717ff67dadb9c7645b39fa868b44d626db9ec41bd2d0fe5ec057",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
     "src/ServerScriptService/CraftService.luau": "6efa1c0a17eb495b2dd2ec25d9bb3c39fad95bb19510c43360b63fee3b99ab42"
   },
-  "fixtureSHA256": "792469571ccfe898dcfc9844eaf1652d4fb614d6f898a7bcb2bede071b0fd3cc",
+  "fixtureSHA256": "5dc2f6d19810af40790dc7cbcf636230653fefedd7d7290dd6df4846ac60bfea",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
