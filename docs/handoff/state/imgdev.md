@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 도구 만듦, 시험·사진 대기)
+
+- **거위 광장 공간 골격(SPEC A23-141, 디자인 검수 요청)**: tools/worldkit/goose_square.luau + tools/goose_square.py(apply/remove/survey, --center 기본 6000,200,6000, --emit = 메인용 파일 ALLOW_MAIN true) + 이름 표 docs/design/goose_square_skeleton_2026-10-12.md. 문법 OK, **아직 Studio에서 안 돌려 봄**(UiSandbox 닫힘) -> 최종 검수에 UiSandbox 열기·사진 슬롯 신청 -> 위 1 + 눈높이 2(Nest·Cart 쪽) + 이름 표를 디자인 검수에. 개발 2에 이름 표 알림.
+
 # 이미지 개발 — 상태 (2026-10-12: 가져온 메시는 세로축 180도 돌아옴)
 
 - **Import 3D로 들어온 메시는 OBJ보다 세로축 180도 돌아가 있음**(이미지 생성 4 확인; x·z 부호 반대). 놓는 규칙 = MeshPart.CFrame = 키트 피벗 * CFrame.new(D2_centre) * CFrame.Angles(0, math.pi, 0). prop_hull_assets.json에 place_rotate_y_pi 표시, tools/read_imported_hulls.py 주석·기록에 반영. **새 가져오기 묶음(나머지 46개, Tripo 손보기 GLB)마다 한 번 확인.**
