@@ -482,8 +482,7 @@ local function goosePos()
 		local ok, cf = pcall(function() return g:GetPivot() end)
 		if ok then return cf.Position, g end
 	end
-	local center = eggCfg().Center
-	return (typeof(center) == "Vector3" and center or Vector3.zero) + Vector3.new(0, 4, 0), g
+	return EggFx.Center() + Vector3.new(0, 4, 0), g
 end
 
 ----------------------------------------------------------------- per frame
@@ -613,7 +612,7 @@ local function stepRings(active)
 		S.Home = nil
 	end
 	local b = type(lk.Boundary) == "table" and lk.Boundary or {}
-	local center = typeof(cfg.Center) == "Vector3" and cfg.Center or Vector3.zero
+	local center = EggFx.Center()
 	local show = active and near(center, num(b.Range, 160) + num(cfg.RingRadius, 54))
 	if show and #S.Dots == 0 then
 		local n, r = math.max(8, math.floor(num(b.Dots, 48))), num(cfg.RingRadius, 54)
@@ -715,7 +714,7 @@ local function stepWobble(now, me)
 		S.StillPos, S.StillAt = me, now
 	end
 	local cfg = eggCfg()
-	local center = typeof(cfg.Center) == "Vector3" and cfg.Center or Vector3.zero
+	local center = EggFx.Center()
 	local flat = Vector3.new(me.X - center.X, 0, me.Z - center.Z).Magnitude
 	local amount = EggFx.Wobble(flat, now - (S.StillAt or now), cfg)
 	if joint and joint:IsA("Motor6D") then
@@ -817,6 +816,26 @@ function EggFx.Homes()
 		return typeof(a) == "Vector3" and a or nil
 	end
 	return { Halo = read("Nest", "NestPos") or cfgHome.Halo, Horns = read("Cart", "CartPos") or cfgHome.Horns }
+end
+
+-- A23-141 (게임성 개발 2 10/12, docs/design/goose_square_skeleton_2026-10-12.md): the egg ring's middle -
+-- workspace.GooseSquare's GooseSpot part (or its GooseSpotPos attribute) while the square exists, else
+-- Config.Goose.Egg.Center (the old plaza's fountain)
+function EggFx.Center()
+	local sq = workspace:FindFirstChild("GooseSquare")
+	if sq then
+		local spot = sq:FindFirstChild("GooseSpot", true)
+		local ok, pos = pcall(function()
+			if spot and spot:IsA("BasePart") then return spot.Position end
+			if spot and spot:IsA("Model") then return spot:GetPivot().Position end
+			return nil
+		end)
+		if ok and typeof(pos) == "Vector3" then return pos end
+		local a = sq:GetAttribute("GooseSpotPos")
+		if typeof(a) == "Vector3" then return a end
+	end
+	local c = eggCfg().Center
+	return typeof(c) == "Vector3" and c or Vector3.zero
 end
 
 -- my side's home point (HomeOf over Homes) or nil outside the square / without one

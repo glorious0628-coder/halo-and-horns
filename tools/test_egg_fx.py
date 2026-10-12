@@ -307,7 +307,17 @@ check(ht1.X == 5 and ht1.Z == 7, "HomeTarget: the square's own nest", ht1 and ht
 squareModel = { FindFirstChild = function() return nil end, GetAttribute = function() return nil end }
 local h2 = EggFx.Homes()
 check(h2.Halo.Z == -30 and h2.Horns.Z == 30, "Homes: a square without Nest / Cart = Config.Goose.Egg.Home")
+-- 게임성 개발 2 10/12 (the skeleton doc): the egg ring's middle = the square's GooseSpot
+check(EggFx.Center().X == 0 and EggFx.Center().Z == 0, "Center: a square without GooseSpot = Config.Goose.Egg.Center (or 0)")
+local spotPart = { IsA = function(_, c) return c == "BasePart" end, Position = vec(6000, 200, 6000) }
+squareModel = { FindFirstChild = function(_, n) if n == "GooseSpot" then return spotPart end return nil end,
+	GetAttribute = function() return nil end }
+check(EggFx.Center().X == 6000 and EggFx.Center().Y == 200, "Center: the square's GooseSpot part", EggFx.Center().X)
+squareModel = { FindFirstChild = function() return nil end,
+	GetAttribute = function(_, k) if k == "GooseSpotPos" then return vec(1, 2, 3) end return nil end }
+check(EggFx.Center().Z == 3, "Center: its GooseSpotPos attribute", EggFx.Center().Z)
 squareModel = nil
+check(EggFx.Center().X == 0, "Center: no square = Config.Goose.Egg.Center (or 0)")
 
 print("CHECKS " .. checks .. " FAILED " .. failed)
 '''
@@ -465,6 +475,11 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and bool(re.search(r"NoPickAlpha = 0\.[3-8]", look.group(1))) and bool(text)
          and sorted(re.findall(r"(\w+) = ", text.group(1))) == ["Alert", "Nap", "Plus"], ""),
         ("Config.Audio.Sounds: the 7 egg sounds", all(re.search(r"\n\t\t" + s + r" = \{ File = \"" + s + '"', cfg) for s in sounds), ""),
+        # 게임성 개발 2 10/12 (the skeleton doc): the goose's fallback spot, the ring dots and the wobble all centre on the
+        # square's GooseSpot (EggFx.Center), never on the old plaza fountain's Config.Goose.Egg.Center directly
+        ("A23-141: the goose spot, the ring and the wobble centre on EggFx.Center (the square's GooseSpot)",
+         "\treturn EggFx.Center() + Vector3.new(0, 4, 0), g" in egg and egg.count("\tlocal center = EggFx.Center()\n") == 2
+         and "typeof(cfg.Center) == \"Vector3\" and cfg.Center" not in egg, ""),
     ]
 
 
@@ -555,6 +570,10 @@ MUTATIONS = [
     ("QT", "the goose target in the real plaza", "\t\tif not inSquare then return nil end\n", ""),
     ("MAP", "the goose marker in the real plaza", "if gsAttr(\"GooseActive\", false) == true and gooseHere then",
      "if gsAttr(\"GooseActive\", false) == true then"),
+    ("EGG", "the egg ring stays on the old plaza (no GooseSpot)", "local spot = sq:FindFirstChild(\"GooseSpot\", true)",
+     "local spot = sq:FindFirstChild(\"Center\", true)"),
+    ("EGG", "the ring / goose / wobble ignore the square's middle", "\treturn EggFx.Center() + Vector3.new(0, 4, 0), g",
+     "\treturn Vector3.new(0, 4, 0), g"),
     ("MAP", "the nest never leaves the map", "\trefreshEggLandmarks() -- A23-141: the nest / the cart while I am in the square\n", ""),
     ("AUDIO", "the tug's 3-2-1 outside the square",
      "elseif type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\ttickFor(\"Goose\", false, 0, t)",
