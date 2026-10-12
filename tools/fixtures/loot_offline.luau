@@ -655,7 +655,8 @@ runGroup("config", function()
 	check(L.FailDropChance == 0.5, "FailDropChance is 0.5", L.FailDropChance)
 	check(L.ItemCap == 999, "ItemCap is 999", L.ItemCap)
 	check(L.GoldenMult == 3, "GoldenMult is 3", L.GoldenMult)
-	check(C.MaxWeaponTier == 8 and #C.Weapons == 8, "MaxWeaponTier is 8", C.MaxWeaponTier)
+	-- C1 (save v4): tier 9 = Mythic (crafted only)
+	check(C.MaxWeaponTier == 9 and #C.Weapons == 9, "MaxWeaponTier is 9", C.MaxWeaponTier)
 	local w8 = C.Weapons[8]
 	check(w8 and w8.Legend == true and w8.MinLevel == 1 and (w8.Price or 0) == 0 and not w8.RequiresFaction,
 		"tier 8 is the legendary: Legend=true, MinLevel 1, never sold, no faction gate", show(w8 and { w8.Legend, w8.MinLevel, w8.Price }))
@@ -858,8 +859,8 @@ runGroup("sanitize", function()
 	local want = { Jelly = 5, Move70 = 999, KnightCrest = 999, BruteHorn = 1, Move10 = 999, Bogus = 3, OldScroll = 999 }
 	local wantKnown = { Jelly = 5, Move70 = 999, KnightCrest = 999, BruteHorn = 1, Move10 = 999 }
 	check(deepEqual(d.Items, want), "stored garbage Items normalize (floor, 1..999, drop <=0/non-number; unknown ids kept)", show(d.Items))
-	local wantEnh = { 3, 0, 0, 10, 0, 10, 10, 0 }
-	check(deepEqual(d.WeaponEnhance, wantEnh), "stored garbage WeaponEnhance normalizes to 8 tiers clamped 0..10", show(d.WeaponEnhance))
+	local wantEnh = { 3, 0, 0, 10, 0, 10, 10, 0, 7 } -- C1: tier 9's +7 is kept (9 tiers)
+	check(deepEqual(d.WeaponEnhance, wantEnh), "stored garbage WeaponEnhance normalizes to 9 tiers clamped 0..10", show(d.WeaponEnhance))
 	check(deepEqual(d.LootFlags, { Other = true }), "LootFlags keeps only string keys set to true", show(d.LootFlags))
 	-- review B11: no ItemsJson / EnhanceJson attributes (they replicated to every client); the owner-only Inventory remote
 	check(f.Player:GetAttribute("ItemsJson") == nil and f.Player:GetAttribute("EnhanceJson") == nil,
@@ -868,14 +869,14 @@ runGroup("sanitize", function()
 	check(pushes == 1, "PlayerReady sends exactly one Inventory push (deferred, coalesced)", pushes)
 	check(payload and deepEqual(payload.Items, wantKnown), "Inventory payload Items = known ids only (unknown ids hidden)", show(payload and payload.Items))
 	check(payload and type(payload.Enhance) == "table" and #payload.Enhance == f.Config.MaxWeaponTier and deepEqual(payload.Enhance, wantEnh),
-		"Inventory payload Enhance is the 8-tier array", show(payload and payload.Enhance))
+		"Inventory payload Enhance is the 9-tier array", show(payload and payload.Enhance))
 	local keys = 0
 	for k in payload or {} do
 		keys += 1
-		check(k == "Items" or k == "Enhance" or k == "Seen" or k == "ItemSeq" or k == "WeaponSeq",
-			"Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq)", tostring(k))
+		check(k == "Items" or k == "Enhance" or k == "Seen" or k == "ItemSeq" or k == "WeaponSeq" or k == "Spares",
+			"Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq, C1 Spares)", tostring(k))
 	end
-	check(keys == 5, "Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq }", keys)
+	check(keys == 6, "Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq, Spares }", keys)
 	check(payload and type(payload.Seen) == "table" and next(payload.Seen) == nil, "P7 no kills yet: payload Seen = {}", show(payload and payload.Seen))
 	check(f.Player:GetAttribute("WeaponEnhance") == 10, "WeaponEnhance attribute = +N of the equipped tier (4)", f.Player:GetAttribute("WeaponEnhance"))
 	-- unknown ids can never be used, sold or given
@@ -895,15 +896,15 @@ runGroup("sanitize", function()
 
 	-- (b) live garbage that only a bug could create: NaN, +-inf, non-string keys, keys outside 1..8, fractional tiers
 	d.Items = { Jelly = 0 / 0, Enh70 = math.huge, Enh30 = -math.huge, [1] = 4, [true] = 2, Move70 = 12.9, Bone = -0.5, Move10 = 1000 }
-	d.WeaponEnhance = { [1] = 0 / 0, [2] = math.huge, [3] = -math.huge, [4] = 4.5, [8] = 11, [0] = 3, [-1] = 2, [9] = 7, [2.5] = 6 }
+	d.WeaponEnhance = { [1] = 0 / 0, [2] = math.huge, [3] = -math.huge, [4] = 4.5, [8] = 11, [0] = 3, [-1] = 2, [9] = 7, [10] = 5, [2.5] = 6 }
 	d.LootFlags = { FirstScroll = 1, [1] = true, Keep = true, Bad = "true" }
 	f.PS.PlayerReady:Fire(f.Player, d)
 	check(deepEqual(d.Items, { Move70 = 12, Move10 = 999 }), "NaN/inf/non-string-key Items are dropped, >cap capped", show(d.Items))
-	check(deepEqual(d.WeaponEnhance, { 0, 0, 0, 4, 0, 0, 0, 10 }), "NaN/inf/out-of-range WeaponEnhance entries normalize", show(d.WeaponEnhance))
+	check(deepEqual(d.WeaponEnhance, { 0, 0, 0, 4, 0, 0, 0, 10, 7 }), "NaN/inf/out-of-range WeaponEnhance entries normalize", show(d.WeaponEnhance))
 	local keys = 0
 	for k in d.WeaponEnhance do
 		keys += 1
-		check(type(k) == "number" and k >= 1 and k <= 8 and k == math.floor(k), "WeaponEnhance keys are exactly tiers 1..8", tostring(k))
+		check(type(k) == "number" and k >= 1 and k <= 9 and k == math.floor(k), "WeaponEnhance keys are exactly tiers 1..9", tostring(k))
 	end
 	check(keys == f.Config.MaxWeaponTier, "WeaponEnhance always has MaxWeaponTier entries", keys)
 	check(deepEqual(d.LootFlags, { Keep = true }), "LootFlags drops non-true values and non-string keys", show(d.LootFlags))
@@ -918,17 +919,17 @@ runGroup("sanitize", function()
 		local s = deepCopy(DEFAULT_ROW)
 		for k, v in row do s[k] = v end
 		local g = fixture({ Saved = s })
-		check(deepEqual(g.Data.Items, {}) and deepEqual(g.Data.WeaponEnhance, { 0, 0, 0, 0, 0, 0, 0, 0 })
-			and deepEqual(g.Data.LootFlags, {}), label .. ": Items {} / WeaponEnhance 8 zeros / LootFlags {}", show(g.Data.WeaponEnhance))
+		check(deepEqual(g.Data.Items, {}) and deepEqual(g.Data.WeaponEnhance, { 0, 0, 0, 0, 0, 0, 0, 0, 0 })
+			and deepEqual(g.Data.LootFlags, {}), label .. ": Items {} / WeaponEnhance 9 zeros / LootFlags {}", show(g.Data.WeaponEnhance))
 		check(g.Player:GetAttribute("WeaponEnhance") == 0, label .. ": WeaponEnhance attribute 0")
 	end
 	-- (d) brand-new player
 	local n = fixture({ Fresh = true })
 	local np = n:LastPayload()
-	check(deepEqual(n.Data.Items, {}) and #n.Data.WeaponEnhance == 8 and n.Player:GetAttribute("WeaponEnhance") == 0
-		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0 }, Seen = {}, ItemSeq = {},
-			WeaponSeq = { 0, 0, 0, 0, 0, 0, 0, 0 } }),
-		"new player: empty items, 8 tiers, Inventory pushed and WeaponEnhance attribute 0", show(np))
+	check(deepEqual(n.Data.Items, {}) and #n.Data.WeaponEnhance == 9 and n.Player:GetAttribute("WeaponEnhance") == 0
+		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Seen = {}, ItemSeq = {},
+			WeaponSeq = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Spares = {} }),
+		"new player: empty items, 9 tiers, Inventory pushed and WeaponEnhance attribute 0", show(np))
 	-- a burst of changes in one frame is one push; a player who left gets none; a real spawn resends (safety net)
 	n:Give("Jelly", 1); n:Give("Jelly", 1); n:Give("Bone", 1)
 	local burst, burstCount = n:LastPayload()
@@ -952,7 +953,7 @@ runGroup("sanitize", function()
 	n.Data.Items, n.Data.WeaponEnhance = nil, nil
 	n.ScriptConst = 0
 	local g = n:Roll("Slime")
-	check(type(n.Data.Items) == "table" and #n.Data.WeaponEnhance == 8 and n.Data.Items.Jelly == 1 and #g > 0,
+	check(type(n.Data.Items) == "table" and #n.Data.WeaponEnhance == 9 and n.Data.Items.Jelly == 1 and #g > 0,
 		"RollKill sanitizes missing tables before granting", show(n.Data.Items))
 	n.ScriptConst = nil
 	check(n:Give("Jelly", 5000) == 998 and n.Data.Items.Jelly == 999, "DebugGive caps at ItemCap", n.Data.Items.Jelly)
@@ -2258,8 +2259,9 @@ runGroup("levelrule", function()
 	check(#usableBad == 0, "Config.WeaponUsable(tier, level) = level >= Weapons[tier].MinLevel", show(usableBad))
 	check(C.WeaponUsable(8, 1) and not C.WeaponUsable(3, 4) and C.WeaponUsable(3, 5) and not C.WeaponUsable(4, 11) and C.WeaponUsable(4, 12)
 		and not C.WeaponUsable(6, 29) and C.WeaponUsable(6, 30), "WeaponUsable boundaries: T8 at Lv1, T3 from Lv5, T4 from Lv12, T6 from Lv30")
-	check(not C.WeaponUsable(0, 50) and not C.WeaponUsable(9, 50) and not C.WeaponUsable("3", 50) and not C.WeaponUsable(nil, 50),
+	check(not C.WeaponUsable(0, 50) and not C.WeaponUsable(10, 50) and not C.WeaponUsable("3", 50) and not C.WeaponUsable(nil, 50),
 		"WeaponUsable of an unknown tier is false")
+	check(C.WeaponUsable(9, 50) and not C.WeaponUsable(9, 49), "C1 WeaponUsable: the Mythic T9 from Lv50")
 	check(C.WeaponUsable(2, nil) and not C.WeaponUsable(3, nil), "WeaponUsable with no level reads Lv1")
 	-- Config.BestUsableWeapon(mask, level): the owned usable tier with the highest Damage; A23-34: 0 = bare hands when no
 	-- owned weapon is usable (tier 1 is owned only after the M1_1 gift)
@@ -2277,6 +2279,8 @@ runGroup("levelrule", function()
 		{ tierMask(3), 1, 0, "only T3 owned at Lv1 -> 0 (bare hands; tier 1 is never assumed)" },
 		{ tierMask(2), 1, 2, "only T2 owned (bought before the M1_1 gift) -> T2" },
 		{ tierMask(1, 2, 3, 4, 5, 6, 7, 8), 100, 7, "everything owned at Lv100 -> T7 (1000)" },
+		{ tierMask(1, 2, 3, 4, 5, 6, 7, 8, 9), 100, 9, "C1 the Mythic T9 (2200) owned at Lv100 -> T9" },
+		{ tierMask(1, 2, 3, 4, 5, 6, 7, 8, 9), 49, 7, "C1 T9 owned at Lv49 (needs Lv50) -> T7" },
 	} do
 		local got = C.BestUsableWeapon(case[1], case[2])
 		check(got == case[3], "Config.BestUsableWeapon: " .. case[4], "got " .. tostring(got))
@@ -2311,7 +2315,7 @@ runGroup("levelrule", function()
 
 	-- (a) the reviewer case: Lv100, tier 6 equipped, tiers 1+3+6 owned -> rebirth to Lv1. Tier 3 needs Lv5, so the best
 	-- usable owned weapon at Lv1 is tier 1 (tier 3 comes back at Lv5 / via the save case (e) below)
-	local enhA = { 1, 0, 3, 0, 0, 6, 0, 0 }
+	local enhA = { 1, 0, 3, 0, 0, 6, 0, 0, 0 } -- C1: 9 tiers
 	local a = mk(100, 6, tierMask(1, 3, 6), enhA)
 	check(a.Data.WeaponTier == 6 and #weaponNotices(a, "WeaponAutoSwap") == 0, "A23-28 Lv100 with tier 6 equipped: nothing to fit at join")
 	a.Notices = {}
@@ -2363,7 +2367,7 @@ runGroup("levelrule", function()
 		show({ c.Data.WeaponTier }))
 
 	-- (d) the free class change (ProgressionService.ResetLevel -> LevelReset) from Lv35 with tier 6 equipped
-	local enhD = { 0, 4, 0, 0, 0, 9, 0, 0 }
+	local enhD = { 0, 4, 0, 0, 0, 9, 0, 0, 0 }
 	local d = mk(35, 6, tierMask(1, 2, 6), enhD)
 	d.Notices = {}
 	d.Prog.ResetLevel(d.Player)
@@ -2498,6 +2502,29 @@ runGroup("sell", function()
 		check(g:Count("Jelly") == 0 and g:Count("Herb") == 4 and g:Count("CopperOre") == 2 and paid == 3 * L.Items.Jelly.Sell,
 			"the sell-all keeps gathered materials (only the monster ones are sold)", show(g.Data.Items))
 	end
+	-- C1: the two boss materials (Source "Boss") sit on their boss's table and stay out of the sell-all
+	do
+		local function hasRow(kind, id, p)
+			for _, row in L.Tables[kind] or {} do
+				if row.Item == id and row.P == p then return true end
+			end
+			return false
+		end
+		local kj, cg = L.Items.KingJelly, L.Items.ClatterGem
+		check(kj and kj.Kind == "Material" and kj.Source == "Boss" and kj.Sell == 60 and cg and cg.Kind == "Material"
+			and cg.Source == "Boss" and cg.Sell == 400 and hasRow("SlimeKing", "KingJelly", 0.2)
+			and hasRow("CaptainClatter", "ClatterGem", 0.1), "C1 boss materials: KingJelly (SlimeKing 0.2) / ClatterGem (CaptainClatter 0.1), Source Boss",
+			show({ kj, cg }))
+		local g = fixture()
+		g:Give("Jelly", 2)
+		g:Give("KingJelly", 3)
+		g:Give("ClatterGem", 1)
+		g:Sell()
+		local paid = 0
+		for _, e in g.GoldLog do paid += e.Amount end
+		check(g:Count("KingJelly") == 3 and g:Count("ClatterGem") == 1 and g:Count("Jelly") == 0 and paid == 2 * L.Items.Jelly.Sell,
+			"C1 the sell-all keeps the boss materials (sold one at a time)", show(g.Data.Items))
+	end
 	-- review B10: an unknown saved id is never sold (no price) and stays in the save
 	local saved = deepCopy(DEFAULT_ROW)
 	saved.Items = { Bogus = 7, Jelly = 2 }
@@ -2512,7 +2539,7 @@ end)
 runGroup("rebirth", function()
 	local saved = deepCopy(DEFAULT_ROW)
 	saved.Level, saved.WeaponTier, saved.WeaponOwnedMask, saved.BankGold = 100, 8, 255, 4567
-	saved.WeaponEnhance = { 2, 3, 4, 5, 6, 7, 8, 9 }
+	saved.WeaponEnhance = { 2, 3, 4, 5, 6, 7, 8, 9, 10 }
 	saved.Items = { Jelly = 5, Enh30 = 2, Bogus = 1 }
 	saved.LootFlags = { FirstScroll = true }
 	local f = fixture({ Saved = saved })
@@ -2529,7 +2556,7 @@ runGroup("rebirth", function()
 		"every owned weapon is kept (mask 255 incl. the legendary)", f.Data.WeaponOwnedMask)
 	check(f.Data.WeaponTier == 8 and f.Player:GetAttribute("WeaponTier") == 8 and f.Player:GetAttribute("WeaponEnhance") == 9,
 		"the equipped weapon stays equipped with its +9", show({ f.Data.WeaponTier, f.Player:GetAttribute("WeaponEnhance") }))
-	check(deepEqual(f.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9 }), "WeaponEnhance is not reset by rebirth", show(f.Data.WeaponEnhance))
+	check(deepEqual(f.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9, 10 }), "WeaponEnhance is not reset by rebirth", show(f.Data.WeaponEnhance))
 	check(deepEqual(f.Data.Items, before.Items) and deepEqual(f.Data.LootFlags, before.Flags),
 		"items (incl. unknown saved ids) and LootFlags are kept", show(f.Data.Items))
 	check(f.Data.CarriedGold == 123 and f.Data.BankGold == 4567, "carried and bank gold are kept",
@@ -2551,7 +2578,7 @@ runGroup("rebirth", function()
 	check(f.Data.WeaponTier == 8 and f.Player:GetAttribute("WeaponEnhance") == 9, "and swaps back to the legendary with its +9")
 	f:Release()
 	local re = fixture({ Rows = f.Rows, UserId = f.UserId })
-	check(deepEqual(re.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9 }) and re.Data.WeaponOwnedMask == 255 and re.Data.WeaponTier == 8
+	check(deepEqual(re.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9, 10 }) and re.Data.WeaponOwnedMask == 255 and re.Data.WeaponTier == 8
 		and re.Data.Level == 1 and re.Data.Rebirths == 1 and re.Data.Items.Bogus == 1 and re.Data.Items.Jelly == 5,
 		"weapons, enhancement, items and the reset level survive save / reload after rebirth", show({ re.Data.WeaponOwnedMask, re.Data.Level }))
 	check(re.Data.BankGold == 4567 + 123, "gold survives the reload (carried gold banked on leave)", re.Data.BankGold)
@@ -2562,7 +2589,7 @@ runGroup("rebirth", function()
 	ok = g.Prog.TryRebirth(g.Player, "Horns")
 	-- A23-28: the Lv40 tier 7 is not usable at Lv1 -> the best usable owned weapon (tiers 1..7 owned: tier 2, damage 15)
 	check(ok == true and g.Data.WeaponOwnedMask == 127 and g.Data.WeaponTier == 2 and g.Data.BankGold == 4567
-		and deepEqual(g.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9 }) and g.Data.Level == 1,
+		and deepEqual(g.Data.WeaponEnhance, { 2, 3, 4, 5, 6, 7, 8, 9, 10 }) and g.Data.Level == 1,
 		"rebirth with a faction switch keeps weapons / gold / enhancement; the Lv40 tier 7 is auto-swapped to tier 2",
 		show({ g.Data.WeaponOwnedMask, g.Data.WeaponTier }))
 	check(g:Noticed(string.format(C.Text.WeaponAutoSwap, 40, C.WeaponName(2, "Warrior", "Horns"))) == 1
