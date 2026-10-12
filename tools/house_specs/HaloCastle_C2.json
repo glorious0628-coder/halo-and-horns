@@ -1,0 +1,6 @@
+{
+ "name": "HaloCastle_C2",
+ "note": "NOT a skeleton_house.py spec: the castle is built by tools/skeleton_castle.py. This file only gives tools/house_4view_sheet.py the 2D views (사용자 승인 C2 '나도 C2!', 2026-10-11).",
+ "src2d": "art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png",
+ "views2d": {"left": "art/out/s2/halo/castle6/HaloCastle_C2_left_src.png", "right": "art/out/s2/halo/castle6/HaloCastle_C2_right_HQ_src.png", "back": "art/out/s2/halo/castle6/HaloCastle_C2_back_src.png"}
+}
