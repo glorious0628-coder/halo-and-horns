@@ -1,0 +1,518 @@
+{
+ "npc": "BakerGranny",
+ "parts": {
+  "Head": {
+   "centre": [
+    0.0,
+    4.7932,
+    -0.0
+   ],
+   "size": [
+    1.4445,
+    1.6864,
+    1.3289
+   ],
+   "tris": 300
+  },
+  "UpperTorso": {
+   "centre": [
+    0.0,
+    3.34,
+    -0.0375
+   ],
+   "size": [
+    1.44,
+    1.28,
+    1.035
+   ],
+   "tris": 3012
+  },
+  "LowerTorso": {
+   "centre": [
+    0.0,
+    1.755,
+    -0.0006
+   ],
+   "size": [
+    2.68,
+    2.17,
+    1.6012
+   ],
+   "tris": 236
+  },
+  "RightUpperArm": {
+   "centre": [
+    1.0737,
+    3.3682,
+    -0.0
+   ],
+   "size": [
+    0.7385,
+    0.9595,
+    0.5
+   ],
+   "tris": 188
+  },
+  "RightLowerArm": {
+   "centre": [
+    1.3954,
+    2.6486,
+    -0.0
+   ],
+   "size": [
+    0.815,
+    0.9034,
+    0.66
+   ],
+   "tris": 184
+  },
+  "RightHand": {
+   "centre": [
+    1.5044,
+    2.1052,
+    -0.0
+   ],
+   "size": [
+    0.4971,
+    0.706,
+    0.4971
+   ],
+   "tris": 1072
+  },
+  "LeftUpperArm": {
+   "centre": [
+    -1.0737,
+    3.3682,
+    -0.0
+   ],
+   "size": [
+    0.7385,
+    0.9595,
+    0.5
+   ],
+   "tris": 188
+  },
+  "LeftLowerArm": {
+   "centre": [
+    -1.3954,
+    2.6486,
+    -0.0
+   ],
+   "size": [
+    0.815,
+    0.9034,
+    0.66
+   ],
+   "tris": 184
+  },
+  "LeftHand": {
+   "centre": [
+    -1.5044,
+    2.1052,
+    -0.0
+   ],
+   "size": [
+    0.4971,
+    0.706,
+    0.4971
+   ],
+   "tris": 1072
+  },
+  "RightUpperLeg": {
+   "centre": [
+    0.45,
+    1.895,
+    -0.0
+   ],
+   "size": [
+    0.56,
+    1.05,
+    0.56
+   ],
+   "tris": 188
+  },
+  "RightLowerLeg": {
+   "centre": [
+    0.45,
+    0.95,
+    -0.0
+   ],
+   "size": [
+    0.52,
+    0.96,
+    0.52
+   ],
+   "tris": 188
+  },
+  "RightFoot": {
+   "centre": [
+    0.52,
+    0.26,
+    -0.12
+   ],
+   "size": [
+    0.8,
+    0.52,
+    1.05
+   ],
+   "tris": 488
+  },
+  "LeftUpperLeg": {
+   "centre": [
+    -0.45,
+    1.895,
+    -0.0
+   ],
+   "size": [
+    0.56,
+    1.05,
+    0.56
+   ],
+   "tris": 188
+  },
+  "LeftLowerLeg": {
+   "centre": [
+    -0.45,
+    0.95,
+    -0.0
+   ],
+   "size": [
+    0.52,
+    0.96,
+    0.52
+   ],
+   "tris": 188
+  },
+  "LeftFoot": {
+   "centre": [
+    -0.52,
+    0.26,
+    -0.12
+   ],
+   "size": [
+    0.8,
+    0.52,
+    1.05
+   ],
+   "tris": 488
+  }
+ },
+ "joints": {
+  "RightShoulder": {
+   "part0": "UpperTorso",
+   "part1": "RightUpperArm",
+   "cframe": [
+    0.98,
+    3.6,
+    -0.0,
+    0.927184,
+    -0.374607,
+    0.0,
+    0.374607,
+    0.927184,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "RightElbow": {
+   "part0": "RightUpperArm",
+   "part1": "RightLowerArm",
+   "cframe": [
+    1.2422,
+    2.951,
+    -0.0,
+    0.927184,
+    -0.374607,
+    0.0,
+    0.374607,
+    0.927184,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "RightWrist": {
+   "part0": "RightLowerArm",
+   "part1": "RightHand",
+   "cframe": [
+    1.482,
+    2.3576,
+    -0.0,
+    0.927184,
+    -0.374607,
+    0.0,
+    0.374607,
+    0.927184,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "LeftShoulder": {
+   "part0": "UpperTorso",
+   "part1": "LeftUpperArm",
+   "cframe": [
+    -0.98,
+    3.6,
+    -0.0,
+    0.927184,
+    0.374607,
+    0.0,
+    -0.374607,
+    0.927184,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "LeftElbow": {
+   "part0": "LeftUpperArm",
+   "part1": "LeftLowerArm",
+   "cframe": [
+    -1.2422,
+    2.951,
+    -0.0,
+    0.927184,
+    0.374607,
+    0.0,
+    -0.374607,
+    0.927184,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "LeftWrist": {
+   "part0": "LeftLowerArm",
+   "part1": "LeftHand",
+   "cframe": [
+    -1.482,
+    2.3576,
+    -0.0,
+    0.927184,
+    0.374607,
+    0.0,
+    -0.374607,
+    0.927184,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "RightHip": {
+   "part0": "LowerTorso",
+   "part1": "RightUpperLeg",
+   "cframe": [
+    0.45,
+    2.35,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "RightKnee": {
+   "part0": "RightUpperLeg",
+   "part1": "RightLowerLeg",
+   "cframe": [
+    0.45,
+    1.4,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "RightAnkle": {
+   "part0": "RightLowerLeg",
+   "part1": "RightFoot",
+   "cframe": [
+    0.45,
+    0.5,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "LeftHip": {
+   "part0": "LowerTorso",
+   "part1": "LeftUpperLeg",
+   "cframe": [
+    -0.45,
+    2.35,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "LeftKnee": {
+   "part0": "LeftUpperLeg",
+   "part1": "LeftLowerLeg",
+   "cframe": [
+    -0.45,
+    1.4,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "LeftAnkle": {
+   "part0": "LeftLowerLeg",
+   "part1": "LeftFoot",
+   "cframe": [
+    -0.45,
+    0.5,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "Waist": {
+   "part0": "LowerTorso",
+   "part1": "UpperTorso",
+   "cframe": [
+    0.0,
+    2.7,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "Neck": {
+   "part0": "UpperTorso",
+   "part1": "Head",
+   "cframe": [
+    0.0,
+    3.92,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  "Root": {
+   "part0": "HumanoidRootPart",
+   "part1": "LowerTorso",
+   "cframe": [
+    0.0,
+    2.45,
+    -0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  }
+ },
+ "accessories": {
+  "HatHair": {
+   "centre": [
+    0.1037,
+    5.1365,
+    0.1134
+   ],
+   "size": [
+    2.4161,
+    2.5634,
+    2.2368
+   ],
+   "tris": 4221,
+   "weld_to": "Head"
+  },
+  "Bow": {
+   "centre": [
+    0.0146,
+    2.6084,
+    0.649
+   ],
+   "size": [
+    1.3859,
+    1.0551,
+    0.5212
+   ],
+   "tris": 320,
+   "weld_to": "LowerTorso"
+  },
+  "Halo": {
+   "centre": [
+    -0.032,
+    6.6518,
+    0.2604
+   ],
+   "size": [
+    1.2122,
+    0.1,
+    1.2122
+   ],
+   "tris": 2048,
+   "weld_to": "Head"
+  }
+ },
+ "ground_z": 0.0,
+ "note": "Roblox space: x = Blender x, y = Blender z, z = -Blender y (the NPC faces -Z). Joint cframes are world; C0 = part0^-1 * J, C1 = part1^-1 * J."
+}
