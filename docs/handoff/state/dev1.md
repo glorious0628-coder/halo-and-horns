@@ -95,3 +95,4 @@
 - 남은 것: #6(빈 칸 그림 승인 뒤), #4(서버 뒤), #8(개발 2 속성 하나 뒤), #10(베타 뒤). 메인 사진 = tools/play_character_ui_photos.py(메인 반영 1).
 29. #3 커밋 = fix/hero-ui **12324880**(최종 검수에 해시 + 사진 목록 보냄: `HH_MAIN_STUDIO=1 py tools/play_character_ui_photos.py heroui`). 사진 보고 L.BodyH/Fov/Margin만 고칠 것.
 30. **fix/goose-leave e32814b7**(wt_gooseleave 성긴 worktree, dev2-goose-square df4d3d47 위): 광장 안이면 Leave 늘 보임, 판 끝나면 거위 칩 위. 개발 2·최종 검수에 보냄.
+31. 팔 버그(사용자 "아바타 팔이 왜이럼?"): 원인 = 전사 한손검 대기 자세에서 팔이 83%만 펴져 정면에서 짧게 접혀 보임(관절은 AnimationConstraint, 코드 정상). **fix/arm-hang 93d7dcc6**(wt_gooseleave): 두 전사 손 0.2 아래·0.2 덜 앞 → 91%. 확인 스크립트 tools/play_arm_check_photos.py(main 15191454), 메인 반영 1 arm_probe 사진 docs/art/verification_2026-10-12/main_apply/arm_probe/.
