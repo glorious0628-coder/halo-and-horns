@@ -27,12 +27,19 @@ def note(m):
     LOG.append(m)
 
 
-def save(c, name):
-    res = c.call("screen_capture", {"capture_id": name})
+def save(c, name, cam=None):
+    args = {"capture_id": name}
+    if cam and "|" in cam:
+        a, b = cam.strip().split("|")
+        args["camera_position"] = [float(v) for v in a.split(",")]
+        args["look_at_position"] = [float(v) for v in b.split(",")]
+    res = c.call("screen_capture", args)
     for part in res.get("content", []):
         if part.get("type") == "image":
             p = os.path.join(OUT, name + ".png")
-            Image.open(io.BytesIO(base64.b64decode(part["data"]))).save(p)
+            im = Image.open(io.BytesIO(base64.b64decode(part["data"]))).convert("RGB")
+            top = max(0, (im.height - 656) // 2)
+            im.crop((0, top, im.width, top + min(656, im.height))).save(p)
             note("saved " + p)
             return p
     note("capture failed " + name)
@@ -77,20 +84,19 @@ local pos = hrp.Position
 local look = hrp.CFrame.LookVector
 local right = hrp.CFrame.RightVector
 local mode = "%s"
-local target = pos - Vector3.new(0, 0.2, 0)
+local target = pos + Vector3.new(0, -1.1, 0)
 local camPos
 if mode == "front" then
-	camPos = pos + look * 15 + Vector3.new(0, 0.6, 0)
+	camPos = pos + look * 12 + Vector3.new(0, -1.1, 0)
 elseif mode == "side" then
-	camPos = pos + right * 15 + Vector3.new(0, 0.6, 0)
+	camPos = pos + right * 12 + Vector3.new(0, -1.1, 0)
 else
 	local hand = ch:FindFirstChild("RightHand") or hrp
-	target = hand.Position
-	camPos = target + right * 4 + look * 0.5 + Vector3.new(0, 0.3, 0)
-	cam.FieldOfView = 35
+	target = hand.Position + Vector3.new(0, 1.2, 0)
+	camPos = target + right * 6
 end
 cam.CFrame = CFrame.lookAt(camPos, target)
-return string.format("cam %%s at %%.1f,%%.1f,%%.1f", mode, camPos.X, camPos.Y, camPos.Z)
+return string.format("%%f,%%f,%%f|%%f,%%f,%%f", camPos.X, camPos.Y, camPos.Z, target.X, target.Y, target.Z)
 """
 RESET = r"""
 local p = game:GetService("Players").LocalPlayer
@@ -127,8 +133,21 @@ def wait_state(c, cond, timeout, every=1.0):
 TELE = r"""
 local p = game:GetService("Players"):GetPlayers()[1]
 local ch = p.Character
-if ch then ch:PivotTo(CFrame.new(0, 5, -25)) end
-return "teleported " .. tostring(ch ~= nil)
+if not ch then return "no char" end
+local spots = { Vector3.new(0, 5, -25), Vector3.new(0, 5, -70), Vector3.new(50, 5, -25), Vector3.new(-50, 5, -60), Vector3.new(0, 5, 40), Vector3.new(60, 5, 40), Vector3.new(-60, 5, 20) }
+local best, bestN = spots[1], 1e9
+for _, sp in spots do
+	local op = OverlapParams.new()
+	op.FilterDescendantsInstances = { ch }
+	op.FilterType = Enum.RaycastFilterType.Exclude
+	local n = 0
+	for _, part in workspace:GetPartBoundsInBox(CFrame.new(sp.X, sp.Y + 2.5, sp.Z), Vector3.new(24, 5, 24), op) do
+		if part.Name ~= "Terrain" and part.Size.Y > 0.5 and part.CanCollide ~= false or part:IsA("BasePart") and part.Transparency < 1 and part.Size.Y > 0.5 and part.Name ~= "Terrain" then n += 1 end
+	end
+	if n < bestN then best, bestN = sp, n end
+end
+ch:PivotTo(CFrame.new(best))
+return "spot " .. tostring(best) .. " blockers=" .. bestN
 """
 
 
@@ -175,21 +194,19 @@ def main():
             note("state: " + lua(c, STATE, "Server"))
             note(lua(c, ANCH % ("true", "on"), "Server"))
             time.sleep(1.5)
-            note(lua(c, CAM % "front", "Client"))
+            cam = lua(c, CAM % "front", "Client")
+            note(cam)
             time.sleep(1.5)
-            save(c, f"01_{tag}_front")
-            note(lua(c, CAM % "side", "Client"))
+            save(c, f"01_{tag}_front", cam)
+            cam = lua(c, CAM % "side", "Client")
+            note(cam)
             time.sleep(1.5)
-            sides.append(save(c, f"01_{tag}_right"))
+            sides.append(save(c, f"01_{tag}_right", cam))
             if tag == "halo":
-                note(lua(c, CAM % "hand", "Client"))
+                cam = lua(c, CAM % "hand", "Client")
+                note(cam)
                 time.sleep(1.5)
-                save(c, "02_halo_hand_right")
-                note(lua(c, ANCH % ("false", "off"), "Server"))
-                note(lua(c, WALK, "Client"))
-                time.sleep(1.0)
-                note(lua(c, CAM % "side", "Client"))
-                save(c, "04_halo_walk_right")
+                save(c, "02_halo_hand_right", cam)
             note(lua(c, RESET, "Client"))
         imgs = [Image.open(p) for p in sides if p]
         if imgs:
