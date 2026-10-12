@@ -690,6 +690,11 @@ SKELETONS = {
     "House_Garden2": ("02", 21, 12.6, 6.3, 0), "House_Garden3": ("07", 16, 13, 6.5, 0), "House_Garden4": ("04", 16, 11.2, 5.6, 0),
     "Shop_Bakery": ("Bakery", 20, 12, 6.0, 4.6), "Shop_Juice": ("Juice", 20, 12, 6.0, -4.6), "Shop_Potion": ("Potion", 19, 11.4, 5.7, 3.8),
     "Shop_Flower": ("Flower", 18, 10.8, 5.4, 0),
+    # 최종 검수 10/12: the 7 new homes get PROVISIONAL bodies in the size of 이미지 생성 3's families until their own skeletons
+    # exist (A ~ houses 08/12: 19 x 14.4, B ~ house 11: 20 x 12.4); replace with the real numbers when 이미지 생성 3 sends them
+    "House_Hill4": ("newB", 20, 12.4, 6.2, 0), "House_Cliff7": ("newB", 20, 12.4, 6.2, 0), "House_Garden6": ("newB", 20, 12.4, 6.2, 0),
+    "House_Cliff6": ("newA", 19, 14.4, 7.2, 0), "House_Cliff8": ("newA", 19, 14.4, 7.2, 0), "House_Garden5": ("newA", 19, 14.4, 7.2, 0),
+    "House_Garden7": ("newA", 19, 14.4, 7.2, 0),
 }
 EAVES, STEPS = 1.2, 4.0
 

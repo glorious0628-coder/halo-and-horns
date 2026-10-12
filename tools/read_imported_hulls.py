@@ -3,6 +3,8 @@
 Finds every MeshPart whose name or ancestor Model name starts with "Hull_" anywhere in Workspace / ServerStorage, prints MeshId, size, world position and pivot,
 writes art/models/worldkit/prop_hull_assets.json {"<Kit>": {"D2_hull_035": "rbxassetid://..", "D2_centre_035": [x,y,z], "import_pos": [..]}} and, with --clean,
 destroys the imported instances. D2_centre = the box centre of the OBJ (from build/prop_kit_hull035/<Kit>_D2_035.json D2_center_roblox, or computed from the obj).
+NOTE (이미지 생성 4 10/12): meshes imported by Import 3D come out turned 180 degrees about the vertical axis versus the OBJ (x and z signs flipped) -> place with
+MeshPart.CFrame = kitPivot * CFrame.new(D2_centre) * CFrame.Angles(0, math.pi, 0); recorded as place_rotate_y_pi. Check every new import batch (also Tripo-touch-up GLBs).
 If the importer moved the mesh (position != the OBJ box centre) the import_pos is recorded too so the mesh pivot can be matched.
 """
 import argparse
@@ -76,6 +78,7 @@ def main():
                 e["D2_hull_035"] = f["id"]
                 e["D2_centre_035"] = ctr
                 e["import_pos"] = [round(x, 4) for x in f["pos"]]
+                e["place_rotate_y_pi"] = True
         with open(OUT, "w", encoding="utf-8", newline="\n") as fh:
             json.dump(rec, fh, ensure_ascii=False, indent=1)
         print(len(found), "hull meshparts found")

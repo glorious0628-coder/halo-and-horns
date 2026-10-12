@@ -1,0 +1,29 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Buff_MightTonic=0 Buff_GuardTonic=0 Buff_LuckyTonic=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Buff_MightTonic=0 Buff_GuardTonic=0 Buff_LuckyTonic=0
+debug: Item=3 Item=2 Item=1 Item=1
+open bag Might
+probe 01_bag_tonic_ready: {"BuffBar":"visible=false 0x26 at 799,279","Words":["Letter:M","Count:3","Name:Might Tonic","Grade:★ Common","Line1:×3","Line2:Hit monsters harder for 3 minutes.","Act_DrinkTonic:Drink","Label:Drink"],"Buff":[],"Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4t\docs\art\verification_2026-10-12\tonics\pc2\01_bag_tonic_ready.png
+fired UseTonic Might
+after Might: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Buff_MightTonic=1791765439.899704 Buff_GuardTonic=0 Buff_LuckyTonic=0
+probe 02_bag_tonic_running: {"BuffBar":"visible=true 18x26 at 781,279","Words":["Letter:M","Count:2","Name:Might Tonic","Grade:★ Common","Line1:×2","Line2:Hit monsters harder for 3 minutes.","Line3:2:59 left","Act_DrinkTonic:Drink","Label:Drink"],"Buff":["Letter:M","Time_MightTonic:2:59"],"Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4t\docs\art\verification_2026-10-12\tonics\pc2\02_bag_tonic_running.png
+fired UseTonic Guard
+after Guard: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Buff_MightTonic=1791765439.949007 Buff_GuardTonic=1791765443.949007 Buff_LuckyTonic=0
+open bag Lucky
+probe 03_bag_two_running_third_blocked: {"BuffBar":"visible=true 39x26 at 760,279","Words":["Letter:L","Name:Lucky Tonic","Grade:★ Common","Line1:×1","Line2:More materials from monsters for 3 minutes.","Status:Only two tonics at a time.","Act_DrinkTonic:Wait 2:55","Label:Wait 2:55"],"Buff":["Letter:M","Time_MightTonic:2:55","Letter:G","Time_GuardTonic:2:59"],"Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4t\docs\art\verification_2026-10-12\tonics\pc2\03_bag_two_running_third_blocked.png
+closed (client view only)
+probe 04_hud_two_buff_tiles: {"BuffBar":"visible=true 39x26 at 760,279","Words":[],"Buff":["Letter:M","Time_MightTonic:2:52","Letter:G","Time_GuardTonic:2:56"],"Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4t\docs\art\verification_2026-10-12\tonics\pc2\04_hud_two_buff_tiles.png
+console: [ServerErrorService] started
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Goblin_86969d1c-332d-4889-ab56-123455c9280f.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.GoblinBrute_2b302594-5a3c-447f-ba4b-3d92f98b4f15.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Skeleton_static.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] ServerError = 514 (Heartbeat, tick # ms, Slow)
+play stopped
+fresh off

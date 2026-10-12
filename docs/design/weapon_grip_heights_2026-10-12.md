@@ -39,3 +39,18 @@
 | Neutral_PetTamer_T3 | 2.34 | 12 | 24.5 | 37 | 0.28 ~ 0.87 | 30 |
 
 활(Ranger·ShadowHunter)은 가운데 감은 곳 = 활 가운데라 옛 코드와 같음. 칼·망치·지휘봉은 옛 코드와 5% 안쪽 차이. 많이 바뀌는 것 = 지팡이 6개 + 연금술사 3개(66/62% → 26~55%).
+
+## 10/12 오후: 지팡이 7개 감은 곳 위로 옮김 (개발 1 fix/staff-hip 실측, 디자인 검수 지시)
+감은 곳(천·끈 + 위아래 고리)을 통째로 잘라 지팡이 축 따라 위로 옮기고, 빈 자리는 바로 아래 맨 막대를 늘여 채움(혹·가지 자리 그대로, 옮긴 자리에서 감은 곳을 뚫고 나올 혹만 지움). 피벗 = 새 감은 곳 가운데. `tools/tripo_weapon_touchup.py` `MOVE` 표, 시트 `art/review/img4/staff_wrap_moved_1012.jpg`.
+
+| 무기 | 감은 곳 가운데(바닥부터 칸) | 올린 만큼(칸) | 손 % |
+|---|---|---|---|
+| Halo_LightMage_T1 | 2.63 | +0.69 | 59.5 |
+| Halo_LightMage_T3 | 2.63 | +1.02 | 56.4 |
+| Horns_DarkMage_T1 | 2.53 | +0.74 | 57.2 |
+| Horns_DarkMage_T3 | 2.53 | +0.76 | 54.3 |
+| Neutral_Alchemist_T1 | 2.59 | +0.95 | 58.6 |
+| Neutral_Alchemist_T2 | 2.59 | +1.02 | 57.0 |
+| Neutral_Alchemist_T3 | 2.59 | +1.38 | 55.6 |
+
+LightMage T2·DarkMage T2는 감은 곳이 이미 범위 안 → 그대로(감은 곳 가운데 피벗).

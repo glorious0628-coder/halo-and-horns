@@ -60,17 +60,18 @@ CAPF = os.path.join(os.environ.get("TEMP", ""), "studio_capture_0.jpeg")
 
 
 def grab(c, tag, cam, look):
+    """one screen_capture through a fresh tools/studio_mcp.py CLI call (a long-lived client never got the image reply back,
+    10/12); the CLI saves the image as %TEMP%/studio_capture_0.jpeg"""
+    import subprocess
     if os.path.exists(CAPF):
         os.remove(CAPF)
-    res = c.call("screen_capture", {"capture_id": "hd_" + tag, "camera_position": cam, "look_at_position": look})
-    im = None
-    for part in res.get("content", []):
-        if part.get("type") == "image":
-            im = Image.open(io.BytesIO(base64.b64decode(part["data"])))
-    if im is None and os.path.exists(CAPF):         # some Studio builds only write the capture file
-        im = Image.open(CAPF).copy()
-    if im is None:
-        raise RuntimeError("no image for %s: %s" % (tag, str(res)[:300]))
+    arg = os.path.join(os.environ.get("TEMP", ""), "hd_cap_arg.json")
+    json.dump({"capture_id": "hd_" + tag, "camera_position": cam, "look_at_position": look}, open(arg, "w"))
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "studio_mcp.py"), "call", "screen_capture", "@" + arg],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", env=dict(os.environ), timeout=120)
+    if not os.path.exists(CAPF):
+        raise RuntimeError("no image for %s: %s" % (tag, (r.stdout + r.stderr)[-300:]))
+    im = Image.open(CAPF).copy()
     w, h = im.size
     s = min(w, h)
     return im.crop(((w - s) // 2, (h - s) // 2, (w + s) // 2, (h + s) // 2))
@@ -134,8 +135,11 @@ try:
         for n in names:
             ox, oz = ROWS[n]
             fz = oz - front_y(n)                       # the facade plane (Roblox z), the camera stands at smaller z
+            orn = json.load(open(os.path.join(ROOT, "build", "skel_%s_ornaments.json" % n)))["items"]
+            lf = [it for it in orn if it["type"] == "leaf"]
+            dx = lf[0]["c"][0] if lf else 0.0          # off-centre shop doors: the camera looks at the door
             if phase == "day":
-                shots[(n, "day5")] = grab(c, n + "_d5", [ox + 1.5, 5.5, fz - 5], [ox, 5.0, fz])
+                shots[(n, "day5")] = grab(c, n + "_d5", [ox + dx + 1.5, 5.5, fz - 5], [ox + dx, 5.0, fz])
                 shots[(n, "day15")] = grab(c, n + "_d15", [ox + 6.0, 10.0, fz - 15], [ox, 8.0, fz])
             else:
                 shots[(n, "night15")] = grab(c, n + "_n15", [ox + 6.0, 10.0, fz - 15], [ox, 8.0, fz])

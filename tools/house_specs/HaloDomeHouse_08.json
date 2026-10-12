@@ -1,7 +1,7 @@
 {
  "name": "HaloDomeHouse_08",
  "src2d": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png",
- "note": "HouseA (24 x 22 x 26). Square body 19 x 17 with four corner towers + finials, two storeys (door + two arched windows below; a shorter upper tier), double arched door with lantern pedestals, two big front urn pots, round drum with 3 arched windows and a ribbed gold dome. Missing: small gold dome canopy over the door, balcony balustrades with flower boxes on the upper tier, topiary cones beside the pots, wide front stairs (see generator_gaps.md). Upper-tier front has no window because the 2D shows a balcony there. Built from art/review/img3/HaloDomeHouse_08_check.jpg (2D panel); the 2D PNG and side view are not in the worktree. | 10/11 저녁 (검수 판정): D 17.0 -> 13.1 (W 19.0, 2D side 0.69), pots y -1.95 | 10/12: porch (feature in the generator) not set yet - the storey-1 front balcony sits where the porch entablature + half dome go (10.95 vs 10.40): 디자인 검수 to decide (raise storey 1 / no front balcony middle / porch = balcony)",
+ "note": "HouseA (24 x 22 x 26). Square body 19 x 17 with four corner towers + finials, two storeys (door + two arched windows below; a shorter upper tier), double arched door with lantern pedestals, two big front urn pots, round drum with 3 arched windows and a ribbed gold dome. Missing: small gold dome canopy over the door, balcony balustrades with flower boxes on the upper tier, topiary cones beside the pots, wide front stairs (see generator_gaps.md). Upper-tier front has no window because the 2D shows a balcony there. Built from art/review/img3/HaloDomeHouse_08_check.jpg (2D panel); the 2D PNG and side view are not in the worktree. | 10/11 저녁 (검수 판정): D 17.0 -> 13.1 (W 19.0, 2D side 0.69), pots y -1.95 | 10/12: porch (feature in the generator) not set yet - the storey-1 front balcony sits where the porch entablature + half dome go (10.95 vs 10.40): 디자인 검수 to decide (raise storey 1 / no front balcony middle / porch = balcony) | 10/12 디자인 검수 08 (나): porch back, the storey-1 front balcony split round the half dome",
  "plan": {
   "shape": "rect",
   "W": 19.0,
@@ -115,5 +115,15 @@
   "ribs": 8,
   "win_w": 2.6,
   "win_h": 0.8
+ },
+ "porch": {
+  "w": 8.6,
+  "out": 2.4,
+  "pier": 1.0,
+  "gap": 0.8,
+  "ent_h": 0.9,
+  "dome_h": 3.6,
+  "split_balcony": true,
+  "gap_side": 0.6
  }
 }

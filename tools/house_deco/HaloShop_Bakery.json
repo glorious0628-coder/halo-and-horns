@@ -136,10 +136,32 @@
   "no_white": true,
   "white_below": 17.6,
   "fix": "lathe",
-  "paint": true,
+  "paint": "bricks",
   "base_cut": 0.0,
   "bands": 30,
-  "profile_from": 0.3
+  "profile_from": 0.3,
+  "tones": [
+   [
+    181,
+    94,
+    57
+   ],
+   [
+    214,
+    117,
+    67
+   ],
+   [
+    234,
+    138,
+    85
+   ]
+  ],
+  "mortar": [
+   250,
+   232,
+   220
+  ]
  },
  "caps": [
   {

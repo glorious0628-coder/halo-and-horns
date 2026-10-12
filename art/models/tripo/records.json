@@ -11452,7 +11452,10 @@
     4.422
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11524,7 +11527,10 @@
     4.66
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11776,7 +11782,10 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11848,7 +11857,10 @@
     4.659
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12100,7 +12112,10 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12136,7 +12151,10 @@
     4.541
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12172,7 +12190,10 @@
     4.663
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
@@ -12462,6 +12483,30 @@
    "studio_step": "pending: second import file after 디자인 검수 (05 / Flower / Bakery skeletons re-inserted first)",
    "credits": 0,
    "review_1": "디자인 검수 10/12: pass + 3 fixes -> shop glass only Transparency 0.6 / Reflectance 0.05 (generator 'shopglass'), Bakery sign V wedge = plate at the panel's front in the median gold, Potion sign X spikes cut (drop_boxes) + small gap closing; plain materials now sRGB -> linear (previews were washed out)"
+  }
+ ],
+ "NPC_HaloPotionMerchant_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6f0f8392-fba9-4495-aec1-1abfbaf22f97",
+   "balance_after": 14170,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "at": "2026-10-12 10:30",
+   "approval": "최종 검수 10/12: PotionMerchant 1명 55점 (디자인 검수 통과 4면); other 5 NPCs already have 10/10 4-view Tripo, decision with 디자인 검수",
+   "inputs": {
+    "front": "art/out/s2/npc/NPC_HaloPotionMerchant_front_HQ_src.png",
+    "left_slot(camera at the character's own left; the 2D sides are named from the viewer)": "art/out/s2/npc/NPC_HaloPotionMerchant_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc/NPC_HaloPotionMerchant_left_HQ_src.png",
+    "back": "art/out/s2/npc/NPC_HaloPotionMerchant_back_HQ_src.png"
+   },
+   "result": "13,506 tris; modest clothing kept (long coat, long sleeves, high collar, boots; only face + hands)",
+   "use": "Halo town potion shop NPC; Blender touch-up next (A23-125)",
+   "file": "art/models/tripo/web/NPC_HaloPotionMerchant_MV4_HD_src.glb",
+   "sheet": "art/review/img4/npc_potionmerchant_tripo_raw_1012.jpg"
   }
  ]
 }

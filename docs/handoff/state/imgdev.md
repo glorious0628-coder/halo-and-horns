@@ -1,3 +1,20 @@
+# 이미지 개발 — 상태 (2026-10-12: EmoGG 올림, 광장 골격 슬롯 대기)
+
+- **EmoGG 올림**(최종 검수 승인, 직접 봄): rbxassetid://127627433457825 (asset_ids EmoGG). Config 반영 = 가지 `imgdev-emo`(c3c2dbc2, worktree ../Game-imgdev-icons) -> 게임성 검수 -> 최종 검수. 쓰는 코드는 아직 없음(키만).
+- **거위 광장 골격 UiSandbox 슬롯**(최종 검수 OK): 차례 = 메인 Save As -> 이미지 생성 3 WorldKit 사진 -> 게임성 개발 4 UiSandbox -> **나**. 게임성 개발 4가 "끝"을 보내면 시작(=전달함, 시작): UiSandbox 열기 -> `STUDIO_NAME=UiSandbox py tools/goose_square.py --mode apply` -> screen_capture 3장(위 1·눈높이 Nest/Cart 쪽 2; 한 장마다 새 `studio_mcp.py call screen_capture` 호출) -> remove -> 저장 없이 닫기 -> 최종 검수에 "끝", 사진·이름 표는 디자인 검수에.
+
+# 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 도구 만듦, 시험·사진 대기)
+
+- **거위 광장 공간 골격(SPEC A23-141, 디자인 검수 요청)**: tools/worldkit/goose_square.luau + tools/goose_square.py(apply/remove/survey, --center 기본 6000,200,6000, --emit = 메인용 파일 ALLOW_MAIN true) + 이름 표 docs/design/goose_square_skeleton_2026-10-12.md. 문법 OK, **아직 Studio에서 안 돌려 봄**(UiSandbox 닫힘) -> 최종 검수에 UiSandbox 열기·사진 슬롯 신청 -> 위 1 + 눈높이 2(Nest·Cart 쪽) + 이름 표를 디자인 검수에. 개발 2에 이름 표 알림.
+
+# 이미지 개발 — 상태 (2026-10-12: 가져온 메시는 세로축 180도 돌아옴)
+
+- **Import 3D로 들어온 메시는 OBJ보다 세로축 180도 돌아가 있음**(이미지 생성 4 확인; x·z 부호 반대). 놓는 규칙 = MeshPart.CFrame = 키트 피벗 * CFrame.new(D2_centre) * CFrame.Angles(0, math.pi, 0). prop_hull_assets.json에 place_rotate_y_pi 표시, tools/read_imported_hulls.py 주석·기록에 반영. **새 가져오기 묶음(나머지 46개, Tripo 손보기 GLB)마다 한 번 확인.**
+
+# 이미지 개발 — 상태 (2026-10-12: 3차 아이콘 5개 올림)
+
+- **3차 아이콘 5개 올림**(최종 검수 승인, 자홍 바탕 직접 봄): IconPetTreat 109038216387583 · IconMightTonic 82167218233168 · IconGuardTonic 113383235344315 · IconLuckyTonic 124851169351640 · IconWisdomTonic 131384631272950 (asset_ids 같은 이름). Config 반영 = 가지 `imgdev-icons3`(def1349f, worktree ../Game-imgdev-icons, origin/main 위; Config.Loot.Items 아이템이 이미 Icon 키 씀) -> 게임성 검수 -> 최종 검수. imgdev-icons2 Glowcap 한 줄(7b8d1a4a)은 main에 이미 들어감.
+
 # 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 5개 전부 올림)
 
 - **IconGlowcap 올림**(고친 컷아웃 dc1fadc2, 디자인 검수 OK): rbxassetid://118269985242078 (asset_ids IconGlowcap). 가지 imgdev-icons2에 새 커밋 7b8d1a4a(Config 한 줄, 16c0609f 위, 되감지 않음). 2차 5개 = CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 · IconGlowcap 118269985242078. 병합 대기(게임성 검수 16c0609f 통과, 새 커밋 한 줄은 다시 봄).

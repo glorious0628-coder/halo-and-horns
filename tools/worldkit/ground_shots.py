@@ -80,7 +80,12 @@ end
 local all = RaycastParams.new()
 all.FilterType = Enum.RaycastFilterType.Exclude
 local mk = workspace:FindFirstChild("HaloV2") and workspace.HaloV2:FindFirstChild("Markers")
-all.FilterDescendantsInstances = mk and { mk } or {}
+-- 10/12: the retaining walls' parapets (5단계) pulled the cameras onto the wall tops -> the same spots as before the walls
+local wl = workspace:FindFirstChild("HaloV2") and workspace.HaloV2:FindFirstChild("Ground") and workspace.HaloV2.Ground:FindFirstChild("Walls")
+local ex = {}
+if mk then table.insert(ex, mk) end
+if wl then table.insert(ex, wl) end
+all.FilterDescendantsInstances = ex
 all.IgnoreWater = true
 local function clear(cam, look)
 	local a = Vector3.new(look[1], look[2] + 1.5, look[3])
