@@ -141,3 +141,8 @@
 - (밤 마지막) 사용자 고름: **무기 들기 = (가) 로블록스 기본 그대로**(SPEC A23-150 7번, 시트 art/review/grip/grip_plan_sheet_2026-10-12.png) → 게임성 개발 1이 다음 세션에 코드(대기 자세 끄기 → Tool 기본 들기 → Grip 표 → 시험 → 메인 사진). 거위 광장 회색 화면 = 카메라·안개·덮개 정상, 창 최소화 탓 추정 → 다음에 창 복원 상태 Join 사진 1장으로 확정(ClassicSword 값 재기와 같이).
 - (정리 뒤) 사용자 Threads 영상('수호수 카드', 기울이면 진화) → **SPEC A23-153 몬스터 도감 카드**, 설계 `docs/design/codex_cards_2026-10-12.md`. 다음 세션에 나눌 것: 게임성 개발 2 = Codex 저장·처치 셈·단계 보상, 게임성 개발 1 = 도감 창 + ViewportFrame 3D 카드 기울기·뒤집기·진화 연출(Slime 1장 시험 먼저, UiSandbox), 이미지 생성 2 = 카드 그림(Slime 3단계 시안부터, UI 그림이라 그림자 규칙 밖). 시기 = 베타 v1 11종(제안, 사용자 반대 없으면).
 - 사용자: 도감 카드 **베타에 넣음** 확정. 사용자가 최종 검수 세션을 새로 만듦 → 시작 글 = docs/handoff/role_prompts/00_review.md(10/12 밤 다시 씀). 새 나는 여기부터: 도감 카드 일 나누기(개발 2 서버·개발 1 Slime 카드 시험·이미지 생성 2 카드 시안) + 빛 마을 첫 그림 판정(art/review/s2/noshadow_set1_statue_fountain_old_new.jpg) + 448b72ff 병합 + 메인 사진 다시(r15 4종·거위 창 복원·ClassicSword) + 무기 들기 코드(개발 1).
+
+## 10/12 밤 21시 (새 최종 검수 local_8166f268) — 세션 6개 새로
+- 시작 때 다른 세션 0개 → 사용자가 빈 세션 6개 만듦 → 내가 이름·모델·노력·첫 지시: 메인 반영 1(Sonnet high: sync·클래식 칼 값·거위 창 복원 사진·r15 4종, Save As는 나중), 게임성 개발 1(Opus xhigh: 무기 들기 (가) fix/tool-grip → 다음 도감 카드 화면), 게임성 개발 2(Opus xhigh: 도감 카드 서버 dev2-codex + 약속 문서 → dev2-c2 전체 시험), 이미지 생성 2(Sonnet high: Codex 꽃 화분 5), 이미지 생성 3(Opus high: 빛 성 WorldKit 넣기 + 집 덩어리 43종 큐), Blender 손보기(Opus high: 동상·분수 Tripo 260점 승인, GLB 내려받기 전 멈춤 → 사용자 허락 받아 알림). 이미지 개발은 올릴 것 생기면 새로.
+- 병합: 448b72ff 거위 바닥 → main 24c396d7. 판정: Halo_Statue 4면 통과, Fountain3 통과(right = left 뒤집음, 원래 right 시점 낮음) → approved.json, 옛 2D → `C:/Users/glori/Documents/Roblox/_지울것_2D_2026-10-12`(11213d8).
+- 화면 차례: 메인 반영 1(창 복원 Play 사진)과 이미지 생성 3(WorldKit 창 복원 사진)이 신청할 것 → 한 번에 하나, 사용자에게 알리고 "전달함, 시작".
