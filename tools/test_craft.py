@@ -97,7 +97,7 @@ MUTATIONS = [
     ("xp: any side gets craft XP (A23-139)", R, "\tif roleOf(data) == r.Role then\n\t\tfame = Config.CraftFame(r, plus)", "\tif true then\n\t\tfame = Config.CraftFame(r, plus)"),
     ("end: one level at most", R, "\twhile rr.Lv < K().MaxLv do\n", "\tif rr.Lv < K().MaxLv then\n"),
     ("end: no Crafted signal", R, "\tCraftService.Crafted:Fire(player, recipeId, plus)\n", ""),
-    ("end: no CraftInfo after", R, "\t\tsendInfo(player, data)\n\tend\n\tCraftService.Crafted", "\tend\n\tCraftService.Crafted"),
+    ("end: no CraftInfo after", R, "\t\tsendInfo(player, data)\n\tend\n\tif r.Kind == \"Gear\"", "\tend\n\tif r.Kind == \"Gear\""),
     ("end: leave loses the craft", R, "\t\tcloseAtZero(player, \"Leave\")\n", ""),
     ("end: KO loses the craft", R, "\t\t\tcloseAtZero(player, \"KO\")\n", ""),
     ("end: a stopped craft never finishes", R, "if type(data.Craft) == \"table\" and type(data.Craft.Pend) == \"table\" and CraftService.Settle(player, data) == \"wait\" then", "if false then"),

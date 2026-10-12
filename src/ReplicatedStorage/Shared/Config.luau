@@ -6960,7 +6960,7 @@ Config.Ranking = {
 		Artisan = { Faction = "Neutral", Reward = true },
 		PvP = { Outlaw = true },
 	},
-	WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 }, -- provisional, tune from beta logs (PvP: no cap)
+	WeekCap = { Honor = 150, Infamy = 150, Artisan = 100 }, -- provisional, tune from beta logs (PvP: no cap); Artisan 100: craft fame joins it (게임성 검수 10/12)
 	TopN = 50,
 	RefreshSeconds = 180, -- each board's global read; boards are staggered by ReadStagger
 	ReadStagger = 45,

@@ -2570,11 +2570,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "606a50faa4e195e0183fd36308aceaa219a07b300de3bd9758fc8dd85d031015",
+    "src/ReplicatedStorage/Shared/Config.luau": "81e21a0a907d19a2cf811671467b454992293a143fbebca1c3f25178de3b0a7c",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
-    "src/ServerScriptService/CraftService.luau": "de1ccfb7a89f0ccd7f027bd01c2a0ed4c4e1b105e4b1fbaa5188bf26d819eec1"
+    "src/ServerScriptService/CraftService.luau": "441daaefd29c576c0b34102db3f7c097305d4e4e7f46341c7283b32f882fb9e2"
   },
   "fixtureSHA256": "0fa8cc49b6c23d55a58fb15b6139706dcc7c4e80416639ad3e515bd584de99dc",
   "sourcesChangedDuringRun": [],
