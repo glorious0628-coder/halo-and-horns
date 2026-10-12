@@ -426,6 +426,14 @@ local function rowOf(rs, id)
 	return nil
 end
 local srows = M.StatRows(rich)
+-- 최종 검수 10/13 (ref_rpg_ui #1 / #2): pure
+local dl, dc = M.DiffLine(100, 110)
+local dl2, dc2 = M.DiffLine(1200, 1180)
+local dl3, dc3 = M.DiffLine(50, 50)
+check(dl == "Power +10" and dc == "Good" and dl2 == "Power -20" and dc2 == "Bad" and dl3 == "Power =" and dc3 == "Same"
+	and M.DiffLine(nil, 5) == nil, "#2 DiffLine: up green, down red, equal grey, nothing without both", tostring(dl) .. "|" .. tostring(dl2))
+local wy = M.PowerWhy("Attack", { Level = 5, Tier = 0 })
+check(#wy == 2 and wy[1] == "Bare hands" and wy[2] == "Level 5", "#1 PowerWhy: bare hands + the level", table.concat(wy, ","))
 check(heads(srows) == "Stats,Traits,Effects,Rebirth,Rank", "StatRows: every section when the data is there", heads(srows))
 check(rowOf(srows, "MaxHP") and rowOf(srows, "MaxHP").Value == "300" and rowOf(srows, "Level").Value == "15", "StatRows: level and max HP")
 check(rowOf(srows, "Next") and rowOf(srows, "Next").Value == "Dread Lord · 140 to go", "StatRows: the next rank and the points to go",
@@ -484,6 +492,25 @@ local changeName = find(body, "ChangeName")
 check(changeName ~= nil and changeName.Text == "Change", "10/12: a [Change] button beside it")
 if changeName and changeName.OnClick then changeName.OnClick() end
 check(kitOpened[#kitOpened] == "Nickname", "10/12: [Change] opens the Nickname window", kitOpened[#kitOpened])
+-- 최종 검수 10/13 (ref_rpg_ui #1): the power's two parts under it, a press lists their sources
+local pa, ph = Config.PowerPartsOf(player)
+check(pa == math.floor(Config.WeaponDamage(2, 10, 3) + 0.5) and ph == math.floor(Config.BaseHealth(10) + 0.5),
+	"#1: Attack = the worn weapon at my level with its +N, Health = the level's base (points / gear off)", tostring(pa) .. "/" .. tostring(ph))
+local chipA, chipH = find(body, "Part_Attack"), find(body, "Part_Health")
+check(chipA and chipH and chipA.Image == "Chip" and find(chipA, "Icon").Image == "IconSword" and find(chipH, "Icon").Image == "IconHeart"
+	and find(chipA, "Value").Text == tostring(pa) and find(chipH, "Value").Text == tostring(ph),
+	"#1: [sword] Attack · [heart] Health chips under the power (Config.PowerPartsOf)", tostring(pa) .. "/" .. tostring(ph))
+check(find(body, "PowerWhy") == nil, "#1: no sources until a chip is pressed")
+chipA.OnClick()
+local why = find(body, "PowerWhy")
+local wname = Config.WeaponName(2, "Warrior", "Halo")
+check(why and find(why, "Why1") and find(why, "Why1").Text == wname .. " +3" and find(why, "Why2").Text == "Level 10",
+	"#1: Attack's sources: the weapon +N, the level", why and find(why, "Why1") and find(why, "Why1").Text)
+find(body, "Part_Health").OnClick()
+why = find(body, "PowerWhy")
+check(why and find(why, "Why1").Text == "Level 10" and find(why, "Why2") == nil, "#1: Health's source: the level (points / armor while off)")
+find(body, "Part_Health").OnClick()
+check(find(body, "PowerWhy") == nil, "#1: the same chip again hides the sources")
 check(find(body, "Title_Auto") and find(body, "Title_Auto").Color == "gold" and find(body, "Title_BetaPioneer") == nil, "the title list: Auto (current) only while no title is owned")
 local nText = scanTexts(M, body)
 -- a press on the Weapon cell opens the owned list
@@ -498,6 +525,12 @@ check(find(body, "Equip_2").Text == "Equipped" and find(body, "Equip_2").Enabled
 	and find(body, "Equip_4").Enabled == false and find(body, "Equip_1").Text == "Equip" and find(body, "Equip_1").Enabled == true,
 	"the buttons: Equipped / From Lv 12 (off) / Equip (on)")
 check(find(body, "Power") ~= nil, "the usable rows show the power line")
+local w1 = find(body, "Weapon_1")
+local pl = w1 and find(w1, "Power")
+local d1 = Config.CombatPowerOf(player, 1, 0) - Config.CombatPowerOf(player)
+check(pl and ((d1 < 0 and pl.Text == "Power -" .. tostring(-d1) and pl.TextColor3 == "bad")
+	or (d1 > 0 and pl.Text == "Power +" .. tostring(d1) and pl.TextColor3 == "good")),
+	"#2: a weapon's power change = one coloured line (Power +N green / Power -N red)", pl and pl.Text)
 nText += scanTexts(M, body)
 find(body, "Equip_1").OnClick()
 check(#fired == 1 and fired[1][1] == "EquipWeapon" and fired[1][2] == 1, "the [Equip] button sends EquipWeapon(tier) once", #fired)

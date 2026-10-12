@@ -105,6 +105,18 @@ MUTATIONS = [
     ("UI", "a Back word written in code", "kit.Button(header, tx(TXT, \"Back\"),", "kit.Button(header, \"Back\","),
     ("MAIN", "CharacterUI is never loaded", "\"BagUI\", \"CharacterUI\", \"GatherView\",", "\"BagUI\", \"GatherView\","),
     ("MAIN", "CharacterUI before BagUI", "\"BagUI\", \"CharacterUI\", \"GatherView\",", "\"CharacterUI\", \"BagUI\", \"GatherView\","),
+    # 최종 검수 10/13 (ref_rpg_ui #1 / #2)
+    ("UI", "#1: no power parts", "\tfor i, part in { { \"Attack\", \"IconSword\", ctx.Attack }, { \"Health\", \"IconHeart\", ctx.Health } } do\n",
+     "\tfor i, part in {} do\n"),
+    ("UI", "#1: the chips never open their sources", "\t\t\t\tS.Why = S.Why ~= id and id or nil\n", ""),
+    ("UI", "#1: the weapon left out of Attack's sources",
+     "\t\t\ttable.insert(lines, tx(TXT.Why, \"Weapon\", Config.WeaponName(tier, ctx.Class, ctx.Faction), math.floor(num(ctx.Plus, 0))))\n", ""),
+    ("UI", "#2: the old 'A -> B' line", "\t\t\t\tline, color = CharacterUI.DiffLine(r.PowerNow, r.PowerWith)\n",
+     "\t\t\t\tline = tx(TXT, \"PowerChange\", Util.FormatInt(r.PowerNow), Util.FormatInt(r.PowerWith))\n"),
+    ("UI", "#2: a drop shown grey", "\tif tone == \"Bad\" then return string.format(t.Down, Util.FormatInt(d)), \"Bad\" end\n",
+     "\tif tone == \"Bad\" then return string.format(t.Down, Util.FormatInt(d)), \"Same\" end\n"),
+    ("CONFIG", "#1: Attack without the +N", "return math.floor(Config.WeaponDamage(tier, level, enhance) * atkMult + 0.5)",
+     "return math.floor(Config.WeaponDamage(tier, level, 0) * atkMult + 0.5)"),
     ("PANELS", "the window has no title icon", "\t\t\tCharacter = \"IconCharacter\" },", "\t\t\t},"),
     # 게임성 검수 10/12 (API review fixes)
     ("UI", "the other side's blessing shown as mine", "if (blessing == \"Halo\" or blessing == \"Horns\") and blessing == faction then",

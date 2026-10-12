@@ -55,6 +55,9 @@ local TXT = {
 	Attack = "Attack %s",
 	PowerNow = "Power %s",
 	PowerChange = "Power %s → %s",
+	-- 최종 검수 10/13 (ref_rpg_ui #1): what the power is made of, under the number; a press lists the sources
+	Why = { Level = "Level %d", Weapon = "%s +%d", Fist = "Bare hands", Points = "Points +%d", Ring = "Ring +%d%%",
+		Armor = "Armor +%d%%" },
 	PetLv = "Lv %d",
 	TitleHead = "Title", TitleAuto = "Auto",
 	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Now", Rebirth = "Rebirth", Rank = "Rank" },
@@ -89,6 +92,7 @@ local L = {
 	LeftW = 150, Split = 14, -- the left column (headshot + power) and the space right of it
 	Portrait = 100,
 	ChangeW = 96, ChangeH = 30, -- the nickname's [Change] (게임성 검수 10/12: moved here from Settings)
+	ChipW = 70, ChipH = 30, ChipIcon = 20, -- the power's two parts (ref_rpg_ui #1)
 	Cell = 64, ColGap = 14, CapH = 18, RowGap = 10, -- one gear cell, the word under it
 	Cols = { Weapon = 0, Armor = 1, Ring = 2, Pet = 0, PetArmor = 0, PetAcc = 1 },
 	Rows = { Weapon = 0, Armor = 0, Ring = 0, Pet = 1, PetArmor = 2, PetAcc = 2 },
@@ -121,6 +125,7 @@ local S = {
 	Drawn = {}, -- the fallback cells / captions this module drew in the frame
 	ReadyAt = {}, -- [remote] = os.clock() when the next send is allowed
 	Pending = nil, -- { Tier, WeaponTier, SentAt, ReadyAt, Answered? }
+	Why = nil, -- the power part whose sources show ("Attack" | "Health"; ref_rpg_ui #1)
 }
 local VIEW = {} -- the open window: Kit, Parent, Pages, Sigs ...
 
@@ -408,6 +413,10 @@ local function context()
 	local tier = math.clamp(math.floor(num(attr("WeaponTier"), 0)), 0, Config.MaxWeaponTier)
 	local plus = num(attr("WeaponEnhance"), 0)
 	local okP, now = pcall(Config.CombatPowerOf, LocalPlayer)
+	local okPa, pa, ph = pcall(Config.PowerPartsOf, LocalPlayer)
+	local parts = okPa and { A = pa, H = ph } or nil
+	local okAl, alloc = pcall(Config.StatAllocOf, LocalPlayer)
+	local okG, ga, gh = pcall(Config.GearMultsOf, LocalPlayer)
 	local power = tonumber(attr("CombatPower", nil))
 	if power == nil then power = okP and tonumber(now) or 0 end -- before the server's first set (Config.CombatPowerOf, test_stats)
 	return { Level = level, Class = (type(class) == "string" and Config.Classes[class]) and class or "Warrior",
@@ -421,7 +430,10 @@ local function context()
 		RevengeUntil = num(attr("RevengeUntil"), 0), Now = Util.Now(), Blessing = gameAttr("WarBlessing", "None"),
 		Rebirths = num(attr("Rebirths"), 0), RebirthBonus = num(attr("RebirthBonus"), 0), FallMarks = num(attr("FallMarks"), 0),
 		RedeemMarks = num(attr("RedeemMarks"), 0), Honor = num(attr("Honor"), 0), Infamy = num(attr("Infamy"), 0),
-		Owned = tostring(attr("TitlesOwned", "")), Sel = tostring(attr("TitleSel", "")) }
+		Owned = tostring(attr("TitlesOwned", "")), Sel = tostring(attr("TitleSel", "")),
+		-- 최종 검수 10/13 (ref_rpg_ui #1): the power's two parts and what goes into them
+		Attack = parts and parts.A or 0, Health = parts and parts.H or 0, Plus = math.floor(plus),
+		Alloc = okAl and alloc or nil, Gear = okG and { A = ga, H = gh } or nil }
 end
 
 ---------------------------------------------------------------------------------------------------- requests
@@ -520,8 +532,43 @@ local function colorOf(name)
 	local th = kit and kit.Theme or {}
 	if name == "Gold" then return th.Gold end
 	if name == "Good" then return th.Good end
-	if name == "Sub" then return th.SubText end
+	if name == "Bad" then return th.Bad end
+	if name == "Sub" or name == "Same" then return th.SubText end
 	return th.Text
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #1): the sources of the power's Attack / Health (pure: ctx = { Level, Tier, Plus, Class,
+-- Faction, Alloc = { A, H }, Gear = { A, H } }) - short lines, numbers and names only
+function CharacterUI.PowerWhy(part, ctx)
+	ctx = type(ctx) == "table" and ctx or {}
+	local lines = {}
+	local level = math.max(1, math.floor(num(ctx.Level, 1)))
+	if part == "Attack" then
+		local tier = math.floor(num(ctx.Tier, 0))
+		if Config.Weapons[tier] then
+			table.insert(lines, tx(TXT.Why, "Weapon", Config.WeaponName(tier, ctx.Class, ctx.Faction), math.floor(num(ctx.Plus, 0))))
+		else
+			table.insert(lines, tx(TXT.Why, "Fist"))
+		end
+	end
+	table.insert(lines, tx(TXT.Why, "Level", level))
+	local alloc = type(ctx.Alloc) == "table" and ctx.Alloc or {}
+	local pts = math.floor(num(part == "Attack" and alloc.A or alloc.H, 0))
+	if Config.FeatureOn("StatPoints") and pts > 0 then table.insert(lines, tx(TXT.Why, "Points", pts)) end
+	local gear = type(ctx.Gear) == "table" and ctx.Gear or {}
+	local pct = math.floor((num(part == "Attack" and gear.A or gear.H, 1) - 1) * 100 + 0.5)
+	if Config.Features.Gear == true and pct > 0 then table.insert(lines, tx(TXT.Why, part == "Attack" and "Ring" or "Armor", pct)) end
+	return lines
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #2): a power change as one line + its colour name (nil = no line)
+function CharacterUI.DiffLine(now, with)
+	local d, tone = Config.PowerDiff(now, with)
+	if not d then return nil, nil end
+	local t = Config.Power.Text.Diff
+	if tone == "Good" then return string.format(t.Up, Util.FormatInt(d)), "Good" end
+	if tone == "Bad" then return string.format(t.Down, Util.FormatInt(d)), "Bad" end
+	return t.Same, "Same"
 end
 
 local function clear(frame)
@@ -726,6 +773,48 @@ local function drawLeft(frame, ctx)
 	label(frame, Util.FormatInt(ctx.CombatPower), L.Size.Power, colorOf("Gold"), { Name = "PowerNumber",
 		Size = UDim2.new(1, 0, 0, L.Size.Power + 6), TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false,
 		LayoutOrder = nextOrder(), Style = "Number" })
+	-- 최종 검수 10/13 (ref_rpg_ui #1): [sword] Attack · [heart] Health under the power; a press lists where each comes from
+	local parts = Instance.new("Frame")
+	parts.Name = "PowerParts"
+	parts.BackgroundTransparency = 1
+	parts.Size = UDim2.new(1, 0, 0, L.ChipH)
+	parts.LayoutOrder = nextOrder()
+	parts.Parent = frame
+	local pl = Instance.new("UIListLayout")
+	pl.FillDirection = Enum.FillDirection.Horizontal
+	pl.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	pl.SortOrder = Enum.SortOrder.LayoutOrder
+	pl.Padding = UDim.new(0, 6)
+	pl.Parent = parts
+	for i, part in { { "Attack", "IconSword", ctx.Attack }, { "Health", "IconHeart", ctx.Health } } do
+		local id = part[1]
+		local chip = kit.ArtButton("Chip", { Name = "Part_" .. id, Size = UDim2.fromOffset(L.ChipW, L.ChipH), LayoutOrder = i },
+			function()
+				S.Why = S.Why ~= id and id or nil
+				CharacterUI.Refresh(true)
+			end, { BackgroundColor3 = Color3.fromRGB(40, 46, 72) })
+		chip.Parent = parts
+		local icon = kit.ArtImage(part[2], { Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 5, 0.5, 0),
+			Size = UDim2.fromOffset(L.ChipIcon, L.ChipIcon), ZIndex = 3 })
+		if icon then icon.Parent = chip end
+		label(chip, Util.FormatInt(num(part[3], 0)), L.Size.Small, S.Why == id and colorOf("Gold") or colorOf("Text"),
+			{ Name = "Value", Position = UDim2.fromOffset(L.ChipIcon + 8, 0), Size = UDim2.new(1, -(L.ChipIcon + 10), 1, 0),
+				TextWrapped = false, ZIndex = 3 })
+	end
+	if S.Why then
+		local why = Instance.new("Frame")
+		why.Name = "PowerWhy"
+		why.BackgroundTransparency = 1
+		why.Size = UDim2.new(1, 0, 0, 0)
+		why.AutomaticSize = Enum.AutomaticSize.Y
+		why.LayoutOrder = nextOrder()
+		why.Parent = frame
+		listLayout(why, 1, true)
+		for i, text in CharacterUI.PowerWhy(S.Why, ctx) do
+			label(why, text, L.Size.Small, colorOf("Sub"), { Name = "Why" .. i, Size = UDim2.new(1, 0, 0, L.Size.Small + 3),
+				TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, LayoutOrder = i })
+		end
+	end
 	return who
 end
 
@@ -808,8 +897,7 @@ local function drawWeapons(frame, rows, ctx)
 			if r.Equipped then
 				line = tx(TXT, "PowerNow", Util.FormatInt(r.PowerNow))
 			else
-				line = tx(TXT, "PowerChange", Util.FormatInt(r.PowerNow), Util.FormatInt(r.PowerWith))
-				color = r.PowerWith > r.PowerNow and "Good" or (r.PowerWith < r.PowerNow and "Sub" or nil)
+				line, color = CharacterUI.DiffLine(r.PowerNow, r.PowerWith)
 			end
 			label(info, line, L.Size.Small, colorOf(color), { Name = "Power", Size = UDim2.new(1, 0, 0, L.Size.Small + 3),
 				TextWrapped = false, LayoutOrder = 3 })
@@ -871,7 +959,8 @@ local function refresh(force)
 	checkPending()
 	local ctx = context()
 	local sigs = VIEW.Sigs
-	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction, tostring(attr("Nickname", "")) }, "|")
+	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction, tostring(attr("Nickname", "")),
+		tostring(ctx.Attack), tostring(ctx.Health), tostring(S.Why) }, "|")
 	if sigs.Left ~= sig then
 		sigs.Left = sig
 		drawLeft(VIEW.Left, ctx)
