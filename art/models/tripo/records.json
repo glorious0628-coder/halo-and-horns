@@ -12723,5 +12723,53 @@
    "file": "art/models/tripo/web/HaloNewHouse_Garden5_HD_src.glb",
    "bytes": 12544000
   }
+ ],
+ "HaloNewHouse_Garden6_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f61736b8-e4d8-43f7-a4e4-56135ae7b8b2",
+   "model_page": "44a8fef3-a411-493c-84dc-e3f9916bb0fe",
+   "balance_after": 13975,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 12:4x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_left_v3.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Garden6_HD_src.glb",
+   "bytes": 12265724,
+   "note": "잔액: Garden5 뒤 14195 → 이 잡 전 14085 → 직후 13975 (110씩 줄어듦: 같은 계정을 다른 세션도 쓰는 듯, 이 잡은 생성 1번 클릭)"
+  }
+ ],
+ "HaloNewHouse_Garden7_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e01e1b57-32b6-43b4-a883-95a676d82e91",
+   "model_page": "9bd1caed-4467-4c00-9d4b-b4479537310e",
+   "balance_after": 13865,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 12:5x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_right_v4.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_left_v3.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_back_v3.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Garden7_HD_src.glb",
+   "bytes": 13781288,
+   "note": "잔액: 직전 13920 → 직후 13865 (이 잡 55). Garden6 뒤 13975 → 13920은 다른 세션 사용인 듯"
+  }
  ]
 }
