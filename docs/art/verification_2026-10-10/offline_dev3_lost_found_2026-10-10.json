@@ -81,7 +81,7 @@
     },
     {
       "group": "config",
-      "check": "save default LostFound { Day 0, N 0, K 0 } (the data version stays 3)",
+      "check": "save default LostFound { Day 0, N 0, K 0 } (additive; the data version 4 = C1's tier 9)",
       "pass": 1,
       "fail": 0
     },
@@ -555,7 +555,7 @@
     },
     {
       "group": "the walk's end: the bench",
-      "check": "the line says what it paid",
+      "check": "the line says what it paid (no thank-you lead)",
       "pass": 1,
       "fail": 0
     },
@@ -609,7 +609,7 @@
     },
     {
       "group": "the walk's end: the fee and the vault",
-      "check": "Cheeky! Here's a coin",
+      "check": "the fee line is the gold only (no 'Cheeky!')",
       "pass": 1,
       "fail": 0
     },
@@ -633,7 +633,7 @@
     },
     {
       "group": "the walk's end: the fee and the vault",
-      "check": "the vault line",
+      "check": "the vault line is the gold only",
       "pass": 1,
       "fail": 0
     },
@@ -1014,9 +1014,10 @@
           "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
           "the walk's end: the bench :: the row is gone; Delivered says what was paid",
           "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
-          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
+          "the walk's end: the fee and the vault :: the fee line is the gold only (no 'Cheeky!')"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 7
       },
       {
         "mutation": "config: the bench range is 20",
@@ -1077,7 +1078,7 @@
           "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
           "the walk's end: the fee and the vault :: the bench is not the vault"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 6
       },
       {
         "mutation": "config: the teddy is not a child's",
@@ -1352,7 +1353,7 @@
           "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault",
           "the walk's end: the fee and the vault :: the bench is not the vault"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 14
       },
       {
         "mutation": "beat: out of season",
@@ -1470,8 +1471,8 @@
           "the pick: Good / the fee / the trophy :: Finder's fee!: the same bench, Infamy +1 (a Horns deed)",
           "the pick: Good / the fee / the trophy :: an Evil walk shows gold, no XP",
           "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
-          "the walk's end: the fee and the vault :: Cheeky! Here's a coin",
-          "the walk's end: the fee and the vault :: the fee at the bench"
+          "the walk's end: the fee and the vault :: the fee at the bench",
+          "the walk's end: the fee and the vault :: the fee line is the gold only (no 'Cheeky!')"
         ],
         "newFailingCount": 6
       },
@@ -1486,10 +1487,9 @@
           "the pick: Good / the fee / the trophy :: the vault row: the badge, guide OwnTown",
           "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
           "the walk's end: the fee and the vault :: the Horns town is the Horns player's vault",
-          "the walk's end: the fee and the vault :: the bench is not the vault",
-          "the walk's end: the fee and the vault :: the vault line"
+          "the walk's end: the fee and the vault :: the bench is not the vault"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 5
       },
       {
         "mutation": "pick: no loop for the walker",
@@ -1503,7 +1503,7 @@
           "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
           "the walk's end: the bench :: exactly 10 studs: the 1 s loop pays by itself",
           "the walk's end: the bench :: nothing is paid twice",
-          "the walk's end: the bench :: the line says what it paid"
+          "the walk's end: the bench :: the line says what it paid (no thank-you lead)"
         ],
         "newFailingCount": 10
       },
@@ -1568,7 +1568,7 @@
           "the walk's end: the bench :: exactly 10 studs: the 1 s loop pays by itself",
           "the walk's end: the bench :: nothing is paid twice",
           "the walk's end: the bench :: the day's second find is not the first",
-          "the walk's end: the bench :: the line says what it paid"
+          "the walk's end: the bench :: the line says what it paid (no thank-you lead)"
         ],
         "newFailingCount": 9
       },
@@ -1653,16 +1653,15 @@
         "newFailingCount": 5
       },
       {
-        "mutation": "walk: the wrong thank-you",
+        "mutation": "walk: the thank-you lead back",
         "file": "src/ServerScriptService/LostFoundService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "the walk's end: the fee and the vault :: Cheeky! Here's a coin",
-          "the walk's end: the fee and the vault :: the vault line"
+          "the walk's end: the bench :: the line says what it paid (no thank-you lead)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "walk: the loop never pays",
@@ -1701,9 +1700,11 @@
           "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
           "the walk's end: the bench :: the row is gone; Delivered says what was paid",
           "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
-          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
+          "the walk's end: the fee and the vault :: the fee line is the gold only (no 'Cheeky!')",
+          "the walk's end: the fee and the vault :: the vault line is the gold only"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "pay: level 1 hunting",
@@ -1713,9 +1714,11 @@
         "crashed": false,
         "newFailingChecks": [
           "the walk's end: the fee and the vault :: 2 minutes of gold at Lv12 (384) as source Choice, no XP, no items",
-          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold"
+          "the walk's end: the fee and the vault :: the Halo town: the trophy is stashed, 2 minutes of gold",
+          "the walk's end: the fee and the vault :: the fee line is the gold only (no 'Cheeky!')",
+          "the walk's end: the fee and the vault :: the vault line is the gold only"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "pay: a good turn-in pays no XP",
@@ -1729,7 +1732,7 @@
           "the save: a thing on its way survives the next join :: a new join: the walk goes on and ends at the bench",
           "the walk's end: the bench :: XP = 2 minutes of hunting at Lv5 (120), no gold",
           "the walk's end: the bench :: nothing is paid twice",
-          "the walk's end: the bench :: the line says what it paid"
+          "the walk's end: the bench :: the line says what it paid (no thank-you lead)"
         ],
         "newFailingCount": 8
       },
@@ -1768,7 +1771,7 @@
         "newFailingChecks": [
           "a full bag, failures :: what the bag cannot hold is paid at the sell price (3 Jelly x 2) as Choice gold",
           "the walk's end: the bench :: a good turn-in: 2 HP + 2 MP potions + the day's first scroll",
-          "the walk's end: the bench :: the line says what it paid",
+          "the walk's end: the bench :: the line says what it paid (no thank-you lead)",
           "the walk's end: the bench :: the second turn-in: potions only, no scroll"
         ],
         "newFailingCount": 4
@@ -2066,13 +2069,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3456c6d00326bb58e520b0dfe7ab84ac2326975c21a8b9622d511578f3c51811",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/Deeds.luau": "2d4026d59e3ff244abccc8395b6003da8a555c64688ffe01210e7482afc05bf7",
-    "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f",
-    "src/ServerScriptService/LostFoundService.luau": "87ef8287bdc7bd17021c689bf0e33265797a4ef45c73fe2f89c0390fb1b9becb"
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/Deeds.luau": "3d7f14657696e438552f78b2fdf1265c6236cd2357bda058cc9d57b74182b0b6",
+    "src/ServerScriptService/ChoiceCard.luau": "6ee8d37032d61e33e5abbb815a9689f51aed62ff3be65ff33037ed3a799d905b",
+    "src/ServerScriptService/LostFoundService.luau": "4fa7868f90043e6d8a795614ef32c83c706fe262fe721f80cf33dc0bc20df3c7"
   },
-  "fixtureSHA256": "d067d674a17092b6502555e47e373ca514d4e4d2e9430c83e04156dac452072c",
+  "fixtureSHA256": "3542f026d9f7da51fee548ae97ff816cb0ebf4efe8e2b796d5a28aa1bed88f2a",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 98,
+  "checks": 99,
   "failedChecks": 0,
-  "namedChecks": 98,
+  "namedChecks": 99,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -63,7 +63,7 @@
     },
     {
       "group": "config",
-      "check": "data version stays 3 (additive field)",
+      "check": "data version 4 = C1's tier 9 (attendance is an additive field)",
       "pass": 1,
       "fail": 0
     },
@@ -183,7 +183,7 @@
     },
     {
       "group": "a week, day by day",
-      "check": "7 days: one milestone line + one title line",
+      "check": "7 days: one title line with the RankUp fanfare",
       "pass": 1,
       "fail": 0
     },
@@ -465,7 +465,13 @@
     },
     {
       "group": "milestones and attendance looks",
-      "check": "the lines name my own faction's look only",
+      "check": "the lines name my own faction's look only (it carries the fanfare)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "milestones and attendance looks",
+      "check": "Neutral at 14 days: '14 days collected!' with the fanfare (never a sound with no words)",
       "pass": 1,
       "fail": 0
     },
@@ -600,9 +606,9 @@
   "staticChecks": 9,
   "staticFailures": [],
   "mutations": {
-    "total": 36,
-    "applied": 36,
-    "caught": 36,
+    "total": 38,
+    "applied": 38,
+    "caught": 38,
     "skipped": false,
     "results": [
       {
@@ -616,7 +622,7 @@
           "a claim never pays twice :: a second call the same day pays nothing",
           "a week, day by day :: 00:00 KST: the claim opens for the online player",
           "a week, day by day :: 6 days: no 'Regular' yet",
-          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: 7 days: one title line with the RankUp fanfare",
           "a week, day by day :: after the box the board starts at slot 1 again"
         ],
         "newFailingCount": 16
@@ -632,7 +638,7 @@
           "a claim never pays twice :: a second call the same day pays nothing",
           "a week, day by day :: 00:00 KST: the claim opens for the online player",
           "a week, day by day :: 6 days: no 'Regular' yet",
-          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: 7 days: one title line with the RankUp fanfare",
           "a week, day by day :: after the box the board starts at slot 1 again"
         ],
         "newFailingCount": 15
@@ -709,7 +715,7 @@
         "newFailingChecks": [
           "a week, day by day :: 00:00 KST: the claim opens for the online player",
           "a week, day by day :: 7 days collected: the stat-free title 'Regular'",
-          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: 7 days: one title line with the RankUp fanfare",
           "a week, day by day :: after the box the board starts at slot 1 again",
           "a week, day by day :: day 2: 3 hunting minutes of gold, source 'Attendance'",
           "a week, day by day :: day 3: one 70% enhance scroll"
@@ -939,9 +945,11 @@
         "crashed": false,
         "newFailingChecks": [
           "milestones and attendance looks :: 120 days: all 6 attendance looks at join",
-          "milestones and attendance looks :: 120 days: every attendance title at join"
+          "milestones and attendance looks :: 120 days: every attendance title at join",
+          "milestones and attendance looks :: Neutral at 14 days: '14 days collected!' with the fanfare (never a sound with no words)",
+          "milestones and attendance looks :: the lines name my own faction's look only (it carries the fanfare)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 4
       },
       {
         "mutation": "the catch-up talks",
@@ -983,22 +991,46 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "milestones and attendance looks :: the lines name my own faction's look only"
+          "milestones and attendance looks :: Neutral at 14 days: '14 days collected!' with the fanfare (never a sound with no words)",
+          "milestones and attendance looks :: the lines name my own faction's look only (it carries the fanfare)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
-        "mutation": "no milestone line",
+        "mutation": "no milestone fanfare",
         "file": "src/ServerScriptService/AttendanceService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "a week, day by day :: 7 days: one milestone line + one title line",
-          "milestones and attendance looks :: 28 days: the name frame line + AttendDays 28 for the nametag",
-          "milestones and attendance looks :: the lines name my own faction's look only"
+          "a week, day by day :: 7 days: one title line with the RankUp fanfare",
+          "milestones and attendance looks :: Neutral at 14 days: '14 days collected!' with the fanfare (never a sound with no words)",
+          "milestones and attendance looks :: the lines name my own faction's look only (it carries the fanfare)"
         ],
         "newFailingCount": 3
+      },
+      {
+        "mutation": "the days line every milestone (A23-130)",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "a week, day by day :: 7 days: one title line with the RankUp fanfare",
+          "milestones and attendance looks :: the lines name my own faction's look only (it carries the fanfare)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "a sound with no words (10/12)",
+        "file": "src/ServerScriptService/AttendanceService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "milestones and attendance looks :: Neutral at 14 days: '14 days collected!' with the fanfare (never a sound with no words)"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "titles only on the exact day",
@@ -1032,7 +1064,7 @@
         "crashed": false,
         "newFailingChecks": [
           "a week, day by day :: 7 days collected: the stat-free title 'Regular'",
-          "a week, day by day :: 7 days: one milestone line + one title line",
+          "a week, day by day :: 7 days: one title line with the RankUp fanfare",
           "config :: milestones at 7 / 14 / 28 / 50 / 100 days"
         ],
         "newFailingCount": 3
@@ -1057,12 +1089,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0742b53aedb434aa3c1a5e61323913391929b5e4c76d065ac31f2fb980fa73d3",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/AttendanceService.luau": "60a7e6745f24b36a2e3763b76d0f1cc9ee641890f5a5639f3acff8955e669595",
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/AttendanceService.luau": "2aeabcc901e6e9cc6b2dec2470d060d2dd9b539fc270b8179f3987c18bc86945",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257"
   },
-  "fixtureSHA256": "3979765ddf151f81138af24735c0987151241354ef1b79becac8fc0eaece5d22",
+  "fixtureSHA256": "cb49ec9ae5395d94b08146fa6b93efd0ffba5641bf1d5a8defc47940a57bc98e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

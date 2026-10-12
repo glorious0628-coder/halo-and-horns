@@ -229,8 +229,8 @@ def static() -> tuple[int, list[str]]:
     check("S.LootService.DebugReset(player, tonumber(value) or 0)" in main, "debug LootReset defaults to the bare-handed start")
     data = strip_comments(read(SSS / "DataService.luau"))
     check("bit32.bor(owned, 1" not in data, "DataService never forces the tier-1 bit at load")
-    check("Version = 3," in config,
-          "save Version stays 3 (additive: older v3 records already hold their tier 1; A23-69's Stats is additive too)")
+    check("Version = 4," in config and "Version = 3," not in config,
+          "save Version 4 = C1's tier 9 (A23-34 needed no bump: older v3 records already hold their tier 1; Stats is additive too)")
     shop = strip_comments(read(SSS / "ShopService.luau"))
     check("bit32.band(ownedMask, 1) == 0" not in shop, "the shop never requires the tier-1 bit")
     combat = strip_comments(read(SSS / "CombatService.luau"))

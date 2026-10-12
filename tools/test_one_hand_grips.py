@@ -142,7 +142,7 @@ def staff_rule(cv: str):
             and "local room = total * (1 - STAFF.Grip) - STAFF.OrbClear * h / STAFF.Height - a" in cv
             and "local low = total * STAFF.Grip -- studs from the foot up to the hand" in cv
             and cv.count("local base, low = fist(grip), total * STAFF.Grip") == 2)
-    orb = re.search(r"return math\.max\(" + NUM + r", math\.min\(STAFF\.Orb \+ STAFF\.OrbPerTier \* tier, room / b\)\)", cv)
+    orb = re.search(r"return math\.max\(" + NUM + r", math\.min\(STAFF\.Orb \+ STAFF\.OrbPerTier \* math\.min\(tier, 8\), room / b\)\)", cv)
     if not (m and uses):
         return None
     v = [float(m[i]) for i in range(1, 6)]
@@ -152,7 +152,7 @@ def staff_rule(cv: str):
 
 def staff_orb(rule, tier: int, total: float, h: float, a: float, b: float) -> float:
     """CharacterVisuals.staffOrb (h = the avatar's height)"""
-    want = rule["Orb"] + rule["OrbPer"] * tier
+    want = rule["Orb"] + rule["OrbPer"] * min(tier, 8)  # C1: tier 9 keeps tier 8's orb
     if not rule["Shrink"]:
         return want
     room = total * (1 - rule["Grip"]) - rule["OrbClear"] * h / rule["Height"] - a
@@ -962,7 +962,8 @@ MUTATIONS = [
      'local h = (type(height) == "number" and height > 0) and height / sc or STAFF.Height', "local h = STAFF.Height"),
     ("CV", "A23-142: the hand at the orb again (grip 66%)", "local STAFF = { Grip = 0.43,", "local STAFF = { Grip = 0.66,"),
     ("CV", "A23-142: the orb never shrinks (a big tier's orb comes down to the hand)",
-     "return math.max(0.3, math.min(STAFF.Orb + STAFF.OrbPerTier * tier, room / b))", "return STAFF.Orb + STAFF.OrbPerTier * tier"),
+     "return math.max(0.3, math.min(STAFF.Orb + STAFF.OrbPerTier * math.min(tier, 8), room / b))", "return STAFF.Orb + STAFF.OrbPerTier * math.min(tier, 8)"),
+    ("CV", "C1: the Mythic orb grows past tier 8", "STAFF.OrbPerTier * math.min(tier, 8), room / b))", "STAFF.OrbPerTier * tier, room / b))"),
     ("CV", "A23-142: the crook's orb hangs low again", "local K = { Hook = 0.5, OrbX = 0.55, OrbY = 0.1 }",
      "local K = { Hook = 0.5, OrbX = 0.55, OrbY = -0.6 }"),
     ("CV", "A23-142: the head counted from the neck (the avatar's height too short)", "return torso + (n0.Y - n1.Y) + head.Size.Y / 2",

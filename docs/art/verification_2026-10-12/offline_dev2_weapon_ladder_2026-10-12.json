@@ -1,0 +1,1225 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 117,
+  "failedChecks": 0,
+  "namedChecks": 99,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "ladder",
+      "check": "9 weapon tiers (Config.MaxWeaponTier = #Config.Weapons)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "T9: Damage 2200, MinLevel 50, Price 250000 (a value only), no faction gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "tiers 1-8 keep their numbers",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "T8 stays the legendary, T7 the faction weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "WeaponGrades.Mythic = { Name Mythic, Stars 6, Rank 6, a colour }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "Mythic ranks above every other grade (Legend 5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "WeaponInfo[9] = Mythic, 'Crafted by artisans'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "tiers 1-8 keep their grades",
+      "pass": 8,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "names: tiers 1-8 frozen, tier 9 Crownforged (Warrior)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "names: tiers 1-8 frozen, tier 9 Crownforged (Mage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "names: tiers 1-8 frozen, tier 9 Crownforged (Tamer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "names: tiers 1-8 frozen, tier 9 Crownforged (Archer)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "WeaponName(9, ...) per class (the Neutral archer = the tamer's baton)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "T9 is never a drop row and never the jackpot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "the Forge still sells tiers 2-3 only (MaxSoldTier 3)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "T9 is no commission order and has no duplicate-drop gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "T9 usable from Lv50; tier 10 does not exist",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "BestUsableWeapon: T9 at Lv100, T7 below Lv50, 8-bit masks unchanged",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "ladder",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "Config.Data.Version = Defaults.Version = 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a v3 record loads as v4 with its weapons, mask, +N and the rest kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "the v3 record gains Spares {} and the default Market",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "loading it again changes nothing (idempotent)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v3: a mask with bit 9 is corrupted -> the equipped bit only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v3: tier 9 equipped is corrupted -> the best usable owned weapon",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v4: tier 9, mask 511 and WeaponEnhance[9] kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v4: a stored tier 9 is a valid tier (the level fit is LootService's)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v4: a mask with bit 9 is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v4: bit 10 = corrupted -> the equipped bit only (the existing repair)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "v4: tier 10 = corrupted -> the best usable owned (T9 at Lv60)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "the load repairs Spares / Market (Config.SanitizeSaveV4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a Spares / Market of the wrong type becomes its default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "a brand-new save is v4 with Spares {} and Market { Out, In, Done, Day, Lists, Buys }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "load",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "caps: tiers 1..32, 20 a key, 60 in all, 64 market rows, 50 done ids, ids 40, N 999",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "not a table -> {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "good keys come back as they were",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "'04:0' and '4:0' merge into '4:0'",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "a merged key is cut at 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "a count above 20 is cut at 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "a later tier (up to 32) and +10 are kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "bad keys dropped (tier 0 / 33, plus 11, fractions, letters, extra parts, long, not strings)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "NaN / inf / negative / 0 / text / table counts drop the key; 1.7 -> 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "70 keys -> the first 64 in sorted order (MaxKeys)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "the total 60 is not cut by the repair (the writers refuse)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "repairing twice = once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spares",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "not a table -> the default",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "good rows come back as they were",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "every known St is kept",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "K written plainly, N cut at 999, fractions floored, Price cut at MaxCount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "In rows: Price 1..MaxCount and a known St, the rest dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "row ids are strings of 1..40 characters",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "at most 64 rows in Out and In each (the first ids in sorted order)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "Done keeps the newest 50 sane unique ids (the list end)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "Day / Lists / Buys: whole numbers >= 0 (NaN / negative -> 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "a sane unknown flat key is kept (a later field), tables are not",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "repairing twice = once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "market",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "LootService.SpareRoom / AddSpare exist",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier neg",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier frac",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier zero",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier inf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier ten",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier nan",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus neg",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus frac",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus eleven",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus inf",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus nan",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: tier nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: plus nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "no data -> false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "SpareRoom says yes and changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "AddSpare(9, 2) -> Spares['9:2'] = 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "the Inventory push carries Spares (and Enhance[9])",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "AddSpare says nothing (the caller does)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "a second one makes 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "one key stops at 20 (SpareKeyMax)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "another key still has room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "59 in all: one more fits",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "60 in all: no room (SpareSum)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "refused, nothing changes, nothing sent: all spares at 60",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "a later tier's key counts in the total",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "a missing Spares table is made",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "LootService's sanitize keeps Spares and Market (9 enhance tiers)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "spare api",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 6,
+  "staticFailures": [],
+  "mutations": {
+    "total": 50,
+    "applied": 50,
+    "caught": 50,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: T9 usable from Lv1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: BestUsableWeapon: T9 at Lv100, T7 below Lv50, 8-bit masks unchanged",
+          "ladder :: T9 usable from Lv50; tier 10 does not exist",
+          "ladder :: T9: Damage 2200, MinLevel 50, Price 250000 (a value only), no faction gate"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: T9 damage 220",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: BestUsableWeapon: T9 at Lv100, T7 below Lv50, 8-bit masks unchanged",
+          "ladder :: T9: Damage 2200, MinLevel 50, Price 250000 (a value only), no faction gate"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: Mythic ranks like Legend",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: Mythic ranks above every other grade (Legend 5)",
+          "ladder :: WeaponGrades.Mythic = { Name Mythic, Stars 6, Rank 6, a colour }"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: WeaponInfo[9] graded Legend",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: WeaponInfo[9] = Mythic, 'Crafted by artisans'"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: no tier-9 baton name",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: WeaponName(9, ...) per class (the Neutral archer = the tamer's baton)",
+          "ladder :: names: tiers 1-8 frozen, tier 9 Crownforged (Tamer)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: T9 dropped by Captain Clatter",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: T9 is never a drop row and never the jackpot"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the Forge sells up to T9",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "ladder :: the Forge still sells tiers 2-3 only (MaxSoldTier 3)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the version back to 3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: Config.Data.Version = Defaults.Version = 4"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the default record's version 3",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: Config.Data.Version = Defaults.Version = 4"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DataService: no v4 step",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: a v3 record loads as v4 with its weapons, mask, +N and the rest kept",
+          "load :: v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "DataService: the old steps follow MaxWeaponTier",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)",
+          "load :: v3: a mask with bit 9 is corrupted -> the equipped bit only",
+          "load :: v3: tier 9 equipped is corrupted -> the best usable owned weapon"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "DataService: a v3 tier 9 trusted",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: v3: tier 9 equipped is corrupted -> the best usable owned weapon"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DataService: a v3 bit 9 trusted",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: v3: a mask with bit 9 is corrupted -> the equipped bit only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DataService: the repair keeps 8 bits",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: v4: a mask with bit 9 is kept",
+          "load :: v4: a stored tier 9 is a valid tier (the level fit is LootService's)",
+          "load :: v4: tier 10 = corrupted -> the best usable owned (T9 at Lv60)",
+          "load :: v4: tier 9, mask 511 and WeaponEnhance[9] kept"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "DataService: the repair keeps tiers 0..8",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: v4: a stored tier 9 is a valid tier (the level fit is LootService's)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "DataService: bit 10 kept",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: v4: bit 10 = corrupted -> the equipped bit only (the existing repair)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spares: no per-key cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spares :: a count above 20 is cut at 20"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spares: a merged key over 20",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spares :: a merged key is cut at 20",
+          "spares :: repairing twice = once"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "spares: a later key replaces the earlier",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)",
+          "spares :: '04:0' and '4:0' merge into '4:0'",
+          "spares :: a merged key is cut at 20"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "spares: tier 0 kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)",
+          "market :: a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)",
+          "spares :: bad keys dropped (tier 0 / 33, plus 11, fractions, letters, extra parts, long, not strings)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "spares: no tier ceiling",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spares :: bad keys dropped (tier 0 / 33, plus 11, fractions, letters, extra parts, long, not strings)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spares: no plus cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)",
+          "spares :: bad keys dropped (tier 0 / 33, plus 11, fractions, letters, extra parts, long, not strings)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "spares: keys kept as written",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)",
+          "market :: K written plainly, N cut at 999, fractions floored, Price cut at MaxCount",
+          "spares :: '04:0' and '4:0' merge into '4:0'",
+          "spares :: a merged key is cut at 20"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "spares: never cut at 64 keys",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spares :: 70 keys -> the first 64 in sorted order (MaxKeys)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spares: 0 counts kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spares :: NaN / inf / negative / 0 / text / table counts drop the key; 1.7 -> 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "spares: the load skips Spares",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: any St kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)",
+          "market :: In rows: Price 1..MaxCount and a known St, the rest dropped",
+          "market :: a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "market: N without the cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: K written plainly, N cut at 999, fractions floored, Price cut at MaxCount"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: N 0 kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: Price 0 kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: In rows: Price 1..MaxCount and a known St, the rest dropped",
+          "market :: a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "market: no id length cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: Done keeps the newest 50 sane unique ids (the list end)",
+          "market :: row ids are strings of 1..40 characters"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "market: rows never cut",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: at most 64 rows in Out and In each (the first ids in sorted order)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: Done keeps the oldest",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: Done keeps the newest 50 sane unique ids (the list end)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: Done keeps duplicates",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)",
+          "market :: Done keeps the newest 50 sane unique ids (the list end)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "market: any item key",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: a row with an unknown St, a bad K, a bad N or a bad Price is dropped (never made up)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: weapon keys kept as written",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: K written plainly, N cut at 999, fractions floored, Price cut at MaxCount"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: negative counters",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)",
+          "market :: Day / Lists / Buys: whole numbers >= 0 (NaN / negative -> 0)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "market: unknown keys dropped",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "market :: a sane unknown flat key is kept (a later field), tables are not"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "market: the load skips Market",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "load :: the load repairs Spares / Market (Config.SanitizeSaveV4)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: any number is a tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: SpareRoom says yes and changes nothing",
+          "spare api :: refused, nothing changes, nothing sent: tier frac",
+          "spare api :: refused, nothing changes, nothing sent: tier inf",
+          "spare api :: refused, nothing changes, nothing sent: tier nan",
+          "spare api :: refused, nothing changes, nothing sent: tier neg",
+          "spare api :: refused, nothing changes, nothing sent: tier ten"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "loot: a fractional plus",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: SpareRoom says yes and changes nothing",
+          "spare api :: one key stops at 20 (SpareKeyMax)",
+          "spare api :: refused, nothing changes, nothing sent: plus frac",
+          "spare api :: the Inventory push carries Spares (and Enhance[9])"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "loot: no plus cap",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: SpareRoom says yes and changes nothing",
+          "spare api :: refused, nothing changes, nothing sent: plus eleven",
+          "spare api :: refused, nothing changes, nothing sent: plus inf",
+          "spare api :: the Inventory push carries Spares (and Enhance[9])"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "loot: 21 of one key",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: one key stops at 20 (SpareKeyMax)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: no total cap",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: 60 in all: no room (SpareSum)",
+          "spare api :: a later tier's key counts in the total",
+          "spare api :: refused, nothing changes, nothing sent: all spares at 60"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "loot: AddSpare skips the room check",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: one key stops at 20 (SpareKeyMax)",
+          "spare api :: refused, nothing changes, nothing sent: all spares at 60"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "loot: AddSpare adds 2",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: AddSpare(9, 2) -> Spares['9:2'] = 1",
+          "spare api :: a missing Spares table is made",
+          "spare api :: a second one makes 2",
+          "spare api :: one key stops at 20 (SpareKeyMax)",
+          "spare api :: the Inventory push carries Spares (and Enhance[9])"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "loot: AddSpare not published",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: the Inventory push carries Spares (and Enhance[9])"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: payload without Spares",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: the Inventory push carries Spares (and Enhance[9])"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: sanitize drops Spares / Market",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: LootService's sanitize keeps Spares and Market (9 enhance tiers)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: sanitize keeps 8 enhance tiers",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "spare api :: LootService's sanitize keeps Spares and Market (9 enhance tiers)"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/LootService.luau": "e10015474c5c364c03954827a3314e5fa390103450e93cc497a010f7441d2b3b",
+    "src/ServerScriptService/DataService.luau": "72aff9b30b4f6f88c01d97968b861184bff021275e22b10ed74030109f131ec2"
+  },
+  "fixtureSHA256": "fdfbfc59ab9e3c84f63027b7aa6c76bb19792330dc1bc54ef94e959be7e03795",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "C1 (게임성 개발 2): Config.Weapons[9] = Damage 2200 / MinLevel 50 / Price 250000 (a value), never a drop row, the jackpot (tier 8), a Forge sale (MaxSoldTier 3) or a commission; tiers 1-8 numbers, grades and names frozen; WeaponGrades.Mythic { Stars 6, Rank 6 } above Legend; 'Crownforged Sword / Staff / Bow / Baton' appended; WeaponInfo[9] = Mythic, 'Crafted by artisans'. Config.Data.Version = Defaults.Version = 4; DataService migrate: v1 / v2 steps pinned to 8 tiers, the v4 step marks an older record's tier > 8 / bit > 8 corrupted (fillDefaults' usual repair) and sets Version 4; a v4 9-bit mask / tier 9 / WeaponEnhance[9] kept, bit 10 / tier 10 = corrupted. Config.SanitizeSpares: 'T:P' (T 1..32, P 0..10) written plainly and merged, n 1..20, 64 keys (sorted), the total 60 not cut. Config.SanitizeMarket: Out { K 'I:<id>' | 'W:T:P', N 1..999, Price 1..MaxCount, St Open/Sold/Cancel/Expired/Paid }, In { Price, St }, ids 1..40 chars, 64 rows each (sorted), Done = the newest 50 unique ids, Day / Lists / Buys >= 0, sane unknown flat keys kept, idempotent; both run in Config.SanitizeSaveV4. LootService.SpareRoom / AddSpare(player, tier 1..MaxWeaponTier, plus 0..MaxEnhance): room = key < 20 and total < 60; AddSpare adds 1 and publishes the Inventory (Spares added to the payload), false changes nothing, no notice; LootService's own repair keeps Spares / Market.",
+  "limitations": "Numbers like fractions are floored (the V4 helper's rule), not dropped. The CR-L3 refusal of a newer record (Version 5) by the real DataStore load is in tools/test_onboarding.py; CraftService's use of the API is in tools/test_craft.py. No MarketService exists yet (only the saved shape). Client display of tier 9 / Spares is 게임성 개발 1's."
+}

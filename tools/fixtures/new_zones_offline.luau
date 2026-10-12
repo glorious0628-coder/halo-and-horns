@@ -161,7 +161,19 @@ runGroup("off", function()
 	local zoneDiff, kindDiff, lootDiff, itemDiff, barkDiff, lvDiff, famDiff, orderDiff = {}, {}, {}, {}, {}, {}, {}, {}
 	for id, bz in base.Zones do if not same(bz, C.Zones[id]) then table.insert(zoneDiff, id) end end
 	for k, bd in base.MonsterTypes do if not same(bd, C.MonsterTypes[k]) then table.insert(kindDiff, k) end end
-	for k, t in base.Loot.Tables do if not same(t, C.Loot.Tables[k]) then table.insert(lootDiff, k) end end
+	-- rows of a later round's own items (Source Boss = C1's boss materials, Gather / Craft / Goose) are not this round's
+	local function laterRow(row)
+		local it = type(row) == "table" and row.Item and C.Loot.Items[row.Item]
+		local src = type(it) == "table" and it.Source
+		return src == "Boss" or src == "Gather" or src == "Craft" or src == "Goose"
+	end
+	local function ownRows(t)
+		if type(t) ~= "table" then return t end
+		local out = {}
+		for _, r in t do if not laterRow(r) then table.insert(out, r) end end
+		return out
+	end
+	for k, t in base.Loot.Tables do if not same(t, ownRows(C.Loot.Tables[k])) then table.insert(lootDiff, k) end end
 	for k, t in base.Loot.Items do if not same(t, C.Loot.Items[k]) then table.insert(itemDiff, k) end end
 	for k, t in base.Barks.Lines do if not same(t, C.Barks.Lines[k]) then table.insert(barkDiff, k) end end
 	for k, v in base.MonsterLevels do if C.MonsterLevels[k] ~= v then table.insert(lvDiff, k) end end
@@ -403,7 +415,7 @@ runGroup("loot", function()
 	-- a later round's own items are not this round's: gathering (게임성 개발 3, 2026-10-11) marks its materials Source = "Gather"
 	local function later(id)
 		local src = type(items[id]) == "table" and items[id].Source
-		return src == "Gather" or src == "Craft" -- the gathering and crafting rounds (게임성 개발 3)
+		return src == "Gather" or src == "Craft" or src == "Goose" or src == "Boss" -- gathering / crafting (게임성 개발 3), the egg hunt (A23-134), C1's boss materials
 	end
 	local order = {}
 	for _, id in C.Loot.Order do if id ~= "SeaShell" and id ~= "CrystalShard" and not later(id) then table.insert(order, id) end end

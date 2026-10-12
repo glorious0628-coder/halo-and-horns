@@ -90,12 +90,14 @@ def main() -> int:
                      "migrated skill quest progress/rewards survive real DataService save/release/load",
                      "new ownership and mirrored fields", "post-sale ownership save/release/load without item resurrection",
                      "legacy tier4 preserved without inventing earlier purchases", "invalid/nonfinite mask, tier and visit repair",
-                     "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any "
-                     "bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-                     "B4 Data Version 3 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a "
-                     "picked build saves and comes back repaired, A-Z kept): fresh/v2/v1 records load and save as Version 3 "
+                     "B4 + C1: 9 weapon tiers (Config.MaxWeaponTier, tier 9 = Mythic); a v2 record's mask outside 1..255 or with any "
+                     "bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped; "
+                     "the old migrate step stays pinned to 8)",
+                     "C1 Data Version 4 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a "
+                     "picked build saves and comes back repaired, A-Z kept): fresh/v3/v2/v1 records load and save as Version 4 "
                      "with no other field changes (v2 legendary, "
-                     "enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
+                     "enhancement, items, loot flags kept); a v4 record keeps tier 9 / mask 511; records with Version > 4 are "
+                     "refused without a write or lock",
                      "finite-value save serialization guard and migration idempotence",
                      "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.Claimed (A23-130: "
                      "'+%s gold', the same line as a manual claim) exactly "
