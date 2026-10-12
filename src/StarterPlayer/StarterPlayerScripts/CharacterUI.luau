@@ -2,22 +2,34 @@
 -- decisions A23-48 English only, A23-99 / A23-130 less hand-holding, A23-78 E key, A23-133 gear row): the Panels window
 -- "Character" ("Hero": the HUD's Hero tile and the E key open it; until it is registered the tile stays locked).
 --   [Gear]  left : my Roblox headshot (UIKit.HeadshotImage) + the big Power number (the CombatPower attribute)
---           right: a Frame "EquipSlots" with the gear cells - row 1 Weapon · Armor · Ring, row 2 Pet, row 3 Pet Armor · Pet Acc.
---                  This module draws only the Weapon cell (tier frame + "+N") and the Pet cell (only while the player has
---                  pets). Armor / Ring / Pet Armor / Pet Acc are 게임성 개발 4's: the first time the window is built it calls
---                  C.GearSlots.Build(equipSlotsFrame, { Refresh, Cell, Cells }) when that module exists (looked up then, not at
---                  Init) and C.GearSlots.Refresh() on every open; without it those four stay empty SlotEmpty cells.
---                  The Weapon cell lists the owned weapons with [Equip] (EquipWeapon: the bag's path - the same rate gap, fight
---                  and level guards, one request at a time); the Pet cell opens the Pet window; the title row sends SetTitle.
+--           right: a Frame "EquipSlots" with the six gear cells - row 1 Weapon · Armor · Ring, row 2 Pet, row 3 Pet Armor · Pet Acc -
+--                  and the title list beside it.
+--   GearSlots contract (게임성 개발 4; agreed after the first draft). WITH C.GearSlots (a table with a Build function, looked
+--   up when the window is built, not at Init) game dev 4 draws ALL SIX cells inside the EquipSlots frame and CharacterUI draws
+--   NO cell of its own (no Weapon cell, no Pet cell, no SlotEmpty placeholders): it only owns the frame (name "EquipSlots",
+--   Position (0, 0), the 3 x 3 cell default Size) and
+--     - calls C.GearSlots.Build(frame, { Refresh = fn }) once - the first build; the frame outlives the window, so the cells
+--       keep their state (a failing Build = no GearSlots: the frame is cleared and the fallback below is drawn),
+--     - calls C.GearSlots.Refresh() on every open (after the window is drawn).
+--   opts.Refresh is for GearSlots to call when its cells change size (e.g. no pet -> one row less): GearSlots sets the frame's
+--   Size (offset units = du, the bounding box of its cells) and then calls opts.Refresh(); CharacterUI reads frame.Size and
+--   lays the window out around it again (the title list moves beside the frame). It never writes the Size of a GearSlots frame.
+--   The Weapon cell of GearSlots may call CharacterUI.ShowView("Weapons") (the owned-weapons list with [Equip]) and back.
+--   WITHOUT GearSlots CharacterUI draws the fallback itself: the Weapon cell (tier frame + "+N"; pressing it opens the owned
+--   weapons with [Equip] - EquipWeapon: the bag's path, the same rate gap, fight and level guards, one request at a time), the
+--   Pet cell (only while the player has pets; it opens the Pet window) and Armor / Ring / Pet Armor / Pet Acc as empty
+--   SlotEmpty cells. The title row sends SetTitle.
 --   [Stats] only values that exist as Config data or replicated attributes: level, max HP, MP, walk speed, one hit, crit,
 --           class / side traits, the effects that are on now, rebirth bonus, honor / infamy and the points to the next rank.
 -- The EquipSlots frame lives as long as this module: Panels destroys a window's children when it closes, so Cleanup takes the
 -- frame out first and the next build puts the same frame back (the gear cells keep their state; Build is called once).
+-- The window is a fixed-height body (Panels), so "lays out again" = the title list's place and the right column, not the height.
 -- Display only: the server checks every request. Text: short English in TXT (L10n key "CharacterUI.TXT.*", A23-111). PC first.
 -- Public API: CharacterUI.Init(C), CharacterUI.Start(), CharacterUI.IsReady(), CharacterUI.Open(tab?),
 -- pure: CharacterUI.Weapons(ctx) -> rows, CharacterUI.EquipState(row, ctx) -> text, enabled, CharacterUI.Titles(ctx) -> list,
 -- CharacterUI.StatRows(ctx) -> rows, CharacterUI.PetState(rows) -> { Equipped, Count } | nil, CharacterUI.NextRank(faction, points)
--- acts: CharacterUI.Equip(tier) -> bool, CharacterUI.SetTitle(id) -> bool, CharacterUI.Refresh()
+-- acts: CharacterUI.Equip(tier) -> bool, CharacterUI.SetTitle(id) -> bool, CharacterUI.Refresh(force?), CharacterUI.Relayout(),
+-- CharacterUI.ShowTab("Gear" | "Stats"), CharacterUI.ShowView("Slots" | "Weapons")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -78,9 +90,9 @@ local L = {
 	Cell = 64, ColGap = 14, CapH = 18, RowGap = 10, -- one gear cell, the word under it
 	Cols = { Weapon = 0, Armor = 1, Ring = 2, Pet = 0, PetArmor = 0, PetAcc = 1 },
 	Rows = { Weapon = 0, Armor = 0, Ring = 0, Pet = 1, PetArmor = 2, PetAcc = 2 },
-	Order = { "Weapon", "Armor", "Ring", "Pet", "PetArmor", "PetAcc" }, -- the gear cells, row by row
-	Mine = { "Weapon", "Pet" }, -- the cells this module draws; the other four are 게임성 개발 4's (GearSlots) or stay empty
-	TitleX = 236, TitleW = 150, TitleH = 36,
+	FrameW = 3 * 64 + 2 * 14, FrameH = 3 * (64 + 18) + 2 * 10, -- the EquipSlots default: 3 columns x 3 rows of Cell / ColGap / CapH / RowGap
+	TitleGap = 16, TitleW = 150, TitleH = 36, -- the title list sits TitleGap right of the EquipSlots frame
+	Fallback = { "Armor", "Ring", "PetArmor", "PetAcc" }, -- the empty cells drawn when there is no GearSlots
 	RowH = 74, Icon = 52, ButtonW = 112, BtnH = 40,
 	StatH = 26, StatLabelW = 200,
 	Size = { Name = 18, Body = 16, Small = 15, Count = 16, Power = 34, Head = 18 },
@@ -102,7 +114,9 @@ local S = {
 	Ready = false,
 	Tab = "Gear", View = "Slots", -- View: "Slots" (the gear cells + titles) | "Weapons" (the owned weapons list)
 	Equip = nil, -- the EquipSlots frame (kept between builds)
-	GearBuilt = false,
+	GearBuilt = false, -- C.GearSlots.Build ran on this frame
+	GearOff = false, -- C.GearSlots.Build failed: the fallback cells are drawn instead
+	Drawn = {}, -- the fallback cells / captions this module drew in the frame
 	ReadyAt = {}, -- [remote] = os.clock() when the next send is allowed
 	Pending = nil, -- { Tier, WeaponTier, SentAt, ReadyAt, Answered? }
 }
@@ -467,7 +481,7 @@ end
 
 local function gearModule()
 	local g = C and C.GearSlots
-	if type(g) == "table" and type(g.Build) == "function" then return g end
+	if not S.GearOff and type(g) == "table" and type(g.Build) == "function" then return g end
 	return nil
 end
 
@@ -581,6 +595,7 @@ local function caption(frame, name, id)
 	local tc = Instance.new("UITextSizeConstraint")
 	tc.MaxTextSize = L.Size.Small
 	tc.Parent = cap
+	return cap
 end
 
 function CharacterUI.ShowView(view)
@@ -603,48 +618,47 @@ local function openPet()
 	end
 end
 
--- the cells of EquipSlots: this module's Weapon and Pet cell again; the four others only while GearSlots is not there
+-- takes back what the fallback drew (before GearSlots draws its cells, and before the fallback draws again)
+local function clearFallback()
+	for _, o in S.Drawn do pcall(o.Destroy, o) end
+	S.Drawn = {}
+end
+
+-- the FALLBACK cells of EquipSlots (no GearSlots only): the Weapon cell, the Pet cell (with pets), four SlotEmpty cells.
+-- Only called while there is no GearSlots (refresh checks): with it this module draws no cell at all.
 local function drawSlots(frame, data)
-	local mine = {}
-	for _, id in L.Order do
-		mine["Cell_" .. id], mine["Cap_" .. id], mine["Empty_" .. id], mine["EmptyCap_" .. id] = true, true, true, true
+	clearFallback()
+	local function keep(o)
+		table.insert(S.Drawn, o)
+		return o
 	end
-	local gear = gearModule()
-	for _, ch in frame:GetChildren() do
-		local n = ch.Name
-		if mine[n] and (n == "Cell_Weapon" or n == "Cap_Weapon" or n == "Cell_Pet" or n == "Cap_Pet"
-			or string.sub(n, 1, 5) == "Empty") then
-			ch:Destroy()
-		end
-	end
+	local function capt(name, id) keep(caption(frame, name, id)) end
 	local worn = data.Worn
 	local box
 	if worn then
-		box = slot(frame, worn.Grade, function() CharacterUI.ShowView(S.View == "Weapons" and "Slots" or "Weapons") end, "Cell_Weapon")
+		box = keep(slot(frame, worn.Grade, function() CharacterUI.ShowView(S.View == "Weapons" and "Slots" or "Weapons") end, "Cell_Weapon"))
 		putIcon(box, worn.Icon, false, worn.Name)
 		if worn.Plus > 0 then corner(box, "+" .. tostring(worn.Plus), colorOf("Gold")) end
 	else
-		box = slot(frame, nil, function() CharacterUI.ShowView(S.View == "Weapons" and "Slots" or "Weapons") end, "Cell_Weapon")
+		box = keep(slot(frame, nil, function() CharacterUI.ShowView(S.View == "Weapons" and "Slots" or "Weapons") end, "Cell_Weapon"))
 	end
 	box.Position = cellPos("Weapon")
-	caption(frame, "Cap_Weapon", "Weapon")
+	capt("Cap_Weapon", "Weapon")
 	local pet = data.Pet
 	if pet then
 		local row = pet.Equipped
-		box = slot(frame, row and "Common" or nil, openPet, "Cell_Pet")
+		box = keep(slot(frame, row and "Common" or nil, openPet, "Cell_Pet"))
 		if row then
 			putIcon(box, row.Icon, true, row.Name)
 			corner(box, tx(TXT, "PetLv", row.Lv), colorOf("Gold"))
 		end
 		box.Position = cellPos("Pet")
-		caption(frame, "Cap_Pet", "Pet")
+		capt("Cap_Pet", "Pet")
 	end
-	if not gear then
-		for _, id in { "Armor", "Ring", "PetArmor", "PetAcc" } do
-			local empty = slot(frame, nil, nil, "Empty_" .. id)
-			empty.Position = cellPos(id)
-			caption(frame, "EmptyCap_" .. id, id)
-		end
+	for _, id in L.Fallback do
+		local empty = keep(slot(frame, nil, nil, "Empty_" .. id))
+		empty.Position = cellPos(id)
+		capt("EmptyCap_" .. id, id)
 	end
 end
 
@@ -840,17 +854,18 @@ local function refresh(force)
 		drawLeft(VIEW.Left, ctx)
 	end
 	local weapons = CharacterUI.Weapons(ctx)
-	local data = { Pet = CharacterUI.PetState(petRows()) }
-	for _, r in weapons do
-		if r.Equipped then data.Worn = r end
-	end
-	local pet = data.Pet
-	sig = table.concat({ data.Worn and (data.Worn.Tier .. ":" .. data.Worn.Plus) or "-",
-		pet and (pet.Count .. ":" .. (pet.Equipped and (pet.Equipped.Species .. pet.Equipped.Lv) or "-")) or "-",
-		gearModule() and "g" or "" }, "|")
-	if sigs.Slots ~= sig then
-		sigs.Slots = sig
-		drawSlots(VIEW.EquipFrame, data)
+	if not (gearModule() or S.GearBuilt) then -- the fallback cells (GearSlots draws its own)
+		local data = { Pet = CharacterUI.PetState(petRows()) }
+		for _, r in weapons do
+			if r.Equipped then data.Worn = r end
+		end
+		local pet = data.Pet
+		sig = table.concat({ data.Worn and (data.Worn.Tier .. ":" .. data.Worn.Plus) or "-",
+			pet and (pet.Count .. ":" .. (pet.Equipped and (tostring(pet.Equipped.Species) .. tostring(pet.Equipped.Lv)) or "-")) or "-" }, "|")
+		if sigs.Slots ~= sig then
+			sigs.Slots = sig
+			drawSlots(VIEW.EquipFrame, data)
+		end
 	end
 	local titles = CharacterUI.Titles(ctx)
 	local parts = {}
@@ -887,7 +902,7 @@ local function refresh(force)
 	end
 end
 
--- everything again (also what GearSlots calls through its Refresh option)
+-- everything again (force = nil / true) or only what changed (false)
 function CharacterUI.Refresh(force)
 	if force == nil then force = true end
 	refresh(force)
@@ -913,26 +928,49 @@ local function placeEquipSlots(parent)
 		f = Instance.new("Frame")
 		f.Name = "EquipSlots"
 		f.BackgroundTransparency = 1
-		f.Size = UDim2.fromOffset(3 * L.Cell + 2 * L.ColGap, 3 * (L.Cell + L.CapH) + 2 * L.RowGap)
+		f.Size = UDim2.fromOffset(L.FrameW, L.FrameH)
 		f.Parent = parent
-		S.Equip, S.GearBuilt = f, false
+		S.Equip, S.GearBuilt, S.Drawn = f, false, {}
 	end
 	f.Position = UDim2.fromOffset(0, 0)
 	return f
 end
 
+-- the EquipSlots frame's size in du (what GearSlots set, else the 3 x 3 default)
+local function frameSize(frame)
+	local ok, w, h = pcall(function() return frame.Size.X.Offset, frame.Size.Y.Offset end)
+	w, h = ok and num(w, 0) or 0, ok and num(h, 0) or 0
+	if w <= 0 or h <= 0 then return L.FrameW, L.FrameH end
+	return w, h
+end
+
+-- lays the right column out around the frame's size: the title list moves beside the frame (a narrower frame = it moves
+-- left, a taller one stays put: the page scrolls). Safe while the window is closed
+function CharacterUI.Relayout()
+	local frame, titles = VIEW.EquipFrame, VIEW.Titles
+	if not (frame and titles) then return end
+	local w = frameSize(frame)
+	titles.Position = UDim2.fromOffset(w + L.TitleGap, 0)
+end
+
 -- GearSlots (게임성 개발 4): Build once with the frame, Refresh on every open; the module may be missing
-local function hookGear(frame, firstOpen)
+local function hookGear(frame, afterDraw)
 	local g = gearModule()
 	if not g then return end
 	if not S.GearBuilt then
 		S.GearBuilt = true
-		local cells = {}
-		for _, id in L.Order do cells[id] = cellPos(id) end
-		local ok, err = pcall(g.Build, frame, { Refresh = function() CharacterUI.Refresh(true) end, Cell = L.Cell, Cells = cells })
-		if not ok then Util.Warn(TAG, "GearSlots.Build failed: " .. tostring(err)) end
+		clearFallback() -- it draws every cell itself
+		local ok, err = pcall(g.Build, frame, { Refresh = function() CharacterUI.Relayout() end })
+		if not ok then
+			Util.Warn(TAG, "GearSlots.Build failed: " .. tostring(err))
+			S.GearBuilt, S.GearOff = false, true -- no GearSlots after all: whatever it drew goes, the fallback is drawn
+			pcall(function()
+				for _, ch in frame:GetChildren() do ch:Destroy() end
+			end)
+			return
+		end
 	end
-	if firstOpen and type(g.Refresh) == "function" then
+	if afterDraw and type(g.Refresh) == "function" then
 		local ok, err = pcall(g.Refresh)
 		if not ok then Util.Warn(TAG, "GearSlots.Refresh failed: " .. tostring(err)) end
 	end
@@ -992,7 +1030,7 @@ local function build(parent, kit, arg)
 	local titles = Instance.new("Frame")
 	titles.Name = "Titles"
 	titles.BackgroundTransparency = 1
-	titles.Position = UDim2.fromOffset(L.TitleX, 0)
+	titles.Position = UDim2.fromOffset(L.FrameW + L.TitleGap, 0)
 	titles.Size = UDim2.new(0, L.TitleW, 0, 0)
 	titles.AutomaticSize = Enum.AutomaticSize.Y
 	titles.Parent = slotsView
@@ -1001,6 +1039,7 @@ local function build(parent, kit, arg)
 	VIEW.GearPage, VIEW.Left, VIEW.SlotsView, VIEW.WeaponsView, VIEW.EquipFrame, VIEW.Titles, VIEW.StatsPage =
 		gear, left, slotsView, weaponsView, equip, titles, stats
 	hookGear(equip, false) -- Build (the first time) before the cells are drawn
+	CharacterUI.Relayout() -- the frame may be another size than the default (GearSlots resized it)
 	-- data changes redraw in place (Rebuild = false: no full window rebuild)
 	kit.OnAttr(function(name)
 		if CharacterUI.Watch[name] then
