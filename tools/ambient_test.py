@@ -1,4 +1,5 @@
-"""Shade-side light test in WorldKit (이미지 생성 3, 10/12; 최종 검수 after tools/latitude_test.py): GeographicLatitude
+"""(10/13: the sim's C2c day now has OutdoorAmbient 188,185,183 = the 'warm' value picked here, so a new run compares
+against that.) Shade-side light test in WorldKit (이미지 생성 3, 10/12; 최종 검수 after tools/latitude_test.py): GeographicLatitude
 35 / 65 x OutdoorAmbient now (C2c day) / a warm brighter one, at the same 4 doors (castle, Bakery, Juice, Cliff6).
 
   STUDIO_NAME=WorldKit py tools/ambient_test.py <out_dir> [--show] [--target 190]
