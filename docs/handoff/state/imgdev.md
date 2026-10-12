@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 UiSandbox 시험·사진 끝)
+
+- **거위 광장 골격 시험 끝**(UiSandbox, 시험물 remove·저장 없이 창 닫음): 짓기 OK(23 부품, WalkGround 태그 2: Floor·GooseSpot). 고침 1개: CSG(UnionAsync/SubtractAsync)는 모델이 workspace에 있어야 해서 모델을 먼저 workspace에 붙임(tools/worldkit/goose_square.luau). 사진 art/review/imgdev/goose_square/ (시트 goose_square_sheet_2026-10-12.jpg: 위·옆·Nest 쪽·Cart 쪽). 소견: 바닥이 UiSandbox 빛 때문에 크림보다 회색으로 보임(색 값은 크림 240,232,215). 디자인 검수에 보냄 -> 메인 반영 1이 `py tools/goose_square.py --mode apply --emit build/goose_square_apply.luau` 파일을 메인에서 돌림(최종 검수 통해).
+- 밤 빛 비교(디자인 검수 요청): tools/night_light_compare.py 만듦, WorldKit 화면 슬롯 대기(최종 검수).
+- 바깥선 묶음 3: build/hull_import 준비됨, 사용자 가져오기 대기. 묶음 4~6은 `py tools/prepare_hull_batch.py <n>`.
+
 # 이미지 개발 — 상태 (2026-10-12: 스티커 17개 올림)
 
 - **스티커 17개 올림**(최종 검수 승인, 자홍 바탕 직접 봄, 10+7 두 번 사이 30초): asset_ids Emo<이름> 17개(Heart·ThumbsUp·HaloHeart·HornSmiley·Crown·Sweat·Zzz·Question·Exclaim·Clap·Sparkle·Anger·Nice·Thanks·Help·Oops·LetsGo). Config.UIArt 반영 = 가지 `imgdev-stickers`(de9e4fcf, worktree ../Game-imgdev-icons): **무료 5개 = Parts 항목에 `Free = true`**(EmoThumbsUp·EmoQuestion·EmoExclaim·EmoHelp·EmoThanks); 나머지 12 + EmoGG = 99 R$ 패스(SPEC A23-143; 패스 서버 = 개발 2, 화면 = 개발 1이 `Free` 필드를 읽음). -> 게임성 검수 -> 최종 검수. 바깥선 묶음 3 목록은 이미지 생성 4 답 대기.
