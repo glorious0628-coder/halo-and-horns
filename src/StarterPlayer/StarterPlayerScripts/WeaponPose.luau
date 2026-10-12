@@ -248,7 +248,7 @@ function WeaponPose.StaffLift(lift, footY, groundY, gap)
 	return math.clamp(lift - off * T.StaffFix, -T.StaffMax, T.StaffMax)
 end
 
--- a staff's lift this frame from its Shaft (the server's WeaponModel: Staff / CrookStaff), else 0
+-- a staff's lift this frame from its Shaft (the server's WeaponModel: Staff / CrookStaff / FlaskStaff), else 0
 function WeaponPose.StaffStep(st, model)
 	local shaft = model and model:FindFirstChild("Shaft")
 	if not (shaft and shaft:IsA("BasePart")) then

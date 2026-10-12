@@ -654,9 +654,9 @@ end
 -- ground on EVERY avatar - the hand's height over the ground in the staff pose comes from this avatar's own rig
 -- (staffHandHeight: HipHeight + the root's half + the root -> UpperTorso rest offset + the ClassGrips Hilt y x the body
 -- scale WeaponPose uses, ShoulderX = its T.ShoulderX), and the shaft below the hand stays HoldMin .. HoldMax of the
--- shaft (the hand above the middle); FootMax = the hand's height when the rig cannot be read (R6, a costume rig: the
--- place's default R15 holds it 2.86 .. 2.91 over the ground)
-local STAFF = { FootGap = 0.08, HoldMin = 0.5, HoldMax = 0.8, FootMax = 2.8, ShoulderX = 0.972, Orb = 0.5, OrbPerTier = 0.05 }
+-- shaft (the hand above the middle); FootMax = the hand's height when the rig cannot be read (R6, a costume rig).
+-- 최종 검수 10/12 (staff held lower, grip_reference §5-6): the place's default R15 holds it 2.56 .. 2.71 over the ground
+local STAFF = { FootGap = 0.08, HoldMin = 0.5, HoldMax = 0.8, FootMax = 2.5, ShoulderX = 0.972, Orb = 0.5, OrbPerTier = 0.05 }
 local function staffLow(shaftLen, hand)
 	local low = type(hand) == "number" and hand - STAFF.FootGap or STAFF.FootMax
 	return math.clamp(low, shaftLen * STAFF.HoldMin, shaftLen * STAFF.HoldMax)
@@ -858,29 +858,55 @@ function SHAPES.CrookStaff(grip, sc, w, color, tier, hand)
 	return { shaft, hook, orb }, orb
 end
 
--- Alchemist: a round flask in the right hand (glass, a neck and a cork; the brew in the tier colour). 검수 10/11 (it lay
--- on the palm; reference: a bottle is held by its neck, the fingers wrapped round it, grip_reference §1): the fist wraps
--- the NECK, the round body hangs under the fist, the cork on top
-function SHAPES.Flask(grip, sc, w, color, tier)
-	local d = 0.75 + 0.04 * tier
-	local neckLen = 0.5
-	local base = fist(grip) -- the neck's centre in the fist (+Y = up with the forearm forward)
-	local ball = accPart({
+-- Alchemist: 최종 검수 10/12 (the approved 2D art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T1..T3_front: a staff
+-- with a flask, the hand on its leather wrap) - a wooden staff like the Light Mage's (LEN.Staff, its foot on the ground
+-- through staffLow), the wrap round the hand, a cradle of two prongs at the top holding a round glass flask (the brew in
+-- the tier colour), its neck and cork above. The shaft is shorter by the neck + cork, so the whole staff tops out where
+-- buildStaff's orb does (A23-133: 0.85 .. 1.0 of the height). Code shape until the Tripo models (step 3) replace it.
+function SHAPES.FlaskStaff(grip, sc, w, color, tier, hand)
+	local F = { Neck = 0.14, Cork = 0.12, Sit = 0.35, Wrap = 0.7, Prong = 0.5, Splay = 25,
+		Leather = Color3.fromRGB(92, 58, 42), Brass = Color3.fromRGB(196, 152, 72), Glass = Color3.fromRGB(220, 235, 240) }
+	local shaftLen = tierLen(w, LEN.Staff) - (F.Neck + F.Cork)
+	local base, low = fist(grip), staffLow(shaftLen, hand)
+	local parts = {}
+	table.insert(parts, accPart({
+		Name = "Shaft", Size = Vector3.new(0.25, shaftLen, 0.25) * sc,
+		Material = Enum.Material.Wood, Color = WOOD_COLOR,
+		CFrame = base * CFrame.new(0, (shaftLen / 2 - low) * sc, 0),
+	}))
+	table.insert(parts, accPart({ -- the leather wrap the fist holds (centred on the grip)
+		Name = "Wrap", Size = Vector3.new(0.3, F.Wrap, 0.3) * sc,
+		Material = Enum.Material.Fabric, Color = F.Leather, CFrame = base,
+	}))
+	local top = base * CFrame.new(0, (shaftLen - low) * sc, 0)
+	for _, s in { -1, 1 } do -- the cradle's two prongs, splayed out round the flask
+		table.insert(parts, accPart({
+			Name = "Prong", Size = Vector3.new(0.1, F.Prong, 0.1) * sc,
+			Material = Enum.Material.Metal, Color = F.Brass,
+			CFrame = top * CFrame.new(s * 0.1 * sc, 0, 0) * CFrame.Angles(0, 0, math.rad(-s * F.Splay))
+				* CFrame.new(0, F.Prong / 2 * sc, 0),
+		}))
+	end
+	local d = STAFF.Orb + STAFF.OrbPerTier * tier
+	local flask = accPart({
 		Name = "Flask", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Glass, Color = color, Transparency = 0.25,
-		CFrame = base * CFrame.new(0, -(neckLen / 2 + d / 2 - 0.05) * sc, 0),
+		CFrame = top * CFrame.new(0, d * F.Sit * sc, 0),
 	})
-	local neck = accPart({
-		Name = "Neck", Size = Vector3.new(0.22, neckLen, 0.22) * sc,
-		Material = Enum.Material.Glass, Color = Color3.fromRGB(220, 235, 240), Transparency = 0.3,
-		CFrame = base,
-	})
-	local cork = accPart({
-		Name = "Cork", Size = Vector3.new(0.26, 0.14, 0.26) * sc,
-		Material = Enum.Material.Wood, Color = WOOD_COLOR, CFrame = base * CFrame.new(0, (neckLen / 2 + 0.07) * sc, 0),
-	})
-	addLight(ball, color, 6 * sc, 1)
-	return { ball, neck, cork }, ball
+	table.insert(parts, flask)
+	local neckAt = d * (F.Sit + 0.5) + F.Neck / 2 -- just over the flask's top
+	table.insert(parts, accPart({
+		Name = "Neck", Size = Vector3.new(0.2, F.Neck + 0.04, 0.2) * sc,
+		Material = Enum.Material.Glass, Color = F.Glass, Transparency = 0.3,
+		CFrame = top * CFrame.new(0, (neckAt - 0.02) * sc, 0),
+	}))
+	table.insert(parts, accPart({
+		Name = "Cork", Size = Vector3.new(0.24, F.Cork, 0.24) * sc,
+		Material = Enum.Material.Wood, Color = WOOD_COLOR,
+		CFrame = top * CFrame.new(0, (neckAt + F.Neck / 2 + F.Cork / 2) * sc, 0),
+	}))
+	addLight(flask, color, 8 * sc, 1.2)
+	return parts, flask
 end
 
 -- Shadow Hunter: the bow smaller and held tilted
@@ -914,7 +940,7 @@ local function buildWeapon(player, character)
 	-- 게임성 검수 10/11: a staff's foot on the ground for this avatar (its hand height in the row's OneHand pose, in
 	-- the staff's unscaled studs; nil = STAFF.FootMax; offline extracts of buildWeapon without the helper keep FootMax)
 	local staffHand = nil
-	if (kind == "Staff" or kind == "CrookStaff") and type(staffHandHeight) == "function" then
+	if (kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff") and type(staffHandHeight) == "function" then
 		local oh = type(gdef) == "table" and type(gdef.OneHand) == "table" and gdef.OneHand or nil
 		local h = oh and typeof(oh.Hilt) == "Vector3" and staffHandHeight(character, oh.Hilt.Y) or nil
 		staffHand = h and h / sc or nil
