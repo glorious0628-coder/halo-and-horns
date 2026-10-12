@@ -40,3 +40,11 @@
 2. `MarketList`의 무기 id를 tier 대신 여분 키 `"T:P"`로?
 3. `MarketPage.Pages` · `MarketMine.Paid / Today` 더하기 괜찮나?
 4. `PlaytimeSeconds`를 플레이어 속성으로 보여 줄 수 있나(관문 이유를 버튼에 미리)? 거래소 퀘스트는 누가 넣나?
+
+## 6. 합의 (게임성 개발 2 답, 2026-10-12) — 이 모양으로 화면을 만든다
+1. **MarketIndex OK** — `{ Rows = { { Key, Low, Count } }, At }`. 서버는 요약 SortedMap 하나(키 = Key, 값 = 가장 싼 값·수, 올리기·사기·취소·만료 때 고침)를 한 번에 읽고 **30초 캐시**. Low·Count는 힌트 — 사기는 늘 서버가 값 다시 확인(`PriceChanged`).
+2. **무기 = 여분 키 "T:P"**: `MarketList("W", "4:2", n, price)`, 원장 K = `"W:4:2"`.
+3. **MarketPage.Pages**, **MarketMine 줄마다 `Paid`(bool)** + **`Today = { Lists, Buys }`**. State = `"Open" | "Sold" | "Cancel" | "Expired"`(Paid는 따로).
+4. **PlaytimeSeconds 속성은 안 함**(남의 플레이 시간이 보임 + 판단은 서버). 대신 `MarketIndex`·`MarketMine` 응답에 **`Gate = { Buy = "" | 거절 키, List = "" | 거절 키, ListIn = 남은 초(0 = 지금 됨) }`** — 화면은 그 키 글(`Config.Market.Text`)을 [Buy]·[List] 버튼에 그대로 보인다(계정 나이·플레이 시간·하루 20·열린 10 모두 서버가 고름). 클라는 AccountAge·Level로 관문을 따로 계산하지 않는다(§1·§2의 '미리 보이는 법' 대신).
+5. **거래소 퀘스트 3개**(첫 사기·첫 올리기·첫 판매 받기) = 개발 2 거래소 서버 가지(C-5/C-7)에서, 보상 값은 검수. 퀘스트 [Go] → `Panels.Open("Market", { Tab = "Buy" | "Sell" | "Mine" })`.
+6. 거절 키 = §2 목록 + **`TooFast`**(요청 너무 빠름)·**`Off`**(스위치 꺼짐).
