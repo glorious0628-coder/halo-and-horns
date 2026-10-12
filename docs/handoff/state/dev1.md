@@ -99,3 +99,5 @@
 32. fix/arm-hang = main 56ad3014 병합됨. **fix/hero-ui 1eabf613**(API 검토 FIX FIRST: gear_slots 패턴, #7 거절 조건, 잠긴 칭호 거르기·6개, 3D 몸 Keep 필터) 보고.
 33. A23-150 #7 무기 쥐기(사용자: 로블록스 기본 Tool 쥐기 먼저, 우리 메시는 Handle 위): 비교 사진 스크립트 tools/play_tool_grip_compare.py(main e6993f0) — 메인 반영 1이 Studio 열리면 돌림 → 사진 보고 비교 + WeaponPose를 기본 쥐기 위에 얹는 계획을 최종 검수에(코드 바꾸기 전에 사진부터).
 34. 팔 접힘 진짜 원인 = WeaponPose.BodyScale(어깨 x ÷ 0.972)이 사용자 아바타(AnimationConstraint, 좁은 몸통, 어깨 x 0.623)에서 0.64 → 손 목표 36% 당겨짐. **fix/arm-body 11f7e7a9**(wt_gooseleave): Body/BodyPoint로 교체, 시험에 사용자 리그 숫자. 조사 스크립트 tools/play_arm_rig_probe.py, 로그 docs/art/verification_2026-10-12/main_apply/arm_rig/log.txt. 병합 뒤 arm_check3 + tool_grip2 사진 → A23-150 쥐기 계획.
+35. 거위 광장 HUD 안 보임 = A23-68 새내기 접기(HUD.RookieFold)가 행사 줄 전체 숨김. **fix/goose-rookie 81162dec**: 광장 안이면 안 접음. 새내기 Join 보일지 최종 검수에 물음(추천: 숨김).
+36. A23-150 #7 ①: tools/play_tool_grip_basics.py(main de8113d) 7가지 무기 기본 Tool 사진 → 메인 반영 1 진행 중(docs/art/verification_2026-10-12/main_apply/tool_basics/). 사진 오면 ② 부위 조절 표 + 시트 → 최종 검수 → 사용자 OK 뒤 ③ 코드.
