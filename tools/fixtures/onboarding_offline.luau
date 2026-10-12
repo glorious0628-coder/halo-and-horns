@@ -750,13 +750,13 @@ end
 -- nothing else changes.
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
-	-- C1: the version is 4 now (tier 9 + Spares / Market); every older record runs up to 4
-	check(cfg.Data.Version == 4 and cfg.Data.Defaults.Version == 4, "Config.Data.Version / Defaults.Version is not 4")
+	-- C1 made the version 4 (tier 9 + Spares / Market), A23-153 5 (the codex); every older record runs up to 5
+	check(cfg.Data.Version == 5 and cfg.Data.Defaults.Version == 5, "Config.Data.Version / Defaults.Version is not 5")
 	check(cfg.Data.Defaults.DailyLevel == 0, "additive DailyLevel default is not 0")
 	local fresh = fixture()
-	check(fresh.Data.Version == 4, "fresh record is not Version 4")
+	check(fresh.Data.Version == 5, "fresh record is not Version 5")
 	local record = fresh:SaveAndRejoin()
-	check(record.Version == 4 and fresh.Data.Version == 4, "fresh record did not save as Version 4")
+	check(record.Version == 5 and fresh.Data.Version == 5, "fresh record did not save as Version 5")
 	check(type(record.Stats) == "table" and record.Stats.Auto == true and record.Stats.Order == "",
 		"fresh record did not save the default Stats (A23-69)")
 	-- v2 record with a legendary, enhancement, items and loot flags: only Version changes
@@ -766,41 +766,52 @@ do
 	v2.Items = { Jelly = 4, Enh70 = 2 }
 	v2.LootFlags = { FirstScroll = true }
 	local f = fixture(v2)
-	check(f.Data.Version == 4, "v2 record did not migrate to Version 4")
+	check(f.Data.Version == 5, "v2 record did not migrate to Version 5")
 	check(f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135 and f.Data.Level == 7
 		and f.Data.CarriedGold == 33 and f.Data.BankGold == 444, "v2 -> v3 changed weapon/level/gold fields")
 	check(encode(f.Data.WeaponEnhance) == encode(v2.WeaponEnhance) and encode(f.Data.Items) == encode(v2.Items)
 		and f.Data.LootFlags.FirstScroll == true, "v2 -> v3 changed enhancement/items/loot flags")
 	local stored = f:SaveAndRejoin()
-	check(stored.Version == 4 and stored.WeaponTier == 8 and stored.WeaponOwnedMask == 135, "v4 record serialized wrong")
-	check(f.Data.Version == 4 and f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135, "v4 reload not idempotent")
+	check(stored.Version == 5 and stored.WeaponTier == 8 and stored.WeaponOwnedMask == 135, "v5 record serialized wrong")
+	check(f.Data.Version == 5 and f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135, "v5 reload not idempotent")
 	-- A23-69: a v3 record from before the stat points gains Stats only (still Version 3); a picked build survives the
 	-- round trip (its letters A-Z kept, the rest dropped)
 	local v3 = saved(99, 5)
 	v3.Version, v3.Level, v3.WeaponTier, v3.WeaponOwnedMask, v3.BankGold = 3, 12, 3, 7, 321
 	local s3 = fixture(v3)
-	check(s3.Data.Version == 4 and s3.Data.Stats.Auto == true and s3.Data.Stats.Order == "" and s3.Data.Level == 12
+	check(s3.Data.Version == 5 and s3.Data.Stats.Auto == true and s3.Data.Stats.Order == "" and s3.Data.Level == 12
 		and s3.Data.WeaponTier == 3 and s3.Data.BankGold == 321, "a v3 record without Stats got more than the default Stats")
 	s3.Data.Stats = { Auto = false, Order = "AHAXa1" }
 	local kept = s3:SaveAndRejoin()
-	check(kept.Version == 4 and kept.Stats.Auto == false and s3.Data.Stats.Auto == false and s3.Data.Stats.Order == "AHAX",
+	check(kept.Version == 5 and kept.Stats.Auto == false and s3.Data.Stats.Auto == false and s3.Data.Stats.Order == "AHAX",
 		"a saved build did not come back (repaired: its letters A-Z kept, the rest dropped)")
 	-- v1 record (SwordTier) runs both steps
 	local v1 = { Version = 1, Level = 6, SwordTier = 3, Faction = "Halo", TutorialStep = 99 }
 	local g = fixture(v1)
-	check(g.Data.Version == 4 and g.Data.WeaponTier == 3 and g.Data.SwordTier == nil and g.Data.WeaponOwnedMask == 5,
-		"v1 -> v2 -> v3 -> v4 migration lost the renamed weapon tier or the version")
+	check(g.Data.Version == 5 and g.Data.WeaponTier == 3 and g.Data.SwordTier == nil and g.Data.WeaponOwnedMask == 5,
+		"v1 -> v2 -> v3 -> v4 -> v5 migration lost the renamed weapon tier or the version")
 	-- C1: a v4 record with the Mythic tier 9 equipped and all 9 bits owned loads as it is
 	local v4 = saved(99, 5)
 	v4.Version, v4.Level, v4.WeaponTier, v4.WeaponOwnedMask = 4, 60, 9, 511
 	local m = fixture(v4)
-	check(m.Data.Version == 4 and m.Data.WeaponTier == 9 and m.Data.WeaponOwnedMask == 511, "a v4 record lost tier 9 / the 9-bit mask")
+	check(m.Data.Version == 5 and m.Data.WeaponTier == 9 and m.Data.WeaponOwnedMask == 511, "a v4 record lost tier 9 / the 9-bit mask")
+	-- A23-153: a v4 record with a kill record loads as v5 with its cards (from KillLog.ByKind, no reward) and keeps them
+	local k4 = saved(99, 5)
+	k4.Version, k4.Level, k4.BankGold = 4, 20, 700
+	k4.KillLog = { Total = 160, M = 160, A = 0, Golden = 1, ByKind = { Slime = 150, Goblin = 10 }, ByTier = {} }
+	local kc = fixture(k4)
+	check(kc.Data.Version == 5 and kc.Data.Codex.Slime.Kills == 150 and kc.Data.Codex.Slime.Stage == 2 and kc.Data.Codex.Slime.First == 0
+		and kc.Data.Codex.Goblin.Kills == 10 and kc.Data.Codex.Goblin.Stage == 1 and kc.Data.BankGold == 700,
+		"a v4 record did not get its codex cards from its kill record (or got a reward)")
+	local back = kc:SaveAndRejoin()
+	check(back.Version == 5 and back.Codex.Slime.Kills == 150 and back.Codex.Goblin.Stage == 1 and kc.Data.Codex.Slime.Stage == 2,
+		"the v5 codex did not survive the save round trip")
 	-- newer-than-this-server records are refused and never rewritten
-	for _, version in { 5, 99 } do
+	for _, version in { 6, 99 } do
 		local newer = saved(99, 5); newer.Version, newer.WeaponTier, newer.WeaponOwnedMask = version, 10, 1023
 		local h = fixture(newer, { AllowRefused = true })
 		local row = h.Rows["P_" .. h.Player.UserId]
-		check(h.Refused == true, "Version " .. version .. " record was loaded by a Version 4 server")
+		check(h.Refused == true, "Version " .. version .. " record was loaded by a Version 5 server")
 		check(row.Version == version and row.WeaponTier == 10 and row.WeaponOwnedMask == 1023 and row.SessionLock == nil
 			and row.SessionToken == nil, "Version " .. version .. " record was rewritten or locked")
 	end

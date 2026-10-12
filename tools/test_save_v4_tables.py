@@ -53,8 +53,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # --- defaults and limits
-    ("config: the version back to 3 (C1 bumped it to 4)", C, "WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 4,",
-     "WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 3,"),
+    ("config: the version back to 3 (C1 bumped it to 4, A23-153 to 5)", C, "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 5,",
+     "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 3,"),
     ("config: one craft level for all roles", C, "CraftRoles = { \"Smith\", \"Alch\", \"Tame\" },", "CraftRoles = { \"Smith\" },"),
     ("config: craft Lv40", C, "\tCraftMaxLv = 30,\n", "\tCraftMaxLv = 40,\n"),
     ("config: three buffs", C, "\tBuffMax = 2, -- Buffs", "\tBuffMax = 3, -- Buffs"),
@@ -116,7 +116,7 @@ MUTATIONS = [
     ("all: the load skips EggHonorAt", C, "\td.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)\n", ""),
     # --- DataService / PetService
     ("DataService: the v4 repair never runs", D, "\tif Config.SanitizeSaveV4 then Config.SanitizeSaveV4(d, os.time()) end\n", ""),
-    ("DataService: no v4 step in migrate (C1)", D, "\t\td.Version = 4\n", ""),
+    ("DataService: no v5 step in migrate (A23-153; C1 made the v4 one)", D, "\t\td.Version = 5\n", ""),
     ("pet: Roll dropped", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", ""),
     ("pet: Roll kept as it was", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", "\t\t\t\t\tRoll = p.Roll,\n"),
     ("pet: fractions allowed", P, "if type(spd) ~= \"number\" or spd ~= math.floor(spd) or spd < range[1]", "if type(spd) ~= \"number\" or spd ~= spd or spd < range[1]"),
@@ -136,6 +136,8 @@ def static() -> tuple[int, list[str]]:
 
     config = read(SHARED / "Config.luau")
     section = config[config.find("-- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)"):]
+    if "-- A23-153 monster codex" in section:  # the save v5 section after it has its own English lines (test_codex)
+        section = section[:section.find("-- A23-153 monster codex")]
     check(bool(section) and "Config.SanitizeSaveV4" in section, "Config: the save v4 section and Config.SanitizeSaveV4 exist")
     code = strip_comments(section)
     check(not re.search(r'"[A-Z][a-z]+ [a-z]+[^"]*"', code),

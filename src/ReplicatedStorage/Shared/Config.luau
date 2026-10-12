@@ -128,7 +128,8 @@ Config.Data = {
 	-- additive field like Settings / Rank / SkillsA71 (a v3 server keeps it as it is), so the version stays 3; a bump
 	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
 	-- C1 (save v4): 4 = weapon tier 9 (a 9-bit mask, WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).
-	Version = 4,
+	-- A23-153 (save v5): 5 = the monster codex (Codex; DataService.migrate fills it once from KillLog.ByKind).
+	Version = 5,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -137,7 +138,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 4,
+		Version = 5,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -9258,6 +9259,170 @@ function Config.SanitizeSaveV4(d, now)
 	d.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)
 	d.Spares = Config.SanitizeSpares(d.Spares)
 	d.Market = Config.SanitizeMarket(d.Market)
+end
+
+------------------------------------------------------------------ A23-153 monster codex (게임성 개발 2, 2026-10-13)
+-- Design docs/design/codex_cards_2026-10-12.md (최종 검수); the screen contract docs/design/codex_cards_contract_2026-10-13.md.
+-- Save v5 (DataService): Codex = { [kind] = { Kills, Golden, Stage, First } } for the series-1 kinds of Pages only. Every kill
+-- CodexService counts (KillLog's rule: MonsterService.MonsterKilled, never a personal monster) adds one to Kills (a golden
+-- one to Golden too). A card is born at the first kill (Stage 1), evolves at Steps[2] (Silver) and Steps[3] (Gold Holo);
+-- the first golden kill of a kind gives its Gold Foil card (bosses are never golden: no foil). Each stage and the foil pay
+-- Reward = that many kills' worth of the kind's own MonsterTypes XP / Gold (never golden x, never stats, never sold); a
+-- full page (every kind at Stage >= 1) gives its Title; every card at Stage 3 lights the cosmetic CodexGlow (display only).
+-- First = os.time() of the first kill (0 = before the codex: a card the v5 step made from the kill record).
+Config.Codex = {
+	Enabled = true,
+	Steps = { 1, 100, 1000 }, -- kills for Stage 1 / 2 / 3 (A23-153)
+	BossSteps = { 1, 100, 1000 }, -- the field bosses (Boss = true); A23-153's numbers until 최종 검수 says otherwise
+	Pages = { -- series 1 = the beta hunting zones (A23-152); later series add pages (Halloween, the new zones, pets)
+		{ Id = "SlimeMeadow", Title = "SlimeScholar", Kinds = { "Slime", "FlowerSlime", "BigSlime", "SlimeKing" } },
+		{ Id = "GoblinWoods", Title = "GoblinScholar", Kinds = { "Goblin", "SlingshotGoblin", "GoblinBrute" } },
+		{ Id = "SkeletonRuins", Title = "SkeletonScholar", Kinds = { "Skeleton", "SkeletonArcher", "SkeletonKnight",
+			"CaptainClatter" } },
+	},
+	-- kills' worth per stage (1, 2, 3), per stage for a boss, and for the Gold Foil card
+	Reward = { Stage = { 3, 20, 100 }, BossStage = { 1, 3, 10 }, Golden = 5 },
+	MaxKills = 1000000000,
+	-- the server also sends the line as a toast (Net.Notify "reward"); 게임성 개발 1 turns this off once the card moment
+	-- shows the line itself (CodexUp carries the same line)
+	ServerToast = true,
+	Attr = { Cards = "CodexCards", Glow = "CodexGlow" }, -- player attributes (cards owned; every card Gold Holo)
+	Text = {
+		Name = "Monster Codex",
+		Card = "New card: %s!", -- (the monster's Short name)
+		Silver = "%s card is now Silver!",
+		Holo = "%s card is now Gold Holo!",
+		Golden = "Gold Foil card: %s!",
+		Reward = "+%s gold · +%s XP",
+		RewardGold = "+%s gold", -- no XP added (the top level)
+		Page = "%s page done! New title: %s", -- (the page's zone name, the title's name)
+		Glow = "Every card is Gold Holo! Your sparkle is on.",
+		Stages = { "Card", "Silver", "Gold Holo" }, -- the stage names, 1..3
+		Foil = "Gold Foil",
+		Before = "Before the Codex", -- the first-kill day of a card with First = 0
+	},
+	-- the card back's one line in my side's voice (GDD §0): Halo = a kind watcher, Horns = a playful tease, Neutral = an
+	-- artisan's material note (side None reads Neutral). Draft lines for 최종 검수 to edit.
+	Lore = {
+		Slime = { Halo = "The youngest slime. Be gentle, it is just a baby.",
+			Horns = "Poke it and it wobbles. Poke it again. Ha!",
+			Neutral = "Drops Jelly. Soft, sticky, always handy." },
+		FlowerSlime = { Halo = "It hides in the flowers and naps in the sun.",
+			Horns = "It thinks it is a flower. Let's not tell it.",
+			Neutral = "Its Flower Petals stay fresh for days." },
+		BigSlime = { Halo = "The eldest slime. He tries hard to look brave.",
+			Horns = "A prince with a wobbly crown. So royal. So squishy.",
+			Neutral = "Big slime, big Slime Core. Bring a bag." },
+		SlimeKing = { Halo = "The slime dad. He raises his kids all alone.",
+			Horns = "He jumps, he lands, the ground goes boing!",
+			Neutral = "Royal Jelly is rare and thick. Keep it safe." },
+		Goblin = { Halo = "He steals shards, but he shares his snacks.",
+			Horns = "A thief! I like his style. Not his smell.",
+			Neutral = "Goblin Teeth are small, sharp and useful." },
+		SlingshotGoblin = { Halo = "Step aside and his pebbles miss. Mostly.",
+			Horns = "Pebbles in the face? Rude. Funny, but rude.",
+			Neutral = "Same teeth as his friends. Same bad aim." },
+		GoblinBrute = { Halo = "Big and slow. He only wants his nap.",
+			Horns = "All muscles, no plan. I respect that.",
+			Neutral = "A Brute Horn is hard as stone." },
+		Skeleton = { Halo = "A guard of the old kingdom, still on duty.",
+			Horns = "Rattle rattle! Who needs skin anyway?",
+			Neutral = "Old Bones. Light, hard and useful." },
+		SkeletonArcher = { Halo = "His arrows fly slow. Step aside and stay safe.",
+			Horns = "No eyes, still aims. What a show-off.",
+			Neutral = "More Old Bones. The ruins never run out." },
+		SkeletonKnight = { Halo = "A knight who never left his post.",
+			Horns = "Heavy armor, empty head. Classic.",
+			Neutral = "His Rusty Knight Crest still shines a little." },
+		CaptainClatter = { Halo = "300 years on duty. Please give him a break.",
+			Horns = "He yells at everyone. Even the wind.",
+			Neutral = "His Old Crown Gem is bright. Handle with care." },
+	},
+}
+-- the series-1 kinds in card order, and the page index of each
+Config.Codex.Order, Config.Codex.PageOf = {}, {}
+for i, page in Config.Codex.Pages do
+	for _, kind in page.Kinds do
+		table.insert(Config.Codex.Order, kind)
+		Config.Codex.PageOf[kind] = i
+	end
+end
+Config.Data.Defaults.Codex = {} -- save v5 (the version step: DataService.migrate)
+Config.RateLimits.CodexOpen = 1 -- c->s "CodexOpen" (no arguments): the answer is the "Codex" snapshot
+Config.PassBoost.GoldSources.Codex = true -- earned gold (the 2x Gold pass doubles it)
+Config.TitleDefs.SlimeScholar = { Name = "Slime Scholar", NameEn = "Slime Scholar", Color = Color3.fromRGB(140, 220, 140) }
+Config.TitleDefs.GoblinScholar = { Name = "Goblin Scholar", NameEn = "Goblin Scholar", Color = Color3.fromRGB(170, 200, 90) }
+Config.TitleDefs.SkeletonScholar = { Name = "Skeleton Scholar", NameEn = "Skeleton Scholar",
+	Color = Color3.fromRGB(225, 220, 200) }
+for _, id in { "SlimeScholar", "GoblinScholar", "SkeletonScholar" } do
+	if not table.find(Config.TitleOrder, id) then table.insert(Config.TitleOrder, id) end
+end
+
+-- the kill steps of a kind's card (a boss: BossSteps)
+function Config.CodexSteps(kind)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return (type(def) == "table" and def.Boss == true) and Config.Codex.BossSteps or Config.Codex.Steps
+end
+
+-- the stage `kills` kills reach (0 = no card yet)
+function Config.CodexStage(kind, kills)
+	local n = tonumber(kills) or 0
+	local stage = 0
+	for i, need in Config.CodexSteps(kind) do
+		if n >= need then stage = i end
+	end
+	return stage
+end
+
+-- a kind that can have a Gold Foil card (bosses are never golden)
+function Config.CodexCanGold(kind)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return type(def) == "table" and def.Boss ~= true
+end
+
+-- the repaired Codex of a save: series-1 kinds only, rows with Kills >= 1; whole numbers (Kills / Golden 0..MaxKills,
+-- Golden <= Kills and 0 for a boss, First >= 0); Stage 0..3 and never below the stage its Kills reach (a stage is never
+-- taken back). Repairing twice = once.
+function Config.SanitizeCodex(src)
+	local out = {}
+	if type(src) ~= "table" then return out end
+	local function int(v, hi)
+		if type(v) ~= "number" or v ~= v or v == math.huge or v == -math.huge then return 0 end
+		return math.clamp(math.floor(v), 0, hi)
+	end
+	for _, kind in Config.Codex.Order do
+		local e = src[kind]
+		if type(e) == "table" then
+			local kills = int(e.Kills, Config.Codex.MaxKills)
+			if kills >= 1 then
+				local golden = Config.CodexCanGold(kind) and math.min(int(e.Golden, Config.Codex.MaxKills), kills) or 0
+				out[kind] = { Kills = kills, Golden = golden, Stage = math.max(int(e.Stage, 3), Config.CodexStage(kind, kills)),
+					First = int(e.First, 2 ^ 52) }
+			end
+		end
+	end
+	return out
+end
+
+-- DataService.migrate's v5 step: the cards a record earned before the codex, from its kill record (KillLog.ByKind: no
+-- golden split, no first day -> Golden 0, First 0). An existing row keeps its larger numbers. No reward, no toast.
+function Config.CodexFromKillLog(killLog, codex)
+	local out = Config.SanitizeCodex(codex)
+	local byKind = (type(killLog) == "table" and type(killLog.ByKind) == "table") and killLog.ByKind or {}
+	for _, kind in Config.Codex.Order do
+		local n = byKind[kind]
+		if type(n) == "number" and n == n and n >= 1 and n ~= math.huge then
+			n = math.min(math.floor(n), Config.Codex.MaxKills)
+			local e = out[kind]
+			if not e then
+				out[kind] = { Kills = n, Golden = 0, Stage = Config.CodexStage(kind, n), First = 0 }
+			elseif e.Kills < n then
+				e.Kills = n
+				e.Stage = math.max(e.Stage, Config.CodexStage(kind, n))
+			end
+		end
+	end
+	return out
 end
 
 return Config

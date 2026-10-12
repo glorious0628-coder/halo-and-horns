@@ -30,6 +30,7 @@ local INIT_ORDER = {
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (the error record, the live switchboard)
 	"HealthService", -- 게임성 개발 3: the hourly health report (2026-10-09)
 	"DayCycleService", -- 게임성 개발 2: A23-105 the day and the weather (a crown-war sky covers its look, the clock turns on)
+	"CodexService", -- 게임성 개발 2: A23-153 the monster codex (listens to MonsterKilled; pays through ProgressionService)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -56,6 +57,7 @@ local START_ORDER = {
 	"ServerErrorService", "SwitchService", -- 게임성 개발 3: ops safety (before PlayerService too)
 	"HealthService", -- 게임성 개발 3: the hourly health report (before PlayerService: it listens to PlayerReady)
 	"DayCycleService", -- 게임성 개발 2: A23-105 (after WarService, whose Start bootstraps the light and hands Neutral to it)
+	"CodexService", -- 게임성 개발 2: A23-153 (before PlayerService too: it listens to PlayerReady)
 	"PlayerService",
 }
 
@@ -209,6 +211,8 @@ if game:GetService("RunService"):IsStudio() then
 			return tostring(S.ChoiceCard.Offer(player, tostring(value)))
 		elseif key == "AttendNext" then -- A23-77 Studio test aid: today's attendance claim opens again
 			return S.AttendanceService.DebugNextDay(player)
+		elseif key == "Codex" then -- A23-153 Studio test aid: "reset", "Slime:99" (kills, no reward), "show:Slime:Silver" (the moment again)
+			return S.CodexService.Debug(player, value)
 		elseif key == "Goose" then
 			S.GooseService.DebugStart()
 		elseif type(Config.FieldBosses) == "table" and type(Config.FieldBosses[key]) == "table" and key ~= "Order" then

@@ -111,8 +111,9 @@ local function hasStoredData(old)
 	return false
 end
 
--- stepwise v1 -> v2 -> v3 -> v4 (each step idempotent; a record runs every step it has not reached yet). A23-69's Stats is
--- an additive field (fillDefaults), no step of its own (검수 2026-10-07); v4 = C1 (tier 9, Spares / Market)
+-- stepwise v1 -> v2 -> v3 -> v4 -> v5 (each step idempotent; a record runs every step it has not reached yet). A23-69's Stats
+-- is an additive field (fillDefaults), no step of its own (검수 2026-10-07); v4 = C1 (tier 9, Spares / Market); v5 = A23-153
+-- (the monster codex)
 local function migrate(d, player)
 	-- C1: v1 / v2 / v3 records were written by a game with at most 8 weapon tiers, so the old steps stay pinned to 8 (a
 	-- tier 9 / bit 9 in such a record is corrupted, never the Mythic weapon). The current repair uses Config.MaxWeaponTier.
@@ -159,6 +160,13 @@ local function migrate(d, player)
 			d.WeaponOwnedMask = bit32.band(m, bit32.lshift(1, oldTiers) - 1)
 		end
 		d.Version = 4
+	end
+	-- A23-153 (save v5): the monster codex. A record from before it gets the cards it already earned, once, from its kill
+	-- record (Config.CodexFromKillLog: KillLog.ByKind -> Kills and Stage; Golden 0, First 0; no reward, no toast).
+	-- The bump makes a v4 server refuse v5 records (CR-L3) instead of leaving their codex behind its kills.
+	if (tonumber(d.Version) or 1) < 5 then
+		if Config.CodexFromKillLog then d.Codex = Config.CodexFromKillLog(d.KillLog, d.Codex) end
+		d.Version = 5
 	end
 end
 
@@ -263,6 +271,8 @@ local function fillDefaults(d, playerName)
 	-- the save v4 tables (Craft, Research, Gather, Gear, Buffs, Shop, EggHonorAt; docs/design/save_v4_tables_2026-10-11.md):
 	-- additive, the version stays 3 until 게임성 개발 2's C1 (guarded like the fields above)
 	if Config.SanitizeSaveV4 then Config.SanitizeSaveV4(d, os.time()) end
+	-- A23-153 save v5: the monster codex (series-1 kinds, whole numbers; guarded like the fields above)
+	if Config.SanitizeCodex then d.Codex = Config.SanitizeCodex(d.Codex) end
 end
 
 -- One UpdateAsync write of `data` (deep-copied now). The caller holds the user's write slot.
