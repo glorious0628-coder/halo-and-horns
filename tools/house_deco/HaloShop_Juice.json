@@ -103,7 +103,13 @@
     248
    ]
   ],
-  "valance_out": 0.35
+  "valance_out": 0.35,
+  "bands": [
+   1,
+   0,
+   1
+  ],
+  "band_valance": 0
  },
  "caps": [
   {

@@ -1716,9 +1716,20 @@ if "canopy" in PR:
             ta, tb = j / ns, (j + 1) / ns
             pa = (x0_ + (x1_ - x0_) * ta, y0_ + (y1_ - y0_) * ta, ze)
             pb = (x0_ + (x1_ - x0_) * tb, y0_ + (y1_ - y0_) * tb, ze)
-            bm_ = bms[(k_ + j) % 2]
-            va, vb, vc = bm_.verts.new(pa), bm_.verts.new(pb), bm_.verts.new(apex)
-            bm_.faces.new((va, vb, vc))
+            # 사용자 10/07: no stripes fanning from a centre (ray-burst) - bands parallel to the eave instead: from the
+            # apex down, band k of len(BANDS) gets cloth BANDS[k] (0 = colour A, 1 = colour B); the valance is BANDS_V
+            bands = C_.get("bands", [1, 0, 1])
+            nb_ = len(bands)
+            for kb in range(nb_):
+                f0, f1 = kb / nb_, (kb + 1) / nb_              # 0 = apex, 1 = eave
+                lerp = lambda q, f: (apex[0] + (q[0] - apex[0]) * f, apex[1] + (q[1] - apex[1]) * f, apex[2] + (q[2] - apex[2]) * f)
+                bmb = bms[bands[kb]]
+                if kb == 0:
+                    bmb.faces.new((bmb.verts.new(lerp(pa, f1)), bmb.verts.new(lerp(pb, f1)), bmb.verts.new(apex)))
+                else:
+                    bmb.faces.new((bmb.verts.new(lerp(pa, f1)), bmb.verts.new(lerp(pb, f1)), bmb.verts.new(lerp(pb, f0)),
+                                   bmb.verts.new(lerp(pa, f0))))
+            bm_ = bms[bands[-1]]                              # the eave strip continues the last band
             vo_ = C_.get("valance_out", 0.02)
             if vo_ > 0.05:                                 # a flat eave strip from the post line out to the valance top
                 ta_ = pa[0] + nx_ * vo_ - (x1_ - x0_) / ln_ * (vo_ if j == 0 else 0), pa[1] + ny_ * vo_ - (y1_ - y0_) / ln_ * (vo_ if j == 0 else 0), ze
@@ -1739,9 +1750,10 @@ if "canopy" in PR:
             for q in range(seg + 1):
                 a_ = math.pi * q / seg
                 pts.append((mx_ + ux_ * r_ * math.cos(a_), my_ + uy_ * r_ * math.cos(a_), ze - vh - r_ * 0.55 * math.sin(a_)))
-            vs_ = [bm_.verts.new(q) for q in pts]
+            bmv = bms[C_.get("band_valance", 0)]
+            vs_ = [bmv.verts.new(q) for q in pts]
             try:
-                bm_.faces.new(vs_)
+                bmv.faces.new(vs_)
             except ValueError:
                 pass
         k_ += ns
@@ -1765,7 +1777,7 @@ if "canopy" in PR:
         bm2_.free()
         objs_c.append(o_)
     out_objs += objs_c
-    REPORT["pieces"]["Canopy"] = {"fix": "exact square canopy %.2f x %.2f, eave %.2f, peak +%.2f, %d stripes a side, scalloped valance %.2f "
+    REPORT["pieces"]["Canopy"] = {"fix": "exact square canopy %.2f x %.2f, eave %.2f, peak +%.2f, %d panels a side in bands parallel to the eave (no ray-burst), scalloped valance %.2f "
                                   "(Tripo measured), colours %s" % (W_, D_, ze, hp, ns, vh, cols_)}
     print("[deco] canopy", REPORT["pieces"]["Canopy"], flush=True)
 
