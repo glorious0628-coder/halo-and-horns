@@ -38,6 +38,11 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
            4.85 blocks with a plaque (cut down under the sill of a ground-floor front window); the lanterns hang on the wall
   lanterns [u, ...] wall lanterns along the front (0..1 like door.u) instead of the pedestal ones (shops); a lantern that
            would sit in a corner pilaster / tower is moved out in front of it
+  porch    {"w": outer width (door + 3.4), "out": depth from the front wall (2.4), "pier": 0.9, "gap": entablature bottom above
+           the door top (0.9), "ent_h": 0.9, "dome_h": half dome height (w / 2 * 0.95)}: two marble piers (gold capital + foot)
+           either side of the door, an entablature with a gold band, a half-dome ornament slot against the wall above it
+           (lowered to stay under a front balcony); piers that hit pedestals / pots / lamps / steps move outwards (max 1.5)
+           with a warning; the lanterns hang on the wall outside the piers instead of on the pedestals
   awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's), "top"} striped
            Fabric + HH_Fabric cloth + scalloped valance; without "top" it is kept under a front storey ledge / balcony / the cornice
   pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122); a pot that hits a wall,
@@ -635,6 +640,7 @@ def lantern_at(k, x):
 # ---------------------------------------------------------------- pedestals + lanterns
 LANT_W, LANT_H = 0.9, 1.15
 LANTS = S.get("lanterns")                               # [u, ...] wall lanterns along the front (0..1 like door.u); replaces the pedestal ones
+PORCH = S.get("porch")                                  # {"w", "out", "pier", "gap", "ent_h", "dome_h"}: portico + half dome over the door (built after the pots)
 PED = S.get("pedestals", True)                          # true = low step posts with a gold ball (the 2D), "tall" = house 07's
 TALL = PED == "tall"
 PW = 1.8 if TALL else 1.5
@@ -661,9 +667,9 @@ if PED:
             add("Pedestal%d_Plaque" % k, (0.7, 1.2, 0.1), (x, YF + pd - 0.5, 2.0), mat="gold")
         if pz <= 3.0:
             ball("Pedestal%d_Ball" % k, 0.8, (x, YF + pd / 2 - 0.55, pz + 0.35 + 0.38))
-        if LANTS is None:
+        if LANTS is None and not PORCH:                 # a porch hangs its own lanterns outside the piers
             lantern_at(k, x)
-for k, u in enumerate(LANTS or []):
+for k, u in enumerate([] if PORCH else LANTS or []):
     lantern_at(k, wf.at(u * wf.L, 0)[0])
 
 # ---------------------------------------------------------------- awning
@@ -744,6 +750,71 @@ for i, (nm, u, z) in enumerate(S.get("medals", [])):
     nm = wall_name(nm)
     if nm in walls:
         walls[nm].quatrefoil("Medal%d" % i, u * walls[nm].L, z, 1.0)
+
+# ---------------------------------------------------------------- front porch (piers + entablature + half dome, house 08)
+if PORCH:
+    PO_W, PO_OUT, PO_PIER = PORCH.get("w", DOOR_W + 3.4), PORCH.get("out", 2.4), PORCH.get("pier", 0.9)
+    PO_GAP, PO_ENT = PORCH.get("gap", 0.9), PORCH.get("ent_h", 0.9)
+    PO_BOT = Z0 + DOOR_H + PO_GAP                         # entablature bottom = pier top
+    PO_TOP = PO_BOT + PO_ENT
+    PO_Y = YF + PO_OUT - PO_PIER / 2
+
+    def fp_box(fp):
+        """axis-aligned (x0, x1, y0, y1) of a footprint (circle or rotated rectangle)"""
+        if fp[0] == "c":
+            (cx, cy), r = fp[1], fp[2]
+            return cx - r, cx + r, cy - r, cy + r
+        _, (cx, cy), u, hu, hv = fp
+        ex, ey = abs(u[0]) * hu + abs(u[1]) * hv, abs(u[1]) * hu + abs(u[0]) * hv
+        return cx - ex, cx + ex, cy - ey, cy + ey
+
+    # piers must not overlap pedestals, pots, lamps, steps: both piers move outwards (x) by the largest overlap, max 1.5
+    po_obs = [(nm, fp_box(fp)) for nm, fp in obstacles(("Pedestal", "Pot", "Lamp", "Step"), Z0, PO_BOT)]
+    PO_DOME_H = PORCH.get("dome_h", PO_W / 2 * 0.95)      # default from the spec width, before any pier move
+    po_shift = 0.0
+    for _ in range(20):
+        hit = []
+        for sx in (-1, 1):
+            pc = CXD + sx * (PO_W / 2 + po_shift - PO_PIER / 2)
+            for nm, b in po_obs:
+                ox = min(pc + PO_PIER / 2, b[1]) - max(pc - PO_PIER / 2, b[0])
+                oy = min(PO_Y + PO_PIER / 2, b[3]) - max(PO_Y - PO_PIER / 2, b[2])
+                if ox > 0.01 and oy > 0.01:
+                    hit.append((ox, nm))
+        if not hit or po_shift >= 1.5:
+            break
+        ov, nm = max(hit)
+        print("[house] WARNING: porch pier overlaps %s by %.2f, moved outwards" % (nm, ov))
+        po_shift = min(1.5, po_shift + ov)
+    if hit:
+        print("[house] WARNING: porch pier still overlaps %s after moving %.2f" % (max(hit)[1], po_shift))
+    PO_W += 2 * po_shift                                  # entablature, dome and lanterns follow the moved piers
+    for k, sx in enumerate((-1, 1)):
+        px = CXD + sx * (PO_W / 2 - PO_PIER / 2)
+        add("Porch_PierBase%d" % k, (PO_PIER + 0.2, Z0, PO_PIER + 0.2), (px, PO_Y, Z0 / 2))
+        add("Porch_Pier%d" % k, (PO_PIER, PO_BOT - Z0, PO_PIER), (px, PO_Y, (Z0 + PO_BOT) / 2))
+        add("Porch_PierCap%d" % k, (PO_PIER + 0.2, 0.3, PO_PIER + 0.2), (px, PO_Y, PO_BOT - 0.15), mat="gold")
+        add("Porch_PierFoot%d" % k, (PO_PIER + 0.2, 0.25, PO_PIER + 0.2), (px, PO_Y, Z0 + 0.125), mat="gold")
+    add("Porch_Entablature", (PO_W, PO_ENT, PO_OUT), (CXD, YF + PO_OUT / 2, PO_BOT + PO_ENT / 2))
+    add("Porch_BandFront", (PO_W + 0.16, 0.18, 0.08), (CXD, YF + PO_OUT + 0.04, PO_TOP - 0.09), mat="gold")
+    for k, sx in enumerate((-1, 1)):
+        add("Porch_BandSide%d" % k, (0.08, 0.18, PO_OUT), (CXD + sx * (PO_W / 2 + 0.04), YF + PO_OUT / 2, PO_TOP - 0.09), mat="gold")
+    for B in S.get("balconies", []):                      # the half dome stays under the first front balcony above the porch
+        if 1 <= B["storey"] < len(STOREYS) and "front" in [wall_name(n) for n in B["walls"]] and Z_LINES[B["storey"]] > PO_BOT:
+            lim = Z_LINES[B["storey"]] - 0.2
+            if PO_TOP > lim:
+                print("[house] WARNING: porch entablature top %.2f is above the balcony %d limit %.2f" % (PO_TOP, B["storey"], lim))
+            if PO_TOP + PO_DOME_H > lim:
+                print("[house] porch dome_h %.2f -> %.2f (under the balcony %d)" % (PO_DOME_H, max(0.0, lim - PO_TOP), B["storey"]))
+                PO_DOME_H = max(0.0, lim - PO_TOP)
+            break
+    if PO_DOME_H > 0.3:
+        orn_items.append({"type": "dome", "half": True, "name": NAME + "_PorchDome", "pos": [CXD, YF, PO_TOP], "R": PO_W / 2 - 0.15,
+                          "h": PO_DOME_H, "ribs": 6})
+    else:
+        print("[house] WARNING: no room for the porch half dome, skipped")
+    for k, sx in enumerate((-1, 1)):                      # lanterns hang on the wall outside the piers
+        lantern_at(k, CXD + sx * (PO_W / 2 + 0.6))
 
 # ---------------------------------------------------------------- balconies + window boxes
 def edge_box(nm, w, p0, p1, z0, z1, dep, mat="marble", grow=0.0):

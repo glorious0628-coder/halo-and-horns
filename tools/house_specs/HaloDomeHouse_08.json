@@ -10,6 +10,7 @@
  "towers": {"w": 2.8, "h_extra": 1.6, "finial": true},
  "pedestals": true,
  "steps": "half",
+ "porch": {"w": 8.6, "out": 2.4, "pier": 1.0, "gap": 0.8, "ent_h": 0.9, "dome_h": 3.6},
  "pots": [[-7.4, 10.25, 3.6, 2.6], [7.4, 10.25, 3.6, 2.6]],
  "balconies": [{"storey": 1, "walls": ["front", "left", "right"], "depth": 1.4}],
  "window_boxes": [["back", 1], ["left", 0], ["right", 0]],
