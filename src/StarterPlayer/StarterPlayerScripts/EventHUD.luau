@@ -159,8 +159,10 @@ local arrowGeo = { Inset = TOP_FALLBACK - TOP_PAD, TopLeft = nil }
 -- (narrow screens), so layout() moves the touch personal line one row lower
 local KING = { Below = false }
 -- A23-141 Goose Square: the Join / Leave button on the goose chip (EggFx.SquareButton / SquarePress; functions below
--- KING). Out = the chip shows the goose time + Join this tick (outside the square while the event runs)
-local SQ = { Out = false }
+-- KING). Out = the chip shows the goose time + Join this tick (outside the square while the event runs). 최종 검수 10/13
+-- (main photo goose_square4/03, PC 1920: "Leav"): the button is as wide as its word (SQ.need) - MinW..MaxW logical px,
+-- H high, Pad = the label's 8 inset + the capsule's round ends; Fit = the last { Key, W }
+local SQ = { Out = false, MinW = 64, MaxW = 160, H = 26, Pad = 20, Size = 15, Fit = nil }
 -- HUD v2 (A23-26): while C.HUD.Layout.Rects.notify exists, the strip contents, the personal line and the siren stack in
 -- that notify column (functions in the "HUD v2 notify column" section). Active = the v2 placement is applied; Key =
 -- geometry cache key; Col = column numbers; Want = what the per-tick updates asked to show; Saved = build-time props
@@ -990,9 +992,9 @@ function SQ.build()
 		Name = "GooseSquareButton",
 		AnchorPoint = Vector2.new(0, 0.5),
 		Position = UDim2.new(1, 6, 0.5, 0),
-		Size = UDim2.fromOffset(64, 26),
+		Size = UDim2.fromOffset(SQ.MinW, SQ.H),
 		Text = "",
-		TextSize = 15,
+		TextSize = SQ.Size,
 		TextStyle = "ink",
 		Visible = false,
 		ZIndex = 8,
@@ -1035,6 +1037,28 @@ function SQ.build()
 	btn.Parent = ui.GooseChip
 end
 
+-- the button's width (logical px) for a word: the word measured at the size it is drawn - the label's screen-px floor
+-- (its UITextSizeConstraint minimum, real px: under UIScale s it draws MinTextSize / s logical) or its drawn line, never
+-- under SQ.Size - in the label's own font (UIKit.MeasureText), else ~0.62 em a letter; + SQ.Pad, clamped MinW..MaxW
+function SQ.need(word, label, kit, s)
+	s = (type(s) == "number" and s > 0) and s or 1
+	local size = SQ.Size
+	if label then
+		local tc = label:FindFirstChildOfClass("UITextSizeConstraint")
+		if tc then size = math.max(size, tc.MinTextSize / s) end
+		local drawn = label.TextBounds.Y / s
+		if drawn > size and drawn < size * 3 then size = drawn end
+	end
+	local text = tostring(word or "")
+	local w = nil
+	if label and type(kit) == "table" and type(kit.MeasureText) == "function" then
+		local ok, _, mw = pcall(kit.MeasureText, text, math.ceil(size), label.FontFace, 100000)
+		if ok and type(mw) == "number" and mw > 0 then w = mw end
+	end
+	w = w or (utf8.len(text) or #text) * size * 0.62
+	return math.clamp(math.ceil(w + SQ.Pad), SQ.MinW, SQ.MaxW)
+end
+
 -- every tick: the button from EggFx.SquareButton (nil = hidden). Inside = Leave on the bar, else Join on the chip; dimmed =
 -- Disabled (no press, no click sound) + faded art / words, never any text
 function SQ.update()
@@ -1053,7 +1077,13 @@ function SQ.update()
 	-- Leave sits on the egg bar while it shows; after the round (no bar) it sits on the chip, which updateGoose keeps shown
 	local home = (want.Word == "Leave" and ui.Tug.Visible) and ui.Tug or ui.GooseChip
 	if btn.Parent ~= home then btn.Parent = home end
-	setText(SQ.Label, SQ.word(want.Word))
+	local word = SQ.word(want.Word)
+	setText(SQ.Label, word)
+	-- as wide as the word (re-measured when the word, the scale or the drawn line changes)
+	local s = currentScale()
+	local key = word .. "|" .. s .. "|" .. SQ.Label.TextBounds.Y
+	if not SQ.Fit or SQ.Fit.Key ~= key then SQ.Fit = { Key = key, W = SQ.need(word, SQ.Label, C and C.UIKit, s) } end
+	if btn.Size.X.Offset ~= SQ.Fit.W then btn.Size = UDim2.fromOffset(SQ.Fit.W, SQ.H) end
 	local dim = want.Dim == true
 	if btn:GetAttribute("Disabled") ~= dim then btn:SetAttribute("Disabled", dim) end
 	if btn:IsA("ImageButton") then
