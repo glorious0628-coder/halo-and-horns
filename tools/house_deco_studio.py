@@ -84,7 +84,7 @@ for _, h in H do
       p.Parent = m; n += 1; table.insert(fresh, p)
       local sa = p:FindFirstChildWhichIsA("SurfaceAppearance")
       if string.find(p.Name, "_Leaf") then p.Material = Enum.Material.Wood
-      elseif string.find(p.Name, "_Canopy") then        -- cloth: the colour the decoration carries, Fabric look
+      elseif string.match(p.Name, "_Canopy[AB]$") then  -- cloth (not the CanopyFinial): the colour the decoration carries, Fabric look
         p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"
         if string.sub(p.Name, -1) == "A" then p.Color = Color3.fromRGB(%s) else p.Color = Color3.fromRGB(%s) end
       elseif string.find(p.Name, "RoofGlass") then

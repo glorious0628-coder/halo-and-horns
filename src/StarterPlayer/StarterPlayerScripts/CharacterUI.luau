@@ -59,7 +59,7 @@ local TXT = {
 	TitleHead = "Title", TitleAuto = "Auto",
 	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Now", Rebirth = "Rebirth", Rank = "Rank" },
 	Stat = {
-		Level = "Level", MaxHP = "Max HP", MP = "MP", Speed = "Walk speed", Hit = "Hit damage", Crit = "Crit",
+		Level = "Level", MaxHP = "Max HP", MP = "MP", Speed = "Walk speed", Hit = "Base hit", Crit = "Crit",
 		Class = "Class", Side = "Side",
 		Size = "Size", Bully = "Bully", Wanted = "Wanted", Revenge = "Revenge", Blessing = "Blessing",
 		Rebirths = "Rebirths", RebirthBonus = "Rebirth bonus", Fall = "Fall marks", Redeem = "Redeem marks",
@@ -71,7 +71,8 @@ local TXT = {
 	BullyPenalty = "No Auto Battle · half XP & drops",
 	WantedValue = "%s · +%d%% damage",
 	RevengeValue = "+%d%% damage · %s",
-	BlessingValue = "%s · +%d%% gold",
+	BlessingValue = "+%d%% gold · +%d%% XP",
+	Change = "Change",
 	RebirthBonusValue = "+%d%% gold & XP",
 	MarksValue = "%d / %d",
 	NextValue = "%s · %d to go",
@@ -87,6 +88,7 @@ local L = {
 	TabH = 40, Gap = 8,
 	LeftW = 150, Split = 14, -- the left column (headshot + power) and the space right of it
 	Portrait = 100,
+	ChangeW = 96, ChangeH = 30, -- the nickname's [Change] (게임성 검수 10/12: moved here from Settings)
 	Cell = 64, ColGap = 14, CapH = 18, RowGap = 10, -- one gear cell, the word under it
 	Cols = { Weapon = 0, Armor = 1, Ring = 2, Pet = 0, PetArmor = 0, PetAcc = 1 },
 	Rows = { Weapon = 0, Armor = 0, Ring = 0, Pet = 1, PetArmor = 2, PetAcc = 2 },
@@ -106,7 +108,7 @@ local L = {
 }
 -- the attributes that redraw the open window
 CharacterUI.Watch = { Level = true, Class = true, Faction = true, WeaponTier = true, WeaponOwnedMask = true, WeaponEnhance = true,
-	CombatPower = true, EquippedPet = true, PetLv = true, TitleSel = true, TitlesOwned = true, SizeMult = true, BullyStacks = true,
+	CombatPower = true, Nickname = true, EquippedPet = true, PetLv = true, TitleSel = true, TitlesOwned = true, SizeMult = true, BullyStacks = true,
 	WantedStars = true, RevengeUntil = true, Rebirths = true, RebirthBonus = true, FallMarks = true, RedeemMarks = true,
 	Honor = true, Infamy = true, MaxMana = true, InCombatUntil = true, StatAtk = true, StatHp = true, DataLoaded = true }
 
@@ -194,6 +196,7 @@ function CharacterUI.Weapons(ctx)
 			table.insert(rows, { Tier = tier, Name = Config.WeaponName(tier, ctx.Class, ctx.Faction), Plus = plus,
 				Grade = weaponGradeId(tier), Icon = Config.WeaponArtKey(tier, ctx.Class, ctx.Faction), Equipped = tier == equipped,
 				Usable = Config.WeaponUsable(tier, level), MinLevel = math.floor(num(Config.Weapons[tier].MinLevel, 1)),
+				NeedSide = Config.Weapons[tier].RequiresFaction == true,
 				Attack = math.floor(Config.WeaponDamage(tier, level, plus)),
 				PowerNow = type(ctx.PowerNow) == "number" and ctx.PowerNow or nil, PowerWith = type(with) == "number" and with or nil })
 		end
@@ -213,6 +216,9 @@ function CharacterUI.EquipState(row, ctx)
 	if row.Equipped then return tx(TXT, "Equipped"), false end
 	if not row.Usable then return tx(TXT, "FromLv", row.MinLevel), false end
 	if ctx.Pending and ctx.Pending.Tier == row.Tier then return tx(TXT, "Checking"), false end
+	-- 게임성 검수 10/12: the server's other refusals (LootService onEquipWeapon) dim the button instead of a silent drop:
+	-- dead, no class yet, a side weapon (RequiresFaction) without a side
+	if ctx.Dead or ctx.NoClass or (row.NeedSide and ctx.Faction == "None") then return tx(TXT, "Equip"), false end
 	if ctx.Combat then return tx(TXT, "InFight"), false end
 	return tx(TXT, "Equip"), ctx.Pending == nil
 end
@@ -319,9 +325,10 @@ function CharacterUI.StatRows(ctx)
 	end
 	local left = num(ctx.RevengeUntil, 0) - num(ctx.Now, 0)
 	if left > 0 then table.insert(effects, { "Revenge", tx(TXT, "RevengeValue", pct(Config.Revenge.Bonus), clock(left)) }) end
+	-- 게임성 검수 10/12: the crown war's blessing is only the winning side's (WarService.HasBlessing) - gold and XP
 	local blessing = ctx.Blessing
-	if (blessing == "Halo" or blessing == "Horns") and Config.Factions[blessing] then
-		table.insert(effects, { "Blessing", tx(TXT, "BlessingValue", Config.Factions[blessing].Name, pct(Config.War.BlessingGold)) })
+	if (blessing == "Halo" or blessing == "Horns") and blessing == faction then
+		table.insert(effects, { "Blessing", tx(TXT, "BlessingValue", pct(Config.War.BlessingGold), pct(Config.War.BlessingXP)) })
 	end
 	if #effects > 0 then
 		head("Effects")
@@ -402,7 +409,7 @@ local function context()
 	local plus = num(attr("WeaponEnhance"), 0)
 	local okP, now = pcall(Config.CombatPowerOf, LocalPlayer)
 	local power = tonumber(attr("CombatPower", nil))
-	if power == nil then power = Config.CombatPower(level, tier, plus) end -- before the server's first set (the HUD's rule)
+	if power == nil then power = okP and tonumber(now) or 0 end -- before the server's first set (Config.CombatPowerOf, test_stats)
 	return { Level = level, Class = (type(class) == "string" and Config.Classes[class]) and class or "Warrior",
 		Faction = type(attr("Faction")) == "string" and attr("Faction") or "None",
 		Mask = num(attr("WeaponOwnedMask"), 0), Equipped = tier, Tier = tier, EquippedPlus = plus, Enhance = inventoryEnhance(),
@@ -697,6 +704,20 @@ local function drawLeft(frame, ctx)
 	head.Parent = holder
 	local ring = kit.ArtImage("PortraitRing", { Name = "Ring", Size = UDim2.fromScale(1, 1), ZIndex = 2 })
 	if ring then ring.Parent = holder end
+	-- 게임성 검수 10/12: the nickname lives here now (SettingsUI hides its own row once this window exists): the name and
+	-- [Change] -> the Panels "Nickname" window
+	local nick = attr("Nickname", "")
+	nick = (type(nick) == "string" and nick ~= "") and nick or LocalPlayer.DisplayName
+	label(frame, nick, L.Size.Name, colorOf("Text"), { Name = "Nickname", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),
+		TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, LayoutOrder = nextOrder() })
+	local pk = VIEW.Kit
+	if type(pk) == "table" and type(pk.Button) == "function" and type(pk.Open) == "function" then
+		local change = pk.Button(frame, tx(TXT, "Change"), pk.Palette.Button, UDim2.fromOffset(L.ChangeW, L.ChangeH), function()
+			pcall(pk.Open, "Nickname")
+		end)
+		change.Name = "ChangeName"
+		change.LayoutOrder = nextOrder()
+	end
 	local who = label(frame, tx(TXT, "LevelClass", ctx.Level, Config.ClassName(ctx.Class, ctx.Faction)), L.Size.Body, colorOf("Text"),
 		{ Name = "Who", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, TextXAlignment = Enum.TextXAlignment.Center,
 			LayoutOrder = nextOrder() })
@@ -750,7 +771,9 @@ local function drawWeapons(frame, rows, ctx)
 			AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = nextOrder() })
 		return
 	end
-	local state = { Combat = inCombat(), Pending = S.Pending }
+	local okA, alive = pcall(Util.IsAlive, LocalPlayer)
+	local state = { Combat = inCombat(), Pending = S.Pending, Dead = okA and alive == false,
+		NoClass = attr("ClassChosen") ~= true, Faction = ctx.Faction }
 	for _, r in rows do
 		local f = Instance.new("Frame")
 		f.Name = "Weapon_" .. tostring(r.Tier)
@@ -848,7 +871,7 @@ local function refresh(force)
 	checkPending()
 	local ctx = context()
 	local sigs = VIEW.Sigs
-	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction }, "|")
+	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction, tostring(attr("Nickname", "")) }, "|")
 	if sigs.Left ~= sig then
 		sigs.Left = sig
 		drawLeft(VIEW.Left, ctx)
