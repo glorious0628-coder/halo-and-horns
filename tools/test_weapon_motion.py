@@ -762,6 +762,11 @@ def main():
     if "local function staffLow(" in visuals:
         helper_names.insert(helper_names.index("buildStaff"), "staffLow")
         harness += "\n" + next(line for line in visuals.splitlines() if line.startswith("local STAFF = {"))
+    # A23-142: the staff's length from the avatar's height (staffLen) and its orb (staffOrb)
+    if "local function staffLen(" in visuals:
+        for helper in ("staffLen", "staffOrb"):
+            helper_names.insert(helper_names.index("buildStaff"), helper)
+        harness += "\n" + next(line for line in visuals.splitlines() if line.startswith("local STAFF = {"))
     # A23-133: the swords, staffs and bows take their length from LEN / tierLen
     if "local function tierLen(" in visuals:
         helper_names.insert(helper_names.index("buildSword"), "tierLen")

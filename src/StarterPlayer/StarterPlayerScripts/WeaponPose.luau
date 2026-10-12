@@ -240,12 +240,16 @@ end
 -- A23-128 (the warriors' one-hand swords at the side): an optional Pole (torso space) bends the elbow low and close
 -- instead of T.PoleRight's down and out
 -- (pure) the next lift of a staff's hand goal: footY = its Shaft's foot now, groundY = the ground under it (nil = none
--- within StaffReach); gap = the foot's wanted height over the ground (StaffGap x the body's size)
-function WeaponPose.StaffLift(lift, footY, groundY, gap)
+-- within StaffReach); gap = the foot's wanted height over the ground (StaffGap x the body's size). A23-142: carry = a staff
+-- held off the ground (the WeaponModel's StaffCarry) - only ever lifted when its foot would go into the ground (a step, a
+-- slope), never lowered onto it
+function WeaponPose.StaffLift(lift, footY, groundY, gap, carry)
 	lift = tonumber(lift) or 0
 	if type(footY) ~= "number" or type(groundY) ~= "number" then return lift * (1 - T.StaffFix) end
 	local off = footY - groundY - (tonumber(gap) or T.StaffGap) -- > 0: floating, < 0: in the ground
-	return math.clamp(lift - off * T.StaffFix, -T.StaffMax, T.StaffMax)
+	local nextLift = lift - off * T.StaffFix
+	if carry == true then nextLift = math.max(nextLift, 0) end
+	return math.clamp(nextLift, -T.StaffMax, T.StaffMax)
 end
 
 -- a staff's lift this frame from its Shaft (the server's WeaponModel: Staff / CrookStaff / FlaskStaff), else 0
@@ -262,7 +266,7 @@ function WeaponPose.StaffStep(st, model)
 		if hit and (ground == nil or hit.Position.Y > ground) then ground = hit.Position.Y end
 	end
 	st.StaffFootY, st.StaffGroundY = foot.Y, ground -- (GripProbe)
-	st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, ground, T.StaffGap)
+	st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, ground, T.StaffGap, model:GetAttribute("StaffCarry") == true)
 	return st.StaffLift
 end
 
