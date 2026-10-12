@@ -12484,5 +12484,29 @@
    "credits": 0,
    "review_1": "디자인 검수 10/12: pass + 3 fixes -> shop glass only Transparency 0.6 / Reflectance 0.05 (generator 'shopglass'), Bakery sign V wedge = plate at the panel's front in the median gold, Potion sign X spikes cut (drop_boxes) + small gap closing; plain materials now sRGB -> linear (previews were washed out)"
   }
+ ],
+ "NPC_HaloPotionMerchant_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6f0f8392-fba9-4495-aec1-1abfbaf22f97",
+   "balance_after": 14170,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "at": "2026-10-12 10:30",
+   "approval": "최종 검수 10/12: PotionMerchant 1명 55점 (디자인 검수 통과 4면); other 5 NPCs already have 10/10 4-view Tripo, decision with 디자인 검수",
+   "inputs": {
+    "front": "art/out/s2/npc/NPC_HaloPotionMerchant_front_HQ_src.png",
+    "left_slot(camera at the character's own left; the 2D sides are named from the viewer)": "art/out/s2/npc/NPC_HaloPotionMerchant_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc/NPC_HaloPotionMerchant_left_HQ_src.png",
+    "back": "art/out/s2/npc/NPC_HaloPotionMerchant_back_HQ_src.png"
+   },
+   "result": "13,506 tris; modest clothing kept (long coat, long sleeves, high collar, boots; only face + hands)",
+   "use": "Halo town potion shop NPC; Blender touch-up next (A23-125)",
+   "file": "art/models/tripo/web/NPC_HaloPotionMerchant_MV4_HD_src.glb",
+   "sheet": "art/review/img4/npc_potionmerchant_tripo_raw_1012.jpg"
+  }
  ]
 }
