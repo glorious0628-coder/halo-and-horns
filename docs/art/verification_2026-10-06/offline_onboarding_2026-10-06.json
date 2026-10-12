@@ -4,7 +4,7 @@
   "contractFailures": [],
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
-    "src/ServerScriptService/DataService.luau": "adb332e34e26eed93282b38b54f902446189e3a6cefdea9938a52c5b2bef1648",
+    "src/ServerScriptService/DataService.luau": "72aff9b30b4f6f88c01d97968b861184bff021275e22b10ed74030109f131ec2",
     "src/ServerScriptService/QuestService.luau": "cc4c3e0f17a5b5b040f4d993fa14d2eb900957b069b8240b9130ddc0611ed420",
     "src/ReplicatedStorage/Shared/Net.luau": "db368ed59a57a4f19b54d3fe69ad52a0574fe08b7e0bf5b1b3e99d108f340863",
     "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d"

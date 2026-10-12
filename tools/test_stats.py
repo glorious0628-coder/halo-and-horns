@@ -126,8 +126,7 @@ MUTATIONS = [
      "{ A = points, H = 0 }"),
     ("MaxCombatPower: one cache for both", C, "local key = stats and \"MaxCacheStats\" or \"MaxCache\"", "local key = \"MaxCache\""),
     # --- the save: Stats additive (검수 2026-10-07); C1's v4 step changes nothing else
-    ("DataService: the v4 step resets Stats", D, "\tif (tonumber(d.Version) or 1) < 4 then\n\t\td.Version = 4\n",
-     "\tif (tonumber(d.Version) or 1) < 4 then\n\t\td.Stats = nil\n\t\td.Version = 4\n"),
+    ("DataService: the v4 step resets Stats", D, "\t\td.Version = 4\n", "\t\td.Stats = nil\n\t\td.Version = 4\n"),
     ("DataService: Stats never repaired", D, "\tif Config.SanitizeStats then d.Stats = Config.SanitizeStats(d.Stats) end\n", ""),
     # --- one formula everywhere
     ("Justice: the attribute without the stats", J, "\treturn Config.CombatPowerOf(player)\nend",
@@ -181,7 +180,7 @@ def static() -> tuple[int, list[str]]:
           "no Robux path touches the stat points (A23-69: no stat is sold)")
     data = read(SSS / "DataService.luau")
     mig = function_block(data, "local function migrate(")
-    check(mig.count("< 4 then") == 1 and "< 4 then\n\t\td.Version = 4\n\tend\n" in mig and "Stats" not in strip_comments(mig)
+    check(mig.count("< 4 then") == 1 and "\t\td.Version = 4\n\tend\n" in mig and "Stats" not in strip_comments(mig)
           and "Config.SanitizeStats" in function_block(data, "local function fillDefaults("),
           "DataService: migrate's only v4 step is C1's (sets Version only; Stats is additive), SanitizeStats in fillDefaults")
     config = read(SHARED / "Config.luau")

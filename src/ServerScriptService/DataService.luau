@@ -112,8 +112,11 @@ local function hasStoredData(old)
 end
 
 -- stepwise v1 -> v2 -> v3 -> v4 (each step idempotent; a record runs every step it has not reached yet). A23-69's Stats is
--- an additive field (fillDefaults), no step of its own (검수 2026-10-07: the version stays 3 in stage 1)
+-- an additive field (fillDefaults), no step of its own (검수 2026-10-07); v4 = C1 (tier 9, Spares / Market)
 local function migrate(d, player)
+	-- C1: v1 / v2 / v3 records were written by a game with at most 8 weapon tiers, so the old steps stay pinned to 8 (a
+	-- tier 9 / bit 9 in such a record is corrupted, never the Mythic weapon). The current repair uses Config.MaxWeaponTier.
+	local oldTiers = 8
 	if (tonumber(d.Version) or 1) < 2 then
 		d.WeaponTier = d.WeaponTier or d.SwordTier or 1 -- v1 field SwordTier is renamed
 		d.SwordTier = nil
@@ -132,9 +135,6 @@ local function migrate(d, player)
 		-- A23-34: every v1 / v2 record is from before the bare-handed start, when tier 1 was always owned (A23-4). Keep
 		-- that here, because fillDefaults no longer forces bit 1: a missing / broken tier is tier 1 and bit 1 stays owned.
 		-- v3 records written by older servers already carry bit 1 (their fillDefaults wrote it on every load).
-		-- C1: a v1 / v2 record was written by a game with at most 8 tiers, so this old step stays pinned to 8 (a tier 9 /
-		-- bit 9 in such a record is corrupted, not the Mythic weapon)
-		local oldTiers = 8
 		local tier = d.WeaponTier
 		if type(tier) ~= "number" or tier ~= math.floor(tier) or tier < 1 or tier > oldTiers then
 			d.WeaponTier = 1
@@ -145,11 +145,14 @@ local function migrate(d, player)
 		d.WeaponOwnedMask = bit32.bor(mask, 1)
 		d.Version = 3
 	end
-	-- C1 (save v4): 4 = weapon tier 9 (Mythic, mask bit 9, WeaponEnhance[9]) + Spares / Market. No field changes: a 9-bit
-	-- mask is simply valid now (fillDefaults repairs against Config.MaxWeaponTier = 9; a 10th bit = corrupted) and the
-	-- new tables come from the defaults. The bump makes a v3 server refuse these records (CR-L3) instead of resetting a
-	-- mask that owns tier 9.
+	-- C1 (save v4): 4 = weapon tier 9 (Mythic, mask bit 9, WeaponEnhance[9]) + Spares / Market. A sane record changes
+	-- nothing: a 9-bit mask is simply valid from now on (fillDefaults repairs against Config.MaxWeaponTier = 9; a 10th bit
+	-- = corrupted) and the new tables come from the defaults. Only an older record's tier above 8 / bit above 8 (which no
+	-- 8-tier server ever wrote) is marked corrupted for fillDefaults' usual repair, so it never becomes a free Mythic.
+	-- The bump makes a v3 server refuse v4 records (CR-L3) instead of resetting a mask that owns tier 9.
 	if (tonumber(d.Version) or 1) < 4 then
+		if type(d.WeaponTier) == "number" and d.WeaponTier > oldTiers then d.WeaponTier = -1 end
+		if type(d.WeaponOwnedMask) == "number" and d.WeaponOwnedMask >= bit32.lshift(1, oldTiers) then d.WeaponOwnedMask = -1 end
 		d.Version = 4
 	end
 end

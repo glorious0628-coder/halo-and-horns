@@ -115,7 +115,7 @@ MUTATIONS = [
     ("all: the load skips EggHonorAt", C, "\td.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)\n", ""),
     # --- DataService / PetService
     ("DataService: the v4 repair never runs", D, "\tif Config.SanitizeSaveV4 then Config.SanitizeSaveV4(d, os.time()) end\n", ""),
-    ("DataService: no v4 step in migrate (C1)", D, "\tif (tonumber(d.Version) or 1) < 4 then\n\t\td.Version = 4\n\tend\n", ""),
+    ("DataService: no v4 step in migrate (C1)", D, "\t\td.Version = 4\n", ""),
     ("pet: Roll dropped", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", ""),
     ("pet: Roll kept as it was", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", "\t\t\t\t\tRoll = p.Roll,\n"),
     ("pet: fractions allowed", P, "if type(spd) ~= \"number\" or spd ~= math.floor(spd) or spd < range[1]", "if type(spd) ~= \"number\" or spd ~= spd or spd < range[1]"),

@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 228,
+  "checks": 230,
   "failedChecks": 0,
-  "namedChecks": 221,
+  "namedChecks": 226,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -15,7 +15,7 @@
     },
     {
       "group": "config",
-      "check": "save Version stays 3 (A23-34 and A23-69's Stats are additive)",
+      "check": "save Version 4 = C1's tier 9 (A23-34 and A23-69's Stats are additive)",
       "pass": 1,
       "fail": 0
     },
@@ -309,43 +309,19 @@
     },
     {
       "group": "config",
-      "check": "text Claimed has KO + EN with the same placeholders",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
-      "check": "text AutoClaimed has KO + EN with the same placeholders",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
-      "check": "text ClaimedArmed has KO + EN with the same placeholders",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
-      "check": "text AutoClaimedArmed has KO + EN with the same placeholders",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "config",
       "check": "text VisitBlacksmithArmed has KO + EN with the same placeholders",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "first-mission line points to the next weapon (its reward = the tier-2 price)",
+      "check": "first-mission line = the reward only (its reward = the tier-2 price)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "config",
-      "check": "the tier-1 refusal says the gift comes with the Guide's first quest",
+      "check": "the tier-1 refusal is short: 'Not sold. Quest reward.'",
       "pass": 1,
       "fail": 0
     },
@@ -381,7 +357,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 3)",
+      "check": "load again: v3 bare-handed save kept (no bit forced) (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -393,7 +369,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 3)",
+      "check": "load again: v3 stored tier 0 is valid: kept even with a weapon owned (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -405,7 +381,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 3)",
+      "check": "load again: v3 save that bought T2 first keeps only T2 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -417,7 +393,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 3)",
+      "check": "load again: v3 legacy save with T1 unchanged (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -429,7 +405,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 3)",
+      "check": "load again: v3 save with T1-T3 unchanged (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -441,7 +417,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 3)",
+      "check": "load again: v3 equipped tier is owned (bit added) (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -453,7 +429,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 3)",
+      "check": "load again: v2 save without a mask keeps its T1 (A23-4) + the equipped T2 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -465,7 +441,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 3)",
+      "check": "load again: v2 save without weapon fields = T1 (pre-A23-34 saves always had it) (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -477,7 +453,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 3)",
+      "check": "load again: v2 tier 0 = its T1 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -489,7 +465,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 3)",
+      "check": "load again: v2 mask without T1 gets T1 back (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -501,7 +477,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 3)",
+      "check": "load again: v1 SwordTier 3 -> T3 + T1 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -513,7 +489,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 3)",
+      "check": "load again: v3 NaN mask -> nothing owned (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -525,7 +501,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 3)",
+      "check": "load again: v3 negative mask -> nothing owned (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -537,7 +513,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 3)",
+      "check": "load again: v3 fraction mask -> only the equipped bit (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -549,7 +525,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 3)",
+      "check": "load again: v3 0xFFFFFFFF -> only the equipped bit (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -561,7 +537,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 3)",
+      "check": "load again: v3 tier 9 with nothing owned -> bare hands (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -573,7 +549,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 3)",
+      "check": "load again: v3 tier -1, owns T2+T3 at Lv1 -> T2 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -585,7 +561,7 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 3)",
+      "check": "load again: v3 NaN tier, owns T2+T3 at Lv5 -> T3 (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -597,7 +573,67 @@
     },
     {
       "group": "save",
-      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 3)",
+      "check": "load again: v3 tier 1.5 with T1 -> T1 (idempotent, Version 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v3 bit 9 -> corrupted, only the equipped bit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v3 bit 9 -> corrupted, only the equipped bit (idempotent, Version 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v4 bit 9 (the Mythic) is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v4 bit 9 (the Mythic) is kept (idempotent, Version 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v4 tier 9 equipped at Lv50 is kept",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v4 tier 9 equipped at Lv50 is kept (idempotent, Version 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v4 tier 10 -> corrupted, the best usable owned",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v4 tier 10 -> corrupted, the best usable owned (idempotent, Version 4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load: v4 bit 10 -> corrupted, only the equipped bit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save",
+      "check": "load again: v4 bit 10 -> corrupted, only the equipped bit (idempotent, Version 4)",
       "pass": 1,
       "fail": 0
     },
@@ -1065,13 +1101,13 @@
     },
     {
       "group": "gift",
-      "check": "(a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)",
+      "check": "(a) notice 'First weapon: [Twig]!', no Finish line",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "gift",
-      "check": "(a) the weapon line comes after the blacksmith's line",
+      "check": "(a) the weapon line comes after the quest's reward line",
       "pass": 1,
       "fail": 0
     },
@@ -1138,7 +1174,7 @@
     {
       "group": "gift",
       "check": "(b) no power line when the gift is not equipped",
-      "pass": 3,
+      "pass": 2,
       "fail": 0
     },
     {
@@ -1150,7 +1186,7 @@
     {
       "group": "gift",
       "check": "(c) no gift line for a save that owns T1",
-      "pass": 2,
+      "pass": 1,
       "fail": 0
     },
     {
@@ -1209,13 +1245,7 @@
     },
     {
       "group": "drops",
-      "check": "one jackpot line: equipped with the power change",
-      "pass": 1,
-      "fail": 0
-    },
-    {
-      "group": "drops",
-      "check": "no 'equip it in the menu' line for a weapon already in hand",
+      "check": "one jackpot line: 'Legendary weapon [X]!'",
       "pass": 1,
       "fail": 0
     },
@@ -1264,7 +1294,7 @@
     {
       "group": "drops",
       "check": "a later M1_1 adds no gift line",
-      "pass": 2,
+      "pass": 1,
       "fail": 0
     },
     {
@@ -1338,9 +1368,9 @@
   "staticChecks": 10,
   "staticFailures": [],
   "mutations": {
-    "total": 71,
-    "applied": 71,
-    "caught": 71,
+    "total": 69,
+    "applied": 69,
+    "caught": 69,
     "skipped": false,
     "results": [
       {
@@ -1357,7 +1387,7 @@
           "config :: a new save starts bare-handed: WeaponTier 0, nothing owned",
           "drops :: a T4 drop at Lv3 stays in the bag (MinLevel 12)"
         ],
-        "newFailingCount": 45
+        "newFailingCount": 43
       },
       {
         "mutation": "new players own tier 1 again",
@@ -1369,7 +1399,7 @@
           "config :: a new save starts bare-handed: WeaponTier 0, nothing owned",
           "drops :: first scroll bare-handed: the first-weapon hint",
           "gift :: (a) M1_1 done: tier 1 owned and equipped",
-          "gift :: (a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)",
+          "gift :: (a) notice 'First weapon: [Twig]!', no Finish line",
           "gift :: (a) power attribute source: Lv2 T1 = 300",
           "gift :: (a) the equip Fx (Upgrade, Tier 1)"
         ],
@@ -1389,7 +1419,7 @@
           "config :: SwingHitsToKill bare Archer/Halo = 5",
           "config :: SwingHitsToKill bare Archer/Horns = 5"
         ],
-        "newFailingCount": 39
+        "newFailingCount": 37
       },
       {
         "mutation": "bare hands take a scroll +N",
@@ -1417,7 +1447,7 @@
           "config :: Lv2 bare 12, Lv3 bare 23",
           "config :: SwingHitsToKill bare Archer/Halo = 5"
         ],
-        "newFailingCount": 39
+        "newFailingCount": 37
       },
       {
         "mutation": "bare power not counted from 0",
@@ -1429,11 +1459,10 @@
           "config :: Lv2 bare 12, Lv3 bare 23",
           "config :: bare hands ignore a +N",
           "config :: combat power at Lv1 bare-handed = 0 (A23-34)",
-          "drops :: one jackpot line: equipped with the power change",
-          "gift :: (a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)",
-          "gift :: (a) the weapon line comes after the blacksmith's line"
+          "power-pvp-visuals :: JusticeService.GetCombatPower: bare Lv1 0, bare Lv2 12, T1 Lv1 283",
+          "power-pvp-visuals :: a bare killer (power 0): boldness x1, no division by 0"
         ],
-        "newFailingCount": 9
+        "newFailingCount": 5
       },
       {
         "mutation": "every power counted from 0 (armed numbers move)",
@@ -1444,12 +1473,10 @@
         "newFailingChecks": [
           "config :: T1 Lv1 283 / Lv2 300",
           "config :: armed combat power = floor(PowerOf x 10 + 0.5) as before (BB4 numbers kept)",
-          "gift :: (a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)",
           "gift :: (a) power attribute source: Lv2 T1 = 300",
-          "gift :: (a) the weapon line comes after the blacksmith's line",
-          "gift :: (e) Lv1 Mage: 'You got your first weapon, [Dry Staff]! Power 0 → 283'"
+          "power-pvp-visuals :: JusticeService.GetCombatPower: bare Lv1 0, bare Lv2 12, T1 Lv1 283"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 4
       },
       {
         "mutation": "best weapon falls back to tier 1",
@@ -1462,10 +1489,10 @@
           "config :: BestUsableWeapon: nothing owned -> 0",
           "config :: BestUsableWeapon: only T3 at Lv1 -> 0",
           "drops :: DebugReset(0) = the bare-handed start",
-          "drops :: a later M1_1 adds no gift line",
-          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)"
+          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)",
+          "save :: load: v3 tier 9 with nothing owned -> bare hands"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 7
       },
       {
         "mutation": "best weapon ignores ownership",
@@ -1478,10 +1505,10 @@
           "config :: BestUsableWeapon: nothing owned -> 0",
           "config :: BestUsableWeapon: only T3 at Lv1 -> 0",
           "drops :: DebugReset(0) = the bare-handed start",
-          "drops :: a later M1_1 adds no gift line",
-          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)"
+          "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)",
+          "save :: load: v3 tier 9 with nothing owned -> bare hands"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 7
       },
       {
         "mutation": "bare-hands name is '?'",
@@ -1613,7 +1640,7 @@
           "gift :: (a) M1_1 done: tier 1 owned and equipped",
           "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
           "gift :: (a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
-          "gift :: (a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)"
+          "gift :: (a) notice 'First weapon: [Twig]!', no Finish line"
         ],
         "newFailingCount": 19
       },
@@ -1629,9 +1656,9 @@
           "save :: load: v3 NaN mask -> nothing owned",
           "save :: load: v3 NaN tier, owns T2+T3 at Lv5 -> T3",
           "save :: load: v3 bare-handed save kept (no bit forced)",
-          "save :: load: v3 equipped tier is owned (bit added)"
+          "save :: load: v3 bit 9 -> corrupted, only the equipped bit"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 17
       },
       {
         "mutation": "load turns tier 0 into a corrupted tier",
@@ -1653,10 +1680,12 @@
         "newFailingChecks": [
           "save :: load: v3 0xFFFFFFFF -> only the equipped bit",
           "save :: load: v3 NaN mask -> nothing owned",
+          "save :: load: v3 bit 9 -> corrupted, only the equipped bit",
           "save :: load: v3 fraction mask -> only the equipped bit",
-          "save :: load: v3 negative mask -> nothing owned"
+          "save :: load: v3 negative mask -> nothing owned",
+          "save :: load: v4 bit 10 -> corrupted, only the equipped bit"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 6
       },
       {
         "mutation": "a corrupted tier becomes tier 1",
@@ -1667,9 +1696,10 @@
         "newFailingChecks": [
           "save :: load: v3 NaN tier, owns T2+T3 at Lv5 -> T3",
           "save :: load: v3 tier -1, owns T2+T3 at Lv1 -> T2",
-          "save :: load: v3 tier 9 with nothing owned -> bare hands"
+          "save :: load: v3 tier 9 with nothing owned -> bare hands",
+          "save :: load: v4 tier 10 -> corrupted, the best usable owned"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "v1 / v2 saves lose their tier 1",
@@ -2030,12 +2060,10 @@
         "crashed": false,
         "newFailingChecks": [
           "drops :: an armed player's jackpot is not equipped",
-          "drops :: an armed player's jackpot keeps the 'equip it in the menu' line",
           "gift :: (b) M1_1 adds T1 to the bag, T2 stays in hand",
-          "gift :: (b) no power line when the gift is not equipped",
           "gift :: (b) the bag line"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 3
       },
       {
         "mutation": "bare equip ignores the level",
@@ -2049,32 +2077,16 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "power line from the new weapon's power",
-        "file": "src/ServerScriptService/LootService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "drops :: one jackpot line: equipped with the power change",
-          "gift :: (a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)",
-          "gift :: (a) the weapon line comes after the blacksmith's line",
-          "gift :: (e) Lv1 Mage: 'You got your first weapon, [Dry Staff]! Power 0 → 283'"
-        ],
-        "newFailingCount": 4
-      },
-      {
         "mutation": "the gift is paid again to a legacy save",
         "file": "src/ServerScriptService/LootService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "drops :: a later M1_1 adds no gift line",
           "gift :: (a) GrantFirstWeapon again: nothing",
-          "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
-          "gift :: (c) no gift line for a save that owns T1"
+          "gift :: (a) no second weapon line (neither the equip line nor the bag line)"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 2
       },
       {
         "mutation": "the gift is paid again while another weapon is held",
@@ -2128,23 +2140,9 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "drops :: a bare-handed jackpot (T8) is equipped at once",
-          "drops :: no 'equip it in the menu' line for a weapon already in hand",
-          "drops :: one jackpot line: equipped with the power change"
+          "drops :: a bare-handed jackpot (T8) is equipped at once"
         ],
-        "newFailingCount": 3
-      },
-      {
-        "mutation": "bare jackpot says 'equip it in the menu'",
-        "file": "src/ServerScriptService/LootService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "drops :: no 'equip it in the menu' line for a weapon already in hand",
-          "drops :: one jackpot line: equipped with the power change"
-        ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "gift saved without the attribute mirror",
@@ -2202,11 +2200,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "drops :: a later M1_1 adds no gift line",
           "drops :: level reset with only T3 owned -> the free T1 equipped (T3 kept)",
           "drops :: the usual swap line names T1"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 2
       },
       {
         "mutation": "join safety net off",
@@ -2242,19 +2239,19 @@
           "gift :: (a) M1_1 done: tier 1 owned and equipped",
           "gift :: (a) no second weapon line (neither the equip line nor the bag line)",
           "gift :: (a) nothing changed by a repeat (mask, held weapon, '얻은 순')",
-          "gift :: (a) notice 'You got your first weapon, [Twig]! Power 12 → 300' (Lv2)",
+          "gift :: (a) notice 'First weapon: [Twig]!', no Finish line",
           "gift :: (a) power attribute source: Lv2 T1 = 300"
         ],
         "newFailingCount": 18
       },
       {
-        "mutation": "weapon line before the story lines",
+        "mutation": "the quest's reward line dropped (the weapon line alone)",
         "file": "src/ServerScriptService/StoryQuestService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "gift :: (a) the weapon line comes after the blacksmith's line"
+          "gift :: (a) the weapon line comes after the quest's reward line"
         ],
         "newFailingCount": 1
       },
@@ -2287,18 +2284,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "e365fd43627dd98da9a69f74ad881b542bfe05339563e6d40881aa9a0757c1fd",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
-    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/StoryQuestService.luau": "0a00f634e31d9f38700bd1e3f0b2c11e62dbe424079a48972de1ad85d1d0bacc",
-    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
-    "src/ServerScriptService/ShopService.luau": "d10a8049c0979d1cd62acb4f8eac928a9a5605b7a3e7620cbaadcb7d4ceb0ad6",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d"
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/CombatService.luau": "274223fc3fbe38eef4f8967111bfa086d292bcb02ab3237a33be63c370b7121a",
+    "src/ServerScriptService/LootService.luau": "e10015474c5c364c03954827a3314e5fa390103450e93cc497a010f7441d2b3b",
+    "src/ServerScriptService/StoryQuestService.luau": "9ce4804611778cfb60356eec2c04fcfc67176984cb97e0b6a67f64b1795509ae",
+    "src/ServerScriptService/PvPService.luau": "1abf66f90ff34028aaa1a4822d8a99b379c6084ec8b44fa4daba7c79ca692f0b",
+    "src/ServerScriptService/ShopService.luau": "1c5529559510c10282f7edc0928cf8f7845f3dfb681691f0054a524163d60336",
+    "src/ServerScriptService/DataService.luau": "72aff9b30b4f6f88c01d97968b861184bff021275e22b10ed74030109f131ec2",
+    "src/ServerScriptService/JusticeService.luau": "7c79b727e7cb25df599b99473104e7f04bf27adba465d0a7ecb5116bd6be580c",
+    "src/ServerScriptService/CharacterVisuals.luau": "6b1ba22ccf739100451602a6880221096863331873d53579189a433f7788117d"
   },
-  "fixtureSHA256": "b272dc9137a221b662a2541a77592751ba875242625af29c0494e4f071a1ed08",
+  "fixtureSHA256": "eaca523307a377552c720d2413b108c3db04800c13bdd15f8ffd60c820199068",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
