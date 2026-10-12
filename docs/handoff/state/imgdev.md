@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12 저녁: 바깥선 묶음 5 ID 기록, Firefly 막힘)
+
+- **바깥선 묶음 5(10개) ID 기록·임시 파트 지움**(합계 50). 묶음 6(6개, build/hull_import_b6: Cauldron·Easel·NoticeBoard·Telescope·WaterBuckets·Fountain3)은 아직 안 들어옴(WorldKit Hull_* 10개만 있었음) -> 사용자 Import 대기.
+- **Firefly 말풍선 8종 막힘**: 앱 브라우저 창 크기가 바뀔 때마다 Firefly 레이아웃이 모바일(577px)로 돌아가고, 1440x900 지정하면 화면이 하얗게/픽커가 1개("generate")만 뜸. 큐·프롬프트·헬퍼 준비 끝(art/prompts/img_bubblefancy_queue_2026-10-12.json). 사용자가 브라우저 창을 크게 고정해 두고(창 너비 바꾸지 말기), 내가 resize 1440x900 -> 6초 기다림 -> 픽커 3개(모델·가로세로비·품질) 보이면 시작.
+
 # 이미지 개발 — 상태 (2026-10-12: 바깥선 묶음 3·4 ID 기록, 5·6 준비)
 
 - **바깥선 묶음 3·4(20개) 가져오기 확인 -> ID 기록·임시 파트 지움**(남은 0). 합계 40개(prop_hull_assets.json + asset_ids PropHull035_<키>). 묶음 5 = build/hull_import(10개), 묶음 6 = build/hull_import_b6(6개) 준비, 렌더 시트 build/hull_import_sheet_5/6.png. 사용자 가져오기 대기. 들어오면 `STUDIO_NAME=WorldKit py tools/read_imported_hulls.py --clean`. 한국어 모드 취소(A23-146).
