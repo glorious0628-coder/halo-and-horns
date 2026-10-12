@@ -8625,7 +8625,7 @@
   "deleted": "옛 2D(art/out/s2/halo/HaloProp_Statue_{front,back,left,right}_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
  },
  "Town_Halo_Fountain3": {
-  "status": "redo",
+  "status": "approved",
   "file": "art/out/s2/noshadow/Town_Halo_Fountain3_front_ns.png",
   "views": {
    "front": "art/out/s2/noshadow/Town_Halo_Fountain3_front_ns.png",
@@ -8633,7 +8633,7 @@
    "left": "art/out/s2/noshadow/Town_Halo_Fountain3_left_ns.png",
    "right": "art/out/s2/noshadow/Town_Halo_Fountain3_right_ns.png"
   },
-  "note": "그림자 없는 4면(최종 검수 통과 2026-10-12 밤, SPEC A23-150) → Blender 손보기 Tripo 스마트 메시. right = left 좌우 뒤집음(원래 right는 낮은 시점이라 다른 3면과 높이가 달랐음). → 10/12 밤 다시(최종 검수 전체 크기 재확인): 떨어지는 물줄기·물보라가 그림에 있음 — 게임 물줄기는 FountainFx 효과가 그리므로 3D엔 물줄기 없이(잔잔한 평평한 물 면만) 다시 그림(이미지 생성 2).",
+  "note": "그림자 없는 4면, 물줄기 없이(잔잔한 평평한 물 면만, 게임 물줄기 = FountainFx). 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤. right = left 좌우 뒤집음. → Blender 손보기 Tripo 스마트 메시.",
   "deleted": "옛 2D(art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
  }
 }
