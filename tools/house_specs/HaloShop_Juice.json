@@ -9,7 +9,7 @@
  "shopwin": {"u": 0.69, "w": 7.5, "h": 5.5, "type": "rect"},
  "pilasters": {"finial": true},
  "pedestals": false,
- "awning": {"w": 9.0, "u": 0.69, "colors": [[250, 205, 72], [255, 243, 212]], "n": 9},
+ "awning": {"w": 9.0, "u": 0.69, "colors": [[250, 205, 72], [255, 243, 212]], "n": 9, "arms": true},
  "pots": [[9.4, 7.7, 3.2, 2.6], [-9.0, 7.5, 3.2, 2.6]],
  "steps": "half",
  "medals": [],
