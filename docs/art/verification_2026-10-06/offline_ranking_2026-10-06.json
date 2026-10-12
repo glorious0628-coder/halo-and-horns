@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 486,
+  "checks": 487,
   "failedChecks": 0,
-  "namedChecks": 478,
+  "namedChecks": 479,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -255,7 +255,7 @@
     },
     {
       "group": "config",
-      "check": "save defaults: Rank / RankReward / Outlaw / DebugTainted (Version stays 3)",
+      "check": "save defaults: Rank / RankReward / Outlaw / DebugTainted (additive; Version 4 = C1's tier 9)",
       "pass": 1,
       "fail": 0
     },
@@ -2427,13 +2427,13 @@
     },
     {
       "group": "bb37-lines",
-      "check": "a hidden knight's bounty line: 'A member of the Knights of Light got …' without the '[Knights of Light]' prefix",
+      "check": "a hidden knight's bounty: no server-wide line",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "bb37-lines",
-      "check": "a shown knight's bounty line keeps the prefix",
+      "check": "a shown knight's bounty: no server-wide line either",
       "pass": 1,
       "fail": 0
     },
@@ -2475,7 +2475,7 @@
     },
     {
       "group": "bb37-lines",
-      "check": "the end line uses the name as it is at the end (hidden)",
+      "check": "no server-wide 'survived to the end' banner (A23-130: the kaiju's own reward line)",
       "pass": 1,
       "fail": 0
     },
@@ -2829,6 +2829,12 @@
     },
     {
       "group": "effects-auto",
+      "check": "the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "effects-auto",
       "check": "group ran to the end without a Lua error",
       "pass": 1,
       "fail": 0
@@ -2880,9 +2886,9 @@
   "staticChecks": 22,
   "staticFailures": [],
   "mutations": {
-    "total": 186,
-    "applied": 186,
-    "caught": 186,
+    "total": 187,
+    "applied": 187,
+    "caught": 187,
     "skipped": false,
     "results": [
       {
@@ -3504,14 +3510,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
           "ko-studio :: STUDIO season: no friend / account-age / playtime checks (Studio clients are new, negative ids)",
           "ko-studio :: Studio: season STUDIO",
           "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
           "settle :: STUDIO settles into HH_RankSettle_STUDIO only",
-          "settle-effects :: DebugSettle applies the results at once (this week)",
-          "settle-effects :: DebugSettle lists this week's server top 3 (OutlawMinScore kept)"
+          "settle-effects :: DebugSettle applies the results at once (this week)"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 15
       },
       {
         "mutation": "memory mode is not STUDIO",
@@ -3770,7 +3776,7 @@
           "artisan :: a failed tagged scroll: 0 points, the tag is used",
           "artisan :: a tagged Enh30 success at +2 scores 3 (A23-24 acceptance)"
         ],
-        "newFailingCount": 78
+        "newFailingCount": 79
       },
       {
         "mutation": "faction change keeps the old points",
@@ -4294,11 +4300,12 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
           "settle-effects :: DebugSettle applies the results at once (this week)",
           "settle-effects :: DebugSettle lists this week's server top 3 (OutlawMinScore kept)",
           "writes-sessions :: a Studio DebugSettle acts for the session only (the saved results stay the live ones)"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 4
       },
       {
         "mutation": "settle retried at once",
@@ -4318,14 +4325,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
           "settle :: Honor #1 is told once",
           "settle :: Honor #1: RankReward for THIS week (2963) + attributes",
           "settle :: Honor #1: the timed title '이번 주 명예 1위'",
           "settle :: PvP #1 with 5 points: outlaw this week",
-          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
-          "settle :: a real document another server stored first is applied, never skipped"
+          "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 21
       },
       {
         "mutation": "outlaw re-applied (notice repeats)",
@@ -4357,14 +4364,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
           "settle :: PvP #1 with 5 points: outlaw this week",
           "settle :: STUDIO fallback settles last week's server board (3 PvP points last week -> outlaw), stamped STUDIO",
           "settle :: an outlaw's rejoin: still an outlaw, not announced again",
           "settle :: server B: PvP #2 (a Halo) is an outlaw too",
-          "settle-effects :: DebugSettle applies the results at once (this week)",
-          "ties :: tied 3rd gets the reward; a Halo and a Horns tied on 3 unfair KOs are both outlaws"
+          "settle-effects :: DebugSettle applies the results at once (this week)"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "no rank title",
@@ -4805,28 +4812,6 @@
         "newFailingCount": 5
       },
       {
-        "mutation": "hidden bounty line not used",
-        "file": "src/ServerScriptService/PvPService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "bb37-lines :: a hidden knight's bounty line: 'A member of the Knights of Light got …' without the '[Knights of Light]' prefix"
-        ],
-        "newFailingCount": 1
-      },
-      {
-        "mutation": "IsHidden always false",
-        "file": "src/ServerScriptService/AnnounceService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "bb37-lines :: a hidden knight's bounty line: 'A member of the Knights of Light got …' without the '[Knights of Light]' prefix"
-        ],
-        "newFailingCount": 1
-      },
-      {
         "mutation": "kaiju name not re-published on a hide toggle",
         "file": "src/ServerScriptService/KaijuService.luau",
         "applied": true,
@@ -5087,9 +5072,9 @@
           "effects-auto :: joining as an outlaw with auto combat saved ON: OFF",
           "effects-auto :: the last bully stack decays while still an outlaw: no 'penalty over' yet",
           "effects-auto :: the outlaw week ends: OutlawEnd only",
-          "effects-auto :: …with the outlaw reason"
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "Outlaw attribute not watched",
@@ -5101,9 +5086,43 @@
           "effects-auto :: an outlaw cannot switch it back on (OutlawNoAuto)",
           "effects-auto :: becoming an outlaw switches auto combat OFF",
           "effects-auto :: joining as an outlaw with auto combat saved ON: OFF",
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line",
           "effects-auto :: …with the outlaw reason"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "the outlaw start says two lines again",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the start line is never recorded",
+        "file": "src/ServerScriptService/RankingService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: the outlaw week starts with auto ON: auto OFF and one line (OutlawStart), no second OutlawAutoOff line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "a join as an outlaw says nothing (the skip ignores fromOutlaw / the time)",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "effects-auto :: …with the outlaw reason"
+        ],
+        "newFailingCount": 1
       },
       {
         "mutation": "a hit taken is the victim's own action",
@@ -5232,21 +5251,21 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "0742b53aedb434aa3c1a5e61323913391929b5e4c76d065ac31f2fb980fa73d3",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/RankingService.luau": "6f626bec812ec8edec524152ce42d0086b66709e6a5657fee97376ad55f70f6e",
-    "src/ServerScriptService/AnnounceService.luau": "6cc1862ddb190304da965355910a7bfd48e2b23cd7ac3a98786591de4085f35b",
-    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11",
-    "src/ServerScriptService/GrudgeService.luau": "b42981e97f8dcc8f4ff263a7bdea0712095cd7b090e8510e9c07be065360e6e3",
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/RankingService.luau": "ea281fae7d85819a9d7bd036fdef32003eaadc29fe4a2385cd9a91e32b148078",
+    "src/ServerScriptService/AnnounceService.luau": "dacb35ae6dde0cb0f913903e487d224be91e7910a44229f2c6f568652d077735",
+    "src/ServerScriptService/PvPService.luau": "1abf66f90ff34028aaa1a4822d8a99b379c6084ec8b44fa4daba7c79ca692f0b",
+    "src/ServerScriptService/GrudgeService.luau": "85c12fdd0072b5c88e5efa1f12593a29d4086b363790c44a4484b5d76b86b2aa",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
-    "src/ServerScriptService/LootService.luau": "b16e2d10e62ea4d1ec7d2f4e47dd102c558b1ddb677302e2850648d0786e9c9d",
-    "src/ServerScriptService/CombatService.luau": "4ab022cab7cc93726d55da8fbd160c1bdb93b98b7b9b5a2ded91bbbd9da90137",
-    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
-    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/CharacterVisuals.luau": "0721e38cd264e7ed77a61f13e76148fc68fc0f8aaa4346fb1223de5eca7b277d",
-    "src/ServerScriptService/KaijuService.luau": "29e84609cf3bc132a71a5bc929b6b5e5153ee148e627721bd64092231bda00b8"
+    "src/ServerScriptService/LootService.luau": "e10015474c5c364c03954827a3314e5fa390103450e93cc497a010f7441d2b3b",
+    "src/ServerScriptService/CombatService.luau": "274223fc3fbe38eef4f8967111bfa086d292bcb02ab3237a33be63c370b7121a",
+    "src/ServerScriptService/ProgressionService.luau": "943e8a8ed1092c21c55a8cdbb256f9c20cd5c3c71da1510d0dacd9108c1d294e",
+    "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d",
+    "src/ServerScriptService/CharacterVisuals.luau": "6b1ba22ccf739100451602a6880221096863331873d53579189a433f7788117d",
+    "src/ServerScriptService/KaijuService.luau": "653e0a39db29cd6a62e34d35c866168efed792dabd781f3c8f53cc714d9f7ed4"
   },
-  "fixtureSHA256": "ac90ea1a7d90cf0629d7697aeec5f4b63188ebe86429106850217622a82c2d64",
+  "fixtureSHA256": "2d23983cdecdcf9c01827e02443d2da14908637cd387f6d5b0b5f7bb3cab0eba",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
