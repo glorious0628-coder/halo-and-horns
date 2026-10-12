@@ -229,7 +229,7 @@ def main():
         except Exception as e:  # noqa: BLE001
             psc.note("stop failed " + str(e))
         time.sleep(2)
-        psc.note(psc.lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", nil) return "fresh off"', "Edit"))
+        psc.note(psc.lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh kept on"', "Edit"))
         psc.note("device: " + psc.lua(c, psc.RESTORE, "Edit"))
         for name, ok in results.items():
             psc.note(("OK   " if ok else "FAIL ") + name)
