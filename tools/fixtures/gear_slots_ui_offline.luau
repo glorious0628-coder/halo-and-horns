@@ -1,4 +1,4 @@
--- 게임성 개발 4 gear slots (2026-10-12): runs the real Config.luau and the real GearSlots.luau (tools/test_gear_slots.py) on small
+-- 게임성 개발 4 gear slots (2026-10-12): runs the real Config.luau and the real GearSlots.luau (tools/test_gear_slots_ui.py) on small
 -- doubles: Players.LocalPlayer attributes + change signals, a recording Instance tree, UIKit art doubles (ItemIcon / ArtImage return
 -- nil for one id to test the letter fallback), the CharacterUI / BagUI / PetWindow registry. Inputs: CONFIG_SOURCE, GEAR_SOURCE.
 local checks, failed = 0, 0

@@ -1,6 +1,6 @@
 """게임성 개발 4 gear slots in the Hero window (2026-10-12; contract: the "GearSlots contract" in CharacterUI.luau), offline.
 
-Runs the CURRENT Config.luau and GearSlots.luau in the official Luau CLI (tools/fixtures/gear_slots_offline.luau; the player's
+Runs the CURRENT Config.luau and GearSlots.luau in the official Luau CLI (tools/fixtures/gear_slots_ui_offline.luau; the player's
 attributes and change signals, a recording Instance tree, UIKit art doubles and the CharacterUI / BagUI / PetWindow registry are
 doubles). Checks: Cells (weapon art / grade / +N, no weapon, pet icon / Lv, no pet, the four empty, gear data drop-in), Build draws
 six named cells at CharacterUI's columns / rows with one caption each (Style false + TextScaled + max 15), the frame Size 220 x 266 and
@@ -8,8 +8,8 @@ opts.Refresh only when it changes, Weapon -> ShowView("Weapons") (else BagUI.Ope
 nothing, the six attributes redraw (connected once), Refresh redraws, the letter fallback. Static: ClientMain loads GearSlots after
 UIKit, no Enum.KeyCode, no English outside TXT. Mutations: each must be caught.
 
-Usage: py tools/test_gear_slots.py
-Report: docs/art/verification_2026-10-12/offline_gear_slots_2026-10-12.json
+Usage: py tools/test_gear_slots_ui.py
+Report: docs/art/verification_2026-10-12/offline_gear_slots_ui_2026-10-12.json
 """
 from __future__ import annotations
 
@@ -24,11 +24,11 @@ ROOT = Path(__file__).resolve().parents[1]
 FILES = {"GEAR": ROOT / "src/StarterPlayer/StarterPlayerScripts/GearSlots.luau",
          "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
          "MAIN": ROOT / "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau"}
-FIXTURE = ROOT / "tools/fixtures/gear_slots_offline.luau"
+FIXTURE = ROOT / "tools/fixtures/gear_slots_ui_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
-OUT = ROOT / "docs/art/verification_2026-10-12/offline_gear_slots_2026-10-12.json"
+OUT = ROOT / "docs/art/verification_2026-10-12/offline_gear_slots_ui_2026-10-12.json"
 
 MUTATIONS = [
     ("GEAR", "+N not cut to MaxEnhance", "cell.Plus = math.clamp(math.floor(num(ctx.Plus, 0)), 0, Config.Loot.MaxEnhance)",
