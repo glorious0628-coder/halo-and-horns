@@ -2193,7 +2193,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "063c4f81827e473cc80185888d8281f297009a46371e40fc0738ae661a9c9da9",
+    "src/ReplicatedStorage/Shared/Config.luau": "51d42decc11427471583c32fba60f04d5fed07328e5d92a282fe8713a02b6ab6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/CombatService.luau": "8d9e02c1c0aef0e628c76807dd7bc5d568280d0256eb9bfcfbf4e9d7c0987f96",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
@@ -2203,7 +2203,7 @@
     "src/ServerScriptService/DataService.luau": "bcc20283d5258fc89af43961e12c1a1c6345eeba61a923bdb7f17cd5e6450217",
     "src/ServerScriptService/JusticeService.luau": "4a8733f87579841fa0d02dbfde562c84c5ade0b05d3f2fb196cd7a44a0e335ad",
     "src/ServerScriptService/CharacterVisuals.luau": "6b1ba22ccf739100451602a6880221096863331873d53579189a433f7788117d",
-    "src/ServerScriptService/PetService.luau": "0a7fc89c858c187c485c40c94ccdbeb4bfd2f182a844bb82a9c2f4ea8adf529f"
+    "src/ServerScriptService/PetService.luau": "d0b7a0841f1269c75e24d4620c987ff7b66e81e624a0f921245e3038d6a9c062"
   },
   "fixtureSHA256": "297308475911bfaedbf423b5adc85d3c0b92cd144726555c862d8172756f6af8",
   "sourcesChangedDuringRun": [],

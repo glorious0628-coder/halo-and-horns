@@ -8502,6 +8502,7 @@ Config.Gear = {
 		Full = "No room for it.",
 		Equipped = "Equipped.",
 		Removed = "Taken off.",
+		InCombat = "Not during a fight.", -- (게임성 개발 2: no gear change mid-PvP, like a weapon swap)
 	},
 }
 Config.RateLimits.EquipGear = 0.5

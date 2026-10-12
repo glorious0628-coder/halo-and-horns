@@ -394,7 +394,22 @@ runGroup("pets", function()
 	local x4 = lvXP(d.Pets.List.P1)
 	w.Reg.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", XP = 10, Gold = 5 })
 	w:RunSpawned()
-	check(lvXP(d.Pets.List.P1) - x4 == 1, "a kill: 1 x 1.5 floors to 1 (applied through the same function)", tostring(lvXP(d.Pets.List.P1) - x4))
+	check(lvXP(d.Pets.List.P1) - x4 == 2, "a kill: 1 x 1.5 + the 0.5 kept from 7 x 1.5 = 2 (the same function, fractions kept)",
+		tostring(lvXP(d.Pets.List.P1) - x4))
+	-- 게임성 개발 2: XPPerKill 1 x 1.2 (PetArmor T1) five kills = 6 pet XP (the fractions add up)
+	local fw = gWorld()
+	local fp, fd = gearer(fw, 1, bag({ ["PetArmor:1:0"] = 1 }))
+	fw.P.SummonPet(fp, "BabySlime", { Spd = 6 })
+	fw.G.EquipPet(fp, "P1", "PetArmor", "1:0")
+	local f0 = lvXP(fd.Pets.List.P1)
+	for _ = 1, 5 do
+		fw.Reg.MonsterService.MonsterKilled:Fire(fp, { Kind = "Slime", XP = 10, Gold = 5 })
+		fw:RunSpawned()
+	end
+	check(lvXP(fd.Pets.List.P1) - f0 == 6, "PetArmor T1: 1 x 1.2 five kills = 6 pet XP (not 5)", tostring(lvXP(fd.Pets.List.P1) - f0))
+	fw.Reg.MonsterService.MonsterKilled:Fire(fp, { Kind = "Slime", XP = 10, Gold = 5 })
+	fw:RunSpawned()
+	check(lvXP(fd.Pets.List.P1) - f0 == 7, "a sixth kill: 1 more (the used-up fraction is gone)", tostring(lvXP(fd.Pets.List.P1) - f0))
 	-- a kill gives XPPerKill (a bigger number here) x the bonus too
 	local kw = gWorld({ EditConfig = function(c) c.Pets.XPPerKill = 10 end })
 	local kp, kd = gearer(kw, 1, bag({ ["PetArmor:2:1"] = 1 }))
@@ -672,6 +687,26 @@ runGroup("scrolls", function()
 	local fixed = w.Config.SanitizeGear({ Own = { ["Armor:1:3"] = 1, ["Armor:1:10"] = 2, ["Ring:1:2"] = 1 }, On = { Armor = "2:5", Ring = "1:2" }, Pet = { P1 = { PetAcc = "1:4" } } })
 	check(next(fixed.Pet) == nil and fixed.On.Armor == "" and fixed.On.Ring == "1:2" and fixed.Own["Ring:1:2"] == 1 and fixed.Own["Armor:1:3"] == nil and fixed.Own["Armor:1:10"] == nil,
 		"a save with a +3..+10 gear: the repair drops it (P stays 0..2)", show(fixed))
+end)
+
+------------------------------------------------------------------ not during a fight (게임성 개발 2)
+runGroup("combat", function()
+	local w = gWorld()
+	local p, d = gearer(w, 1, bag({ ["Armor:1:0"] = 1, ["PetAcc:1:0"] = 1 }))
+	w.P.SummonPet(p, "BabySlime", { Spd = 6 })
+	w.Reg.CombatService.InCombat[p] = true
+	local snap = show(d.Gear)
+	local from = #w.Notices
+	check(w.G.Equip(p, "Armor", "1:0") == "combat" and show(d.Gear) == snap and p:GetAttribute("GearHp") == 1
+		and keysFor(w, p, from)[1] == "Config.Gear.Text.InCombat", "in a fight: no armor on (InCombat, a key), nothing moves", "")
+	check(w.G.EquipPet(p, "P1", "PetAcc", "1:0") == "combat" and show(d.Gear) == snap, "in a fight: no pet gear either", "")
+	w.Reg.CombatService.InCombat[p] = nil
+	check(w.G.Equip(p, "Armor", "1:0") == "ok" and w.G.EquipPet(p, "P1", "PetAcc", "1:0") == "ok", "after the fight: both go on", "")
+	w.Reg.CombatService.InCombat[p] = true
+	check(w.G.Equip(p, "Armor", "") == "combat" and d.Gear.On.Armor == "1:0", "in a fight: no taking it off", "")
+	w.Reg.CombatService.InCombat[p] = nil
+	w.Reg.CombatService.IsInCombat = function() error("offline failure") end
+	check(w.G.Equip(p, "Armor", "") == "ok", "a failing IsInCombat: not a fight (never stuck)", "")
 end)
 
 finish()

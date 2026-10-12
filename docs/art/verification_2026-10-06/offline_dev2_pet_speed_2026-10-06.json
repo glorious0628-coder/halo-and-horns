@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 49,
+  "checks": 50,
   "failedChecks": 0,
-  "namedChecks": 49,
+  "namedChecks": 50,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -214,6 +214,12 @@
     {
       "group": "player-speed",
       "check": "applyStats: WalkSpeed = ComputeWalkSpeed (and HP as before)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "player-speed",
+      "check": "a bigger max HP (armor) without a full heal keeps the HP ratio (100/200 -> 122/244)",
       "pass": 1,
       "fail": 0
     },
@@ -578,13 +584,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "063c4f81827e473cc80185888d8281f297009a46371e40fc0738ae661a9c9da9",
+    "src/ReplicatedStorage/Shared/Config.luau": "51d42decc11427471583c32fba60f04d5fed07328e5d92a282fe8713a02b6ab6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/PlayerService.luau": "8992841de671fd0e580317d8ec49e8240bff9964a1551e9f3103d3ee39498b39",
     "src/ServerScriptService/ZoneService.luau": "becfcaaf73db143aa5db1ca6f6d211a73dea9751960c588d5c05a8655748a3e5",
-    "src/ServerScriptService/PetService.luau": "0a7fc89c858c187c485c40c94ccdbeb4bfd2f182a844bb82a9c2f4ea8adf529f"
+    "src/ServerScriptService/PetService.luau": "d0b7a0841f1269c75e24d4620c987ff7b66e81e624a0f921245e3038d6a9c062"
   },
-  "fixtureSHA256": "101483182c97767f5fc96ab97f21a36ba6159343521df48233042d3f327c931d",
+  "fixtureSHA256": "b03aa1f95f56986b82cb11608606c5297e9d06419a5b0616f627e56eedd1497e",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

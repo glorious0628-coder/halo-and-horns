@@ -1243,10 +1243,10 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "063c4f81827e473cc80185888d8281f297009a46371e40fc0738ae661a9c9da9",
+    "src/ReplicatedStorage/Shared/Config.luau": "51d42decc11427471583c32fba60f04d5fed07328e5d92a282fe8713a02b6ab6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/TamerService.luau": "054748a11d59918f2a0dd0f7fcf5524d86f5498321877bcd26b50ab71dd0ff1c",
-    "src/ServerScriptService/PetService.luau": "0a7fc89c858c187c485c40c94ccdbeb4bfd2f182a844bb82a9c2f4ea8adf529f"
+    "src/ServerScriptService/PetService.luau": "d0b7a0841f1269c75e24d4620c987ff7b66e81e624a0f921245e3038d6a9c062"
   },
   "fixtureSHA256": "f4d9fd0e042151bf9d22c38488f679312999124ef2310f43fd2820dc906d6def",
   "sourcesChangedDuringRun": [],

@@ -8,7 +8,8 @@
 --     plus, and no scroll reaches gear (LootService.UseItem takes weapon tiers only).
 --   * c->s EquipGear(slot, key) / EquipPetGear(uid, slot, key): key = "T:P" of an Own thing, or "" to take it off. A ready,
 --     living player, the wear level of the tier (Config.Gear.Slots[slot].Wear), my own pet only (PetService.GetPet), the
---     exact argument count, one change every Config.RateLimits.EquipGear seconds. Notices are keys only (Config.Gear.Text).
+--     exact argument count, one change every Config.RateLimits.EquipGear seconds, never in a fight (CombatService.IsInCombat,
+--     like a weapon swap: no max HP / speed change mid-PvP; 게임성 개발 2). Notices are keys only (Config.Gear.Text).
 --   * The player's attributes GearAtk (the ring: my hit x) and GearHp (the armor: max HP x) are the multipliers (1 = none;
 --     Config.GearMultsOf reads them, PlayerService / CombatService / Config.CombatPower use them), set at PlayerReady and
 --     after every change (a new GearHp refreshes the max HP). The following pet's PetAcc and the pet XP bonus come from
@@ -156,6 +157,14 @@ local function move(g, data, slot, key, worn)
 	return "ok", "Equipped"
 end
 
+-- in a fight now (CombatService.IsInCombat; false when it cannot tell)
+local function fighting(player)
+	local C = S.CombatService
+	if type(C) ~= "table" or type(C.IsInCombat) ~= "function" then return false end
+	local ok, yes = pcall(C.IsInCombat, player)
+	return ok and yes == true
+end
+
 -- the checks both remotes share: the switch, a real ready living player; returns data, g or a reason
 local function ready(player)
 	if not on() then return nil, "off" end
@@ -184,6 +193,10 @@ function GearService.Equip(player, slot, key)
 	if not data then return g end
 	if type(slot) ~= "string" or Config.Gear.Slots[slot] == nil then return "slot" end
 	if type(key) ~= "string" then return "key" end
+	if fighting(player) then
+		notify(player, "InCombat")
+		return "combat"
+	end
 	local result, noteKey = move(g, data, slot, key, g.On)
 	if result == "ok" then g.On[slot] = g.On[slot] or "" end -- On always has both slots ("" = empty)
 	return done(player, data, g, result, noteKey, false)
@@ -197,6 +210,10 @@ function GearService.EquipPet(player, uid, slot, key)
 	if type(key) ~= "string" then return "key" end
 	local P = S.PetService
 	if not (type(P) == "table" and type(P.GetPet) == "function" and P.GetPet(player, uid)) then return "pet" end
+	if fighting(player) then
+		notify(player, "InCombat")
+		return "combat"
+	end
 	local row = type(g.Pet[uid]) == "table" and g.Pet[uid] or {}
 	local result, noteKey = move(g, data, slot, key, row)
 	if result == "ok" then

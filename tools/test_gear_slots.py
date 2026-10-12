@@ -113,11 +113,11 @@ MUTATIONS = [
     ("pet: PetAcc from the armor", PE, "Config.PetGearBonus(data.Gear, uid, \"PetAcc\"))", "Config.PetGearBonus(data.Gear, uid, \"PetArmor\"))"),
     ("pet: PetAcc after the speed refresh", PE, "\tplayer:SetAttribute(\"PetAcc\", Config.PetGearBonus(data.Gear, uid, \"PetAcc\")) -- ⑥ gear (게임성 개발 3): the following pet's PetAcc (0 = none)\n\trefreshSpeed(player)\n",
      "\trefreshSpeed(player)\n\tplayer:SetAttribute(\"PetAcc\", Config.PetGearBonus(data.Gear, uid, \"PetAcc\"))\n"),
-    ("pet: no XP bonus", PE, "\treturn math.floor(n * (1 + Config.PetGearBonus(data.Gear, uid, \"PetArmor\")) + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)\n", "\treturn n\n"),
-    ("pet: the XP bonus not floored", PE, "return math.floor(n * (1 + Config.PetGearBonus(data.Gear, uid, \"PetArmor\")) + 1e-9)", "return n * (1 + Config.PetGearBonus(data.Gear, uid, \"PetArmor\"))"),
-    ("pet: the XP bonus from the accessory", PE, "\"PetArmor\")) + 1e-9)", "\"PetAcc\")) + 1e-9)"),
-    ("pet: a kill without the bonus", PE, "giveXP(p, gearXP(data, uid, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1)))))", "giveXP(p, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1))))"),
-    ("pet: AddPetXP without the bonus", PE, "\tn = gearXP(data, uid, n)" + HOOK + ": PetArmor of this pet\n", ""),
+    ("pet: no XP bonus", PE, "\tlocal exact = n * (1 + Config.PetGearBonus(data.Gear, uid, \"PetArmor\")) + (rems and rems[uid] or 0)\n", "\tlocal exact = n + (rems and rems[uid] or 0)\n"),
+    ("pet: the XP bonus not floored", PE, "\tlocal whole = math.floor(exact + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)\n", "\tlocal whole = exact\n"),
+    ("pet: the XP bonus from the accessory", PE, "uid, \"PetArmor\")) + (rems and rems[uid] or 0)", "uid, \"PetAcc\")) + (rems and rems[uid] or 0)"),
+    ("pet: a kill without the bonus", PE, "giveXP(p, gearXP(player, data, uid, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1)))))", "giveXP(p, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1))))"),
+    ("pet: AddPetXP without the bonus", PE, "\tn = gearXP(player, data, uid, n) -- ⑥ gear (게임성 개발 3): PetArmor of this pet\n", ""),
     ("pet: Refresh never republishes", PE, "\tpublish(player, data)\n\treturn true\nend", "\treturn true\nend"),
     # --- GearService: the rules
     ("equip: the switch not checked", G, "\tif not on() then return nil, \"off\" end\n", ""),
@@ -166,6 +166,12 @@ MUTATIONS = [
     # --- a scroll never reaches gear
     ("scroll: UseItem takes a gear key as a tier", L, "\treturn type(tier) == \"number\" and tier == tier and tier == math.floor(tier) and tier >= 1 and tier <= Config.MaxWeaponTier\n",
      "\treturn type(tier) == \"string\" or (type(tier) == \"number\" and tier == tier and tier == math.floor(tier) and tier >= 1 and tier <= Config.MaxWeaponTier)\n"),
+    # --- 게임성 개발 2 follow-ups (10/12)
+    ("combat: armor in a fight", G, "\tif type(key) ~= \"string\" then return \"key\" end\n\tif fighting(player) then\n", "\tif type(key) ~= \"string\" then return \"key\" end\n\tif false then\n"),
+    ("combat: pet gear in a fight", G, "\tif not (type(P) == \"table\" and type(P.GetPet) == \"function\" and P.GetPet(player, uid)) then return \"pet\" end\n\tif fighting(player) then\n", "\tif not (type(P) == \"table\" and type(P.GetPet) == \"function\" and P.GetPet(player, uid)) then return \"pet\" end\n\tif false then\n"),
+    ("combat: a failing check blocks", G, "\treturn ok and yes == true\nend\n", "\treturn not ok or yes == true\nend\n"),
+    ("pet xp: fractions dropped", PE, "\t\trems[uid] = rest\n", ""),
+    ("pet xp: fractions never cleared", PE, "\telseif rems then\n\t\trems[uid] = nil\n\tend\n\treturn whole\n", "\tend\n\treturn whole\n"),
 ]
 
 
@@ -216,6 +222,11 @@ def static() -> tuple[int, list[str]]:
     mh = function_block(combat, "function CombatService.ComputeMonsterHit(")
     pvp = function_block(combat, "function CombatService.ComputePvPHit(")
     check("Config.GearMultsOf(attacker)" in mh, "CombatService.ComputeMonsterHit: x the ring's atk mult")
+    # 게임성 개발 2: the Might Tonic (BuffService, on the dealt damage in damageMonster) and the ring (on the computed hit)
+    # stack as a product: two separate factors on one path, neither replaces the other
+    dmon = function_block(combat, "local function damageMonster(")
+    check('dealt = dealt * S.BuffService.Mult(player, "MonsterDamage")' in dmon and "GearMultsOf" not in dmon
+          and "BuffService" not in mh, "a Might Tonic x a ring: two factors (damageMonster x the tonic, ComputeMonsterHit x the ring)")
     check("Config.GearMultsOf(attacker)" in pvp and "Config.GearMultsOf(victim)" in pvp, "CombatService.ComputePvPHit: both rings inside the ratio")
     check("local base = Config.MaxHealth(vLevel, faction(victim), vClass) * Config.PvP.HitPctOfMaxHP" in pvp and "Gear" not in
           [line for line in pvp.splitlines() if "local base" in line][0],
