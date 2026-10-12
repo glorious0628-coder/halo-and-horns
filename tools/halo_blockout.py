@@ -63,8 +63,9 @@ RING_DOWN = -18  # 5단계 10/12: the ring's rock bottom (the Luau RIM_DOWN; was
 RIM_W = 4  # rock rim cells outside the water: 2 cells showed see-through holes at distance (terrain LOD) -> 4 (16 studs)
 # pointed floating-rock underside (10/11 검수; 2차 10/11 17:10: the cone capped at 70 left a flat bottom with an even comb of
 # short spikes -> longer toward the middle, a few big spikes + medium + small ones at uneven lengths and spacing)
-UND_CENTER = 105  # base depth in studs at the farthest-from-edge cell: UND_CENTER * dn ** UND_POW (dn = edge distance / max)
-UND_POW = 0.9
+UND_CENTER = 170  # 디자인 검수 10/12 ④: was 105 (from the side a flat slab + one spike; now an inverted cone)
+# base depth in studs at the farthest-from-edge cell: UND_CENTER * dn ** UND_POW (dn = edge distance / max)
+UND_POW = 0.75  # was 0.9: deeper right inside the rim
 UND_WOB = 0.22  # low-frequency wobble of the base (+-)
 UND_JIT = 0.12  # per-cell shake
 UND_BIG = dict(n=6, min_dn=0.35, gap=90, L=(50, 110), R=(22, 36))  # a few big spikes (studs)
@@ -73,7 +74,7 @@ UND_STAL_P = 0.05  # small: a cell is a stalactite when its hash is below this .
 UND_STAL_MIN_D = 12  # ... and it is farther than this (studs) from the edge
 UND_STAL_ADD = (5, 16)  # small stalactite adds 5..16 studs; the 4 neighbours get UND_STAL_NB of that
 UND_STAL_NB = 0.35
-UND_UNIT = 3  # one ALPH char = 3 studs of depth (the Luau reads D.und_unit)
+UND_UNIT = 4  # 10/12: was 3 (cap 216 -> 288 for the deeper cone); one ALPH char = 3 studs of depth (the Luau reads D.und_unit)
 UND_CAP = 72 * UND_UNIT  # hard cap (studs), ALPH has 74 chars
 
 
@@ -800,6 +801,27 @@ def main():
                 cx, cz = ax + ux * (t0 + t1) / 2, az + uz * (t0 + t1) / 2
                 walls.append(dict(x=round(cx, 2), z=round(cz, 2), len=round(t1 - t0 + WALL_OVER, 2), ux=round(ux, 4), uz=round(uz, 4),
                                   nx=round(px * sg, 4), nz=round(pz * sg, 4), top=round(tp, 2), bot=round(bt, 2), t=WALL_T))
+    # 디자인 검수 10/12 (r2_07 / r2_03: short walls standing alone on the grass): a piece is kept only where the ground
+    # really steps there - high side ~ its top, low side >= FACE_DH under it - at 2 of 3 points along it (junction / corner
+    # leftovers of the straightening fail)
+    def hgrid(x, z):
+        c_, r_ = int((x - X0) // CELL), int((Z0 - z) // CELL)
+        if 0 <= r_ < rows and 0 <= c_ < cols and MAT[r_][c_] != "sea" and H[r_][c_] is not None:
+            return H[r_][c_]
+        return -99.0
+    kept = []
+    for w_ in walls:
+        ok = 0
+        for f in (-0.33, 0.0, 0.33):
+            px_, pz_ = w_["x"] + w_["ux"] * w_["len"] * f, w_["z"] + w_["uz"] * w_["len"] * f
+            off = w_["t"] / 2 + CELL * 0.75
+            hi = hgrid(px_ - w_["nx"] * off, pz_ - w_["nz"] * off)
+            lo = hgrid(px_ + w_["nx"] * off, pz_ + w_["nz"] * off)
+            ok += hi >= w_["top"] - 2.5 and w_["top"] - lo >= FACE_DH
+        if ok >= 2:
+            kept.append(w_)
+    print(f"[blockout] wall pieces without a real step there: {len(walls) - len(kept)} dropped")
+    walls = kept
     os.makedirs(os.path.join(ROOT, "build", "wk"), exist_ok=True)
     with open(os.path.join(ROOT, "build", "wk", "halo_walls.json"), "w", encoding="utf-8") as f:
         json.dump(dict(cell=CELL, walls=walls), f)
