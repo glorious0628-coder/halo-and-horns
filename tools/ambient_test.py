@@ -42,6 +42,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("out")
 ap.add_argument("--show", action="store_true")
 ap.add_argument("--target", type=float, default=190)
+ap.add_argument("--sheet-only", action="store_true", help="redraw the sheet from <out>/result.json + photos")
 a = ap.parse_args()
 os.makedirs(a.out, exist_ok=True)
 plan = json.load(open(os.path.join(ROOT, "docs", "design", "halo_plan_v2_2026-10-11.json"), encoding="utf-8"))
@@ -102,57 +103,62 @@ def worldkit_hwnd():
     return hs[0] if len(hs) == 1 else None
 
 
-c = Client()
-c.start()
-wk = worldkit_hwnd() if a.show else None
+if a.sheet_only:
+    res = json.load(open(os.path.join(a.out, "result.json")))
+else:
+    c = Client()
+    c.start()
+wk = worldkit_hwnd() if a.show and not a.sheet_only else None
 if a.show and not wk:
     sys.exit("[oa] WorldKit window not found (or more than one)")
-res = {"cols": [], "cells": {}, "search": []}
-try:
-    if wk:
-        U32.ShowWindowAsync(wk, 9)
-        time.sleep(2.5)
-    print("[oa]", luau(c, SIM)[:60], flush=True)
-    base = [int(v) for v in luau(c, SET % (35, "false", 0, 0, 0)).split(",")]
-    print("[oa] C2c day OutdoorAmbient", base, flush=True)
-    # search k on Cliff6 at latitude 35 (shade side): secant on the measured median
-    pts = []
-    k = 1.25
-    warm = None
-    for it in range(4):
-        col = [min(255, round(base[i] * k * TINT[i])) for i in range(3)]
-        luau(c, SET % (35, "true", *col))
-        time.sleep(0.6)
-        m = med(grab("search%d" % it, *cam("House_Cliff6")), "House_Cliff6")
-        pts.append((k, m))
-        res["search"].append({"k": k, "oa": col, "cliff6_median": m})
-        print("[oa] search k %.2f oa %s -> %d" % (k, col, m), flush=True)
-        warm = col
-        if abs(m - a.target) <= 6:
-            break
-        if len(pts) >= 2 and pts[-1][1] != pts[-2][1]:
-            (k1, m1), (k2, m2) = pts[-2], pts[-1]
-            k = k2 + (a.target - m2) * (k2 - k1) / (m2 - m1)
-        else:
-            k = k * (1.25 if m < a.target else 0.85)
-        k = max(0.8, min(2.2, k))
-    cols = [(35, None), (35, warm), (65, None), (65, warm)]
-    for lat, oa in cols:
-        got = luau(c, SET % ((lat, "true", *oa) if oa else (lat, "false", 0, 0, 0)))
-        tag = "lat%g_%s" % (lat, "warm" if oa else "now")
-        res["cols"].append({"tag": tag, "lat": lat, "oa": got})
-        time.sleep(0.6)
-        for bid in PICK:
-            im = grab("%s_%s" % (bid, tag), *cam(bid))
-            im.save(os.path.join(a.out, "%s_%s.png" % (bid, tag)))
-            res["cells"]["%s|%s" % (bid, tag)] = med(im, bid)
-        print("[oa]", tag, got, {b: res["cells"]["%s|%s" % (b, tag)] for b in PICK}, flush=True)
-finally:
-    print("[oa] light", luau(c, GUARD + RESTORE)[:60], flush=True)
-    if wk:
-        U32.ShowWindowAsync(wk, 6)
-        print("[oa] WorldKit minimized", flush=True)
-json.dump(res, open(os.path.join(a.out, "result.json"), "w"), indent=1)
+if not a.sheet_only:
+    res = {"cols": [], "cells": {}, "search": []}
+    try:
+        if wk:
+            U32.ShowWindowAsync(wk, 9)
+            time.sleep(2.5)
+        print("[oa]", luau(c, SIM)[:60], flush=True)
+        base = [int(v) for v in luau(c, SET % (35, "false", 0, 0, 0)).split(",")]
+        print("[oa] C2c day OutdoorAmbient", base, flush=True)
+        # search k on Cliff6 at latitude 35 (shade side): secant on the measured median
+        pts = []
+        k = 1.25
+        warm = None
+        for it in range(4):
+            col = [min(255, round(base[i] * k * TINT[i])) for i in range(3)]
+            luau(c, SET % (35, "true", *col))
+            time.sleep(0.6)
+            m = med(grab("search%d" % it, *cam("House_Cliff6")), "House_Cliff6")
+            pts.append((k, m))
+            res["search"].append({"k": k, "oa": col, "cliff6_median": m})
+            print("[oa] search k %.2f oa %s -> %d" % (k, col, m), flush=True)
+            warm = col
+            if abs(m - a.target) <= 6:
+                break
+            if len(pts) >= 2 and pts[-1][1] != pts[-2][1]:
+                (k1, m1), (k2, m2) = pts[-2], pts[-1]
+                k = k2 + (a.target - m2) * (k2 - k1) / (m2 - m1)
+            else:
+                k = k * (1.25 if m < a.target else 0.85)
+            k = max(0.8, min(2.2, k))
+        cols = [(35, None), (35, warm), (65, None), (65, warm)]
+        for lat, oa in cols:
+            got = luau(c, SET % (lat, "true", *(oa or base)))   # "now" = the C2c day value again (10/12 first run kept the warm one)
+            tag = "lat%g_%s" % (lat, "warm" if oa else "now")
+            res["cols"].append({"tag": tag, "lat": lat, "oa": got})
+            time.sleep(0.6)
+            for bid in PICK:
+                im = grab("%s_%s" % (bid, tag), *cam(bid))
+                im.save(os.path.join(a.out, "%s_%s.png" % (bid, tag)))
+                res["cells"]["%s|%s" % (bid, tag)] = med(im, bid)
+            print("[oa]", tag, got, {b: res["cells"]["%s|%s" % (b, tag)] for b in PICK}, flush=True)
+    finally:
+        print("[oa] light", luau(c, GUARD + RESTORE)[:60], flush=True)
+        if wk:
+            U32.ShowWindowAsync(wk, 6)
+            print("[oa] WorldKit minimized", flush=True)
+if not a.sheet_only:
+    json.dump(res, open(os.path.join(a.out, "result.json"), "w"), indent=1)
 
 font = ImageFont.truetype("malgun.ttf", 18)
 small = ImageFont.truetype("malgun.ttf", 14)
