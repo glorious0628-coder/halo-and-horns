@@ -8558,5 +8558,42 @@
   "status": "approved",
   "file": "art/out/s2/memes/Meme_GGSticker_m1.png",
   "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 GGSticker_m1. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138."
+ },
+ "HaloCastle_C2_parts_high": {
+  "status": "approved-by-design-review",
+  "date": "2026-10-12",
+  "by": "디자인 검수 (기록: 이미지 생성 3)",
+  "parent": "Halo_Castle_F3c_C2 (사용자 승인 '나도 C2!')",
+  "tool": "Adobe Firefly GPT Image 2.5, High (이미지 생성 2; commits 601043d1 · 9518e0c7 · 648d6413 · d07a57f1)",
+  "parts": {
+   "Rose": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_right.png"
+   },
+   "Spire": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_right.png"
+   },
+   "WingL": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_right.png",
+    "back2": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_back2.png"
+   },
+   "WingR": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_right.png",
+    "back2": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_back2.png"
+   }
+  },
+  "review": "디자인 검수 10/12: 장미창 4면 두께·테 맞음, 첨탑 4면 작은 첨탑 수·후광 높이 맞음, 날개 4면 깃 층·받침 맞음, 빛살·얼굴 없음.",
+  "next": "Tripo 4면 HD(묶음 승인 뒤) → Blender: 후광 고리 = 정확한 원 고리로 바꿔 끼우기, 장미창 꽃잎 = 8잎 정확 대칭, 첨탑 꼭지 별 = 정확한 모양. 성 몸통·탑·벽은 Studio 골격(A23-120)."
  }
 }
