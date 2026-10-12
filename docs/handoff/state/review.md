@@ -108,3 +108,10 @@
 - 경쟁 조사: 백그라운드 에이전트가 UNTITLED RPG GAME(Lunar's Studio, 8570876289) 영상·페이지 → docs/design/ref_untitled_rpg_2026-10-12.md(UI 비교·첫 퀘스트 표 포함). 사용자: 다른 게임 직접 플레이 세션 대신 영상 정리 방식 고름.
 - 사용자: 빛 마을 오늘 완성 어렵다고 답함 — 목표 10/16쯤 메인 한 번에(6단계 전 사진 ★). 비공개 시험 10/17 유지 추천(사용자 답 없음).
 - UiSandbox 차례: 게임성 개발 4 → 이미지 개발(거위 광장 골격). WorldKit: 이미지 생성 1 지형 다시 쓰기+3장 진행, 이미지 생성 3 밤 사진 대기.
+
+## 10/12 오후 (최종 검수, 세션 7+1개)
+- **세션:** 사용자 결정으로 7개로 줄임(디자인 검수·게임성 검수·개발 3·4·이미지 생성 1·2 정리 후 삭제) + 사용자가 'Blender 손보기' 새로 엶(역할 15, Opus xhigh). 첫 검수(시험·시트)는 이제 내가 함. API는 남은 ≈$13~15만, 병합 검토용(사용자: 충전 안 함).
+- **병합(오늘 오후, 전부 merge_chain + 내 시험):** C1 9cf89625(저장 v4·9단계, API MERGE) → 캐릭터 창 묶음 3feb3232(켜짐, Lv2+ 영웅 칸·E) → fame-cap 486a235a → staff-face2·c1-minor·stickers 서버 74f1dd79 → bubbles·sticker UI(P 키) 9f780ae0. merge_chain 고침: diff3로 '같은 줄 양쪽 고침'은 멈춤(ORDER 3줄 버그), `--ours <경로|접두*>`(시험 보고서·옛 상태 문서).
+- **대기:** 거위 광장(개발 2가 main+개발 1 화면 합치는 중 → API 반박 검토 프롬프트 build/api_agent_prompts/final_review_goose_square_2026-10-12.md 준비됨), 메인 Save As(74f1dd79, 메인 반영 1), 바깥선 묶음 6 Import(사용자), 말풍선 화려한 8종(이미지 개발 Firefly, 브라우저 넓게 고정 필요), RPG UI 조사(백그라운드 → docs/design/ref_rpg_ui_2026-10-12.md).
+- **사용자 결정 오후:** A23-141~147(거위 광장·지팡이 0.7H·말풍선 꾸미기/스티커·값은 내가·폰 10/21·한국어 취소·Blender 최소 손보기 + 구운 3D 전부 새로). 펫 교배·장인 농사(+연금술사 시간 물약) = 정식 뒤 아이디어. 사용자용 영·한 대본 docs/script/. 경쟁 조사 ref_untitled_rpg, 가이드 대조 launch_guide_check.
+- **사용자 할 일 생김:** 게임 패스 만들기(Sticker Pack 99·Bubble Pack 99 + 기존 패스들) → id를 Config.GamePasses에 넣기(10/17 시험 전, 결제 시험용).
