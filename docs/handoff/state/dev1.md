@@ -86,3 +86,5 @@
 - 쥐기·자세는 참고 먼저(`docs/design/grip_reference_2026-10-11.md`), 숫자 시험(test_one_hand_grips) + 메인 사진.
 
 24. **api/dev1-character-ui-2 537331d4**: Settings 닉네임 줄 = Hero 잠김(Lv<2) 동안 남김(SettingsUI.NicknameRow). 최종 검수에 보고.
+25. **fix/character-ui a5f6abd0** (= api/dev1-character-ui-2): 537331d4 + merge dev4-gear-slots 01a3fc3b + dev4-market-window 3bd187d9, ORDER 손으로 한 줄(GearSlots UIKit 다음, MarketWindow CraftWindow 다음). 11개 시험 통과, 최종 검수에 보고.
+- 큐 뒤(개발 4 쉬는 중, 그 두 가지 켜기 전): 마켓 시간 글 1:05, 팔린 줄 수수료, T1 여분 — 최종 검수 10/13 지시, 자세한 건 최종 검수에 물어 확인.
