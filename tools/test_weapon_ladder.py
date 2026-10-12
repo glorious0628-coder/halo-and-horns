@@ -54,10 +54,10 @@ MUTATIONS = [
     # --- Version 4
     ("migrate: a v3 bit 9 wipes the whole mask", D, "\t\t\td.WeaponOwnedMask = bit32.band(m, bit32.lshift(1, oldTiers) - 1)\n",
      "\t\t\td.WeaponOwnedMask = -1\n"),
-    ("config: the version back to 3", C, "Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 4,",
-     "Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 3,"),
-    ("config: the default record's version 3", C, "\tDefaults = {\n\t\tVersion = 4,", "\tDefaults = {\n\t\tVersion = 3,"),
-    ("DataService: no v4 step", D, "\t\td.Version = 4\n", ""),
+    ("config: the version back to 3", C, "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 5,",
+     "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 3,"),
+    ("config: the default record's version 3", C, "\tDefaults = {\n\t\tVersion = 5,", "\tDefaults = {\n\t\tVersion = 3,"),
+    ("DataService: no v4 step", D, "\tif (tonumber(d.Version) or 1) < 4 then\n", "\tif false then\n"),
     ("DataService: the old steps follow MaxWeaponTier", D, "\tlocal oldTiers = 8\n", "\tlocal oldTiers = Config.MaxWeaponTier\n"),
     ("DataService: a v3 tier 9 trusted", D,
      "\t\tif type(d.WeaponTier) == \"number\" and d.WeaponTier > oldTiers then d.WeaponTier = -1 end\n", ""),
@@ -128,7 +128,7 @@ def static() -> tuple[int, list[str]]:
     check(top_locals < 190, f"Config's top chunk stays well under 200 locals ({top_locals})")
     data_block = re.search(r"^Config\.Data = \{(.*?)^\}", config, re.M | re.S)
     versions = re.findall(r"^\t{1,2}Version = (\d+),", data_block.group(1), re.M) if data_block else []
-    check(versions == ["4", "4"], f"Config.Data.Version and Defaults.Version are both 4 ({versions})")
+    check(versions == ["5", "5"], f"Config.Data.Version and Defaults.Version are both 5 (A23-153; C1 made it 4) ({versions})")
     check("Config.WeaponShop = { MaxSoldTier = 3," in config, "the Forge's MaxSoldTier stays 3")
     data = read(SSS / "DataService.luau")
     mig = function_block(data, "local function migrate(")

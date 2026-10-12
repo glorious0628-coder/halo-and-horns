@@ -74,7 +74,7 @@ runGroup("config", function()
 	local D = C.Data.Defaults
 	check(type(D.Rank) == "table" and D.Rank.WeekId == 0 and D.Rank.PvP == 0 and D.Rank.Artisan == 0
 		and type(D.Rank.Victims) == "table" and type(D.Rank.HandScroll) == "table" and D.DebugTainted == false
-		and D.Outlaw.WeekId == 0 and D.RankReward.Board == "" and D.Version == 4, "save defaults: Rank / RankReward / Outlaw / DebugTainted (additive; Version 4 = C1's tier 9)")
+		and D.Outlaw.WeekId == 0 and D.RankReward.Board == "" and D.Version == 5, "save defaults: Rank / RankReward / Outlaw / DebugTainted (additive; Version 5 = A23-153's codex (C1's tier 9 made it 4))")
 end)
 
 ------------------------------------------------------------------ 2. Config.SanitizeRank (DataService.fillDefaults)

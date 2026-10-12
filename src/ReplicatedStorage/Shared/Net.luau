@@ -79,6 +79,12 @@ Net.Names = {
 	"EquipPetGear", -- (uid: my pet, slot: PetArmor | PetAcc, key: "T:P" from Own, or "" = take it off)
 	-- server -> client (owner only):
 	"GearInfo", -- { Own = { ["<Slot>:T:P"] = n }, On = { Armor, Ring }, Pet = { [uid] = { PetArmor?, PetAcc? } } } at join and after changes
+	-- 게임성 개발 2 (2026-10-13) A23-153 the monster codex (CodexService, docs/design/codex_cards_contract_2026-10-13.md):
+	"CodexOpen", -- c->s, no arguments: send me my codex (answered with "Codex"; rate-limited)
+	"Codex", -- s->c owner only { V = 1, Cards = { [kind] = { Kills, Golden, Stage, First } }, Glow } at join and on CodexOpen
+	-- s->c owner only, one per moment: { Event = "Card" | "Silver" | "Holo" | "Golden" | "Page" | "Glow", Kind?, Stage?,
+	-- Card? = { Kills, Golden, Stage, First }, Gold, XP (added), Title?, Page?, Key, Args, Text, Debug? }
+	"CodexUp",
 }
 
 Net.GameStateDefaults = {

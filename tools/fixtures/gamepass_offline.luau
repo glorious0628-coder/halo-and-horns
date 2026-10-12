@@ -173,7 +173,7 @@ runGroup("config", function()
 	local B = C0.PassBoost
 	check(B.Mult == 2, "the passes double (2x)", B.Mult)
 	local want = { Monster = true, Quest = true, Event = true, Bounty = true, War = true, Loot = true, Kaiju = true, SignOn = true,
-		Attendance = true }
+		Attendance = true, Codex = true } -- A23-153: the monster codex's card rewards are earned gold
 	local same = true
 	for k in want do if B.GoldSources[k] ~= true then same = false end end
 	for k in B.GoldSources do if not want[k] then same = false end end
@@ -212,7 +212,7 @@ runGroup("config", function()
 	-- the save fields (additive, Version 3)
 	local D = C0.Data.Defaults
 	check(type(D.Looks) == "table" and type(D.Looks.Owned) == "table" and D.Looks.On == "" and type(D.PassSeen) == "table"
-		and C0.Data.Version == 4, "save: Looks { Owned, On } + PassSeen (additive; Version 4 = C1's tier 9)")
+		and C0.Data.Version == 5, "save: Looks { Owned, On } + PassSeen (additive; Version 5 = A23-153's codex (C1's tier 9 made it 4))")
 	local looks, seen = C0.SanitizeLooks({ Owned = { HaloSprout = 1790000000, Nope = 5, HornsSprout = "x", HaloStarlight = -1,
 		HaloPlatinum = 0 / 0 }, On = "Nope" }, { XP2 = true, VIP = "yes", HaloIce = false, Junk = true })
 	check(looks.Owned.HaloSprout == 1790000000 and looks.Owned.Nope == nil and looks.Owned.HornsSprout == nil
@@ -347,7 +347,7 @@ runGroup("boost", function()
 	check(Prog.AddXP(p, 100, 50) == 50 and Prog.AddXP(q, 100, 50) == 50 and Prog.AddXP(p, 20, 50) == 40,
 		"a cap (A23-27) holds after the doubling")
 	-- gold: every source
-	local srcs = { "Monster", "Quest", "Event", "Bounty", "War", "Loot", "Kaiju", "SignOn", "Attendance", "Sale", "Refund",
+	local srcs = { "Monster", "Quest", "Event", "Bounty", "War", "Loot", "Kaiju", "SignOn", "Attendance", "Codex", "Sale", "Refund",
 		"Plunder", "KaijuBank", "KaijuTransfer", "KaijuBonus", "Penalty", "Other" }
 	local wrong = {}
 	for _, s in srcs do
