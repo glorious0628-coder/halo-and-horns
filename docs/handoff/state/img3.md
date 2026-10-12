@@ -1,5 +1,10 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/12 밤 (최종 검수 할 일 1·2 끝)
+- **빛 성 C2 골격 WorldKit 넣음**(1d95146): 바닥판 SkeletonTest.HouseRows_Ground3(z 210..310) → 시험 줄 4 HaloCastle_C2_Skeleton(1374, 문 z 230) → 계획 자리 HaloV2.Buildings.Castle(문 오차 0, 회색 상자 → ServerStorage.HaloV2_GrayBoxes). 백업 build/wk_backup/20261012_211758. 낮 사진 시트 art/review/img3/houses/castle_C2_wk/castle_C2_wk_day.jpg (tools/castle_shots.py, 창이 펼쳐져 있으면 화면 차례 없이 찍힘). 계획 자리 앞마당에 소품 5개 겹침(P054·P055 Topiary, P056 BenchA, L26 Lantern_A, P052 Flagpole_3) = 이미지 생성 1 몫, 최종 검수에 알림. WorldKit 창 = 펼쳐진 채(셸 열기의 Minimized 무시됨).
+- **덩어리 장식 43종 그림 큐**(abac993): art/prompts/house_chunks_queue_2026-10-13.json (순서 = 눈에 띄는 것 먼저, 집 목록·옛 2D·크롭·한 줄 설명·A23-150 규칙), 크롭 art/review/img3/chunk_refs/ (+ chunk_refs_sheet.jpg), 도구 tools/house_chunk_queue.py.
+- 다음: 통과한 Tripo GLB(동상·분수 먼저, Blender 손보기 세션) 오면 WorldKit 넣기·재질·낮밤 사진 — 최종 검수가 알려 줌.
+
 ## ★ 10/12 저녁 정리 (사용자 "여기까지만 하고 정리")
 - **빛 성 C2 골격 v3 통과**(tools/skeleton_castle.py, 파트 1374, 십자 평면 + 교차 탑 = 가장 높은 첨탑·후광 자리, 정면 계단 탑·장미창·뾰족 정문·진짜 금 문짝 2·기단). **WorldKit 넣기 대기**: WorldKit 닫혀 있음 → 최종 검수 '전달함, 시작' 뒤 scratchpad castle_run.sh 순서(셸로 build/WorldKit.rbxlx 열기 → 바닥판 3(z 208..308) → build/castle_row.json(시험 줄 4, z 260) → build/castle_plan_place.json(tools/castle_plan_place.py, 계획 자리 Castle -176,-574 yaw 20, 문 맞춤) → 백업 → 낮 사진 5장 → 최소화). 장식 단계 메모: 교차 탑 아래 둘레 작은 첨탑 4, 옆 첨탑 줄 더 촘촘히.
 - **등불 = 파트 골격**(받침·기둥 4·유리·뚜껑·2단 지붕·꼭지·벽 팔) 22채 + 07 바꿔 넣음(house_skeleton_swap, 07은 Luau로), 옛 납작 등불 58 + 07 금속 틀 4 → ServerStorage.Parked_FlatLanterns. 사진 lamps_parts_day.jpg.
