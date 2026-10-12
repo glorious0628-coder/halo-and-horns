@@ -1,4 +1,12 @@
-# 이미지 생성 2 — 인계 (2026-10-12 점심, 세션 정리로 쉼)
+# 이미지 생성 2 — 인계 (10/12 저녁 정리: 모든 세션 여기까지, 사용자 지시)
+## 10/12 저녁 정리 (맨 위 = 이것부터)
+- **하는 일 = 그림자 없이 다시 그리기(SPEC A23-150·151)**. 도구 `py tools/codex_image.py --prompt-file <txt> --ref <옛 2D> [--ref <새 앞면>] --out <png>`(사용자 ChatGPT 요금제, Codex 앱; 끝 코드 3 = 사용량 끝 → 그 장만 Firefly 고급). 4면 구동기 `py tools/_noshadow_redo.py <이름> [<이름>...]`(이름 = `docs/review/noshadow_redo_2026-10-12.md` 표의 이름; 앞면 먼저 → 뒤·왼·오른은 옛 그 면 + 새 앞면 ref, 옛 면이 없으면 새 앞면만; 결과 `art/out/s2/noshadow/<이름>_{front,back,left,right}_ns.png`, 프롬프트 .txt 같은 폴더, 로그 `build/img2_next/noshadow_log.txt`; 이미 있는 파일은 건너뜀; **한 번에 하나씩**, 한 장 약 3~4분, 방향은 말 말고 'ref1과 같은 시점·방향'). 반드시 `run_in_background`로 돌리고 한 묶음(5개)마다 옛|새 시트 → 최종 검수.
+- **그린 것(시트 `art/review/s2/noshadow_set1_statue_fountain_old_new.jpg`, 판정 대기)**: Halo_Statue 4면 · Town_Halo_Fountain3 4면(옛은 앞면만, 둥글어 4면 거의 같음). 앞서 통과: MailBoy 4면(`art/out/s2/noshadow/npc/`, approved.json 기록, 옛은 최종 검수가 지움).
+- **남은 71개(그릴 것 67 + 가게 간판 4)**: `docs/review/halo_redo_split_2026-10-12.md`의 '그릴 것' 목록 − Halo_Statue·Fountain3(끝) − HaloStairs_3·HaloVar4_Balustrade_B·D(안 놓임, 뺌) + NEW_WhiteRock a/b/c + HaloSign_Bakery/Flower/Juice/Potion. 순서: 눈에 띄는 것 먼저 — 꽃화분 5(HaloFlowerPotHQ_*) · 벤치(HaloReasonHQ_BenchA~C) · 가판대(BreadStand·FruitStall·FlowerCart) · 등불(HaloVar4_Lantern_A~D·HaloVar3_Lantern_E) · 나무·토피어리·화분(Var3/4) · 난간 · NEW_ 소품 · 나머지. 다음 묶음은 HaloFlowerPotHQ_Daisy부터. v2에 놓인 이름 대조 = `docs/design/halo_v2_placed_names_2026-10-12.txt`. 집 22채·성·가게·부품 46개는 통째로 안 그리고 덩어리 장식 목록(`docs/design/house_chunk_decor_2026-10-12.md`) 단위. **사람(NPC·주민)은 맨 마지막**(주민 36장·MailBoy 외 새로 그려야 함).
+- **버린 앞면**: Halo_Cathedral·DomeHouseA/B·Balustrade·CloudBush(옛 메인 빛 마을, 버림) — 내가 만든 새 파일은 지움. 옛 2D 지우기는 최종 검수가 함.
+- **새 그림 규칙**: 3D 렌더로 그림자만 없이(볼륨·둥근 모서리·부드러운 형태 음영·재질 광택은 유지; 사방 고른 빛; 바닥·드리운·닿는 곳·AO·어두운 면·강한 반사광 없음; 밝은 회색 배경; 빛살 금지; 사람은 단정한 옷). 기준: `art/review/codex/mailboy_front_original_flat_3d_1012.jpg`, `art/prompts/_noshadow_3d_example.txt`.
+- 이전(점심) Firefly 인계 내용은 아래에 그대로.
+
 ## 지금 상태
 - **Firefly 큐 비어 있음(생성 중인 것 없음).** 이어받는 세션 = 이미지 개발. 시트 보고는 **최종 검수**(디자인 검수 쉼, 대기 목록 `docs/handoff/state/design_review.md`).
 - 오늘 끝·푸시·보고(전부 origin/main): 가방/제작 아이콘 16종(통과) · 게임 아이콘 C(통과) · 새 집 7채 4면(통과) · 무기 4면 84(통과) · 물약 상인 4면(통과) · 성문 등 머리 4면·받침·무기고 뒤(통과) · 밈 5장 High(통과)+GG `EmoGG`(통과) · 밈 후광·뿔 4면 16(통과, PixelHalo 옆면 최종 = `Meme_PixelHalo_{left,right}_final_HQ.png`, right는 left 좌우 뒤집음) · 스티커 17종 High+컷아웃(통과, 올리기 승인됨) · 채팅 말풍선 8 Medium v2(통과, 사용자 고르기 대기) · 빛 성 C2 정면·right·금문 한 짝(통과) · 큰 지도 빛 섬 합성본 ★(통과, 최종 검수에 올림) · **주민 9명 High 정면+뒤·왼·오른 36장(`art/out/s2/npc2_hq/`, 시트 `art/review/s2/npc_residents_4v_a/b.jpg`, 정면 시트는 통과·4면 판정 대기)**.
