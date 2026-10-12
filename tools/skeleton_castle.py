@@ -191,9 +191,10 @@ for sg in (-1, 1):
         lancet("AisleWin%d_%d" % (k_, b_), (sg, 0.0), sg * (AX + 0.5), yb, Z0 + 1.6, 2.0, 6.4)
     for b_, yb in enumerate([y - 3.5 for y in BAYS[1:]]):
         px = sg * (AX + 1.0)
-        box("Buttress%d_%d" % (k_, b_), px - 0.7, px + 0.7, yb - 0.7, yb + 0.7, Z0, AISLE_TOP + 1.6)
-        add("ButtressCap%d_%d" % (k_, b_), (1.7, 0.35, 1.7), (px, yb, AISLE_TOP + 1.75), mat="gold")
-        spire("ButtressSp%d_%d" % (k_, b_), px, yb, AISLE_TOP + 1.95, 1.3, 3.6, 0.4)
+        box("Buttress%d_%d" % (k_, b_), px - 0.7, px + 0.7, yb - 0.7, yb + 0.7, Z0, AISLE_TOP + 3.0)
+        add("ButtressBand%d_%d" % (k_, b_), (1.6, 0.3, 1.6), (px, yb, AISLE_TOP), mat="gold")
+        add("ButtressCap%d_%d" % (k_, b_), (1.7, 0.35, 1.7), (px, yb, AISLE_TOP + 3.15), mat="gold")
+        spire("ButtressSp%d_%d" % (k_, b_), px, yb, AISLE_TOP + 3.35, 1.3, 5.0, 0.4)    # 최종 검수 10/12: a row on every buttress
     lean_roof("Aisle%d" % k_, sg, sg * AX, sg * NX, YB, YF - 1.0, AISLE_TOP, AISLE_TOP + 4.2)
 
 # front chapels (the low wide front either side, under the outer towers): x 20..30, the front 12 studs
@@ -290,9 +291,33 @@ for i_, (xt, wt, zt, sh) in enumerate(STAIR):
         yt = YF - 1.0 - wt / 2 - (0.8 if i_ in (0, 1) else 0.0)
         tower("StairTower%d_%d" % (i_, (sg + 1) // 2), sg * xt, yt, wt, Z0, zt, sh, bands=tuple(z for z in (8.0, 15.0, 22.0, 29.0) if z < zt - 2),
               win_faces=((0.0, 1.0),) if zt > 10 else (), win=(0.8, 2.6 if zt > 14 else 1.6), turrets=False, spire_w=0.8)
-CY, CW = YF - 5.4, 7.8                        # the centre tower (the tallest spire, the halo ring over it)
-tower("CentreTower", 0.0, CY, CW, Z0, 40.0, 13.0, spire_w=0.62, bands=(29.0, 34.0),
+# 최종 검수 10/12 (v3): a cross plan as the 2D top view - transept arms either side in the middle of the nave, the tallest
+# spire tower (the halo ring) on the crossing
+TY0, TY1, TX, TT = -7.0, 7.0, 27.5, 15.0        # transept y span, arm end x, wall top
+for sg in (-1, 1):
+    k_ = (sg + 1) // 2
+    x0_, x1_ = sorted((sg * NX, sg * TX))
+    box("Transept%d" % k_, x0_, x1_, TY0, TY1, Z0, TT)
+    add("TranseptCornice%d" % k_, (x1_ - x0_ + 0.4, 0.5, TY1 - TY0 + 0.6), ((x0_ + x1_) / 2, 0.0, TT - 0.2), mat="gold")
+    n_ = 12
+    for k in range(n_):                       # the arm's end gable (strips) + gold coping
+        wk = (TY1 - TY0) * (1 - (k + 0.5) / n_)
+        box("TranseptGable%d_%d" % (k_, k), sg * TX - 0.5 if sg > 0 else sg * TX, sg * TX if sg > 0 else sg * TX + 0.5, -wk / 2, wk / 2,
+            TT + 6.0 * k / n_, TT + 6.0 * (k + 1) / n_ + 0.02)
+    lancet("TranseptEndWin%d" % k_, (sg, 0.0), sg * TX, 0.0, Z0 + 2.0, 3.0, 8.0)
+    disk("TranseptRose%d" % k_, 3.4, 0.3, (sg * (TX + 0.05), 0.0, TT + 1.9), (sg, 0.0, 0.0), "wglass")
+    disk("TranseptRoseRing%d" % k_, 4.0, 0.25, (sg * (TX + 0.02), 0.0, TT + 1.9), (sg, 0.0, 0.0))
+    for w_, yw in enumerate((TY0 + 2.0, TY1 - 2.0)):
+        lancet("TranseptSideWin%d_%d" % (k_, w_), (0.0, 1.0 if yw > 0 else -1.0), sg * (AX + TX) / 2, TY1 if yw > 0 else TY0, Z0 + 2.0, 1.8, 6.0)
+    for c_, yc in enumerate((TY0, TY1)):      # pinnacles on the arm end corners
+        add("TranseptPin%d_%d" % (k_, c_), (1.2, TT + 1.6 - Z0, 1.2), (sg * (TX + 0.2), yc, (TT + 1.6 + Z0) / 2))
+        spire("TranseptPinSp%d_%d" % (k_, c_), sg * (TX + 0.2), yc, TT + 1.6, 1.4, 5.0, 0.4)
+    spire("TranseptGableSp%d" % k_, sg * TX, 0.0, TT + 6.0, 1.0, 2.6, 0.35)
+gable_roof_x("TranseptRoof", -TX, TX, TY0, TY1, TT, TT + 6.0)
+CY, CW = 0.0, 9.0                             # the crossing tower (the tallest spire, the halo ring over it)
+tower("CentreTower", 0.0, CY, CW, NAVE_TOP - 1.0, 40.0, 13.0, spire_w=0.62, bands=(29.0, 34.0),
       win_faces=((0.0, 1.0), (1.0, 0.0), (-1.0, 0.0), (0.0, -1.0)), win=(1.3, 4.2))
+tower("FacadeTower", 0.0, YF - 4.2, 5.0, Z0, 32.0, 7.0, spire_w=0.7, bands=(29.5,), win_faces=((0.0, 1.0),), win=(1.0, 2.6), turrets=False)
 orn.append({"type": "halo_ring", "name": NAME + "_HaloRing", "pos": [0.0, CY, 46.5], "R": 7.3,
             "note": "exact circle ring (Blender), 디자인 검수 10/12; 2D ring 180 px = 14.5 studs across"})
 
