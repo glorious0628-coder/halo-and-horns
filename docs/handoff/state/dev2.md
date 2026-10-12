@@ -16,6 +16,12 @@
   게임성 검수에 보낸 보고 그대로(첫 PvP 카드 겹침, 남의 무기 자랑 토스트(클라), 사이렌 칩(클라),
   Tut.Text.Travel/Welcome 경계선, 할로윈 왕 수다). 전체 오프라인: 실패 = 파일 없는 3개(place_english·shop_layout·rank_marks)뿐.
 
+## 진행 중
+- **C1 API job `dev2_c1_t9_v4`** (10/12, 가지 api/dev2-c1-t9-v4, Opus $12·110턴, 프롬프트 = 스크래치 c1_prompt.md 요지: T9 Mythic
+  2200/Lv50/Crownforged 끝에, Version 4, Spares·Market sanitize, LootService.SpareRoom/AddSpare, KingJelly 0.2·ClatterGem 0.1
+  Source Boss, test_weapon_ladder 새로). 끝나면: `.py` diff 먼저 읽기 → 임시 worktree에서 시험 → 게임성 검수에 해시.
+- 게임성 검수 10/12: 큰 코드·큰 시험 고침은 api_agent 쓰기 모드 먼저(남은 API 약 $85, 한 일당 한도).
+
 ## 다음 큐
 1. **황금 알 줍기** Goose.Mode="Eggs" — 설계 `docs/design/golden_egg_2026-10-11.md` + SPEC A23-131·134·137(4시간마다 30점 등).
    (개발 1이 egg 화면 가지를 진행 중 — 계약 맞추기.)
