@@ -90,3 +90,5 @@
 - 큐 뒤(개발 4 쉬는 중, 그 두 가지 켜기 전): 마켓 시간 글 1:05, 팔린 줄 수수료, T1 여분 — 최종 검수 10/13 지시, 자세한 건 최종 검수에 물어 확인.
 26. character-ui 묶음 a5f6abd0 = main 3feb3232 병합됨. **fix/staff-face2 025b7fb6** (15bf290f 뿔 갈고리 앞으로·연금술사 z -1.3 + main merge): 최종 검수에 보고, 사진 = tools/play_mage_staff_photos.py.
 - 거위 광장 낮은 것 3개 = 개발 2가 서버+화면 한 가지로 합치는 중 → 그쪽에 맞춤(먼저 손대지 않음).
+27. **fix/sticker-ui 83bf3124** = main 9f780ae0 병합됨(스티커 P 키). **fix/english-polish 0e5ac261**(영어 16곳) 보고. **fix/bubble-ui ab1b28da**(A23-144: BubbleUI OnBubbleAdded 주인, 스티커 창 아래 말풍선 줄, 그림 없으면 색) 보고.
+- 다음: 큰 지도 거위 광장 표시 끄기(개발 2 dev2-goose-square 병합 뒤, WorldMap이 맵 밖 둥지·수레·거위 안 그림) → ④ RPG UI 조사(docs/design/ref_rpg_ui_2026-10-12.md) 오면 캐릭터 창 개선(장비 탭 빈 공간, 능력치 탭 글뿐; 사진 docs/art/verification_2026-10-12/main_apply/charui/05·06).
