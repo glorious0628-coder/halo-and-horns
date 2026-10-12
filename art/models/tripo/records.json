@@ -9124,12 +9124,14 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (6314), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3924 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    3.156,
-    1.261,
-    2.837
+    3.521,
+    1.394,
+    6.994
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Lantern_C/HaloVar4_Lantern_C_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-footprint: below the head base only the post is cut, the hanging lantern keeps its bottom",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_A_web_hd_mv4": [
@@ -9163,10 +9165,12 @@
    "size_studs": [
     1.425,
     1.417,
-    1.578
+    2.268
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Lantern_A/HaloVar4_Lantern_A_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-from 0.68: the Tripo's own head (neck up, 2.24 studs, 2D share) set on the kit head base; before, the cut at the kit head height took the lower glass cage",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_B_web_hd_mv4": [
@@ -9235,12 +9239,14 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (4479), weld then loose specks (0 faces), decimate to 4999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3878 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    4.544,
-    1.102,
-    3.363
+    4.541,
+    1.47,
+    6.999
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Lantern_D/HaloVar4_Lantern_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-footprint: below the head base only the post is cut, both hanging lanterns keep their bottoms",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar3_Lantern_E_web_hd_mv4": [
@@ -10516,12 +10522,14 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (10396), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3993 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    1.807,
-    1.482,
-    2.431
+    1.751,
+    1.467,
+    0.79
    ],
    "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--drop-low 0.1: 16 loose leaf islands (398 faces) wholly below the pot rim removed (floating bits); hanging vines need a new Tripo (asked)",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [

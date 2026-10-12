@@ -48,6 +48,9 @@ from prop_kit_bl import bounds, build_kit  # noqa: E402
 argv = sys.argv[sys.argv.index("--") + 1:]
 ap = argparse.ArgumentParser()
 ap.add_argument("job")
+ap.add_argument("--head-from", type=float, default=0.0, help="head: keep the Tripo from this share of its height up (its own head) and set it on the kit head base")
+ap.add_argument("--head-footprint", action="store_true", help="head: below the head base cut only inside the kit body's footprint (hanging lanterns stay)")
+ap.add_argument("--drop-low", type=float, default=0.0, help="plant: drop loose islands lying wholly this far below the pot rim (floating leaf bits)")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
 ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
 ap.add_argument("--fit", default="h=1", help="h=<height> or w=<width> in studs (ontop: w=<factor of the body length>)")
@@ -197,6 +200,13 @@ else:
                     s *= k
                     stats["rim_calib"] = {"tripo_rim": round(float(rim), 3), "body_top": round(bmx.z, 3), "k": round(k, 3)}
                     log("rim calib k %.3f (tripo rim %.2f -> body top %.2f)" % (k, rim, bmx.z))
+if a.kind == "head" and a.head_from > 0:
+    # the Tripo's own head (from --head-from of its height, e.g. the neck above the knob) goes on the kit's head base,
+    # instead of cutting the Tripo lantern at the kit head height (Lantern_A lost the lower half of its glass cage, 10/12)
+    hz = max(v.co.z for v in me.vertices)
+    shift = stats["head_cut_z"] - a.head_from * hz
+    me.transform(Matrix.Translation((0, 0, shift)))
+    stats["head_from"] = {"share": a.head_from, "tripo_head_h": round((1 - a.head_from) * hz, 3), "shift": round(shift, 3)}
 me.update()
 stats["scale"] = round(s, 4)
 stats["src_tris"] = tris(src)
@@ -243,7 +253,21 @@ elif a.kind == "goods":
             kill.append(f)
 elif a.kind == "head":
     zc = stats["head_cut_z"] - 0.02
-    kill = [f for f in bm.faces if f.calc_center_median().z < zc]
+    if a.head_footprint:
+        # below the head base cut only what stands inside the kit body at that height (the post); lanterns hanging
+        # off the arm below the base stay whole (Lantern_C / D lost their bottoms, 10/12)
+        spans = []
+        for o in body_obs:
+            W = np.array([(o.matrix_world @ v.co)[:] for v in o.data.vertices])
+            spans.append((W[:, 2].min(), W[:, 2].max(), np.sqrt(W[:, 0] ** 2 + W[:, 1] ** 2).max()))
+
+        def r_at(z):
+            r = [sp[2] for sp in spans if sp[0] - a.tol <= z <= sp[1] + a.tol and sp[2] < 1.0]
+            return max(r) if r else -1.0
+        kill = [f for f in bm.faces if f.calc_center_median().z < zc
+                and math.hypot(f.calc_center_median().x, f.calc_center_median().y) < r_at(f.calc_center_median().z) + a.tol]
+    else:
+        kill = [f for f in bm.faces if f.calc_center_median().z < zc]
 stats["faces_cut"] = len(kill)
 bmesh.ops.delete(bm, geom=kill, context="FACES")
 # dust: loose islands of a handful of faces - weld first: the glTF import splits vertices at UV seams, so before the
@@ -267,6 +291,13 @@ for f in bm.faces:
     islands.append(isl)
 dust = [g for isl in islands if len(isl) < a.dust for g in isl]
 stats["dust_faces"] = len(dust)
+if a.drop_low and a.kind == "plant" and "body_top" in stats:
+    # loose pieces that hang wholly below the pot rim (leaf bits left round the foot after the pot was cut away) float
+    # in the game: 디자인 검수 12-item check 4, PotFlowers_F 10/12. Pieces joined to the plant above the rim stay.
+    zl = stats["body_top"] - a.drop_low
+    low = [isl for isl in islands if len(isl) >= a.dust and max(v.co.z for g in isl for v in g.verts) < zl]
+    stats["low_islands"] = {"count": len(low), "faces": sum(len(i) for i in low), "below": round(zl, 3)}
+    dust += [g for isl in low for g in isl]
 bmesh.ops.delete(bm, geom=dust, context="FACES")
 bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
 bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
