@@ -72,6 +72,11 @@ Net.Names = {
 	"TamerInfo", -- { Pts = { [family] = points }, Stage = { [family] = 0..5 }, Sum = { [family] = summons }, Stages }
 	-- client -> server (anyone with a pet):
 	"FeedPet", -- (uid: my pet) one Pet Treat -> that pet gets Config.Research.TreatXP pet XP
+	-- 게임성 개발 3 (2026-10-12) gear slots (GearService, docs/design/gear_slots_2026-10-12.md §3), client -> server:
+	"EquipGear", -- (slot: Armor | Ring, key: "T:P" from Own, or "" = take it off)
+	"EquipPetGear", -- (uid: my pet, slot: PetArmor | PetAcc, key: "T:P" from Own, or "" = take it off)
+	-- server -> client (owner only):
+	"GearInfo", -- { Own = { ["<Slot>:T:P"] = n }, On = { Armor, Ring }, Pet = { [uid] = { PetArmor?, PetAcc? } } } at join and after changes
 }
 
 Net.GameStateDefaults = {

@@ -409,6 +409,59 @@ def mirror_fill(maps, extra=None):
     return int(take.sum())
 
 
+def brick_maps(prof, k, size=1024, course=0.42, brick=0.85, mortar=0.07, tones=((181, 94, 57), (214, 117, 67), (234, 138, 85)),
+               mortar_rgb=(250, 232, 220), seed=7):
+    """clean running-bond bricks for a lathe() surface (its UV: u = angle, v = 0.01 + 0.98 * 0.92 * arc / total arc):
+    courses of `course` studs along the profile, bricks `brick` studs long round it (fewer per course where the radius
+    shrinks, at least 3), half-brick offset on odd courses, `mortar` studs joints in mortar_rgb; brick colours picked per
+    brick from `tones` (+-4 % shade); k = the scale the mesh gets later (profile units -> studs). Returns proj_bake maps."""
+    pr = np.array(prof, float)
+    arc = np.concatenate([[0.0], np.cumsum(np.hypot(np.diff(pr[:, 0]), np.diff(pr[:, 1])))])
+    tot = max(arc[-1], 1e-9)
+    rows = np.arange(size)
+    v = 1 - (rows + 0.5) / size
+    a = (v - 0.01) / (0.98 * 0.92) * tot                     # arc length (profile units) of each texel row
+    on = (v >= 0.01) & (a <= tot)
+    r = np.interp(np.clip(a, 0, tot), arc, pr[:, 0]) * k       # studs
+    aw = np.clip(a, 0, tot) * k
+    u = (np.arange(size) + 0.5) / size
+    fu = np.clip((u - 0.01) / 0.98, 0, 1)
+    C = np.zeros((size, size, 3))
+    Hh = np.zeros((size, size))
+    rng = np.random.default_rng(seed)
+    T = np.array(tones, float) / 255.0
+    shade = rng.uniform(0.96, 1.04, (4096, 2048))
+    pick = rng.integers(0, len(T), (4096, 2048))
+    Mrt = np.array(mortar_rgb, float) / 255.0
+    for i in rows:
+        if not on[i]:
+            C[i] = Mrt
+            continue
+        c = int(aw[i] // course)
+        inc = aw[i] - c * course
+        n = max(3, int(round(2 * np.pi * max(r[i], 1e-3) / brick)))
+        bl = 2 * np.pi * max(r[i], 1e-3) / n                   # this course's brick length (studs)
+        x = fu * n + (0.5 if c % 2 else 0.0)
+        bi = np.floor(x).astype(int) % n
+        inb = (x - np.floor(x)) * bl
+        joint = (inc < mortar) | (inb < mortar) | (r[i] < 0.12)
+        col = T[pick[c % 4096, bi % 2048]] * shade[c % 4096, bi % 2048][:, None]
+        C[i] = np.where(joint[:, None], Mrt, np.clip(col, 0, 1))
+        Hh[i] = np.where(joint, 0.0, 1.0)
+    # mortar grooves as a tangent normal (u = round, v = up the profile)
+    gx = np.roll(Hh, -1, 1) - np.roll(Hh, 1, 1)
+    gy = np.roll(Hh, 1, 0) - np.roll(Hh, -1, 0)
+    st = 0.35
+    N = np.dstack([-gx * st, -gy * st, np.ones_like(Hh)])
+    N /= np.linalg.norm(N, axis=2, keepdims=True)
+    N = N * 0.5 + 0.5
+    R = np.where(Hh[..., None] > 0.5, 0.82, 0.9) * np.ones((1, 1, 3))
+    M = np.zeros((size, size, 3))
+    MR = np.zeros((size, size, 3))
+    MR[..., 1] = R[..., 0]
+    return {"C": C, "N": N, "R": R, "M": M, "MR": MR, "hit": 1.0}
+
+
 def save_maps(maps, work, name):
     """write <work>/<name>_{C,N,R,M,MR}.png and return a glTF-ready material using them"""
     os.makedirs(work, exist_ok=True)
@@ -501,3 +554,74 @@ def lathe(profile, seg=32, name="Lathe"):
     bpy.context.scene.collection.objects.link(o)
     me.shade_smooth()
     return o
+
+
+def delight(work, maps, size, k=0.75):
+    """Remove the shadows / AO Tripo baked into its colour (디자인 검수 10/12 "멍든 것 같다"): bake AO of `work` into its
+    UVs, divide it out of maps["C"] (linear, hue kept, at most x2.2), then pull the remaining darks toward the local tone of
+    the same colour. Changes maps["C"] in place; returns stats."""
+    # 디자인 검수 10/12 ("멍든 것 같다"): Tripo's colour has its own shadows / AO baked in (dark grey-brown in every fold).
+    # Bake ambient occlusion of our mesh into the same UVs and divide it out of the colour (linear), so the engine and the
+    # normal map do the shading: colour / (1 - k * (1 - AO)), at most x2.2 brighter, then the remaining darks inside a
+    # part are pulled toward the part's own tone (median of the pixels with the same hue / saturation nearby)
+    sc0 = bpy.context.scene
+    sc0.render.engine = "CYCLES"
+    sc0.cycles.samples = 64
+    sc0.cycles.device = "CPU"
+    aoimg = bpy.data.images.new("AO_bake", size, size, alpha=False, is_data=True)
+    aom = bpy.data.materials.new("AO_bake_mat")
+    aom.use_nodes = True
+    tn = aom.node_tree.nodes.new("ShaderNodeTexImage")
+    tn.image = aoimg
+    aom.node_tree.nodes.active = tn
+    keep_mats = list(work.data.materials)
+    work.data.materials.clear()
+    work.data.materials.append(aom)
+    bpy.context.view_layer.update()
+    for o in bpy.context.view_layer.objects:
+        o.select_set(False)
+    work.select_set(True)
+    bpy.context.view_layer.objects.active = work
+    hide = [o for o in bpy.context.scene.objects if o is not work and o.type == "MESH"]
+    for o in hide:
+        o.hide_render = True
+    sc0.render.bake.margin = 8
+    bpy.ops.object.bake(type="AO")
+    for o in hide:
+        o.hide_render = False
+    work.data.materials.clear()
+    for m_ in keep_mats:
+        work.data.materials.append(m_)
+    ao = np.array(aoimg.pixels[:]).reshape(size, size, 4)[::-1, :, 0]
+    C = maps["C"]
+    lin = np.where(C <= 0.04045, C / 12.92, ((C + 0.055) / 1.055) ** 2.4)
+    f = np.clip(1.0 - k * (1.0 - ao), 1 / 2.2, 1.0)
+
+    def gain(rgb, g):
+        # brighten without clipping a channel (a clipped red turned skin green-yellow, 10/12): cap g at 1 / max channel
+        g = np.minimum(g, 1.0 / np.maximum(rgb.max(-1), 1e-4))
+        return rgb * g[..., None]
+    lin = gain(lin, 1.0 / f)
+    # residual darks: luminance pulled toward the local tone of the same colour (hue/sat bins, 64 px blocks)
+    Y = lin @ np.array([0.2126, 0.7152, 0.0722])
+    mx_ = lin.max(-1)
+    mn_ = lin.min(-1)
+    sat = np.where(mx_ > 1e-4, (mx_ - mn_) / np.maximum(mx_, 1e-4), 0)
+    rgbn = lin / np.maximum(lin.sum(-1, keepdims=True), 1e-4)
+    key = (np.round(rgbn[..., 0] / 0.03) * 100 + np.round(rgbn[..., 1] / 0.03)).astype(int) * 4 + np.minimum((sat * 4).astype(int), 3)
+    by, bx = np.indices(Y.shape) // 64
+    blk = (by * 1000 + bx) * 100000 + key
+    order = np.argsort(blk, axis=None)
+    flatb = blk.ravel()[order]
+    flaty = Y.ravel()[order]
+    starts = np.r_[0, np.nonzero(np.diff(flatb))[0] + 1]
+    med = np.empty_like(flaty)
+    for i0, i1 in zip(starts, np.r_[starts[1:], len(flatb)]):
+        med[i0:i1] = np.median(flaty[i0:i1]) if i1 - i0 > 8 else flaty[i0:i1]
+    medY = np.empty(Y.size)
+    medY[order] = med
+    medY = medY.reshape(Y.shape)
+    Y2 = np.where(Y < medY, medY - (medY - Y) * (1 - 0.6 * k), Y)
+    lin = gain(lin, Y2 / np.maximum(Y, 1e-4))
+    maps["C"] = np.where(lin <= 0.0031308, lin * 12.92, 1.055 * lin ** (1 / 2.4) - 0.055)
+    return {"k": k, "ao_mean": round(float(ao.mean()), 3)}

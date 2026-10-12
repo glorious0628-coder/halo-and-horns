@@ -1,3 +1,39 @@
+# 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 UiSandbox 시험·사진 끝)
+
+- **거위 광장 골격 시험 끝**(UiSandbox, 시험물 remove·저장 없이 창 닫음): 짓기 OK(23 부품, WalkGround 태그 2: Floor·GooseSpot). 고침 1개: CSG(UnionAsync/SubtractAsync)는 모델이 workspace에 있어야 해서 모델을 먼저 workspace에 붙임(tools/worldkit/goose_square.luau). 사진 art/review/imgdev/goose_square/ (시트 goose_square_sheet_2026-10-12.jpg: 위·옆·Nest 쪽·Cart 쪽). 소견: 바닥이 UiSandbox 빛 때문에 크림보다 회색으로 보임(색 값은 크림 240,232,215). 디자인 검수에 보냄 -> 메인 반영 1이 `py tools/goose_square.py --mode apply --emit build/goose_square_apply.luau` 파일을 메인에서 돌림(최종 검수 통해).
+- 밤 빛 비교(디자인 검수 요청): tools/night_light_compare.py 만듦, WorldKit 화면 슬롯 대기(최종 검수).
+- 바깥선 묶음 3: build/hull_import 준비됨, 사용자 가져오기 대기. 묶음 4~6은 `py tools/prepare_hull_batch.py <n>`.
+
+# 이미지 개발 — 상태 (2026-10-12: 스티커 17개 올림)
+
+- **스티커 17개 올림**(최종 검수 승인, 자홍 바탕 직접 봄, 10+7 두 번 사이 30초): asset_ids Emo<이름> 17개(Heart·ThumbsUp·HaloHeart·HornSmiley·Crown·Sweat·Zzz·Question·Exclaim·Clap·Sparkle·Anger·Nice·Thanks·Help·Oops·LetsGo). Config.UIArt 반영 = 가지 `imgdev-stickers`(de9e4fcf, worktree ../Game-imgdev-icons): **무료 5개 = Parts 항목에 `Free = true`**(EmoThumbsUp·EmoQuestion·EmoExclaim·EmoHelp·EmoThanks); 나머지 12 + EmoGG = 99 R$ 패스(SPEC A23-143; 패스 서버 = 개발 2, 화면 = 개발 1이 `Free` 필드를 읽음). -> 게임성 검수 -> 최종 검수. 바깥선 묶음 3 목록은 이미지 생성 4 답 대기.
+
+# 이미지 개발 — 상태 (2026-10-12: 바깥선 묶음 2 ID 기록)
+
+- **바깥선 껍데기 묶음 2(10개) 가져오기 끝 -> ID 읽음·임시 파트 지움**(남은 0). 합계 20개 prop_hull_assets.json + asset_ids PropHull035_<키트>(place_rotate_y_pi, centre = OBJ 상자 중심). 다음 = 묶음 3~6(46개 중 나머지 36개): build/hull_import 비우고 10개씩 Hull_<키>.obj 복사 -> 렌더 직접 봄 -> 이미지 생성 4에 "준비됨" -> 최종 검수(사용자 클릭) -> `STUDIO_NAME=WorldKit py tools/read_imported_hulls.py --clean`.
+
+# 이미지 개발 — 상태 (2026-10-12: EmoGG 올림, 광장 골격 슬롯 대기)
+
+- **EmoGG 올림**(최종 검수 승인, 직접 봄): rbxassetid://127627433457825 (asset_ids EmoGG). Config 반영 = 가지 `imgdev-emo`(c3c2dbc2, worktree ../Game-imgdev-icons) -> 게임성 검수 -> 최종 검수. 쓰는 코드는 아직 없음(키만).
+- **거위 광장 골격 UiSandbox 슬롯**(최종 검수 OK): 차례 = 메인 Save As -> 이미지 생성 3 WorldKit 사진 -> 게임성 개발 4 UiSandbox -> **나**. 게임성 개발 4가 "끝"을 보내면 시작(=전달함, 시작): UiSandbox 열기 -> `STUDIO_NAME=UiSandbox py tools/goose_square.py --mode apply` -> screen_capture 3장(위 1·눈높이 Nest/Cart 쪽 2; 한 장마다 새 `studio_mcp.py call screen_capture` 호출) -> remove -> 저장 없이 닫기 -> 최종 검수에 "끝", 사진·이름 표는 디자인 검수에.
+
+# 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 도구 만듦, 시험·사진 대기)
+
+- **거위 광장 공간 골격(SPEC A23-141, 디자인 검수 요청)**: tools/worldkit/goose_square.luau + tools/goose_square.py(apply/remove/survey, --center 기본 6000,200,6000, --emit = 메인용 파일 ALLOW_MAIN true) + 이름 표 docs/design/goose_square_skeleton_2026-10-12.md. 문법 OK, **아직 Studio에서 안 돌려 봄**(UiSandbox 닫힘) -> 최종 검수에 UiSandbox 열기·사진 슬롯 신청 -> 위 1 + 눈높이 2(Nest·Cart 쪽) + 이름 표를 디자인 검수에. 개발 2에 이름 표 알림.
+
+# 이미지 개발 — 상태 (2026-10-12: 가져온 메시는 세로축 180도 돌아옴)
+
+- **Import 3D로 들어온 메시는 OBJ보다 세로축 180도 돌아가 있음**(이미지 생성 4 확인; x·z 부호 반대). 놓는 규칙 = MeshPart.CFrame = 키트 피벗 * CFrame.new(D2_centre) * CFrame.Angles(0, math.pi, 0). prop_hull_assets.json에 place_rotate_y_pi 표시, tools/read_imported_hulls.py 주석·기록에 반영. **새 가져오기 묶음(나머지 46개, Tripo 손보기 GLB)마다 한 번 확인.**
+
+# 이미지 개발 — 상태 (2026-10-12: 3차 아이콘 5개 올림)
+
+- **3차 아이콘 5개 올림**(최종 검수 승인, 자홍 바탕 직접 봄): IconPetTreat 109038216387583 · IconMightTonic 82167218233168 · IconGuardTonic 113383235344315 · IconLuckyTonic 124851169351640 · IconWisdomTonic 131384631272950 (asset_ids 같은 이름). Config 반영 = 가지 `imgdev-icons3`(def1349f, worktree ../Game-imgdev-icons, origin/main 위; Config.Loot.Items 아이템이 이미 Icon 키 씀) -> 게임성 검수 -> 최종 검수. imgdev-icons2 Glowcap 한 줄(7b8d1a4a)은 main에 이미 들어감.
+
+# 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 5개 전부 올림)
+
+- **IconGlowcap 올림**(고친 컷아웃 dc1fadc2, 디자인 검수 OK): rbxassetid://118269985242078 (asset_ids IconGlowcap). 가지 imgdev-icons2에 새 커밋 7b8d1a4a(Config 한 줄, 16c0609f 위, 되감지 않음). 2차 5개 = CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 · IconGlowcap 118269985242078. 병합 대기(게임성 검수 16c0609f 통과, 새 커밋 한 줄은 다시 봄).
+- WorldKit이 다시 시작됨(MCP 이름 WorldKit.rbxlx, 새 STUDIO_ID는 이미지 생성 1이 알려 줌). MV(금·매끈·천 v3b)는 되살린 뒤 확인·다시 넣기: build/wk_backup/20261012_090653.
+
 # 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 4개 올림, Glowcap 보류)
 
 - **2차 아이콘 4개 올림**: CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 (asset_ids 같은 이름). Config 반영 = 가지 `imgdev-icons2`(worktree ../Game-imgdev-icons, origin/main 위) -> 게임성 검수 -> 최종 검수.

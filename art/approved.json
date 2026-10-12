@@ -8354,28 +8354,28 @@
   "note": "폭포 Beam 물줄기 무늬(세로로 이어짐, 3x3 이음매 없음). 512로 줄이고 밝기→투명도(tools/streak_alpha.py). halo_waterfx.luau STREAK. 검수 m1 OK 2026-10-11."
  },
  "Halo_Castle_F3c_C2": {
-   "status": "approved-by-user",
-   "date": "2026-10-11",
-   "approvalQuote": "나도 C2!",
-   "tool": "Adobe Firefly GPT Image 2.5 Sunburst; candidates Medium (0); final + left/back/top = High (5 each, 4 total)",
-   "original": "art/out/s2/halo/castle6/HaloCastle_C2_final_src.png",
-   "views": {
-     "left": "art/out/s2/halo/castle6/HaloCastle_C2_left_src.png",
-     "back": "art/out/s2/halo/castle6/HaloCastle_C2_back_src.png",
-     "top": "art/out/s2/halo/castle6/HaloCastle_C2_top_src.png"
-   },
-   "concepts": "art/out/s2/halo/castle5/HaloCastleF3c_C1..C4.png (C2 chosen); base F3 art/out/s2/halo/castle3/HaloCastleFant_F3.png",
-   "note": "빛 성 확정(사용자 10/11 F3c C2). 날개 한 쌍, 가운데 첨탑+후광, 장미창, 금문 세로 패널+꽃, 평평한 마당, 별/뾰족 끝. 몸통·탑·벽은 Studio 골격(A23-120/122), 장식 부품만 Tripo. 위 시안은 약간 원근이 있음."
+  "status": "approved-by-user",
+  "date": "2026-10-11",
+  "approvalQuote": "나도 C2!",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst; candidates Medium (0); final + left/back/top = High (5 each, 4 total)",
+  "original": "art/out/s2/halo/castle6/HaloCastle_C2_final_src.png",
+  "views": {
+   "left": "art/out/s2/halo/castle6/HaloCastle_C2_left_src.png",
+   "back": "art/out/s2/halo/castle6/HaloCastle_C2_back_src.png",
+   "top": "art/out/s2/halo/castle6/HaloCastle_C2_top_src.png"
+  },
+  "concepts": "art/out/s2/halo/castle5/HaloCastleF3c_C1..C4.png (C2 chosen); base F3 art/out/s2/halo/castle3/HaloCastleFant_F3.png",
+  "note": "빛 성 확정(사용자 10/11 F3c C2). 날개 한 쌍, 가운데 첨탑+후광, 장미창, 금문 세로 패널+꽃, 평평한 마당, 별/뾰족 끝. 몸통·탑·벽은 Studio 골격(A23-120/122), 장식 부품만 Tripo. 위 시안은 약간 원근이 있음."
  },
  "Halo_Aerial_A3": {
-   "status": "approved-by-user",
-   "date": "2026-10-11",
-   "approvalQuote": "추천!",
-   "tool": "Adobe Firefly GPT Image 2.5 Sunburst; candidates Medium (0); final = High (5)",
-   "original": "art/out/s2/halo/aerial/HaloAerial_A3_final_src.png",
-   "concept": "art/out/s2/halo/aerial/HaloAerial_3.png (A3, 확정 구도)",
-   "plan": "art/out/s2/halo/aerial/ref_plan.png / docs/design/halo_plan_v2_2026-10-11.json",
-   "note": "빛 마을 조감 확정(10/11 A3). 2차 = A3 구도 그대로 + 서쪽 성을 C2 날개 성당-성으로, 돔·십자가 0. 위치는 지도 v2 배치."
+  "status": "approved-by-user",
+  "date": "2026-10-11",
+  "approvalQuote": "추천!",
+  "tool": "Adobe Firefly GPT Image 2.5 Sunburst; candidates Medium (0); final = High (5)",
+  "original": "art/out/s2/halo/aerial/HaloAerial_A3_final_src.png",
+  "concept": "art/out/s2/halo/aerial/HaloAerial_3.png (A3, 확정 구도)",
+  "plan": "art/out/s2/halo/aerial/ref_plan.png / docs/design/halo_plan_v2_2026-10-11.json",
+  "note": "빛 마을 조감 확정(10/11 A3). 2차 = A3 구도 그대로 + 서쪽 성을 C2 날개 성당-성으로, 돔·십자가 0. 위치는 지도 v2 배치."
  },
  "HH_Fabric": {
   "status": "uploaded_review_pending",
@@ -8533,5 +8533,71 @@
   "id": "rbxassetid://111724093383818",
   "materialVariant": "GE_MeadowDirt",
   "review": "검수 10/11 밤 3×3 시트(art/review/imgdev/tex_ff3_tiled3x3_sheet_2026-10-11.jpg) 직접 봄: 이음매 OK, 반복 약함 → 통과."
+ },
+ "Meme_PixelHalo": {
+  "status": "approved",
+  "file": "art/out/s2/memes/Meme_PixelHalo_m2.png",
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 PixelHalo_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): front·back = Meme_PixelHalo_{front,back}_HQ.png, left = Meme_PixelHalo_left_final_HQ.png (= left_v2), right = Meme_PixelHalo_right_final_HQ.png (= left 좌우 뒤집음). 위치 art/out/s2/memes_4v/"
+ },
+ "Meme_PixelHorns": {
+  "status": "approved",
+  "file": "art/out/s2/memes/Meme_PixelHorns_m2.png",
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 PixelHorns_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): art/out/s2/memes_4v/Meme_PixelHorns_{front,back,left,right}_HQ.png"
+ },
+ "Meme_DonutHalo": {
+  "status": "approved",
+  "file": "art/out/s2/memes/Meme_DonutHalo_m2.png",
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 DonutHalo_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): art/out/s2/memes_4v/Meme_DonutHalo_{front,back,left,right}_HQ.png"
+ },
+ "Meme_TwistHorns": {
+  "status": "approved",
+  "file": "art/out/s2/memes/Meme_TwistHorns_m1.png",
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 TwistHorns_m1. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): art/out/s2/memes_4v/Meme_TwistHorns_{front,back,left,right}_HQ.png"
+ },
+ "Meme_GGSticker": {
+  "status": "approved",
+  "file": "art/out/s2/memes/Meme_GGSticker_m1.png",
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 GGSticker_m1. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138."
+ },
+ "HaloCastle_C2_parts_high": {
+  "status": "approved-by-design-review",
+  "date": "2026-10-12",
+  "by": "디자인 검수 (기록: 이미지 생성 3)",
+  "parent": "Halo_Castle_F3c_C2 (사용자 승인 '나도 C2!')",
+  "tool": "Adobe Firefly GPT Image 2.5, High (이미지 생성 2; commits 601043d1 · 9518e0c7 · 648d6413 · d07a57f1)",
+  "parts": {
+   "Rose": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_right.png"
+   },
+   "Spire": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Spire_right.png"
+   },
+   "WingL": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_right.png",
+    "back2": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_back2.png"
+   },
+   "WingR": {
+    "front": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_front.png",
+    "back": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_back.png",
+    "left": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_left.png",
+    "right": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_right.png",
+    "back2": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_back2.png"
+   }
+  },
+  "review": "디자인 검수 10/12: 장미창 4면 두께·테 맞음, 첨탑 4면 작은 첨탑 수·후광 높이 맞음, 날개 4면 깃 층·받침 맞음, 빛살·얼굴 없음.",
+  "next": "Tripo 4면 HD(묶음 승인 뒤) → Blender: 후광 고리 = 정확한 원 고리로 바꿔 끼우기, 장미창 꽃잎 = 8잎 정확 대칭, 첨탑 꼭지 별 = 정확한 모양. 성 몸통·탑·벽은 Studio 골격(A23-120)."
  }
 }

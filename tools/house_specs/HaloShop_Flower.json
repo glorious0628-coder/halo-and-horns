@@ -42,6 +42,7 @@
  "pedestals": true,
  "awning": {
   "w": 10.4,
+  "arms": true,
   "colors": [
    [
     150,

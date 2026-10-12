@@ -6078,7 +6078,7 @@ applyLayout = function()
 		LeftX = ch.X,
 		RightX = ch.X + ch.W,
 	}
-	for _, name in { "EventHUD", "MiniMap", "SkillBar" } do
+	for _, name in { "EventHUD", "MiniMap", "SkillBar", "BuffBar" } do
 		local m = C and C[name]
 		if type(m) == "table" and type(m.Relayout) == "function" then pcall(m.Relayout) end
 	end

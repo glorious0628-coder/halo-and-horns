@@ -38,13 +38,13 @@ import proj_bake as PB  # noqa: E402
 KIND = {  # class -> (kind, lengths T1..T3, hand share from the bottom)
     "Paladin": ("sword", (3.85, 3.95, 4.05), 0.145),
     "Berserker": ("darksword", (4.15, 4.25, 4.35), 0.195),
-    "LightMage": ("staff", (4.42, 4.54, 4.66), 0.66),
-    "DarkMage": ("staff", (4.42, 4.54, 4.66), 0.66),
+    "LightMage": ("staff", (3.38, 3.64, 3.90), 0.66),        # SPEC A23-142: 0.65 / 0.70 / 0.75 x H 5.2 incl. the orb
+    "DarkMage": ("staff", (3.38, 3.64, 3.90), 0.66),        # SPEC A23-142: 0.65 / 0.70 / 0.75 x H 5.2 incl. the orb
     "Ranger": ("bow", (3.1, 3.36, 3.61), 0.5),
     "ShadowHunter": ("bow", (2.33, 2.52, 2.71), 0.5),
     "Blacksmith": ("hammer", (2.2, 2.2, 2.2), 0.26),
     "PetTamer": ("baton", (2.13, 2.2, 2.34), 0.3),
-    "Alchemist": ("staff", (4.42, 4.54, 4.66), 0.62),   # the approved 2D is a staff with a flask; the game holds a flask today
+    "Alchemist": ("staff", (3.38, 3.64, 3.90), 0.62),   # flask staff (2D); A23-142 length like the mages
 }
 
 # the hand = the middle of the wrapped grip in the approved 2D front (share of the height from the bottom, measured on
@@ -63,6 +63,155 @@ WRAP = {
     "Weapon_Neutral_PetTamer_T1": 0.26, "Weapon_Neutral_PetTamer_T2": 0.28, "Weapon_Neutral_PetTamer_T3": 0.245,
 }
 
+# 개발 1 (fix/staff-hip, 10/12): on these staffs the wrapped grip moves UP so the hand holds it in the hip pose; the wrap
+# band (wrap + its rings, share of the height measured on the Tripo width profile) is cut out, moved along the staff so
+# its middle sits at <target> studs from the foot, the hole is filled by stretching the bare shaft just below it (knots
+# and branches stay where they are). (lo, hi, target studs)
+MOVE = {   # SPEC A23-142 + 개발 1 code (fix/staff-short 68bef0e7, 디자인 검수 10/12): the hand holds the wrap in the
+    # middle of the staff, wrap centre = 43 % of the length from the foot (= the pivot) on all 9 staffs; the wrap band
+    # (wrap + its rings, share measured on the Tripo width profile) moves along the staff, up or down. (lo, hi, target)
+    "Weapon_Halo_LightMage_T1": (0.365, 0.515, 0.43), "Weapon_Halo_LightMage_T2": (0.385, 0.61, 0.43),
+    "Weapon_Halo_LightMage_T3": (0.235, 0.455, 0.43),
+    "Weapon_Horns_DarkMage_T1": (0.295, 0.515, 0.43), "Weapon_Horns_DarkMage_T2": (0.42, 0.675, 0.43),
+    "Weapon_Horns_DarkMage_T3": (0.265, 0.495, 0.43),
+    "Weapon_Neutral_Alchemist_T1": (0.245, 0.495, 0.43), "Weapon_Neutral_Alchemist_T2": (0.235, 0.455, 0.43),
+    "Weapon_Neutral_Alchemist_T3": (0.135, 0.385, 0.43),
+}
+
+
+def move_wrap(me, z0, L, lo_s, hi_s, target, rmax=0.3, foot=0.12):
+    """cut the band [lo, hi] (faces near the staff axis) and move it up by d; the hole [lo, lo + h] (h = min(hi - lo, d))
+    is filled with COPIES of the bare shaft just below it (knots and twists repeat like the 2D branch; 디자인 검수 10/12:
+    a stretched slice read as a smooth striped tube), stacked when the shaft below is shorter than the hole; every seam
+    is closed by snapping the upper piece's edge onto the lower one; the top seam sits under the moved band's ring.
+    returns (lo, hi, d) in studs"""
+    lo, hi = z0 + lo_s * L - 0.03, z0 + hi_s * L + 0.03          # a little past the rings: no ring sliver left behind
+    d = z0 + target - (lo + hi) / 2
+    h = min(hi - lo, d)
+    V = np.array([v.co[:] for v in me.vertices])
+    mid = V[(V[:, 2] > lo) & (V[:, 2] < hi)]
+    cx, cy = float(np.median(mid[:, 0])), float(np.median(mid[:, 1]))
+    R = np.hypot(V[:, 0] - cx, V[:, 1] - cy)
+    ang = ((np.arctan2(V[:, 1] - cy, V[:, 0] - cx) + math.pi) / (2 * math.pi) * 24).astype(int) % 24
+
+    def prof(z):
+        m = (np.abs(V[:, 2] - z) < 0.02) & (R < rmax)
+        out = np.zeros(24)
+        np.maximum.at(out, ang[m], R[m])
+        return out
+    target = prof(lo - 0.005)
+    bottom = z0 + foot * L
+    ref_r = float(np.median(target[target > 0])) if (target > 0).any() else 0.1
+
+    def lumpy(a_, w_):
+        """a ring / flange inside the window (a mean radius > 1.15 x the shaft at the hole) = never copy it"""
+        rs = [prof(z) for z in np.arange(a_ + 0.01, a_ + w_, 0.02)]
+        return any(np.median(r[r > 0]) > 1.15 * ref_r for r in rs if (r > 0).any())
+    # the source piece [a, a + w] (n copies stacked, n*w = h) is picked where its cross-sections best match the hole's
+    # lower edge and each other, so seams barely show and no knot is cut in half (DarkMage T1 10/12)
+    best = None
+    for n_ in (1, 2, 3, 4, 5, 6):                               # more copies = a visibly repeating pattern: only
+        w_ = h / n_                                             # when the shaft below is too short (straight staffs)
+        if w_ < min(0.15, h) - 1e-9 or (n_ > 2 and best is not None):
+            break
+        for a_ in np.arange(bottom, lo - w_ + 1e-6, 0.01):
+            pa, pb = prof(a_ + 0.005), prof(a_ + w_ - 0.005)
+            cost = np.abs(pa - target).mean() + 0.02 * (n_ - 1)        # copies alternate upside down: their seams match
+            if best is None or cost < best[0]:
+                best = (cost, float(a_), w_, n_)
+    if best is None:
+        # the shaft below is too short (Alchemist T3: gold foot right under the wrap): copy plain shaft from above the
+        # moved band instead
+        for n_ in (1, 2, 3, 4, 5, 6):
+            w_ = h / n_
+            for a_ in np.arange(hi + d + 0.02, z0 + 0.8 * L - w_ + 1e-6, 0.01):
+                if lumpy(a_, w_):
+                    continue
+                pa = prof(a_ + 0.005)
+                cost = np.abs(pa - target).mean() + 0.02 * (n_ - 1)
+                if best is None or cost < best[0]:
+                    best = (cost, float(a_), w_, n_)
+            if best is not None:
+                break
+    _, a, w, n = best
+    src_hi = a + w
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
+    for zc in (a, src_hi, lo, hi, lo + d, hi + d):
+        bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=(0, 0, zc), plane_no=(0, 0, 1))
+    P = np.array([v.co[:] for v in bm.verts if lo <= v.co.z <= hi])
+    ax, ay = float(np.median(P[:, 0])), float(np.median(P[:, 1]))
+
+    def near(f, lo_, hi_):
+        c = f.calc_center_median()
+        return lo_ - 1e-5 <= c.z <= hi_ + 1e-5 and math.hypot(c.x - ax, c.y - ay) < rmax
+    band = [f for f in bm.faces if near(f, lo, hi)]
+    src = [f for f in bm.faces if near(f, a, src_hi)]
+    # where the wrap lands, everything of the staff there (shaft, knots, an old metal ring - LightMage T3 10/12) is
+    # replaced by the moved band: clean cuts at lo + d / hi + d, no teeth of old shaft showing past the rings
+    poke = [f for f in bm.faces if near(f, lo + d, hi + d)]
+    dup = bmesh.ops.duplicate(bm, geom=band)
+    bmesh.ops.translate(bm, verts=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMVert)], vec=(0, 0, d))
+    bmesh.ops.delete(bm, geom=band + [f for f in poke if f not in band], context="FACES")
+
+    def edge_verts(faces, z):
+        return [v for v in {v for f in faces for v in f.verts} if abs(v.co.z - z) < 1e-4]
+
+    def snap(upper, lower, z, blend=0.12, sign=1):
+        """close the seam at z: the upper piece's edge goes onto the lower piece's edge, and its verts within `blend`
+        of the seam follow part of the way (a short taper instead of a step; sign -1 = the moving piece is below)"""
+        lv = edge_verts(lower, z)
+        if not lv:
+            return
+        L2 = np.array([v.co[:2] for v in lv])
+        up = edge_verts(upper, z)
+        moves = []
+        for v in up:
+            k = int(np.argmin(((L2 - np.array(v.co[:2])) ** 2).sum(1)))
+            if np.hypot(*(L2[k] - np.array(v.co[:2]))) < 0.2:
+                moves.append((np.array(v.co[:2]), L2[k] - np.array(v.co[:2])))
+                v.co.x, v.co.y = L2[k]
+        if not moves:
+            return
+        M0 = np.array([m[0] for m in moves])
+        for v in {v for f in upper for v in f.verts}:
+            t = (v.co.z - z) * sign
+            if 1e-4 < t < blend:
+                k = int(np.argmin(((M0 - np.array(v.co[:2])) ** 2).sum(1)))
+                f = 1.0 - t / blend
+                v.co.x += moves[k][1][0] * f
+                v.co.y += moves[k][1][1] * f
+    below = [f for f in bm.faces if near(f, lo - 0.2, lo)]
+    for k in range(1, n + 1):
+        cp = bmesh.ops.duplicate(bm, geom=src)
+        cf = [g for g in cp["geom"] if isinstance(g, bmesh.types.BMFace)]
+        cv = [g for g in cp["geom"] if isinstance(g, bmesh.types.BMVert)]
+        bmesh.ops.translate(bm, verts=cv, vec=(0, 0, lo + (k - 1) * w - a))
+        if k % 2 == 0:
+            # every second copy upside down: neighbouring copies then meet with the same cross-section and the same
+            # texture at the seam (no stripes where straight staffs need several copies, Alchemist T3 10/12)
+            zm = 2 * lo + (2 * k - 1) * w
+            for v in cv:
+                v.co.z = zm - v.co.z
+            bmesh.ops.reverse_faces(bm, faces=cf)
+        if lo + k * w > lo + h + 1e-5:                            # (n * w = h: never cut; kept for safety)
+            geom = list({e for f in cf for e in f.edges}) + list({v for f in cf for v in f.verts}) + cf
+            res = bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(0, 0, lo + h), plane_no=(0, 0, 1), clear_outer=True)
+            cf = [f for f in bm.faces if f.is_valid and near(f, lo + (k - 1) * w, lo + h) and f not in below]
+        snap(cf, below, lo + (k - 1) * w)
+        below = cf
+    if h < d - 1e-5:                                              # original shaft above the hole: snap it onto the copy
+        above = [f for f in bm.faces if near(f, lo + h, lo + h + 0.2) and f not in below]
+        snap(above, below, lo + h)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    bmesh.ops.remove_doubles(bm, verts=[v for v in bm.verts if any(abs(v.co.z - (lo + q * w)) < 1e-4 for q in range(n + 1))], dist=2e-4)
+    bm.to_mesh(me)
+    bm.free()
+    me.update()
+    return lo, hi, d
+
+
 argv = sys.argv[sys.argv.index("--") + 1:]
 ap = argparse.ArgumentParser()
 ap.add_argument("job")
@@ -72,6 +221,8 @@ ap.add_argument("--min-thick", type=float, default=0.2)
 ap.add_argument("--rotz", type=float, default=90.0)
 ap.add_argument("--out", default=os.path.join(ROOT, "art", "models", "tripo", "weapons"))
 ap.add_argument("--preview", action="store_true")
+ap.add_argument("--delight", type=float, default=0.75, help="remove Tripo's baked shadows from the colour (tools/proj_bake.py delight), 0 = off")
+ap.add_argument("--no-move", action="store_true", help="keep the wrap where Tripo made it (MOVE table off)")
 ap.add_argument("--preview-only", action="store_true", help="only re-render the previews of an existing <job>_TU.glb")
 ap.add_argument("--sym", action="store_true", help="left / right mirror (the 2D front is symmetric): keep the +x half, mirror it")
 a = ap.parse_args(argv)
@@ -176,6 +327,24 @@ s = length / (z1 - z0)
 me.transform(Matrix.Scale(s, 4))
 V = np.array([v.co[:] for v in me.vertices])
 z0 = V[:, 2].min()
+if a.job in MOVE and not a.no_move:
+    lo_s, hi_s, tgt = MOVE[a.job]
+    if tgt < (lo_s + hi_s) / 2:
+        # moving DOWN: flip the staff upside down, move "up" (the shaft above the wrap fills the hole), flip back;
+        # in the flipped staff the head is at the "foot", so the source search keeps 30 % clear of it
+        zt = float(np.array([v.co[:] for v in me.vertices])[:, 2].max())
+        flip = Matrix.Translation((0, 0, z0 + zt)) @ Matrix.Diagonal((1, 1, -1, 1))
+        me.transform(flip)
+        me.flip_normals()
+        flo, fhi, fd = move_wrap(me, z0, length, 1 - hi_s, 1 - lo_s, (1 - tgt) * length, foot=0.3)
+        me.transform(flip)
+        me.flip_normals()
+        mlo, mhi, md = z0 + zt - fhi, z0 + zt - flo, -fd
+    else:
+        mlo, mhi, md = move_wrap(me, z0, length, lo_s, hi_s, tgt * length)
+    stats["wrap_moved"] = {"from": [round(mlo - z0, 3), round(mhi - z0, 3)], "up": round(md, 3), "centre_now": round(tgt * length, 3)}
+    V = np.array([v.co[:] for v in me.vertices])
+    z0 = V[:, 2].min()
 zg = z0 + hand * length                                     # the grip height (share of the length)
 zguard = None
 if kind in ("sword", "darksword"):
@@ -209,6 +378,9 @@ if a.job in WRAP:
     stats["grip_code_share"] = round(float((zg - z0) / length), 3)
     zg = z0 + WRAP[a.job] * length
     stats["grip_source"] = "2D wrap centre"
+if "wrap_moved" in stats:
+    zg = z0 + stats["wrap_moved"]["centre_now"]
+    stats["grip_source"] = "moved wrap centre (개발 1 hip pose)"
 band = V[np.abs(V[:, 2] - zg) < 0.08 * length]
 stats["grip_from_bottom"] = round(float((zg - z0) / length), 3)
 cx, cy = (band[:, 0].min() + band[:, 0].max()) / 2, (band[:, 1].min() + band[:, 1].max()) / 2
@@ -308,6 +480,8 @@ bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.004, scal
 bpy.ops.uv.pack_islands(margin=0.004)
 bpy.ops.object.mode_set(mode="OBJECT")
 maps = PB.bake(work, PB.Source([src]), size=a.px, ray=None, relief=True)
+if a.delight > 0:
+    stats["delight"] = PB.delight(work, maps, a.px, a.delight)
 mat = PB.save_maps(maps, OUT, NAME)
 work.data.materials.clear()
 work.data.materials.append(mat)

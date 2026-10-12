@@ -84,6 +84,9 @@ for _, h in H do
       p.Parent = m; n += 1; table.insert(fresh, p)
       local sa = p:FindFirstChildWhichIsA("SurfaceAppearance")
       if string.find(p.Name, "_Leaf") then p.Material = Enum.Material.Wood
+      elseif string.match(p.Name, "_Canopy[AB]$") then  -- cloth (not the CanopyFinial): the colour the decoration carries, Fabric look
+        p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"
+        if string.sub(p.Name, -1) == "A" then p.Color = Color3.fromRGB(%s) else p.Color = Color3.fromRGB(%s) end
       elseif string.find(p.Name, "RoofGlass") then
         p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(170, 215, 245); p.Transparency = 0.45; p.Reflectance = 0.1
         p.CastShadow = false
@@ -134,7 +137,7 @@ local left = 0
 for _, p in M:GetDescendants() do if p:IsA("BasePart") then left += 1 end end
 if left == 0 then M:Destroy() end
 table.insert(out, "left in the import model: " .. left)
-return table.concat(out, " | ")''' % (a.model, a.marker, a.model, ",\n".join(houses), *mn, *mx, "true" if a.append else "false")
+return table.concat(out, " | ")''' % (a.model, a.marker, a.model, ",\n".join(houses), *mn, *mx, "true" if a.append else "false", "110, 165, 232", "250, 250, 248")
 os.makedirs(os.path.join(ROOT, "build"), exist_ok=True)
 json.dump({"code": code, "datamodel_type": "Edit"}, open(os.path.join(ROOT, "build", "house_deco_studio.json"), "w", encoding="utf-8"))
 print("[studio] %d houses -> build/house_deco_studio.json" % len(houses))

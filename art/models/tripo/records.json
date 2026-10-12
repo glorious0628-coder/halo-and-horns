@@ -6882,6 +6882,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloBright_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, left/right mirror below 42 % of the height, decimate to 8768 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.866,
+    1.614,
+    5.191
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloBright/NPC_HaloBright_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloSirGleam_web_hd": [
@@ -6899,6 +6914,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloSirGleam_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, left/right mirror below 18 % of the height, decimate to 8767 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    3.349,
+    1.631,
+    5.198
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloSirGleam/NPC_HaloSirGleam_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloBakerGranny_web_hd": [
@@ -6916,6 +6946,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloBakerGranny_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, decimate to 8768 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.968,
+    1.642,
+    5.195
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloBakerGranny/NPC_HaloBakerGranny_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloJuiceMan_web_hd": [
@@ -6933,6 +6978,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloJuiceMan_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, decimate to 8766 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    3.027,
+    2.056,
+    5.196
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloJuiceMan/NPC_HaloJuiceMan_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloFlowerGirl_web_hd": [
@@ -6950,6 +7010,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloFlowerGirl_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, decimate to 8767 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.706,
+    1.736,
+    5.19
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloFlowerGirl/NPC_HaloFlowerGirl_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "Crown_GoldHalf_web_hd": [
@@ -9339,11 +9414,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5417), weld then loose specks (6 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3970 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     3.168,
-    3.19,
-    1.869
+    3.122,
+    1.98
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 5417 -> 4230); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Lavender_web_hd_mv4": [
@@ -9376,11 +9452,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (11744), weld then loose specks (20 faces), decimate to 7836 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (4000 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     2.29,
-    2.237,
-    2.12
+    2.241,
+    2.118
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Lavender/HaloFlowerPotHQ_Lavender_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 11744 -> 5665); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Rose_web_hd_mv4": [
@@ -9417,7 +9494,8 @@
     3.499
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Rose/HaloFlowerPotHQ_Rose_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 2514 -> 995); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Sunflower_web_hd_mv4": [
@@ -9451,10 +9529,11 @@
    "size_studs": [
     2.729,
     2.104,
-    2.223
+    3.466
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8757 -> 5870); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Tulip_web_hd_mv4": [
@@ -9487,11 +9566,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7240), weld then loose specks (0 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3998 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     2.7,
-    2.672,
-    2.107
+    2.67,
+    2.252
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 7240 -> 5113); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_C_web_hd_mv4": [
@@ -9528,7 +9608,8 @@
     8.0
    ],
    "out": "art/models/tripo/touchup/HaloVar3_Topiary_C/HaloVar3_Topiary_C_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 9 -> 9); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_D_web_hd_mv4": [
@@ -9565,7 +9646,8 @@
     7.997
    ],
    "out": "art/models/tripo/touchup/HaloVar3_Topiary_D/HaloVar3_Topiary_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 36 -> 36); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_E_web_hd_mv4": [
@@ -9597,12 +9679,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=8)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7806), weld then loose specks (4 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3991 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    3.318,
-    2.946,
-    1.49
+    3.303,
+    2.93,
+    2.024
    ],
    "out": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 7806 -> 3002); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_E_web_hd_mv4": [
@@ -9639,7 +9722,8 @@
     10.0
    ],
    "out": "art/models/tripo/touchup/HaloVar3_RoundTree_E/HaloVar3_RoundTree_E_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 35 -> 35); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_F_web_hd_mv4": [
@@ -9676,7 +9760,8 @@
     9.999
    ],
    "out": "art/models/tripo/touchup/HaloVar3_RoundTree_F/HaloVar3_RoundTree_F_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 16 -> 16); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_G_web_hd_mv4": [
@@ -9713,7 +9798,8 @@
     10.0
    ],
    "out": "art/models/tripo/touchup/HaloVar3_RoundTree_G/HaloVar3_RoundTree_G_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 21 -> 21); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloReasonHQ_BenchB_web_hd_mv4": [
@@ -10374,12 +10460,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5193), weld then loose specks (7 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3980 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    2.329,
-    2.367,
-    2.983
+    2.336,
+    2.357,
+    2.985
    ],
    "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_A/HaloVar4_PotFlowers_A_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 5193 -> 2542); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_C_web_hd_mv4": [
@@ -10412,11 +10499,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8542), weld then loose specks (0 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3990 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     1.888,
-    1.654,
-    0.975
+    1.714,
+    1.112
    ],
    "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_C/HaloVar4_PotFlowers_C_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8542 -> 5463); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_D_web_hd_mv4": [
@@ -10448,12 +10536,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (9378), weld then loose specks (9 faces), decimate to 7000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3840 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    2.59,
-    2.494,
-    0.827
+    2.599,
+    2.57,
+    0.966
    ],
    "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 9378 -> 5158); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_PotFlowers_E_web_hd_mv4": [
@@ -10485,12 +10574,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8948), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3962 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    2.371,
-    2.293,
+    2.457,
+    2.425,
     2.83
    ],
    "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_E/HaloVar3_PotFlowers_E_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8948 -> 3794); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_PotFlowers_F_web_hd_mv4": [
@@ -10522,14 +10612,15 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (10396), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3993 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    1.751,
-    1.467,
-    0.79
+    1.891,
+    1.618,
+    2.427
    ],
    "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_TU.glb (+ maps, disk only)",
    "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
-   "fix_10_12": "--drop-low 0.1: 16 loose leaf islands (398 faces) wholly below the pot rim removed (floating bits); hanging vines need a new Tripo (asked)",
-   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
+   "fix_10_12": "--keep-green --drop-low 0.1: the Tripo already had the long trailing vines; the pot cut had taken them. Leaf-green faces now survive the cut (14512), 4 loose pieces wholly below the rim dropped (91 faces). No new Tripo needed.",
+   "sheet_fix": "art/review/img4/tripo_tu_potflowersF_vines_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 3607 -> 3057); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [
@@ -10566,7 +10657,8 @@
     5.808
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Planter_D/HaloVar4_Planter_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 2132 -> 2132); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "halo_houses15_deco_tripo_2026-10-12": [
@@ -11430,12 +11522,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.731,
-    0.355,
-    4.422
+    0.559,
+    0.271,
+    3.382
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved -0.03; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11466,12 +11562,13 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.943,
-    0.416,
-    4.543
+    0.756,
+    0.334,
+    3.643
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved -0.25; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_LightMage_T3_web_hd_mv4": [
@@ -11502,12 +11599,16 @@
    "tool": "tools/tripo_weapon_touchup.py --sym",
    "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3497 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    1.254,
-    0.642,
-    4.66
+    1.05,
+    0.537,
+    3.9
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.33; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11754,12 +11855,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.851,
-    0.353,
-    4.42
+    0.651,
+    0.27,
+    3.378
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved +0.09; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11790,12 +11895,13 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.949,
-    0.403,
-    4.538
+    0.761,
+    0.323,
+    3.638
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved -0.43; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
@@ -11826,12 +11932,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    1.094,
-    0.437,
-    4.659
+    0.915,
+    0.365,
+    3.899
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.20; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12078,12 +12188,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    1.022,
-    0.457,
-    4.42
+    0.781,
+    0.347,
+    3.377
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved +0.20; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12114,12 +12228,16 @@
    "tool": "tools/tripo_weapon_touchup.py --sym",
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3498 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.766,
-    0.619,
-    4.541
+    0.614,
+    0.496,
+    3.64
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved +0.31; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12150,12 +12268,16 @@
    "tool": "tools/tripo_weapon_touchup.py --sym",
    "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.866,
-    0.694,
-    4.663
+    0.732,
+    0.581,
+    3.902
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.66; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
@@ -12445,6 +12567,305 @@
    "studio_step": "pending: second import file after 디자인 검수 (05 / Flower / Bakery skeletons re-inserted first)",
    "credits": 0,
    "review_1": "디자인 검수 10/12: pass + 3 fixes -> shop glass only Transparency 0.6 / Reflectance 0.05 (generator 'shopglass'), Bakery sign V wedge = plate at the panel's front in the median gold, Potion sign X spikes cut (drop_boxes) + small gap closing; plain materials now sRGB -> linear (previews were washed out)"
+  }
+ ],
+ "NPC_HaloPotionMerchant_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6f0f8392-fba9-4495-aec1-1abfbaf22f97",
+   "balance_after": 14170,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "at": "2026-10-12 10:30",
+   "approval": "최종 검수 10/12: PotionMerchant 1명 55점 (디자인 검수 통과 4면); other 5 NPCs already have 10/10 4-view Tripo, decision with 디자인 검수",
+   "inputs": {
+    "front": "art/out/s2/npc/NPC_HaloPotionMerchant_front_HQ_src.png",
+    "left_slot(camera at the character's own left; the 2D sides are named from the viewer)": "art/out/s2/npc/NPC_HaloPotionMerchant_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc/NPC_HaloPotionMerchant_left_HQ_src.png",
+    "back": "art/out/s2/npc/NPC_HaloPotionMerchant_back_HQ_src.png"
+   },
+   "result": "13,506 tris; modest clothing kept (long coat, long sleeves, high collar, boots; only face + hands)",
+   "use": "Halo town potion shop NPC; Blender touch-up next (A23-125)",
+   "file": "art/models/tripo/web/NPC_HaloPotionMerchant_MV4_HD_src.glb",
+   "sheet": "art/review/img4/npc_potionmerchant_tripo_raw_1012.jpg"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, decimate to 8000 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.884,
+    1.592,
+    5.199
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloPotionMerchant/NPC_HaloPotionMerchant_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "new 10/12 Tripo (55 points)"
+  }
+ ],
+ "HaloNewHouse_Hill4_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d3cdb959-b357-4486-b95c-34d4b513ca17",
+   "model_page": "d2ebcfca-1286-45e9-bb7e-8934abf716c5",
+   "balance_after": 14415,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:2x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Hill4_HD_src.glb",
+   "bytes": 14086480,
+   "note": "잔액 표시: 생성 전 14170 → 직후 14415 (다른 적립/환불이 겹친 듯, 이 잡 55점)"
+  }
+ ],
+ "HaloNewHouse_Cliff6_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d667e530-0c0b-46bb-9ff2-df3324e3017a",
+   "model_page": "a90320f1-f54d-4d09-99cd-79f978d54769",
+   "balance_after": 14360,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:3x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Cliff6_HD_src.glb",
+   "bytes": 12283428
+  }
+ ],
+ "HaloNewHouse_Cliff7_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6cdf2e7d-61b4-4d8a-ba50-fe996d296854",
+   "model_page": "a41e3f81-f950-4679-adbb-6c8da3d22980",
+   "balance_after": 14305,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:4x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Cliff7_HD_src.glb",
+   "bytes": 13164064
+  }
+ ],
+ "HaloNewHouse_Cliff8_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d4049a77-87c0-4c97-b85f-6e8c26a8974e",
+   "model_page": "41b63e9e-1515-4664-9ed2-8531a25ca157",
+   "balance_after": 14250,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:5x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Cliff8_HD_src.glb",
+   "bytes": 12738796
+  }
+ ],
+ "HaloNewHouse_Garden5_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "07bb46c7-843a-4354-b2a9-d1a6e5be9f69",
+   "model_page": "ec3011a5-7172-4e2a-85f4-76d334c26282",
+   "balance_after": 14195,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 12:0x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Garden5_HD_src.glb",
+   "bytes": 12544000
+  }
+ ],
+ "HaloNewHouse_Garden6_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f61736b8-e4d8-43f7-a4e4-56135ae7b8b2",
+   "model_page": "44a8fef3-a411-493c-84dc-e3f9916bb0fe",
+   "balance_after": 13975,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 12:4x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_left_v3.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Garden6_HD_src.glb",
+   "bytes": 12265724,
+   "note": "잔액: Garden5 뒤 14195 → 이 잡 전 14085 → 직후 13975 (110씩 줄어듦: 같은 계정을 다른 세션도 쓰는 듯, 이 잡은 생성 1번 클릭)"
+  }
+ ],
+ "HaloNewHouse_Garden7_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "e01e1b57-32b6-43b4-a883-95a676d82e91",
+   "model_page": "9bd1caed-4467-4c00-9d4b-b4479537310e",
+   "balance_after": 13865,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 12:5x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_right_v4.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_left_v3.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_back_v3.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Garden7_HD_src.glb",
+   "bytes": 13781288,
+   "note": "잔액: 직전 13920 → 직후 13865 (이 잡 55). Garden6 뒤 13975 → 13920은 다른 세션 사용인 듯"
+  }
+ ],
+ "Meme_PixelHalo_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b190a848-3034-4ac3-b5aa-2fdf605c5f61",
+   "balance_after": 14140,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_PixelHalo_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_PixelHalo_right_v2_mirror_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_PixelHalo_left_v2_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_PixelHalo_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_PixelHalo_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
+ ],
+ "Meme_PixelHorns_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "12c2e60e-a05d-4427-a557-f321a66b600c",
+   "balance_after": 14085,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_PixelHorns_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_PixelHorns_right_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_PixelHorns_left_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_PixelHorns_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_PixelHorns_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
+ ],
+ "Meme_DonutHalo_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3553b34d-a0a3-4605-9fb8-59c1e5f03d43",
+   "balance_after": 14030,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_DonutHalo_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_DonutHalo_right_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_DonutHalo_left_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_DonutHalo_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_DonutHalo_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
+ ],
+ "Meme_TwistHorns_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "21e4f14d-b931-423d-98a4-3bf0e5d516b7",
+   "balance_after": 13920,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_TwistHorns_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_TwistHorns_right_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_TwistHorns_left_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_TwistHorns_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_TwistHorns_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
   }
  ]
 }

@@ -25,7 +25,7 @@ OUT = os.path.join(ROOT, "build", "wk", "halo_blockout_apply.lua")
 CELL = 4
 X0, X1 = -212, 212  # set from the plan's land in main() (③ 3차: the town grew 1.5x); north edge Z0 stays at the gate
 Z0, Z1 = -324, -712  # north edge (gate side) .. south edge
-EDGE = 32  # grid margin round the land: the 16-stud sea ring + its 16-stud rim (2차 10/11)
+EDGE = 52  # grid margin round the land: the 16-stud sea ring + its 16-stud rim (2차 10/11) + 20 for the outcrops (3차 10/12)
 HOFF = 20  # stored height = round(y) + HOFF
 ALPH = "".join(chr(c) for c in range(48, 48 + 80) if chr(c) not in "\\\"'`[]")  # safe chars
 # material codes
@@ -41,17 +41,34 @@ PAVED_R = dict(fountain=40, spawn=14)  # paved circle radii: round the plan's fo
 APRON_D, APRON_RAMP = 8, 12  # level doorstep in front of every door, then a ramp back to the district slope (studs)
 APRON_SIDE = 8  # review 10/11: sideways blend width of the doorstep (its sides were steps)
 PAINT_IN = CELL  # 디자인 검수 10/11: road / yard / plaza terrain paint stops one cell inside the parts
+WALL_MIN = 8.0  # 5단계 10/12: only steps of 8+ (the tiers: castle plateau, cathedral hill, cliff, flower terraces) get a wall;
+# 4..8 steps are plain grass banks (walls on every district border read as a white maze from above). Inside a terrace
+# district (cathedral_steps: the flower terraces beside the cathedral stairs) every step > FACE_DH gets its wall
+WALL_TOL = 2.5  # 5단계 10/12: retaining-wall lines are the step edges straightened to this tolerance (studs)
+WALL_T = 8.0  # wall thickness, centred on the line (covers the zigzag + the one-cell terrain slope)
+WALL_MAXLEN = 24.0  # longest single wall piece (studs)
+WALL_OVER = 0.6  # pieces overlap this much (no hairline gaps at the joints)
 FACE_DH = 4.0  # 디자인 검수 10/11: only steps higher than 4 are rock faces (Limestone, light cream); lower ones stay grass slopes
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
+ROAD_SINK = 2  # 5단계 10/12: Terrain under the road parts this much lower (skeleton_ground G() adds it back); 2 not 1:
+# the drawn surface lands up to 1 above the planned height (voxel occupancy rounding), 1 left grass at the plate tops
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
 CLIFF_Z = -760  # rock lip on the south shore
 SEA_R = 4  # sea ring width in cells (16 studs) round the coast (2차 10/11: was 5; the rim beyond it is RIM_W cells)
+OUT_LAYERS, OUT_GROW = 5, 0.95  # 3차 10/12: lumps up to 5 cells out (layer k picked with OUT_GROW - 0.1 k)
+RECESS_ROWS, RECESS_P = 3, 0.5  # recess cells up to 3 rows into the 4-wide rim (its inner row stays), coarse 2x2 hash
+OUT_P1, OUT_P2 = 0.42, 0.3  # 5단계 10/12 ④: outcrop chance next to the rim / next to an outcrop (2-cell lumps)
+RIM_RAG = (4, 26)  # ragged extra depth under the rim (studs, slow wave)
+RIM_DRIP_P, RIM_DRIP = 0.14, (14, 40)  # drips hanging from the rim's bottom
+RIM_OUT_D = (12, 30)  # outcrop depth under its own top
+RING_DOWN = -18  # 5단계 10/12: the ring's rock bottom (the Luau RIM_DOWN; was -30 with the 24-deep water)
 RIM_W = 4  # rock rim cells outside the water: 2 cells showed see-through holes at distance (terrain LOD) -> 4 (16 studs)
 # pointed floating-rock underside (10/11 검수; 2차 10/11 17:10: the cone capped at 70 left a flat bottom with an even comb of
 # short spikes -> longer toward the middle, a few big spikes + medium + small ones at uneven lengths and spacing)
-UND_CENTER = 105  # base depth in studs at the farthest-from-edge cell: UND_CENTER * dn ** UND_POW (dn = edge distance / max)
-UND_POW = 0.9
+UND_CENTER = 170  # 디자인 검수 10/12 ④: was 105 (from the side a flat slab + one spike; now an inverted cone)
+# base depth in studs at the farthest-from-edge cell: UND_CENTER * dn ** UND_POW (dn = edge distance / max)
+UND_POW = 0.75  # was 0.9: deeper right inside the rim
 UND_WOB = 0.22  # low-frequency wobble of the base (+-)
 UND_JIT = 0.12  # per-cell shake
 UND_BIG = dict(n=6, min_dn=0.35, gap=90, L=(50, 110), R=(22, 36))  # a few big spikes (studs)
@@ -60,7 +77,7 @@ UND_STAL_P = 0.05  # small: a cell is a stalactite when its hash is below this .
 UND_STAL_MIN_D = 12  # ... and it is farther than this (studs) from the edge
 UND_STAL_ADD = (5, 16)  # small stalactite adds 5..16 studs; the 4 neighbours get UND_STAL_NB of that
 UND_STAL_NB = 0.35
-UND_UNIT = 3  # one ALPH char = 3 studs of depth (the Luau reads D.und_unit)
+UND_UNIT = 4  # 10/12: was 3 (cap 216 -> 288 for the deeper cone); one ALPH char = 3 studs of depth (the Luau reads D.und_unit)
 UND_CAP = 72 * UND_UNIT  # hard cap (studs), ALPH has 74 chars
 
 
@@ -319,6 +336,7 @@ def main():
                     apron += 1
     print(f"[blockout] door aprons: {apron} cells")
     base = [row[:] for row in H]
+    RSINK = set()  # 5단계 10/12: cells under the road parts (sunk ROAD_SINK at the end, see below)
 
     # roads: own height profile, painted, ramps; stairs where steeper than 24 deg
     grade_mat = {1: "road1", 2: "road2", 3: "road3"}
@@ -346,6 +364,7 @@ def main():
                 seg_len = math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1])
                 slope = math.degrees(math.atan2(abs(prof[i + 1] - prof[i]), max(seg_len, 1e-6)))
                 H[r][c] = y
+                RSINK.add((r, c))
                 if best[0] > half - PAINT_IN:
                     continue  # 디자인 검수 10/11: the paint stays one cell inside the parts (it bled white round them)
                 if slope > 24:
@@ -408,6 +427,7 @@ def main():
                         MAT[r][c] = "road1"
                     if H[r][c] is not None:
                         H[r][c] -= PAVED_SINK  # the sink keeps the full radius (tools/skeleton_ground G() tests the same cells)
+                    RSINK.discard((r, c))
     # shore: distance to the sea in cells (4-neighbour BFS)
     DS = [[None] * cols for _ in range(rows)]
     q = deque()
@@ -476,6 +496,54 @@ def main():
                     SEA_TIER[r][c] = 2
                 else:
                     SEA_TIER[r][c] = 0
+    # 5단계 10/12 ④ (디자인 검수: from the side the rim was one dark, thick, straight band; 3차: 1-2 cells of relief read
+    # as soft bumps): rock outcrops (tier 5) grow out of the rim's outer face in lumps up to OUT_LAYERS cells (a coarse
+    # 3x3-cell hash picks the lumps, each layer a bit less likely); the Luau makes them horizontal ledges. Recess cells
+    # (tier 6 = rim, carved between the ledges) go up to RECESS_ROWS rows into the rim, never its inner row (it holds the water)
+    outc = 0
+    for layer in range(OUT_LAYERS):
+        want = (3,) if layer == 0 else (5,)
+        p_ = OUT_P1 if layer == 0 else OUT_GROW - 0.1 * layer
+        pick = []
+        for r in range(rows):
+            for c in range(cols):
+                if SEA_TIER[r][c] != 4 or MAT[r][c] != "sea" or Z0 - (r + 0.5) * CELL > -340:
+                    continue  # the entry neck (north edge) stays open for the bridge
+                if not any(0 <= r + dr < rows and 0 <= c + dc < cols and SEA_TIER[r + dr][c + dc] in want
+                           for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                    continue
+                if hash01(r // 3, c // 3, 21) < p_ and (layer == 0 or hash01(r, c, 30 + layer) < 0.85):
+                    pick.append((r, c))
+        for r, c in pick:
+            SEA_TIER[r][c] = 5
+            outc += 1
+    rdist = {}
+    q = deque()
+    for r in range(rows):
+        for c in range(cols):
+            if SEA_TIER[r][c] == 3 and any(0 <= r + dr < rows and 0 <= c + dc < cols and SEA_TIER[r + dr][c + dc] in (4, 5)
+                                          for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                rdist[(r, c)] = 1
+                q.append((r, c))
+    while q:
+        r, c = q.popleft()
+        if rdist[(r, c)] >= RECESS_ROWS:
+            continue
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            rr, cc = r + dr, c + dc
+            if 0 <= rr < rows and 0 <= cc < cols and SEA_TIER[rr][cc] == 3 and (rr, cc) not in rdist:
+                inner = any(0 <= rr + d2 < rows and 0 <= cc + d3 < cols and SEA_TIER[rr + d2][cc + d3] in (0, 1, 2)
+                            for d2, d3 in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                if not inner:  # the row next to the ring water stays whole
+                    rdist[(rr, cc)] = rdist[(r, c)] + 1
+                    q.append((rr, cc))
+    rec = 0
+    for (r, c), d_ in rdist.items():
+        if hash01(r // 2, c // 2, 41) < RECESS_P:
+            SEA_TIER[r][c] = 6
+            rec += 1
+    print(f"[blockout] rim recess cells {rec}")
+    print(f"[blockout] rim outcrops {outc} cells")
 
     # walking times (③ 3차 target: gate -> cathedral ~30 s, spawn -> any home <= 45 s at Config.Player.WalkSpeed): Dijkstra on the grid,
     # 8 neighbours, blocked by sea / water (bridges excepted) / building footprints (the gate passage excepted) and by steps
@@ -585,6 +653,22 @@ def main():
     # pointed rock underside: depth under every cell that is land or inside the sea ring (SEA_TIER != 4)
     active = [[MAT[r][c] != "sea" or SEA_TIER[r][c] != 4 for c in range(cols)] for r in range(rows)]
     UND = underside(active, rows, cols)
+    # 5단계 10/12 ④: the rim's bottom edge was one straight line under the band -> ragged: a slow wave + drips; outcrops
+    # (tier 5) hang RIM_OUT_D deep under their own top (the Luau adds nothing for them)
+    ph = hash01(0, 0, 50) * 6.2832
+    for r in range(rows):
+        for c in range(cols):
+            t = SEA_TIER[r][c] if MAT[r][c] == "sea" else None
+            if t not in (3, 5, 6):
+                continue
+            x, z = c * CELL, -r * CELL
+            wave = 0.5 + 0.5 * math.sin(x / 37.0 + z / 29.0 + ph) * math.sin(z / 23.0 - x / 47.0)
+            add = RIM_RAG[0] + (RIM_RAG[1] - RIM_RAG[0]) * wave
+            if hash01(r, c, 31) < RIM_DRIP_P:
+                add += RIM_DRIP[0] + (RIM_DRIP[1] - RIM_DRIP[0]) * hash01(r, c, 32)
+            if t == 5:
+                add = RIM_OUT_D[0] + (RIM_OUT_D[1] - RIM_OUT_D[0]) * hash01(r, c, 33) + add * 0.6
+            UND[r][c] = min(UND_CAP, UND[r][c] + add) if t in (3, 6) else min(UND_CAP, add)
     # 2차 10/11: a low beach cell (water on top in the Luau) next to the open sky (sea tier 4, the entry neck where the ring
     # narrows to nothing) showed a thin water edge: keep those cells dry (surface 0.5 above the -1.2 water)
     dry = 0
@@ -615,26 +699,206 @@ def main():
                 if 0 <= rr < rows and 0 <= cc < cols and near[rr][cc] is None and MAT[rr][cc] != "sea":
                     near[rr][cc] = near[r][c] + 1
                     q.append((rr, cc))
-                    UND[rr][cc] = min(UND_CAP, max(UND[rr][cc], H[rr][cc] - 2 + 30 + 4 + 6 * (3 - near[rr][cc])))
+                    UND[rr][cc] = min(UND_CAP, max(UND[rr][cc], H[rr][cc] - 2 - RING_DOWN + 4 + 6 * (3 - near[rr][cc])))
     und_max = max(max(row) for row in UND)
     print(f"[blockout] underside depth max {und_max:.1f} studs (cap {UND_CAP}), unit {UND_UNIT}")
 
-    # 디자인 검수 10/11 (r2_05·07): steep faces between levels (stair terraces, district steps) are rock, not smeared grass /
-    # white road paint
-    faces = 0
+    # 5단계 10/12 (디자인 검수 r2_03·04·05·07: big cream / grey faces, black bands between the flower terraces and tiers):
+    # every cell edge with a drop > FACE_DH is a retaining-wall edge. The edges are chained into lines and straightened
+    # (Douglas-Peucker WALL_TOL: a diagonal district border is a zigzag of cell edges), then cut into pieces of one top
+    # height -> build/wk/halo_walls.json -> tools/skeleton_ground.py stage "walls" (marble, WalkGround top). A piece is
+    # WALL_T thick, centred on the line, so the terrain slope between the low and the high cell centres is inside it; top =
+    # the high side. Stair cells stay open (their own rails). A face cell whose every steep edge got a wall is grass
+    # again; the rest stay Limestone (not Rock: Rock is dark and is the island underside too)
+    def wall_ok(m):
+        return m not in ("sea", "water", "stair")
+    TERRACE_D = {d["id"] for d in dists if d.get("terrace")}
+    wedges = []  # (vertex a, vertex b, top, bot, low normal x, z) on grid vertices (col, row)
+    faces = grassed = 0
     for r in range(rows):
         for c in range(cols):
-            if MAT[r][c] in ("sea", "water", "stair") or MAT[r][c].startswith("road") or (r, c) in PAD or H[r][c] is None:
+            if MAT[r][c] in ("sea", "water") or H[r][c] is None:
                 continue
-            d = 0.0
+            steep, walled = 0, 0
             for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 rr, cc = r + dr, c + dc
-                if 0 <= rr < rows and 0 <= cc < cols and MAT[rr][cc] not in ("sea", "water") and H[rr][cc] is not None:
-                    d = max(d, H[r][c] - H[rr][cc])
-            if d > FACE_DH:
-                MAT[r][c] = "limestone"  # not Rock: Rock is dark and is the island underside too
+                if not (0 <= rr < rows and 0 <= cc < cols) or MAT[rr][cc] in ("sea", "water") or H[rr][cc] is None:
+                    continue
+                if H[r][c] - H[rr][cc] <= FACE_DH:
+                    continue
+                steep += 1
+                if H[r][c] - H[rr][cc] < WALL_MIN and not (DID[r][c] in TERRACE_D or DID[rr][cc] in TERRACE_D):
+                    walled += 1  # a grass bank: no wall, no Limestone
+                elif wall_ok(MAT[r][c]) and wall_ok(MAT[rr][cc]):
+                    walled += 1
+                    if dr:  # the line between rows r and rr (z = Z0 - line*CELL), from column c to c+1; low side = -dr in z
+                        ln = max(r, rr)
+                        wedges.append(((c, ln), (c + 1, ln), H[r][c], H[rr][cc], 0.0, -float(dr)))
+                    else:  # the line between columns c and cc, from row r to r+1; low side = +dc in x
+                        ln = max(c, cc)
+                        wedges.append(((ln, r), (ln, r + 1), H[r][c], H[rr][cc], float(dc), 0.0))
+            if not steep or MAT[r][c] in ("stair",) or MAT[r][c].startswith("road") or (r, c) in PAD:
+                continue
+            if walled == steep:
+                grassed += 1
+            else:
+                MAT[r][c] = "limestone"
                 faces += 1
-    print(f"[blockout] rock faces {faces}")
+
+    def vxz(v):
+        return X0 + v[0] * CELL, Z0 - v[1] * CELL
+    adj = {}
+    for i, e in enumerate(wedges):
+        adj.setdefault(e[0], []).append(i)
+        adj.setdefault(e[1], []).append(i)
+    used = [False] * len(wedges)
+    chains = []  # [vertex list, edge id list]
+
+    def walk(v, i):
+        vs, es = [v], []
+        while True:
+            used[i] = True
+            es.append(i)
+            e = wedges[i]
+            v = e[1] if e[0] == v else e[0]
+            vs.append(v)
+            nxt = [j for j in adj[v] if not used[j]]
+            if len(adj[v]) != 2 or not nxt:
+                return vs, es
+            i = nxt[0]
+    for v in adj:
+        if len(adj[v]) != 2:
+            for i in adj[v]:
+                if not used[i]:
+                    chains.append(walk(v, i))
+    for i in range(len(wedges)):  # closed loops
+        if not used[i]:
+            chains.append(walk(wedges[i][0], i))
+
+    def dp(pts, lo, hi, keep):
+        ax, az = pts[lo]
+        bx, bz = pts[hi]
+        best, bi = -1.0, None
+        for k in range(lo + 1, hi):
+            t, d = seg_t(pts[k], (ax, az), (bx, bz))
+            if d > best:
+                best, bi = d, k
+        if bi is not None and best > WALL_TOL:
+            keep.add(bi)
+            dp(pts, lo, bi, keep)
+            dp(pts, bi, hi, keep)
+    walls = []
+    for vs, es in chains:
+        pts = [vxz(v) for v in vs]
+        keep = {0, len(pts) - 1}
+        dp(pts, 0, len(pts) - 1, keep)
+        ks = sorted(keep)
+        mids = [((vxz(wedges[i][0])[0] + vxz(wedges[i][1])[0]) / 2, (vxz(wedges[i][0])[1] + vxz(wedges[i][1])[1]) / 2, wedges[i]) for i in es]
+        for a_, b_ in zip(ks, ks[1:]):
+            (ax, az), (bx, bz) = pts[a_], pts[b_]
+            L = math.hypot(bx - ax, bz - az)
+            if L < 1e-6:
+                continue
+            ux, uz = (bx - ax) / L, (bz - az) / L
+            n = max(1, int(round(L / CELL)))
+            cuts = []
+            for k in range(n):  # one 4-stud cut: the edges whose midpoints project into it
+                t0, t1 = k * L / n, (k + 1) * L / n
+                tops, bots, nx, nz = [], [], 0.0, 0.0
+                for mx, mz, e in mids:
+                    t = (mx - ax) * ux + (mz - az) * uz
+                    d = abs((mx - ax) * uz - (mz - az) * ux)
+                    if t0 - 0.01 <= t <= t1 + 0.01 and d <= WALL_TOL + CELL:
+                        tops.append(e[2])
+                        bots.append(e[3])
+                        nx += e[4]
+                        nz += e[5]
+                if not tops:
+                    cuts.append(cuts[-1][:2] + (t0, t1) + cuts[-1][4:] if cuts else None)
+                    continue
+                cuts.append((max(tops), min(bots), t0, t1, nx, nz))
+            if cuts and cuts[0] is None:
+                cuts = [c_ for c_ in cuts if c_ is not None]
+            pieces = []
+            for cu in cuts:
+                if cu is None:
+                    continue
+                if pieces and abs(cu[0] - pieces[-1][0]) <= 0.25 and cu[3] - pieces[-1][2] <= WALL_MAXLEN:
+                    pv = pieces[-1]
+                    pieces[-1] = (max(pv[0], cu[0]), min(pv[1], cu[1]), pv[2], cu[3], pv[4] + cu[4], pv[5] + cu[5])
+                else:
+                    pieces.append(cu)
+            for tp, bt, t0, t1, nx, nz in pieces:
+                # the low side as the unit perpendicular of the line (sign from the edges' own low normals)
+                px, pz = -uz, ux
+                sg = 1.0 if px * nx + pz * nz >= 0 else -1.0
+                cx, cz = ax + ux * (t0 + t1) / 2, az + uz * (t0 + t1) / 2
+                walls.append(dict(x=round(cx, 2), z=round(cz, 2), len=round(t1 - t0 + WALL_OVER, 2), ux=round(ux, 4), uz=round(uz, 4),
+                                  nx=round(px * sg, 4), nz=round(pz * sg, 4), top=round(tp, 2), bot=round(bt, 2), t=WALL_T))
+    # 디자인 검수 10/12 (r2_07 / r2_03: short walls standing alone on the grass): a piece is kept only where the ground
+    # really steps there - high side ~ its top, low side >= FACE_DH under it - at 2 of 3 points along it (junction / corner
+    # leftovers of the straightening fail)
+    def hgrid(x, z):
+        c_, r_ = int((x - X0) // CELL), int((Z0 - z) // CELL)
+        if 0 <= r_ < rows and 0 <= c_ < cols and MAT[r_][c_] != "sea" and H[r_][c_] is not None:
+            return H[r_][c_]
+        return -99.0
+    kept = []
+    for w_ in walls:
+        ok = 0
+        for f in (-0.33, 0.0, 0.33):
+            px_, pz_ = w_["x"] + w_["ux"] * w_["len"] * f, w_["z"] + w_["uz"] * w_["len"] * f
+            off = w_["t"] / 2 + CELL * 0.75
+            hi = hgrid(px_ - w_["nx"] * off, pz_ - w_["nz"] * off)
+            lo = hgrid(px_ + w_["nx"] * off, pz_ + w_["nz"] * off)
+            ok += hi >= w_["top"] - 2.5 and w_["top"] - lo >= FACE_DH
+        if ok >= 2:
+            kept.append(w_)
+    print(f"[blockout] wall pieces without a real step there: {len(walls) - len(kept)} dropped")
+    walls = kept
+    # 디자인 검수 10/12 (r2_17: from the high side the ground sat a few studs under the wall top, the wall stood alone): the
+    # ground right behind every wall is filled up to its top (1.5 cells), then eased down over the next cell (roads, stairs,
+    # water, footprints and pads keep their own height)
+    filled = 0
+    for w_ in walls:
+        n_ = max(1, int(w_["len"] / 2))
+        for k in range(n_ + 1):
+            f = -0.5 + k / n_
+            px_, pz_ = w_["x"] + w_["ux"] * w_["len"] * f, w_["z"] + w_["uz"] * w_["len"] * f
+            for d_, want in ((w_["t"] / 2 + 1, w_["top"]), (w_["t"] / 2 + CELL, w_["top"]), (w_["t"] / 2 + CELL * 1.5, w_["top"]),
+                             (w_["t"] / 2 + CELL * 2.5, w_["top"] - 1.5)):
+                c_, r_ = int((px_ - w_["nx"] * d_ - X0) // CELL), int((Z0 - (pz_ - w_["nz"] * d_)) // CELL)
+                if not (0 <= r_ < rows and 0 <= c_ < cols) or H[r_][c_] is None:
+                    continue
+                m_ = MAT[r_][c_]
+                if m_ in ("sea", "water", "stair") or m_.startswith("road") or (r_, c_) in INFP or (r_, c_) in PAD:
+                    continue
+                if H[r_][c_] < want - 0.05:
+                    H[r_][c_] = want
+                    filled += 1
+    print(f"[blockout] ground filled up to the wall tops behind the walls: {filled} cells")
+    os.makedirs(os.path.join(ROOT, "build", "wk"), exist_ok=True)
+    with open(os.path.join(ROOT, "build", "wk", "halo_walls.json"), "w", encoding="utf-8") as f:
+        json.dump(dict(cell=CELL, walls=walls), f)
+    print(f"[blockout] retaining walls: {len(wedges)} cell edges -> {len(chains)} lines -> {len(walls)} pieces; "
+          f"face cells grass {grassed}, limestone left {faces}")
+
+    # 5단계 10/12 (① grass poking through the road plates on ramps and bends): the Terrain under the road parts sits
+    # ROAD_SINK lower; tools/skeleton_ground.py G() adds it back from build/wk/halo_sink.json (the parts keep their height)
+    sunk = 0
+    mask = []
+    for r in range(rows):
+        row = []
+        for c in range(cols):
+            on = (r, c) in RSINK and MAT[r][c] not in ("sea", "water") and H[r][c] is not None
+            if on:
+                H[r][c] -= ROAD_SINK
+                sunk += 1
+            row.append("1" if on else "0")
+        mask.append("".join(row))
+    with open(os.path.join(ROOT, "build", "wk", "halo_sink.json"), "w", encoding="utf-8") as f:
+        json.dump(dict(x0=X0, z0=Z0, cell=CELL, sink=ROAD_SINK, rows=mask), f)
+    print(f"[blockout] road sink {ROAD_SINK}: {sunk} cells")
 
     # encode
     hrows, mrows, urows = [], [], []

@@ -24,7 +24,8 @@
   - dev3-alchemy ba91630f: test_gamepass 고침(CraftService는 제작 XP 줄에서만 XP2 패스) → dev3-craft2·dev3-tamer에 merge로 받음.
   - 8e67dbcf 간식 재료 = Jelly 5 + Herb 2(검수). f8dc5efc 개발 2 M1·L1(소환 펫은 선물·이야기 펫 아님, giveXP 주석). 개발 2 PetService 확인 통과.
   - 클라 남은 것(개발 4·1, 검수가 나눔): PetWindow Roll 속도 숫자, 연구 창, 소환 결과, 간식 버튼.
-  - 다음: ⑥ 방어구·반지·펫 장비 칸(Gear, 전투력, 펫 장비 = 조련사).
+  - **⑥ 장비 칸 = 가지 `api/dev3-gear`**(로컬 dev3-gear, base dev3-tamer b9b5c381): API job dev3_gear 59ecc2dc + 개발 2 후속 847dcd31. 설계 `docs/design/gear_slots_2026-10-12.md` §7. test_gear_slots 203·105/105. 게임성 검수 시험 대기.
+  - 다음: ⑦ 장인 명성·계급(Craft.Rep, A23-135 장인 랭킹 따로) → ⑧ 장인 첫 10분.
 
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.

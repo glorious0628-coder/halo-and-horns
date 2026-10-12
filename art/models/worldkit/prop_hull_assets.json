@@ -10,7 +10,8 @@
    2975.7224,
    5.7786,
    54.1004
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "NEW_Beehive": {
   "D2_hull_035": "rbxassetid://124672166388327",
@@ -23,7 +24,8 @@
    2976.1895,
    15.5522,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_C": {
   "D2_hull_035": "rbxassetid://93408563081704",
@@ -36,7 +38,8 @@
    2976.9333,
    20.7224,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_D": {
   "D2_hull_035": "rbxassetid://120006190113668",
@@ -49,7 +52,8 @@
    2976.1895,
    28.0332,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_A": {
   "D2_hull_035": "rbxassetid://119419548475400",
@@ -62,7 +66,8 @@
    2976.1895,
    34.9718,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_B": {
   "D2_hull_035": "rbxassetid://122188717018907",
@@ -75,7 +80,8 @@
    2976.1895,
    42.0272,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar3_RoundTree_E__Body": {
   "D2_hull_035": "rbxassetid://80213311324976",
@@ -88,7 +94,8 @@
    2976.1895,
    46.2286,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloReasonHQ_BenchA": {
   "D2_hull_035": "rbxassetid://74717412656936",
@@ -101,7 +108,8 @@
    2976.1895,
    48.8948,
    52.5288
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloReasonHQ_BenchB__Body": {
   "D2_hull_035": "rbxassetid://77057551482230",
@@ -114,7 +122,8 @@
    2976.0337,
    52.8528,
    52.4881
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar3_Lantern_E": {
   "D2_hull_035": "rbxassetid://100421935093888",
@@ -127,6 +136,147 @@
    2976.1895,
    57.9032,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_RoundTree_G__Body": {
+  "D2_hull_035": "rbxassetid://126542824569796",
+  "D2_centre_035": [
+   0.0,
+   0.6134,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -15.1126,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_RoundTree_F__Body": {
+  "D2_hull_035": "rbxassetid://113862776282696",
+  "D2_centre_035": [
+   0.0,
+   0.6634,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -13.8612,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlowerPotHQ_Daisy__Body": {
+  "D2_hull_035": "rbxassetid://118968865489681",
+  "D2_centre_035": [
+   0.0,
+   0.7911,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -12.4199,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_BenchC": {
+  "D2_hull_035": "rbxassetid://138341029609999",
+  "D2_centre_035": [
+   0.0,
+   1.2829,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -10.3258,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlowerPotHQ_Tulip__Body": {
+  "D2_hull_035": "rbxassetid://116340015290445",
+  "D2_centre_035": [
+   0.0,
+   0.7235,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -9.4062,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlagpole_1": {
+  "D2_hull_035": "rbxassetid://88824904912298",
+  "D2_centre_035": [
+   -0.9754,
+   6.1544,
+   0.0
+  ],
+  "import_pos": [
+   -46.2024,
+   -2.5083,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_CafeTable": {
+  "D2_hull_035": "rbxassetid://111905240129295",
+  "D2_centre_035": [
+   0.0,
+   1.54,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   5.1398,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_Clothesline": {
+  "D2_hull_035": "rbxassetid://84067393232047",
+  "D2_centre_035": [
+   0.0,
+   2.5129,
+   -0.5275
+  ],
+  "import_pos": [
+   -47.1779,
+   -13.213,
+   118.4722
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_Planter_A__Body": {
+  "D2_hull_035": "rbxassetid://71174861208068",
+  "D2_centre_035": [
+   0.0,
+   1.5379,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   8.1915,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlowerPotHQ_Lavender__Body": {
+  "D2_hull_035": "rbxassetid://84921729022793",
+  "D2_centre_035": [
+   -0.0,
+   1.2634,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   11.0128,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
  }
 }

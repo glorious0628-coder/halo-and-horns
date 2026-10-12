@@ -185,12 +185,21 @@ local function levelAndTier(player)
 end
 
 ------------------------------------------------------------------ public API
--- faction-sum power (includes the rebirth bonus)
+-- ⑥ gear (게임성 개발 3; 게임성 검수 10/12: the faction size counts the armor / ring too, A23-133): { A, H } or nil
+-- (nil when this Config has no gear or it fails)
+local function gearOf(player)
+	if type(Config.GearMultsOf) ~= "function" then return nil end
+	local ok, a, h = pcall(Config.GearMultsOf, player)
+	if not ok then return nil end
+	return { A = a, H = h }
+end
+
+-- faction-sum power (includes the rebirth bonus and the gear)
 function JusticeService.GetPower(player)
 	if not player then return 0 end
 	local level, tier, enhance = levelAndTier(player)
 	local rebirthBonus = tonumber(player:GetAttribute("RebirthBonus")) or 0
-	return Config.PowerOf(level, tier, 1 + rebirthBonus, enhance, Config.StatAllocOf(player)) -- A23-69: + the stat points
+	return Config.PowerOf(level, tier, 1 + rebirthBonus, enhance, Config.StatAllocOf(player), gearOf(player)) -- A23-69: + the stat points
 end
 
 -- BB4 "전투력" (integer): the weak-victim (bully) rule and the boldness ratios compare it. A23-69: Config.CombatPowerOf,
@@ -227,7 +236,7 @@ end
 function POWER.Watch(player)
 	POWER.Drop(player)
 	local list = {}
-	for _, attr in { "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp" } do
+	for _, attr in { "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp", "GearAtk", "GearHp" } do -- ⑥ gear (게임성 개발 3)
 		table.insert(list, player:GetAttributeChangedSignal(attr):Connect(function() POWER.Schedule(player) end))
 	end
 	POWER.Conns[player] = list

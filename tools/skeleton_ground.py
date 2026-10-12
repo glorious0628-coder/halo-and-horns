@@ -26,7 +26,7 @@ import json
 import math
 import os
 
-STAGES = ["roads", "plaza", "yards", "stairs", "rails", "bridges"]
+STAGES = ["roads", "plaza", "yards", "stairs", "rails", "bridges", "walls"]
 ap = argparse.ArgumentParser()
 ap.add_argument("--only", default="")
 ap.add_argument("--offset", default="0,0", help="X,Z the same offset that was given to tools/halo_blockout.py")
@@ -74,6 +74,28 @@ def lua_road(r):
         r["id"], r["id"], fm(r["w"]), r["grade"], fm(ln), ",".join("{%s,%s}" % (fm(x), fm(z)) for x, z in pts))
 
 
+def lua_walls():
+    # 5단계 10/12: retaining walls from tools/halo_blockout.py (build/wk/halo_walls.json, the same grid heights as the Terrain)
+    fp = os.path.join(ROOT, "build", "wk", "halo_walls.json")
+    if "walls" in ONLY and not os.path.exists(fp):
+        raise SystemExit("build/wk/halo_walls.json is missing: run py tools/halo_blockout.py --mode terrain first")
+    ws = json.load(open(fp, encoding="utf-8"))["walls"] if os.path.exists(fp) else []
+    return ",".join('{x=%s,z=%s,len=%s,ux=%s,uz=%s,nx=%s,nz=%s,top=%s,bot=%s,t=%s}' % (
+        fm(w["x"] + OX), fm(w["z"] + OZ), fm(w["len"]), fm(w["ux"]), fm(w["uz"]), fm(w["nx"]), fm(w["nz"]), fm(w["top"]), fm(w["bot"]),
+        fm(w["t"])) for w in ws)
+
+
+def lua_sink():
+    # 5단계 10/12: tools/halo_blockout.py sinks the Terrain under the road parts by ROAD_SINK (build/wk/halo_sink.json);
+    # G() adds it back so a rebuild puts the parts where they were
+    fp = os.path.join(ROOT, "build", "wk", "halo_sink.json")
+    if not os.path.exists(fp):
+        print("[skeleton_ground] no build/wk/halo_sink.json: road sink 0 (run py tools/halo_blockout.py first)")
+        return "{sink=0,rows={}}"
+    m = json.load(open(fp, encoding="utf-8"))
+    return "{sink=%s,rows={%s}}" % (fm(m["sink"]), ",".join('"%s"' % r for r in m["rows"]))
+
+
 def lua_data():
     yards = ",".join('{id="%s",x=%s,z=%s,r=%s}' % (y["id"], fm(y["at"][0] + OX), fm(y["at"][1] + OZ), fm(y["r"])) for y in YARDS)
     return "\n".join([
@@ -85,6 +107,8 @@ def lua_data():
         " grid={x0=%s,z0=%s,cell=%s}," % (fm(GRID_X0 + OX), fm(GRID_Z0 + OZ), fm(GRID_CELL)),  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
         " passage={x0=%s,x1=%s,z0=%s,z1=%s}," % (fm(PASSAGE[0] + OX), fm(PASSAGE[1] + OX), fm(PASSAGE[2] + OZ), fm(PASSAGE[3] + OZ)),
         " yards={%s}," % yards,
+        " walls={%s}," % lua_walls(),
+        " rsink=%s," % lua_sink(),
         " bridges={%s}," % ",".join('{x=%s,z=%s,r=%s}' % (fm(b["at"][0] + OX), fm(b["at"][1] + OZ), fm(b["len"] / 2 + 2)) for b in BRIDGES),
         " roads={",
         ",\n".join("  " + lua_road(r) for r in ROADS),
@@ -119,7 +143,7 @@ do
 		gf.Name = "Ground"
 		gf.Parent = root
 	end
-	for _, nm in { "Roads", "Plaza", "Yards", "Stairs", "Rails" } do
+	for _, nm in { "Roads", "Plaza", "Yards", "Stairs", "Rails", "Walls" } do
 		local f = gf:FindFirstChild(nm)
 		if not f then
 			f = Instance.new("Folder")
@@ -158,6 +182,10 @@ local function G(x, z, quiet)
 		for _, c in { D.fountain, D.spawn } do
 			if (cx - c.x) ^ 2 + (cz - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
 		end
+		-- under a road part the Terrain is rsink.sink lower (halo_blockout ROAD_SINK)
+		local row = D.rsink.rows[math.floor((g.z0 - z) / g.cell) + 1]
+		local col = math.floor((x - g.x0) / g.cell) + 1
+		if row and col >= 1 and string.sub(row, col, col) == "1" then return hit.Position.Y + D.rsink.sink end
 		return hit.Position.Y
 	end
 	if not quiet then N.nohit += 1 end
@@ -170,6 +198,7 @@ local STY = {
 	gold = function(p) p.Material = Enum.Material.Metal p.MaterialVariant = "HH_HaloGoldTrim" p.Color = GOLD end,
 	cobble = function(p) p.Material = Enum.Material.Cobblestone p.Color = Color3.fromRGB(__COBBLE__) end,
 	slate = function(p) p.Material = Enum.Material.Slate p.Color = Color3.fromRGB(__SLATE__) end,
+	soil = function(p) p.Material = Enum.Material.Ground p.Color = Color3.fromRGB(104, 78, 54) end,
 }
 local CYL, BLK = Enum.PartType.Cylinder, Enum.PartType.Block
 local UPR = CFrame.Angles(0, 0, math.pi / 2) -- a Cylinder part lies along X; this stands it upright
@@ -623,7 +652,77 @@ ST.bridges = function()
 	end
 end
 
-for _, nm in { "plaza", "yards", "roads", "stairs", "rails", "bridges" } do
+ST.walls = function()
+	-- 5단계 10/12: marble retaining walls along the straightened step lines of halo_blockout.py (drop > FACE_DH). A piece is
+	-- t thick, centred on its line (the terrain slope between the low and the high cell centres is inside it); s = distance
+	-- across the line toward the low side (n), the face is at s = t/2. 디자인 검수 10/12 (a plain endless white wall read as
+	-- a fortress / canyon): a base band at the foot, shallow pilasters every <= PIL_GAP with gold heads, a gold band on top,
+	-- a low parapet on the top (people walk up there); walls higher than TIER_H are two tiers with a flower ledge between
+	-- (soil strip + lip, NOT WalkGround; the bushes come with the props)
+	local PIL_GAP, TIER_H, LEDGE = 12, 12, 2.5
+	local hitB = {}
+	local op = OverlapParams.new()
+	op.FilterType = Enum.RaycastFilterType.Include
+	local bf = root:FindFirstChild("Buildings")
+	op.FilterDescendantsInstances = { bf }
+	for i, w in D.walls do
+		local u, n = Vector3.new(w.ux, 0, w.uz), Vector3.new(w.nx, 0, w.nz)
+		local P = Vector3.new(w.x, 0, w.z)
+		-- a box from s0..s1 across, y0..y1 high, along the whole piece (+ extra length)
+		local function box(name, s0, s1, y0, y1, style, opt, len, along)
+			local c = P + n * ((s0 + s1) / 2) + u * (along or 0) + Vector3.new(0, (y0 + y1) / 2, 0)
+			return mk("walls", "Walls", name, BLK, Vector3.new(s1 - s0, y1 - y0, len or w.len), CFrame.lookAt(c, c + u), style, opt)
+		end
+		local top, foot, deep = w.top - 0.05, w.bot, w.bot - 2
+		local half = w.t / 2
+		local tiers
+		if w.top - w.bot > TIER_H then
+			local mid = w.bot + (w.top - w.bot) / 2
+			tiers = { { y0 = deep, y1 = mid, face = half, low = true }, { y0 = mid, y1 = top, face = half - LEDGE } }
+		else
+			tiers = { { y0 = deep, y1 = top, face = half, low = true } }
+		end
+		for k, tr in tiers do
+			local last = k == #tiers
+			-- body: the upper / only tier is walking ground on its top; a lower tier's top is the flower ledge
+			box((last and "RetainWall_" or "RetainWallLow_") .. i, -half, tr.face, tr.y0, tr.y1, "marble", last and "walk" or nil)
+			local y0v = tr.low and foot or tr.y0 -- the visible foot of this tier
+			if tr.low then -- base band 0.5 out, 1.2 over the low ground
+				box("RetainPlinth_" .. i, tr.face - 0.5, tr.face + 0.5, foot - 1, foot + 1.2, "marble", nil, w.len)
+			end
+			box("RetainBand_" .. i .. "_" .. k, tr.face - 0.3, tr.face + 0.5, tr.y1 - 0.45, tr.y1, "gold", "deco", w.len + 0.6)
+			local np = math.max(1, math.floor(w.len / PIL_GAP + 0.5))
+			if tr.y1 - y0v > 2.5 then
+				for j = 0, np - 1 do
+					local along = -w.len / 2 + (j + 0.5) * w.len / np
+					box("RetainPil_" .. i .. "_" .. k .. "_" .. j, tr.face - 0.4, tr.face + 0.6, y0v - 0.5, tr.y1 - 0.45, "marble", nil, 1.6, along)
+					box("RetainPilCap_" .. i .. "_" .. k .. "_" .. j, tr.face - 0.4, tr.face + 0.8, tr.y1 - 0.85, tr.y1 - 0.45, "gold", "deco", 2.1, along)
+				end
+			end
+			if not last then -- the flower ledge on this tier's top, in front of the next tier
+				local ledge = box("RetainLedge_" .. i, tr.face - LEDGE + 0.1, tr.face - 0.45, tr.y1, tr.y1 + 0.45, "soil", nil, w.len - 0.2)
+				if ledge then ledge:SetAttribute("FlowerLedge", true) end
+				box("RetainLedgeLip_" .. i, tr.face - 0.45, tr.face + 0.05, tr.y1, tr.y1 + 0.8, "marble", nil, w.len)
+			else -- the parapet along the top edge (2.2 high, gold rail)
+				box("RetainParapet_" .. i, tr.face - 0.9, tr.face, top, top + 2.2, "marble", nil, w.len)
+				box("RetainParapetCap_" .. i, tr.face - 1.05, tr.face + 0.15, top + 2.2, top + 2.45, "gold", "deco", w.len + 0.2)
+			end
+		end
+		if bf then
+			local probe = CFrame.lookAt(Vector3.new(w.x, top - 1, w.z), Vector3.new(w.x, top - 1, w.z) + u)
+			for _, p in workspace:GetPartBoundsInBox(probe, Vector3.new(w.t - 0.5, 2, w.len - 0.5), op) do
+				local m = p
+				while m.Parent and m.Parent ~= bf do m = m.Parent end
+				hitB[m.Name] = (hitB[m.Name] or 0) + 1
+			end
+		end
+	end
+	local t = {}
+	for k, v in hitB do table.insert(t, k .. "=" .. v) end
+	N.wallHits = table.concat(t, ",")
+end
+
+for _, nm in { "plaza", "yards", "roads", "stairs", "rails", "bridges", "walls" } do
 	if ONLY[nm] then
 		local ok, err = pcall(ST[nm])
 		if not ok then
@@ -634,11 +733,11 @@ for _, nm in { "plaza", "yards", "roads", "stairs", "rails", "bridges" } do
 end
 tmp:Destroy()
 local by = {}
-for _, nm in { "roads", "plaza", "yards", "stairs", "rails", "bridges" } do
+for _, nm in { "roads", "plaza", "yards", "stairs", "rails", "bridges", "walls" } do
 	if ONLY[nm] then table.insert(by, nm .. "=" .. (N.by[nm] or 0)) end
 end
-return string.format("skeleton_ground built: %s | parts %d (cap %d, over %d) tagged %d bridges %d | spacing x%.2f | csg failures %d | no-hit points %d | stage errors %d",
-	table.concat(by, " "), N.parts, D.cap, N.over, N.tagged, N.bridges or 0, N.spacing, N.csgFail, N.nohit, N.errors)
+return string.format("skeleton_ground built: %s | parts %d (cap %d, over %d) tagged %d bridges %d | spacing x%.2f | csg failures %d | no-hit points %d | stage errors %d | walls in buildings: %s",
+	table.concat(by, " "), N.parts, D.cap, N.over, N.tagged, N.bridges or 0, N.spacing, N.csgFail, N.nohit, N.errors, N.wallHits or "-")
 '''
 
 

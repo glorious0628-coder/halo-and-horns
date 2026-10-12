@@ -12,6 +12,7 @@ os.makedirs(OUT, exist_ok=True)
 PLAN = json.load(open("docs/design/halo_plan_v2_2026-10-11.json", encoding="utf-8"))
 TEMP = os.environ["TEMP"]
 env = dict(os.environ, STUDIO_NAME="WorldKit")
+CALL_TIMEOUT = 60  # seconds per MCP call (screen_capture normally takes 1-5)
 land = PLAN["land"]
 LX0, LX1 = min(p[0] for p in land), max(p[0] for p in land)
 LZ0, LZ1 = min(p[1] for p in land), max(p[1] for p in land)
@@ -80,7 +81,12 @@ end
 local all = RaycastParams.new()
 all.FilterType = Enum.RaycastFilterType.Exclude
 local mk = workspace:FindFirstChild("HaloV2") and workspace.HaloV2:FindFirstChild("Markers")
-all.FilterDescendantsInstances = mk and { mk } or {}
+-- 10/12: the retaining walls' parapets (5단계) pulled the cameras onto the wall tops -> the same spots as before the walls
+local wl = workspace:FindFirstChild("HaloV2") and workspace.HaloV2:FindFirstChild("Ground") and workspace.HaloV2.Ground:FindFirstChild("Walls")
+local ex = {}
+if mk then table.insert(ex, mk) end
+if wl then table.insert(ex, wl) end
+all.FilterDescendantsInstances = ex
 all.IgnoreWater = true
 local function clear(cam, look)
 	local a = Vector3.new(look[1], look[2] + 1.5, look[3])
@@ -103,7 +109,14 @@ return game:GetService("HttpService"):JSONEncode(shots)
 def mcp(tool, arg):
     p = os.path.join(TEMP, "wk_arg_ground.json")
     json.dump(arg, open(p, "w", encoding="utf-8"), ensure_ascii=False)
-    return subprocess.run([sys.executable, "tools/studio_mcp.py", "call", tool, "@" + p], env=env, capture_output=True, text=True, encoding="utf-8").stdout
+    # 10/12: a stalled screen_capture once hung the run until an outer `timeout` killed it - before the finally block put the
+    # light back. Each call has its own limit now: a stalled shot is skipped and the light is always restored
+    try:
+        return subprocess.run([sys.executable, "tools/studio_mcp.py", "call", tool, "@" + p], env=env, capture_output=True, text=True,
+                              encoding="utf-8", timeout=CALL_TIMEOUT).stdout
+    except subprocess.TimeoutExpired:
+        print("TIMEOUT", tool, CALL_TIMEOUT, "s")
+        return ""
 
 
 def run_luau(code):
@@ -143,6 +156,8 @@ def review2_spec():
         ("r2_03_plaza_high", g(fx + 46, fz + 46, 58), g(fx, fz, 0)),
         ("r2_04_stairs_low", g(30, -625, 8), g(80, -675, 4)),
         ("r2_05_stairs_mid", g(112, -668, 6), g(40, -686, 4)),
+        ("r2_17_cliffwall_high", g(118, -585, 6), g(88, -585, 2)),   # 10/12 디자인 검수: the plaza|cliff wall from its high side
+        ("r2_18_stairfoot_top", g(36, -626, 25), g(56, -650, 0)),     # 10/12 디자인 검수: r2_04's road from above (plates over the grass?)
         ("r2_06_stairs_top", g(70, -724, 8), g(40, -640, 0)),
         ("r2_07_stairs_side", g(10, -630, 40), g(72, -680, 0)),  # 3차: was inside a gray box (150,-640)
         ("r2_08_cliff_tiers", g(160, -606, 6), g(185, -628, 2)),  # 3차: from the lower tier at the to_cliff flight

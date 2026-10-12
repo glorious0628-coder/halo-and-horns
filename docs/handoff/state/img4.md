@@ -1,16 +1,11 @@
-# 이미지 생성 4 — 상태 (2026-10-12 08:30)
+# 이미지 생성 4 — 상태 (2026-10-12 오후)
 
-## 지금 상태 (10/12 아침)
-- **바깥선 껍데기(A23-139, 0.035 안뒤집기 껍데기) 56개**: `build/prop_kit_hull035/<키>_D2_035.obj/.json`, 표 `docs/design/halo_prop_outlines_2026-10-12.md`, 시트 `art/review/img4/outline_hulls_fix_1012.jpg` → 디자인 검수 **통과**. 첫 묶음 10 = 이미지 개발이 올리는 중(최종 검수 승인) → ID 오면 실제 땅 C2c 낮 5·15칸 사진(화면 슬롯은 최종 검수에 신청; WorldKit은 이미지 생성 1이 되살린 뒤).
-- 바닥 검은 덩어리 원인 = 키트 부품 두 면이 같은 평면에 겹침 → `tools/prop_kit_coplanar.py`(검사) + `prop_kit.py` `defight()`(작은 부품 면 0.012칸 밀기, 3번까지 반복). 58키트 887면 → 0. **WorldKit HaloPropKits는 아직 옛 키트** → 되살아난 뒤 `py tools/prop_kit.py --all --apply` + halo_props_place + wk_backup (화면 신청).
-- 껍데기 바닥 규칙: 맨 아래 아래쪽 면 빼고 바닥 아래 0.01까지만(prop_kit_bake.py `make_hull`, tripo_touchup.py 바깥선 같은 규칙).
-- Tripo 소품 39개 손보기 + 바깥선(--outline 0.035) 다시 돌리는 중 → `py tools/tripo_touchup_sheet.py <out> <키…>` 시트 → 디자인 검수.
-- **무기 28개 Blender 손보기** (디자인 검수 2단계 통과): `tools/tripo_weapon_touchup.py`(길이 = 개발 1 LEN/tierLen, 피벗 = 손 = 2D 감은 손잡이 가운데 `WRAP` 표, 칼은 날만 y 두께 ≥0.2, `--sym` Paladin T2/T3·LightMage T3·Alchemist T2/T3, 3,500 삼각형, C/N/R/M 1024, `--preview-only`로 렌더만) → `art/models/tripo/weapons/<키>/`(디스크만, 206MB), 시트 `tools/tripo_weapon_sheet.py` → `art/review/img4/weapons_tu_<진영>_1012.jpg`. 쥐는 높이 표 `docs/design/weapon_grip_heights_2026-10-12.md`(감은 곳 아래끝·가운데·위끝 — 개발 1이 고름, 바뀌면 WRAP만 고쳐 다시 굽기). 다음 = 3단계 Roblox 재질(Berserker T3·Paladin T3 밝은 강철, PetTamer T3 짙은 청록, 최종 b 용암 Neon 살짝) 낮·밤 사진.
-- **구멍 버그(10/12 고침)**: glTF 가져오기가 UV 이음매에서 점을 나눠서, 점 합치기 전에 '작은 조각'을 지우면 진짜 면이 지워져 구멍. 두 도구 모두 용접 먼저. 검사 `tools/glb_hole_check.py`(투명 필름 실루엣, 밖에서 못 닿는 빈칸 = 구멍; 활시위·고리 같은 원래 틈은 Tripo 원본과 비교).
-- Tripo 소품 39개 다시 굽기 끝(바깥선 + 용접 + 생울타리 ontop 높이 = 화단 테두리), 시트 `art/review/img4/tripo_tu_outline_[1-4]_1012.jpg`, records.json blender_touchup 기록. 남은 눈 확인: PotFlowers_F 늘어진 덩굴이 2D보다 적고 받침 근처 잎 조각.
-- 껍데기 json 중심값: bound_box 캐시가 늦어 0.018 낮았음 → OBJ에서 다시 계산(56개). 첫 묶음 10 ID = `art/models/worldkit/prop_hull_assets.json`(이미지 개발).
-- WorldKit 백업: build/wk_backup/20261012_013528 (HaloPropKits, 가마솥 Slate 포함, 겹친 면 밀기 전).
-- 남은 것: records.json 손보기 기록(touchup 이벤트), Rose 화분 몸통이 2D보다 좁음, CSG 합치기로 파트 수 줄이기.
+## 지금 상태 (10/12 오후)
+- **바깥선 껍데기 56개**: 첫 묶음 10 통과(C2c 사진 art/review/img4/outline_hull1_fix_c2c_1012.jpg). 2~6묶음 최종 검수 승인 — 길: 이미지 개발이 build/hull_import 준비 → 나는 최종 검수에 "묶음 N 가져오기 준비됨 + 폴더" → 사용자 Import 3D → 이미지 개발이 ID 읽음(art/models/worldkit/prop_hull_assets.json). 묶음 목록 = docs/design/halo_prop_outlines_2026-10-12.md '묶음' 열. 묶음 2 ID 받음, 묶음 3 이미지 개발 준비 중. **놓기 = 키트 피벗 × CFrame.new(centre) × CFrame.Angles(0, π, 0)** (Import 3D가 OBJ를 세로축 180° 돌림). 다음 사진 비교 자리는 새 평지로(옛 자리 -24,0.2,-440은 지형 바뀌어 15칸이 언덕에 가림).
+- **키트 겹친 면**: tools/prop_kit_coplanar.py + prop_kit.py defight() → 58키트 0. WorldKit HaloPropKits 다시 넣음(백업 build/wk_backup/20261012_092142), HaloV2.Props는 이미지 생성 1이 다시 놓음 — 키트 바꾸면 halo_props_place 직접 돌려도 됨(STUDIO_ID 83b32720).
+- **무기 28개**: tools/tripo_weapon_touchup.py. 지팡이 9개 = SPEC A23-142 확정판(개발 1 68bef0e7): 길이 0.65/0.70/0.75H, 손 = 감은 곳 가운데 43% = 피벗, 감은 곳 통째 옮김(빈 자리는 막대 복사, 내려갈 땐 위쪽 막대). 표 docs/design/weapon_grip_heights_2026-10-12.md 맨 아래, 시트 staff_a23_142_1012.jpg(tools/staff_sheet.py). 디자인 검수 통과(Alchemist T1 매단 병 그대로). 다음 = 3단계 Roblox 재질(밝은 강철·짙은 청록·용암 Neon), 메인 반영 1 사진에서 같이.
+- **Tripo 소품 39개**: 바깥선(식물은 굵은 voxel = 덩어리만) + 용접 + keep-green + Lantern A 머리(--head-from)·C/D(--head-footprint)·PotFlowers_F 덩굴. 시트 tripo_tu_organic_1/2·goods·heads_1012.jpg. 식물 잎 어두움 = 3단계(C2c 낮)에서 색 맵 밝기.
+- **NPC 6명**: 5명은 10/10 Tripo 그대로(디자인 검수), PotionMerchant 새로(55점, 잔액 14,170). tools/tripo_touchup_npc.sh(후광 정확한 고리 0.38, Bright/SirGleam 아래 대칭, 머리 UV ×2.2) → 시트 npc_touchup_1012.jpg(tools/npc_sheet.py --prev build/npc_prev, 렌더 tools/glb_preview4.py — Blender 경로는 절대경로로!). 디자인 검수 판정 기다림.
 
 ## 배운 것 (10/12)
 - 실제 땅 C2c 빛에서 어두운 회색(Metal·SmoothPlastic)은 하늘빛을 받아 남색으로 보임 → 숯 회색은 거친 Slate + 따뜻한 회색(110,100,92).

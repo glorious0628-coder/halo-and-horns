@@ -1,7 +1,7 @@
-# 게임성 개발 1 — 인계 상태 (2026-10-13, 지팡이 쥐는 높이 결정 기다림)
+# 게임성 개발 1 — 인계 상태 (2026-10-13, 지팡이·BB8·거위 광장 보고, 결과 기다림)
 
 클라 코드만(창·HUD·Config·Fx). 메인 Studio는 건드리지 않음(sync·사진 = 메인 반영 1). 사용자에게 직접 묻지 않음. 보고는 send_message, 묶음마다 한 번 → 턴 끝내기.
-- **보고처(사용자 10/11 변경):** 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
+- **보고처(10/13 게임성 검수 쉼): 가지 보고·시험 결과 = '최종 검수' `local_d522c0f1-07cf-4db1-b178-5f335a56db7c` (내 시험 + 변이 숫자 같이).** 옛 보고처(사용자 10/11 변경): 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
 - 지금 일하는 가벼운 worktree(sparse: src/tools/docs): `C:/Users/glori/Documents/Roblox/wt_lesstext`(브랜치 `fix/lesstext`), `C:/Users/glori/Documents/Roblox/wt_onehand`(브랜치 `fix/onehand`), 둘 다 base 201779da; `C:/Users/glori/Documents/Roblox/wt_goldegg`(브랜치 `fix/golden-egg-client`, base 368f490e). build/luau_cli_0_741는 Game/build에서 복사해 둠. place 파일이 없어서 test_place_english는 place를 잠깐 복사해 돌리고 지움.
 - 커밋: worktree에서 `git commit -m "짧은 한국어" -- <경로>` → 그 브랜치만 push(main push 금지, 병합은 검수). 공유 트리(Game)는 `py tools/push_paths.py`만.
 - 큰 표·코드는 `py tools/api_agent.py`(읽기 모드 / `--write --branch api/<이름>`) 써도 됨.
@@ -39,11 +39,25 @@
 
 14. **fix/stairs-ground 3099197e** (wt_onehand, main 7578bc15에서; staff-slope-hero·pvp-toast는 병합됨): 빛 계단 위 지팡이 2~3칸 뜸 = Config.GroundRoots가 Props 키트 조각 중 'Bridge'만 땅 → Config.Ground.KitWalk {Bridge, Stairs, Steps, Ramp}. 태그 없는 Floor는 장식 그대로. 새 빛 마을(메인 Studio) 다른 폴더 계단·바닥은 월드 쪽 확인(최종 검수에 전달 부탁). test_ground_rays 24·19/19 등 통과. 게임성 검수에 보고.
 
-15. **지팡이 쥐는 높이 결정 기다림** (게임성 검수 → 최종 검수 지시: ① 연금술사 = 승인 2D대로 '플라스크 달린 지팡이'(지금 손에 든 플라스크) — 참고 먼저 + 손잡이-주먹 관통 검사, ② 쥐는 곳 = 2D 감은 손잡이 가운데(빛 마법사 T1/T3·연금술사 30~45%, 지금 66%); 이미지 생성 4가 메시 피벗 옮기고 무기별 쥐는 높이 표 보냄 → 넣고 대기 지팡이 끝 땅 닿기 사진). 부딪힘: 손 ≈2.9칸이면 40% 쥐기 = 지팡이 ≈7.2칸(1.4H) → A23-133(0.85~1.0H) 넘음; 5.2칸 안이면 손 ≈2.1칸(엉덩이, 팔 거의 펴짐; 늘어뜨린 팔 쥐는 높이 ≈1.78). StaffLift ±0.4로는 못 메움. 참고: 걷는 막대 = 팔꿈치 90°·꼭대기 쥐기(손 허리~엉덩이), 겨드랑이 막대 = 너무 긺(REI); 마법사 대기 기준 없음. **추천 A = 팔을 편히 옆에 드는 대기로 내려 손 ≈2.1칸**, 대안 B = 팔 그대로 + 감은 곳 위쪽 끝(≈55%). 최종 검수·디자인 검수(`local_a9261aed-28c8-47fe-b203-27e92cef5d30`)에 보냄. 결정 + 표 오면: CharacterVisuals SHAPES.Flask → 플라스크 지팡이, STAFF/staffHandHeight·ClassGrips Hold(손 높이), test_one_hand_grips 갱신.
+15. **fix/staff-hip 612274b1** (wt_onehand, main 170fce30에서; stairs-ground는 병합됨, 게임성 검수에 보고): 최종 검수 (a) '손 엉덩이 ≈2.1칸'은 불가 (곧은 지팡이 + 주먹 = 아래팔 내려간 만큼 손목 엄지 쪽 꺾임, 사람 15~25°; 2.1칸이면 팔 다 펴짐·손목 ≈70°; 내 첫 추천이 손목을 빼고 잰 실수 — 정정함). 손목 20° 안 가장 낮게: 빛 2.71칸(Hilt (1.4,-0.5,-0.8), 3°, Pole (0.2,-0.2,0.6))·연금술사 2.66(6°)·뿔 2.56(11°). 연금술사 = SHAPES.FlaskStaff(승인 2D), STAFF.FootMax 2.5, grip_reference §5-6, test_one_hand_grips 123·74/74 + 관련 14개 통과. 감은 곳: 디자인 검수가 메시 7개(LightMage T1·T3, DarkMage T1·T3, Alchemist T1~T3) 감은 곳 가운데를 바닥에서 빛 2.63·뿔 2.53·연금술사 2.59칸으로 올리게 이미지 생성 4에 보냄(내 손 높이 그대로). 쥐는 높이 표 = docs/design/weapon_grip_heights_2026-10-12.md. 사진(병합 뒤): 세 마법사 대기 앞·옆(디자인 검수에도 한 장), 주먹-막대 크롭, GripProbe 평지·계단, 걷기, 연금술사 지팡이 T1·T7, Q·Z → 참고 vs 우리 나란히 시트.
+
+   - **a76e7564** (612274b1 위, 최종 검수 API 검토 MAJOR): 7단계 지팡이 1.008H → LEN.Staff 위 끝 4.45(0.9985H), 시험 REACH Staff (0.85, 1.0). 게임성 검수에 보고.
+16. **BB8 내 캐릭터 창 = API 쓰기 job `dev1_character_ui`**(가지 api/dev1-character-ui, sonnet $6, 프롬프트 scratchpad api/bb8_character_ui.md — 세션 끝나면 사라짐; 결과 build/api_agent/dev1_character_ui/result.md). 게임성 검수 10/12: 큰 코드는 API 쓰기 모드 먼저(남은 약 $85, 한도 꼭). 개발 4와 약속: 창 안 빈 Frame 'EquipSlots' 전체를 개발 4에게 — C.GearSlots.Build(frame, { Refresh = fn }) 있으면 6칸(Weapon·Armor·Ring / Pet + Pet Armor·Pet Acc) 전부 개발 4가 그림, 없을 때만 내 임시 무기·펫 칸; 열 때마다 C.GearSlots.Refresh(). job 프롬프트는 무기·펫 칸을 내가 그리는 판이라 끝나면 그 위에 이 규칙으로 고쳐 해시를 개발 4·게임성 검수에. **결과:** job 1($6) = CharacterUI.luau 초안만(컴파일 OK, 미연결·시험 없음, ca33f568) → job 2 `dev1_character_ui_2`(가지 api/dev1-character-ui-2, $6, 프롬프트 scratchpad api/bb8_finish.md): GearSlots 있으면 6칸 전부 개발 4(내 칸 안 그림), ORDER 'BagUI' 다음, test_gather_view 변이, Panels Icons, tools/test_character_ui.py + fixture. 내 확인용 가지 fix/character-ui(wt_lesstext) = 초안 그대로.
+
+17. **BB8 끝 = api/dev1-character-ui-2 47dce676** (job 2 $3.2: GearSlots 있으면 6칸 다 개발 4, ORDER 'BagUI' 다음, Panels Icons, test_character_ui 129·49/49 + 관련 12개 내가 다시 돌려 통과). 게임성 검수·개발 4에 보고. fix/staff-hip는 main ecde46c6에 병합됨.
+18. **A23-141 거위 광장 화면 = API job `dev1_goose_square`**(가지 api/dev1-goose-square, $6, 프롬프트 scratchpad api/goose_square.md): Config.Goose.Square(내 것, 개발 2는 읽기), EggFx.Here/SquareButton/SquarePress/어두워짐, EventHUD Join·Leave, 알 화면·둥지/수레 표시는 InGooseSquare일 때만. 약속 docs/design/goose_square_contract_2026-10-12.md(main 8dc84f6) — 개발 2 답 기다림(원격 GooseSquare·속성 InGooseSquare·GooseJoinBlock은 Net/서버 = 개발 2).
+19. **A23-142 급한 일 = fix/staff-short 68bef0e7** (wt_onehand, main 3570a8f3에서, 게임성 검수에 보고): 지팡이 3개 = 아바타 실제 키(avatarHeight)의 0.65~0.75, 손 43%(STAFF.Grip), 구슬 아래 ≥ 손+1.2(키 비례, staffOrb), 땅 안 짚음(발끝 0.89~1.26) → StaffCarry: WeaponPose는 박힐 때만 들어 올림. staffHandHeight·staffLow·FootMax 지움. grip_reference §5-7. 디자인 검수에 메시 숫자(43%) 보냄. 낮은 것 ①(실제 키)은 이걸로 끝, ②(자세 안 잡는 캐릭터 지팡이 누움)는 남음.
+   - **d56d0f1e** (68bef0e7 위): 메인 사진 뿔 지팡이가 몸 가로지름(11°+숙임 8°) → 모든 지팡이 세상 기준 10° 안, 뿔 Aim (0,1,0)·손 2.71(빛과 같음). 시험 세상 기울기 줄.
+20. **BB8 고침 = api/dev1-character-ui-2 b479014a** (= fix/character-ui, wt_lesstext): main merge(ORDER + BuffBar) + 닉네임 줄·[Change], HUD PowerOpen 잠금, Base hit, 축복 내 편만 +gold+XP, CombatPowerOf, [Equip] 죽음·직업 전·진영 무기 막기. test_character_ui 138·59/59 + 9개. 남은 낮은 것: 장착 간격 공유, 한국어 이름, 코드 모양 배경.
+21. **거위 광장 화면 = fix/goose-square cb886aae** (wt_goldegg; 4e34b165 API job 한도에서 멈춤 → 내가 마무리): + GooseSpot 가운데. egg_fx 126·66/66, audio(혼자) 통과 + 10개. 게임성 검수에 보고. 서버(개발 2 앱 세션)와 같이 병합해야 동작.
+22. **fix/staff-face cdab64c7** (wt_onehand, main a09de901에서; staff-short·d56d0f1e는 병합됨): 디자인 검수 staff_short_v2 판정 → 손 0.4칸 앞(z -1.2), 지팡이 바깥 5°, 구슬이 얼굴 앞·밖(test 'orb clears the face'), GripProbe 'tilt='. 게임성 검수·디자인 검수에 보고. 사진 = 세 마법사 옆 합본(디자인 검수).
+23. **최종 검수 10/13:** staff-face cdab64c7 + character-ui-2 b479014a = 최종 검수 첫 검수 중 → 통과하면 같이 병합 → 메인 반영 1 사진. goose-square cb886aae = 개발 2 서버 가지와 같이. 서버 병합 뒤 한 가지로: 도움말 '10분·교차로' 글, Config.QuestGuide GuideZones.Goose, 큰 지도엔 거위 광장 안 그림(광장 안 미니맵만).
+- 다음 큐 메모: A23-143 말풍선 스티커 고르기·잠금 화면(이미지 개발 imgdev-stickers 병합 + 지시 뒤, 키 Config.UIArt.Parts.Emo*, Free 5개). 이미지 생성 4 지팡이 메시 9개 = 0.65/0.70/0.75H·원점 43%(코드와 맞음, 올리기·연결은 최종 검수 승인 뒤 이미지 개발).
+- **API: 남은 ≈$22 → 새 API 쓰기 job 금지(최종 검수 10/12), 큰 코드도 앱 세션에서.**
 
 ## 기다리는 것
-- **지팡이 쥐는 높이 결정(15번) + 이미지 생성 4 무기별 쥐는 높이 표.**
-- 게임성 검수: fix/stairs-ground 3099197e 결과 → 병합 뒤 사진(Hero 칸, 계단·경사 GripProbe 줄).
+- **BB8 job 결과(16번)** → 검토·EquipSlots 규칙 고침 → 개발 4·게임성 검수. 개발 2 황금 알 서버(api/dev2-golden-egg) 해시 오면 EggFx 깃털·장인 줍기·Bring 2 eggs 맞춤 화면 가지.
+- 게임성 검수: fix/staff-hip 612274b1 결과 → 병합 뒤 사진(15번). stairs-ground는 병합됨 → Hero 칸·계단 GripProbe 사진 아직.
 - 게임성 검수: fix/lesstext(0325d628)·fix/onehand(33272a46, "병합 가능")·fix/onehand-2(6d449153)·fix/golden-egg-client(eebeebd3) 시험 → 최종 검수 병합 → 메인 반영 1 sync·Play 사진(전사: 앞·3/4·옆, 주먹-손잡이 100% 크롭, 걷기 때 칼-허벅지, Q·Z·X 한 번씩, GripProbe 줄; **사용자 아바타 마법사 지팡이 발끝이 보이는 전신 옆 사진** — HUD에 발이 가려지지 않게; 대장장이 Q). 사진 오면 쥐기·길이 다시 봄. dev4-bag와 golden-egg는 ClientMain ORDER 한 줄 충돌(둘째 병합 쪽이 main 다시 받기).
 - 사진(병합 뒤 메인 반영 1): 마법사 지팡이 tip-foot 다시(목표 0.05~0.15, 기본 R15도), 가방 강화 성공·실패 칩, 카드 연 채 첫 미션 받기(동전 +150), 빛|뿔 전사 나란히 앞·3/4·옆 + 이름표·후광/뿔 위치(숙임), 뿔 마법사·뿔 궁수 옆, 마법사 지팡이 발끝, 대장장이 Q.
 - 새 SPEC: A23-137(거위 4시간마다·예고 칩 = 다음 거위 시각 → 황금 알 화면 EventHUD 칩 손볼 것, 지시 오면), A23-138(밈 묶음 = fix/meme-en-client, 급한 병합 뒤 지시 오면; Smokey → Rose 36곳).
@@ -52,6 +66,7 @@
 - 아직 안 한 황금 알 화면: 거위 조각 색(거위 3D 필요), "!"·"Zzz" 아이콘 그림(승인되면 글자 대신), 알 아이콘 IconGoldenEgg(이미지 개발 업로드 뒤 막대 양 끝).
 
 ## 그다음 큐 (검수가 새로 주지 않으면)
+0. 낮음(최종 검수 API 검토 10/12): ① 지팡이 길이가 GetScale만 따라 작은 체형은 4단계부터 1.0H 넘음 → 실제 키(머리 꼭대기-발) 기준으로 ② 자세를 안 잡는 캐릭터(R6·멀리·12번째 이후)는 지팡이가 앞으로 누워 몸을 뚫음.
 1. 한국어 클라 다음 덩어리(API 쓰기, `docs/design/l10n_contract_2026-10-11.md` §10-1 나머지; L10n 중심은 main 398733a4에 병합됨): L10nText 처리기(간판 TextKey·현상수배판 BoardRows·글자 그림 Lettering 먼저), 프롬프트 훅(ActionKey/ObjectKey), Announce 조합기 → L10n.T, 이름표·몬스터 바 클라 조합, l10n_export --lettering·클라 표 export/apply. 그다음 첫 10분 화면 UIKit.Tx 키로.
 2. 스트리밍 고침(검수가 켜기 정하면, `docs/review/streaming_risk_2026-10-11.md`).
 3. 스킬 소리 41개 연결(id 오면), 개발 2 Z·X 패킷 필드 SkillFx 연결.

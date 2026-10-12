@@ -510,6 +510,13 @@ function CombatService.GetDamageMult(attacker, victim, shape)
 	return mult
 end
 
+-- ⑥ gear (게임성 개발 3): a player's ring mult (Config.GearMultsOf; 1 when this Config has no gear or it fails)
+local function gearAtk(p)
+	if type(Config.GearMultsOf) ~= "function" then return 1 end
+	local ok, a = pcall(Config.GearMultsOf, p)
+	return (ok and type(a) == "number" and a == a and a >= 1 and a ~= math.huge) and a or 1
+end
+
 -- NORMAL per-target monster hit (unrounded), before the 50% immediate rule. shape = the swing's Config.AttackProfile
 -- (A23-34: a punch has class multiplier 1); nil = the class row (skill Q keeps the class multiplier, bare-handed too)
 function CombatService.ComputeMonsterHit(attacker, allowCrit, shape)
@@ -519,6 +526,7 @@ function CombatService.ComputeMonsterHit(attacker, allowCrit, shape)
 	local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, "WeaponEnhance", 0))
 		* (c.Damage or 1)
 		* (1 + CombatService.GetDamageBonus(attacker, nil))
+		* gearAtk(attacker) -- ⑥ gear (게임성 개발 3): the ring's atk mult
 		* CombatService.GetDamageMult(attacker, nil, shape)
 	local crit = allowCrit == true and Util.Random:NextNumber() < Config.Combat.CritChance
 	if crit then
@@ -540,8 +548,9 @@ function CombatService.ComputePvPHit(attacker, victim, shape)
 	-- A23-12: enhancement and the legendary tier only move this ratio; the PvP clamp below still caps it
 	local vWeapon = Config.WeaponDamage(vTier, vLevel, numAttr(victim, "WeaponEnhance", 0))
 	local ratio = Config.PvP.PowerRatioMax
-	if vWeapon > 0 then
-		ratio = Config.WeaponDamage(aTier, aLevel, numAttr(attacker, "WeaponEnhance", 0)) / vWeapon
+	if vWeapon > 0 then -- ⑥ gear (게임성 개발 3): each weapon damage x its owner's ring mult; the same clamp below
+		ratio = Config.WeaponDamage(aTier, aLevel, numAttr(attacker, "WeaponEnhance", 0)) * gearAtk(attacker)
+			/ (vWeapon * gearAtk(victim))
 	end
 	-- A23-34 (검수 2026-10-06): a bare-handed attacker never gets the weapon floor PowerRatioMin, so a punch (and a
 	-- bare-handed skill) stays weaker than any tier-1 weapon against every opponent (Config.Combat.Unarmed.PvPRatioMin)
