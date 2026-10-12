@@ -24,6 +24,10 @@ GatherView.luau(노드 글 ActionKey/ObjectKey, 나만 쉬는 노드 흐리게).
 - 시험 `tools/test_craft_window.py` 97·31/31. UiSandbox 사진 pc(10장, 잘림 3개 고침) → 고친 뒤 사진 pc2(2번째 칸 요청함). 사진 `tools/play_craft_window_photos.py <폴더> [--click]`(UiSandbox, 최종 검수 승인 뒤).
 - 개발 3이 넣음(origin/dev3-craft2 e16569cf, 게임성 검수 시험 중): CraftInfo.On, NotReady 알림, CraftStation마다 "CraftPrompt"(ActionKey/ObjectKey) → OpenPanel("Craft"). 화면 쪽: 프롬프트 글을 내 언어로 쓰고 그 역할 장인에게만 보이게(CraftWindow.RefreshStations) — 시험 108·39/39.
 
+## 조련사 화면 — dev4-tamer (dev4-craft c35905ee 위, 게임성 검수 보고)
+- 서버 = 개발 3 origin/dev3-tamer(설계 docs/design/tamer_server_2026-10-12.md §7, 스위치 Crafting + Research 꺼짐 → 화면도 안 보임). CraftWindow: Kind Pet 레시피(종 이름·아이콘, Speed +5–8%, "Slime research 120 / 150", 이유 NeedResearch = NeedLevel 다음·NeedMats 앞), 조련사만 Make/Research 탭(TamerInfo, 가족·Stage·다음 단계 막대). CraftView: CraftResult.Pet → "Baby Slime +9% speed". PetWindow: Roll/PetRoll → PetSpeedBonus, "Born with +N% speed", [Feed (n)] = FeedPet(uid)(최대 Lv·간식 0이면 끔, 수는 바로 바뀜).
+- 시험 craft_window 135·47/47, craft_view 47·21/21, pet_tamer(새) 20·11/11, pet_window 32·17/17 — dev3-tamer Config로 돌려도 통과. 사진 docs/art/verification_2026-10-12/tamer/pc(6장, 사진 전용 묶음 = 내 가지 + dev3-tamer + 스위치 켬, 커밋 안 함, 묶음 worktree 지움). 사진 스크립트 tools/play_tamer_photos.py.
+
 ## 그 뒤 큐
 - ④ 연금 계약(개발 3 origin/dev3-alchemy 09a149d0, 설계 docs/design/alchemy_server_2026-10-12.md §4, 스위치 Config.Features.Tonics 꺼짐): Loot.Items Kind "Tonic" 4종(MightTonic·GuardTonic·LuckyTonic·WisdomTonic, Icon IconMightTonic…) → 가방 Use 탭 [Drink] = c->s UseTonic(itemId), 거절 Config.Alchemy.Text.TwoMax / NoTonic. 도는 물약 = 속성 Buff_<itemId>(끝 서버 시각, 0 없음) → 작은 아이콘·남은 시간(3분, 2개까지). 레시피 A1~A4(Kind Item, 결과 병 수 = N + 망치 +N). 퀵슬롯 물약은 개발 2·1(검수가 순서).
 ④ 연금·조련 창 ⑤ 거래소 창 + 퀘스트 화면(개발 2) ⑥ 장비창 방어구·반지·펫 칸 ⑦ 장인 스킬 효과·장인 채집 Fx "Gather"(그림 오면).

@@ -43,7 +43,7 @@ MUTATIONS = [
     ("config: Wisdom on gold", C, "WisdomTonic = { Stat = \"HuntXP\", Mult = 1.10 },", "WisdomTonic = { Stat = \"HuntGold\", Mult = 1.10 },"),
     ("config: tonics sold at the Forge", C, "Icon = \"IconMightTonic\", Source = \"Craft\",", "Icon = \"IconMightTonic\","),
     ("config: A1 at craft Lv2", C, "Item = \"MightTonic\", N = 1, Lv = 1, Gold = 20,", "Item = \"MightTonic\", N = 1, Lv = 2, Gold = 20,"),
-    ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\" },", "\t},"),
+    ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\", \"PetTreat\" },", "\t\t\"PetTreat\" },"),
     # --- drinking
     ("use: the switch not checked", B, "\tif not on() then return \"off\" end\n\tlocal tonic", "\tlocal tonic"),
     ("use: any item drinks", B, "\tif type(tonic) ~= \"table\" or not Config.Loot.Items[id] then return \"tonic\" end\n", "\tif type(tonic) ~= \"table\" then tonic = { Stat = \"x\", Mult = 1 } end\n"),
@@ -66,7 +66,8 @@ MUTATIONS = [
     ("remote: extra arguments taken", B, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal id = ...\n", "\tlocal id = ...\n"),
     ("remote: no rate limit", B, "\tif not Util.RateLimit(player, \"UseTonic\", num(Config.RateLimits.UseTonic, 1)) then return end\n", ""),
     # --- the Lucky Tonic hook in LootService
-    ("loot: Lucky on every row", L, "\t\tlocal rowBonus = rowBonus * ((def and def.Kind == \"Material\") and num(info.MatMult, 1) or 1)\n", "\t\tlocal rowBonus = rowBonus * num(info.MatMult, 1)\n"),
+    ("loot: Lucky on every row", L, "\t\tlocal rowBonus = rowBonus * ((def and def.Kind == \"Material\" and def.Source == nil) and num(info.MatMult, 1) or 1)\n", "\t\tlocal rowBonus = rowBonus * num(info.MatMult, 1)\n"),
+    ("loot: Lucky on boss / gathered material rows", L, " and def.Source == nil) and num(info.MatMult, 1) or 1)\n", ") and num(info.MatMult, 1) or 1)\n"),
     ("loot: Lucky never asked", L, "\tif S.BuffService then info.MatMult = S.BuffService.Mult(player, \"MaterialDrop\") end\n", ""),
 ]
 

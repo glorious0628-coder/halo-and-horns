@@ -37,6 +37,7 @@ local TXT = {
 	Skip = "Skip",
 	Result = "+%d %s",
 	ResultPlain = "+%d",
+	ResultPet = "%s +%d%% speed", -- a tamer's summon (CraftResult.Pet: the new pet and its walk speed roll, 개발 3 dev3-tamer)
 }
 L10n.Register("CraftView.TXT", TXT)
 
@@ -382,14 +383,22 @@ function CraftView.OnResult(payload)
 	if not s or (payload.Id ~= s.Id and not payload.Practice) then return end
 	local plus = math.max(0, math.floor(tonumber(payload.Plus) or 0))
 	local name = nil
-	if payload.Kind == "Weapon" and tonumber(payload.Tier) then
+	local pet = type(payload.Pet) == "table" and payload.Pet or nil
+	local species = pet and type(pet.Species) == "string" and type(Config.Pets) == "table" and type(Config.Pets.Species) == "table"
+		and Config.Pets.Species[pet.Species] or nil
+	if pet and tonumber(pet.Spd) then
+		-- the summon's line: the pet and the speed it was born with (it follows at once by the server's rules)
+		local petName = type(species) == "table" and tx(species, "Name") or ""
+		if petName == "" then petName = tostring(pet.Species) end
+		if UI.Result then UI.Result.Text = tx(TXT, "ResultPet", petName, math.max(0, math.floor(tonumber(pet.Spd)))) end
+	elseif payload.Kind == "Weapon" and tonumber(payload.Tier) then
 		local class, faction = LocalPlayer:GetAttribute("Class"), LocalPlayer:GetAttribute("Faction")
 		local ok, n = pcall(Config.WeaponName, math.floor(tonumber(payload.Tier)), class, faction)
 		name = ok and n or nil
 	elseif type(payload.Item) == "string" and Config.Loot.Items[payload.Item] then
 		name = tx(Config.Loot.Items[payload.Item], "Name")
 	end
-	if UI.Result then
+	if UI.Result and not (pet and tonumber(pet.Spd)) then
 		UI.Result.Text = name and tx(TXT, "Result", plus, name) or tx(TXT, "ResultPlain", plus)
 	end
 	if UI.Ring then UI.Ring.Visible = false end

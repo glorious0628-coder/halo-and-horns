@@ -1,0 +1,79 @@
+{
+  "checks": 22,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "a summoned pet's roll is not passed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the follower's PetRoll ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a roll of 0 counts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no born line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a PetRoll change keeps the old window",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "feed while research is off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "feed on at the top level",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "feed with no treat",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "feed twice within the gap",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the treat count never updates",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the small lines below the UIKit floor",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a styled line loses its colour",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the row keeps the icon's height",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the live count turns the top level on",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "조련사 펫 창 몫 (게임성 개발 4, 2026-10-12; server 개발 3 origin/dev3-tamer dccbc1e5, docs/design/tamer_server_2026-10-12.md\n§7: PetList rows carry Roll = { Spd }, the follower's attribute PetRoll, c->s FeedPet(uid); switch Config.Features.Research),\noffline.\n\nRuns the CURRENT Config.luau and PetWindow.luau in the official Luau CLI (tools/fixtures/pet_tamer_offline.luau; the pet\nwindow test's doubles + FeedPet, Panels.LastInventory, kit.SetEnabled; Config.PetSpeedBonus wrapped to see the roll).\nChecks: a summoned pet's roll goes into Config.PetSpeedBonus (Lv1 = roll %), a found pet passes none; before the first\nPetList the follower's roll is the attribute PetRoll (0 = none); a PetRoll change redraws; \"Born with +N% speed\" on a\nrolled pet only; research off = no [Feed] and Feed sends nothing; research on = [Feed (n)] per pet (n = Pet Treats in the\nbag), off at the top level or with none, FeedPet(uid) once per Gap; the count updates in place (no rebuild); a fed pet's\nXP-only PetList moves the bar in place. Mutations: each must be caught.",
+  "studioCalls": 0
+}

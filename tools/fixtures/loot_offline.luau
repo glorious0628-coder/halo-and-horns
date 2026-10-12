@@ -722,9 +722,10 @@ runGroup("config", function()
 		check(d and d.Kind == "Transfer" and d.Chance == chance, "transfer scroll " .. id .. " chance", show(d))
 	end
 	for id, d in L.Items do
-		-- Tonic (게임성 개발 3, alchemy): drunk through BuffService's UseTonic, never through UseItem
-		check(d.Kind == "Material" or d.Kind == "Enhance" or d.Kind == "Transfer" or d.Kind == "Tonic",
-			"item kinds are Material/Enhance/Transfer/Tonic", id)
+		-- Tonic (게임성 개발 3, alchemy): drunk through BuffService's UseTonic, never through UseItem; Treat (⑤ Pet Treat):
+		-- fed through TamerService's FeedPet
+		check(d.Kind == "Material" or d.Kind == "Enhance" or d.Kind == "Transfer" or d.Kind == "Tonic" or d.Kind == "Treat",
+			"item kinds are Material/Enhance/Transfer/Tonic/Treat", id)
 		if d.Kind == "Material" then
 			check(type(d.Sell) == "number" and d.Sell > 0 and d.Sell == math.floor(d.Sell), "materials have a positive integer Sell price", id)
 		end

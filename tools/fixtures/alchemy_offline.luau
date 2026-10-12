@@ -214,6 +214,17 @@ runGroup("loot", function()
 	local scroll = dl.Items.Enh70 or 0
 	kill(lucky, { 0.99, 0.0035, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99 })
 	check((dl.Items.Enh70 or 0) == scroll, "a scroll row stays as it was (0.3%: a draw of 0.0035 misses even with the tonic)", "")
+	-- 게임성 검수 10/12: only a plain monster material (no Source); a boss / gathered material row stays as it was
+	for i, src in { "Boss", "Gather" } do
+		local w2 = aWorld({ EditConfig = function(c) c.Loot.Items.Jelly.Source = src end })
+		local q, dq = drinker(w2, 10 + i)
+		w2.B.Use(q, "LuckyTonic")
+		local b3 = dq.Items.Jelly
+		w2.Script = { 0.35, table.unpack(nine) }
+		w2.Reg.LootService.RollKill(q, { Kind = "Slime", Position = vec(0, 0, 0) })
+		w2:Flush()
+		check(dq.Items.Jelly == b3, "a " .. src .. " material row ignores the Lucky Tonic (0.35 still misses)", tostring(dq.Items.Jelly))
+	end
 end)
 
 finish()

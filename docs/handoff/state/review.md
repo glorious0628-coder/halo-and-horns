@@ -73,3 +73,4 @@
 - (07:07) 메인 저장 c92bd9b(07:06:18, SHA 4a92c18e…, 소스 e272933e, 천 v3b 포함). 병합 50c03c82(town_quests 시험), e272933e(pvp-toast·staff-slope-hero). 남은 낮은 것: 빛 마법사 Halo_Stairs 위 지팡이 2~3.3 뜸(개발 1).
 - (08:05) 병합 30832896: dev4-craft c35905ee·stairs-ground 3099197e·dev3-alchemy ba91630f·dev3-craft2 e0556202(전부 꺼짐 + 계단 땅). **lesstext-server 1f42e88f = 고쳐서 다시**(강화·옮기기 결과 토스트 5개 지웠는데 Bag 창이 결과를 안 그림 → 실패로 +N 떨어져도 글 0; 낮은 것: 보스 등장 위치 없음, 출석 14일 장인 글 없음) → 게임성 검수 경유 개발 2.
 - (08:47) 병합 44d03729(lesstext-server 8c8dc44d, 결과 토스트 되살림). 메인 저장 7fc9082(08:46:17, SHA a2007e08…, 소스 44d03729). 대기: dev3-tamer b3972a6b(반박 검토 wehjlcaxh) + dev4-tamer bcd6ef5a(dev4-craft 위).
+- (09:45) 병합 4020bfcb = dev3-tamer b3972a6b + dev4-tamer bcd6ef5a(꺼짐). 반박 검토는 이번까지 앱 워크플로, **다음부터 api_agent**(사용자 확인 10/12, 메모리 big-work-via-api-sdk). WorldKit screen_capture 멈춤 → 이미지 생성 1이 백업 → WorldKit만 다시 시작 중. 마법사 대기 = 손 엉덩이 높이(a) 결정(개발 1).
