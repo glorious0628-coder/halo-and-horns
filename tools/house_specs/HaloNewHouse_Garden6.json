@@ -1,18 +1,88 @@
 {
  "name": "HaloNewHouse_Garden6",
  "src2d": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_front.png",
- "views2d": {"left": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_left_v3.png", "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_right_v2.png", "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_back_v2.png"},
+ "views2d": {
+  "left": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_left_v3.png",
+  "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_right_v2.png",
+  "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_back_v2.png"
+ },
  "note": "새 집 Garden6 (plan House_Garden6, HouseB). 2D: wide low one-storey cottage, blue hip roof + gold ball finial, corner pilasters, an arched window either side of the single arched door, mint/white striped awning, wall lanterns, flower boxes, a round lily pond at the front-left corner (pond, plants = Tripo decoration later), one large arched window on each side wall. W 22 x D 18.6 from the 2D front / side widths.",
- "plan": {"shape": "rect", "W": 22.0, "D": 18.6},
+ "plan": {
+  "shape": "rect",
+  "W": 22.0,
+  "D": 18.6
+ },
  "Z0": 1.1,
- "storeys": [{"h": 8.4, "win": {"w": 1.9, "type": "arch", "h": 4.2, "by_wall": {"left": 2.6, "right": 2.6}}, "walls": {"front": [0.2, 0.8], "left": [0.5], "right": [0.5], "back": [0.3, 0.7]}}],
- "door": {"w": 4.0, "h": 6.8, "double": false},
+ "storeys": [
+  {
+   "h": 8.4,
+   "win": {
+    "w": 1.9,
+    "type": "arch",
+    "h": 4.2,
+    "by_wall": {
+     "left": 2.6,
+     "right": 2.6
+    }
+   },
+   "walls": {
+    "front": [
+     0.2,
+     0.8
+    ],
+    "left": [
+     0.5
+    ],
+    "right": [
+     0.5
+    ],
+    "back": [
+     0.5
+    ]
+   }
+  }
+ ],
+ "door": {
+  "w": 4.0,
+  "h": 6.8,
+  "double": false
+ },
  "pilasters": true,
  "pedestals": true,
  "steps": "three",
- "awning": {"w": 6.2, "colors": [[120, 200, 165], [250, 250, 245]], "n": 7},
- "window_boxes": [["all", "all"]],
+ "awning": {
+  "w": 6.2,
+  "colors": [
+   [
+    120,
+    200,
+    165
+   ],
+   [
+    250,
+    250,
+    245
+   ]
+  ],
+  "n": 7
+ },
+ "window_boxes": [
+  [
+   "all",
+   "all"
+  ]
+ ],
  "pots": [],
  "medals": [],
- "top": {"type": "flat", "parapet": "none", "h": 1.0, "skylight": null, "topiary": [], "hip": {"h": 5.0, "eave": 1.4}}
+ "top": {
+  "type": "flat",
+  "parapet": "none",
+  "h": 1.0,
+  "skylight": null,
+  "topiary": [],
+  "hip": {
+   "h": 5.0,
+   "eave": 1.4
+  }
+ }
 }

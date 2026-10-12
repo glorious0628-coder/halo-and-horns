@@ -617,6 +617,14 @@ for TW_ in (TWL if P["shape"] == "rect" else []):
                               "yaw": 0, "W": ww_, "spring": ZT + 0.6 + TW.get("win_h", 1.6), "pier": 0.25, "frame": 0.1,
                               "depth": 0.9, "recess": 0.2})
 
+# wall_piers [[wall, u 0..1, w], ...]: flat marble piers on a wall (gold foot + capital), e.g. Cliff7's blind back wall
+for k, (wn_, u_, w_) in enumerate(S.get("wall_piers", [])):
+    wl_ = walls[wn_]
+    c0_ = wl_.at(u_ * wl_.L, (Z0 + Z1) / 2, T / 2 + 0.2)
+    add("WallPier%d" % k, (w_, Z1 - Z0, 0.45), c0_, wl_.u, UP)
+    add("WallPierCap%d" % k, (w_ + 0.3, 0.6, 0.65), wl_.at(u_ * wl_.L, Z1 - 0.3, T / 2 + 0.3), wl_.u, UP, "gold")
+    add("WallPierFoot%d" % k, (w_ + 0.25, 0.4, 0.6), wl_.at(u_ * wl_.L, Z0 + 0.2, T / 2 + 0.3), wl_.u, UP, "gold")
+
 # ---------------------------------------------------------------- clearance helpers (pedestals, lanterns, pots; 10/11 check)
 def footprint(p):
     """2D footprint + height range of an upright part: ("c", (x, y), r) for a post (X = up), ("r", (x, y), u, hu, hv) for a
