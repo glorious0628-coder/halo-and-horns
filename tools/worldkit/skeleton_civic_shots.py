@@ -47,6 +47,8 @@ def spots():
         elif bid == "Armory":
             add("Armory_door_eye", at(11, 0, 4.6), at(0, 0, 4.2))
             add("Armory_roof", at(18, 12, 22), at(0, 0, 9))
+            add("Armory_back_eye", at(-11, 0, 4.6), at(0, 0, 4.2))       # 10/12: the back window (이미지 생성 2 back 2D)
+            add("Armory_back_diag", at(-13, 9, 7), at(0, 0, 4.5))
         else:
             add(bid + "_door_eye", at(12, 0, 4.6), at(0, 0, 4.0))
             add(bid + "_top", at(26, 14, h * 0.92), at(0, 0, h * 0.8))

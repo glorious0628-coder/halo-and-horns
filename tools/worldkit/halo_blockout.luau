@@ -244,8 +244,12 @@ for ix = 1, NX do
 					mx[iy][iz] = top            -- a partly filled top voxel showed through as dark brown patches on the slopes
 				else -- 디자인 검수 10/12 ④: one rock mass, lighter at the top: Limestone -> Sandstone -> Rock going down (the rim and
 					-- its outcrops from their top), the borders shaken per column so the bands do not run as straight lines
+					-- 10/12 photo: inland the light subsurface showed through the grass slopes as pale cracked patches (terrain
+					-- blending reaches past the 2 top voxels) -> inland ground keeps Rock under it down to y -8
 					local j = ((ix * 13 + iz * 7) % 5) * 2
-					if yb >= -26 + j then
+					if not band and m ~= "s" and yb > -8 then
+						mx[iy][iz] = Rock
+					elseif yb >= -26 + j then
 						mx[iy][iz] = Enum.Material.Limestone
 					elseif yb >= -64 + j * 2 then
 						mx[iy][iz] = Enum.Material.Sandstone
