@@ -11,7 +11,9 @@
 --     time } once per ring; CraftFinish(id) grades them with CraftMini.Accept (a strike whose arrival does not fit its
 --     claimed offset, or one that never came, is a Miss). Five equal offsets = +0. No Finish by StartAt +
 --     CraftMini.T.Timeout, a leave or a KO = +0.
---   * The end: the result goes in (Weapon -> LootService.AddSpare, Gear -> data.Gear.Own, Item -> LootService.GrantItems),
+--   * The end: the result goes in (Weapon -> LootService.AddSpare, Gear -> data.Gear.Own, Item -> LootService.GrantItems,
+--     Pet (⑤ a tamer's summon: TamerService research points first) -> PetService.SummonPet with Roll.Spd = a random whole
+--     % in the recipe's Spd + the hammer's +N, at most Config.SaveV4.PetRollSpd[2]; then TamerService.AddSummon),
 --     craft XP for the role (levels up while it can, at most MaxLv), Craft.Made[id] + 1, Pend cleared -> s->c CraftResult
 --     + CraftInfo, signal Crafted(player, recipeId, plus).
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
@@ -39,6 +41,7 @@ local ST = {
 	Serial = 0,
 	Prompts = {}, -- [ProximityPrompt] = the workbench's role (the "Craft" prompts this service made)
 	GearSum = 60, -- Gear.Own holds at most this many things in all (the save v4 agreement; per key: Config.SaveV4.OwnKeyMax)
+	Rng = Random.new(), -- a summon's random walk bonus (never Robux, A23-115)
 }
 
 local function num(v, default)
@@ -122,6 +125,14 @@ function CraftService.RecipeOn(id)
 		if type(r.Slot) ~= "string" or type(r.Tier) ~= "number" then return nil end
 	elseif r.Kind == "Item" then
 		if not Config.Loot.Items[r.Item] then return nil end
+	elseif r.Kind == "Pet" then
+		-- ⑤ a summon needs the research switch, a known species and both services' calls
+		local P, T = S and S.PetService, S and S.TamerService
+		if not (Config.FeatureOn("Research") and type(r.Species) == "string" and type(Config.Pets.Species[r.Species]) == "table"
+			and type(r.Family) == "string" and type(r.Spd) == "table" and P and type(P.SummonPet) == "function"
+			and type(P.HasRoom) == "function" and T and type(T.Points) == "function") then
+			return nil
+		end
 	else
 		return nil
 	end
@@ -157,14 +168,26 @@ local function room(player, data, r)
 			if math.floor(num(own[gearKey(r, plus)])) >= Config.SaveV4.OwnKeyMax then return false end
 		end
 		return true
+	elseif r.Kind == "Pet" then
+		local ok, yes = pcall(S.PetService.HasRoom, player)
+		return ok and yes == true
 	end
 	local have = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
 	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 
--- the result goes in; false = it did not fit (the craft stays pending)
+-- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }
 local function payOut(player, data, r, plus)
-	if r.Kind == "Weapon" then
+	if r.Kind == "Pet" then
+		local lo = math.floor(num(r.Spd[1], 5))
+		local spd = math.min(Config.SaveV4.PetRollSpd[2], ST.Rng:NextInteger(lo, math.max(lo, math.floor(num(r.Spd[2], lo))))
+			+ math.max(0, math.floor(num(plus))))
+		local ok, uid = pcall(S.PetService.SummonPet, player, r.Species, { Spd = spd })
+		if not ok or type(uid) ~= "string" then return false end
+		local okS, err = pcall(S.TamerService.AddSummon, player, r.Family)
+		if not okS then Util.Warn(TAG, "AddSummon: " .. tostring(err)) end
+		return true, { Uid = uid, Species = r.Species, Spd = spd }
+	elseif r.Kind == "Weapon" then
 		local ok, yes = pcall(S.LootService.AddSpare, player, r.Tier, plus)
 		return ok and yes == true
 	elseif r.Kind == "Gear" then
@@ -225,7 +248,8 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	local c = craftOf(data)
 	-- an earned +N is kept in the save if the result does not fit now (the next try pays that +N, never less)
 	if type(c.Pend) == "table" and c.Pend.Id == recipeId then c.Pend.Plus = plus end
-	if not payOut(player, data, r, plus) then return false end
+	local paid, pet = payOut(player, data, r, plus)
+	if not paid then return false end
 	c.Pend = nil
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
 	-- A23-139 (user 10/12 "그래야 공평"): craft XP only for a player who is that artisan now (a pending craft finished after
@@ -240,7 +264,7 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if player.Parent == Players then
 		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item,
-			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up })
+			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet })
 		sendInfo(player, data)
 	end
 	CraftService.Crafted:Fire(player, recipeId, plus)
@@ -347,6 +371,13 @@ function CraftService.TryStart(player, id)
 	if roleRec(c, role).Lv < r.Lv then
 		notify(player, "NeedLevel")
 		return "level"
+	end
+	if r.Kind == "Pet" then
+		local ok, pts = pcall(S.TamerService.Points, player, r.Family)
+		if not ok or num(pts) < num(r.Research) then
+			notify(player, "NeedResearch")
+			return "research"
+		end
 	end
 	if not hasMats(data, r) then
 		notify(player, "NeedMats")

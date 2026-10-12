@@ -1,0 +1,1257 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 107,
+  "failedChecks": 0,
+  "namedChecks": 97,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.Research is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "stages 50 / 150 / 400 / 1000 / 2500 (crafting_market §4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ResearchStage: the stage the points reach",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "ResearchStage: junk = 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every slime (Prince, Flower, King, Pumpkin) is the Slime family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "other families: the table, else the quest kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "an unknown kind has no family",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every family the table makes has a name",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the stage line takes (family, stage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "TamerInfo at most once a second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "the tamer's join: one TamerInfo (no points yet, the stages)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "a free rider's share (MinorShare) gives none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "an unknown kind gives none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "auto combat kills count (the pet fights for this class)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "only the tamer researches (not a Halo archer, an alchemist, or a class not picked yet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "no TamerInfo for others",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "junk kills are ignored without an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "a broken Research table is repaired, then counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "Points / Stage read the save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "points",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "a new family past MaxKeys (64) is not counted",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "... with room again, it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "a counter never goes past MaxCount",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "caps",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "49 points: no stage yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "50 points: one stage line (key; args = the family's name key, \"1\")",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "a new stage: TamerInfo at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "a family without a name reaches its stage without a line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "StageUp(player, family, stage) fires",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "150 points: stage 2 (the summon stage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "stages",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "the first change after a quiet second: TamerInfo at once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "more within the second: they wait",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "... then one TamerInfo with all of them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "nothing more without a change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "a leave forgets the wait without an error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pace",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "AddSummon: Sum + 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "... and TamerInfo shows it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "junk: false",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summons",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "switch off: no points, no TamerInfo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the tamer's own baby slime (no roll: PetRoll 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "a second baby slime: a new Bound pet with Roll { Spd = 7 }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "PetGranted(player, uid, species)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the pet that follows stays (a summon comes out only when none does)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "PetList rows carry Roll (the window's stats)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "a bad roll: no pet (the server never makes a value up)",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "no roll / an unknown species / no player: no pet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "still two pets",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the summon follows: PetRoll 7, then the speed refresh",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "nothing follows: the summon comes out",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "63 pets: room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "the 64th goes in",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "64 pets: no room, no 65th (Sanitize would drop some pet at the next join)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "GetPet: my pet only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon pets",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "10 XP on a pet that does not follow: no level yet, the list goes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "10 + 20 = 30: Lv2 (15) with 15 over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "the follower's PetLv is not the summon's",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "the follower levels up: published (PetLv 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "a bad amount: nil, nothing changes",
+      "pass": 6,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "not my pet: nil",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "MaxLv: unchanged (Lv 10, XP 0)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "... and no list goes (nothing changed)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pet xp",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "a treat = +20 pet XP, one a half second",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "the Fed line (a key, \"20\")",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "not my pet: the treat stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "a MaxLv pet: PetMax, the treat stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "no treat: NoTreat, no XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "anyone with a pet feeds it (a Halo knight too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "not ready: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "junk: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "FeedPet with two arguments: ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "two within half a second: one treat",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "switch off: no feeding",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "feed",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "the story pick: Lean / Name on the gift slime, the summon stays as it is",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "only a summon owned: the story pick gives the story slime (a second pet)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "catch-up: a summon is not the story pet, it comes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "summon vs story pet",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 7,
+  "staticFailures": [],
+  "mutations": {
+    "total": 52,
+    "applied": 52,
+    "caught": 52,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Features.Research is off",
+          "feed :: switch off: no feeding",
+          "off :: switch off: no points, no TamerInfo"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: stage 2 at 100",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ResearchStage: the stage the points reach",
+          "config :: stages 50 / 150 / 400 / 1000 / 2500 (crafting_market §4)",
+          "points :: the tamer's join: one TamerInfo (no points yet, the stages)",
+          "stages :: 150 points: stage 2 (the summon stage)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: the Prince is its own family",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: every slime (Prince, Flower, King, Pumpkin) is the Slime family",
+          "points :: 1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+          "points :: a free rider's share (MinorShare) gives none",
+          "points :: an unknown kind gives none",
+          "points :: auto combat kills count (the pet fights for this class)",
+          "points :: junk kills are ignored without an error"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: no quest-kind fallback",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: every slime (Prince, Flower, King, Pumpkin) is the Slime family",
+          "config :: other families: the table, else the quest kind"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: unknown kinds have a family",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: an unknown kind has no family",
+          "points :: an unknown kind gives none"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: stage one too early",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: ResearchStage: the stage the points reach",
+          "stages :: 150 points: stage 2 (the summon stage)",
+          "stages :: 49 points: no stage yet",
+          "stages :: StageUp(player, family, stage) fires",
+          "stages :: a new stage: TamerInfo at once"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "kill: the switch not checked",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "off :: switch off: no points, no TamerInfo"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kill: free riders count",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: a free rider's share (MinorShare) gives none",
+          "points :: auto combat kills count (the pet fights for this class)",
+          "points :: junk kills are ignored without an error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "kill: everyone researches",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: no TamerInfo for others",
+          "points :: only the tamer researches (not a Halo archer, an alchemist, or a class not picked yet)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kill: class not picked counts",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: no TamerInfo for others",
+          "points :: only the tamer researches (not a Halo archer, an alchemist, or a class not picked yet)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kill: by kind, not family",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: 1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+          "points :: a free rider's share (MinorShare) gives none",
+          "points :: an unknown kind gives none",
+          "points :: auto combat kills count (the pet fights for this class)",
+          "points :: junk kills are ignored without an error",
+          "stages :: 150 points: stage 2 (the summon stage)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "kill: no key cap",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "caps :: ... with room again, it is",
+          "caps :: a new family past MaxKeys (64) is not counted"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "kill: no count cap",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "caps :: a counter never goes past MaxCount"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "kill: two points",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "caps :: ... with room again, it is",
+          "pace :: ... then one TamerInfo with all of them",
+          "points :: 1 point a paid kill, in the monster's family (the Prince counts for Slime)",
+          "points :: Points / Stage read the save",
+          "points :: a broken Research table is repaired, then counted",
+          "points :: a free rider's share (MinorShare) gives none"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "kill: broken save not repaired",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: Points / Stage read the save",
+          "points :: a broken Research table is repaired, then counted",
+          "points :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stage: no line",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: 50 points: one stage line (key; args = the family's name key, \"1\")",
+          "stages :: a family without a name reaches its stage without a line",
+          "stages :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stage: a line every kill",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: 49 points: no stage yet",
+          "stages :: 50 points: one stage line (key; args = the family's name key, \"1\")",
+          "stages :: a family without a name reaches its stage without a line"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "stage: unnamed families get a line",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: a family without a name reaches its stage without a line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "stage: no signal",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: StageUp(player, family, stage) fires"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "stage: info waits",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "stages :: a new stage: TamerInfo at once"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "info: no info at the join",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: the tamer's join: one TamerInfo (no points yet, the stages)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "info: every kill at once",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pace :: ... then one TamerInfo with all of them",
+          "pace :: more within the second: they wait",
+          "pace :: nothing more without a change"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "info: waits never sent",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pace :: ... then one TamerInfo with all of them",
+          "pace :: nothing more without a change"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "info: no stage list",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "points :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "summon: Sum not counted",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summons :: ... and TamerInfo shows it",
+          "summons :: AddSummon: Sum + 1"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "summon: info not sent",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summons :: ... and TamerInfo shows it"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "summon: one per species",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: 10 + 20 = 30: Lv2 (15) with 15 over",
+          "pet xp :: 10 XP on a pet that does not follow: no level yet, the list goes",
+          "pet xp :: group ran to the end without a Lua error",
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)",
+          "summon pets :: PetGranted(player, uid, species)",
+          "summon pets :: PetList rows carry Roll (the window's stats)"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "summon: the roll not kept",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: PetList rows carry Roll (the window's stats)",
+          "summon pets :: a second baby slime: a new Bound pet with Roll { Spd = 7 }",
+          "summon pets :: nothing follows: the summon comes out",
+          "summon pets :: the summon follows: PetRoll 7, then the speed refresh",
+          "summon vs story pet :: only a summon owned: the story pick gives the story slime (a second pet)",
+          "summon vs story pet :: the story pick: Lean / Name on the gift slime, the summon stays as it is"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "summon: not Bound",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: a second baby slime: a new Bound pet with Roll { Spd = 7 }"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "summon: any roll",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: a bad roll: no pet (the server never makes a value up)",
+          "summon pets :: no roll / an unknown species / no player: no pet",
+          "summon pets :: still two pets"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "summon: unknown species",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: no roll / an unknown species / no player: no pet",
+          "summon pets :: still two pets"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "summon: a summon is the gift / story pet",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon vs story pet :: catch-up: a summon is not the story pet, it comes",
+          "summon vs story pet :: only a summon owned: the story pick gives the story slime (a second pet)",
+          "summon vs story pet :: the story pick: Lean / Name on the gift slime, the summon stays as it is"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "pets: no cap of 64",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pets: a 65th",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "room: always",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: 64 pets: no room, no 65th (Sanitize would drop some pet at the next join)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "GetPet: no level",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a MaxLv pet: PetMax, the treat stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: fractions",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: a bad amount: nil, nothing changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: zero",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: a bad amount: nil, nothing changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: infinity",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: a bad amount: nil, nothing changes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: no level-up publish",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+          "pet xp :: the follower levels up: published (PetLv 2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "xp: no list after XP",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: 10 XP on a pet that does not follow: no level yet, the list goes"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "xp: MaxLv keeps adding",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pet xp :: ... and no list goes (nothing changed)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "list: no Roll",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "summon pets :: PetList rows carry Roll (the window's stats)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: the switch not checked",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: switch off: no feeding"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: not ready",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: not ready: no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: MaxLv eats the treat",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a MaxLv pet: PetMax, the treat stays"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: the treat stays",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a MaxLv pet: PetMax, the treat stays",
+          "feed :: anyone with a pet feeds it (a Halo knight too)",
+          "feed :: no treat: NoTreat, no XP",
+          "feed :: not my pet: the treat stays",
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+          "feed :: two within half a second: one treat"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "feed: no XP",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: anyone with a pet feeds it (a Halo knight too)",
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "feed: no line",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: the Fed line (a key, \"20\")"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "feed: extra arguments taken",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: FeedPet with two arguments: ignored",
+          "feed :: two within half a second: one treat"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "feed: no rate limit",
+        "file": "src/ServerScriptService/TamerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: two within half a second: one treat"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a treat gives 30",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "feed :: a treat = +20 pet XP, one a half second",
+          "feed :: one treat: +20 pet XP (Lv1 15 -> Lv2 with 5)",
+          "feed :: the Fed line (a key, \"20\")"
+        ],
+        "newFailingCount": 3
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "3980836b987d717ff67dadb9c7645b39fa868b44d626db9ec41bd2d0fe5ec057",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/TamerService.luau": "054748a11d59918f2a0dd0f7fcf5524d86f5498321877bcd26b50ab71dd0ff1c",
+    "src/ServerScriptService/PetService.luau": "5a8c3921b043b517af23eb017685be1d096fbb467556eec7da807b036735014f"
+  },
+  "fixtureSHA256": "f4d9fd0e042151bf9d22c38488f679312999124ef2310f43fd2820dc906d6def",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Tamer research + summons + treats (docs/design/tamer_server_2026-10-12.md §1-§4, crafting_market §4, A23-115; PetService.SummonPet / HasRoom / GetPet / AddPetXP, PetList Roll, the 64-pet cap before a pet goes in; FeedPet(uid): a ready owner's pet below MaxLv, one Pet Treat -> +20 pet XP, keys only, 0.5 s). Research: switch Config.Features.Research off; the tamer (artisan Archer, class picked) gets 1 point per paid kill (not MinorShare; auto too) in Config.MonsterFamily (every slime = Slime); stages 50/150/400/1000/2500, one keyed line per new stage (named families), StageUp signal; TamerInfo { Pts, Stage, Sum, Stages } at join and after changes (once a second, a new stage / summon at once); 64 families, MaxCount; AddSummon.",
+  "limitations": "The summon / Pet Treat recipes are tested in tools/test_craft.py (PetService / TamerService doubles there); the Roll walk speed in tools/test_pet_speed.py; the research window, the summon result and the Feed button (PetWindow: Roll in its speed number) are client work."
+}

@@ -1,4 +1,4 @@
-# 게임성 개발 3 — 상태 (2026-10-11 밤)
+# 게임성 개발 3 — 상태 (2026-10-12)
 
 역할: 장인 길드 서버(`role_prompts/04_dev3.md`). 서버만, Studio 안 열고 main에 직접 push 안 함. 보고처 = **'게임성 검수'**(가지 push 보고), 사용자 질문·화면 조작 = '최종 검수'(모든 것 검수). 세션 id는 list_sessions로.
 작업 폴더: `C:/Users/glori/Documents/Roblox/Game-dev3w`(sparse: src·tools·docs·AGENTS.md, `build/luau_cli_0_741` 있음).
@@ -18,7 +18,13 @@
 - **④ 연금 버프 물약 = 가지 `dev3-alchemy`**(main 위): BuffService(UseTonic, Buff_<id> 속성, data.Buffs), 물약 4종·레시피 A1~A4, 효과 줄 4곳(CombatService 2·LootService·ProgressionService — 개발 2 파일, 한 줄씩), Item 레시피 = N + 망치질 +N. 설계 `docs/design/alchemy_server_2026-10-12.md`. 시험 test_alchemy 53·30/30. 남의 시험 고침: test_town_quests(Config.Gather의 Pick을 이야기 Pick으로 잘못 셈 — gather 병합 뒤 main에서도 실패하던 것), loot 픽스처(Tonic 종류 허용), new_zones 픽스처(Source Craft도 다음 묶음).
 - A23-139 반영(dev3-alchemy 두 번째 커밋): 제작 XP × 2배 XP 패스(PassMult "XP2"), 제작 XP는 그 역할 장인만.
 - `dev3-craft2`(dev3-alchemy 위): 개발 4 부탁 3개 — CraftInfo.On, NotReady 알림, 작업대 Craft 프롬프트 → OpenPanel("Craft").
-- 다음: ⑤ 조련사 연구·소환·간식(Research 표, Pets.Roll, Pet Treat 레시피).
+- **⑤ 조련사 = 가지 `dev3-tamer`**(dev3-craft2 위): 설계 `docs/design/tamer_server_2026-10-12.md`(6264f469) — 개발 2에 PetService 4개(SummonPet·AddPetXP·PetRoll 속도·PetList Roll) 누가 넣을지 질문, 게임성 검수에 소환 능력치(5..8 + 망치질, 최대 10)·간식 재료(Petal/Herb) 판단 질문.
+  - 됨 7ac7dad5: 연구력 `TamerService`(조련사 처치 → 가족 점수, Config.MonsterFamily·ResearchStage, 단계 알림 키 + StageUp, TamerInfo, AddSummon), 스위치 `Config.Features.Research = false`. test_tamer_research 52·26/26.
+  - 됨 3f58ecdb: 소환 S1(Kind "Pet", 무작위 5~8 + 망치질, 최대 10 — 검수 OK)·간식 T1(Jelly 5 + Petal 2 → 3)·FeedPet(+20)·PetService 4개(개발 2 합의, 개발 2 읽어 확인 대기)·행운 물약 Source 없는 재료만(88d53831). 설계 §7.
+  - dev3-alchemy ba91630f: test_gamepass 고침(CraftService는 제작 XP 줄에서만 XP2 패스) → dev3-craft2·dev3-tamer에 merge로 받음.
+  - 8e67dbcf 간식 재료 = Jelly 5 + Herb 2(검수). f8dc5efc 개발 2 M1·L1(소환 펫은 선물·이야기 펫 아님, giveXP 주석). 개발 2 PetService 확인 통과.
+  - 클라 남은 것(개발 4·1, 검수가 나눔): PetWindow Roll 속도 숫자, 연구 창, 소환 결과, 간식 버튼.
+  - 다음: ⑥ 방어구·반지·펫 장비 칸(Gear, 전투력, 펫 장비 = 조련사).
 
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.
