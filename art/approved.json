@@ -8635,5 +8635,65 @@
   },
   "note": "그림자 없는 4면, 물줄기 없이(잔잔한 평평한 물 면만, 게임 물줄기 = FountainFx). 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤. right = left 좌우 뒤집음. → Blender 손보기 Tripo 스마트 메시.",
   "deleted": "옛 2D(art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "HaloFlowerPotHQ_Daisy": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/HaloFlowerPotHQ_Daisy_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Daisy_front_ns.png",
+   "back": "art/out/s2/noshadow/HaloFlowerPotHQ_Daisy_back_ns.png",
+   "left": "art/out/s2/noshadow/HaloFlowerPotHQ_Daisy_left_ns.png",
+   "right": "art/out/s2/noshadow/HaloFlowerPotHQ_Daisy_right_ns.png"
+  },
+  "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo. left = right 좌우 뒤집음(원래 left 시점 낮음, 이미지 생성 2).",
+  "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Daisy.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "HaloFlowerPotHQ_Lavender": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/HaloFlowerPotHQ_Lavender_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Lavender_front_ns.png",
+   "back": "art/out/s2/noshadow/HaloFlowerPotHQ_Lavender_back_ns.png",
+   "left": "art/out/s2/noshadow/HaloFlowerPotHQ_Lavender_left_ns.png",
+   "right": "art/out/s2/noshadow/HaloFlowerPotHQ_Lavender_right_ns.png"
+  },
+  "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo.",
+  "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Lavender.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "HaloFlowerPotHQ_Rose": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/HaloFlowerPotHQ_Rose_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Rose_front_ns.png",
+   "back": "art/out/s2/noshadow/HaloFlowerPotHQ_Rose_back_ns.png",
+   "left": "art/out/s2/noshadow/HaloFlowerPotHQ_Rose_left_ns.png",
+   "right": "art/out/s2/noshadow/HaloFlowerPotHQ_Rose_right_ns.png"
+  },
+  "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo.",
+  "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Rose.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "HaloFlowerPotHQ_Sunflower": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/HaloFlowerPotHQ_Sunflower_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Sunflower_front_ns.png",
+   "back": "art/out/s2/noshadow/HaloFlowerPotHQ_Sunflower_back_ns.png",
+   "left": "art/out/s2/noshadow/HaloFlowerPotHQ_Sunflower_left_ns.png",
+   "right": "art/out/s2/noshadow/HaloFlowerPotHQ_Sunflower_right_ns.png"
+  },
+  "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo. left = right 좌우 뒤집음(원래 left는 해바라기가 카메라를 봐서 앞면 방향과 어긋남, 최종 검수).",
+  "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Sunflower.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "HaloFlowerPotHQ_Tulip": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/HaloFlowerPotHQ_Tulip_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Tulip_front_ns.png",
+   "back": "art/out/s2/noshadow/HaloFlowerPotHQ_Tulip_back_ns.png",
+   "left": "art/out/s2/noshadow/HaloFlowerPotHQ_Tulip_left_ns.png",
+   "right": "art/out/s2/noshadow/HaloFlowerPotHQ_Tulip_right_ns.png"
+  },
+  "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo. left 면 튤립 한 송이가 상자 밖으로 살짝 나옴(꽃다발 기울기, 통과).",
+  "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Tulip.png) deleted 10/12 noshadow (최종 검수)"
  }
 }
