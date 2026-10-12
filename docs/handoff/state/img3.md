@@ -2,6 +2,7 @@
 ## 지금 상태 한 줄 (10/12 오전 9:50)
 **WorldKit = 새 창 STUDIO_ID 83b32720(다시 시작됨).** 집 15채 장식(1차 Import) + 빠진 장식(2차 v2_extras: 간판·진열창·05 채광창·꽃 온실) 배치 끝, 골격 13채 새 판(차양 금 팔·02/08 드럼 창 2.6·08 현관+갈라진 발코니·주스 지붕 기둥·진열창 유리 0.6), 문 오차 최대 0.006, WalkGround 812, 백업 `wk_backup 20261012_093336`.
 **디자인 검수 판정 기다림:** `art/review/img3/house_deco/houses_deco_roofs3.jpg`(빵 벽돌 돔 = 깨끗한 벽돌 `proj_bake.brick_maps`, 주스 파라솔 모서리 = 기둥 꼭대기). 08 현관 (나) 통과. 통과하면 **세 번째 Import** `art/models/tripo/house_deco/HaloHouses_Deco_v3_roofs.glb`(7개, 이미 만듦) → `py tools/house_deco_studio.py --model HaloHouses_Deco_v3_roofs --append --marker HaloShop_Juice_CanopyA` → execute_luau(STUDIO_ID=83b32720) → 백업 → **C2c 사진** `STUDIO_ID=83b32720 py tools/house_deco_shots.py art/review/img3/house_deco/studio_c2c`(최종 검수 "전달함, 시작" 뒤) → 디자인 검수.
+**10/12 오전 판정:** 빵 벽돌 돔 통과, 08 현관 (나) 통과, A23-125 3단계 낮 통과. 남은 것: 주스 파라솔 무늬(빛살 금지 → 처마와 나란한 띠, `houses_deco_parasol3.jpg` 판정 대기), **밤 사진 원인 가르기**(등불 끈 것/켠 것 3채 × 2, 최종 검수 사진 차례 신청함; 등불 탓이면 빛 255,214,160·0.5·10, C2c 밤 자체면 이미지 개발에), 다음 묶음 작은 것: 빵 문 아래 오른쪽 결 휨, 물약 금 경첩 끝 뭉개짐. 사진 도구 `tools/house_deco_shots.py`는 이제 한 장마다 CLI 캡처(오래 연결하면 응답 못 받음).
 **그다음:** 새 집 7채(Hill4·Cliff6·7·8·Garden5·6·7) Tripo HD 멀티뷰 7개 ≈ 385점 — 4면 2D 통과(`art/out/s2/halo/houses_new4/`), 최종 검수 묶음 승인 요청부터. 남은 작은 것: 10 모서리 꼭지(슬롯 없음).
 **주의:** house_deco_studio.py는 Workspace에서 marker 부품이 든 덩어리를 집음 — 배치 전 `wk_imp_q`처럼 덩어리 개수 확인. 복구 순서: wk_backup load --only Workspace.SkeletonTest --replace → house_plan_place → 장식 복제 → house_skeleton_swap.
 
