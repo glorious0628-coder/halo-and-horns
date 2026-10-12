@@ -46,5 +46,11 @@
   "quality": "medium",
   "aspect": "{\"height\":1024,\"width\":1536}",
   "prompt": "A fancy chat speech-bubble frame for a kids game, drawn straight-on, wide landscape rounded rectangle filling the image with small margin, NO tail, NO text, NO letters. The big middle area is a perfectly flat, plain, uniform solid color panel with no pattern and no decoration so text can be read on it. All ornament sits only on the thin double-layer border and in the four corners (larger, jeweled corner pieces), nothing on the middle of the top or bottom edges. Glossy polished game-UI style, soft gradient and fine sparkle dots on the border only, clean crisp outline, plain flat light gray background, no light rays, no stripes fanning out, no shadow. Theme: royal crown. Warm ivory flat center. Border = two rings of polished gold with a ruby and sapphire gem band, a small jeweled gold crown at the top-left corner, ornate gold scroll corner pieces with pearls, tiny sparkles."
+ },
+ {
+  "key": "BubbleFancy_Artisan_m1",
+  "quality": "medium",
+  "aspect": "{\"height\":1024,\"width\":1536}",
+  "prompt": "A fancy chat speech-bubble frame for a kids game, drawn straight-on, wide landscape rounded rectangle filling the image with small margin, NO tail, NO text, NO letters. The big middle area is a perfectly flat, plain, uniform solid color panel with no pattern and no decoration so text can be read on it. All ornament sits only on the thin double-layer border and in the four corners (larger, jeweled corner pieces), nothing on the middle of the top or bottom edges. Glossy polished game-UI style, soft gradient and fine sparkle dots on the border only, clean crisp outline, plain flat light gray background, no light rays, no stripes fanning out, no shadow. Theme: Artisan craftsman (neutral guild). Warm cream-parchment flat center. Border = two rings of polished warm wood with a brass inner line, brass rivets and a small hammer-and-gear emblem plate in the top-left corner, brass corner brackets with tiny gems, fine sparkle dots."
  }
 ]
