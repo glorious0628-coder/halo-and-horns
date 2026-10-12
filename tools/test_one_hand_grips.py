@@ -200,7 +200,7 @@ def flask_staff(cv: str):
             and re.search(r'Name = "Shaft",[^}]*CFrame = base \* CFrame\.new\(0, \(shaftLen / 2 - low\) \* sc, 0\)', b, re.S) is not None,
             "Wrap": re.search(r'Name = "Wrap",[^}]*CFrame = base,', b, re.S) is not None,
             "Top": "local top = base * CFrame.new(0, (shaftLen - low) * sc, 0)" in b,
-            "Flask": "local d = STAFF.Orb + STAFF.OrbPerTier * tier" in b
+            "Flask": "local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax)" in b
             and re.search(r'Name = "Flask", Shape = Enum\.PartType\.Ball,[^}]*CFrame = top \* CFrame\.new\(0, d \* F\.Sit \* sc, 0\)', b, re.S) is not None,
             "CorkAt": "local neckAt = d * (F.Sit + 0.5) + F.Neck / 2" in b
             and "CFrame = top * CFrame.new(0, (neckAt + F.Neck / 2 + F.Cork / 2) * sc, 0)," in b,

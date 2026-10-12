@@ -282,7 +282,7 @@ Config.Weapons = {
 	-- A23-127 (C1, save v4): the Mythic tier, made only by artisans (CraftService W9 -> spare weapons). Never dropped, never a
 	-- jackpot, never sold at the Forge (WeaponShop.MaxSoldTier), never a commission. Price = the sale-value reference only.
 	-- Color = placeholder until the image team picks the Mythic look.
-	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.5 },
+	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.2 }, -- C1: 0.3 under T7 (the bigger orb keeps the staff within the avatar's height, A23-133)
 }
 Config.MaxWeaponTier = #Config.Weapons
 
