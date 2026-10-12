@@ -53,7 +53,7 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
             the marble base here, the glass house is a decoration),
             "topiary": [[x, y], ...], roof extras:
             "hip": {"h", "eave": 1.5, "chimney": [x, y, w, h]} (rect plan: blue slate SmoothPlastic (90,140,210) hip roof,
-            gold hip lines + ridge + ball finial; use "parapet": "none"), "pergola": {"w", "d", "h", "columns": 4|6, "x", "y"},
+            gold hip lines + ridge + ball finial; use "parapet": "none"), "pergola": {"w", "d", "h", "columns": 4|6, "x", "y", "beams": true, "ball": false},
             "cupola": {"r", "h", "x", "y"} (6 marble posts + gold ring + small dome ornament)} |
            {"type": "drum_dome", "R", "h", "seg", "windows": n, "dome_h", "onion": bool, "win_w": drum window glass width (1.2),
             "win_h": glass height from the drum base + 0.8 to the spring line (drum h - 2.4); a window wider than the drum
@@ -1030,13 +1030,17 @@ if TOP["type"] == "flat":
             post("Pergola_Col%d" % k, 0.55, ph_, pcx + a_, pcy + b_, z0p, "gold")
             post("Pergola_ColBase%d" % k, 0.95, 0.35, pcx + a_, pcy + b_, z0p)
             post("Pergola_ColCap%d" % k, 0.9, 0.3, pcx + a_, pcy + b_, z0p + ph_ - 0.3, "gold")
-        for k, b_ in enumerate((-pd_ / 2, pd_ / 2)):
-            add("Pergola_BeamX%d" % k, (pw_ + 1.2, 0.45, 0.5), (pcx, pcy + b_, z0p + ph_ + 0.225))
-        for k, a_ in enumerate(xl):
-            add("Pergola_BeamY%d" % k, (0.5, 0.4, pd_ + 1.2), (pcx + a_, pcy, z0p + ph_ + 0.65))
-        nr = int(pw_ / 1.0) + 1
-        for k in range(nr):
-            add("Pergola_Rafter%d" % k, (0.22, 0.28, pd_ + 1.4), (pcx - pw_ / 2 + pw_ * k / max(1, nr - 1), pcy, z0p + ph_ + 0.99))
+        if PG.get("ball"):                                # gold ball on each column cap (the Juice roof canopy posts)
+            for k, (a_, b_) in enumerate((a_, b_) for a_ in xl for b_ in (-pd_ / 2, pd_ / 2)):
+                ball("Pergola_Ball%d" % k, 0.75, (pcx + a_, pcy + b_, z0p + ph_ + 0.35))
+        if PG.get("beams", True):                         # "beams": false = posts only (a cloth canopy decoration on top)
+            for k, b_ in enumerate((-pd_ / 2, pd_ / 2)):
+                add("Pergola_BeamX%d" % k, (pw_ + 1.2, 0.45, 0.5), (pcx, pcy + b_, z0p + ph_ + 0.225))
+            for k, a_ in enumerate(xl):
+                add("Pergola_BeamY%d" % k, (0.5, 0.4, pd_ + 1.2), (pcx + a_, pcy, z0p + ph_ + 0.65))
+            nr = int(pw_ / 1.0) + 1
+            for k in range(nr):
+                add("Pergola_Rafter%d" % k, (0.22, 0.28, pd_ + 1.4), (pcx - pw_ / 2 + pw_ * k / max(1, nr - 1), pcy, z0p + ph_ + 0.99))
     CU = TOP.get("cupola")                                # {"r", "h", "x", "y"}: 6 marble posts + gold ring + small gold dome
     if CU:
         cr, chh_ = CU["r"], CU["h"]

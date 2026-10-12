@@ -454,6 +454,19 @@ def plan_poly(off):
     return out
 
 
+def slot_or_target(d, slot, axis, Rt):
+    """the skeleton's ornament slot, or d["target"] / d["pos"]: {"pos": [x, y, z], "R": r} (R default = Tripo radius x the
+    house scale); "pos": "tripo" puts it at Tripo's own xy x the house scale and z "z" (a dome the skeleton has no slot for:
+    the Bakery's brick dome, its chimney cap)"""
+    t = d.get("target", d if "pos" in d else None)
+    if not t:
+        return SLOTS[slot]
+    pos = t["pos"]
+    if pos == "tripo":
+        pos = [float(axis[0]) * HS, float(axis[1]) * HS, t["z"]]
+    return {"pos": pos, "R": t.get("R", Rt * HS)}
+
+
 # ------------------------------------------------------------------ main dome / cupola dome
 if "dome" in PR and PR["dome"].get("fix") == "oct":
     # an octagonal dome: placed by its width onto the plan, then tools/roof_fit.py warps its eaves onto the plan
@@ -492,7 +505,7 @@ elif "dome" in PR:
         zb = P[:, 2].min()
         low = P[P[:, 2] <= zb + 0.12 * (P[:, 2].max() - zb)]
         Rt = float(np.percentile(np.hypot(low[:, 0] - axis[0], low[:, 1] - axis[1]), 98))
-        sl = SLOTS[d.get("slot", "Dome")]
+        sl = slot_or_target(d, d.get("slot", "Dome"), axis, Rt)
         k = sl["R"] / Rt * d.get("r_mul", 1.0)
         M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4) @ \
             Matrix.Translation((-axis[0], -axis[1], -zb))
@@ -502,70 +515,104 @@ elif "dome" in PR:
             # (gold, rib lines, shine) is projected from the nearest point; no relief taken (the dent would come back)
             apply(ps, Matrix.Translation((-axis[0], -axis[1], -zb)))
             prof = lathe_profile(ps, d.get("bands", 40))
+            if d.get("profile_from"):                   # a messy foot: the clean upper outline, straight down below it
+                zt_ = max(z_ for _, z_ in prof)
+                z0_ = d["profile_from"] * zt_
+                r0_ = float(np.interp(z0_, [z_ for _, z_ in prof], [r_ for r_, _ in prof]))
+                prof = [(r0_, 0.0), (r0_, z0_)] + [(r_, z_) for r_, z_ in prof if z_ > z0_]
             bc = d.get("base_cut", 0.0)
             if bc > 0:
                 rb = float(np.interp(bc, [z_ for _, z_ in prof], [r_ for r_, _ in prof]))
                 prof = [(rb, 0.0), (rb, bc)] + [(r_, z_) for r_, z_ in prof if z_ > bc]
             dl = proj_bake.lathe(prof, seg=48, name="%s_%s" % (NAME, d.get("slot", "Dome")))
-            # ribs: as many as the spec says (the 2D), turned to where Tripo's dark rib lines are (mid height)
-            spec_top = json.load(open(os.path.join(ROOT, "tools", "house_specs", NAME + ".json"), encoding="utf-8")).get("top", {})
-            nrib = int(d.get("ribs", spec_top.get("ribs", 8)))
-            angs, gold_rgb = [], []
-            zt = max(z_ for _, z_ in prof)
-            for o in ps:
-                hsv = face_hsv(o)
-                c = centres(o)
-                hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
-                isg = (hh >= 25) & (hh <= 55) & (ss > 0.45)
-                mid = (c[:, 2] > 0.25 * zt) & (c[:, 2] < 0.6 * zt)
-                dark = isg & (vv < 0.6) & mid
-                angs += list(np.degrees(np.arctan2(c[dark, 1], c[dark, 0])) % (360.0 / nrib))
-                gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[isg & (vv > 0.45)]]
-            if angs:
-                hist, ed = np.histogram(angs, bins=36, range=(0, 360.0 / nrib))
-                phase = float((ed[np.argmax(hist)] + ed[np.argmax(hist) + 1]) / 2)
+            if d.get("paint"):
+                # a painted dome (the Bakery's brick dome): the clean lathe takes Tripo's own paint from the nearest point
+                # (bricks, white stone bands), no exact ribs (the runner skips piece_fix for it: fix_shape "lathe")
+                mp_ = proj_bake.bake(dl, proj_bake.Source(ps), size=d.get("size", 1024), ray=None, relief=False)
+                if d.get("profile_from"):
+                    # the straight foot band took smeared paint from Tripo's messy foot: repeat the brick courses just
+                    # above it downwards (lathe UV: v = 0.01 + 0.98 * 0.92 * arc / total arc)
+                    arc_ = [0.0]
+                    for (r0_, z0_), (r1_, z1_) in zip(prof, prof[1:]):
+                        arc_.append(arc_[-1] + math.hypot(r1_ - r0_, z1_ - z0_))
+                    zf_ = prof[1][1]                               # top of the straight foot
+                    vf_ = 0.01 + 0.98 * 0.92 * zf_ / arc_[-1]
+                    per_ = 0.98 * 0.92 * d.get("course", 0.9) / arc_[-1]
+                    S_ = mp_["C"].shape[0]
+                    rows_ = np.arange(S_)
+                    vv_ = 1 - (rows_ + 0.5) / S_                     # row 0 = top of the image
+                    for r_ in rows_[vv_ < vf_]:
+                        src_v = vf_ + (vf_ - vv_[r_]) % per_
+                        sr_ = int(np.clip(round((1 - src_v) * S_ - 0.5), 0, S_ - 1))
+                        for key_ in ("C", "N", "R", "M", "MR"):
+                            mp_[key_][r_] = mp_[key_][sr_]
+                dl.data.materials.append(proj_bake.save_maps(mp_, WORK, "%s_%s" % (NAME, d.get("slot", "Dome"))))
+                for o in ps:
+                    bpy.data.objects.remove(o)
+                ps = [dl]
+                M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
+                rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, foot band %.2f, Tripo paint projected " \
+                                   "(hit %.0f %%)" % (len(prof), bc, 100 * mp_["hit"])
             else:
-                phase = 0.0
-            me = bpy.data.meshes.new(NAME + "_DomeRibs")
-            bm = bmesh.new()
-            rib_w, rib_out = d.get("rib_w", 0.22), d.get("rib_out", 0.1)
-            rmax = max(r_ for r_, _ in prof)
-            path = [(r_, z_) for r_, z_ in prof if z_ >= bc and r_ > 0.18 * rmax]
-            for kr in range(nrib):
-                th = math.radians(phase + kr * 360.0 / nrib)
-                rows = []
-                for r_, z_ in path:
-                    a_ = (rib_w / 2) / max(r_, 1e-3)
-                    rows.append([bm.verts.new(((r_ + o_) * math.cos(th + sgn * a_), (r_ + o_) * math.sin(th + sgn * a_), z_))
-                                 for sgn, o_ in ((-1, -0.02), (-1, rib_out), (1, rib_out), (1, -0.02))])
-                for r0_, r1_ in zip(rows, rows[1:]):
-                    for q_ in range(3):
-                        bm.faces.new((r0_[q_], r0_[q_ + 1], r1_[q_ + 1], r1_[q_]))
-                if rows:                                   # end caps
-                    bm.faces.new(rows[0][::-1])
-                    bm.faces.new(rows[-1])
-            bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-            bm.to_mesh(me)
-            bm.free()
-            ribs = bpy.data.objects.new("%s_%sRibs" % (NAME, d.get("slot", "Dome")), me)
-            bpy.context.scene.collection.objects.link(ribs)
-            gr = np.array([255, 168, 36]) / 255.0               # the approved gold (HH_HaloGoldTrim part colour) for a plain dome
-            gm = bpy.data.materials.new(NAME + "_DomeGold")
-            gm.use_nodes = True
-            pb_ = gm.node_tree.nodes["Principled BSDF"]
-            pb_.inputs["Base Color"].default_value = (*[c_ / 12.92 if c_ <= 0.04045 else ((c_ + 0.055) / 1.055) ** 2.4 for c_ in gr], 1)
-            pb_.inputs["Metallic"].default_value = 1.0
-            pb_.inputs["Roughness"].default_value = 0.28
-            dl.data.materials.append(gm)
-            ribs.data.materials.append(gm)
-            me.shade_smooth()
-            for o in ps:
-                bpy.data.objects.remove(o)
-            ps = [dl, ribs]
-            mp = {"hit": 1.0}
-            M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
-            rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, plain foot band %.2f, %d exact ribs at Tripo's " \
-                               "rib angle (phase %.1f deg), approved gold 255,168,36 (plain; Studio gold MaterialVariant)" % (len(prof), bc, nrib, phase)
+                # ribs: as many as the spec says (the 2D), turned to where Tripo's dark rib lines are (mid height)
+                spec_top = json.load(open(os.path.join(ROOT, "tools", "house_specs", NAME + ".json"), encoding="utf-8")).get("top", {})
+                nrib = int(d.get("ribs", spec_top.get("ribs", 8)))
+                angs, gold_rgb = [], []
+                zt = max(z_ for _, z_ in prof)
+                for o in ps:
+                    hsv = face_hsv(o)
+                    c = centres(o)
+                    hh, ss, vv = hsv[:, 0] * 360, hsv[:, 1], hsv[:, 2]
+                    isg = (hh >= 25) & (hh <= 55) & (ss > 0.45)
+                    mid = (c[:, 2] > 0.25 * zt) & (c[:, 2] < 0.6 * zt)
+                    dark = isg & (vv < 0.6) & mid
+                    angs += list(np.degrees(np.arctan2(c[dark, 1], c[dark, 0])) % (360.0 / nrib))
+                    gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[isg & (vv > 0.45)]]
+                if angs:
+                    hist, ed = np.histogram(angs, bins=36, range=(0, 360.0 / nrib))
+                    phase = float((ed[np.argmax(hist)] + ed[np.argmax(hist) + 1]) / 2)
+                else:
+                    phase = 0.0
+                me = bpy.data.meshes.new(NAME + "_DomeRibs")
+                bm = bmesh.new()
+                rib_w, rib_out = d.get("rib_w", 0.22), d.get("rib_out", 0.1)
+                rmax = max(r_ for r_, _ in prof)
+                path = [(r_, z_) for r_, z_ in prof if z_ >= bc and r_ > 0.18 * rmax]
+                for kr in range(nrib):
+                    th = math.radians(phase + kr * 360.0 / nrib)
+                    rows = []
+                    for r_, z_ in path:
+                        a_ = (rib_w / 2) / max(r_, 1e-3)
+                        rows.append([bm.verts.new(((r_ + o_) * math.cos(th + sgn * a_), (r_ + o_) * math.sin(th + sgn * a_), z_))
+                                     for sgn, o_ in ((-1, -0.02), (-1, rib_out), (1, rib_out), (1, -0.02))])
+                    for r0_, r1_ in zip(rows, rows[1:]):
+                        for q_ in range(3):
+                            bm.faces.new((r0_[q_], r0_[q_ + 1], r1_[q_ + 1], r1_[q_]))
+                    if rows:                                   # end caps
+                        bm.faces.new(rows[0][::-1])
+                        bm.faces.new(rows[-1])
+                bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+                bm.to_mesh(me)
+                bm.free()
+                ribs = bpy.data.objects.new("%s_%sRibs" % (NAME, d.get("slot", "Dome")), me)
+                bpy.context.scene.collection.objects.link(ribs)
+                gr = np.array([255, 168, 36]) / 255.0               # the approved gold (HH_HaloGoldTrim part colour) for a plain dome
+                gm = bpy.data.materials.new(NAME + "_DomeGold")
+                gm.use_nodes = True
+                pb_ = gm.node_tree.nodes["Principled BSDF"]
+                pb_.inputs["Base Color"].default_value = (*[c_ / 12.92 if c_ <= 0.04045 else ((c_ + 0.055) / 1.055) ** 2.4 for c_ in gr], 1)
+                pb_.inputs["Metallic"].default_value = 1.0
+                pb_.inputs["Roughness"].default_value = 0.28
+                dl.data.materials.append(gm)
+                ribs.data.materials.append(gm)
+                me.shade_smooth()
+                for o in ps:
+                    bpy.data.objects.remove(o)
+                ps = [dl, ribs]
+                mp = {"hit": 1.0}
+                M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
+                rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, plain foot band %.2f, %d exact ribs at Tripo's " \
+                                   "rib angle (phase %.1f deg), approved gold 255,168,36 (plain; Studio gold MaterialVariant)" % (len(prof), bc, nrib, phase)
         apply(ps, M)
         for o in ps:
             o.name = o.data.name = o.name.replace("DomeTmp", d.get("slot", "Dome"))
@@ -603,7 +650,7 @@ for ci, cp in enumerate(PR.get("caps", [])):
     rep["fix_shape"] = "lathe: %d profile rings x %d sides from the Tripo silhouette, paint projected (hit %.0f %%)" % (
         len(prof), cp.get("seg", 16), 100 * maps["hit"])
     for sn in cp["slots"]:
-        sl = SLOTS[sn]
+        sl = slot_or_target(cp.get("targets", {}).get(sn, {}), sn, axis, Rt)
         k = (sl["R"] / Rt if cp.get("fit", "R") == "R" else HS) * cp.get("mul", 1.0)
         COPIES.append({"src": "%s_%s" % (NAME, tname), "name": "%s_%s" % (NAME, sn), "scale": round(k, 4),
                        "move": [sl["pos"][0], sl["pos"][1], sl["pos"][2] + cp.get("dz", 0.0)]})
@@ -1584,6 +1631,69 @@ if "roofglass" in PR:
         REPORT["pieces"]["RoofGlass"] = {"fix": "%s roof glass built exact on Skylight_Base %.1f x %.1f (Tripo proportions in params): "
                                          "gold bars %.2f, glass panes, finials" % (R_["type"], W_, D_, bw)}
         print("[deco] roofglass", REPORT["pieces"]["RoofGlass"], flush=True)
+
+# ------------------------------------------------------------------ cloth canopy (Juice roof parasol): exact
+if "canopy" in PR:
+    # Tripo's striped square roof canopy measured (eave box, peak, valance): a square pyramid split into stripes per side
+    # (two objects, CanopyA / CanopyB = the two cloth colours; Studio: Fabric + HH_Fabric + the colour), a scalloped
+    # valance under the eave; posts are the skeleton's pergola, the finial a Tripo cap (caps with a target)
+    C_ = PR["canopy"]
+    cx_, cy_, W_, D_ = C_["cx"], C_["cy"], C_["w"], C_["d"]
+    ze, hp, vh, ns = C_["z_eave"], C_["h"], C_.get("valance", 0.55), C_.get("n", 4)
+    apex = (cx_, cy_, ze + hp)
+    corners = [(cx_ - W_ / 2, cy_ - D_ / 2), (cx_ + W_ / 2, cy_ - D_ / 2), (cx_ + W_ / 2, cy_ + D_ / 2), (cx_ - W_ / 2, cy_ + D_ / 2)]
+    bms = [bmesh.new(), bmesh.new()]
+    k_ = 0
+    for e in range(4):
+        (x0_, y0_), (x1_, y1_) = corners[e], corners[(e + 1) % 4]
+        nx_, ny_ = (y1_ - y0_), -(x1_ - x0_)
+        ln_ = math.hypot(nx_, ny_)
+        nx_, ny_ = nx_ / ln_, ny_ / ln_                # outward normal of this side
+        for j in range(ns):
+            ta, tb = j / ns, (j + 1) / ns
+            pa = (x0_ + (x1_ - x0_) * ta, y0_ + (y1_ - y0_) * ta, ze)
+            pb = (x0_ + (x1_ - x0_) * tb, y0_ + (y1_ - y0_) * tb, ze)
+            bm_ = bms[(k_ + j) % 2]
+            va, vb, vc = bm_.verts.new(pa), bm_.verts.new(pb), bm_.verts.new(apex)
+            bm_.faces.new((va, vb, vc))
+            # valance: a flat band below the eave with a half-round scallop, pushed out 0.02
+            seg = 8
+            pts = [(pa[0] + nx_ * 0.02, pa[1] + ny_ * 0.02, ze), (pb[0] + nx_ * 0.02, pb[1] + ny_ * 0.02, ze)]
+            r_ = math.hypot(pb[0] - pa[0], pb[1] - pa[1]) / 2
+            mx_, my_ = (pa[0] + pb[0]) / 2 + nx_ * 0.02, (pa[1] + pb[1]) / 2 + ny_ * 0.02
+            ux_, uy_ = (pb[0] - pa[0]) / (2 * r_), (pb[1] - pa[1]) / (2 * r_)
+            for q in range(seg + 1):
+                a_ = math.pi * q / seg
+                pts.append((mx_ + ux_ * r_ * math.cos(a_), my_ + uy_ * r_ * math.cos(a_), ze - vh - r_ * 0.55 * math.sin(a_)))
+            vs_ = [bm_.verts.new(q) for q in pts]
+            try:
+                bm_.faces.new(vs_)
+            except ValueError:
+                pass
+        k_ += ns
+    objs_c = []
+    cols_ = C_.get("colors", [[110, 165, 232], [250, 250, 248]])
+    for bi, bm_ in enumerate(bms):
+        bmesh.ops.remove_doubles(bm_, verts=bm_.verts, dist=1e-4)
+        bmesh.ops.recalc_face_normals(bm_, faces=bm_.faces)
+        me_ = bpy.data.meshes.new("%s_Canopy%s" % (NAME, "AB"[bi]))
+        bm_.to_mesh(me_)
+        bm_.free()
+        o_ = bpy.data.objects.new(me_.name, me_)
+        bpy.context.scene.collection.objects.link(o_)
+        o_.data.materials.append(plain_mat(me_.name + "Cloth", cols_[bi], 0.0, 0.85))
+        # cloth is seen from both sides: a back copy of every face
+        bm2_ = bmesh.new()
+        bm2_.from_mesh(me_)
+        dup = bmesh.ops.duplicate(bm2_, geom=bm2_.faces[:])
+        bmesh.ops.reverse_faces(bm2_, faces=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMFace)])
+        bm2_.to_mesh(me_)
+        bm2_.free()
+        objs_c.append(o_)
+    out_objs += objs_c
+    REPORT["pieces"]["Canopy"] = {"fix": "exact square canopy %.2f x %.2f, eave %.2f, peak +%.2f, %d stripes a side, scalloped valance %.2f "
+                                  "(Tripo measured), colours %s" % (W_, D_, ze, hp, ns, vh, cols_)}
+    print("[deco] canopy", REPORT["pieces"]["Canopy"], flush=True)
 
 # ------------------------------------------------------------------ extras (awning frames, parasols, brick domes ...)
 for ex in PR.get("extra", []):

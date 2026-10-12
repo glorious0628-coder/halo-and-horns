@@ -117,5 +117,83 @@
     9.7
    ]
   ]
- }
+ },
+ "dome": {
+  "c": [
+   -5.25,
+   -2.2
+  ],
+  "z": [
+   17.0,
+   20.6
+  ],
+  "r": 4.6,
+  "slot": "BrickDome",
+  "target": {
+   "pos": "tripo",
+   "z": 16.2
+  },
+  "no_white": true,
+  "white_below": 17.6,
+  "fix": "lathe",
+  "paint": true,
+  "base_cut": 0.0,
+  "bands": 30,
+  "profile_from": 0.3
+ },
+ "caps": [
+  {
+   "src": {
+    "c": [
+     -5.45,
+     -2.35
+    ],
+    "z": [
+     22.45,
+     26.3
+    ],
+    "r": 1.9
+   },
+   "slots": [
+    "ChimneyCap"
+   ],
+   "fit": "house",
+   "targets": {
+    "ChimneyCap": {
+     "pos": [
+      -4.513,
+      -1.946,
+      20.713
+     ]
+    }
+   }
+  }
+ ],
+ "extra": [
+  {
+   "name": "Chimney",
+   "obj": "Body",
+   "box": [
+    [
+     -7.0,
+     -3.7
+    ],
+    [
+     -3.9,
+     -0.8
+    ],
+    [
+     20.3,
+     22.55
+    ]
+   ],
+   "fix": "none",
+   "scale": 0.828,
+   "move": [
+    0,
+    0,
+    2.124
+   ]
+  }
+ ]
 }
