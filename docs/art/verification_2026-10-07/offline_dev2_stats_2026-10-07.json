@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 85,
+  "checks": 86,
   "failedChecks": 0,
-  "namedChecks": 76,
+  "namedChecks": 77,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -33,7 +33,7 @@
     },
     {
       "group": "config",
-      "check": "save Data stays v3 (검수 2026-10-07: Stats is an additive field)",
+      "check": "save Data v4 = C1's tier 9 (검수 2026-10-07: Stats is an additive field)",
       "pass": 1,
       "fail": 0
     },
@@ -291,19 +291,25 @@
     },
     {
       "group": "power",
-      "check": "MaxCombatPower OFF = 25,488 (cached in Power.MaxCache)",
+      "check": "MaxCombatPower OFF = 37,805 (cached in Power.MaxCache)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "power",
-      "check": "MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)",
+      "check": "MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "power",
-      "check": "switching back OFF gives 25,488 again",
+      "check": "tier 7 at Lv100 +10 stays 25,488 off / 33,740 even split (tiers 1-8 unchanged)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "switching back OFF gives 37,805 again",
       "pass": 1,
       "fail": 0
     },
@@ -339,7 +345,7 @@
     },
     {
       "group": "one formula",
-      "check": "no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) OFF",
+      "check": "no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..MaxWeaponTier (9; NaN -> 0) OFF",
       "pass": 1,
       "fail": 0
     },
@@ -369,7 +375,7 @@
     },
     {
       "group": "one formula",
-      "check": "no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) ON",
+      "check": "no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..MaxWeaponTier (9; NaN -> 0) ON",
       "pass": 1,
       "fail": 0
     },
@@ -417,7 +423,7 @@
     },
     {
       "group": "data",
-      "check": "a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes",
+      "check": "a v3 save without Stats becomes v4 (C1) and gains { Auto ON, nothing picked }, nothing else changes",
       "pass": 1,
       "fail": 0
     },
@@ -441,13 +447,13 @@
     },
     {
       "group": "data",
-      "check": "a v1 save runs every step to v3 and gains the default Stats",
+      "check": "a v1 save runs every step to v4 and gains the default Stats",
       "pass": 1,
       "fail": 0
     },
     {
       "group": "data",
-      "check": "a brand-new save is v3 with the default Stats",
+      "check": "a brand-new save is v4 with the default Stats",
       "pass": 1,
       "fail": 0
     },
@@ -484,9 +490,10 @@
           "curve :: f(points): 0 / 1% / 10% / 20% / 20.5% / 25% / 30% / 30.25% / 32.5% / 44.75%",
           "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
           "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)",
+          "power :: tier 7 at Lv100 +10 stays 25,488 off / 33,740 even split (tiers 1-8 unchanged)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "Config: Archer's pattern like the others",
@@ -520,10 +527,10 @@
         "crashed": false,
         "newFailingChecks": [
           "config :: a new save: Stats = { Auto = true, Order = '' }",
-          "data :: a brand-new save is v3 with the default Stats",
+          "data :: a brand-new save is v4 with the default Stats",
           "data :: a broken Stats becomes the default",
-          "data :: a v1 save runs every step to v3 and gains the default Stats",
-          "data :: a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes"
+          "data :: a v1 save runs every step to v4 and gains the default Stats",
+          "data :: a v3 save without Stats becomes v4 (C1) and gains { Auto ON, nothing picked }, nothing else changes"
         ],
         "newFailingCount": 5
       },
@@ -539,13 +546,13 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "Config: the save version bumped to 4",
+        "mutation": "Config: the save version back to 3 (C1 made it 4)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: save Data stays v3 (검수 2026-10-07: Stats is an additive field)"
+          "config :: save Data v4 = C1's tier 9 (검수 2026-10-07: Stats is an additive field)"
         ],
         "newFailingCount": 1
       },
@@ -610,7 +617,7 @@
           "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
           "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)"
         ],
-        "newFailingCount": 8
+        "newFailingCount": 9
       },
       {
         "mutation": "StatPoints from Lv1",
@@ -714,9 +721,9 @@
           "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
           "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
           "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "StatAllocOf without a cap",
@@ -800,9 +807,9 @@
           "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
           "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
           "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 7
       },
       {
         "mutation": "PowerOf: the stats outside the square root",
@@ -815,9 +822,10 @@
           "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
           "power :: Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
           "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)",
+          "power :: tier 7 at Lv100 +10 stays 25,488 off / 33,740 even split (tiers 1-8 unchanged)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "CombatPower drops the stats",
@@ -830,9 +838,10 @@
           "power :: Lv10 tier 3: 923 -> 965 with the auto points (+4.5%)",
           "power :: Lv100 tier 7: 18,023 -> 23,858 (+32.4%)",
           "power :: Lv20 tier 5: 2,829 -> 3,098 (+9.5%)",
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)",
+          "power :: tier 7 at Lv100 +10 stays 25,488 off / 33,740 even split (tiers 1-8 unchanged)"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 6
       },
       {
         "mutation": "CombatPowerOf ignores the stats",
@@ -880,8 +889,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "one formula :: no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) OFF",
-          "one formula :: no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) ON"
+          "one formula :: no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..MaxWeaponTier (9; NaN -> 0) OFF",
+          "one formula :: no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..MaxWeaponTier (9; NaN -> 0) ON"
         ],
         "newFailingCount": 2
       },
@@ -892,7 +901,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)",
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)",
           "power :: no level / weapon / build goes above MaxCombatPower (ON)"
         ],
         "newFailingCount": 2
@@ -904,7 +913,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)",
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)",
           "power :: no level / weapon / build goes above MaxCombatPower (ON)"
         ],
         "newFailingCount": 2
@@ -916,23 +925,20 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "power :: MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)"
+          "power :: MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)"
         ],
         "newFailingCount": 1
       },
       {
-        "mutation": "DataService: a v4 step again",
+        "mutation": "DataService: the v4 step resets Stats",
         "file": "src/ServerScriptService/DataService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "data :: a brand-new save is v3 with the default Stats",
-          "data :: a save's picks are repaired, not reset",
-          "data :: a v1 save runs every step to v3 and gains the default Stats",
-          "data :: a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes"
+          "data :: a save's picks are repaired, not reset"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 1
       },
       {
         "mutation": "DataService: Stats never repaired",
@@ -1052,18 +1058,18 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "d3f49aca3c9e132e9faa39ec088e5944bce5bc9000adbe2a4dfa759722080c21",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "7160acbaa901542e10909010d65535ff2c6fe7663a4180b98bd7920cfef6490d",
-    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/PvPService.luau": "5bad58a49429548ea3bd7e2bb6293e1a012d7ff96982f42d471a08d9ef514cce",
-    "src/ServerScriptService/PlayerService.luau": "65c35962d75e6e60782a22fa44c0ba0ad3ba5207ce15b85d4bc08ef790dae3da",
-    "src/ServerScriptService/LootService.luau": "76c64ebb3303e438a40d75a90ff95e15ba5cb096d4b84e49d5d36a4b4f066db8"
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/DataService.luau": "adb332e34e26eed93282b38b54f902446189e3a6cefdea9938a52c5b2bef1648",
+    "src/ServerScriptService/JusticeService.luau": "7c79b727e7cb25df599b99473104e7f04bf27adba465d0a7ecb5116bd6be580c",
+    "src/ServerScriptService/PvPService.luau": "1abf66f90ff34028aaa1a4822d8a99b379c6084ec8b44fa4daba7c79ca692f0b",
+    "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d",
+    "src/ServerScriptService/LootService.luau": "e10015474c5c364c03954827a3314e5fa390103450e93cc497a010f7441d2b3b"
   },
-  "fixtureSHA256": "50b1b399b429867aca96ef37f8ca2a0f98791e60749b0a077e64c64cbbe7cbd4",
+  "fixtureSHA256": "3b90d0d31a4d3ba6a4eee171de93a2e77cd661a7f473254b436f45221da24063",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-69 stage 1 (switch Config.Features.StatPoints OFF): Config.Stats { MaxPoints 99, Letters A / H, Curve 1% to 20 / 0.5% to 40 / 0.25% after, AutoPattern Warrior HA / Mage HA / Archer AH }; StatPoints(L) = L - 1 (0..99, no points from rebirths); StatAlloc = the class pattern (Auto) or Order's first points (by hand, the rest free; a level reset keeps Order); StatMults = (1, 1) while off; SanitizeStats (boolean Auto, letters A-Z kept for later stats, the rest dropped, at most 99); PowerOf / CombatPower take alloc { A, H } (sqrt of attack x health with both mults); MaxCombatPower 25,488 off / 33,740 on (the even split), cached apart; Config.CombatPowerOf(player, tier?, +N?) reads Level / WeaponTier / WeaponEnhance / StatAtk / StatHp and is the one formula of JusticeService (GetCombatPower, GetPower with the rebirth bonus, the CombatPower attribute watching StatAtk / StatHp), PvPService's fallback, the Tab list column and LootService's 'Power X -> Y'; the save gains Stats = { Auto true, Order '' } as an additive field (검수 2026-10-07: Version stays 3; fillDefaults adds / repairs it, idempotent).",
+  "contract": "A23-69 stage 1 (switch Config.Features.StatPoints OFF): Config.Stats { MaxPoints 99, Letters A / H, Curve 1% to 20 / 0.5% to 40 / 0.25% after, AutoPattern Warrior HA / Mage HA / Archer AH }; StatPoints(L) = L - 1 (0..99, no points from rebirths); StatAlloc = the class pattern (Auto) or Order's first points (by hand, the rest free; a level reset keeps Order); StatMults = (1, 1) while off; SanitizeStats (boolean Auto, letters A-Z kept for later stats, the rest dropped, at most 99); PowerOf / CombatPower take alloc { A, H } (sqrt of attack x health with both mults); MaxCombatPower 37,805 off / 50,044 on (C1: the Mythic tier 9; tier 7 alone 25,488 / 33,740; the even split), cached apart; Config.CombatPowerOf(player, tier?, +N?) reads Level / WeaponTier / WeaponEnhance / StatAtk / StatHp and is the one formula of JusticeService (GetCombatPower, GetPower with the rebirth bonus, the CombatPower attribute watching StatAtk / StatHp), PvPService's fallback, the Tab list column and LootService's 'Power X -> Y'; the save gains Stats = { Auto true, Order '' } as an additive field (검수 2026-10-07: no version step of its own; Version 4 since C1; fillDefaults adds / repairs it, idempotent).",
   "limitations": "Stage 2 (10/16-17) adds StatService (the StatAction remote, auto placement, the blocks, StatAtk / StatHp / StatFree / AutoStat attributes), the hits (ComputeMonsterHit, ComputePvPHit inside the 0.8-1.5 caps), max HP (Config.StatMaxHealth) and the bait threshold; game dev 1 builds the [Stats] tab and switches the HUD fallback to Config.CombatPowerOf. The real DataStore load (the CR-L3 refusal of a newer record) is in tools/test_onboarding.py."
 }
