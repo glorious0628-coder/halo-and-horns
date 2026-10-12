@@ -1719,13 +1719,23 @@ if "canopy" in PR:
             bm_ = bms[(k_ + j) % 2]
             va, vb, vc = bm_.verts.new(pa), bm_.verts.new(pb), bm_.verts.new(apex)
             bm_.faces.new((va, vb, vc))
+            vo_ = C_.get("valance_out", 0.02)
+            if vo_ > 0.05:                                 # a flat eave strip from the post line out to the valance top
+                ta_ = pa[0] + nx_ * vo_ - (x1_ - x0_) / ln_ * (vo_ if j == 0 else 0), pa[1] + ny_ * vo_ - (y1_ - y0_) / ln_ * (vo_ if j == 0 else 0), ze
+                tb_ = pb[0] + nx_ * vo_ + (x1_ - x0_) / ln_ * (vo_ if j == ns - 1 else 0), pb[1] + ny_ * vo_ + (y1_ - y0_) / ln_ * (vo_ if j == ns - 1 else 0), ze
+                bm_.faces.new((bm_.verts.new(pa), bm_.verts.new(ta_), bm_.verts.new(tb_), bm_.verts.new(pb)))
             # valance: a flat band below the eave with a half-round scallop, pushed out 0.02
             seg = 8
             vo = C_.get("valance_out", 0.02)
-            pts = [(pa[0] + nx_ * vo, pa[1] + ny_ * vo, ze), (pb[0] + nx_ * vo, pb[1] + ny_ * vo, ze)]
-            r_ = math.hypot(pb[0] - pa[0], pb[1] - pa[1]) / 2
-            mx_, my_ = (pa[0] + pb[0]) / 2 + nx_ * vo, (pa[1] + pb[1]) / 2 + ny_ * vo
-            ux_, uy_ = (pb[0] - pa[0]) / (2 * r_), (pb[1] - pa[1]) / (2 * r_)
+            ex_, ey_ = (x1_ - x0_) / ln_, (y1_ - y0_) / ln_
+            ea = vo if (j == 0 and vo > 0.05) else 0.0
+            eb = vo if (j == ns - 1 and vo > 0.05) else 0.0
+            qa = (pa[0] + nx_ * vo - ex_ * ea, pa[1] + ny_ * vo - ey_ * ea, ze)
+            qb = (pb[0] + nx_ * vo + ex_ * eb, pb[1] + ny_ * vo + ey_ * eb, ze)
+            pts = [qa, qb]
+            r_ = math.hypot(qb[0] - qa[0], qb[1] - qa[1]) / 2
+            mx_, my_ = (qa[0] + qb[0]) / 2, (qa[1] + qb[1]) / 2
+            ux_, uy_ = (qb[0] - qa[0]) / (2 * r_), (qb[1] - qa[1]) / (2 * r_)
             for q in range(seg + 1):
                 a_ = math.pi * q / seg
                 pts.append((mx_ + ux_ * r_ * math.cos(a_), my_ + uy_ * r_ * math.cos(a_), ze - vh - r_ * 0.55 * math.sin(a_)))
