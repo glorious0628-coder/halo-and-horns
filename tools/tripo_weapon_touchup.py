@@ -83,7 +83,7 @@ def move_wrap(me, z0, L, lo_s, hi_s, target, sl=0.05, rmax=0.3):
     bm = bmesh.new()
     bm.from_mesh(me)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
-    for zc in (lo - sl, lo, hi):
+    for zc in (lo - sl, lo, hi, lo + d, hi + d):
         bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=(0, 0, zc), plane_no=(0, 0, 1))
     P = np.array([v.co[:] for v in bm.verts if lo <= v.co.z <= hi])
     ax, ay = float(np.median(P[:, 0])), float(np.median(P[:, 1]))
@@ -93,9 +93,9 @@ def move_wrap(me, z0, L, lo_s, hi_s, target, sl=0.05, rmax=0.3):
         return a - 1e-5 <= c.z <= b + 1e-5 and math.hypot(c.x - ax, c.y - ay) < rmax
     band = [f for f in bm.faces if near(f, lo, hi)]
     piece = [f for f in bm.faces if near(f, lo - sl, lo)]
-    rw = float(np.median([math.hypot(v.co.x - ax, v.co.y - ay) for f in band for v in f.verts]))
-    # where the wrap lands, knots / lumps of the shaft that would poke through it are dropped (the wrap hides the rest)
-    poke = [f for f in bm.faces if near(f, lo + d, hi + d) and math.hypot(f.calc_center_median().x - ax, f.calc_center_median().y - ay) > 0.9 * rw]
+    # where the wrap lands, everything of the staff there (shaft, knots, an old metal ring - LightMage T3 10/12) is
+    # replaced by the moved band: clean cuts at lo + d / hi + d, no teeth of old shaft showing past the rings
+    poke = [f for f in bm.faces if near(f, lo + d, hi + d)]
     dup = bmesh.ops.duplicate(bm, geom=band)
     bmesh.ops.translate(bm, verts=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMVert)], vec=(0, 0, d))
     bmesh.ops.delete(bm, geom=band + [f for f in poke if f not in band], context="FACES")
