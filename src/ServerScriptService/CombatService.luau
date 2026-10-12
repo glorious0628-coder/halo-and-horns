@@ -182,9 +182,10 @@ local function kstate(player)
 	return st
 end
 
--- goose body center if this player's swings can count on it (Halo / Horns only), else nil
+-- goose body center if this player's swings can count on it (Halo / Horns only), else nil. A23-131: only the old tug
+-- (Config.Goose.Mode "Tug") is a swing target; the egg hunt's goose is never hit
 local function goosePositionFor(player)
-	if not PVP_FACTIONS[faction(player)] then
+	if Config.Goose.Mode ~= "Tug" or not PVP_FACTIONS[faction(player)] then
 		return nil
 	end
 	local pos = S.GooseService.GetPosition()

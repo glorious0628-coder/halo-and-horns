@@ -12,6 +12,11 @@
 -- A tug whose rival side left before the end is judged the same way (no 100% win, no war points without a rival).
 -- GameState for the HUD: GooseMode ("Versus" | "Coop"), GooseCoopSide ("Halo" | "Horns" | "None"), GooseCoopTarget,
 -- GooseCoopPeople. GooseFinished keeps (result, counts) and adds an optional 3rd arg { Mode, Side, Success, Target }.
+-- A23-131 / A23-134 / A23-137 (Config.Goose.Mode "Eggs", the default): the golden egg hunt. GooseEggs.luau (required only
+-- here) runs the rules every Egg.Tick s; this service keeps the schedule (fixed KST clock times, Schedule.Every), the goose
+-- model (Act / ActUntil, walking where GooseEggs says), the co-op target (CoopPerPerson x ring entrants), overtime
+-- (GameState GooseOvertimeUntil), the verdict ("a side never came" by ring presence), rewards (2 eggs or 20 points),
+-- Honor / Infamy +5 once an hour, war +30. counts in GooseFinished = delivery points. RegisterHit returns 0.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local RunService = game:GetService("RunService")
@@ -19,6 +24,18 @@ local RunService = game:GetService("RunService")
 local Config = require(ReplicatedStorage.Shared.Config)
 local Util = require(ReplicatedStorage.Shared.Util)
 local Net = require(ReplicatedStorage.Shared.Net)
+-- the egg hunt rules (nil if the module cannot load: Eggs mode then falls back to the tug, with a warning)
+local okEggs, GooseEggs = pcall(function()
+	return require(script.Parent:FindFirstChild("GooseEggs"))
+end)
+if not okEggs or type(GooseEggs) ~= "table" then GooseEggs = nil end
+local EGG = Config.Goose.Egg or {}
+-- A23-141: the Goose Square (GooseSquare.luau, required only here): Join / Leave, the space, the way back
+local okSquare, GooseSquare = pcall(function()
+	return require(script.Parent:FindFirstChild("GooseSquare"))
+end)
+if not okSquare or type(GooseSquare) ~= "table" then GooseSquare = nil end
+local SQS = Config.Goose.SquareSpace or {}
 
 local TAG = "GooseService"
 local GOOSE_LABEL = Config.Goose.Text.Label -- billboard text (TECH_SPEC §4.16; English since A23-48)
@@ -159,6 +176,28 @@ local function isTugFaction(f)
 	return f == "Halo" or f == "Horns"
 end
 
+-- A23-131: the egg hunt runs (Mode "Eggs" and GooseEggs loaded)
+local function eggsOn()
+	return Config.Goose.Mode == "Eggs" and GooseEggs ~= nil
+end
+
+-- A23-141: the egg hunt is played in the Goose Square (Join only); off = the old ring at the Crossroads fountain
+local function squareOn()
+	return eggsOn() and GooseSquare ~= nil and SQS.Enabled == true
+end
+
+-- the egg rules' geometry for this round: the square's marks and members, or the Config ring
+local function setEggGeometry()
+	if not squareOn() then
+		GooseEggs.SetGeometry(nil)
+		return
+	end
+	local sp = GooseSquare.Ensure()
+	GooseEggs.SetGeometry({ Center = sp.GooseSpot, Home = { Halo = sp.Nest, Horns = sp.Cart },
+		Avoid = { sp.SpawnHalo, sp.SpawnHorns, sp.SpawnNeutral }, AvoidRadius = SQS.SpawnClear, Square = true,
+		Members = GooseSquare.Members })
+end
+
 -- persisted numeric stat: live data table first, mirrored attribute as fallback
 local function getNum(p, key)
 	local data = call("PlayerService", "GetData", p)
@@ -223,7 +262,7 @@ local function sideTotal(side)
 end
 
 local function coopTargetFor(people)
-	local per = tonumber(Config.Goose.CoopPerPerson) or 20
+	local per = tonumber(eggsOn() and EGG.CoopPerPerson or Config.Goose.CoopPerPerson) or 20
 	if per ~= per or per <= 0 then per = 20 end
 	return math.max(1, math.floor(per * math.max(1, people) + 0.5))
 end
@@ -244,6 +283,13 @@ end
 
 -- next goose start: aligned to WarService's round end minus OffsetFromWarEnd, advanced by Interval past `now`
 local function computeNextAt(now, fallback)
+	if eggsOn() then
+		-- A23-137: fixed KST clock times (Every 14400 = 00/04/08/12/16/20 KST), the next one strictly after now
+		local sch = Config.Goose.Schedule or {}
+		local every = math.max(60, tonumber(sch.Every) or 14400)
+		local tz = tonumber(sch.TzOffset) or 32400
+		return (math.floor((now + tz) / every) + 1) * every - tz
+	end
 	local base = fallback
 	local roundEnd = call("WarService", "GetRoundEndsAt")
 	if type(roundEnd) == "number" and roundEnd == roundEnd and roundEnd > now - 86400 then
@@ -378,14 +424,34 @@ local function startMotion(rot)
 	end)
 end
 
+-- A23-131: the walking goose (Eggs mode) glides to where GooseEggs puts it, facing where it goes; feet on the ground
+local function startEggMotion()
+	if motionConn then motionConn:Disconnect() end
+	motionConn = RunService.Heartbeat:Connect(function(dt)
+		local root = gooseRoot
+		local target = GooseEggs and GooseEggs.GoosePos()
+		if not root or not root.Parent or not target then return end
+		local want = target + Vector3.new(0, -VISUAL_BOTTOM, 0)
+		local cur = root.Position
+		local pos = cur:Lerp(want, math.min(1, dt * 8))
+		local look = Vector3.new(want.X - cur.X, 0, want.Z - cur.Z)
+		if look.Magnitude > 0.05 then
+			root.CFrame = CFrame.lookAt(pos, pos + look)
+		else
+			root.CFrame = CFrame.new(pos) * (root.CFrame - root.CFrame.Position)
+		end
+	end)
+end
+
 local function spawnModel()
 	destroyModel()
 	local effects = Util.GetFolder(workspace, "Effects")
 	local old = effects:FindFirstChild("GoldenGoose")
 	if old then old:Destroy() end
 
+	local eggs = eggsOn() and GooseEggs.GoosePos() or nil
 	local rot = baseRotation()
-	local rootCF = CFrame.new(gooseCenter()) * rot
+	local rootCF = CFrame.new(eggs and (eggs + Vector3.new(0, -VISUAL_BOTTOM, 0)) or gooseCenter()) * rot
 
 	local model = Instance.new("Model")
 	model.Name = "GoldenGoose"
@@ -436,6 +502,17 @@ local function spawnModel()
 	sparkles.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.35), NumberSequenceKeypoint.new(1, 0) })
 	sparkles.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1) })
 	sparkles.Parent = root
+
+	if eggs then -- contract §6: no "Golden Goose" name tag over the walking goose; Act / ActUntil for the client
+		model:SetAttribute("Act", "Walk")
+		model:SetAttribute("ActUntil", 0)
+		model.Parent = effects
+		gooseModel = model
+		gooseRoot = root
+		sideOffset, sideTarget = 0, 0
+		startEggMotion()
+		return
+	end
 
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "GooseLabel"
@@ -514,7 +591,7 @@ end
 local function start()
 	if active then return end
 	active = true
-	endsAt = Util.Now() + Config.Goose.Duration
+	endsAt = Util.Now() + (eggsOn() and (tonumber(EGG.Duration) or 60) or Config.Goose.Duration)
 	rescue, poach = 0, 0
 	counts = {}
 	manualHits = {}
@@ -524,6 +601,15 @@ local function start()
 	mode = "Pending"
 	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
 	fixMode()
+	if eggsOn() then
+		-- A23-131: the co-op target grows with the side's ring entrants (none yet = 1 person)
+		if mode == "Coop" then coop.People, coop.Target = 0, coopTargetFor(0) end
+		setGame("GooseOvertimeUntil", 0)
+		local okG, errG = pcall(setEggGeometry)
+		if not okG then warnThrottled("eggGeometry", "egg geometry failed: " .. tostring(errG)) end
+		local okB, errB = pcall(GooseEggs.Begin, Util.Now(), mode, coop.Side)
+		if not okB then warnThrottled("eggBegin", "egg hunt start failed: " .. tostring(errB)) end
+	end
 	publishMode()
 	publishTotals(true)
 	setGame("GooseEndsAt", endsAt)
@@ -551,6 +637,7 @@ local function dropEntry(p)
 	manualHits[p] = nil
 	sideOf[p] = nil
 	hitTimes[p] = nil
+	if eggsOn() then pcall(GooseEggs.DropEntry, p) end -- A23-131: carried eggs go back, a fresh entry
 	if isPlayer(p) and p.Parent then
 		p:SetAttribute("GooseCount", 0)
 	end
@@ -600,8 +687,135 @@ local function rewardPlayer(p, result, f, share, judged)
 		Mode = judged == "Coop" and "Coop" or "Versus" })
 end
 
+-- A23-134: Honor (Halo) / Infamy (Horns) +HonorPoints at most once per HonorEvery s per player (save EggHonorAt).
+-- AddStat only: like every story / goose point it never reaches a ranking board (D1)
+local function eggHonor(p, f)
+	local data = call("PlayerService", "GetData", p)
+	if type(data) ~= "table" or not isTugFaction(f) then return end
+	local now = os.time()
+	local at = Config.SanitizeEggHonorAt(data.EggHonorAt, now)
+	if now - at < (tonumber(EGG.HonorEvery) or 3600) then return end
+	local pts = tonumber(EGG.HonorPoints) or 5
+	-- A23-134 "(주간 상한 안)": the same path as PvP / the grudge sack - the stat + the weekly board within WeekCap
+	call("PlayerService", "GrantFame", p, f == "Halo" and "Honor" or "Infamy", pts, { RankPoints = pts })
+	call("PlayerService", "SetStat", p, "EggHonorAt", now)
+	local T = type(Config.StoryQuests) == "table" and Config.StoryQuests.Text or {}
+	local fmt = f == "Halo" and T.GooseFirstHalo or T.GooseFirstHorns
+	if type(fmt) == "string" then pcall(Net.Notify, p, string.format(fmt, pts), "good") end
+end
+
+-- A23-131: a paid side player delivered MinDelivered eggs or MinPoints points (MinCrowd eggs once P reached CrowdFrom)
+local function eggPaid(delivered, points, peakP)
+	local need = (peakP or 0) >= (tonumber(EGG.CrowdFrom) or 16) and (tonumber(EGG.MinCrowd) or 1) or (tonumber(EGG.MinDelivered) or 2)
+	return (delivered or 0) >= need or (points or 0) >= (tonumber(EGG.MinPoints) or 20)
+end
+
+-- the egg hunt's end (finish() calls it in Eggs mode)
+local function finishEggs()
+	active = false
+	if squareOn() then
+		-- A23-141: the result shows for ReturnAfter s, then everyone still in the square goes back (scheduled first, so
+		-- an error below can never leave anyone in the square; GooseSquare.Tick has a safety net too)
+		task.delay(math.max(0, tonumber(SQS.ReturnAfter) or 4), function()
+			local okR, errR = pcall(GooseSquare.ReturnAll, "End")
+			if not okR then warnThrottled("squareReturn", "square return failed: " .. tostring(errR)) end
+		end)
+	end
+	endsAt = 0
+	nextAt = computeNextAt(Util.Now(), nextAt)
+	setGame("GooseNextAt", nextAt)
+	local okF, sum = pcall(GooseEggs.Finish, Util.Now())
+	if not okF or type(sum) ~= "table" then
+		warnThrottled("eggFinish", "egg hunt finish failed: " .. tostring(sum))
+		sum = { Points = {}, Delivered = {}, Side = {}, Rescue = rescue, Poach = poach, Entrants = { Halo = 0, Horns = 0 }, PeakP = 0 }
+	end
+	pcall(GooseEggs.Cleanup)
+	rescue, poach = math.floor(tonumber(sum.Rescue) or 0), math.floor(tonumber(sum.Poach) or 0)
+	local entr = type(sum.Entrants) == "table" and sum.Entrants or { Halo = 0, Horns = 0 }
+	-- verdict: a versus side that never came into the ring (or has nobody left) = the co-op rule for the other side
+	local judged, side, target, rivalLeft, neverCame = mode, coop.Side, coop.Target, false, nil
+	local result = "Tie"
+	if judged ~= "Coop" then
+		local halo, horns = factionCounts()
+		local goneH = (entr.Halo or 0) <= 0 or halo <= 0
+		local goneR = (entr.Horns or 0) <= 0 or horns <= 0
+		if goneH and goneR then
+			judged = "Pending"
+		elseif goneH or goneR then
+			judged = "Coop"
+			side = goneH and "Horns" or "Halo"
+			rivalLeft = true
+			neverCame = (entr[goneH and "Halo" or "Horns"] or 0) <= 0 and (goneH and "Halo" or "Horns") or nil
+		else
+			judged = "Versus"
+			result = (rescue > poach) and "Halo" or ((poach > rescue) and "Horns" or "Tie")
+		end
+	end
+	local success = false
+	if judged == "Coop" then
+		target = coopTargetFor(entr[side] or 0)
+		success = isTugFaction(side) and sideTotal(side) >= target
+		result = success and side or "Tie"
+	end
+	local share = (judged == "Coop" and success) and (tonumber(Config.Goose.CoopWinShare) or 0.7) or nil
+	local fxPos = (gooseRoot and gooseRoot.Parent) and gooseRoot.Position or (EGG.Center or gooseCenter())
+	mode = "Idle"
+	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
+
+	local rewarded = {}
+	for p, pts in sum.Points do
+		local f = sum.Side[p]
+		if isReady(p) and factionOf(p) == f and (judged ~= "Coop" or f == side) then
+			local delivered = sum.Delivered[p] or 0
+			if eggPaid(delivered, pts, sum.PeakP) then
+				rewarded[p] = pts
+				local ok, err = pcall(rewardPlayer, p, result, f, share, judged)
+				if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
+				local okH, errH = pcall(eggHonor, p, f)
+				if not okH then warnThrottled("honor", "egg honor failed: " .. tostring(errH)) end
+			elseif delivered >= 1 then
+				local msg = txt("BringTwo") -- the one fail fact (A23-99)
+				if msg then pcall(Net.Notify, p, msg, "info") end
+			end
+		end
+	end
+	if judged == "Versus" and result ~= "Tie" then -- co-op / a side that never came: no war points
+		call("WarService", "AddFactionPoints", result, Config.Goose.WinWarPoints)
+	end
+	local okSend, sendErr = pcall(function()
+		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop") })
+	end)
+	if not okSend then warnThrottled("send", "goose result broadcast failed: " .. tostring(sendErr)) end
+
+	destroyModel()
+	for p in sum.Points do
+		if isPlayer(p) and p.Parent then p:SetAttribute("GooseCount", 0) end
+	end
+	local finalR, finalP = rescue, poach
+	rescue, poach = 0, 0
+	publishTotals(true)
+	setGame("GooseActive", false)
+	setGame("GooseEndsAt", 0)
+	setGame("GooseOvertimeUntil", 0)
+	publishMode()
+
+	local info = { Mode = judged, Delivered = tonumber(sum.DeliveredTotal) or 0, H = sum.H,
+		CrownFlip = sum.CrownFlip ~= nil and sum.CrownFlip == result, ScoreGap = math.abs(finalR - finalP),
+		Rescue = finalR, Poach = finalP, DropFails = tonumber(sum.DropFails) or 0, CheatLogs = tonumber(sum.CheatLogs) or 0,
+		Returns = sum.Returns, NeverCame = neverCame }
+	if judged == "Coop" then
+		info.Side = side
+		info.Success = success
+		info.Target = target
+		info.RivalLeft = rivalLeft
+	end
+	if squareOn() then info.Joins = GooseSquare.TakeJoins() end
+	GooseService.GooseFinished:Fire(result, rewarded, info)
+end
+
 local function finish()
 	if not active then return end
+	if eggsOn() then return finishEggs() end
 	active = false
 	-- schedule the next goose FIRST so a failure below can never re-trigger an event every tick
 	endsAt = 0
@@ -691,6 +905,10 @@ end
 
 local function tick()
 	local now = Util.Now()
+	if squareOn() then
+		local okQ, errQ = pcall(GooseSquare.Tick, now) -- falls out of the square, GooseJoinBlock
+		if not okQ then warnThrottled("squareTick", "square tick failed: " .. tostring(errQ)) end
+	end
 	if not active then
 		if now >= nextAt then
 			local sw = S and S.SwitchService
@@ -701,6 +919,38 @@ local function tick()
 				start()
 			end
 		end
+		return
+	end
+	if eggsOn() then
+		if mode == "Pending" then
+			fixMode()
+			if mode == "Coop" then coop.People, coop.Target = 0, coopTargetFor(0) end
+			if mode ~= "Pending" then GooseEggs.SetMode(mode, coop.Side) end
+		end
+		-- the walk's centre leans toward the losing side (+Z = the Horns cart), MAX_SIDE_OFFSET at most; none in co-op
+		local r0, p0 = GooseEggs.Totals()
+		local total = r0 + p0
+		sideTarget = (mode == "Coop") and 0
+			or math.clamp((r0 - p0) / math.max(1, total) * MAX_SIDE_OFFSET, -MAX_SIDE_OFFSET, MAX_SIDE_OFFSET)
+		sideOffset += (sideTarget - sideOffset) * math.min(1, (tonumber(EGG.Tick) or 0.1) * SIDE_LERP)
+		local res = GooseEggs.Step(now, { Tilt = sideOffset })
+		rescue, poach = GooseEggs.Totals()
+		if mode == "Coop" and isTugFaction(coop.Side) then
+			local people = GooseEggs.Entrants(coop.Side)
+			if people ~= coop.People then
+				coop.People, coop.Target = people, coopTargetFor(people)
+				publishMode()
+			end
+		end
+		setGame("GooseOvertimeUntil", GooseEggs.OvertimeUntil())
+		if gooseModel and gooseModel.Parent then
+			local act, untilAt = GooseEggs.Act()
+			gooseModel:SetAttribute("Act", act)
+			gooseModel:SetAttribute("ActUntil", untilAt)
+		end
+		publishTotals(false)
+		-- "Done" from the rules; a stuck round ends anyway well after the longest overtime
+		if res == "Done" or now >= endsAt + (tonumber(EGG.Crown and EGG.Crown.Overtime) or 8) + 5 then finish() end
 		return
 	end
 	if now >= endsAt then
@@ -738,13 +988,40 @@ function GooseService.Init(registry)
 		sideOf[player] = nil
 		hitTimes[player] = nil
 		coop.Told[player] = nil
+		if GooseSquare then
+			pcall(GooseSquare.Leave, player, "Left") -- A23-141 (the eggs go back through OnLeave)
+			pcall(GooseSquare.Forget, player)
+		end
+		if eggsOn() then pcall(GooseEggs.Leave, player) end -- A23-131: carried eggs fly back
 	end)
+	if GooseSquare then
+		-- A23-141: Join only while a goose is on; leaving the square returns the carried eggs first
+		GooseSquare.Init(S, {
+			IsActive = function() return active == true and squareOn() end,
+			OnLeave = function(p, reason)
+				if eggsOn() then GooseEggs.ReturnEggs(p, reason == "Death" and "Death" or "Leave") end
+			end,
+		})
+	end
+	if GooseEggs then
+		GooseEggs.Init(S)
+		-- A23-131: dying returns the carried eggs at once (the next check would too: no living root)
+		if S.PlayerService.CharacterDied then
+			S.PlayerService.CharacterDied:Connect(function(player)
+				if GooseSquare then pcall(GooseSquare.Leave, player, "Death") end -- A23-141: a death leaves the square
+				if eggsOn() then pcall(GooseEggs.ReturnEggs, player, "Death") end
+			end)
+		end
+	elseif Config.Goose.Mode == "Eggs" then
+		warnThrottled("eggsMissing", "GooseEggs missing: the goose runs the old tug")
+	end
 	-- review fix: switching sides mid-event (altar is next to the perch) forfeits this event's entry, so nobody can pull
 	-- for one side and then collect the winner share of the other. Pulling again after the switch starts a new entry.
 	local fs = S.FactionService
 	if fs and fs.FactionChanged then
 		fs.FactionChanged:Connect(function(player)
-			if counts[player] ~= nil or hitTimes[player] ~= nil then
+			if GooseSquare then pcall(GooseSquare.Leave, player, "Faction") end -- A23-141: a new side starts outside
+			if counts[player] ~= nil or hitTimes[player] ~= nil or (active and eggsOn()) then
 				dropEntry(player)
 			end
 		end)
@@ -761,10 +1038,27 @@ function GooseService.Start()
 	setGame("GooseEndsAt", 0)
 	publishMode()
 	publishTotals(true)
+	-- A23-131: a crashed earlier run may have left eggs / slowed players: clean at start too
+	if GooseEggs then pcall(GooseEggs.Cleanup) end
+	-- A23-141: the square (the place's model, or the plain stand-in built now) and its remote
+	if squareOn() then
+		local okE, errE = pcall(GooseSquare.Ensure)
+		if not okE then warnThrottled("squareEnsure", "Goose Square failed: " .. tostring(errE)) end
+	end
+	if GooseSquare then
+		local remote = type(Config.Goose.Square) == "table" and Config.Goose.Square.Remote or "GooseSquare"
+		local okR, errR = pcall(function()
+			Net.Get(remote).OnServerEvent:Connect(function(player, ...)
+				if squareOn() then GooseSquare.OnRemote(player, ...) end
+			end)
+		end)
+		if not okR then warnThrottled("squareRemote", "GooseSquare remote missing: " .. tostring(errR)) end
+	end
+	setGame("GooseOvertimeUntil", 0)
 
 	task.spawn(function()
 		while true do
-			task.wait(Config.Goose.Tick)
+			task.wait(eggsOn() and (tonumber(EGG.Tick) or 0.1) or Config.Goose.Tick)
 			local ok, err = pcall(tick)
 			if not ok then warnThrottled("loop", "tick error: " .. tostring(err)) end
 		end
@@ -779,14 +1073,31 @@ function GooseService.IsActive()
 end
 
 -- CR-L21: includes the tug pivot (sideOffset, +-MAX_SIDE_OFFSET) so swing range checks match the goose players see
+-- Eggs mode: nil (the goose is no swing target any more; CombatService's goose stage is Tug-only)
 function GooseService.GetPosition()
-	if not active then return nil end
+	if not active or eggsOn() then return nil end
 	return gooseCenter() + Vector3.new(sideOffset, 0, 0)
+end
+
+-- A23-131: a carrier's eggs go back now (ZoneService pads / Travel / any server teleport). Safe any time
+-- A23-141: Travel / a pad / any other teleport: out of the square first (no move back: the caller moves them), then
+-- the carried eggs (the old ring) go back
+function GooseService.LeaveSquare(player, reason)
+	if GooseSquare then pcall(GooseSquare.Leave, player, reason or "Travel") end
+	if active and eggsOn() then pcall(GooseEggs.ReturnEggs, player, reason or "Travel") end
+end
+
+function GooseService.InSquare(player)
+	return GooseSquare ~= nil and GooseSquare.IsIn(player)
+end
+
+function GooseService.ReturnEggs(player, reason)
+	if active and eggsOn() then GooseEggs.ReturnEggs(player, reason or "Travel") end
 end
 
 -- returns the tug count actually added (0 = rejected), so CombatService can show the real "+N" (CR-L21)
 function GooseService.RegisterHit(player, isManual)
-	if not active then return 0 end
+	if not active or eggsOn() then return 0 end -- A23-131: hitting the goose does nothing in the egg hunt
 	if not isReady(player) then return 0 end
 	local f = factionOf(player)
 	if not isTugFaction(f) then return 0 end -- A6: Neutral swings on the goose count 0

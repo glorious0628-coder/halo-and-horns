@@ -180,6 +180,14 @@ function HealthService.OnGooseFinished(result, _rewarded, info)
 		local key = result == "Halo" and "HaloWins" or result == "Horns" and "HornsWins" or "Ties"
 		g[key] = (g[key] or 0) + 1
 	end
+	-- A23-131 / A23-141 egg hunt: joins, deliveries, the score gap, crown flips, drop-spot failures (the 10/17-20 tuning)
+	if type(info) == "table" then
+		for _, k in { "Joins", "Delivered", "ScoreGap", "DropFails", "CheatLogs" } do
+			local v = tonumber(info[k])
+			if v and v == v and v > 0 then g[k] = (g[k] or 0) + math.floor(v) end
+		end
+		if info.CrownFlip == true then g.CrownFlips = (g.CrownFlips or 0) + 1 end
+	end
 end
 
 -- one player was paid by the goose: GooseRewarded(player, { Won, Rare, Gold, XP, Level, Mode })

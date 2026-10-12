@@ -14,9 +14,15 @@
 -- the files exist). No text but the "!" / "Zzz" / "+N" marks (Config.GooseEggFx.Text), no rays (the 10/07 rule).
 -- Only in Config.Goose.Mode "Eggs"; the pure helpers (Arc, CanPick, Wobble, Bar, TickEnd, HomeOf) are tested offline
 -- (tools/test_egg_fx.py).
+-- A23-141 Goose Square (contract docs/design/goose_square_contract_2026-10-12.md): the egg play is in a separate square
+-- off the map and only for players who pressed Join. Every screen above works only while EggFx.Here() (Eggs mode + my
+-- InGooseSquare attribute); outside, they are off / return nil. This module also owns the Join / Leave button's data
+-- (SquareButton / SquarePress: the one remote it fires, GooseSquare, looked up without waiting) and the short screen
+-- fade when InGooseSquare changes (Fade). EventHUD draws the button.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -58,11 +64,91 @@ local function lookCfg()
 	return type(Config.GooseEggFx) == "table" and Config.GooseEggFx or {}
 end
 
+----------------------------------------------------------------- pure helpers (tested offline)
 function EggFx.On()
 	return type(Config.Goose) == "table" and Config.Goose.Mode == "Eggs"
 end
 
------------------------------------------------------------------ pure helpers (tested offline)
+-- A23-141 Goose Square (contract docs/design/goose_square_contract_2026-10-12.md): the golden-egg play is in a separate
+-- square off the map; only players who pressed Join are there (the server sets my InGooseSquare attribute). Every egg
+-- screen below works only while EggFx.Here(). Names: Config.Goose.Square.
+local function squareCfg()
+	return type(Config.Goose) == "table" and type(Config.Goose.Square) == "table" and Config.Goose.Square or {}
+end
+
+local function squareName(key, default)
+	local v = squareCfg()[key]
+	return type(v) == "string" and v ~= "" and v or default
+end
+
+-- my InGooseSquare attribute (the server's; true = I am in the square)
+function EggFx.Inside()
+	return LocalPlayer:GetAttribute(squareName("Attr", "InGooseSquare")) == true
+end
+
+-- the egg screens' gate: the Eggs mode and I am in the square
+function EggFx.Here()
+	return EggFx.On() and EggFx.Inside()
+end
+
+-- the c->s RemoteEvent, looked up without waiting (it may not exist yet: nil = the button is dimmed and does nothing)
+function EggFx.SquareRemote()
+	local r = S.SquareRemote
+	if r ~= nil and r.Parent ~= nil then return r end
+	S.SquareRemote = nil
+	local folder = ReplicatedStorage:FindFirstChild("Remotes")
+	local found = folder and folder:FindFirstChild(squareName("Remote", "GooseSquare"))
+	if found ~= nil and found:IsA("RemoteEvent") then
+		S.SquareRemote = found
+		return found
+	end
+	return nil
+end
+
+-- what the button needs to know, read from the world now
+function EggFx.SquareCtx()
+	local gs = ReplicatedStorage:FindFirstChild("GameState")
+	return { Active = gs ~= nil and gs:GetAttribute("GooseActive") == true, Inside = EggFx.Inside(),
+		Block = LocalPlayer:GetAttribute(squareName("Block", "GooseJoinBlock")), HasRemote = EggFx.SquareRemote() ~= nil }
+end
+
+-- the Join / Leave button of the goose chip. ctx = { Active (the event is open), Inside, Block (my GooseJoinBlock), HasRemote }
+-- -> nil (hidden: no event, or not the Eggs mode) | { Word = "Join" | "Leave", Dim }. Leave while I am inside (dimmed only
+-- without the remote) - 개발 2 10/13: ALWAYS while inside, open event or not (the seconds after the round before the trip
+-- home, or a failed trip home, must keep a way out); Join otherwise, dimmed by a non-empty Block or without the remote
+-- (A23-130: a dimmed press says nothing)
+function EggFx.SquareButton(ctx)
+	if type(ctx) ~= "table" then return nil end
+	local noRemote = ctx.HasRemote ~= true
+	if ctx.Inside == true then return { Word = "Leave", Dim = noRemote } end
+	if ctx.Active ~= true or not EggFx.On() then return nil end
+	return { Word = "Join", Dim = noRemote or (type(ctx.Block) == "string" and ctx.Block ~= "") }
+end
+
+-- a press: fires the remote once with "Join" / "Leave"; nothing while the button is dimmed / hidden / the other word, and
+-- a second press within RateLimits.GooseSquare s (else 1) is dropped. now = os.clock() (a test passes its own)
+function EggFx.SquarePress(word, now)
+	if word ~= "Join" and word ~= "Leave" then return false end
+	local b = EggFx.SquareButton(EggFx.SquareCtx())
+	if not b or b.Dim or b.Word ~= word then return false end
+	local remote = EggFx.SquareRemote()
+	if not remote then return false end
+	now = num(now, os.clock())
+	local gap = num(type(Config.RateLimits) == "table" and Config.RateLimits.GooseSquare, 1)
+	if now - (S.SquareAt or -math.huge) < gap then return false end
+	S.SquareAt = now
+	local ok = pcall(function() remote:FireServer(word) end)
+	return ok
+end
+
+-- my InGooseSquare changed (either way): the short screen fade, once per change (the same value again = nothing)
+function EggFx.SquareChanged()
+	local inside = EggFx.Inside()
+	if (S.SquareIn == true) == inside then return false end
+	S.SquareIn = inside
+	pcall(EggFx.Fade)
+	return true
+end
 -- where a flying egg is at server time now: from -> to over the FlyTime s before landAt, a parabola whose peak is
 -- clamp(distance x k, min, max) studs. -> position, landed (true once now >= landAt)
 function EggFx.Arc(from, to, landAt, flyTime, now, arc)
@@ -124,8 +210,10 @@ function EggFx.TickEnd(endsAt, overtimeUntil, now)
 end
 
 -- the top bar in Eggs mode (EventHUD draws it). a = { Rescue, Poach, EndsAt, OvertimeUntil, Mode, CoopSide,
--- CoopTarget }. -> { Coop, Side, Left, Right, Fill (0..1 of the Halo / co-op fill), Seconds, Overtime }
+-- CoopTarget }. -> { Coop, Side, Left, Right, Fill (0..1 of the Halo / co-op fill), Seconds, Overtime }; nil outside
+-- the Goose Square (no egg bar in the real plaza)
 function EggFx.Bar(a, now)
+	if not EggFx.Here() then return nil end
 	a = type(a) == "table" and a or {}
 	local halo = math.max(0, math.floor(num(a.Rescue, 0) + 0.5))
 	local horns = math.max(0, math.floor(num(a.Poach, 0) + 0.5))
@@ -268,6 +356,7 @@ local function near(pos, range)
 end
 
 local function play(event, opts, standIn)
+	if not EggFx.Here() then return end -- no egg sound outside the Goose Square
 	local audio = C and C.Audio
 	if type(audio) ~= "table" or type(audio.Play) ~= "function" then return end
 	local ok, played = pcall(audio.Play, event, opts)
@@ -322,7 +411,7 @@ end
 
 -- a little burst of round sparkles at pos (a pickup by someone else, a tag)
 local function pop(pos, color, count)
-	if not near(pos, num(lookCfg().SparkleRange, 60)) then return end
+	if not EggFx.Here() or not near(pos, num(lookCfg().SparkleRange, 60)) then return end
 	local p = quiet(Instance.new("Part"))
 	p.Name = "EggPop"
 	p.Size = Vector3.new(0.2, 0.2, 0.2)
@@ -396,8 +485,7 @@ local function goosePos()
 		local ok, cf = pcall(function() return g:GetPivot() end)
 		if ok then return cf.Position, g end
 	end
-	local center = eggCfg().Center
-	return (typeof(center) == "Vector3" and center or Vector3.zero) + Vector3.new(0, 4, 0), g
+	return EggFx.Center() + Vector3.new(0, 4, 0), g
 end
 
 ----------------------------------------------------------------- per frame
@@ -504,7 +592,7 @@ end
 local function stepRings(active)
 	local cfg, lk = eggCfg(), lookCfg()
 	local faction = LocalPlayer:GetAttribute("Faction")
-	local home = active and LocalPlayer:GetAttribute("EggCan") == true and EggFx.HomeOf(faction, cfg) or nil
+	local home = active and LocalPlayer:GetAttribute("EggCan") == true and EggFx.HomeFor(faction) or nil
 	if home then
 		local r = num(cfg.HomeRadius, 8)
 		local hl = type(lk.Home) == "table" and lk.Home or {}
@@ -513,10 +601,11 @@ local function stepRings(active)
 			S.Home.Material = Enum.Material.Neon
 			S.HomeFaction = nil
 		end
-		if S.HomeFaction ~= faction then -- new, or I changed sides at the altar: the other home, its colour
+		if S.HomeFaction ~= faction or S.HomeAt ~= home then -- new, I changed sides at the altar, or the square's home moved
 			S.Home.Color = homeColor(faction)
 			S.Home.CFrame = CFrame.new(home.X, groundY(home) + num(hl.Height, 0.15), home.Z) * FLAT
 			S.HomeFaction = faction
+			S.HomeAt = home
 		end
 		local carrying = num(LocalPlayer:GetAttribute("EggCarry"), 0) > 0
 		local pulse = carrying and (math.sin(os.clock() * 4) * 0.08) or 0
@@ -526,7 +615,7 @@ local function stepRings(active)
 		S.Home = nil
 	end
 	local b = type(lk.Boundary) == "table" and lk.Boundary or {}
-	local center = typeof(cfg.Center) == "Vector3" and cfg.Center or Vector3.zero
+	local center = EggFx.Center()
 	local show = active and near(center, num(b.Range, 160) + num(cfg.RingRadius, 54))
 	if show and #S.Dots == 0 then
 		local n, r = math.max(8, math.floor(num(b.Dots, 48))), num(cfg.RingRadius, 54)
@@ -628,7 +717,7 @@ local function stepWobble(now, me)
 		S.StillPos, S.StillAt = me, now
 	end
 	local cfg = eggCfg()
-	local center = typeof(cfg.Center) == "Vector3" and cfg.Center or Vector3.zero
+	local center = EggFx.Center()
 	local flat = Vector3.new(me.X - center.X, 0, me.Z - center.Z).Magnitude
 	local amount = EggFx.Wobble(flat, now - (S.StillAt or now), cfg)
 	if joint and joint:IsA("Motor6D") then
@@ -638,6 +727,45 @@ local function stepWobble(now, me)
 	end
 end
 
+-- outside the Goose Square (A23-141): none of the egg play shows - the local egg copies, flights, rings, the goose's mark,
+-- the shields and my stack's wobble are off (cheap and guarded: runs every frame outside, only while there is anything)
+local function stepAway()
+	for _, rec in S.Eggs do
+		local v = rec.Visual
+		if v and v.LocalTransparencyModifier ~= 1 then v.LocalTransparencyModifier = 1 end
+		if rec.Glow and rec.Glow.LocalTransparencyModifier ~= 1 then rec.Glow.LocalTransparencyModifier = 1 end
+		if rec.Sparkle and rec.Sparkle.Enabled then rec.Sparkle.Enabled = false end
+		if rec.Shadow and rec.Shadow.Transparency ~= 1 then rec.Shadow.Transparency = 1 end
+	end
+	for i = #S.Flights, 1, -1 do
+		pcall(function() S.Flights[i].Part:Destroy() end)
+		table.remove(S.Flights, i)
+	end
+	if S.Home then
+		S.Home:Destroy()
+		S.Home = nil
+	end
+	if #S.Dots > 0 then
+		for _, d in S.Dots do d:Destroy() end
+		S.Dots = {}
+	end
+	if S.Icon then
+		S.Icon:Destroy()
+		S.Icon = nil
+	end
+	for p, s in S.Shields do
+		s:Destroy()
+		S.Shields[p] = nil
+	end
+	if S.StillPos then -- my stack's wobble off
+		local ch = LocalPlayer.Character
+		local joint = ch and ch:FindFirstChild("EggJoint", true)
+		if joint and joint:IsA("Motor6D") then joint.Transform = CFrame.identity end
+		S.StillAt, S.StillPos = nil, nil
+	end
+	S.Carry = 0
+end
+
 function EggFx.Step()
 	if not EggFx.On() then return end
 	local now = serverNow()
@@ -645,6 +773,10 @@ function EggFx.Step()
 	local active = gs ~= nil and gs:GetAttribute("GooseActive") == true
 	if S.WasActive and not active then S.Picked = false end
 	S.WasActive = active
+	if not EggFx.Here() then
+		stepAway()
+		return
+	end
 	local root = myRoot()
 	local me = root and root.Position or nil
 	-- my EggCarry rose: I picked one (the last ticks are mine); the server's yes after a preview stays silent
@@ -668,26 +800,74 @@ function EggFx.Step()
 	stepWobble(now, me)
 end
 
--- QuestMarker: while I carry eggs in the event, the marker points at my home (3 studs over it), else nil
+-- the nest (Halo) and the cart (Horns) points while I am in the square, else nil: workspace.GooseSquare's Nest / Cart
+-- parts (or its NestPos / CartPos attributes) when it exists, before Config.Goose.Egg.Home
+function EggFx.Homes()
+	if not EggFx.Here() then return nil end
+	local cfgHome = type(eggCfg().Home) == "table" and eggCfg().Home or {}
+	local sq = workspace:FindFirstChild("GooseSquare")
+	local function read(name, attrName)
+		if not sq then return nil end
+		local inst = sq:FindFirstChild(name, true)
+		local ok, pos = pcall(function()
+			if inst and inst:IsA("BasePart") then return inst.Position end
+			if inst and inst:IsA("Model") then return inst:GetPivot().Position end
+			return nil
+		end)
+		if ok and typeof(pos) == "Vector3" then return pos end
+		local a = sq:GetAttribute(attrName)
+		return typeof(a) == "Vector3" and a or nil
+	end
+	return { Halo = read("Nest", "NestPos") or cfgHome.Halo, Horns = read("Cart", "CartPos") or cfgHome.Horns }
+end
+
+-- A23-141 (게임성 개발 2 10/12, docs/design/goose_square_skeleton_2026-10-12.md): the egg ring's middle -
+-- workspace.GooseSquare's GooseSpot part (or its GooseSpotPos attribute) while the square exists, else
+-- Config.Goose.Egg.Center (the old plaza's fountain)
+function EggFx.Center()
+	local sq = workspace:FindFirstChild("GooseSquare")
+	if sq then
+		local spot = sq:FindFirstChild("GooseSpot", true)
+		local ok, pos = pcall(function()
+			if spot and spot:IsA("BasePart") then return spot.Position end
+			if spot and spot:IsA("Model") then return spot:GetPivot().Position end
+			return nil
+		end)
+		if ok and typeof(pos) == "Vector3" then return pos end
+		local a = sq:GetAttribute("GooseSpotPos")
+		if typeof(a) == "Vector3" then return a end
+	end
+	local c = eggCfg().Center
+	return typeof(c) == "Vector3" and c or Vector3.zero
+end
+
+-- my side's home point (HomeOf over Homes) or nil outside the square / without one
+function EggFx.HomeFor(faction)
+	local homes = EggFx.Homes()
+	return homes and EggFx.HomeOf(faction, { Home = homes }) or nil
+end
+
+-- QuestMarker: while I carry eggs in the square, the marker points at my home (3 studs over it), else nil
 function EggFx.HomeTarget()
-	if not EggFx.On() then return nil end
+	if not EggFx.Here() then return nil end
 	local gs = ReplicatedStorage:FindFirstChild("GameState")
 	if not gs or gs:GetAttribute("GooseActive") ~= true then return nil end
 	if num(LocalPlayer:GetAttribute("EggCarry"), 0) <= 0 then return nil end
-	local home = EggFx.HomeOf(LocalPlayer:GetAttribute("Faction"), eggCfg())
+	local home = EggFx.HomeFor(LocalPlayer:GetAttribute("Faction"))
 	return home and home + Vector3.new(0, 3, 0) or nil
 end
 
--- Audio: the last 3-2-1 is for those who picked an egg this event; the crown egg's overtime moves its end
+-- Audio: the last 3-2-1 is for those who picked an egg this event; the crown egg's overtime moves its end. nil outside
+-- the square (no egg count there)
 function EggFx.TickFor(gs)
-	if not EggFx.On() or not gs then return nil end
+	if not EggFx.Here() or not gs then return nil end
 	local endAt = EggFx.TickEnd(gs:GetAttribute("GooseEndsAt"), gs:GetAttribute("GooseOvertimeUntil"), serverNow())
 	return S.Picked, endAt
 end
 
 ----------------------------------------------------------------- one-off events (Net.Fx)
 function EggFx.OnFx(kind, data)
-	if not EggFx.On() or type(data) ~= "table" then return end
+	if not EggFx.Here() or type(data) ~= "table" then return end
 	local lk = lookCfg()
 	if kind == "EggReturn" then -- the eggs fly back to the goose
 		local to = goosePos()
@@ -724,7 +904,7 @@ function EggFx.OnFx(kind, data)
 	elseif kind == "EggTag" then
 		if typeof(data.Pos) == "Vector3" then pop(data.Pos + Vector3.new(0, 2, 0), Color3.fromRGB(255, 245, 210), 16) end
 	elseif kind == "GooseEnd" then -- confetti over the winner's home
-		local home = EggFx.HomeOf(data.Winner, eggCfg())
+		local home = EggFx.HomeFor(data.Winner)
 		if home and near(home, 200) then
 			for _, col in { Color3.fromRGB(255, 215, 90), Color3.fromRGB(255, 255, 255), homeColor(data.Winner) } do
 				pop(home + Vector3.new(0, 6, 0), col, 25)
@@ -737,6 +917,58 @@ local function watchFolder(f)
 	for _, p in f:GetChildren() do pcall(addEgg, p) end
 	f.ChildAdded:Connect(function(p) pcall(addEgg, p) end)
 	f.ChildRemoved:Connect(function(p) pcall(removeEgg, p) end)
+end
+
+-- A23-141: the short screen fade when my InGooseSquare changes (either way): a full-screen black Frame (IgnoreGuiInset)
+-- goes opaque over Fade.In s, then clear over Fade.Out s, then the gui is off. One at a time: a new change restarts it
+-- (the old tween is cancelled). No text.
+local function fadeFrame()
+	if S.FadeGui and S.FadeGui.Parent and S.FadeFrame then return S.FadeGui, S.FadeFrame end
+	local pg = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	if not pg then return nil end
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "GooseSquareFade"
+	gui.ResetOnSpawn = false
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 100
+	gui.Enabled = false
+	local f = Instance.new("Frame")
+	f.Name = "Black"
+	f.Size = UDim2.fromScale(1, 1)
+	f.BackgroundColor3 = Color3.new(0, 0, 0)
+	f.BackgroundTransparency = 1
+	f.BorderSizePixel = 0
+	f.Active = false
+	f.Parent = gui
+	gui.Parent = pg
+	S.FadeGui, S.FadeFrame = gui, f
+	return gui, f
+end
+
+function EggFx.Fade()
+	local fade = type(squareCfg().Fade) == "table" and squareCfg().Fade or {}
+	local gui, frame = fadeFrame()
+	if not gui then return end
+	S.FadeId = (S.FadeId or 0) + 1
+	local id = S.FadeId
+	if S.FadeTween then S.FadeTween:Cancel() end
+	gui.Enabled = true
+	local t1 = TweenService:Create(frame, TweenInfo.new(math.max(0, num(fade.In, 0.25)), Enum.EasingStyle.Quad,
+		Enum.EasingDirection.Out), { BackgroundTransparency = 0 })
+	S.FadeTween = t1
+	t1.Completed:Connect(function()
+		if S.FadeId ~= id then return end
+		local t2 = TweenService:Create(frame, TweenInfo.new(math.max(0, num(fade.Out, 0.35)), Enum.EasingStyle.Quad,
+			Enum.EasingDirection.In), { BackgroundTransparency = 1 })
+		S.FadeTween = t2
+		t2.Completed:Connect(function()
+			if S.FadeId ~= id then return end
+			gui.Enabled = false
+			S.FadeTween = nil
+		end)
+		t2:Play()
+	end)
+	t1:Play()
 end
 
 function EggFx.Init(registry)
@@ -753,6 +985,11 @@ local function warnThrottled(msg)
 end
 
 function EggFx.Start()
+	S.SquareIn = EggFx.Inside() -- where I already am: no fade for that
+	LocalPlayer:GetAttributeChangedSignal(squareName("Attr", "InGooseSquare")):Connect(function()
+		local ok, err = pcall(EggFx.SquareChanged)
+		if not ok then warnThrottled("Square: " .. tostring(err)) end
+	end)
 	task.spawn(function()
 		local effects = workspace:WaitForChild("Effects", 60)
 		if not effects then return end

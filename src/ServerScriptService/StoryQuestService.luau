@@ -1178,8 +1178,9 @@ local function onGooseFinished(result, counts)
 			local data = getData(p)
 			local st = data and story(data)
 			local f = faction(p)
-			-- first rescue / poach ever: +1 honor (Halo) or infamy (Horns)
-			if st and not st.First.Goose and (f == "Halo" or f == "Horns") then
+			-- first rescue / poach ever: +1 honor (Halo) or infamy (Horns). A23-134: the egg hunt pays +5 once an hour
+			-- instead (GooseService), so this one is the old tug's only
+			if st and not st.First.Goose and (f == "Halo" or f == "Horns") and Config.Goose.Mode == "Tug" then
 				st.First.Goose = true
 				local pts = (DEFS.S1 and DEFS.S1.FirstPoints) or 1
 				S.PlayerService.AddStat(p, f == "Halo" and "Honor" or "Infamy", pts)

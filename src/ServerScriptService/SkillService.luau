@@ -238,6 +238,8 @@ function SHAPES.Hop(ctx)
 		local grudge = S.GrudgeService
 		local sack = type(grudge) == "table" and type(grudge.HasSack) == "function" and grudge.HasSack(player) == true
 		if sack or TUNE.Kaiju[kit.Kaiju(player)] then return nil, "TooHeavy" end
+		-- A23-131: golden eggs in hand are too heavy to hop with
+		if (tonumber(player:GetAttribute("EggCarry")) or 0) > 0 then return nil, "TooHeavy" end
 		local back = -flatDir(ctx.Root.CFrame.LookVector)
 		local ms = S.MonsterService
 		local reach = type(ms.HopReach) == "function" and num(ms.HopReach(pos, back, num(def.Hop, 10))) or 0

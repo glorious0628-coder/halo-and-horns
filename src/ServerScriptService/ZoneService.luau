@@ -252,6 +252,12 @@ end
 
 -- pivots the character to a zone spawn; false when there is no character / root
 local function teleport(player, zoneId)
+	-- A23-141: any teleport leaves the Goose Square first (the carried eggs go back; no move back, this is the move)
+	local gs = S.GooseService
+	if type(gs) == "table" and type(gs.LeaveSquare) == "function" then
+		local okL, errL = pcall(gs.LeaveSquare, player, "Travel")
+		if not okL then Util.Warn(TAG, "LeaveSquare: " .. tostring(errL)) end
+	end
 	local character = Util.GetCharacter(player)
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return false end

@@ -102,6 +102,7 @@ end
 -- spot / NPC listed in Config.Return.GuideZones ("Home" = the player's own town)
 local function zoneOfGuide(guide)
 	if type(guide) ~= "string" then return nil end
+	if guide == "Goose" and Config.Goose.Mode == "Eggs" then return nil end -- A23-141: Join from anywhere (no zone)
 	if Config.Zones[guide] then return guide end
 	local fixed = (R.GuideZones or {})[guide]
 	if fixed then return fixed end

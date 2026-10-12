@@ -1039,6 +1039,8 @@ local function gooseWorld(roster)
 	local f = { Now = 5000, Clock = 100, Notices = {}, All = {}, Fx = {}, Gold = {}, XP = {}, War = {}, Finished = {}, Paid = {}, Players = {},
 		GS = {}, Loop = nil }
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
+	-- A23-131: these groups test the tug (Mode "Tug" must keep working); the egg hunt has tools/test_golden_egg.py
+	config.Goose.Mode = "Tug"
 	f.Config = config
 	local gs = { Parent = {}, Attrs = {} }
 	function gs:SetAttribute(k, v) self.Attrs[k] = v end
