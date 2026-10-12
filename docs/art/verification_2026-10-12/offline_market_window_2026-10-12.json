@@ -1,0 +1,309 @@
+{
+  "checks": 165,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the menu entry shows while the switch is off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Open works while the switch is off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a window built while off draws",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a missing remote is sent to anyway",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "resting needs only some of the remotes",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the interval is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no margin over the interval",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Config.RateLimits is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Buy / List / Cancel wait 1 s only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Index every time",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "update never pumps the requests",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "update never redraws what changed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "MarketPage is never bound",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no TXT fallback for Resting",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Config.Market.Text is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the search reads the key, not the name",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the search is case-sensitive",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a quest thing is sold / listed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Pet Treat is no tonic",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a weapon tier that does not exist shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the first index row is not picked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "picking a thing to sell asks no Browse",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the price is not clamped to Max",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the price is not clamped to Min",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the price does not start at Ref",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the fee rounds up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the price box takes letters",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a spare is listed as an item",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a spare's id is its tier only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "List sends one whatever the count",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Gate.List is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Gate.ListIn is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Gate.Buy is ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an owned weapon tier can be bought",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the worn tier is not owned",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Buy sends another price",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no Checking while a Buy waits",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a request never stops waiting",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "after 3 s Mine is not asked again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "after 3 s the open page is not asked again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no page past the last",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the time left never runs",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no h:mm from an hour",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a Sold row gets a [Cancel]",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Paid is always shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Mine tab never gets its dot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the dot never goes away",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "[Cancel] works on any row",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a Mine row in a state the server never sends",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Waiting rows are not shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the open arg is applied on every rebuild",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the open arg's tab is not applied",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an unknown tab in the arg is taken",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "my gold is the bank only",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a weapon named for another class",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a weapon's +N is not shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "four hint rows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "All lists one",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the price box loses the keyboard to a redraw",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the window is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "C-6 거래소 창 (게임성 개발 4, 2026-10-12; SPEC A23-127 / A23-133 / A23-130 / A23-111, contract\ndocs/design/market_window_2026-10-12.md §1 the window, §2 the remotes, §6 the agreed answers), offline, client only.\n\nRuns the CURRENT Config.luau and MarketWindow.luau in the official Luau CLI (tools/fixtures/market_window_offline.luau;\na Remotes folder whose remotes appear when the test says so, the s->c remotes MarketIndex / MarketPage / MarketMine fired by\nthe test, a recording Instance tree with TextBox events, Panels, UIKit and the kit are doubles; the switch is turned on\ninside the fixture). Checks: off = no menu entry, Open does nothing, nothing drawn; no remotes = Resting and nothing sent\n(also while one of the six is missing); Buy (kinds, search by name, index rows, page rows with time left, pages, [Buy] once +\nChecking…, Gate.Buy's key text, an owned weapon tier off, my class's weapon names); Sell (only sellable kinds + spares,\nMarketBrowse on pick, hint rows, count - / + / All, price box numbers only and clamped Min..Max, You get = price - 10%,\nMarketList for \"I\" and \"W\", Gate.List / Wait); Mine (states, Cancel, Paid, Waiting, Today, the dot); the request\nintervals (Config.RateLimits wins, margin, Index 30 s, 3 s re-request); the open arg Tab once (a rebuild keeps my tab).\nStatic: ClientMain order, no Enum.KeyCode, no gate computed by the client, remotes by name only, no hard-coded English\noutside TXT (dev log lines through Util.Warn excepted). Mutations: each must be caught.",
+  "studioCalls": 0
+}
