@@ -7,7 +7,8 @@
   Join 때 광장 없으면 먼저 만듦, 만들 때 로그 한 줄. test_goose_square 91/91·변형 51/51. **최종 검수 시험 중.**
 - 거위 광장 '하늘색/회색 허공': 메인 반영 1 읽기 → 서버 바닥 정상(6000,198,6000, 투명 0, 밟힘, 경고 없음). 그런데 Leave 뒤 마을 사진(04)도
   화면 전체 회색 → 광장 아닌 순간이동 뒤 **클라이언트 화면** 문제로 추측. 메인 반영 1에 클라이언트 읽기 부탁함(카메라 Type/Subject/CFrame/Focus,
-  HRP, Lighting 안개·효과, 전체화면 GUI) + Lunchbox 카드 닫은 사진. **결과 기다림** → 범인 따라 개발 1(클라이언트) 또는 나.
+  HRP, Lighting 안개·효과, 전체화면 GUI). **결과(goose_square3/log.txt): 카메라·안개·덮개 모두 정상** → 회색은 Studio 창이 가려진/최소화된
+  상태의 사진 탓일 가능성 큼(추측). 남은 일: 창 복원 상태로 Join 사진 한 장(최종 검수 허락 → 메인 반영 1). 코드 고칠 것 없음.
   사진: docs/art/verification_2026-10-12/main_apply/goose_square2/.
 - **C2 = dev2-c2 f1a2cbe9 (push함, 아직 보고 안 함)**: 491ef614(드롭표 다시 맞춤, FirstWeaponDrop BigSlime T2, 겹친 무기 → AddSpare + SpareWeapon,
   DuplicateWeaponGold 15/80, LootFlags.FirstWeapon) + main 병합. test_loot --no-mutations 574 통과. **전체 시험은 중간에 멈춤 → 다시 돌리고**
