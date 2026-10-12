@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12: EmoGG 올림, 광장 골격 슬롯 대기)
+
+- **EmoGG 올림**(최종 검수 승인, 직접 봄): rbxassetid://127627433457825 (asset_ids EmoGG). Config 반영 = 가지 `imgdev-emo`(c3c2dbc2, worktree ../Game-imgdev-icons) -> 게임성 검수 -> 최종 검수. 쓰는 코드는 아직 없음(키만).
+- **거위 광장 골격 UiSandbox 슬롯**(최종 검수 OK): 차례 = 메인 Save As -> 이미지 생성 3 WorldKit 사진 -> 게임성 개발 4 UiSandbox -> **나**. 게임성 개발 4가 "끝"을 보내면 시작(=전달함, 시작): UiSandbox 열기 -> `STUDIO_NAME=UiSandbox py tools/goose_square.py --mode apply` -> screen_capture 3장(위 1·눈높이 Nest/Cart 쪽 2; 한 장마다 새 `studio_mcp.py call screen_capture` 호출) -> remove -> 저장 없이 닫기 -> 최종 검수에 "끝", 사진·이름 표는 디자인 검수에.
+
 # 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 도구 만듦, 시험·사진 대기)
 
 - **거위 광장 공간 골격(SPEC A23-141, 디자인 검수 요청)**: tools/worldkit/goose_square.luau + tools/goose_square.py(apply/remove/survey, --center 기본 6000,200,6000, --emit = 메인용 파일 ALLOW_MAIN true) + 이름 표 docs/design/goose_square_skeleton_2026-10-12.md. 문법 OK, **아직 Studio에서 안 돌려 봄**(UiSandbox 닫힘) -> 최종 검수에 UiSandbox 열기·사진 슬롯 신청 -> 위 1 + 눈높이 2(Nest·Cart 쪽) + 이름 표를 디자인 검수에. 개발 2에 이름 표 알림.
