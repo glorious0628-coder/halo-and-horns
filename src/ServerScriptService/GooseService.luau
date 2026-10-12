@@ -30,6 +30,12 @@ local okEggs, GooseEggs = pcall(function()
 end)
 if not okEggs or type(GooseEggs) ~= "table" then GooseEggs = nil end
 local EGG = Config.Goose.Egg or {}
+-- A23-141: the Goose Square (GooseSquare.luau, required only here): Join / Leave, the space, the way back
+local okSquare, GooseSquare = pcall(function()
+	return require(script.Parent:FindFirstChild("GooseSquare"))
+end)
+if not okSquare or type(GooseSquare) ~= "table" then GooseSquare = nil end
+local SQS = Config.Goose.SquareSpace or {}
 
 local TAG = "GooseService"
 local GOOSE_LABEL = Config.Goose.Text.Label -- billboard text (TECH_SPEC §4.16; English since A23-48)
@@ -173,6 +179,23 @@ end
 -- A23-131: the egg hunt runs (Mode "Eggs" and GooseEggs loaded)
 local function eggsOn()
 	return Config.Goose.Mode == "Eggs" and GooseEggs ~= nil
+end
+
+-- A23-141: the egg hunt is played in the Goose Square (Join only); off = the old ring at the Crossroads fountain
+local function squareOn()
+	return eggsOn() and GooseSquare ~= nil and SQS.Enabled == true
+end
+
+-- the egg rules' geometry for this round: the square's marks and members, or the Config ring
+local function setEggGeometry()
+	if not squareOn() then
+		GooseEggs.SetGeometry(nil)
+		return
+	end
+	local sp = GooseSquare.Ensure()
+	GooseEggs.SetGeometry({ Center = sp.GooseSpot, Home = { Halo = sp.Nest, Horns = sp.Cart },
+		Avoid = { sp.SpawnHalo, sp.SpawnHorns, sp.SpawnNeutral }, AvoidRadius = SQS.SpawnClear, Square = true,
+		Members = GooseSquare.Members })
 end
 
 -- persisted numeric stat: live data table first, mirrored attribute as fallback
@@ -582,6 +605,8 @@ local function start()
 		-- A23-131: the co-op target grows with the side's ring entrants (none yet = 1 person)
 		if mode == "Coop" then coop.People, coop.Target = 0, coopTargetFor(0) end
 		setGame("GooseOvertimeUntil", 0)
+		local okG, errG = pcall(setEggGeometry)
+		if not okG then warnThrottled("eggGeometry", "egg geometry failed: " .. tostring(errG)) end
 		local okB, errB = pcall(GooseEggs.Begin, Util.Now(), mode, coop.Side)
 		if not okB then warnThrottled("eggBegin", "egg hunt start failed: " .. tostring(errB)) end
 	end
@@ -671,7 +696,8 @@ local function eggHonor(p, f)
 	local at = Config.SanitizeEggHonorAt(data.EggHonorAt, now)
 	if now - at < (tonumber(EGG.HonorEvery) or 3600) then return end
 	local pts = tonumber(EGG.HonorPoints) or 5
-	call("PlayerService", "AddStat", p, f == "Halo" and "Honor" or "Infamy", pts)
+	-- A23-134 "(주간 상한 안)": the same path as PvP / the grudge sack - the stat + the weekly board within WeekCap
+	call("PlayerService", "GrantFame", p, f == "Halo" and "Honor" or "Infamy", pts, { RankPoints = pts })
 	call("PlayerService", "SetStat", p, "EggHonorAt", now)
 	local T = type(Config.StoryQuests) == "table" and Config.StoryQuests.Text or {}
 	local fmt = f == "Halo" and T.GooseFirstHalo or T.GooseFirstHorns
@@ -775,6 +801,14 @@ local function finishEggs()
 		info.Target = target
 		info.RivalLeft = rivalLeft
 	end
+	if squareOn() then
+		info.Joins = GooseSquare.TakeJoins()
+		-- A23-141: the result shows for ReturnAfter s, then everyone still in the square goes back
+		task.delay(math.max(0, tonumber(SQS.ReturnAfter) or 4), function()
+			local okR, errR = pcall(GooseSquare.ReturnAll, "End")
+			if not okR then warnThrottled("squareReturn", "square return failed: " .. tostring(errR)) end
+		end)
+	end
 	GooseService.GooseFinished:Fire(result, rewarded, info)
 end
 
@@ -870,6 +904,10 @@ end
 
 local function tick()
 	local now = Util.Now()
+	if squareOn() then
+		local okQ, errQ = pcall(GooseSquare.Tick, now) -- falls out of the square, GooseJoinBlock
+		if not okQ then warnThrottled("squareTick", "square tick failed: " .. tostring(errQ)) end
+	end
 	if not active then
 		if now >= nextAt then
 			local sw = S and S.SwitchService
@@ -949,13 +987,27 @@ function GooseService.Init(registry)
 		sideOf[player] = nil
 		hitTimes[player] = nil
 		coop.Told[player] = nil
+		if GooseSquare then
+			pcall(GooseSquare.Leave, player, "Left") -- A23-141 (the eggs go back through OnLeave)
+			pcall(GooseSquare.Forget, player)
+		end
 		if eggsOn() then pcall(GooseEggs.Leave, player) end -- A23-131: carried eggs fly back
 	end)
+	if GooseSquare then
+		-- A23-141: Join only while a goose is on; leaving the square returns the carried eggs first
+		GooseSquare.Init(S, {
+			IsActive = function() return active == true and squareOn() end,
+			OnLeave = function(p, reason)
+				if eggsOn() then GooseEggs.ReturnEggs(p, reason == "Death" and "Death" or "Leave") end
+			end,
+		})
+	end
 	if GooseEggs then
 		GooseEggs.Init(S)
 		-- A23-131: dying returns the carried eggs at once (the next check would too: no living root)
 		if S.PlayerService.CharacterDied then
 			S.PlayerService.CharacterDied:Connect(function(player)
+				if GooseSquare then pcall(GooseSquare.Leave, player, "Death") end -- A23-141: a death leaves the square
 				if eggsOn() then pcall(GooseEggs.ReturnEggs, player, "Death") end
 			end)
 		end
@@ -967,6 +1019,7 @@ function GooseService.Init(registry)
 	local fs = S.FactionService
 	if fs and fs.FactionChanged then
 		fs.FactionChanged:Connect(function(player)
+			if GooseSquare then pcall(GooseSquare.Leave, player, "Faction") end -- A23-141: a new side starts outside
 			if counts[player] ~= nil or hitTimes[player] ~= nil or (active and eggsOn()) then
 				dropEntry(player)
 			end
@@ -986,6 +1039,20 @@ function GooseService.Start()
 	publishTotals(true)
 	-- A23-131: a crashed earlier run may have left eggs / slowed players: clean at start too
 	if GooseEggs then pcall(GooseEggs.Cleanup) end
+	-- A23-141: the square (the place's model, or the plain stand-in built now) and its remote
+	if squareOn() then
+		local okE, errE = pcall(GooseSquare.Ensure)
+		if not okE then warnThrottled("squareEnsure", "Goose Square failed: " .. tostring(errE)) end
+	end
+	if GooseSquare then
+		local remote = type(Config.Goose.Square) == "table" and Config.Goose.Square.Remote or "GooseSquare"
+		local okR, errR = pcall(function()
+			Net.Get(remote).OnServerEvent:Connect(function(player, ...)
+				if squareOn() then GooseSquare.OnRemote(player, ...) end
+			end)
+		end)
+		if not okR then warnThrottled("squareRemote", "GooseSquare remote missing: " .. tostring(errR)) end
+	end
 	setGame("GooseOvertimeUntil", 0)
 
 	task.spawn(function()
@@ -1012,6 +1079,17 @@ function GooseService.GetPosition()
 end
 
 -- A23-131: a carrier's eggs go back now (ZoneService pads / Travel / any server teleport). Safe any time
+-- A23-141: Travel / a pad / any other teleport: out of the square first (no move back: the caller moves them), then
+-- the carried eggs (the old ring) go back
+function GooseService.LeaveSquare(player, reason)
+	if GooseSquare then pcall(GooseSquare.Leave, player, reason or "Travel") end
+	if active and eggsOn() then pcall(GooseEggs.ReturnEggs, player, reason or "Travel") end
+end
+
+function GooseService.InSquare(player)
+	return GooseSquare ~= nil and GooseSquare.IsIn(player)
+end
+
 function GooseService.ReturnEggs(player, reason)
 	if active and eggsOn() then GooseEggs.ReturnEggs(player, reason or "Travel") end
 end

@@ -20,6 +20,16 @@ local E = Config.Goose.Egg
 local SIDES = { Halo = "Horns", Horns = "Halo" } -- side -> the other side
 local S = nil
 local R = { Active = false } -- the round (Begin builds it)
+-- A23-141: where the round is played. GooseService sets it from GooseSquare before Begin (SetGeometry): the ring centre
+-- (the square's GooseSpot), the two homes (Nest / Cart), the extra no-drop marks (the spawns) and the members (the
+-- square's players: only they pick, count, deliver). In the square its walls replace the ring edge (no ring return).
+local GEO = { Center = E.Center, Home = { Halo = E.Home.Halo, Horns = E.Home.Horns }, Avoid = nil, AvoidRadius = nil,
+	Square = false, Members = nil }
+local function inRing(pos)
+	if pos == nil then return false end
+	if GEO.Square then return true end
+	return Vector3.new(pos.X - GEO.Center.X, 0, pos.Z - GEO.Center.Z).Magnitude <= E.RingRadius
+end
 local lastWarn = {}
 
 ------------------------------------------------------------------ helpers
@@ -213,7 +223,7 @@ local function publishCarry(p, st)
 end
 
 local function headPos(st, i)
-	local base = st.Pos or E.Center
+	local base = st.Pos or GEO.Center
 	return base + v3(0, 3 + (i or 1) * 1.2, 0)
 end
 
@@ -225,15 +235,15 @@ end
 
 -- (x, z) is a valid egg spot near feet height footY: -> ground y or nil (opts.Half(x, z) = an extra rule)
 local function spotOk(x, z, footY, opts)
-	local D, c = E.Drop, E.Center
+	local D, c = E.Drop, GEO.Center
 	local p = v3(x, footY, z)
 	local dc = flat(p, c)
 	if dc < D.Fountain or dc > D.Ring then return nil end
-	for _, home in E.Home do
+	for _, home in GEO.Home do
 		if flat(p, home) < D.Home then return nil end
 	end
-	for _, a in D.Avoid do
-		if flat(p, a) < D.AvoidRadius then return nil end
+	for _, a in GEO.Avoid or D.Avoid do
+		if flat(p, a) < (GEO.AvoidRadius or D.AvoidRadius) then return nil end
 	end
 	if opts.Half and not opts.Half(x, z) then return nil end
 	local y, water = groundOf(p)
@@ -247,7 +257,7 @@ end
 -- Spread, Half }. nil after Drop.Tries failed draws (each failure counted in R.DropFails)
 local function pickSpot(anchor, opts)
 	opts = opts or {}
-	local D, c = E.Drop, E.Center
+	local D, c = E.Drop, GEO.Center
 	local minR, maxR = num(opts.Min, D.Min), num(opts.Max, D.Max)
 	local footY = groundOf(anchor) or anchor.Y
 	local base, spread = 0, math.pi * 2
@@ -322,7 +332,7 @@ local function dropTop(now, p, st, minR, maxR)
 	if not egg then return nil end
 	st.Slots = math.max(0, st.Slots - slotsOf(egg))
 	publishCarry(p, st)
-	local at = st.Pos or E.Center
+	local at = st.Pos or GEO.Center
 	local spot = pickSpot(at, { Min = minR, Max = maxR, Any = true })
 	if not spot then spot = v3(at.X, groundOf(at) or (at.Y - 3), at.Z) end
 	egg.From = headPos(st, #st.Carry + 1)
@@ -371,7 +381,7 @@ end
 
 local function refreshPlayers(now, dt)
 	local seen = {}
-	for _, p in W.Players() do
+	for _, p in (GEO.Members and GEO.Members() or W.Players()) do -- A23-141: the square's members
 		seen[p] = true
 		local st = stateOf(p)
 		local f = W.Faction(p)
@@ -389,12 +399,12 @@ local function refreshPlayers(now, dt)
 			setAttr(p, "EggCan", can)
 		end
 		if not can and #st.Carry > 0 then returnCarry(p, st, st.Pos and "Blocked" or "Death") end
-		local inRing = st.Pos ~= nil and flat(st.Pos, E.Center) <= E.RingRadius
-		if can and inRing and isSide(f) then
+		local ringIn = inRing(st.Pos)
+		if can and ringIn and isSide(f) then
 			R.Presence[f] += dt
 			R.Entrants[f][p] = true
 		end
-		local plaza = can and inRing and now < R.EndsAt + E.Crown.Overtime
+		local plaza = can and ringIn and now < R.EndsAt + E.Crown.Overtime
 		if plaza ~= st.Plaza then
 			st.Plaza = plaza
 			setAttr(p, "EggPlaza", plaza)
@@ -416,7 +426,7 @@ local function refreshPlayers(now, dt)
 		R.NextRecount = now + E.Rate.Recount
 		local n = 0
 		for _, st in R.Players do
-			if st.Can and isSide(st.Faction) and st.Pos and flat(st.Pos, E.Center) <= E.RingRadius then n += 1 end
+			if st.Can and isSide(st.Faction) and inRing(st.Pos) then n += 1 end
 		end
 		R.P = n
 		R.PeakP = math.max(R.PeakP, n)
@@ -425,7 +435,7 @@ end
 
 ------------------------------------------------------------------ the goose
 local function clampGoose(pos)
-	local c, Wk = E.Center, E.Walk
+	local c, Wk = GEO.Center, E.Walk
 	local d = flat(pos, c)
 	if d < 0.01 then return c + v3(Wk.MinFountain, 0, 0) end
 	local k = math.clamp(d, Wk.MinFountain, Wk.MaxRing) / d
@@ -465,16 +475,16 @@ local function losingHalf()
 	local side = leader()
 	if not side then return nil end
 	local lose = SIDES[side]
-	local hz = E.Home[lose].Z - E.Center.Z
-	return function(_, z) return (z - E.Center.Z) * hz > 0 end, lose
+	local hz = GEO.Home[lose].Z - GEO.Center.Z
+	return function(_, z) return (z - GEO.Center.Z) * hz > 0 end, lose
 end
 
 local function layBig(now)
 	local half, lose = losingHalf()
 	local egg = layEgg(now, "Big", { Half = half, Any = true })
 	if not egg and lose then
-		local c = E.Center
-		local anchor = v3(c.X, c.Y, c.Z + (E.Home[lose].Z > c.Z and 25 or -25))
+		local c = GEO.Center
+		local anchor = v3(c.X, c.Y, c.Z + (GEO.Home[lose].Z > c.Z and 25 or -25))
 		egg = layEgg(now, "Big", { Half = half, Any = true, Anchor = anchor })
 	end
 	return egg
@@ -484,12 +494,12 @@ local function stepGoose(now, el, dt, tilt)
 	local G = R.Goose
 	-- the crown at Crown.At: the goose stops on the west rim, lays the crown (west half) and Gold eggs
 	if el >= E.Crown.At then
-		G.Pos = clampGoose(E.Center + v3(-E.Walk.Radius, 0, 0))
+		G.Pos = clampGoose(GEO.Center + v3(-E.Walk.Radius, 0, 0))
 		if not R.CrownLaid then
 			R.CrownLaid = true
 			setAct("Lay", R.T0 + E.Duration)
 			local pts = math.max(E.Crown.Min, math.floor(E.Crown.Share * (R.Rescue + R.Poach) + 0.5))
-			local c = E.Center
+			local c = GEO.Center
 			local west = function(x) return x < c.X end
 			local crown = layEgg(now, "Crown", { Points = pts, Any = true, Fly = E.CrownFly, Anchor = c, Min = E.Drop.Fountain,
 				Max = E.Drop.Ring, Half = west }) or layEgg(now, "Crown", { Points = pts, Any = true, Fly = E.CrownFly, Half = west })
@@ -528,7 +538,7 @@ local function stepGoose(now, el, dt, tilt)
 	end
 	if ch then
 		local st = R.Players[ch.Target]
-		if not st or not st.Pos or #st.Carry == 0 or now >= ch.Until or flat(st.Pos, E.Center) > E.RingRadius then
+		if not st or not st.Pos or #st.Carry == 0 or now >= ch.Until or not inRing(st.Pos) then
 			R.Chase = nil
 			setAct("Walk", 0)
 		elseif now >= ch.Start then
@@ -552,14 +562,14 @@ local function stepGoose(now, el, dt, tilt)
 	if G.Act ~= "Walk" then setAct("Walk", 0) end
 	-- the walk: a circle around the fountain, its centre tilted toward the losing side
 	G.Angle += dt * math.pi * 2 / E.Walk.Lap
-	local c = E.Center
+	local c = GEO.Center
 	G.Pos = clampGoose(v3(c.X + math.cos(G.Angle) * E.Walk.Radius, c.Y, c.Z + num(tilt, 0) + math.sin(G.Angle) * E.Walk.Radius))
 end
 
 ------------------------------------------------------------------ deliver / return / pick / tag / lay
 local function deliver(now, p, st)
 	local side = st.Faction
-	local home = E.Home[side]
+	local home = GEO.Home[side]
 	local n, pts, crown = 0, 0, false
 	for _, egg in st.Carry do
 		n += 1
@@ -763,6 +773,20 @@ function GooseEggs.Init(registry)
 end
 
 -- a new round. mode = "Versus" | "Coop" | "Pending", side = the co-op side
+-- A23-141: the square's geometry (GooseService, before Begin): g = { Center, Home = { Halo, Horns }, Avoid = { pos },
+-- AvoidRadius, Square = true, Members = function() -> { Player } }; nil = back to the Config ring (the old plaza)
+function GooseEggs.SetGeometry(g)
+	g = type(g) == "table" and g or {}
+	local h = type(g.Home) == "table" and g.Home or {}
+	GEO.Center = g.Center or E.Center
+	GEO.Home = { Halo = h.Halo or E.Home.Halo, Horns = h.Horns or E.Home.Horns }
+	GEO.Avoid = type(g.Avoid) == "table" and g.Avoid or nil
+	GEO.AvoidRadius = tonumber(g.AvoidRadius)
+	GEO.Square = g.Square == true
+	GEO.Members = type(g.Members) == "function" and g.Members or nil
+end
+function GooseEggs.Geometry() return GEO end
+
 function GooseEggs.Begin(now, mode, side)
 	GooseEggs.Cleanup()
 	R = { Active = true, T0 = now, EndsAt = now + E.Duration, LastStep = now, Mode = mode or "Versus", CoopSide = side or "None",
@@ -770,7 +794,7 @@ function GooseEggs.Begin(now, mode, side)
 		Entrants = { Halo = {}, Horns = {} }, P = 0, PeakP = 0, NextRecount = now, LayAcc = 0, NapDone = {}, ChaseDone = {},
 		Chase = nil, CrownLaid = false, CrownPoints = 0, CrownFlip = nil, Overtime = 0, Ended = false, DropFails = 0,
 		Returns = {}, CheatLogs = 0, FastPicks = 0, Tags = 0, Delivered = 0,
-		Goose = { Pos = clampGoose(E.Center + v3(E.Walk.Radius, 0, 0)), Angle = 0, Act = "Walk", ActUntil = 0 } }
+		Goose = { Pos = clampGoose(GEO.Center + v3(E.Walk.Radius, 0, 0)), Angle = 0, Act = "Walk", ActUntil = 0 } }
 	refreshPlayers(now, 0)
 	for p in R.Players do
 		setAttr(p, "GooseCount", 0)
@@ -778,7 +802,7 @@ function GooseEggs.Begin(now, mode, side)
 		setAttr(p, "EggShield", 0)
 	end
 	-- the arrival sneeze: eggs fanned over the half away from the fountain (the basin side has no spots), and feathers
-	local g, c = R.Goose.Pos, E.Center
+	local g, c = R.Goose.Pos, GEO.Center
 	local away = math.atan2(g.Z - c.Z, g.X - c.X)
 	for i = 1, E.Sneeze do
 		layEgg(now, "Gold", { Dir = away + ((i - 0.5) / E.Sneeze - 0.5) * math.pi, Spread = 0.4 })
@@ -801,7 +825,7 @@ function GooseEggs.Step(now, ctx)
 	stepGoose(now, el, dt, type(ctx) == "table" and ctx.Tilt or 0)
 	-- 1 deliver
 	for p, st in R.Players do
-		if #st.Carry > 0 and isSide(st.Faction) and st.Can and st.Pos and flat(st.Pos, E.Home[st.Faction]) <= E.HomeRadius then
+		if #st.Carry > 0 and isSide(st.Faction) and st.Can and st.Pos and flat(st.Pos, GEO.Home[st.Faction]) <= E.HomeRadius then
 			deliver(now, p, st)
 		end
 	end
@@ -811,7 +835,7 @@ function GooseEggs.Step(now, ctx)
 		if #st.Carry > 0 then
 			if not st.Pos then
 				returnCarry(p, st, "Death", froms)
-			elseif flat(st.Pos, E.Center) > E.RingRadius then
+			elseif not inRing(st.Pos) then
 				returnCarry(p, st, "Ring", froms)
 			elseif now - st.StillAt >= E.IdleReturn then
 				returnCarry(p, st, "Idle", froms)

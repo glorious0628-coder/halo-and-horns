@@ -111,6 +111,7 @@ runGroup("players keep the front half", function()
 	-- the golden goose behind me never pulls the aim and is not counted by a turned swing
 	local w3 = bareWorld({ Hit = true })
 	local goose = {}
+	w3.Config.Goose.Mode = "Tug" -- A23-131: only the old tug's goose is a swing target
 	w3.Registry.GooseService.GetPosition = function() return vec(0, 0, 4) end
 	w3.Registry.GooseService.RegisterHit = function(pl) table.insert(goose, pl) return 1 end
 	local p3 = w3:Join(1, { Class = "Warrior", Faction = "Halo", Level = 5, Tier = 1, Mask = 1 })

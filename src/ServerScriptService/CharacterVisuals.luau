@@ -40,7 +40,7 @@ local REFRESH_DEBOUNCE = 0.25
 -- build order for a full refresh
 local PIECE_ORDER = {
 	"Nametag", "FactionMark", "WeaponModel", "GoldSack", "GrudgeSack", "GrudgeGhost",
-	"RebirthAura", "MarkCape", "MarkHalo", "GrayAura", "WantedGlow", "KaijuFire",
+	"RebirthAura", "MarkCape", "MarkHalo", "GrayAura", "WantedGlow", "KaijuFire", "EggStack",
 }
 
 -- attribute -> pieces to rebuild ("NametagOffset" = only move the nametag)
@@ -71,6 +71,7 @@ local WATCH = {
 	SackVictimName = { "GrudgeGhost" },
 	SackHeldUntil = { "GrudgeGhost" }, -- A23-18: the ghost glows hard while the victim holds the sack
 	KaijuState = { "WantedGlow", "KaijuFire" },
+	EggCarry = { "EggStack" }, -- A23-131: the golden eggs carried (GooseEggs)
 }
 
 -- A23-75 VIP crown before the name (이미지 개발 2026-10-08). The pass attribute is named by 게임성 개발 2
@@ -1229,6 +1230,42 @@ local function buildKaijuFire(player, character)
 	att.Parent = root
 end
 
+-- A23-131 / A23-141: the golden eggs carried (EggCarry slots, 0..3) in a little basket on the back - not over the head,
+-- where the name tag, the halo / horns and the VIP crown live (design 'gaps': head overlap). One Motor6D EggJoint
+-- (upper torso -> EggBase) holds the stack; the client wobbles it through its Transform (golden_egg_contract §4).
+-- Placeholder parts until the approved egg model (no light: up to 90 carried eggs in a full square)
+local EGGS = { Egg = Color3.fromRGB(255, 196, 64), Basket = Color3.fromRGB(150, 105, 60), Size = 0.55, Gap = 0.45 }
+local function buildEggStack(player, character, force)
+	local n = math.clamp(math.floor(attrNum(player, "EggCarry", 0)), 0, 3)
+	local existing = character:FindFirstChild("EggStack")
+	if not force and existing and builtTier[existing] == n then return end
+	clearChild(character, "EggStack")
+	if n <= 0 then return end
+	local torso = Util.FindPart(character, "UpperTorso", "Torso")
+	if not torso then return end
+	local sc = charScale(character)
+	local baseCF = torso.CFrame * CFrame.new(0, 0.55 * sc, torso.Size.Z / 2 + 0.35 * sc)
+	local base = accPart({ Name = "EggBase", Size = Vector3.new(0.9, 0.35, 0.6) * sc, Material = Enum.Material.WoodPlanks,
+		Color = EGGS.Basket, CFrame = baseCF })
+	local parts = { base }
+	local d = EGGS.Size * sc
+	for i = 1, n do
+		table.insert(parts, accPart({ Name = "Egg" .. i, Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d),
+			Material = Enum.Material.SmoothPlastic, Color = EGGS.Egg,
+			CFrame = baseCF * CFrame.new(0, 0.175 * sc + d * 0.5 + (i - 1) * EGGS.Gap * sc, 0) }))
+	end
+	local model = newPiece("EggStack")
+	for _, part in parts do part.Parent = model end
+	model.Parent = character
+	local joint = Instance.new("Motor6D")
+	joint.Name = "EggJoint"
+	joint.Part0, joint.Part1 = torso, base
+	joint.C0 = torso.CFrame:ToObjectSpace(baseCF)
+	joint.Parent = base
+	for i = 2, #parts do Util.Weld(base, parts[i]) end
+	builtTier[model] = n
+end
+
 ------------------------------------------------------------------ dispatch
 local BUILDERS = {
 	Nametag = buildNametag,
@@ -1243,6 +1280,7 @@ local BUILDERS = {
 	GrayAura = buildGrayAura,
 	WantedGlow = buildWantedGlow,
 	KaijuFire = buildKaijuFire,
+	EggStack = buildEggStack,
 }
 
 local function buildPiece(player, character, piece, force)

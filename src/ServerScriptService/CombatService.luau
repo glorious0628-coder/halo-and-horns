@@ -182,9 +182,10 @@ local function kstate(player)
 	return st
 end
 
--- goose body center if this player's swings can count on it (Halo / Horns only), else nil
+-- goose body center if this player's swings can count on it (Halo / Horns only), else nil. A23-131: only the old tug
+-- (Config.Goose.Mode "Tug") is a swing target; the egg hunt's goose is never hit
 local function goosePositionFor(player)
-	if not PVP_FACTIONS[faction(player)] then
+	if Config.Goose.Mode ~= "Tug" or not PVP_FACTIONS[faction(player)] then
 		return nil
 	end
 	local pos = S.GooseService.GetPosition()
@@ -675,6 +676,11 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 end
 
 ------------------------------------------------------------------ queries (public)
+-- A23-141: os.clock() of this player's last PvP damage dealt or taken (nil = none; the Goose Square's Join gate)
+function CombatService.LastPvPAt(player)
+	return lastPvPTime[player]
+end
+
 function CombatService.IsInCombat(player)
 	local t = lastPvPTime[player]
 	return t ~= nil and os.clock() - t <= Config.PvP.CombatTagTime

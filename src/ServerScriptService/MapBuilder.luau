@@ -758,12 +758,20 @@ local CONTRACT_LANDMARKS = {
 	{ Name = "Fountain", Build = buildFountain },
 	{ Name = "Altar", Build = buildAltar, Part = true },
 	{ Name = "MostWantedBoard", Build = buildBoard, Part = true },
-	{ Name = "GoosePerch", Build = buildGoosePerch },
+	{ Name = "GoosePerch", Build = buildGoosePerch, Tug = true }, -- A23-131 / A23-141: only the old tug has a perch
 }
 
 local function ensureLandmarks(ctx, folder)
 	for _, def in CONTRACT_LANDMARKS do
 		local inst = folder:FindFirstChild(def.Name)
+		if def.Tug and Config.Goose.Mode ~= "Tug" then
+			-- A23-141: the egg hunt plays in the Goose Square: no goose things at the Crossroads (a saved perch goes)
+			if inst then
+				Util.Log(TAG, inst:GetFullName() .. " removed: the goose lives in the Goose Square (A23-141)")
+				inst:Destroy()
+			end
+			continue
+		end
 		if inst and def.Part and not inst:IsA("BasePart") then
 			retire(inst, "_Decor")
 			inst = nil

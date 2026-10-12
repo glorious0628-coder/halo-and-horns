@@ -1554,6 +1554,40 @@ Config.Goose.Egg = {
 	Items = { Egg = "GoldenEgg", Feather = "GooseFeather" }, -- Neutral picks go to the bag as these
 }
 
+-- A23-141 (user 10/12): the egg hunt runs in the Goose Square, a separate space in the same server outside the map; only
+-- players who press Join (remote GooseSquare "Join" | "Leave"; Config.Goose.Square = game dev 1's client table: Remote,
+-- Attr, Block, Fade, Text - the server only reads it) go there. The real Crossroads plaza has no goose and no eggs.
+-- The space = workspace.GooseSquare (the image team's skeleton, docs/design/goose_square_skeleton_2026-10-12.md): the
+-- model attributes GooseSpotPos / NestPos / CartPos / SpawnHaloPos / SpawnHornsPos / SpawnNeutralPos (world positions) or
+-- the parts of those names, the Floor's size = the area. Missing -> GooseSquare.luau builds a plain floor, invisible walls
+-- and the markers ONCE at Center + Offsets (no decoration). Join gates: GooseActive, ready, alive, not the kaiju, no
+-- grudge sack, no PvP hit dealt / taken within FightSeconds (GooseJoinBlock "" | "Dead" | "Monster" | "Grudge" | "PvP").
+-- The way back: the spot Join was pressed at, unless it is a PvP spot, under the kill height, inside the square or its
+-- zone is gone -> the own town start. Auto combat is paused inside (the attribute only: the saved choice stays).
+Config.Goose.SquareSpace = {
+	Enabled = true,
+	Center = Vector3.new(6000, 200, 6000), -- the floor's top (the skeleton's default, outside every zone and the fog)
+	Size = Vector3.new(110, 4, 90), -- the fallback floor (x, thickness, z)
+	WallHeight = 30,
+	Offsets = { -- the fallback markers from Center (north = -z: the Halo nest; south = +z: the Horns cart)
+		GooseSpot = Vector3.new(0, 0, 0), Nest = Vector3.new(0, 0, -37), Cart = Vector3.new(0, 0, 37),
+		SpawnHalo = Vector3.new(0, 0, -24), SpawnHorns = Vector3.new(0, 0, 24), SpawnNeutral = Vector3.new(-22, 0, 0),
+	},
+	SpawnSpread = 4, -- a joiner lands within this many studs of the side's spawn mark
+	SpawnClear = 6, -- no egg lands within this of a spawn mark
+	ReturnAfter = 4, -- s after the result: everyone still inside goes back
+	FightSeconds = 10, -- no Join within this long of a PvP hit (dealt or taken)
+	FallBelow = 25, -- a root this far under the floor top, or Margin studs off the floor's area = left the square
+	Margin = 20,
+	BlockEvery = 0.5, -- s between GooseJoinBlock refreshes
+	KillHeightPad = 50, -- a way-back spot must be this far above workspace.FallenPartsDestroyHeight
+}
+-- the player is in the Goose Square (the attribute GooseSquare.luau writes; the name comes from game dev 1's table)
+function Config.InGooseSquare(p)
+	local name = type(Config.Goose.Square) == "table" and Config.Goose.Square.Attr or "InGooseSquare"
+	return typeof(p) == "Instance" and p:GetAttribute(name) == true
+end
+
 -- A23-134 plaza speed: base x the carry multiplier for `slots` carried (heavy = a Big / Crown egg). nil = no rule
 function Config.GooseEggSpeed(slots, heavy)
 	local E = Config.Goose.Egg
@@ -4567,6 +4601,7 @@ Config.Finisher = {
 }
 -- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
 Config.RateLimits.FinisherPick = 0.3
+Config.RateLimits.GooseSquare = 1 -- A23-141 Join / Leave (GooseSquare.luau)
 -- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
 -- names its GameState <Key>Active / EndsAt / NextAt and its Announce <Key>Appear / Defeat / Leave lines). Per boss: one
 -- on the server; the first slot FirstDelay s after the start, then every Interval s from its last appearance (a due

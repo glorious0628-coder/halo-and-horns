@@ -115,7 +115,7 @@ local function newWorld(opts)
 	opts = opts or {}
 	local w = { Now = 1790000000, Clock = 100, Players = {}, Fx = {}, Notices = {}, All = {}, Bag = {}, Refresh = {},
 		Warn = {}, Parts = {}, Water = {}, High = {}, Props = {}, Implausible = {}, PlausibleCalls = 0, War = {},
-		Gold = {}, XP = {}, Stats = {}, Finished = {}, Paid = {}, AllowWarn = {} }
+		Gold = {}, XP = {}, Stats = {}, Fame = {}, Finished = {}, Paid = {}, AllowWarn = {} }
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
 	config.Goose.Mode = opts.Mode or "Eggs"
 	if not opts.Live then -- a quiet goose (no laying, naps, chases or crown): the rule under test alone
@@ -279,6 +279,11 @@ local function newWorld(opts)
 			IsReady = function(p) return p.Ready == true and p.Parent ~= nil end, GetData = function(p) return p.Data end,
 			GetReadyPlayers = W.Players, GetLuckEvents = function() return 0 end, RefreshSpeed = function() end }
 		function ps.AddStat(p, key, n) p.Data[key] = (p.Data[key] or 0) + n; table.insert(w.Stats, { P = p, Key = key, N = n }); return p.Data[key] end
+		-- A23-134 '(주간 상한 안)': the stat + the weekly board (RankPoints = the board credit, capped by RankingService)
+		function ps.GrantFame(p, key, n, ctx)
+			table.insert(w.Fame, { P = p, Key = key, N = n, Ctx = ctx })
+			return ps.AddStat(p, key, n)
+		end
 		function ps.SetStat(p, key, v) p.Data[key] = v end
 		w.Registry = { PlayerService = ps,
 			FactionService = { FactionChanged = signal(), GetFaction = function(p) return p.Faction end,
@@ -1075,6 +1080,9 @@ runGroup("service-versus", function()
 	check(#w.War == 1 and w.War[1][1] == "Halo" and w.War[1][2] == 30, "the winning side +30 crown-war points", show(w.War))
 	check(w.Gold[h] ~= nil and w.Gold[r] == nil and #w.Paid == 1, "2 eggs paid; 1 egg (10 points) not", show({ w.Gold[h], w.Gold[r] }))
 	check(w:NoticeTo(r, w.Config.Goose.Text.BringTwo) == 1 and w:NoticeTo(h, w.Config.Goose.Text.BringTwo) == 0, "'Bring 2 eggs for a reward.' only to the one short")
+	local fame = w.Fame[#w.Fame]
+	check(fame and fame.P == h and fame.Key == "Honor" and fame.N == 5 and type(fame.Ctx) == "table" and fame.Ctx.RankPoints == 5,
+		"the +5 goes through GrantFame with RankPoints 5 (the weekly board, within WeekCap)", show(fame and fame.Ctx))
 	check(w:HonorAdds(h) == 5 and h.Data.EggHonorAt == math.floor(w.Now) and w:HonorAdds(r) == 0, "Honor +5 to the paid Knight, EggHonorAt saved",
 		show({ w:HonorAdds(h), h.Data.EggHonorAt }))
 	check(h.Attrs.GooseCount == 0 and w.GS.Attrs.GooseActive == false and w.GS.Attrs.GooseRescue == 0 and (h.Attrs.EggCarry or 0) == 0,
