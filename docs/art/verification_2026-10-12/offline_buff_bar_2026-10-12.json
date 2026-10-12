@@ -1,5 +1,5 @@
 {
-  "checks": 68,
+  "checks": 70,
   "failed": 0,
   "mutations": [
     {
@@ -109,6 +109,11 @@
     },
     {
       "name": "the right edge is the bar's left",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the MP bar ignored (the tiles hang between the bars)",
       "applied": true,
       "caught": true
     },

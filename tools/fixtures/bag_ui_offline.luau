@@ -488,6 +488,9 @@ check(lineWith(v, "0:45 left") ~= nil, "the time is rounded up (44.2 s = 0:45)",
 v = tonicDetail("MightTonic", { Tonics = { GuardTonic = NOW + 100, LuckyTonic = NOW + 50 } })
 check(action(v, "DrinkTonic") and not action(v, "DrinkTonic").Enabled and v.Status and v.Status.Text == Config.Alchemy.Text.TwoMax
 	and v.Status.Color == "Bad", "two other tonics running: Drink off + the server's TwoMax line (bad)", v.Status and v.Status.Text)
+check(action(v, "DrinkTonic").Text == "Wait 0:50" and action(v, "DrinkTonic").Color == "Button",
+	"blocked: the button says when the first of the two ends (UiSandbox 10/12: an off Drink still looked on)",
+	action(v, "DrinkTonic").Text)
 v = tonicDetail("MightTonic", { Tonics = { MightTonic = NOW + 30, GuardTonic = NOW + 100 } })
 check(action(v, "DrinkTonic").Enabled and v.Status == nil and lineWith(v, "0:30 left"), "this one running with one other: on, no status")
 v = tonicDetail("MightTonic", { Tonics = { MightTonic = NOW + 30, GuardTonic = NOW + 100, LuckyTonic = NOW + 60 } })

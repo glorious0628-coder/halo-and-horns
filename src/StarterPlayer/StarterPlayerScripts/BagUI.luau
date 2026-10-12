@@ -48,6 +48,7 @@ local TXT = {
 	Spare = "Spare",
 	Count = "×%d",
 	TonicLeft = "%s left",
+	TonicWait = "Wait %s", -- two others run: when the first of them ends (UiSandbox 10/12: an off Drink still looked on)
 	Drink = "Drink", Full = "Full", Empty = "Empty", Wait = "%d s", Quick = "Quick slot",
 	Use = "Use", Cancel = "Cancel", Enhance = "Enhance", Move = "Move",
 	ScrollEnh = "+%d on success · %d%%",
@@ -337,19 +338,25 @@ local function clockOf(seconds)
 	return string.format("%d:%02d", s // 60, s % 60)
 end
 
--- a tonic's state. tonics = { [itemId] = the server time it ends }, now = the server time -> running, seconds left, blocked
--- (blocked = it is not running and Config.Alchemy.MaxActive other tonics are)
+-- a tonic's state. tonics = { [itemId] = the server time it ends }, now = the server time -> running, seconds left, blocked,
+-- free in (blocked = it is not running and Config.Alchemy.MaxActive other tonics are; free in = the seconds until the
+-- first of them ends)
 function BagUI.TonicState(id, tonics, now)
 	local list = type(tonics) == "table" and tonics or {}
 	local t = num(now, 0)
 	local left = num(list[id], 0) - t
-	if left > 0 then return true, left, false end
-	local others = 0
+	if left > 0 then return true, left, false, 0 end
+	local others, soonest = 0, math.huge
 	for other, ends in list do
-		if other ~= id and num(ends, 0) > t then others += 1 end
+		local e = num(ends, 0)
+		if other ~= id and e > t then
+			others += 1
+			soonest = math.min(soonest, e - t)
+		end
 	end
 	local max = type(Config.Alchemy) == "table" and num(Config.Alchemy.MaxActive, 2) or 2
-	return false, 0, others >= max
+	local blocked = others >= max
+	return false, 0, blocked, blocked and soonest or 0
 end
 
 -- may this weapon cell be tapped while a scroll is being used (mode)?
@@ -535,10 +542,12 @@ function BagUI.Detail(cell, ctx)
 		local def = Config.Loot.Items[cell.Id]
 		line(tx(TXT, "Count", cell.Count))
 		if type(def) == "table" and type(def.Desc) == "string" then line(tx(def, "Desc"), "Sub") end
-		local running, left, blocked = BagUI.TonicState(cell.Id, ctx.Tonics, ctx.Now)
+		local running, left, blocked, freeIn = BagUI.TonicState(cell.Id, ctx.Tonics, ctx.Now)
 		if running then line(tx(TXT, "TonicLeft", clockOf(left)), "Gold") end
 		if ctx.TonicsOn == true then
-			act("DrinkTonic", tx(TXT, "Drink"), cell.Count >= 1 and pending == nil and not blocked, "Free")
+			-- blocked: the button says when a place frees (an off art button looks on, UiSandbox 10/12) + the server's line
+			act("DrinkTonic", blocked and tx(TXT, "TonicWait", clockOf(freeIn)) or tx(TXT, "Drink"),
+				cell.Count >= 1 and pending == nil and not blocked, blocked and "Button" or "Free")
 			if blocked then view.Status = { Text = tx(Config.Alchemy.Text, "TwoMax"), Color = "Bad" } end
 		end
 	elseif cell.Kind == "Enhance" or cell.Kind == "Transfer" then
@@ -1229,8 +1238,9 @@ function BagUI.LiveSig(picked)
 		table.insert(parts, text .. tostring(ok))
 	elseif type(picked) == "table" and picked.Kind == "Tonic" then
 		-- the timer line moves once a second: its remaining whole seconds (and the switch / two-others state)
-		local running, left, blocked = BagUI.TonicState(picked.Id, tonicEnds(), workspace:GetServerTimeNow())
-		table.insert(parts, "t" .. tostring(math.ceil(left)) .. (running and "r" or "") .. (blocked and "b" or "") .. (tonicsOn() and "o" or ""))
+		local running, left, blocked, freeIn = BagUI.TonicState(picked.Id, tonicEnds(), workspace:GetServerTimeNow())
+		table.insert(parts, "t" .. tostring(math.ceil(left)) .. "w" .. tostring(math.ceil(freeIn)) .. (running and "r" or "")
+			.. (blocked and "b" or "") .. (tonicsOn() and "o" or ""))
 	end
 	return table.concat(parts, "|")
 end

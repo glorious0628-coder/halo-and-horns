@@ -1,7 +1,17 @@
 {
-  "checks": 189,
+  "checks": 190,
   "failed": 0,
   "mutations": [
+    {
+      "name": "a blocked Drink still says Drink",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the wait counts to the last one",
+      "applied": true,
+      "caught": true
+    },
     {
       "name": "unowned weapons show",
       "applied": true,

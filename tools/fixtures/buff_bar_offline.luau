@@ -327,8 +327,13 @@ check(holder.Visible == true, "the HUD back: the row is back")
 
 ------------------------------------------------------------------ 5. placement from the HUD layout
 local pos = holder.Position
-check(pos.Args[1] == 100 + 184 and pos.Args[2] == 470 - 4, "right edge = the HP bar's right edge, bottom = 4 du above the power line",
+check(pos.Args[1] == 100 + 184 and pos.Args[2] == 470 - 4, "no MP bar: right edge = the HP bar's right edge, bottom = 4 du above the power line",
 	tostring(pos.Args[1]) .. "," .. tostring(pos.Args[2]))
+HUD.Layout = { Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, mp_bar = { X = 294, Y = 500, W = 184, H = 17 },
+	power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
+BuffBar.Relayout()
+check(holder.Position.Args[1] == 294 + 184 and holder.Position.Args[2] == 466,
+	"with the MP bar: right edge = the end of the vitals row (UiSandbox 10/12: not between the bars)", holder.Position.Args[1])
 check(holder.AnchorPoint.X == 1 and holder.AnchorPoint.Y == 1, "anchored bottom-right so the row grows to the left")
 HUD.Layout = { Rects = { hp_bar = { X = 700, Y = 540, W = 200, H = 20 }, power_line = { X = 700, Y = 510, W = 375, H = 16 } } }
 BuffBar.Relayout()
@@ -347,6 +352,10 @@ check(holder.Visible == false, "no layout yet: hidden")
 HUD.Layout = { Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
 BuffBar.Relayout()
 check(holder.Visible == true and holder.Position.Args[1] == 284, "a layout again: shown at its place")
+HUD.Layout = { Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, mp_bar = { X = 294, Y = 500 },
+	power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
+BuffBar.Relayout()
+check(holder.Position.Args[1] == 284, "an MP rect without a width: the HP bar's edge")
 Config.Features.Tonics = false
 
 print(string.format("BUFF_BAR_SUMMARY checks=%d failed=%d", checks, failed))

@@ -1,6 +1,7 @@
 -- BuffBar.luau (게임성 개발 4, 2026-10-12; SPEC A23-133 alchemy tonics, A23-130 no words): the running tonics as small tiles
--- above the HUD's power line, right edge on the HP bar's right edge (C.HUD.Layout.Rects, the same logical units / root as
--- SkillBar and MiniMap: HUD calls BuffBar.Relayout after each layout pass).
+-- above the HUD's power line, right edge on the MP bar's right edge (the end of the vitals row; UiSandbox 10/12: on the HP
+-- bar's edge they hung between the two bars) - the HP bar's without an MP bar (C.HUD.Layout.Rects, the same logical units /
+-- root as SkillBar and MiniMap: HUD calls BuffBar.Relayout after each layout pass).
 --   tile    : the approved slot art SlotCommon (34 du; BagUI's code fallback without art) with the item icon in its Inner
 --             box (Rect(76, 80, 436, 436) of 512), the name's first letter in the item's colour while the icon is not drawn,
 --             and under it the time left "m:ss" (UIKit text style Number). NO words.
@@ -205,8 +206,8 @@ function BuffBar.Refresh()
 	if ui.Holder.Visible ~= show then ui.Holder.Visible = show end
 end
 
--- re-reads C.HUD.Layout.Rects (HUD calls this right after each layout pass): the right edge = the HP bar's right edge,
--- the bottom = 4 du above the power line. No usable rects = hidden
+-- re-reads C.HUD.Layout.Rects (HUD calls this right after each layout pass): the right edge = the MP bar's right edge
+-- (the HP bar's without one), the bottom = 4 du above the power line. No usable rects = hidden
 function BuffBar.Relayout()
 	if not S.Built or not ui.Holder then return end
 	local hud = C and C.HUD
@@ -214,8 +215,10 @@ function BuffBar.Relayout()
 	S.LayoutRef = layout
 	local rects = type(layout) == "table" and type(layout.Rects) == "table" and layout.Rects or nil
 	local hp, pl = rects and rects.hp_bar, rects and rects.power_line
-	if type(hp) == "table" and type(pl) == "table" and tonumber(hp.X) and tonumber(hp.W) and tonumber(pl.Y) then
-		S.Anchor = { X = hp.X + hp.W, Y = pl.Y - T.Above }
+	local mp = rects and rects.mp_bar
+	local edge = (type(mp) == "table" and tonumber(mp.X) and tonumber(mp.W)) and mp or hp
+	if type(edge) == "table" and type(pl) == "table" and tonumber(edge.X) and tonumber(edge.W) and tonumber(pl.Y) then
+		S.Anchor = { X = edge.X + edge.W, Y = pl.Y - T.Above }
 		ui.Holder.Position = UDim2.fromOffset(S.Anchor.X, S.Anchor.Y)
 	else
 		S.Anchor = nil
