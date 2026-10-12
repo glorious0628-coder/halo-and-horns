@@ -13215,5 +13215,74 @@
    },
    "next": "Roblox material closer to the 2D = 이미지 생성 3/4; water jets come from FountainFx"
   }
+ ],
+ "HaloFlowerPotHQ_Lavender_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 22:30 - 10-13 01:50",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "white_model": "fd15be73 (picked by 디자인 검수 in Tripo + my own clay check)",
+   "texture": "6495fbb8 (left menu 텍스처, FIRST tab, front 2D only, 조명 제거, 8K)",
+   "pbr": "92579a11 (PBR 5, base colour unchanged; normal/roughness/metallic 4096)",
+   "approval": "디자인 검수 (batch 675 approved by 최종 검수); PBR result passed by 디자인 검수 10/13 (sheet art/review/design/pots3_pbr_vs_flat_1012.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Lavender_front_ns.png",
+    "left_slot": "..._Lavender_right_ns.png",
+    "right_slot": "..._Lavender_left_ns.png",
+    "back": "..._Lavender_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Lavender/HaloFlowerPotHQ_Lavender_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched; size 0.76 x 0.48 x 1.0 model units)",
+   "next": "이미지 생성 3: WorldKit + Roblox material (maps to 1024; 디자인 검수 note: Sunflower metal ~0.3 on leaves, Lavender low roughness — raise roughness only if leaves shine in day photos)"
+  }
+ ],
+ "HaloFlowerPotHQ_Tulip_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 22:30 - 10-13 01:50",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "white_model": "f75480d2 (picked by 디자인 검수 in Tripo + my own clay check)",
+   "texture": "2b1bf845 (left menu 텍스처, FIRST tab, front 2D only, 조명 제거, 8K)",
+   "pbr": "1aa031bb (PBR 5, base colour unchanged; normal/roughness/metallic 4096)",
+   "approval": "디자인 검수 (batch 675 approved by 최종 검수); PBR result passed by 디자인 검수 10/13 (sheet art/review/design/pots3_pbr_vs_flat_1012.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Tulip_front_ns.png",
+    "left_slot": "..._Tulip_right_ns.png",
+    "right_slot": "..._Tulip_left_ns.png",
+    "back": "..._Tulip_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched; size 0.83 x 0.77 x 1.0 model units)",
+   "next": "이미지 생성 3: WorldKit + Roblox material (maps to 1024; 디자인 검수 note: Sunflower metal ~0.3 on leaves, Lavender low roughness — raise roughness only if leaves shine in day photos)"
+  }
+ ],
+ "HaloFlowerPotHQ_Sunflower_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 22:30 - 10-13 01:50",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "white_model": "5f8780fb (picked by 디자인 검수 in Tripo + my own clay check)",
+   "texture": "e6aacbd5 (left menu 텍스처, FIRST tab, front 2D only, 조명 제거, 8K)",
+   "pbr": "ec0c9111 (PBR 5, base colour unchanged; normal/roughness/metallic 4096)",
+   "approval": "디자인 검수 (batch 675 approved by 최종 검수); PBR result passed by 디자인 검수 10/13 (sheet art/review/design/pots3_pbr_vs_flat_1012.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloFlowerPotHQ_Sunflower_front_ns.png",
+    "left_slot": "..._Sunflower_right_ns.png",
+    "right_slot": "..._Sunflower_left_ns.png",
+    "back": "..._Sunflower_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched; size 0.79 x 0.58 x 1.0 model units)",
+   "next": "이미지 생성 3: WorldKit + Roblox material (maps to 1024; 디자인 검수 note: Sunflower metal ~0.3 on leaves, Lavender low roughness — raise roughness only if leaves shine in day photos)"
+  }
  ]
 }
