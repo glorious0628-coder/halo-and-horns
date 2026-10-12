@@ -77,3 +77,4 @@
 - (10:00) 10/17 비공개 시험 전 사용자 일 목록에 추가: 게임 아이콘 넣기(Creator Hub 또는 Studio Game Settings → Icon, 파일 art/out/s2/gameicon/GameIcon_C_512.png). 계정 나이 확인·2단계, 등급 설문(답안 docs/design/maturity_questionnaire_draft_2026-10-11.md)과 함께.
 - (10:30) 사용자: 계정 나이 확인·2단계 인증 이미 끝("1번은 이미 했오"). 남은 10/17 전 사용자 일 = 등급 설문 제출, 게임 아이콘 넣기.
 - (11:10) 병합 5db4018e = dev4-tonics a777e6bd(꺼짐). **첫 API 반박 검토**: build/api_agent_prompts/final_review_tonics_2026-10-12.md → result.md, opus $1.38, VERDICT MERGE(낮은 것 3 → 개발 4). 앞으로 이 방식. 병합 c747534f(Glowcap ID), 13951906(icons2), 05f56d4a(집 생성기 api/house-gen-porch).
+- (11:20) 사용자 고름: 밈 꾸미기 = 픽셀 후광 m2·픽셀 뿔 m2·도넛 후광 m2·꼬인 뿔 m1·GG 스티커 m1(디자인 검수 추천대로, art/review/s2/memes_m1m2m5_cands.jpg). staff-hip+icons3 API 검토 진행(buebonurd).
