@@ -3,6 +3,7 @@
 10/12 아침: fix/bag-2·dev4-gather·dev4-craft 5d4fc6f3 모두 main에 들어감. dev4-craft에 origin/main을 merge(다시 쓰기 아님, 4a0b467f)한 뒤 ③-3 제작 창을 그 위에 쌓음.
 
 클라 화면만(StarterPlayerScripts·UIKit·클라 시험 + 공용 순수 모듈). 메인 Studio 안 건드림. **보고: 가지 push·사진·결과 = '게임성 검수', UiSandbox 화면 조작 승인·사용자 질문 = '최종 검수'**(list_sessions로 찾기). UiSandbox 창·Play는 최종 검수에 "게임성 개발 4 / 무엇 / 몇 초" → "전달함, 시작" 뒤에만, 끝나면 Play 멈추고 UiSandbox 저장 없이 닫기(Stop-Process 그 pid, 제목에 UiSandbox 확인) → "끝". 바탕화면 마우스·키보드 금지(내 시험 Play 안 Studio MCP user_mouse_input은 승인받고만).
+- **10/12 (최종 검수→게임성 검수 전달, 사용자):** 큰 코드·큰 시험 고침은 먼저 `py tools/api_agent.py` 쓰기 모드 검토(`--write --make-worktree origin/main --branch api/<이름> --model opus|sonnet --max-usd N`, docs/handoff/api_agent_howto.md). 앱 세션 = 지휘·짧은 확인·UiSandbox 사진 요청. 남은 API 약 $85, 일당 한도. 화면 일은 시험·픽스처·문서부터 API로. api/* 가지도 게임성 검수가 시험.
 - worktree(sparse src/tools/docs): `Game-dev4w` = `fix/bag-2`(옛 dev4-bag은 main에 병합됨), `Game-dev4g` = `dev4-gather` / `dev4-craft`(같은 폴더, 브랜치 바꿔 씀). 쌓는 순서 fix/bag-2 → dev4-gather → dev4-craft.
 - **게임성 검수 10/12 규칙: '병합 가능'으로 보고한 끝 커밋은 절대 다시 쓰지 않음(rebase·push -f 금지).** 그 위에 커밋을 쌓고, 아래 가지의 새 커밋은 `git merge`로 받고, main과 충돌할 때만 `git merge origin/main`(해결 후 커밋). 보고 안 한 내 가지만 rebase 가능.
 - 커밋: worktree에서 `git commit -m "짧은 한국어" -- <경로>` → 내 가지만 push(main 금지). 시험이 덮어쓰는 옛 docs/art/verification_* JSON은 커밋 말고 `git restore`(내 새 보고 JSON은 커밋).
