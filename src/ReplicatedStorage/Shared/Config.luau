@@ -5220,12 +5220,14 @@ Config.Loot = {
 			{ Item = "Enh70", P = 0.003 }, { Item = "Enh30", P = 0.0008 }, { Item = "Enh10", P = 0.0002 },
 			{ Item = "Move70", P = 0.001 }, { Item = "Move30", P = 0.0003 }, { Item = "Move10", P = 0.0001 },
 			{ Potion = "HP", P = 0.01 }, { Potion = "MP", P = 0.01 },
+			{ Weapon = 2, P = 0.002 }, { Weapon = 3, P = 0.001, BelowLevel = { Item = "Jelly", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		BigSlime = {
 			{ Item = "SlimeCore", P = 0.5 }, { Item = "Jelly", P = 0.5, N = 2 },
 			{ Item = "Enh70", P = 0.03 }, { Item = "Enh30", P = 0.008 }, { Item = "Enh10", P = 0.002 },
 			{ Item = "Move70", P = 0.01 }, { Item = "Move30", P = 0.003 }, { Item = "Move10", P = 0.0007 },
 			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+			{ Weapon = 2, P = 0.02 }, { Weapon = 3, P = 0.015, BelowLevel = { Item = "SlimeCore", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		-- the King Slime boss (each paid contributor rolls; proposed, tune after play): more of the Prince's things
 		SlimeKing = {
@@ -5234,18 +5236,20 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.08 }, { Item = "Move30", P = 0.02 }, { Item = "Move10", P = 0.005 },
 			{ Potion = "HP", P = 0.3 }, { Potion = "MP", P = 0.3 },
 			{ Item = "KingJelly", P = 0.2 }, -- C1: last, so the rows above keep their draws
+			{ Weapon = 3, P = 0.10, BelowLevel = { Item = "SlimeCore", N = 2 } }, -- C2 (crafting_market §3)
 		},
 		SlingshotGoblin = { -- A23-87: the goblin's rows
 			{ Item = "GoblinTooth", P = 0.4 },
 			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
 			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
+			{ Weapon = 4, P = 0.002 }, -- C2 (crafting_market §3): the goblin's weapon too
 		},
 		Goblin = {
 			{ Item = "GoblinTooth", P = 0.4 },
 			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
 			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
 			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
-			{ Weapon = 4, P = 0.001 },
+			{ Weapon = 4, P = 0.002 }, -- C2 (crafting_market §3): was 0.001
 		},
 		GoblinBrute = {
 			{ Item = "BruteHorn", P = 0.5 },
@@ -5253,18 +5257,20 @@ Config.Loot = {
 			{ Item = "Move70", P = 0.017 }, { Item = "Move30", P = 0.0047 }, { Item = "Move10", P = 0.0012 },
 			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
 			{ Weapon = 4, P = 0.005 },
+			{ Weapon = 5, P = 0.0008, BelowLevel = { Item = "BruteHorn", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		SkeletonArcher = { -- A23-87: the skeleton's rows
 			{ Item = "Bone", P = 0.45 },
 			{ Item = "Enh70", P = 0.05 }, { Item = "Enh30", P = 0.014 }, { Item = "Enh10", P = 0.004 },
 			{ Potion = "HP", P = 0.05 }, { Potion = "MP", P = 0.05 },
+			{ Weapon = 5, P = 0.001 }, -- C2 (crafting_market §3): the skeleton's weapon too
 		},
 		Skeleton = {
 			{ Item = "Bone", P = 0.4 },
 			{ Item = "Enh70", P = 0.025 }, { Item = "Enh30", P = 0.007 }, { Item = "Enh10", P = 0.0018 },
 			{ Item = "Move70", P = 0.008 }, { Item = "Move30", P = 0.0023 }, { Item = "Move10", P = 0.0006 },
 			{ Potion = "HP", P = 0.025 }, { Potion = "MP", P = 0.025 },
-			{ Weapon = 5, P = 0.0005 },
+			{ Weapon = 5, P = 0.001 }, -- C2 (crafting_market §3): was 0.0005
 		},
 		-- J Captain Clatter (each eligible contributor rolls; the weekly badge is FieldBossService's, not a row)
 		CaptainClatter = {
@@ -5273,7 +5279,7 @@ Config.Loot = {
 			{ Potion = "HP", P = 0.5 }, { Potion = "MP", P = 0.5 },
 			-- below the weapon's MinLevel the row gives 2 more Knight Crests instead (A23-27)
 			{ Weapon = 5, P = 0.03, BelowLevel = { Item = "KnightCrest", N = 2 } },
-			{ Weapon = 6, P = 0.005, BelowLevel = { Item = "KnightCrest", N = 2 } },
+			{ Weapon = 6, P = 0.01, BelowLevel = { Item = "KnightCrest", N = 2 } }, -- C2 (crafting_market §3): was 0.005
 			{ Item = "ClatterGem", P = 0.1 }, -- C1: last, so the rows above keep their draws
 		},
 		SkeletonKnight = {
@@ -5281,7 +5287,7 @@ Config.Loot = {
 			{ Item = "Enh70", P = 0.08 }, { Item = "Enh30", P = 0.022 }, { Item = "Enh10", P = 0.006 },
 			{ Item = "Move70", P = 0.027 }, { Item = "Move30", P = 0.0073 }, { Item = "Move10", P = 0.002 },
 			{ Potion = "HP", P = 0.05 }, { Potion = "MP", P = 0.05 },
-			{ Weapon = 5, P = 0.003 }, { Weapon = 6, P = 0.0005 },
+			{ Weapon = 5, P = 0.004 }, { Weapon = 6, P = 0.001 }, -- C2 (crafting_market §3): were 0.003 / 0.0005
 		},
 		-- Halloween kinds (Config.Halloween): candy + the scroll / transfer / potion rows of the base kind of their zone
 		PumpkinSlime = {
@@ -5332,43 +5338,50 @@ Config.Loot = {
 			{ Item = "Enh70", P = 0.01 }, { Item = "Enh30", P = 0.0025 }, { Item = "Enh10", P = 0.0006 },
 			{ Item = "Move70", P = 0.003 }, { Item = "Move30", P = 0.0008 }, { Item = "Move10", P = 0.0002 },
 			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+			{ Weapon = 3, P = 0.004, BelowLevel = { Item = "SeaShell", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		Jellyfish = {
 			{ Item = "SeaShell", P = 0.3 },
 			{ Item = "Enh70", P = 0.01 }, { Item = "Enh30", P = 0.0025 }, { Item = "Enh10", P = 0.0006 },
 			{ Item = "Move70", P = 0.003 }, { Item = "Move30", P = 0.0008 }, { Item = "Move10", P = 0.0002 },
 			{ Potion = "HP", P = 0.015 }, { Potion = "MP", P = 0.015 },
+			{ Weapon = 3, P = 0.004, BelowLevel = { Item = "SeaShell", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		HermitCrab = {
 			{ Item = "SeaShell", P = 0.5, N = 2 },
 			{ Item = "Enh70", P = 0.03 }, { Item = "Enh30", P = 0.008 }, { Item = "Enh10", P = 0.002 },
 			{ Item = "Move70", P = 0.01 }, { Item = "Move30", P = 0.003 }, { Item = "Move10", P = 0.0007 },
 			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+			{ Weapon = 3, P = 0.012, BelowLevel = { Item = "SeaShell", N = 1 } },
+			{ Weapon = 4, P = 0.001, BelowLevel = { Item = "SeaShell", N = 2 } }, -- C2 (crafting_market §3)
 		},
 		CrystalLizard = {
 			{ Item = "CrystalShard", P = 0.3 },
 			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
 			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
 			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+			{ Weapon = 4, P = 0.002, BelowLevel = { Item = "CrystalShard", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		CaveBat = {
 			{ Item = "CrystalShard", P = 0.3 },
 			{ Item = "Enh70", P = 0.015 }, { Item = "Enh30", P = 0.004 }, { Item = "Enh10", P = 0.001 },
 			{ Item = "Move70", P = 0.005 }, { Item = "Move30", P = 0.0013 }, { Item = "Move10", P = 0.0003 },
 			{ Potion = "HP", P = 0.02 }, { Potion = "MP", P = 0.02 },
+			{ Weapon = 4, P = 0.002, BelowLevel = { Item = "CrystalShard", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		GlowMushroom = {
 			{ Item = "CrystalShard", P = 0.4 },
 			{ Item = "Enh70", P = 0.02 }, { Item = "Enh30", P = 0.0055 }, { Item = "Enh10", P = 0.0014 },
 			{ Item = "Move70", P = 0.0067 }, { Item = "Move30", P = 0.0018 }, { Item = "Move10", P = 0.0005 },
 			{ Potion = "HP", P = 0.03 }, { Potion = "MP", P = 0.03 },
+			{ Weapon = 4, P = 0.004, BelowLevel = { Item = "CrystalShard", N = 1 } }, -- C2 (crafting_market §3)
 		},
 		CrystalGolem = {
 			{ Item = "CrystalShard", P = 0.6, N = 2 },
 			{ Item = "Enh70", P = 0.05 }, { Item = "Enh30", P = 0.014 }, { Item = "Enh10", P = 0.0035 },
 			{ Item = "Move70", P = 0.017 }, { Item = "Move30", P = 0.0047 }, { Item = "Move10", P = 0.0012 },
 			{ Potion = "HP", P = 0.04 }, { Potion = "MP", P = 0.04 },
-			{ Weapon = 4, P = 0.003 },
+			{ Weapon = 4, P = 0.004 }, { Weapon = 5, P = 0.001, BelowLevel = { Item = "CrystalShard", N = 2 } }, -- C2 (crafting_market §3): was 0.003
 		},
 	},
 	-- "레벨1 몬스터" jackpot (user 2026-10-05): any player level, auto kills included, golden x GoldenMult. Pumpkin
@@ -5378,8 +5391,12 @@ Config.Loot = {
 	-- the first Slime Prince (BigSlime) a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
 	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
 	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
+	-- C2 (crafting_market §3 / §8): the first Slime Prince a player defeats always drops the tier-2 weapon (once, a paid
+	-- kill; LootFlags.FirstWeapon), equipped at once when it beats the weapon in hand. A weapon owned already drops as a
+	-- Spare (+0, LootService.AddSpare); DuplicateWeaponGold below is paid only when the Spares are full
+	FirstWeaponDrop = { Monster = "BigSlime", Tier = 2 },
 	-- a weapon drop the player already owns turns into gold
-	DuplicateWeaponGold = { [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 },
+	DuplicateWeaponGold = { [2] = 15, [3] = 80, [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 }, -- C2: 2 / 3 = 10% of the old price
 	Text = {
 		Got = "+%s",
 		GotN = "+%s ×%d",
@@ -5392,7 +5409,10 @@ Config.Loot = {
 		UseCombat = "You can't use scrolls in combat.",
 		EquipDead = "You can't change weapons while knocked out.",
 		RareWeapon = "%s weapon! You got %s!", -- grade name (Rare / Epic / Legendary), weapon
-		DuplicateWeapon = "%s again! +%s gold", -- (weapon, gold)
+		DuplicateWeapon = "%s again! +%s gold", -- (weapon, gold) only when the Spares are full (C2)
+		SpareWeapon = "Spare [%s] in your Bag.", -- C2: a weapon owned already (weapon)
+		FirstDropWeapon = "The Slime Prince dropped [%s]!", -- C2: the first Prince's weapon (weapon)
+		FirstDropEquip = "The Slime Prince dropped [%s]! Equipped.", -- C2: ... and it beat the weapon in hand
 		JackpotSelf = "Legendary weapon [%s]!",
 		-- A23-34: the same jackpot found bare-handed is equipped at once
 		JackpotEquip = "Legendary weapon [%s]!",

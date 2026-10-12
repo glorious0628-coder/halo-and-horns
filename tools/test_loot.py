@@ -62,6 +62,16 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    # C2: the first Prince's weapon, duplicates -> Spares, the retuned rows
+    ("C2: the first weapon every Prince", "LOOT_SOURCE", "\t\tdata.LootFlags.FirstWeapon = true\n\t\tif validTier(fw.Tier)", "\t\tif validTier(fw.Tier)"),
+    ("C2: the first weapon never equipped", "LOOT_SOURCE", "\tif better then\n\t\tS.PlayerService.SetStat(player, \"WeaponTier\", tier) -- CharacterVisuals",
+     "\tif false then\n\t\tS.PlayerService.SetStat(player, \"WeaponTier\", tier) -- CharacterVisuals"),
+    ("C2: the first weapon always equipped", "LOOT_SOURCE", "\tlocal better = Config.WeaponUsable(tier, level) and (cur < 1\n",
+     "\tlocal better = true or (cur < 1\n"),
+    ("C2: the first weapon twice when owned", "LOOT_SOURCE", "if validTier(fw.Tier) and not owns(data, fw.Tier) then grantFirstDrop", "if validTier(fw.Tier) then grantFirstDrop"),
+    ("C2: duplicates still gold", "LOOT_SOURCE", "\t\tif LootService.AddSpare(player, tier, 0) then\n", "\t\tif false then\n"),
+    ("C2: the Prince's tier 2 at 0.2", "CONFIG_SOURCE", "{ Weapon = 2, P = 0.02 }, { Weapon = 3, P = 0.015,", "{ Weapon = 2, P = 0.2 }, { Weapon = 3, P = 0.015,"),
+    ("C2: the slime's tier 3 without BelowLevel", "CONFIG_SOURCE", "{ Weapon = 3, P = 0.001, BelowLevel = { Item = \"Jelly\", N = 1 } }", "{ Weapon = 3, P = 0.001 }"),
     # 게임성 검수 10/12 (A23-99): an enhance / transfer result is always said (the Bag window draws no result line)
     ("no enhance drop toast", "LOOT_SOURCE",
      "\t\tnotify(player, string.format(TXT.EnhanceFailDown, name, before, after), \"bad\", \"ScrollFail\")\n", ""),
