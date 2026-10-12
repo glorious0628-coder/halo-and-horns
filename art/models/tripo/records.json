@@ -11456,7 +11456,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.38 studs (0.65 H), grip = wrap centre 1.50 studs from the foot (44.5 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved -0.03; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11493,7 +11493,7 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
-   "a23_142": "length 3.64 studs (0.70 H), grip = wrap centre 1.84 studs from the foot (50.5 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved -0.25; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_LightMage_T3_web_hd_mv4": [
@@ -11533,7 +11533,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.90 studs (0.75 H), grip = wrap centre 1.75 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.33; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11789,7 +11789,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.38 studs (0.65 H), grip = wrap centre 1.52 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved +0.09; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11826,7 +11826,7 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
-   "a23_142": "length 3.64 studs (0.70 H), grip = wrap centre 2.00 studs from the foot (55.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved -0.43; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
@@ -11866,7 +11866,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.90 studs (0.75 H), grip = wrap centre 1.75 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.20; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12122,7 +12122,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.38 studs (0.65 H), grip = wrap centre 1.52 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved +0.20; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12154,7 +12154,7 @@
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3498 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
     0.614,
-    0.497,
+    0.496,
     3.64
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
@@ -12162,7 +12162,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.64 studs (0.70 H), grip = wrap centre 1.64 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved +0.31; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12202,7 +12202,7 @@
    "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
-   "a23_142": "length 3.90 studs (0.75 H), grip = wrap centre 1.75 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
+   "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.66; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
@@ -12516,6 +12516,99 @@
    "use": "Halo town potion shop NPC; Blender touch-up next (A23-125)",
    "file": "art/models/tripo/web/NPC_HaloPotionMerchant_MV4_HD_src.glb",
    "sheet": "art/review/img4/npc_potionmerchant_tripo_raw_1012.jpg"
+  }
+ ],
+ "HaloNewHouse_Hill4_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d3cdb959-b357-4486-b95c-34d4b513ca17",
+   "model_page": "d2ebcfca-1286-45e9-bb7e-8934abf716c5",
+   "balance_after": 14415,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:2x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Hill4_HD_src.glb",
+   "bytes": 14086480,
+   "note": "잔액 표시: 생성 전 14170 → 직후 14415 (다른 적립/환불이 겹친 듯, 이 잡 55점)"
+  }
+ ],
+ "HaloNewHouse_Cliff6_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d667e530-0c0b-46bb-9ff2-df3324e3017a",
+   "model_page": "a90320f1-f54d-4d09-99cd-79f978d54769",
+   "balance_after": 14360,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:3x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Cliff6_HD_src.glb",
+   "bytes": 12283428
+  }
+ ],
+ "HaloNewHouse_Cliff7_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6cdf2e7d-61b4-4d8a-ba50-fe996d296854",
+   "model_page": "a41e3f81-f950-4679-adbb-6c8da3d22980",
+   "balance_after": 14305,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:4x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Cliff7_HD_src.glb",
+   "bytes": 13164064
+  }
+ ],
+ "HaloNewHouse_Cliff8_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "d4049a77-87c0-4c97-b85f-6e8c26a8974e",
+   "model_page": "41b63e9e-1515-4664-9ed2-8531a25ca157",
+   "balance_after": 14250,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 11:5x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Cliff8_HD_src.glb",
+   "bytes": 12738796
   }
  ]
 }
