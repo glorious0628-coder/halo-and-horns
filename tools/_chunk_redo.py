@@ -25,7 +25,8 @@ def main():
     items = {i["id"]: i for i in json.load(open(Q, encoding="utf-8"))["items"]}
     for name in sys.argv[1:]:
         it = items[name]
-        refs = [os.path.join(R.ROOT, r["crop"]) for r in it["refs"] if r.get("crop")]
+        refs = [os.path.join(R.ROOT, r.get("crop") or r["image"]) for r in it["refs"]]
+        has_back = len(it["refs"]) > 1 and "back" in it["refs"][1]["image"]
         draw = it["draw"].split(" 3D note:")[0]
         front = os.path.join(OUT, "%s_front_ns.png" % name)
         if not os.path.exists(front):
@@ -36,7 +37,7 @@ def main():
             out = os.path.join(OUT, "%s_%s_ns.png" % (name, v))
             if os.path.exists(out):
                 continue
-            if v == "back" and len(refs) > 1:
+            if v == "back" and has_back:
                 rc = R.run(BACKREF % draw, [front, refs[1]], out)
             elif v == "back":
                 rc = R.run(OTHER % (draw, "BACK (opposite side to ref1)"), [front], out)
