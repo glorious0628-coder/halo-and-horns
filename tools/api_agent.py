@@ -746,7 +746,9 @@ class Tools:
         if cnt > 1 and not replace_all:
             raise ToolError(f"old_string occurs {cnt} times; make it unique or pass replace_all")
         out = text.replace(old, new) if replace_all else text.replace(old, new, 1)
-        self.note_write(relp, len(out.encode("utf-8")))
+        # the budget counts what the edit writes (the new text), not the whole file: a 600 KB Config.luau used to cost
+        # 600 KB per one-line edit, so ~13 edits ended a job (dev2_c1_t9_v4, 2026-10-12)
+        self.note_write(relp, max(1, len(new.encode("utf-8")) * (cnt if replace_all else 1)))
         with open(full, "w", encoding="utf-8", newline="") as f:
             f.write(out)
         return f"edited {relp} ({cnt if replace_all else 1} replacement{'s' if replace_all and cnt != 1 else ''})"
