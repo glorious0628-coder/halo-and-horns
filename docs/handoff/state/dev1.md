@@ -6,7 +6,7 @@
 - 시험: 새 test_tool_grip 328·변이 30/30, weapon_motion 265, class_grips_server 18·7/7, unarmed_start 226·69/69, tamer 168·90/90, side_clips 167·15/15 + 관련 18개 통과(rank_marks 종료 코드만 1·halloween 3D 파일 없음 = 원래). 은퇴: test_one_hand_grips / test_two_hand_grip / test_weapon_pose.
 - 메인 사진 = 메인 반영 1: `HH_MAIN_STUDIO=1 py tools/play_tool_grip_ours.py`. 볼 것: 커서 모양(Tool 들 때), 망치·봉·플라스크 지팡이 팔 앞 세움, 활 공격 왼손 넘김, Hero 창 3D 무기.
 - **fix/leave-width 2cd31bb4**(worktree `wt_leave`, main 1d9f6089에서): 거위 광장 Leave "Leav" 잘림 → EventHUD SQ.need(글자를 그려지는 크기로 재서 버튼 64~160), test_square_button_width 135·7/7. 보고함, 병합 대기.
-- **fix/tool-grip 46e666ea**(41da3211 위): 최종 검수 검토 2개(활) 고침 — BowGrip 한 번만 만들고 켜고 끔 + HUD 초상화가 무기 안 변화 무시, 활 클립 뒤 MOTION.BOW_HOLD 0.25초 왼손 유지(연사 튐 없음, 죽음은 바로). test_tool_grip 358·37/37, weapon_motion 269. **병합됨 main 310abb37**(tool-grip 46e666ea + leave-width 2cd31bb4). 메인 반영 1이 무기 사진 찍는 중 → 고장 오면 wt_toolgrip(병합된 가지, main 다시 받아서)에서 고침.
+- **fix/tool-grip 46e666ea**(41da3211 위): 최종 검수 검토 2개(활) 고침 — BowGrip 한 번만 만들고 켜고 끔 + HUD 초상화가 무기 안 변화 무시, 활 클립 뒤 MOTION.BOW_HOLD 0.25초 왼손 유지(연사 튐 없음, 죽음은 바로). test_tool_grip 358·37/37, weapon_motion 269. **병합됨 main 310abb37**(tool-grip 46e666ea + leave-width 2cd31bb4). **메인 사진 통과**(최종 검수 10/13: main_apply/tool_grip_ours·bow_rapid·goose_square5 — 9종 쥐기 정상, 활 연사 왼손 유지·초상화 다시 만들기 0번, Leave 글자 다 보임). wt_toolgrip·wt_leave 지움(열린 worktree 없음).
 - **대기(최종 검수 10/13, 사용자 상시 지시 "이미지→Tripo 먼저"):** 이 병합의 후속(메인 사진에서 나온 고장)만 받음. 도감 카드(A23-153, docs/design/codex_cards_2026-10-12.md) 등 새 일은 최종 검수가 다시 부를 때 시작.
 
 ## 10/12 저녁 정리 (사용자 "모든 세션 다 여기까지만 하고 정리해줘", 최종 검수 전달)
