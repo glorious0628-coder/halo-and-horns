@@ -12771,5 +12771,101 @@
    "bytes": 13781288,
    "note": "잔액: 직전 13920 → 직후 13865 (이 잡 55). Garden6 뒤 13975 → 13920은 다른 세션 사용인 듯"
   }
+ ],
+ "Meme_PixelHalo_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "b190a848-3034-4ac3-b5aa-2fdf605c5f61",
+   "balance_after": 14140,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_PixelHalo_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_PixelHalo_right_v2_mirror_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_PixelHalo_left_v2_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_PixelHalo_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_PixelHalo_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
+ ],
+ "Meme_PixelHorns_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "12c2e60e-a05d-4427-a557-f321a66b600c",
+   "balance_after": 14085,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_PixelHorns_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_PixelHorns_right_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_PixelHorns_left_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_PixelHorns_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_PixelHorns_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
+ ],
+ "Meme_DonutHalo_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "3553b34d-a0a3-4605-9fb8-59c1e5f03d43",
+   "balance_after": 14030,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_DonutHalo_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_DonutHalo_right_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_DonutHalo_left_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_DonutHalo_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_DonutHalo_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
+ ],
+ "Meme_TwistHorns_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "21e4f14d-b931-423d-98a4-3bf0e5d516b7",
+   "balance_after": 13920,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 12:40",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12 (via 디자인 검수): meme halos / horns 4 x 55 = 220 points (SPEC A23-138)",
+   "inputs": {
+    "front": "art/out/s2/memes_4v/Meme_TwistHorns_front_HQ.png",
+    "left_slot(camera at the object's own left; 2D sides named from the viewer)": "art/out/s2/memes_4v/Meme_TwistHorns_right_HQ.png",
+    "right_slot": "art/out/s2/memes_4v/Meme_TwistHorns_left_HQ.png",
+    "back": "art/out/s2/memes_4v/Meme_TwistHorns_back_HQ.png"
+   },
+   "note": "balance is shared with another session using the same account (drops between my jobs were larger than 55)",
+   "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
+   "file": "art/models/tripo/web/Meme_TwistHorns_MV4_HD_src.glb",
+   "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  }
  ]
 }
