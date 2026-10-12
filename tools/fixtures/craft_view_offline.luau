@@ -323,5 +323,18 @@ View.Step(CraftMini.Appear(NOW + CraftMini.T.Lead, 1) + 0.6)
 check(find(scr, "Ring").Visible and math.abs(find(scr, "Ring").Size.Args[1] - 120 * 1.8) < 0.01, "the art ring shrinks the same way")
 View.Close()
 UIKit.ArtImage = nil
+-- a tamer's summon (개발 3 dev3-tamer CraftResult.Pet = { Uid, Species, Spd }): the pet and the speed it was born with
+NOW = 11000
+sessionR.OnClientEvent:Fire({ Id = 12, StartAt = NOW + 0.8 })
+resultR.OnClientEvent:Fire({ Id = 12, Plus = 2, Kind = "Pet", Grades = {}, Pet = { Uid = "P9", Species = "BabySlime", Spd = 9 } })
+local petLine = find(find(gui, "CraftRing"), "Result")
+check(petLine and petLine.Text == "Baby Slime +9% speed", "a summon: \"Baby Slime +9% speed\" (not \"+2\")", petLine and petLine.Text)
+View.Close()
+NOW = 11500
+sessionR.OnClientEvent:Fire({ Id = 13, StartAt = NOW + 0.8 })
+resultR.OnClientEvent:Fire({ Id = 13, Plus = 1, Kind = "Pet", Grades = {}, Pet = { Uid = "P10", Species = "Dragon", Spd = 6 } })
+petLine = find(find(gui, "CraftRing"), "Result")
+check(petLine and petLine.Text == "Dragon +6% speed", "a species the client does not know: its id, still one line", petLine and petLine.Text)
+View.Close()
 
 print(string.format("CRAFT_VIEW_SUMMARY checks=%d failed=%d", checks, failed))

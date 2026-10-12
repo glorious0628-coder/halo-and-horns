@@ -63,6 +63,7 @@ MUTATIONS = [
     ("VIEW", "no practice in Studio", "\t\t\t\tCraftView.Begin({ Id = 0, StartAt = now() + CraftMini.T.Lead }, true)\n", ""),
     ("VIEW", "the screen is not a button", "\troot.Activated:Connect(function() CraftView.Press() end)\n", ""),
     ("VIEW", "an open window stays under the ring (UiSandbox 10/12)", "\t\tif ok and open then pcall(panels.Close) end\n", ""),
+    ("VIEW", "a summon shows the plain +N", "\tif pet and tonumber(pet.Spd) then\n", "\tif false then\n"),
     ("MAIN", "the view is never loaded", "\"GatherView\", \"CraftView\",", "\"GatherView\","),
 ]
 
