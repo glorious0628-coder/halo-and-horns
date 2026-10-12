@@ -134,8 +134,8 @@ def run(src: dict):
 MUTATIONS = [
     # A23-128 (user 10/11 "한손검만"): the great sword / two-hand grip never comes back
     ("CONFIG", "the Berserker's great sword again", 'Warrior_Horns = { Weapon = "DarkSword",', 'Warrior_Horns = { Weapon = "GreatSword",'),
-    ("CONFIG", "the Berserker's two-hand grip again", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65)",
-     "TwoHand = { Hilt = Vector3.new(1.65, -0.85, -0.65)"),
+    ("CONFIG", "the Berserker's two-hand grip again", "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.45)",
+     "TwoHand = { Hilt = Vector3.new(1.65, -1.05, -0.45)"),
     ("CONFIG", "the Paladin's sword out of his hand", 'Warrior_Halo = { Weapon = "Sword",', 'Warrior_Halo = { Weapon = "Hammer",'),
     ("CV", "the great sword shape again", "function SHAPES.DarkSword(grip, sc, w, color)",
      "function SHAPES.GreatSword(grip, sc, w, color) end\nfunction SHAPES.DarkSword(grip, sc, w, color)"),

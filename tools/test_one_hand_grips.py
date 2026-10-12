@@ -578,8 +578,12 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             elev = math.degrees(math.atan2(aim[1], -aim[2]))
             out.append((f"{key}: holds the one-hand '{spec['Sword']}' (no two-hand grip, no great sword)",
                         r["Weapon"] == spec["Sword"] and "TwoHand" not in r["Body"], f"{r['Weapon']}"))
-            out.append((f"{key}: the hand at the right side just outside the hanging arm's line, waist height, a little ahead",
-                        1.4 <= hilt[0] <= 1.75 and -1.0 <= hilt[1] <= -0.6 and -0.9 <= hilt[2] <= -0.4, f"{hilt}"))
+            out.append((f"{key}: the hand at the right side just outside the hanging arm's line, waist to hip height, a little "
+                        "ahead", 1.4 <= hilt[0] <= 1.75 and -1.1 <= hilt[1] <= -0.6 and -0.9 <= hilt[2] <= -0.3, f"{hilt}"))
+            # 최종 검수 10/12 (user "아바타 팔이 왜이럼?": the folded sword arm looked short from the front): the arm hangs
+            # nearly straight - the shoulder to the wrist >= 88% of the arm (it was 83%)
+            out.append((f"{key}: 최종 검수 10/12 the sword arm hangs nearly straight (reach >= 0.88)", worst["reach"] >= 0.88,
+                        f"{worst['reach']:.2f}"))
             lo, hi = SWORD["Elev"]
             out.append((f"{key}: the tip ahead and {lo}..{hi} deg up, never across the body, the line clear of the torso",
                         lo <= elev <= hi and aim[2] < -0.4 and 0 <= aim[0] <= 0.3 and line_clear_of_torso(hilt, aim),
@@ -877,7 +881,7 @@ MUTATIONS = [
     ("CONFIG", "the Dark Mage's staff splayed in", "Aim = Vector3.new(0.09, 1, 0), Pole", "Aim = Vector3.new(-0.09, 1, 0), Pole"),
     # A23-128 (user 10/11 "한손검만"): the warriors' one-hand swords at the side
     ("CONFIG", "the Paladin's sword across the body again", "Aim = Vector3.new(0.05, 0.7, -0.7)", "Aim = Vector3.new(-0.8, 0.55, -0.2)"),
-    ("CONFIG", "the Paladin's sword held in front of the belly", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6)",
+    ("CONFIG", "the Paladin's sword held in front of the belly", "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.4)",
      "OneHand = { Hilt = Vector3.new(0.4, -0.6, -0.9)"),
     ("CONFIG", "the Paladin's left fist in front of the chest again",
      "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },",
@@ -886,15 +890,20 @@ MUTATIONS = [
     ("CONFIG", "the Paladin's elbow flared out", "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) }",
      "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(1.5, -0.2, 0.3) }"),
     # 검수 10/11 (fix/onehand review)
-    ("CONFIG", "the Paladin's hand back in the hip (the old spot)", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6)",
+    ("CONFIG", "the Paladin's hand back in the hip (the old spot)", "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.4)",
      "OneHand = { Hilt = Vector3.new(1.35, -0.8, -0.6)"),
     ("CONFIG", "the Paladin's elbow tucked into the side", "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) }",
      "Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(-0.6, -0.6, 0.8) }"),
     ("CONFIG", "the Berserker's wrist bent hard (the old 35 deg tip, the hand high)",
-     "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.6, -0.7)",
+     "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.45), Aim = Vector3.new(0.1, 0.6, -0.7)",
      "OneHand = { Hilt = Vector3.new(1.65, -0.6, -0.65), Aim = Vector3.new(0.1, 0.56, -0.82)"),
-    ("CONFIG", "the Berserker's hand down at the thigh", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65)",
+    ("CONFIG", "the Berserker's hand down at the thigh", "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.45)",
      "OneHand = { Hilt = Vector3.new(1.0, -1.3, -0.3)"),
+    # 최종 검수 10/12 (user "아바타 팔이 왜이럼?")
+    ("CONFIG", "the Paladin's sword arm folded again (the old waist spot)", "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.4)",
+     "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6)"),
+    ("CONFIG", "the Berserker's sword arm folded again", "OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.45)",
+     "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65)"),
     ("CONFIG", "the Berserker's great sword again", 'Warrior_Horns = { Weapon = "DarkSword",', 'Warrior_Horns = { Weapon = "GreatSword",'),
     ("CONFIG", "the Berserker's two-hand grip again", "Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },",
      "Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) },\n"
