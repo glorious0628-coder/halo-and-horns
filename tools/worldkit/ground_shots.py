@@ -12,6 +12,7 @@ os.makedirs(OUT, exist_ok=True)
 PLAN = json.load(open("docs/design/halo_plan_v2_2026-10-11.json", encoding="utf-8"))
 TEMP = os.environ["TEMP"]
 env = dict(os.environ, STUDIO_NAME="WorldKit")
+CALL_TIMEOUT = 60  # seconds per MCP call (screen_capture normally takes 1-5)
 land = PLAN["land"]
 LX0, LX1 = min(p[0] for p in land), max(p[0] for p in land)
 LZ0, LZ1 = min(p[1] for p in land), max(p[1] for p in land)
@@ -108,7 +109,14 @@ return game:GetService("HttpService"):JSONEncode(shots)
 def mcp(tool, arg):
     p = os.path.join(TEMP, "wk_arg_ground.json")
     json.dump(arg, open(p, "w", encoding="utf-8"), ensure_ascii=False)
-    return subprocess.run([sys.executable, "tools/studio_mcp.py", "call", tool, "@" + p], env=env, capture_output=True, text=True, encoding="utf-8").stdout
+    # 10/12: a stalled screen_capture once hung the run until an outer `timeout` killed it - before the finally block put the
+    # light back. Each call has its own limit now: a stalled shot is skipped and the light is always restored
+    try:
+        return subprocess.run([sys.executable, "tools/studio_mcp.py", "call", tool, "@" + p], env=env, capture_output=True, text=True,
+                              encoding="utf-8", timeout=CALL_TIMEOUT).stdout
+    except subprocess.TimeoutExpired:
+        print("TIMEOUT", tool, CALL_TIMEOUT, "s")
+        return ""
 
 
 def run_luau(code):
