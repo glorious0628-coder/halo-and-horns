@@ -450,8 +450,14 @@ check(not action(v, "Enhance").Enabled and action(v, "Enhance").Text == "In a fi
 	"a fight: the confirm is off and its button says why (no second line)")
 
 ------------------------------------------------------------------ 6b. alchemy tonics (BuffService; the Use tab)
+do -- 최종 검수 10/12: while tonics are off a tonic stays a material (Materials tab, no Drink)
+	local off = {}
+	for _, c in BagUI.Cells(ctxOf({ Items = { MightTonic = 2 }, TonicsOn = false })) do off[c.Key] = c end
+	check(off["I:MightTonic"] and off["I:MightTonic"].Kind == "Material" and off["I:MightTonic"].Tab == "Material",
+		"tonics off: a tonic stays on the Materials tab", off["I:MightTonic"] and off["I:MightTonic"].Tab)
+end
 local tonicCells = BagUI.Cells(ctxOf({ Items = { MightTonic = 2, GuardTonic = 1, LuckyTonic = 3, Jelly = 4 },
-	ItemSeq = { MightTonic = 3, GuardTonic = 2, LuckyTonic = 1, PotionHP = 5 } }))
+	ItemSeq = { MightTonic = 3, GuardTonic = 2, LuckyTonic = 1, PotionHP = 5 }, TonicsOn = true }))
 local tk = {}
 for _, c in tonicCells do tk[c.Key] = c end
 check(tk["I:MightTonic"] and tk["I:MightTonic"].Kind == "Tonic" and tk["I:MightTonic"].Count == 2 and tk["I:MightTonic"].Id == "MightTonic",
@@ -776,7 +782,11 @@ do
 	Config.Features.Tonics = false
 	attrs.Buff_MightTonic = 0
 	for _, f in attrFns do f("Buff_MightTonic") end
-	check(find(root, "Act_DrinkTonic") == nil and find(root, "Cell_I:LuckyTonic") ~= nil, "tonics off: no Drink button (the bag still lists them)")
+	-- 최종 검수 10/12: off, a tonic is a material again - gone from the Use tab, listed on Materials, never a Drink
+	check(find(root, "Act_DrinkTonic") == nil and find(root, "Cell_I:LuckyTonic") == nil, "tonics off: not on the Use tab, no Drink button")
+	BagUI.ShowTab("Material")
+	check(find(root, "Cell_I:LuckyTonic") ~= nil and find(root, "Act_DrinkTonic") == nil, "tonics off: the bag lists it on Materials, no Drink")
+	BagUI.ShowTab("Use")
 	CLOCK += 5
 	n0 = #fired
 	BagUI.Act("DrinkTonic", tk["I:LuckyTonic"])

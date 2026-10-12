@@ -46,6 +46,9 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-12/offline_bag_ui_2026-10-12.json"
 
 MUTATIONS = [
+    ("BAG", "a tonic on the Use tab while tonics are off", "\t\t\tif kind == \"Tonic\" and ctx.TonicsOn ~= true then kind = \"Material\" end\n", ""),
+    ("BAG", "the bag never sees the switch on", "TonicsOn = type(Config.Alchemy) == \"table\" and Config.FeatureOn(\"Tonics\") == true }",
+     "TonicsOn = false }"),
     ("BAG", "a blocked Drink still says Drink", "blocked and tx(TXT, \"TonicWait\", clockOf(freeIn)) or tx(TXT, \"Drink\")", "tx(TXT, \"Drink\")"),
     ("BAG", "the wait counts to the last one", "soonest = math.min(soonest, e - t)", "soonest = math.max(soonest == math.huge and 0 or soonest, e - t)"),
     ("BAG", "unowned weapons show", "\t\tif owns(ctx.Mask, tier) or tier == equipped then\n", "\t\tif true then\n"),

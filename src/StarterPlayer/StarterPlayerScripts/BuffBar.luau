@@ -36,6 +36,9 @@ local T = {
 	CapGap = 2, CapH = 14, -- the time under a tile
 	Above = 4, -- du above the power line
 	Tick = 0.25, -- s between two timer updates
+	-- real-pixel floors (최종 검수 10/12: at 1280x720 a 34 du tile was ~27 px and two clocks could touch; HudLayout PC_FLOOR):
+	-- the tile and the clock grow in logical units on a small HUD scale (C.HUD.Layout.Scale)
+	FloorPx = { Tile = 34, Cap = 15 },
 	WarnGap = 10, -- s: one warning line per kind at most this often (게임성 검수 10/12: an error in the loop came 4x a second)
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), as in BagUI
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
@@ -46,7 +49,7 @@ local T = {
 	Z = 2,
 }
 
-local S = { Built = false, Sig = nil, Tiles = {}, Anchor = nil, LayoutRef = nil, WarnAt = {} }
+local S = { Built = false, Sig = nil, Tiles = {}, Anchor = nil, LayoutRef = nil, WarnAt = {}, Scale = 1 }
 local ui = { Holder = nil }
 
 ---------------------------------------------------------------------------------------------------- pure helpers
@@ -111,6 +114,13 @@ local function tx(t, key)
 	return type(s) == "string" and s or ""
 end
 
+-- the tile side and the clock height in logical units at HUD scale s: never under T.FloorPx real px. Pure
+function BuffBar.Sizes(s)
+	local scale = num(s, 1)
+	if scale <= 0.05 then scale = 1 end
+	return math.max(T.Tile, math.ceil(T.FloorPx.Tile / scale)), math.max(T.CapH, math.ceil(T.FloorPx.Cap / scale))
+end
+
 ---------------------------------------------------------------------------------------------------- drawing
 local function clearTiles()
 	for _, tile in S.Tiles do
@@ -124,11 +134,12 @@ local function buildTile(entry, index)
 	local kit = C.UIKit
 	local holder = ui.Holder
 	local def = type(Config.Loot) == "table" and Config.Loot.Items and Config.Loot.Items[entry.Id] or nil
-	local x = (index - 1) * (T.Tile + T.Gap)
+	local tile, cap = BuffBar.Sizes(S.Scale)
+	local x = (index - 1) * (tile + T.Gap)
 	local grades = type(Config.WeaponGrades) == "table" and Config.WeaponGrades or {}
 	local rim = grades.Common and typeof(grades.Common.Color) == "Color3" and grades.Common.Color or T.Rim
 	local box = kit.ArtFrame(T.Slot, { Name = "Tile_" .. entry.Id, Position = UDim2.fromOffset(x, 0),
-			Size = UDim2.fromOffset(T.Tile, T.Tile), ZIndex = T.Z, Parent = holder },
+			Size = UDim2.fromOffset(tile, tile), ZIndex = T.Z, Parent = holder },
 		{ BackgroundColor3 = T.Fill, CornerRadius = UDim.new(0, 10), StrokeColor = rim, StrokeThickness = 2 })
 	local z = (tonumber(box.ZIndex) or T.Z) + 1
 	local props = { Name = "Icon", Position = UDim2.fromScale(T.Inner.X, T.Inner.Y), Size = UDim2.fromScale(T.Inner.W, T.Inner.H),
@@ -145,7 +156,7 @@ local function buildTile(entry, index)
 		letter.AnchorPoint = Vector2.new(0.5, 0.5)
 		letter.Position = UDim2.fromScale(0.5, 0.5)
 		letter.Size = UDim2.fromScale(T.Inner.W, T.Inner.H)
-		letter.TextSize = math.floor(T.Tile * 0.42)
+		letter.TextSize = math.floor(tile * 0.42)
 		letter.TextWrapped = false
 		letter.TextXAlignment = Enum.TextXAlignment.Center
 		letter.Text = string.upper(string.match(name, "%w") or "?")
@@ -158,9 +169,9 @@ local function buildTile(entry, index)
 	clock.Name = "Time_" .. entry.Id
 	clock.BackgroundTransparency = 1
 	clock.AnchorPoint = Vector2.new(0.5, 0)
-	clock.Position = UDim2.fromOffset(x + T.Tile / 2, T.Tile + T.CapGap)
-	clock.Size = UDim2.fromOffset(T.Tile + T.Gap, T.CapH)
-	clock.TextSize = T.CapH
+	clock.Position = UDim2.fromOffset(x + tile / 2, tile + T.CapGap)
+	clock.Size = UDim2.fromOffset(tile + T.Gap, cap)
+	clock.TextSize = cap
 	clock.TextWrapped = false
 	clock.TextXAlignment = Enum.TextXAlignment.Center
 	clock.TextColor3 = T.White
@@ -190,13 +201,14 @@ function BuffBar.Refresh()
 	end
 	local ids = {}
 	for _, e in list do table.insert(ids, e.Id) end
-	local sig = table.concat(ids, ",")
+	local tile, cap = BuffBar.Sizes(S.Scale)
+	local sig = table.concat(ids, ",") .. "|" .. tile .. "|" .. cap -- a new HUD scale builds the tiles again
 	if sig ~= S.Sig then
 		S.Sig = sig
 		clearTiles()
 		for i, e in list do buildTile(e, i) end
 		local n = #list
-		ui.Holder.Size = UDim2.fromOffset(math.max(0, n * T.Tile + (n - 1) * T.Gap), T.Tile + T.CapGap + T.CapH)
+		ui.Holder.Size = UDim2.fromOffset(math.max(0, n * tile + (n - 1) * T.Gap), tile + T.CapGap + cap)
 	end
 	for _, e in list do
 		local tile = S.Tiles[e.Id]
@@ -214,6 +226,7 @@ function BuffBar.Relayout()
 	local hud = C and C.HUD
 	local layout = type(hud) == "table" and hud.Layout or nil
 	S.LayoutRef = layout
+	S.Scale = type(layout) == "table" and num(layout.Scale, 1) or 1
 	local rects = type(layout) == "table" and type(layout.Rects) == "table" and layout.Rects or nil
 	local hp, pl = rects and rects.hp_bar, rects and rects.power_line
 	local mp = rects and rects.mp_bar

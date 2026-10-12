@@ -252,7 +252,10 @@ function BagUI.Cells(ctx)
 		local n = math.floor(num(type(ctx.Items) == "table" and ctx.Items[id], 0))
 		if def and not done[id] and n >= 1 then
 			done[id] = true
-			seqNew({ Key = "I:" .. id, Kind = itemKind(def), Id = id, Plus = 0, Count = n, Grade = itemGradeId(id, def),
+			-- a tonic is a Use thing only while tonics are on (최종 검수 10/12: off, it stays a material - no Drink to offer)
+			local kind = itemKind(def)
+			if kind == "Tonic" and ctx.TonicsOn ~= true then kind = "Material" end
+			seqNew({ Key = "I:" .. id, Kind = kind, Id = id, Plus = 0, Count = n, Grade = itemGradeId(id, def),
 				Name = tx(def, "Name"), Icon = id, Color = def.Color, Seq = math.floor(num(iseq[id], 0)) })
 		end
 	end
@@ -652,7 +655,8 @@ local function context()
 		Mask = num(attr("WeaponOwnedMask"), 0), Equipped = num(attr("WeaponTier"), 0), Level = num(attr("Level"), 1),
 		Class = (type(class) == "string" and Config.Classes[class]) and class or "Warrior",
 		Faction = type(attr("Faction")) == "string" and attr("Faction") or "None", Potions = potions,
-		SeqBase = S.SeqBase, SeenSeq = S.SeenSeq }
+		SeqBase = S.SeqBase, SeenSeq = S.SeenSeq,
+		TonicsOn = type(Config.Alchemy) == "table" and Config.FeatureOn("Tonics") == true }
 end
 
 local function inCombat()

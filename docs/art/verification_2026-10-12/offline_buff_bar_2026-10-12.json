@@ -1,5 +1,5 @@
 {
-  "checks": 75,
+  "checks": 81,
   "failed": 0,
   "mutations": [
     {
@@ -104,6 +104,26 @@
     },
     {
       "name": "the time in another style",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no pixel floor for the tile",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no pixel floor for the clock",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the HUD scale never read",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new scale keeps the old tiles",
       "applied": true,
       "caught": true
     },

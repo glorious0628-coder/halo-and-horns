@@ -359,6 +359,31 @@ HUD.Layout = { Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, mp_bar 
 	power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
 BuffBar.Relayout()
 check(holder.Position.Args[1] == 284, "an MP rect without a width: the HP bar's edge")
+------------------------------------------------------------------ 5b. the real-pixel floor (최종 검수 10/12)
+local st, sc = BuffBar.Sizes(1)
+check(st == 34 and sc == 15, "scale 1: the tile stays 34 du, the clock at its 15 px floor", st .. "," .. sc)
+st, sc = BuffBar.Sizes(0.6)
+check(st == 57 and sc == 25 and st * 0.6 >= 34 and sc * 0.6 >= 15, "scale 0.6: tile >= 34 px and clock >= 15 px real", st .. "," .. sc)
+check(BuffBar.Sizes(nil) == 34 and BuffBar.Sizes(0) == 34, "no / bad scale: as at 1")
+attrs.Buff_GuardTonic = NOW + 120
+fire("Buff_GuardTonic")
+HUD.Layout = { Scale = 0.6, Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, mp_bar = { X = 294, Y = 500, W = 184, H = 17 },
+	power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
+BuffBar.Relayout()
+local tiles = findAll(holder, "^Tile_")
+local clocks = findAll(holder, "^Time_")
+local tileSize = tiles[1] and tiles[1].Size and tiles[1].Size.Args[1]
+check(#tiles == 2 and tileSize == 57, "a small HUD scale builds the tiles again at the floor size", tostring(tileSize))
+local cx = {}
+for _, c in clocks do table.insert(cx, c.Position.Args[1]) end
+table.sort(cx)
+check(#clocks == 2 and clocks[1].Size.Args[1] <= 57 + 6 and (cx[2] - cx[1]) >= clocks[1].Size.Args[1],
+	"the two clocks never overlap (each as wide as its tile + gap)", #clocks)
+check(holder.Size.Args[1] == 57 * 2 + 6 and holder.Size.Args[2] == 57 + 2 + 25, "the row's size follows", holder.Size.Args[1])
+attrs.Buff_GuardTonic = 0
+fire("Buff_GuardTonic")
+HUD.Layout = { Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
+BuffBar.Relayout()
 ------------------------------------------------------------------ 6. the loop's warnings and the switch (게임성 검수 10/12)
 local goodLayout = HUD.Layout
 -- a broken layout every pass (a new table each read, so every pass tries it again and fails)

@@ -1,7 +1,17 @@
 {
-  "checks": 190,
+  "checks": 192,
   "failed": 0,
   "mutations": [
+    {
+      "name": "a tonic on the Use tab while tonics are off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bag never sees the switch on",
+      "applied": true,
+      "caught": true
+    },
     {
       "name": "a blocked Drink still says Drink",
       "applied": true,
