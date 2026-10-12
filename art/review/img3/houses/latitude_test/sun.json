@@ -1,0 +1,41 @@
+{
+ "35.0": {
+  "sun": [
+   -0.745,
+   0.636,
+   0.199
+  ],
+  "door_dot_sun": {
+   "Castle": -0.07,
+   "Shop_Bakery": 0.2,
+   "Shop_Juice": 0.74,
+   "House_Cliff6": -0.59
+  }
+ },
+ "-41.7": {
+  "sun": [
+   -0.319,
+   0.272,
+   -0.908
+  ],
+  "door_dot_sun": {
+   "Castle": -0.96,
+   "Shop_Bakery": 0.95,
+   "Shop_Juice": 0.32,
+   "House_Cliff6": -0.67
+  }
+ },
+ "65.0": {
+  "sun": [
+   -0.569,
+   0.486,
+   0.663
+  ],
+  "door_dot_sun": {
+   "Castle": 0.43,
+   "Shop_Bakery": -0.29,
+   "Shop_Juice": 0.57,
+   "House_Cliff6": -0.24
+  }
+ }
+}
