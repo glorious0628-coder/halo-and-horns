@@ -167,7 +167,9 @@ runGroup("config", function()
 	check(GP.XP2.Id == 0 and GP.Gold2.Id == 0 and GP.VIP.Id == 0, "ids 0 until the user makes the passes (Coming soon)")
 	local n = 0
 	for _ in GP do n += 1 end
-	check(n == 3, "three passes: XP2, Gold2, VIP", n)
+	check(n == 5 and GP.Stickers.Price == 99 and GP.Stickers.Attr == "PassStickers" and GP.Stickers.Id == 0
+		and GP.Bubbles.Price == 99 and GP.Bubbles.Attr == "PassBubbles" and GP.Bubbles.Id == 0,
+		"five passes: XP2, Gold2, VIP, the Sticker Pack and the Bubble Pack (99 R$ each; A23-143 / A23-144)", n)
 	local B = C0.PassBoost
 	check(B.Mult == 2, "the passes double (2x)", B.Mult)
 	local want = { Monster = true, Quest = true, Event = true, Bounty = true, War = true, Loot = true, Kaiju = true, SignOn = true,
@@ -907,6 +909,117 @@ runGroup("craft XP pass", function()
 	local p1 = p0 and string.find(code, "\nend\n", p0, true)
 	local pay = (p0 and p1) and string.sub(code, p0, p1) or "Pass"
 	check(not string.find(pay, "[Pp]ass"), "payOut (the result: weapon, gear, items) never reads a pass", "")
+end)
+
+------------------------------------------------------------------ A23-143 chat stickers
+runGroup("stickers", function()
+	local w = passWorld({ Ids = { Stickers = 31 }, Owns = { [601] = { [31] = true } } })
+	local C = w.Config
+	-- a living character (Util.IsAlive: a Humanoid with Health > 0 and a root)
+	local function body(p)
+		local hum = { Health = 100 }
+		p.Character = { Parent = true,
+			FindFirstChildOfClass = function(_, cls) return cls == "Humanoid" and hum or nil end,
+			FindFirstChild = function(_, name) return name == "HumanoidRootPart" and {} or nil end }
+		return hum
+	end
+	local owner, plain = w:Join(601), w:Join(602)
+	body(owner)
+	local plainHum = body(plain)
+	local remote = w.Net.Get("SendSticker")
+	local function sent(p, key)
+		local n = 0
+		for _, f in w.Fx do
+			if f.Kind == "Sticker" and f.Player == nil and f.Data.UserId == p.UserId and (key == nil or f.Data.Key == key) then n += 1 end
+		end
+		return n
+	end
+	local free = 0
+	for _, k in C.Stickers.Order do if C.StickerFree(k) then free += 1 end end
+	check(#C.Stickers.Order == 18 and free == 5 and C.StickerFree("EmoThumbsUp") and C.StickerFree("EmoQuestion") and C.StickerFree("EmoExclaim")
+		and C.StickerFree("EmoHelp") and C.StickerFree("EmoThanks") and not C.StickerFree("EmoHeart") and not C.StickerFree("EmoGG")
+		and not C.StickerFree("EmoStress"), "18 stickers; the 5 basic ones are free (the art's Free); GG and the other 12 are the pack's",
+		show({ #C.Stickers.Order, free }))
+	check(owner:GetAttribute("PassStickers") == true and plain:GetAttribute("PassStickers") == false, "PassStickers follows the pass", "")
+	remote.OnServerEvent:Fire(plain, "EmoThumbsUp")
+	check(sent(plain, "EmoThumbsUp") == 1, "a free sticker: Fx Sticker { UserId, Key } to everyone", sent(plain))
+	w:Advance(3)
+	remote.OnServerEvent:Fire(plain, "EmoHeart")
+	check(sent(plain, "EmoHeart") == 0, "a pack sticker without the pass: nothing", "")
+	w:Advance(3)
+	remote.OnServerEvent:Fire(owner, "EmoGG")
+	check(sent(owner, "EmoGG") == 1, "the pass owner sends GG", "")
+	remote.OnServerEvent:Fire(owner, "EmoCrown")
+	check(sent(owner, "EmoCrown") == 0, "a second sticker within RateLimits.SendSticker (2 s): dropped", "")
+	w:Advance(3)
+	remote.OnServerEvent:Fire(owner)
+	remote.OnServerEvent:Fire(owner, "EmoCrown", "x")
+	remote.OnServerEvent:Fire(owner, 5)
+	remote.OnServerEvent:Fire(owner, "Nope")
+	remote.OnServerEvent:Fire(owner, "EmoStress")
+	check(sent(owner) == 1, "no / two arguments, not a string, an unknown or non-sticker art id: nothing", sent(owner))
+	w:Advance(3)
+	plainHum.Health = 0
+	remote.OnServerEvent:Fire(plain, "EmoHelp")
+	check(sent(plain, "EmoHelp") == 0, "a dead player sends nothing", "")
+	plainHum.Health = 100
+	w.Ready[plain] = nil
+	w:Advance(3)
+	remote.OnServerEvent:Fire(plain, "EmoHelp")
+	check(sent(plain, "EmoHelp") == 0, "a player not ready sends nothing", "")
+end)
+
+------------------------------------------------------------------ A23-144 chat bubble skins
+runGroup("bubbles", function()
+	local w = passWorld({ Ids = { Bubbles = 41 }, Owns = { [701] = { [41] = true } },
+		EditConfig = function(c) table.insert(c.Bubbles.Order, "BubbleTestPack") end })
+	local C = w.Config
+	check(C.Bubbles.Free.Halo == "BubbleHalo" and C.Bubbles.Free.Horns == "BubbleHorns" and C.Bubbles.Free.Neutral == "BubbleArtisan"
+		and C.Data.Defaults.Bubble == "" and C.BubbleSide("BubbleHorns") == "Horns" and C.BubbleSide("BubbleTestPack") == nil,
+		"each side's free bubble; the save starts at '' (my side's)", "")
+	local owner = w:Join(701, { Faction = "Halo" })
+	local plain = w:Join(702, { Faction = "Horns" })
+	local artisan = w:Join(703, { Faction = "Neutral" })
+	check(owner:GetAttribute("BubbleOn") == "BubbleHalo" and plain:GetAttribute("BubbleOn") == "BubbleHorns"
+		and artisan:GetAttribute("BubbleOn") == "BubbleArtisan" and owner:GetAttribute("PassBubbles") == true
+		and plain:GetAttribute("PassBubbles") == false, "at join: BubbleOn = my side's free bubble; PassBubbles follows the pass",
+		show({ owner:GetAttribute("BubbleOn"), plain:GetAttribute("BubbleOn") }))
+	local remote = w.Net.Get("SetBubble")
+	remote.OnServerEvent:Fire(owner, "BubbleTestPack")
+	check(owner:GetAttribute("BubbleOn") == "BubbleTestPack" and w.Data[owner].Bubble == "BubbleTestPack", "the pass owner picks a pack skin (saved)", "")
+	remote.OnServerEvent:Fire(plain, "BubbleTestPack")
+	check(plain:GetAttribute("BubbleOn") == "BubbleHorns" and w.Data[plain].Bubble == "", "a pack skin without the pass: refused", "")
+	w:Advance(1)
+	remote.OnServerEvent:Fire(plain, "BubbleHalo")
+	check(plain:GetAttribute("BubbleOn") == "BubbleHorns" and w.Data[plain].Bubble == "", "the other side's free bubble: refused", "")
+	w:Advance(1)
+	remote.OnServerEvent:Fire(owner, "BubbleHalo")
+	remote.OnServerEvent:Fire(owner, "BubbleTestPack")
+	check(owner:GetAttribute("BubbleOn") == "BubbleHalo", "twice within 0.5 s: the second is dropped (rate limit)", owner:GetAttribute("BubbleOn"))
+	w:Advance(1)
+	remote.OnServerEvent:Fire(owner)
+	remote.OnServerEvent:Fire(owner, "BubbleTestPack", "x")
+	remote.OnServerEvent:Fire(owner, 5)
+	remote.OnServerEvent:Fire(owner, "Nope")
+	remote.OnServerEvent:Fire(owner, string.rep("a", 40))
+	check(owner:GetAttribute("BubbleOn") == "BubbleHalo", "no / two arguments, not a string, unknown, too long: ignored", "")
+	w:Advance(1)
+	remote.OnServerEvent:Fire(owner, "BubbleTestPack")
+	w:Advance(1)
+	-- a saved pick that is not usable any more (the pass gone / the side changed) shows my side's free one; the pick stays
+	w.Data[owner].Bubble = "BubbleHalo"
+	owner:SetAttribute("Faction", "Horns")
+	w.Reg.FactionService.FactionChanged:Fire(owner)
+	check(owner:GetAttribute("BubbleOn") == "BubbleHorns" and w.Data[owner].Bubble == "BubbleHalo",
+		"a side change: the old side's bubble comes off (my new side's free one), the pick is kept", show(owner:GetAttribute("BubbleOn")))
+	owner:SetAttribute("Faction", "Halo")
+	w.Reg.FactionService.FactionChanged:Fire(owner)
+	check(owner:GetAttribute("BubbleOn") == "BubbleHalo", "back on that side: it shows again", "")
+	remote.OnServerEvent:Fire(owner, "")
+	check(owner:GetAttribute("BubbleOn") == "BubbleHalo" and w.Data[owner].Bubble == "", "'' = my side's free one", "")
+	local saved = w:Join(704, { Faction = "Horns", Data = { Bubble = "BubbleTestPack" } })
+	check(saved:GetAttribute("BubbleOn") == "BubbleHorns" and w.Data[saved].Bubble == "BubbleTestPack",
+		"a saved pack skin without the pass shows the free one (the pick waits for the pass)", "")
 end)
 
 finish()
