@@ -22,6 +22,10 @@
   이어서 `dev2_c1b_t9_v4`(Opus $10·130턴, --make-worktree origin/api/dev2-c1-t9-v4, 프롬프트 c1b_prompt.md = 남은 1~4 + 원래
   c1_prompt.md: Sanitize Spares/Market, DataService <4 + v1/v2 단계는 8 고정, LootService.SpareRoom/AddSpare, test_weapon_ladder +
   Version 3·8단계 가정 시험들). 끝나면: `.py` diff 먼저 읽기 → 임시 worktree에서 시험 → 게임성 검수에 해시.
+- 거래소 창 계약 합의(개발 4, origin/dev4-market 9d8a679f `docs/design/market_window_2026-10-12.md` §6): MarketIndex 30초 캐시
+  (요약 SortedMap 하나)·힌트, 무기 키 "T:P", MarketPage.Pages, MarketMine Paid·Today, 응답에 Gate = { Buy, List, ListIn }(관문은
+  서버만), 거래소 퀘스트 3개 = 내 거래소 가지, 거절 키 + TooFast·Off. 모양 바꾸면 그 문서에 적기.
+- 장비 칸(개발 3 api/dev3-gear): 내 파일 줄은 개발 3이 해시와 함께 보냄 → 그 줄만 검토.
 - 버그 알림: 개발 3(dev3_gear)·개발 4(dev4_tonics)·최종 검수(house-gen-porch 주인에게)에 보냄 — 옛 한도로 돈 job은 멈출 수 있음.
 - **황금 알 API job `dev2_golden_egg`** (10/12, 가지 api/dev2-golden-egg, Opus $18·170턴, 프롬프트 = 스크래치 egg_prompt.md:
   약속 문서 그대로 + 개발 1 가지 origin/fix/golden-egg-client에 맞춤, A23-134 네 개 모두 켬, A23-137 4시간·+30, 중립 = 바로 가방
