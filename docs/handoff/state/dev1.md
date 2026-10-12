@@ -46,6 +46,7 @@
 
 17. **BB8 끝 = api/dev1-character-ui-2 47dce676** (job 2 $3.2: GearSlots 있으면 6칸 다 개발 4, ORDER 'BagUI' 다음, Panels Icons, test_character_ui 129·49/49 + 관련 12개 내가 다시 돌려 통과). 게임성 검수·개발 4에 보고. fix/staff-hip는 main ecde46c6에 병합됨.
 18. **A23-141 거위 광장 화면 = API job `dev1_goose_square`**(가지 api/dev1-goose-square, $6, 프롬프트 scratchpad api/goose_square.md): Config.Goose.Square(내 것, 개발 2는 읽기), EggFx.Here/SquareButton/SquarePress/어두워짐, EventHUD Join·Leave, 알 화면·둥지/수레 표시는 InGooseSquare일 때만. 약속 docs/design/goose_square_contract_2026-10-12.md(main 8dc84f6) — 개발 2 답 기다림(원격 GooseSquare·속성 InGooseSquare·GooseJoinBlock은 Net/서버 = 개발 2).
+19. **A23-142 급한 일 = fix/staff-short 68bef0e7** (wt_onehand, main 3570a8f3에서, 게임성 검수에 보고): 지팡이 3개 = 아바타 실제 키(avatarHeight)의 0.65~0.75, 손 43%(STAFF.Grip), 구슬 아래 ≥ 손+1.2(키 비례, staffOrb), 땅 안 짚음(발끝 0.89~1.26) → StaffCarry: WeaponPose는 박힐 때만 들어 올림. staffHandHeight·staffLow·FootMax 지움. grip_reference §5-7. 디자인 검수에 메시 숫자(43%) 보냄. 낮은 것 ①(실제 키)은 이걸로 끝, ②(자세 안 잡는 캐릭터 지팡이 누움)는 남음.
 
 ## 기다리는 것
 - **BB8 job 결과(16번)** → 검토·EquipSlots 규칙 고침 → 개발 4·게임성 검수. 개발 2 황금 알 서버(api/dev2-golden-egg) 해시 오면 EggFx 깃털·장인 줍기·Bring 2 eggs 맞춤 화면 가지.
