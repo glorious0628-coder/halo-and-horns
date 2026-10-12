@@ -1,10 +1,11 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
-## 10/12 밤 — 빛 마을 동상·분수 (내려받기 전 멈춤, 사용자 허락 대기)
+## 10/12 밤 — 빛 마을 동상·분수 (끝: 받음 + 최소 손보기, push 7035c69)
 - **확정 방법(사용자 10/12 밤 직접 보여 줌):** 스마트 메시 4면 → 흰 모델 고름 → 왼쪽 메뉴 '텍스처' → **첫 칸(그림 한 장 탭)에 앞면 2D 한 장 업로드** → 조명 제거 켬 → 8K → 텍스처 생성(30) → **PBR 생성(5) 한 번** → (Roblox에서 2D에 더 가깝게 재질 한 번 더). 가운데 칸(멀티뷰 탭)은 쓰지 않음. 물건 하나 = 135점.
 - 동상 `Halo_Statue` 흰 모델 D = f4fcec0d(방패 별 4갈래), 분수 `Town_Halo_Fountain3` 흰 모델 D = 16be0d85(기둥이 2D보다 45° 돌아감 → 배치 yaw +45). 시트 `art/review/blender/halo_statue_tex_compare_1012.jpg`, `town_fountain3_tex_compare_1012.jpg`.
 - 내려받은 뒤 고칠 것: 분수 큰 그릇 안쪽 벽 주황·갈색 + 기둥 둘레 물 얼룩 → 색만 흰 대리석/하늘색; 동상 받침대 오른쪽 아래 어두운 틈.
 - Tripo 잔액 12,840(오늘 13,230에서 390).
+- **내려받기는 이제 묻지 않음**(사용자 10/12 22:05). 받는 법: 페이지 `$pinia…['feature-workspace'].current.latest.model_url`(마지막 판 FBX, 8K 색 + PBR 맵) → curl. 손본 판 `art/models/tripo/touchup/<id>/<id>_TU.glb`(디스크만), 스크립트(uvmask·extract_fbx·build_glb·render_views·fix_*) 같은 폴더에.
 - **조작 요령:** 앱 창이 숨겨지면 화면 캡처가 잘림 → 최종 검수에 "창 보이게". Tripo 화면에서 좌표 클릭·드래그 금지(엉뚱한 버튼 맞음). 버튼은 요소 확인 뒤 JS, 3D 시점은 canvas에 JS PointerEvent 드래그·WheelEvent. 사용자가 창에서 같이 누르는 중이면 손 뗌.
 
 ## 10/12 저녁 정리 (사용자 "모든 세션 다 여기까지만 하고 정리해줘")
