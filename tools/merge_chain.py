@@ -10,6 +10,7 @@ tree, export the result for offline tests, then push with a real check that the 
 
 A conflict is resolved only when a file has exactly ONE conflict block where both sides only ADDED lines at the same
 spot (e.g. two branches appending to the end of Config.luau): both blocks are kept, ours first. Anything else stops.
+The check reads the diff3 base part (10/12: a changed-on-both-sides line used to pass and was duplicated).
 Why `push` exists: on 10/12 a hand-written retry treated "! [rejected] ... -> main" as success and a merge never
 landed (게임성 검수 caught it). Never trust push output - check ancestry after a fetch.
 """
@@ -34,12 +35,17 @@ def out(*args):
 
 
 def resolve_append(text):
+    # 10/12 fix: the conflict text comes in diff3 style (merge.conflictStyle=diff3) and is accepted ONLY when the base
+    # part is empty, i.e. both sides inserted new lines at the same spot. Two branches that CHANGED the same line (e.g.
+    # both editing ClientMain's ORDER list) have that line in the base part - keeping both sides would duplicate it
+    # (three `local ORDER` lines compiled fine and silently dropped a module), so that stops for a hand merge.
     if len(re.findall(rb"^<<<<<<< [^\n]*\n", text, flags=re.M)) != 1:
         return None
-    m = re.search(rb"^<<<<<<< [^\n]*\n(.*?)^=======\n(.*?)^>>>>>>> [^\n]*\n", text, flags=re.M | re.S)
-    if not m:
+    m = re.search(rb"^<<<<<<< [^\n]*\n(.*?)^\|\|\|\|\|\|\|[^\n]*\n(.*?)^=======\n(.*?)^>>>>>>> [^\n]*\n", text,
+                  flags=re.M | re.S)
+    if not m or m.group(2).strip():
         return None
-    return text[:m.start()] + m.group(1) + m.group(2) + text[m.end():]
+    return text[:m.start()] + m.group(1) + m.group(3) + text[m.end():]
 
 
 def build_chain(specs):
@@ -47,7 +53,7 @@ def build_chain(specs):
     base = out("rev-parse", "origin/main")
     cur = base
     for commit, title in specs:
-        r = run("merge-tree", "--write-tree", "--name-only", cur, commit, ok=(0, 1))
+        r = run("-c", "merge.conflictStyle=diff3", "merge-tree", "--write-tree", "--name-only", cur, commit, ok=(0, 1))
         lines = r.stdout.decode("utf-8").splitlines()
         tree, note = lines[0], ""
         if r.returncode == 1:
