@@ -5904,7 +5904,10 @@ Config.ClassGrips = {
 	-- 최종 검수 10/12 (the staff held lower, grip_reference §5-6): the hand comes down from the chest (2.9 studs) as far as
 	-- the wrist allows - a staff upright in a fist needs the forearm near level, each 10 degrees it drops bends the wrist
 	-- 10 degrees towards the thumb (normal 15 .. 25): the hand out of the torso at the side, a little ahead, the elbow
-	-- back (Pole). Light 2.71, Alchemist 2.66, Dark 2.56 over the ground (the Dark Mage's staff leans 11 degrees)
+	-- back (Pole). Light 2.71, Alchemist 2.66 over the ground. 최종 검수 10/12 (main photo: the Dark Mage's staff lay
+	-- across the body - its 11 degrees + the 8 degree hunch): every staff stands within 10 degrees of upright in the WORLD,
+	-- the Dark Mage's square to his hunched torso (8 degrees in the world), so his hand is as high as the Light Mage's -
+	-- the sides differ by the body (Waist / Neck) and the crook, not by a slanted staff
 	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
 		OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) },
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
@@ -5912,7 +5915,7 @@ Config.ClassGrips = {
 	-- 검수 10/11 main photo: the free left hand floated out at the side -> on the hip like the artisans (OffHand)
 	-- 게임성 검수 10/11: Waist was +8 = leaning BACK (this table's sign) against the "hunched" note -> -8 (leaning in)
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.4, -0.65, -0.8), Aim = Vector3.new(0, 1, -0.2), Pole = Vector3.new(0.3, -0.4, 0.6) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.0), Aim = Vector3.new(0, 1, 0), Pole = Vector3.new(0.2, -0.2, 0.6) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Alchemist: 최종 검수 10/12 (the approved 2D: a staff with a flask, CharacterVisuals SHAPES.FlaskStaff) held like the
 	-- mages' staffs at the side, nearly upright (6 degrees), the left hand on the hip; it throws with the right hand (the
