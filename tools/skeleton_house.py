@@ -541,16 +541,68 @@ if PIL:
             g = 0.1 * ww + 0.08
             if uc - ww / 2 - g < reach or uc + ww / 2 + g > walls[nm].L - reach:
                 print("[house] WARNING: window on %s at u %.2f runs into a corner pier" % (nm, uc))
-TW = S.get("towers")
-if TW and P["shape"] == "rect":
+TWL = S.get("towers") or []
+TWL = TWL if isinstance(TWL, list) else [TWL]          # several tower kinds (Cliff8: a square wing tower + a round bay)
+TW = TWL[0] if TWL else None
+for TW_ in (TWL if P["shape"] == "rect" else []):
+    TW = TW_
     tw, hx = TW["w"], TW.get("h_extra", 3.0)
+    # "corners": plan vertex indices (V: 0 = front, viewer's right (-x); 1 = back right; 2 = back left; 3 = front left (+x));
+    # "round": a round tower (house Garden5 / Cliff8 2D); "cone": {"h"} a blue slate cone roof (stacked rings) + gold ball
     for i, (x, y) in enumerate(V):
-        th = ZT + hx
-        add("Tower%d" % i, (tw, th, tw), (x, y, th / 2))
-        for k, z in enumerate([Z_LINES[s] for s in range(1, len(STOREYS))] + [Z1 - 0.6, th - 0.5]):
-            add("TowerBand%d_%d" % (i, k), (tw + 0.3, 0.45, tw + 0.3), (x, y, z), mat="gold")
-        add("TowerCap%d" % i, (tw + 0.5, 0.4, tw + 0.5), (x, y, th + 0.2))
-        add("TowerFoot%d" % i, (tw + 0.4, 0.55, tw + 0.4), (x, y, 0.275), mat="gold")
+        if "corners" in TW and i not in TW["corners"]:
+            continue
+        x, y = x + TW.get("dx", 0.0) * (1 if x > 0 else -1), y + TW.get("dy", 0.0) * (1 if y > 0 else -1)
+        th = TW["h"] if "h" in TW else ZT + hx          # "h": absolute top (a one-storey bay: Z_LINES[1])
+        rnd = TW.get("round", False)
+        if rnd:
+            post("Tower%d" % i, tw, th, x, y, 0.0)
+            for k, z in enumerate([Z_LINES[s] for s in range(1, len(STOREYS))] + [Z1 - 0.6, th - 0.5]):
+                disk("TowerBand%d_%d" % (i, k), tw + 0.3, 0.45, (x, y, z), UP)
+            disk("TowerCap%d" % i, tw + 0.5, 0.4, (x, y, th + 0.2), UP, "marble")
+            disk("TowerFoot%d" % i, tw + 0.4, 0.55, (x, y, 0.275), UP)
+        else:
+            add("Tower%d" % i, (tw, th, tw), (x, y, th / 2))
+            for k, z in enumerate([Z_LINES[s] for s in range(1, len(STOREYS))] + [Z1 - 0.6, th - 0.5]):
+                add("TowerBand%d_%d" % (i, k), (tw + 0.3, 0.45, tw + 0.3), (x, y, z), mat="gold")
+            add("TowerCap%d" % i, (tw + 0.5, 0.4, tw + 0.5), (x, y, th + 0.2))
+            add("TowerFoot%d" % i, (tw + 0.4, 0.55, tw + 0.4), (x, y, 0.275), mat="gold")
+        for k, (wall_, u_) in enumerate(TW.get("windows", [])):     # small arched windows on the tower: [[storey, angle deg], ...]
+            st_, ang_ = wall_, math.radians(u_)
+            zc_ = Z_LINES[st_] + 1.2
+            rr_ = tw / 2 + 0.05
+            nx_, ny_ = math.cos(ang_), math.sin(ang_)
+            add("TowerWin%d_%d_Glass" % (i, k), (0.9, 2.2, 0.1), (x + nx_ * rr_, y + ny_ * rr_, zc_ + 1.1), (-ny_, nx_, 0.0), UP, "glass")
+            add("TowerWin%d_%d_Frame" % (i, k), (1.2, 2.5, 0.08), (x + nx_ * (rr_ - 0.03), y + ny_ * (rr_ - 0.03), zc_ + 1.15), (-ny_, nx_, 0.0), UP, "gold")
+        if TW.get("rail"):                              # a balustrade round the tower top (Cliff8 bay balcony)
+            nb_ = 10 if rnd else 8
+            for b_ in range(nb_):
+                a_ = 2 * math.pi * b_ / nb_
+                post("TowerBal%d_%d" % (i, b_), 0.28, 1.0, x + math.cos(a_) * (tw / 2), y + math.sin(a_) * (tw / 2), th + 0.4)
+            disk("TowerRail%d" % i, tw + 0.35, 0.2, (x, y, th + 1.5), UP) if rnd else add("TowerRail%d" % i, (tw + 0.35, 0.2, tw + 0.35), (x, y, th + 1.5), mat="gold")
+            continue
+        if TW.get("cone") and TW["cone"].get("square"):  # a square pyramid cap (stacked square slabs)
+            ch_ = TW["cone"]["h"]
+            r0_ = tw / 2 + TW["cone"].get("eave", 0.5)
+            n_ = max(8, int(ch_ / 0.45))
+            for k in range(n_):
+                w0_ = 2 * r0_ * (1 - k / n_) + 0.05
+                add("TowerCone%d_%d" % (i, k), (w0_, ch_ / n_ + 0.02, w0_), (x, y, th + 0.4 + ch_ * (k + 0.5) / n_), mat="slate")
+            add("TowerConeEave%d" % i, (2 * r0_ + 0.2, 0.3, 2 * r0_ + 0.2), (x, y, th + 0.45), mat="gold")
+            post("TowerConeFinialBase%d" % i, 0.35, 0.6, x, y, th + 0.4 + ch_, "gold")
+            ball("TowerConeFinialBall%d" % i, 0.6, (x, y, th + 0.4 + ch_ + 0.9))
+            continue
+        if TW.get("cone"):
+            ch_ = TW["cone"]["h"]
+            r0_ = tw / 2 + TW["cone"].get("eave", 0.5)
+            n_ = max(8, int(ch_ / 0.45))
+            for k in range(n_):                             # stacked rings, each a little smaller (a stepped cone)
+                f0 = k / n_
+                disk("TowerCone%d_%d" % (i, k), 2 * r0_ * (1 - f0) + 0.05, ch_ / n_ + 0.02, (x, y, th + 0.4 + ch_ * (k + 0.5) / n_), UP, "slate")
+            disk("TowerConeEave%d" % i, 2 * r0_ + 0.2, 0.3, (x, y, th + 0.45), UP)
+            post("TowerConeFinialBase%d" % i, 0.35, 0.6, x, y, th + 0.4 + ch_, "gold")
+            ball("TowerConeFinialBall%d" % i, 0.6, (x, y, th + 0.4 + ch_ + 0.9))
+            continue
         if TW.get("dome", False):                      # small gold dome cap (ornament) with a small finial of its own
             dr = tw / 2 + 0.2
             orn_items.append({"type": "dome", "name": "%s_TowerDome%d" % (NAME, i), "pos": [x, y, th + 0.4], "R": dr,
@@ -1014,11 +1066,38 @@ if TOP["type"] == "flat":
                 lr = Hm - max(0.0, abs(s) - (A - Hm))
                 if lr < 0.15:
                     continue
+                if HIP.get("curve"):
+                    # a rounded roof (Cliff7 2D): every face a quarter ellipse (run Hm, rise hh) from the eave - steep at the
+                    # eave, flat on top; each strip split into pieces along that curve
+                    KC = 7
+                    us_ = [min(lr / Hm, 1.0) * q_ / KC for q_ in range(KC + 1)]
+                    for q_ in range(KC):
+                        u0, u1 = us_[q_], us_[q_ + 1]
+                        z0c, z1c = hh * math.sqrt(max(0.0, 1 - (1 - u0) ** 2)), hh * math.sqrt(max(0.0, 1 - (1 - u1) ** 2))
+                        d0c, d1c = u0 * Hm, u1 * Hm
+                        ln_c = math.hypot(d1c - d0c, z1c - z0c)
+                        dirc = norm((-nx * (d1c - d0c), -ny * (d1c - d0c), z1c - z0c))
+                        nrc = norm((nx * (z1c - z0c), ny * (z1c - z0c), d1c - d0c))
+                        dm_ = Eh - (d0c + d1c) / 2
+                        add("Hip%d_%d_%d" % (fi, k, q_), (dx + 0.02, 0.25, ln_c + 0.05),
+                            (nx * dm_ + tt[0] * s - nrc[0] * 0.125, ny * dm_ + tt[1] * s - nrc[1] * 0.125, ZT + (z0c + z1c) / 2 - nrc[2] * 0.125),
+                            tt, nrc, "slate")
+                        rib_n = HIP.get("ribs", 0)
+                        if rib_n and A > Hm + 0.5:              # gold ribs spread over the long faces (each follows its strip)
+                            span_ = A * 0.72
+                            step_ = 2 * span_ / max(rib_n - 1, 1) if rib_n > 1 else 0.0
+                            for ri_ in range(rib_n):
+                                sr_ = -span_ + step_ * ri_ if rib_n > 1 else 0.0
+                                if abs(s - sr_) < dx / 2:
+                                    add("HipRib%d_%d_%d" % (fi, ri_, q_), (0.35, 0.3, ln_c + 0.08),
+                                        (nx * dm_ + tt[0] * sr_ + nrc[0] * 0.1, ny * dm_ + tt[1] * sr_ + nrc[1] * 0.1, ZT + (z0c + z1c) / 2 + nrc[2] * 0.1),
+                                        tt, nrc, "gold")
+                    continue
                 r = Eh - lr / 2
                 pc_ = (nx * r + tt[0] * s - nrm[0] * 0.125, ny * r + tt[1] * s - nrm[1] * 0.125, ZT + hh * lr / (2 * Hm) - nrm[2] * 0.125)
                 add("Hip%d_%d" % (fi, k), (dx + 0.02, 0.25, lr / ca), pc_, tt, nrm, "slate")
         rl2 = abs(Wb - Db) / 2
-        for ci, (sx_, sy_) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):
+        for ci, (sx_, sy_) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1)) if not HIP.get("curve") else ()):
             c0 = (sx_ * Wb / 2, sy_ * Db / 2, ZT)
             c1 = (sx_ * rl2, 0.0, ZT + hh) if Wb >= Db else (0.0, sy_ * rl2, ZT + hh)
             dv = (c1[0] - c0[0], c1[1] - c0[1], c1[2] - c0[2])
@@ -1034,6 +1113,73 @@ if TOP["type"] == "flat":
                 (1.0, 0.0, 0.0) if alongx else (0.0, 1.0, 0.0), UP, "gold")
         post("HipFinialBase", 0.55, 0.6, 0.0, 0.0, ZT + hh, "gold")
         ball("HipFinialBall", 0.95, (0.0, 0.0, ZT + hh + 1.05))
+
+        def hip_z(px, py):                                # roof surface height over a plan point (straight faces)
+            return ZT + min(hh, hh / Hm * min(Wb / 2 - abs(px), Db / 2 - abs(py)))
+        FACES = {"front": (0, 1), "back": (0, -1), "left": (1, 0), "right": (-1, 0)}
+        # dormers [{"face": "front", "s": offset along the face (front: + = +x = the viewer's left), "w", "h", "win"}]: a
+        # marble box standing on the slope with an arched-top window and its own little gable roof (Hill4 2D)
+        for di, Dm in enumerate(HIP.get("dormers", [])):
+            fx_, fy_ = FACES[Dm.get("face", "front")]
+            tt_ = (-fy_, fx_, 0.0)
+            w_, h_ = Dm.get("w", 2.6), Dm.get("h", 2.6)
+            Eh_ = Db / 2 if fy_ else Wb / 2
+            r_f = Eh_ - Dm.get("in", 1.6)                 # the dormer front, measured from the plan centre
+            sx_ = Dm.get("s", 0.0)
+            px_, py_ = fx_ * r_f + tt_[0] * sx_, fy_ * r_f + tt_[1] * sx_
+            z0_ = hip_z(px_, py_) - 0.2
+            dd_ = (h_ + 0.6) * Hm / hh                      # back into the slope until the roof covers it
+            cx_, cy_ = px_ - fx_ * dd_ / 2, py_ - fy_ * dd_ / 2
+            add("Dormer%d" % di, (w_, h_ + 0.4, dd_), (cx_, cy_, z0_ + (h_ + 0.4) / 2), tt_, UP)
+            gw_ = Dm.get("win", 1.2)
+            add("Dormer%d_Glass" % di, (gw_, h_ * 0.62, 0.08), (px_ + fx_ * 0.02, py_ + fy_ * 0.02, z0_ + 0.5 + h_ * 0.31), tt_, UP, "glass")
+            add("Dormer%d_Frame" % di, (gw_ + 0.3, h_ * 0.62 + 0.3, 0.06), (px_ + fx_ * 0.0, py_ + fy_ * 0.0, z0_ + 0.5 + h_ * 0.31), tt_, UP, "gold")
+            zt_ = z0_ + h_ + 0.4
+            gh_ = w_ / 2 * 0.9                              # its gable: two tilted slabs + gold edges
+            for sg in (-1, 1):
+                ln_ = math.hypot(w_ / 2 + 0.3, gh_)
+                ax_ = (tt_[0] * sg * (w_ / 2 + 0.3) / ln_, tt_[1] * sg * (w_ / 2 + 0.3) / ln_, -gh_ / ln_)
+                nz_ = norm((-ax_[0] * 0 + tt_[0] * sg * gh_ / ln_, tt_[1] * sg * gh_ / ln_, (w_ / 2 + 0.3) / ln_))
+                c_ = (px_ - fx_ * dd_ / 2 + tt_[0] * sg * (w_ / 4 + 0.15), py_ - fy_ * dd_ / 2 + tt_[1] * sg * (w_ / 4 + 0.15), zt_ + gh_ / 2)
+                add("Dormer%d_Roof%d" % (di, (sg + 1) // 2), (ln_, 0.25, dd_ + 0.4), c_, norm((tt_[0] * sg * (w_ / 2 + 0.3), tt_[1] * sg * (w_ / 2 + 0.3), -gh_)), nz_, "slate")
+                add("Dormer%d_Edge%d" % (di, (sg + 1) // 2), (ln_, 0.28, 0.3), (px_ + fx_ * 0.2 + tt_[0] * sg * (w_ / 4 + 0.15), py_ + fy_ * 0.2 + tt_[1] * sg * (w_ / 4 + 0.15), zt_ + gh_ / 2 + 0.1),
+                    norm((tt_[0] * sg * (w_ / 2 + 0.3), tt_[1] * sg * (w_ / 2 + 0.3), -gh_)), nz_, "gold")
+            ball("Dormer%d_Finial" % di, 0.45, (px_ + fx_ * 0.2, py_ + fy_ * 0.2, zt_ + gh_ + 0.25))
+        # gable {"face": "front", "w", "h", "win": glass width}: a cross gable over the front wall - a triangular marble wall
+        # (horizontal strips) on the facade plane from the eave line up, its two slopes running back into the main roof,
+        # gold edges + finial, an arched window in it (Hill4 2D)
+        GBL = HIP.get("gable") or []
+        for gi_, GB in enumerate(GBL if isinstance(GBL, list) else [GBL]):
+            gp_ = "Gable" if gi_ == 0 else "Gable%d" % gi_
+            fx_, fy_ = FACES[GB.get("face", "front")]
+            tt_ = (-fy_, fx_, 0.0)
+            gw_, gh_ = GB["w"], GB["h"]
+            Eh_ = (Db / 2 if fy_ else Wb / 2) - eo          # the facade plane
+            n_ = max(12, int(gh_ / 0.18))
+            for k in range(n_):
+                f1 = (k + 1) / n_
+                wk_ = gw_ * (1 - (k + 0.5) / n_)
+                add(gp_ + "_Wall%d" % k, (wk_, gh_ / n_ + 0.02, 0.6), (fx_ * (Eh_ - 0.3), fy_ * (Eh_ - 0.3), ZT + gh_ * (k + 0.5) / n_), tt_, UP)
+            ln_ = math.hypot(gw_ / 2 + 0.5, gh_)
+            run_ = eo + Hm * gh_ / hh + 1.0                  # back to where the main roof covers it
+            for sg in (-1, 1):
+                ax_ = norm((tt_[0] * sg * (gw_ / 2 + 0.5), tt_[1] * sg * (gw_ / 2 + 0.5), -gh_))
+                nz_ = norm((tt_[0] * sg * gh_, tt_[1] * sg * gh_, gw_ / 2 + 0.5))
+                c_ = (fx_ * (Eh_ + eo - run_ / 2) + tt_[0] * sg * (gw_ / 4 + 0.25) + nz_[0] * 0.15,
+                      fy_ * (Eh_ + eo - run_ / 2) + tt_[1] * sg * (gw_ / 4 + 0.25) + nz_[1] * 0.15, ZT + gh_ / 2 + nz_[2] * 0.15)
+                add(gp_ + "_Roof%d" % ((sg + 1) // 2), (ln_, 0.28, run_), c_, ax_, nz_, "slate")
+                add(gp_ + "_Edge%d" % ((sg + 1) // 2), (ln_ + 0.2, 0.35, 0.4),
+                    (fx_ * (Eh_ + eo) + tt_[0] * sg * (gw_ / 4 + 0.25) + nz_[0] * 0.3, fy_ * (Eh_ + eo) + tt_[1] * sg * (gw_ / 4 + 0.25) + nz_[1] * 0.3, ZT + gh_ / 2 + nz_[2] * 0.3),
+                    ax_, nz_, "gold")
+            post(gp_ + "_FinialBase", 0.4, 0.5, fx_ * (Eh_ + eo), fy_ * (Eh_ + eo), ZT + gh_ + 0.2, "gold")
+            ball(gp_ + "_FinialBall", 0.7, (fx_ * (Eh_ + eo), fy_ * (Eh_ + eo), ZT + gh_ + 1.0))
+            if GB.get("win"):
+                gwn_ = GB["win"]
+                zc_ = ZT + gh_ * 0.32
+                add(gp_ + "_WinGlass", (gwn_, gh_ * 0.34, 0.08), (fx_ * (Eh_ + 0.02), fy_ * (Eh_ + 0.02), zc_), tt_, UP, "glass")
+                add(gp_ + "_WinFrame", (gwn_ + 0.35, gh_ * 0.34 + 0.35, 0.06), (fx_ * Eh_, fy_ * Eh_, zc_), tt_, UP, "gold")
+            if GB.get("medal"):
+                disk(gp_ + "_Medal", 0.9, 0.15, (fx_ * (Eh_ + 0.05), fy_ * (Eh_ + 0.05), ZT + gh_ * 0.68), (fx_, fy_, 0.0))
         ch = HIP.get("chimney")
         if ch:
             ccx_, ccy_, cw_, chh_ = ch

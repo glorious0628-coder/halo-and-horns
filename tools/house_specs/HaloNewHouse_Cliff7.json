@@ -1,0 +1,83 @@
+{
+ "name": "HaloNewHouse_Cliff7",
+ "src2d": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_front.png",
+ "views2d": {
+  "left": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_left_v2.png",
+  "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_right_v2.png",
+  "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_back_v2.png"
+ },
+ "note": "새 집 Cliff7 (plan House_Cliff7, HouseB). 2D: long low one-storey house under a rounded (barrel-shouldered) blue roof with gold ribs, a raised arched door bay in the middle (gold quatrefoil above the door), wall lanterns, an arched window + flower box either side, corner pilasters + mid pilasters, round steps. Generator: top.hip.curve + ribs (10/12). W 24 x D 16 from the 2D front / side widths. The generator's wall 'left' = x -W/2 = the viewer's right.",
+ "plan": {
+  "shape": "rect",
+  "W": 24.0,
+  "D": 16.0
+ },
+ "Z0": 1.1,
+ "storeys": [
+  {
+   "h": 7.4,
+   "win": {
+    "w": 2.0,
+    "type": "arch",
+    "h": 3.4
+   },
+   "walls": {
+    "front": [
+     0.2,
+     0.8
+    ],
+    "left": [
+     0.25,
+     0.75
+    ],
+    "right": [
+     0.25,
+     0.75
+    ],
+    "back": [
+     0.25,
+     0.75
+    ]
+   }
+  }
+ ],
+ "door": {
+  "w": 4.0,
+  "h": 6.4,
+  "double": false
+ },
+ "pilasters": true,
+ "pedestals": false,
+ "lanterns": [
+  0.36,
+  0.64
+ ],
+ "steps": "half",
+ "window_boxes": [
+  [
+   "all",
+   "all"
+  ]
+ ],
+ "pots": [],
+ "medals": [
+  [
+   "front",
+   0.5,
+   8.0
+  ]
+ ],
+ "top": {
+  "type": "flat",
+  "parapet": "none",
+  "h": 1.0,
+  "skylight": null,
+  "topiary": [],
+  "hip": {
+   "h": 5.4,
+   "eave": 0.9,
+   "curve": true,
+   "ribs": 4
+  }
+ }
+}

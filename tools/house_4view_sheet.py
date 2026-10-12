@@ -53,7 +53,7 @@ for n in a.names:
     spec = json.load(open("tools/house_specs/%s.json" % n, encoding="utf-8"))
     src = {"front": spec["src2d"]}
     for v in ("left", "right", "back"):
-        src[v] = "art/out/s2/halo/houses_mv/%s_%s.png" % (n, v)
+        src[v] = spec.get("views2d", {}).get(v) or "art/out/s2/halo/houses_mv/%s_%s.png" % (n, v)   # new houses: spec "views2d"
     rend = {v: os.path.join(a.renders, n, r + ".png") for v, r in VIEWS}
     ims3 = {v: Image.open(p) for v, p in rend.items() if os.path.exists(p)}
     if a.studio:                                          # same centre square for the four photos (same camera distance)

@@ -1,0 +1,23 @@
+{
+ "name": "HaloNewHouse_Cliff8",
+ "src2d": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_front.png",
+ "views2d": {"left": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_left_v2.png", "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_right_v2.png", "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_back_v2.png"},
+ "note": "새 집 Cliff8 (plan House_Cliff8, HouseA, the sea-view house). 2D: 2-storey house, a taller square wing at the front-left (viewer's left = +x = plan vertex 3) under its own blue pyramid roof, the main block under a lower blue hip roof with a chimney, a round one-storey bay at the front-right (vertex 0) with a big sea-view window and a balcony on its top (a telescope there = Tripo decoration later), single arched door with a yellow/white awning + wall lanterns, arched windows with flower boxes, a gold plinth band. 18 x 15 body. Generator: towers list (square wing + round bay with rail) + square pyramid cap (10/12).",
+ "plan": {"shape": "rect", "W": 18.0, "D": 15.0},
+ "Z0": 1.1,
+ "storeys": [{"h": 7.4, "win": {"w": 1.8, "type": "arch", "h": 3.4}, "walls": {"front": [0.42], "left": [0.35, 0.7], "right": [0.35, 0.7], "back": [0.3, 0.7]}},
+             {"h": 7.0, "win": {"w": 1.7, "type": "arch", "h": 3.2}, "walls": {"front": [0.42, 0.62], "left": [0.35, 0.7], "right": [0.35, 0.7], "back": [0.3, 0.7]}}],
+ "door": {"w": 3.6, "h": 6.2, "double": false, "u": 0.58},
+ "pilasters": true,
+ "pedestals": false,
+ "lanterns": [0.48, 0.68],
+ "steps": "three",
+ "awning": {"w": 4.6, "colors": [[250, 205, 72], [255, 248, 228]], "n": 6},
+ "window_boxes": [["all", "all"]],
+ "towers": [{"w": 7.0, "h_extra": 1.6, "corners": [3], "cone": {"h": 5.0, "eave": 0.6, "square": true}},
+            {"w": 6.0, "h": 8.6, "round": true, "corners": [0], "rail": true, "windows": [[0, 90], [0, 30]]}],
+ "pots": [],
+ "medals": [],
+ "top": {"type": "flat", "parapet": "none", "h": 1.0, "skylight": null, "topiary": [],
+         "hip": {"h": 4.6, "eave": 1.0, "chimney": [-3.0, -3.0, 1.8, 2.6]}}
+}

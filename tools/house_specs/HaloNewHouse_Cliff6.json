@@ -1,0 +1,108 @@
+{
+ "name": "HaloNewHouse_Cliff6",
+ "src2d": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_front.png",
+ "views2d": {
+  "left": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_left_v2.png",
+  "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_right_v2.png",
+  "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_back_v2.png"
+ },
+ "note": "새 집 Cliff6 (plan House_Cliff6, HouseA). 2D: square 2-storey cottage, blue pyramid hip roof + gold star finial (finial = ball here, star = Tripo decoration later), corner pilasters, 2 arched windows a storey on every side (front upper: a third, larger centre window with a small balcony), flower boxes under all windows, single arched door with wall lanterns, three steps. Size from the Tripo HD job (web/HaloNewHouse_Cliff6_HD_src.glb: width 0.83, depth 0.79, height 0.98) at W 20 -> D 19, total height 23.6.",
+ "plan": {
+  "shape": "rect",
+  "W": 20.0,
+  "D": 19.0
+ },
+ "Z0": 1.1,
+ "storeys": [
+  {
+   "h": 7.6,
+   "win": {
+    "w": 1.6,
+    "type": "arch",
+    "h": 3.0
+   },
+   "walls": {
+    "front": [
+     0.2,
+     0.8
+    ],
+    "left": [
+     0.3,
+     0.7
+    ],
+    "right": [
+     0.3,
+     0.7
+    ],
+    "back": [
+     0.3,
+     0.7
+    ]
+   }
+  },
+  {
+   "h": 7.4,
+   "win": {
+    "w": 1.6,
+    "type": "arch",
+    "h": 3.0
+   },
+   "walls": {
+    "front": [
+     0.2,
+     0.5,
+     0.8
+    ],
+    "left": [
+     0.3,
+     0.7
+    ],
+    "right": [
+     0.3,
+     0.7
+    ],
+    "back": [
+     0.3,
+     0.7
+    ]
+   }
+  }
+ ],
+ "door": {
+  "w": 4.0,
+  "h": 7.0,
+  "double": false
+ },
+ "pilasters": true,
+ "pedestals": true,
+ "steps": "three",
+ "balconies": [
+  {
+   "storey": 1,
+   "walls": [
+    "front"
+   ],
+   "depth": 1.2,
+   "margin": 7.6
+  }
+ ],
+ "window_boxes": [
+  [
+   "all",
+   "all"
+  ]
+ ],
+ "pots": [],
+ "medals": [],
+ "top": {
+  "type": "flat",
+  "parapet": "none",
+  "h": 1.0,
+  "skylight": null,
+  "topiary": [],
+  "hip": {
+   "h": 8.5,
+   "eave": 1.2
+  }
+ }
+}

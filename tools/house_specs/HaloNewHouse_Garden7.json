@@ -1,0 +1,151 @@
+{
+ "name": "HaloNewHouse_Garden7",
+ "src2d": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_front.png",
+ "views2d": {
+  "left": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_left_v3.png",
+  "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_right_v4.png",
+  "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_back_v3.png"
+ },
+ "note": "새 집 Garden7 (plan House_Garden7, HouseA). 2D: a tall narrow 3-storey tower house, steep blue pyramid roof + gold star / arrow weathervane (finial ball here, vane = Tripo decoration later), corner pilasters with storey bands, one arched window a storey on every face above the ground floor, flower boxes, small single arched door with wall lanterns, a small side balcony on the top storey (right side), pots either side of the door. 9 x 9 body from the 2D width / height ratio. | wall 'left' of the generator = x -W/2 = the viewer's right of the front (the 2D balcony side).",
+ "plan": {
+  "shape": "rect",
+  "W": 9.0,
+  "D": 9.0
+ },
+ "Z0": 1.1,
+ "storeys": [
+  {
+   "h": 7.0,
+   "win": {
+    "w": 1.5,
+    "type": "arch",
+    "h": 3.4
+   },
+   "walls": {
+    "left": [
+     0.5
+    ],
+    "right": [
+     0.5
+    ],
+    "back": [
+     0.5
+    ]
+   }
+  },
+  {
+   "h": 6.4,
+   "win": {
+    "w": 1.5,
+    "type": "arch",
+    "h": 3.2
+   },
+   "walls": {
+    "front": [
+     0.5
+    ],
+    "left": [
+     0.5
+    ],
+    "right": [
+     0.5
+    ],
+    "back": [
+     0.5
+    ]
+   }
+  },
+  {
+   "h": 6.4,
+   "win": {
+    "w": 1.5,
+    "type": "arch",
+    "h": 3.2
+   },
+   "walls": {
+    "front": [
+     0.5
+    ],
+    "left": [
+     0.5
+    ],
+    "right": [
+     0.5
+    ],
+    "back": [
+     0.5
+    ]
+   }
+  }
+ ],
+ "door": {
+  "w": 3.2,
+  "h": 5.8,
+  "double": false
+ },
+ "pilasters": true,
+ "pedestals": false,
+ "lanterns": [
+  0.15,
+  0.85
+ ],
+ "steps": "three",
+ "balconies": [
+  {
+   "storey": 2,
+   "walls": [
+    "left"
+   ],
+   "depth": 1.2,
+   "margin": 2.4
+  }
+ ],
+ "window_boxes": [
+  [
+   "all",
+   1
+  ],
+  [
+   "all",
+   2
+  ],
+  [
+   "left",
+   0
+  ],
+  [
+   "right",
+   0
+  ],
+  [
+   "back",
+   0
+  ]
+ ],
+ "pots": [
+  [
+   -3.6,
+   6.2,
+   1.8,
+   1.4
+  ],
+  [
+   3.6,
+   6.2,
+   1.8,
+   1.4
+  ]
+ ],
+ "medals": [],
+ "top": {
+  "type": "flat",
+  "parapet": "none",
+  "h": 0.8,
+  "skylight": null,
+  "topiary": [],
+  "hip": {
+   "h": 6.8,
+   "eave": 1.0
+  }
+ }
+}

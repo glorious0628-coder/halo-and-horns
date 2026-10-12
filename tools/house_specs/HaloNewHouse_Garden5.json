@@ -1,0 +1,156 @@
+{
+ "name": "HaloNewHouse_Garden5",
+ "src2d": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_front.png",
+ "views2d": {
+  "left": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_left_v2.png",
+  "right": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_right_v2.png",
+  "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_back_v2.png"
+ },
+ "note": "새 집 Garden5 (plan House_Garden5, HouseA). 2D: narrow 2-storey cottage, a round tower with a blue cone roof at the front-left corner (the viewer's left = +x = plan vertex 3), a steep front cross gable with an arched window over the door, a rose arch round the door + pink/white awning (roses, sunflowers, plants = Tripo decoration later), a chimney at the back right, arched windows with flower boxes, gold bands. 14 x 13 body. Generator: towers corners / round / cone + hip gable (10/12).",
+ "plan": {
+  "shape": "rect",
+  "W": 14.0,
+  "D": 13.0
+ },
+ "Z0": 1.1,
+ "storeys": [
+  {
+   "h": 7.2,
+   "win": {
+    "w": 1.7,
+    "type": "arch",
+    "h": 3.4
+   },
+   "walls": {
+    "front": [
+     0.76
+    ],
+    "left": [
+     0.5
+    ],
+    "right": [
+     0.6
+    ],
+    "back": [
+     0.3,
+     0.7
+    ]
+   }
+  },
+  {
+   "h": 6.4,
+   "win": {
+    "w": 1.6,
+    "type": "arch",
+    "h": 3.0
+   },
+   "walls": {
+    "front": [
+     0.76
+    ],
+    "left": [
+     0.5
+    ],
+    "right": [
+     0.6
+    ],
+    "back": [
+     0.3,
+     0.7
+    ]
+   }
+  }
+ ],
+ "door": {
+  "w": 3.6,
+  "h": 6.2,
+  "double": false,
+  "u": 0.5
+ },
+ "pilasters": true,
+ "pedestals": false,
+ "lanterns": [
+  0.3,
+  0.7
+ ],
+ "steps": "three",
+ "awning": {
+  "w": 4.6,
+  "colors": [
+   [
+    240,
+    130,
+    160
+   ],
+   [
+    252,
+    246,
+    246
+   ]
+  ],
+  "n": 6
+ },
+ "window_boxes": [
+  [
+   "all",
+   "all"
+  ]
+ ],
+ "towers": {
+  "w": 5.6,
+  "h_extra": 1.2,
+  "round": true,
+  "corners": [
+   3
+  ],
+  "cone": {
+   "h": 6.5,
+   "eave": 0.5
+  },
+  "windows": [
+   [
+    0,
+    90
+   ],
+   [
+    1,
+    90
+   ],
+   [
+    0,
+    0
+   ],
+   [
+    1,
+    0
+   ]
+  ]
+ },
+ "pots": [],
+ "medals": [],
+ "top": {
+  "type": "flat",
+  "parapet": "none",
+  "h": 1.0,
+  "skylight": null,
+  "topiary": [],
+  "hip": {
+   "h": 6.0,
+   "eave": 1.0,
+   "chimney": [
+    -4.5,
+    -3.0,
+    1.6,
+    2.4
+   ],
+   "gable": [
+    {
+     "face": "front",
+     "w": 7.0,
+     "h": 6.2,
+     "win": 1.4
+    }
+   ]
+  }
+ }
+}
