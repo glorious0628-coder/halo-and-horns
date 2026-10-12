@@ -1,0 +1,2447 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 194,
+  "failedChecks": 0,
+  "namedChecks": 184,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "Config.Features.Gear is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "3 tiers, +0..+2 only, 60 things in Own (20 a key), the save repair keeps P in 0..2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "wear level 10 / 20 / 30 for armor and ring",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Config.RateLimits.EquipGear = 0.5",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a short text for every notice",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearBonus Armor: the design table per tier and +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearBonus PetAcc: the design table per tier and +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearBonus Ring: the design table per tier and +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearBonus PetArmor: the design table per tier and +N",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PetAccMax = the best PetAcc (T3 +2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the top: HP x1.22, hit x1.14, power about +18%",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearBonus: 0 for an unknown slot, tier 0 / 4, a plus outside 0..2 (a scroll's +3..+10 is never gear), junk",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearParse: plain T:P with T 1..3, P 0..2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearMult: a real number >= 1, anything else 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearBonusOf reads a worn T:P",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearMultsOf = (1, 1) while the switch is off, whatever the attributes say",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "GearMultsOf reads GearAtk / GearHp (the switch on)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "missing / NaN / below 1 / infinity / text = 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a nil / broken player never throws: (1, 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PetGearBonus: the pet's worn slot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "PetGearBonus: 0 for another pet / a player slot / junk / a broken key / the switch off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed: the pet's +7% / +10% plus PetAcc",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed: a kaiju or no pet gets no PetAcc",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed: PetAcc is cut at PetAccMax; NaN / negative / text ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every old call still works (extra arguments nil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed: the Speed.Cap (1.35) still holds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "WalkSpeed: PetAcc does nothing while the switch is off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "CombatPower = floor(PowerOf with the gear x 10 + 0.5)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "the top gear = power x sqrt(1.14 x 1.22) (about +18%)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "gear nil / {} / (1, 1) = the old number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "a bad gear multiplier counts as 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "the ring and the armor each multiply their own factor inside the root",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "CombatPowerOf passes the player's gear (the switch off: the old number)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "CombatPowerOf with another weapon keeps the gear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "no gear attributes = the old number",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "MaxCombatPower: one cached value per switch state (flipping never mixes them)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "MaxCombatPower: stat points and gear together are a fourth value",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "no gear number goes over MaxCombatPower",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "power",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "Equip: an owned Armor T1 +0 at Lv30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "one place: it left Own, it is worn, the total is the same",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "GearHp 1.06 (armor T1 +0), GearAtk 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "GearInfo { Own, On, Pet } after the change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "the notice is a key (Equipped)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "a new armor re-reads the max HP (RefreshCharacter, no full heal)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "swap: Armor T2 +1 on, the T1 back in Own (the total stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "GearHp 1.14 (T2 +1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "two of a key: one worn, one left",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "GearAtk 1.14 (ring T3 +2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "the same one again: nothing changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "take off: back to Own, the slot is '' (never nil)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "GearHp back to 1, the Removed key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "nothing worn: 'none', no notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "the ring off: GearAtk 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "a Ring key in the Armor slot: not yours (the kind is the slot)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "wear both again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "Mults(player) = the attributes' numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "equip",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "Lv9: not even tier 1 (NeedLevel, nothing changes)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a turned-down change sends GearInfo again (the window shows the truth)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "wear level: tier 1 at Lv10 = ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "wear level: tier 2 at Lv19 = level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "wear level: tier 2 at Lv20 = ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "wear level: tier 3 at Lv29 = level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "wear level: tier 3 at Lv30 = ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "Lv10 wears the T1 ring; taking off needs no level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "taking off has no level check",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "not owned: NotYours, nothing changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a bad key is refused: 4 chars",
+      "pass": 4,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a bad key is refused: 3 chars",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a bad key is refused: 1 chars",
+      "pass": 2,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a bad key is refused: 40 chars",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a bad slot / a pet slot / junk: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "not ready: no change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "KO'd: no change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "not a player: no change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a player who left: no change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "setup: 60 in Own + 1 worn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "Own holds 60: taking off is refused (Full), the armor stays on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a swap keeps the sum (one in, one out): allowed at 60",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "still 60: still no room",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "20 of that key in Own (room in all): taking off is refused (key cap)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "a swap whose old one has no room (key cap): refused, all of it or nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "switch off: nothing can be worn",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "switch off: no attribute, no GearInfo, no refresh at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "rules",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "PlayerReady: one GearInfo { Own, On, Pet }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "the payload is a copy (the save is never shared)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "no gear: 1 / 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "a broken Gear table is repaired (Config.SanitizeGear), no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "a worn thing stays on at a low level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "taken off: 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "setup: my pet P1 (it follows), PetAcc 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "EquipPet: PetAcc T1 on my pet (Own -> Pet[uid], one place)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "PetService republished: the PetAcc attribute 0.01, then the speed refresh",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "GearInfo.Pet and the Equipped key",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "swap: PetAcc T3 +2 = 0.04, the T1 back in Own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "the same one again: nothing changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "PetArmor on the same pet (a row of two slots)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "AddPetXP 20 with PetArmor T2 +1 (x1.5) = 30 pet XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "7 x 1.5 = 10.5 floors to 10",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "another pet without PetArmor: the plain 20",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "the second pet wears the T3 +2 armor",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a kill: 1 x 1.5 floors to 1 (applied through the same function)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a kill: XPPerKill 10 x 1.5 = 15 (the kill path uses the same bonus)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a free rider's share still gives nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "another pet follows (no PetAcc): PetAcc 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "... and its own PetAcc 0.02 once it wears one",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "take off: PetAcc 0, back to Own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a pet that wears nothing has no row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "nothing worn: none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "not my pet / junk uid: pet, nothing changes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "another player's pet uid: pet (I have none)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a player's slot on a pet / junk: refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a PetAcc I do not own: NotYours",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "T1 pet gear at Lv30 (pets need no level)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "pet gear has no wear level (Lv1 owner, T3 +2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "Own holds 60: taking a pet's gear off is refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "a free slot: no old one goes back, so 60 is fine",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "switch off: a worn PetAcc gives nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "switch off: a worn PetArmor gives nothing (plain pet XP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pets",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "orphans",
+      "check": "PlayerReady: a vanished pet's gear goes back to Own, a pet I still have keeps its",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "orphans",
+      "check": "the pet I still have: PetAcc 0.01 at the join",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "orphans",
+      "check": "no room in Own: the gear stays where it is (never lost)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "orphans",
+      "check": "no pets at all: it goes back too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "orphans",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "orphans",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputeMonsterHit: x the ring's atk mult (1.14)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "... the swing profile too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "the switch off: the attribute is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "the armor does not change my hit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputePvPHit: attacker with a ring against a +1 weapon (inside the clamp)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputePvPHit: the victim's ring lowers the ratio",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputePvPHit: both rings: the ratio is 1 again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputePvPHit: far above: still PowerRatioMax (a ring cannot pass the clamp)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputePvPHit: far below: still PowerRatioMin (a ring cannot pass it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "ComputePvPHit: a +4 weapon against a ring on the other side",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "the victim's armor does not change the hit's base (the BASE MaxHealth): it only means more HP to chew through",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "the switch off: the PvP hit ignores the attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "a bare-handed attacker with a ring: the punch floor still applies",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "hits",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "computeMaxHealth: the real max HP x the armor's hp mult (floored)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "the ring / NaN / below 1: the plain max HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "the switch off: the plain max HP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "ComputeWalkSpeed: the pet's bonus + the PetAcc attribute",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "no PetAcc: the old speed; no pet: PetAcc does nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "a kaiju: no pet bonus at all",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "POWER.Watch: Level, WeaponTier, WeaponEnhance, StatAtk, StatHp + GearAtk, GearHp",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "CombatPowerOf (the CombatPower attribute, the bully rule) includes the gear",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "EquipGear(slot, key): the remote works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "EquipGear: the wrong argument count / types / lengths are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "EquipGear: two within half a second (0.5 s) = the second is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "... after half a second it works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "EquipPetGear: the wrong argument count / types / lengths are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "EquipPetGear(uid, slot, key): the remote works",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "EquipPetGear: two within half a second = the second is ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "... after half a second it works (the take-off)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "no handler error from any of them",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "remotes",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "UseItem with a gear key / slot / junk: the Gear table and its attributes never change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "... and no scroll is used up by it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "... and no handler error (a gear key is no weapon tier)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "control: Enh70 on weapon tier 1 uses the scroll",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "... and the gear is the same",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "a swap moves the same key back: the plus stays what it was (+2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "a save with a +3..+10 gear: the repair drops it (P stays 0..2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "scrolls",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 24,
+  "staticFailures": [],
+  "mutations": {
+    "total": 100,
+    "applied": 100,
+    "caught": 100,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: on by default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.Features.Gear is off",
+          "config :: GearMultsOf = (1, 1) while the switch is off, whatever the attributes say",
+          "config :: PetGearBonus: 0 for another pet / a player slot / junk / a broken key / the switch off",
+          "config :: WalkSpeed: PetAcc does nothing while the switch is off",
+          "hits :: the switch off: the PvP hit ignores the attribute",
+          "hits :: the switch off: the attribute is ignored"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "config: Armor T1 +7%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus Armor: the design table per tier and +N",
+          "equip :: GearHp 1.06 (armor T1 +0), GearAtk 1",
+          "equip :: Mults(player) = the attributes' numbers"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: Armor +N 3%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus Armor: the design table per tier and +N",
+          "config :: the top: HP x1.22, hit x1.14, power about +18%",
+          "equip :: GearAtk 1.14 (ring T3 +2)",
+          "equip :: GearHp 1.14 (T2 +1)",
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: Ring T3 +13%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus Ring: the design table per tier and +N",
+          "config :: the top: HP x1.22, hit x1.14, power about +18%",
+          "equip :: GearAtk 1.14 (ring T3 +2)",
+          "equip :: Mults(player) = the attributes' numbers",
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: Ring +N 2%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus Ring: the design table per tier and +N",
+          "config :: GearBonusOf reads a worn T:P",
+          "config :: the top: HP x1.22, hit x1.14, power about +18%",
+          "equip :: GearAtk 1.14 (ring T3 +2)",
+          "equip :: Mults(player) = the attributes' numbers",
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "config: PetArmor T1 +25%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus PetArmor: the design table per tier and +N"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: PetArmor +N 15%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus PetArmor: the design table per tier and +N",
+          "config :: PetGearBonus: the pet's worn slot",
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: AddPetXP 20 with PetArmor T2 +1 (x1.5) = 30 pet XP"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: PetAcc T2 +3%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus PetAcc: the design table per tier and +N",
+          "config :: PetGearBonus: the pet's worn slot",
+          "pets :: ... and its own PetAcc 0.02 once it wears one"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: PetAcc +N 1%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus PetAcc: the design table per tier and +N",
+          "config :: PetAccMax = the best PetAcc (T3 +2)",
+          "config :: PetGearBonus: the pet's worn slot",
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: PetArmor on the same pet (a row of two slots)",
+          "pets :: swap: PetAcc T3 +2 = 0.04, the T1 back in Own"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "config: Armor wears at Lv5",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: wear level 10 / 20 / 30 for armor and ring",
+          "rules :: Lv9: not even tier 1 (NeedLevel, nothing changes)",
+          "rules :: a turned-down change sends GearInfo again (the window shows the truth)",
+          "rules :: wear level: tier 1 at Lv10 = ok"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: Ring T3 wears at Lv20",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: wear level 10 / 20 / 30 for armor and ring"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a plus up to +10 (a scroll's)",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 3 tiers, +0..+2 only, 60 things in Own (20 a key), the save repair keeps P in 0..2",
+          "config :: GearBonus: 0 for an unknown slot, tier 0 / 4, a plus outside 0..2 (a scroll's +3..+10 is never gear), junk",
+          "config :: GearBonusOf reads a worn T:P",
+          "config :: GearParse: plain T:P with T 1..3, P 0..2",
+          "pets :: a player's slot on a pet / junk: refused",
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "config: 80 things in Own",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 3 tiers, +0..+2 only, 60 things in Own (20 a key), the save repair keeps P in 0..2",
+          "orphans :: no room in Own: the gear stays where it is (never lost)",
+          "pets :: Own holds 60: taking a pet's gear off is refused",
+          "pets :: a free slot: no old one goes back, so 60 is fine",
+          "rules :: 20 of that key in Own (room in all): taking off is refused (key cap)",
+          "rules :: Own holds 60: taking off is refused (Full), the armor stays on"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "config: PetAccMax 5%",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: PetAccMax = the best PetAcc (T3 +2)",
+          "config :: WalkSpeed: PetAcc is cut at PetAccMax; NaN / negative / text ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: equip every 0.1 s",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: Config.RateLimits.EquipGear = 0.5",
+          "remotes :: EquipGear: two within half a second (0.5 s) = the second is ignored",
+          "remotes :: EquipPetGear: two within half a second = the second is ignored"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: GearMult lets a loss through",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearMult: a real number >= 1, anything else 1",
+          "config :: missing / NaN / below 1 / infinity / text = 1",
+          "max hp / speed / watch :: the ring / NaN / below 1: the plain max HP",
+          "power :: a bad gear multiplier counts as 1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: GearMultsOf ignores the switch",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearMultsOf = (1, 1) while the switch is off, whatever the attributes say",
+          "hits :: the switch off: the PvP hit ignores the attribute",
+          "hits :: the switch off: the attribute is ignored",
+          "max hp / speed / watch :: the switch off: the plain max HP",
+          "power :: CombatPowerOf passes the player's gear (the switch off: the old number)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: GearMultsOf swaps the two",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearMultsOf reads GearAtk / GearHp (the switch on)",
+          "hits :: ... the swing profile too",
+          "hits :: ComputeMonsterHit: x the ring's atk mult (1.14)",
+          "hits :: ComputePvPHit: a +4 weapon against a ring on the other side",
+          "hits :: ComputePvPHit: attacker with a ring against a +1 weapon (inside the clamp)",
+          "hits :: ComputePvPHit: both rings: the ratio is 1 again"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "config: GearBonus without the plus cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearBonus: 0 for an unknown slot, tier 0 / 4, a plus outside 0..2 (a scroll's +3..+10 is never gear), junk"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: GearBonus without the tier cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: GearBonus takes fractions",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: GearParse keeps leading zeros",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearParse: plain T:P with T 1..3, P 0..2",
+          "rules :: a bad key is refused: 4 chars"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: GearParse plus up to the scroll's +10",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: GearParse: plain T:P with T 1..3, P 0..2",
+          "pets :: a player's slot on a pet / junk: refused",
+          "rules :: a bad key is refused: 3 chars",
+          "rules :: a bad key is refused: 4 chars"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "config: PetGearBonus ignores the switch",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: PetGearBonus: 0 for another pet / a player slot / junk / a broken key / the switch off",
+          "pets :: switch off: a worn PetAcc gives nothing",
+          "pets :: switch off: a worn PetArmor gives nothing (plain pet XP)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: the save repair keeps plus up to +10",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 3 tiers, +0..+2 only, 60 things in Own (20 a key), the save repair keeps P in 0..2",
+          "scrolls :: a save with a +3..+10 gear: the repair drops it (P stays 0..2)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: the plus cap of the repair is the scroll's",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "scrolls :: a save with a +3..+10 gear: the repair drops it (P stays 0..2)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "power: CombatPower drops the gear",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: CombatPowerOf (the CombatPower attribute, the bully rule) includes the gear",
+          "power :: CombatPower = floor(PowerOf with the gear x 10 + 0.5)",
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring",
+          "power :: MaxCombatPower: stat points and gear together are a fourth value",
+          "power :: the top gear = power x sqrt(1.14 x 1.22) (about +18%)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "power: PowerOf ignores the gear",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: CombatPowerOf (the CombatPower attribute, the bully rule) includes the gear",
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring",
+          "power :: MaxCombatPower: stat points and gear together are a fourth value",
+          "power :: the ring and the armor each multiply their own factor inside the root",
+          "power :: the top gear = power x sqrt(1.14 x 1.22) (about +18%)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "power: the armor in the attack factor",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring",
+          "power :: the ring and the armor each multiply their own factor inside the root",
+          "power :: the top gear = power x sqrt(1.14 x 1.22) (about +18%)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "power: CombatPowerOf drops the gear",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: CombatPowerOf (the CombatPower attribute, the bully rule) includes the gear",
+          "power :: CombatPowerOf passes the player's gear (the switch off: the old number)",
+          "power :: CombatPowerOf with another weapon keeps the gear"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "power: MaxCombatPower without the best gear",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring",
+          "power :: MaxCombatPower: stat points and gear together are a fourth value"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "power: MaxCombatPower shares one cache",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower: one cached value per switch state (flipping never mixes them)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "power: MaxCombatPower without the best armor",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "power :: MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walk: PetAcc never added",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed: PetAcc is cut at PetAccMax; NaN / negative / text ignored",
+          "config :: WalkSpeed: the pet's +7% / +10% plus PetAcc",
+          "max hp / speed / watch :: ComputeWalkSpeed: the pet's bonus + the PetAcc attribute"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "walk: PetAcc not cut",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed: PetAcc is cut at PetAccMax; NaN / negative / text ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walk: PetAcc without a pet",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed: a kaiju or no pet gets no PetAcc",
+          "max hp / speed / watch :: no PetAcc: the old speed; no pet: PetAcc does nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "walk: PetAcc for a kaiju",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed: a kaiju or no pet gets no PetAcc",
+          "max hp / speed / watch :: a kaiju: no pet bonus at all",
+          "max hp / speed / watch :: no PetAcc: the old speed; no pet: PetAcc does nothing"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "walk: PetAcc with the switch off",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: WalkSpeed: PetAcc does nothing while the switch is off"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "walk: ComputeWalkSpeed drops PetAcc",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: ComputeWalkSpeed: the pet's bonus + the PetAcc attribute"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hook: max HP without the armor",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: computeMaxHealth: the real max HP x the armor's hp mult (floored)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hook: max HP from the ring's number",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: computeMaxHealth: the real max HP x the armor's hp mult (floored)",
+          "max hp / speed / watch :: the ring / NaN / below 1: the plain max HP"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hook: monster hit without the ring",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: ... the swing profile too",
+          "hits :: ComputeMonsterHit: x the ring's atk mult (1.14)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hook: PvP ratio without the attacker's ring",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: ComputePvPHit: attacker with a ring against a +1 weapon (inside the clamp)",
+          "hits :: ComputePvPHit: both rings: the ratio is 1 again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hook: PvP ratio without the victim's ring",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: ComputePvPHit: a +4 weapon against a ring on the other side",
+          "hits :: ComputePvPHit: both rings: the ratio is 1 again",
+          "hits :: ComputePvPHit: the victim's ring lowers the ratio"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "hook: PvP ratio from the armor",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: ComputePvPHit: attacker with a ring against a +1 weapon (inside the clamp)",
+          "hits :: ComputePvPHit: both rings: the ratio is 1 again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "hook: PvP ratio without the clamp",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: ComputePvPHit: far above: still PowerRatioMax (a ring cannot pass the clamp)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hook: PvP base grows with the victim's armor",
+        "file": "src/ServerScriptService/CombatService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "hits :: ComputePvPHit: a +4 weapon against a ring on the other side",
+          "hits :: ComputePvPHit: attacker with a ring against a +1 weapon (inside the clamp)",
+          "hits :: ComputePvPHit: both rings: the ratio is 1 again",
+          "hits :: ComputePvPHit: far above: still PowerRatioMax (a ring cannot pass the clamp)",
+          "hits :: ComputePvPHit: far below: still PowerRatioMin (a ring cannot pass it)",
+          "hits :: ComputePvPHit: the victim's ring lowers the ratio"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "hook: the power watch misses GearAtk",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: POWER.Watch: Level, WeaponTier, WeaponEnhance, StatAtk, StatHp + GearAtk, GearHp"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "hook: the power watch misses GearHp",
+        "file": "src/ServerScriptService/JusticeService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: POWER.Watch: Level, WeaponTier, WeaponEnhance, StatAtk, StatHp + GearAtk, GearHp"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: publish sets no PetAcc",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "orphans :: the pet I still have: PetAcc 0.01 at the join",
+          "pets :: ... and its own PetAcc 0.02 once it wears one",
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: PetArmor on the same pet (a row of two slots)",
+          "pets :: PetService republished: the PetAcc attribute 0.01, then the speed refresh",
+          "pets :: another pet follows (no PetAcc): PetAcc 0"
+        ],
+        "newFailingCount": 10
+      },
+      {
+        "mutation": "pet: PetAcc from the armor",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "orphans :: the pet I still have: PetAcc 0.01 at the join",
+          "pets :: ... and its own PetAcc 0.02 once it wears one",
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: PetArmor on the same pet (a row of two slots)",
+          "pets :: PetService republished: the PetAcc attribute 0.01, then the speed refresh",
+          "pets :: another pet follows (no PetAcc): PetAcc 0"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "pet: PetAcc after the speed refresh",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: PetService republished: the PetAcc attribute 0.01, then the speed refresh"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pet: no XP bonus",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: 7 x 1.5 = 10.5 floors to 10",
+          "pets :: AddPetXP 20 with PetArmor T2 +1 (x1.5) = 30 pet XP",
+          "pets :: a free rider's share still gives nothing",
+          "pets :: a kill: XPPerKill 10 x 1.5 = 15 (the kill path uses the same bonus)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "pet: the XP bonus not floored",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: 7 x 1.5 = 10.5 floors to 10",
+          "pets :: a kill: 1 x 1.5 floors to 1 (applied through the same function)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pet: the XP bonus from the accessory",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: 7 x 1.5 = 10.5 floors to 10",
+          "pets :: AddPetXP 20 with PetArmor T2 +1 (x1.5) = 30 pet XP",
+          "pets :: a free rider's share still gives nothing",
+          "pets :: a kill: XPPerKill 10 x 1.5 = 15 (the kill path uses the same bonus)"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "pet: a kill without the bonus",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: a free rider's share still gives nothing",
+          "pets :: a kill: XPPerKill 10 x 1.5 = 15 (the kill path uses the same bonus)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "pet: AddPetXP without the bonus",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
+          "pets :: 7 x 1.5 = 10.5 floors to 10",
+          "pets :: AddPetXP 20 with PetArmor T2 +1 (x1.5) = 30 pet XP"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "pet: Refresh never republishes",
+        "file": "src/ServerScriptService/PetService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: ... and its own PetAcc 0.02 once it wears one",
+          "pets :: PetArmor on the same pet (a row of two slots)",
+          "pets :: PetService republished: the PetAcc attribute 0.01, then the speed refresh",
+          "pets :: swap: PetAcc T3 +2 = 0.04, the T1 back in Own"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "equip: the switch not checked",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: switch off: no attribute, no GearInfo, no refresh at the join",
+          "rules :: switch off: nothing can be worn"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: not-ready players wear",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: not ready: no change"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: KO'd players wear",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: KO'd: no change"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: any caller",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: any slot name",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a bad slot / a pet slot / junk: refused"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: any pet slot name",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: a PetAcc I do not own: NotYours",
+          "pets :: a player's slot on a pet / junk: refused"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: not my pet",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: T1 pet gear at Lv30 (pets need no level)",
+          "pets :: a PetAcc I do not own: NotYours",
+          "pets :: a player's slot on a pet / junk: refused",
+          "pets :: another player's pet uid: pet (I have none)",
+          "pets :: not my pet / junk uid: pet, nothing changes"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "equip: no ownership check",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: a Ring key in the Armor slot: not yours (the kind is the slot)",
+          "equip :: wear both again",
+          "pets :: a PetAcc I do not own: NotYours",
+          "rules :: KO'd: no change",
+          "rules :: a bad key is refused: 1 chars",
+          "rules :: a bad key is refused: 3 chars"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "equip: no wear level",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: Lv9: not even tier 1 (NeedLevel, nothing changes)",
+          "rules :: a turned-down change sends GearInfo again (the window shows the truth)",
+          "rules :: wear level: tier 1 at Lv10 = ok",
+          "rules :: wear level: tier 2 at Lv19 = level",
+          "rules :: wear level: tier 2 at Lv20 = ok",
+          "rules :: wear level: tier 3 at Lv29 = level"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "equip: the wear level one too high",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearAtk 1.14 (ring T3 +2)",
+          "equip :: Mults(player) = the attributes' numbers",
+          "equip :: the ring off: GearAtk 1",
+          "equip :: the same one again: nothing changes",
+          "equip :: two of a key: one worn, one left",
+          "equip :: wear both again"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "equip: the same key swaps with itself",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: the same one again: nothing changes",
+          "pets :: the same one again: nothing changes"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: the new one stays in Own",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearInfo { Own, On, Pet } after the change",
+          "equip :: one place: it left Own, it is worn, the total is the same",
+          "equip :: swap: Armor T2 +1 on, the T1 back in Own (the total stays)",
+          "equip :: take off: back to Own, the slot is '' (never nil)",
+          "equip :: the ring off: GearAtk 1",
+          "equip :: the same one again: nothing changes"
+        ],
+        "newFailingCount": 15
+      },
+      {
+        "mutation": "equip: the old one is lost",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: Mults(player) = the attributes' numbers",
+          "equip :: swap: Armor T2 +1 on, the T1 back in Own (the total stays)",
+          "equip :: take off: back to Own, the slot is '' (never nil)",
+          "equip :: the ring off: GearAtk 1",
+          "equip :: two of a key: one worn, one left",
+          "equip :: wear both again"
+        ],
+        "newFailingCount": 13
+      },
+      {
+        "mutation": "equip: a swap without room for the old one",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a swap whose old one has no room (key cap): refused, all of it or nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: a refused swap loses the new one",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a swap whose old one has no room (key cap): refused, all of it or nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: a take-off without room",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: Own holds 60: taking a pet's gear off is refused",
+          "pets :: a free slot: no old one goes back, so 60 is fine",
+          "rules :: 20 of that key in Own (room in all): taking off is refused (key cap)",
+          "rules :: Own holds 60: taking off is refused (Full), the armor stays on",
+          "rules :: a swap whose old one has no room (key cap): refused, all of it or nothing",
+          "rules :: still 60: still no room"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "equip: no per-key cap",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: 20 of that key in Own (room in all): taking off is refused (key cap)",
+          "rules :: a swap whose old one has no room (key cap): refused, all of it or nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: no sum cap",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "orphans :: no room in Own: the gear stays where it is (never lost)",
+          "pets :: Own holds 60: taking a pet's gear off is refused",
+          "pets :: a free slot: no old one goes back, so 60 is fine",
+          "rules :: 20 of that key in Own (room in all): taking off is refused (key cap)",
+          "rules :: Own holds 60: taking off is refused (Full), the armor stays on",
+          "rules :: a swap whose old one has no room (key cap): refused, all of it or nothing"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "equip: a take-off of nothing",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: nothing worn: 'none', no notice",
+          "equip :: the ring off: GearAtk 1",
+          "equip :: wear both again",
+          "pets :: nothing worn: none"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "equip: On loses its empty slot",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: a Ring key in the Armor slot: not yours (the kind is the slot)",
+          "equip :: take off: back to Own, the slot is '' (never nil)",
+          "equip :: the ring off: GearAtk 1",
+          "remotes :: EquipGear: two within half a second (0.5 s) = the second is ignored"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "equip: a pet keeps an empty row",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: a pet that wears nothing has no row",
+          "remotes :: ... after half a second it works (the take-off)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: a broken Gear table not repaired",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join :: a broken Gear table is repaired (Config.SanitizeGear), no error",
+          "join :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: no GearInfo after a change",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearInfo { Own, On, Pet } after the change",
+          "pets :: GearInfo.Pet and the Equipped key"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "equip: the pet is not republished",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pets :: ... and its own PetAcc 0.02 once it wears one",
+          "pets :: PetArmor on the same pet (a row of two slots)",
+          "pets :: PetService republished: the PetAcc attribute 0.01, then the speed refresh",
+          "pets :: swap: PetAcc T3 +2 = 0.04, the T1 back in Own"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "equip: no notice",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearHp back to 1, the Removed key",
+          "equip :: nothing worn: 'none', no notice",
+          "equip :: the notice is a key (Equipped)",
+          "pets :: GearInfo.Pet and the Equipped key"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "equip: a refusal says nothing",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: Lv9: not even tier 1 (NeedLevel, nothing changes)",
+          "rules :: Own holds 60: taking off is refused (Full), the armor stays on",
+          "rules :: not owned: NotYours, nothing changes"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "equip: a refusal sends no GearInfo",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: a turned-down change sends GearInfo again (the window shows the truth)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: no GearHp",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearAtk 1.14 (ring T3 +2)",
+          "equip :: GearHp 1.06 (armor T1 +0), GearAtk 1",
+          "equip :: GearHp 1.14 (T2 +1)",
+          "equip :: GearHp back to 1, the Removed key",
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
+          "join :: a broken Gear table is repaired (Config.SanitizeGear), no error"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "equip: no GearAtk",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearAtk 1.14 (ring T3 +2)",
+          "equip :: GearHp 1.06 (armor T1 +0), GearAtk 1",
+          "equip :: the ring off: GearAtk 1",
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
+          "join :: no gear: 1 / 1"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "equip: the armor's HP not refreshed",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: a new armor re-reads the max HP (RefreshCharacter, no full heal)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "equip: the ring from the armor",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "equip :: GearHp 1.06 (armor T1 +0), GearAtk 1",
+          "equip :: GearHp 1.14 (T2 +1)",
+          "equip :: GearHp back to 1, the Removed key",
+          "equip :: a new armor re-reads the max HP (RefreshCharacter, no full heal)",
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
+          "join :: a worn thing stays on at a low level"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "join: the switch not checked",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rules :: switch off: no attribute, no GearInfo, no refresh at the join"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "join: no attributes",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
+          "join :: a broken Gear table is repaired (Config.SanitizeGear), no error",
+          "join :: a worn thing stays on at a low level",
+          "join :: no gear: 1 / 1"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "join: no GearInfo",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join :: PlayerReady: one GearInfo { Own, On, Pet }",
+          "join :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "join: a gone pet keeps its gear",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "orphans :: PlayerReady: a vanished pet's gear goes back to Own, a pet I still have keeps its",
+          "orphans :: no pets at all: it goes back too"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "join: a gone pet's gear lost when Own is full",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "orphans :: no room in Own: the gear stays where it is (never lost)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "join: an empty row stays",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "orphans :: PlayerReady: a vanished pet's gear goes back to Own, a pet I still have keeps its",
+          "orphans :: no pets at all: it goes back too"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "remote: extra arguments taken (EquipGear)",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: EquipGear: the wrong argument count / types / lengths are ignored",
+          "remotes :: EquipGear: two within half a second (0.5 s) = the second is ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "remote: extra arguments taken (EquipPetGear)",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: EquipPetGear: the wrong argument count / types / lengths are ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: no rate limit (EquipGear)",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: EquipGear: two within half a second (0.5 s) = the second is ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "remote: no rate limit (EquipPetGear)",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "remotes :: EquipPetGear: two within half a second = the second is ignored"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "scroll: UseItem takes a gear key as a tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "scrolls :: ... and no handler error (a gear key is no weapon tier)",
+          "scrolls :: no service warnings (pcall-swallowed handler errors)"
+        ],
+        "newFailingCount": 2
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "063c4f81827e473cc80185888d8281f297009a46371e40fc0738ae661a9c9da9",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/GearService.luau": "84891eed5d9ee5728c1e3ac7caebf1b3996bb640eb4b8df7d9744d6aebad2cd0",
+    "src/ServerScriptService/PetService.luau": "0a7fc89c858c187c485c40c94ccdbeb4bfd2f182a844bb82a9c2f4ea8adf529f",
+    "src/ServerScriptService/CombatService.luau": "8d9e02c1c0aef0e628c76807dd7bc5d568280d0256eb9bfcfbf4e9d7c0987f96",
+    "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
+    "src/ServerScriptService/PlayerService.luau": "8992841de671fd0e580317d8ec49e8240bff9964a1551e9f3103d3ee39498b39",
+    "src/ServerScriptService/JusticeService.luau": "4a8733f87579841fa0d02dbfde562c84c5ade0b05d3f2fb196cd7a44a0e335ad"
+  },
+  "fixtureSHA256": "0cd2d6fc6daa83e606d71b8ca1c82604414e5f8fd920edf2b7b9c98f92224210",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "Gear slots (docs/design/gear_slots_2026-10-12.md, 게임성 검수 10/12): Armor (max HP x 1 + 6/12/18% + 2% a +N, wear Lv 10/20/30) and Ring (my hits and power x 1 + 4/8/12% + 1% a +N); PetArmor (pet XP + 20/40/60% + 10% a +N, floored) and PetAcc (walk bonus + 1/2/3% + 0.5% a +N, Speed.Cap stays) on the pet that follows; EquipGear(slot, key) / EquipPetGear(uid, slot, key) with key 'T:P' or '': one place (Own <-> On / Pet[uid]), Own 60 / 20 caps, wear level, my pet only, ready + alive, 0.5 s, exact argument count, keys-only notices; GearAtk / GearHp attributes and GearInfo { Own, On, Pet } at PlayerReady and after changes; hooks: computeMaxHealth, ComputeMonsterHit, ComputePvPHit (ring x weapon damage inside the same clamp, base = the victim's BASE MaxHealth), POWER.Watch, PetAcc in the walk speed, PetArmor in pet XP; Config.CombatPower / MaxCombatPower with the gear; Config.Features.Gear off = (1, 1) everywhere. A gear's +N is only the hammer's +0..+2: UseItem with a gear key changes nothing, Config.SanitizeGear keeps P in 0..2, GearService never writes a plus.",
+  "limitations": "The gear window, the pet-gear row in the pet window and any Fx are client work (not in this job). Real Humanoid MaxHealth changes (RefreshCharacter) are a double here; PlayerService.computeMaxHealth, ComputeWalkSpeed and JusticeService POWER.Watch run as extracted functions with doubles. A kill gives a pet XPPerKill = 1: x1.2..x1.8 floors back to 1, so PetArmor shows on treats (+20 XP) and any bigger gain (a tuning note for 게임성 검수)."
+}

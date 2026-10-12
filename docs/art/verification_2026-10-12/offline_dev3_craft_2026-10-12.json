@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 176,
+  "checks": 189,
   "failedChecks": 0,
-  "namedChecks": 162,
+  "namedChecks": 164,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -51,7 +51,19 @@
     },
     {
       "group": "config",
-      "check": "eight blacksmith recipes",
+      "check": "eight blacksmith weapon recipes",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "gear recipe: role / slot / tier / craft Lv as the design, every material is a known item",
+      "pass": 12,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a gear recipe is on only while Config.Features.Gear is",
       "pass": 1,
       "fail": 0
     },
@@ -984,9 +996,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 97,
-    "applied": 97,
-    "caught": 97,
+    "total": 98,
+    "applied": 98,
+    "caught": 98,
     "skipped": false,
     "results": [
       {
@@ -1137,6 +1149,19 @@
           "recipes :: W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items"
         ],
         "newFailingCount": 2
+      },
+      {
+        "mutation": "recipe: gear without the gear switch",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: a gear recipe is on only while Config.Features.Gear is",
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
+          "tamer :: the tamer's CraftInfo.On = S1, T1"
+        ],
+        "newFailingCount": 3
       },
       {
         "mutation": "recipe: weapons without AddSpare",
@@ -1655,14 +1680,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "config :: group ran to the end without a Lua error",
           "ends :: group ran to the end without a Lua error",
           "hammer :: group ran to the end without a Lua error",
           "off :: group ran to the end without a Lua error",
           "recipes :: group ran to the end without a Lua error",
-          "remotes :: group ran to the end without a Lua error",
-          "results :: group ran to the end without a Lua error"
+          "remotes :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 11
       },
       {
         "mutation": "end: no Crafted signal",
@@ -1886,9 +1911,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)"
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
+          "tamer :: the tamer's CraftInfo.On = S1, T1"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "start: a switched-off recipe says nothing",
@@ -2226,13 +2252,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "3980836b987d717ff67dadb9c7645b39fa868b44d626db9ec41bd2d0fe5ec057",
+    "src/ReplicatedStorage/Shared/Config.luau": "063c4f81827e473cc80185888d8281f297009a46371e40fc0738ae661a9c9da9",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
-    "src/ServerScriptService/CraftService.luau": "6efa1c0a17eb495b2dd2ec25d9bb3c39fad95bb19510c43360b63fee3b99ab42"
+    "src/ServerScriptService/CraftService.luau": "95fd223f9003309ca86888c7cc1d537b0ccc4517d7fe2451e97bab5dad4029bc"
   },
-  "fixtureSHA256": "5dc2f6d19810af40790dc7cbcf636230653fefedd7d7290dd6df4846ac60bfea",
+  "fixtureSHA256": "395674c5800896983d13842b38713299207712bbc61c3ca7c65b02c2d9a10984",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
