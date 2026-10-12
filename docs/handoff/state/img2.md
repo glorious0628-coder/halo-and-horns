@@ -1,14 +1,12 @@
 # 이미지 생성 2 — 인계 (2026-10-12 새벽)
-## 지금 상태 (10/12 오전)
-- 보고: 그림 시트는 **디자인 검수**(list_sessions), 로그인·화면·사용자 질문은 최종 검수. Firefly 로그인됨, 탭 `seed`(창은 보이게 유지돼야 렌더됨), 큐 비어 있음.
-- 끝·푸시·보고함: 가방 아이콘 11종 High+컷아웃(통과) / Glowcap·CraftRing·Target·Ingot High+컷아웃(`icons_bag_cut/`, 시트 `icons_new_batch_cut_sheet.jpg`) / 게임 아이콘 C High(`gameicon/GameIcon_C_512.png`·`_150.png`, 시트 `gameicon_C_hq_sheet.jpg`) / Garden7 right v4(`garden7_4v_v4.jpg`, 발코니 위치 왼쪽 가장자리라 판정 대기) / 새 아이콘 5종 Medium 10장(`icons_bag2/`, 시트 `icons_bag2_medium_cands.jpg`).
-- 크레딧: 오늘 아침 High 6장 사용(30). 어젯밤 합산 약 1,430 사용, 표시 잔액은 Firefly 화면에서 확인(약 3,400 추정). 500 근처면 알림.
+## 지금 상태 (10/12 오전, 큐 비어 있음)
+- 보고: 그림 시트는 **디자인 검수**(list_sessions), 로그인·창 보이기·사용자 질문은 최종 검수. Firefly 로그인됨, 탭 `seed`. **브라우저 창이 보여야 렌더/속도 정상**(숨기면 멈추거나 느림 → 최종 검수에 Ctrl+Shift+B 부탁).
+- 오늘 끝·푸시·보고함(전부 디자인 검수 통과 또는 판정 대기): 가방/제작 아이콘 16종(통과, 올리기 이미지 개발) · 게임 아이콘 C(통과) · 새 집 7채 4면(통과) · 무기 4면 84(통과) · 물약 상인 4면(통과) · 성문 등 머리 4면(통과)+받침 Medium(그대로 씀)+무기고 뒤(통과) · 밈 5장 High(통과)+GG `EmoGG` 컷아웃(통과) · **후광·뿔 4면 16장**(`art/out/s2/memes_4v/`, 판정 대기) · **스티커 17종 High+컷아웃**(`stickers_cut/Emo*.png`, 판정 대기) · **채팅 말풍선 8 Medium**(`bubbles_cut/`, 판정 대기·고르기) · **빛 성 C2 정면·right·금문 한 짝**(`halo/castle6/`, 판정 대기) · **큰 지도 빛 섬 High 합성본 ★**(`worldmap/UIP_WorldMapV2_HaloNew_composite.png`, 판정 대기) · 새 집 주민 8명+Folk4 Medium 18장(`npc2/`, 최종 검수 고르기 대기).
+- 크레딧: 오늘 High 합계 약 90장(약 450크레딧) 사용(아침 55 + 밈 5·4면 16·스티커 17·성 3·물약 상인 4·등 4·무기고 1·지도 1 …). 표시 잔액은 Firefly 화면에서 확인, 500 근처면 알림.
 ## 다음 일
-- 새 아이콘 5종(PetTreat·MightTonic·GuardTonic·LuckyTonic·WisdomTonic) High+컷아웃 끝·통과 대기(`icons_bag_cut/`, 시트 `icons_new5_cut_sheet.jpg`, 자홍 칸 포함). 올리기 5개는 디자인 검수 → 최종 검수 → 이미지 개발.
-- IconGlowcap은 --holes로 다시 잘라 고침(이미지 개발이 올림).
-- 컷아웃 확인 시트(`--check`)는 항상 자홍 칸 포함 4칸(밝은/남색/자홍/48px) — 디자인 검수 요청.
-- 새 요청 오면: Medium 0크레딧 → 고르기 → High 5크레딧 → `cutout_flat.py --holes` → 시트(밝은·남색·자홍 + 48px) → 디자인 검수.
-- 크레딧: 10/12 아침 High 11장(55) 사용. 어젯밤 약 1,400 + 오늘 55. 표시 잔액은 Firefly 화면 확인(약 3,350 추정), 500 근처면 알림.
+- 주민 고른 것 High 정면(+4면 요청 시) / 말풍선 고른 것 High(안쪽 64px 띠 장식 맞춤) / 판정 반려 시 해당 칸 다시.
+- 규칙: Medium 0크레딧 → 고르기 → High → `cutout_flat.py --holes` → 확인 시트(밝은·남색·자홍·48px) → 디자인 검수.
+- 올리기는 이미지 개발(승인은 최종 검수).
 ## Firefly / 도구 메모
 - 새 턴마다 `resize_window` 1440x900. 페이지를 다시 열면 보강 helper(품질 선택기 value+change, 품질 확인 실패 시 중단)를 javascript_exec에 다시 심기: `__pick(idx,value)`는 idx 2(품질)만 value+change, 나머지는 메뉴 클릭. 반복 실행에는 `setInterval`로 품질 값이 바뀌면 `__stopList=true`(실수 High=5크레딧).
 - 참조: 이미 만든 결과 이미지의 `asset_get_presigned_urls` downloadUrl(https://at.adobe.com/…)을 `__setRef`에 그대로(assets 배열에 `{id, sourceType:"acp"}`). 로컬 파일은 asset_initialize_file_upload → curl PUT → finalize.
