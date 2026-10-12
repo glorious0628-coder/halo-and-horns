@@ -4248,7 +4248,9 @@ end
 -- picked key ("" = my side's free one). SetBubble(key) (MonetizationService) checks and saves; BubbleOn = what shows now.
 Config.Bubbles = {
 	Free = { Halo = "BubbleHalo", Horns = "BubbleHorns", Neutral = "BubbleArtisan" },
-	Order = { "BubbleHalo", "BubbleHorns", "BubbleArtisan" }, -- + the pack's skins (Bubble<Name>) when their art is in
+	-- the 3 sides' + the pack's 6 (image dev's names, 10/12; until a Parts entry is uploaded the client draws a code fallback)
+	Order = { "BubbleHalo", "BubbleHorns", "BubbleArtisan", "BubblePixel", "BubbleDonut", "BubbleNight", "BubbleCloud",
+		"BubbleFlower", "BubbleCrown" },
 	Pass = "Bubbles",
 }
 Config.Data.Defaults.Bubble = "" -- additive (no version step): the picked chat bubble skin
