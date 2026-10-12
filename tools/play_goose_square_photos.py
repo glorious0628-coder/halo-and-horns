@@ -188,6 +188,44 @@ for _, d in pg:GetDescendants() do
 end
 return table.concat(out, " | ")
 """
+GSQ = r"""
+local out = {}
+local m = workspace:FindFirstChild("GooseSquare")
+if not m then return "GooseSquare: none" end
+table.insert(out, "BuiltBy=" .. tostring(m:GetAttribute("BuiltBy")) .. " StandInFloor=" .. tostring(m:GetAttribute("StandInFloor")))
+local n = 0
+for _, d in m:GetDescendants() do
+	if d:IsA("BasePart") then
+		n += 1
+		if n <= 60 then table.insert(out, string.format("%s pos=%s size=%s transp=%s collide=%s", d.Name, tostring(d.Position), tostring(d.Size), tostring(d.Transparency), tostring(d.CanCollide))) end
+	end
+end
+table.insert(out, "parts=" .. n)
+local kids = {}
+for _, d in m:GetChildren() do table.insert(kids, d.Name .. "(" .. d.ClassName .. ")") end
+table.insert(out, "children: " .. table.concat(kids, ", "))
+return table.concat(out, "\n")
+"""
+CAMP = r"""
+local cam = workspace.CurrentCamera
+local lp = game.Players.LocalPlayer
+local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
+local L = game.Lighting
+local out = {}
+table.insert(out, "cam " .. tostring(cam.CameraType) .. " subject=" .. tostring(cam.CameraSubject and cam.CameraSubject:GetFullName()) .. " camPos=" .. tostring(cam.CFrame.Position) .. " focus=" .. tostring(cam.Focus.Position) .. " hrp=" .. tostring(hrp and hrp.Position))
+table.insert(out, "fog start=" .. L.FogStart .. " end=" .. L.FogEnd .. " color=" .. tostring(L.FogColor) .. " brightness=" .. L.Brightness .. " exposure=" .. L.ExposureCompensation .. " clock=" .. L.ClockTime)
+for _, e in L:GetChildren() do table.insert(out, "L " .. e.ClassName .. " " .. e.Name .. " " .. tostring(e:IsA("PostEffect") and e.Enabled)) end
+for _, g in lp.PlayerGui:GetChildren() do
+	if g:IsA("ScreenGui") and g.Enabled then
+		for _, f in g:GetChildren() do
+			if f:IsA("GuiObject") and f.Visible and f.AbsoluteSize.X > 1500 and f.BackgroundTransparency < 0.9 then
+				table.insert(out, "full " .. g.Name .. " " .. f.Name .. " " .. f.BackgroundTransparency .. " " .. tostring(f.BackgroundColor3))
+			end
+		end
+	end
+end
+return table.concat(out, "\n")
+"""
 ATTR = r"""
 local p = game:GetService("Players").LocalPlayer
 return "InGooseSquare=" .. tostring(p:GetAttribute("InGooseSquare")) .. " GooseJoinBlock=" .. tostring(p:GetAttribute("GooseJoinBlock"))
@@ -203,6 +241,7 @@ def main():
         if "Current Studio Mode: Edit" not in st:
             sys.exit("not in Edit: " + st)
         note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh on"', "Edit"))
+        note("EDIT state GooseSquare:\n" + lua(c, GSQ, "Edit"))
         c.call("start_stop_play", {"is_start": True})
         note("loaded: " + wait_state(c, lambda x: "DataLoaded=true" in x, 90, 2.0))
         time.sleep(26)
@@ -224,6 +263,8 @@ def main():
         note("join: " + lua(c, FIRE % ("GooseSquare", '"Join"', "GooseSquare Join"), "Client"))
         time.sleep(4)
         note("inside attr: " + lua(c, ATTR, "Client"))
+        note("PLAY GooseSquare after Join:\n" + lua(c, GSQ, "Server"))
+        note("CLIENT cam probe after Join:\n" + lua(c, CAMP, "Client"))
         save(c, "02_inside_square")
         time.sleep(3)
         save(c, "03_inside_square_leave_visible")
@@ -231,6 +272,8 @@ def main():
         note("leave: " + lua(c, FIRE % ("GooseSquare", '"Leave"', "GooseSquare Leave"), "Client"))
         time.sleep(4)
         note("inside attr after leave: " + lua(c, ATTR, "Client"))
+        time.sleep(2)
+        note("CLIENT cam probe 3 s after Leave:\n" + lua(c, CAMP, "Client"))
         save(c, "04_after_leave")
         # a rookie still in the tutorial (A23-68): no Join outside, but Leave + the egg bar inside
         note("rookie: " + lua(c, TUTOR % "0", "Server"))
@@ -248,6 +291,7 @@ def main():
         save(c, "07_rookie_after_leave")
         con = text_of(c.call("get_console_output", {}))
         errs = [ln for ln in con.splitlines() if any(k in ln.lower() for k in ("error", "failed", "infinite yield")) and "TexturePack" not in ln]
+        note("goose warnings: " + "\n".join(ln for ln in text_of(c.call("get_console_output", {})).splitlines() if "GooseSquare" in ln or "GooseService" in ln)[-3000:])
         note("console: " + "\n".join(errs[-20:]))
     finally:
         try:
@@ -256,7 +300,7 @@ def main():
         except Exception as e:  # noqa: BLE001
             note("stop failed " + str(e))
         time.sleep(2)
-        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", nil) return "fresh off"', "Edit"))
+        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh kept on"', "Edit"))
         with open(os.path.join(OUT, "log.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(LOG) + "\n")
 

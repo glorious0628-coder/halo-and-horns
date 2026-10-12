@@ -1,3 +1,10 @@
+# 이미지 개발 — 10/12 저녁 정리 (사용자 "모든 세션 여기까지만")
+
+- 하던 일 전부 멈춤(새로 만들거나 올리는 것 없음). **그림자 점검(A23-150)은 시작만 함**: WorldKit MV 색 맵 21개 id 목록만 뽑음(build/mv_color_rows.json, git 밖), 판정 파일 docs/review/noshadow_check_imgdev_2026-10-12.md는 **아직 안 만듦** -> 다음에. 대상 = ① MaterialService MV 색 맵(GE_* 지형 14 + HH_* 7: id->파일은 asset_ids/approved.json에 없는 GE_* 11개는 Config·MaterialService 기록에서 찾아야 함) ② Config.UIArt 그림(UI는 따로 칸) ③ 하던 그림. 판정: 있음/약간/없음.
+- **남은 일:** ① 말풍선 9종(Firefly Medium, 정사각 1024->512 9-slice 모서리 64px; 프롬프트 art/prompts/BubbleFancy_*.txt + img_bubblefancy_queue_2026-10-12.json 준비, 앱 브라우저 창 너비 고정 필요; A23-150/151: 그림자 없이·마무리는 ChatGPT) ② 파란 비늘 기와 타일(Tex_RoofTileBlue a/b/c 프롬프트 준비 -> 후보 -> 최종 검수 -> HH_HaloRoofTileBlue MV) ③ 거위 골격(workspace.GooseSquare, tools/goose_square.py): SPEC A23-152로 **쌍둥이 교차로(교차로와 똑같이 생긴 곳, 거위 게임만)**가 되므로 지금 둥근 크림 골격은 임시 -> 교차로 꾸미기 때 교차로 광장 복사 도구로 바꿈; 서쪽 벽 그림자 확인은 그 때 ④ 6단계 때 메인 밤 값 Config 가지(Looks.Night Exposure 0.35 -> +0.0 비율) ⑤ 아이콘·스티커 가지(imgdev-stickers de9e4fcf 등) 병합 확인.
+- **바깥선 취소(A23-148)**: PropHull035_* 50개 기록만 남김(쓰지 않음). 한국어 모드 취소(A23-146).
+- WorldKit id는 자주 바뀜(STUDIO_NAME=WorldKit로 잡을 것). 새로 올린 것 전부 push됨.
+
 # 이미지 개발 — 상태 (2026-10-12: 바깥선 취소 SPEC A23-148)
 
 - **바깥선(껍데기 메시) 취소**(사용자: "선 때문에 완전 이상해졌다. 우리의 시안은 2D야"). 묶음 6·Import 요청 그만, 남은 껍데기 일 없음. `prop_hull_assets.json`·asset_ids `PropHull035_*` 50개는 기록만(쓰지 않음, 지우지 않음). WorldKit의 껍데기 숨기기는 이미지 생성 4. 도구(upload_hull_meshes.py·read_imported_hulls.py·prepare_hull_batch.py)는 그대로 둠, build/hull_import* 폴더 비움.

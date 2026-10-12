@@ -1,4 +1,20 @@
-# 게임성 개발 2 — 상태 (2026-10-12 저녁)
+# 게임성 개발 2 — 상태 (2026-10-12 저녁 정리)
+
+## 10/12 저녁 정리 (사용자: "모든 세션 여기까지만 하고 정리")
+- 새 결정 A23-152: 베타 7구역(빛·뿔·장인 마을·교차로·슬라임·고블린·해골), NewZones는 베타 뒤,
+  **거위 광장 = 교차로 쌍둥이, 거기선 거위 게임만**(서버 계약 workspace.GooseSquare 그대로).
+- **fix/goose-square-floor 448b72ff**(origin/main 기준): 바닥(보이고 밟히는 Floor/StandInFloor) 없는 GooseSquare 모델엔 임시 바닥 추가,
+  Join 때 광장 없으면 먼저 만듦, 만들 때 로그 한 줄. test_goose_square 91/91·변형 51/51. **최종 검수 시험 중.**
+- 거위 광장 '하늘색/회색 허공': 메인 반영 1 읽기 → 서버 바닥 정상(6000,198,6000, 투명 0, 밟힘, 경고 없음). 그런데 Leave 뒤 마을 사진(04)도
+  화면 전체 회색 → 광장 아닌 순간이동 뒤 **클라이언트 화면** 문제로 추측. 메인 반영 1에 클라이언트 읽기 부탁함(카메라 Type/Subject/CFrame/Focus,
+  HRP, Lighting 안개·효과, 전체화면 GUI). **결과(goose_square3/log.txt): 카메라·안개·덮개 모두 정상** → 회색은 Studio 창이 가려진/최소화된
+  상태의 사진 탓일 가능성 큼(추측). 남은 일: 창 복원 상태로 Join 사진 한 장(최종 검수 허락 → 메인 반영 1). 코드 고칠 것 없음.
+  사진: docs/art/verification_2026-10-12/main_apply/goose_square2/.
+- **C2 = dev2-c2 f1a2cbe9 (push함, 아직 보고 안 함)**: 491ef614(드롭표 다시 맞춤, FirstWeaponDrop BigSlime T2, 겹친 무기 → AddSpare + SpareWeapon,
+  DuplicateWeaponGold 15/80, LootFlags.FirstWeapon) + main 병합. test_loot --no-mutations 574 통과. **전체 시험은 중간에 멈춤 → 다시 돌리고**
+  실패(new_zones 무기 줄 비교, 경제·첫 10분 시험 등) 고친 뒤 숫자와 함께 최종 검수 보고. A23-152로 NewZones 몬스터 줄은 베타 뒤라 그대로 둠.
+- 열린 가지: fix/goose-square-floor, dev2-c2, dev2-bubbles c1c70fce(개발 1 스티커 화면과 병합 대기), fix/lesstext-server 8c8dc44d(병합 확인 안 함).
+- worktree: wt_goose_square(fix/goose-square-floor), wt_c2(dev2-c2), wt_stickers, wt_c1, wt_famecap, wt_lesstext_server(병합된 것 지우기).
 
 서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). **보고처 = '최종 검수'**(10/12 게임성 검수 쉼; id는 list_sessions).
 보고는 묶음마다 한 번. 대화가 길어지면 이 파일 적고 push → clear_session("self").

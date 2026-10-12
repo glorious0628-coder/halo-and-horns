@@ -41,8 +41,8 @@ local function newModel(attrs, parts)
 	function m:FindFirstChild(name) return self.Parts[name] end
 	return m
 end
-local function part(pos, size)
-	local pt = { Position = pos, Size = size, CFrame = cf(pos) }
+local function part(pos, size, see)
+	local pt = { Position = pos, Size = size, CFrame = cf(pos), CanCollide = true, Transparency = see and 1 or 0 }
 	function pt:IsA(c) return c == "BasePart" end
 	return pt
 end
@@ -84,8 +84,14 @@ local function square(opts)
 	end
 	function GW.SavedAuto(p) return p.SavedAuto end
 	function GW.Model() return G.Model end
-	function GW.Build()
+	function GW.Build(into)
 		G.Builds += 1
+		G.BuiltInto = into
+		if into then
+			into.Parts.StandInFloor = part(G.C.Goose.SquareSpace.Center, G.C.Goose.SquareSpace.Size)
+			into.Parts.Floor = into.Parts.Floor or into.Parts.StandInFloor
+			return into
+		end
 		local c, size = G.C.Goose.SquareSpace.Center, G.C.Goose.SquareSpace.Size
 		local attrs = {}
 		for name, off in G.C.Goose.SquareSpace.Offsets do attrs[name .. "Pos"] = c + off end
@@ -126,6 +132,35 @@ runGroup("space", function()
 	check(near(t.SpawnNeutral.X, 100 - 22) and near(t.SpawnNeutral.Z, 100), "a missing mark = GooseSpot + its Config offset (SpawnNeutral)",
 		show({ t.SpawnNeutral.X, t.SpawnNeutral.Z }))
 	check(near(t.AreaSize.X, 110) and near(t.AreaCF.Position.Y, 48), "the Floor part is the area", "")
+
+	-- a model without a floor you can see / stand on (an unfinished skeleton) gets the stand-in floor, keeps its marks
+	local skel = newModel({ GooseSpotPos = spot, NestPos = vec(100, 50, 70) }, { Floor = part(vec(100, 48, 100), vec(110, 4, 90), true) })
+	local K = square({ Model = skel })
+	local u = K.GS.Ensure()
+	check(K.Builds == 1 and K.BuiltInto == skel and skel.Parts.StandInFloor ~= nil and near(u.Nest.Z, 70),
+		"a see-through Floor: the stand-in floor goes into that model, its marks stay", show({ K.Builds, u.Nest.Z }))
+	K.GS.Ensure()
+	check(K.Builds == 1, "once it has the floor, no second build", K.Builds)
+	local bare = square({ Model = newModel({ GooseSpotPos = spot }, {}) })
+	bare.GS.Ensure()
+	check(bare.Builds == 1 and bare.BuiltInto ~= nil, "a model with no Floor at all gets the stand-in floor", bare.Builds)
+	local HF = G.GS.World.HasFloor
+	local fm = { IsA = function(_, c) return c == "Model" end }
+	function fm:GetDescendants() return { part(vec(0, 0, 0), vec(4, 1, 4), true), part(vec(0, 0, 0), vec(4, 1, 4)) } end
+	local holder = newModel({}, { Floor = fm })
+	check(HF(holder) == true and HF(nil) == false, "a Floor model with one solid, visible part is a floor; no model = none", "")
+	local ghost = part(vec(0, 0, 0), vec(4, 1, 4))
+	ghost.CanCollide = false
+	check(HF(newModel({}, { Floor = ghost })) == false, "a Floor you fall through is no floor", "")
+
+	-- the square went after the start (or was never built): Join builds it before moving the player there
+	local J = square()
+	J.GS.Ensure()
+	J.Model = nil
+	local pj = J.Add(newPlayer("J"))
+	local okJ = J.GS.Join(pj)
+	check(okJ == true and J.Builds == 2 and J.Model ~= nil and #J.Pivots == 1, "Join with the square gone: built again, then moved",
+		show({ okJ, J.Builds, #J.Pivots }))
 end)
 
 ------------------------------------------------------------------ Inside

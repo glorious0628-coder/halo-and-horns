@@ -218,7 +218,7 @@ def main():
         except Exception as e:  # noqa: BLE001
             note("stop failed " + str(e))
         time.sleep(2)
-        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", nil) return "fresh off"', "Edit"))
+        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh kept on"', "Edit"))
         note("RESULT\n" + "\n".join(results))
         os.makedirs(OUT, exist_ok=True)
         with open(os.path.join(OUT, f"{TAG}_log.txt"), "w", encoding="utf-8") as f:

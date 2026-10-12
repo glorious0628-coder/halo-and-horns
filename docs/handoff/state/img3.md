@@ -1,5 +1,18 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/12 밤 (최종 검수 할 일 1·2 끝)
+- **빛 성 C2 골격 WorldKit 넣음**(1d95146): 바닥판 SkeletonTest.HouseRows_Ground3(z 210..310) → 시험 줄 4 HaloCastle_C2_Skeleton(1374, 문 z 230) → 계획 자리 HaloV2.Buildings.Castle(문 오차 0, 회색 상자 → ServerStorage.HaloV2_GrayBoxes). 백업 build/wk_backup/20261012_211758. 낮 사진 시트 art/review/img3/houses/castle_C2_wk/castle_C2_wk_day.jpg (tools/castle_shots.py, 창이 펼쳐져 있으면 화면 차례 없이 찍힘). 계획 자리 앞마당에 소품 5개 겹침(P054·P055 Topiary, P056 BenchA, L26 Lantern_A, P052 Flagpole_3) = 이미지 생성 1 몫, 최종 검수에 알림. WorldKit 창 = 펼쳐진 채(셸 열기의 Minimized 무시됨).
+- **덩어리 장식 43종 그림 큐**(abac993): art/prompts/house_chunks_queue_2026-10-13.json (순서 = 눈에 띄는 것 먼저, 집 목록·옛 2D·크롭·한 줄 설명·A23-150 규칙), 크롭 art/review/img3/chunk_refs/ (+ chunk_refs_sheet.jpg), 도구 tools/house_chunk_queue.py.
+- 다음: 통과한 Tripo GLB(동상·분수 먼저, Blender 손보기 세션) 오면 WorldKit 넣기·재질·낮밤 사진 — 최종 검수가 알려 줌.
+
+## ★ 10/12 저녁 정리 (사용자 "여기까지만 하고 정리")
+- **빛 성 C2 골격 v3 통과**(tools/skeleton_castle.py, 파트 1374, 십자 평면 + 교차 탑 = 가장 높은 첨탑·후광 자리, 정면 계단 탑·장미창·뾰족 정문·진짜 금 문짝 2·기단). **WorldKit 넣기 대기**: WorldKit 닫혀 있음 → 최종 검수 '전달함, 시작' 뒤 scratchpad castle_run.sh 순서(셸로 build/WorldKit.rbxlx 열기 → 바닥판 3(z 208..308) → build/castle_row.json(시험 줄 4, z 260) → build/castle_plan_place.json(tools/castle_plan_place.py, 계획 자리 Castle -176,-574 yaw 20, 문 맞춤) → 백업 → 낮 사진 5장 → 최소화). 장식 단계 메모: 교차 탑 아래 둘레 작은 첨탑 4, 옆 첨탑 줄 더 촘촘히.
+- **등불 = 파트 골격**(받침·기둥 4·유리·뚜껑·2단 지붕·꼭지·벽 팔) 22채 + 07 바꿔 넣음(house_skeleton_swap, 07은 Luau로), 옛 납작 등불 58 + 07 금속 틀 4 → ServerStorage.Parked_FlatLanterns. 사진 lamps_parts_day.jpg.
+- **덩어리 장식 목록** docs/design/house_chunk_decor_2026-10-12.md (tools/house_chunk_list.py): 요약 = 같은 모양 한 번 만들기 고유 43종 × 130 = 5,590점 — **사용자 결정(A23-150 5번): 같은 모양은 같이 쓰기**(2D가 같은 것만, 다른 물건 흉내 금지). 다음 = 이 43종 순서로 이미지 생성 2에 덩어리 그림 요청. 집마다 받는 덩어리 표.
+- 그림자 점검 docs/review/noshadow_check_img3_2026-10-12.md(169장: 있음 7·약간 160·없음 2). 놓인 소품 목록 docs/design/halo_v2_placed_props_2026-10-12.md + 이름 한 줄씩 halo_v2_placed_names_2026-10-12.txt (tools/wk_placed_props.py, 저장 파일 파싱).
+- **이미지 생성 4 일 이어받음**: 통과한 GLB를 WorldKit 넣기·Roblox 재질·낮밤 사진(2D 나란히) — docs/handoff/state/img4.md 맨 위, 넣을 것은 최종 검수가 알려 줌(아직 없음).
+- 새 결정 SPEC A23-152: 베타 7구역 순서 빛 → 뿔 → 장인 마을(새로) → 교차로 + 쌍둥이 교차로(거위 게임만) → 슬라임 → 고블린 → 해골.
+
 **WorldKit = 새 창 STUDIO_ID 83b32720.** 집 15채 장식 1차 + 2차 v2_extras + **3차 v3_roofs(08 현관 돔·빵 벽돌 돔·굴뚝·굴뚝 갓·주스 파라솔 A/B·꼭지) 배치 끝(10/12 10:58, 사용자가 두 번 넣은 것 하나 지움, 꼭지 Fabric→Plastic+SA 고침, 도구 `_Canopy[AB]$`)**, 골격 13채 새 판, WalkGround 812, 백업 `wk_backup 20261012_105803`.
 **10/12 13:4x 역할 바뀜(최종 검수, 사용자 '전부 싹 다 새로'):** Blender 거친 3D 전부(집 parts·장식·돔·지붕 장식)는 새 'Blender 손보기' 세션(local_fa73201d…)이 Tripo 원본에서 A23-147(최소 손보기)로 다시 함 — 원본·현재판 위치 넘김 끝. 돔 v4(HaloHouses_Deco_v4_domes.glb) Import 멈춤. **내 일 = 집 골격(Studio 파트)·배치·사진 + 새 집 7채 골격**(Hill4·Cliff6·7·8·Garden5·6·7, Tripo HD 원본 art/models/tripo/web/HaloNewHouse_<X>_HD_src.glb, 385점, records 5c65fb7a). WorldKit = STUDIO_NAME=WorldKit(id 자주 바뀜, 지금 535fc5fe). 보고 = 최종 검수(디자인 검수 쉼). 밤 빛 결정: Exposure +0·Ambient ×0.85·등불 255,214,160/0.5/10(이미지 개발).
 **10/12 밤:** 그림자 점검 끝(docs/review/noshadow_check_img3_2026-10-12.md, 169장: 있음 7·약간 160·없음 2 — 집 2D 4면 전부 접촉 그림자 '약간' → 장식은 그림자 없는 2D로 다시). 덩어리 장식 목록 docs/design/house_chunk_decor_2026-10-12.md (tools/house_chunk_list.py). 등불 = 22채 + 07 파트 골격 등불로 바꿔 넣음, 옛 납작 등불·07 금속 틀 → ServerStorage.Parked_FlatLanterns. 빛 성 v2 = 최종 검수 판정 대기. **이미지 생성 4 닫힘 → 그 일(통과한 GLB WorldKit 넣기·재질·낮밤 사진) 이어받음**: docs/handoff/state/img4.md 맨 위 참고, 넣을 것은 최종 검수가 알려 줌.

@@ -157,12 +157,29 @@ function W.ReadSpace(m)
 	end
 	return s
 end
--- the plain stand-in when the place has no GooseSquare model yet: a floor, invisible walls and the marks (no decoration)
-function W.Build()
+-- true when the model has a floor you can see and stand on: a solid, visible Floor (or StandInFloor) part, or a model
+-- of that name holding one
+function W.HasFloor(m)
+	if not m then return false end
+	for _, name in { "Floor", "StandInFloor" } do
+		local f = m:FindFirstChild(name, true)
+		local list = f and (f:IsA("BasePart") and { f } or f:GetDescendants()) or {}
+		for _, d in list do
+			if d:IsA("BasePart") and d.CanCollide and d.Transparency < 1 then return true end
+		end
+	end
+	return false
+end
+-- the plain stand-in when the place has no GooseSquare model yet: a floor, invisible walls and the marks (no decoration).
+-- into = a GooseSquare model already there without a floor (an unfinished skeleton): its parts / marks stay, the
+-- stand-in adds only a floor (StandInFloor when it has a see-through Floor) and the walls / marks it lacks
+function W.Build(into)
 	local c, size = SP.Center, SP.Size
-	local m = Instance.new("Model")
-	m.Name = "GooseSquare"
-	m:SetAttribute("BuiltBy", TAG)
+	local m = into or Instance.new("Model")
+	if not into then
+		m.Name = "GooseSquare"
+		m:SetAttribute("BuiltBy", TAG)
+	end
 	local function part(name, props)
 		local p = Instance.new("Part")
 		p.Name = name
@@ -172,10 +189,11 @@ function W.Build()
 		p.Parent = m
 		return p
 	end
-	local floor = part("Floor", { Size = size, CFrame = CFrame.new(c - Vector3.new(0, size.Y / 2, 0)),
+	local floorName = (into and into:FindFirstChild("Floor", true)) and "StandInFloor" or "Floor"
+	local floor = part(floorName, { Size = size, CFrame = CFrame.new(c - Vector3.new(0, size.Y / 2, 0)),
 		Material = Enum.Material.SmoothPlastic, Color = Color3.fromRGB(240, 232, 215) })
 	CollectionService:AddTag(floor, Config.Ground and Config.Ground.Tag or "WalkGround")
-	m.PrimaryPart = floor
+	if not into then m.PrimaryPart = floor end
 	local hx, hz, wh = size.X / 2, size.Z / 2, SP.WallHeight
 	local walls = {
 		Wall_E = { Vector3.new(1, wh, size.Z + 2), Vector3.new(hx + 0.5, wh / 2, 0) },
@@ -184,24 +202,30 @@ function W.Build()
 		Wall_S = { Vector3.new(size.X + 2, wh, 1), Vector3.new(0, wh / 2, hz + 0.5) },
 	}
 	for name, w in walls do
+		if into and into:FindFirstChild(name, true) then continue end
 		part(name, { Size = w[1], CFrame = CFrame.new(c + w[2]), Transparency = 1, CanQuery = false, CastShadow = false })
 	end
 	for name, off in SP.Offsets do
+		if into and markPos(into, name) then continue end
 		part(name, { Size = Vector3.new(2, 0.2, 2), CFrame = CFrame.new(c + off + Vector3.new(0, 0.1, 0)), Transparency = 1,
 			CanCollide = false, CanQuery = false, CanTouch = false, CastShadow = false })
 		m:SetAttribute(name .. "Pos", c + off)
 	end
-	m.Parent = workspace
+	m:SetAttribute("StandInFloor", true)
+	if not into then m.Parent = workspace end
+	Util.Log(TAG, ("stand-in square %s at %s (floor %s, size %s)"):format(into and "floor added" or "built",
+		tostring(floor.Position), floorName, tostring(size)))
 	return m
 end
 
 ------------------------------------------------------------------ the space
--- resolves the marks (the place's model wins; none -> the stand-in, built once); a missing mark = Center/GooseSpot + its
--- Config offset. Returns { GooseSpot, Nest, Cart, SpawnHalo, SpawnHorns, SpawnNeutral, AreaCF, AreaSize }
+-- resolves the marks (the place's model wins; none -> the stand-in, built once; a model with no solid, visible floor
+-- gets the stand-in floor); a missing mark = Center/GooseSpot + its Config offset.
+-- Returns { GooseSpot, Nest, Cart, SpawnHalo, SpawnHorns, SpawnNeutral, AreaCF, AreaSize }
 function GooseSquare.Ensure()
 	local m = W.Model()
-	if not m then
-		local ok, built = pcall(W.Build)
+	if not m or not W.HasFloor(m) then
+		local ok, built = pcall(W.Build, m)
 		if ok then
 			m = built
 		else
@@ -280,6 +304,7 @@ function GooseSquare.Join(p)
 		Q.Block[p] = ""
 		W.SetAttr(p, attrBlock(), "")
 	end
+	if not W.HasFloor(W.Model()) then GooseSquare.Ensure() end -- the square went (or was never built): build it first
 	W.Pivot(p, spawnFor(p))
 	return true, nil
 end

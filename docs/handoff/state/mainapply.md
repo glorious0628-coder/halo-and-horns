@@ -1,4 +1,13 @@
-# 메인 반영 1 — 인계 상태 (2026-10-11)
+# 메인 반영 1 — 인계 상태
+
+## 10/12 저녁 정리 (사용자 지시 "모든 세션 다 여기까지만 하고 정리")
+- **메인 Studio**: GoodEvil.rbxlx(id는 list_roblox_studios로, 지금 ace67cec…) **Edit, Play 없음, 창 최소화**(PowerShell ShowWindowAsync 6; 복원은 9 + SetForegroundWindow). 셸로 열었음: RobloxStudioBeta.exe "build/GoodEvil.rbxlx". 사진 찍을 땐 창을 **복원**해야 함(최소화/가림 = 3D 흰·회색 화면). 긴 촬영 중 뷰가 흰색으로 바뀐 적 있음(tool_basics r15 20장).
+- **저장 상태**: build/GoodEvil.rbxlx = place/ = 10/12 14:52:20, 44,262,615 B, SHA256 e68e7e5a01a730b0…, push f1928aa, **소스 74f1dd79 판**. 그 뒤 병합(56ad3014 팔·ca99cc69 거위·d4c7c3be 팔 진짜 원인·77b27f50 새내기 등)은 **저장 안 된 sync**: Studio 코드는 main fa559ed7 부근까지 sync됨(src 마지막 sync 680316db 이후 변화는 `py tools/sync_to_studio.py`로).
+- **끝난 촬영**(docs/art/verification_2026-10-12/main_apply/): staff_front_v3f/·v4/(세 마법사 앞·옆·합본), charui/(캐릭터 창 12장), arm_probe/(값 + Motor6D 0개 발견), arm_check/·arm_check2/·arm_check3/(직업×진영 팔), arm_rig/(숫자 로그, 사진 흰 화면), tool_grip/·tool_grip2/(칼·지팡이·활 우리 vs 로블록스 Tool), tool_basics/(7종 기본 Tool, **r15_baton·flaskstaff·hammer·staff 20장 흰 화면**), goose_square/·2/(사진 + 값)·3/(클라이언트 카메라 값, 창 최소화라 사진 무의미).
+- **거위 광장 서버 확인 결과**: Edit 상태 place에 workspace.GooseSquare 없음; Play 중 Join 후 생김(BuiltBy=GooseSquare, 11 BasePart: Floor 6000,198,6000 110×4×90 투명0, 벽 4개 투명1 충돌, Spawn·Cart·Nest·GooseSpot 투명1). 새내기 Join/Leave·InGooseSquare true↔false 정상. 클라이언트: 카메라 Custom·Humanoid 추적 정상, 안개·조명 정상, 화면 덮는 GUI 0개 → 회색 사진 = 창 상태 영향 추정(창 복원 상태로 재촬영 필요).
+- **안 끝난 것**: ① `play_classic_sword_grip.py`(개발 1이 2aa7de25에서 서식 오류 고침) 아직 안 돌림 → `HH_MAIN_STUDIO=1 py tools/play_classic_sword_grip.py classic_sword`(창 복원 후). ② tool_basics r15 4종 재촬영(개발 1이 사진 보고 필요하면 요청). ③ goose_square 창 복원 상태 재촬영. ④ Save As(저장 안 된 sync 반영) — 최종 검수 "전달함, 시작" 뒤.
+- **새 도구**(tools/): play_mage_staff_photos.py(세 마법사, screen_capture camera_position 인자로 카메라), play_character_ui_photos.py(캐릭터 창), play_arm_probe.py, play_goose_square_photos.py(Join/Leave + GooseSquare 읽기 + 클라이언트 카메라 읽기), 개발 1 것: play_arm_check_photos.py·play_arm_rig_probe.py·play_tool_grip_compare.py·play_tool_grip_basics.py·play_classic_sword_grip.py.
+- **교훈**: ① 사용자에게 컴퓨터 쓴다고 직접 알리고 시작(최종 검수 말만 믿지 말 것, 사용자 화냄 10/12). 창 복원·최소화는 PowerShell로(마우스 X). ② 공유 트리가 다른 세션 수정 중이면 `git reset --keep`이 막힘 → git update-index --refresh 뒤 재시도. ③ push_paths는 새 폴더째 주면 "변경 없음" 나올 수 있음 → 파일 하나씩. ④ Game 창 찾기: Get-Process RobloxStudioBeta MainWindowTitle -like '*GoodEvil*'.
 
 ## 메인 Studio 상태 (2026-10-12 낮 11:00, 3번째 메인 반영 1 → 다음에게; 스스로 clear 함)
 - 창: Edit, Play 정지, StudioFreshSave=true. 창 id는 열 때마다 바뀜 → `HH_MAIN_STUDIO=1 py tools/studio_mcp.py call list_roblox_studios '{}'` 후 `STUDIO_ID=<id>`(지금 b2281643-ef9b-4501-8753-69c024b67d0f). 이름이 "헤일로 & 혼스 (81671223175574)" 또는 "Darugi_S2의 장소: 10122026_1 (79345022650204)"로 번갈아 보일 수 있음 — 사용자 답 "무시해도 돼"(설문 다시 하려고 만든 것). **Ctrl+S·Save to Roblox·Publish 절대 금지**(클라우드가 새 place로 감), 저장은 Save to File As build/GoodEvil.rbxlx만. studio_mcp MAIN_NAMES·AGENTS 규칙 3은 최종 검수가 고침(건드리지 말 것).

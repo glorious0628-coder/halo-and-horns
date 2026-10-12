@@ -3109,8 +3109,8 @@
     -561.8
    ],
    [
-    -135.8,
-    -548.5
+    -130.7,
+    -554.6
    ],
    [
     144.7,
@@ -4208,8 +4208,8 @@
     "kit": "HaloFlagpole_3",
     "cat": "item",
     "at": [
-     -153.2,
-     -540.8
+     -150.4,
+     -525.0
     ],
     "yaw": 20,
     "scale": 0.89,
@@ -4221,7 +4221,8 @@
     "district": "castle",
     "ground_y": 16,
     "zone": "castle",
-    "id": "P052"
+    "id": "P052",
+    "moved": "이미지 생성 3 10/12: 성 C2 골격 앞마당·계단 비움(최종 검수)"
    },
    {
     "kit": "HaloFlagpole_1",
@@ -4246,8 +4247,8 @@
     "kit": "HaloVar3_Topiary_C",
     "cat": "item",
     "at": [
-     -177.1,
-     -533.2
+     -178.2,
+     -518.2
     ],
     "yaw": 20,
     "scale": 1.05,
@@ -4259,14 +4260,15 @@
     "district": "castle",
     "ground_y": 16,
     "zone": "castle",
-    "id": "P054"
+    "id": "P054",
+    "moved": "이미지 생성 3 10/12: 성 C2 골격 앞마당·계단 비움(최종 검수)"
    },
    {
     "kit": "HaloVar3_Topiary_D",
     "cat": "item",
     "at": [
-     -143.8,
-     -541.0
+     -131.5,
+     -530.7
     ],
     "yaw": 20,
     "scale": 1.13,
@@ -4278,16 +4280,17 @@
     "district": "castle",
     "ground_y": 16,
     "zone": "castle",
-    "id": "P055"
+    "id": "P055",
+    "moved": "이미지 생성 3 10/12: 성 C2 골격 앞마당·계단 비움(최종 검수)"
    },
    {
     "kit": "HaloReasonHQ_BenchA",
     "cat": "bench",
     "at": [
-     -170,
-     -528
+     -163.0,
+     -515.9
     ],
-    "yaw": 53,
+    "yaw": 148,
     "scale": 0.92,
     "r": 2.2,
     "h": 3,
@@ -4297,7 +4300,8 @@
     "district": "castle",
     "ground_y": 16,
     "zone": "castle",
-    "id": "P056"
+    "id": "P056",
+    "moved": "이미지 생성 3 10/12: 성 C2 골격 앞마당·계단 비움(최종 검수)"
    },
    {
     "kit": "HaloReasonHQ_BenchB",
@@ -6190,8 +6194,8 @@
     "kit": "HaloVar4_Lantern_A",
     "cat": "lamp",
     "at": [
-     -135.8,
-     -548.5
+     -130.7,
+     -554.6
     ],
     "yaw": 7,
     "scale": 1.09,
@@ -6204,7 +6208,8 @@
     "district": "castle",
     "ground_y": 16,
     "zone": "castle",
-    "id": "L26"
+    "id": "L26",
+    "moved": "이미지 생성 3 10/12: 성 C2 골격 앞마당·계단 비움(최종 검수)"
    },
    {
     "kit": "HaloVar3_Lantern_E",

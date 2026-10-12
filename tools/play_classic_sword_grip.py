@@ -72,7 +72,7 @@ if not hum then return "no humanoid" end
 local wm = ch:FindFirstChild("WeaponModel")
 if wm then wm.Parent = game:GetService("ServerStorage") end -- our weapon off (WeaponPose lets go)
 local out = {}
-for _, id in { %s } do
+for _, id in { __IDS__ } do
 	local ok, model = pcall(function() return game:GetService("InsertService"):LoadAsset(id) end)
 	if ok and model then
 		local tool = model:FindFirstChildWhichIsA("Tool", true)
@@ -192,7 +192,7 @@ def main():
         time.sleep(2)
         note(lua(c, TELE, "Server"))
         time.sleep(1)
-        note("load:\n" + lua(c, LOAD % ", ".join(str(i) for i in IDS), "Server"))
+        note("load:\n" + lua(c, LOAD.replace("__IDS__", ", ".join(str(i) for i in IDS)), "Server"))
         time.sleep(2.5)
         note(lua(c, ANCH % ("true", "on"), "Server"))
         time.sleep(1.2)
@@ -214,7 +214,7 @@ def main():
         except Exception as e:  # noqa: BLE001
             note("stop failed " + str(e))
         time.sleep(2)
-        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", nil) return "fresh off"', "Edit"))
+        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh kept on"', "Edit"))
         with open(os.path.join(OUT, "log.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(LOG) + "\n")
 

@@ -1,4 +1,26 @@
-# 게임성 개발 1 — 인계 상태 (2026-10-13, 지팡이·BB8·거위 광장 보고, 결과 기다림)
+# 게임성 개발 1 — 인계 상태
+
+## 10/12 저녁 정리 (사용자 "모든 세션 다 여기까지만 하고 정리해줘", 최종 검수 전달)
+- **오늘 병합됨(main)**: fix/hero-ui 1eabf613(Hero 창 #1 전투력 칩·#2 비교 줄·#5 Stats 카드·#9 칭호 리본/등급 막대/잠긴 칭호·#7 더 센 무기 점·#3 3D 몸 HeroPreview + API 검토 고침), fix/arm-hang 93d7dcc6(전사 손 0.2 아래), **fix/arm-body 11f7e7a9 = main d4c7c3be**(팔 접힘 진짜 원인: WeaponPose.BodyScale 0.64 → Body/BodyPoint), fix/goose-leave e32814b7(광장 안 Leave 늘), fix/goose-rookie 81162dec(새내기 접기가 광장 안 행사 줄 안 숨김; 새내기 Join은 A23-68대로 숨김 = 최종 검수 결정), 그 전 staff-face2·bubble-ui·english-polish.
+- **열린 가지(내 것)**: 없음 — 위 가지 모두 main에 들어감. worktree: `wt_lesstext`(fix/hero-ui), `wt_gooseleave`(sparse, fix/goose-rookie), `wt_goldegg`(fix/bubble-ui), `wt_onehand` — 다 병합됨, 지워도 됨(지울 땐 최종 검수에 먼저).
+- **사용자 결정(10/12 저녁, SPEC A23-150 7번)**: 무기 쥐기 = **(가) 로블록스 기본 그대로**(내 추천 (나) 아님). 서 있기·걷기 = 모든 무기
+  Roblox 기본 들기(오른팔 앞, 무기 세움): Tool + Handle + RightGripAttachment, 무기마다 Tool.Grip(쥐는 점·각도)만 다름, **활도 오른손**.
+  우리 메시는 Handle 위. 쥐는 점 = 표대로(칼·어둠 검 자루 60%, 지팡이 45%, 망치·조련사 봉 30%, 플라스크 지팡이 45%, 활 손잡이 50%).
+  공격 = 지금 직업별 동작(Fx) 그대로. **③ 코드는 다음 세션에서 시작**, 순서:
+  1. WeaponPose 서기·걷기 자세 끄기(OneHand/OffHand/Hold/TwoHand 풀이 안 씀; Fx 공격 클립·StaffStep 등 다른 쓰임 확인 후).
+  2. 무기를 Roblox 기본 들기로: Handle + RightGripAttachment(로블록스 RightGrip과 같은 붙임) + 기본 Animate toolnone(팔 앞) — 진짜 Tool로 할지, WeaponModel에 같은 붙임 + toolnone 재생으로 할지 먼저 정함(우리 공격 입력·장비 창과 충돌 확인).
+  3. Grip 표(Config 한 곳): 무기 종류별 쥐는 점(%)·각도, CharacterVisuals가 Handle/메시를 그 규칙으로 만듦; 옛 fist() 각도 규칙 버림.
+  4. 시험(오프라인: 쥐는 점·Handle 축·활 오른손·공격 클립 그대로) → 최종 검수.
+  5. 메인 사진(메인 반영 1): play_tool_grip_basics.py 비슷하게 우리 실제 무기 7종 앞·옆·걷기·공격.
+- **남은 일(순서)**:
+  1. A23-150 7번 무기 쥐기: ①② 끝 = 시트 `docs/art/verification_2026-10-12/main_apply/grip_plan_sheet_2026-10-12.png` + 표 `docs/design/weapon_grip_plan_2026-10-12.md`(main 224a8a7) → 사용자 답 = (가) → 위 '사용자 결정' 순서로 ③ 코드(Handle + Grip 표 Config 한 곳, 옛 fist() 각도 버림). 기본 R15 몸 4종(지팡이·망치·조련사 봉·플라스크) 사진은 흰 화면 → 필요하면 `tools/play_tool_grip_basics.py` 다시.
+  2. ClassicSword Grip 값: `tools/play_classic_sword_grip.py`(main 2aa7de25, 서식 고침) 메인 반영 1 재실행 대기 → 값 오면 칼 쥐는 점·길이 표에 맞춤.
+  3. 거위 광장 사진 다시: `HH_MAIN_STUDIO=1 py tools/play_goose_square_photos.py goose_square2`(main b1a182c: 튜토리얼 끝낸 뒤 행사 + 새내기 05~07) — 메인 반영 1. 광장 바닥 골격 없음 = 개발 2·메인 반영 1 몫.
+  4. 그 뒤(옛 큐): 큰 지도 거위 광장 표시 끄기, A23-145 폰 정리 목록(10/21부터), Hero 창 #6(빈 칸 그림 승인 뒤)·#4(서버 뒤)·#8(개발 2 속성 뒤)·#10(베타 뒤).
+- 사진·조사 스크립트(main): play_arm_check_photos.py, play_arm_rig_probe.py, play_tool_grip_compare.py, play_tool_grip_basics.py, play_classic_sword_grip.py, play_goose_square_photos.py, play_character_ui_photos.py — 모두 메인 반영 1이 돌림.
+
+## (아래는 이전 기록)
+(2026-10-13, 지팡이·BB8·거위 광장 보고, 결과 기다림)
 
 클라 코드만(창·HUD·Config·Fx). 메인 Studio는 건드리지 않음(sync·사진 = 메인 반영 1). 사용자에게 직접 묻지 않음. 보고는 send_message, 묶음마다 한 번 → 턴 끝내기.
 - **보고처(10/13 게임성 검수 쉼): 가지 보고·시험 결과 = '최종 검수' `local_d522c0f1-07cf-4db1-b178-5f335a56db7c` (내 시험 + 변이 숫자 같이).** 옛 보고처(사용자 10/11 변경): 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
@@ -101,3 +123,4 @@
 34. 팔 접힘 진짜 원인 = WeaponPose.BodyScale(어깨 x ÷ 0.972)이 사용자 아바타(AnimationConstraint, 좁은 몸통, 어깨 x 0.623)에서 0.64 → 손 목표 36% 당겨짐. **fix/arm-body 11f7e7a9**(wt_gooseleave): Body/BodyPoint로 교체, 시험에 사용자 리그 숫자. 조사 스크립트 tools/play_arm_rig_probe.py, 로그 docs/art/verification_2026-10-12/main_apply/arm_rig/log.txt. 병합 뒤 arm_check3 + tool_grip2 사진 → A23-150 쥐기 계획.
 35. 거위 광장 HUD 안 보임 = A23-68 새내기 접기(HUD.RookieFold)가 행사 줄 전체 숨김. **fix/goose-rookie 81162dec**: 광장 안이면 안 접음. 새내기 Join 보일지 최종 검수에 물음(추천: 숨김).
 36. A23-150 #7 ①: tools/play_tool_grip_basics.py(main de8113d) 7가지 무기 기본 Tool 사진 → 메인 반영 1 진행 중(docs/art/verification_2026-10-12/main_apply/tool_basics/). 사진 오면 ② 부위 조절 표 + 시트 → 최종 검수 → 사용자 OK 뒤 ③ 코드.
+37. arm-body = main d4c7c3be 병합. A23-150 7번 ①② 끝: 시트 main_apply/grip_plan_sheet_2026-10-12.png + docs/design/weapon_grip_plan_2026-10-12.md(main 224a8a7). 사용자 고를 것 (가) 로블록스 toolnone vs (나) 추천: 로블록스 Handle 쥐기 + 우리 준비 자세. OK 오면 ③ 코드(Handle + Grip 표, fist() 각도 버림). ClassicSword 값 재기 = tools/play_classic_sword_grip.py(2aa7de25) 메인 반영 1 재실행 대기. 거위 사진 스크립트 b1a182c.

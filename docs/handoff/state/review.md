@@ -128,3 +128,21 @@
 - 그림자 점검 워크플로(41 에이전트): 460개 중 진함 268·약간 178·없음 9(대부분 타일)·원본 없음 5 → `docs/review/noshadow_redo_2026-10-12.md`(순서·방법). 세션 점검: img3 169장, img4 348장(img2·imgdev·Blender 결과 대기).
 - **지움(사용자 요청):** art/models 3D 파일 6,405개(12 GB) → 프로젝트 밖 `C:/Users/glori/Documents/Roblox/_지울것_3D_2026-10-12`로 옮김(사용자가 폴더 지움), 그중 git 추적 1,320개는 a74d495로 지움(이력에 남음). 남김: npc_block, MailBoy SM tex8k(4면 새 판 통과 뒤 지움), JSON 기록. 옛 2D는 새 그림 통과하는 대로 지움(사용자 고름).
 - 세션: 이미지 생성 4 지움(사용자 OK, 일 → 이미지 생성 3). 병합: ca99cc69 거위 광장, 56ad3014 전사 팔 곧게, 9ab152c4 Hero 창(API FIX FIRST 고친 판, 시험 57). 메인 반영 1 = Studio 다시 엶, 사진 흰 화면 → PowerShell 창 복원으로 다시(진행 중). WorldKit은 그 뒤 이미지 생성 3이 열기(빛 성 C2 v3 통과 → 시험 줄 4).
+
+## 10/12 밤 정리 (사용자 "모든 세션 다 여기까지만 하고 정리해줘") — 다음 나는 여기부터
+- **사용자 결정 오늘 저녁:** A23-150(그림자 없는 3D 렌더 2D 4면 → Tripo 스마트 메시 → 얼굴 빈 흰 모델 → 왼쪽 텍스처 '조명 없이' 8K, 130점/개; 재생성 = Blender 손보기; 건물 = 골격 + 장식 덩어리; 무기 쥐기 = 7종 Roblox 기본 쥐기 사진 먼저; 12/1 늦어도 됨; Tripo 예산 7구역 4만~6만, 사용자 최대 10만), A23-151(확정 그림 = ChatGPT 요금제 Codex 앱 `tools/codex_image.py`, 다 쓰면 Firefly 고급), A23-152(베타 7구역 빛 → 뿔 → **장인 마을** → 교차로 + **쌍둥이 교차로 = 거위 게임만** → 슬라임 → 고블린 → 해골; NewZones는 베타 뒤). 사람(NPC·주민)은 다시 그리기 맨 마지막. 안 쓰는 것은 다시 안 그림.
+- **다시 그리기:** 빛 마을 71개(≈9,230점) — 이미지 생성 2가 Codex로 첫 묶음(Halo_Statue·Fountain3·Daisy 화분·BenchA·BreadStand) 그리는 중이었음 → 옛|새 시트 판정부터. 통과하면 옛 2D 지움(_지울것 폴더로 + push_paths), Blender 손보기에 4면 넘김. MailBoy 4면 통과(옛 2D 지움), 3D는 사람이라 보류. 집 장식 = 이미지 생성 3이 고유 덩어리 수 세는 중(사용자에게 점수 알려야 함).
+- **지움:** art/models 6,405개(12 GB) → `C:/Users/glori/Documents/Roblox/_지울것_3D_2026-10-12`(사용자가 직접 지울 폴더), git 1,320개 a74d495.
+- **병합 오늘 밤:** ca99cc69 거위 광장, 56ad3014 전사 팔, 9ab152c4 Hero 창, d4c7c3be 팔 진짜 원인(BodyScale), 77b27f50 거위 광장 안 새내기 Leave. **대기:** goose-square-floor 448b72ff(내 시험 8개 전부 통과, 합친 판 6a6ad8c6 — 메인 확인 코드 결과 보고 병합만 하면 됨).
+- **메인:** 메인 반영 1이 arm_check3 → tool_grip2 → grip_basics(7종) → goose_square2 → ClassicSword 값 순서로 찍는 중이었음(어디까지 했는지 state/mainapply.md). 메인 Studio 저장 안 함(코드는 git).
+- **세션:** 이미지 생성 4 지움(일 → 이미지 생성 3). 남은 7개: 최종 검수·메인 반영 1·게임성 개발 1·2·이미지 개발·이미지 생성 2·3·Blender 손보기. 다들 state 파일 정리 중.
+- **사용자 할 일:** `_지울것_3D_2026-10-12` 폴더 지우기(원하면). Tripo 앱 브라우저 로그인 = 끝. Codex 설치·로그인 = 끝.
+- (밤 정리 뒤) 사용자 고름: 집 장식 = **같은 모양은 같이 씀**(고유 43종 ≈ 5,590점, SPEC A23-150 5번에 적음). 메인 사진 끝: arm_check3·tool_grip2·tool_basics(R15 기본 몸 20장 흰 화면 → 다시)·goose_square2. 거위 광장 서버 바닥 정상(Edit엔 GooseSquare 없음, Play 때 Floor 생김) → **448b72ff 병합 가능(개발 2 OK, 내 시험 8 통과)**, 새 문제 = Join/Leave 뒤 화면 전체 회색(클라이언트 카메라/조명 추정, 메인 반영 1이 값 읽는 중). ClassicSword 스크립트 TypeError(개발 1).
+- (밤 마지막) 사용자 고름: **무기 들기 = (가) 로블록스 기본 그대로**(SPEC A23-150 7번, 시트 art/review/grip/grip_plan_sheet_2026-10-12.png) → 게임성 개발 1이 다음 세션에 코드(대기 자세 끄기 → Tool 기본 들기 → Grip 표 → 시험 → 메인 사진). 거위 광장 회색 화면 = 카메라·안개·덮개 정상, 창 최소화 탓 추정 → 다음에 창 복원 상태 Join 사진 1장으로 확정(ClassicSword 값 재기와 같이).
+- (정리 뒤) 사용자 Threads 영상('수호수 카드', 기울이면 진화) → **SPEC A23-153 몬스터 도감 카드**, 설계 `docs/design/codex_cards_2026-10-12.md`. 다음 세션에 나눌 것: 게임성 개발 2 = Codex 저장·처치 셈·단계 보상, 게임성 개발 1 = 도감 창 + ViewportFrame 3D 카드 기울기·뒤집기·진화 연출(Slime 1장 시험 먼저, UiSandbox), 이미지 생성 2 = 카드 그림(Slime 3단계 시안부터, UI 그림이라 그림자 규칙 밖). 시기 = 베타 v1 11종(제안, 사용자 반대 없으면).
+- 사용자: 도감 카드 **베타에 넣음** 확정. 사용자가 최종 검수 세션을 새로 만듦 → 시작 글 = docs/handoff/role_prompts/00_review.md(10/12 밤 다시 씀). 새 나는 여기부터: 도감 카드 일 나누기(개발 2 서버·개발 1 Slime 카드 시험·이미지 생성 2 카드 시안) + 빛 마을 첫 그림 판정(art/review/s2/noshadow_set1_statue_fountain_old_new.jpg) + 448b72ff 병합 + 메인 사진 다시(r15 4종·거위 창 복원·ClassicSword) + 무기 들기 코드(개발 1).
+
+## 10/12 밤 21시 (새 최종 검수 local_8166f268) — 세션 6개 새로
+- 시작 때 다른 세션 0개 → 사용자가 빈 세션 6개 만듦 → 내가 이름·모델·노력·첫 지시: 메인 반영 1(Sonnet high: sync·클래식 칼 값·거위 창 복원 사진·r15 4종, Save As는 나중), 게임성 개발 1(Opus xhigh: 무기 들기 (가) fix/tool-grip → 다음 도감 카드 화면), 게임성 개발 2(Opus xhigh: 도감 카드 서버 dev2-codex + 약속 문서 → dev2-c2 전체 시험), 이미지 생성 2(Sonnet high: Codex 꽃 화분 5), 이미지 생성 3(Opus high: 빛 성 WorldKit 넣기 + 집 덩어리 43종 큐), Blender 손보기(Opus high: 동상·분수 Tripo 260점 승인, GLB 내려받기 전 멈춤 → 사용자 허락 받아 알림). 이미지 개발은 올릴 것 생기면 새로.
+- 병합: 448b72ff 거위 바닥 → main 24c396d7. 판정: Halo_Statue 4면 통과, Fountain3 통과(right = left 뒤집음, 원래 right 시점 낮음) → approved.json, 옛 2D → `C:/Users/glori/Documents/Roblox/_지울것_2D_2026-10-12`(11213d8).
+- 화면 차례: 메인 반영 1(창 복원 Play 사진)과 이미지 생성 3(WorldKit 창 복원 사진)이 신청할 것 → 한 번에 하나, 사용자에게 알리고 "전달함, 시작".

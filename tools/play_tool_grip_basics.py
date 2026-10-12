@@ -28,6 +28,9 @@ os.makedirs(OUT, exist_ok=True)
 LOG = []
 KINDS = [("sword", "Halo", "Warrior"), ("darksword", "Horns", "Warrior"), ("bow", "Halo", "Archer"), ("staff", "Halo", "Mage"),
          ("hammer", "Neutral", "Warrior"), ("baton", "Neutral", "Archer"), ("flaskstaff", "Neutral", "Mage")]
+ONLY = [k for k in os.environ.get("HH_KINDS", "").split(",") if k]  # e.g. HH_KINDS=baton,staff (+ HH_SKIP_USER=1 = default R15 pass only)
+if ONLY:
+    KINDS = [k for k in KINDS if k[0] in ONLY]
 SHOTS = ["front", "side", "quarter", "walk", "slash"]
 
 
@@ -342,7 +345,7 @@ def main():
         time.sleep(1)
         note("gear: " + lua(c, DEBUG % '{ "Level", 30 }, { "WeaponOwnedMask", 511 }', "Server"))
         note(lua(c, TELE, "Server"))
-        user = pass_all(c, "user")
+        user = {} if os.environ.get("HH_SKIP_USER") else pass_all(c, "user")
         note(lua(c, DEFAULT_BODY, "Server"))
         time.sleep(4)
         note(lua(c, TELE, "Server"))
@@ -359,7 +362,7 @@ def main():
         except Exception as e:  # noqa: BLE001
             note("stop failed " + str(e))
         time.sleep(2)
-        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", nil) return "fresh off"', "Edit"))
+        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh kept on"', "Edit"))
         with open(os.path.join(OUT, "log.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(LOG) + "\n")
 
