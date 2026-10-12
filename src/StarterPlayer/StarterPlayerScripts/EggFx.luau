@@ -114,11 +114,14 @@ end
 
 -- the Join / Leave button of the goose chip. ctx = { Active (the event is open), Inside, Block (my GooseJoinBlock), HasRemote }
 -- -> nil (hidden: no event, or not the Eggs mode) | { Word = "Join" | "Leave", Dim }. Leave while I am inside (dimmed only
--- without the remote); Join otherwise, dimmed by a non-empty Block or without the remote (A23-130: a dimmed press says nothing)
+-- without the remote) - 개발 2 10/13: ALWAYS while inside, open event or not (the seconds after the round before the trip
+-- home, or a failed trip home, must keep a way out); Join otherwise, dimmed by a non-empty Block or without the remote
+-- (A23-130: a dimmed press says nothing)
 function EggFx.SquareButton(ctx)
-	if type(ctx) ~= "table" or ctx.Active ~= true or not EggFx.On() then return nil end
+	if type(ctx) ~= "table" then return nil end
 	local noRemote = ctx.HasRemote ~= true
 	if ctx.Inside == true then return { Word = "Leave", Dim = noRemote } end
+	if ctx.Active ~= true or not EggFx.On() then return nil end
 	return { Word = "Join", Dim = noRemote or (type(ctx.Block) == "string" and ctx.Block ~= "") }
 end
 
