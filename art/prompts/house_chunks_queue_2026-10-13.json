@@ -17,7 +17,7 @@
    "id": "HaloChunk_LampArm",
    "name_ko": "등불 + 팔",
    "what_ko": "벽 등불 둥근 갓 꼭지 + 굽은 팔 (모든 집 같은 모양)",
-   "draw": "wall lantern: gold lantern with glowing glass, round cap + knob, curved gold wall arm and small wall plate",
+   "draw": "wall lantern: gold lantern frame with pale clear see-through glass (no glow painted), round cap + knob, curved gold wall arm and small wall plate. 3D note: Tripo keeps only the gold frame + arm; the glass and the night light stay the Studio parts LampGlass / LampCore",
    "houses": [
     "HaloDomeHouse_01",
     "HaloDomeHouse_02",
@@ -779,7 +779,7 @@
    "id": "HaloChunk_RoseArch",
    "name_ko": "장미 아치",
    "what_ko": "Garden5 문 둘레",
-   "draw": "rose arch around a door: green vine arch with pink roses (Garden5)",
+   "draw": "rose arch only: green vine lattice arch with pink roses, the door opening left EMPTY (no door leaf, no awning, no lanterns) (Garden5)",
    "houses": [
     "HaloNewHouse_Garden5"
    ],
@@ -989,7 +989,7 @@
    "id": "HaloChunk_MedalBell",
    "name_ko": "메달 + 종",
    "what_ko": "Cliff7 문 위",
-   "draw": "gold four-leaf medal over the door + small gold bell on a wall bracket (Cliff7)",
+   "draw": "only the gold four-leaf medal + the small gold bell on its wall bracket, drawn together (no door, no lantern) (Cliff7)",
    "houses": [
     "HaloNewHouse_Cliff7"
    ],
@@ -1012,7 +1012,7 @@
    "id": "HaloChunk_Telescope",
    "name_ko": "망원경",
    "what_ko": "Cliff8 발코니",
-   "draw": "brass telescope on a gold tripod stand (Cliff8 balcony)",
+   "draw": "brass telescope on a gold tripod stand (Cliff8 balcony) - made by Tripo like the other chunks (최종 검수 10/12)",
    "houses": [
     "HaloNewHouse_Cliff8"
    ],
@@ -1035,7 +1035,7 @@
    "id": "HaloChunk_Cauldron",
    "name_ko": "가마솥",
    "what_ko": "물약 가게 문 앞 가마솥",
-   "draw": "black iron cauldron on three short legs, bubbling green potion (Potion)",
+   "draw": "black iron cauldron on three short legs, bubbling green potion (Potion) - made by Tripo like the other chunks (최종 검수 10/12)",
    "houses": [
     "HaloShop_Potion"
    ],

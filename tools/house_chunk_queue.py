@@ -28,7 +28,7 @@ GETS = VAL["GETS"]
 
 # (kind, id, one line for the drawer, [(ref image, crop box x0 y0 x1 y1 as fractions), ...]) - most visible first
 Q = [
-    ("등불 + 팔", "LampArm", "wall lantern: gold lantern with glowing glass, round cap + knob, curved gold wall arm and small wall plate",
+    ("등불 + 팔", "LampArm", "wall lantern: gold lantern frame with pale clear see-through glass (no glow painted), round cap + knob, curved gold wall arm and small wall plate. 3D note: Tripo keeps only the gold frame + arm; the glass and the night light stay the Studio parts LampGlass / LampCore",
      [(H + "roofs/HaloDomeHouse_11_roof_v2.png", (0.60, 0.46, 0.70, 0.62)), (H + "houses_new4/HaloNewHouse_Hill4_left_v2.png", (0.73, 0.53, 0.84, 0.72))]),
     ("외문", "DoorSingle", "single arched wooden door leaf, vertical planks, two long gold strap hinges, gold ring knocker",
      [(H + "roofs/HaloDomeHouse_11_roof_v2.png", (0.38, 0.42, 0.59, 0.75))]),
@@ -84,7 +84,7 @@ Q = [
      [(H + "shops/HaloShop_Potion_front_HQ_src.png", (0.26, 0.57, 0.55, 0.82))]),
     ("장미 격자", "RoseTrellis", "white wooden lattice panel with climbing blue + white flowers (Flower)",
      [(H + "roofs/HaloShop_Flower_roof_v2.png", (0.10, 0.36, 0.26, 0.80))]),
-    ("장미 아치", "RoseArch", "rose arch around a door: green vine arch with pink roses (Garden5)",
+    ("장미 아치", "RoseArch", "rose arch only: green vine lattice arch with pink roses, the door opening left EMPTY (no door leaf, no awning, no lanterns) (Garden5)",
      [(NEW % "Garden5_front", (0.32, 0.44, 0.75, 0.90))]),
     ("해바라기 화단", "SunflowerBed", "flower bed: sunflowers + white daisies in green leaves (Garden5)",
      [(NEW % "Garden5_front", (0.14, 0.68, 0.40, 0.90))]),
@@ -102,11 +102,11 @@ Q = [
      [(H + "shops/HaloShop_Bakery_front_HQ_src.png", (0.62, 0.04, 0.76, 0.24))]),
     ("동그란 나무", "RoundTree", "small round clipped bush tree in a gold-rim pot on the roof (05)",
      [(H + "roofs/HaloDomeHouse_05_roof_v2.png", (0.27, 0.22, 0.36, 0.31))]),
-    ("메달 + 종", "MedalBell", "gold four-leaf medal over the door + small gold bell on a wall bracket (Cliff7)",
+    ("메달 + 종", "MedalBell", "only the gold four-leaf medal + the small gold bell on its wall bracket, drawn together (no door, no lantern) (Cliff7)",
      [(NEW % "Cliff7_front", (0.44, 0.30, 0.75, 0.60))]),
-    ("망원경", "Telescope", "brass telescope on a gold tripod stand (Cliff8 balcony)",
+    ("망원경", "Telescope", "brass telescope on a gold tripod stand (Cliff8 balcony) - made by Tripo like the other chunks (최종 검수 10/12)",
      [(NEW % "Cliff8_front", (0.76, 0.24, 0.93, 0.46))]),
-    ("가마솥", "Cauldron", "black iron cauldron on three short legs, bubbling green potion (Potion)",
+    ("가마솥", "Cauldron", "black iron cauldron on three short legs, bubbling green potion (Potion) - made by Tripo like the other chunks (최종 검수 10/12)",
      [(H + "shops/HaloShop_Potion_front_HQ_src.png", (0.64, 0.73, 0.79, 0.93))]),
     ("꽃 양동이", "FlowerBuckets", "wooden + tin flower buckets with blue hydrangea, white tulips (Flower)",
      [(H + "roofs/HaloShop_Flower_roof_v2.png", (0.25, 0.74, 0.41, 0.91))]),
