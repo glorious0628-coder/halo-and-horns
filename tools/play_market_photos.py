@@ -17,7 +17,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from studio_mcp import Client  # noqa: E402
 
-OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-12", "market", sys.argv[1] if len(sys.argv) > 1 else "pc")
+ARGS = [a for a in sys.argv[1:] if not a.startswith("--")]
+OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-12", "market", ARGS[0] if ARGS else "pc")
 LOG = []
 
 
@@ -201,6 +202,9 @@ def main():
         time.sleep(0.5)
         send(c, "MarketMine", MINE)
         shot(c, "03_mine_tab")
+        if "--hero" in sys.argv:  # the bundle also holds the Hero window (개발 1) + GearSlots: the six gear cells
+            note(lua(c, SEND % ("OpenPanel", '"Character"', "OpenPanel"), "Server"))
+            shot(c, "04_hero_gear_slots")
         con = text_of(c.call("get_console_output", {}))
         errs = [ln for ln in con.splitlines() if any(k in ln.lower() for k in ("error", "failed", "warn", "infinite yield"))]
         note("console: " + "\n".join(errs[-30:]))
