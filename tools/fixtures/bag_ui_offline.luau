@@ -239,7 +239,8 @@ local UIKit = {
 		return b
 	end,
 	ItemIcon = function(id, props)
-		if id == "Petal" then return nil end -- an item whose icon is not drawn yet (UiSandbox 10/12)
+		-- an item whose icon is not drawn yet (UiSandbox 10/12; the tonics' art is still being drawn)
+		if id == "Petal" or (Config.Loot.Items[id] and Config.Loot.Items[id].Kind == "Tonic") then return nil end
 		local o = artObj("ImageLabel", "Icon:" .. tostring(id), props)
 		o.ItemId = id
 		return o
@@ -448,6 +449,70 @@ v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 }, Combat = true })
 check(not action(v, "Enhance").Enabled and action(v, "Enhance").Text == "In a fight" and v.Status == nil,
 	"a fight: the confirm is off and its button says why (no second line)")
 
+------------------------------------------------------------------ 6b. alchemy tonics (BuffService; the Use tab)
+do -- 최종 검수 10/12: while tonics are off a tonic stays a material (Materials tab, no Drink)
+	local off = {}
+	for _, c in BagUI.Cells(ctxOf({ Items = { MightTonic = 2 }, TonicsOn = false })) do off[c.Key] = c end
+	check(off["I:MightTonic"] and off["I:MightTonic"].Kind == "Material" and off["I:MightTonic"].Tab == "Material",
+		"tonics off: a tonic stays on the Materials tab", off["I:MightTonic"] and off["I:MightTonic"].Tab)
+end
+local tonicCells = BagUI.Cells(ctxOf({ Items = { MightTonic = 2, GuardTonic = 1, LuckyTonic = 3, Jelly = 4 },
+	ItemSeq = { MightTonic = 3, GuardTonic = 2, LuckyTonic = 1, PotionHP = 5 }, TonicsOn = true }))
+local tk = {}
+for _, c in tonicCells do tk[c.Key] = c end
+check(tk["I:MightTonic"] and tk["I:MightTonic"].Kind == "Tonic" and tk["I:MightTonic"].Count == 2 and tk["I:MightTonic"].Id == "MightTonic",
+	"a tonic is its own kind (not a material)", tk["I:MightTonic"] and tk["I:MightTonic"].Kind)
+check(tk["I:MightTonic"].Tab == "Use" and tk["I:GuardTonic"].Tab == "Use" and tk["I:LuckyTonic"].Tab == "Use" and tk["I:Jelly"].Tab == "Material",
+	"the tonics live on the Use tab", tk["I:MightTonic"].Tab)
+check(T.L.KindTab.Tonic == "Use" and T.L.KindOrder.Tonic == 11 and T.L.KindOrder.Potion == 10, "Tonic: tab Use, order 11 (after Potion 10)")
+check(tk["I:MightTonic"].Color == Config.Loot.Items.MightTonic.Color and tk["I:MightTonic"].Icon == "MightTonic",
+	"a tonic cell carries the item's colour (the letter fallback) and its icon id")
+local useKinds = {}
+for _, c in BagUI.Sort(BagUI.TabCells(tonicCells, "Use"), "Kind") do table.insert(useKinds, c.Kind) end
+check(table.concat(useKinds, ",") == "Potion,Potion,Tonic,Tonic,Tonic", "the Type sort: potions, then tonics", table.concat(useKinds, ","))
+for id in Config.Alchemy.Tonics do
+	check(BagUI.Watch["Buff_" .. id] == true, "Watch has Buff_" .. id .. " (a live redraw)")
+end
+local function tonicDetail(id, t2)
+	local c = { Tonics = {}, Now = NOW, TonicsOn = true }
+	for k, v2 in t2 or {} do c[k] = v2 end
+	return detail(tk["I:" .. id], c)
+end
+v = tonicDetail("MightTonic", { TonicsOn = false })
+check(#v.Actions == 0 and v.Status == nil, "tonics off: no Drink button at all")
+check(lineWith(v, "×2") ~= nil and lineWith(v, Config.Loot.Items.MightTonic.Desc) ~= nil, "the count line and the item's Desc line (switch off too)")
+v = tonicDetail("MightTonic")
+check(lineWith(v, "×2") ~= nil and lineWith(v, Config.Loot.Items.MightTonic.Desc).Color == "Sub", "on: the count and the Desc line in the Sub colour")
+check(action(v, "DrinkTonic") and action(v, "DrinkTonic").Text == "Drink" and action(v, "DrinkTonic").Enabled and #v.Actions == 1,
+	"on: Drink (DrinkTonic), enabled", action(v, "DrinkTonic") and action(v, "DrinkTonic").Text)
+check(lineWith(v, "left") == nil and v.Status == nil, "not running: no time line, no status")
+v = tonicDetail("MightTonic", { Tonics = { MightTonic = NOW + 151 } })
+check(lineWith(v, "2:31 left") and lineWith(v, "2:31 left").Color == "Gold" and action(v, "DrinkTonic").Enabled,
+	"running: a gold \"2:31 left\" line, Drink still on (starts it over)", lineWith(v, "left") and lineWith(v, "left").Text)
+v = tonicDetail("MightTonic", { Tonics = { MightTonic = NOW + 44.2 } })
+check(lineWith(v, "0:45 left") ~= nil, "the time is rounded up (44.2 s = 0:45)", lineWith(v, "left") and lineWith(v, "left").Text)
+v = tonicDetail("MightTonic", { Tonics = { GuardTonic = NOW + 100, LuckyTonic = NOW + 50 } })
+check(action(v, "DrinkTonic") and not action(v, "DrinkTonic").Enabled and v.Status and v.Status.Text == Config.Alchemy.Text.TwoMax
+	and v.Status.Color == "Bad", "two other tonics running: Drink off + the server's TwoMax line (bad)", v.Status and v.Status.Text)
+check(action(v, "DrinkTonic").Text == "Wait 0:50" and action(v, "DrinkTonic").Color == "Button",
+	"blocked: the button says when the first of the two ends (UiSandbox 10/12: an off Drink still looked on)",
+	action(v, "DrinkTonic").Text)
+v = tonicDetail("MightTonic", { Tonics = { MightTonic = NOW + 30, GuardTonic = NOW + 100 } })
+check(action(v, "DrinkTonic").Enabled and v.Status == nil and lineWith(v, "0:30 left"), "this one running with one other: on, no status")
+v = tonicDetail("MightTonic", { Tonics = { MightTonic = NOW + 30, GuardTonic = NOW + 100, LuckyTonic = NOW + 60 } })
+check(action(v, "DrinkTonic").Enabled and v.Status == nil, "this one running (even with two others): on")
+v = tonicDetail("MightTonic", { Tonics = { GuardTonic = NOW - 5, LuckyTonic = NOW - 1, WisdomTonic = 0 } })
+check(action(v, "DrinkTonic").Enabled and v.Status == nil, "tonics that ran out do not count as running")
+v = tonicDetail("MightTonic", { Tonics = { GuardTonic = NOW + 100 } })
+check(action(v, "DrinkTonic").Enabled, "one other tonic running: on")
+v = tonicDetail("MightTonic", { Pending = { Kind = "Tonic", Item = "MightTonic" } })
+check(action(v, "DrinkTonic") and not action(v, "DrinkTonic").Enabled, "a request waiting: Drink off")
+v = tonicDetail("MightTonic", { Combat = true })
+check(action(v, "DrinkTonic").Enabled, "tonics may be drunk in a fight (no fight rule)")
+local zero = table.clone(tk["I:MightTonic"])
+zero.Count = 0
+check(not action(detail(zero, { Tonics = {}, Now = NOW, TonicsOn = true }), "DrinkTonic").Enabled, "no bottle left: Drink off")
+
 ------------------------------------------------------------------ 7. data
 BagUI.OnInventory({ Items = { Jelly = 12, Enh70 = 2, Bogus = 3, SlimeCore = -1 }, Enhance = { 0, 3, 0, 1 }, Seen = { Slime = true, Nope = true },
 	ItemSeq = { Jelly = 10, Enh70 = 6, PotionHP = 3 }, WeaponSeq = { 1, 4, 0, 2 } })
@@ -647,6 +712,87 @@ end
 check(anyDim, "the weapons a scroll can't use dim their code slot")
 find(root, "Act_Cancel").OnClick()
 missingSlotArt = false
+
+-- alchemy tonics in the window: Drink -> UseTonic(itemId) once, the answer, the live timer, the two-at-a-time block
+do
+	Config.Features.Tonics = true
+	BagUI.OnInventory({ Items = { Jelly = 14, MightTonic = 2, GuardTonic = 1, LuckyTonic = 3 }, Enhance = { 0, 3, 0, 1 },
+		ItemSeq = { Jelly = 12, MightTonic = 15, GuardTonic = 16, LuckyTonic = 17 }, WeaponSeq = { 1, 4, 0, 2 } })
+	find(root, "Tab_Use").OnClick()
+	check(find(root, "Cell_I:MightTonic") and find(root, "Cell_I:GuardTonic") and find(root, "Cell_I:LuckyTonic") and find(root, "Cell_P:HP"),
+		"the Use tab lists the tonics next to the potions")
+	local letter = find(find(root, "Cell_I:LuckyTonic"), "Letter")
+	check(letter and letter.Text == "L", "a tonic without icon art shows its name's first letter (as BagUI's slot())")
+	find(root, "Cell_I:LuckyTonic").OnClick()
+	local drink = find(root, "Act_DrinkTonic")
+	check(drink and drink.Enabled and drink.Text == "Drink" and find(root, "Quick1") == nil, "a tonic picked: Drink, no quick slot row")
+	local n0 = #fired
+	attrs.Buff_LuckyTonic = 0
+	drink.OnClick()
+	check(#fired == n0 + 1 and fired[#fired][1] == "UseTonic" and fired[#fired][2] == "LuckyTonic" and #fired[#fired] == 2,
+		"Drink sends UseTonic(itemId) once", fired[#fired] and fired[#fired][1])
+	check(T.S.Pending and T.S.Pending.Kind == "Tonic" and T.S.Pending.Item == "LuckyTonic" and T.S.Pending.Count == 3 and T.S.Pending.Ends == 0,
+		"the request waits as { Kind = Tonic, Item, Count, Ends }")
+	check(find(root, "Act_DrinkTonic") and not find(root, "Act_DrinkTonic").Enabled, "Drink is off while the request waits")
+	find(root, "Act_DrinkTonic").OnClick()
+	BagUI.Act("DrinkTonic", tk["I:LuckyTonic"])
+	check(#fired == n0 + 1, "no second UseTonic while the first waits")
+	-- the server's answer: Buff_ is set (the count may come later with the Inventory push)
+	attrs.Buff_LuckyTonic = NOW + 180
+	for _, f in attrFns do f("Buff_LuckyTonic") end
+	CLOCK += 2
+	update()
+	check(T.S.Pending == nil, "Buff_<id> changing answers the request (then the server's interval)")
+	check(textIn(root, "3:00 left") ~= nil and find(root, "Act_DrinkTonic").Enabled, "the detail shows 3:00 left (a live redraw from the attribute)")
+	NOW += 1
+	update()
+	check(textIn(root, "2:59 left") ~= nil and textIn(root, "3:00 left") == nil, "the 0.25 s update moves the timer once a second")
+	local sig1 = BagUI.LiveSig({ Kind = "Tonic", Id = "LuckyTonic" })
+	NOW += 1
+	check(BagUI.LiveSig({ Kind = "Tonic", Id = "LuckyTonic" }) ~= sig1, "LiveSig has the remaining whole seconds")
+	NOW -= 2
+	-- an answer by the count alone
+	attrs.Buff_LuckyTonic = 0
+	for _, f in attrFns do f("Buff_LuckyTonic") end
+	CLOCK += 2
+	update()
+	n0 = #fired
+	find(root, "Act_DrinkTonic").OnClick()
+	check(#fired == n0 + 1 and T.S.Pending ~= nil, "Drink again (not running): one more request")
+	BagUI.OnInventory({ Items = { Jelly = 14, MightTonic = 2, GuardTonic = 1, LuckyTonic = 2 }, Enhance = { 0, 3, 0, 1 },
+		ItemSeq = { Jelly = 12, MightTonic = 15, GuardTonic = 16, LuckyTonic = 17 }, WeaponSeq = { 1, 4, 0, 2 } })
+	CLOCK += 2
+	update()
+	check(T.S.Pending == nil, "a changed count answers the request too")
+	-- two others running: Drink off + the server's TwoMax line, and Act sends nothing
+	attrs.Buff_MightTonic, attrs.Buff_GuardTonic = NOW + 50, NOW + 60
+	for _, f in attrFns do f("Buff_MightTonic") end
+	CLOCK += 5
+	local blockedBtn = find(root, "Act_DrinkTonic")
+	check(blockedBtn and not blockedBtn.Enabled and textIn(root, Config.Alchemy.Text.TwoMax) ~= nil,
+		"two others running: Drink off and the TwoMax line", blockedBtn and blockedBtn.Enabled)
+	n0 = #fired
+	BagUI.Act("DrinkTonic", tk["I:LuckyTonic"])
+	check(#fired == n0, "Act sends nothing while two other tonics run")
+	-- only one other tonic running: allowed again
+	attrs.Buff_GuardTonic = 0
+	for _, f in attrFns do f("Buff_GuardTonic") end
+	check(find(root, "Act_DrinkTonic").Enabled and textIn(root, Config.Alchemy.Text.TwoMax) == nil, "one other running: Drink on again")
+	-- the switch off: nothing shows, Act sends nothing
+	Config.Features.Tonics = false
+	attrs.Buff_MightTonic = 0
+	for _, f in attrFns do f("Buff_MightTonic") end
+	-- 최종 검수 10/12: off, a tonic is a material again - gone from the Use tab, listed on Materials, never a Drink
+	check(find(root, "Act_DrinkTonic") == nil and find(root, "Cell_I:LuckyTonic") == nil, "tonics off: not on the Use tab, no Drink button")
+	BagUI.ShowTab("Material")
+	check(find(root, "Cell_I:LuckyTonic") ~= nil and find(root, "Act_DrinkTonic") == nil, "tonics off: the bag lists it on Materials, no Drink")
+	BagUI.ShowTab("Use")
+	CLOCK += 5
+	n0 = #fired
+	BagUI.Act("DrinkTonic", tk["I:LuckyTonic"])
+	check(#fired == n0, "tonics off: Act sends nothing")
+	attrs.Buff_LuckyTonic, attrs.Buff_MightTonic, attrs.Buff_GuardTonic = nil, nil, nil
+end
 
 -- a payload that reached Panels before this module bound its listener: taken from Panels (LastInventory)
 local bf2 = assert(loadstring(BAG_SOURCE, "=BagUI2"))

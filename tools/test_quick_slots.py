@@ -48,7 +48,7 @@ MUTATIONS = [
     ("QS", "an empty slot keeps the old icon", 'local id = def and artId(def.Icon) or ""', 'local id = def and artId(def.Icon) or w.Icon.Image'),
     ("QS", "the lit slot cannot be emptied", "QuickSlots.Set(i, on and \"\" or item)", "QuickSlots.Set(i, item)"),
     ("VITALS", "keys used twice (VitalsUI too)", "and quick.OwnsKeys() then return end", "and false then return end"),
-    ("MAIN", "never loaded", '"SkillBar", "QuickSlots", "WeaponPose"', '"SkillBar", "WeaponPose"'),
+    ("MAIN", "never loaded", '"SkillBar", "QuickSlots", "BuffBar"', '"SkillBar", "BuffBar"'),
 ]
 
 
