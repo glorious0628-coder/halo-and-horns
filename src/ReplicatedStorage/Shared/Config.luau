@@ -22,6 +22,15 @@ function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
+-- a ranking board's weekly cap (nil = none): Ranking.CraftWeekCap while Features.Crafting is on, else Ranking.WeekCap
+function Config.WeekCapOf(board)
+	local R = Config.Ranking
+	if type(R) ~= "table" then return nil end
+	local craft = type(R.CraftWeekCap) == "table" and R.CraftWeekCap[board] or nil
+	if craft and Config.FeatureOn("Crafting") then return craft end
+	return type(R.WeekCap) == "table" and R.WeekCap[board] or nil
+end
+
 -- A23-63 (user 2026-10-07 "폰트 이쁜 걸로"): the game's two fonts, in one place. Head = titles, buttons, numbers and the
 -- name on a name tag (Denk One, one weight); Body = body text and the other name-tag lines (Montserrat). The server-built
 -- name tags (CharacterVisuals, UI round 2 #7) read Nametag; UIKit's FONT.Sets can read Head / Body from here too.
@@ -7032,6 +7041,9 @@ Config.Ranking = {
 		PvP = { Outlaw = true },
 	},
 	WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 }, -- provisional, tune from beta logs (PvP: no cap)
+	-- 게임성 검수 10/12: craft fame joins the Artisan board, so its cap is 100 - only while crafting is on (Config.WeekCapOf;
+	-- off = the scroll-only 60 as before)
+	CraftWeekCap = { Artisan = 100 },
 	TopN = 50,
 	RefreshSeconds = 180, -- each board's global read; boards are staggered by ReadStagger
 	ReadStagger = 45,
@@ -7175,7 +7187,7 @@ function Config.SanitizeRank(d, now)
 		HandScroll = {}, Drop = {}, YieldDay = Config.DayIndex(now), YieldN = 0, HideSynced = rank.HideSynced == true }
 	if int(rank.WeekId, 0, 1e9) == week then
 		for _, board in R.Order do
-			out[board] = int(rank[board], 0, R.WeekCap[board] or 1e9)
+			out[board] = int(rank[board], 0, Config.WeekCapOf(board) or 1e9)
 		end
 		local n = 0
 		if type(rank.Victims) == "table" then
@@ -8438,6 +8450,50 @@ Config.Craft = {
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 	},
 }
+-- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly
+-- "Artisan Fame" board, A23-24 / A23-135). A finished craft by an artisan of the recipe's role now (the craft XP rule,
+-- A23-139) earns Fame = the band of the recipe's craft Lv (the first row whose Lv it reaches) + PerfectBonus at the
+-- hammer's +2. It goes into data.Craft.Rep (lifetime) and RankingService's weekly "Artisan" board. The 2x XP pass never
+-- touches it. Ranks: the lifetime Rep a rank needs (the attribute ArtisanRank 1..#Ranks, 0 = not an artisan now); a rank
+-- shows (name / badge), it buys nothing.
+Config.Craft.Fame = { Bands = { { Lv = 30, N = 4 }, { Lv = 20, N = 3 }, { Lv = 10, N = 2 }, { Lv = 1, N = 1 } }, PerfectBonus = 1 }
+Config.Craft.Ranks = {
+	{ Id = "Apprentice", Rep = 0 },
+	{ Id = "Journeyman", Rep = 30 },
+	{ Id = "Artisan", Rep = 150 },
+	{ Id = "Master", Rep = 500 },
+	{ Id = "Grandmaster", Rep = 1500 },
+}
+Config.Craft.Text.RankUp = "Artisan rank up: %s!" -- (the rank's name key)
+Config.Craft.Text.Ranks = { Apprentice = "Apprentice", Journeyman = "Journeyman", Artisan = "Artisan", Master = "Master",
+	Grandmaster = "Grandmaster" }
+
+-- the Fame of one finished craft of recipe row r at the hammer's +plus (0 for a broken row)
+function Config.CraftFame(r, plus)
+	if type(r) ~= "table" or type(r.Lv) ~= "number" then return 0 end
+	local F = Config.Craft.Fame
+	local n = 0
+	for _, band in F.Bands do
+		if r.Lv >= band.Lv then
+			n = band.N
+			break
+		end
+	end
+	if n > 0 and plus == 2 then n += F.PerfectBonus end
+	return n
+end
+
+-- the artisan rank (1..#Ranks) a lifetime Rep reaches; the Rep of the next one (0 at the top)
+function Config.ArtisanRank(rep)
+	if type(rep) ~= "number" or rep ~= rep then rep = 0 end
+	local rank = 1
+	for i, row in Config.Craft.Ranks do
+		if rep >= row.Rep then rank = i end
+	end
+	local nextRow = Config.Craft.Ranks[rank + 1]
+	return rank, nextRow and nextRow.Rep or 0
+end
+
 Config.RateLimits.CraftStart = 3
 Config.RateLimits.CraftFinish = 0.5
 

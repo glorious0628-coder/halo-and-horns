@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 189,
+  "checks": 210,
   "failedChecks": 0,
-  "namedChecks": 164,
+  "namedChecks": 181,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -990,15 +990,117 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "ranks at 0 / 30 / 150 / 500 / 1500 (next Rep; 0 at the top)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "five ranks, a RankUp line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "every rank has a name",
+      "pass": 5,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "a new artisan: ArtisanRank 1 (Apprentice), CraftInfo Rep 0 / Rank 1 / NextRep 30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "with the 2x XP pass: still 2 fame",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "the next craft in the same rank: no line",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "a Knight's waiting craft: the item, no fame; ArtisanRank 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "Rep never passes MaxCount; Grandmaster",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "left the guild: ArtisanRank 0 (Rep kept: lifetime)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "the lifetime Rep stays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "back as an alchemist: rank 2 again (Rep is shared by the roles)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "no RankingService.Credit: Rep only, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "fame",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 98,
-    "applied": 98,
-    "caught": 98,
+    "total": 115,
+    "applied": 115,
+    "caught": 115,
     "skipped": false,
     "results": [
       {
@@ -1193,11 +1295,13 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "fame :: a Knight's waiting craft: the item, no fame; ArtisanRank 0",
+          "fame :: left the guild: ArtisanRank 0 (Rep kept: lifetime)",
           "start :: a Knight cannot craft (NotArtisan, a key)",
           "workbench :: a Knight or an alchemist at the anvil: NotArtisan, no window",
           "xp :: a Knight's waiting craft: the item comes, no craft XP"
         ],
-        "newFailingCount": 3
+        "newFailingCount": 5
       },
       {
         "mutation": "start: any role's recipe",
@@ -1513,12 +1617,12 @@
         "newFailingChecks": [
           "ends :: full at the Finish: +2 earned and kept in the save",
           "ends :: the next start pays the +2 first",
-          "hammer :: 395 ms later than claimed (inside 400): kept",
-          "hammer :: 45 ms earlier than claimed (inside 50): kept",
-          "hammer :: Crafted(player, W1, 2)",
-          "hammer :: Grades x5"
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame",
+          "fame :: no RankingService.Credit: Rep only, no error",
+          "fame :: the lifetime Rep stays"
         ],
-        "newFailingCount": 21
+        "newFailingCount": 26
       },
       {
         "mutation": "strike: the ping then not kept",
@@ -1539,13 +1643,13 @@
         "crashed": false,
         "newFailingChecks": [
           "ends :: the next start pays the +2 first",
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: the lifetime Rep stays",
+          "fame :: with the 2x XP pass: still 2 fame",
           "hammer :: 6 points: +0 (still made, nothing lost)",
-          "hammer :: Finish: the right id only, once",
-          "hammer :: Perfect, Great, Good, (no press) Miss, Perfect = 9 points: +1",
-          "hammer :: Skip (Finish right away): +0, made",
-          "remotes :: 3 s later: a new session"
+          "hammer :: Finish: the right id only, once"
         ],
-        "newFailingCount": 12
+        "newFailingCount": 15
       },
       {
         "mutation": "finish: bots get their +N",
@@ -1605,7 +1709,7 @@
           "ends :: no Finish by StartAt + 20 s: made at +0",
           "ends :: room again: the waiting one is made first at its +2, then the new one starts"
         ],
-        "newFailingCount": 24
+        "newFailingCount": 25
       },
       {
         "mutation": "end: Made not counted",
@@ -1668,10 +1772,11 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "fame :: a Knight's waiting craft: the item, no fame; ArtisanRank 0",
           "xp :: a Knight's waiting craft: the item comes, no craft XP",
           "xp :: an alchemist finishing an old blacksmith craft: no XP for either role"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 3
       },
       {
         "mutation": "end: one level at most",
@@ -1682,12 +1787,12 @@
         "newFailingChecks": [
           "config :: group ran to the end without a Lua error",
           "ends :: group ran to the end without a Lua error",
+          "fame :: group ran to the end without a Lua error",
           "hammer :: group ran to the end without a Lua error",
           "off :: group ran to the end without a Lua error",
-          "recipes :: group ran to the end without a Lua error",
-          "remotes :: group ran to the end without a Lua error"
+          "recipes :: group ran to the end without a Lua error"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 12
       },
       {
         "mutation": "end: no Crafted signal",
@@ -1707,9 +1812,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
           "hammer :: CraftInfo { Role, Lv, XP, Need, Made } after the craft"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "end: leave loses the craft",
@@ -1745,9 +1851,9 @@
           "ends :: an unknown recipe pays back the gold and every material (150 in two parts)",
           "ends :: no room at the join: it stays pending with its +2 (Full notice)",
           "ends :: the gold comes back as CraftRefund (never doubled by a pass)",
-          "xp :: a Knight's waiting craft: the item comes, no craft XP"
+          "fame :: a Knight's waiting craft: the item, no fame; ArtisanRank 0"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 8
       },
       {
         "mutation": "end: an unknown Pend stays",
@@ -2202,6 +2308,218 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "config: rank 2 at 50",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: a new artisan: ArtisanRank 1 (Apprentice), CraftInfo Rep 0 / Rank 1 / NextRep 30",
+          "fame :: back as an alchemist: rank 2 again (Rep is shared by the roles)",
+          "fame :: ranks at 0 / 30 / 150 / 500 / 1500 (next Rep; 0 at the top)",
+          "fame :: the next craft in the same rank: no line"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: the perfect bonus at any +N",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: every recipe in the lowest band",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a rank one point late",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: ranks at 0 / 30 / 150 / 500 / 1500 (next Rep; 0 at the top)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "fame: none",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame",
+          "fame :: back as an alchemist: rank 2 again (Rep is shared by the roles)",
+          "fame :: no RankingService.Credit: Rep only, no error",
+          "fame :: the lifetime Rep stays",
+          "fame :: the next craft in the same rank: no line"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "fame: anyone earns it",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: a Knight's waiting craft: the item, no fame; ArtisanRank 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "fame: no lifetime Rep",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame",
+          "fame :: back as an alchemist: rank 2 again (Rep is shared by the roles)",
+          "fame :: no RankingService.Credit: Rep only, no error",
+          "fame :: the lifetime Rep stays",
+          "fame :: the next craft in the same rank: no line"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "fame: no cap",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: Rep never passes MaxCount; Grandmaster"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "fame: not on the weekly board",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame",
+          "fame :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rank: no line",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: the next craft in the same rank: no line"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rank: no signal",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: the next craft in the same rank: no line"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rank: a line every craft",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: the next craft in the same rank: no line"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "rank: the attribute for everyone",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: a Knight's waiting craft: the item, no fame; ArtisanRank 0",
+          "fame :: left the guild: ArtisanRank 0 (Rep kept: lifetime)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "rank: no attribute",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: Rep never passes MaxCount; Grandmaster",
+          "fame :: a Knight's waiting craft: the item, no fame; ArtisanRank 0",
+          "fame :: a new artisan: ArtisanRank 1 (Apprentice), CraftInfo Rep 0 / Rank 1 / NextRep 30",
+          "fame :: back as an alchemist: rank 2 again (Rep is shared by the roles)",
+          "fame :: left the guild: ArtisanRank 0 (Rep kept: lifetime)"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "rank: a faction change not followed",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: left the guild: ArtisanRank 0 (Rep kept: lifetime)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "info: no Rep / Rank",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: 28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)",
+          "fame :: a new artisan: ArtisanRank 1 (Apprentice), CraftInfo Rep 0 / Rank 1 / NextRep 30"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "result: no Fame",
+        "file": "src/ServerScriptService/CraftService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "fame :: W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame"
+        ],
+        "newFailingCount": 1
+      },
+      {
         "mutation": "remote: extra arguments taken",
         "file": "src/ServerScriptService/CraftService.luau",
         "applied": true,
@@ -2252,13 +2570,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "51d42decc11427471583c32fba60f04d5fed07328e5d92a282fe8713a02b6ab6",
+    "src/ReplicatedStorage/Shared/Config.luau": "81e21a0a907d19a2cf811671467b454992293a143fbebca1c3f25178de3b0a7c",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
-    "src/ServerScriptService/CraftService.luau": "0f7a8efbf0729ce70c432f00ec715e176ee84bd87a21daab571d42180b9958d5"
+    "src/ServerScriptService/CraftService.luau": "441daaefd29c576c0b34102db3f7c097305d4e4e7f46341c7283b32f882fb9e2"
   },
-  "fixtureSHA256": "395674c5800896983d13842b38713299207712bbc61c3ca7c65b02c2d9a10984",
+  "fixtureSHA256": "0fa8cc49b6c23d55a58fb15b6139706dcc7c4e80416639ad3e515bd584de99dc",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
