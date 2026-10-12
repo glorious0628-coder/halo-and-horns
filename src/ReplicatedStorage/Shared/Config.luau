@@ -118,7 +118,8 @@ Config.Data = {
 	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69 (검수 2026-10-07): Stats { Auto, Order } is an
 	-- additive field like Settings / Rank / SkillsA71 (a v3 server keeps it as it is), so the version stays 3; a bump
 	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
-	Version = 3,
+	-- C1 (save v4): 4 = weapon tier 9 (a 9-bit mask, WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).
+	Version = 4,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -127,7 +128,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 3,
+		Version = 4,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -278,6 +279,10 @@ Config.Weapons = {
 	-- A23-12: the slime jackpot ("젤리 왕관" legendary). Never sold; dropped only by Config.Loot.Jackpot monsters,
 	-- exactly 2x the best shop weapon (tier 3: 38 -> 76, so the tier-4 drop at 88 stays an upgrade), usable at any level.
 	{ Tier = 8, Damage = 76, Price = 0, MinLevel = 1, Legend = true, Color = Color3.fromRGB(120, 240, 190), Material = Enum.Material.Neon, Length = 4.5 },
+	-- A23-127 (C1, save v4): the Mythic tier, made only by artisans (CraftService W9 -> spare weapons). Never dropped, never a
+	-- jackpot, never sold at the Forge (WeaponShop.MaxSoldTier), never a commission. Price = the sale-value reference only.
+	-- Color = placeholder until the image team picks the Mythic look.
+	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.5 },
 }
 Config.MaxWeaponTier = #Config.Weapons
 
@@ -285,17 +290,17 @@ Config.MaxWeaponTier = #Config.Weapons
 -- ever APPEND tiers. T4-T6 names come from the monsters that drop them (design skills_weapons_pets_2026-10-05 §1 B3).
 Config.WeaponNames = {
 	Warrior = { "Twig", "Wooden Sword", "Iron Sword", "Goblin Thief's Golden Sword", "Old Kingdom Crystal Sword", "Guardian Spirit Sword",
-		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword" },
+		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword" },
 	Mage = { "Dry Staff", "Oak Staff", "Iron Staff", "Goblin Thief's Golden Staff", "Old Kingdom Crystal Staff", "Guardian Spirit Staff",
-		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff" },
+		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff" },
 	Archer = { "Slingshot Bow", "Wooden Bow", "Iron Bow", "Goblin Thief's Golden Bow", "Old Kingdom Crystal Bow", "Guardian Spirit Bow",
-		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow" },
+		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow" },
 }
 
 -- A23-39: the pet tamer (artisan guild Archer, Config.IsTamer) holds taming batons instead of bows (same stats)
 Config.WeaponNames.Tamer = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton",
 	"Old Kingdom Crystal Baton", "Guardian Spirit Baton", { Halo = "Dawn Baton", Horns = "Ruin Baton", None = "Crown Shard Baton" },
-	"Jelly Crown Baton" }
+	"Jelly Crown Baton", "Crownforged Baton" }
 -- the former English twin is the same tables now (readers of WeaponNamesEn keep working)
 Config.WeaponNamesEn = Config.WeaponNames
 
@@ -306,6 +311,8 @@ Config.WeaponGrades = {
 	Rare = { Name = "Rare", NameEn = "Rare", Stars = 3, Color = Color3.fromRGB(70, 140, 255), Rank = 3 },
 	Epic = { Name = "Epic", NameEn = "Epic", Stars = 4, Color = Color3.fromRGB(170, 90, 230), Rank = 4 },
 	Legend = { Name = "Legendary", NameEn = "Legendary", Stars = 5, Color = Color3.fromRGB(255, 160, 40), Rank = 5 },
+	-- A23-127 tier 9 (crafted). Color = placeholder: the image team may change it
+	Mythic = { Name = "Mythic", NameEn = "Mythic", Stars = 6, Color = Color3.fromRGB(255, 70, 130), Rank = 6 },
 }
 -- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
 Config.WeaponInfo = {
@@ -317,6 +324,7 @@ Config.WeaponInfo = {
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
 	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
+	{ Grade = "Mythic", Source = "Crafted by artisans" },
 }
 
 function Config.WeaponGrade(tier)
@@ -5079,6 +5087,10 @@ Config.Loot = {
 		KnightCrest = { Kind = "Material", Name = "Rusty Knight Crest", Sell = 40, Color = Color3.fromRGB(150, 150, 170), Icon = "IconKnightCrest" },
 		-- J: Captain Clatter's badge (a week's first kill always gives one; the T6 commission needs it, A23-86 L)
 		CaptainBadge = { Kind = "Material", Name = "Captain's Badge", Sell = 200, Color = Color3.fromRGB(220, 190, 110), Icon = "IconCaptainBadge" },
+		-- C1 boss materials for the artisans' recipes (W7 / W9). Source "Boss": never in the Forge's sell-all (sold one at a
+		-- time). Icons not drawn yet (no Config.UIArt part: the bag's code fallback until image gen 2 -> image dev)
+		KingJelly = { Kind = "Material", Name = "Royal Jelly", Sell = 60, Color = Color3.fromRGB(255, 140, 190), Icon = "IconKingJelly", Source = "Boss", Desc = "Artisans craft with it." },
+		ClatterGem = { Kind = "Material", Name = "Old Crown Gem", Sell = 400, Color = Color3.fromRGB(120, 200, 230), Icon = "IconClatterGem", Source = "Boss", Desc = "Artisans craft with it." },
 		Candy = { Kind = "Material", Name = "Candy", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
 		-- NewZones (A23-123): one material per new field, priced between its level neighbours (Jelly 2 / Goblin Tooth 6 /
 		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
@@ -5112,7 +5124,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy",
+		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
 		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
@@ -5146,6 +5158,7 @@ Config.Loot = {
 			{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.06 }, { Item = "Enh10", P = 0.015 },
 			{ Item = "Move70", P = 0.08 }, { Item = "Move30", P = 0.02 }, { Item = "Move10", P = 0.005 },
 			{ Potion = "HP", P = 0.3 }, { Potion = "MP", P = 0.3 },
+			{ Item = "KingJelly", P = 0.2 }, -- C1: last, so the rows above keep their draws
 		},
 		SlingshotGoblin = { -- A23-87: the goblin's rows
 			{ Item = "GoblinTooth", P = 0.4 },
@@ -5186,6 +5199,7 @@ Config.Loot = {
 			-- below the weapon's MinLevel the row gives 2 more Knight Crests instead (A23-27)
 			{ Weapon = 5, P = 0.03, BelowLevel = { Item = "KnightCrest", N = 2 } },
 			{ Weapon = 6, P = 0.005, BelowLevel = { Item = "KnightCrest", N = 2 } },
+			{ Item = "ClatterGem", P = 0.1 }, -- C1: last, so the rows above keep their draws
 		},
 		SkeletonKnight = {
 			{ Item = "KnightCrest", P = 0.5 },
@@ -8414,6 +8428,15 @@ Config.SaveV4 = {
 	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
 	ShopDayMax = 50, -- Shop.N: Otto's cheap materials a KST day (게임성 개발 2)
 	PetRollSpd = { 5, 10 }, -- Pets.List[uid].Roll.Spd: a summoned pet's walk bonus in whole % (PetService.Sanitize)
+	-- C1 (게임성 개발 2): spare weapons and the market ledger
+	SpareTierMax = 32, -- Spares "T:P": the shape check keeps tiers 1..32 (a later tier survives this server)
+	SpareKeyMax = 20, -- at most this many of one "T:P"
+	SpareSum = 60, -- all spares together: the writers refuse above this (the repair never drops for it)
+	MarketRows = 64, -- Market.Out / Market.In: most rows kept each (sorted ids)
+	MarketDone = 50, -- Market.Done: most finished ids kept
+	MarketIdLen = 40, -- a market row id
+	MarketMaxN = 999, -- items in one market row
+	MarketStates = { Open = true, Sold = true, Cancel = true, Expired = true, Paid = true },
 }
 -- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
 -- Made (recipe id -> times made). Research: the tamer's points (Pts) and summons (Sum) per monster family (QuestKind).
@@ -8429,6 +8452,11 @@ Config.Data.Defaults.Gear = { Own = {}, On = { Armor = "", Ring = "" }, Pet = {}
 Config.Data.Defaults.Buffs = {}
 Config.Data.Defaults.Shop = { Day = 0, N = 0 }
 Config.Data.Defaults.EggHonorAt = 0
+-- C1 (Version 4): Spares["T:P"] = n spare weapons (tier:plus, not owned in the mask; LootService.AddSpare / SpareRoom).
+-- Market: Out[id] = { K, N, Price, St } my listings, In[id] = { Price, St } my buys, Done = finished ids, Day = KST DayIndex
+-- of Lists / Buys. K = "I:<item id>" | "W:<T>:<P>"; St = Open | Sold | Cancel | Expired | Paid (MarketService later)
+Config.Data.Defaults.Spares = {}
+Config.Data.Defaults.Market = { Out = {}, In = {}, Done = {}, Day = 0, Lists = 0, Buys = 0 }
 
 -- the repair helpers of the v4 tables (one local for the whole set: Config's top chunk is near the 200 locals limit)
 local V4 = {}
