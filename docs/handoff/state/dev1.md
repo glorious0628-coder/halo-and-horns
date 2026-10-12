@@ -41,7 +41,8 @@
 
 15. **fix/staff-hip 612274b1** (wt_onehand, main 170fce30에서; stairs-ground는 병합됨, 게임성 검수에 보고): 최종 검수 (a) '손 엉덩이 ≈2.1칸'은 불가 (곧은 지팡이 + 주먹 = 아래팔 내려간 만큼 손목 엄지 쪽 꺾임, 사람 15~25°; 2.1칸이면 팔 다 펴짐·손목 ≈70°; 내 첫 추천이 손목을 빼고 잰 실수 — 정정함). 손목 20° 안 가장 낮게: 빛 2.71칸(Hilt (1.4,-0.5,-0.8), 3°, Pole (0.2,-0.2,0.6))·연금술사 2.66(6°)·뿔 2.56(11°). 연금술사 = SHAPES.FlaskStaff(승인 2D), STAFF.FootMax 2.5, grip_reference §5-6, test_one_hand_grips 123·74/74 + 관련 14개 통과. 감은 곳: 디자인 검수가 메시 7개(LightMage T1·T3, DarkMage T1·T3, Alchemist T1~T3) 감은 곳 가운데를 바닥에서 빛 2.63·뿔 2.53·연금술사 2.59칸으로 올리게 이미지 생성 4에 보냄(내 손 높이 그대로). 쥐는 높이 표 = docs/design/weapon_grip_heights_2026-10-12.md. 사진(병합 뒤): 세 마법사 대기 앞·옆(디자인 검수에도 한 장), 주먹-막대 크롭, GripProbe 평지·계단, 걷기, 연금술사 지팡이 T1·T7, Q·Z → 참고 vs 우리 나란히 시트.
 
-16. **BB8 내 캐릭터 창 = API 쓰기 job `dev1_character_ui`**(가지 api/dev1-character-ui, sonnet $6, 프롬프트 scratchpad api/bb8_character_ui.md — 세션 끝나면 사라짐; 결과 build/api_agent/dev1_character_ui/result.md). 게임성 검수 10/12: 큰 코드는 API 쓰기 모드 먼저(남은 약 $85, 한도 꼭). 개발 4와 약속: 창 안 빈 Frame 'EquipSlots' 전체를 개발 4에게 — C.GearSlots.Build(frame, { Refresh = fn }) 있으면 6칸(Weapon·Armor·Ring / Pet + Pet Armor·Pet Acc) 전부 개발 4가 그림, 없을 때만 내 임시 무기·펫 칸; 열 때마다 C.GearSlots.Refresh(). job 프롬프트는 무기·펫 칸을 내가 그리는 판이라 끝나면 그 위에 이 규칙으로 고쳐 해시를 개발 4·게임성 검수에.
+   - **a76e7564** (612274b1 위, 최종 검수 API 검토 MAJOR): 7단계 지팡이 1.008H → LEN.Staff 위 끝 4.45(0.9985H), 시험 REACH Staff (0.85, 1.0). 게임성 검수에 보고.
+16. **BB8 내 캐릭터 창 = API 쓰기 job `dev1_character_ui`**(가지 api/dev1-character-ui, sonnet $6, 프롬프트 scratchpad api/bb8_character_ui.md — 세션 끝나면 사라짐; 결과 build/api_agent/dev1_character_ui/result.md). 게임성 검수 10/12: 큰 코드는 API 쓰기 모드 먼저(남은 약 $85, 한도 꼭). 개발 4와 약속: 창 안 빈 Frame 'EquipSlots' 전체를 개발 4에게 — C.GearSlots.Build(frame, { Refresh = fn }) 있으면 6칸(Weapon·Armor·Ring / Pet + Pet Armor·Pet Acc) 전부 개발 4가 그림, 없을 때만 내 임시 무기·펫 칸; 열 때마다 C.GearSlots.Refresh(). job 프롬프트는 무기·펫 칸을 내가 그리는 판이라 끝나면 그 위에 이 규칙으로 고쳐 해시를 개발 4·게임성 검수에. **결과:** job 1($6) = CharacterUI.luau 초안만(컴파일 OK, 미연결·시험 없음, ca33f568) → job 2 `dev1_character_ui_2`(가지 api/dev1-character-ui-2, $6, 프롬프트 scratchpad api/bb8_finish.md): GearSlots 있으면 6칸 전부 개발 4(내 칸 안 그림), ORDER 'BagUI' 다음, test_gather_view 변이, Panels Icons, tools/test_character_ui.py + fixture. 내 확인용 가지 fix/character-ui(wt_lesstext) = 초안 그대로.
 
 ## 기다리는 것
 - **BB8 job 결과(16번)** → 검토·EquipSlots 규칙 고침 → 개발 4·게임성 검수. 개발 2 황금 알 서버(api/dev2-golden-egg) 해시 오면 EggFx 깃털·장인 줍기·Bring 2 eggs 맞춤 화면 가지.
@@ -54,6 +55,7 @@
 - 아직 안 한 황금 알 화면: 거위 조각 색(거위 3D 필요), "!"·"Zzz" 아이콘 그림(승인되면 글자 대신), 알 아이콘 IconGoldenEgg(이미지 개발 업로드 뒤 막대 양 끝).
 
 ## 그다음 큐 (검수가 새로 주지 않으면)
+0. 낮음(최종 검수 API 검토 10/12): ① 지팡이 길이가 GetScale만 따라 작은 체형은 4단계부터 1.0H 넘음 → 실제 키(머리 꼭대기-발) 기준으로 ② 자세를 안 잡는 캐릭터(R6·멀리·12번째 이후)는 지팡이가 앞으로 누워 몸을 뚫음.
 1. 한국어 클라 다음 덩어리(API 쓰기, `docs/design/l10n_contract_2026-10-11.md` §10-1 나머지; L10n 중심은 main 398733a4에 병합됨): L10nText 처리기(간판 TextKey·현상수배판 BoardRows·글자 그림 Lettering 먼저), 프롬프트 훅(ActionKey/ObjectKey), Announce 조합기 → L10n.T, 이름표·몬스터 바 클라 조합, l10n_export --lettering·클라 표 export/apply. 그다음 첫 10분 화면 UIKit.Tx 키로.
 2. 스트리밍 고침(검수가 켜기 정하면, `docs/review/streaming_risk_2026-10-11.md`).
 3. 스킬 소리 41개 연결(id 오면), 개발 2 Z·X 패킷 필드 SkillFx 연결.
