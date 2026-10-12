@@ -239,25 +239,38 @@ for ix = 1, NX do
 		-- recesses (one cell = 4 deep, 20-40 % of the band) between the ledges
 		local slabs, recess = nil, nil
 		local LV = { -6 - (ix * 5 + iz * 3) % 3, -20 - (ix * 7 + iz * 11) % 4, -36 - (ix * 3 + iz * 13) % 4 }
+		-- 3차 10/12 (one cell of relief did not read from 150 away): ledges 8 thick; recesses two cells deep (the outer rim
+		-- row and the row inside it, a coarse 2x2 hash so both rows share them) and 10-12 tall
+		local function tierAt(rr, cc)
+			if D.m[rr] and string.sub(D.m[rr], cc, cc) == "s" then return idx[string.sub(D.h[rr], cc, cc)] end
+			return -1
+		end
+		local function isOuter(rr, cc)
+			if tierAt(rr, cc) ~= 3 then return false end
+			for _, d in { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } } do
+				local nk = tierAt(rr + d[2], cc + d[1])
+				if nk == 4 or nk == 5 then return true end
+			end
+			return false
+		end
 		if kk == 5 then
 			slabs = {}
 			for li, lv in LV do
-				if (ix * (3 + li) + iz * (5 + 2 * li)) % 5 < 3 then table.insert(slabs, { lv - 6, lv }) end
+				if (ix * (3 + li) + iz * (5 + 2 * li)) % 5 < 3 then table.insert(slabs, { lv - 8, lv }) end
 			end
-			if #slabs == 0 then table.insert(slabs, { LV[2] - 6, LV[2] }) end
+			if #slabs == 0 then table.insert(slabs, { LV[2] - 8, LV[2] }) end
 		elseif kk == 3 then
-			local outer = false
-			for _, d in { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } } do
-				local rr, cc = r + d[2], ix + d[1]
-				if D.m[rr] and string.sub(D.m[rr], cc, cc) == "s" then
-					local nk = idx[string.sub(D.h[rr], cc, cc)]
-					if nk == 4 or nk == 5 then outer = true end
+			local outer = isOuter(r, ix)
+			if not outer then
+				for _, d in { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } } do
+					if isOuter(r + d[2], ix + d[1]) then outer = true end
 				end
 			end
 			if outer then
+				local hx, hz = ix // 2, iz // 2
 				recess = {}
-				if (ix * 9 + iz * 5) % 7 < 3 then table.insert(recess, { LV[1] - 10, LV[1] - 4 }) end
-				if (ix * 4 + iz * 13) % 7 < 3 then table.insert(recess, { LV[2] - 12, LV[2] - 4 }) end
+				if (hx * 9 + hz * 5) % 7 < 3 then table.insert(recess, { LV[1] - 12, LV[1] - 2 }) end
+				if (hx * 4 + hz * 13) % 7 < 3 then table.insert(recess, { LV[2] - 14, LV[2] - 2 }) end
 			end
 		end
 		for iy = 1, NY do

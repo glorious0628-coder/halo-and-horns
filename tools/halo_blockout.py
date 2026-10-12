@@ -823,6 +823,27 @@ def main():
             kept.append(w_)
     print(f"[blockout] wall pieces without a real step there: {len(walls) - len(kept)} dropped")
     walls = kept
+    # 디자인 검수 10/12 (r2_17: from the high side the ground sat a few studs under the wall top, the wall stood alone): the
+    # ground right behind every wall is filled up to its top (1.5 cells), then eased down over the next cell (roads, stairs,
+    # water, footprints and pads keep their own height)
+    filled = 0
+    for w_ in walls:
+        n_ = max(1, int(w_["len"] / 2))
+        for k in range(n_ + 1):
+            f = -0.5 + k / n_
+            px_, pz_ = w_["x"] + w_["ux"] * w_["len"] * f, w_["z"] + w_["uz"] * w_["len"] * f
+            for d_, want in ((w_["t"] / 2 + 1, w_["top"]), (w_["t"] / 2 + CELL, w_["top"]), (w_["t"] / 2 + CELL * 1.5, w_["top"]),
+                             (w_["t"] / 2 + CELL * 2.5, w_["top"] - 1.5)):
+                c_, r_ = int((px_ - w_["nx"] * d_ - X0) // CELL), int((Z0 - (pz_ - w_["nz"] * d_)) // CELL)
+                if not (0 <= r_ < rows and 0 <= c_ < cols) or H[r_][c_] is None:
+                    continue
+                m_ = MAT[r_][c_]
+                if m_ in ("sea", "water", "stair") or m_.startswith("road") or (r_, c_) in INFP or (r_, c_) in PAD:
+                    continue
+                if H[r_][c_] < want - 0.05:
+                    H[r_][c_] = want
+                    filled += 1
+    print(f"[blockout] ground filled up to the wall tops behind the walls: {filled} cells")
     os.makedirs(os.path.join(ROOT, "build", "wk"), exist_ok=True)
     with open(os.path.join(ROOT, "build", "wk", "halo_walls.json"), "w", encoding="utf-8") as f:
         json.dump(dict(cell=CELL, walls=walls), f)
