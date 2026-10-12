@@ -11,7 +11,7 @@
 ## main에 들어간 것
 가방 BagUI, 채집 GatherView, 망치질 CraftMini·CraftView, 제작 창 CraftWindow(작업대 프롬프트), 조련사 화면(소환·Research 탭·펫 Roll/Born/Feed), 연금 물약 화면(dev4-tonics 6867e71f: 가방 Drink·Wait m:ss·꺼지면 재료 탭, BuffBar = MP 줄 끝·px 바닥·경고 10초).
 
-## 병합 대기 (게임성 검수 시험 중)
+## 병합 대기 (게임성 검수도 쉼 → **앞으로 가지 보고는 최종 검수로**; 01a3fc3b는 main e8f76ed4와 충돌 없음만 확인, 시험 전. 거래소 시험 결과는 게임성 검수가 최종 검수에 넘김)
 - **② 거래소 창 C-6 — origin/dev4-market-window 3bd187d9**: MarketWindow.luau(Buy·Sell·Mine, 계약 docs/design/market_window_2026-10-12.md §6 = 개발 2 합의, 스위치 Market 꺼짐, 서버 C-5 없으면 "The market is resting."). 시험 tools/test_market_window.py 165·60/60. 사진 docs/art/verification_2026-10-12/market/pc 00~03(+04 영웅 창). 사진 스크립트 tools/play_market_photos.py [--hero](Play 안 서버 대역). 남은 질문(개발 2 서버 올 때): Fx "Market" 알림 직접 듣기, 열린 동안 Mine 10초, Sell에서 T1 여분 거르기, 값 = 한 줄 전체 값.
 - **③ 장비 칸 — origin/dev4-gear-slots 01a3fc3b**(개발 1 api/dev1-character-ui-2 b479014a 위; 개발 1 먼저 병합): GearSlots.luau(EquipSlots 안 6칸, 무기 → CharacterUI.ShowView("Weapons"), 펫 → 펫 창, 방어구·반지·펫 장비 = 서버 C-7 전 빈 칸, Cells(ctx).Gear로 채움). 시험 tools/test_gear_slots_ui.py 69·28/28(개발 3 test_gear_slots와 다른 파일), test_character_ui 138·59/59. 사진 market/pc/04_hero_gear_slots.
 
