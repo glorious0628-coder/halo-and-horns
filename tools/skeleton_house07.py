@@ -436,6 +436,19 @@ LANT_C = LANT_Y + 0.25 + LANT_W / 2        # glass box centre (y): bracket arm 0
 for nm, x in (("LampGlassL", CX - LANT_U), ("LampGlassR", CX + LANT_U)):
     g = LANT_W - 2 * LANT_POST - 0.02
     add(nm, (g, LANT_H - 0.1, g), (x, LANT_C, LANT_Z), mat="lamp")
+    # 최종 검수 10/12 (A23-148/149): the lantern frame is a part skeleton too (the Blender metal frames are parked); the
+    # same parts as tools/skeleton_house.py lanterns, Tripo lantern pieces (round shade top, curved arm) later
+    sd_ = nm[-1]
+    zb_, zt_ = LANT_Z - LANT_H / 2, LANT_Z + LANT_H / 2
+    add("LampBase" + sd_, (LANT_W + 0.15, 0.22, LANT_W + 0.15), (x, LANT_C, zb_ - 0.06), mat="gold")
+    add("LampDrop" + sd_, (0.26, 0.26, 0.26), (x, LANT_C, zb_ - 0.3), mat="gold", shape="Ball")
+    for c_, (sx_, sy_) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):
+        add("LampPost%s%d" % (sd_, c_ + 1), (0.09, LANT_H, 0.09), (x + sx_ * (LANT_W / 2 - 0.05), LANT_C + sy_ * (LANT_W / 2 - 0.05), LANT_Z), mat="gold")
+    add("LampCap" + sd_, (LANT_W + 0.25, 0.2, LANT_W + 0.25), (x, LANT_C, zt_ + 0.05), mat="gold")
+    add("LampRoof" + sd_, (LANT_W * 0.72, 0.3, LANT_W * 0.72), (x, LANT_C, zt_ + 0.3), mat="gold")
+    add("LampRoofTop" + sd_, (LANT_W * 0.38, 0.22, LANT_W * 0.38), (x, LANT_C, zt_ + 0.55), mat="gold")
+    add("LampFinial" + sd_, (0.24, 0.24, 0.24), (x, LANT_C, zt_ + 0.78), mat="gold", shape="Ball")
+    add("LampArm" + sd_, (0.14, 0.14, 0.4), (x, LANT_C - LANT_W / 2 - 0.15, zt_ - 0.15), mat="gold")
 
 # ---------------- awning (검수 v4c: the Tripo awning reads as a small gold lump; its map is cut into gold-orange islands,
 # so a recolour would need a new texture upload + re-import): cream / yellow striped cloth of parts, Fabric + HH_Fabric (plain Fabric read as a dark check; 이미지 개발 10/11), a

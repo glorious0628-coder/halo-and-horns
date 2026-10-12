@@ -22,6 +22,8 @@ for i, h in enumerate(FRONT):
     ROWS["HaloDomeHouse_" + h] = (2940 + 36 * i, 60)
 for i, h in enumerate(BACK):
     ROWS[("HaloDomeHouse_" + h) if h.isdigit() else ("HaloShop_" + h)] = (2940 + 36 * i, 115)
+for h, x in (("Cliff6", 3000), ("Garden6", 3036), ("Garden7", 3072), ("Hill4", 3108), ("Cliff7", 3144), ("Garden5", 3180), ("Cliff8", 3216)):
+    ROWS["HaloNewHouse_" + h] = (x, 170)                  # the 7 new houses' test row 3 (10/12)
 FIX = r'''
 local ST = workspace.SkeletonTest
 local name, ox, oz = "%s", %g, %g
