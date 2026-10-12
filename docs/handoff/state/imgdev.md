@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-12: 스티커 17개 올림)
+
+- **스티커 17개 올림**(최종 검수 승인, 자홍 바탕 직접 봄, 10+7 두 번 사이 30초): asset_ids Emo<이름> 17개(Heart·ThumbsUp·HaloHeart·HornSmiley·Crown·Sweat·Zzz·Question·Exclaim·Clap·Sparkle·Anger·Nice·Thanks·Help·Oops·LetsGo). Config.UIArt 반영 = 가지 `imgdev-stickers`(de9e4fcf, worktree ../Game-imgdev-icons): **무료 5개 = Parts 항목에 `Free = true`**(EmoThumbsUp·EmoQuestion·EmoExclaim·EmoHelp·EmoThanks); 나머지 12 + EmoGG = 99 R$ 패스(SPEC A23-143; 패스 서버 = 개발 2, 화면 = 개발 1이 `Free` 필드를 읽음). -> 게임성 검수 -> 최종 검수. 바깥선 묶음 3 목록은 이미지 생성 4 답 대기.
+
 # 이미지 개발 — 상태 (2026-10-12: 바깥선 묶음 2 ID 기록)
 
 - **바깥선 껍데기 묶음 2(10개) 가져오기 끝 -> ID 읽음·임시 파트 지움**(남은 0). 합계 20개 prop_hull_assets.json + asset_ids PropHull035_<키트>(place_rotate_y_pi, centre = OBJ 상자 중심). 다음 = 묶음 3~6(46개 중 나머지 36개): build/hull_import 비우고 10개씩 Hull_<키>.obj 복사 -> 렌더 직접 봄 -> 이미지 생성 4에 "준비됨" -> 최종 검수(사용자 클릭) -> `STUDIO_NAME=WorldKit py tools/read_imported_hulls.py --clean`.
