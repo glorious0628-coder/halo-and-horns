@@ -12927,5 +12927,212 @@
    "out": "art/models/tripo/touchup/Meme_TwistHorns/Meme_TwistHorns_TU.glb (+ maps, disk only)",
    "sheet": "art/review/img4/meme_touchup_1012.jpg"
   }
+ ],
+ "NPC_HaloBellElder_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "dca9a12c-931a-4a3d-a678-f798b0694e3b",
+   "balance_before": 13865,
+   "balance_after": 13810,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloBellElder_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloBellElder_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloBellElder_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloBellElder_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloBellElder_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloFlowerFarmer_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "41b03f83-7ba2-419c-8375-2ef4b74a6772",
+   "balance_before": 13810,
+   "balance_after": 13755,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloFlowerFarmer_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloFlowerFarmer_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloFlowerFarmer_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloFlowerFarmer_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloFlowerFarmer_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloFolk4_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "2689a845-cdc4-45a7-a156-529a6f3030bb",
+   "balance_before": 13755,
+   "balance_after": 13700,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloFolk4_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloFolk4_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloFolk4_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloFolk4_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloFolk4_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloHerbHusband_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "c8f1c820-eeaf-47d4-8971-9c490cadc723",
+   "balance_before": 13700,
+   "balance_after": 13645,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloHerbHusband_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloHerbHusband_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloHerbHusband_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloHerbHusband_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloHerbHusband_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloHerbWife_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "afa02086-d93d-4e50-8f64-d2149ef93174",
+   "balance_before": 13645,
+   "balance_after": 13590,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloHerbWife_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloHerbWife_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloHerbWife_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloHerbWife_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloHerbWife_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloMailBoy_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "eadc967b-e12b-40a6-bb37-9f71586092d5",
+   "balance_before": 13590,
+   "balance_after": 13535,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloMailBoy_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloMailBoy_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloMailBoy_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloMailBoy_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloMailBoy_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloOldSailor_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "54e024a6-e3c2-46cf-bd22-c3dd25228c1f",
+   "balance_before": 13535,
+   "balance_after": 13480,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloOldSailor_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloOldSailor_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloOldSailor_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloOldSailor_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloOldSailor_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloPondAngler_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "531e60d6-90ec-4864-b8b4-72eb810d9336",
+   "balance_before": 13480,
+   "balance_after": 13425,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloPondAngler_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloPondAngler_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloPondAngler_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloPondAngler_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloPondAngler_MV4_HD_src.glb"
+  }
+ ],
+ "NPC_HaloStarScholar_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "f0af31fb-73f4-4bfa-83f7-c3e51047703e",
+   "balance_before": 13425,
+   "balance_after": 13370,
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 15:10",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "approval": "최종 검수 10/12: residents 9 x 55 = 495 points (4-view High passed)",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloStarScholar_front_HQ_src.png",
+    "left_slot(camera at the character's own left; 2D sides named from the viewer)": "art/out/s2/npc2_hq/NPC_HaloStarScholar_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc2_hq/NPC_HaloStarScholar_left_HQ_src.png",
+    "back": "art/out/s2/npc2_hq/NPC_HaloStarScholar_back_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
+   "file": "art/models/tripo/web/NPC_HaloStarScholar_MV4_HD_src.glb"
+  }
  ]
 }
