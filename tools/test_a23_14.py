@@ -211,7 +211,7 @@ MUTATIONS = [
     ("A23-113: a deed never fills the Choice daily", "QUEST_SOURCE",
      "if typeof(player) == \"Instance\" and player:IsA(\"Player\") then addProgress(player, \"Choice\", 1) end", "local _ = player"),
     ("A23-113: a deed fills the goose daily", "QUEST_SOURCE", "addProgress(player, \"Choice\", 1) end", "addProgress(player, \"Goose\", 1) end"),
-    ("A23-113 config: Goose is hunting", "CONFIG_SOURCE", "RewardPerUnit = 20, NonHunt = true,\n\t\t\tText = \"Join the Golden Goose", "RewardPerUnit = 20,\n\t\t\tText = \"Join the Golden Goose"),
+    ("A23-113 config: Goose is hunting", "CONFIG_SOURCE", "RewardPerUnit = 20, NonHunt = true,\n\t\t\tText = \"Golden Egg hunt", "RewardPerUnit = 20,\n\t\t\tText = \"Golden Egg hunt"),
     ("A23-113 config: Choice is hunting", "CONFIG_SOURCE", "RewardPerUnit = 20, NonHunt = true,\n\t\t\tText = \"Make a kind or sneaky choice\"", "RewardPerUnit = 20,\n\t\t\tText = \"Make a kind or sneaky choice\""),
     ("A23-113 config: the guarantee from Lv30", "CONFIG_SOURCE", "\tNonHuntFrom = 10,", "\tNonHuntFrom = 30,"),
     ("A23-113 config: the woods have no Choice row", "CONFIG_SOURCE",
