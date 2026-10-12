@@ -509,6 +509,50 @@ def length_checks(src: dict) -> list[tuple[str, bool, str]]:
     return out
 
 
+# 최종 검수 10/12 (메인 반영 1 probe docs/art/verification_2026-10-12/main_apply/arm_rig/log.txt, the user's avatar):
+# upgraded joints, UpperTorso 1.325 x 1.961 x 0.901, the shoulder joint (0.623, 0.387, 0.081), the upper arm's own
+# 0.254, bones 0.780 + 1.019, the wrist 0.181 over the hand, the grip 0.118 under it
+USER_RIG = {"P": (0.623, 0.387, 0.081), "C1x": 0.254, "L1": 0.780, "L2": 1.019, "WC1": 0.181, "Grip": -0.118, "Half": 0.6625}
+PLACE = {"ShoulderY": 0.598, "ArmLine": 1.473, "ArmLen": 1.729, "TorsoHalf": 1.0}
+
+
+def body_point(p, rig, on_body=False):
+    """Python copy of WeaponPose.BodyPoint (WeaponPose.Body from rig)"""
+    k = (rig["L1"] + rig["L2"]) / PLACE["ArmLen"]
+    line = rig["P"][0] + rig["C1x"]
+    sx = 1 if p[0] >= 0 else -1
+    x = p[0] * rig["Half"] / PLACE["TorsoHalf"] if on_body else sx * line + (p[0] - sx * PLACE["ArmLine"]) * k
+    return (x, rig["P"][1] + (p[1] - PLACE["ShoulderY"]) * k, rig["P"][2] + p[2] * k)
+
+
+def user_reach(hilt, aim, wp, place=None):
+    """the arm's reach (shoulder -> wrist over L1 + L2) for a held point on the user's rig; place = the point as given"""
+    rig = USER_RIG
+    pt = place or body_point(hilt, rig)
+    shoulder, grip, wc1 = rig["P"], (0.0, rig["Grip"], 0.0), (0.0, rig["WC1"], 0.0)
+    frame, pos = G.goal(pt, grip, shoulder, aim, wp)
+    wrist = G.to_world(frame, pos, wc1)
+    return G.length(G.sub(wrist, shoulder)) / (rig["L1"] + rig["L2"])
+
+
+def user_rig_checks(src: dict) -> list[tuple[str, bool, str]]:
+    out = []
+    wp = src["WP"]
+    for key in ROWS:
+        r = row(src["CONFIG"], key)
+        if not r:
+            continue
+        shoulder, l1, l2, wc1, grip = G.rig("R", 1.0)
+        frame, pos = G.goal(r["Hilt"], grip, shoulder, r["Aim"], wp)
+        place = G.length(G.sub(G.to_world(frame, pos, wc1), shoulder)) / (l1 + l2)
+        mine = user_reach(r["Hilt"], r["Aim"], wp)
+        old = user_reach(r["Hilt"], r["Aim"], wp, tuple(v * USER_RIG["P"][0] / 0.972 for v in r["Hilt"]))
+        out.append((f"{key}: 최종 검수 10/12 on the user's avatar (narrow torso, upgraded joints) the arm reaches as on the place "
+                    "rig (within 0.06, never folded below 0.75)", abs(mine - place) <= 0.06 and 0.75 <= mine <= 0.95,
+                    f"user {mine:.2f}, place {place:.2f} (the old shoulder-x scale gave {old:.2f})"))
+    return out
+
+
 def geometry(src: dict) -> list[tuple[str, bool, str]]:
     out = []
     wp = src["WP"]
@@ -826,13 +870,19 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          '\telse\n\t\tif type(def.OneHand) == "table" then WeaponPose.OneHand(char, st, def, model) end\n'
          '\t\tif type(def.OffHand) == "table" then WeaponPose.OffHand(char, st, def) end\n' in wp, ""),
         ("OffHand places the left hand on its body point and writes only the left arm (fading in)",
-         "local goal = WeaponPose.OffHandGoal(torso, oh, gripOf(leftHand, \"LeftGripAttachment\", T.LeftGrip), WeaponPose.BodyScale(right or left))" in off
+         "local placed = { At = WeaponPose.BodyPoint(oh.At, WeaponPose.Body(left, torsoPart), true), Up = oh.Up, Fwd = oh.Fwd }" in off
+         and "local goal = WeaponPose.OffHandGoal(torso, placed, gripOf(leftHand, \"LeftGripAttachment\", T.LeftGrip), 1)" in off
          and "for i = 4, 6 do" in off and "local out = base:Lerp(pose[w[2]], st.W)" in off, ""),
-        ("the body points scale with the avatar (WeaponPose.BodyScale from the shoulder joint)",
-         "return math.clamp(math.abs(c0.Position.X) / T.ShoulderX, 0.6, 1.4)" in wp
-         and "CFrame.new(torso * (oh.At * (k or 1)))" in wp and "local hilt = torso * (th.Hilt * (k or 1))" in wp, ""),
+        ("최종 검수 10/12 (user's avatar, arm_rig probe): the body points are placed on THIS body (WeaponPose.Body / BodyPoint: "
+         "y / z from its shoulder joint by its arm length, x from its hanging arm's line or its torso width), no shoulder-x scale",
+         "BodyScale" not in wp and "Rig = { ShoulderY = 0.598, ArmLine = 1.473, ArmLen = 1.729, TorsoHalf = 1.0 }," in wp
+         and "return { P = Vector3.new(math.abs(c0.X), c0.Y, c0.Z), Line = math.abs(c0.X) + math.abs(c1.X)," in wp
+         and "local x = onBody and p.X * body.Half / R.TorsoHalf or sx * body.Line + (p.X - sx * R.ArmLine) * body.K" in wp
+         and "return Vector3.new(x, body.P.Y + (p.Y - R.ShoulderY) * body.K, body.P.Z + p.Z * body.K)" in wp
+         and "local placed = { Hilt = WeaponPose.BodyPoint(oh.Hilt, WeaponPose.Body(right, torsoPart)), Aim = oh.Aim }" in wp
+         and "local placed = { Hilt = WeaponPose.BodyPoint(th.Hilt, WeaponPose.Body(right, torsoPart)), Aim = th.Aim }" in wp, ""),
         ("OneHand places the right hand from the weapon (TwoHandGoals) and writes only the right arm",
-         "local rGoal = WeaponPose.TwoHandGoals(torso + Vector3.new(0, lift, 0), oh," in body and body.count("for i = 1, 3 do") == 2
+         "local rGoal = WeaponPose.TwoHandGoals(torso + Vector3.new(0, lift, 0), placed," in body and body.count("for i = 1, 3 do") == 2
          and "T.TwoJoints[i]" in body and "Left" not in body.replace("T.LeftGrip", ""), ""),
         # 게임성 검수 10/12 (메인 반영 1 photo grips_low, the user's avatar: the staff tip 0.27 / 0.26 over the sole)
         ("10/12: a staff's hand goal follows its Shaft's foot onto the ground (StaffStep: the foot cast down, StaffLift "
@@ -862,7 +912,7 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
 
 
 def run(src: dict):
-    res = geometry(src) + statics(src) + staff_lift_checks(src)
+    res = geometry(src) + statics(src) + staff_lift_checks(src) + user_rig_checks(src)
     lines = [("CHECK_OK " if ok else "CHECK_FAIL ") + name + (f" :: {d}" if d else "") for name, ok, d in res]
     return len(res), sum(0 if ok else 1 for _, ok, _ in res), lines
 
@@ -1015,7 +1065,13 @@ MUTATIONS = [
      '\t\tif false then WeaponPose.OneHand(char, st, def, model) end\n'),
     ("WP", "the free hand never placed", '\t\tif type(def.OffHand) == "table" then WeaponPose.OffHand(char, st, def) end\n',
      '\t\tif false then WeaponPose.OffHand(char, st, def) end\n'),
-    ("WP", "no body scale (small avatars stretch)", "return math.clamp(math.abs(c0.Position.X) / T.ShoulderX, 0.6, 1.4)", "return 1"),
+    # 최종 검수 10/12 (the user's avatar: the arms folded)
+    ("WP", "the held hand scaled by the shoulder joint again", "sx * body.Line + (p.X - sx * R.ArmLine) * body.K", "p.X * body.P.X / 0.972"),
+    ("WP", "the height not from the shoulder", "body.P.Y + (p.Y - R.ShoulderY) * body.K", "p.Y * body.K"),
+    ("WP", "the one-hand goal not placed on the body", "local placed = { Hilt = WeaponPose.BodyPoint(oh.Hilt, WeaponPose.Body(right, torsoPart)), Aim = oh.Aim }",
+     "local placed = oh"),
+    ("WP", "the free hand not placed on the body", "local placed = { At = WeaponPose.BodyPoint(oh.At, WeaponPose.Body(left, torsoPart), true), Up = oh.Up, Fwd = oh.Fwd }",
+     "local placed = oh"),
 ]
 
 
