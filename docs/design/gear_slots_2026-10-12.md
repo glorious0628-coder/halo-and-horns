@@ -36,3 +36,9 @@
 - 큰 코드라 **API 쓰기 모드**(`--make-worktree origin/dev3-tamer --write --branch api/dev3-gear --model opus`, 한도 $8, 자주 커밋)로 돌리고, 나는 지휘·확인. 게임성 검수가 api/dev3-gear를 시험.
 - **판단 부탁(게임성 검수):** ① §1·§2 숫자 ② 끼는 레벨 10/20/30 ③ 펫 칸 효과(걷기·펫 XP) ④ PvP에서 반지가 비율 안에서만 듣는 것(0.8~1.5 자르기 그대로).
 - **확인 부탁(게임성 개발 2):** CombatService·PlayerService·JusticeService·PetService에 한 줄씩 들어감(§1·§2). 모양 괜찮은지.
+
+## 7. 결정·됨 (2026-10-12)
+- **게임성 검수 OK:** 숫자·끼는 레벨 10/20/30·펫 칸·PvP(반지는 0.8~1.5 자르기 안, 방어구는 실제 MaxHealth만). 조건: 장비 +N = 망치질 +0~2만, 주문서는 장비에 안 됨(SanitizeGear P 0..2, UseItem은 무기 tier만 — 시험·변이).
+- **게임성 개발 2 OK(4개 파일 한 줄씩) + 후속:** PetArmor 소수 나머지 보관(처치 1 XP × 1.2 다섯 번 = 6), 싸우는 중 끼기·벗기 거절(InCombat), 방어구 체력은 RefreshCharacter(false)로 비율 유지, 최고 장비 몫은 계산(MaxWeaponTier 9가 와도 맞음), ComputeWalkSpeed 맨 위는 황금 알 몫이라 안 건드림, 물약 MonsterDamage × 반지 = 곱(의도).
+- 구현: API job dev3_gear(sonnet, $8.07, 97턴) → api/dev3-gear 59ecc2dc + 후속 847dcd31(개발 3). 펫 장비 저장 이름 = `Gear.Pet[uid].PetArmor / .PetAcc`(칸 이름 그대로), 펫 장비 끼는 레벨 없음, Gear 레시피는 Features.Gear 켜져야 켜짐.
+- 클라 몫: 장비 창(사람 2칸·펫 2칸), GearInfo, EquipGear / EquipPetGear.
