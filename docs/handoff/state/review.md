@@ -137,3 +137,4 @@
 - **메인:** 메인 반영 1이 arm_check3 → tool_grip2 → grip_basics(7종) → goose_square2 → ClassicSword 값 순서로 찍는 중이었음(어디까지 했는지 state/mainapply.md). 메인 Studio 저장 안 함(코드는 git).
 - **세션:** 이미지 생성 4 지움(일 → 이미지 생성 3). 남은 7개: 최종 검수·메인 반영 1·게임성 개발 1·2·이미지 개발·이미지 생성 2·3·Blender 손보기. 다들 state 파일 정리 중.
 - **사용자 할 일:** `_지울것_3D_2026-10-12` 폴더 지우기(원하면). Tripo 앱 브라우저 로그인 = 끝. Codex 설치·로그인 = 끝.
+- (밤 정리 뒤) 사용자 고름: 집 장식 = **같은 모양은 같이 씀**(고유 43종 ≈ 5,590점, SPEC A23-150 5번에 적음). 메인 사진 끝: arm_check3·tool_grip2·tool_basics(R15 기본 몸 20장 흰 화면 → 다시)·goose_square2. 거위 광장 서버 바닥 정상(Edit엔 GooseSquare 없음, Play 때 Floor 생김) → **448b72ff 병합 가능(개발 2 OK, 내 시험 8 통과)**, 새 문제 = Join/Leave 뒤 화면 전체 회색(클라이언트 카메라/조명 추정, 메인 반영 1이 값 읽는 중). ClassicSword 스크립트 TypeError(개발 1).
