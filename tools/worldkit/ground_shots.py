@@ -148,6 +148,7 @@ def review2_spec():
         ("r2_03_plaza_high", g(fx + 46, fz + 46, 58), g(fx, fz, 0)),
         ("r2_04_stairs_low", g(30, -625, 8), g(80, -675, 4)),
         ("r2_05_stairs_mid", g(112, -668, 6), g(40, -686, 4)),
+        ("r2_17_cliffwall_high", g(118, -585, 6), g(88, -585, 2)),   # 10/12 디자인 검수: the plaza|cliff wall from its high side
         ("r2_06_stairs_top", g(70, -724, 8), g(40, -640, 0)),
         ("r2_07_stairs_side", g(10, -630, 40), g(72, -680, 0)),  # 3차: was inside a gray box (150,-640)
         ("r2_08_cliff_tiers", g(160, -606, 6), g(185, -628, 2)),  # 3차: from the lower tier at the to_cliff flight

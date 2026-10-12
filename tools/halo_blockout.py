@@ -51,7 +51,8 @@ WALL_OVER = 0.6  # pieces overlap this much (no hairline gaps at the joints)
 FACE_DH = 4.0  # 디자인 검수 10/11: only steps higher than 4 are rock faces (Limestone, light cream); lower ones stay grass slopes
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
-ROAD_SINK = 1  # 5단계 10/12: Terrain under the road parts this much lower (skeleton_ground G() adds it back)
+ROAD_SINK = 2  # 5단계 10/12: Terrain under the road parts this much lower (skeleton_ground G() adds it back); 2 not 1:
+# the drawn surface lands up to 1 above the planned height (voxel occupancy rounding), 1 left grass at the plate tops
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
 CLIFF_Z = -760  # rock lip on the south shore
 SEA_R = 4  # sea ring width in cells (16 studs) round the coast (2차 10/11: was 5; the rim beyond it is RIM_W cells)

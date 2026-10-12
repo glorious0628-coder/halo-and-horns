@@ -232,13 +232,46 @@ for ix = 1, NX do
 		-- solid from `bottom` up to `land`: the SURF rule is not applied to the underside (hidden, <= 2 studs off is fine)
 		local bottom = math.max(land - math.max(und, 4), VY0)
 		local band = false -- the rim (3) and its outcrops (5): rock right from their top
-		if m == "s" then
-			local k = idx[string.sub(D.h[r], ix, ix)]
-			band = k == 3 or k == 5
+		local kk = m == "s" and idx[string.sub(D.h[r], ix, ix)] or -1
+		band = kk == 3 or kk == 5
+		-- 디자인 검수 10/12 ④ (the rim read as a smooth beige drum): relief on the outer face. Outcrops (5) are 1-2 horizontal
+		-- rock ledges (6 thick) at three uneven levels instead of full columns; the outermost rim cells (3 next to 4/5) get
+		-- recesses (one cell = 4 deep, 20-40 % of the band) between the ledges
+		local slabs, recess = nil, nil
+		local LV = { -6 - (ix * 5 + iz * 3) % 3, -20 - (ix * 7 + iz * 11) % 4, -36 - (ix * 3 + iz * 13) % 4 }
+		if kk == 5 then
+			slabs = {}
+			for li, lv in LV do
+				if (ix * (3 + li) + iz * (5 + 2 * li)) % 5 < 3 then table.insert(slabs, { lv - 6, lv }) end
+			end
+			if #slabs == 0 then table.insert(slabs, { LV[2] - 6, LV[2] }) end
+		elseif kk == 3 then
+			local outer = false
+			for _, d in { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } } do
+				local rr, cc = r + d[2], ix + d[1]
+				if D.m[rr] and string.sub(D.m[rr], cc, cc) == "s" then
+					local nk = idx[string.sub(D.h[rr], cc, cc)]
+					if nk == 4 or nk == 5 then outer = true end
+				end
+			end
+			if outer then
+				recess = {}
+				if (ix * 9 + iz * 5) % 7 < 3 then table.insert(recess, { LV[1] - 10, LV[1] - 4 }) end
+				if (ix * 4 + iz * 13) % 7 < 3 then table.insert(recess, { LV[2] - 12, LV[2] - 4 }) end
+			end
 		end
 		for iy = 1, NY do
 			local yb = VY0 + (iy - 1) * 4
 			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
+			if slabs then
+				lo = 0
+				for _, s in slabs do lo += math.clamp((math.min(yb + 4, s[2]) - math.max(yb, s[1])) / 4, 0, 1) end
+				lo = math.min(lo, 1)
+			elseif recess then
+				for _, s in recess do
+					if yb + 2 > s[1] and yb + 2 < s[2] then lo = 0 end
+				end
+			end
 			if lo > 0 then
 				-- 10/12: 4 voxels deep (was 2): slopes / coarse terrain detail still showed the rock under the grass
 				if yb + 4 > land - 15 and not band then -- 디자인 검수 10/11 (h_05): top material deep; with 1 the Rock under
