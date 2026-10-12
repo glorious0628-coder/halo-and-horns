@@ -1,0 +1,329 @@
+{
+  "checks": 121,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the arc upside down",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no peak cap",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "picked while it flies",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a big egg on top of others",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a 4th egg",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the height ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "picked while standing still",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a turned-down preview retried at once",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "two previews in one frame overfill the slots",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the wobble the smaller",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the overtime ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the fill from the Horn Legion",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "fractions on the bar",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a point light on the crown egg",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the server part left showing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a frame error warns every frame",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a 'picked' pop without waiting for a return",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an egg picked in passing pops as someone else's (only my spot now counts)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a previewed pickup hides others' pops too (MineAt for every pickup)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "my own pickup also pops as someone else's (the sound twice)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "'+N' for everyone's delivery",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the explanation line under the bar again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the 3-2-1 for the goose hitters in Eggs mode",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "everyone hears every delivery",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "carrying eggs points at the goose",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no egg cart on the map",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the marker ignores my eggs",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the marker points home with empty hands",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "EggFx never loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Here() ignores InGooseSquare",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Here() ignores the Eggs mode",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the button shows without an open event",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the button shows outside the Eggs mode",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a blocked Join stays bright",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Leave dimmed by a block",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no remote does not dim",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a dimmed press still fires",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a press of the other word fires",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no rate gap between presses",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a press fires twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the remote is waited for",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the fade repeats for the same value",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fade on a change",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the egg bar outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the 3-2-1 outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the home marker outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "homes outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the square's own nest / cart ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the egg play runs outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "egg sounds outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "egg pops outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "egg Fx outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the fade never ends",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new fade does not restart the old one",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the remote renamed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the fade is slower",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the egg bar outside the square",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Join always bright",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Leave on the chip",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no button update",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the goose target in the real plaza",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the goose marker in the real plaza",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the nest never leaves the map",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the tug's 3-2-1 outside the square",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "황금 알 줍기, the client side (게임성 개발 1, SPEC A23-131 / A23-134), offline.\n\nRuns, in the official Luau CLI, the CURRENT EggFx.luau pure helpers (cut from the source between the \"pure helpers\" and\n\"world pieces\" markers) with fake Vector3s: Arc (an egg flies from From to its spot over FlyTime s before LandAt along a\nparabola whose peak is clamp(distance x k, min, max); at / after LandAt it rests on its spot; without From it is\nalready down), CanPick (the pickup preview: landed, EggCan, moved lately, flat <= PickRadius and height <= PickHeight; a 3-slot egg\nonly with empty hands, else carry + slots <= MaxSlots), Wobble (0 inside WobbleFrom, 1 at RingRadius; 0 before\nIdleWobble s standing, 1 at IdleReturn; the larger), HomeOf (Config.Goose.Egg.Home by faction, none for None),\nTickEnd (the crown egg's overtime when it runs, else the event's end), Bar (Versus: the Knights' fill share, both\npoints rounded to whole numbers; co-op: \"ours / goal\" and that share; the seconds left up to the overtime). Static:\nClientMain loads EggFx; EggFx hides the server egg part (LocalTransparencyModifier) and draws no PointLight / Highlight /\nBeam, fires no remote, waits GoneWait for an EggReturn before a \"picked\" pop; EventHUD's Eggs branch draws the bar from\nEggFx.Bar and hides the line under it; Audio plays the deliveries / tags (EggDeliver / EggTag, stand-ins until the\nfiles) and counts the last 3-2-1 from EggFx.TickFor; QuestMarker points home while I carry eggs; QuestTarget points carrying eggs home, empty hands at the goose;\nWorldMap shows the nest and the egg cart; Config.GooseEggFx and the 7 egg sounds exist. Mutations: each must be caught.",
+  "studioCalls": 0
+}

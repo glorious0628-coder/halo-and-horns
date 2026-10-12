@@ -72,6 +72,7 @@ function H.World(o)
 	local w = bareWorld({ Hit = true })
 	w.Tugs = {}
 	if o.Goose then
+		w.Config.Goose.Mode = "Tug" -- A23-131: only the old tug's goose is a swing target
 		w.Registry.GooseService.GetPosition = function() return o.Goose end
 		w.Registry.GooseService.RegisterHit = function(pl) table.insert(w.Tugs, pl) return 1 end
 	end

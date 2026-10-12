@@ -399,7 +399,7 @@ check(lineWith(v, "Power 100") and not lineWith(v, "→"), "the equipped weapon:
 check(lineWith(v, "Attack ") ~= nil, "weapons: the attack at my level with the +N")
 v = detail(byKey["W:1"])
 check(action(v, "Equip").Text == "Equip" and action(v, "Equip").Enabled, "another usable weapon: Equip")
-check(lineWith(v, "Power 100 → 110") ~= nil, "Equip shows the power change first", v.Lines[2] and v.Lines[2].Text)
+check(lineWith(v, "Power +10") ~= nil and v.Lines[2].Color == "Good", "Equip shows the power change first (최종 검수 10/13: 'Power +10' in green)", v.Lines[2] and v.Lines[2].Text)
 v = detail(byKey["W:7"] or byKey["W:4"])
 local lockTier = byKey["W:7"] and 7 or 4
 check(action(v, "Equip").Text == string.format("From Lv %d", Config.Weapons[lockTier].MinLevel) and not action(v, "Equip").Enabled,

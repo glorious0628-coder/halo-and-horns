@@ -371,8 +371,10 @@ def static() -> tuple[int, list[str]]:
           "GrudgeService pay: GrantFame with the sack's RankPoints")
     story = strip_comments(read(SSS / "StoryQuestService.luau"))
     goose = strip_comments(read(SSS / "GooseService.luau"))
-    check("GrantFame" not in story and "CreditFame" not in story and "GrantFame" not in goose,
-          "D1: story / goose fame stays AddStat (never a board)")
+    check("GrantFame" not in story and "CreditFame" not in story and goose.count("GrantFame") == 1
+          and 'call("PlayerService", "GrantFame", p, f == "Halo" and "Honor" or "Infamy", pts, { RankPoints = pts })' in goose,
+          "D1: story fame stays AddStat (never a board); the egg hunt's hourly +5 is on the weekly board within WeekCap "
+          "(A23-134, 게임성 검수 10/12: GrantFame RankPoints)")
     everywhere = []
     for path in sorted(SSS.glob("*.luau")):
         code = strip_comments(read(path))

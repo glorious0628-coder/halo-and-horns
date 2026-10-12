@@ -1074,6 +1074,8 @@ Config.Power = {
 		-- PvPNote / PvPNoteEn: finished lines, filled from Config.PvP.PowerRatioMax / Min right after Config.PvP below
 		Up = "Power +%s", UpEn = "Power +%s",
 		Change = "Power %s → %s", ChangeEn = "Power %s → %s",
+		-- 최종 검수 10/13 (ref_rpg_ui #2): a choice's power change as one short coloured line (Config.PowerDiff)
+		Diff = { Up = "Power +%s", Down = "Power -%s", Same = "Power =" },
 	},
 }
 
@@ -1105,6 +1107,36 @@ function Config.CombatPowerOf(player, tierOverride, enhOverride)
 	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
 	local gearAtk, gearHp = Config.GearMultsOf(player) -- ⑥ gear (게임성 개발 3): (1, 1) while Config.Features.Gear is off
 	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #1, 전투력 풀어 보기): the two numbers the power is made of (Config.PowerOf: the square root
+-- of attack x health) - Attack = the weapon's damage at this level and +N x the attack points / ring, Health = the level's
+-- base health x the health points / armor. Pure; the player's own in Config.PowerPartsOf
+function Config.PowerParts(level, tier, enhance, alloc, gear)
+	local atkMult, hpMult = 1, 1
+	if type(alloc) == "table" then atkMult, hpMult = Config.StatMults(alloc.A, alloc.H) end
+	if type(gear) == "table" then atkMult, hpMult = atkMult * Config.GearMult(gear.A), hpMult * Config.GearMult(gear.H) end
+	return math.floor(Config.WeaponDamage(tier, level, enhance) * atkMult + 0.5), math.floor(Config.BaseHealth(level) * hpMult + 0.5)
+end
+function Config.PowerPartsOf(player)
+	local level = tonumber(player:GetAttribute("Level")) or 1
+	if level ~= level then level = 1 end
+	local tier = tonumber(player:GetAttribute("WeaponTier")) or 0
+	if tier ~= tier then tier = 0 end
+	local gearAtk, gearHp = Config.GearMultsOf(player)
+	return Config.PowerParts(math.max(1, level), math.clamp(math.floor(tier), 0, Config.MaxWeaponTier),
+		tonumber(player:GetAttribute("WeaponEnhance")) or 0, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #2): the change from power `now` to `with` -> its size (>= 0) and a tone: "Good" (up),
+-- "Bad" (down), "Same" (equal); nil when either is missing. Screens format Config.Power.Text.Diff with it
+function Config.PowerDiff(now, with)
+	now, with = tonumber(now), tonumber(with)
+	if not (now and with) or now ~= now or with ~= with then return nil, nil end
+	local d = math.floor(with + 0.5) - math.floor(now + 0.5)
+	if d > 0 then return d, "Good" end
+	if d < 0 then return -d, "Bad" end
+	return 0, "Same"
 end
 
 -- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N; A23-69 with the stat
@@ -1466,8 +1498,13 @@ Config.Goose = {
 	LoserShare = 0.4, -- losers (and both sides on a tie) get 40% + 1 cheer star
 	CheerStarsForRare = 5, -- 5 cheer stars -> the next golden reward is guaranteed RARE (stars consumed)
 	RareMult = 5,
-	WinWarPoints = 60,
+	WinWarPoints = 30, -- A23-137: the winning side +30 crown-war points (versus only)
 	Tick = 0.25,
+	-- A23-131 황금 알 줍기: "Eggs" = the egg hunt (GooseEggs.luau); "Tug" = the old tug (kept until the tests move, 11/10)
+	Mode = "Eggs",
+	-- A23-137: Eggs mode starts at fixed KST clock times (00/04/08/12/16/20 with Every 14400; TzOffset = KST UTC+9).
+	-- A test server may set Every = 600 (every 10 min on the clock)
+	Schedule = { Every = 14400, TzOffset = 32400 },
 	-- anti-AFK: a reward (and GooseFinished/quest credit) needs this many ACCEPTED manual hits this event; auto hits
 	-- still pull but never pay (review fix, kept by A23-14)
 	MinManualHits = 3,
@@ -1520,8 +1557,121 @@ Config.Goose = {
 			Halo = "This goose is the Knights' Team Rescue",
 			Horns = "This goose is the Horn Legion's Team Poach",
 		},
+		-- Eggs mode: the only extra line (A23-99 fail fact): a side player who delivered 1+ egg but not enough for a reward
+		BringTwo = "Bring 2 eggs for a reward.",
 	},
 }
+
+-- A23-131 / A23-134 / A23-137 황금 알 줍기, the server rules (GooseEggs.luau; 게임성 개발 2). Contract:
+-- docs/design/golden_egg_contract_2026-10-11.md §2 (the client reads Kinds, MaxSlots, PickRadius, PickHeight, Center,
+-- RingRadius, WobbleFrom, Home, HomeRadius, IdleReturn, IdleWobble, FlyTime, Tag). Design: docs/design/golden_egg_2026-10-11.md.
+Config.Goose.Egg = {
+	Kinds = { -- Points = base points (the crown's is set when laid, part attribute Points), Slots = carried slots
+		Gold = { Points = 10, Slots = 1 }, Bouncy = { Points = 20, Slots = 1 },
+		Big = { Points = 30, Slots = 3 }, Crown = { Points = 50, Slots = 3 },
+		Feather = { Points = 0, Slots = 0 }, -- A23-134: a ground feather, straight to the bag (GooseFeather)
+	},
+	MaxSlots = 3, PickRadius = 4.5, PickHeight = 6, PickSlack = 0.5, -- the server allows PickSlack more (phone ping)
+	Center = Vector3.new(0, 0, 0), -- the ring centre (the Crossroads fountain)
+	RingRadius = 54, WobbleFrom = 45, -- carried eggs return past RingRadius; the client wobbles them from WobbleFrom
+	Home = { Halo = Vector3.new(-30, 0, -30), Horns = Vector3.new(-30, 0, 30) }, HomeRadius = 8, -- nest / egg cart
+	IdleReturn = 10, IdleWobble = 7, -- carrying and not moving MoveMin studs for IdleReturn s = the eggs return
+	FlyTime = 0.7, CrownFly = 1.0, -- s a laid / bounced egg flies (not pickable until it lands)
+	Tag = { On = true, Radius = 3, Hold = 1, Shield = 3, Cooldown = 4 }, -- A23-134 egg tag
+	Tick = 0.1, -- s between server checks while the hunt runs
+	Duration = 60, LayStop = 55, Hurry = { From = 50, To = 55, Mult = 1.5 },
+	-- eggs per s = clamp(Base + PerPlayer x P, Min, Max); P = ready Halo / Horns players who may pick inside the ring,
+	-- recounted every Recount s
+	Rate = { Base = 0.4, PerPlayer = 0.2, Min = 0.6, Max = 3, Recount = 5 },
+	GroundCap = 30, Unpicked = 15, -- ground eggs at most; a landed egg nobody picks for Unpicked s returns
+	Sneeze = 6, ArrivalFeathers = 3, NapFeathers = 1, -- the arrival sneeze (eggs in a ring + feathers), a feather per nap
+	Bouncy = { From = 30, Share = 0.15, Near = 7, Hop = 6, Hops = 3 },
+	-- drop spots: Min..Max studs from the goose on the half away from the fountain; never within Fountain of the centre
+	-- (the basin is 13), within Home of a home, past Ring, on water, within Avoid (altar, Crossroads spawn, pads) or
+	-- where the ground is more than Step studs above / below the goose's feet; a prop overlap (Prop radius) redraws,
+	-- at most Tries draws
+	Drop = { Min = 4, Max = 10, Fountain = 14, Home = 16, Ring = 46, Step = 4, Prop = 1.2, Tries = 8, AvoidRadius = 8,
+		Avoid = { Vector3.new(0, 0, 45), Vector3.new(0, 0, -25), Vector3.new(52, 0, 24), Vector3.new(52, 0, -24),
+			Vector3.new(68, 0, 24) } },
+	Carry = { 0.9, 0.8, 0.7 }, HeavyMult = 0.7, -- speed x by carried slots (Big / Crown = x0.7)
+	PlazaSpeed = 20, -- A23-134: inside the ring while the hunt runs everyone starts from this (no class / pet speed)
+	-- a paid side player: MinDelivered eggs or MinPoints points (MinCrowd eggs once P reached CrowdFrom)
+	MinDelivered = 2, MinPoints = 20, MinCrowd = 1, CrowdFrom = 16,
+	CoopPerPerson = 80, -- co-op target = CoopPerPerson x the co-op side's ring entrants (min 1)
+	HMax = 2, -- the fewer side's points x clamp(sqrt(more N / fewer N), 1, HMax); N = average ring presence
+	-- crown = max(Min, Share x both totals), laid anywhere on the west half of the egg area (x < the fountain's)
+	Crown = { At = 50, Min = 50, Share = 0.15, Gold = 4, Overtime = 8 },
+	Naps = { 15, 30, 45 }, NapTime = 2,
+	Chases = { 22, 38 }, ChaseTime = 4, ChaseAlert = 1, ChaseSpeed = 17, ChaseMinSlots = 2, ChaseHit = 3, ChaseBounce = { 6, 8 },
+	Walk = { Radius = 18, Lap = 24, MinFountain = 16, MaxRing = 46 }, -- the goose's circle (s per lap) and its limits
+	RePick = 1.5, MoveWindow = 0.5, MoveMin = 1, PickRateLog = 3, -- a dropped egg: its dropper waits RePick s
+	-- cheat check: delivery time >= (last pick -> home ring edge) / (speed x SpeedSlack) - Grace; Enforce false = log only
+	Cheat = { SpeedSlack = 1.4, Grace = 0.3, Enforce = false },
+	HonorPoints = 5, HonorEvery = 3600, -- A23-134: Honor / Infamy +5 at most once an hour per paid player
+	NeutralTopMult = 1.5, -- A23-134: the round's top Neutral picker gets 50% more eggs (floor, at least +1)
+	Items = { Egg = "GoldenEgg", Feather = "GooseFeather" }, -- Neutral picks go to the bag as these
+}
+
+-- A23-141 (user 10/12): the egg hunt runs in the Goose Square, a separate space in the same server outside the map; only
+-- players who press Join (remote GooseSquare "Join" | "Leave"; Config.Goose.Square = game dev 1's client table: Remote,
+-- Attr, Block, Fade, Text - the server only reads it) go there. The real Crossroads plaza has no goose and no eggs.
+-- The space = workspace.GooseSquare (the image team's skeleton, docs/design/goose_square_skeleton_2026-10-12.md): the
+-- model attributes GooseSpotPos / NestPos / CartPos / SpawnHaloPos / SpawnHornsPos / SpawnNeutralPos (world positions) or
+-- the parts of those names, the Floor's size = the area. Missing -> GooseSquare.luau builds a plain floor, invisible walls
+-- and the markers ONCE at Center + Offsets (no decoration). Join gates: GooseActive, ready, alive, not the kaiju, no
+-- grudge sack, no PvP combat tag (CombatTagTime) or NoTravelStars stars, like Travel (GooseJoinBlock "" | "Dead" | "Monster"
+-- | "Grudge" | "PvP").
+-- The way back: the spot Join was pressed at, unless it is a PvP spot, under the kill height, inside the square or its
+-- zone is gone -> the own town start. Auto combat is paused inside (the attribute only: the saved choice stays).
+Config.Goose.SquareSpace = {
+	Enabled = true,
+	Center = Vector3.new(6000, 200, 6000), -- the floor's top (the skeleton's default, outside every zone and the fog)
+	Size = Vector3.new(110, 4, 90), -- the fallback floor (x, thickness, z)
+	WallHeight = 30,
+	Offsets = { -- the fallback markers from Center (north = -z: the Halo nest; south = +z: the Horns cart)
+		GooseSpot = Vector3.new(0, 0, 0), Nest = Vector3.new(0, 0, -37), Cart = Vector3.new(0, 0, 37),
+		SpawnHalo = Vector3.new(0, 0, -24), SpawnHorns = Vector3.new(0, 0, 24), SpawnNeutral = Vector3.new(-22, 0, 0),
+	},
+	SpawnSpread = 4, -- a joiner lands within this many studs of the side's spawn mark
+	SpawnClear = 6, -- no egg lands within this of a spawn mark
+	ReturnAfter = 4, -- s after the result: everyone still inside goes back
+	FallBelow = 25, -- a root this far under the floor top, or Margin studs off the floor's area = left the square
+	Margin = 20,
+	BlockEvery = 0.5, -- s between GooseJoinBlock refreshes
+	KillHeightPad = 50, -- a way-back spot must be this far above workspace.FallenPartsDestroyHeight
+}
+-- the player is in the Goose Square (the attribute GooseSquare.luau writes; the name comes from game dev 1's table)
+function Config.InGooseSquare(p)
+	local name = type(Config.Goose.Square) == "table" and Config.Goose.Square.Attr or "InGooseSquare"
+	return typeof(p) == "Instance" and p:GetAttribute(name) == true
+end
+
+-- A23-134 plaza speed: base x the carry multiplier for `slots` carried (heavy = a Big / Crown egg). nil = no rule
+function Config.GooseEggSpeed(slots, heavy)
+	local E = Config.Goose.Egg
+	local n = math.clamp(math.floor(tonumber(slots) or 0), 0, #E.Carry)
+	local mult = n > 0 and E.Carry[n] or 1
+	if heavy == true then mult = math.min(mult, E.HeavyMult) end
+	return E.PlazaSpeed * mult
+end
+
+-- A23-141 Goose Square (user 2026-10-12; contract docs/design/goose_square_contract_2026-10-12.md): golden-egg play happens
+-- in a separate square of the same server, off the map; only players who press Join go there. Remote = the c->s
+-- RemoteEvent (one arg "Join" | "Leave"); Attr = my player attribute the server sets (true = I am in the square);
+-- Block = my player attribute "" | "Dead" | "Monster" | "Grudge" | "PvP" (non-empty = the Join button is dimmed, no
+-- text, A23-130); Fade = seconds of the screen going dark / clear again when Attr changes (EggFx); Text = the Join /
+-- Leave words (EventHUD) and the server's refusal Notify lines (GooseEggs, 게임성 개발 2), easy short English.
+if type(Config.Goose) == "table" then
+	Config.Goose.Square = {
+		Remote = "GooseSquare",
+		Attr = "InGooseSquare",
+		Block = "GooseJoinBlock",
+		Fade = { In = 0.25, Out = 0.35 },
+		Text = { Join = "Join", Leave = "Leave",
+			Dead = "You can't join right now.", Monster = "You can't join right now.", Grudge = "You can't join right now.",
+			PvP = "You can't join during a fight.", Closed = "The goose is gone." },
+	}
+end
 
 -- gold, xp of one golden-goose reward. share (optional, A23-14 co-op success) replaces the won/lost multiplier.
 function Config.GooseReward(level, factionId, won, rare, share)
@@ -3156,8 +3306,9 @@ Config.StoryQuests = {
 		S1 = {
 			Kind = "Sub", Title = "The Golden Goose With a Shard", ShortName = "Golden Goose", Factions = { Halo = true, Horns = true },
 			Requires = { Tutorial = true }, Show = "GooseSoon",
-			Steps = { { Text = "Hit the Golden Goose yourself 3 times", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } } },
-			FirstPoints = 1, -- 구조(빛) 명예 / 밀렵(뿔) 악명, 첫 1회만; 거위 보상은 GooseService가 그대로 준다
+			Steps = { { Text = "Bring 2 golden eggs", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } } },
+			-- Tug mode only: the first rescue / poach +1. Eggs mode: GooseService gives +5 once an hour (A23-134)
+			FirstPoints = 1,
 		},
 		S2 = {
 			Kind = "Sub", Title = "First Crown War Chest", ShortName = "War chest", Factions = { Halo = true, Horns = true }, Requires = { Done = { "M2_1" } },
@@ -3569,7 +3720,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 17 },
 			Start = "Fountain Shard: The Golden Goose looks so tired…",
 			Steps = {
-				{ Text = "Join the Golden Goose tug %d/%d", Guide = "Goose", Obj = { Type = "Goose", Count = 2 } },
+				{ Text = "Bring golden eggs %d/%d", Guide = "Goose", Obj = { Type = "Goose", Count = 2 } },
 				{ Text = "Talk with the Fountain Shard", Guide = "Crossroads", Panel = true,
 					Lines = { All = { "Fountain Shard: She runs every day. Pulled this way, then that way.", "Fountain Shard: What now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Let her rest a day", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -3706,7 +3857,8 @@ Config.StoryQuests.Landmarks.LavaCrack = Vector3.new(48, 0, 410)
 -- (literals: some offline Vector3 doubles have no arithmetic)
 Config.StoryQuests.Landmarks.TermsScroll = Vector3.new(0, 0, 51)
 Config.StoryQuests.Landmarks.PatchNote = Vector3.new(-52, 0, 0)
-Config.StoryQuests.Landmarks.GooseNest = Vector3.new(-30, 0, 30)
+-- A23-131: GooseNest = the Knights' egg nest (Config.Goose.Egg.Home.Halo); the old perch (-30,0,30) is the Horns cart now
+Config.StoryQuests.Landmarks.GooseNest = Vector3.new(-30, 0, -30)
 Config.StoryQuests.Defs.EG01 = {
 	Kind = "Sub", Title = "Terms of Fate", ShortName = "Terms of Fate", Hidden = true, Speaker = "Scroll", Requires = { Done = { "M2_3" } },
 	Steps = {
@@ -4013,8 +4165,8 @@ Config.Quests = {
 			Text = "Earn %s gold by hunting" },
 		{ Id = "Release", ShortName = "Skill hits", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
 			Text = "Hit monsters with skills %d times" },
-		{ Id = "Goose", ShortName = "Goose tug", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
-			Text = "Join the Golden Goose tug %d times" },
+		{ Id = "Goose", ShortName = "Egg hunt", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
+			Text = "Golden Egg hunt %d times" },
 		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
 		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
@@ -4576,6 +4728,7 @@ Config.Finisher = {
 }
 -- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
 Config.RateLimits.FinisherPick = 0.3
+Config.RateLimits.GooseSquare = 1 -- A23-141 Join / Leave (GooseSquare.luau)
 Config.RateLimits.SendSticker = 2 -- A23-143: one sticker every 2 s per player
 Config.RateLimits.SetBubble = 0.5 -- A23-144: picking a chat bubble skin
 -- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
@@ -5058,7 +5211,7 @@ Config.Help = {
 			"If a Knight catches the thief within 45 s, you get 120% back.",
 		} },
 		{ Id = "Events", Title = "Golden Goose, Kaiju & Rebirth", Lines = {
-			"Golden Goose: every 10 minutes in the Crossroads. Knights rescue it, the Horn Legion poaches it!",
+			"Golden Goose: every 4 hours. Press Join, pick up its golden eggs and bring them home!", -- A23-141: the Goose Square
 			"Kaiju: a 5-star villain turns huge for 120 s. Knights can hit it anywhere!",
 			"Rebirth from Lv 50: only your level resets. Gold, weapons and items stay.",
 			"Each Rebirth: +25% gold and XP forever (+40% on the smaller side).",
@@ -5153,6 +5306,9 @@ Config.Loot = {
 		Jelly = { Kind = "Material", Name = "Jelly", Sell = 2, Color = Color3.fromRGB(110, 210, 110), Icon = "IconJelly" },
 		-- A23-87: the Flower Slime's petals (a sell material; the FlowerPatch card's Evil gift)
 		Petal = { Kind = "Material", Name = "Flower Petal", Sell = 3, Color = Color3.fromRGB(255, 160, 205), Icon = "IconPetal" },
+		-- A23-134: what Neutral artisans pick in the golden egg hunt (craft materials; icons not drawn yet = code fallback)
+		GoldenEgg = { Kind = "Material", Name = "Golden Egg", Sell = 25, Color = Color3.fromRGB(255, 205, 60), Icon = "IconGoldenEgg", Source = "Goose", Desc = "Artisans craft with it." },
+		GooseFeather = { Kind = "Material", Name = "Goose Feather", Sell = 10, Color = Color3.fromRGB(255, 246, 215), Icon = "IconGooseFeather", Source = "Goose", Desc = "Artisans craft with it." },
 		SlimeCore = { Kind = "Material", Name = "Slime Core", Sell = 8, Color = Color3.fromRGB(80, 160, 235), Icon = "IconSlimeCore" },
 		GoblinTooth = { Kind = "Material", Name = "Goblin Tooth", Sell = 6, Color = Color3.fromRGB(235, 225, 190), Icon = "IconGoblinTooth" },
 		BruteHorn = { Kind = "Material", Name = "Brute Horn", Sell = 18, Color = Color3.fromRGB(200, 150, 100), Icon = "IconBruteHorn" }, -- review ui-brutehorn-contrast: readable on the row
@@ -5199,7 +5355,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "Candy",
+		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
 		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
@@ -5994,13 +6150,16 @@ Config.ClassGrips = {
 	-- 최종 검수 10/11 (the two sides stood alike; GDD §0 angel / devil): the Paladin stands tall, chest out and chin up
 	-- (Waist / Neck +3 = leaning back, this table's sign), the Berserker leans in and hunches (Waist -10, Neck -6: head
 	-- down) with his tip lower (40 degrees); the grips stay the same (the hands live in torso space)
+	-- 최종 검수 10/12 (user "아바타 팔이 왜이럼?", main photo arm_probe: from the front the sword arm looked short and
+	-- folded, the hand in front of the waist): both warriors' hands 0.2 lower (hip height) and 0.2 less ahead, so the arm
+	-- hangs nearly straight (reach 0.83 -> 0.91 of the arm) with the forearm a little forward, the tip still 45 / 40 up
 	-- Paladin: the straight sword, its tip ahead and 45 degrees up
 	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 }, Neck = { 3, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
+		OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.4), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
 	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 40 degrees up
 	-- and a touch out
 	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.65), Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
+		OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.45), Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
 	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
 	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
 	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
@@ -7681,8 +7840,8 @@ Config.Return = {
 	NextZone = "GoblinWoods", -- the next-goal row "Lv10 · Goblin Woods" travels there
 	SeasonFallback = "SlimeMeadow", -- a seasonal field (no Travel destination): its entrance field
 	-- quest guide spots that are not zones / landmarks ("Home" = the player's own town)
-	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home",
-		Goose = "Crossroads" },
+	-- (A23-141: no Goose - the egg hunt is joined from anywhere with the Join button, ReturnService gives it no zone)
+	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home" },
 	-- A23-86 F: the zone a next-goal ladder row (QuestService GoalKind) leads to; other kinds use the level's hunting zone
 	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Commission4 = "Crossroads",
 		Commission5 = "Crossroads", Commission6 = "Crossroads", Crystal = "Crossroads" },

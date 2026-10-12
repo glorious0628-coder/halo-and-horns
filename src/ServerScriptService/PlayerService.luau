@@ -948,6 +948,10 @@ end
 -- attributes, PetService) and the kaiju state (KaijuService.GetState "Active" = no pet bonus). applyStats and RefreshSpeed are the
 -- only writers of a player's WalkSpeed (KaijuService / ClassService / JusticeService refresh through RefreshCharacter).
 function PlayerService.ComputeWalkSpeed(player)
+	-- A23-134 / A23-141: inside the egg round's square every class and pet walks the same base, slower with each egg slot
+	if player:GetAttribute("EggPlaza") == true and type(Config.GooseEggSpeed) == "function" then
+		return Config.GooseEggSpeed(player:GetAttribute("EggCarry"))
+	end
 	local kaiju = false
 	local ks = S.KaijuService
 	if type(ks) == "table" and type(ks.GetState) == "function" then

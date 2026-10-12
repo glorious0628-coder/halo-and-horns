@@ -139,124 +139,203 @@ def tower(name, cx, cy, w, z0, z1, spire_h, bands=(), win_faces=(), win=(1.0, 3.
 
 
 # ---------------------------------------------------------------- dimensions (studs)
-Z0 = 1.0                                   # platform top = floor
+# v2 (최종 검수 10/12): measured on the 2D front (art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png, platform 770 px =
+# 62 studs, 12.4 px a stud): a staircase of towers from the middle out - centre spire tip 53, then 45, 40, 34, 25.5, 17,
+# 8.5 at x 0, 8, 12.5, 18.5, 23.4, 26.6, 28.6; portal ~10 wide, pointed apex 15.7; rose window centre 20.3, 6.9 across.
+Z0 = 1.6                                   # platform top = floor (a wide white two-step base)
 NX = 9.0                                   # nave half width
 AX = 20.0                                  # aisle outer wall
 YF = 25.0                                  # facade front face
 YB = -24.0                                 # nave / aisles back end
-NAVE_TOP, AISLE_TOP = 17.0, 10.0
+NAVE_TOP, AISLE_TOP = 17.0, 10.5
 RIDGE = 25.0
 BAYS = [YF - 5 - 7 * k for k in range(7)]   # bay centres along the aisles: 20 13 6 -1 -8 -15 -22
 
-# platform + front plaza + steps
-box("Platform", -31, 31, -32, 38, 0.0, Z0, "floor")
+# platform (two steps) + front plaza + wide front stairs
+box("PlatformLow", -32.5, 32.5, -33.5, 39.5, 0.0, 0.8, "floor")
+box("Platform", -31.0, 31.0, -32.0, 38.0, 0.8, Z0, "floor")
 for e_, (x0, x1, y0, y1) in enumerate(((-31.2, 31.2, 37.8, 38.2), (-31.2, 31.2, -32.2, -31.8), (-31.2, -30.8, -32, 38), (30.8, 31.2, -32, 38))):
-    box("PlatformEdge%d" % e_, x0, x1, y0, y1, 0.0, Z0 + 0.1, "gold")
-for s_ in range(3):
-    box("Step%d" % s_, -7 + s_ * 0.0, 7, YF + 4.5 - s_ * 1.4, YF + 4.5 - s_ * 1.4 + 1.4, Z0, Z0 + 0.35 * (s_ + 1), "floor")
+    box("PlatformEdge%d" % e_, x0, x1, y0, y1, 0.8, Z0 + 0.1, "gold")
+for s_ in range(4):                          # the front stairs down from the portal to the plaza
+    box("Step%d" % s_, -9.0, 9.0, YF + 6.5 - s_ * 1.2, YF + 6.5 - s_ * 1.2 + 1.2, Z0, Z0 + 0.3 * (s_ + 1), "floor")
 box("FloorInside", -NX + 0.6, NX - 0.6, YB + 0.6, YF - 0.6, Z0, Z0 + 0.1, "floor")
 
-# nave: side walls above the aisle roofs with clerestory lancets, gable roof
+# nave: side walls above the aisle roofs with clerestory lancets, gable roof, pinnacles on the cornice, small roof dormers
 for sg in (-1, 1):
-    box("NaveWall%d" % ((sg + 1) // 2), sg * NX - 0.5, sg * NX + 0.5, YB, YF, Z0, NAVE_TOP) if sg > 0 else \
-        box("NaveWall%d" % ((sg + 1) // 2), sg * NX - 0.5, sg * NX + 0.5, YB, YF, Z0, NAVE_TOP)
-    add("NaveCornice%d" % ((sg + 1) // 2), (YF - YB + 0.6, 0.5, 1.1), (sg * (NX + 0.3), (YF + YB) / 2, NAVE_TOP - 0.25), (0.0, 1.0, 0.0), UP, "gold")
+    k_ = (sg + 1) // 2
+    box("NaveWall%d" % k_, sg * NX - 0.5, sg * NX + 0.5, YB, YF, Z0, NAVE_TOP)
+    add("NaveCornice%d" % k_, (YF - YB + 0.6, 0.5, 1.1), (sg * (NX + 0.3), (YF + YB) / 2, NAVE_TOP - 0.25), (0.0, 1.0, 0.0), UP, "gold")
     for b_, yb in enumerate(BAYS[1:-1]):
-        lancet("Clere%d_%d" % ((sg + 1) // 2, b_), (sg, 0.0), sg * (NX + 0.5), yb, AISLE_TOP + 3.6, 1.2, 2.6)
+        lancet("Clere%d_%d" % (k_, b_), (sg, 0.0), sg * (NX + 0.5), yb, AISLE_TOP + 2.6, 1.2, 3.4)
+    for b_, yb in enumerate([y - 3.5 for y in BAYS[1:]]):   # cornice pinnacles between the clerestory windows
+        px = sg * (NX + 0.4)
+        add("NavePin%d_%d" % (k_, b_), (0.9, 1.4, 0.9), (px, yb, NAVE_TOP + 0.7))
+        spire("NavePinSp%d_%d" % (k_, b_), px, yb, NAVE_TOP + 1.4, 1.0, 2.8, 0.35)
 gable_roof_y("Nave", -NX - 0.5, NX + 0.5, YB, YF - 1.0, NAVE_TOP, RIDGE)
+for d_, yb in enumerate((BAYS[2], BAYS[4], BAYS[6] + 2.0)):  # small pointed dormers on both nave slopes
+    for sg in (-1, 1):
+        dx_ = sg * 4.6
+        zr_ = NAVE_TOP + (RIDGE - NAVE_TOP) * (1 - abs(dx_) / (NX + 1.1))
+        box("NaveDormer%d_%d" % (d_, (sg + 1) // 2), dx_ - 0.8, dx_ + 0.8, yb - 0.8, yb + 0.8, zr_ - 1.2, zr_ + 1.3)
+        lancet("NaveDormerWin%d_%d" % (d_, (sg + 1) // 2), (sg, 0.0), dx_ + sg * 0.8, yb, zr_ - 0.6, 0.7, 1.2)
+        spire("NaveDormerSp%d_%d" % (d_, (sg + 1) // 2), dx_, yb, zr_ + 1.3, 1.5, 2.0, 0.3)
 box("NaveBackWall", -NX, NX, YB - 1.0, YB, Z0, NAVE_TOP)
 
-# aisles: outer walls with tall lancets, buttress pinnacles between the bays, lean-to roofs
+# aisles: outer walls with tall pointed windows, buttress piers + pinnacles between the bays, lean-to roofs
 for sg in (-1, 1):
     k_ = (sg + 1) // 2
-    box("AisleWall%d" % k_, sg * AX - 0.5, sg * AX + 0.5, YB, YF - 3.0, Z0, AISLE_TOP) if sg > 0 else \
-        box("AisleWall%d" % k_, sg * AX - 0.5, sg * AX + 0.5, YB, YF - 3.0, Z0, AISLE_TOP)
-    add("AisleBase%d" % k_, (YF - 3.0 - YB + 0.6, 0.6, 1.4), (sg * (AX + 0.2), (YF - 3.0 + YB) / 2, Z0 + 0.3), (0.0, 1.0, 0.0), UP, "gold")
-    box("AisleFront%d" % k_, min(sg * NX, sg * AX), max(sg * NX, sg * AX), YF - 3.5, YF - 2.5, Z0, AISLE_TOP + 2.0)
+    box("AisleWall%d" % k_, sg * AX - 0.5, sg * AX + 0.5, YB, YF - 12.0, Z0, AISLE_TOP)
+    add("AisleBase%d" % k_, (YF - 12.0 - YB + 0.6, 0.6, 1.4), (sg * (AX + 0.2), (YF - 12.0 + YB) / 2, Z0 + 0.3), (0.0, 1.0, 0.0), UP, "gold")
     box("AisleBack%d" % k_, min(sg * NX, sg * AX), max(sg * NX, sg * AX), YB - 0.5, YB + 0.5, Z0, AISLE_TOP)
-    for b_, yb in enumerate(BAYS[1:]):
-        lancet("AisleWin%d_%d" % (k_, b_), (sg, 0.0), sg * (AX + 0.5), yb, Z0 + 2.0, 2.0, 5.4)
-    for b_, yb in enumerate([y - 3.5 for y in BAYS]):    # buttress piers + pinnacles between the windows
+    for b_, yb in enumerate(BAYS[2:]):
+        lancet("AisleWin%d_%d" % (k_, b_), (sg, 0.0), sg * (AX + 0.5), yb, Z0 + 1.6, 2.0, 6.4)
+    for b_, yb in enumerate([y - 3.5 for y in BAYS[1:]]):
         px = sg * (AX + 1.0)
-        box("Buttress%d_%d" % (k_, b_), px - 0.7, px + 0.7, yb - 0.7, yb + 0.7, Z0, AISLE_TOP + 1.6)
-        add("ButtressCap%d_%d" % (k_, b_), (1.7, 0.35, 1.7), (px, yb, AISLE_TOP + 1.75), mat="gold")
-        spire("ButtressSp%d_%d" % (k_, b_), px, yb, AISLE_TOP + 1.95, 1.3, 3.2, 0.4)
-    lean_roof("Aisle%d" % k_, sg, sg * AX, sg * NX, YB, YF - 3.0, AISLE_TOP, AISLE_TOP + 4.2)
+        box("Buttress%d_%d" % (k_, b_), px - 0.7, px + 0.7, yb - 0.7, yb + 0.7, Z0, AISLE_TOP + 3.0)
+        add("ButtressBand%d_%d" % (k_, b_), (1.6, 0.3, 1.6), (px, yb, AISLE_TOP), mat="gold")
+        add("ButtressCap%d_%d" % (k_, b_), (1.7, 0.35, 1.7), (px, yb, AISLE_TOP + 3.15), mat="gold")
+        spire("ButtressSp%d_%d" % (k_, b_), px, yb, AISLE_TOP + 3.35, 1.3, 5.0, 0.4)    # 최종 검수 10/12: a row on every buttress
+    lean_roof("Aisle%d" % k_, sg, sg * AX, sg * NX, YB, YF - 1.0, AISLE_TOP, AISLE_TOP + 4.2)
 
-# facade: front wall + pointed gable + rose-window opening + pointed-arch portal with two real gold door leaves
-FW = 12.0                                    # facade half width (between the towers)
-FT = 27.0                                    # facade wall top (gable foot)
-GH = 10.0                                    # gable height
-DW, DH = 10.0, 12.0                          # portal (plan door size 10 x 12)
-box("FacadeL", -FW, -DW / 2, YF - 1.5, YF, Z0, FT)
-box("FacadeR", DW / 2, FW, YF - 1.5, YF, Z0, FT)
-box("FacadeTop", -DW / 2, DW / 2, YF - 1.5, YF, Z0 + DH, FT)          # solid above the lintel (the pointed arch is gold trim on it)
+# front chapels (the low wide front either side, under the outer towers): x 20..30, the front 12 studs
+for sg in (-1, 1):
+    k_ = (sg + 1) // 2
+    x0_, x1_ = sorted((sg * AX - sg * 0.5, sg * 30.0))
+    box("Chapel%d" % k_, x0_, x1_, YF - 12.0, YF - 0.5, Z0, 7.5)
+    add("ChapelCornice%d" % k_, (x1_ - x0_ + 0.4, 0.45, 11.9), ((x0_ + x1_) / 2, YF - 6.25, 7.3), mat="gold")
+    lean_roof("Chapel%d" % k_, sg, sg * 30.0, sg * AX, YF - 12.0, YF - 0.5, 7.5, 9.5)
+    for w_, xw in enumerate((sg * 21.5, sg * 25.0)):
+        lancet("ChapelWin%d_%d" % (k_, w_), (0.0, 1.0), xw, YF - 0.5, Z0 + 1.4, 1.6, 4.0)
+    lancet("ChapelSideWin%d" % k_, (sg, 0.0), sg * 30.0, YF - 6.0, Z0 + 1.4, 1.6, 4.0)
+
+# facade screen between the centre block and the chapels (the aisle fronts): wall + pointed windows
+for sg in (-1, 1):
+    k_ = (sg + 1) // 2
+    x0_, x1_ = sorted((sg * 5.8, sg * AX))
+    box("Screen%d" % k_, x0_, x1_, YF - 1.5, YF - 0.5, Z0, AISLE_TOP + 3.5)
+    add("ScreenBand%d" % k_, (x1_ - x0_, 0.4, 0.5), ((x0_ + x1_) / 2, YF - 0.3, AISLE_TOP + 3.5), mat="gold")
+    for w_, xw in enumerate((sg * 10.2, sg * 15.5)):
+        lancet("ScreenWin%d_%d" % (k_, w_), (0.0, 1.0), xw, YF - 0.5, Z0 + 1.6, 1.9, 6.6)
+
+# facade centre block: front wall, a steep pointed gable, the rose window, the tall pointed portal with real doors
+FW = 5.8                                     # centre block half width (2D 330..470 px)
+FT = 22.0                                    # wall top (gable foot)
+GH = 7.5                                     # gable height (apex 29.5)
+DW, DH = 9.6, 11.3                           # portal opening + door leaf height (2D)
+AP = 4.4                                     # pointed arch rise above the leaves (apex 15.7 + base)
+box("FacadeL", -FW, -DW / 2, YF - 1.5, YF + 0.5, Z0, FT)
+box("FacadeR", DW / 2, FW, YF - 1.5, YF + 0.5, Z0, FT)
+box("FacadeTop", -DW / 2, DW / 2, YF - 1.5, YF + 0.5, Z0 + DH + AP, FT)
 n_ = 16
-for k in range(n_):                           # the pointed gable: horizontal strips (marble), gold coping
+for k in range(n_):
     wk = 2 * FW * (1 - (k + 0.5) / n_)
-    box("FacadeGable%d" % k, -wk / 2, wk / 2, YF - 1.5, YF, FT + GH * k / n_, FT + GH * (k + 1) / n_ + 0.02)
+    box("FacadeGable%d" % k, -wk / 2, wk / 2, YF - 1.5, YF + 0.5, FT + GH * k / n_, FT + GH * (k + 1) / n_ + 0.02)
 for sg in (-1, 1):
     ln_ = math.hypot(FW, GH)
-    X_ = norm((-sg * FW, 0.0, GH)) if sg > 0 else norm((FW, 0.0, GH))
-    add("FacadeCoping%d" % ((sg + 1) // 2), (ln_ + 0.4, 0.5, 2.0), (sg * FW / 2, YF - 0.75, FT + GH / 2 + 0.3), X_,
-        norm((sg * GH, 0.0, FW)), "gold")
-add("FacadeGableFinial", (0.3, 1.2, 0.3), (0, YF - 0.75, FT + GH + 0.6), mat="gold")
-ball("FacadeGableBall", 0.9, (0, YF - 0.75, FT + GH + 1.5))
-# the portal: tympanum under a pointed arch (two tilted gold bars), the opening DW x DH, a deep reveal, two gold leaves
-for sg in (-1, 1):
-    ln_ = math.hypot(DW / 2, DW / 2)
-    add("PortalArch%d" % ((sg + 1) // 2), (ln_ + 0.6, 0.7, 0.9), (sg * DW / 4, YF + 0.15, Z0 + DH + DW / 4),
-        norm((-sg * 1.0, 0.0, 1.0)), (0.0, 1.0, 0.0), "gold")
-    parts[-1]["X"] = [round(c, 5) for c in norm((-sg, 0.0, 1.0))]
-    parts[-1]["Y"] = [0.0, 1.0, 0.0]
-    parts[-1]["size"] = [round(ln_ + 0.6, 4), 0.9, 0.7]
-    box("PortalJamb%d" % ((sg + 1) // 2), sg * DW / 2 - 0.45, sg * DW / 2 + 0.45, YF - 0.2, YF + 0.5, Z0, Z0 + DH, "gold")
-box("PortalLintel", -DW / 2, DW / 2, YF - 0.3, YF + 0.3, Z0 + DH - 0.3, Z0 + DH + 0.3, "gold")
-box("PortalReveal_L", -DW / 2, -DW / 2 + 0.4, YF - 4.0, YF - 1.5, Z0, Z0 + DH)
-box("PortalReveal_R", DW / 2 - 0.4, DW / 2, YF - 4.0, YF - 1.5, Z0, Z0 + DH)
-box("PortalReveal_T", -DW / 2, DW / 2, YF - 4.0, YF - 1.5, Z0 + DH - 0.4, Z0 + DH)
-for sg in (-1, 1):                            # A23-120 real doors: two leaves, hinge on the outer jamb (names for a door script)
-    box("Door_Leaf%s" % ("L" if sg < 0 else "R"), min(sg * 0.05, sg * (DW / 2 - 0.45)), max(sg * 0.05, sg * (DW / 2 - 0.45)),
-        YF - 3.4, YF - 3.0, Z0 + 0.05, Z0 + DH - 0.45, "gold")
-# rose window opening: a round glass + gold rings (the 8-petal tracery = a Tripo / Blender part in this slot)
-RZ, RD = Z0 + DH + DW / 2 + 5.0, 7.0
-disk("RoseRingOuter", RD + 1.0, 0.5, (0, YF + 0.1, RZ), (0.0, 1.0, 0.0))
-disk("RoseGlass", RD, 0.3, (0, YF + 0.25, RZ), (0.0, 1.0, 0.0), "wglass")
-disk("RoseRingInner", 2.0, 0.5, (0, YF + 0.35, RZ), (0.0, 1.0, 0.0))
-orn.append({"type": "rose_window", "name": NAME + "_Rose", "pos": [0, YF + 0.4, RZ], "D": RD, "petals": 8,
-            "src": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_*.png"})
-orn.append({"type": "wing", "name": NAME + "_WingL", "pos": [FW + 3.0, YF + 1.0, FT - 2], "h": 26,
-            "src": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingL_*.png"})
-orn.append({"type": "wing", "name": NAME + "_WingR", "pos": [-FW - 3.0, YF + 1.0, FT - 2], "h": 26,
-            "src": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_WingR_*.png"})
-for k in range(3):                            # facade lancets beside the portal
+    add("FacadeCoping%d" % ((sg + 1) // 2), (ln_ + 0.4, 0.5, 2.4), (sg * FW / 2, YF - 0.5, FT + GH / 2 + 0.3),
+        norm((-sg * FW, 0.0, GH)) if sg > 0 else norm((FW, 0.0, GH)), norm((sg * GH, 0.0, FW)), "gold")
+spire("FacadeGableSp", 0.0, YF - 0.5, FT + GH, 1.2, 3.0, 0.4)
+for sg in (-1, 1):                            # pinnacles on the centre block corners
+    add("FacadePin%d" % ((sg + 1) // 2), (1.2, FT + 1.5 - Z0, 1.2), (sg * (FW + 0.3), YF, (FT + 1.5 + Z0) / 2))
+    spire("FacadePinSp%d" % ((sg + 1) // 2), sg * (FW + 0.3), YF, FT + 1.5, 1.4, 4.0, 0.4)
+# the portal: the opening DW x (DH + AP) with a pointed head (stepped fill), two gold arch bands, a glowing inner window
+nA = 10
+for k in range(nA):                           # the pointed head: fill strips either side, narrowing upwards
+    f0, f1 = k / nA, (k + 1) / nA
+    hw = DW / 2 * math.sqrt(max(0.0, 1 - ((f0 + f1) / 2) ** 2))    # a rounded-point (gothic) curve
     for sg in (-1, 1):
-        lancet("FacadeWin%d_%d" % ((sg + 1) // 2, k), (0.0, 1.0), sg * (DW / 2 + 1.9), YF, Z0 + 2.0 + 0.0 * k, 1.6, 6.0) if k == 0 else None
-add("FacadeBand", (2 * FW + 0.4, 0.5, 0.6), (0, YF + 0.2, Z0 + DH + DW / 2 + 0.6), mat="gold")
+        x0_, x1_ = sorted((sg * hw, sg * DW / 2))
+        if x1_ - x0_ > 0.02:
+            box("PortalHead%d_%d" % (k, (sg + 1) // 2), x0_, x1_, YF - 1.5, YF + 0.5, Z0 + DH + AP * f0, Z0 + DH + AP * f1 + 0.02)
+for band, (off, wd) in enumerate(((0.0, 0.55), (0.9, 0.45))):
+    for sg in (-1, 1):
+        pts = []
+        for k in range(nA + 1):
+            f = k / nA
+            pts.append((sg * (DW / 2 + off) * math.sqrt(max(0.0, 1 - f * f)), Z0 + DH + (AP + off) * f))
+        for k in range(nA):
+            (xa, za), (xb, zb) = pts[k], pts[k + 1]
+            ln_ = math.hypot(xb - xa, zb - za)
+            add("PortalArch%d_%d_%d" % (band, (sg + 1) // 2, k), (ln_ + 0.06, 0.5, wd), ((xa + xb) / 2, YF + 0.65, (za + zb) / 2),
+                norm((xb - xa, 0.0, zb - za)), (0.0, 1.0, 0.0), "gold")
+    for sg in (-1, 1):
+        box("PortalJamb%d_%d" % (band, (sg + 1) // 2), sg * (DW / 2 + off) - wd / 2, sg * (DW / 2 + off) + wd / 2, YF + 0.4, YF + 0.9, Z0, Z0 + DH, "gold")
+lancet("PortalInnerWin", (0.0, 1.0), 0.0, YF - 3.6, Z0 + 3.0, 3.0, 9.0)          # the glowing window behind the doors (2D)
+box("PortalReveal_L", -DW / 2, -DW / 2 + 0.4, YF - 4.0, YF - 1.5, Z0, Z0 + DH + AP)
+box("PortalReveal_R", DW / 2 - 0.4, DW / 2, YF - 4.0, YF - 1.5, Z0, Z0 + DH + AP)
+box("PortalBack", -DW / 2, DW / 2, YF - 4.2, YF - 3.8, Z0, Z0 + DH + AP)
+for sg in (-1, 1):                            # A23-120 real doors: two leaves standing open a little (2D), hinge on the jambs
+    leaf_w = DW / 2 - 0.2
+    hx = sg * (DW / 2 - 0.15)
+    ang = math.radians(28)
+    cx_ = hx - sg * leaf_w / 2 * math.cos(ang)
+    cy_ = YF - 0.2 + leaf_w / 2 * math.sin(ang)
+    add("Door_Leaf%s" % ("L" if sg < 0 else "R"), (leaf_w, DH - 0.2, 0.35), (cx_, cy_, Z0 + (DH - 0.2) / 2),
+        norm((-sg * math.cos(ang), math.sin(ang), 0.0)), UP, "gold")
+# rose window: round glass + gold rings (the 8-petal tracery = a Tripo / Blender part in this slot)
+RZ, RD = 22.4, 6.9                              # above the portal arch apex (18.2)
+disk("RoseRingOuter", RD + 1.0, 0.5, (0, YF + 0.6, RZ), (0.0, 1.0, 0.0))
+disk("RoseGlass", RD, 0.3, (0, YF + 0.75, RZ), (0.0, 1.0, 0.0), "wglass")
+disk("RoseRingInner", 2.0, 0.5, (0, YF + 0.85, RZ), (0.0, 1.0, 0.0))
+orn.append({"type": "rose_window", "name": NAME + "_Rose", "pos": [0, YF + 0.9, RZ], "D": RD, "petals": 8,
+            "src": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_Rose_*.png"})
+for sg, nm in ((1, "WingL"), (-1, "WingR")):
+    orn.append({"type": "wing", "name": NAME + "_" + nm, "pos": [sg * (FW + 4.0), YF + 1.5, 24.0], "h": 30,
+                "src": "art/out/s2/halo/castle6/parts_high/CastlePartHigh_%s_*.png" % nm})
 
-# facade towers, front turrets, crossing tower, back block + back towers
-TWF = 6.5
+# the tower staircase across the front (2D): (x, body width, body top, spire h); centre tower behind the gable
+STAIR = [(8.0, 3.4, 35.0, 10.0), (12.5, 3.2, 30.5, 9.0), (18.5, 3.8, 25.5, 8.0), (23.4, 3.4, 18.5, 6.5),
+         (26.6, 3.0, 12.0, 4.6), (28.6, 2.4, 5.2, 3.0)]
+for i_, (xt, wt, zt, sh) in enumerate(STAIR):
+    for sg in (-1, 1):
+        yt = YF - 1.0 - wt / 2 - (0.8 if i_ in (0, 1) else 0.0)
+        tower("StairTower%d_%d" % (i_, (sg + 1) // 2), sg * xt, yt, wt, Z0, zt, sh, bands=tuple(z for z in (8.0, 15.0, 22.0, 29.0) if z < zt - 2),
+              win_faces=((0.0, 1.0),) if zt > 10 else (), win=(0.8, 2.6 if zt > 14 else 1.6), turrets=False, spire_w=0.8)
+# 최종 검수 10/12 (v3): a cross plan as the 2D top view - transept arms either side in the middle of the nave, the tallest
+# spire tower (the halo ring) on the crossing
+TY0, TY1, TX, TT = -7.0, 7.0, 27.5, 15.0        # transept y span, arm end x, wall top
 for sg in (-1, 1):
     k_ = (sg + 1) // 2
-    tower("FrontTower%d" % k_, sg * (FW + TWF / 2), YF - TWF / 2, TWF, Z0, 31.0, 16.0, bands=(10.0, 20.0),
-          win_faces=((0.0, 1.0), (sg, 0.0)), win=(1.2, 4.0))
-    tower("FrontTurret%d" % k_, sg * (AX + 0.7), YF - 3.0, 3.6, Z0, AISLE_TOP + 5.0, 6.0, bands=(AISLE_TOP,), turrets=False)
-CY, CW = YF - 7.5, 11.0                        # the tall spire tower stands right behind the facade (2D left / right)
-tower("CrossTower", 0.0, CY, CW, NAVE_TOP - 1.0, 33.0, 22.0, spire_w=0.55, bands=(RIDGE - 0.5,),
-      win_faces=((0.0, 1.0), (1.0, 0.0), (-1.0, 0.0), (0.0, -1.0)), win=(1.4, 4.4))
-orn.append({"type": "halo_ring", "name": NAME + "_HaloRing", "pos": [0.0, CY, 33.0 + 22.0 + 2.0], "R": 7.5,
-            "note": "exact circle ring (Blender), 디자인 검수 10/12"})
+    x0_, x1_ = sorted((sg * NX, sg * TX))
+    box("Transept%d" % k_, x0_, x1_, TY0, TY1, Z0, TT)
+    add("TranseptCornice%d" % k_, (x1_ - x0_ + 0.4, 0.5, TY1 - TY0 + 0.6), ((x0_ + x1_) / 2, 0.0, TT - 0.2), mat="gold")
+    n_ = 12
+    for k in range(n_):                       # the arm's end gable (strips) + gold coping
+        wk = (TY1 - TY0) * (1 - (k + 0.5) / n_)
+        box("TranseptGable%d_%d" % (k_, k), sg * TX - 0.5 if sg > 0 else sg * TX, sg * TX if sg > 0 else sg * TX + 0.5, -wk / 2, wk / 2,
+            TT + 6.0 * k / n_, TT + 6.0 * (k + 1) / n_ + 0.02)
+    lancet("TranseptEndWin%d" % k_, (sg, 0.0), sg * TX, 0.0, Z0 + 2.0, 3.0, 8.0)
+    disk("TranseptRose%d" % k_, 3.4, 0.3, (sg * (TX + 0.05), 0.0, TT + 1.9), (sg, 0.0, 0.0), "wglass")
+    disk("TranseptRoseRing%d" % k_, 4.0, 0.25, (sg * (TX + 0.02), 0.0, TT + 1.9), (sg, 0.0, 0.0))
+    for w_, yw in enumerate((TY0 + 2.0, TY1 - 2.0)):
+        lancet("TranseptSideWin%d_%d" % (k_, w_), (0.0, 1.0 if yw > 0 else -1.0), sg * (AX + TX) / 2, TY1 if yw > 0 else TY0, Z0 + 2.0, 1.8, 6.0)
+    for c_, yc in enumerate((TY0, TY1)):      # pinnacles on the arm end corners
+        add("TranseptPin%d_%d" % (k_, c_), (1.2, TT + 1.6 - Z0, 1.2), (sg * (TX + 0.2), yc, (TT + 1.6 + Z0) / 2))
+        spire("TranseptPinSp%d_%d" % (k_, c_), sg * (TX + 0.2), yc, TT + 1.6, 1.4, 5.0, 0.4)
+    spire("TranseptGableSp%d" % k_, sg * TX, 0.0, TT + 6.0, 1.0, 2.6, 0.35)
+gable_roof_x("TranseptRoof", -TX, TX, TY0, TY1, TT, TT + 6.0)
+CY, CW = 0.0, 9.0                             # the crossing tower (the tallest spire, the halo ring over it)
+tower("CentreTower", 0.0, CY, CW, NAVE_TOP - 1.0, 40.0, 13.0, spire_w=0.62, bands=(29.0, 34.0),
+      win_faces=((0.0, 1.0), (1.0, 0.0), (-1.0, 0.0), (0.0, -1.0)), win=(1.3, 4.2))
+tower("FacadeTower", 0.0, YF - 4.2, 5.0, Z0, 32.0, 7.0, spire_w=0.7, bands=(29.5,), win_faces=((0.0, 1.0),), win=(1.0, 2.6), turrets=False)
+orn.append({"type": "halo_ring", "name": NAME + "_HaloRing", "pos": [0.0, CY, 46.5], "R": 7.3,
+            "note": "exact circle ring (Blender), 디자인 검수 10/12; 2D ring 180 px = 14.5 studs across"})
+
+# back block + back towers + the great back window
 BX0, BX1, BY0, BY1 = -22.0, 22.0, -31.0, YB
 box("BackBlock", BX0, BX1, BY0, BY1, Z0, 13.0)
 add("BackBlockCornice", (BX1 - BX0 + 0.6, 0.5, BY1 - BY0 + 0.6), (0, (BY0 + BY1) / 2, 12.9), mat="gold")
 gable_roof_x("Back", BX0, BX1, BY0, BY1, 13.0, 18.0)
 for b_, xb in enumerate((-15.0, -8.0, 8.0, 15.0)):
     lancet("BackWin%d" % b_, (0.0, -1.0), xb, BY0, Z0 + 2.2, 2.0, 6.0)
-lancet("BackGreatWin", (0.0, -1.0), 0.0, BY0, Z0 + 2.0, 4.0, 9.0)        # the tall pointed window of the 2D back
+lancet("BackGreatWin", (0.0, -1.0), 0.0, BY0, Z0 + 2.0, 4.0, 9.0)
 for sg in (-1, 1):
     k_ = (sg + 1) // 2
     tower("BackTower%d" % k_, sg * (BX1 - 2.5), BY0 + 2.5, 6.0, Z0, 24.0, 10.0, bands=(13.0,),
           win_faces=((0.0, -1.0), (sg, 0.0)), win=(1.0, 3.4))
+    for b_, xb in enumerate((sg * 9.0, sg * 14.0)):          # back block pinnacles
+        add("BackPin%d_%d" % (k_, b_), (0.9, 1.4, 0.9), (xb, BY0 + 0.2, 13.7))
+        spire("BackPinSp%d_%d" % (k_, b_), xb, BY0 + 0.2, 14.4, 1.0, 2.8, 0.35)
 orn.append({"type": "star_finials", "name": NAME + "_Stars", "note": "gold star tops on the spires (2D), Tripo parts"})
 
 # ---------------------------------------------------------------- outputs (same Luau writer as tools/skeleton_house.py)
@@ -306,4 +385,4 @@ json.dump(parts, open(base + ".json", "w"), indent=0)
 json.dump({"note": "%s decoration slots (tools/skeleton_castle.py): Tripo parts -> Blender 손보기 (A23-147)" % NAME, "items": orn},
           open(base + "_ornaments.json", "w"), indent=1)
 print("[castle] %s: %d parts, %d slots, body x %.0f..%.0f y %.0f..%.0f, crossing spire tip %.1f -> %s"
-      % (NAME, len(parts), len(orn), -AX - 1.7, AX + 1.7, BY0, YF + 5, 33.0 + 0.6 + 22.0, OUT))
+      % (NAME, len(parts), len(orn), -32.5, 32.5, BY0, YF + 6.5, 40.0 + 0.6 + 13.0, OUT))

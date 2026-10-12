@@ -1815,8 +1815,8 @@ runGroup("easter-eggs", function()
 	end
 	check(speakerOk, "every quest's Speaker names a Speakers entry", "")
 	check(SQ0.Landmarks.TermsScroll.Z > C0.Map.AltarPosition.Z and SQ0.Landmarks.PatchNote.X > C0.Map.BoardPosition.X
-		and SQ0.Landmarks.GooseNest.X == C0.Goose.Position.X and SQ0.Landmarks.GooseNest.Z == C0.Goose.Position.Z,
-		"the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the goose perch", "")
+		and SQ0.Landmarks.GooseNest.X == C0.Goose.Egg.Home.Halo.X and SQ0.Landmarks.GooseNest.Z == C0.Goose.Egg.Home.Halo.Z,
+		"the scroll is behind the Altar, the slip in front of the Wanted Board, the nest is the Knights' egg nest (A23-131)", "")
 	-- before M2_3 nothing starts; after it all five are hidden
 	local early, ed = joinAfterM23(w, 901, "Halo", { Before = true })
 	for _, id in EGGS do check(w:Track(ed, id) == nil, id .. ": not started before M2_3", "") end

@@ -1221,12 +1221,14 @@ local function pollWorld()
 		tickFor("War", warEnds > 0, warEnds, t)
 		tickFor("Kaiju", gs:GetAttribute("KaijuPhase") == "Siren", num(gs:GetAttribute("KaijuEndsAt"), 0), t)
 		-- A23-131 Eggs mode (EggFx.TickFor): the 3-2-1 is for those who picked an egg this event, up to the crown egg's
-		-- overtime while it runs; the old tug: for the goose's hitters
+		-- overtime while it runs, and only inside the Goose Square (A23-141); the old tug: for the goose's hitters
 		local eggFx = C and C.EggFx
 		local picked, eggEnd = nil, nil
 		if type(eggFx) == "table" and type(eggFx.TickFor) == "function" then picked, eggEnd = eggFx.TickFor(gs) end
 		if picked ~= nil then
 			tickFor("Goose", gs:GetAttribute("GooseActive") == true and picked, num(eggEnd, 0), t)
+		elseif type(eggFx) == "table" and type(eggFx.On) == "function" and eggFx.On() then
+			tickFor("Goose", false, 0, t) -- A23-141: the Eggs mode outside the Goose Square (TickFor is nil there): no 3-2-1
 		else
 			tickFor("Goose", gs:GetAttribute("GooseActive") == true and S.GooseHit, num(gs:GetAttribute("GooseEndsAt"), 0), t)
 		end

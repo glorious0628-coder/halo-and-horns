@@ -8599,5 +8599,17 @@
   },
   "review": "디자인 검수 10/12: 장미창 4면 두께·테 맞음, 첨탑 4면 작은 첨탑 수·후광 높이 맞음, 날개 4면 깃 층·받침 맞음, 빛살·얼굴 없음.",
   "next": "Tripo 4면 HD(묶음 승인 뒤) → Blender: 후광 고리 = 정확한 원 고리로 바꿔 끼우기, 장미창 꽃잎 = 8잎 정확 대칭, 첨탑 꼭지 별 = 정확한 모양. 성 몸통·탑·벽은 Studio 골격(A23-120)."
+ },
+ "NPC_HaloMailBoy": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_right_ns.png"
+  },
+  "note": "그림자 없는 4면(최종 검수 통과 2026-10-12, SPEC A23-150). 사용자 승인 주민(우편배달 소년 m1) 그대로.",
+  "deleted": "옛 4면(npc2_hq/NPC_HaloMailBoy_*_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
  }
 }

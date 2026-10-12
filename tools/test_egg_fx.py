@@ -60,7 +60,33 @@ local function num(v, default)
 end
 local function near(a, b, eps) return math.abs(a - b) <= (eps or 1e-6) end
 
+-- A23-141 stubs: my player's attributes, GameState, the Remotes folder (the GooseSquare remote may be missing), workspace
+local attrs = { InGooseSquare = true }
+local LocalPlayer = { GetAttribute = function(_, k) return attrs[k] end }
+local Config = { Goose = { Mode = "Eggs", Square = { Remote = "GooseSquare", Attr = "InGooseSquare", Block = "GooseJoinBlock" },
+	Egg = { Home = { Halo = vec(-30, 0, -30), Horns = vec(-30, 0, 30) } } }, RateLimits = {} }
+local gsAttrs = { GooseActive = true }
+local fired = {}
+local remoteOn = true
+local remotes = {}
+local remote = { Name = "GooseSquare", Parent = remotes, IsA = function(_, c) return c == "RemoteEvent" end,
+	FireServer = function(_, w) table.insert(fired, w) end }
+remotes.FindFirstChild = function(_, n) if remoteOn and n == "GooseSquare" then return remote end return nil end
+local gsFolder = { GetAttribute = function(_, k) return gsAttrs[k] end }
+local ReplicatedStorage = { FindFirstChild = function(_, n)
+	if n == "Remotes" then return remotes elseif n == "GameState" then return gsFolder end
+	return nil
+end }
+local S = { SquareIn = false }
+local fades = 0
+function EggFx.Fade() fades += 1 end
+local function serverNow() return 1000 end
+local function eggCfg() return Config.Goose.Egg end
+local sqAttrs, nestPart, squareModel = {}, nil, nil
+local workspace = { FindFirstChild = function(_, n) if n == "GooseSquare" then return squareModel end return nil end }
+
 -- PURE --
+-- HOMES --
 
 local NOW = 1000
 -- Arc
@@ -142,6 +168,159 @@ check(bo.Overtime and near(bo.Seconds, 6), "Bar: the crown egg's overtime = its 
 local be = EggFx.Bar({ Rescue = 1, Poach = 1, EndsAt = NOW - 3 }, NOW)
 check(be.Seconds == 0, "Bar: never below 0 s", be.Seconds)
 
+-- A23-141 Goose Square ------------------------------------------------------------------------------
+local function press(word, t) return EggFx.SquarePress(word, t) end
+local function setSquare(inside, active, block, hasRemote)
+	attrs.InGooseSquare = inside
+	attrs.GooseJoinBlock = block
+	gsAttrs.GooseActive = active
+	remote.Parent = hasRemote and remotes or nil
+	remoteOn = hasRemote
+	S.SquareRemote = nil
+	S.SquareAt = nil
+	fired = {}
+end
+
+-- Here: the Eggs mode AND my InGooseSquare
+attrs.InGooseSquare = true
+check(EggFx.Here() == true, "Here: the Eggs mode and I am in the square")
+attrs.InGooseSquare = false
+check(EggFx.Here() == false, "Here: the Eggs mode but outside the square = not here")
+attrs.InGooseSquare = true
+Config.Goose.Mode = "Tug"
+check(EggFx.Here() == false and EggFx.Inside() == true, "Here: inside the square but not the Eggs mode = not here")
+Config.Goose.Mode = "Eggs"
+attrs.InGooseSquare = nil
+check(EggFx.Here() == false, "Here: no InGooseSquare attribute = not here")
+attrs.InGooseSquare = true
+
+-- SquareButton table
+local function btn(ctx) return EggFx.SquareButton(ctx) end
+check(btn({ Active = false, Inside = false, Block = "", HasRemote = true }) == nil, "SquareButton: no open event = hidden")
+local after = btn({ Active = false, Inside = true, HasRemote = true })
+check(after ~= nil and after.Word == "Leave" and after.Dim == false,
+	"SquareButton (개발 2 10/13): inside after the round = Leave still (a way out before / without the trip home)", after and after.Word)
+check(btn(nil) == nil and btn({}) == nil, "SquareButton: no context = hidden")
+Config.Goose.Mode = "Tug"
+check(btn({ Active = true, Inside = false, Block = "", HasRemote = true }) == nil, "SquareButton: not the Eggs mode = hidden")
+Config.Goose.Mode = "Eggs"
+local j = btn({ Active = true, Inside = false, Block = "", HasRemote = true })
+check(j ~= nil and j.Word == "Join" and j.Dim == false, "SquareButton: open event, outside, no block = Join bright", j and j.Dim)
+local j2 = btn({ Active = true, Inside = false, Block = nil, HasRemote = true })
+check(j2 ~= nil and j2.Word == "Join" and j2.Dim == false, "SquareButton: no GooseJoinBlock attribute = Join bright (the server refuses by Notify)")
+for _, blk in { "Dead", "Monster", "Grudge", "PvP" } do
+	local d = btn({ Active = true, Inside = false, Block = blk, HasRemote = true })
+	check(d ~= nil and d.Word == "Join" and d.Dim == true, "SquareButton: Join dimmed by Block " .. blk, d and d.Dim)
+end
+local l = btn({ Active = true, Inside = true, Block = "PvP", HasRemote = true })
+check(l ~= nil and l.Word == "Leave" and l.Dim == false, "SquareButton: inside = Leave, never dimmed by a block", l and l.Dim)
+local nj = btn({ Active = true, Inside = false, Block = "", HasRemote = false })
+local nl = btn({ Active = true, Inside = true, Block = "", HasRemote = false })
+check(nj.Word == "Join" and nj.Dim == true and nl.Word == "Leave" and nl.Dim == true, "SquareButton: no remote = both dimmed")
+
+-- SquareCtx reads the world
+setSquare(false, true, "Monster", true)
+local cx = EggFx.SquareCtx()
+check(cx.Active == true and cx.Inside == false and cx.Block == "Monster" and cx.HasRemote == true, "SquareCtx: event, outside, block, remote")
+setSquare(true, false, nil, false)
+cx = EggFx.SquareCtx()
+check(cx.Active == false and cx.Inside == true and cx.Block == nil and cx.HasRemote == false, "SquareCtx: no event, inside, no remote")
+
+-- SquarePress: once, rate-gapped, nothing while dimmed / hidden
+setSquare(false, true, "", true)
+check(press("Join", 100) == true and #fired == 1 and fired[1] == "Join", "SquarePress: Join fires the remote once with 'Join'", #fired)
+check(press("Join", 100.5) == false and #fired == 1, "SquarePress: a second press within 1 s is dropped", #fired)
+check(press("Join", 101.1) == true and #fired == 2, "SquarePress: after the gap it fires again", #fired)
+Config.RateLimits.GooseSquare = 2
+check(press("Join", 102.5) == false and #fired == 2 and press("Join", 103.2) == true and #fired == 3,
+	"SquarePress: Config.RateLimits.GooseSquare sets the gap when present", #fired)
+Config.RateLimits.GooseSquare = nil
+setSquare(false, true, "Dead", true)
+check(press("Join", 500) == false and #fired == 0, "SquarePress: a dimmed Join (blocked) fires nothing", #fired)
+setSquare(false, true, "", true)
+check(press("Leave", 500) == false and #fired == 0, "SquarePress: Leave while outside fires nothing", #fired)
+check(press("Dance", 500) == false and press(nil, 500) == false and #fired == 0, "SquarePress: only 'Join' / 'Leave'", #fired)
+setSquare(true, true, "PvP", true)
+check(press("Join", 600) == false and #fired == 0, "SquarePress: Join while inside fires nothing", #fired)
+check(press("Leave", 600) == true and #fired == 1 and fired[1] == "Leave", "SquarePress: Leave inside fires 'Leave' (a block does not stop it)", #fired)
+setSquare(false, true, "", false)
+check(press("Join", 700) == false and #fired == 0, "SquarePress: no remote (not made yet) = dimmed, nothing fires", #fired)
+setSquare(false, false, "", true)
+check(press("Join", 800) == false and #fired == 0, "SquarePress: no open event fires nothing", #fired)
+setSquare(false, true, "", true)
+remoteOn = true
+check(EggFx.SquareRemote() == remote, "SquareRemote: found without waiting once it exists")
+
+-- the screen fade: once per change of InGooseSquare, not on a repeat
+attrs.InGooseSquare = false
+S.SquareIn = false
+fades = 0
+check(EggFx.SquareChanged() == false and fades == 0, "SquareChanged: the same value (outside -> outside) = no fade", fades)
+attrs.InGooseSquare = true
+check(EggFx.SquareChanged() == true and fades == 1, "SquareChanged: outside -> inside = one fade", fades)
+check(EggFx.SquareChanged() == false and fades == 1, "SquareChanged: inside again = no second fade", fades)
+attrs.InGooseSquare = false
+check(EggFx.SquareChanged() == true and fades == 2, "SquareChanged: inside -> outside = a fade too", fades)
+check(EggFx.SquareChanged() == false and fades == 2, "SquareChanged: outside again = none", fades)
+
+-- the egg screens are off outside the square: Bar / TickFor / HomeTarget / Homes
+local barArgs = { Rescue = 3, Poach = 1, EndsAt = NOW + 20 }
+attrs.InGooseSquare = false
+check(EggFx.Bar(barArgs, NOW) == nil, "Bar: nil outside the Goose Square (no egg bar in the real plaza)")
+attrs.InGooseSquare = true
+check(EggFx.Bar(barArgs, NOW) ~= nil, "Bar: drawn inside the square")
+Config.Goose.Mode = "Tug"
+check(EggFx.Bar(barArgs, NOW) == nil, "Bar: nil when it is not the Eggs mode")
+Config.Goose.Mode = "Eggs"
+
+local tickGs = { GetAttribute = function(_, k) if k == "GooseEndsAt" then return 1030 end return nil end }
+S.Picked = true
+attrs.InGooseSquare = false
+check(EggFx.TickFor(tickGs) == nil, "TickFor: nil outside the square (no 3-2-1 there)")
+attrs.InGooseSquare = true
+local pk, pe = EggFx.TickFor(tickGs)
+check(pk == true and pe == 1030, "TickFor: inside = (picked, the end)", pe)
+
+attrs.Faction, attrs.EggCarry = "Halo", 2
+gsAttrs.GooseActive = true
+attrs.InGooseSquare = false
+check(EggFx.Homes() == nil and EggFx.HomeFor("Halo") == nil and EggFx.HomeTarget() == nil,
+	"Homes / HomeFor / HomeTarget: nil outside the square")
+attrs.InGooseSquare = true
+local h0 = EggFx.Homes()
+check(h0.Halo.Z == -30 and h0.Horns.Z == 30, "Homes: no workspace.GooseSquare = Config.Goose.Egg.Home")
+local ht = EggFx.HomeTarget()
+check(ht ~= nil and ht.Z == -30 and near(ht.Y, 3), "HomeTarget: carrying eggs inside = my home, 3 studs up", ht and ht.Y)
+attrs.EggCarry = 0
+check(EggFx.HomeTarget() == nil, "HomeTarget: empty hands = nil")
+attrs.EggCarry = 2
+gsAttrs.GooseActive = false
+check(EggFx.HomeTarget() == nil, "HomeTarget: no open event = nil")
+gsAttrs.GooseActive = true
+nestPart = { IsA = function(_, c) return c == "BasePart" end, Position = vec(5, 0, 7) }
+squareModel = { FindFirstChild = function(_, n) if n == "Nest" then return nestPart end return nil end,
+	GetAttribute = function(_, k) return sqAttrs[k] end }
+sqAttrs.CartPos = vec(9, 0, 11)
+local h1 = EggFx.Homes()
+check(h1.Halo.X == 5 and h1.Halo.Z == 7, "Homes: workspace.GooseSquare's Nest part before Config.Goose.Egg.Home", h1.Halo.X)
+check(h1.Horns.X == 9 and h1.Horns.Z == 11, "Homes: its CartPos attribute before Config.Goose.Egg.Home", h1.Horns.X)
+local ht1 = EggFx.HomeTarget()
+check(ht1.X == 5 and ht1.Z == 7, "HomeTarget: the square's own nest", ht1 and ht1.X)
+squareModel = { FindFirstChild = function() return nil end, GetAttribute = function() return nil end }
+local h2 = EggFx.Homes()
+check(h2.Halo.Z == -30 and h2.Horns.Z == 30, "Homes: a square without Nest / Cart = Config.Goose.Egg.Home")
+-- 게임성 개발 2 10/12 (the skeleton doc): the egg ring's middle = the square's GooseSpot
+check(EggFx.Center().X == 0 and EggFx.Center().Z == 0, "Center: a square without GooseSpot = Config.Goose.Egg.Center (or 0)")
+local spotPart = { IsA = function(_, c) return c == "BasePart" end, Position = vec(6000, 200, 6000) }
+squareModel = { FindFirstChild = function(_, n) if n == "GooseSpot" then return spotPart end return nil end,
+	GetAttribute = function() return nil end }
+check(EggFx.Center().X == 6000 and EggFx.Center().Y == 200, "Center: the square's GooseSpot part", EggFx.Center().X)
+squareModel = { FindFirstChild = function() return nil end,
+	GetAttribute = function(_, k) if k == "GooseSpotPos" then return vec(1, 2, 3) end return nil end }
+check(EggFx.Center().Z == 3, "Center: its GooseSpotPos attribute", EggFx.Center().Z)
+squareModel = nil
+check(EggFx.Center().X == 0, "Center: no square = Config.Goose.Egg.Center (or 0)")
+
 print("CHECKS " .. checks .. " FAILED " .. failed)
 '''
 
@@ -152,11 +331,19 @@ def pure_block(src: str) -> str | None:
     return src[a:b] if 0 <= a < b else None
 
 
+def homes_block(src: str) -> str | None:
+    """A23-141: Homes / HomeFor / HomeTarget / TickFor (between the Step and the one-off events), run with stubs."""
+    a = src.find("-- the nest (Halo) and the cart (Horns) points")
+    b = src.find("----------------------------------------------------------------- one-off events")
+    return src[a:b] if 0 <= a < b else None
+
+
 def run_pure(src: dict) -> tuple[int, int, list[str]]:
     block = pure_block(src["EGG"])
-    if block is None:
+    homes = homes_block(src["EGG"])
+    if block is None or homes is None:
         return 1, 1, ["CHECK_FAIL EggFx pure helpers block found"]
-    code = HARNESS.replace("-- PURE --", block)
+    code = HARNESS.replace("-- PURE --", block).replace("-- HOMES --", homes)
     with tempfile.TemporaryDirectory() as d:
         f = Path(d) / "egg_fx_offline.luau"
         f.write_text(code, encoding="utf-8")
@@ -173,8 +360,12 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
     egg, hud, audio, qt, mp, cfg = src["EGG"], src["HUD"], src["AUDIO"], src["QT"], src["MAP"], src["CONFIG"]
     order = re.search(r"local ORDER = \{([^}]*)\}", src["MAIN"])
     sounds = ("EggPlop", "EggPickup", "EggDeliverHalo", "EggDeliverHorns", "EggBoing", "CrownEgg", "GooseSnore")
-    branch = hud.split("if type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then", 1)
-    branch = branch[1].split("\t\t\treturn\n", 1)[0] if len(branch) == 2 else ""
+    branch = hud.split("\t\tif eggMode then\n", 1)
+    branch = branch[1].split("\n\t\t\treturn\n", 1)[0] if len(branch) == 2 else ""
+    square = re.search(r"Config\.Goose\.Square = \{(.*?)\n\t\}", cfg, re.S)
+    sq = square.group(1) if square else ""
+    chip = hud.split("if eggMode and type(eggFx.Here) == \"function\" and not eggFx.Here() then", 1)
+    chip = chip[1].split("\n\t\t\treturn\n", 1)[0] if len(chip) == 2 else ""
     look = re.search(r"Config\.GooseEggFx = \{(.*?)\n\}", cfg, re.S)
     text = re.search(r"Text = \{([^}]*)\}", look.group(1)) if look else None
     return [
@@ -184,7 +375,61 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and "workspace.Effects.GooseEggs" in egg and 'c.Name == "GooseEggs"' in egg, ""),
         ("EggFx: no PointLight / Highlight / Beam (design: no per-egg lights, no rays)",
          not re.search(r'Instance\.new\("(PointLight|Highlight|Beam|SpotLight|SurfaceLight)"\)', egg), ""),
-        ("EggFx: no remote of its own (no FireServer / InvokeServer)", "FireServer" not in egg and "InvokeServer" not in egg, ""),
+        # A23-141: the one remote EggFx fires is GooseSquare's Join / Leave (looked up without waiting); nothing else
+        ("EggFx: the only remote is the GooseSquare press (one FireServer, no InvokeServer, no remote created)",
+         egg.count("FireServer") == 1 and "pcall(function() remote:FireServer(word) end)" in egg and "InvokeServer" not in egg
+         and 'Instance.new("RemoteEvent")' not in egg and "Net.Get(" not in egg.replace('Net.Get("Fx")', ""), ""),
+        ("EggFx: HomeTarget / Homes check EggFx.Here() themselves (two gates: the marker and the homes)",
+         "function EggFx.HomeTarget()\n\tif not EggFx.Here() then return nil end\n" in egg
+         and "function EggFx.Homes()\n\tif not EggFx.Here() then return nil end\n" in egg, ""),
+        ("EggFx: the GooseSquare remote is found without waiting (FindFirstChild, never WaitForChild)",
+         'folder:FindFirstChild(squareName("Remote", "GooseSquare"))' in egg and 'WaitForChild("GooseSquare"' not in egg
+         and 'ReplicatedStorage:FindFirstChild("Remotes")' in egg, ""),
+        ("EggFx: the screen fade = a full-screen black Frame in a ScreenGui with IgnoreGuiInset, In then Out, then off, one at a time, no text",
+         "gui.IgnoreGuiInset = true" in egg and "f.Size = UDim2.fromScale(1, 1)" in egg and "f.BackgroundColor3 = Color3.new(0, 0, 0)" in egg
+         and "{ BackgroundTransparency = 0 }" in egg and "{ BackgroundTransparency = 1 }" in egg
+         and "\t\t\tgui.Enabled = false\n\t\t\tS.FadeTween = nil\n" in egg
+         and "if S.FadeTween then S.FadeTween:Cancel() end" in egg and "if S.FadeId ~= id then return end" in egg
+         and "num(fade.In, 0.25)" in egg and "num(fade.Out, 0.35)" in egg
+         and not re.search(r'Instance\.new\("(TextLabel|TextButton|ImageLabel)"\)', egg.split("local function fadeFrame()", 1)[-1].split("function EggFx.Init", 1)[0]), ""),
+        ("EggFx: the fade starts from the InGooseSquare signal, the state read at Start (no fade for where I already am)",
+         "S.SquareIn = EggFx.Inside()" in egg and 'GetAttributeChangedSignal(squareName("Attr", "InGooseSquare"))' in egg
+         and "pcall(EggFx.SquareChanged)" in egg, ""),
+        ("EggFx: outside the Goose Square the egg screens are off (Step -> stepAway, no sounds, no pops, no Fx)",
+         "if not EggFx.Here() then\n\t\tstepAway()\n\t\treturn\n\tend" in egg
+         and "if not EggFx.Here() then return end -- no egg sound outside the Goose Square" in egg
+         and "if not EggFx.Here() or not near(pos, num(lookCfg().SparkleRange, 60)) then return end" in egg
+         and "if not EggFx.Here() or type(data) ~= \"table\" then return end" in egg
+         and "EggFx.HomeFor(faction)" in egg and "EggFx.HomeFor(data.Winner)" in egg, ""),
+        ("Config.Goose.Square: Remote / Attr / Block / Fade / Text exactly as the contract (A23-141)",
+         bool(square) and 'Remote = "GooseSquare"' in sq and 'Attr = "InGooseSquare"' in sq and 'Block = "GooseJoinBlock"' in sq
+         and "Fade = { In = 0.25, Out = 0.35 }" in sq and 'Join = "Join"' in sq and 'Leave = "Leave"' in sq
+         and "PvP = \"You can't join during a fight.\"" in sq and 'Closed = "The goose is gone."' in sq
+         and sq.count("You can't join right now.") == 3 and 'if type(Config.Goose) == "table" then\n\tConfig.Goose.Square = {' in cfg, ""),
+        ("EventHUD: outside the square the chip shows only the goose time (+ Join), no egg bar; the bar's nil is handled",
+         "SQ.Out = true" in chip and "setVisible(ui.Tug, false)" in chip and "eggFx.TickEnd(" in chip and "setVisible(ui.GooseChip, true)" in chip
+         and "if not b then" in branch, ""),
+        ("EventHUD: the Join / Leave button = UIKit.ArtButton Chip (code fallback), words from Config.Goose.Square.Text through UIKit.Tx, "
+         "dimmed = Disabled (no text), press -> EggFx.SquarePress",
+         'pcall(kit.ArtButton, "Chip", props, SQ.press, { CornerRadius = UDim.new(0.5, 0) })' in hud and "pcall(kit.Tx, t, key)" in hud
+         and "Config.Goose.Square" in hud and "e.SquareButton(e.SquareCtx())" in hud and "pcall(e.SquarePress, SQ.Word)" in hud
+         and 'btn:SetAttribute("Disabled", dim)' in hud and "local dim = want.Dim == true" in hud
+         and 'local home = (want.Word == "Leave" and ui.Tug.Visible) and ui.Tug or ui.GooseChip' in hud
+         and "elseif inside then\n\t\t\tsetVisible(ui.GooseChip, true)\n\t\t\tsetText(ui.GooseChipText, \"\")" in hud
+         and "\tupdateGoose(now)\n\tSQ.update()\n" in hud and "SQ.build()\n\n\t-- kaiju chip" in hud
+         and "V2.GooseIn = SQ.Out and 0 or" in hud, ""),
+        ("최종 검수 10/12 (goose_square photos): the A23-68 rookie fold never hides the event strip while I am inside the Goose "
+         "Square (its Leave and egg bar stay; outside, the fold still waits for the first Claim)",
+         "\tlocal folded = V2.Fold() and not V2.InSquare()\n" in hud and "function V2.InSquare()" in hud
+         and "local ok, inside = pcall(e.Inside)\n\treturn ok and inside == true" in hud, ""),
+        ("QuestTarget: the goose / nest / cart target only inside the Goose Square (else none), the square's own homes first",
+         "if not inSquare then return nil end" in qt and "eggFx.HomeFor(myFaction())" in qt and "QuestTarget.Reg = registry" in qt, ""),
+        ("WorldMap: the nest / cart landmarks and the goose marker only while EggFx.Here (EggFx.Homes), none drawn at build",
+         "refreshEggLandmarks() -- A23-141: the nest / the cart while I am in the square" in mp
+         and "e.Homes()" in mp and "e.Here() == true" in mp and "gsAttr(\"GooseActive\", false) == true and gooseHere then" in mp
+         and 'landmark("Nest", GLYPH.Nest, COL.Nest, pos, TXT.Nest, 18)' in mp and "COL.Nest, homes.Halo" not in mp, ""),
+        ("Audio: the Eggs mode outside the square has no 3-2-1 (TickFor nil must not fall back to the tug's hitters)",
+         'elseif type(eggFx) == "table" and type(eggFx.On) == "function" and eggFx.On() then\n\t\t\ttickFor("Goose", false, 0, t)' in audio, ""),
         ("EggFx: a repeating error warns once per WarnGap s (게임성 검수 10/11), never a bare warn per frame",
          "if now - (S.Warned[msg] or -math.huge) < num(lookCfg().WarnGap, 10) then return end" in egg
          and "if not ok then warnThrottled(tostring(err)) end" in egg and egg.count("warn(") == 1, ""),
@@ -229,14 +474,19 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         ("QuestMarker: while I carry eggs the marker points at my home (EggFx.HomeTarget), whatever row is pinned",
          "local ok, home = pcall(egg.HomeTarget)" in src["QM"] and 'Tag = "EggHome"' in src["QM"]
          and 'if num(LocalPlayer:GetAttribute("EggCarry"), 0) <= 0 then return nil end' in egg, ""),
-        ("WorldMap: the nest (Halo home) and the egg cart (Horns home) in Eggs mode",
-         'landmark("EggCart", GLYPH.Cart, COL.Cart, homes.Horns, TXT.Cart, 18)' in mp
-         and 'landmark("Nest", GLYPH.Nest, COL.Nest, homes.Halo, TXT.Nest, 18)' in mp, ""),
+        ("WorldMap: the nest (Halo home) and the egg cart (Horns home) in Eggs mode (A23-141: drawn while in the square)",
+         'landmark("EggCart", GLYPH.Cart, COL.Cart, pos, TXT.Cart, 18)' in mp
+         and 'landmark("Nest", GLYPH.Nest, COL.Nest, pos, TXT.Nest, 18)' in mp, ""),
         ("Config.GooseEggFx: kinds with sizes, a see-through egg I cannot pick, only the !/Zzz/+N marks",
          bool(look) and all(re.search(k + r" = \{ Size = [\d.]+", look.group(1)) for k in ("Gold", "Bouncy", "Big", "Crown"))
          and bool(re.search(r"NoPickAlpha = 0\.[3-8]", look.group(1))) and bool(text)
          and sorted(re.findall(r"(\w+) = ", text.group(1))) == ["Alert", "Nap", "Plus"], ""),
         ("Config.Audio.Sounds: the 7 egg sounds", all(re.search(r"\n\t\t" + s + r" = \{ File = \"" + s + '"', cfg) for s in sounds), ""),
+        # 게임성 개발 2 10/12 (the skeleton doc): the goose's fallback spot, the ring dots and the wobble all centre on the
+        # square's GooseSpot (EggFx.Center), never on the old plaza fountain's Config.Goose.Egg.Center directly
+        ("A23-141: the goose spot, the ring and the wobble centre on EggFx.Center (the square's GooseSpot)",
+         "\treturn EggFx.Center() + Vector3.new(0, 4, 0), g" in egg and egg.count("\tlocal center = EggFx.Center()\n") == 2
+         and "typeof(cfg.Center) == \"Vector3\" and cfg.Center" not in egg, ""),
     ]
 
 
@@ -275,24 +525,97 @@ MUTATIONS = [
     ("EGG", "my own pickup also pops as someone else's (the sound twice)",
      "if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end -- mine", ""),
     ("EGG", "'+N' for everyone's delivery", "if data.UserId ~= LocalPlayer.UserId then return end", ""),
-    ("HUD", "the explanation line under the bar again", "if type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\tsetVisible(ui.TugSub, false)",
-     "if type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\tsetVisible(ui.TugSub, true)"),
+    ("HUD", "the explanation line under the bar again", "\t\tif eggMode then\n\t\t\tsetVisible(ui.TugSub, false)",
+     "\t\tif eggMode then\n\t\t\tsetVisible(ui.TugSub, true)"),
     ("AUDIO", "the 3-2-1 for the goose hitters in Eggs mode",
      'tickFor("Goose", gs:GetAttribute("GooseActive") == true and picked, num(eggEnd, 0), t)',
      'tickFor("Goose", gs:GetAttribute("GooseActive") == true and S.GooseHit, num(eggEnd, 0), t)'),
     ("AUDIO", "everyone hears every delivery", "if not mine and (d == nil or d > T.EggRange) then return out end", ""),
     ("QT", "carrying eggs points at the goose", 'num(LocalPlayer:GetAttribute("EggCarry"), 0) <= 0', 'num(LocalPlayer:GetAttribute("EggCarry"), 0) >= 0'),
-    ("MAP", "no egg cart on the map", 'landmark("EggCart", GLYPH.Cart, COL.Cart, homes.Horns, TXT.Cart, 18)', "local _ = nil"),
+    ("MAP", "no egg cart on the map", 'landmark("EggCart", GLYPH.Cart, COL.Cart, pos, TXT.Cart, 18)', "local _ = nil"),
     ("QM", "the marker ignores my eggs", "local ok, home = pcall(egg.HomeTarget)", "local ok, home = false, nil"),
     ("EGG", "the marker points home with empty hands", 'if num(LocalPlayer:GetAttribute("EggCarry"), 0) <= 0 then return nil end', ""),
     ("MAIN", "EggFx never loaded", '"FountainFx", "EggFx", ', '"FountainFx", '),
+    # A23-141 Goose Square
+    ("EGG", "Here() ignores InGooseSquare", "return EggFx.On() and EggFx.Inside()", "return EggFx.On()"),
+    ("EGG", "Here() ignores the Eggs mode", "return EggFx.On() and EggFx.Inside()", "return EggFx.Inside()"),
+    ("EGG", "the button shows without an open event", "\tif ctx.Active ~= true or not EggFx.On() then return nil end\n",
+     "\tif not EggFx.On() then return nil end\n"),
+    ("EGG", "the button shows outside the Eggs mode", "\tif ctx.Active ~= true or not EggFx.On() then return nil end\n",
+     "\tif ctx.Active ~= true then return nil end\n"),
+    ("EGG", "a blocked Join stays bright", "Dim = noRemote or (type(ctx.Block) == \"string\" and ctx.Block ~= \"\") }", "Dim = noRemote }"),
+    ("EGG", "Leave dimmed by a block", "return { Word = \"Leave\", Dim = noRemote }",
+     "return { Word = \"Leave\", Dim = noRemote or (type(ctx.Block) == \"string\" and ctx.Block ~= \"\") }"),
+    ("EGG", "no remote does not dim", "local noRemote = ctx.HasRemote ~= true", "local noRemote = false"),
+    ("EGG", "a dimmed press still fires", "if not b or b.Dim or b.Word ~= word then return false end", "if not b or b.Word ~= word then return false end"),
+    ("EGG", "a press of the other word fires", "if not b or b.Dim or b.Word ~= word then return false end", "if not b or b.Dim then return false end"),
+    ("EGG", "no rate gap between presses", "if now - (S.SquareAt or -math.huge) < gap then return false end", ""),
+    ("EGG", "a press fires twice", "pcall(function() remote:FireServer(word) end)", "pcall(function() remote:FireServer(word) remote:FireServer(word) end)"),
+    ("EGG", "the remote is waited for", "folder:FindFirstChild(squareName(\"Remote\", \"GooseSquare\"))", "folder:WaitForChild(squareName(\"Remote\", \"GooseSquare\"))"),
+    ("EGG", "the fade repeats for the same value", "if (S.SquareIn == true) == inside then return false end", ""),
+    ("EGG", "no fade on a change", "pcall(EggFx.Fade)", "local _ = nil"),
+    ("EGG", "the egg bar outside the square", "function EggFx.Bar(a, now)\n\tif not EggFx.Here() then return nil end\n", "function EggFx.Bar(a, now)\n"),
+    ("EGG", "the 3-2-1 outside the square", "if not EggFx.Here() or not gs then return nil end", "if not gs then return nil end"),
+    ("EGG", "the home marker outside the square", "function EggFx.HomeTarget()\n\tif not EggFx.Here() then return nil end\n", "function EggFx.HomeTarget()\n"),
+    ("EGG", "homes outside the square", "function EggFx.Homes()\n\tif not EggFx.Here() then return nil end\n", "function EggFx.Homes()\n"),
+    ("EGG", "the square's own nest / cart ignored",
+     "return { Halo = read(\"Nest\", \"NestPos\") or cfgHome.Halo, Horns = read(\"Cart\", \"CartPos\") or cfgHome.Horns }",
+     "return { Halo = cfgHome.Halo, Horns = cfgHome.Horns }"),
+    ("EGG", "the egg play runs outside the square", "if not EggFx.Here() then\n\t\tstepAway()\n\t\treturn\n\tend", ""),
+    ("EGG", "egg sounds outside the square", "\tif not EggFx.Here() then return end -- no egg sound outside the Goose Square\n", ""),
+    ("EGG", "egg pops outside the square", "if not EggFx.Here() or not near(pos, num(lookCfg().SparkleRange, 60)) then return end",
+     "if not near(pos, num(lookCfg().SparkleRange, 60)) then return end"),
+    ("EGG", "egg Fx outside the square", "if not EggFx.Here() or type(data) ~= \"table\" then return end", "if type(data) ~= \"table\" then return end"),
+    ("EGG", "the fade never ends", "\t\t\tgui.Enabled = false\n\t\t\tS.FadeTween = nil\n", ""),
+    ("EGG", "a new fade does not restart the old one", "if S.FadeTween then S.FadeTween:Cancel() end", ""),
+    ("CONFIG", "the remote renamed", "Remote = \"GooseSquare\",", "Remote = \"Goose\","),
+    ("CONFIG", "the fade is slower", "Fade = { In = 0.25, Out = 0.35 },", "Fade = { In = 1, Out = 1 },"),
+    ("HUD", "the egg bar outside the square", "if eggMode and type(eggFx.Here) == \"function\" and not eggFx.Here() then", "if false then"),
+    ("HUD", "Join always bright", "local dim = want.Dim == true", "local dim = false"),
+    ("HUD", "Leave on the chip", "local home = (want.Word == \"Leave\" and ui.Tug.Visible) and ui.Tug or ui.GooseChip", "local home = ui.GooseChip"),
+    ("HUD", "Leave on a hidden bar after the round", "local home = (want.Word == \"Leave\" and ui.Tug.Visible) and ui.Tug or ui.GooseChip",
+     "local home = want.Word == \"Leave\" and ui.Tug or ui.GooseChip"),
+    ("HUD", "the chip hides after the round while I am inside", "\t\telseif inside then\n\t\t\tsetVisible(ui.GooseChip, true)\n", "\t\telseif false then\n\t\t\tsetVisible(ui.GooseChip, true)\n"),
+    ("EGG", "Leave hidden after the round", "\tif ctx.Inside == true then return { Word = \"Leave\", Dim = noRemote } end\n\tif ctx.Active ~= true or not EggFx.On() then return nil end\n",
+     "\tif ctx.Active ~= true or not EggFx.On() then return nil end\n\tif ctx.Inside == true then return { Word = \"Leave\", Dim = noRemote } end\n"),
+    ("HUD", "no button update", "\tupdateGoose(now)\n\tSQ.update()\n", "\tupdateGoose(now)\n"),
+    ("HUD", "a rookie inside the square loses Leave (folded)", "\tlocal folded = V2.Fold() and not V2.InSquare()\n", "\tlocal folded = V2.Fold()\n"),
+    ("HUD", "the square check never true", "\treturn ok and inside == true\nend", "\treturn false\nend"),
+    ("QT", "the goose target in the real plaza", "\t\tif not inSquare then return nil end\n", ""),
+    ("MAP", "the goose marker in the real plaza", "if gsAttr(\"GooseActive\", false) == true and gooseHere then",
+     "if gsAttr(\"GooseActive\", false) == true then"),
+    ("EGG", "the egg ring stays on the old plaza (no GooseSpot)", "local spot = sq:FindFirstChild(\"GooseSpot\", true)",
+     "local spot = sq:FindFirstChild(\"Center\", true)"),
+    ("EGG", "the ring / goose / wobble ignore the square's middle", "\treturn EggFx.Center() + Vector3.new(0, 4, 0), g",
+     "\treturn Vector3.new(0, 4, 0), g"),
+    ("MAP", "the nest never leaves the map", "\trefreshEggLandmarks() -- A23-141: the nest / the cart while I am in the square\n", ""),
+    ("AUDIO", "the tug's 3-2-1 outside the square",
+     "elseif type(eggFx) == \"table\" and type(eggFx.On) == \"function\" and eggFx.On() then\n\t\t\ttickFor(\"Goose\", false, 0, t)",
+     "elseif false then\n\t\t\ttickFor(\"Goose\", false, 0, t)"),
 ]
+
+
+def compile_check() -> tuple[int, int, list[str]]:
+    """A23-141: every file this test reads (except ClientMain / QuestMarker, unchanged) still compiles (luau-compile --null)."""
+    compiler = BINARY.with_name("luau-compile" + BINARY.suffix)
+    if not compiler.exists():
+        return 1, 1, ["CHECK_FAIL luau-compile found next to the Luau CLI"]
+    lines, bad = [], 0
+    for key in ("EGG", "HUD", "AUDIO", "QT", "MAP", "CONFIG"):
+        r = subprocess.run([str(compiler), "--null", str(FILES[key])], capture_output=True, text=True, encoding="utf-8",
+                           errors="replace")
+        ok = r.returncode == 0
+        bad += 0 if ok else 1
+        lines.append(("CHECK_OK " if ok else "CHECK_FAIL ") + f"compiles: {FILES[key].name}" + ("" if ok else " :: " + (r.stderr or r.stdout).strip()[:300]))
+    return len(lines), bad, lines
 
 
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     src = {k: p.read_text(encoding="utf-8-sig").replace("\r\n", "\n") for k, p in FILES.items()}
     n, failed, lines = run(src)
+    cn, cbad, clines = compile_check()
+    n, failed, lines = n + cn, failed + cbad, lines + clines
     print("\n".join(lines))
     muts = []
     for key, name, old, new in MUTATIONS:

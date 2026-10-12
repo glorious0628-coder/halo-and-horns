@@ -86,7 +86,7 @@ MUTATIONS = [
     ("power: CombatPower drops the gear", C, "\tlocal raw = Config.PowerOf(level, tier, 1, enhance, alloc, gear)\n", "\tlocal raw = Config.PowerOf(level, tier, 1, enhance, alloc)\n"),
     ("power: PowerOf ignores the gear", C, "\tif type(gear) == \"table\" then am, hm = am * Config.GearMult(gear.A), hm * Config.GearMult(gear.H) end" + HOOK + "\n", ""),
     ("power: the armor in the attack factor", C, "hm * Config.GearMult(gear.H)", "hm * Config.GearMult(gear.A)"),
-    ("power: CombatPowerOf drops the gear", C, "Config.StatAllocOf(player), { A = gearAtk, H = gearHp })", "Config.StatAllocOf(player))"),
+    ("power: CombatPowerOf drops the gear", C, "tier, enhance, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })", "tier, enhance, Config.StatAllocOf(player))"),
     ("power: MaxCombatPower without the best gear", C, "Config.Loot.MaxEnhance, even, top))", "Config.Loot.MaxEnhance, even))"),
     ("power: MaxCombatPower shares one cache", C, "\tif gearOn then key ..= \"Gear\" end -- ⑥ gear (게임성 개발 3): its own cache value\n", ""),
     ("power: MaxCombatPower without the best armor", C, "H = 1 + Config.GearBonus(\"Armor\", Config.Gear.MaxTier, Config.Gear.MaxPlus) }", "H = 1 }"),

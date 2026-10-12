@@ -516,7 +516,12 @@ function BagUI.Detail(cell, ctx)
 		if cell.Equipped and now then
 			line(tx(TXT, "PowerNow", Util.FormatInt(now)))
 		elseif now and with and Config.WeaponUsable(cell.Tier, level) then -- a locked weapon: no power it can't give yet
-			line(tx(TXT, "Power", Util.FormatInt(now), Util.FormatInt(with)), with > now and "Good" or (with < now and "Sub" or nil))
+			-- 최종 검수 10/13 (ref_rpg_ui #2): the change only, coloured (up green, down red, equal grey) - Config.PowerDiff
+			local d, tone = Config.PowerDiff(now, with)
+			local t = Config.Power.Text.Diff
+			if tone == "Good" then line(string.format(t.Up, Util.FormatInt(d)), "Good")
+			elseif tone == "Bad" then line(string.format(t.Down, Util.FormatInt(d)), "Bad")
+			else line(t.Same, "Sub") end
 		end
 		local source = Config.WeaponSource(cell.Tier)
 		if type(source) == "string" and source ~= "" then

@@ -13134,5 +13134,25 @@
    "use": "Halo town resident NPC; face will be a clean 2D decal (최종 검수 10/12), Blender touch-up next",
    "file": "art/models/tripo/web/NPC_HaloStarScholar_MV4_HD_src.glb"
   }
+ ],
+ "NPC_HaloMailBoy_web_sm_tex8k": [
+  {
+   "event": "web_smart_mesh_then_texture",
+   "points": 30,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (user's Chrome)",
+   "task": "20b5c871-6586-4242-a3cf-2c9f2713fb6e",
+   "balance_before": 13260,
+   "balance_after": 13230,
+   "by": "Blender 손보기 (with the user)",
+   "at": "2026-10-12 16:20",
+   "mode": "Smart Mesh from the FRONT 2D only (free trial run, quad 5,841 faces, no sculpted nose) -> LEFT menu 텍스처 with the front image as reference, lighting removal OFF, 8K -> 텍스처 생성 30; export (user downloaded) = 10,452 tris, 8192 basecolor jpg, faces -y, bottom-centre pivot",
+   "approval": "user in chat 10/12 (found the method: '확 좋아졌다 … 앞으로 이 방법으로 다 만들자')",
+   "inputs": {
+    "front": "art/out/s2/npc2_hq/NPC_HaloMailBoy_front_HQ_src.png"
+   },
+   "use": "Halo town resident NPC; replaces the HD 4-view face (smeared); sheet art/review/blender/mailboy_sm_tex8k_1012.jpg",
+   "file": "art/models/tripo/web/NPC_HaloMailBoy_SM_tex8k_src.glb"
+  }
  ]
 }

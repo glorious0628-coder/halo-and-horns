@@ -890,10 +890,9 @@ local function drawWorld()
 		landmark("Market", GLYPH.Market, COL.Market, marketPos, TXT.Market, 18)
 	end
 	local goose = type(Config.Goose) == "table" and Config.Goose or {}
-	local homes = goose.Mode == "Eggs" and type(goose.Egg) == "table" and type(goose.Egg.Home) == "table" and goose.Egg.Home or nil
-	if homes then -- A23-131 황금 알 줍기: the Knights' nest and the Horn Legion's egg cart (Config.Goose.Egg.Home)
-		if typeof(homes.Halo) == "Vector3" then landmark("Nest", GLYPH.Nest, COL.Nest, homes.Halo, TXT.Nest, 18) end
-		if typeof(homes.Horns) == "Vector3" then landmark("EggCart", GLYPH.Cart, COL.Cart, homes.Horns, TXT.Cart, 18) end
+	if goose.Mode == "Eggs" then
+		-- A23-131 황금 알 줍기: the Knights' nest and the Horn Legion's egg cart. A23-141: they are only in the Goose Square,
+		-- so refreshEggLandmarks draws them (from EggFx.Homes) while I am there; none are drawn in the real plaza
 	else
 		local nestPos = goose.Position
 		if typeof(nestPos) ~= "Vector3" then nestPos = Vector3.new(-30, 0, 30) end
@@ -1686,9 +1685,47 @@ local function build()
 end
 
 ----------------------------------------------------------------- live updates (10x/s while open)
+-- A23-141 Goose Square: the Knights' nest (Halo home) and the Horn Legion's egg cart (Horns home) exist only in the
+-- square - drawn (at EggFx.Homes: workspace.GooseSquare's Nest / Cart, else Config.Goose.Egg.Home) while I am there
+-- (EggFx.Here), removed outside. A new landmark follows the zoom tier the others are in
+local function refreshEggLandmarks()
+	local e = C and C.EggFx
+	local on = type(Config.Goose) == "table" and Config.Goose.Mode == "Eggs"
+	local homes = on and type(e) == "table" and type(e.Homes) == "function" and e.Homes() or nil
+	for _, side in { "Halo", "Horns" } do
+		local key = side == "Halo" and "Nest" or "EggCart"
+		local pos = type(homes) == "table" and homes[side] or nil
+		local entry = movable[key]
+		if typeof(pos) == "Vector3" then
+			if entry then
+				placeMovable(key, pos)
+			else
+				if side == "Halo" then
+					landmark("Nest", GLYPH.Nest, COL.Nest, pos, TXT.Nest, 18)
+				else
+					landmark("EggCart", GLYPH.Cart, COL.Cart, pos, TXT.Cart, 18)
+				end
+				local items = movable[key] and movable[key].Items or {}
+				if items[1] then items[1].Inst.Visible = detailIconsOn ~= false end
+				if items[2] then items[2].Inst.Visible = detailLabelsOn ~= false end
+			end
+		elseif entry then
+			for _, item in entry.Items do
+				for _, list in { detailIcons, detailLabels } do
+					local at = table.find(list, item.Inst)
+					if at then table.remove(list, at) end
+				end
+				item.Inst:Destroy()
+			end
+			movable[key] = nil
+		end
+	end
+end
+
 local function refreshLandmarks()
 	placeMovable("Market", landmarkPos("MarketSign"))
 	placeMovable("Guild", landmarkPos("ArtisanGuild"))
+	refreshEggLandmarks()
 end
 
 local function placeMarker(m, pos, text)
@@ -1738,7 +1775,11 @@ end
 local function updateMarkers(faction)
 	-- golden goose (GameState GooseActive; position of workspace.Effects.GoldenGoose, else its nest)
 	local gooseShown = false
-	if gsAttr("GooseActive", false) == true then
+	-- A23-141: in the Eggs mode the goose (and its nest / cart) is only in the Goose Square (EggFx.Here)
+	local e = C and C.EggFx
+	local gooseHere = not (type(Config.Goose) == "table" and Config.Goose.Mode == "Eggs")
+		or (type(e) == "table" and type(e.Here) == "function" and e.Here() == true)
+	if gsAttr("GooseActive", false) == true and gooseHere then
 		local p = goosePosition()
 		if p then
 			placeMarker(gooseMarker, p, TXT.Goose)
@@ -1799,6 +1840,7 @@ local function tick()
 	updateHeader()
 	updateArrow(faction)
 	updateMarkers(faction)
+	refreshEggLandmarks() -- A23-141: the nest / the cart while I am in the square
 end
 
 local function startLoop()

@@ -186,7 +186,7 @@ MUTATIONS = [
     # story_depth (나) the beta Easter eggs
     ("egg: the scroll is in front of the Altar", C, "Landmarks.TermsScroll = Vector3.new(0, 0, 51)", "Landmarks.TermsScroll = Vector3.new(0, 0, 40)"),
     ("egg: the slip is behind the Wanted Board", C, "Landmarks.PatchNote = Vector3.new(-52, 0, 0)", "Landmarks.PatchNote = Vector3.new(-58, 0, 0)"),
-    ("egg: the goose nest is not the perch", C, "Landmarks.GooseNest = Vector3.new(-30, 0, 30)", "Landmarks.GooseNest = Vector3.new(-30, 0, 40)"),
+    ("egg: the goose nest is not the Knights' nest", C, "Landmarks.GooseNest = Vector3.new(-30, 0, -30)", "Landmarks.GooseNest = Vector3.new(-30, 0, 30)"),
     ("egg: Patch Note is not hidden", C, "Title = \"Patch Note\", ShortName = \"Patch Note\", Hidden = true,", "Title = \"Patch Note\", ShortName = \"Patch Note\","),
     ("egg: Goose Fan opens after M1_4", C, "Title = \"Goose Fan\", ShortName = \"Goose Fan\", Hidden = true, Speaker = \"Goose\", Requires = { Done = { \"M2_3\" } },",
      "Title = \"Goose Fan\", ShortName = \"Goose Fan\", Hidden = true, Speaker = \"Goose\", Requires = { Done = { \"M1_4\" } },"),

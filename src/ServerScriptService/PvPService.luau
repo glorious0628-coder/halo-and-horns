@@ -606,6 +606,10 @@ function PvPService.CanAttack(attacker, victim)
 	if not Util.IsAlive(attacker) or not Util.IsAlive(victim) then
 		return false, "Dead"
 	end
+	-- A23-141: the Goose Square is a safe place (nobody inside hits or is hit by a player)
+	if Config.InGooseSquare and (Config.InGooseSquare(attacker) or Config.InGooseSquare(victim)) then
+		return false, "SafeZone"
+	end
 	local fa, fv = faction(attacker), faction(victim)
 	if fa == "Neutral" or fv == "Neutral" then
 		return false, "Neutral" -- addendum A6: Neutral never hits / is hit by players, anywhere
