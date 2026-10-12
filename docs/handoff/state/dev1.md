@@ -1,7 +1,7 @@
 # 게임성 개발 1 — 인계 상태 (2026-10-13, 지팡이·BB8·거위 광장 보고, 결과 기다림)
 
 클라 코드만(창·HUD·Config·Fx). 메인 Studio는 건드리지 않음(sync·사진 = 메인 반영 1). 사용자에게 직접 묻지 않음. 보고는 send_message, 묶음마다 한 번 → 턴 끝내기.
-- **보고처(사용자 10/11 변경):** 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
+- **보고처(10/13 게임성 검수 쉼): 가지 보고·시험 결과 = '최종 검수' `local_d522c0f1-07cf-4db1-b178-5f335a56db7c` (내 시험 + 변이 숫자 같이).** 옛 보고처(사용자 10/11 변경): 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
 - 지금 일하는 가벼운 worktree(sparse: src/tools/docs): `C:/Users/glori/Documents/Roblox/wt_lesstext`(브랜치 `fix/lesstext`), `C:/Users/glori/Documents/Roblox/wt_onehand`(브랜치 `fix/onehand`), 둘 다 base 201779da; `C:/Users/glori/Documents/Roblox/wt_goldegg`(브랜치 `fix/golden-egg-client`, base 368f490e). build/luau_cli_0_741는 Game/build에서 복사해 둠. place 파일이 없어서 test_place_english는 place를 잠깐 복사해 돌리고 지움.
 - 커밋: worktree에서 `git commit -m "짧은 한국어" -- <경로>` → 그 브랜치만 push(main push 금지, 병합은 검수). 공유 트리(Game)는 `py tools/push_paths.py`만.
 - 큰 표·코드는 `py tools/api_agent.py`(읽기 모드 / `--write --branch api/<이름>`) 써도 됨.
@@ -51,6 +51,7 @@
 20. **BB8 고침 = api/dev1-character-ui-2 b479014a** (= fix/character-ui, wt_lesstext): main merge(ORDER + BuffBar) + 닉네임 줄·[Change], HUD PowerOpen 잠금, Base hit, 축복 내 편만 +gold+XP, CombatPowerOf, [Equip] 죽음·직업 전·진영 무기 막기. test_character_ui 138·59/59 + 9개. 남은 낮은 것: 장착 간격 공유, 한국어 이름, 코드 모양 배경.
 21. **거위 광장 화면 = fix/goose-square cb886aae** (wt_goldegg; 4e34b165 API job 한도에서 멈춤 → 내가 마무리): + GooseSpot 가운데. egg_fx 126·66/66, audio(혼자) 통과 + 10개. 게임성 검수에 보고. 서버(개발 2 앱 세션)와 같이 병합해야 동작.
 22. **fix/staff-face cdab64c7** (wt_onehand, main a09de901에서; staff-short·d56d0f1e는 병합됨): 디자인 검수 staff_short_v2 판정 → 손 0.4칸 앞(z -1.2), 지팡이 바깥 5°, 구슬이 얼굴 앞·밖(test 'orb clears the face'), GripProbe 'tilt='. 게임성 검수·디자인 검수에 보고. 사진 = 세 마법사 옆 합본(디자인 검수).
+23. **최종 검수 10/13:** staff-face cdab64c7 + character-ui-2 b479014a = 최종 검수 첫 검수 중 → 통과하면 같이 병합 → 메인 반영 1 사진. goose-square cb886aae = 개발 2 서버 가지와 같이. 서버 병합 뒤 한 가지로: 도움말 '10분·교차로' 글, Config.QuestGuide GuideZones.Goose, 큰 지도엔 거위 광장 안 그림(광장 안 미니맵만).
 - 다음 큐 메모: A23-143 말풍선 스티커 고르기·잠금 화면(이미지 개발 imgdev-stickers 병합 + 지시 뒤, 키 Config.UIArt.Parts.Emo*, Free 5개). 이미지 생성 4 지팡이 메시 9개 = 0.65/0.70/0.75H·원점 43%(코드와 맞음, 올리기·연결은 최종 검수 승인 뒤 이미지 개발).
 - **API: 남은 ≈$22 → 새 API 쓰기 job 금지(최종 검수 10/12), 큰 코드도 앱 세션에서.**
 
