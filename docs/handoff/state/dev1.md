@@ -50,6 +50,8 @@
    - **d56d0f1e** (68bef0e7 위): 메인 사진 뿔 지팡이가 몸 가로지름(11°+숙임 8°) → 모든 지팡이 세상 기준 10° 안, 뿔 Aim (0,1,0)·손 2.71(빛과 같음). 시험 세상 기울기 줄.
 20. **BB8 고침 = api/dev1-character-ui-2 b479014a** (= fix/character-ui, wt_lesstext): main merge(ORDER + BuffBar) + 닉네임 줄·[Change], HUD PowerOpen 잠금, Base hit, 축복 내 편만 +gold+XP, CombatPowerOf, [Equip] 죽음·직업 전·진영 무기 막기. test_character_ui 138·59/59 + 9개. 남은 낮은 것: 장착 간격 공유, 한국어 이름, 코드 모양 배경.
 21. **거위 광장 화면 = fix/goose-square cb886aae** (wt_goldegg; 4e34b165 API job 한도에서 멈춤 → 내가 마무리): + GooseSpot 가운데. egg_fx 126·66/66, audio(혼자) 통과 + 10개. 게임성 검수에 보고. 서버(개발 2 앱 세션)와 같이 병합해야 동작.
+22. **fix/staff-face cdab64c7** (wt_onehand, main a09de901에서; staff-short·d56d0f1e는 병합됨): 디자인 검수 staff_short_v2 판정 → 손 0.4칸 앞(z -1.2), 지팡이 바깥 5°, 구슬이 얼굴 앞·밖(test 'orb clears the face'), GripProbe 'tilt='. 게임성 검수·디자인 검수에 보고. 사진 = 세 마법사 옆 합본(디자인 검수).
+- 다음 큐 메모: A23-143 말풍선 스티커 고르기·잠금 화면(이미지 개발 imgdev-stickers 병합 + 지시 뒤, 키 Config.UIArt.Parts.Emo*, Free 5개). 이미지 생성 4 지팡이 메시 9개 = 0.65/0.70/0.75H·원점 43%(코드와 맞음, 올리기·연결은 최종 검수 승인 뒤 이미지 개발).
 - **API: 남은 ≈$22 → 새 API 쓰기 job 금지(최종 검수 10/12), 큰 코드도 앱 세션에서.**
 
 ## 기다리는 것
