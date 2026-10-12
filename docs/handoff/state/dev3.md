@@ -1,4 +1,4 @@
-# 게임성 개발 3 — 상태 (2026-10-12)
+# 게임성 개발 3 — 상태 (2026-10-12 점심, 쉬는 중)
 
 역할: 장인 길드 서버(`role_prompts/04_dev3.md`). 서버만, Studio 안 열고 main에 직접 push 안 함. 보고처 = **'게임성 검수'**(가지 push 보고), 사용자 질문·화면 조작 = '최종 검수'(모든 것 검수). 세션 id는 list_sessions로.
 작업 폴더: `C:/Users/glori/Documents/Roblox/Game-dev3w`(sparse: src·tools·docs·AGENTS.md, `build/luau_cli_0_741` 있음).
@@ -25,7 +25,15 @@
   - 8e67dbcf 간식 재료 = Jelly 5 + Herb 2(검수). f8dc5efc 개발 2 M1·L1(소환 펫은 선물·이야기 펫 아님, giveXP 주석). 개발 2 PetService 확인 통과.
   - 클라 남은 것(개발 4·1, 검수가 나눔): PetWindow Roll 속도 숫자, 연구 창, 소환 결과, 간식 버튼.
   - **⑥ 장비 칸 = 가지 `api/dev3-gear`**(로컬 dev3-gear, base dev3-tamer b9b5c381): API job dev3_gear 59ecc2dc + 개발 2 후속 847dcd31. 설계 `docs/design/gear_slots_2026-10-12.md` §7. test_gear_slots 203·105/105. 게임성 검수 시험 대기.
-  - 다음: ⑦ 장인 명성·계급(Craft.Rep, A23-135 장인 랭킹 따로) → ⑧ 장인 첫 10분.
+  - 장비 끝 f0367a1d(지켜 부르기 d4529184, 켜기 전 고침 c2874b02 = 레벨 내려가면 멈춤·제작 뒤 GearInfo·진영 크기 장비·PetAcc nil, 시험 패턴 aecbaec1·f0367a1d) → **main dd27e8f7에 병합됨**.
+  - **⑦ 장인 명성·계급 = 가지 `dev3-fame` 5933d919**(gear merge 위): 명성 띠 1/2/3/4 + 망치질 +2면 +1, 그 역할 장인만, 패스 무관 → Craft.Rep + RankingService.Credit Artisan; 계급 Rep 0/30/150/500/1500, 속성 ArtisanRank, RankUp; WeekCap Artisan 100(검수·개발 2 OK). 설계 `docs/design/artisan_fame_2026-10-12.md`. 최종 검수 병합 중(10/12).
+
+## 쉬는 중 (사용자 10/12 점심: 세션 7개로 줄임, 10/17 주간 초기화 뒤까지)
+- 다음 큐: ⑧ 장인 첫 10분 퀘스트(crafting_market §8 '첫 10분' 읽고 설계부터 — 장인 길드 고른 뒤 채집 → 첫 제작 → 망치질 → 명성, 퀘스트 글은 키만). 그다음 켜는 가지(Gathering·Crafting·Tonics·Research·Gear 스위치 + 패스 문구 "Get 2x level and crafting XP. No stats are for sale." + 정적 검사, craft_server §8).
+- 켜기 전 남은 조건: 채집 = SellItem 또는 거래소(개발 2); 제작 무기 = 개발 2 AddSpare/SpareRoom(+ W7·W9는 ClatterGem·KingJelly·T9, C1); 클라 화면(개발 4·1): 장비 창·펫 장비 줄·연구 창·소환 결과·간식 버튼·PetWindow Roll 속도.
+- 남은 낮은 것: MaxLv 펫도 PetArmor 나머지가 쌓임(무해, 개발 2); 저장에서 Roll이 깨지면 소환 펫이 선물 펫처럼 보임(깨진 저장뿐); 레시피 골드·XP·재료는 시작값(11/14~20 장인 균형 때); test_beta_basics MaxCombatPower 기대값은 개발 2 C1(T9)과 같이 들어간 뒤 다시 확인.
+- API: 새 쓰기 job 안 씀(남은 약 $22는 최종 검수 병합 검토용). dev3_gather 죽은 job은 status stopped_dead로 정리함.
+- 작업 폴더 Game-dev3w는 지금 dev3-fame(깨끗).
 
 ## 다음 (04_dev3.md 순서)
 ③ CraftService(대장장이 T1~T7·T9, 장인만, 망치질 서버 간격 검사) — 레시피에 채집 재료 넣기(gather_server §1 방향: 구리 T1~3, 철 T4~5, 은 T6~7, 달 수정 T9, 참나무 손잡이·방어구, 약초·빛버섯 물약). Craft 저장은 역할마다 Lv/XP.
