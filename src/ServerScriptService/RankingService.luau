@@ -283,7 +283,7 @@ function RankingService.Credit(player, board, n, _why)
 	local data = getData(player)
 	if not data then return false end
 	local rank = ensureWeek(player, data)
-	local cap = R.WeekCap[board]
+	local cap = Config.WeekCapOf(board)
 	local cur = rank[board] or 0
 	if cap and cur >= cap then
 		refuse("WeekCap")
@@ -366,7 +366,7 @@ function RankingService.PvPCreditOK(killer, victim, facts)
 	end
 	-- a killer whose board is already at WeekCap: the point could not land, so it must not use up the fair counters
 	local board = KILLER_BOARD[factionOf(killer)]
-	local cap = board and R.WeekCap[board]
+	local cap = board and Config.WeekCapOf(board)
 	if cap and (ensureWeek(killer, kdata)[board] or 0) >= cap then return "WeekCap" end
 	return nil
 end

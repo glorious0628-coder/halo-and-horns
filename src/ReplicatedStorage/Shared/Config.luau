@@ -22,6 +22,15 @@ function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
+-- a ranking board's weekly cap (nil = none): Ranking.CraftWeekCap while Features.Crafting is on, else Ranking.WeekCap
+function Config.WeekCapOf(board)
+	local R = Config.Ranking
+	if type(R) ~= "table" then return nil end
+	local craft = type(R.CraftWeekCap) == "table" and R.CraftWeekCap[board] or nil
+	if craft and Config.FeatureOn("Crafting") then return craft end
+	return type(R.WeekCap) == "table" and R.WeekCap[board] or nil
+end
+
 -- A23-63 (user 2026-10-07 "폰트 이쁜 걸로"): the game's two fonts, in one place. Head = titles, buttons, numbers and the
 -- name on a name tag (Denk One, one weight); Body = body text and the other name-tag lines (Montserrat). The server-built
 -- name tags (CharacterVisuals, UI round 2 #7) read Nametag; UIKit's FONT.Sets can read Head / Body from here too.
@@ -6960,7 +6969,10 @@ Config.Ranking = {
 		Artisan = { Faction = "Neutral", Reward = true },
 		PvP = { Outlaw = true },
 	},
-	WeekCap = { Honor = 150, Infamy = 150, Artisan = 100 }, -- provisional, tune from beta logs (PvP: no cap); Artisan 100: craft fame joins it (게임성 검수 10/12)
+	WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 }, -- provisional, tune from beta logs (PvP: no cap)
+	-- 게임성 검수 10/12: craft fame joins the Artisan board, so its cap is 100 - only while crafting is on (Config.WeekCapOf;
+	-- off = the scroll-only 60 as before)
+	CraftWeekCap = { Artisan = 100 },
 	TopN = 50,
 	RefreshSeconds = 180, -- each board's global read; boards are staggered by ReadStagger
 	ReadStagger = 45,
@@ -7104,7 +7116,7 @@ function Config.SanitizeRank(d, now)
 		HandScroll = {}, Drop = {}, YieldDay = Config.DayIndex(now), YieldN = 0, HideSynced = rank.HideSynced == true }
 	if int(rank.WeekId, 0, 1e9) == week then
 		for _, board in R.Order do
-			out[board] = int(rank[board], 0, R.WeekCap[board] or 1e9)
+			out[board] = int(rank[board], 0, Config.WeekCapOf(board) or 1e9)
 		end
 		local n = 0
 		if type(rank.Victims) == "table" then

@@ -26,8 +26,9 @@ runGroup("config", function()
 		and R0.Boards.PvP.Faction == nil, "board factions: Honor Halo, Infamy Horns, Artisan Neutral, PvP every faction")
 	check(R0.Boards.Honor.Reward and R0.Boards.Infamy.Reward and R0.Boards.Artisan.Reward and not R0.Boards.PvP.Reward
 		and R0.Boards.PvP.Outlaw and not R0.Boards.Honor.Outlaw, "reward boards Honor/Infamy/Artisan, the outlaw board PvP")
-	check(R0.WeekCap.Honor == 150 and R0.WeekCap.Infamy == 150 and R0.WeekCap.Artisan == 100 and R0.WeekCap.PvP == nil,
-		"WeekCap Honor 150, Infamy 150, Artisan 100 (craft fame joins it, 10/12), PvP none")
+	check(R0.WeekCap.Honor == 150 and R0.WeekCap.Infamy == 150 and R0.WeekCap.Artisan == 60 and R0.WeekCap.PvP == nil
+		and R0.CraftWeekCap.Artisan == 100,
+		"WeekCap Honor 150, Infamy 150, Artisan 60 (100 with crafting on: craft fame joins it, 10/12), PvP none")
 	check(R0.OutlawMinScore == 3, "D5: OutlawMinScore = 3", R0.OutlawMinScore)
 	check(R0.SettleDelaySeconds == 600 and R0.SettleRetrySeconds == 60 and R0.SettleGiveUpSeconds == 7200,
 		"D4: settle 10 min after Monday 00:00, retry 60 s, give up after 2 h")
@@ -694,7 +695,11 @@ runGroup("credit-guards", function()
 	check(R.Credit(h, "PvP", 500) == true and w:Rank(h).PvP == 500, "the PvP board has no cap")
 	local n = rankWorld()
 	local nu = n:Join(301, "Neutral")
-	check(n.Ranking.Credit(nu, "Artisan", 120) == true and n:Rank(nu).Artisan == 100, "Artisan WeekCap 100")
+	check(n.Config.Features.Crafting ~= true and n.Ranking.Credit(nu, "Artisan", 120) == true and n:Rank(nu).Artisan == 60,
+		"Artisan WeekCap 60 while crafting is off", n:Rank(nu).Artisan)
+	n.Config.Features.Crafting = true
+	check(n.Ranking.Credit(nu, "Artisan", 120) == true and n:Rank(nu).Artisan == 100, "Artisan WeekCap 100 once crafting is on", n:Rank(nu).Artisan)
+	n.Config.Features.Crafting = false
 	check(n.Ranking.Credit(nu, "Honor", 1) == false, "a Neutral player is never on the Honor board")
 	local np = rankWorld({ PrivateServerId = "vip-2" })
 	local npu = np:Join(302, "Neutral")
