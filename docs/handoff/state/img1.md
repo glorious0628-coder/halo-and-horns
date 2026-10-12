@@ -9,6 +9,7 @@
 2. `py -X utf8 tools/worldkit/skeleton_ground_run.py --only walls` (길·계단 등은 바뀐 것 없으면 다시 안 지어도 됨; 다시 지으면 G()가 길 밑 낮춤을 되돌려 더함).
 3. `py -X utf8 tools/worldkit/halo_props_place.py` (땅 바뀌면 소품 다시 앉힘; 이미지 생성 4도 키트 바꾸면 직접 돌림).
 4. 사진 `SK_OUT=<폴더> py -X utf8 tools/worldkit/ground_shots.py --review2 r2_04 r2_05 r2_07 r2_17 r2_18` / `under_side under_south` / 무기고 `tools/worldkit/skeleton_civic_shots.py Armory_back`. 호출마다 60초 제한(멈추면 그 장 건너뜀, 빛은 원복). **지형 다시 쓴 직후 첫 캡처가 자주 멈춤 → 1~2분 뒤 찍기.**
+**보고처(10/12 점심):** 디자인 검수도 쉼 → 사진·판정 요청은 **최종 검수**로(디자인 검수 대기 목록 docs/handoff/state/design_review.md 4abdb7c).
 **디자인 검수 판정 상태(5단계):** 통과 = ① 흰 번짐·길 사이 잔디, 옹벽 ⓐ기둥 ⓑ금 띠·난간 ⓓ받침, 혼자 선 벽(높은 쪽 땅 = 벽 위), r2_05, 무기고 뒤 창, 새 집 7 임시 상자, 섬 멀리 역원뿔.
 **남은 것:**
 - ④ 섬 테: (가) 돌출 5칸·움푹 3줄 적용됨 → 가까이 + 멀리 사진 2장(under_side_close, under_south) → 디자인 검수. 그래도 밋밋하면 (나) Tripo 매달린 바위 3종(4면 2D → Tripo → Blender) — 개수·점수 정리해 최종 검수 승인.
