@@ -249,6 +249,13 @@ MUTATIONS = [
      "if def and def.Kind == \"Material\" then", "if def then"),
     ("sell also sells gathered materials", "LOOT_SOURCE",
      "\t\tif def and def.Source ~= nil then def = nil end\n", ""),
+    # C1 boss materials
+    ("boss material KingJelly sold in the sell-all (no Source)", "CONFIG_SOURCE",
+     "Icon = \"IconKingJelly\", Source = \"Boss\",", "Icon = \"IconKingJelly\","),
+    ("ClatterGem row missing from Captain Clatter", "CONFIG_SOURCE",
+     "{ Item = \"ClatterGem\", P = 0.1 },", ""),
+    ("boss materials drop with crafting off", "LOOT_SOURCE",
+     "if not (def and def.Feature) or Config.FeatureOn(def.Feature) then onHit(row, false) end", "onHit(row, false)"),
     ("remote rate limit bypassed", "LOOT_SOURCE",
      "and Util.RateLimit(player, key, Config.RateLimits[key] or 0.5)", "and true"),
     ("WeaponEnhance attribute not refreshed on equip", "LOOT_SOURCE",

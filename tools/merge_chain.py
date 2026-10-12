@@ -5,11 +5,14 @@ tree, export the result for offline tests, then push with a real check that the 
       -> merge commits on origin/main (one per branch, in order), prints "FINAL <sha>", exports src/ tools/ docs/design
          of FINAL into <outdir>/tree (copy build/luau_cli_0_741 and build/*.luau in before running tools/test_*.py)
   py tools/merge_chain.py push <tested-final-sha> <commit>=<title> [...]
+  (both take --ours <path> [--ours <path> ...]: a conflicted non-src file keeps main's version, e.g. an old state doc;
+   a value ending in * is a prefix, e.g. --ours 'docs/art/verification_*' for generated test reports)
       -> rebuilds the same chain on the newest origin/main, refuses unless src/ is byte-identical to the tested FINAL,
          pushes, fetches and checks every branch commit is an ancestor of origin/main; retries while others push art/docs
 
 A conflict is resolved only when a file has exactly ONE conflict block where both sides only ADDED lines at the same
 spot (e.g. two branches appending to the end of Config.luau): both blocks are kept, ours first. Anything else stops.
+The check reads the diff3 base part (10/12: a changed-on-both-sides line used to pass and was duplicated).
 Why `push` exists: on 10/12 a hand-written retry treated "! [rejected] ... -> main" as success and a merge never
 landed (게임성 검수 caught it). Never trust push output - check ancestry after a fetch.
 """
@@ -34,12 +37,20 @@ def out(*args):
 
 
 def resolve_append(text):
+    # 10/12 fix: the conflict text comes in diff3 style (merge.conflictStyle=diff3) and is accepted ONLY when the base
+    # part is empty, i.e. both sides inserted new lines at the same spot. Two branches that CHANGED the same line (e.g.
+    # both editing ClientMain's ORDER list) have that line in the base part - keeping both sides would duplicate it
+    # (three `local ORDER` lines compiled fine and silently dropped a module), so that stops for a hand merge.
     if len(re.findall(rb"^<<<<<<< [^\n]*\n", text, flags=re.M)) != 1:
         return None
-    m = re.search(rb"^<<<<<<< [^\n]*\n(.*?)^=======\n(.*?)^>>>>>>> [^\n]*\n", text, flags=re.M | re.S)
-    if not m:
+    m = re.search(rb"^<<<<<<< [^\n]*\n(.*?)^\|\|\|\|\|\|\|[^\n]*\n(.*?)^=======\n(.*?)^>>>>>>> [^\n]*\n", text,
+                  flags=re.M | re.S)
+    if not m or m.group(2).strip():
         return None
-    return text[:m.start()] + m.group(1) + m.group(2) + text[m.end():]
+    return text[:m.start()] + m.group(1) + m.group(3) + text[m.end():]
+
+
+OURS = set()  # --ours <path>: a conflicted NON-src file (e.g. an old state doc) takes main's side, said in the message
 
 
 def build_chain(specs):
@@ -47,7 +58,7 @@ def build_chain(specs):
     base = out("rev-parse", "origin/main")
     cur = base
     for commit, title in specs:
-        r = run("merge-tree", "--write-tree", "--name-only", cur, commit, ok=(0, 1))
+        r = run("-c", "merge.conflictStyle=diff3", "merge-tree", "--write-tree", "--name-only", cur, commit, ok=(0, 1))
         lines = r.stdout.decode("utf-8").splitlines()
         tree, note = lines[0], ""
         if r.returncode == 1:
@@ -58,7 +69,14 @@ def build_chain(specs):
             env = dict(os.environ, GIT_INDEX_FILE=idx)
             try:
                 run("read-tree", tree, env=env)
+                kept = []
                 for f in files:
+                    if (f in OURS or any(o.endswith("*") and f.startswith(o[:-1]) for o in OURS)) and not f.startswith("src/"):
+                        ob = out("rev-parse", f"{cur}:{f}")
+                        run("update-index", "--cacheinfo", f"100644,{ob},{f}", env=env)
+                        print(f"  took main's side (--ours) for {f}")
+                        kept.append(f + " (main)")
+                        continue
                     text = run("cat-file", "-p", out("rev-parse", f"{tree}:{f}")).stdout
                     fixed = resolve_append(text)
                     if fixed is None:
@@ -78,7 +96,14 @@ def build_chain(specs):
 
 
 def parse_specs(argv):
-    specs = [a.split("=", 1) for a in argv]
+    rest = []
+    it = iter(argv)
+    for a in it:
+        if a == "--ours":
+            OURS.add(next(it))
+        else:
+            rest.append(a)
+    specs = [a.split("=", 1) for a in rest]
     if not specs or any(len(s) != 2 for s in specs):
         raise SystemExit(__doc__)
     return specs

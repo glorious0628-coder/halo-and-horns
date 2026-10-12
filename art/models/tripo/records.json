@@ -12794,6 +12794,21 @@
    "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
    "file": "art/models/tripo/web/Meme_PixelHalo_MV4_HD_src.glb",
    "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/meme_voxel.py pixelhalo",
+   "what": "Tripo made a flat bar (the 4 side views carry no top view): rebuilt from the 2D as a level pixel-circle ring of bevelled gold cubes, ice-blue blocks stepping up at the left / right ends, 3 sparkle cubes; palette from the 2D; the Tripo model is not used",
+   "size_studs": [
+    2.72,
+    2.08,
+    0.712
+   ],
+   "tris": 1892,
+   "out": "art/models/tripo/touchup/Meme_PixelHalo/Meme_PixelHalo_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/meme_touchup_1012.jpg"
   }
  ],
  "Meme_PixelHorns_web_hd_mv4": [
@@ -12818,6 +12833,21 @@
    "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
    "file": "art/models/tripo/web/Meme_PixelHorns_MV4_HD_src.glb",
    "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/meme_voxel.py chain",
+   "what": "voxel fill of the Tripo model joined the horns and lost the steps: rebuilt from the 2D front block by block (9 cubes a horn, mirrored), palette from the 2D (red / dark red / tip brown)",
+   "size_studs": [
+    1.792,
+    0.348,
+    1.352
+   ],
+   "tris": 792,
+   "out": "art/models/tripo/touchup/Meme_PixelHorns/Meme_PixelHorns_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/meme_touchup_1012.jpg"
   }
  ],
  "Meme_DonutHalo_web_hd_mv4": [
@@ -12842,6 +12872,21 @@
    "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
    "file": "art/models/tripo/web/Meme_DonutHalo_MV4_HD_src.glb",
    "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup.py whole --sym-below 1.0 --delight 0.75",
+   "what": "mirrored left / right, decimated, baked C/N/R/M, Tripo shadows removed (de-light), thin outline",
+   "size_studs": [
+    3.202,
+    1.051,
+    0.934
+   ],
+   "tris": 6000,
+   "out": "art/models/tripo/touchup/Meme_DonutHalo/Meme_DonutHalo_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/meme_touchup_1012.jpg"
   }
  ],
  "Meme_TwistHorns_web_hd_mv4": [
@@ -12866,6 +12911,21 @@
    "use": "cosmetic halo / horns (game pass item); Blender touch-up next: exact ring / block grid, mirror symmetry",
    "file": "art/models/tripo/web/Meme_TwistHorns_MV4_HD_src.glb",
    "sheet": "art/review/img4/meme_tripo_raw_1012.jpg"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup.py whole --sym-below 1.0 --delight 0.75",
+   "what": "mirrored left / right, decimated, baked C/N/R/M, Tripo shadows removed (de-light), thin outline",
+   "size_studs": [
+    1.8,
+    0.627,
+    1.797
+   ],
+   "tris": 6000,
+   "out": "art/models/tripo/touchup/Meme_TwistHorns/Meme_TwistHorns_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/meme_touchup_1012.jpg"
   }
  ]
 }

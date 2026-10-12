@@ -1,3 +1,22 @@
+# 이미지 개발 — 상태 (2026-10-12 저녁: 바깥선 묶음 5 ID 기록, Firefly 막힘)
+
+- **바깥선 묶음 5(10개) ID 기록·임시 파트 지움**(합계 50). 묶음 6(6개, build/hull_import_b6: Cauldron·Easel·NoticeBoard·Telescope·WaterBuckets·Fountain3)은 아직 안 들어옴(WorldKit Hull_* 10개만 있었음) -> 사용자 Import 대기.
+- **Firefly 말풍선 8종 막힘**: 앱 브라우저 창 크기가 바뀔 때마다 Firefly 레이아웃이 모바일(577px)로 돌아가고, 1440x900 지정하면 화면이 하얗게/픽커가 1개("generate")만 뜸. 큐·프롬프트·헬퍼 준비 끝(art/prompts/img_bubblefancy_queue_2026-10-12.json). 사용자가 브라우저 창을 크게 고정해 두고(창 너비 바꾸지 말기), 내가 resize 1440x900 -> 6초 기다림 -> 픽커 3개(모델·가로세로비·품질) 보이면 시작.
+
+# 이미지 개발 — 상태 (2026-10-12: 바깥선 묶음 3·4 ID 기록, 5·6 준비)
+
+- **바깥선 묶음 3·4(20개) 가져오기 확인 -> ID 기록·임시 파트 지움**(남은 0). 합계 40개(prop_hull_assets.json + asset_ids PropHull035_<키>). 묶음 5 = build/hull_import(10개), 묶음 6 = build/hull_import_b6(6개) 준비, 렌더 시트 build/hull_import_sheet_5/6.png. 사용자 가져오기 대기. 들어오면 `STUDIO_NAME=WorldKit py tools/read_imported_hulls.py --clean`. 한국어 모드 취소(A23-146).
+
+# 이미지 개발 — 상태 (2026-10-12 오후: 밤 빛 결정 적용)
+
+- **밤 빛 결정(최종 검수)**: Exposure +0.0, Ambient/OutdoorAmbient x0.85, 등불 (255,214,160)·0.5·범위 10(집 08 근처 2개 범위 8). WorldKit 등불 31개 적용 끝(tools/night_lamps_apply.luau survey/apply/undo), tools/halo_light_sim.luau 밤 값 갱신(Exp base -0.15 -> 합 0.0, Ambient (60,66,90), Outdoor (83,94,126)), 사진 art/review/imgdev/night_new_2026-10-12/(집 08·Potion). **메인 게임 밤 값(Config.DayNight Looks.Night Exposure 0.35)은 6단계(새 빛 마을 메인 교체) 때 같은 비율로 — 그 Config 가지는 내가 만들고 게임성 개발 1에 알림, 메인 낮·밤 사진으로 확인.**
+- WorldKit id가 또 바뀜(재시작됨): 지금 535fc5fe (STUDIO_NAME=WorldKit로 잡힘). 
+- **Firefly 말풍선 8종 더 화려하게(Medium)**: 프롬프트 art/prompts/BubbleFancy_*.txt + art/prompts/img_bubblefancy_queue_2026-10-12.json(3:2, 0크레딧) 준비. Firefly 탭 열림(seed), 앱 브라우저 창 가려져 화면 흰색 -> 최종 검수에 창 보이게 부탁 중. 그 뒤 `tools/_firefly_helpers.js` 심고 `__runNoRef`로 돌림 -> asset_search+presign으로 받기 -> `tools/cutout_flat.py`(512x256) -> 실제 채팅 크기 한 줄·두 줄 미리보기 시트 -> 최종 검수.
+
+# 이미지 개발 — 상태 (2026-10-12 오후: WorldKit 재시작·밤 비교 끝)
+
+- **WorldKit 재시작**: 새 STUDIO_ID **de120476** (WorldKit.rbxlx). screen_capture 멈춤 원인 = Studio 렌더 멈춤(재시작으로 풀림). 백업 20261012_123644로 되살림(루트 50 개수 같음·지형). **밤 빛 비교 사진 끝** art/review/imgdev/night_cmp_2026-10-12/night_compare_{HaloDomeHouse_08,HaloShop_Potion}.jpg (빛 3종 x 등불 끔/지금/권장) -> 최종 검수. 도구 tools/night_light_compare.py. 한국어 모드 취소(A23-146): 한국어 글자 그림·글꼴 일 없음. Firefly 큐 인수(state/img2.md, 큐 비어 있음). 거위 광장 서쪽 벽 그림자 켠/끈 확인은 다음 UiSandbox 슬롯.
+
 # 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 UiSandbox 시험·사진 끝)
 
 - **거위 광장 골격 시험 끝**(UiSandbox, 시험물 remove·저장 없이 창 닫음): 짓기 OK(23 부품, WalkGround 태그 2: Floor·GooseSpot). 고침 1개: CSG(UnionAsync/SubtractAsync)는 모델이 workspace에 있어야 해서 모델을 먼저 workspace에 붙임(tools/worldkit/goose_square.luau). 사진 art/review/imgdev/goose_square/ (시트 goose_square_sheet_2026-10-12.jpg: 위·옆·Nest 쪽·Cart 쪽). 소견: 바닥이 UiSandbox 빛 때문에 크림보다 회색으로 보임(색 값은 크림 240,232,215). 디자인 검수에 보냄 -> 메인 반영 1이 `py tools/goose_square.py --mode apply --emit build/goose_square_apply.luau` 파일을 메인에서 돌림(최종 검수 통해).

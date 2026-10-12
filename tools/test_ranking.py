@@ -252,6 +252,8 @@ MUTATIONS = [
     ("SanitizeRank: a PvP 'reward' kept", C, "R.Boards[rr.Board] and R.Boards[rr.Board].Reward and rr.Board", "R.Boards[rr.Board] and rr.Board"),
     ("RewardMult 1.20", C, "RewardMult = 1.10,", "RewardMult = 1.20,"),
     ("Artisan WeekCap 600", C, "WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 },", "WeekCap = { Honor = 150, Infamy = 150, Artisan = 600 },"),
+    ("craft cap regardless of the switch", C, "\tif craft and Config.FeatureOn(\"Crafting\") then return craft end\n", "\tif craft then return craft end\n"),
+    ("craft cap never used", C, "\tif craft and Config.FeatureOn(\"Crafting\") then return craft end\n", ""),
     ("Artisan title wording 'Artisan Fame'", C, 'TitleNames = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan" },',
      'TitleNames = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan Fame" },'),
     ("SanitizeRank: Drop kept for any board", C, "if R.Boards[board].Faction and (wk == week or wk == week - 1) then out.Drop[board] = wk end",

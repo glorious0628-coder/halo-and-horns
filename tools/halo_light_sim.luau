@@ -37,7 +37,9 @@ local z = C[CAND]
 assert(z, "no candidate " .. CAND)
 local base
 if PHASE == "night" then
-	base = { ClockTime = 21, Brightness = 1.4, Ambient = rgb(70, 78, 106), OutdoorAmbient = rgb(98, 110, 148), Exp = 0.35 }
+	-- 10/12 night v2 (최종 검수 결정, 이미지 개발 night_cmp): Exposure +0.0 in the town (base -0.15 + HaloTown 0.15), Ambient / OutdoorAmbient x0.85
+	-- (was Ambient (70,78,106), OutdoorAmbient (98,110,148), Exp 0.35: the cream marble + gold read like day)
+	base = { ClockTime = 21, Brightness = 1.4, Ambient = rgb(60, 66, 90), OutdoorAmbient = rgb(83, 94, 126), Exp = -0.15 }
 else
 	base = { ClockTime = 15.3, Brightness = 2, Ambient = rgb(72, 76, 86), OutdoorAmbient = rgb(95, 104, 118), Exp = -0.25 }
 end

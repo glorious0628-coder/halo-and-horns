@@ -15,7 +15,7 @@
     },
     {
       "group": "config",
-      "check": "data version stays 3 (additive field)",
+      "check": "data version 4 = C1's tier 9 (the kill log is an additive field)",
       "pass": 1,
       "fail": 0
     },
@@ -448,11 +448,11 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "be96c0704be9d1cd595c08adc376bfa690fbc557f20de3f9a8af70dccbea77b7",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/KillLog.luau": "0c517d98afbe72b6db265add7a78644b2bf2ba5a2486df18d6a16f516de967a0"
   },
-  "fixtureSHA256": "8920735f890aec1a9a36742ecda4b8ea903f6e4125b353b20c39a587c501cc7e",
+  "fixtureSHA256": "1f370e5556cb8277905ba19ef66552568d7f6cf5f974cb58d4c8d7d27ac98530",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

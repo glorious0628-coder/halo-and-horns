@@ -1,6 +1,9 @@
 # 이미지 생성 4 — 상태 (2026-10-12 오후)
 
 ## 지금 상태 (10/12 오후)
+- **보고 길 바뀜(10/12 오후, 사용자 결정):** 디자인 검수 쉼 → 시트·판정 요청은 전부 **최종 검수**로(규칙·대기 목록 docs/handoff/state/design_review.md).
+- **밈 후광·뿔 4개**: Tripo 220점(잔액 13,920), 손보기 tools/meme_voxel.py(PixelHalo = 2D 색 블록 고리, PixelHorns = 2D 블록 하나씩) + tripo_touchup(Donut·Twist 거울+de-light), 시트 meme_touchup_1012.jpg → 최종 검수 판정 대기.
+- **de-light**(tools/proj_bake.py delight): NPC·무기 끝, 소품 39 굽는 중.
 - **바깥선 껍데기 56개**: 첫 묶음 10 통과(C2c 사진 art/review/img4/outline_hull1_fix_c2c_1012.jpg). 2~6묶음 최종 검수 승인 — 길: 이미지 개발이 build/hull_import 준비 → 나는 최종 검수에 "묶음 N 가져오기 준비됨 + 폴더" → 사용자 Import 3D → 이미지 개발이 ID 읽음(art/models/worldkit/prop_hull_assets.json). 묶음 목록 = docs/design/halo_prop_outlines_2026-10-12.md '묶음' 열. 묶음 2 ID 받음, 묶음 3 이미지 개발 준비 중. **놓기 = 키트 피벗 × CFrame.new(centre) × CFrame.Angles(0, π, 0)** (Import 3D가 OBJ를 세로축 180° 돌림). 다음 사진 비교 자리는 새 평지로(옛 자리 -24,0.2,-440은 지형 바뀌어 15칸이 언덕에 가림).
 - **키트 겹친 면**: tools/prop_kit_coplanar.py + prop_kit.py defight() → 58키트 0. WorldKit HaloPropKits 다시 넣음(백업 build/wk_backup/20261012_092142), HaloV2.Props는 이미지 생성 1이 다시 놓음 — 키트 바꾸면 halo_props_place 직접 돌려도 됨(STUDIO_ID 83b32720).
 - **무기 28개**: tools/tripo_weapon_touchup.py. 지팡이 9개 = SPEC A23-142 확정판(개발 1 68bef0e7): 길이 0.65/0.70/0.75H, 손 = 감은 곳 가운데 43% = 피벗, 감은 곳 통째 옮김(빈 자리는 막대 복사, 내려갈 땐 위쪽 막대). 표 docs/design/weapon_grip_heights_2026-10-12.md 맨 아래, 시트 staff_a23_142_1012.jpg(tools/staff_sheet.py). 디자인 검수 통과(Alchemist T1 매단 병 그대로). 다음 = 3단계 Roblox 재질(밝은 강철·짙은 청록·용암 Neon), 메인 반영 1 사진에서 같이.

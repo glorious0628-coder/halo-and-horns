@@ -25,6 +25,8 @@ Net.Names = {
 	"SetLook", -- A23-75 (id: an owned Config.Looks id of the player's faction, or "" = none) MonetizationService
 	"EquipPet", -- PET-2 (uid: an owned pet uid of a known species, or "" = put it away) PetService
 	"GooseSquare", -- A23-141 ("Join" | "Leave") the Goose Square (GooseSquare.luau via GooseService)
+	"SendSticker", -- A23-143 (key: a Config.Stickers.Order id) a chat sticker over my head (MonetizationService)
+	"SetBubble", -- A23-144 (key: a Config.Bubbles.Order id I may use, or "" = my side's free one) MonetizationService
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request
@@ -64,8 +66,8 @@ Net.Names = {
 	"CraftFinish", -- (sessionId: number) the hammer is over (or Skip): the server grades the strikes (Shared/CraftMini)
 	-- server -> client (owner only):
 	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
-	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp, Pet? = { Uid, Species, Spd } (a summon) }
-	"CraftInfo", -- { Role, Lv, XP, Need, Made } at join and after every craft
+	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp, Pet? = { Uid, Species, Spd } (a summon), Fame }
+	"CraftInfo", -- { Role, Lv, XP, Need, Made, On, Rep, Rank, NextRep } at join, after every craft and a class / faction change
 	-- 게임성 개발 3 (2026-10-12) alchemy tonics (BuffService), client -> server:
 	"UseTonic", -- (itemId: a Config.Alchemy.Tonics item) drink one; the running ones are the attributes Buff_<itemId>
 	-- 게임성 개발 3 (2026-10-12) tamer research (TamerService), server -> client (owner only, the tamer):

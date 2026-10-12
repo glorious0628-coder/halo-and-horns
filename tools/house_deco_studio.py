@@ -20,7 +20,8 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", default="HaloHouses15_Deco_v1")
-ap.add_argument("--append", action="store_true", help="add the pieces to the existing <house>_Deco models (extra import)")
+ap.add_argument("--append", action="store_true", help="add the pieces to the existing <house>_Deco models (extra import); "
+                "a piece with the name of an old one replaces it (the plan copies too)")
 ap.add_argument("--marker", default="HaloDomeHouse_02_Dome", help="a part name that identifies the import root")
 a = ap.parse_args()
 pack = json.load(open(os.path.join(ROOT, "art", "models", "tripo", "house_deco", a.model + ".json")))
@@ -81,6 +82,9 @@ for _, h in H do
   local n = 0
   for _, p in M:GetDescendants() do
     if p:IsA("BasePart") and (string.sub(p.Name, 1, #h.name) == h.name or string.find(p.Name, "Orn_" .. h.name, 1, true)) then
+      if APPEND then                                    -- a rebuilt piece replaces the old one of the same name
+        local o_ = m:FindFirstChild(p.Name); if o_ and o_ ~= p then o_:Destroy() end
+      end
       p.Parent = m; n += 1; table.insert(fresh, p)
       local sa = p:FindFirstChildWhichIsA("SurfaceAppearance")
       if string.find(p.Name, "_Leaf") then p.Material = Enum.Material.Wood
@@ -122,7 +126,10 @@ for _, h in H do
         local d2 = tgt:FindFirstChild(h.name .. "_Deco")
         if d2 then
           local Mp = tgt.WorldPivot * CFrame.new(h.ox, 0, h.oz):Inverse()
-          for _, p in fresh do local c = p:Clone(); c.CFrame = Mp * p.CFrame; c.Parent = d2 end
+          for _, p in fresh do
+            local o_ = d2:FindFirstChild(p.Name); if o_ then o_:Destroy() end
+            local c = p:Clone(); c.CFrame = Mp * p.CFrame; c.Parent = d2
+          end
           placed += 1
         end
       else

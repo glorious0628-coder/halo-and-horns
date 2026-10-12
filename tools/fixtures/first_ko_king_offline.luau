@@ -286,7 +286,7 @@ runGroup("config", function()
 	check(FK0.BossClear >= 20 and FK0.BossClear <= 30,
 		"BossClear keeps the bodies apart but never blocks the hill for the field King's stay", tostring(FK0.BossClear))
 	check(C0.Data.Defaults.FirstKODone == false, "the save field (additive, false)")
-	check(C0.Data.Defaults.Version == 3, "Version stays 3")
+	check(C0.Data.Defaults.Version == 4, "Version 4 = C1's tier 9 (the first-KO fields are additive)")
 	local w = fkWorld({ Edit = function(c) c.FirstKO.Quest = nil end })
 	local p = w:Hunter(101, "Halo")
 	w:FKTick()

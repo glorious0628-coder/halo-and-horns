@@ -22,6 +22,15 @@ function Config.FeatureOn(name)
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
+-- a ranking board's weekly cap (nil = none): Ranking.CraftWeekCap while Features.Crafting is on, else Ranking.WeekCap
+function Config.WeekCapOf(board)
+	local R = Config.Ranking
+	if type(R) ~= "table" then return nil end
+	local craft = type(R.CraftWeekCap) == "table" and R.CraftWeekCap[board] or nil
+	if craft and Config.FeatureOn("Crafting") then return craft end
+	return type(R.WeekCap) == "table" and R.WeekCap[board] or nil
+end
+
 -- A23-63 (user 2026-10-07 "폰트 이쁜 걸로"): the game's two fonts, in one place. Head = titles, buttons, numbers and the
 -- name on a name tag (Denk One, one weight); Body = body text and the other name-tag lines (Montserrat). The server-built
 -- name tags (CharacterVisuals, UI round 2 #7) read Nametag; UIKit's FONT.Sets can read Head / Body from here too.
@@ -118,7 +127,8 @@ Config.Data = {
 	-- B4: 3 = weapon tier 8 + Items / WeaponEnhance / LootFlags. A23-69 (검수 2026-10-07): Stats { Auto, Order } is an
 	-- additive field like Settings / Rank / SkillsA71 (a v3 server keeps it as it is), so the version stays 3; a bump
 	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
-	Version = 3,
+	-- C1 (save v4): 4 = weapon tier 9 (a 9-bit mask, WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).
+	Version = 4,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -127,7 +137,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 3,
+		Version = 4,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -278,6 +288,10 @@ Config.Weapons = {
 	-- A23-12: the slime jackpot ("젤리 왕관" legendary). Never sold; dropped only by Config.Loot.Jackpot monsters,
 	-- exactly 2x the best shop weapon (tier 3: 38 -> 76, so the tier-4 drop at 88 stays an upgrade), usable at any level.
 	{ Tier = 8, Damage = 76, Price = 0, MinLevel = 1, Legend = true, Color = Color3.fromRGB(120, 240, 190), Material = Enum.Material.Neon, Length = 4.5 },
+	-- A23-127 (C1, save v4): the Mythic tier, made only by artisans (CraftService W9 -> spare weapons). Never dropped, never a
+	-- jackpot, never sold at the Forge (WeaponShop.MaxSoldTier), never a commission. Price = the sale-value reference only.
+	-- Color = placeholder until the image team picks the Mythic look.
+	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.2 }, -- C1: 0.3 under T7 (the bigger orb keeps the staff within the avatar's height, A23-133)
 }
 Config.MaxWeaponTier = #Config.Weapons
 
@@ -285,17 +299,17 @@ Config.MaxWeaponTier = #Config.Weapons
 -- ever APPEND tiers. T4-T6 names come from the monsters that drop them (design skills_weapons_pets_2026-10-05 §1 B3).
 Config.WeaponNames = {
 	Warrior = { "Twig", "Wooden Sword", "Iron Sword", "Goblin Thief's Golden Sword", "Old Kingdom Crystal Sword", "Guardian Spirit Sword",
-		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword" },
+		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword" },
 	Mage = { "Dry Staff", "Oak Staff", "Iron Staff", "Goblin Thief's Golden Staff", "Old Kingdom Crystal Staff", "Guardian Spirit Staff",
-		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff" },
+		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff" },
 	Archer = { "Slingshot Bow", "Wooden Bow", "Iron Bow", "Goblin Thief's Golden Bow", "Old Kingdom Crystal Bow", "Guardian Spirit Bow",
-		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow" },
+		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow" },
 }
 
 -- A23-39: the pet tamer (artisan guild Archer, Config.IsTamer) holds taming batons instead of bows (same stats)
 Config.WeaponNames.Tamer = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton",
 	"Old Kingdom Crystal Baton", "Guardian Spirit Baton", { Halo = "Dawn Baton", Horns = "Ruin Baton", None = "Crown Shard Baton" },
-	"Jelly Crown Baton" }
+	"Jelly Crown Baton", "Crownforged Baton" }
 -- the former English twin is the same tables now (readers of WeaponNamesEn keep working)
 Config.WeaponNamesEn = Config.WeaponNames
 
@@ -306,6 +320,8 @@ Config.WeaponGrades = {
 	Rare = { Name = "Rare", NameEn = "Rare", Stars = 3, Color = Color3.fromRGB(70, 140, 255), Rank = 3 },
 	Epic = { Name = "Epic", NameEn = "Epic", Stars = 4, Color = Color3.fromRGB(170, 90, 230), Rank = 4 },
 	Legend = { Name = "Legendary", NameEn = "Legendary", Stars = 5, Color = Color3.fromRGB(255, 160, 40), Rank = 5 },
+	-- A23-127 tier 9 (crafted). Color = placeholder: the image team may change it
+	Mythic = { Name = "Mythic", NameEn = "Mythic", Stars = 6, Color = Color3.fromRGB(255, 70, 130), Rank = 6 },
 }
 -- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
 Config.WeaponInfo = {
@@ -317,6 +333,7 @@ Config.WeaponInfo = {
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
 	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
+	{ Grade = "Mythic", Source = "Crafted by artisans" },
 }
 
 function Config.WeaponGrade(tier)
@@ -4258,6 +4275,8 @@ Config.GamePasses = {
 	XP2 = { Id = 0, Price = 199, Name = "2x XP", Attr = "PassXP2" },
 	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
 	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
+	Stickers = { Id = 0, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
+	Bubbles = { Id = 0, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
 -- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
@@ -4306,7 +4325,54 @@ Config.PassInfo = {
 		Desc = "A new color for your halo or horns. It only changes how you look: the shape still shows your rank. No stats are for sale." },
 	PrivateServer = { Line = "Play with just your friends.",
 		Desc = "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale." },
+	Bubbles = { Line = "Fancy chat bubbles",
+		Desc = "Show off when you chat: every fancy chat bubble skin. Your side's own bubble is free for everyone. No stats are for sale." },
+	Stickers = { Line = "13 more chat stickers",
+		Desc = "13 more stickers to pop over your head: hearts, a crown, Nice!, GG and more. 5 basic stickers are free for everyone. No stats are for sale." },
 }
+
+-- A23-143 (user 10/12): chat stickers - a picture over my head that everyone sees, no text typed. Keys = Config.UIArt.Parts
+-- Emo* ids (image dev's art). The 5 basic ones are free (the part's Free = true: ThumbsUp, Question, Exclaim, Help, Thanks);
+-- the other 12 + GG need the Sticker Pack pass (Config.GamePasses.Stickers, 99 R$). Remote SendSticker(key) ->
+-- Fx "Sticker" { UserId, Key } to everyone (the screen draws it over that player for Seconds; MonetizationService).
+Config.Stickers = {
+	Order = { "EmoThumbsUp", "EmoQuestion", "EmoExclaim", "EmoHelp", "EmoThanks", "EmoHeart", "EmoHaloHeart", "EmoHornSmiley",
+		"EmoCrown", "EmoSweat", "EmoZzz", "EmoClap", "EmoSparkle", "EmoAnger", "EmoNice", "EmoOops", "EmoLetsGo", "EmoGG" },
+	Pass = "Stickers",
+	Seconds = 3,
+}
+function Config.IsSticker(key)
+	return type(key) == "string" and table.find(Config.Stickers.Order, key) ~= nil
+end
+-- a free sticker (its art part says Free = true); every other sticker needs the pass
+function Config.StickerFree(key)
+	local parts = type(Config.UIArt) == "table" and Config.UIArt.Parts or nil
+	local part = type(parts) == "table" and parts[key] or nil
+	return Config.IsSticker(key) and type(part) == "table" and part.Free == true
+end
+
+-- A23-143 / A23-144 (user 10/12): chat bubble skins - how MY chat bubble looks to everyone (TextChatService bubbles: the
+-- client styles a speaker's bubble from their attribute BubbleOn; the text stays Roblox-filtered, only art and colours).
+-- Each side's own bubble is free for everyone of that side (Free: Halo white + gold rim, Horns dark red, the artisan guild
+-- wood + brass) and only for that side; every other skin needs the Bubble Pack (Config.GamePasses.Bubbles, 99 R$). Keys =
+-- Config.UIArt.Parts ids (image dev's art, Bubble<Name>); a pack skin goes into Order once drawn. Saved: data.Bubble = the
+-- picked key ("" = my side's free one). SetBubble(key) (MonetizationService) checks and saves; BubbleOn = what shows now.
+Config.Bubbles = {
+	Free = { Halo = "BubbleHalo", Horns = "BubbleHorns", Neutral = "BubbleArtisan" },
+	Order = { "BubbleHalo", "BubbleHorns", "BubbleArtisan" }, -- + the pack's skins (Bubble<Name>) when their art is in
+	Pass = "Bubbles",
+}
+Config.Data.Defaults.Bubble = "" -- additive (no version step): the picked chat bubble skin
+function Config.IsBubble(key)
+	return type(key) == "string" and table.find(Config.Bubbles.Order, key) ~= nil
+end
+-- the side whose free bubble `key` is (nil = a pack skin)
+function Config.BubbleSide(key)
+	for side, k in Config.Bubbles.Free do
+		if k == key then return side end
+	end
+	return nil
+end
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
 -- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
@@ -4611,6 +4677,8 @@ Config.Finisher = {
 -- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
 Config.RateLimits.FinisherPick = 0.3
 Config.RateLimits.GooseSquare = 1 -- A23-141 Join / Leave (GooseSquare.luau)
+Config.RateLimits.SendSticker = 2 -- A23-143: one sticker every 2 s per player
+Config.RateLimits.SetBubble = 0.5 -- A23-144: picking a chat bubble skin
 -- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
 -- names its GameState <Key>Active / EndsAt / NextAt and its Announce <Key>Appear / Defeat / Leave lines). Per boss: one
 -- on the server; the first slot FirstDelay s after the start, then every Interval s from its last appearance (a due
@@ -5194,6 +5262,10 @@ Config.Loot = {
 		KnightCrest = { Kind = "Material", Name = "Rusty Knight Crest", Sell = 40, Color = Color3.fromRGB(150, 150, 170), Icon = "IconKnightCrest" },
 		-- J: Captain Clatter's badge (a week's first kill always gives one; the T6 commission needs it, A23-86 L)
 		CaptainBadge = { Kind = "Material", Name = "Captain's Badge", Sell = 200, Color = Color3.fromRGB(220, 190, 110), Icon = "IconCaptainBadge" },
+		-- C1 boss materials for the artisans' recipes (W7 / W9). Source "Boss": never in the Forge's sell-all (sold one at a
+		-- time). Icons not drawn yet (no Config.UIArt part: the bag's code fallback until image gen 2 -> image dev)
+		KingJelly = { Kind = "Material", Name = "Royal Jelly", Sell = 60, Color = Color3.fromRGB(255, 140, 190), Icon = "IconKingJelly", Source = "Boss", Feature = "Crafting", Desc = "Artisans craft with it." },
+		ClatterGem = { Kind = "Material", Name = "Old Crown Gem", Sell = 400, Color = Color3.fromRGB(120, 200, 230), Icon = "IconClatterGem", Source = "Boss", Feature = "Crafting", Desc = "Artisans craft with it." }, -- Feature: drops only while that switch is on
 		Candy = { Kind = "Material", Name = "Candy", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
 		-- NewZones (A23-123): one material per new field, priced between its level neighbours (Jelly 2 / Goblin Tooth 6 /
 		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
@@ -5229,7 +5301,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "Candy",
+		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
 		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
@@ -5263,6 +5335,7 @@ Config.Loot = {
 			{ Item = "Enh70", P = 0.25 }, { Item = "Enh30", P = 0.06 }, { Item = "Enh10", P = 0.015 },
 			{ Item = "Move70", P = 0.08 }, { Item = "Move30", P = 0.02 }, { Item = "Move10", P = 0.005 },
 			{ Potion = "HP", P = 0.3 }, { Potion = "MP", P = 0.3 },
+			{ Item = "KingJelly", P = 0.2 }, -- C1: last, so the rows above keep their draws
 		},
 		SlingshotGoblin = { -- A23-87: the goblin's rows
 			{ Item = "GoblinTooth", P = 0.4 },
@@ -5303,6 +5376,7 @@ Config.Loot = {
 			-- below the weapon's MinLevel the row gives 2 more Knight Crests instead (A23-27)
 			{ Weapon = 5, P = 0.03, BelowLevel = { Item = "KnightCrest", N = 2 } },
 			{ Weapon = 6, P = 0.005, BelowLevel = { Item = "KnightCrest", N = 2 } },
+			{ Item = "ClatterGem", P = 0.1 }, -- C1: last, so the rows above keep their draws
 		},
 		SkeletonKnight = {
 			{ Item = "KnightCrest", P = 0.5 },
@@ -6024,7 +6098,8 @@ Config.ClassGrips = {
 	-- the Dark Mage's square to his hunched torso (8 degrees in the world), so his hand is as high as the Light Mage's -
 	-- the sides differ by the body (Waist / Neck) and the crook, not by a slanted staff. 디자인 검수 10/12 (staff_short_v2
 	-- side photo: the orb right beside / in front of the face): the hand 0.4 further ahead and every staff splayed 5 degrees
-	-- out, so the orb sits ahead of and outside the face (torso space: z <= -1.05, x >= 1.3) from the side and the front
+	-- out, so the orb sits ahead of and outside the face (torso space: z <= -1.05, x >= 1.3) from the side and the front.
+	-- 최종 검수 10/13 (side photo staff_front_v3f: the flask just over the Alchemist's chin): his hand 0.1 further ahead
 	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
 		OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2), Aim = Vector3.new(0.09, 1, -0.05), Pole = Vector3.new(0.2, -0.1, 0.4) },
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
@@ -6038,7 +6113,7 @@ Config.ClassGrips = {
 	-- mages' staffs at the side, nearly upright (6 degrees), the left hand on the hip; it throws with the right hand (the
 	-- Mage clips stay right-handed)
 	Mage_Neutral = { Weapon = "FlaskStaff", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.2), Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.3), Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
@@ -7124,6 +7199,9 @@ Config.Ranking = {
 		PvP = { Outlaw = true },
 	},
 	WeekCap = { Honor = 150, Infamy = 150, Artisan = 60 }, -- provisional, tune from beta logs (PvP: no cap)
+	-- 게임성 검수 10/12: craft fame joins the Artisan board, so its cap is 100 - only while crafting is on (Config.WeekCapOf;
+	-- off = the scroll-only 60 as before)
+	CraftWeekCap = { Artisan = 100 },
 	TopN = 50,
 	RefreshSeconds = 180, -- each board's global read; boards are staggered by ReadStagger
 	ReadStagger = 45,
@@ -7267,7 +7345,7 @@ function Config.SanitizeRank(d, now)
 		HandScroll = {}, Drop = {}, YieldDay = Config.DayIndex(now), YieldN = 0, HideSynced = rank.HideSynced == true }
 	if int(rank.WeekId, 0, 1e9) == week then
 		for _, board in R.Order do
-			out[board] = int(rank[board], 0, R.WeekCap[board] or 1e9)
+			out[board] = int(rank[board], 0, Config.WeekCapOf(board) or 1e9)
 		end
 		local n = 0
 		if type(rank.Victims) == "table" then
@@ -8530,6 +8608,50 @@ Config.Craft = {
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 	},
 }
+-- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly
+-- "Artisan Fame" board, A23-24 / A23-135). A finished craft by an artisan of the recipe's role now (the craft XP rule,
+-- A23-139) earns Fame = the band of the recipe's craft Lv (the first row whose Lv it reaches) + PerfectBonus at the
+-- hammer's +2. It goes into data.Craft.Rep (lifetime) and RankingService's weekly "Artisan" board. The 2x XP pass never
+-- touches it. Ranks: the lifetime Rep a rank needs (the attribute ArtisanRank 1..#Ranks, 0 = not an artisan now); a rank
+-- shows (name / badge), it buys nothing.
+Config.Craft.Fame = { Bands = { { Lv = 30, N = 4 }, { Lv = 20, N = 3 }, { Lv = 10, N = 2 }, { Lv = 1, N = 1 } }, PerfectBonus = 1 }
+Config.Craft.Ranks = {
+	{ Id = "Apprentice", Rep = 0 },
+	{ Id = "Journeyman", Rep = 30 },
+	{ Id = "Artisan", Rep = 150 },
+	{ Id = "Master", Rep = 500 },
+	{ Id = "Grandmaster", Rep = 1500 },
+}
+Config.Craft.Text.RankUp = "Artisan rank up: %s!" -- (the rank's name key)
+Config.Craft.Text.Ranks = { Apprentice = "Apprentice", Journeyman = "Journeyman", Artisan = "Artisan", Master = "Master",
+	Grandmaster = "Grandmaster" }
+
+-- the Fame of one finished craft of recipe row r at the hammer's +plus (0 for a broken row)
+function Config.CraftFame(r, plus)
+	if type(r) ~= "table" or type(r.Lv) ~= "number" then return 0 end
+	local F = Config.Craft.Fame
+	local n = 0
+	for _, band in F.Bands do
+		if r.Lv >= band.Lv then
+			n = band.N
+			break
+		end
+	end
+	if n > 0 and plus == 2 then n += F.PerfectBonus end
+	return n
+end
+
+-- the artisan rank (1..#Ranks) a lifetime Rep reaches; the Rep of the next one (0 at the top)
+function Config.ArtisanRank(rep)
+	if type(rep) ~= "number" or rep ~= rep then rep = 0 end
+	local rank = 1
+	for i, row in Config.Craft.Ranks do
+		if rep >= row.Rep then rank = i end
+	end
+	local nextRow = Config.Craft.Ranks[rank + 1]
+	return rank, nextRow and nextRow.Rep or 0
+end
+
 Config.RateLimits.CraftStart = 3
 Config.RateLimits.CraftFinish = 0.5
 
@@ -8749,6 +8871,15 @@ Config.SaveV4 = {
 	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
 	ShopDayMax = 50, -- Shop.N: Otto's cheap materials a KST day (게임성 개발 2)
 	PetRollSpd = { 5, 10 }, -- Pets.List[uid].Roll.Spd: a summoned pet's walk bonus in whole % (PetService.Sanitize)
+	-- C1 (게임성 개발 2): spare weapons and the market ledger
+	SpareTierMax = 32, -- Spares "T:P": the shape check keeps tiers 1..32 (a later tier survives this server)
+	SpareKeyMax = 20, -- at most this many of one "T:P"
+	SpareSum = 60, -- all spares together: the writers refuse above this (the repair never drops for it)
+	MarketRows = 64, -- Market.Out / Market.In: most rows kept each (sorted ids)
+	MarketDone = 50, -- Market.Done: most finished ids kept
+	MarketIdLen = 40, -- a market row id
+	MarketMaxN = 999, -- items in one market row
+	MarketStates = { Open = true, Sold = true, Cancel = true, Expired = true, Paid = true },
 }
 -- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
 -- Made (recipe id -> times made). Research: the tamer's points (Pts) and summons (Sum) per monster family (QuestKind).
@@ -8764,6 +8895,11 @@ Config.Data.Defaults.Gear = { Own = {}, On = { Armor = "", Ring = "" }, Pet = {}
 Config.Data.Defaults.Buffs = {}
 Config.Data.Defaults.Shop = { Day = 0, N = 0 }
 Config.Data.Defaults.EggHonorAt = 0
+-- C1 (Version 4): Spares["T:P"] = n spare weapons (tier:plus, not owned in the mask; LootService.AddSpare / SpareRoom).
+-- Market: Out[id] = { K, N, Price, St } my listings, In[id] = { Price, St } my buys, Done = finished ids, Day = KST DayIndex
+-- of Lists / Buys. K = "I:<item id>" | "W:<T>:<P>"; St = Open | Sold | Cancel | Expired | Paid (MarketService later)
+Config.Data.Defaults.Spares = {}
+Config.Data.Defaults.Market = { Out = {}, In = {}, Done = {}, Day = 0, Lists = 0, Buys = 0 }
 
 -- the repair helpers of the v4 tables (one local for the whole set: Config's top chunk is near the 200 locals limit)
 local V4 = {}
@@ -8952,6 +9088,107 @@ function Config.SanitizeEggHonorAt(v, now)
 	return math.min(at, now)
 end
 
+-- C1: a spare weapon key "T:P" written plainly (T 1..SpareTierMax, a later tier kept; P 0..MaxEnhance), or nil
+function V4.spareKey(s)
+	if type(s) ~= "string" or #s > 12 then return nil end
+	local t, p = string.match(s, "^(%d+):(%d+)$")
+	t, p = tonumber(t), tonumber(p)
+	if not t or not p or t < 1 or t > Config.SaveV4.SpareTierMax or p > Config.Loot.MaxEnhance then return nil end
+	return string.format("%d:%d", t, p) -- "04:0" -> "4:0"
+end
+
+-- Spares { ["T:P"] = n }: n 1..SpareKeyMax (0 / broken = key dropped), "04:0" + "4:0" merged, at most MaxKeys keys
+-- (sorted). The total SpareSum is NOT cut here: the writers refuse (save_v4 §1)
+function Config.SanitizeSpares(t)
+	local L = Config.SaveV4
+	local out, kept = {}, 0
+	if type(t) ~= "table" then return out end
+	for _, k in V4.sortedKeys(t, function(k) return type(k) == "string" end) do
+		local key = V4.spareKey(k)
+		local n = V4.int(t[k], 0, L.SpareKeyMax)
+		if key and n and n > 0 then
+			if out[key] ~= nil then
+				out[key] = math.min(L.SpareKeyMax, out[key] + n)
+			elseif kept < L.MaxKeys then -- a new key
+				out[key] = n
+				kept += 1
+			end
+		end
+	end
+	return out
+end
+
+-- a market row id: a string of 1..MarketIdLen characters
+function V4.marketId(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.MarketIdLen
+end
+
+-- a market thing key: "I:<item id>" or "W:<T>:<P>" (written plainly), at most KeyLen + 8 characters; else nil
+function V4.marketKey(k)
+	if type(k) ~= "string" or #k > Config.SaveV4.KeyLen + 8 then return nil end
+	if string.match(k, "^I:[%w_]+$") then return k end
+	local tp = string.match(k, "^W:(.+)$")
+	tp = tp and V4.spareKey(tp)
+	return tp and ("W:" .. tp) or nil
+end
+
+-- the rows of Out / In: sane ids (sorted, at most MarketRows), a row that `row` refuses is dropped
+function V4.marketRows(src, row)
+	local out, kept = {}, 0
+	for _, id in V4.sortedKeys(src, V4.marketId) do
+		local r = type(src[id]) == "table" and row(src[id]) or nil
+		if r and kept < Config.SaveV4.MarketRows then
+			out[id] = r
+			kept += 1
+		end
+	end
+	return out
+end
+
+-- Market { Out[id] = { K, N, Price, St }, In[id] = { Price, St }, Done = { ids }, Day, Lists, Buys }: a row with a
+-- broken K / N / Price or an unknown St is dropped (never made up); Done keeps the newest MarketDone ids (list end)
+function Config.SanitizeMarket(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	local function price(r)
+		local p = V4.int(r.Price, 0, L.MaxCount)
+		return (p and p >= 1) and p or nil
+	end
+	local function state(r)
+		return type(r.St) == "string" and L.MarketStates[r.St] == true and r.St or nil
+	end
+	local out = {}
+	out.Out = V4.marketRows(src.Out, function(r)
+		local k, n, p, st = V4.marketKey(r.K), V4.int(r.N, 0, L.MarketMaxN), price(r), state(r)
+		if not (k and n and n >= 1 and p and st) then return nil end
+		return V4.keepExtra(r, { K = k, N = n, Price = p, St = st }, { K = true, N = true, Price = true, St = true })
+	end)
+	out.In = V4.marketRows(src.In, function(r)
+		local p, st = price(r), state(r)
+		if not (p and st) then return nil end
+		return V4.keepExtra(r, { Price = p, St = st }, { Price = true, St = true })
+	end)
+	-- Done: a list; sane unique ids, the last MarketDone of them in their order
+	local ids, seen = {}, {}
+	if type(src.Done) == "table" then
+		for i = 1, math.min(#src.Done, 4096) do
+			local id = src.Done[i]
+			if V4.marketId(id) and not seen[id] then
+				seen[id] = true
+				table.insert(ids, id)
+			end
+		end
+	end
+	out.Done = {}
+	for i = math.max(1, #ids - L.MarketDone + 1), #ids do
+		table.insert(out.Done, ids[i])
+	end
+	for _, k in { "Day", "Lists", "Buys" } do
+		out[k] = V4.int(src[k], 0, L.MaxCount) or 0
+	end
+	return V4.keepExtra(src, out, { Out = true, In = true, Done = true, Day = true, Lists = true, Buys = true })
+end
+
 -- every v4 table of a save, in place (DataService.fillDefaults, after the default fill)
 function Config.SanitizeSaveV4(d, now)
 	now = V4.int(now, 0, 2 ^ 52) or os.time()
@@ -8962,6 +9199,8 @@ function Config.SanitizeSaveV4(d, now)
 	d.Buffs = Config.SanitizeBuffs(d.Buffs, now)
 	d.Shop = Config.SanitizeShop(d.Shop)
 	d.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)
+	d.Spares = Config.SanitizeSpares(d.Spares)
+	d.Market = Config.SanitizeMarket(d.Market)
 end
 
 return Config

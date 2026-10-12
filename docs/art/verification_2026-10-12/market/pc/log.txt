@@ -1,0 +1,36 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false BankGold=0 CarriedGold=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true BankGold=0 CarriedGold=0
+debug: Gold=ok Level=ok Item=24 Item=3 Item=2 Item=5
+open market
+probe 00_resting_no_server: {"Words":["Title:Market","Tab_Buy:Buy","Label:Buy","Tab_Sell:Sell","Label:Sell","Tab_Mine:Mine","Label:Mine","Status:The market is resting.","Gold:1,234"],"Window":"294x315 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\market\pc\00_resting_no_server.png
+made MarketIndex,MarketBrowse,MarketPage,MarketList,MarketBuy,MarketCancel,MarketMine
+sent MarketIndex
+sent MarketMine
+open market
+sent MarketIndex
+sent MarketPage
+probe 01_buy_materials_jelly: {"Words":["Title:Market","Tab_Buy:Buy","Label:Buy","Tab_Sell:Sell","Label:Sell","Tab_Mine:Mine","Label:Mine","N:1","Kind_Material:Materials","Label:Materials","Kind_Scroll:Scrolls","Label:Scrolls","Kind_Tonic:Tonics","Label:Tonics","Kind_Weapon:Weapons","Label:Weapons","Name:Jelly","Right1:3","Right2:×40","Name:Flower Petal","Right1:5","Right2:×12","Name:Slime Core","Right1:14","Right2:×6","Title:Jelly","Count:×1","Price:3","Left:1:59","Buy:Buy","Label:Buy","Count:×10","Price:30","Left:58:18","Buy:Buy","Label:Buy","Count:×40","Price:120","Left:2:03","Buy:Buy","Label:Buy","Prev:◀","Label:◀","Page:1 / 2","Next:▶","Label:▶","Gold:1,234"],"Window":"294x315 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\market\pc\01_buy_materials_jelly.png
+open market
+sent MarketPage
+probe 02_sell_tab: {"Words":["Title:Market","Tab_Buy:Buy","Label:Buy","Tab_Sell:Sell","Label:Sell","Tab_Mine:Mine","Label:Mine","N:1","Name:Enhance Scroll 70%","Right1:×2","Name:Jelly","Right1:×24","Name:Slime Core","Right1:×3","Name:Old Bone","Right1:×5","Name:Enhance Scroll 70%","Less:−","Label:−","Count:1 / 2","More:+","Label:+","All:All","Label:All","List:Checking…","Label:Checking…","Gold:1,234"],"Window":"294x315 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\market\pc\02_sell_tab.png
+open market
+sent MarketMine
+probe 03_mine_tab: {"Words":["Title:Market","Tab_Buy:Buy","Label:Buy","Tab_Sell:Sell","Label:Sell","Tab_Mine:Mine","Label:Mine","Today:Today: 3 listed · 1 bought","Name:Jelly","Count:×10","Price:30","Left:1:29","Cancel:Cancel","Label:Cancel","Name:Enhance Scroll 70%","Count:×1","Price:320","State:Sold","Paid:Paid","Name:Wooden Sword","Count:×1","Price:150","State:Back in your bag","Gold:1,234"],"Window":"294x315 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\market\pc\03_mine_tab.png
+sent OpenPanel
+probe 04_hero_gear_slots: {"Words":["Title:Hero","Tab_Gear:Gear","Label:Gear","Tab_Stats:Stats","Label:Stats","Who:Lv 12 · Paladin","PowerWord:Power","PowerNumber:120","Cap_Weapon:Weapon","Cap_Armor:Armor","Cap_Ring:Ring","Cap_Pet:Pet","Cap_PetArmor:Pet Armor","Cap_PetAcc:Pet Acc","TitleHead:Title","Title_Auto:Auto","Label:Auto","Title_BetaPioneer:★Beta Pioneer","Label:★Beta Pioneer"],"Window":"315x315 px","Cut":[]}
+saved C:\Users\glori\Documents\Roblox\Game-dev4g\docs\art\verification_2026-10-12\market\pc\04_hero_gear_slots.png
+console: [ServerErrorService] started
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Goblin_86969d1c-332d-4889-ab56-123455c9280f.Goblin.tripo_node_e8497c3a-ac26-4a67-bb46-ad931bc29982.tripo_mesh_e8497c3a-ac26-4a67-bb46-ad931bc29982.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.GoblinBrute_2b302594-5a3c-447f-ba4b-3d92f98b4f15.GoblinBrute.tripo_node_7864553f-8556-495d-8781-28acb3d9f1e9.tripo_mesh_7864553f-8556-495d-8781-28acb3d9f1e9.SurfaceAppearance. (0)
+Failed to fetch TexturePack in ServerStorage.MonsterModelArchive.Skeleton_static.tripo_node_75dda943-8798-4cd0-a323-5831f66e63ac.tripo_mesh_75dda943-8798-4cd0-a323-5831f66e63ac.SurfaceAppearance. (0)
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] ServerError = 534 (Heartbeat, tick # ms, Slow)
+play stopped
+fresh off

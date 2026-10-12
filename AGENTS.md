@@ -8,7 +8,7 @@ Read order: this file → `docs/handoff/README.md` → your role file in `docs/h
 
 ## Dates, language (A23-119 user 10/11; A23-111)
 - Private publish test 10/17~20; feature freeze **2026-11-24**; public beta **2026-12-01 11:00 KST**, Artisan Guild (Neutral) included; full launch **late Jan 2027**. Pumpkin Patch + Haunted Hollow hidden; a new zone with new monsters (no slimes, A23-123) replaces them.
-- **Game text is English only** (A23-48). Later a **Korean mode in the same game** (per-player language, Roblox locale `ko`, Settings "Language / 언어"), started right after the Halo town is done (A23-111, newer than A23-89). Until then all player text sits in central text tables (never hard-coded), easy short English (`docs/design/glossary_en_2026-10-06.md`). Fixed Korean lettering images: Firefly's GPT image model, checked letter by letter, enlarged.
+- **Game text is English only** (A23-48; **Korean mode cancelled 2026-10-12, A23-146**, user: "한국어 하지 말자" — replaces A23-111/A23-133's Korean part; no Korean lettering images, no Korean font set, no `ko` tables). All player text still sits in central text tables (never hard-coded), easy short English (`docs/design/glossary_en_2026-10-06.md`).
 - Core design rule `docs/GDD.md` §0: every action tilts toward angel or devil.
 
 ## The user
@@ -20,7 +20,7 @@ Korean-speaking beginner Roblox creator. **Every sentence to the user is Korean*
 - Image sessions share `art/approved.json`, `art/prompts/`, `art/out/`, `art/ui/`: re-read before editing, touch only your keys, commit at once with a pathspec. Cutout tools (`tools/cutout_flat.py`, `band_mask.py`, `make_tileable.py`) change only via 이미지 생성. One report per finished chunk to 검수, then end the turn.
 
 ## Latest user decisions (2026-10-05 unless noted)
-- **Gameplay first, art later:** first 10 min playable/fun → combat/auto toggle → loot/growth → town services → rest. One zone at a time: Halo → Horns → Crossroads → Meadow → new zone → Woods → (Ruins) (A23-97/102/119); Halo town restarts from scratch (A23-121). Reused/rescaled/recoloured assets are remade (A23-96). UI PC first, phone later (A23-98).
+- **Gameplay first, art later:** first 10 min playable/fun → combat/auto toggle → loot/growth → town services → rest. One zone at a time: Halo → Horns → Crossroads → Meadow → new zone → Woods → (Ruins) (A23-97/102/119); Halo town restarts from scratch (A23-121). Reused/rescaled/recoloured assets are remade (A23-96). UI PC first; phone round from 10/21 (A23-145, private test 10/17~20 also on a phone).
 - **Combat = manual + auto toggle** (`GDD` §0-2): one attack per press/short click, holding never repeats; right-drag rotates camera, left-drag does NOT (A23-51); follow camera default on (A23-91). Skill = MP + cooldown, 3 skills at Lv5/15/25, keys Z/X/C, interact G; skills 2–3 off (`Config.Skills.ZEnabled/XEnabled`) until 10/20. Auto combat starts OFF, unlocked by optional quest "내 싸움을 배우는 왕관 조각" (after first skill, Lv5, A23-71), saved ON/OFF, hits **monsters only**. Charge gauge/PERFECT/stacks stay removed. Skill-use quests count only skills that hit ≥1 monster. First mission reward 150 gold.
 - **Opening:** skippable in-engine 3D intro before faction pick, all Roblox 3D, no in-game video (A23-9/99).
 - **No chibi costumes:** players = own Roblox avatar + class weapon + halo/horns; no paid Tripo for avatars.

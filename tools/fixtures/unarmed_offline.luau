@@ -9,7 +9,7 @@ runGroup("config", function()
 	local C = C0
 	check(C.Data.Defaults.WeaponTier == 0 and C.Data.Defaults.WeaponOwnedMask == 0,
 		"a new save starts bare-handed: WeaponTier 0, nothing owned", show({ C.Data.Defaults.WeaponTier, C.Data.Defaults.WeaponOwnedMask }))
-	check(C.Data.Version == 3, "save Version stays 3 (A23-34 and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 4, "save Version 4 = C1's tier 9 (A23-34 and A23-69's Stats are additive)", C.Data.Version)
 	check(U.Damage == 4 and U.Range == 7 and U.Interval == 0.8 and U.AimCone == 90, "Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)", show(U))
 	check(U.Range > C.Monsters.AttackRange, "the punch reaches a slime that attacks me (Range 7 > monster reach 5.5)",
 		C.Monsters.AttackRange)
@@ -138,13 +138,19 @@ runGroup("save", function()
 		{ row(3, { WeaponTier = -1, WeaponOwnedMask = 6 }), 2, 6, "v3 tier -1, owns T2+T3 at Lv1 -> T2" },
 		{ row(3, { WeaponTier = 0 / 0, WeaponOwnedMask = 6, Level = 5 }), 3, 6, "v3 NaN tier, owns T2+T3 at Lv5 -> T3" },
 		{ row(3, { WeaponTier = 1.5, WeaponOwnedMask = 1 }), 1, 1, "v3 tier 1.5 with T1 -> T1" },
+		-- C1 (save v4): a v3 record was written by an 8-tier server, so its bit 9 is still corruption; a v4 record owns tier 9
+		{ row(3, { WeaponTier = 2, WeaponOwnedMask = 258 }), 2, 2, "v3 bit 9 -> corrupted, only the equipped bit" },
+		{ row(4, { WeaponTier = 2, WeaponOwnedMask = 258 }), 2, 258, "v4 bit 9 (the Mythic) is kept" },
+		{ row(4, { WeaponTier = 9, WeaponOwnedMask = 256, Level = 50 }), 9, 256, "v4 tier 9 equipped at Lv50 is kept" },
+		{ row(4, { WeaponTier = 10, WeaponOwnedMask = 2 }), 2, 2, "v4 tier 10 -> corrupted, the best usable owned" },
+		{ row(4, { WeaponTier = 2, WeaponOwnedMask = 514 }), 2, 2, "v4 bit 10 -> corrupted, only the equipped bit" },
 	} do
 		local d = load(case[1])
 		check(d.WeaponTier == case[2] and d.WeaponOwnedMask == case[3], "load: " .. case[4],
 			show({ tier = d.WeaponTier, mask = d.WeaponOwnedMask }))
 		local again = load(d)
-		check(again.WeaponTier == d.WeaponTier and again.WeaponOwnedMask == d.WeaponOwnedMask and again.Version == 3,
-			"load again: " .. case[4] .. " (idempotent, Version 3)")
+		check(again.WeaponTier == d.WeaponTier and again.WeaponOwnedMask == d.WeaponOwnedMask and again.Version == 4,
+			"load again: " .. case[4] .. " (idempotent, Version 4)")
 	end
 end)
 

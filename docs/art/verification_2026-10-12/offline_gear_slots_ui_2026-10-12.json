@@ -1,0 +1,149 @@
+{
+  "checks": 69,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "+N not cut to MaxEnhance",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the weapon grade ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a tier above the last is a weapon",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "pet Lv not cut to MaxLv",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "gear data of every cell taken",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pet icon is an item icon",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the empty weapon wears a grade slot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "opts.Refresh never called",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "opts.Refresh called every Build",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Pet Acc in the wrong column",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Weapon opens the wrong view",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no bag fallback tab",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Pet opens nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Armor is pressable",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no attribute watched",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "PetLv not watched",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "WeaponEnhance not watched",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "signals connected on every Build",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Refresh does not redraw",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a redraw keeps the old cells",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "+N on every cell",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no letter fallback",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "captions not scaled",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "caption max size too big",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Lv not bottom-right",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the +N ignores the enhance attribute",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a press error escapes",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "GearSlots is never loaded",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "게임성 개발 4 gear slots in the Hero window (2026-10-12; contract: the \"GearSlots contract\" in CharacterUI.luau), offline.\n\nRuns the CURRENT Config.luau and GearSlots.luau in the official Luau CLI (tools/fixtures/gear_slots_ui_offline.luau; the player's\nattributes and change signals, a recording Instance tree, UIKit art doubles and the CharacterUI / BagUI / PetWindow registry are\ndoubles). Checks: Cells (weapon art / grade / +N, no weapon, pet icon / Lv, no pet, the four empty, gear data drop-in), Build draws\nsix named cells at CharacterUI's columns / rows with one caption each (Style false + TextScaled + max 15), the frame Size 220 x 266 and\nopts.Refresh only when it changes, Weapon -> ShowView(\"Weapons\") (else BagUI.Open(\"Gear\")), Pet -> PetWindow.Open, the empty cells do\nnothing, the six attributes redraw (connected once), Refresh redraws, the letter fallback. Static: ClientMain loads GearSlots after\nUIKit, no Enum.KeyCode, no English outside TXT. Mutations: each must be caught.",
+  "studioCalls": 0
+}

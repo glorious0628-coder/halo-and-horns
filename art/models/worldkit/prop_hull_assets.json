@@ -278,5 +278,425 @@
    117.9447
   ],
   "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_VegGarden__Body": {
+  "D2_hull_035": "rbxassetid://88990823217034",
+  "D2_centre_035": [
+   0.0,
+   0.6675,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   22.2875,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlowerPotHQ_Sunflower__Body": {
+  "D2_hull_035": "rbxassetid://106102631249163",
+  "D2_centre_035": [
+   0.0,
+   0.6919,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   23.2769,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Topiary_D__Body": {
+  "D2_hull_035": "rbxassetid://117389135931083",
+  "D2_centre_035": [
+   0.0,
+   0.8711,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   24.8321,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_PotFlowers_A__Body": {
+  "D2_hull_035": "rbxassetid://120880307750338",
+  "D2_centre_035": [
+   0.0,
+   0.9074,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   26.6087,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Topiary_C__Body": {
+  "D2_hull_035": "rbxassetid://139525883470794",
+  "D2_centre_035": [
+   -0.0,
+   0.8534,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   28.3694,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Topiary_E__Body": {
+  "D2_hull_035": "rbxassetid://84656018356515",
+  "D2_centre_035": [
+   0.0,
+   1.7124,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   30.9346,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_RackShieldSword": {
+  "D2_hull_035": "rbxassetid://85251726217357",
+  "D2_centre_035": [
+   0.0,
+   2.4579,
+   -0.185
+  ],
+  "import_pos": [
+   3010.8582,
+   34.7385,
+   109.0854
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlowerPotHQ_Rose__Body": {
+  "D2_hull_035": "rbxassetid://81417802048767",
+  "D2_centre_035": [
+   -0.0,
+   0.7921,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   37.5595,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_Woodpile": {
+  "D2_hull_035": "rbxassetid://137575112406319",
+  "D2_centre_035": [
+   0.0,
+   2.6429,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   40.9455,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Planter_E__Body": {
+  "D2_hull_035": "rbxassetid://100948443566578",
+  "D2_centre_035": [
+   0.0,
+   1.7117,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   45.3201,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_PotFlowers_C__Body": {
+  "D2_hull_035": "rbxassetid://80984161668072",
+  "D2_centre_035": [
+   0.0,
+   1.0434,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   48.0952,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_Hedge__Body": {
+  "D2_hull_035": "rbxassetid://80644962323785",
+  "D2_centre_035": [
+   0.0,
+   1.2292,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   50.3663,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlagpole_3": {
+  "D2_hull_035": "rbxassetid://107220621075257",
+  "D2_centre_035": [
+   0.0,
+   5.8357,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   56.3398,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_WallLamp": {
+  "D2_hull_035": "rbxassetid://134098717344816",
+  "D2_centre_035": [
+   0.0,
+   0.7522,
+   -0.7248
+  ],
+  "import_pos": [
+   3010.8582,
+   21.0048,
+   109.6252
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_GuardPost": {
+  "D2_hull_035": "rbxassetid://121884478955905",
+  "D2_centre_035": [
+   -1.0497,
+   5.9454,
+   -0.2855
+  ],
+  "import_pos": [
+   3011.9077,
+   68.1409,
+   109.186
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_FruitStall__Body": {
+  "D2_hull_035": "rbxassetid://118776721043182",
+  "D2_centre_035": [
+   0.0,
+   4.2779,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   78.1533,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloFlagpole_2": {
+  "D2_hull_035": "rbxassetid://83219590789915",
+  "D2_centre_035": [
+   -0.0,
+   6.0253,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   88.4765,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_BreadStand__Body": {
+  "D2_hull_035": "rbxassetid://126894645549784",
+  "D2_centre_035": [
+   0.0,
+   1.9275,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   96.2189,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_CandleCrate": {
+  "D2_hull_035": "rbxassetid://117447215878510",
+  "D2_centre_035": [
+   0.0,
+   0.9669,
+   0.0
+  ],
+  "import_pos": [
+   3010.8582,
+   64.3175,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_FlowerCart__Body": {
+  "D2_hull_035": "rbxassetid://71563339003208",
+  "D2_centre_035": [
+   -0.7991,
+   2.5929,
+   0.0
+  ],
+  "import_pos": [
+   3011.6572,
+   99.4124,
+   108.9004
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Balustrade_E": {
+  "D2_hull_035": "rbxassetid://113676384541578",
+  "D2_centre_035": [
+   0.0,
+   2.3267,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -13.3993,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_BellFrame": {
+  "D2_hull_035": "rbxassetid://106436580224062",
+  "D2_centre_035": [
+   0.0,
+   2.7492,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -9.6134,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_PotFlowers_E__Body": {
+  "D2_hull_035": "rbxassetid://89839306614579",
+  "D2_centre_035": [
+   0.0,
+   1.0084,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -5.8359,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_PotFlowers_D__Body": {
+  "D2_hull_035": "rbxassetid://111837837124380",
+  "D2_centre_035": [
+   0.0,
+   0.7272,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -4.1495,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Balustrade_F": {
+  "D2_hull_035": "rbxassetid://103313580060057",
+  "D2_centre_035": [
+   0.0,
+   2.3292,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -1.0943,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_Balustrade_C": {
+  "D2_hull_035": "rbxassetid://90522539772745",
+  "D2_centre_035": [
+   0.0,
+   2.4229,
+   0.4806
+  ],
+  "import_pos": [
+   -47.1779,
+   3.6779,
+   117.4641
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_ArmoryBarrels": {
+  "D2_hull_035": "rbxassetid://83490740194376",
+  "D2_centre_035": [
+   -0.1017,
+   1.5169,
+   -0.228
+  ],
+  "import_pos": [
+   -47.0761,
+   7.6377,
+   118.1727
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_PotionCrate__Body": {
+  "D2_hull_035": "rbxassetid://138321528569239",
+  "D2_centre_035": [
+   -0.064,
+   1.7544,
+   0.0
+  ],
+  "import_pos": [
+   -47.1139,
+   10.951,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_PotFlowers_F__Body": {
+  "D2_hull_035": "rbxassetid://84298636430009",
+  "D2_centre_035": [
+   0.0,
+   1.2434,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   14.0158,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_Balustrade_A": {
+  "D2_hull_035": "rbxassetid://97509719803066",
+  "D2_centre_035": [
+   0.0,
+   2.2879,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   17.5471,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
  }
 }

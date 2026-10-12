@@ -27,7 +27,7 @@
     },
     {
       "group": "config",
-      "check": "data version stays 3 (additive fields)",
+      "check": "data version 4 = C1's tier 9 (the card fields are additive)",
       "pass": 1,
       "fail": 0
     },
@@ -483,7 +483,7 @@
     },
     {
       "group": "card: offer, pick, reward",
-      "check": "one line: Kind choice! … Honor +1",
+      "check": "one line: +Jelly ×2 · Honor +1",
       "pass": 1,
       "fail": 0
     },
@@ -573,7 +573,7 @@
     },
     {
       "group": "card: a full day keeps the reward",
-      "check": "the 'shard is full' line",
+      "check": "no 'shard is full' line, the reward line only",
       "pass": 1,
       "fail": 0
     },
@@ -880,13 +880,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
-          "card: a full day keeps the reward :: the 'shard is full' line",
           "card: a full day keeps the reward :: the card says Full / Zero",
           "config :: 6 points a day, a deed is 1 (A23-86)",
           "deeds: sides, floor, ranks :: Preview of a full day: 0",
-          "deeds: sides, floor, ranks :: a huge size is cut to the day's six"
+          "deeds: sides, floor, ranks :: a huge size is cut to the day's six",
+          "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)"
         ],
-        "newFailingCount": 20
+        "newFailingCount": 19
       },
       {
         "mutation": "config: a deed is 2",
@@ -912,13 +912,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
-          "card: a full day keeps the reward :: the 'shard is full' line",
           "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)",
           "deeds: the Booked signal :: a full day's pick is still a deed (change 0)",
           "deeds: the day's six points :: a full day: the other side still costs 1 (A23-58)",
-          "deeds: the day's six points :: a new day pays again"
+          "deeds: the day's six points :: a new day pays again",
+          "deeds: the day's six points :: the seventh: no points, full = true, Honor stays"
         ],
-        "newFailingCount": 7
+        "newFailingCount": 6
       },
       {
         "mutation": "the day is not checked",
@@ -1001,11 +1001,10 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
-          "card: a full day keeps the reward :: the 'shard is full' line",
           "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)",
           "deeds: the day's six points :: the seventh: no points, full = true, Honor stays"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 3
       },
       {
         "mutation": "the attribute is not published",
@@ -1041,13 +1040,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
-          "card: a full day keeps the reward :: the 'shard is full' line",
           "card: a full day keeps the reward :: the card says Full / Zero",
           "card: offer, pick, reward :: the pick used one deed point",
           "deeds: sides, floor, ranks :: Preview of a full day: 0",
-          "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)"
+          "deeds: sides, floor, ranks :: a size-4 deed twice: 4 then the 2 left (full)",
+          "deeds: the Booked signal :: a full day's pick is still a deed (change 0)"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 14
       },
       {
         "mutation": "the sides are swapped",
@@ -1057,13 +1056,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
-          "card: a full day keeps the reward :: the 'shard is full' line",
           "card: offer, pick, reward :: 2 Jelly in the bag, Honor 6",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
           "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
-          "card: offer, pick, reward :: one line: Kind choice! … Honor +1"
+          "card: offer, pick, reward :: one line: +Jelly ×2 · Honor +1",
+          "card: offer, pick, reward :: the pick used one deed point"
         ],
-        "newFailingCount": 33
+        "newFailingCount": 32
       },
       {
         "mutation": "Honor and Infamy swapped",
@@ -1077,7 +1076,7 @@
           "card: offer, pick, reward :: Fx Card { Id 1, Kind, Title, no Seconds, Stat Honor }",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
           "card: offer, pick, reward :: off-side answer + counted",
-          "card: offer, pick, reward :: one line: Kind choice! … Honor +1"
+          "card: offer, pick, reward :: one line: +Jelly ×2 · Honor +1"
         ],
         "newFailingCount": 21
       },
@@ -1433,13 +1432,13 @@
         "crashed": false,
         "newFailingChecks": [
           "card: a full day keeps the reward :: no points, the reward still comes, Full = true",
-          "card: a full day keeps the reward :: the 'shard is full' line",
           "card: no faction, bag full :: no side: the reward only",
           "card: offer, pick, reward :: Fx CardEnd { Good, Honor +1, 2 Jelly }",
           "card: offer, pick, reward :: Halo takes the Evil option: 4 gold, Honor -1 (A23-58)",
-          "card: offer, pick, reward :: off-side answer + counted"
+          "card: offer, pick, reward :: off-side answer + counted",
+          "card: offer, pick, reward :: one line: +Jelly ×2 · Honor +1"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 9
       },
       {
         "mutation": "the pick is not counted",
@@ -1489,13 +1488,24 @@
         "newFailingCount": 3
       },
       {
-        "mutation": "the full-day line is missing",
+        "mutation": "the full-day line back",
         "file": "src/ServerScriptService/Deeds.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "card: a full day keeps the reward :: the 'shard is full' line"
+          "card: a full day keeps the reward :: no 'shard is full' line, the reward line only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "the choice label back",
+        "file": "src/ServerScriptService/ChoiceCard.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card: offer, pick, reward :: one line: +Jelly ×2 · Honor +1"
         ],
         "newFailingCount": 1
       },
@@ -1596,17 +1606,6 @@
         "newFailingCount": 1
       },
       {
-        "mutation": "config: the cap line is different",
-        "file": "src/ReplicatedStorage/Shared/Config.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "card: a full day keeps the reward :: the 'shard is full' line"
-        ],
-        "newFailingCount": 1
-      },
-      {
         "mutation": "config: no card rate limit",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
@@ -1684,12 +1683,12 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7a057592afed2986d5775033df83a4863b1c813ef9b98b169e62c0a32a63ecc3",
-    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/Deeds.luau": "ef54e177229e0155e119ea7d8c54da813ad50561251410e46e00c120665384eb",
-    "src/ServerScriptService/ChoiceCard.luau": "f9ddcd5f99a235d8db91c420ea535131d2c0b62d8384df961568573c854fcc3f"
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/Deeds.luau": "3d7f14657696e438552f78b2fdf1265c6236cd2357bda058cc9d57b74182b0b6",
+    "src/ServerScriptService/ChoiceCard.luau": "6ee8d37032d61e33e5abbb815a9689f51aed62ff3be65ff33037ed3a799d905b"
   },
-  "fixtureSHA256": "23bf9b0e9a9f9f25e483b4c7d1761c91ade6ea6b3578b8cff946ae37857da47e",
+  "fixtureSHA256": "fe84ea0e3052d688ed87e179cff0bd9439bee2499f5adec6ae4ed5e952a169f4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

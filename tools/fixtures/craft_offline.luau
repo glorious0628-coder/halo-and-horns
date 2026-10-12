@@ -17,7 +17,8 @@ do
 	end
 end
 
--- o: Off, NoSpare (no AddSpare yet), EditConfig(c)
+-- o: Off, NoSpare (a LootService without AddSpare / SpareRoom), RealSpare (LootService's own AddSpare / SpareRoom, C1),
+-- EditConfig(c)
 local function cWorld(o)
 	o = o or {}
 	o.Time = o.Time or NOON
@@ -71,7 +72,9 @@ local function cWorld(o)
 	local L = w.Reg.LootService
 	L.Init(w.Reg)
 	w.Spares, w.SpareFull = {}, false
-	if not o.NoSpare then
+	if o.NoSpare then
+		L.AddSpare, L.SpareRoom = nil, nil -- a LootService without the spares API (the guard in RecipeOn)
+	elseif not o.RealSpare then
 		function L.AddSpare(p, tier, plus)
 			if w.SpareFull then return false end
 			table.insert(w.Spares, { P = p, Tier = tier, Plus = plus })
@@ -237,11 +240,12 @@ runGroup("recipes", function()
 	local w = cWorld()
 	local on = {}
 	for id in w.Config.Craft.Recipes do if w.C.RecipeOn(id) then on[id] = true end end
-	check(on.W1 and on.W2 and on.W3 and on.W4 and on.W5 and on.W6 and not on.W7 and not on.W9,
-		"W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items", show(on))
+	-- C1 (게임성 개발 2): Clatter Gem / Royal Jelly are items and tier 9 exists, so W7 / W9 are on too
+	check(on.W1 and on.W2 and on.W3 and on.W4 and on.W5 and on.W6 and on.W7 and on.W9,
+		"W1..W7 and W9 on (C1: Clatter Gem / Royal Jelly items + tier 9)", show(on))
 	check(w.C.RecipeOn("Nope") == nil and w.C.RecipeOn(nil) == nil, "an unknown recipe is off", "")
 	local n = cWorld({ NoSpare = true })
-	check(n.C.RecipeOn("W1") == nil, "no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off", "")
+	check(n.C.RecipeOn("W1") == nil, "a LootService without AddSpare / SpareRoom: every weapon recipe is off", "")
 	local p = smith(n, 1)
 	local nf = #n.Notices
 	check(n.C.TryStart(p, "W1") == "recipe" and keysFor(n, p, nf)[1] == "Config.Craft.Text.NotReady", "... and refused with NotReady (a key)", "")
@@ -253,6 +257,20 @@ runGroup("recipes", function()
 		c.Weapons[9] = { Damage = 2200, MinLevel = 50 } -- T9 (게임성 개발 2 C1)
 	end })
 	check(gem.C.RecipeOn("W7") ~= nil and gem.C.RecipeOn("W9") ~= nil, "the new drops (and T9) switch W7 / W9 on by themselves", "")
+	local nogem = cWorld({ EditConfig = function(c) c.Loot.Items.ClatterGem = nil end })
+	check(nogem.C.RecipeOn("W7") == nil and nogem.C.RecipeOn("W9") == nil and nogem.C.RecipeOn("W6") ~= nil,
+		"without the Clatter Gem item W7 / W9 are off again (the item check stays)", "")
+	local gp = smith(nogem, 8)
+	startAndHammer(nogem, gp, HONEST)
+	local ginfo = last(fired(nogem, "CraftInfo", gp))
+	check(ginfo and type(ginfo.On) == "table" and table.concat(ginfo.On, ",") == "W1,W2,W3,W4,W5,W6",
+		"CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)", ginfo and show(ginfo.On) or "")
+	-- C1: LootService's real AddSpare / SpareRoom (no doubles)
+	local real = cWorld({ RealSpare = true })
+	check(real.C.RecipeOn("W1") ~= nil and real.C.RecipeOn("W9") ~= nil, "the real LootService.AddSpare / SpareRoom switch the weapon recipes on", "")
+	local rp, rd = smith(real, 7)
+	check(startAndHammer(real, rp, HONEST) == "ok" and type(rd.Spares) == "table" and rd.Spares["1:2"] == 1,
+		"a real W1 craft lands in data.Spares['1:2'] (LootService.AddSpare)", show(rd.Spares))
 end)
 
 ------------------------------------------------------------------ start
@@ -327,8 +345,8 @@ runGroup("hammer", function()
 	check(#w.Spares == 1 and w.Spares[1].Tier == 1 and w.Spares[1].Plus == 2, "the weapon goes to the spares (AddSpare 1, +2)", "")
 	check(d.Craft.Pend == nil and d.Craft.Made.W1 == 1 and d.Craft.Smith.XP == 10, "Pend cleared, Made.W1 = 1, 10 craft XP", show(d.Craft))
 	local info = last(fired(w, "CraftInfo", p))
-	check(info and type(info.On) == "table" and table.concat(info.On, ",") == "W1,W2,W3,W4,W5,W6",
-		"CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)", info and show(info.On) or "")
+	check(info and type(info.On) == "table" and table.concat(info.On, ",") == "W1,W2,W3,W4,W5,W6,W7,W9",
+		"CraftInfo.On = the blacksmith recipes the server would start now (C1: W7 / W9 too)", info and show(info.On) or "")
 	check(info and info.Role == "Smith" and info.Lv == 1 and info.XP == 10 and info.Need == 40 and info.Made.W1 == 1,
 		"CraftInfo { Role, Lv, XP, Need, Made } after the craft", show(info))
 	check(#w.Crafted == 1 and w.Crafted[1].Id == "W1" and w.Crafted[1].Plus == 2, "Crafted(player, W1, 2)", "")
@@ -774,6 +792,77 @@ runGroup("tamer", function()
 	check(st == "ok" and (dr.Items.Herb or 0) == 0, "T1 starts with 2 herbs (no research needed)", tostring(st) .. " " .. tostring(dr.Items.Herb))
 	hammer(t, r, HONEST)
 	check(dr.Items.PetTreat == 5 and dr.Craft.Tame.XP == 10, "3 + 2 = 5 Pet Treats, 10 craft XP", tostring(dr.Items.PetTreat))
+end)
+
+------------------------------------------------------------------ ⑦ fame and rank (artisan_fame_2026-10-12.md)
+runGroup("fame", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local R = C.Craft.Recipes
+	check(C.CraftFame(R.W1, 0) == 1 and C.CraftFame(R.W1, 2) == 2 and C.CraftFame(R.W1, 1) == 1 and C.CraftFame(R.W4, 0) == 2
+		and C.CraftFame(R.W6, 0) == 3 and C.CraftFame(R.W9, 0) == 4 and C.CraftFame(R.W9, 2) == 5 and C.CraftFame(nil, 2) == 0,
+		"fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1", "")
+	local rk = {}
+	for _, rep in { 0, 29, 30, 149, 150, 499, 500, 1499, 1500, 1e9 } do table.insert(rk, (C.ArtisanRank(rep))) end
+	check(table.concat(rk, ",") == "1,1,2,2,3,3,4,4,5,5" and select(2, C.ArtisanRank(0)) == 30 and select(2, C.ArtisanRank(150)) == 500
+		and select(2, C.ArtisanRank(1500)) == 0 and C.ArtisanRank(0 / 0) == 1 and C.ArtisanRank(nil) == 1,
+		"ranks at 0 / 30 / 150 / 500 / 1500 (next Rep; 0 at the top)", table.concat(rk, ","))
+	check(#C.Craft.Ranks == 5 and type(C.Craft.Text.RankUp) == "string", "five ranks, a RankUp line", "")
+	for _, row in C.Craft.Ranks do
+		check(type(C.Craft.Text.Ranks[row.Id]) == "string", "every rank has a name", row.Id)
+	end
+
+	local w = cWorld()
+	w.Credits = {}
+	w.Reg.RankingService.Credit = function(p, board, n, why) table.insert(w.Credits, { P = p, B = board, N = n, W = why }) return true end
+	local p, d = smith(w, 1)
+	check(p:GetAttribute("ArtisanRank") == 1 and last(fired(w, "CraftInfo", p)).Rank == 1 and last(fired(w, "CraftInfo", p)).NextRep == 30
+		and last(fired(w, "CraftInfo", p)).Rep == 0, "a new artisan: ArtisanRank 1 (Apprentice), CraftInfo Rep 0 / Rank 1 / NextRep 30", "")
+	startAndHammer(w, p, HONEST)
+	check(d.Craft.Rep == 2 and #w.Credits == 1 and w.Credits[1].B == "Artisan" and w.Credits[1].N == 2 and w.Credits[1].W == "Craft"
+		and last(fired(w, "CraftResult", p)).Fame == 2, "W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame", tostring(d.Craft.Rep))
+	-- the 2x XP pass never touches fame
+	w.PassXP2[p] = true
+	w:Advance(61)
+	startAndHammer(w, p, HONEST)
+	check(d.Craft.Rep == 4 and w.Credits[2].N == 2, "with the 2x XP pass: still 2 fame", tostring(d.Craft.Rep))
+	-- a rank up: one line (the rank's name key), the signal, the attribute, CraftInfo
+	local ups = {}
+	w.C.RankUp:Connect(function(pl, rank) table.insert(ups, rank) end)
+	d.Craft.Rep = 28
+	local from = #w.Notices
+	w:Advance(61)
+	startAndHammer(w, p, HONEST)
+	local ns = {}
+	for i = from + 1, #w.Notices do if w.Notices[i].Player == p and w.Notices[i].Key == "Config.Craft.Text.RankUp" then table.insert(ns, w.Notices[i]) end end
+	check(d.Craft.Rep == 30 and #ns == 1 and #ups == 1 and ups[1] == 2 and p:GetAttribute("ArtisanRank") == 2
+		and last(fired(w, "CraftInfo", p)).Rank == 2 and last(fired(w, "CraftInfo", p)).NextRep == 150, "28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)", "")
+	w:Advance(61)
+	startAndHammer(w, p, HONEST)
+	local again = 0
+	for i = from + 1, #w.Notices do if w.Notices[i].Player == p and w.Notices[i].Key == "Config.Craft.Text.RankUp" then again += 1 end end
+	check(again == 1 and #ups == 1, "the next craft in the same rank: no line", "")
+	-- no fame for a waiting craft finished after a side change (the craft XP rule)
+	local h, dh = smith(w, 2, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 7, Made = {},
+		Pend = { Id = "W2", Plus = 2, Gold = 40, Mats = { Jelly = 10 } } } }, "Warrior", "Halo")
+	check(dh.Craft.Pend == nil and dh.Craft.Rep == 7 and h:GetAttribute("ArtisanRank") == 0, "a Knight's waiting craft: the item, no fame; ArtisanRank 0", "")
+	-- the lifetime cap
+	local top, dt = smith(w, 3, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 10000000, Made = {} } })
+	startAndHammer(w, top, HONEST)
+	check(dt.Craft.Rep == 10000000 and top:GetAttribute("ArtisanRank") == 5, "Rep never passes MaxCount; Grandmaster", tostring(dt.Craft.Rep))
+	-- a faction change: the attribute follows at once
+	d.Faction = "Halo"
+	w.Reg.FactionService.FactionChanged:Fire(p)
+	check(p:GetAttribute("ArtisanRank") == 0, "left the guild: ArtisanRank 0 (Rep kept: lifetime)", tostring(p:GetAttribute("ArtisanRank")))
+	check(d.Craft.Rep == 32, "the lifetime Rep stays", tostring(d.Craft.Rep))
+	d.Faction, d.Class = "Neutral", "Mage"
+	w.Reg.ClassService.ClassChanged:Fire(p)
+	check(p:GetAttribute("ArtisanRank") == 2 and last(fired(w, "CraftInfo", p)).Role == "Alch", "back as an alchemist: rank 2 again (Rep is shared by the roles)", "")
+	-- no RankingService: crafting still works
+	local n = cWorld()
+	n.Reg.RankingService.Credit = nil
+	local q, dq = smith(n, 1)
+	startAndHammer(n, q, HONEST)
+	check(dq.Craft.Rep == 2 and #n.Warnings == 0, "no RankingService.Credit: Rep only, no error", show(n.Warnings))
 end)
 
 finish()

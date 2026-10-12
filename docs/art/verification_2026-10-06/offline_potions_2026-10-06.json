@@ -9,139 +9,139 @@
         "mutation": "#34 tagged sellers ignored (Crossroads only)",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_00.luau:3002: #34 Halo stall prompt did not open the shop"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_00.luau:3097: #34 Halo stall prompt did not open the shop"
       },
       {
         "mutation": "#34 the Crossroads seller's old path dropped",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_01.luau:3002: verified merchant prompt did not open owner potion panel"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_01.luau:3097: verified merchant prompt did not open owner potion panel"
       },
       {
         "mutation": "#34 a moved Crossroads seller still sells by name",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_02.luau:3002: direct purchase bypassed exact NPC/prompt enabled/path validation"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_02.luau:3097: direct purchase bypassed exact NPC/prompt enabled/path validation"
       },
       {
         "mutation": "#34 non-Model sellers accepted",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_03.luau:3002: #34 NotAModel seller still sold"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_03.luau:3097: #34 NotAModel seller still sold"
       },
       {
         "mutation": "#34 sellers outside workspace accepted",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_04.luau:3002: #34 Unparented seller still sold"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_04.luau:3097: #34 Unparented seller still sold"
       },
       {
         "mutation": "#34 seller attribute not required",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_05.luau:3002: untrusted/inactive/distant prompt opened store"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_05.luau:3097: untrusted/inactive/distant prompt opened store"
       },
       {
         "mutation": "#34 an unanchored (client-movable) root accepted",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_06.luau:3002: #34 UnanchoredRoot seller still sold"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_06.luau:3097: #34 UnanchoredRoot seller still sold"
       },
       {
         "mutation": "#34 a root outside its model accepted",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_07.luau:3002: untrusted/inactive/distant prompt opened store"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_07.luau:3097: untrusted/inactive/distant prompt opened store"
       },
       {
         "mutation": "#34 a disabled seller prompt still sells",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_08.luau:3002: direct purchase bypassed exact NPC/prompt enabled/path validation"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_08.luau:3097: direct purchase bypassed exact NPC/prompt enabled/path validation"
       },
       {
         "mutation": "#34 any seller's prompt opens the shop",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_09.luau:3002: same-name cloned prompt bypassed exact identity"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_09.luau:3097: same-name cloned prompt bypassed exact identity"
       },
       {
         "mutation": "#34 the handler skips the prompt's own seller",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_10.luau:3002: same-name cloned prompt bypassed exact identity"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_10.luau:3097: same-name cloned prompt bypassed exact identity"
       },
       {
         "mutation": "#34 no distance limit",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_11.luau:3002: untrusted/inactive/distant prompt opened store"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_11.luau:3097: untrusted/inactive/distant prompt opened store"
       },
       {
         "mutation": "#34 MerchantEnabled ignored",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_12.luau:3002: untrusted/inactive/distant prompt opened store"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_12.luau:3097: untrusted/inactive/distant prompt opened store"
       },
       {
         "mutation": "#34 Config: the seller tag renamed",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_13.luau:3002: #34 seller tag is not \"PotionMerchant\" (TownNpcs / MiniMap / VitalsUI contract)"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_13.luau:3097: #34 seller tag is not \"PotionMerchant\" (TownNpcs / MiniMap / VitalsUI contract)"
       },
       {
         "mutation": "A23-110 a purchase never reports PotionBought",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_14.luau:3002: A23-110 a purchase did not report PotionBought once"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_14.luau:3097: A23-110 a purchase did not report PotionBought once"
       },
       {
         "mutation": "A23-110 a real drink never reports PotionUsed",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_15.luau:3002: A23-110 a real HP drink did not report PotionUsed"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_15.luau:3097: A23-110 a real HP drink did not report PotionUsed"
       },
       {
         "mutation": "A23-110 a sip is taken with no step waiting",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_16.luau:3002: A23-110 full HP with nothing waiting reported or changed"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_16.luau:3097: A23-110 full HP with nothing waiting reported or changed"
       },
       {
         "mutation": "A23-110 a sip never reports",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_17.luau:3002: A23-110 a practice sip at full HP: counted, potion kept, no cooldown"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_17.luau:3097: A23-110 a practice sip at full HP: counted, potion kept, no cooldown (A23-130: no line)"
       },
       {
         "mutation": "A23-110 a sip eats the potion",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_18.luau:3002: A23-110 a practice sip at full HP: counted, potion kept, no cooldown"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_18.luau:3097: A23-110 a practice sip at full HP: counted, potion kept, no cooldown (A23-130: no line)"
       },
       {
         "mutation": "A23-110 no sip at full HP",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_19.luau:3001: A23-110 a practice sip at full HP: counted, potion kept, no cooldown"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_19.luau:3096: A23-110 a practice sip at full HP: counted, potion kept, no cooldown (A23-130: no line)"
       },
       {
         "mutation": "A23-110 no sip at full MP",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_20.luau:3001: A23-110 a practice sip at full MP: counted, potion kept"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_20.luau:3096: A23-110 a practice sip at full MP: counted, potion kept (no line)"
       },
       {
-        "mutation": "A23-110 a sip says nothing",
+        "mutation": "A23-130 a sip says its line again",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_21.luau:3001: A23-110 a practice sip at full HP: counted, potion kept, no cooldown"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_21.luau:3098: A23-110 a practice sip at full HP: counted, potion kept, no cooldown (A23-130: no line)"
       },
       {
         "mutation": "A23-110 a sip is refused after counting",
         "applied": true,
         "caught": true,
-        "firstFailure": "C:/Users/glori/Documents/Roblox/Game-dev3/build/potion_mutant_22.luau:3002: A23-110 a practice sip at full HP: counted, potion kept, no cooldown"
+        "firstFailure": "C:/Users/glori/Documents/Roblox/Game/build/api_agent_wt/dev2_c1b_t9_v4/build/potion_mutant_22.luau:3097: A23-110 a practice sip at full HP: counted, potion kept, no cooldown (A23-130: no line)"
       }
     ]
   },
@@ -161,14 +161,14 @@
   "liveValidation": "pending: merchant/UI, real datastore/reconnect and engine play",
   "contract": "A23-6 MerchantEnabled=true, prices 25/25, merchant = MapBuilder default R15 NPC from HumanoidDescription (no costume rig), E key + HoldDuration 0 prompt; costume modules, SetCostume remote/rate limit and CostumeEnabled removed",
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "ce439e76da4e1a35dfa7960e9650ef4748fca5b9dad3d7b1799616d0ebdcbe7a",
-    "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
-    "src/ServerScriptService/VitalsService.luau": "4e1962bfdbee5c313db1953c82e9a0caab21b8e1361c0d0d608d79dbee257808",
-    "src/ServerScriptService/ProgressionService.luau": "13f424efdecbc24adc0d547e5651f333ac0e3a69d997764f705a5e0380f0c645",
-    "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9",
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Net.luau": "db368ed59a57a4f19b54d3fe69ad52a0574fe08b7e0bf5b1b3e99d108f340863",
+    "src/ServerScriptService/DataService.luau": "72aff9b30b4f6f88c01d97968b861184bff021275e22b10ed74030109f131ec2",
+    "src/ServerScriptService/ShopService.luau": "1c5529559510c10282f7edc0928cf8f7845f3dfb681691f0054a524163d60336",
+    "src/ServerScriptService/VitalsService.luau": "5a29f11f72d15e0ac883e00fbda38d8304b9f0c1fc91c89e379c2d7f1994d934",
+    "src/ServerScriptService/ProgressionService.luau": "943e8a8ed1092c21c55a8cdbb256f9c20cd5c3c71da1510d0dacd9108c1d294e",
+    "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d",
     "src/ServerScriptService/MapBuilder.luau": "1501c830e09a8396a88747f93027f56bed4588444a2200312275347da47599fb"
   },
-  "fixtureSHA256": "2f72ca24da19c9a25469a498e07d4c13303ef8e4e877c5eadc1930f369c79b5c"
+  "fixtureSHA256": "a2f2e7804426e40dffd04414ec406c9f21edccbf92bf0576ec2839b745392748"
 }
