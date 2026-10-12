@@ -45,15 +45,18 @@ MUTATIONS = [
      "\tlocal gui"),
     ("UI", "the sticker stays forever", "\t\t\t\tpcall(function() gui:Destroy() end)\n", ""),
     ("UI", "any Fx key drawn", "or not (type(Config.IsSticker) == \"function\" and Config.IsSticker(data.Key)) then return end", "then return end"),
-    ("UI", "a locked press sends instead of the shop", "\t\t\tif cell and cell.Locked then\n", "\t\t\tif false then\n"),
-    ("UI", "no lock badge", "\t\t\tif cell.Lock then cell.Lock.Visible = row.Locked end\n", ""),
+    ("UI", "a locked press sends instead of the shop", "local cell = S.Cells[key]\n\t\t\tif cell and cell.Locked then\n",
+     "local cell = S.Cells[key]\n\t\t\tif false then\n"),
+    ("UI", "no lock badge", "or 0 end\n\t\t\tif cell.Lock then cell.Lock.Visible = row.Locked end\n\t\t\tcell.Locked = row.Locked\n\t\tend\n\tend\n\tlocal b",
+     "or 0 end\n\t\t\tcell.Locked = row.Locked\n\t\tend\n\tend\n\tlocal b"),
     ("UI", "typing opens the picker", "if processed or keys.IsCapturing() or UserInputService:GetFocusedTextBox() then return end",
      "if keys.IsCapturing() then return end"),
-    ("UI", "the pass never unlocks the open picker", "\t\tif S.Gui then pcall(paint) end\n", ""),
+    ("UI", "the pass never unlocks the open picker", "GetAttributeChangedSignal(attr):Connect(function()\n\t\tif S.Gui then pcall(paint) end\n",
+     "GetAttributeChangedSignal(attr):Connect(function()\n"),
     ("UI", "a leaving player's sticker stays", "\t\tif rec and rec.Gui then pcall(function() rec.Gui:Destroy() end) end\n\t\tS.Heads[p.UserId] = nil",
      "\t\tS.Heads[p.UserId] = nil"),
     ("CONFIG", "no key for the picker", '{ Id = "Stickers", Group = "Other", Key = "P",', '{ Id = "Stickers", Group = "Other", Key = "",'),
-    ("MAIN", "StickerUI never loaded", '"PlayerListUI", "StickerUI", "MonsterLabels"', '"PlayerListUI", "MonsterLabels"'),
+    ("MAIN", "StickerUI never loaded", '"BubbleUI", "StickerUI", "MonsterLabels"', '"BubbleUI", "MonsterLabels"'),
 ]
 
 
