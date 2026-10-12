@@ -28,8 +28,9 @@ FRONT = ("ref1 is an approved design of a prop for a kid-friendly Roblox game.%s
          "it to a straight-on front view. " + LIGHT)
 SIDE = ("ref1 shows the viewpoint: an older drawing of this object seen from one side. ref2 is the NEW approved front view of "
         "the object (the look to keep).%s Draw the SAME object as ref2 (same shapes, parts, colours, proportions, materials) "
-        "seen from exactly the same viewpoint and direction as ref1, straight-on, mid-height, whole object centered, the same "
-        "size and distance as ref2. Match ref2's look, not ref1's colours or shading. " + LIGHT)
+        "seen from the same side as ref1, but as a strict elevation: camera level at mid-height, at a right angle to that side, "
+        "no 3/4 angle and no top-down tilt even if ref1 has one; whole object centered, the same size and distance as ref2. "
+        "Match ref2's look, not ref1's colours or shading. " + LIGHT)
 TURN = {"left": "seen straight-on from its left side (90 degrees from ref1's front)",
         "right": "seen straight-on from its right side (90 degrees from ref1's front)",
         "back": "seen straight-on from the back (180 degrees from ref1's front)"}
