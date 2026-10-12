@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-12: 3차 아이콘 5개 올림)
+
+- **3차 아이콘 5개 올림**(최종 검수 승인, 자홍 바탕 직접 봄): IconPetTreat 109038216387583 · IconMightTonic 82167218233168 · IconGuardTonic 113383235344315 · IconLuckyTonic 124851169351640 · IconWisdomTonic 131384631272950 (asset_ids 같은 이름). Config 반영 = 가지 `imgdev-icons3`(def1349f, worktree ../Game-imgdev-icons, origin/main 위; Config.Loot.Items 아이템이 이미 Icon 키 씀) -> 게임성 검수 -> 최종 검수. imgdev-icons2 Glowcap 한 줄(7b8d1a4a)은 main에 이미 들어감.
+
 # 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 5개 전부 올림)
 
 - **IconGlowcap 올림**(고친 컷아웃 dc1fadc2, 디자인 검수 OK): rbxassetid://118269985242078 (asset_ids IconGlowcap). 가지 imgdev-icons2에 새 커밋 7b8d1a4a(Config 한 줄, 16c0609f 위, 되감지 않음). 2차 5개 = CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 · IconGlowcap 118269985242078. 병합 대기(게임성 검수 16c0609f 통과, 새 커밋 한 줄은 다시 봄).

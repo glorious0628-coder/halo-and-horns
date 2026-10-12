@@ -1143,5 +1143,10 @@
   "CraftTarget": "rbxassetid://134156748980991",
   "CraftIngot": "rbxassetid://133966322294546",
   "IconCrownDust": "rbxassetid://130666131385080",
-  "IconGlowcap": "rbxassetid://118269985242078"
+  "IconGlowcap": "rbxassetid://118269985242078",
+  "IconPetTreat": "rbxassetid://109038216387583",
+  "IconMightTonic": "rbxassetid://82167218233168",
+  "IconGuardTonic": "rbxassetid://113383235344315",
+  "IconLuckyTonic": "rbxassetid://124851169351640",
+  "IconWisdomTonic": "rbxassetid://131384631272950"
 }
