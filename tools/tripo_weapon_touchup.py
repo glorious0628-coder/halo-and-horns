@@ -47,6 +47,22 @@ KIND = {  # class -> (kind, lengths T1..T3, hand share from the bottom)
     "Alchemist": ("staff", (4.42, 4.54, 4.66), 0.62),   # the approved 2D is a staff with a flask; the game holds a flask today
 }
 
+# the hand = the middle of the wrapped grip in the approved 2D front (share of the height from the bottom, measured on
+# art/out/s2/weapons_t13_4v/<job>_front.png with a 5 % ruler; 디자인 검수 10/12: the wrap says "hold here" - never a
+# bare shaft). It replaces the code shares above; the arm pose stays, the weapon only slides along the hand.
+WRAP = {
+    "Weapon_Halo_LightMage_T1": 0.445, "Weapon_Halo_LightMage_T2": 0.505, "Weapon_Halo_LightMage_T3": 0.345,
+    "Weapon_Halo_Paladin_T1": 0.155, "Weapon_Halo_Paladin_T2": 0.16, "Weapon_Halo_Paladin_T3": 0.18,
+    "Weapon_Halo_Ranger_T1": 0.505, "Weapon_Halo_Ranger_T2": 0.52, "Weapon_Halo_Ranger_T3": 0.50,
+    "Weapon_Horns_Berserker_T1": 0.165, "Weapon_Horns_Berserker_T2": 0.185, "Weapon_Horns_Berserker_T3": 0.185,
+    "Weapon_Horns_Berserker_final_b": 0.175,
+    "Weapon_Horns_DarkMage_T1": 0.395, "Weapon_Horns_DarkMage_T2": 0.55, "Weapon_Horns_DarkMage_T3": 0.375,
+    "Weapon_Horns_ShadowHunter_T1": 0.47, "Weapon_Horns_ShadowHunter_T2": 0.50, "Weapon_Horns_ShadowHunter_T3": 0.50,
+    "Weapon_Neutral_Alchemist_T1": 0.37, "Weapon_Neutral_Alchemist_T2": 0.345, "Weapon_Neutral_Alchemist_T3": 0.26,
+    "Weapon_Neutral_Blacksmith_T1": 0.26, "Weapon_Neutral_Blacksmith_T2": 0.215, "Weapon_Neutral_Blacksmith_T3": 0.235,
+    "Weapon_Neutral_PetTamer_T1": 0.26, "Weapon_Neutral_PetTamer_T2": 0.28, "Weapon_Neutral_PetTamer_T3": 0.245,
+}
+
 argv = sys.argv[sys.argv.index("--") + 1:]
 ap = argparse.ArgumentParser()
 ap.add_argument("job")
@@ -189,6 +205,10 @@ if kind in ("sword", "darksword"):
             gt += 1
         zguard = float(zs[gt])
         stats["guard_z"] = round(float(zs[g] - z0), 3)
+if a.job in WRAP:
+    stats["grip_code_share"] = round(float((zg - z0) / length), 3)
+    zg = z0 + WRAP[a.job] * length
+    stats["grip_source"] = "2D wrap centre"
 band = V[np.abs(V[:, 2] - zg) < 0.08 * length]
 stats["grip_from_bottom"] = round(float((zg - z0) / length), 3)
 cx, cy = (band[:, 0].min() + band[:, 0].max()) / 2, (band[:, 1].min() + band[:, 1].max()) / 2

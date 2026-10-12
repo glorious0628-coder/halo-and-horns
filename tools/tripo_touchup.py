@@ -165,8 +165,9 @@ elif a.kind == "ontop":
     bmn, bmx = bounds(body_obs)
     s = (bmx.x - bmn.x) * val / size0[0]
     me.transform(Matrix.Scale(s, 4))
-    me.transform(Matrix.Translation((0, 0, bmx.z - 0.05)))
-    stats["body_top"] = round(bmx.z, 3)
+    zt = body_rim_top(body_obs)          # the trough rim, not the end posts' domes (the hedge floated 1.4 high, 10/12)
+    me.transform(Matrix.Translation((0, 0, zt - 0.08)))
+    stats["body_top"] = round(zt, 3)
 else:
     s = val / (size0[2] if key == "h" else max(size0[0], size0[1]))
     if a.kind == "plant" and body_obs and a.rim_frac > 0:
