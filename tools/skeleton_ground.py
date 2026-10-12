@@ -26,7 +26,7 @@ import json
 import math
 import os
 
-STAGES = ["roads", "plaza", "yards", "stairs", "rails", "bridges"]
+STAGES = ["roads", "plaza", "yards", "stairs", "rails", "bridges", "walls"]
 ap = argparse.ArgumentParser()
 ap.add_argument("--only", default="")
 ap.add_argument("--offset", default="0,0", help="X,Z the same offset that was given to tools/halo_blockout.py")
@@ -74,6 +74,28 @@ def lua_road(r):
         r["id"], r["id"], fm(r["w"]), r["grade"], fm(ln), ",".join("{%s,%s}" % (fm(x), fm(z)) for x, z in pts))
 
 
+def lua_walls():
+    # 5단계 10/12: retaining walls from tools/halo_blockout.py (build/wk/halo_walls.json, the same grid heights as the Terrain)
+    fp = os.path.join(ROOT, "build", "wk", "halo_walls.json")
+    if "walls" in ONLY and not os.path.exists(fp):
+        raise SystemExit("build/wk/halo_walls.json is missing: run py tools/halo_blockout.py --mode terrain first")
+    ws = json.load(open(fp, encoding="utf-8"))["walls"] if os.path.exists(fp) else []
+    return ",".join('{x=%s,z=%s,len=%s,ux=%s,uz=%s,nx=%s,nz=%s,top=%s,bot=%s,t=%s}' % (
+        fm(w["x"] + OX), fm(w["z"] + OZ), fm(w["len"]), fm(w["ux"]), fm(w["uz"]), fm(w["nx"]), fm(w["nz"]), fm(w["top"]), fm(w["bot"]),
+        fm(w["t"])) for w in ws)
+
+
+def lua_sink():
+    # 5단계 10/12: tools/halo_blockout.py sinks the Terrain under the road parts by ROAD_SINK (build/wk/halo_sink.json);
+    # G() adds it back so a rebuild puts the parts where they were
+    fp = os.path.join(ROOT, "build", "wk", "halo_sink.json")
+    if not os.path.exists(fp):
+        print("[skeleton_ground] no build/wk/halo_sink.json: road sink 0 (run py tools/halo_blockout.py first)")
+        return "{sink=0,rows={}}"
+    m = json.load(open(fp, encoding="utf-8"))
+    return "{sink=%s,rows={%s}}" % (fm(m["sink"]), ",".join('"%s"' % r for r in m["rows"]))
+
+
 def lua_data():
     yards = ",".join('{id="%s",x=%s,z=%s,r=%s}' % (y["id"], fm(y["at"][0] + OX), fm(y["at"][1] + OZ), fm(y["r"])) for y in YARDS)
     return "\n".join([
@@ -85,6 +107,8 @@ def lua_data():
         " grid={x0=%s,z0=%s,cell=%s}," % (fm(GRID_X0 + OX), fm(GRID_Z0 + OZ), fm(GRID_CELL)),  # halo_blockout.py PAVED_SINK: the Terrain under the plaza discs is 1 lower, the parts keep their height
         " passage={x0=%s,x1=%s,z0=%s,z1=%s}," % (fm(PASSAGE[0] + OX), fm(PASSAGE[1] + OX), fm(PASSAGE[2] + OZ), fm(PASSAGE[3] + OZ)),
         " yards={%s}," % yards,
+        " walls={%s}," % lua_walls(),
+        " rsink=%s," % lua_sink(),
         " bridges={%s}," % ",".join('{x=%s,z=%s,r=%s}' % (fm(b["at"][0] + OX), fm(b["at"][1] + OZ), fm(b["len"] / 2 + 2)) for b in BRIDGES),
         " roads={",
         ",\n".join("  " + lua_road(r) for r in ROADS),
@@ -119,7 +143,7 @@ do
 		gf.Name = "Ground"
 		gf.Parent = root
 	end
-	for _, nm in { "Roads", "Plaza", "Yards", "Stairs", "Rails" } do
+	for _, nm in { "Roads", "Plaza", "Yards", "Stairs", "Rails", "Walls" } do
 		local f = gf:FindFirstChild(nm)
 		if not f then
 			f = Instance.new("Folder")
@@ -158,6 +182,10 @@ local function G(x, z, quiet)
 		for _, c in { D.fountain, D.spawn } do
 			if (cx - c.x) ^ 2 + (cz - c.z) ^ 2 <= c.r * c.r then return hit.Position.Y + (D.plaza_sink or 0) end
 		end
+		-- under a road part the Terrain is rsink.sink lower (halo_blockout ROAD_SINK)
+		local row = D.rsink.rows[math.floor((g.z0 - z) / g.cell) + 1]
+		local col = math.floor((x - g.x0) / g.cell) + 1
+		if row and col >= 1 and string.sub(row, col, col) == "1" then return hit.Position.Y + D.rsink.sink end
 		return hit.Position.Y
 	end
 	if not quiet then N.nohit += 1 end
@@ -623,7 +651,39 @@ ST.bridges = function()
 	end
 end
 
-for _, nm in { "plaza", "yards", "roads", "stairs", "rails", "bridges" } do
+ST.walls = function()
+	-- 5단계 10/12: marble retaining walls along the straightened step lines of halo_blockout.py (drop > FACE_DH). A piece is
+	-- t thick, centred on its line (the terrain slope between the low and the high cell centres is inside it), top = the
+	-- high side (WalkGround), 2 below the low side's lowest point; a coping band sticks 0.4 out on the low side (n)
+	local hitB = {}
+	local op = OverlapParams.new()
+	op.FilterType = Enum.RaycastFilterType.Include
+	local bf = root:FindFirstChild("Buildings")
+	op.FilterDescendantsInstances = { bf }
+	for i, w in D.walls do
+		local top, bot = w.top - 0.05, w.bot - 2
+		local h = top - bot
+		local c = Vector3.new(w.x, (top + bot) / 2, w.z)
+		local u, n = Vector3.new(w.ux, 0, w.uz), Vector3.new(w.nx, 0, w.nz)
+		local cf = CFrame.lookAt(c, c + u) -- local Z runs along the wall, local X across it
+		mk("walls", "Walls", "RetainWall_" .. i, BLK, Vector3.new(w.t, h, w.len), cf, "marble", "walk")
+		local cc = Vector3.new(w.x, top - 0.35, w.z) + n * (w.t / 2)
+		mk("walls", "Walls", "RetainCap_" .. i, BLK, Vector3.new(0.8, 0.7, w.len + 0.4), CFrame.lookAt(cc, cc + u), "marble", "walk")
+		if bf then
+			local probe = CFrame.lookAt(Vector3.new(w.x, top - 1, w.z), Vector3.new(w.x, top - 1, w.z) + u)
+			for _, p in workspace:GetPartBoundsInBox(probe, Vector3.new(w.t - 0.5, 2, w.len - 0.5), op) do
+				local m = p
+				while m.Parent and m.Parent ~= bf do m = m.Parent end
+				hitB[m.Name] = (hitB[m.Name] or 0) + 1
+			end
+		end
+	end
+	local t = {}
+	for k, v in hitB do table.insert(t, k .. "=" .. v) end
+	N.wallHits = table.concat(t, ",")
+end
+
+for _, nm in { "plaza", "yards", "roads", "stairs", "rails", "bridges", "walls" } do
 	if ONLY[nm] then
 		local ok, err = pcall(ST[nm])
 		if not ok then
@@ -634,11 +694,11 @@ for _, nm in { "plaza", "yards", "roads", "stairs", "rails", "bridges" } do
 end
 tmp:Destroy()
 local by = {}
-for _, nm in { "roads", "plaza", "yards", "stairs", "rails", "bridges" } do
+for _, nm in { "roads", "plaza", "yards", "stairs", "rails", "bridges", "walls" } do
 	if ONLY[nm] then table.insert(by, nm .. "=" .. (N.by[nm] or 0)) end
 end
-return string.format("skeleton_ground built: %s | parts %d (cap %d, over %d) tagged %d bridges %d | spacing x%.2f | csg failures %d | no-hit points %d | stage errors %d",
-	table.concat(by, " "), N.parts, D.cap, N.over, N.tagged, N.bridges or 0, N.spacing, N.csgFail, N.nohit, N.errors)
+return string.format("skeleton_ground built: %s | parts %d (cap %d, over %d) tagged %d bridges %d | spacing x%.2f | csg failures %d | no-hit points %d | stage errors %d | walls in buildings: %s",
+	table.concat(by, " "), N.parts, D.cap, N.over, N.tagged, N.bridges or 0, N.spacing, N.csgFail, N.nohit, N.errors, N.wallHits or "-")
 '''
 
 
