@@ -373,8 +373,8 @@ def main() -> int:
         "studioCalls": 0, "apiCalls": 0,
         "contract": "BB4 (docs/design/beta_basics_2026-10-05.md): Config.CombatPower(level, tier, +N) = floor(PowerOf(level, "
                     "tier, 1, +N) x DisplayScale 10 + 0.5) for a weapon (A23-34: bare hands count from 0: Lv1 0, Lv2 12) with samples 283 (Lv1 T1) / 387 (Lv1 T2) / 758 (Lv5 T3) / 1,052 "
-                    "(Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 25,488 (Lv100, highest-damage "
-                    "weapon, +10; cached; tier-index cap would be 7,027); rises with level and +N, ordered by weapon Damage; "
+                    "(Lv10 T3 +3) / 2,829 (Lv20 T5), Lv1 T8 872 < Lv1 T4 938, MaxCombatPower() = 37,805 (C1: Lv100, highest-damage "
+                    "weapon = the Mythic tier 9, +10; tier 7 alone 25,488; cached; a tier-8 cap would be 7,027); rises with level and +N, ordered by weapon Damage; "
                     "Config.Power.Text (Label/Up/Change/Formula + En; PvPNote / PvPNoteEn are finished lines built right "
                     "after Config.PvP: strings with no '%', following PowerRatioMax / PowerRatioMin and equal to exactly "
                     "(A23-48: both) 'However strong the weapons, PvP "
