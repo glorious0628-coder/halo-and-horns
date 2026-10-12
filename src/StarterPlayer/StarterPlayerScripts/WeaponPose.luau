@@ -45,7 +45,10 @@ local T = {
 	RightGrip = Vector3.new(0, -0.158, 0), LeftGrip = Vector3.new(0, -0.158, 0),
 	PoleRight = Vector3.new(0.7, -0.7, 0.2), Pole = Vector3.new(-0.7, -0.7, 0.2),
 	Gap = { 0.45, 0.9 }, GapPad = 0.05, OverlapShare = 0.8,
-	ShoulderX = 0.972, -- the place rig's shoulder joint x on UpperTorso (WeaponPose.BodyScale)
+	-- the place's R15 rig the ClassGrips points are laid out on (WeaponPose.Body / BodyPoint): the shoulder joint's y on
+	-- UpperTorso, the hanging arm's line x (the shoulder joint x 0.972 + the upper arm's own 0.501), the arm's two bone
+	-- lengths (0.922 + 0.807), the UpperTorso's half width
+	Rig = { ShoulderY = 0.598, ArmLine = 1.473, ArmLen = 1.729, TorsoHalf = 1.0 },
 	ProbeEvery = 2, -- s: Studio's GripProbe print (WeaponPose.ProbeStep: every frame measured, the worst printed)
 	-- 게임성 검수 10/12 (메인 반영 1 photo, the user's avatar: the staff tip 0.27 / 0.26 over the sole - the server sizes
 	-- the shaft from the rig at rest, the live pose holds the hand a little higher): a staff's hand goal moves up or down
@@ -168,7 +171,7 @@ end
 -- (검수 10/11 walk photos: a dropped solve let the left hand hang for a frame).
 function WeaponPose.TwoHandGoals(torso, th, rightGrip, leftGrip, rightShoulder, leftShoulder, gap, k)
 	local aim = torso:VectorToWorldSpace(th.Aim.Unit)
-	local hilt = torso * (th.Hilt * (k or 1)) -- k: this avatar's body scale (WeaponPose.BodyScale)
+	local hilt = torso * (th.Hilt * (k or 1)) -- k: a scale (WeaponPose passes 1: the Hilt is already placed, BodyPoint)
 	local function goal(point, gripPos, shoulder)
 		local up = shoulder - point
 		up -= aim * up:Dot(aim)
@@ -212,9 +215,10 @@ function WeaponPose.TwoHand(char, st, def, model)
 		gap = math.max((foot.Z - grip.Z) - leftHand.Size.Z / 2 - T.GapPad, (hand.Size.Z + leftHand.Size.Z) / 2 * T.OverlapShare)
 	end
 	gap = math.clamp(gap, tonumber(g[1]) or 0.45, tonumber(g[2]) or 0.9)
-	local rGoal, lGoal = WeaponPose.TwoHandGoals(torso, th, gripOf(hand, "RightGripAttachment", T.RightGrip),
+	local placed = { Hilt = WeaponPose.BodyPoint(th.Hilt, WeaponPose.Body(right, torsoPart)), Aim = th.Aim }
+	local rGoal, lGoal = WeaponPose.TwoHandGoals(torso, placed, gripOf(hand, "RightGripAttachment", T.RightGrip),
 		gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), (torso * right.Shoulder.C0).Position,
-		(torso * left.Shoulder.C0).Position, gap, WeaponPose.BodyScale(right))
+		(torso * left.Shoulder.C0).Position, gap, 1)
 	local rPose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(T.PoleRight))
 	local lPose = fx.SolveArm(left, torso, lGoal, torso:VectorToWorldSpace(T.Pole))
 	if type(rPose) ~= "table" or type(lPose) ~= "table" then return false end
@@ -289,8 +293,9 @@ function WeaponPose.OneHand(char, st, def, model)
 	if not right then return false end
 	local torso = torsoPart.CFrame
 	local lift = WeaponPose.StaffStep(st, model) -- a staff: its foot on the ground (0 for the other weapons)
-	local rGoal = WeaponPose.TwoHandGoals(torso + Vector3.new(0, lift, 0), oh, gripOf(hand, "RightGripAttachment", T.RightGrip),
-		T.LeftGrip, (torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0, WeaponPose.BodyScale(right))
+	local placed = { Hilt = WeaponPose.BodyPoint(oh.Hilt, WeaponPose.Body(right, torsoPart)), Aim = oh.Aim }
+	local rGoal = WeaponPose.TwoHandGoals(torso + Vector3.new(0, lift, 0), placed, gripOf(hand, "RightGripAttachment", T.RightGrip),
+		T.LeftGrip, (torso * right.Shoulder.C0).Position, (torso * right.Shoulder.C0).Position, 0, 1)
 	local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight
 	local pose = fx.SolveArm(right, torso, rGoal, torso:VectorToWorldSpace(pole))
 	if type(pose) ~= "table" then return false end
@@ -309,12 +314,30 @@ function WeaponPose.OneHand(char, st, def, model)
 	return not pose.Clamped
 end
 
--- this avatar's body scale against the place's R15 rig (its shoulder joint's distance from the torso centre, 0.972 at
--- scale 1): the torso-space points (Hilt, OffHand At) shrink and grow with the body, the directions do not
-function WeaponPose.BodyScale(arm)
-	local c0 = arm and arm.Shoulder and arm.Shoulder.C0
-	if typeof(c0) ~= "CFrame" then return 1 end
-	return math.clamp(math.abs(c0.Position.X) / T.ShoulderX, 0.6, 1.4)
+-- 최종 검수 10/12 (user "아바타 팔이 왜이럼?"; main probe arm_rig: the user's avatar - upgraded joints, a narrow
+-- UpperTorso 1.33 wide, its shoulder joint at x 0.623 - got the old shoulder-x scale 0.64, so every hand goal was pulled
+-- 36% towards the shoulder and the arms folded ~100 degrees): the ClassGrips points are laid out on the place's rig
+-- (T.Rig) and placed on THIS body - y and z from its own shoulder joint by its arm's length, x from its hanging arm's
+-- line (a held weapon) or by its torso's width (a point on the body: OffHand). On a rig that is the place's scaled by k
+-- this is exactly the point x k. body = WeaponPose.Body(arm, torsoPart): { P = the shoulder joint (x made positive),
+-- Line = the hanging arm's x, K = the arm's length / the rig's, Half = the UpperTorso's half width }
+function WeaponPose.Body(arm, torsoPart)
+	local s = arm and arm.Shoulder
+	if not (s and typeof(s.C0) == "CFrame" and typeof(s.C1) == "CFrame") then return nil end
+	local c0, c1 = s.C0.Position, s.C1.Position
+	local half = (torsoPart and torsoPart:IsA("BasePart")) and torsoPart.Size.X / 2 or T.Rig.TorsoHalf
+	return { P = Vector3.new(math.abs(c0.X), c0.Y, c0.Z), Line = math.abs(c0.X) + math.abs(c1.X),
+		K = math.clamp((tonumber(arm.L1) or 0) + (tonumber(arm.L2) or 0), 0.6 * T.Rig.ArmLen, 1.4 * T.Rig.ArmLen) / T.Rig.ArmLen, Half = half }
+end
+
+-- (pure) a ClassGrips torso-space point (Vector3, laid out on T.Rig) on this body (nil = the rig itself); onBody = a point
+-- on the torso (x by its width), else a held weapon's (x from the hanging arm's line)
+function WeaponPose.BodyPoint(p, body, onBody)
+	if type(body) ~= "table" then return p end
+	local R = T.Rig
+	local sx = p.X >= 0 and 1 or -1
+	local x = onBody and p.X * body.Half / R.TorsoHalf or sx * body.Line + (p.X - sx * R.ArmLine) * body.K
+	return Vector3.new(x, body.P.Y + (p.Y - R.ShoulderY) * body.K, body.P.Z + p.Z * body.K)
 end
 
 -- 검수 10/11 (grip_audit9 §2: the empty left hands floated out at the side; references grip_reference §1-6/7): the free
@@ -345,10 +368,11 @@ function WeaponPose.OffHand(char, st, def)
 			st.Base[joint], st.Last[joint] = nil, nil
 		end
 	end
-	local left, right = fx.ArmGeometry(st, "Left"), fx.ArmGeometry(st, "Right")
+	local left = fx.ArmGeometry(st, "Left")
 	if not left then return false end
 	local torso = torsoPart.CFrame
-	local goal = WeaponPose.OffHandGoal(torso, oh, gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), WeaponPose.BodyScale(right or left))
+	local placed = { At = WeaponPose.BodyPoint(oh.At, WeaponPose.Body(left, torsoPart), true), Up = oh.Up, Fwd = oh.Fwd }
+	local goal = WeaponPose.OffHandGoal(torso, placed, gripOf(leftHand, "LeftGripAttachment", T.LeftGrip), 1)
 	local p = typeof(oh.Pole) == "Vector3" and oh.Pole or T.Pole
 	local pose = fx.SolveArm(left, torso, goal, torso:VectorToWorldSpace(p))
 	if type(pose) ~= "table" then return false end

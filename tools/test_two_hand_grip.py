@@ -114,7 +114,8 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and ".Clamped then return" not in body, ""),
         ("walk / run / jump: the goals and the elbows live in torso space (the arm swing is replaced, not added)",
          "local aim = torso:VectorToWorldSpace(th.Aim.Unit)\n\tlocal hilt = torso * (th.Hilt * (k or 1))" in wp
-         and "(torso * left.Shoulder.C0).Position, gap, WeaponPose.BodyScale(right))" in wp
+         and "(torso * left.Shoulder.C0).Position, gap, 1)" in wp
+         and "local placed = { Hilt = WeaponPose.BodyPoint(th.Hilt, WeaponPose.Body(right, torsoPart)), Aim = th.Aim }" in wp
          and "torso:VectorToWorldSpace(T.PoleRight)" in body and "torso:VectorToWorldSpace(T.Pole)" in body
          and "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
         ("Studio probe measures every frame and prints the worst (walk sequences)",
