@@ -1,5 +1,24 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
+## ★ 10/12 12:20 쉬기 전 인계 (사용자 결정: 세션 7개로 줄임, 이미지 생성 1 쉼 → 땅 일은 이미지 생성 3이 짬 날 때)
+**WorldKit:** `build/WorldKit.rbxlx` 열린 창, MCP id **5835416f**(`STUDIO_ID=5835416f`, 또는 `STUDIO_NAME=WorldKit`; Studio가 다시 연결되면 id 바뀜 → `py tools/studio_mcp.py call list_roblox_studios '{}'`). 화면 사진은 매번 최종 검수 "전달함, 시작" 뒤, 찍기 전 `game.Lighting.ClockTime` = 14(낮) 확인(다른 세션 밤 사진과 안 겹치게).
+**백업:** `build/wk_backup/20261012_121149` (HaloV2 + 지형, 마지막 지형 쓰기 직후 아님 — 직전). 전체(56 roots) = `20261012_091151`. 되살리기 `py tools/worldkit/wk_backup.py load <폴더이름> [--only Workspace.HaloV2] --replace --terrain` (폴더는 이름만). 백업은 한 세션씩(동시에 돌면 shared.WKB가 지워져 "empty chunk").
+**WorldKit 지금 상태(12:11 지형 쓰기 = 코드 HEAD와 같음):** 옹벽 94조각(980파트), 길 밑 2 낮춤, 벽 뒤 땅 채움 74칸, 섬 테 돌출 5칸·움푹 3줄(아직 사진 확인 못 함), 소품 다시 앉힘(real 103 / stand-in 47 / 자리 상자 35).
+**다시 만드는 순서(창 필요 없음):**
+1. `py -X utf8 tools/halo_blockout.py --mode terrain` → `build/wk/halo_blockout_apply.lua` + `halo_walls.json` + `halo_sink.json` → execute_luau로 실행(`py -c "import json,os;json.dump({'code':open('build/wk/halo_blockout_apply.lua',encoding='utf-8').read(),'datamodel_type':'Edit'},open(os.environ['TEMP']+'/hb.json','w',encoding='utf-8'))"` 후 `py tools/studio_mcp.py call execute_luau @%TEMP%/hb.json`). apply 모드는 HaloV2를 지우니 쓰지 말 것.
+2. `py -X utf8 tools/worldkit/skeleton_ground_run.py --only walls` (길·계단 등은 바뀐 것 없으면 다시 안 지어도 됨; 다시 지으면 G()가 길 밑 낮춤을 되돌려 더함).
+3. `py -X utf8 tools/worldkit/halo_props_place.py` (땅 바뀌면 소품 다시 앉힘; 이미지 생성 4도 키트 바꾸면 직접 돌림).
+4. 사진 `SK_OUT=<폴더> py -X utf8 tools/worldkit/ground_shots.py --review2 r2_04 r2_05 r2_07 r2_17 r2_18` / `under_side under_south` / 무기고 `tools/worldkit/skeleton_civic_shots.py Armory_back`. 호출마다 60초 제한(멈추면 그 장 건너뜀, 빛은 원복). **지형 다시 쓴 직후 첫 캡처가 자주 멈춤 → 1~2분 뒤 찍기.**
+**디자인 검수 판정 상태(5단계):** 통과 = ① 흰 번짐·길 사이 잔디, 옹벽 ⓐ기둥 ⓑ금 띠·난간 ⓓ받침, 혼자 선 벽(높은 쪽 땅 = 벽 위), r2_05, 무기고 뒤 창, 새 집 7 임시 상자, 섬 멀리 역원뿔.
+**남은 것:**
+- ④ 섬 테: (가) 돌출 5칸·움푹 3줄 적용됨 → 가까이 + 멀리 사진 2장(under_side_close, under_south) → 디자인 검수. 그래도 밋밋하면 (나) Tripo 매달린 바위 3종(4면 2D → Tripo → Blender) — 개수·점수 정리해 최종 검수 승인.
+- r2_04: 계단 발치 위 사진 1장(`r2_18_stairfoot_top`) → 길 판이 잔디 위에 다 보이면 통과(숫자로는 판이 땅보다 0.6~2.2 위).
+- ⓒ 두 단 옹벽 43조각의 꽃 턱(RetainLedge_*, 속성 FlowerLedge, WalkGround 아님) = 덤불·꽃 소품 차례(키트 필요, halo_props_v2 SPEC에 자리 추가).
+- plan `dressing.stage5_fixes` 남은 것: 길 두 겹(헤링본 포장 위 디딤돌, door_House_Garden3), 반 잘린 디딤돌(Cliff4·Garden3), 하늘색 표시 기둥 숨김 확인(6단계 전), 새 섬 폭포(halo_waterfx가 옛 HaloTerrainStore Waterfalls를 읽음 → plan v2 falls W1·W2·W3), 대성당 굽은 계단 다리 양옆 난간 끊김 없이, 디딤돌 P086 WalkGround 태그(진짜 키트 때).
+- 새 집 7채: plan SKELETONS 임시 크기(A 19×14.4 / B 20×12.4) → 이미지 생성 3 진짜 골격 숫자로 바꾸고 `py -X utf8 tools/halo_plan_v2.py` → `tools/worldkit/halo_newhouse_boxes.py`(진짜 골격 넣으면 필요 없음).
+- 6단계(메인 옮김) 규칙: Map.Ground 폴더는 통째로 땅 → HaloV2.Ground의 Rails·*_line*·YardDot·*_Ring·Walls 장식(띠·기둥·난간)은 Decor로, 걷는 파트는 WalkGround 태그 유지, *Props 장식 이름에 Bridge·Stairs·Steps·Ramp 금지.
+**알아 둘 것:** 지형 겉 높이는 계획보다 0~+1 높게 그려질 수 있음(복셀 채움 반올림; SURF=2 규칙이 근사) — 길 밑 낮춤 2가 그 여유. 섬 아래 밝은 색(Limestone→Sandstone→Rock)은 섬 옆·아래만, 안쪽 땅 밑은 Rock(밝은 밑색이 잔디 비탈에 비쳤음). 격자 여백 EDGE 52(돌출 자리, X0 = -352).
+
 ## 10/12 12:00 5단계 3차 (디자인 검수 판정 대기)
 - **WorldKit MCP id = 5835416f** (사용자 Import 중 다시 연결돼 83b32720에서 바뀜; `STUDIO_ID=5835416f` 또는 `STUDIO_NAME=WorldKit`). 창 크기도 바뀜 → 사진 934×526(전 1920×656).
 - 사진은 매번 최종 검수 "전달함, 시작" 뒤 + 찍기 전 ClockTime 낮(14) 확인(이미지 생성 3 밤 사진과 안 겹치게).
