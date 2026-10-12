@@ -5,6 +5,8 @@
 
 **사용자 지시(10/12, 최종 검수 전달): 큰 리뷰·반박 검토 = `py tools/api_agent.py` 읽기 모드**(`--make-worktree <시험 병합 커밋> --model opus --max-usd 2~3`, 프롬프트는 scratchpad review_*.md 형식: 확인한 것/그럴 수 있는 것 + 파일:줄 + 장면). 앱 세션은 지휘·시험 sweep·짧은 확인. 남은 API 약 $85. 개발 1~4에도 '큰 코드는 API 쓰기 모드 먼저' 전달함.
 
+**병합 알림 받으면 확인:** `git merge-base --is-ancestor <가지 끝> origin/main` — 10/12 dev4-tonics 병합 5db4018e가 push 거절로 main에 안 들어갔는데 상태 파일만 올라간 적 있음(최종 검수에 알림, 다시 병합 대상 6867e71f).
+
 ## main에 병합됨 (지난밤까지 + 오늘)
 지난밤 목록 + fix/egg-mine, spawnclear-rim(+town_quests 정규식), imgdev-icons1, fix/pvp-toast, fix/staff-slope-hero. 메인 반영 1 사진: spawn probe 프롭 안 0·빈 시도 비율이 내 오프라인 실측과 몇 % 안, PvP 카드·Hero 자물쇠·지팡이 평지/경사 OK.
 

@@ -9124,12 +9124,14 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (6314), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3924 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    3.156,
-    1.261,
-    2.837
+    3.521,
+    1.394,
+    6.994
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Lantern_C/HaloVar4_Lantern_C_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-footprint: below the head base only the post is cut, the hanging lantern keeps its bottom",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_A_web_hd_mv4": [
@@ -9163,10 +9165,12 @@
    "size_studs": [
     1.425,
     1.417,
-    1.578
+    2.268
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Lantern_A/HaloVar4_Lantern_A_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-from 0.68: the Tripo's own head (neck up, 2.24 studs, 2D share) set on the kit head base; before, the cut at the kit head height took the lower glass cage",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_B_web_hd_mv4": [
@@ -9235,12 +9239,14 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (4479), weld then loose specks (0 faces), decimate to 4999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3878 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    4.544,
-    1.102,
-    3.363
+    4.541,
+    1.47,
+    6.999
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Lantern_D/HaloVar4_Lantern_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-footprint: below the head base only the post is cut, both hanging lanterns keep their bottoms",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar3_Lantern_E_web_hd_mv4": [
@@ -9333,11 +9339,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5417), weld then loose specks (6 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3970 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     3.168,
-    3.19,
-    1.869
+    3.122,
+    1.98
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 5417 -> 4230); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Lavender_web_hd_mv4": [
@@ -9370,11 +9377,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (11744), weld then loose specks (20 faces), decimate to 7836 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (4000 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     2.29,
-    2.237,
-    2.12
+    2.241,
+    2.118
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Lavender/HaloFlowerPotHQ_Lavender_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 11744 -> 5665); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Rose_web_hd_mv4": [
@@ -9411,7 +9419,8 @@
     3.499
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Rose/HaloFlowerPotHQ_Rose_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 2514 -> 995); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Sunflower_web_hd_mv4": [
@@ -9445,10 +9454,11 @@
    "size_studs": [
     2.729,
     2.104,
-    2.223
+    3.466
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8757 -> 5870); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Tulip_web_hd_mv4": [
@@ -9481,11 +9491,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7240), weld then loose specks (0 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3998 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     2.7,
-    2.672,
-    2.107
+    2.67,
+    2.252
    ],
    "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 7240 -> 5113); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_C_web_hd_mv4": [
@@ -9522,7 +9533,8 @@
     8.0
    ],
    "out": "art/models/tripo/touchup/HaloVar3_Topiary_C/HaloVar3_Topiary_C_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 9 -> 9); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_D_web_hd_mv4": [
@@ -9559,7 +9571,8 @@
     7.997
    ],
    "out": "art/models/tripo/touchup/HaloVar3_Topiary_D/HaloVar3_Topiary_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 36 -> 36); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_E_web_hd_mv4": [
@@ -9591,12 +9604,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=8)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7806), weld then loose specks (4 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3991 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    3.318,
-    2.946,
-    1.49
+    3.303,
+    2.93,
+    2.024
    ],
    "out": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 7806 -> 3002); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_E_web_hd_mv4": [
@@ -9633,7 +9647,8 @@
     10.0
    ],
    "out": "art/models/tripo/touchup/HaloVar3_RoundTree_E/HaloVar3_RoundTree_E_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 35 -> 35); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_F_web_hd_mv4": [
@@ -9670,7 +9685,8 @@
     9.999
    ],
    "out": "art/models/tripo/touchup/HaloVar3_RoundTree_F/HaloVar3_RoundTree_F_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 16 -> 16); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_G_web_hd_mv4": [
@@ -9707,7 +9723,8 @@
     10.0
    ],
    "out": "art/models/tripo/touchup/HaloVar3_RoundTree_G/HaloVar3_RoundTree_G_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 21 -> 21); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloReasonHQ_BenchB_web_hd_mv4": [
@@ -10368,12 +10385,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5193), weld then loose specks (7 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3980 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    2.329,
-    2.367,
-    2.983
+    2.336,
+    2.357,
+    2.985
    ],
    "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_A/HaloVar4_PotFlowers_A_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 5193 -> 2542); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_C_web_hd_mv4": [
@@ -10406,11 +10424,12 @@
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8542), weld then loose specks (0 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3990 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
     1.888,
-    1.654,
-    0.975
+    1.714,
+    1.112
    ],
    "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_C/HaloVar4_PotFlowers_C_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8542 -> 5463); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_D_web_hd_mv4": [
@@ -10442,12 +10461,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (9378), weld then loose specks (9 faces), decimate to 7000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3840 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    2.59,
-    2.494,
-    0.827
+    2.599,
+    2.57,
+    0.966
    ],
    "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 9378 -> 5158); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_PotFlowers_E_web_hd_mv4": [
@@ -10479,12 +10499,13 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8948), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3962 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    2.371,
-    2.293,
+    2.457,
+    2.425,
     2.83
    ],
    "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_E/HaloVar3_PotFlowers_E_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8948 -> 3794); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_PotFlowers_F_web_hd_mv4": [
@@ -10516,12 +10537,15 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (10396), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3993 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    1.807,
-    1.482,
-    2.431
+    1.891,
+    1.618,
+    2.427
    ],
    "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--keep-green --drop-low 0.1: the Tripo already had the long trailing vines; the pot cut had taken them. Leaf-green faces now survive the cut (14512), 4 loose pieces wholly below the rim dropped (91 faces). No new Tripo needed.",
+   "sheet_fix": "art/review/img4/tripo_tu_potflowersF_vines_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 3607 -> 3057); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [
@@ -10558,7 +10582,8 @@
     5.808
    ],
    "out": "art/models/tripo/touchup/HaloVar4_Planter_D/HaloVar4_Planter_D_TU.glb (+ maps, disk only)",
-   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 2132 -> 2132); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "halo_houses15_deco_tripo_2026-10-12": [
@@ -11427,7 +11452,10 @@
     4.422
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11499,7 +11527,10 @@
     4.66
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11751,7 +11782,10 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11823,7 +11857,10 @@
     4.659
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12075,7 +12112,10 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12111,7 +12151,10 @@
     4.541
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12147,7 +12190,10 @@
     4.663
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [

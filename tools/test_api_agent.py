@@ -398,6 +398,19 @@ def write_checks(base):
             t, e = T.call("write_file", {"path": "src/more.luau", "content": "x" * 50})
             check("write: total byte budget", e and "budget" in t, t)
             A.LIMITS.update(old)
+            # an edit costs the new text only, not the whole file (a big Config.luau edited many times)
+            with open(os.path.join(wt, "src", "huge.luau"), "w", encoding="utf-8") as f:
+                f.write("-- pad\n" * 20000 + "local marker = 1\n")
+            before = ctx.bytes
+            t, e = T.call("edit_file", {"path": "src/huge.luau", "old_string": "local marker = 1", "new_string": "local marker = 2"})
+            check("edit: the budget counts the new text, not the whole file", not e and ctx.bytes - before == 16,
+                  f"{t} / +{ctx.bytes - before}")
+            A.LIMITS["write_total_bytes_max"] = ctx.bytes + 20
+            t, e = T.call("edit_file", {"path": "src/huge.luau", "old_string": "local marker = 2", "new_string": "local marker = 3"})
+            check("edit: a small edit of a huge file fits a small budget", not e, t)
+            t, e = T.call("edit_file", {"path": "src/huge.luau", "old_string": "local marker = 3", "new_string": "local marker = 4" + "x" * 40})
+            check("edit: a big new text still hits the budget", e and "budget" in t, t)
+            A.LIMITS.update(old)
             A.LIMITS["write_files_max"] = len(ctx.touched)
             t, e = T.call("write_file", {"path": "src/another.luau", "content": "x"})
             check("write: file count limit", e and "too many" in t, t)

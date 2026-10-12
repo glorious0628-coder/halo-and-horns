@@ -62,6 +62,7 @@
  "awning": {
   "w": 16.0,
   "u": 0.5,
+  "arms": true,
   "colors": [
    [
     110,

@@ -48,6 +48,11 @@ from prop_kit_bl import bounds, build_kit  # noqa: E402
 argv = sys.argv[sys.argv.index("--") + 1:]
 ap = argparse.ArgumentParser()
 ap.add_argument("job")
+ap.add_argument("--head-from", type=float, default=0.0, help="head: keep the Tripo from this share of its height up (its own head) and set it on the kit head base")
+ap.add_argument("--head-footprint", action="store_true", help="head: below the head base cut only inside the kit body's footprint (hanging lanterns stay)")
+ap.add_argument("--drop-low", type=float, default=0.0, help="plant: drop loose islands lying wholly this far below the pot rim (floating leaf bits)")
+ap.add_argument("--keep-green", action="store_true", help="plant: leaf-green faces survive the pot cut (vines hanging over the pot)")
+ap.add_argument("--organic", action="store_true", help="outline like a plant (coarse voxel = one line round the leaf mass), for whole bushes")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
 ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
 ap.add_argument("--fit", default="h=1", help="h=<height> or w=<width> in studs (ontop: w=<factor of the body length>)")
@@ -197,6 +202,13 @@ else:
                     s *= k
                     stats["rim_calib"] = {"tripo_rim": round(float(rim), 3), "body_top": round(bmx.z, 3), "k": round(k, 3)}
                     log("rim calib k %.3f (tripo rim %.2f -> body top %.2f)" % (k, rim, bmx.z))
+if a.kind == "head" and a.head_from > 0:
+    # the Tripo's own head (from --head-from of its height, e.g. the neck above the knob) goes on the kit's head base,
+    # instead of cutting the Tripo lantern at the kit head height (Lantern_A lost the lower half of its glass cage, 10/12)
+    hz = max(v.co.z for v in me.vertices)
+    shift = stats["head_cut_z"] - a.head_from * hz
+    me.transform(Matrix.Translation((0, 0, shift)))
+    stats["head_from"] = {"share": a.head_from, "tripo_head_h": round((1 - a.head_from) * hz, 3), "shift": round(shift, 3)}
 me.update()
 stats["scale"] = round(s, 4)
 stats["src_tris"] = tris(src)
@@ -224,9 +236,21 @@ if a.kind == "plant":
     def r_at(z):
         r = [sp[2] for sp in spans if sp[0] - a.tol <= z <= sp[1] + a.tol]
         return max(r) if r else -1.0
+    green = None
+    if a.keep_green:
+        # vines hanging over the pot lie on its surface, inside the cut: keep the leaf-green faces (Tripo had the
+        # long trailing vines of PotFlowers_F, the cut took them, 10/12)
+        hsv = PB.Source([src]).tri_hsv()
+        if len(hsv) == len(bm.faces):
+            green = (hsv[:, 0] > 55) & (hsv[:, 0] < 170) & (hsv[:, 1] > 0.25) & (hsv[:, 2] > 0.12)
+            stats["keep_green"] = int(green.sum())
+        else:
+            log("keep-green skipped: %d colours for %d faces" % (len(hsv), len(bm.faces)))
     for f in bm.faces:
         c = f.calc_center_median()
         if c.z < ztop + a.tolz and (a.below_all or math.hypot(c.x, c.y) < r_at(c.z) + a.tol):
+            if green is not None and green[f.index]:
+                continue
             kill.append(f)
 elif a.kind == "goods":
     from mathutils.bvhtree import BVHTree
@@ -243,7 +267,21 @@ elif a.kind == "goods":
             kill.append(f)
 elif a.kind == "head":
     zc = stats["head_cut_z"] - 0.02
-    kill = [f for f in bm.faces if f.calc_center_median().z < zc]
+    if a.head_footprint:
+        # below the head base cut only what stands inside the kit body at that height (the post); lanterns hanging
+        # off the arm below the base stay whole (Lantern_C / D lost their bottoms, 10/12)
+        spans = []
+        for o in body_obs:
+            W = np.array([(o.matrix_world @ v.co)[:] for v in o.data.vertices])
+            spans.append((W[:, 2].min(), W[:, 2].max(), np.sqrt(W[:, 0] ** 2 + W[:, 1] ** 2).max()))
+
+        def r_at(z):
+            r = [sp[2] for sp in spans if sp[0] - a.tol <= z <= sp[1] + a.tol and sp[2] < 1.0]
+            return max(r) if r else -1.0
+        kill = [f for f in bm.faces if f.calc_center_median().z < zc
+                and math.hypot(f.calc_center_median().x, f.calc_center_median().y) < r_at(f.calc_center_median().z) + a.tol]
+    else:
+        kill = [f for f in bm.faces if f.calc_center_median().z < zc]
 stats["faces_cut"] = len(kill)
 bmesh.ops.delete(bm, geom=kill, context="FACES")
 # dust: loose islands of a handful of faces - weld first: the glTF import splits vertices at UV seams, so before the
@@ -267,6 +305,13 @@ for f in bm.faces:
     islands.append(isl)
 dust = [g for isl in islands if len(isl) < a.dust for g in isl]
 stats["dust_faces"] = len(dust)
+if a.drop_low and a.kind == "plant" and "body_top" in stats:
+    # loose pieces that hang wholly below the pot rim (leaf bits left round the foot after the pot was cut away) float
+    # in the game: 디자인 검수 12-item check 4, PotFlowers_F 10/12. Pieces joined to the plant above the rim stay.
+    zl = stats["body_top"] - a.drop_low
+    low = [isl for isl in islands if len(isl) >= a.dust and max(v.co.z for g in isl for v in g.verts) < zl]
+    stats["low_islands"] = {"count": len(low), "faces": sum(len(i) for i in low), "below": round(zl, 3)}
+    dust += [g for isl in low for g in isl]
 bmesh.ops.delete(bm, geom=dust, context="FACES")
 bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
 bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
@@ -317,7 +362,14 @@ if a.outline > 0:
     outline.name = NAME + "_Outline"
     bpy.context.scene.collection.objects.link(outline)
     outline.data.materials.clear()
-    vox = a.outline_voxel or max(0.03, 0.015 * max(mx - mn))
+    if a.outline_voxel:
+        vox = a.outline_voxel
+    elif a.kind in ("plant", "ontop") or a.organic:
+        # leaves / flowers: a fine voxel wraps every leaf in its own shell = dark rims round each leaf and black gaps
+        # (디자인 검수 10/12 "잎 사이 검음"); 4.5 % of the size (max 0.15 stud) closes the gaps -> one line round the mass
+        vox = min(0.15, max(0.03, 0.045 * max(mx - mn)))
+    else:
+        vox = max(0.03, 0.015 * max(mx - mn))
     select_only([outline], outline)
     rm = outline.modifiers.new("remesh", "REMESH")
     rm.mode = "VOXEL"
@@ -392,12 +444,12 @@ if a.preview:
     w = bpy.data.worlds.new("w")
     sc.world = w
     w.use_nodes = True
-    w.node_tree.nodes["Background"].inputs[0].default_value = (0.13, 0.135, 0.145, 1)
-    for nm, en, rot in (("sun", 3.0, (50, 0, 200)), ("fill", 1.0, (60, 0, 20))):
-        L = bpy.data.objects.new(nm, bpy.data.lights.new(nm, "SUN"))
-        L.data.energy = en
-        L.rotation_euler = tuple(math.radians(v) for v in rot)
-        sc.collection.objects.link(L)
+    # 10/12: grey sky + a key light from the camera side (upper left) for every view - the old fixed sun lit the
+    # back, so plants read darker than they are (디자인 검수 "잎이 2D보다 어두움")
+    w.node_tree.nodes["Background"].inputs[0].default_value = (0.42, 0.43, 0.45, 1)
+    key = bpy.data.objects.new("key", bpy.data.lights.new("key", "SUN"))
+    key.data.energy = 3.2
+    sc.collection.objects.link(key)
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
     sc.collection.objects.link(cam)
     sc.camera = cam
@@ -408,6 +460,8 @@ if a.preview:
         d = Vector((math.sin(math.radians(az)), math.cos(math.radians(az)), 0)) * math.cos(el) + Vector((0, 0, math.sin(el)))
         cam.location = ctr + d * (size * 3)
         cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
+        side = Vector((d.x, d.y, 0)).normalized().cross(Vector((0, 0, 1)))
+        key.rotation_euler = (-(d * 0.75 + side * 0.45 + Vector((0, 0, 0.7))).normalized()).to_track_quat("-Z", "Y").to_euler()
         sc.render.filepath = os.path.join(OUT, "%s_%s.png" % (NAME, view))
         bpy.ops.render.render(write_still=True)
     log("preview done")
