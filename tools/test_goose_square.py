@@ -33,7 +33,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # --- the space
-    ("space: built every time", Q, "\tlocal m = W.Model()\n\tif not m then\n", "\tlocal m = nil\n\tif not m then\n"),
+    ("space: built every time", Q, "\tlocal m = W.Model()\n\tif not m or not W.HasFloor(m) then\n", "\tlocal m = nil\n\tif not m then\n"),
+    ("space: a floorless model kept as it is", Q, "\tif not m or not W.HasFloor(m) then\n", "\tif not m then\n"),
+    ("space: a see-through floor counts", Q, "if d:IsA(\"BasePart\") and d.CanCollide and d.Transparency < 1 then", "if d:IsA(\"BasePart\") then"),
+    ("join: a gone square not rebuilt", Q, "\tif not W.HasFloor(W.Model()) then GooseSquare.Ensure() end", "\tlocal _ = 0"),
     ("space: the model's attributes ignored", Q, "\tif typeof(a) == \"Vector3\" then return a end\n", ""),
     ("space: no offset for a missing mark", Q, "\t\tif typeof(s[name]) ~= \"Vector3\" then s[name] = c + off end\n", ""),
     ("space: the Floor is not the area", Q, "\t\ts.AreaCF, s.AreaSize = floor.CFrame, floor.Size\n", ""),
