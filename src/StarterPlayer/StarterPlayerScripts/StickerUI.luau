@@ -7,6 +7,8 @@
 -- drops anything else without a word) and closes the picker. The server's Fx "Sticker" { UserId, Key } draws the art over
 -- that player's head (one at a time per player: a new one replaces it), a short pop in, a fade out. No words, no tips
 -- (A23-130); only approved parts + UIKit fallbacks. Pure helpers (Rows, CanSend) are tested offline (tools/test_sticker_ui.py).
+-- A23-144 (최종 검수 10/13): under the stickers, one row of chat bubble skins (BubbleUI.MyRows: my side's free one + the
+-- pack's) - the worn one framed (Worn), a locked one dimmed with IconLock (a press opens the Shop), else BubbleUI.Pick.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -33,6 +35,8 @@ local L = {
 	Head = { Size = 3, Up = 2.6, Range = 90 }, -- over-head: studs wide, studs over the head's centre, seen from
 	Pop = 0.18, Fade = 0.35, -- s
 	GapPad = 0.15, -- s over the server's rate limit
+	BubbleGap = 14, -- du between the stickers and the bubble row
+	WornColor = Color3.fromRGB(255, 214, 110), WornThick = 3, -- the worn bubble's frame
 }
 local S = { Open = false, LastAt = -math.huge, Gui = nil, Cells = {}, Heads = {} } -- Heads[userId] = { Gui, Token }
 
@@ -148,6 +152,11 @@ local function openShop()
 	if type(panels) == "table" and type(panels.Open) == "function" then pcall(panels.Open, "Shop") end
 end
 
+local function bubbleUI()
+	local b = C and C.BubbleUI
+	return (type(b) == "table" and type(b.MyRows) == "function") and b or nil
+end
+
 local function paint()
 	local pass = hasPass()
 	for _, row in StickerUI.Rows(pass) do
@@ -155,6 +164,20 @@ local function paint()
 		if cell then
 			if cell.Art then cell.Art.ImageTransparency = row.Locked and L.LockedFade or 0 end
 			if cell.Lock then cell.Lock.Visible = row.Locked end
+			cell.Locked = row.Locked
+		end
+	end
+	local b = bubbleUI()
+	local ok, rows = pcall(function() return b and b.MyRows() or {} end)
+	for _, row in ok and rows or {} do
+		local cell = S.Bubbles and S.Bubbles[row.Key]
+		if cell then
+			if cell.Art then
+				if cell.Art:IsA("ImageLabel") then cell.Art.ImageTransparency = row.Locked and L.LockedFade or 0
+				else cell.Art.BackgroundTransparency = row.Locked and L.LockedFade or 0 end
+			end
+			if cell.Lock then cell.Lock.Visible = row.Locked end
+			if cell.Worn then cell.Worn.Enabled = row.Worn == true end
 			cell.Locked = row.Locked
 		end
 	end
@@ -166,8 +189,12 @@ local function buildPicker()
 	local rows = StickerUI.Rows(hasPass())
 	local cols = L.Cols
 	local lines = math.ceil(#rows / cols)
-	local w = L.Pad * 2 + cols * L.Cell + (cols - 1) * L.Gap
-	local h = L.Pad * 2 + lines * L.Cell + (lines - 1) * L.Gap
+	local b = bubbleUI()
+	local okB, bubbles = pcall(function() return b and b.MyRows() or {} end)
+	bubbles = okB and bubbles or {}
+	local bcols = math.max(cols, #bubbles)
+	local w = L.Pad * 2 + bcols * L.Cell + (bcols - 1) * L.Gap
+	local h = L.Pad * 2 + lines * L.Cell + (lines - 1) * L.Gap + (#bubbles > 0 and (L.BubbleGap + L.Cell) or 0)
 	local panel = kit.ArtFrame("PanelCard", {
 		Name = "StickerPicker", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -L.Bottom),
 		Size = UDim2.fromOffset(w, h), Visible = false, ZIndex = 40,
@@ -196,6 +223,52 @@ local function buildPicker()
 			Position = UDim2.fromScale(0.78, 0.22), Size = UDim2.fromScale(L.LockSize, L.LockSize), ZIndex = 43, Visible = false })
 		if lock then lock.Parent = btn end
 		S.Cells[key] = { Button = btn, Art = art, Lock = lock, Locked = row.Locked }
+	end
+	-- A23-144: the bubble row (art when uploaded, else the skin's colour as a small rounded bubble)
+	S.Bubbles = {}
+	local top = L.Pad + lines * L.Cell + (lines - 1) * L.Gap + L.BubbleGap
+	for i, row in bubbles do
+		local key = row.Key
+		local btn = kit.ArtButton("SlotCommon", {
+			Name = "Bubble_" .. key, Position = UDim2.fromOffset(L.Pad + (i - 1) * (L.Cell + L.Gap), top),
+			Size = UDim2.fromOffset(L.Cell, L.Cell), ZIndex = 41,
+		}, function()
+			local cell = S.Bubbles[key]
+			if cell and cell.Locked then
+				closePicker()
+				openShop()
+				return
+			end
+			local ok, sent = pcall(b.Pick, key)
+			if ok and sent then closePicker() end
+		end, { BackgroundColor3 = Color3.fromRGB(46, 52, 80) })
+		btn.Parent = panel
+		local art = kit.ArtImage(key, { Name = "Art", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromScale(0.78, 0.6), ScaleType = Enum.ScaleType.Fit, ZIndex = 42 })
+		if not art and type(b.LookOf) == "function" then
+			local look = b.LookOf(key)
+			art = Instance.new("Frame")
+			art.Name = "Art"
+			art.AnchorPoint = Vector2.new(0.5, 0.5)
+			art.Position = UDim2.fromScale(0.5, 0.5)
+			art.Size = UDim2.fromScale(0.72, 0.48)
+			art.BackgroundColor3 = look and look.Bg or Color3.new(1, 1, 1)
+			art.ZIndex = 42
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0.35, 0)
+			corner.Parent = art
+		end
+		if art then art.Parent = btn end
+		local lock = kit.ArtImage("IconLock", { Name = "Lock", AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.78, 0.22), Size = UDim2.fromScale(L.LockSize, L.LockSize), ZIndex = 43, Visible = false })
+		if lock then lock.Parent = btn end
+		local worn = Instance.new("UIStroke")
+		worn.Name = "Worn"
+		worn.Color = L.WornColor
+		worn.Thickness = L.WornThick
+		worn.Enabled = row.Worn == true
+		worn.Parent = btn
+		S.Bubbles[key] = { Button = btn, Art = art, Lock = lock, Worn = worn, Locked = row.Locked }
 	end
 	return panel
 end
@@ -247,6 +320,11 @@ function StickerUI.Start()
 	LocalPlayer:GetAttributeChangedSignal(attr):Connect(function()
 		if S.Gui then pcall(paint) end
 	end)
+	for _, a in { "PassBubbles", "BubbleOn" } do -- A23-144: the bubble pack bought / my skin changed
+		LocalPlayer:GetAttributeChangedSignal(a):Connect(function()
+			if S.Gui then pcall(paint) end
+		end)
+	end
 	Players.PlayerRemoving:Connect(function(p)
 		local rec = S.Heads[p.UserId]
 		if rec and rec.Gui then pcall(function() rec.Gui:Destroy() end) end
