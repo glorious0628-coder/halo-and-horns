@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 203,
+  "checks": 204,
   "failedChecks": 0,
-  "namedChecks": 193,
+  "namedChecks": 194,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -615,7 +615,7 @@
     },
     {
       "group": "pets",
-      "check": "setup: my pet P1 (it follows), PetAcc 0",
+      "check": "setup: my pet P1 (it follows), no PetAcc (nil)",
       "pass": 1,
       "fail": 0
     },
@@ -957,6 +957,12 @@
     },
     {
       "group": "max hp / speed / watch",
+      "check": "a Config without GearMultsOf: the plain max HP, no error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "max hp / speed / watch",
       "check": "the switch off: the plain max HP",
       "pass": 1,
       "fail": 0
@@ -1167,12 +1173,12 @@
     }
   ],
   "findings": [],
-  "staticChecks": 25,
+  "staticChecks": 28,
   "staticFailures": [],
   "mutations": {
-    "total": 105,
-    "applied": 105,
-    "caught": 105,
+    "total": 106,
+    "applied": 106,
+    "caught": 106,
     "skipped": false,
     "results": [
       {
@@ -1396,10 +1402,9 @@
         "newFailingChecks": [
           "config :: GearMult: a real number >= 1, anything else 1",
           "config :: missing / NaN / below 1 / infinity / text = 1",
-          "max hp / speed / watch :: the ring / NaN / below 1: the plain max HP",
           "power :: a bad gear multiplier counts as 1"
         ],
-        "newFailingCount": 4
+        "newFailingCount": 3
       },
       {
         "mutation": "config: GearMultsOf ignores the switch",
@@ -1821,9 +1826,9 @@
           "pets :: 20 x 1.8 = 36; PetAcc follows the pet that follows (P1)",
           "pets :: PetArmor on the same pet (a row of two slots)",
           "pets :: PetService republished: the PetAcc attribute 0.01, then the speed refresh",
-          "pets :: another pet follows (no PetAcc): PetAcc 0"
+          "pets :: swap: PetAcc T3 +2 = 0.04, the T1 back in Own"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 6
       },
       {
         "mutation": "pet: PetAcc from the armor",
@@ -2546,6 +2551,17 @@
           "pets :: a sixth kill: 1 more (the used-up fraction is gone)"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "hook: max HP calls Config directly",
+        "file": "src/ServerScriptService/PlayerService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "max hp / speed / watch :: a Config without GearMultsOf: the plain max HP, no error"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -2556,13 +2572,13 @@
     "src/ReplicatedStorage/Shared/Config.luau": "51d42decc11427471583c32fba60f04d5fed07328e5d92a282fe8713a02b6ab6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ServerScriptService/GearService.luau": "80adf8bc8b50650927dc950317edbbdcaec5d237493b4f20feecd500cb3183f7",
-    "src/ServerScriptService/PetService.luau": "d0b7a0841f1269c75e24d4620c987ff7b66e81e624a0f921245e3038d6a9c062",
-    "src/ServerScriptService/CombatService.luau": "8d9e02c1c0aef0e628c76807dd7bc5d568280d0256eb9bfcfbf4e9d7c0987f96",
+    "src/ServerScriptService/PetService.luau": "b7a6688db63ce2832518c82b62e81fbeefb1f257c79fbac98e71a6e5809e2df3",
+    "src/ServerScriptService/CombatService.luau": "b49963a08397ea9d5cda2a02fdd522f278b8e468ac73ef84842412bb0eb21781",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
-    "src/ServerScriptService/PlayerService.luau": "8992841de671fd0e580317d8ec49e8240bff9964a1551e9f3103d3ee39498b39",
+    "src/ServerScriptService/PlayerService.luau": "48e6230ef57e89a418697715367e6c3df16f46c76b28d1e73cea2f850acfa254",
     "src/ServerScriptService/JusticeService.luau": "4a8733f87579841fa0d02dbfde562c84c5ade0b05d3f2fb196cd7a44a0e335ad"
   },
-  "fixtureSHA256": "cf05ed99945a44c02256a5913d0ef4f5eb45fe0d9d5bf774ab9a52374741f63a",
+  "fixtureSHA256": "f339c7b3b16fe3637ed90e7eff50da7b55b45c661df3ee7f7bb0f23e8049eb74",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

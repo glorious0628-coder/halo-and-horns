@@ -357,7 +357,7 @@ runGroup("pets", function()
 	local p, d = gearer(w, 1, bag({ ["PetAcc:1:0"] = 1, ["PetAcc:2:0"] = 1, ["PetAcc:3:2"] = 1, ["PetArmor:1:0"] = 1, ["PetArmor:2:1"] = 1, ["PetArmor:3:2"] = 1, ["Armor:1:0"] = 1 }))
 	local uid = w.P.SummonPet(p, "BabySlime", { Spd = 6 })
 	local total = things(d)
-	check(uid == "P1" and p:GetAttribute("PetAcc") == 0, "setup: my pet P1 (it follows), PetAcc 0", tostring(p:GetAttribute("PetAcc")))
+	check(uid == "P1" and p:GetAttribute("PetAcc") == nil, "setup: my pet P1 (it follows), no PetAcc (nil)", tostring(p:GetAttribute("PetAcc")))
 	local from = #w.Notices
 	local speeds = #w.Speeds
 	check(w.G.EquipPet(p, "P1", "PetAcc", "1:0") == "ok" and d.Gear.Pet.P1.PetAcc == "1:0" and d.Gear.Own["PetAcc:1:0"] == nil and things(d) == total,
@@ -425,11 +425,11 @@ runGroup("pets", function()
 	-- the pet that follows changes: PetAcc follows
 	w.Gap = 1
 	w:Remote("EquipPet", p, u2)
-	check(p:GetAttribute("PetAcc") == 0, "another pet follows (no PetAcc): PetAcc 0", tostring(p:GetAttribute("PetAcc")))
+	check(p:GetAttribute("PetAcc") == nil, "another pet follows (no PetAcc): PetAcc 0", tostring(p:GetAttribute("PetAcc")))
 	w.G.EquipPet(p, u2, "PetAcc", "2:0")
 	check(near(p:GetAttribute("PetAcc"), 0.02), "... and its own PetAcc 0.02 once it wears one", tostring(p:GetAttribute("PetAcc")))
 	-- take off
-	check(w.G.EquipPet(p, u2, "PetAcc", "") == "ok" and p:GetAttribute("PetAcc") == 0 and d.Gear.Pet[u2].PetAcc == nil and d.Gear.Own["PetAcc:2:0"] == 1, "take off: PetAcc 0, back to Own", show(d.Gear))
+	check(w.G.EquipPet(p, u2, "PetAcc", "") == "ok" and p:GetAttribute("PetAcc") == nil and d.Gear.Pet[u2].PetAcc == nil and d.Gear.Own["PetAcc:2:0"] == 1, "take off: PetAcc 0, back to Own", show(d.Gear))
 	check(w.G.EquipPet(p, u2, "PetArmor", "") == "ok" and d.Gear.Pet[u2] == nil, "a pet that wears nothing has no row", show(d.Gear.Pet))
 	check(w.G.EquipPet(p, u2, "PetArmor", "") == "none", "nothing worn: none", "")
 	-- my pet only, the right slots, the same checks
@@ -457,7 +457,7 @@ runGroup("pets", function()
 	o.P.SummonPet(q, "BabySlime", { Spd = 6 })
 	dq.Gear.Pet = { P1 = { PetAcc = "3:2", PetArmor = "3:2" } }
 	o.P.Refresh(q)
-	check(q:GetAttribute("PetAcc") == 0, "switch off: a worn PetAcc gives nothing", tostring(q:GetAttribute("PetAcc")))
+	check(q:GetAttribute("PetAcc") == nil, "switch off: a worn PetAcc gives nothing", tostring(q:GetAttribute("PetAcc")))
 	local xp0 = lvXP(dq.Pets.List.P1)
 	o.P.AddPetXP(q, "P1", 20)
 	check(lvXP(dq.Pets.List.P1) - xp0 == 20, "switch off: a worn PetArmor gives nothing (plain pet XP)", tostring(lvXP(dq.Pets.List.P1) - xp0))
@@ -573,6 +573,12 @@ runGroup("max hp / speed / watch", function()
 	check(hpOf({ GearHp = 1.22 }) == math.floor(C.MaxHealth(20, "Halo", "Warrior") * 1.22) and hpOf({ GearHp = 1.06 }) == math.floor(C.MaxHealth(20, "Halo", "Warrior") * 1.06),
 		"computeMaxHealth: the real max HP x the armor's hp mult (floored)", show({ plain, hpOf({ GearHp = 1.22 }) }))
 	check(hpOf({ GearAtk = 1.14 }) == plain and hpOf({ GearHp = 0 / 0 }) == plain and hpOf({ GearHp = 0.5 }) == plain, "the ring / NaN / below 1: the plain max HP", "")
+	-- 게임성 검수 10/12: a Config without gear (test_owner_restore's trimmed one, an older build) never errors
+	local trimmed = execute("Config", CONFIG_SOURCE, nativeEnv())
+	trimmed.GearMultsOf = nil
+	local maxHPt = execute("MaxHP", MAXHP_SOURCE, env, trimmed, stat, function() return 1 end)
+	local okT, hpT = pcall(maxHPt, fake({ Level = 20, Faction = "Halo", Class = "Warrior", GearHp = 1.22 }))
+	check(okT and hpT == trimmed.MaxHealth(20, "Halo", "Warrior"), "a Config without GearMultsOf: the plain max HP, no error", tostring(hpT))
 	local off = gWorld({ Off = true })
 	local maxHPoff = execute("MaxHP", MAXHP_SOURCE, off:Env(), off.Config, stat, function() return 1 end)
 	check(maxHPoff(fake({ Level = 20, Faction = "Halo", Class = "Warrior", GearHp = 1.22 })) == plain, "the switch off: the plain max HP", "")
