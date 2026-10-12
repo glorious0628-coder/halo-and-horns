@@ -1,5 +1,16 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 정리 (사용자 "정리하고 컴퓨터 꺼줘") — 다음 세션은 여기부터
+- **잔액 9,385.** 도는 Tripo 일 없음(전부 끝남). 브라우저 탭 seed = Tripo 로그인 그대로, localStorage 함수 hhTexFn/hhSetFn/hhGoFn/hhPbrFn + Cache 'hh' /hh-bundle3~7(hhIdx3~7; 다시 열면 캐시가 없을 수 있음 → 4면 묶음 다시 올림).
+- **끝·넘길 것:** 9종 PBR 완성 + WingR 거울 = 디자인 검수 통과 → **이미지 생성 3에 넘기기(아직 메시지 안 보냄)**: `art/models/tripo/touchup/<id>/<id>_TU.glb` (DoorSingle·LampArm·CastleWingL·CastleWingR·DomeRibbed·DoorDouble·WindowBoxA·BenchA·BenchC·CastleRose). 메모: CastleRose 뒤 파란 원판, WindowBoxA DoubleSided, LampArm 유리 칸 = Studio 유리 파트. records.json 기록 완료, src FBX push.
+- **PBR 누르기(5) — OK 받음:** GateLeaf 2bc07ecc(텍스처 6bb26988), DomeOnion 414b871a(텍스처 c6d08561) → hhPbrFn → 내려받기 → build_glb.py → 이미지 생성 3.
+- **PBR 판정 대기(디자인 검수 다음 세션 첫 일):** 텍스처 끝 ConeTree 2bbbd641, DomeOctagon f9e91fe2, DomeBall 66894770, FlowerCart af2e2b5f(흰 모델 꽃 화분이 작고 성김), BenchB b8de1d3c. 내 확인 시트 scratchpad tex_b5/b5_tex.jpg(지워질 수 있음).
+- **텍스처 누르기(30) — OK 받음, 아직 안 누름:** DomeOnionSlim 40dad418-dbd3-4840-a282-ff632a7a9acf, BreadStand 00dac363-0f24-4b60-acff-44c9dce79e52, FruitStall 568b5b8e-f20d-4c23-b79e-332bda8067be, DomeBrick 46f0bb09-49cb-4426-a380-60ae02ae07ea (앞면 슬라이스 /hh-bundle6, hhIdx6; 키 `<이름>_front`). **텍스처 전에 내가 흰 모델 직접 확인**(아직 못 봄).
+- **JuiceParasol 흰 모델 4개(100 씀):** 6ec4d75d / 52b68046 / 46c0419e / 89bac495 → 디자인 검수가 다음 세션에 고름(내 의견 6ec4d75d). 텍스처 누르지 말 것.
+- **스마트 메시(100) 대기 — 4면 통과:** HaloChunk_Greenhouse(chunks/), HaloChunk_ShopSign(chunks/), HaloVar4_Lantern_A, HaloVar4_Lantern_C, HaloVar4_Lantern_D, HaloVar3_Lantern_E (art/out/s2/noshadow/…_{front,left,right,back}_ns.png). 관문: 금 틀·가는 팔·사슬 끊김, 유리 막힘/뚫림, 꼭대기 공, ShopSign 판 가운데 평평. Lantern_B는 받침 손질 뒤. IvyWall은 안 함(다시 그림).
+- **매직 브러시 보류 5곳(창 보여야 함, 그 뒤 PBR):** 동상 B 1a0812be — ①뒤 파란 앞치마 → 흰 대리석 ②발 사이 검은 점; 분수 C cd70436c — ③2단 물의 크림/주황 얼룩 → 물 파랑(어두운 고리 선택); ④Daisy c9df2ff9 주황 꽃 → 빨강/흰; ⑤Rose 9e0487cc 위 갈색 얼룩 → 분홍.
+- MailBoy(사람) = 맨 마지막.
+
 ## 10/13 새벽 — 진행판 (보고처 = 디자인 검수 local_2137d284…, 점수 승인도)
 - 순서: 4면 → 스마트 메시(100) → 흰 모델 id를 디자인 검수에(Tripo에서 직접 봄) → 나도 받아서 봄, 다르면 상의 → 텍스처 첫 칸 앞면 한 장+조명 제거+8K(30) → 디자인 검수 확인 → (고칠 곳은 Tripo 편집/매직 브러시, 창 보여야 함) → PBR 한 번(5) → 내려받기 → Blender 크기·피벗·방향만.
 - 동상 B 1a0812be·분수 C cd70436c: 텍스처 끝, 매직 브러시 3곳 대기(창 숨김) → 그 뒤 PBR. Daisy c9df2ff9·Rose 9e0487cc도 매직 브러시 대기. Lavender·Tulip·Sunflower PBR 돌림.

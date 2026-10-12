@@ -13284,5 +13284,206 @@
    "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched; size 0.79 x 0.58 x 1.0 model units)",
    "next": "이미지 생성 3: WorldKit + Roblox material (maps to 1024; 디자인 검수 note: Sunflower metal ~0.3 on leaves, Lavender low roughness — raise roughness only if leaves shine in day photos)"
   }
+ ],
+ "HaloChunk_DoorSingle_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "d61f68e6 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_DoorSingle_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_DoorSingle_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_DoorSingle_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_DoorSingle_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_DoorSingle_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_DoorSingle/HaloChunk_DoorSingle_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material"
+  }
+ ],
+ "HaloChunk_LampArm_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "6895c425 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_LampArm_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_LampArm_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_LampArm_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_LampArm_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_LampArm_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_LampArm/HaloChunk_LampArm_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material; Studio: glass part covers the blue-marble glass panes"
+  }
+ ],
+ "HaloChunk_CastleWingL_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "10bf8543 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_CastleWingL_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_CastleWingL_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_CastleWingL_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_CastleWingL_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_CastleWingL_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_CastleWingL/HaloChunk_CastleWingL_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material"
+  }
+ ],
+ "HaloChunk_DomeRibbed_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "2f0b12f2 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_DomeRibbed_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_DomeRibbed_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_DomeRibbed_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_DomeRibbed_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_DomeRibbed_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeRibbed/HaloChunk_DomeRibbed_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material"
+  }
+ ],
+ "HaloChunk_DoorDouble_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "d28f2316 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_DoorDouble_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_DoorDouble_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_DoorDouble_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_DoorDouble_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_DoorDouble_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_DoorDouble/HaloChunk_DoorDouble_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material"
+  }
+ ],
+ "HaloChunk_WindowBoxA_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "82c8a278 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_WindowBoxA_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_WindowBoxA_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_WindowBoxA_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_WindowBoxA_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_WindowBoxA_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_WindowBoxA/HaloChunk_WindowBoxA_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material; Studio: DoubleSided"
+  }
+ ],
+ "HaloReasonHQ_BenchA_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "bbf6251c (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloReasonHQ_BenchA_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloReasonHQ_BenchA_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloReasonHQ_BenchA_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloReasonHQ_BenchA_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchA_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_BenchA/HaloReasonHQ_BenchA_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material"
+  }
+ ],
+ "HaloReasonHQ_BenchC_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "f12d3f90 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloReasonHQ_BenchC_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloReasonHQ_BenchC_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloReasonHQ_BenchC_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloReasonHQ_BenchC_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchC_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_BenchC/HaloReasonHQ_BenchC_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material"
+  }
+ ],
+ "HaloChunk_CastleRose_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-150, 10/12-13)",
+   "at": "2026-10-12 - 10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "e51189a5 (white model picked by 디자인 검수 in Tripo + my clay check; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "approval": "디자인 검수: white model + texture + PBR metal pass 10/13 (sheet art/review/design/chunks9_pbr_vs_flat_1013.jpg)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/chunks/HaloChunk_CastleRose_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/chunks/HaloChunk_CastleRose_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_CastleRose_left_ns.png",
+    "back": "art/out/s2/noshadow/chunks/HaloChunk_CastleRose_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_CastleRose_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_CastleRose/HaloChunk_CastleRose_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "이미지 생성 3: WorldKit + Roblox material; Studio: blue disc part behind the rose window"
+  }
+ ],
+ "HaloChunk_CastleWingR_mirror": [
+  {
+   "event": "Blender mirror of CastleWingL final (X mirror + flip normals, maps untouched)",
+   "at": "2026-10-13",
+   "by": "Blender 손보기",
+   "points": 0,
+   "source": "art/models/tripo/web/HaloChunk_CastleWingL_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_CastleWingR/HaloChunk_CastleWingR_TU.glb (disk only)",
+   "approval": "디자인 검수 10/13 mirror pass (art/review/blender/castle_wing_L_R_mirror_1013.jpg)",
+   "next": "이미지 생성 3 with WingL"
+  }
  ]
 }
