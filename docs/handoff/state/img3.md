@@ -1,5 +1,10 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/13 새벽 정리 (사용자 "정리하고 컴퓨터 꺼줘")
+- **WorldKit 저장:** Studio 창 제어 허용이 2번 거부돼(robloxstudiobeta.exe) Ctrl+S 못 함 → `build/WorldKit.rbxlx`는 10/12 17:12 판 그대로. 대신 **전체 백업 build/wk_backup/20261013_020933**(59 루트 + 지형, 12 MB, 오류 0) = 성 C2 골격·바닥판 3·성 앞 소품 5 옮김 등 오늘 것 전부. **다시 켠 뒤:** WorldKit 열기(`build/WorldKit.rbxlx`) → `py tools/worldkit/wk_backup.py load 20261013_020933 --replace --terrain` (마우스·키보드 없음).
+- **꽃 화분 3종(Lavender·Tulip·Sunflower) 넣기 = 3D 가져오기 안 됨(허용 거부) → 사용자 일로 미룸.** 준비 끝: 메시만 GLB `build/import3d/HaloFlowerPotHQ_<이름>_TU.glb`(build는 git 밖 — 없으면 `py tools/glb_strip_mesh.py build/import3d art/models/tripo/touchup/HaloFlowerPotHQ_<이름>/HaloFlowerPotHQ_<이름>_TU.glb`), SA 12장 올림(asset_ids SA_HaloFlowerPotHQ_<이름>_C/N/M/R, 금 외 금속 0·거칠기 ≥0.6). 남은 것: 가져오기 → MeshId 읽기 → 키트(높이 1 → 대역 높이) + SA + DoubleSided → 대역 7곳(P020 Tulip 3.29·P022 Lavender 3.85·P032 Sunflower 3.60·P033 Tulip 3.89·P077 Sunflower 4.02·P083 Lavender 3.68·P085 Tulip 3.22; StandIn은 ServerStorage로) → 앞 방향 사진 확인 → 2D | 낮·밤 + 뒤에서 본 사진(잎 양면). Daisy·Rose·동상·분수는 Blender 손보기에서 아직.
+- **그림자 없는 4면:** 통과 = 벤치 A·B·C, 가판대 3, 등불 A·C·D·E. 등불 B 앞면 다시(면마다 금테 판 1개) push → 디자인 검수 판정 대기. 다음 큐 = 나무·토피어리·화분(Var3/4) → 난간 → NEW_ 소품 → 나머지 (docs/review/halo_redo_split_2026-10-12.md '그릴 것').
+
 ## ★ 10/12 밤 (최종 검수 할 일 1·2 끝)
 - **넣을 때 메모(디자인 검수 10/13):** ① HaloChunk_CastleRose: 금 틀 바로 뒤(벽 쪽 0.05칸) 진한 파랑 얇은 원판 파트(≈34,90,180), 밤 은은함은 사진 보고 ② LampArm: 유리 칸 = LampGlass/LampCore 파트 ③ WindowBoxA DoubleSided ④ 꽃 화분 잎 DoubleSided (+ 뒤에서 본 사진) — 넷 다 낮·밤 사진에. **그림자 없는 4면 그리기**(최종 검수 10/13): tools/ns_draw.py(그리기·시트) + tools/ns_fix.py(높이·발 맞춤·뒤집기), 규칙 = 똑바른 정면·끝에서 수평 옆·4면 같은 높이·비대칭이면 옆 따로; 통과: 벤치 A·B·C, 꽃수레.
 - **보고처 바뀜(10/13):** 사진·시트·판정 = 디자인 검수(list_sessions로 찾기), 화면 차례·사용자 클릭(3D 가져오기) = 최종 검수. **동상 멈춤:** Halo_Statue_TU는 넣지 않음(Tripo PBR 다시) — 새 판(동상·분수·꽃 화분 5) 오면 `py tools/glb_strip_mesh.py build/import3d <glb들>` → 최종 검수에 사용자 3D 가져오기 부탁(WorldKit 창 → 홈 → 3D 가져오기 → build/import3d 전부) → MeshId 읽기 → SA는 `tools/upload_sa_maps.py --tags CNMR --replace`(옛 SA_Halo_Statue_* 4개는 안 씀). CreateAssetAsync는 이 Studio에서 안 됨.
