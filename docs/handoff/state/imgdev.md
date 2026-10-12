@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-12 오후: WorldKit 재시작·밤 비교 끝)
+
+- **WorldKit 재시작**: 새 STUDIO_ID **de120476** (WorldKit.rbxlx). screen_capture 멈춤 원인 = Studio 렌더 멈춤(재시작으로 풀림). 백업 20261012_123644로 되살림(루트 50 개수 같음·지형). **밤 빛 비교 사진 끝** art/review/imgdev/night_cmp_2026-10-12/night_compare_{HaloDomeHouse_08,HaloShop_Potion}.jpg (빛 3종 x 등불 끔/지금/권장) -> 최종 검수. 도구 tools/night_light_compare.py. 한국어 모드 취소(A23-146): 한국어 글자 그림·글꼴 일 없음. Firefly 큐 인수(state/img2.md, 큐 비어 있음). 거위 광장 서쪽 벽 그림자 켠/끈 확인은 다음 UiSandbox 슬롯.
+
 # 이미지 개발 — 상태 (2026-10-12: 거위 광장 골격 UiSandbox 시험·사진 끝)
 
 - **거위 광장 골격 시험 끝**(UiSandbox, 시험물 remove·저장 없이 창 닫음): 짓기 OK(23 부품, WalkGround 태그 2: Floor·GooseSpot). 고침 1개: CSG(UnionAsync/SubtractAsync)는 모델이 workspace에 있어야 해서 모델을 먼저 workspace에 붙임(tools/worldkit/goose_square.luau). 사진 art/review/imgdev/goose_square/ (시트 goose_square_sheet_2026-10-12.jpg: 위·옆·Nest 쪽·Cart 쪽). 소견: 바닥이 UiSandbox 빛 때문에 크림보다 회색으로 보임(색 값은 크림 240,232,215). 디자인 검수에 보냄 -> 메인 반영 1이 `py tools/goose_square.py --mode apply --emit build/goose_square_apply.luau` 파일을 메인에서 돌림(최종 검수 통해).
