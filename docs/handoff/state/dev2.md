@@ -20,6 +20,10 @@
 - **C1 API job `dev2_c1_t9_v4`** (10/12, 가지 api/dev2-c1-t9-v4, Opus $12·110턴, 프롬프트 = 스크래치 c1_prompt.md 요지: T9 Mythic
   2200/Lv50/Crownforged 끝에, Version 4, Spares·Market sanitize, LootService.SpareRoom/AddSpare, KingJelly 0.2·ClatterGem 0.1
   Source Boss, test_weapon_ladder 새로). 끝나면: `.py` diff 먼저 읽기 → 임시 worktree에서 시험 → 게임성 검수에 해시.
+- **황금 알 API job `dev2_golden_egg`** (10/12, 가지 api/dev2-golden-egg, Opus $18·170턴, 프롬프트 = 스크래치 egg_prompt.md:
+  약속 문서 그대로 + 개발 1 가지 origin/fix/golden-egg-client에 맞춤, A23-134 네 개 모두 켬, A23-137 4시간·+30, 중립 = 바로 가방
+  GoldenEgg·1등 +50%, 깃털 Kind Feather → GooseFeather(Fx 없음), 'Bring 2 eggs' Notify, 명예 +5 한 시간 한 번(첫 +1 대신),
+  속도 = ComputeWalkSpeed 맨 위 조기 반환(EggPlaza), Tug 코드 남김). §9 답은 개발 1에 보냄. 끝나면 C1처럼 검토.
 - 게임성 검수 10/12: 큰 코드·큰 시험 고침은 api_agent 쓰기 모드 먼저(남은 API 약 $85, 한 일당 한도).
 
 ## 다음 큐
