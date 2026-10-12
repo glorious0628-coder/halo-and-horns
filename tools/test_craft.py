@@ -51,6 +51,7 @@ MUTATIONS = [
     ("config: XP at Lv30 goes on", C, "\tif l ~= l or l >= K.MaxLv then return 0 end\n", "\tif l ~= l then return 0 end\n"),
     # --- recipes on / off
     ("recipe: unknown materials allowed", R, "\t\tif not Config.Loot.Items[item] then return nil end\n", ""),
+    ("recipe: gear without the gear switch", R, "\t\tif not Config.FeatureOn(\"Gear\") or type(r.Slot) ~= \"string\"", "\t\tif type(r.Slot) ~= \"string\""),
     ("recipe: weapons without AddSpare", R, "\t\tif not (L and type(L.AddSpare) == \"function\" and type(L.SpareRoom) == \"function\" and Config.Weapons[r.Tier]) then return nil end\n", ""),
     # --- start
     ("start: switch not checked", R, "\tif not on() then return \"off\" end\n", ""),
@@ -96,7 +97,7 @@ MUTATIONS = [
     ("xp: any side gets craft XP (A23-139)", R, "\tif roleOf(data) == r.Role then\n\t\tlocal ps = S.ProgressionService", "\tif true then\n\t\tlocal ps = S.ProgressionService"),
     ("end: one level at most", R, "\twhile rr.Lv < K().MaxLv do\n", "\tif rr.Lv < K().MaxLv then\n"),
     ("end: no Crafted signal", R, "\tCraftService.Crafted:Fire(player, recipeId, plus)\n", ""),
-    ("end: no CraftInfo after", R, "\t\tsendInfo(player, data)\n\tend\n\tCraftService.Crafted", "\tend\n\tCraftService.Crafted"),
+    ("end: no CraftInfo after", R, "\t\tsendInfo(player, data)\n\tend\n\tif r.Kind == \"Gear\"", "\tend\n\tif r.Kind == \"Gear\""),
     ("end: leave loses the craft", R, "\t\tcloseAtZero(player, \"Leave\")\n", ""),
     ("end: KO loses the craft", R, "\t\t\tcloseAtZero(player, \"KO\")\n", ""),
     ("end: a stopped craft never finishes", R, "if type(data.Craft) == \"table\" and type(data.Craft.Pend) == \"table\" and CraftService.Settle(player, data) == \"wait\" then", "if false then"),

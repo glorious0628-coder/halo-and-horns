@@ -1,7 +1,7 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 319,
+  "checks": 343,
   "failedChecks": 0,
   "namedChecks": 225,
   "namedChecksFailing": 0,
@@ -730,7 +730,7 @@
     {
       "group": "title-config",
       "check": "every TitleOrder id has a TitleDefs entry",
-      "pass": 22,
+      "pass": 28,
       "fail": 0
     },
     {
@@ -742,19 +742,19 @@
     {
       "group": "title-config",
       "check": "every TitleDefs id is in TitleOrder (picker)",
-      "pass": 22,
+      "pass": 28,
       "fail": 0
     },
     {
       "group": "title-config",
       "check": "TitleDefs entry has Name / NameEn / Color",
-      "pass": 22,
+      "pass": 28,
       "fail": 0
     },
     {
       "group": "title-config",
       "check": "title ids fit the 32-char SetTitle limit",
-      "pass": 22,
+      "pass": 28,
       "fail": 0
     },
     {
@@ -1801,13 +1801,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "801cf31a28dfc948b250da3170a16ecea3b7a93a339bd3f964564212df11407f",
-    "src/ReplicatedStorage/Shared/Util.luau": "7baf64cb2b749ff6fdbc42ea8d5bd6ba03894f5ef4f53045c291c808b42f996c",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
+    "src/ReplicatedStorage/Shared/Config.luau": "063c4f81827e473cc80185888d8281f297009a46371e40fc0738ae661a9c9da9",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/DataService.luau": "bcc20283d5258fc89af43961e12c1a1c6345eeba61a923bdb7f17cd5e6450217",
+    "src/ServerScriptService/JusticeService.luau": "4a8733f87579841fa0d02dbfde562c84c5ade0b05d3f2fb196cd7a44a0e335ad",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
-    "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9",
-    "src/ServerScriptService/PvPService.luau": "f74a3ab7c1fa6cdb3e47683f2e63821b6902652157761cd153300b51e7198c11"
+    "src/ServerScriptService/PlayerService.luau": "8992841de671fd0e580317d8ec49e8240bff9964a1551e9f3103d3ee39498b39",
+    "src/ServerScriptService/PvPService.luau": "59f2ce526e31c2cac0ff00ce62fa38bde23e61036a91b42e5e8844f200ad27f1"
   },
   "fixtureSHA256": "8fb5336b52c74658a41b282e47648d701ede89ea6ff449a0766ea62c70554cc1",
   "sourcesChangedDuringRun": [],

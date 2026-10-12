@@ -132,10 +132,10 @@ runGroup("gear", function()
 	check(sameTable(C.SanitizeGear(nil), def) and sameTable(C.SanitizeGear({}), def) and sameTable(C.SanitizeGear("x"), def),
 		"nil / {} / text -> the default (On always has Armor and Ring)", "")
 	local g = C.SanitizeGear({ Own = { ["Armor:1:0"] = 2, ["Ring:3:2"] = 1, ["PetArmor:2:0"] = 4, ["PetAcc:1:1"] = 1 },
-		On = { Armor = "2:1", Ring = "" }, Pet = { P7 = { Armor = "1:0", Acc = "2:3" } } })
+		On = { Armor = "2:1", Ring = "" }, Pet = { P7 = { Armor = "1:0", Acc = "2:2" } } })
 	check(sameTable(g.Own, { ["Armor:1:0"] = 2, ["Ring:3:2"] = 1, ["PetArmor:2:0"] = 4, ["PetAcc:1:1"] = 1 }),
 		"Own: good keys of every kind kept", show(g.Own))
-	check(sameTable(g.On, { Armor = "2:1", Ring = "" }) and sameTable(g.Pet, { P7 = { Armor = "1:0", Acc = "2:3" } }),
+	check(sameTable(g.On, { Armor = "2:1", Ring = "" }) and sameTable(g.Pet, { P7 = { Armor = "1:0", Acc = "2:2" } }),
 		"On and Pet: good worn things kept", show({ g.On, g.Pet }))
 	local o = C.SanitizeGear({ Own = { ["Armor:01:0"] = 3, ["Armor:1:00"] = 2, ["Armor:0:0"] = 1, ["Armor:17:0"] = 1,
 		["Ring:1:11"] = 1, ["Ring:1:-1"] = 1, ["Ring:1"] = 1, ["9x:1:0"] = 1, ["Ring:1:0"] = 0, ["Ring:2:0"] = NAN,
@@ -164,8 +164,14 @@ runGroup("gear", function()
 	check(count(cut.Pet) == 64 and cut.Pet.P001 ~= nil and cut.Pet.P065 == nil, "Pet keeps at most 64 pets (sorted)",
 		tostring(count(cut.Pet)))
 	local own = {}
-	for i = 1, 16 do for k = 0, 4 do own[string.format("Armor:%d:%d", i, k)] = 1 end end
+	for _, kind in { "Armor", "Ring" } do for i = 1, 16 do for k = 0, 2 do own[string.format("%s:%d:%d", kind, i, k)] = 1 end end end
 	check(count(C.SanitizeGear({ Own = own }).Own) == 64, "Own keeps at most 64 keys", "")
+	-- ⑥ gear (게임성 개발 3): a gear's plus is the hammer's +0..+2 only (a scroll's +3..+10 is never gear)
+	local plus = C.SanitizeGear({ Own = { ["Ring:1:2"] = 1, ["Ring:1:3"] = 1, ["Armor:2:10"] = 1 }, On = { Armor = "1:3", Ring = "1:2" },
+		Pet = { P1 = { PetAcc = "1:3" }, P2 = { PetAcc = "1:2" } } })
+	check(plus.Own["Ring:1:2"] == 1 and plus.Own["Ring:1:3"] == nil and plus.Own["Armor:2:10"] == nil and plus.On.Armor == ""
+		and plus.On.Ring == "1:2" and plus.Pet.P1 == nil and plus.Pet.P2.PetAcc == "1:2", "gear keeps P in 0..2 (+3 / +10 dropped everywhere)", show(plus))
+	check(C.SaveV4.GearMaxPlus == 2, "Config.SaveV4.GearMaxPlus = 2", "")
 	local x = C.SanitizeGear({ Later = 2, Deep = { 1 } })
 	check(x.Later == 2 and x.Deep == nil, "an unknown flat key is kept, an unknown table is not", show(x))
 	local once = C.SanitizeGear({ Own = { ["Armor:01:0"] = 3, ["Amulet:2:0"] = 1 }, On = { Armor = "01:2", Belt = "1:0" },

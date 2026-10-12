@@ -117,7 +117,8 @@ def static() -> tuple[int, list[str]]:
     check("Net.Notify(" not in tamer and "Net.NotifyKey" in tamer, "TamerService sends notices by key only")
     check(bool(names) and '"FeedPet"' in strip_comments(names.group(1)), "Net.Names has FeedPet")
     player = strip_comments(read(SSS / "PlayerService.luau"))
-    check('kaiju,\n\t\tplayer:GetAttribute("PetRoll"))' in player, "PlayerService.ComputeWalkSpeed passes the PetRoll attribute")
+    check('kaiju,\n\t\tplayer:GetAttribute("PetRoll"), player:GetAttribute("PetAcc"))' in player,
+          "PlayerService.ComputeWalkSpeed passes the PetRoll and PetAcc attributes")
     check(not re.search(r"MarketplaceService|PromptPurchase|Robux", tamer), "no purchase path for research (A23-115: no Robux)")
     return count, failures
 
