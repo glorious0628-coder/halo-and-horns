@@ -1,15 +1,15 @@
 {
   "status": "passed",
-  "checks": 860,
+  "checks": 871,
   "contractFailures": [],
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "1adf22dd4507c9ae259301fd54dc903343e197fbc5c5277c0df5b8f05be9e1dd",
-    "src/ServerScriptService/DataService.luau": "188a26f56ca5abf2554eb6f75dc8ea887f57f4aa4a7378f742a974fbdb6a914c",
-    "src/ServerScriptService/QuestService.luau": "79230111318f47d572419b94a7aa253e286429c0d275948536b9655ff86320c2",
-    "src/ReplicatedStorage/Shared/Net.luau": "deb1fadab349f1665609b1bcfd3a1079a24b3f6929e1a552cecd08ae57ed1f79",
-    "src/ServerScriptService/PlayerService.luau": "a6899045974aedf4f8a3c6a1fc44b9c1a445282f4a4d708e52e424331e18a1f9"
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ServerScriptService/DataService.luau": "adb332e34e26eed93282b38b54f902446189e3a6cefdea9938a52c5b2bef1648",
+    "src/ServerScriptService/QuestService.luau": "cc4c3e0f17a5b5b040f4d993fa14d2eb900957b069b8240b9130ddc0611ed420",
+    "src/ReplicatedStorage/Shared/Net.luau": "db368ed59a57a4f19b54d3fe69ad52a0574fe08b7e0bf5b1b3e99d108f340863",
+    "src/ServerScriptService/PlayerService.luau": "49aa45ea135cc6533425e4780cc9233e2f1a74f94c7a45e459bff6a8e677ae5d"
   },
-  "fixtureSHA256": "bb1c9d4aacdf4ae3eab76e86a59712f2a3805ff9a2c823bbf2c9964e9e70225f",
+  "fixtureSHA256": "d5e39359da27baeeb8eb97138b61023f02fd1657582539e71e0fd8b0f454038c",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "networkCalls": 0,
@@ -60,11 +60,11 @@
     "post-sale ownership save/release/load without item resurrection",
     "legacy tier4 preserved without inventing earlier purchases",
     "invalid/nonfinite mask, tier and visit repair",
-    "B4 8 weapon tiers (Config.MaxWeaponTier, tier 8 = legendary bit 7): a mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped)",
-    "B4 Data Version 3 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a picked build saves and comes back repaired, A-Z kept): fresh/v2/v1 records load and save as Version 3 with no other field changes (v2 legendary, enhancement, items, loot flags kept); records with Version > 3 are refused without a write or lock",
+    "B4 + C1: 9 weapon tiers (Config.MaxWeaponTier, tier 9 = Mythic); a v2 record's mask outside 1..255 or with any bit above tier 8 resets to the starter (+ equipped bit), a tier outside 1..8 or fractional becomes 1 (never clamped; the old migrate step stays pinned to 8)",
+    "C1 Data Version 4 (A23-69's Stats is additive: a record without it gains { Auto ON, nothing picked }; a picked build saves and comes back repaired, A-Z kept): fresh/v3/v2/v1 records load and save as Version 4 with no other field changes (v2 legendary, enhancement, items, loot flags kept); a v4 record keeps tier 9 / mask 511; records with Version > 4 are refused without a write or lock",
     "finite-value save serialization guard and migration idempotence",
-    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.AutoClaimed exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
-    "A23-74 + A23-88 weapon first, walking (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 (the Forge row 'Go to Otto's Forge', NO automatic trip: no Fx Travel, no lock, nobody moved); meadow kills before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 'Travel to Squishy Meadow' (2 in the meadow), once, no meadow trip; arriving in the meadow (the pad, Map -> Travel or a walk) -> the hunt; a save owning tier 1 -> step 1, no trip; every claim clears BlacksmithVisited, Claimed = the next weapon unless a better one is owned (ClaimedArmed); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial asks for no trip at any step; a KO at step 3 respawns at home"
+    "F10-4 safety net: step 2 at 5/5 unclaimed is paid QuestRewardGold once with Text.Claimed (A23-130: '+%s gold', the same line as a manual claim) exactly Tutorial.AutoClaimSeconds (60) after this server first sees it; 4/5 never; a manual claim first pays the Claimed line and clears the timer; kills < 5 reset it; PlayerLeaving clears it; a rejoin starts it again; never outside step 2; the paid state saves and a late claim/rejoin pays nothing more",
+    "A23-74 + A23-88 weapon first, walking (the mutations: tools/test_weapon_first.py): a bare-handed [Accept] -> step 3 (the Forge row 'Go to Otto's Forge', NO automatic trip: no Fx Travel, no lock, nobody moved); meadow kills before the gift count nothing; QuestService.ForgeGift -> Otto's line + step 1 'Travel to Squishy Meadow' (2 in the meadow), once, no meadow trip; arriving in the meadow (the pad, Map -> Travel or a walk) -> the hunt; a save owning tier 1 -> step 1, no trip; every claim clears BlacksmithVisited, Claimed = the reward only for every save (A23-130); step 3 survives save/reload (4 = invalid -> 99); RequestTutorial asks for no trip at any step; a KO at step 3 respawns at home"
   ],
   "limitations": "Offline store with finite-value serialization guard, scheduler, combat and reward doubles; post-sale states are fixtures. Actual DataService runs, but live DataStore/reconnect is not verified here. F10-4 timing uses an os.clock double for QuestService only (one tutorial-loop tick per simulated second); 'claim clears' and 'PlayerLeaving clears' are white-box checks (step set back to 2 / the same Player object seen again)."
 }
