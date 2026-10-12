@@ -15,6 +15,6 @@
 - 화분 5종 흰 모델 통과: Daisy c9df2ff9, Lavender fd15be73, Rose 9e0487cc, Sunflower 5f8780fb, Tulip f75480d2 → 텍스처 OK, PBR 전 내가 다시 봄. (창 숨김이면 Tripo가 안 그려짐 → store의 model_url로 FBX 받아 Blender 7면 렌더로 판정, 최종 검수 OK 방법.) 잎 한쪽 면 → Roblox DoubleSided(이미지 생성 3에 알림).
 - 최종 검수 상시(사용자 10/12 22:30): 이미지→Tripo 먼저, 4면·흰 모델 관문이 다른 판정보다 먼저. 4면 공급 = 이미지 생성 2(집 덩어리 43 큐) + 이미지 생성 3(빛 마을 소품: 벤치부터).
 - 텍스처: 동상 B(뒤 앞치마 파랑→흰, 발 사이 얼룩)·분수 C(2단 물 번짐) → Tripo 편집 30점 이하 OK, 고친 뒤 내가 보고 PBR. 크롭 art/review/design/*_tex_*_1012.jpg.
-- 4면 판정: BenchA 왼·오른 손질(오른 기준 크기 770px, 왼=뒤집기). 덩어리: DoorSingle·ConeTree 통과→Blender 넘김. LampArm(right=flip left)·WingL(right=flip left)·DomeRibbed(left=front)·DoorDouble(front=flip back)·WindowBoxA(right=flip left + 옆 높이 1015px) 손질 뒤 통과. WingR = WingL 3D Blender 좌우 뒤집기 제안(최종 검수 결정 대기). CastleRose 4면 대기.
+- 4면 판정: BenchA 왼·오른 손질(오른 기준 크기 770px, 왼=뒤집기). 덩어리: DoorSingle·ConeTree 통과→Blender 넘김. LampArm(right=flip left)·WingL(right=flip left)·DomeRibbed(left=front)·DoorDouble(front=flip back)·WindowBoxA(right=flip left + 옆 높이 1015px) 손질 뒤 통과. WingR = **WingL 완성 3D를 Blender 좌우 뒤집기(최종 검수 OK)** — 메시에 굽기 + 노멀 재계산, 앞·위 3/4로 면 뒤집힘·텍스처 늘어남 내가 확인. CastleRose 4면 대기.
 - 4면 흔한 고장: 좌우 옆면이 서로 다름 / 옆면이 1.2~1.3배 크게 그려짐 / 한 면만 연한 빛 띠 → PIL 뒤집기·복사·크기로 고침(새 생성 X).
 - 이미지 생성 3: 동상·분수·화분 새 판 모이면 3D 가져오기(최종 검수 경유) → SA → WorldKit 자리·재질·낮밤 사진. 낮 빛 = 위도 35 + 따뜻한 OA.
