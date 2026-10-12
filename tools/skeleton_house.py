@@ -695,6 +695,18 @@ def lantern_at(k, x):
     g = LANT_W - 0.2
     add("LampGlass%d" % k, (g, LANT_H - 0.1, g), lc, mat="lamp")
     add("LampCore%d" % k, (0.36, 0.5, 0.36), lc, mat="neon")       # warm Neon core: the 2D lanterns glow day and night
+    # 최종 검수 10/12 (A23-148/149): the lantern is a part skeleton (box + glass + roof); Tripo lantern pieces go on it later
+    zb_, zt_ = lc[2] - LANT_H / 2, lc[2] + LANT_H / 2
+    add("LampBase%d" % k, (LANT_W + 0.15, 0.22, LANT_W + 0.15), (x, y, zb_ - 0.06), mat="gold")
+    ball("LampDrop%d" % k, 0.26, (x, y, zb_ - 0.3))
+    for c_, (sx_, sy_) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):
+        add("LampPost%d_%d" % (k, c_), (0.09, LANT_H, 0.09), (x + sx_ * (LANT_W / 2 - 0.05), y + sy_ * (LANT_W / 2 - 0.05), lc[2]), mat="gold")
+    add("LampCap%d" % k, (LANT_W + 0.25, 0.2, LANT_W + 0.25), (x, y, zt_ + 0.05), mat="gold")
+    add("LampRoof%d" % k, (LANT_W * 0.72, 0.3, LANT_W * 0.72), (x, y, zt_ + 0.3), mat="gold")
+    add("LampRoofTop%d" % k, (LANT_W * 0.38, 0.22, LANT_W * 0.38), (x, y, zt_ + 0.55), mat="gold")
+    ball("LampFinial%d" % k, 0.24, (x, y, zt_ + 0.78))
+    arm_ = max(0.1, y - LANT_W / 2 - YF)
+    add("LampArm%d" % k, (0.14, 0.14, arm_ + 0.1), (x, YF + arm_ / 2, zt_ - 0.15), mat="gold")
     orn_items.append({"type": "lantern", "name": "%s_Lantern%d" % (NAME, k), "pos": list(lc), "w": LANT_W, "hgt": LANT_H,
                       "post": 0.09, "wall_y": YF})
 
