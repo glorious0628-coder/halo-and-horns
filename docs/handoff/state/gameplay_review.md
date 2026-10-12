@@ -1,34 +1,35 @@
-# 게임성 검수 상태 (2026-10-12 아침)
+# 게임성 검수 상태 (2026-10-12 낮 12:30)
 
-역할: `role_prompts/14_gameplay_review.md`. 시험 폴더(sparse): `C:/Users/glori/Documents/Roblox/Game-gprev`, `Game-gprev2`, `Game-gprev3`, `Game-gprev4` (src·tools·docs + build/luau_cli_0_741; 바꿀 땐 `git checkout -f --detach`). 시험 병합 = `git merge-tree --write-tree origin/main <가지>` → `git commit-tree`. 큰 가지는 전체 시험을 네 폴더로: scratchpad `shard.sh <폴더> <커밋> <k> <n> <로그> <목록>`(--no-mutations), 변이까지는 `shard_full.sh`; 목록 = tools/test_*.py에서 halloween·place_english·rank_marks·shop_layout·costume_physics·skin_binding_studio(은퇴/파일 필요) 뺀 161개. 다른 세션 메시지는 사용자 입력 한 번에 10개까지 — 최종 검수에는 `mcp__ccd_session_mgmt__send_message`(local_d522c0f1…)가 됨.
-규칙(memory): 보고한 끝 커밋은 다시 쓰지 않기; **서버 알림을 지우는 가지는 그 행동을 보내는 클라 화면이 결과를 그리는지 따라가 보고, 글·시험을 건드린 병합은 전체 sweep**(10/12 판정표에서 강화 결과 토스트 놓침).
+역할: `role_prompts/14_gameplay_review.md`. 시험 폴더(sparse): `C:/Users/glori/Documents/Roblox/Game-gprev`, `Game-gprev2` … `Game-gprev6` (src·tools·docs + build/luau_cli_0_741; 바꿀 땐 `git checkout -f --detach`). 시험 병합 = `git merge-tree --write-tree origin/main <가지>` → `git commit-tree`(종료 코드 1 = 충돌). 전체 시험은 폴더 2~4개로 나눠: scratchpad `shard.sh <폴더> <커밋> <k> <n> <로그> <목록>`(--no-mutations), 변이까지는 `shard_full.sh`; 목록 = 시험 병합 커밋의 tools/test_*.py에서 halloween·place_english·rank_marks·shop_layout·costume_physics·skin_binding_studio·skeleton_ground(은퇴/파일 필요) 뺀 것(10/12 낮 166개). 다른 세션 메시지는 사용자 입력 한 번에 10개까지 — `mcp__ccd_session_mgmt__send_message`(local_… id)가 됨.
+규칙(memory): 보고한 끝 커밋은 다시 쓰지 않기(충돌 때만 main 합치기); **서버 알림을 지우는 가지는 그 행동을 보내는 클라 화면이 결과를 그리는지 따라가 보고, 글·시험을 건드린 병합은 전체 sweep**; 시험 범위는 SPEC 숫자와 맞추기.
 
-**사용자 지시(10/12, 최종 검수 전달): 큰 리뷰·반박 검토 = `py tools/api_agent.py` 읽기 모드**(`--make-worktree <시험 병합 커밋> --model opus --max-usd 2~3`, 프롬프트는 scratchpad review_*.md 형식: 확인한 것/그럴 수 있는 것 + 파일:줄 + 장면). 앱 세션은 지휘·시험 sweep·짧은 확인. 남은 API 약 $85. 개발 1~4에도 '큰 코드는 API 쓰기 모드 먼저' 전달함.
+**API:** 남은 약 $22는 최종 검수용 → 내 검토는 앱 안(시험 sweep + 직접 읽기 + 필요하면 앱 하위 에이전트). 개발 세션도 이제 앱에서 직접 코드.
 
-**병합 알림 받으면 확인:** `git merge-base --is-ancestor <가지 끝> origin/main` — 10/12 dev4-tonics 병합 5db4018e가 push 거절로 main에 안 들어갔는데 상태 파일만 올라간 적 있음(최종 검수에 알림, 다시 병합 대상 6867e71f).
+**병합 알림 받으면 확인:** `git merge-base --is-ancestor <가지 끝> origin/main` (10/12 dev4-tonics 5db4018e push 거절 사례).
 
-## main에 병합됨 (지난밤까지 + 오늘)
-지난밤 목록 + fix/egg-mine, spawnclear-rim(+town_quests 정규식), imgdev-icons1, fix/pvp-toast, fix/staff-slope-hero. 메인 반영 1 사진: spawn probe 프롭 안 0·빈 시도 비율이 내 오프라인 실측과 몇 % 안, PvP 카드·Hero 자물쇠·지팡이 평지/경사 OK.
+## main에 들어간 것 (오늘 확인)
+fix/lesstext-server 8c8dc44d, dev3-tamer, dev4-tamer d9db0a67, dev4-craft, fix/stairs-ground, dev3-alchemy, dev3-craft2, fix/staff-short d56d0f1e, api/dev3-gear f0367a1d, imgdev-emo.
 
 ## "병합 가능" 올림, 최종 검수 병합 대기
-- dev4-craft c35905ee(제작 창), fix/stairs-ground 3099197e(계단 = 땅), dev3-alchemy ba91630f(연금 물약 + A23-139), dev3-craft2 e0556202(제작 창용 서버) — 최종 검수 '지금 병합' 중.
-- **fix/lesstext-server 8c8dc44d**(판정표 + 강화 토스트 되살림 + 보스 구역 이름 + 출석 한 줄): 전체 161 + 바뀐 시험 5개 변이 + a23_14 99/99.
-- **dev3-tamer b3972a6b**(조련사 연구·소환·간식 Herb, PetService 개발 2 OK) — alchemy → craft2 다음.
-- **dev4-tamer d9db0a67**(조련사 화면 4개) — dev4-craft 다음. 낮은 것: 펫 칸 작은 줄 글자 크기(개발 4).
+- dev3-fame 5933d919(⑦ 명성, 주간 상한 100) — dev3-gear 다음.
+- api/dev1-character-ui-2 b479014a(영웅 창, 닉네임 줄·Lv2 잠금 고침) — 개발 4 장비 칸이 이 위에 얹힘.
+- imgdev-stickers de9e4fcf.
+- (확인 필요) dev4-tamer 뒤 커밋 4c69f15f 펫 창 작은 줄 글자(내가 낮은 것으로 적은 것) — 아직 보고 안 받음.
+
+## 시험 중 (10/12 낮)
+- **fix/goose-square cb886aae**(개발 1, A23-141 화면): main a09de901과 깨끗. 코드 검토 막는 것 없음(거위 모드 아니면 그대로, 광장 밖이면 막대·고리·소리·째깍·지도 둥지/수레·퀘스트 화살표 꺼짐). egg_fx 126·66/66, quest_target, map_v2 36/36, hud_reveal 15/15, audio 통과; 전체 166 도는 중. 낮은 것: 도움말 Config 'Golden Goose: every 10 minutes in the Crossroads'(A23-137/141과 다름), GuideZones.Goose = Crossroads, 광장(6000,200,6000)은 큰 지도 밖이라 지도에 둥지/수레 안 보임. 개발 2 서버 가지와 같이 병합 — 서버 오면 아래 A23-141 목록.
+- **api/dev2-c1-t9-v4 435999d0**(개발 2 C1: 9단계 신화·저장 v4·Spares·보스 재료): main c8407657과 **충돌**(CharacterVisuals·test_one_hand_grips — A23-142 지팡이 뒤) → 개발 2에 main 합치기 + main의 staffOrb 그대로(9단계 구슬 멈춤은 staffOrb 안 math.min) 보냄. 저장 이전 읽음: v3 이하에 9단계/9비트 = 손상 처리, CR-L3 그대로 — 막는 것 없음. 새 끝 오면 전체 + loot·weapon_ladder·save_v4·craft 변이.
+- **dev4-market-window 3bd187d9**(개발 4 거래소 창 C-6): main 79b2a5f3과 깨끗, 전체 sweep(2폴더) + 하위 에이전트 반박 검토 중.
+- **dev4-gear-slots 77e5789b**(개발 4 장비 칸): 고칠 것 보냄 — 시험 이름이 개발 3 서버 test_gear_slots와 겹침(→ test_gear_slots_ui), 바탕이 47dce676이라 b479014a 위 ORDER 충돌(→ 개발 1 끝 합치기).
+
+## A23-141 거위 광장 서버 오면 볼 것(최종 검수 요청)
+못 들어가는 때(죽음·괴수·원한 자루·PvP 10초 안 때림/맞음), 돌아가는 자리(누른 자리, 없거나 위험하면 진영 마을 시작점), 판 끝 자동 귀환·Leave, 인원 기준 = 광장 안 사람(협동 목표·H·한 편 안 옴·MinDelivered), 교차로 광장에 거위·알·막대 0, 광장 = 안전 지대(PvP 피해 0, 몬스터 0), 자동 전투 멈춤/복원, 장인 입장(알 바로 가방), 같은 서버·저장 넘김 없음, 알 명예 +5 = GrantFame RankPoints(주간 150 안, 개발 2 답 10/12). Config.Goose.Square는 화면 가지에 이미 있음 → 서버 가지가 같은 표를 또 넣으면 충돌.
 
 ## 결정 (오늘)
-- A23-139(사용자): 2배 XP 패스 = 제작 XP도 2배, 제작·제작 XP는 장인 길드만. 패스 글 "Get 2x level and crafting XP. No stats are for sale."
+- A23-139: 2배 XP 패스 = 제작 XP도 2배, 글 "Get 2x level and crafting XP. No stats are for sale."
 - 행운 물약 = Source 없는 몬스터 재료만. 소환 속도 = 무작위 5~8 + 망치질 +N(최대 10). 간식 = Jelly 5 + Herb 2. 보스 재료 Source "Boss". 한 번에 팔기 = 몬스터 재료만.
-- A23-130: 무법자 주 시작 한 줄, 첫 PvP 카드 뜰 땐 'PvP zone!' 건너뜀, 남의 무기 자랑 배너·사이렌 칩·첫 10분 줄은 그대로.
-- 망치질: CraftStrike(Id, i, ms) 두드림마다, 공용 CraftMini, 두드림 키 = 점프 요청.
-
-## A23-141 거위 광장 가지 오면 볼 것(최종 검수 요청)
-못 들어가는 때(죽음·괴수·원한 자루·PvP 10초 안 때림/맞음), 돌아가는 자리(누른 자리, 없거나 위험하면 진영 마을 시작점), 판 끝 자동 귀환·Leave, 인원 기준 = 거위 광장 안 사람(협동 목표·H·한 편 안 옴·MinDelivered), 교차로 광장에 거위·알·막대 0, 자동 전투 멈춤/복원, 장인 입장(알 바로 가방), 같은 서버·저장 넘김 없음. 서버 = 개발 2(dev2_golden_egg 위), 화면 = 개발 1.
-
-## 기다림
-- api/dev3-gear 고친 커밋(GearMultsOf 지키기 → test_owner_restore) → 그다음 dev3-fame(⑦ 명성, 주간 상한 100).
-- 개발 3 ⑥ 장비 칸, 개발 4 다음 화면, 개발 1 다음 가지, 개발 2 C1(AddSpare/SpareRoom·저장 v4·보스 재료).
-- 월드 쪽(최종 검수 경로): 새 빛 마을 계단·바닥이 다른 폴더면 WalkGround 태그 또는 Decor.*Props 이름 규칙.
+- 장비: 방어구 6/12/18%(+2/N), 반지 4/8/12%(+1/N), 착용 Lv 10/20/30, +N은 망치질만. 명성 1/2/3/4, 등급 0/30/150/500/1500, 장인 주간 100.
+- A23-130: 무법자 주 시작 한 줄, 첫 PvP 카드 뜰 땐 'PvP zone!' 건너뜀.
 
 ## 원래 있던 문제
-- test_ops_safety 할로윈 변이 1개(병합 기준 아님).
+- test_ops_safety 할로윈 변이 1개, rank_marks STATIC(그림 없음), skeleton_ground(build/wk 파일 필요) — 병합 기준 아님.
