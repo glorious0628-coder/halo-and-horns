@@ -554,3 +554,74 @@ def lathe(profile, seg=32, name="Lathe"):
     bpy.context.scene.collection.objects.link(o)
     me.shade_smooth()
     return o
+
+
+def delight(work, maps, size, k=0.75):
+    """Remove the shadows / AO Tripo baked into its colour (디자인 검수 10/12 "멍든 것 같다"): bake AO of `work` into its
+    UVs, divide it out of maps["C"] (linear, hue kept, at most x2.2), then pull the remaining darks toward the local tone of
+    the same colour. Changes maps["C"] in place; returns stats."""
+    # 디자인 검수 10/12 ("멍든 것 같다"): Tripo's colour has its own shadows / AO baked in (dark grey-brown in every fold).
+    # Bake ambient occlusion of our mesh into the same UVs and divide it out of the colour (linear), so the engine and the
+    # normal map do the shading: colour / (1 - k * (1 - AO)), at most x2.2 brighter, then the remaining darks inside a
+    # part are pulled toward the part's own tone (median of the pixels with the same hue / saturation nearby)
+    sc0 = bpy.context.scene
+    sc0.render.engine = "CYCLES"
+    sc0.cycles.samples = 64
+    sc0.cycles.device = "CPU"
+    aoimg = bpy.data.images.new("AO_bake", size, size, alpha=False, is_data=True)
+    aom = bpy.data.materials.new("AO_bake_mat")
+    aom.use_nodes = True
+    tn = aom.node_tree.nodes.new("ShaderNodeTexImage")
+    tn.image = aoimg
+    aom.node_tree.nodes.active = tn
+    keep_mats = list(work.data.materials)
+    work.data.materials.clear()
+    work.data.materials.append(aom)
+    bpy.context.view_layer.update()
+    for o in bpy.context.view_layer.objects:
+        o.select_set(False)
+    work.select_set(True)
+    bpy.context.view_layer.objects.active = work
+    hide = [o for o in bpy.context.scene.objects if o is not work and o.type == "MESH"]
+    for o in hide:
+        o.hide_render = True
+    sc0.render.bake.margin = 8
+    bpy.ops.object.bake(type="AO")
+    for o in hide:
+        o.hide_render = False
+    work.data.materials.clear()
+    for m_ in keep_mats:
+        work.data.materials.append(m_)
+    ao = np.array(aoimg.pixels[:]).reshape(size, size, 4)[::-1, :, 0]
+    C = maps["C"]
+    lin = np.where(C <= 0.04045, C / 12.92, ((C + 0.055) / 1.055) ** 2.4)
+    f = np.clip(1.0 - k * (1.0 - ao), 1 / 2.2, 1.0)
+
+    def gain(rgb, g):
+        # brighten without clipping a channel (a clipped red turned skin green-yellow, 10/12): cap g at 1 / max channel
+        g = np.minimum(g, 1.0 / np.maximum(rgb.max(-1), 1e-4))
+        return rgb * g[..., None]
+    lin = gain(lin, 1.0 / f)
+    # residual darks: luminance pulled toward the local tone of the same colour (hue/sat bins, 64 px blocks)
+    Y = lin @ np.array([0.2126, 0.7152, 0.0722])
+    mx_ = lin.max(-1)
+    mn_ = lin.min(-1)
+    sat = np.where(mx_ > 1e-4, (mx_ - mn_) / np.maximum(mx_, 1e-4), 0)
+    rgbn = lin / np.maximum(lin.sum(-1, keepdims=True), 1e-4)
+    key = (np.round(rgbn[..., 0] / 0.03) * 100 + np.round(rgbn[..., 1] / 0.03)).astype(int) * 4 + np.minimum((sat * 4).astype(int), 3)
+    by, bx = np.indices(Y.shape) // 64
+    blk = (by * 1000 + bx) * 100000 + key
+    order = np.argsort(blk, axis=None)
+    flatb = blk.ravel()[order]
+    flaty = Y.ravel()[order]
+    starts = np.r_[0, np.nonzero(np.diff(flatb))[0] + 1]
+    med = np.empty_like(flaty)
+    for i0, i1 in zip(starts, np.r_[starts[1:], len(flatb)]):
+        med[i0:i1] = np.median(flaty[i0:i1]) if i1 - i0 > 8 else flaty[i0:i1]
+    medY = np.empty(Y.size)
+    medY[order] = med
+    medY = medY.reshape(Y.shape)
+    Y2 = np.where(Y < medY, medY - (medY - Y) * (1 - 0.6 * k), Y)
+    lin = gain(lin, Y2 / np.maximum(Y, 1e-4))
+    maps["C"] = np.where(lin <= 0.0031308, lin * 12.92, 1.055 * lin ** (1 / 2.4) - 0.055)
+    return {"k": k, "ao_mean": round(float(ao.mean()), 3)}

@@ -6,12 +6,12 @@
 B="C:/Users/glori/Tools/blender-5.2.2-windows-x64/blender.exe"
 cd "$(dirname "$0")/.."
 JOBS=(
-  "NPC_HaloBright --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05 --sym-below 0.42"
-  "NPC_HaloSirGleam --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05 --sym-below 0.18"
-  "NPC_HaloBakerGranny --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05"
-  "NPC_HaloFlowerGirl --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05"
-  "NPC_HaloJuiceMan --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05"
-  "NPC_HaloPotionMerchant --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2"
+  "NPC_HaloBright --delight 0.75 --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05 --sym-below 0.42"
+  "NPC_HaloSirGleam --delight 0.75 --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05 --sym-below 0.18"
+  "NPC_HaloBakerGranny --delight 0.75 --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05"
+  "NPC_HaloFlowerGirl --delight 0.75 --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05"
+  "NPC_HaloJuiceMan --delight 0.75 --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2 --src-suffix _HD_src --halo --halo-r 0.38 --halo-t 0.05"
+  "NPC_HaloPotionMerchant --delight 0.75 --kind whole --fit h=5.2 --tris 8000 --uv-head 0.62:2.2"
 )
 for j in "${JOBS[@]}"; do
   set -- $j

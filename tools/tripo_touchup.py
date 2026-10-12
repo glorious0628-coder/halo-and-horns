@@ -58,6 +58,7 @@ ap.add_argument("--halo", action="store_true", help="replace Tripo's halo (flat 
 ap.add_argument("--halo-r", type=float, default=0.0, help="halo: level ring with this major radius (0 = as fitted)")
 ap.add_argument("--halo-t", type=float, default=0.05, help="halo: tube radius with --halo-r")
 ap.add_argument("--uv-head", default="", help="characters: '<share>:<scale>' = UV islands above that share of the height scaled up before packing (more texture for the face)")
+ap.add_argument("--delight", type=float, default=0.0, help="remove Tripo's baked shadows from the colour: AO of our mesh divided out with this strength (0.75) + darks pulled to the part tone")
 ap.add_argument("--sym-below", type=float, default=0.0, help="mirror the +x half onto -x below this share of the height (armour legs; 0 = off)")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
 ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
@@ -458,6 +459,8 @@ log("decimated", cur, "->", stats["tris"])
 # ---------------------------------------------------------------- 5. bake Tripo's look onto the new UVs
 source = PB.Source([src])
 maps = PB.bake(work, source, size=a.px, ray=None, relief=True)
+if a.delight > 0:
+    stats["delight"] = PB.delight(work, maps, a.px, a.delight)
 mat = PB.save_maps(maps, OUT, NAME)
 work.data.materials.clear()
 work.data.materials.append(mat)
