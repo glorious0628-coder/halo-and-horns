@@ -75,35 +75,133 @@ MOVE = {
 }
 
 
-def move_wrap(me, z0, L, lo_s, hi_s, target, sl=0.05, rmax=0.3):
-    """cut the band [lo, hi] (faces near the staff axis), move it by d along z, stretch the bare slice [lo - sl, lo]
-    up to hi + 0.02 to fill the hole; returns (lo, hi, d) in studs"""
+def move_wrap(me, z0, L, lo_s, hi_s, target, rmax=0.3, foot=0.12):
+    """cut the band [lo, hi] (faces near the staff axis) and move it up by d; the hole [lo, lo + h] (h = min(hi - lo, d))
+    is filled with COPIES of the bare shaft just below it (knots and twists repeat like the 2D branch; 디자인 검수 10/12:
+    a stretched slice read as a smooth striped tube), stacked when the shaft below is shorter than the hole; every seam
+    is closed by snapping the upper piece's edge onto the lower one; the top seam sits under the moved band's ring.
+    returns (lo, hi, d) in studs"""
     lo, hi = z0 + lo_s * L - 0.03, z0 + hi_s * L + 0.03          # a little past the rings: no ring sliver left behind
     d = z0 + target - (lo + hi) / 2
+    h = min(hi - lo, d)
+    V = np.array([v.co[:] for v in me.vertices])
+    mid = V[(V[:, 2] > lo) & (V[:, 2] < hi)]
+    cx, cy = float(np.median(mid[:, 0])), float(np.median(mid[:, 1]))
+    R = np.hypot(V[:, 0] - cx, V[:, 1] - cy)
+    ang = ((np.arctan2(V[:, 1] - cy, V[:, 0] - cx) + math.pi) / (2 * math.pi) * 24).astype(int) % 24
+
+    def prof(z):
+        m = (np.abs(V[:, 2] - z) < 0.02) & (R < rmax)
+        out = np.zeros(24)
+        np.maximum.at(out, ang[m], R[m])
+        return out
+    target = prof(lo - 0.005)
+    bottom = z0 + foot * L
+    ref_r = float(np.median(target[target > 0])) if (target > 0).any() else 0.1
+
+    def lumpy(a_, w_):
+        """a ring / flange inside the window (a mean radius > 1.15 x the shaft at the hole) = never copy it"""
+        rs = [prof(z) for z in np.arange(a_ + 0.01, a_ + w_, 0.02)]
+        return any(np.median(r[r > 0]) > 1.15 * ref_r for r in rs if (r > 0).any())
+    # the source piece [a, a + w] (n copies stacked, n*w = h) is picked where its cross-sections best match the hole's
+    # lower edge and each other, so seams barely show and no knot is cut in half (DarkMage T1 10/12)
+    best = None
+    for n_ in (1, 2, 3, 4, 5, 6):                               # more copies = a visibly repeating pattern: only
+        w_ = h / n_                                             # when the shaft below is too short (straight staffs)
+        if w_ < 0.15 or (n_ > 2 and best is not None):
+            break
+        for a_ in np.arange(bottom, lo - w_ + 1e-6, 0.01):
+            pa, pb = prof(a_ + 0.005), prof(a_ + w_ - 0.005)
+            cost = np.abs(pa - target).mean() + 0.02 * (n_ - 1)        # copies alternate upside down: their seams match
+            if best is None or cost < best[0]:
+                best = (cost, float(a_), w_, n_)
+    if best is None:
+        # the shaft below is too short (Alchemist T3: gold foot right under the wrap): copy plain shaft from above the
+        # moved band instead
+        for n_ in (1, 2, 3, 4, 5, 6):
+            w_ = h / n_
+            for a_ in np.arange(hi + d + 0.02, z0 + 0.8 * L - w_ + 1e-6, 0.01):
+                if lumpy(a_, w_):
+                    continue
+                pa = prof(a_ + 0.005)
+                cost = np.abs(pa - target).mean() + 0.02 * (n_ - 1)
+                if best is None or cost < best[0]:
+                    best = (cost, float(a_), w_, n_)
+            if best is not None:
+                break
+    _, a, w, n = best
+    src_hi = a + w
     bm = bmesh.new()
     bm.from_mesh(me)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
-    for zc in (lo - sl, lo, hi, lo + d, hi + d):
+    for zc in (a, src_hi, lo, hi, lo + d, hi + d):
         bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=(0, 0, zc), plane_no=(0, 0, 1))
     P = np.array([v.co[:] for v in bm.verts if lo <= v.co.z <= hi])
     ax, ay = float(np.median(P[:, 0])), float(np.median(P[:, 1]))
 
-    def near(f, a, b):
+    def near(f, lo_, hi_):
         c = f.calc_center_median()
-        return a - 1e-5 <= c.z <= b + 1e-5 and math.hypot(c.x - ax, c.y - ay) < rmax
+        return lo_ - 1e-5 <= c.z <= hi_ + 1e-5 and math.hypot(c.x - ax, c.y - ay) < rmax
     band = [f for f in bm.faces if near(f, lo, hi)]
-    piece = [f for f in bm.faces if near(f, lo - sl, lo)]
+    src = [f for f in bm.faces if near(f, a, src_hi)]
     # where the wrap lands, everything of the staff there (shaft, knots, an old metal ring - LightMage T3 10/12) is
     # replaced by the moved band: clean cuts at lo + d / hi + d, no teeth of old shaft showing past the rings
     poke = [f for f in bm.faces if near(f, lo + d, hi + d)]
     dup = bmesh.ops.duplicate(bm, geom=band)
     bmesh.ops.translate(bm, verts=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMVert)], vec=(0, 0, d))
     bmesh.ops.delete(bm, geom=band + [f for f in poke if f not in band], context="FACES")
-    k = (hi + 0.02 - (lo - sl)) / sl
-    for v in {v for f in piece for v in f.verts}:
-        if v.co.z > lo - sl + 1e-5:
-            v.co.z = lo - sl + (v.co.z - (lo - sl)) * k
+
+    def edge_verts(faces, z):
+        return [v for v in {v for f in faces for v in f.verts} if abs(v.co.z - z) < 1e-4]
+
+    def snap(upper, lower, z, blend=0.12, sign=1):
+        """close the seam at z: the upper piece's edge goes onto the lower piece's edge, and its verts within `blend`
+        of the seam follow part of the way (a short taper instead of a step; sign -1 = the moving piece is below)"""
+        lv = edge_verts(lower, z)
+        if not lv:
+            return
+        L2 = np.array([v.co[:2] for v in lv])
+        up = edge_verts(upper, z)
+        moves = []
+        for v in up:
+            k = int(np.argmin(((L2 - np.array(v.co[:2])) ** 2).sum(1)))
+            if np.hypot(*(L2[k] - np.array(v.co[:2]))) < 0.2:
+                moves.append((np.array(v.co[:2]), L2[k] - np.array(v.co[:2])))
+                v.co.x, v.co.y = L2[k]
+        if not moves:
+            return
+        M0 = np.array([m[0] for m in moves])
+        for v in {v for f in upper for v in f.verts}:
+            t = (v.co.z - z) * sign
+            if 1e-4 < t < blend:
+                k = int(np.argmin(((M0 - np.array(v.co[:2])) ** 2).sum(1)))
+                f = 1.0 - t / blend
+                v.co.x += moves[k][1][0] * f
+                v.co.y += moves[k][1][1] * f
+    below = [f for f in bm.faces if near(f, lo - 0.2, lo)]
+    for k in range(1, n + 1):
+        cp = bmesh.ops.duplicate(bm, geom=src)
+        cf = [g for g in cp["geom"] if isinstance(g, bmesh.types.BMFace)]
+        cv = [g for g in cp["geom"] if isinstance(g, bmesh.types.BMVert)]
+        bmesh.ops.translate(bm, verts=cv, vec=(0, 0, lo + (k - 1) * w - a))
+        if k % 2 == 0:
+            # every second copy upside down: neighbouring copies then meet with the same cross-section and the same
+            # texture at the seam (no stripes where straight staffs need several copies, Alchemist T3 10/12)
+            zm = 2 * lo + (2 * k - 1) * w
+            for v in cv:
+                v.co.z = zm - v.co.z
+            bmesh.ops.reverse_faces(bm, faces=cf)
+        if lo + k * w > lo + h + 1e-5:                            # (n * w = h: never cut; kept for safety)
+            geom = list({e for f in cf for e in f.edges}) + list({v for f in cf for v in f.verts}) + cf
+            res = bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(0, 0, lo + h), plane_no=(0, 0, 1), clear_outer=True)
+            cf = [f for f in bm.faces if f.is_valid and near(f, lo + (k - 1) * w, lo + h) and f not in below]
+        snap(cf, below, lo + (k - 1) * w)
+        below = cf
+    if h < d - 1e-5:                                              # original shaft above the hole: snap it onto the copy
+        above = [f for f in bm.faces if near(f, lo + h, lo + h + 0.2) and f not in below]
+        snap(above, below, lo + h)
     bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    bmesh.ops.remove_doubles(bm, verts=[v for v in bm.verts if any(abs(v.co.z - (lo + q * w)) < 1e-4 for q in range(n + 1))], dist=2e-4)
     bm.to_mesh(me)
     bm.free()
     me.update()

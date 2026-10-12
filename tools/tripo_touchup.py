@@ -52,6 +52,7 @@ ap.add_argument("--head-from", type=float, default=0.0, help="head: keep the Tri
 ap.add_argument("--head-footprint", action="store_true", help="head: below the head base cut only inside the kit body's footprint (hanging lanterns stay)")
 ap.add_argument("--drop-low", type=float, default=0.0, help="plant: drop loose islands lying wholly this far below the pot rim (floating leaf bits)")
 ap.add_argument("--keep-green", action="store_true", help="plant: leaf-green faces survive the pot cut (vines hanging over the pot)")
+ap.add_argument("--organic", action="store_true", help="outline like a plant (coarse voxel = one line round the leaf mass), for whole bushes")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
 ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
 ap.add_argument("--fit", default="h=1", help="h=<height> or w=<width> in studs (ontop: w=<factor of the body length>)")
@@ -361,7 +362,14 @@ if a.outline > 0:
     outline.name = NAME + "_Outline"
     bpy.context.scene.collection.objects.link(outline)
     outline.data.materials.clear()
-    vox = a.outline_voxel or max(0.03, 0.015 * max(mx - mn))
+    if a.outline_voxel:
+        vox = a.outline_voxel
+    elif a.kind in ("plant", "ontop") or a.organic:
+        # leaves / flowers: a fine voxel wraps every leaf in its own shell = dark rims round each leaf and black gaps
+        # (디자인 검수 10/12 "잎 사이 검음"); 4.5 % of the size (max 0.15 stud) closes the gaps -> one line round the mass
+        vox = min(0.15, max(0.03, 0.045 * max(mx - mn)))
+    else:
+        vox = max(0.03, 0.015 * max(mx - mn))
     select_only([outline], outline)
     rm = outline.modifiers.new("remesh", "REMESH")
     rm.mode = "VOXEL"
@@ -436,12 +444,12 @@ if a.preview:
     w = bpy.data.worlds.new("w")
     sc.world = w
     w.use_nodes = True
-    w.node_tree.nodes["Background"].inputs[0].default_value = (0.13, 0.135, 0.145, 1)
-    for nm, en, rot in (("sun", 3.0, (50, 0, 200)), ("fill", 1.0, (60, 0, 20))):
-        L = bpy.data.objects.new(nm, bpy.data.lights.new(nm, "SUN"))
-        L.data.energy = en
-        L.rotation_euler = tuple(math.radians(v) for v in rot)
-        sc.collection.objects.link(L)
+    # 10/12: grey sky + a key light from the camera side (upper left) for every view - the old fixed sun lit the
+    # back, so plants read darker than they are (디자인 검수 "잎이 2D보다 어두움")
+    w.node_tree.nodes["Background"].inputs[0].default_value = (0.42, 0.43, 0.45, 1)
+    key = bpy.data.objects.new("key", bpy.data.lights.new("key", "SUN"))
+    key.data.energy = 3.2
+    sc.collection.objects.link(key)
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
     sc.collection.objects.link(cam)
     sc.camera = cam
@@ -452,6 +460,8 @@ if a.preview:
         d = Vector((math.sin(math.radians(az)), math.cos(math.radians(az)), 0)) * math.cos(el) + Vector((0, 0, math.sin(el)))
         cam.location = ctr + d * (size * 3)
         cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
+        side = Vector((d.x, d.y, 0)).normalized().cross(Vector((0, 0, 1)))
+        key.rotation_euler = (-(d * 0.75 + side * 0.45 + Vector((0, 0, 0.7))).normalized()).to_track_quat("-Z", "Y").to_euler()
         sc.render.filepath = os.path.join(OUT, "%s_%s.png" % (NAME, view))
         bpy.ops.render.render(write_still=True)
     log("preview done")
