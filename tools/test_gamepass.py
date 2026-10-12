@@ -208,6 +208,18 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # A23-144 chat bubble skins
+    ("bubbles: the pack is free", M, "\treturn MonetizationService.HasPass(player, Config.Bubbles.Pass)\nend\n", "\treturn true\nend\n"),
+    ("bubbles: any side's free bubble", M, "\tif side then return side == player:GetAttribute(\"Faction\") end\n", "\tif side then return true end\n"),
+    ("bubbles: a refused pick is saved", M, "\tif key ~= \"\" and not PASS.BubbleUsable(player, key) then return end\n", ""),
+    ("bubbles: no rate limit", M, "or not Util.RateLimit(player, \"SetBubble\", Config.RateLimits.SetBubble or 0.5) then return end", "then return end"),
+    ("bubbles: the saved pick shown even when unusable", M,
+     "if type(want) == \"string\" and want ~= \"\" and PASS.BubbleUsable(player, want) then return want end",
+     "if type(want) == \"string\" and want ~= \"\" then return want end"),
+    ("bubbles: no free bubble", M, "\treturn type(free) == \"string\" and free or \"\"\nend\n", "\treturn \"\"\nend\n"),
+    ("bubbles: never published", M, "\tplayer:SetAttribute(\"BubbleOn\", PASS.BubbleOf(player)) -- A23-144\n", ""),
+    ("bubbles: any argument count", M, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal key = ...\n\tif type(key) ~= \"string\" or #key > 32 then return end\n",
+     "\tlocal key = ...\n\tif type(key) ~= \"string\" or #key > 32 then return end\n"),
     # A23-143 chat stickers
     ("stickers: the pack is free", M, "\tif not Config.StickerFree(key) and not MonetizationService.HasPass(player, Config.Stickers.Pass) then return end\n", ""),
     ("stickers: no rate limit", M, "\tif not Util.RateLimit(player, \"SendSticker\", Config.RateLimits.SendSticker or 2) then return end\n", ""),

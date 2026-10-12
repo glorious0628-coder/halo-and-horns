@@ -4165,6 +4165,7 @@ Config.GamePasses = {
 	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
 	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
 	Stickers = { Id = 0, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
+	Bubbles = { Id = 0, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
 -- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
@@ -4213,6 +4214,8 @@ Config.PassInfo = {
 		Desc = "A new color for your halo or horns. It only changes how you look: the shape still shows your rank. No stats are for sale." },
 	PrivateServer = { Line = "Play with just your friends.",
 		Desc = "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale." },
+	Bubbles = { Line = "Fancy chat bubbles",
+		Desc = "Show off when you chat: every fancy chat bubble skin. Your side's own bubble is free for everyone. No stats are for sale." },
 	Stickers = { Line = "13 more chat stickers",
 		Desc = "13 more stickers to pop over your head: hearts, a crown, Nice!, GG and more. 5 basic stickers are free for everyone. No stats are for sale." },
 }
@@ -4235,6 +4238,29 @@ function Config.StickerFree(key)
 	local parts = type(Config.UIArt) == "table" and Config.UIArt.Parts or nil
 	local part = type(parts) == "table" and parts[key] or nil
 	return Config.IsSticker(key) and type(part) == "table" and part.Free == true
+end
+
+-- A23-143 / A23-144 (user 10/12): chat bubble skins - how MY chat bubble looks to everyone (TextChatService bubbles: the
+-- client styles a speaker's bubble from their attribute BubbleOn; the text stays Roblox-filtered, only art and colours).
+-- Each side's own bubble is free for everyone of that side (Free: Halo white + gold rim, Horns dark red, the artisan guild
+-- wood + brass) and only for that side; every other skin needs the Bubble Pack (Config.GamePasses.Bubbles, 99 R$). Keys =
+-- Config.UIArt.Parts ids (image dev's art, Bubble<Name>); a pack skin goes into Order once drawn. Saved: data.Bubble = the
+-- picked key ("" = my side's free one). SetBubble(key) (MonetizationService) checks and saves; BubbleOn = what shows now.
+Config.Bubbles = {
+	Free = { Halo = "BubbleHalo", Horns = "BubbleHorns", Neutral = "BubbleArtisan" },
+	Order = { "BubbleHalo", "BubbleHorns", "BubbleArtisan" }, -- + the pack's skins (Bubble<Name>) when their art is in
+	Pass = "Bubbles",
+}
+Config.Data.Defaults.Bubble = "" -- additive (no version step): the picked chat bubble skin
+function Config.IsBubble(key)
+	return type(key) == "string" and table.find(Config.Bubbles.Order, key) ~= nil
+end
+-- the side whose free bubble `key` is (nil = a pack skin)
+function Config.BubbleSide(key)
+	for side, k in Config.Bubbles.Free do
+		if k == key then return side end
+	end
+	return nil
 end
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
@@ -4540,6 +4566,7 @@ Config.Finisher = {
 -- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
 Config.RateLimits.FinisherPick = 0.3
 Config.RateLimits.SendSticker = 2 -- A23-143: one sticker every 2 s per player
+Config.RateLimits.SetBubble = 0.5 -- A23-144: picking a chat bubble skin
 -- the year-round field bosses (FieldBossService; content_beyond_10min_2026-10-08 FB). Order = the boss keys (each key
 -- names its GameState <Key>Active / EndsAt / NextAt and its Announce <Key>Appear / Defeat / Leave lines). Per boss: one
 -- on the server; the first slot FirstDelay s after the start, then every Interval s from its last appearance (a due
