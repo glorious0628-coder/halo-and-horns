@@ -4,7 +4,8 @@
 - 순서: 4면 → 스마트 메시(100) → 흰 모델 id를 디자인 검수에(Tripo에서 직접 봄) → 나도 받아서 봄, 다르면 상의 → 텍스처 첫 칸 앞면 한 장+조명 제거+8K(30) → 디자인 검수 확인 → (고칠 곳은 Tripo 편집/매직 브러시, 창 보여야 함) → PBR 한 번(5) → 내려받기 → Blender 크기·피벗·방향만.
 - 동상 B 1a0812be·분수 C cd70436c: 텍스처 끝, 매직 브러시 3곳 대기(창 숨김) → 그 뒤 PBR. Daisy c9df2ff9·Rose 9e0487cc도 매직 브러시 대기. Lavender·Tulip·Sunflower PBR 돌림.
 - 흰 모델 디자인 검수 답 대기: DoorSingle·ConeTree(내 의견 나무 4개 다 별로 → 다시 뽑기), LampArm·CastleWingL·DomeRibbed·DoorDouble·WindowBoxA·BenchA·BenchC·CastleRose. CastleWingR = WingL 완성판 Blender 좌우 뒤집기(메시에 굽기·노멀·UV 그대로).
-- 잔액 11,110.
+- 잔액 10,075 (10/13 새벽). PBR 끝·받음(디스크): Lavender·Tulip·Sunflower → art/models/tripo/web/HaloFlowerPotHQ_<n>_SM_tex8k_pbr_src.fbx. PBR 돌림: DoorSingle d61f68e6. 텍스처 끝·PBR OK 대기: 묶음 2·3 8종(LampArm 6895c425, CastleWingL 10bf8543, DomeRibbed 2f0b12f2, DoorDouble d28f2316, WindowBoxA 82c8a278, BenchA bbf6251c, BenchC f12d3f90, CastleRose e51189a5). 텍스처 돌림: GateLeaf 2bc07ecc, DomeOnion 414b871a. 흰 모델 고르기 대기: ConeTree(새)·DomeOctagon·DomeBall·FlowerCart·BenchB.
+- 페이지 localStorage: hhTexFn(텍스처 함수), hhSetFn/hhGoFn(스마트 메시 넣기/누르기), hhIdx3/4/5 + Cache 'hh' /hh-bundle3/4/5.
 - **요령:** 브라우저 호출은 전부 tabId "seed"(디자인 검수가 같은 창에 자기 탭을 엶). 32장 같은 많은 그림은 한 파일(bundle)로 묶어 Adobe에 한 번 올리고 페이지 Cache API('hh')에 넣어 slice로 칸에 넣음. 에셋 목록 20개 넘으면 `fetch('https://api.tripo3d.ai/v2/studio/assets/v2?asset_type=mine&locale=ko&offset=20&size=40&type=all',{credentials:'include'})` → data.projects(id·model_url). 점수 버튼은 경로 id·상태 확인 후 JS click, 앞뒤 잔액 비교.
 
 ## 10/12 밤 늦게 — 바뀐 순서(사용자) + 대기 중
