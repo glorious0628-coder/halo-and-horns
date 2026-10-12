@@ -601,9 +601,12 @@ runGroup("power-pvp-visuals", function()
 		function() end, function() end, function(name) local m = newInstance("Model", w); m.Name = name; return m end,
 		function() return "Halo" end, function(model) table.insert(built, "mount:" .. model.Name) end)
 	buildWeapon(p, p.Character)
-	check(cleared == 1 and #built == 0, "tier 0: the old model is cleared and nothing is built", show(built))
+	-- (A23-150 7: cleared twice a build - the character's WeaponModel and a Tool the engine put in the Backpack)
+	check(cleared == 2 and #built == 0, "tier 0: the old model is cleared and nothing is built", show(built))
 	buildWeapon(r, r.Character)
-	check(cleared == 2 and built[1] == "Sword" and built[2] == "mount:WeaponModel", "tier 1: the weapon is built", show(built))
+	-- A23-150 7: the weapon is a Tool built round its Handle part - this stub builder returns none, so nothing is mounted
+	-- (tools/test_tool_grip.py builds the real shapes)
+	check(cleared == 4 and built[1] == "Sword" and #built == 1, "tier 1: the weapon is built", show(built))
 end)
 
 finish()

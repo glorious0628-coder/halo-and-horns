@@ -34,3 +34,15 @@
 - 남김: 무기 메시·크기 규칙(CharacterVisuals), 직업별 공격 동작(Fx), 팔 풀이(WeaponPose: 이제 몸에 맞춤, BodyPoint).
 - 바꿈: 무기를 손에 붙이는 법 → Handle + Grip(로블록스 규칙), 무기별 쥐는 점·각도를 표 한 곳(Config)에. (가)를 고르면 WeaponPose의 서기 자세 대신 로블록스 toolnone.
 - 버림: 무기마다 손 안에서 다르게 돌려 붙이던 옛 fist() 각도 규칙(Handle 규칙으로 하나로).
+
+## ③ 코드 = 사용자 고름 (가) "로블록스 기본 그대로" (10/13, 가지 fix/tool-grip, 게임성 개발 1)
+- **무기 = 진짜 Roblox Tool `WeaponModel`, 오른손(활도).** Handle = 주먹이 감싸는 파트: 칼·어둠 검 = 자루(1.2), 망치 = 자루(1.9), 지팡이 3종·조련사 봉 = 막대(Shaft → 이름 Handle), 활 2종 = 가운데 조각(Arc3 → Handle). 나머지 파트는 Handle에 용접. 손에는 엔진이 RightGrip 용접(RightGripAttachment × Tool.Grip)을 붙이고, 기본 Animate가 toolnone(팔 앞·무기 세움)을 저절로 틂.
+- **Grip 표 한 곳 = `Config.WeaponGrips`** (Point = Handle 아래에서 몇 %, Turn = 주먹 안에서 돌림) → `Config.WeaponGrip(종류, Handle 길이)` = Tool.Grip. 칼·어둠 검 **0.75**(처음 표 0.6 → 메인 반영 1 ClassicSword 사진에 맞춤: Tool.Grip (0,0,-1.5)·손잡이 4칸, 주먹 가운데 = 자루 아래에서 74%, 주먹 윗면이 날밑에 닿음; 0.6이면 날밑 아래 0.2칸 틈), 지팡이·갈고리 지팡이·플라스크 지팡이 0.45, 망치·조련사 봉 0.3, 활·짧은 활 0.5, 짧은 활만 Turn 15°(옆으로 기울임 — 전과 같음). 갈고리 지팡이(어둠 마법사)·짧은 활(그림자 사냥꾼)은 시트 7종에 없어 지팡이·활 줄을 씀. 옛 `fist()` 각도 규칙은 지움(주먹 축 = Roblox 쥐는 점의 축).
+- **왜 진짜 Tool(같은 붙임 + toolnone 직접 재생이 아니라):** 가방 칸(Backpack CoreGui)은 이미 꺼짐(VitalsUI), place·코드에 ClickDetector 없음(Tool을 들면 ClickDetector가 안 먹는 문제 없음), 공격 입력은 우리 Swing 원격이라 `ManualActivationOnly = true`로 클릭·탭이 Tool을 안 깨움, `CanBeDropped = false`, 장비 창은 서버가 WeaponModel을 새로 만드는 것뿐 → toolnone을 따로 틀 코드가 필요 없음.
+- **활:** 서기·걷기 = 오른손(사용자 결정). 공격은 직업별 동작 그대로(레인저·그림자 사냥꾼 클립 = 왼손 활, 오른손 시위) → 그 클립이 도는 동안만 `Fx.bowHand`가 화면마다 활을 왼손 쥐는 점으로 옮김(지역 용접 BowGrip = LeftGripAttachment × 같은 Grip, RightGrip 끔), 끝나면 오른손으로. 활의 HandMuzzle·HandBowRest(AttackHand = LeftHand)는 왼손 기준.
+- **끈 것:** WeaponPose 서기·걷기 자세(Hold / OneHand / OffHand / TwoHand / 지팡이 발끝 들기), Config.ClassGrips의 자세 값(줄에는 Weapon만 남음), Fx의 WeaponPose용 내보내기(Animating·SolveArm). WeaponPose = Studio 측정(GripProbe: dGrip·point·axis)만.
+- **그대로:** 직업별 공격 클립(Fx MOTION·archerPose·staffPose — 시험이 main 11213d87 해시로 지킴), 무기 모양·길이(LEN, 지팡이 = 아바타 키의 0.65~0.75), HeroPreview 3D 몸에 무기(Tool도 남김).
+- **시험:** 새 `tools/test_tool_grip.py`(9줄 × 9단계 × 손 3개: Tool·Grip·쥐는 점·Handle 축·길이·활 왼손 넘김·정적 + 변이). 은퇴: `test_one_hand_grips` / `test_two_hand_grip` / `test_weapon_pose`(지운 서기 자세 계산 시험). `test_weapon_motion`·`test_class_grips_server`·`test_unarmed_start`는 새 규칙에 맞춤.
+- **메인 사진(메인 반영 1):** `HH_MAIN_STUDIO=1 py tools/play_tool_grip_ours.py` → 9종 앞·옆·3/4·걷기·공격 + GripProbe 줄.
+- **볼 것:** Tool을 들 때 마우스 커서 모양이 바뀌는지, 망치·조련사 봉·플라스크 지팡이도 팔 앞에 세운 모습이 괜찮은지, 활 공격 때 왼손으로 넘어가는 순간 튐이 없는지, Hero 창 3D 몸의 무기.
+- **나중(메시 연결 때):** 지팡이 Tripo 메시(원점 = 전체 길이 43%)는 이제 쥐는 점이 막대의 45%(전체의 약 39%)라 맞춰야 함 — 메시가 Handle을 대신하면 그 메시 기준 Point를 다시 정함(이미지 개발·최종 검수).
