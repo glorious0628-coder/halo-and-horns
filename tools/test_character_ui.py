@@ -34,7 +34,8 @@ FILES = {"UI": ROOT / (SPS + "CharacterUI.luau"),
          "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
          "MAIN": ROOT / (SPS + "ClientMain.client.luau"),
          "HUD": ROOT / (SPS + "HUD.luau"),
-         "PANELS": ROOT / (SPS + "Panels.luau")}
+         "PANELS": ROOT / (SPS + "Panels.luau"),
+         "SETTINGS": ROOT / (SPS + "SettingsUI.luau")}
 FIXTURE = ROOT / "tools/fixtures/character_ui_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
@@ -121,6 +122,10 @@ MUTATIONS = [
      "if ctx.Dead or ctx.NoClass then"),
     ("UI", "the power from the old formula (not CombatPowerOf)", "if power == nil then power = okP and tonumber(now) or 0 end",
      "if power == nil then power = Config.CombatPower(level, tier, plus) end"),
+    ("SETTINGS", "Lv 1 cannot change the name (the row gone once the window exists)",
+     'return not hasCharacter or not Config.HudReveal.TileShows("Character", { Level = level })', "return not hasCharacter"),
+    ("SETTINGS", "the row never comes back / leaves on a level up", "Rebuild = { VacationDays = true, DataLoaded = true, Level = true },",
+     "Rebuild = { VacationDays = true, DataLoaded = true },"),
     ("HUD", "the face opens the window below Lv 2 (the tile's lock skipped)", "\tif L.TileLocked(\"Character\") then\n\t\tL.TileWiggle(\"Character\")",
      "\tif false then\n\t\tL.TileWiggle(\"Character\")"),
 ]
@@ -168,6 +173,12 @@ def static(src: dict) -> list[tuple[str, bool]]:
          "function L.PowerOpen()\n\t-- 게임성 검수 10/12" in src["HUD"]
          and "\tif L.TileLocked(\"Character\") then\n\t\tL.TileWiggle(\"Character\")\n\t\treturn\n\tend" in src["HUD"]),
         ("게임성 검수 10/12: the power goes through Config.CombatPowerOf only (tools/test_stats)", "Config.CombatPower(" not in code),
+        # 최종 검수 10/13 (API review): below Lv 2 the Hero window is locked everywhere, so Settings keeps the Nickname row
+        ("최종 검수 10/13: Settings keeps its Nickname row while the Hero window is locked (Lv 1; the HUD's TileShows rule) "
+         "and redraws on a level up", 'return not hasCharacter or not Config.HudReveal.TileShows("Character", { Level = level })'
+         in src["SETTINGS"] and 'if SettingsUI.NicknameRow(panelsHas("Character"), kit.Num("Level")) then' in src["SETTINGS"]
+         and "Rebuild = { VacationDays = true, DataLoaded = true, Level = true }," in src["SETTINGS"]
+         and 'Config.HudReveal.Tiles = { Character = "LevelUp",' in src["CONFIG"]),
         ("the E key opens \"Character\" (Soon: live once the window is registered)",
          '{ Id = "Character", Group = "Window", Key = "E",' in src["CONFIG"] and 'Window = "Character", Soon = true }' in src["CONFIG"]),
     ]

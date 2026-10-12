@@ -57,6 +57,13 @@ local function panelsHas(id)
 	return type(p) == "table" and type(p.Has) == "function" and p.Has(id) == true
 end
 
+-- 최종 검수 10/13 (API review): the Nickname row stays here until the Hero window can really open - it holds the name
+-- (CharacterUI), but below Lv 2 every way into it is locked (the HUD's rule, Config.HudReveal.TileShows), so a new player
+-- changes the name here. Pure: hasCharacter = the window is registered, level = my Level
+function SettingsUI.NicknameRow(hasCharacter, level)
+	return not hasCharacter or not Config.HudReveal.TileShows("Character", { Level = level })
+end
+
 local function corner(obj, r)
 	local c = Instance.new("UICorner")
 	c.CornerRadius = UDim.new(0, r or 10)
@@ -210,7 +217,7 @@ local function buildMain(kit, frame)
 		_, h = row(kit, frame, W.Vacation)
 		button(kit, h, W.Open, nil, function() kit.Open("Vacation") end, kit.Palette.Free)
 	end
-	if not panelsHas("Character") then
+	if SettingsUI.NicknameRow(panelsHas("Character"), kit.Num("Level")) then
 		_, h = row(kit, frame, W.Nickname)
 		button(kit, h, W.Change, nil, function() kit.Open("Nickname") end)
 	end
@@ -540,7 +547,7 @@ function SettingsUI.Init(registry)
 	panels.Register("Settings", {
 		Title = W.Title,
 		FixedBody = true,
-		Rebuild = { VacationDays = true, DataLoaded = true },
+		Rebuild = { VacationDays = true, DataLoaded = true, Level = true }, -- Level: the Nickname row moves to Hero at Lv 2
 		Build = buildSettings,
 		Cleanup = cleanupSettings,
 	})
