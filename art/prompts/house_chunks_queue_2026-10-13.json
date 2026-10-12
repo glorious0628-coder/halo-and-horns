@@ -1,0 +1,1126 @@
+{
+ "made_by": "이미지 생성 3, 2026-10-13 (최종 검수 요청 10/12 밤)",
+ "for": "이미지 생성 2 — 집 덩어리 장식 고유 43종 그림 (같은 모양은 한 번, A23-150 5번)",
+ "source": "docs/design/house_chunk_decor_2026-10-12.md (tools/house_chunk_list.py), crops by tools/house_chunk_queue.py",
+ "rules": [
+  "A23-150 1: shadow-free 3D render - keep volume, rounded edges, soft form shading and material shine; even light-box light from all sides; NO ground / cast / contact shadow, no dark side, no dark crevices; bright true colours; not flat 2D colouring",
+  "A23-150 5: tiny pieces are drawn together as one chunk on one sheet (dome + finial, door leaf + hinges + knocker, lantern + arm)",
+  "4 views front / left / right / back, same object, same size, same light (A23-122); the old 2D crop is the shape reference only (copy its shape and colours, never its shadows)",
+  "no letters on signs, no ray-burst patterns, no outlines (A23-148); plain light grey background",
+  "candidates = Firefly Medium; final = the user's ChatGPT plan image tool, Firefly High only when ChatGPT runs out (A23-151); prompt < 1000 chars for Firefly",
+  "old 2D used as a reference is deleted once its new art passes (A23-150 3)"
+ ],
+ "order_rule": "most visible first: everywhere-at-eye-level (lantern, doors), then the castle landmark, big rooftop domes, window plants / trees, shop fronts, then the small one-house pieces",
+ "items": [
+  {
+   "order": 1,
+   "id": "HaloChunk_LampArm",
+   "name_ko": "등불 + 팔",
+   "what_ko": "벽 등불 둥근 갓 꼭지 + 굽은 팔 (모든 집 같은 모양)",
+   "draw": "wall lantern: gold lantern with glowing glass, round cap + knob, curved gold wall arm and small wall plate",
+   "houses": [
+    "HaloDomeHouse_01",
+    "HaloDomeHouse_02",
+    "HaloDomeHouse_03",
+    "HaloDomeHouse_04",
+    "HaloDomeHouse_05",
+    "HaloDomeHouse_06",
+    "House07",
+    "HaloDomeHouse_08",
+    "HaloDomeHouse_09",
+    "HaloDomeHouse_10",
+    "HaloDomeHouse_11",
+    "HaloDomeHouse_12",
+    "HaloShop_Bakery",
+    "HaloShop_Flower",
+    "HaloShop_Juice",
+    "HaloShop_Potion",
+    "HaloNewHouse_Hill4",
+    "HaloNewHouse_Cliff6",
+    "HaloNewHouse_Cliff7",
+    "HaloNewHouse_Cliff8",
+    "HaloNewHouse_Garden5",
+    "HaloNewHouse_Garden6",
+    "HaloNewHouse_Garden7"
+   ],
+   "house_count": 23,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloDomeHouse_11_roof_v2.png",
+     "crop_box": [
+      0.6,
+      0.46,
+      0.7,
+      0.62
+     ],
+     "crop": "art/review/img3/chunk_refs/LampArm_ref.png"
+    },
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_left_v2.png",
+     "crop_box": [
+      0.73,
+      0.53,
+      0.84,
+      0.72
+     ],
+     "crop": "art/review/img3/chunk_refs/LampArm_ref2.png"
+    }
+   ]
+  },
+  {
+   "order": 2,
+   "id": "HaloChunk_DoorSingle",
+   "name_ko": "외문",
+   "what_ko": "아치 나무 외문 + 경첩 + 문고리 고리",
+   "draw": "single arched wooden door leaf, vertical planks, two long gold strap hinges, gold ring knocker",
+   "houses": [
+    "HaloDomeHouse_01",
+    "HaloDomeHouse_03",
+    "HaloDomeHouse_05",
+    "House07",
+    "HaloDomeHouse_09",
+    "HaloDomeHouse_10",
+    "HaloDomeHouse_11",
+    "HaloShop_Bakery",
+    "HaloShop_Flower",
+    "HaloShop_Juice",
+    "HaloShop_Potion",
+    "HaloNewHouse_Hill4",
+    "HaloNewHouse_Cliff6",
+    "HaloNewHouse_Cliff7",
+    "HaloNewHouse_Cliff8",
+    "HaloNewHouse_Garden5",
+    "HaloNewHouse_Garden6",
+    "HaloNewHouse_Garden7"
+   ],
+   "house_count": 18,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloDomeHouse_11_roof_v2.png",
+     "crop_box": [
+      0.38,
+      0.42,
+      0.59,
+      0.75
+     ],
+     "crop": "art/review/img3/chunk_refs/DoorSingle_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 3,
+   "id": "HaloChunk_CastleWingL",
+   "name_ko": "날개 왼쪽",
+   "what_ko": "빛 성 날개 + 받침",
+   "draw": "castle: huge white angel wing with gold feather edges + its base, left side of the facade (ref 2 = the same wing seen from the back = image right)",
+   "houses": [
+    "빛 성 C2"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png",
+     "crop_box": [
+      0.17,
+      0.12,
+      0.52,
+      0.82
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleWingL_ref.png"
+    },
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_back_src.png",
+     "crop_box": [
+      0.46,
+      0.06,
+      0.8,
+      0.72
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleWingL_ref2.png"
+    }
+   ]
+  },
+  {
+   "order": 4,
+   "id": "HaloChunk_CastleWingR",
+   "name_ko": "날개 오른쪽",
+   "what_ko": "빛 성 날개 + 받침",
+   "draw": "castle: huge white angel wing with gold feather edges + its base, right side (mirror of the left one in the 2D; ref 2 = seen from the back = image left)",
+   "houses": [
+    "빛 성 C2"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png",
+     "crop_box": [
+      0.48,
+      0.12,
+      0.83,
+      0.82
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleWingR_ref.png"
+    },
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_back_src.png",
+     "crop_box": [
+      0.2,
+      0.06,
+      0.54,
+      0.72
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleWingR_ref2.png"
+    }
+   ]
+  },
+  {
+   "order": 5,
+   "id": "HaloChunk_DomeRibbed",
+   "name_ko": "둥근 갈빗대 돔",
+   "what_ko": "02·06·08·물약: 반구 금 돔 + 갈빗대 + 뾰족 꼭지",
+   "draw": "round gold dome with ribs, ring base and a pointed gold finial (02, 06, 08, Potion)",
+   "houses": [
+    "HaloDomeHouse_02",
+    "HaloDomeHouse_06",
+    "HaloDomeHouse_08",
+    "HaloShop_Potion"
+   ],
+   "house_count": 4,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_src.png",
+     "crop_box": [
+      0.29,
+      0.04,
+      0.71,
+      0.33
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeRibbed_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 6,
+   "id": "HaloChunk_DoorDouble",
+   "name_ko": "쌍문",
+   "what_ko": "아치 나무 쌍문 + 경첩 + 손잡이 2",
+   "draw": "double arched wooden door, two leaves, gold fleur hinges, two gold knobs",
+   "houses": [
+    "HaloDomeHouse_02",
+    "HaloDomeHouse_04",
+    "HaloDomeHouse_06",
+    "HaloDomeHouse_08",
+    "HaloDomeHouse_12"
+   ],
+   "house_count": 5,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_04_front_HQ_src.png",
+     "crop_box": [
+      0.42,
+      0.53,
+      0.58,
+      0.86
+     ],
+     "crop": "art/review/img3/chunk_refs/DoorDouble_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 7,
+   "id": "HaloChunk_WindowBoxA",
+   "name_ko": "창 화분 A",
+   "what_ko": "흰·파랑 꽃 + 늘어진 잎 (대부분의 집)",
+   "draw": "window box plants: white + blue daisies with green leaves hanging over the edge (box = skeleton)",
+   "houses": [
+    "HaloDomeHouse_01",
+    "HaloDomeHouse_02",
+    "HaloDomeHouse_03",
+    "HaloDomeHouse_04",
+    "HaloDomeHouse_05",
+    "HaloDomeHouse_06",
+    "House07",
+    "HaloDomeHouse_08",
+    "HaloDomeHouse_09",
+    "HaloDomeHouse_10",
+    "HaloDomeHouse_11",
+    "HaloDomeHouse_12",
+    "HaloShop_Flower",
+    "HaloNewHouse_Hill4",
+    "HaloNewHouse_Cliff7",
+    "HaloNewHouse_Cliff8",
+    "HaloNewHouse_Garden5",
+    "HaloNewHouse_Garden6",
+    "HaloNewHouse_Garden7"
+   ],
+   "house_count": 19,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_left_v2.png",
+     "crop_box": [
+      0.27,
+      0.68,
+      0.53,
+      0.88
+     ],
+     "crop": "art/review/img3/chunk_refs/WindowBoxA_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 8,
+   "id": "HaloChunk_ConeTree",
+   "name_ko": "원뿔 나무",
+   "what_ko": "원뿔 정원수 (문 옆·화단)",
+   "draw": "small cone-shaped garden tree (topiary), dense round leaf clumps, no pot",
+   "houses": [
+    "HaloDomeHouse_03",
+    "HaloDomeHouse_06",
+    "House07",
+    "HaloDomeHouse_08",
+    "HaloDomeHouse_10",
+    "HaloDomeHouse_11",
+    "HaloDomeHouse_12",
+    "HaloShop_Bakery",
+    "HaloShop_Flower",
+    "HaloShop_Juice",
+    "HaloShop_Potion",
+    "빛 성 C2"
+   ],
+   "house_count": 12,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png",
+     "crop_box": [
+      0.19,
+      0.66,
+      0.29,
+      0.8
+     ],
+     "crop": "art/review/img3/chunk_refs/ConeTree_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 9,
+   "id": "HaloChunk_CastleRose",
+   "name_ko": "장미창 무늬",
+   "what_ko": "빛 성 8잎 무늬 + 금 틀",
+   "draw": "castle: round rose window, 8 petal gold tracery with glowing yellow glass + gold ring frame",
+   "houses": [
+    "빛 성 C2"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png",
+     "crop_box": [
+      0.43,
+      0.46,
+      0.57,
+      0.62
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleRose_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 10,
+   "id": "HaloChunk_CastleGateLeaf",
+   "name_ko": "성 문 무늬",
+   "what_ko": "빛 성 금 문짝 꽃 메달 + 세로 판",
+   "draw": "castle: tall pointed gold door leaf with a flower medallion and vertical panels",
+   "houses": [
+    "빛 성 C2"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_gateleaf_HQ_src.png",
+     "crop": null
+    },
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png",
+     "crop_box": [
+      0.42,
+      0.62,
+      0.58,
+      0.88
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleGateLeaf_ref2.png"
+    }
+   ]
+  },
+  {
+   "order": 11,
+   "id": "HaloChunk_DomeOnion",
+   "name_ko": "양파 돔",
+   "what_ko": "04: 통통한 양파 돔",
+   "draw": "plump gold onion dome with ribs, ring base and a pointed finial (04)",
+   "houses": [
+    "HaloDomeHouse_04"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_04_front_HQ_src.png",
+     "crop_box": [
+      0.29,
+      0.02,
+      0.71,
+      0.41
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeOnion_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 12,
+   "id": "HaloChunk_DomeOctagon",
+   "name_ko": "팔각 돔",
+   "what_ko": "03: 8면 돔",
+   "draw": "eight-sided gold dome with flat facets and a pointed finial (03)",
+   "houses": [
+    "HaloDomeHouse_03"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_03_front_HQ_src.png",
+     "crop_box": [
+      0.24,
+      0.02,
+      0.8,
+      0.36
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeOctagon_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 13,
+   "id": "HaloChunk_DomeBall",
+   "name_ko": "공 꼭지 돔",
+   "what_ko": "09: 둥근 돔 + 큰 공 꼭지",
+   "draw": "wide round gold dome with ribs and one big gold ball finial (09)",
+   "houses": [
+    "HaloDomeHouse_09"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_09_front_HQ_src.png",
+     "crop_box": [
+      0.25,
+      0.02,
+      0.75,
+      0.38
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeBall_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 14,
+   "id": "HaloChunk_DomeOnionSlim",
+   "name_ko": "가는 양파 돔",
+   "what_ko": "10: 가는 양파 돔 + 공 2 + 뾰족",
+   "draw": "slim tall gold onion dome, two small balls at the base, pointed spire (10)",
+   "houses": [
+    "HaloDomeHouse_10"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_10_front_HQ_recolor.png",
+     "crop_box": [
+      0.33,
+      0.0,
+      0.67,
+      0.28
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeOnionSlim_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 15,
+   "id": "HaloChunk_DomeBrick",
+   "name_ko": "벽돌 돔",
+   "what_ko": "빵집: 벽돌 돔",
+   "draw": "rounded red-brown brick dome with a cream stone rim (Bakery)",
+   "houses": [
+    "HaloShop_Bakery"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
+     "crop_box": [
+      0.53,
+      0.17,
+      0.83,
+      0.36
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeBrick_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 16,
+   "id": "HaloChunk_JuiceParasol",
+   "name_ko": "파라솔",
+   "what_ko": "주스 지붕 파라솔 + 과일 상자",
+   "draw": "rooftop: blue + white striped canopy on four gold posts, crates of oranges, lemons, apples (Juice)",
+   "houses": [
+    "HaloShop_Juice"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloShop_Juice_roof_v2.png",
+     "crop_box": [
+      0.27,
+      0.02,
+      0.73,
+      0.35
+     ],
+     "crop": "art/review/img3/chunk_refs/JuiceParasol_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 17,
+   "id": "HaloChunk_Greenhouse",
+   "name_ko": "온실",
+   "what_ko": "꽃집 지붕 유리 온실 + 식물",
+   "draw": "rooftop glass greenhouse with gold frame and green plants + white flowers inside (Flower)",
+   "houses": [
+    "HaloShop_Flower"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloShop_Flower_roof_v2.png",
+     "crop_box": [
+      0.22,
+      0.08,
+      0.78,
+      0.35
+     ],
+     "crop": "art/review/img3/chunk_refs/Greenhouse_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 18,
+   "id": "HaloChunk_ShopSign",
+   "name_ko": "간판",
+   "what_ko": "금 간판 판 (빵·주스·물약 같은 모양, 글자 = 텍스트)",
+   "draw": "blank gold shop sign board with scroll ends and a small top ornament (no letters; text = TextLabel)",
+   "houses": [
+    "HaloShop_Bakery",
+    "HaloShop_Juice",
+    "HaloShop_Potion"
+   ],
+   "house_count": 3,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
+     "crop_box": [
+      0.31,
+      0.32,
+      0.67,
+      0.46
+     ],
+     "crop": "art/review/img3/chunk_refs/ShopSign_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 19,
+   "id": "HaloChunk_IvyWall",
+   "name_ko": "담쟁이 벽",
+   "what_ko": "벽 타고 오르는 담쟁이 (09·가게)",
+   "draw": "green ivy climbing up a wall corner with small white + blue flowers (flat back, hangs on the wall)",
+   "houses": [
+    "HaloDomeHouse_09",
+    "HaloShop_Bakery",
+    "HaloShop_Juice",
+    "HaloShop_Potion"
+   ],
+   "house_count": 4,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_09_front_HQ_src.png",
+     "crop_box": [
+      0.18,
+      0.24,
+      0.39,
+      0.93
+     ],
+     "crop": "art/review/img3/chunk_refs/IvyWall_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 20,
+   "id": "HaloChunk_IvyBalcony",
+   "name_ko": "담쟁이 발코니",
+   "what_ko": "발코니·퍼걸러에서 늘어진 담쟁이 (06·08·10·12)",
+   "draw": "ivy hanging down from a balcony rail / pergola beam, white flowers (06, 08, 10, 12)",
+   "houses": [
+    "HaloDomeHouse_06",
+    "HaloDomeHouse_08",
+    "HaloDomeHouse_10",
+    "HaloDomeHouse_12"
+   ],
+   "house_count": 4,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloDomeHouse_12_roof_v2.png",
+     "crop_box": [
+      0.28,
+      0.07,
+      0.72,
+      0.3
+     ],
+     "crop": "art/review/img3/chunk_refs/IvyBalcony_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 21,
+   "id": "HaloChunk_FlowerBushPot",
+   "name_ko": "꽃 덤불 화분",
+   "what_ko": "큰 화분 꽃 덤불 (01·02 등, 지붕 상자 꽃 포함)",
+   "draw": "round flower bush: white + blue flowers in a green leaf mound with hanging vines (pot = skeleton)",
+   "houses": [
+    "HaloDomeHouse_01",
+    "HaloDomeHouse_02"
+   ],
+   "house_count": 2,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_src.png",
+     "crop_box": [
+      0.2,
+      0.7,
+      0.4,
+      0.93
+     ],
+     "crop": "art/review/img3/chunk_refs/FlowerBushPot_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 22,
+   "id": "HaloChunk_DomePorchHalf",
+   "name_ko": "현관 반돔",
+   "what_ko": "08: 현관 반돔",
+   "draw": "small half dome over the door: gold ribbed half dome with finial (08)",
+   "houses": [
+    "HaloDomeHouse_08"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png",
+     "crop_box": [
+      0.36,
+      0.42,
+      0.64,
+      0.58
+     ],
+     "crop": "art/review/img3/chunk_refs/DomePorchHalf_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 23,
+   "id": "HaloChunk_DomePavilion",
+   "name_ko": "정자 돔",
+   "what_ko": "01: 작은 정자 돔 + 공",
+   "draw": "small rooftop pavilion: open arches, gold mini dome and ball (01)",
+   "houses": [
+    "HaloDomeHouse_01"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloDomeHouse_01_roof_v2.png",
+     "crop_box": [
+      0.6,
+      0.12,
+      0.76,
+      0.3
+     ],
+     "crop": "art/review/img3/chunk_refs/DomePavilion_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 24,
+   "id": "HaloChunk_DomeTowerSmall",
+   "name_ko": "작은 탑 돔",
+   "what_ko": "02 탑 4개: 작은 갈빗대 돔",
+   "draw": "small gold tower cap: little ribbed dome with point, sits on a corner pillar (02, x4)",
+   "houses": [
+    "HaloDomeHouse_02"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_02_front_HQ_src.png",
+     "crop_box": [
+      0.18,
+      0.3,
+      0.27,
+      0.41
+     ],
+     "crop": "art/review/img3/chunk_refs/DomeTowerSmall_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 25,
+   "id": "HaloChunk_BreadDisplay",
+   "name_ko": "빵 진열",
+   "what_ko": "빵집 진열창 안",
+   "draw": "bakery window shelves: baguettes, round loaves, croissants in baskets (Bakery)",
+   "houses": [
+    "HaloShop_Bakery"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
+     "crop_box": [
+      0.28,
+      0.55,
+      0.55,
+      0.83
+     ],
+     "crop": "art/review/img3/chunk_refs/BreadDisplay_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 26,
+   "id": "HaloChunk_JuiceStand",
+   "name_ko": "주스 가판",
+   "what_ko": "주스 과일·병 가판",
+   "draw": "juice counter: wooden shelves, glass juice jars (orange, red, green), fruit crates (Juice)",
+   "houses": [
+    "HaloShop_Juice"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloShop_Juice_roof_v2.png",
+     "crop_box": [
+      0.37,
+      0.58,
+      0.72,
+      0.92
+     ],
+     "crop": "art/review/img3/chunk_refs/JuiceStand_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 27,
+   "id": "HaloChunk_PotionDisplay",
+   "name_ko": "물약 진열",
+   "what_ko": "물약 선반",
+   "draw": "potion shelves: round glowing bottles (pink, teal, purple, gold), books (Potion)",
+   "houses": [
+    "HaloShop_Potion"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/shops/HaloShop_Potion_front_HQ_src.png",
+     "crop_box": [
+      0.26,
+      0.57,
+      0.55,
+      0.82
+     ],
+     "crop": "art/review/img3/chunk_refs/PotionDisplay_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 28,
+   "id": "HaloChunk_RoseTrellis",
+   "name_ko": "장미 격자",
+   "what_ko": "꽃집 벽 격자 장미",
+   "draw": "white wooden lattice panel with climbing blue + white flowers (Flower)",
+   "houses": [
+    "HaloShop_Flower"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloShop_Flower_roof_v2.png",
+     "crop_box": [
+      0.1,
+      0.36,
+      0.26,
+      0.8
+     ],
+     "crop": "art/review/img3/chunk_refs/RoseTrellis_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 29,
+   "id": "HaloChunk_RoseArch",
+   "name_ko": "장미 아치",
+   "what_ko": "Garden5 문 둘레",
+   "draw": "rose arch around a door: green vine arch with pink roses (Garden5)",
+   "houses": [
+    "HaloNewHouse_Garden5"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_front.png",
+     "crop_box": [
+      0.32,
+      0.44,
+      0.75,
+      0.9
+     ],
+     "crop": "art/review/img3/chunk_refs/RoseArch_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 30,
+   "id": "HaloChunk_SunflowerBed",
+   "name_ko": "해바라기 화단",
+   "what_ko": "Garden5 앞·옆",
+   "draw": "flower bed: sunflowers + white daisies in green leaves (Garden5)",
+   "houses": [
+    "HaloNewHouse_Garden5"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_front.png",
+     "crop_box": [
+      0.14,
+      0.68,
+      0.4,
+      0.9
+     ],
+     "crop": "art/review/img3/chunk_refs/SunflowerBed_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 31,
+   "id": "HaloChunk_Pond",
+   "name_ko": "연못",
+   "what_ko": "Garden6 연꽃 연못 + 고사리",
+   "draw": "small round pond: gold rim, blue water, lily pads, white lotus, ferns behind (Garden6)",
+   "houses": [
+    "HaloNewHouse_Garden6"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden6_front.png",
+     "crop_box": [
+      0.01,
+      0.54,
+      0.39,
+      0.82
+     ],
+     "crop": "art/review/img3/chunk_refs/Pond_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 32,
+   "id": "HaloChunk_CastleHedge",
+   "name_ko": "성 울타리",
+   "what_ko": "빛 성 낮은 생울타리",
+   "draw": "castle: low trimmed green hedge strip on a white stone curb",
+   "houses": [
+    "빛 성 C2"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/castle6/HaloCastle_C2_front_HQ_src.png",
+     "crop_box": [
+      0.02,
+      0.74,
+      0.44,
+      0.93
+     ],
+     "crop": "art/review/img3/chunk_refs/CastleHedge_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 33,
+   "id": "HaloChunk_StarFinial",
+   "name_ko": "별 꼭지",
+   "what_ko": "금 별 (Cliff6·빛 성 첨탑)",
+   "draw": "gold five-point star finial on a short gold stem (Cliff6, Garden7, castle spires)",
+   "houses": [
+    "HaloNewHouse_Cliff6",
+    "HaloNewHouse_Garden7",
+    "빛 성 C2"
+   ],
+   "house_count": 3,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_front.png",
+     "crop_box": [
+      0.44,
+      0.0,
+      0.56,
+      0.13
+     ],
+     "crop": "art/review/img3/chunk_refs/StarFinial_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 34,
+   "id": "HaloChunk_WeatherVane",
+   "name_ko": "바람개비",
+   "what_ko": "별 + 화살 바람개비 (Garden7)",
+   "draw": "gold weathervane: star on top + arrow with feather tail (Garden7)",
+   "houses": [
+    "HaloNewHouse_Garden7"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden7_front.png",
+     "crop_box": [
+      0.4,
+      0.0,
+      0.59,
+      0.15
+     ],
+     "crop": "art/review/img3/chunk_refs/WeatherVane_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 35,
+   "id": "HaloChunk_ChimneyCap",
+   "name_ko": "굴뚝 갓",
+   "what_ko": "굴뚝 연통 (11·Hill4)",
+   "draw": "chimney top: cream stone chimney with two gold pots (11, Hill4)",
+   "houses": [
+    "HaloDomeHouse_11",
+    "HaloNewHouse_Hill4"
+   ],
+   "house_count": 2,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Hill4_front.png",
+     "crop_box": [
+      0.77,
+      0.07,
+      0.92,
+      0.24
+     ],
+     "crop": "art/review/img3/chunk_refs/ChimneyCap_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 36,
+   "id": "HaloChunk_ChimneyLantern",
+   "name_ko": "굴뚝 등",
+   "what_ko": "빵집 굴뚝 위 등",
+   "draw": "bakery chimney top: small round gold lantern cupola with dome and ball (Bakery)",
+   "houses": [
+    "HaloShop_Bakery"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/shops/HaloShop_Bakery_front_HQ_src.png",
+     "crop_box": [
+      0.62,
+      0.04,
+      0.76,
+      0.24
+     ],
+     "crop": "art/review/img3/chunk_refs/ChimneyLantern_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 37,
+   "id": "HaloChunk_RoundTree",
+   "name_ko": "동그란 나무",
+   "what_ko": "05 지붕 동그란 나무",
+   "draw": "small round clipped bush tree in a gold-rim pot on the roof (05)",
+   "houses": [
+    "HaloDomeHouse_05"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloDomeHouse_05_roof_v2.png",
+     "crop_box": [
+      0.27,
+      0.22,
+      0.36,
+      0.31
+     ],
+     "crop": "art/review/img3/chunk_refs/RoundTree_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 38,
+   "id": "HaloChunk_MedalBell",
+   "name_ko": "메달 + 종",
+   "what_ko": "Cliff7 문 위",
+   "draw": "gold four-leaf medal over the door + small gold bell on a wall bracket (Cliff7)",
+   "houses": [
+    "HaloNewHouse_Cliff7"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff7_front.png",
+     "crop_box": [
+      0.44,
+      0.3,
+      0.75,
+      0.6
+     ],
+     "crop": "art/review/img3/chunk_refs/MedalBell_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 39,
+   "id": "HaloChunk_Telescope",
+   "name_ko": "망원경",
+   "what_ko": "Cliff8 발코니",
+   "draw": "brass telescope on a gold tripod stand (Cliff8 balcony)",
+   "houses": [
+    "HaloNewHouse_Cliff8"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff8_front.png",
+     "crop_box": [
+      0.76,
+      0.24,
+      0.93,
+      0.46
+     ],
+     "crop": "art/review/img3/chunk_refs/Telescope_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 40,
+   "id": "HaloChunk_Cauldron",
+   "name_ko": "가마솥",
+   "what_ko": "물약 가게 문 앞 가마솥",
+   "draw": "black iron cauldron on three short legs, bubbling green potion (Potion)",
+   "houses": [
+    "HaloShop_Potion"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/shops/HaloShop_Potion_front_HQ_src.png",
+     "crop_box": [
+      0.64,
+      0.73,
+      0.79,
+      0.93
+     ],
+     "crop": "art/review/img3/chunk_refs/Cauldron_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 41,
+   "id": "HaloChunk_FlowerBuckets",
+   "name_ko": "꽃 양동이",
+   "what_ko": "꽃집 문 앞 꽃 양동이",
+   "draw": "wooden + tin flower buckets with blue hydrangea, white tulips (Flower)",
+   "houses": [
+    "HaloShop_Flower"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/roofs/HaloShop_Flower_roof_v2.png",
+     "crop_box": [
+      0.25,
+      0.74,
+      0.41,
+      0.91
+     ],
+     "crop": "art/review/img3/chunk_refs/FlowerBuckets_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 42,
+   "id": "HaloChunk_WindowBoxB",
+   "name_ko": "창 화분 B",
+   "what_ko": "분홍 튤립 (Cliff6)",
+   "draw": "window box plants: pink + white tulips with green leaves (Cliff6)",
+   "houses": [
+    "HaloNewHouse_Cliff6"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses_new4/HaloNewHouse_Cliff6_front.png",
+     "crop_box": [
+      0.16,
+      0.45,
+      0.36,
+      0.58
+     ],
+     "crop": "art/review/img3/chunk_refs/WindowBoxB_ref.png"
+    }
+   ]
+  },
+  {
+   "order": 43,
+   "id": "HaloChunk_CornerFinial",
+   "name_ko": "모서리 꼭지",
+   "what_ko": "08 모서리 4: 금 꼭지",
+   "draw": "small gold corner finial: ball + point on a little stepped base (08 corners, x4)",
+   "houses": [
+    "HaloDomeHouse_08"
+   ],
+   "house_count": 1,
+   "refs": [
+    {
+     "image": "art/out/s2/halo/houses/HaloDomeHouse_08_front_HQ_src.png",
+     "crop_box": [
+      0.19,
+      0.22,
+      0.27,
+      0.33
+     ],
+     "crop": "art/review/img3/chunk_refs/CornerFinial_ref.png"
+    }
+   ]
+  }
+ ]
+}
