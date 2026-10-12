@@ -17,9 +17,12 @@
   Tut.Text.Travel/Welcome 경계선, 할로윈 왕 수다). 전체 오프라인: 실패 = 파일 없는 3개(place_english·shop_layout·rank_marks)뿐.
 
 ## 진행 중
-- **C1 API job `dev2_c1_t9_v4`** (10/12, 가지 api/dev2-c1-t9-v4, Opus $12·110턴, 프롬프트 = 스크래치 c1_prompt.md 요지: T9 Mythic
-  2200/Lv50/Crownforged 끝에, Version 4, Spares·Market sanitize, LootService.SpareRoom/AddSpare, KingJelly 0.2·ClatterGem 0.1
-  Source Boss, test_weapon_ladder 새로). 끝나면: `.py` diff 먼저 읽기 → 임시 worktree에서 시험 → 게임성 검수에 해시.
+- **C1 API job** 가지 api/dev2-c1-t9-v4: 첫 job `dev2_c1_t9_v4`($2.6)는 api_agent 버그(edit_file이 파일 전체 크기를 쓰기 한도에 셈
+  → Config 13번 고치면 멈춤)로 Config만 미완성 커밋 ab5b9777. 버그는 main 476362b로 고침(새 글만 셈, test_api_agent 314).
+  이어서 `dev2_c1b_t9_v4`(Opus $10·130턴, --make-worktree origin/api/dev2-c1-t9-v4, 프롬프트 c1b_prompt.md = 남은 1~4 + 원래
+  c1_prompt.md: Sanitize Spares/Market, DataService <4 + v1/v2 단계는 8 고정, LootService.SpareRoom/AddSpare, test_weapon_ladder +
+  Version 3·8단계 가정 시험들). 끝나면: `.py` diff 먼저 읽기 → 임시 worktree에서 시험 → 게임성 검수에 해시.
+- 버그 알림: 개발 3(dev3_gear)·개발 4(dev4_tonics)·최종 검수(house-gen-porch 주인에게)에 보냄 — 옛 한도로 돈 job은 멈출 수 있음.
 - **황금 알 API job `dev2_golden_egg`** (10/12, 가지 api/dev2-golden-egg, Opus $18·170턴, 프롬프트 = 스크래치 egg_prompt.md:
   약속 문서 그대로 + 개발 1 가지 origin/fix/golden-egg-client에 맞춤, A23-134 네 개 모두 켬, A23-137 4시간·+30, 중립 = 바로 가방
   GoldenEgg·1등 +50%, 깃털 Kind Feather → GooseFeather(Fx 없음), 'Bring 2 eggs' Notify, 명예 +5 한 시간 한 번(첫 +1 대신),
