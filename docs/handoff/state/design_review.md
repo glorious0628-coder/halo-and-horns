@@ -26,6 +26,8 @@
 - (23시 50분) BreadStand·FruitStall 4면 통과 → 묶음 6 = FlowerCart·BenchB·BreadStand·FruitStall. 최종 검수 보고 4 보냄. 다음: 등불 A~E(이미지 생성 3), 집 덩어리 16 JuiceParasol~(이미지 생성 2), DomeBrick 옆, 묶음 5·6 흰 모델, 매직 브러시 4곳(창 보일 때).
 - (자정) 흰 모델 묶음 5·6: ConeTree 2bbbd641(이번엔 됨), DomeOctagon f9e91fe2, DomeBall 66894770, FlowerCart af2e2b5f, BenchB b8de1d3c → 텍스처. DomeBrick 4면 통과 → 묶음 7. JuiceParasol 오른쪽 다시(가까운 상자 = 빨간 사과).
 - (10/13 0시 반) 흰 모델: DomeOnionSlim 40dad418, BreadStand 00dac363, FruitStall 568b5b8e, DomeBrick 46f0bb09 → 텍스처. 4면: JuiceParasol 통과(묶음 7), Greenhouse 크기 다시(옆이 캔버스 밖으로 잘림 → 옆 원래 크기 + 앞·뒤 줄이기). 흰 모델 받기 도구: scratchpad mkbatch.py(묶음 JSON) → browser_batch → rawlines.py → tripo_dl.py → pot_views.py → sheets.py.
+- (2시) Greenhouse 4면 통과(묶음 7). GateLeaf·DomeOnion 텍스처 PBR OK. PBR 9종 통과(시트 art/review/design/chunks9_pbr_vs_flat_1013.jpg). 등불 A·C·D·E 4면 통과 → 묶음 8. Lantern_B 받침 판 개수(면마다 1개) 다시. 대기: WingR 뒤집기 사진, 묶음 7·8 흰 모델, 매직 브러시 4곳.
+- **교훈: 옛 그림이 3/4면이면 보이는 두 면을 합쳐 정면 하나로 그리는 실수가 있음 → 면마다 개수 세기.**
 - **교훈: 4면 관문에서 '3D로 될 그림인지'도 봄** — 작은 알갱이 수백 개(잎·꽃 알갱이)는 스마트 메시가 못 따라감 → 큰 덩어리로 단순하게.
 - 흰 모델 보는 법(창 숨김일 때): 뒤 탭(tabs_create)에서 store의 model_url → 날짜·uuid·서명만 뽑아 scratchpad tripo_dl.py로 받기(Policy는 다시 만듦) → pot_views.py 7면 점토 렌더.
 - 4면 흔한 고장: 좌우 옆면이 서로 다름 / 옆면이 1.2~1.3배 크게 그려짐 / 한 면만 연한 빛 띠 → PIL 뒤집기·복사·크기로 고침(새 생성 X).
