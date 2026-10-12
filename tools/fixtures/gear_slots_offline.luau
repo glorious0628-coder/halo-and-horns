@@ -213,23 +213,35 @@ runGroup("power", function()
 	check(on.CombatPowerOf(fake({ Level = 30, WeaponTier = 3, WeaponEnhance = 5 })) == base, "no gear attributes = the old number", "")
 	-- MaxCombatPower: the best gear when the switch is on, its own cache value
 	local m0 = off.MaxCombatPower()
-	local want = 0
-	for t = 1, on.MaxWeaponTier do want = math.max(want, on.CombatPower(on.Levels.MaxLevel, t, on.Loot.MaxEnhance, nil, top)) end
+	-- C1 (tier 9 Mythic): the expected numbers come from the formula - the best of every tier at MaxLevel / MaxEnhance
+	local function best(c, even, gear)
+		local b, bt = 0, 0
+		for t = 1, c.MaxWeaponTier do
+			local v = c.CombatPower(c.Levels.MaxLevel, t, c.Loot.MaxEnhance, even, gear)
+			if v > b then b, bt = v, t end
+		end
+		return b, bt
+	end
+	local wantOff, topTier = best(off, nil, nil)
+	local want = best(on, nil, top)
 	local m1 = on.MaxCombatPower()
-	check(m0 == 25488 and m1 == want and m1 > m0 and math.abs(m1 / m0 - math.sqrt(1.14 * 1.22)) < 0.001,
-		"MaxCombatPower: 25,488 off; on = the highest weapon with the T3 +2 armor and ring", show({ m0, m1, want }))
+	check(m0 == wantOff and topTier == off.MaxWeaponTier and m1 == want and m1 > m0 and math.abs(m1 / m0 - math.sqrt(1.14 * 1.22)) < 0.001,
+		"MaxCombatPower: off = the best tier (the Mythic, tier 9) at MaxLevel +MaxEnhance; on = the same with the T3 +2 armor and ring",
+		show({ m0, wantOff, topTier, m1, want }))
 	local both = newConfig(false)
 	local x0 = both.MaxCombatPower()
 	both.Features.Gear = true
 	local x1 = both.MaxCombatPower()
 	both.Features.Gear = false
-	check(x0 == 25488 and x1 == m1 and both.MaxCombatPower() == x0, "MaxCombatPower: one cached value per switch state (flipping never mixes them)", show({ x0, x1 }))
+	check(x0 == wantOff and x1 == m1 and both.MaxCombatPower() == x0, "MaxCombatPower: one cached value per switch state (flipping never mixes them)", show({ x0, x1 }))
 	local stats = newConfig(true, function(c) c.Features.StatPoints = true end)
 	local statsOff = newConfig(false, function(c) c.Features.StatPoints = true end)
-	check(stats.MaxCombatPower() > statsOff.MaxCombatPower() and stats.MaxCombatPower() ~= m1 and statsOff.MaxCombatPower() == 33740,
+	local points = statsOff.StatPoints(statsOff.Levels.MaxLevel)
+	local wantStats = best(statsOff, { A = math.floor(points / 2), H = points - math.floor(points / 2) }, nil)
+	check(stats.MaxCombatPower() > statsOff.MaxCombatPower() and stats.MaxCombatPower() ~= m1 and statsOff.MaxCombatPower() == wantStats,
 		"MaxCombatPower: stat points and gear together are a fourth value", show({ stats.MaxCombatPower(), statsOff.MaxCombatPower() }))
 	-- no hit of anything beats the displayed top number
-	check(on.CombatPower(on.Levels.MaxLevel, 8, on.Loot.MaxEnhance, nil, top) <= m1, "no gear number goes over MaxCombatPower", "")
+	check(on.CombatPower(on.Levels.MaxLevel, on.MaxWeaponTier, on.Loot.MaxEnhance, nil, top) <= m1, "no gear number goes over MaxCombatPower", "")
 end)
 
 ------------------------------------------------------------------ equip / take off / swap (one place)

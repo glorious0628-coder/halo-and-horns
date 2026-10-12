@@ -233,7 +233,9 @@ local function rollRows(info, onHit)
 			and not Config.WeaponUsable(row.Weapon, info.Level) then
 			onHit(row.BelowLevel, false)
 		elseif rng:NextNumber() < math.min(1, num(row.P) * rowMult * rowBonus) then
-			onHit(row, false)
+			-- C1 review: an item with a Feature (the boss craft materials) drops only while that switch is on; the draw is
+			-- made either way, so every row after it keeps its draw
+			if not (def and def.Feature) or Config.FeatureOn(def.Feature) then onHit(row, false) end
 		end
 	end
 	local jackpot = LOOT.Jackpot

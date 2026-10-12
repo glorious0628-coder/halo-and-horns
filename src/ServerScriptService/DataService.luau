@@ -152,7 +152,12 @@ local function migrate(d, player)
 	-- The bump makes a v3 server refuse v4 records (CR-L3) instead of resetting a mask that owns tier 9.
 	if (tonumber(d.Version) or 1) < 4 then
 		if type(d.WeaponTier) == "number" and d.WeaponTier > oldTiers then d.WeaponTier = -1 end
-		if type(d.WeaponOwnedMask) == "number" and d.WeaponOwnedMask >= bit32.lshift(1, oldTiers) then d.WeaponOwnedMask = -1 end
+		-- C1 review: a whole mask with a bit above 8 keeps its 8 real bits (the weapons that record did own); a broken
+		-- number is left to fillDefaults' repair
+		local m = d.WeaponOwnedMask
+		if type(m) == "number" and m == math.floor(m) and m >= bit32.lshift(1, oldTiers) and m < 2 ^ 31 then
+			d.WeaponOwnedMask = bit32.band(m, bit32.lshift(1, oldTiers) - 1)
+		end
 		d.Version = 4
 	end
 end
