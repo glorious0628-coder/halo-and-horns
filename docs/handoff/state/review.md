@@ -146,3 +146,6 @@
 - 시작 때 다른 세션 0개 → 사용자가 빈 세션 6개 만듦 → 내가 이름·모델·노력·첫 지시: 메인 반영 1(Sonnet high: sync·클래식 칼 값·거위 창 복원 사진·r15 4종, Save As는 나중), 게임성 개발 1(Opus xhigh: 무기 들기 (가) fix/tool-grip → 다음 도감 카드 화면), 게임성 개발 2(Opus xhigh: 도감 카드 서버 dev2-codex + 약속 문서 → dev2-c2 전체 시험), 이미지 생성 2(Sonnet high: Codex 꽃 화분 5), 이미지 생성 3(Opus high: 빛 성 WorldKit 넣기 + 집 덩어리 43종 큐), Blender 손보기(Opus high: 동상·분수 Tripo 260점 승인, GLB 내려받기 전 멈춤 → 사용자 허락 받아 알림). 이미지 개발은 올릴 것 생기면 새로.
 - 병합: 448b72ff 거위 바닥 → main 24c396d7. 판정: Halo_Statue 4면 통과, Fountain3 통과(right = left 뒤집음, 원래 right 시점 낮음) → approved.json, 옛 2D → `C:/Users/glori/Documents/Roblox/_지울것_2D_2026-10-12`(11213d8).
 - 화면 차례: 메인 반영 1(창 복원 Play 사진)과 이미지 생성 3(WorldKit 창 복원 사진)이 신청할 것 → 한 번에 하나, 사용자에게 알리고 "전달함, 시작".
+- (21:40~) 결정(나): 빛 마을 낮 빛 = 위도 35 그대로 + 그늘 빛(OutdoorAmbient) 따뜻하게 188,185,183(WorldKit C2c 기준, 게임 Config 낮 값 ≈130,136,139 계산) — 시트 art/review/img3/houses/ambient_test/ambient_test.jpg, 근거 docs/design/halo_light_day_oa_2026-10-13.md(이미지 생성 3). 게임 Config는 빛 마을 메인 교체(6단계) 때 코드 세션이 넣음.
+- 판정: 동상 Tripo 통과(흰 모델 D f4fcec0d, 130점), 분수 4면은 물줄기 있어 다시(FountainFx가 물줄기 그림) → 물 없는 판 통과 → Tripo 130점(흰 모델 D 16be0d85, 기둥 45° 돌아감 = 놓을 때 yaw +45, 큰 그릇 물 색 확인 중). 잔액 12,970. **GLB 내려받기 = 사용자 답 대기**(동상·분수). 성 앞 소품 5개 옮김, 집 덩어리 43종 큐 art/prompts/house_chunks_queue_2026-10-13.json 통과.
+- 순서 규칙(사용자 다시 강조): 그림 전체 크기 확인 통과 → 그다음에만 3D, 사람은 맨 끝(보지도 말 것).
