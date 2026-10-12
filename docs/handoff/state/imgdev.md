@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12: 바깥선 취소 SPEC A23-148)
+
+- **바깥선(껍데기 메시) 취소**(사용자: "선 때문에 완전 이상해졌다. 우리의 시안은 2D야"). 묶음 6·Import 요청 그만, 남은 껍데기 일 없음. `prop_hull_assets.json`·asset_ids `PropHull035_*` 50개는 기록만(쓰지 않음, 지우지 않음). WorldKit의 껍데기 숨기기는 이미지 생성 4. 도구(upload_hull_meshes.py·read_imported_hulls.py·prepare_hull_batch.py)는 그대로 둠, build/hull_import* 폴더 비움.
+- 남은 큐: ① Firefly 말풍선 9종(512x512 9-slice, 모서리 64px; 브라우저 창 너비 고정 대기) ② 파란 비늘 기와 타일(Tex_RoofTileBlue a/b/c, Medium -> 최종 검수 -> High 1장 -> HH_HaloRoofTileBlue MV) ③ 새 아이콘·스티커 가지 병합 확인 ④ 6단계 때 메인 밤 값 Config 가지 ⑤ 거위 광장 서쪽 벽 그림자 확인(UiSandbox 슬롯).
+
 # 이미지 개발 — 상태 (2026-10-12 저녁: 바깥선 묶음 5 ID 기록, Firefly 막힘)
 
 - **바깥선 묶음 5(10개) ID 기록·임시 파트 지움**(합계 50). 묶음 6(6개, build/hull_import_b6: Cauldron·Easel·NoticeBoard·Telescope·WaterBuckets·Fountain3)은 아직 안 들어옴(WorldKit Hull_* 10개만 있었음) -> 사용자 Import 대기.
