@@ -78,3 +78,14 @@
 - (10:30) 사용자: 계정 나이 확인·2단계 인증 이미 끝("1번은 이미 했오"). 남은 10/17 전 사용자 일 = 등급 설문 제출, 게임 아이콘 넣기.
 - (11:10) 병합 5db4018e = dev4-tonics a777e6bd(꺼짐). **첫 API 반박 검토**: build/api_agent_prompts/final_review_tonics_2026-10-12.md → result.md, opus $1.38, VERDICT MERGE(낮은 것 3 → 개발 4). 앞으로 이 방식. 병합 c747534f(Glowcap ID), 13951906(icons2), 05f56d4a(집 생성기 api/house-gen-porch).
 - (11:20) 사용자 고름: 밈 꾸미기 = 픽셀 후광 m2·픽셀 뿔 m2·도넛 후광 m2·꼬인 뿔 m1·GG 스티커 m1(디자인 검수 추천대로, art/review/s2/memes_m1m2m5_cands.jpg). staff-hip+icons3 API 검토 진행(buebonurd).
+
+## 10/12 오전 클리어 전 (사용자: "클리어 해도 되면 스스로 클리어") — 다음 나는 여기부터
+- **main = 90fbaceb**(오늘 병합 32개 전부 origin/main 조상 확인함). 메인 place 저장 = 7fc9082(08:46, 소스 44d03729). 그 뒤 들어간 것: 조련사·연금 물약·제작 화면(전부 꺼짐), 아이콘 ID들, 집 생성기(tools) → 화면 변화 거의 없음.
+- **병합 도구:** `py tools/merge_chain.py build <scratch>/mcN <commit>=<제목> …` → <scratch>/mcN/tree에 build/luau_cli_0_741 + build/*.luau 복사 → luau-compile + 시험 → `py tools/merge_chain.py push <FINAL> <같은 목록>`(push 뒤 merge-base로 진짜 들어갔는지 확인; 10/12 '->' 오판으로 tonics 병합이 빠졌던 일 재발 방지).
+- **반박 검토 = API**(사용자 10/12 "api sdk 잘 쓰고 있지?"): `py tools/api_agent.py run --prompt-file build/api_agent_prompts/final_review_<이름>.md --out build/api_agent/final_review_<이름>/ --model opus --effort high --make-worktree <병합 커밋> --allow-tests --max-usd 3`. 본보기 프롬프트 = final_review_tonics/staffhip_2026-10-12.md. API 남은 돈 약 $78(사용자에게는 ~$20일 때만).
+- **대기 1번:** fix/staff-hip 612274b1 + imgdev-icons3 def1349f — API 검토 build/api_agent/final_review_staffhip_2026-10-12/result.md 결과 보고 MERGE면 위 도구로 병합 → 메인 반영 1 sync·사진(마법사·연금술사 대기 앞·옆 전신, 주먹-막대 크롭, GripProbe 평지·계단 0.05~0.15, 걷기, 연금술사 지팡이 T1·T7, Q·Z) → Save As 신청(마우스·키보드).
+- **WorldKit:** 다시 시작함(새 STUDIO_ID 83b32720-4192-4c5d-9934-da1cda9ab9bc, STUDIO_NAME=WorldKit 됨). 캡처는 장마다 CLI 호출(한 연결 대기 = 멈춤). 백업은 한 세션씩(동시 = empty chunk). 사진은 짧아도 신청 → 전달함, 시작(이미지 생성 1에 다시 알림).
+- **사용자 결정 오늘:** A23-139(아이콘 C_m2·소품 얇은 선·2배 XP 제작도·제작은 장인 길드만), A23-140(밈 꾸미기 추천대로·말풍선 스티커 더 많이 만들어 판매 — 값·개수·무료 몇 개는 후보 나온 뒤 물음), 마법사 대기 자세 = 손목 20° 안 가장 낮게(개발 1 실측 2.56~2.71), 지팡이 7개 감은 곳 위로(디자인 검수, 사용자에게 알림함), 장비 칸 PvP 영향 알림함(반대 없음).
+- **사용자 할 일 남음(10/17 전):** 등급 설문(docs/design/maturity_questionnaire_draft_2026-10-11.md), 게임 아이콘 넣기(art/out/s2/gameicon/GameIcon_C_512.png, Game Settings → Icon). 계정 나이·2단계 = 끝.
+- **사용자에게 나중에 보여 줄 것:** 스티커 후보 시트(이미지 생성 2) + 판매 형태 질문, 주민 그림 후보, 세 번째 Import 3D(빵 벽돌 돔·주스 파라솔·08 반돔, 이미지 생성 3), 바깥선 나머지 46개 Import(10개씩, 이미지 개발).
+- **승인함(진행 중):** Tripo NPC 6명 ≈330점(이미지 생성 4), 이미지 생성 2 큐(성문 받침 4면 → 무기고 뒤 → 큰 지도 해안선 → 밈 High 5 → 스티커 12+ Medium → 주민), 아이콘 5개 올리기(PetTreat·물약 4 — 이미지 개발), 바깥선 1묶음 사진(이미지 생성 4).
