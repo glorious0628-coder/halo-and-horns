@@ -17,7 +17,8 @@ do
 	end
 end
 
--- o: Off, NoSpare (no AddSpare yet), EditConfig(c)
+-- o: Off, NoSpare (a LootService without AddSpare / SpareRoom), RealSpare (LootService's own AddSpare / SpareRoom, C1),
+-- EditConfig(c)
 local function cWorld(o)
 	o = o or {}
 	o.Time = o.Time or NOON
@@ -71,7 +72,9 @@ local function cWorld(o)
 	local L = w.Reg.LootService
 	L.Init(w.Reg)
 	w.Spares, w.SpareFull = {}, false
-	if not o.NoSpare then
+	if o.NoSpare then
+		L.AddSpare, L.SpareRoom = nil, nil -- a LootService without the spares API (the guard in RecipeOn)
+	elseif not o.RealSpare then
 		function L.AddSpare(p, tier, plus)
 			if w.SpareFull then return false end
 			table.insert(w.Spares, { P = p, Tier = tier, Plus = plus })
@@ -219,11 +222,12 @@ runGroup("recipes", function()
 	local w = cWorld()
 	local on = {}
 	for id in w.Config.Craft.Recipes do if w.C.RecipeOn(id) then on[id] = true end end
-	check(on.W1 and on.W2 and on.W3 and on.W4 and on.W5 and on.W6 and not on.W7 and not on.W9,
-		"W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items", show(on))
+	-- C1 (게임성 개발 2): Clatter Gem / Royal Jelly are items and tier 9 exists, so W7 / W9 are on too
+	check(on.W1 and on.W2 and on.W3 and on.W4 and on.W5 and on.W6 and on.W7 and on.W9,
+		"W1..W7 and W9 on (C1: Clatter Gem / Royal Jelly items + tier 9)", show(on))
 	check(w.C.RecipeOn("Nope") == nil and w.C.RecipeOn(nil) == nil, "an unknown recipe is off", "")
 	local n = cWorld({ NoSpare = true })
-	check(n.C.RecipeOn("W1") == nil, "no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off", "")
+	check(n.C.RecipeOn("W1") == nil, "a LootService without AddSpare / SpareRoom: every weapon recipe is off", "")
 	local p = smith(n, 1)
 	local nf = #n.Notices
 	check(n.C.TryStart(p, "W1") == "recipe" and keysFor(n, p, nf)[1] == "Config.Craft.Text.NotReady", "... and refused with NotReady (a key)", "")
@@ -235,6 +239,20 @@ runGroup("recipes", function()
 		c.Weapons[9] = { Damage = 2200, MinLevel = 50 } -- T9 (게임성 개발 2 C1)
 	end })
 	check(gem.C.RecipeOn("W7") ~= nil and gem.C.RecipeOn("W9") ~= nil, "the new drops (and T9) switch W7 / W9 on by themselves", "")
+	local nogem = cWorld({ EditConfig = function(c) c.Loot.Items.ClatterGem = nil end })
+	check(nogem.C.RecipeOn("W7") == nil and nogem.C.RecipeOn("W9") == nil and nogem.C.RecipeOn("W6") ~= nil,
+		"without the Clatter Gem item W7 / W9 are off again (the item check stays)", "")
+	local gp = smith(nogem, 8)
+	startAndHammer(nogem, gp, HONEST)
+	local ginfo = last(fired(nogem, "CraftInfo", gp))
+	check(ginfo and type(ginfo.On) == "table" and table.concat(ginfo.On, ",") == "W1,W2,W3,W4,W5,W6",
+		"CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)", ginfo and show(ginfo.On) or "")
+	-- C1: LootService's real AddSpare / SpareRoom (no doubles)
+	local real = cWorld({ RealSpare = true })
+	check(real.C.RecipeOn("W1") ~= nil and real.C.RecipeOn("W9") ~= nil, "the real LootService.AddSpare / SpareRoom switch the weapon recipes on", "")
+	local rp, rd = smith(real, 7)
+	check(startAndHammer(real, rp, HONEST) == "ok" and type(rd.Spares) == "table" and rd.Spares["1:2"] == 1,
+		"a real W1 craft lands in data.Spares['1:2'] (LootService.AddSpare)", show(rd.Spares))
 end)
 
 ------------------------------------------------------------------ start
@@ -309,8 +327,8 @@ runGroup("hammer", function()
 	check(#w.Spares == 1 and w.Spares[1].Tier == 1 and w.Spares[1].Plus == 2, "the weapon goes to the spares (AddSpare 1, +2)", "")
 	check(d.Craft.Pend == nil and d.Craft.Made.W1 == 1 and d.Craft.Smith.XP == 10, "Pend cleared, Made.W1 = 1, 10 craft XP", show(d.Craft))
 	local info = last(fired(w, "CraftInfo", p))
-	check(info and type(info.On) == "table" and table.concat(info.On, ",") == "W1,W2,W3,W4,W5,W6",
-		"CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)", info and show(info.On) or "")
+	check(info and type(info.On) == "table" and table.concat(info.On, ",") == "W1,W2,W3,W4,W5,W6,W7,W9",
+		"CraftInfo.On = the blacksmith recipes the server would start now (C1: W7 / W9 too)", info and show(info.On) or "")
 	check(info and info.Role == "Smith" and info.Lv == 1 and info.XP == 10 and info.Need == 40 and info.Made.W1 == 1,
 		"CraftInfo { Role, Lv, XP, Need, Made } after the craft", show(info))
 	check(#w.Crafted == 1 and w.Crafted[1].Id == "W1" and w.Crafted[1].Plus == 2, "Crafted(player, W1, 2)", "")

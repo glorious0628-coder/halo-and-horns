@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 151,
+  "checks": 155,
   "failedChecks": 0,
-  "namedChecks": 137,
+  "namedChecks": 141,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -87,7 +87,7 @@
     },
     {
       "group": "recipes",
-      "check": "W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items",
+      "check": "W1..W7 and W9 on (C1: Clatter Gem / Royal Jelly items + tier 9)",
       "pass": 1,
       "fail": 0
     },
@@ -99,7 +99,7 @@
     },
     {
       "group": "recipes",
-      "check": "no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off",
+      "check": "a LootService without AddSpare / SpareRoom: every weapon recipe is off",
       "pass": 1,
       "fail": 0
     },
@@ -118,6 +118,30 @@
     {
       "group": "recipes",
       "check": "the new drops (and T9) switch W7 / W9 on by themselves",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "without the Clatter Gem item W7 / W9 are off again (the item check stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "the real LootService.AddSpare / SpareRoom switch the weapon recipes on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "recipes",
+      "check": "a real W1 craft lands in data.Spares['1:2'] (LootService.AddSpare)",
       "pass": 1,
       "fail": 0
     },
@@ -279,7 +303,7 @@
     },
     {
       "group": "hammer",
-      "check": "CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
+      "check": "CraftInfo.On = the blacksmith recipes the server would start now (C1: W7 / W9 too)",
       "pass": 1,
       "fail": 0
     },
@@ -977,8 +1001,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)",
-          "recipes :: W1..W6 on; W7 / W9 off until Clatter Gem / Royal Jelly exist as items"
+          "recipes :: CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)",
+          "recipes :: without the Clatter Gem item W7 / W9 are off again (the item check stays)"
         ],
         "newFailingCount": 2
       },
@@ -990,7 +1014,7 @@
         "crashed": false,
         "newFailingChecks": [
           "recipes :: ... and refused with NotReady (a key)",
-          "recipes :: no LootService.AddSpare yet (게임성 개발 2): every weapon recipe is off"
+          "recipes :: a LootService without AddSpare / SpareRoom: every weapon recipe is off"
         ],
         "newFailingCount": 2
       },
@@ -1330,7 +1354,7 @@
           "hammer :: Crafted(player, W1, 2)",
           "hammer :: Grades x5"
         ],
-        "newFailingCount": 16
+        "newFailingCount": 17
       },
       {
         "mutation": "strike: the ping then not kept",
@@ -1711,9 +1735,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)"
+          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (C1: W7 / W9 too)",
+          "recipes :: CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "info: On lists every recipe",
@@ -1722,7 +1747,7 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "hammer :: CraftInfo.On = the blacksmith recipes the server would start now (W7 / W9 wait for their drops)"
+          "recipes :: CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)"
         ],
         "newFailingCount": 1
       },
@@ -1870,13 +1895,13 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "6d5a25fc50a0301c7e6c1487528a0d4fcfda7982f0bd87949dba375b188c8b18",
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
     "src/ReplicatedStorage/Shared/CraftMini.luau": "34a6cac904e7037283cfc0980da8faa9113ed18516ac1323fc207aca3a9cbf05",
-    "src/ServerScriptService/LootService.luau": "b427096f06419dc337a116b14589ac05b3ed36222c5f9261872927ad6d73ef4e",
+    "src/ServerScriptService/LootService.luau": "e10015474c5c364c03954827a3314e5fa390103450e93cc497a010f7441d2b3b",
     "src/ServerScriptService/CraftService.luau": "0f8363991f59b331de5abe308aabdc129917231b3418d3e2b4ea28bc95e9ce4c"
   },
-  "fixtureSHA256": "98fa658d66b14d47e7b2df3d6ba87ab140560915c8dd1160a2e4574ba0127479",
+  "fixtureSHA256": "92d63541d9efadfba22701b700bd8012f10a9c2fd71f0f119bcbf905febef04d",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
