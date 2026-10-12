@@ -567,7 +567,7 @@ MAT = {
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
     # lamp glass: warm see-through glass by day (검수 v4c: no white Neon box); the PointLight is off in the place and
     # WeatherFx switches it on at Dusk / Night (attribute LampLight on the part)
-    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 2.5; l.Range = 16; l.Shadows = false; l.Enabled = false; l.Parent = p',
+    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 0.7; l.Range = 12; l.Shadows = false; l.Enabled = false; l.Parent = p',
     "fabricY": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(250, 205, 72)',
     "fabricC": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(255, 243, 212)',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',

@@ -648,4 +648,131 @@ runGroup("workbench", function()
 	check(part:FindFirstChild("CraftPrompt") == nil, "switch off: no prompt", "")
 end)
 
+------------------------------------------------------------------ ⑤ the tamer's recipes (summon S1, Pet Treats T1)
+-- PetService / TamerService are doubles here (their own code: tools/test_tamer_research.py)
+local function tamerWorld(o)
+	o = o or {}
+	local edit = o.EditConfig
+	local w = cWorld({ EditConfig = function(c)
+		if o.NoResearch ~= true then c.Features.Research = true end
+		if edit then edit(c) end
+	end })
+	w.Pts, w.Summons, w.Sums, w.PetsFull, w.SummonFails = {}, {}, {}, false, false
+	if o.NoPets ~= true then
+		w.Reg.PetService = {
+			HasRoom = function() return not w.PetsFull end,
+			SummonPet = function(p, sp, roll)
+				table.insert(w.Summons, { P = p, Sp = sp, Roll = roll })
+				if w.SummonFails then return nil end
+				return "P" .. tostring(10 + #w.Summons)
+			end,
+		}
+	end
+	w.Reg.TamerService = { Points = function(_, fam) return w.Pts[fam] or 0 end,
+		AddSummon = function(_, fam) table.insert(w.Sums, fam) return true end }
+	return w
+end
+
+runGroup("tamer", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local S1, T1 = C.Craft.Recipes.S1, C.Craft.Recipes.T1
+	check(S1 and S1.Role == "Tame" and S1.Kind == "Pet" and S1.Species == "BabySlime" and S1.Family == "Slime" and S1.Research == C.Research.Stages[2]
+		and S1.Spd[1] == 5 and S1.Spd[2] == 8 and S1.Gold == 100 and S1.Mats.Jelly == 30 and S1.Mats.SlimeCore == 5 and S1.Lv == 1 and S1.XP == 40,
+		"S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4)", show(S1))
+	check(T1 and T1.Role == "Tame" and T1.Kind == "Item" and T1.Item == "PetTreat" and T1.N == 3 and T1.Mats.Jelly == 5 and T1.Mats.Herb == 2
+		and T1.Mats.Petal == nil, "T1: Jelly 5 + Herb 2 (gathered, 게임성 검수 10/12) -> 3 Pet Treats (+ the hammer's +N)", show(T1))
+	local it = C.Loot.Items.PetTreat
+	local inOrder = false
+	for _, id in C.Loot.Order do if id == "PetTreat" then inOrder = true end end
+	check(it and it.Kind == "Treat" and it.Source == "Craft" and inOrder and C.SaveV4.PetRollSpd[2] == 10,
+		"Pet Treat: Kind Treat, Source Craft (never sold at the Forge), in the bag order; a pet's walk roll tops at 10", show(it))
+	check(type(C.Craft.Text.NeedResearch) == "string", "a NeedResearch line", "")
+
+	-- which recipes are on
+	local off = tamerWorld({ NoResearch = true })
+	check(off.C.RecipeOn("S1") == nil and off.C.RecipeOn("T1") ~= nil, "research switch off: no summon recipe (treats stay)", "")
+	local nop = tamerWorld({ NoPets = true })
+	check(nop.C.RecipeOn("S1") == nil, "no PetService summon yet: no summon recipe", "")
+	local w = tamerWorld()
+	check(w.C.RecipeOn("S1") ~= nil, "both switches + both services: S1 on", "")
+	local p, d = smith(w, 1, nil, "Archer")
+	local info = last(fired(w, "CraftInfo", p))
+	check(info and info.Role == "Tame" and table.concat(info.On, ",") == "S1,T1", "the tamer's CraftInfo.On = S1, T1", info and show(info.On) or "")
+
+	-- research first
+	w.Pts.Slime = 149
+	local jelly, gold = d.Items.Jelly, d.BankGold
+	local nf = #w.Notices
+	check(w.C.TryStart(p, "S1") == "research" and keysFor(w, p, nf)[1] == "Config.Craft.Text.NeedResearch" and d.Items.Jelly == jelly
+		and d.BankGold == gold, "149 Slime points: NeedResearch, nothing taken", "")
+	local smithP = smith(w, 2)
+	check(w.C.TryStart(smithP, "S1") == "role", "a blacksmith cannot summon", "")
+	w.Pts.Slime = 150
+	w.PetsFull = true
+	local nf2 = #w.Notices
+	check(w.C.TryStart(p, "S1") == "full" and keysFor(w, p, nf2)[1] == "Config.Craft.Text.Full" and d.Items.Jelly == jelly,
+		"150 points but 64 pets: Full, nothing taken", "")
+	w.PetsFull = false
+
+	-- the roll: random 5..8 + the hammer's +N, at most 10
+	w:Advance(61)
+	check(w.C.TryStart(p, "S1") == "ok" and d.Items.Jelly == jelly - 30 and d.Items.SlimeCore == MATS.SlimeCore - 5 and d.BankGold == gold - 100,
+		"150 points: the summon starts (Jelly 30, Slime Core 5, 100 gold)", "")
+	w.Script = { 0.0 }
+	hammer(w, p, HONEST)
+	local s = w.Summons[1]
+	local res = last(fired(w, "CraftResult", p))
+	check(s and s.P == p and s.Sp == "BabySlime" and s.Roll.Spd == 7 and #w.Sums == 1 and w.Sums[1] == "Slime",
+		"random 5 + the hammer's +2 = walk +7%; SummonPet(BabySlime, { Spd = 7 }), Sum + 1", s and show(s.Roll) or "")
+	check(res.Kind == "Pet" and res.Plus == 2 and res.XP == 40 and type(res.Pet) == "table" and res.Pet.Uid == "P11" and res.Pet.Spd == 7
+		and res.Pet.Species == "BabySlime" and d.Craft.Tame.Lv == 2 and d.Craft.Tame.XP == 0 and d.Craft.Pend == nil,
+		"CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)", show(res.Pet))
+	w:Advance(61)
+	w.C.TryStart(p, "S1")
+	w.Script = { 0.99 }
+	hammer(w, p, HONEST)
+	check(w.Summons[2].Roll.Spd == 10, "random 8 + 2 = 10 (the top)", show(w.Summons[2].Roll))
+	w:Advance(61)
+	w.C.TryStart(p, "S1")
+	w.Script = { 0.99 }
+	w.C.Finish(p, last(fired(w, "CraftSession", p)).Id)
+	w:Flush()
+	check(w.Summons[3].Roll.Spd == 8 and last(fired(w, "CraftResult", p)).Plus == 0, "no hammer (+0): 5..8 only (8)", show(w.Summons[3].Roll))
+	w:Advance(61)
+	w.C.TryStart(p, "S1")
+	w.Script = { 0.0 }
+	w.C.Finish(p, last(fired(w, "CraftSession", p)).Id)
+	w:Flush()
+	check(w.Summons[4].Roll.Spd == 5, "no hammer, the lowest draw: 5", show(w.Summons[4].Roll))
+	local hi = tamerWorld({ EditConfig = function(c) c.Craft.Recipes.S1.Spd = { 9, 9 } end })
+	local h = smith(hi, 3, nil, "Archer")
+	hi.Pts.Slime = 150
+	hi.C.TryStart(h, "S1")
+	hammer(hi, h, HONEST)
+	check(hi.Summons[1].Roll.Spd == 10, "never over 10: 9 + 2 is cut to 10", show(hi.Summons[1].Roll))
+
+	-- a summon that does not go in waits (paid, Pend) and counts nothing
+	local f = tamerWorld()
+	local q, dq = smith(f, 4, nil, "Archer")
+	f.Pts.Slime = 150
+	f.C.TryStart(q, "S1")
+	f.SummonFails = true
+	hammer(f, q, HONEST)
+	check(type(dq.Craft.Pend) == "table" and dq.Craft.Pend.Id == "S1" and #f.Sums == 0 and dq.Craft.Tame.XP == 0,
+		"SummonPet says no: the craft waits (Pend), no Sum, no XP", show(dq.Craft.Pend))
+	f.SummonFails = false
+	f.C.Settle(q, dq)
+	check(dq.Craft.Pend == nil and #f.Sums == 1 and f.Summons[#f.Summons].Roll.Spd >= 7, "the next try: the pet comes at the earned +2", "")
+
+	-- Pet Treats: 3 + the hammer's +N
+	local t = tamerWorld()
+	local r, dr = smith(t, 5, nil, "Archer")
+	check(t.C.TryStart(r, "T1") == "mats", "no herbs: NeedMats", "")
+	dr.Items.Herb = 2
+	local st = t.C.TryStart(r, "T1")
+	check(st == "ok" and (dr.Items.Herb or 0) == 0, "T1 starts with 2 herbs (no research needed)", tostring(st) .. " " .. tostring(dr.Items.Herb))
+	hammer(t, r, HONEST)
+	check(dr.Items.PetTreat == 5 and dr.Craft.Tame.XP == 10, "3 + 2 = 5 Pet Treats, 10 craft XP", tostring(dr.Items.PetTreat))
+end)
+
 finish()

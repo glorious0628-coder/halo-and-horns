@@ -69,7 +69,35 @@
 ## 10/12 아침 (06:00~)
 - 사용자 답 = SPEC A23-139(아이콘 C_m2, 소품 얇은 선, 2배 XP 패스는 제작 XP도·제작은 장인 길드만). 사용자가 Import 3D(집 장식 v1)·Tripo·Firefly 로그인 함. 병합 50c03c82(town_quests 정규식, src 0).
 - 사용자 지시(07:00쯤): "검수할 것 남겨두고 계속, 1시간 30분 뒤 확인" → 사용자 확인 거리는 여기 '사용자에게 보여 줄 것'에 모으고 일 계속.
-- **사용자에게 보여 줄 것(돌아오면):** 09:00 사용자가 다 함(Ctrl+Shift+B, WorldKit 클릭, hull 10개 Import 3D). 새로 생기면 여기에.
+- **사용자에게 보여 줄 것:** (없음 — 10:45 v2_extras Import 끝. 10/17 전 사용자 일: 등급 설문, 게임 아이콘 넣기)
 - (07:07) 메인 저장 c92bd9b(07:06:18, SHA 4a92c18e…, 소스 e272933e, 천 v3b 포함). 병합 50c03c82(town_quests 시험), e272933e(pvp-toast·staff-slope-hero). 남은 낮은 것: 빛 마법사 Halo_Stairs 위 지팡이 2~3.3 뜸(개발 1).
 - (08:05) 병합 30832896: dev4-craft c35905ee·stairs-ground 3099197e·dev3-alchemy ba91630f·dev3-craft2 e0556202(전부 꺼짐 + 계단 땅). **lesstext-server 1f42e88f = 고쳐서 다시**(강화·옮기기 결과 토스트 5개 지웠는데 Bag 창이 결과를 안 그림 → 실패로 +N 떨어져도 글 0; 낮은 것: 보스 등장 위치 없음, 출석 14일 장인 글 없음) → 게임성 검수 경유 개발 2.
 - (08:47) 병합 44d03729(lesstext-server 8c8dc44d, 결과 토스트 되살림). 메인 저장 7fc9082(08:46:17, SHA a2007e08…, 소스 44d03729). 대기: dev3-tamer b3972a6b(반박 검토 wehjlcaxh) + dev4-tamer bcd6ef5a(dev4-craft 위).
+- (09:45) 병합 4020bfcb = dev3-tamer b3972a6b + dev4-tamer bcd6ef5a(꺼짐). 반박 검토는 이번까지 앱 워크플로, **다음부터 api_agent**(사용자 확인 10/12, 메모리 big-work-via-api-sdk). WorldKit screen_capture 멈춤 → 이미지 생성 1이 백업 → WorldKit만 다시 시작 중. 마법사 대기 = 손 엉덩이 높이(a) 결정(개발 1).
+- (10:00) 10/17 비공개 시험 전 사용자 일 목록에 추가: 게임 아이콘 넣기(Creator Hub 또는 Studio Game Settings → Icon, 파일 art/out/s2/gameicon/GameIcon_C_512.png). 계정 나이 확인·2단계, 등급 설문(답안 docs/design/maturity_questionnaire_draft_2026-10-11.md)과 함께.
+- (10:30) 사용자: 계정 나이 확인·2단계 인증 이미 끝("1번은 이미 했오"). 남은 10/17 전 사용자 일 = 등급 설문 제출, 게임 아이콘 넣기.
+- (11:10) 병합 5db4018e = dev4-tonics a777e6bd(꺼짐). **첫 API 반박 검토**: build/api_agent_prompts/final_review_tonics_2026-10-12.md → result.md, opus $1.38, VERDICT MERGE(낮은 것 3 → 개발 4). 앞으로 이 방식. 병합 c747534f(Glowcap ID), 13951906(icons2), 05f56d4a(집 생성기 api/house-gen-porch).
+- (11:20) 사용자 고름: 밈 꾸미기 = 픽셀 후광 m2·픽셀 뿔 m2·도넛 후광 m2·꼬인 뿔 m1·GG 스티커 m1(디자인 검수 추천대로, art/review/s2/memes_m1m2m5_cands.jpg). staff-hip+icons3 API 검토 진행(buebonurd).
+
+## 10/12 오전 클리어 전 (사용자: "클리어 해도 되면 스스로 클리어") — 다음 나는 여기부터
+- **main = 90fbaceb**(오늘 병합 32개 전부 origin/main 조상 확인함). 메인 place 저장 = 7fc9082(08:46, 소스 44d03729). 그 뒤 들어간 것: 조련사·연금 물약·제작 화면(전부 꺼짐), 아이콘 ID들, 집 생성기(tools) → 화면 변화 거의 없음.
+- **병합 도구:** `py tools/merge_chain.py build <scratch>/mcN <commit>=<제목> …` → <scratch>/mcN/tree에 build/luau_cli_0_741 + build/*.luau 복사 → luau-compile + 시험 → `py tools/merge_chain.py push <FINAL> <같은 목록>`(push 뒤 merge-base로 진짜 들어갔는지 확인; 10/12 '->' 오판으로 tonics 병합이 빠졌던 일 재발 방지).
+- **반박 검토 = API**(사용자 10/12 "api sdk 잘 쓰고 있지?"): `py tools/api_agent.py run --prompt-file build/api_agent_prompts/final_review_<이름>.md --out build/api_agent/final_review_<이름>/ --model opus --effort high --make-worktree <병합 커밋> --allow-tests --max-usd 3`. 본보기 프롬프트 = final_review_tonics/staffhip_2026-10-12.md. API 남은 돈 약 $78(사용자에게는 ~$20일 때만).
+- **대기 1번:** fix/staff-hip 612274b1 + imgdev-icons3 def1349f — API 검토 build/api_agent/final_review_staffhip_2026-10-12/result.md 결과 보고 MERGE면 위 도구로 병합 → 메인 반영 1 sync·사진(마법사·연금술사 대기 앞·옆 전신, 주먹-막대 크롭, GripProbe 평지·계단 0.05~0.15, 걷기, 연금술사 지팡이 T1·T7, Q·Z) → Save As 신청(마우스·키보드).
+- **WorldKit:** 다시 시작함(새 STUDIO_ID 83b32720-4192-4c5d-9934-da1cda9ab9bc, STUDIO_NAME=WorldKit 됨). 캡처는 장마다 CLI 호출(한 연결 대기 = 멈춤). 백업은 한 세션씩(동시 = empty chunk). 사진은 짧아도 신청 → 전달함, 시작(이미지 생성 1에 다시 알림).
+- **사용자 결정 오늘:** A23-139(아이콘 C_m2·소품 얇은 선·2배 XP 제작도·제작은 장인 길드만), A23-140(밈 꾸미기 추천대로·말풍선 스티커 더 많이 만들어 판매 — 값·개수·무료 몇 개는 후보 나온 뒤 물음), 마법사 대기 자세 = 손목 20° 안 가장 낮게(개발 1 실측 2.56~2.71), 지팡이 7개 감은 곳 위로(디자인 검수, 사용자에게 알림함), 장비 칸 PvP 영향 알림함(반대 없음).
+- **사용자 할 일 남음(10/17 전):** 등급 설문(docs/design/maturity_questionnaire_draft_2026-10-11.md), 게임 아이콘 넣기(art/out/s2/gameicon/GameIcon_C_512.png, Game Settings → Icon). 계정 나이·2단계 = 끝.
+- **사용자에게 나중에 보여 줄 것:** 스티커 후보 시트(이미지 생성 2) + 판매 형태 질문, 주민 그림 후보, 세 번째 Import 3D(빵 벽돌 돔·주스 파라솔·08 반돔, 이미지 생성 3), 바깥선 나머지 46개 Import(10개씩, 이미지 개발).
+- **승인함(진행 중):** Tripo NPC 6명 ≈330점(이미지 생성 4), 이미지 생성 2 큐(성문 받침 4면 → 무기고 뒤 → 큰 지도 해안선 → 밈 High 5 → 스티커 12+ Medium → 주민), 아이콘 5개 올리기(PetTreat·물약 4 — 이미지 개발), 바깥선 1묶음 사진(이미지 생성 4).
+
+## 10/12 오전 (클리어 뒤 새 나)
+- (10:05) icons3 def1349f는 클리어 전 병합됨(74615473). staff-hip = API 검토 FIX FIRST(7단계 1.008H) → 개발 1 a76e7564(4.45, 시험 0.85..1.0) → 합친 나무 compile 3 + 시험 16 통과(one_hand 75/75 새 변이 포함) → **main ecde46c6**. 메인 반영 1에 sync·사진(세 마법사 앞·옆 전신, 주먹 크롭, GripProbe, 걷기, 연금술사 T1·T7, Q·Z) + Save As 신청 보냄.
+- 사용자 새 결정 **A23-141**(70f92558): 거위 = 'Join' 누른 사람만 따로 있는 거위 광장(같은 서버·맵 밖). 개발 2(dev2_golden_egg 위에 서버), 개발 1(Join·Leave·어두워짐), 디자인 검수(골격 → 이미지 세션)에 보냄.
+- 사용자 아이디어 펫 교배 → idea_backlog(정식 뒤 후보, 로벅스 X).
+- 다운로드 폴더에 복사: HaloHorns_게임아이콘_512/원본_2026-10-12.png, HaloHorns_등급설문_답안_2026-10-12.txt(사용자 요청).
+- 사용자 할 일(10/17 전): 등급 설문 제출, 게임 아이콘 넣기. 다음 클릭 거리(준비되면 알림): 세 번째 Import 3D(이미지 생성 3, 디자인 검수 판정 뒤), 바깥선 나머지 46개(10개씩, 이미지 개발).
+- (10:30) 사용자 "방금 다 했오" = 등급 설문 제출 + 게임 아이콘 넣기 끝(10/17 전 사용자 일 없음).
+- 사용자 빛 성 물음 → 2D C2(castle6) 있음, 3D 아직. 이미지 생성 3 순서 = 새 집 7(Tripo 385점 승인) → 빛 성 → 대성당.
+- **A23-142**(acffe182): 지팡이 키 0.7배·가운데 감은 곳 쥠(사용자 "대가리를 거의 잡고 길고 뭉툭") → 개발 1(급한 것 먼저), 이미지 생성 4(메시 감은 곳·길이), 디자인 검수.
+- 승인: 이미지 생성 4 PotionMerchant Tripo 55점(10/10 NPC 5명 재사용 = 디자인 검수 판정), 이미지 생성 1 WorldKit 사진 10장(끝남).
+- 사용자에게 요청: 앱 브라우저 창 보이게(Ctrl+Shift+B, 이미지 생성 2 Firefly 멈춤), WorldKit Import 3D HaloHouses_Deco_v3_roofs.glb(이미지 생성 3) → '넣음' 오면 이미지 생성 3에 알리고 밤 사진 '전달함, 시작'.

@@ -73,7 +73,9 @@ local function meshPart(id, centre)
 	local ok, mp = pcall(function() return AS:CreateMeshPartAsync(Content.fromUri(id), {CollisionFidelity = Enum.CollisionFidelity.Box, RenderFidelity = Enum.RenderFidelity.Precise}) end)
 	if not ok then error("mesh " .. id .. ": " .. tostring(mp)) end
 	mp.Anchored = true; mp.CanCollide = false; mp.CanTouch = false; mp.CanQuery = false
-	mp.CFrame = pivot * CFrame.new(centre[1], centre[2], centre[3])
+	-- Studio's 3D import turns an OBJ half round the vertical (x and z negated, measured 10/12 on Lantern_C / BenchB):
+	-- turn it back, or an asymmetric hull sits on the wrong side as a dark copy (A.rot_y overrides, 0 = as uploaded)
+	mp.CFrame = pivot * CFrame.new(centre[1], centre[2], centre[3]) * CFrame.Angles(0, A.rot_y or math.pi, 0)
 	mp.Parent = m
 	return mp
 end

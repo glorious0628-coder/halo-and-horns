@@ -24,8 +24,10 @@ import queue
 MCP_BAT = os.path.join(os.environ["LOCALAPPDATA"], "Roblox", "mcp.bat")
 TIMEOUT = float(os.environ.get("STUDIO_MCP_TIMEOUT", "120"))
 
-# the main Studio: the GoodEvil local file, or the published private experience (Darugi_S2 private place 81671223175574, 2026-10-06)
-MAIN_NAMES = ("GoodEvil", "81671223175574")
+# the main Studio: the GoodEvil local file, or the published private experience (Darugi_S2 private place 81671223175574, 2026-10-06).
+# 2026-10-12: the user published the open main Studio as a new place in the same experience ("Darugi_S2의 장소: 10122026_1",
+# PlaceId 79345022650204, user: "무시해도 돼") - the same game, so it counts as the main Studio too.
+MAIN_NAMES = ("GoodEvil", "81671223175574", "79345022650204", "10122026_1")
 
 
 def is_main_name(name):

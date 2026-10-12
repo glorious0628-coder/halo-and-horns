@@ -5113,6 +5113,8 @@ Config.Loot = {
 		GuardTonic = { Kind = "Tonic", Name = "Guard Tonic", Sell = 20, Color = Color3.fromRGB(90, 150, 235), Icon = "IconGuardTonic", Source = "Craft", Desc = "Monsters hurt you less for 3 minutes." },
 		LuckyTonic = { Kind = "Tonic", Name = "Lucky Tonic", Sell = 40, Color = Color3.fromRGB(110, 210, 110), Icon = "IconLuckyTonic", Source = "Craft", Desc = "More materials from monsters for 3 minutes." },
 		WisdomTonic = { Kind = "Tonic", Name = "Wisdom Tonic", Sell = 60, Color = Color3.fromRGB(175, 120, 235), Icon = "IconWisdomTonic", Source = "Craft", Desc = "More XP from monsters for 3 minutes." },
+		-- ⑤ tamers make it (recipe T1); anyone feeds it to a pet (FeedPet: pet XP + Config.Research.TreatXP)
+		PetTreat = { Kind = "Treat", Name = "Pet Treat", Sell = 10, Color = Color3.fromRGB(240, 170, 90), Icon = "IconPetTreat", Source = "Craft", Desc = "Feed it to your pet for pet XP." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
@@ -5126,7 +5128,7 @@ Config.Loot = {
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
 		"Jelly", "Petal", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
-		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic" },
+		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -5913,21 +5915,24 @@ Config.ClassGrips = {
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
 	-- 검수 10/11 + grip_reference §1: the staff stands upright at the side, close to the body (OneHand: the right hand placed
 	-- from the staff, WeaponPose; studs in UpperTorso space), held a little above its middle (CharacterVisuals staffLow)
+	-- 최종 검수 10/12 (the staff held lower, grip_reference §5-6): the hand comes down from the chest (2.9 studs) as far as
+	-- the wrist allows - a staff upright in a fist needs the forearm near level, each 10 degrees it drops bends the wrist
+	-- 10 degrees towards the thumb (normal 15 .. 25): the hand out of the torso at the side, a little ahead, the elbow
+	-- back (Pole). Light 2.71, Alchemist 2.66, Dark 2.56 over the ground (the Dark Mage's staff leans 11 degrees)
 	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) },
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	-- 검수 10/11 main photo: the free left hand floated out at the side -> on the hip like the artisans (OffHand)
 	-- 게임성 검수 10/11: Waist was +8 = leaning BACK (this table's sign) against the "hunched" note -> -8 (leaning in)
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.65, -0.8), Aim = Vector3.new(0, 1, -0.2), Pole = Vector3.new(0.3, -0.4, 0.6) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
-	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
-	-- handed), the left hand on the hip
-	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask).
-	-- 게임성 검수 10/11: the elbow bends down and out (Pole) - the default bend tucked the upper arm into the side
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0), Pole = Vector3.new(1, -0.8, 0) },
+	-- Alchemist: 최종 검수 10/12 (the approved 2D: a staff with a flask, CharacterVisuals SHAPES.FlaskStaff) held like the
+	-- mages' staffs at the side, nearly upright (6 degrees), the left hand on the hip; it throws with the right hand (the
+	-- Mage clips stay right-handed)
+	Mage_Neutral = { Weapon = "FlaskStaff", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.4, -0.55, -0.8), Aim = Vector3.new(0, 1, -0.1), Pole = Vector3.new(0.3, -0.4, 0.6) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
@@ -6047,6 +6052,18 @@ Config.UIArt = {
 		IconIronOre = { Id = "rbxassetid://100831679530995", Size = Vector2.new(512, 512) },
 		IconSilverOre = { Id = "rbxassetid://114879087694979", Size = Vector2.new(512, 512) },
 		IconMoonCrystal = { Id = "rbxassetid://106196598879661", Size = Vector2.new(512, 512) },
+		-- round 2 (이미지 개발 2026-10-12, 디자인 검수 pass): crafting ring screen + Crown Dust; IconGlowcap waits for a cutout fix (grey fragment)
+		CraftRing = { Id = "rbxassetid://115071977806649", Size = Vector2.new(512, 512) },
+		CraftTarget = { Id = "rbxassetid://134156748980991", Size = Vector2.new(512, 512) },
+		CraftIngot = { Id = "rbxassetid://133966322294546", Size = Vector2.new(512, 512) },
+		IconCrownDust = { Id = "rbxassetid://130666131385080", Size = Vector2.new(512, 512) },
+		IconGlowcap = { Id = "rbxassetid://118269985242078", Size = Vector2.new(512, 512) },
+		-- round 3 (이미지 개발 2026-10-12, 디자인 검수 pass): pet treat + the four tonics
+		IconPetTreat = { Id = "rbxassetid://109038216387583", Size = Vector2.new(512, 512) },
+		IconMightTonic = { Id = "rbxassetid://82167218233168", Size = Vector2.new(512, 512) },
+		IconGuardTonic = { Id = "rbxassetid://113383235344315", Size = Vector2.new(512, 512) },
+		IconLuckyTonic = { Id = "rbxassetid://124851169351640", Size = Vector2.new(512, 512) },
+		IconWisdomTonic = { Id = "rbxassetid://131384631272950", Size = Vector2.new(512, 512) },
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
 		IconAttack = { Id = "rbxassetid://74944938867654", Size = Vector2.new(512, 512) }, -- Firefly sword (bundle 5)
 		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
@@ -7351,6 +7368,9 @@ Config.Pets = {
 	MaxLv = 10,
 	XPPerKill = 1,
 	XPPerLv = 15,
+	-- a summoned pet (Pets.List[uid].Roll.Spd, whole %; 게임성 개발 3, docs/design/tamer_server_2026-10-12.md §4): its
+	-- bonus is Spd % at Lv1 -> Spd % + RollGrow at MaxLv (the baby slime's own slope, 7 -> 10)
+	RollGrow = 0.03,
 	ListEvery = 1,
 	NoticeAfter = 0.5,
 	Species = {
@@ -7359,22 +7379,30 @@ Config.Pets = {
 	},
 }
 
--- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv
-function Config.PetSpeedBonus(species, lv)
+-- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv. roll = a summoned pet's
+-- Roll.Spd (whole %, cut to Config.SaveV4.PetRollSpd): Lv1 = roll %, MaxLv = roll % + Pets.RollGrow; nil / 0 = the
+-- species' own line
+function Config.PetSpeedBonus(species, lv, roll)
 	local P = Config.Pets
 	local def = type(species) == "string" and P.Species[species] or nil
 	if type(def) ~= "table" or type(def.Speed) ~= "table" then return 0 end
 	if type(lv) ~= "number" or lv ~= lv then lv = 1 end
 	lv = math.clamp(math.floor(lv), 1, P.MaxLv)
 	local a, b = def.Speed[1], def.Speed[2]
+	if type(roll) == "number" and roll > 0 then
+		local range = Config.SaveV4.PetRollSpd
+		a = math.clamp(roll, range[1], range[2]) / 100
+		b = a + P.RollGrow
+	end
 	return a + (b - a) * (lv - 1) / math.max(1, P.MaxLv - 1)
 end
 
--- studs per second for a class with a pet (species, level; nil = none); kaiju = an Active kaiju (no pet bonus)
-function Config.WalkSpeed(classId, petSpecies, petLv, kaiju)
+-- studs per second for a class with a pet (species, level; nil = none); kaiju = an Active kaiju (no pet bonus);
+-- petRoll = a summoned pet's Roll.Spd (nil / 0 = none)
+function Config.WalkSpeed(classId, petSpecies, petLv, kaiju, petRoll)
 	local c = Config.Classes[classId] or Config.Classes.Warrior
 	local base = Config.Player.WalkSpeed
-	local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv)
+	local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv, petRoll)
 	local raw = base * (c.WalkSpeedMult or 1) * (1 + pet)
 	return math.min(raw, base * Config.Speed.Cap)
 end
@@ -8335,6 +8363,12 @@ Config.Craft = {
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
 		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
+		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
+		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
+		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
+		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
+		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
+		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Herb = 2 }, XP = 10 },
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",
@@ -8346,6 +8380,7 @@ Config.Craft = {
 		Full = "No room for it.",
 		Auto = "Turn off auto combat first.",
 		NotReady = "You can't make this yet.", -- a recipe the server has switched off (its drops / spares are not in yet)
+		NeedResearch = "Research this monster more first.", -- a summon before its research stage
 		Prompt = "Craft", -- the workbench prompt (ActionKey)
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 	},
@@ -8404,6 +8439,55 @@ Config.Alchemy = {
 	},
 }
 Config.RateLimits.UseTonic = 1
+
+----------------------------------------------------------------- tamer research (게임성 개발 3, 2026-10-12)
+-- TamerService; contract docs/design/tamer_server_2026-10-12.md (crafting_market §4, A23-115). The pet tamer
+-- (Config.IsTamer: the artisan Archer) gets 1 research point for every kill it is paid for (MonsterKilled, not a
+-- MinorShare; auto combat too) in that monster's family (Config.MonsterFamily: Family below, else Config.QuestKind).
+-- Stages = the points each stage needs; a summon recipe (Config.Craft.Recipes, Kind "Pet") asks for its Research
+-- points. Saved in data.Research.Pts (Config.SanitizeResearch: at most Config.SaveV4.MaxKeys families). Switched by
+-- Config.Features.Research (off; on with the artisan guild, 검수).
+Config.Features.Research = false
+Config.Research = {
+	Stages = { 50, 150, 400, 1000, 2500 },
+	InfoEvery = 1, -- TamerInfo goes at most once a second (a new stage at once)
+	Treat = "PetTreat", -- FeedPet(uid): one of these -> that pet gets TreatXP pet XP (anyone with a pet)
+	TreatXP = 20,
+	-- the kinds that are not their own family (the rest: Config.QuestKind, e.g. a pumpkin slime is a Slime already)
+	Family = {
+		BigSlime = "Slime", FlowerSlime = "Slime", SlimeKing = "Slime",
+		GoblinBrute = "Goblin", SlingshotGoblin = "Goblin",
+		SkeletonArcher = "Skeleton", SkeletonKnight = "Skeleton", CaptainClatter = "Skeleton",
+		GhostMinion = "Ghost", LittleGhost = "Ghost", GhostKing = "Ghost",
+	},
+	Text = {
+		Stage = "%s research: stage %s!", -- (family name, stage) a new stage
+		Names = { Slime = "Slime", Goblin = "Goblin", Skeleton = "Skeleton", Ghost = "Ghost" }, -- family names (a family
+		-- without one never gets the stage line)
+		Fed = "Pet XP +%s", -- (TreatXP) a treat eaten
+		PetMax = "Your pet is at max level.",
+		NoTreat = "You have no Pet Treats.",
+	},
+}
+Config.RateLimits.FeedPet = 0.5
+
+-- the research family of a monster kind (nil for a kind the game does not know)
+function Config.MonsterFamily(kind)
+	if type(kind) ~= "string" or Config.MonsterTypes[kind] == nil then return nil end
+	local fam = Config.Research.Family[kind]
+	if type(fam) == "string" then return fam end
+	return Config.QuestKind(kind)
+end
+
+-- the research stage the points reach (0 = not stage 1 yet .. #Stages)
+function Config.ResearchStage(pts)
+	local stage = 0
+	if type(pts) ~= "number" then return 0 end -- NaN passes no stage
+	for i, need in Config.Research.Stages do
+		if pts >= need then stage = i else break end
+	end
+	return stage
+end
 
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save

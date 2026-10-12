@@ -1,4 +1,24 @@
 {
+ "HaloShop_Bakery_Chimney_t00": {
+  "faces_in": 55,
+  "slivers_pale": 0,
+  "faces_out": 55
+ },
+ "HaloShop_Bakery_Chimney_t01": {
+  "faces_in": 5,
+  "slivers_pale": 0,
+  "faces_out": 5
+ },
+ "HaloShop_Bakery_Chimney_t10": {
+  "faces_in": 52,
+  "slivers_pale": 0,
+  "faces_out": 52
+ },
+ "HaloShop_Bakery_Chimney_t11": {
+  "faces_in": 2,
+  "slivers_pale": 0,
+  "faces_out": 2
+ },
  "HaloShop_Bakery_Sign_t00": {
   "faces_in": 40,
   "slivers_pale": 0,
@@ -20,6 +40,13 @@
   "faces_out": 146
  },
  "_parts": {
+  "HaloShop_Bakery_Chimney": {
+   "tiles_joined": 4,
+   "island_faces_cut": 0,
+   "tris": 114,
+   "maps": 512,
+   "uv_fill": 0.681
+  },
   "HaloShop_Bakery_Sign": {
    "tiles_joined": 4,
    "island_faces_cut": 10,

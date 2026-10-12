@@ -315,7 +315,10 @@ def do_kit(path):
     if a.hull_only:
         tag = "D2_%03d" % round(a.hull_t * 1000)
         h = make_hull(K, a.hull_t)
-        hmn, hmx = bounds([h])
+        # from the vertices: bound_box is stale right after bmesh.to_mesh (centres were 0.018 low, 이미지 개발 10/12)
+        hv = [h.matrix_world @ v.co for v in h.data.vertices]
+        hmn = Vector((min(v.x for v in hv), min(v.y for v in hv), min(v.z for v in hv)))
+        hmx = Vector((max(v.x for v in hv), max(v.y for v in hv), max(v.z for v in hv)))
         stats.update({"tag": tag, "D2_tris": tris(h), "D2_thickness": a.hull_t, "hull_min": a.hull_min, "hull_big": a.hull_big, "D2_center_roblox": r3((hmn + hmx) / 2),
                       "D2_size_roblox": [round(hmx.x - hmn.x, 4), round(hmx.z - hmn.z, 4), round(hmx.y - hmn.y, 4)]})
         export_obj(h, os.path.join(a.out, "%s_%s.obj" % (name, tag)))

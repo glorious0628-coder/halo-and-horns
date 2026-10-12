@@ -272,8 +272,8 @@ def gate(sc):
 def armory(sc):
     """Armory v2 (검수 10/11 판정 3): follows art/review/s2/halo_armory_views.jpg (front / left / back, approved): blue hip roof
     (모임지붕) with a gold ridge, hip lines, eave line and a gold finial, a gold shield medallion above the double arched door
-    (gold ring knockers + hinges), two barred arched windows on the front and one on each side (the back windows are being redrawn
-    by 이미지 생성 2), two lanterns beside the door, gold band + corner / door-flank / back pilasters with gold capitals and feet.
+    (gold ring knockers + hinges), two barred arched windows on the front, one on each side and one on the back (back 2D by
+    이미지 생성 2, 10/12), two lanterns beside the door, gold band + corner / door-flank / back pilasters with gold capitals and feet.
     Scale: 2D front 440 px = 16 studs -> 27.5 px per stud (wall 6.9, cornice to 8.4, roof rise 3.6, finial to ~14)."""
     W, D = 16.0, 12.0
     WH = 8.4                       # cornice top = roof base
@@ -282,7 +282,8 @@ def armory(sc):
     DOOR_H = DS + DR
     PH = math.pi / 2
     # ---- walls: hollow, ceiling slab, door + windows through
-    wins = [(-5.6, 6.0, PH), (5.6, 6.0, PH), (8.0, 0.0, 0.0), (-8.0, 0.0, math.pi)]   # front 2, sides 1 (back: later)
+    # front 2, sides 1, back 1 centred between the back pilasters (이미지 생성 2 10/12, art/out/s2/halo/HaloProp_ArmoryBack_HQ_src.png)
+    wins = [(-5.6, 6.0, PH), (5.6, 6.0, PH), (8.0, 0.0, 0.0), (-8.0, 0.0, math.pi), (0.0, -6.0, -PH)]
     WZ0, WS, WR = 3.0, 1.35, 0.75                                                      # window sill, straight, arch radius (top 5.1)
     cuts = [zbox(0, 0, -0.5, 7.0, W - 1.6, D - 1.6)]
     cuts += arch_cut(0, 0, PH, -0.3, DW, DS + 0.3, 3.0, 5.9)

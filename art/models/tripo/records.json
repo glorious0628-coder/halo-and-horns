@@ -9116,6 +9116,22 @@
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_Lantern_C_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (6314), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3924 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.521,
+    1.394,
+    6.994
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_Lantern_C/HaloVar4_Lantern_C_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-footprint: below the head base only the post is cut, the hanging lantern keeps its bottom",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_A_web_hd_mv4": [
@@ -9139,6 +9155,22 @@
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_Lantern_A_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_A_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (9241), weld then loose specks (0 faces), decimate to 3436 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3961 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    1.425,
+    1.417,
+    2.268
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_Lantern_A/HaloVar4_Lantern_A_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-from 0.68: the Tripo's own head (neck up, 2.24 studs, 2D share) set on the kit head base; before, the cut at the kit head height took the lower glass cage",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_B_web_hd_mv4": [
@@ -9162,6 +9194,20 @@
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_Lantern_B_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_B_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (6341), weld then loose specks (0 faces), decimate to 4999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3793 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.55,
+    2.554,
+    3.283
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_Lantern_B/HaloVar4_Lantern_B_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloVar4_Lantern_D_web_hd_mv4": [
@@ -9185,6 +9231,22 @@
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_Lantern_D_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Lantern_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (4479), weld then loose specks (0 faces), decimate to 4999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3878 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    4.541,
+    1.47,
+    6.999
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_Lantern_D/HaloVar4_Lantern_D_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--head-footprint: below the head base only the post is cut, both hanging lanterns keep their bottoms",
+   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
   }
  ],
  "HaloVar3_Lantern_E_web_hd_mv4": [
@@ -9208,6 +9270,20 @@
    "use": "lamp head only (post/base = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_Lantern_E_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Lantern_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (head, fit h=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7372), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3787 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.014,
+    2.017,
+    3.378
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_Lantern_E/HaloVar3_Lantern_E_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_WallLamp_web_hd_mv4": [
@@ -9254,6 +9330,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Daisy_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5417), weld then loose specks (6 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3970 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.168,
+    3.122,
+    1.98
+   ],
+   "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 5417 -> 4230); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Lavender_web_hd_mv4": [
@@ -9277,6 +9368,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Lavender_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Lavender_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (11744), weld then loose specks (20 faces), decimate to 7836 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (4000 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.29,
+    2.241,
+    2.118
+   ],
+   "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Lavender/HaloFlowerPotHQ_Lavender_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 11744 -> 5665); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Rose_web_hd_mv4": [
@@ -9300,6 +9406,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Rose_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (2514), weld then loose specks (32 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3998 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    4.258,
+    3.466,
+    3.499
+   ],
+   "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Rose/HaloFlowerPotHQ_Rose_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 2514 -> 995); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Sunflower_web_hd_mv4": [
@@ -9323,6 +9444,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Sunflower_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Sunflower_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8757), weld then loose specks (1 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3999 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.729,
+    2.104,
+    3.466
+   ],
+   "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Sunflower/HaloFlowerPotHQ_Sunflower_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8757 -> 5870); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloFlowerPotHQ_Tulip_web_hd_mv4": [
@@ -9346,6 +9482,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Tulip_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloFlowerPotHQ_Tulip_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7240), weld then loose specks (0 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3998 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.7,
+    2.67,
+    2.252
+   ],
+   "out": "art/models/tripo/touchup/HaloFlowerPotHQ_Tulip/HaloFlowerPotHQ_Tulip_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 7240 -> 5113); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_C_web_hd_mv4": [
@@ -9369,6 +9520,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_Topiary_C_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=8)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (9), weld then loose specks (0 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3995 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.808,
+    2.785,
+    8.0
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_Topiary_C/HaloVar3_Topiary_C_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 9 -> 9); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_D_web_hd_mv4": [
@@ -9392,6 +9558,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_Topiary_D_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=8)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (36), weld then loose specks (0 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3981 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.25,
+    3.194,
+    7.997
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_Topiary_D/HaloVar3_Topiary_D_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 36 -> 36); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_Topiary_E_web_hd_mv4": [
@@ -9415,6 +9596,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_Topiary_E_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_Topiary_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=8)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (7806), weld then loose specks (4 faces), decimate to 7999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3991 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.303,
+    2.93,
+    2.024
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 7806 -> 3002); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_E_web_hd_mv4": [
@@ -9438,6 +9634,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_RoundTree_E_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=10)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (35), weld then loose specks (3 faces), decimate to 9999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3998 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    6.267,
+    6.094,
+    10.0
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_RoundTree_E/HaloVar3_RoundTree_E_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 35 -> 35); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_F_web_hd_mv4": [
@@ -9461,6 +9672,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_RoundTree_F_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_F_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=10)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (16), weld then loose specks (7 faces), decimate to 9999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3999 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    7.683,
+    6.446,
+    9.999
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_RoundTree_F/HaloVar3_RoundTree_F_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 16 -> 16); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_RoundTree_G_web_hd_mv4": [
@@ -9484,6 +9710,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_RoundTree_G_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_RoundTree_G_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=10)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (21), weld then loose specks (4 faces), decimate to 9999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (4000 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    6.505,
+    6.289,
+    10.0
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_RoundTree_G/HaloVar3_RoundTree_G_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 21 -> 21); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloReasonHQ_BenchB_web_hd_mv4": [
@@ -9507,6 +9748,20 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloReasonHQ_BenchB_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_BenchB_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (goods, fit w=6.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5095), weld then loose specks (44 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3975 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    6.497,
+    2.045,
+    3.755
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_BenchB/HaloReasonHQ_BenchB_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloReasonHQ_VegGarden_web_hd_mv4": [
@@ -9530,6 +9785,20 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_VegGarden_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (goods, fit w=8)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (1880), weld then loose specks (33 faces), decimate to 9999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3980 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    7.985,
+    6.873,
+    5.115
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_VegGarden/HaloReasonHQ_VegGarden_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloReasonHQ_BreadStand_web_hd_mv4": [
@@ -9553,6 +9822,20 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_BreadStand_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (goods, fit w=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (4810), weld then loose specks (14 faces), decimate to 10000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3998 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    6.999,
+    2.915,
+    6.481
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_BreadStand/HaloReasonHQ_BreadStand_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloReasonHQ_FruitStall_web_hd_mv4": [
@@ -9576,6 +9859,20 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_FruitStall_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (goods, fit h=9)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (2731), weld then loose specks (58 faces), decimate to 10000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3999 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    8.523,
+    3.924,
+    8.996
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_FruitStall/HaloReasonHQ_FruitStall_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloReasonHQ_FlowerCart_web_hd_mv4": [
@@ -9599,6 +9896,20 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_FlowerCart_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (goods, fit w=7)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (1839), weld then loose specks (38 faces), decimate to 9999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3992 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    7.0,
+    6.259,
+    7.968
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_FlowerCart/HaloReasonHQ_FlowerCart_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloReasonHQ_PotionCrate_web_hd_mv4": [
@@ -9622,6 +9933,20 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_PotionCrate_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (goods, fit w=5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8347), weld then loose specks (95 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3942 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    4.935,
+    2.461,
+    3.983
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloReasonHQ_Scarecrow_web_hd_mv4": [
@@ -9645,6 +9970,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloReasonHQ_Scarecrow_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=6.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (1 faces), decimate to 6000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3927 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    4.192,
+    2.596,
+    6.5
+   ],
+   "out": "art/models/tripo/touchup/HaloReasonHQ_Scarecrow/HaloReasonHQ_Scarecrow_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_FlowerBush_web_hd_mv4": [
@@ -9668,6 +10007,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_FlowerBush_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_FlowerBush_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (6 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3985 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    4.648,
+    4.591,
+    2.995
+   ],
+   "out": "art/models/tripo/touchup/NEW_FlowerBush/NEW_FlowerBush_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_GatherBush_web_hd_mv4": [
@@ -9691,6 +10044,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_GatherBush_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_GatherBush_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (11 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3933 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.748,
+    3.736,
+    3.0
+   ],
+   "out": "art/models/tripo/touchup/NEW_GatherBush/NEW_GatherBush_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_BellFrame_Bell_web_hd_mv4": [
@@ -9714,6 +10081,20 @@
    "use": "bell only (frame/posts = Studio parts, tools/prop_kit.py BellFrame); Blender: swap rings/ribs for exact shapes, symmetric, bake C/N/R/M",
    "file": "art/models/tripo/web/NEW_BellFrame_Bell_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_BellFrame_Bell_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (part, fit h=1)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3974 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    1.091,
+    1.09,
+    2.021
+   ],
+   "out": "art/models/tripo/touchup/NEW_BellFrame_Bell/NEW_BellFrame_Bell_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_WallLamp_Head_web_hd_mv4": [
@@ -9737,6 +10118,20 @@
    "use": "lamp head only (wall bracket = Studio parts, tools/prop_kit.py); Blender: keep head, exact rings/ribs, bake C/N/R/M",
    "file": "art/models/tripo/web/NEW_WallLamp_Head_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_WallLamp_Head_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (part, fit h=1)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 4000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3978 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    0.622,
+    0.615,
+    1.34
+   ],
+   "out": "art/models/tripo/touchup/NEW_WallLamp_Head/NEW_WallLamp_Head_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_WateringCan_web_hd_mv4": [
@@ -9760,6 +10155,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_WateringCan_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_WateringCan_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=1.2)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 4000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3847 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    1.78,
+    0.936,
+    1.2
+   ],
+   "out": "art/models/tripo/touchup/NEW_WateringCan/NEW_WateringCan_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_BreadBasket_web_hd_mv4": [
@@ -9783,6 +10192,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_BreadBasket_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_BreadBasket_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=1.6)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3934 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    1.653,
+    1.649,
+    1.598
+   ],
+   "out": "art/models/tripo/touchup/NEW_BreadBasket/NEW_BreadBasket_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_Hedge_web_hd_mv4": [
@@ -9806,6 +10229,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_Hedge_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_Hedge_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (ontop, fit w=0.82)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3856 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    6.61,
+    2.394,
+    2.033
+   ],
+   "out": "art/models/tripo/touchup/NEW_Hedge/NEW_Hedge_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_WhiteRock_a_web_hd_mv4": [
@@ -9829,6 +10266,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_WhiteRock_a_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_a_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=2.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3668 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.206,
+    3.168,
+    2.498
+   ],
+   "out": "art/models/tripo/touchup/NEW_WhiteRock_a/NEW_WhiteRock_a_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_WhiteRock_b_web_hd_mv4": [
@@ -9852,6 +10303,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_WhiteRock_b_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_b_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=2.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (0 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3893 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    4.637,
+    4.626,
+    2.498
+   ],
+   "out": "art/models/tripo/touchup/NEW_WhiteRock_b/NEW_WhiteRock_b_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "NEW_WhiteRock_c_web_hd_mv4": [
@@ -9875,6 +10340,20 @@
    "use": "whole kit (Tripo -> Blender touch-up -> Roblox material)",
    "file": "art/models/tripo/web/NEW_WhiteRock_c_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/NEW_WhiteRock_c_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (whole, fit h=2.5)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (0), weld then loose specks (3 faces), decimate to 5000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3887 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.886,
+    2.681,
+    2.5
+   ],
+   "out": "art/models/tripo/touchup/NEW_WhiteRock_c/NEW_WhiteRock_c_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_A_web_hd_mv4": [
@@ -9898,6 +10377,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_A_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (5193), weld then loose specks (7 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3980 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.336,
+    2.357,
+    2.985
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_A/HaloVar4_PotFlowers_A_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 5193 -> 2542); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_C_web_hd_mv4": [
@@ -9921,6 +10415,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_C_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8542), weld then loose specks (0 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3990 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    1.888,
+    1.714,
+    1.112
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_C/HaloVar4_PotFlowers_C_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8542 -> 5463); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_PotFlowers_D_web_hd_mv4": [
@@ -9944,6 +10453,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_PotFlowers_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (9378), weld then loose specks (9 faces), decimate to 7000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3840 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.599,
+    2.57,
+    0.966
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 9378 -> 5158); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_PotFlowers_E_web_hd_mv4": [
@@ -9967,6 +10491,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_PotFlowers_E_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (8948), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3962 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    2.457,
+    2.425,
+    2.83
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_E/HaloVar3_PotFlowers_E_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 8948 -> 3794); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar3_PotFlowers_F_web_hd_mv4": [
@@ -9990,6 +10529,23 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar3_PotFlowers_F_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (10396), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3993 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    1.891,
+    1.618,
+    2.427
+   ],
+   "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "fix_10_12": "--keep-green --drop-low 0.1: the Tripo already had the long trailing vines; the pot cut had taken them. Leaf-green faces now survive the cut (14512), 4 loose pieces wholly below the rim dropped (91 faces). No new Tripo needed.",
+   "sheet_fix": "art/review/img4/tripo_tu_potflowersF_vines_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 3607 -> 3057); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [
@@ -10013,6 +10569,21 @@
    "use": "plant/goods only (body = Studio parts <kit>__Body, tools/prop_kit.py); Blender: keep the plant part, clean, bake C/N/R/M",
    "file": "art/models/tripo/web/HaloVar4_Planter_D_MV4_HD_src.glb",
    "note_file": "10/12: renamed from art/models/tripo/web/HaloVar4_Planter_D_HD_src.glb - the first download had overwritten an older single-view HD job of the same name"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 morning",
+   "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=5.8)",
+   "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (2132), weld then loose specks (0 faces), decimate to 8000 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (4000 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
+   "size_studs": [
+    3.663,
+    3.534,
+    5.808
+   ],
+   "out": "art/models/tripo/touchup/HaloVar4_Planter_D/HaloVar4_Planter_D_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
+   "keep_green_10_12": "--keep-green: leaf-green faces survive the pot cut (faces cut 2132 -> 2132); sheet art/review/img4/tripo_tu_keepgreen_[12]_1012.jpg"
   }
  ],
  "halo_houses15_deco_tripo_2026-10-12": [
@@ -10881,7 +11452,10 @@
     4.422
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -10953,7 +11527,10 @@
     4.66
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11205,7 +11782,10 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11277,7 +11857,10 @@
     4.659
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -11529,7 +12112,10 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -11565,7 +12151,10 @@
     4.541
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -11601,7 +12190,10 @@
     4.663
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
@@ -11891,6 +12483,30 @@
    "studio_step": "pending: second import file after 디자인 검수 (05 / Flower / Bakery skeletons re-inserted first)",
    "credits": 0,
    "review_1": "디자인 검수 10/12: pass + 3 fixes -> shop glass only Transparency 0.6 / Reflectance 0.05 (generator 'shopglass'), Bakery sign V wedge = plate at the panel's front in the median gold, Potion sign X spikes cut (drop_boxes) + small gap closing; plain materials now sRGB -> linear (previews were washed out)"
+  }
+ ],
+ "NPC_HaloPotionMerchant_web_hd_mv4": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "6f0f8392-fba9-4495-aec1-1abfbaf22f97",
+   "balance_after": 14170,
+   "by": "이미지 생성 4",
+   "mode": "HD multi-view (front / left / right / back), H3.1, ultra mesh, poly 15000 typed, 4K, PBR, triangles, remove-lighting OFF, 8K OFF, part-gen OFF",
+   "at": "2026-10-12 10:30",
+   "approval": "최종 검수 10/12: PotionMerchant 1명 55점 (디자인 검수 통과 4면); other 5 NPCs already have 10/10 4-view Tripo, decision with 디자인 검수",
+   "inputs": {
+    "front": "art/out/s2/npc/NPC_HaloPotionMerchant_front_HQ_src.png",
+    "left_slot(camera at the character's own left; the 2D sides are named from the viewer)": "art/out/s2/npc/NPC_HaloPotionMerchant_right_HQ_src.png",
+    "right_slot": "art/out/s2/npc/NPC_HaloPotionMerchant_left_HQ_src.png",
+    "back": "art/out/s2/npc/NPC_HaloPotionMerchant_back_HQ_src.png"
+   },
+   "result": "13,506 tris; modest clothing kept (long coat, long sleeves, high collar, boots; only face + hands)",
+   "use": "Halo town potion shop NPC; Blender touch-up next (A23-125)",
+   "file": "art/models/tripo/web/NPC_HaloPotionMerchant_MV4_HD_src.glb",
+   "sheet": "art/review/img4/npc_potionmerchant_tripo_raw_1012.jpg"
   }
  ]
 }

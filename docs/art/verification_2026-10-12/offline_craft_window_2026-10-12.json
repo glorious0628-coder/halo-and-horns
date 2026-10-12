@@ -1,5 +1,5 @@
 {
-  "checks": 108,
+  "checks": 135,
   "failed": 0,
   "mutations": [
     {
@@ -49,6 +49,46 @@
     },
     {
       "name": "reasons out of the server's order",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "research is no reason",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a summon ready without its research",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "summons while research is off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the research tab for every artisan",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "TamerInfo never redraws",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a stage counted below its points",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "unnamed families listed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "TamerInfo is never bound",
       "applied": true,
       "caught": true
     },

@@ -936,8 +936,8 @@ function PlayerService.RefreshCharacter(player, fullHeal)
 	applyStats(player, humanoid, fullHeal == true)
 end
 
--- PET-1: the ONE walk speed (Config.WalkSpeed) from the class (classDef), the equipped pet (EquippedPet / PetLv attributes,
--- PetService) and the kaiju state (KaijuService.GetState "Active" = no pet bonus). applyStats and RefreshSpeed are the
+-- PET-1: the ONE walk speed (Config.WalkSpeed) from the class (classDef), the equipped pet (EquippedPet / PetLv / PetRoll
+-- attributes, PetService) and the kaiju state (KaijuService.GetState "Active" = no pet bonus). applyStats and RefreshSpeed are the
 -- only writers of a player's WalkSpeed (KaijuService / ClassService / JusticeService refresh through RefreshCharacter).
 function PlayerService.ComputeWalkSpeed(player)
 	local kaiju = false
@@ -946,7 +946,8 @@ function PlayerService.ComputeWalkSpeed(player)
 		local ok, st = pcall(ks.GetState, player)
 		kaiju = ok and st == "Active"
 	end
-	return Config.WalkSpeed(classDef(player).Id, player:GetAttribute("EquippedPet"), player:GetAttribute("PetLv"), kaiju)
+	return Config.WalkSpeed(classDef(player).Id, player:GetAttribute("EquippedPet"), player:GetAttribute("PetLv"), kaiju,
+		player:GetAttribute("PetRoll"))
 end
 
 -- PET-1: WalkSpeed only (a pet equipped or levelled up); a dead or missing character is left alone

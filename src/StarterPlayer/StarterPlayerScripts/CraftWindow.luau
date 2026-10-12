@@ -52,6 +52,11 @@ local TXT = {
 	Made = "Made %d",
 	Checking = "Checking…",
 	None = "Nothing to make yet.",
+	-- the tamer (⑤, 개발 3 dev3-tamer: summons + research; only while Config.Features.Research is on)
+	Tabs = { Make = "Make", Research = "Research" },
+	PetSpeed = "Speed +%d–%d%%", -- a summon's random walk speed range (the hammer adds up to +2)
+	ResearchNeed = "%s research %s / %s",
+	Stage = "Stage %d",
 }
 L10n.Register("CraftWindow.TXT", TXT)
 
@@ -68,7 +73,9 @@ local L = {
 	Slot = { Common = "SlotCommon", Fine = "SlotUncommon", Rare = "SlotRare", Epic = "SlotEpic", Legend = "SlotLegendary",
 		Mythic = "SlotLegendary" },
 	-- the refusals in the server's order (CraftService.TryStart) that the client can see
-	Reasons = { "NotArtisan", "Auto", "Far", "NeedLevel", "NeedMats", "NeedGold" },
+	Reasons = { "NotArtisan", "Auto", "Far", "NeedLevel", "NeedResearch", "NeedMats", "NeedGold" },
+	Families = { "Slime", "Goblin", "Skeleton", "Ghost" }, -- the research list's order (other named families after)
+	TabH = 36, FamH = 58,
 	GapMargin = 0.15, -- s over Config.RateLimits.CraftStart (the server drops a 2nd start inside it without a reply)
 	PendingTimeout = 3, -- s without CraftSession -> the start stops waiting (a refusal came as a notice)
 	Poll = 0.25, -- s: the ring watch (reopen after it)
@@ -79,8 +86,10 @@ local L = {
 -- state: Info = the last CraftInfo (validated); Sel = the picked recipe id; Await = a start sent { Id, At, Phase =
 -- "sent" | "ring" } (the ring screen opened -> this window comes back after it); ReadyAt = os.clock() of the next start
 local S = { Ready = false, Info = nil, InfoVer = 0, Sel = nil, Await = nil, ReadyAt = 0, LastArg = nil, Started = false,
+	Tamer = nil, TamerVer = 0, Tab = "Make", -- the last TamerInfo; the tamer's tab (Make | Research)
 	Stations = {} } -- [bench part] = its ChildAdded connection (the prompt the server adds)
 local VIEW = {} -- the open window: Kit, Parent, Head, Body, Bottom, List, Detail, Sig
+local drawTabs, drawResearch -- (defined with the drawing below)
 
 ---------------------------------------------------------------------------------------------------- small helpers
 local function num(v, d)
@@ -181,6 +190,21 @@ local function entryOf(id, r, ctx, lv, made)
 		e.Item, e.N = r.Item, math.max(1, math.floor(num(r.N, 1)))
 		e.Grade = (type(def.Grade) == "string" and Config.WeaponGrades[def.Grade]) and def.Grade or "Common"
 		e.Name, e.Icon, e.Color = tx(def, "Name"), r.Item, def.Color or gradeDef(e.Grade).Color
+	elseif r.Kind == "Pet" then
+		-- a tamer's summon (개발 3 dev3-tamer): only while research is on; the pet's species gives the name and icon
+		local pets = type(Config.Pets) == "table" and type(Config.Pets.Species) == "table" and Config.Pets.Species or {}
+		local sp = type(r.Species) == "string" and pets[r.Species] or nil
+		if not (CraftWindow.ResearchOn() and type(sp) == "table" and type(r.Family) == "string") then return nil end
+		e.Species, e.Family, e.Grade = r.Species, r.Family, "Common"
+		e.Name, e.Icon, e.Color = tx(sp, "Name"), sp.Icon, gradeDef("Common").Color
+		e.Research = math.max(0, math.floor(num(r.Research, 0)))
+		local tamer = type(ctx.Tamer) == "table" and type(ctx.Tamer.Pts) == "table" and ctx.Tamer.Pts or {}
+		e.ResearchHave = math.max(0, math.floor(num(tamer[r.Family], 0)))
+		e.ResearchShort = e.ResearchHave < e.Research
+		if type(r.Spd) == "table" then
+			local lo = math.floor(num(r.Spd[1], 0))
+			e.Spd = { lo, math.max(lo, math.floor(num(r.Spd[2], lo))) }
+		end
 	else
 		return nil
 	end
@@ -192,7 +216,7 @@ local function entryOf(id, r, ctx, lv, made)
 	end
 	e.GoldShort = math.max(0, math.floor(num(ctx.Gold, 0))) < e.Gold
 	e.Locked = lv < e.Lv
-	e.Ready = not e.Locked and not e.MatsShort and not e.GoldShort
+	e.Ready = not e.Locked and not e.MatsShort and not e.GoldShort and not e.ResearchShort
 	return e
 end
 
@@ -228,6 +252,7 @@ function CraftWindow.Reason(e, ctx)
 		Auto = ctx.Auto == true,
 		Far = ctx.Far == true,
 		NeedLevel = type(e) == "table" and e.Locked == true,
+		NeedResearch = type(e) == "table" and e.ResearchShort == true,
 		NeedMats = type(e) == "table" and e.MatsShort == true,
 		NeedGold = type(e) == "table" and e.GoldShort == true,
 	}
@@ -279,6 +304,10 @@ function CraftWindow.Detail(e, ctx)
 		if not Config.WeaponUsable(e.Tier, level) then
 			line(tx(TXT, "UseFrom", math.floor(num(Config.Weapons[e.Tier].MinLevel, 1))), "Sub")
 		end
+	elseif e.Kind == "Pet" then
+		if e.Spd then line(tx(TXT, "PetSpeed", e.Spd[1], e.Spd[2])) end
+		line(tx(TXT, "ResearchNeed", CraftWindow.FamilyName(e.Family), Util.FormatInt(e.ResearchHave), Util.FormatInt(e.Research)),
+			e.ResearchShort and "Bad" or "Good")
 	end
 	for _, m in e.Mats do
 		table.insert(view.Mats, { Id = m.Id, Name = m.Name, Color = m.Color, Text = tx(TXT, "Have", Util.FormatInt(m.Have),
@@ -298,6 +327,80 @@ function CraftWindow.Detail(e, ctx)
 		view.Action = { Text = text, Enabled = why == nil and ctx.Gap ~= true }
 	end
 	return view
+end
+
+---------------------------------------------------------------------------------------------------- the tamer's research
+-- research is on (Config.Features.Research + its table: 개발 3 dev3-tamer; off = no summons, no research tab)
+function CraftWindow.ResearchOn()
+	return type(Config.FeatureOn) == "function" and Config.FeatureOn("Research") == true and type(Config.Research) == "table"
+		and type(Config.Research.Stages) == "table"
+end
+
+-- a family's name (Config.Research.Text.Names; the id when it has none)
+function CraftWindow.FamilyName(family)
+	local R = type(Config.Research) == "table" and Config.Research or {}
+	local names = type(R.Text) == "table" and type(R.Text.Names) == "table" and R.Text.Names or nil
+	local s = names and names[family] ~= nil and tx(names, family) or ""
+	return s ~= "" and s or tostring(family)
+end
+
+-- the research list: one row per named family (L.Families first), its points, stage and the bar to the next stage.
+-- tamer = the last TamerInfo { Pts, Stage, Sum, Stages } (nil = all zero). Pure
+function CraftWindow.ResearchRows(tamer)
+	local R = type(Config.Research) == "table" and Config.Research or {}
+	local names = type(R.Text) == "table" and type(R.Text.Names) == "table" and R.Text.Names or {}
+	local stages = type(tamer) == "table" and type(tamer.Stages) == "table" and #tamer.Stages > 0 and tamer.Stages
+		or (type(R.Stages) == "table" and R.Stages or {})
+	local pts = type(tamer) == "table" and type(tamer.Pts) == "table" and tamer.Pts or {}
+	local sums = type(tamer) == "table" and type(tamer.Sum) == "table" and tamer.Sum or {}
+	local order = {}
+	for _, f in L.Families do
+		if names[f] ~= nil then table.insert(order, f) end
+	end
+	local extra = {}
+	for f in names do
+		if not table.find(order, f) then table.insert(extra, f) end
+	end
+	table.sort(extra)
+	for _, f in extra do table.insert(order, f) end
+	local rows = {}
+	for _, f in order do
+		local have = math.max(0, math.floor(num(pts[f], 0)))
+		local stage = 0
+		for i, need in stages do
+			if have >= num(need, math.huge) then stage = i else break end
+		end
+		local nextNeed = stages[stage + 1]
+		local row = { Family = f, Name = CraftWindow.FamilyName(f), Pts = have, Stage = stage,
+			Sum = math.max(0, math.floor(num(sums[f], 0))) }
+		if nextNeed then
+			row.Bar = tx(TXT, "XP", Util.FormatInt(have), Util.FormatInt(nextNeed))
+			row.Fraction = math.clamp(have / math.max(1, num(nextNeed, 1)), 0, 1)
+		else
+			row.Bar, row.Fraction = tx(TXT, "Max"), 1
+		end
+		table.insert(rows, row)
+	end
+	return rows
+end
+
+-- s->c TamerInfo { Pts = { [family] = n }, Stage = { [family] = 0..5 }, Sum = { [family] = n }, Stages = { ... } }
+function CraftWindow.OnTamer(payload)
+	if type(payload) ~= "table" then return end
+	local function counts(t)
+		local out = {}
+		for k, v in type(t) == "table" and t or {} do
+			if type(k) == "string" and num(v, nil) and v >= 0 then out[k] = math.floor(v) end
+		end
+		return out
+	end
+	local stages = {}
+	for _, v in type(payload.Stages) == "table" and payload.Stages or {} do
+		if num(v, nil) then table.insert(stages, v) end
+	end
+	S.Tamer = { Pts = counts(payload.Pts), Sum = counts(payload.Sum), Stages = stages }
+	S.TamerVer += 1
+	if VIEW.Kit then CraftWindow.Redraw() end
 end
 
 ---------------------------------------------------------------------------------------------------- data
@@ -365,7 +468,7 @@ local function context()
 	local class = attr("Class")
 	local ctx = { Faction = attr("Faction"), ClassChosen = attr("ClassChosen") == true,
 		Class = (type(class) == "string" and Config.Classes[class]) and class or "Warrior", Items = items(),
-		Gold = math.max(0, num(attr("BankGold"), 0)) + math.max(0, num(attr("CarriedGold"), 0)), Info = S.Info,
+		Gold = math.max(0, num(attr("BankGold"), 0)) + math.max(0, num(attr("CarriedGold"), 0)), Info = S.Info, Tamer = S.Tamer,
 		Level = num(attr("Level"), 1),
 		Auto = attr("AutoCombatUnlocked") == true and attr("AutoCombatEnabled") == true,
 		Pending = pending(), Gap = os.clock() < S.ReadyAt }
@@ -622,13 +725,65 @@ local function drawBottom(bottom)
 		Position = UDim2.new(0, L.CoinW + 6, 0.5, 0), Size = UDim2.new(0.5, 0, 1, 0), TextWrapped = false, Style = "Number" })
 end
 
+-- the tamer's tabs (the Panels capsules, gold = open: the bag's look); hidden for everyone else
+function drawTabs(show)
+	local frame, kit = VIEW.Tabs, VIEW.Kit
+	if not (frame and kit) then return end
+	clear(frame)
+	frame.Visible = show == true
+	if not show then return end
+	listLayout(frame, 6, false).FillDirection = Enum.FillDirection.Horizontal
+	for i, id in { "Make", "Research" } do
+		local b = kit.Button(frame, tx(TXT.Tabs, id), kit.Palette.Button, UDim2.new(0.5, -3, 1, 0), function()
+			CraftWindow.ShowTab(id)
+		end)
+		b.Name = "Tab_" .. id
+		b.LayoutOrder = i
+		local on = S.Tab == id
+		kit.Paint(b, on and kit.Theme.Gold or kit.Palette.Button, on and kit.Palette.DarkText or kit.Theme.Text)
+	end
+end
+
+-- the research tab: one row per family - its name, stage and the bar to the next stage (A23-130: no other words)
+function drawResearch(body)
+	local scroll = Instance.new("ScrollingFrame")
+	scroll.Name = "Research"
+	scroll.BackgroundTransparency = 1
+	scroll.BorderSizePixel = 0
+	scroll.Size = UDim2.fromScale(1, 1)
+	scroll.CanvasSize = UDim2.new()
+	scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	scroll.ScrollingDirection = Enum.ScrollingDirection.Y
+	scroll.ScrollBarThickness = 6
+	scroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+	scroll.Parent = body
+	listLayout(scroll, L.RowSpace, false)
+	for i, r in CraftWindow.ResearchRows(S.Tamer) do
+		local row = Instance.new("Frame")
+		row.Name = "Fam_" .. r.Family
+		row.BackgroundTransparency = 1
+		row.Size = UDim2.new(1, 0, 0, L.FamH)
+		row.LayoutOrder = i
+		row.Parent = scroll
+		label(row, r.Name, L.Size.Row, r.Stage > 0 and colorOf("Gold") or colorOf("Text"), { Name = "Name",
+			Size = UDim2.new(1, -90, 0, 24), TextWrapped = false, Style = "Title" })
+		label(row, tx(TXT, "Stage", r.Stage), L.Size.Small, colorOf("Sub"), { Name = "Stage", AnchorPoint = Vector2.new(1, 0),
+			Position = UDim2.new(1, -4, 0, 2), Size = UDim2.fromOffset(86, 20), TextXAlignment = Enum.TextXAlignment.Right,
+			TextWrapped = false, Style = false })
+		local ok, bar, set = pcall(ui().ArtBar, { Name = "Bar", Position = UDim2.fromOffset(0, 28),
+			Size = UDim2.new(1, -4, 0, L.XPBarH), Text = r.Bar, TextSize = L.Size.Small, Parent = row })
+		if ok and bar and type(set) == "function" then set(r.Fraction) end
+	end
+end
+
 -- what the window shows depends on (the redraw signature: the update redraws when it changes)
 local function sigOf(ctx, list)
 	local parts = { tostring(ctx.Faction), tostring(ctx.Class), tostring(ctx.ClassChosen), S.InfoVer, ctx.Gold, ctx.Level,
-		tostring(ctx.Auto), tostring(ctx.Far), tostring(ctx.Pending), tostring(ctx.Gap), tostring(S.Sel) }
+		tostring(ctx.Auto), tostring(ctx.Far), tostring(ctx.Pending), tostring(ctx.Gap), tostring(S.Sel), S.TamerVer, S.Tab }
 	for _, e in list do
 		table.insert(parts, e.Id)
 		for _, m in e.Mats do table.insert(parts, m.Have) end
+		if e.ResearchHave then table.insert(parts, e.ResearchHave) end
 	end
 	return table.concat(parts, "|")
 end
@@ -655,6 +810,16 @@ function CraftWindow.Redraw()
 	clear(body)
 	VIEW.List, VIEW.Detail = nil, nil
 	if VIEW.Bottom then drawBottom(VIEW.Bottom) end
+	-- the tamer's two tabs (research on only): Make (the recipes) · Research (the families)
+	local tabs = CraftWindow.RoleOf(ctx) == "Tame" and CraftWindow.ResearchOn()
+	local top = L.HeadH + L.RowGap + (tabs and (L.TabH + L.RowGap) or 0)
+	body.Position = UDim2.fromOffset(0, top)
+	body.Size = UDim2.new(1, 0, 1, -(top + L.BarH + L.RowGap))
+	drawTabs(tabs)
+	if tabs and S.Tab == "Research" then
+		drawResearch(body)
+		return
+	end
 	if #list == 0 then
 		-- nothing to list (not an artisan, no recipe yet): one line in the middle (UiSandbox 10/12: it sat in the right
 		-- column of an empty window)
@@ -694,6 +859,12 @@ function CraftWindow.Redraw()
 	detail.Parent = body
 	VIEW.Detail = detail
 	drawDetail(detail, picked, ctx)
+end
+
+function CraftWindow.ShowTab(id)
+	if id ~= "Make" and id ~= "Research" then return end
+	S.Tab = id
+	CraftWindow.Redraw()
 end
 
 function CraftWindow.Pick(id)
@@ -755,6 +926,14 @@ local function build(parent, kit, arg)
 	head.BackgroundTransparency = 1
 	head.Size = UDim2.new(1, 0, 0, L.HeadH)
 	head.Parent = parent
+	local tabs = Instance.new("Frame")
+	tabs.Name = "Tabs"
+	tabs.BackgroundTransparency = 1
+	tabs.Position = UDim2.fromOffset(0, L.HeadH + L.RowGap)
+	tabs.Size = UDim2.new(1, 0, 0, L.TabH)
+	tabs.Visible = false
+	tabs.Parent = parent
+	VIEW.Tabs = tabs
 	VIEW.Head = head
 	local body = Instance.new("Frame")
 	body.Name = "Body"
@@ -908,6 +1087,7 @@ end
 function CraftWindow.Init(registry)
 	C = registry
 	hook("CraftInfo", CraftWindow.OnInfo) -- before any Start: the join's CraftInfo is never missed
+	hook("TamerInfo", CraftWindow.OnTamer) -- the tamer's research (no remote = research is not on this server)
 	local panels = C and C.Panels
 	if type(panels) ~= "table" or type(panels.Register) ~= "function" then
 		Util.Warn(TAG, "Panels.Register is missing; the craft window is off")

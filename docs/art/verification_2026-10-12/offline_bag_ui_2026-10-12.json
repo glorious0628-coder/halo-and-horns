@@ -1,7 +1,27 @@
 {
-  "checks": 147,
+  "checks": 192,
   "failed": 0,
   "mutations": [
+    {
+      "name": "a tonic on the Use tab while tonics are off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the bag never sees the switch on",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a blocked Drink still says Drink",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the wait counts to the last one",
+      "applied": true,
+      "caught": true
+    },
     {
       "name": "unowned weapons show",
       "applied": true,
@@ -274,6 +294,121 @@
     },
     {
       "name": "a taller window never redraws",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a tonic is a material",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "tonics on the Materials tab",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "tonics sorted before potions",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no time-left line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the time rounds down",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no Desc line on a tonic",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink shows while tonics are off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink with two others running",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no TwoMax line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink while a request waits",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no Drink with no bottle",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a fight stops the tonic",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the running tonic counts as blocked",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "ended tonics count as running",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "three tonics at a time",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink sends nothing (tonic)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink sends the wrong tonic",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink with the switch off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Drink with two others running (Act)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Buff_ answer ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the count answer ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Buff_ never watched",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the tonic timer never moves",
       "applied": true,
       "caught": true
     },

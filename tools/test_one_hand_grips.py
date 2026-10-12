@@ -11,7 +11,7 @@ way for every staff up to 6 studs) and its foot never sinks under the ground nor
 from the Hilt and the UpperTorso centre 3.21 studs above the feet - measured on the place's default R15, the old 3.9 was
 an estimate); A23-133 (user 10/11 "무기가 너무 길어서 잡는 위치가 이상해"; grip_reference §5): every held length is a share
 of the avatar's height (the same rig: 5.18 studs) - a sword (pommel end to tip) 0.72..0.95 with the hand 10..22% up
-from its end and the blade 1.3..2.5x the rest, a staff with its orb 0.82..1.03 held 55..75% up, a bow 0.55..0.97 (the
+from its end and the blade 1.3..2.5x the rest, a staff with its orb 0.85..1.0 (never over the height; 최종 검수 10/12) held 52..70% up, a bow 0.55..0.97 (the
 short bow <= 0.72), the smithing hammer 0.35..0.55 held 15..33% up, the baton 0.3..0.6 - every tier, from LEN; the flask's
 fist wraps the neck, the round body hangs under it, the cork above. A23-128 (user 2026-10-11 "한손검만"): both warriors
 (Warrior_Halo Sword, Warrior_Horns DarkSword) hold a one-hand sword in the right hand at the side - the hand just
@@ -23,7 +23,14 @@ hand bottom >= 0.45) stay out of the UpperTorso / LowerTorso boxes, the wrist be
 hand's up), the handle + pommel (CharacterVisuals sizes, 0.21 thick) and the hand clear the right thigh (the place rig:
 hip (0.5, -1.2, 0), RightUpperLeg 0.99 x 1.36 x 0.97 hung 0.47 under the hip) swinging +-40 deg; SHAPES.DarkSword is
 buildSword's size and place (the same handle, the same blade size and spot for every tier length, the guard at the same
-height and about as wide, a small round pommel at the handle's end). Static: WeaponPose runs OneHand when a row has no
+height and about as wide, a small round pommel at the handle's end). 최종 검수 10/12 (the staffs held lower; references
+grip_reference §5-6: a fist holds a staff square to the forearm, the wrist bends 15..25 deg towards the thumb): the
+three staff rows (Light Mage, Dark Mage, Alchemist) hold the hand 2.45..2.75 studs over the ground (it was 2.9), the
+wrist <= 20 deg towards the thumb and <= 40 deg back / forward, the forearm and the hand >= 0.2 out of the torso, the
+Light Mage's hand the highest and its staff the most upright, the Dark Mage's the lowest and leaning; the staffs held
+52..70% up; the Alchemist holds SHAPES.FlaskStaff (the approved 2D: a staff with a flask): a Shaft (the client's foot
+fix finds it) with its foot on the ground through staffLow, a leather Wrap round the hand, the flask in a cradle on top
+with its neck and cork, the whole 0.85..1.0 of the height. Static: WeaponPose runs OneHand when a row has no
 TwoHand, writes only the right arm, fades with the pose weight, bends the elbow to the row's Pole; the rows keep no
 right-arm hold angles. Mutations: each must be caught.
 
@@ -50,7 +57,7 @@ FILES = {"CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau", "WP": SPS 
 OUT = ROOT / "docs/art/verification_2026-10-11/offline_one_hand_grips_2026-10-11.json"
 NUM = r"(-?[\d.]+)"
 ROWS = {"Mage_Halo": {"Tilt": 5, "Staff": True}, "Mage_Horns": {"Tilt": 15, "Staff": True},
-        "Mage_Neutral": {"Tilt": 10, "Staff": False}, "Warrior_Halo": {"Tilt": None, "Sword": "Sword"},
+        "Mage_Neutral": {"Tilt": 8, "Staff": True}, "Warrior_Halo": {"Tilt": None, "Sword": "Sword"},
         "Warrior_Horns": {"Tilt": None, "Sword": "DarkSword"}}
 # 검수 10/11 (fix/onehand review) the warriors' limits
 SWORD = {"Elev": (40, 50), "Elbow": (1.3, 1.55), "Fore": 0.4, "Hand": 0.45, "HandLen": 0.15, "Wrist": 30, "Thick": 0.21, "Upper": 0.15,
@@ -68,9 +75,13 @@ AVATAR_H = 5.18  # studs, the feet to the top of the head at scale 1
 SHOULDER_ABOVE_FEET = 3.8
 TORSO_HALF = (1.0, 0.5)  # x, z half sizes of the UpperTorso box
 # A23-133 (grip_reference §5): held lengths as shares of AVATAR_H; hands as shares of the length from its butt end / foot
-REACH = {"Sword": (0.72, 0.95), "SwordHand": (0.10, 0.22), "BladeRest": (1.3, 2.5), "Staff": (0.82, 1.03),
-         "StaffHand": (0.55, 0.75), "Bow": (0.55, 0.97), "ShortBow": 0.72, "Hammer": (0.35, 0.55), "HammerHand": (0.15, 0.33),
+REACH = {"Sword": (0.72, 0.95), "SwordHand": (0.10, 0.22), "BladeRest": (1.3, 2.5), "Staff": (0.85, 1.0),
+         "StaffHand": (0.52, 0.70), "Bow": (0.55, 0.97), "ShortBow": 0.72, "Hammer": (0.35, 0.55), "HammerHand": (0.15, 0.33),
          "Baton": (0.3, 0.6)}
+# 최종 검수 10/12 (grip_reference §5-6): the staff rows' hand height over the ground, the wrist (radial = towards the
+# thumb, flex = back / forward), the forearm / hand out of the torso
+STAFF_ROWS = ("Mage_Halo", "Mage_Horns", "Mage_Neutral")
+STAFF_POSE = {"Grip": (2.45, 2.75), "Radial": 20, "Flex": 40, "Out": 0.2}
 
 
 def row(cfg: str, key: str):
@@ -121,8 +132,8 @@ def staff_rule(cv: str):
     uses = (cv.count("staffLow(shaftLen, hand)") >= 2
             and 'local low = type(hand) == "number" and hand - STAFF.FootGap or STAFF.FootMax' in cv
             and "return math.clamp(low, shaftLen * STAFF.HoldMin, shaftLen * STAFF.HoldMax)" in cv
-            and cv.count("local shaftLen = tierLen(w, LEN.Staff)") == 2
-            and cv.count("local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax)") == 2)
+            and cv.count("local shaftLen = tierLen(w, LEN.Staff)") == 3
+            and cv.count("local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax)") == 3)
     if not (m and uses):
         return None
     v = [float(m[i]) for i in range(1, 9)]
@@ -174,15 +185,26 @@ def weapon_lengths(cfg: str):
     return [float(x) for x in re.findall(r"\n\t\{ Tier = \d, [^\n]*?Length = " + NUM, cfg)]
 
 
-def flask(cv: str):
-    m = re.search(r"function SHAPES\.Flask\(grip, sc, w, color, tier\)(.*?)\nend", cv, re.S)
+def flask_staff(cv: str):
+    """최종 검수 10/12: SHAPES.FlaskStaff (the approved 2D: a staff with a flask) - its numbers and parts"""
+    m = re.search(r"function SHAPES\.FlaskStaff\(grip, sc, w, color, tier, hand\)(.*?)\nend", cv, re.S)
     if not m:
         return None
     b = m.group(1)
-    neck_on_fist = re.search(r'Name = "Neck",[^}]*CFrame = base,', b, re.S) is not None
-    ball_below = re.search(r'Name = "Flask",[^}]*CFrame = base \* CFrame\.new\(0, -\(', b, re.S) is not None
-    cork_above = re.search(r'Name = "Cork",[^}]*CFrame = base \* CFrame\.new\(0, \(neckLen / 2', b, re.S) is not None
-    return {"Neck": neck_on_fist, "Ball": ball_below, "Cork": cork_above}
+    f = re.search(r"local F = \{ Neck = " + NUM + ", Cork = " + NUM + ", Sit = " + NUM + ", Wrap = " + NUM, b)
+    if not f:
+        return None
+    return {"Neck": float(f[1]), "Cork": float(f[2]), "Sit": float(f[3]), "WrapLen": float(f[4]),
+            "Shaft": "local shaftLen = tierLen(w, LEN.Staff) - (F.Neck + F.Cork)" in b
+            and "local base, low = fist(grip), staffLow(shaftLen, hand)" in b
+            and re.search(r'Name = "Shaft",[^}]*CFrame = base \* CFrame\.new\(0, \(shaftLen / 2 - low\) \* sc, 0\)', b, re.S) is not None,
+            "Wrap": re.search(r'Name = "Wrap",[^}]*CFrame = base,', b, re.S) is not None,
+            "Top": "local top = base * CFrame.new(0, (shaftLen - low) * sc, 0)" in b,
+            "Flask": "local d = STAFF.Orb + STAFF.OrbPerTier * tier" in b
+            and re.search(r'Name = "Flask", Shape = Enum\.PartType\.Ball,[^}]*CFrame = top \* CFrame\.new\(0, d \* F\.Sit \* sc, 0\)', b, re.S) is not None,
+            "CorkAt": "local neckAt = d * (F.Sit + 0.5) + F.Neck / 2" in b
+            and "CFrame = top * CFrame.new(0, (neckAt + F.Neck / 2 + F.Cork / 2) * sc, 0)," in b,
+            "Main": "return parts, flask" in b}
 
 
 def line_clear_of_torso(point, aim):
@@ -367,17 +389,34 @@ def length_checks(src: dict) -> list[tuple[str, bool, str]]:
     # the staffs (buildStaff: the orb's centre d x k over the shaft's top, so the top is shaft + d x (k + 0.5))
     tip = re.search(r"\(shaftLen - low \+ d \* " + NUM + r"\) \* sc",
                     body_of(cv, "local function buildStaff(grip, sc, w, color, tier, hand)"))
-    hand0 = hand_height(TORSO_ABOVE_FEET, min(row(src["CONFIG"], k)["Hilt"][1] for k in ("Mage_Halo", "Mage_Horns")), 1.0)
+    hands = [hand_height(TORSO_ABOVE_FEET, row(src["CONFIG"], k)["Hilt"][1], 1.0) for k in STAFF_ROWS]
     rows = []
     for tier, length in enumerate(lens, start=1):
         shaft = tier_len(lrule, "Staff", length)
-        low = staff_low(srule, shaft, hand0)
         d = srule["Orb"] + srule["OrbPer"] * min(tier, srule["OrbMax"])
-        rows.append(((shaft + d * (float(tip[1]) + 0.5)) / H if tip else 9.0, low / shaft))
+        for hand0 in hands:
+            low = staff_low(srule, shaft, hand0)
+            rows.append(((shaft + d * (float(tip[1]) + 0.5)) / H if tip else 9.0, low / shaft))
     out.append((f"A23-133: a staff with its orb {REACH['Staff'][0]}..{REACH['Staff'][1]} of the avatar's height, held "
-                f"{REACH['StaffHand'][0]:.0%}..{REACH['StaffHand'][1]:.0%} up from its foot",
+                f"{REACH['StaffHand'][0]:.0%}..{REACH['StaffHand'][1]:.0%} up from its foot (every staff row's hand)",
                 all(within(h, REACH["Staff"]) and within(f, REACH["StaffHand"]) for h, f in rows),
-                ", ".join(f"{h:.2f}/{f:.2f}" for h, f in rows)))
+                f"{min(h for h, _ in rows):.2f}..{max(h for h, _ in rows):.2f} / {min(f for _, f in rows):.2f}.."
+                f"{max(f for _, f in rows):.2f}"))
+    # 최종 검수 10/12: the Alchemist's flask staff (shorter by its neck + cork, so it tops out where the orb staffs do)
+    fs = flask_staff(cv)
+    hand_n = hand_height(TORSO_ABOVE_FEET, row(src["CONFIG"], "Mage_Neutral")["Hilt"][1], 1.0)
+    frows = []
+    if fs:
+        for tier, length in enumerate(lens, start=1):
+            shaft = tier_len(lrule, "Staff", length) - (fs["Neck"] + fs["Cork"])
+            d = srule["Orb"] + srule["OrbPer"] * min(tier, srule["OrbMax"])
+            low = staff_low(srule, shaft, hand_n)
+            frows.append(((shaft + d * (fs["Sit"] + 0.5) + fs["Neck"] + fs["Cork"]) / H, low / shaft, hand_n - low))
+    out.append((f"최종 검수 10/12: the Alchemist's flask staff {REACH['Staff'][0]}..{REACH['Staff'][1]} of the avatar's height "
+                f"(flask, neck and cork included), held {REACH['StaffHand'][0]:.0%}..{REACH['StaffHand'][1]:.0%} up, its foot "
+                "0 .. 0.3 over the ground", len(frows) == len(lens) and all(within(h, REACH["Staff"]) and within(f, REACH["StaffHand"])
+                                               and 0.0 <= y <= 0.3 for h, f, y in frows),
+                ", ".join(f"{h:.2f}/{f:.2f}" for h, f, _ in frows)))
     # the bows (held in the middle: buildBow centres the riser on the grip)
     short = re.search(r"return buildBow\(grip, sc, w, color, " + NUM + ", " + NUM + r"\)", body_of(cv, "function SHAPES.ShortBow("))
     bows = [tier_len(lrule, "Bow", length) / H for length in lens]
@@ -424,7 +463,8 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             continue
         hilt, aim = r["Hilt"], r["Aim"]
         worst = {"reach": 0.0, "dist": 0.0, "axis": 0.0, "fore": (180.0, 0.0), "elbow": (-9.0, 9.0, 9.0), "elbowIn": 9.0,
-                 "wrist": 0.0, "foreGap": 9.0, "handGap": 9.0, "swordThigh": 9.0, "handThigh": 9.0, "upper": 9.0}
+                 "wrist": 0.0, "foreGap": 9.0, "handGap": 9.0, "swordThigh": 9.0, "handThigh": 9.0, "upper": 9.0,
+                 "radial": -90.0, "flex": 0.0}
         reach = sword_reach(src["CV"], spec.get("Sword") or "Sword")
         for k in (1.0, 0.85):
             shoulder, l1, l2, wc1, grip = G.rig("R", k)
@@ -453,6 +493,12 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             # 검수 10/11: the wrist (the forearm's up against the hand's up), the forearm / hand against the torso boxes,
             # the handle + pommel and the hand against the swinging thigh (all unscaled)
             worst["wrist"] = max(worst["wrist"], G.angle(G.sub(elbow, wrist), frame[1]))
+            # 최종 검수 10/12: the wrist split - towards the thumb (the hand's -Z; radial, normal 15..25 deg) and back /
+            # forward (about the knuckle line)
+            fa = G.unit(G.sub(elbow, wrist))
+            fy, fz, fx = G.dot(fa, frame[1]), G.dot(fa, frame[2]), G.dot(fa, frame[0])
+            worst["radial"] = max(worst["radial"], math.degrees(math.atan2(-fz, fy)))
+            worst["flex"] = max(worst["flex"], abs(math.degrees(math.atan2(fx, fy))))
             bottom = G.add(pos, frame[1], -SWORD["HandLen"] * k)
             worst["foreGap"] = min(worst["foreGap"], body_gap(elbow, wrist, k) / k)
             # 게임성 검수 10/11: the upper arm too (its lower half, mid -> elbow; the top half sits at the shoulder joint,
@@ -505,11 +551,29 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
         elif spec["Staff"]:
             out.append((f"{key}: the staff stands beside the body (hand outside the torso, the line clear of it)",
                         hilt[0] >= 0.8 and line_clear_of_torso(hilt, aim), f"{hilt}"))
-        else:
-            out.append((f"{key}: the flask in front of the chest", hilt[2] <= -0.6 and abs(hilt[0]) <= 0.8 and -0.4 <= hilt[1] <= 0.4,
-                        f"{hilt}"))
+            g0, g1 = STAFF_POSE["Grip"]
+            grip_y = TORSO_ABOVE_FEET + hilt[1]
+            out.append((f"{key}: 최종 검수 10/12 the hand lowered from the chest to {g0}..{g1} studs over the ground (it was 2.9)",
+                        g0 <= grip_y <= g1, f"{grip_y:.2f}"))
+            out.append((f"{key}: 최종 검수 10/12 the wrist <= {STAFF_POSE['Radial']} deg towards the thumb and <= "
+                        f"{STAFF_POSE['Flex']} deg back / forward (grip_reference §5-6)",
+                        worst["radial"] <= STAFF_POSE["Radial"] and worst["flex"] <= STAFF_POSE["Flex"],
+                        f"{worst['radial']:.1f} / {worst['flex']:.1f} deg"))
+            out.append((f"{key}: 최종 검수 10/12 the forearm and the hand >= {STAFF_POSE['Out']} out of the torso",
+                        worst["foreGap"] >= STAFF_POSE["Out"] and worst["handGap"] >= STAFF_POSE["Out"],
+                        f"forearm {worst['foreGap']:.2f}, hand {worst['handGap']:.2f}"))
         out.append((f"{key}: no right-arm hold angles fight the placement",
                     "RightShoulder" not in r["HoldText"] and "RightElbow" not in r["HoldText"] and "RightWrist" not in r["HoldText"], ""))
+    # 최종 검수 10/12 (keep the sides apart, GDD §0): the Light Mage stands tallest with the most upright staff, the Dark
+    # Mage lowest with his staff leaning in front, the Alchemist between
+    sr = {k: row(src["CONFIG"], k) for k in STAFF_ROWS}
+    if all(sr.values()):
+        tilt = {k: G.angle(r["Aim"], (0.0, 1.0, 0.0)) for k, r in sr.items()}
+        hy = {k: r["Hilt"][1] for k, r in sr.items()}
+        out.append(("최종 검수 10/12: the Light Mage's hand highest and staff most upright, the Dark Mage's lowest and leaning "
+                    "(>= 5 deg more), the Alchemist between", hy["Mage_Halo"] > hy["Mage_Neutral"] > hy["Mage_Horns"]
+                    and tilt["Mage_Halo"] < tilt["Mage_Neutral"] < tilt["Mage_Horns"] and tilt["Mage_Horns"] >= tilt["Mage_Halo"] + 5,
+                    ", ".join(f"{k} {TORSO_ABOVE_FEET + hy[k]:.2f}/{tilt[k]:.0f} deg" for k in STAFF_ROWS)))
     for key, kind in OFF_ROWS.items():
         o = off_row(src["CONFIG"], key)
         out.append((f"{key}: OffHand (At, Up, Fwd) is readable and no left-arm hold angles fight it",
@@ -546,7 +610,7 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
     out.append(("CharacterVisuals: the staffs use STAFF / staffLow and their length LEN.Staff",
                 rule is not None and lrule is not None and len(lens) >= 7, f"{len(lens)} tiers"))
     if rule and lrule and lens:
-        hilts = [row(src["CONFIG"], k)["Hilt"][1] for k in ("Mage_Halo", "Mage_Horns")]
+        hilts = [row(src["CONFIG"], k)["Hilt"][1] for k in STAFF_ROWS]
         hand_above_feet = hand_height(TORSO_ABOVE_FEET, min(hilts), 1.0)
         fracs, feet, tops, orbs = [], [], [], []
         for tier, length in enumerate(lens, start=1):
@@ -591,9 +655,17 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
                     ", ".join(f"{t:.2f}" for t in tops)))
         out.append(("the staff orb stays hand sized (<= 0.9 studs)", all(d <= 0.9 for d in orbs), ", ".join(f"{d:.2f}" for d in orbs)))
     out += length_checks(src)
-    fk = flask(src["CV"])
-    out.append(("the flask: the fist wraps the neck, the body hangs under it, the cork on top",
-                bool(fk and fk["Neck"] and fk["Ball"] and fk["Cork"]), f"{fk}"))
+    fs, rn = flask_staff(src["CV"]), row(src["CONFIG"], "Mage_Neutral")
+    cv = src["CV"]
+    out.append(("최종 검수 10/12: the Alchemist holds the flask staff (SHAPES.FlaskStaff; the old hand flask is gone), its foot "
+                "on the ground (buildWeapon passes the avatar's hand height)",
+                bool(rn and rn["Weapon"] == "FlaskStaff") and "function SHAPES.Flask(" not in cv
+                and '(kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff") and type(staffHandHeight) == "function"' in cv,
+                f"{rn and rn['Weapon']}"))
+    out.append(("최종 검수 10/12: the flask staff = a Shaft (the client's foot fix finds it) through staffLow, a leather Wrap "
+                "round the hand (>= 0.5 long), the flask sitting in its cradle on top, the neck and the cork above, the flask "
+                "the main part", bool(fs and fs["Shaft"] and fs["Wrap"] and fs["WrapLen"] >= 0.5 and fs["Top"] and fs["Flask"]
+                                      and fs["CorkAt"] and fs["Main"]), f"{fs}"))
     out += dark_sword_checks(src["CV"], weapon_lengths(src["CONFIG"]))
     return out
 
@@ -733,8 +805,7 @@ def run(src: dict):
 
 
 MUTATIONS = [
-    ("CONFIG", "the Light Mage's staff leaning out", "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) }",
-     "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0.6, 1, -0.05) }"),
+    ("CONFIG", "the Light Mage's staff leaning out", "Aim = Vector3.new(0, 1, -0.05), Pole", "Aim = Vector3.new(0.6, 1, -0.05), Pole"),
     # A23-128 (user 10/11 "한손검만"): the warriors' one-hand swords at the side
     ("CONFIG", "the Paladin's sword across the body again", "Aim = Vector3.new(0.05, 0.7, -0.7)", "Aim = Vector3.new(-0.8, 0.55, -0.2)"),
     ("CONFIG", "the Paladin's sword held in front of the belly", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6)",
@@ -773,7 +844,8 @@ MUTATIONS = [
      "local handleLen = 1.2\n\tlocal bladeLen = w.Length"),
     ("CV", "A23-133: the dark blade off LEN", "local bladeLen = tierLen(w, LEN.Blade) -- A23-133", "local bladeLen = w.Length -- A23-133"),
     ("CV", "A23-133: a stubby sword", "Blade = { 2.4, 3.1 }", "Blade = { 1.2, 1.6 }"),
-    ("CV", "A23-133: the old tall staffs", "Staff = { 3.95, 4.5 }", "Staff = { 4.35, 5.4 }"),
+    ("CV", "A23-133: the old tall staffs", "Staff = { 3.95, 4.45 }", "Staff = { 4.35, 5.4 }"),
+    ("CV", "최종 검수 10/12: the Lv40 staff a hair over the height again (4.5: 1.008H)", "Staff = { 3.95, 4.45 }", "Staff = { 3.95, 4.5 }"),
     ("CV", "A23-133: the old long bows", "Bow = { 3.1, 4.9 }", "Bow = { 3, 6.5 }"),
     ("CV", "A23-133: the short bow as big as the bow", "return buildBow(grip, sc, w, color, 0.75, 15)", "return buildBow(grip, sc, w, color, 1, 15)"),
     ("CV", "A23-133: a long smithing hammer", "local handleLen = 1.9", "local handleLen = 3.4"),
@@ -804,8 +876,20 @@ MUTATIONS = [
     ("CONFIG", "a hand-on-hip sinks into the waist", "OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage",
      "OffHand = { At = Vector3.new(-0.6, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage"),
     ("CONFIG", "the old left-arm hold kept (Tamer)", "RightWrist = { -30, 0, 0 } }, OffHand", "RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 } }, OffHand"),
-    ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6)", "OneHand = { Hilt = Vector3.new(0.2, -0.3, -0.6)"),
-    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, -0.2) },", "Aim = Vector3.new(0, 1, -0.8) },"),
+    ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8)", "OneHand = { Hilt = Vector3.new(0.2, -0.5, -0.8)"),
+    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, -0.2), Pole", "Aim = Vector3.new(0, 1, -0.8), Pole"),
+    # 최종 검수 10/12 (the staffs held lower, grip_reference §5-6)
+    ("CONFIG", "the Light Mage's hand back up at the chest (the old spot)",
+     "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) }",
+     "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) }"),
+    ("CONFIG", "the Dark Mage's hand at the hip (the arm straight, the wrist broken)", "OneHand = { Hilt = Vector3.new(1.4, -0.65, -0.8)",
+     "OneHand = { Hilt = Vector3.new(1.4, -1.1, -0.8)"),
+    ("CONFIG", "the Light Mage's elbow out (the default bend: the wrist breaks)",
+     "Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) }", "Aim = Vector3.new(0, 1, -0.05) }"),
+    ("CONFIG", "the Dark Mage upright like the Light Mage (the sides alike)", "Aim = Vector3.new(0, 1, -0.2), Pole",
+     "Aim = Vector3.new(0, 1, -0.04), Pole"),
+    ("CONFIG", "the Light Mage's hand tucked into the torso", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8)",
+     "OneHand = { Hilt = Vector3.new(1.05, -0.5, -0.8)"),
     ("CONFIG", "the Dark Mage's free hand out at the side again", "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },",
      "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 }, LeftShoulder = { 14, 0, -20 } },"),
     # 게임성 검수 10/11: the Horns rows leaned back against their notes
@@ -815,15 +899,16 @@ MUTATIONS = [
      "Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },"),
     ("CV", "the big floating gear again", "local GEAR = { Size = 0.55, Gap = 0.35 }", "local GEAR = { Size = 1, Gap = 1.6 }"),
     ("CV", "the gear ignores the hat / hair", "buildNeutralGear(head, sc, character), character, head)", "buildNeutralGear(head, sc), character, head)"),
-    ("CONFIG", "게임성 검수 10/11: the flask's upper arm tucked into the side again",
-     "Aim = Vector3.new(0, 1, 0), Pole = Vector3.new(1, -0.8, 0) },", "Aim = Vector3.new(0, 1, 0) },"),
-    ("CONFIG", "the flask held out of reach", "OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9)", "OneHand = { Hilt = Vector3.new(0.55, -0.05, -2.2)"),
+    ("CONFIG", "the Alchemist's elbow out (the default bend)", "Aim = Vector3.new(0, 1, -0.1), Pole = Vector3.new(0.3, -0.4, 0.6) },",
+     "Aim = Vector3.new(0, 1, -0.1) },"),
+    ("CONFIG", "the flask staff held out of reach", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -0.8)", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -2.2)"),
+    ("CONFIG", "the Alchemist holds the old hand flask again", 'Mage_Neutral = { Weapon = "FlaskStaff",', 'Mage_Neutral = { Weapon = "Flask",'),
     ("CONFIG", "the old right-arm hold kept", 'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck',
      'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, Neck'),
     ("CV", "the hand near the foot again", "HoldMin = 0.5, HoldMax = 0.8,", "HoldMin = 0.2, HoldMax = 0.4,"),
     ("CV", "a staff sinks into the ground", 'local low = type(hand) == "number" and hand - STAFF.FootGap or STAFF.FootMax',
      'local low = type(hand) == "number" and hand + 0.5 or STAFF.FootMax'),
-    ("CV", "A23-133: the old hand reach (3.4) sinks the long staffs", "FootMax = 2.8,", "FootMax = 3.4,"),
+    ("CV", "A23-133: the old hand reach (3.4) sinks the long staffs", "FootMax = 2.5,", "FootMax = 3.4,"),
     # 게임성 검수 10/11: the staff foot on every avatar
     ("CV", "the staff floats off the ground", "local STAFF = { FootGap = 0.08,", "local STAFF = { FootGap = 0.6,"),
     ("CV", "one fixed reach for every avatar (the old FootMax only)",
@@ -833,8 +918,15 @@ MUTATIONS = [
     ("CV", "buildWeapon never measures the avatar", "staffHand = h and h / sc or nil", "staffHand = nil"),
     ("CV", "the old big orb", "Orb = 0.5, OrbPerTier = 0.05, OrbTierMax", "Orb = 0.7, OrbPerTier = 0.1, OrbTierMax"),
     ("CV", "C1: the Mythic orb grows past tier 8", "OrbPerTier = 0.05, OrbTierMax = 8 }", "OrbPerTier = 0.05, OrbTierMax = 9 }"),
-    ("CV", "the flask on the palm again", "CFrame = base * CFrame.new(0, -(neckLen / 2 + d / 2 - 0.05) * sc, 0),",
-     "CFrame = base * CFrame.new(0, (d / 2 + 0.05) * sc, 0),"),
+    ("CV", "the flask staff as long as the orb staffs plus its cork (too tall)",
+     "local shaftLen = tierLen(w, LEN.Staff) - (F.Neck + F.Cork)", "local shaftLen = tierLen(w, LEN.Staff) + 0.6"),
+    ("CV", "the flask staff's wrap off the hand", "Material = Enum.Material.Fabric, Color = F.Leather, CFrame = base,",
+     "Material = Enum.Material.Fabric, Color = F.Leather, CFrame = base * CFrame.new(0, -1.2 * sc, 0),"),
+    ("CV", "the flask staff's foot never measured", 'kind == "CrookStaff" or kind == "FlaskStaff") and type(staffHandHeight)',
+     'kind == "CrookStaff") and type(staffHandHeight)'),
+    ("CV", "the flask staff's shaft renamed (the client's foot fix loses it)",
+     'table.insert(parts, accPart({\n\t\tName = "Shaft",', 'table.insert(parts, accPart({\n\t\tName = "Pole",'),
+    ("CV", "the flask floating over its cradle", "CFrame = top * CFrame.new(0, d * F.Sit * sc, 0),", "CFrame = top * CFrame.new(0, (d + 0.8) * sc, 0),"),
     ("WP", "never run", '\t\tif type(def.OneHand) == "table" then WeaponPose.OneHand(char, st, def, model) end\n',
      '\t\tif false then WeaponPose.OneHand(char, st, def, model) end\n'),
     ("WP", "the free hand never placed", '\t\tif type(def.OffHand) == "table" then WeaponPose.OffHand(char, st, def) end\n',

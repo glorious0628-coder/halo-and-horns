@@ -609,4 +609,82 @@ tagRemoved(late)
 check(late.OnChild == nil, "a bench that leaves stops being watched")
 attrs.Class = "Warrior"
 
+------------------------------------------------------------------ 7. the tamer (개발 3 dev3-tamer: summons + research, switch Research)
+check(type(handlers.TamerInfo) == "function", "TamerInfo is bound at Init (no remote = research is not on that server)")
+-- 개발 3's shapes (not on this branch's Config yet)
+Config.Craft.Recipes.S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 },
+	Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 }
+Config.Craft.Text.NeedResearch = "Research this monster more first."
+local tameCtx = ctxOf({ Class = "Archer", Items = { Jelly = 40, SlimeCore = 6 }, Gold = 500 })
+check(entry(CraftWindow.Entries(tameCtx), "S1") == nil and not CraftWindow.ResearchOn(), "research off: no summon in the list")
+Config.Research = { Stages = { 50, 150, 400, 1000, 2500 }, Treat = "PetTreat", TreatXP = 20,
+	Text = { Names = { Slime = "Slime", Goblin = "Goblin", Skeleton = "Skeleton", Ghost = "Ghost" } } }
+Config.Features.Research = true
+check(CraftWindow.ResearchOn(), "research on (switch + table)")
+local s1 = entry(CraftWindow.Entries(tameCtx), "S1")
+check(s1 and s1.Name == "Baby Slime" and s1.Icon == "IconPetBabySlime" and s1.ResearchHave == 0 and s1.ResearchShort and not s1.Ready,
+	"a summon: the pet's name and icon, its research still short", s1 and s1.Name)
+check(entry(CraftWindow.Entries(ctxOf({ Items = { Jelly = 40, SlimeCore = 6 }, Gold = 500 })), "S1") == nil, "a blacksmith never sees the summon")
+tameCtx.Tamer = { Pts = { Slime = 120 } }
+s1 = entry(CraftWindow.Entries(tameCtx), "S1")
+check(s1.ResearchHave == 120 and CraftWindow.Reason(s1, tameCtx) == "NeedResearch", "120 / 150 Slime research: NeedResearch")
+local shortCtx = ctxOf({ Class = "Archer", Items = { Jelly = 1 }, Gold = 0, Tamer = { Pts = { Slime = 10 } } })
+check(CraftWindow.Reason(entry(CraftWindow.Entries(shortCtx), "S1"), shortCtx) == "NeedResearch",
+	"the research before the materials and the gold (the server's order)")
+local lockCtx = ctxOf({ Class = "Archer", Tamer = { Pts = { Slime = 10 } } })
+Config.Craft.Recipes.S1.Lv = 5
+check(CraftWindow.Reason(entry(CraftWindow.Entries(lockCtx), "S1"), lockCtx) == "NeedLevel", "the craft level before the research")
+Config.Craft.Recipes.S1.Lv = 1
+local sv = CraftWindow.Detail(s1, tameCtx)
+local function vline(v, s)
+	for _, l in v.Lines do if string.find(l.Text, s, 1, true) then return l end end
+	return nil
+end
+check(vline(sv, "Speed +5–8%") ~= nil, "the summon's speed range", sv.Lines[1] and sv.Lines[1].Text)
+check(vline(sv, "Slime research 120 / 150") and vline(sv, "Slime research 120 / 150").Color == "Bad"
+	and sv.Status.Text == Config.Craft.Text.NeedResearch and sv.Action.Text == "Make" and not sv.Action.Enabled,
+	"the research line in red, the server's notice, Make off")
+tameCtx.Tamer.Pts.Slime = 150
+s1 = entry(CraftWindow.Entries(tameCtx), "S1")
+sv = CraftWindow.Detail(s1, tameCtx)
+check(s1.Ready and vline(sv, "Slime research 150 / 150").Color == "Good" and sv.Action.Enabled, "150 / 150: ready, Make on")
+-- the research rows
+local rr = CraftWindow.ResearchRows({ Pts = { Slime = 160, Goblin = 2600, Bat = 9 }, Stages = { 50, 150, 400, 1000, 2500 } })
+local fams = {}
+for _, r in rr do table.insert(fams, r.Family) end
+check(table.concat(fams, ",") == "Slime,Goblin,Skeleton,Ghost", "every named family in order (an unnamed one is not listed)",
+	table.concat(fams, ","))
+check(rr[1].Stage == 2 and rr[1].Bar == "160 / 400" and math.abs(rr[1].Fraction - 0.4) < 1e-9, "Slime 160: stage 2, 160 / 400", rr[1].Bar)
+check(rr[2].Stage == 5 and rr[2].Bar == "Max" and rr[2].Fraction == 1, "Goblin past the last stage: Max")
+check(rr[3].Stage == 0 and rr[3].Bar == "0 / 50", "no points: stage 0, 0 / 50")
+check(CraftWindow.ResearchRows(nil)[1].Bar == "0 / 50", "no TamerInfo yet: Config's stages")
+check(CraftWindow.ResearchRows({ Pts = { Slime = 150 } })[1].Stage == 2, "exactly at a stage's points: that stage")
+check(CraftWindow.ResearchRows({ Pts = { Slime = 149 } })[1].Stage == 1, "one point short: the stage before")
+Config.Research.Text.Names.Ghost = nil
+local noGhost = CraftWindow.ResearchRows(nil)
+check(#noGhost == 3 and noGhost[3].Family == "Skeleton", "a family without a name is not listed (the server never names its stages)")
+Config.Research.Text.Names.Ghost = "Ghost"
+-- the window: the tamer's tabs
+attrs.Class = "Archer"
+inventory = { Items = { Jelly = 40, SlimeCore = 6 } }
+handlers.TamerInfo({ Pts = { Slime = 60, Goblin = "x", [3] = 4 }, Sum = { Slime = 1 }, Stages = { 50, 150, 400, 1000, 2500 } })
+check(T.S.Tamer.Pts.Slime == 60 and T.S.Tamer.Pts.Goblin == nil and T.S.Tamer.Sum.Slime == 1, "TamerInfo keeps numbers by family only")
+open(nil)
+check(find(root, "Tabs").Visible == true and find(root, "Tab_Make") and find(root, "Tab_Research"), "a tamer gets Make · Research tabs")
+check(find(root, "Tab_Make").PaintColor == "gold" and find(root, "Row_S1") ~= nil, "Make open first: the summon row")
+find(root, "Tab_Research").OnClick()
+check(find(root, "Fam_Slime") ~= nil and find(root, "Row_S1") == nil and find(root, "Tab_Research").PaintColor == "gold",
+	"the research tab: the families instead of the recipes")
+check(find(find(root, "Fam_Slime"), "Stage").Text == "Stage 1" and find(find(root, "Fam_Slime"), "Bar").Text == "60 / 150",
+	"Slime: Stage 1, 60 / 150", find(find(root, "Fam_Slime"), "Bar").Text)
+handlers.TamerInfo({ Pts = { Slime = 151 }, Sum = {}, Stages = { 50, 150, 400, 1000, 2500 } })
+check(find(find(root, "Fam_Slime"), "Stage").Text == "Stage 2", "a TamerInfo while open redraws the research")
+find(root, "Tab_Make").OnClick()
+check(find(root, "Row_S1") ~= nil and find(root, "Fam_Slime") == nil, "back to Make")
+attrs.Class = "Warrior"
+fireAttr("Class")
+check(find(root, "Tabs").Visible == false and find(root, "Fam_Slime") == nil, "a blacksmith: no tabs (research is the tamer's)")
+close()
+Config.Features.Research = false
+
 print(string.format("CRAFT_WINDOW_SUMMARY checks=%d failed=%d", checks, failed))

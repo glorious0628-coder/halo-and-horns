@@ -5,7 +5,10 @@
 - 바닥 검은 덩어리 원인 = 키트 부품 두 면이 같은 평면에 겹침 → `tools/prop_kit_coplanar.py`(검사) + `prop_kit.py` `defight()`(작은 부품 면 0.012칸 밀기, 3번까지 반복). 58키트 887면 → 0. **WorldKit HaloPropKits는 아직 옛 키트** → 되살아난 뒤 `py tools/prop_kit.py --all --apply` + halo_props_place + wk_backup (화면 신청).
 - 껍데기 바닥 규칙: 맨 아래 아래쪽 면 빼고 바닥 아래 0.01까지만(prop_kit_bake.py `make_hull`, tripo_touchup.py 바깥선 같은 규칙).
 - Tripo 소품 39개 손보기 + 바깥선(--outline 0.035) 다시 돌리는 중 → `py tools/tripo_touchup_sheet.py <out> <키…>` 시트 → 디자인 검수.
-- **무기 28개 Blender 손보기**: `tools/tripo_weapon_touchup.py`(길이·쥐는 점 = 개발 1 LEN/tierLen, 피벗 = 손, 칼은 날만 y 두께 ≥0.2, `--sym` 좌우 대칭 Paladin T2/T3·LightMage T3·Alchemist T2/T3, 3,500 삼각형, C/N/R/M 1024) → `art/models/tripo/weapons/<키>/`, 시트 `tools/tripo_weapon_sheet.py`(2D 4면 | 3D 4면). 연금술사 2D = 플라스크 지팡이 → 지팡이 길이·손 62%(게임 코드는 아직 플라스크, 개발 1 결정). 지팡이 2D 감은 손잡이 위치(LightMage T1·T3, 연금술사)는 코드 손 위치 66/62%와 다름 → 검수 결정.
+- **무기 28개 Blender 손보기** (디자인 검수 2단계 통과): `tools/tripo_weapon_touchup.py`(길이 = 개발 1 LEN/tierLen, 피벗 = 손 = 2D 감은 손잡이 가운데 `WRAP` 표, 칼은 날만 y 두께 ≥0.2, `--sym` Paladin T2/T3·LightMage T3·Alchemist T2/T3, 3,500 삼각형, C/N/R/M 1024, `--preview-only`로 렌더만) → `art/models/tripo/weapons/<키>/`(디스크만, 206MB), 시트 `tools/tripo_weapon_sheet.py` → `art/review/img4/weapons_tu_<진영>_1012.jpg`. 쥐는 높이 표 `docs/design/weapon_grip_heights_2026-10-12.md`(감은 곳 아래끝·가운데·위끝 — 개발 1이 고름, 바뀌면 WRAP만 고쳐 다시 굽기). 다음 = 3단계 Roblox 재질(Berserker T3·Paladin T3 밝은 강철, PetTamer T3 짙은 청록, 최종 b 용암 Neon 살짝) 낮·밤 사진.
+- **구멍 버그(10/12 고침)**: glTF 가져오기가 UV 이음매에서 점을 나눠서, 점 합치기 전에 '작은 조각'을 지우면 진짜 면이 지워져 구멍. 두 도구 모두 용접 먼저. 검사 `tools/glb_hole_check.py`(투명 필름 실루엣, 밖에서 못 닿는 빈칸 = 구멍; 활시위·고리 같은 원래 틈은 Tripo 원본과 비교).
+- Tripo 소품 39개 다시 굽기 끝(바깥선 + 용접 + 생울타리 ontop 높이 = 화단 테두리), 시트 `art/review/img4/tripo_tu_outline_[1-4]_1012.jpg`, records.json blender_touchup 기록. 남은 눈 확인: PotFlowers_F 늘어진 덩굴이 2D보다 적고 받침 근처 잎 조각.
+- 껍데기 json 중심값: bound_box 캐시가 늦어 0.018 낮았음 → OBJ에서 다시 계산(56개). 첫 묶음 10 ID = `art/models/worldkit/prop_hull_assets.json`(이미지 개발).
 - WorldKit 백업: build/wk_backup/20261012_013528 (HaloPropKits, 가마솥 Slate 포함, 겹친 면 밀기 전).
 - 남은 것: records.json 손보기 기록(touchup 이벤트), Rose 화분 몸통이 2D보다 좁음, CSG 합치기로 파트 수 줄이기.
 

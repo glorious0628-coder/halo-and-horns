@@ -37,7 +37,7 @@ def main():
         d.text((6, y + 4), "%s  [%s]  삼각형 %s→%s, 크기 %s, 맵 %dpx C/N/R/M  |  2D | 앞 | 왼 | 뒤 | 오른 (파트 몸통 같이) | 색 맵"
                % (job, st["kind"], st["src_tris"], st["tris"], "×".join("%.2f" % v for v in st["size"]), st["px"]),
                font=f1, fill=(255, 255, 255))
-        e = rec[job + "_web_hd_mv4"][-1]
+        e = [x for x in rec[job + "_web_hd_mv4"] if "inputs" in x][-1]
         ims = [os.path.join(ROOT, e["inputs"]["front"])]
         ims += [os.path.join(TU, job, "%s_TU_%s.png" % (job, v)) for v in ("front", "left", "back", "right", "C")]
         for j, p in enumerate(ims):

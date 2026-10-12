@@ -1138,5 +1138,16 @@
   "PropHull035_HaloVar3_RoundTree_E__Body": "rbxassetid://80213311324976",
   "PropHull035_HaloReasonHQ_BenchA": "rbxassetid://74717412656936",
   "PropHull035_HaloReasonHQ_BenchB__Body": "rbxassetid://77057551482230",
-  "PropHull035_HaloVar3_Lantern_E": "rbxassetid://100421935093888"
+  "PropHull035_HaloVar3_Lantern_E": "rbxassetid://100421935093888",
+  "CraftRing": "rbxassetid://115071977806649",
+  "CraftTarget": "rbxassetid://134156748980991",
+  "CraftIngot": "rbxassetid://133966322294546",
+  "IconCrownDust": "rbxassetid://130666131385080",
+  "IconGlowcap": "rbxassetid://118269985242078",
+  "IconPetTreat": "rbxassetid://109038216387583",
+  "IconMightTonic": "rbxassetid://82167218233168",
+  "IconGuardTonic": "rbxassetid://113383235344315",
+  "IconLuckyTonic": "rbxassetid://124851169351640",
+  "IconWisdomTonic": "rbxassetid://131384631272950",
+  "EmoGG": "rbxassetid://127627433457825"
 }

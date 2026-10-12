@@ -225,9 +225,10 @@ local function rollRows(info, onHit)
 	local rowMult = mult * num(info.DropMult, 1) -- A23-22 bully penalty (rows and the jackpot; not the first scroll)
 	local rowBonus = num(info.RowBonus, 1) * num(info.AreaMult, 1) -- A23-90: the Crown Pit's better drops (rows only)
 	for _, row in LOOT.Tables[info.Kind] or {} do
-		-- ④ alchemy (BuffService): a Lucky Tonic raises a material row only (info.MatMult, set by RollKill)
+		-- ④ alchemy (BuffService): a Lucky Tonic raises a plain monster material row only (info.MatMult, set by RollKill);
+		-- a material with a Source (Boss / Gather / Craft) stays as it was (게임성 검수 10/12: the top tiers' economy)
 		local def = row.Item and LOOT.Items[row.Item]
-		local rowBonus = rowBonus * ((def and def.Kind == "Material") and num(info.MatMult, 1) or 1)
+		local rowBonus = rowBonus * ((def and def.Kind == "Material" and def.Source == nil) and num(info.MatMult, 1) or 1)
 		if row.Weapon and type(row.BelowLevel) == "table" and info.Level ~= nil
 			and not Config.WeaponUsable(row.Weapon, info.Level) then
 			onHit(row.BelowLevel, false)

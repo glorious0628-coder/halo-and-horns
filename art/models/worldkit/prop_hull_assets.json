@@ -10,7 +10,8 @@
    2975.7224,
    5.7786,
    54.1004
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "NEW_Beehive": {
   "D2_hull_035": "rbxassetid://124672166388327",
@@ -23,7 +24,8 @@
    2976.1895,
    15.5522,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_C": {
   "D2_hull_035": "rbxassetid://93408563081704",
@@ -36,7 +38,8 @@
    2976.9333,
    20.7224,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_D": {
   "D2_hull_035": "rbxassetid://120006190113668",
@@ -49,7 +52,8 @@
    2976.1895,
    28.0332,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_A": {
   "D2_hull_035": "rbxassetid://119419548475400",
@@ -62,7 +66,8 @@
    2976.1895,
    34.9718,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar4_Lantern_B": {
   "D2_hull_035": "rbxassetid://122188717018907",
@@ -75,7 +80,8 @@
    2976.1895,
    42.0272,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar3_RoundTree_E__Body": {
   "D2_hull_035": "rbxassetid://80213311324976",
@@ -88,7 +94,8 @@
    2976.1895,
    46.2286,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloReasonHQ_BenchA": {
   "D2_hull_035": "rbxassetid://74717412656936",
@@ -101,7 +108,8 @@
    2976.1895,
    48.8948,
    52.5288
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloReasonHQ_BenchB__Body": {
   "D2_hull_035": "rbxassetid://77057551482230",
@@ -114,7 +122,8 @@
    2976.0337,
    52.8528,
    52.4881
-  ]
+  ],
+  "place_rotate_y_pi": true
  },
  "HaloVar3_Lantern_E": {
   "D2_hull_035": "rbxassetid://100421935093888",
@@ -127,6 +136,7 @@
    2976.1895,
    57.9032,
    52.5438
-  ]
+  ],
+  "place_rotate_y_pi": true
  }
 }
