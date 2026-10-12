@@ -12,6 +12,6 @@
 
 ## 지금 (10/12 23시쯤)
 - 동상 흰 모델 = **B 1a0812be 통과**, 분수 = **C cd70436c 통과**(D 네모 물·B 바닥 없음·A 물 높음) → Blender 손보기 텍스처 중 → PBR 전에 내가 Tripo에서 금 공·물 색 확인.
-- 화분 5종: Blender 손보기가 스마트 메시 시작(잔액 12,335) → 흰 모델 id 받으면 직접 봄.
+- 화분 5종 흰 모델 통과: Daisy c9df2ff9, Lavender fd15be73, Rose 9e0487cc, Sunflower 5f8780fb, Tulip f75480d2 → 텍스처 OK, PBR 전 내가 다시 봄. (창 숨김이면 Tripo가 안 그려짐 → store의 model_url로 FBX 받아 Blender 7면 렌더로 판정, 최종 검수 OK 방법.) 잎 한쪽 면 → Roblox DoubleSided(이미지 생성 3에 알림).
 - 이미지 생성 2: 집 덩어리 앞 9종 → 한 장씩 전체 크기 판정 대기. 그다음 벤치 A~C·가판대 3.
 - 이미지 생성 3: 동상·분수·화분 새 판 모이면 3D 가져오기(최종 검수 경유) → SA → WorldKit 자리·재질·낮밤 사진. 낮 빛 = 위도 35 + 따뜻한 OA.
