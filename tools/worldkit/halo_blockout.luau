@@ -240,7 +240,8 @@ for ix = 1, NX do
 			local yb = VY0 + (iy - 1) * 4
 			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
 			if lo > 0 then
-				if yb + 4 > land - 7 and not band then -- 디자인 검수 10/11 (h_05): top material 2 voxels deep; with 1 the Rock under
+				-- 10/12: 4 voxels deep (was 2): slopes / coarse terrain detail still showed the rock under the grass
+				if yb + 4 > land - 15 and not band then -- 디자인 검수 10/11 (h_05): top material deep; with 1 the Rock under
 					mx[iy][iz] = top            -- a partly filled top voxel showed through as dark brown patches on the slopes
 				else -- 디자인 검수 10/12 ④: one rock mass, lighter at the top: Limestone -> Sandstone -> Rock going down (the rim and
 					-- its outcrops from their top), the borders shaken per column so the bands do not run as straight lines
