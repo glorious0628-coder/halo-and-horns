@@ -12610,5 +12610,28 @@
    "file": "art/models/tripo/web/HaloNewHouse_Cliff8_HD_src.glb",
    "bytes": 12738796
   }
+ ],
+ "HaloNewHouse_Garden5_web_hd": [
+  {
+   "event": "web_generation",
+   "points": 55,
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai",
+   "task": "07bb46c7-843a-4354-b2a9-d1a6e5be9f69",
+   "model_page": "ec3011a5-7172-4e2a-85f4-76d334c26282",
+   "balance_after": 14195,
+   "mode": "HD multi-view, v3.1-20260211, ultra mesh ON (default), poly 25000, 4K, PBR, triangles, remove-lighting OFF, 8K OFF",
+   "at": "2026-10-12 12:0x",
+   "by": "이미지 생성 3",
+   "approval": "최종 검수 10/12: 새 집 7채 HD 멀티뷰 7 x 55 = 385점 승인 (디자인 검수 통과 4면 최신판)",
+   "inputs": {
+    "front": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_front.png",
+    "left_slot(=building's own left)": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_right_v2.png",
+    "right_slot": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_left_v2.png",
+    "back": "art/out/s2/halo/houses_new4/HaloNewHouse_Garden5_back_v2.png"
+   },
+   "file": "art/models/tripo/web/HaloNewHouse_Garden5_HD_src.glb",
+   "bytes": 12544000
+  }
  ]
 }
