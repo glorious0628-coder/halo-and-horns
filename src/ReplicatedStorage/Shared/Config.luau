@@ -4642,6 +4642,8 @@ Config.Keybinds = {
 		{ Id = "Journal", Group = "Window", Key = "Q", Pad = "", Label = "Quest list", LabelEn = "Quest list", Button = "Quest list", ButtonEn = "Quest list", Window = "Journal", Soon = true },
 		{ Id = "Map", Group = "Other", Key = "M", Pad = "DPadLeft", Label = "Map", LabelEn = "Map", Button = "Map button", ButtonEn = "Map button" },
 		{ Id = "Menu", Group = "Other", Key = "B", Pad = "ButtonY", Label = "Menu", LabelEn = "Menu", Button = "Menu button", ButtonEn = "Menu button" },
+		-- A23-143: the chat-sticker picker (StickerUI, P); the phone button comes with the phone round (A23-145)
+		{ Id = "Stickers", Group = "Other", Key = "P", Pad = "", Label = "Stickers", LabelEn = "Stickers", Button = "Stickers button", ButtonEn = "Stickers button" },
 	},
 	-- Roblox / the default camera use these (O zoom - I is the bag key since 10/08, its zoom sunk by Keybinds -, Comma /
 	-- Period + arrows + PageUp/PageDown camera, W A S D move,

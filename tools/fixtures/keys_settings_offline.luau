@@ -247,6 +247,7 @@ local CONTRACT_ACTIONS = {
 	
 	{ "Interact", "G", "ButtonX" }, { "Upgrade", "U", "" }, { "Bag", "I", "" }, { "Character", "E", "" }, { "Skills", "K", "" },
 	{ "Ranking", "L", "" }, { "Help", "H", "" }, { "Journal", "Q", "" }, { "Map", "M", "DPadLeft" }, { "Menu", "B", "ButtonY" },
+	{ "Stickers", "P", "" }, -- A23-143 the chat-sticker picker (StickerUI)
 }
 local WINDOWS = { Bag = true, Character = true, Skills = true, Ranking = true, Help = true, Journal = true }
 -- user 2026-10-08: these answer before their windows exist (like their HUD tiles), so they are live without Panels
@@ -605,7 +606,7 @@ end
 runGroup("config-contract", function()
 	local KB = CONFIG.Keybinds
 	check(type(KB) == "table" and type(KB.Actions) == "table", "Config.Keybinds.Actions exists")
-	check(#KB.Actions == #CONTRACT_ACTIONS, "19 actions (BB1 table + SKL-1 SkillX + A23-109 QuickSlot3)", #KB.Actions)
+	check(#KB.Actions == #CONTRACT_ACTIONS, "20 actions (BB1 table + SKL-1 SkillX + A23-109 QuickSlot3 + A23-143 Stickers)", #KB.Actions)
 	local validGroups = { Combat = true, Potion = true, Window = true, Other = true }
 	for i, want in CONTRACT_ACTIONS do
 		local a = KB.Actions[i] or {}
@@ -708,7 +709,7 @@ runGroup("keymap-rules", function()
 	local noBag = liveAll(C, { Bag = true })
 	map, col = C.KeyMap({ Bag = "X" }, noBag)
 	-- 16 bound: + QuickSlot3 (A23-109)
-	check(map.Bag == "" and boundCount(map) == 16 and #col == 0, "a non-live window holds no key even with a saved key", show({ map.Bag, col }))
+	check(map.Bag == "" and boundCount(map) == 17 and #col == 0, "a non-live window holds no key even with a saved key", show({ map.Bag, col }))
 	map, col = C.KeyMap({ Map = "I" }, noBag)
 	check(map.Map == "I" and map.Bag == "" and #col == 0, "a non-live window's default key blocks nothing (no collision)", show({ map.Map, col }))
 	map, col = C.KeyMap({ Map = "I" }, live)
@@ -747,7 +748,7 @@ runGroup("keymap-rules", function()
 		"every action saved on one key: the first live action keeps it, Interact keeps G (never all blank)",
 		show(map))
 	map = C.KeyMap({ Attack = "Z" }, live)
-	check(boundCount(map) == 16 and map.SkillQ == "", -- 16: + QuickSlot3 (A23-109)
+	check(boundCount(map) == 17 and map.SkillQ == "", -- 17: + QuickSlot3 (A23-109) + Stickers (A23-143)
 		 "one changed key costs at most the one colliding default", boundCount(map))
 	-- fuzz against the contract rule
 	local rnd = seededRandom(424242)
