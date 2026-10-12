@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 4개 올림, Glowcap 보류)
+
+- **2차 아이콘 4개 올림**: CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 (asset_ids 같은 이름). Config 반영 = 가지 `imgdev-icons2`(worktree ../Game-imgdev-icons, origin/main 위) -> 게임성 검수 -> 최종 검수.
+- **IconGlowcap 보류**: 작은 버섯 줄기 사이(갓 밑)에 불투명 회색 삼각 조각이 남은 누끼 결함(확대 확인). 컷아웃은 이미지 생성 쪽 몫 -> 이미지 생성 2에 다시 받음. 고쳐 오면 올림(UIArt 키 IconGlowcap).
+- 게임 아이콘 C는 올리지 않음(사용자가 게임 설정에서 직접).
+
 # 이미지 개발 — 상태 (2026-10-12: 껍데기 메시 1묶음 10개 ID 기록·전달)
 
 - **껍데기 메시 10개 올림(사용자 3D 가져오기) -> ID 읽음·임시 파트 지움**(WorldKit Workspace Hull_* 10개 destroyed, 남은 0). 기록: art/models/worldkit/prop_hull_assets.json(키트별 D2_hull_035, D2_centre_035 = OBJ 상자 중심, import_pos) + asset_ids.json `PropHull035_<키트>`. 메시 피벗 = 상자 중심(크기 OBJ와 같음) -> 놓을 때 MeshPart.CFrame = 키트 피벗 * CFrame.new(D2_centre_035). 나머지 46개는 사진 판정 뒤 10개씩.
