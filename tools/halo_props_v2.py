@@ -164,11 +164,12 @@ SPEC = [
     A(-214, -414, "NEW_FlowerBush", "훈련장 가장자리 낮은 덤불(가운데 비움, 노랑)"),
     A(-232, -452, "NEW_FlowerBush", "훈련장 서쪽 가장자리 낮은 덤불(흰)"),
     # --- 기사단 성
-    D("Castle", 10, 4, "HaloFlagpole_3", "성 문 깃발: 기사단 본부 표시(문 오른쪽 하나만)"),
+    # (이미지 생성 3 10/12, 최종 검수) 성 C2 골격의 앞마당·계단(문 앞 ~14칸)을 비움: 깃발·정원수 2·벤치를 마당 밖 가장 가까운 빈 땅으로
+    D("Castle", 7.3, 19.8, "HaloFlagpole_3", "성 문 깃발: 기사단 본부 표시(문 오른쪽 하나만)"),
     Y("castle_court", -12, 6, "HaloFlagpole_1", "성 앞 마당 깃발: 기사들이 모이는 자리(높이 다르게)"),
-    D("Castle", -15, 3, "HaloVar3_Topiary_C", "성 앞 정원수: 기사단 성의 품위(짝 금지, 왼쪽)"),
-    D("Castle", 19, 7, "HaloVar3_Topiary_D", "성 앞 정원수 둘째(종류·거리 다르게)"),
-    Y("castle_court", -10, -6, "HaloReasonHQ_BenchA", "성 앞 마당 벤치: 교대 기다리는 기사", face=(-160, -522)),
+    D("Castle", -24.0, 18.5, "HaloVar3_Topiary_C", "성 앞 정원수: 기사단 성의 품위(짝 금지, 왼쪽)"),
+    D("Castle", 27.0, 20.9, "HaloVar3_Topiary_D", "성 앞 정원수 둘째(종류·거리 다르게)"),
+    Y("castle_court", -3.0, 6.1, "HaloReasonHQ_BenchA", "성 앞 마당 벤치: 교대 기다리는 기사", face=(-160, -522)),
     S("성벽 전망", -3, 7, "HaloReasonHQ_BenchB", "성벽 곁길 끝 바다 전망 벤치(막다른 길 보상)", face=(-330, -566)),
     S("성벽 전망", 3, 6, "HaloReasonHQ_PhotoDisc", "사진 자리: 서쪽 바다와 성벽"),
     S("성벽 전망", -10, 0, "HaloVar3_Balustrade_E", "낭떠러지 난간: 성벽 전망 끝 떨어짐 막이", yaw=90),
@@ -308,6 +309,11 @@ def resolve(H, blds, lamps):
             why = f"마당 등불: {y['note']}(모이는 곳)" if y else ""
         out.append(dict(kit=kits[(j * 3) % 5], cat="lamp", at=[x, z], yaw=round((_jit(j + 7)) % 360), scale=_scale(j + 101), r=0.8, h=7,
                         anchor=("road:" if r else "yard:") + src, why=why, top=False, auto=True))
+    # 이미지 생성 3 10/12 (최종 검수): the castle C2 skeleton has a front plaza ~14 studs out of the plan footprint; the auto
+    # lamp the plaza_castle road put on it goes to the nearest free ground
+    for p in out:
+        if p.get("auto") and p["at"] == [-135.8, -548.5]:
+            p["at"] = [-130.7, -554.6]
     for p in out:
         p["district"] = next((dd["id"] for dd in H.DISTRICTS if H.inside(tuple(p["at"]), dd["poly"])), None)
         dd = H.DIST.get(p["district"]) if p["district"] else None
