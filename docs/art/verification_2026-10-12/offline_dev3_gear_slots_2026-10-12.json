@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 204,
+  "checks": 213,
   "failedChecks": 0,
-  "namedChecks": 194,
+  "namedChecks": 203,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -591,7 +591,7 @@
     },
     {
       "group": "join",
-      "check": "a worn thing stays on at a low level",
+      "check": "a worn thing stays on at a low level, paused (x1)",
       "pass": 1,
       "fail": 0
     },
@@ -1170,15 +1170,69 @@
       "check": "no service warnings (pcall-swallowed handler errors)",
       "pass": 1,
       "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "Lv30: armor T3 x1.18, ring T1 x1.04",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "Lv1: both pause (x1), still worn; the max HP re-read",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "Lv10: the T1 ring counts again, the T3 armor waits for Lv30",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "GearService.Mults says the same",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "Lv30 again: the armor counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "SendInfo: one GearInfo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "switch off: no GearInfo",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "level drop",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
     }
   ],
   "findings": [],
-  "staticChecks": 28,
+  "staticChecks": 30,
   "staticFailures": [],
   "mutations": {
-    "total": 106,
-    "applied": 106,
-    "caught": 106,
+    "total": 109,
+    "applied": 109,
+    "caught": 109,
     "skipped": false,
     "results": [
       {
@@ -1195,7 +1249,7 @@
           "hits :: the switch off: the PvP hit ignores the attribute",
           "hits :: the switch off: the attribute is ignored"
         ],
-        "newFailingCount": 15
+        "newFailingCount": 16
       },
       {
         "mutation": "config: Armor T1 +7%",
@@ -2074,7 +2128,7 @@
           "equip :: two of a key: one worn, one left",
           "equip :: wear both again"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 18
       },
       {
         "mutation": "equip: the same key swaps with itself",
@@ -2316,7 +2370,7 @@
           "equip :: GearHp back to 1, the Removed key",
           "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 14
       },
       {
         "mutation": "equip: no GearAtk",
@@ -2329,9 +2383,10 @@
           "equip :: GearHp 1.06 (armor T1 +0), GearAtk 1",
           "equip :: the ring off: GearAtk 1",
           "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
-          "join :: no gear: 1 / 1"
+          "join :: no gear: 1 / 1",
+          "level drop :: Lv10: the T1 ring counts again, the T3 armor waits for Lv30"
         ],
-        "newFailingCount": 5
+        "newFailingCount": 8
       },
       {
         "mutation": "equip: the armor's HP not refreshed",
@@ -2340,9 +2395,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "equip :: a new armor re-reads the max HP (RefreshCharacter, no full heal)"
+          "equip :: a new armor re-reads the max HP (RefreshCharacter, no full heal)",
+          "level drop :: Lv1: both pause (x1), still worn; the max HP re-read"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "equip: the ring from the armor",
@@ -2354,11 +2410,11 @@
           "equip :: GearHp 1.06 (armor T1 +0), GearAtk 1",
           "equip :: GearHp 1.14 (T2 +1)",
           "equip :: GearHp back to 1, the Removed key",
+          "equip :: Mults(player) = the attributes' numbers",
           "equip :: a new armor re-reads the max HP (RefreshCharacter, no full heal)",
-          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
-          "join :: a worn thing stays on at a low level"
+          "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)"
         ],
-        "newFailingCount": 6
+        "newFailingCount": 10
       },
       {
         "mutation": "join: the switch not checked",
@@ -2367,9 +2423,10 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "level drop :: switch off: no GearInfo",
           "rules :: switch off: no attribute, no GearInfo, no refresh at the join"
         ],
-        "newFailingCount": 1
+        "newFailingCount": 2
       },
       {
         "mutation": "join: no attributes",
@@ -2381,7 +2438,7 @@
           "combat :: in a fight: no armor on (InCombat, a key), nothing moves",
           "join :: PlayerReady: GearHp / GearAtk from what is worn (armor T3 +1, ring T2 +2)",
           "join :: a broken Gear table is repaired (Config.SanitizeGear), no error",
-          "join :: a worn thing stays on at a low level",
+          "join :: a worn thing stays on at a low level, paused (x1)",
           "join :: no gear: 1 / 1"
         ],
         "newFailingCount": 5
@@ -2562,6 +2619,43 @@
           "max hp / speed / watch :: a Config without GearMultsOf: the plain max HP, no error"
         ],
         "newFailingCount": 1
+      },
+      {
+        "mutation": "level: a level drop keeps the bonus",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join :: a worn thing stays on at a low level, paused (x1)",
+          "level drop :: GearService.Mults says the same",
+          "level drop :: Lv10: the T1 ring counts again, the T3 armor waits for Lv30",
+          "level drop :: Lv1: both pause (x1), still worn; the max HP re-read"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "level: no Level watch",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level drop :: Lv10: the T1 ring counts again, the T3 armor waits for Lv30",
+          "level drop :: Lv1: both pause (x1), still worn; the max HP re-read"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "info: no SendInfo",
+        "file": "src/ServerScriptService/GearService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "level drop :: SendInfo: one GearInfo"
+        ],
+        "newFailingCount": 1
       }
     ]
   },
@@ -2571,14 +2665,14 @@
   "sourceSHA256": {
     "src/ReplicatedStorage/Shared/Config.luau": "51d42decc11427471583c32fba60f04d5fed07328e5d92a282fe8713a02b6ab6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/GearService.luau": "80adf8bc8b50650927dc950317edbbdcaec5d237493b4f20feecd500cb3183f7",
+    "src/ServerScriptService/GearService.luau": "979ac505e1153c03783953cfd0e4eac690cd245f0f2b07ba85e94d638a9bcb0a",
     "src/ServerScriptService/PetService.luau": "b7a6688db63ce2832518c82b62e81fbeefb1f257c79fbac98e71a6e5809e2df3",
     "src/ServerScriptService/CombatService.luau": "b49963a08397ea9d5cda2a02fdd522f278b8e468ac73ef84842412bb0eb21781",
     "src/ServerScriptService/LootService.luau": "ce0820cb20fdbf1198115a7bdb06ef597242fc5a8fd97cc87b60e6f392251182",
     "src/ServerScriptService/PlayerService.luau": "48e6230ef57e89a418697715367e6c3df16f46c76b28d1e73cea2f850acfa254",
-    "src/ServerScriptService/JusticeService.luau": "4a8733f87579841fa0d02dbfde562c84c5ade0b05d3f2fb196cd7a44a0e335ad"
+    "src/ServerScriptService/JusticeService.luau": "d42f1a7498cbb1fccc9c3e448b01ed73c6539038ee5f7c94707b8075ca39076c"
   },
-  "fixtureSHA256": "f339c7b3b16fe3637ed90e7eff50da7b55b45c661df3ee7f7bb0f23e8049eb74",
+  "fixtureSHA256": "a2abbdb3e1e8ee1c8da37f93b390fad473f34bfd900e9974f21eb5da4854c1a8",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

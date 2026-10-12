@@ -42,3 +42,4 @@
 - **게임성 개발 2 OK(4개 파일 한 줄씩) + 후속:** PetArmor 소수 나머지 보관(처치 1 XP × 1.2 다섯 번 = 6), 싸우는 중 끼기·벗기 거절(InCombat), 방어구 체력은 RefreshCharacter(false)로 비율 유지, 최고 장비 몫은 계산(MaxWeaponTier 9가 와도 맞음), ComputeWalkSpeed 맨 위는 황금 알 몫이라 안 건드림, 물약 MonsterDamage × 반지 = 곱(의도).
 - 구현: API job dev3_gear(sonnet, $8.07, 97턴) → api/dev3-gear 59ecc2dc + 후속 847dcd31(개발 3). 펫 장비 저장 이름 = `Gear.Pet[uid].PetArmor / .PetAcc`(칸 이름 그대로), 펫 장비 끼는 레벨 없음, Gear 레시피는 Features.Gear 켜져야 켜짐.
 - 클라 몫: 장비 창(사람 2칸·펫 2칸), GearInfo, EquipGear / EquipPetGear.
+- **게임성 검수 시험 뒤(10/12):** Config 장비 함수는 지켜서 부름(test_owner_restore). 켜기 전 고침: ① 레벨이 끼는 레벨 아래로 내려가면(무료 직업 바꾸기·환생) 그 칸 효과는 멈춤(끼운 채로, 다시 그 레벨이 되면 돌아옴; Level 속성 지켜봄) ② PetAcc 속성은 있을 때만(꺼짐이면 없음) ③ 장비 제작 뒤 GearInfo ④ 진영 크기(JusticeService.GetPower)도 장비 포함 ⑤ **PetArmor는 그 펫이 끼고 있으면 따라오지 않아도 간식 XP에 들음**(처치 XP는 따라오는 펫만 받으니 처치에선 따라오는 펫의 것) ⑥ PvP에서 맞는 쪽 반지도 비율 분모에 들어감(무기 비율과 같은 방식).

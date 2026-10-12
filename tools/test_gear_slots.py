@@ -150,10 +150,10 @@ MUTATIONS = [
     ("equip: no GearHp", G, "\tplayer:SetAttribute(\"GearHp\", hp)\n", ""),
     ("equip: no GearAtk", G, "\tplayer:SetAttribute(\"GearAtk\", atk)\n", ""),
     ("equip: the armor's HP not refreshed", G, "\tif before ~= hp and type(ps) == \"table\"", "\tif false and type(ps) == \"table\""),
-    ("equip: the ring from the armor", G, "local atk, hp = 1 + Config.GearBonusOf(\"Ring\", g.On.Ring), 1 + Config.GearBonusOf(\"Armor\", g.On.Armor)", "local atk, hp = 1 + Config.GearBonusOf(\"Armor\", g.On.Armor), 1 + Config.GearBonusOf(\"Ring\", g.On.Ring)"),
+    ("equip: the ring from the armor", G, "return 1 + wornBonus(\"Ring\", g.On.Ring, level), 1 + wornBonus(\"Armor\", g.On.Armor, level)", "return 1 + wornBonus(\"Armor\", g.On.Armor, level), 1 + wornBonus(\"Ring\", g.On.Ring, level)"),
     ("join: the switch not checked", G, "local function onReady(player)\n\tif not on() then return end\n", "local function onReady(player)\n"),
-    ("join: no attributes", G, "\treturnOrphans(player, data, g)\n\tpublishAttrs(player, g)\n", "\treturnOrphans(player, data, g)\n"),
-    ("join: no GearInfo", G, "\tpublishAttrs(player, g)\n\tsendInfo(player, g)\nend", "\tpublishAttrs(player, g)\nend"),
+    ("join: no attributes", G, "\treturnOrphans(player, data, g)\n\tpublishAttrs(player, g, data)\n", "\treturnOrphans(player, data, g)\n"),
+    ("join: no GearInfo", G, "\tpublishAttrs(player, g, data)\n\tsendInfo(player, g)\n\tif not LEVEL[player] then\n", "\tpublishAttrs(player, g, data)\n\tif not LEVEL[player] then\n"),
     ("join: a gone pet keeps its gear", G, "and not S.PetService.GetPet(player, uid) then", "and false then"),
     ("join: a gone pet's gear lost when Own is full", G, "\t\t\t\tif roomFor(g.Own, kind) then\n", "\t\t\t\tif true then\n"),
     ("join: an empty row stays", G, "\t\t\tif next(row) == nil then g.Pet[uid] = nil end\n", ""),
@@ -172,6 +172,10 @@ MUTATIONS = [
     ("pet xp: fractions dropped", PE, "\t\trems[uid] = rest\n", ""),
     ("pet xp: fractions never cleared", PE, "\telseif rems then\n\t\trems[uid] = nil\n\tend\n\treturn whole\n", "\tend\n\treturn whole\n"),
     ("hook: max HP calls Config directly", P, "\t\t* gearHp(player))) -- ⑥ gear", "\t\t* select(2, Config.GearMultsOf(player)))) -- ⑥ gear"),
+    # --- 게임성 검수 10/12 (before the switch goes on)
+    ("level: a level drop keeps the bonus", G, "\tif not tier or not def or level < num(def.Wear[tier], 1) then return 0 end\n", "\tif not tier or not def then return 0 end\n"),
+    ("level: no Level watch", G, "\t\tLEVEL[player] = player:GetAttributeChangedSignal(\"Level\"):Connect(function()\n", "\t\tLEVEL[player] = player:GetAttributeChangedSignal(\"NoSuchAttr\"):Connect(function()\n"),
+    ("info: no SendInfo", G, "\tsendInfo(player, gearOf(data))\n\treturn true\n", "\treturn true\n"),
 ]
 
 
@@ -231,6 +235,14 @@ def static() -> tuple[int, list[str]]:
     mh = function_block(combat, "function CombatService.ComputeMonsterHit(")
     pvp = function_block(combat, "function CombatService.ComputePvPHit(")
     check("gearAtk(attacker)" in mh, "CombatService.ComputeMonsterHit: x the ring's atk mult")
+    justice = strip_comments(read(SSS / "JusticeService.luau"))
+    gp = function_block(justice, "function JusticeService.GetPower(")
+    gb = function_block(justice, "local function gearOf(")
+    check("Config.StatAllocOf(player), gearOf(player))" in gp and 'type(Config.GearMultsOf) ~= "function"' in gb and "pcall(Config.GearMultsOf," in gb,
+          "JusticeService.GetPower (the faction size) counts the gear (guarded)")
+    craft = strip_comments(read(SSS / "CraftService.luau"))
+    check('if r.Kind == "Gear" and S.GearService and type(S.GearService.SendInfo) == "function" then' in craft
+          and "pcall(S.GearService.SendInfo, player)" in craft, "CraftService: a gear craft sends GearInfo (GearService.SendInfo)")
     # 게임성 개발 2: the Might Tonic (BuffService, on the dealt damage in damageMonster) and the ring (on the computed hit)
     # stack as a product: two separate factors on one path, neither replaces the other
     dmon = function_block(combat, "local function damageMonster(")

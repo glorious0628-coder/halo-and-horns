@@ -11,6 +11,8 @@
 --     exact argument count, one change every Config.RateLimits.EquipGear seconds, never in a fight (CombatService.IsInCombat,
 --     like a weapon swap: no max HP / speed change mid-PvP; 게임성 개발 2). Notices are keys only (Config.Gear.Text).
 --   * The player's attributes GearAtk (the ring: my hit x) and GearHp (the armor: max HP x) are the multipliers (1 = none;
+--     a worn thing counts only while my level wears its tier: a level drop - a free class change, a rebirth - pauses it,
+--     it stays worn and counts again at that level; the Level attribute is watched, like the weapon's FitWeaponToLevel;
 --     Config.GearMultsOf reads them, PlayerService / CombatService / Config.CombatPower use them), set at PlayerReady and
 --     after every change (a new GearHp refreshes the max HP). The following pet's PetAcc and the pet XP bonus come from
 --     data.Gear.Pet through PetService (Refresh republishes after a pet-gear change).
@@ -31,6 +33,7 @@ local GearService = {}
 local TAG = "GearService"
 local S = nil
 local UID_LEN = 32
+local LEVEL = setmetatable({}, { __mode = "k" }) -- [Player] = the Level attribute watch (one per join)
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -83,16 +86,28 @@ local function takeOwn(own, kind)
 end
 
 ------------------------------------------------------------------ what the clients see
+-- the bonus of a worn "T:P" in a player slot at my level (0 below the tier's wear level: it waits, still worn)
+local function wornBonus(slot, key, level)
+	local tier = Config.GearParse(key)
+	local def = Config.GearDef(slot)
+	if not tier or not def or level < num(def.Wear[tier], 1) then return 0 end
+	return Config.GearBonusOf(slot, key)
+end
+
+local function multsOf(data, g)
+	local level = math.floor(num(data.Level, 1))
+	return 1 + wornBonus("Ring", g.On.Ring, level), 1 + wornBonus("Armor", g.On.Armor, level)
+end
+
 -- the multipliers of what is worn now (1 + the bonus): ring -> atk, armor -> hp
 function GearService.Mults(player)
 	local data = getData(player)
 	if not data then return 1, 1 end
-	local g = gearOf(data)
-	return 1 + Config.GearBonusOf("Ring", g.On.Ring), 1 + Config.GearBonusOf("Armor", g.On.Armor)
+	return multsOf(data, gearOf(data))
 end
 
-local function publishAttrs(player, g)
-	local atk, hp = 1 + Config.GearBonusOf("Ring", g.On.Ring), 1 + Config.GearBonusOf("Armor", g.On.Armor)
+local function publishAttrs(player, g, data)
+	local atk, hp = multsOf(data, g)
 	local before = num(player:GetAttribute("GearHp"), 1)
 	player:SetAttribute("GearAtk", atk)
 	player:SetAttribute("GearHp", hp)
@@ -176,7 +191,7 @@ end
 
 local function done(player, data, g, result, noteKey, petChanged)
 	if result == "ok" then
-		publishAttrs(player, g)
+		publishAttrs(player, g, data)
 		sendInfo(player, g)
 		if petChanged then refreshPet(player) end
 		notify(player, noteKey, "info")
@@ -247,8 +262,26 @@ local function onReady(player)
 	if not data then return end
 	local g = gearOf(data)
 	returnOrphans(player, data, g)
-	publishAttrs(player, g)
+	publishAttrs(player, g, data)
 	sendInfo(player, g)
+	if not LEVEL[player] then
+		LEVEL[player] = player:GetAttributeChangedSignal("Level"):Connect(function()
+			local ok, err = pcall(function()
+				local d = on() and getData(player)
+				if d then publishAttrs(player, gearOf(d), d) end
+			end)
+			if not ok then Util.Warn(TAG, "level: " .. tostring(err)) end
+		end)
+	end
+end
+
+-- ③ CraftService after a gear craft: the window's GearInfo (the new thing in Own)
+function GearService.SendInfo(player)
+	if not on() then return false end
+	local data = getData(player)
+	if not data then return false end
+	sendInfo(player, gearOf(data))
+	return true
 end
 
 ------------------------------------------------------------------ remotes
@@ -284,6 +317,11 @@ function GearService.Start()
 	S.PlayerService.PlayerReady:Connect(function(player)
 		local ok, err = pcall(onReady, player)
 		if not ok then Util.Warn(TAG, "ready: " .. tostring(err)) end
+	end)
+	Players.PlayerRemoving:Connect(function(player)
+		local c = LEVEL[player]
+		LEVEL[player] = nil
+		if c then pcall(function() c:Disconnect() end) end
 	end)
 	print("[GearService] started")
 end

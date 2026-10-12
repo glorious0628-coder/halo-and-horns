@@ -343,9 +343,9 @@ runGroup("join", function()
 	check(q:GetAttribute("GearHp") == 1 and q:GetAttribute("GearAtk") == 1 and dq.Gear.On.Armor == "" and dq.Gear.On.Ring == "", "no gear: 1 / 1", "")
 	local r, dr = gearer(w, 3, { Own = "x", On = 5, Pet = false })
 	check(type(dr.Gear.Own) == "table" and dr.Gear.On.Armor == "" and r:GetAttribute("GearHp") == 1 and #w.Warnings == 0, "a broken Gear table is repaired (Config.SanitizeGear), no error", show(dr.Gear))
-	-- a worn thing above the wear level (a Lv changed) stays worn: wearing is checked at the swap, never taken away
+	-- a worn thing above the wear level (a Lv changed) stays worn but pauses (게임성 검수 10/12): x1 until that level
 	local s, ds = gearer(w, 4, bag({}, { Armor = "3:0", Ring = "" }), { Level = 5 })
-	check(near(s:GetAttribute("GearHp"), 1.18), "a worn thing stays on at a low level", tostring(s:GetAttribute("GearHp")))
+	check(s:GetAttribute("GearHp") == 1 and ds.Gear.On.Armor == "3:0", "a worn thing stays on at a low level, paused (x1)", tostring(s:GetAttribute("GearHp")))
 	-- the armor that stays: a take-off lowers the HP mult
 	w.G.Equip(s, "Armor", "")
 	check(s:GetAttribute("GearHp") == 1, "taken off: 1", "")
@@ -713,6 +713,33 @@ runGroup("combat", function()
 	w.Reg.CombatService.InCombat[p] = nil
 	w.Reg.CombatService.IsInCombat = function() error("offline failure") end
 	check(w.G.Equip(p, "Armor", "") == "ok", "a failing IsInCombat: not a fight (never stuck)", "")
+end)
+
+------------------------------------------------------------------ a level drop pauses gear (게임성 검수 10/12)
+runGroup("level drop", function()
+	local w = gWorld()
+	local p, d = gearer(w, 1, bag({ ["Armor:3:0"] = 1, ["Ring:1:0"] = 1 }))
+	check(w.G.Equip(p, "Armor", "3:0") == "ok" and w.G.Equip(p, "Ring", "1:0") == "ok" and near(p:GetAttribute("GearHp"), 1.18)
+		and near(p:GetAttribute("GearAtk"), 1.04), "Lv30: armor T3 x1.18, ring T1 x1.04", "")
+	local refreshes = #w.Refreshes
+	w.PS.SetStat(p, "Level", 1) -- a free class change / a rebirth
+	w:RunSpawned()
+	check(p:GetAttribute("GearHp") == 1 and p:GetAttribute("GearAtk") == 1 and d.Gear.On.Armor == "3:0" and d.Gear.On.Ring == "1:0"
+		and #w.Refreshes > refreshes, "Lv1: both pause (x1), still worn; the max HP re-read", show({ p:GetAttribute("GearHp"), p:GetAttribute("GearAtk") }))
+	w.PS.SetStat(p, "Level", 10)
+	w:RunSpawned()
+	check(p:GetAttribute("GearHp") == 1 and near(p:GetAttribute("GearAtk"), 1.04), "Lv10: the T1 ring counts again, the T3 armor waits for Lv30", "")
+	local a, h = w.G.Mults(p)
+	check(near(a, 1.04) and h == 1, "GearService.Mults says the same", show({ a, h }))
+	w.PS.SetStat(p, "Level", 30)
+	w:RunSpawned()
+	check(near(p:GetAttribute("GearHp"), 1.18), "Lv30 again: the armor counts", "")
+	-- ③ GearService.SendInfo (CraftService after a gear craft)
+	local n = #fired(w, "GearInfo", p)
+	check(w.G.SendInfo(p) == true and #fired(w, "GearInfo", p) == n + 1, "SendInfo: one GearInfo", "")
+	local o = gWorld({ Off = true })
+	local q = gearer(o, 1, bag({}))
+	check(o.G.SendInfo(q) == false and #fired(o, "GearInfo", q) == 0, "switch off: no GearInfo", "")
 end)
 
 finish()
