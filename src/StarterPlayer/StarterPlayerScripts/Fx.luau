@@ -221,6 +221,7 @@ local MOTION = {
 	LAYER_FADE_IN = 0.045, LAYER_FADE_OUT = 0.1,
 	BOW = { Extend = 0.995, CheekSide = 0.27, CheekDown = 0.18, CheekFront = 0.32,
 		DrawStart = 0.055, SnapTime = 0.05, AimIn = 0.065, Settle = 0.105 },
+	BOW_HOLD = 0.25, -- A23-150 7 (최종 검수 10/13): s a bow stays in the left hand after an archer clip (Feel.bowHand)
 	STREAK_LIFE = 0.12,
 	MAGIC_SIZE = 4, MAGIC_COLOR = Color3.fromRGB(190, 140, 255),
 
@@ -2740,20 +2741,56 @@ end
 -- the right hand pulls the string) is the class's own clip, kept: while an archer clip plays the Handle hangs on the
 -- LEFT hand's grip (a local Weld "BowGrip": LeftGripAttachment, the same Tool.Grip; the RightGrip switched off), after
 -- it back on the right one. The bow's HandMuzzle / HandBowRest are the left hand's (its AttackHand). Only this client's
--- view, like every Fx pose (every client moves the bows it sees; the server keeps it in the right hand)
-function Feel.bowHand(st, left)
+-- view, like every Fx pose (every client moves the bows it sees; the server keeps it in the right hand).
+-- 최종 검수 10/13 (review): the weld is made ONCE per bow and switched on / off (a new joint every shot made HUD copy
+-- the whole character for its portrait), and after a clip the bow waits MOTION.BOW_HOLD s before going back - rapid
+-- shots (0.06 .. 0.16 s between two clips) never flip it hand to hand; now = true puts it back at once (death).
+-- st.BowGrip = { Weld, Right (the engine's RightGrip), Handle, On (on the left now), Back (the pending return's token) }
+
+-- the bow back on the engine's right grip (its BowGrip kept, switched off)
+function Feel.bowRight(cur)
+	cur.On, cur.Back = false, nil
+	pcall(function()
+		cur.Weld.Enabled = false
+		if cur.Right.Parent and cur.Right.Part1 == cur.Handle then cur.Right.Enabled = true end
+	end)
+end
+
+function Feel.bowHand(st, left, now)
 	local weapon = st.Char:FindFirstChild("WeaponModel")
 	local handle = weapon and weapon:GetAttribute("AttackHand") == "LeftHand" and weapon:FindFirstChild("Handle") or nil
 	local cur = st.BowGrip
-	if cur and (not left or cur.Handle ~= handle) then -- back on the right grip (or the bow was swapped / put away)
+	if cur and cur.Handle ~= handle then -- the bow was swapped / put away: let go of the old one
 		st.BowGrip = nil
-		pcall(function()
-			cur.Weld:Destroy()
-			if cur.Right.Parent and cur.Right.Part1 == cur.Handle then cur.Right.Enabled = true end
-		end)
+		Feel.bowRight(cur)
+		pcall(function() cur.Weld:Destroy() end)
 		cur = nil
 	end
-	if not left or cur or not (handle and handle:IsA("BasePart")) then return end
+	if not left then
+		if not (cur and cur.On) then return end
+		if now then
+			Feel.bowRight(cur)
+		elseif not cur.Back then -- the clip is over: back on the right after the hold, unless another draw starts
+			local token = {}
+			cur.Back = token
+			later(MOTION.BOW_HOLD, function()
+				if st.BowGrip == cur and cur.Back == token then Feel.bowRight(cur) end
+			end)
+		end
+		return
+	end
+	if cur then -- a draw again: stay on (or go back to) the left grip, the same weld
+		cur.Back = nil
+		if not cur.On then
+			cur.On = true
+			pcall(function()
+				cur.Right.Enabled = false
+				cur.Weld.Enabled = true
+			end)
+		end
+		return
+	end
+	if not (handle and handle:IsA("BasePart")) then return end
 	local hand, right = st.Char:FindFirstChild("LeftHand"), st.Char:FindFirstChild("RightHand")
 	local rightGrip = right and right:FindFirstChild("RightGrip")
 	if not (hand and rightGrip and rightGrip:IsA("JointInstance") and rightGrip.Part1 == handle) then return end
@@ -2767,7 +2804,7 @@ function Feel.bowHand(st, left)
 		weld.C1 = weapon.Grip
 		rightGrip.Enabled = false
 		weld.Parent = handle
-		st.BowGrip = { Weld = weld, Right = rightGrip, Handle = handle }
+		st.BowGrip = { Weld = weld, Right = rightGrip, Handle = handle, On = true }
 	end)
 	if not ok then rightGrip.Enabled = true end
 end
@@ -3102,6 +3139,7 @@ function Feel.stepChar(st, dt, now)
 	local hum = st.Char:FindFirstChildOfClass("Humanoid")
 	if not st.Char.Parent or not hum or hum.Health <= 0
 		or (st.Layers.Attack and st.Layers.Attack.Clip and not Feel.validAttack(st.AttackContext)) then
+		Feel.bowHand(st, false, true) -- death / a changed actor: the bow back on the right grip at once
 		Feel.drop(st)
 		return
 	end

@@ -651,7 +651,11 @@ for _,data in FIXTURES do
             Feel.stepChar(st,0,1000)
             for key,m in st.Joints do check(same(m.Transform,previous[key]),data.name..": no additive frame drift "..key) end
             Feel.drop(st);recovered(st)
-            check(st.BowGrip==nil and parts.RightHand:FindFirstChild("RightGrip").Enabled and weapon:FindFirstChild("Handle"):FindFirstChild("BowGrip")==nil,
+            -- 최종 검수 10/13: the bow waits MOTION.BOW_HOLD on the left (rapid shots), then back; its weld kept, off
+            check(not parts.RightHand:FindFirstChild("RightGrip").Enabled,data.name..": right after the draw the bow waits on the left")
+            delays()
+            local kept=weapon:FindFirstChild("Handle"):FindFirstChild("BowGrip")
+            check(parts.RightHand:FindFirstChild("RightGrip").Enabled and (kept==nil or kept.Enabled==false) and (st.BowGrip==nil or st.BowGrip.On==false),
                 data.name..": after the draw the bow is back on the right grip")
             metrics[data.name.."/"..kind.."/"..name]={ForwardDot=muzzleCF.LookVector:Dot(aim),HandAxisError=(muzzleCF.Position-hand):Cross(aim).Magnitude}
         end
@@ -778,6 +782,8 @@ def main():
     # A23-150 7: the bow's hand-over (the right hand's Tool onto the left grip while an archer draws)
     if "function Feel.bowHand(" in source:
         names.insert(names.index("archerPose"), "bowHand")
+    if "function Feel.bowRight(" in source:  # 최종 검수 10/13: the one weld switched back off
+        names.insert(names.index("bowHand"), "bowRight")
     harness = MATH + motion + "\n" + "\n".join(source_function(source, n) for n in names)
     config = (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8")
     harness += "\n" + config[config.index("Config.Weapons = {"):config.index("-- display names per class")]

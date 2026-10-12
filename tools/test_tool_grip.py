@@ -22,7 +22,11 @@ arm forward), the user's AJU avatar grip (tools/fixtures/archer_native_aju.json)
   hand's space (the Handle on LeftGripAttachment with the same Grip); the others' HandMuzzle in the right hand's;
 - Fx.bowHand (the real function): an archer draw moves the bow onto the left grip (a local weld BowGrip = LeftGrip x
   Grip, the RightGrip off) so the muzzle lands on the left hand's HandMuzzle, and back after; a sword never moves; a bow
-  swapped mid-draw lets go of the old one.
+  swapped mid-draw lets go of the old one. 최종 검수 10/13 review: ONE weld per bow (switched on / off, never re-made),
+  after a clip the bow waits MOTION.BOW_HOLD (0.1..0.5 s) on the left - five rapid shots never put it back in the right
+  hand, a stale return never wins over a new draw - then goes back; death puts it back at once;
+- HUD's portrait (L.PortraitAppearance, the real function): nothing inside the weapon Tool (the BowGrip, a swap) nor the
+  engine's RightGrip asks for a new copy of the character; an accessory part and a body joint still do.
 Static: WeaponPose never writes a joint (Studio grip probe only) and ClientMain still loads it, Config.ClassGrips rows
 hold only Weapon (no Hold / OneHand / OffHand / TwoHand / Walk), no fist() in CharacterVisuals, mount never welds the
 Handle to itself, HeroPreview keeps the weapon Tool, the Backpack hotbar stays off, Fx calls bowHand in stepChar (archer
@@ -47,7 +51,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 FILES = {"CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau", "CV": ROOT / "src/ServerScriptService/CharacterVisuals.luau",
          "FX": SPS / "Fx.luau", "WP": SPS / "WeaponPose.luau", "MAIN": SPS / "ClientMain.client.luau",
-         "HERO": SPS / "HeroPreview.luau", "VITALS": SPS / "VitalsUI.luau"}
+         "HERO": SPS / "HeroPreview.luau", "VITALS": SPS / "VitalsUI.luau", "HUD_MAIN": SPS / "HUD.luau"}
 OUT = ROOT / "docs/art/verification_2026-10-12/offline_tool_grip_2026-10-12.json"
 LUAU = ROOT / "build/luau_cli_0_741/luau.exe"
 FIXTURE = ROOT / "tools/fixtures/archer_native_aju.json"
@@ -236,7 +240,15 @@ do
 	check(model:FindFirstChild("Handle").CFrame.UpVector:Dot(Vector3.yAxis) > 0.9999, "toolnone (the arm forward): the sword stands upright")
 end
 
--- Fx.bowHand: the draw moves the bow onto the left grip and back
+-- Fx.bowHand: the draw moves the bow onto the left grip and back - one weld per bow (switched on / off), MOTION.BOW_HOLD s
+-- on the left after a clip (rapid shots never flip it), at once on death (최종 검수 10/13 review)
+local function bowWelds(handle)
+	local n = 0
+	for _, c in handle.Children do
+		if c.Name == "BowGrip" and not c.Destroyed then n += 1 end
+	end
+	return n
+end
 for _, hand in HANDS do
 	for _, bowRow in { ROWS[7], ROWS[8] } do -- the bow and the short bow (its Grip is turned)
 		local tag = hand.Name .. " " .. bowRow[3]
@@ -255,8 +267,31 @@ for _, hand in HANDS do
 			tag .. ": on the left grip the muzzle is the draw's HandMuzzle")
 		Feel.bowHand(st, true)
 		check(st.BowGrip ~= nil and st.BowGrip.Weld == bowGrip, tag .. ": a held draw keeps one weld")
+		-- the clip ends: the bow waits on the left, then goes back (the weld kept, off)
 		Feel.bowHand(st, false)
-		check(bowGrip.Destroyed and rightGrip.Enabled == true and st.BowGrip == nil, tag .. ": after the draw the bow is back on the right grip")
+		check(st.BowGrip.On == true and rightGrip.Enabled == false and bowGrip.Enabled ~= false, tag .. ": after a clip the bow waits on the left (BOW_HOLD)")
+		delays()
+		check(st.BowGrip ~= nil and st.BowGrip.On == false and bowGrip.Enabled == false and rightGrip.Enabled == true
+			and not bowGrip.Destroyed, tag .. ": after the hold the bow is back on the right grip (its weld kept, off)")
+		-- rapid shots: every new clip before the hold is over keeps it on the left, the same weld; a stale return never wins
+		local flips, created = 0, 0
+		for _ = 1, 5 do
+			Feel.bowHand(st, true)
+			if rightGrip.Enabled then flips += 1 end
+			Feel.bowHand(st, false)
+			if rightGrip.Enabled then flips += 1 end
+		end
+		Feel.bowHand(st, true)
+		delays() -- the five returns asked between the shots are all stale now
+		check(flips == 0 and rightGrip.Enabled == false and st.BowGrip.On == true and bowWelds(handle) == 1,
+			tag .. ": rapid shots: the bow never leaves the left hand, one weld", string.format("flips=%d welds=%d", flips, bowWelds(handle)))
+		Feel.bowHand(st, false)
+		delays()
+		check(rightGrip.Enabled == true and bowWelds(handle) == 1, tag .. ": rapid shots over: back on the right after the hold")
+		-- death: back at once
+		Feel.bowHand(st, true)
+		Feel.bowHand(st, false, true)
+		check(rightGrip.Enabled == true and st.BowGrip.On == false, tag .. ": death puts the bow back at once")
 		-- a swap mid-draw: the old bow is let go, the new one moved
 		Feel.bowHand(st, true)
 		local old = st.BowGrip
@@ -268,7 +303,7 @@ for _, hand in HANDS do
 		Feel.bowHand(st, true)
 		check(old.Weld.Destroyed and st.BowGrip ~= nil and st.BowGrip.Handle == newHandle and newGrip.Enabled == false,
 			tag .. ": a bow swapped mid-draw: the old weld goes, the new bow moves")
-		Feel.bowHand(st, false)
+		Feel.bowHand(st, false, true)
 	end
 	-- a sword never moves
 	local schar, sright, _, _, sword = build(ROWS[1], 3, hand)
@@ -276,6 +311,23 @@ for _, hand in HANDS do
 	local sst = { Char = schar }
 	Feel.bowHand(sst, true)
 	check(sst.BowGrip == nil and sgrip.Enabled == true and sword:FindFirstChild("Handle"):FindFirstChild("BowGrip") == nil, hand.Name .. ": a sword stays in the right hand")
+end
+
+-- HUD's portrait: nothing in the weapon Tool (the BowGrip every shot, a swap) nor the engine's RightGrip asks for a new
+-- copy of the character; its body, accessories and own joints still do
+do
+	local function obj(class, name, ancestors)
+		return { Name = name, IsA = function(_, c) return c == class or (c == "JointInstance" and (class == "Weld" or class == "Motor6D"))
+			or (c == "BasePart" and class == "Part") or (c == "Model" and class == "Tool") end,
+			FindFirstAncestor = function(_, n) return ancestors[n] and {} or nil end }
+	end
+	local inTool = { WeaponModel = true, Char = true }
+	check(L.PortraitAppearance(obj("Weld", "BowGrip", inTool)) == false, "portrait: the archer's BowGrip asks for no copy")
+	check(L.PortraitAppearance(obj("Part", "Handle", inTool)) == false and L.PortraitAppearance(obj("Tool", "WeaponModel", { Char = true })) == false,
+		"portrait: a weapon swap (the Tool, its parts) asks for no copy")
+	check(L.PortraitAppearance(obj("Weld", "RightGrip", { Char = true })) == false, "portrait: the engine's RightGrip asks for no copy")
+	check(L.PortraitAppearance(obj("Part", "Handle", { Hat = true, Char = true })) == true and L.PortraitAppearance(obj("Motor6D", "RightWrist", { Char = true })) == true,
+		"portrait: an accessory's part and a body joint still refresh it")
 end
 print("TOOL_GRIP_CHECKS " .. checks .. " FAILED " .. failed)
 '''
@@ -304,8 +356,12 @@ def harness(src: dict) -> str:
         out += "\n" + WM.local_function(cv, name)
     out += "\n" + cv[cv.index("------------------------------------------------------------------ WeaponModel"):
                      cv.index("------------------------------------------------------------------ sacks & ghost")]
-    out += "\n" + WM.source_function(fx, "bowHand")
-    rows = "{" + ",".join("{%s,%s,%s}" % (WM.lua(a), WM.lua(b), WM.lua(c)) for a, b, c in ROWS) + "}"
+    # the bow's hand-over (+ its hold: MOTION.BOW_HOLD read from Fx) and HUD's portrait filter
+    hold = fx[fx.index("\tBOW_HOLD = "):].split("=", 1)[1].split(",", 1)[0].strip()
+    out += "\nlocal MOTION = { BOW_HOLD = " + hold + " }\n" + WM.source_function(fx, "bowRight") + "\n" + WM.source_function(fx, "bowHand")
+    hud = src["HUD_MAIN"]
+    out += "\nlocal L = {}\n" + hud[hud.index("function L.PortraitAppearance("):hud.index("\nfunction L.PortraitLoad(")]
+    rows ="{" + ",".join("{%s,%s,%s}" % (WM.lua(a), WM.lua(b), WM.lua(c)) for a, b, c in ROWS) + "}"
     tests = TESTS.replace("ROWS_IN", rows).replace("POINTS_IN", WM.lua(POINTS)).replace("HANDS_IN", hands())
     return out + "\n" + tests
 
@@ -334,6 +390,14 @@ def sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def _hold_ok(fx: str) -> bool:
+    try:
+        v = float(fx[fx.index("\tBOW_HOLD = "):].split("=", 1)[1].split(",", 1)[0])
+    except ValueError:
+        return False
+    return 0.1 <= v <= 0.5 and "later(MOTION.BOW_HOLD, function()" in fx
+
+
 def statics(src: dict) -> list[tuple[str, bool]]:
     cfg, cv, fx, wp, main, hero, vitals = (src[k] for k in ("CONFIG", "CV", "FX", "WP", "MAIN", "HERO", "VITALS"))
     grips = cfg[cfg.index("Config.ClassGrips = {"):cfg.index("Config.WeaponGrips = {")]
@@ -357,9 +421,14 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          'Feel.bowHand(st, attack ~= nil and attack.Clip ~= nil and plain and st.AttackContext.Class == "Archer")' in fx),
         ("Fx: drop puts the bow back", "function Feel.drop(st)\n\tFeel.clearWeaponMotion(st)\n\tFeel.bowHand(st, false)" in fx),
         ("Fx: WeaponPose's old exports are gone", "Fx.SolveArm" not in fx and "function Fx.Animating" not in fx),
+        ("Fx: death / a changed actor puts the bow back at once (stepChar)",
+         "\t\tFeel.bowHand(st, false, true) -- death / a changed actor: the bow back on the right grip at once\n\t\tFeel.drop(st)\n\t\treturn" in fx),
+        ("Fx: the bow's hold after a clip is a MOTION value (0.1 .. 0.5 s)", _hold_ok(fx)),
     ]
     try:
         motion = fx[fx.index("local MOTION = {"):fx.index("-- A14-4 combat feel: functions")]
+        # (the attack clips as on main 11213d87; the one new MOTION line is the bow's hold, 최종 검수 10/13)
+        motion = "\n".join(line for line in motion.split("\n") if not line.startswith("\tBOW_HOLD = "))
         out.append(("the attack clips as before (Fx MOTION)", sha(motion) == CLIP_SHA["MOTION"]))
         for name in ("archerPose", "staffPose"):
             out.append((f"the attack solve as before (Feel.{name})", sha(WM.source_function(fx, name)) == CLIP_SHA[name]))
@@ -406,7 +475,18 @@ MUTATIONS = [
     ("CV", "the staff 0.8 of the height", "Staff = { 0.65, 0.75 }", "Staff = { 0.8, 0.9 }"),
     ("FX", "the draw never moves the bow", "\t\trightGrip.Enabled = false\n\t\tweld.Parent = handle\n", "\t\tweld.Parent = nil\n"),
     ("FX", "the bow on the right grip's spot in the left hand", "\t\tweld.C1 = weapon.Grip\n", "\t\tweld.C1 = CFrame.identity\n"),
-    ("FX", "the bow never comes back", "\t\t\tif cur.Right.Parent and cur.Right.Part1 == cur.Handle then cur.Right.Enabled = true end\n", ""),
+    ("FX", "the bow never comes back", "\t\tif cur.Right.Parent and cur.Right.Part1 == cur.Handle then cur.Right.Enabled = true end\n", ""),
+    # 최종 검수 10/13 review: one weld per bow, the hold between rapid shots, death at once
+    ("FX", "a new weld every shot", "\tif cur then -- a draw again", "\tif false then -- a draw again"),
+    ("FX", "no hold: back the moment a clip ends", "\t\tif now then\n\t\t\tFeel.bowRight(cur)\n", "\t\tif true then\n\t\t\tFeel.bowRight(cur)\n"),
+    ("FX", "a stale return wins over a new draw", "if st.BowGrip == cur and cur.Back == token then Feel.bowRight(cur) end",
+     "if st.BowGrip == cur then Feel.bowRight(cur) end"),
+    ("FX", "the weld thrown away after each draw", "\t\tcur.Weld.Enabled = false\n", "\t\tcur.Weld.Enabled = false\n\t\tcur.Weld:Destroy()\n"),
+    ("FX", "death keeps the bow in the left hand", "\t\tFeel.bowHand(st, false, true) -- death / a changed actor: the bow back on the right grip at once\n", ""),
+    ("HUD_MAIN", "the portrait copies the character for every bow shot", 'if object.Name == "WeaponModel" or object:FindFirstAncestor("WeaponModel")',
+     'if object.Name == "WeaponModel"'),
+    ("HUD_MAIN", "the portrait copies on the engine's RightGrip", 'or (object.Name == "RightGrip" and object:IsA("JointInstance")) then',
+     'or false then'),
     ("FX", "drop leaves the bow in the left hand", "\tFeel.clearWeaponMotion(st)\n\tFeel.bowHand(st, false)\n", "\tFeel.clearWeaponMotion(st)\n"),
     ("FX", "a sword moved too", 'weapon:GetAttribute("AttackHand") == "LeftHand" and weapon:FindFirstChild("Handle")', 'weapon:FindFirstChild("Handle")'),
     ("FX", "an attack clip changed", "PaladinSwing", "PaladinSwing2"),
