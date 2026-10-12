@@ -15,7 +15,8 @@
 ## 지금 어디까지 (Tripo 잔액 Blender 손보기 마지막 보고 9,635 → 그 뒤 텍스처 더 씀)
 **끝(PBR 통과 → Blender 마무리 → 이미지 생성 3에 넘김):** 화분 Lavender·Tulip·Sunflower(시트 `art/review/design/pots3_pbr_*_1012.jpg`), DoorSingle, LampArm, CastleWingL, **CastleWingR(= WingL Blender 거울, 최종 검수 OK, 통과)**, DomeRibbed, DoorDouble, WindowBoxA, BenchA, BenchC, CastleRose(시트 `chunks9_pbr_vs_flat_1013.jpg`).
 **텍스처 PBR OK, PBR 결과 아직 안 봄:** GateLeaf(흰 2bc07ecc), DomeOnion(414b871a).
-**흰 모델 고름 → 텍스처 중(텍스처 결과 아직 안 봄):** ConeTree 2bbbd641(2차, 큰 잎 뭉치), DomeOctagon f9e91fe2, DomeBall 66894770, FlowerCart af2e2b5f, BenchB b8de1d3c, DomeOnionSlim 40dad418, BreadStand 00dac363, FruitStall 568b5b8e, DomeBrick 46f0bb09.
+**텍스처 끝 → PBR 전 내 확인 대기(다음 세션 첫 일, 파일은 Blender 손보기 scratchpad 또는 Tripo):** ConeTree 2bbbd641(2차, 큰 잎 뭉치), DomeOctagon f9e91fe2, DomeBall 66894770, FlowerCart af2e2b5f(Blender 손보기: 꽃 덩어리가 2D보다 작고 성김 — 모양 문제, 렌더로 보고 그대로/다시 판단), BenchB b8de1d3c.
+**흰 모델 고름 → 텍스처 중:** DomeOnionSlim 40dad418, BreadStand 00dac363, FruitStall 568b5b8e, DomeBrick 46f0bb09.
 **4면 통과 → 흰 모델 대기:** Greenhouse, ShopSign, Lantern_A·C·D·E. **JuiceParasol 흰 모델 4개 나옴 = 다음 세션 첫 일**(6ec4d75d / 52b68046 / 46c0419e / 89bac495, 앞 8자리 — 전체 id는 Tripo 작업 목록 또는 Blender 손보기에게). Blender 손보기 의견 = 6ec4d75d(과일 앞뒤, 깨끗) / 46c0419e 상자 빔 / 52b68046 뒤 막힘 / 89bac495 지붕 안쪽 처짐 → 내가 직접 보고 OK.
 **매직 브러시 보류(창 보일 때 Blender 손보기가, 한 번 30점 이하):** 동상 B(뒤 앞치마 파랑 → 흰, 발 사이 얼룩), 분수 C(2단 물 위 크림·주황 번짐), Daisy(주황·살구 꽃 → 빨강/흰), Rose(윗면 탁한 갈색). 크롭 `art/review/design/*_tex_*_1012.jpg`. 끝나면 내가 보고 PBR.
 **다시 그리는 중:** IvyWall(가는 줄기·성긴 잎이라 큼직 잎 판으로 다시, 지금 판은 Tripo 안 넘김), IvyBalcony(큼직 잎 문구로 생성 중, 미판정). Lantern_B(받침 금테 판 = 면마다 1개, 지금 2개). 이미지 생성 2 큐 19 IvyWall부터(잎 큼직하게 미리 말함). 이미지 생성 3 소품 큐: 벤치 3·가판대 3·등불 5 끝 → 다음은 `docs/review/halo_redo_split_2026-10-12.md` '그릴 것' 순서.
