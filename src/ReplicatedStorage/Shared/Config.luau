@@ -1487,8 +1487,8 @@ Config.Goose = {
 		Label = "Golden Goose", -- the goose's name tag (GooseService billboard)
 		NeedManual = "No reward: hit it yourself %d+ times", -- (MinManualHits)
 		CoopFull = { -- NotifyAll once when the gauge is full (MinManualHits)
-			Halo = "Gauge full! Team Rescue done.\nHit it yourself %d+ times before the end for a reward!",
-			Horns = "Gauge full! Team Poach done.\nHit it yourself %d+ times before the end for a reward!",
+			Halo = "Rescue done! Hit it %d+ times yourself for a reward.",
+			Horns = "Poach done! Hit it %d+ times yourself for a reward.",
 		},
 		CoopResult = { -- NotifyAll at the end, gauge filled
 			Halo = "The Knights worked together and rescued the Golden Goose! The shard shines with light again.",
@@ -2694,7 +2694,7 @@ Config.Tutorial = {
 		-- A23-40: the guide is met by tapping this quest line (the menu moved to the top-right fold)
 		-- 3rd idea round #3: %s = the faction guide's name (Welcome[faction].Name), there is no guide NPC to look for
 		Welcome = "Tap here: first quest from %s", WelcomeEn = "Tap here: first quest from %s",
-		Travel = "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)", -- A23-88
+		Travel = "Step on the glowing pad to go to Squishy Meadow", -- A23-88
 		-- A23-130 (user 2026-10-11): no line when the hunt starts or reaches 5/5 (QuestStart / QuestReady removed)
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
@@ -2717,7 +2717,7 @@ Config.Tutorial = {
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
 		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
-		NextRebirth = "Next goal · Lv%d: Rebirth, choose your side again (now Lv%d)",
+		NextRebirth = "Next goal · Lv%d: Rebirth and start again (now Lv%d)",
 		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
 		RebirthNoteHalo = "Stay a knight, or not?", -- a second line under the rebirth goal, by side
 		RebirthNoteHorns = "Stay a rascal, or not?",
@@ -3002,7 +3002,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", -- A23-71 (Skill: see M1_3)
 					Obj = { Type = "Level", Level = 5, Skill = true } },
-				{ Text = "Hit 3 with one skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
+				{ Text = "Hit 3 monsters with one skill %d/%d", Guide = "SlimeMeadow", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
 			},
 			Reward = { Gold = 1 },
 		},
@@ -3086,7 +3086,7 @@ Config.StoryQuests = {
 						Default = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Leave some for their lamps", Points = 3 },
-						Evil = { Label = "Into our vault. They took it first!", Points = 3, Reward = { Gold = 192 } },
+						Evil = { Label = "Keep it. Goblins stole it first!", Points = 3, Reward = { Gold = 192 } },
 						Neutral = { A = "Make them a real lamp", B = "Sell the dust back to them" } } },
 				{ Text = "Hear the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "The shard found a home." } },
 					LinesBy = { From = "M3_4",
@@ -3185,7 +3185,7 @@ Config.StoryQuests = {
 		N1 = {
 			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" }, Level = 5 }, -- A23-71: a skill quest
 			Start = "Kit: Shape with care. Two at once!",
-			Steps = { { Text = "Hit 2 with one skill %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
+			Steps = { { Text = "Hit 2 monsters with one skill %d/%d", Obj = { Type = "SkillHit", Min = 2, Count = 3 } } },
 			Reward = { Gold = 1 },
 		},
 		N2 = {
@@ -3520,7 +3520,7 @@ Config.StoryQuests = {
 			Finish = "Does gold paint make anyone rich?",
 		},
 		H5 = {
-			Kind = "Sub", Title = "Form H-2", ShortName = "Form H-2", Speaker = "Bright", Factions = { Halo = true },
+			Kind = "Sub", Title = "Paperwork for a Brute", ShortName = "Paperwork", Speaker = "Bright", Factions = { Halo = true },
 			Requires = { Done = { "M2_7" }, Level = 15 },
 			Start = "Bright needs a form signed. Find her in Halo Citadel!",
 			Steps = {
@@ -3791,7 +3791,7 @@ Config.StoryQuests.Meetings = {
 	ScaleMet = { AttrOver = { Name = "SizeMult", Over = 1 } },
 }
 Config.StoryQuests.Defs.TS1 = {
-	Kind = "Sub", Title = "Moving a Plus", ShortName = "Move a plus", Speaker = "Smith", Requires = { Seen = "ScrollMet" },
+	Kind = "Sub", Title = "Moving an Upgrade", ShortName = "Move upgrade", Speaker = "Smith", Requires = { Seen = "ScrollMet" },
 	Steps = {
 		{ Text = "Hear about your Transfer Scroll", Panel = true, Obj = { Type = "Talk" },
 			Lines = { All = { "A Transfer Scroll moves a weapon's + to another weapon.",
@@ -6905,7 +6905,7 @@ Config.Text = {
 	GrudgeRefund = "Stolen gold back: +%s", -- (gold)
 	GrudgeReturned = "Stolen gold back: +%s",
 	GrudgeMail = "Stolen gold back: +%s", -- P3
-	DailyAllDone = "All done for today! You can rest now without missing out. Want more? Enjoy story quests or hunting.", -- P8
+	DailyAllDone = "All done for today! Play more if you like.", -- P8
 	GhostHoldOk = "Your ghost grabbed the thief! Their hold time +%d s (max +%d s)", -- A23-18
 	GhostHoldMax = "Max hold reached.",
 	GhostHeld = "Ghost holds you!",
@@ -6935,7 +6935,7 @@ Config.Text = {
 	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
-	ClassChangeRuleF = "Change class later in Menu. Free: level kept below Lv%d. Ticket: level always kept.", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
+	ClassChangeRuleF = "You can change class later in Menu. Free below Lv%d.", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
 	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
@@ -7091,11 +7091,11 @@ Config.Ranking = {
 		Empty = "No records yet", EmptyEn = "No records yet",
 		Unknown = "Player", UnknownEn = "Player",
 		Test = "Test", TestEn = "Test",
-		PvPTabNote = "Rises when you KO weaker, idle or new players. Top 3 (3+ points) turn outlaw.",
-		PvPTabNoteEn = "Rises when you KO weaker, idle or new players. Top 3 (3+ points) turn outlaw.",
+		PvPTabNote = "Goes up when you KO weaker, away or new players. Top 3 (3+ points) become outlaws.",
+		PvPTabNoteEn = "Goes up when you KO weaker, away or new players. Top 3 (3+ points) become outlaws.",
 		RewardTabNote = "Top 3: XP and drops +10% next week", RewardTabNoteEn = "Top 3: XP and drops +10% next week",
-		Ineligible = "New accounts join the global ranking after 3 days and 30 minutes of play",
-		IneligibleEn = "New accounts join the global ranking after 3 days and 30 minutes of play",
+		Ineligible = "New players join the ranking after 3 days and 30 min of play",
+		IneligibleEn = "New players join the ranking after 3 days and 30 min of play",
 		Private = "Private servers do not earn ranking points", PrivateEn = "Private servers do not earn ranking points",
 		OutlawTag = "Outlaw", OutlawTagEn = "Outlaw",
 		OutlawChip = "Outlaw: no Auto Battle · half XP and drops (until Monday)",

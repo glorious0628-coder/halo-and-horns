@@ -165,7 +165,7 @@ runGroup("config", function()
 	end
 	check(TC.Text.Forge == "Go to Otto's Forge in the Crossroads" and TC.ShortNames.Forge == "To the Forge" and #TC.ShortNames.Forge <= 14,
 		"the Forge row: text + phone ShortName", show({ TC.Text.Forge, TC.ShortNames.Forge }))
-	check(TC.Text.Travel == "Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)" and TC.ShortNames.Travel == "To the meadow"
+	check(TC.Text.Travel == "Step on the glowing pad to go to Squishy Meadow" and TC.ShortNames.Travel == "To the meadow"
 		and #TC.ShortNames.Travel <= 14, "the travel row (A23-88): the pad or the map, phone ShortName", show({ TC.Text.Travel, TC.ShortNames.Travel }))
 	check(string.find(TC.Text.ForgeGift, "Squishy Meadow is next", 1, true) ~= nil, "Otto points to the meadow", TC.Text.ForgeGift)
 	check(string.sub(TC.Text.ForgeGift, 1, 6) == "Otto: " and string.find(TC.Text.ForgeGift, "Clang, clang", 1, true) ~= nil,

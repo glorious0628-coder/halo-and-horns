@@ -61,7 +61,7 @@ runGroup("config", function()
 		check(type(T.ShortNames[h.Kind]) == "string" and #T.ShortNames[h.Kind] <= 14, h.Kind .. ": a short name <= 14", tostring(T.ShortNames[h.Kind]))
 	end
 	check(ladder.Rebirth.Warn == 5, "the rebirth line starts 5 levels before", show(ladder.Rebirth))
-	check(T.Text.NextRebirth == "Next goal · Lv%d: Rebirth, choose your side again (now Lv%d)" and T.Text.NextRebirthReady == "Next goal · Rebirth is open! Choose your side again",
+	check(T.Text.NextRebirth == "Next goal · Lv%d: Rebirth and start again (now Lv%d)" and T.Text.NextRebirthReady == "Next goal · Rebirth is open! Choose your side again",
 		"rebirth lines", show({ T.Text.NextRebirth, T.Text.NextRebirthReady }))
 	check(T.Text.RebirthNoteHalo == "Stay a knight, or not?" and T.Text.RebirthNoteHorns == "Stay a rascal, or not?", "the side questions", "")
 	check(T.ShortNames.Rebirth == "Rebirth Lv %d" and T.ShortNames.RebirthReady == "Rebirth ready" and #string.format(T.ShortNames.Rebirth, 100) <= 14, "rebirth short names", "")
@@ -79,7 +79,7 @@ runGroup("the rebirth rung", function()
 	local C = w.Config
 	local p, d = veteran(w, 1, "Halo", 47)
 	local row = Q.PinnedRow(p)
-	check(row and row.Text == "Next goal · Lv50: Rebirth, choose your side again (now Lv47)" and row.GoalKind == "Rebirth" and row.NextGoal == true,
+	check(row and row.Text == "Next goal · Lv50: Rebirth and start again (now Lv47)" and row.GoalKind == "Rebirth" and row.NextGoal == true,
 		"Lv47 (Halo): the rebirth goal with the level", show(row and { row.Text, row.GoalKind }))
 	check(row and row.ShortName == "Rebirth Lv 50" and row.GoalNote == "Stay a knight, or not?", "short name + the knight question", show(row and { row.ShortName, row.GoalNote }))
 	check(row and row.Pinned == true and row.CanClaim == false and row.RewardGold == 0 and row.RewardXP == 0, "no reward, no claim", show(row))

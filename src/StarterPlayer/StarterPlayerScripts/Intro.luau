@@ -24,7 +24,7 @@ local C, UIKit = nil, nil
 -- old Korean premise for the story texts); short, easy English
 local TXT = {
 	Lines = {
-		"The Crown of Balance broke.",
+		"They say the Crown of Balance broke.",
 		"Some who touched the shards grew halos. Others grew horns.",
 		"Whoever gathers more shards will remake the world.",
 	},

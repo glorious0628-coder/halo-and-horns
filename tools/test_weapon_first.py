@@ -67,7 +67,7 @@ MUTATIONS = [
     # --- A23-88: nothing moves the player; the walker's arrival is a metric
     ("Config: the Forge text is the old one", C, "Forge = \"Go to Otto's Forge in the Crossroads\",", "Forge = \"Get your first weapon · Crossroads Forge\","),
     ("Config: the Forge text forgets the Crossroads", C, "Forge = \"Go to Otto's Forge in the Crossroads\",", "Forge = \"Go to Otto's Forge\","),
-    ("Config: the travel row is the old one", C, "Travel = \"Travel to Squishy Meadow — step on the glowing travel pad (or Map → Travel)\",", "Travel = \"Free the supply road · Menu > Travel > Squishy Meadow\","),
+    ("Config: the travel row is the old one", C, "Travel = \"Step on the glowing pad to go to Squishy Meadow\",", "Travel = \"Free the supply road · Menu > Travel > Squishy Meadow\","),
     ("Config: the accept trip is back", C, "\tRespawnInMeadow = true,\n\tFoldOthers = true,\n", "\tRespawnInMeadow = true,\n\tFoldOthers = true,\n\tAcceptTravelSeconds = 3,\n"),
     ("Config: the forge landing is back", C, "Forge = { Near = 24 },", "Forge = { Landing = \"Anvil\", Back = 8, Lift = 4, Near = 24 },"),
     ("Config: the meadow trip delay is back", C, "Forge = { Near = 24 },", "Forge = { Near = 24, TravelDelay = 3 },"),
