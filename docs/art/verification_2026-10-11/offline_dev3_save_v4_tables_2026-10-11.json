@@ -9,7 +9,7 @@
   "named": [
     {
       "group": "config",
-      "check": "the save version stays 3 (게임성 개발 2's C1 bumps it to 4)",
+      "check": "the save version is 4 (게임성 개발 2's C1), Data and Defaults equal",
       "pass": 1,
       "fail": 0
     },
@@ -507,7 +507,7 @@
     },
     {
       "group": "load",
-      "check": "a v3 save stays v3 and keeps everything it had",
+      "check": "a v3 save becomes v4 (C1) and keeps everything it had",
       "pass": 1,
       "fail": 0
     },
@@ -549,7 +549,7 @@
     },
     {
       "group": "load",
-      "check": "a brand-new save is v3 with the defaults",
+      "check": "a brand-new save is v4 with the defaults",
       "pass": 1,
       "fail": 0
     },
@@ -618,13 +618,13 @@
     "skipped": false,
     "results": [
       {
-        "mutation": "config: the version bumped to 4 here",
+        "mutation": "config: the version back to 3 (C1 bumped it to 4)",
         "file": "src/ReplicatedStorage/Shared/Config.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: the save version stays 3 (게임성 개발 2's C1 bumps it to 4)"
+          "config :: the save version is 4 (게임성 개발 2's C1), Data and Defaults equal"
         ],
         "newFailingCount": 1
       },
@@ -638,7 +638,7 @@
           "config :: the defaults pass their own repair unchanged",
           "craft :: group ran to the end without a Lua error",
           "craft :: nil / text / a number -> the default",
-          "load :: a brand-new save is v3 with the defaults",
+          "load :: a brand-new save is v4 with the defaults",
           "load :: a broken table becomes its default",
           "load :: it gains every v4 table with its default"
         ],
@@ -693,7 +693,7 @@
           "gear :: On and Pet: good worn things kept",
           "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
           "gear :: nil / {} / text -> the default (On always has Armor and Ring)",
-          "load :: a brand-new save is v3 with the defaults",
+          "load :: a brand-new save is v4 with the defaults",
           "load :: a broken table becomes its default"
         ],
         "newFailingCount": 8
@@ -708,7 +708,7 @@
           "config :: Craft: a level per role (Smith / Alch / Tame) + Rep + Made",
           "config :: the defaults pass their own repair unchanged",
           "craft :: nil / text / a number -> the default",
-          "load :: a brand-new save is v3 with the defaults",
+          "load :: a brand-new save is v4 with the defaults",
           "load :: a broken table becomes its default",
           "load :: it gains every v4 table with its default"
         ],
@@ -1092,7 +1092,7 @@
           "gear :: On and Pet: good worn things kept",
           "gear :: On: plain 'T:P' kept, a bad worn value -> '' (Armor / Ring) or dropped (others)",
           "gear :: nil / {} / text -> the default (On always has Armor and Ring)",
-          "load :: a brand-new save is v3 with the defaults",
+          "load :: a brand-new save is v4 with the defaults",
           "load :: a broken table becomes its default"
         ],
         "newFailingCount": 8
@@ -1260,16 +1260,15 @@
         "newFailingCount": 2
       },
       {
-        "mutation": "DataService: a v4 step in migrate",
+        "mutation": "DataService: no v4 step in migrate (C1)",
         "file": "src/ServerScriptService/DataService.luau",
         "applied": true,
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "load :: a brand-new save is v3 with the defaults",
-          "load :: a v3 save stays v3 and keeps everything it had"
+          "load :: a v3 save becomes v4 (C1) and keeps everything it had"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 1
       },
       {
         "mutation": "pet: Roll dropped",
@@ -1333,15 +1332,15 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "a0ee7351c55a312f3c6f25e37eeda0e4cbd2f1f11c123c99b52472637784cd83",
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/DataService.luau": "bcc20283d5258fc89af43961e12c1a1c6345eeba61a923bdb7f17cd5e6450217",
+    "src/ServerScriptService/DataService.luau": "adb332e34e26eed93282b38b54f902446189e3a6cefdea9938a52c5b2bef1648",
     "src/ServerScriptService/PetService.luau": "7b989fa015080ca49e49466def1cdbeb886f172e906e26ce2c6fea343d8e37a3"
   },
-  "fixtureSHA256": "0f88946a7c8738a7f22005ce1f8c8a17cf3555e49e6bdfd45ae9e472119c8406",
+  "fixtureSHA256": "544069afbf5946ff6e6c118a1af3476a422e70d659a1878eecfe31b6e6c73098",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "Save v4 tables (docs/design/save_v4_tables_2026-10-11.md, agreed by 게임성 개발 2 + 3 2026-10-11): additive defaults with the version still 3 - Craft { Smith / Alch / Tame { Lv 1..30, XP }, Rep, Made (64 ids) }, Research { Pts, Sum } (64 families), Gather { Day, N, Bloom, Gift, Total, FirstBloom }, Gear { Own '<kind>:T:P' -> 1..20 (letters-only kinds, tier 1..16, plus 0..10, written plainly and merged, 64 keys), On { Armor, Ring always, '' = empty }, Pet { uid -> worn slots, 64 pets } }, Buffs { tonic -> end, ended dropped, cut to now + 180, the 2 that end last }, Shop { Day, N 0..50 }, EggHonorAt (a future hour = 0). A repair never makes a value up and keeps a sane unknown flat key; repairing twice = once. DataService.fillDefaults runs Config.SanitizeSaveV4(d, os.time()); PetService.Sanitize keeps Roll { Spd = 5..10 } only.",
+  "contract": "Save v4 tables (docs/design/save_v4_tables_2026-10-11.md, agreed by 게임성 개발 2 + 3 2026-10-11): additive defaults (the version is 4 since 게임성 개발 2's C1) - Craft { Smith / Alch / Tame { Lv 1..30, XP }, Rep, Made (64 ids) }, Research { Pts, Sum } (64 families), Gather { Day, N, Bloom, Gift, Total, FirstBloom }, Gear { Own '<kind>:T:P' -> 1..20 (letters-only kinds, tier 1..16, plus 0..10, written plainly and merged, 64 keys), On { Armor, Ring always, '' = empty }, Pet { uid -> worn slots, 64 pets } }, Buffs { tonic -> end, ended dropped, cut to now + 180, the 2 that end last }, Shop { Day, N 0..50 }, EggHonorAt (a future hour = 0). A repair never makes a value up and keeps a sane unknown flat key; repairing twice = once. DataService.fillDefaults runs Config.SanitizeSaveV4(d, os.time()); PetService.Sanitize keeps Roll { Spd = 5..10 } only.",
   "limitations": "No service writes these tables yet (GatherService, CraftService, GearService, the alchemy buffs, Otto's cheap materials and the golden egg come in their own branches). The version bump, Spares, Market and the 9-bit weapon mask are 게임성 개발 2's C1. The real DataStore load (the CR-L3 refusal of a newer record) is in tools/test_onboarding.py."
 }

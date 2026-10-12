@@ -53,8 +53,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # --- defaults and limits
-    ("config: the version bumped to 4 here", C, "is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).\n\tVersion = 3,",
-     "is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).\n\tVersion = 4,"),
+    ("config: the version back to 3 (C1 bumped it to 4)", C, "WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 4,",
+     "WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 3,"),
     ("config: one craft level for all roles", C, "CraftRoles = { \"Smith\", \"Alch\", \"Tame\" },", "CraftRoles = { \"Smith\" },"),
     ("config: craft Lv40", C, "\tCraftMaxLv = 30,\n", "\tCraftMaxLv = 40,\n"),
     ("config: three buffs", C, "\tBuffMax = 2, -- Buffs", "\tBuffMax = 3, -- Buffs"),
@@ -115,7 +115,7 @@ MUTATIONS = [
     ("all: the load skips EggHonorAt", C, "\td.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)\n", ""),
     # --- DataService / PetService
     ("DataService: the v4 repair never runs", D, "\tif Config.SanitizeSaveV4 then Config.SanitizeSaveV4(d, os.time()) end\n", ""),
-    ("DataService: a v4 step in migrate", D, "\t\td.Version = 3\n\tend\nend", "\t\td.Version = 3\n\tend\n\td.Version = 4\nend"),
+    ("DataService: no v4 step in migrate (C1)", D, "\tif (tonumber(d.Version) or 1) < 4 then\n\t\td.Version = 4\n\tend\n", ""),
     ("pet: Roll dropped", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", ""),
     ("pet: Roll kept as it was", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", "\t\t\t\t\tRoll = p.Roll,\n"),
     ("pet: fractions allowed", P, "if type(spd) ~= \"number\" or spd ~= math.floor(spd) or spd < range[1]", "if type(spd) ~= \"number\" or spd ~= spd or spd < range[1]"),
@@ -143,10 +143,10 @@ def static() -> tuple[int, list[str]]:
           "the v4 section adds one top-level local table (+ one helper function): Config's 200-locals limit")
     data = read(SSS / "DataService.luau")
     check("Config.SanitizeSaveV4(d, os.time())" in function_block(data, "local function fillDefaults(")
-          and "< 4 then" not in function_block(data, "local function migrate("),
-          "DataService: the v4 repair runs in fillDefaults, migrate has no v4 step (C1 bumps the version)")
+          and "< 4 then" in function_block(data, "local function migrate("),
+          "DataService: the v4 repair runs in fillDefaults, migrate has the C1 v4 step")
     mirrored = re.search(r"\tMirrored = \{(.*?)\n\t\}", config, re.S)
-    check(bool(mirrored) and not re.search(r'"(Craft|Research|Gather|Gear|Buffs|Shop|EggHonorAt)"', mirrored.group(1)),
+    check(bool(mirrored) and not re.search(r'"(Craft|Research|Gather|Gear|Buffs|Shop|EggHonorAt|Spares|Market)"', mirrored.group(1)),
           "no v4 table is mirrored")
     pet = read(SSS / "PetService.luau")
     check("Roll = sanitizeRoll(p.Roll)," in function_block(pet, "function PetService.Sanitize(data)"),
@@ -162,7 +162,7 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-11/offline_dev3_save_v4_tables_2026-10-11.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="Save v4 tables (docs/design/save_v4_tables_2026-10-11.md, agreed by 게임성 개발 2 + 3 2026-10-11): additive "
-             "defaults with the version still 3 - Craft { Smith / Alch / Tame { Lv 1..30, XP }, Rep, Made (64 ids) }, "
+             "defaults (the version is 4 since 게임성 개발 2's C1) - Craft { Smith / Alch / Tame { Lv 1..30, XP }, Rep, Made (64 ids) }, "
              "Research { Pts, Sum } (64 families), Gather { Day, N, Bloom, Gift, Total, FirstBloom }, Gear { Own "
              "'<kind>:T:P' -> 1..20 (letters-only kinds, tier 1..16, plus 0..10, written plainly and merged, 64 keys), On "
              "{ Armor, Ring always, '' = empty }, Pet { uid -> worn slots, 64 pets } }, Buffs { tonic -> end, ended "

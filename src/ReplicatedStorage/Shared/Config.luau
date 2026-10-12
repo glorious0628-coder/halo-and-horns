@@ -8650,7 +8650,7 @@ function V4.spareKey(s)
 	local t, p = string.match(s, "^(%d+):(%d+)$")
 	t, p = tonumber(t), tonumber(p)
 	if not t or not p or t < 1 or t > Config.SaveV4.SpareTierMax or p > Config.Loot.MaxEnhance then return nil end
-	return string.format("%d:%d", t, p)
+	return string.format("%d:%d", t, p) -- "04:0" -> "4:0"
 end
 
 -- Spares { ["T:P"] = n }: n 1..SpareKeyMax (0 / broken = key dropped), "04:0" + "4:0" merged, at most MaxKeys keys
@@ -8665,7 +8665,7 @@ function Config.SanitizeSpares(t)
 		if key and n and n > 0 then
 			if out[key] ~= nil then
 				out[key] = math.min(L.SpareKeyMax, out[key] + n)
-			elseif kept < L.MaxKeys then
+			elseif kept < L.MaxKeys then -- a new key
 				out[key] = n
 				kept += 1
 			end

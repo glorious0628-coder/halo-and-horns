@@ -30,7 +30,8 @@ local NAN, INF = 0 / 0, math.huge
 runGroup("config", function()
 	local C = cfg()
 	local D = C.Data.Defaults
-	check(C.Data.Version == 3 and D.Version == 3, "the save version stays 3 (게임성 개발 2's C1 bumps it to 4)",
+	-- C1 (게임성 개발 2) bumped the version to 4 on top of these tables (tier 9, Spares, Market)
+	check(C.Data.Version == 4 and D.Version == 4, "the save version is 4 (게임성 개발 2's C1), Data and Defaults equal",
 		show({ C.Data.Version, D.Version }))
 	check(sameTable(D.Craft, { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {} }),
 		"Craft: a level per role (Smith / Alch / Tame) + Rep + Made", show(D.Craft))
@@ -225,8 +226,8 @@ runGroup("load", function()
 		WeaponOwnedMask = 7, BankGold = 300 }
 	local d = load(v3)
 	local D = C.Data.Defaults
-	check(d.Version == 3 and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
-		"a v3 save stays v3 and keeps everything it had", show({ d.Version, d.Level }))
+	check(d.Version == 4 and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300 and d.WeaponOwnedMask == 7,
+		"a v3 save becomes v4 (C1) and keeps everything it had", show({ d.Version, d.Level }))
 	check(sameTable(d.Craft, D.Craft) and sameTable(d.Research, D.Research) and sameTable(d.Gather, D.Gather)
 		and sameTable(d.Gear, D.Gear) and sameTable(d.Buffs, D.Buffs) and sameTable(d.Shop, D.Shop) and d.EggHonorAt == 0,
 		"it gains every v4 table with its default", "")
@@ -249,7 +250,8 @@ runGroup("load", function()
 		"the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)",
 		show(fixed.Gear))
 	local fresh = load(deepCopy(D))
-	check(fresh.Version == 3 and sameTable(fresh.Gear, D.Gear) and sameTable(fresh.Craft, D.Craft), "a brand-new save is v3 with the defaults", "")
+	check(fresh.Version == 4 and sameTable(fresh.Gear, D.Gear) and sameTable(fresh.Craft, D.Craft)
+		and sameTable(fresh.Spares, D.Spares) and sameTable(fresh.Market, D.Market), "a brand-new save is v4 with the defaults", "")
 end)
 
 ------------------------------------------------------------------ PetService.Sanitize keeps Roll
