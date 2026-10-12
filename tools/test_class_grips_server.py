@@ -2,9 +2,11 @@
 
 Reads the CURRENT Config.luau (Config.ClassGrips) and CharacterVisuals.luau. Checks: every ClassGrips Weapon has a shape
 (a SHAPES builder or the old Sword / Staff / Bow / Baton), buildWeapon takes the weapon from ClassGrips first and the old
-rule (tamer baton, the class's weapon) without a row, both bows go in the left hand with the arrow muzzle, the short bow
-is the bow at 0.75 size tilted 15 degrees, the shapes are plain Parts (no store assets). Mutations on in-memory copies:
-each must be caught. The look is checked in Studio photos (메인 반영 1, 9 classes).
+rule (tamer baton, the class's weapon) without a row, A23-150 7 (user 10/12 (가)): every weapon - the bows too - in the
+RIGHT hand (a Roblox Tool), both bows get the arrow muzzle and publish the LEFT hand's draw spots (AttackHand, HandMuzzle,
+HandBowRest: Fx moves the bow there while an archer clip plays), the short bow is the bow at 0.75 size canted 15
+degrees (Config.WeaponGrips ShortBow Turn), the shapes are plain Parts (no store assets). Mutations on in-memory
+copies: each must be caught. The look is checked in Studio photos (메인 반영 1). Geometry: tools/test_tool_grip.py.
 
 Usage: py tools/test_class_grips_server.py
 Report: docs/art/verification_2026-10-10/offline_class_grips_server_2026-10-10.json
@@ -30,19 +32,25 @@ def checks(cv: str, cfg: str) -> list[tuple[str, bool]]:
     out = [("nine ClassGrips rows with a weapon", len(weapons) == 9)]
     for key, kind in weapons:
         out.append((f"{key}: its weapon '{kind}' has a shape", kind in shapes or kind in OLD))
+    grips = cfg[cfg.find("Config.WeaponGrips = {"):cfg.find("function Config.WeaponGripOf")]
     out += [
         ("buildWeapon reads ClassGrips first", 'local gdef = type(Config.ClassGrips) == "table" and gkey and Config.ClassGrips[gkey] or nil' in cv
          and 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)' in cv),
         ("... and the old rule without a row", 'or ((Config.IsTamer and Config.IsTamer(classId, getFaction(player))) and "Baton" or classDef.Weapon)' in cv),
         ("a SHAPES builder is used by its kind", "local shape = type(SHAPES) == \"table\" and SHAPES[kind] or nil" in cv
-         and "parts, main = shape(grip, sc, w, color, tier, staffHeight)" in cv),  # A23-142: + the avatar's height (staffs)
-        ("both bows in the left hand", 'local left = kind == "Bow" or kind == "ShortBow"' in cv),
-        ("both bows get the arrow muzzle", 'if kind == "Bow" or kind == "ShortBow" then' in cv),
-        ("both bows publish the bow rest the archer pose reads (HandBowRest)", 'if kind == "Bow" or kind == "ShortBow" then -- both bows' in cv
-         and 'model:SetAttribute("HandBowRest"' in cv),
-        ("the short bow = the bow at 0.75, tilted 15 degrees", "return buildBow(grip, sc, w, color, 0.75, 15)" in cv
-         and "local H = tierLen(w, LEN.Bow) * (tonumber(scale) or 1)" in cv  # A23-133: the bow length from LEN
-         and "CFrame.Angles(0, 0, math.rad(tonumber(tilt) or 0))" in cv),
+         and "parts, main = shape(CFrame.identity, sc, w, color, tier, staffHeight, point)" in cv),  # A23-150 7: round its Handle
+        ("A23-150 7: every weapon in the right hand (the bows too)", 'local hand = Util.FindPart(character, "RightHand", "Right Arm")' in cv
+         and 'local left = kind == "Bow"' not in cv),
+        ("both bows get the arrow muzzle", 'local isBow = kind == "Bow" or kind == "ShortBow"' in cv
+         and "if isBow then\n\t\t\tmuzzle.Position = Vector3.new(0, 0, -0.18 * sc)" in cv),
+        ("both bows publish the left hand's draw spots (AttackHand, HandMuzzle, HandBowRest)",
+         'local left = isBow and Util.FindPart(character, "LeftHand", "Left Arm") or nil' in cv
+         and 'model:SetAttribute("AttackHand", left.Name)' in cv
+         and 'model:SetAttribute("HandMuzzle", toLeft * (main.CFrame * muzzle.CFrame))' in cv
+         and 'if nock then model:SetAttribute("HandBowRest", toLeft * (part.CFrame * nock.CFrame)) end' in cv),
+        ("the short bow = the bow at 0.75, canted 15 degrees", "return buildBow(H, sc, w, color, 0.75)" in cv
+         and "local len = tierLen(w, LEN.Bow) * (tonumber(scale) or 1)" in cv  # A23-133: the bow length from LEN
+         and "ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } }," in grips),
         ("the shapes are plain parts (no store asset ids)", "rbxassetid" not in cv[cv.find("local SHAPES = {}"):cv.find("local function buildWeapon(")]),
     ]
     return out
@@ -52,9 +60,12 @@ MUTATIONS = [
     ("the hammer never made", "function SHAPES.Hammer(", "function SHAPES.Hammer_("),
     ("A23-128: the dark one-hand sword never made", "function SHAPES.DarkSword(", "function SHAPES.DarkSword_("),
     ("ClassGrips ignored", 'local kind = (type(gdef) == "table" and type(gdef.Weapon) == "string" and gdef.Weapon)', "local kind = (false)"),
-    ("the short bow in the right hand", 'local left = kind == "Bow" or kind == "ShortBow"', 'local left = kind == "Bow"'),
-    ("the short bow has no bow rest", 'if kind == "Bow" or kind == "ShortBow" then -- both bows', 'if kind == "Bow" then -- both bows'),
-    ("the short bow full size", "return buildBow(grip, sc, w, color, 0.75, 15)", "return buildBow(grip, sc, w, color)"),
+    ("A23-150 7: the bow in the left hand again", 'local hand = Util.FindPart(character, "RightHand", "Right Arm")',
+     'local left = kind == "Bow"\n\tlocal hand = Util.FindPart(character, left and "LeftHand" or "RightHand", "Right Arm")'),
+    ("the short bow has no arrow muzzle", 'local isBow = kind == "Bow" or kind == "ShortBow"', 'local isBow = kind == "Bow"'),
+    ("the bow's draw spots in the right hand's space", 'model:SetAttribute("HandMuzzle", toLeft * (main.CFrame * muzzle.CFrame))',
+     'model:SetAttribute("HandMuzzle", hand.CFrame:ToObjectSpace(main.CFrame * muzzle.CFrame))'),
+    ("the short bow full size", "return buildBow(H, sc, w, color, 0.75)", "return buildBow(H, sc, w, color)"),
 ]
 
 

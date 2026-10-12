@@ -2735,6 +2735,43 @@ function Feel.bowDrawDistance(point, aim, offset, shoulder, arm, desired)
 	return value
 end
 
+-- A23-150 7 (user 10/12 night (가) "로블록스 기본 그대로", 활도 오른손): a bow is a Roblox Tool standing in the RIGHT
+-- hand (the engine's RightGrip weld, CharacterVisuals), but the archers' draw (archerPose: the left arm holds the bow,
+-- the right hand pulls the string) is the class's own clip, kept: while an archer clip plays the Handle hangs on the
+-- LEFT hand's grip (a local Weld "BowGrip": LeftGripAttachment, the same Tool.Grip; the RightGrip switched off), after
+-- it back on the right one. The bow's HandMuzzle / HandBowRest are the left hand's (its AttackHand). Only this client's
+-- view, like every Fx pose (every client moves the bows it sees; the server keeps it in the right hand)
+function Feel.bowHand(st, left)
+	local weapon = st.Char:FindFirstChild("WeaponModel")
+	local handle = weapon and weapon:GetAttribute("AttackHand") == "LeftHand" and weapon:FindFirstChild("Handle") or nil
+	local cur = st.BowGrip
+	if cur and (not left or cur.Handle ~= handle) then -- back on the right grip (or the bow was swapped / put away)
+		st.BowGrip = nil
+		pcall(function()
+			cur.Weld:Destroy()
+			if cur.Right.Parent and cur.Right.Part1 == cur.Handle then cur.Right.Enabled = true end
+		end)
+		cur = nil
+	end
+	if not left or cur or not (handle and handle:IsA("BasePart")) then return end
+	local hand, right = st.Char:FindFirstChild("LeftHand"), st.Char:FindFirstChild("RightHand")
+	local rightGrip = right and right:FindFirstChild("RightGrip")
+	if not (hand and rightGrip and rightGrip:IsA("JointInstance") and rightGrip.Part1 == handle) then return end
+	local att = hand:FindFirstChild("LeftGripAttachment")
+	local ok = pcall(function()
+		local weld = Instance.new("Weld")
+		weld.Name = "BowGrip"
+		weld.Part0, weld.Part1 = hand, handle
+		weld.C0 = (att and att:IsA("Attachment")) and att.CFrame
+			or CFrame.new(0, -hand.Size.Y / 2, 0) * CFrame.Angles(-math.pi / 2, 0, 0)
+		weld.C1 = weapon.Grip
+		rightGrip.Enabled = false
+		weld.Parent = handle
+		st.BowGrip = { Weld = weld, Right = rightGrip, Handle = handle }
+	end)
+	if not ok then rightGrip.Enabled = true end
+end
+
 function Feel.archerPose(st, attack, bases, outputs)
 	local ctx = st.AttackContext
 	if not ctx or ctx.Class ~= "Archer" or not Feel.validAttack(ctx) then return end
@@ -3119,6 +3156,7 @@ function Feel.stepChar(st, dt, now)
 	end
 	local attack = st.Layers.Attack
 	local plain = st.AttackContext and not st.AttackContext.Style
+	Feel.bowHand(st, attack ~= nil and attack.Clip ~= nil and plain and st.AttackContext.Class == "Archer")
 	if attack and attack.Clip and plain and st.AttackContext.Class == "Archer" then
 		Feel.archerPose(st, attack, bases, outputs)
 	elseif attack and attack.Clip and plain and st.AttackContext.Class == "Mage" then
@@ -3144,6 +3182,7 @@ end
 -- stops every layer of a character and hands back the joints it still holds
 function Feel.drop(st)
 	Feel.clearWeaponMotion(st)
+	Feel.bowHand(st, false)
 	st.AttackContext = nil
 	if Feel.Active[st] then
 		Feel.Active[st] = nil
@@ -4478,16 +4517,6 @@ handlers.GooseEnd = function(data)
 end
 
 ----------------------------------------------------------------- public API
--- A23-108 (WeaponPose.luau): true while an attack / hurt clip plays on that character (its weapon pose steps aside)
-function Fx.Animating(char)
-	local st = typeof(char) == "Instance" and Feel.Chars[char] or nil
-	return st ~= nil and Feel.Active[st] == true
-end
-
--- A23-108 (WeaponPose: OneHand / OffHand place the hands from the weapon / the body; TwoHand stays for a later two-hand
--- weapon - A23-128 took the great sword away): the bow's two-bone arm solver, shared
-Fx.SolveArm, Fx.ArmGeometry, Fx.JointFrames = Feel.solveArm, Feel.armGeometry, Feel.jointFrames
-
 function Fx.Init(registry)
 	C = registry
 end

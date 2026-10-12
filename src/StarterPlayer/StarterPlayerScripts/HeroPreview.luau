@@ -25,7 +25,8 @@ local L = {
 	Card = Color3.fromRGB(16, 20, 40), -- the PanelCard fallback colour
 	-- CharacterVisuals pieces left out of the copy: the name tag and glows / the grudge ghost (big see-through shapes)
 	Drop = { Nametag = true, GrudgeGhost = true, WantedGlow = true, KaijuFire = true },
-	-- classes the copy never keeps (scripts, UI, sounds, effects, movers: HUD's portrait rule; the weapon is a Model, it stays)
+	-- classes the copy never keeps (scripts, UI, sounds, effects, movers: HUD's portrait rule). A23-150 7: the weapon is a
+	-- Tool now (WeaponModel) - it stays, its parts anchored like the body's
 	Gone = { "LuaSourceContainer", "LayerCollector", "GuiObject", "Tool", "ParticleEmitter", "Trail", "Beam", "Fire", "Smoke",
 		"Sparkles", "Sound", "Light", "Highlight", "BodyMover", "Animator", "AnimationController", "ForceField" },
 }
@@ -44,6 +45,7 @@ local S = {
 -- does the copy keep this instance? (no Drop piece, no Gone class, no physics constraint but welds)
 function HeroPreview.Keep(inst)
 	if L.Drop[inst.Name] then return false end
+	if inst:IsA("Tool") and inst.Name == "WeaponModel" then return true end
 	for _, cls in L.Gone do
 		if inst:IsA(cls) then return false end
 	end

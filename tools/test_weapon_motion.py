@@ -362,7 +362,7 @@ local function node(kind,name,props)
     local n=props or {}
     n.__type,n.ClassName,n.Name,n.Children,n.Attributes="Instance",kind,name,{},{}
     n.Parent=true
-    function n:IsA(k) return k==kind or (k=="BasePart" and kind=="Part") end
+    function n:IsA(k) return k==kind or (k=="BasePart" and kind=="Part") or (k=="JointInstance" and kind=="Weld") or (k=="Model" and kind=="Tool") end
     function n:FindFirstChild(key,recurse)
         for _,c in self.Children do if c.Name==key and not c.Destroyed then return c end end
         if recurse then for _,c in self.Children do local found=c:FindFirstChild(key,true);if found then return found end end end
@@ -424,10 +424,16 @@ local Instance={new=function(kind)
 end}
 local function newPiece(name) return node("Model",name) end
 local function sparkle()end
-local function mount(model,parts,char,hand)
-    model.HandFrames={};model.HandPart=hand
-    for _,p in parts do model.HandFrames[p]=hand.CFrame:ToObjectSpace(p.CFrame);child(model,p) end
+-- A23-150 7: the weapon is a Tool; every part hangs on its Handle (base) and the engine's RightGrip weld holds the Handle
+-- on the right hand's grip (C0 = RightGripAttachment, C1 = Tool.Grip) - an old RightGrip goes with the old Tool
+local function mount(model,parts,char,base)
+    model.HandFrames={};model.HandPart=base
+    for _,p in parts do model.HandFrames[p]=base.CFrame:ToObjectSpace(p.CFrame);child(model,p) end
     child(char,model)
+    local hand=char:FindFirstChild("RightHand")
+    local old=hand:FindFirstChild("RightGrip");if old then old:Destroy() end
+    local att=hand:FindFirstChild("RightGripAttachment")
+    child(hand,node("Weld","RightGrip",{Part0=hand,Part1=base,C0=att.CFrame,C1=model.Grip,Enabled=true}))
 end
 '''
 
@@ -508,7 +514,15 @@ local function fixture(data,kind)
         end
         local equipped=char:FindFirstChild("WeaponModel")
         if equipped.HandFrames then
-            for part,relative in equipped.HandFrames do part.CFrame=equipped.HandPart.CFrame*relative end
+            -- the Handle where its live grip weld holds it: the engine's RightGrip, or Fx's BowGrip while an archer draws
+            local handle=equipped.HandPart
+            local weld=nil
+            local rightGrip=parts.RightHand:FindFirstChild("RightGrip")
+            if rightGrip and rightGrip.Enabled and rightGrip.Part1==handle then weld=rightGrip end
+            local bowGrip=handle:FindFirstChild("BowGrip")
+            if bowGrip and bowGrip.Enabled~=false then weld=bowGrip end
+            if weld then handle.CFrame=weld.Part0.CFrame*weld.C0*weld.C1:Inverse() end
+            for part,relative in equipped.HandFrames do part.CFrame=handle.CFrame*relative end
             local actual=equipped:FindFirstChild("AttackMuzzle",true)
             if actual then actual.WorldPosition=actual.Parent.CFrame*actual.Position end
             local actualNock=equipped:FindFirstChild("BowNock",true)
@@ -518,7 +532,7 @@ local function fixture(data,kind)
     fk({})
     buildWeapon(p,char)
     weapon=char:FindFirstChild("WeaponModel")
-    main=weapon:FindFirstChild("Arc3")
+    main=weapon:FindFirstChild("Handle") -- A23-150 7: the bow's riser is its Handle
     muzzle=main:FindFirstChild("AttackMuzzle")
     stringPart=weapon:FindFirstChild("String")
     nock=stringPart:FindFirstChild("BowNock")
@@ -592,9 +606,13 @@ for _,data in FIXTURES do
             local base,out={},{}
             for joint in st.Joints do base[joint]=CFrame.identity end
             for joint,track in attack.Clip.Joints do out[joint]=Feel.sample(track,Feel.archerPhase(attack)) end
+            Feel.bowHand(st,true) -- A23-150 7: the bow from the right hand onto the left grip for the draw
+            check(st.BowGrip~=nil and not parts.RightHand:FindFirstChild("RightGrip").Enabled,data.name..": the draw moves the bow to the left hand")
             Feel.archerPose(st,attack,base,out)
             check(out.LeftWrist and out.RightWrist,data.name..": both hands solved at launch")
             fk(out)
+            local actualMuzzle=weapon:FindFirstChild("Handle").CFrame*muzzle.CFrame
+            check(same(actualMuzzle,parts.LeftHand.CFrame*weapon.Attributes.HandMuzzle),data.name..": the bow in the left hand matches its HandMuzzle")
             local hand=Feel.handPoint(st.Char,false)
             local muzzleCF=parts.LeftHand.CFrame*weapon.Attributes.HandMuzzle
             local aim=(st.AttackTarget-muzzleCF.Position).Unit
@@ -633,6 +651,8 @@ for _,data in FIXTURES do
             Feel.stepChar(st,0,1000)
             for key,m in st.Joints do check(same(m.Transform,previous[key]),data.name..": no additive frame drift "..key) end
             Feel.drop(st);recovered(st)
+            check(st.BowGrip==nil and parts.RightHand:FindFirstChild("RightGrip").Enabled and weapon:FindFirstChild("Handle"):FindFirstChild("BowGrip")==nil,
+                data.name..": after the draw the bow is back on the right grip")
             metrics[data.name.."/"..kind.."/"..name]={ForwardDot=muzzleCF.LookVector:Dot(aim),HandAxisError=(muzzleCF.Position-hand):Cross(aim).Magnitude}
         end
         for _,class in {"Warrior","Mage","Archer"} do
@@ -663,7 +683,7 @@ for _,data in FIXTURES do
                     local origin=equipped:FindFirstChild("AttackMuzzle",true).WorldPosition
                     local direction=(target-origin).Unit
                     check(main.CFrame.UpVector:Dot(direction)>.999999,data.name..": actual staff/cast target axis")
-                    local shaft=equipped:FindFirstChild("Shaft")
+                    local shaft=equipped:FindFirstChild("Handle") -- A23-150 7: the staff's shaft is its Handle
                     local grip=shaft.CFrame:PointToObjectSpace(Feel.handPoint(st.Char,false))
                     check(math.sqrt(grip.X*grip.X+grip.Z*grip.Z)<1e-5,data.name..": actual staff grip centreline")
                     check(math.abs(grip.Y)<shaft.Size.Y*.5,data.name..": hand within actual shaft length")
@@ -671,7 +691,10 @@ for _,data in FIXTURES do
                 elseif class=="Warrior" then
                     local handle=equipped:FindFirstChild("Handle")
                     local grip=handle.CFrame:PointToObjectSpace(Feel.handPoint(st.Char,false))
-                    check(grip.Magnitude<1e-5,data.name..": actual sword handle held in right hand")
+                    -- A23-150 7: the fist on the hilt's Config.WeaponGrips Point (above its middle, towards the guard), on
+                    -- its centreline
+                    check(near(grip,Config.WeaponGrip("Sword",handle.Size.Y).Position) and grip.Y>0,
+                        data.name..": actual sword handle held in right hand")
                 end
                 Feel.drop(st)
             end
@@ -752,12 +775,17 @@ def main():
         names.insert(names.index("archerPose"), "bowAim")
     if "function Feel.bowDrawDistance(" in source:
         names.insert(names.index("archerPose"), "bowDrawDistance")
+    # A23-150 7: the bow's hand-over (the right hand's Tool onto the left grip while an archer draws)
+    if "function Feel.bowHand(" in source:
+        names.insert(names.index("archerPose"), "bowHand")
     harness = MATH + motion + "\n" + "\n".join(source_function(source, n) for n in names)
     config = (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8")
     harness += "\n" + config[config.index("Config.Weapons = {"):config.index("-- display names per class")]
     visuals = VISUALS.read_text(encoding="utf-8")
+    # A23-150 7: the grip table (Config.WeaponGrips / WeaponGripOf / WeaponGrip) and the fist's frame (gripFrame)
+    harness += "\n" + config[config.index("Config.WeaponGrips = {"):config.index("Config.Combo = {")]
     helper_names = ["attrNum", "attrStr", "getFaction", "getClass", "charScale", "clearChild", "accPart",
-                    "gripCFrame", "fist", "buildSword", "buildStaff", "buildBow", "buildWeapon"]
+                    "gripFrame", "buildSword", "buildStaff", "buildBow", "buildWeapon"]
     # 검수 10/11 staff grip: buildStaff reads STAFF / staffLow (where the hand holds the shaft)
     if "local function staffLow(" in visuals:
         helper_names.insert(helper_names.index("buildStaff"), "staffLow")

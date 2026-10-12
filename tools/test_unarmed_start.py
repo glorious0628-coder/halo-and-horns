@@ -56,7 +56,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         + "\nreturn JusticeService\n")
     visuals = sources["VISUALS_SOURCE"]
     out["VISUALS_EXTRACT"] = (
-        "local Config, Util, clearChild, getClass, charScale, gripCFrame, buildStaff, buildBow, buildSword, addLight, "
+        "local Config, Util, clearChild, getClass, charScale, gripFrame, buildStaff, buildBow, buildSword, addLight, "
         "sparkle, newPiece, getFaction, mount, buildBaton = ...\n"
         + function_block(visuals, "local function attrNum(")
         + function_block(visuals, "local function buildWeapon(")

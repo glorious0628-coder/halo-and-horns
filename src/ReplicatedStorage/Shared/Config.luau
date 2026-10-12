@@ -6110,79 +6110,69 @@ Config.QuickSlots = {
 }
 
 -- A23-108 (user 2026-10-10 "직업별로 무기 쥐는 법 이런 것도 다 해야 된다"; docs/design/class_grips_a23_108_2026-10-10.md):
--- each class x faction holds its weapon its own way. Key = Config.ClassGripKey(class, faction) ("Warrior_Halo" ... ,
--- a class alone without a side). Weapon = what the hand holds (CharacterVisuals proposal, game dev 3 checks); Hold =
--- the standing pose WeaponPose.luau adds over Roblox's idle / walk while the weapon is out and no attack plays
--- (degrees in joint space like Fx MOTION.CLIPS: +rx raises an arm forward / leans back, +rz swings an arm to the
--- character's right, +ry turns left); Walk = the share of the shoulders' rx kept while walking (the walk swing shows).
--- 고침 2026-10-10 (검수 grip sheet): every weapon goes through the fist (CharacterVisuals fist()), so the weapon's tilt up
--- from forward = the arm's shoulder + elbow + wrist rx: ~90 = upright (staffs, hammer, flask, bows), ~50 = up and ahead
+-- the weapon each class x faction holds. Key = Config.ClassGripKey(class, faction) ("Warrior_Halo" ... , a class alone
+-- without a side). Weapon = the kind CharacterVisuals builds (a SHAPES builder or the old Sword / Staff / Bow / Baton);
+-- how the hand holds it = Config.WeaponGrips[Weapon] below.
+-- A23-150 7 (user 10/12 night (가) "로블록스 기본 그대로"): the standing / walking hold is Roblox's own - the weapon is a
+-- Tool, the default Animate holds it (toolnone: the right arm forward at shoulder height, the weapon upright) - so the
+-- old per-class standing poses (Hold / Walk / OneHand / OffHand / TwoHand, WeaponPose.luau) are gone. The attacks stay
+-- each class x side's own clips (Fx MOTION.SIDE_CLIPS / CLASS_CLIPS).
 Config.ClassGrips = {
-	-- A23-128 (user 2026-10-11 "한손검만 쓸 수 있게 하자", 검수 picked one-hand only): both warriors hold a ONE-hand
-	-- sword in the right hand, standing ready at the side (references docs/design/grip_reference_2026-10-11.md §1-8: the
-	-- fist wraps the handle - hammer / handshake grip - the hand in line with the hanging arm, the elbow bent low and
-	-- close, the forearm a little down and forward, the tip ahead and up). No sword across the body, no great sword, no
-	-- two-hand grip; the left hand is empty and hangs as Roblox's idle / walk move it (no OffHand: a shield comes with
-	-- its model). OneHand Pole = where the elbow bends (torso space; default WeaponPose T.PoleRight, down and out).
-	-- 검수 10/11 (fix/onehand review): the forearm and the hand stay OUT of the torso / hip (the hand just outside the
-	-- hanging arm's line, at the waist, a little ahead; the elbow back near the hanging arm's line, not tucked in), the
-	-- wrist nearly straight (<= 30 degrees), the handle and pommel clear of the swinging thigh
-	-- 최종 검수 10/11 (the two sides stood alike; GDD §0 angel / devil): the Paladin stands tall, chest out and chin up
-	-- (Waist / Neck +3 = leaning back, this table's sign), the Berserker leans in and hunches (Waist -10, Neck -6: head
-	-- down) with his tip lower (40 degrees); the grips stay the same (the hands live in torso space)
-	-- 최종 검수 10/12 (user "아바타 팔이 왜이럼?", main photo arm_probe: from the front the sword arm looked short and
-	-- folded, the hand in front of the waist): both warriors' hands 0.2 lower (hip height) and 0.2 less ahead, so the arm
-	-- hangs nearly straight (reach 0.83 -> 0.91 of the arm) with the forearm a little forward, the tip still 45 / 40 up
-	-- Paladin: the straight sword, its tip ahead and 45 degrees up
-	Warrior_Halo = { Weapon = "Sword", Walk = 0.6, Hold = { Waist = { 3, 0, 0 }, Neck = { 3, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.4), Aim = Vector3.new(0.05, 0.7, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
-	-- Berserker: the dark one-hand sword (CharacterVisuals SHAPES.DarkSword), a little further ahead, its tip 40 degrees up
-	-- and a touch out
-	Warrior_Horns = { Weapon = "DarkSword", Walk = 0.5, Hold = { Waist = { -10, 0, 0 }, Neck = { -6, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.65, -1.05, -0.45), Aim = Vector3.new(0.1, 0.6, -0.7), Pole = Vector3.new(0.6, -0.6, 0.8) } },
-	-- Blacksmith: the hammer held up at the side, head up, the left hand on the hip (OffHand: the back of the hand on the
-	-- waist's side, the elbow out - grip_reference §1-7; At scales with the body)
-	Warrior_Neutral = { Weapon = "Hammer", Walk = 0.6, Hold = { RightShoulder = { 18, 0, 10 }, RightElbow = { 68, 0, 0 } },
-		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
-	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
-	-- 검수 10/11 + grip_reference §1: the staff stands upright at the side, close to the body (OneHand: the right hand placed
-	-- from the staff, WeaponPose; studs in UpperTorso space), held a little above its middle (CharacterVisuals staffLow)
-	-- 최종 검수 10/12 (the staff held lower, grip_reference §5-6): the hand comes down from the chest (2.9 studs) as far as
-	-- the wrist allows - a staff upright in a fist needs the forearm near level, each 10 degrees it drops bends the wrist
-	-- 10 degrees towards the thumb (normal 15 .. 25): the hand out of the torso at the side, a little ahead, the elbow
-	-- back (Pole). Light 2.71, Alchemist 2.66 over the ground. 최종 검수 10/12 (main photo: the Dark Mage's staff lay
-	-- across the body - its 11 degrees + the 8 degree hunch): every staff stands within 10 degrees of upright in the WORLD,
-	-- the Dark Mage's square to his hunched torso (8 degrees in the world), so his hand is as high as the Light Mage's -
-	-- the sides differ by the body (Waist / Neck) and the crook, not by a slanted staff. 디자인 검수 10/12 (staff_short_v2
-	-- side photo: the orb right beside / in front of the face): the hand 0.4 further ahead and every staff splayed 5 degrees
-	-- out, so the orb sits ahead of and outside the face (torso space: z <= -1.05, x >= 1.3) from the side and the front.
-	-- 최종 검수 10/13 (side photo staff_front_v3f: the flask just over the Alchemist's chin): his hand 0.1 further ahead
-	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2), Aim = Vector3.new(0.09, 1, -0.05), Pole = Vector3.new(0.2, -0.1, 0.4) },
-		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
-	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
-	-- 검수 10/11 main photo: the free left hand floated out at the side -> on the hip like the artisans (OffHand)
-	-- 게임성 검수 10/11: Waist was +8 = leaning BACK (this table's sign) against the "hunched" note -> -8 (leaning in)
-	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.5, -0.5, -1.2), Aim = Vector3.new(0.09, 1, 0), Pole = Vector3.new(0.2, -0.4, 0.2) },
-		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
-	-- Alchemist: 최종 검수 10/12 (the approved 2D: a staff with a flask, CharacterVisuals SHAPES.FlaskStaff) held like the
-	-- mages' staffs at the side, nearly upright (6 degrees), the left hand on the hip; it throws with the right hand (the
-	-- Mage clips stay right-handed)
-	Mage_Neutral = { Weapon = "FlaskStaff", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.3), Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },
-		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
-	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
-	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
-		RightShoulder = { 6, 0, 6 } } },
-	-- Shadow Hunter: low and quiet, the short bow upright and a little tilted in front (게임성 검수 10/11: Waist +12 leaned
-	-- back against "low" -> -12, leaning in)
-	Archer_Horns = { Weapon = "ShortBow", Walk = 0.5, Hold = { Waist = { -12, 0, 0 }, Neck = { -8, 0, 0 },
-		LeftShoulder = { 30, 0, -10 }, LeftElbow = { 55, 0, 0 }, RightShoulder = { 10, 0, 6 } } },
-	-- Pet Tamer: the baton pointing ahead, the left hand on the hip
-	Archer_Neutral = { Weapon = "Baton", Walk = 0.6, Hold = { RightShoulder = { 36, 0, 8 }, RightElbow = { 42, 0, 0 },
-		RightWrist = { -30, 0, 0 } }, OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
+	Warrior_Halo = { Weapon = "Sword" }, -- Paladin: the straight one-hand sword (A23-128)
+	Warrior_Horns = { Weapon = "DarkSword" }, -- Berserker: the dark one-hand sword (A23-128)
+	Warrior_Neutral = { Weapon = "Hammer" }, -- Blacksmith
+	Mage_Halo = { Weapon = "Staff" }, -- Light Mage
+	Mage_Horns = { Weapon = "CrookStaff" }, -- Dark Mage
+	Mage_Neutral = { Weapon = "FlaskStaff" }, -- Alchemist (the approved 2D: a staff with a flask)
+	Archer_Halo = { Weapon = "Bow" }, -- Ranger
+	Archer_Horns = { Weapon = "ShortBow" }, -- Shadow Hunter
+	Archer_Neutral = { Weapon = "Baton" }, -- Pet Tamer
 }
+
+-- A23-150 7 (user 10/12 night (가); table docs/design/weapon_grip_plan_2026-10-12.md, sheet
+-- art/review/grip/grip_plan_sheet_2026-10-12.png): the grip table, one place. Every weapon is a Roblox Tool held in the
+-- RIGHT hand (bows too): its part "Handle" hangs on the hand's RightGripAttachment by the engine's RightGrip weld with
+-- Tool.Grip = Config.WeaponGrip(kind, handle length). The Handle is the part the fist wraps (the hilt, the shaft, the
+-- bow's riser) and its +Y is the weapon's long axis (to the blade / head / orb). Point = where the fist holds the Handle,
+-- a share of its length up from its bottom end (the sword just under the guard 0.75, staffs 0.45 so the orb sits higher
+-- over the hand, the hammer and the baton low 0.3, the bow's riser in its middle 0.5). Turn = { x, y, z } degrees the
+-- Handle is turned in the fist (the grip attachment's axes: +Y = the knuckle line, +Z = towards the wrist): 0 = upright
+-- when the arm is forward (Roblox's own hold); the Shadow Hunter's short bow is canted 15 degrees. The Dark Mage's crook
+-- staff takes the staffs' row and the short bow the bow's (the user's sheet showed seven kinds). The fist's frame is
+-- Roblox's (R15 RightGripAttachment = 0.15 under the hand turned -90 degrees about X); the old per-weapon fist() angle
+-- in CharacterVisuals is gone. The swords follow Roblox's ClassicSword (메인 반영 1 10/13, main_apply/classic_sword:
+-- Tool.Grip (0, 0, -1.5) on its 4-stud handle mesh; side photo: the fist's middle 74% up the hilt from the pommel end,
+-- its top against the guard): 0.75 of our 1.2-stud hilt (the table's first 0.6 left a gap under the guard).
+Config.WeaponGrips = {
+	Sword = { Point = 0.75 },
+	DarkSword = { Point = 0.75 },
+	Bow = { Point = 0.5 },
+	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
+	Staff = { Point = 0.45 },
+	CrookStaff = { Point = 0.45 },
+	FlaskStaff = { Point = 0.45 },
+	Hammer = { Point = 0.3 },
+	Baton = { Point = 0.3 },
+}
+
+-- (pure) the grip row of a weapon kind (a kind without a row: the sword's)
+function Config.WeaponGripOf(kind)
+	local rows = Config.WeaponGrips
+	local row = type(kind) == "string" and rows[kind] or nil
+	return type(row) == "table" and row or rows.Sword
+end
+
+-- (pure) the Tool.Grip of a weapon kind whose Handle is len studs long: the grip point (0, (Point - 0.5) x len, 0) on the
+-- Handle, turned by Turn. The engine then puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's
+-- frame in the fist = CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
+function Config.WeaponGrip(kind, len)
+	local row = Config.WeaponGripOf(kind)
+	local point = math.clamp(tonumber(row.Point) or 0.5, 0, 1)
+	local turn = type(row.Turn) == "table" and row.Turn or {}
+	local angles = CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
+	return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
+end
+
 function Config.ClassGripKey(classId, faction)
 	if type(classId) ~= "string" then return nil end
 	if faction == "Halo" or faction == "Horns" or faction == "Neutral" then return classId .. "_" .. faction end
