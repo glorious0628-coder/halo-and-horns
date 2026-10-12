@@ -631,6 +631,11 @@ function L.PowerText(n)
 end
 
 function L.PowerOpen()
+	-- 게임성 검수 10/12: the face / power line obeys the Hero tile's lock (before Lv 2 it only wiggles the tile)
+	if L.TileLocked("Character") then
+		L.TileWiggle("Character")
+		return
+	end
 	local P = C and C.Panels
 	if type(P) == "table" and type(P.Has) == "function" and P.Has("Character") then pcall(P.Open, "Character") end
 end

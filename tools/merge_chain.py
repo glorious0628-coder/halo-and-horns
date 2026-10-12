@@ -5,7 +5,8 @@ tree, export the result for offline tests, then push with a real check that the 
       -> merge commits on origin/main (one per branch, in order), prints "FINAL <sha>", exports src/ tools/ docs/design
          of FINAL into <outdir>/tree (copy build/luau_cli_0_741 and build/*.luau in before running tools/test_*.py)
   py tools/merge_chain.py push <tested-final-sha> <commit>=<title> [...]
-  (both take --ours <path> [--ours <path> ...]: a conflicted non-src file keeps main's version, e.g. an old state doc)
+  (both take --ours <path> [--ours <path> ...]: a conflicted non-src file keeps main's version, e.g. an old state doc;
+   a value ending in * is a prefix, e.g. --ours 'docs/art/verification_*' for generated test reports)
       -> rebuilds the same chain on the newest origin/main, refuses unless src/ is byte-identical to the tested FINAL,
          pushes, fetches and checks every branch commit is an ancestor of origin/main; retries while others push art/docs
 
@@ -70,7 +71,7 @@ def build_chain(specs):
                 run("read-tree", tree, env=env)
                 kept = []
                 for f in files:
-                    if f in OURS and not f.startswith("src/"):
+                    if (f in OURS or any(o.endswith("*") and f.startswith(o[:-1]) for o in OURS)) and not f.startswith("src/"):
                         ob = out("rev-parse", f"{cur}:{f}")
                         run("update-index", "--cacheinfo", f"100644,{ob},{f}", env=env)
                         print(f"  took main's side (--ours) for {f}")

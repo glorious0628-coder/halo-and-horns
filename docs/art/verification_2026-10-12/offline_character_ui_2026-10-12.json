@@ -1,0 +1,254 @@
+{
+  "checks": 129,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "registers under another id",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no text table",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Open ignores the tab",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "unowned weapons show",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the worn weapon only when owned",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "weapons sorted by tier number",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the worn weapon not first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the worn weapon can be equipped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a locked weapon says Equip",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a waiting request is not shown",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no fight tag",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "two requests may wait",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "unowned titles listed",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an unowned selection stays",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Auto is never current",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a pet cell without pets",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the next rank is the same one",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no top rank line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "rebirth rows without data",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "two equips at once",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the rate gap ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a request waits for nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "equip below the level",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "equip in a fight",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the answered weapon never ends the wait",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the shown title is sent again",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "SetTitle sends the name",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a watched attribute does not redraw",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the Stats page never shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an equip button never switches off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the weapon cell opens nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no empty cells in the fallback",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a Pet cell always",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "its own cells beside GearSlots",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Build on every open",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "GearSlots.Refresh never called",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a new frame every open",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the frame stays in the closed window",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "opts.Refresh does nothing",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the layout ignores the frame's size",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an empty size is taken as it is",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the open window never lays out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a failed Build is kept",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a failed Build leaves its cells",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a failed Build is not reported",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a Back word written in code",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "CharacterUI is never loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "CharacterUI before BagUI",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the window has no title icon",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "BB8 Hero window \"Character\" (CharacterUI, 게임성 개발 1, 2026-10-12; design docs/design/beta_basics_2026-10-05.md BB8, SPEC\nA23-48 English only / A23-78 E key / A23-99 / A23-111 text tables / A23-130 / A23-133 gear row), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and CharacterUI.luau in tools/fixtures/character_ui_offline.luau\n(Players / Instance tree / Panels / UIKit doubles, a fake GearSlots and PetWindow). Checks: the window registers as \"Character\"\n(fixed body, redraws itself, an L10n text table); the pure model - Weapons() lists the owned tiers + the worn one, worn first\nthen by Damage; EquipState words and enabled flags (Equipped / From Lv N / Checking… / In a fight / Equip); Titles() = Auto +\nthe owned titles in Config.TitleOrder, exactly one current, an unowned selection falls back to Auto; PetState() nil without\npets; NextRank() names / points, nil at the top; StatRows(); Equip(tier) fires EquipWeapon once (a second press inside the\nrate gap and a second request while one waits send nothing); SetTitle(id) fires SetTitle (\"\" = Auto). The GEAR CELL RULE:\nwith a GearSlots (a table with Build) CharacterUI draws NO cell of its own - GearSlots.Build(EquipSlotsFrame, { Refresh })\nruns once across opens, GearSlots.Refresh() on every open, opts.Refresh lays the window out around the frame's new size\n(the title list moves beside it), a failing Build = the fallback; WITHOUT GearSlots the fallback draws the Weapon cell (opens\nthe owned list with [Equip]), the Pet cell (only with pets) and four SlotEmpty cells. Every text the window shows is a TXT\nline, a Config name or a number (runtime scan) and no text is a literal in a Text = / label / Button call (static scan).\nStatic: ClientMain loads CharacterUI right after BagUI; Panels' title icon; the HUD Hero tile / E key. Mutations: each must be\ncaught.",
+  "studioCalls": 0
+}

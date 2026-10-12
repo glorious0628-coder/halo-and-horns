@@ -88,3 +88,5 @@
 24. **api/dev1-character-ui-2 537331d4**: Settings 닉네임 줄 = Hero 잠김(Lv<2) 동안 남김(SettingsUI.NicknameRow). 최종 검수에 보고.
 25. **fix/character-ui a5f6abd0** (= api/dev1-character-ui-2): 537331d4 + merge dev4-gear-slots 01a3fc3b + dev4-market-window 3bd187d9, ORDER 손으로 한 줄(GearSlots UIKit 다음, MarketWindow CraftWindow 다음). 11개 시험 통과, 최종 검수에 보고.
 - 큐 뒤(개발 4 쉬는 중, 그 두 가지 켜기 전): 마켓 시간 글 1:05, 팔린 줄 수수료, T1 여분 — 최종 검수 10/13 지시, 자세한 건 최종 검수에 물어 확인.
+26. character-ui 묶음 a5f6abd0 = main 3feb3232 병합됨. **fix/staff-face2 025b7fb6** (15bf290f 뿔 갈고리 앞으로·연금술사 z -1.3 + main merge): 최종 검수에 보고, 사진 = tools/play_mage_staff_photos.py.
+- 거위 광장 낮은 것 3개 = 개발 2가 서버+화면 한 가지로 합치는 중 → 그쪽에 맞춤(먼저 손대지 않음).
