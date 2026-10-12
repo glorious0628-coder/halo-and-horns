@@ -11,7 +11,8 @@
   ],
   "r": 7.6,
   "no_white": true,
-  "no_leaf": true
+  "no_leaf": true,
+  "fix": "lathe"
  },
  "metal": [],
  "door": {

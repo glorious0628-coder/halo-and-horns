@@ -13,7 +13,8 @@
   "fix": "oct",
   "offset": -0.5,
   "no_white": true,
-  "no_leaf": true
+  "no_leaf": true,
+  "loft": true
  },
  "lantern": {
   "box": [

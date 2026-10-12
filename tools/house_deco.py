@@ -329,6 +329,20 @@ import proj_bake  # noqa: E402
 WORK = os.path.join(ROOT, "art", "models", "tripo", "house_deco", NAME)
 
 
+def gold_material(name):
+    """the approved gold (HH_HaloGoldTrim part colour 255,168,36), no maps: Studio gives every part without a
+    SurfaceAppearance Metal + HH_HaloGoldTrim (tools/house_deco_studio.py), the engine draws the shading. 디자인 검수 10/12
+    ('멍든 돔'): Tripo's paint carries baked shadow (AO) blotches, so gold domes / caps are plain like 09"""
+    gr = np.array([255, 168, 36]) / 255.0
+    gm = bpy.data.materials.new(name)
+    gm.use_nodes = True
+    pb_ = gm.node_tree.nodes["Principled BSDF"]
+    pb_.inputs["Base Color"].default_value = (*[c_ / 12.92 if c_ <= 0.04045 else ((c_ + 0.055) / 1.055) ** 2.4 for c_ in gr], 1)
+    pb_.inputs["Metallic"].default_value = 1.0
+    pb_.inputs["Roughness"].default_value = 0.28
+    return gm
+
+
 def lathe_profile(objs, bands=28, samples=40000):
     """outer silhouette r(z) of pieces standing on z 0 round the z axis: area-weighted surface samples, 92nd percentile
     radius per height band, lightly smoothed, closed to a pole on top"""
@@ -488,14 +502,98 @@ if "dome" in PR and PR["dome"].get("fix") == "oct":
         # left-right symmetric: every vertex's |x - ctx| averaged with its mirror partner is not needed for the fit;
         # the per-axis fit keeps Tripo's 8 facets and ribs and puts its eave box on the plan octagon's box
         sl = SLOTS[d.get("slot", "Dome")]
-        apply(ps, Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @
-              Matrix.Diagonal((kx, ky, kz, 1.0)) @ Matrix.Translation((-ctx, -cty, -zb)))
-        tidy_normals(ps)
-        out_objs += ps
-        rep = {"fix": "oct: Tripo's octagon box -> the plan octagon box %+.2f (x %.3f, y %.3f, z %.3f), facets / ribs kept" % (
-            d.get("offset", -0.6), kx, ky, kz), "faces": sum(len(o.data.polygons) for o in ps)}
-        REPORT["pieces"]["Dome"] = rep
-        print("[deco] dome (oct)", rep, flush=True)
+        if d.get("loft"):
+            # 디자인 검수 10/12 ('멍든 돔'): Tripo's octagon had a torn front-left facet, slivers and baked-shadow paint ->
+            # an exact octagonal dome: every ring = the plan octagon (offset) shrunk by Tripo's own height profile s(z),
+            # each facet its own smooth strip (crisp corners), exact ribs on the 8 corners, plain approved gold
+            apply(ps, Matrix.Translation((-ctx, -cty, -zb)))
+            prof = lathe_profile(ps, d.get("bands", 28))
+            r0_ = max(prof[0][0], 1e-3)
+            prof = [(r_ / r0_, z_ * kz) for r_, z_ in prof]                 # (scale of the plan octagon, height in studs)
+            bc = d.get("base_cut", 0.0)
+            if bc > 0:
+                sb_ = float(np.interp(bc, [z_ for _, z_ in prof], [s_ for s_, _ in prof]))
+                prof = [(sb_, 0.0), (sb_, bc)] + [(s_, z_) for s_, z_ in prof if z_ > bc]
+            if prof[-1][0] > 1e-3:
+                prof.append((0.0, prof[-1][1]))
+            PV = np.array(poly, float)
+            n8 = len(PV)
+            me = bpy.data.meshes.new(NAME + "_Dome")
+            bm = bmesh.new()
+            for i in range(n8):
+                a_, b_ = PV[i], PV[(i + 1) % n8]
+                prev = None
+                for s_, z_ in prof:
+                    if s_ < 1e-3:
+                        top = bm.verts.new((0.0, 0.0, z_))
+                        if prev:
+                            bm.faces.new((prev[0], prev[1], top))
+                        break
+                    row = [bm.verts.new((a_[0] * s_, a_[1] * s_, z_)), bm.verts.new((b_[0] * s_, b_[1] * s_, z_))]
+                    if prev:
+                        bm.faces.new((prev[0], prev[1], row[1], row[0]))
+                    prev = row
+            bm.faces.new([bm.verts.new((q[0] * prof[0][0], q[1] * prof[0][0], 0.0)) for q in PV])     # bottom
+            bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+            bm.to_mesh(me)
+            bm.free()
+            dome_o = bpy.data.objects.new(NAME + "_Dome", me)
+            bpy.context.scene.collection.objects.link(dome_o)
+            me.shade_smooth()
+            # ribs: a box strip on every corner line (corner x s(z)), pushed out along the corner bisector
+            area_ = sum(PV[i, 0] * PV[(i + 1) % n8, 1] - PV[(i + 1) % n8, 0] * PV[i, 1] for i in range(n8))
+            sg_ = 1 if area_ > 0 else -1
+            rib_w, rib_out = d.get("rib_w", 0.22), d.get("rib_out", 0.1)
+            me2 = bpy.data.meshes.new(NAME + "_DomeRibs")
+            bm = bmesh.new()
+            for i in range(n8):
+                e0 = PV[i] - PV[i - 1]
+                e1 = PV[(i + 1) % n8] - PV[i]
+                n0 = np.array([e0[1], -e0[0]]) * sg_ / np.linalg.norm(e0)
+                n1 = np.array([e1[1], -e1[0]]) * sg_ / np.linalg.norm(e1)
+                bis = (n0 + n1) / np.linalg.norm(n0 + n1)
+                tg = np.array([-bis[1], bis[0]])
+                rows = []
+                for s_, z_ in prof:
+                    if s_ < 0.18 or z_ < bc:
+                        continue
+                    c_ = PV[i] * s_
+                    rows.append([bm.verts.new((c_[0] + tg[0] * sw * rib_w / 2 + bis[0] * o_, c_[1] + tg[1] * sw * rib_w / 2 + bis[1] * o_, z_))
+                                 for sw, o_ in ((-1, -0.02), (-1, rib_out), (1, rib_out), (1, -0.02))])
+                for r0q, r1q in zip(rows, rows[1:]):
+                    for q_ in range(3):
+                        bm.faces.new((r0q[q_], r0q[q_ + 1], r1q[q_ + 1], r1q[q_]))
+                if rows:
+                    bm.faces.new(rows[0][::-1])
+                    bm.faces.new(rows[-1])
+            bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+            bm.to_mesh(me2)
+            bm.free()
+            ribs_o = bpy.data.objects.new(NAME + "_DomeRibs", me2)
+            bpy.context.scene.collection.objects.link(ribs_o)
+            me2.shade_smooth()
+            gm = gold_material(NAME + "_DomeGold")
+            dome_o.data.materials.append(gm)
+            ribs_o.data.materials.append(gm)
+            for o in ps:
+                bpy.data.objects.remove(o)
+            ps = [dome_o, ribs_o]
+            apply(ps, Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))))
+            out_objs += ps
+            rep = {"fix": "oct loft", "fix_shape": "lathe: exact octagonal loft, %d rings of the plan octagon %+.2f x Tripo's height profile "
+                   "(h %.2f), %d exact corner ribs, plain approved gold 255,168,36" % (len(prof), d.get("offset", -0.6), prof[-1][1], n8),
+                   "faces": sum(len(o.data.polygons) for o in ps)}
+            REPORT["pieces"]["Dome"] = rep
+            print("[deco] dome (oct loft)", rep, flush=True)
+        else:
+            apply(ps, Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @
+                  Matrix.Diagonal((kx, ky, kz, 1.0)) @ Matrix.Translation((-ctx, -cty, -zb)))
+            tidy_normals(ps)
+            out_objs += ps
+            rep = {"fix": "oct: Tripo's octagon box -> the plan octagon box %+.2f (x %.3f, y %.3f, z %.3f), facets / ribs kept" % (
+                d.get("offset", -0.6), kx, ky, kz), "faces": sum(len(o.data.polygons) for o in ps)}
+            REPORT["pieces"]["Dome"] = rep
+            print("[deco] dome (oct)", rep, flush=True)
 elif "dome" in PR:
     d = PR["dome"]
     ps = cut("DomeTmp", dict(d, cyl=d, white_below=d.get("white_below", d["z"][0] + 0.8)))
@@ -515,6 +613,11 @@ elif "dome" in PR:
             # (gold, rib lines, shine) is projected from the nearest point; no relief taken (the dent would come back)
             apply(ps, Matrix.Translation((-axis[0], -axis[1], -zb)))
             prof = lathe_profile(ps, d.get("bands", 40))
+            if d.get("profile"):
+                # 디자인 검수 10/12: a torn Tripo dome (10 = half an open shell, 01 = shards over the cupola) is turned from
+                # the 2D's own outline instead (tools/dome_profile_2d.py, studs, base on z 0): the slot scale is not used
+                prof = [(float(r_), float(z_)) for r_, z_ in d["profile"]]
+                k = 1.0
             if d.get("profile_from"):                   # a messy foot: the clean upper outline, straight down below it
                 zt_ = max(z_ for _, z_ in prof)
                 z0_ = d["profile_from"] * zt_
@@ -524,7 +627,7 @@ elif "dome" in PR:
             if bc > 0:
                 rb = float(np.interp(bc, [z_ for _, z_ in prof], [r_ for r_, _ in prof]))
                 prof = [(rb, 0.0), (rb, bc)] + [(r_, z_) for r_, z_ in prof if z_ > bc]
-            dl = proj_bake.lathe(prof, seg=48, name="%s_%s" % (NAME, d.get("slot", "Dome")))
+            dl = proj_bake.lathe(prof, seg=d.get("seg", 48), name="%s_%s" % (NAME, d.get("slot", "Dome")))
             if d.get("paint"):
                 # a painted dome (the Bakery's brick dome): the clean lathe takes Tripo's own paint from the nearest point
                 # (bricks, white stone bands), no exact ribs (the runner skips piece_fix for it: fix_shape "lathe")
@@ -574,7 +677,9 @@ elif "dome" in PR:
                     dark = isg & (vv < 0.6) & mid
                     angs += list(np.degrees(np.arctan2(c[dark, 1], c[dark, 0])) % (360.0 / nrib))
                     gold_rgb += [colorsys.hsv_to_rgb(*q) for q in hsv[isg & (vv > 0.45)]]
-                if angs:
+                if "rib_phase" in d:                       # given (a 2D-outline dome: one rib facing the front, +y)
+                    phase = float(d["rib_phase"])
+                elif angs:
                     hist, ed = np.histogram(angs, bins=36, range=(0, 360.0 / nrib))
                     phase = float((ed[np.argmax(hist)] + ed[np.argmax(hist) + 1]) / 2)
                 else:
@@ -583,7 +688,8 @@ elif "dome" in PR:
                 bm = bmesh.new()
                 rib_w, rib_out = d.get("rib_w", 0.22), d.get("rib_out", 0.1)
                 rmax = max(r_ for r_, _ in prof)
-                path = [(r_, z_) for r_, z_ in prof if z_ >= bc and r_ > 0.18 * rmax]
+                rz0, rz1 = d.get("rib_z", [-1e9, 1e9])     # ribs only on the dome body (not the eave flare / the spire)
+                path = [(r_, z_) for r_, z_ in prof if z_ >= bc and r_ > 0.18 * rmax and rz0 <= z_ <= rz1]
                 for kr in range(nrib):
                     th = math.radians(phase + kr * 360.0 / nrib)
                     rows = []
@@ -602,13 +708,7 @@ elif "dome" in PR:
                 bm.free()
                 ribs = bpy.data.objects.new("%s_%sRibs" % (NAME, d.get("slot", "Dome")), me)
                 bpy.context.scene.collection.objects.link(ribs)
-                gr = np.array([255, 168, 36]) / 255.0               # the approved gold (HH_HaloGoldTrim part colour) for a plain dome
-                gm = bpy.data.materials.new(NAME + "_DomeGold")
-                gm.use_nodes = True
-                pb_ = gm.node_tree.nodes["Principled BSDF"]
-                pb_.inputs["Base Color"].default_value = (*[c_ / 12.92 if c_ <= 0.04045 else ((c_ + 0.055) / 1.055) ** 2.4 for c_ in gr], 1)
-                pb_.inputs["Metallic"].default_value = 1.0
-                pb_.inputs["Roughness"].default_value = 0.28
+                gm = gold_material(NAME + "_DomeGold")         # the approved gold, plain (Studio gold MaterialVariant)
                 dl.data.materials.append(gm)
                 ribs.data.materials.append(gm)
                 me.shade_smooth()
@@ -648,13 +748,18 @@ for ci, cp in enumerate(PR.get("caps", [])):
     # Tripo's paint onto it from the nearest point (so the colours, bands and shine stay Tripo's)
     prof = lathe_profile(ps, cp.get("bands", 20))
     lo_ = proj_bake.lathe(prof, seg=cp.get("seg", 16), name="%s_%s" % (NAME, tname))
-    maps = proj_bake.bake(lo_, proj_bake.Source(ps), size=cp.get("size", 256), ray=None, relief=False)
-    lo_.data.materials.append(proj_bake.save_maps(maps, WORK, "%s_%s" % (NAME, tname)))
+    if cp.get("plain"):                                 # a gold cap: plain approved gold (no baked-shadow blotches)
+        maps = {"hit": 1.0}
+        lo_.data.materials.append(gold_material("%s_%s_Gold" % (NAME, tname)))
+        lo_.data.shade_smooth()
+    else:
+        maps = proj_bake.bake(lo_, proj_bake.Source(ps), size=cp.get("size", 256), ray=None, relief=False)
+        lo_.data.materials.append(proj_bake.save_maps(maps, WORK, "%s_%s" % (NAME, tname)))
     for o in ps:
         bpy.data.objects.remove(o)
     out_objs.append(lo_)
-    rep["fix_shape"] = "lathe: %d profile rings x %d sides from the Tripo silhouette, paint projected (hit %.0f %%)" % (
-        len(prof), cp.get("seg", 16), 100 * maps["hit"])
+    rep["fix_shape"] = "lathe: %d profile rings x %d sides from the Tripo silhouette, %s" % (
+        len(prof), cp.get("seg", 16), "plain approved gold" if cp.get("plain") else "paint projected (hit %.0f %%)" % (100 * maps["hit"]))
     for sn in cp["slots"]:
         sl = slot_or_target(cp.get("targets", {}).get(sn, {}), sn, axis, Rt)
         k = (sl["R"] / Rt if cp.get("fit", "R") == "R" else HS) * cp.get("mul", 1.0)
@@ -1680,8 +1785,12 @@ if "halfdome" in PR:
         hd = bpy.data.objects.new(NAME + "_PorchDome", me)
         bpy.context.scene.collection.objects.link(hd)
         me.shade_smooth()
-        mp_ = proj_bake.bake(hd, proj_bake.Source(ps), size=Hd.get("size", 512), ray=None, relief=False)
-        hd.data.materials.append(proj_bake.save_maps(mp_, WORK, NAME + "_PorchDome"))
+        if Hd.get("plain"):                             # plain approved gold (디자인 검수 10/12, no baked-shadow blotches)
+            mp_ = {"hit": 1.0}
+            hd.data.materials.append(gold_material(NAME + "_PorchDomeGold"))
+        else:
+            mp_ = proj_bake.bake(hd, proj_bake.Source(ps), size=Hd.get("size", 512), ray=None, relief=False)
+            hd.data.materials.append(proj_bake.save_maps(mp_, WORK, NAME + "_PorchDome"))
         for o in ps:
             bpy.data.objects.remove(o)
         sl = SLOTS["PorchDome"]
@@ -1691,8 +1800,9 @@ if "halfdome" in PR:
         hd.data.transform(Matrix.Translation(sl["pos"]) @ Matrix.Diagonal((kx, kx, kz, 1.0)))
         out_objs.append(hd)
         REPORT["pieces"]["PorchDome"] = {"fix": "half lathe (24 x %d rings) from the Tripo half dome outline in front of the wall "
-                                         "(y %.2f), Tripo paint projected (hit %.0f %%), scaled to the slot R %.2f h %.2f"
-                                         % (len(prof), yw, 100 * mp_["hit"], sl["R"], sl["h"])}
+                                         "(y %.2f), %s, scaled to the slot R %.2f h %.2f"
+                                         % (len(prof), yw, "plain approved gold" if Hd.get("plain") else
+                                            "Tripo paint projected (hit %.0f %%)" % (100 * mp_["hit"]), sl["R"], sl["h"])}
         print("[deco] halfdome", REPORT["pieces"]["PorchDome"], flush=True)
 
 # ------------------------------------------------------------------ cloth canopy (Juice roof parasol): exact
