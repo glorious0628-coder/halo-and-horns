@@ -775,4 +775,51 @@ attrs.Level = 12
 check(M.BetterWeapon() == true, "#7 BetterWeapon: a stronger owned weapon I can wear now -> the dot")
 resetAttrs()
 
+------------------------------------------------------------------ 9. 최종 검수 10/13 (ref_rpg_ui #3): the 3D body (a fake HeroPreview)
+local hlog = { mount = 0, refresh = 0, unmount = 0 }
+local fakePreview = {
+	Mount = function(parent, size)
+		hlog.mount += 1
+		hlog.parent, hlog.size = parent, size
+		return newObj("Frame", { Name = "BodyPreview", Parent = parent })
+	end,
+	Refresh = function() hlog.refresh += 1 end,
+	Unmount = function() hlog.unmount += 1 end,
+}
+local glog9 = { build = 0, refresh = 0, seq = {} }
+resetAttrs()
+local M9, reg9 = boot({ GearSlots = fakeGear(glog9), HeroPreview = fakePreview })
+local L9 = M9._T.L
+local body9, update9 = openWin(reg9)
+local bodyP = find(body9, "BodyPreview")
+check(hlog.mount == 1 and hlog.parent ~= nil and hlog.parent.Name == "SlotsView" and bodyP ~= nil and bodyP.Parent == hlog.parent,
+	"#3: the body is mounted once, in the gear page's slot view", hlog.mount)
+check(bodyP and bodyP.Position.Y.Offset == L9.FrameH + L9.BodyGap and bodyP.Size.X.Offset == L9.FrameW and bodyP.Size.Y.Offset == L9.BodyH,
+	"#3: it sits under the gear cells, as wide as them", bodyP and bodyP.Position.Y.Offset)
+glog9.frame.Size = UDim2.fromOffset(150, 120)
+glog9.opts.Refresh()
+check(bodyP and bodyP.Position.Y.Offset == 120 + L9.BodyGap and bodyP.Size.X.Offset == 150, "#3: it follows a frame GearSlots resized",
+	bodyP and bodyP.Position.Y.Offset)
+check(hlog.refresh == 0, "#3: opening copies me once (Mount's own), no extra Refresh", hlog.refresh)
+update9()
+check(hlog.refresh == 0, "#3: nothing changed = no new copy", hlog.refresh)
+attrs.WeaponTier = 1
+update9()
+check(hlog.refresh == 1, "#3: a weapon swap copies me again", hlog.refresh)
+update9()
+check(hlog.refresh == 1, "#3: once per change", hlog.refresh)
+attrs.Faction = "Horns"
+update9()
+check(hlog.refresh == 2, "#3: a side change copies me again (halo -> horns)", hlog.refresh)
+closeWin(reg9, body9)
+check(hlog.unmount == 1, "#3: closing the window unmounts the body", hlog.unmount)
+resetAttrs()
+local warns10 = #warns
+local M10, reg10 = boot({ GearSlots = fakeGear({ build = 0, refresh = 0, seq = {} }),
+	HeroPreview = { Mount = function() error("boom") end, Unmount = function() end } })
+local body10 = openWin(reg10)
+check(#warns == warns10 + 1 and find(body10, "Title_Auto") ~= nil and find(body10, "BodyPreview") == nil,
+	"#3: a failing Mount is warned once and the window still draws", #warns - warns10)
+closeWin(reg10, body10)
+
 print(string.format("CHARACTER_UI_SUMMARY checks=%d failed=%d", checks, failed))

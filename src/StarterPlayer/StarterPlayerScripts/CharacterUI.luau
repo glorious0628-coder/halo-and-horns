@@ -102,6 +102,7 @@ local L = {
 	StatH = 26, StatLabelW = 200,
 	CardW = 132, CardH = 50, CardIcon = 26, TraitW = 132, TraitH = 28, -- the Stats tab's cards and chips (ref_rpg_ui #5)
 	RibbonH = 34, BarH = 18, BarIcon = 22, -- the title ribbon and the next rank bar (ref_rpg_ui #9)
+	BodyGap = 12, BodyH = 220, -- the 3D body under the gear cells, as wide as them (ref_rpg_ui #3, C.HeroPreview)
 	Size = { Name = 18, Body = 16, Small = 15, Count = 16, Power = 34, Head = 18 },
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), same as the bag
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
@@ -533,6 +534,13 @@ function CharacterUI.SetTitle(id)
 		end
 	end
 	return false
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #3): the 3D body module (may be missing: then no body, the rest works)
+local function preview()
+	local h = C and C.HeroPreview
+	if type(h) == "table" and type(h.Mount) == "function" then return h end
+	return nil
 end
 
 local function gearModule()
@@ -1093,6 +1101,14 @@ local function refresh(force)
 		sigs.Left = sig
 		drawLeft(VIEW.Left, ctx)
 	end
+	-- 최종 검수 10/13 (ref_rpg_ui #3): a new look copies the 3D body again (the first draw is Mount's own)
+	sig = table.concat({ tostring(attr("WeaponTier")), tostring(ctx.Faction), tostring(ctx.Class), tostring(attr("SizeMult")) }, "|")
+	if sigs.Body ~= sig then
+		local first = sigs.Body == nil
+		sigs.Body = sig
+		local hp = preview()
+		if hp and VIEW.Body and not first and type(hp.Refresh) == "function" then pcall(hp.Refresh) end
+	end
 	local weapons = CharacterUI.Weapons(ctx)
 	if not (gearModule() or S.GearBuilt) then -- the fallback cells (GearSlots draws its own)
 		local data = { Pet = CharacterUI.PetState(petRows()) }
@@ -1189,8 +1205,15 @@ end
 function CharacterUI.Relayout()
 	local frame, titles = VIEW.EquipFrame, VIEW.Titles
 	if not (frame and titles) then return end
-	local w = frameSize(frame)
+	local w, h = frameSize(frame)
 	titles.Position = UDim2.fromOffset(w + L.TitleGap, 0)
+	local body = VIEW.Body
+	if body then
+		pcall(function()
+			body.Position = UDim2.fromOffset(0, h + L.BodyGap)
+			body.Size = UDim2.fromOffset(w, L.BodyH)
+		end)
+	end
 end
 
 -- GearSlots (게임성 개발 4): Build once with the frame, Refresh on every open; the module may be missing
@@ -1278,6 +1301,12 @@ local function build(parent, kit, arg)
 	stats.Visible = false
 	VIEW.GearPage, VIEW.Left, VIEW.SlotsView, VIEW.WeaponsView, VIEW.EquipFrame, VIEW.Titles, VIEW.StatsPage =
 		gear, left, slotsView, weaponsView, equip, titles, stats
+	-- 최종 검수 10/13 (ref_rpg_ui #3): my 3D body (weapon, halo / horns) under the gear cells; drag it to turn it
+	local hp = preview()
+	if hp then
+		local ok, body = pcall(hp.Mount, slotsView, UDim2.fromOffset(L.FrameW, L.BodyH))
+		if ok then VIEW.Body = body else Util.Warn(TAG, "HeroPreview.Mount failed: " .. tostring(body)) end
+	end
 	hookGear(equip, false) -- Build (the first time) before the cells are drawn
 	CharacterUI.Relayout() -- the frame may be another size than the default (GearSlots resized it)
 	-- data changes redraw in place (Rebuild = false: no full window rebuild)
@@ -1302,6 +1331,8 @@ local function build(parent, kit, arg)
 end
 
 local function cleanup()
+	local hp = preview()
+	if hp and type(hp.Unmount) == "function" then pcall(hp.Unmount) end
 	local f = S.Equip
 	if f then pcall(function() f.Parent = nil end) end -- Panels clears the window's children next: keep the gear frame
 	VIEW = {}

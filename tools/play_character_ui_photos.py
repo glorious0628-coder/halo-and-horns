@@ -1,6 +1,9 @@
 """내 캐릭터 창 photos (메인 반영 1, 2026-10-12): own test Play in the MAIN Studio (HH_MAIN_STUDIO=1) with a FRESH in-memory save.
 Lv1: HUD, a click on the Hero tile (locked: wiggle), Settings window; Lv30 tier 3: HUD, E key, Character [Gear] / [Stats] /
 weapon list with [Equip] before + after, closed + reopened, Bag, Journal. Studio's own user_mouse_input only (no desktop mouse).
+fix/hero-ui (최종 검수 10/13, ref_rpg_ui #1 #2 #5 #9 #7 #3): the Hero / Bag tile dot (a stronger owned weapon), the title
+ribbon + next rank bar + 3D body under the gear cells, the Attack chip pressed (its sources), the body dragged (turned), the
+Stats tab cards / chips, the locked titles grey, the weapon list's "Power +N" lines.
 Usage: HH_MAIN_STUDIO=1 py tools/play_character_ui_photos.py [outdir-name]   Out: docs/art/verification_2026-10-12/main_apply/<outdir>/"""
 import base64
 import io
@@ -117,6 +120,32 @@ return table.concat(out, " | ")
 """
 
 
+DOTS = r"""
+local pg = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
+local out = {}
+for _, d in pg:GetDescendants() do
+	if d.Name == "BetterDot" then table.insert(out, d.Parent.Name .. "=" .. tostring(d.Visible)) end
+end
+return "dots " .. table.concat(out, ",")
+"""
+BODY = r"""
+local pg = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
+local inset = game:GetService("GuiService"):GetGuiInset()
+for _, d in pg:GetDescendants() do
+	if d.Name == "Body3D" and d:IsA("ViewportFrame") then
+		local wm = d:FindFirstChildOfClass("WorldModel")
+		local copy = wm and wm:FindFirstChild("PreviewCharacter")
+		local parts, weapon, mark = 0, copy and copy:FindFirstChild("WeaponModel") ~= nil, copy and copy:FindFirstChild("FactionMark") ~= nil
+		if copy then for _, x in copy:GetDescendants() do if x:IsA("BasePart") then parts += 1 end end end
+		local c = d.AbsolutePosition + d.AbsoluteSize / 2
+		return string.format("%d %d yaw=%s copy=%s parts=%d weapon=%s mark=%s size=%dx%d", math.floor(c.X), math.floor(c.Y + inset.Y),
+			tostring(d:GetAttribute("Yaw")), tostring(copy ~= nil), parts, tostring(weapon), tostring(mark), d.AbsoluteSize.X, d.AbsoluteSize.Y)
+	end
+end
+return "none"
+"""
+
+
 CHAR = r"""
 local ok, m = pcall(function() return require(game:GetService("Players").LocalPlayer.PlayerScripts:WaitForChild("CharacterUI")) end)
 if not ok then return "require failed: " .. tostring(m) end
@@ -189,6 +218,8 @@ def main():
         time.sleep(1)
         note(lua(c, FIRE % ("EquipWeapon", "1", "EquipWeapon"), "Client"))
         time.sleep(2)
+        time.sleep(5)  # the HUD's tile dot refreshes with the menu glow
+        note(lua(c, DOTS, "Client"))
         save(c, "04_lv30_hud")
         note("E key: " + lua(c, DISPATCH % "E", "Client"))
         time.sleep(1.5)
@@ -196,8 +227,28 @@ def main():
             note("E did not open; OpenPanel Character instead")
             note(lua(c, OPEN % ("Character", "nil", "Character"), "Server"))
             time.sleep(1.5)
+        time.sleep(1.5)  # the 3D body copies me after a short wait
         save(c, "05_character_gear")
         note("gear words: " + lua(c, WORDS, "Client"))
+        body = lua(c, BODY, "Client")
+        note("body: " + body)
+        # ref_rpg_ui #3: drag the body 160 px to the right (left button), it turns
+        xy = body.split(" ")[:2]
+        if len(xy) == 2 and xy[0].lstrip("-").isdigit():
+            x, y = int(xy[0]), int(xy[1])
+            r = c.call("user_mouse_input", {"datamodel_type": "Client", "actions": [
+                {"action": "moveTo", "x": x, "y": y}, {"action": "mouseButtonDown", "mouse_button": "left"},
+                {"action": "moveTo", "x": x + 80, "y": y}, {"action": "moveTo", "x": x + 160, "y": y},
+                {"action": "mouseButtonUp", "mouse_button": "left"}]})
+            note("drag: " + text_of(r)[:150])
+            time.sleep(1)
+            note("body after drag: " + lua(c, BODY, "Client"))
+            save(c, "05b_body_turned")
+        # ref_rpg_ui #1: the Attack chip shows where the number comes from
+        if click(c, "Part_Attack", "PanelsModal"):
+            save(c, "05c_power_why")
+            note("why words: " + lua(c, WORDS, "Client"))
+            click(c, "Part_Attack", "PanelsModal")
         note(lua(c, OPEN % ("Character", '{ Tab = "Stats" }', "Character Stats"), "Server"))
         time.sleep(1.5)
         save(c, "06_character_stats")

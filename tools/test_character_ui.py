@@ -103,8 +103,8 @@ MUTATIONS = [
     ("UI", "a failed Build leaves its cells", "\t\t\tpcall(function()\n\t\t\t\tfor _, ch in frame:GetChildren() do ch:Destroy() end\n\t\t\tend)\n", ""),
     ("UI", "a failed Build is not reported", "\t\t\tUtil.Warn(TAG, \"GearSlots.Build failed: \" .. tostring(err))\n", ""),
     ("UI", "a Back word written in code", "kit.Button(header, tx(TXT, \"Back\"),", "kit.Button(header, \"Back\","),
-    ("MAIN", "CharacterUI is never loaded", "\"BagUI\", \"CharacterUI\", \"GatherView\",", "\"BagUI\", \"GatherView\","),
-    ("MAIN", "CharacterUI before BagUI", "\"BagUI\", \"CharacterUI\", \"GatherView\",", "\"CharacterUI\", \"BagUI\", \"GatherView\","),
+    ("MAIN", "CharacterUI is never loaded", "\"BagUI\", \"CharacterUI\", \"HeroPreview\",", "\"BagUI\", \"HeroPreview\","),
+    ("MAIN", "CharacterUI before BagUI", "\"BagUI\", \"CharacterUI\", \"HeroPreview\",", "\"CharacterUI\", \"BagUI\", \"HeroPreview\","),
     # 최종 검수 10/13 (ref_rpg_ui #1 / #2)
     ("UI", "#1: no power parts", "\tfor i, part in { { \"Attack\", \"IconSword\", ctx.Attack }, { \"Health\", \"IconHeart\", ctx.Health } } do\n",
      "\tfor i, part in {} do\n"),
@@ -140,6 +140,17 @@ MUTATIONS = [
     ("UI", "#7: a locked weapon lights the dot", "if not r.Equipped and r.Usable and type(r.PowerNow)", "if not r.Equipped and type(r.PowerNow)"),
     ("UI", "#7: the worn weapon lights the dot", "if not r.Equipped and r.Usable and type(r.PowerNow)", "if r.Usable and type(r.PowerNow)"),
     ("HUD", "#7: the dot on a locked tile", "local on = better and not L.TileLocked(id)", "local on = better"),
+    # 최종 검수 10/13 (ref_rpg_ui #3)
+    ("UI", "#3: no body", "\tlocal hp = preview()\n\tif hp then\n\t\tlocal ok, body", "\tlocal hp = nil\n\tif hp then\n\t\tlocal ok, body"),
+    ("UI", "#3: the body stays put when the frame resizes", "body.Position = UDim2.fromOffset(0, h + L.BodyGap)",
+     "body.Position = UDim2.fromOffset(0, L.FrameH + L.BodyGap)"),
+    ("UI", "#3: a weapon swap not copied", "tostring(attr(\"WeaponTier\")), tostring(ctx.Faction), tostring(ctx.Class), tostring(attr(\"SizeMult\"))",
+     "tostring(ctx.Faction), tostring(ctx.Class), tostring(attr(\"SizeMult\"))"),
+    ("UI", "#3: copied again on every open", "and not first and type(hp.Refresh)", "and type(hp.Refresh)"),
+    ("UI", "#3: never unmounted", "\tif hp and type(hp.Unmount) == \"function\" then pcall(hp.Unmount) end\n", ""),
+    ("UI", "#3: a throwing Mount breaks the window", "local ok, body = pcall(hp.Mount, slotsView, UDim2.fromOffset(L.FrameW, L.BodyH))",
+     "local ok, body = true, hp.Mount(slotsView, UDim2.fromOffset(L.FrameW, L.BodyH))"),
+    ("MAIN", "#3: HeroPreview not loaded", '"CharacterUI", "HeroPreview", "GatherView",', '"CharacterUI", "GatherView",'),
     ("UI", "#5: cards drawn as text rows", "\t\tif r.Kind == \"Card\" then\n", "\t\tif false then\n"),
     ("UI", "the hit row claims the final damage", "Hit = \"Base hit\",", "Hit = \"Hit damage\","),
     ("UI", "no nickname row", "Name = \"Nickname\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),",
@@ -214,6 +225,8 @@ def static(src: dict) -> list[tuple[str, bool]]:
          "locked tile", 'if def.Id == "Character" or def.Id == "Bag" then' in src["HUD"]
          and 'UIKit.ArtImage("BadgeDot", { Name = "BetterDot",' in src["HUD"]
          and "local on = better and not L.TileLocked(id)" in src["HUD"] and "\tL.RefreshBetterDots()\nend" in src["HUD"]),
+        ("최종 검수 10/13 (ref_rpg_ui #3): ClientMain loads HeroPreview once (any place: CharacterUI asks C.HeroPreview when the window opens)",
+         names.count("HeroPreview") == 1),
         ("the E key opens \"Character\" (Soon: live once the window is registered)",
          '{ Id = "Character", Group = "Window", Key = "E",' in src["CONFIG"] and 'Window = "Character", Soon = true }' in src["CONFIG"]),
     ]
