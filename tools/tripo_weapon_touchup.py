@@ -38,13 +38,13 @@ import proj_bake as PB  # noqa: E402
 KIND = {  # class -> (kind, lengths T1..T3, hand share from the bottom)
     "Paladin": ("sword", (3.85, 3.95, 4.05), 0.145),
     "Berserker": ("darksword", (4.15, 4.25, 4.35), 0.195),
-    "LightMage": ("staff", (4.42, 4.54, 4.66), 0.66),
-    "DarkMage": ("staff", (4.42, 4.54, 4.66), 0.66),
+    "LightMage": ("staff", (3.38, 3.64, 3.90), 0.66),        # SPEC A23-142: 0.65 / 0.70 / 0.75 x H 5.2 incl. the orb
+    "DarkMage": ("staff", (3.38, 3.64, 3.90), 0.66),        # SPEC A23-142: 0.65 / 0.70 / 0.75 x H 5.2 incl. the orb
     "Ranger": ("bow", (3.1, 3.36, 3.61), 0.5),
     "ShadowHunter": ("bow", (2.33, 2.52, 2.71), 0.5),
     "Blacksmith": ("hammer", (2.2, 2.2, 2.2), 0.26),
     "PetTamer": ("baton", (2.13, 2.2, 2.34), 0.3),
-    "Alchemist": ("staff", (4.42, 4.54, 4.66), 0.62),   # the approved 2D is a staff with a flask; the game holds a flask today
+    "Alchemist": ("staff", (3.38, 3.64, 3.90), 0.62),   # flask staff (2D); A23-142 length like the mages
 }
 
 # the hand = the middle of the wrapped grip in the approved 2D front (share of the height from the bottom, measured on
@@ -67,11 +67,13 @@ WRAP = {
 # band (wrap + its rings, share of the height measured on the Tripo width profile) is cut out, moved along the staff so
 # its middle sits at <target> studs from the foot, the hole is filled by stretching the bare shaft just below it (knots
 # and branches stay where they are). (lo, hi, target studs)
-MOVE = {
-    "Weapon_Halo_LightMage_T1": (0.365, 0.515, 2.63), "Weapon_Halo_LightMage_T3": (0.235, 0.455, 2.63),
-    "Weapon_Horns_DarkMage_T1": (0.295, 0.515, 2.53), "Weapon_Horns_DarkMage_T3": (0.265, 0.495, 2.53),
-    "Weapon_Neutral_Alchemist_T1": (0.245, 0.495, 2.59), "Weapon_Neutral_Alchemist_T2": (0.235, 0.455, 2.59),
-    "Weapon_Neutral_Alchemist_T3": (0.135, 0.385, 2.59),
+MOVE = {   # SPEC A23-142 (user 10/12): the hand holds the wrap in the MIDDLE of the staff, wrap centre 40-55 % of the
+    # length from the foot; wraps drawn lower (LightMage T3, DarkMage T1 / T3, Alchemist T1-T3) move up to 45 %, the others
+    # (LightMage T1 44.5 %, T2 50.5 %, DarkMage T2 55 %) stay. (lo, hi = the wrap band incl. rings, share; target share)
+    "Weapon_Halo_LightMage_T3": (0.235, 0.455, 0.45),
+    "Weapon_Horns_DarkMage_T1": (0.295, 0.515, 0.45), "Weapon_Horns_DarkMage_T3": (0.265, 0.495, 0.45),
+    "Weapon_Neutral_Alchemist_T1": (0.245, 0.495, 0.45), "Weapon_Neutral_Alchemist_T2": (0.235, 0.455, 0.45),
+    "Weapon_Neutral_Alchemist_T3": (0.135, 0.385, 0.45),
 }
 
 
@@ -324,8 +326,8 @@ V = np.array([v.co[:] for v in me.vertices])
 z0 = V[:, 2].min()
 if a.job in MOVE and not a.no_move:
     lo_s, hi_s, tgt = MOVE[a.job]
-    mlo, mhi, md = move_wrap(me, z0, length, lo_s, hi_s, tgt)
-    stats["wrap_moved"] = {"from": [round(mlo - z0, 3), round(mhi - z0, 3)], "up": round(md, 3), "centre_now": tgt}
+    mlo, mhi, md = move_wrap(me, z0, length, lo_s, hi_s, tgt * length)
+    stats["wrap_moved"] = {"from": [round(mlo - z0, 3), round(mhi - z0, 3)], "up": round(md, 3), "centre_now": round(tgt * length, 3)}
     V = np.array([v.co[:] for v in me.vertices])
     z0 = V[:, 2].min()
 zg = z0 + hand * length                                     # the grip height (share of the length)

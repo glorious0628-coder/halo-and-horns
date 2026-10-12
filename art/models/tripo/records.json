@@ -11447,15 +11447,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.731,
-    0.355,
-    4.422
+    0.559,
+    0.271,
+    3.382
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.38 studs (0.65 H), grip = wrap centre 1.50 studs from the foot (44.5 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11486,12 +11487,13 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.943,
-    0.416,
-    4.543
+    0.756,
+    0.334,
+    3.643
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "a23_142": "length 3.64 studs (0.70 H), grip = wrap centre 1.84 studs from the foot (50.5 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_LightMage_T3_web_hd_mv4": [
@@ -11522,15 +11524,16 @@
    "tool": "tools/tripo_weapon_touchup.py --sym",
    "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3497 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    1.254,
-    0.642,
-    4.66
+    1.05,
+    0.537,
+    3.9
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.90 studs (0.75 H), grip = wrap centre 1.75 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11777,15 +11780,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.851,
-    0.353,
-    4.42
+    0.651,
+    0.27,
+    3.378
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.38 studs (0.65 H), grip = wrap centre 1.52 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11816,12 +11820,13 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.949,
-    0.403,
-    4.538
+    0.761,
+    0.323,
+    3.638
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "a23_142": "length 3.64 studs (0.70 H), grip = wrap centre 2.00 studs from the foot (55.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
@@ -11852,15 +11857,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 66% from the bottom, weld + loose specks, decimate to 3500 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    1.094,
-    0.437,
-    4.659
+    0.915,
+    0.365,
+    3.899
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.90 studs (0.75 H), grip = wrap centre 1.75 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12107,15 +12113,16 @@
    "tool": "tools/tripo_weapon_touchup.py",
    "what": "Tripo front turned to +y, length 4.42 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    1.022,
-    0.457,
-    4.42
+    0.781,
+    0.347,
+    3.377
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.38 studs (0.65 H), grip = wrap centre 1.52 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12146,15 +12153,16 @@
    "tool": "tools/tripo_weapon_touchup.py --sym",
    "what": "Tripo front turned to +y, length 4.54 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3498 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.766,
-    0.619,
-    4.541
+    0.614,
+    0.497,
+    3.64
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.64 studs (0.70 H), grip = wrap centre 1.64 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12185,15 +12193,16 @@
    "tool": "tools/tripo_weapon_touchup.py --sym",
    "what": "Tripo front turned to +y, length 4.66 studs (개발 1 LEN/tierLen), pivot = hand at 62% from the bottom, weld + loose specks, decimate to 3499 tris, smart UV, bake C/N/R/M/MR 1024 (tools/proj_bake.py), see-through check tools/glb_hole_check.py",
    "size_studs": [
-    0.866,
-    0.694,
-    4.663
+    0.732,
+    0.581,
+    3.902
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
    "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
-   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg"
+   "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
+   "a23_142": "length 3.90 studs (0.75 H), grip = wrap centre 1.75 studs from the foot (45.0 %) = GLB origin; table docs/design/weapon_grip_heights_2026-10-12.md"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
