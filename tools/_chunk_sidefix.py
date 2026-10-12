@@ -36,6 +36,9 @@ def main(n):
     bb = m.point(lambda x: 255 if x > 128 else 0).getbbox()
     obj, om = left.crop(bb), m.crop(bb)
     size = (round(obj.width * fh / obj.height), fh)
+    cx = (bb[0] + bb[2]) // 2
+    if cx - size[0] // 2 < 2 or cx + size[0] // 2 > left.width - 2:
+        sys.exit("STOP: scaled side %s would run off the canvas (%s px wide); shrink the front/back instead" % (n, size[0]))
     obj, om = obj.resize(size, Image.LANCZOS), om.resize(size, Image.LANCZOS)
     cv = Image.new("RGB", left.size, c)
     cv.paste(obj, ((bb[0] + bb[2]) // 2 - size[0] // 2, fb[1]), om)
