@@ -38,7 +38,8 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
            4.85 blocks with a plaque (cut down under the sill of a ground-floor front window); the lanterns hang on the wall
   lanterns [u, ...] wall lanterns along the front (0..1 like door.u) instead of the pedestal ones (shops); a lantern that
            would sit in a corner pilaster / tower is moved out in front of it
-  porch    {"w": outer width (door + 3.4), "out": depth from the front wall (2.4), "pier": 0.9, "gap": entablature bottom above
+  porch    {"split_balcony": true = the front balconies are split round the half dome (gap = porch width + 2 x "gap_side" 0.6,
+           cut ends get posts) and the dome may rise through that storey; "w": outer width (door + 3.4), "out": depth from the front wall (2.4), "pier": 0.9, "gap": entablature bottom above
            the door top (0.9), "ent_h": 0.9, "dome_h": half dome height (w / 2 * 0.95)}: two marble piers (gold capital + foot)
            either side of the door, an entablature with a gold band, a half-dome ornament slot against the wall above it
            (lowered to stay under a front balcony); piers that hit pedestals / pots / lamps / steps move outwards (max 1.5)
@@ -641,7 +642,8 @@ def lantern_at(k, x):
 # ---------------------------------------------------------------- pedestals + lanterns
 LANT_W, LANT_H = 0.9, 1.15
 LANTS = S.get("lanterns")                               # [u, ...] wall lanterns along the front (0..1 like door.u); replaces the pedestal ones
-PORCH = S.get("porch")                                  # {"w", "out", "pier", "gap", "ent_h", "dome_h"}: portico + half dome over the door (built after the pots)
+PORCH = S.get("porch")
+PO_GAP_X = None                                  # {"w", "out", "pier", "gap", "ent_h", "dome_h"}: portico + half dome over the door (built after the pots)
 PED = S.get("pedestals", True)                          # true = low step posts with a gold ball (the 2D), "tall" = house 07's
 TALL = PED == "tall"
 PW = 1.8 if TALL else 1.5
@@ -809,7 +811,10 @@ if PORCH:
     add("Porch_BandFront", (PO_W + 0.16, 0.18, 0.08), (CXD, YF + PO_OUT + 0.04, PO_TOP - 0.09), mat="gold")
     for k, sx in enumerate((-1, 1)):
         add("Porch_BandSide%d" % k, (0.08, 0.18, PO_OUT), (CXD + sx * (PO_W / 2 + 0.04), YF + PO_OUT / 2, PO_TOP - 0.09), mat="gold")
-    for B in S.get("balconies", []):                      # the half dome stays under the first front balcony above the porch
+    PO_GAP_X = None                                       # x range kept free in the front balconies (split round the dome)
+    if PORCH.get("split_balcony"):
+        PO_GAP_X = (CXD - PO_W / 2 - PORCH.get("gap_side", 0.6), CXD + PO_W / 2 + PORCH.get("gap_side", 0.6))
+    for B in [] if PO_GAP_X else S.get("balconies", []):  # the half dome stays under the first front balcony above the porch
         if 1 <= B["storey"] < len(STOREYS) and "front" in [wall_name(n) for n in B["walls"]] and Z_LINES[B["storey"]] > PO_BOT:
             lim = Z_LINES[B["storey"]] - 0.2
             if PO_TOP > lim:
@@ -836,6 +841,36 @@ def edge_box(nm, w, p0, p1, z0, z1, dep, mat="marble", grow=0.0):
 
 
 BALC_SEEN = set()
+
+
+def balcony_run(bi, nm, w, p0, p1, side, zf, zs, dd):
+    """one straight balcony run p0 -> p1 along wall w: slab, gold band, rail + balusters, end posts (+ return rails)"""
+    pre = "Balc%d_%s%s" % (bi, nm, side)
+    edge_box(pre + "_Slab", w, p0, p1, zf - 0.1, zs, dd, "floor")
+    edge_box(pre + "_Band", w, p0, p1, zf - 0.3, zf - 0.1, dd, "gold", 0.08)
+    edge_box(pre + "_RailBase", w, p0, p1, zs, zs + 0.25, 0.5, "marble", -0.15)
+    edge_box(pre + "_Rail", w, p0, p1, zs + 1.0, zs + 1.2, 0.5, "marble", -0.15)
+    edge_box(pre + "_RailCap", w, p0, p1, zs + 1.2, zs + 1.3, 0.6, "gold", -0.1)
+    ln = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
+    nb = max(2, int(ln / 0.7))
+    for k in range(nb):
+        f = (k + 0.5) / nb
+        post("%s_Baluster%d" % (pre, k), 0.3, 0.75, p0[0] + (p1[0] - p0[0]) * f - w.n[0] * 0.4,
+             p0[1] + (p1[1] - p0[1]) * f - w.n[1] * 0.4, zs + 0.25)
+    for k, pe in enumerate((p0, p1)):
+        px, py = pe[0] - w.n[0] * 0.4, pe[1] - w.n[1] * 0.4
+        if (round(px, 2), round(py, 2), zf) in BALC_SEEN:
+            continue
+        BALC_SEEN.add((round(px, 2), round(py, 2), zf))
+        add("%s_Post%d" % (pre, k), (0.6, 1.3, 0.6), (px, py, zs + 0.65), w.u, UP)
+        add("%s_PostCap%d" % (pre, k), (0.78, 0.15, 0.78), (px, py, zs + 1.375), w.u, UP, "gold")
+        if P["shape"] == "rect":                      # rect plan: a short return rail from the end post back to the wall
+            rl = dd - 0.3
+            cx_, cy_ = pe[0] - w.n[0] * (dd - rl / 2 - 0.0), pe[1] - w.n[1] * (dd - rl / 2 - 0.0)
+            add("%s_Return%d" % (pre, k), (rl, 0.95, 0.3), (cx_, cy_, zs + 0.725), w.n, UP)
+            add("%s_ReturnCap%d" % (pre, k), (rl, 0.1, 0.4), (cx_, cy_, zs + 1.25), w.n, UP, "gold")
+
+
 for bi, B in enumerate(S.get("balconies", [])):
     # {"storey": k (1 = the first upper storey), "walls": [names or "@k"], "depth": 1.4, "margin": studs kept free at both
     # ends of a rect wall (default 1.5, or half a tower + 0.1)}: floor slab + gold band under it + marble rail with gold cap
@@ -861,30 +896,20 @@ for bi, B in enumerate(S.get("balconies", [])):
         else:
             i = EDGES.index(nm)
             p0, p1 = Pb[i], Pb[(i + 1) % len(Pb)]
-        pre = "Balc%d_%s" % (bi, nm)
-        edge_box(pre + "_Slab", w, p0, p1, zf - 0.1, zs, dd, "floor")
-        edge_box(pre + "_Band", w, p0, p1, zf - 0.3, zf - 0.1, dd, "gold", 0.08)
-        edge_box(pre + "_RailBase", w, p0, p1, zs, zs + 0.25, 0.5, "marble", -0.15)
-        edge_box(pre + "_Rail", w, p0, p1, zs + 1.0, zs + 1.2, 0.5, "marble", -0.15)
-        edge_box(pre + "_RailCap", w, p0, p1, zs + 1.2, zs + 1.3, 0.6, "gold", -0.1)
-        ln = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
-        nb = max(2, int(ln / 0.7))
-        for k in range(nb):
-            f = (k + 0.5) / nb
-            post("%s_Baluster%d" % (pre, k), 0.3, 0.75, p0[0] + (p1[0] - p0[0]) * f - w.n[0] * 0.4,
-                 p0[1] + (p1[1] - p0[1]) * f - w.n[1] * 0.4, zs + 0.25)
-        for k, pe in enumerate((p0, p1)):
-            px, py = pe[0] - w.n[0] * 0.4, pe[1] - w.n[1] * 0.4
-            if (round(px, 2), round(py, 2), zf) in BALC_SEEN:
-                continue
-            BALC_SEEN.add((round(px, 2), round(py, 2), zf))
-            add("%s_Post%d" % (pre, k), (0.6, 1.3, 0.6), (px, py, zs + 0.65), w.u, UP)
-            add("%s_PostCap%d" % (pre, k), (0.78, 0.15, 0.78), (px, py, zs + 1.375), w.u, UP, "gold")
-            if P["shape"] == "rect":                      # rect plan: a short return rail from the end post back to the wall
-                rl = dd - 0.3
-                cx_, cy_ = pe[0] - w.n[0] * (dd - rl / 2 - 0.0), pe[1] - w.n[1] * (dd - rl / 2 - 0.0)
-                add("%s_Return%d" % (pre, k), (rl, 0.95, 0.3), (cx_, cy_, zs + 0.725), w.n, UP)
-                add("%s_ReturnCap%d" % (pre, k), (rl, 0.1, 0.4), (cx_, cy_, zs + 1.25), w.n, UP, "gold")
+        segs = [(p0, p1, "")]
+        if nm == "front" and PORCH and PO_GAP_X:          # split round the porch half dome (디자인 검수 10/12 08 (나))
+            gx0, gx1 = PO_GAP_X
+            xa, xb = sorted((p0[0], p1[0]))
+            segs = []
+            if gx0 - xa >= 1.6:
+                segs.append(((xa, p0[1]), (gx0, p0[1]), "L"))
+            if xb - gx1 >= 1.6:
+                segs.append(((gx1, p0[1]), (xb, p0[1]), "R"))
+            if not segs:
+                print("[house] WARNING: front balcony fully taken by the porch gap, skipped")
+        for p0, p1, side in segs:
+            balcony_run(bi, nm, w, p0, p1, side, zf, zs, dd)
+
 
 # window_boxes: [[wall or "all", storey index (0 = ground) or "all"], ...]: marble box + gold rim + soil under each window
 WBN = 0

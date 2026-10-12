@@ -1632,6 +1632,63 @@ if "roofglass" in PR:
                                          "gold bars %.2f, glass panes, finials" % (R_["type"], W_, D_, bw)}
         print("[deco] roofglass", REPORT["pieces"]["RoofGlass"], flush=True)
 
+# ------------------------------------------------------------------ half dome (08 porch): exact half lathe + Tripo paint
+if "halfdome" in PR:
+    # Tripo's porch half dome (against the wall over the portico) measured: its outline r(z) from the faces in front of the
+    # wall, turned as a half lathe (the flat side on the wall plane) and painted from Tripo's nearest point; slot = the
+    # skeleton's PorchDome (R, h, base on the entablature, flat side on YF)
+    Hd = PR["halfdome"]
+    ps = cut("HalfTmp", dict(Hd, no_white=True, white_below=Hd.get("white_below", Hd["z"][0] + 0.5)))
+    if ps:
+        cxh, yw = Hd["c"][0], Hd["wall_y"]
+        P = allv(ps)
+        zb = Hd["z"][0]
+        apply(ps, Matrix.Translation((-cxh, -yw, -zb)))
+        Q = allv(ps)
+        Q = Q[Q[:, 1] > 0.05]
+        rr = np.hypot(Q[:, 0], Q[:, 1])
+        zt = float(Q[:, 2].max())
+        edges = np.linspace(0, zt, 21)
+        prof = []
+        for b in range(20):
+            sel = (Q[:, 2] >= edges[b]) & (Q[:, 2] < edges[b + 1] + 1e-9)
+            if sel.sum() >= 5:
+                prof.append((float(np.percentile(rr[sel], 92)), float((edges[b] + edges[b + 1]) / 2)))
+        prof = [(prof[0][0], 0.0)] + prof + [(0.0, zt)]
+        # half lathe: angles 0..pi (x = r cos, y = r sin >= 0, so the flat side is the wall plane y = 0)
+        seg = 24
+        me = bpy.data.meshes.new(NAME + "_PorchDome")
+        bm = bmesh.new()
+        uvl = bm.loops.layers.uv.new("UVMap")
+        rings = [[bm.verts.new((r * math.cos(math.pi * q / seg), r * math.sin(math.pi * q / seg), z)) for q in range(seg + 1)]
+                 for r, z in prof]
+        for j in range(len(prof) - 1):
+            for q in range(seg):
+                f = bm.faces.new((rings[j][q], rings[j][q + 1], rings[j + 1][q + 1], rings[j + 1][q]))
+                for lp, (u, v) in zip(f.loops, ((q, j), (q + 1, j), (q + 1, j + 1), (q, j + 1))):
+                    lp[uvl].uv = (0.01 + 0.98 * u / seg, 0.01 + 0.98 * v / (len(prof) - 1))
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        bm.to_mesh(me)
+        bm.free()
+        hd = bpy.data.objects.new(NAME + "_PorchDome", me)
+        bpy.context.scene.collection.objects.link(hd)
+        me.shade_smooth()
+        mp_ = proj_bake.bake(hd, proj_bake.Source(ps), size=Hd.get("size", 512), ray=None, relief=False)
+        hd.data.materials.append(proj_bake.save_maps(mp_, WORK, NAME + "_PorchDome"))
+        for o in ps:
+            bpy.data.objects.remove(o)
+        sl = SLOTS["PorchDome"]
+        R0 = prof[0][0]
+        kx = sl["R"] / R0
+        kz = sl["h"] / zt
+        hd.data.transform(Matrix.Translation(sl["pos"]) @ Matrix.Diagonal((kx, kx, kz, 1.0)))
+        out_objs.append(hd)
+        REPORT["pieces"]["PorchDome"] = {"fix": "half lathe (24 x %d rings) from the Tripo half dome outline in front of the wall "
+                                         "(y %.2f), Tripo paint projected (hit %.0f %%), scaled to the slot R %.2f h %.2f"
+                                         % (len(prof), yw, 100 * mp_["hit"], sl["R"], sl["h"])}
+        print("[deco] halfdome", REPORT["pieces"]["PorchDome"], flush=True)
+
 # ------------------------------------------------------------------ cloth canopy (Juice roof parasol): exact
 if "canopy" in PR:
     # Tripo's striped square roof canopy measured (eave box, peak, valance): a square pyramid split into stripes per side
