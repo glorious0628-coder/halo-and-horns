@@ -12,7 +12,8 @@
   "r": 7.3,
   "slot": "Dome",
   "no_white": true,
-  "fix": "lathe"
+  "fix": "lathe",
+  "smooth": 7
  },
  "caps": [
   {

@@ -618,6 +618,15 @@ elif "dome" in PR:
                 # the 2D's own outline instead (tools/dome_profile_2d.py, studs, base on z 0): the slot scale is not used
                 prof = [(float(r_), float(z_)) for r_, z_ in d["profile"]]
                 k = 1.0
+            if d.get("smooth"):
+                # 최종 검수 10/12: the ribs followed small wobbles of Tripo's outline -> a moving average over "smooth"
+                # rings (radius only; the foot and the pole stay)
+                nS = int(d["smooth"])
+                rr_ = np.array([r_ for r_, _ in prof])
+                pad_ = np.pad(rr_, nS // 2, mode="edge")
+                sm_ = np.convolve(pad_, np.ones(nS) / nS, mode="valid")[:len(rr_)]
+                sm_[0], sm_[-1] = rr_[0], rr_[-1]
+                prof = [(float(a_), z_) for a_, (_, z_) in zip(sm_, prof)]
             if d.get("profile_from"):                   # a messy foot: the clean upper outline, straight down below it
                 zt_ = max(z_ for _, z_ in prof)
                 z0_ = d["profile_from"] * zt_
@@ -693,10 +702,12 @@ elif "dome" in PR:
                 for kr in range(nrib):
                     th = math.radians(phase + kr * 360.0 / nrib)
                     rows = []
-                    for r_, z_ in path:
-                        a_ = (rib_w / 2) / max(r_, 1e-3)
+                    for ip_, (r_, z_) in enumerate(path):
+                        # the top end tapers and sinks into the finial collar (최종 검수 10/12: no blunt stub ends)
+                        f_ = 1.0 if ip_ < len(path) - 3 else (0.7, 0.45, 0.2)[ip_ - (len(path) - 3)]
+                        a_ = (rib_w * f_ / 2) / max(r_, 1e-3)
                         rows.append([bm.verts.new(((r_ + o_) * math.cos(th + sgn * a_), (r_ + o_) * math.sin(th + sgn * a_), z_))
-                                     for sgn, o_ in ((-1, -0.02), (-1, rib_out), (1, rib_out), (1, -0.02))])
+                                     for sgn, o_ in ((-1, -0.02), (-1, rib_out * f_ - 0.03 * (1 - f_)), (1, rib_out * f_ - 0.03 * (1 - f_)), (1, -0.02))])
                     for r0_, r1_ in zip(rows, rows[1:]):
                         for q_ in range(3):
                             bm.faces.new((r0_[q_], r0_[q_ + 1], r1_[q_ + 1], r1_[q_]))

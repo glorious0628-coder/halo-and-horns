@@ -234,9 +234,11 @@
   "profile_src": "tools/dome_profile_2d.py art/out/s2/halo/houses/HaloDomeHouse_10_front_HQ_recolor.png cx 512 y 15..262 R 4.75 (10/12 디자인 검수: Tripo 조각 대신 2D 비율)",
   "rib_z": [
    0.25,
-   5.2
+   5.35
   ],
-  "rib_phase": 0.0
+  "rib_phase": 0.0,
+  "rib_w": 0.15,
+  "rib_out": 0.07
  },
  "lantern": {
   "box": [

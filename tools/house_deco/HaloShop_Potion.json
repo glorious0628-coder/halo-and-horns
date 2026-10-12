@@ -12,7 +12,8 @@
   "r": 7.8,
   "no_white": true,
   "no_leaf": true,
-  "fix": "lathe"
+  "fix": "lathe",
+  "smooth": 7
  },
  "lantern": {
   "box": [

@@ -363,9 +363,11 @@
   "profile_src": "tools/dome_profile_2d.py art/out/s2/halo/roofs/HaloDomeHouse_01_roof_v2.png cx 698 y 142..228 R 2.55 (10/12 디자인 검수: Tripo 조각 대신 2D 비율)",
   "rib_z": [
    0.85,
-   2.3
+   2.4
   ],
-  "rib_phase": 0.0
+  "rib_phase": 0.0,
+  "rib_w": 0.1,
+  "rib_out": 0.05
  },
  "lantern": {
   "box": [
