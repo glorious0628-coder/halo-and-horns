@@ -1,33 +1,23 @@
-# 게임성 개발 2 — 상태 (2026-10-12 오후)
+# 게임성 개발 2 — 상태 (2026-10-12 저녁)
 
-서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). **보고처 = '게임성 검수'**(id는 list_sessions). 최종 검수 = '최종 검수'.
+서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). **보고처 = '최종 검수'**(10/12 게임성 검수 쉼; id는 list_sessions).
 보고는 묶음마다 한 번. 대화가 길어지면 이 파일 적고 push → clear_session("self").
 - **API(api_agent) 거의 바닥(10/12 남은 약 $22, 최종 검수: 최종 병합 검토용으로 남김) → 큰 일도 앱에서 직접.** 충전되면 최종 검수가 알림.
   도구 버그 고침: edit_file이 파일 전체 크기를 쓰기 한도에 세던 것 → main 476362b(새 글만 셈).
 
-## 보고함 / 검토 대기 (보고한 가지 = 다시 쌓지 말고 위에 커밋만; main 합치기는 충돌 때만)
-- **fix/lesstext-server 8c8dc44d** — 강화 결과 토스트 5개 되살림, 보스 등장 구역 이름, 출석 이정표 줄(중립 14일 'N days collected!').
-  그 아래 1f42e88f(무법자 주 시작 1줄)·6adf2c82(A23-130 서버 글 판정표).
-- **C1 = api/dev2-c1-t9-v4 435999d0** — 9단계 Mythic(2200/Lv50/Crownforged, 길이 6.2), Version 4(v1/v2 단계 8 고정, v3의 9비트 = 손상),
-  Spares·Market sanitize, LootService.SpareRoom/AddSpare(키 20·합 60), KingJelly 20%·ClatterGem 10%(Source Boss). 구슬 8단계에서 멈춤.
-  main 합친 뒤 전체 172개: 원래 실패만 + skeleton_ground·studio_guard(이 가지가 안 건드린 worldkit, main이 더 바뀜).
-- **황금 알 1차 = api/dev2-golden-egg 3dfdc791** (Config·GooseEggs·GooseService) — 1차만으론 덜 됨, 아래 거위 광장과 같이 병합 권함.
-
-## 진행 중 — 거위 광장 (A23-141) = 가지 **dev2-goose-square** (worktree ../wt_goose_square, 3dfdc791 위)
-- 이름: 개발 1 계약 `docs/design/goose_square_contract_2026-10-12.md` 그대로 — 원격 `GooseSquare("Join"|"Leave")`, 속성
-  `InGooseSquare`·`GooseJoinBlock`, Join은 GooseActive만, 어두워짐은 화면. `Config.Goose.Square`(Remote·Attr·Block·Fade·Text) = **개발 1
-  가지에서만 정의**, 서버는 `or` 기본값으로 읽기만. 서버 숫자 = `Config.Goose.SquareSpace`. 공간 = 이미지 개발 골격
-  `docs/design/goose_square_skeleton_2026-10-12.md`(workspace.GooseSquare Model, GooseSpot·Nest·Cart·SpawnHalo·SpawnHorns, 속성 <이름>Pos,
-  Floor = 범위, 중심 (6000,200,6000)); 없으면 서버가 대역(바닥·벽·표시) 한 번 만듦.
-- 코드 끝(커밋 전): GooseSquare.luau(새), GooseEggs GEO(SetGeometry·Members·광장 안 = 링 안), GooseService(require·start 전 기하·끝 4초 뒤
-  ReturnAll·tick·Init 나감/죽음/진영·Start 원격·LeaveSquare), Net "GooseSquare", Config SquareSpace·InGooseSquare·RateLimits·
-  Landmarks.GooseNest, CombatService(LastPvPAt·거위 공격은 Tug만), PvPService(광장 = SafeZone), ZoneService teleport → LeaveSquare,
-  PlayerService ComputeWalkSpeed 맨 위 EggPlaza 조기 반환, SkillService Hop TooHeavy, CharacterVisuals EggStack(등 바구니·Motor6D EggJoint),
-  MapBuilder 횃대 Tug만, StoryQuest 첫 +1 Tug만, HealthService Joins 등. 새 test_goose_square(77 + 정적 22, 변이 43).
-- 다음: 전체 시험 → origin/main 합치기 → 문서(스크래치 square_contract_s6.md → 광장 계약 §6, egg_contract_s9.md → 알 계약 §9 답) →
-  커밋·push(origin dev2-goose-square) → 게임성 검수에 보고(1차 3dfdc791 + 이 가지 함께).
+## 보고함 / 검토 대기 (최종 검수; 보고한 가지 = 다시 쌓지 말고 위에 커밋만; main 합치기는 충돌 때만)
+- **fix/lesstext-server 8c8dc44d** — 강화 결과 토스트 5개 되살림, 보스 등장 구역 이름, 출석 이정표 줄.
+- **C1 = api/dev2-c1-t9-v4 ab9578b7** — 최종 검수 API 검토 VERDICT MERGE, 병합 중. 그 위 **fix/c1-minor 1b491953**: 보스 재료
+  Feature = "Crafting"(제작 꺼지면 드롭 안 함, 뽑기는 함), v3 9번째 비트는 band로 아래 8칸 살림.
+- **fix/fame-cap d3c40ce9** (dev3-fame a5d38f39 위): WeekCap.Artisan 60 + CraftWeekCap 100 + Config.WeekCapOf(제작 켜짐일 때만 100).
+- **거위 광장 = dev2-goose-square e6dc909a** (황금 알 1차 3dfdc791 + 광장 서버 d689d56f + main 합침 + 계약 문서 §6·§9 답).
+  worktree ../wt_goose_square. 명예 +5 = GrantFame RankPoints. 이야기 GooseNest 표지는 교차로 그대로(부활절 달걀).
+  Config.Goose.Square는 개발 1 fix/goose-square에만(서버는 읽기만).
+- worktree: wt_c1(fix/c1-minor), wt_famecap(fix/fame-cap), wt_goose_square, wt_lesstext_server — 병합되면 지우기.
 
 ## 다음 큐
+0. **스티커 패스(SPEC A23-143)**: 이미지 개발 스티커 17개 Config.UIArt.Parts.Emo<이름>, 무료 5개 = Parts `Free = true`(EmoThumbsUp·
+   EmoQuestion·EmoExclaim·EmoHelp·EmoThanks), 나머지 12 + EmoGG = 99 R$ 패스 — 패스 목록·가격·소유 Config는 내 몫(가지 imgdev-stickers de9e4fcf).
 1. **C2**: 드롭표 + 첫 Prince T2 + 중복 무기 → Spares(save_v4·crafting_market §3·§7). C1 병합 뒤.
 2. 거래소 서버(C-5/C-7): 개발 4 계약 `origin/dev4-market` `docs/design/market_window_2026-10-12.md` §6 합의(MarketIndex 30초 캐시·요약 맵,
    무기 키 "T:P", Pages·Paid·Today, Gate { Buy, List, ListIn }, 거래소 퀘스트 3개는 내 몫, 거절 키 + TooFast·Off).

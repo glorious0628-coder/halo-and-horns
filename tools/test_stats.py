@@ -74,8 +74,8 @@ MUTATIONS = [
     ("Config: a third letter", C, "Letters = { A = true, H = true },", "Letters = { A = true, H = true, C = true },"),
     ("Config: Auto off for a new save", C, "\t\tStats = { Auto = true, Order = \"\" },\n", "\t\tStats = { Auto = false, Order = \"\" },\n"),
     ("Config: the switch on", C, "Market = false, StatPoints = false }", "Market = false, StatPoints = true }"),
-    ("Config: the save version bumped to 4", C, "\t-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).\n\tVersion = 3,\n",
-     "\t-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).\n\tVersion = 4,\n"),
+    ("Config: the save version back to 3 (C1 made it 4)", C, "Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 4,\n",
+     "Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 3,\n"),
     ("SanitizeStats: only the known letters (the old rule)", C, "\t\tif string.match(ch, \"^%u$\") then table.insert(kept, ch) end\n",
      "\t\tif Config.Stats.Letters[ch] then table.insert(kept, ch) end\n"),
     ("SanitizeStats: lowercase kept", C, "\t\tif string.match(ch, \"^%u$\") then table.insert(kept, ch) end\n",
@@ -125,8 +125,8 @@ MUTATIONS = [
     ("MaxCombatPower: a one-stat build", C, "{ A = math.floor(points / 2), H = points - math.floor(points / 2) }",
      "{ A = points, H = 0 }"),
     ("MaxCombatPower: one cache for both", C, "local key = stats and \"MaxCacheStats\" or \"MaxCache\"", "local key = \"MaxCache\""),
-    # --- the save: Stats additive, Version 3 (검수 2026-10-07)
-    ("DataService: a v4 step again", D, "\t\td.Version = 3\n\tend\nend", "\t\td.Version = 3\n\tend\n\td.Version = 4\nend"),
+    # --- the save: Stats additive (검수 2026-10-07); C1's v4 step changes nothing else
+    ("DataService: the v4 step resets Stats", D, "\t\td.Version = 4\n", "\t\td.Stats = nil\n\t\td.Version = 4\n"),
     ("DataService: Stats never repaired", D, "\tif Config.SanitizeStats then d.Stats = Config.SanitizeStats(d.Stats) end\n", ""),
     # --- one formula everywhere
     ("Justice: the attribute without the stats", J, "\treturn Config.CombatPowerOf(player)\nend",
@@ -179,9 +179,10 @@ def static() -> tuple[int, list[str]]:
     check(not re.search(r"Stat(s|Points|Atk|Hp|Alloc|Mults)\b", money) and "SanitizeStats" not in money,
           "no Robux path touches the stat points (A23-69: no stat is sold)")
     data = read(SSS / "DataService.luau")
-    check("< 4 then" not in function_block(data, "local function migrate(")
+    mig = function_block(data, "local function migrate(")
+    check(mig.count("< 4 then") == 1 and "\t\td.Version = 4\n\tend\n" in mig and "Stats" not in strip_comments(mig)
           and "Config.SanitizeStats" in function_block(data, "local function fillDefaults("),
-          "DataService: no v4 step in migrate (Stats is additive), SanitizeStats in fillDefaults")
+          "DataService: migrate's only v4 step is C1's (sets Version only; Stats is additive), SanitizeStats in fillDefaults")
     config = read(SHARED / "Config.luau")
     mirrored = re.search(r"\tMirrored = \{(.*?)\n\t\}", config, re.S)
     check(bool(mirrored) and not re.search(r'"Stat', mirrored.group(1)),
@@ -199,11 +200,11 @@ SUITE = Suite(
              "(0..99, no points from rebirths); StatAlloc = the class pattern (Auto) or Order's first points (by hand, the "
              "rest free; a level reset keeps Order); StatMults = (1, 1) while off; SanitizeStats (boolean Auto, letters "
              "A-Z kept for later stats, the rest dropped, at most 99); PowerOf / CombatPower take alloc { A, H } (sqrt of attack x health with both mults); "
-             "MaxCombatPower 25,488 off / 33,740 on (the even split), cached apart; Config.CombatPowerOf(player, tier?, "
+             "MaxCombatPower 37,805 off / 50,044 on (C1: the Mythic tier 9; tier 7 alone 25,488 / 33,740; the even split), cached apart; Config.CombatPowerOf(player, tier?, "
              "+N?) reads Level / WeaponTier / WeaponEnhance / StatAtk / StatHp and is the one formula of JusticeService "
              "(GetCombatPower, GetPower with the rebirth bonus, the CombatPower attribute watching StatAtk / StatHp), "
              "PvPService's fallback, the Tab list column and LootService's 'Power X -> Y'; the save gains Stats = { Auto "
-             "true, Order '' } as an additive field (검수 2026-10-07: Version stays 3; fillDefaults adds / repairs it, "
+             "true, Order '' } as an additive field (검수 2026-10-07: no version step of its own; Version 4 since C1; fillDefaults adds / repairs it, "
              "idempotent).",
     limitations="Stage 2 (10/16-17) adds StatService (the StatAction remote, auto placement, the blocks, StatAtk / StatHp "
                 "/ StatFree / AutoStat attributes), the hits (ComputeMonsterHit, ComputePvPHit inside the 0.8-1.5 caps), "

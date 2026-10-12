@@ -45,7 +45,8 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer" },
+		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer",
+			Character = "IconCharacter" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 	RailGap = 8, RailMinRoom = 300, -- du: the window stops this far above the HUD icon row, if it keeps this much height
 }

@@ -5,7 +5,8 @@
 --                                               never shown or usable — review B10, so a renamed id is recoverable)
 --   data.WeaponEnhance = { [tier] = 0..MaxEnhance }  (array by weapon tier; kept through rebirth)
 --   data.LootFlags = { FirstScroll = true }
--- Client mirror (display only, review B11): the owner-only "Inventory" remote { Items, Enhance } and the numeric
+--   data.Spares = { ["T:P"] = n }  (C1 spare weapons: SpareRoom / AddSpare; the save repair is Config.SanitizeSpares)
+-- Client mirror (display only, review B11): the owner-only "Inventory" remote { Items, Enhance, ..., Spares } and the numeric
 -- WeaponEnhance attribute (+N of the EQUIPPED tier; CombatService / JusticeService / PvPService read it).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -155,7 +156,9 @@ local function inventoryPayload(data)
 	for tier = 1, Config.MaxWeaponTier do
 		weaponSeq[tier] = type(data.WeaponSeq) == "table" and math.max(0, math.floor(num(data.WeaponSeq[tier]))) or 0
 	end
-	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq }
+	-- C1: spare weapons { ["T:P"] = n } (a repaired copy; additive field, the bag lists them)
+	local spares = Config.SanitizeSpares and Config.SanitizeSpares(data.Spares) or {}
+	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq, Spares = spares }
 end
 
 local function pushInventory(player)
@@ -774,6 +777,45 @@ function LootService.Start()
 		STATE.Watching[player] = nil
 	end)
 	print("[LootService] started")
+end
+
+------------------------------------------------------------------ spare weapons (C1, save v4)
+-- data.Spares["T:P"] = n: weapons kept beside the owned mask (CraftService's results; duplicates later). The writers keep
+-- the caps: at most Config.SaveV4.SpareKeyMax of one key and SpareSum of all keys (the save repair never cuts the sum).
+-- nil = a bad tier (integer 1..MaxWeaponTier) or plus (integer 0..MaxEnhance)
+local function spareKey(tier, plus)
+	if not validTier(tier) then return nil end
+	if type(plus) ~= "number" or plus ~= plus or plus ~= math.floor(plus) or plus < 0 or plus > LOOT.MaxEnhance then return nil end
+	return string.format("%d:%d", tier, plus)
+end
+
+-- room for one more of that key (key below SpareKeyMax, all keys below SpareSum)
+local function spareFits(data, key)
+	local spares = type(data.Spares) == "table" and data.Spares or {}
+	local sum = 0
+	for _, n in spares do
+		sum += math.max(0, math.floor(num(n)))
+	end
+	return math.floor(num(spares[key])) < Config.SaveV4.SpareKeyMax and sum < Config.SaveV4.SpareSum
+end
+
+function LootService.SpareRoom(player, tier, plus)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	if not data then return false end
+	return spareFits(data, key)
+end
+
+-- adds one spare of tier +plus and publishes the inventory; false (nothing changed) on a bad argument, no data or no
+-- room. No notice here: the caller says it
+function LootService.AddSpare(player, tier, plus)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	if not data or not spareFits(data, key) then return false end
+	if type(data.Spares) ~= "table" then data.Spares = {} end
+	data.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1
+	publish(player, data)
+	return true
 end
 
 -- re-mirror the owner's items / per-tier +N (Inventory remote) and the equipped WeaponEnhance attribute; for other

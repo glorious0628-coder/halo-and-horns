@@ -452,7 +452,10 @@ runGroup("power-samples", function()
 	local fresh = execute("Config", CONFIG_SOURCE, nativeEnv())
 	check(fresh.Power.MaxCache == nil, "no cached maximum before the first call", fresh.Power.MaxCache)
 	local m = fresh.MaxCombatPower()
-	check(m == 25488, "MaxCombatPower() = 25,488", m)
+	-- C1: the Mythic tier 9 (2200) is the new strongest weapon: 25,488 (tier 7 at Lv100 +10) -> 37,805
+	check(m == 37805, "MaxCombatPower() = 37,805 (C1: Lv100 Mythic tier 9 +10)", m)
+	check(C.CombatPower(C.Levels.MaxLevel, 7, C.Loot.MaxEnhance) == 25488, "tier 7 at Lv100 +10 stays 25,488 (tiers 1-8 unchanged)",
+		C.CombatPower(C.Levels.MaxLevel, 7, C.Loot.MaxEnhance))
 	check(fresh.Power.MaxCache == m, "the maximum is cached in Config.Power.MaxCache", fresh.Power.MaxCache)
 	fresh.Power.MaxCache = 12345
 	check(fresh.MaxCombatPower() == 12345, "a second call returns the cached value (no recompute)", fresh.MaxCombatPower())
@@ -462,8 +465,13 @@ runGroup("power-samples", function()
 	end
 	check(m == C.CombatPower(C.Levels.MaxLevel, bestTier, C.Loot.MaxEnhance),
 		"maximum = Lv100 + the highest-DAMAGE weapon at +10", show({ m, bestTier }))
-	local wrong = C.CombatPower(C.Levels.MaxLevel, C.MaxWeaponTier, C.Loot.MaxEnhance)
-	check(wrong == 7027 and wrong < m, "the tier-index cap (MaxWeaponTier = jelly legendary) would give 7,027", wrong)
+	-- C1: tier 9 is both the last and the strongest tier, so a weak later tier proves the maximum is by Damage, not index
+	local later = execute("Config", CONFIG_SOURCE, nativeEnv())
+	table.insert(later.Weapons, { Tier = later.MaxWeaponTier + 1, Damage = 1, Price = 0, MinLevel = 1 })
+	later.MaxWeaponTier += 1
+	check(later.MaxCombatPower() == m, "a weaker tier appended after the strongest does not lower the maximum", later.MaxCombatPower())
+	local wrong = C.CombatPower(C.Levels.MaxLevel, 8, C.Loot.MaxEnhance)
+	check(wrong == 7027 and wrong < m, "a tier-index cap at the jelly legendary (tier 8) would give 7,027", wrong)
 	local over = 0
 	for level = 1, C.Levels.MaxLevel do
 		for tier = 1, C.MaxWeaponTier do
@@ -517,8 +525,9 @@ runGroup("power-monotonic", function()
 		end
 	end
 	check(orderBad == 0, "ordered by weapon Damage the number never goes down (strictly up when Damage is higher)", orderBad)
-	check(byDamage[#byDamage] == 7 and byDamage[4] == 8 and byDamage[5] == 4,
-		"damage order: tier 8 (76) sits between tier 3 (38) and tier 4 (88); tier 7 is the strongest", show(byDamage))
+	check(byDamage[#byDamage] == 9 and byDamage[#byDamage - 1] == 7 and byDamage[4] == 8 and byDamage[5] == 4,
+		"damage order: tier 8 (76) sits between tier 3 (38) and tier 4 (88); tier 7 next to last, the Mythic tier 9 the strongest (C1)",
+		show(byDamage))
 	check(C.CombatPower(1, 8, 0) < C.CombatPower(1, 7, 0), "tier index order is NOT the power order (tier 8 < tier 7)")
 end)
 
@@ -858,7 +867,7 @@ runGroup("title-config", function()
 	check(type(D.Titles) == "table" and next(D.Titles) == nil, "Data.Defaults.Titles = {}", show(D.Titles))
 	check(D.TitleSel == "", "Data.Defaults.TitleSel = \"\"", show(D.TitleSel))
 	check(D.BetaPioneer == false, "legacy Data.Defaults.BetaPioneer kept as false (migrated by TitleService)", show(D.BetaPioneer))
-	check(C.Data.Version == 3, "Data.Version stays 3 (the title fields and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 4, "Data.Version is 4 = C1's tier 9 (the title fields and A23-69's Stats are additive)", C.Data.Version)
 	local mirrored = {}
 	for _, k in C.Data.Mirrored do mirrored[k] = true end
 	check(mirrored.TitleSel == true, "TitleSel is mirrored (attribute for nametag / HUD)")

@@ -38,7 +38,7 @@ runGroup("config", function()
 		show(S.Curve))
 	check(S.AutoPattern.Warrior == "HA" and S.AutoPattern.Mage == "HA" and S.AutoPattern.Archer == "AH",
 		"auto patterns: Warrior / Mage HA, Archer AH (the same for Halo and Horns)", show(S.AutoPattern))
-	check(C.Data.Version == 3 and C.Data.Defaults.Version == 3, "save Data stays v3 (검수 2026-10-07: Stats is an additive field)",
+	check(C.Data.Version == 4 and C.Data.Defaults.Version == 4, "save Data v4 = C1's tier 9 (검수 2026-10-07: Stats is an additive field)",
 		show({ C.Data.Version, C.Data.Defaults.Version }))
 	check(sameTable(C.Data.Defaults.Stats, { Auto = true, Order = "" }), "a new save: Stats = { Auto = true, Order = '' }",
 		show(C.Data.Defaults.Stats))
@@ -164,15 +164,17 @@ runGroup("power", function()
 		"Lv100: one stat only = 0.909 of the even build, nothing picked = 0.755 (never under the 0.5 bully line)",
 		show({ one / even, none / even }))
 	check(on.CombatPower(1, 0, 0, { A = 0, H = 0 }) == 0, "Lv1 bare hands is still 0 (A23-34)", on.CombatPower(1, 0, 0, { A = 0, H = 0 }))
-	-- the highest number: 25,488 off / 33,740 on, cached apart
+	-- the highest number (C1: the Mythic tier 9): 37,805 off / 50,044 on, cached apart; tier 7 alone stays 25,488 / 33,740
 	local f = cfg(false)
-	check(f.MaxCombatPower() == 25488 and f.Power.MaxCache == 25488 and f.Power.MaxCacheStats == nil,
-		"MaxCombatPower OFF = 25,488 (cached in Power.MaxCache)", show({ f.MaxCombatPower(), f.Power.MaxCacheStats }))
+	check(f.MaxCombatPower() == 37805 and f.Power.MaxCache == 37805 and f.Power.MaxCacheStats == nil,
+		"MaxCombatPower OFF = 37,805 (cached in Power.MaxCache)", show({ f.MaxCombatPower(), f.Power.MaxCacheStats }))
 	f.Features.StatPoints = true
-	check(f.MaxCombatPower() == 33740 and f.Power.MaxCacheStats == 33740 and f.Power.MaxCache == 25488,
-		"MaxCombatPower ON = 33,740 (the even 49 / 50 split; its own cache)", show({ f.MaxCombatPower(), f.Power.MaxCache }))
+	check(f.MaxCombatPower() == 50044 and f.Power.MaxCacheStats == 50044 and f.Power.MaxCache == 37805,
+		"MaxCombatPower ON = 50,044 (the even 49 / 50 split; its own cache)", show({ f.MaxCombatPower(), f.Power.MaxCache }))
+	check(f.CombatPower(100, 7, 10, { A = 49, H = 50 }) == 33740 and f.CombatPower(100, 7, 10) == 25488,
+		"tier 7 at Lv100 +10 stays 25,488 off / 33,740 even split (tiers 1-8 unchanged)", "")
 	f.Features.StatPoints = false
-	check(f.MaxCombatPower() == 25488, "switching back OFF gives 25,488 again", f.MaxCombatPower())
+	check(f.MaxCombatPower() == 37805, "switching back OFF gives 37,805 again", f.MaxCombatPower())
 	local over = 0
 	local max = on.MaxCombatPower()
 	for level = 1, on.Levels.MaxLevel, 3 do
@@ -199,7 +201,7 @@ runGroup("one formula", function()
 		check(C.CombatPowerOf(pl({})) == 0 and C.CombatPowerOf(pl({ Level = 0 / 0, WeaponTier = 99 })) == C.CombatPower(1, C.MaxWeaponTier, 0)
 			and C.CombatPowerOf(pl({ Level = 5, WeaponTier = -2 })) == C.CombatPower(5, 0, 0)
 			and C.CombatPowerOf(pl({ Level = 5, WeaponTier = 0 / 0 })) == C.CombatPower(5, 0, 0),
-			"no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..8 (NaN -> 0) " .. tag, "")
+			"no attributes = Lv1 bare hands (0); NaN level -> 1; the tier clamped to 0..MaxWeaponTier (9; NaN -> 0) " .. tag, "")
 		local J = execute("JusticeService.extract", JUSTICE_EXTRACT, nativeEnv(), C)
 		local PV = execute("PvPService.extract", PVP_EXTRACT, nativeEnv(), C)
 		local COL = execute("PlayerService.leaderstats", COLUMN_EXTRACT, nativeEnv(), C, nil, function() end)
@@ -264,20 +266,20 @@ runGroup("data", function()
 	local v3 = { Version = 3, Level = 12, XP = 5, Faction = "Halo", Class = "Mage", ClassChosen = true, TutorialStep = 99,
 		WeaponTier = 3, WeaponOwnedMask = 7, BankGold = 300 }
 	local d = load(v3)
-	check(d.Version == 3 and sameTable(d.Stats, { Auto = true, Order = "" }) and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
-		"a v3 save without Stats stays v3 and gains { Auto ON, nothing picked }, nothing else changes", show({ d.Version, d.Stats }))
+	check(d.Version == 4 and sameTable(d.Stats, { Auto = true, Order = "" }) and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
+		"a v3 save without Stats becomes v4 (C1) and gains { Auto ON, nothing picked }, nothing else changes", show({ d.Version, d.Stats }))
 	local again = load(d)
 	check(sameTable(again, d), "loading it again changes nothing (idempotent)", "")
 	local hand = load({ Version = 3, Level = 8, TutorialStep = 99, Stats = { Auto = false, Order = "AHXah" } })
-	check(sameTable(hand.Stats, { Auto = false, Order = "AHX" }) and hand.Version == 3, "a save's picks are repaired, not reset",
+	check(sameTable(hand.Stats, { Auto = false, Order = "AHX" }) and hand.Version == 4, "a save's picks are repaired, not reset",
 		show(hand.Stats))
 	local broken = load({ Version = 3, Level = 8, TutorialStep = 99, Stats = "oops" })
 	check(sameTable(broken.Stats, { Auto = true, Order = "" }), "a broken Stats becomes the default", show(broken.Stats))
 	local v1 = load({ Level = 5, SwordTier = 2, TutorialStep = 99 })
-	check(v1.Version == 3 and v1.WeaponTier == 2 and v1.SwordTier == nil and sameTable(v1.Stats, { Auto = true, Order = "" }),
-		"a v1 save runs every step to v3 and gains the default Stats", show({ v1.Version, v1.WeaponTier }))
+	check(v1.Version == 4 and v1.WeaponTier == 2 and v1.SwordTier == nil and sameTable(v1.Stats, { Auto = true, Order = "" }),
+		"a v1 save runs every step to v4 and gains the default Stats", show({ v1.Version, v1.WeaponTier }))
 	local fresh = load(deepCopy(C.Data.Defaults))
-	check(fresh.Version == 3 and sameTable(fresh.Stats, { Auto = true, Order = "" }), "a brand-new save is v3 with the default Stats", "")
+	check(fresh.Version == 4 and sameTable(fresh.Stats, { Auto = true, Order = "" }), "a brand-new save is v4 with the default Stats", "")
 end)
 
 finish()

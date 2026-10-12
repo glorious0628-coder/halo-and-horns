@@ -5,6 +5,7 @@ tree, export the result for offline tests, then push with a real check that the 
       -> merge commits on origin/main (one per branch, in order), prints "FINAL <sha>", exports src/ tools/ docs/design
          of FINAL into <outdir>/tree (copy build/luau_cli_0_741 and build/*.luau in before running tools/test_*.py)
   py tools/merge_chain.py push <tested-final-sha> <commit>=<title> [...]
+  (both take --ours <path> [--ours <path> ...]: a conflicted non-src file keeps main's version, e.g. an old state doc)
       -> rebuilds the same chain on the newest origin/main, refuses unless src/ is byte-identical to the tested FINAL,
          pushes, fetches and checks every branch commit is an ancestor of origin/main; retries while others push art/docs
 
@@ -48,6 +49,9 @@ def resolve_append(text):
     return text[:m.start()] + m.group(1) + m.group(3) + text[m.end():]
 
 
+OURS = set()  # --ours <path>: a conflicted NON-src file (e.g. an old state doc) takes main's side, said in the message
+
+
 def build_chain(specs):
     run("fetch", "-q", "origin")
     base = out("rev-parse", "origin/main")
@@ -64,7 +68,14 @@ def build_chain(specs):
             env = dict(os.environ, GIT_INDEX_FILE=idx)
             try:
                 run("read-tree", tree, env=env)
+                kept = []
                 for f in files:
+                    if f in OURS and not f.startswith("src/"):
+                        ob = out("rev-parse", f"{cur}:{f}")
+                        run("update-index", "--cacheinfo", f"100644,{ob},{f}", env=env)
+                        print(f"  took main's side (--ours) for {f}")
+                        kept.append(f + " (main)")
+                        continue
                     text = run("cat-file", "-p", out("rev-parse", f"{tree}:{f}")).stdout
                     fixed = resolve_append(text)
                     if fixed is None:
@@ -84,7 +95,14 @@ def build_chain(specs):
 
 
 def parse_specs(argv):
-    specs = [a.split("=", 1) for a in argv]
+    rest = []
+    it = iter(argv)
+    for a in it:
+        if a == "--ours":
+            OURS.add(next(it))
+        else:
+            rest.append(a)
+    specs = [a.split("=", 1) for a in rest]
     if not specs or any(len(s) != 2 for s in specs):
         raise SystemExit(__doc__)
     return specs

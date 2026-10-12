@@ -558,5 +558,145 @@
    108.9004
   ],
   "place_rotate_y_pi": true
+ },
+ "HaloVar3_Balustrade_E": {
+  "D2_hull_035": "rbxassetid://113676384541578",
+  "D2_centre_035": [
+   0.0,
+   2.3267,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -13.3993,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_BellFrame": {
+  "D2_hull_035": "rbxassetid://106436580224062",
+  "D2_centre_035": [
+   0.0,
+   2.7492,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -9.6134,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_PotFlowers_E__Body": {
+  "D2_hull_035": "rbxassetid://89839306614579",
+  "D2_centre_035": [
+   0.0,
+   1.0084,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -5.8359,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_PotFlowers_D__Body": {
+  "D2_hull_035": "rbxassetid://111837837124380",
+  "D2_centre_035": [
+   0.0,
+   0.7272,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -4.1495,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_Balustrade_F": {
+  "D2_hull_035": "rbxassetid://103313580060057",
+  "D2_centre_035": [
+   0.0,
+   2.3292,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   -1.0943,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_Balustrade_C": {
+  "D2_hull_035": "rbxassetid://90522539772745",
+  "D2_centre_035": [
+   0.0,
+   2.4229,
+   0.4806
+  ],
+  "import_pos": [
+   -47.1779,
+   3.6779,
+   117.4641
+  ],
+  "place_rotate_y_pi": true
+ },
+ "NEW_ArmoryBarrels": {
+  "D2_hull_035": "rbxassetid://83490740194376",
+  "D2_centre_035": [
+   -0.1017,
+   1.5169,
+   -0.228
+  ],
+  "import_pos": [
+   -47.0761,
+   7.6377,
+   118.1727
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloReasonHQ_PotionCrate__Body": {
+  "D2_hull_035": "rbxassetid://138321528569239",
+  "D2_centre_035": [
+   -0.064,
+   1.7544,
+   0.0
+  ],
+  "import_pos": [
+   -47.1139,
+   10.951,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar3_PotFlowers_F__Body": {
+  "D2_hull_035": "rbxassetid://84298636430009",
+  "D2_centre_035": [
+   0.0,
+   1.2434,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   14.0158,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
+ },
+ "HaloVar4_Balustrade_A": {
+  "D2_hull_035": "rbxassetid://97509719803066",
+  "D2_centre_035": [
+   0.0,
+   2.2879,
+   0.0
+  ],
+  "import_pos": [
+   -47.1779,
+   17.5471,
+   117.9447
+  ],
+  "place_rotate_y_pi": true
  }
 }

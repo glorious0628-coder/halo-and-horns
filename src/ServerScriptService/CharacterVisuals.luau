@@ -691,7 +691,8 @@ end
 -- orb's bottom hangs for a size d: a + b x d
 local function staffOrb(tier, total, h, a, b)
 	local room = total * (1 - STAFF.Grip) - STAFF.OrbClear * h / STAFF.Height - a
-	return math.max(0.3, math.min(STAFF.Orb + STAFF.OrbPerTier * tier, room / b))
+	-- C1: the Mythic tier 9 keeps tier 8's orb (math.min(tier, 8)); the hand room shrinks it as before
+	return math.max(0.3, math.min(STAFF.Orb + STAFF.OrbPerTier * math.min(tier, 8), room / b))
 end
 
 local function buildStaff(grip, sc, w, color, tier, height)

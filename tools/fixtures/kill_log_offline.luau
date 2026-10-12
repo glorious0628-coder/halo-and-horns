@@ -28,7 +28,7 @@ runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local d = C.Data.Defaults.KillLog
 	check(d.Total == 0 and d.M == 0 and d.A == 0 and d.Golden == 0 and next(d.ByKind) == nil and next(d.ByTier) == nil, "save default KillLog", show(d))
-	check(C.Data.Version == 3, "data version stays 3 (additive field)", C.Data.Version)
+	check(C.Data.Version == 4, "data version 4 = C1's tier 9 (the kill log is an additive field)", C.Data.Version)
 end)
 
 runGroup("counting", function()
