@@ -1494,16 +1494,23 @@ def potflowers_e():
 
 @kit("HaloVar3_PotFlowers_F__Body", 2.45, "art/out/s2/halo/variants/HaloVar3_PotFlowers_F_HQ_src.png")
 def potflowers_f():
-    cyl("Base", 1.5, 0.3, 0, 0, 0)
-    cyl("BaseGold", 1.6, 0.08, 0, 0, 0.3, "gold")
-    cyl("Stem", 0.55, 0.45, 0, 0, 0.38)
-    ball("Knot", 0.62, 0, 0, 0.62, "marble")
-    ring("KnotRing", 0.7, 0.5, 0.1, 0, 0, 0.82, "gold", cc=False)
-    cap_bowl("Bowl", 1.7, 0.7, 1.6)
-    cyl("Upper", 1.7, 0.7, 0, 0, 1.6)
-    round_inlays("Win", 0.85, 1.95, 4, 0.18, 0.4, "arch", a0=0, fr=0.04)
-    ring("Rim", 1.86, 1.5, 0.14, 0, 0, 2.33, "gold")
-    soil("Soil", 1.55, 0, 0, 2.3)
+    # 디자인 검수 10/12: the 2D is a tall narrow urn (rim 1.22 wide, 2.45 high), not a wide low bowl - vines hang
+    # over it instead of sinking in. Measured on the 2D with a 5 % grid (rim top = 79 % of the drawing).
+    cyl("Base", 1.02, 0.16, 0, 0, 0)
+    cyl("BaseGold", 0.9, 0.05, 0, 0, 0.16, "gold")
+    cyl("Plinth", 0.82, 0.31, 0, 0, 0.21)
+    round_inlays("PWin", 0.41, 0.36, 4, 0.1, 0.18, "rect", a0=45, fr=0.03)
+    cyl("Neck1", 0.6, 0.1, 0, 0, 0.52, "gold")
+    ball("Knot", 0.7, 0, 0, 0.82, "marble")
+    cyl("Neck2", 0.72, 0.1, 0, 0, 1.0, "gold")
+    cap_bowl("Bowl", 1.12, 0.7, 1.7)
+    cyl("Upper", 1.12, 0.62, 0, 0, 1.7)
+    round_inlays("Win", 0.56, 2.0, 4, 0.16, 0.5, "arch", a0=45, fr=0.04)
+    for k in range(4):
+        x, y, _ = vmul(hdir(45 + 90 * k), 0.57)
+        ball("Stud%d" % k, 0.12, x, y, 2.24, "gold")
+    ring("Rim", 1.22, 0.98, 0.15, 0, 0, 2.375, "gold")
+    soil("Soil", 0.98, 0, 0, 2.4)
 
 
 @kit("HaloVar4_Planter_A__Body", 2.75, "art/out/s2/halo/variants4/HaloVar4_Planter_A_HQ_src.png")
