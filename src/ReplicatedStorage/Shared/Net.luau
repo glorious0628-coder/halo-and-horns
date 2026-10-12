@@ -90,6 +90,8 @@ Net.GameStateDefaults = {
 	GooseNextAt = 0, GooseActive = false, GooseEndsAt = 0, GooseRescue = 0, GoosePoach = 0,
 	-- A23-14 "함께 구조" mirror (GooseService.publishMode; EventHUD.updateGoose)
 	GooseMode = "Versus", GooseCoopSide = "None", GooseCoopTarget = 0, GooseCoopPeople = 0,
+	-- A23-131 egg hunt: the crown egg's overtime end (0 = none; GooseEndsAt never moves)
+	GooseOvertimeUntil = 0,
 	-- KaijuService
 	KaijuPhase = "None", KaijuUserId = 0, KaijuName = "", KaijuEndsAt = 0,
 	-- HalloweenService (Config.Halloween): server time (Util.Now) of the next Pumpkin King, 0 = season off / none

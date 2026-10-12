@@ -986,6 +986,226 @@ runGroup("neutral-and-feathers", function()
 	check(math.abs(hops[1] - 6) < 1e-6 and math.abs(hops[2] - 6) < 1e-6 and math.abs(hops[3] - 6) < 1e-6 and hops[4] == 0 and egg.Hops == 3,
 		"a bouncy egg hops 6 studs, 3 times at most", show(hops))
 end)
+------------------------------------------------------------------ GooseService (Eggs mode, then the tug)
+local function serviceWorld(opts)
+	opts = opts or {}
+	opts.Service = true
+	local w = newWorld(opts)
+	function w:STick(n, mover)
+		for _ = 1, n or 1 do
+			self.Now += TICK
+			self.Clock += TICK
+			if mover then mover(self) end
+			self:Tick()
+		end
+	end
+	-- runs the service until the goose lands (GooseNextAt)
+	function w:Land()
+		self.Now = self.GS.Attrs.GooseNextAt - TICK
+		self:STick(1)
+		assert(self.GS.Attrs.GooseActive == true, "the goose landed")
+	end
+	function w:SUntil(t, mover)
+		local T0 = self.Eggs.Round().T0
+		while self.GS.Attrs.GooseActive == true and self.Now - T0 < t - 1e-6 do self:STick(1, mover) end
+	end
+	function w:HonorAdds(p)
+		local n = 0
+		for _, s in self.Stats do if s.P == p and (s.Key == "Honor" or s.Key == "Infamy") then n += s.N end end
+		return n
+	end
+	function w:NoticeTo(p, text)
+		local n = 0
+		for _, e in self.Notices do if e.Player == p and e.Text == text then n += 1 end end
+		return n
+	end
+	return w
+end
+
+local function kstHour(t) return math.floor(((t + 32400) % 86400) / 3600) end
+
+runGroup("service-schedule", function()
+	local w = serviceWorld()
+	local now = w.Now
+	local nextAt = w.GS.Attrs.GooseNextAt
+	check(nextAt > now and nextAt - now <= 14400 and (nextAt + 32400) % 14400 == 0 and kstHour(nextAt) % 4 == 0,
+		"the next goose: the next KST 00/04/08/12/16/20 clock time", show({ nextAt - now, kstHour(nextAt) }))
+	check(w.GS.Attrs.GooseActive == false and w.GS.Attrs.GooseOvertimeUntil == 0, "idle at start, no overtime")
+	w:Land()
+	check(w.Eggs.IsActive() and w.Goose.RegisterHit(w:Add("X", "Halo", vec(0, 3, 20)), true) == 0 and w.Goose.GetPosition() == nil,
+		"Eggs mode: the hunt runs, hitting the goose counts 0, no swing target")
+	w:SUntil(61)
+	local after = w.GS.Attrs.GooseNextAt
+	check(w.GS.Attrs.GooseActive == false and after - nextAt == 14400, "after the round: the next one 4 hours later", after - nextAt)
+	local t = serviceWorld({ Edit = function(c) c.Goose.Schedule.Every = 600 end })
+	local n2 = t.GS.Attrs.GooseNextAt
+	check((n2 + 32400) % 600 == 0 and n2 - t.Now <= 600, "a test server: Every = 600", n2 - t.Now)
+end)
+
+runGroup("service-versus", function()
+	local w = serviceWorld({ Edit = function(c) c.Goose.Schedule.Every = 600 end }) -- a test server: one every 10 min
+	local h = w:Add("H1", "Halo", vec(-30, 3, -10), 3)
+	local r = w:Add("R1", "Horns", vec(-30, 3, 10), 3)
+	w:Land()
+	check(w.GS.Attrs.GooseMode == "Versus", "both sides: versus")
+	local E2 = w.Eggs
+	E2.DebugEgg(w.Now, "Gold", vec(-30, 0, -10)); E2.DebugEgg(w.Now, "Gold", vec(-30, 0, -10))
+	E2.DebugEgg(w.Now, "Gold", vec(-30, 0, 10))
+	local ph, pr = h.Pos, r.Pos
+	w:STick(8, function() w:Jiggle(h, ph); w:Jiggle(r, pr) end)
+	check(h.Attrs.EggCarry == 2 and r.Attrs.EggCarry == 1, "picks through the service loop", show({ h.Attrs.EggCarry, r.Attrs.EggCarry }))
+	local function walk(p, to)
+		for _ = 1, 40 do
+			w:STick(1, function()
+				local d = flat(p.Pos, to)
+				local s = math.min(d, 14 * TICK)
+				if d > 0 then p.Pos = vec(p.Pos.X + (to.X - p.Pos.X) / d * s, 3, p.Pos.Z + (to.Z - p.Pos.Z) / d * s) end
+			end)
+		end
+	end
+	walk(h, vec(-30, 3, -30))
+	walk(r, vec(-30, 3, 30))
+	check(w.GS.Attrs.GooseRescue == 20 and w.GS.Attrs.GoosePoach == 10, "GameState totals = integer delivery points", show({ w.GS.Attrs.GooseRescue, w.GS.Attrs.GoosePoach }))
+	w:SUntil(61, function() w:Jiggle(h, vec(-30, 3, -30)); w:Jiggle(r, vec(-30, 3, 30)) end)
+	local fin = w.Finished[#w.Finished]
+	check(fin and fin.Result == "Halo" and fin.Info.Mode == "Versus" and fin.Rewarded[h] == 20 and fin.Rewarded[r] == nil,
+		"GooseFinished('Halo', { H1 = 20 points }): counts = delivery points of the paid", show(fin and { fin.Result, fin.Info.Mode, fin.Rewarded[h] }))
+	check(fin and fin.Info.Delivered == 3 and fin.Info.ScoreGap == 10 and type(fin.Info.H) == "table" and fin.Info.CrownFlip == false,
+		"info: Delivered, ScoreGap, H, CrownFlip", show(fin and fin.Info))
+	check(#w.War == 1 and w.War[1][1] == "Halo" and w.War[1][2] == 30, "the winning side +30 crown-war points", show(w.War))
+	check(w.Gold[h] ~= nil and w.Gold[r] == nil and #w.Paid == 1, "2 eggs paid; 1 egg (10 points) not", show({ w.Gold[h], w.Gold[r] }))
+	check(w:NoticeTo(r, w.Config.Goose.Text.BringTwo) == 1 and w:NoticeTo(h, w.Config.Goose.Text.BringTwo) == 0, "'Bring 2 eggs for a reward.' only to the one short")
+	check(w:HonorAdds(h) == 5 and h.Data.EggHonorAt == math.floor(w.Now) and w:HonorAdds(r) == 0, "Honor +5 to the paid Knight, EggHonorAt saved",
+		show({ w:HonorAdds(h), h.Data.EggHonorAt }))
+	check(h.Attrs.GooseCount == 0 and w.GS.Attrs.GooseActive == false and w.GS.Attrs.GooseRescue == 0 and (h.Attrs.EggCarry or 0) == 0,
+		"after the end: attributes reset")
+	-- the next round within the hour: paid again, no second +5; an hour later: +5 again
+	local function round(later)
+		if later then
+			w.Now += later
+			w:STick(1)
+		else
+			w:Land()
+		end
+		w.Eggs.DebugEgg(w.Now, "Big", vec(-30, 0, -10))
+		local at = vec(-30, 3, -10)
+		h.Pos = at
+		w:STick(8, function() w:Jiggle(h, at) end)
+		walk(h, vec(-30, 3, -30))
+		w:SUntil(61, function() w:Jiggle(h, vec(-30, 3, -30)); w:Jiggle(r, vec(-30, 3, 30)) end)
+	end
+	round()
+	check(w.Finished[#w.Finished].Rewarded[h] == 30 and w:HonorAdds(h) == 5, "a big egg alone (30 points) is paid; no second +5 within the hour",
+		show({ w.Finished[#w.Finished].Rewarded[h], w:HonorAdds(h) }))
+	round(3600)
+	check(w:HonorAdds(h) == 10, "an hour later: +5 again", w:HonorAdds(h))
+end)
+
+runGroup("service-coop-and-absent", function()
+	-- only Knights on the server: co-op, target 80 x ring entrants (min 1)
+	local w = serviceWorld()
+	local h1 = w:Add("H1", "Halo", vec(70, 3, 0))
+	local h2 = w:Add("H2", "Halo", vec(70, 3, 10))
+	w:Land()
+	check(w.GS.Attrs.GooseMode == "Coop" and w.GS.Attrs.GooseCoopSide == "Halo" and w.GS.Attrs.GooseCoopTarget == 80,
+		"co-op; nobody in the ring yet: target 80", show(w.GS.Attrs))
+	h1.Pos = vec(20, 3, 0)
+	w:STick(2)
+	check(w.GS.Attrs.GooseCoopTarget == 80 and w.GS.Attrs.GooseCoopPeople == 1, "1 entrant: 80")
+	h2.Pos = vec(20, 3, 10)
+	w:STick(2)
+	check(w.GS.Attrs.GooseCoopTarget == 160 and w.GS.Attrs.GooseCoopPeople == 2, "2 entrants: 160", show({ w.GS.Attrs.GooseCoopTarget }))
+	local rival = w:Add("R1", "Horns", vec(24, 3, 0))
+	w:STick(2)
+	check(rival.Attrs.EggCan == false, "a rival who came late cannot pick")
+	w:SUntil(61)
+	local fin = w.Finished[#w.Finished]
+	check(fin.Result == "Tie" and fin.Info.Mode == "Coop" and fin.Info.Success == false and fin.Info.Target == 160 and #w.War == 0,
+		"gauge not filled: a tie, no war points", show(fin.Info))
+	-- versus, but the Horn Legion never came into the ring: judged as co-op for the Knights, no war points
+	local a = serviceWorld()
+	local h = a:Add("H1", "Halo", vec(-30, 3, -10))
+	local r = a:Add("R1", "Horns", vec(80, 3, 0))
+	a:Land()
+	check(a.GS.Attrs.GooseMode == "Versus", "both on the server: versus at the start")
+	a.Eggs.DebugEgg(a.Now, "Crown", vec(-30, 0, -10), 90)
+	local at = h.Pos
+	a:STick(8, function() a:Jiggle(h, at) end)
+	for _ = 1, 30 do
+		a:STick(1, function()
+			local to = vec(-30, 3, -30)
+			local d = flat(h.Pos, to)
+			local s = math.min(d, 14 * TICK)
+			if d > 0 then h.Pos = vec(h.Pos.X, 3, h.Pos.Z + (to.Z - h.Pos.Z) / d * s) end
+		end)
+	end
+	a:SUntil(61, function() a:Jiggle(h, vec(-30, 3, -30)) end)
+	local af = a.Finished[#a.Finished]
+	check(af.Info.Mode == "Coop" and af.Info.NeverCame == "Horns" and af.Info.Side == "Halo" and af.Info.Target == 80 and af.Result == "Halo"
+		and #a.War == 0, "a side that never came: the co-op rule (90 >= 80: success at 70%), no war points", show(af.Info))
+	local _ = r
+end)
+
+runGroup("service-returns-crowd-overtime", function()
+	-- faction change / leaving through the service signals
+	local w = serviceWorld()
+	local h = w:Add("H1", "Halo", vec(24, 3, 0))
+	local h2 = w:Add("H2", "Halo", vec(-24, 3, 0))
+	w:Add("R1", "Horns", vec(0, 3, 30))
+	w:Land()
+	w.Eggs.DebugEgg(w.Now, "Gold", vec(24, 0, 0)); w.Eggs.DebugEgg(w.Now, "Gold", vec(-24, 0, 0))
+	w:STick(8, function() w:Jiggle(h, vec(24, 3, 0)); w:Jiggle(h2, vec(-24, 3, 0)) end)
+	check(h.Attrs.EggCarry == 1 and h2.Attrs.EggCarry == 1, "two carriers")
+	h.Faction = "Horns"
+	w.Registry.FactionService.FactionChanged:Fire(h)
+	check((h.Attrs.EggCarry or 0) == 0, "FactionChanged: the carried eggs go back (dropEntry)")
+	w.Registry.PlayerService.PlayerLeaving:Fire(h2)
+	check((h2.Attrs.EggCarry or 0) == 0, "PlayerLeaving: the carried eggs go back")
+	w.Goose.ReturnEggs(h2, "Travel")
+	-- P >= 16: one egg is enough
+	local c = serviceWorld()
+	local d = c:Add("D", "Halo", vec(-30, 3, -10))
+	c:Add("R1", "Horns", vec(30, 3, 0))
+	for i = 1, 15 do c:Add("P" .. i, "Halo", vec(-8 + i, 3, -50)) end
+	c:Land()
+	c.Eggs.DebugEgg(c.Now, "Gold", vec(-30, 0, -10))
+	c:STick(8, function() c:Jiggle(d, vec(-30, 3, -10)) end)
+	for _ = 1, 30 do
+		c:STick(1, function()
+			local to = vec(-30, 3, -30)
+			local dd = flat(d.Pos, to)
+			if dd > 0 then d.Pos = vec(-30, 3, d.Pos.Z + (to.Z - d.Pos.Z) / dd * math.min(dd, 16 * TICK)) end
+		end)
+	end
+	c:SUntil(61, function() c:Jiggle(d, vec(-30, 3, -30)) end)
+	local cf = c.Finished[#c.Finished]
+	check(cf.Rewarded[d] ~= nil, "17 in the ring (P >= 16): one egg is enough", show(cf.Rewarded))
+	-- overtime: GameState GooseOvertimeUntil while a crown egg is carried, 0 after
+	local o = serviceWorld()
+	local k = o:Add("K", "Halo", vec(-20, 3, -12))
+	o:Add("R1", "Horns", vec(20, 3, 12))
+	o:Land()
+	local T0 = o.Eggs.Round().T0
+	o:SUntil(55, function() o:Jiggle(k, vec(-20, 3, -12)) end)
+	o.Eggs.DebugEgg(o.Now, "Crown", vec(-20, 0, -12), 50)
+	o:SUntil(60.5, function() o:Jiggle(k, vec(-20, 3, -12)) end)
+	check(o.GS.Attrs.GooseActive == true and math.abs(o.GS.Attrs.GooseOvertimeUntil - (T0 + 68)) < 1e-6 and o.GS.Attrs.GooseEndsAt == T0 + 60,
+		"overtime: GooseOvertimeUntil = end + 8, GooseEndsAt unchanged", show({ o.GS.Attrs.GooseOvertimeUntil - T0, o.GS.Attrs.GooseEndsAt - T0 }))
+	o:SUntil(70, function() o:Jiggle(k, vec(-20, 3, -12)) end)
+	check(o.GS.Attrs.GooseActive == false and o.GS.Attrs.GooseOvertimeUntil == 0 and (k.Attrs.EggCarry or 0) == 0,
+		"after the overtime: the round ends, the crown goes back, nobody keeps eggs")
+end)
+
+runGroup("tug-still-works", function()
+	local w = serviceWorld({ Mode = "Tug" })
+	local h = w:Add("H1", "Halo", vec(0, 3, 0))
+	w:Add("R1", "Horns", vec(0, 3, 10))
+	w.Goose.DebugStart()
+	check(w.GS.Attrs.GooseActive == true and not w.Eggs.IsActive(), "Mode Tug: the tug starts, no egg hunt")
+	w.Clock += 1
+	check(w.Goose.RegisterHit(h, true) == 2, "a manual hit pulls 2")
+	check(w.Goose.GetPosition() ~= nil, "the goose is a swing target again")
+end)
 -- GROUPS_END
 
 ------------------------------------------------------------------ result
