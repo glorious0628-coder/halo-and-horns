@@ -46,8 +46,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         "PET_SOURCE": sources[PE],
         "COMBAT_SOURCE": sources[CO],
         "LOOT_SOURCE": sources[L],
-        "MAXHP_SOURCE": ("local Config, stat, healthMult = ...\n" + function_block(player, "local function computeMaxHealth(")
-                         + "\nreturn computeMaxHealth\n"),
+        "MAXHP_SOURCE": ("local Config, stat, healthMult = ...\n" + function_block(player, "local function gearHp(") + "\n"
+                         + function_block(player, "local function computeMaxHealth(") + "\nreturn computeMaxHealth\n"),
         "SPEED_SOURCE": ("local PlayerService, S, Config, Util, classDef = ...\n"
                          + function_block(player, "function PlayerService.ComputeWalkSpeed(") + "\nreturn PlayerService\n"),
         "WATCH_SOURCE": "local POWER = ...\n" + function_block(justice, "function POWER.Watch(") + "\nreturn POWER\n",
@@ -98,22 +98,21 @@ MUTATIONS = [
     ("walk: PetAcc with the switch off", C, "and petAcc > 0 and Config.FeatureOn(\"Gear\") then", "and petAcc > 0 then"),
     ("walk: ComputeWalkSpeed drops PetAcc", P, ", player:GetAttribute(\"PetAcc\")) -- ⑥ gear", ") -- ⑥ gear"),
     # --- the hooks (게임성 개발 2's files)
-    ("hook: max HP without the armor", P, "\t\t* select(2, Config.GearMultsOf(player)))) -- ⑥ gear", "\t\t* 1)) -- ⑥ gear"),
-    ("hook: max HP from the ring's number", P, "\t\t* select(2, Config.GearMultsOf(player)))) -- ⑥ gear", "\t\t* select(1, Config.GearMultsOf(player)))) -- ⑥ gear"),
-    ("hook: monster hit without the ring", CO, "\t\t* (Config.GearMultsOf(attacker)) -- ⑥ gear (게임성 개발 3): the ring's atk mult\n", ""),
-    ("hook: PvP ratio without the attacker's ring", CO, " * (Config.GearMultsOf(attacker))\n\t\t\t/ (vWeapon", "\n\t\t\t/ (vWeapon"),
-    ("hook: PvP ratio without the victim's ring", CO, "/ (vWeapon * (Config.GearMultsOf(victim)))", "/ vWeapon"),
-    ("hook: PvP ratio from the armor", CO, " * (Config.GearMultsOf(attacker))\n\t\t\t/ (vWeapon", " * select(2, Config.GearMultsOf(attacker))\n\t\t\t/ (vWeapon"),
+    ("hook: max HP without the armor", P, "\t\t* gearHp(player))) -- ⑥ gear", "\t\t* 1)) -- ⑥ gear"),
+    ("hook: max HP from the ring's number", P, "\tlocal ok, _, h = pcall(Config.GearMultsOf, player)\n", "\tlocal ok, h = pcall(Config.GearMultsOf, player)\n"),
+    ("hook: monster hit without the ring", CO, "\t\t* gearAtk(attacker) -- ⑥ gear (게임성 개발 3): the ring's atk mult\n", ""),
+    ("hook: PvP ratio without the attacker's ring", CO, " * gearAtk(attacker)\n\t\t\t/ (vWeapon", "\n\t\t\t/ (vWeapon"),
+    ("hook: PvP ratio without the victim's ring", CO, "/ (vWeapon * gearAtk(victim))", "/ vWeapon"),
+    ("hook: PvP ratio from the armor", CO, " * gearAtk(attacker)\n\t\t\t/ (vWeapon", " * select(2, Config.GearMultsOf(attacker))\n\t\t\t/ (vWeapon"),
     ("hook: PvP ratio without the clamp", CO, "\tratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)\n", "\tratio = math.max(ratio, floor)\n"),
     ("hook: PvP base grows with the victim's armor", CO, "vClass) * Config.PvP.HitPctOfMaxHP\n", "vClass) * Config.PvP.HitPctOfMaxHP * select(2, Config.GearMultsOf(victim))\n"),
     ("hook: the power watch misses GearAtk", J, "\"StatHp\", \"GearAtk\", \"GearHp\" } do", "\"StatHp\", \"GearHp\" } do"),
     ("hook: the power watch misses GearHp", J, "\"StatHp\", \"GearAtk\", \"GearHp\" } do", "\"StatHp\", \"GearAtk\" } do"),
     # --- PetService (the pet's side)
-    ("pet: publish sets no PetAcc", PE, "\tplayer:SetAttribute(\"PetAcc\", Config.PetGearBonus(data.Gear, uid, \"PetAcc\"))" + HOOK + ": the following pet's PetAcc (0 = none)\n", ""),
-    ("pet: PetAcc from the armor", PE, "Config.PetGearBonus(data.Gear, uid, \"PetAcc\"))", "Config.PetGearBonus(data.Gear, uid, \"PetArmor\"))"),
-    ("pet: PetAcc after the speed refresh", PE, "\tplayer:SetAttribute(\"PetAcc\", Config.PetGearBonus(data.Gear, uid, \"PetAcc\")) -- ⑥ gear (게임성 개발 3): the following pet's PetAcc (0 = none)\n\trefreshSpeed(player)\n",
-     "\trefreshSpeed(player)\n\tplayer:SetAttribute(\"PetAcc\", Config.PetGearBonus(data.Gear, uid, \"PetAcc\"))\n"),
-    ("pet: no XP bonus", PE, "\tlocal exact = n * (1 + Config.PetGearBonus(data.Gear, uid, \"PetArmor\")) + (rems and rems[uid] or 0)\n", "\tlocal exact = n + (rems and rems[uid] or 0)\n"),
+    ("pet: publish sets no PetAcc", PE, "\tplayer:SetAttribute(\"PetAcc\", acc > 0 and acc or nil)\n", ""),
+    ("pet: PetAcc from the armor", PE, "\tlocal acc = petGear(data, uid, \"PetAcc\")\n", "\tlocal acc = petGear(data, uid, \"PetArmor\")\n"),
+    ("pet: PetAcc after the speed refresh", PE, "\tplayer:SetAttribute(\"PetAcc\", acc > 0 and acc or nil)\n\trefreshSpeed(player)\n", "\trefreshSpeed(player)\n\tplayer:SetAttribute(\"PetAcc\", acc > 0 and acc or nil)\n"),
+    ("pet: no XP bonus", PE, "\tlocal exact = n * (1 + petGear(data, uid, \"PetArmor\")) + (rems and rems[uid] or 0)\n", "\tlocal exact = n + (rems and rems[uid] or 0)\n"),
     ("pet: the XP bonus not floored", PE, "\tlocal whole = math.floor(exact + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)\n", "\tlocal whole = exact\n"),
     ("pet: the XP bonus from the accessory", PE, "uid, \"PetArmor\")) + (rems and rems[uid] or 0)", "uid, \"PetAcc\")) + (rems and rems[uid] or 0)"),
     ("pet: a kill without the bonus", PE, "giveXP(p, gearXP(player, data, uid, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1)))))", "giveXP(p, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1))))"),
@@ -151,10 +150,10 @@ MUTATIONS = [
     ("equip: no GearHp", G, "\tplayer:SetAttribute(\"GearHp\", hp)\n", ""),
     ("equip: no GearAtk", G, "\tplayer:SetAttribute(\"GearAtk\", atk)\n", ""),
     ("equip: the armor's HP not refreshed", G, "\tif before ~= hp and type(ps) == \"table\"", "\tif false and type(ps) == \"table\""),
-    ("equip: the ring from the armor", G, "local atk, hp = 1 + Config.GearBonusOf(\"Ring\", g.On.Ring), 1 + Config.GearBonusOf(\"Armor\", g.On.Armor)", "local atk, hp = 1 + Config.GearBonusOf(\"Armor\", g.On.Armor), 1 + Config.GearBonusOf(\"Ring\", g.On.Ring)"),
+    ("equip: the ring from the armor", G, "return 1 + wornBonus(\"Ring\", g.On.Ring, level), 1 + wornBonus(\"Armor\", g.On.Armor, level)", "return 1 + wornBonus(\"Armor\", g.On.Armor, level), 1 + wornBonus(\"Ring\", g.On.Ring, level)"),
     ("join: the switch not checked", G, "local function onReady(player)\n\tif not on() then return end\n", "local function onReady(player)\n"),
-    ("join: no attributes", G, "\treturnOrphans(player, data, g)\n\tpublishAttrs(player, g)\n", "\treturnOrphans(player, data, g)\n"),
-    ("join: no GearInfo", G, "\tpublishAttrs(player, g)\n\tsendInfo(player, g)\nend", "\tpublishAttrs(player, g)\nend"),
+    ("join: no attributes", G, "\treturnOrphans(player, data, g)\n\tpublishAttrs(player, g, data)\n", "\treturnOrphans(player, data, g)\n"),
+    ("join: no GearInfo", G, "\tpublishAttrs(player, g, data)\n\tsendInfo(player, g)\n\tif not LEVEL[player] then\n", "\tpublishAttrs(player, g, data)\n\tif not LEVEL[player] then\n"),
     ("join: a gone pet keeps its gear", G, "and not S.PetService.GetPet(player, uid) then", "and false then"),
     ("join: a gone pet's gear lost when Own is full", G, "\t\t\t\tif roomFor(g.Own, kind) then\n", "\t\t\t\tif true then\n"),
     ("join: an empty row stays", G, "\t\t\tif next(row) == nil then g.Pet[uid] = nil end\n", ""),
@@ -172,6 +171,11 @@ MUTATIONS = [
     ("combat: a failing check blocks", G, "\treturn ok and yes == true\nend\n", "\treturn not ok or yes == true\nend\n"),
     ("pet xp: fractions dropped", PE, "\t\trems[uid] = rest\n", ""),
     ("pet xp: fractions never cleared", PE, "\telseif rems then\n\t\trems[uid] = nil\n\tend\n\treturn whole\n", "\tend\n\treturn whole\n"),
+    ("hook: max HP calls Config directly", P, "\t\t* gearHp(player))) -- ⑥ gear", "\t\t* select(2, Config.GearMultsOf(player)))) -- ⑥ gear"),
+    # --- 게임성 검수 10/12 (before the switch goes on)
+    ("level: a level drop keeps the bonus", G, "\tif not tier or not def or level < num(def.Wear[tier], 1) then return 0 end\n", "\tif not tier or not def then return 0 end\n"),
+    ("level: no Level watch", G, "\t\tLEVEL[player] = player:GetAttributeChangedSignal(\"Level\"):Connect(function()\n", "\t\tLEVEL[player] = player:GetAttributeChangedSignal(\"NoSuchAttr\"):Connect(function()\n"),
+    ("info: no SendInfo", G, "\tsendInfo(player, gearOf(data))\n\treturn true\n", "\treturn true\n"),
 ]
 
 
@@ -214,20 +218,37 @@ def static() -> tuple[int, list[str]]:
     check(re.search(r"GearSum = 60,", craft) is not None and "OwnSum = 60," in config, "CraftService.ST.GearSum and Config.Gear.OwnSum are both 60")
     # the one-line hooks in game dev 2's files
     player = strip_comments(read(SSS / "PlayerService.luau"))
-    check("Config.GearMultsOf(player)" in function_block(player, "local function computeMaxHealth("), "PlayerService.computeMaxHealth: x the armor's hp mult")
+    check("gearHp(player)" in function_block(player, "local function computeMaxHealth("), "PlayerService.computeMaxHealth: x the armor's hp mult")
+    # 게임성 검수 10/12 (test_owner_restore runs a trimmed Config): every hook reads gear through a guarded helper
+    # (type(Config.X) == "function" + pcall), never a bare Config.GearMultsOf( / Config.PetGearBonus( call
+    pet_src = strip_comments(read(SSS / "PetService.luau"))
+    for name, src, helper, fn in (("PlayerService", player, "local function gearHp(", "GearMultsOf"),
+                                  ("CombatService", strip_comments(read(SSS / "CombatService.luau")), "local function gearAtk(", "GearMultsOf"),
+                                  ("PetService", pet_src, "local function petGear(", "PetGearBonus")):
+        block = function_block(src, helper)
+        check(f'type(Config.{fn}) ~= "function"' in block and f"pcall(Config.{fn}," in block and f"Config.{fn}(" not in src,
+              f"{name}: gear through a guarded helper only (no bare Config.{fn}( call)")
     check('player:GetAttribute("PetRoll"), player:GetAttribute("PetAcc"))' in function_block(player, "function PlayerService.ComputeWalkSpeed("),
           "PlayerService.ComputeWalkSpeed passes the PetAcc attribute")
     combat_raw = read(SSS / "CombatService.luau")
     combat = strip_comments(combat_raw)
     mh = function_block(combat, "function CombatService.ComputeMonsterHit(")
     pvp = function_block(combat, "function CombatService.ComputePvPHit(")
-    check("Config.GearMultsOf(attacker)" in mh, "CombatService.ComputeMonsterHit: x the ring's atk mult")
+    check("gearAtk(attacker)" in mh, "CombatService.ComputeMonsterHit: x the ring's atk mult")
+    justice = strip_comments(read(SSS / "JusticeService.luau"))
+    gp = function_block(justice, "function JusticeService.GetPower(")
+    gb = function_block(justice, "local function gearOf(")
+    check("Config.StatAllocOf(player), gearOf(player))" in gp and 'type(Config.GearMultsOf) ~= "function"' in gb and "pcall(Config.GearMultsOf," in gb,
+          "JusticeService.GetPower (the faction size) counts the gear (guarded)")
+    craft = strip_comments(read(SSS / "CraftService.luau"))
+    check('if r.Kind == "Gear" and S.GearService and type(S.GearService.SendInfo) == "function" then' in craft
+          and "pcall(S.GearService.SendInfo, player)" in craft, "CraftService: a gear craft sends GearInfo (GearService.SendInfo)")
     # 게임성 개발 2: the Might Tonic (BuffService, on the dealt damage in damageMonster) and the ring (on the computed hit)
     # stack as a product: two separate factors on one path, neither replaces the other
     dmon = function_block(combat, "local function damageMonster(")
-    check('dealt = dealt * S.BuffService.Mult(player, "MonsterDamage")' in dmon and "GearMultsOf" not in dmon
+    check('dealt = dealt * S.BuffService.Mult(player, "MonsterDamage")' in dmon and "gearAtk" not in dmon
           and "BuffService" not in mh, "a Might Tonic x a ring: two factors (damageMonster x the tonic, ComputeMonsterHit x the ring)")
-    check("Config.GearMultsOf(attacker)" in pvp and "Config.GearMultsOf(victim)" in pvp, "CombatService.ComputePvPHit: both rings inside the ratio")
+    check("gearAtk(attacker)" in pvp and "gearAtk(victim)" in pvp, "CombatService.ComputePvPHit: both rings inside the ratio")
     check("local base = Config.MaxHealth(vLevel, faction(victim), vClass) * Config.PvP.HitPctOfMaxHP" in pvp and "Gear" not in
           [line for line in pvp.splitlines() if "local base" in line][0],
           "ComputePvPHit: the base stays the victim's BASE MaxHealth")

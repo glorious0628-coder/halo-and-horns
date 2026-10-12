@@ -163,6 +163,14 @@ local function notifyLater(player, text)
 	end)
 end
 
+-- ⑥ gear (게임성 개발 3): the bonus a pet's worn PetArmor / PetAcc gives (Config.PetGearBonus; 0 when this Config has no
+-- gear or it fails)
+local function petGear(data, uid, slot)
+	if type(Config.PetGearBonus) ~= "function" then return 0 end
+	local ok, x = pcall(Config.PetGearBonus, data.Gear, uid, slot)
+	return (ok and type(x) == "number" and x == x and x > 0 and x ~= math.huge) and x or 0
+end
+
 -- the attributes every client reads (EquippedPet / PetLv / PetForm), then the walk speed, then the owner's list
 local function publish(player, data)
 	local pets = data.Pets
@@ -172,7 +180,9 @@ local function publish(player, data)
 	player:SetAttribute("PetLv", p and p.Lv or 0)
 	player:SetAttribute("PetRoll", p and p.Roll and p.Roll.Spd or 0)
 	player:SetAttribute("PetForm", "")
-	player:SetAttribute("PetAcc", Config.PetGearBonus(data.Gear, uid, "PetAcc")) -- ⑥ gear (게임성 개발 3): the following pet's PetAcc (0 = none)
+	-- ⑥ gear (게임성 개발 3): the following pet's PetAcc bonus; nil = none (and always nil while the switch is off)
+	local acc = petGear(data, uid, "PetAcc")
+	player:SetAttribute("PetAcc", acc > 0 and acc or nil)
 	refreshSpeed(player)
 	if type(pets) == "table" and type(pets.List) == "table" then sendList(player, data) end
 end
@@ -341,7 +351,7 @@ end
 -- AddPetXP both go through it before giveXP). 0 / no gear = n as it is.
 local function gearXP(player, data, uid, n)
 	local rems = GEARREM[player]
-	local exact = n * (1 + Config.PetGearBonus(data.Gear, uid, "PetArmor")) + (rems and rems[uid] or 0)
+	local exact = n * (1 + petGear(data, uid, "PetArmor")) + (rems and rems[uid] or 0)
 	local whole = math.floor(exact + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)
 	local rest = exact - whole
 	if rest > 1e-9 then

@@ -294,6 +294,10 @@ local function complete(player, data, recipeId, plus, grades, sid)
 			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet, Fame = fame })
 		sendInfo(player, data)
 	end
+	if r.Kind == "Gear" and S.GearService and type(S.GearService.SendInfo) == "function" then -- ⑥ the gear window's list
+		local okG, errG = pcall(S.GearService.SendInfo, player)
+		if not okG then Util.Warn(TAG, "GearInfo: " .. tostring(errG)) end
+	end
 	CraftService.Crafted:Fire(player, recipeId, plus)
 	return true
 end
