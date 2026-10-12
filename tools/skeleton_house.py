@@ -1293,7 +1293,7 @@ MAT = {
     "neon": 'p.Material = Enum.Material.Neon; p.Color = Color3.fromRGB(255, 205, 120); p.CanCollide = false',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
     "shopglass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(190, 225, 248); p.Transparency = 0.6; p.Reflectance = 0.05',   # 디자인 검수 10/12: the goods behind show
-    "slate": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(90, 140, 210)',
+    "slate": 'p.Material = Enum.Material.SmoothPlastic; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(S.get("roof_rgb", (90, 140, 210))),
     "cloth0": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[0]),
     "cloth1": 'p.Material = Enum.Material.Fabric; p.MaterialVariant = "HH_Fabric"; p.Color = Color3.fromRGB(%d, %d, %d)' % tuple(cols[1]),
 }
