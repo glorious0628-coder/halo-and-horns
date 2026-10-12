@@ -8,7 +8,8 @@
 --             Pet gear (A23-133; armor / rings / pet gear have no server data yet, so those three stay empty places)
 --   detail  : the picked thing on the right - big slot, name in its grade colour, short lines (attack, power change,
 --             level lock, count, sell price, which seen monsters drop it) and its buttons: Equip (EquipWeapon), Drink
---             (UsePotion) + quick slot 1 / 2 / 3 (QuickSlots.Set), Use for a scroll -> pick the weapon(s) in the grid ->
+--             (UsePotion) + quick slot 1 / 2 / 3 (QuickSlots.Set), a tonic (Use tab, Config.FeatureOn("Tonics")): its Desc,
+--             the time left while it runs and Drink (UseTonic; two at a time, BuffService), Use for a scroll -> pick the weapon(s) in the grid ->
 --             Enhance / Move (UseItem) with the chance and the fail result shown before anything is sent
 --   bottom  : my gold (bank + carried), the sort (Newest · Name · Grade · Type, saved as Settings.BagSort, Newest =
 --             the server's ItemSeq / WeaponSeq order) and narrow (4 columns) / wide (8 columns) (Settings.BagWide)
@@ -19,7 +20,8 @@
 -- Public API: BagUI.Init(C), BagUI.Start(), BagUI.IsReady(), BagUI.Open(tab?), BagUI.OnInventory(payload),
 -- pure: BagUI.Cells(ctx) -> cells, BagUI.Sort(cells, mode) -> cells, BagUI.Columns(widthDu, wide) -> n,
 -- BagUI.WindowWidth(wide) -> du, BagUI.Detail(cell, ctx) -> view, BagUI.PotionState(p) -> text, enabled,
--- BagUI.Pick(mode, cell, ctx) -> mode, BagUI.CellEnabled(mode, cell) -> bool
+-- BagUI.Pick(mode, cell, ctx) -> mode, BagUI.CellEnabled(mode, cell) -> bool,
+-- BagUI.TonicState(id, tonics, now) -> running, left, blocked
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -45,6 +47,7 @@ local TXT = {
 	PowerNow = "Power %s",
 	Spare = "Spare",
 	Count = "×%d",
+	TonicLeft = "%s left",
 	Drink = "Drink", Full = "Full", Empty = "Empty", Wait = "%d s", Quick = "Quick slot",
 	Use = "Use", Cancel = "Cancel", Enhance = "Enhance", Move = "Move",
 	ScrollEnh = "+%d on success · %d%%",
@@ -86,8 +89,8 @@ local L = {
 	ItemGrade = { SlimeCore = "Fine", BruteHorn = "Fine", KnightCrest = "Fine", CaptainBadge = "Rare",
 		Enh70 = "Fine", Move70 = "Fine", Enh30 = "Rare", Move30 = "Rare", Enh10 = "Epic", Move10 = "Epic" },
 	-- kinds: the Type sort order and the tab each lives on (Armor / Ring / PetGear: A23-133, no data yet)
-	KindOrder = { Weapon = 1, Spare = 2, Armor = 3, Ring = 4, PetGear = 5, Potion = 10, Enhance = 20, Transfer = 21, Material = 30 },
-	KindTab = { Weapon = "Gear", Spare = "Gear", Armor = "Gear", Ring = "Gear", PetGear = "Gear", Potion = "Use",
+	KindOrder = { Weapon = 1, Spare = 2, Armor = 3, Ring = 4, PetGear = 5, Potion = 10, Tonic = 11, Enhance = 20, Transfer = 21, Material = 30 },
+	KindTab = { Weapon = "Gear", Spare = "Gear", Armor = "Gear", Ring = "Gear", PetGear = "Gear", Potion = "Use", Tonic = "Use",
 		Enhance = "Scroll", Transfer = "Scroll", Material = "Material" },
 	Worn = { "Weapon", "Armor", "Ring", "PetGear" },
 	GapMargin = 0.15, -- s over Config.RateLimits[remote] (the server drops a 2nd request inside it without a reply)
@@ -178,7 +181,7 @@ end
 
 local function itemKind(def)
 	local k = type(def) == "table" and def.Kind or nil
-	if k == "Enhance" or k == "Transfer" or k == "Material" then return k end
+	if k == "Enhance" or k == "Transfer" or k == "Material" or k == "Tonic" then return k end
 	return "Material"
 end
 
@@ -328,6 +331,27 @@ function BagUI.PotionState(p)
 	return tx(TXT, "Drink"), true
 end
 
+-- whole seconds as m:ss (rounded up, never negative)
+local function clockOf(seconds)
+	local s = math.max(0, math.ceil(num(seconds, 0)))
+	return string.format("%d:%02d", s // 60, s % 60)
+end
+
+-- a tonic's state. tonics = { [itemId] = the server time it ends }, now = the server time -> running, seconds left, blocked
+-- (blocked = it is not running and Config.Alchemy.MaxActive other tonics are)
+function BagUI.TonicState(id, tonics, now)
+	local list = type(tonics) == "table" and tonics or {}
+	local t = num(now, 0)
+	local left = num(list[id], 0) - t
+	if left > 0 then return true, left, false end
+	local others = 0
+	for other, ends in list do
+		if other ~= id and num(ends, 0) > t then others += 1 end
+	end
+	local max = type(Config.Alchemy) == "table" and num(Config.Alchemy.MaxActive, 2) or 2
+	return false, 0, others >= max
+end
+
 -- may this weapon cell be tapped while a scroll is being used (mode)?
 function BagUI.CellEnabled(mode, cell)
 	if not mode then return true end
@@ -353,7 +377,7 @@ end
 -- the scroll step dropped back to its last valid part (scroll used up, weapon at +Max, empty source, gone)
 local function validMode(mode, cells)
 	local def = mode and Config.Loot.Items[mode.Item]
-	if not mode or not def or def.Kind == "Material" then return nil end
+	if not mode or not def or (def.Kind ~= "Enhance" and def.Kind ~= "Transfer") then return nil end
 	local byTier, count = {}, 0
 	for _, c in cells do
 		if c.Kind == "Weapon" then byTier[c.Tier] = c end
@@ -408,7 +432,8 @@ end
 
 -- what the detail column shows for a cell (a scroll's result is the server's toast, not repeated here: A23-130).
 -- ctx = { Level, Combat, Pending, Mode, Seen, Note, Power(tier, plus)
--- -> number, PowerNow, Potion(item) -> { Count, ReadyAt, Now, Amount, Max, Sip }, Cells }. view = { Title, Color, Sub,
+-- -> number, PowerNow, Potion(item) -> { Count, ReadyAt, Now, Amount, Max, Sip }, Cells, Tonics = { [tonic] = the server
+-- time it ends }, Now = the server time, TonicsOn = Config.FeatureOn("Tonics") }. view = { Title, Color, Sub,
 -- SubColor, Lines = { { Text, Color? } }, Actions = { { Id, Text, Enabled, Color = "Free" | "Buy" | "Button" } },
 -- Quick = item? (the quick slot row), Status = { Text, Color }? }
 function BagUI.Detail(cell, ctx)
@@ -505,6 +530,17 @@ function BagUI.Detail(cell, ctx)
 		local text, ok = BagUI.PotionState(p)
 		act("Drink", text, ok, "Free")
 		view.Quick = cell.Id
+	elseif cell.Kind == "Tonic" then
+		-- an alchemy tonic (BuffService): the count, what it does, the time left while it runs, Drink (no fight rule)
+		local def = Config.Loot.Items[cell.Id]
+		line(tx(TXT, "Count", cell.Count))
+		if type(def) == "table" and type(def.Desc) == "string" then line(tx(def, "Desc"), "Sub") end
+		local running, left, blocked = BagUI.TonicState(cell.Id, ctx.Tonics, ctx.Now)
+		if running then line(tx(TXT, "TonicLeft", clockOf(left)), "Gold") end
+		if ctx.TonicsOn == true then
+			act("DrinkTonic", tx(TXT, "Drink"), cell.Count >= 1 and pending == nil and not blocked, "Free")
+			if blocked then view.Status = { Text = tx(Config.Alchemy.Text, "TwoMax"), Color = "Bad" } end
+		end
 	elseif cell.Kind == "Enhance" or cell.Kind == "Transfer" then
 		local def = Config.Loot.Items[cell.Id]
 		line(tx(TXT, "Count", cell.Count))
@@ -614,6 +650,18 @@ local function inCombat()
 	return num(attr("InCombatUntil"), 0) > Util.Now()
 end
 
+-- the alchemy tonics: the switch, and { [tonic] = the server time it ends } from the Buff_<tonic> attributes
+local function tonicsOn()
+	return type(Config.Alchemy) == "table" and type(Config.Alchemy.Tonics) == "table" and Config.FeatureOn("Tonics")
+end
+
+local function tonicEnds()
+	local out = {}
+	local list = type(Config.Alchemy) == "table" and type(Config.Alchemy.Tonics) == "table" and Config.Alchemy.Tonics or {}
+	for id in list do out[id] = num(attr("Buff_" .. id), 0) end
+	return out
+end
+
 local function potionInput(item)
 	local def = Config.QuickSlots.Items[item]
 	if type(def) ~= "table" then return { Count = 0 } end
@@ -664,6 +712,8 @@ local function checkPending()
 			done = math.floor(num(S.Data.Items[p.Item], 0)) ~= p.Count or S.ResultAt > p.SentAt
 		elseif p.Kind == "Equip" then
 			done = math.floor(num(attr("WeaponTier"), 0)) ~= p.WeaponTier
+		elseif p.Kind == "Tonic" then
+			done = math.floor(num(S.Data.Items[p.Item], 0)) ~= p.Count or num(attr("Buff_" .. p.Item), 0) ~= p.Ends
 		end
 		if done then
 			p.Answered, changed = true, true
@@ -954,6 +1004,7 @@ local function drawDetail(frame, all, picked)
 		PowerNow = type(Config.CombatPowerOf) == "function" and Config.CombatPowerOf(LocalPlayer) or nil,
 		Power = function(tier, plus) return Config.CombatPowerOf(LocalPlayer, tier, plus) end,
 		Potion = potionInput,
+		Tonics = tonicEnds(), Now = workspace:GetServerTimeNow(), TonicsOn = tonicsOn(),
 	})
 	VIEW.DetailSig = nil
 	if not view.Title then return view end
@@ -1176,6 +1227,10 @@ function BagUI.LiveSig(picked)
 	if type(picked) == "table" and picked.Kind == "Potion" then
 		local text, ok = BagUI.PotionState(potionInput(picked.Id))
 		table.insert(parts, text .. tostring(ok))
+	elseif type(picked) == "table" and picked.Kind == "Tonic" then
+		-- the timer line moves once a second: its remaining whole seconds (and the switch / two-others state)
+		local running, left, blocked = BagUI.TonicState(picked.Id, tonicEnds(), workspace:GetServerTimeNow())
+		table.insert(parts, "t" .. tostring(math.ceil(left)) .. (running and "r" or "") .. (blocked and "b" or "") .. (tonicsOn() and "o" or ""))
 	end
 	return table.concat(parts, "|")
 end
@@ -1212,6 +1267,15 @@ function BagUI.Act(id, cell)
 		local def = Config.QuickSlots.Items[cell.Id]
 		local _, ok = BagUI.PotionState(potionInput(cell.Id))
 		if ok and def and send("UsePotion", nil, def.Kind) then BagUI.Redraw() end
+	elseif id == "DrinkTonic" and type(cell) == "table" and cell.Kind == "Tonic" then
+		if not tonicsOn() then return end
+		local ends = tonicEnds()
+		local _, _, blocked = BagUI.TonicState(cell.Id, ends, workspace:GetServerTimeNow())
+		local count = math.floor(num(S.Data.Items[cell.Id], 0))
+		if blocked or count < 1 then return end
+		if send("UseTonic", { Kind = "Tonic", Item = cell.Id, Count = count, Ends = ends[cell.Id] or 0 }, cell.Id) then
+			BagUI.Redraw()
+		end
 	elseif string.sub(id, 1, 5) == "Quick" and type(cell) == "table" and cell.Kind == "Potion" then
 		local i = tonumber(string.sub(id, 6))
 		local qs = C and C.QuickSlots
@@ -1260,7 +1324,7 @@ local function build(parent, kit, arg)
 	-- arg.Use = a scroll id: straight into its step (a scroll notice / Studio photos), with arg.Tier (enhance) or
 	-- arg.From / arg.To (transfer) already picked; the step drops back to what is valid (validMode)
 	local use = type(arg) == "table" and type(arg.Use) == "string" and Config.Loot.Items[arg.Use] or nil
-	if use and use.Kind ~= "Material" then
+	if use and (use.Kind == "Enhance" or use.Kind == "Transfer") then
 		S.Tab, S.Sel, S.Result, S.Note = "Gear", "I:" .. arg.Use, nil, nil
 		S.Mode = { Item = arg.Use, Tier = tonumber(arg.Tier), From = tonumber(arg.From), To = tonumber(arg.To) }
 	end
@@ -1339,6 +1403,9 @@ end
 -- attributes that redraw the open bag
 BagUI.Watch = { WeaponOwnedMask = true, WeaponTier = true, WeaponEnhance = true, Level = true, Class = true, Faction = true,
 	HPPotionCount = true, MPPotionCount = true, DataLoaded = true, QuickSlots = true }
+for id in type(Config.Alchemy) == "table" and type(Config.Alchemy.Tonics) == "table" and Config.Alchemy.Tonics or {} do
+	BagUI.Watch["Buff_" .. id] = true -- a tonic starts / runs out (BuffService)
+end
 BagUI.WatchBar = { BankGold = true, CarriedGold = true } -- only the gold line
 
 local function cleanup()
