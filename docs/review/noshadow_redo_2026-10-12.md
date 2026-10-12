@@ -8,7 +8,7 @@
 ## 다시 그리는 법 (이미지 생성 2)
 1. 확정 그림 = `py tools/codex_image.py --prompt-file art/prompts/<id>.txt --ref <옛 승인 2D> [--ref <같은 것의 새 앞면>] --out art/out/<...>.png` (사용자 ChatGPT 요금제, Codex 앱). 끝 코드 3 = ChatGPT 사용량 끝 → 그 그림은 Firefly 고급. 후보 탐색은 Firefly 중간.
 2. 4면(앞·왼·오른·뒤)을 그림. **앞면을 먼저** 그리고, 나머지 3면은 `--ref <옛 그 면> --ref <새 앞면>`으로. 방향은 말로 쓰지 말고 "ref1과 같은 시점·같은 방향"(10/12 시험: "왼쪽을 본다"고 쓰니 방향이 뒤집힘).
-3. 프롬프트에 꼭: "flat even shadowless light from every side, no cast/ground/contact shadow, no ambient-occlusion darkening, no darker side, no strong highlights or reflections, plain base colours, plain light grey background". 단정한 옷, 빛살 금지, 글자 없음.
+3. **3D 렌더로, 그림자만 없이**(사용자 "3d 로 그려야지 왜 2d로 그려?"): 프롬프트에 꼭 "a 3D-rendered toy figure/object like the reference; keep the 3D look: real volume, rounded edges, soft gentle form shading, same material. Lighting: soft even studio light from all around (light box). NO cast shadows, NO ground/floor shadow, NO contact shadows, NO dark shadowed side, NO dark crevices. Bright true colours. Plain light grey background, no floor." 납작한 평면 색칠은 안 됨. 기준 = `art/review/codex/mailboy_front_original_flat_3d_1012.jpg` 오른쪽(프롬프트 본보기 `art/prompts/_noshadow_3d_example.txt`). 단정한 옷, 빛살 금지, 글자 없음.
 4. 판정(최종 검수): 옛 2D | 새 2D 나란히 — 모양·색 같고 그림자만 빠졌는지. 통과하면 옛 2D는 바로 지움(사용자 고름).
 5. 3D = Blender 손보기: 새 4면 → Tripo 스마트 메시 → 가장 잘 나온 흰 모델(사람은 얼굴 빈 것) → 왼쪽 메뉴 텍스처 '조명 없이' 체크, 8K.
 6. 건물 장식은 덩어리 목록 `docs/design/house_chunk_decor_2026-10-12.md` 단위로 그림(작은 조각은 한 장에 묶음).
