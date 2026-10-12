@@ -63,6 +63,53 @@ WRAP = {
     "Weapon_Neutral_PetTamer_T1": 0.26, "Weapon_Neutral_PetTamer_T2": 0.28, "Weapon_Neutral_PetTamer_T3": 0.245,
 }
 
+# 개발 1 (fix/staff-hip, 10/12): on these staffs the wrapped grip moves UP so the hand holds it in the hip pose; the wrap
+# band (wrap + its rings, share of the height measured on the Tripo width profile) is cut out, moved along the staff so
+# its middle sits at <target> studs from the foot, the hole is filled by stretching the bare shaft just below it (knots
+# and branches stay where they are). (lo, hi, target studs)
+MOVE = {
+    "Weapon_Halo_LightMage_T1": (0.365, 0.515, 2.63), "Weapon_Halo_LightMage_T3": (0.235, 0.455, 2.63),
+    "Weapon_Horns_DarkMage_T1": (0.295, 0.515, 2.53), "Weapon_Horns_DarkMage_T3": (0.265, 0.495, 2.53),
+    "Weapon_Neutral_Alchemist_T1": (0.245, 0.495, 2.59), "Weapon_Neutral_Alchemist_T2": (0.235, 0.455, 2.59),
+    "Weapon_Neutral_Alchemist_T3": (0.135, 0.385, 2.59),
+}
+
+
+def move_wrap(me, z0, L, lo_s, hi_s, target, sl=0.05, rmax=0.3):
+    """cut the band [lo, hi] (faces near the staff axis), move it by d along z, stretch the bare slice [lo - sl, lo]
+    up to hi + 0.02 to fill the hole; returns (lo, hi, d) in studs"""
+    lo, hi = z0 + lo_s * L - 0.03, z0 + hi_s * L + 0.03          # a little past the rings: no ring sliver left behind
+    d = z0 + target - (lo + hi) / 2
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
+    for zc in (lo - sl, lo, hi):
+        bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=(0, 0, zc), plane_no=(0, 0, 1))
+    P = np.array([v.co[:] for v in bm.verts if lo <= v.co.z <= hi])
+    ax, ay = float(np.median(P[:, 0])), float(np.median(P[:, 1]))
+
+    def near(f, a, b):
+        c = f.calc_center_median()
+        return a - 1e-5 <= c.z <= b + 1e-5 and math.hypot(c.x - ax, c.y - ay) < rmax
+    band = [f for f in bm.faces if near(f, lo, hi)]
+    piece = [f for f in bm.faces if near(f, lo - sl, lo)]
+    rw = float(np.median([math.hypot(v.co.x - ax, v.co.y - ay) for f in band for v in f.verts]))
+    # where the wrap lands, knots / lumps of the shaft that would poke through it are dropped (the wrap hides the rest)
+    poke = [f for f in bm.faces if near(f, lo + d, hi + d) and math.hypot(f.calc_center_median().x - ax, f.calc_center_median().y - ay) > 0.9 * rw]
+    dup = bmesh.ops.duplicate(bm, geom=band)
+    bmesh.ops.translate(bm, verts=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMVert)], vec=(0, 0, d))
+    bmesh.ops.delete(bm, geom=band + [f for f in poke if f not in band], context="FACES")
+    k = (hi + 0.02 - (lo - sl)) / sl
+    for v in {v for f in piece for v in f.verts}:
+        if v.co.z > lo - sl + 1e-5:
+            v.co.z = lo - sl + (v.co.z - (lo - sl)) * k
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    bm.to_mesh(me)
+    bm.free()
+    me.update()
+    return lo, hi, d
+
+
 argv = sys.argv[sys.argv.index("--") + 1:]
 ap = argparse.ArgumentParser()
 ap.add_argument("job")
@@ -72,6 +119,7 @@ ap.add_argument("--min-thick", type=float, default=0.2)
 ap.add_argument("--rotz", type=float, default=90.0)
 ap.add_argument("--out", default=os.path.join(ROOT, "art", "models", "tripo", "weapons"))
 ap.add_argument("--preview", action="store_true")
+ap.add_argument("--no-move", action="store_true", help="keep the wrap where Tripo made it (MOVE table off)")
 ap.add_argument("--preview-only", action="store_true", help="only re-render the previews of an existing <job>_TU.glb")
 ap.add_argument("--sym", action="store_true", help="left / right mirror (the 2D front is symmetric): keep the +x half, mirror it")
 a = ap.parse_args(argv)
@@ -176,6 +224,12 @@ s = length / (z1 - z0)
 me.transform(Matrix.Scale(s, 4))
 V = np.array([v.co[:] for v in me.vertices])
 z0 = V[:, 2].min()
+if a.job in MOVE and not a.no_move:
+    lo_s, hi_s, tgt = MOVE[a.job]
+    mlo, mhi, md = move_wrap(me, z0, length, lo_s, hi_s, tgt)
+    stats["wrap_moved"] = {"from": [round(mlo - z0, 3), round(mhi - z0, 3)], "up": round(md, 3), "centre_now": tgt}
+    V = np.array([v.co[:] for v in me.vertices])
+    z0 = V[:, 2].min()
 zg = z0 + hand * length                                     # the grip height (share of the length)
 zguard = None
 if kind in ("sword", "darksword"):
@@ -209,6 +263,9 @@ if a.job in WRAP:
     stats["grip_code_share"] = round(float((zg - z0) / length), 3)
     zg = z0 + WRAP[a.job] * length
     stats["grip_source"] = "2D wrap centre"
+if "wrap_moved" in stats:
+    zg = z0 + stats["wrap_moved"]["centre_now"]
+    stats["grip_source"] = "moved wrap centre (개발 1 hip pose)"
 band = V[np.abs(V[:, 2] - zg) < 0.08 * length]
 stats["grip_from_bottom"] = round(float((zg - z0) / length), 3)
 cx, cy = (band[:, 0].min() + band[:, 0].max()) / 2, (band[:, 1].min() + band[:, 1].max()) / 2

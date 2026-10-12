@@ -11452,7 +11452,9 @@
     4.422
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.69 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11524,7 +11526,9 @@
     4.66
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.63 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11776,7 +11780,9 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.74 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11848,7 +11854,9 @@
     4.659
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.76 studs (centre 2.53 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12100,7 +12108,9 @@
     4.42
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 0.95 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12136,7 +12146,9 @@
     4.541
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.02 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12172,7 +12184,9 @@
     4.663
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
-   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+   "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg",
+   "wrap_moved_10_12": "wrap band cut and moved up 1.38 studs (centre 2.59 from the foot, 개발 1 hip pose), hole filled by stretching the bare shaft below; pivot = new wrap centre",
+   "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
