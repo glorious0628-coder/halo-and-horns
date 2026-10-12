@@ -19,6 +19,7 @@
 - (23시 넘어) Tripo로 넘긴 것: 묶음1 DoorSingle·ConeTree, 묶음2 LampArm·WingL·DomeRibbed·DoorDouble·WindowBoxA, 묶음3 BenchA·BenchC·CastleRose. BenchB 다시(뒤 판자 4→3, 옆 = 끝에서 수평 진짜 옆모습, 비대칭이라 각각).
 - 화분 텍스처: Lavender·Tulip·Sunflower PBR OK. Daisy(주황·살구 꽃 → 빨강/흰)·Rose(윗면 탁한 갈색 장미) 편집 뒤 PBR, 총 30점 넘으면 먼저 알림.
 - 흰 모델: DoorSingle d61f68e6 통과(뒤 고리는 생성 버릇, 그대로). ConeTree 4개 다 탈락(가시·별 찌그러짐·옥수수·속 빔) → 이미지 생성 2가 큰 잎 뭉치 12~15개로 4면 다시 → 다시 뽑기 100점.
+- 흰 모델 통과(→ 텍스처): LampArm 6895c425(유리 칸 빔), WingL 10bf8543, DomeRibbed 2f0b12f2, DoorDouble d28f2316, WindowBoxA 82c8a278, BenchA bbf6251c, BenchC f12d3f90, CastleRose e51189a5. 4면 통과 → Blender: GateLeaf·DomeOnion. DomeOctagon(right = front 복사 뒤 통과), ConeTree(색 R×0.62 G×0.80 뒤 3면), BreadStand(왼쪽 따로 그림) 대기. PBR 판(Lavender·Tulip·Sunflower) 결과 아직 안 봄.
 - **교훈: 4면 관문에서 '3D로 될 그림인지'도 봄** — 작은 알갱이 수백 개(잎·꽃 알갱이)는 스마트 메시가 못 따라감 → 큰 덩어리로 단순하게.
 - 흰 모델 보는 법(창 숨김일 때): 뒤 탭(tabs_create)에서 store의 model_url → 날짜·uuid·서명만 뽑아 scratchpad tripo_dl.py로 받기(Policy는 다시 만듦) → pot_views.py 7면 점토 렌더.
 - 4면 흔한 고장: 좌우 옆면이 서로 다름 / 옆면이 1.2~1.3배 크게 그려짐 / 한 면만 연한 빛 띠 → PIL 뒤집기·복사·크기로 고침(새 생성 X).
