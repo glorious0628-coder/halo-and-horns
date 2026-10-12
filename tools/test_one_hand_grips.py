@@ -11,7 +11,7 @@ way for every staff up to 6 studs) and its foot never sinks under the ground nor
 from the Hilt and the UpperTorso centre 3.21 studs above the feet - measured on the place's default R15, the old 3.9 was
 an estimate); A23-133 (user 10/11 "무기가 너무 길어서 잡는 위치가 이상해"; grip_reference §5): every held length is a share
 of the avatar's height (the same rig: 5.18 studs) - a sword (pommel end to tip) 0.72..0.95 with the hand 10..22% up
-from its end and the blade 1.3..2.5x the rest, a staff with its orb 0.82..1.03 held 55..75% up, a bow 0.55..0.97 (the
+from its end and the blade 1.3..2.5x the rest, a staff with its orb 0.85..1.0 (never over the height; 최종 검수 10/12) held 52..70% up, a bow 0.55..0.97 (the
 short bow <= 0.72), the smithing hammer 0.35..0.55 held 15..33% up, the baton 0.3..0.6 - every tier, from LEN; the flask's
 fist wraps the neck, the round body hangs under it, the cork above. A23-128 (user 2026-10-11 "한손검만"): both warriors
 (Warrior_Halo Sword, Warrior_Horns DarkSword) hold a one-hand sword in the right hand at the side - the hand just
@@ -30,7 +30,7 @@ wrist <= 20 deg towards the thumb and <= 40 deg back / forward, the forearm and 
 Light Mage's hand the highest and its staff the most upright, the Dark Mage's the lowest and leaning; the staffs held
 52..70% up; the Alchemist holds SHAPES.FlaskStaff (the approved 2D: a staff with a flask): a Shaft (the client's foot
 fix finds it) with its foot on the ground through staffLow, a leather Wrap round the hand, the flask in a cradle on top
-with its neck and cork, the whole 0.82..1.03 of the height. Static: WeaponPose runs OneHand when a row has no
+with its neck and cork, the whole 0.85..1.0 of the height. Static: WeaponPose runs OneHand when a row has no
 TwoHand, writes only the right arm, fades with the pose weight, bends the elbow to the row's Pole; the rows keep no
 right-arm hold angles. Mutations: each must be caught.
 
@@ -75,7 +75,7 @@ AVATAR_H = 5.18  # studs, the feet to the top of the head at scale 1
 SHOULDER_ABOVE_FEET = 3.8
 TORSO_HALF = (1.0, 0.5)  # x, z half sizes of the UpperTorso box
 # A23-133 (grip_reference §5): held lengths as shares of AVATAR_H; hands as shares of the length from its butt end / foot
-REACH = {"Sword": (0.72, 0.95), "SwordHand": (0.10, 0.22), "BladeRest": (1.3, 2.5), "Staff": (0.82, 1.03),
+REACH = {"Sword": (0.72, 0.95), "SwordHand": (0.10, 0.22), "BladeRest": (1.3, 2.5), "Staff": (0.85, 1.0),
          "StaffHand": (0.52, 0.70), "Bow": (0.55, 0.97), "ShortBow": 0.72, "Hammer": (0.35, 0.55), "HammerHand": (0.15, 0.33),
          "Baton": (0.3, 0.6)}
 # 최종 검수 10/12 (grip_reference §5-6): the staff rows' hand height over the ground, the wrist (radial = towards the
@@ -843,7 +843,8 @@ MUTATIONS = [
      "local handleLen = 1.2\n\tlocal bladeLen = w.Length"),
     ("CV", "A23-133: the dark blade off LEN", "local bladeLen = tierLen(w, LEN.Blade) -- A23-133", "local bladeLen = w.Length -- A23-133"),
     ("CV", "A23-133: a stubby sword", "Blade = { 2.4, 3.1 }", "Blade = { 1.2, 1.6 }"),
-    ("CV", "A23-133: the old tall staffs", "Staff = { 3.95, 4.5 }", "Staff = { 4.35, 5.4 }"),
+    ("CV", "A23-133: the old tall staffs", "Staff = { 3.95, 4.45 }", "Staff = { 4.35, 5.4 }"),
+    ("CV", "최종 검수 10/12: the Lv40 staff a hair over the height again (4.5: 1.008H)", "Staff = { 3.95, 4.45 }", "Staff = { 3.95, 4.5 }"),
     ("CV", "A23-133: the old long bows", "Bow = { 3.1, 4.9 }", "Bow = { 3, 6.5 }"),
     ("CV", "A23-133: the short bow as big as the bow", "return buildBow(grip, sc, w, color, 0.75, 15)", "return buildBow(grip, sc, w, color, 1, 15)"),
     ("CV", "A23-133: a long smithing hammer", "local handleLen = 1.9", "local handleLen = 3.4"),

@@ -620,7 +620,7 @@ end
 -- (3 .. 6.5) only orders the tiers; tierLen squeezes it into each kind's studs: the blade (a sword 0.75 .. 0.9 of the
 -- height with its handle and guard - Roblox's Linked Sword is 4 studs, the gear swords' median 5), the staff shaft (0.85
 -- .. 1.0 with its orb), the bow (0.6 .. 0.95; the gear bows' median 5.25)
-local LEN = { From = { 3, 6.5 }, Blade = { 2.4, 3.1 }, Staff = { 3.95, 4.5 }, Bow = { 3.1, 4.9 } }
+local LEN = { From = { 3, 6.5 }, Blade = { 2.4, 3.1 }, Staff = { 3.95, 4.45 }, Bow = { 3.1, 4.9 } }
 local function tierLen(w, to)
 	local t = math.clamp(((tonumber(w.Length) or LEN.From[1]) - LEN.From[1]) / (LEN.From[2] - LEN.From[1]), 0, 1)
 	return to[1] + (to[2] - to[1]) * t
@@ -649,7 +649,7 @@ end
 
 -- 검수 10/11 (grip sheet: the hand near the foot, the staff leaning out; reference: a staff is held upright close to
 -- the body a little above its middle, grip_reference_2026-10-11.md §1). User 10/11 "마법봉 너무 크지 않니?" (reference: a
--- staff reaches from the shoulder to the top of the head): the shaft LEN.Staff long (A23-133: 3.95 .. 4.5, with the orb
+-- staff reaches from the shoulder to the top of the head): the shaft LEN.Staff long (A23-133: 3.95 .. 4.45, with the orb
 -- 0.85 .. 1.0 of the height), the orb Orb + OrbPerTier x tier across. 게임성 검수 10/11: the foot rests FootGap over the
 -- ground on EVERY avatar - the hand's height over the ground in the staff pose comes from this avatar's own rig
 -- (staffHandHeight: HipHeight + the root's half + the root -> UpperTorso rest offset + the ClassGrips Hilt y x the body
