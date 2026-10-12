@@ -1307,6 +1307,28 @@ local function cleanup()
 	VIEW = {}
 end
 
+-- 최종 검수 10/13 (ref_rpg_ui #7): is there an owned weapon I can wear now that raises my power? (HUD's Hero / Bag tile
+-- dot, no words). Pure on rows (CharacterUI.Weapons); BetterWeapon() reads mine from the attributes
+function CharacterUI.HasBetter(rows)
+	for _, r in type(rows) == "table" and rows or {} do
+		if not r.Equipped and r.Usable and type(r.PowerNow) == "number" and type(r.PowerWith) == "number" and r.PowerWith > r.PowerNow then
+			return true
+		end
+	end
+	return false
+end
+
+function CharacterUI.BetterWeapon()
+	local okP, now = pcall(Config.CombatPowerOf, LocalPlayer)
+	if not okP then return false end
+	local ctx = { Mask = num(attr("WeaponOwnedMask"), 0), Equipped = math.floor(num(attr("WeaponTier"), 0)),
+		Level = math.max(1, math.floor(num(attr("Level"), 1))), Class = attr("Class"), Faction = attr("Faction"),
+		Enhance = inventoryEnhance(), EquippedPlus = num(attr("WeaponEnhance"), 0), PowerNow = now,
+		Power = function(t, p) return Config.CombatPowerOf(LocalPlayer, t, p) end }
+	local ok, rows = pcall(CharacterUI.Weapons, ctx)
+	return ok and CharacterUI.HasBetter(rows) or false
+end
+
 function CharacterUI.IsReady()
 	return S.Ready
 end

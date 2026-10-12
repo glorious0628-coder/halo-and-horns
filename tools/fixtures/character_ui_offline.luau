@@ -443,6 +443,10 @@ local lockedIds = {}
 for _, t in locked do table.insert(lockedIds, t.Id) end
 check(table.find(lockedIds, "BetaPioneer") == nil and table.find(lockedIds, "GrayLegend") ~= nil,
 	"#9 LockedTitles: the titles I do not own yet", table.concat(lockedIds, ","))
+-- 최종 검수 10/13 (ref_rpg_ui #7): pure
+check(M.HasBetter({ { Equipped = true, Usable = true, PowerNow = 100, PowerWith = 100 }, { Usable = true, PowerNow = 100, PowerWith = 120 } })
+	and not M.HasBetter({ { Equipped = true, Usable = true, PowerNow = 100, PowerWith = 150 }, { Usable = false, PowerNow = 100, PowerWith = 300 }, { Usable = true, PowerNow = 100, PowerWith = 90 } })
+	and not M.HasBetter(nil), "#7 HasBetter: only a wearable weapon that raises the power")
 local wy = M.PowerWhy("Attack", { Level = 5, Tier = 0 })
 check(#wy == 2 and wy[1] == "Bare hands" and wy[2] == "Level 5", "#1 PowerWhy: bare hands + the level", table.concat(wy, ","))
 check(heads(srows) == "Stats,Traits,Effects,Rebirth,Rank", "StatRows: every section when the data is there", heads(srows))
@@ -763,5 +767,12 @@ closeWin(reg5, body5)
 ------------------------------------------------------------------ 8. every text comes from TXT / Config
 check(nText > 40, "the scan looked at the window's texts", nText)
 check(#strangers == 0, "every text the window shows is a TXT line, a Config name or a number", table.concat(strangers, " | "))
+
+-- 최종 검수 10/13 (ref_rpg_ui #7): BetterWeapon from my attributes (owned 1, 2, 4; wearing 2; 4 needs Lv 12)
+resetAttrs()
+check(M.BetterWeapon() == false, "#7 BetterWeapon: nothing stronger I can wear (4 is locked, 1 is weaker)")
+attrs.Level = 12
+check(M.BetterWeapon() == true, "#7 BetterWeapon: a stronger owned weapon I can wear now -> the dot")
+resetAttrs()
 
 print(string.format("CHARACTER_UI_SUMMARY checks=%d failed=%d", checks, failed))

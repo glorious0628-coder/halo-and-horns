@@ -135,6 +135,11 @@ MUTATIONS = [
     ("UI", "#9: locked titles left out", "\tfor _, t in CharacterUI.LockedTitles(attr(\"TitlesOwned\", \"\")) do\n", "\tfor _, t in {} do\n"),
     ("UI", "#9: a locked title pressable", "\t\tb.Name = \"Locked_\" .. t.Id\n\t\tb.LayoutOrder = order\n\t\tkit.SetEnabled(b, false)\n",
      "\t\tb.Name = \"Locked_\" .. t.Id\n\t\tb.LayoutOrder = order\n"),
+    # 최종 검수 10/13 (ref_rpg_ui #7)
+    ("UI", "#7: a weaker weapon lights the dot", "r.PowerWith > r.PowerNow then\n\t\t\treturn true", "r.PowerWith ~= r.PowerNow then\n\t\t\treturn true"),
+    ("UI", "#7: a locked weapon lights the dot", "if not r.Equipped and r.Usable and type(r.PowerNow)", "if not r.Equipped and type(r.PowerNow)"),
+    ("UI", "#7: the worn weapon lights the dot", "if not r.Equipped and r.Usable and type(r.PowerNow)", "if r.Usable and type(r.PowerNow)"),
+    ("HUD", "#7: the dot on a locked tile", "local on = better and not L.TileLocked(id)", "local on = better"),
     ("UI", "#5: cards drawn as text rows", "\t\tif r.Kind == \"Card\" then\n", "\t\tif false then\n"),
     ("UI", "the hit row claims the final damage", "Hit = \"Base hit\",", "Hit = \"Hit damage\","),
     ("UI", "no nickname row", "Name = \"Nickname\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),",
@@ -205,6 +210,10 @@ def static(src: dict) -> list[tuple[str, bool]]:
          in src["SETTINGS"] and 'if SettingsUI.NicknameRow(panelsHas("Character"), kit.Num("Level")) then' in src["SETTINGS"]
          and "Rebuild = { VacationDays = true, DataLoaded = true, Level = true }," in src["SETTINGS"]
          and 'Config.HudReveal.Tiles = { Character = "LevelUp",' in src["CONFIG"]),
+        ("최종 검수 10/13 (ref_rpg_ui #7): the Hero and Bag tiles carry a BadgeDot shown by CharacterUI.BetterWeapon, never on a "
+         "locked tile", 'if def.Id == "Character" or def.Id == "Bag" then' in src["HUD"]
+         and 'UIKit.ArtImage("BadgeDot", { Name = "BetterDot",' in src["HUD"]
+         and "local on = better and not L.TileLocked(id)" in src["HUD"] and "\tL.RefreshBetterDots()\nend" in src["HUD"]),
         ("the E key opens \"Character\" (Soon: live once the window is registered)",
          '{ Id = "Character", Group = "Window", Key = "E",' in src["CONFIG"] and 'Window = "Character", Soon = true }' in src["CONFIG"]),
     ]
