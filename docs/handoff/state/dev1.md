@@ -66,8 +66,10 @@
 - 아직 안 한 황금 알 화면: 거위 조각 색(거위 3D 필요), "!"·"Zzz" 아이콘 그림(승인되면 글자 대신), 알 아이콘 IconGoldenEgg(이미지 개발 업로드 뒤 막대 양 끝).
 
 ## 그다음 큐 (검수가 새로 주지 않으면)
+- **A23-146 (10/12): 한국어 모드 취소, 게임은 영어만** — 한국어 클라 덩어리(L10nText·TextKo·Lettering) 지움. 들어간 L10n 중심 코드는 꺼진 채 그대로(지우지 말 것). 글은 중앙 표 + 쉬운 짧은 영어.
+- **A23-145: 폰 정리 라운드 10/21부터(개발 1 주로)** — 지금은 준비만: 폰에서 겹치는 버튼·작은 글자 목록을 짬 날 때 적기(docs/review/phone_round_prep_<날짜>.md).
+- 지금 순서(최종 검수 10/13): 캐릭터 창 MAJOR 고침(537331d4 보냄) → 거위 광장 낮은 것 3개(서버 병합 뒤).
 0. 낮음(최종 검수 API 검토 10/12): ① 지팡이 길이가 GetScale만 따라 작은 체형은 4단계부터 1.0H 넘음 → 실제 키(머리 꼭대기-발) 기준으로 ② 자세를 안 잡는 캐릭터(R6·멀리·12번째 이후)는 지팡이가 앞으로 누워 몸을 뚫음.
-1. 한국어 클라 다음 덩어리(API 쓰기, `docs/design/l10n_contract_2026-10-11.md` §10-1 나머지; L10n 중심은 main 398733a4에 병합됨): L10nText 처리기(간판 TextKey·현상수배판 BoardRows·글자 그림 Lettering 먼저), 프롬프트 훅(ActionKey/ObjectKey), Announce 조합기 → L10n.T, 이름표·몬스터 바 클라 조합, l10n_export --lettering·클라 표 export/apply. 그다음 첫 10분 화면 UIKit.Tx 키로.
 2. 스트리밍 고침(검수가 켜기 정하면, `docs/review/streaming_risk_2026-10-11.md`).
 3. 스킬 소리 41개 연결(id 오면), 개발 2 Z·X 패킷 필드 SkillFx 연결.
 4. 나중: 장인 기능 클라, 슬롯별 화면 흔들림 세기.
@@ -82,3 +84,5 @@
 - 직업 id는 Warrior/Mage/Archer뿐(연금술사 = Mage+Neutral).
 - HUD.luau·Fx.luau·UIKit.luau는 지역 변수 200개 한도 근처 → 새 값은 표(L / MOTION / UIKit 필드)에.
 - 쥐기·자세는 참고 먼저(`docs/design/grip_reference_2026-10-11.md`), 숫자 시험(test_one_hand_grips) + 메인 사진.
+
+24. **api/dev1-character-ui-2 537331d4**: Settings 닉네임 줄 = Hero 잠김(Lv<2) 동안 남김(SettingsUI.NicknameRow). 최종 검수에 보고.
