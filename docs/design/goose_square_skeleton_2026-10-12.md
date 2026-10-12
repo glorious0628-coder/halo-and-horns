@@ -13,11 +13,12 @@
 | `Cart` | 뿔 수레 자리(남쪽 끝): 낮은 상자 6×2×4 + 바퀴 2(`CartWheel`) | (0, 1.9, +37) | `CartRing` = 바닥 빨간 원 지름 14 |
 | `SpawnHalo` | 빛 진영 들어오는 자리 원 지름 12(반경 6), 안 막힘 없음 | (0, 0.05, -24) | 반투명 표시, CanCollide false |
 | `SpawnHorns` | 뿔 진영 들어오는 자리 원 지름 12 | (0, 0.05, +24) | 반투명 표시, CanCollide false |
+| `SpawnNeutral` | 장인(중립) 들어오는 자리 원 지름 12(반경 6), 비어 있음 | (-22, 0.05, 0) | GooseSpot 서쪽 옆, 반투명 표시(게임성 개발 2 요청 10/12) |
 | `Rim` | 둘레 낮은 돌 테두리(높이 3, 폭 3, 앉을 수 있는 턱) | 바닥 가장자리 | `GoldBand_*` = 윗면 금 띠(곧은 부분만) |
 | `Wall_E/W/N/S` | 보이지 않는 벽 높이 30(CanCollide, Transparency 1) | 테두리 바깥 | 떨어지지 않게 |
 | `SafetyPlate` | 보이지 않는 안전 판 | 바닥 아래 -14 | |
 
-모델 속성(월드 좌표 Vector3): `NestPos`, `CartPos`, `GooseSpotPos`, `SpawnHaloPos`, `SpawnHornsPos`, `Skeleton = true`. 지도·QuestMarker는 `Nest`·`Cart` 부품 또는 이 속성을 읽으면 됨.
+모델 속성(월드 좌표 Vector3): `NestPos`, `CartPos`, `GooseSpotPos`, `SpawnHaloPos`, `SpawnHornsPos`, `SpawnNeutralPos`, `Skeleton = true`. 지도·QuestMarker는 `Nest`·`Cart` 부품 또는 이 속성을 읽으면 됨.
 
 ## 안 한 것
 몬스터 없음(구역 밖), 꾸미기(나무·깃발·조명) 없음(교차로 차례), 빛살 줄무늬 없음(금 띠는 테두리·고리뿐). 재질 = 승인된 것만: 크림 SmoothPlastic (240,232,215) + 금 (255,168,36)(HH_HaloGoldTrim이 있으면 그 변형).

@@ -12,6 +12,7 @@
 --   Nest         north end (z = -37): Halo light nest spot (simple cup + blue floor ring NestRing)
 --   Cart         south end (z = +37): Horns cart spot (simple cart + red floor ring CartRing)
 --   SpawnHalo / SpawnHorns   faction arrival circles radius 6 in front of Nest / Cart (z = -24 / +24), nothing standing in them
+--   SpawnNeutral   Artisan (Neutral) arrival circle radius 6, west of the goose spot (x = -22, z = 0)
 -- Colours: floor cream (240,232,215), gold band (255,168,36) (HH_HaloGoldTrim variant when the place has it), no rays / stripes from the centre.
 -- Model attributes (for the map / quest markers): NestPos, CartPos, GooseSpotPos, SpawnHaloPos, SpawnHornsPos (Vector3, world), Skeleton = true.
 local MODE = "__MODE__"
@@ -202,8 +203,8 @@ do
 	end
 	body.CanCollide = true
 end
-local function spawnCircle(name, z, tint)
-	local p = disc(name, 12, 0.1, Vector3.new(CENTER.X, CENTER.Y + 0.05, CENTER.Z + z), tint)
+local function spawnCircle(name, z, tint, dx)
+	local p = disc(name, 12, 0.1, Vector3.new(CENTER.X + (dx or 0), CENTER.Y + 0.05, CENTER.Z + z), tint)
 	p.Transparency = 0.7
 	p.CanCollide = false
 	p.CanQuery = false
@@ -212,12 +213,14 @@ local function spawnCircle(name, z, tint)
 end
 spawnCircle("SpawnHalo", NEST_Z + 13, HALO_BLUE)
 spawnCircle("SpawnHorns", CART_Z - 13, HORNS_RED)
+spawnCircle("SpawnNeutral", 0, Color3.fromRGB(235, 200, 120), -22) -- Artisan (Neutral) arrival: west of the goose spot, radius 6 free
 
 model:SetAttribute("NestPos", nestC)
 model:SetAttribute("CartPos", cartC)
 model:SetAttribute("GooseSpotPos", Vector3.new(CENTER.X, CENTER.Y, CENTER.Z))
 model:SetAttribute("SpawnHaloPos", Vector3.new(CENTER.X, CENTER.Y, CENTER.Z + NEST_Z + 13))
 model:SetAttribute("SpawnHornsPos", Vector3.new(CENTER.X, CENTER.Y, CENTER.Z + CART_Z - 13))
+model:SetAttribute("SpawnNeutralPos", Vector3.new(CENTER.X - 22, CENTER.Y, CENTER.Z))
 model.Parent = workspace
 
 local n, tagged = 0, 0
