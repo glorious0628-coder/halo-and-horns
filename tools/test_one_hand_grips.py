@@ -84,6 +84,7 @@ REACH = {"Sword": (0.72, 0.95), "SwordHand": (0.10, 0.22), "BladeRest": (1.3, 2.
 # thumb, flex = back / forward), the forearm / hand out of the torso
 STAFF_ROWS = ("Mage_Halo", "Mage_Horns", "Mage_Neutral")
 STAFF_POSE = {"Grip": (2.45, 2.75), "Radial": 20, "Flex": 40, "Out": 0.2}
+WORLD_TILT = 10  # deg: a staff's lean in the world (its tilt + the row's Waist hunch) - more lay across the body (10/12 photo)
 
 
 def row(cfg: str, key: str):
@@ -614,16 +615,21 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
                         f"forearm {worst['foreGap']:.2f}, hand {worst['handGap']:.2f}"))
         out.append((f"{key}: no right-arm hold angles fight the placement",
                     "RightShoulder" not in r["HoldText"] and "RightElbow" not in r["HoldText"] and "RightWrist" not in r["HoldText"], ""))
-    # 최종 검수 10/12 (keep the sides apart, GDD §0): the Light Mage stands tallest with the most upright staff, the Dark
-    # Mage lowest with his staff leaning in front, the Alchemist between
+    # 최종 검수 10/12 (keep the sides apart, GDD §0; main photo: the Dark Mage's staff lay across the body): every staff
+    # within WORLD_TILT of upright in the world (its torso-space tilt forward + the row's Hold Waist lean: -Waist), the
+    # Light Mage's the most upright and his hand not lower than the others', the Dark Mage hunched (Waist <= -6)
     sr = {k: row(src["CONFIG"], k) for k in STAFF_ROWS}
     if all(sr.values()):
-        tilt = {k: G.angle(r["Aim"], (0.0, 1.0, 0.0)) for k, r in sr.items()}
+        def waist(key):
+            j = re.search(r"Waist = \{ " + NUM, sr[key]["HoldText"])
+            return float(j[1]) if j else 0.0
+        world = {k: math.degrees(math.atan2(-r["Aim"][2], r["Aim"][1])) - waist(k) for k, r in sr.items()}
         hy = {k: r["Hilt"][1] for k, r in sr.items()}
-        out.append(("최종 검수 10/12: the Light Mage's hand highest and staff most upright, the Dark Mage's lowest and leaning "
-                    "(>= 5 deg more), the Alchemist between", hy["Mage_Halo"] > hy["Mage_Neutral"] > hy["Mage_Horns"]
-                    and tilt["Mage_Halo"] < tilt["Mage_Neutral"] < tilt["Mage_Horns"] and tilt["Mage_Horns"] >= tilt["Mage_Halo"] + 5,
-                    ", ".join(f"{k} {TORSO_ABOVE_FEET + hy[k]:.2f}/{tilt[k]:.0f} deg" for k in STAFF_ROWS)))
+        out.append((f"최종 검수 10/12: every staff within {WORLD_TILT} deg of upright in the world (the hunch included; never "
+                    "across the body), the Light Mage's the most upright, his hand not lower than the others', the Dark Mage "
+                    "hunched", all(0 <= w <= WORLD_TILT for w in world.values())
+                    and world["Mage_Halo"] <= min(world.values()) and hy["Mage_Halo"] >= max(hy.values()) and waist("Mage_Horns") <= -6,
+                    ", ".join(f"{k} {TORSO_ABOVE_FEET + hy[k]:.2f}/{world[k]:.0f} deg" for k in STAFF_ROWS)))
     for key, kind in OFF_ROWS.items():
         o = off_row(src["CONFIG"], key)
         out.append((f"{key}: OffHand (At, Up, Fwd) is readable and no left-arm hold angles fight it",
@@ -908,17 +914,17 @@ MUTATIONS = [
      "OffHand = { At = Vector3.new(-0.6, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage"),
     ("CONFIG", "the old left-arm hold kept (Tamer)", "RightWrist = { -30, 0, 0 } }, OffHand", "RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 } }, OffHand"),
     ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8)", "OneHand = { Hilt = Vector3.new(0.2, -0.5, -0.8)"),
-    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, -0.2), Pole", "Aim = Vector3.new(0, 1, -0.8), Pole"),
+    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, 0), Pole", "Aim = Vector3.new(0, 1, -0.8), Pole"),
+    ("CONFIG", "10/12 photo: the Dark Mage's staff across the body again (11 deg + the hunch)", "Aim = Vector3.new(0, 1, 0), Pole",
+     "Aim = Vector3.new(0, 1, -0.2), Pole"),
     # 최종 검수 10/12 (the staffs held lower, grip_reference §5-6)
     ("CONFIG", "the Light Mage's hand back up at the chest (the old spot)",
      "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) }",
      "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) }"),
-    ("CONFIG", "the Dark Mage's hand at the hip (the arm straight, the wrist broken)", "OneHand = { Hilt = Vector3.new(1.4, -0.65, -0.8)",
-     "OneHand = { Hilt = Vector3.new(1.4, -1.1, -0.8)"),
+    ("CONFIG", "the Dark Mage's hand at the hip (the arm straight, the wrist broken)", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.0)",
+     "OneHand = { Hilt = Vector3.new(1.4, -1.1, -1.0)"),
     ("CONFIG", "the Light Mage's elbow out (the default bend: the wrist breaks)",
      "Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) }", "Aim = Vector3.new(0, 1, -0.05) }"),
-    ("CONFIG", "the Dark Mage upright like the Light Mage (the sides alike)", "Aim = Vector3.new(0, 1, -0.2), Pole",
-     "Aim = Vector3.new(0, 1, -0.04), Pole"),
     ("CONFIG", "the Light Mage's hand tucked into the torso", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8)",
      "OneHand = { Hilt = Vector3.new(1.05, -0.5, -0.8)"),
     ("CONFIG", "the Dark Mage's free hand out at the side again", "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },",
