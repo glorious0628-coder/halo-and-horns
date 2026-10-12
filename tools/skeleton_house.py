@@ -1135,7 +1135,7 @@ MAT = {
     "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 168, 36)',
     "soil": 'p.Material = Enum.Material.Sand; p.Color = Color3.fromRGB(140, 100, 62)',
     "wood": 'p.Material = Enum.Material.Wood; p.Color = Color3.fromRGB(176, 118, 68); p.CanCollide = false',
-    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 2.5; l.Range = 16; l.Shadows = false; l.Enabled = false; l.Parent = p',
+    "lamp": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 228, 160); p.Transparency = 0.3; p:SetAttribute("LampLight", true); local l = Instance.new("PointLight"); l.Color = Color3.fromRGB(255, 214, 140); l.Brightness = 0.7; l.Range = 12; l.Shadows = false; l.Enabled = false; l.Parent = p',
     "neon": 'p.Material = Enum.Material.Neon; p.Color = Color3.fromRGB(255, 205, 120); p.CanCollide = false',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
     "shopglass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(190, 225, 248); p.Transparency = 0.6; p.Reflectance = 0.05',   # 디자인 검수 10/12: the goods behind show
