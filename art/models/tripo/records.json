@@ -6882,6 +6882,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloBright_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, left/right mirror below 42 % of the height, decimate to 8768 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.866,
+    1.614,
+    5.191
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloBright/NPC_HaloBright_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloSirGleam_web_hd": [
@@ -6899,6 +6914,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloSirGleam_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, left/right mirror below 18 % of the height, decimate to 8767 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    3.349,
+    1.631,
+    5.198
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloSirGleam/NPC_HaloSirGleam_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloBakerGranny_web_hd": [
@@ -6916,6 +6946,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloBakerGranny_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, decimate to 8768 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.968,
+    1.642,
+    5.195
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloBakerGranny/NPC_HaloBakerGranny_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloJuiceMan_web_hd": [
@@ -6933,6 +6978,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloJuiceMan_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, decimate to 8766 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    3.027,
+    2.056,
+    5.196
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloJuiceMan/NPC_HaloJuiceMan_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "NPC_HaloFlowerGirl_web_hd": [
@@ -6950,6 +7010,21 @@
    "derived": [
     "art/models/tripo/web/NPC_HaloFlowerGirl_HD_LOD.glb"
    ]
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, halo replaced by an exact level ring (major 0.38, tube 0.05) at Tripo's halo centre, decimate to 8767 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.706,
+    1.736,
+    5.19
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloFlowerGirl/NPC_HaloFlowerGirl_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "디자인 검수 10/12: the 10/10 4-view Tripo models are kept (A23-122 ok, not A23-96 reuse)"
   }
  ],
  "Crown_GoldHalf_web_hd": [
@@ -12516,6 +12591,21 @@
    "use": "Halo town potion shop NPC; Blender touch-up next (A23-125)",
    "file": "art/models/tripo/web/NPC_HaloPotionMerchant_MV4_HD_src.glb",
    "sheet": "art/review/img4/npc_potionmerchant_tripo_raw_1012.jpg"
+  },
+  {
+   "event": "blender_touchup",
+   "by": "이미지 생성 4",
+   "at": "2026-10-12 afternoon",
+   "tool": "tools/tripo_touchup_npc.sh -> tools/tripo_touchup.py (whole, h=5.2)",
+   "what": "front to +y, height 5.2 studs, weld + specks, decimate to 8000 tris, smart UV with the head islands x2.2 (face texture), bake C/N/R/M/MR 1024, thin outline shell 0.035 as <job>_TU_Outline",
+   "size_studs": [
+    2.884,
+    1.592,
+    5.199
+   ],
+   "out": "art/models/tripo/touchup/NPC_HaloPotionMerchant/NPC_HaloPotionMerchant_TU.glb (+ maps, disk only)",
+   "sheet": "art/review/img4/npc_touchup_1012.jpg",
+   "decision": "new 10/12 Tripo (55 points)"
   }
  ],
  "HaloNewHouse_Hill4_web_hd": [
