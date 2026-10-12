@@ -5,19 +5,15 @@
 - **API(api_agent) 거의 바닥(10/12 남은 약 $22, 최종 검수: 최종 병합 검토용으로 남김) → 큰 일도 앱에서 직접.** 충전되면 최종 검수가 알림.
   도구 버그 고침: edit_file이 파일 전체 크기를 쓰기 한도에 세던 것 → main 476362b(새 글만 셈).
 
-## 보고함 / 검토 대기 (최종 검수; 보고한 가지 = 다시 쌓지 말고 위에 커밋만; main 합치기는 충돌 때만)
-- **fix/lesstext-server 8c8dc44d** — 강화 결과 토스트 5개 되살림, 보스 등장 구역 이름, 출석 이정표 줄.
-- **C1 = api/dev2-c1-t9-v4 ab9578b7** — 최종 검수 API 검토 VERDICT MERGE, 병합 중. 그 위 **fix/c1-minor 1b491953**: 보스 재료
-  Feature = "Crafting"(제작 꺼지면 드롭 안 함, 뽑기는 함), v3 9번째 비트는 band로 아래 8칸 살림.
-- **fix/fame-cap d3c40ce9** (dev3-fame a5d38f39 위): WeekCap.Artisan 60 + CraftWeekCap 100 + Config.WeekCapOf(제작 켜짐일 때만 100).
-- **거위 광장 = dev2-goose-square e6dc909a** (황금 알 1차 3dfdc791 + 광장 서버 d689d56f + main 합침 + 계약 문서 §6·§9 답).
-  worktree ../wt_goose_square. 명예 +5 = GrantFame RankPoints. 이야기 GooseNest 표지는 교차로 그대로(부활절 달걀).
-  Config.Goose.Square는 개발 1 fix/goose-square에만(서버는 읽기만).
-- worktree: wt_c1(fix/c1-minor), wt_famecap(fix/fame-cap), wt_goose_square, wt_lesstext_server — 병합되면 지우기.
+## 보고함 / 검토 대기 (최종 검수)
+- main에 들어감(10/12): C1(9단계·v4·Spares), fix/fame-cap, fix/c1-minor(보스 재료 Feature Crafting, v3 마스크 band, gear_slots 식),
+  dev2-stickers(스티커 패스 99·SendSticker). dev2-bubbles c1c70fce(말풍선 패스 99·진영 무료·SetBubble·BubbleOn) = 개발 1 스티커 화면과 같이 병합 예정.
+- **거위 광장 한 끝 = dev2-goose-square df4d3d47** (황금 알 1차 + 광장 서버 + main 74f1dd79 + 개발 1 fix/goose-square 합침).
+  최종 검수가 API 반박 검토 → 병합 → 메인 반영 1 사진(Join·Leave·어두워짐·알 줍기·귀환). 큰 지도 = 개발 1(병합 뒤 한 줄).
+- **fix/lesstext-server 8c8dc44d** — 강화 결과 토스트 5개 되살림 등(아직 병합 확인 안 됨).
+- worktree: wt_goose_square·wt_stickers(dev2-bubbles)·wt_c1·wt_famecap·wt_lesstext_server — 병합되면 지우기.
 
 ## 다음 큐
-0. **스티커 패스(SPEC A23-143)**: 이미지 개발 스티커 17개 Config.UIArt.Parts.Emo<이름>, 무료 5개 = Parts `Free = true`(EmoThumbsUp·
-   EmoQuestion·EmoExclaim·EmoHelp·EmoThanks), 나머지 12 + EmoGG = 99 R$ 패스 — 패스 목록·가격·소유 Config는 내 몫(가지 imgdev-stickers de9e4fcf).
 1. **C2**: 드롭표 + 첫 Prince T2 + 중복 무기 → Spares(save_v4·crafting_market §3·§7). C1 병합 뒤.
 2. 거래소 서버(C-5/C-7): 개발 4 계약 `origin/dev4-market` `docs/design/market_window_2026-10-12.md` §6 합의(MarketIndex 30초 캐시·요약 맵,
    무기 키 "T:P", Pages·Paid·Today, Gate { Buy, List, ListIn }, 거래소 퀘스트 3개는 내 몫, 거절 키 + TooFast·Off).
