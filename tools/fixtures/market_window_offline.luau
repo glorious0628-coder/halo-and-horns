@@ -40,7 +40,7 @@ local savedMarket = Config.Market -- (the market's own Config table is the serve
 Config.Market = nil
 check(Config.Features.Market == false, "Config.Features.Market is off in the game today", Config.Features.Market)
 -- a test-only item of another kind (never sellable): a quest thing
-Config.Loot.Items.ZQuest = { Kind = "Quest", Name = "Quest Note", Sell = 0, Color = Color3.fromRGB(200, 200, 200), Icon = "IconQuestNote" }
+Config.Loot.Items.ZQuest = { Kind = "Quest", Name = "Quest Note", Sell = 0, Color = vec(200, 200, 200), Icon = "IconQuestNote" }
 
 ------------------------------------------------------------------ an Instance tree double (TextBox events included)
 local ISA = {
@@ -274,6 +274,11 @@ local function lastIs(name, ...)
 	end
 	return #f == #want + 1
 end
+-- the icon inside a row / slot: UIKit.ItemIcon's object is named "Icon", its Image is "Icon:<key>" in this double
+local function iconOf(r)
+	local i = r and find(r, "Icon")
+	return i and i.Image or nil
+end
 local function tick(dt)
 	CLOCK += dt or 0
 	if update then update() end
@@ -363,7 +368,7 @@ check(names(findAll(idx, "^Row_")) == "Row_I:Jelly,Row_I:Petal,Row_I:SlimeCore",
 local jelly = find(idx, "Row_I:Jelly")
 check(find(jelly, "Name").Text == "Jelly" and find(jelly, "Right1").Text == "3" and find(jelly, "Right2").Text == "×40",
 	"a row: the name, the Low price, the Count", find(jelly, "Right1").Text .. " " .. find(jelly, "Right2").Text)
-check(find(jelly, "Icon:Jelly") ~= nil and find(jelly, "Slot").Image == "SlotCommon", "the icon in the bag's grade slot")
+check(iconOf(jelly) == "Icon:Jelly" and find(jelly, "Slot").Image == "SlotCommon", "the icon in the bag's grade slot", iconOf(jelly))
 check(find(find(idx, "Row_I:Petal"), "Letter") ~= nil and find(find(idx, "Row_I:Petal"), "Letter").Text == "F",
 	"no icon art yet: the name's first letter in the slot")
 check(find(jelly, "Picked") ~= nil and S.BuyKey == "I:Jelly", "the first row is picked (gold rim)")
@@ -419,6 +424,12 @@ check(find(find(right, "Pager"), "Page").Text == "1 / 3" and find(find(right, "P
 tick(5)
 check(find(find(right, "Offer_a1"), "Left").Text == "2:00" and find(find(find(root, "Right"), "Offer_a1"), "Left").Text == "2:00",
 	"the clock runs (5 s later 2:00)")
+-- a remote that vanished between the draw and the click: nothing is sent
+local savedBuy = remoteObjs.MarketBuy
+remoteObjs.MarketBuy = nil
+fired = {}
+check(MarketWindow.Buy("a1", 3) == false and #fired == 0, "a missing MarketBuy remote: nothing is sent", firedNames())
+remoteObjs.MarketBuy = savedBuy
 -- Buy once
 fired = {}
 find(find(root, "Right"), "Offer_a1"):FindFirstChild("Buy").OnClick()
@@ -482,7 +493,7 @@ local w32 = find(widx, "Row_W:3:2")
 local wname = Config.WeaponName(3, "Warrior", "Halo")
 check(find(w32, "Name").Text == wname .. " +2" and find(find(widx, "Row_W:2:0"), "Name").Text == Config.WeaponName(2, "Warrior", "Halo"),
 	"a weapon key shows my class's weapon name (+N when it has one)", find(w32, "Name").Text)
-check(find(w32, "Icon:" .. Config.WeaponArtKey(3, "Warrior", "Halo")) ~= nil, "...and my class's weapon icon")
+check(iconOf(w32) == "Icon:" .. Config.WeaponArtKey(3, "Warrior", "Halo"), "...and my class's weapon icon", iconOf(w32))
 check(S.BuyKey == "W:2:0", "the first weapon row is picked")
 w32.OnActivate()
 check(S.BuyKey == "W:3:2" and find(find(root, "Index"), "Row_W:3:2"):FindFirstChild("Picked") ~= nil, "a tap picks a row")
@@ -504,7 +515,7 @@ check(find(find(find(root, "Right"), "Offer_w1"), "Buy").Enabled == true, "not o
 attrs.Class = "Mage"
 fireAttr("Class")
 check(find(find(root, "Index"), "Row_W:3:2"):FindFirstChild("Name").Text == Config.WeaponName(3, "Mage", "Halo") .. " +2"
-	and find(find(root, "Index"), "Row_W:3:2"):FindFirstChild("Icon:" .. Config.WeaponArtKey(3, "Mage", "Halo")) ~= nil,
+	and iconOf(find(find(root, "Index"), "Row_W:3:2")) == "Icon:" .. Config.WeaponArtKey(3, "Mage", "Halo"),
 	"my class changes: the names and icons follow")
 attrs.Class = "Warrior"
 fireAttr("Class")
@@ -593,9 +604,9 @@ check(select(2, firedNames():gsub("MarketMine", "")) >= 1 and select(2, firedNam
 	"3 s after the List: Mine and the open page are asked again", firedNames())
 -- a spare weapon: kind "W" with the key "T:P"
 tick(7)
+fired = {}
 find(find(root, "List"), "Row_W:3:2").OnActivate()
 check(S.SellKey == "W:3:2" and S.SellN == 1 and S.SellPrice == nil, "a spare is picked (count 1, price back to Ref)")
-fired = {}
 tick(0)
 check(lastIs("MarketBrowse", "W:3:2", 1), "...its page is asked", firedNames())
 handlers.MarketPage({ Key = "W:3:2", Page = 1, Pages = 1, Ref = 480, Min = 300, Max = 900, Rows = {} })
@@ -679,8 +690,8 @@ find(find(find(root, "Mine"), "Mine_m1"), "Cancel").OnClick()
 check(#fired == 1, "[Cancel] once")
 check(math.abs(S.ReadyAt.MarketCancel - (CLOCK + 2.15)) < 1e-9, "Config.RateLimits[name] wins over the default (2 + 0.15)", S.ReadyAt.MarketCancel - CLOCK)
 S.MineNext = 0
-tick(0.5)
-check(lastIs("MarketMine"), "a Mine request inside the 3 s", firedNames())
+tick(1.2) -- (MarketMine's own interval, 1 s + 0.15, from the Mine asked just before)
+check(select(2, firedNames():gsub("MarketMine", "")) == 1, "a Mine request inside the 3 s (the open page may follow it)", firedNames())
 handlers.MarketMine(MINE)
 check(S.Pending == nil and find(find(find(root, "Mine"), "Mine_m1"), "Cancel").Text == "Cancel", "the Mine answer after the Cancel ends the wait (and asks the page)")
 check(find(find(find(root, "Mine"), "Mine_m1"), "Cancel").Enabled == false, "...the button waits out its interval")

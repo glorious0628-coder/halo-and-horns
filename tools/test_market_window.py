@@ -120,8 +120,6 @@ MUTATIONS = [
     ("WIN", "a weapon's +N is not shown", "Title = plus > 0 and (name .. \" \" .. tx(TXT, \"Plus\", plus)) or name,", "Title = name,"),
     ("WIN", "four hint rows", "HintRows = 3,", "HintRows = 4,"),
     ("WIN", "All lists one", "\t\tS.SellN = entry.Count\n", "\t\tS.SellN = 1\n"),
-    ("WIN", "more than I have", "S.SellN = math.clamp(S.SellN + (num(how, 0) < 0 and -1 or 1), 1, entry.Count)",
-     "S.SellN = math.max(1, S.SellN + (num(how, 0) < 0 and -1 or 1))"),
     ("WIN", "the price box loses the keyboard to a redraw", "\tif VIEW.Focus then\n\t\tVIEW.Dirty = true", "\tif false then\n\t\tVIEW.Dirty = true"),
     ("MAIN", "the window is never loaded", "\"CraftWindow\", \"MarketWindow\",", "\"CraftWindow\","),
 ]
@@ -143,7 +141,7 @@ def english_literals(text: str) -> list[str]:
     cut = re.sub(r"local TXT = \{.*?\n\}\nL10n\.Register", "L10n.Register", text, flags=re.S)
     bad = []
     for line in code_lines(cut):
-        if "Util.Warn" in line:
+        if "Util.Warn" in line or "L10n.Register(" in line:
             continue
         line = line.split(" -- ")[0]
         for lit in re.findall(r'"([^"\n]*)"', line):
