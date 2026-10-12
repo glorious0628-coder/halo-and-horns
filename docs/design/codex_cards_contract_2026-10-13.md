@@ -7,8 +7,8 @@ SPEC A23-153, 설계 `docs/design/codex_cards_2026-10-12.md`. 서버 = `src/Serv
   - SlimeMeadow: `Slime`, `FlowerSlime`, `BigSlime`, `SlimeKing`(보스) → 칭호 `SlimeScholar` "Slime Scholar"
   - GoblinWoods: `Goblin`, `SlingshotGoblin`, `GoblinBrute` → `GoblinScholar` "Goblin Scholar"
   - SkeletonRuins: `Skeleton`, `SkeletonArcher`, `SkeletonKnight`, `CaptainClatter`(보스) → `SkeletonScholar` "Skeleton Scholar"
-- 세는 규칙 = 처치 기록(KillLog)과 같음: `MonsterKilled`(보상 받은 처치, 자동 전투 포함, 보스 '작은 몫' 포함), **개인 몬스터(첫 KO 왕) 제외**. 그래서 `Codex[kind].Kills == KillLog.ByKind[kind]`.
-- 단계 `Stage`: 0 없음 · **1 Card**(처음 잡음) · **2 Silver**(100) · **3 Gold Holo**(1000). 표 `Config.Codex.Steps`, 보스 `BossSteps`(지금 같은 1/100/1000). `Config.CodexStage(kind, kills)`로 계산 가능.
+- 세는 규칙 = 처치 기록(KillLog)과 같음: `MonsterKilled`(보상 받은 처치, 자동 전투 포함, 보스 '작은 몫'(`info.Minor`)도 셈 — 단 그 처치로 오른 단계 보상은 × MinorShare(Captain Clatter 15%, 없으면 0)), **개인 몬스터(첫 KO 왕) 제외**. 그래서 `Codex[kind].Kills == KillLog.ByKind[kind]`.
+- 단계 `Stage`: 0 없음 · **1 Card**(처음 잡음) · **2 Silver**(100) · **3 Gold Holo**(1000). 표 `Config.Codex.Steps`, **보스(King Slime·Captain Clatter)는 `BossSteps` = 1 / 10 / 30**(최종 검수 10/13). `Config.CodexStage(kind, kills)`로 계산 가능.
 - **Gold Foil**: 그 종류 황금 몬스터를 처음 잡으면(`Golden >= 1`) 따로 생기는 카드. **보스는 황금이 안 나와서 포일 없음**(`Config.CodexCanGold(kind)` = false) → 그림은 9장이면 됨.
 - `First` = 처음 잡은 때(os.time). **0 = 도감 전**(옛 저장에서 옮겨 온 카드) → 날짜 대신 `Config.Codex.Text.Before` "Before the Codex".
 
@@ -33,7 +33,7 @@ SPEC A23-153, 설계 `docs/design/codex_cards_2026-10-12.md`. 서버 = `src/Serv
 | `Page` | 페이지 다 채움(그 칭호를 새로 얻을 때만) | `Page` "%s page done! New title: %s" (구역 이름, 칭호 이름) | 칭호 |
 | `Glow` | 11종 모두 Gold Holo | `Glow` "Every card is Gold Holo! Your sparkle is on." | 꾸미기(아래 속성) |
 
-보스(King Slime·Captain Clatter)는 단계 보상이 1/3/10마리 몫(`Reward.BossStage`). 보상 = 은행 골드(출처 `"Codex"`, 털리지 않음) + XP. 숫자 `Config.Codex.Reward`.
+보스(King Slime·Captain Clatter)는 단계 보상이 1/3/10마리 몫(`Reward.BossStage`). 보상 = 은행 골드(출처 `"Codex"`, 털리지 않음) + XP. 숫자 `Config.Codex.Reward`. 몬스터의 `XPCapBelowLevel`(King Slime 8) 아래 레벨이면 카드 XP도 한 레벨 몫까지(A23-27, 처치 XP와 같은 규칙).
 
 ## 3. 속성 (Player attribute)
 - `CodexCards` (숫자) = 가진 카드 수(Stage ≥ 1), 0..11 — HUD [Codex] 단추 옆 "3/11" 같은 표시용.
@@ -60,4 +60,4 @@ SPEC A23-153, 설계 `docs/design/codex_cards_2026-10-12.md`. 서버 = `src/Serv
 ## 7. 화면 쪽 메모(게임성 개발 1)
 - `Config.Codex.ServerToast = true`(지금): 서버가 같은 줄을 보상 토스트로도 보냄. **카드 순간 화면이 들어가면 개발 1이 false로** — 그때부터 줄은 `CodexUp`에서만.
 - 순서: 접속 `Codex` → 창 열 때 `CodexOpen` → 순간은 `CodexUp`(창이 열려 있으면 그 카드만 새로 그리기, 아니면 가운데 카드 순간). 빛살 무늬 금지(A23-153).
-- 남은 결정(최종 검수): 보스 단계 숫자(1000마리 Captain Clatter ≈ 20분마다 1번 = 330시간), 뒷면 이야기 33줄 다듬기, 꾸미기 그림.
+- 최종 검수 결정(10/13): 보스 단계 1/10/30, 보상 배수 그대로, 뒷면 33줄은 카드 화면 만들 때 다듬기, ServerToast = true 그대로. 남은 것: 꾸미기 그림.

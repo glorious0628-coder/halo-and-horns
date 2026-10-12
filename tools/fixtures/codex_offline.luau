@@ -10,7 +10,8 @@ local NAN, INF = 0 / 0, math.huge
 local function codexWorld(o)
 	o = o or {}
 	local w = dev3World({ EditConfig = o.EditConfig })
-	w.GoldMult, w.XPMult = o.GoldMult, o.XPMult
+	-- 1 = the doubles answer what they added, like the real ProgressionService (2 = a 2x pass)
+	w.GoldMult, w.XPMult = o.GoldMult or 1, o.XPMult or 1
 	w:Service("TitleService", TITLE_SOURCE)
 	w:Service("KillLog", LOG_SOURCE)
 	w:Service("CodexService", CODEX_SOURCE)
@@ -77,8 +78,8 @@ runGroup("config", function()
 	check(C.Data.Version == 5 and C.Data.Defaults.Version == 5, "save version 5 (A23-153), Data and Defaults equal",
 		show({ C.Data.Version, C.Data.Defaults.Version }))
 	check(type(C.Data.Defaults.Codex) == "table" and next(C.Data.Defaults.Codex) == nil, "save default Codex = {}", show(C.Data.Defaults.Codex))
-	check(X.Enabled == true and sameTable(X.Steps, { 1, 100, 1000 }) and sameTable(X.BossSteps, { 1, 100, 1000 }),
-		"steps 1 / 100 / 1000 (bosses too)", show({ X.Steps, X.BossSteps }))
+	check(X.Enabled == true and sameTable(X.Steps, { 1, 100, 1000 }) and sameTable(X.BossSteps, { 1, 10, 30 }),
+		"steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)", show({ X.Steps, X.BossSteps }))
 	local want = { "Slime", "FlowerSlime", "BigSlime", "SlimeKing", "Goblin", "SlingshotGoblin", "GoblinBrute", "Skeleton",
 		"SkeletonArcher", "SkeletonKnight", "CaptainClatter" }
 	check(sameTable(X.Order, want), "series 1 = the 11 beta kinds in page order", table.concat(X.Order, ","))
@@ -100,7 +101,8 @@ runGroup("config", function()
 		"bosses have no Gold Foil card (never golden)", "")
 	check(C.CodexStage("Slime", 0) == 0 and C.CodexStage("Slime", 1) == 1 and C.CodexStage("Slime", 99) == 1
 		and C.CodexStage("Slime", 100) == 2 and C.CodexStage("Slime", 999) == 2 and C.CodexStage("Slime", 1000) == 3
-		and C.CodexStage("Slime", 5000) == 3 and C.CodexStage("SlimeKing", 100) == 2, "stage from kills", "")
+		and C.CodexStage("Slime", 5000) == 3 and C.CodexStage("SlimeKing", 9) == 1 and C.CodexStage("SlimeKing", 10) == 2 and C.CodexStage("SlimeKing", 29) == 2
+		and C.CodexStage("CaptainClatter", 30) == 3, "stage from kills (a boss: 10 / 30)", "")
 	local textOk, loreOk = true, true
 	for _, k in { "Name", "Card", "Silver", "Holo", "Golden", "Reward", "RewardGold", "Page", "Glow", "Foil", "Before" } do
 		local s = X.Text[k]
@@ -220,11 +222,50 @@ runGroup("boss cards", function()
 	kill(w, p, "CaptainClatter", { ZoneId = "SkeletonRuins" })
 	local u = fired(w, "CodexUp", p, f0)[1]
 	check(u and u.Event == "Card" and u.Gold == 3900 and u.XP == 3900, "Captain Clatter's card pays 1 kill's worth (BossStage)", show(u))
-	d.Codex.CaptainClatter.Kills = 99
+	d.Codex.CaptainClatter.Kills = 8
+	kill(w, p, "CaptainClatter")
+	check(d.Codex.CaptainClatter.Stage == 1, "9 kills: still stage 1", show(d.Codex.CaptainClatter))
 	local f1 = #w.Fired
 	kill(w, p, "CaptainClatter")
 	u = fired(w, "CodexUp", p, f1)[1]
-	check(u and u.Event == "Silver" and u.Gold == 11700 and u.XP == 11700, "Silver at 100: 3 kills' worth", show(u))
+	check(u and u.Event == "Silver" and u.Gold == 11700 and u.XP == 11700, "a boss's Silver at 10: 3 kills' worth", show(u))
+	d.Codex.CaptainClatter.Kills = 29
+	local f2 = #w.Fired
+	kill(w, p, "CaptainClatter")
+	u = fired(w, "CodexUp", p, f2)[1]
+	check(u and u.Event == "Holo" and u.Gold == 39000 and u.XP == 39000, "a boss's Gold Holo at 30: 10 kills' worth", show(u))
+	-- 최종 검수 review ①: a free rider's minor share (info.Minor) counts, its stage reward is x MinorShare (15%)
+	local q, qd = hero(w, 51, { Level = 30 })
+	local f3 = #w.Fired
+	kill(w, q, "CaptainClatter", { Minor = true })
+	u = fired(w, "CodexUp", q, f3)[1]
+	check(qd.Codex.CaptainClatter.Kills == 1 and u and u.Event == "Card" and u.Gold == 585 and u.XP == 585,
+		"a minor share: counted, the card pays 15% (585)", show(u))
+	qd.Codex.CaptainClatter.Kills = 9
+	local f4 = #w.Fired
+	kill(w, q, "CaptainClatter", { Minor = true })
+	u = fired(w, "CodexUp", q, f4)[1]
+	check(u and u.Event == "Silver" and u.Gold == 1755 and u.XP == 1755, "a minor share's Silver: 15% of 3 kills' worth (1,755)", show(u))
+	local f5 = #w.Fired
+	kill(w, q, "SlimeKing", { Minor = true })
+	u = fired(w, "CodexUp", q, f5)[1]
+	check(qd.Codex.SlimeKing.Kills == 1 and u and u.Event == "Card" and u.Gold == 0 and u.XP == 0 and u.Text == "New card: King Slime!",
+		"a minor kill of a boss without a MinorShare: the card, no reward", show(u))
+	-- 최종 검수 review ②: below the King Slime's XPCapBelowLevel (8) its card XP is at most one level (A23-27); gold is not capped
+	local r = hero(w, 52, { Level = 1 })
+	local f6 = #w.Fired
+	kill(w, r, "SlimeKing")
+	u = fired(w, "CodexUp", r, f6)[1]
+	check(u and u.XP == w.Config.XPToNext(1) and u.XP < 120 and u.Gold == 60, "a Lv1 King Slime card: XP capped to one level, 60 gold", show(u))
+	-- the cap level itself is free: a King worth more than a level shows it (a test-only XP of 1000)
+	local w2 = codexWorld({ EditConfig = function(c) c.MonsterTypes.SlimeKing.XP = 1000 end })
+	local s = hero(w2, 53, { Level = 8 })
+	local t = hero(w2, 54, { Level = 7 })
+	kill(w2, s, "SlimeKing")
+	kill(w2, t, "SlimeKing")
+	local us, ut = fired(w2, "CodexUp", s, 0)[1], fired(w2, "CodexUp", t, 0)[1]
+	check(us and us.XP == 1000 and ut and ut.XP == w2.Config.XPToNext(7) and ut.XP < 1000,
+		"Lv8 (the cap level): the full card XP; Lv7: one level", show({ us and us.XP, ut and ut.XP }))
 end)
 
 ------------------------------------------------------------------ pages and titles
@@ -260,7 +301,9 @@ end)
 runGroup("every card gold holo", function()
 	local w = codexWorld()
 	local cards = {}
-	for _, kind in w.Config.Codex.Order do cards[kind] = { Kills = 999, Golden = 0, Stage = 2, First = 1 } end
+	for _, kind in w.Config.Codex.Order do
+		cards[kind] = { Kills = w.Config.MonsterTypes[kind].Boss and 29 or 999, Golden = 0, Stage = 2, First = 1 } -- one kill short of Holo
+	end
 	local p, d = hero(w, 8, { Codex = cards })
 	check(p:GetAttribute("CodexGlow") == false and p:GetAttribute("CodexCards") == 11, "11 silver cards: no glow", "")
 	local order = w.Config.Codex.Order

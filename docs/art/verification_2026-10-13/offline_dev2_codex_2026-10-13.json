@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 132,
+  "checks": 139,
   "failedChecks": 0,
-  "namedChecks": 130,
+  "namedChecks": 137,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -21,7 +21,7 @@
     },
     {
       "group": "config",
-      "check": "steps 1 / 100 / 1000 (bosses too)",
+      "check": "steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)",
       "pass": 1,
       "fail": 0
     },
@@ -63,7 +63,7 @@
     },
     {
       "group": "config",
-      "check": "stage from kills",
+      "check": "stage from kills (a boss: 10 / 30)",
       "pass": 1,
       "fail": 0
     },
@@ -291,7 +291,49 @@
     },
     {
       "group": "boss cards",
-      "check": "Silver at 100: 3 kills' worth",
+      "check": "9 kills: still stage 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a boss's Silver at 10: 3 kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a boss's Gold Holo at 30: 10 kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a minor share: counted, the card pays 15% (585)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a minor share's Silver: 15% of 3 kills' worth (1,755)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a minor kill of a boss without a MinorShare: the card, no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a Lv1 King Slime card: XP capped to one level, 60 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "Lv8 (the cap level): the full card XP; Lv7: one level",
       "pass": 1,
       "fail": 0
     },
@@ -792,9 +834,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 53,
-    "applied": 53,
-    "caught": 53,
+    "total": 60,
+    "applied": 60,
+    "caught": 60,
     "skipped": false,
     "results": [
       {
@@ -838,8 +880,8 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
-          "config :: stage from kills",
-          "config :: steps 1 / 100 / 1000 (bosses too)",
+          "config :: stage from kills (a boss: 10 / 30)",
+          "config :: steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)",
           "debug :: 'Slime:99' sets the kills, no reward",
           "debug :: then one kill evolves it",
           "repair :: fractions floored, text / negative -> 0",
@@ -855,9 +897,13 @@
         "crashed": false,
         "newFailingChecks": [
           "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
-          "boss cards :: Silver at 100: 3 kills' worth"
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold",
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth",
+          "boss cards :: a boss's Silver at 10: 3 kills' worth",
+          "boss cards :: a minor share's Silver: 15% of 3 kills' worth (1,755)"
         ],
-        "newFailingCount": 2
+        "newFailingCount": 7
       },
       {
         "mutation": "config: a boss can be golden",
@@ -901,14 +947,14 @@
         "caught": true,
         "crashed": false,
         "newFailingChecks": [
+          "boss cards :: group ran to the end without a Lua error",
           "config :: series 1 = the 11 beta kinds in page order",
           "every card gold holo :: 11 silver cards: no glow",
           "gold foil :: group ran to the end without a Lua error",
           "join and the snapshot :: CodexCards counts the cards",
-          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0",
-          "page titles :: 3 of 4 meadow cards: no title yet"
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0"
         ],
-        "newFailingCount": 13
+        "newFailingCount": 14
       },
       {
         "mutation": "repair: a stage taken back",
@@ -1185,11 +1231,11 @@
           "2x passes and the toast switch :: no XP added: '+9 gold' only",
           "2x passes and the toast switch :: the line says what was added (2x)",
           "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
-          "boss cards :: Silver at 100: 3 kills' worth",
-          "first card :: paid as bank gold 'Codex' + XP",
-          "first card :: the line: key, args, English text"
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold",
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth"
         ],
-        "newFailingCount": 11
+        "newFailingCount": 16
       },
       {
         "mutation": "service: the reward in pocket gold",
@@ -1212,11 +1258,11 @@
           "2x passes and the toast switch :: no XP added: '+9 gold' only",
           "2x passes and the toast switch :: the line says what was added (2x)",
           "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
-          "boss cards :: Silver at 100: 3 kills' worth",
-          "first card :: paid as bank gold 'Codex' + XP",
-          "first card :: the line: key, args, English text"
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold",
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth",
+          "boss cards :: a boss's Silver at 10: 3 kills' worth"
         ],
-        "newFailingCount": 10
+        "newFailingCount": 14
       },
       {
         "mutation": "service: the line shows the asked amount",
@@ -1263,10 +1309,10 @@
           "2x passes and the toast switch :: no XP added: '+9 gold' only",
           "2x passes and the toast switch :: the line says what was added (2x)",
           "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
-          "boss cards :: Silver at 100: 3 kills' worth",
-          "debug :: the moment again, no reward, no change"
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold"
         ],
-        "newFailingCount": 25
+        "newFailingCount": 31
       },
       {
         "mutation": "service: '+0 XP' at the top level",
@@ -1447,6 +1493,93 @@
         "newFailingCount": 1
       },
       {
+        "mutation": "service: a minor share pays the whole stage reward",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: a minor kill of a boss without a MinorShare: the card, no reward",
+          "boss cards :: a minor share's Silver: 15% of 3 kills' worth (1,755)",
+          "boss cards :: a minor share: counted, the card pays 15% (585)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "service: a minor kill without a MinorShare pays in full",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: a minor kill of a boss without a MinorShare: the card, no reward"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: a minor kill not counted",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: group ran to the end without a Lua error",
+          "what does not count :: a minor share counts (the KillLog rule)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: no XP cap below the boss's level",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the cap not passed",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the cap at the cap level too",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: boss steps back to 100 / 1000",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth",
+          "boss cards :: a boss's Silver at 10: 3 kills' worth",
+          "boss cards :: a minor share's Silver: 15% of 3 kills' worth (1,755)",
+          "config :: stage from kills (a boss: 10 / 30)",
+          "config :: steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)",
+          "every card gold holo :: CodexGlow = true"
+        ],
+        "newFailingCount": 8
+      },
+      {
         "mutation": "debug: any event name",
         "file": "src/ServerScriptService/CodexService.luau",
         "applied": true,
@@ -1463,17 +1596,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "7d454e053d2fc6e61b7565ceb4b0193d070eaebdf912389e1cf4d188d0cfa243",
+    "src/ReplicatedStorage/Shared/Config.luau": "678c51900c0edc405da916563c40a25177fb48f66b8f6ffc6d8dd7694690f978",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/CodexService.luau": "07fdd008409a98e3abda2d067914a6d43089cc956847f4cfde0c2c731e2ea995",
+    "src/ServerScriptService/CodexService.luau": "977c155dba2fd51e1896cc70d63811bdb1b9dae288a0b04067ac4150034c3ae7",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/KillLog.luau": "0c517d98afbe72b6db265add7a78644b2bf2ba5a2486df18d6a16f516de967a0",
     "src/ServerScriptService/DataService.luau": "14dc7d8759bb689afa249102420ac6c46e972c7fb27425adc2afc1ba770231dc"
   },
-  "fixtureSHA256": "62e1e924c9b71d502e88a6a5af204fa1c825e61529a9be729e3c73ccd27da859",
+  "fixtureSHA256": "a2ff873209d7bf982a287e5335be773dac14260a36da8d7f572f27d5613ddfc7",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
-  "contract": "A23-153: Codex[kind] = { Kills, Golden, Stage, First } for the 11 series-1 kinds (3 pages); the KillLog rule (MonsterKilled, not personal); stages at 1 / 100 / 1000 (Card / Silver / Gold Holo), a skipped stage paid in order; the first golden kill = Gold Foil (never a boss); rewards = 3 / 20 / 100 kills' worth (bosses 1 / 3 / 10, foil 5) of the kind's own XP / Gold as bank gold 'Codex' + XP; CodexUp { Event, Kind, Stage, Card, Gold, XP, Title, Page, Key, Args, Text } + a reward toast while ServerToast; a full page = its title once (silent at join); every card at stage 3 = CodexGlow; CodexCards = cards owned; snapshot Codex at join and on CodexOpen (1 s). Save v5: migrate fills the codex once from KillLog.ByKind (Golden 0, First 0, no reward); fillDefaults repairs it.",
+  "contract": "A23-153: Codex[kind] = { Kills, Golden, Stage, First } for the 11 series-1 kinds (3 pages); the KillLog rule (MonsterKilled, not personal); stages at 1 / 100 / 1000 (Card / Silver / Gold Holo; bosses 1 / 10 / 30), a skipped stage paid in order; a minor share (info.Minor) counts but its stage reward is x MinorShare (0 without one); below XPCapBelowLevel the card XP is at most one level (A23-27); the first golden kill = Gold Foil (never a boss); rewards = 3 / 20 / 100 kills' worth (bosses 1 / 3 / 10, foil 5) of the kind's own XP / Gold as bank gold 'Codex' + XP; CodexUp { Event, Kind, Stage, Card, Gold, XP, Title, Page, Key, Args, Text } + a reward toast while ServerToast; a full page = its title once (silent at join); every card at stage 3 = CodexGlow; CodexCards = cards owned; snapshot Codex at join and on CodexOpen (1 s). Save v5: migrate fills the codex once from KillLog.ByKind (Golden 0, First 0, no reward); fillDefaults repairs it.",
   "limitations": "The card window, the 3D card and the evolve moment are 게임성 개발 1's (the contract doc); the card art is image gen 2's. The real DataStore round trip of a v4 -> v5 record is in tools/test_onboarding.py."
 }

@@ -91,7 +91,7 @@ MUTATIONS = [
     ("service: a foil per golden kill", X, "\t\tif e.Golden == 1 then table.insert(events, { Event = \"Golden\"",
      "\t\tif e.Golden >= 1 then table.insert(events, { Event = \"Golden\""),
     ("service: Golden from any value", X, "\tif info.Golden == true and Config.CodexCanGold(kind) then\n", "\tif info.Golden and Config.CodexCanGold(kind) then\n"),
-    ("service: no reward", X, "\t\tlocal gold, xp = pay(player, kind, ev.Mult)\n", "\t\tlocal gold, xp = 0, 0\n"),
+    ("service: no reward", X, "\t\tlocal gold, xp = pay(player, kind, ev.Mult * share)\n", "\t\tlocal gold, xp = 0, 0\n"),
     ("service: the reward in pocket gold", X, "pcall(S.ProgressionService.AddBankGold, player, gold, \"Codex\")",
      "pcall(S.ProgressionService.AddCarriedGold, player, gold, \"Codex\")"),
     ("service: the golden x on the reward", X, "\tlocal gold = math.floor((tonumber(def.Gold) or 0) * mult + 0.5)\n",
@@ -117,6 +117,16 @@ MUTATIONS = [
     ("service: CodexOpen before ready", X, "if not S.PlayerService.IsReady(player) or not Util.RateLimit(", "if not Util.RateLimit("),
     ("debug: a reward on the kills set", X, "\t\t\tcodex[kind] = { Kills = kills, Golden = old and math.min(old.Golden, kills) or 0, Stage = Config.CodexStage(kind, kills),",
      "\t\t\tpay(player, kind, 3)\n\t\t\tcodex[kind] = { Kills = kills, Golden = old and math.min(old.Golden, kills) or 0, Stage = Config.CodexStage(kind, kills),"),
+    ("service: a minor share pays the whole stage reward", X,
+     "if info.Minor == true then share = math.clamp(tonumber(Config.MonsterTypes[kind].MinorShare) or 0, 0, 1) end",
+     "if info.Minor == true then share = 1 end"),
+    ("service: a minor kill without a MinorShare pays in full", X, "tonumber(Config.MonsterTypes[kind].MinorShare) or 0, 0, 1)",
+     "tonumber(Config.MonsterTypes[kind].MinorShare) or 1, 0, 1)"),
+    ("service: a minor kill not counted", X, "\tlocal kind = info.Kind\n", "\tif info.Minor == true then return end\n\tlocal kind = info.Kind\n"),
+    ("service: no XP cap below the boss's level", X, "\t\tif level < capBelow then cap = math.floor(Config.XPToNext(level)) end\n", ""),
+    ("service: the cap not passed", X, "pcall(S.ProgressionService.AddXP, player, xp, cap)", "pcall(S.ProgressionService.AddXP, player, xp)"),
+    ("service: the cap at the cap level too", X, "if level < capBelow then cap", "if level <= capBelow then cap"),
+    ("config: boss steps back to 100 / 1000", C, "\tBossSteps = { 1, 10, 30 },\n", "\tBossSteps = { 1, 100, 1000 },\n"),
     ("debug: any event name", X, "if not X.PageOf[showKind] or not EVENTS[event] then return", "if not X.PageOf[showKind] then return"),
 ]
 
@@ -176,7 +186,9 @@ SUITE = Suite(
     out=ROOT / "docs/art/verification_2026-10-13/offline_dev2_codex_2026-10-13.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
     contract="A23-153: Codex[kind] = { Kills, Golden, Stage, First } for the 11 series-1 kinds (3 pages); the KillLog rule "
-             "(MonsterKilled, not personal); stages at 1 / 100 / 1000 (Card / Silver / Gold Holo), a skipped stage paid in order; "
+             "(MonsterKilled, not personal); stages at 1 / 100 / 1000 (Card / Silver / Gold Holo; bosses 1 / 10 / 30), a skipped "
+             "stage paid in order; a minor share (info.Minor) counts but its stage reward is x MinorShare (0 without one); below "
+             "XPCapBelowLevel the card XP is at most one level (A23-27); "
              "the first golden kill = Gold Foil (never a boss); rewards = 3 / 20 / 100 kills' worth (bosses 1 / 3 / 10, foil 5) "
              "of the kind's own XP / Gold as bank gold 'Codex' + XP; CodexUp { Event, Kind, Stage, Card, Gold, XP, Title, Page, "
              "Key, Args, Text } + a reward toast while ServerToast; a full page = its title once (silent at join); every card "

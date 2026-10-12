@@ -79,19 +79,27 @@ local function shortName(kind)
 end
 
 -- the reward of `mult` kills' worth of `kind` (its own XP / Gold, no golden x): bank gold "Codex" + XP (the passes apply).
--- Returns the gold and XP really added.
+-- 최종 검수 review 2026-10-13: below the kind's XPCapBelowLevel the XP is at most one level's (A23-27, the kill's own cap:
+-- ProgressionService.onMonsterKilled). Returns the gold and XP really added.
 local function pay(player, kind, mult)
 	local def = Config.MonsterTypes[kind]
 	mult = tonumber(mult) or 0
 	local gold = math.floor((tonumber(def.Gold) or 0) * mult + 0.5)
 	local xp = math.floor((tonumber(def.XP) or 0) * mult + 0.5)
+	local cap = nil
+	local capBelow = tonumber(def.XPCapBelowLevel)
+	if capBelow then
+		local data = S.PlayerService.GetData(player)
+		local level = math.floor(type(data) == "table" and tonumber(data.Level) or 1)
+		if level < capBelow then cap = math.floor(Config.XPToNext(level)) end
+	end
 	local gotGold, gotXP = 0, 0
 	if gold > 0 then
 		local ok, got = pcall(S.ProgressionService.AddBankGold, player, gold, "Codex")
 		if ok then gotGold = tonumber(got) or gold else Util.Warn(TAG, "gold: " .. tostring(got)) end
 	end
 	if xp > 0 then
-		local ok, got = pcall(S.ProgressionService.AddXP, player, xp)
+		local ok, got = pcall(S.ProgressionService.AddXP, player, xp, cap)
 		if ok then gotXP = tonumber(got) or xp else Util.Warn(TAG, "xp: " .. tostring(got)) end
 	end
 	return gotGold, gotXP
@@ -138,8 +146,12 @@ local function onKilled(player, info)
 		e.Golden = math.min(e.Kills, e.Golden + 1)
 		if e.Golden == 1 then table.insert(events, { Event = "Golden", Stage = e.Stage, Mult = X.Reward.Golden }) end
 	end
+	-- 최종 검수 review 2026-10-13: a free rider's minor share (info.Minor: the hits, under the boss's damage share) counts
+	-- like KillLog, but a stage it reaches pays only MinorShare of the reward (none without one), like its XP / gold
+	local share = 1
+	if info.Minor == true then share = math.clamp(tonumber(Config.MonsterTypes[kind].MinorShare) or 0, 0, 1) end
 	for _, ev in events do
-		local gold, xp = pay(player, kind, ev.Mult)
+		local gold, xp = pay(player, kind, ev.Mult * share)
 		up(player, { Event = ev.Event, Kind = kind, Stage = ev.Stage, Gold = gold, XP = xp, Args = { shortName(kind) },
 			Card = { Kills = e.Kills, Golden = e.Golden, Stage = e.Stage, First = e.First } })
 	end

@@ -9273,7 +9273,8 @@ end
 Config.Codex = {
 	Enabled = true,
 	Steps = { 1, 100, 1000 }, -- kills for Stage 1 / 2 / 3 (A23-153)
-	BossSteps = { 1, 100, 1000 }, -- the field bosses (Boss = true); A23-153's numbers until 최종 검수 says otherwise
+	-- the field bosses (Boss = true): 최종 검수 2026-10-13 1 / 10 / 30 (1000 Captain Clatters, one every 20 min, = ~330 h)
+	BossSteps = { 1, 10, 30 },
 	Pages = { -- series 1 = the beta hunting zones (A23-152); later series add pages (Halloween, the new zones, pets)
 		{ Id = "SlimeMeadow", Title = "SlimeScholar", Kinds = { "Slime", "FlowerSlime", "BigSlime", "SlimeKing" } },
 		{ Id = "GoblinWoods", Title = "GoblinScholar", Kinds = { "Goblin", "SlingshotGoblin", "GoblinBrute" } },
