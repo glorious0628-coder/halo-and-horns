@@ -1,5 +1,14 @@
 # 이미지 생성 1 — 상태 (2026-10-11 인계)
 
+## 10/12 09:50 5단계 ①~④ + 새 집 7 상자 (최종 검수 지시) — 디자인 검수 판정 대기
+- WorldKit 재시작(capture 멈춤): 새 STUDIO_ID **83b32720** (이름 WorldKit.rbxlx라 STUDIO_NAME=WorldKit도 됨). 터레인 크게 다시 쓴 직후 첫 screen_capture가 한 번 2분 멈춘 적 있음(다시 찍으면 됨). 맨 위(r2_14) 사진은 먼 거리 그림이 흐림(물·길 안 보임) — 데이터는 정상(복셀·레이 확인).
+- 시트: `art/review/world/halo_v2/stage5/sheet_stage5_walls_underside.jpg` (전·후 6줄). 백업 20261012_094558(HaloV2+지형).
+- ②③ 옹벽: `halo_blockout.py` 턱 8 이상(WALL_MIN) + 꽃 단 구역(terrace 구역은 4 넘으면) 칸 경계 → 줄로 이음 → 곧게(DP 2.5) → 조각 `build/wk/halo_walls.json` → `skeleton_ground.py --only walls`(RetainWall/RetainCap, 두께 8, 윗면 = 높은 쪽, WalkGround). 99조각(198파트), 건물 겹침 0. 4~8 턱은 잔디 둔덕(벽 다 넣으면 위에서 흰 미로). Limestone 얼굴 0.
+- ① 흰 번짐 = 옛 Limestone 얼굴이었음 → 없어짐. 길 판 사이 잔디: 길 밑 지형 1 낮춤(ROAD_SINK, `build/wk/halo_sink.json`, skeleton_ground G()가 되돌려 더함 → 길 다시 지어도 높이 같음).
+- ④ 섬: 바다 띠 물 12깊이(24→, 파란 점 = LOD로 보인 물), 테 바닥 -18(RING_DOWN, -30→ 멀리서 판처럼), 테 아래 들쭉날쭉 + 고드름, 테 밖 돌출 바위(tier 5, 251칸), 테·돌출 = Limestone(-40까지, Sandstone은 C2c에서 짙은 갈색이라 뺌). 멀리서는 아직 띠 느낌 조금 → 원뿔(UND_POW) 손대면 더 좋아질 수 있음(안 함).
+- 새 집 7: `halo_plan_v2.py` SKELETONS에 **임시** 크기(A 19×14.4 face 7.2, B 20×12.4 face 6.2 — 이미지 생성 3 집 08/12·11 크기), plan 검사 0, `tools/worldkit/halo_newhouse_boxes.py`로 회색 상자 다시(높이 20, 문 = door_at, 2층 바닥 WalkGround, 속성 Provisional). 이미지 생성 3 진짜 골격 숫자 오면 SKELETONS 고치고 다시 실행.
+- 꽃 덤불(옹벽 위·아래)은 5단계 소품 차례(키트 필요).
+
 ## 10/12 07:30 걷는 땅 규칙 점검 (fix/stairs-ground, Config.Ground.KitWalk = Bridge·Stairs·Steps·Ramp, 대소문자 구분)
 - WorldKit은 06:20에 다른 세션이 파일 저장 후 다시 열었음 → MCP 이름이 "Game"이라 STUDIO_NAME=WorldKit 안 됨, `STUDIO_ID`(list_roblox_studios)로.
 - 내 몫 OK: Ground 걷는 면(길·계단·층계참·마당·광장 원판) 전부 WalkGround, 다리 4 태그+이름 Bridge_. 태그 없는 것 = 난간·길 금줄(nc)·마당 점(nc)·광장 테(nc) = 맞음. 성문·탑·무기고: 바닥은 지형, 전망대 BalconyFloor 태그.

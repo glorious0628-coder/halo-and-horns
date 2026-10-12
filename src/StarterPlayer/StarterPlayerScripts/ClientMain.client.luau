@@ -15,7 +15,7 @@ do
 	task.spawn(watch, workspace)
 end
 
-local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "DeathScreen", "Panels", "SettingsUI", "ShopUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "ChatTags", "Invite", "Passes", "SupporterBoard", "PauseCard", "ComeBack", "KingDiary", "PetWindow", "SkillBook", "QuestBook", "BagUI", "CharacterUI", "GatherView", "CraftView", "CraftWindow", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "StoryNpcs", "TownReact", "LightCap", "FirstSteps", "FountainFx", "EggFx", "WeatherFx", "SkillBar", "QuickSlots", "WeaponPose", "LandShadow", "SkillFx", "Audio" }
+local ORDER = { "CameraFollow", "UIKit", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "DeathScreen", "Panels", "SettingsUI", "ShopUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "ChatTags", "Invite", "Passes", "SupporterBoard", "PauseCard", "ComeBack", "KingDiary", "PetWindow", "SkillBook", "QuestBook", "BagUI", "CharacterUI", "GatherView", "CraftView", "CraftWindow", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "StoryNpcs", "TownReact", "LightCap", "FirstSteps", "FountainFx", "EggFx", "WeatherFx", "SkillBar", "QuickSlots", "BuffBar", "WeaponPose", "LandShadow", "SkillFx", "Audio" }
 
 local C = {}
 for _, name in ORDER do

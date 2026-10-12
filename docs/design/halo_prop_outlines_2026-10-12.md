@@ -3,7 +3,7 @@
 사용자 결정 SPEC A23-139: 소품 바깥선 = 얇은 선(0.035칸), 기본 B(모든 파트 그림자) 위에 뒤집힌 껍데기 메시. 디자인 검수 10/12: 껍데기는 바깥 실루엣 + 큰 덩어리만(가장 작은 변 0.12칸 미만·가장 큰 변 0.3칸 미만 파트 = 판 줄·작은 띠·창 테·작은 공 빼기), 거리 끄기는 아직 안 함.
 
 - 만드는 법: `blender --background --factory-startup --python tools/prop_kit_bake.py -- build/prop_kit_hull035 build/prop_kit/<키>.json --hull-only --hull-t 0.035 --hull-min 0.12 --hull-big 0.3 [--preview]`
-- 파일: `build/prop_kit_hull035/<키>_D2_035.obj` (삼각형만, Roblox 축 = Y 위·앞 -Z, 1 = 1칸, 키트 원점 기준, 법선은 일부러 안쪽) + `<키>_D2_035.json`(D2_center_roblox = 상자 중심). 놓기: MeshPart.CFrame = 키트 피벗 × CFrame.new(상자 중심), SmoothPlastic (74,50,36), CastShadow·CanCollide·CanQuery 끔, DoubleSided 끔. 모델 안에 넣으면 ScaleTo로 같이 커짐.
+- 파일: `build/prop_kit_hull035/<키>_D2_035.obj` (삼각형만, Roblox 축 = Y 위·앞 -Z, 1 = 1칸, 키트 원점 기준, 법선은 일부러 안쪽) + `<키>_D2_035.json`(D2_center_roblox = 상자 중심). 놓기: MeshPart.CFrame = 키트 피벗 × CFrame.new(상자 중심) × **CFrame.Angles(0, math.pi, 0)** (Studio 3D 가져오기가 OBJ를 세로축 180° 돌림 — 10/12 Lantern_C·BenchB 실측, 안 돌리면 비대칭 키트는 반대쪽에 검은 복사본), SmoothPlastic (74,50,36), CastShadow·CanCollide·CanQuery 끔, DoubleSided 끔. 모델 안에 넣으면 ScaleTo로 같이 커짐.
 - 같은 키트를 여러 군데 놓아도 메시 1개를 같이 씀(마을 놓인 수와 상관없이 키트당 1개). 등불 56개 = 기둥 종류 A~E 5개.
 - 빼는 키트 2: HaloReasonHQ_PhotoDisc(바닥 원판), NEW_SteppingStones(납작한 돌) — 선이 의미 없음.
 - Tripo 메시(식물·등불 머리·종·벽등 머리·바위 등)는 tools/tripo_touchup.py에서 같은 0.035 껍데기를 붙여 한 GLB로(다음 일).

@@ -167,15 +167,19 @@ clearWideSea()
 local seaY0 = -24 -- the deep sea floor (dark basalt)
 -- sea tiers from halo_blockout.py: 0 deep, 1 sand shelf off the north beach, 2 cliff foot, 3 the ring's rock rim (dry, just
 -- above the water), 4 nothing (outside the ring the islands float: no water, no base)
-local SEA_FLOOR = { [0] = { -24, Enum.Material.Basalt }, [1] = { -6, Enum.Material.Sand }, [2] = { -14, Enum.Material.Basalt },
-	[3] = { 1.6, Enum.Material.Rock } }
+-- 5단계 10/12 ④: the ring water is 12 deep (was 24): at a distance the coarse terrain LOD showed it through the 16-stud rim
+-- as blue dots. The rim (3) and its outcrops (5, below the rim top, uneven) are rock from their top (Limestone ->
+-- Sandstone -> Rock going down, like the whole underside; Sandstone alone read dark brown in C2c)
+local SEA_FLOOR = { [0] = { -12, Enum.Material.Basalt }, [1] = { -6, Enum.Material.Sand }, [2] = { -10, Enum.Material.Basalt },
+	[3] = { 1.6, Enum.Material.Limestone }, [5] = { -4, Enum.Material.Limestone } }
 -- 2차 10/11 (검수: from the side the sea ring hung as a blue water wall): the rim is 4 cells wide (2 showed LOD holes), stands 1.8..4.8 above the
 -- water (uneven per cell) and its rock goes down past the sea floor into the underside, so the water ends inside rock
-local RIM_DOWN = seaY0 - 6
+local RIM_DOWN = -18 -- 5단계 10/12: 6 under the 12-deep ring water (was -30 for the 24-deep water: from afar the island
+-- edge was one flat slab); the shore land rock in halo_blockout.py reaches RIM_DOWN + 4 (RING_DOWN there)
 local A = D.alph
 local idx = {}
 for i = 1, #A do idx[string.sub(A, i, i)] = i - 1 end
-local VY0, VY1 = -232, 96 -- -232: the deepest underside spike (ground ~ 0, depth <= 216, 2차 10/11) stays inside
+local VY0, VY1 = -304, 96 -- -304: the deepest underside spike (ground <= 30, depth <= 288 since 10/12) stays inside
 local NY = (VY1 - VY0) / 4
 local NX, NZ = D.cols, D.rows
 local zMin = D.z0 - NZ * D.cell
@@ -207,9 +211,13 @@ for ix = 1, NX do
 				land, top, wtop = VY0 - 8, Rock, nil -- nothing
 				und = 0
 			else
-				land, top, wtop = tier[1] - SURF, tier[2], (k ~= 3) and WATER_TOP or nil
+				land, top, wtop = tier[1] - SURF, tier[2], (k ~= 3 and k ~= 5) and WATER_TOP or nil -- rim + outcrops dry
 				if k == 3 then land += ((ix * 7 + iz * 13) % 4) * 1.0 end -- uneven rocky top
-				und = land - RIM_DOWN + und -- every ring cell (water floor or rim) goes down past the sea floor
+				if k == 5 then
+					land -= ((ix * 11 + iz * 5) % 6) * 4.0 -- outcrop tops 4..24 under the water line (ledges at uneven heights)
+				else
+					und = land - RIM_DOWN + und -- every ring cell (water floor or rim) goes down past the sea floor
+				end
 			end
 		else
 			local y = idx[string.sub(D.h[r], ix, ix)] - D.hoff
@@ -223,16 +231,32 @@ for ix = 1, NX do
 		end
 		-- solid from `bottom` up to `land`: the SURF rule is not applied to the underside (hidden, <= 2 studs off is fine)
 		local bottom = math.max(land - math.max(und, 4), VY0)
+		local band = false -- the rim (3) and its outcrops (5): rock right from their top
+		if m == "s" then
+			local k = idx[string.sub(D.h[r], ix, ix)]
+			band = k == 3 or k == 5
+		end
 		for iy = 1, NY do
 			local yb = VY0 + (iy - 1) * 4
 			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
 			if lo > 0 then
-				if yb + 4 > land - 7 then -- 디자인 검수 10/11 (h_05): top material 2 voxels deep; with 1 the Rock under a partly filled
-					mx[iy][iz] = top            -- top voxel showed through as dark brown patches on the slopes
-				elseif yb < bottom + 4 then
-					mx[iy][iz] = Basalt -- the lowest 1-2 voxels
-				else
-					mx[iy][iz] = Rock
+				-- 10/12: 4 voxels deep (was 2): slopes / coarse terrain detail still showed the rock under the grass
+				if yb + 4 > land - 15 and not band then -- 디자인 검수 10/11 (h_05): top material deep; with 1 the Rock under
+					mx[iy][iz] = top            -- a partly filled top voxel showed through as dark brown patches on the slopes
+				else -- 디자인 검수 10/12 ④: one rock mass, lighter at the top: Limestone -> Sandstone -> Rock going down (the rim and
+					-- its outcrops from their top), the borders shaken per column so the bands do not run as straight lines
+					-- 10/12 photo: inland the light subsurface showed through the grass slopes as pale cracked patches (terrain
+					-- blending reaches past the 2 top voxels) -> inland ground keeps Rock under it down to y -8
+					local j = ((ix * 13 + iz * 7) % 5) * 2
+					if not band and m ~= "s" and yb > -8 then
+						mx[iy][iz] = Rock
+					elseif yb >= -26 + j then
+						mx[iy][iz] = Enum.Material.Limestone
+					elseif yb >= -64 + j * 2 then
+						mx[iy][iz] = Enum.Material.Sandstone
+					else
+						mx[iy][iz] = Rock
+					end
 				end
 				ox[iy][iz] = lo
 			elseif wtop and yb >= land and wtop - SURF > yb then -- water only above the ground, never under the hanging rock

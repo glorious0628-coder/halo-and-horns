@@ -5901,21 +5901,24 @@ Config.ClassGrips = {
 	-- Light Mage: the staff upright at the side, the left palm up in front of the chest
 	-- 검수 10/11 + grip_reference §1: the staff stands upright at the side, close to the body (OneHand: the right hand placed
 	-- from the staff, WeaponPose; studs in UpperTorso space), held a little above its middle (CharacterVisuals staffLow)
+	-- 최종 검수 10/12 (the staff held lower, grip_reference §5-6): the hand comes down from the chest (2.9 studs) as far as
+	-- the wrist allows - a staff upright in a fist needs the forearm near level, each 10 degrees it drops bends the wrist
+	-- 10 degrees towards the thumb (normal 15 .. 25): the hand out of the torso at the side, a little ahead, the elbow
+	-- back (Pole). Light 2.71, Alchemist 2.66, Dark 2.56 over the ground (the Dark Mage's staff leans 11 degrees)
 	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) },
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
 	-- Dark Mage: the crooked staff slanted forward, a little hunched, the left fingers down
 	-- 검수 10/11 main photo: the free left hand floated out at the side -> on the hip like the artisans (OffHand)
 	-- 게임성 검수 10/11: Waist was +8 = leaning BACK (this table's sign) against the "hunched" note -> -8 (leaning in)
 	Mage_Horns = { Weapon = "CrookStaff", Walk = 0.6, Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.05, -0.35, -0.65), Aim = Vector3.new(0, 1, -0.2) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.65, -0.8), Aim = Vector3.new(0, 1, -0.2), Pole = Vector3.new(0.3, -0.4, 0.6) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
-	-- Alchemist: a round flask held up in the right hand (it throws with it; the staff aim of the Mage clips stays right-
-	-- handed), the left hand on the hip
-	-- 검수 10/11: the flask held by its neck in front of the chest, upright (OneHand; CharacterVisuals SHAPES.Flask).
-	-- 게임성 검수 10/11: the elbow bends down and out (Pole) - the default bend tucked the upper arm into the side
-	Mage_Neutral = { Weapon = "Flask", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(0.55, -0.05, -0.9), Aim = Vector3.new(0, 1, 0), Pole = Vector3.new(1, -0.8, 0) },
+	-- Alchemist: 최종 검수 10/12 (the approved 2D: a staff with a flask, CharacterVisuals SHAPES.FlaskStaff) held like the
+	-- mages' staffs at the side, nearly upright (6 degrees), the left hand on the hip; it throws with the right hand (the
+	-- Mage clips stay right-handed)
+	Mage_Neutral = { Weapon = "FlaskStaff", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
+		OneHand = { Hilt = Vector3.new(1.4, -0.55, -0.8), Aim = Vector3.new(0, 1, -0.1), Pole = Vector3.new(0.3, -0.4, 0.6) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
@@ -6041,6 +6044,12 @@ Config.UIArt = {
 		CraftIngot = { Id = "rbxassetid://133966322294546", Size = Vector2.new(512, 512) },
 		IconCrownDust = { Id = "rbxassetid://130666131385080", Size = Vector2.new(512, 512) },
 		IconGlowcap = { Id = "rbxassetid://118269985242078", Size = Vector2.new(512, 512) },
+		-- round 3 (이미지 개발 2026-10-12, 디자인 검수 pass): pet treat + the four tonics
+		IconPetTreat = { Id = "rbxassetid://109038216387583", Size = Vector2.new(512, 512) },
+		IconMightTonic = { Id = "rbxassetid://82167218233168", Size = Vector2.new(512, 512) },
+		IconGuardTonic = { Id = "rbxassetid://113383235344315", Size = Vector2.new(512, 512) },
+		IconLuckyTonic = { Id = "rbxassetid://124851169351640", Size = Vector2.new(512, 512) },
+		IconWisdomTonic = { Id = "rbxassetid://131384631272950", Size = Vector2.new(512, 512) },
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
 		IconAttack = { Id = "rbxassetid://74944938867654", Size = Vector2.new(512, 512) }, -- Firefly sword (bundle 5)
 		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
@@ -6457,6 +6466,7 @@ Config.UIArt = {
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
 		EmoAngry = { Id = "rbxassetid://79994000943963", Size = Vector2.new(512, 512) },
 		EmoStress = { Id = "rbxassetid://132610409379166", Size = Vector2.new(512, 512) },
+		EmoGG = { Id = "rbxassetid://127627433457825", Size = Vector2.new(512, 512) }, -- speech bubble "GG" + stars (이미지 생성 2, 디자인 검수 pass 10/12)
 		Weapon_Warrior_T1 = { Id = "rbxassetid://128452607217223", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T2 = { Id = "rbxassetid://115882263046090", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T3 = { Id = "rbxassetid://99916196093265", Size = Vector2.new(512, 512) }, -- 그림체 #28: the approved b1 master (navy rim, blue grip)

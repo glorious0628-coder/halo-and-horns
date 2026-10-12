@@ -5,6 +5,8 @@
 
 **사용자 지시(10/12, 최종 검수 전달): 큰 리뷰·반박 검토 = `py tools/api_agent.py` 읽기 모드**(`--make-worktree <시험 병합 커밋> --model opus --max-usd 2~3`, 프롬프트는 scratchpad review_*.md 형식: 확인한 것/그럴 수 있는 것 + 파일:줄 + 장면). 앱 세션은 지휘·시험 sweep·짧은 확인. 남은 API 약 $85. 개발 1~4에도 '큰 코드는 API 쓰기 모드 먼저' 전달함.
 
+**병합 알림 받으면 확인:** `git merge-base --is-ancestor <가지 끝> origin/main` — 10/12 dev4-tonics 병합 5db4018e가 push 거절로 main에 안 들어갔는데 상태 파일만 올라간 적 있음(최종 검수에 알림, 다시 병합 대상 6867e71f).
+
 ## main에 병합됨 (지난밤까지 + 오늘)
 지난밤 목록 + fix/egg-mine, spawnclear-rim(+town_quests 정규식), imgdev-icons1, fix/pvp-toast, fix/staff-slope-hero. 메인 반영 1 사진: spawn probe 프롭 안 0·빈 시도 비율이 내 오프라인 실측과 몇 % 안, PvP 카드·Hero 자물쇠·지팡이 평지/경사 OK.
 
@@ -20,7 +22,11 @@
 - A23-130: 무법자 주 시작 한 줄, 첫 PvP 카드 뜰 땐 'PvP zone!' 건너뜀, 남의 무기 자랑 배너·사이렌 칩·첫 10분 줄은 그대로.
 - 망치질: CraftStrike(Id, i, ms) 두드림마다, 공용 CraftMini, 두드림 키 = 점프 요청.
 
+## A23-141 거위 광장 가지 오면 볼 것(최종 검수 요청)
+못 들어가는 때(죽음·괴수·원한 자루·PvP 10초 안 때림/맞음), 돌아가는 자리(누른 자리, 없거나 위험하면 진영 마을 시작점), 판 끝 자동 귀환·Leave, 인원 기준 = 거위 광장 안 사람(협동 목표·H·한 편 안 옴·MinDelivered), 교차로 광장에 거위·알·막대 0, 자동 전투 멈춤/복원, 장인 입장(알 바로 가방), 같은 서버·저장 넘김 없음. 서버 = 개발 2(dev2_golden_egg 위), 화면 = 개발 1.
+
 ## 기다림
+- api/dev3-gear 고친 커밋(GearMultsOf 지키기 → test_owner_restore) → 그다음 dev3-fame(⑦ 명성, 주간 상한 100).
 - 개발 3 ⑥ 장비 칸, 개발 4 다음 화면, 개발 1 다음 가지, 개발 2 C1(AddSpare/SpareRoom·저장 v4·보스 재료).
 - 월드 쪽(최종 검수 경로): 새 빛 마을 계단·바닥이 다른 폴더면 WalkGround 태그 또는 Decor.*Props 이름 규칙.
 

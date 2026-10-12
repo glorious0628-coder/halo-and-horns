@@ -528,8 +528,13 @@ elif "dome" in PR:
             if d.get("paint"):
                 # a painted dome (the Bakery's brick dome): the clean lathe takes Tripo's own paint from the nearest point
                 # (bricks, white stone bands), no exact ribs (the runner skips piece_fix for it: fix_shape "lathe")
-                mp_ = proj_bake.bake(dl, proj_bake.Source(ps), size=d.get("size", 1024), ray=None, relief=False)
-                if d.get("profile_from"):
+                if d.get("paint") == "bricks":           # 디자인 검수 10/12: clean bricks, not Tripo's streaky paint
+                    mp_ = proj_bake.brick_maps(prof, k, size=d.get("size", 1024), course=d.get("course_studs", 0.42),
+                                               brick=d.get("brick_studs", 0.85), tones=d.get("tones", ((181, 94, 57), (214, 117, 67), (234, 138, 85))),
+                                               mortar_rgb=d.get("mortar", (250, 232, 220)))
+                else:
+                    mp_ = proj_bake.bake(dl, proj_bake.Source(ps), size=d.get("size", 1024), ray=None, relief=False)
+                if d.get("profile_from") and d.get("paint") != "bricks":
                     # the straight foot band took smeared paint from Tripo's messy foot: repeat the brick courses just
                     # above it downwards (lathe UV: v = 0.01 + 0.98 * 0.92 * arc / total arc)
                     arc_ = [0.0]
@@ -551,8 +556,9 @@ elif "dome" in PR:
                     bpy.data.objects.remove(o)
                 ps = [dl]
                 M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
-                rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, foot band %.2f, Tripo paint projected " \
-                                   "(hit %.0f %%)" % (len(prof), bc, 100 * mp_["hit"])
+                rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, foot band %.2f, %s" % (
+                    len(prof), bc, "clean running-bond bricks (2D colours, cream joints)" if d.get("paint") == "bricks"
+                    else "Tripo paint projected (hit %.0f %%)" % (100 * mp_["hit"]))
             else:
                 # ribs: as many as the spec says (the 2D), turned to where Tripo's dark rib lines are (mid height)
                 spec_top = json.load(open(os.path.join(ROOT, "tools", "house_specs", NAME + ".json"), encoding="utf-8")).get("top", {})
@@ -1632,6 +1638,63 @@ if "roofglass" in PR:
                                          "gold bars %.2f, glass panes, finials" % (R_["type"], W_, D_, bw)}
         print("[deco] roofglass", REPORT["pieces"]["RoofGlass"], flush=True)
 
+# ------------------------------------------------------------------ half dome (08 porch): exact half lathe + Tripo paint
+if "halfdome" in PR:
+    # Tripo's porch half dome (against the wall over the portico) measured: its outline r(z) from the faces in front of the
+    # wall, turned as a half lathe (the flat side on the wall plane) and painted from Tripo's nearest point; slot = the
+    # skeleton's PorchDome (R, h, base on the entablature, flat side on YF)
+    Hd = PR["halfdome"]
+    ps = cut("HalfTmp", dict(Hd, no_white=True, white_below=Hd.get("white_below", Hd["z"][0] + 0.5)))
+    if ps:
+        cxh, yw = Hd["c"][0], Hd["wall_y"]
+        P = allv(ps)
+        zb = Hd["z"][0]
+        apply(ps, Matrix.Translation((-cxh, -yw, -zb)))
+        Q = allv(ps)
+        Q = Q[Q[:, 1] > 0.05]
+        rr = np.hypot(Q[:, 0], Q[:, 1])
+        zt = float(Q[:, 2].max())
+        edges = np.linspace(0, zt, 21)
+        prof = []
+        for b in range(20):
+            sel = (Q[:, 2] >= edges[b]) & (Q[:, 2] < edges[b + 1] + 1e-9)
+            if sel.sum() >= 5:
+                prof.append((float(np.percentile(rr[sel], 92)), float((edges[b] + edges[b + 1]) / 2)))
+        prof = [(prof[0][0], 0.0)] + prof + [(0.0, zt)]
+        # half lathe: angles 0..pi (x = r cos, y = r sin >= 0, so the flat side is the wall plane y = 0)
+        seg = 24
+        me = bpy.data.meshes.new(NAME + "_PorchDome")
+        bm = bmesh.new()
+        uvl = bm.loops.layers.uv.new("UVMap")
+        rings = [[bm.verts.new((r * math.cos(math.pi * q / seg), r * math.sin(math.pi * q / seg), z)) for q in range(seg + 1)]
+                 for r, z in prof]
+        for j in range(len(prof) - 1):
+            for q in range(seg):
+                f = bm.faces.new((rings[j][q], rings[j][q + 1], rings[j + 1][q + 1], rings[j + 1][q]))
+                for lp, (u, v) in zip(f.loops, ((q, j), (q + 1, j), (q + 1, j + 1), (q, j + 1))):
+                    lp[uvl].uv = (0.01 + 0.98 * u / seg, 0.01 + 0.98 * v / (len(prof) - 1))
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        bm.to_mesh(me)
+        bm.free()
+        hd = bpy.data.objects.new(NAME + "_PorchDome", me)
+        bpy.context.scene.collection.objects.link(hd)
+        me.shade_smooth()
+        mp_ = proj_bake.bake(hd, proj_bake.Source(ps), size=Hd.get("size", 512), ray=None, relief=False)
+        hd.data.materials.append(proj_bake.save_maps(mp_, WORK, NAME + "_PorchDome"))
+        for o in ps:
+            bpy.data.objects.remove(o)
+        sl = SLOTS["PorchDome"]
+        R0 = prof[0][0]
+        kx = sl["R"] / R0
+        kz = sl["h"] / zt
+        hd.data.transform(Matrix.Translation(sl["pos"]) @ Matrix.Diagonal((kx, kx, kz, 1.0)))
+        out_objs.append(hd)
+        REPORT["pieces"]["PorchDome"] = {"fix": "half lathe (24 x %d rings) from the Tripo half dome outline in front of the wall "
+                                         "(y %.2f), Tripo paint projected (hit %.0f %%), scaled to the slot R %.2f h %.2f"
+                                         % (len(prof), yw, 100 * mp_["hit"], sl["R"], sl["h"])}
+        print("[deco] halfdome", REPORT["pieces"]["PorchDome"], flush=True)
+
 # ------------------------------------------------------------------ cloth canopy (Juice roof parasol): exact
 if "canopy" in PR:
     # Tripo's striped square roof canopy measured (eave box, peak, valance): a square pyramid split into stripes per side
@@ -1653,21 +1716,44 @@ if "canopy" in PR:
             ta, tb = j / ns, (j + 1) / ns
             pa = (x0_ + (x1_ - x0_) * ta, y0_ + (y1_ - y0_) * ta, ze)
             pb = (x0_ + (x1_ - x0_) * tb, y0_ + (y1_ - y0_) * tb, ze)
-            bm_ = bms[(k_ + j) % 2]
-            va, vb, vc = bm_.verts.new(pa), bm_.verts.new(pb), bm_.verts.new(apex)
-            bm_.faces.new((va, vb, vc))
+            # 사용자 10/07: no stripes fanning from a centre (ray-burst) - bands parallel to the eave instead: from the
+            # apex down, band k of len(BANDS) gets cloth BANDS[k] (0 = colour A, 1 = colour B); the valance is BANDS_V
+            bands = C_.get("bands", [1, 0, 1])
+            nb_ = len(bands)
+            for kb in range(nb_):
+                f0, f1 = kb / nb_, (kb + 1) / nb_              # 0 = apex, 1 = eave
+                lerp = lambda q, f: (apex[0] + (q[0] - apex[0]) * f, apex[1] + (q[1] - apex[1]) * f, apex[2] + (q[2] - apex[2]) * f)
+                bmb = bms[bands[kb]]
+                if kb == 0:
+                    bmb.faces.new((bmb.verts.new(lerp(pa, f1)), bmb.verts.new(lerp(pb, f1)), bmb.verts.new(apex)))
+                else:
+                    bmb.faces.new((bmb.verts.new(lerp(pa, f1)), bmb.verts.new(lerp(pb, f1)), bmb.verts.new(lerp(pb, f0)),
+                                   bmb.verts.new(lerp(pa, f0))))
+            bm_ = bms[bands[-1]]                              # the eave strip continues the last band
+            vo_ = C_.get("valance_out", 0.02)
+            if vo_ > 0.05:                                 # a flat eave strip from the post line out to the valance top
+                ta_ = pa[0] + nx_ * vo_ - (x1_ - x0_) / ln_ * (vo_ if j == 0 else 0), pa[1] + ny_ * vo_ - (y1_ - y0_) / ln_ * (vo_ if j == 0 else 0), ze
+                tb_ = pb[0] + nx_ * vo_ + (x1_ - x0_) / ln_ * (vo_ if j == ns - 1 else 0), pb[1] + ny_ * vo_ + (y1_ - y0_) / ln_ * (vo_ if j == ns - 1 else 0), ze
+                bm_.faces.new((bm_.verts.new(pa), bm_.verts.new(ta_), bm_.verts.new(tb_), bm_.verts.new(pb)))
             # valance: a flat band below the eave with a half-round scallop, pushed out 0.02
             seg = 8
-            pts = [(pa[0] + nx_ * 0.02, pa[1] + ny_ * 0.02, ze), (pb[0] + nx_ * 0.02, pb[1] + ny_ * 0.02, ze)]
-            r_ = math.hypot(pb[0] - pa[0], pb[1] - pa[1]) / 2
-            mx_, my_ = (pa[0] + pb[0]) / 2 + nx_ * 0.02, (pa[1] + pb[1]) / 2 + ny_ * 0.02
-            ux_, uy_ = (pb[0] - pa[0]) / (2 * r_), (pb[1] - pa[1]) / (2 * r_)
+            vo = C_.get("valance_out", 0.02)
+            ex_, ey_ = (x1_ - x0_) / ln_, (y1_ - y0_) / ln_
+            ea = vo if (j == 0 and vo > 0.05) else 0.0
+            eb = vo if (j == ns - 1 and vo > 0.05) else 0.0
+            qa = (pa[0] + nx_ * vo - ex_ * ea, pa[1] + ny_ * vo - ey_ * ea, ze)
+            qb = (pb[0] + nx_ * vo + ex_ * eb, pb[1] + ny_ * vo + ey_ * eb, ze)
+            pts = [qa, qb]
+            r_ = math.hypot(qb[0] - qa[0], qb[1] - qa[1]) / 2
+            mx_, my_ = (qa[0] + qb[0]) / 2, (qa[1] + qb[1]) / 2
+            ux_, uy_ = (qb[0] - qa[0]) / (2 * r_), (qb[1] - qa[1]) / (2 * r_)
             for q in range(seg + 1):
                 a_ = math.pi * q / seg
                 pts.append((mx_ + ux_ * r_ * math.cos(a_), my_ + uy_ * r_ * math.cos(a_), ze - vh - r_ * 0.55 * math.sin(a_)))
-            vs_ = [bm_.verts.new(q) for q in pts]
+            bmv = bms[C_.get("band_valance", 0)]
+            vs_ = [bmv.verts.new(q) for q in pts]
             try:
-                bm_.faces.new(vs_)
+                bmv.faces.new(vs_)
             except ValueError:
                 pass
         k_ += ns
@@ -1691,7 +1777,7 @@ if "canopy" in PR:
         bm2_.free()
         objs_c.append(o_)
     out_objs += objs_c
-    REPORT["pieces"]["Canopy"] = {"fix": "exact square canopy %.2f x %.2f, eave %.2f, peak +%.2f, %d stripes a side, scalloped valance %.2f "
+    REPORT["pieces"]["Canopy"] = {"fix": "exact square canopy %.2f x %.2f, eave %.2f, peak +%.2f, %d panels a side in bands parallel to the eave (no ray-burst), scalloped valance %.2f "
                                   "(Tripo measured), colours %s" % (W_, D_, ze, hp, ns, vh, cols_)}
     print("[deco] canopy", REPORT["pieces"]["Canopy"], flush=True)
 
