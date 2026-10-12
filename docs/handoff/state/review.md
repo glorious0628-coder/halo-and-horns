@@ -166,5 +166,7 @@
 - **main = 0aa6a0b7 이후 문서 커밋들.** 오늘 밤 병합: 310abb37(무기 들기 Tool + Leave 폭, 메인 사진 통과), 0aa6a0b7(도감 카드 서버 + 저장 v5, 메인 Play 통과). 메인 Studio 저장 안 함(Save As 미룸, 18:41 build 판 = place/ + 새 스크립트 5개 = 안전 → 다음에 열고 sync 뒤 Save As).
 - **각 세션 state 파일**에 어디까지 했는지 적게 함(img2·img3·blender·design_review·mainapply·dev1·dev2). 아침에 먼저 그 파일들을 읽고 이어서.
 - (02:10) 7개 세션 정리 끝. Studio 창 제어(robloxstudiobeta.exe) 허용이 두 번 다 "거부"(두 번째는 자동 거부로 보임) → 3D 가져오기·Ctrl+S 못 함. **WorldKit은 저장 안 됨** — 백업 build/wk_backup/20261013_020933(59 루트 + 지형, 13 MB) → 켠 뒤 WorldKit 열고 `wk_backup.py load 20261013_020933 --replace --terrain` 먼저(이미지 생성 3, state/img3.md). Tripo 잔액 9,385, 도는 일 없음, Blender 손보기 다음 첫 일 = 9종 + WingR을 이미지 생성 3에 넘기기.
+- (08:40 10/13) 사용자 "이어서, 몇 시간 자리 비움, 내 허락 필요한 건 미뤄줘" → 이미지 생성 2·3·Blender 손보기·디자인 검수에 이어서 보냄(이미지 생성 3: WorldKit 백업 되살리기 → GLB는 build/import3d에 모으기 + SA 올리기까지 → 소품 4면). 개발 1·2·메인 반영 1 = 대기(메시지 안 보냄).
+- **3D 올리기 자동화 제안(사용자 OK 필요, 미룸):** Open Cloud Assets API는 .glb/.fbx(≤20 MB)를 Model로 올림 → Studio 클릭 없이 `InsertService:LoadAsset(id)`로 MeshId. 도구 `tools/roblox_asset_upload.py`(아직 안 돌림). 사용자 일: Creator Hub → Open Cloud → API Keys → 새 키(Access Permissions = Assets Read+Write) → `.env`에 `ROBLOX_API_KEY=`·`ROBLOX_CREATOR_ID=` 직접 붙여 넣기(채팅에 쓰지 않음) + 첫 업로드 OK.
 - **사용자 일(미룸):** WorldKit 3D 가져오기(build/import3d 화분 3개 — 또는 Studio 제어 허용 창 문제 해결), 메인 Save As 허용(또는 직접), Blender 손보기 창 보이게(매직 브러시 5곳), 게임 패스 만들기, `_지울것` 폴더, Tripo 계정 바꾸기(잔액 < 135 때).
 - Tripo 잔액 12,335(22:30, 꽃 화분 5종 흰 모델 500점 시작). 빛 마을 남은 것 ≈ 소품 62 + 덩어리 43 ≈ 105개 × 135 ≈ 14,200 > 잔액 → 빛 마을 끝 무렵 멈춤 예상.
