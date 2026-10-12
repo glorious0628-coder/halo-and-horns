@@ -1291,7 +1291,7 @@ def rack_shield_sword():
         ball("ShieldBoss%d" % k, 0.44, *vadd(c, vmul(nrm, 0.08)), "gold", cc=False)
 
 
-@kit("Town_Halo_Fountain3", 12.85, "art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png",
+@kit("Town_Halo_Fountain3", 12.85, "art/out/s2/noshadow/Town_Halo_Fountain3_front_ns.png",
      note="keep the model name Town_Halo_Fountain3: FountainFx draws the water by that name (fractions of 16 x 16 x 12.85)")
 def fountain3():
     H = 12.85

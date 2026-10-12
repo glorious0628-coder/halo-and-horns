@@ -8611,5 +8611,29 @@
   },
   "note": "그림자 없는 4면(최종 검수 통과 2026-10-12, SPEC A23-150). 사용자 승인 주민(우편배달 소년 m1) 그대로.",
   "deleted": "옛 4면(npc2_hq/NPC_HaloMailBoy_*_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "Halo_Statue": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/Halo_Statue_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/Halo_Statue_front_ns.png",
+   "back": "art/out/s2/noshadow/Halo_Statue_back_ns.png",
+   "left": "art/out/s2/noshadow/Halo_Statue_left_ns.png",
+   "right": "art/out/s2/noshadow/Halo_Statue_right_ns.png"
+  },
+  "note": "그림자 없는 4면(최종 검수 통과 2026-10-12 밤, SPEC A23-150) → Blender 손보기 Tripo 스마트 메시.",
+  "deleted": "옛 2D(art/out/s2/halo/HaloProp_Statue_{front,back,left,right}_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "Town_Halo_Fountain3": {
+  "status": "approved",
+  "file": "art/out/s2/noshadow/Town_Halo_Fountain3_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/Town_Halo_Fountain3_front_ns.png",
+   "back": "art/out/s2/noshadow/Town_Halo_Fountain3_back_ns.png",
+   "left": "art/out/s2/noshadow/Town_Halo_Fountain3_left_ns.png",
+   "right": "art/out/s2/noshadow/Town_Halo_Fountain3_right_ns.png"
+  },
+  "note": "그림자 없는 4면(최종 검수 통과 2026-10-12 밤, SPEC A23-150) → Blender 손보기 Tripo 스마트 메시. right = left 좌우 뒤집음(원래 right는 낮은 시점이라 다른 3면과 높이가 달랐음).",
+  "deleted": "옛 2D(art/out/s2/halo/HaloProp_Fountain_front_HQ_src.png) deleted 10/12 noshadow (최종 검수)"
  }
 }
