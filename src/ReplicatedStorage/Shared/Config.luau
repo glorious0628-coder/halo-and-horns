@@ -1541,7 +1541,8 @@ Config.Goose.Egg = {
 	MinDelivered = 2, MinPoints = 20, MinCrowd = 1, CrowdFrom = 16,
 	CoopPerPerson = 80, -- co-op target = CoopPerPerson x the co-op side's ring entrants (min 1)
 	HMax = 2, -- the fewer side's points x clamp(sqrt(more N / fewer N), 1, HMax); N = average ring presence
-	Crown = { At = 50, Min = 50, Share = 0.15, Gold = 4, Overtime = 8 }, -- crown = max(Min, Share x both totals)
+	-- crown = max(Min, Share x both totals), laid anywhere on the west half of the egg area (x < the fountain's)
+	Crown = { At = 50, Min = 50, Share = 0.15, Gold = 4, Overtime = 8 },
 	Naps = { 15, 30, 45 }, NapTime = 2,
 	Chases = { 22, 38 }, ChaseTime = 4, ChaseAlert = 1, ChaseSpeed = 17, ChaseMinSlots = 2, ChaseHit = 3, ChaseBounce = { 6, 8 },
 	Walk = { Radius = 18, Lap = 24, MinFountain = 16, MaxRing = 46 }, -- the goose's circle (s per lap) and its limits
