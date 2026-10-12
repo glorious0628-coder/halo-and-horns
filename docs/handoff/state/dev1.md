@@ -1,4 +1,4 @@
-# 게임성 개발 1 — 인계 상태 (2026-10-13, staff-hip 보고·BB8 API job 중)
+# 게임성 개발 1 — 인계 상태 (2026-10-13, BB8 보고·거위 광장 API job 중)
 
 클라 코드만(창·HUD·Config·Fx). 메인 Studio는 건드리지 않음(sync·사진 = 메인 반영 1). 사용자에게 직접 묻지 않음. 보고는 send_message, 묶음마다 한 번 → 턴 끝내기.
 - **보고처(사용자 10/11 변경):** 가지 push 보고 = **'게임성 검수'** `local_e148c3c7-2703-4fd7-8df3-aae3998d5de7`(시험·리뷰 → "병합 가능"이면 최종 검수가 병합). 화면 조작 승인·사용자 질문 = **'최종 검수'**(옛 '모든 것 검수') `local_d522c0f1-07cf-4db1-b178-5f335a56db7c`. 개발 2 = `local_8434905b-1b7a-44cb-b4c0-abce17954dac`. (id는 list_sessions로 다시 확인)
@@ -43,6 +43,9 @@
 
    - **a76e7564** (612274b1 위, 최종 검수 API 검토 MAJOR): 7단계 지팡이 1.008H → LEN.Staff 위 끝 4.45(0.9985H), 시험 REACH Staff (0.85, 1.0). 게임성 검수에 보고.
 16. **BB8 내 캐릭터 창 = API 쓰기 job `dev1_character_ui`**(가지 api/dev1-character-ui, sonnet $6, 프롬프트 scratchpad api/bb8_character_ui.md — 세션 끝나면 사라짐; 결과 build/api_agent/dev1_character_ui/result.md). 게임성 검수 10/12: 큰 코드는 API 쓰기 모드 먼저(남은 약 $85, 한도 꼭). 개발 4와 약속: 창 안 빈 Frame 'EquipSlots' 전체를 개발 4에게 — C.GearSlots.Build(frame, { Refresh = fn }) 있으면 6칸(Weapon·Armor·Ring / Pet + Pet Armor·Pet Acc) 전부 개발 4가 그림, 없을 때만 내 임시 무기·펫 칸; 열 때마다 C.GearSlots.Refresh(). job 프롬프트는 무기·펫 칸을 내가 그리는 판이라 끝나면 그 위에 이 규칙으로 고쳐 해시를 개발 4·게임성 검수에. **결과:** job 1($6) = CharacterUI.luau 초안만(컴파일 OK, 미연결·시험 없음, ca33f568) → job 2 `dev1_character_ui_2`(가지 api/dev1-character-ui-2, $6, 프롬프트 scratchpad api/bb8_finish.md): GearSlots 있으면 6칸 전부 개발 4(내 칸 안 그림), ORDER 'BagUI' 다음, test_gather_view 변이, Panels Icons, tools/test_character_ui.py + fixture. 내 확인용 가지 fix/character-ui(wt_lesstext) = 초안 그대로.
+
+17. **BB8 끝 = api/dev1-character-ui-2 47dce676** (job 2 $3.2: GearSlots 있으면 6칸 다 개발 4, ORDER 'BagUI' 다음, Panels Icons, test_character_ui 129·49/49 + 관련 12개 내가 다시 돌려 통과). 게임성 검수·개발 4에 보고. fix/staff-hip는 main ecde46c6에 병합됨.
+18. **A23-141 거위 광장 화면 = API job `dev1_goose_square`**(가지 api/dev1-goose-square, $6, 프롬프트 scratchpad api/goose_square.md): Config.Goose.Square(내 것, 개발 2는 읽기), EggFx.Here/SquareButton/SquarePress/어두워짐, EventHUD Join·Leave, 알 화면·둥지/수레 표시는 InGooseSquare일 때만. 약속 docs/design/goose_square_contract_2026-10-12.md(main 8dc84f6) — 개발 2 답 기다림(원격 GooseSquare·속성 InGooseSquare·GooseJoinBlock은 Net/서버 = 개발 2).
 
 ## 기다리는 것
 - **BB8 job 결과(16번)** → 검토·EquipSlots 규칙 고침 → 개발 4·게임성 검수. 개발 2 황금 알 서버(api/dev2-golden-egg) 해시 오면 EggFx 깃털·장인 줍기·Bring 2 eggs 맞춤 화면 가지.
