@@ -6466,6 +6466,7 @@ Config.UIArt = {
 		EmoDizzy = { Id = "rbxassetid://117032268995160", Size = Vector2.new(512, 512) },
 		EmoAngry = { Id = "rbxassetid://79994000943963", Size = Vector2.new(512, 512) },
 		EmoStress = { Id = "rbxassetid://132610409379166", Size = Vector2.new(512, 512) },
+		EmoGG = { Id = "rbxassetid://127627433457825", Size = Vector2.new(512, 512) }, -- speech bubble "GG" + stars (이미지 생성 2, 디자인 검수 pass 10/12)
 		Weapon_Warrior_T1 = { Id = "rbxassetid://128452607217223", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T2 = { Id = "rbxassetid://115882263046090", Size = Vector2.new(512, 512) },
 		Weapon_Warrior_T3 = { Id = "rbxassetid://99916196093265", Size = Vector2.new(512, 512) }, -- 그림체 #28: the approved b1 master (navy rim, blue grip)
