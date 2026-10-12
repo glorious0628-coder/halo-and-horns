@@ -1050,7 +1050,8 @@ function SQ.update()
 		setVisible(btn, false)
 		return
 	end
-	local home = want.Word == "Leave" and ui.Tug or ui.GooseChip
+	-- Leave sits on the egg bar while it shows; after the round (no bar) it sits on the chip, which updateGoose keeps shown
+	local home = (want.Word == "Leave" and ui.Tug.Visible) and ui.Tug or ui.GooseChip
 	if btn.Parent ~= home then btn.Parent = home end
 	setText(SQ.Label, SQ.word(want.Word))
 	local dim = want.Dim == true
@@ -1184,9 +1185,15 @@ local function updateGoose(now)
 		setVisible(ui.Tug, false)
 		setVisible(ui.TugSub, false)
 		local nextAt = num(gsAttr("GooseNextAt", 0))
+		-- 개발 2 10/13: still in the Goose Square after the round = the chip stays for the Leave button (SQ.update)
+		local eggFx = C and C.EggFx
+		local inside = type(eggFx) == "table" and type(eggFx.Inside) == "function" and eggFx.Inside() == true
 		if nextAt > 0 then
 			setVisible(ui.GooseChip, true)
 			setText(ui.GooseChipText, string.format(TXT.GooseNext, Util.FormatTime(nextAt - now)))
+		elseif inside then
+			setVisible(ui.GooseChip, true)
+			setText(ui.GooseChipText, "")
 		else
 			setVisible(ui.GooseChip, false)
 		end

@@ -197,7 +197,9 @@ attrs.InGooseSquare = true
 -- SquareButton table
 local function btn(ctx) return EggFx.SquareButton(ctx) end
 check(btn({ Active = false, Inside = false, Block = "", HasRemote = true }) == nil, "SquareButton: no open event = hidden")
-check(btn({ Active = false, Inside = true, HasRemote = true }) == nil, "SquareButton: inside but the event is over = hidden")
+local after = btn({ Active = false, Inside = true, HasRemote = true })
+check(after ~= nil and after.Word == "Leave" and after.Dim == false,
+	"SquareButton (개발 2 10/13): inside after the round = Leave still (a way out before / without the trip home)", after and after.Word)
 check(btn(nil) == nil and btn({}) == nil, "SquareButton: no context = hidden")
 Config.Goose.Mode = "Tug"
 check(btn({ Active = true, Inside = false, Block = "", HasRemote = true }) == nil, "SquareButton: not the Eggs mode = hidden")
@@ -412,7 +414,8 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          'pcall(kit.ArtButton, "Chip", props, SQ.press, { CornerRadius = UDim.new(0.5, 0) })' in hud and "pcall(kit.Tx, t, key)" in hud
          and "Config.Goose.Square" in hud and "e.SquareButton(e.SquareCtx())" in hud and "pcall(e.SquarePress, SQ.Word)" in hud
          and 'btn:SetAttribute("Disabled", dim)' in hud and "local dim = want.Dim == true" in hud
-         and 'local home = want.Word == "Leave" and ui.Tug or ui.GooseChip' in hud
+         and 'local home = (want.Word == "Leave" and ui.Tug.Visible) and ui.Tug or ui.GooseChip' in hud
+         and "elseif inside then\n\t\t\tsetVisible(ui.GooseChip, true)\n\t\t\tsetText(ui.GooseChipText, \"\")" in hud
          and "\tupdateGoose(now)\n\tSQ.update()\n" in hud and "SQ.build()\n\n\t-- kaiju chip" in hud
          and "V2.GooseIn = SQ.Out and 0 or" in hud, ""),
         ("QuestTarget: the goose / nest / cart target only inside the Goose Square (else none), the square's own homes first",
@@ -532,10 +535,10 @@ MUTATIONS = [
     # A23-141 Goose Square
     ("EGG", "Here() ignores InGooseSquare", "return EggFx.On() and EggFx.Inside()", "return EggFx.On()"),
     ("EGG", "Here() ignores the Eggs mode", "return EggFx.On() and EggFx.Inside()", "return EggFx.Inside()"),
-    ("EGG", "the button shows without an open event", "if type(ctx) ~= \"table\" or ctx.Active ~= true or not EggFx.On() then return nil end",
-     "if type(ctx) ~= \"table\" or not EggFx.On() then return nil end"),
-    ("EGG", "the button shows outside the Eggs mode", "or ctx.Active ~= true or not EggFx.On() then return nil end",
-     "or ctx.Active ~= true then return nil end"),
+    ("EGG", "the button shows without an open event", "\tif ctx.Active ~= true or not EggFx.On() then return nil end\n",
+     "\tif not EggFx.On() then return nil end\n"),
+    ("EGG", "the button shows outside the Eggs mode", "\tif ctx.Active ~= true or not EggFx.On() then return nil end\n",
+     "\tif ctx.Active ~= true then return nil end\n"),
     ("EGG", "a blocked Join stays bright", "Dim = noRemote or (type(ctx.Block) == \"string\" and ctx.Block ~= \"\") }", "Dim = noRemote }"),
     ("EGG", "Leave dimmed by a block", "return { Word = \"Leave\", Dim = noRemote }",
      "return { Word = \"Leave\", Dim = noRemote or (type(ctx.Block) == \"string\" and ctx.Block ~= \"\") }"),
@@ -565,7 +568,12 @@ MUTATIONS = [
     ("CONFIG", "the fade is slower", "Fade = { In = 0.25, Out = 0.35 },", "Fade = { In = 1, Out = 1 },"),
     ("HUD", "the egg bar outside the square", "if eggMode and type(eggFx.Here) == \"function\" and not eggFx.Here() then", "if false then"),
     ("HUD", "Join always bright", "local dim = want.Dim == true", "local dim = false"),
-    ("HUD", "Leave on the chip", "local home = want.Word == \"Leave\" and ui.Tug or ui.GooseChip", "local home = ui.GooseChip"),
+    ("HUD", "Leave on the chip", "local home = (want.Word == \"Leave\" and ui.Tug.Visible) and ui.Tug or ui.GooseChip", "local home = ui.GooseChip"),
+    ("HUD", "Leave on a hidden bar after the round", "local home = (want.Word == \"Leave\" and ui.Tug.Visible) and ui.Tug or ui.GooseChip",
+     "local home = want.Word == \"Leave\" and ui.Tug or ui.GooseChip"),
+    ("HUD", "the chip hides after the round while I am inside", "\t\telseif inside then\n\t\t\tsetVisible(ui.GooseChip, true)\n", "\t\telseif false then\n\t\t\tsetVisible(ui.GooseChip, true)\n"),
+    ("EGG", "Leave hidden after the round", "\tif ctx.Inside == true then return { Word = \"Leave\", Dim = noRemote } end\n\tif ctx.Active ~= true or not EggFx.On() then return nil end\n",
+     "\tif ctx.Active ~= true or not EggFx.On() then return nil end\n\tif ctx.Inside == true then return { Word = \"Leave\", Dim = noRemote } end\n"),
     ("HUD", "no button update", "\tupdateGoose(now)\n\tSQ.update()\n", "\tupdateGoose(now)\n"),
     ("QT", "the goose target in the real plaza", "\t\tif not inSquare then return nil end\n", ""),
     ("MAP", "the goose marker in the real plaza", "if gsAttr(\"GooseActive\", false) == true and gooseHere then",
