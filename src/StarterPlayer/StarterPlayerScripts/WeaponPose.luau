@@ -266,6 +266,7 @@ function WeaponPose.StaffStep(st, model)
 		if hit and (ground == nil or hit.Position.Y > ground) then ground = hit.Position.Y end
 	end
 	st.StaffFootY, st.StaffGroundY = foot.Y, ground -- (GripProbe)
+	st.StaffTilt = math.deg(math.acos(math.clamp(shaft.CFrame.UpVector.Y, -1, 1))) -- (GripProbe: the lean from upright)
 	st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, ground, T.StaffGap, model:GetAttribute("StaffCarry") == true)
 	return st.StaffLift
 end
@@ -488,8 +489,8 @@ function WeaponPose.ProbeStep(me, now)
 	-- 게임성 검수 10/13: a staff's tip against the ground under it (not the sole) and its hand lift
 	local st = S.Chars[char]
 	if st and type(st.StaffFootY) == "number" then
-		table.insert(parts, string.format("Staff tip-ground=%s lift=%.2f", type(st.StaffGroundY) == "number"
-			and string.format("%.2f", st.StaffFootY - st.StaffGroundY) or "none", tonumber(st.StaffLift) or 0))
+		table.insert(parts, string.format("Staff tip-ground=%s lift=%.2f tilt=%.0f", type(st.StaffGroundY) == "number"
+			and string.format("%.2f", st.StaffFootY - st.StaffGroundY) or "none", tonumber(st.StaffLift) or 0, tonumber(st.StaffTilt) or 0))
 	end
 	print(table.concat(parts, " | "))
 	S.Probe = nil

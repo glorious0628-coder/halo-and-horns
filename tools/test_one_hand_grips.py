@@ -58,8 +58,8 @@ FILES = {"CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau", "WP": SPS 
          "CV": ROOT / "src/ServerScriptService/CharacterVisuals.luau"}
 OUT = ROOT / "docs/art/verification_2026-10-11/offline_one_hand_grips_2026-10-11.json"
 NUM = r"(-?[\d.]+)"
-ROWS = {"Mage_Halo": {"Tilt": 5, "Staff": True}, "Mage_Horns": {"Tilt": 15, "Staff": True},
-        "Mage_Neutral": {"Tilt": 8, "Staff": True}, "Warrior_Halo": {"Tilt": None, "Sword": "Sword"},
+ROWS = {"Mage_Halo": {"Tilt": 10, "Staff": True}, "Mage_Horns": {"Tilt": 15, "Staff": True},
+        "Mage_Neutral": {"Tilt": 10, "Staff": True}, "Warrior_Halo": {"Tilt": None, "Sword": "Sword"},
         "Warrior_Horns": {"Tilt": None, "Sword": "DarkSword"}}
 # 검수 10/11 (fix/onehand review) the warriors' limits
 SWORD = {"Elev": (40, 50), "Elbow": (1.3, 1.55), "Fore": 0.4, "Hand": 0.45, "HandLen": 0.15, "Wrist": 30, "Thick": 0.21, "Upper": 0.15,
@@ -84,6 +84,8 @@ REACH = {"Sword": (0.72, 0.95), "SwordHand": (0.10, 0.22), "BladeRest": (1.3, 2.
 # thumb, flex = back / forward), the forearm / hand out of the torso
 STAFF_ROWS = ("Mage_Halo", "Mage_Horns", "Mage_Neutral")
 STAFF_POSE = {"Grip": (2.45, 2.75), "Radial": 20, "Flex": 40, "Out": 0.2}
+ORB_UP = 1.75  # studs: the hand to the orb's centre along a staff (A23-142: 0.57 x ~3.6 - half the orb)
+ORB_CLEAR = (-1.05, 1.3)  # torso space: the face's front is z -0.6, the head's side x 0.6
 WORLD_TILT = 10  # deg: a staff's lean in the world (its tilt + the row's Waist hunch) - more lay across the body (10/12 photo)
 
 
@@ -595,13 +597,20 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             out.append((f"{key}: the left hand is empty and hangs (no OffHand, no left-arm hold)",
                         "OffHand" not in r["Body"] and "Left" not in r["HoldText"], ""))
         else:
-            out.append((f"{key}: upright (tilt <= {spec['Tilt']} deg), never leaning out to the side",
-                        tilt <= spec["Tilt"] and aim[0] <= 0.05, f"{tilt:.0f} deg, x {aim[0]:.2f}"))
+            # 디자인 검수 10/12 (the orb by the face from the side): splayed 3..8 deg out, never in, never flagged far out
+            splay = math.degrees(math.atan2(aim[0], aim[1]))
+            out.append((f"{key}: upright (tilt <= {spec['Tilt']} deg), splayed out 3..8 deg (never in, never far out)",
+                        tilt <= spec["Tilt"] and 3 <= splay <= 8, f"{tilt:.0f} deg, splay {splay:.1f}"))
         if spec["Tilt"] is None:
             pass
         elif spec["Staff"]:
             out.append((f"{key}: the staff stands beside the body (hand outside the torso, the line clear of it)",
                         hilt[0] >= 0.8 and line_clear_of_torso(hilt, aim), f"{hilt}"))
+            # 디자인 검수 10/12 (staff_short_v2 side photo: the orb right beside / in front of the face): the orb (about
+            # ORB_UP along the staff over the hand) ahead of the face and outside the head - torso space z / x
+            orb = G.add(hilt, aim, ORB_UP)
+            out.append((f"{key}: 디자인 검수 10/12 the orb clears the face (ahead z <= {ORB_CLEAR[0]}, outside x >= {ORB_CLEAR[1]})",
+                        orb[2] <= ORB_CLEAR[0] and orb[0] >= ORB_CLEAR[1], f"z {orb[2]:.2f}, x {orb[0]:.2f}"))
             g0, g1 = STAFF_POSE["Grip"]
             grip_y = TORSO_ABOVE_FEET + hilt[1]
             out.append((f"{key}: 최종 검수 10/12 the hand lowered from the chest to {g0}..{g1} studs over the ground (it was 2.9)",
@@ -820,7 +829,8 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and "if hit and (ground == nil or hit.Position.Y > ground) then ground = hit.Position.Y end" in wp
          and 'st.StaffLift = WeaponPose.StaffLift(st.StaffLift, foot.Y, ground, T.StaffGap, model:GetAttribute("StaffCarry") == true)' in wp
          and "if carry == true then nextLift = math.max(nextLift, 0) end" in wp
-         and '"Staff tip-ground=%s lift=%.2f"' in wp and "st.StaffFootY - st.StaffGroundY" in wp, ""),
+         and '"Staff tip-ground=%s lift=%.2f tilt=%.0f"' in wp and "st.StaffFootY - st.StaffGroundY" in wp
+         and "st.StaffTilt = math.deg(math.acos(math.clamp(shaft.CFrame.UpVector.Y, -1, 1)))" in wp, ""),
         ("OneHand fades in with the pose weight", "local out = base:Lerp(pose[w[2]], st.W)" in body, ""),
         ("A23-128: OneHand bends the elbow to the row's Pole (else T.PoleRight)",
          'local pole = typeof(oh.Pole) == "Vector3" and oh.Pole or T.PoleRight' in body
@@ -837,7 +847,12 @@ def run(src: dict):
 
 
 MUTATIONS = [
-    ("CONFIG", "the Light Mage's staff leaning out", "Aim = Vector3.new(0, 1, -0.05), Pole", "Aim = Vector3.new(0.6, 1, -0.05), Pole"),
+    ("CONFIG", "the Light Mage's staff leaning out", "Aim = Vector3.new(0.09, 1, -0.05), Pole", "Aim = Vector3.new(0.6, 1, -0.05), Pole"),
+    # 디자인 검수 10/12 (staff_short_v2 side photo)
+    ("CONFIG", "the orb by the Light Mage's face again (the old spot)", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2), Aim = Vector3.new(0.09, 1, -0.05)",
+     "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0.09, 1, -0.05)"),
+    ("CONFIG", "the Alchemist's staff not splayed", "Aim = Vector3.new(0.09, 1, -0.1), Pole", "Aim = Vector3.new(0, 1, -0.1), Pole"),
+    ("CONFIG", "the Dark Mage's staff splayed in", "Aim = Vector3.new(0.09, 1, 0), Pole", "Aim = Vector3.new(-0.09, 1, 0), Pole"),
     # A23-128 (user 10/11 "한손검만"): the warriors' one-hand swords at the side
     ("CONFIG", "the Paladin's sword across the body again", "Aim = Vector3.new(0.05, 0.7, -0.7)", "Aim = Vector3.new(-0.8, 0.55, -0.2)"),
     ("CONFIG", "the Paladin's sword held in front of the belly", "OneHand = { Hilt = Vector3.new(1.65, -0.85, -0.6)",
@@ -913,20 +928,20 @@ MUTATIONS = [
     ("CONFIG", "a hand-on-hip sinks into the waist", "OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage",
      "OffHand = { At = Vector3.new(-0.6, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },\n\t-- Light Mage"),
     ("CONFIG", "the old left-arm hold kept (Tamer)", "RightWrist = { -30, 0, 0 } }, OffHand", "RightWrist = { -30, 0, 0 }, LeftShoulder = { 0, 0, -15 } }, OffHand"),
-    ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8)", "OneHand = { Hilt = Vector3.new(0.2, -0.5, -0.8)"),
-    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0, 1, 0), Pole", "Aim = Vector3.new(0, 1, -0.8), Pole"),
-    ("CONFIG", "10/12 photo: the Dark Mage's staff across the body again (11 deg + the hunch)", "Aim = Vector3.new(0, 1, 0), Pole",
-     "Aim = Vector3.new(0, 1, -0.2), Pole"),
+    ("CONFIG", "the staff across the chest", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2)", "OneHand = { Hilt = Vector3.new(0.2, -0.5, -1.2)"),
+    ("CONFIG", "the Dark Mage's staff slanted far", "Aim = Vector3.new(0.09, 1, 0), Pole", "Aim = Vector3.new(0.09, 1, -0.8), Pole"),
+    ("CONFIG", "10/12 photo: the Dark Mage's staff across the body again (11 deg + the hunch)", "Aim = Vector3.new(0.09, 1, 0), Pole",
+     "Aim = Vector3.new(0.09, 1, -0.2), Pole"),
     # 최종 검수 10/12 (the staffs held lower, grip_reference §5-6)
     ("CONFIG", "the Light Mage's hand back up at the chest (the old spot)",
-     "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) }",
+     "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2), Aim = Vector3.new(0.09, 1, -0.05), Pole = Vector3.new(0.2, -0.1, 0.4) }",
      "OneHand = { Hilt = Vector3.new(1.0, -0.3, -0.6), Aim = Vector3.new(0, 1, -0.05) }"),
-    ("CONFIG", "the Dark Mage's hand at the hip (the arm straight, the wrist broken)", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.0)",
-     "OneHand = { Hilt = Vector3.new(1.4, -1.1, -1.0)"),
+    ("CONFIG", "the Dark Mage's hand at the hip (the arm straight, the wrist broken)", "OneHand = { Hilt = Vector3.new(1.5, -0.5, -1.2)",
+     "OneHand = { Hilt = Vector3.new(1.5, -1.1, -1.2)"),
     ("CONFIG", "the Light Mage's elbow out (the default bend: the wrist breaks)",
-     "Aim = Vector3.new(0, 1, -0.05), Pole = Vector3.new(0.2, -0.2, 0.6) }", "Aim = Vector3.new(0, 1, -0.05) }"),
-    ("CONFIG", "the Light Mage's hand tucked into the torso", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8)",
-     "OneHand = { Hilt = Vector3.new(1.05, -0.5, -0.8)"),
+     "Aim = Vector3.new(0.09, 1, -0.05), Pole = Vector3.new(0.2, -0.1, 0.4) }", "Aim = Vector3.new(0, 1, -0.05) }"),
+    ("CONFIG", "the Light Mage's hand tucked into the torso", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2)",
+     "OneHand = { Hilt = Vector3.new(1.05, -0.5, -1.2)"),
     ("CONFIG", "the Dark Mage's free hand out at the side again", "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 } },",
      "Hold = { Waist = { -8, 0, 0 }, Neck = { -5, 0, 0 }, LeftShoulder = { 14, 0, -20 } },"),
     # 게임성 검수 10/11: the Horns rows leaned back against their notes
@@ -936,9 +951,9 @@ MUTATIONS = [
      "Hold = { Waist = { 12, 0, 0 }, Neck = { -8, 0, 0 },"),
     ("CV", "the big floating gear again", "local GEAR = { Size = 0.55, Gap = 0.35 }", "local GEAR = { Size = 1, Gap = 1.6 }"),
     ("CV", "the gear ignores the hat / hair", "buildNeutralGear(head, sc, character), character, head)", "buildNeutralGear(head, sc), character, head)"),
-    ("CONFIG", "the Alchemist's elbow out (the default bend)", "Aim = Vector3.new(0, 1, -0.1), Pole = Vector3.new(0.3, -0.4, 0.6) },",
-     "Aim = Vector3.new(0, 1, -0.1) },"),
-    ("CONFIG", "the flask staff held out of reach", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -0.8)", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -2.2)"),
+    ("CONFIG", "the Alchemist's elbow out (the default bend)", "Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },",
+     "Aim = Vector3.new(0.09, 1, -0.1) },"),
+    ("CONFIG", "the flask staff held out of reach", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.2)", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -2.2)"),
     ("CONFIG", "the Alchemist holds the old hand flask again", 'Mage_Neutral = { Weapon = "FlaskStaff",', 'Mage_Neutral = { Weapon = "Flask",'),
     ("CONFIG", "the old right-arm hold kept", 'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck',
      'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, Neck'),
