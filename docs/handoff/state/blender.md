@@ -1,5 +1,10 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 아침 — PC 다시 켬
+- 9종+WingR 이미지 생성 3에 넘김(메시지). **Tripo 로그아웃됨**(재부팅 뒤 401, localStorage·Cache 비어짐) → 사용자 로그인 기다림(비밀번호 입력 금지).
+- 페이지 함수는 `tools/tripo_web_helpers.js`에 저장 → 로그인 뒤 그 파일 내용을 javascript_exec로 한 번 실행하면 hhTexFn/hhSetFn/hhGoFn/hhPbrFn 다시 생김.
+- 다음 묶음 bundle8(scratchpad, 31.7 MB, 키 `<이름>_<면>`): Greenhouse·ShopSign·Lantern_A·C·D·E 4면 + 텍스처용 앞면 DomeOnionSlim·BreadStand·FruitStall·DomeBrick·JuiceParasol. 로그인 뒤 Adobe 올림 → /hh-bundle8, hhIdx8.
+
 ## 10/13 정리 (사용자 "정리하고 컴퓨터 꺼줘") — 다음 세션은 여기부터
 - **잔액 9,385.** 도는 Tripo 일 없음(전부 끝남). 브라우저 탭 seed = Tripo 로그인 그대로, localStorage 함수 hhTexFn/hhSetFn/hhGoFn/hhPbrFn + Cache 'hh' /hh-bundle3~7(hhIdx3~7; 다시 열면 캐시가 없을 수 있음 → 4면 묶음 다시 올림).
 - **끝·넘길 것:** 9종 PBR 완성 + WingR 거울 = 디자인 검수 통과 → **이미지 생성 3에 넘기기(아직 메시지 안 보냄)**: `art/models/tripo/touchup/<id>/<id>_TU.glb` (DoorSingle·LampArm·CastleWingL·CastleWingR·DomeRibbed·DoorDouble·WindowBoxA·BenchA·BenchC·CastleRose). 메모: CastleRose 뒤 파란 원판, WindowBoxA DoubleSided, LampArm 유리 칸 = Studio 유리 파트. records.json 기록 완료, src FBX push.
