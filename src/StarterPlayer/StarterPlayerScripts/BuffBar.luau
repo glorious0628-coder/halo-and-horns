@@ -36,6 +36,7 @@ local T = {
 	CapGap = 2, CapH = 14, -- the time under a tile
 	Above = 4, -- du above the power line
 	Tick = 0.25, -- s between two timer updates
+	WarnGap = 10, -- s: one warning line per kind at most this often (게임성 검수 10/12: an error in the loop came 4x a second)
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), as in BagUI
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
 	Slot = "SlotCommon",
@@ -45,7 +46,7 @@ local T = {
 	Z = 2,
 }
 
-local S = { Built = false, Sig = nil, Tiles = {}, Anchor = nil, LayoutRef = nil }
+local S = { Built = false, Sig = nil, Tiles = {}, Anchor = nil, LayoutRef = nil, WarnAt = {} }
 local ui = { Holder = nil }
 
 ---------------------------------------------------------------------------------------------------- pure helpers
@@ -227,15 +228,29 @@ function BuffBar.Relayout()
 end
 
 ---------------------------------------------------------------------------------------------------- start
+-- one warning line per key at most every T.WarnGap s (the loop runs 4x a second)
+local function warnOnce(key, msg)
+	local now = os.clock()
+	if (S.WarnAt[key] or -math.huge) + T.WarnGap > now then return end
+	S.WarnAt[key] = now
+	Util.Warn(TAG, msg)
+end
+
 local function loop()
 	while true do
-		local ok, err = pcall(function()
-			local hud = C and C.HUD
-			local layout = type(hud) == "table" and hud.Layout or nil
-			if layout ~= S.LayoutRef then BuffBar.Relayout() end -- a layout made while this was not listening
-			BuffBar.Refresh()
-		end)
-		if not ok then Util.Warn(TAG, "update error: " .. tostring(err)) end
+		if not on() then
+			-- the switch is off: nothing to read or draw (a row left from before hides; it is built again when on)
+			if ui.Holder and ui.Holder.Visible then ui.Holder.Visible = false end
+			S.Sig = nil
+		else
+			local ok, err = pcall(function()
+				local hud = C and C.HUD
+				local layout = type(hud) == "table" and hud.Layout or nil
+				if layout ~= S.LayoutRef then BuffBar.Relayout() end -- a layout made while this was not listening
+				BuffBar.Refresh()
+			end)
+			if not ok then warnOnce("loop", "update error: " .. tostring(err)) end
+		end
 		task.wait(T.Tick)
 	end
 end
@@ -272,7 +287,7 @@ function BuffBar.Start()
 		if LocalPlayer then
 			LocalPlayer:GetAttributeChangedSignal("Buff_" .. id):Connect(function()
 				local okR, errR = pcall(BuffBar.Refresh)
-				if not okR then Util.Warn(TAG, "refresh error: " .. tostring(errR)) end
+				if not okR then warnOnce("refresh", "refresh error: " .. tostring(errR)) end
 			end)
 		end
 	end

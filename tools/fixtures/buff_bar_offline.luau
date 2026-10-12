@@ -113,7 +113,8 @@ local player = {
 local function fire(name)
 	for _, f in sigFns[name] or {} do f() end
 end
-local Util = { Warn = function(...) print("WARN", ...) end }
+local warns = 0
+local Util = { Warn = function(...) warns += 1 print("WARN", ...) end }
 local L10nReg = {}
 local L10n = { Register = function(path, t) L10nReg[path] = t return t end }
 local shared = { WaitForChild = function(_, n) return n end }
@@ -130,6 +131,8 @@ local env = setmetatable(table.clone(base), { __index = getfenv() })
 env.game, env.Instance = game, { new = function(c) return newObj(c) end }
 env.require = function(n) return mods[n] end
 env.workspace = { GetServerTimeNow = function() return NOW end }
+local CLOCK = 1000
+env.os = setmetatable({ clock = function() return CLOCK end }, { __index = os })
 env.typeof = function(v)
 	if getmetatable(v) == vmt then return "Color3" end
 	return typeof(v)
@@ -356,6 +359,33 @@ HUD.Layout = { Rects = { hp_bar = { X = 100, Y = 500, W = 184, H = 20 }, mp_bar 
 	power_line = { X = 100, Y = 470, W = 375, H = 16 } } }
 BuffBar.Relayout()
 check(holder.Position.Args[1] == 284, "an MP rect without a width: the HP bar's edge")
+------------------------------------------------------------------ 6. the loop's warnings and the switch (게임성 검수 10/12)
+local goodLayout = HUD.Layout
+-- a broken layout every pass (a new table each read, so every pass tries it again and fails)
+rawset(HUD, "Layout", nil)
+setmetatable(HUD, { __index = function(_, k)
+	if k == "Layout" then return setmetatable({}, { __index = function() error("broken layout") end }) end
+	return nil
+end })
+warns, waits, waitLimit = 0, {}, 5
+pcall(spawned[1])
+check(warns == 1, "an error every 0.25 s: one warning line, not four a second", warns)
+CLOCK += 11
+waits = {}
+pcall(spawned[1])
+check(warns == 2, "the same error 10 s later: one more line", warns)
+setmetatable(HUD, nil)
+HUD.Layout = goodLayout
+BuffBar.Relayout()
+check(holder.Visible == true, "a good layout again: shown")
+Config.Features.Tonics = false
+waits, waitLimit = {}, 2
+pcall(spawned[1])
+check(holder.Visible == false and BuffBar._T.S.Sig == nil, "the switch off: the loop hides the row and draws nothing")
+Config.Features.Tonics = true
+waits = {}
+pcall(spawned[1])
+check(holder.Visible == true and #findAll(holder, "^Tile_") >= 1, "on again: the tiles are built again")
 Config.Features.Tonics = false
 
 print(string.format("BUFF_BAR_SUMMARY checks=%d failed=%d", checks, failed))

@@ -57,6 +57,9 @@ MUTATIONS = [
      "letter.TextColor3 = T.White"),
     ("BUFF", "the icon outside the Inner box", "Inner = { X = 76 / 512,", "Inner = { X = 0,"),
     ("BUFF", "the time in another style", "pcall(kit.StyleText, clock, \"Number\")", "pcall(kit.StyleText, clock, \"Title\")"),
+    ("BUFF", "a warning 4x a second", "\tif (S.WarnAt[key] or -math.huge) + T.WarnGap > now then return end\n", ""),
+    ("BUFF", "the loop runs while the switch is off", "\t\tif not on() then\n", "\t\tif false then\n"),
+    ("BUFF", "a row left from before stays when off", "\t\t\tif ui.Holder and ui.Holder.Visible then ui.Holder.Visible = false end\n", ""),
     ("BUFF", "the right edge is the bar's left", "S.Anchor = { X = edge.X + edge.W,", "S.Anchor = { X = edge.X,"),
     ("BUFF", "the MP bar ignored (the tiles hang between the bars)", "and tonumber(mp.W)) and mp or hp", "and tonumber(mp.W)) and hp or hp"),
     ("BUFF", "no gap above the power line", "Y = pl.Y - T.Above }", "Y = pl.Y }"),
@@ -92,7 +95,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
     # the player text lives in TXT only: cut the table, then look for two English words in one string (dev log lines
     # through Util.Warn are not player text)
     body = re.sub(r"local TXT = \{.*?\n\}\n", "", code, count=1, flags=re.S)
-    english = [l for l in body.splitlines() if "Util.Warn" not in l
+    english = [l for l in body.splitlines() if "Util.Warn" not in l and "warnOnce(" not in l
                and any(re.search(r"[A-Za-z]{2,} [A-Za-z]{2,}", s) for s in re.findall(r'"([^"\n]*)"', l))]
     txt = re.search(r"local TXT = \{(.*?)\n\}\n", code, flags=re.S)
     txt_keys = re.findall(r"(\w+)\s*=", txt.group(1)) if txt else ["?"]

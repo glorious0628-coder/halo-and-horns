@@ -1,5 +1,5 @@
 {
-  "checks": 70,
+  "checks": 75,
   "failed": 0,
   "mutations": [
     {
@@ -104,6 +104,21 @@
     },
     {
       "name": "the time in another style",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a warning 4x a second",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the loop runs while the switch is off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a row left from before stays when off",
       "applied": true,
       "caught": true
     },
