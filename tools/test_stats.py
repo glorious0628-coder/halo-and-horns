@@ -131,8 +131,8 @@ MUTATIONS = [
     # --- one formula everywhere
     ("Justice: the attribute without the stats", J, "\treturn Config.CombatPowerOf(player)\nend",
      "\tlocal level, tier, enhance = levelAndTier(player)\n\treturn Config.CombatPower(level, tier, enhance)\nend"),
-    ("Justice: the faction sum without the stats", J, "1 + rebirthBonus, enhance, Config.StatAllocOf(player))",
-     "1 + rebirthBonus, enhance)"),
+    ("Justice: the faction sum without the stats", J, "1 + rebirthBonus, enhance, Config.StatAllocOf(player), gearOf(player))",
+     "1 + rebirthBonus, enhance, nil, gearOf(player))"),
     ("Justice: the faction sum clamps bare hands to tier 1", J,
      "or 0), 0, Config.MaxWeaponTier) -- A23-34: 0 = bare hands", "or 1), 1, Config.MaxWeaponTier) -- A23-34: 0 = bare hands"),
     ("Justice: StatAtk not watched", J, "\"WeaponEnhance\", \"StatAtk\", \"StatHp\", \"GearAtk\"", "\"WeaponEnhance\", \"StatHp\", \"GearAtk\""),
