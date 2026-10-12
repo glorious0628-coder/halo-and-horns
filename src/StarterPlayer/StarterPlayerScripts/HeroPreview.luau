@@ -187,9 +187,13 @@ local function watchCharacter()
 	disconnect(S.CharConns)
 	S.Character = character
 	if character then
-		-- CharacterVisuals swaps whole pieces (WeaponModel, FactionMark) as direct children
-		table.insert(S.CharConns, character.ChildAdded:Connect(HeroPreview.Refresh))
-		table.insert(S.CharConns, character.ChildRemoved:Connect(HeroPreview.Refresh))
+		-- CharacterVisuals swaps whole pieces (WeaponModel, FactionMark) as direct children; a child the copy would drop
+		-- anyway (a fight's Highlight, a Sound) asks nothing (API review 10/13)
+		local function changed(child)
+			if HeroPreview.Keep(child) then HeroPreview.Refresh() end
+		end
+		table.insert(S.CharConns, character.ChildAdded:Connect(changed))
+		table.insert(S.CharConns, character.ChildRemoved:Connect(changed))
 	end
 end
 

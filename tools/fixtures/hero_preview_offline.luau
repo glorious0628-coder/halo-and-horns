@@ -184,6 +184,9 @@ player.CharacterAdded:Fire(character)
 check(S.Revision == rev + 1 and live == liveMounted + 2, "a new character: watched (ChildAdded / ChildRemoved) and copied", live)
 character.ChildAdded:Fire(obj("Model", "WeaponModel"))
 check(S.Revision == rev + 2, "a weapon model put on = copied again", S.Revision)
+character.ChildAdded:Fire(obj("Highlight"))
+character.ChildRemoved:Fire(obj("Highlight"))
+check(S.Revision == rev + 2, "a fight's Highlight coming and going copies nothing (API review)", S.Revision)
 
 ------------------------------------------------------------------ 6. Unmount: everything let go
 H.Unmount()

@@ -102,6 +102,10 @@ local L = {
 	StatH = 26, StatLabelW = 200,
 	CardW = 132, CardH = 50, CardIcon = 26, TraitW = 132, TraitH = 28, -- the Stats tab's cards and chips (ref_rpg_ui #5)
 	RibbonH = 34, BarH = 18, BarIcon = 22, -- the title ribbon and the next rank bar (ref_rpg_ui #9)
+	-- the locked titles (CharacterUI.LockedTitles): past / season ones left out, side ones only for that side, at most this many
+	LockedSkip = { BetaPioneer = true, PartyGuest2026 = true, PumpkinPal = true, CandyKeeper = true },
+	LockedSide = { GuardianCadet = "Halo", RascalCadet = "Horns" },
+	LockedMax = 6,
 	BodyGap = 12, BodyH = 220, -- the 3D body under the gear cells, as wide as them (ref_rpg_ui #3, C.HeroPreview)
 	Size = { Name = 18, Body = 16, Small = 15, Count = 16, Power = 34, Head = 18 },
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), same as the bag
@@ -277,8 +281,10 @@ function CharacterUI.RankBar(faction, honor, infamy)
 		Icon = faction == "Halo" and "IconRankHonor" or "IconRankInfamy" }
 end
 
--- 최종 검수 10/13 (ref_rpg_ui #9): the titles I do not own yet (Config.TitleOrder), shown grey under mine
-function CharacterUI.LockedTitles(owned)
+-- 최종 검수 10/13 (ref_rpg_ui #9): the titles I do not own yet (Config.TitleOrder), shown grey under mine. API review: only
+-- ones I can still earn - no weekly (Timed) title, none of L.LockedSkip (past / season ones), not the other side's
+-- (L.LockedSide), at most L.LockedMax
+function CharacterUI.LockedTitles(owned, faction)
 	local have = {}
 	if type(owned) == "string" then
 		for id in string.gmatch(owned, "[^,]+") do have[id] = true end
@@ -286,7 +292,11 @@ function CharacterUI.LockedTitles(owned)
 	local list = {}
 	for _, id in Config.TitleOrder do
 		local def = Config.TitleDefs[id]
-		if def and not have[id] then table.insert(list, { Id = id, Name = tx(def, "Name") }) end
+		local side = L.LockedSide[id]
+		if def and not have[id] and def.Timed ~= true and not L.LockedSkip[id] and (side == nil or side == faction) then
+			table.insert(list, { Id = id, Name = tx(def, "Name") })
+			if #list >= L.LockedMax then break end
+		end
 	end
 	return list
 end
@@ -913,7 +923,7 @@ local function drawTitles(frame, titles)
 		b.LayoutOrder = order
 	end
 	-- 최종 검수 10/13 (ref_rpg_ui #9): the ones still to earn, grey and off
-	for _, t in CharacterUI.LockedTitles(attr("TitlesOwned", "")) do
+	for _, t in CharacterUI.LockedTitles(attr("TitlesOwned", ""), attr("Faction", "None")) do
 		order += 1
 		local b = kit.Button(frame, t.Name, kit.Palette.Button, UDim2.fromOffset(L.TitleW, L.TitleH), function() end)
 		b.Name = "Locked_" .. t.Id
@@ -1340,9 +1350,14 @@ end
 
 -- 최종 검수 10/13 (ref_rpg_ui #7): is there an owned weapon I can wear now that raises my power? (HUD's Hero / Bag tile
 -- dot, no words). Pure on rows (CharacterUI.Weapons); BetterWeapon() reads mine from the attributes
-function CharacterUI.HasBetter(rows)
+-- 최종 검수 10/13 (API review): state = { Dead, NoClass, Faction } - the server's refusals EquipState dims (dead, no class
+-- yet, a side weapon without a side) light no dot either
+function CharacterUI.HasBetter(rows, state)
+	state = type(state) == "table" and state or {}
+	if state.Dead or state.NoClass then return false end
 	for _, r in type(rows) == "table" and rows or {} do
-		if not r.Equipped and r.Usable and type(r.PowerNow) == "number" and type(r.PowerWith) == "number" and r.PowerWith > r.PowerNow then
+		if not r.Equipped and r.Usable and not (r.NeedSide and state.Faction == "None")
+			and type(r.PowerNow) == "number" and type(r.PowerWith) == "number" and r.PowerWith > r.PowerNow then
 			return true
 		end
 	end
@@ -1357,7 +1372,9 @@ function CharacterUI.BetterWeapon()
 		Enhance = inventoryEnhance(), EquippedPlus = num(attr("WeaponEnhance"), 0), PowerNow = now,
 		Power = function(t, p) return Config.CombatPowerOf(LocalPlayer, t, p) end }
 	local ok, rows = pcall(CharacterUI.Weapons, ctx)
-	return ok and CharacterUI.HasBetter(rows) or false
+	local okA, alive = pcall(Util.IsAlive, LocalPlayer)
+	return ok and CharacterUI.HasBetter(rows, { Dead = okA and alive == false, NoClass = attr("ClassChosen") ~= true,
+		Faction = attr("Faction") }) or false
 end
 
 function CharacterUI.IsReady()

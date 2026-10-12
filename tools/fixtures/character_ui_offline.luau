@@ -438,15 +438,34 @@ local top = M.RankBar("Horns", 0, 5000)
 check(rb and rb.Title == "Knight" and rb.Next == "Paladin" and math.abs(rb.Fill - 0.5) < 1e-6 and rb.ToGo == 20 and rb.Icon == "IconRankHonor"
 	and top and top.Next == nil and top.Fill == 1 and top.Icon == "IconRankInfamy" and M.RankBar("None", 5, 5) == nil,
 	"#9 RankBar: this rank's share filled, points to the next, full at the top, none without a side", rb and rb.Fill)
-local locked = M.LockedTitles("BetaPioneer")
-local lockedIds = {}
-for _, t in locked do table.insert(lockedIds, t.Id) end
-check(table.find(lockedIds, "BetaPioneer") == nil and table.find(lockedIds, "GrayLegend") ~= nil,
-	"#9 LockedTitles: the titles I do not own yet", table.concat(lockedIds, ","))
+local function ids(list)
+	local out = {}
+	for _, t in list do table.insert(out, t.Id) end
+	return out
+end
+local lockedIds = ids(M.LockedTitles("", "Halo"))
+local anyTimed = false
+for _, id in lockedIds do
+	if Config.TitleDefs[id].Timed then anyTimed = true end
+end
+check(#lockedIds == M._T.L.LockedMax and not anyTimed and table.find(lockedIds, "BetaPioneer") == nil
+	and table.find(lockedIds, "GrayLegend") ~= nil and table.find(ids(M.LockedTitles("GrayLegend", "Halo")), "GrayLegend") == nil,
+	"#9 LockedTitles (API review): the ones I can still earn - no weekly, no past / season one, at most LockedMax",
+	table.concat(lockedIds, ","))
+local many = "GrayLegend,ClatterStopper,ClatterStopper10,ClatterStopper50,Regular,SuperRegular,MegaRegular"
+local haloIds, hornsIds = ids(M.LockedTitles(many, "Halo")), ids(M.LockedTitles(many, "Horns"))
+check(table.find(haloIds, "GuardianCadet") ~= nil and table.find(haloIds, "RascalCadet") == nil
+	and table.find(hornsIds, "RascalCadet") ~= nil and table.find(hornsIds, "GuardianCadet") == nil,
+	"#9 LockedTitles (API review): a side's title only for that side", table.concat(haloIds, ",") .. " / " .. table.concat(hornsIds, ","))
 -- 최종 검수 10/13 (ref_rpg_ui #7): pure
 check(M.HasBetter({ { Equipped = true, Usable = true, PowerNow = 100, PowerWith = 100 }, { Usable = true, PowerNow = 100, PowerWith = 120 } })
 	and not M.HasBetter({ { Equipped = true, Usable = true, PowerNow = 100, PowerWith = 150 }, { Usable = false, PowerNow = 100, PowerWith = 300 }, { Usable = true, PowerNow = 100, PowerWith = 90 } })
 	and not M.HasBetter(nil), "#7 HasBetter: only a wearable weapon that raises the power")
+local side = { { Usable = true, NeedSide = true, PowerNow = 100, PowerWith = 120 } }
+local plain = { { Usable = true, PowerNow = 100, PowerWith = 120 } }
+check(M.HasBetter(side, { Faction = "Halo" }) and not M.HasBetter(side, { Faction = "None" }) and M.HasBetter(plain, { Faction = "None" })
+	and not M.HasBetter(plain, { Dead = true }) and not M.HasBetter(plain, { NoClass = true }),
+	"#7 HasBetter (API review): no dot for what the server refuses (a side weapon without a side, dead, no class)")
 local wy = M.PowerWhy("Attack", { Level = 5, Tier = 0 })
 check(#wy == 2 and wy[1] == "Bare hands" and wy[2] == "Level 5", "#1 PowerWhy: bare hands + the level", table.concat(wy, ","))
 check(heads(srows) == "Stats,Traits,Effects,Rebirth,Rank", "StatRows: every section when the data is there", heads(srows))
@@ -537,8 +556,9 @@ local rbar = find(body, "RankBar")
 check(rbar and find(rbar, "Icon").Image == "IconRankHonor" and find(rbar, "Fill").Image == "BarFill" and find(rbar, "Fill").Size.X.Scale < 0.1
 	and find(rbar, "ToGo").Text == "10 to go",
 	"#9: the next rank bar (honor icon, the fill, points to go)", rbar and find(rbar, "ToGo") and find(rbar, "ToGo").Text)
-local lockedB = find(body, "Locked_BetaPioneer")
-check(lockedB and lockedB.Enabled == false and lockedB.Text == Config.TitleDefs.BetaPioneer.Name, "#9: a title I lack shows grey and off")
+local lockedB = find(body, "Locked_GrayLegend")
+check(lockedB and lockedB.Enabled == false and lockedB.Text == Config.TitleDefs.GrayLegend.Name and find(body, "Locked_BetaPioneer") == nil,
+	"#9: a title I lack shows grey and off (not one I can no longer get)")
 chipA.OnClick()
 local why = find(body, "PowerWhy")
 local wname = Config.WeaponName(2, "Warrior", "Halo")
