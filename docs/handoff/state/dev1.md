@@ -91,4 +91,7 @@
 26. character-ui 묶음 a5f6abd0 = main 3feb3232 병합됨. **fix/staff-face2 025b7fb6** (15bf290f 뿔 갈고리 앞으로·연금술사 z -1.3 + main merge): 최종 검수에 보고, 사진 = tools/play_mage_staff_photos.py.
 - 거위 광장 낮은 것 3개 = 개발 2가 서버+화면 한 가지로 합치는 중 → 그쪽에 맞춤(먼저 손대지 않음).
 27. **fix/sticker-ui 83bf3124** = main 9f780ae0 병합됨(스티커 P 키). **fix/english-polish 0e5ac261**(영어 16곳) 보고. **fix/bubble-ui ab1b28da**(A23-144: BubbleUI OnBubbleAdded 주인, 스티커 창 아래 말풍선 줄, 그림 없으면 색) 보고.
-- 다음: 큰 지도 거위 광장 표시 끄기(개발 2 dev2-goose-square 병합 뒤, WorldMap이 맵 밖 둥지·수레·거위 안 그림) → ④ RPG UI 조사(docs/design/ref_rpg_ui_2026-10-12.md) 오면 캐릭터 창 개선(장비 탭 빈 공간, 능력치 탭 글뿐; 사진 docs/art/verification_2026-10-12/main_apply/charui/05·06).
+- 다음: 큰 지도 거위 광장 표시 끄기(개발 2 dev2-goose-square 병합 뒤, WorldMap이 맵 밖 둥지·수레·거위 안 그림) → ④ RPG UI 조사(docs/design/ref_rpg_ui_2026-10-12.md) 오면 캐릭터 창 개선(장비 탭 빈 공간, 능력치 탭 글뿐; 사진 docs/art/verification_2026-10-12/main_apply/charui/05·06).28. **fix/hero-ui** (wt_lesstext, origin/main에서, 리베이스 금지): ref_rpg_ui #1 301a6c66 · #2 201e9a1e · #5·#9 2ff5575e · #7 9bc17354(Hero·가방 칸 더 센 무기 점, BadgeDot) · #3 3D 몸(HeroPreview.luau 새 모듈, ORDER CharacterUI 다음; 장비 칸 아래 PanelCard + ViewportFrame, 왼쪽 끌기로 돌림, 무기·후광/뿔 포함; 시험 test_hero_preview.py). 최종 검수에 보고.
+- 남은 것: #6(빈 칸 그림 승인 뒤), #4(서버 뒤), #8(개발 2 속성 하나 뒤), #10(베타 뒤). 메인 사진 = tools/play_character_ui_photos.py(메인 반영 1).
+29. #3 커밋 = fix/hero-ui **12324880**(최종 검수에 해시 + 사진 목록 보냄: `HH_MAIN_STUDIO=1 py tools/play_character_ui_photos.py heroui`). 사진 보고 L.BodyH/Fov/Margin만 고칠 것.
+30. **fix/goose-leave e32814b7**(wt_gooseleave 성긴 worktree, dev2-goose-square df4d3d47 위): 광장 안이면 Leave 늘 보임, 판 끝나면 거위 칩 위. 개발 2·최종 검수에 보냄.
