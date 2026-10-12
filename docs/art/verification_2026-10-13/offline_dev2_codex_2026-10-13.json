@@ -1,0 +1,1612 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 139,
+  "failedChecks": 0,
+  "namedChecks": 137,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "save version 5 (A23-153), Data and Defaults equal",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "save default Codex = {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "series 1 = the 11 beta kinds in page order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "3 pages; every kind is a year-round monster of its page's zone; each page title is defined and ordered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the page titles",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rewards in kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "codex gold is earned gold (2x pass), CodexOpen 1 s, the server toast is on",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "bosses have no Gold Foil card (never golden)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "stage from kills (a boss: 10 / 30)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every line is short English (no Korean, <= 60 letters)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "a card-back line per kind for Halo / Horns / Neutral (short English)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "names are %s slots",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "Codex.Slime = { Kills 1, Golden 0, Stage 1, First now }",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "one CodexUp Card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "the reward = 3 Slime kills' worth (3 x 3 gold, 3 x 5 XP)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "paid as bank gold 'Codex' + XP",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "never pocket gold (a robbery never takes it)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "the line: key, args, English text",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "the card rides along",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "and the same line as a reward toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "attributes: 1 card, no glow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "the second kill only counts (First stays)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "first card",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "99 kills: still stage 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "the 100th kill: Silver",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "Silver pays 20 Goblin kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "the 1000th: Gold Holo, 100 kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "after Gold Holo: counting only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "join: a stage below its kills is raised silently (no reward)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "then the 1000th kill: Holo only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "all three stages, in order",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "a billion kills is the ceiling",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "silver and gold holo",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "a golden first kill: the card, then the Gold Foil card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "Golden 1, Kills 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "the foil pays 5 kills' worth (no golden x)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "a second golden only counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "a boss is never a foil card (a bad golden flag)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "only Golden == true counts",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gold foil",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "Captain Clatter's card pays 1 kill's worth (BossStage)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "9 kills: still stage 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a boss's Silver at 10: 3 kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a boss's Gold Holo at 30: 10 kills' worth",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a minor share: counted, the card pays 15% (585)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a minor share's Silver: 15% of 3 kills' worth (1,755)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a minor kill of a boss without a MinorShare: the card, no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "a Lv1 King Slime card: XP capped to one level, 60 gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "Lv8 (the cap level): the full card XP; Lv7: one level",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "boss cards",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "3 of 4 meadow cards: no title yet",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "the 4th card finishes the page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "Page: the title, no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "TitleService owns and publishes it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "two toasts (the card, the page)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "no second Page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "CodexCards 4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "a page whose title is already owned: the card only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "page titles",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "11 silver cards: no glow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "10 of 11 Gold Holo: still no glow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "the 11th Gold Holo lights the glow",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "CodexGlow = true",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "the glow line, no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "no stat attribute changed (cosmetic only)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "every card gold holo",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "a personal monster, a Halloween kind, an unknown kind, no kind, a broken info: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "a minor share counts (the KillLog rule)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "Config.Codex.Enabled = false: no counting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "what does not count",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same count as the kill record",
+      "check": "Codex[kind].Kills == KillLog.ByKind[kind] for every codex kind",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same count as the kill record",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "same count as the kill record",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "2x passes and the toast switch",
+      "check": "the line says what was added (2x)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "2x passes and the toast switch",
+      "check": "ServerToast off: CodexUp only, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "2x passes and the toast switch",
+      "check": "no XP added: '+9 gold' only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "2x passes and the toast switch",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "2x passes and the toast switch",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "one snapshot at join (V 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "a sane card as saved",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "no kills / unknown kind / broken row: dropped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "CodexCards counts the cards",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "a page full at join (the v5 step): its title, no moment, no toast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "CodexOpen -> one snapshot",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "again within 1 s: nothing (rate limit)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "extra arguments are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "not ready: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "each player gets their own",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join and the snapshot",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "'Slime:99' sets the kills, no reward",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "then one kill evolves it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "'show:Slime:Holo' answers ok",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "the moment again, no reward, no change",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "an unknown event / kind is refused",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "'Slime:0' removes the card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "'reset' clears",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "debug",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "nil / text / empty -> {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "a billion is the ceiling; Golden <= Kills",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "fractions floored, text / negative -> 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "NaN / inf kills: no card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "a stage below its kills is raised",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "a stage above its kills is kept (never taken back); Golden cut to Kills",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "only series-1 kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "repairing twice = once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "the fill reads series-1 kinds only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "repair",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a v4 record runs the v5 step",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "its cards come from KillLog.ByKind (Golden 0, First 0 = before the codex)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "no Halloween kind, no 0-kill card",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "nothing else moves (no reward)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "loading the v5 record again changes nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a v5 record is not filled again from its kill record",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a v1 record runs every step up to 5 (no cards)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a v3 record with a kill record gets its cards too",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a broken kill record makes no card from bad numbers",
+      "pass": 3,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "an existing row keeps its larger numbers",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a brand-new record: Version 5, Codex {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "Codex of the wrong type -> {}",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "a v5 record's codex is repaired at load",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "save v5 step",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 13,
+  "staticFailures": [],
+  "mutations": {
+    "total": 60,
+    "applied": 60,
+    "caught": 60,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: the version stays 4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: save version 5 (A23-153), Data and Defaults equal"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the default record stays 4",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: save version 5 (A23-153), Data and Defaults equal",
+          "save v5 step :: a brand-new record: Version 5, Codex {}"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: no Codex default",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: save default Codex = {}"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: Silver at 50",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: stage from kills (a boss: 10 / 30)",
+          "config :: steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)",
+          "debug :: 'Slime:99' sets the kills, no reward",
+          "debug :: then one kill evolves it",
+          "repair :: fractions floored, text / negative -> 0",
+          "silver and gold holo :: 99 kills: still stage 1"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "service: bosses on the normal rewards",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold",
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth",
+          "boss cards :: a boss's Silver at 10: 3 kills' worth",
+          "boss cards :: a minor share's Silver: 15% of 3 kills' worth (1,755)"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "config: a boss can be golden",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: bosses have no Gold Foil card (never golden)",
+          "gold foil :: a boss is never a foil card (a bad golden flag)",
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: codex gold not earned",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: codex gold is earned gold (2x pass), CodexOpen 1 s, the server toast is on"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a page title not ordered",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: 3 pages; every kind is a year-round monster of its page's zone; each page title is defined and ordered"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: the King Slime off its page",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: group ran to the end without a Lua error",
+          "config :: series 1 = the 11 beta kinds in page order",
+          "every card gold holo :: 11 silver cards: no glow",
+          "gold foil :: group ran to the end without a Lua error",
+          "join and the snapshot :: CodexCards counts the cards",
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "repair: a stage taken back",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0",
+          "repair :: a stage above its kills is kept (never taken back); Golden cut to Kills"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "repair: a stage never raised",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "repair :: a billion is the ceiling; Golden <= Kills",
+          "repair :: a stage below its kills is raised",
+          "repair :: fractions floored, text / negative -> 0",
+          "save v5 step :: a v5 record's codex is repaired at load",
+          "silver and gold holo :: join: a stage below its kills is raised silently (no reward)",
+          "silver and gold holo :: then the 1000th kill: Holo only"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "repair: Golden above Kills",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "repair :: a stage above its kills is kept (never taken back); Golden cut to Kills"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "repair: a boss foil kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "repair: NaN kills kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0",
+          "repair :: NaN / inf kills: no card",
+          "repair :: only series-1 kinds"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "repair: 0-kill rows kept",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: CodexCards counts the cards",
+          "join and the snapshot :: no kills / unknown kind / broken row: dropped",
+          "repair :: NaN / inf kills: no card",
+          "repair :: only series-1 kinds"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "repair: no kill ceiling",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "repair :: a billion is the ceiling; Golden <= Kills"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "v5 step: no fill from the kill record",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save v5 step :: group ran to the end without a Lua error",
+          "save v5 step :: its cards come from KillLog.ByKind (Golden 0, First 0 = before the codex)",
+          "save v5 step :: no Halloween kind, no 0-kill card"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "v5 step: the version stays",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save v5 step :: a broken kill record makes no card from bad numbers",
+          "save v5 step :: a v1 record runs every step up to 5 (no cards)",
+          "save v5 step :: a v4 record runs the v5 step",
+          "save v5 step :: a v5 record is not filled again from its kill record",
+          "save v5 step :: loading the v5 record again changes nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "v5 step: runs on every load",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save v5 step :: a v5 record is not filled again from its kill record"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "v5 step: no repair at load",
+        "file": "src/ServerScriptService/DataService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save v5 step :: a v5 record's codex is repaired at load"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "fill: a smaller kill record wins",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "save v5 step :: an existing row keeps its larger numbers"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "fill: Halloween kinds too",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "repair :: the fill reads series-1 kinds only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: personal monsters count",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "same count as the kill record :: Codex[kind].Kills == KillLog.ByKind[kind] for every codex kind",
+          "what does not count :: a personal monster, a Halloween kind, an unknown kind, no kind, a broken info: nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the switch ignored",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what does not count :: Config.Codex.Enabled = false: no counting"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: any monster kind",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "what does not count :: a personal monster, a Halloween kind, an unknown kind, no kind, a broken info: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: First never set",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first card :: Codex.Slime = { Kills 1, Golden 0, Stage 1, First now }",
+          "first card :: the card rides along",
+          "first card :: the second kill only counts (First stays)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "service: no kill ceiling",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "silver and gold holo :: a billion kills is the ceiling"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: one stage at most per kill",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "silver and gold holo :: all three stages, in order"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: no golden count",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gold foil :: Golden 1, Kills 1",
+          "gold foil :: a golden first kill: the card, then the Gold Foil card",
+          "gold foil :: a second golden only counts",
+          "gold foil :: the foil pays 5 kills' worth (no golden x)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "service: a foil per golden kill",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gold foil :: a second golden only counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: Golden from any value",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gold foil :: only Golden == true counts"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: no reward",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: no XP added: '+9 gold' only",
+          "2x passes and the toast switch :: the line says what was added (2x)",
+          "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold",
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth"
+        ],
+        "newFailingCount": 16
+      },
+      {
+        "mutation": "service: the reward in pocket gold",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first card :: never pocket gold (a robbery never takes it)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: the golden x on the reward",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: no XP added: '+9 gold' only",
+          "2x passes and the toast switch :: the line says what was added (2x)",
+          "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold",
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth",
+          "boss cards :: a boss's Silver at 10: 3 kills' worth"
+        ],
+        "newFailingCount": 14
+      },
+      {
+        "mutation": "service: the line shows the asked amount",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: the line says what was added (2x)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: no toast",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "first card :: and the same line as a reward toast",
+          "page titles :: two toasts (the card, the page)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the toast switch ignored",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: ServerToast off: CodexUp only, no toast"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: no CodexUp",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: ServerToast off: CodexUp only, no toast",
+          "2x passes and the toast switch :: no XP added: '+9 gold' only",
+          "2x passes and the toast switch :: the line says what was added (2x)",
+          "boss cards :: Captain Clatter's card pays 1 kill's worth (BossStage)",
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold"
+        ],
+        "newFailingCount": 31
+      },
+      {
+        "mutation": "service: '+0 XP' at the top level",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: no XP added: '+9 gold' only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: no page title",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "page titles :: Page: the title, no gold",
+          "page titles :: TitleService owns and publishes it",
+          "page titles :: the 4th card finishes the page",
+          "page titles :: two toasts (the card, the page)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "service: the page moment for an owned title",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "page titles :: a page whose title is already owned: the card only"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: a page at every new card",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "2x passes and the toast switch :: ServerToast off: CodexUp only, no toast",
+          "first card :: and the same line as a reward toast",
+          "first card :: one CodexUp Card",
+          "gold foil :: a golden first kill: the card, then the Gold Foil card",
+          "page titles :: 3 of 4 meadow cards: no title yet",
+          "page titles :: Page: the title, no gold"
+        ],
+        "newFailingCount": 9
+      },
+      {
+        "mutation": "service: no glow moment",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "every card gold holo :: the 11th Gold Holo lights the glow",
+          "every card gold holo :: the glow line, no reward"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the glow at any Holo",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "silver and gold holo :: all three stages, in order",
+          "silver and gold holo :: then the 1000th kill: Holo only"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: no attributes",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug :: 'reset' clears",
+          "every card gold holo :: 11 silver cards: no glow",
+          "first card :: attributes: 1 card, no glow",
+          "join and the snapshot :: CodexCards counts the cards",
+          "page titles :: CodexCards 4"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "service: the glow attribute always on",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "every card gold holo :: 10 of 11 Gold Holo: still no glow",
+          "every card gold holo :: 11 silver cards: no glow",
+          "first card :: attributes: 1 card, no glow"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "service: no repair at join",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: CodexCards counts the cards",
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0",
+          "join and the snapshot :: no kills / unknown kind / broken row: dropped",
+          "silver and gold holo :: join: a stage below its kills is raised silently (no reward)",
+          "silver and gold holo :: then the 1000th kill: Holo only"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "service: no snapshot at join",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0",
+          "join and the snapshot :: a sane card as saved",
+          "join and the snapshot :: each player gets their own",
+          "join and the snapshot :: one snapshot at join (V 1)"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "service: no title at join",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: a page full at join (the v5 step): its title, no moment, no toast"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: CodexOpen without the rate limit",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: again within 1 s: nothing (rate limit)",
+          "join and the snapshot :: extra arguments are ignored"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: CodexOpen before ready",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join and the snapshot :: not ready: nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "debug: a reward on the kills set",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug :: 'Slime:99' sets the kills, no reward"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: a minor share pays the whole stage reward",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: a minor kill of a boss without a MinorShare: the card, no reward",
+          "boss cards :: a minor share's Silver: 15% of 3 kills' worth (1,755)",
+          "boss cards :: a minor share: counted, the card pays 15% (585)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "service: a minor kill without a MinorShare pays in full",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: a minor kill of a boss without a MinorShare: the card, no reward"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "service: a minor kill not counted",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: group ran to the end without a Lua error",
+          "what does not count :: a minor share counts (the KillLog rule)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: no XP cap below the boss's level",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the cap not passed",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level",
+          "boss cards :: a Lv1 King Slime card: XP capped to one level, 60 gold"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "service: the cap at the cap level too",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: Lv8 (the cap level): the full card XP; Lv7: one level"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: boss steps back to 100 / 1000",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "boss cards :: a boss's Gold Holo at 30: 10 kills' worth",
+          "boss cards :: a boss's Silver at 10: 3 kills' worth",
+          "boss cards :: a minor share's Silver: 15% of 3 kills' worth (1,755)",
+          "config :: stage from kills (a boss: 10 / 30)",
+          "config :: steps 1 / 100 / 1000, bosses 1 / 10 / 30 (최종 검수 2026-10-13)",
+          "every card gold holo :: CodexGlow = true"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "debug: any event name",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "debug :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "678c51900c0edc405da916563c40a25177fb48f66b8f6ffc6d8dd7694690f978",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/CodexService.luau": "977c155dba2fd51e1896cc70d63811bdb1b9dae288a0b04067ac4150034c3ae7",
+    "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
+    "src/ServerScriptService/KillLog.luau": "0c517d98afbe72b6db265add7a78644b2bf2ba5a2486df18d6a16f516de967a0",
+    "src/ServerScriptService/DataService.luau": "14dc7d8759bb689afa249102420ac6c46e972c7fb27425adc2afc1ba770231dc"
+  },
+  "fixtureSHA256": "a2ff873209d7bf982a287e5335be773dac14260a36da8d7f572f27d5613ddfc7",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "A23-153: Codex[kind] = { Kills, Golden, Stage, First } for the 11 series-1 kinds (3 pages); the KillLog rule (MonsterKilled, not personal); stages at 1 / 100 / 1000 (Card / Silver / Gold Holo; bosses 1 / 10 / 30), a skipped stage paid in order; a minor share (info.Minor) counts but its stage reward is x MinorShare (0 without one); below XPCapBelowLevel the card XP is at most one level (A23-27); the first golden kill = Gold Foil (never a boss); rewards = 3 / 20 / 100 kills' worth (bosses 1 / 3 / 10, foil 5) of the kind's own XP / Gold as bank gold 'Codex' + XP; CodexUp { Event, Kind, Stage, Card, Gold, XP, Title, Page, Key, Args, Text } + a reward toast while ServerToast; a full page = its title once (silent at join); every card at stage 3 = CodexGlow; CodexCards = cards owned; snapshot Codex at join and on CodexOpen (1 s). Save v5: migrate fills the codex once from KillLog.ByKind (Golden 0, First 0, no reward); fillDefaults repairs it.",
+  "limitations": "The card window, the 3D card and the evolve moment are 게임성 개발 1's (the contract doc); the card art is image gen 2's. The real DataStore round trip of a v4 -> v5 record is in tools/test_onboarding.py."
+}

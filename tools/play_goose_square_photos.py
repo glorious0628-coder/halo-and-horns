@@ -183,7 +183,13 @@ local pg = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerG
 local out = {}
 for _, d in pg:GetDescendants() do
 	if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Visible and d.Text ~= "" and (string.find(d.Text, "Join") or string.find(d.Text, "Leave") or string.find(d.Text, "oose") or string.find(d.Text, "gg")) then
-		table.insert(out, d.Name .. ":" .. d.Text)
+		local note = ""
+		if d.Text == "Leave" or string.find(d.Text, "Leav") then
+			local sc = d:FindFirstAncestorOfClass("ScreenGui")
+			note = string.format("[abs=%dx%d at %d,%d textBounds=%dx%d screen=%s]", d.AbsoluteSize.X, d.AbsoluteSize.Y, d.AbsolutePosition.X, d.AbsolutePosition.Y,
+				d.TextBounds.X, d.TextBounds.Y, tostring(sc and sc.AbsoluteSize))
+		end
+		table.insert(out, d.Name .. ":" .. d.Text .. note)
 	end
 end
 return table.concat(out, " | ")

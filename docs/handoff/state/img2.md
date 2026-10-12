@@ -1,4 +1,13 @@
-# 이미지 생성 2 — 인계 (10/12 저녁 정리: 모든 세션 여기까지, 사용자 지시)
+# 이미지 생성 2 — 인계 (10/13 새벽 정리: 컴퓨터 끄기 전)
+## 10/13 새벽 (맨 위 = 이것부터)
+- **집 덩어리 큐** `art/prompts/house_chunks_queue_2026-10-13.json` (43종, 순서대로). 구동기 `py tools/_chunk_redo.py <HaloChunk_Id>`(앞면 → 뒤·왼·오른, 결과 `art/out/s2/noshadow/chunks/<Id>_<view>_ns.png`, 한 번에 하나·run_in_background, 끝 코드 3 = Codex 사용량 끝 → Firefly 고급), 옆면 PIL 고침 `py tools/_chunk_sidefix.py <Id>`(right=left 뒤집기+높이 맞춤, 캔버스 밖이면 STOP), 색 보정 `tools/_tint_obj.py`. 규칙: 둥근 것은 4면 폭 같게, 한쪽을 보는 것은 4면 방향 맞게, 잎·덩굴은 큼직·굵게(도구가 Ivy/FlowerBush/WindowBox 등에 자동으로 문구 추가). 보고처 = **디자인 검수**(통과 판정은 거기서), 막힌 것만 최종 검수.
+- **통과(디자인 검수, Blender 손보기로 넘김)**: 1 LampArm · 2 DoorSingle · 3 CastleWingL · 4 CastleWingR(=WingL 3D를 Blender에서 뒤집어 씀, 2D는 더 안 그림) · 5 DomeRibbed · 6 DoorDouble · 7 WindowBoxA · 8 ConeTree(큰 잎 뭉치 12개 판, 색 보정, 통과) · 9 CastleRose · 10 CastleGateLeaf · 11 DomeOnion · 12 DomeOctagon · 13 DomeBall · 14 DomeOnionSlim · 15 DomeBrick(옆 둥근 반구로 다시, 통과) · 16 JuiceParasol · 17 Greenhouse · 18 ShopSign.
+- **다시 그릴 것(디자인 검수 10/13 확정)**: 19 IvyWall — 지금 판은 줄기 가늘고 잎 성겨 Tripo로 안 넘김. '큼직 잎·굵은 줄기·큰 덩어리' 판으로 4면 다시(도구가 Ivy에 자동 문구 추가, 앞면 파일을 지우고 `py tools/_chunk_redo.py HaloChunk_IvyWall`). 20 IvyBalcony는 앞면(큼직 판) 다음 세션에서 디자인 검수가 봄.
+- **중간에 멈춘 것**: 20 IvyBalcony — 앞면만 그림(`HaloChunk_IvyBalcony_front_ns.png`, 큼직한 잎 문구 판, 앞면 판정 전). 뒤·왼·오른 안 그림(이어서 `py tools/_chunk_redo.py HaloChunk_IvyBalcony`는 있는 파일은 건너뜀).
+- **그다음 큐**: 21 FlowerBushPot · 22 DomePorchHalf · 23 DomePavilion · 24 DomeTowerSmall · 25 BreadDisplay · 26 JuiceStand · 27 PotionDisplay · 28 RoseTrellis · 29 RoseArch · 30 SunflowerBed · 31 Pond · 32 CastleHedge · 33 StarFinial · 34 WeatherVane · 35 ChimneyCap · 36 ChimneyLantern · 37 RoundTree · 38 MedalBell · 39 Telescope · 40 Cauldron · 41 FlowerBuckets · 42 WindowBoxB · 43 CornerFinial. 빛 마을 소품(벤치·가판대·등불·나무…)은 이미지 생성 3이 그림.
+- 꽃 화분 5종(Daisy·Lavender·Rose·Sunflower·Tulip)·분수(물줄기 없음)·Halo_Statue는 통과·옛 2D 지움(최종 검수).
+- 이 줄 아래는 10/12 저녁 정리 내용(이전).
+
 ## 10/12 저녁 정리 (맨 위 = 이것부터)
 - **하는 일 = 그림자 없이 다시 그리기(SPEC A23-150·151)**. 도구 `py tools/codex_image.py --prompt-file <txt> --ref <옛 2D> [--ref <새 앞면>] --out <png>`(사용자 ChatGPT 요금제, Codex 앱; 끝 코드 3 = 사용량 끝 → 그 장만 Firefly 고급). 4면 구동기 `py tools/_noshadow_redo.py <이름> [<이름>...]`(이름 = `docs/review/noshadow_redo_2026-10-12.md` 표의 이름; 앞면 먼저 → 뒤·왼·오른은 옛 그 면 + 새 앞면 ref, 옛 면이 없으면 새 앞면만; 결과 `art/out/s2/noshadow/<이름>_{front,back,left,right}_ns.png`, 프롬프트 .txt 같은 폴더, 로그 `build/img2_next/noshadow_log.txt`; 이미 있는 파일은 건너뜀; **한 번에 하나씩**, 한 장 약 3~4분, 방향은 말 말고 'ref1과 같은 시점·방향'). 반드시 `run_in_background`로 돌리고 한 묶음(5개)마다 옛|새 시트 → 최종 검수.
 - **그린 것(시트 `art/review/s2/noshadow_set1_statue_fountain_old_new.jpg`, 판정 대기)**: Halo_Statue 4면 · Town_Halo_Fountain3 4면(옛은 앞면만, 둥글어 4면 거의 같음). 앞서 통과: MailBoy 4면(`art/out/s2/noshadow/npc/`, approved.json 기록, 옛은 최종 검수가 지움).

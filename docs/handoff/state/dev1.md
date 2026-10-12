@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/13 정리 (사용자 "이제 정리하고 컴퓨터 꺼줘", 최종 검수 전달) — 지금 기준
+- **끝·병합·사진 통과:** 무기 들기 (가) = fix/tool-grip 41da3211 + 46e666ea(활: BowGrip 한 번만·켜고 끔, HUD 초상화가 무기 안 변화 무시, 활 클립 뒤 MOTION.BOW_HOLD 0.25초 왼손 유지), 거위 광장 Leave 폭 = fix/leave-width 2cd31bb4 → **main 310abb37**. 메인 사진 통과(main_apply/tool_grip_ours·bow_rapid·goose_square5: 9종 쥐기 정상, 활 연사 왼손 유지·초상화 다시 만들기 0번, Leave 글자 다 보임).
+- 무기 = 진짜 Roblox Tool `WeaponModel` 오른손(활도), Handle(칼·망치 자루, 지팡이·봉 막대, 활 가운데) + 엔진 RightGrip, Tool.Grip = `Config.WeaponGrip(kind, len)`, 표 `Config.WeaponGrips`(칼 0.75 = ClassicSword 사진, 지팡이 0.45, 망치·봉 0.3, 활 0.5, 짧은 활 Turn 15°). WeaponPose = Studio GripProbe만, ClassGrips엔 Weapon만. 자세한 건 `docs/design/weapon_grip_plan_2026-10-12.md` ③. 시험 test_tool_grip(358·37/37), test_square_button_width(135·7/7); 은퇴 test_one_hand_grips / test_two_hand_grip / test_weapon_pose. 사진 스크립트 `tools/play_tool_grip_ours.py`.
+- **열린 가지·worktree: 없음**(wt_toolgrip·wt_leave·옛 4개 지움).
+- **다음 일 = 몬스터 도감 카드 화면(A23-153)** — 사용자 상시 지시 "이미지→Tripo 먼저"라 **Tripo 일이 끝난 뒤 최종 검수가 부르면 시작**. 설계 `docs/design/codex_cards_2026-10-12.md`, 서버-화면 약속 `docs/design/codex_cards_contract_2026-10-13.md`(main에 있음). 첫 걸음: Slime 카드 1장 3D 기울기·뒤집기 시험.
+- 나중 메모: 지팡이 Tripo 메시(원점 = 전체 43%)를 연결할 때 쥐는 점은 막대 45%(전체 약 39%) — 메시 기준 Point 다시 정함(이미지 개발·최종 검수).
+
 ## 10/12 저녁 정리 (사용자 "모든 세션 다 여기까지만 하고 정리해줘", 최종 검수 전달)
 - **오늘 병합됨(main)**: fix/hero-ui 1eabf613(Hero 창 #1 전투력 칩·#2 비교 줄·#5 Stats 카드·#9 칭호 리본/등급 막대/잠긴 칭호·#7 더 센 무기 점·#3 3D 몸 HeroPreview + API 검토 고침), fix/arm-hang 93d7dcc6(전사 손 0.2 아래), **fix/arm-body 11f7e7a9 = main d4c7c3be**(팔 접힘 진짜 원인: WeaponPose.BodyScale 0.64 → Body/BodyPoint), fix/goose-leave e32814b7(광장 안 Leave 늘), fix/goose-rookie 81162dec(새내기 접기가 광장 안 행사 줄 안 숨김; 새내기 Join은 A23-68대로 숨김 = 최종 검수 결정), 그 전 staff-face2·bubble-ui·english-polish.
 - **열린 가지(내 것)**: 없음 — 위 가지 모두 main에 들어감. worktree: `wt_lesstext`(fix/hero-ui), `wt_gooseleave`(sparse, fix/goose-rookie), `wt_goldegg`(fix/bubble-ui), `wt_onehand` — 다 병합됨, 지워도 됨(지울 땐 최종 검수에 먼저).

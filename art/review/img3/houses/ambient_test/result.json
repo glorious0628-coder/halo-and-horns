@@ -1,0 +1,73 @@
+{
+ "cols": [
+  {
+   "tag": "lat35_now",
+   "lat": 35,
+   "oa": "138,141,156",
+   "from": "latitude_test (same C2c day light, cameras, boxes; this run kept the warm OA by a bug)"
+  },
+  {
+   "tag": "lat35_warm",
+   "lat": 35,
+   "oa": "188,185,183"
+  },
+  {
+   "tag": "lat65_now",
+   "lat": 65,
+   "oa": "138,141,156",
+   "from": "latitude_test (same C2c day light, cameras, boxes; this run kept the warm OA by a bug)"
+  },
+  {
+   "tag": "lat65_warm",
+   "lat": 65,
+   "oa": "188,185,183"
+  }
+ ],
+ "cells": {
+  "Castle|lat35_now": 160,
+  "Shop_Bakery|lat35_now": 182,
+  "Shop_Juice|lat35_now": 200,
+  "House_Cliff6|lat35_now": 164,
+  "Castle|lat35_warm": 188,
+  "Shop_Bakery|lat35_warm": 201,
+  "Shop_Juice|lat35_warm": 215,
+  "House_Cliff6|lat35_warm": 190,
+  "Castle|lat65_now": 201,
+  "Shop_Bakery|lat65_now": 164,
+  "Shop_Juice|lat65_now": 194,
+  "House_Cliff6|lat65_now": 162,
+  "Castle|lat65_warm": 215,
+  "Shop_Bakery|lat65_warm": 188,
+  "Shop_Juice|lat65_warm": 211,
+  "House_Cliff6|lat65_warm": 189
+ },
+ "search": [
+  {
+   "k": 1.25,
+   "oa": [
+    172,
+    169,
+    168
+   ],
+   "cliff6_median": 182
+  },
+  {
+   "k": 1.5625,
+   "oa": [
+    216,
+    212,
+    210
+   ],
+   "cliff6_median": 204
+  },
+  {
+   "k": 1.3636363636363638,
+   "oa": [
+    188,
+    185,
+    183
+   ],
+   "cliff6_median": 190
+  }
+ ]
+}

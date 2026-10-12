@@ -28,8 +28,10 @@ local C = {
 		CC = 0.02 },
 	C2b = { Amb = { 1.5, 1.38, 1.2 }, Bright = 1.0, Exp = 0.15, Spec = 0.8, Tint = rgb(255, 246, 228), Sat = 0.08, Con = 0.04,
 		CC = 0.02 },
-	C2c = { Amb = { 1.45, 1.36, 1.32 }, Bright = 1.0, Exp = 0.15, Spec = 0.8, Tint = rgb(255, 248, 236), Sat = 0.08, Con = 0.04,
-		CC = 0.02 },
+	-- 10/13 최종 검수 (이미지 생성 3 tools/ambient_test.py): day OutdoorAmbient on its own = 188,185,183 (warm cream shade side,
+	-- was 95,104,118 x Amb = 138,141,156 blue grey); Ambient keeps Amb. Night unchanged.
+	C2c = { Amb = { 1.45, 1.36, 1.32 }, OutAmbDay = { 1.979, 1.779, 1.551 }, Bright = 1.0, Exp = 0.15, Spec = 0.8,
+		Tint = rgb(255, 248, 236), Sat = 0.08, Con = 0.04, CC = 0.02 },
 	C3 = { Amb = { 1.3, 1.22, 1.0 }, Bright = 0.95, Exp = 0.1, Diff = 0.8, Tint = rgb(255, 244, 226), Sat = 0.06, Con = 0.05,
 		CC = 0 },
 }
@@ -50,7 +52,7 @@ L.ClockTime = base.ClockTime
 L.GeographicLatitude = 35
 L.Brightness = base.Brightness * bright
 L.Ambient = sc(base.Ambient, z.Amb)
-L.OutdoorAmbient = sc(base.OutdoorAmbient, z.Amb)
+L.OutdoorAmbient = sc(base.OutdoorAmbient, (PHASE ~= "night" and z.OutAmbDay) or z.Amb)
 L.ExposureCompensation = base.Exp + z.Exp
 L.EnvironmentSpecularScale = z.Spec or 0.6
 L.EnvironmentDiffuseScale = z.Diff or 0.5

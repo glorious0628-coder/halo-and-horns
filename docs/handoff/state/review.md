@@ -146,3 +146,28 @@
 - 시작 때 다른 세션 0개 → 사용자가 빈 세션 6개 만듦 → 내가 이름·모델·노력·첫 지시: 메인 반영 1(Sonnet high: sync·클래식 칼 값·거위 창 복원 사진·r15 4종, Save As는 나중), 게임성 개발 1(Opus xhigh: 무기 들기 (가) fix/tool-grip → 다음 도감 카드 화면), 게임성 개발 2(Opus xhigh: 도감 카드 서버 dev2-codex + 약속 문서 → dev2-c2 전체 시험), 이미지 생성 2(Sonnet high: Codex 꽃 화분 5), 이미지 생성 3(Opus high: 빛 성 WorldKit 넣기 + 집 덩어리 43종 큐), Blender 손보기(Opus high: 동상·분수 Tripo 260점 승인, GLB 내려받기 전 멈춤 → 사용자 허락 받아 알림). 이미지 개발은 올릴 것 생기면 새로.
 - 병합: 448b72ff 거위 바닥 → main 24c396d7. 판정: Halo_Statue 4면 통과, Fountain3 통과(right = left 뒤집음, 원래 right 시점 낮음) → approved.json, 옛 2D → `C:/Users/glori/Documents/Roblox/_지울것_2D_2026-10-12`(11213d8).
 - 화면 차례: 메인 반영 1(창 복원 Play 사진)과 이미지 생성 3(WorldKit 창 복원 사진)이 신청할 것 → 한 번에 하나, 사용자에게 알리고 "전달함, 시작".
+- (21:40~) 결정(나): 빛 마을 낮 빛 = 위도 35 그대로 + 그늘 빛(OutdoorAmbient) 따뜻하게 188,185,183(WorldKit C2c 기준, 게임 Config 낮 값 ≈130,136,139 계산) — 시트 art/review/img3/houses/ambient_test/ambient_test.jpg, 근거 docs/design/halo_light_day_oa_2026-10-13.md(이미지 생성 3). 게임 Config는 빛 마을 메인 교체(6단계) 때 코드 세션이 넣음.
+- 판정: 동상 Tripo 통과(흰 모델 D f4fcec0d, 130점), 분수 4면은 물줄기 있어 다시(FountainFx가 물줄기 그림) → 물 없는 판 통과 → Tripo 130점(흰 모델 D 16be0d85, 기둥 45° 돌아감 = 놓을 때 yaw +45, 큰 그릇 물 색 확인 중). 잔액 12,970. **GLB 내려받기 = 사용자 답 대기**(동상·분수). 성 앞 소품 5개 옮김, 집 덩어리 43종 큐 art/prompts/house_chunks_queue_2026-10-13.json 통과.
+- 순서 규칙(사용자 다시 강조): 그림 전체 크기 확인 통과 → 그다음에만 3D, 사람은 맨 끝(보지도 말 것).
+
+## 10/12 22:30 사용자 상시 지시 (새 나는 여기부터)
+- 사용자: "다른 거 요청하기 전까지는 이미지 트리포에서 하는 걸로 하자. 트리포 하다가 크레딧 모자라면 거기서 멈추고 다른 밀린 작업들 시작. 내가 해야 할 것들은 미뤄둬. 컴퓨터 제어도 내가 말 안 해도 써도 돼."
+- **팀 = 이미지→Tripo만:** 이미지 생성 2(집 덩어리 43 큐 4면), 이미지 생성 3(빛 마을 소품 4면 새로 + GLB 넣기·3D 가져오기 직접), Blender 손보기(Tripo 전부, 흰 모델 미리 돌려 둠), 디자인 검수(흰 모델·4면 관문, 빛 마을 안 점수 승인). 게임성 개발 1·2·메인 반영 1 = 하던 것(무기 들기·Leave 병합 + 사진, 도감 서버 시험)만 끝내고 대기(새 일 안 줌).
+- **멈추는 때:** Tripo 잔액 < 135(다음 물건 하나) → Tripo 멈춤 → 밀린 일(도감 카드 화면 개발 1·도감 서버 병합·C2·거래소 개발 2·남은 메인 사진 등) 다시 나눔. 계정 바꾸기는 사용자 일 → 아래 목록.
+- **화면 제어:** 사용자 답 기다리지 않고 바로 "전달함, 시작"(한 번에 한 세션만, 마우스·키보드면 사용자 채팅에 🟠 줄). 3D 가져오기도 세션이 직접(안 먹으면 사용자 일로 미룸).
+- (23:30) 병합: 310abb37 무기 들기 Tool(46e666ea)+Leave 폭(2cd31bb4) — 메인 사진 통과(tool_grip_ours·bow_rapid·goose_square5). 0aa6a0b7 도감 카드 서버 + **저장 v5**(3481c431, 반박 검토 MINOR 2개 고친 판, BossSteps 1/10/30 내 결정) → 메인 반영 1 sync·Play 확인 → Save As 신청 대기. 디자인 검수 결정: CastleWingR = WingL 3D 좌우 뒤집기(내 OK). API 남은 돈 ≈ $4 → 병합 검토는 앱 워크플로.
+- (23:40) 메인 반영 1 도감 서버 Play 확인 통과(codex_server/log.txt). Save As = Studio 컴퓨터 제어 허용창을 사용자가 "거부" → 다시 시도 안 함, 미룸(place/ = 18:41 판 그대로, 코드는 git).
+- **사용자 일 미룸(모아 두기):** 메인 Studio Save As(컴퓨터 제어 허용창이 뜨면 허용, 또는 직접 저장), Blender 손보기 세션을 화면에 띄우고 Ctrl+Shift+B(앱 브라우저 보이게 — 동상·분수 매직 브러시 3곳, 창 숨김이면 3D 안 그려짐), 게임 패스 만들기(Sticker Pack 99·Bubble Pack 99 + 기존 패스 → Config.GamePasses, 10/17 시험 전), `_지울것_3D/2D_2026-10-12` 폴더 지우기(원하면), Tripo 계정 바꾸기(잔액 < 135 때).
+- (23:50) 디자인 검수 보고 4: 4면 통과 → Tripo = 소품 BenchA·B·C, BreadStand, FruitStall, FlowerCart + 덩어리 DoorSingle·LampArm·CastleWingL(R = 뒤집기)·DomeRibbed·DoorDouble·WindowBoxA·CastleRose·CastleGateLeaf·DomeOnion·DomeOctagon·DomeBall·DomeOnionSlim. 다시 그림: DomeBrick 옆, ConeTree(큰 잎 뭉치 12개). 텍스처→PBR OK: 화분 Lavender·Tulip·Sunflower, DoorSingle + 8종. 매직 브러시 보류(창 보일 때): 동상 B 2곳·분수 C 1곳·Daisy 주황 꽃·Rose 윗면. 잔액 ≈ 10,640(그 뒤 묶음 5·6 스마트 메시로 더 내려감).
+- (00:00 10/13) 이미지 생성 3 WorldKit 3D 가져오기(화분 3개) — 사용자가 허용함 → 진행.
+
+## 10/13 00:00 정리 (사용자 "이제 슬슬 정리하고, 컴퓨터 꺼줘") — 다음 나는 여기부터
+- **상시 지시 그대로:** 이미지→Tripo 먼저(위 22:30 절). 아침에 세션들에 "이어서" 보낼 때도 같은 방향: 이미지 생성 2(덩어리 큐)·이미지 생성 3(소품 4면 + 넣기)·Blender 손보기(Tripo)·디자인 검수(관문). 게임성 개발 1·2·메인 반영 1은 대기.
+- **main = 0aa6a0b7 이후 문서 커밋들.** 오늘 밤 병합: 310abb37(무기 들기 Tool + Leave 폭, 메인 사진 통과), 0aa6a0b7(도감 카드 서버 + 저장 v5, 메인 Play 통과). 메인 Studio 저장 안 함(Save As 미룸, 18:41 build 판 = place/ + 새 스크립트 5개 = 안전 → 다음에 열고 sync 뒤 Save As).
+- **각 세션 state 파일**에 어디까지 했는지 적게 함(img2·img3·blender·design_review·mainapply·dev1·dev2). 아침에 먼저 그 파일들을 읽고 이어서.
+- (02:10) 7개 세션 정리 끝. Studio 창 제어(robloxstudiobeta.exe) 허용이 두 번 다 "거부"(두 번째는 자동 거부로 보임) → 3D 가져오기·Ctrl+S 못 함. **WorldKit은 저장 안 됨** — 백업 build/wk_backup/20261013_020933(59 루트 + 지형, 13 MB) → 켠 뒤 WorldKit 열고 `wk_backup.py load 20261013_020933 --replace --terrain` 먼저(이미지 생성 3, state/img3.md). Tripo 잔액 9,385, 도는 일 없음, Blender 손보기 다음 첫 일 = 9종 + WingR을 이미지 생성 3에 넘기기.
+- (08:40 10/13) 사용자 "이어서, 몇 시간 자리 비움, 내 허락 필요한 건 미뤄줘" → 이미지 생성 2·3·Blender 손보기·디자인 검수에 이어서 보냄(이미지 생성 3: WorldKit 백업 되살리기 → GLB는 build/import3d에 모으기 + SA 올리기까지 → 소품 4면). 개발 1·2·메인 반영 1 = 대기(메시지 안 보냄).
+- **3D 올리기 자동화 제안(사용자 OK 필요, 미룸):** Open Cloud Assets API는 .glb/.fbx(≤20 MB)를 Model로 올림 → Studio 클릭 없이 `InsertService:LoadAsset(id)`로 MeshId. 도구 `tools/roblox_asset_upload.py`(아직 안 돌림). 사용자 일: Creator Hub → Open Cloud → API Keys → 새 키(Access Permissions = Assets Read+Write) → `.env`에 `ROBLOX_API_KEY=`·`ROBLOX_CREATOR_ID=` 직접 붙여 넣기(채팅에 쓰지 않음) + 첫 업로드 OK.
+- (08:55) **Tripo 로그아웃**(재부팅 뒤 앱 브라우저 쿠키 비어짐, 401) → Tripo 멈춤 = 사용자 규칙 "Tripo 막히면 밀린 일" → 개발 1 = 도감 카드 화면(fix/codex-ui, UiSandbox Slime 먼저), 개발 2 = C2 → 거래소 서버, 메인 반영 1 = 메인 Studio 다시 열고 sync. 이미지 생성 2·3(2D)·디자인 검수는 계속. 주간 사용량 11%.
+- **사용자 일(미룸):** **Tripo 다시 로그인**(앱 브라우저, Blender 손보기 세션 화면에서 — 로그인하면 Tripo 다시 돌림), WorldKit 3D 가져오기(build/import3d 화분 3개 — 또는 Studio 제어 허용 창 문제 해결), 메인 Save As 허용(또는 직접), Blender 손보기 창 보이게(매직 브러시 5곳), 게임 패스 만들기, `_지울것` 폴더, Tripo 계정 바꾸기(잔액 < 135 때).
+- Tripo 잔액 12,335(22:30, 꽃 화분 5종 흰 모델 500점 시작). 빛 마을 남은 것 ≈ 소품 62 + 덩어리 43 ≈ 105개 × 135 ≈ 14,200 > 잔액 → 빛 마을 끝 무렵 멈춤 예상.

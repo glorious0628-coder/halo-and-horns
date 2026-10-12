@@ -9,7 +9,7 @@ runGroup("config", function()
 	local C = C0
 	check(C.Data.Defaults.WeaponTier == 0 and C.Data.Defaults.WeaponOwnedMask == 0,
 		"a new save starts bare-handed: WeaponTier 0, nothing owned", show({ C.Data.Defaults.WeaponTier, C.Data.Defaults.WeaponOwnedMask }))
-	check(C.Data.Version == 4, "save Version 4 = C1's tier 9 (A23-34 and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 5, "save Version 5 = A23-153's codex (C1's tier 9 made it 4) (A23-34 and A23-69's Stats are additive)", C.Data.Version)
 	check(U.Damage == 4 and U.Range == 7 and U.Interval == 0.8 and U.AimCone == 90, "Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)", show(U))
 	check(U.Range > C.Monsters.AttackRange, "the punch reaches a slime that attacks me (Range 7 > monster reach 5.5)",
 		C.Monsters.AttackRange)
@@ -149,7 +149,7 @@ runGroup("save", function()
 		check(d.WeaponTier == case[2] and d.WeaponOwnedMask == case[3], "load: " .. case[4],
 			show({ tier = d.WeaponTier, mask = d.WeaponOwnedMask }))
 		local again = load(d)
-		check(again.WeaponTier == d.WeaponTier and again.WeaponOwnedMask == d.WeaponOwnedMask and again.Version == 4,
+		check(again.WeaponTier == d.WeaponTier and again.WeaponOwnedMask == d.WeaponOwnedMask and again.Version == 5,
 			"load again: " .. case[4] .. " (idempotent, Version 4)")
 	end
 end)
@@ -601,9 +601,12 @@ runGroup("power-pvp-visuals", function()
 		function() end, function() end, function(name) local m = newInstance("Model", w); m.Name = name; return m end,
 		function() return "Halo" end, function(model) table.insert(built, "mount:" .. model.Name) end)
 	buildWeapon(p, p.Character)
-	check(cleared == 1 and #built == 0, "tier 0: the old model is cleared and nothing is built", show(built))
+	-- (A23-150 7: cleared twice a build - the character's WeaponModel and a Tool the engine put in the Backpack)
+	check(cleared == 2 and #built == 0, "tier 0: the old model is cleared and nothing is built", show(built))
 	buildWeapon(r, r.Character)
-	check(cleared == 2 and built[1] == "Sword" and built[2] == "mount:WeaponModel", "tier 1: the weapon is built", show(built))
+	-- A23-150 7: the weapon is a Tool built round its Handle part - this stub builder returns none, so nothing is mounted
+	-- (tools/test_tool_grip.py builds the real shapes)
+	check(cleared == 4 and built[1] == "Sword" and #built == 1, "tier 1: the weapon is built", show(built))
 end)
 
 finish()

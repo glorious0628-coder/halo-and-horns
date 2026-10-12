@@ -3138,6 +3138,12 @@ function L.PortraitPairs(source, copy, pairs)
 end
 
 function L.PortraitAppearance(object)
+	-- A23-150 7 (최종 검수 10/13): the weapon Tool never shows in the portrait (L.RefreshPortrait drops it) - nothing in it
+	-- (the archers' BowGrip switched on / off every shot, a swapped weapon) nor the engine's RightGrip asks for a new copy
+	if object.Name == "WeaponModel" or object:FindFirstAncestor("WeaponModel")
+		or (object.Name == "RightGrip" and object:IsA("JointInstance")) then
+		return false
+	end
 	return object:IsA("BasePart") or object:IsA("DataModelMesh") or object:IsA("Decal")
 		or object:IsA("SurfaceAppearance") or object:IsA("BodyColors") or object:IsA("Clothing")
 		or object:IsA("ShirtGraphic") or object:IsA("Accessory") or object:IsA("CharacterMesh")
