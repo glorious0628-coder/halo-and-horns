@@ -1,3 +1,8 @@
+# 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 5개 전부 올림)
+
+- **IconGlowcap 올림**(고친 컷아웃 dc1fadc2, 디자인 검수 OK): rbxassetid://118269985242078 (asset_ids IconGlowcap). 가지 imgdev-icons2에 새 커밋 7b8d1a4a(Config 한 줄, 16c0609f 위, 되감지 않음). 2차 5개 = CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 · IconGlowcap 118269985242078. 병합 대기(게임성 검수 16c0609f 통과, 새 커밋 한 줄은 다시 봄).
+- WorldKit이 다시 시작됨(MCP 이름 WorldKit.rbxlx, 새 STUDIO_ID는 이미지 생성 1이 알려 줌). MV(금·매끈·천 v3b)는 되살린 뒤 확인·다시 넣기: build/wk_backup/20261012_090653.
+
 # 이미지 개발 — 상태 (2026-10-12: 2차 아이콘 4개 올림, Glowcap 보류)
 
 - **2차 아이콘 4개 올림**: CraftRing 115071977806649 · CraftTarget 134156748980991 · CraftIngot 133966322294546 · IconCrownDust 130666131385080 (asset_ids 같은 이름). Config 반영 = 가지 `imgdev-icons2`(worktree ../Game-imgdev-icons, origin/main 위) -> 게임성 검수 -> 최종 검수.
