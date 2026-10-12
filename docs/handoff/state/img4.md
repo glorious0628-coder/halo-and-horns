@@ -1,5 +1,10 @@
 # 이미지 생성 4 — 상태 (2026-10-12 저녁)
 
+## ★ 10/12 최종 검수 결정 — 블록 몸 시험 멈춤, 역할 바뀜
+- BakerGranny 블록 몸은 **멈춤**(WorldKit에 넣지 않음, 화면 슬롯 취소). 이유: 얼굴이 비고 Tripo 앞머리가 얼굴 위 콧수염처럼 보여, MailBoy 새 방법(SPEC A23-150: 그림자 없는 2D 4면 → Tripo 스마트 메시 → 텍스처 '조명 없이')보다 못함. 사용자: "인물도 골격을 넣어서 더 잘되면 골격 만들어서 해도 돼" → 더 나을 때만 블록 몸.
+- `tools/npc_block_body.py`·`art/models/npc_block/BakerGranny/*`(rig.json 포함)는 **지우지 말 것** — 움직이는 NPC 때 다시 봄.
+- **새 역할: Tripo 생성은 이제 Blender 손보기 세션이 전부.** 이미지 생성 4 = 통과한 GLB를 WorldKit/Roblox에 넣기·재질·낮밤 사진만. 다음 넣을 것은 최종 검수가 알려 줌(그때까지 대기).
+
 ## ★ 10/12 A23-149 골격 먼저 — BakerGranny 시험 (ddb6ca1, 최종 검수 답 기다림)
 - `tools/npc_block_body.py` (Blender): R15 15부품 블록 몸 + 팔레트 단색 입히기 + Tripo 원본에서 모자·머리·리본 잘라 쓰기 + 정확한 후광, 얼굴 비움. 출력 `art/models/npc_block/BakerGranny/` (glb, palette, rig.json = Roblox 좌표 관절 15개). 시트 `art/review/img4/npc_block_BakerGranny_1012.jpg`.
 - 남은 흠: 리본 끈 옆으로 삐짐, 모자 아래 금띠 조각. 다음 = OK 받으면 WorldKit Import(화면 슬롯) → Humanoid R15 + Motor6D 스크립트 → 기본 걷기 1회.
