@@ -362,7 +362,7 @@ def main():
         except Exception as e:  # noqa: BLE001
             note("stop failed " + str(e))
         time.sleep(2)
-        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", nil) return "fresh off"', "Edit"))
+        note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh kept on"', "Edit"))
         with open(os.path.join(OUT, "log.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(LOG) + "\n")
 
