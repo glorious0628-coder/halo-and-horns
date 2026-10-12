@@ -3,7 +3,7 @@
 ## ★ 10/12 저녁 정리 (사용자 "여기까지만 하고 정리")
 - **빛 성 C2 골격 v3 통과**(tools/skeleton_castle.py, 파트 1374, 십자 평면 + 교차 탑 = 가장 높은 첨탑·후광 자리, 정면 계단 탑·장미창·뾰족 정문·진짜 금 문짝 2·기단). **WorldKit 넣기 대기**: WorldKit 닫혀 있음 → 최종 검수 '전달함, 시작' 뒤 scratchpad castle_run.sh 순서(셸로 build/WorldKit.rbxlx 열기 → 바닥판 3(z 208..308) → build/castle_row.json(시험 줄 4, z 260) → build/castle_plan_place.json(tools/castle_plan_place.py, 계획 자리 Castle -176,-574 yaw 20, 문 맞춤) → 백업 → 낮 사진 5장 → 최소화). 장식 단계 메모: 교차 탑 아래 둘레 작은 첨탑 4, 옆 첨탑 줄 더 촘촘히.
 - **등불 = 파트 골격**(받침·기둥 4·유리·뚜껑·2단 지붕·꼭지·벽 팔) 22채 + 07 바꿔 넣음(house_skeleton_swap, 07은 Luau로), 옛 납작 등불 58 + 07 금속 틀 4 → ServerStorage.Parked_FlatLanterns. 사진 lamps_parts_day.jpg.
-- **덩어리 장식 목록** docs/design/house_chunk_decor_2026-10-12.md (tools/house_chunk_list.py): 요약 = 같은 모양 한 번 만들기 고유 43종 × 130 = 5,590점(집마다 따로 130개 = 16,900점) — A23-96/107(다시 쓰기·크기 바꾸기 없음)과 부딪혀 사용자 결정 대기. 집마다 받는 덩어리 표.
+- **덩어리 장식 목록** docs/design/house_chunk_decor_2026-10-12.md (tools/house_chunk_list.py): 요약 = 같은 모양 한 번 만들기 고유 43종 × 130 = 5,590점 — **사용자 결정(A23-150 5번): 같은 모양은 같이 쓰기**(2D가 같은 것만, 다른 물건 흉내 금지). 다음 = 이 43종 순서로 이미지 생성 2에 덩어리 그림 요청. 집마다 받는 덩어리 표.
 - 그림자 점검 docs/review/noshadow_check_img3_2026-10-12.md(169장: 있음 7·약간 160·없음 2). 놓인 소품 목록 docs/design/halo_v2_placed_props_2026-10-12.md + 이름 한 줄씩 halo_v2_placed_names_2026-10-12.txt (tools/wk_placed_props.py, 저장 파일 파싱).
 - **이미지 생성 4 일 이어받음**: 통과한 GLB를 WorldKit 넣기·Roblox 재질·낮밤 사진(2D 나란히) — docs/handoff/state/img4.md 맨 위, 넣을 것은 최종 검수가 알려 줌(아직 없음).
 - 새 결정 SPEC A23-152: 베타 7구역 순서 빛 → 뿔 → 장인 마을(새로) → 교차로 + 쌍둥이 교차로(거위 게임만) → 슬라임 → 고블린 → 해골.
