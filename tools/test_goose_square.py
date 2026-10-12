@@ -98,8 +98,9 @@ def static() -> tuple[int, list[str]]:
     config = read(SHARED / "Config.luau")
     check("function Config.InGooseSquare(p)" in config and "Config.Goose.Square.Attr or \"InGooseSquare\"" in config,
           "Config.InGooseSquare reads game dev 1's attribute name (InGooseSquare by default)")
-    check(config.count("Config.Goose.Square = {") == 1 and "Config.Goose.Square" not in strip_comments(read(SSS / "GooseSquare.luau")).replace("Config.Goose.Square or", "")
-          .replace("type(Config.Goose.Square) == \"table\" and Config.Goose.Square", ""),
+    sq_code = strip_comments(read(SSS / "GooseSquare.luau"))
+    check(config.count("Config.Goose.Square = {") == 1 and "Config.Goose.Square =" not in sq_code
+          and 'type(Config.Goose.Square) == "table" and Config.Goose.Square or {}' in sq_code,
           "Config.Goose.Square (the client table) is defined once (game dev 1); GooseSquare only reads it")
     net = read(SHARED / "Net.luau")
     check('"GooseSquare", -- A23-141' in net, "Net registers the GooseSquare remote")

@@ -207,8 +207,8 @@ runGroup("remote", function()
 	local n = G.World.Notices[#G.World.Notices]
 	check(n and n.Player == p and n.Text == "The goose is gone." and p.Attrs.InGooseSquare == false, "a refusal = the client table's Text line once",
 		show(n and n.Text))
-	-- no client table yet: no line, never an error
-	local H = square()
+	-- no client table (game dev 1's Config.Goose.Square taken away): no line, never an error
+	local H = square({ EditConfig = function(c) c.Goose.Square = nil end })
 	H.Active = false
 	local q = H.Add(newPlayer("q"))
 	H.GS.OnRemote(q, "Join")
