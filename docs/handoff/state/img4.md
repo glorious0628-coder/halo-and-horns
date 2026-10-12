@@ -1,3 +1,38 @@
+# ★★ 넘김 (10/12 저녁) — 이 세션 닫음, 일은 이미지 생성 3이 이어받음
+최종 검수 결정(사용자 OK): 이미지 생성 4 세션 정리 후 닫음. 이어받는 일 = **통과한 GLB를 WorldKit/Roblox에 넣기·재질·낮밤 사진** (Tripo 생성·Blender 손보기 = 'Blender 손보기' 세션).
+
+## 1. WorldKit에 내가 넣은 것 (STUDIO_ID 535fc5fe…, 파일 build/WorldKit.rbxlx)
+- **ServerStorage.HaloPropKits** = 파트 키트 58개 (tools/worldkit/prop_kit.py, Tripo 아님, 색 맵 0 — 전부 단색 파트). 겹친 면 고친 판(백업 build/wk_backup/20261012_092142).
+  - 실제 자리: **Workspace.HaloV2.Props**에 이미지 생성 1이 `py tools/worldkit/halo_props_place.py --mode apply`로 놓음(Real 103). 키트를 바꾸면 `py tools/worldkit/prop_kit.py <키…> --apply` → halo_props_place 다시 → `wk_backup.py save --only ServerStorage.HaloPropKits`.
+- **ServerStorage.Parked_Outlines** = 바깥선 껍데기 6개(A23-148로 치움, **지우지 말 것**): NoticeBoard 122491459364964, Telescope 76210421841998, Cauldron 135592054416796, Fountain3 111616336567227, WaterBuckets 133947698842194, Easel 131882928073202. 마을 소품엔 껍데기가 하나도 안 놓여 있었음. 나머지 껍데기 ID 표 art/models/worldkit/prop_hull_assets.json(쓰지 않음).
+- **Tripo GLB는 WorldKit에 하나도 안 넣음.** 내 Blender판(art/models/tripo/touchup/*, art/models/tripo/weapons/*)은 폐기 대상, 원본은 art/models/tripo/web/ (목록·Tripo 축은 아래 '★ 10/12 저녁 전환' 절).
+- 참고(내 것 아님): Workspace …Props/StandIn 아래 10/10 Tripo 대역 4종(Halo_PotFlowers·RoundTree·Planter·Topiary, 47곳)은 색 맵에 그림자가 구워져 있음 → docs/review/noshadow_check_img4_2026-10-12.md.
+
+## 2. 재질 규칙 (Studio 사진에서 배운 것)
+- 실제 땅 C2c 빛에서 어두운 회색 Metal·SmoothPlastic은 하늘빛을 받아 남색으로 보임 → 숯 회색 = 거친 Slate + 따뜻한 회색(110,100,92).
+- Neon은 하얗게 번짐 → 빛나는 면(물약 등)은 한 단계 진한 색(예 60,196,170).
+- 칠한 흰 나무 = `pcream` SmoothPlastic(242,233,214) + 판 줄 `groove`(212,198,176); 무쇠 솥 `ironblue`(60,64,78) Metal 반사 0.08.
+- 판정은 Blender 미리보기 말고 **Studio 낮·밤 사진**으로(Blender 해 그림자가 거짓 줄을 만듦). 사진 자리는 새 평지로(옛 자리 -24,0.2,-440은 언덕에 가림).
+- 바깥선 없음(A23-148), 2D 시안이 목표. 새 모델 색 맵은 그림자 없는 판(A23-150)이어야 함.
+
+## 3. 넣기 도구·순서
+1. 통과 GLB 받기(Blender 손보기 → 최종 검수 통과). Tripo GLB 앞 = Blender +X; Roblox 앞 = -Z.
+2. Import 3D는 GUI라 **화면 슬롯 필요**(규칙 6: 최종 검수에 "<세션> / Import 3D / 초, 마우스·키보드" → "전달함, 시작" → 끝나면 "끝"). 사용자가 직접 Import하는 길도 있었음(바깥선 묶음 때).
+3. **회전 보정:** Import 3D는 OBJ 메시를 세로축 180° 돌림 → 놓기 = `키트 피벗 × CFrame.new(centre) × CFrame.Angles(0, math.pi, 0)` (centre = 메시 중심, prop_kit_bake의 `<키>_<tag>_bake.json`은 키트 피벗 기준). GLB도 넣은 뒤 앞이 -Z인지 꼭 사진으로 확인.
+4. 스크립트 조작은 `STUDIO_ID=535fc5fe-08fc-481f-8519-0e37aeb6c57a py tools/studio_mcp.py call execute_luau '{"datamodel_type":"Edit","code":"…"}'` (긴 코드는 json.dumps로 감싸 넘기기; Windows 콘솔은 PYTHONIOENCODING=utf-8). WorldKit 창이 닫혀 있으면 실시간 조회 불가 → 저장 파일 build/WorldKit.rbxlx를 XML로 읽을 수 있음.
+5. 재질: SurfaceAppearance(Color/Normal/Roughness/Metalness) 또는 MaterialVariant → 낮·밤 사진을 2D 옆에 놓고 최종 검수에 보냄. 바꾸기 전 `wk_backup.py save`.
+6. 사진 도구: tools/prop_compare_shots.py(`--dry`는 화면 없이 배치 확인), tools/prop_compare_sheet.py.
+
+## 4. 남은 일
+- 다음 넣을 GLB는 최종 검수가 알려 줌(지금 대기 없음).
+- 그림자 점검 결과: 내가 Tripo에 넣은 2D 87세트 전부 바닥 그림자는 없지만 입체 음영·AO가 있음(약간 60·약간(진함) 27) → 그 Tripo 모델들은 A23-150대로 다시 만들 대상(Blender 손보기 세션).
+- 키트 파트 수 줄이기(CSG, 등불 56 ≈ 4천 파트, Woodpile 146) — 하게 되면 최종 검수 OK 뒤.
+
+## 5. 블록 몸 도구 (움직이는 NPC 때 다시 봄, 지우지 말 것)
+- `tools/npc_block_body.py` (Blender): R15 15부품 블록 몸 + 팔레트 단색 옷 + Tripo에서 모자·머리·리본 잘라 붙이기 + 정확한 후광. 출력 art/models/npc_block/BakerGranny/ (BakerGranny_block.glb, _palette.png, **_rig.json** = Roblox 좌표 관절 15개 Root/Waist/Neck/어깨·팔꿈치·손목/엉덩이·무릎·발목, C0 = part0⁻¹·J, C1 = part1⁻¹·J). 시트 art/review/img4/npc_block_BakerGranny_1012.jpg.
+- 판정: 멈춤(얼굴이 비고 앞머리가 콧수염처럼 보임). 사용자 "골격 넣어서 더 잘되면 해도 돼" → 더 나을 때만.
+- 쓰는 법: `blender --background --factory-startup --python tools/npc_block_body.py -- BakerGranny [--render]`; 새 NPC는 스크립트 안 NPC 표에 치수 추가. Studio에서는 Humanoid(R15) + HumanoidRootPart + Motor6D를 rig.json대로 묶으면 기본 걷기 애니메이션이 붙음(아직 시험 안 함).
+
 # 이미지 생성 4 — 상태 (2026-10-12 저녁)
 
 ## ★ 10/12 최종 검수 결정 — 블록 몸 시험 멈춤, 역할 바뀜
