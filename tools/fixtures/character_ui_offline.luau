@@ -138,12 +138,14 @@ local attrs = {}
 local function resetAttrs()
 	for k in attrs do attrs[k] = nil end
 	for k, v in { Class = "Warrior", Faction = "Halo", Level = 10, WeaponOwnedMask = 11, WeaponTier = 2, WeaponEnhance = 3,
-		CombatPower = 1234, DataLoaded = true, InCombatUntil = 0, TitlesOwned = "", TitleSel = "", MaxMana = 100 } do
+		CombatPower = 1234, DataLoaded = true, InCombatUntil = 0, TitlesOwned = "", TitleSel = "", MaxMana = 100,
+		ClassChosen = true, Nickname = "Glory" } do
 		attrs[k] = v
 	end
 end
 resetAttrs()
-local player = { UserId = 4242, GetAttribute = function(_, k) return attrs[k] end }
+local player = { UserId = 4242, DisplayName = "Glory_RBX", GetAttribute = function(_, k) return attrs[k] end }
+local ALIVE = true
 local warns = {}
 local Util = {
 	Warn = function(...) table.insert(warns, table.concat({ ... }, " ")) end,
@@ -154,6 +156,7 @@ local Util = {
 		return (out:gsub("^,", ""))
 	end,
 	GetHumanoid = function() return hum end,
+	IsAlive = function() return ALIVE end,
 }
 local L10nReg = {}
 local L10n = { Register = function(path, t) L10nReg[path] = t return t end }
@@ -318,7 +321,9 @@ local function scanTexts(M, root)
 		local t = d.Text
 		if type(t) == "string" and t ~= "" and (d.ClassName == "TextLabel" or d.ClassName == "TextButton") then
 			n += 1
+			-- (the player's own nickname / display name is their data, not a word of ours)
 			local ok = configWords[t] == true or string.match(t, "^[%d,%.%+%-]+$") ~= nil or string.match(t, "^%u$") ~= nil
+				or (d.Name == "Nickname" and (t == attrs.Nickname or t == player.DisplayName))
 			if not ok then
 				for _, p in pats do
 					if string.match(t, p) then ok = true break end
@@ -435,6 +440,24 @@ check(rowOf(minimal, "MaxHP") == nil, "StatRows: a value with no source leaves i
 local top = M.StatRows({ Faction = "Halo", Honor = 2000, Level = 5 })
 check(rowOf(top, "Next").Value == "Top rank", "StatRows: at the top = Top rank", rowOf(top, "Next").Value)
 check(heads(M.StatRows({ Faction = "Halo", Rebirths = 1 })):find("Rebirth", 1, true) ~= nil, "StatRows: one rebirth shows the Rebirth section")
+-- 게임성 검수 10/12 (API review): the blessing is the winning side's only (gold and XP), the hit row is the base hit
+check(rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Value == "+25% gold · +25% XP", "10/12: my side's blessing = +gold and +XP",
+	rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Value)
+local otherSide = table.clone(rich)
+otherSide.Blessing = "Halo"
+check(rowOf(M.StatRows(otherSide), "Blessing") == nil, "10/12: the other side's blessing is not mine (no row)")
+check(rowOf(srows, "Hit") and rowOf(srows, "Hit").Label == "Base hit", "10/12: the hit row says Base hit (the server adds size / bully / wanted / aura)",
+	rowOf(srows, "Hit") and rowOf(srows, "Hit").Label)
+-- 게임성 검수 10/12: the server's other refusals dim [Equip] (dead, no class, a side weapon without a side)
+local usable = { Tier = 7, Usable = true, NeedSide = true }
+local _, onA = M.EquipState(usable, { Faction = "Halo" })
+local _, offDead = M.EquipState(usable, { Faction = "Halo", Dead = true })
+local _, offClass = M.EquipState(usable, { Faction = "Halo", NoClass = true })
+local _, offSide = M.EquipState(usable, { Faction = "None" })
+local _, onPlain = M.EquipState({ Tier = 1, Usable = true }, { Faction = "None" })
+check(onA == true and offDead == false and offClass == false and offSide == false and onPlain == true,
+	"10/12: Equip off when dead / no class / a side weapon without a side; on otherwise", tostring(onA) .. tostring(offDead)
+	.. tostring(offClass) .. tostring(offSide) .. tostring(onPlain))
 
 ------------------------------------------------------------------ 4. the window without GearSlots (the fallback), no pets
 resetAttrs()
@@ -454,6 +477,13 @@ check(allEmpty and find(frame, "Empty_Armor") and find(frame, "Empty_Ring") and 
 check(find(frame, "Cap_Weapon").Text == "Weapon" and find(frame, "EmptyCap_PetArmor").Text == "Pet Armor", "fallback: the one short word under a cell")
 check(find(body, "PowerNumber").Text == "1,234" and string.find(find(body, "Who").Text, "Lv 10", 1, true) ~= nil, "the left column: the Power number and Lv / class")
 check(find(body, "Headshot").Image == "headshot:4242", "the headshot of my account")
+-- 게임성 검수 10/12 (API review): Settings hides its Nickname row once this window exists -> the nickname lives here
+check(find(body, "Nickname") and find(body, "Nickname").Text == "Glory", "10/12: my nickname under the portrait",
+	find(body, "Nickname") and find(body, "Nickname").Text)
+local changeName = find(body, "ChangeName")
+check(changeName ~= nil and changeName.Text == "Change", "10/12: a [Change] button beside it")
+if changeName and changeName.OnClick then changeName.OnClick() end
+check(kitOpened[#kitOpened] == "Nickname", "10/12: [Change] opens the Nickname window", kitOpened[#kitOpened])
 check(find(body, "Title_Auto") and find(body, "Title_Auto").Color == "gold" and find(body, "Title_BetaPioneer") == nil, "the title list: Auto (current) only while no title is owned")
 local nText = scanTexts(M, body)
 -- a press on the Weapon cell opens the owned list

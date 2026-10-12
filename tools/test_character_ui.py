@@ -105,6 +105,24 @@ MUTATIONS = [
     ("MAIN", "CharacterUI is never loaded", "\"BagUI\", \"CharacterUI\", \"GatherView\",", "\"BagUI\", \"GatherView\","),
     ("MAIN", "CharacterUI before BagUI", "\"BagUI\", \"CharacterUI\", \"GatherView\",", "\"CharacterUI\", \"BagUI\", \"GatherView\","),
     ("PANELS", "the window has no title icon", "\t\t\tCharacter = \"IconCharacter\" },", "\t\t\t},"),
+    # 게임성 검수 10/12 (API review fixes)
+    ("UI", "the other side's blessing shown as mine", "if (blessing == \"Halo\" or blessing == \"Horns\") and blessing == faction then",
+     "if (blessing == \"Halo\" or blessing == \"Horns\") then"),
+    ("UI", "the blessing without its XP", "BlessingValue = \"+%d%% gold · +%d%% XP\",", "BlessingValue = \"+%d%% gold\","),
+    ("UI", "the hit row claims the final damage", "Hit = \"Base hit\",", "Hit = \"Hit damage\","),
+    ("UI", "no nickname row", "Name = \"Nickname\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),",
+     "Name = \"Nick_\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),"),
+    ("UI", "[Change] opens another window", "pcall(pk.Open, \"Nickname\")", "pcall(pk.Open, \"Settings\")"),
+    ("UI", "equip while dead", "if ctx.Dead or ctx.NoClass or (row.NeedSide and ctx.Faction == \"None\") then",
+     "if ctx.NoClass or (row.NeedSide and ctx.Faction == \"None\") then"),
+    ("UI", "equip before a class", "if ctx.Dead or ctx.NoClass or (row.NeedSide and ctx.Faction == \"None\") then",
+     "if ctx.Dead or (row.NeedSide and ctx.Faction == \"None\") then"),
+    ("UI", "a side weapon without a side", "if ctx.Dead or ctx.NoClass or (row.NeedSide and ctx.Faction == \"None\") then",
+     "if ctx.Dead or ctx.NoClass then"),
+    ("UI", "the power from the old formula (not CombatPowerOf)", "if power == nil then power = okP and tonumber(now) or 0 end",
+     "if power == nil then power = Config.CombatPower(level, tier, plus) end"),
+    ("HUD", "the face opens the window below Lv 2 (the tile's lock skipped)", "\tif L.TileLocked(\"Character\") then\n\t\tL.TileWiggle(\"Character\")",
+     "\tif false then\n\t\tL.TileWiggle(\"Character\")"),
 ]
 
 
@@ -146,6 +164,10 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("the HUD Hero tile opens \"Character\" (locked below Lv 2 by Config.HudReveal)",
          '{ Id = "Character", Icon = "IconCharacter", Window = "Character", Key = "Character", Keep = 2 },' in src["HUD"]
          and 'Config.HudReveal.Tiles = { Character = "LevelUp",' in src["CONFIG"]),
+        ("게임성 검수 10/12: the HUD face / power line obeys the Hero tile's lock (a wiggle below Lv 2, no window)",
+         "function L.PowerOpen()\n\t-- 게임성 검수 10/12" in src["HUD"]
+         and "\tif L.TileLocked(\"Character\") then\n\t\tL.TileWiggle(\"Character\")\n\t\treturn\n\tend" in src["HUD"]),
+        ("게임성 검수 10/12: the power goes through Config.CombatPowerOf only (tools/test_stats)", "Config.CombatPower(" not in code),
         ("the E key opens \"Character\" (Soon: live once the window is registered)",
          '{ Id = "Character", Group = "Window", Key = "E",' in src["CONFIG"] and 'Window = "Character", Soon = true }' in src["CONFIG"]),
     ]
