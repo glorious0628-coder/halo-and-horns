@@ -16,6 +16,10 @@
 --     % in the recipe's Spd + the hammer's +N, at most Config.SaveV4.PetRollSpd[2]; then TamerService.AddSummon),
 --     craft XP for the role (levels up while it can, at most MaxLv), Craft.Made[id] + 1, Pend cleared -> s->c CraftResult
 --     + CraftInfo, signal Crafted(player, recipeId, plus).
+--   * ⑦ fame (docs/design/artisan_fame_2026-10-12.md): an artisan of the recipe's role gets Config.CraftFame -> data.Craft.Rep
+--     (lifetime) + RankingService.Credit "Artisan" (the weekly board); the attribute ArtisanRank (Config.ArtisanRank, 0 =
+--     not an artisan now) at PlayerReady, after a craft and after a class / faction change; a new rank says so once
+--     (key Config.Craft.Text.RankUp) and fires RankUp(player, rank).
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
 --   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
 --   handlers; public for the offline test) · RecipeOn(id) · Session(player) · Settle(player, data) (a waiting craft)
@@ -32,6 +36,7 @@ local CraftMini = require(Shared:WaitForChild("CraftMini")) -- the hammer's numb
 
 local CraftService = {}
 CraftService.Crafted = Util.Signal.new() -- (player, recipeId, plus)
+CraftService.RankUp = Util.Signal.new() -- (player, rank) ⑦
 
 local TAG = "CraftService"
 local S = nil
@@ -214,8 +219,12 @@ end
 
 local function sendInfo(player, data)
 	local role = roleOf(data)
-	if not role then return end
 	local c = craftOf(data)
+	local rank, nextRep = Config.ArtisanRank(c.Rep)
+	-- ⑦ the artisan rank every client sees (0 = not an artisan now)
+	local okA, errA = pcall(function() player:SetAttribute("ArtisanRank", role and rank or 0) end)
+	if not okA then Util.Warn(TAG, "ArtisanRank: " .. tostring(errA)) end
+	if not role then return end
 	local rr = roleRec(c, role)
 	-- On = the recipe ids of my role the server would start now (a recipe waiting for its drops / spares is left out)
 	local onIds = {}
@@ -224,7 +233,7 @@ local function sendInfo(player, data)
 	end
 	table.sort(onIds)
 	fire(player, "CraftInfo", { Role = role, Lv = rr.Lv, XP = rr.XP, Need = Config.CraftXPToNext(rr.Lv), Made = table.clone(c.Made),
-		On = onIds })
+		On = onIds, Rep = math.floor(num(c.Rep)), Rank = rank, NextRep = nextRep })
 end
 
 -- craft XP for `role`; returns the level now and whether it rose
@@ -255,17 +264,34 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
 	-- A23-139 (user 10/12 "그래야 공평"): craft XP only for a player who is that artisan now (a pending craft finished after
 	-- a side change still pays its item, never the XP), x2 with the 2x XP pass (the same pass check as level XP)
-	local xp = 0
+	local xp, fame = 0, 0
 	if roleOf(data) == r.Role then
+		fame = Config.CraftFame(r, plus) -- ⑦ (never the 2x XP pass)
 		local ps = S.ProgressionService
 		local okPass, pass = pcall(function() return ps and type(ps.PassMult) == "function" and ps.PassMult(player, "XP2") or 1 end)
 		xp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))
 	end
 	local lv, up = addXP(c, r.Role, xp)
+	local rank0 = Config.ArtisanRank(c.Rep)
+	if fame > 0 then
+		c.Rep = math.min(Config.SaveV4.MaxCount, math.floor(num(c.Rep)) + fame)
+		local RS = S.RankingService
+		if RS and type(RS.Credit) == "function" then
+			local okR, errR = pcall(RS.Credit, player, "Artisan", fame, "Craft")
+			if not okR then Util.Warn(TAG, "Credit: " .. tostring(errR)) end
+		end
+	end
+	local rank1 = Config.ArtisanRank(c.Rep)
+	if rank1 > rank0 and player.Parent == Players then
+		local row = K().Ranks[rank1]
+		local okN, errN = pcall(Net.NotifyKey, player, "Config.Craft.Text.RankUp", { { Key = "Config.Craft.Text.Ranks." .. row.Id } }, "reward")
+		if not okN then Util.Warn(TAG, "rank notice: " .. tostring(errN)) end
+		CraftService.RankUp:Fire(player, rank1)
+	end
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if player.Parent == Players then
 		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item,
-			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet })
+			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet, Fame = fame })
 		sendInfo(player, data)
 	end
 	CraftService.Crafted:Fire(player, recipeId, plus)
@@ -560,6 +586,17 @@ function CraftService.Start()
 		end
 		sendInfo(player, data)
 	end))
+	-- ⑦ a class / faction change: the artisan rank attribute (and a new artisan's CraftInfo) follows at once
+	for _, pair in { { "ClassService", "ClassChanged" }, { "FactionService", "FactionChanged" } } do
+		local sig = S[pair[1]] and S[pair[1]][pair[2]]
+		if type(sig) == "table" and type(sig.Connect) == "function" then
+			sig:Connect(guard("changed", function(player)
+				if not on() then return end
+				local data = getData(player)
+				if data then sendInfo(player, data) end
+			end))
+		end
+	end
 	S.PlayerService.PlayerLeaving:Connect(guard("leave", function(player)
 		closeAtZero(player, "Leave")
 		ST.Starts[player] = nil

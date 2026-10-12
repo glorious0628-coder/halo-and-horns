@@ -8367,6 +8367,50 @@ Config.Craft = {
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 	},
 }
+-- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly
+-- "Artisan Fame" board, A23-24 / A23-135). A finished craft by an artisan of the recipe's role now (the craft XP rule,
+-- A23-139) earns Fame = the band of the recipe's craft Lv (the first row whose Lv it reaches) + PerfectBonus at the
+-- hammer's +2. It goes into data.Craft.Rep (lifetime) and RankingService's weekly "Artisan" board. The 2x XP pass never
+-- touches it. Ranks: the lifetime Rep a rank needs (the attribute ArtisanRank 1..#Ranks, 0 = not an artisan now); a rank
+-- shows (name / badge), it buys nothing.
+Config.Craft.Fame = { Bands = { { Lv = 30, N = 4 }, { Lv = 20, N = 3 }, { Lv = 10, N = 2 }, { Lv = 1, N = 1 } }, PerfectBonus = 1 }
+Config.Craft.Ranks = {
+	{ Id = "Apprentice", Rep = 0 },
+	{ Id = "Journeyman", Rep = 30 },
+	{ Id = "Artisan", Rep = 150 },
+	{ Id = "Master", Rep = 500 },
+	{ Id = "Grandmaster", Rep = 1500 },
+}
+Config.Craft.Text.RankUp = "Artisan rank up: %s!" -- (the rank's name key)
+Config.Craft.Text.Ranks = { Apprentice = "Apprentice", Journeyman = "Journeyman", Artisan = "Artisan", Master = "Master",
+	Grandmaster = "Grandmaster" }
+
+-- the Fame of one finished craft of recipe row r at the hammer's +plus (0 for a broken row)
+function Config.CraftFame(r, plus)
+	if type(r) ~= "table" or type(r.Lv) ~= "number" then return 0 end
+	local F = Config.Craft.Fame
+	local n = 0
+	for _, band in F.Bands do
+		if r.Lv >= band.Lv then
+			n = band.N
+			break
+		end
+	end
+	if n > 0 and plus == 2 then n += F.PerfectBonus end
+	return n
+end
+
+-- the artisan rank (1..#Ranks) a lifetime Rep reaches; the Rep of the next one (0 at the top)
+function Config.ArtisanRank(rep)
+	if type(rep) ~= "number" or rep ~= rep then rep = 0 end
+	local rank = 1
+	for i, row in Config.Craft.Ranks do
+		if rep >= row.Rep then rank = i end
+	end
+	local nextRow = Config.Craft.Ranks[rank + 1]
+	return rank, nextRow and nextRow.Rep or 0
+end
+
 Config.RateLimits.CraftStart = 3
 Config.RateLimits.CraftFinish = 0.5
 

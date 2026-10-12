@@ -776,4 +776,75 @@ runGroup("tamer", function()
 	check(dr.Items.PetTreat == 5 and dr.Craft.Tame.XP == 10, "3 + 2 = 5 Pet Treats, 10 craft XP", tostring(dr.Items.PetTreat))
 end)
 
+------------------------------------------------------------------ ⑦ fame and rank (artisan_fame_2026-10-12.md)
+runGroup("fame", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local R = C.Craft.Recipes
+	check(C.CraftFame(R.W1, 0) == 1 and C.CraftFame(R.W1, 2) == 2 and C.CraftFame(R.W1, 1) == 1 and C.CraftFame(R.W4, 0) == 2
+		and C.CraftFame(R.W6, 0) == 3 and C.CraftFame(R.W9, 0) == 4 and C.CraftFame(R.W9, 2) == 5 and C.CraftFame(nil, 2) == 0,
+		"fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1", "")
+	local rk = {}
+	for _, rep in { 0, 29, 30, 149, 150, 499, 500, 1499, 1500, 1e9 } do table.insert(rk, (C.ArtisanRank(rep))) end
+	check(table.concat(rk, ",") == "1,1,2,2,3,3,4,4,5,5" and select(2, C.ArtisanRank(0)) == 30 and select(2, C.ArtisanRank(150)) == 500
+		and select(2, C.ArtisanRank(1500)) == 0 and C.ArtisanRank(0 / 0) == 1 and C.ArtisanRank(nil) == 1,
+		"ranks at 0 / 30 / 150 / 500 / 1500 (next Rep; 0 at the top)", table.concat(rk, ","))
+	check(#C.Craft.Ranks == 5 and type(C.Craft.Text.RankUp) == "string", "five ranks, a RankUp line", "")
+	for _, row in C.Craft.Ranks do
+		check(type(C.Craft.Text.Ranks[row.Id]) == "string", "every rank has a name", row.Id)
+	end
+
+	local w = cWorld()
+	w.Credits = {}
+	w.Reg.RankingService.Credit = function(p, board, n, why) table.insert(w.Credits, { P = p, B = board, N = n, W = why }) return true end
+	local p, d = smith(w, 1)
+	check(p:GetAttribute("ArtisanRank") == 1 and last(fired(w, "CraftInfo", p)).Rank == 1 and last(fired(w, "CraftInfo", p)).NextRep == 30
+		and last(fired(w, "CraftInfo", p)).Rep == 0, "a new artisan: ArtisanRank 1 (Apprentice), CraftInfo Rep 0 / Rank 1 / NextRep 30", "")
+	startAndHammer(w, p, HONEST)
+	check(d.Craft.Rep == 2 and #w.Credits == 1 and w.Credits[1].B == "Artisan" and w.Credits[1].N == 2 and w.Credits[1].W == "Craft"
+		and last(fired(w, "CraftResult", p)).Fame == 2, "W1 at +2: 2 fame -> Rep and the weekly Artisan board; CraftResult.Fame", tostring(d.Craft.Rep))
+	-- the 2x XP pass never touches fame
+	w.PassXP2[p] = true
+	w:Advance(61)
+	startAndHammer(w, p, HONEST)
+	check(d.Craft.Rep == 4 and w.Credits[2].N == 2, "with the 2x XP pass: still 2 fame", tostring(d.Craft.Rep))
+	-- a rank up: one line (the rank's name key), the signal, the attribute, CraftInfo
+	local ups = {}
+	w.C.RankUp:Connect(function(pl, rank) table.insert(ups, rank) end)
+	d.Craft.Rep = 28
+	local from = #w.Notices
+	w:Advance(61)
+	startAndHammer(w, p, HONEST)
+	local ns = {}
+	for i = from + 1, #w.Notices do if w.Notices[i].Player == p and w.Notices[i].Key == "Config.Craft.Text.RankUp" then table.insert(ns, w.Notices[i]) end end
+	check(d.Craft.Rep == 30 and #ns == 1 and #ups == 1 and ups[1] == 2 and p:GetAttribute("ArtisanRank") == 2
+		and last(fired(w, "CraftInfo", p)).Rank == 2 and last(fired(w, "CraftInfo", p)).NextRep == 150, "28 + 2 = 30: Journeyman (one line, RankUp 2, attribute 2)", "")
+	w:Advance(61)
+	startAndHammer(w, p, HONEST)
+	local again = 0
+	for i = from + 1, #w.Notices do if w.Notices[i].Player == p and w.Notices[i].Key == "Config.Craft.Text.RankUp" then again += 1 end end
+	check(again == 1 and #ups == 1, "the next craft in the same rank: no line", "")
+	-- no fame for a waiting craft finished after a side change (the craft XP rule)
+	local h, dh = smith(w, 2, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 7, Made = {},
+		Pend = { Id = "W2", Plus = 2, Gold = 40, Mats = { Jelly = 10 } } } }, "Warrior", "Halo")
+	check(dh.Craft.Pend == nil and dh.Craft.Rep == 7 and h:GetAttribute("ArtisanRank") == 0, "a Knight's waiting craft: the item, no fame; ArtisanRank 0", "")
+	-- the lifetime cap
+	local top, dt = smith(w, 3, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 10000000, Made = {} } })
+	startAndHammer(w, top, HONEST)
+	check(dt.Craft.Rep == 10000000 and top:GetAttribute("ArtisanRank") == 5, "Rep never passes MaxCount; Grandmaster", tostring(dt.Craft.Rep))
+	-- a faction change: the attribute follows at once
+	d.Faction = "Halo"
+	w.Reg.FactionService.FactionChanged:Fire(p)
+	check(p:GetAttribute("ArtisanRank") == 0, "left the guild: ArtisanRank 0 (Rep kept: lifetime)", tostring(p:GetAttribute("ArtisanRank")))
+	check(d.Craft.Rep == 32, "the lifetime Rep stays", tostring(d.Craft.Rep))
+	d.Faction, d.Class = "Neutral", "Mage"
+	w.Reg.ClassService.ClassChanged:Fire(p)
+	check(p:GetAttribute("ArtisanRank") == 2 and last(fired(w, "CraftInfo", p)).Role == "Alch", "back as an alchemist: rank 2 again (Rep is shared by the roles)", "")
+	-- no RankingService: crafting still works
+	local n = cWorld()
+	n.Reg.RankingService.Credit = nil
+	local q, dq = smith(n, 1)
+	startAndHammer(n, q, HONEST)
+	check(dq.Craft.Rep == 2 and #n.Warnings == 0, "no RankingService.Credit: Rep only, no error", show(n.Warnings))
+end)
+
 finish()
