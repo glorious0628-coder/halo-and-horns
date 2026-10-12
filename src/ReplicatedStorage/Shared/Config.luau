@@ -6035,6 +6035,11 @@ Config.UIArt = {
 		IconIronOre = { Id = "rbxassetid://100831679530995", Size = Vector2.new(512, 512) },
 		IconSilverOre = { Id = "rbxassetid://114879087694979", Size = Vector2.new(512, 512) },
 		IconMoonCrystal = { Id = "rbxassetid://106196598879661", Size = Vector2.new(512, 512) },
+		-- round 2 (이미지 개발 2026-10-12, 디자인 검수 pass): crafting ring screen + Crown Dust; IconGlowcap waits for a cutout fix (grey fragment)
+		CraftRing = { Id = "rbxassetid://115071977806649", Size = Vector2.new(512, 512) },
+		CraftTarget = { Id = "rbxassetid://134156748980991", Size = Vector2.new(512, 512) },
+		CraftIngot = { Id = "rbxassetid://133966322294546", Size = Vector2.new(512, 512) },
+		IconCrownDust = { Id = "rbxassetid://130666131385080", Size = Vector2.new(512, 512) },
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
 		IconAttack = { Id = "rbxassetid://74944938867654", Size = Vector2.new(512, 512) }, -- Firefly sword (bundle 5)
 		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
