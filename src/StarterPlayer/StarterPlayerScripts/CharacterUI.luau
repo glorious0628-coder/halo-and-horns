@@ -78,6 +78,7 @@ local TXT = {
 	MarksValue = "%d / %d",
 	NextValue = "%s · %d to go",
 	TopRank = "Top rank",
+	ToGo = "%d to go", -- the next rank bar's number (ref_rpg_ui #9)
 	Clock = "%d:%02d",
 }
 L10n.Register("CharacterUI.TXT", TXT)
@@ -100,6 +101,7 @@ local L = {
 	RowH = 74, Icon = 52, ButtonW = 112, BtnH = 40,
 	StatH = 26, StatLabelW = 200,
 	CardW = 132, CardH = 50, CardIcon = 26, TraitW = 132, TraitH = 28, -- the Stats tab's cards and chips (ref_rpg_ui #5)
+	RibbonH = 34, BarH = 18, BarIcon = 22, -- the title ribbon and the next rank bar (ref_rpg_ui #9)
 	Size = { Name = 18, Body = 16, Small = 15, Count = 16, Power = 34, Head = 18 },
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), same as the bag
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
@@ -260,6 +262,34 @@ function CharacterUI.PetState(rows)
 end
 
 ---------------------------------------------------------------------------------------------------- stats (pure)
+-- 최종 검수 10/13 (ref_rpg_ui #9): my side's rank as a bar - { Title, Next (nil at the top), Fill 0..1 inside this rank,
+-- ToGo, Icon } for Halo (honor) / Horns (infamy); nil without a side
+function CharacterUI.RankBar(faction, honor, infamy)
+	local names, th = Config.Titles[faction], Config.Titles.Thresholds
+	if type(names) ~= "table" then return nil end
+	local points = math.max(0, math.floor(num(faction == "Halo" and honor or infamy, 0)))
+	local title, rank = Config.GetTitle(faction, honor, infamy)
+	local lo, hi = num(th[rank], 0), th[rank + 1]
+	local nextName = hi and names[rank + 1] or nil
+	local fill = hi and math.clamp((points - lo) / math.max(1, hi - lo), 0, 1) or 1
+	return { Title = title, Next = nextName, Fill = fill, ToGo = hi and (hi - points) or 0,
+		Icon = faction == "Halo" and "IconRankHonor" or "IconRankInfamy" }
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #9): the titles I do not own yet (Config.TitleOrder), shown grey under mine
+function CharacterUI.LockedTitles(owned)
+	local have = {}
+	if type(owned) == "string" then
+		for id in string.gmatch(owned, "[^,]+") do have[id] = true end
+	end
+	local list = {}
+	for _, id in Config.TitleOrder do
+		local def = Config.TitleDefs[id]
+		if def and not have[id] then table.insert(list, { Id = id, Name = tx(def, "Name") }) end
+	end
+	return list
+end
+
 -- the next rank of a side: name and points to go; nil at the top (Config.Titles)
 function CharacterUI.NextRank(faction, points)
 	local names, th = Config.Titles[faction], Config.Titles.Thresholds
@@ -775,6 +805,20 @@ local function drawLeft(frame, ctx)
 	local who = label(frame, tx(TXT, "LevelClass", ctx.Level, Config.ClassName(ctx.Class, ctx.Faction)), L.Size.Body, colorOf("Text"),
 		{ Name = "Who", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, TextXAlignment = Enum.TextXAlignment.Center,
 			LayoutOrder = nextOrder() })
+	-- 최종 검수 10/13 (ref_rpg_ui #9): the title I show, on the approved ribbon
+	local shown = nil
+	for _, t in CharacterUI.Titles(ctx) do
+		if t.Current and t.Id ~= "" then shown = t.Name end
+	end
+	local bar = CharacterUI.RankBar(ctx.Faction, ctx.Honor, ctx.Infamy)
+	shown = shown or (bar and bar.Title) or nil
+	if shown then
+		local ribbon = kit.ArtFrame("TitleRibbon", { Name = "TitleRibbon", Size = UDim2.new(1, 0, 0, L.RibbonH), LayoutOrder = nextOrder() },
+			{ BackgroundColor3 = Color3.fromRGB(120, 40, 50) })
+		ribbon.Parent = frame
+		label(ribbon, shown, L.Size.Small, colorOf("Text"), { Name = "Title", Size = UDim2.fromScale(1, 1),
+			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, ZIndex = 3 })
+	end
 	label(frame, tx(TXT, "Power"), L.Size.Small, colorOf("Sub"), { Name = "PowerWord", Size = UDim2.new(1, 0, 0, L.Size.Small + 4),
 		TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, LayoutOrder = nextOrder() })
 	label(frame, Util.FormatInt(ctx.CombatPower), L.Size.Power, colorOf("Gold"), { Name = "PowerNumber",
@@ -808,6 +852,27 @@ local function drawLeft(frame, ctx)
 			{ Name = "Value", Position = UDim2.fromOffset(L.ChipIcon + 8, 0), Size = UDim2.new(1, -(L.ChipIcon + 10), 1, 0),
 				TextWrapped = false, ZIndex = 3 })
 	end
+	-- 최종 검수 10/13 (ref_rpg_ui #9): the next rank bar (my side's points inside this rank; full at the top)
+	local rb = CharacterUI.RankBar(ctx.Faction, ctx.Honor, ctx.Infamy)
+	if rb then
+		local row = Instance.new("Frame")
+		row.Name = "RankBar"
+		row.BackgroundTransparency = 1
+		row.Size = UDim2.new(1, 0, 0, L.BarIcon + L.Size.Small + 6)
+		row.LayoutOrder = nextOrder()
+		row.Parent = frame
+		local icon = kit.ArtImage(rb.Icon, { Name = "Icon", Size = UDim2.fromOffset(L.BarIcon, L.BarIcon), ZIndex = 3 })
+		if icon then icon.Parent = row end
+		local track = kit.ArtFrame("BarTrack", { Name = "Track", Position = UDim2.new(0, L.BarIcon + 4, 0, (L.BarIcon - L.BarH) / 2),
+			Size = UDim2.new(1, -(L.BarIcon + 4), 0, L.BarH) }, { BackgroundColor3 = Color3.fromRGB(24, 28, 48) })
+		track.Parent = row
+		local fill = kit.ArtFrame("BarFill", { Name = "Fill", Size = UDim2.fromScale(math.max(0.04, rb.Fill), 1), ZIndex = 3 },
+			{ BackgroundColor3 = Color3.fromRGB(255, 214, 110) })
+		fill.Parent = track
+		label(row, rb.Next and tx(TXT, "ToGo", rb.ToGo) or tx(TXT, "TopRank"), L.Size.Small, colorOf("Sub"), { Name = "ToGo",
+			Position = UDim2.fromOffset(0, L.BarIcon + 2), Size = UDim2.new(1, 0, 0, L.Size.Small + 3),
+			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false })
+	end
 	if S.Why then
 		local why = Instance.new("Frame")
 		why.Name = "PowerWhy"
@@ -838,6 +903,14 @@ local function drawTitles(frame, titles)
 			function() CharacterUI.SetTitle(t.Id) end, t.Current and kit.Palette.DarkText or nil)
 		b.Name = "Title_" .. (t.Id == "" and "Auto" or t.Id)
 		b.LayoutOrder = order
+	end
+	-- 최종 검수 10/13 (ref_rpg_ui #9): the ones still to earn, grey and off
+	for _, t in CharacterUI.LockedTitles(attr("TitlesOwned", "")) do
+		order += 1
+		local b = kit.Button(frame, t.Name, kit.Palette.Button, UDim2.fromOffset(L.TitleW, L.TitleH), function() end)
+		b.Name = "Locked_" .. t.Id
+		b.LayoutOrder = order
+		kit.SetEnabled(b, false)
 	end
 end
 
@@ -1014,7 +1087,8 @@ local function refresh(force)
 	local ctx = context()
 	local sigs = VIEW.Sigs
 	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction, tostring(attr("Nickname", "")),
-		tostring(ctx.Attack), tostring(ctx.Health), tostring(S.Why) }, "|")
+		tostring(ctx.Attack), tostring(ctx.Health), tostring(S.Why), tostring(ctx.Honor), tostring(ctx.Infamy), tostring(ctx.Sel),
+		tostring(ctx.Owned) }, "|")
 	if sigs.Left ~= sig then
 		sigs.Left = sig
 		drawLeft(VIEW.Left, ctx)

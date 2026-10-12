@@ -432,6 +432,17 @@ local dl2, dc2 = M.DiffLine(1200, 1180)
 local dl3, dc3 = M.DiffLine(50, 50)
 check(dl == "Power +10" and dc == "Good" and dl2 == "Power -20" and dc2 == "Bad" and dl3 == "Power =" and dc3 == "Same"
 	and M.DiffLine(nil, 5) == nil, "#2 DiffLine: up green, down red, equal grey, nothing without both", tostring(dl) .. "|" .. tostring(dl2))
+-- 최종 검수 10/13 (ref_rpg_ui #9): pure
+local rb = M.RankBar("Halo", 30, 0)
+local top = M.RankBar("Horns", 0, 5000)
+check(rb and rb.Title == "Knight" and rb.Next == "Paladin" and math.abs(rb.Fill - 0.5) < 1e-6 and rb.ToGo == 20 and rb.Icon == "IconRankHonor"
+	and top and top.Next == nil and top.Fill == 1 and top.Icon == "IconRankInfamy" and M.RankBar("None", 5, 5) == nil,
+	"#9 RankBar: this rank's share filled, points to the next, full at the top, none without a side", rb and rb.Fill)
+local locked = M.LockedTitles("BetaPioneer")
+local lockedIds = {}
+for _, t in locked do table.insert(lockedIds, t.Id) end
+check(table.find(lockedIds, "BetaPioneer") == nil and table.find(lockedIds, "GrayLegend") ~= nil,
+	"#9 LockedTitles: the titles I do not own yet", table.concat(lockedIds, ","))
 local wy = M.PowerWhy("Attack", { Level = 5, Tier = 0 })
 check(#wy == 2 and wy[1] == "Bare hands" and wy[2] == "Level 5", "#1 PowerWhy: bare hands + the level", table.concat(wy, ","))
 check(heads(srows) == "Stats,Traits,Effects,Rebirth,Rank", "StatRows: every section when the data is there", heads(srows))
@@ -514,6 +525,16 @@ check(chipA and chipH and chipA.Image == "Chip" and find(chipA, "Icon").Image ==
 	and find(chipA, "Value").Text == tostring(pa) and find(chipH, "Value").Text == tostring(ph),
 	"#1: [sword] Attack · [heart] Health chips under the power (Config.PowerPartsOf)", tostring(pa) .. "/" .. tostring(ph))
 check(find(body, "PowerWhy") == nil, "#1: no sources until a chip is pressed")
+-- 최종 검수 10/13 (ref_rpg_ui #9): the ribbon with my shown title, the next rank bar, the locked titles grey
+local ribbon = find(body, "TitleRibbon")
+check(ribbon and ribbon.Image == "TitleRibbon" and find(ribbon, "Title").Text == "Squire", "#9: the title ribbon (Auto = my rank title)",
+	ribbon and find(ribbon, "Title") and find(ribbon, "Title").Text)
+local rbar = find(body, "RankBar")
+check(rbar and find(rbar, "Icon").Image == "IconRankHonor" and find(rbar, "Fill").Image == "BarFill" and find(rbar, "Fill").Size.X.Scale < 0.1
+	and find(rbar, "ToGo").Text == "10 to go",
+	"#9: the next rank bar (honor icon, the fill, points to go)", rbar and find(rbar, "ToGo") and find(rbar, "ToGo").Text)
+local lockedB = find(body, "Locked_BetaPioneer")
+check(lockedB and lockedB.Enabled == false and lockedB.Text == Config.TitleDefs.BetaPioneer.Name, "#9: a title I lack shows grey and off")
 chipA.OnClick()
 local why = find(body, "PowerWhy")
 local wname = Config.WeaponName(2, "Warrior", "Halo")
