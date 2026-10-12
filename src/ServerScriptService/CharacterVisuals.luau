@@ -846,9 +846,11 @@ function SHAPES.Hammer(grip, sc, w, color)
 end
 
 -- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
--- A23-142: the hook rises Hook over the shaft's top (the staff's top), the orb hangs under its end at OrbY
+-- A23-142: the hook rises Hook over the shaft's top (the staff's top), the orb hangs under its end at OrbY.
+-- 최종 검수 10/13 (side photo staff_front_v3f: the orb hid the Dark Mage's face): the hook bends AHEAD - the fist's -Z
+-- (away from the shoulder) - not along its +X, which pointed back at the hunched head
 function SHAPES.CrookStaff(grip, sc, w, color, tier, height)
-	local K = { Hook = 0.5, OrbX = 0.55, OrbY = 0.1 }
+	local K = { Hook = 0.5, OrbX = 0.55, OrbY = 0.1, Bend = -60 }
 	local total, h = staffLen(w, height, sc)
 	local shaftLen = total - K.Hook
 	local base, low = fist(grip), total * STAFF.Grip
@@ -861,13 +863,13 @@ function SHAPES.CrookStaff(grip, sc, w, color, tier, height)
 	local hook = accPart({
 		Name = "Hook", Size = Vector3.new(0.24, 0.9, 0.24) * sc,
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
-		CFrame = top * CFrame.Angles(0, 0, math.rad(-60)) * CFrame.new(0, 0.4 * sc, 0),
+		CFrame = top * CFrame.Angles(math.rad(K.Bend), 0, 0) * CFrame.new(0, 0.4 * sc, 0),
 	})
 	local d = staffOrb(tier, total, h, K.Hook - K.OrbY, 0.5)
 	local orb = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,
-		CFrame = top * CFrame.new(K.OrbX * sc, K.OrbY * sc, 0),
+		CFrame = top * CFrame.new(0, K.OrbY * sc, -K.OrbX * sc),
 	})
 	addLight(orb, color, 8 * sc, 1.5)
 	return { shaft, hook, orb }, orb

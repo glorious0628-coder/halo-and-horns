@@ -86,6 +86,9 @@ STAFF_ROWS = ("Mage_Halo", "Mage_Horns", "Mage_Neutral")
 STAFF_POSE = {"Grip": (2.45, 2.75), "Radial": 20, "Flex": 40, "Out": 0.2}
 ORB_UP = 1.75  # studs: the hand to the orb's centre along a staff (A23-142: 0.57 x ~3.6 - half the orb)
 ORB_CLEAR = (-1.05, 1.3)  # torso space: the face's front is z -0.6, the head's side x 0.6
+# 최종 검수 10/13 (side 90 deg, staff_front_v3f): the orb's back >= 0.2 ahead of the face's front (-0.6, a Neck bow a
+# little further): its centre (the crook's hangs off the hook, read from SHAPES.CrookStaff) + a 0.35 radius <= FACE_FRONT
+FACE_FRONT, FACE_GAP, ORB_R = -0.6, 0.2, 0.35
 WORLD_TILT = 10  # deg: a staff's lean in the world (its tilt + the row's Waist hunch) - more lay across the body (10/12 photo)
 
 
@@ -176,9 +179,9 @@ def staff_kinds(cv: str, rule):
             return max(shaft, shaft + d * (k2 + 0.5)), shaft + d * (k2 - 0.5)
         out["Staff"] = staff
     b = body_of(cv, "function SHAPES.CrookStaff(grip, sc, w, color, tier, height)")
-    kk = re.search(r"local K = \{ Hook = " + NUM + ", OrbX = " + NUM + ", OrbY = " + NUM + r" \}", b)
+    kk = re.search(r"local K = \{ Hook = " + NUM + ", OrbX = " + NUM + ", OrbY = " + NUM + r", Bend = " + NUM + r" \}", b)
     if kk and "local shaftLen = total - K.Hook" in b and "local d = staffOrb(tier, total, h, K.Hook - K.OrbY, 0.5)" in b \
-            and "CFrame = top * CFrame.new(K.OrbX * sc, K.OrbY * sc, 0)," in b:
+            and ("CFrame = top * CFrame.new(0, K.OrbY * sc, -K.OrbX * sc)," in b or "CFrame = top * CFrame.new(K.OrbX * sc, K.OrbY * sc, 0)," in b):
         hook, oy = float(kk[1]), float(kk[3])
 
         def crook(total, tier, h, hook=hook, oy=oy):
@@ -609,8 +612,22 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             # 디자인 검수 10/12 (staff_short_v2 side photo: the orb right beside / in front of the face): the orb (about
             # ORB_UP along the staff over the hand) ahead of the face and outside the head - torso space z / x
             orb = G.add(hilt, aim, ORB_UP)
+            if r["Weapon"] == "CrookStaff":  # the orb hangs off the hook: along the fist's -Z (ahead) or its +X (old: back)
+                shoulder0, _, _, _, grip0 = G.rig("R", 1.0)
+                fr, _ = G.goal(hilt, grip0, shoulder0, aim, wp)
+                cb = body_of(src["CV"], "function SHAPES.CrookStaff(grip, sc, w, color, tier, height)")
+                kk = re.search(r"OrbX = " + NUM + ", OrbY = " + NUM, cb)
+                ox = float(kk[1]) if kk else 0.0
+                if "CFrame = top * CFrame.new(0, K.OrbY * sc, -K.OrbX * sc)," in cb:
+                    orb = G.add(orb, fr[1], -ox)
+                else:
+                    orb = G.add(orb, fr[0], ox)
+            neck = re.search(r"Neck = \{ " + NUM, r["HoldText"])
+            face = FACE_FRONT - 0.6 * math.sin(math.radians(max(0.0, -float(neck[1])))) if neck else FACE_FRONT
             out.append((f"{key}: 디자인 검수 10/12 the orb clears the face (ahead z <= {ORB_CLEAR[0]}, outside x >= {ORB_CLEAR[1]})",
                         orb[2] <= ORB_CLEAR[0] and orb[0] >= ORB_CLEAR[1], f"z {orb[2]:.2f}, x {orb[0]:.2f}"))
+            out.append((f"{key}: 최종 검수 10/13 from the side (90 deg) the orb's back is >= {FACE_GAP} ahead of the face",
+                        orb[2] + ORB_R <= face - FACE_GAP, f"orb back {orb[2] + ORB_R:.2f}, face {face:.2f}"))
             g0, g1 = STAFF_POSE["Grip"]
             grip_y = TORSO_ABOVE_FEET + hilt[1]
             out.append((f"{key}: 최종 검수 10/12 the hand lowered from the chest to {g0}..{g1} studs over the ground (it was 2.9)",
@@ -848,6 +865,11 @@ def run(src: dict):
 
 MUTATIONS = [
     ("CONFIG", "the Light Mage's staff leaning out", "Aim = Vector3.new(0.09, 1, -0.05), Pole", "Aim = Vector3.new(0.6, 1, -0.05), Pole"),
+    # 최종 검수 10/13 (staff_front_v3f side photo)
+    ("CV", "the crook's orb hangs back at the face again", "CFrame = top * CFrame.new(0, K.OrbY * sc, -K.OrbX * sc),",
+     "CFrame = top * CFrame.new(K.OrbX * sc, K.OrbY * sc, 0),"),
+    ("CONFIG", "the Alchemist's flask at the face again (the 10/12 spot)", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.3)",
+     "OneHand = { Hilt = Vector3.new(1.4, -0.55, -0.8)"),
     # 디자인 검수 10/12 (staff_short_v2 side photo)
     ("CONFIG", "the orb by the Light Mage's face again (the old spot)", "OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2), Aim = Vector3.new(0.09, 1, -0.05)",
      "OneHand = { Hilt = Vector3.new(1.4, -0.5, -0.8), Aim = Vector3.new(0.09, 1, -0.05)"),
@@ -953,7 +975,7 @@ MUTATIONS = [
     ("CV", "the gear ignores the hat / hair", "buildNeutralGear(head, sc, character), character, head)", "buildNeutralGear(head, sc), character, head)"),
     ("CONFIG", "the Alchemist's elbow out (the default bend)", "Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },",
      "Aim = Vector3.new(0.09, 1, -0.1) },"),
-    ("CONFIG", "the flask staff held out of reach", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.2)", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -2.2)"),
+    ("CONFIG", "the flask staff held out of reach", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.3)", "OneHand = { Hilt = Vector3.new(1.4, -0.55, -2.2)"),
     ("CONFIG", "the Alchemist holds the old hand flask again", 'Mage_Neutral = { Weapon = "FlaskStaff",', 'Mage_Neutral = { Weapon = "Flask",'),
     ("CONFIG", "the old right-arm hold kept", 'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck',
      'Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { RightShoulder = { 8, 0, 8 }, Neck'),
@@ -963,8 +985,8 @@ MUTATIONS = [
     ("CV", "A23-142: the hand at the orb again (grip 66%)", "local STAFF = { Grip = 0.43,", "local STAFF = { Grip = 0.66,"),
     ("CV", "A23-142: the orb never shrinks (a big tier's orb comes down to the hand)",
      "return math.max(0.3, math.min(STAFF.Orb + STAFF.OrbPerTier * tier, room / b))", "return STAFF.Orb + STAFF.OrbPerTier * tier"),
-    ("CV", "A23-142: the crook's orb hangs low again", "local K = { Hook = 0.5, OrbX = 0.55, OrbY = 0.1 }",
-     "local K = { Hook = 0.5, OrbX = 0.55, OrbY = -0.6 }"),
+    ("CV", "A23-142: the crook's orb hangs low again", "local K = { Hook = 0.5, OrbX = 0.55, OrbY = 0.1, Bend = -60 }",
+     "local K = { Hook = 0.5, OrbX = 0.55, OrbY = -0.6, Bend = -60 }"),
     ("CV", "A23-142: the head counted from the neck (the avatar's height too short)", "return torso + (n0.Y - n1.Y) + head.Size.Y / 2",
      "return torso + (n0.Y - n1.Y)"),
     ("CV", "buildWeapon never measures the avatar",

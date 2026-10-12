@@ -5918,7 +5918,8 @@ Config.ClassGrips = {
 	-- the Dark Mage's square to his hunched torso (8 degrees in the world), so his hand is as high as the Light Mage's -
 	-- the sides differ by the body (Waist / Neck) and the crook, not by a slanted staff. 디자인 검수 10/12 (staff_short_v2
 	-- side photo: the orb right beside / in front of the face): the hand 0.4 further ahead and every staff splayed 5 degrees
-	-- out, so the orb sits ahead of and outside the face (torso space: z <= -1.05, x >= 1.3) from the side and the front
+	-- out, so the orb sits ahead of and outside the face (torso space: z <= -1.05, x >= 1.3) from the side and the front.
+	-- 최종 검수 10/13 (side photo staff_front_v3f: the flask just over the Alchemist's chin): his hand 0.1 further ahead
 	Mage_Halo = { Weapon = "Staff", Walk = 0.7, Hold = { Neck = { -3, 0, 0 } },
 		OneHand = { Hilt = Vector3.new(1.4, -0.5, -1.2), Aim = Vector3.new(0.09, 1, -0.05), Pole = Vector3.new(0.2, -0.1, 0.4) },
 		OffHand = { At = Vector3.new(-0.45, -0.35, -0.95), Up = Vector3.new(-0.8, -0.1, 0.6), Fwd = Vector3.new(0.3, 0, -1) } },
@@ -5932,7 +5933,7 @@ Config.ClassGrips = {
 	-- mages' staffs at the side, nearly upright (6 degrees), the left hand on the hip; it throws with the right hand (the
 	-- Mage clips stay right-handed)
 	Mage_Neutral = { Weapon = "FlaskStaff", Walk = 0.6, Hold = { Neck = { 4, 0, 0 } },
-		OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.2), Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },
+		OneHand = { Hilt = Vector3.new(1.4, -0.55, -1.3), Aim = Vector3.new(0.09, 1, -0.1), Pole = Vector3.new(0.2, -0.1, 0.4) },
 		OffHand = { At = Vector3.new(-1.25, -0.65, 0.1), Up = Vector3.new(-0.75, 0.5, 0.4), Fwd = Vector3.new(0, 0, -1) } },
 	-- Ranger: the long bow upright in the left hand, half an arm in front, the string towards the body
 	Archer_Halo = { Weapon = "Bow", Walk = 0.7, Hold = { LeftShoulder = { 40, 0, -12 }, LeftElbow = { 50, 0, 0 },
