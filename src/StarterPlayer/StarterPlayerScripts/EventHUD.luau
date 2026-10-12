@@ -1759,6 +1759,15 @@ function V2.Fold()
 	return ok and fold == true
 end
 
+-- 최종 검수 10/12 (main photos goose_square: a new player inside the Goose Square saw no Leave and no egg bar): am I
+-- inside the Goose Square (EggFx.Inside)? Then the A23-68 fold never hides the strip - its Leave is the way out
+function V2.InSquare()
+	local e = C and C.EggFx
+	if type(e) ~= "table" or type(e.Inside) ~= "function" then return false end
+	local ok, inside = pcall(e.Inside)
+	return ok and inside == true
+end
+
 function V2.NewTag()
 	local kit = C and C.UIKit
 	if type(kit) ~= "table" or type(kit.NewTag) ~= "function" then return end
@@ -1772,7 +1781,7 @@ end
 
 local function update()
 	if not built then return end
-	local folded = V2.Fold()
+	local folded = V2.Fold() and not V2.InSquare()
 	if folded then V2.WasFolded = true end
 	if pickersOpen() or folded then
 		setVisible(ui.Arrows, false)
