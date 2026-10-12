@@ -49,7 +49,9 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
             "hip": {"h", "eave": 1.5, "chimney": [x, y, w, h]} (rect plan: blue slate SmoothPlastic (90,140,210) hip roof,
             gold hip lines + ridge + ball finial; use "parapet": "none"), "pergola": {"w", "d", "h", "columns": 4|6, "x", "y"},
             "cupola": {"r", "h", "x", "y"} (6 marble posts + gold ring + small dome ornament)} |
-           {"type": "drum_dome", "R", "h", "seg", "windows": n, "dome_h", "onion": bool} |
+           {"type": "drum_dome", "R", "h", "seg", "windows": n, "dome_h", "onion": bool, "win_w": drum window glass width (1.2),
+            "win_h": glass height from the drum base + 0.8 to the spring line (drum h - 2.4); a window wider than the drum
+            segments allow or with the arch above the drum top - 0.3 is skipped with a warning} |
            {"type": "dome", "dome_h", "onion": bool}  (dome straight on the cornice of a round / oct plan)
   medals   [[wall, u, z], ...] raised gold quatrefoil medallions
 Marble = Marble + HH_HaloMarbleBlock_Cream (255,244,222), gold = Metal + HH_HaloGoldTrim (255,168,36; MV metal 0.5 /
@@ -989,11 +991,23 @@ else:
             dd = (math.cos(t), math.sin(t), 0.0)
             win = nwin and (k % max(1, seg // max(nwin, 1)) == 0) and abs(dd[1] - 1) < 1.3
             add("Drum%d" % k, (sl, H_, 0.7), (dd[0] * (R_ - 0.35), dd[1] * (R_ - 0.35), zb + H_ / 2), (-dd[1], dd[0], 0.0), UP)
-        for k in range(nwin):                           # arched windows on the front half of the drum
-            t = math.pi / 2 + (k - (nwin - 1) / 2) * (2 * math.pi / seg) * 2
+        WIN_SP = 2                                      # drum segments between window centres
+        WIN_W, WIN_H = TOP.get("win_w", 1.2), TOP.get("win_h", H_ - 1.6 - 0.8)
+        WIN_SPRING = zb + 0.8 + WIN_H if "win_h" in TOP else zb + H_ - 1.6
+        WIN_OK = True
+        if "win_w" in TOP or "win_h" in TOP:            # custom size: it must fit between the windows and under the drum top
+            chord = 2 * R_ * math.sin(math.pi / seg * WIN_SP) - 0.4
+            if nwin > 1 and WIN_W > chord + 1e-6:
+                print("[house] WARNING: drum window %.2f wide is wider than the %.2f the drum segments allow, skipped" % (WIN_W, chord))
+                WIN_OK = False
+            elif WIN_SPRING + WIN_W / 2 > zb + H_ - 0.3 + 1e-6:
+                print("[house] WARNING: drum window arch reaches %.2f, above the drum top limit %.2f, skipped" % (WIN_SPRING + WIN_W / 2, zb + H_ - 0.3))
+                WIN_OK = False
+        for k in range(nwin if WIN_OK else 0):          # arched windows on the front half of the drum
+            t = math.pi / 2 + (k - (nwin - 1) / 2) * (2 * math.pi / seg) * WIN_SP
             dd = (math.cos(t), math.sin(t), 0.0)
             orn_items.append({"type": "arch_window", "name": "%s_DrumWin%d" % (NAME, k), "pos": [dd[0] * (R_ + 0.05), dd[1] * (R_ + 0.05), zb + 0.8],
-                              "yaw": math.degrees(t) - 90, "W": 1.2, "spring": zb + H_ - 1.6, "pier": 0.3, "frame": 0.14, "depth": 0.9, "recess": 0.2})
+                              "yaw": math.degrees(t) - 90, "W": WIN_W, "spring": WIN_SPRING, "pier": 0.3, "frame": 0.14, "depth": 0.9, "recess": 0.2})
         post("DrumBase", 2 * R_ + 0.8, 0.5, 0.0, 0.0, zb)
         add("DrumTopGold", (0.35, 2 * R_ + 0.6, 2 * R_ + 0.6), (0, 0, zb + H_ - 0.1), UP, (1.0, 0.0, 0.0), "gold", "Cylinder")
         zb += H_

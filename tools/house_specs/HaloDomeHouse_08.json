@@ -14,5 +14,5 @@
  "balconies": [{"storey": 1, "walls": ["front", "left", "right"], "depth": 1.4}],
  "window_boxes": [["back", 1], ["left", 0], ["right", 0]],
  "medals": [],
- "top": {"type": "drum_dome", "R": 6.0, "h": 3.2, "seg": 20, "windows": 3, "dome_h": 5.8, "ribs": 8}
+ "top": {"type": "drum_dome", "R": 6.0, "h": 3.2, "seg": 20, "windows": 3, "dome_h": 5.8, "ribs": 8, "win_w": 2.6, "win_h": 0.8}
 }
