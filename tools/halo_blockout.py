@@ -25,7 +25,7 @@ OUT = os.path.join(ROOT, "build", "wk", "halo_blockout_apply.lua")
 CELL = 4
 X0, X1 = -212, 212  # set from the plan's land in main() (③ 3차: the town grew 1.5x); north edge Z0 stays at the gate
 Z0, Z1 = -324, -712  # north edge (gate side) .. south edge
-EDGE = 32  # grid margin round the land: the 16-stud sea ring + its 16-stud rim (2차 10/11)
+EDGE = 52  # grid margin round the land: the 16-stud sea ring + its 16-stud rim (2차 10/11) + 20 for the outcrops (3차 10/12)
 HOFF = 20  # stored height = round(y) + HOFF
 ALPH = "".join(chr(c) for c in range(48, 48 + 80) if chr(c) not in "\\\"'`[]")  # safe chars
 # material codes
@@ -51,10 +51,13 @@ WALL_OVER = 0.6  # pieces overlap this much (no hairline gaps at the joints)
 FACE_DH = 4.0  # 디자인 검수 10/11: only steps higher than 4 are rock faces (Limestone, light cream); lower ones stay grass slopes
 PAVED_SINK = 1  # 2차 10/11 검수: the Terrain under the plaza disc parts sits 1 lower (it poked through the 0.5 disc); the disc
 # height stays (tools/skeleton_ground.py adds D.plaza_sink back inside the discs)
-ROAD_SINK = 1  # 5단계 10/12: Terrain under the road parts this much lower (skeleton_ground G() adds it back)
+ROAD_SINK = 2  # 5단계 10/12: Terrain under the road parts this much lower (skeleton_ground G() adds it back); 2 not 1:
+# the drawn surface lands up to 1 above the planned height (voxel occupancy rounding), 1 left grass at the plate tops
 BEACH_Z, BEACH_W = -400, 4  # sand on the north shore (z > -400) up to 4 cells from the sea
 CLIFF_Z = -760  # rock lip on the south shore
 SEA_R = 4  # sea ring width in cells (16 studs) round the coast (2차 10/11: was 5; the rim beyond it is RIM_W cells)
+OUT_LAYERS, OUT_GROW = 5, 0.95  # 3차 10/12: lumps up to 5 cells out (layer k picked with OUT_GROW - 0.1 k)
+RECESS_ROWS, RECESS_P = 3, 0.5  # recess cells up to 3 rows into the 4-wide rim (its inner row stays), coarse 2x2 hash
 OUT_P1, OUT_P2 = 0.42, 0.3  # 5단계 10/12 ④: outcrop chance next to the rim / next to an outcrop (2-cell lumps)
 RIM_RAG = (4, 26)  # ragged extra depth under the rim (studs, slow wave)
 RIM_DRIP_P, RIM_DRIP = 0.14, (14, 40)  # drips hanging from the rim's bottom
@@ -493,22 +496,53 @@ def main():
                     SEA_TIER[r][c] = 2
                 else:
                     SEA_TIER[r][c] = 0
-    # 5단계 10/12 ④ (디자인 검수: from the side the rim was one dark, thick, straight band): rock outcrops (tier 5) stick out
-    # of the rim's outer face below its top, in lumps of 1-2 cells (clustered hash), the Luau gives them a lower, uneven top
+    # 5단계 10/12 ④ (디자인 검수: from the side the rim was one dark, thick, straight band; 3차: 1-2 cells of relief read
+    # as soft bumps): rock outcrops (tier 5) grow out of the rim's outer face in lumps up to OUT_LAYERS cells (a coarse
+    # 3x3-cell hash picks the lumps, each layer a bit less likely); the Luau makes them horizontal ledges. Recess cells
+    # (tier 6 = rim, carved between the ledges) go up to RECESS_ROWS rows into the rim, never its inner row (it holds the water)
     outc = 0
-    for layer, (seed, p_) in enumerate(((21, OUT_P1), (22, OUT_P2))):
-        want = 3 if layer == 0 else 5
+    for layer in range(OUT_LAYERS):
+        want = (3,) if layer == 0 else (5,)
+        p_ = OUT_P1 if layer == 0 else OUT_GROW - 0.1 * layer
         pick = []
         for r in range(rows):
             for c in range(cols):
                 if SEA_TIER[r][c] != 4 or MAT[r][c] != "sea" or Z0 - (r + 0.5) * CELL > -340:
                     continue  # the entry neck (north edge) stays open for the bridge
-                if any(0 <= r + dr < rows and 0 <= c + dc < cols and SEA_TIER[r + dr][c + dc] == want
-                       for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1))) and hash01(r // 2, c // 2, seed) < p_:
+                if not any(0 <= r + dr < rows and 0 <= c + dc < cols and SEA_TIER[r + dr][c + dc] in want
+                           for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                    continue
+                if hash01(r // 3, c // 3, 21) < p_ and (layer == 0 or hash01(r, c, 30 + layer) < 0.85):
                     pick.append((r, c))
         for r, c in pick:
             SEA_TIER[r][c] = 5
             outc += 1
+    rdist = {}
+    q = deque()
+    for r in range(rows):
+        for c in range(cols):
+            if SEA_TIER[r][c] == 3 and any(0 <= r + dr < rows and 0 <= c + dc < cols and SEA_TIER[r + dr][c + dc] in (4, 5)
+                                          for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                rdist[(r, c)] = 1
+                q.append((r, c))
+    while q:
+        r, c = q.popleft()
+        if rdist[(r, c)] >= RECESS_ROWS:
+            continue
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            rr, cc = r + dr, c + dc
+            if 0 <= rr < rows and 0 <= cc < cols and SEA_TIER[rr][cc] == 3 and (rr, cc) not in rdist:
+                inner = any(0 <= rr + d2 < rows and 0 <= cc + d3 < cols and SEA_TIER[rr + d2][cc + d3] in (0, 1, 2)
+                            for d2, d3 in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                if not inner:  # the row next to the ring water stays whole
+                    rdist[(rr, cc)] = rdist[(r, c)] + 1
+                    q.append((rr, cc))
+    rec = 0
+    for (r, c), d_ in rdist.items():
+        if hash01(r // 2, c // 2, 41) < RECESS_P:
+            SEA_TIER[r][c] = 6
+            rec += 1
+    print(f"[blockout] rim recess cells {rec}")
     print(f"[blockout] rim outcrops {outc} cells")
 
     # walking times (③ 3차 target: gate -> cathedral ~30 s, spawn -> any home <= 45 s at Config.Player.WalkSpeed): Dijkstra on the grid,
@@ -625,7 +659,7 @@ def main():
     for r in range(rows):
         for c in range(cols):
             t = SEA_TIER[r][c] if MAT[r][c] == "sea" else None
-            if t not in (3, 5):
+            if t not in (3, 5, 6):
                 continue
             x, z = c * CELL, -r * CELL
             wave = 0.5 + 0.5 * math.sin(x / 37.0 + z / 29.0 + ph) * math.sin(z / 23.0 - x / 47.0)
@@ -634,7 +668,7 @@ def main():
                 add += RIM_DRIP[0] + (RIM_DRIP[1] - RIM_DRIP[0]) * hash01(r, c, 32)
             if t == 5:
                 add = RIM_OUT_D[0] + (RIM_OUT_D[1] - RIM_OUT_D[0]) * hash01(r, c, 33) + add * 0.6
-            UND[r][c] = min(UND_CAP, UND[r][c] + add) if t == 3 else min(UND_CAP, add)
+            UND[r][c] = min(UND_CAP, UND[r][c] + add) if t in (3, 6) else min(UND_CAP, add)
     # 2차 10/11: a low beach cell (water on top in the Luau) next to the open sky (sea tier 4, the entry neck where the ring
     # narrows to nothing) showed a thin water edge: keep those cells dry (surface 0.5 above the -1.2 water)
     dry = 0
@@ -822,6 +856,27 @@ def main():
             kept.append(w_)
     print(f"[blockout] wall pieces without a real step there: {len(walls) - len(kept)} dropped")
     walls = kept
+    # 디자인 검수 10/12 (r2_17: from the high side the ground sat a few studs under the wall top, the wall stood alone): the
+    # ground right behind every wall is filled up to its top (1.5 cells), then eased down over the next cell (roads, stairs,
+    # water, footprints and pads keep their own height)
+    filled = 0
+    for w_ in walls:
+        n_ = max(1, int(w_["len"] / 2))
+        for k in range(n_ + 1):
+            f = -0.5 + k / n_
+            px_, pz_ = w_["x"] + w_["ux"] * w_["len"] * f, w_["z"] + w_["uz"] * w_["len"] * f
+            for d_, want in ((w_["t"] / 2 + 1, w_["top"]), (w_["t"] / 2 + CELL, w_["top"]), (w_["t"] / 2 + CELL * 1.5, w_["top"]),
+                             (w_["t"] / 2 + CELL * 2.5, w_["top"] - 1.5)):
+                c_, r_ = int((px_ - w_["nx"] * d_ - X0) // CELL), int((Z0 - (pz_ - w_["nz"] * d_)) // CELL)
+                if not (0 <= r_ < rows and 0 <= c_ < cols) or H[r_][c_] is None:
+                    continue
+                m_ = MAT[r_][c_]
+                if m_ in ("sea", "water", "stair") or m_.startswith("road") or (r_, c_) in INFP or (r_, c_) in PAD:
+                    continue
+                if H[r_][c_] < want - 0.05:
+                    H[r_][c_] = want
+                    filled += 1
+    print(f"[blockout] ground filled up to the wall tops behind the walls: {filled} cells")
     os.makedirs(os.path.join(ROOT, "build", "wk"), exist_ok=True)
     with open(os.path.join(ROOT, "build", "wk", "halo_walls.json"), "w", encoding="utf-8") as f:
         json.dump(dict(cell=CELL, walls=walls), f)

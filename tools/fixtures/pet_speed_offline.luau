@@ -138,6 +138,12 @@ runGroup("player-speed", function()
 	applyStats(q, h, true)
 	check(near(h.WalkSpeed, ps.ComputeWalkSpeed(q)) and h.MaxHealth == 200 and h.Health == 200,
 		"applyStats: WalkSpeed = ComputeWalkSpeed (and HP as before)", show(h))
+	-- ⑥ gear (게임성 개발 2): a new armor re-reads the max HP through RefreshCharacter(player, false): no full heal, the HP
+	-- ratio stays (half of 200 -> half of 244)
+	local applyGear = execute("PlayerService.applyStats", APPLY_SOURCE, w:Env(), ps, function() return 244 end)
+	h.Health = 100
+	applyGear(q, h, false)
+	check(h.MaxHealth == 244 and h.Health == 122, "a bigger max HP (armor) without a full heal keeps the HP ratio (100/200 -> 122/244)", show(h))
 end)
 
 runGroup("pet-publish-refresh", function()

@@ -53,6 +53,12 @@ ap.add_argument("--head-footprint", action="store_true", help="head: below the h
 ap.add_argument("--drop-low", type=float, default=0.0, help="plant: drop loose islands lying wholly this far below the pot rim (floating leaf bits)")
 ap.add_argument("--keep-green", action="store_true", help="plant: leaf-green faces survive the pot cut (vines hanging over the pot)")
 ap.add_argument("--organic", action="store_true", help="outline like a plant (coarse voxel = one line round the leaf mass), for whole bushes")
+ap.add_argument("--src-suffix", default="_MV4_HD_src", help="art/models/tripo/web/<job><suffix>.glb (10/10 NPCs: _HD_src)")
+ap.add_argument("--halo", action="store_true", help="replace Tripo's halo (flat loose ring near the top) by an exact torus at the same place")
+ap.add_argument("--halo-r", type=float, default=0.0, help="halo: level ring with this major radius (0 = as fitted)")
+ap.add_argument("--halo-t", type=float, default=0.05, help="halo: tube radius with --halo-r")
+ap.add_argument("--uv-head", default="", help="characters: '<share>:<scale>' = UV islands above that share of the height scaled up before packing (more texture for the face)")
+ap.add_argument("--sym-below", type=float, default=0.0, help="mirror the +x half onto -x below this share of the height (armour legs; 0 = off)")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
 ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
 ap.add_argument("--fit", default="h=1", help="h=<height> or w=<width> in studs (ontop: w=<factor of the body length>)")
@@ -73,7 +79,7 @@ ap.add_argument("--dust", type=int, default=4, help="drop loose islands with few
 a = ap.parse_args(argv)
 OUT = os.path.join(os.path.abspath(a.out), a.job)
 os.makedirs(OUT, exist_ok=True)
-SRC = os.path.join(ROOT, "art", "models", "tripo", "web", a.job + "_MV4_HD_src.glb")
+SRC = os.path.join(ROOT, "art", "models", "tripo", "web", a.job + a.src_suffix + ".glb")
 NAME = a.job + "_TU"
 stats = {"job": a.job, "kind": a.kind, "fit": a.fit, "src": os.path.relpath(SRC, ROOT).replace("\\", "/")}
 
@@ -312,9 +318,65 @@ if a.drop_low and a.kind == "plant" and "body_top" in stats:
     low = [isl for isl in islands if len(isl) >= a.dust and max(v.co.z for g in isl for v in g.verts) < zl]
     stats["low_islands"] = {"count": len(low), "faces": sum(len(i) for i in low), "below": round(zl, 3)}
     dust += [g for isl in low for g in isl]
+halo_ring = None
+if a.halo:
+    # Tripo's halo = flat loose island(s) in the top 15 % (Bright's came in two pieces): fit a ring and drop them
+    zs = [v.co.z for v in bm.verts]
+    zb, zt = min(zs), max(zs)
+    flat = []
+    for isl in islands:
+        P = np.array([v.co[:] for g in isl for v in g.verts])
+        dz, dxy = np.ptp(P[:, 2]), max(np.ptp(P[:, 0]), np.ptp(P[:, 1]))
+        if P[:, 2].min() > zb + 0.85 * (zt - zb) and dz < 0.35 * dxy and len(isl) < 0.1 * len(bm.faces):
+            flat.append(isl)
+    if flat:
+        P = np.array([v.co[:] for isl in flat for g in isl for v in g.verts])
+        c = (P.min(0) + P.max(0)) / 2
+        u, sv, vt = np.linalg.svd(P - P.mean(0), full_matrices=False)
+        nrm = vt[2] if vt[2][2] >= 0 else -vt[2]
+        rad = np.linalg.norm((P - c) - np.outer((P - c) @ nrm, nrm), axis=1)
+        tube = max(0.012, float(np.percentile(np.abs((P - c) @ nrm), 95)))
+        halo_ring = {"centre": [round(float(x), 4) for x in c], "normal": [round(float(x), 4) for x in nrm],
+                     "major": round(float(np.percentile(rad, 50)), 4), "minor": round(tube, 4)}
+        if a.halo_r > 0:
+            # one halo for every NPC (디자인 검수: exact ring, the same over every head): level, the given size, its centre
+            # kept where Tripo put it over the head
+            halo_ring.update(normal=[0.0, 0.0, 1.0], major=a.halo_r, minor=a.halo_t, fitted_major=halo_ring["major"],
+                             fitted_normal=halo_ring["normal"])
+        dust += [g for isl in flat for g in isl]
+        stats["halo"] = dict(halo_ring, pieces=len(flat))
+    else:
+        stats["halo"] = "none found"
 bmesh.ops.delete(bm, geom=dust, context="FACES")
 bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
 bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
+if a.sym_below > 0:
+    # left / right mirror of the lower body (armour legs / tunic skirt): keep +x, mirror it onto -x below zc; the -x
+    # side above zc stays and its lower edge is snapped onto the mirrored piece (no step)
+    zs = [v.co.z for v in bm.verts]
+    zc = min(zs) + a.sym_below * (max(zs) - min(zs))
+    xs = np.array([v.co.x for v in bm.verts if v.co.z < zc])
+    xc = float((xs.min() + xs.max()) / 2)
+    for co, no in (((0, 0, zc), (0, 0, 1)), ((xc, 0, 0), (1, 0, 0))):
+        bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=co, plane_no=no)
+    lowf = [f for f in bm.faces if f.calc_center_median().z < zc]
+    bmesh.ops.delete(bm, geom=[f for f in lowf if f.calc_center_median().x < xc], context="FACES")
+    keep = [f for f in bm.faces if f.is_valid and f.calc_center_median().z < zc and f.calc_center_median().x >= xc]
+    dup = bmesh.ops.duplicate(bm, geom=keep)
+    dv = [g for g in dup["geom"] if isinstance(g, bmesh.types.BMVert)]
+    for v in dv:
+        v.co.x = 2 * xc - v.co.x
+    bmesh.ops.reverse_faces(bm, faces=[g for g in dup["geom"] if isinstance(g, bmesh.types.BMFace)])
+    edge = [v for v in dv if abs(v.co.z - zc) < 1e-4]
+    upper = [v for v in bm.verts if v not in set(dv) and abs(v.co.z - zc) < 1e-4 and v.co.x < xc - 1e-4]
+    if edge and upper:
+        E = np.array([v.co[:2] for v in edge])
+        for v in upper:                                  # the original -x edge goes onto the mirrored edge
+            k = int(np.argmin(((E - np.array(v.co[:2])) ** 2).sum(1)))
+            if np.hypot(*(E[k] - np.array(v.co[:2]))) < 0.15:
+                v.co.x, v.co.y = E[k]
+    bmesh.ops.remove_doubles(bm, verts=[v for v in bm.verts if abs(v.co.z - zc) < 1e-4 or abs(v.co.x - xc) < 1e-4], dist=2e-4)
+    stats["sym_below"] = {"share": a.sym_below, "z": round(zc, 3), "x": round(xc, 4)}
 bm.to_mesh(work.data)
 bm.free()
 log("cut", stats["faces_cut"], "dust", stats["dust_faces"], "islands", len(islands))
@@ -327,6 +389,16 @@ if cur > a.tris:
     mod.ratio = a.tris / cur
     mod.use_collapse_triangulate = True
     bpy.ops.object.modifier_apply(modifier=mod.name)
+if halo_ring:
+    # exact round halo: 48 x 8 torus in the fitted plane, joined into the model (gold comes from the bake of the old one)
+    bpy.ops.mesh.primitive_torus_add(major_segments=48, minor_segments=8, major_radius=halo_ring["major"],
+                                     minor_radius=halo_ring["minor"], location=halo_ring["centre"],
+                                     rotation=Vector((0, 0, 1)).rotation_difference(Vector(halo_ring["normal"])).to_euler())
+    tor = bpy.context.view_layer.objects.active
+    select_only([work, tor], work)
+    bpy.ops.object.join()
+    work = bpy.context.view_layer.objects.active
+    select_only([work], work)
 tri = work.modifiers.new("tri", "TRIANGULATE")
 bpy.ops.object.modifier_apply(modifier=tri.name)
 for p in work.data.polygons:
@@ -338,6 +410,47 @@ work.data.uv_layers.new(name="UVMap")
 bpy.ops.object.mode_set(mode="EDIT")
 bpy.ops.mesh.select_all(action="SELECT")
 bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.004, scale_to_bounds=False)
+if a.uv_head:
+    # characters: the face got ~50 px of a 1024 map (grainy faces, 10/12) -> UV islands of the head (faces above the
+    # given share of the height) are scaled up before packing, so the head gets more of the texture
+    zshare, fac = (float(x) for x in a.uv_head.split(":"))
+    bm = bmesh.from_edit_mesh(work.data)
+    uvl = bm.loops.layers.uv.active
+    zs = [v.co.z for v in bm.verts]
+    zcut = min(zs) + zshare * (max(zs) - min(zs))
+    bm.faces.ensure_lookup_table()
+    parent = list(range(len(bm.faces)))
+
+    def root(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    for e in bm.edges:
+        if len(e.link_faces) != 2:
+            continue
+        f, g = e.link_faces
+        uf = {l.vert.index: l[uvl].uv.copy() for l in f.loops if l.vert in e.verts}
+        ug = {l.vert.index: l[uvl].uv.copy() for l in g.loops if l.vert in e.verts}
+        if all((uf[k] - ug[k]).length < 1e-5 for k in uf):
+            parent[root(f.index)] = root(g.index)
+    isl = {}
+    for f in bm.faces:
+        isl.setdefault(root(f.index), []).append(f)
+    n = 0
+    for faces in isl.values():
+        if sum(f.calc_center_median().z for f in faces) / len(faces) < zcut:
+            continue
+        U = [l[uvl].uv for f in faces for l in f.loops]
+        cu, cv = sum(u.x for u in U) / len(U), sum(u.y for u in U) / len(U)
+        for f in faces:
+            for l in f.loops:
+                l[uvl].uv.x = cu + (l[uvl].uv.x - cu) * fac
+                l[uvl].uv.y = cv + (l[uvl].uv.y - cv) * fac
+        n += 1
+    bmesh.update_edit_mesh(work.data)
+    stats["uv_head"] = {"above": zshare, "scale": fac, "islands": n}
+bpy.ops.uv.select_all(action="SELECT")
 bpy.ops.uv.pack_islands(margin=0.004)
 bpy.ops.object.mode_set(mode="OBJECT")
 log("decimated", cur, "->", stats["tris"])

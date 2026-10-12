@@ -618,9 +618,10 @@ end
 -- A23-133 (user 10/11 "무기가 너무 길어서 잡는 위치가 이상해"; references docs/design/grip_reference_2026-10-11.md §5):
 -- held lengths as a share of the avatar's height (the place's default R15 = 5.18 studs at scale 1). Config.Weapons Length
 -- (3 .. 6.5) only orders the tiers; tierLen squeezes it into each kind's studs: the blade (a sword 0.75 .. 0.9 of the
--- height with its handle and guard - Roblox's Linked Sword is 4 studs, the gear swords' median 5), the staff shaft (0.85
--- .. 1.0 with its orb), the bow (0.6 .. 0.95; the gear bows' median 5.25)
-local LEN = { From = { 3, 6.5 }, Blade = { 2.4, 3.1 }, Staff = { 3.95, 4.45 }, Bow = { 3.1, 4.9 } }
+-- height with its handle and guard - Roblox's Linked Sword is 4 studs, the gear swords' median 5), the bow (0.6 .. 0.95;
+-- the gear bows' median 5.25). A23-142 (user 10/12 "마법봉 ... 아직도 길고 뭉툭해"): a staff is a SHARE of this avatar's
+-- own height (0.65 .. 0.75 with its orb / flask / hook; STAFF below), not studs
+local LEN = { From = { 3, 6.5 }, Blade = { 2.4, 3.1 }, Staff = { 0.65, 0.75 }, Bow = { 3.1, 4.9 } }
 local function tierLen(w, to)
 	local t = math.clamp(((tonumber(w.Length) or LEN.From[1]) - LEN.From[1]) / (LEN.From[2] - LEN.From[1]), 0, 1)
 	return to[1] + (to[2] - to[1]) * t
@@ -647,46 +648,59 @@ local function buildSword(grip, sc, w, color)
 	return { handle, guard, blade }, blade
 end
 
--- 검수 10/11 (grip sheet: the hand near the foot, the staff leaning out; reference: a staff is held upright close to
--- the body a little above its middle, grip_reference_2026-10-11.md §1). User 10/11 "마법봉 너무 크지 않니?" (reference: a
--- staff reaches from the shoulder to the top of the head): the shaft LEN.Staff long (A23-133: 3.95 .. 4.45, with the orb
--- 0.85 .. 1.0 of the height), the orb Orb + OrbPerTier x tier across. 게임성 검수 10/11: the foot rests FootGap over the
--- ground on EVERY avatar - the hand's height over the ground in the staff pose comes from this avatar's own rig
--- (staffHandHeight: HipHeight + the root's half + the root -> UpperTorso rest offset + the ClassGrips Hilt y x the body
--- scale WeaponPose uses, ShoulderX = its T.ShoulderX), and the shaft below the hand stays HoldMin .. HoldMax of the
--- shaft (the hand above the middle); FootMax = the hand's height when the rig cannot be read (R6, a costume rig).
--- 최종 검수 10/12 (staff held lower, grip_reference §5-6): the place's default R15 holds it 2.56 .. 2.71 over the ground
-local STAFF = { FootGap = 0.08, HoldMin = 0.5, HoldMax = 0.8, FootMax = 2.5, ShoulderX = 0.972, Orb = 0.5, OrbPerTier = 0.05, OrbTierMax = 8 }
-local function staffLow(shaftLen, hand)
-	local low = type(hand) == "number" and hand - STAFF.FootGap or STAFF.FootMax
-	return math.clamp(low, shaftLen * STAFF.HoldMin, shaftLen * STAFF.HoldMax)
-end
+-- A23-142 (user 10/12 Play "마법봉 대가리를 거의 잡는 것 같고, 아직도 마법봉이 길고 뭉툭해"; references
+-- docs/design/grip_reference_2026-10-11.md §5-7: a staff carried in one hand is held at its balance point, upright beside
+-- the body, its foot off the ground): every staff (the Light Mage's, the Dark Mage's crook, the Alchemist's flask staff) is
+-- LEN.Staff of the avatar's OWN height long, orb / flask / hook included (avatarHeight: the rig's head top over the ground;
+-- Height when the rig cannot be read), the hand Grip of that length up from the foot (the middle wrap), and the orb never
+-- closer to the hand than OrbClear (a bigger tier's orb shrinks to fit). The pose keeps the hand 2.56 .. 2.71 over the
+-- ground (Config.ClassGrips), so the foot hangs about 0.9 .. 1.3 over it - the client only lifts the hand if the foot would
+-- go into the ground (the WeaponModel's StaffCarry, WeaponPose.StaffStep). Studs here are the avatar's own (x sc later).
+local STAFF = { Grip = 0.43, OrbClear = 1.2, Height = 5.18, Orb = 0.5, OrbPerTier = 0.05 }
 
--- the grip's height over the ground (studs, the avatar's own size) in the one-hand staff pose, or nil
-local function staffHandHeight(character, hiltY)
+-- the head's top over the ground (studs, this avatar's own size) at rest, from its R15 rig, or nil
+local function avatarHeight(character)
 	local ok, h = pcall(function()
 		local hum = character:FindFirstChildOfClass("Humanoid")
 		local root = character:FindFirstChild("HumanoidRootPart")
-		local lower, upper = character:FindFirstChild("LowerTorso"), character:FindFirstChild("UpperTorso")
-		if not (hum and root and lower and upper) or hum.RigType ~= Enum.HumanoidRigType.R15 then return nil end
+		local lower, upper, head = character:FindFirstChild("LowerTorso"), character:FindFirstChild("UpperTorso"),
+			character:FindFirstChild("Head")
+		if not (hum and root and lower and upper and head) or hum.RigType ~= Enum.HumanoidRigType.R15 then return nil end
 		local function at(part, name)
 			local a = part:FindFirstChild(name)
 			return a and a:IsA("Attachment") and a.Position or nil
 		end
 		local r0, r1 = at(root, "RootRigAttachment"), at(lower, "RootRigAttachment")
 		local w0, w1 = at(lower, "WaistRigAttachment"), at(upper, "WaistRigAttachment")
-		local sh = at(upper, "RightShoulderRigAttachment")
-		if not (r0 and r1 and w0 and w1 and sh) then return nil end
+		local n0, n1 = at(upper, "NeckRigAttachment"), at(head, "NeckRigAttachment")
+		if not (r0 and r1 and w0 and w1 and n0 and n1) then return nil end
 		local torso = hum.HipHeight + root.Size.Y / 2 + (r0.Y - r1.Y) + (w0.Y - w1.Y) -- UpperTorso centre over the ground
-		return torso + hiltY * math.clamp(math.abs(sh.X) / STAFF.ShoulderX, 0.6, 1.4)
+		return torso + (n0.Y - n1.Y) + head.Size.Y / 2
 	end)
 	return ok and type(h) == "number" and h == h and h > 0 and h or nil
 end
 
-local function buildStaff(grip, sc, w, color, tier, hand)
-	local shaftLen = tierLen(w, LEN.Staff)
+-- a staff's whole length (unscaled studs: the shapes multiply by sc) for this avatar's height, and that height
+local function staffLen(w, height, sc)
+	local h = (type(height) == "number" and height > 0) and height / sc or STAFF.Height
+	return h * tierLen(w, LEN.Staff), h
+end
+
+-- the orb's size: Orb + OrbPerTier x tier, smaller when its bottom would come nearer the hand than OrbClear (on the
+-- default avatar; it grows and shrinks with the avatar's height h). The shape says how far under the staff's top the
+-- orb's bottom hangs for a size d: a + b x d
+local function staffOrb(tier, total, h, a, b)
+	local room = total * (1 - STAFF.Grip) - STAFF.OrbClear * h / STAFF.Height - a
+	-- C1: the Mythic tier 9 keeps tier 8's orb (math.min(tier, 8)); the hand room shrinks it as before
+	return math.max(0.3, math.min(STAFF.Orb + STAFF.OrbPerTier * math.min(tier, 8), room / b))
+end
+
+local function buildStaff(grip, sc, w, color, tier, height)
+	local total, h = staffLen(w, height, sc)
+	local d = staffOrb(tier, total, h, 0, 1) -- the orb's top is the staff's top, its bottom d under it
+	local shaftLen = total - d * 0.85
 	local base = fist(grip) -- the shaft centreline passes through the actual hand grip
-	local low = staffLow(shaftLen, hand) -- studs from the foot up to the hand
+	local low = total * STAFF.Grip -- studs from the foot up to the hand
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.25, shaftLen, 0.25) * sc,
 		Material = Enum.Material.Wood, Color = WOOD_COLOR,
@@ -697,7 +711,6 @@ local function buildStaff(grip, sc, w, color, tier, hand)
 		Material = w.Material, Color = color,
 		CFrame = base * CFrame.new(0, (shaftLen - low - 0.05) * sc, 0),
 	})
-	local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax) -- C1: tier 9 keeps tier 8's hand-sized orb
 	local tip = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,
@@ -834,9 +847,12 @@ function SHAPES.Hammer(grip, sc, w, color)
 end
 
 -- Dark Mage: a crooked staff (the shaft, a hook bent over the top, the glowing orb hanging in the hook)
-function SHAPES.CrookStaff(grip, sc, w, color, tier, hand)
-	local shaftLen = tierLen(w, LEN.Staff)
-	local base, low = fist(grip), staffLow(shaftLen, hand)
+-- A23-142: the hook rises Hook over the shaft's top (the staff's top), the orb hangs under its end at OrbY
+function SHAPES.CrookStaff(grip, sc, w, color, tier, height)
+	local K = { Hook = 0.5, OrbX = 0.55, OrbY = 0.1 }
+	local total, h = staffLen(w, height, sc)
+	local shaftLen = total - K.Hook
+	local base, low = fist(grip), total * STAFF.Grip
 	local shaft = accPart({
 		Name = "Shaft", Size = Vector3.new(0.28, shaftLen, 0.28) * sc,
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
@@ -848,26 +864,28 @@ function SHAPES.CrookStaff(grip, sc, w, color, tier, hand)
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
 		CFrame = top * CFrame.Angles(0, 0, math.rad(-60)) * CFrame.new(0, 0.4 * sc, 0),
 	})
-	local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax) -- C1: tier 9 keeps tier 8's hand-sized orb
+	local d = staffOrb(tier, total, h, K.Hook - K.OrbY, 0.5)
 	local orb = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,
-		CFrame = top * CFrame.new(0.55 * sc, -0.05 * sc, 0),
+		CFrame = top * CFrame.new(K.OrbX * sc, K.OrbY * sc, 0),
 	})
 	addLight(orb, color, 8 * sc, 1.5)
 	return { shaft, hook, orb }, orb
 end
 
 -- Alchemist: 최종 검수 10/12 (the approved 2D art/out/s2/weapons_t13_4v/Weapon_Neutral_Alchemist_T1..T3_front: a staff
--- with a flask, the hand on its leather wrap) - a wooden staff like the Light Mage's (LEN.Staff, its foot on the ground
--- through staffLow), the wrap round the hand, a cradle of two prongs at the top holding a round glass flask (the brew in
--- the tier colour), its neck and cork above. The shaft is shorter by the neck + cork, so the whole staff tops out where
--- buildStaff's orb does (A23-133: 0.85 .. 1.0 of the height). Code shape until the Tripo models (step 3) replace it.
-function SHAPES.FlaskStaff(grip, sc, w, color, tier, hand)
-	local F = { Neck = 0.14, Cork = 0.12, Sit = 0.35, Wrap = 0.7, Prong = 0.5, Splay = 25,
+-- with a flask, the hand on its leather wrap) - a wooden staff like the Light Mage's, the wrap round the hand, a cradle of
+-- two prongs at the top holding a round glass flask (the brew in the tier colour), its neck and cork above. A23-142: the
+-- whole staff (cork included) LEN.Staff of the height, held at Grip, the flask's bottom OrbClear over the hand. Code shape
+-- until the Tripo models (step 3) replace it.
+function SHAPES.FlaskStaff(grip, sc, w, color, tier, height)
+	local F = { Neck = 0.12, Cork = 0.1, Sit = 0.35, Wrap = 0.7, Prong = 0.5, Splay = 25,
 		Leather = Color3.fromRGB(92, 58, 42), Brass = Color3.fromRGB(196, 152, 72), Glass = Color3.fromRGB(220, 235, 240) }
-	local shaftLen = tierLen(w, LEN.Staff) - (F.Neck + F.Cork)
-	local base, low = fist(grip), staffLow(shaftLen, hand)
+	local total, h = staffLen(w, height, sc)
+	local d = staffOrb(tier, total, h, F.Neck + F.Cork, 1) -- the flask's bottom: d + the neck and cork under the top
+	local shaftLen = total - d * (F.Sit + 0.5) - (F.Neck + F.Cork)
+	local base, low = fist(grip), total * STAFF.Grip
 	local parts = {}
 	table.insert(parts, accPart({
 		Name = "Shaft", Size = Vector3.new(0.25, shaftLen, 0.25) * sc,
@@ -887,7 +905,6 @@ function SHAPES.FlaskStaff(grip, sc, w, color, tier, hand)
 				* CFrame.new(0, F.Prong / 2 * sc, 0),
 		}))
 	end
-	local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax) -- C1: tier 9 keeps tier 8's hand-sized orb
 	local flask = accPart({
 		Name = "Flask", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Glass, Color = color, Transparency = 0.25,
@@ -937,21 +954,17 @@ local function buildWeapon(player, character)
 	local f = getFaction(player)
 	local color = Config.WeaponColor(tier, f)
 	local grip = gripCFrame(hand, left)
-	-- 게임성 검수 10/11: a staff's foot on the ground for this avatar (its hand height in the row's OneHand pose, in
-	-- the staff's unscaled studs; nil = STAFF.FootMax; offline extracts of buildWeapon without the helper keep FootMax)
-	local staffHand = nil
-	if (kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff") and type(staffHandHeight) == "function" then
-		local oh = type(gdef) == "table" and type(gdef.OneHand) == "table" and gdef.OneHand or nil
-		local h = oh and typeof(oh.Hilt) == "Vector3" and staffHandHeight(character, oh.Hilt.Y) or nil
-		staffHand = h and h / sc or nil
-	end
+	-- A23-142: a staff's length follows this avatar's own height (nil = STAFF.Height x sc; offline extracts of buildWeapon
+	-- without the helper keep that)
+	local isStaff = kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff"
+	local staffHeight = (isStaff and type(avatarHeight) == "function") and avatarHeight(character) or nil
 
 	local parts, main
 	local shape = type(SHAPES) == "table" and SHAPES[kind] or nil
 	if shape then
-		parts, main = shape(grip, sc, w, color, tier, staffHand)
+		parts, main = shape(grip, sc, w, color, tier, staffHeight)
 	elseif kind == "Staff" then
-		parts, main = buildStaff(grip, sc, w, color, tier, staffHand)
+		parts, main = buildStaff(grip, sc, w, color, tier, staffHeight)
 	elseif kind == "Bow" then
 		parts, main = buildBow(grip, sc, w, color)
 	elseif kind == "Baton" then
@@ -976,6 +989,7 @@ local function buildWeapon(player, character)
 	local model = newPiece("WeaponModel")
 	model:SetAttribute("Class", classId)
 	model:SetAttribute("GripHand", hand.Name)
+	if isStaff then model:SetAttribute("StaffCarry", true) end -- A23-142: held off the ground (WeaponPose lifts, never lowers)
 	if main then
 		local muzzle = Instance.new("Attachment")
 		muzzle.Name = "AttackMuzzle"

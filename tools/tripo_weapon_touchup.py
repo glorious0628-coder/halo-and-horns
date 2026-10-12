@@ -38,13 +38,13 @@ import proj_bake as PB  # noqa: E402
 KIND = {  # class -> (kind, lengths T1..T3, hand share from the bottom)
     "Paladin": ("sword", (3.85, 3.95, 4.05), 0.145),
     "Berserker": ("darksword", (4.15, 4.25, 4.35), 0.195),
-    "LightMage": ("staff", (4.42, 4.54, 4.66), 0.66),
-    "DarkMage": ("staff", (4.42, 4.54, 4.66), 0.66),
+    "LightMage": ("staff", (3.38, 3.64, 3.90), 0.66),        # SPEC A23-142: 0.65 / 0.70 / 0.75 x H 5.2 incl. the orb
+    "DarkMage": ("staff", (3.38, 3.64, 3.90), 0.66),        # SPEC A23-142: 0.65 / 0.70 / 0.75 x H 5.2 incl. the orb
     "Ranger": ("bow", (3.1, 3.36, 3.61), 0.5),
     "ShadowHunter": ("bow", (2.33, 2.52, 2.71), 0.5),
     "Blacksmith": ("hammer", (2.2, 2.2, 2.2), 0.26),
     "PetTamer": ("baton", (2.13, 2.2, 2.34), 0.3),
-    "Alchemist": ("staff", (4.42, 4.54, 4.66), 0.62),   # the approved 2D is a staff with a flask; the game holds a flask today
+    "Alchemist": ("staff", (3.38, 3.64, 3.90), 0.62),   # flask staff (2D); A23-142 length like the mages
 }
 
 # the hand = the middle of the wrapped grip in the approved 2D front (share of the height from the bottom, measured on
@@ -67,11 +67,15 @@ WRAP = {
 # band (wrap + its rings, share of the height measured on the Tripo width profile) is cut out, moved along the staff so
 # its middle sits at <target> studs from the foot, the hole is filled by stretching the bare shaft just below it (knots
 # and branches stay where they are). (lo, hi, target studs)
-MOVE = {
-    "Weapon_Halo_LightMage_T1": (0.365, 0.515, 2.63), "Weapon_Halo_LightMage_T3": (0.235, 0.455, 2.63),
-    "Weapon_Horns_DarkMage_T1": (0.295, 0.515, 2.53), "Weapon_Horns_DarkMage_T3": (0.265, 0.495, 2.53),
-    "Weapon_Neutral_Alchemist_T1": (0.245, 0.495, 2.59), "Weapon_Neutral_Alchemist_T2": (0.235, 0.455, 2.59),
-    "Weapon_Neutral_Alchemist_T3": (0.135, 0.385, 2.59),
+MOVE = {   # SPEC A23-142 + 개발 1 code (fix/staff-short 68bef0e7, 디자인 검수 10/12): the hand holds the wrap in the
+    # middle of the staff, wrap centre = 43 % of the length from the foot (= the pivot) on all 9 staffs; the wrap band
+    # (wrap + its rings, share measured on the Tripo width profile) moves along the staff, up or down. (lo, hi, target)
+    "Weapon_Halo_LightMage_T1": (0.365, 0.515, 0.43), "Weapon_Halo_LightMage_T2": (0.385, 0.61, 0.43),
+    "Weapon_Halo_LightMage_T3": (0.235, 0.455, 0.43),
+    "Weapon_Horns_DarkMage_T1": (0.295, 0.515, 0.43), "Weapon_Horns_DarkMage_T2": (0.42, 0.675, 0.43),
+    "Weapon_Horns_DarkMage_T3": (0.265, 0.495, 0.43),
+    "Weapon_Neutral_Alchemist_T1": (0.245, 0.495, 0.43), "Weapon_Neutral_Alchemist_T2": (0.235, 0.455, 0.43),
+    "Weapon_Neutral_Alchemist_T3": (0.135, 0.385, 0.43),
 }
 
 
@@ -108,7 +112,7 @@ def move_wrap(me, z0, L, lo_s, hi_s, target, rmax=0.3, foot=0.12):
     best = None
     for n_ in (1, 2, 3, 4, 5, 6):                               # more copies = a visibly repeating pattern: only
         w_ = h / n_                                             # when the shaft below is too short (straight staffs)
-        if w_ < 0.15 or (n_ > 2 and best is not None):
+        if w_ < min(0.15, h) - 1e-9 or (n_ > 2 and best is not None):
             break
         for a_ in np.arange(bottom, lo - w_ + 1e-6, 0.01):
             pa, pb = prof(a_ + 0.005), prof(a_ + w_ - 0.005)
@@ -324,8 +328,20 @@ V = np.array([v.co[:] for v in me.vertices])
 z0 = V[:, 2].min()
 if a.job in MOVE and not a.no_move:
     lo_s, hi_s, tgt = MOVE[a.job]
-    mlo, mhi, md = move_wrap(me, z0, length, lo_s, hi_s, tgt)
-    stats["wrap_moved"] = {"from": [round(mlo - z0, 3), round(mhi - z0, 3)], "up": round(md, 3), "centre_now": tgt}
+    if tgt < (lo_s + hi_s) / 2:
+        # moving DOWN: flip the staff upside down, move "up" (the shaft above the wrap fills the hole), flip back;
+        # in the flipped staff the head is at the "foot", so the source search keeps 30 % clear of it
+        zt = float(np.array([v.co[:] for v in me.vertices])[:, 2].max())
+        flip = Matrix.Translation((0, 0, z0 + zt)) @ Matrix.Diagonal((1, 1, -1, 1))
+        me.transform(flip)
+        me.flip_normals()
+        flo, fhi, fd = move_wrap(me, z0, length, 1 - hi_s, 1 - lo_s, (1 - tgt) * length, foot=0.3)
+        me.transform(flip)
+        me.flip_normals()
+        mlo, mhi, md = z0 + zt - fhi, z0 + zt - flo, -fd
+    else:
+        mlo, mhi, md = move_wrap(me, z0, length, lo_s, hi_s, tgt * length)
+    stats["wrap_moved"] = {"from": [round(mlo - z0, 3), round(mhi - z0, 3)], "up": round(md, 3), "centre_now": round(tgt * length, 3)}
     V = np.array([v.co[:] for v in me.vertices])
     z0 = V[:, 2].min()
 zg = z0 + hand * length                                     # the grip height (share of the length)

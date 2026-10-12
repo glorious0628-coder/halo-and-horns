@@ -58,6 +58,7 @@ local model = Instance.new("Model")
 model.Name = NAME
 model:SetAttribute("Skeleton", true)
 model:SetAttribute("Maker", "이미지 개발 2026-10-12 tools/worldkit/goose_square.luau")
+model.Parent = workspace -- CSG (UnionAsync / SubtractAsync) needs the parts inside the DataModel
 
 local function part(name, shape, size, cf, color, mat)
 	local p = Instance.new("Part")

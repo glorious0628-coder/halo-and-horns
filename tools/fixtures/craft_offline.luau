@@ -202,8 +202,26 @@ runGroup("config", function()
 	local want = { W1 = { 1, 1, 10, 10 }, W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
 		W6 = { 6, 20, 7500, 900 }, W7 = { 7, 25, 22500, 2000 }, W9 = { 9, 30, 60000, 4000 } }
 	local smithRows = 0
-	for _, r in K.Recipes do if r.Role == "Smith" then smithRows += 1 end end
-	check(smithRows == 8, "eight blacksmith recipes", tostring(smithRows))
+	for _, r in K.Recipes do if r.Role == "Smith" and r.Kind == "Weapon" then smithRows += 1 end end
+	check(smithRows == 8, "eight blacksmith weapon recipes", tostring(smithRows))
+	-- ⑥ gear rows (게임성 개발 3): Armor / Ring (Smith, Lv 8 / 16 / 24), PetArmor / PetAcc (Tame, Lv 5 / 12 / 20), Kind Gear,
+	-- materials that exist; the recipes wait for Config.Features.Gear
+	local gearWant = { G1 = { "Smith", "Armor", 1, 8 }, G2 = { "Smith", "Armor", 2, 16 }, G3 = { "Smith", "Armor", 3, 24 },
+		R1 = { "Smith", "Ring", 1, 8 }, R2 = { "Smith", "Ring", 2, 16 }, R3 = { "Smith", "Ring", 3, 24 },
+		PA1 = { "Tame", "PetArmor", 1, 5 }, PA2 = { "Tame", "PetArmor", 2, 12 }, PA3 = { "Tame", "PetArmor", 3, 20 },
+		PC1 = { "Tame", "PetAcc", 1, 5 }, PC2 = { "Tame", "PetAcc", 2, 12 }, PC3 = { "Tame", "PetAcc", 3, 20 } }
+	for id, x in gearWant do
+		local r = K.Recipes[id]
+		local mats = r ~= nil
+		for item in (r and r.Mats or {}) do
+			if not C.Loot.Items[item] then mats = false end
+		end
+		check(r and r.Role == x[1] and r.Kind == "Gear" and r.Slot == x[2] and r.Tier == x[3] and r.Lv == x[4] and mats,
+			"gear recipe: role / slot / tier / craft Lv as the design, every material is a known item", id .. " " .. show(r))
+	end
+	local gearOff = cWorld()
+	local gearOn = cWorld({ EditConfig = function(c) c.Features.Gear = true end })
+	check(gearOff.C.RecipeOn("G1") == nil and gearOn.C.RecipeOn("G1") ~= nil, "a gear recipe is on only while Config.Features.Gear is", "")
 	for id, x in want do
 		local r = K.Recipes[id]
 		check(r and r.Role == "Smith" and r.Kind == "Weapon" and r.Tier == x[1] and r.Lv == x[2] and r.Gold == x[3] and r.XP == x[4],
@@ -497,6 +515,7 @@ runGroup("results", function()
 	local w = cWorld({ EditConfig = function(c)
 		c.Craft.Recipes.T1 = { Role = "Smith", Kind = "Item", Item = "Jelly", N = 3, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
 		c.Craft.Recipes.G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
+		c.Features.Gear = true -- ⑥: a gear recipe is on only while the gear switch is
 	end })
 	local p, d = smith(w, 1)
 	d.Items.Jelly = 990

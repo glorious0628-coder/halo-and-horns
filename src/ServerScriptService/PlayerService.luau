@@ -108,11 +108,19 @@ local function healthMult(player)
 	return 1
 end
 
+-- ⑥ gear (게임성 개발 3): the armor's hp mult (Config.GearMultsOf; 1 when this Config has no gear or it fails)
+local function gearHp(player)
+	if type(Config.GearMultsOf) ~= "function" then return 1 end
+	local ok, _, h = pcall(Config.GearMultsOf, player)
+	return (ok and type(h) == "number" and h == h and h >= 1 and h ~= math.huge) and h or 1
+end
+
 local function computeMaxHealth(player)
 	local level = tonumber(stat(player, "Level", 1)) or 1
 	local faction = stat(player, "Faction", "None")
 	local class = stat(player, "Class", "Warrior")
-	return math.max(1, math.floor(Config.MaxHealth(level, faction, class) * healthMult(player)))
+	return math.max(1, math.floor(Config.MaxHealth(level, faction, class) * healthMult(player)
+		* gearHp(player))) -- ⑥ gear (게임성 개발 3): the armor's hp mult (1 while the switch is off)
 end
 
 -- health/speed formula on a given humanoid (used on spawn and by RefreshCharacter)
@@ -947,7 +955,7 @@ function PlayerService.ComputeWalkSpeed(player)
 		kaiju = ok and st == "Active"
 	end
 	return Config.WalkSpeed(classDef(player).Id, player:GetAttribute("EquippedPet"), player:GetAttribute("PetLv"), kaiju,
-		player:GetAttribute("PetRoll"))
+		player:GetAttribute("PetRoll"), player:GetAttribute("PetAcc")) -- ⑥ gear (게임성 개발 3): the pet's PetAcc bonus
 end
 
 -- PET-1: WalkSpeed only (a pet equipped or levelled up); a dead or missing character is left alone

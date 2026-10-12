@@ -171,7 +171,8 @@ local seaY0 = -24 -- the deep sea floor (dark basalt)
 -- as blue dots. The rim (3) and its outcrops (5, below the rim top, uneven) are rock from their top (Limestone ->
 -- Sandstone -> Rock going down, like the whole underside; Sandstone alone read dark brown in C2c)
 local SEA_FLOOR = { [0] = { -12, Enum.Material.Basalt }, [1] = { -6, Enum.Material.Sand }, [2] = { -10, Enum.Material.Basalt },
-	[3] = { 1.6, Enum.Material.Limestone }, [5] = { -4, Enum.Material.Limestone } }
+	[3] = { 1.6, Enum.Material.Limestone }, [5] = { -4, Enum.Material.Limestone }, [6] = { 1.6, Enum.Material.Limestone } }
+-- 6 = a rim cell carved between the ledges (halo_blockout.py RECESS_ROWS, 3차 10/12); otherwise like 3
 -- 2차 10/11 (검수: from the side the sea ring hung as a blue water wall): the rim is 4 cells wide (2 showed LOD holes), stands 1.8..4.8 above the
 -- water (uneven per cell) and its rock goes down past the sea floor into the underside, so the water ends inside rock
 local RIM_DOWN = -18 -- 5단계 10/12: 6 under the 12-deep ring water (was -30 for the 24-deep water: from afar the island
@@ -212,7 +213,7 @@ for ix = 1, NX do
 				und = 0
 			else
 				land, top, wtop = tier[1] - SURF, tier[2], (k ~= 3 and k ~= 5) and WATER_TOP or nil -- rim + outcrops dry
-				if k == 3 then land += ((ix * 7 + iz * 13) % 4) * 1.0 end -- uneven rocky top
+				if k == 3 or k == 6 then land += ((ix * 7 + iz * 13) % 4) * 1.0 end -- uneven rocky top
 				if k == 5 then
 					land -= ((ix * 11 + iz * 5) % 6) * 4.0 -- outcrop tops 4..24 under the water line (ledges at uneven heights)
 				else
@@ -232,13 +233,36 @@ for ix = 1, NX do
 		-- solid from `bottom` up to `land`: the SURF rule is not applied to the underside (hidden, <= 2 studs off is fine)
 		local bottom = math.max(land - math.max(und, 4), VY0)
 		local band = false -- the rim (3) and its outcrops (5): rock right from their top
-		if m == "s" then
-			local k = idx[string.sub(D.h[r], ix, ix)]
-			band = k == 3 or k == 5
+		local kk = m == "s" and idx[string.sub(D.h[r], ix, ix)] or -1
+		band = kk == 3 or kk == 5 or kk == 6
+		-- 디자인 검수 10/12 ④ (the rim read as a smooth beige drum): relief on the outer face. Outcrops (5) are 1-2 horizontal
+		-- rock ledges (6 thick) at three uneven levels instead of full columns; the outermost rim cells (3 next to 4/5) get
+		-- recesses (one cell = 4 deep, 20-40 % of the band) between the ledges
+		local slabs, recess = nil, nil
+		local LV = { -6 - (ix * 5 + iz * 3) % 3, -20 - (ix * 7 + iz * 11) % 4, -36 - (ix * 3 + iz * 13) % 4 }
+		-- 3차 10/12 (one cell of relief did not read from 150 away): ledges 8 thick on outcrop lumps up to 5 cells out; recess
+		-- cells (tier 6, halo_blockout.py: up to 3 rows into the rim, coarse 2x2 hash) are carved in two deeper bands
+		if kk == 5 then
+			slabs = {}
+			for li, lv in LV do
+				if (ix * (3 + li) + iz * (5 + 2 * li)) % 5 < 3 then table.insert(slabs, { lv - 8, lv }) end
+			end
+			if #slabs == 0 then table.insert(slabs, { LV[2] - 8, LV[2] }) end
+		elseif kk == 6 then -- deeper bands between the ledges (3차: "a bit deeper between the steps")
+			recess = { { LV[1] - 13, LV[1] - 2 }, { LV[2] - 15, LV[2] - 3 } }
 		end
 		for iy = 1, NY do
 			local yb = VY0 + (iy - 1) * 4
 			local lo = math.clamp((math.min(yb + 4, land) - math.max(yb, bottom)) / 4, 0, 1)
+			if slabs then
+				lo = 0
+				for _, s in slabs do lo += math.clamp((math.min(yb + 4, s[2]) - math.max(yb, s[1])) / 4, 0, 1) end
+				lo = math.min(lo, 1)
+			elseif recess then
+				for _, s in recess do
+					if yb + 2 > s[1] and yb + 2 < s[2] then lo = 0 end
+				end
+			end
 			if lo > 0 then
 				-- 10/12: 4 voxels deep (was 2): slopes / coarse terrain detail still showed the rock under the grass
 				if yb + 4 > land - 15 and not band then -- 디자인 검수 10/11 (h_05): top material deep; with 1 the Rock under

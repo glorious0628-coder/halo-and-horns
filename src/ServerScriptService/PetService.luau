@@ -29,6 +29,9 @@ local LIMIT = { NameLen = 20, UidLen = 32, Pets = 64 }
 -- PET-2b L4: when each owner last got PetList, and whether an XP-only send waits (Config.Pets.ListEvery); weak keys
 -- so a send racing a leave never keeps a player (PlayerRemoving clears them too)
 local LIST = { Last = setmetatable({}, { __mode = "k" }), Queued = setmetatable({}, { __mode = "k" }) }
+-- ⑥ PetArmor: the part of a pet XP gain below 1 kept for the next gain ([player][uid] = fraction; memory only, a leave
+-- drops it), so a kill's 1 pet XP x 1.2 still adds up (5 kills = 6)
+local GEARREM = setmetatable({}, { __mode = "k" })
 
 PetService.PetGranted = Util.Signal.new() -- (player, uid, species): PET-6 announcements later
 
@@ -160,6 +163,14 @@ local function notifyLater(player, text)
 	end)
 end
 
+-- ⑥ gear (게임성 개발 3): the bonus a pet's worn PetArmor / PetAcc gives (Config.PetGearBonus; 0 when this Config has no
+-- gear or it fails)
+local function petGear(data, uid, slot)
+	if type(Config.PetGearBonus) ~= "function" then return 0 end
+	local ok, x = pcall(Config.PetGearBonus, data.Gear, uid, slot)
+	return (ok and type(x) == "number" and x == x and x > 0 and x ~= math.huge) and x or 0
+end
+
 -- the attributes every client reads (EquippedPet / PetLv / PetForm), then the walk speed, then the owner's list
 local function publish(player, data)
 	local pets = data.Pets
@@ -169,6 +180,9 @@ local function publish(player, data)
 	player:SetAttribute("PetLv", p and p.Lv or 0)
 	player:SetAttribute("PetRoll", p and p.Roll and p.Roll.Spd or 0)
 	player:SetAttribute("PetForm", "")
+	-- ⑥ gear (게임성 개발 3): the following pet's PetAcc bonus; nil = none (and always nil while the switch is off)
+	local acc = petGear(data, uid, "PetAcc")
+	player:SetAttribute("PetAcc", acc > 0 and acc or nil)
 	refreshSpeed(player)
 	if type(pets) == "table" and type(pets.List) == "table" then sendList(player, data) end
 end
@@ -272,6 +286,15 @@ function PetService.GetPet(player, uid)
 	return { Sp = p.Sp, Lv = p.Lv, XP = p.XP }
 end
 
+-- ⑥ gear (GearService, 게임성 개발 3): my pets' worn gear changed -> publish again (PetAcc, the walk speed, the list)
+function PetService.Refresh(player)
+	local data = getData(player)
+	if not data then return false end
+	if type(data.Pets) ~= "table" or type(data.Pets.List) ~= "table" or type(data.Pets.Equipped) ~= "table" then PetService.Sanitize(data) end
+	publish(player, data)
+	return true
+end
+
 -- a well-formed EquipPet the server turned down (the tamer's put-away, too fast, not ready yet, a pet it does not own):
 -- the owner's window gets the true list back (game dev 1's report: it may already show the change), at most once every
 -- Config.Pets.ListEvery s (sendListSoon), so a held button never floods it
@@ -323,6 +346,26 @@ local function giveXP(p, n)
 	return leveled
 end
 
+-- ⑥ gear (게임성 개발 3): the pet XP of ONE gain x (1 + the PetArmor bonus of THAT pet) + the fraction kept from the last
+-- gains of that pet; the whole part goes in, the rest waits (GEARREM). The one place the bonus is applied (a kill and
+-- AddPetXP both go through it before giveXP). 0 / no gear = n as it is.
+local function gearXP(player, data, uid, n)
+	local rems = GEARREM[player]
+	local exact = n * (1 + petGear(data, uid, "PetArmor")) + (rems and rems[uid] or 0)
+	local whole = math.floor(exact + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)
+	local rest = exact - whole
+	if rest > 1e-9 then
+		if not rems then
+			rems = {}
+			GEARREM[player] = rems
+		end
+		rems[uid] = rest
+	elseif rems then
+		rems[uid] = nil
+	end
+	return whole
+end
+
 -- PET-2: every kill its owner is paid for (MonsterKilled, auto combat too) gives the equipped pet XPPerKill pet XP;
 -- a level up refreshes the walk speed (Config.PetSpeedBonus follows the level). A free rider's share (info.Minor,
 -- MonsterService MinorShare) is not a paid kill (PET-2b L1, like LootService.RollKill).
@@ -336,7 +379,7 @@ local function onKilled(player, info)
 	local uid = pets.Equipped[1]
 	local p = uid and pets.List[uid] or nil
 	if not p then return end
-	local leveled = giveXP(p, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1))))
+	local leveled = giveXP(p, gearXP(player, data, uid, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1)))))
 	if leveled == nil then return end -- MaxLv
 	if leveled then
 		publish(player, data)
@@ -355,6 +398,7 @@ function PetService.AddPetXP(player, uid, n)
 	if type(pets.List) ~= "table" or type(pets.Equipped) ~= "table" then pets = PetService.Sanitize(data) end
 	local p = pets.List[uid]
 	if type(p) ~= "table" then return nil end
+	n = gearXP(player, data, uid, n) -- ⑥ gear (게임성 개발 3): PetArmor of this pet
 	local leveled = giveXP(p, n)
 	if leveled then
 		publish(player, data)
@@ -485,6 +529,7 @@ function PetService.Start()
 	end)
 	Players.PlayerRemoving:Connect(function(player) -- PET-2b L4
 		LIST.Last[player], LIST.Queued[player] = nil, nil
+		GEARREM[player] = nil -- ⑥ PetArmor fractions
 	end)
 	print("[PetService] started")
 end

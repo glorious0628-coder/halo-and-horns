@@ -56,8 +56,8 @@ MUTATIONS = [
      "return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))",
      "return math.max(0, math.floor(raw + 0.5))"),
     ("MaxCombatPower uses MaxWeaponTier only", "CONFIG_SOURCE",
-     "best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even))",
-     "best = Config.CombatPower(Config.Levels.MaxLevel, Config.MaxWeaponTier, Config.Loot.MaxEnhance, even)"),
+     "best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even, top))",
+     "best = Config.CombatPower(Config.Levels.MaxLevel, Config.MaxWeaponTier, Config.Loot.MaxEnhance, even, top)"),
     ("MaxCombatPower not cached", "CONFIG_SOURCE",
      "if not Config.Power[key] then", "if true then"),
     ("TitleSel not mirrored", "CONFIG_SOURCE",
@@ -100,7 +100,8 @@ MUTATIONS = [
     ("CombatPower not set on PlayerReady", "JUSTICE_SOURCE",
      "POWER.Conns[player] = list\n\tPOWER.Refresh(player)", "POWER.Conns[player] = list"),
     ("WeaponEnhance not watched", "JUSTICE_SOURCE",
-     '{ "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp" }', '{ "Level", "WeaponTier", "StatAtk", "StatHp" }'),
+     '{ "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp", "GearAtk", "GearHp" }',
+     '{ "Level", "WeaponTier", "StatAtk", "StatHp", "GearAtk", "GearHp" }'),
     # PvPService helpers
     # A23-69: the fallback is the one power formula (Config.CombatPowerOf, the attributes)
     ("PvP fallback is not the displayed number", "PVP_SOURCE",
