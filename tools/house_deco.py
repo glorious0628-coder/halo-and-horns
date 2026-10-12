@@ -528,8 +528,13 @@ elif "dome" in PR:
             if d.get("paint"):
                 # a painted dome (the Bakery's brick dome): the clean lathe takes Tripo's own paint from the nearest point
                 # (bricks, white stone bands), no exact ribs (the runner skips piece_fix for it: fix_shape "lathe")
-                mp_ = proj_bake.bake(dl, proj_bake.Source(ps), size=d.get("size", 1024), ray=None, relief=False)
-                if d.get("profile_from"):
+                if d.get("paint") == "bricks":           # 디자인 검수 10/12: clean bricks, not Tripo's streaky paint
+                    mp_ = proj_bake.brick_maps(prof, k, size=d.get("size", 1024), course=d.get("course_studs", 0.42),
+                                               brick=d.get("brick_studs", 0.85), tones=d.get("tones", ((181, 94, 57), (214, 117, 67), (234, 138, 85))),
+                                               mortar_rgb=d.get("mortar", (250, 232, 220)))
+                else:
+                    mp_ = proj_bake.bake(dl, proj_bake.Source(ps), size=d.get("size", 1024), ray=None, relief=False)
+                if d.get("profile_from") and d.get("paint") != "bricks":
                     # the straight foot band took smeared paint from Tripo's messy foot: repeat the brick courses just
                     # above it downwards (lathe UV: v = 0.01 + 0.98 * 0.92 * arc / total arc)
                     arc_ = [0.0]
@@ -551,8 +556,9 @@ elif "dome" in PR:
                     bpy.data.objects.remove(o)
                 ps = [dl]
                 M = Matrix.Translation((sl["pos"][0], sl["pos"][1], sl["pos"][2] + d.get("dz", 0.0))) @ Matrix.Scale(k, 4)
-                rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, foot band %.2f, Tripo paint projected " \
-                                   "(hit %.0f %%)" % (len(prof), bc, 100 * mp_["hit"])
+                rep["fix_shape"] = "lathe: %d rings x 48 sides from the Tripo silhouette, foot band %.2f, %s" % (
+                    len(prof), bc, "clean running-bond bricks (2D colours, cream joints)" if d.get("paint") == "bricks"
+                    else "Tripo paint projected (hit %.0f %%)" % (100 * mp_["hit"]))
             else:
                 # ribs: as many as the spec says (the 2D), turned to where Tripo's dark rib lines are (mid height)
                 spec_top = json.load(open(os.path.join(ROOT, "tools", "house_specs", NAME + ".json"), encoding="utf-8")).get("top", {})
@@ -1715,9 +1721,10 @@ if "canopy" in PR:
             bm_.faces.new((va, vb, vc))
             # valance: a flat band below the eave with a half-round scallop, pushed out 0.02
             seg = 8
-            pts = [(pa[0] + nx_ * 0.02, pa[1] + ny_ * 0.02, ze), (pb[0] + nx_ * 0.02, pb[1] + ny_ * 0.02, ze)]
+            vo = C_.get("valance_out", 0.02)
+            pts = [(pa[0] + nx_ * vo, pa[1] + ny_ * vo, ze), (pb[0] + nx_ * vo, pb[1] + ny_ * vo, ze)]
             r_ = math.hypot(pb[0] - pa[0], pb[1] - pa[1]) / 2
-            mx_, my_ = (pa[0] + pb[0]) / 2 + nx_ * 0.02, (pa[1] + pb[1]) / 2 + ny_ * 0.02
+            mx_, my_ = (pa[0] + pb[0]) / 2 + nx_ * vo, (pa[1] + pb[1]) / 2 + ny_ * vo
             ux_, uy_ = (pb[0] - pa[0]) / (2 * r_), (pb[1] - pa[1]) / (2 * r_)
             for q in range(seg + 1):
                 a_ = math.pi * q / seg

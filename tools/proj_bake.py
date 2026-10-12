@@ -409,6 +409,59 @@ def mirror_fill(maps, extra=None):
     return int(take.sum())
 
 
+def brick_maps(prof, k, size=1024, course=0.42, brick=0.85, mortar=0.07, tones=((181, 94, 57), (214, 117, 67), (234, 138, 85)),
+               mortar_rgb=(250, 232, 220), seed=7):
+    """clean running-bond bricks for a lathe() surface (its UV: u = angle, v = 0.01 + 0.98 * 0.92 * arc / total arc):
+    courses of `course` studs along the profile, bricks `brick` studs long round it (fewer per course where the radius
+    shrinks, at least 3), half-brick offset on odd courses, `mortar` studs joints in mortar_rgb; brick colours picked per
+    brick from `tones` (+-4 % shade); k = the scale the mesh gets later (profile units -> studs). Returns proj_bake maps."""
+    pr = np.array(prof, float)
+    arc = np.concatenate([[0.0], np.cumsum(np.hypot(np.diff(pr[:, 0]), np.diff(pr[:, 1])))])
+    tot = max(arc[-1], 1e-9)
+    rows = np.arange(size)
+    v = 1 - (rows + 0.5) / size
+    a = (v - 0.01) / (0.98 * 0.92) * tot                     # arc length (profile units) of each texel row
+    on = (v >= 0.01) & (a <= tot)
+    r = np.interp(np.clip(a, 0, tot), arc, pr[:, 0]) * k       # studs
+    aw = np.clip(a, 0, tot) * k
+    u = (np.arange(size) + 0.5) / size
+    fu = np.clip((u - 0.01) / 0.98, 0, 1)
+    C = np.zeros((size, size, 3))
+    Hh = np.zeros((size, size))
+    rng = np.random.default_rng(seed)
+    T = np.array(tones, float) / 255.0
+    shade = rng.uniform(0.96, 1.04, (4096, 2048))
+    pick = rng.integers(0, len(T), (4096, 2048))
+    Mrt = np.array(mortar_rgb, float) / 255.0
+    for i in rows:
+        if not on[i]:
+            C[i] = Mrt
+            continue
+        c = int(aw[i] // course)
+        inc = aw[i] - c * course
+        n = max(3, int(round(2 * np.pi * max(r[i], 1e-3) / brick)))
+        bl = 2 * np.pi * max(r[i], 1e-3) / n                   # this course's brick length (studs)
+        x = fu * n + (0.5 if c % 2 else 0.0)
+        bi = np.floor(x).astype(int) % n
+        inb = (x - np.floor(x)) * bl
+        joint = (inc < mortar) | (inb < mortar) | (r[i] < 0.12)
+        col = T[pick[c % 4096, bi % 2048]] * shade[c % 4096, bi % 2048][:, None]
+        C[i] = np.where(joint[:, None], Mrt, np.clip(col, 0, 1))
+        Hh[i] = np.where(joint, 0.0, 1.0)
+    # mortar grooves as a tangent normal (u = round, v = up the profile)
+    gx = np.roll(Hh, -1, 1) - np.roll(Hh, 1, 1)
+    gy = np.roll(Hh, 1, 0) - np.roll(Hh, -1, 0)
+    st = 0.35
+    N = np.dstack([-gx * st, -gy * st, np.ones_like(Hh)])
+    N /= np.linalg.norm(N, axis=2, keepdims=True)
+    N = N * 0.5 + 0.5
+    R = np.where(Hh[..., None] > 0.5, 0.82, 0.9) * np.ones((1, 1, 3))
+    M = np.zeros((size, size, 3))
+    MR = np.zeros((size, size, 3))
+    MR[..., 1] = R[..., 0]
+    return {"C": C, "N": N, "R": R, "M": M, "MR": MR, "hit": 1.0}
+
+
 def save_maps(maps, work, name):
     """write <work>/<name>_{C,N,R,M,MR}.png and return a glTF-ready material using them"""
     os.makedirs(work, exist_ok=True)
