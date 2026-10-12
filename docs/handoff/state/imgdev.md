@@ -1,3 +1,7 @@
+# 이미지 개발 — 상태 (2026-10-12: 바깥선 묶음 3·4 ID 기록, 5·6 준비)
+
+- **바깥선 묶음 3·4(20개) 가져오기 확인 -> ID 기록·임시 파트 지움**(남은 0). 합계 40개(prop_hull_assets.json + asset_ids PropHull035_<키>). 묶음 5 = build/hull_import(10개), 묶음 6 = build/hull_import_b6(6개) 준비, 렌더 시트 build/hull_import_sheet_5/6.png. 사용자 가져오기 대기. 들어오면 `STUDIO_NAME=WorldKit py tools/read_imported_hulls.py --clean`. 한국어 모드 취소(A23-146).
+
 # 이미지 개발 — 상태 (2026-10-12 오후: 밤 빛 결정 적용)
 
 - **밤 빛 결정(최종 검수)**: Exposure +0.0, Ambient/OutdoorAmbient x0.85, 등불 (255,214,160)·0.5·범위 10(집 08 근처 2개 범위 8). WorldKit 등불 31개 적용 끝(tools/night_lamps_apply.luau survey/apply/undo), tools/halo_light_sim.luau 밤 값 갱신(Exp base -0.15 -> 합 0.0, Ambient (60,66,90), Outdoor (83,94,126)), 사진 art/review/imgdev/night_new_2026-10-12/(집 08·Potion). **메인 게임 밤 값(Config.DayNight Looks.Night Exposure 0.35)은 6단계(새 빛 마을 메인 교체) 때 같은 비율로 — 그 Config 가지는 내가 만들고 게임성 개발 1에 알림, 메인 낮·밤 사진으로 확인.**
