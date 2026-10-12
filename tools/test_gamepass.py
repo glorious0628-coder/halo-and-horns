@@ -208,6 +208,18 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # A23-143 chat stickers
+    ("stickers: the pack is free", M, "\tif not Config.StickerFree(key) and not MonetizationService.HasPass(player, Config.Stickers.Pass) then return end\n", ""),
+    ("stickers: no rate limit", M, "\tif not Util.RateLimit(player, \"SendSticker\", Config.RateLimits.SendSticker or 2) then return end\n", ""),
+    ("stickers: any argument count", M, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal key = ...\n\tif not Config.IsSticker(key) then return end\n",
+     "\tlocal key = ...\n\tif not Config.IsSticker(key) then return end\n"),
+    ("stickers: any art id", M, "\tif not Config.IsSticker(key) then return end\n", "\tif type(key) ~= \"string\" then return end\n"),
+    ("stickers: the dead send", M, "\tif not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return end\n\tif not Config.StickerFree",
+     "\tif not S.PlayerService.IsReady(player) then return end\n\tif not Config.StickerFree"),
+    ("stickers: sent to the sender only", M, "pcall(Net.Fx, nil, \"Sticker\", { UserId = player.UserId, Key = key })",
+     "pcall(Net.Fx, player, \"Sticker\", { UserId = player.UserId, Key = key })"),
+    ("stickers: every one free", C, "\treturn Config.IsSticker(key) and type(part) == \"table\" and part.Free == true\n", "\treturn Config.IsSticker(key)\n"),
+    ("stickers: pass 199", C, "Stickers = { Id = 0, Price = 99, Name = \"Sticker Pack\"", "Stickers = { Id = 0, Price = 199, Name = \"Sticker Pack\""),
     # A23-139: the pass doubles craft XP only, never what a craft makes
     ("craft: the result count x the pass", CR, "\tlocal n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus))) -- items: N + the hammer's +N\n", "\tlocal n = (math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))) * math.max(1, num(S.ProgressionService.PassMult(player, \"XP2\"), 1))\n"),
     ("craft: the +N x the pass", CR, "\t\tlocal okPass, pass = pcall(function() return ps and type(ps.PassMult) == \"function\" and ps.PassMult(player, \"XP2\") or 1 end)\n\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n\tend\n", "\t\tlocal okPass, pass = pcall(function() return ps and type(ps.PassMult) == \"function\" and ps.PassMult(player, \"XP2\") or 1 end)\n\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n\t\tplus = math.min(2, plus * num(pass, 1))\n\tend\n"),

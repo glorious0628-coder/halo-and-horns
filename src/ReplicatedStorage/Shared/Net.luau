@@ -24,6 +24,7 @@ Net.Names = {
 	"UiMetric", -- BB38 (windowId: Config.Analytics.UiIds) a window the client opened (TelemetryService, metrics only)
 	"SetLook", -- A23-75 (id: an owned Config.Looks id of the player's faction, or "" = none) MonetizationService
 	"EquipPet", -- PET-2 (uid: an owned pet uid of a known species, or "" = put it away) PetService
+	"SendSticker", -- A23-143 (key: a Config.Stickers.Order id) a chat sticker over my head (MonetizationService)
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request

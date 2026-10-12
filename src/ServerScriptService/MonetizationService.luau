@@ -351,6 +351,19 @@ function PASS.Purchased(player, passId, purchased)
 end
 
 -- c->s SetLook(id): one string <= 32, an owned look of the player's faction, or "" (wear none); anything else ignored
+-- A23-143: a chat sticker over my head for everyone: one argument, a known sticker, every RateLimits.SendSticker s, ready
+-- and alive, free or the Sticker Pack owned; anything else is dropped without a word
+function PASS.OnSticker(player, ...)
+	if select("#", ...) ~= 1 then return end
+	local key = ...
+	if not Config.IsSticker(key) then return end
+	if not Util.RateLimit(player, "SendSticker", Config.RateLimits.SendSticker or 2) then return end
+	if not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return end
+	if not Config.StickerFree(key) and not MonetizationService.HasPass(player, Config.Stickers.Pass) then return end
+	local ok, err = pcall(Net.Fx, nil, "Sticker", { UserId = player.UserId, Key = key })
+	if not ok then Util.Warn(TAG, "sticker: " .. tostring(err)) end
+end
+
 function PASS.OnSetLook(player, ...)
 	if select("#", ...) ~= 1 then return end
 	local id = ...
@@ -584,6 +597,10 @@ function MonetizationService.Start()
 	Net.Get("SetLook").OnServerEvent:Connect(function(player, ...)
 		local ok, err = pcall(PASS.OnSetLook, player, ...)
 		if not ok then Util.Warn(TAG, "SetLook: " .. tostring(err)) end
+	end)
+	Net.Get("SendSticker").OnServerEvent:Connect(function(player, ...) -- A23-143
+		local ok, err = pcall(PASS.OnSticker, player, ...)
+		if not ok then Util.Warn(TAG, "SendSticker: " .. tostring(err)) end
 	end)
 	if S.FactionService and S.FactionService.FactionChanged then -- a look of the other side comes off (and back)
 		S.FactionService.FactionChanged:Connect(function(player)
