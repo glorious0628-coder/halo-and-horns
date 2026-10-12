@@ -1,0 +1,174 @@
+{
+  "checks": 68,
+  "failed": 0,
+  "mutations": [
+    {
+      "name": "the latest end first",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a tie in the wrong order",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no cap",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the cap is a fixed 2",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the ending second still shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "an ended tonic still shows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the time rounds down",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the time can go negative",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "seconds not padded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "shown while tonics are off",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "shown with nothing running",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "shown while the HUD is hidden",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "shown without a HUD layout",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the tiles never change",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the times never move",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "another slot art",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a bigger tile",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no letter without art",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the letter is white",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the icon outside the Inner box",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the time in another style",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the right edge is the bar's left",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no gap above the power line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no attribute signals",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the loop is slow",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a layout made meanwhile is never read",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Start runs twice",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no text table",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a word on the row",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a fixed key",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "never loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "loaded far from QuickSlots",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the HUD never tells it to relayout",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Alchemy buff row (게임성 개발 4, 2026-10-12; SPEC A23-133 tonics, A23-130 no words; server contract\nsrc/ServerScriptService/BuffService.luau: the player attribute \"Buff_<itemId>\" = the SERVER time the tonic ends, 0 = none), offline.\n\nRuns, in the official Luau CLI, the CURRENT Config.luau and BuffBar.luau in tools/fixtures/buff_bar_offline.luau (Players /\nInstance tree / UIKit / HUD.Layout / task doubles). Checks: Clock (m:ss, rounded up, never negative); Active (the soonest end\nfirst, a steady order on a tie, at most Config.Alchemy.MaxActive, ended ones and 0 dropped, only the Config tonic ids);\nthe row is built once under UIKit.Gui and hidden while nothing runs, tonics are off, the HUD is hidden or no HUD layout\nexists; the tiles (approved slot art SlotCommon 34 du, BagUI's code fallback, the icon in the Inner box, the name's first\nletter in the item's colour while the art is missing, the time under each tile in the Number style, no words); an\nattribute signal per tonic + one 0.25 s loop that moves the timers; the placement from a fake HUD.Layout (right edge =\nhp_bar.X + hp_bar.W, bottom = power_line.Y - 4), Relayout, and a layout the HUD made while the bar did not listen.\nStatic: ClientMain loads BuffBar after QuickSlots / HUD / UIKit, HUD's relayout list has \"BuffBar\", BuffBar has no\nEnum.KeyCode and no hard-coded English outside TXT. Mutations: each must be caught.",
+  "studioCalls": 0
+}
