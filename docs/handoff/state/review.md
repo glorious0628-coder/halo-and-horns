@@ -158,4 +158,12 @@
 - (23:30) 병합: 310abb37 무기 들기 Tool(46e666ea)+Leave 폭(2cd31bb4) — 메인 사진 통과(tool_grip_ours·bow_rapid·goose_square5). 0aa6a0b7 도감 카드 서버 + **저장 v5**(3481c431, 반박 검토 MINOR 2개 고친 판, BossSteps 1/10/30 내 결정) → 메인 반영 1 sync·Play 확인 → Save As 신청 대기. 디자인 검수 결정: CastleWingR = WingL 3D 좌우 뒤집기(내 OK). API 남은 돈 ≈ $4 → 병합 검토는 앱 워크플로.
 - (23:40) 메인 반영 1 도감 서버 Play 확인 통과(codex_server/log.txt). Save As = Studio 컴퓨터 제어 허용창을 사용자가 "거부" → 다시 시도 안 함, 미룸(place/ = 18:41 판 그대로, 코드는 git).
 - **사용자 일 미룸(모아 두기):** 메인 Studio Save As(컴퓨터 제어 허용창이 뜨면 허용, 또는 직접 저장), Blender 손보기 세션을 화면에 띄우고 Ctrl+Shift+B(앱 브라우저 보이게 — 동상·분수 매직 브러시 3곳, 창 숨김이면 3D 안 그려짐), 게임 패스 만들기(Sticker Pack 99·Bubble Pack 99 + 기존 패스 → Config.GamePasses, 10/17 시험 전), `_지울것_3D/2D_2026-10-12` 폴더 지우기(원하면), Tripo 계정 바꾸기(잔액 < 135 때).
+- (23:50) 디자인 검수 보고 4: 4면 통과 → Tripo = 소품 BenchA·B·C, BreadStand, FruitStall, FlowerCart + 덩어리 DoorSingle·LampArm·CastleWingL(R = 뒤집기)·DomeRibbed·DoorDouble·WindowBoxA·CastleRose·CastleGateLeaf·DomeOnion·DomeOctagon·DomeBall·DomeOnionSlim. 다시 그림: DomeBrick 옆, ConeTree(큰 잎 뭉치 12개). 텍스처→PBR OK: 화분 Lavender·Tulip·Sunflower, DoorSingle + 8종. 매직 브러시 보류(창 보일 때): 동상 B 2곳·분수 C 1곳·Daisy 주황 꽃·Rose 윗면. 잔액 ≈ 10,640(그 뒤 묶음 5·6 스마트 메시로 더 내려감).
+- (00:00 10/13) 이미지 생성 3 WorldKit 3D 가져오기(화분 3개) — 사용자가 허용함 → 진행.
+
+## 10/13 00:00 정리 (사용자 "이제 슬슬 정리하고, 컴퓨터 꺼줘") — 다음 나는 여기부터
+- **상시 지시 그대로:** 이미지→Tripo 먼저(위 22:30 절). 아침에 세션들에 "이어서" 보낼 때도 같은 방향: 이미지 생성 2(덩어리 큐)·이미지 생성 3(소품 4면 + 넣기)·Blender 손보기(Tripo)·디자인 검수(관문). 게임성 개발 1·2·메인 반영 1은 대기.
+- **main = 0aa6a0b7 이후 문서 커밋들.** 오늘 밤 병합: 310abb37(무기 들기 Tool + Leave 폭, 메인 사진 통과), 0aa6a0b7(도감 카드 서버 + 저장 v5, 메인 Play 통과). 메인 Studio 저장 안 함(Save As 미룸, 18:41 build 판 = place/ + 새 스크립트 5개 = 안전 → 다음에 열고 sync 뒤 Save As).
+- **각 세션 state 파일**에 어디까지 했는지 적게 함(img2·img3·blender·design_review·mainapply·dev1·dev2). 아침에 먼저 그 파일들을 읽고 이어서.
+- **사용자 일(미룸):** 메인 Save As 허용(또는 직접), Blender 손보기 창 보이게(매직 브러시 5곳), 게임 패스 만들기, `_지울것` 폴더, Tripo 계정 바꾸기(잔액 < 135 때).
 - Tripo 잔액 12,335(22:30, 꽃 화분 5종 흰 모델 500점 시작). 빛 마을 남은 것 ≈ 소품 62 + 덩어리 43 ≈ 105개 × 135 ≈ 14,200 > 잔액 → 빛 마을 끝 무렵 멈춤 예상.
