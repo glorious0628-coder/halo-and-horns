@@ -8,7 +8,7 @@
  "door": {"w": 5.0, "h": 8.15, "double": false},
  "pilasters": {"finial": true},
  "pedestals": false, "lanterns": [0.025, 0.975],
- "awning": {"w": 6.8, "colors": [[110, 165, 232], [214, 240, 222]], "n": 7},
+ "awning": {"w": 6.8, "colors": [[110, 165, 232], [214, 240, 222]], "n": 7, "arms": true},
  "pots": [[-7.6, 6.85, 3.6, 2.6], [7.6, 6.85, 3.6, 2.6]],
  "steps": "half",
  "balconies": [{"storey": 1, "walls": ["front_l", "front", "front_r"], "depth": 1.4}],

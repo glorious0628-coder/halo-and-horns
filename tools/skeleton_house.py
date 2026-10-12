@@ -43,7 +43,8 @@ Spec (all lengths in studs; see tools/house_specs/*.json):
            either side of the door, an entablature with a gold band, a half-dome ornament slot against the wall above it
            (lowered to stay under a front balcony); piers that hit pedestals / pots / lamps / steps move outwards (max 1.5)
            with a warning; the lanterns hang on the wall outside the piers instead of on the pedestals
-  awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's), "top"} striped
+  awning   {"w", "colors": [[r,g,b], [r,g,b]], "n", "u": centre along the front (default = the door's), "top", "arms": true = two gold arms (0.16
+           cylinders + wall foot balls) from the wall to the front balls, default false} striped
            Fabric + HH_Fabric cloth + scalloped valance; without "top" it is kept under a front storey ledge / balcony / the cornice
   pots     [[x, y, d, h], ...] round pots with sand soil (plants: 4-view Tripo later, A23-122); a pot that hits a wall,
            pilaster, tower, pedestal, step, the door or another pot is moved the shortest way out (printed)
@@ -703,6 +704,15 @@ if AW:
     for k, sx in enumerate((-1, 1)):
         ball("Awning_BallFront%d" % k, 0.42, (AWX + sx * (AW_W / 2 + 0.05), YF + AW_D + 0.05, AW_TOP - AW_DROP))
         ball("Awning_BallTop%d" % k, 0.36, (AWX + sx * (AW_W / 2 + 0.25), YF + 0.16, AW_TOP + 0.02))
+        if AW.get("arms"):                              # gold arm from the wall down to the front ball (cylinder length axis = X)
+            a0 = (AWX + sx * AW_W / 2, YF + 0.05, AW_TOP - AW_DROP - 0.9)
+            a1 = (AWX + sx * (AW_W / 2 + 0.05), YF + AW_D + 0.05, AW_TOP - AW_DROP)
+            ax = tuple(q - p for p, q in zip(a0, a1))
+            al = math.sqrt(sum(c * c for c in ax))
+            ax = vmul(ax, 1.0 / al)
+            ay = norm(vadd(UP, vmul(ax, -ax[2])))        # UP with its part along the arm taken out = perpendicular to it
+            add("Awning_Arm%d" % k, (al, 0.16, 0.16), vmul(vadd(a0, a1), 0.5), ax, ay, "gold", "Cylinder")
+            ball("Awning_ArmFoot%d" % k, 0.3, a0)
 else:
     cols = [[250, 205, 72], [255, 243, 212]]
 

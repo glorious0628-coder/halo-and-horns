@@ -9,7 +9,7 @@
  "pilasters": false,
  "towers": {"w": 2.8, "h_extra": 4.2, "dome": true, "window": true, "win_w": 0.9},
  "pedestals": true,
- "awning": {"w": 7.6, "colors": [[250, 205, 72], [255, 243, 212]], "n": 7},
+ "awning": {"w": 7.6, "colors": [[250, 205, 72], [255, 243, 212]], "n": 7, "arms": true},
  "pots": [[-7.3, 9.0, 3.2, 2.6]],
  "steps": "three",
  "medals": [["front", 0.143, 11.6], ["front", 0.857, 11.6], ["left", 0.5, 11.6], ["right", 0.5, 11.6]],

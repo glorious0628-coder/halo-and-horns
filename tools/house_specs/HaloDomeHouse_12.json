@@ -8,7 +8,7 @@
  "door": {"w": 5.0, "h": 8.15, "double": true},
  "pilasters": true,
  "pedestals": true,
- "awning": {"w": 7.0, "colors": [[40, 62, 138], [255, 243, 212]], "n": 7},
+ "awning": {"w": 7.0, "colors": [[40, 62, 138], [255, 243, 212]], "n": 7, "arms": true},
  "pots": [[-8.2, 8.0, 4.4, 2.4], [8.2, 8.0, 4.4, 2.4]],
  "steps": "half",
  "window_boxes": [["all", 1]],
