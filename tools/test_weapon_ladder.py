@@ -52,6 +52,8 @@ MUTATIONS = [
      "{ Item = \"ClatterGem\", P = 0.1 }, { Weapon = 9, P = 0.001 },"),
     ("config: the Forge sells up to T9", C, "Config.WeaponShop = { MaxSoldTier = 3,", "Config.WeaponShop = { MaxSoldTier = 9,"),
     # --- Version 4
+    ("migrate: a v3 bit 9 wipes the whole mask", D, "\t\t\td.WeaponOwnedMask = bit32.band(m, bit32.lshift(1, oldTiers) - 1)\n",
+     "\t\t\td.WeaponOwnedMask = -1\n"),
     ("config: the version back to 3", C, "Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 4,",
      "Spares / Market (save_v4_tables_2026-10-11.md).\n\tVersion = 3,"),
     ("config: the default record's version 3", C, "\tDefaults = {\n\t\tVersion = 4,", "\tDefaults = {\n\t\tVersion = 3,"),
@@ -60,7 +62,7 @@ MUTATIONS = [
     ("DataService: a v3 tier 9 trusted", D,
      "\t\tif type(d.WeaponTier) == \"number\" and d.WeaponTier > oldTiers then d.WeaponTier = -1 end\n", ""),
     ("DataService: a v3 bit 9 trusted", D,
-     "\t\tif type(d.WeaponOwnedMask) == \"number\" and d.WeaponOwnedMask >= bit32.lshift(1, oldTiers) then d.WeaponOwnedMask = -1 end\n", ""),
+     "\t\tif type(m) == \"number\" and m == math.floor(m) and m >= bit32.lshift(1, oldTiers) and m < 2 ^ 31 then\n", "\t\tif false then\n"),
     ("DataService: the repair keeps 8 bits", D, "local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1",
      "local validMask = bit32.lshift(1, 8) - 1"),
     ("DataService: the repair keeps tiers 0..8", D, "or weaponTier > Config.MaxWeaponTier then", "or weaponTier > 8 then"),

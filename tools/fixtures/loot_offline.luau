@@ -1308,6 +1308,7 @@ runGroup("bully", function()
 	local HALF = 0.5 -- A23-22: 드랍률 x0.5 (대박 확률도 절반)
 	local t = fixture()
 	local L, C = t.L, t.Config
+	C.Features.Crafting = true -- C1 review: the boss craft materials' rows draw like every other row here
 	local pen = C.Bully and C.Bully.Penalty
 	check(type(pen) == "table" and pen.DropMult == HALF, "A23-22 Config.Bully.Penalty.DropMult is 0.5", show(pen))
 	local jackpotBit = bit32.lshift(1, L.Jackpot.Tier - 1)
@@ -2525,6 +2526,17 @@ runGroup("sell", function()
 		for _, e in g.GoldLog do paid += e.Amount end
 		check(g:Count("KingJelly") == 3 and g:Count("ClatterGem") == 1 and g:Count("Jelly") == 0 and paid == 2 * L.Items.Jelly.Sell,
 			"C1 the sell-all keeps the boss materials (sold one at a time)", show(g.Data.Items))
+		-- C1 review: they drop only while crafting is on (nothing to craft them into before)
+		local k = fixture()
+		k.ScriptConst = 0
+		k.Config.Features.Crafting = false
+		k:Kill("SlimeKing")
+		local off = k:Count("KingJelly")
+		k.Config.Features.Crafting = true
+		k:Kill("SlimeKing")
+		k.Config.Features.Crafting = false
+		check(kj.Feature == "Crafting" and cg.Feature == "Crafting" and off == 0 and k:Count("KingJelly") == 1,
+			"C1 boss materials drop only while Features.Crafting is on", show({ off, k:Count("KingJelly") }))
 	end
 	-- review B10: an unknown saved id is never sold (no price) and stays in the save
 	local saved = deepCopy(DEFAULT_ROW)
