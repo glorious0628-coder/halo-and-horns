@@ -201,7 +201,7 @@ def static() -> tuple[int, list[str]]:
           and '"EquipPet"' in net and '"PetList"' in net, "PET-2 remotes: PetList (owner) + EquipPet, named in Net")
     config = read(SHARED / "Config.luau")
     check("Pets = { List = {}, Equipped = {}, Next = 1, Away = false }," in config and "TamerNotice = false," in config,
-          "save defaults: Pets (with PET-2b Away) + TamerNotice (additive, Version stays 3)")
+          "save defaults: Pets (with PET-2b Away) + TamerNotice (additive, no version step of their own)")
     return count, failures
 
 

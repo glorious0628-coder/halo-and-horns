@@ -195,7 +195,7 @@
     },
     {
       "group": "config",
-      "check": "save defaults: no pet, TamerNotice false, Version 3",
+      "check": "save defaults: no pet, TamerNotice false, Version 4 (C1's tier 9)",
       "pass": 1,
       "fail": 0
     },
@@ -465,7 +465,7 @@
     },
     {
       "group": "lost baby slime",
-      "check": "the pet line for everyone (not 'fights for you')",
+      "check": "one pet line for everyone (not 'fights for you')",
       "pass": 1,
       "fail": 0
     },
@@ -1020,9 +1020,9 @@
   "staticChecks": 5,
   "staticFailures": [],
   "mutations": {
-    "total": 91,
-    "applied": 91,
-    "caught": 91,
+    "total": 90,
+    "applied": 90,
+    "caught": 90,
     "skipped": false,
     "results": [
       {
@@ -1528,7 +1528,7 @@
           "lost baby slime :: a Neutral's B: Evil lean",
           "lost baby slime :: a tamer's own baby slime takes the lean / name",
           "lost baby slime :: no second pet / line",
-          "lost baby slime :: the pet line for everyone (not 'fights for you')"
+          "lost baby slime :: one pet line for everyone (not 'fights for you')"
         ],
         "newFailingCount": 12
       },
@@ -1584,18 +1584,6 @@
           "lost baby slime :: a tamer's own baby slime takes the lean / name"
         ],
         "newFailingCount": 1
-      },
-      {
-        "mutation": "the tamer line for everyone",
-        "file": "src/ServerScriptService/PetService.luau",
-        "applied": true,
-        "caught": true,
-        "crashed": false,
-        "newFailingChecks": [
-          "lost baby slime :: the pet line for everyone (not 'fights for you')",
-          "lost baby slime :: then it is the newest line"
-        ],
-        "newFailingCount": 2
       },
       {
         "mutation": "minion is Good",
@@ -1883,7 +1871,7 @@
         "crashed": false,
         "newFailingChecks": [
           "legacy :: the hunter-became-tamer notice, then the pet notice",
-          "lost baby slime :: the pet line for everyone (not 'fights for you')",
+          "lost baby slime :: one pet line for everyone (not 'fights for you')",
           "lost baby slime :: then it is the newest line",
           "pet :: the pet notice"
         ],
@@ -1910,12 +1898,12 @@
         "newFailingChecks": [
           "legacy :: a guild warrior's save: no notice, no ticket",
           "lost baby slime :: other quests / unknown picks give no pet",
-          "lost baby slime :: the pet line for everyone (not 'fights for you')",
-          "lost baby slime :: then it is the newest line",
           "pet :: a Halo archer has no pet",
-          "pet :: joining the guild as an Archer: the pet, no ticket"
+          "pet :: joining the guild as an Archer: the pet, no ticket",
+          "pet :: no pet for a Halo Archer",
+          "pet :: no pet for a Horns Archer"
         ],
-        "newFailingCount": 22
+        "newFailingCount": 20
       },
       {
         "mutation": "the tamer before the class pick",
@@ -2193,19 +2181,19 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "b89a6cb23eb72ea0f7f3fbe399540da4b41a64f50809f0daa2f0f62300275c2c",
-    "src/ReplicatedStorage/Shared/Util.luau": "3f6fbda263ae0de5bfcf99dce496a7139c09967ca1b8c86b283c1f7f4a6e43b8",
-    "src/ServerScriptService/CombatService.luau": "d783fd6fa24e04def8da78ca72659295420ba4b771fa284978d23a427d88f0ec",
-    "src/ServerScriptService/LootService.luau": "4d305fa008ba3ef77fb88503a178d0b715a83be193cc1f152208c076ec79bdfd",
-    "src/ServerScriptService/StoryQuestService.luau": "fe2772848aec297272d7ca49a2a31dc5aacfcd15c8d5ae0e6530c6b2aa20e62a",
-    "src/ServerScriptService/PvPService.luau": "59f2ce526e31c2cac0ff00ce62fa38bde23e61036a91b42e5e8844f200ad27f1",
-    "src/ServerScriptService/ShopService.luau": "360b826e66f1d8868a472317e9293deb60a1fba158e028bd3e61a873594eef2c",
-    "src/ServerScriptService/DataService.luau": "f110b76ca05e922537736e41ee8c9e4fbb6d8bcb7fd342fdfe391723c05b812a",
-    "src/ServerScriptService/JusticeService.luau": "4d6e19f48e3c23287122083487d36845e0287861b5277e657ecac1bdc398543d",
-    "src/ServerScriptService/CharacterVisuals.luau": "4cea048892499a57982b21eaa104f3b6552ed1d927a625f9565b0578a3c125ca",
-    "src/ServerScriptService/PetService.luau": "e1b00d42eb32751ce48a66e4f3d1ecd090296f412ccf2c4a4904c4bb4495376b"
+    "src/ReplicatedStorage/Shared/Config.luau": "746bb55b4d9d73577a9b09a29e85ff6f971c6dc6da555e46c3722900eae880c6",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/CombatService.luau": "274223fc3fbe38eef4f8967111bfa086d292bcb02ab3237a33be63c370b7121a",
+    "src/ServerScriptService/LootService.luau": "e10015474c5c364c03954827a3314e5fa390103450e93cc497a010f7441d2b3b",
+    "src/ServerScriptService/StoryQuestService.luau": "9ce4804611778cfb60356eec2c04fcfc67176984cb97e0b6a67f64b1795509ae",
+    "src/ServerScriptService/PvPService.luau": "1abf66f90ff34028aaa1a4822d8a99b379c6084ec8b44fa4daba7c79ca692f0b",
+    "src/ServerScriptService/ShopService.luau": "1c5529559510c10282f7edc0928cf8f7845f3dfb681691f0054a524163d60336",
+    "src/ServerScriptService/DataService.luau": "72aff9b30b4f6f88c01d97968b861184bff021275e22b10ed74030109f131ec2",
+    "src/ServerScriptService/JusticeService.luau": "7c79b727e7cb25df599b99473104e7f04bf27adba465d0a7ecb5116bd6be580c",
+    "src/ServerScriptService/CharacterVisuals.luau": "6b1ba22ccf739100451602a6880221096863331873d53579189a433f7788117d",
+    "src/ServerScriptService/PetService.luau": "7b989fa015080ca49e49466def1cdbeb886f172e906e26ce2c6fea343d8e37a3"
   },
-  "fixtureSHA256": "297308475911bfaedbf423b5adc85d3c0b92cd144726555c862d8172756f6af8",
+  "fixtureSHA256": "7c80b74f5854d0f729ea47c522e83893047739e21ae062af9f96919f5e4c6f8b",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,
