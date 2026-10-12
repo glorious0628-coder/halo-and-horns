@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/13 무기 들기 (가) 코드 = fix/tool-grip 41da3211 (최종 검수에 보고, 병합 대기)
+- worktree `C:/Users/glori/Documents/Roblox/wt_toolgrip`(sparse src/tools/docs, base main 11213d87). 옛 wt_lesstext·wt_gooseleave·wt_goldegg·wt_onehand는 지움(다 병합됨).
+- 무기 = 진짜 Roblox Tool `WeaponModel` 오른손(활도), Handle(칼·망치 자루, 지팡이·봉 막대, 활 가운데) + 엔진 RightGrip, Tool.Grip = `Config.WeaponGrip(kind, len)`, 표 `Config.WeaponGrips`(칼 0.75 = ClassicSword 사진, 지팡이 0.45, 망치·봉 0.3, 활 0.5, 짧은 활 Turn 15°). WeaponPose = GripProbe만(서기 자세 끔), ClassGrips엔 Weapon만. 활 = 공격 클립 동안만 `Fx.bowHand`가 왼손 쥐는 점으로(BowGrip). HeroPreview가 Tool 무기 남김. 자세한 건 `docs/design/weapon_grip_plan_2026-10-12.md` ③.
+- 시험: 새 test_tool_grip 328·변이 30/30, weapon_motion 265, class_grips_server 18·7/7, unarmed_start 226·69/69, tamer 168·90/90, side_clips 167·15/15 + 관련 18개 통과(rank_marks 종료 코드만 1·halloween 3D 파일 없음 = 원래). 은퇴: test_one_hand_grips / test_two_hand_grip / test_weapon_pose.
+- 메인 사진 = 메인 반영 1: `HH_MAIN_STUDIO=1 py tools/play_tool_grip_ours.py`. 볼 것: 커서 모양(Tool 들 때), 망치·봉·플라스크 지팡이 팔 앞 세움, 활 공격 왼손 넘김, Hero 창 3D 무기.
+- 다음: 거위 광장 Leave 글자 "Leav" 잘림(최종 검수 10/13, 따로 가지) → 몬스터 도감 카드(A23-153, 개발 2 서버 약속 문서 오면).
+
 ## 10/12 저녁 정리 (사용자 "모든 세션 다 여기까지만 하고 정리해줘", 최종 검수 전달)
 - **오늘 병합됨(main)**: fix/hero-ui 1eabf613(Hero 창 #1 전투력 칩·#2 비교 줄·#5 Stats 카드·#9 칭호 리본/등급 막대/잠긴 칭호·#7 더 센 무기 점·#3 3D 몸 HeroPreview + API 검토 고침), fix/arm-hang 93d7dcc6(전사 손 0.2 아래), **fix/arm-body 11f7e7a9 = main d4c7c3be**(팔 접힘 진짜 원인: WeaponPose.BodyScale 0.64 → Body/BodyPoint), fix/goose-leave e32814b7(광장 안 Leave 늘), fix/goose-rookie 81162dec(새내기 접기가 광장 안 행사 줄 안 숨김; 새내기 Join은 A23-68대로 숨김 = 최종 검수 결정), 그 전 staff-face2·bubble-ui·english-polish.
 - **열린 가지(내 것)**: 없음 — 위 가지 모두 main에 들어감. worktree: `wt_lesstext`(fix/hero-ui), `wt_gooseleave`(sparse, fix/goose-rookie), `wt_goldegg`(fix/bubble-ui), `wt_onehand` — 다 병합됨, 지워도 됨(지울 땐 최종 검수에 먼저).
