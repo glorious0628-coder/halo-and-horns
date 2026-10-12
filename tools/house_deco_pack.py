@@ -19,7 +19,11 @@ import bpy
 from mathutils import Matrix, Vector
 
 ROOT = os.environ.get("HH_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = sys.argv[sys.argv.index("--") + 1]
+ARGS = sys.argv[sys.argv.index("--") + 1:]
+OUT = ARGS[0]
+# --houses a,b  --only-names Sign,PlaqueBack,...: a small extra import (10/12 빠진 장식) with only those pieces
+HOUSES = ARGS[ARGS.index("--houses") + 1].split(",") if "--houses" in ARGS else None
+ONLY = ARGS[ARGS.index("--only-names") + 1].split(",") if "--only-names" in ARGS else None
 FRONT = ["01", "02", "03", "04", "05", "06", "08", "09"]
 BACK = ["10", "11", "12", "Bakery", "Flower", "Juice", "Potion"]
 ROWS = {}
@@ -32,11 +36,22 @@ info = {"houses": {}, "note": "Roblox = (-x_b, z_b, y_b) + T; move the imported 
 lo = Vector((1e9, 1e9, 1e9))
 hi = -lo
 for name, (ox, oz) in ROWS.items():
+    if HOUSES and name not in HOUSES:
+        continue
     p = os.path.join(ROOT, "art", "models", "tripo", "house_deco", name, name + "_deco.glb")
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=p)
     M = Matrix.Translation((-ox, oz, 0)) @ Matrix.Rotation(math.pi, 4, "Z")
     objs = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+    if ONLY:
+        for o in list(objs):
+            if not any(("_" + k) in o.name for k in ONLY):
+                bpy.data.objects.remove(o)
+        objs = [o for o in bpy.data.objects if o not in before and o.type == "MESH"]
+    for o in objs:                                      # no Blender ".001" suffixes in Studio names
+        base = o.name.rsplit(".", 1)[0] if o.name.rsplit(".", 1)[-1].isdigit() else o.name
+        if base != o.name and base not in bpy.data.objects:
+            o.name = base
     for o in objs:
         o.data.transform(M @ o.matrix_world)
         o.matrix_world.identity()

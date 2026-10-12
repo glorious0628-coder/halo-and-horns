@@ -20,8 +20,10 @@ import os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", default="HaloHouses15_Deco_v1")
+ap.add_argument("--append", action="store_true", help="add the pieces to the existing <house>_Deco models (extra import)")
+ap.add_argument("--marker", default="HaloDomeHouse_02_Dome", help="a part name that identifies the import root")
 a = ap.parse_args()
-pack = json.load(open(os.path.join(ROOT, "art", "models", "tripo", "house_deco", "HaloHouses15_Deco_v1.json")))
+pack = json.load(open(os.path.join(ROOT, "art", "models", "tripo", "house_deco", a.model + ".json")))
 plan = json.load(open(os.path.join(ROOT, "docs", "design", "halo_plan_v2_2026-10-11.json"), encoding="utf-8"))
 SHORT = {}
 for b in plan["buildings"]:
@@ -43,7 +45,7 @@ code = '''if game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil"
 local M = workspace:FindFirstChild("%s", true)
 if not M then
   for _, c in workspace:GetChildren() do
-    if c ~= workspace:FindFirstChild("SkeletonTest") and c ~= workspace:FindFirstChild("HaloV2") and c:FindFirstChild("HaloDomeHouse_02_Dome", true) then M = c end
+    if c ~= workspace:FindFirstChild("SkeletonTest") and c ~= workspace:FindFirstChild("HaloV2") and c:FindFirstChild("%s", true) then M = c end
   end
 end
 if not M then return "imported model %s not found" end
@@ -71,14 +73,20 @@ local function gold(p)
   p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 168, 36)
 end
 for _, h in H do
-  local old = ST:FindFirstChild(h.name .. "_Deco"); if old then old:Destroy() end
-  local m = Instance.new("Model"); m.Name = h.name .. "_Deco"; m.Parent = ST
+  local APPEND = %s
+  local old = ST:FindFirstChild(h.name .. "_Deco")
+  if old and not APPEND then old:Destroy(); old = nil end
+  local m = old or Instance.new("Model"); m.Name = h.name .. "_Deco"; m.Parent = ST
+  local fresh = {}
   local n = 0
   for _, p in M:GetDescendants() do
     if p:IsA("BasePart") and (string.sub(p.Name, 1, #h.name) == h.name or string.find(p.Name, "Orn_" .. h.name, 1, true)) then
-      p.Parent = m; n += 1
+      p.Parent = m; n += 1; table.insert(fresh, p)
       local sa = p:FindFirstChildWhichIsA("SurfaceAppearance")
       if string.find(p.Name, "_Leaf") then p.Material = Enum.Material.Wood
+      elseif string.find(p.Name, "RoofGlass") then
+        p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(170, 215, 245); p.Transparency = 0.45; p.Reflectance = 0.1
+        p.CastShadow = false
       elseif not sa then gold(p) end
       p.CastShadow = true; p.CanCollide = false
     end
@@ -91,7 +99,7 @@ for _, h in H do
       if q:IsA("BasePart") and string.match(q.Name, "^LampGlass%%d") then q.Size = Vector3.new(q.Size.X, h.glass, q.Size.Z) end
     end
   end
-  lamps(sk)
+  if not APPEND then lamps(sk) end
   -- check: the door leaf against the skeleton's DoorFront (5 studs in front of the door face, front = -Z in the rows)
   local chk = ""
   local df = sk and sk:FindFirstChild("DoorFront", true)
@@ -107,8 +115,17 @@ for _, h in H do
   for _, id in h.ids do
     local tgt = B and B:FindFirstChild(id)
     if tgt and tgt:GetAttribute("HouseSkeleton") then
-      local o2 = tgt:FindFirstChild(h.name .. "_Deco"); if o2 then o2:Destroy() end
-      local c = m:Clone(); c.Parent = tgt; c:PivotTo(tgt.WorldPivot); lamps(tgt); placed += 1
+      if APPEND then
+        local d2 = tgt:FindFirstChild(h.name .. "_Deco")
+        if d2 then
+          local Mp = tgt.WorldPivot * CFrame.new(h.ox, 0, h.oz):Inverse()
+          for _, p in fresh do local c = p:Clone(); c.CFrame = Mp * p.CFrame; c.Parent = d2 end
+          placed += 1
+        end
+      else
+        local o2 = tgt:FindFirstChild(h.name .. "_Deco"); if o2 then o2:Destroy() end
+        local c = m:Clone(); c.Parent = tgt; c:PivotTo(tgt.WorldPivot); lamps(tgt); placed += 1
+      end
     end
   end
   table.insert(out, string.format("%%s: %%d parts, plan copies %%d, glass %%.2f%%s", h.name, n, placed, h.glass, chk))
@@ -117,7 +134,7 @@ local left = 0
 for _, p in M:GetDescendants() do if p:IsA("BasePart") then left += 1 end end
 if left == 0 then M:Destroy() end
 table.insert(out, "left in the import model: " .. left)
-return table.concat(out, " | ")''' % (a.model, a.model, ",\n".join(houses), *mn, *mx)
+return table.concat(out, " | ")''' % (a.model, a.marker, a.model, ",\n".join(houses), *mn, *mx, "true" if a.append else "false")
 os.makedirs(os.path.join(ROOT, "build"), exist_ok=True)
 json.dump({"code": code, "datamodel_type": "Edit"}, open(os.path.join(ROOT, "build", "house_deco_studio.json"), "w", encoding="utf-8"))
 print("[studio] %d houses -> build/house_deco_studio.json" % len(houses))
