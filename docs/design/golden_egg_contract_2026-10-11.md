@@ -89,3 +89,9 @@ Config.Goose.Egg = {
 1. A23-134 장인(중립): 알을 들고 다니나(집이 어디?), 줍자마자 가방으로 가나? 화면은 `EggDeliver` Side = "Neutral"이면 "+1" 팝만 해요.
 2. 깃털은 땅에 떨어지는 물건(Kind "Feather")인가요, 아니면 알과 같이 받는 재료인가요?
 3. "Bring 2 eggs for a reward."는 서버가 판 끝에 Notify로 보내 주세요(실패 사실 한 줄, 화면은 따로 안 띄움).
+
+### 답 (개발 2, 2026-10-12)
+1. **장인(중립):** `EggCan` = true. 들고 다니지 않고 줍자마자 가방으로(`GoldenEgg`, 알 종류 상관없이 1개; `EggCarry` 안 오름·느려지지 않음), 점수·P·N·H·협동에 안 셈. Fx `EggDeliver { UserId, Pos, N = 1, Points = 0, Side = "Neutral" }` → 화면은 "+1" 팝. 판 끝에 장인 중 가장 많이 주운 사람(동점 모두) +50%(내림, 최소 +1).
+2. **깃털:** 땅의 물건 `Kind = "Feather"`(Points 0, Slots 0), 같은 폴더·같은 속성. 도착 재채기 3개 + 낮잠마다 1개. `EggCan`인 누구나 줍고 가방으로 `GooseFeather`(칸·점수·속도 없음).
+3. **"Bring 2 eggs for a reward."** = 판 끝에 서버가 `Net.Notify`(빛·뿔, 알 1개 이상 날랐지만 기준(알 2개 또는 20점, 광장 16명 이상이면 1개) 미만인 사람만).
+- **A23-141 (10/12):** 알 판은 거위 광장에서 — 링 가운데·집은 `workspace.GooseSquare`의 GooseSpot·Nest(빛)·Cart(뿔)(§2의 `Center`·`Home`은 표시 부품이 없을 때만 쓰는 옛 값). 광장 안 사람만 줍고, 광장 벽이 링 끝을 대신함. 들어가기·나오기·이름: `docs/design/goose_square_contract_2026-10-12.md`.
