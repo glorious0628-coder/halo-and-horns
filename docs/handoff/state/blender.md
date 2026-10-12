@@ -1,5 +1,12 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 새벽 — 진행판 (보고처 = 디자인 검수 local_2137d284…, 점수 승인도)
+- 순서: 4면 → 스마트 메시(100) → 흰 모델 id를 디자인 검수에(Tripo에서 직접 봄) → 나도 받아서 봄, 다르면 상의 → 텍스처 첫 칸 앞면 한 장+조명 제거+8K(30) → 디자인 검수 확인 → (고칠 곳은 Tripo 편집/매직 브러시, 창 보여야 함) → PBR 한 번(5) → 내려받기 → Blender 크기·피벗·방향만.
+- 동상 B 1a0812be·분수 C cd70436c: 텍스처 끝, 매직 브러시 3곳 대기(창 숨김) → 그 뒤 PBR. Daisy c9df2ff9·Rose 9e0487cc도 매직 브러시 대기. Lavender·Tulip·Sunflower PBR 돌림.
+- 흰 모델 디자인 검수 답 대기: DoorSingle·ConeTree(내 의견 나무 4개 다 별로 → 다시 뽑기), LampArm·CastleWingL·DomeRibbed·DoorDouble·WindowBoxA·BenchA·BenchC·CastleRose. CastleWingR = WingL 완성판 Blender 좌우 뒤집기(메시에 굽기·노멀·UV 그대로).
+- 잔액 11,110.
+- **요령:** 브라우저 호출은 전부 tabId "seed"(디자인 검수가 같은 창에 자기 탭을 엶). 32장 같은 많은 그림은 한 파일(bundle)로 묶어 Adobe에 한 번 올리고 페이지 Cache API('hh')에 넣어 slice로 칸에 넣음. 에셋 목록 20개 넘으면 `fetch('https://api.tripo3d.ai/v2/studio/assets/v2?asset_type=mine&locale=ko&offset=20&size=40&type=all',{credentials:'include'})` → data.projects(id·model_url). 점수 버튼은 경로 id·상태 확인 후 JS click, 앞뒤 잔액 비교.
+
 ## 10/12 밤 늦게 — 바뀐 순서(사용자) + 대기 중
 - 흰 모델 4개는 **디자인 검수가 Tripo에서 직접 보고 고름**(시트 보내지 않음). 나도 따로 보고, 다르면 이유 말하고 상의.
 - 고장은 Blender가 아니라 Tripo 안에서(더 나은 흰 모델/스마트 메시 수정/다시 뽑기). PBR은 맨 끝 한 번. Blender는 크기·피벗·방향만.
