@@ -1,3 +1,9 @@
+# 이미지 개발 — 상태 (2026-10-12 오후: 밤 빛 결정 적용)
+
+- **밤 빛 결정(최종 검수)**: Exposure +0.0, Ambient/OutdoorAmbient x0.85, 등불 (255,214,160)·0.5·범위 10(집 08 근처 2개 범위 8). WorldKit 등불 31개 적용 끝(tools/night_lamps_apply.luau survey/apply/undo), tools/halo_light_sim.luau 밤 값 갱신(Exp base -0.15 -> 합 0.0, Ambient (60,66,90), Outdoor (83,94,126)), 사진 art/review/imgdev/night_new_2026-10-12/(집 08·Potion). **메인 게임 밤 값(Config.DayNight Looks.Night Exposure 0.35)은 6단계(새 빛 마을 메인 교체) 때 같은 비율로 — 그 Config 가지는 내가 만들고 게임성 개발 1에 알림, 메인 낮·밤 사진으로 확인.**
+- WorldKit id가 또 바뀜(재시작됨): 지금 535fc5fe (STUDIO_NAME=WorldKit로 잡힘). 
+- **Firefly 말풍선 8종 더 화려하게(Medium)**: 프롬프트 art/prompts/BubbleFancy_*.txt + art/prompts/img_bubblefancy_queue_2026-10-12.json(3:2, 0크레딧) 준비. Firefly 탭 열림(seed), 앱 브라우저 창 가려져 화면 흰색 -> 최종 검수에 창 보이게 부탁 중. 그 뒤 `tools/_firefly_helpers.js` 심고 `__runNoRef`로 돌림 -> asset_search+presign으로 받기 -> `tools/cutout_flat.py`(512x256) -> 실제 채팅 크기 한 줄·두 줄 미리보기 시트 -> 최종 검수.
+
 # 이미지 개발 — 상태 (2026-10-12 오후: WorldKit 재시작·밤 비교 끝)
 
 - **WorldKit 재시작**: 새 STUDIO_ID **de120476** (WorldKit.rbxlx). screen_capture 멈춤 원인 = Studio 렌더 멈춤(재시작으로 풀림). 백업 20261012_123644로 되살림(루트 50 개수 같음·지형). **밤 빛 비교 사진 끝** art/review/imgdev/night_cmp_2026-10-12/night_compare_{HaloDomeHouse_08,HaloShop_Potion}.jpg (빛 3종 x 등불 끔/지금/권장) -> 최종 검수. 도구 tools/night_light_compare.py. 한국어 모드 취소(A23-146): 한국어 글자 그림·글꼴 일 없음. Firefly 큐 인수(state/img2.md, 큐 비어 있음). 거위 광장 서쪽 벽 그림자 켠/끈 확인은 다음 UiSandbox 슬롯.
