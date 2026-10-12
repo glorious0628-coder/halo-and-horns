@@ -23,6 +23,7 @@
 - (23시 반) 흰 모델: GateLeaf 2bc07ecc, DomeOnion 414b871a 통과. DoorSingle 텍스처 f60f57e3 PBR OK. 4면 통과 → Blender 묶음 5: ConeTree(다시 뽑기), DomeOctagon, DomeBall. FruitStall 옆 두 장 다시(비스듬 → 끝에서 수평, 좌우 따로). BreadStand 왼쪽 다시. BenchB 뒤·왼 다시.
 - (23시 40분) 텍스처 9개 PBR OK: LampArm·WingL·DomeRibbed·DoorDouble·WindowBoxA·BenchA·BenchC·CastleRose + DoorSingle. 4면 통과 → 묶음 6 FlowerCart·BenchB. **넣을 때 메모(이미지 생성 3에 보냄)**: CastleRose 바깥 유리 칸 비어 있음 → 금 틀 뒤 진한 파랑 원판 파트(≈34,90,180), LampArm 유리 = LampGlass/LampCore, WindowBoxA·화분 잎 DoubleSided.
 - PBR 판 확인법: scratchpad pbr_maps.py(맵 추출) + pbr_look.py(EEVEE 해+하늘, PBR vs 색만). 화분 Lavender·Tulip·Sunflower PBR 통과(시트 art/review/design/pots3_pbr_*_1012.jpg). DomeOnionSlim 통과 → Blender. DomeBrick 옆 두 장 다시(둥근 반구라 옆도 앞과 같은 폭, 크림 띠 = 가운데 세로 띠).
+- (23시 50분) BreadStand·FruitStall 4면 통과 → 묶음 6 = FlowerCart·BenchB·BreadStand·FruitStall. 최종 검수 보고 4 보냄. 다음: 등불 A~E(이미지 생성 3), 집 덩어리 16 JuiceParasol~(이미지 생성 2), DomeBrick 옆, 묶음 5·6 흰 모델, 매직 브러시 4곳(창 보일 때).
 - **교훈: 4면 관문에서 '3D로 될 그림인지'도 봄** — 작은 알갱이 수백 개(잎·꽃 알갱이)는 스마트 메시가 못 따라감 → 큰 덩어리로 단순하게.
 - 흰 모델 보는 법(창 숨김일 때): 뒤 탭(tabs_create)에서 store의 model_url → 날짜·uuid·서명만 뽑아 scratchpad tripo_dl.py로 받기(Policy는 다시 만듦) → pot_views.py 7면 점토 렌더.
 - 4면 흔한 고장: 좌우 옆면이 서로 다름 / 옆면이 1.2~1.3배 크게 그려짐 / 한 면만 연한 빛 띠 → PIL 뒤집기·복사·크기로 고침(새 생성 X).
