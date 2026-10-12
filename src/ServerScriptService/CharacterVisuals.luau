@@ -656,7 +656,7 @@ end
 -- scale WeaponPose uses, ShoulderX = its T.ShoulderX), and the shaft below the hand stays HoldMin .. HoldMax of the
 -- shaft (the hand above the middle); FootMax = the hand's height when the rig cannot be read (R6, a costume rig: the
 -- place's default R15 holds it 2.86 .. 2.91 over the ground)
-local STAFF = { FootGap = 0.08, HoldMin = 0.5, HoldMax = 0.8, FootMax = 2.8, ShoulderX = 0.972, Orb = 0.5, OrbPerTier = 0.05 }
+local STAFF = { FootGap = 0.08, HoldMin = 0.5, HoldMax = 0.8, FootMax = 2.8, ShoulderX = 0.972, Orb = 0.5, OrbPerTier = 0.05, OrbTierMax = 8 }
 local function staffLow(shaftLen, hand)
 	local low = type(hand) == "number" and hand - STAFF.FootGap or STAFF.FootMax
 	return math.clamp(low, shaftLen * STAFF.HoldMin, shaftLen * STAFF.HoldMax)
@@ -697,7 +697,7 @@ local function buildStaff(grip, sc, w, color, tier, hand)
 		Material = w.Material, Color = color,
 		CFrame = base * CFrame.new(0, (shaftLen - low - 0.05) * sc, 0),
 	})
-	local d = STAFF.Orb + STAFF.OrbPerTier * tier
+	local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax) -- C1: tier 9 keeps tier 8's hand-sized orb
 	local tip = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,
@@ -848,7 +848,7 @@ function SHAPES.CrookStaff(grip, sc, w, color, tier, hand)
 		Material = Enum.Material.Wood, Color = Color3.fromRGB(70, 50, 60),
 		CFrame = top * CFrame.Angles(0, 0, math.rad(-60)) * CFrame.new(0, 0.4 * sc, 0),
 	})
-	local d = STAFF.Orb + STAFF.OrbPerTier * tier
+	local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax) -- C1: tier 9 keeps tier 8's hand-sized orb
 	local orb = accPart({
 		Name = "Tip", Shape = Enum.PartType.Ball, Size = Vector3.new(d, d, d) * sc,
 		Material = Enum.Material.Neon, Color = color,

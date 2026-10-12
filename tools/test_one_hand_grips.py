@@ -117,16 +117,17 @@ def off_goal(at, up, fwd, grip):
 
 def staff_rule(cv: str):
     m = re.search(r"local STAFF = \{ FootGap = " + NUM + ", HoldMin = " + NUM + ", HoldMax = " + NUM + ", FootMax = " + NUM
-                  + ", ShoulderX = " + NUM + ", Orb = " + NUM + ", OrbPerTier = " + NUM + r" \}", cv)
+                  + ", ShoulderX = " + NUM + ", Orb = " + NUM + ", OrbPerTier = " + NUM + ", OrbTierMax = " + NUM + r" \}", cv)
     uses = (cv.count("staffLow(shaftLen, hand)") >= 2
             and 'local low = type(hand) == "number" and hand - STAFF.FootGap or STAFF.FootMax' in cv
             and "return math.clamp(low, shaftLen * STAFF.HoldMin, shaftLen * STAFF.HoldMax)" in cv
             and cv.count("local shaftLen = tierLen(w, LEN.Staff)") == 2
-            and cv.count("local d = STAFF.Orb + STAFF.OrbPerTier * tier") == 2)
+            and cv.count("local d = STAFF.Orb + STAFF.OrbPerTier * math.min(tier, STAFF.OrbTierMax)") == 2)
     if not (m and uses):
         return None
-    v = [float(m[i]) for i in range(1, 8)]
-    return {"Gap": v[0], "HoldMin": v[1], "HoldMax": v[2], "FootMax": v[3], "ShoulderX": v[4], "Orb": v[5], "OrbPer": v[6]}
+    v = [float(m[i]) for i in range(1, 9)]
+    return {"Gap": v[0], "HoldMin": v[1], "HoldMax": v[2], "FootMax": v[3], "ShoulderX": v[4], "Orb": v[5], "OrbPer": v[6],
+            "OrbMax": v[7]}
 
 
 def staff_low(rule, shaft: float, hand):
@@ -371,7 +372,7 @@ def length_checks(src: dict) -> list[tuple[str, bool, str]]:
     for tier, length in enumerate(lens, start=1):
         shaft = tier_len(lrule, "Staff", length)
         low = staff_low(srule, shaft, hand0)
-        d = srule["Orb"] + srule["OrbPer"] * tier
+        d = srule["Orb"] + srule["OrbPer"] * min(tier, srule["OrbMax"])
         rows.append(((shaft + d * (float(tip[1]) + 0.5)) / H if tip else 9.0, low / shaft))
     out.append((f"A23-133: a staff with its orb {REACH['Staff'][0]}..{REACH['Staff'][1]} of the avatar's height, held "
                 f"{REACH['StaffHand'][0]:.0%}..{REACH['StaffHand'][1]:.0%} up from its foot",
@@ -554,7 +555,7 @@ def geometry(src: dict) -> list[tuple[str, bool, str]]:
             fracs.append((shaft, low / shaft))
             feet.append(hand_above_feet - low)
             tops.append(hand_above_feet - low + shaft)
-            orbs.append(rule["Orb"] + rule["OrbPer"] * tier)
+            orbs.append(rule["Orb"] + rule["OrbPer"] * min(tier, rule["OrbMax"]))
         out.append(("every staff is held above its middle (the reference)",
                     all(f >= 0.5 for s, f in fracs), ", ".join(f"{s:.2f}:{f:.2f}" for s, f in fracs)))
         out.append(("the staff's foot never sinks into the ground nor floats more than 1.3 studs",
@@ -830,7 +831,8 @@ MUTATIONS = [
     ("CV", "the body scale ignored", "return torso + hiltY * math.clamp(math.abs(sh.X) / STAFF.ShoulderX, 0.6, 1.4)",
      "return torso + hiltY"),
     ("CV", "buildWeapon never measures the avatar", "staffHand = h and h / sc or nil", "staffHand = nil"),
-    ("CV", "the old big orb", "Orb = 0.5, OrbPerTier = 0.05 }", "Orb = 0.7, OrbPerTier = 0.1 }"),
+    ("CV", "the old big orb", "Orb = 0.5, OrbPerTier = 0.05, OrbTierMax", "Orb = 0.7, OrbPerTier = 0.1, OrbTierMax"),
+    ("CV", "C1: the Mythic orb grows past tier 8", "OrbPerTier = 0.05, OrbTierMax = 8 }", "OrbPerTier = 0.05, OrbTierMax = 9 }"),
     ("CV", "the flask on the palm again", "CFrame = base * CFrame.new(0, -(neckLen / 2 + d / 2 - 0.05) * sc, 0),",
      "CFrame = base * CFrame.new(0, (d / 2 + 0.05) * sc, 0),"),
     ("WP", "never run", '\t\tif type(def.OneHand) == "table" then WeaponPose.OneHand(char, st, def, model) end\n',

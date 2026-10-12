@@ -344,7 +344,13 @@ check(CraftWindow.RoleOf(ctxOf()) == "Smith" and CraftWindow.RoleOf(ctxOf({ Clas
 check(CraftWindow.RoleOf(ctxOf({ Faction = "Horns" })) == nil and CraftWindow.RoleOf(ctxOf({ ClassChosen = false })) == nil,
 	"no role outside the guild / before the class")
 local list = CraftWindow.Entries(ctxOf())
-check(ids(list) == "W1,W2,W3,W4,W5,W6", "the smith's recipes, lowest level first; W7 / W9 (materials not in the game yet) and Gear (no names yet) hidden", ids(list))
+check(ids(list) == "W1,W2,W3,W4,W5,W6,W7,W9", "the smith's recipes, lowest level first; W7 / W9 shown since C1 added their boss materials and tier 9; Gear (no names yet) hidden", ids(list))
+do -- C1 made W7 / W9's boss materials real, so a test recipe keeps the "material not in the game = hidden" rule covered
+	K.Recipes.WTEST = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 1, Mats = { NoSuchMaterial = 1 }, XP = 1 }
+	local l2 = CraftWindow.Entries(ctxOf())
+	check(entry(l2, "WTEST") == nil and #l2 == #list, "a recipe with a material not in the game (a test id) stays hidden", ids(l2))
+	K.Recipes.WTEST = nil
+end
 do -- (a test id: 개발 3's own alchemist recipes A1~A4 join Config later)
 	local alch = CraftWindow.Entries(ctxOf({ Class = "Mage" }))
 	local onlyAlch = #alch >= 1
@@ -431,7 +437,7 @@ check(lineWith(v, "craft XP") == nil, "no craft XP line at the top level")
 ------------------------------------------------------------------ 5. the window
 open(nil)
 local rows = findAll(root, "^Row_")
-check(#rows == 6 and rows[1].Name == "Row_W1", "a row per recipe", #rows)
+check(#rows == 8 and rows[1].Name == "Row_W1", "a row per recipe", #rows)
 check(find(find(root, "Row_W1"), "Picked") ~= nil and find(find(root, "Row_W2"), "Picked") == nil, "the first ready recipe is picked (gold rim)")
 check(find(find(root, "Row_W1"), "Ready") ~= nil and find(find(root, "Row_W2"), "Ready") == nil, "a gold check on what I can make now")
 check(find(find(root, "Row_W3"), "Lv").Text == "Lv 5" and find(find(root, "Row_W3"), "Lv").TextColor3 == "bad", "a locked row's level in red")
