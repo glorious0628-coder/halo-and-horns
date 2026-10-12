@@ -1,0 +1,45 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Mage ClassChosen=true Level=1
+tutorial: fired AcceptTutorial
+gear: Level=ok WeaponOwnedMask=ok
+fired EquipWeapon
+set Halo Mage: Faction=ok Class=ok
+spot -50, 5, -60 blockers=0
+fired EquipWeapon
+state: DataLoaded=true Faction=Halo Class=Mage ClassChosen=true Level=30
+anchored on
+-50.000000,2.646884,-72.000000|-50.000000,2.646884,-60.000000
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\01_halo_front.png
+-38.000000,2.646884,-60.000000|-50.000000,2.646884,-60.000000
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\01_halo_right.png
+-43.163055,4.990472,-60.823917|-49.163055,4.990472,-60.823917
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\02_halo_hand_right.png
+reset
+set Horns Mage: Faction=ok Class=ok
+spot -50, 5, -60 blockers=0
+fired EquipWeapon
+state: DataLoaded=true Faction=Horns Class=Mage ClassChosen=true Level=30
+anchored on
+-50.000000,3.900000,-72.000000|-50.000000,3.900000,-60.000000
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\01_horns_front.png
+-38.000000,3.900000,-60.000000|-50.000000,3.900000,-60.000000
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\01_horns_right.png
+reset
+set Neutral Mage: Faction=ok Class=ok
+spot -50, 5, -60 blockers=0
+fired EquipWeapon
+state: DataLoaded=true Faction=Neutral Class=Mage ClassChosen=true Level=30
+anchored on
+-50.000000,3.900000,-72.000000|-50.000000,3.900000,-60.000000
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\01_alch_front.png
+-38.000000,3.900000,-60.000000|-50.000000,3.900000,-60.000000
+saved C:\Users\glori\Documents\Roblox\Game\docs\art\verification_2026-10-12\main_apply\staff_front_v4\01_alch_right.png
+reset
+saved composite
+console: [ServerErrorService] started
+[Metrics] ServerError = 523 (Heartbeat, tick # ms, Slow)
+play stopped
+fresh off
