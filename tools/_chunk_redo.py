@@ -18,6 +18,8 @@ OTHER = ("ref1 is the new front view of a piece of a kid-friendly Roblox buildin
          "seen straight-on from the %s, at mid-height, centered, the SAME camera height, size and distance as ref1. Anything that faces one way (flowers, a lamp) must turn with the piece: seen from the side it shows its side, from behind its back. " + ISO + R.LIGHT)
 BACKREF = ("ref1 is the new front view and ref2 an old view of the same piece of a kid-friendly Roblox building (%s), ref2 shows it from the BACK. Draw the SAME piece exactly as ref1 (shapes, parts, colours) "
            "from the BACK like ref2, as a 3D-rendered toy-like object, same camera height, size and distance as ref1. " + ISO + R.LIGHT)
+CHUNKY = ("Make the foliage Tripo-friendly: BIG chunky simple leaves, thick short stems, a few big clear clumps with clear boundaries; NO tiny leaves, NO thin wiry vines, NO fine texture. ")
+CHUNKY_IDS = ("Ivy", "FlowerBush", "WindowBox", "SunflowerBed", "RoseArch", "RoseTrellis", "Pond", "FlowerBuckets", "RoundTree", "CastleHedge")
 SIDES = {"left": "LEFT side (90 degrees to the left of ref1's front)", "right": "RIGHT side (90 degrees to the right of ref1's front)"}
 
 
@@ -28,6 +30,8 @@ def main():
         refs = [os.path.join(R.ROOT, r.get("crop") or r["image"]) for r in it["refs"]]
         has_back = len(it["refs"]) > 1 and "back" in it["refs"][1]["image"]
         draw = it["draw"].split(" 3D note:")[0]
+        if any(k in name for k in CHUNKY_IDS):
+            draw += ". " + CHUNKY
         front = os.path.join(OUT, "%s_front_ns.png" % name)
         if not os.path.exists(front):
             rc = R.run(FRONT % draw, [refs[0]], front)
