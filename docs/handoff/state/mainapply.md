@@ -1,5 +1,11 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/12 밤 (최종 검수 통과까지)
+- **Studio**: build/GoodEvil.rbxlx 셸로 열림(id는 list_roblox_studios로, 지금 633b22a6…), Edit, Play 없음, 창 최소화(ShowWindowAsync 6; 복원 9 + SetForegroundWindow). 코드 = main 310abb37 sync본(무기 들기 Tool + Leave 폭). **저장은 아직 안 함**(Save As = 도감 서버 병합 뒤 한 번에, 최종 검수가 부름; 마지막 저장 f1928aa 소스 74f1dd79 판).
+- 끝난 촬영(통과): docs/art/verification_2026-10-12/main_apply/ classic_sword/·goose_square4/·5/·tool_basics_r15b/·tool_grip_ours/(9종)·bow_rapid/. 컴퓨터 제어(창 복원·최소화)는 사용자 상시 지시(10/12 22:30)로 최종 검수에 "메인 반영 1 / 무엇 / 몇 초" 보내고 "전달함, 시작" 받으면 바로.
+- 도구(tools/, 모두 push): play_bow_rapid.py(연사·초상화), play_tool_grip_basics.py(HH_KINDS·HH_SKIP_USER), 모든 play_*.py 끝은 StudioFreshSave를 true로 유지(nil로 지우지 않음).
+- 교훈: 창 최소화 상태 사진 = 흰·회색 화면(창 탓 확정) → 사진 전엔 꼭 복원.
+
 ## 10/12 저녁 정리 (사용자 지시 "모든 세션 다 여기까지만 하고 정리")
 - **메인 Studio**: GoodEvil.rbxlx(id는 list_roblox_studios로, 지금 ace67cec…) **Edit, Play 없음, 창 최소화**(PowerShell ShowWindowAsync 6; 복원은 9 + SetForegroundWindow). 셸로 열었음: RobloxStudioBeta.exe "build/GoodEvil.rbxlx". 사진 찍을 땐 창을 **복원**해야 함(최소화/가림 = 3D 흰·회색 화면). 긴 촬영 중 뷰가 흰색으로 바뀐 적 있음(tool_basics r15 20장).
 - **저장 상태**: build/GoodEvil.rbxlx = place/ = 10/12 14:52:20, 44,262,615 B, SHA256 e68e7e5a01a730b0…, push f1928aa, **소스 74f1dd79 판**. 그 뒤 병합(56ad3014 팔·ca99cc69 거위·d4c7c3be 팔 진짜 원인·77b27f50 새내기 등)은 **저장 안 된 sync**: Studio 코드는 main fa559ed7 부근까지 sync됨(src 마지막 sync 680316db 이후 변화는 `py tools/sync_to_studio.py`로).
