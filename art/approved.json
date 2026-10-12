@@ -8537,22 +8537,26 @@
  "Meme_PixelHalo": {
   "status": "approved",
   "file": "art/out/s2/memes/Meme_PixelHalo_m2.png",
-  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 PixelHalo_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138."
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 PixelHalo_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): front·back = Meme_PixelHalo_{front,back}_HQ.png, left = Meme_PixelHalo_left_final_HQ.png (= left_v2), right = Meme_PixelHalo_right_final_HQ.png (= left 좌우 뒤집음). 위치 art/out/s2/memes_4v/"
  },
  "Meme_PixelHorns": {
   "status": "approved",
   "file": "art/out/s2/memes/Meme_PixelHorns_m2.png",
-  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 PixelHorns_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138."
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 PixelHorns_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): art/out/s2/memes_4v/Meme_PixelHorns_{front,back,left,right}_HQ.png"
  },
  "Meme_DonutHalo": {
   "status": "approved",
   "file": "art/out/s2/memes/Meme_DonutHalo_m2.png",
-  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 DonutHalo_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138."
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 DonutHalo_m2. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): art/out/s2/memes_4v/Meme_DonutHalo_{front,back,left,right}_HQ.png"
  },
  "Meme_TwistHorns": {
   "status": "approved",
   "file": "art/out/s2/memes/Meme_TwistHorns_m1.png",
-  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 TwistHorns_m1. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138."
+  "note": "사용자 선택(검수 경유) 2026-10-12, Medium 후보 TwistHorns_m1. 다음: High + (후광·뿔은 4면, GG는 컷아웃). SPEC A23-138.",
+  "fourviews": "4면(디자인 검수 통과 2026-10-12): art/out/s2/memes_4v/Meme_TwistHorns_{front,back,left,right}_HQ.png"
  },
  "Meme_GGSticker": {
   "status": "approved",
