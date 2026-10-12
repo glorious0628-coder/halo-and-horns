@@ -6041,6 +6041,12 @@ Config.UIArt = {
 		CraftIngot = { Id = "rbxassetid://133966322294546", Size = Vector2.new(512, 512) },
 		IconCrownDust = { Id = "rbxassetid://130666131385080", Size = Vector2.new(512, 512) },
 		IconGlowcap = { Id = "rbxassetid://118269985242078", Size = Vector2.new(512, 512) },
+		-- round 3 (이미지 개발 2026-10-12, 디자인 검수 pass): pet treat + the four tonics
+		IconPetTreat = { Id = "rbxassetid://109038216387583", Size = Vector2.new(512, 512) },
+		IconMightTonic = { Id = "rbxassetid://82167218233168", Size = Vector2.new(512, 512) },
+		IconGuardTonic = { Id = "rbxassetid://113383235344315", Size = Vector2.new(512, 512) },
+		IconLuckyTonic = { Id = "rbxassetid://124851169351640", Size = Vector2.new(512, 512) },
+		IconWisdomTonic = { Id = "rbxassetid://131384631272950", Size = Vector2.new(512, 512) },
 		IconSword = { Id = "rbxassetid://112025111517770", Size = Vector2.new(255, 256) }, -- wooden sword (next weapon)
 		IconAttack = { Id = "rbxassetid://74944938867654", Size = Vector2.new(512, 512) }, -- Firefly sword (bundle 5)
 		IconSpecial = { Id = "rbxassetid://96492143551436", Size = Vector2.new(256, 146) }, -- winged gold star (발사)
