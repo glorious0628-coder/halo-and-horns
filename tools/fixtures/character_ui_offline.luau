@@ -421,11 +421,53 @@ local function heads(rs)
 	for _, r in rs do if r.Kind == "Head" then table.insert(out, r.Id) end end
 	return table.concat(out, ",")
 end
-local function rowOf(rs, id)
-	for _, r in rs do if r.Kind == "Row" and r.Id == id then return r end end
+local function rowOf(rs, id) -- a row, a card or a chip (ref_rpg_ui #5)
+	for _, r in rs do if r.Kind ~= "Head" and r.Id == id then return r end end
 	return nil
 end
 local srows = M.StatRows(rich)
+-- 최종 검수 10/13 (ref_rpg_ui #1 / #2): pure
+local dl, dc = M.DiffLine(100, 110)
+local dl2, dc2 = M.DiffLine(1200, 1180)
+local dl3, dc3 = M.DiffLine(50, 50)
+check(dl == "Power +10" and dc == "Good" and dl2 == "Power -20" and dc2 == "Bad" and dl3 == "Power =" and dc3 == "Same"
+	and M.DiffLine(nil, 5) == nil, "#2 DiffLine: up green, down red, equal grey, nothing without both", tostring(dl) .. "|" .. tostring(dl2))
+-- 최종 검수 10/13 (ref_rpg_ui #9): pure
+local rb = M.RankBar("Halo", 30, 0)
+local top = M.RankBar("Horns", 0, 5000)
+check(rb and rb.Title == "Knight" and rb.Next == "Paladin" and math.abs(rb.Fill - 0.5) < 1e-6 and rb.ToGo == 20 and rb.Icon == "IconRankHonor"
+	and top and top.Next == nil and top.Fill == 1 and top.Icon == "IconRankInfamy" and M.RankBar("None", 5, 5) == nil,
+	"#9 RankBar: this rank's share filled, points to the next, full at the top, none without a side", rb and rb.Fill)
+local function ids(list)
+	local out = {}
+	for _, t in list do table.insert(out, t.Id) end
+	return out
+end
+local lockedIds = ids(M.LockedTitles("", "Halo"))
+local anyTimed = false
+for _, id in lockedIds do
+	if Config.TitleDefs[id].Timed then anyTimed = true end
+end
+check(#lockedIds == M._T.L.LockedMax and not anyTimed and table.find(lockedIds, "BetaPioneer") == nil
+	and table.find(lockedIds, "GrayLegend") ~= nil and table.find(ids(M.LockedTitles("GrayLegend", "Halo")), "GrayLegend") == nil,
+	"#9 LockedTitles (API review): the ones I can still earn - no weekly, no past / season one, at most LockedMax",
+	table.concat(lockedIds, ","))
+local many = "GrayLegend,ClatterStopper,ClatterStopper10,ClatterStopper50,Regular,SuperRegular,MegaRegular"
+local haloIds, hornsIds = ids(M.LockedTitles(many, "Halo")), ids(M.LockedTitles(many, "Horns"))
+check(table.find(haloIds, "GuardianCadet") ~= nil and table.find(haloIds, "RascalCadet") == nil
+	and table.find(hornsIds, "RascalCadet") ~= nil and table.find(hornsIds, "GuardianCadet") == nil,
+	"#9 LockedTitles (API review): a side's title only for that side", table.concat(haloIds, ",") .. " / " .. table.concat(hornsIds, ","))
+-- 최종 검수 10/13 (ref_rpg_ui #7): pure
+check(M.HasBetter({ { Equipped = true, Usable = true, PowerNow = 100, PowerWith = 100 }, { Usable = true, PowerNow = 100, PowerWith = 120 } })
+	and not M.HasBetter({ { Equipped = true, Usable = true, PowerNow = 100, PowerWith = 150 }, { Usable = false, PowerNow = 100, PowerWith = 300 }, { Usable = true, PowerNow = 100, PowerWith = 90 } })
+	and not M.HasBetter(nil), "#7 HasBetter: only a wearable weapon that raises the power")
+local side = { { Usable = true, NeedSide = true, PowerNow = 100, PowerWith = 120 } }
+local plain = { { Usable = true, PowerNow = 100, PowerWith = 120 } }
+check(M.HasBetter(side, { Faction = "Halo" }) and not M.HasBetter(side, { Faction = "None" }) and M.HasBetter(plain, { Faction = "None" })
+	and not M.HasBetter(plain, { Dead = true }) and not M.HasBetter(plain, { NoClass = true }),
+	"#7 HasBetter (API review): no dot for what the server refuses (a side weapon without a side, dead, no class)")
+local wy = M.PowerWhy("Attack", { Level = 5, Tier = 0 })
+check(#wy == 2 and wy[1] == "Bare hands" and wy[2] == "Level 5", "#1 PowerWhy: bare hands + the level", table.concat(wy, ","))
 check(heads(srows) == "Stats,Traits,Effects,Rebirth,Rank", "StatRows: every section when the data is there", heads(srows))
 check(rowOf(srows, "MaxHP") and rowOf(srows, "MaxHP").Value == "300" and rowOf(srows, "Level").Value == "15", "StatRows: level and max HP")
 check(rowOf(srows, "Next") and rowOf(srows, "Next").Value == "Dread Lord · 140 to go", "StatRows: the next rank and the points to go",
@@ -441,8 +483,21 @@ local top = M.StatRows({ Faction = "Halo", Honor = 2000, Level = 5 })
 check(rowOf(top, "Next").Value == "Top rank", "StatRows: at the top = Top rank", rowOf(top, "Next").Value)
 check(heads(M.StatRows({ Faction = "Halo", Rebirths = 1 })):find("Rebirth", 1, true) ~= nil, "StatRows: one rebirth shows the Rebirth section")
 -- 게임성 검수 10/12 (API review): the blessing is the winning side's only (gold and XP), the hit row is the base hit
-check(rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Value == "+25% gold · +25% XP", "10/12: my side's blessing = +gold and +XP",
-	rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Value)
+check(rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Text == "Gold & XP +25%", "10/12: my side's blessing = +gold and +XP",
+	rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Text)
+-- 최종 검수 10/13 (ref_rpg_ui #5): cards for the numbers, chips for the traits / effects, no sentences
+local kinds = {}
+for _, r in srows do kinds[r.Kind] = (kinds[r.Kind] or 0) + 1 end
+check((kinds.Line or 0) == 0 and (kinds.Card or 0) == 6 and rowOf(srows, "MaxHP").Kind == "Card" and rowOf(srows, "MaxHP").Icon == "IconHeart"
+	and rowOf(srows, "Hit").Icon == "IconSword", "#5: six number cards with icons, no text lines", tostring(kinds.Card))
+check(rowOf(srows, "Gold") and rowOf(srows, "Gold").Text == "Gold +25%" and rowOf(srows, "ATK").Text == "ATK +15%"
+	and rowOf(srows, "Steal").Text == "HP steal 10%" and rowOf(srows, "Class1").Kind == "Chip",
+	"#5: the Horn Legion's traits as number chips (Gold +25%, ATK +15%, HP steal 10%) + the class's", rowOf(srows, "Gold") and rowOf(srows, "Gold").Text)
+local haloRows = M.StatRows({ Faction = "Halo", Level = 3, Class = "Mage" })
+check(rowOf(haloRows, "XP") and rowOf(haloRows, "XP").Text == "XP +30%" and rowOf(haloRows, "HP").Text == "HP +20%"
+	and rowOf(haloRows, "Heal") and rowOf(haloRows, "Gold") == nil, "#5: the Knights' traits (XP +30%, HP +20%, healing allies)")
+check(rowOf(srows, "Bully").Text == "Bully -15%" and rowOf(srows, "NoAuto") ~= nil and rowOf(srows, "Size").Text == "Size ×1.25",
+	"#5: the effects as chips (Size ×1.25, Bully -15%, No Auto Battle)", rowOf(srows, "Bully").Text)
 local otherSide = table.clone(rich)
 otherSide.Blessing = "Halo"
 check(rowOf(M.StatRows(otherSide), "Blessing") == nil, "10/12: the other side's blessing is not mine (no row)")
@@ -484,6 +539,36 @@ local changeName = find(body, "ChangeName")
 check(changeName ~= nil and changeName.Text == "Change", "10/12: a [Change] button beside it")
 if changeName and changeName.OnClick then changeName.OnClick() end
 check(kitOpened[#kitOpened] == "Nickname", "10/12: [Change] opens the Nickname window", kitOpened[#kitOpened])
+-- 최종 검수 10/13 (ref_rpg_ui #1): the power's two parts under it, a press lists their sources
+local pa, ph = Config.PowerPartsOf(player)
+check(pa == math.floor(Config.WeaponDamage(2, 10, 3) + 0.5) and ph == math.floor(Config.BaseHealth(10) + 0.5),
+	"#1: Attack = the worn weapon at my level with its +N, Health = the level's base (points / gear off)", tostring(pa) .. "/" .. tostring(ph))
+local chipA, chipH = find(body, "Part_Attack"), find(body, "Part_Health")
+check(chipA and chipH and chipA.Image == "Chip" and find(chipA, "Icon").Image == "IconSword" and find(chipH, "Icon").Image == "IconHeart"
+	and find(chipA, "Value").Text == tostring(pa) and find(chipH, "Value").Text == tostring(ph),
+	"#1: [sword] Attack · [heart] Health chips under the power (Config.PowerPartsOf)", tostring(pa) .. "/" .. tostring(ph))
+check(find(body, "PowerWhy") == nil, "#1: no sources until a chip is pressed")
+-- 최종 검수 10/13 (ref_rpg_ui #9): the ribbon with my shown title, the next rank bar, the locked titles grey
+local ribbon = find(body, "TitleRibbon")
+check(ribbon and ribbon.Image == "TitleRibbon" and find(ribbon, "Title").Text == "Squire", "#9: the title ribbon (Auto = my rank title)",
+	ribbon and find(ribbon, "Title") and find(ribbon, "Title").Text)
+local rbar = find(body, "RankBar")
+check(rbar and find(rbar, "Icon").Image == "IconRankHonor" and find(rbar, "Fill").Image == "BarFill" and find(rbar, "Fill").Size.X.Scale < 0.1
+	and find(rbar, "ToGo").Text == "10 to go",
+	"#9: the next rank bar (honor icon, the fill, points to go)", rbar and find(rbar, "ToGo") and find(rbar, "ToGo").Text)
+local lockedB = find(body, "Locked_GrayLegend")
+check(lockedB and lockedB.Enabled == false and lockedB.Text == Config.TitleDefs.GrayLegend.Name and find(body, "Locked_BetaPioneer") == nil,
+	"#9: a title I lack shows grey and off (not one I can no longer get)")
+chipA.OnClick()
+local why = find(body, "PowerWhy")
+local wname = Config.WeaponName(2, "Warrior", "Halo")
+check(why and find(why, "Why1") and find(why, "Why1").Text == wname .. " +3" and find(why, "Why2").Text == "Level 10",
+	"#1: Attack's sources: the weapon +N, the level", why and find(why, "Why1") and find(why, "Why1").Text)
+find(body, "Part_Health").OnClick()
+why = find(body, "PowerWhy")
+check(why and find(why, "Why1").Text == "Level 10" and find(why, "Why2") == nil, "#1: Health's source: the level (points / armor while off)")
+find(body, "Part_Health").OnClick()
+check(find(body, "PowerWhy") == nil, "#1: the same chip again hides the sources")
 check(find(body, "Title_Auto") and find(body, "Title_Auto").Color == "gold" and find(body, "Title_BetaPioneer") == nil, "the title list: Auto (current) only while no title is owned")
 local nText = scanTexts(M, body)
 -- a press on the Weapon cell opens the owned list
@@ -498,6 +583,12 @@ check(find(body, "Equip_2").Text == "Equipped" and find(body, "Equip_2").Enabled
 	and find(body, "Equip_4").Enabled == false and find(body, "Equip_1").Text == "Equip" and find(body, "Equip_1").Enabled == true,
 	"the buttons: Equipped / From Lv 12 (off) / Equip (on)")
 check(find(body, "Power") ~= nil, "the usable rows show the power line")
+local w1 = find(body, "Weapon_1")
+local pl = w1 and find(w1, "Power")
+local d1 = Config.CombatPowerOf(player, 1, 0) - Config.CombatPowerOf(player)
+check(pl and ((d1 < 0 and pl.Text == "Power -" .. tostring(-d1) and pl.TextColor3 == "bad")
+	or (d1 > 0 and pl.Text == "Power +" .. tostring(d1) and pl.TextColor3 == "good")),
+	"#2: a weapon's power change = one coloured line (Power +N green / Power -N red)", pl and pl.Text)
 nText += scanTexts(M, body)
 find(body, "Equip_1").OnClick()
 check(#fired == 1 and fired[1][1] == "EquipWeapon" and fired[1][2] == 1, "the [Equip] button sends EquipWeapon(tier) once", #fired)
@@ -561,7 +652,8 @@ attrs.RevengeUntil, attrs.Rebirths, attrs.RebirthBonus, attrs.FallMarks, attrs.H
 find(body, "Tab_Stats").OnClick()
 check(M._T.S.Tab == "Stats" and find(body, "StatsPage").Visible == true and find(body, "GearPage").Visible == false, "the Stats tab shows its page")
 check(find(body, "Tab_Stats").PaintColor == "gold" and find(body, "Tab_Gear").PaintColor == "button", "the open tab is gold")
-check(find(body, "Stat_Level") and find(body, "Stat_Wanted") and find(body, "Stat_Next") and find(body, "Head_Effects"), "the Stats rows from the attributes")
+check(find(body, "Card_Level") and find(body, "Chip_Wanted") and find(body, "Stat_Next") and find(body, "Head_Effects")
+	and find(find(body, "Card_MaxHP"), "Icon") and find(body, "Card_Level").Image == "Chip", "the Stats cards / chips / rows from the attributes")
 check(find(find(body, "Stat_Next"), "Value").Text == "Dread Lord · 140 to go", "the next rank row", find(find(body, "Stat_Next"), "Value").Text)
 nText += scanTexts(M, body)
 closeWin(reg, body)
@@ -695,5 +787,59 @@ closeWin(reg5, body5)
 ------------------------------------------------------------------ 8. every text comes from TXT / Config
 check(nText > 40, "the scan looked at the window's texts", nText)
 check(#strangers == 0, "every text the window shows is a TXT line, a Config name or a number", table.concat(strangers, " | "))
+
+-- 최종 검수 10/13 (ref_rpg_ui #7): BetterWeapon from my attributes (owned 1, 2, 4; wearing 2; 4 needs Lv 12)
+resetAttrs()
+check(M.BetterWeapon() == false, "#7 BetterWeapon: nothing stronger I can wear (4 is locked, 1 is weaker)")
+attrs.Level = 12
+check(M.BetterWeapon() == true, "#7 BetterWeapon: a stronger owned weapon I can wear now -> the dot")
+resetAttrs()
+
+------------------------------------------------------------------ 9. 최종 검수 10/13 (ref_rpg_ui #3): the 3D body (a fake HeroPreview)
+local hlog = { mount = 0, refresh = 0, unmount = 0 }
+local fakePreview = {
+	Mount = function(parent, size)
+		hlog.mount += 1
+		hlog.parent, hlog.size = parent, size
+		return newObj("Frame", { Name = "BodyPreview", Parent = parent })
+	end,
+	Refresh = function() hlog.refresh += 1 end,
+	Unmount = function() hlog.unmount += 1 end,
+}
+local glog9 = { build = 0, refresh = 0, seq = {} }
+resetAttrs()
+local M9, reg9 = boot({ GearSlots = fakeGear(glog9), HeroPreview = fakePreview })
+local L9 = M9._T.L
+local body9, update9 = openWin(reg9)
+local bodyP = find(body9, "BodyPreview")
+check(hlog.mount == 1 and hlog.parent ~= nil and hlog.parent.Name == "SlotsView" and bodyP ~= nil and bodyP.Parent == hlog.parent,
+	"#3: the body is mounted once, in the gear page's slot view", hlog.mount)
+check(bodyP and bodyP.Position.Y.Offset == L9.FrameH + L9.BodyGap and bodyP.Size.X.Offset == L9.FrameW and bodyP.Size.Y.Offset == L9.BodyH,
+	"#3: it sits under the gear cells, as wide as them", bodyP and bodyP.Position.Y.Offset)
+glog9.frame.Size = UDim2.fromOffset(150, 120)
+glog9.opts.Refresh()
+check(bodyP and bodyP.Position.Y.Offset == 120 + L9.BodyGap and bodyP.Size.X.Offset == 150, "#3: it follows a frame GearSlots resized",
+	bodyP and bodyP.Position.Y.Offset)
+check(hlog.refresh == 0, "#3: opening copies me once (Mount's own), no extra Refresh", hlog.refresh)
+update9()
+check(hlog.refresh == 0, "#3: nothing changed = no new copy", hlog.refresh)
+attrs.WeaponTier = 1
+update9()
+check(hlog.refresh == 1, "#3: a weapon swap copies me again", hlog.refresh)
+update9()
+check(hlog.refresh == 1, "#3: once per change", hlog.refresh)
+attrs.Faction = "Horns"
+update9()
+check(hlog.refresh == 2, "#3: a side change copies me again (halo -> horns)", hlog.refresh)
+closeWin(reg9, body9)
+check(hlog.unmount == 1, "#3: closing the window unmounts the body", hlog.unmount)
+resetAttrs()
+local warns10 = #warns
+local M10, reg10 = boot({ GearSlots = fakeGear({ build = 0, refresh = 0, seq = {} }),
+	HeroPreview = { Mount = function() error("boom") end, Unmount = function() end } })
+local body10 = openWin(reg10)
+check(#warns == warns10 + 1 and find(body10, "Title_Auto") ~= nil and find(body10, "BodyPreview") == nil,
+	"#3: a failing Mount is warned once and the window still draws", #warns - warns10)
+closeWin(reg10, body10)
 
 print(string.format("CHARACTER_UI_SUMMARY checks=%d failed=%d", checks, failed))

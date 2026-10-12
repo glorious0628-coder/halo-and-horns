@@ -55,6 +55,9 @@ local TXT = {
 	Attack = "Attack %s",
 	PowerNow = "Power %s",
 	PowerChange = "Power %s → %s",
+	-- 최종 검수 10/13 (ref_rpg_ui #1): what the power is made of, under the number; a press lists the sources
+	Why = { Level = "Level %d", Weapon = "%s +%d", Fist = "Bare hands", Points = "Points +%d", Ring = "Ring +%d%%",
+		Armor = "Armor +%d%%" },
 	PetLv = "Lv %d",
 	TitleHead = "Title", TitleAuto = "Auto",
 	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Now", Rebirth = "Rebirth", Rank = "Rank" },
@@ -66,17 +69,16 @@ local TXT = {
 		Honor = "Honor", Infamy = "Infamy", Rank = "Rank", Next = "Next rank",
 	},
 	CritValue = "%d%% · ×%s",
-	SizeValue = "×%.2f",
-	BullyValue = "-%d%% size & damage",
-	BullyPenalty = "No Auto Battle · half XP & drops",
-	WantedValue = "%s · +%d%% damage",
-	RevengeValue = "+%d%% damage · %s",
-	BlessingValue = "+%d%% gold · +%d%% XP",
+	-- 최종 검수 10/13 (ref_rpg_ui #5, A23-130): the Stats tab's traits and effects as short number chips, no sentences
+	Chip = { XP = "XP +%d%%", Gold = "Gold +%d%%", HP = "HP +%d%%", ATK = "ATK +%d%%", Regen = "Healing", Steal = "HP steal %d%%",
+		Heal = "Heals allies", Size = "Size ×%.2f", Bully = "Bully -%d%%", NoAuto = "No Auto Battle", Wanted = "%s +%d%%",
+		Revenge = "Revenge +%d%% %s", Blessing = "Gold & XP +%d%%" },
 	Change = "Change",
 	RebirthBonusValue = "+%d%% gold & XP",
 	MarksValue = "%d / %d",
 	NextValue = "%s · %d to go",
 	TopRank = "Top rank",
+	ToGo = "%d to go", -- the next rank bar's number (ref_rpg_ui #9)
 	Clock = "%d:%02d",
 }
 L10n.Register("CharacterUI.TXT", TXT)
@@ -89,6 +91,7 @@ local L = {
 	LeftW = 150, Split = 14, -- the left column (headshot + power) and the space right of it
 	Portrait = 100,
 	ChangeW = 96, ChangeH = 30, -- the nickname's [Change] (게임성 검수 10/12: moved here from Settings)
+	ChipW = 70, ChipH = 30, ChipIcon = 20, -- the power's two parts (ref_rpg_ui #1)
 	Cell = 64, ColGap = 14, CapH = 18, RowGap = 10, -- one gear cell, the word under it
 	Cols = { Weapon = 0, Armor = 1, Ring = 2, Pet = 0, PetArmor = 0, PetAcc = 1 },
 	Rows = { Weapon = 0, Armor = 0, Ring = 0, Pet = 1, PetArmor = 2, PetAcc = 2 },
@@ -97,6 +100,13 @@ local L = {
 	Fallback = { "Armor", "Ring", "PetArmor", "PetAcc" }, -- the empty cells drawn when there is no GearSlots
 	RowH = 74, Icon = 52, ButtonW = 112, BtnH = 40,
 	StatH = 26, StatLabelW = 200,
+	CardW = 132, CardH = 50, CardIcon = 26, TraitW = 132, TraitH = 28, -- the Stats tab's cards and chips (ref_rpg_ui #5)
+	RibbonH = 34, BarH = 18, BarIcon = 22, -- the title ribbon and the next rank bar (ref_rpg_ui #9)
+	-- the locked titles (CharacterUI.LockedTitles): past / season ones left out, side ones only for that side, at most this many
+	LockedSkip = { BetaPioneer = true, PartyGuest2026 = true, PumpkinPal = true, CandyKeeper = true },
+	LockedSide = { GuardianCadet = "Halo", RascalCadet = "Horns" },
+	LockedMax = 6,
+	BodyGap = 12, BodyH = 220, -- the 3D body under the gear cells, as wide as them (ref_rpg_ui #3, C.HeroPreview)
 	Size = { Name = 18, Body = 16, Small = 15, Count = 16, Power = 34, Head = 18 },
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), same as the bag
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
@@ -121,6 +131,7 @@ local S = {
 	Drawn = {}, -- the fallback cells / captions this module drew in the frame
 	ReadyAt = {}, -- [remote] = os.clock() when the next send is allowed
 	Pending = nil, -- { Tier, WeaponTier, SentAt, ReadyAt, Answered? }
+	Why = nil, -- the power part whose sources show ("Attack" | "Health"; ref_rpg_ui #1)
 }
 local VIEW = {} -- the open window: Kit, Parent, Pages, Sigs ...
 
@@ -256,6 +267,40 @@ function CharacterUI.PetState(rows)
 end
 
 ---------------------------------------------------------------------------------------------------- stats (pure)
+-- 최종 검수 10/13 (ref_rpg_ui #9): my side's rank as a bar - { Title, Next (nil at the top), Fill 0..1 inside this rank,
+-- ToGo, Icon } for Halo (honor) / Horns (infamy); nil without a side
+function CharacterUI.RankBar(faction, honor, infamy)
+	local names, th = Config.Titles[faction], Config.Titles.Thresholds
+	if type(names) ~= "table" then return nil end
+	local points = math.max(0, math.floor(num(faction == "Halo" and honor or infamy, 0)))
+	local title, rank = Config.GetTitle(faction, honor, infamy)
+	local lo, hi = num(th[rank], 0), th[rank + 1]
+	local nextName = hi and names[rank + 1] or nil
+	local fill = hi and math.clamp((points - lo) / math.max(1, hi - lo), 0, 1) or 1
+	return { Title = title, Next = nextName, Fill = fill, ToGo = hi and (hi - points) or 0,
+		Icon = faction == "Halo" and "IconRankHonor" or "IconRankInfamy" }
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #9): the titles I do not own yet (Config.TitleOrder), shown grey under mine. API review: only
+-- ones I can still earn - no weekly (Timed) title, none of L.LockedSkip (past / season ones), not the other side's
+-- (L.LockedSide), at most L.LockedMax
+function CharacterUI.LockedTitles(owned, faction)
+	local have = {}
+	if type(owned) == "string" then
+		for id in string.gmatch(owned, "[^,]+") do have[id] = true end
+	end
+	local list = {}
+	for _, id in Config.TitleOrder do
+		local def = Config.TitleDefs[id]
+		local side = L.LockedSide[id]
+		if def and not have[id] and def.Timed ~= true and not L.LockedSkip[id] and (side == nil or side == faction) then
+			table.insert(list, { Id = id, Name = tx(def, "Name") })
+			if #list >= L.LockedMax then break end
+		end
+	end
+	return list
+end
+
 -- the next rank of a side: name and points to go; nil at the top (Config.Titles)
 function CharacterUI.NextRank(faction, points)
 	local names, th = Config.Titles[faction], Config.Titles.Thresholds
@@ -282,60 +327,68 @@ end
 
 -- the Stats tab. ctx = { Level, MaxHealth, MaxMana, WalkSpeed, Tier, EquippedPlus, Class, Faction, SizeMult, BullyStacks,
 -- WantedStars, RevengeUntil, Now, Blessing, Rebirths, RebirthBonus, FallMarks, RedeemMarks, Honor, Infamy }
--- -> rows { Kind = "Head" | "Row" | "Line", Id?, Label?, Value?, Text? }; a value with no source leaves its row out
+-- -> rows { Kind = "Head" | "Card" | "Chip" | "Row", Id?, Icon?, Label?, Value?, Text? }; a value with no source leaves its
+-- row out. 최종 검수 10/13 (ref_rpg_ui #5: the text wall): the core numbers are cards (an icon, the number, one word), the
+-- class / side traits and the effects on now are short chips made from the numbers ("XP +30%"), no perk sentences
 function CharacterUI.StatRows(ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	local rows = {}
 	local function head(id) table.insert(rows, { Kind = "Head", Id = id, Text = tx(TXT.Heads, id) }) end
 	local function row(id, value) table.insert(rows, { Kind = "Row", Id = id, Label = tx(TXT.Stat, id), Value = value }) end
-	local function line(text) table.insert(rows, { Kind = "Line", Text = text }) end
+	local function card(id, icon, value)
+		table.insert(rows, { Kind = "Card", Id = id, Icon = icon, Label = tx(TXT.Stat, id), Value = value })
+	end
+	local function chip(id, text) table.insert(rows, { Kind = "Chip", Id = id, Text = text }) end
 	local faction = type(ctx.Faction) == "string" and ctx.Faction or "None"
 	local level = math.max(1, math.floor(num(ctx.Level, 1)))
 
 	head("Stats")
-	row("Level", tostring(level))
-	if num(ctx.MaxHealth, 0) > 0 then row("MaxHP", Util.FormatInt(math.floor(ctx.MaxHealth))) end
-	row("MP", Util.FormatInt(math.floor(num(ctx.MaxMana, num(Config.Vitals.MaxMana, 100)))))
-	if num(ctx.WalkSpeed, 0) > 0 then row("Speed", tostring(math.floor(ctx.WalkSpeed * 10 + 0.5) / 10)) end
+	card("Level", "IconStar", tostring(level))
+	if num(ctx.MaxHealth, 0) > 0 then card("MaxHP", "IconHeart", Util.FormatInt(math.floor(ctx.MaxHealth))) end
+	card("MP", "IconPotionMP", Util.FormatInt(math.floor(num(ctx.MaxMana, num(Config.Vitals.MaxMana, 100)))))
+	if num(ctx.WalkSpeed, 0) > 0 then card("Speed", "IconBoot", tostring(math.floor(ctx.WalkSpeed * 10 + 0.5) / 10)) end
 	local ok, hit = pcall(hitDamage, ctx)
-	if ok then row("Hit", Util.FormatInt(hit)) end
-	row("Crit", tx(TXT, "CritValue", pct(Config.Combat.CritChance), tostring(Config.Combat.CritMult)))
+	if ok then card("Hit", "IconSword", Util.FormatInt(hit)) end
+	card("Crit", nil, tx(TXT, "CritValue", pct(Config.Combat.CritChance), tostring(Config.Combat.CritMult)))
 
+	-- the class's and the side's traits: chips from the numbers (Config.Classes Stats are short already)
 	head("Traits")
 	local class = Config.Classes[ctx.Class] or Config.Classes.Warrior
-	row("Class", Config.ClassName(class.Id, faction))
-	for _, text in type(class.Stats) == "table" and class.Stats or {} do line(text) end
+	for i, text in type(class.Stats) == "table" and class.Stats or {} do chip("Class" .. i, text) end
 	local fdef = Config.Factions[faction]
 	if faction ~= "None" and type(fdef) == "table" then
-		row("Side", fdef.Name)
-		for _, text in type(fdef.Perks) == "table" and fdef.Perks or {} do line(text) end
+		if num(fdef.XPBonus, 0) > 0 then chip("XP", tx(TXT.Chip, "XP", pct(fdef.XPBonus))) end
+		if num(fdef.GoldBonus, 0) > 0 then chip("Gold", tx(TXT.Chip, "Gold", pct(fdef.GoldBonus))) end
+		if num(fdef.MaxHPMult, 1) > 1.001 then chip("HP", tx(TXT.Chip, "HP", pct(fdef.MaxHPMult - 1))) end
+		if num(fdef.DamageBonus, 0) > 0 then chip("ATK", tx(TXT.Chip, "ATK", pct(fdef.DamageBonus))) end
+		if num(fdef.RegenPerSec, 0) > 0 then chip("Regen", tx(TXT.Chip, "Regen")) end
+		if num(fdef.Lifesteal, 0) > 0 then chip("Steal", tx(TXT.Chip, "Steal", pct(fdef.Lifesteal))) end
+		if fdef.ReleaseSupport == true then chip("Heal", tx(TXT.Chip, "Heal")) end
 	end
 
-	-- what is on right now (nothing: no heading)
+	-- what is on right now (nothing: no heading), chips too
 	local effects = {}
 	local size = num(ctx.SizeMult, 1)
-	if size > 1.001 then table.insert(effects, { "Size", tx(TXT, "SizeValue", size) }) end
+	if size > 1.001 then table.insert(effects, { "Size", tx(TXT.Chip, "Size", size) }) end
 	local bully = math.floor(num(ctx.BullyStacks, 0))
 	if bully >= 1 then
-		table.insert(effects, { "Bully", tx(TXT, "BullyValue", pct(1 - Config.BullyMult(bully))), tx(TXT, "BullyPenalty") })
+		table.insert(effects, { "Bully", tx(TXT.Chip, "Bully", pct(1 - Config.BullyMult(bully))) })
+		table.insert(effects, { "NoAuto", tx(TXT.Chip, "NoAuto") })
 	end
 	local stars = faction == "Horns" and math.clamp(math.floor(num(ctx.WantedStars, 0)), 0, Config.PvP.MaxStars) or 0
 	if stars >= 1 then
-		table.insert(effects, { "Wanted", tx(TXT, "WantedValue", string.rep("★", stars), pct(stars * Config.PvP.StarDamageBonus)) })
+		table.insert(effects, { "Wanted", tx(TXT.Chip, "Wanted", string.rep("★", stars), pct(stars * Config.PvP.StarDamageBonus)) })
 	end
 	local left = num(ctx.RevengeUntil, 0) - num(ctx.Now, 0)
-	if left > 0 then table.insert(effects, { "Revenge", tx(TXT, "RevengeValue", pct(Config.Revenge.Bonus), clock(left)) }) end
+	if left > 0 then table.insert(effects, { "Revenge", tx(TXT.Chip, "Revenge", pct(Config.Revenge.Bonus), clock(left)) }) end
 	-- 게임성 검수 10/12: the crown war's blessing is only the winning side's (WarService.HasBlessing) - gold and XP
 	local blessing = ctx.Blessing
 	if (blessing == "Halo" or blessing == "Horns") and blessing == faction then
-		table.insert(effects, { "Blessing", tx(TXT, "BlessingValue", pct(Config.War.BlessingGold), pct(Config.War.BlessingXP)) })
+		table.insert(effects, { "Blessing", tx(TXT.Chip, "Blessing", pct(Config.War.BlessingGold)) })
 	end
 	if #effects > 0 then
 		head("Effects")
-		for _, e in effects do
-			row(e[1], e[2])
-			if e[3] then line(e[3]) end
-		end
+		for _, e in effects do chip(e[1], e[2]) end
 	end
 
 	local rebirths = math.max(0, math.floor(num(ctx.Rebirths, 0)))
@@ -408,6 +461,10 @@ local function context()
 	local tier = math.clamp(math.floor(num(attr("WeaponTier"), 0)), 0, Config.MaxWeaponTier)
 	local plus = num(attr("WeaponEnhance"), 0)
 	local okP, now = pcall(Config.CombatPowerOf, LocalPlayer)
+	local okPa, pa, ph = pcall(Config.PowerPartsOf, LocalPlayer)
+	local parts = okPa and { A = pa, H = ph } or nil
+	local okAl, alloc = pcall(Config.StatAllocOf, LocalPlayer)
+	local okG, ga, gh = pcall(Config.GearMultsOf, LocalPlayer)
 	local power = tonumber(attr("CombatPower", nil))
 	if power == nil then power = okP and tonumber(now) or 0 end -- before the server's first set (Config.CombatPowerOf, test_stats)
 	return { Level = level, Class = (type(class) == "string" and Config.Classes[class]) and class or "Warrior",
@@ -421,7 +478,10 @@ local function context()
 		RevengeUntil = num(attr("RevengeUntil"), 0), Now = Util.Now(), Blessing = gameAttr("WarBlessing", "None"),
 		Rebirths = num(attr("Rebirths"), 0), RebirthBonus = num(attr("RebirthBonus"), 0), FallMarks = num(attr("FallMarks"), 0),
 		RedeemMarks = num(attr("RedeemMarks"), 0), Honor = num(attr("Honor"), 0), Infamy = num(attr("Infamy"), 0),
-		Owned = tostring(attr("TitlesOwned", "")), Sel = tostring(attr("TitleSel", "")) }
+		Owned = tostring(attr("TitlesOwned", "")), Sel = tostring(attr("TitleSel", "")),
+		-- 최종 검수 10/13 (ref_rpg_ui #1): the power's two parts and what goes into them
+		Attack = parts and parts.A or 0, Health = parts and parts.H or 0, Plus = math.floor(plus),
+		Alloc = okAl and alloc or nil, Gear = okG and { A = ga, H = gh } or nil }
 end
 
 ---------------------------------------------------------------------------------------------------- requests
@@ -486,6 +546,13 @@ function CharacterUI.SetTitle(id)
 	return false
 end
 
+-- 최종 검수 10/13 (ref_rpg_ui #3): the 3D body module (may be missing: then no body, the rest works)
+local function preview()
+	local h = C and C.HeroPreview
+	if type(h) == "table" and type(h.Mount) == "function" then return h end
+	return nil
+end
+
 local function gearModule()
 	local g = C and C.GearSlots
 	if not S.GearOff and type(g) == "table" and type(g.Build) == "function" then return g end
@@ -520,8 +587,43 @@ local function colorOf(name)
 	local th = kit and kit.Theme or {}
 	if name == "Gold" then return th.Gold end
 	if name == "Good" then return th.Good end
-	if name == "Sub" then return th.SubText end
+	if name == "Bad" then return th.Bad end
+	if name == "Sub" or name == "Same" then return th.SubText end
 	return th.Text
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #1): the sources of the power's Attack / Health (pure: ctx = { Level, Tier, Plus, Class,
+-- Faction, Alloc = { A, H }, Gear = { A, H } }) - short lines, numbers and names only
+function CharacterUI.PowerWhy(part, ctx)
+	ctx = type(ctx) == "table" and ctx or {}
+	local lines = {}
+	local level = math.max(1, math.floor(num(ctx.Level, 1)))
+	if part == "Attack" then
+		local tier = math.floor(num(ctx.Tier, 0))
+		if Config.Weapons[tier] then
+			table.insert(lines, tx(TXT.Why, "Weapon", Config.WeaponName(tier, ctx.Class, ctx.Faction), math.floor(num(ctx.Plus, 0))))
+		else
+			table.insert(lines, tx(TXT.Why, "Fist"))
+		end
+	end
+	table.insert(lines, tx(TXT.Why, "Level", level))
+	local alloc = type(ctx.Alloc) == "table" and ctx.Alloc or {}
+	local pts = math.floor(num(part == "Attack" and alloc.A or alloc.H, 0))
+	if Config.FeatureOn("StatPoints") and pts > 0 then table.insert(lines, tx(TXT.Why, "Points", pts)) end
+	local gear = type(ctx.Gear) == "table" and ctx.Gear or {}
+	local pct = math.floor((num(part == "Attack" and gear.A or gear.H, 1) - 1) * 100 + 0.5)
+	if Config.Features.Gear == true and pct > 0 then table.insert(lines, tx(TXT.Why, part == "Attack" and "Ring" or "Armor", pct)) end
+	return lines
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #2): a power change as one line + its colour name (nil = no line)
+function CharacterUI.DiffLine(now, with)
+	local d, tone = Config.PowerDiff(now, with)
+	if not d then return nil, nil end
+	local t = Config.Power.Text.Diff
+	if tone == "Good" then return string.format(t.Up, Util.FormatInt(d)), "Good" end
+	if tone == "Bad" then return string.format(t.Down, Util.FormatInt(d)), "Bad" end
+	return t.Same, "Same"
 end
 
 local function clear(frame)
@@ -721,11 +823,88 @@ local function drawLeft(frame, ctx)
 	local who = label(frame, tx(TXT, "LevelClass", ctx.Level, Config.ClassName(ctx.Class, ctx.Faction)), L.Size.Body, colorOf("Text"),
 		{ Name = "Who", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, TextXAlignment = Enum.TextXAlignment.Center,
 			LayoutOrder = nextOrder() })
+	-- 최종 검수 10/13 (ref_rpg_ui #9): the title I show, on the approved ribbon
+	local shown = nil
+	for _, t in CharacterUI.Titles(ctx) do
+		if t.Current and t.Id ~= "" then shown = t.Name end
+	end
+	local bar = CharacterUI.RankBar(ctx.Faction, ctx.Honor, ctx.Infamy)
+	shown = shown or (bar and bar.Title) or nil
+	if shown then
+		local ribbon = kit.ArtFrame("TitleRibbon", { Name = "TitleRibbon", Size = UDim2.new(1, 0, 0, L.RibbonH), LayoutOrder = nextOrder() },
+			{ BackgroundColor3 = Color3.fromRGB(120, 40, 50) })
+		ribbon.Parent = frame
+		label(ribbon, shown, L.Size.Small, colorOf("Text"), { Name = "Title", Size = UDim2.fromScale(1, 1),
+			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, ZIndex = 3 })
+	end
 	label(frame, tx(TXT, "Power"), L.Size.Small, colorOf("Sub"), { Name = "PowerWord", Size = UDim2.new(1, 0, 0, L.Size.Small + 4),
 		TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, LayoutOrder = nextOrder() })
 	label(frame, Util.FormatInt(ctx.CombatPower), L.Size.Power, colorOf("Gold"), { Name = "PowerNumber",
 		Size = UDim2.new(1, 0, 0, L.Size.Power + 6), TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false,
 		LayoutOrder = nextOrder(), Style = "Number" })
+	-- 최종 검수 10/13 (ref_rpg_ui #1): [sword] Attack · [heart] Health under the power; a press lists where each comes from
+	local parts = Instance.new("Frame")
+	parts.Name = "PowerParts"
+	parts.BackgroundTransparency = 1
+	parts.Size = UDim2.new(1, 0, 0, L.ChipH)
+	parts.LayoutOrder = nextOrder()
+	parts.Parent = frame
+	local pl = Instance.new("UIListLayout")
+	pl.FillDirection = Enum.FillDirection.Horizontal
+	pl.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	pl.SortOrder = Enum.SortOrder.LayoutOrder
+	pl.Padding = UDim.new(0, 6)
+	pl.Parent = parts
+	for i, part in { { "Attack", "IconSword", ctx.Attack }, { "Health", "IconHeart", ctx.Health } } do
+		local id = part[1]
+		local chip = kit.ArtButton("Chip", { Name = "Part_" .. id, Size = UDim2.fromOffset(L.ChipW, L.ChipH), LayoutOrder = i },
+			function()
+				S.Why = S.Why ~= id and id or nil
+				CharacterUI.Refresh(true)
+			end, { BackgroundColor3 = Color3.fromRGB(40, 46, 72) })
+		chip.Parent = parts
+		local icon = kit.ArtImage(part[2], { Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 5, 0.5, 0),
+			Size = UDim2.fromOffset(L.ChipIcon, L.ChipIcon), ZIndex = 3 })
+		if icon then icon.Parent = chip end
+		label(chip, Util.FormatInt(num(part[3], 0)), L.Size.Small, S.Why == id and colorOf("Gold") or colorOf("Text"),
+			{ Name = "Value", Position = UDim2.fromOffset(L.ChipIcon + 8, 0), Size = UDim2.new(1, -(L.ChipIcon + 10), 1, 0),
+				TextWrapped = false, ZIndex = 3 })
+	end
+	-- 최종 검수 10/13 (ref_rpg_ui #9): the next rank bar (my side's points inside this rank; full at the top)
+	local rb = CharacterUI.RankBar(ctx.Faction, ctx.Honor, ctx.Infamy)
+	if rb then
+		local row = Instance.new("Frame")
+		row.Name = "RankBar"
+		row.BackgroundTransparency = 1
+		row.Size = UDim2.new(1, 0, 0, L.BarIcon + L.Size.Small + 6)
+		row.LayoutOrder = nextOrder()
+		row.Parent = frame
+		local icon = kit.ArtImage(rb.Icon, { Name = "Icon", Size = UDim2.fromOffset(L.BarIcon, L.BarIcon), ZIndex = 3 })
+		if icon then icon.Parent = row end
+		local track = kit.ArtFrame("BarTrack", { Name = "Track", Position = UDim2.new(0, L.BarIcon + 4, 0, (L.BarIcon - L.BarH) / 2),
+			Size = UDim2.new(1, -(L.BarIcon + 4), 0, L.BarH) }, { BackgroundColor3 = Color3.fromRGB(24, 28, 48) })
+		track.Parent = row
+		local fill = kit.ArtFrame("BarFill", { Name = "Fill", Size = UDim2.fromScale(math.max(0.04, rb.Fill), 1), ZIndex = 3 },
+			{ BackgroundColor3 = Color3.fromRGB(255, 214, 110) })
+		fill.Parent = track
+		label(row, rb.Next and tx(TXT, "ToGo", rb.ToGo) or tx(TXT, "TopRank"), L.Size.Small, colorOf("Sub"), { Name = "ToGo",
+			Position = UDim2.fromOffset(0, L.BarIcon + 2), Size = UDim2.new(1, 0, 0, L.Size.Small + 3),
+			TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false })
+	end
+	if S.Why then
+		local why = Instance.new("Frame")
+		why.Name = "PowerWhy"
+		why.BackgroundTransparency = 1
+		why.Size = UDim2.new(1, 0, 0, 0)
+		why.AutomaticSize = Enum.AutomaticSize.Y
+		why.LayoutOrder = nextOrder()
+		why.Parent = frame
+		listLayout(why, 1, true)
+		for i, text in CharacterUI.PowerWhy(S.Why, ctx) do
+			label(why, text, L.Size.Small, colorOf("Sub"), { Name = "Why" .. i, Size = UDim2.new(1, 0, 0, L.Size.Small + 3),
+				TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, LayoutOrder = i })
+		end
+	end
 	return who
 end
 
@@ -742,6 +921,14 @@ local function drawTitles(frame, titles)
 			function() CharacterUI.SetTitle(t.Id) end, t.Current and kit.Palette.DarkText or nil)
 		b.Name = "Title_" .. (t.Id == "" and "Auto" or t.Id)
 		b.LayoutOrder = order
+	end
+	-- 최종 검수 10/13 (ref_rpg_ui #9): the ones still to earn, grey and off
+	for _, t in CharacterUI.LockedTitles(attr("TitlesOwned", ""), attr("Faction", "None")) do
+		order += 1
+		local b = kit.Button(frame, t.Name, kit.Palette.Button, UDim2.fromOffset(L.TitleW, L.TitleH), function() end)
+		b.Name = "Locked_" .. t.Id
+		b.LayoutOrder = order
+		kit.SetEnabled(b, false)
 	end
 end
 
@@ -808,8 +995,7 @@ local function drawWeapons(frame, rows, ctx)
 			if r.Equipped then
 				line = tx(TXT, "PowerNow", Util.FormatInt(r.PowerNow))
 			else
-				line = tx(TXT, "PowerChange", Util.FormatInt(r.PowerNow), Util.FormatInt(r.PowerWith))
-				color = r.PowerWith > r.PowerNow and "Good" or (r.PowerWith < r.PowerNow and "Sub" or nil)
+				line, color = CharacterUI.DiffLine(r.PowerNow, r.PowerWith)
 			end
 			label(info, line, L.Size.Small, colorOf(color), { Name = "Power", Size = UDim2.new(1, 0, 0, L.Size.Small + 3),
 				TextWrapped = false, LayoutOrder = 3 })
@@ -829,7 +1015,54 @@ local function drawStats(frame, rows)
 	clear(frame)
 	listLayout(frame, 4, false)
 	local order = 0
+	local kit = ui()
+	local group, groupKind = nil, nil
+	-- consecutive cards / chips share one grid (ref_rpg_ui #5: number cards and short chips instead of text rows)
+	local function grid(kind)
+		if group and groupKind == kind then return group end
+		order += 1
+		group = Instance.new("Frame")
+		group.Name = kind == "Card" and ("Cards" .. order) or ("Chips" .. order)
+		group.BackgroundTransparency = 1
+		group.Size = UDim2.new(1, -8, 0, 0)
+		group.AutomaticSize = Enum.AutomaticSize.Y
+		group.LayoutOrder = order
+		group.Parent = frame
+		local g = Instance.new("UIGridLayout")
+		g.CellSize = kind == "Card" and UDim2.fromOffset(L.CardW, L.CardH) or UDim2.fromOffset(L.TraitW, L.TraitH)
+		g.CellPadding = UDim2.fromOffset(6, 6)
+		g.SortOrder = Enum.SortOrder.LayoutOrder
+		g.Parent = group
+		groupKind = kind
+		return group
+	end
 	for _, r in rows do
+		if r.Kind == "Card" then
+			local g = grid("Card")
+			local c = kit.ArtFrame("Chip", { Name = "Card_" .. r.Id, LayoutOrder = #g:GetChildren() },
+				{ BackgroundColor3 = Color3.fromRGB(40, 46, 72) })
+			c.Parent = g
+			if r.Icon then
+				local icon = kit.ArtImage(r.Icon, { Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 6, 0.5, 0),
+					Size = UDim2.fromOffset(L.CardIcon, L.CardIcon), ZIndex = 3 })
+				if icon then icon.Parent = c end
+			end
+			local x = r.Icon and (L.CardIcon + 10) or 8
+			label(c, r.Value, L.Size.Body, colorOf("Text"), { Name = "Value", Position = UDim2.fromOffset(x, 2),
+				Size = UDim2.new(1, -(x + 4), 0.55, 0), TextWrapped = false, ZIndex = 3, Style = "Number" })
+			label(c, r.Label, L.Size.Small, colorOf("Sub"), { Name = "Label", Position = UDim2.new(0, x, 0.55, -2),
+				Size = UDim2.new(1, -(x + 4), 0.45, 0), TextWrapped = false, ZIndex = 3 })
+			continue
+		elseif r.Kind == "Chip" then
+			local g = grid("Chip")
+			local c = kit.ArtFrame("Chip", { Name = "Chip_" .. r.Id, LayoutOrder = #g:GetChildren() },
+				{ BackgroundColor3 = Color3.fromRGB(40, 46, 72) })
+			c.Parent = g
+			label(c, r.Text, L.Size.Small, colorOf("Text"), { Name = "Text", Size = UDim2.fromScale(1, 1),
+				TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, ZIndex = 3 })
+			continue
+		end
+		group, groupKind = nil, nil
 		order += 1
 		if r.Kind == "Head" then
 			label(frame, r.Text, L.Size.Head, colorOf("Gold"), { Name = "Head_" .. r.Id, Size = UDim2.new(1, -8, 0, L.Size.Head + 14),
@@ -871,10 +1104,20 @@ local function refresh(force)
 	checkPending()
 	local ctx = context()
 	local sigs = VIEW.Sigs
-	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction, tostring(attr("Nickname", "")) }, "|")
+	local sig = table.concat({ ctx.CombatPower, ctx.Level, ctx.Class, ctx.Faction, tostring(attr("Nickname", "")),
+		tostring(ctx.Attack), tostring(ctx.Health), tostring(S.Why), tostring(ctx.Honor), tostring(ctx.Infamy), tostring(ctx.Sel),
+		tostring(ctx.Owned) }, "|")
 	if sigs.Left ~= sig then
 		sigs.Left = sig
 		drawLeft(VIEW.Left, ctx)
+	end
+	-- 최종 검수 10/13 (ref_rpg_ui #3): a new look copies the 3D body again (the first draw is Mount's own)
+	sig = table.concat({ tostring(attr("WeaponTier")), tostring(ctx.Faction), tostring(ctx.Class), tostring(attr("SizeMult")) }, "|")
+	if sigs.Body ~= sig then
+		local first = sigs.Body == nil
+		sigs.Body = sig
+		local hp = preview()
+		if hp and VIEW.Body and not first and type(hp.Refresh) == "function" then pcall(hp.Refresh) end
 	end
 	local weapons = CharacterUI.Weapons(ctx)
 	if not (gearModule() or S.GearBuilt) then -- the fallback cells (GearSlots draws its own)
@@ -972,8 +1215,15 @@ end
 function CharacterUI.Relayout()
 	local frame, titles = VIEW.EquipFrame, VIEW.Titles
 	if not (frame and titles) then return end
-	local w = frameSize(frame)
+	local w, h = frameSize(frame)
 	titles.Position = UDim2.fromOffset(w + L.TitleGap, 0)
+	local body = VIEW.Body
+	if body then
+		pcall(function()
+			body.Position = UDim2.fromOffset(0, h + L.BodyGap)
+			body.Size = UDim2.fromOffset(w, L.BodyH)
+		end)
+	end
 end
 
 -- GearSlots (게임성 개발 4): Build once with the frame, Refresh on every open; the module may be missing
@@ -1061,6 +1311,12 @@ local function build(parent, kit, arg)
 	stats.Visible = false
 	VIEW.GearPage, VIEW.Left, VIEW.SlotsView, VIEW.WeaponsView, VIEW.EquipFrame, VIEW.Titles, VIEW.StatsPage =
 		gear, left, slotsView, weaponsView, equip, titles, stats
+	-- 최종 검수 10/13 (ref_rpg_ui #3): my 3D body (weapon, halo / horns) under the gear cells; drag it to turn it
+	local hp = preview()
+	if hp then
+		local ok, body = pcall(hp.Mount, slotsView, UDim2.fromOffset(L.FrameW, L.BodyH))
+		if ok then VIEW.Body = body else Util.Warn(TAG, "HeroPreview.Mount failed: " .. tostring(body)) end
+	end
 	hookGear(equip, false) -- Build (the first time) before the cells are drawn
 	CharacterUI.Relayout() -- the frame may be another size than the default (GearSlots resized it)
 	-- data changes redraw in place (Rebuild = false: no full window rebuild)
@@ -1085,9 +1341,40 @@ local function build(parent, kit, arg)
 end
 
 local function cleanup()
+	local hp = preview()
+	if hp and type(hp.Unmount) == "function" then pcall(hp.Unmount) end
 	local f = S.Equip
 	if f then pcall(function() f.Parent = nil end) end -- Panels clears the window's children next: keep the gear frame
 	VIEW = {}
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #7): is there an owned weapon I can wear now that raises my power? (HUD's Hero / Bag tile
+-- dot, no words). Pure on rows (CharacterUI.Weapons); BetterWeapon() reads mine from the attributes
+-- 최종 검수 10/13 (API review): state = { Dead, NoClass, Faction } - the server's refusals EquipState dims (dead, no class
+-- yet, a side weapon without a side) light no dot either
+function CharacterUI.HasBetter(rows, state)
+	state = type(state) == "table" and state or {}
+	if state.Dead or state.NoClass then return false end
+	for _, r in type(rows) == "table" and rows or {} do
+		if not r.Equipped and r.Usable and not (r.NeedSide and state.Faction == "None")
+			and type(r.PowerNow) == "number" and type(r.PowerWith) == "number" and r.PowerWith > r.PowerNow then
+			return true
+		end
+	end
+	return false
+end
+
+function CharacterUI.BetterWeapon()
+	local okP, now = pcall(Config.CombatPowerOf, LocalPlayer)
+	if not okP then return false end
+	local ctx = { Mask = num(attr("WeaponOwnedMask"), 0), Equipped = math.floor(num(attr("WeaponTier"), 0)),
+		Level = math.max(1, math.floor(num(attr("Level"), 1))), Class = attr("Class"), Faction = attr("Faction"),
+		Enhance = inventoryEnhance(), EquippedPlus = num(attr("WeaponEnhance"), 0), PowerNow = now,
+		Power = function(t, p) return Config.CombatPowerOf(LocalPlayer, t, p) end }
+	local ok, rows = pcall(CharacterUI.Weapons, ctx)
+	local okA, alive = pcall(Util.IsAlive, LocalPlayer)
+	return ok and CharacterUI.HasBetter(rows, { Dead = okA and alive == false, NoClass = attr("ClassChosen") ~= true,
+		Faction = attr("Faction") }) or false
 end
 
 function CharacterUI.IsReady()

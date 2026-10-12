@@ -1074,6 +1074,8 @@ Config.Power = {
 		-- PvPNote / PvPNoteEn: finished lines, filled from Config.PvP.PowerRatioMax / Min right after Config.PvP below
 		Up = "Power +%s", UpEn = "Power +%s",
 		Change = "Power %s → %s", ChangeEn = "Power %s → %s",
+		-- 최종 검수 10/13 (ref_rpg_ui #2): a choice's power change as one short coloured line (Config.PowerDiff)
+		Diff = { Up = "Power +%s", Down = "Power -%s", Same = "Power =" },
 	},
 }
 
@@ -1105,6 +1107,36 @@ function Config.CombatPowerOf(player, tierOverride, enhOverride)
 	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
 	local gearAtk, gearHp = Config.GearMultsOf(player) -- ⑥ gear (게임성 개발 3): (1, 1) while Config.Features.Gear is off
 	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #1, 전투력 풀어 보기): the two numbers the power is made of (Config.PowerOf: the square root
+-- of attack x health) - Attack = the weapon's damage at this level and +N x the attack points / ring, Health = the level's
+-- base health x the health points / armor. Pure; the player's own in Config.PowerPartsOf
+function Config.PowerParts(level, tier, enhance, alloc, gear)
+	local atkMult, hpMult = 1, 1
+	if type(alloc) == "table" then atkMult, hpMult = Config.StatMults(alloc.A, alloc.H) end
+	if type(gear) == "table" then atkMult, hpMult = atkMult * Config.GearMult(gear.A), hpMult * Config.GearMult(gear.H) end
+	return math.floor(Config.WeaponDamage(tier, level, enhance) * atkMult + 0.5), math.floor(Config.BaseHealth(level) * hpMult + 0.5)
+end
+function Config.PowerPartsOf(player)
+	local level = tonumber(player:GetAttribute("Level")) or 1
+	if level ~= level then level = 1 end
+	local tier = tonumber(player:GetAttribute("WeaponTier")) or 0
+	if tier ~= tier then tier = 0 end
+	local gearAtk, gearHp = Config.GearMultsOf(player)
+	return Config.PowerParts(math.max(1, level), math.clamp(math.floor(tier), 0, Config.MaxWeaponTier),
+		tonumber(player:GetAttribute("WeaponEnhance")) or 0, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })
+end
+
+-- 최종 검수 10/13 (ref_rpg_ui #2): the change from power `now` to `with` -> its size (>= 0) and a tone: "Good" (up),
+-- "Bad" (down), "Same" (equal); nil when either is missing. Screens format Config.Power.Text.Diff with it
+function Config.PowerDiff(now, with)
+	now, with = tonumber(now), tonumber(with)
+	if not (now and with) or now ~= now or with ~= with then return nil, nil end
+	local d = math.floor(with + 0.5) - math.floor(now + 0.5)
+	if d > 0 then return d, "Good" end
+	if d < 0 then return -d, "Bad" end
+	return 0, "Same"
 end
 
 -- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N; A23-69 with the stat

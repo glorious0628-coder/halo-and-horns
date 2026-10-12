@@ -3019,6 +3019,12 @@ local function buildButtons(root)
 			if ok then ui.tiles[i].Lock = lock end
 		end
 		if def.Id == "Bag" then ui.bagGlow = makeGlow(btn, UDim.new(0, 10)) end -- B14 scroll hint
+		-- 최종 검수 10/13 (ref_rpg_ui #7): a small dot when I own a stronger weapon I can wear (CharacterUI.BetterWeapon)
+		if def.Id == "Character" or def.Id == "Bag" then
+			ui.betterDots = ui.betterDots or {}
+			ui.betterDots[def.Id] = UIKit.ArtImage("BadgeDot", { Name = "BetterDot", AnchorPoint = Vector2.new(1, 0),
+				Position = UDim2.new(1, -2, 0, 2), Size = UDim2.fromOffset(14, 14), ZIndex = 8, Visible = false, Parent = btn })
+		end
 	end
 	L.BuildMenu(names)
 	-- A23-1 auto combat ON/OFF (round, Firefly BtnRound): hidden until the crown-shard quest unlocks it (no "unlocks at
@@ -3591,6 +3597,21 @@ local function refreshSkill()
 	end
 end
 
+-- 최종 검수 10/13 (ref_rpg_ui #7): the Hero / Bag tiles' dot = an owned weapon I can wear that raises my power (never on
+-- a locked tile)
+function L.RefreshBetterDots()
+	local cu = C and C.CharacterUI
+	local better = false
+	if type(cu) == "table" and type(cu.BetterWeapon) == "function" then
+		local ok, b = pcall(cu.BetterWeapon)
+		better = ok and b == true
+	end
+	for id, dot in ui.betterDots or {} do
+		local on = better and not L.TileLocked(id)
+		if dot.Visible ~= on then dot.Visible = on end
+	end
+end
+
 -- B14: Panels.ItemsHint = I hold a scroll and have not opened 메뉴 → 아이템 this session
 function L.ItemsHint()
 	local panels = C and C.Panels
@@ -3944,6 +3965,7 @@ local function refreshMenuGlow()
 	L.SetGlow("travel", ui.travelGlow, travel)
 	L.SetGlow("settings", ui.settingsGlow, settings)
 	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
+	L.RefreshBetterDots()
 end
 
 ----------------------------------------------------------------- refresh: travel
