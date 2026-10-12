@@ -1497,6 +1497,24 @@ Config.Goose = {
 	},
 }
 
+-- A23-141 Goose Square (user 2026-10-12; contract docs/design/goose_square_contract_2026-10-12.md): golden-egg play happens
+-- in a separate square of the same server, off the map; only players who press Join go there. Remote = the c->s
+-- RemoteEvent (one arg "Join" | "Leave"); Attr = my player attribute the server sets (true = I am in the square);
+-- Block = my player attribute "" | "Dead" | "Monster" | "Grudge" | "PvP" (non-empty = the Join button is dimmed, no
+-- text, A23-130); Fade = seconds of the screen going dark / clear again when Attr changes (EggFx); Text = the Join /
+-- Leave words (EventHUD) and the server's refusal Notify lines (GooseEggs, 게임성 개발 2), easy short English.
+if type(Config.Goose) == "table" then
+	Config.Goose.Square = {
+		Remote = "GooseSquare",
+		Attr = "InGooseSquare",
+		Block = "GooseJoinBlock",
+		Fade = { In = 0.25, Out = 0.35 },
+		Text = { Join = "Join", Leave = "Leave",
+			Dead = "You can't join right now.", Monster = "You can't join right now.", Grudge = "You can't join right now.",
+			PvP = "You can't join during a fight.", Closed = "The goose is gone." },
+	}
+end
+
 -- gold, xp of one golden-goose reward. share (optional, A23-14 co-op success) replaces the won/lost multiplier.
 function Config.GooseReward(level, factionId, won, rare, share)
 	local g, x = Config.HuntValue(level, Config.Goose.RewardMinutes)

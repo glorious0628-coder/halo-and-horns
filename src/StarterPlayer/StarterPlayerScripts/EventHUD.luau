@@ -1,7 +1,8 @@
 -- EventHUD.luau : event UI for Halo & Horns (G11).
 -- Golden goose countdown chip / tug-of-war bar, kaiju chip + siren banner, screen-edge arrows (grudge sacks, kaiju,
 -- revenge), the personal status line (sack / kaiju / revenge) and the Regular's Luck corner.
--- Reads only player attributes and GameState attributes; sends nothing to the server.
+-- Reads only player attributes and GameState attributes; sends nothing to the server (the Join / Leave press goes through
+-- EggFx.SquarePress, A23-141: the one remote there, GooseSquare).
 -- Look (A14-3, mockup art/out/UI_HUD_Final.png): parchment pills / panels and the navy BarTrack from UIKit's GPT
 -- art parts; every part falls back to the code-drawn frame when its id is missing (IMG-R4).
 local Players = game:GetService("Players")
@@ -157,6 +158,9 @@ local arrowGeo = { Inset = TOP_FALLBACK - TOP_PAD, TopLeft = nil }
 -- Halloween Pumpkin King pill (functions below KING.update); Below = it sits in the row under HUD's status chips
 -- (narrow screens), so layout() moves the touch personal line one row lower
 local KING = { Below = false }
+-- A23-141 Goose Square: the Join / Leave button on the goose chip (EggFx.SquareButton / SquarePress; functions below
+-- KING). Out = the chip shows the goose time + Join this tick (outside the square while the event runs)
+local SQ = { Out = false }
 -- HUD v2 (A23-26): while C.HUD.Layout.Rects.notify exists, the strip contents, the personal line and the siren stack in
 -- that notify column (functions in the "HUD v2 notify column" section). Active = the v2 placement is applied; Key =
 -- geometry cache key; Col = column numbers; Want = what the per-tick updates asked to show; Saved = build-time props
@@ -616,6 +620,7 @@ local function build()
 		Visible = false,
 		ZIndex = 3,
 	}, 13, ui.Strip)
+	SQ.build()
 
 	-- kaiju chip (right of the strip): red-tinted chip with red ink
 	ui.KaijuChip = Art.frame("Chip", {
@@ -953,9 +958,135 @@ layout = function()
 	applyMinText(minText)
 end
 
+----------------------------------------------------------------- Goose Square button (A23-141)
+local function eggFxOf()
+	local e = C and C.EggFx
+	return type(e) == "table" and e or nil
+end
+
+-- the Join / Leave words from Config.Goose.Square.Text (UIKit.Tx, the central-text path)
+function SQ.word(key)
+	local sq = type(Config.Goose) == "table" and type(Config.Goose.Square) == "table" and Config.Goose.Square or {}
+	local t = type(sq.Text) == "table" and sq.Text or {}
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, s = pcall(kit.Tx, t, key)
+		if ok and type(s) == "string" and s ~= "" then return s end
+	end
+	return type(t[key]) == "string" and t[key] or ""
+end
+
+function SQ.press()
+	local e = eggFxOf()
+	if not e or type(e.SquarePress) ~= "function" or not SQ.Word then return end
+	local ok, err = pcall(e.SquarePress, SQ.Word)
+	if not ok then warnThrottled("SquarePress failed: " .. tostring(err)) end
+end
+
+-- an approved Chip art button (UIKit.ArtButton: its code fallback when the part has no id), else a plain TextButton; sits
+-- right of the bar / the chip (a child of whichever shows: SQ.update moves it), hidden until SQ.update asks for it
+function SQ.build()
+	local props = {
+		Name = "GooseSquareButton",
+		AnchorPoint = Vector2.new(0, 0.5),
+		Position = UDim2.new(1, 6, 0.5, 0),
+		Size = UDim2.fromOffset(64, 26),
+		Text = "",
+		TextSize = 15,
+		TextStyle = "ink",
+		Visible = false,
+		ZIndex = 8,
+	}
+	local kit = C and C.UIKit
+	local btn, label = nil, nil
+	if type(kit) == "table" and type(kit.ArtButton) == "function" then
+		local ok, b, l = pcall(kit.ArtButton, "Chip", props, SQ.press, { CornerRadius = UDim.new(0.5, 0) })
+		if ok and typeof(b) == "Instance" then btn, label = b, l end
+	end
+	if not btn then
+		btn = make("TextButton", {
+			Name = props.Name,
+			AnchorPoint = props.AnchorPoint,
+			Position = props.Position,
+			Size = props.Size,
+			BackgroundColor3 = bgColor,
+			BackgroundTransparency = bgTransparency,
+			AutoButtonColor = false,
+			Font = fontFace,
+			Text = "",
+			TextColor3 = GOLD,
+			TextScaled = true,
+			Visible = false,
+			ZIndex = props.ZIndex,
+		})
+		make("UICorner", { CornerRadius = UDim.new(0.5, 0) }, btn)
+		local c = make("UITextSizeConstraint", { MinTextSize = MIN_TEXT_SIZE, MaxTextSize = 15 }, btn)
+		table.insert(textConstraints, { c, 15 })
+		btn.Activated:Connect(function()
+			if btn:GetAttribute("Disabled") == true then return end
+			SQ.press()
+		end)
+	elseif label then
+		local c = label:FindFirstChildOfClass("UITextSizeConstraint")
+		if c then table.insert(textConstraints, { c, 15 }) end
+	end
+	SQ.Btn, SQ.Label = btn, label or btn
+	SQ.Base = btn:IsA("GuiButton") and btn.BackgroundTransparency or 0 -- the code button's own look (dimmed = fainter)
+	btn.Parent = ui.GooseChip
+end
+
+-- every tick: the button from EggFx.SquareButton (nil = hidden). Inside = Leave on the bar, else Join on the chip; dimmed =
+-- Disabled (no press, no click sound) + faded art / words, never any text
+function SQ.update()
+	local btn, e = SQ.Btn, eggFxOf()
+	if not btn then return end
+	local want = nil
+	if e and type(e.SquareButton) == "function" and type(e.SquareCtx) == "function" then
+		local ok, b = pcall(function() return e.SquareButton(e.SquareCtx()) end)
+		if ok and type(b) == "table" then want = b end
+	end
+	SQ.Word = want and want.Word or nil
+	if not want then
+		setVisible(btn, false)
+		return
+	end
+	local home = want.Word == "Leave" and ui.Tug or ui.GooseChip
+	if btn.Parent ~= home then btn.Parent = home end
+	setText(SQ.Label, SQ.word(want.Word))
+	local dim = want.Dim == true
+	if btn:GetAttribute("Disabled") ~= dim then btn:SetAttribute("Disabled", dim) end
+	if btn:IsA("ImageButton") then
+		local a = dim and 0.55 or 0
+		if btn.ImageTransparency ~= a then btn.ImageTransparency = a end
+	else
+		local a = dim and math.max(0.6, SQ.Base) or SQ.Base
+		if btn.BackgroundTransparency ~= a then btn.BackgroundTransparency = a end
+	end
+	local t = dim and 0.5 or 0
+	if SQ.Label:IsA("TextLabel") or SQ.Label:IsA("TextButton") then
+		if SQ.Label.TextTransparency ~= t then SQ.Label.TextTransparency = t end
+	end
+	setVisible(btn, true)
+end
+
 ----------------------------------------------------------------- per-tick updates
 local function updateGoose(now)
+	SQ.Out = false
 	if gsAttr("GooseActive", false) == true then
+		-- A23-141: Eggs mode outside the Goose Square - the chip shows only the goose time (+ the Join button, SQ.update),
+		-- no egg bar; inside the square the bar below shows as before
+		local eggFx = C and C.EggFx
+		local eggMode = type(eggFx) == "table" and type(eggFx.On) == "function" and eggFx.On()
+		if eggMode and type(eggFx.Here) == "function" and not eggFx.Here() then
+			SQ.Out = true
+			setVisible(ui.Tug, false)
+			setVisible(ui.TugSub, false)
+			if ui.TugCrown then setVisible(ui.TugCrown, false) end
+			local endAt = eggFx.TickEnd(gsAttr("GooseEndsAt", 0), gsAttr("GooseOvertimeUntil", 0), now)
+			setVisible(ui.GooseChip, true)
+			setText(ui.GooseChipText, string.format(TXT.GooseNext, Util.FormatTime(math.max(0, num(endAt) - now))))
+			return
+		end
 		setVisible(ui.GooseChip, false)
 		setVisible(ui.Tug, true)
 		-- A23-130: the bar alone (Config.Nudges.GooseSub = false hides the "My points …" line under it)
@@ -968,12 +1099,15 @@ local function updateGoose(now)
 		-- A23-131 황금 알 줍기 (Config.Goose.Mode "Eggs", EggFx.Bar; contract golden_egg_contract §5): the bar alone - the
 		-- Knights' points left (gold fill), the Horn Legion's right, the time in the middle; co-op = "50 / 160" in that
 		-- side's colour; the crown egg's overtime = the crown icon and a gold clock. No line under it (A23-130).
-		local eggFx = C and C.EggFx
-		if type(eggFx) == "table" and type(eggFx.On) == "function" and eggFx.On() then
+		if eggMode then
 			setVisible(ui.TugSub, false)
 			local b = eggFx.Bar({ Rescue = rescue, Poach = poach, EndsAt = gsAttr("GooseEndsAt", 0),
 				OvertimeUntil = gsAttr("GooseOvertimeUntil", 0), Mode = gsAttr("GooseMode", "Versus"),
 				CoopSide = gsAttr("GooseCoopSide", "None"), CoopTarget = gsAttr("GooseCoopTarget", 0) }, now)
+			if not b then -- outside the Goose Square (EggFx.Bar is nil there): no egg bar
+				setVisible(ui.Tug, false)
+				return
+			end
 			local col = (b.Coop and b.Side == "Horns") and AC.WarHorns or AC.WarHalo
 			if ui.TugLeft.BackgroundColor3 ~= col then ui.TugLeft.BackgroundColor3 = col end
 			setVisible(ui.TugRight, not b.Coop)
@@ -1596,7 +1730,7 @@ function V2.tick()
 	local now = Util.Now()
 	local kingKey, kingActive, kingT = KING.pick(now) -- A23-45: the pumpkin king or the ghost king, whichever is sooner
 	V2.KingIn = kingKey and (kingActive and 0 or math.max(0, kingT)) or 0
-	V2.GooseIn = math.max(0, num(gsAttr("GooseNextAt", 0)) - now)
+	V2.GooseIn = SQ.Out and 0 or math.max(0, num(gsAttr("GooseNextAt", 0)) - now) -- the open event's chip (Join) goes first
 	V2.layout() -- cheap key check: HUD's numbers / the UIScale changed (or HUD v2 just appeared)
 	V2.stack()
 end
@@ -1653,6 +1787,7 @@ local function update()
 	setVisible(ui.Luck, not IS_TOUCH and V2.rects() == nil)
 	local now = Util.Now()
 	updateGoose(now)
+	SQ.update()
 	updateKaiju(now)
 	KING.update(now) -- after the kaiju pill: the king pill sits after it while both show
 	updatePersonal(now)

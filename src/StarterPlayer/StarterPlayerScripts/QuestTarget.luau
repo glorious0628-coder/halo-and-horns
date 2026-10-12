@@ -386,10 +386,17 @@ end
 -- the goose perch (MapBuilder GoosePerch), else Config.Goose.Position at hover height. A23-131 황금 알 줍기
 -- (Config.Goose.Mode "Eggs", contract golden_egg_contract): carrying eggs -> my home (the nest / the cart,
 -- Config.Goose.Egg.Home); the event on with empty hands -> the goose itself; between events -> my home, else the ring
--- centre (Config.Goose.Egg.Center, the fountain)
+-- centre (Config.Goose.Egg.Center, the fountain). A23-141: all of this only while I am in the Goose Square, else nil
 local function gooseTarget()
 	local goose = type(Config.Goose) == "table" and Config.Goose or {}
 	if goose.Mode == "Eggs" then
+		-- A23-141 Goose Square: the goose, the nest and the cart are only in the square (EggFx.Here); the real plaza has
+		-- none, so outside it there is no target
+		local eggFx = QuestTarget.Reg and QuestTarget.Reg.EggFx
+		local sq = type(goose.Square) == "table" and goose.Square or {}
+		local inSquare = type(eggFx) == "table" and type(eggFx.Here) == "function" and eggFx.Here()
+			or (eggFx == nil and LocalPlayer:GetAttribute(type(sq.Attr) == "string" and sq.Attr or "InGooseSquare") == true)
+		if not inSquare then return nil end
 		local egg = type(goose.Egg) == "table" and goose.Egg or {}
 		local gs = ReplicatedStorage:FindFirstChild("GameState")
 		if gs and gs:GetAttribute("GooseActive") == true and num(LocalPlayer:GetAttribute("EggCarry"), 0) <= 0 then
@@ -398,7 +405,9 @@ local function gooseTarget()
 			local part = g and (g:IsA("Model") and g.PrimaryPart or g:FindFirstChildWhichIsA("BasePart", true))
 			if part then return part end
 		end
-		local home = type(egg.Home) == "table" and egg.Home[myFaction()] or nil
+		-- the square's own Nest / Cart (workspace.GooseSquare) before Config.Goose.Egg.Home
+		local home = type(eggFx) == "table" and type(eggFx.HomeFor) == "function" and eggFx.HomeFor(myFaction()) or nil
+		if typeof(home) ~= "Vector3" then home = type(egg.Home) == "table" and egg.Home[myFaction()] or nil end
 		if typeof(home) == "Vector3" then return home + K.Lift end
 		return (typeof(egg.Center) == "Vector3" and egg.Center or Vector3.zero) + K.Lift
 	end
@@ -626,7 +635,9 @@ function QuestTarget.ForEntry(entry, myZone, faction, pos)
 end
 
 ----------------------------------------------------------------- lifecycle (nothing to set up)
-function QuestTarget.Init(_registry) end
+function QuestTarget.Init(registry) -- the registry only gives gooseTarget the EggFx module (A23-141)
+	QuestTarget.Reg = registry
+end
 
 function QuestTarget.Start() end
 
