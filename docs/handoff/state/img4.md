@@ -1,5 +1,10 @@
 # 이미지 생성 4 — 상태 (2026-10-12 저녁)
 
+## ★ 10/12 A23-149 골격 먼저 — BakerGranny 시험 (ddb6ca1, 최종 검수 답 기다림)
+- `tools/npc_block_body.py` (Blender): R15 15부품 블록 몸 + 팔레트 단색 입히기 + Tripo 원본에서 모자·머리·리본 잘라 쓰기 + 정확한 후광, 얼굴 비움. 출력 `art/models/npc_block/BakerGranny/` (glb, palette, rig.json = Roblox 좌표 관절 15개). 시트 `art/review/img4/npc_block_BakerGranny_1012.jpg`.
+- 남은 흠: 리본 끈 옆으로 삐짐, 모자 아래 금띠 조각. 다음 = OK 받으면 WorldKit Import(화면 슬롯) → Humanoid R15 + Motor6D 스크립트 → 기본 걷기 1회.
+- 바깥선(A23-148): WorldKit 껍데기 6개 ServerStorage.Parked_Outlines로 치움(삭제 X).
+
 ## ★ 10/12 저녁 전환 — SPEC A23-147 (사용자: Blender판이 원본을 망침 → 전부 Tripo 원본에서 새로)
 - **Blender 손보기는 이제 'Blender 손보기' 세션(local_fa73201d…, role 15_blender.md) 담당.** 이미지 생성 4 = Tripo 생성 + 통과한 GLB를 Roblox(WorldKit)에 넣기(Import·재질·바깥선 껍데기·낮밤 사진). 보고 = 최종 검수.
 - 규칙(A23-147): 고장 없는 모델은 크기·방향·쥐는 점·꼭 필요한 대칭만, **메시·색 맵 그대로**(de-light·다시 굽기·면 줄이기·2D 얼굴 데칼 없음). 얼굴 = Tripo 디자인 그대로 번진 곳만 깨끗하게(Blender 세션).
