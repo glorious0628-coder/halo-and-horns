@@ -76,3 +76,4 @@
 - (09:45) 병합 4020bfcb = dev3-tamer b3972a6b + dev4-tamer bcd6ef5a(꺼짐). 반박 검토는 이번까지 앱 워크플로, **다음부터 api_agent**(사용자 확인 10/12, 메모리 big-work-via-api-sdk). WorldKit screen_capture 멈춤 → 이미지 생성 1이 백업 → WorldKit만 다시 시작 중. 마법사 대기 = 손 엉덩이 높이(a) 결정(개발 1).
 - (10:00) 10/17 비공개 시험 전 사용자 일 목록에 추가: 게임 아이콘 넣기(Creator Hub 또는 Studio Game Settings → Icon, 파일 art/out/s2/gameicon/GameIcon_C_512.png). 계정 나이 확인·2단계, 등급 설문(답안 docs/design/maturity_questionnaire_draft_2026-10-11.md)과 함께.
 - (10:30) 사용자: 계정 나이 확인·2단계 인증 이미 끝("1번은 이미 했오"). 남은 10/17 전 사용자 일 = 등급 설문 제출, 게임 아이콘 넣기.
+- (11:10) 병합 5db4018e = dev4-tonics a777e6bd(꺼짐). **첫 API 반박 검토**: build/api_agent_prompts/final_review_tonics_2026-10-12.md → result.md, opus $1.38, VERDICT MERGE(낮은 것 3 → 개발 4). 앞으로 이 방식. 병합 c747534f(Glowcap ID), 13951906(icons2), 05f56d4a(집 생성기 api/house-gen-porch).
