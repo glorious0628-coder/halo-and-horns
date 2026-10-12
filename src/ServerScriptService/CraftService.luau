@@ -122,7 +122,8 @@ function CraftService.RecipeOn(id)
 		local L = S and S.LootService
 		if not (L and type(L.AddSpare) == "function" and type(L.SpareRoom) == "function" and Config.Weapons[r.Tier]) then return nil end
 	elseif r.Kind == "Gear" then
-		if type(r.Slot) ~= "string" or type(r.Tier) ~= "number" then return nil end
+		-- ⑥ gear recipes wait for Config.Features.Gear (nothing to wear them with before it: GearService)
+		if not Config.FeatureOn("Gear") or type(r.Slot) ~= "string" or type(r.Tier) ~= "number" then return nil end
 	elseif r.Kind == "Item" then
 		if not Config.Loot.Items[r.Item] then return nil end
 	elseif r.Kind == "Pet" then

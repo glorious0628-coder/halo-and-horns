@@ -1036,9 +1036,11 @@ end
 -- "base power" of a player (no Size Justice, no kaiju); rebirthMult = 1 + RebirthBonus.
 -- enhance = scroll +N of the equipped weapon (the WeaponEnhance attribute); nil counts as +0 (Config.EnhanceMult).
 -- alloc = { A, H } stat points (A23-69, nil = none): sqrt(attack x atkMult x health x hpMult) like the plain formula
-function Config.PowerOf(level, weaponTier, rebirthMult, enhance, alloc)
+-- gear = { A, H } the gear multipliers (⑥, nil = 1, 1; Config.GearMult keeps a bad one at 1): they multiply the same two factors
+function Config.PowerOf(level, weaponTier, rebirthMult, enhance, alloc, gear)
 	local am, hm = 1, 1
 	if type(alloc) == "table" then am, hm = Config.StatMults(alloc.A, alloc.H) end
+	if type(gear) == "table" then am, hm = am * Config.GearMult(gear.A), hm * Config.GearMult(gear.H) end -- ⑥ gear (게임성 개발 3)
 	return math.sqrt(Config.WeaponDamage(weaponTier, level, enhance) * am * Config.BaseHealth(level) * hm) * (rebirthMult or 1)
 end
 
@@ -1062,8 +1064,9 @@ Config.Power = {
 -- weapon (and no pet) shows 0 and every level still adds a little. With a weapon the number is the BB4 value as before,
 -- so armed players keep their numbers and every armed comparison (bully rule, boldness, Tab list) its balance.
 -- A23-69: alloc = { A, H } stat points (nil = none; Config.StatAllocOf reads a player's)
-function Config.CombatPower(level, tier, enhance, alloc)
-	local raw = Config.PowerOf(level, tier, 1, enhance, alloc)
+-- ⑥ gear = { A = atkMult, H = hpMult } (nil = 1, 1; Config.GearMultsOf reads a player's)
+function Config.CombatPower(level, tier, enhance, alloc, gear)
+	local raw = Config.PowerOf(level, tier, 1, enhance, alloc, gear)
 	if not (type(tier) == "number" and Config.Weapons[tier]) then raw -= Config.PowerOf(1, 0, 1, 0) end
 	return math.max(0, math.floor(raw * Config.Power.DisplayScale + 0.5))
 end
@@ -1083,20 +1086,26 @@ function Config.CombatPowerOf(player, tierOverride, enhOverride)
 	end
 	local enhance = enhOverride
 	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
-	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player))
+	local gearAtk, gearHp = Config.GearMultsOf(player) -- ⑥ gear (게임성 개발 3): (1, 1) while Config.Features.Gear is off
+	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })
 end
 
 -- the highest number anyone can reach (max level, the highest-damage weapon at the max scroll +N; A23-69 with the stat
--- points on: the even split of every point, the strongest build); cached, one value with and one without stats
+-- points on: the even split of every point, the strongest build; ⑥ gear on: the best gear, T3 +2 armor and ring);
+-- cached, one value per switch combination
 function Config.MaxCombatPower()
 	local stats = Config.FeatureOn("StatPoints")
+	local gearOn = Config.FeatureOn("Gear")
 	local key = stats and "MaxCacheStats" or "MaxCache"
+	if gearOn then key ..= "Gear" end -- ⑥ gear (게임성 개발 3): its own cache value
 	if not Config.Power[key] then
 		local points = Config.StatPoints(Config.Levels.MaxLevel)
 		local even = stats and { A = math.floor(points / 2), H = points - math.floor(points / 2) } or nil
+		local top = gearOn and { A = 1 + Config.GearBonus("Ring", Config.Gear.MaxTier, Config.Gear.MaxPlus),
+			H = 1 + Config.GearBonus("Armor", Config.Gear.MaxTier, Config.Gear.MaxPlus) } or nil
 		local best = 0
 		for t = 1, Config.MaxWeaponTier do
-			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even))
+			best = math.max(best, Config.CombatPower(Config.Levels.MaxLevel, t, Config.Loot.MaxEnhance, even, top))
 		end
 		Config.Power[key] = best
 	end
@@ -7351,11 +7360,15 @@ function Config.PetSpeedBonus(species, lv, roll)
 end
 
 -- studs per second for a class with a pet (species, level; nil = none); kaiju = an Active kaiju (no pet bonus);
--- petRoll = a summoned pet's Roll.Spd (nil / 0 = none)
-function Config.WalkSpeed(classId, petSpecies, petLv, kaiju, petRoll)
+-- petRoll = a summoned pet's Roll.Spd (nil / 0 = none); petAcc = the following pet's PetAcc gear bonus (a fraction, ⑥ gear:
+-- added to the pet's bonus, never for a kaiju or without a pet; the Speed.Cap still holds)
+function Config.WalkSpeed(classId, petSpecies, petLv, kaiju, petRoll, petAcc)
 	local c = Config.Classes[classId] or Config.Classes.Warrior
 	local base = Config.Player.WalkSpeed
 	local pet = kaiju == true and 0 or Config.PetSpeedBonus(petSpecies, petLv, petRoll)
+	if kaiju ~= true and pet > 0 and type(petAcc) == "number" and petAcc == petAcc and petAcc > 0 and Config.FeatureOn("Gear") then
+		pet += math.min(petAcc, Config.Gear.PetAccMax) -- ⑥ gear (게임성 개발 3)
+	end
 	local raw = base * (c.WalkSpeedMult or 1) * (1 + pet)
 	return math.min(raw, base * Config.Speed.Cap)
 end
@@ -8322,6 +8335,22 @@ Config.Craft = {
 		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
 		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
 		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Herb = 2 }, XP = 10 },
+		-- ⑥ gear (docs/design/gear_slots_2026-10-12.md §4; 게임성 검수 OK 10/12; Config.Gear has the numbers). Kind Gear pays
+		-- into data.Gear.Own["<Slot>:T:P"] (T = Tier, P = the hammer's +N). Smith: armor + ring (Lv 8 / 16 / 24: iron, silver,
+		-- moon crystal + the monster materials of the same zones); the tamer: pet armor + pet accessory (Lv 5 / 12 / 20:
+		-- jelly, petals, herbs -> goblin tooth -> bone, knight crest). Gold / XP sit between the weapon rows.
+		G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 8, Gold = 450, Mats = { IronOre = 6, OakLog = 4, GoblinTooth = 10 }, XP = 100 },
+		G2 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 2, Lv = 16, Gold = 3500, Mats = { MoonCrystal = 8, IronOre = 12, KnightCrest = 10, Bone = 20 }, XP = 500 },
+		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 20, MoonCrystal = 15, KnightCrest = 40, Bone = 60 }, XP = 1400 },
+		R1 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 1, Lv = 8, Gold = 400, Mats = { CopperOre = 6, Glowcap = 4, GoblinTooth = 8 }, XP = 90 },
+		R2 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 2, Lv = 16, Gold = 3200, Mats = { SilverOre = 6, Glowcap = 8, BruteHorn = 10, Bone = 15 }, XP = 450 },
+		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 15, MoonCrystal = 12, Glowcap = 15, KnightCrest = 30 }, XP = 1300 },
+		PA1 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 1, Lv = 5, Gold = 150, Mats = { Jelly = 20, Herb = 4, SlimeCore = 4 }, XP = 50 },
+		PA2 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 2, Lv = 12, Gold = 900, Mats = { GoblinTooth = 20, Herb = 10, BruteHorn = 6, OakLog = 6 }, XP = 160 },
+		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 40, KnightCrest = 20, Herb = 20 }, XP = 700 },
+		PC1 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 1, Lv = 5, Gold = 120, Mats = { Petal = 10, Herb = 3, Jelly = 12 }, XP = 45 },
+		PC2 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 2, Lv = 12, Gold = 800, Mats = { GoblinTooth = 15, Petal = 15, Glowcap = 6 }, XP = 150 },
+		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 30, KnightCrest = 15, Glowcap = 12 }, XP = 650 },
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",
@@ -8442,6 +8471,96 @@ function Config.ResearchStage(pts)
 	return stage
 end
 
+----------------------------------------------------------------- gear slots (게임성 개발 3, 2026-10-12)
+-- GearService; contract docs/design/gear_slots_2026-10-12.md (A23-133; 게임성 검수 OK 10/12). A player wears Armor (max HP) and
+-- Ring (my hits and power), the following pet wears PetArmor (the pet's XP) and PetAcc (the walk bonus). An item is the
+-- save key "<Slot>:T:P" in data.Gear.Own (T 1..MaxTier, P 0..MaxPlus); a worn one lives in data.Gear.On.<Slot> or
+-- data.Gear.Pet[uid].<Slot> as "T:P", never in both places. A gear's bonus x = Base[tier] + Step x P; P is ONLY the hammer's
+-- +0..+2 (CraftService): the scrolls (Enhance / Transfer) never touch gear, Config.SanitizeGear drops any other P. Wear =
+-- the level that wears tier 1 / 2 / 3 (the pets: any, Lv1). Armor: max HP x (1 + x); Ring: my hit x (1 + x) and power; PetArmor:
+-- pet XP x (1 + x), floored; PetAcc: + x to the pet's walk bonus (at most PetAccMax = the best one, Speed.Cap stays). The
+-- top (T3 +2 both): HP x1.22, hit x1.14, power about +18%. OwnSum = the 60 things in Own (CraftService.ST.GearSum), at
+-- most Config.SaveV4.OwnKeyMax of one key. Never sold, never breaks. Switched by Config.Features.Gear (off; on with the
+-- artisan guild, 검수): while off, every multiplier is 1 and nothing can be worn.
+Config.Features.Gear = false
+Config.Gear = {
+	MaxTier = 3,
+	MaxPlus = 2,
+	OwnSum = 60,
+	PetAccMax = 0.04,
+	Slots = {
+		Armor = { Stat = "Hp", Base = { 0.06, 0.12, 0.18 }, Step = 0.02, Wear = { 10, 20, 30 } },
+		Ring = { Stat = "Atk", Base = { 0.04, 0.08, 0.12 }, Step = 0.01, Wear = { 10, 20, 30 } },
+	},
+	PetSlots = {
+		PetArmor = { Stat = "PetXP", Base = { 0.20, 0.40, 0.60 }, Step = 0.10, Wear = { 1, 1, 1 } },
+		PetAcc = { Stat = "PetSpeed", Base = { 0.01, 0.02, 0.03 }, Step = 0.005, Wear = { 1, 1, 1 } },
+	},
+	Text = {
+		NotYours = "You don't have that.",
+		NeedLevel = "Your level is too low for it.",
+		Full = "No room for it.",
+		Equipped = "Equipped.",
+		Removed = "Taken off.",
+	},
+}
+Config.RateLimits.EquipGear = 0.5
+
+-- the slot row of a player slot (Armor / Ring) or a pet slot (PetArmor / PetAcc), nil for anything else
+function Config.GearDef(slot)
+	if type(slot) ~= "string" then return nil end
+	return Config.Gear.Slots[slot] or Config.Gear.PetSlots[slot]
+end
+
+-- a gear multiplier that is a real number >= 1 (nil / NaN / infinity / text / below 1 = 1)
+function Config.GearMult(v)
+	if type(v) ~= "number" or v ~= v or v == math.huge or v < 1 then return 1 end
+	return v
+end
+
+-- "T:P" written plainly (no leading zeros) -> tier, plus; nil for anything else (tier 1..MaxTier, plus 0..MaxPlus)
+function Config.GearParse(key)
+	if type(key) ~= "string" or #key > 8 then return nil end
+	local t, p = string.match(key, "^(%d+):(%d+)$")
+	t, p = tonumber(t), tonumber(p)
+	if not t or not p or t < 1 or t > Config.Gear.MaxTier or p > Config.Gear.MaxPlus then return nil end
+	if string.format("%d:%d", t, p) ~= key then return nil end
+	return t, p
+end
+
+-- the x of the table: Base[tier] + Step x plus (0 for an unknown slot, a tier outside 1..MaxTier or a plus outside
+-- 0..MaxPlus: a bigger +N is never gear)
+function Config.GearBonus(slot, tier, plus)
+	local def = Config.GearDef(slot)
+	if not def or type(tier) ~= "number" or type(plus) ~= "number" or tier ~= math.floor(tier) or plus ~= math.floor(plus) then return 0 end
+	if tier < 1 or tier > Config.Gear.MaxTier or plus < 0 or plus > Config.Gear.MaxPlus then return 0 end
+	return math.floor((def.Base[tier] + def.Step * plus) * 10000 + 0.5) / 10000
+end
+
+-- the bonus of a worn "T:P" (0 for none / a broken key)
+function Config.GearBonusOf(slot, key)
+	local t, p = Config.GearParse(key)
+	if not t then return 0 end
+	return Config.GearBonus(slot, t, p)
+end
+
+-- (atkMult, hpMult) of a player from the attributes GearService keeps (GearAtk = the ring, GearHp = the armor; missing /
+-- NaN / below 1 = 1); (1, 1) while Config.Features.Gear is off. Server and client alike.
+function Config.GearMultsOf(player)
+	if not Config.FeatureOn("Gear") then return 1, 1 end
+	local ok, a, h = pcall(function() return player:GetAttribute("GearAtk"), player:GetAttribute("GearHp") end)
+	if not ok then return 1, 1 end
+	return Config.GearMult(a), Config.GearMult(h)
+end
+
+-- the bonus (a fraction) a pet's worn PetArmor / PetAcc gives: gear = data.Gear, 0 while the switch is off
+function Config.PetGearBonus(gear, uid, slot)
+	if not Config.FeatureOn("Gear") or type(gear) ~= "table" or type(gear.Pet) ~= "table" or type(uid) ~= "string" then return 0 end
+	local row = gear.Pet[uid]
+	if type(row) ~= "table" or Config.Gear.PetSlots[slot] == nil then return 0 end
+	return Config.GearBonusOf(slot, row[slot])
+end
+
 ----------------------------------------------------------------- save v4 tables (docs/design/save_v4_tables_2026-10-11.md)
 -- 게임성 개발 2 + 3 agreed 2026-10-11: every table the artisan guild, the gear slots and Otto / the golden egg will save
 -- gets its shape and its repair NOW, while the save version is still 3 (additive fields like Stats / Looks: an older v3
@@ -8460,6 +8579,7 @@ Config.SaveV4 = {
 	CraftMaxLv = 30,
 	GearSlots = { "Armor", "Ring" }, -- the player's worn slots (Gear.On, always present)
 	GearMaxTier = 16,
+	GearMaxPlus = 2, -- Gear: P (the hammer's +N) is 0..2 and nothing else; a scroll never reaches gear (⑥, 게임성 검수 10/12)
 	OwnKeyMax = 20, -- Gear.Own: at most this many of one "<kind>:T:P" key
 	BuffMax = 2, -- Buffs: at most two tonics at once
 	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
@@ -8498,12 +8618,13 @@ function V4.slot(k)
 	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.SlotLen and string.match(k, "^%a+$") ~= nil
 end
 
--- "T:P" -> "T:P" written plainly (tier 1..GearMaxTier, plus 0..Config.Loot.MaxEnhance), or nil
+-- "T:P" -> "T:P" written plainly (tier 1..GearMaxTier, plus 0..maxPlus = Config.SaveV4.GearMaxPlus: gear only gets the
+-- hammer's +0..+2), or nil
 function V4.tierPlus(s)
 	if type(s) ~= "string" or #s > 12 then return nil end
 	local t, p = string.match(s, "^(%d+):(%d+)$")
 	t, p = tonumber(t), tonumber(p)
-	if not t or not p or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.Loot.MaxEnhance then return nil end
+	if not t or not p or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.SaveV4.GearMaxPlus then return nil end
 	return string.format("%d:%d", t, p)
 end
 
