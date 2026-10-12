@@ -38,7 +38,6 @@ MUTATIONS = [
     ("space: no offset for a missing mark", Q, "\t\tif typeof(s[name]) ~= \"Vector3\" then s[name] = c + off end\n", ""),
     ("space: the Floor is not the area", Q, "\t\ts.AreaCF, s.AreaSize = floor.CFrame, floor.Size\n", ""),
     ("config: the nest south", C, "Nest = Vector3.new(0, 0, -37), Cart = Vector3.new(0, 0, 37),", "Nest = Vector3.new(0, 0, 37), Cart = Vector3.new(0, 0, -37),"),
-    ("config: fights 15 s", C, "\tFightSeconds = 10,", "\tFightSeconds = 15,"),
     ("config: back after 10 s", C, "\tReturnAfter = 4,", "\tReturnAfter = 10,"),
     ("config: no rate limit value", C, "Config.RateLimits.GooseSquare = 1 --", "Config.RateLimits.GooseSquare = 0 --"),
     # --- Inside
@@ -52,9 +51,18 @@ MUTATIONS = [
     ("join: artisans refused", Q, "\tif f ~= \"Halo\" and f ~= \"Horns\" and f ~= \"Neutral\" then return false, nil end\n",
      "\tif f ~= \"Halo\" and f ~= \"Horns\" then return false, nil end\n"),
     ("join: the dead join", Q, "\tif not W.Alive(p) then return \"Dead\" end\n", ""),
-    ("join: the kaiju joins", Q, "\tif W.Kaiju(p) then return \"Monster\" end\n", ""),
+    ("join: the kaiju joins", Q, "\tif W.KaijuState(p) ~= \"None\" then return \"Monster\" end\n", ""),
+    ("join: a queued / siren kaiju joins", Q, "\tif W.KaijuState(p) ~= \"None\" then return \"Monster\" end\n",
+     "\tif W.KaijuState(p) == \"Active\" then return \"Monster\" end\n"),
+    ("join: wanted stars ignored", Q, "if W.InCombat(p) or W.Stars(p) >= Config.PvP.NoTravelStars then return \"PvP\" end",
+     "if W.InCombat(p) then return \"PvP\" end"),
+    ("way back: a wanted player goes home", Q, "\tif W.Stars(p) >= Config.PvP.NoTravelStars then\n\t\treturn typeof(cf) == \"CFrame\" and cf or W.CrossroadsCF()\n\tend\n", ""),
+    ("tick: an Active kaiju stays inside", Q, "\t\telseif W.KaijuState(p) == \"Active\" then\n\t\t\ttable.insert(out, { p, \"Moved\" })\n", ""),
+    ("tick: no safety net", Q, "\t\t\tGooseSquare.ReturnAll(\"End\")\n", ""),
+    ("tick: the safety net at once", Q, "if W.Clock() - Q.IdleSince > SP.ReturnAfter + 3 then", "if true then"),
     ("join: a sack joins", Q, "\tif W.Sack(p) then return \"Grudge\" end\n", ""),
-    ("join: fights ignored", Q, "\tif t and W.Clock() - t < SP.FightSeconds then return \"PvP\" end\n", ""),
+    ("join: fights ignored", Q, "if W.InCombat(p) or W.Stars(p) >= Config.PvP.NoTravelStars then return \"PvP\" end",
+     "if W.Stars(p) >= Config.PvP.NoTravelStars then return \"PvP\" end"),
     ("join: Horns land at the Halo spawn", Q, "(f == \"Horns\" and s.SpawnHorns)", "(f == \"Horns\" and s.SpawnHalo)"),
     ("join: no attribute", Q, "\tQ.In[p] = true\n\tQ.Joins += 1\n\tW.SetAttr(p, attrIn(), true)\n", "\tQ.In[p] = true\n\tQ.Joins += 1\n"),
     ("join: not moved", Q, "\tW.Pivot(p, spawnFor(p))\n\treturn true, nil\n", "\treturn true, nil\n"),
@@ -149,8 +157,11 @@ def static() -> tuple[int, list[str]]:
     skill = read(SSS / "SkillService.luau")
     check('(tonumber(player:GetAttribute("EggCarry")) or 0) > 0 then return nil, "TooHeavy" end' in skill, "Hop refused while carrying eggs")
     combat = read(SSS / "CombatService.luau")
-    check('if Config.Goose.Mode ~= "Tug" or not PVP_FACTIONS[faction(player)] then' in combat
-          and "function CombatService.LastPvPAt(player)" in combat, "CombatService: the goose is a target in Tug only; LastPvPAt")
+    check('if Config.Goose.Mode ~= "Tug" or not PVP_FACTIONS[faction(player)] then' in combat, "CombatService: the goose is a target in Tug only")
+    fin = function_block(goose, "local function finishEggs()")
+    check(fin.find("task.delay(math.max(0, tonumber(SQS.ReturnAfter) or 4)") >= 0
+          and fin.find("task.delay(math.max(0, tonumber(SQS.ReturnAfter) or 4)") < fin.find("pcall(GooseEggs.Finish"),
+          "finishEggs: the square's return is scheduled before anything that can fail")
     vis = read(SSS / "CharacterVisuals.luau")
     check('EggCarry = { "EggStack" }' in vis and '"EggStack",\n}' in vis and "EggStack = buildEggStack," in vis
           and 'joint.Name = "EggJoint"' in vis and "Instance.new(\"Motor6D\")" in function_block(vis, "local function buildEggStack("),

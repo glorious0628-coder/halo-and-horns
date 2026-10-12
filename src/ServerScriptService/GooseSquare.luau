@@ -75,12 +75,18 @@ function W.Faction(p)
 	local f = call("FactionService", "GetFaction", p)
 	return type(f) == "string" and f or "None"
 end
-function W.Kaiju(p) return call("KaijuService", "GetState", p) == "Active" end
+-- the kaiju state ("None" when not the kaiju; Queued / Siren / Active all count as the kaiju here)
+function W.KaijuState(p)
+	local st = call("KaijuService", "GetState", p)
+	return type(st) == "string" and st or "None"
+end
 function W.Sack(p) return call("GrudgeService", "HasSack", p) == true end
--- os.clock() of the last PvP damage dealt or taken (nil = none)
-function W.LastPvP(p)
-	local t = call("CombatService", "LastPvPAt", p)
-	return type(t) == "number" and t or nil
+-- the PvP combat tag (CombatService.IsInCombat: Config.PvP.CombatTagTime, the same rule Travel uses)
+function W.InCombat(p) return call("CombatService", "IsInCombat", p) == true end
+-- wanted stars (Config.PvP.NoTravelStars and up may not Travel: never through the square either)
+function W.Stars(p)
+	local n = call("PvPService", "GetStars", p)
+	return tonumber(n) or 0
 end
 function W.RootCF(p)
 	if not Util.IsAlive(p) then return nil end
@@ -109,6 +115,12 @@ function W.TownCF(p)
 	if typeof(cf) == "CFrame" then return cf end
 	local z = Config.Zones[zoneId] or Config.Zones.Crossroads
 	return CFrame.new(z.Spawn + Vector3.new(0, 4, 0))
+end
+-- the Crossroads start (a wanted player whose spot is gone)
+function W.CrossroadsCF()
+	local cf = call("ZoneService", "GetSpawnCFrame", "Crossroads", true)
+	if typeof(cf) == "CFrame" then return cf end
+	return CFrame.new(Config.Zones.Crossroads.Spawn + Vector3.new(0, 4, 0))
 end
 function W.GetAttr(p, key) return p:GetAttribute(key) end
 function W.SetAttr(p, key, value)
@@ -224,13 +236,14 @@ function GooseSquare.Inside(pos)
 end
 
 ------------------------------------------------------------------ join / leave
--- why this player may not join now: "" | "Dead" | "Monster" | "Grudge" | "PvP" (GooseJoinBlock)
+-- why this player may not join now: "" | "Dead" | "Monster" | "Grudge" | "PvP" (GooseJoinBlock). Final review 10/12: the
+-- square must never be a way around Travel's rules - any kaiju state (Queued / Siren / Active), the combat tag
+-- (CombatService.IsInCombat, Config.PvP.CombatTagTime) and NoTravelStars wanted stars all block, like Travel
 function GooseSquare.BlockOf(p)
 	if not W.Alive(p) then return "Dead" end
-	if W.Kaiju(p) then return "Monster" end
+	if W.KaijuState(p) ~= "None" then return "Monster" end
 	if W.Sack(p) then return "Grudge" end
-	local t = W.LastPvP(p)
-	if t and W.Clock() - t < SP.FightSeconds then return "PvP" end
+	if W.InCombat(p) or W.Stars(p) >= Config.PvP.NoTravelStars then return "PvP" end
 	return ""
 end
 
@@ -271,10 +284,14 @@ function GooseSquare.Join(p)
 	return true, nil
 end
 
--- the way back: the remembered spot when it is still a fine place, else the own town start
+-- the way back: the remembered spot when it is still a fine place, else the own town start. A wanted player
+-- (NoTravelStars) always goes back to the spot (or the Crossroads): the square is never a free trip home
 function GooseSquare.WayBack(p)
 	local b = Q.Back[p]
 	local cf = b and b.CF
+	if W.Stars(p) >= Config.PvP.NoTravelStars then
+		return typeof(cf) == "CFrame" and cf or W.CrossroadsCF()
+	end
 	if typeof(cf) == "CFrame" then
 		local pos = cf.Position
 		local zone = W.ZoneAt(pos)
@@ -333,13 +350,26 @@ function GooseSquare.Members()
 	return list
 end
 
--- every tick: a member off the floor leaves (fell: moved back; carried far away by something else: stays there), and
--- GooseJoinBlock follows every ready player (written only on a change; "" while inside)
+-- every tick: a member off the floor leaves (fell: moved back; carried far away by something else: stays there), a
+-- member who became the Active kaiju leaves (the kaiju event moves it), nobody stays once no goose is on (the round's
+-- end return failed: a safety net after ReturnAfter + 3 s), and GooseJoinBlock follows every ready player (written only
+-- on a change; "" while inside)
 function GooseSquare.Tick(_now)
 	local out = {}
+	if not (H.IsActive and H.IsActive()) and next(Q.In) ~= nil then
+		Q.IdleSince = Q.IdleSince or W.Clock()
+		if W.Clock() - Q.IdleSince > SP.ReturnAfter + 3 then
+			Q.IdleSince = nil
+			GooseSquare.ReturnAll("End")
+		end
+	else
+		Q.IdleSince = nil
+	end
 	for p in Q.In do
 		if not p.Parent then
 			table.insert(out, { p, "Left" })
+		elseif W.KaijuState(p) == "Active" then
+			table.insert(out, { p, "Moved" })
 		else
 			local cf = W.RootCF(p)
 			if cf and not GooseSquare.Inside(cf.Position) then

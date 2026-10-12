@@ -713,6 +713,14 @@ end
 -- the egg hunt's end (finish() calls it in Eggs mode)
 local function finishEggs()
 	active = false
+	if squareOn() then
+		-- A23-141: the result shows for ReturnAfter s, then everyone still in the square goes back (scheduled first, so
+		-- an error below can never leave anyone in the square; GooseSquare.Tick has a safety net too)
+		task.delay(math.max(0, tonumber(SQS.ReturnAfter) or 4), function()
+			local okR, errR = pcall(GooseSquare.ReturnAll, "End")
+			if not okR then warnThrottled("squareReturn", "square return failed: " .. tostring(errR)) end
+		end)
+	end
 	endsAt = 0
 	nextAt = computeNextAt(Util.Now(), nextAt)
 	setGame("GooseNextAt", nextAt)
@@ -801,14 +809,7 @@ local function finishEggs()
 		info.Target = target
 		info.RivalLeft = rivalLeft
 	end
-	if squareOn() then
-		info.Joins = GooseSquare.TakeJoins()
-		-- A23-141: the result shows for ReturnAfter s, then everyone still in the square goes back
-		task.delay(math.max(0, tonumber(SQS.ReturnAfter) or 4), function()
-			local okR, errR = pcall(GooseSquare.ReturnAll, "End")
-			if not okR then warnThrottled("squareReturn", "square return failed: " .. tostring(errR)) end
-		end)
-	end
+	if squareOn() then info.Joins = GooseSquare.TakeJoins() end
 	GooseService.GooseFinished:Fire(result, rewarded, info)
 end
 

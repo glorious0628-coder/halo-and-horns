@@ -685,11 +685,6 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 end
 
 ------------------------------------------------------------------ queries (public)
--- A23-141: os.clock() of this player's last PvP damage dealt or taken (nil = none; the Goose Square's Join gate)
-function CombatService.LastPvPAt(player)
-	return lastPvPTime[player]
-end
-
 function CombatService.IsInCombat(player)
 	local t = lastPvPTime[player]
 	return t ~= nil and os.clock() - t <= Config.PvP.CombatTagTime

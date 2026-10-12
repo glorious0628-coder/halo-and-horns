@@ -26,8 +26,8 @@ local function flatDist(a, b) return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2
 local function newPlayer(name, opts)
 	opts = opts or {}
 	local p = { Name = name, Parent = true, Attrs = {}, Faction = opts.Faction or "Halo", Ready = opts.Ready ~= false,
-		Root = opts.Root ~= nil and opts.Root or cf(vec(0, 3, -25)), Kaiju = opts.Kaiju == true, Sack = opts.Sack == true,
-		PvPAt = opts.PvPAt, Zone = opts.Zone or "Crossroads", SavedAuto = opts.SavedAuto == true }
+		Root = opts.Root ~= nil and opts.Root or cf(vec(0, 3, -25)), KaijuState = opts.KaijuState or "None", Sack = opts.Sack == true,
+		InCombat = opts.InCombat == true, Stars = opts.Stars or 0, Zone = opts.Zone or "Crossroads", SavedAuto = opts.SavedAuto == true }
 	function p:GetAttribute(k) return self.Attrs[k] end
 	function p:SetAttribute(k, v) self.Attrs[k] = v end
 	if opts.Auto ~= nil then p.Attrs.AutoCombatEnabled = opts.Auto end
@@ -64,9 +64,11 @@ local function square(opts)
 	function GW.Players() return G.Players end
 	function GW.Alive(p) return p.Root ~= nil end
 	function GW.Faction(p) return p.Faction end
-	function GW.Kaiju(p) return p.Kaiju end
+	function GW.KaijuState(p) return p.KaijuState end
 	function GW.Sack(p) return p.Sack end
-	function GW.LastPvP(p) return p.PvPAt end
+	function GW.InCombat(p) return p.InCombat end
+	function GW.Stars(p) return p.Stars end
+	function GW.CrossroadsCF() G.Crossroads = (G.Crossroads or 0) + 1 return cf(vec(0, 4, -25)) end
 	function GW.RootCF(p) return p.Root end
 	function GW.Pivot(p, c)
 		table.insert(G.Pivots, { P = p, CF = c })
@@ -103,8 +105,8 @@ runGroup("space", function()
 	local G = square()
 	local SP = G.C.Goose.SquareSpace
 	check(SP.Enabled == true and near(SP.Center.X, 6000) and near(SP.Center.Y, 200) and near(SP.Center.Z, 6000)
-		and SP.ReturnAfter == 4 and SP.FightSeconds == 10, "Config.Goose.SquareSpace: on, centre (6000, 200, 6000), back after 4 s, fights 10 s",
-		show({ SP.Center.X, SP.Center.Y, SP.Center.Z, SP.ReturnAfter, SP.FightSeconds }))
+		and SP.ReturnAfter == 4 and G.C.PvP.NoTravelStars == 3, "Config.Goose.SquareSpace: on, centre (6000, 200, 6000), back after 4 s",
+		show({ SP.Center.X, SP.Center.Y, SP.Center.Z, SP.ReturnAfter }))
 	check(G.C.RateLimits.GooseSquare == 1, "RateLimits.GooseSquare = 1", "")
 	local s = G.GS.Ensure()
 	check(G.Builds == 1 and G.Model ~= nil, "no model in the place: the stand-in is built once", G.Builds)
@@ -153,13 +155,14 @@ runGroup("join", function()
 	local dead = G.Add(newPlayer("dead", { Root = false }))
 	dead.Root = nil
 	check(select(2, G.GS.Join(dead)) == "Dead", "dead: Dead", "")
-	check(select(2, G.GS.Join(G.Add(newPlayer("kaiju", { Kaiju = true })))) == "Monster", "the kaiju: Monster", "")
+	for _, st in { "Queued", "Siren", "Active" } do
+		check(select(2, G.GS.Join(G.Add(newPlayer("kaiju" .. st, { KaijuState = st })))) == "Monster", "the kaiju (" .. st .. "): Monster", st)
+	end
 	check(select(2, G.GS.Join(G.Add(newPlayer("sack", { Sack = true })))) == "Grudge", "a grudge sack: Grudge", "")
-	G.Clock = 1000
-	local f9 = G.Add(newPlayer("fight9", { PvPAt = 1000 - 9 }))
-	check(select(2, G.GS.Join(f9)) == "PvP", "a PvP hit 9 s ago: PvP", "")
-	local f11 = G.Add(newPlayer("fight11", { PvPAt = 1000 - 11 }))
-	check(G.GS.Join(f11) == true, "a PvP hit 11 s ago: in (FightSeconds 10)", "")
+	check(select(2, G.GS.Join(G.Add(newPlayer("fight", { InCombat = true })))) == "PvP", "the PvP combat tag (IsInCombat, Travel's rule): PvP", "")
+	check(select(2, G.GS.Join(G.Add(newPlayer("wanted3", { Stars = 3 })))) == "PvP", "3 wanted stars (NoTravelStars): PvP", "")
+	local f11 = G.Add(newPlayer("stars2", { Stars = 2 }))
+	check(G.GS.Join(f11) == true, "2 stars, no combat tag: in", "")
 	local none = G.Add(newPlayer("none", { Faction = "None" }))
 	check(G.GS.Join(none) == false and select(2, G.GS.Join(none)) == nil, "no side yet: refused without a line", "")
 	local notReady = G.Add(newPlayer("loading", { Ready = false }))
@@ -281,6 +284,16 @@ runGroup("leave", function()
 	check(town == 0 and near(back.Position.X, 430), "a hunting spot without PvP is kept (the meadow)", "")
 	back, town = wayBackOf(cf(vec(950, 3, 0)), "GoblinWoods", { Faction = "Horns" })
 	check(town == 1 and near(back.Position.Z, 515), "Horns -> the Horns town start", "")
+	-- a wanted player (stars gained before NoTravelStars: none inside) never gets a free trip home: back to the spot
+	local W3 = square()
+	W3.GS.Ensure()
+	local wq = W3.Add(newPlayer("wanted", { Root = cf(vec(950, 3, 0)), Zone = "GoblinWoods", Stars = 1 }))
+	W3.GS.Join(wq)
+	wq.Stars = 3
+	W3.Pivots = {}
+	W3.GS.Leave(wq, "Button")
+	check(#W3.Town == 0 and W3.Pivots[1] and near(W3.Pivots[1].CF.Position.X, 950), "3 stars: back to the PvP spot itself, never the town",
+		show(W3.Pivots[1] and W3.Pivots[1].CF.Position.X))
 end)
 
 ------------------------------------------------------------------ the round's end
@@ -321,10 +334,30 @@ runGroup("tick", function()
 	G.Leaves = {}
 	G.GS.Tick(0)
 	check(not G.GS.IsIn(r) and G.Leaves[1] and G.Leaves[1].Reason == "Left", "a player gone from the server leaves (Left)", "")
+	local k = G.Add(newPlayer("k", { Root = cf(vec(1, 3, -30)) }))
+	G.GS.Join(k)
+	k.KaijuState = "Active"
+	G.Pivots, G.Leaves = {}, {}
+	G.GS.Tick(0)
+	check(not G.GS.IsIn(k) and G.Leaves[1] and G.Leaves[1].Reason == "Moved" and #G.Pivots == 0, "a member who became the Active kaiju leaves (Moved)", "")
+	-- the safety net: no goose on and someone still inside (the round's end return failed) -> out after ReturnAfter + 3 s
+	local SN = square()
+	SN.GS.Ensure()
+	local s1 = SN.Add(newPlayer("s1", { Root = cf(vec(1, 3, -30)) }))
+	SN.GS.Join(s1)
+	SN.Active = false
+	SN.Clock = 2000
+	SN.GS.Tick(0)
+	SN.Clock = 2000 + SP.ReturnAfter + 2
+	SN.GS.Tick(0)
+	check(SN.GS.IsIn(s1), "the safety net waits ReturnAfter + 3 s (the normal return comes first)", "")
+	SN.Clock = 2000 + SP.ReturnAfter + 3.5
+	SN.GS.Tick(0)
+	check(not SN.GS.IsIn(s1) and s1.Attrs.InGooseSquare == false, "no goose on: everyone goes back after ReturnAfter + 3 s", "")
 	-- GooseJoinBlock: every ready player, on a change only, "" inside, throttled by BlockEvery
 	local H = square()
 	H.GS.Ensure()
-	local fighter = H.Add(newPlayer("fighter", { PvPAt = 995 }))
+	local fighter = H.Add(newPlayer("fighter", { InCombat = true }))
 	local fine = H.Add(newPlayer("fine"))
 	local inside = H.Add(newPlayer("inside"))
 	H.GS.Join(inside)
@@ -332,7 +365,7 @@ runGroup("tick", function()
 	H.GS.Tick(0)
 	check(fighter.Attrs.GooseJoinBlock == "PvP" and fine.Attrs.GooseJoinBlock == "" and inside.Attrs.GooseJoinBlock == "",
 		"GooseJoinBlock: PvP for a fighter, '' for others and for a member", show({ fighter.Attrs.GooseJoinBlock, fine.Attrs.GooseJoinBlock }))
-	fighter.PvPAt = nil
+	fighter.InCombat = false
 	H.Clock = 1000 + SP.BlockEvery / 2
 	H.GS.Tick(0)
 	check(fighter.Attrs.GooseJoinBlock == "PvP", "no refresh before BlockEvery", "")

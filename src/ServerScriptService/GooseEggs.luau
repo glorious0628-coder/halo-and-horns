@@ -402,7 +402,6 @@ local function refreshPlayers(now, dt)
 		local ringIn = inRing(st.Pos)
 		if can and ringIn and isSide(f) then
 			R.Presence[f] += dt
-			R.Entrants[f][p] = true
 		end
 		local plaza = can and ringIn and now < R.EndsAt + E.Crown.Overtime
 		if plaza ~= st.Plaza then
@@ -636,6 +635,9 @@ local function pick(now, p, st, egg)
 		W.Grant(p, E.Items.Feather, 1, egg.Pos)
 		return
 	end
+	-- final review 10/12: a side's entrant = a player who picked an egg this round (the co-op target, 'a side never
+	-- came'): an idle alt who only joined never turns a co-op round into a versus one
+	if isSide(st.Faction) then R.Entrants[st.Faction][p] = true end
 	table.insert(st.Carry, egg)
 	st.Slots += slotsOf(egg)
 	st.LastPickPos, st.LastPickAt = egg.Pos, now

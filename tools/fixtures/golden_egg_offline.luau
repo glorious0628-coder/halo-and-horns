@@ -1118,10 +1118,18 @@ runGroup("service-coop-and-absent", function()
 	check(w.GS.Attrs.GooseMode == "Coop" and w.GS.Attrs.GooseCoopSide == "Halo" and w.GS.Attrs.GooseCoopTarget == 80,
 		"co-op; nobody in the ring yet: target 80", show(w.GS.Attrs))
 	h1.Pos = vec(20, 3, 0)
-	w:STick(2)
-	check(w.GS.Attrs.GooseCoopTarget == 80 and w.GS.Attrs.GooseCoopPeople == 1, "1 entrant: 80")
 	h2.Pos = vec(20, 3, 10)
 	w:STick(2)
+	check(w.GS.Attrs.GooseCoopTarget == 80 and w.GS.Attrs.GooseCoopPeople == 0, "in the ring but no egg picked: no entrant yet (target 80)",
+		show({ w.GS.Attrs.GooseCoopPeople }))
+	-- final review 10/12: an entrant = a player who picked an egg this round
+	w.Eggs.DebugEgg(w.Now, "Gold", vec(20, 0, 0), 10)
+	local p1 = h1.Pos
+	w:STick(10, function() w:Jiggle(h1, p1) end)
+	check(w.GS.Attrs.GooseCoopTarget == 80 and w.GS.Attrs.GooseCoopPeople == 1, "1 entrant (picked an egg): 80", show({ w.GS.Attrs.GooseCoopPeople }))
+	w.Eggs.DebugEgg(w.Now, "Gold", vec(20, 0, 10), 10)
+	local p2 = h2.Pos
+	w:STick(10, function() w:Jiggle(h2, p2) end)
 	check(w.GS.Attrs.GooseCoopTarget == 160 and w.GS.Attrs.GooseCoopPeople == 2, "2 entrants: 160", show({ w.GS.Attrs.GooseCoopTarget }))
 	local rival = w:Add("R1", "Horns", vec(24, 3, 0))
 	w:STick(2)
@@ -1133,7 +1141,7 @@ runGroup("service-coop-and-absent", function()
 	-- versus, but the Horn Legion never came into the ring: judged as co-op for the Knights, no war points
 	local a = serviceWorld()
 	local h = a:Add("H1", "Halo", vec(-30, 3, -10))
-	local r = a:Add("R1", "Horns", vec(80, 3, 0))
+	local r = a:Add("R1", "Horns", vec(20, 3, 0)) -- in the ring all round but never picks (an idle alt): still 'never came'
 	a:Land()
 	check(a.GS.Attrs.GooseMode == "Versus", "both on the server: versus at the start")
 	a.Eggs.DebugEgg(a.Now, "Crown", vec(-30, 0, -10), 90)

@@ -1587,7 +1587,8 @@ Config.Goose.Egg = {
 -- model attributes GooseSpotPos / NestPos / CartPos / SpawnHaloPos / SpawnHornsPos / SpawnNeutralPos (world positions) or
 -- the parts of those names, the Floor's size = the area. Missing -> GooseSquare.luau builds a plain floor, invisible walls
 -- and the markers ONCE at Center + Offsets (no decoration). Join gates: GooseActive, ready, alive, not the kaiju, no
--- grudge sack, no PvP hit dealt / taken within FightSeconds (GooseJoinBlock "" | "Dead" | "Monster" | "Grudge" | "PvP").
+-- grudge sack, no PvP combat tag (CombatTagTime) or NoTravelStars stars, like Travel (GooseJoinBlock "" | "Dead" | "Monster"
+-- | "Grudge" | "PvP").
 -- The way back: the spot Join was pressed at, unless it is a PvP spot, under the kill height, inside the square or its
 -- zone is gone -> the own town start. Auto combat is paused inside (the attribute only: the saved choice stays).
 Config.Goose.SquareSpace = {
@@ -1602,7 +1603,6 @@ Config.Goose.SquareSpace = {
 	SpawnSpread = 4, -- a joiner lands within this many studs of the side's spawn mark
 	SpawnClear = 6, -- no egg lands within this of a spawn mark
 	ReturnAfter = 4, -- s after the result: everyone still inside goes back
-	FightSeconds = 10, -- no Join within this long of a PvP hit (dealt or taken)
 	FallBelow = 25, -- a root this far under the floor top, or Margin studs off the floor's area = left the square
 	Margin = 20,
 	BlockEvery = 0.5, -- s between GooseJoinBlock refreshes
