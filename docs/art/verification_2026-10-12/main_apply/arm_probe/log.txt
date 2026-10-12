@@ -1,0 +1,110 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 WeaponTier=0
+first values right after joining (no class yet):
+Faction=None
+Class=Warrior
+Level=1
+WeaponTier=0
+RigType=Enum.HumanoidRigType.R15
+HipHeight=2.7468841075897217 Scale: BodyHeightScale=1.00 BodyWidthScale=1.00 BodyDepthScale=1.00 HeadScale=1.00 BodyProportionScale=0.00
+WeaponModel=none; character children: HumanoidRootPart,LeftLowerArm,RightLowerArm,LeftUpperArm,RightUpperArm,Head,Shirt,LeftLowerLeg,LeftUpperLeg,LeftHand,RightLowerLeg,RightUpperLeg,LeftFoot,Humanoid,Pants,Health,Animate,Body Colors,UpperTorso,LowerTorso,RightHand,RightFoot,VarietyShades10,SidePonytail
+Motor6D total=0
+WrapLayers=0
+Accessories=2
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 WeaponTier=0
+values right after choosing, weapon tier default:
+Faction=Halo
+Class=Warrior
+Level=1
+WeaponTier=0
+RigType=Enum.HumanoidRigType.R15
+HipHeight=2.7468841075897217 Scale: BodyHeightScale=1.00 BodyWidthScale=1.00 BodyDepthScale=1.00 HeadScale=1.00 BodyProportionScale=0.00
+WeaponModel=none; character children: HumanoidRootPart,LeftLowerArm,RightLowerArm,LeftUpperArm,RightUpperArm,Head,Shirt,LeftLowerLeg,LeftUpperLeg,LeftHand,RightLowerLeg,RightUpperLeg,LeftFoot,Humanoid,Pants,Health,Animate,Body Colors,UpperTorso,LowerTorso,RightHand,RightFoot,VarietyShades10,SidePonytail,ForceField,FactionMark
+Motor6D total=0
+WrapLayers=0
+Accessories=2
+fired AcceptTutorial
+gear: Level=ok WeaponOwnedMask=ok
+fired EquipWeapon
+state: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=30 WeaponTier=3
+== warrior values ==
+Faction=Halo
+Class=Warrior
+Level=30
+WeaponTier=3
+RigType=Enum.HumanoidRigType.R15
+HipHeight=2.7468841075897217 Scale: BodyHeightScale=1.00 BodyWidthScale=1.00 BodyDepthScale=1.00 HeadScale=1.00 BodyProportionScale=0.00
+WeaponModel=WeaponModel parent=Darugi_S2 descendants=7: Handle(Part), WeldConstraint(WeldConstraint), Guard(Part), WeldConstraint(WeldConstraint), Blade(Part), AttackMuzzle(Attachment), WeldConstraint(WeldConstraint)
+Motor6D total=0
+WrapLayers=0
+Accessories=2
+spot -50, 5, -60 blockers=0
+anchored on
+saved warrior_stand_front
+saved warrior_stand_side
+anchored off
+walking
+saved warrior_walk_front
+saved warrior_walk_side
+walk values: Faction=Halo
+Class=Warrior
+Level=30
+WeaponTier=3
+RigType=Enum.HumanoidRigType.R15
+HipHeight=2.7468841075897217 Scale: BodyHeightScale=1.00 BodyWidthScale=1.00 BodyDepthScale=1.00 HeadScale=1.00 BodyProportionScale=0.00
+WeaponModel=WeaponModel parent=Darugi_S2 descendants=7: Handle(Part), WeldConstraint(WeldConstraint), Guard(Part), WeldConstraint(WeldConstraint), Blade(Part), AttackMuzzle(Attachment), WeldConstraint(WeldConstraint)
+Motor6D total=0
+WrapLayers=0
+Accessories=2
+spot -50, 5, -60 blockers=0
+anchored on
+hidden parts 3
+saved warrior_noweapon_front
+anchored off
+Class=ok
+gear: Level=ok WeaponOwnedMask=ok
+fired EquipWeapon
+state: DataLoaded=true Faction=Halo Class=Mage ClassChosen=true Level=30 WeaponTier=3
+== mage values ==
+Faction=Halo
+Class=Mage
+Level=30
+WeaponTier=3
+RigType=Enum.HumanoidRigType.R15
+HipHeight=2.7468841075897217 Scale: BodyHeightScale=1.00 BodyWidthScale=1.00 BodyDepthScale=1.00 HeadScale=1.00 BodyProportionScale=0.00
+WeaponModel=WeaponModel parent=Darugi_S2 descendants=8: Shaft(Part), WeldConstraint(WeldConstraint), Collar(Part), WeldConstraint(WeldConstraint), Tip(Part), PointLight(PointLight), AttackMuzzle(Attachment), WeldConstraint(WeldConstraint)
+Motor6D total=0
+WrapLayers=0
+Accessories=2
+spot -50, 5, -60 blockers=0
+anchored on
+saved mage_stand_front
+saved mage_stand_side
+anchored off
+walking
+saved mage_walk_front
+saved mage_walk_side
+walk values: Faction=Halo
+Class=Mage
+Level=30
+WeaponTier=3
+RigType=Enum.HumanoidRigType.R15
+HipHeight=2.7468841075897217 Scale: BodyHeightScale=1.00 BodyWidthScale=1.00 BodyDepthScale=1.00 HeadScale=1.00 BodyProportionScale=0.00
+WeaponModel=WeaponModel parent=Darugi_S2 descendants=8: Shaft(Part), WeldConstraint(WeldConstraint), Collar(Part), WeldConstraint(WeldConstraint), Tip(Part), PointLight(PointLight), AttackMuzzle(Attachment), WeldConstraint(WeldConstraint)
+Motor6D total=0
+WrapLayers=0
+Accessories=2
+spot -50, 5, -60 blockers=0
+anchored on
+hidden parts 3
+saved mage_noweapon_front
+anchored off
+console: [ServerErrorService] started
+[Metrics] ServerError = 1241 (Heartbeat, tick # ms, Slow)
+[Metrics] ServerError = 598 (Heartbeat, tick # ms, Slow)
+[Metrics] ServerError = 556 (Heartbeat, tick # ms, Slow)
+[Metrics] ServerError = 511 (Heartbeat, tick # ms, Slow)
+play stopped
+fresh off
