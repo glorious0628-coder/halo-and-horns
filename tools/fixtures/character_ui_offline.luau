@@ -421,8 +421,8 @@ local function heads(rs)
 	for _, r in rs do if r.Kind == "Head" then table.insert(out, r.Id) end end
 	return table.concat(out, ",")
 end
-local function rowOf(rs, id)
-	for _, r in rs do if r.Kind == "Row" and r.Id == id then return r end end
+local function rowOf(rs, id) -- a row, a card or a chip (ref_rpg_ui #5)
+	for _, r in rs do if r.Kind ~= "Head" and r.Id == id then return r end end
 	return nil
 end
 local srows = M.StatRows(rich)
@@ -449,8 +449,21 @@ local top = M.StatRows({ Faction = "Halo", Honor = 2000, Level = 5 })
 check(rowOf(top, "Next").Value == "Top rank", "StatRows: at the top = Top rank", rowOf(top, "Next").Value)
 check(heads(M.StatRows({ Faction = "Halo", Rebirths = 1 })):find("Rebirth", 1, true) ~= nil, "StatRows: one rebirth shows the Rebirth section")
 -- 게임성 검수 10/12 (API review): the blessing is the winning side's only (gold and XP), the hit row is the base hit
-check(rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Value == "+25% gold · +25% XP", "10/12: my side's blessing = +gold and +XP",
-	rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Value)
+check(rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Text == "Gold & XP +25%", "10/12: my side's blessing = +gold and +XP",
+	rowOf(srows, "Blessing") and rowOf(srows, "Blessing").Text)
+-- 최종 검수 10/13 (ref_rpg_ui #5): cards for the numbers, chips for the traits / effects, no sentences
+local kinds = {}
+for _, r in srows do kinds[r.Kind] = (kinds[r.Kind] or 0) + 1 end
+check((kinds.Line or 0) == 0 and (kinds.Card or 0) == 6 and rowOf(srows, "MaxHP").Kind == "Card" and rowOf(srows, "MaxHP").Icon == "IconHeart"
+	and rowOf(srows, "Hit").Icon == "IconSword", "#5: six number cards with icons, no text lines", tostring(kinds.Card))
+check(rowOf(srows, "Gold") and rowOf(srows, "Gold").Text == "Gold +25%" and rowOf(srows, "ATK").Text == "ATK +15%"
+	and rowOf(srows, "Steal").Text == "HP steal 10%" and rowOf(srows, "Class1").Kind == "Chip",
+	"#5: the Horn Legion's traits as number chips (Gold +25%, ATK +15%, HP steal 10%) + the class's", rowOf(srows, "Gold") and rowOf(srows, "Gold").Text)
+local haloRows = M.StatRows({ Faction = "Halo", Level = 3, Class = "Mage" })
+check(rowOf(haloRows, "XP") and rowOf(haloRows, "XP").Text == "XP +30%" and rowOf(haloRows, "HP").Text == "HP +20%"
+	and rowOf(haloRows, "Heal") and rowOf(haloRows, "Gold") == nil, "#5: the Knights' traits (XP +30%, HP +20%, healing allies)")
+check(rowOf(srows, "Bully").Text == "Bully -15%" and rowOf(srows, "NoAuto") ~= nil and rowOf(srows, "Size").Text == "Size ×1.25",
+	"#5: the effects as chips (Size ×1.25, Bully -15%, No Auto Battle)", rowOf(srows, "Bully").Text)
 local otherSide = table.clone(rich)
 otherSide.Blessing = "Halo"
 check(rowOf(M.StatRows(otherSide), "Blessing") == nil, "10/12: the other side's blessing is not mine (no row)")
@@ -594,7 +607,8 @@ attrs.RevengeUntil, attrs.Rebirths, attrs.RebirthBonus, attrs.FallMarks, attrs.H
 find(body, "Tab_Stats").OnClick()
 check(M._T.S.Tab == "Stats" and find(body, "StatsPage").Visible == true and find(body, "GearPage").Visible == false, "the Stats tab shows its page")
 check(find(body, "Tab_Stats").PaintColor == "gold" and find(body, "Tab_Gear").PaintColor == "button", "the open tab is gold")
-check(find(body, "Stat_Level") and find(body, "Stat_Wanted") and find(body, "Stat_Next") and find(body, "Head_Effects"), "the Stats rows from the attributes")
+check(find(body, "Card_Level") and find(body, "Chip_Wanted") and find(body, "Stat_Next") and find(body, "Head_Effects")
+	and find(find(body, "Card_MaxHP"), "Icon") and find(body, "Card_Level").Image == "Chip", "the Stats cards / chips / rows from the attributes")
 check(find(find(body, "Stat_Next"), "Value").Text == "Dread Lord · 140 to go", "the next rank row", find(find(body, "Stat_Next"), "Value").Text)
 nText += scanTexts(M, body)
 closeWin(reg, body)

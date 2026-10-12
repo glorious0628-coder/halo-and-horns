@@ -121,7 +121,13 @@ MUTATIONS = [
     # 게임성 검수 10/12 (API review fixes)
     ("UI", "the other side's blessing shown as mine", "if (blessing == \"Halo\" or blessing == \"Horns\") and blessing == faction then",
      "if (blessing == \"Halo\" or blessing == \"Horns\") then"),
-    ("UI", "the blessing without its XP", "BlessingValue = \"+%d%% gold · +%d%% XP\",", "BlessingValue = \"+%d%% gold\","),
+    ("UI", "the blessing without its XP", "Blessing = \"Gold & XP +%d%%\" },", "Blessing = \"Gold +%d%%\" },"),
+    # 최종 검수 10/13 (ref_rpg_ui #5)
+    ("UI", "#5: the Horns' gold bonus left out", "\t\tif num(fdef.GoldBonus, 0) > 0 then chip(\"Gold\", tx(TXT.Chip, \"Gold\", pct(fdef.GoldBonus))) end\n", ""),
+    ("UI", "#5: the perk sentences back", "\tif #effects > 0 then\n\t\thead(\"Effects\")",
+     "\tfor _, t in type(fdef) == \"table\" and fdef.Perks or {} do table.insert(rows, { Kind = \"Line\", Text = t }) end\n\tif #effects > 0 then\n\t\thead(\"Effects\")"),
+    ("UI", "#5: cards without icons", "then card(\"MaxHP\", \"IconHeart\",", "then card(\"MaxHP\", nil,"),
+    ("UI", "#5: cards drawn as text rows", "\t\tif r.Kind == \"Card\" then\n", "\t\tif false then\n"),
     ("UI", "the hit row claims the final damage", "Hit = \"Base hit\",", "Hit = \"Hit damage\","),
     ("UI", "no nickname row", "Name = \"Nickname\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),",
      "Name = \"Nick_\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),"),

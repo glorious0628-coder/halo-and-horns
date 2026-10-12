@@ -69,12 +69,10 @@ local TXT = {
 		Honor = "Honor", Infamy = "Infamy", Rank = "Rank", Next = "Next rank",
 	},
 	CritValue = "%d%% · ×%s",
-	SizeValue = "×%.2f",
-	BullyValue = "-%d%% size & damage",
-	BullyPenalty = "No Auto Battle · half XP & drops",
-	WantedValue = "%s · +%d%% damage",
-	RevengeValue = "+%d%% damage · %s",
-	BlessingValue = "+%d%% gold · +%d%% XP",
+	-- 최종 검수 10/13 (ref_rpg_ui #5, A23-130): the Stats tab's traits and effects as short number chips, no sentences
+	Chip = { XP = "XP +%d%%", Gold = "Gold +%d%%", HP = "HP +%d%%", ATK = "ATK +%d%%", Regen = "Healing", Steal = "HP steal %d%%",
+		Heal = "Heals allies", Size = "Size ×%.2f", Bully = "Bully -%d%%", NoAuto = "No Auto Battle", Wanted = "%s +%d%%",
+		Revenge = "Revenge +%d%% %s", Blessing = "Gold & XP +%d%%" },
 	Change = "Change",
 	RebirthBonusValue = "+%d%% gold & XP",
 	MarksValue = "%d / %d",
@@ -101,6 +99,7 @@ local L = {
 	Fallback = { "Armor", "Ring", "PetArmor", "PetAcc" }, -- the empty cells drawn when there is no GearSlots
 	RowH = 74, Icon = 52, ButtonW = 112, BtnH = 40,
 	StatH = 26, StatLabelW = 200,
+	CardW = 132, CardH = 50, CardIcon = 26, TraitW = 132, TraitH = 28, -- the Stats tab's cards and chips (ref_rpg_ui #5)
 	Size = { Name = 18, Body = 16, Small = 15, Count = 16, Power = 34, Head = 18 },
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512), same as the bag
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
@@ -287,60 +286,68 @@ end
 
 -- the Stats tab. ctx = { Level, MaxHealth, MaxMana, WalkSpeed, Tier, EquippedPlus, Class, Faction, SizeMult, BullyStacks,
 -- WantedStars, RevengeUntil, Now, Blessing, Rebirths, RebirthBonus, FallMarks, RedeemMarks, Honor, Infamy }
--- -> rows { Kind = "Head" | "Row" | "Line", Id?, Label?, Value?, Text? }; a value with no source leaves its row out
+-- -> rows { Kind = "Head" | "Card" | "Chip" | "Row", Id?, Icon?, Label?, Value?, Text? }; a value with no source leaves its
+-- row out. 최종 검수 10/13 (ref_rpg_ui #5: the text wall): the core numbers are cards (an icon, the number, one word), the
+-- class / side traits and the effects on now are short chips made from the numbers ("XP +30%"), no perk sentences
 function CharacterUI.StatRows(ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	local rows = {}
 	local function head(id) table.insert(rows, { Kind = "Head", Id = id, Text = tx(TXT.Heads, id) }) end
 	local function row(id, value) table.insert(rows, { Kind = "Row", Id = id, Label = tx(TXT.Stat, id), Value = value }) end
-	local function line(text) table.insert(rows, { Kind = "Line", Text = text }) end
+	local function card(id, icon, value)
+		table.insert(rows, { Kind = "Card", Id = id, Icon = icon, Label = tx(TXT.Stat, id), Value = value })
+	end
+	local function chip(id, text) table.insert(rows, { Kind = "Chip", Id = id, Text = text }) end
 	local faction = type(ctx.Faction) == "string" and ctx.Faction or "None"
 	local level = math.max(1, math.floor(num(ctx.Level, 1)))
 
 	head("Stats")
-	row("Level", tostring(level))
-	if num(ctx.MaxHealth, 0) > 0 then row("MaxHP", Util.FormatInt(math.floor(ctx.MaxHealth))) end
-	row("MP", Util.FormatInt(math.floor(num(ctx.MaxMana, num(Config.Vitals.MaxMana, 100)))))
-	if num(ctx.WalkSpeed, 0) > 0 then row("Speed", tostring(math.floor(ctx.WalkSpeed * 10 + 0.5) / 10)) end
+	card("Level", "IconStar", tostring(level))
+	if num(ctx.MaxHealth, 0) > 0 then card("MaxHP", "IconHeart", Util.FormatInt(math.floor(ctx.MaxHealth))) end
+	card("MP", "IconPotionMP", Util.FormatInt(math.floor(num(ctx.MaxMana, num(Config.Vitals.MaxMana, 100)))))
+	if num(ctx.WalkSpeed, 0) > 0 then card("Speed", "IconBoot", tostring(math.floor(ctx.WalkSpeed * 10 + 0.5) / 10)) end
 	local ok, hit = pcall(hitDamage, ctx)
-	if ok then row("Hit", Util.FormatInt(hit)) end
-	row("Crit", tx(TXT, "CritValue", pct(Config.Combat.CritChance), tostring(Config.Combat.CritMult)))
+	if ok then card("Hit", "IconSword", Util.FormatInt(hit)) end
+	card("Crit", nil, tx(TXT, "CritValue", pct(Config.Combat.CritChance), tostring(Config.Combat.CritMult)))
 
+	-- the class's and the side's traits: chips from the numbers (Config.Classes Stats are short already)
 	head("Traits")
 	local class = Config.Classes[ctx.Class] or Config.Classes.Warrior
-	row("Class", Config.ClassName(class.Id, faction))
-	for _, text in type(class.Stats) == "table" and class.Stats or {} do line(text) end
+	for i, text in type(class.Stats) == "table" and class.Stats or {} do chip("Class" .. i, text) end
 	local fdef = Config.Factions[faction]
 	if faction ~= "None" and type(fdef) == "table" then
-		row("Side", fdef.Name)
-		for _, text in type(fdef.Perks) == "table" and fdef.Perks or {} do line(text) end
+		if num(fdef.XPBonus, 0) > 0 then chip("XP", tx(TXT.Chip, "XP", pct(fdef.XPBonus))) end
+		if num(fdef.GoldBonus, 0) > 0 then chip("Gold", tx(TXT.Chip, "Gold", pct(fdef.GoldBonus))) end
+		if num(fdef.MaxHPMult, 1) > 1.001 then chip("HP", tx(TXT.Chip, "HP", pct(fdef.MaxHPMult - 1))) end
+		if num(fdef.DamageBonus, 0) > 0 then chip("ATK", tx(TXT.Chip, "ATK", pct(fdef.DamageBonus))) end
+		if num(fdef.RegenPerSec, 0) > 0 then chip("Regen", tx(TXT.Chip, "Regen")) end
+		if num(fdef.Lifesteal, 0) > 0 then chip("Steal", tx(TXT.Chip, "Steal", pct(fdef.Lifesteal))) end
+		if fdef.ReleaseSupport == true then chip("Heal", tx(TXT.Chip, "Heal")) end
 	end
 
-	-- what is on right now (nothing: no heading)
+	-- what is on right now (nothing: no heading), chips too
 	local effects = {}
 	local size = num(ctx.SizeMult, 1)
-	if size > 1.001 then table.insert(effects, { "Size", tx(TXT, "SizeValue", size) }) end
+	if size > 1.001 then table.insert(effects, { "Size", tx(TXT.Chip, "Size", size) }) end
 	local bully = math.floor(num(ctx.BullyStacks, 0))
 	if bully >= 1 then
-		table.insert(effects, { "Bully", tx(TXT, "BullyValue", pct(1 - Config.BullyMult(bully))), tx(TXT, "BullyPenalty") })
+		table.insert(effects, { "Bully", tx(TXT.Chip, "Bully", pct(1 - Config.BullyMult(bully))) })
+		table.insert(effects, { "NoAuto", tx(TXT.Chip, "NoAuto") })
 	end
 	local stars = faction == "Horns" and math.clamp(math.floor(num(ctx.WantedStars, 0)), 0, Config.PvP.MaxStars) or 0
 	if stars >= 1 then
-		table.insert(effects, { "Wanted", tx(TXT, "WantedValue", string.rep("★", stars), pct(stars * Config.PvP.StarDamageBonus)) })
+		table.insert(effects, { "Wanted", tx(TXT.Chip, "Wanted", string.rep("★", stars), pct(stars * Config.PvP.StarDamageBonus)) })
 	end
 	local left = num(ctx.RevengeUntil, 0) - num(ctx.Now, 0)
-	if left > 0 then table.insert(effects, { "Revenge", tx(TXT, "RevengeValue", pct(Config.Revenge.Bonus), clock(left)) }) end
+	if left > 0 then table.insert(effects, { "Revenge", tx(TXT.Chip, "Revenge", pct(Config.Revenge.Bonus), clock(left)) }) end
 	-- 게임성 검수 10/12: the crown war's blessing is only the winning side's (WarService.HasBlessing) - gold and XP
 	local blessing = ctx.Blessing
 	if (blessing == "Halo" or blessing == "Horns") and blessing == faction then
-		table.insert(effects, { "Blessing", tx(TXT, "BlessingValue", pct(Config.War.BlessingGold), pct(Config.War.BlessingXP)) })
+		table.insert(effects, { "Blessing", tx(TXT.Chip, "Blessing", pct(Config.War.BlessingGold)) })
 	end
 	if #effects > 0 then
 		head("Effects")
-		for _, e in effects do
-			row(e[1], e[2])
-			if e[3] then line(e[3]) end
-		end
+		for _, e in effects do chip(e[1], e[2]) end
 	end
 
 	local rebirths = math.max(0, math.floor(num(ctx.Rebirths, 0)))
@@ -917,7 +924,54 @@ local function drawStats(frame, rows)
 	clear(frame)
 	listLayout(frame, 4, false)
 	local order = 0
+	local kit = ui()
+	local group, groupKind = nil, nil
+	-- consecutive cards / chips share one grid (ref_rpg_ui #5: number cards and short chips instead of text rows)
+	local function grid(kind)
+		if group and groupKind == kind then return group end
+		order += 1
+		group = Instance.new("Frame")
+		group.Name = kind == "Card" and ("Cards" .. order) or ("Chips" .. order)
+		group.BackgroundTransparency = 1
+		group.Size = UDim2.new(1, -8, 0, 0)
+		group.AutomaticSize = Enum.AutomaticSize.Y
+		group.LayoutOrder = order
+		group.Parent = frame
+		local g = Instance.new("UIGridLayout")
+		g.CellSize = kind == "Card" and UDim2.fromOffset(L.CardW, L.CardH) or UDim2.fromOffset(L.TraitW, L.TraitH)
+		g.CellPadding = UDim2.fromOffset(6, 6)
+		g.SortOrder = Enum.SortOrder.LayoutOrder
+		g.Parent = group
+		groupKind = kind
+		return group
+	end
 	for _, r in rows do
+		if r.Kind == "Card" then
+			local g = grid("Card")
+			local c = kit.ArtFrame("Chip", { Name = "Card_" .. r.Id, LayoutOrder = #g:GetChildren() },
+				{ BackgroundColor3 = Color3.fromRGB(40, 46, 72) })
+			c.Parent = g
+			if r.Icon then
+				local icon = kit.ArtImage(r.Icon, { Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 6, 0.5, 0),
+					Size = UDim2.fromOffset(L.CardIcon, L.CardIcon), ZIndex = 3 })
+				if icon then icon.Parent = c end
+			end
+			local x = r.Icon and (L.CardIcon + 10) or 8
+			label(c, r.Value, L.Size.Body, colorOf("Text"), { Name = "Value", Position = UDim2.fromOffset(x, 2),
+				Size = UDim2.new(1, -(x + 4), 0.55, 0), TextWrapped = false, ZIndex = 3, Style = "Number" })
+			label(c, r.Label, L.Size.Small, colorOf("Sub"), { Name = "Label", Position = UDim2.new(0, x, 0.55, -2),
+				Size = UDim2.new(1, -(x + 4), 0.45, 0), TextWrapped = false, ZIndex = 3 })
+			continue
+		elseif r.Kind == "Chip" then
+			local g = grid("Chip")
+			local c = kit.ArtFrame("Chip", { Name = "Chip_" .. r.Id, LayoutOrder = #g:GetChildren() },
+				{ BackgroundColor3 = Color3.fromRGB(40, 46, 72) })
+			c.Parent = g
+			label(c, r.Text, L.Size.Small, colorOf("Text"), { Name = "Text", Size = UDim2.fromScale(1, 1),
+				TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, ZIndex = 3 })
+			continue
+		end
+		group, groupKind = nil, nil
 		order += 1
 		if r.Kind == "Head" then
 			label(frame, r.Text, L.Size.Head, colorOf("Gold"), { Name = "Head_" .. r.Id, Size = UDim2.new(1, -8, 0, L.Size.Head + 14),
