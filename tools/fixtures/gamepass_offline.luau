@@ -975,7 +975,8 @@ runGroup("bubbles", function()
 		EditConfig = function(c) table.insert(c.Bubbles.Order, "BubbleTestPack") end })
 	local C = w.Config
 	check(C.Bubbles.Free.Halo == "BubbleHalo" and C.Bubbles.Free.Horns == "BubbleHorns" and C.Bubbles.Free.Neutral == "BubbleArtisan"
-		and C.Data.Defaults.Bubble == "" and C.BubbleSide("BubbleHorns") == "Horns" and C.BubbleSide("BubbleTestPack") == nil,
+		and C.Data.Defaults.Bubble == "" and C.BubbleSide("BubbleHorns") == "Horns" and C.BubbleSide("BubbleTestPack") == nil
+		and #C.Bubbles.Order == 10 and C.IsBubble("BubbleCrown") and C.BubbleSide("BubblePixel") == nil,
 		"each side's free bubble; the save starts at '' (my side's)", "")
 	local owner = w:Join(701, { Faction = "Halo" })
 	local plain = w:Join(702, { Faction = "Horns" })
