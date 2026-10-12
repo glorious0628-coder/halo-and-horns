@@ -8644,6 +8644,107 @@ function Config.SanitizeEggHonorAt(v, now)
 	return math.min(at, now)
 end
 
+-- C1: a spare weapon key "T:P" written plainly (T 1..SpareTierMax, a later tier kept; P 0..MaxEnhance), or nil
+function V4.spareKey(s)
+	if type(s) ~= "string" or #s > 12 then return nil end
+	local t, p = string.match(s, "^(%d+):(%d+)$")
+	t, p = tonumber(t), tonumber(p)
+	if not t or not p or t < 1 or t > Config.SaveV4.SpareTierMax or p > Config.Loot.MaxEnhance then return nil end
+	return string.format("%d:%d", t, p)
+end
+
+-- Spares { ["T:P"] = n }: n 1..SpareKeyMax (0 / broken = key dropped), "04:0" + "4:0" merged, at most MaxKeys keys
+-- (sorted). The total SpareSum is NOT cut here: the writers refuse (save_v4 §1)
+function Config.SanitizeSpares(t)
+	local L = Config.SaveV4
+	local out, kept = {}, 0
+	if type(t) ~= "table" then return out end
+	for _, k in V4.sortedKeys(t, function(k) return type(k) == "string" end) do
+		local key = V4.spareKey(k)
+		local n = V4.int(t[k], 0, L.SpareKeyMax)
+		if key and n and n > 0 then
+			if out[key] ~= nil then
+				out[key] = math.min(L.SpareKeyMax, out[key] + n)
+			elseif kept < L.MaxKeys then
+				out[key] = n
+				kept += 1
+			end
+		end
+	end
+	return out
+end
+
+-- a market row id: a string of 1..MarketIdLen characters
+function V4.marketId(k)
+	return type(k) == "string" and #k >= 1 and #k <= Config.SaveV4.MarketIdLen
+end
+
+-- a market thing key: "I:<item id>" or "W:<T>:<P>" (written plainly), at most KeyLen + 8 characters; else nil
+function V4.marketKey(k)
+	if type(k) ~= "string" or #k > Config.SaveV4.KeyLen + 8 then return nil end
+	if string.match(k, "^I:[%w_]+$") then return k end
+	local tp = string.match(k, "^W:(.+)$")
+	tp = tp and V4.spareKey(tp)
+	return tp and ("W:" .. tp) or nil
+end
+
+-- the rows of Out / In: sane ids (sorted, at most MarketRows), a row that `row` refuses is dropped
+function V4.marketRows(src, row)
+	local out, kept = {}, 0
+	for _, id in V4.sortedKeys(src, V4.marketId) do
+		local r = type(src[id]) == "table" and row(src[id]) or nil
+		if r and kept < Config.SaveV4.MarketRows then
+			out[id] = r
+			kept += 1
+		end
+	end
+	return out
+end
+
+-- Market { Out[id] = { K, N, Price, St }, In[id] = { Price, St }, Done = { ids }, Day, Lists, Buys }: a row with a
+-- broken K / N / Price or an unknown St is dropped (never made up); Done keeps the newest MarketDone ids (list end)
+function Config.SanitizeMarket(t)
+	local L = Config.SaveV4
+	local src = type(t) == "table" and t or {}
+	local function price(r)
+		local p = V4.int(r.Price, 0, L.MaxCount)
+		return (p and p >= 1) and p or nil
+	end
+	local function state(r)
+		return type(r.St) == "string" and L.MarketStates[r.St] == true and r.St or nil
+	end
+	local out = {}
+	out.Out = V4.marketRows(src.Out, function(r)
+		local k, n, p, st = V4.marketKey(r.K), V4.int(r.N, 0, L.MarketMaxN), price(r), state(r)
+		if not (k and n and n >= 1 and p and st) then return nil end
+		return V4.keepExtra(r, { K = k, N = n, Price = p, St = st }, { K = true, N = true, Price = true, St = true })
+	end)
+	out.In = V4.marketRows(src.In, function(r)
+		local p, st = price(r), state(r)
+		if not (p and st) then return nil end
+		return V4.keepExtra(r, { Price = p, St = st }, { Price = true, St = true })
+	end)
+	-- Done: a list; sane unique ids, the last MarketDone of them in their order
+	local ids, seen = {}, {}
+	if type(src.Done) == "table" then
+		for i = 1, math.min(#src.Done, 4096) do
+			local id = src.Done[i]
+			if V4.marketId(id) and not seen[id] then
+				seen[id] = true
+				table.insert(ids, id)
+			end
+		end
+	end
+	out.Done = {}
+	for i = math.max(1, #ids - L.MarketDone + 1), #ids do
+		table.insert(out.Done, ids[i])
+	end
+	for _, k in { "Day", "Lists", "Buys" } do
+		out[k] = V4.int(src[k], 0, L.MaxCount) or 0
+	end
+	return V4.keepExtra(src, out, { Out = true, In = true, Done = true, Day = true, Lists = true, Buys = true })
+end
+
 -- every v4 table of a save, in place (DataService.fillDefaults, after the default fill)
 function Config.SanitizeSaveV4(d, now)
 	now = V4.int(now, 0, 2 ^ 52) or os.time()
@@ -8654,6 +8755,8 @@ function Config.SanitizeSaveV4(d, now)
 	d.Buffs = Config.SanitizeBuffs(d.Buffs, now)
 	d.Shop = Config.SanitizeShop(d.Shop)
 	d.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)
+	d.Spares = Config.SanitizeSpares(d.Spares)
+	d.Market = Config.SanitizeMarket(d.Market)
 end
 
 return Config
