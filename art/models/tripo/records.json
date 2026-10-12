@@ -10522,14 +10522,14 @@
    "tool": "tools/tripo_touchup.py via tools/tripo_touchup_halo.sh (plant, fit h=3)",
    "what": "Tripo front to +y, scaled / placed on the Studio part body, pot / body faces cut (10396), weld then loose specks (19 faces), decimate to 6999 tris, smart UV, bake C/N/R/M/MR 1024; outline shell 0.035 studs (3993 tris, no faces under the foot) as <job>_TU_Outline in the same GLB",
    "size_studs": [
-    1.751,
-    1.467,
-    0.79
+    1.891,
+    1.618,
+    2.427
    ],
    "out": "art/models/tripo/touchup/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_TU.glb (+ maps, disk only)",
    "sheet": "art/review/img4/tripo_tu_outline_[1-4]_1012.jpg",
-   "fix_10_12": "--drop-low 0.1: 16 loose leaf islands (398 faces) wholly below the pot rim removed (floating bits); hanging vines need a new Tripo (asked)",
-   "sheet_fix": "art/review/img4/tripo_tu_fix_1012.jpg"
+   "fix_10_12": "--keep-green --drop-low 0.1: the Tripo already had the long trailing vines; the pot cut had taken them. Leaf-green faces now survive the cut (14512), 4 loose pieces wholly below the rim dropped (91 faces). No new Tripo needed.",
+   "sheet_fix": "art/review/img4/tripo_tu_potflowersF_vines_1012.jpg"
   }
  ],
  "HaloVar4_Planter_D_web_hd_mv4": [

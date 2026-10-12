@@ -51,6 +51,7 @@ ap.add_argument("job")
 ap.add_argument("--head-from", type=float, default=0.0, help="head: keep the Tripo from this share of its height up (its own head) and set it on the kit head base")
 ap.add_argument("--head-footprint", action="store_true", help="head: below the head base cut only inside the kit body's footprint (hanging lanterns stay)")
 ap.add_argument("--drop-low", type=float, default=0.0, help="plant: drop loose islands lying wholly this far below the pot rim (floating leaf bits)")
+ap.add_argument("--keep-green", action="store_true", help="plant: leaf-green faces survive the pot cut (vines hanging over the pot)")
 ap.add_argument("--kind", required=True, choices=["plant", "goods", "head", "part", "ontop", "whole"])
 ap.add_argument("--part", default="", help="kind part / head: name prefixes (comma list) of the kit parts it replaces (Head / Bell,Rope)")
 ap.add_argument("--fit", default="h=1", help="h=<height> or w=<width> in studs (ontop: w=<factor of the body length>)")
@@ -234,9 +235,21 @@ if a.kind == "plant":
     def r_at(z):
         r = [sp[2] for sp in spans if sp[0] - a.tol <= z <= sp[1] + a.tol]
         return max(r) if r else -1.0
+    green = None
+    if a.keep_green:
+        # vines hanging over the pot lie on its surface, inside the cut: keep the leaf-green faces (Tripo had the
+        # long trailing vines of PotFlowers_F, the cut took them, 10/12)
+        hsv = PB.Source([src]).tri_hsv()
+        if len(hsv) == len(bm.faces):
+            green = (hsv[:, 0] > 55) & (hsv[:, 0] < 170) & (hsv[:, 1] > 0.25) & (hsv[:, 2] > 0.12)
+            stats["keep_green"] = int(green.sum())
+        else:
+            log("keep-green skipped: %d colours for %d faces" % (len(hsv), len(bm.faces)))
     for f in bm.faces:
         c = f.calc_center_median()
         if c.z < ztop + a.tolz and (a.below_all or math.hypot(c.x, c.y) < r_at(c.z) + a.tol):
+            if green is not None and green[f.index]:
+                continue
             kill.append(f)
 elif a.kind == "goods":
     from mathutils.bvhtree import BVHTree
