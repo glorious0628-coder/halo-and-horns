@@ -231,3 +231,9 @@
 - **열린 것**: 이미지 생성 2 사람 2묶음 시트(오면 판정 → approved.json), 개발 2 honor-crown 고침 보고, 자동 번역 켜기(사용자, 내일), 10/15 패스 ID 9개, 수요일 사용량 확인(지금 전체 3%·Fable 6%).
 - WorldKit Studio(eba950da…)가 열려 있음(저장 안 함, RobloxGen_FlowerBush 모델 + HttpEnabled=true 변경됨 → 저장하지 말 것). 메인 Studio는 Edit·미저장(sync만).
 - (23:0x) 이미지 생성 2: 빛 마을 대칭 소품 30개 뒤 = 앞 뒤집기로 교체(목록 art/review/s2/backflip_list_2026-10-13.md, f036b71), 사람 3묶음 그리는 중 → 2·3묶음 시트 보고 뒤 clear 예정. 오면 판정 → approved.json.
+
+## 10/13 밤 추가 — dev2-honor-crown 고침 도착 (555e1a56)
+- 게임성 개발 2 보고: dev2-honor-crown **555e1a56** (ab6fcc0a 위 1커밋, 리베이스 없음). 처치 단위 저장 `data.CrownUnits`(더하기만, 편 바꿀 때만 0), M2_1 15 / GW4 100 처치 단위, 옛 세이브 "12/1" 문제 해소; HUD.luau fmtScore 소수 두 자리 1줄(클라 파일). 시험 test_crown_points 75/75·변이 39/39, 관련 36개 중 34 통과, a23_14 변이 없이 6426/6426, ops_safety 원래 실패(main 동일).
+- **내일 아침 병합 순서(고침):** ① fix/first-look-2 b9dd5764 ② dev2-honor-crown 555e1a56 (API 반박 검토는 FIX FIRST 항목만 재확인: CrownUnits 저장·Count) → 메인 반영 1 sync → Save As(🟠) → place push → 사용자 Alt+P.
+- dev2 질문(같이 잡은 몹 = 기여자마다 사냥 명예 1마리): **10/17 기술 시험은 그대로 둠**(1~3명). 11/7 시험 전 WarShare식 나누기 여부를 사용자에게 1줄로 물어 결정(backlog). 사용자에게 1줄 알림함.
+- 게임성 개발 2 클리어 OK 전달.
