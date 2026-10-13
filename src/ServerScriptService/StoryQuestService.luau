@@ -280,6 +280,8 @@ local function eventAmount(player, obj, ev)
 		local info = ev.Info
 		-- a personal monster never counts, except for a step that asks for exactly that (KO1's rematch Personal = true)
 		if (info.Personal == true) ~= (obj.Personal == true) then return 0 end
+		-- A23-135: a crown step counts the kill's units (1, golden 5), not the whole points (100 units = 1; final review
+		-- 10/13: a whole-point step stalled the main line)
 		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
 		if t ~= "Kill" and t ~= "BasicKill" and t ~= "SafeKill" and t ~= "AutoKill" then return 0 end
 		-- A23-86 Call of the Woods: obj.Alt = { MinLevel, Pairs = { { Kind, Zone } } } lets another kind in its own zone

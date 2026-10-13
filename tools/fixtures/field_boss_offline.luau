@@ -412,8 +412,8 @@ runGroup("clatter config", function()
 	local K = C.FieldBosses.Clatter
 	local def = C.MonsterTypes.CaptainClatter
 	check(table.find(C.FieldBosses.Order, "Clatter") ~= nil and K.Kind == "CaptainClatter", "Clatter is a field boss key")
-	check(K.FirstDelay == 300 and K.Interval == 1200 and K.Lifetime == 360 and K.MinLevel == 25 and K.War == 20
-		and K.Attr == "ClatterSpawn" and K.Hill ~= true, "every 20 min, stays 6 min, chip from Lv25, +20 war, own mark", show(K))
+	check(K.FirstDelay == 300 and K.Interval == 1200 and K.Lifetime == 360 and K.MinLevel == 25 and K.War == 2
+		and K.Attr == "ClatterSpawn" and K.Hill ~= true, "every 20 min, stays 6 min, chip from Lv25, +2 war (A23-137 scale), own mark", show(K))
 	check(type(K.Weekly) == "table" and K.Weekly.Item == "CaptainBadge" and K.Weekly.Max == 2
 		and K.Titles[1] == "ClatterStopper" and K.Titles[10] == "ClatterStopper10" and K.Titles[50] == "ClatterStopper50",
 		"weekly badge banked up to 2, titles 1 / 10 / 50")
@@ -456,7 +456,7 @@ runGroup("clatter config", function()
 end)
 
 runGroup("clatter war pool", function()
-	-- 검수 2026-10-09 (the CR-M18 way): +20 personal points each, but one kill adds 20 to a side's pool only once
+	-- 검수 2026-10-09 (the CR-M18 way): +2 personal points each (A23-137 scale, was 20), but one kill adds 2 to a side's pool only once
 	local w = bossWorld({})
 	local a, b, c = w:Hunter(1, "SkeletonRuins"), w:Hunter(2, "SkeletonRuins"), w:Hunter(3, "SkeletonRuins")
 	a.Attrs.Faction, b.Attrs.Faction, c.Attrs.Faction = "Halo", "Halo", "Horns"
@@ -466,8 +466,8 @@ runGroup("clatter war pool", function()
 		pool[add.P.Attrs.Faction] += add.Pool or add.N
 		personal += add.N
 	end
-	check(#w.WarAdds == 3 and personal == 60, "+20 personal points each", show({ #w.WarAdds, personal }))
-	check(pool.Halo == 20 and pool.Horns == 20, "each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)", show(pool))
+	check(#w.WarAdds == 3 and personal == 6, "+2 personal points each", show({ #w.WarAdds, personal }))
+	check(pool.Halo == 2 and pool.Horns == 2, "each side's pool gets 2 once (two Halos 1 + 1, one Horns 2)", show(pool))
 end)
 
 runGroup("clatter extras", function()
@@ -479,7 +479,7 @@ runGroup("clatter extras", function()
 	for _, f in w.Fx do if f.Kind == "KingDefeat" then fx = f end end
 	check(fx and fx.Data.Key == "Clatter" and fx.Data.Share and fx.Data.Share.Halo == 62 and fx.Data.Share.Horns == 38,
 		"defeat Fx carries the side share", show(fx and fx.Data.Share))
-	check(#w.WarAdds == 2 and w.WarAdds[1].N == 20 and w.WarAdds[2].N == 20, "+20 crown-war points each (own side)", #w.WarAdds)
+	check(#w.WarAdds == 2 and w.WarAdds[1].N == 2 and w.WarAdds[2].N == 2, "+2 crown-war points each (own side)", #w.WarAdds)
 	local da, db = w.DataOf[a].FieldBoss.Clatter, w.DataOf[b].FieldBoss.Clatter
 	check(da.Kills == 1 and db.Kills == 1 and w.TitlesOf[a].ClatterStopper and w.TitlesOf[b].ClatterStopper,
 		"first kill: Kills 1, Clatter Stopper", show(da))
