@@ -30,6 +30,7 @@ Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 
 - 통과 → Blender 손보기 2: NEW_Hedge, NEW_WallLamp(_left/_right 이름 맞바꿈 6bfc4ff 뒤).
 
 ## 교훈
+- **사용자(10/13 저녁, "왜 검수하는 애는 크롬 안 봐?"): 계정 2 흰 모델은 Chrome의 Tripo에서 직접 돌려 보고 고름**(점토·wm_six = 보조). 순서: Blender 손보기 2가 '고르기 대기'일 때만 → 최종 검수에 "디자인 검수 2 / Chrome 흰 모델 보기 / N분" → '전달함, 시작' → Blender 손보기 2에 '지금 내가 봄' → 내 탭 하나(tabs_create_mcp, studio.tripo3d.ai/ko/workspace/generate/<id>)에서 위·아래·앞·뒤·양옆·3/4(Tripo 화면 버튼/JS 회전, 좌표 클릭·점수 버튼 금지) → 내 탭 닫기 → Blender 손보기 2에 '끝', 최종 검수에 '끝'. Chrome은 앞 탭만 그려져 둘이 겹치면 Blender 손보기 2가 멈춤. PBR도 가능하면 Tripo에서 한 번 돌려 봄.
 - **사용자 지시(10/13): 흰 모델은 4개 각각 위·아래·앞·뒤·양옆 + 3/4를 다 보고 고름, 이유에 '위·아래 확인함'.** 도구 `tools/design_review/wm_six.py`(README 8).
 - **난간·울타리처럼 바닥 모양이 중요한 것은 흰 모델을 바로 위(top)에서 꼭 봄** — Bal_C 531c8172가 옆에선 ㄱ인데 위에선 닫힌 세모(최종 검수가 잡음). 스크래치 `top.py`(위 + 뒤 3/4). 같은 2D라도 흰 모델이 45° 돌아 나오면 앞 한 장 텍스처가 어긋날 수 있음.
 - 판정이 두 검수에서 겹치면 먼저 내려간 판정을 따르고, 정정은 관련 세션 모두에 한 번에(메시지가 엇갈림).
