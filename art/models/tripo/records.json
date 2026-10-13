@@ -15588,7 +15588,8 @@
    "file": "art/models/tripo/web/NPC_HaloBakerGranny_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 9406304,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloBellElder_web2_hd": [
@@ -15611,7 +15612,8 @@
    "file": "art/models/tripo/web/NPC_HaloBellElder_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 4658196,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloBright_web2_hd": [
@@ -15634,7 +15636,8 @@
    "file": "art/models/tripo/web/NPC_HaloBright_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 6823004,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloFlowerFarmer_web2_hd": [
@@ -15657,7 +15660,8 @@
    "file": "art/models/tripo/web/NPC_HaloFlowerFarmer_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 5960584,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloFlowerGirl_web2_hd": [
@@ -15680,7 +15684,8 @@
    "file": "art/models/tripo/web/NPC_HaloFlowerGirl_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 5806216,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloFolk4_web2_hd": [
@@ -15703,7 +15708,8 @@
    "file": "art/models/tripo/web/NPC_HaloFolk4_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 4977280,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloHerbHusband_web2_hd": [
@@ -15726,7 +15732,8 @@
    "file": "art/models/tripo/web/NPC_HaloHerbHusband_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 5400828,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ],
  "NPC_HaloHerbWife_web2_hd": [
@@ -15749,7 +15756,8 @@
    "file": "art/models/tripo/web/NPC_HaloHerbWife_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 6243344,
-   "note": "raw HD GLB front = +X"
+   "note": "raw HD GLB front = +X",
+   "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
  ]
 }
