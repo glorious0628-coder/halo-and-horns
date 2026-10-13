@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 아침 — fix/menu-one-line (다시 시작하면 여기부터)
+## 10/14 낮 — fix/menu-one-line-2 959f3eed (다시 시작하면 여기부터)
+- menu-one-line은 main 75890afd 병합·사진 통과. 남은 2개 고침 = **fix/menu-one-line-2 959f3eed**(origin/main 6fca85e0 위, ../wt_dev1merge): ① 칸 이름이 11px에서 못 줄던 원인 = UIKit.FitText가 바닥을 MIN_TEXT_SIZE 11로 막고 UITextSizeConstraint는 그걸 실제 px로 읽음 → 라벨 속성 FitMinPx(자기 바닥) 새로, PC 칸 이름 8px·여백 PickerFitPaddingX 6px(Studio TextService 실측: Monsters 33.5/38/45.5 @8/9/11, Settings 30.5/34.5/41) ② 사진 로그 펼침 줄 = MenuFold 칸만 셈 + 이름 px·남는 폭 기록. 내일 아침 병합 예정.
+- 다음: 02_dev1.md 폰 첫 10분 읽힘.
+
+## 10/14 아침 — fix/menu-one-line (병합됨)
 - first-look-1·2는 main에 병합됨(4fe62394). 새 가지 **fix/menu-one-line 11af5107**(../wt_dev1merge, origin/main 4f88cc5a에서): PC 메뉴 펼침 한 줄.
   - HudLayout: PC 아래 줄 7칸(Monsters가 펼침에서 아래 줄로; 시트 tiles 438du, 1280x720은 유령 버튼 때문에 묶음이 가운데에서 26px 왼쪽), PC는 전쟁 미터(가운데 열)가 폭 그대로 왼쪽으로 움직여 펼침 8칸(FOLD_WANT_PC = #L.Fold)이 [Menu] 옆 한 줄. 991x451 Studio 창: 첫 줄 7 → 8칸.
   - HUD: L.TileNamePxPC 10 → 9('Monsters' 잘림). FitFold는 미터가 못 움직일 때(Roblox 메뉴 넓게 열림) 대비로 남김.
