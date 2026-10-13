@@ -1,5 +1,12 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 밤 — 숨긴 창에서도 돎 (잔액 3,955)
+- **숨긴 창 해결:** 페이지를 새로 열지 말고 `$router.push`로만 이동(새로 열면 숨긴 창에서 안 뜸). 도우미: hhTexUp/hhTexGo(텍스처), hhPbrStep(PBR), hhSmStep('nav'|'prep'|'go')(스마트 메시, 지난 그림 키와 같으면 안 누름). 그림 올릴 땐 input.value='' + 새 파일 이름(같은 이름이면 안 올라감).
+- **주소 받기:** 페이지 → 내 PC 직접은 막힘. 주소 목록 텍스트를 Adobe 업로드(PUT)로 보낸 뒤 presigned URL을 curl.
+- **끝:** PBR 36개 내려받음 → art/models/tripo/web/<id>_SM_tex8k_pbr_src.fbx(디스크만, 크기 커서 git 안 올림) → touchup/<id>/<id>_TU.glb. records.json 적음. 디자인 검수에 이름+경로 보냄.
+- **흰 모델 고르기 대기(디자인 검수):** 집 덩어리 18종(id 보냄) + 묶음10 7종(Topiary_E·PotFlowers_E·F·A·C·D·Planter_A, id 보냄). 고르면 → 텍스처 → 바로 PBR.
+- Blender 손보기 2 몫: Planter_D·FlowerCart_Bouquet·난간 6·NEW_* 5.
+
 ## 10/13 오후 — A23-154 방식 (다섯 단계만)
 - 스마트 메시 → 디자인 검수가 4개 중 고름 → 텍스처(앞면 한 장·조명 없이·8K) → **바로 PBR** → 내려받아 크기·피벗·방향만 → **디자인 검수에 이름+경로**(그다음 최종 검수 → 이미지 생성 3). 매직 브러시·붓·Blender 색 고침·사이 관문 없음.
 - 데스크톱에 뜨는 일(창·다운로드 창·마우스·키보드) 하지 않음 — Blender --background·curl·앱 브라우저 JS만. 사용자 부탁은 최종 검수에게만.
@@ -10,7 +17,7 @@
 - **이어받기(10/13 밤):** 텍스처 큐 0~10번 끝(Greenhouse d148d3bd·ShopSign e96efdb6·Lantern_A~E·IvyWall 18598e34·IvyBalcony 0352e909·FlowerBushPot 5a5af84d·DomePorchHalf e549329c) → 이 11개 텍스처 끝나면 **바로 PBR**. 남은 텍스처 11~19번: DomePavilion bc5097f2·DomeTowerSmall 6d925d8a·BreadDisplay e5467c5f·RoundTree_E 077f2fae·RoundTree_F cc3f527f·RoundTree_G a9395b47·Topiary_C 3e2847ad·Topiary_D 7c673fb4·Planter_E 1021df70 (페이지 hhTexQ/hhTexI=11, `eval(hhSleepDef); hhTexDo()` 반복).
 - PBR 눌렀고 내려받기 남음(16): GateLeaf·DomeOnion·DomeBall·BenchB·DomeOctagon·FlowerCart·JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick·ConeTree·동상B 1a0812be·분수C cd70436c·Daisy c9df2ff9·Rose 9e0487cc → model_url(tripo_texture_*.fbx) curl → art/models/tripo/web/<id>_SM_tex8k_pbr_src.fbx → scratchpad build_glb.py(크기·피벗·방향만) → touchup/<id>/<id>_TU.glb → 디자인 검수에 이름+경로, records.json.
 - 페이지 함수가 사라지면 tools/tripo_web_helpers.js 전체를 javascript_exec로 실행. 이 세션 오른쪽 브라우저 칸이 보일 때만 Tripo가 돎(대화만 떠 있고 브라우저 칸이 닫히면 멈춤).
-- **나눔(A23-155):** Blender 손보기 2(local_d85ba88a…, 다른 Tripo 계정)에 넘김 = Planter_D·FlowerCart_Bouquet·Balustrade 6종(Var3 E·F, Var4 A·B·C·D)·NEW_* 5종. 내 몫 남은 흰 모델 = HaloChunk_* 18종: bundle11 PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond, bundle12 StarFinial·CastleHedge·WeatherVane·ChimneyCap·ChimneyLantern·RoundTree, bundle13(21.8 MB) MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope.
+- **나눔(A23-155):** Blender 손보기 2(local_d85ba88a…, 다른 Tripo 계정)에 넘김 = Planter_D·FlowerCart_Bouquet·Balustrade 6종(Var3 E·F, Var4 A·B·C·D)·NEW_* 5종 + (10/13 13시) 가게 간판 4종·NEW_Beehive·NEW_WateringCan·NEW_SteppingStones(디자인 검수 2 2D 통과분, 1의 큐에 넣지 말 것). 내 몫 남은 흰 모델 = HaloChunk_* 18종: bundle11 PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond, bundle12 StarFinial·CastleHedge·WeatherVane·ChimneyCap·ChimneyLantern·RoundTree, bundle13(21.8 MB) MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope.
 - (옛 줄) 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap·ChimneyLantern·RoundTree(bundle12 끝에 넣음, 42.1 MB; 아직 Adobe 안 올림).
 
 ## 10/13 낮 — 로그인 뒤 진행 (잔액 6,505)
