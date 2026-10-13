@@ -9,11 +9,13 @@ import json
 import os
 import subprocess
 import sys
+import time
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 from studio_mcp import Client  # noqa: E402
+from shot_hide import HIDE, SHOW  # noqa: E402
 
 GUARD = 'if game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil") then error("WRONG STUDIO: main") end\n'
 SIM = open(os.path.join(ROOT, "tools", "halo_light_sim.luau"), encoding="utf-8").read()
@@ -45,8 +47,13 @@ def grab(tag, cam, look):
         os.remove(CAPF)
     arg = os.path.join(os.environ.get("TEMP", ""), "bab_arg.json")
     json.dump({"capture_id": tag, "camera_position": cam, "look_at_position": look}, open(arg, "w"))
-    subprocess.run([sys.executable, os.path.join(ROOT, "tools", "studio_mcp.py"), "call", "screen_capture", "@" + arg],
-                   capture_output=True, text=True, encoding="utf-8", errors="replace", env=dict(os.environ), timeout=120)
+    for k in range(2):   # 10/13: the first capture moves the camera, terrain there is drawn only after a moment
+        if k:
+            time.sleep(2.5)
+            if os.path.exists(CAPF):
+                os.remove(CAPF)
+        subprocess.run([sys.executable, os.path.join(ROOT, "tools", "studio_mcp.py"), "call", "screen_capture", "@" + arg],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", env=dict(os.environ), timeout=120)
     im = Image.open(CAPF).copy()
     w, h = im.size
     s = min(w, h)
@@ -59,6 +66,7 @@ for _, x in b:GetDescendants() do if x:IsA("Attachment") and x.Name == "DoorFron
 local p = d or f.Position
 local l = f.LookVector
 return string.format("%%.3f,%%.3f,%%.3f,%%.4f,%%.4f", p.X, p.Y, p.Z, l.X, l.Z)'''
+luau(HIDE)   # before the camera rays, so stand-in boxes do not block them
 geo = {}
 for bn, src, dist in items:
     r = luau(Q % bn)
@@ -69,6 +77,7 @@ for bn, src, dist in items:
     geo[bn] = ([x + lx * dist, y + 10, z + lz * dist], [x, y + 7, z], [x + lx * 12, y + 5, z + lz * 12], [x, y + 4.5, z])
 views = ["day", "night"] + (["close"] if close else [])
 try:
+    luau(HIDE)
     for ph in ("day", "night"):
         luau(SIM.replace('local CAND, PHASE = "%s", "%s"', 'local CAND, PHASE = "C2c", "%s"' % ph))
         for bn, g in geo.items():
@@ -77,6 +86,7 @@ try:
                 grab(bn + "close", g[2], g[3]).save(os.path.join(out, "%s_close.png" % bn))
 finally:
     luau(REST)
+    luau(SHOW)
 font = ImageFont.truetype("malgun.ttf", 16)
 C = 320
 rows = [i for i in items if i[0] in geo]
