@@ -23,8 +23,7 @@ from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 from studio_mcp import Client  # noqa: E402
 
 GUARD = 'if game.PlaceId == 81671223175574 or string.find(game.Name, "GoodEvil") then error("WRONG STUDIO: main") end\n'
-SIM = open(os.path.join(ROOT, "tools", "halo_light_sim.luau"), encoding="utf-8").read().replace(
-    'local CAND, PHASE = "%s", "%s"', 'local CAND, PHASE = "C2c", "day"')
+SIM0 = open(os.path.join(ROOT, "tools", "halo_light_sim.luau"), encoding="utf-8").read()
 RESTORE = open(os.path.join(ROOT, "tools", "halo_light_restore.luau"), encoding="utf-8").read()
 D2 = "art/out/s2/halo/castle6/HaloCastle_C2_%s.png"
 # shot: (2D file, camera, look-at)
@@ -42,9 +41,11 @@ ap = argparse.ArgumentParser()
 ap.add_argument("out")
 ap.add_argument("--show", action="store_true")
 ap.add_argument("--dry", action="store_true")
+ap.add_argument("--phase", default="day", choices=["day", "night"], help="C2c day or night light (halo_light_sim; the castle skeleton has no lamps yet)")
 a = ap.parse_args()
 os.makedirs(a.out, exist_ok=True)
 allshots = dict(SHOTS, plan=PLAN)
+SIM = SIM0.replace('local CAND, PHASE = "%s", "%s"', 'local CAND, PHASE = "C2c", "%s"' % a.phase)
 if a.dry:
     for k, v in allshots.items():
         print(k, v)
@@ -104,7 +105,7 @@ try:
         time.sleep(2.0)
     print("[castle]", luau(c, SIM)[:90], flush=True)
     for k, (_, cam, look) in allshots.items():
-        grab(k, cam, look).save(os.path.join(a.out, k + ".png"))
+        grab(k, cam, look).save(os.path.join(a.out, k + ("" if a.phase == "day" else "_night") + ".png"))
         print("[castle] shot", k, flush=True)
 finally:
     print("[castle] restore", luau(c, GUARD + RESTORE)[:80], flush=True)
@@ -120,14 +121,14 @@ CELL = 460
 rows = list(allshots.items())
 S = Image.new("RGB", (2 * (CELL + 10) + 10, 40 + len(rows) * (CELL + 34)), (24, 24, 28))
 d = ImageDraw.Draw(S)
-d.text((10, 8), "빛 성 C2 골격 — 2D | WorldKit C2c 낮 (plan = 계획 자리)", fill=(240, 240, 240), font=font)
+d.text((10, 8), "빛 성 C2 골격 — 2D | WorldKit C2c %s (plan = 계획 자리)" % ("낮" if a.phase == "day" else "밤"), fill=(240, 240, 240), font=font)
 for r, (k, (src, _, _)) in enumerate(rows):
     y = 40 + r * (CELL + 34)
     d.text((10, y), k, fill=(255, 210, 120), font=font)
-    for j, p in enumerate([os.path.join(ROOT, src), os.path.join(a.out, k + ".png")]):
+    for j, p in enumerate([os.path.join(ROOT, src), os.path.join(a.out, k + ("" if a.phase == "day" else "_night") + ".png")]):
         if os.path.isfile(p):
             im = Image.open(p).convert("RGB")
             im.thumbnail((CELL, CELL))
             S.paste(im, (10 + j * (CELL + 10), y + 28))
-S.save(os.path.join(a.out, "castle_C2_wk_day.jpg"), quality=88)
+S.save(os.path.join(a.out, "castle_C2_wk_%s.jpg" % a.phase), quality=88)
 print("[castle] ok", a.out, flush=True)

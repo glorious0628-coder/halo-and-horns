@@ -85,6 +85,9 @@ local L = {
 		{ Id = "Skills", Icon = "IconSkills", Window = "Skills", Key = "Skills", Keep = 4 },
 		{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = 5 },
 		{ Id = "Ranking", Icon = "IconRanking", Window = "Ranking", Key = "Ranking", Keep = 6 },
+		-- A23-153 the Monster Codex (CodexUI.luau window "Codex"): open from the start - its silhouettes are the goal
+		-- (the approved slime icon until a codex icon is drawn)
+		{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },
 	},
 	-- A23-40 정정 (user 2026-10-06 "메뉴는 오른쪽 위에, 누르면 옆으로 좌르륵"; 검수: 새 소식 · 이동 · 도움말 · 설정): the
 	-- squares [메뉴] folds out to its left, left to right. 직업 바꾸기 · 환생 · 오프닝 다시 보기 · 이름 숨기기 · 휴가 are
@@ -209,6 +212,7 @@ local TXT = {
 	TileCharacter = "Hero",
 	TileSkills = "Skills",
 	TileRanking = "Ranking",
+	TileCodex = "Codex", -- A23-153
 	TileSettings = "Settings",
 	TileNews = "News",
 	TileDiary = "Diary",
@@ -3004,7 +3008,7 @@ local function buildButtons(root)
 	-- A23-40 icon tile row (U1: the menu key is B by default; Esc belongs to Roblox and M opens the map). A window tile
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
-		Ranking = TXT.TileRanking, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
+		Ranking = TXT.TileRanking, Codex = TXT.TileCodex, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
 		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite }
 	ui.tiles = {}
 	for i, def in L.Tiles do

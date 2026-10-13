@@ -7,9 +7,103 @@
 local NOW = 1790000000 -- the kit's os.time()
 local NAN, INF = 0 / 0, math.huge
 
+-- a tiny Instance tree for the card models (Clone / GetDescendants / IsA with BasePart / Destroy / attributes / Parent).
+-- fake(className, name, props, children); a parent may be a kit Instance (anything with _children)
+local BASEPARTS = { Part = true, MeshPart = true, UnionOperation = true, WedgePart = true }
+local fakeMeta = {}
+local function fake(className, name, props, children)
+	local o = setmetatable({ ClassName = className, Name = name or className, _children = {}, _parent = nil, Attrs = {} }, fakeMeta)
+	for k, v in props or {} do rawset(o, k, v) end
+	for _, c in children or {} do c.Parent = o end
+	return o
+end
+fakeMeta.M = {
+	IsA = function(o, kind)
+		return o.ClassName == kind or kind == "Instance" or (kind == "BasePart" and BASEPARTS[o.ClassName] == true)
+	end,
+	FindFirstChild = function(o, n)
+		for _, c in o._children do if c.Name == n then return c end end
+		return nil
+	end,
+	GetChildren = function(o) return table.clone(o._children) end,
+	GetDescendants = function(o)
+		local out = {}
+		local function walk(x)
+			for _, c in x._children do
+				table.insert(out, c)
+				walk(c)
+			end
+		end
+		walk(o)
+		return out
+	end,
+	Clone = function(o)
+		if rawget(o, "CloneFails") then error("offline: this model cannot be cloned") end
+		local c = setmetatable({ _children = {}, _parent = nil, Attrs = table.clone(o.Attrs) }, fakeMeta)
+		for k, v in o do
+			if k ~= "_children" and k ~= "_parent" and k ~= "Attrs" then rawset(c, k, v) end
+		end
+		for _, kid in o._children do kid:Clone().Parent = c end
+		return c
+	end,
+	Destroy = function(o)
+		o.Parent = nil
+		rawset(o, "Destroyed", true)
+	end,
+	SetAttribute = function(o, k, v) o.Attrs[k] = v end,
+	GetAttribute = function(o, k) return o.Attrs[k] end,
+}
+fakeMeta.__index = function(o, k)
+	if k == "Parent" then return rawget(o, "_parent") end
+	return fakeMeta.M[k]
+end
+fakeMeta.__newindex = function(o, k, v)
+	if k == "Parent" then
+		local old = rawget(o, "_parent")
+		if old then
+			local i = table.find(old._children, o)
+			if i then table.remove(old._children, i) end
+		end
+		rawset(o, "_parent", v)
+		if type(v) == "table" and v._children then table.insert(v._children, o) end
+		return
+	end
+	rawset(o, k, v)
+end
+
+-- a monster model as an import looks: parts that move and collide, a script, a sound, effects, an attachment
+local function importedModel(name, extra)
+	return fake("Model", name, extra, {
+		fake("MeshPart", "Body", { Anchored = false, CanCollide = true, CanQuery = true, CanTouch = true }, {
+			fake("Attachment", "RootAttachment"), fake("ParticleEmitter", "Sparkle"), fake("PointLight", "Glow") }),
+		fake("Part", "HumanoidRootPart", { Anchored = false, CanCollide = true, CanQuery = true, CanTouch = true }),
+		fake("Script", "Brain"), fake("LocalScript", "Bob"), fake("Sound", "Growl"), fake("BillboardGui", "Tag"),
+		fake("Folder", "Bits", nil, { fake("Part", "Hat", { Anchored = false, CanCollide = true, CanQuery = true, CanTouch = true },
+			{ fake("ModuleScript", "Deep") }) }),
+	})
+end
+
 local function codexWorld(o)
 	o = o or {}
-	local w = dev3World({ EditConfig = o.EditConfig })
+	-- 게임성 개발 1 10/13: the shipped Config.Codex.ServerToast is off (CodexUI.luau shows every line); these worlds test the
+	-- server's toast path with it on (a world's own EditConfig still runs after, e.g. turning it off again)
+	local edit = o.EditConfig
+	local w = dev3World({ EditConfig = function(c)
+		c.Codex.ServerToast = true
+		if edit then edit(c) end
+	end })
+	-- the card models: ServerStorage (o.Custom = the CustomModels folder's children, or nil = no folder) and a ReplicatedStorage
+	-- that holds children
+	w.ServerStorage = fake("ServerStorage", "ServerStorage")
+	if o.Custom then fake("Folder", "CustomModels", nil, o.Custom).Parent = w.ServerStorage end
+	w.Services.ServerStorage = w.ServerStorage
+	local rs = w.Services.ReplicatedStorage
+	rs._children = rs._children or {}
+	function rs.FindFirstChild(self, n)
+		for _, c in self._children do if c.Name == n then return c end end
+		return rawget(self, n)
+	end
+	w.AllowWarn = o.AllowWarn
 	-- 1 = the doubles answer what they added, like the real ProgressionService (2 = a 2x pass)
 	w.GoldMult, w.XPMult = o.GoldMult or 1, o.XPMult or 1
 	w:Service("TitleService", TITLE_SOURCE)
@@ -95,8 +189,8 @@ runGroup("config", function()
 	check(C.TitleDefs.SlimeScholar.Name == "Slime Scholar" and C.TitleDefs.GoblinScholar.Name == "Goblin Scholar"
 		and C.TitleDefs.SkeletonScholar.Name == "Skeleton Scholar", "the page titles", "")
 	check(sameTable(X.Reward, { Stage = { 3, 20, 100 }, BossStage = { 1, 3, 10 }, Golden = 5 }), "rewards in kills' worth", show(X.Reward))
-	check(C.PassBoost.GoldSources.Codex == true and C.RateLimits.CodexOpen == 1 and X.ServerToast == true,
-		"codex gold is earned gold (2x pass), CodexOpen 1 s, the server toast is on", "")
+	check(C.PassBoost.GoldSources.Codex == true and C.RateLimits.CodexOpen == 1 and X.ServerToast == false,
+		"codex gold is earned gold (2x pass), CodexOpen 1 s, the server toast is off (CodexUI shows the lines)", "")
 	check(C.CodexCanGold("Slime") and not C.CodexCanGold("SlimeKing") and not C.CodexCanGold("CaptainClatter"),
 		"bosses have no Gold Foil card (never golden)", "")
 	check(C.CodexStage("Slime", 0) == 0 and C.CodexStage("Slime", 1) == 1 and C.CodexStage("Slime", 99) == 1
@@ -444,6 +538,61 @@ runGroup("debug", function()
 	check(CS.Debug(p, "Slime:0") == "ok" and d.Codex.Slime == nil, "'Slime:0' removes the card", show(d.Codex))
 	CS.Debug(p, "Goblin:5")
 	check(CS.Debug(p, "reset") == "ok" and next(d.Codex) == nil and p:GetAttribute("CodexCards") == 0, "'reset' clears", show(d.Codex))
+end)
+
+------------------------------------------------------------------ the card models (최종 검수 10/13)
+runGroup("card models", function()
+	local goblin = importedModel("Goblin")
+	local knight = importedModel("SkeletonKnight")
+	local prince = fake("MeshPart", "BigSlime", { Anchored = false, CanCollide = true, CanQuery = true, CanTouch = true },
+		{ fake("Script", "Wobble") })
+	local custom = { goblin, knight, prince, fake("Folder", "Skeleton"), importedModel("PumpkinSlime"), importedModel("Slime", { CloneFails = true }) }
+	local w = codexWorld({ Custom = custom, AllowWarn = { "model Slime: ", "model FlowerSlime: " } })
+	local C = w.Config
+	local folder = w.Services.ReplicatedStorage:FindFirstChild("CodexModels")
+	check(folder ~= nil and folder.ClassName == "Folder", "ReplicatedStorage.CodexModels exists", "")
+	local names = {}
+	for _, c in folder:GetChildren() do table.insert(names, c.Name) end
+	table.sort(names)
+	check(table.concat(names, ",") == "BigSlime,CaptainClatter,Goblin,SkeletonKnight,SlimeKing,SlingshotGoblin",
+		"own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped",
+		table.concat(names, ","))
+	check(folder:FindFirstChild("PumpkinSlime") == nil, "only the codex kinds", "")
+	local g = folder:FindFirstChild("Goblin")
+	local kinds = {}
+	for _, d in g:GetDescendants() do kinds[d.ClassName] = true end
+	check(not (kinds.Script or kinds.LocalScript or kinds.ModuleScript or kinds.Sound or kinds.ParticleEmitter or kinds.PointLight
+		or kinds.BillboardGui), "no script, sound, effect, light or GUI left (deep ones too)", show(kinds))
+	check(kinds.MeshPart and kinds.Part and kinds.Attachment and kinds.Folder, "the shape stays (parts, attachments, folders)", show(kinds))
+	local stillOk = true
+	for _, d in g:GetDescendants() do
+		if d:IsA("BasePart") and not (d.Anchored == true and d.CanCollide == false and d.CanQuery == false and d.CanTouch == false) then
+			stillOk = false
+		end
+	end
+	check(stillOk, "every part Anchored, CanCollide / CanQuery / CanTouch off", "")
+	check(g:GetAttribute("CodexScale") == C.MonsterTypes.Goblin.Scale and g:GetAttribute("CodexFrom") == nil, "own model: its scale, no From", "")
+	local sling = folder:FindFirstChild("SlingshotGoblin")
+	check(sling and sling:GetAttribute("CodexFrom") == "Goblin" and sling:GetAttribute("CodexScale") == C.MonsterTypes.SlingshotGoblin.Scale
+		and sling:GetAttribute("CodexColor") == C.MonsterTypes.SlingshotGoblin.Color and sling ~= g,
+		"a borrowed model (ModelFrom Goblin): its own copy, From, scale, tint", "")
+	local clatter = folder:FindFirstChild("CaptainClatter")
+	check(clatter and clatter:GetAttribute("CodexFrom") == "SkeletonKnight" and clatter:GetAttribute("CodexScale") == 2.2, "Captain Clatter borrows the knight", "")
+	local king = folder:FindFirstChild("SlimeKing")
+	check(king and king.ClassName == "MeshPart" and king.Anchored == true and king.CanQuery == false and #king:GetChildren() == 0
+		and king:GetAttribute("CodexFrom") == "BigSlime", "a BasePart model (the King borrows the Prince's): still, its script gone", "")
+	-- the originals are untouched
+	local orig = {}
+	for _, d in goblin:GetDescendants() do orig[d.ClassName] = true end
+	check(orig.Script and orig.Sound and goblin.Name == "Goblin" and goblin:FindFirstChild("HumanoidRootPart").Anchored == false
+		and prince:FindFirstChild("Wobble") ~= nil, "ServerStorage's models are not changed", "")
+	-- again: nothing doubled
+	local again = w.Reg.CodexService.PublishModels()
+	check(again == 0 and #folder:GetChildren() == 6, "publishing again adds nothing", again)
+	-- no CustomModels folder: an empty CodexModels, no warning
+	local w2 = codexWorld()
+	local f2 = w2.Services.ReplicatedStorage:FindFirstChild("CodexModels")
+	check(f2 ~= nil and #f2:GetChildren() == 0, "no CustomModels: an empty folder", "")
 end)
 
 ------------------------------------------------------------------ the repair

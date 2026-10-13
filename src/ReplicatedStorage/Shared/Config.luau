@@ -9277,9 +9277,13 @@ Config.Codex = {
 	Reward = { Stage = { 3, 20, 100 }, BossStage = { 1, 3, 10 }, Golden = 5 },
 	MaxKills = 1000000000,
 	-- the server also sends the line as a toast (Net.Notify "reward"); 게임성 개발 1 turns this off once the card moment
-	-- shows the line itself (CodexUp carries the same line)
-	ServerToast = true,
+	-- shows the line itself (CodexUp carries the same line). Off (게임성 개발 1 10/13): CodexUI.luau shows every line - a
+	-- card moment, the reward popup (Page / Glow) or, with the codex window open, a toast
+	ServerToast = false,
 	Attr = { Cards = "CodexCards", Glow = "CodexGlow" }, -- player attributes (cards owned; every card Gold Holo)
+	-- 최종 검수 10/13: the 3D card models the codex window draws (게임성 개발 1): ReplicatedStorage[ModelFolder][kind], copied at
+	-- the server's start from ServerStorage.CustomModels by MonsterService's rule (the kind's own model, else its ModelFrom)
+	ModelFolder = "CodexModels",
 	Text = {
 		Name = "Monster Codex",
 		Card = "New card: %s!", -- (the monster's Short name)
@@ -9332,6 +9336,35 @@ Config.Codex = {
 			Neutral = "His Old Crown Gem is bright. Handle with care." },
 	},
 }
+-- A23-153 the codex screen (게임성 개발 1, CodexUI.luau; contract docs/design/codex_cards_contract_2026-10-13.md §7): the
+-- window's and the card moments' own words (game text English only; the server's lines are Config.Codex.Text), the card
+-- rims by look (None = not met, Card / Silver / Holo by stage, Foil = the Gold Foil card) and the moments' timing. No
+-- new art: the approved PanelCard / SlotEmpty / SlotCommon / Chip / Btn* parts with their UIKit fallbacks; the sparkles
+-- are the round RewardSparkle (A23-153: never rays)
+Config.Codex.Screen = {
+	Text = {
+		Count = "%d/%d cards",
+		Kills = "Kills: %s",
+		NextAt = "%s at %s", -- the next stage's name at that many kills ("Silver at 100")
+		Top = "Top stage!",
+		Unknown = "???",
+		NotMet = "Not met yet",
+		Flip = "Flip",
+		Front = "Front",
+		Tilt = "Auto tilt",
+		ShowFoil = "Gold Foil",
+		ShowCard = "Card",
+		Where = "Found in: %s",
+		Drops = "Drops: %s",
+		First = "First met: %s",
+		Ok = "Yay!",
+		Months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" },
+	},
+	Rim = { None = Color3.fromRGB(90, 96, 120), Card = Color3.fromRGB(196, 150, 92), Silver = Color3.fromRGB(214, 222, 236),
+		Holo = Color3.fromRGB(255, 214, 92), Foil = Color3.fromRGB(255, 186, 40) },
+	Moment = { Hold = 2.6, Max = 8 }, -- s a card moment stays; moments waiting at most (the oldest go)
+}
+
 -- the series-1 kinds in card order, and the page index of each
 Config.Codex.Order, Config.Codex.PageOf = {}, {}
 for i, page in Config.Codex.Pages do

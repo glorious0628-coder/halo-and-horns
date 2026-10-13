@@ -1,9 +1,9 @@
 {
   "status": "passed",
   "mutationsSkipped": false,
-  "checks": 139,
+  "checks": 154,
   "failedChecks": 0,
-  "namedChecks": 137,
+  "namedChecks": 152,
   "namedChecksFailing": 0,
   "failing": [],
   "named": [
@@ -674,6 +674,96 @@
       "fail": 0
     },
     {
+      "group": "card models",
+      "check": "ReplicatedStorage.CodexModels exists",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "only the codex kinds",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "no script, sound, effect, light or GUI left (deep ones too)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "the shape stays (parts, attachments, folders)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "every part Anchored, CanCollide / CanQuery / CanTouch off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "own model: its scale, no From",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "a borrowed model (ModelFrom Goblin): its own copy, From, scale, tint",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "Captain Clatter borrows the knight",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "a BasePart model (the King borrows the Prince's): still, its script gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "ServerStorage's models are not changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "publishing again adds nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "no CustomModels: an empty folder",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "card models",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
       "group": "repair",
       "check": "nil / text / empty -> {}",
       "pass": 1,
@@ -834,9 +924,9 @@
   "staticChecks": 13,
   "staticFailures": [],
   "mutations": {
-    "total": 60,
-    "applied": 60,
-    "caught": 60,
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
     "skipped": false,
     "results": [
       {
@@ -948,13 +1038,13 @@
         "crashed": false,
         "newFailingChecks": [
           "boss cards :: group ran to the end without a Lua error",
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped",
+          "card models :: publishing again adds nothing",
           "config :: series 1 = the 11 beta kinds in page order",
-          "every card gold holo :: 11 silver cards: no glow",
-          "gold foil :: group ran to the end without a Lua error",
-          "join and the snapshot :: CodexCards counts the cards",
-          "join and the snapshot :: a broken boss row: whole kills, no foil, stage capped at 3 (never taken back), First 0"
+          "every card gold holo :: 11 silver cards: no glow"
         ],
-        "newFailingCount": 14
+        "newFailingCount": 17
       },
       {
         "mutation": "repair: a stage taken back",
@@ -1580,6 +1670,155 @@
         "newFailingCount": 8
       },
       {
+        "mutation": "models: scripts kept",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: no script, sound, effect, light or GUI left (deep ones too)"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "models: sounds kept",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: no script, sound, effect, light or GUI left (deep ones too)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "models: parts not anchored",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: every part Anchored, CanCollide / CanQuery / CanTouch off"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "models: parts hit by rays",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: every part Anchored, CanCollide / CanQuery / CanTouch off"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "models: a BasePart model left loose",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "models: the source's name",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: Captain Clatter borrows the knight",
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: a borrowed model (ModelFrom Goblin): its own copy, From, scale, tint",
+          "card models :: own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped",
+          "card models :: publishing again adds nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "models: no ModelFrom",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: Captain Clatter borrows the knight",
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: a borrowed model (ModelFrom Goblin): its own copy, From, scale, tint",
+          "card models :: own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped",
+          "card models :: publishing again adds nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "models: a folder taken as a model",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped",
+          "card models :: publishing again adds nothing"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "models: one broken model stops the rest",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: group ran to the end without a Lua error",
+          "card models :: no service warnings (pcall-swallowed handler errors)",
+          "card models :: own models + ModelFrom borrowers; no model (GoblinBrute, the Skeleton folder, its archer) or a broken one (Slime and FlowerSlime that borrows it) skipped"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "models: published twice",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: publishing again adds nothing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "models: no borrowed attribute",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: Captain Clatter borrows the knight",
+          "card models :: a BasePart model (the King borrows the Prince's): still, its script gone",
+          "card models :: a borrowed model (ModelFrom Goblin): its own copy, From, scale, tint"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "models: never published",
+        "file": "src/ServerScriptService/CodexService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "card models :: ReplicatedStorage.CodexModels exists",
+          "card models :: group ran to the end without a Lua error"
+        ],
+        "newFailingCount": 2
+      },
+      {
         "mutation": "debug: any event name",
         "file": "src/ServerScriptService/CodexService.luau",
         "applied": true,
@@ -1596,14 +1835,14 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "678c51900c0edc405da916563c40a25177fb48f66b8f6ffc6d8dd7694690f978",
+    "src/ReplicatedStorage/Shared/Config.luau": "8eae310bb798b8ea27bcf1f15d5fe06a63524725595d38cb77d23ae5f8c910d5",
     "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
-    "src/ServerScriptService/CodexService.luau": "977c155dba2fd51e1896cc70d63811bdb1b9dae288a0b04067ac4150034c3ae7",
+    "src/ServerScriptService/CodexService.luau": "8fda524e9ff0dfaa29ef02521834d8c3200d77ba219f4347e9a4ab83c0e83d8c",
     "src/ServerScriptService/TitleService.luau": "31da92b19ab5ce7eb0d36694a06b3b07d65fdd8fb0ae99880930e77422635257",
     "src/ServerScriptService/KillLog.luau": "0c517d98afbe72b6db265add7a78644b2bf2ba5a2486df18d6a16f516de967a0",
     "src/ServerScriptService/DataService.luau": "14dc7d8759bb689afa249102420ac6c46e972c7fb27425adc2afc1ba770231dc"
   },
-  "fixtureSHA256": "a2ff873209d7bf982a287e5335be773dac14260a36da8d7f572f27d5613ddfc7",
+  "fixtureSHA256": "3a198602e8e0bab2aec248e0767683dea9d66746c749c9f397ed0f31bda4bef4",
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,
   "apiCalls": 0,

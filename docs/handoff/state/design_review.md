@@ -1,4 +1,4 @@
-# 디자인 검수 — 상태 (2026-10-13 새벽 2시, 사용자 "정리하고 컴퓨터 꺼줘")
+# 디자인 검수 — 상태 (2026-10-13 오전 10시)
 
 세션 local_2137d284(10/12 밤 새로). 보고처: 이미지 생성 2·3·Blender 손보기 → 나 → 최종 검수(local_8166f268). 옛 10/12 점심 큐(돔·NPC de-light·바깥선)는 끝난 기록(git log).
 
@@ -19,7 +19,8 @@
 **흰 모델 고름 → 텍스처 중:** DomeOnionSlim 40dad418, BreadStand 00dac363, FruitStall 568b5b8e, DomeBrick 46f0bb09.
 **4면 통과 → 흰 모델 대기:** Greenhouse, ShopSign, Lantern_A·B(10/13 다시 그림 통과)·C·D·E. (JuiceParasol 흰 모델은 10/13 아침 6ec4d75d로 고름.)
 **매직 브러시 보류(창 보일 때 Blender 손보기가, 한 번 30점 이하):** 동상 B(뒤 앞치마 파랑 → 흰, 발 사이 얼룩), 분수 C(2단 물 위 크림·주황 번짐), Daisy(주황·살구 꽃 → 빨강/흰), Rose(윗면 탁한 갈색). 크롭 `art/review/design/*_tex_*_1012.jpg`. 끝나면 내가 보고 PBR.
-**다시 그리는 중:** IvyWall(큼직 잎 새 판 앞·뒤 좋음, 옆 대기), IvyBalcony(앞면 좋음, 4면 대기), FlowerCart_Bouquet(이미지 생성 3). (끝난 것: Lantern_B)(받침 금테 판 = 면마다 1개, 지금 2개). 이미지 생성 2 큐 19 IvyWall부터(잎 큼직하게 미리 말함). 이미지 생성 3 소품 큐: 벤치 3·가판대 3·등불 5 끝 → 다음은 `docs/review/halo_redo_split_2026-10-12.md` '그릴 것' 순서.
+**IvyWall 큼직 잎 판 4면 통과 → 흰 모델 큐(로그인 뒤).** 10/13 오전 4면 통과 → 흰 모델 큐: IvyBalcony, FlowerBushPot(right = flip left), DomePorchHalf(뒤 = 평평한 금 단면, **반쪽으로 나와야 함**), DomePavilion(left = front), DomeTowerSmall, BreadDisplay. JuiceStand 왼쪽 다시(초록 사과·컵 끝). **흰 모델 큐(로그인 뒤) = Greenhouse·ShopSign·Lantern A~E·IvyWall·IvyBalcony·FlowerBushPot·DomePorchHalf·DomePavilion·DomeTowerSmall·BreadDisplay (15) + 이미지 생성 3 식물 15종(RoundTree_E·F·G, Topiary_C·D·E, PotFlowers_E·F, Var4 PotFlowers_A·C·D, Planter_A·D, Var3 Planter_E, FlowerCart_Bouquet) = 30개 ≈ 4,050점.** + PotionDisplay·JuiceStand·RoseTrellis·RoseArch·Balustrade_E·F·Var4_A = 37개 + SunflowerBed·Pond·Var4_Balustrade_B·C·D·StarFinial = 43개 + NEW_BellFrame·BreadBasket·CafeTable·FlowerBush·Cauldron = **48개 ≈ 6,480점(잔액 9,385)**. NEW_ 남은 12종 = 이미지 생성 3 Firefly 고급(≈150 크레딧, 내 OK, 창·로그인은 최종 검수). CastleHedge = 최종 검수 결정: 골격 아니오 → **이어 붙이는 한 토막만 Tripo**(PIL로 덩어리 3 + 받침 잘라 4면, 통과, 큐 49개 ≈6,615점). 빛 성 C2 골격 v4 통과. 성 벽 재질 = **B HH_HaloMarbleSmooth_Cream + 흰 255,255,255**, 받침 248,244,236 (시트 art/review/img3/houses/castle_C2_marble_v2/castle_marble_test.jpg) → **10/13 적용 사진 통과**(`art/review/img3/houses/castle_C2_wk_v4b/castle_C2_wk_day.jpg`·`_night.jpg`: 해 쪽 ≈248,234,207, 그늘 쪽 회색 = 해 방향, 밤 푸르스름한 흰색). 밤 창 빛 = 장식/빛 단계 Studio 파트. 마을 배치 때 정문이 낮에 해 받는지 사진 확인. 이미지 생성 2 ChatGPT 사용량 끝 → Firefly 고급(앱 브라우저 + Adobe 로그인 필요, 최종 검수). **NEW_WhiteRock a/b/c·BellFrame_Bell·WallLamp_Head = 버림 목록(그리지 않음)** — 이미지 생성 3에 알림. sidefix 구멍 점검(갇힌 바탕 픽셀 자홍 칠) = 잎 사이 틈 수준, 이상 없음. **Tripo 로그아웃(10/13 재부팅) = 사용자 로그인 대기, 최종 검수가 미룸 목록에.** 옆면 방향 규칙: `_left` = 앞이 화면 오른쪽, `_right` = 앞이 화면 왼쪽(BenchB·IvyWall 기준).
+**다시 그리는 중:** IvyBalcony(앞면 좋음, 4면 대기), FlowerCart_Bouquet(이미지 생성 3). (끝난 것: Lantern_B)(받침 금테 판 = 면마다 1개, 지금 2개). 이미지 생성 2 큐 19 IvyWall부터(잎 큼직하게 미리 말함). 이미지 생성 3 소품 큐: 벤치 3·가판대 3·등불 5 끝 → 다음은 `docs/review/halo_redo_split_2026-10-12.md` '그릴 것' 순서.
 
 ## 넣을 때 메모 (이미지 생성 3에 보냄)
 - CastleRose: 바깥 유리 칸이 3D에서 빔 → 금 틀 바로 뒤 진한 파랑 얇은 원판 파트(≈34,90,180).

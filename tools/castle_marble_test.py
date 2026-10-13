@@ -27,11 +27,18 @@ SIM = open(os.path.join(ROOT, "tools", "halo_light_sim.luau"), encoding="utf-8")
     'local CAND, PHASE = "%s", "%s"', 'local CAND, PHASE = "C2c", "day"')
 RESTORE = open(os.path.join(ROOT, "tools", "halo_light_restore.luau"), encoding="utf-8").read()
 # name: (MaterialVariant, colour)
-VARS = {
+VARS_1012 = {   # first test (old blue-grey OA): all four looked the same, A kept
     "A_now_BlockCream_255_244_222": ("HH_HaloMarbleBlock_Cream", (255, 244, 222)),
     "B_BlockCream_255_252_244": ("HH_HaloMarbleBlock_Cream", (255, 252, 244)),
     "C_SmoothCream_255_250_238": ("HH_HaloMarbleSmooth_Cream", (255, 250, 238)),
     "D_Block_255_250_240": ("HH_HaloMarbleBlock", (255, 250, 240)),
+}
+# 10/13 디자인 검수 (warm C2c OA 188,185,183): walls read creamy / sandy with thick brick lines vs the 2D's near-white marble
+VARS = {
+    "A_now_BlockCream_255_244_222": ("HH_HaloMarbleBlock_Cream", (255, 244, 222)),
+    "B_SmoothCream_255_255_255": ("HH_HaloMarbleSmooth_Cream", (255, 255, 255)),
+    "C_SmoothCream_246_248_255": ("HH_HaloMarbleSmooth_Cream", (246, 248, 255)),
+    "D_Block_255_255_255": ("HH_HaloMarbleBlock", (255, 255, 255)),
 }
 SET = GUARD + '''local mv, r, g, b = "%s", %d, %d, %d
 local n = 0

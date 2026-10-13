@@ -57,6 +57,12 @@ SPEC A23-153, 설계 `docs/design/codex_cards_2026-10-12.md`. 서버 = `src/Serv
 - `"show:Slime:Silver"` → `CodexUp` Silver 한 번 더(저장·보상 없음, `Debug = true`). Event = Card/Silver/Holo/Golden/Page/Glow.
 - `"Slime:0"` 그 카드 지움, `"reset"` 전부 지움.
 
+## 6-1. 3D 카드 모델 (최종 검수 10/13, fix/codex-models)
+- **`ReplicatedStorage.CodexModels.<kind>`**(`Config.Codex.ModelFolder`): 서버 시작 때 한 번, 시리즈 1의 11종을 `ServerStorage.CustomModels`에서 복사 — MonsterService `getCustomTemplate` 규칙 그대로(자기 모델, 없으면 `ModelFrom`의 모델). 이름 = kind. 폴더는 늘 있음(모델이 없으면 빈 폴더).
+- 복사본에서 Script·LocalScript·ModuleScript·Sound·ParticleEmitter·Trail·Beam·Fire·Smoke·Sparkles·빛·ProximityPrompt·ClickDetector·BillboardGui·SurfaceGui를 뺌, 모든 파트 `Anchored = true`·`CanCollide/CanQuery/CanTouch = false`(BasePart 하나짜리 모델도). 모양(파트·Attachment·폴더·SurfaceAppearance 등)은 그대로.
+- 속성: `CodexScale` = `MonsterTypes[kind].Scale`(몬스터가 쓰는 크기 배수), 빌린 모델이면 `CodexFrom` = 원래 종류, `CodexColor` = 그 종류의 색(몬스터가 빌린 모델을 칠하는 색).
+- 모델이 없는 종류(지금 파트로 만드는 Slime 등)는 없음 → 화면은 그 카드에 실루엣/그림을 씀. 복사 중 오류도 그 종류만 건너뜀(서버는 안 멈춤, 경고 한 줄).
+
 ## 7. 화면 쪽 메모(게임성 개발 1)
 - `Config.Codex.ServerToast = true`(지금): 서버가 같은 줄을 보상 토스트로도 보냄. **카드 순간 화면이 들어가면 개발 1이 false로** — 그때부터 줄은 `CodexUp`에서만.
 - 순서: 접속 `Codex` → 창 열 때 `CodexOpen` → 순간은 `CodexUp`(창이 열려 있으면 그 카드만 새로 그리기, 아니면 가운데 카드 순간). 빛살 무늬 금지(A23-153).

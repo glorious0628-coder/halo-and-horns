@@ -127,6 +127,22 @@ MUTATIONS = [
     ("service: the cap not passed", X, "pcall(S.ProgressionService.AddXP, player, xp, cap)", "pcall(S.ProgressionService.AddXP, player, xp)"),
     ("service: the cap at the cap level too", X, "if level < capBelow then cap", "if level <= capBelow then cap"),
     ("config: boss steps back to 100 / 1000", C, "\tBossSteps = { 1, 10, 30 },\n", "\tBossSteps = { 1, 100, 1000 },\n"),
+    ("models: scripts kept", X, "\t\tif STRIP[d.ClassName] then\n\t\t\td:Destroy()\n", "\t\tif false then\n\t\t\td:Destroy()\n"),
+    ("models: sounds kept", X, "ModuleScript = true, Sound = true, ParticleEmitter", "ModuleScript = true, ParticleEmitter"),
+    ("models: parts not anchored", X, "\tpart.Anchored = true\n", ""),
+    ("models: parts hit by rays", X, "\tpart.CanQuery = false\n", ""),
+    ("models: a BasePart model left loose", X, "\tif copy:IsA(\"BasePart\") then still(copy) end\n", ""),
+    ("models: the source's name", X, "\tcopy.Name = kind\n", ""),
+    ("models: no ModelFrom", X, "\tt = type(from) == \"string\" and from ~= kind and folder:FindFirstChild(from) or nil\n", "\tt = nil\n"),
+    ("models: a folder taken as a model", X, "\tif t and (t:IsA(\"Model\") or t:IsA(\"BasePart\")) then return t, nil end", "\tif t then return t, nil end"),
+    ("models: one broken model stops the rest", X,
+     "\t\t\tlocal ok, err = pcall(function()\n\t\t\t\tlocal src, from = templateOf(custom, kind)\n\t\t\t\tif not src then return end\n"
+     "\t\t\t\tcopyOf(src, kind, from).Parent = folder\n\t\t\t\tmade += 1\n\t\t\tend)\n",
+     "\t\t\tlocal ok, err = true, nil\n\t\t\tlocal src, from = templateOf(custom, kind)\n\t\t\tif src then\n"
+     "\t\t\t\tcopyOf(src, kind, from).Parent = folder\n\t\t\t\tmade += 1\n\t\t\tend\n"),
+    ("models: published twice", X, "\t\tif not folder:FindFirstChild(kind) then\n\t\t\tlocal ok, err", "\t\tif true then\n\t\t\tlocal ok, err"),
+    ("models: no borrowed attribute", X, "\t\tcopy:SetAttribute(\"CodexFrom\", from)\n", ""),
+    ("models: never published", X, "\tlocal okModels, errModels = pcall(CodexService.PublishModels)\n", "\tlocal okModels, errModels = true, nil\n"),
     ("debug: any event name", X, "if not X.PageOf[showKind] or not EVENTS[event] then return", "if not X.PageOf[showKind] then return"),
 ]
 
