@@ -1,6 +1,16 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/13 밤 2 (PC 재시작 20:18 뒤) — 다시 시작하면 여기부터
+## 10/14 새벽 — 다시 시작하면 여기부터 (모두 push, 최종 검수에 보고, 병합 대기)
+- fix/test-prep-client 6ee394eb = main 627a9b51 병합됨.
+- **fix/choice-card-ui e9077f02** (../wt_codexui): 공용 선택 카드 창 + 여운. 켜기는 개발 2(Finisher.Kinds 되돌리기, 카드 고른 뒤 Afterglow 보내기).
+- **fix/mischief-client 96aeef24**: 화면 글 Infamy → Mischief 5줄(A23-166).
+- **fix/first-look-1 b23679e3**: 메뉴 펼침 한 줄(L.FitFold, PC만, 85%까지; PC 아래 줄 6칸은 A23-109 승인이라 안 바꿈), Menu 빛은 펼침 닫혔을 때만, Codex 칸 글 "Monsters", 행사 알약은 칩 줄이 비면 그 자리로(V2.eventY + HUD.ChipsShown). 사진 tools/play_first_look_photos.py [phone].
+- **fix/phone-first10-2 9759e832**: TownReact.Clear(말풍선이 HUD 밑에 안 깔리게), 전사 글 "Smash up close!", 환영 카드 I'm In 320du, 사진 점검 tiny 배율 고침.
+- **dev1-halo-stage6 4fb64a0b**: 큰 지도 V3 b Id 114107691990380(+ asset_ids.json). 교체 병합 10/20 주.
+- worktree: ../wt_dev1merge = 작은 고침 가지 돌려 쓰기(지금 fix/phone-first10-2), ../wt_codexui = choice-card, ../wt_dev1halo6 = stage6(art/ui/asset_ids.json sparse 추가함).
+- 알아둘 것: test_a23_14 돌연변이 포함판은 40분 넘음 → --no-mutations로. test_halloween은 성긴 worktree에서 art glb 없어 실행 불가(병합 조건 아님). test_place_english는 --place ../Game/place/GoodEvil.rbxlx.
+
+## 10/13 밤 2 (PC 재시작 20:18 뒤)
 - **fix/test-prep-client 6ee394eb**(worktree ../wt_dev1merge로 옮김; ../wt_codexui는 choice-card): API 검토 FIX FIRST 반영 — UIKit.TapScale(ScreenGui UIScale 포함), 크기<2 띠 숨김, powerHit 처음 UDim2.new(), 사진 점검 small 44. test_phone_first10 23·17/17 + 관련 15개 + audio 통과. 최종 검수 병합 대기(서버 가지와 같이).
 - **fix/choice-card-ui e9077f02**(../wt_codexui, main fc6717d0에서): ChoiceCardUI.luau = 공용 선택 카드 창(Card + FinisherCard, Panels 'ChoiceCard', 승인 BtnKind/BtnSneaky + 날개·뿔, 시간 카드 카운트다운, 저장 카드는 조용한 화면에서만·닫으면 30초 뒤 다시, 시간 카드가 저장 카드를 잠깐 보류) + 여운(Fx Afterglow: 금빛 반짝이·보라 연기, 발밑). Config.ChoiceCard.Screen(+ Stat Infamy→"Mischief", A23-166). 시험 test_choice_card_ui 57·25/25 + 48개(halloween·place_english는 성긴 worktree라 실행 불가 → place_english는 --place로 통과) + a23_14 --no-mutations 291/0 + audio 통과. 사진 `HH_MAIN_STUDIO=1 py tools/play_choice_card_photos.py [phone]`.
 - 서버 쪽 남은 것(개발 2): Config.Finisher.Kinds 다시 켜기(main은 {}), ChoiceCard·Finisher 고른 뒤 StoryQuestService.Afterglow 부르기(Config.Afterglow.From Card/Finisher는 있는데 안 부름). 화면 'Infamy' 글 목록은 최종 검수에 보냄(CharacterUI:69, Panels:133·135·145·147).
