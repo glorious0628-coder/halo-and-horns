@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 낮 — fix/menu-one-line-2 959f3eed (다시 시작하면 여기부터)
+## 10/14 낮 2 — fix/town-react-zone 696cd288 (다시 시작하면 여기부터)
+- menu-one-line-2는 main 4baa63e6 병합됨. 새 가지 **fix/town-react-zone 696cd288**: TownReact.Clear Touch L 0.34, 바닥이 0.44H 아래면 R 0.6(749 폰은 위 가운데만 말함 — 너무 드물면 폰 말풍선 크기 줄이기), HUD TXT.Siege %g(화면엔 안 나옴). 최종 검수 병합 대기.
+- 다음: 02_dev1.md 폰 첫 10분 읽힘.
+
+## 10/14 낮 — fix/menu-one-line-2 959f3eed (병합됨)
 - menu-one-line은 main 75890afd 병합·사진 통과. 남은 2개 고침 = **fix/menu-one-line-2 959f3eed**(origin/main 6fca85e0 위, ../wt_dev1merge): ① 칸 이름이 11px에서 못 줄던 원인 = UIKit.FitText가 바닥을 MIN_TEXT_SIZE 11로 막고 UITextSizeConstraint는 그걸 실제 px로 읽음 → 라벨 속성 FitMinPx(자기 바닥) 새로, PC 칸 이름 8px·여백 PickerFitPaddingX 6px(Studio TextService 실측: Monsters 33.5/38/45.5 @8/9/11, Settings 30.5/34.5/41) ② 사진 로그 펼침 줄 = MenuFold 칸만 셈 + 이름 px·남는 폭 기록. 내일 아침 병합 예정.
 - 다음: 02_dev1.md 폰 첫 10분 읽힘.
 
