@@ -2,6 +2,8 @@
 
 새 세션을 열 때 아래 글을 그대로 붙여 넣는다. 모델·노력 기본(A23-160, 10/13 저녁): **Fable 5.1 high**, 어려운 가지를 직접 시험·병합할 때만 잠깐 xhigh, 끝나면 high. **Ultracode 끔.** 큰 검토·긴 읽기는 `py tools/api_agent.py`(API ≈$200). (10/13 저녁 다시 씀 — 앞 최종 검수가 사용자 방식을 지키게 하지 못해 사용자가 새 세션으로 바꿈)
 
+> **10/14 새벽 인계(다른 계정에서 새 최종 검수를 열 때):** main dd121979(10/13 밤 병합 10개), 게시판 = 75890afd(place 956e521). 상태는 `docs/handoff/state/review.md` 맨 아래 '10/14 새벽 끝'부터. 저장은 사용자가 Save to File As(메모리 main-save-user-does-save-as), 게시는 Alt+P. 오늘 1번 = Meshy·Tripo 3D 정확도 연구 정리(더 시험할 것 3줄 + 비용 먼저, 돈은 OK 뒤).
+
 > **A23-160 먼저:** 이번 주는 디자인이 아니라 10/17~20 비공개 시험·첫 10분. 돈 드는 그림·3D 전부 멈춤. 세션 4개(+이미지 생성 3 선택). 사용자 체크리스트 `docs/design/private_test_user_checklist_2026-10-15.md`, A/B 보고 `docs/review/halo_spend_2026-10-13.md`·`art_scope_min_2026-10-13.md`. 수요일 주간 사용량 50% 넘으면 사용자에게 말하고 개발 세션 하나로.
 
 ```text
