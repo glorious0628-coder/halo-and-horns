@@ -60,9 +60,10 @@ TERRAIN_RETURN = 'if MODE == "terrain" then\n\tif fresh then map.Parent = worksp
 
 # (name, file key, old, new): each old must match exactly once
 MUTATIONS = [
+    # A23-121 stage 6 (halo_fixed_points_v2 table C): the v2 island's rect; "back to v1" = the old (0, -515) centre
     ("HaloTown centre back to v1", "config",
-     'HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -515)',
-     'HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -400)'),
+     'HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(-2.5, 0, -596.5)',
+     'HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -515)'),
     ("meadow spawn in the river", "config", "Spawn = Vector3.new(230, 0, 0) },", "Spawn = Vector3.new(200, 0, 0) },"),
     ("pumpkin king spot in the near half", "config", "Vector3.new(470, 0, 390)", "Vector3.new(470, 0, 300)"),
     ("ghost king on the ghost willow", "config", "Vector3.new(260, 0, 300)", "Vector3.new(300, 0, 360)"),
@@ -79,7 +80,7 @@ MUTATIONS = [
     ("Halo Citadel allows PvP", "config", 'MinLevel = 1, PvP = false, Town = true, Faction = "Halo",',
      'MinLevel = 1, PvP = true, Town = true, Faction = "Halo",'),
     ("pumpkin land overlaps the hollow", "config", '{ Name = "LandPumpkinPatch", MinX = 420,', '{ Name = "LandPumpkinPatch", MinX = 400,'),
-    ("Bounds cut the ruins", "config", "Bounds = { MinX = -260, MaxX = 1840,", "Bounds = { MinX = -260, MaxX = 1700,"),
+    ("Bounds cut the ruins", "config", "Bounds = { MinX = -330, MaxX = 1840,", "Bounds = { MinX = -330, MaxX = 1700,"),
     ("Halo bridge ends in the water", "config", "To = Vector3.new(0, 0, -330), Width = 22", "To = Vector3.new(0, 0, -300), Width = 22"),
     ("ruins gate off the zone border", "config", '{ Zone = "SkeletonRuins", Position = Vector3.new(1260, 0, 0) },',
      '{ Zone = "SkeletonRuins", Position = Vector3.new(1225, 0, 0) },'),
@@ -100,8 +101,8 @@ MUTATIONS = [
      "Landmarks.GoblinCamp3 = Vector3.new(660, 0, -60)"),
     ("meadow board on the crown road", "config", "Landmarks.MeadowBoard = Vector3.new(230, 0, 12)",
      "Landmarks.MeadowBoard = Vector3.new(230, 0, 5)"),
-    ("hero statue outside Halo Citadel", "config", "Landmarks.HeroStatue = Vector3.new(0, 0, -370)",
-     "Landmarks.HeroStatue = Vector3.new(0, 0, -300)"),
+    ("hero statue outside Halo Citadel", "config", "Landmarks.HeroStatue = Vector3.new(-34, 0, -388)",
+     "Landmarks.HeroStatue = Vector3.new(-34, 0, -300)"),
     ("MapBuilder no longer re-fits reused walls", "mapbuilder",
      '\t\t\tif fitWall(wall, specs[name]) then Util.Log(TAG, "moved " .. name .. " onto Config.Map.Bounds") end\n', ""),
     ("the ruins road runs into the crown altar", "config", '{ Name = "RoadRuins", MinX = 1260, MaxX = 1684,',
