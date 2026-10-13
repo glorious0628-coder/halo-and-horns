@@ -9,7 +9,7 @@ import bpy
 from mathutils import Vector
 
 a = sys.argv[sys.argv.index("--") + 1:]
-out_dir = a[0]
+out_dir = os.path.abspath(a[0])  # Blender resolves relative render paths against "//", not the cwd
 os.makedirs(out_dir, exist_ok=True)
 VIEWS = [("f", 0, 0.25), ("r45", 45, 0.35), ("s90", 90, 0.25), ("b", 180, 0.25), ("s270", 270, 0.25),
          ("top", 0, 1.3), ("low", 135, -0.5)]

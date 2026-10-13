@@ -13,7 +13,7 @@ import bpy
 from mathutils import Vector
 
 a = sys.argv[sys.argv.index("--") + 1:]
-out, px, big = a[0], int(a[1]), int(a[2])
+out, px, big = os.path.abspath(a[0]), int(a[1]), int(a[2])
 os.makedirs(out, exist_ok=True)
 
 
