@@ -22,7 +22,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SPS = "src/StarterPlayer/StarterPlayerScripts/"
-FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "UIKIT": ROOT / (SPS + "UIKit.luau"), "SCALE": ROOT / (SPS + "UIKit.luau")}
+FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "UIKIT": ROOT / (SPS + "UIKit.luau"), "SCALE": ROOT / (SPS + "UIKit.luau"),
+         "VITALS": ROOT / (SPS + "VitalsUI.luau")}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -235,6 +236,10 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          "\t\t\tfor _, p in pads do p.Visible = false end\n" in u),
         ("the power tap area starts empty (never the whole screen before the first layout)",
          "\tui.powerHit.Size = UDim2.new()" in h),
+        # final review 10/14 (phone first-10 photos: '156/156' thin and ~9 px; HudLayout TOUCH_BAR = taller bars, tested
+        # in test_hud_layout): phone bar numbers bold, up to 13 px
+        ("phone HP / MP numbers bold up to 13 px",
+         "C.HUD.FitText(text, touch and 13 or 11, touch == true, nil, true)" in src["VITALS"]),
     ]
 
 
@@ -251,6 +256,7 @@ STATIC_MUTATIONS = [
     ("UIKIT", "a shrunk button keeps its strips", "\t\tif size.X < 2 or size.Y < 2 or (size.X >= UIKit.Tap.Px",
      "\t\tif (size.X >= UIKit.Tap.Px"),
     ("HUD", "the power tap area starts full screen", "\tui.powerHit.Size = UDim2.new()", "\tlocal _ = UDim2.new()"),
+    ("VITALS", "phone bar numbers thin again", "touch and 13 or 11, touch == true,", "touch and 13 or 11, nil,"),
 ]
 
 

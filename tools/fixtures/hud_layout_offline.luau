@@ -353,6 +353,9 @@ for _, case in CASES do
 					limit = math.min(limit, r.X - GROUP_GAP)
 				end
 			end
+			-- final review 10/14 (phone first-10 photos): the HP / MP numbers need taller bars on phones
+			check(g, "phone HP / MP bars at least 15 px tall", out.hp_bar.H * s >= 15 - 0.5 and out.mp_bar.H * s >= 15 - 0.5,
+				("%.1f / %.1f px"):format(out.hp_bar.H * s, out.mp_bar.H * s))
 			check(g, "phone row at most six tiles wide", tileOk and row.W <= ROW_TILES * row.Size + (ROW_TILES - 1) * row.Gap + 0.01,
 				fmt(row))
 			check(g, "phone group no wider than the room right of 0.4 W", row.W <= math.max(0, limit - 0.4 * W) + 0.5,

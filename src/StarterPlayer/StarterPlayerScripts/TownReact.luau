@@ -20,13 +20,18 @@ local LocalPlayer = Players.LocalPlayer
 local C = nil
 local R = type(Config.TownReact) == "table" and Config.TownReact or {}
 -- Tick = s between checks; Size = bubble px for a sentence (3 short lines); Lift = studs above the head
-local T = { Tick = 1, Size = { 196, 86 }, Lift = 0.6,
+-- final review 10/14 (3): SizeTouch = the phone bubble (Studio-measured Denk One: the longest line, 55 letters, is 3 lines
+-- at 14 px in its 128 x 53 text box), so it fits between the quest card and the thumb ring
+local T = { Tick = 1, Size = { 196, 86 }, SizeTouch = { 160, 70 }, Lift = 0.6,
 	-- final review 10/14 (phone first-10 photos: Bright's "Welcome, Squire!" bubble sat under the minimap and the quest
 	-- card): a person speaks only while the whole bubble (its tail at the head, Size px up and right) lands in the open
 	-- middle of the screen - fractions of the view; touch keeps clear of the thumbstick / thumb ring sides too
 	-- final review 10/14 (2, API review on the 749x361 sheet): the quest card ends at x 248 (L 0.34) and the thumb ring's
 	-- ghost / Q / Z start at x 475 from y 161 down - a bubble whose bottom is lower than RowY keeps left of RLow
-	Clear = { Touch = { L = 0.34, R = 0.85, RLow = 0.6, RowY = 0.44, T = 0.15, B = 0.72 },
+	-- final review 10/14 (3, that left a 19 px band on 749x361): touch reads the buttons shown now (TownReact.Blockers:
+	-- every visible ScreenGui button MinBtn px .. MaxFrac of the view) and the bubble only misses each by Gap px; RLow /
+	-- RowY stay the guess when they cannot be read
+	Clear = { Touch = { L = 0.34, R = 0.85, RLow = 0.6, RowY = 0.44, T = 0.15, B = 0.72, Gap = 6, MinBtn = 24, MaxFrac = 0.4 },
 		PC = { L = 0.26, R = 0.86, T = 0.12, B = 0.78 } } }
 -- NextAt[model] = os.clock() when it may speak again; Last[model] = its last line; Pick = { Value, At } the TownPick seen
 local S = { NextAt = setmetatable({}, { __mode = "k" }), Last = setmetatable({}, { __mode = "k" }),
@@ -110,17 +115,63 @@ local function windowOpen()
 	return false
 end
 
+-- the bubble's px on this device (T.SizeTouch on phones)
+function TownReact.SizeFor(touch)
+	return touch and T.SizeTouch or T.Size
+end
+
 -- pure (tools/test_town_react.py): does a bubble with its tail at view point (x, y) - in front of the camera - fit the
--- open middle of a W x H view? w, h = the bubble's px; touch = the phone zone
-function TownReact.Clear(x, y, front, W, H, w, h, touch)
+-- open middle of a W x H view? w, h = the bubble's px; touch = the phone zone; blockers (touch) = { X, Y, W, H } view px
+-- of the buttons shown now (TownReact.Blockers): the bubble misses each by Gap px; nil = the RLow / RowY guess
+function TownReact.Clear(x, y, front, W, H, w, h, touch, blockers)
 	if not front or type(x) ~= "number" or type(y) ~= "number" or not (W and W > 0 and H and H > 0) then return false end
 	local z = touch and T.Clear.Touch or T.Clear.PC
-	local right = (z.RLow and z.RowY and y > H * z.RowY) and z.RLow or z.R
-	return x >= W * z.L and x + w <= W * right and y - h >= H * z.T and y <= H * z.B
+	local read = touch and type(blockers) == "table"
+	local right = (not read and z.RLow and z.RowY and y > H * z.RowY) and z.RLow or z.R
+	if not (x >= W * z.L and x + w <= W * right and y - h >= H * z.T and y <= H * z.B) then return false end
+	if read then
+		local g = z.Gap or 0
+		for _, b in blockers do
+			if x < b.X + b.W + g and x + w > b.X - g and y - h < b.Y + b.H + g and y > b.Y - g then return false end
+		end
+	end
+	return true
+end
+
+-- the buttons on screen now (touch): every shown GuiButton of an enabled ScreenGui (the HUD, the thumb ring, Roblox's
+-- jump button) between MinBtn px and MaxFrac of the view, in view px (the top bar inset added where a ScreenGui keeps
+-- it); nil when the PlayerGui cannot be read
+function TownReact.Blockers()
+	local ok, list = pcall(function()
+		local pg = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+		local cam = workspace.CurrentCamera
+		if not pg or not cam then return nil end
+		local inset = game:GetService("GuiService"):GetGuiInset()
+		local z, vp, out = T.Clear.Touch, cam.ViewportSize, {}
+		for _, d in pg:GetDescendants() do
+			if d:IsA("GuiButton") and d.Visible then
+				local sg = d:FindFirstAncestorWhichIsA("LayerCollector")
+				local shown = sg ~= nil and sg:IsA("ScreenGui") and sg.Enabled
+				local a = d.Parent
+				while shown and a and a ~= sg do
+					if a:IsA("GuiObject") and not a.Visible then shown = false end
+					a = a.Parent
+				end
+				local size = d.AbsoluteSize
+				if shown and size.X >= z.MinBtn and size.Y >= z.MinBtn and size.X <= vp.X * z.MaxFrac
+					and size.Y <= vp.Y * z.MaxFrac then
+					local pos = d.AbsolutePosition
+					table.insert(out, { X = pos.X, Y = pos.Y + (sg.IgnoreGuiInset and 0 or inset.Y), W = size.X, H = size.Y })
+				end
+			end
+		end
+		return out
+	end)
+	return ok and list or nil
 end
 
 -- the person's head on screen now leaves room for the bubble (TownReact.Clear)
-local function inView(npc)
+local function inView(npc, touch, blockers)
 	local cam = workspace.CurrentCamera
 	if not cam then return true end
 	local head = npc:FindFirstChild("Head") or npc.PrimaryPart
@@ -128,8 +179,8 @@ local function inView(npc)
 	if not ok or pos == nil then return false end
 	local p, front = cam:WorldToViewportPoint(pos + Vector3.new(0, T.Lift + 1, 0))
 	local vp = cam.ViewportSize
-	return TownReact.Clear(p.X, p.Y, front and p.Z > 0, vp.X, vp.Y, T.Size[1], T.Size[2],
-		game:GetService("UserInputService").TouchEnabled)
+	local size = TownReact.SizeFor(touch)
+	return TownReact.Clear(p.X, p.Y, front and p.Z > 0, vp.X, vp.Y, size[1], size[2], touch, blockers)
 end
 
 -- one check: the nearest town person in range that may speak, says its line
@@ -146,11 +197,13 @@ function TownReact.Step(now)
 		S.Pick = { Init = true, Value = pick, At = now, Said = false } -- a new pick is said first
 	end
 	local best, bestD = nil, num(R.Range, 30)
+	local touch = game:GetService("UserInputService").TouchEnabled == true
+	local blockers = touch and TownReact.Blockers() or nil
 	for _, npc in TownReact.Speakers() do
 		if npc:IsA("Model") and npc:IsDescendantOf(workspace) and now >= (S.NextAt[npc] or 0) then
 			local ok, pos = pcall(function() return npc:GetPivot().Position end)
 			local d = ok and (pos - root.Position).Magnitude or math.huge
-			if d <= bestD and inView(npc) then best, bestD = npc, d end
+			if d <= bestD and inView(npc, touch, blockers) then best, bestD = npc, d end
 		end
 	end
 	if not best then return nil end
@@ -173,7 +226,8 @@ function TownReact.Say(npc, line)
 	local labels = C and C.MonsterLabels
 	local B = type(labels) == "table" and labels.Bark or nil
 	if not head or type(B) ~= "table" or type(B.Make) ~= "function" then return end
-	local ok, bubble, fadeOut = pcall(B.Make, head, T.Lift, line, nil, T.Size)
+	local ok, bubble, fadeOut = pcall(B.Make, head, T.Lift, line, nil,
+		TownReact.SizeFor(game:GetService("UserInputService").TouchEnabled == true))
 	if not ok or not bubble then return end
 	bubble.Name = "TownReactBubble"
 	local show = num(R.Show, 4)
