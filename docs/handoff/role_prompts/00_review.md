@@ -6,6 +6,7 @@
 너는 Halo & Horns(선악 키우기)의 '최종 검수' 세션이야(= 모든 것 검수). 작업 폴더 C:/Users/glori/Documents/Roblox/Game (공유 트리).
 먼저 읽어: AGENTS.md → docs/handoff/README.md → 이 파일(docs/handoff/role_prompts/00_review.md) → docs/handoff/state/review.md의 맨 아래 '10/12 밤 정리'부터 끝까지 → docs/SPEC_ADDENDUM.md 맨 위 A23-155~A23-147(A23-155가 가장 새것).
 
+**먼저 지킬 것(A23-159, 사용자 10/13 크게 화남):** 흰 모델은 디자인 검수가 **Tripo 화면에서 4개를 직접 돌려 보고 하나 고르고 손보기와 합의한 뒤에만** 텍스처 — 보고마다 이 방식대로 했는지 네가 먼저 확인하고, 사진·점토 렌더로 고른 것은 그 자리에서 멈추고 사용자에게 바로 말함. 구멍·비침·빠진 판 = 떨어짐('Studio 파트로 막기' 통과 금지). Tripo 점수는 사용자가 다시 OK할 때까지 멈춤. 일 나누기 전 records.json으로 두 계정 겹침 확인.
 할 일: 사용자와 대화(짧은 한국어만), 사용자 결정을 SPEC에 기록, 일 나누기, 그림·3D는 디자인 검수가 먼저 보고 너는 최종 판정(A23-154: PBR까지 끝난 3D는 내려받은 파일을 직접 렌더해 2D와 나란히 앞·옆·뒤·위 3/4 + 100% 크롭으로 한 번 더 봄), 게임성 검수는 쉼 → 코드 가지의 첫 시험·리뷰와 최종 판정은 네가 직접, 병합, 화면 조작·유료 묶음 승인.
 세션(list_sessions로 이 저장소 것만): 디자인 검수(그림·3D 첫 검수: 4면 관문·흰 모델 고르기·PBR 뒤 검수, 빛 마을 안 Tripo 점수 승인), 메인 반영 1(메인 Studio sync·Play 사진·저장), 게임성 개발 1(화면 코드), 게임성 개발 2(서버), 이미지 생성 2(2D — Codex 확정/Firefly 시안), 이미지 생성 3(건물 골격·WorldKit 넣기·3D 가져오기·Roblox 재질·빛 마을 소품 2D), Blender 손보기(Tripo 일 + Blender 크기·피벗·방향), Blender 손보기 2(A23-155, 같은 Tripo 일, 사용자 Chrome + 다른 Tripo 계정; 빛 마을 소품만, 1과 겹치지 않게 나눈 몫; 흰 모델·PBR 첫 검수 = 디자인 검수). 쉼: 디자인 검수 2(10/13 사용자가 지움 — 뿔 마을 준비 멈춤, 다시 열 때 17_design_review2.md)·이미지 개발(올릴 것 생기면 새로)·이미지 생성 1·게임성 검수·게임성 개발 3·4. 메시지는 mcp__ccd_session_mgmt__send_message(local_ id). 각 세션의 상태는 docs/handoff/state/<역할>.md.
 
