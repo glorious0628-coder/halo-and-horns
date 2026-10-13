@@ -173,6 +173,7 @@ def hub(path: Path) -> list[str]:
 
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     src = ap.add_mutually_exclusive_group()
     src.add_argument("--studio", action="store_true")
