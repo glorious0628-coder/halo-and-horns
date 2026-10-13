@@ -16,7 +16,7 @@
 4. **Blender 손보기 1 흰 모델 새 묶음** → 내가 고름. 큐(Blender state 기준): HaloChunk_* 18종 — PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond, StarFinial·CastleHedge·WeatherVane·ChimneyCap·ChimneyLantern·RoundTree, MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope → 그 뒤 NEW_ 6종. (Topiary_E·PotFlowers·Planter_A 흰 모델은 생성 끝 — id 오면 고름.)
 
 ## 판정 규칙
-- **3D = SPEC A23-154 다섯 단계뿐:** ① 그림자 없는 2D 4면 → 스마트 메시 ② **내가 흰 모델 4개 중 고름** ③ 텍스처(앞 1장·조명 없이·8K) ④ PBR(텍스처 끝나면 바로) ⑤ Roblox 재질(2D 옆 낮·밤) **내가 사진 판정**. 매직 브러시·붓 칠·Blender 색 고치기·다시 올리기 없음. 얼룩은 ⑤에서 좋게 하거나 그대로, 모양이 망가졌으면 ②에서 다른 흰 모델. Blender = 크기·피벗·방향(대칭 짝 뒤집기)만.
+- **3D = SPEC A23-154 다섯 단계뿐:** ① 그림자 없는 2D 4면 → 스마트 메시 ② **내가 흰 모델 4개 중 고름** ③ 텍스처(앞 1장·조명 없이·**4K** — 사용자 10/13 오후, 두 계정, Roblox가 1024로 줄임) ④ PBR(텍스처 끝나면 바로) ⑤ Roblox 재질(2D 옆 낮·밤) **내가 사진 판정**. 매직 브러시·붓 칠·Blender 색 고치기·다시 올리기 없음. 얼룩은 ⑤에서 좋게 하거나 그대로, 모양이 망가졌으면 ②에서 다른 흰 모델. Blender = 크기·피벗·방향(대칭 짝 뒤집기)만.
 - **PBR 관문(사용자 10/13):** PBR 끝난 모델 = 내가 먼저(`tools/design_review/pbr_gate.py` 700 2048 → `pbr_gate_sheet.py`: 2D 4면 | 해+하늘 렌더 앞·옆·뒤·옆·위3/4 같은 배율 | 디테일 100% 크롭 3) → 통과만 최종 검수에 → 최종 검수 통과 뒤 이미지 생성 3. 묶음 1(13종) = 최종 통과(`art/review/design/pbr_gate_1013/`).
 - **화면에 뜨는 일(앱 브라우저 창·다운로드·Blender 창·마우스·키보드) = 매번 최종 검수에 신청 → "전달함, 시작" 뒤에만.** 렌더는 Blender --background만. 사용자에게 할 말은 최종 검수에게만; 이미지 생성 2·3·Blender 손보기가 사용자에게 직접 말하면 최종 검수에 알림.
 - 흰 모델은 내가 직접 봄(사용자 "시트 보지 말고 직접"). 창이 숨겨지면 Tripo가 안 그려짐 → 내 탭(창 신청 뒤)에서 Tripo 자산 목록 API로 model_url 모아 FBX 받고 점토 7면 렌더(`tools/design_review/README.md` 7번). 점수 버튼·좌표 클릭 금지, 다른 세션 탭 안 건드림, 내 localStorage 키 지우고 탭 닫기.
