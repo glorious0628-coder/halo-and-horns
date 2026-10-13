@@ -1,3 +1,16 @@
+# 이미지 생성 2 — 인계 (10/13 밤 끝 정리, Opus 5.5 세션)
+## 10/13 밤 끝 (맨 위 = 이것부터)
+- **지금 일 순서(최종 검수, 사용자 "뿔 먼저 말고 빛부터")**: 빛 마을 먼저. 도구는 `py tools/codex_image.py`(ChatGPT 요금제, 추가 0; 끝 코드 3 = 사용량 끝 → 멈추고 최종 검수). **Firefly High·Tripo·Meshy·브라우저·화면 사용 금지(A23-160)**. 보고는 전부 최종 검수(local_30f96900…)에게 시트로. 할 일이 끝나 기다리기만 남으면 이 파일 적고 push → `clear_session("self")`(A23-168).
+- **빛 마을 사람 2D 그림자 없이(A23-150) — 14명 전부 그림**: 도구 `py tools/_noshadow_npc.py <NPC_Name>`(사람용; 옛 4면을 방향 ref로, 결과 `art/out/s2/noshadow/npc/<이름>_{front,back,left,right}_ns.png`, 규칙: 단정한 옷·얼굴 무늬(주근깨) 없음·작은 금고리 후광). MailBoy는 10/12에 통과.
+  - 1묶음 Bright·SirGleam·BakerGranny·JuiceMan·FlowerGirl = **최종 검수 통과**, approved.json 기록(c0405d5).
+  - 2묶음 PotionMerchant(후광 넣음, 최종 검수 OK)·BellElder·StarScholar·OldSailor·PondAngler, 3묶음 주민 FlowerFarmer·Folk4·HerbHusband·HerbWife = **판정 대기**. 시트 `art/review/s2/npc_halo_noshadow_set{2,3}_2026-10-13.jpg`.
+  - **4면 방향 규칙(사람)**: 왼 면 = 화면 오른쪽을 봄, 오른 면 = 화면 왼쪽. 한쪽 엉덩이·어깨 물건(칼집·가방·종·통·밧줄·망원경·주머니·약초·어깨 꽃)은 그쪽 면에만, 반대 면에선 몸에 가려 안 그림, 뒤에서는 좌우가 바뀜. 옛 승인 4면도 이게 틀린 것이 많음 → 생성 후 반드시 확인하고 `<이름>_<면>_ns_fix.txt` 프롬프트로 그 면만 다시(ref1 = 틀린 그 면, ref2 = 새 앞). 고친 면 목록: SirGleam R, Bright L·B, FlowerGirl R(+B 뒤집기), BellElder R, StarScholar R, OldSailor L·R, FlowerFarmer R, Folk4 L(배경 짙음)·R, HerbHusband R. 고치기 전 판은 `build/img2_next/pil_orig/*_ns_v1.png`.
+- **앞뒤 같은 물건 = 뒤는 앞 좌우 뒤집기(최종 검수 새 규칙, 사용자 FlowerBuckets 지적)**: 빛 마을 30종 바꿈(f036b71), 목록·안 바꾼 8종 이유 `art/review/s2/backflip_list_2026-10-13.md`. 10/20부터 뿔 마을 물건에도: 앞뒤가 거의 같은 것(덤불·화분·양동이·대칭 소품)은 뒤를 그리지 않고 뒤집기, 옆은 앞 끝 기준으로 폭 맞춘 생성. 앞뒤 다른 것(사람·간판·문)만 따로.
+- **A23-168(3D = 골격 먼저 + Meshy 리텍스처)**: 4면을 그릴 때 골격을 단순 덩어리로 세우기 쉬운 모양(큰 잎 뭉치 10~15개, 가는 줄 없음, 큰 꽃)으로.
+- **빛 마을 땅 목표 시트**(끝, 419b046): `art/review/world/halo_new/ground_target_2026-10-13.jpg` — 시안 100% 크롭 5칸 + 재질별 중앙값 RGB(크림 포장 ≈249,231,214 · 그늘 돌 ≈180,167,160 · 금 선 ≈196~218,158~190,89~108 · 초록 잎 ≈100,111,65 · 물 38,135,191 · 거품 249,251,252). 시안엔 넓은 잔디 없음.
+- **뿔 마을(멈춤, 나중에)**: 성채 시안 A~D 끝(시트 `art/review/s2/horns_castle_ABCD_2026-10-13.jpg`, push). 조감 a는 그림만 있음 `art/out/s2/horns_zone/HornsZone_a.png`(push 안 함, 깃발에 작은 별 무늬), 조감 b는 안 그림(프롬프트 `art/prompts/HornsZone_Concept_b.txt` 그대로). 참고표 `docs/design/ref_horns_town_2026-10-13.md`(A23-165: 새 시안은 실제 장소 먼저 검색).
+- 시트 만드는 법: PIL로 1줄에 옛 4면|새 4면, 라벨에 공백 없이(셸이 자름). 이 세션 스크립트는 스크래치라 없음 — 필요하면 다시 짧게.
+
 # 이미지 생성 2 — 인계 (10/13 낮 정리)
 ## 10/13 낮 (맨 위 = 이것부터)
 - **10/13 낮 3**: 최종 검수 요청(사용자 결정)으로 HaloChunk_JuiceParasol 4면 다시 — 줄무늬 없는 하늘색 차양 + 흰 물결 테(92efd66), 디자인 검수 2 판정 대기, 통과하면 Blender 손보기 2(계정 2). 옛 줄무늬 4면 백업 `build/img2_next/pil_orig/juice_parasol_v1/`, 구동 스크립트 `build/img2_next/juice_parasol_v2.py`. 옛 Tripo 모델은 새로 만들어야 함.
