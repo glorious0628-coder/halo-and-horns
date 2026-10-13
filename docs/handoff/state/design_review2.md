@@ -11,7 +11,8 @@
 3. **이미지 생성 2 큰 지도 그림** 판정.
 
 ## 2D 4면 판정 끝(10/13)
-- 통과 → Blender 손보기 1: GatherBush·CandleCrate·Easel·NoticeBoard·ArmoryBarrels·WaterBuckets(디자인 검수 1 먼저 판정 따름), 간판 Bakery·Flower·Juice·Potion, NEW_Beehive, NEW_WateringCan, NEW_SteppingStone(돌 하나; 옛 5개 줄 NEW_SteppingStones는 안 씀). 마지막 7종을 Blender 손보기 2로 옮길지 최종 검수에 물어 둠.
+- 통과 → Blender 손보기 1: GatherBush·CandleCrate·Easel·NoticeBoard·ArmoryBarrels·WaterBuckets(디자인 검수 1 먼저 판정 따름).
+- 통과 → **Blender 손보기 2로 옮김(최종 검수 10/13)**: 간판 Bakery·Flower·Juice·Potion, NEW_Beehive, NEW_WateringCan, NEW_SteppingStone(돌 하나; 옛 5개 줄 NEW_SteppingStones는 안 씀). 텍스처 4K → 1개 125점, 점수 승인·흰 모델·PBR 판정 = 나.
 - 통과 → Blender 손보기 2: NEW_Hedge, NEW_WallLamp(_left/_right 이름 맞바꿈 6bfc4ff 뒤).
 
 ## 교훈
