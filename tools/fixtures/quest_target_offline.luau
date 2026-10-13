@@ -381,6 +381,10 @@ do
 	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = false, Text = "Visit the Forge", Progress = 1, Target = 1,
 		CanClaim = false }, "Crossroads", "Halo", vec(0, 3, 0))
 	check(g, "done but CanClaim false -> no Claim", type(e) == "table" and e.Claim == false, e and tostring(e.Claim) or "nil")
+	-- the Forge selling first (main's Config sells none since A23-127 / plan 10/13 §1-A #2 - Buy = false - so the
+	-- selling-case checks set it on here and put the real value back below)
+	local buyWas = Config.WeaponShop.Buy
+	Config.WeaponShop.Buy = true
 	-- after the visit the iron-weapon gold goal (English row text, A23-48) still points at the anvil from the meadow
 	local iron = Config.Weapons[3]
 	ATTR.BlacksmithVisited, ATTR.Level = true, iron.MinLevel
@@ -427,6 +431,7 @@ do
 	Config.WeaponShop.Buy = nil
 	check(g, "selling again: the IronGold row is the gold goal", QT.IronGold({ NextGoal = true, GoalKind = "IronGold",
 		Text = "x" }, iron.MinLevel) == true)
+	Config.WeaponShop.Buy = buyWas
 	-- M1_1's scroll step (게임성 개발 2): Guide "Bag" has no place in the world (the row opens the bag)
 	check(g, "Guide Bag -> no world target", QT.Story("Bag", "Crossroads", vec(0, 3, 0), "Halo") == nil
 		and QT.ForEntry({ Story = { Id = "M1_1", St = 2, Guide = "Bag" } }, "SlimeMeadow", "Halo", vec(330, 3, 0)) == nil)
