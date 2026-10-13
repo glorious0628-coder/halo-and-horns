@@ -1,11 +1,12 @@
 """Offline check of the Shop window (src/StarterPlayer/StarterPlayerScripts/ShopUI.luau, SPEC A23-75) on PC and phones.
 
-Reads ShopUI's layout numbers (the `L` table), its words (T.Names / T.Lines / capsule words) and the pass prices, rebuilds
+Reads ShopUI's layout numbers (the `L` table), its words (plan 10/13: Config.GamePasses names, Config.PassInfo lines +
+Config.PassInfo.Screen capsule words, Config.PrivateServer.Text on the private server card) and the pass prices, rebuilds
 the window the way Panels sizes it (canvas = screen / UIScale, at most 780 x 600 du, the ribbon hanging 23 du over the
 top, content 18 du in from the rim) and measures every text with the game's own fonts (Roblox Studio's Denk One and
 Montserrat .ttf; Roblox's TextSize is the line height, so the em size = TextSize / (ascent + descent), checked against
 UiSandbox TextBounds of the bark lines: within 3 %). Checks, on every screen:
-  - the four pass cards sit in one row and the window needs no scrolling for them
+  - the six pass cards sit three a row; a PC window needs no scrolling for them, a phone shows the first row unscrolled
   - each card name fits one line at >= 12 px (TextScaled from 22 du down to its StyleMinPx floor)
   - each card's lines wrap into the room above the capsule at the Body floor (14 px; PC floors shrink with the window)
   - every capsule word ('199 R$', 'Owned', 'Coming soon', '100 R$ / mo') fits one line at >= 16 px
@@ -86,6 +87,8 @@ BODY = Face("Montserrat-Regular.ttf")
 
 
 def wrap(face, text, size, width):
+    if "\n" in text:  # an explicit line break starts a new line (the private server card)
+        return [ln for part in text.split("\n") for ln in wrap(face, part, size, width)]
     words, lines, cur = text.split(" "), [], ""
     for w in words:
         trial = (cur + " " + w) if cur else w
@@ -116,11 +119,18 @@ def parse_shop():
     block = re.search(r"\nlocal L = \{(.*?)\n\}", s, re.S).group(1)
     L = {k: float(v) for k, v in re.findall(r"(\w+) = (-?[\d.]+)", block)}
     passes = re.findall(r'\{ Kind = "(\w+)", Badge = "\w+", Icon = "(\w+)", Slot = "(\w+)", Price = (\d+)(, Attr = "\w+")?(, Info = true)? \}', s)
-    names = dict(re.findall(r'(\w+) = "([^"]+)"', re.search(r"Names = \{([^}]*)\}", s).group(1)))
-    lines_block = re.search(r"Lines = \{(.*?)\n\t\}", s, re.S).group(1)
-    lines = dict(re.findall(r'(\w+) = "([^"]+)"', lines_block))
-    words = {k: re.search(r"\n\t" + k + r' = "([^"]+)"', s).group(1)
-             for k in ("PriceF", "MonthF", "Owned", "Soon", "Note", "Title", "Wear", "Wearing")}
+    # plan 10/13 §1-A #6: the words live in Config (GamePasses names, PassInfo lines, PassInfo.Screen)
+    cfg = open(CONFIG, encoding="utf-8").read()
+    gp = re.search(r"\nConfig\.GamePasses = \{(.*?)\n\}", cfg, re.S).group(1)
+    names = dict(re.findall(r'\n\t(\w+) = \{ Id = \d+, Price = \d+, Name = "([^"]+)"', gp))
+    info = re.search(r"\nConfig\.PassInfo = \{(.*?)\n\}", cfg, re.S).group(1)
+    lines = dict(re.findall(r'\n\t(\w+) = \{ Line = "([^"]+)"', info))
+    screen = re.search(r"\n\tScreen = \{(.*?)\n\t\},", info, re.S).group(1)
+    names["PrivateServer"] = re.search(r'\n\t\tPrivateName = "([^"]+)"', screen).group(1)
+    half = re.search(r'\nConfig\.PrivateServer = \{.*?\n\tText = "([^"]+)"', cfg, re.S).group(1)
+    lines["PrivateServer"] = lines["PrivateServer"] + "\n" + half  # the private server card's second line (A23-90)
+    words = {k: re.search(r"\n\t\t" + k + r' = "([^"]+)"', screen).group(1)
+             for k in ("PriceF", "MonthF", "Owned", "Soon", "Off", "Note", "Title", "Wear", "Wearing")}
     # the looks shown in the Studio preview (the user's picks): their names must fit the narrower look tiles
     words["LookNames"] = re.findall(r'\w+ = \{ Faction = "\w+", Name = "([^"]+)"', s)
     return L, [{"Kind": p[0], "Icon": p[1], "Slot": p[2], "Price": int(p[3]), "Info": bool(p[5])} for p in passes], names, lines, words
@@ -129,6 +139,8 @@ def parse_shop():
 def part_files():
     """Config.UIArt part key -> (local png, slice rect or None, size) through art/ui/asset_ids.json"""
     cfg = open(CONFIG, encoding="utf-8").read()
+    if not os.path.exists(os.path.join(ART, "asset_ids.json")):
+        return {}  # a sparse worktree without art/: the mock sheet is drawn without the art
     ids = json.load(open(os.path.join(ART, "asset_ids.json"), encoding="utf-8"))
     by_id = {}
     for k, v in ids.items():
@@ -173,16 +185,21 @@ def check_screen(name, vw, vh, touch, L, passes, names, lines, words):
     card_w = inner_w / L["Cols"] - L["Gap"] * (L["Cols"] - 1) / L["Cols"] - 1
     row_px = L["Cols"] * round(card_w * s) + (L["Cols"] - 1) * round(L["Gap"] * s)
     note_lines = wrap(BODY, words["Note"], NOTE_SIZE * s, inner_w * s)
-    content_h = PAD_TOP + L["CardH"] + LIST_GAP + len(note_lines) * NOTE_SIZE + PAD_BOTTOM
+    rows = math.ceil(len(passes) / L["Cols"])
+    cards_h = rows * L["CardH"] + (rows - 1) * L["Gap"]
+    content_h = PAD_TOP + cards_h + LIST_GAP + len(note_lines) * NOTE_SIZE + PAD_BOTTOM
     win_h = min(max(math.ceil(hang + 8 + content_h + BOTTOM), MIN_H), max_h)
     view_h = win_h - (hang + 8) - BOTTOM
     res = {"Scale": round(s, 3), "PxFloor": round(pxf, 3), "Canvas": [round(cw), round(ch)], "Window": [win_w, win_h],
            "CardW": round(card_w, 1), "RowPx": row_px, "InnerPx": round(inner_w * s, 1), "ContentH": content_h,
            "ViewH": view_h, "Checks": {}, "Cards": {}}
     checks = res["Checks"]
-    checks["four cards in one row (whole-pixel cells)"] = row_px <= math.floor(inner_w * s) and L["Cols"] == 4 \
-        and len(passes) == 4
-    checks["no scrolling for the cards"] = content_h <= view_h + 0.5
+    checks["six cards, three a row (whole-pixel cells)"] = row_px <= math.floor(inner_w * s) and L["Cols"] == 3 \
+        and len(passes) == 6
+    if touch:  # plan 10/13: phones scroll to the second row; the first row shows at once
+        checks["phone: the first row of cards without scrolling"] = PAD_TOP + L["CardH"] <= view_h + 0.5
+    else:
+        checks["PC: no scrolling for the cards"] = content_h <= view_h + 0.5
     lines_top = L["Pad"] + L["Slot"] + 4
     lines_h = L["CardH"] - lines_top - L["NameH"] - 2 - 6 - L["CapsH"] - L["Pad"]
     # every text size below is real px
@@ -199,7 +216,7 @@ def check_screen(name, vw, vh, touch, L, passes, names, lines, words):
         wl = wrap(BODY, lines[k], line_px, lines_w)
         lines_ok = len(wl) * line_px <= lines_hpx + 0.5 and all(BODY.width(x, line_px) <= lines_w for x in wl)
         caps_words = [words["MonthF"].replace("%s", str(p["Price"]))] if p["Info"] else \
-            [words["PriceF"].replace("%s", str(p["Price"])), words["Owned"], words["Soon"]]
+            [words["PriceF"].replace("%s", str(p["Price"])), words["Owned"], words["Soon"], words["Off"]]
         caps = {}
         for w in caps_words:
             size, _ = scaled_size(HEAD, w, L["CapsSize"], caps_floor, *caps_box)
@@ -221,13 +238,13 @@ def check_screen(name, vw, vh, touch, L, passes, names, lines, words):
         size, _ = scaled_size(HEAD, n, L["NameSize"], name_floor, (look_w - 8) * s, L["NameH"] * s)
         looks[n] = {"Px": size}
         checks["look " + n + ": name on one line at >= 12 px"] = size is not None and size >= NAME_MIN_PX * pxf - 0.01
-    for w in (words["PriceF"].replace("%s", "99"), words["Wear"], words["Wearing"], words["Soon"]):
+    for w in (words["PriceF"].replace("%s", "99"), words["Wear"], words["Wearing"], words["Soon"], words["Off"]):
         size, _ = scaled_size(HEAD, w, L["CapsSize"], caps_floor, (look_w - 2 * L["Pad"] - 20) * s, (L["CapsH"] - 8) * s)
         looks[w] = {"Px": size}
         checks["look capsule '" + w + "' on one line at >= 16 px"] = size is not None and size >= FLOOR_BUTTON * pxf - 0.01
     res["Looks"] = looks
     res["Layout"] = {"Top": top, "Hang": hang, "AvailH": avail_h, "LinesTop": lines_top, "LinesH": lines_h,
-                     "NoteLines": note_lines}
+                     "NoteLines": note_lines, "CardsH": cards_h}
     return res
 
 
@@ -314,7 +331,8 @@ def mock(name, vw, vh, touch, res, L, passes, names, words, parts):
     caps_art = {"buy": "BtnPrimary", "soon": "BtnSecondary", "info": "BtnSecondary", "owned": "BtnConfirm"}
     for i, p in enumerate(passes):
         k = p["Kind"]
-        x0, y0 = ox + i * (cw + L["Gap"] * s), oy
+        col, row = i % int(L["Cols"]), i // int(L["Cols"])
+        x0, y0 = ox + col * (cw + L["Gap"] * s), oy + row * (chh + L["Gap"] * s)
         if plate:
             canvas.alpha_composite(nine_slice(plate, pp[1], pp[2] * s, cw, chh), (int(x0), int(y0)))
         slot, _ = art(p["Slot"])
@@ -356,7 +374,7 @@ def mock(name, vw, vh, touch, res, L, passes, names, words, parts):
         rim = (255, 240, 200) if state == "buy" else (27, 33, 64)
         d = ImageDraw.Draw(canvas)
         draw_text(d, HEAD, word, size, bx + bw / 2, by + bh * 0.48, ink + ((153,) if state == "soon" else (255,)), rim, "mm", 1)
-    ny = oy + (L["CardH"] + LIST_GAP) * s
+    ny = oy + (res["Layout"]["CardsH"] + LIST_GAP) * s
     for line in res["Layout"]["NoteLines"]:
         draw_text(d, BODY, line, NOTE_SIZE * s, cx, ny, (200, 200, 210), (0, 0, 0), "mt", 0)
         ny += NOTE_SIZE * s
@@ -367,8 +385,8 @@ def mock(name, vw, vh, touch, res, L, passes, names, words, parts):
 
 def main():
     L, passes, names, lines, words = parse_shop()
-    if len(passes) != 4:
-        raise SystemExit(f"expected 4 pass cards in ShopUI.PASSES, found {len(passes)}")
+    if len(passes) != 6:
+        raise SystemExit(f"expected 6 pass cards in ShopUI.PASSES, found {len(passes)}")
     parts = part_files()
     report = {"Shop": os.path.relpath(SHOP, ROOT), "Fonts": {"Head": HEAD.path, "Body": BODY.path,
               "HeadRatio": round(HEAD.ratio, 3), "BodyRatio": round(BODY.ratio, 3)}, "Screens": {}}

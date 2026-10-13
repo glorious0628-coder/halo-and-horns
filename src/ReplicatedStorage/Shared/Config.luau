@@ -4380,6 +4380,30 @@ Config.PassInfo = {
 		Desc = "Show off when you chat: every fancy chat bubble skin. Your side's own bubble is free for everyone. No stats are for sale." },
 	Stickers = { Line = "13 more chat stickers",
 		Desc = "13 more stickers to pop over your head: hearts, a crown, Nice!, GG and more. 5 basic stickers are free for everyone. No stats are for sale." },
+	-- the Shop window's own words (ShopUI, game dev 1; plan 10/13 §1-A #6 moved them here from ShopUI). A pass card's name =
+	-- Config.GamePasses[kind].Name (PrivateName for the private server card), its line = Line above; the private server
+	-- card adds Config.PrivateServer.Text. Off = the [Buy] capsules while the live switch PassSales is off (GameState
+	-- SwitchPassSales = false; a bought pass keeps working)
+	Screen = {
+		Title = "Shop",
+		PrivateName = "Private Server",
+		PriceF = "%s R$",
+		MonthF = "%s R$ / mo",
+		Owned = "Owned",
+		Soon = "Coming soon",
+		Off = "Not on sale",
+		Wear = "Wear",
+		Wearing = "Wearing",
+		LooksSideF = "Looks for %s",
+		Looks = "Looks",
+		Tickets = "Change Tickets",
+		TicketF = "%s · you have %d",
+		SoonToast = "Not on sale yet. Check back soon!",
+		OffToast = "Not on sale right now. Check back later!",
+		OwnedToast = "You already have this!",
+		ServerToast = "Get a private server on the game page: open Servers, then Create.",
+		Note = "Always ask a grown-up before you buy.",
+	},
 }
 
 -- A23-143 (user 10/12): chat stickers - a picture over my head that everyone sees, no text typed. Keys = Config.UIArt.Parts

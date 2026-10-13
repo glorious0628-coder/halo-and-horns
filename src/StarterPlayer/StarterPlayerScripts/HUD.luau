@@ -226,6 +226,9 @@ local TXT = {
 	BoostXP = "2x XP",
 	BoostGold = "2x Gold",
 	BoostBoth = "2x XP · Gold",
+	-- plan 10/13 §1-A #6 (A23-90): in a private server (GameState PrivateServer, 게임성 개발 2) one chip; a press says the
+	-- whole rule (Config.PrivateServer.Text)
+	PrivateHalf = "Private server · half rewards",
 	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
@@ -1465,12 +1468,13 @@ local function buildChips(root)
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
 	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
-		Boost = "IconExp" }
+		Boost = "IconExp", Private = "IconPrivateServer" }
 	L.ChipIcons = icons
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
 	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Private", "Rookie", "Protected", "Blessing", "Size",
+		"Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
@@ -1487,6 +1491,16 @@ local function buildChips(root)
 		end)
 	end
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
+	local privateChip = ui.chip.Private and ui.chip.Private.Frame -- a press: the whole private-server rule (A23-90)
+	if privateChip then
+		privateChip.Active = true
+		privateChip.InputBegan:Connect(function(input)
+			local t = input.UserInputType
+			local ps = Config.PrivateServer
+			if (t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch) and type(ps) == "table"
+				and type(ps.Text) == "string" then pcall(UIKit.Toast, ps.Text, "info") end
+		end)
+	end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
 end
 
@@ -3463,6 +3477,7 @@ refreshChips = function()
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
 	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
+	setChip(ui.chip.Private, UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf, Theme.SubText, false, nil, true)
 	L.RefreshBoost()
 
 	-- A23-40: at most L.MaxChips chips in their order (fewer when they do not fit the row, L.CheckChipFit); the rest fold
