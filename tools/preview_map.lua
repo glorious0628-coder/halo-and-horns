@@ -23,7 +23,7 @@ local NEON = Enum.Material.Neon
 local ZONES = {
 	Crossroads = { Name = "Crossroads", Center = Vector3.new(0, 0, 0), Size = Vector3.new(300, 0, 300), MinLevel = 1, PvP = false,
 		Color = RGB(190, 176, 150), Material = Enum.Material.Cobblestone, Spawn = Vector3.new(0, 0, -25) },
-	HaloTown = { Name = "Halo Citadel", Center = Vector3.new(0, 0, -515), Size = Vector3.new(400, 0, 370), MinLevel = 1, PvP = false,
+	HaloTown = { Name = "Halo Citadel", Center = Vector3.new(-2.5, 0, -596.5), Size = Vector3.new(615, 0, 533), MinLevel = 1, PvP = false,
 		Color = RGB(228, 218, 190), Material = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -420) },
 	HornsTown = { Name = "Horns Den", Center = Vector3.new(0, 0, 515), Size = Vector3.new(400, 0, 370), MinLevel = 1, PvP = false,
 		Color = RGB(70, 40, 45), Material = Enum.Material.Slate, Spawn = Vector3.new(0, 0, 420) },
@@ -39,7 +39,7 @@ local ZONES = {
 		Color = RGB(135, 125, 108), Material = Enum.Material.Slate, Spawn = Vector3.new(1280, 0, 0) },
 }
 local ZONE_ORDER = { "Crossroads", "HaloTown", "HornsTown", "SlimeMeadow", "PumpkinPatch", "HauntedHollow", "GoblinWoods", "SkeletonRuins" }
-local BOUNDS = { MinX = -260, MaxX = 1840, MinZ = -720, MaxZ = 720 }
+local BOUNDS = { MinX = -330, MaxX = 1840, MinZ = -883, MaxZ = 720 }
 local WALL_HEIGHT = 80 -- Config.Map.WallHeight
 local WATER_TOP = -1.2 -- Config.Map.WaterTop
 -- land pieces (= Config.Map.Lands); Floor = the land's own ground material (zone floors paint over it below)
@@ -49,7 +49,7 @@ local LANDS = {
 	{ Name = "LandWoods", MinX = 710, MaxX = 1190, MinZ = -260, MaxZ = 260, Floor = Enum.Material.LeafyGrass },
 	{ Name = "LandPass", MinX = 1190, MaxX = 1260, MinZ = -260, MaxZ = 260, Floor = Enum.Material.Rock },
 	{ Name = "LandRuins", MinX = 1260, MaxX = 1780, MinZ = -290, MaxZ = 290, Floor = Enum.Material.Ground },
-	{ Name = "IslandHalo", MinX = -200, MaxX = 200, MinZ = -700, MaxZ = -330, Floor = Enum.Material.Limestone },
+	{ Name = "IslandHalo", MinX = -310, MaxX = 305, MinZ = -863, MaxZ = -330, Floor = Enum.Material.Limestone },
 	{ Name = "IslandHorns", MinX = -200, MaxX = 200, MinZ = 330, MaxZ = 700, Floor = Enum.Material.Basalt },
 	{ Name = "LandPumpkinPatch", MinX = 420, MaxX = 650, MinZ = 240, MaxZ = 430, Floor = Enum.Material.Mud, Season = "Halloween" },
 	{ Name = "LandHauntedHollow", MinX = 220, MaxX = 420, MinZ = 255, MaxZ = 430, Floor = Enum.Material.Asphalt, Season = "Halloween" },

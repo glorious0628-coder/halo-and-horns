@@ -36,9 +36,9 @@
    "en": "Halo Citadel",
    "kind": "town",
    "land": [
-    -200,
-    200,
-    -700,
+    -310,
+    305,
+    -863,
     -330
    ],
    "lv": "1",
@@ -55,9 +55,10 @@
     222
    ],
    "size": [
-    400,
-    370
-   ]
+    615,
+    533
+   ],
+   "note_v2": "A23-121 stage 6: the Halo v2 island (docs/design/halo_fixed_points_v2_2026-10-11.md C)"
   },
   {
    "id": "HornsTown",

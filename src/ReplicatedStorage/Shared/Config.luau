@@ -1816,8 +1816,10 @@ Config.Zones = {
 	Crossroads = { Id = "Crossroads", Name = "Crossroads", Center = Vector3.new(0, 0, 0), Size = Vector3.new(300, 0, 300),
 		MinLevel = 1, PvP = false, Town = true, Faction = nil,
 		FloorColor = Color3.fromRGB(190, 176, 150), FloorMaterial = Enum.Material.Cobblestone, Spawn = Vector3.new(0, 0, -25) },
-	-- the towns: land x -200..200, z -700..-330 / 330..700; the gate at the bridge end, the castle at the far end (z -+630)
-	HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(0, 0, -515), Size = Vector3.new(400, 0, 370),
+	-- the towns: the gate at the bridge end (z -+330). Horns Den: land x -200..200, z 330..700. Halo Citadel = the v2 island
+	-- (A23-121 stage 6, docs/design/halo_fixed_points_v2_2026-10-11.md C): land x -300..295, z -853..-325 + 10 studs -> x -310..305, z -863..-330
+	-- (the PvP-safe town, its music, Enter quests, the bounce of the other side, the monsters' chase limit)
+	HaloTown = { Id = "HaloTown", Name = "Halo Citadel", Center = Vector3.new(-2.5, 0, -596.5), Size = Vector3.new(615, 0, 533),
 		MinLevel = 1, PvP = false, Town = true, Faction = "Halo",
 		FloorColor = Color3.fromRGB(228, 218, 190), FloorMaterial = Enum.Material.Marble, Spawn = Vector3.new(0, 0, -420),
 		SpawnLook = Vector3.new(0, 0, -330) }, -- the gate at the bridge end: the first mission's spawn faces the way out (zone_check_halo #43)
@@ -1865,7 +1867,7 @@ Config.Zones = {
 		MinLevel = 1, PvP = false, Town = false, Faction = nil, Season = "NewZones",
 		FloorColor = Color3.fromRGB(90, 150, 140), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(2210, 0, -300) },
 	-- = Config.Map.Bounds
-	Outskirts = { Id = "Outskirts", Name = "Outskirts", Center = Vector3.new(790, 0, 0), Size = Vector3.new(2100, 0, 1440),
+	Outskirts = { Id = "Outskirts", Name = "Outskirts", Center = Vector3.new(755, 0, -81.5), Size = Vector3.new(2170, 0, 1603),
 		MinLevel = 1, PvP = false, Town = false, Faction = nil,
 		FloorColor = Color3.fromRGB(130, 165, 100), FloorMaterial = Enum.Material.Grass, Spawn = Vector3.new(0, 0, -25) },
 }
@@ -1966,7 +1968,9 @@ Config.Map = {
 	-- invisible walls only: NEVER a ground plate covering Bounds (it would cover the sea and rivers: A10-V3-1). Map v2:
 	-- 60 studs of sea past the lands east / west, 20 past the town ends (= the big map picture UIP_WorldMapV2 covers x
 	-- -295..1865, z -720..720). New islands (A23-53 "차차 넓힌다") push these out later.
-	Bounds = { MinX = -260, MaxX = 1840, MinZ = -720, MaxZ = 720 },
+	-- A23-121 stage 6: the Halo v2 island box reaches x -310 / z -863, + 20 studs of sea like every land (the fixed-point
+	-- table's -320 / -873 + 10; MaxX / MaxZ stay: Horns Den is as it was)
+	Bounds = { MinX = -330, MaxX = 1840, MinZ = -883, MaxZ = 720 },
 	WallHeight = 80,
 	FountainPosition = Vector3.new(0, 0, 0),
 	AltarPosition = Vector3.new(0, 0, 45), -- "운명의 제단": Part named "Altar" + ProximityPrompt "AltarPrompt"
@@ -2001,7 +2005,7 @@ Config.Map = {
 		{ Name = "LandWoods", MinX = 710, MaxX = 1190, MinZ = -260, MaxZ = 260 },
 		{ Name = "LandPass", MinX = 1190, MaxX = 1260, MinZ = -260, MaxZ = 260 },
 		{ Name = "LandRuins", MinX = 1260, MaxX = 1780, MinZ = -290, MaxZ = 290 },
-		{ Name = "IslandHalo", MinX = -200, MaxX = 200, MinZ = -700, MaxZ = -330 },
+		{ Name = "IslandHalo", MinX = -310, MaxX = 305, MinZ = -863, MaxZ = -330 }, -- the v2 island's box (its real shore: the blockout Terrain)
 		{ Name = "IslandHorns", MinX = -200, MaxX = 200, MinZ = 330, MaxZ = 700 },
 		{ Name = "LandPumpkinPatch", MinX = 420, MaxX = 650, MinZ = 240, MaxZ = 430, Season = "Halloween" }, -- A23-30, joined to LandMeadow
 		{ Name = "LandHauntedHollow", MinX = 220, MaxX = 420, MinZ = 255, MaxZ = 430, Season = "Halloween" }, -- A23-45, joined to the patch's west edge
@@ -3845,7 +3849,12 @@ Config.StoryQuests.Landmarks.MeadowBoard = Vector3.new(230, 0, 12)
 Config.StoryQuests.Landmarks.WoodsBoard = Config.StoryQuests.Landmarks.WoodsGate
 -- quest_volume §3-2 H6 / R7: the Heroes' Road between the hero statues (Halo Citadel) and the east lava channel (Horns
 -- Den). Map v2 moves the town cores 10 studs outward with their gates (Halo z -320 -> -330, Horns 320 -> 330).
-Config.StoryQuests.Landmarks.HeroStatue = Vector3.new(0, 0, -370)
+-- A23-121 stage 6: the v2 statue stands west of the main road (outside the |x| <= 12 gate lane); a StoryLandmark-tagged
+-- instance with Spot = "HeroStatue" (a raised terrace) moves it as before
+Config.StoryQuests.Landmarks.HeroStatue = Vector3.new(-34, 0, -388)
+-- A23-121 stage 6: the knights' training yard (scarecrow targets) by the castle road; a landmark only - no quest points at it
+-- yet (최종 검수 10/13)
+Config.StoryQuests.Landmarks.TrainingYard = Vector3.new(-130, 2, -446)
 Config.StoryQuests.Landmarks.LavaCrack = Vector3.new(48, 0, 410)
 
 -- story_depth (나) the beta Easter eggs EG01 / EG02 / EG03 / EG04 / EG14 (검수 2026-10-10: only what needs no new model; A23-52
@@ -4019,6 +4028,9 @@ Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSi
 -- road, the shop people (Folk1 juice, Folk2 flowers, Folk3 bakery) and the potion seller about 5 studs in front of their shop's
 -- face, Folk4 beside the fountain. Y = the ground the spot is meant to have (a roof, a pedestal top or a balcony above it is never the ground): the ray
 -- goes on below a hit more than YTol studs away from it. Retries / RetryDelay: a body whose avatar call failed is made again.
+-- A23-121 stage 6 (the Halo v2 island, docs/design/halo_fixed_points_v2_2026-10-11.md B): Sir Gleam beside the hero statue (west of the
+-- main road), the potion seller / bakery / juice / flower people in front of their shops (Y = their yard's ground), Folk4 by
+-- the 2-tier fountain (pool centre (22, 10, -590), r 9). Bright stays at the spawn plaza.
 Config.TownNpcs = {
 	Enabled = true,
 	PromptDistance = 10, -- studs (< Config.StoryQuests.NpcRange 16: a trigger is always near enough for the story's own check)
@@ -4032,18 +4044,18 @@ Config.TownNpcs = {
 	List = {
 		{ Id = "Bright", Name = "Npc_Bright", Story = "Bright", Label = "Bright", At = Vector3.new(18, 0, -424), Look = Vector3.new(18, 0, -380),
 			Colors = { Head = Color3.fromRGB(240, 200, 170), Torso = Color3.fromRGB(140, 200, 240), Legs = Color3.fromRGB(245, 245, 250) } },
-		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-10, 0, -372), Look = Vector3.new(0, 0, -372),
+		{ Id = "Gleam", Name = "Npc_Gleam", Story = "Gleam", Label = "Sir Gleam", At = Vector3.new(-20, 0, -390), Look = Vector3.new(0, 0, -390),
 			Colors = { Head = Color3.fromRGB(205, 160, 120), Torso = Color3.fromRGB(232, 196, 70), Legs = Color3.fromRGB(240, 240, 235) } },
-		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(38.42, 0, -499.19), Look = Vector3.new(49.53, 0, -496), Y = 9,
+		{ Id = "Folk1", Name = "Npc_Folk1", Folk = "Folk1", At = Vector3.new(130, 0, -507), Look = Vector3.new(119.5, 0, -503), Y = 8,
 			Colors = { Head = Color3.fromRGB(234, 184, 146), Torso = Color3.fromRGB(255, 200, 150), Legs = Color3.fromRGB(110, 90, 70) } },
-		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(6.6, 0, -489.63), Look = Vector3.new(-4.57, 0, -486), Y = 9,
+		{ Id = "Folk2", Name = "Npc_Folk2", Folk = "Folk2", At = Vector3.new(66.4, 0, -514), Look = Vector3.new(69.2, 0, -503.1), Y = 6,
 			Colors = { Head = Color3.fromRGB(198, 143, 105), Torso = Color3.fromRGB(180, 150, 220), Legs = Color3.fromRGB(80, 80, 110) } },
-		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(-6.35, 0, -476.52), Look = Vector3.new(-18.21, 0, -474), Y = 9,
+		{ Id = "Folk3", Name = "Npc_Folk3", Folk = "Folk3", At = Vector3.new(101.9, 0, -452.8), Look = Vector3.new(93.2, 0, -459.9), Y = 6,
 			Colors = { Head = Color3.fromRGB(150, 105, 75), Torso = Color3.fromRGB(150, 210, 170), Legs = Color3.fromRGB(225, 220, 200) } },
-		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(46, 0, -556), Look = Vector3.new(34.55, 0, -566), Y = 20,
+		{ Id = "Folk4", Name = "Npc_Folk4", Folk = "Folk4", At = Vector3.new(36, 0, -596), Look = Vector3.new(22, 0, -590), Y = 10,
 			Colors = { Head = Color3.fromRGB(245, 205, 175), Torso = Color3.fromRGB(255, 225, 140), Legs = Color3.fromRGB(90, 120, 160) } },
-		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 9,
-			At = Vector3.new(20.07, 0, -468.17), Look = Vector3.new(32.38, 0, -466) },
+		{ Id = "PotionHalo", Name = "PotionMerchant_Halo", Merchant = true, Label = "Potion Seller", Y = 5,
+			At = Vector3.new(32.5, 0, -483.5), Look = Vector3.new(31.7, 0, -472.3) },
 		{ Id = "Otto", Name = "Npc_Otto", Anvil = true, Behind = 4,
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
@@ -6100,8 +6112,9 @@ Config.Audio.Weather = {
 Config.Audio.Ambient = {
 	Fountain = { Id = "rbxassetid://136139057502455", Volume = 0.5, MinDistance = 6, MaxDistance = 40 },
 	Waterfall = { Id = "rbxassetid://85234404217631", Volume = 0.5, MinDistance = 8, MaxDistance = 40,
-		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
-			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
+		-- A23-121 stage 6: the Halo v2 falls W1 (west of the gate, to the sea), W2 (the cathedral spring's 3 steps), W3 (the
+		-- east cliff, 2 steps)
+		Spots = { Vector3.new(-85, 1, -340), Vector3.new(-38, 21, -699), Vector3.new(288, 12, -641) } },
 }
 
 -- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.

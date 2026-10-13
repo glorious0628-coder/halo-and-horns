@@ -195,10 +195,11 @@ runGroup("town area", function()
 		return t and t.Id or "-"
 	end
 	check(id(0, -500) == "HaloTown", "inside the Halo rect (a canal)", id(0, -500))
-	check(id(239, -500) == "HaloTown" and id(-239, -600) == "HaloTown", "39 studs outside the Halo rect (east / west sea)",
-		id(239, -500) .. " " .. id(-239, -600))
-	check(id(241, -500) == "-" and id(-241, -600) == "-", "41 studs outside: no town area", id(241, -500))
-	check(id(0, -739) == "HaloTown" and id(0, -741) == "-", "the far end: z -700 - 40", id(0, -739) .. " " .. id(0, -741))
+	-- the Halo v2 rect (A23-121 stage 6): x -310..305, z -863..-330
+	check(id(344, -500) == "HaloTown" and id(-349, -600) == "HaloTown", "39 studs outside the Halo rect (east / west sea)",
+		id(344, -500) .. " " .. id(-349, -600))
+	check(id(346, -500) == "-" and id(-351, -600) == "-", "41 studs outside: no town area", id(346, -500))
+	check(id(0, -902) == "HaloTown" and id(0, -904) == "-", "the far end: z -863 - 40", id(0, -902) .. " " .. id(0, -904))
 	check(id(0, -292) == "HaloTown", "the strait 38 studs off the Halo gate end", id(0, -292))
 	check(id(0, -240) == "-", "mid strait (z -240) lies between the Crossroads and Halo margins", id(0, -240))
 	check(id(185, 0) == "Crossroads" and id(185, 60) == "Crossroads", "the Crossroads river by the meadow bridge", id(185, 60))
@@ -366,19 +367,19 @@ runGroup("landing rules", function()
 end)
 
 runGroup("enemy town and kaiju", function()
-	-- the sea 25 studs east of the Halo rect (Outskirts, inside the 40-stud margin); the only land is Halo island (x <= 195)
+	-- the sea 25 studs east of the Halo v2 rect (x <= 305: Outskirts, inside the 40-stud margin); the only land is Halo island (x <= 300)
 	local w = zoneWorld()
 	fakeProbes(w, function(x, _z)
-		if x <= 195 then return land(0.2) end
+		if x <= 300 then return land(0.2) end
 		return sea()
 	end)
-	local halo = swimmer(w, 1, vec(225, -0.5, -500), { Faction = "Halo" })
-	local horns = swimmer(w, 2, vec(225, -0.5, -560), { Faction = "Horns" })
-	local kaiju = swimmer(w, 3, vec(225, -0.5, -620), { Faction = "Halo" })
+	local halo = swimmer(w, 1, vec(330, -0.5, -500), { Faction = "Halo" })
+	local horns = swimmer(w, 2, vec(330, -0.5, -560), { Faction = "Horns" })
+	local kaiju = swimmer(w, 3, vec(330, -0.5, -620), { Faction = "Halo" })
 	w.Kaiju[kaiju.P] = "Active"
 	rescueNow(w, { halo, horns, kaiju })
 	local a, b, c = halo.Root.Position, horns.Root.Position, kaiju.Root.Position
-	check(a.X <= 195 and near(a.Y, 4.2), "a Halo player lands on the Halo shore", show(a))
+	check(a.X <= 300 and near(a.Y, 4.2), "a Halo player lands on the Halo shore", show(a))
 	check(near(b.Y, 4) and math.abs(b.X) <= 6 and math.abs(b.Z + 25) <= 6,
 		"a Horns player is never put into the Halo town: the Crossroads spawn (0, 4, -25), no free trip home", show(b))
 	check(near(c.Y, 4) and math.abs(c.X) <= 6 and math.abs(c.Z + 25) <= 6,

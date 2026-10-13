@@ -22,6 +22,9 @@ local LOOT_NEIGHBOUR = { Plain = "Goblin", Big = "GoblinBrute" }
 local function classOf(def) return (tonumber(def.Scale) or 1) >= 1.2 and "Big" or "Plain" end
 
 local base = execute("BaseConfig", BASE_CONFIG_SOURCE, nativeEnv())
+-- zones a later round changed on purpose (A23-121 stage 6: the Halo v2 island's rect and the Outskirts around the world;
+-- tools/test_map_v2.py checks them): a point whose answer is HaloTown on either side, and these two rects, are not this round's
+local LATER_ZONES = { HaloTown = true, Outskirts = true }
 
 local function pt(x, z) return vec(x, 0, z) end
 local function samples(z)
@@ -131,7 +134,7 @@ runGroup("off", function()
 		for _, p in samples(bz) do
 			total += 1
 			local a, b = C.ZoneAt(p).Id, base.ZoneAt(p).Id
-			if a ~= b then table.insert(bad, id .. "@" .. p.X .. "," .. p.Z .. " " .. a .. " vs " .. b) end
+			if a ~= b and a ~= "HaloTown" and b ~= "HaloTown" then table.insert(bad, id .. "@" .. p.X .. "," .. p.Z .. " " .. a .. " vs " .. b) end
 		end
 	end
 	check(total > 100 and #bad == 0, "ZoneAt over every existing zone rect (centre, corners, edges, 1 stud outside) = base commit 048127fa9e", tostring(bad[1]) .. " (" .. #bad .. " of " .. total .. ")")
@@ -159,7 +162,7 @@ runGroup("off", function()
 
 	-- nothing that existed changed
 	local zoneDiff, kindDiff, lootDiff, itemDiff, barkDiff, lvDiff, famDiff, orderDiff = {}, {}, {}, {}, {}, {}, {}, {}
-	for id, bz in base.Zones do if not same(bz, C.Zones[id]) then table.insert(zoneDiff, id) end end
+	for id, bz in base.Zones do if not LATER_ZONES[id] and not same(bz, C.Zones[id]) then table.insert(zoneDiff, id) end end
 	for k, bd in base.MonsterTypes do if not same(bd, C.MonsterTypes[k]) then table.insert(kindDiff, k) end end
 	-- rows of a later round's own items (Source Boss = C1's boss materials, Gather / Craft / Goose) are not this round's, nor
 	-- the weapon rows (게임성 개발 2's C2 retuned them on purpose, crafting_market §3; tools/test_loot.py checks them)
@@ -255,7 +258,7 @@ runGroup("on", function()
 		for _, p in samples(bz) do
 			total += 1
 			local a, b = C.ZoneAt(p).Id, base.ZoneAt(p).Id
-			if a ~= b then table.insert(bad, id .. "@" .. p.X .. "," .. p.Z .. " " .. a .. " vs " .. b) end
+			if a ~= b and a ~= "HaloTown" and b ~= "HaloTown" then table.insert(bad, id .. "@" .. p.X .. "," .. p.Z .. " " .. a .. " vs " .. b) end
 		end
 	end
 	check(total > 100 and #bad == 0, "with the switch on, ZoneAt over every existing zone rect is still the base commit's", tostring(bad[1]) .. " (" .. #bad .. " of " .. total .. ")")

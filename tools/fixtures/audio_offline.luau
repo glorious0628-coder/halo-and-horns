@@ -1145,9 +1145,9 @@ do
 	check(m, "Config: the Halo / Horns town tracks, quieter than the effects, a 1.5 s crossfade",
 		M.Tracks.HaloTown == "rbxassetid://108661141883977" and M.Tracks.HornsTown == "rbxassetid://123430641290441"
 		and M.Volume > 0 and M.Volume <= 0.6 and M.Fade == 1.5 and M.DuckMul < 1, encode(M))
-	check(m, "Config: the water loops, 3D within 40 studs, six Halo waterfall spots",
+	check(m, "Config: the water loops, 3D within 40 studs, the three Halo v2 waterfall spots (W1-W3, A23-121 stage 6)",
 		AM.Fountain.Id ~= "" and AM.Waterfall.Id ~= "" and AM.Fountain.MaxDistance == 40 and AM.Waterfall.MaxDistance == 40
-		and #AM.Waterfall.Spots == 6, encode(AM))
+		and #AM.Waterfall.Spots == 3, encode(AM))
 	local SD = Config.Settings
 	check(m, "Settings: a Music volume row (0..1 by 0.1, default 1, right after Sound effects)",
 		SD.Defs.Music and SD.Defs.Music.Min == 0 and SD.Defs.Music.Max == 1 and SD.Defs.Music.Step == 0.1
@@ -1252,7 +1252,7 @@ do
 	for _, so in SOUNDS_MADE do
 		if so.Name == "AmbientWaterfall" and so.Looped and so.Parent and so.Parent.Name == "WaterfallSound" then spots += 1 end
 	end
-	check(m, "a waterfall sound at each of the six Halo spots", spots >= 6, spots)
+	check(m, "a waterfall sound at each of the three Halo spots", spots >= 3, spots)
 	local hub = newInstance("Part")
 	local w = Audio.Ambient(hub, "Fountain")
 	check(m, "a fountain's water: looped, 3D 40 studs, at its volume x Sound effects", w and w.Looped and w.Parent == hub

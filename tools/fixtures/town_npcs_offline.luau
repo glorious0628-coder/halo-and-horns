@@ -78,6 +78,22 @@ function methods:PivotTo(cf)
 end
 
 -- one world per scenario
+-- the Halo v2 island's ground at a spot (A23-121 stage 6, halo_plan_v2 yards): the gate road and spawn plaza 0.2, the potion
+-- yard 5, the bakery / flower corners 6, the juice lane 8, the fountain plaza 10, the hills above 30
+local function HALO_V2(x, z)
+	if z > -440 then return 0.2 end
+	if x > 120 and z < -480 and z > -540 then return 8 end
+	if x > 50 and z < -430 and z > -540 then return 6 end
+	if x > 0 and z > -540 then return 5 end
+	if z > -640 then return 10 end
+	return 30
+end
+
+-- the four shop yards (the shop people's spots), where the roof / balcony scenarios put things overhead
+local function SHOPS(x, z)
+	return x > 0 and z <= -440 and z >= -524
+end
+
 local function townWorld(o)
 	o = o or {}
 	local t = { Tags = {}, Warnings = {}, Ctx = { pieces = 0 }, Created = {}, Queue = {}, Defer = false, Rays = {}, Characters = {}, Waits = {} }
@@ -97,12 +113,10 @@ local function townWorld(o)
 		local anvil = object(o.AnvilModel and "Model" or "Part", "Anvil"); anvil.Position = o.AnvilAt or vec(39, 0, 49); anvil.Parent = guild
 		t.Anvil = anvil
 	end
-	-- the ground: the Halo terraces (halo_layout_plan: 0.2 at the gate, 9, the plaza 20, the cathedral 33), unless the scenario says otherwise
+	-- the ground: the Halo v2 terraces (halo_plan_v2: the gate road 0.2, the potion yard 5, the bakery / flower corners 6,
+	-- the juice lane 8, the fountain plaza 10, the castle / cathedral hills above), unless the scenario says otherwise
 	function t.Ground(x, z)
-		if z > -444 then return 0.2 end
-		if z > -524 then return 9 end
-		if z > -606 then return 20 end
-		return 33
+		return HALO_V2(x, z)
 	end
 	local ws = { FindFirstChild = function(_, name) if name == "Map" then return map end return nil end }
 	function ws:Raycast(origin, direction, params)
@@ -214,18 +228,19 @@ runGroup("config", function()
 		end
 	end
 	check(kinds.Story == 2 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto", show(kinds))
-	-- the shop people stand in front of their shop (A23-112 halo_layout_plan: each shop has its own yaw; tools/test_town_npcs.py
-	-- checks the 2..8 studs in front of the face against the plan), on the shop street terrace (Y 9; Folk4 stands on the fountain plaza, Y 20)
+	-- the shop people stand beside their shop's door (A23-121 stage 6, halo_fixed_points_v2 B; tools/test_town_npcs.py checks
+	-- them against the v2 plan's doors), each on its own yard (Y); Folk4 by the fountain on its plaza
 	local spot = {}
 	for _, e in T.List do spot[e.Id] = e end
-	check(spot.Folk1.At.X == 38.42 and spot.Folk1.At.Z == -499.19 and spot.Folk2.At.X == 6.6 and spot.Folk2.At.Z == -489.63
-		and spot.Folk3.At.X == -6.35 and spot.Folk3.At.Z == -476.52 and spot.PotionHalo.At.X == 20.07 and spot.PotionHalo.At.Z == -468.17,
-		"juice man (38.42,-499.19), flower girl (6.6,-489.63), baker (-6.35,-476.52), the potion seller (20.07,-468.17)",
+	check(spot.Folk1.At.X == 130 and spot.Folk1.At.Z == -507 and spot.Folk2.At.X == 66.4 and spot.Folk2.At.Z == -514
+		and spot.Folk3.At.X == 101.9 and spot.Folk3.At.Z == -452.8 and spot.PotionHalo.At.X == 32.5 and spot.PotionHalo.At.Z == -483.5
+		and spot.Folk4.At.X == 36 and spot.Folk4.At.Z == -596 and spot.Gleam.At.X == -20 and spot.Gleam.At.Z == -390,
+		"juice man (130,-507), flower girl (66.4,-514), baker (101.9,-452.8), the potion seller (32.5,-483.5), Folk4 (36,-596), Sir Gleam (-20,-390)",
 		show({ spot.Folk1.At, spot.Folk2.At, spot.Folk3.At, spot.PotionHalo.At }))
-	for _, id in { "Folk1", "Folk2", "Folk3", "PotionHalo" } do
-		check(spot[id].Y == 9, id .. " is on the shop street terrace: Y 9", tostring(spot[id].Y))
+	for id, y in { Folk1 = 8, Folk2 = 6, Folk3 = 6, PotionHalo = 5 } do
+		check(spot[id].Y == y, id .. " is on its shop's yard: Y " .. y, tostring(spot[id].Y))
 	end
-	check(spot.Folk4.Y == 20, "Folk4 is on the fountain plaza: Y 20", tostring(spot.Folk4.Y))
+	check(spot.Folk4.Y == 10, "Folk4 is on the fountain plaza: Y 10", tostring(spot.Folk4.Y))
 	check(spot.Bright.Y == nil and spot.Gleam.Y == nil, "Bright and Sir Gleam have no expected Y (a ramp / the gate road)", "")
 	local taken = {}
 	for _, e in T.List do
@@ -300,7 +315,7 @@ runGroup("build", function()
 		local f = t.Npc("Npc_Folk" .. i)
 		check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk" .. i and not t.Tagged(f, "StoryNpc") and t.PromptOf(f, "TalkPrompt") == nil,
 			"Folk" .. i .. ": a townsperson, tagged TownFolk, no prompt", show(t.Tags[f]))
-		local terrace = i == 4 and 20 or 9 -- Folk1-3 on the shop street, Folk4 on the fountain plaza
+		local terrace = ({ 8, 6, 6, 10 })[i] -- Folk1-3 on their shops' yards, Folk4 on the fountain plaza
 		check(near(f:GetPivot().Position.Y, terrace + 2.6), "Folk" .. i .. ": feet on the terrace (Y " .. terrace .. " + 2.6)", show(f:GetPivot().Position))
 	end
 	-- Otto: 4 studs behind the anvil, away from the Crossroads middle, facing it
@@ -329,9 +344,9 @@ runGroup("the potion seller (switched on)", function()
 	check(p and p.ActionText == "Buy potions" and p.ObjectText == "Potion Seller" and p.KeyboardKeyCode == "KeyCode.G" and p.HoldDuration == 0
 		and p.MaxActivationDistance == t.Config.Vitals.PotionMerchantDistance and p.Enabled == true and p:GetAttribute("StoryNpcId") == nil,
 		"the shop prompt (the Crossroads seller's name and range), no StoryNpcId", show(p and { p.ActionText, p.ObjectText }))
-	check(near(m:GetPivot().Position.X, 20.07) and near(m:GetPivot().Position.Z, -468.17) and near(m:GetPivot().Position.Y, 9 + 2.6),
-		"in front of the potion shop (20.07, -468.17), feet on the shop street terrace", show(m:GetPivot().Position))
-	check(near(m:GetPivot().Look.X, 32.38) and near(m:GetPivot().Look.Z, -466) and near(m:GetPivot().Look.Y, 9 + 2.6), "facing the shop (32.38, -466) at her own height", show(m:GetPivot().Look))
+	check(near(m:GetPivot().Position.X, 32.5) and near(m:GetPivot().Position.Z, -483.5) and near(m:GetPivot().Position.Y, 5 + 2.6),
+		"beside the potion shop's door (32.5, -483.5), feet on its yard (Y 5)", show(m:GetPivot().Position))
+	check(near(m:GetPivot().Look.X, 31.7) and near(m:GetPivot().Look.Z, -472.3) and near(m:GetPivot().Look.Y, 5 + 2.6), "facing the street (31.7, -472.3) at her own height", show(m:GetPivot().Look))
 	check(t.Tagged(m, t.Config.Vitals.PotionMerchantTag or "PotionMerchant"), "the tag ShopService sells at (Config.Vitals.PotionMerchantTag when it exists)", show(t.Tags[m]))
 	-- the seller's colours default to the Crossroads seller's (Config.Vitals.PotionMerchantColors)
 	local vc = t.Config.Vitals.PotionMerchantColors
@@ -431,11 +446,12 @@ end)
 
 ------------------------------------------------------------------ the ground under a spot with a roof over it
 runGroup("the expected ground (roofs, balconies, walls)", function()
-	-- the shop street terrace is Y 9; a shop roof at 25 and a balcony at 16 hang over some spots
+	-- the shop yards (Y 5..8); a shop roof 16 and a balcony 7 above the yard hang over some spots
 	local function roofed(t)
 		t.Layers = function(x, z)
-			if z <= -440 and z >= -524 then return { { Y = 25 }, { Y = 16 }, { Y = 9.1 }, { Y = 0.2 } } end
-			return { { Y = t.Ground(x, z) } }
+			local g = t.Ground(x, z)
+			if SHOPS(x, z) then return { { Y = g + 16 }, { Y = g + 7 }, { Y = g + 0.1 }, { Y = 0.2 } } end
+			return { { Y = g } }
 		end
 	end
 	local r = townWorld()
@@ -443,30 +459,31 @@ runGroup("the expected ground (roofs, balconies, walls)", function()
 	roofed(r)
 	r.Ensure()
 	local seller = r.Npc("PotionMerchant_Halo")
-	check(near(r.Npc("Npc_Folk1"):GetPivot().Position.Y, 9.1 + 2.6) and near(r.Npc("Npc_Folk3"):GetPivot().Position.Y, 9.1 + 2.6)
-		and seller and near(seller:GetPivot().Position.Y, 9.1 + 2.6),
-		"a roof (25) and a balcony (16) over the shop street: the shop people stand on the terrace (9.1), not on top", show({ r.Npc("Npc_Folk1"):GetPivot().Position.Y }))
+	check(near(r.Npc("Npc_Folk1"):GetPivot().Position.Y, 8.1 + 2.6) and near(r.Npc("Npc_Folk3"):GetPivot().Position.Y, 6.1 + 2.6)
+		and seller and near(seller:GetPivot().Position.Y, 5.1 + 2.6),
+		"a roof (+16) and a balcony (+7) over the shop yards: the shop people stand on their yard (8.1 / 6.1 / 5.1), not on top", show({ r.Npc("Npc_Folk1"):GetPivot().Position.Y }))
 	check(near(r.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6), "Bright (no expected Y) takes the ground the ray finds", show(r.Npc("Npc_Bright"):GetPivot().Position.Y))
 	local casts = 0
-	for _, ray in r.Rays do if near(ray.Origin.X, 38.42) and near(ray.Origin.Z, -499.19) then casts += 1 end end
+	for _, ray in r.Rays do if near(ray.Origin.X, 130) and near(ray.Origin.Z, -507) then casts += 1 end end
 	check(casts == 6, "three casts under Folk1's spot (roof, balcony, floor) twice (the check, then the placing), each from just below the last hit", tostring(casts))
 	for _, ray in r.Rays do
-		if near(ray.Origin.X, 38.42) and near(ray.Origin.Z, -499.19) and ray.Origin.Y < 150 then
-			check(ray.Origin.Y == 24.5 or ray.Origin.Y == 15.5, "a later cast starts 0.5 below the hit it passes", tostring(ray.Origin.Y))
+		if near(ray.Origin.X, 130) and near(ray.Origin.Z, -507) and ray.Origin.Y < 150 then
+			check(ray.Origin.Y == 23.5 or ray.Origin.Y == 14.5, "a later cast starts 0.5 below the hit it passes", tostring(ray.Origin.Y))
 		end
 	end
 	-- a wall (a balustrade's side) on the way is looked under too
 	local w = townWorld()
 	w.Layers = function(x, z)
-		if z <= -440 and z >= -524 then return { { Y = 13, NormalY = 0 }, { Y = 9 } } end
-		return { { Y = w.Ground(x, z) } }
+		local g = w.Ground(x, z)
+		if SHOPS(x, z) then return { { Y = g + 4, NormalY = 0 }, { Y = g } } end
+		return { { Y = g } }
 	end
 	w.Ensure()
-	check(near(w.Npc("Npc_Folk2"):GetPivot().Position.Y, 9 + 2.6), "a steep face at 13 over the floor: the floor is the ground", show(w.Npc("Npc_Folk2"):GetPivot().Position.Y))
+	check(near(w.Npc("Npc_Folk2"):GetPivot().Position.Y, 6 + 2.6), "a steep face 4 over the floor: the floor is the ground", show(w.Npc("Npc_Folk2"):GetPivot().Position.Y))
 	-- only a roof, no floor: the body is not made (a warning)
 	local nf = townWorld()
 	nf.Layers = function(x, z)
-		if z <= -440 and z >= -524 then return { { Y = 25 } } end
+		if SHOPS(x, z) then return { { Y = nf.Ground(x, z) + 16 } } end
 		return { { Y = nf.Ground(x, z) } }
 	end
 	nf.Ensure()
@@ -474,32 +491,34 @@ runGroup("the expected ground (roofs, balconies, walls)", function()
 	-- the floor is far below the terrace (a hole): not the ground either
 	local hole = townWorld()
 	hole.Layers = function(x, z)
-		if z <= -440 and z >= -524 then return { { Y = 0.2 } } end
+		if SHOPS(x, z) then return { { Y = 0.2 } } end
 		return { { Y = hole.Ground(x, z) } }
 	end
 	hole.Ensure()
-	check(hole.Npc("Npc_Folk1") == nil, "a floor at 0.2 where the terrace should be 9 (+-4): no body", "")
+	check(hole.Npc("Npc_Folk1") == nil, "a floor at 0.2 where the yard should be 8 (+-4): no body", "")
 	-- a pedestal top just inside the tolerance is the floor for the ray (the tolerance is 4)
 	local ped = townWorld()
 	ped.Layers = function(x, z)
-		if z <= -440 and z >= -524 then return { { Y = 12.9 } } end
+		if SHOPS(x, z) then return { { Y = ped.Ground(x, z) + 3.9 } } end
 		return { { Y = ped.Ground(x, z) } }
 	end
 	ped.Ensure()
-	check(ped.Npc("Npc_Folk1") ~= nil and near(ped.Npc("Npc_Folk1"):GetPivot().Position.Y, 12.9 + 2.6), "9 + 3.9 is inside the tolerance", "")
+	check(ped.Npc("Npc_Folk1") ~= nil and near(ped.Npc("Npc_Folk1"):GetPivot().Position.Y, 11.9 + 2.6), "8 + 3.9 is inside the tolerance", "")
 	local out = townWorld()
 	out.Layers = function(x, z)
-		if z <= -440 and z >= -524 then return { { Y = 13.1 }, { Y = 9 } } end
-		return { { Y = out.Ground(x, z) } }
+		local g = out.Ground(x, z)
+		if SHOPS(x, z) then return { { Y = g + 4.1 }, { Y = g } } end
+		return { { Y = g } }
 	end
 	out.Ensure()
-	check(near(out.Npc("Npc_Folk1"):GetPivot().Position.Y, 9 + 2.6), "9 + 4.1 is a roof: the ray goes on to the floor", "")
+	check(near(out.Npc("Npc_Folk1"):GetPivot().Position.Y, 8 + 2.6), "8 + 4.1 is a roof: the ray goes on to the floor", "")
 	-- RayTries: five roofs over the floor need six casts
 	local deep = townWorld()
 	deep.Config.TownNpcs.RayTries = 3
 	deep.Layers = function(x, z)
-		if z <= -440 and z >= -524 then return { { Y = 49 }, { Y = 39 }, { Y = 29 }, { Y = 19 }, { Y = 9 } } end
-		return { { Y = deep.Ground(x, z) } }
+		local g = deep.Ground(x, z)
+		if SHOPS(x, z) then return { { Y = g + 40 }, { Y = g + 30 }, { Y = g + 20 }, { Y = g + 10 }, { Y = g } } end
+		return { { Y = g } }
 	end
 	deep.Ensure()
 	check(deep.Npc("Npc_Folk1") == nil, "RayTries = 3: five things over the floor are too many casts", "")
@@ -523,15 +542,15 @@ runGroup("failures", function()
 	s.Ensure()
 	check(#s.NPCs:GetChildren() == 0, "a steep surface under a spot is not ground", tostring(#s.NPCs:GetChildren()))
 	local flat = townWorld()
-	function flat.Ground(x, z) return { Y = (z <= -440 and z >= -524) and 9 or 20, NormalY = 0.7 } end
+	function flat.Ground(x, z) return { Y = HALO_V2(x, z), NormalY = 0.7 } end
 	flat.Ensure()
 	check(#flat.NPCs:GetChildren() == 7, "a slope of exactly 0.7 is still ground", tostring(#flat.NPCs:GetChildren()))
 	-- the heights follow the ground (a stepped terrace)
 	local st = townWorld()
-	function st.Ground(x, z) if z <= -524 then return 22 end if z <= -444 then return 7 end return 0.2 end -- the street 7, the plaza 22
+	function st.Ground(x, z) if z <= -560 then return 12 end if z <= -444 then return 7 end return 0.2 end -- the yards 7, the plaza 12
 	st.Ensure()
-	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 7 + 2.6) and near(st.Npc("Npc_Folk4"):GetPivot().Position.Y, 22 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
-		"each body takes its own terrace height (0.2 / 7 on the street / 22 on the plaza; Y 9 / 20 +- 4 accept them)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
+	check(near(st.Npc("Npc_Bright"):GetPivot().Position.Y, 0.2 + 2.6) and near(st.Npc("Npc_Folk1"):GetPivot().Position.Y, 7 + 2.6) and near(st.Npc("Npc_Folk4"):GetPivot().Position.Y, 12 + 2.6) and near(st.Npc("Npc_Gleam"):GetPivot().Position.Y, 0.2 + 2.6),
+		"each body takes its own terrace height (0.2 / 7 on the yards / 12 on the plaza; Y 5..8 / 10 +- 4 accept them)", show({ st.Npc("Npc_Bright"):GetPivot().Position.Y, st.Npc("Npc_Folk1"):GetPivot().Position.Y }))
 	-- the avatar service failing
 	local e = townWorld()
 	e.CreateError = true

@@ -34,15 +34,15 @@ MUTATIONS = [
     ("Config: Bright has another NpcId", C, 'Name = "Npc_Bright", Story = "Bright",', 'Name = "Npc_Bright", Story = "Brite",'),
     ("Config: Bright outside the town", C, "At = Vector3.new(18, 0, -424), Look = Vector3.new(18, 0, -380),", "At = Vector3.new(18, 0, -224), Look = Vector3.new(18, 0, -380),"),
     ("Config: the prompt range is 40", C, "\tPromptDistance = 10,", "\tPromptDistance = 40,"),
-    ("Config: the seller is switched off", C, 'Label = "Potion Seller", Y = 9,', 'Label = "Potion Seller", Enabled = false, Y = 9,'),
+    ("Config: the seller is switched off", C, 'Label = "Potion Seller", Y = 5,', 'Label = "Potion Seller", Enabled = false, Y = 5,'),
     ("Config: a fifth townsperson", C, '\t\t{ Id = "PotionHalo",', '\t\t{ Id = "Folk5", Name = "Npc_Folk5", Folk = "Folk5", At = Vector3.new(20, 0, -570), Look = Vector3.new(0, 0, -565) },\n\t\t{ Id = "PotionHalo",'),
     ("Config: a duplicate model name", C, 'Id = "Folk2", Name = "Npc_Folk2",', 'Id = "Folk2", Name = "Npc_Folk1",'),
     ("Config: Otto is not behind the anvil", C, 'Anvil = true, Behind = 4,', 'Anvil = true, Behind = -4,'),
     ("Config: off", C, "Config.TownNpcs = {\n\tEnabled = true,", "Config.TownNpcs = {\n\tEnabled = false,"),
-    ("Config: the seller back at the bakery", C, "Y = 9,\n\t\t\tAt = Vector3.new(20.07, 0, -468.17), Look = Vector3.new(32.38, 0, -466) },", "Y = 9,\n\t\t\tAt = Vector3.new(-6.35, 0, -476.52), Look = Vector3.new(32.38, 0, -466) },"),
-    ("Config: Folk3 on the seller's spot", C, "At = Vector3.new(-6.35, 0, -476.52), Look = Vector3.new(-18.21, 0, -474), Y = 9,", "At = Vector3.new(20.07, 0, -468.17), Look = Vector3.new(-18.21, 0, -474), Y = 9,"),
-    ("Config: Folk1 has no expected Y", C, "Look = Vector3.new(49.53, 0, -496), Y = 9,", "Look = Vector3.new(49.53, 0, -496),"),
-    ("Config: Folk4 on the terrace below", C, "Look = Vector3.new(34.55, 0, -566), Y = 20,", "Look = Vector3.new(34.55, 0, -566), Y = 9,"),
+    ("Config: the seller back at the bakery", C, "Y = 5,\n\t\t\tAt = Vector3.new(32.5, 0, -483.5), Look = Vector3.new(31.7, 0, -472.3) },", "Y = 5,\n\t\t\tAt = Vector3.new(101.9, 0, -452.8), Look = Vector3.new(31.7, 0, -472.3) },"),
+    ("Config: Folk3 on the seller's spot", C, "At = Vector3.new(101.9, 0, -452.8), Look = Vector3.new(93.2, 0, -459.9), Y = 6,", "At = Vector3.new(32.5, 0, -483.5), Look = Vector3.new(93.2, 0, -459.9), Y = 6,"),
+    ("Config: Folk1 has no expected Y", C, "Look = Vector3.new(119.5, 0, -503), Y = 8,", "Look = Vector3.new(119.5, 0, -503),"),
+    ("Config: Folk4 on the yard below", C, "Look = Vector3.new(22, 0, -590), Y = 10,", "Look = Vector3.new(22, 0, -590), Y = 5,"),
     ("Config: no retries", C, "\tRetries = 3,", "\tRetries = 1,"),
     ("Config: retry every second", C, "\tRetryDelay = 5,", "\tRetryDelay = 1,"),
     ("Config: the tolerance is 10", C, "\tYTol = 4,", "\tYTol = 10,"),
@@ -163,10 +163,10 @@ def static() -> tuple[int, list[str]]:
     check("MarketplaceService" not in src and "AddBankGold" not in src and "AddStat" not in src and "GrantItem" not in src, "TownNpcs: nothing sold, nothing paid")
     check(src.count("task.wait") == 1 and "task.wait" not in src.split("task.spawn(function()")[0] and ":WaitForChild" not in src,
           "TownNpcs waits only inside the spawned task (Build never yields)")
-    # the shop people stand in front of their shop in the Halo layout plan (docs/design/halo_layout_plan_2026-10-10.json)
+    # A23-121 stage 6: the shop people stand beside their shop's door in the Halo v2 plan (docs/design/halo_plan_v2_2026-10-11.json)
     import json
-    plan = json.loads(read(ROOT / "docs/design/halo_layout_plan_2026-10-10.json"))
-    shops = {p["shopkind"]: p for p in plan["placements"] if p["kind"] == "Shop"}
+    plan = json.loads(read(ROOT / "docs/design/halo_plan_v2_2026-10-11.json"))
+    shops = {b["id"][len("Shop_"):]: b for b in plan["buildings"] if b.get("kind") == "Shop"}
     cfg = read(SHARED / "Config.luau")
     block = cfg[cfg.find("Config.TownNpcs = {"):]
     block = block[: block.find("\n}\n")]
@@ -185,20 +185,16 @@ def static() -> tuple[int, list[str]]:
         shop, at = shops.get(shop_kind), entry_at(entry_id)
         check(shop is not None and at is not None, f"the plan has a {shop_kind} shop and Config an entry {entry_id}")
         if shop and at:
-            # A23-112: every shop has its own yaw; its front is the kit -Z turned by yaw (CFrame.Angles(0, rad(yaw), 0))
+            # the v2 plan: door_at = the middle of the door on the face, door_dir = the way the door faces (outward)
             import math
-            theta = math.radians(shop["yaw"])
-            front_dir = (-math.sin(theta), -math.cos(theta))
-            right_dir = (math.cos(theta), -math.sin(theta))
-            depth = 7.5 * shop["s"] / 2  # the kit shop is 7.5 deep (halo_layout.py), x its scale
-            rel = (at[0] - shop["x"], at[1] - shop["z"])
-            gap = rel[0] * front_dir[0] + rel[1] * front_dir[1] - depth  # studs in front of the shop's face
-            side = rel[0] * right_dir[0] + rel[1] * right_dir[1]  # along the face from its middle
-            # the entry's own expected ground height (Y) is the terrace its shop stands on (the plan's y: 3rd layout 9, the shop street)
+            door, out = shop["door_at"], shop["door_dir"]
+            rel = (at[0] - door[0], at[1] - door[1])
+            gap = rel[0] * out[0] + rel[1] * out[1]  # studs in front of the face
+            dist = math.hypot(rel[0], rel[1])  # from the door (the seller / the talk stays within reach)
             want_y = entry_y(entry_id)
-            check(2 <= gap <= 8 and abs(side) <= 4 and want_y is not None and abs(shop["y"] - want_y) < 1,
-                  f"{entry_id} stands 2..8 studs in front of the {shop_kind} shop ({shop['x']}, {shop['z']}, yaw {shop['yaw']}, y {shop['y']}) "
-                  f"on its terrace (the entry's Y {want_y}): gap {gap:.1f}, sideways {side:.1f}")
+            check(0.5 <= gap <= 8 and dist <= 12 and want_y is not None and abs(shop["ground_y"] - want_y) < 1,
+                  f"{entry_id} stands outside the {shop_kind} shop beside its door ({door[0]}, {door[1]}, faces {out}, yard Y {shop['ground_y']}) "
+                  f"(the entry's Y {want_y}): {gap:.1f} in front, {dist:.1f} from the door")
     check(src.count("CreateHumanoidModelFromDescription") == 1 and "ServerStorage" not in src and "CustomModels" not in src, "the body comes from a HumanoidDescription only (A23-6): no costume rig, no template")
     return count, failures
 
