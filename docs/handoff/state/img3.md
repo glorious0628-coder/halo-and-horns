@@ -1,5 +1,13 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/13 낮 늦게 — 지금 상태 / 다음 할 일 (클리어 전)
+- **WorldKit = 열려 있음(최소화 아님일 수 있음), rbxlx 파일은 10/12 17:12 판** → 최신 = 백업 build/wk_backup/20261013_122156(HaloV2·HaloTripoKits) + 20261013_113942(Parked_*)·20261013_020933(전체+지형). 다시 열면 `wk_backup.py load 20261013_020933 --replace --terrain` → `load 20261013_113942 --replace` → `load 20261013_122156 --replace`.
+- **넣은 것(관문 1, 최종 검수 통과):** 화분 7·벤치 10·문 23·등불 47·갈빗대 돔 4·창 화분 92·성 날개 2·장미창 1. 장미창 = 메시 z -26.17, 파란 원판 RoseGlass 0.08 두께 z -25.56(정면 벽 앞면 -25.5). Sunflower SA = 새 자산 4장(asset_ids SA_HaloFlowerPotHQ_Sunflower_*; 옛 ID는 Roblox가 안 붙였음 — 같은 일 생기면 1픽셀 바꿔 다시 올림). DomeRibbed SA.Color 255,222,180, DoorDouble 255,236,214.
+- **판정 대기:** 디자인 검수에 고칠 것 3 사진 보냄(장미창·해바라기·벤치 전체 fix_v1/). 최종 검수에 WorldKit 다시 열기 화면 차례 신청함 — P026·P048·P049는 물리 땅(데이터)은 맞는데 화면 땅만 몇 칸 높게 그려짐(185개 자동 검사: 다른 건 벽등 P045·P046뿐). 다시 열어 보고도 묻히면 그 자리 지형을 계획 높이로 맞추기(빛 마을 지형 = 내 몫).
+- **다음 넣기:** HaloChunk_Cauldron(물약 가게 문 앞 + 옛 P011 자리 28.3,-483.9), HaloChunk_Telescope(Cliff8 발코니 + 옛 P116 자리 192.4,-643.8) — Blender 손보기 → 관문 통과 후. 넣는 법: build/import3d에 glb_strip_mesh → 최종 검수에 가져오기 차례 → tools/worldkit/tripo_kits_build.luau(키트) → 놓기(소품: build의 swap 방식, 장식: tools/worldkit/tripo_deco_place.luau) → 사진 tools/prop_ab_shots.py / building_ab_shots.py(대역 자동 숨김).
+- **넘긴 일:** NEW_ 12종 4면 = 이미지 생성 2(참고 그림 build/ff_refs/, 계획 build/ns_batch_new.py).
+- **규칙(10/13):** 사용자 부탁·알림은 최종 검수에게만. Studio 창 띄우기·닫기·최소화도 매번 화면 차례 신청. 판정 사진은 2D | 낮 | 밤(+뒤), 대역 표시 숨김.
+
 ## ★ 10/13 낮 — Tripo PBR 13종 WorldKit에 넣음 (최종 검수 관문 1 통과분)
 - 가져오기: 사용자 '3D 가져오기'(build/import3d 13개) → Workspace.<이름>_TU(원본, 지우지 말 것) → 키트 ServerStorage.HaloTripoKits.<이름>(MeshPart + SurfaceAppearance SA_<이름>_C/N/M/R, 앞 -Z, 피벗 = 바닥 가운데; 만드는 코드 tools/worldkit/tripo_kits_build.luau). **주의: 가져온 메시는 이미 -Z를 봄 — 180° 더 돌리면 뒷면이 나옴(10/13 한 번 틀려서 Flipped180로 되돌림), PrimaryPart 넣지 말 것(피벗이 가운데로 감).**
 - 놓기: 화분 Lavender·Tulip·Sunflower 7곳 + 벤치 A 6·C 4곳(옛 키트/대역 → ServerStorage.Parked_PreTripoProps, 높이 = 옛 높이). 집: tools/worldkit/tripo_deco_place.luau(문 23 = Door_Back 크기, 등불 47 = LampGlass/Core만 남김, 갈빗대 돔 4 = 옛 Deco 돔 자리, 창 화분 92 = WBox 자리, 성 날개 2 + 장미창 1 = 장식 슬롯, RoseGlass → 파랑 34,90,180), 옛 것 → ServerStorage.Parked_PreTripoDeco.<건물>. 재질 ⑤: DomeRibbed SA.Color 255,222,180(주황 금), DoorDouble 255,236,214. 백업 20261013_113942.
