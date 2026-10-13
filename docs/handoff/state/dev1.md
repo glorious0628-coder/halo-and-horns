@@ -1,5 +1,9 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/13 오후 — 폰 사진 결과 + 고장급 고침
+- 메인 반영 1 폰 사진(`docs/art/verification_2026-10-13/phone_round/`) 읽고 `docs/review/phone_round_prep_2026-10-13.md` 3절 표 채움. 고장급 = **Hero 창 왼쪽 칸 잘림**(힘·칩·랭크 막대 못 읽음) 하나 → `fix/phone-round` **5e4780d1**(왼쪽 칸 ScrollingFrame, test_character_ui 175·94/94). 같은 가지 f995916d = 도감 슬롯 이름 두 줄째. main과 충돌 없음(merge-tree). worktree `wt_codexui`.
+- 나머지(칭호 단추 잘림·거위 칩 시간·Help/Skills PC 키 글·40px 미만 버튼)는 표에 10/21로. 병합 뒤 메인 반영 1이 Hero 창만 폰 사진 다시.
+
 ## 10/13 낮 — 도감 마무리 + 폰 정리 준비
 - 도감 카드 화면 = main e1eca798까지 병합(사진 main2 통과), 마무리 3개 fix/codex-ui **7be7895c**(이벤트 단계·순간 카드 가운데·슬롯 이름 두 줄) 보고함 — 병합 대기.
 - 다음 고른 것 = **A23-145 폰 정리 준비**: 도구 `tools/play_phone_round_photos.py`(main a2f8df0, 메인 반영 1이 돌림: 749×361·844×390 HUD·창 12개 사진 + 잘린 글·작은 버튼·화면 밖·겹침 json) + 목록 `docs/review/phone_round_prep_2026-10-13.md`(main 952db8e). 사진 오면 표 채우고 고장급만 10/21 전에 고침.
