@@ -12,7 +12,7 @@ a = sys.argv[sys.argv.index("--") + 1:]
 out_dir = os.path.abspath(a[0])  # Blender resolves relative render paths against "//", not the cwd
 os.makedirs(out_dir, exist_ok=True)
 VIEWS = [("f", 0, 0.25), ("r45", 45, 0.35), ("s90", 90, 0.25), ("b", 180, 0.25), ("s270", 270, 0.25),
-         ("top", 0, 1.3), ("low", 135, -0.5)]
+         ("top", 0, 1.3), ("low", 135, -0.5), ("up", 0, 60), ("down", 0, -60)]  # up/down = straight top/bottom (user 10/13: all six sides)
 for path in a[1:]:
     label = os.path.splitext(os.path.basename(path))[0]
     bpy.ops.wm.read_factory_settings(use_empty=True)

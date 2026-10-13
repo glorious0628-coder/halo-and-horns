@@ -1,6 +1,7 @@
 """PBR gate renders (A23-154): finished Tripo model (GLB from build_glb.py or Tripo FBX), lit like a sunny day.
 Views: f (front), fr (camera on -X: front points to image right = 2D `_left`), b (back),
-fl (camera on +X: front points to image left = 2D `_right`), q34 (front-right from above), plus f_big for 100% crops.
+fl (camera on +X: front points to image left = 2D `_right`), q34 (front-right from above), top, bot (straight top/underside),
+plus f_big for 100% crops.
 Sun follows each camera (upper left behind it) so every side gets the same light; sky fill.
 blender --background --factory-startup --python pbr_gate.py -- <out_dir> <px> <big_px> <file[:front]> ...
 front = -y (default for .glb, build_glb.py) or +x (default for .fbx, raw Tripo).
@@ -90,10 +91,12 @@ for spec in a[3:]:
         "b": -F,
         "fl": -R,  # front points to image left (2D `_right`)
         "q34": F - R * 0.8 + Vector((0, 0, 0.75)),  # front + the side on the front view's image right, from above
+        "top": Vector((0, 0, 1)) + F * 0.02,  # straight down onto the top, front at image bottom (user 10/13: all six sides)
+        "bot": Vector((0, 0, -1)) + F * 0.02,  # straight up at the underside (holes, open bottoms)
     }
     sc, cam, sun, lo, hi = setup(path)
     ring = max(frame(lo, hi, views[k])[0] for k in ("f", "fr", "b", "fl"))
     for k, d in views.items():
-        shoot(sc, cam, sun, lo, hi, d, px, os.path.join(out, f"{label}__{k}.png"), None if k == "q34" else ring)
+        shoot(sc, cam, sun, lo, hi, d, px, os.path.join(out, f"{label}__{k}.png"), ring if k in ("f", "fr", "b", "fl") else None)
     shoot(sc, cam, sun, lo, hi, views["f"], big, os.path.join(out, f"{label}__f_big.png"))
     print("DONE", label, "size", tuple(round(v, 3) for v in (hi - lo)))

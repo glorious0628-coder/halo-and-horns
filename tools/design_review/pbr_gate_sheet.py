@@ -1,5 +1,5 @@
 """Sheet for the PBR gate: row 1 = 2D 4 views (+ label), row 2 = lit renders f/fr/b/fl/q34 (pbr_gate.py),
-row 3 = three 100% crops (600 px) from the 2048 front render (the 3 most detailed spots).
+row 2b = straight top | bottom, row 3 = three 100% crops (600 px) from the 2048 front render (the 3 most detailed spots).
 py tools/design_review/pbr_gate_sheet.py <render_dir> <out_dir> <render_label>=<2d_prefix> ...
 2d_prefix = path without _front_ns.png (e.g. art/out/s2/noshadow/chunks/HaloChunk_DoorSingle).
 """
@@ -14,7 +14,7 @@ C, CR, HDR = 360, 600, 22
 for spec in sys.argv[3:]:
     lab, pre = spec.split("=", 1)
     W = C * 5
-    o = Image.new("RGB", (W, HDR * 3 + C * 2 + CR), (28, 28, 30))
+    o = Image.new("RGB", (W, HDR * 4 + C * 3 + CR), (28, 28, 30))
     dr = ImageDraw.Draw(o)
     # row 1: 2D (front, _left = front to image right, back, _right = front to image left)
     dr.text((4, 4), f"{os.path.basename(pre)}  2D: front | _left | back | _right", fill=(255, 220, 0))
@@ -33,8 +33,15 @@ for spec in sys.argv[3:]:
         p = os.path.join(rd, f"{lab}__{v}.png")
         if os.path.exists(p):
             o.paste(Image.open(p).convert("RGB").resize((C, C)), (k * C, y2))
+    # row 2b: straight top and underside (user 10/13: check all six sides)
+    y2b = y2 + C + HDR
+    dr.text((4, y2b - HDR + 4), "top | bottom (straight)", fill=(255, 220, 0))
+    for k, v in enumerate(("top", "bot")):
+        p = os.path.join(rd, f"{lab}__{v}.png")
+        if os.path.exists(p):
+            o.paste(Image.open(p).convert("RGB").resize((C, C)), (k * C, y2b))
     # row 3: 100% crops from f_big
-    y3 = y2 + C + HDR
+    y3 = y2b + C + HDR
     dr.text((4, y3 - HDR + 4), "100% crops of f (2048): 3 most detailed spots", fill=(255, 220, 0))
     p = os.path.join(rd, f"{lab}__f_big.png")
     if os.path.exists(p):
