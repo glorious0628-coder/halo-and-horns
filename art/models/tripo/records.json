@@ -15462,7 +15462,19 @@
    "sheet": "art/review/design/pbr_gate_20261014/HaloVar4_Baluster_p_SM_texMV4k_pbr_src.jpg",
    "status": "PBR done; waiting 디자인 검수 -> 최종 검수 PBR review; Blender size/pivot/orientation only after both pass",
    "other_spend_seen": "account 2 also dropped 21265->21210->21155 (55+55) around 07:09-07:12 from new HD generations (e.g. 093f98de 'marble hourglass prop') not made by this session - probably the user testing HD",
-   "hd_price_check": "general generate HD (H3.1), multiview 4 images in: texture ON (8K, delight, PBR, ultra mesh) = 65; texture OFF + ultra mesh ON = 30; texture OFF + ultra OFF = 15; HD gives 1 model per press (smart mesh gives 4 for 100). Not pressed; settings restored."
+   "hd_price_check": "general generate HD (H3.1), multiview 4 images in: texture ON (8K, delight, PBR, ultra mesh) = 65; texture OFF + ultra mesh ON = 30; texture OFF + ultra OFF = 15; HD gives 1 model per press (smart mesh gives 4 for 100). Not pressed; settings restored.",
+   "picked_note": "디자인 검수 later switched its pick to 6a4879ed (a7a73124: 376 open edges / 5 pieces, see-through risk under cap); messages crossed after texture+PBR were already pressed on a7a73124 -> 최종 검수 10/14: keep a7a73124, check cap underside at 100% in PBR review; 6a4879ed texture+PBR (25) only if see-through shows. 6a4879ed NOT pressed."
+  }
+ ],
+ "USER_HD_test_093f98de_web2": [
+  {
+   "event": "사용자 직접 시험, 일반 생성 HD+텍스처, 55점, 계정 2 (not in our queue)",
+   "at": "2026-10-14 ~07:09",
+   "account": "Tripo account 2",
+   "by": "user (confirmed via 최종 검수)",
+   "points": 55,
+   "asset": "093f98de-48c0-482a-a741-4366c2a9cc23 'marble hourglass prop 3d model' (tripo_texture_*_meshopt.glb)",
+   "note": "balance 21265 -> 21210; a second 55 drop 21210 -> 21155 (~07:12) also not by Blender 손보기 2, asset id not checked"
   }
  ]
 }

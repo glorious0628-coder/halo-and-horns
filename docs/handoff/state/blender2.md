@@ -5,7 +5,8 @@ Tripo 계정 2 · 사용자 Chrome(Claude Chrome 확장) · 역할 파일 `role_
 ## 끝난 것 (10/14)
 - **HaloVar4_Baluster(난간 기둥 부품, A23-172 Tripo 비교 1개, 125점):** 스마트 메시 흰 모델 d2cb7d72 · db407464 · **a7a73124(고름)** · 6a4879ed → 디자인 검수가 Tripo에서 직접 보고 고름 + 나와 합의 → 텍스처 멀티뷰 4면·조명 제거·4K 29c5640c(20) → PBR 8fc77956(5).
   - 원본 `art/models/tripo/web/HaloVar4_Baluster_p_SM_texMV4k_pbr_src.fbx`(5.9 MB, 디스크만). 흰 모델 FBX `art/models/tripo/wm2_1014/HaloVar4_Baluster/<id8>.fbx`(디스크만). 시트 `art/review/design/pbr_gate_20261014/HaloVar4_Baluster_p_SM_texMV4k_pbr_src.jpg`. records.json 키 `HaloVar4_Baluster_p_web2_sm_texMV4k_pbr` (push ee97ce5).
-  - 잔액 21,365 → 21,130(내 것 125; 그 사이 남의 HD 생성 55×2, 093f98de 등 — 사용자 시험으로 보임, 최종 검수에 알림).
+  - 잔액 21,365 → 21,130(내 것 125; 그 사이 HD 생성 55×2 — 093f98de는 사용자 직접 시험으로 확인, records `USER_HD_test_093f98de_web2`).
+  - 메시지 엇갈림: 디자인 검수가 나중에 고름을 6a4879ed로 바꿈(a7a73124 열린 모서리 376·조각 5 = 비침 위험). 그땐 a7a73124 텍스처·PBR이 이미 끝남 → 최종 검수 10/14: a7a73124 그대로 PBR 판정(갓 밑 100% 크롭), 비침이 보이면 그때 6a4879ed 텍스처·PBR(25) 승인. **6a4879ed는 안 누름.**
 
 ## 기다리는 것
 1. Baluster PBR 판정: 디자인 검수 → 최종 검수(최종 검수가 Meshy 판 옆 시트로 사용자에게). 둘 다 통과 → Blender **크기·피벗·방향만**: `blender --background --factory-startup --python art/models/tripo/touchup/Halo_Statue/build_glb.py -- <fbx> art/models/tripo/touchup/HaloVar4_Baluster_p/HaloVar4_Baluster_p_TU.glb`(`--basecolor` 없음) → 앞 렌더로 확인 → records에 final 줄. 떨어지면 ②: 다른 흰 모델(db407464가 다음 후보) → 텍스처 → PBR(25, 최종 검수 OK 뒤).
