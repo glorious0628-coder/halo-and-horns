@@ -13183,6 +13183,19 @@
     "size": "GLB in model units 0.50 x 0.38 x 1.0 (W x D x H, front -Y); old plan height 9 studs (docs/design/tripo_batch3_towns_proposal_2026-10-06.md) -> 4.5 x 3.4 x 9"
    },
    "next": "Roblox: textures to 1024, material closer to the 2D (user 10/12: '로블록스에서 2D와 더 가깝게 재질 한 번 더') = 이미지 생성 3/4"
+  },
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "1a0812be (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/Halo_Statue_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/Halo_Statue/Halo_Statue_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)",
+   "note": "texture as-is (magic brush dropped, A23-154); replaces older D/colour-fixed versions"
   }
  ],
  "Town_Halo_Fountain3_web_sm_tex8k_pbr": [
@@ -13214,6 +13227,19 @@
     "size": "GLB in model units 1.0 x 1.0 x 0.733 (W x D x H). Old place size 16 x 16 x 12.85 (FountainFx). Keep the ratio: 16 wide -> 11.73 high. FountainFx fractions measured on this mesh: pool water y 0.053 (old spec 0.165!), inner rim r 0.39 (0.45), middle bowl water y 0.525 (0.53), top bowl water y 0.738 (0.75), tip 1.0 -> Pool.Y needs retuning (게임성 개발 1)"
    },
    "next": "Roblox material closer to the 2D = 이미지 생성 3/4; water jets come from FountainFx"
+  },
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "cd70436c (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/Town_Halo_Fountain3_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/Town_Halo_Fountain3/Town_Halo_Fountain3_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)",
+   "note": "texture as-is (magic brush dropped, A23-154); replaces older D/colour-fixed versions"
   }
  ],
  "HaloFlowerPotHQ_Lavender_web_sm_tex8k_pbr": [
@@ -13493,22 +13519,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "6e6bd726-bf17-49a9-bf22-9d3c71b32145",
     "93829d23-bc3c-4f18-870e-a7af062e23f5",
     "7cafd99b-625a-466f-9f4a-5fbee34bbca6",
     "24520619-5629-4de3-b42d-968efb66a2ea"
    ],
-   "picked": null,
+   "picked": "6e6bd726 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/NEW_FlowerBush_front_ns.png",
     "left_slot": "art/out/s2/noshadow/NEW_FlowerBush_right_ns.png",
     "right_slot": "art/out/s2/noshadow/NEW_FlowerBush_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_FlowerBush_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/NEW_FlowerBush/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/NEW_FlowerBush/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 7d6991d2",
+   "pbr": "79224b20 (5)",
+   "file": "art/models/tripo/web/NEW_FlowerBush_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar4_Balustrade_D_web2_sm_tex8k_pbr": [
@@ -13518,22 +13547,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "150c1b26-b89f-4d6c-91eb-67d33e059db8",
     "6f37f799-91ed-45ac-b60c-95c0f84fa746",
     "860e4b9f-fb7d-4940-baf9-4d3ac3546457",
     "71359ce0-ebcf-4b4e-9fc6-50dfe2de8ea5"
    ],
-   "picked": null,
+   "picked": "71359ce0 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar4_Balustrade_D_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_D_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_D_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_D_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_D/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_D/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task b7d13a54",
+   "pbr": "0660e7b8 (5)",
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_D_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar4_Balustrade_C_web2_sm_tex8k_pbr": [
@@ -13543,22 +13575,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "cd1fd3e2-cad4-4ba8-a4fc-806d0110b8bc",
     "531c8172-d449-438b-a4a7-bcd442a39f27",
     "9f789f40-d9a3-49d1-abd8-c2af82d5f530",
     "506fd6cc-f059-43db-87a4-f096f322b77b"
    ],
-   "picked": null,
+   "picked": "531c8172 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar4_Balustrade_C_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_C_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_C/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_C/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 5ecde7f6",
+   "pbr": "d68d7d68 (5)",
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_C_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar4_Balustrade_B_web2_sm_tex8k_pbr": [
@@ -13568,22 +13603,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "726ab69e-fe50-44cd-91b3-e38adfa3db12",
     "f9c105f0-f919-430c-988a-517e181db648",
     "6436f662-ec6f-4fc6-883c-3d04f5ff89fd",
     "add2a937-3906-4eb5-8747-cd7d71b19491"
    ],
-   "picked": null,
+   "picked": "add2a937 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar4_Balustrade_B_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_B_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_B_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_B_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_B/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_B/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task f49e623c",
+   "pbr": "77bd57c0 (5)",
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_B_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar4_Balustrade_A_web2_sm_tex8k_pbr": [
@@ -13593,22 +13631,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "20d95b80-06fd-42c3-99ca-b770e9afe6b8",
     "378c02f6-b4b7-4137-9f2c-150ff559d5a6",
     "c7c8c296-3673-4006-9984-7ff3d56a5d14",
     "bcaca51e-26d3-44bc-a7f0-c110d7fa64c7"
    ],
-   "picked": null,
+   "picked": "bcaca51e (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar4_Balustrade_A_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_A_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_A_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_A_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_A/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_A/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task d47393f0",
+   "pbr": "d5c9b5bf (5)",
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_A_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar3_Balustrade_F_web2_sm_tex8k_pbr": [
@@ -13618,22 +13659,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "72d5c08f-419a-4ba7-b2ce-94fba0f43185",
     "934efdb9-d5d9-46af-bfc2-e855a68dd8da",
     "f41b0d90-8f4e-4f24-babd-6121ca87c71f",
     "332b1274-76c3-4a49-950a-6d86e2d7ae69"
    ],
-   "picked": null,
+   "picked": "934efdb9 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar3_Balustrade_F_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_F_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_F_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar3_Balustrade_F_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar3_Balustrade_F/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar3_Balustrade_F/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task e55d3f95",
+   "pbr": "78439720 (5)",
+   "file": "art/models/tripo/web/HaloVar3_Balustrade_F_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar3_Balustrade_E_web2_sm_tex8k_pbr": [
@@ -13643,22 +13687,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "86d21ea6-2081-45e6-b548-ec828592c9b6",
     "48465117-8a9a-4d66-bae5-76c720fea1f0",
     "781e6f4e-ff08-413f-9b3d-61294e6b181b",
     "67aaeedf-d580-4665-ba71-59156d31098b"
    ],
-   "picked": null,
+   "picked": "781e6f4e (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar3_Balustrade_E_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_E_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_E_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar3_Balustrade_E_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar3_Balustrade_E/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar3_Balustrade_E/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 05aa9f45",
+   "pbr": "39a83a80 (5)",
+   "file": "art/models/tripo/web/HaloVar3_Balustrade_E_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloReasonHQ_FlowerCart_Bouquet_web2_sm_tex8k_pbr": [
@@ -13668,22 +13715,25 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "6e6aae44-0d1e-4ce4-b10b-d95a29ea8358",
     "82912694-42a4-4507-b254-1e3d8c6b4647",
     "93fbed8d-d91d-497c-8cb6-1d8171412d34",
     "339423a7-cbf8-412a-8238-346bb4914033"
    ],
-   "picked": null,
+   "picked": "82912694 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloReasonHQ_FlowerCart_Bouquet/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloReasonHQ_FlowerCart_Bouquet/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 22ae7b8e",
+   "pbr": "1afda87e (5)",
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_Bouquet_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloVar4_Planter_D_web2_sm_tex8k_pbr": [
@@ -13693,22 +13743,26 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 120,
    "white_models": [
     "105124b0-e593-41b9-bdec-7a56f649a3be",
     "49024868-1c59-457c-ad7c-12da5276d9d0",
     "f350c381-1f44-4ff9-9b4f-3ed3910430ff",
     "456ce078-2e73-4c56-a978-33e7f6839dc2"
    ],
-   "picked": null,
+   "picked": "105124b0 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar4_Planter_D_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar4_Planter_D_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar4_Planter_D_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Planter_D_back_ns.png"
    },
-   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)",
-   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Planter_D/"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Planter_D/",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task e67a08e0 (4K, 20); 8K trial 3527cc1e (0 pts)",
+   "pbr": "pending (8K vs 4K compare first)",
+   "file": "art/models/tripo/web/HaloVar4_Planter_D_SM_tex4k_src.fbx (+ _SM_tex8k_src.fbx)",
+   "compare": "art/review/blender2/tex8k_vs_4k_1013/HaloVar4_Planter_D_8k_vs_4k.jpg"
   }
  ],
  "NEW_WallLamp_web2_sm_tex8k_pbr": [
@@ -13718,7 +13772,7 @@
    "account": "Tripo account 2 (user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "e85e1d93-4ee1-4aeb-9158-1abfde96570e",
     "06b12745-a3c2-4cb6-8884-c1e6d4d67f42",
@@ -13726,14 +13780,17 @@
     "58ddd366-8ae0-4590-a101-77096522f902"
    ],
    "white_model_fbx": "art/models/tripo/wm2_1013/NEW_WallLamp/",
-   "picked": null,
+   "picked": "8ec1b5e1 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/NEW_WallLamp_front_ns.png",
     "left_slot": "art/out/s2/noshadow/NEW_WallLamp_right_ns.png",
     "right_slot": "art/out/s2/noshadow/NEW_WallLamp_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_WallLamp_back_ns.png"
    },
-   "next": "디자인 검수 2 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 2b74f65e",
+   "pbr": "3038c95b (5)",
+   "file": "art/models/tripo/web/NEW_WallLamp_SM_tex4k_pbr_src.fbx"
   }
  ],
  "NEW_Hedge_web2_sm_tex8k_pbr": [
@@ -13743,7 +13800,7 @@
    "account": "Tripo account 2 (user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "67f8ae44-5ed5-46ed-a2e7-06e58d93d1b4",
     "4651ceda-7b5a-4291-980a-549fbb611315",
@@ -13751,14 +13808,501 @@
     "1e060aa7-6903-450e-8822-2a770d967b08"
    ],
    "white_model_fbx": "art/models/tripo/wm2_1013/NEW_Hedge/",
-   "picked": null,
+   "picked": "67f8ae44 (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/NEW_Hedge_front_ns.png",
     "left_slot": "art/out/s2/noshadow/NEW_Hedge_right_ns.png",
     "right_slot": "art/out/s2/noshadow/NEW_Hedge_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_Hedge_back_ns.png"
    },
-   "next": "디자인 검수 2 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 00165ec7",
+   "pbr": "669f258a (5)",
+   "file": "art/models/tripo/web/NEW_Hedge_SM_tex4k_pbr_src.fbx"
+  }
+ ],
+ "HaloVar3_Topiary_D_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "7c673fb4 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_D_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_Topiary_D/HaloVar3_Topiary_D_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar3_Planter_E_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "1021df70 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_Planter_E_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_Planter_E/HaloVar3_Planter_E_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar3_Topiary_C_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "3e2847ad (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_C_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_Topiary_C/HaloVar3_Topiary_C_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar3_RoundTree_G_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "a9395b47 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_RoundTree_G/HaloVar3_RoundTree_G_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar3_RoundTree_F_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "cc3f527f (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_F_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_RoundTree_F/HaloVar3_RoundTree_F_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar3_RoundTree_E_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "077f2fae (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_RoundTree_E/HaloVar3_RoundTree_E_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_BreadDisplay_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "e5467c5f (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_BreadDisplay_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_BreadDisplay/HaloChunk_BreadDisplay_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomeTowerSmall_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "6d925d8a (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomeTowerSmall_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeTowerSmall/HaloChunk_DomeTowerSmall_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomePavilion_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "bc5097f2 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomePavilion_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomePavilion/HaloChunk_DomePavilion_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomePorchHalf_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "e549329c (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomePorchHalf_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomePorchHalf/HaloChunk_DomePorchHalf_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_FlowerBushPot_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "5a5af84d (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_FlowerBushPot_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_FlowerBushPot/HaloChunk_FlowerBushPot_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_IvyBalcony_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "0352e909 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_IvyBalcony_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_IvyBalcony/HaloChunk_IvyBalcony_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_IvyWall_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "18598e34 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_IvyWall_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_IvyWall/HaloChunk_IvyWall_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar3_Lantern_E_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "c102246e (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar3_Lantern_E_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_Lantern_E/HaloVar3_Lantern_E_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar4_Lantern_D_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "1eed23ce (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_D_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_Lantern_D/HaloVar4_Lantern_D_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar4_Lantern_C_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "096e84f2 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_C_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_Lantern_C/HaloVar4_Lantern_C_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar4_Lantern_B_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "4b6f9db9 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_B_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_Lantern_B/HaloVar4_Lantern_B_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloVar4_Lantern_A_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "3b8c167c (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloVar4_Lantern_A_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_Lantern_A/HaloVar4_Lantern_A_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_ShopSign_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "e96efdb6 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_ShopSign_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_ShopSign/HaloChunk_ShopSign_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_Greenhouse_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "d148d3bd (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_Greenhouse_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_Greenhouse/HaloChunk_Greenhouse_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_JuiceParasol_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "6ec4d75d (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_JuiceParasol_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_JuiceParasol/HaloChunk_JuiceParasol_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomeBrick_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "46f0bb09 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomeBrick_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeBrick/HaloChunk_DomeBrick_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloReasonHQ_FruitStall_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "568b5b8e (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloReasonHQ_FruitStall_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_FruitStall/HaloReasonHQ_FruitStall_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloReasonHQ_BreadStand_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "00dac363 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloReasonHQ_BreadStand_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_BreadStand/HaloReasonHQ_BreadStand_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomeOnionSlim_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "40dad418 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomeOnionSlim_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeOnionSlim/HaloChunk_DomeOnionSlim_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloReasonHQ_BenchB_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "b8de1d3c (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloReasonHQ_BenchB_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_BenchB/HaloReasonHQ_BenchB_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloReasonHQ_FlowerCart_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "af2e2b5f (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_FlowerCart/HaloReasonHQ_FlowerCart_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomeBall_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "66894770 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomeBall_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeBall/HaloChunk_DomeBall_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomeOctagon_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "f9e91fe2 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomeOctagon_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeOctagon/HaloChunk_DomeOctagon_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_ConeTree_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "2bbbd641 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_ConeTree_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_ConeTree/HaloChunk_ConeTree_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_DomeOnion_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "414b871a (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_DomeOnion_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_DomeOnion/HaloChunk_DomeOnion_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloChunk_GateLeaf_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "2bc07ecc (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloChunk_GateLeaf_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_GateLeaf/HaloChunk_GateLeaf_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)"
+  }
+ ],
+ "HaloFlowerPotHQ_Rose_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "9e0487cc (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Rose/HaloFlowerPotHQ_Rose_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)",
+   "note": "texture as-is (magic brush dropped, A23-154); replaces older D/colour-fixed versions"
+  }
+ ],
+ "HaloFlowerPotHQ_Daisy_web_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 -> PBR (A23-154 five steps)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "site": "studio.tripo3d.ai (Claude app built-in browser)",
+   "by": "Blender 손보기",
+   "points": 135,
+   "project": "c9df2ff9 (white model picked by 디자인 검수 in Tripo; texture FIRST tab front 2D, 조명 제거, 8K; PBR 5 once)",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_SM_tex8k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3 (Roblox material)",
+   "note": "texture as-is (magic brush dropped, A23-154); replaces older D/colour-fixed versions"
+  }
+ ],
+ "_web2_account_note_1013": [
+  {
+   "note": "Tripo account 2 wallet 25,500 -> 24,330 on 10/13: 11 smart mesh pressed but only 900 deducted (first two, Planter_D and FlowerCart_Bouquet, did not change the wallet); 11x4K texture 220; 8K trial 0; 10 PBR 50. Recorded only (최종 검수 10/13).",
+   "by": "Blender 손보기 2"
   }
  ]
 }
