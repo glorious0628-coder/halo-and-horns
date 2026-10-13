@@ -7,7 +7,11 @@
   - 99da2abd: UIKit.TapPad(wirePress, 폰만) — 44px 미만 버튼 바깥에 보이지 않는 누름 띠(옆 버튼 틈의 절반까지), 순수 UIKit.TapExtents.
   - 새 시험 tools/test_phone_first10.py(18·12/12). 관련 시험 15개 + test_audio(혼자) 통과.
   - 사진: `HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py first10` → docs/art/verification_2026-10-14/phone_first10/(오프닝·진영·직업·환영·첫 미션·HUD·대장간·물약 가게·Gifts·가방·Lv5, 두 폰). 병합 뒤 메인 반영 1. 'small'은 누름 띠 포함 크기로 셈.
-- 다음: 사진 오면 cut/small/overlap 고장급만 고침. 그다음 10/21 목록(Hero 칭호 단추 잘림 등, docs/review/phone_round_prep_2026-10-13.md).
+- 다음: 사진 오면 cut/small/overlap/tiny 고장급만 고침. 그다음 10/21 목록(Hero 칭호 단추 잘림 등, docs/review/phone_round_prep_2026-10-13.md).
+- 51127c10: 사진 점검에 tiny(실제 17px 미만 한 줄 글자). 최종 검수 덧붙임: PC 모양 1px도 그대로(누름 띠는 폰만; Power 줄 고침만 PC 글자 위치가 설계 자리로 돌아감 — 알림함), 글자 바닥 규칙 안 건드림, #8 Rose·#2 Buy 값은 개발 2.
+- **A23-161/162:** 동결 없음, 진짜 첫 10분 시험 11/7~10, 베타 12/15. 날짜 값은 고치지 말고 목록만(화면 코드엔 없음; Config BuildLabel·PioneerUntil 12/19).
+- **dev1-halo-stage6 cbf3c3f0 마무리 확인:** 합친 판(main 50eefbe4 + cbf3c3f0 + dev2 bd903c79, ../wt_dev1merge 임시 커밋 2f6bcfe9)에서 halo_maps 18·9/9, map_v2 102·37/37, zone_look, fountain_fx 18·12/12, quest_target 84, return 190, spawn_look 49, intro_halo_shot 7·8/8, town_npcs 133, town_quests 1036, water_rescue 149, audio(혼자) 통과, 바뀐 화면 파일 7개 컴파일 OK. 폰 가지와도 충돌 없음. 남은 것 = 큰 지도 그림 Id(최종 검수 올림) → Config Id만. 교체(10/20 주)는 최종 검수 병합.
+- 2주 차: 공용 선택 카드 창(gameplay_plan 2-A #3), 주별 몫 docs/design/six_week_plan_2026-10-13.md.
 
 ## 10/13 저녁
 - **`fix/test-prep-client` ae655ccf = main 10fa20b9 병합됨**(최종 검수 10/13, 검수 고침 ①가방 얻는 곳 ②출석 목표 진짜 보상만 ③Rose 되돌림 — Rose·TownReact는 개발 2 가지로). 메인 sync·사진(play_test_prep_photos.py)은 개발 2 fix/test-prep-server 병합 뒤 한 번에. worktree `../wt_codexui` 다시 써도 됨. 넣은 것: 출석 창(AttendanceUI.luau, 메뉴 칸 Gifts), 상점 정리(6칸·Config.PassInfo.Screen·SwitchPassSales·Focus·개인 서버 HUD 칩), 첫 무기 화면(Panels WSHOP.Sells·WeaponInfo Source/ShopSource·Tutorial.Text.NextIronDrop·QuestTarget.IronGold·IronDrop→초원·Guide "Bag"), 이름(Bat Zigzag·TownReact Rose), ClientMain `Config.ApplyTestServer()`, 도감 "Defeated: %s". 새 시험 test_attendance_ui·test_shop_ui·test_first_weapon_client(+test_shop_layout·quest_target·slime_prince·skill_kit·town_quests 대명사 고침). 사진 `tools/play_test_prep_photos.py`(병합 뒤 메인 반영 1).
