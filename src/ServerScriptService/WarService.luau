@@ -16,8 +16,9 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local WarService = {}
 -- A23-79 (게임성 개발 3): a round ended: (winner, mode, { [Player] = round points }) - ReturnService's pause card
 WarService.RoundEnded = Util.Signal.new()
--- A23-135: (player, n, source) whole personal crown points were added ("Hunt" | "PvP" | "Other"); the story's crown-point
--- steps count these (StoryQuestService), never the kill units
+-- A23-135: (player, n, source) whole personal crown points were added ("Hunt" | "PvP" | "Other"). Nothing in the game
+-- listens to it yet (tests; later hooks). The story's crown steps do NOT count it: they count the kill units of
+-- MonsterKilled info.WarPoints (StoryQuestService eventAmount, 1 a monster / 5 golden; no PvP)
 WarService.PersonalAdded = Util.Signal.new()
 
 local TAG = "WarService"
@@ -448,15 +449,17 @@ end
 ------------------------------------------------------------------ public API
 -- personal + faction pool (rewarded PvP KOs, a field boss's War). poolN (optional, CR-M18) = this player's share of the
 -- pool: one kill by k same-faction contributors adds n / k each, so the pool gets n once while every contributor still
--- gets n personal points. Invalid / missing poolN -> n (capped at n). source = PersonalAdded's ("PvP" | "Other")
+-- gets n personal points. Invalid / missing poolN -> n (capped at n). source = PersonalAdded's ("PvP" | "Other").
+-- Returns true when the points were added (false: war off, not ready, None / Neutral, a bad amount)
 function WarService.AddPoints(player, n, poolN, source)
-	if not isPlayer(player) or not isValidAmount(n) or warOff() then return end
-	if not (S and S.PlayerService.IsReady(player)) then return end
+	if not isPlayer(player) or not isValidAmount(n) or warOff() then return false end
+	if not (S and S.PlayerService.IsReady(player)) then return false end
 	local f = getFaction(player)
-	if not WAR_FACTIONS[f] then return end -- None / Neutral never earn war points
+	if not WAR_FACTIONS[f] then return false end -- None / Neutral never earn war points
 	points[f] += isValidAmount(poolN) and math.min(poolN, n) or n
 	setPersonal(player, (personal[player] or 0) + n)
 	WarService.PersonalAdded:Fire(player, n, type(source) == "string" and source or "Other")
+	return true
 end
 
 -- A23-135: a monster kill = `u` kill units (Config.War.MonsterPoints / GoldenPoints, MonsterKilled info.WarPoints); poolU =
@@ -536,9 +539,9 @@ function WarService.Init(registry)
 		S.PvPService.PlayerKO:Connect(function(killer, _victim, info)
 			if type(info) == "table" and info.Rewarded == true and isPlayer(killer) then
 				-- A23-137: a killer scores at most PvPKOMaxPerRound rewarded KOs a round
+				-- (counted only when the points were really added: a KO with the war off / as Neutral uses up no slot)
 				local kos = hunt.KOs[killer.UserId] or 0
 				if kos >= (tonumber(Config.War.PvPKOMaxPerRound) or 3) then return end
-				hunt.KOs[killer.UserId] = kos + 1
 				local stars = tonumber(info.VictimStars) or 0
 				local points = Config.War.PvPKOPoints + Config.War.PvPKOPerStar * stars
 				local bold = tonumber(info.BoldMult) -- A23-18 boldness (x2 strong victim / x0.5 weak victim)
@@ -549,7 +552,7 @@ function WarService.Init(registry)
 				else
 					points = math.floor(points * bold + 0.5)
 				end
-				if points > 0 then WarService.AddPoints(killer, points, nil, "PvP") end
+				if points > 0 and WarService.AddPoints(killer, points, nil, "PvP") then hunt.KOs[killer.UserId] = kos + 1 end
 			end
 		end)
 	else

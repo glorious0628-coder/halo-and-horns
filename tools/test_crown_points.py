@@ -64,6 +64,11 @@ MUTATIONS = [
     ("PvP 2.5 stays 2.5", W, "\t\t\t\tif S.PvPService.ScalePoints then\n\t\t\t\t\tpoints = S.PvPService.ScalePoints(points, bold)\n"
      "\t\t\t\telse\n\t\t\t\t\tpoints = math.floor(points * bold + 0.5)\n\t\t\t\tend\n", "\t\t\t\tpoints = points * bold\n"),
     ("the winner on the raw scores", W, "local haloScore = round2(points.Halo / math.max(1, halo))", "local haloScore = points.Halo / math.max(1, halo)"),
+    ("the PvP cap counts a KO that scored nothing", W,
+     "\t\t\t\tif points > 0 and WarService.AddPoints(killer, points, nil, \"PvP\") then hunt.KOs[killer.UserId] = kos + 1 end\n",
+     "\t\t\t\thunt.KOs[killer.UserId] = kos + 1\n\t\t\t\tif points > 0 then WarService.AddPoints(killer, points, nil, \"PvP\") end\n"),
+    ("AddPoints answers false after adding", W, "\tWarService.PersonalAdded:Fire(player, n, type(source) == \"string\" and source or \"Other\")\n\treturn true\n",
+     "\tWarService.PersonalAdded:Fire(player, n, type(source) == \"string\" and source or \"Other\")\n\treturn false\n"),
     ("the PvP cap is off", W, "\t\t\t\tif kos >= (tonumber(Config.War.PvPKOMaxPerRound) or 3) then return end\n", ""),
     ("a side switch keeps the units", W, "\t\t\t\tif type(data) == \"table\" then data.CrownUnits = 0 end\n", ""),
     ("Neutral scores kills", W, "\tif not WAR_FACTIONS[f] then return end\n\tlocal data = S.PlayerService.GetData(player)",
