@@ -1,5 +1,11 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 밤 늦게 — 큐 끝 (잔액 1,730)
+- 끝·디자인 검수에 보냄: 8K PBR 36종 + 4K PBR 37종(집 덩어리 18·묶음10 7·NEW_ 9·간판 Potion/Bakery/Flower) → art/models/tripo/touchup/<이름>/<이름>_TU.glb, 원본 web/<이름>_SM_tex{8k,4k}_pbr_src.fbx(디스크만), records.json push.
+- 남음: **Daisy 다시**(디자인 검수가 형제 7b4845eb·245a153c·c2e4b5db 중 고르면 텍스처 4K → PBR; FBX build/tripo_wm1/HaloFlowerPotHQ_Daisy_wm_*). SignJuice = 계정 2(cb0ab903) 것 씀, 계정 1 Juice는 안 씀. 지금 Daisy_TU 쓰지 않음.
+- 새 텍스처 = 4K(20점). 텍스처+PBR = 25점/개, 흰 모델 100점.
+- 페이지 함수 = tools/tripo_web_helpers.js(+ hhTexOne = 올리기+누르기 한 번에, 잠금 있음). 브라우저 캐시는 가끔 비워짐 → Adobe presigned URL로 다시 /hh-bundleN에 넣음.
+
 ## 10/13 밤 — 숨긴 창에서도 돎 (잔액 3,955)
 - **숨긴 창 해결:** 페이지를 새로 열지 말고 `$router.push`로만 이동(새로 열면 숨긴 창에서 안 뜸). 도우미: hhTexUp/hhTexGo(텍스처), hhPbrStep(PBR), hhSmStep('nav'|'prep'|'go')(스마트 메시, 지난 그림 키와 같으면 안 누름). 그림 올릴 땐 input.value='' + 새 파일 이름(같은 이름이면 안 올라감).
 - **주소 받기:** 페이지 → 내 PC 직접은 막힘. 주소 목록 텍스트를 Adobe 업로드(PUT)로 보낸 뒤 presigned URL을 curl.
