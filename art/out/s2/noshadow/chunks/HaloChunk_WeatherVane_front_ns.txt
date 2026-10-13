@@ -1,0 +1,1 @@
+Firefly High (gpt-image-2.5-prism), ref = art/review/img3/chunk_refs/WeatherVane_ref.png; prompt: Redraw the object in the reference as a clean 3D-rendered toy-like piece ... gold weathervane: star on top + arrow with feather tail. Straight-on FRONT view ... no shadows.
