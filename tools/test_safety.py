@@ -55,7 +55,8 @@ def checks(src: dict) -> list[tuple[str, bool]]:
 
 MUTATIONS = [
     ("CONFIG", "no Safety topic", '\t\t{ Id = "Safety", Title = "Safety", Lines = {\n', '\t\t{ Id = "Safe", Title = "Safety", Lines = {\n'),
-    ("CONFIG", "no parent line", '\t\t\t"Ask a parent before using Robux. Never share your password.",\n', ""),
+    # the Safety topic's own line (Config.Help.TouchTopics.Safety repeats it for touch: tools/test_phone_text.py)
+    ("CONFIG", "no parent line", '\t\t\t"Ask a parent before using Robux. Never share your password.",\n\t\t} },', "\t\t} },"),
     ("LIST", "my own row gets the buttons", "\tif row.Pick then row.Pick.Visible = not mine end\n", ""),
     ("LIST", "the pick stays after closing", "\t\tS.Open = false\n\t\tS.Pick = nil\n", "\t\tS.Open = false\n"),
     ("LIST", "Block sends a friend request", '{ TXT.Block, "PromptBlockPlayer", "Bad" }', '{ TXT.Block, "PromptSendFriendRequest", "Bad" }'),

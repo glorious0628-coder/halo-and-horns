@@ -5175,6 +5175,16 @@ Config.Help = {
 	TouchLines = {
 		"Tap the buttons on the screen to attack, use skills and drink potions.",
 		"Drag with one finger to turn the camera.",
+		"Tap Menu (top right) for your Bag, Hero, Skills and more.",
+	},
+	-- A23-145 (최종 검수 10/13): a touch-only device (no keyboard: no Esc, no Tab) reads these lines instead of the topic's
+	TouchTopics = {
+		Safety = {
+			"Block or report someone: tap the Roblox button (top left), then find their name.",
+			"Player list: tap a name to add a friend or block them.",
+			"PvP zones (orange and red on the map): other players can fight you there.",
+			"Ask a parent before using Robux. Never share your password.",
+		},
 	},
 	Topics = {
 		{ Id = "Controls", Title = "Controls", Lines = {} },
