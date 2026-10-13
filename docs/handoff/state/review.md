@@ -193,3 +193,7 @@
 - **사용자 결정 오후:** A23-158 텍스처 = 가운데 멀티뷰 탭 2D 4면·4K·조명 제거(사용자가 Blender 손보기 2에 직접), 흰 모델은 Tripo에서 직접 위·아래 포함 모든 면(디자인 검수 1·2), 계정 1 다 쓰면 Chrome 계정 2로(손보기 1·디자인 검수 1), 떨어진 것 다시 OK, **이미 만든 것도 멀티뷰로 다시 — 단 내가 '안 해도 되는 것'을 꼼꼼히 골라 빼기**(워크플로 multiview-redo-triage 도는 중, 계정 1은 25점×~54개까지). 사람 그림 시작 여부 = 사용자 답 대기. 11월부터 세션 줄임(메모리 fewer-sessions-from-november).
 - 사용자가 WorldKit 3D 가져오기 직접(build/import3d_b 56개) — '넣음' 오면 이미지 생성 3에. 다음 가져오기 = build/import3d_c(묶음 d 34).
 - 코드: fix/test-prep-client 289295f7 = 고쳐서 다시(BagUI source 줄·출석 28일 이름 테 약속·Rose 되돌림), 시험 12개·compile 통과. fix/test-prep-server 아직 없음.
+- (16:30) **사용자 크게 화남 → SPEC A23-159.** 디자인 검수 2가 계정 2 흰 모델 약 28개를 Tripo가 아닌 점토 렌더로 고름(보고는 했는데 내가 막지 않음), 내 나눔 실수로 겹친 점수 약 500(계정 2 250·계정 1 250), ArmoryBarrels v2 상자 구멍을 '속 파트로 막기'로 통과시킴(사용자 지적 → 통과 취소, 놓지 않음). **지금 Tripo 점수 쓰는 일 전부 멈춤(4세션 확인)** — 사용자가 다시 OK할 때까지. 멀티뷰 다시 입히기 판정(multiview-redo-triage: 계정 1 68개 중 다시 38·그대로 30, 계정 2 24개 중 다시 18·그대로 6; scratchpad triage.json)은 보류 — 다시 하자고 하면 '꼭 다시'만 개수·점수로 먼저 보여 줌. ArmoryBarrels 대안 = 상자는 Studio 나무 판 골격(점수 0) + 통만 Tripo.
+- 메모리 final-review-checks-process: 보고마다 사용자 방식대로 했는지 먼저 확인, 구멍 = 떨어짐.
+- 코드: test-prep-client 병합 main 10fa20b9. 개발 1 dev1-halo-stage6 cbf3c3f0(큰 지도 V3 b 틀, Id 비움). 개발 2 test-prep-server 18~19시 예정 → 그 뒤 메인 sync·사진 한 번에.
+- WorldKit: 사용자가 import3d_b 56 + import3d_c 40 가져옴 → 이미지 생성 3 키트·놓기 중(ArmoryBarrels v2 빼기).
