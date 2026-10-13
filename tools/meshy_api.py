@@ -1,7 +1,7 @@
 """Meshy API (docs.meshy.ai) for Halo & Horns - multi-image (4 views) -> 3D, retexture, download, records.
 
   py tools/meshy_api.py balance
-  py tools/meshy_api.py mesh <name> --front F.png --left L.png --right R.png --back B.png [--texture] [--pbr]
+  py tools/meshy_api.py mesh <name> --front F.png --left L.png --right R.png --back B.png [--texture] [--pbr] [--remesh 15000]
                         [--res 2k|4k|8k] [--model latest|meshy-7.1|meshy-6] [--dry-run] [--wait]
   py tools/meshy_api.py retex <name> --task <mesh task id> --front F.png [--left ...] [--res 4k] [--pbr] [--wait]
   py tools/meshy_api.py status <task id> [--kind multi-image-to-3d|retexture]
@@ -144,7 +144,8 @@ def main():
     m.add_argument("--texture", action="store_true", help="texture in the same task (else mesh only, retex later)")
     m.add_argument("--pbr", action="store_true")
     m.add_argument("--res", default="4k", choices=["2k", "4k", "8k"])
-    m.add_argument("--model", default="latest")
+    m.add_argument("--model", default="meshy-7.1")
+    m.add_argument("--remesh", type=int, default=0, help="target polycount (e.g. 15000) -> should_remesh true; 0 = raw mesh")
     m.add_argument("--geo", default="standard", choices=["standard", "2k"])
     m.add_argument("--pose", default="", help="'' | a-pose | t-pose (people)")
     m.add_argument("--dry-run", action="store_true")
@@ -196,11 +197,16 @@ def main():
             "ai_model": a.model,
             "geometry_resolution": a.geo,
             "should_texture": bool(a.texture),
-            "should_remesh": False,
+            "should_remesh": bool(a.remesh),  # research_3d_accuracy 2026-10-13 #12: poly budget at creation (Roblox <= 20k tris)
+            "image_enhancement": False,  # #14: never let the AI "improve" our 2D
+            "remove_lighting": True,
             "target_formats": ["glb", "fbx"],
             "multi_view_thumbnails": True,
             "moderation": True,
         }
+        if a.remesh:
+            body["topology"] = "triangle"
+            body["target_polycount"] = int(a.remesh)
         if a.texture:
             body["enable_pbr"] = bool(a.pbr)
             body["texture_resolution"] = a.res
