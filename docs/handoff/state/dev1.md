@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 2 — fix/comeback-client a4a683e6 (다시 시작하면 여기부터)
+## 10/15 아침 이어갈 자리 (10/14 밤 컴퓨터 끄기 전)
+- fix/comeback-client **a4a683e6 = 다 됨·push됨**(시험 모두 통과, 최종 검수 보고함, 진행 중 아님). phone-first10-3은 main 6367529c 병합됨.
+- 내일: 최종 검수가 comeback-client 병합하면 메인 반영 1이 `play_comeback_photos.py`·`play_phone_round_photos.py first10` 사진 → 고장급만 고침.
+- 답 기다림: 칩 단어 '2x XP · N min' 그대로인지, Returned 말풍선을 마을 사람 첫 말로 한 것 괜찮은지. 그다음 02_dev1.md(dev1-halo-stage6 마무리).
+
+## 10/14 밤 2 — fix/comeback-client a4a683e6
 - A23-167 클라(개발 2 서버 main 9264ae44): 칩 '2x XP · N min'(HUD L.EarlyXPLeft/L.BoostText), PauseCard 'Tomorrow' 카드(Fx TomorrowGift, AttendanceUI.SlotIcon, [Open]=AttendanceUI.Open), Returned → 마을 사람 첫 말 BackLines 한 번(TownReact.BackLine; 안내자는 몸 없음), WelcomeBack News 줄. 새 시험 test_comeback_client, 사진 tools/play_comeback_photos.py [phone]. phone-first10-3과 병합 깨끗(시험 확인).
 - 기다림: 최종 검수 병합(phone-first10-3, comeback-client) → 메인 반영 1 사진(phone first10, comeback). 칩 단어 'XP x2' vs '2x XP'는 최종 검수 답 대기.
 
