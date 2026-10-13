@@ -2,6 +2,7 @@
 ## 지금 상태 한 줄 (10/12 오전 9:50)
 ## ★ 10/13 오후 끝 — 묶음 b·c 넣기 준비 (이 절이 최신)
 - PhotoDisc 4곳 전부 통과(디자인 검수). P058 '떠 보임' = 화면 지형 ≠ 데이터(추측), 화면 보고 내리지 말 것 → 6단계.
+- **10/13 저녁:** 사용자가 직접 3D 가져오기 중 = build/import3d_b 56개(b 34 + c 13 + e 9; GuardPost·PotionCrate 보류 → build/import3d_hold, 맵 build/sa_e_hold). 묶음 d 34 = build/import3d_c(다음 가져오기). 그동안 WorldKit MCP 금지 → SA 올리기 멈춤(b 22종 올라감). '넣음' 알림 뒤: 남은 SA 올리기(b 나머지 → c → d → e, `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_X --tags CNMR`) → `py tools/worldkit/tripo_kits_gen.py <tag> <이름들>` → build/wk/tripo_kits_build_<tag>.luau 실행 → 놓기.
 - 묶음 b(34종, JuiceParasol 뺌 — 줄무늬 없는 판 다시) + c(13종) = build/import3d_b 47개(메시만). GateLeaf R = 쓰지 않음(문짝 대칭 → 오른쪽도 L 모델, 디자인 검수), R 파일은 build/import3d_hold. SA: build/sa_b(140)·build/sa_c(52) 다 봄, b 올리는 중(_upload.log), c는 b 끝나면 `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_c --tags CNMR`. 3D 가져오기(마우스·키보드) = 최종 검수가 사용자에게 (가)직접/(나)나 묻는 중. 묶음 e 11종 = Blender 손보기 2 경로 오면 같은 폴더에.
 - 자리 지도: 소품 = Props(Real/StandIn/Placeholder)의 Kit 이름(분수 P063, 장미 P021·P112, BenchB P035·057·081·120·127, FlowerCart P018, BreadStand P012, FruitStall P016, 등불 L01~L56, 나무 E·F·G 16곳, 토피어리 C·D 4, Planter_E 2). 집 장식 = art/prompts/house_chunks_queue_2026-10-13.json 'houses'. ⑤ 메모 = docs/review/pbr_final_2026-10-13.md 묶음 b·c·e.
 
