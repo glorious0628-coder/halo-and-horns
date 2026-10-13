@@ -10,7 +10,8 @@
 | 우리 기록 (새) | DataStore `HaloHorns_TestMetrics_v1`(환경 이름 붙음, `Config.StoreName`), 키 = 회차 `PT1` | 서버가 1분쯤마다·닫힐 때 씀 → 바로 | 아래 표 전부 |
 | Creator Hub | Roblox Analytics(온보딩 퍼널 13단계, 다른 퍼널 6개, 사용자 이벤트) | 보통 하루쯤 늦게 | 같은 첫 단계들(참고·대조용), PerfFps/PerfMem |
 
-- 우리 기록 = `TestMetricsService`(서버, 읽기만 하는 관찰자). 이름·UserId를 저장하지 않아요. 숫자만 서버끼리 더해요(UpdateAsync).
+- 우리 기록 = `TestMetricsService`(서버 관찰자: 게임은 안 바꾸고 저장에 `data.Telemetry.Test`만 더함). 이름·UserId를 저장하지 않아요. 숫자만 서버끼리 더해요(UpdateAsync).
+- **Live 게임에서는 꺼져요**(`Config.EnvName() == "Live"`, 시험 스위치와 같음). 12/8 뒤 Live에 숫자가 쌓이지 않아요.
 - 계정마다 표시는 저장에 더해요(`data.Telemetry.Test`, 더하기만). 그래서 한 사람이 두 번 세지지 않아요.
 - Studio Play에서 쓴 것은 `_STUDIO` 복사본에 따로 쌓여요. 시험 숫자를 더럽히지 않아요.
 - 켜고 끄기: `Config.TestMetrics.Enabled`. 다음 시험(12/3~6, A23-162)은 `Round = "PT2"`만 바꿔요.
@@ -23,8 +24,8 @@
 - **분** = 플레이한 시간(`PlaytimeSeconds`)을 다 채운 분으로 셈. 4분 59초 = 4분. "10분 안" = 9분대까지예요.
 - **10분 완주** = 새 계정이 Lv5, 첫 드롭 무기(2단 이상 무기 보유 — 대장간 선물 1단은 아님), 첫 미션 Claim을 셋 다 10분 안에 해낸 것.
 - **합격선**(1-B): Lv5 5분, Lv10 15분, 첫 드롭 무기 4분. 표는 그 안에 닿은 새 계정 비율과 중간값이에요.
-- **패스** = 산 수(Bought), 산 뒤 **다른 접속**에서 다시 들어온 수(Back), 그때 들어온 지 20초 뒤에도 혜택이 켜져 있던 수(Kept, `MonetizationService.HasPass`).
-  - 유지율 = Kept ÷ Back. 100%가 아니면 사고예요. 바로 최종 검수에 알려요.
+- **패스** = 산 수(Bought), 산 뒤 **다른 접속**에서 다시 들어온 수(Back), 그때 들어온 지 20초 뒤 **Roblox가 그 접속에서 직접 '가짐'이라고 답한** 수(Kept, `MonetizationService.PassAnswer`). Roblox가 아직 답하지 않았으면 '확인 못 함'(Unknown)으로 세요. 저장된 옛 답은 Kept로 세지 않아요.
+  - 유지율 = Kept ÷ (Back − 확인 못 함). 100%가 아니면 사고예요. 바로 최종 검수에 알려요. '확인 못 함'이 많으면 Roblox 응답이 느린 것이라 다시 접속해 봐요.
 - 진영(새 계정의 첫 진영)과 기기(첫 Perf 기록의 기기)도 같이 세요.
 
 ## 표 뽑기 — `tools/test_metrics_board.py`

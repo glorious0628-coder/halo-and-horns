@@ -445,6 +445,15 @@ local function topUpGold(player, data, id, track)
 	if have < want then S.ProgressionService.AddCarriedGold(player, want - have, "Choice") end
 end
 
+-- the player's stack of item `id` is at its cap (Config.Loot.ItemCap; potions Config.Vitals.PotionInventoryCap)
+local function stackFull(data, id)
+	if type(id) ~= "string" then return false end
+	local potionKey = type(Config.PotionStockKey) == "function" and Config.PotionStockKey(id) or nil
+	if potionKey then return num(data[potionKey]) >= num(Config.Vitals.PotionInventoryCap, math.huge) end
+	local items = type(data.Items) == "table" and data.Items or {}
+	return num(items[id]) >= num(Config.Loot.ItemCap, math.huge)
+end
+
 -- gameplay plan 2026-10-13 1-A #2 GiveItem = { Item, N }: a step that opens hands this over once per step (M1_1: Otto's
 -- Enhance Scroll) with one "+item" line. Nothing for a step that already passes (Past)
 local function giveStepItem(player, data, id, track)
@@ -457,8 +466,9 @@ local function giveStepItem(player, data, id, track)
 	first[key] = true -- saved before the item, so it can never be given twice
 	local given = grantItem(player, gift.Item, gift.N)
 	if given then notify(player, given, "reward", "None") end -- the scroll's own sound comes with the Bag (none here)
-	-- 최종 검수 10/13 review: nothing given (the stack full, a failure) = not marked; RetryGifts tries again at the next join
-	if not given then first[key] = nil end
+	-- 최종 검수 10/13 review: nothing given because of a failure = not marked (RetryGifts tries again at the next join); a FULL
+	-- stack stays marked (the player holds that item already; a retry would only repeat the "full" line every join)
+	if not given and not stackFull(data, gift.Item) then first[key] = nil end
 end
 
 -- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself

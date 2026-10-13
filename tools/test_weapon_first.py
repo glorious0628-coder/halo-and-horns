@@ -100,7 +100,8 @@ MUTATIONS = [
     # 최종 검수 10/13 review: a gift that gave nothing is tried again at the join, and given once only
     ("1-A #2: the step gift every time", "STORY_SOURCE", "\tif first[key] == true then return end\n\tfirst[key] = true -- saved before the item",
      "\tfirst[key] = true -- saved before the item"),
-    ("1-A #2: a gift that gave nothing stays marked", "STORY_SOURCE", "\tif not given then first[key] = nil end\n", ""),
+    ("1-A #2: a failed gift stays marked", "STORY_SOURCE", "\tif not given and not stackFull(data, gift.Item) then first[key] = nil end\n", ""),
+    ("1-A #2: a full stack retries every join", "STORY_SOURCE", "if not given and not stackFull(data, gift.Item) then", "if not given then"),
     ("1-A #2: RetryGifts tries nothing", "STORY_SOURCE", "local ok, err = pcall(giveStepItem, player, data, id, track)",
      "local ok, err = true, nil"),
     ("1-A #2: the step gift never sent", "STORY_SOURCE", "\t\tgiveStepItem(player, data, id, track)\n\t\tdirty(player)", "\t\tdirty(player)"),

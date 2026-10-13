@@ -281,7 +281,8 @@ MUTATIONS = [
     ("left player written", M, "\t\tif player.Parent == nil or S.PlayerService.GetData(player) ~= data then return end\n", ""),
     ("closed prompt counts", M, "\tif purchased ~= true or typeof(player)", "\tif typeof(player)"),
     ("purchase not saved", M, "\t\tif answer == true and data then seenTable(data)[p.Key] = true end\n", ""),
-    ("debug override ignored", M, "\tif d and d[key] ~= nil then return d[key] == true end\n", ""),
+    ("debug override ignored", M, "function MonetizationService.HasPass(player, key)\n\tlocal d = PASS.Debug[player]\n\tif d and d[key] ~= nil then return d[key] == true end\n",
+     "function MonetizationService.HasPass(player, key)\n\tlocal d = PASS.Debug[player]\n"),
     # looks
     ("SetLook: any faction", M, "\t\tif not look or look.Faction ~= player:GetAttribute(\"Faction\") or not MonetizationService.OwnsLook(player, id) then\n\t\t\treturn\n",
      "\t\tif not look or not MonetizationService.OwnsLook(player, id) then\n\t\t\treturn\n"),

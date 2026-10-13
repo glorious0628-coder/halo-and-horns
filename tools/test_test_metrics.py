@@ -1,6 +1,6 @@
 """The private test's numbers board (TestMetricsService) (게임성 개발 2, 2026-10-13, A23-160 ④), offline.
 
-Contract docs/design/test_metrics_2026-10-13.md: a read-only observer. Per test round (Config.TestMetrics.Round) it sums into ONE
+Contract docs/design/test_metrics_2026-10-13.md: an observer (adds data.Telemetry.Test only, never on Live). Per test round (Config.TestMetrics.Round) it sums into ONE
 DataStore document (Config.StoreName(Config.TestMetrics.Store); Studio: _STUDIO): Players / New / Joins, the first screen (Intro,
 Faction, Side), the minute of play new accounts reach Lv5 / Lv10 / the first dropped weapon / the first mission claim (Min), the
 10-minute run (Ten), the first device (Device) and passes bought / kept on a later join (Pass). Runs the CURRENT Config, Util and
@@ -73,7 +73,11 @@ MUTATIONS = [
      "\tif true then return key end"),
     ("the same join is a rejoin", TM, "if passKey(key) and not rec.K[key] and rec.J > num(at) then", "if passKey(key) and not rec.K[key] and rec.J >= num(at) then"),
     ("the rejoin counted every join", TM, "\tif rec.K[key] then return end\n\trec.K[key] = true\n", "\trec.K[key] = true\n"),
-    ("kept without asking", TM, "\tif ok and has == true then bump(p, \"Kept\") end", "\tbump(p, \"Kept\")"),
+    ("kept without asking", TM, "\tif ok and answer == true then\n\t\tbump(p, \"Kept\")", "\tif true then\n\t\tbump(p, \"Kept\")"),
+    ("no answer counted as kept", TM, "\tif ok and answer == true then\n", "\tif ok and answer ~= false then\n"),
+    ("the saved answer read", TM, "type(mon.PassAnswer) == \"function\" then ok, answer = pcall(mon.PassAnswer, player, key)",
+     "type(mon.HasPass) == \"function\" then ok, answer = pcall(mon.HasPass, player, key)"),
+    ("Live too", TM, "\tif type(Config.EnvName) == \"function\" and Config.EnvName() == \"Live\" then return end", ""),
     ("a gone player is checked", TM, "local function checkKept(player, key)\n\tif player.Parent == nil then return end\n",
      "local function checkKept(player, key)\n"),
     ("the purchase join moves", TM, "\tif rec.P[key] == nil then rec.P[key] = math.max(1, math.floor(num(rec.J))) end",
@@ -120,7 +124,7 @@ def static() -> tuple[int, list[str]]:
     check(code.count("UpdateAsync") == 1 and "SetAsync" not in code and "RemoveAsync" not in code, "the document is only merged (one UpdateAsync)")
     check("UserId" not in code and "player.Name" not in code and "DisplayName" not in code, "no UserId, no player name")
     check("MarketplaceService" not in code and "AddBankGold" not in code and "AddStat" not in code and "SetStat" not in code
-          and "GrantItem" not in code and "SetAttribute" not in code, "nothing sold, paid or changed (read-only observer)")
+          and "GrantItem" not in code and "SetAttribute" not in code, "nothing sold, paid or changed (adds data.Telemetry.Test only)")
     check(not re.search(r"[가-힣]", code), "no Korean outside comments")
     for service, signal in (("PlayerService", "PlayerReady"), ("PlayerService", "PlayerLeaving"),
                             ("MonetizationService", "PassBought"), ("TelemetryService", "ClientMetric")):
@@ -151,7 +155,7 @@ SUITE = Suite(
     world=ROOT / "tools/fixtures/dev3_world.luau",
     out=ROOT / "docs/art/verification_2026-10-13/offline_test_metrics_2026-10-13.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="TestMetricsService: read-only observer, on while Config.TestMetrics.Enabled. Per round one document in "
+    contract="TestMetricsService: an observer (adds data.Telemetry.Test only), on while Config.TestMetrics.Enabled and never on Live. Per round one document in "
              "Config.StoreName('HaloHorns_TestMetrics_v1') (Studio: _STUDIO), key = Config.TestMetrics.Round: Players (accounts "
              "seen this round), New (fresh saves: no intro, Lv1, no kill, under FreshSeconds), Joins, Intro / Faction / Side "
              "(new accounts' first screen), Min[Lv5|Lv10|Weapon|Claim][minute of play] (once per account; Weapon = a tier 2+ "
