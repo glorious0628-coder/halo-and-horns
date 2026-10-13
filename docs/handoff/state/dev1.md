@@ -3,6 +3,7 @@
 ## 지금 (10/13 오후, 셀프 클리어 전) — 다시 시작하면 여기부터
 - **열린 가지:** `dev1-halo-stage6` **bfce02b0** (worktree `../wt_dev1halo6`, sparse, build/luau 복사됨) = 6단계 때 개발 2 가지와 합쳐 병합(최종 검수가 함). 최종 검수는 73be5aea까지 받음, bfce02b0 보고는 보냄(대기열).
 - **다음 할 일 1:** 개발 2가 `dev2-halo-stage6`를 push하면(`git ls-remote --heads origin dev2-halo-stage6`) 임시 worktree에서 두 가지를 합쳐(origin/main + dev1-halo-stage6 + dev2-halo-stage6) 시험: test_halo_maps·map_v2·zone_look·fountain_fx·quest_target·return·spawn_look·intro_halo_shot·town_npcs·town_quests·audio·water_rescue. map_v2 그림 검사 2개('picture covers Bounds'·'every land maps inside the picture')는 새 큰 지도 그림+변환값 전엔 실패가 예상 — 최종 검수 결정 대기. 결과 해시+표로 최종 검수에.
+- 큰 지도 새 그림(art/out/s2/worldmap/UIP_WorldMapV2_HaloNew_composite.png, 1024×683 옛 틀) = 새 Bounds 못 덮음, 섬도 실제 비율 아님(대륙 맞춘 변환이면 분수 광장 자리가 그림 속 집 위, 대성당 y -25 밖) → 최종 검수에 "그림 다시" 알림. 다시 그릴 틀: 1041×760, 옛 그림을 (17,77)에, Map = { X0 = 47.815, K = 0.47407, OffX = 230, OffZ = 883 } (Bounds px 0.4..1029.1 × 0..759.9). 안내 그림 `docs/review/halo_worldmap_guide_2026-10-13.png`(분홍 = plan.land 실제 크기, 흰 = 큰 길·고리길, 빨강 = 성문(157,262)·스폰(157,220)·분수(167,139)·성(73,147)·대성당(197,53)·전망대(267,50)). 새 그림 오면 이 변환값을 dev1-halo-stage6 Config에 넣고 Id 비움.
 - **다음 할 일 2:** 최종 검수의 게임성 계획 `docs/design/gameplay_plan_2026-10-13.md`(작성 중)대로.
 - 끝난 것: fix/phone-round b6e4fe45 = main 4c945b11 병합. 멈춘 것: Hero 창 844 "Paladin" 글자·힘 칩 여백(최종 검수 '폰 멈춤'). '키보드 없음' Studio 스위치 = 나중(최종 검수).
 - worktree `wt_codexui`(fix/phone-round, 병합됨)는 지워도 됨(지울 땐 최종 검수에 먼저).
