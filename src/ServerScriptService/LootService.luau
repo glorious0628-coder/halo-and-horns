@@ -280,6 +280,12 @@ end
 local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	if not validTier(tier) then return end
 	if owns(data, tier) then
+		-- C2 (crafting_market §3): a weapon owned already goes into the bag as a Spare (+0: the Market / Otto take it); no
+		-- room (20 of that key / 60 spares) -> the old gold, so a drop is never lost
+		if LootService.AddSpare(player, tier, 0) then
+			notify(player, string.format(TXT.SpareWeapon, weaponName(player, tier)), "reward", "Equip")
+			return
+		end
 		local gold = LOOT.DuplicateWeaponGold[tier] or 0
 		if gold > 0 then
 			gold = S.ProgressionService.AddCarriedGold(player, gold, "Loot") or gold -- A23-75: as added (2x Gold)
@@ -307,6 +313,24 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 		end
 		-- A23-130: no second "[X] equipped! Power" line (the HUD Stronger! banner and the power count-up show it)
 	end
+end
+
+-- C2: the first Slime Prince's guaranteed weapon: owned (saved first), in this kill's Loot list, equipped when it beats
+-- the weapon in hand (bare hands, or a lower damage at this level with its +N)
+local function grantFirstDrop(player, data, tier, gained)
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
+	local name = weaponName(player, tier)
+	table.insert(gained, { Weapon = tier, Name = name })
+	local level = math.floor(num(data.Level, 1))
+	local cur = math.floor(num(data.WeaponTier, 0))
+	local better = Config.WeaponUsable(tier, level) and (cur < 1
+		or Config.WeaponDamage(tier, level, enhanceOf(data, tier)) > Config.WeaponDamage(cur, level, enhanceOf(data, cur)))
+	if better then
+		S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals builds the model; WeaponEnhance follows
+		publish(player, data)
+		pcall(Net.Fx, player, "Upgrade", { Tier = tier })
+	end
+	notify(player, string.format(better and TXT.FirstDropEquip or TXT.FirstDropWeapon, name), "reward", better and "None" or "Equip")
 end
 
 -- A23-34: the M1_1 blacksmith gift (StoryQuestService, Config.StoryQuests.Defs.M1_1.GiveWeapon) = the class basic
@@ -413,6 +437,13 @@ function LootService.RollKill(player, info)
 			local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll
 			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6), "None") -- the drop has its own sound
 		end
+	end
+
+	-- C2: the first Slime Prince always drops the tier-2 weapon (the flag first: once; owned already = the chance is used)
+	local fw = LOOT.FirstWeaponDrop
+	if fw and info.Kind == fw.Monster and data.LootFlags.FirstWeapon ~= true then
+		data.LootFlags.FirstWeapon = true
+		if validTier(fw.Tier) and not owns(data, fw.Tier) then grantFirstDrop(player, data, fw.Tier, gained) end
 	end
 
 	info = table.clone(info) -- the caller's info stays untouched

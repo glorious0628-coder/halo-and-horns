@@ -511,12 +511,20 @@ local function fixture(opts)
 	end
 	-- scripted roll: only the listed row indices (and optionally the jackpot) succeed
 	function f:Force(kind, hitRows, jackpot, golden, extra)
-		local script = {}
-		for i in L.Tables[kind] or {} do script[i] = (hitRows and hitRows[i]) and 0 or 0.999999 end
+		-- a BelowLevel weapon row below its MinLevel draws nothing (A23-27): no script value, counted as left over
+		local script, skipped = {}, 0
+		local level = math.floor(tonumber(self.Data.Level) or 1)
+		for i, row in L.Tables[kind] or {} do
+			if row.Weapon and type(row.BelowLevel) == "table" and level < self.Config.Weapons[row.Weapon].MinLevel then
+				skipped += 1
+			else
+				table.insert(script, (hitRows and hitRows[i]) and 0 or 0.999999)
+			end
+		end
 		if L.Jackpot.Monsters[kind] then table.insert(script, jackpot and 0 or 0.999999) end
 		self.Script = script
 		local g = self:Roll(kind, golden, extra)
-		local left = #self.Script
+		local left = #self.Script + skipped
 		self.Script = {}
 		return g, left
 	end
@@ -693,6 +701,23 @@ runGroup("config", function()
 			local a, b, c = rowP(chain[1], "Item", id), rowP(chain[2], "Item", id), rowP(chain[3], "Item", id)
 			check(a and b and c and a < b and b < c, "B2 scroll chance rises meadow < woods < ruins", id .. " " .. show({ a, b, c }))
 		end
+	end
+	-- C2 (crafting_market §3, 게임성 개발 2 10/13): the beta monsters' weapon rows; never a BelowLevel on a plain monster (it pays
+	-- its item on every kill below the weapon's level, without a draw: the boss rows only)
+	local C2W = { Slime = { [2] = 0.002, [3] = 0.001 }, BigSlime = { [2] = 0.02, [3] = 0.015 }, SlimeKing = { [3] = 0.10 },
+		Goblin = { [4] = 0.002 }, SlingshotGoblin = { [4] = 0.002 }, GoblinBrute = { [4] = 0.005, [5] = 0.0008 },
+		Skeleton = { [5] = 0.001 }, SkeletonArcher = { [5] = 0.001 }, SkeletonKnight = { [5] = 0.004, [6] = 0.001 },
+		CaptainClatter = { [5] = 0.03, [6] = 0.01 }, FlowerSlime = {} }
+	for kind, want in C2W do
+		local got, below = {}, false
+		for _, row in L.Tables[kind] or {} do
+			if row.Weapon then
+				got[row.Weapon] = row.P
+				if row.BelowLevel ~= nil and C.MonsterTypes[kind].Boss ~= true then below = true end
+			end
+		end
+		check(deepEqual(got, want) and not below, "C2 weapon rows of the beta monsters, no BelowLevel on a plain monster",
+			kind .. " " .. show(got))
 	end
 	-- review B13: potions about half of the first values, the same for HP and MP
 	local POTION = { Slime = 0.01, BigSlime = 0.03, Goblin = 0.02, GoblinBrute = 0.04, Skeleton = 0.025, SkeletonKnight = 0.05 }
@@ -957,7 +982,8 @@ runGroup("sanitize", function()
 	check(type(n.Data.Items) == "table" and #n.Data.WeaponEnhance == 9 and n.Data.Items.Jelly == 1 and #g > 0,
 		"RollKill sanitizes missing tables before granting", show(n.Data.Items))
 	n.ScriptConst = nil
-	check(n:Give("Jelly", 5000) == 998 and n.Data.Items.Jelly == 999, "DebugGive caps at ItemCap", n.Data.Items.Jelly)
+	local had = n.Data.Items.Jelly
+	check(n:Give("Jelly", 5000) == 999 - had and n.Data.Items.Jelly == 999, "DebugGive caps at ItemCap", n.Data.Items.Jelly)
 end)
 
 ------------------------------------------------------------------ 2. RollKill
@@ -983,10 +1009,11 @@ runGroup("rollkill", function()
 	f:Set("Level", 1)
 	f.Draws = 0
 	f:Kill("Slime")
-	check(f.Draws == #L.Tables.Slime + 1, "one MonsterKilled signal = exactly one roll", f.Draws)
+	local slimeDraws = #L.Tables.Slime + 1 - belowLevelRows(f, "Slime", 1)
+	check(f.Draws == slimeDraws, "one MonsterKilled signal = exactly one roll", f.Draws)
 	f.Draws = 0
 	f:Kill("Slime", { Auto = true, SkillHit = true, Personal = true })
-	check(f.Draws == #L.Tables.Slime + 1, "auto / skill / personal kills roll like any kill", f.Draws)
+	check(f.Draws == slimeDraws, "auto / skill / personal kills roll like any kill", f.Draws)
 	-- 검수 2026-10-09: a free rider's share (MonsterService MinorShare, info.Minor) rolls nothing
 	f.Draws = 0
 	f:Kill("CaptainClatter", { Minor = true })
@@ -994,7 +1021,7 @@ runGroup("rollkill", function()
 
 	-- every contributor gets an own roll (MonsterService fires once per contributor)
 	local p2, d2 = f:Join(f.UserId + 100000)
-	local n = #L.Tables.Slime + 1
+	local n = #L.Tables.Slime + 1 - belowLevelRows(f, "Slime", math.floor(tonumber(f.Data.Level) or 1))
 	local jellyBefore = f:Count("Jelly") -- the every-kind loop above may have paid Jelly (King Slime)
 	local script = {}
 	for i = 1, n do script[i] = 0 end
@@ -1003,7 +1030,8 @@ runGroup("rollkill", function()
 	f:Kill("Slime")
 	f:Kill("Slime", nil, p2)
 	check(f.Draws == 2 * n and #f.Script == 0, "two contributors = two independent rolls", f.Draws)
-	check(f:Count("Jelly") - jellyBefore == 1 and (d2.Items.Jelly or 0) == 0, "contributor rolls are independent (own result each)",
+	local bl = belowLevelRows(f, "Slime", math.floor(tonumber(f.Data.Level) or 1)) > 0 and 1 or 0
+	check(f:Count("Jelly") - jellyBefore == 1 + bl and (d2.Items.Jelly or 0) == bl, "contributor rolls are independent (own result each)",
 		show({ f:Count("Jelly") - jellyBefore, d2.Items.Jelly }))
 	f.Script = {}
 
@@ -1077,6 +1105,8 @@ runGroup("rollkill", function()
 	-- exact thresholds: a row drops iff draw < P (x GoldenMult when info.Golden == true)
 	local t = fixture()
 	t.Data.LootFlags.FirstScroll = true
+	t.Data.LootFlags.FirstWeapon = true -- C2: the first Prince's weapon is not a row
+	t:Set("Level", 50) -- every row draws (the C2 tier-3 rows have a BelowLevel)
 	for _, kind in { "Slime", "BigSlime", "Goblin" } do
 		local rows = L.Tables[kind]
 		for i, row in rows do
@@ -1116,6 +1146,8 @@ runGroup("rollkill", function()
 	local function sample(kind, golden, nRolls, seed)
 		local s = fixture()
 		s.Data.LootFlags.FirstScroll = true
+		s.Data.LootFlags.FirstWeapon = true -- C2
+		s:Set("Level", 50) -- every row draws (C2 BelowLevel rows)
 		math.randomseed(seed)
 		local counts, events = {}, {}
 		local info = { Kind = kind, Golden = golden }
@@ -1188,6 +1220,7 @@ runGroup("rollkill", function()
 	-- potions go to the stock counters (not Items) and respect the 99 cap
 	local hp, mp = rowIndex(L, "Slime", "Potion", "HP"), rowIndex(L, "Slime", "Potion", "MP")
 	local pf = fixture()
+	pf:Set("Level", 50) -- C2: no BelowLevel jelly
 	g = pf:Force("Slime", { [hp] = true, [mp] = true })
 	check(pf.Data.HPPotionCount == 1 and pf.Data.MPPotionCount == 1 and pf.Player:GetAttribute("HPPotionCount") == 1
 		and pf.Player:GetAttribute("MPPotionCount") == 1, "potion drops add 1 to HP/MPPotionCount (saved + mirrored)")
@@ -1270,9 +1303,11 @@ runGroup("rollkill", function()
 		end
 	end
 	local js = fixture()
+	js:Set("Level", 50) -- C2: every slime row draws
 	js:Force("Slime", nil, true, false, { Auto = true, Personal = true })
 	check(bit32.btest(js.Data.WeaponOwnedMask, bit32.lshift(1, L.Jackpot.Tier - 1)), "slime jackpot also pays for auto / personal kills")
 	local jp = fixture()
+	jp:Set("Level", 50)
 	jp:Force("PumpkinSlime", nil, true, false, { Auto = true })
 	check(bit32.btest(jp.Data.WeaponOwnedMask, bit32.lshift(1, L.Jackpot.Tier - 1)), "pumpkin slime carries the slime jackpot")
 
@@ -1280,6 +1315,7 @@ runGroup("rollkill", function()
 	for _, case in { { false, L.Jackpot.Chance - 1e-12, true }, { false, L.Jackpot.Chance + 1e-12, false },
 		{ true, L.Jackpot.Chance * 3 - 1e-12, true }, { true, L.Jackpot.Chance * 3 + 1e-12, false } } do
 		local j = fixture()
+		j:Set("Level", 50)
 		local script4 = {}
 		for i in L.Tables.Slime do script4[i] = 0.999999 end
 		table.insert(script4, case[2])
@@ -1430,7 +1466,8 @@ runGroup("bully", function()
 	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true and fs:Noticed(L.Text.FirstScroll) == 1,
 		"BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
 		show({ fs:Count("Enh70"), fs.Data.LootFlags.FirstScroll, fs:Noticed(L.Text.FirstScroll) }))
-	check(fs.Draws == #L.Tables.BigSlime, "BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)", fs.Draws)
+	check(fs.Draws == #L.Tables.BigSlime - belowLevelRows(fs, "BigSlime", fs.Data.Level),
+		"BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)", fs.Draws)
 	fs:Kill("BigSlime")
 	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "BullyStacks 1: the guarantee is still paid only once",
 		fs:Count("Enh70"))
@@ -1515,6 +1552,7 @@ runGroup("seen", function()
 	local f = fixture()
 	local L = f.L
 	f.Data.LootFlags.FirstScroll = true
+	f:Set("Level", 50) -- C2: a Lv1 slime pays the tier-3 row's BelowLevel jelly (a push)
 	f:Pushes()
 	f.ScriptConst = 0.999999 -- nothing drops: the push below comes from the first-kill flag alone
 	f:Kill("Slime")
@@ -1559,6 +1597,57 @@ runGroup("seen", function()
 end)
 
 ------------------------------------------------------------------ 3. weapons
+------------------------------------------------------------------ C2 the first Slime Prince's weapon
+runGroup("first weapon drop", function()
+	local f = fixture()
+	local L = f.L
+	f.Data.LootFlags.FirstScroll = true
+	local fw = L.FirstWeaponDrop
+	check(fw and fw.Monster == "BigSlime" and fw.Tier == 2, "Config.Loot.FirstWeaponDrop = the Slime Prince's tier 2", show(fw))
+	f.ScriptConst = 0.999999 -- no row drops: the weapon is the guarantee alone
+	local g = f:Roll("BigSlime")
+	local name = f.Config.WeaponName(2, "Warrior", "Halo")
+	check(bit32.btest(f.Data.WeaponOwnedMask, 2) and f:Gained(g, "Weapon", 2) == 1 and f.Data.LootFlags.FirstWeapon == true,
+		"the first Prince kill: tier 2 owned, in the Loot list, the flag set", show({ f.Data.WeaponOwnedMask, f.Data.LootFlags }))
+	check(f.Data.WeaponTier == 2 and f:Noticed(string.format(L.Text.FirstDropEquip, name)) == 1,
+		"it beats the tier-1 weapon in hand: equipped at once (FirstDropEquip)", show({ f.Data.WeaponTier }))
+	f.Data.WeaponOwnedMask, f.Data.WeaponTier = 1, 1
+	g = f:Roll("BigSlime")
+	check(f:Gained(g, "Weapon", 2) == 0 and f.Data.WeaponOwnedMask == 1, "only the first Prince: never a second guarantee", "")
+	f.ScriptConst = nil
+	-- owned already: the chance is used up, nothing given
+	local o = fixture()
+	o.Data.LootFlags.FirstScroll = true
+	o:Set("WeaponOwnedMask", 3)
+	o.ScriptConst = 0.999999
+	g = o:Roll("BigSlime")
+	check(o.Data.LootFlags.FirstWeapon == true and o:Gained(g, "Weapon", 2) == 0 and (o.Data.Spares == nil or next(o.Data.Spares) == nil),
+		"tier 2 owned already: the flag is used, nothing given (no Spare)", show(o.Data.Spares))
+	-- a stronger weapon in hand (tier 1 +10): owned, not equipped (FirstDropWeapon)
+	local s2 = fixture()
+	s2.Data.LootFlags.FirstScroll = true
+	s2.Data.WeaponEnhance[1] = 10
+	s2.ScriptConst = 0.999999
+	s2:Roll("BigSlime")
+	local t1, t2 = s2.Config.WeaponDamage(1, 1, 10), s2.Config.WeaponDamage(2, 1, 0)
+	check(t1 >= t2 and s2.Data.WeaponTier == 1 and bit32.btest(s2.Data.WeaponOwnedMask, 2)
+		and s2:Noticed(string.format(L.Text.FirstDropWeapon, name)) == 1, "a stronger weapon in hand stays; the line says it dropped",
+		show({ t1, t2, s2.Data.WeaponTier }))
+	-- bare hands: equipped
+	local b = fixture()
+	b.Data.LootFlags.FirstScroll = true
+	b:Set("WeaponTier", 0)
+	b:Set("WeaponOwnedMask", 0)
+	b.ScriptConst = 0.999999
+	b:Roll("BigSlime")
+	check(b.Data.WeaponTier == 2, "bare hands: equipped", show(b.Data.WeaponTier))
+	-- a free rider's share (Minor) and the practice King roll nothing, the flag stays unused
+	local m = fixture()
+	m.Data.LootFlags.FirstScroll = true
+	m:Roll("BigSlime", false, { Minor = true })
+	check(m.Data.LootFlags.FirstWeapon == nil and not bit32.btest(m.Data.WeaponOwnedMask, 2), "a free rider's share: no guarantee used", "")
+end)
+
 runGroup("weapons", function()
 	local f = fixture()
 	local L = f.L
@@ -1570,11 +1659,13 @@ runGroup("weapons", function()
 			if row.Weapon then
 				local w = fixture()
 				w.Data.LootFlags.FirstScroll = true
+				w.Data.LootFlags.FirstWeapon = true -- C2: the first Prince's weapon is checked on its own
 				local bitMask = bit32.lshift(1, row.Weapon - 1)
 				if type(row.BelowLevel) == "table" then
 					-- A23-27: below the weapon's MinLevel this row pays BelowLevel with no draw (one script value unused)
 					local b = fixture()
 					b.Data.LootFlags.FirstScroll = true
+					b.Data.LootFlags.FirstWeapon = true
 					local min = C.Weapons[row.Weapon].MinLevel
 					b:Set("Level", min - 1)
 					local bg, unused = b:Force(kind, { [i] = true })
@@ -1621,9 +1712,18 @@ runGroup("weapons", function()
 				local maskBefore, carried = w.Data.WeaponOwnedMask, w.Data.CarriedGold
 				g = w:Force(kind, { [i] = true })
 				local gold = L.DuplicateWeaponGold[row.Weapon]
+				local key = row.Weapon .. ":0"
 				check(w.Data.WeaponOwnedMask == maskBefore, "duplicate weapon drop does not change the mask")
-				check(w.Data.CarriedGold == carried + gold and #w.GoldLog == 1 and w.GoldLog[1].Amount == gold and w.GoldLog[1].Source == "Loot",
-					"duplicate weapon becomes DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)", show(w.GoldLog))
+				-- C2: a weapon owned already is a Spare (+0) in the bag, no gold
+				check(type(w.Data.Spares) == "table" and w.Data.Spares[key] == 1 and w.Data.CarriedGold == carried and #w.GoldLog == 0
+					and w:Noticed(string.format(L.Text.SpareWeapon, name)) == 1,
+					"C2 a duplicate weapon becomes a Spare (+0) with one line, no gold", show({ w.Data.Spares, w.GoldLog }))
+				-- ... and only with the Spares full (60) the old DuplicateWeaponGold, through AddCarriedGold (once)
+				w.Data.Spares = { ["1:0"] = 20, ["1:1"] = 20, ["1:2"] = 20 }
+				g = w:Force(kind, { [i] = true })
+				check(w.Data.CarriedGold == carried + gold and #w.GoldLog == 1 and w.GoldLog[1].Amount == gold and w.GoldLog[1].Source == "Loot"
+					and w.Data.Spares[key] == nil, "duplicate weapon with the Spares full: DuplicateWeaponGold via ProgressionService.AddCarriedGold (once)",
+					show(w.GoldLog))
 				check(w:Gained(g, "Weapon", row.Weapon) == 0, "duplicate is not reported as a new weapon")
 				check(#w:Announced("RareWeapon") == #rare and #w.Announces == #rare, "a duplicate weapon drop is not announced again",
 					show(w.Announces))
@@ -1684,8 +1784,8 @@ runGroup("weapons", function()
 	check(j:Noticed(string.format(L.Text.JackpotSelf, name)) == 1, "jackpot owner notice")
 	local carried = j.Data.CarriedGold
 	j:Force("Slime", nil, true)
-	check(#j.Announces == 1 and #j.All == 0 and j.Data.CarriedGold == carried + L.DuplicateWeaponGold[L.Jackpot.Tier],
-		"second jackpot = duplicate gold, no second announcement", show({ #j.Announces, #j.All, j.Data.CarriedGold }))
+	check(#j.Announces == 1 and #j.All == 0 and j.Data.CarriedGold == carried and j.Data.Spares[L.Jackpot.Tier .. ":0"] == 1,
+		"second jackpot = a Spare (C2), no second announcement", show({ #j.Announces, #j.All, j.Data.Spares }))
 	local jg2 = fixture()
 	jg2:Force("Slime", nil, true, true, { Auto = true })
 	check(#jg2:Announced("Jackpot") == 1 and deepEqual(jg2.Announces[1].Args, { Weapon = L.Jackpot.Tier }),
