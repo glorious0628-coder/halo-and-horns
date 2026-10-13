@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/15 아침 이어갈 자리 (10/14 밤 컴퓨터 끄기 전)
+## 10/15 아침 (최신)
+- comeback-client main dd121979 병합됨. 칩 글 '2x XP' 그대로·Returned 마을 사람 BackLines = 최종 검수 OK.
+- 내일: 메인 반영 1 사진(comeback/, phone_first10) 판정 → 고칠 것은 최종 검수가 보냄. 그다음 02_dev1.md(dev1-halo-stage6 마무리).
+
+## 10/15 아침 이어갈 자리 (10/14 밤 컴퓨터 끄기 전, 지난 판)
 - fix/comeback-client **a4a683e6 = 다 됨·push됨**(시험 모두 통과, 최종 검수 보고함, 진행 중 아님). phone-first10-3은 main 6367529c 병합됨.
 - 내일: 최종 검수가 comeback-client 병합하면 메인 반영 1이 `play_comeback_photos.py`·`play_phone_round_photos.py first10` 사진 → 고장급만 고침.
 - 답 기다림: 칩 단어 '2x XP · N min' 그대로인지, Returned 말풍선을 마을 사람 첫 말로 한 것 괜찮은지. 그다음 02_dev1.md(dev1-halo-stage6 마무리).
