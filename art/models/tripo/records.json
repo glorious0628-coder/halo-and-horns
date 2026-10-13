@@ -14410,7 +14410,7 @@
    "at": "2026-10-13",
    "account": "Tripo account 2 (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "379d6f2c",
     "cb0ab903",
@@ -14418,15 +14418,343 @@
     "e4bc6f96"
    ],
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloSign_SignJuice/",
-   "picked": null,
+   "picked": "cb0ab903 (디자인 검수, from account 1 + 2 = 8, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloSign_SignJuice_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloSign_SignJuice_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloSign_SignJuice_left_ns.png",
     "back": "art/out/s2/noshadow/HaloSign_SignJuice_back_ns.png"
    },
-   "next": "디자인 검수 picks from account 1 + account 2 white models",
-   "note": "overlap: account 1 (Blender 손보기) already had white models; account 2 copy kept as spare, 디자인 검수 picks from 8 (최종 검수 10/13). Juice was pressed while the tab was frozen."
+   "next": "디자인 검수 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "note": "overlap: account 1 (Blender 손보기) already had white models; account 2 copy kept as spare, 디자인 검수 picks from 8 (최종 검수 10/13). Juice was pressed while the tab was frozen.",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K task 1b87fb3f",
+   "pbr": "32f9a9dc (5)",
+   "file": "art/models/tripo/web/HaloSign_SignJuice_SM_tex4k_pbr_src.fbx"
+  }
+ ],
+ "HaloChunk_Telescope_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "a73dc35b (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_Telescope_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_Telescope/HaloChunk_Telescope_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_CornerFinial_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "24a61e02 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_CornerFinial_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_CornerFinial/HaloChunk_CornerFinial_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_WindowBoxB_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "0c9987cb (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_WindowBoxB_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_WindowBoxB/HaloChunk_WindowBoxB_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_FlowerBuckets_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "4af3e511 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_FlowerBuckets_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_FlowerBuckets/HaloChunk_FlowerBuckets_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_Cauldron_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "ce94c8f5 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_Cauldron_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_Cauldron/HaloChunk_Cauldron_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_MedalBell_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "2917319f (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_MedalBell_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_MedalBell/HaloChunk_MedalBell_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_RoundTree_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "d1d35697 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_RoundTree_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_RoundTree/HaloChunk_RoundTree_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_ChimneyLantern_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "dd073350 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_ChimneyLantern_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_ChimneyLantern/HaloChunk_ChimneyLantern_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_ChimneyCap_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "87933f5a (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_ChimneyCap_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_ChimneyCap/HaloChunk_ChimneyCap_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_WeatherVane_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "b7848ea1 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_WeatherVane_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_WeatherVane/HaloChunk_WeatherVane_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_CastleHedge_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "4581aa73 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_CastleHedge_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_CastleHedge/HaloChunk_CastleHedge_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_StarFinial_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "c9ce371b (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_StarFinial_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_StarFinial/HaloChunk_StarFinial_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_Pond_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "4d206cce (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_Pond_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_Pond/HaloChunk_Pond_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_SunflowerBed_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "932cdb1f (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_SunflowerBed_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_SunflowerBed/HaloChunk_SunflowerBed_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_RoseArch_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "ec6af25d (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_RoseArch_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_RoseArch/HaloChunk_RoseArch_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_RoseTrellis_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "f71dd3f9 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_RoseTrellis_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_RoseTrellis/HaloChunk_RoseTrellis_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_JuiceStand_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "dea2ca9b (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_JuiceStand_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_JuiceStand/HaloChunk_JuiceStand_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloChunk_PotionDisplay_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "39c265fa (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloChunk_PotionDisplay_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloChunk_PotionDisplay/HaloChunk_PotionDisplay_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar4_Planter_A_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "e72c4f22 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar4_Planter_A_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_Planter_A/HaloVar4_Planter_A_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar4_PotFlowers_D_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "87f66ae2 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar4_PotFlowers_C_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "43d5ba0d (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_PotFlowers_C/HaloVar4_PotFlowers_C_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar3_PotFlowers_F_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "a35f95c9 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_PotFlowers_F/HaloVar3_PotFlowers_F_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar4_PotFlowers_A_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "4e2a9bf7 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_PotFlowers_A/HaloVar4_PotFlowers_A_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar3_PotFlowers_E_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "07a16690 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_E_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_PotFlowers_E/HaloVar3_PotFlowers_E_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar3_Topiary_E_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154; 4K per user 10/13)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "f8f12f92 (white model picked by 디자인 검수 from build/tripo_wm1 FBX; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_E_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
   }
  ]
 }
