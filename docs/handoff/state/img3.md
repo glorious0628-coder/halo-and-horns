@@ -1,5 +1,11 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/13 낮 — Tripo PBR 13종 WorldKit에 넣음 (최종 검수 관문 1 통과분)
+- 가져오기: 사용자 '3D 가져오기'(build/import3d 13개) → Workspace.<이름>_TU(원본, 지우지 말 것) → 키트 ServerStorage.HaloTripoKits.<이름>(MeshPart + SurfaceAppearance SA_<이름>_C/N/M/R, 앞 -Z, 피벗 = 바닥 가운데; 만드는 코드 tools/worldkit/tripo_kits_build.luau). **주의: 가져온 메시는 이미 -Z를 봄 — 180° 더 돌리면 뒷면이 나옴(10/13 한 번 틀려서 Flipped180로 되돌림), PrimaryPart 넣지 말 것(피벗이 가운데로 감).**
+- 놓기: 화분 Lavender·Tulip·Sunflower 7곳 + 벤치 A 6·C 4곳(옛 키트/대역 → ServerStorage.Parked_PreTripoProps, 높이 = 옛 높이). 집: tools/worldkit/tripo_deco_place.luau(문 23 = Door_Back 크기, 등불 47 = LampGlass/Core만 남김, 갈빗대 돔 4 = 옛 Deco 돔 자리, 창 화분 92 = WBox 자리, 성 날개 2 + 장미창 1 = 장식 슬롯, RoseGlass → 파랑 34,90,180), 옛 것 → ServerStorage.Parked_PreTripoDeco.<건물>. 재질 ⑤: DomeRibbed SA.Color 255,222,180(주황 금), DoorDouble 255,236,214. 백업 20261013_113942.
+- 사진: art/review/img3/tripo_place/{deco_v2, deco_v3, pots_benches_v3}/, 성 장미창 가까이 deco_v1/castle_rose_close.png. 도구 tools/building_ab_shots.py, tools/prop_ab_shots.py.
+- **남은 문제:** HaloFlowerPotHQ_Sunflower는 어느 방향에서도 회색(색 그림 승인·로드 OK, UV 있음, 새 MeshPart로도 회색 → 가져온 메시 쪽 문제로 보임, 다시 가져오기 필요할 수 있음). Lavender 꽃 자홍빛·LampArm 검은 점은 아직 안 봄.
+
 ## ★ 10/13 아침 (PC 다시 켬)
 - WorldKit 되살림: build/WorldKit.rbxlx 열기 → wk_backup load 20261013_020933 --replace --terrain → 성·바닥판·소품 확인 + 사진(build/restore_check) → 백업 20261013_084828. **rbxlx 파일은 여전히 10/12 17:12 판(Ctrl+S 못 함)** — 끌 때마다 wk_backup save.
 - **3D 가져오기 묶음(사용자 일, 미룸):** build/import3d/ 13개 메시만 GLB = 화분 Lavender·Tulip·Sunflower + HaloChunk_DoorSingle·LampArm·CastleWingL·CastleWingR·DomeRibbed·DoorDouble·WindowBoxA·CastleRose + HaloReasonHQ_BenchA·BenchC. SA 52장 올림 끝(asset_ids SA_<이름>_C/N/M/R, 금 외 금속 0·거칠기 ≥0.6, tools/glb_sa_maps.py). 순서: WorldKit 창 → 홈 '3D 가져오기' → build/import3d 전부(Ctrl+A) → 가져오기. 그 뒤 내 일: MeshId 읽기 → 키트 + SA + DoubleSided(WindowBoxA·화분) → 자리 놓기 → 사진(넣을 때 메모 4개). Rose·BenchB는 Blender 손보기 쪽 json만(아직).
