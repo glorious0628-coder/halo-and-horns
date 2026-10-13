@@ -18,6 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 CARD = SCRIPTS / "PauseCard.luau"
 CLIENT_MAIN = SCRIPTS / "ClientMain.client.luau"
+RETURN_SERVICE = ROOT / "src/ServerScriptService/ReturnService.luau"
+CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 FIXTURE = ROOT / "tools/fixtures/pause_card_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-08/offline_pause_card_2026-10-08.json"
@@ -65,6 +67,18 @@ MUTATIONS = [
      "if data.OptIn then comeBack(\"OptIn\", card.Why)"),
     ("a tip keeps every line", "\t\tif #out >= lines then break end\n", ""),
     ("a tip on one line", "local text = cleanLines(data.Text, T.TipMax, T.TipLines)", "local text = clean(data.Text, T.TipMax)"),
+    # A23-167 ② the tomorrow card (Fx TomorrowGift) and the welcome-back News line
+    ("the tomorrow card never shows", "\telseif kind == T.Fx.Tomorrow then\n\t\tPauseCard.Show(\"Tomorrow\", data)\n", ""),
+    ("[Open] opens nothing", "\t\tif id == \"Go\" and card.Attend then openAttendance() end\n", ""),
+    ("no slot art", "\t\tcard.Icon = slotIcon(slot)\n", ""),
+    ("the card's art never reaches the plate", "Icon = card.Kind == \"Pause\" and \"IconSaved\" or card.Icon,",
+     "Icon = card.Kind == \"Pause\" and \"IconSaved\" or nil,"),
+    ("today's line without Today", "\t\tif slotOf(data.Today) and type(words.TodayLine) == \"string\" then\n",
+     "\t\tif type(words.TodayLine) == \"string\" then\n"),
+    ("any number is a slot", "\treturn type(v) == \"number\" and v == math.floor(v) and v >= 1 and v <= T.SlotMax and v or nil\n",
+     "\treturn type(v) == \"number\" and v or nil\n"),
+    ("News ignored", "\t\tif news then card.Body ..= \"\\n\" .. news end\n", ""),
+    ("News not cut", "local news = clean(data.News, T.NewsMax)", "local news = clean(data.News, 999)"),
 ]
 
 
@@ -110,6 +124,13 @@ def main():
         ("no purchase prompt near the pause card (A23-79)",
          not re.search(r"PromptGamePassPurchase|PromptProductPurchase|MarketplaceService", code)),
         ("no number in the card's words (no clock, no countdown)", bool(words) and not re.search(r"\d", words[1])),
+        # A23-167: the server's Fx name and Config.Return.Text's tomorrow words (game dev 2) are the ones the card reads
+        ("the server sends the Fx this card listens to", 'Tomorrow = "TomorrowGift"' in src
+         and 'fx(player, "TomorrowGift",' in RETURN_SERVICE.read_text(encoding="utf-8-sig")),
+        ("Config.Return.Text has the tomorrow words (TomorrowLine takes the slot)",
+         all(re.search(r"\t\t" + k + r' = "[^"]+",', CONFIG.read_text(encoding="utf-8-sig")) for k in
+             ("TomorrowTitle", "TomorrowLine", "TodayLine"))
+         and re.search(r'\t\tTomorrowLine = "[^"%]*%d[^"%]*",', CONFIG.read_text(encoding="utf-8-sig")) is not None),
     ]
     for name, good in static:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)

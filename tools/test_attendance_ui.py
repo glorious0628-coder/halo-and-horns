@@ -27,6 +27,9 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-13/offline_attendance_ui_2026-10-13.json"
 
 MUTATIONS = [
+    # A23-167 ②: the tomorrow card's slot art (AttendanceUI.SlotIcon)
+    ("the weekly box slot shows its first reward", "\tif def.Box == true then return L.Icons.Box end\n", ""),
+    ("the slot art always the coin", "\treturn parts[1] and parts[1].Icon or nil\n", "\treturn L.Icons.Gold\n"),
     ("the 2x Gold pass ignored", "\t\tgold = math.floor(gold * (pass.Gold2 == true and mult or 1))\n", "\t\tgold = math.floor(gold)\n"),
     ("the 2x XP pass doubles gold", "(pass.Gold2 == true and mult or 1)", "(pass.XP2 == true and mult or 1)"),
     ("the materials forgotten", "\tif (tonumber(def.MaterialMin) or 0) > 0 then\n", "\tif false then\n"),

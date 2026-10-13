@@ -226,6 +226,7 @@ local TXT = {
 	BoostXP = "2x XP",
 	BoostGold = "2x Gold",
 	BoostBoth = "2x XP · Gold",
+	EarlyXP = "2x XP · %d min", -- A23-167: the first minutes' 2x XP (the minutes left), the pass chip's own words
 	-- plan 10/13 §1-A #6 (A23-90): in a private server (GameState PrivateServer, 게임성 개발 2) one chip; a press says the
 	-- whole rule (Config.PrivateServer.Text)
 	PrivateHalf = "Private server · half rewards",
@@ -3461,8 +3462,26 @@ function L.LuckText()
 	return line
 end
 
+-- A23-167: whole minutes left of the first Config.EarlyXP.Seconds of play (2x XP on the server, ProgressionService
+-- XPBoost) from the PlaytimeSeconds attribute; nil when it is off, over or not known yet
+function L.EarlyXPLeft()
+	local e = Config.EarlyXP
+	if type(e) ~= "table" or e.Enabled ~= true then return nil end
+	local left = (tonumber(e.Seconds) or 0) - num("PlaytimeSeconds", math.huge)
+	return left > 0 and math.ceil(left / 60) or nil
+end
+
+-- pure (tools/test_comeback_client.py): the boost chip's words - the passes (xp / gold owned), else the first minutes'
+-- 2x XP with its minutes left (early); nil = no chip. The 2x XP pass already says 2x XP (the server never stacks them)
+function L.BoostText(xp, gold, early)
+	local first = type(early) == "number" and early > 0
+	if gold then return (xp or first) and TXT.BoostBoth or TXT.BoostGold end
+	if xp then return TXT.BoostXP end
+	return first and string.format(TXT.EarlyXP, early) or nil
+end
+
 -- A23-75: one gold chip while a 2x pass is owned (attribute names from Config.GamePasses, 게임성 개발 2); its icon is
--- the XP star, or the gold pile for 2x Gold alone
+-- the XP star, or the gold pile for 2x Gold alone. A23-167: the first minutes' 2x XP shows on it too (L.BoostText)
 function L.RefreshBoost()
 	local chip = ui.chip.Boost
 	if not chip then return end
@@ -3472,9 +3491,10 @@ function L.RefreshBoost()
 		return attr(type(def.Attr) == "string" and def.Attr or default, false) == true
 	end
 	local xp, gold = owns("XP2", "PassXP2"), owns("Gold2", "PassGold2")
-	setChip(chip, xp or gold, (xp and gold) and TXT.BoostBoth or (xp and TXT.BoostXP or TXT.BoostGold), Theme.Gold, true,
-		nil, true)
-	local key = (gold and not xp) and "IconGoldPile" or "IconExp"
+	local early = L.EarlyXPLeft()
+	local words = L.BoostText(xp, gold, early)
+	setChip(chip, words ~= nil, words, Theme.Gold, true, nil, true)
+	local key = (gold and not xp and not early) and "IconGoldPile" or "IconExp"
 	if chip.Icon and chip.IconKey ~= key then
 		local id = UIKit.ArtId(key)
 		if id then chip.Icon.Image, chip.IconKey = id, key end
