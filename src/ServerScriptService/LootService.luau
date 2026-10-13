@@ -315,9 +315,10 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	end
 end
 
--- C2: the first Slime Prince's guaranteed weapon: owned (saved first), in this kill's Loot list, equipped when it beats
--- the weapon in hand (bare hands, or a lower damage at this level with its +N)
-local function grantFirstDrop(player, data, tier, gained)
+-- C2: the first Slime Prince's guaranteed weapon (1-A #2: and the first King Slime's): owned (saved first), in this kill's
+-- Loot list, equipped when it beats the weapon in hand (bare hands, or a lower damage at this level with its +N).
+-- plain / equip = the toast lines (default: the Prince's)
+local function grantFirstDrop(player, data, tier, gained, plain, equip)
 	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
 	local name = weaponName(player, tier)
 	table.insert(gained, { Weapon = tier, Name = name })
@@ -330,7 +331,8 @@ local function grantFirstDrop(player, data, tier, gained)
 		publish(player, data)
 		pcall(Net.Fx, player, "Upgrade", { Tier = tier })
 	end
-	notify(player, string.format(better and TXT.FirstDropEquip or TXT.FirstDropWeapon, name), "reward", better and "None" or "Equip")
+	local line = better and (equip or TXT.FirstDropEquip) or (plain or TXT.FirstDropWeapon)
+	notify(player, string.format(line, name), "reward", better and "None" or "Equip")
 end
 
 -- A23-34: the M1_1 blacksmith gift (StoryQuestService, Config.StoryQuests.Defs.M1_1.GiveWeapon) = the class basic
@@ -431,11 +433,8 @@ function LootService.RollKill(player, info)
 		if giveItem(first.Item, 1) > 0 then
 			data.LootFlags.FirstScroll = true
 			firstNow = true
-			-- the one-time guide (A23-12). The Loot Fx below carries First = true so the client skips its own
-			-- "where to use it" toast for this scroll (one toast, not two)
-			-- A23-34: no weapon owned yet (the M1_1 gift comes later) -> the hint says where the first weapon comes from
-			local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll
-			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6), "None") -- the drop has its own sound
+			-- A23-130 (user 10/13 night): no hint line any more. The Loot Fx below carries First = true so the client skips
+			-- its own "where to use it" toast too: only the "+Enhance Scroll" pop shows
 		end
 	end
 
@@ -444,6 +443,14 @@ function LootService.RollKill(player, info)
 	if fw and info.Kind == fw.Monster and data.LootFlags.FirstWeapon ~= true then
 		data.LootFlags.FirstWeapon = true
 		if validTier(fw.Tier) and not owns(data, fw.Tier) then grantFirstDrop(player, data, fw.Tier, gained) end
+	end
+	-- gameplay plan 2026-10-13 1-A #2: the first King Slime always drops the tier-3 weapon, the same way
+	local fk = LOOT.FirstKingDrop
+	if fk and info.Kind == fk.Monster and data.LootFlags.FirstKingWeapon ~= true then
+		data.LootFlags.FirstKingWeapon = true
+		if validTier(fk.Tier) and not owns(data, fk.Tier) then
+			grantFirstDrop(player, data, fk.Tier, gained, TXT.FirstKingWeapon, TXT.FirstKingEquip)
+		end
 	end
 
 	info = table.clone(info) -- the caller's info stays untouched
@@ -553,6 +560,13 @@ local function useEnhance(player, data, id, def, tier)
 	end
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
 	LootService.Enhanced:Fire(player, tier, before, after, success, id)
+	-- gameplay plan 2026-10-13 1-A #2: a scroll used on a weapon, success or not = the story's ScrollUsed (M1_1 step 2),
+	-- reported softly like the potion events
+	local story = S.StoryQuestService
+	if type(story) == "table" and type(story.Event) == "function" then
+		local okEvent, errEvent = pcall(story.Event, player, "ScrollUsed", { Tier = tier, Success = success })
+		if not okEvent then Util.Warn(TAG, "ScrollUsed: " .. tostring(errEvent)) end
+	end
 end
 
 local function useTransfer(player, data, id, def, fromTier, toTier)

@@ -155,8 +155,9 @@ MUTATIONS = [
     ("DebugSub keeps a Done mark", ST, "\tst.Done[id] = nil\n\tlocal track = { St = n", "\tlocal track = { St = n"),
     ("DebugSub starts any quest", ST, 'if not def or def.Kind ~= "Sub" then return "no such sub quest "', 'if not def then return "no such sub quest "'),
     ("DebugSub does not check the step", ST, '\tif n < 1 or n > #def.Steps then return string.format("%s has steps 1-%d", id, #def.Steps) end\n', ""),
-    ("DebugSub forgets the step's gold", ST, "\ttopUpGold(player, data, id, track)\n\tdirty(player)\n\tlocal ok, err = pcall(refresh, player)",
-     "\tdirty(player)\n\tlocal ok, err = pcall(refresh, player)"),
+    ("DebugSub forgets the step's gold", ST,
+     "\ttopUpGold(player, data, id, track)\n\tgiveStepItem(player, data, id, track)\n\tdirty(player)\n\tlocal ok, err = pcall(refresh, player)",
+     "\tgiveStepItem(player, data, id, track)\n\tdirty(player)\n\tlocal ok, err = pcall(refresh, player)"),
     ("DebugSub does not round the step", ST, "local n = math.floor(num(step, 1))", "local n = num(step, 1)"),
     ("DebugDone does not mark it done", ST, "\tst.Done[id] = true\n\tst.Subs[id] = nil\n\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\"",
      "\tst.Subs[id] = nil\n\tif st.Main.Id == id then st.Main = { Id = \"\" } end\n\tdirty(player)\n\treturn \"ok\""),
@@ -195,9 +196,12 @@ def static() -> tuple[int, list[str]]:
     # the happenings: the hooks and the quest steps name exactly the listed ones
     events = re.search(r"^Config\.StoryQuests\.Events = \{(.*?)\}", config, re.M)
     listed = set(re.findall(r"(\w+) = true", events.group(1))) if events else set()
+    # added one per line after the table: A23-113 SackMet, gameplay plan 2026-10-13 1-A #2 ScrollUsed (M1_1 step 2)
+    later = set(re.findall(r"^Config\.StoryQuests\.Events\.(\w+) = true", config, re.M))
     used = set(re.findall(r'Type = "Event", Name = "(\w+)"', config))
-    check(listed == {"FirstKO", "PotionBought", "QuickSlotSet", "PotionUsed"} and used <= listed,
-          f"Config.StoryQuests.Events lists the four happenings and the steps use only those ({sorted(used)})")
+    check(listed == {"FirstKO", "PotionBought", "QuickSlotSet", "PotionUsed"} and later == {"SackMet", "ScrollUsed"}
+          and used <= (listed | later),
+          f"Config.StoryQuests.Events lists the four happenings (+ SackMet, ScrollUsed) and the steps use only those ({sorted(used)})")
     check(shop.count('pcall(story.Event, player, "PotionBought"') == 1, "ShopService reports PotionBought once (a successful BuyPotion)")
     buy = function_block(shop, "function M.BuyPotion(")
     check(buy.index("S.PlayerService.SetStat(player, key, count + amount)") < buy.index('"PotionBought"'),

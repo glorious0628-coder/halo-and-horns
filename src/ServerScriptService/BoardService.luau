@@ -256,7 +256,7 @@ local function finish(player, data, index)
 	local deed = h.Side == "Kind" and "Good" or "Evil"
 	local okD, stat, change, mine, down, full = pcall(S.Deeds.Add, player, deed, 1)
 	if okD then
-		if change > 0 then notify(player, string.format(T.Score or "%s +%d", stat, change), "good") end
+		if change > 0 then notify(player, string.format(T.Score or "%s +%d", Config.FameLabel(stat), change), "good") end
 		pcall(S.Deeds.Say, player, deed, stat, change, mine, down, full)
 	end
 	local ret = S.ReturnService

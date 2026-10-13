@@ -1,45 +1,40 @@
-# 게임성 개발 2 — 상태 (2026-10-13 오후)
+# 게임성 개발 2 — 상태 (2026-10-14, dev2-early-xp-2 보고 뒤)
 
-## 지금 (사용자 새 지시: "자잘한 디자인은 나중, 지금은 빛 마을에 집중")
-- **빛 마을 6단계 준비 — 서버·Config 쪽 = 가지 dev2-halo-stage6 (worktree ../wt_halo6, origin/main d2477aac 위). 6단계 때 병합(지금은 병합 안 함).**
-  근거 `docs/design/halo_fixed_points_v2_2026-10-11.md` 표 B·C·F + `halo_restart_2026-10-11.md`. 값은 `py -X utf8 tools/halo_fixed_points.py`로
-  다시 뽑음 = 커밋된 표와 같음. WorldKit 저장 파일 읽기(Studio 안 엶, 스크래치 wk_positions.py)로 놓인 표시(NPC·영웅상·훈련장·스폰·발판) = 표 B와 같음,
-  가게 건물 pivot = plan의 skeleton.origin(표 E의 x,z는 다른 기준점이라 몇 칸 달라 보일 뿐).
-  바꾼 것: Zones.HaloTown Center (-2.5,0,-596.5) Size (615,0,533) · IslandHalo -310..305 / -863..-330 · **Map.Bounds MinX -330 MinZ -883**(표는 -320/-873;
-  지도 규칙 '땅~경계 바다 20칸' 때문에 10 더) · Outskirts Center (755,0,-81.5) Size (2170,0,1603) · TownNpcs Gleam/PotionHalo/Folk1~4(표 B, Y = 마당 높이)
-  · Landmarks.HeroStatue (-34,0,-388) · 새 Landmarks.TrainingYard (-130,2,-446)(퀘스트는 아직 안 가리킴) · Audio Waterfall.Spots 3곳.
-  시험 고침: audio(폭포 3), map_v2(배치표 json HaloTown + tools/preview_map.lua), spawn_look(마을 가운데 = 새 구역 중심), town_npcs(v2 plan 문 기준 + v2 땅 높이),
-  town_quests(영웅상 변이), water_rescue(새 상자). **map_v2 '큰 지도 그림이 Bounds를 덮음' 2개는 새 큰 지도 그림(표 D, 이미지 생성 2 + 변환값)이 나와야 풀림.**
-  전체 시험 하나씩 도는 중 → 끝나면 고치고 커밋·push → 최종 검수 보고(표와 다른 것: Bounds 10칸, 상인 4명이 문 옆 벽에서 1.5칸 — Play 사진에서 계단 위인지 확인).
-  미니맵 띠 RoadNorthIsland·큰 지도·오프닝·FountainFx·ZoneLook = 개발 1 몫.
-- **거래소 서버(C-5/C-7) = dev2-market d9e0abc2 (push함, 멈춤).** 48d7e252 + main 병합(C2 포함). MarketService(장부 DataStore + MemoryStore 목록 + 사기·판 돈·
-  취소·72시간·접속 확인) + LootService TakeSpare/GrantMarketWeapon/Pack/Unpack + 거래소 퀘스트 MK1~3(Requires.Feature) + Config.Market(스위치 꺼짐).
-  설계 `docs/design/market_server_2026-10-13.md`. test_market 161 + 정적 14, 변이 72/72(합친 판 161 통과). **전체 시험은 6개만 돌고 멈춤** → 다시 시작할 때
-  전체 시험 하나씩 → 보고. 화면 쪽 알릴 것: 값 = 1개 값(창의 "You get"·[Buy] 금액은 N 곱하기).
-- 끝난 것(main): 도감 카드 서버 dev2-codex 3481c431(main 0aa6a0b7), 도감 카드 모델 fix/codex-models 2961fe9c(main cd047ef7),
-  **C2 dev2-c2 91ea03e9(main 56c19428)** — 일반 몬스터 무기 줄 BelowLevel 함정 고침(그 무기 레벨 아래면 처치마다 확정으로 재료를 줌 → 보스 줄만).
+서버 전용·Studio 금지·main에 코드 push 금지(최종 검수가 병합). 보고처 = '최종 검수'(list_sessions, send_message). 덩어리마다 한 번.
+읽는 순서: `docs/handoff/README.md`(새 입구) → `role_prompts/03_dev2.md` → 이 파일 → `docs/design/six_week_plan_2026-10-13.md`(주별 몫).
 
-서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). **보고처 = '최종 검수'**(id는 list_sessions). 보고는 묶음마다 한 번.
-시험은 한 번에 하나씩(PC 렉), 서브에이전트·워크플로 쓰지 않음(최종 검수 10/13). 대화가 길어지면 이 파일 적고 push → clear_session("self").
-- API(api_agent) 거의 바닥(남은 것은 최종 검수의 최종 병합 검토용) → 큰 일도 앱에서 직접.
-- 전체 시험 기준(main): 182개 중 원래 실패 9개 = costume_physics·skin_binding(은퇴), halloween·shop_layout(그림 필요), place_english(place 필요),
-  rank_marks, ops_safety 변이 "Halloween is not applied", skeleton_ground(build/wk 파일 없음), studio_guard 변이 "only GoodEvil is main". api_agent·claude_doc_worker 건너뜀.
-- 지우지 못한 worktree(병합 끝; 자동 모드 분류기가 `git worktree remove` 막음, 그냥 둠): ../wt_goose_square, ../wt_stickers, ../wt_lesstext_server,
-  ../wt_c1, ../wt_famecap, ../wt_codex, ../wt_codexmodels, ../wt_c2, ../wt_base(main 기준 시험용).
+## 가지 (모두 push, 최종 검수 병합 대기·진행)
+| 가지 | tip | 무엇 | 상태 |
+|---|---|---|---|
+| fix/test-prep-server | e43370e2 | 1-A 서버 몫 + 시험 스위치 | main 병합됨 |
+| fix/test-prep-server-2 | bd50ad74 | 시험 숫자판(TestMetricsService, tools/test_metrics_board.py), set_pass_ids, 검토 고침 3개 + main 합침(bag_ui = 개발 1 판) | 검토 MERGE, 병합 중 |
+| fix/mischief-name | 61d7c162 | A23-166 보이는 Infamy → Mischief(Config.FameName/FameLabel) + 검토 MINOR 3개(숫자판 Live 끔, Kept = Roblox 실제 답만 = MonetizationService.PassAnswer·'Unknown', 주문서 칸 가득 차면 표시 유지) | 보고함 |
+| fix/scroll-toast-off | 696088cf | 첫 Slime Prince 주문서 안내 토스트 삭제(A23-130, Loot.Text.FirstScroll* 키 삭제) | 보고함 |
+| dev2-honor-crown | 555e1a56 | 2-A #4 HuntFameService + #5 왕관 새 점수(WarService.AddKill/PersonalAdded) — mischief 위. 검토 FIX FIRST 고침: 처치 수 저장(data.CrownUnits), M2_1 15·GW4 100마리, KO 상한 UserId, PvP 정수, 점수 두 자리(HUD 한 줄), ZoneLevel, Minor 제외 | 고침 보고함. 설명 `docs/design/honor_crown_server_2026-10-14.md` |
+| dev2-early-xp | 36396af8 (main 9264ae44) | A23-167 첫 10분 2배 XP(Config.EarlyXP, ProgressionService.XPBoost = 패스와 큰 쪽) + 내일 또 오기 서버(Fx TomorrowGift, 속성 Returned, WelcomeBack Days·News, AttendanceService.NextSlots, 소식 DataStore HaloHorns_News_v1) — origin/main 4f88cc5a 위 | 보고함. 설명 `docs/design/comeback_server_2026-10-14.md`. 화면은 개발 1 몫(문서 끝 4줄) |
+| dev2-early-xp-2 | 20569434 | early-xp 후속: 빈 거위 판(Mode Pending) 소식 안 셈, BindToClose가 도는 쓰기 기다린 뒤 씀, crown-small 체리픽, NextSlots·Config TomorrowDay 주석 — origin/main 5e157bf7 위, ../wt_earlyxp2 | 보고함(return 244·121/121) |
+| dev2-crown-small | 53e28b6a | API 사후 검토 낮음 2개: PvP KO 상한 칸은 AddPoints가 실제로 더했을 때만(AddPoints true/false), PersonalAdded 주석 — origin/main 893d8d37 위 | main 병합됨(10/14). early-xp-2의 체리픽 890994fe = 같은 내용 |
+| dev2-halo-stage6 | bd903c79 | 빛 마을 6단계 서버 | 2주 차 교체 날 병합(map_v2 2개 = 새 큰 지도 그림 기다림) |
 
-## 다음 큐 (빛 마을 뒤, 최종 검수가 부르면)
-1. 거래소 서버 마무리(위).
-2. `api/dev2-l10n-a` 정리(한국어 모드 취소 A23-146 → 필요한 것만), 제작 설계 `api/dev2-crafting-design` ea0ce9bc 정리(A23-127).
-3. A23-138 영어 밈 서버 쪽(fix/meme-en-server).
-- 알아 둘 것: 개발 3이 내 파일에 넣은 줄 — 연금 물약 BuffService.Mult 4줄(Combat·Loot·Progression), 조련사 PetService(SummonPet·AddPetXP·
-  PetRoll, findSpecies는 소환 펫 제외), 장비 api/dev3-gear — 모두 검토 OK. 보스 재료도 행운 물약에 오름(빼려면 `def.Source == nil`, 결정 대기).
+- 날짜 박힌 값 목록(3주 차 '아주 먼 날짜 + 출시 날 스위치', 2-A #12): BuildLabel, Beta.PioneerUntil 12/19, 하늘 주석 '12/19 launch',
+  Halloween EndsAt 11/09·Banter DayOneStart 10/31, Badges Order Halloween2026, 할로윈 주석 'beta 2026-12-01', 글 "launch date is set in December".
+- **내일 이어갈 자리(10/14 밤, 사용자 컴퓨터 끔):** dev2-early-xp-2 20569434 = push·시험 끝(return 244·121/121, crown_points·attendance·health 통과), 최종 검수 병합 기다림 — 병합 때 crown-small이 main에 이미 있으니 890994fe는 같은 줄(충돌 나면 main 쪽 그대로).
+  그다음 순서: ① early-xp-2 마무리(검토 고칠 것 오면 그 가지 위 커밋) ② 10/15 사용자 패스 ID 9개 넣기(set_pass_ids) ③ 시험 숫자판(TestMetricsService, tools/test_metrics_board.py) 점검.
+- **다음 일:** 최종 검수가 정함. dev2-early-xp 병합됨, 후속 dev2-early-xp-2(20569434) 보고함 → 병합 기다림(고칠 것이 오면 그 가지 위에 커밋, 리베이스 금지).
+  dev2-honor-crown 555e1a56 = main 병합됨(4fe62394). 같이 잡은 몹 사냥 명예 나누기 = 11/7 전 사용자 결정(backlog, 지금 그대로).
+  2배 XP 속도: 계산상 Lv10이 슬라임만 약 16분 → 약 8분(퀘스트 보상도 2배) — 10/17 숫자판 'Lv5까지 분'으로 확인, 빠르면 최종 검수가 EarlyMult/Seconds 결정.
+- 그 뒤 후보(최종 검수가 정함): 6단계 서버 병합, 무기 운 보정(2-A #6), 골드 쓸 곳(#7), 스탯 서버(#9), 날짜 값(#12), 보스 경쟁·황금 시간(crown_war_content).
+- A23-168: 덩어리 보고 뒤 기다릴 일만 남으면 이 파일 적고 push → clear_session("self").
 
 ## worktree·도구
-- 가벼운 worktree: `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
+- ../wt_prep(test-prep-server-2), ../wt_prep_t(전체 시험 고정판), ../wt_mischief, ../wt_scroll, ../wt_honor, ../wt_halo6, ../wt_earlyxp, ../wt_crownsmall, ../wt_base1014(4f88cc5a 비교용). 병합 끝난 것은 그냥 둠.
+- 가벼운 worktree: Game에서 `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
   --no-cone /src/ /tools/ /docs/ /AGENTS.md` → `git read-tree -mu HEAD` → `cp -r ../Game/build/luau_cli_0_741 build/`.
-  worktree 안에서 `git add <새 파일>` + `git commit -m … -- <경로>`(docs/art 시험 출력은 빼고, 내 새 보고서만).
-- 고치기: Write 도구로 스크래치에 python 정확 치환 스크립트(Bash heredoc은 `\\t`·작은따옴표를 망칠 수 있음). Python write_text는 CRLF로 씀 →
-  git이 LF로 맞춰 줌(경고만). 시험 줄 상세에 플레이어 객체를 show()하면 스택 넘침.
-- 전체 시험: 스크래치에 run_all_tests.py(`<worktree> <outdir> [시험 이름…]`, 하나씩, a23_14는 --no-mutations) — 스크래치는 세션마다
-  지워지니 다시 만들 것(tools/test_*.py 차례로 `py tools/<t>` 실행, rc·로그 저장). **시험 도는 중엔 그 worktree 파일을 고치지 말 것**.
-- 일반 몬스터 드롭 줄에 BelowLevel 쓰지 말 것(LootService.rollRows는 뽑기 없이 처치마다 줌).
+- 시험 실행기: 스크래치 run_tests.py(`<worktree> <outdir> [이름…]`, 하나씩; rc·CHECK_FAIL·failing·MISSED 요약). 스크래치는 세션마다 다시 만듦.
+  시험 도는 worktree 파일은 고치지 말 것. 커밋 전 `git checkout -- docs/art/`(시험 보고서 되돌림).
+- **Bash 도구는 `\n`·`\b`를 진짜 줄바꿈·백스페이스로 바꿈** → 백슬래시가 든 고침은 Edit 도구나 Write로 만든 py 파일로.
+- 시험 상세에 플레이어 객체를 show()하면 스택 넘침 → 플레이어 뺀 복사본으로.
+- 새 저장 칸·새 연결은 다른 시험 세계에서 경고가 나지 않게 '부드럽게' 찾기(PvP 훅처럼).
+- 원래 실패(main): costume_physics(은퇴), halloween(그림 필요), ops_safety 변이 'Halloween is not applied', place_english, rank_marks,
+  skeleton_ground, studio_guard 변이, skin_binding(_studio), quest_target(rows 2개), walk_forge_client, metrics_board(인자 필요 = 시험 아님).
+- 전체 시험: 스크래치 sweep.py(`<worktree> <outdir> [이름…]`, 6개 동시, --no-mutations 되는 것만) → summary.txt. 10/14 새벽 192개 중 183 통과·9 = 위 원래 실패.

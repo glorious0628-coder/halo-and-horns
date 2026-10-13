@@ -1,0 +1,1163 @@
+{
+ "HaloChunk_ChimneyLantern": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "lit_q34 (and albedo f/l/r/b as a thin dark line under the arches): top of the middle gold ring = window sill and the floor inside each arch",
+    "what": "Dirty brown-grey baked smudge all round the window sill, between and outside the window columns. In the 2D this ledge is clean gold. You only see it from above. It sits on the albedo, so a colour tint cannot remove it. The first reviewer missed it.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo l, r, b: lower brick course, one vertical joint per view (left view near the left edge, right view centre-left, back view right of centre)",
+    "what": "Gold paint has run into the vertical gap between two marble bricks, giving a yellow stripe on the white brick band. The 2D joints are white or pale.",
+    "severity": "minor"
+   },
+   {
+    "where": "lit_q34: top of the bottom gold ring where the bricks meet it",
+    "what": "White smear from the brick paint runs onto the gold ring at the brick base",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo all views + top",
+    "what": "All the gold is one flat lemon yellow (about #F5C815) with no warm orange-gold tone, while the 2D is warm gold. The bricks are a slightly pink cream (2D: white marble with gold veins). There is only one material, so a warm Color multiply will also turn the bricks more peach.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 are OK. Size 0.589 x 0.589 x 1.0.",
+   "Sill smudge: either accept it (a chimney top is mostly seen from below or level) or add a thin gold ring part (Metal/SmoothPlastic, warm gold) on the middle-ring ledge. The planned LampGlass/LampCore parts inside the arches will also hide the dirty inner floor.",
+   "Use only a mild warm tint on the SurfaceAppearance Color (e.g. around 255,235,215). A stronger orange push turns the marble bricks peach. Check day and night next to the 2D.",
+   "Window glass parts: keep them inside the arch recess, warm amber, and give the night light a round soft glow (no ray burst)."
+  ]
+ },
+ "HaloChunk_RoundTree": {
+  "verdict": "FAIL",
+  "defects": [
+   {
+    "where": "albedo f/l/r/b (silhouette overlay: about 15 red holes inside the ball), lit_q34 top centre",
+    "what": "See-through holes. The canopy is an open cage of leaves: the background shows through about 10-15 triangular gaps across the middle of the ball from every side at eye level, and there is a dark hole at the top centre in q34. The 2D is a dense, closed leaf ball. These are large holes in the main view, not small gaps seen only from above.",
+    "severity": "major"
+   },
+   {
+    "where": "albedo f/b bottom centre, studio f/l/r/b",
+    "what": "Three bare trunk/stem sticks show through the lower hole under the centre flower. The 2D shows no trunk; the leaves meet the pot rim.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo fbig, studio views, all leaves",
+    "what": "The leaves are sharp faceted kite/diamond shapes, larger and fewer than the 2D's many small smooth plump oval leaves. The ball reads as low-poly or crystal, not soft and rounded. A tint cannot fix this.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo f, flowers",
+    "what": "Flowers are 3-ball yellow trefoils painted fairly flat, versus the 2D's 4-5-bud rounded clusters. The count is about the same.",
+    "severity": "minor"
+   },
+   {
+    "where": "pot, albedo all views",
+    "what": "Flat lemon-yellow pot without the 2D's warm gold. Tint can fix this.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Recommend picking another white model at step 2 (a denser canopy). The holes are at eye level on all four sides, which the gate counts as FAIL.",
+   "If 최종 검수 accepts the first reviewer's rescue instead: put a slightly smaller dark-green ball (SmoothPlastic, about 60,120,30) inside the canopy so the holes read as shaded depth and the trunk sticks are covered. Check from front and q34 day and night. It will still look faceted, not like the 2D's plump ovals.",
+   "Pivot 0,0 and min z 0 are OK. Size 0.915 x 0.875 x 1.0."
+  ]
+ },
+ "HaloChunk_MedalBell": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo l/r, studio l/r, lit_q34",
+    "what": "The quatrefoil medallion plus the bracket plate are about twice as thick as in the 2D side views (3D about 0.25 of height, 2D about 0.13). In q34 the medallion reads as a thick cookie or puck, not a thin plaque. The shape is not broken.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig and crop 2: grooves around the 4 inner petals; albedo b lower petal",
+    "what": "A thin dark grey-green baked line along the petal outlines, plus one small dark spot at the bottom petal on the back",
+    "severity": "minor"
+   },
+   {
+    "where": "silhouette overlay, hook; albedo f chain",
+    "what": "The hook is a closed round loop with a bigger hole than the 2D's curled hook, and the chain is 1 link + ring versus about 2 links in the 2D. Small detail difference.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo all",
+    "what": "Flat orange-yellow with no gold shading. Close to gold; a warm tint is enough.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 are OK. Size 1.0 x 0.423 x 0.906. The bracket plate has its rivets on the front, so the back (-Y side reversed) goes flat to the wall and the medallion faces the street.",
+   "A slight warm-gold Color multiply. A metallic/roughness check at night so the petal grooves do not look dirty.",
+   "The bell mouth underneath was not visible in any render: check from below in Studio whether it is open or closed. A closed bottom is OK for a wall prop."
+  ]
+ },
+ "HaloChunk_Cauldron": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo all views, body",
+    "what": "The body is a blue-navy slate (about #2E3448) and flat matte, versus the 2D's charcoal-grey iron with a soft metal sheen. Tint can fix this.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f/b, studio f/b; silhouette overlay (cyan at the handle ends)",
+    "what": "The side ring handles splay outward at about 25-30 degrees, so from the front they read as two straight gold bars sticking out. In the 2D the rings hang close to the body as visible O-rings. The q34 and side views show proper rings.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f, studio f/l/r/b",
+    "what": "4 feet at the diagonals, so each view shows 2 feet. The 2D shows 3 per view (a small centre foot behind). The 2D views are not consistent themselves, so this does not matter.",
+    "severity": "minor"
+   },
+   {
+    "where": "lit_q34 right side near the ring lug; albedo f around both lugs",
+    "what": "Faint dark-blue streaks or seams on the body next to the handle lugs",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo green liquid + bubbles",
+    "what": "Flat neon green (about #19F04A) without the 2D's glossy bubble highlights. About 7 floating bubbles versus about 10 in the 2D. The floating bubbles match the 2D (not junk).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 are OK. Size 0.946 x 0.792 x 1.0.",
+   "Tint the body toward neutral charcoal (reduce blue slightly, e.g. Color around 235,235,215). This also warms the lemon gold feet and handles a little, which helps. Check that the green does not go yellowish.",
+   "Green foam: a soft round glow or PointLight at night is OK. No ray or star burst particles.",
+   "Turn it so a ring handle faces the path side if the front-view 'bar' handles look odd in Studio."
+  ]
+ },
+ "HaloChunk_FlowerBuckets": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b, metal pail (left in back view)",
+    "what": "The back of the pail bouquet is almost all green leaves: only faint hints of white petals and one tiny blue spot. The 2D back clearly shows 3 white flower clusters plus blue forget-me-nots. This side is blank but can face a wall.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f, front of pail",
+    "what": "About 3 blue forget-me-nots versus about 5 in the 2D cluster. Slightly fewer flowers.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo b, under the blue tulip (centre top); base of the pail leaves",
+    "what": "A pale blue-grey smear on the tulip stem below the blue bloom, and small white smudges along the leaf edges at the pail rim",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo all, metal pail",
+    "what": "The pail is painted lavender-white rather than silver. It relies on the metallic map; q34 reads as grey-lavender plastic more than polished silver.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo, wooden bucket bands",
+    "what": "The gold bands are flat lemon yellow versus the 2D's warm gold. Tint can fix this.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 are OK. Size 1.0 x 0.591 x 0.868.",
+   "Place it with the back (pail leaves side) toward a wall or shop front. The front and q34 match the 2D well (4 tulips: 2 white, 2 blue; white cluster with yellow centres).",
+   "A slight warm tint for the gold bands. Check that the pail still reads as silver metal in day light; if it looks lavender, a slightly warm-neutral Color multiply helps."
+  ]
+ },
+ "NEW_WaterBuckets": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo back view (both buckets)",
+    "what": "Back side has no rope handles and no blue clasps; the 2D back shows ropes and clasps on the back too. The back is just the white bands and rivets.",
+    "severity": "minor"
+   },
+   {
+    "where": "rope lugs at bucket rims, albedo front crops",
+    "what": "The 2D has round gold rings at the lugs. The 3D has small yellow crescents, softer and not full rings.",
+    "severity": "minor"
+   },
+   {
+    "where": "all gold parts (rake, rivets, lugs, knob)",
+    "what": "Gold is flat lemon yellow, not the warm metallic gold of the 2D. A tint can fix this.",
+    "severity": "minor"
+   },
+   {
+    "where": "rope, albedo front",
+    "what": "Rope is a slightly peach cream, not the 2D white. Small.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Face the back toward a wall or fence if possible, because the back has no ropes or clasps.",
+   "SurfaceAppearance Color: tint slightly warmer and deeper so the gold reads less lemon.",
+   "Shape checks OK: 7 rake tines (2D also 7), 2+2 rivets per bucket front, bucket floors closed in the top view, no holes. Pivot 0,0 and min z 0 are OK."
+  ]
+ },
+ "NEW_Beehive": {
+  "verdict": "FAIL",
+  "defects": [
+   {
+    "where": "both hive boxes, front and back (albedo_fbig on black, albedo_b on magenta, silhouette overlay all red in the box areas)",
+    "what": "Both box panels are missing on the front AND the back. You can see straight through the two hive boxes, and the cream handle bars float in the empty openings. The 2D shows solid white drawer panels with handle slots. The first reviewer missed this because the grey background behind looked like grey panels. The q34 lit view shows open shelves.",
+    "severity": "major"
+   },
+   {
+    "where": "bottom box floor, lit q34",
+    "what": "Through the open front you can see a dark brown and olive smudge on the inner floor of the lower box.",
+    "severity": "medium"
+   },
+   {
+    "where": "roof back end, both slopes (left view left edge, right view right edge, bottom strip of the top view)",
+    "what": "Pale unpainted white or grey-blue strip on the back overhang of the roof. The 2D roof is fully blue.",
+    "severity": "minor"
+   },
+   {
+    "where": "side panels, albedo left and right",
+    "what": "The 2D side views show handle slots on the sides. The 3D has only faint painted ghosts of them.",
+    "severity": "minor"
+   },
+   {
+    "where": "ridge top, front view",
+    "what": "Two large gold balls on a rounded gold block make a mouse-ear or bear-head silhouette from the front. It has no face, but it reads more like a character head than the small finials in the 2D.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Send it back to pick another white model whose two boxes are closed solid volumes. The see-through boxes cannot be fixed with material or small Studio parts under the rules. Adding filler panels would also hide the floating handles only partly.",
+   "Pivot 0,0 and min z 0 are OK."
+  ]
+ },
+ "NEW_WateringCan": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "spout, left view and top view",
+    "what": "The spout angles about 15 degrees toward the front. In the left view the rose sits up and to the right of the body, not centred as in the 2D left view. The front view still matches.",
+    "severity": "minor"
+   },
+   {
+    "where": "all gold parts",
+    "what": "Flat lemon yellow, not warm metallic gold. A tint can fix this.",
+    "severity": "minor"
+   },
+   {
+    "where": "base",
+    "what": "The base reads as a flat slab with straight sides. The 2D has a rounded, raised flange. Softer detail.",
+    "severity": "minor"
+   },
+   {
+    "where": "body marble, 100% crops",
+    "what": "Tan diamond-grid veining on the white marble is a bit stronger than in the 2D. Acceptable.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Tint the gold warmer and deeper.",
+   "Matches the 2D: 3 front windows (one small, one tall, one small), 8 windows around in the top view, rose with holes, blue bow on the handle, dome lid with knob. Handle loop is open, as it should be. The red oval in the silhouette is the 2D cutout filling the handle loop, not a 3D defect.",
+   "No holes in the top view. Pivot 0,0 and min z 0 are OK."
+  ]
+ },
+ "NEW_SteppingStone": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "whole stone, top and sides (albedo top, lit q34)",
+    "what": "The stone is painted peach or apricot (median top albedo about 250,212,170). The 2D is a cream-white marble (about 246,231,214) with orange veins. The veins are also weaker. A multiply tint can only lower red and green, so it gives a darker tan, not cream-white. Other white marble in this batch (WateringCan body about 252,235,213) is much closer to its 2D, so this cast belongs to this model.",
+    "severity": "medium"
+   },
+   {
+    "where": "veins, 100% crops",
+    "what": "The orange crack-vein pattern is softer and lower in contrast than in the 2D.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Shape is OK: rounded square slab, yellow-green moss clusters on the two opposite sides as in the 2D, no holes, flat bottom. Pivot 0,0 and min z 0 are OK.",
+   "This one model is reused many times on the path, so the colour cast will be very visible. Try a SurfaceAppearance Color tint (for example about 0.95, 0.97, 1.0). Then compare day and night next to the Halo white marble tiles. If it still reads as apricot sandstone and not white marble, send it back for another texture or white model rather than accept it."
+  ]
+ },
+ "NEW_GatherBush": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo f/l/r/b (row 2), q34",
+    "what": "Fewer gold berry clusters than the 2D: the front has 3 trefoil clusters (left-mid, right-mid, bottom-centre) where the 2D front has about 5-6, and the left and right views each have only 1 centre cluster. The berries are real 3D balls (studio_l crop) but painted flat orange-yellow with no gold shine.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo l and r, centre of the dome",
+    "what": "The middle of each side view is mostly plain green leaves, with flowers only on the rim. The 2D left and right views have flowers spread evenly over the whole dome. The crown is also plain green in the top view.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo base band, all views",
+    "what": "The gold base ring and pillar feet are flat lemon yellow (about 245,195,20), not the warm orange-gold of the 2D.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo l/r centre",
+    "what": "Two berries sit half-hidden between leaves and read as a small yellow 'bow' or 'M' blob above the cluster. Only visible from the sides.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot (0,0) and min z 0 are OK; size 1.0 x 1.0 x 0.816.",
+   "Warm the gold with a SurfaceAppearance Color multiply toward orange-gold (lemon base ring and berries). It is one material, so check that the white flowers and the cream planter do not turn yellow.",
+   "Turn it so the front (the most flowers and berries) faces the path.",
+   "No ray-burst pattern: the top view is a 4-fold leaf rosette, not fanning rays. No accidental face."
+  ]
+ },
+ "NEW_ArmoryBarrels": {
+  "verdict": "FAIL",
+  "defects": [
+   {
+    "where": "crate (right third): studio_r, lit q34, albedo q34 area",
+    "what": "The crate is an open lattice, not the closed plank box of the 2D. In studio_r the big barrel's gold bands and staves show through the gaps between the X braces and the frame. In lit q34 the crate interior is visible through the top and the sides, with a glassy translucent sheet at the inside bottom. In all four 2D views the crate faces are solid plank panels with an X brace on top.",
+    "severity": "major"
+   },
+   {
+    "where": "crate right face, albedo_fbig x~1700-1830 y~800-1400 and studio_f right edge",
+    "what": "Broken thin parts: splintered, crossing thin plank slivers between the doubled gold corner caps, with background visible between them. Studio_r also shows thin broken sticks on both crate edges.",
+    "severity": "major"
+   },
+   {
+    "where": "top view and albedo b",
+    "what": "A second cloth is knotted on the back-right of the big barrel. The 2D has one cloth only (front-left; seen from behind it is on the right edge).",
+    "severity": "minor"
+   },
+   {
+    "where": "all gold bands and corner caps",
+    "what": "The gold is flat lemon yellow (tint can fix).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot (0,0) and min z 0 are OK; size 1.0 x 0.903 x 0.617.",
+   "Send back to step 2: pick another white model with a closed, solid crate. The see-through lattice and the splinters on the crate's right face cannot be fixed with tint.",
+   "A wood-coloured box Part inside the crate could hide the see-through, but the splinter slivers on the crate edge would still show. It is not a clean fix.",
+   "The first reviewer passed this with no note. The open crate is plain in studio_r and in their own q34."
+  ]
+ },
+ "NEW_CandleCrate": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo f/l/r/b crate panels",
+    "what": "The crate wood is peach-pink (about 245,210,180) where the 2D is near-white cream (about 230,208,191). The candles are butter yellow (about 241,214,177) where the 2D is near white (about 248,233,214).",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo r and albedo b / studio r and b",
+    "what": "The diagonal brace sits on the wrong side. The 2D right view has a diagonal brace and the 2D back has plain horizontal planks. The 3D right face is a plain panel with a vertical seam, and the 3D back has a '/' diagonal brace.",
+    "severity": "minor"
+   },
+   {
+    "where": "gold bands and studs, all views",
+    "what": "Flat lemon-yellow gold (tint).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot (0,0) and min z 0 are OK; size 0.825 x 0.815 x 1.0. 8 candles in the top view, which matches the 2D count.",
+   "The shape is clean in all views and in q34, with no holes or floating parts.",
+   "Colour multiply: a slightly cooler or less red tint to move the peach wood toward cream. It is one material, so warming the gold and whitening the candles pull against each other. Compare by day and by night next to the 2D.",
+   "Put the front (the '\\' brace face) toward the path. Any side can face a wall."
+  ]
+ },
+ "NEW_Easel": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b / studio b, back of the canvas (about 1/3 of the back silhouette)",
+    "what": "Wrong colour on the back. The canvas back is painted as blue-grey weathered wood planks with a dark knot, inside a pale-blue border. The 2D back is a beige linen canvas in a light wooden stretcher frame with corner braces. A tint cannot fix this. The first reviewer's sheet shows it too (their 'b' view) but has no note.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo top",
+    "what": "The sea painting texture runs over the canvas top edge, so a blue strip shows from above. Only visible from above.",
+    "severity": "minor"
+   },
+   {
+    "where": "gold knob, clip, shelf ends, crossbar, feet",
+    "what": "Flat lemon-yellow gold (tint).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot (0,0) and min z 0 are OK; size 0.527 x 0.347 x 1.0. dark(<6%) = 0.0164 in the stats, but none of the 5 albedo renders has pixels below 35% brightness, so there are no visible dark blotches.",
+   "The front painting (clouds, sea, foam), the clip, the knob, the 3 legs, the crossbar and the shelf all match the 2D. The thin legs are intact.",
+   "The back must not be seen: place the easel with its back to a wall, fence or tree. Or add one thin cream/linen-coloured Studio Part over the canvas back (an allowed small extra part).",
+   "Warm the gold with a Color multiply."
+  ]
+ },
+ "NEW_NoticeBoard": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo_fbig board lower corners (~x540,y1350 and ~x1395,y1350)",
+    "what": "Small triangular gaps between the wood board and the gold frame at both lower corners. Background shows through.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo top",
+    "what": "Thin see-through seams between roof tiles, plus small orange triangles at the ridge centre. Only visible from above.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo b",
+    "what": "On the back, the board's gold frame and hinge brackets sit wider than the 2D and cover about half of each pillar's gothic window. The 2D back shows both windows in full.",
+    "severity": "minor"
+   },
+   {
+    "where": "front silhouette overlay (red above the board shoulders)",
+    "what": "The arched board sits a little lower and smaller under the roof than in the 2D, leaving a wider gap at the arch shoulders.",
+    "severity": "minor"
+   },
+   {
+    "where": "all gold trim",
+    "what": "Flat lemon-yellow gold (tint).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot (0,0) and min z 0 are OK; size 0.815 x 0.449 x 1.0.",
+   "Roof tiles: top row 4 and bottom row 5, which matches the 2D. Finials, pillar windows and the gable sides match.",
+   "The jagged shape on the board in lit q34 is the cast shadow of the roof tiles in EEVEE, not a texture stain.",
+   "Face the front toward the path. The back is fine but slightly worse (half-covered windows).",
+   "Warm the gold with a Color multiply. If board-corner gaps show by day or night, a thin wood Part behind the board can hide them."
+  ]
+ },
+ "HaloChunk_PotionDisplay": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b (whole back board)",
+    "what": "Front items are projected onto the back board: a red book bar at upper left, an orange column with a cap, a small triangle, two orange discs, two pink discs, and a small pedestal block at bottom centre. The 2D back is a clean plank board with vertical grooves. The 3D back is flat brown with no plank lines. A tint cannot fix this. The first reviewer saw it, so the back must face the wall.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo b, left edge between the left pillar and the back board (about x 70-75, y 260-460 and y 560-600 of the 700px render)",
+    "what": "Thin see-through slits plus a teal/green sliver show between the pillar and the back board. The first reviewer missed this. It is only visible from behind.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo l/r and top view",
+    "what": "The shelf is much shallower than the 2D (side aspect x1.49, depth 0.215 of width). Bottle bellies bulge past the frame's front face in both side views, where the 2D keeps them inside the frame depth. The q34 view still reads well.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig, top of the blue book on the middle-left shelf (about x 340, y 830)",
+    "what": "Tiny teal spike or fragment on the book top.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK.",
+   "Front matches the 2D well: same bottles, books and columns per shelf, silhouette IoU 0.985.",
+   "Mount with the back flush to the potion shop wall, which hides the stains, the missing planks and the pillar slits.",
+   "The frame gold is a flat orange-yellow. A slight warm-darken Color multiply would bring it closer to the 2D gold, but this is optional.",
+   "No faces and no ray-burst patterns."
+  ]
+ },
+ "HaloChunk_JuiceStand": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b / studio b (entire back)",
+    "what": "The back is one blank flat tan board from the awning down to the base. The 2D back shows the shelf frame grid, the plank wall, the 3-panel counter and the upper white arch pillars. All of these are missing; only the lower white pillar pieces and the awning tabs remain. The first reviewer noted 'blank board' but not that the counter panels and upper pillars are also gone.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo b, left edge mid-height",
+    "what": "Green leaf tips from the front greens poke out past the back-board edge.",
+    "severity": "minor"
+   },
+   {
+    "where": "front silhouette overlay",
+    "what": "The 3D is slightly wider at the upper sides (cyan) and slightly short at the bottom corners (red). Not visible in play.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK.",
+   "Front is a close match: scalloped white/yellow awning, 2 potted plants, 2 lanterns, cups, 4 jars (orange/yellow/red/green), right shelf limes, 5 crates (orange+red, lemons, apples, limes, pineapple), 3-panel counter.",
+   "The back must face the juice shop wall. It cannot be a freestanding stall.",
+   "The awning stripes are parallel, not fanned, so there is no ray-burst. No faces."
+  ]
+ },
+ "HaloChunk_RoseTrellis": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b / studio b, vine side (right strip from the back, about x 330-410, y 60-640 of the 700px render)",
+    "what": "Extra geometry not in the 2D. A solid white curved membrane fills about a quarter of the lattice opening behind the vine. A triangular white wedge plate sits under the top bar and a curved wedge plate sits at the lower right. The 2D back is open lattice across the full width, with the vine and flowers on top. The first reviewer missed this. It is only acceptable because the trellis faces a wall.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo fbig / studio f, lattice",
+    "what": "The lattice is much coarser than the 2D. The 2D has a fine 45-degree weave about 3 diamonds wide and about 9-10 rows. The 3D has about one big X per row, about 6-7 rows, with flatter bars around 30 degrees. In the lower half (about 55-65% height) bars cross off-grid in a messy double cross. It still reads as a see-through lattice, but with softer detail.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo fbig, top-left of the lattice opening (about x 860-1000, y 380-620)",
+    "what": "The membrane shows from the front as an arched inner corner. The 2D opening corner is square.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo b",
+    "what": "The 2D back has about 10 blue and white flowers along the vine, at the top and in the bottom cluster. The 3D back shows only 2-3 small blue bits; the rest is leaves.",
+    "severity": "medium"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK.",
+   "Front flowers match the 2D: 4 at the top (2 blue, 2 white), 2 blue on the vine, and the bottom cluster of 4 blue + 4 white.",
+   "Use it only flat against the flower shop facade with the back hidden. If a freestanding or both-sides use is ever needed, re-pick the white model instead.",
+   "DoubleSided for the leaves, as the first reviewer said.",
+   "No faces and no ray-burst."
+  ]
+ },
+ "HaloChunk_RoseArch": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b (whole back)",
+    "what": "The back is bare wood. The 2D back has about 9 pink roses and vines on the posts and arch. The 3D back has none, only pink rose-back blobs peeking behind edge leaves (top left, left mid, right mid, right low). This is acceptable only because the arch is a door surround (Garden5) against the house wall.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo b, lower-left leaf near the left post (about x 75, y 300 of the 700px render)",
+    "what": "A brown wood-coloured smear on one leaf. The first reviewer missed it.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo l/r",
+    "what": "The arch is thinner than the 2D (side aspect x1.14). The roses all sit on the front side of the posts.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK.",
+   "Front is an excellent match: 9 roses in the same places and sizes, 4 visible top blocks and end tabs, crossbars, and the door opening fully open.",
+   "Mount it as the Garden5 door surround with the back against the wall.",
+   "DoubleSided for the leaves.",
+   "No faces and no ray-burst."
+  ]
+ },
+ "HaloChunk_SunflowerBed": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b (upper right sunflower head) and albedo r (top head, about x 350-420, y 60-270)",
+    "what": "The back of the sunflower head is a yellow-to-olive/brown gradient blob. The 2D back shows a clean green calyx (sepals) and stem. It is muddy, a tint cannot fix it, and it is visible from the back and the right side. The first reviewer missed this.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo b",
+    "what": "Flowers are missing on the back. The 2D back shows 2 sunflower heads, 3 white daisies and 2 pink buds. The 3D back shows 1 clear head (the second is almost hidden by leaves), the daisies only as faint cream ghosts at the left and right edges, and 2 buds.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo l/r, studio l/r, base",
+    "what": "In the side views the base narrows, and the lowest leaves splay out like legs with see-through gaps at ground level. The 2D side is a full rounded mound down to the ground. The model is also thinner (x1.11).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK.",
+   "Front matches the 2D well: 2 sunflowers (upper left and centre), 4 daisies, 2 pink buds on the right, clean colours.",
+   "Place it against the Garden5 house wall with the back hidden. Angle it so the right-side olive head-back is not on the path side.",
+   "Sink it slightly into the soil, or add a small soil/grass mound part, to hide the leg gaps at the base.",
+   "DoubleSided for the leaves.",
+   "Sunflower and daisy petals are flowers, not a ray-burst. No faces."
+  ]
+ },
+ "HaloChunk_Pond": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo back view (renders/__albedo_b)",
+    "what": "From the back you see only leaves and tall grass, with no flowers. The 2D back shows two white lilies (left and centre). Every flower sits on the front or side half.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig, big lily (centre-left) and small flower at far left",
+    "what": "Small green smudges on the lower petals of the big lily and green streaks on the petals of the left small flower. These are small texture stains.",
+    "severity": "minor"
+   },
+   {
+    "where": "top view / lit q34, water",
+    "what": "The water is flat bright blue with none of the 2D's light ripples or depth gradient. The MR map also gives the water disc metal about 0.5-0.7, so it may look dark or mirror-like in Roblox. Check it in day and night.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo front vs 2D front",
+    "what": "The flower cluster drawn at the front-left of the 2D sits further back (left-middle) on the 3D, and the 2D gold plinth step is narrower. Flower count matches (1 big lily + 3 small). There are 3 lily pads, the same as the 2D.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 OK. Size 1.0 x 0.95 x 0.52, 1 mesh, 1 material.",
+   "No holes in the top view and no floating junk. Rim stones and gold band are intact all round. Tall grass is on the +Y (back) half, so the open water faces the path.",
+   "Gold band albedo hue is about 42 (2D about 41), so no tint is needed. Lily pad veins radiate faintly but match the approved 2D and are small and natural, not a sunburst.",
+   "Agree with the first reviewer's 'water as is', but check the water's metallic look in the day/night photos."
+  ]
+ },
+ "HaloChunk_StarFinial": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "lit q34 / first reviewer's TU sun crop",
+    "what": "Under light the gold reads as dull dark mustard/olive (lit mean about 166,118,17) next to the 2D's bright warm gold. The cause is metal 0.98 with roughness 0.34, not the hue: the albedo hue is about 41, already slightly more orange than the 2D (about 44). An SA Color multiply toward orange would only make it darker and browner.",
+    "severity": "minor"
+   },
+   {
+    "where": "TU sun crop 2 / lit q34 facets",
+    "what": "The normal map gives the facets a fine orange-peel grain. It shows in close-up as a speckled bumpy gold.",
+    "severity": "minor"
+   },
+   {
+    "where": "front, base peg",
+    "what": "The 2D peg is a flared cone. The 3D peg is a narrow straight cylinder with only a small flare at the foot.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 OK. Size 1.0 x 0.34 x 0.98. Silhouette IoU 0.98 front and 0.91 side. 5 points, centre ridges and side diamond profile all match the 2D.",
+   "No holes and no stains in the albedo. The colour map is a flat orange-gold, and the facets come from the geometry.",
+   "The ChimneyCap note groups this model with the lemon golds, but this one is not lemon. Keep SA Color near white and judge it in the Studio day/night photos. A multiply can only darken it."
+  ]
+ },
+ "HaloChunk_CastleHedge": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo crops / first reviewer's TU crops, hedge green",
+    "what": "A regular halftone-like dot grid runs over the green. Light at 1024, but visible up close.",
+    "severity": "minor"
+   },
+   {
+    "where": "lit q34 right and left ends; studio l/r",
+    "what": "Each end face is a flat cut panel with a small raised lip around its edge (a cushion look). The 2D ends are plain rounded-top flats.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig crops 1-2, hedge/base seam",
+    "what": "A thin dark green crease line runs along the hedge-to-marble join, plus a small white sliver at the left end.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 OK. Size 1.0 x 0.36 x 0.58. Silhouette IoU 0.99 front and back, 0.94 sides.",
+   "3 domed hedge lumps and 2 marble base blocks match the 2D on front and back. No holes in the top view. Hedge metal about 0.02 and rough about 0.89 is fine.",
+   "Placing the ends against posts or the next hedge hides the end lips."
+  ]
+ },
+ "HaloChunk_WeatherVane": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo all views / lit q34",
+    "what": "The gold is lemon yellow (albedo about 244,202,3, hue about 49.5). The 2D is about 46.7, and the Halo palette wants a warm orange-gold. The first reviewer did not list this model for a tint. A warm SA Color multiply (about 255,230,195) fixes it.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig, underside of the star's two lower arms next to the pole",
+    "what": "A thin blue hairline bleeds from the dome colour along both lower edges of the star.",
+    "severity": "minor"
+   },
+   {
+    "where": "front dome",
+    "what": "The front shows about 3 wide blue panels between 2 ribs (8 panels round). The 2D front shows about 4-5 narrower panels. Blue/gold borders are a little soft and wobbly at 100%.",
+    "severity": "minor"
+   },
+   {
+    "where": "front silhouette overlay",
+    "what": "The arrow shaft is thinner than in the 2D (red line along the shaft) but continuous and not broken. Seen end-on (l/r) the arrow is a small diamond, where the 2D shows a round hub ring.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 OK. Size 0.92 x 0.48 x 1.0. Front IoU 0.88. The star, arrow (3 chevron feathers, triangle head), hub ball, stepped collar and caged dome with foot ring are all present.",
+   "The top view's arrow points the opposite way to the front view only because of the camera orientation. It is not a mirror defect.",
+   "The dome ribs from above form 8 spokes, as on the approved 2D. That is a structural cage, not a ray-burst pattern."
+  ]
+ },
+ "HaloChunk_ChimneyCap": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "lit q34 / first reviewer's TU row, gold pots and band",
+    "what": "Under light the gold reads as dark mustard (lit about 154,114,19). The albedo hue (about 42) is already close to the 2D (about 43.5), so the dullness comes from metal shading (gold metal about 1, roughness about 0.2), not a lemon hue. The first reviewer's 'SA Color orange gold' tint can only darken it further. Judge it in the Studio day/night photos instead.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig crop 2, middle-row centre block",
+    "what": "Faint brownish blotchy marble veining. It is close to the 2D's soft beige veins but a little smudgier.",
+    "severity": "minor"
+   },
+   {
+    "where": "back view",
+    "what": "The top block split is mirrored (big left, small right), where the 2D back repeats the front layout. This is harmless.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot 0,0 and min z 0 OK. Size 0.75 x 0.36 x 1.0. Silhouette IoU 0.93-0.97 on all sides.",
+   "Block count matches the 2D: 2 top, gold band, 3 middle, 1 long bottom, and 2 gold pots with caps and flanges. Pot tops are solid in the 2D too, so no flue hole is missing. No holes in the top view.",
+   "The first reviewer's tint note (gold mustard/lemon -> orange) fits WeatherVane (lemon hue 49.5), not ChimneyCap or StarFinial (hue 41-42)."
+  ]
+ },
+ "HaloVar3_PotFlowers_F": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo l (renders __albedo_l, base band, centre)",
+    "what": "Base panel is smeared at a texture seam: one wide gold frame holds a washed-out pale-blue half panel, a blank cream strip, then a normal blue panel. The 2D has clean, evenly spaced blue panels.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo b (base band, right half)",
+    "what": "Back base shows only 2 blue panels, one cut at the left edge, and the right half is blank. The 2D back shows 3 evenly spaced panels.",
+    "severity": "minor"
+   },
+   {
+    "where": "all albedo views, vase body and knob",
+    "what": "The 2D's carved vertical flutes on the bowl are only faint lines in albedo, and the body reads smooth. The fluted knob survives in the mesh (studio views) but is painted flat. Detail is softer.",
+    "severity": "minor"
+   },
+   {
+    "where": "studio_r / studio_f, gem panel",
+    "what": "Gem sits on a flat rectangular plate with square corners (visible in shape renders) instead of the 2D's pointed hexagon frame. In albedo it reads fine.",
+    "severity": "minor"
+   },
+   {
+    "where": "all albedo views, marble and gold",
+    "what": "Marble albedo is peach/salmon cream, not the 2D's white marble with grey veins. Gold is lemon yellow.",
+    "severity": "minor"
+   },
+   {
+    "where": "lit_q34 right trailing vine; albedo l/b top",
+    "what": "The right vine has thin, edge-on blade leaves and looks sparse. 2 or 3 small washed-out ghost flowers sit at the top-back (albedo b, top centre).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK. 8253 tris, 1 mesh/1 mat.",
+   "Silhouette front IoU 0.879, flower count close to 2D (front: 3 top + 3 left + 2 right). Top view: leaves fill the mouth, no see-through hole into the vase.",
+   "SurfaceAppearance Color multiply slightly cool (about 0.97,0.97,1.0) to take the peach off the marble. Gold stays lemon; accept.",
+   "Put the -Y front (cleanest base panels) toward the path. The left side has the smeared base panel, so face it toward a wall or neighbour if possible.",
+   "First reviewer gave no notes and missed the base-panel seam on the left and back."
+  ]
+ },
+ "HaloVar4_PotFlowers_A": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo b (top-left 240,95; top-right 450,95; left edge 100,295; right edge 590,290 of 700px), albedo l (225,100 and 250,290), albedo r (470,90 and 450,290), top view (lower half, 260,450 and 430,450)",
+    "what": "About 6-8 ghost flowers: flower-shaped geometry painted pale translucent green-white instead of white or blue. They look like faded, see-through discs on the left, right, back and top. Front is clean.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo top",
+    "what": "The dome crown is leaves only. Flowers sit in a ring around the dome, and about the central 45% of the top has none. The 2D dome is flowered up to its top.",
+    "severity": "minor"
+   },
+   {
+    "where": "all albedo/studio views, bowl",
+    "what": "The 2D bowl has clear vertical fluted panels and a thick rounded double gold rim. The 3D bowl is nearly smooth (faint lines only) with a flat gold band.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f crops",
+    "what": "Flowers are blobby 4-lobed shapes with flat yellow dots. The 2D has crisp 5-petal flowers with gold bead centres. There are fewer flowers per side (about 7-9 vs about 12-13 in the 2D front).",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo all views",
+    "what": "Marble albedo is pinkish peach rather than white, and the gold is lemon.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f, just above the gold rim (y about 332-336 of 700px)",
+    "what": "A 1-3 px see-through slit between the bottom of the leaf mound and the rim, visible only at exact eye level.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK. 10401 tris.",
+   "Front IoU 0.92. The front and q34 views read well, and sky-blue + white flowers match the Halo palette (the first reviewer's colour OK is right).",
+   "The first reviewer missed the ghost flowers on the back and sides. Place with -Y front toward the path, and where possible put the back (4 ghosts) against a wall, hedge or another prop. If it must stand free in the open, consider another white model.",
+   "Color multiply slightly cool to reduce the pink marble."
+  ]
+ },
+ "HaloVar4_PotFlowers_C": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo l / albedo r (centre of dome), albedo top (centre)",
+    "what": "Flowers sit only in clusters at the front/back corners and the rim. The middle of the left and right faces and the top crown are bare leaves. The 2D dome has flowers spread over the whole dome (about 8 on front).",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f / b",
+    "what": "Fewer flowers: about 5 on front and back vs about 8 in the 2D. Flowers are flat yellow-dot discs instead of the 2D's gold beads, though lit/PBR shows a raised bead.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo l / r (dome top) and studio l / r",
+    "what": "The leaf mass on the sides is scaly and pinecone-like, with a few spiky leaves sticking up at the top. It is softer than the 2D's distinct glossy leaves.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo l, urn body",
+    "what": "One gold rib is doubled or offset on the left side (around x 300-330 of 700px).",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo all views",
+    "what": "Marble albedo is peach/pink, and the gold is lemon.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK. 11102 tris.",
+   "Shape matches the 2D well: lobed urn with gold ribs, gold neck ring, base with gold pillar strips, gold foot. IoU 0.89-0.92. No see-through holes into the urn from the top.",
+   "Flower colour (pale sky blue with yellow centre) matches the 2D.",
+   "Color multiply slightly cool for the marble. Face the -Y front or back (more flowers) toward the path."
+  ]
+ },
+ "HaloVar4_PotFlowers_D": {
+  "verdict": "FAIL",
+  "defects": [
+   {
+    "where": "albedo f (fbig), albedo l/r/b, lit_q34",
+    "what": "Wrong flower colour. Most flowers are muddy mint/sage-teal (sampled about RGB 143,194,182 / 132,189,183 / 155,198,170). The 2D has about 50/50 pure white and saturated royal blue (8 white, 7 blue on front). Front 3D: about 7 mint, 1 white, 2 blue. A uniform SurfaceAppearance tint cannot turn mint into white plus blue without wrecking the leaves and marble.",
+    "severity": "major"
+   },
+   {
+    "where": "albedo f (fbig) mid-mound, albedo top",
+    "what": "Flower layout is lost. Flowers form one ring along the bottom edge of the mound plus a small cluster at the crown. The whole middle band of the mound (about 2/3 of the front face) is bare green leaves. The 2D is a dense mound evenly studded with about 15 flowers. This shows the white model's flower geometry does not match the 2D, so the front projection smeared white/blue into mint.",
+    "severity": "major"
+   },
+   {
+    "where": "albedo f / fbig, foot",
+    "what": "The 2D's distinct gold ring under the bowl is a soft yellow gradient smear on a flared cone stem, and the white plinth disc is a thin band. The 2D's vertical fluted bowl panels are missing in albedo (smooth bowl).",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo f, top centre (about 350,164 of 700px; grey triangle at fbig 965,455)",
+    "what": "A small see-through pinhole between leaves at the crown, visible from the front.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK. 9992 tris, size 1.0 x 0.998 x 0.763.",
+   "Silhouette IoU 0.94 is good, but the colour and flower failure is in the paint/geometry match, not the outline.",
+   "The first reviewer's 'flowers mint/sky vs 2D white + deep blue -> OK as is' is wrong. Mint flowers with a mostly bare green mound do not read as the white+blue flower bowl in the 2D, and nothing in the allowed fixes (tint, DoubleSided, extra parts) can repaint them.",
+   "Back to step 2: pick a white model whose flower discs cover the whole mound like the 2D, then re-texture from the FRONT 2D."
+  ]
+ },
+ "HaloVar4_Planter_A": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo top (4 inner corners between round bush and box rim), lit_q34 (behind front-corner finial, about 500-530,290-330 in the 4x zoom)",
+    "what": "See-through gaps. The round bush does not fill the square box, and the box has no floor or soil, so the ground shows through all 4 inner corners from above (about 2360 px, 1.2% of footprint). A small gap is also visible at the 3/4 game camera behind the front finial.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo b / albedo r / albedo l (bush centre)",
+    "what": "Flowers on the side and back faces sit only near the edges, with bare green centres (back about 6, right about 7 vs front about 10). The 2D shows about 12 evenly spread. The bush leaves are blobby and scaly.",
+    "severity": "minor"
+   },
+   {
+    "where": "lit_q34 back-right finial ball",
+    "what": "A small pale crack/seam streak on the upper-left of the gold ball.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo all views",
+    "what": "Marble albedo is peach, and the gold is lemon.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot offset 0,0 and min z 0: OK. 9903 tris. IoU 0.97-0.98, so shape matches the 2D well: 4 posts with gold ball finials and caps, gold feet, recessed panel, gold trim line on every side.",
+   "Step-5 fix (allowed small extra Studio part): add a thin soil-brown or cream square plate inside the box just below rim height, so the 4 corner gaps stop showing the ground.",
+   "The first reviewer gave no notes and missed the corner see-through gaps (check the top view on a coloured background).",
+   "Color multiply slightly cool for the marble. Put the -Y front (most flowers) toward the path."
+  ]
+ },
+ "HaloSign_SignPotion": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "back (albedo_b, studio_b)",
+    "what": "The whole sign disc is flat solid gold, with no rim relief and no cream marble. The 2D back is a cream marble disc inside a gold rim. This is a projecting sign that hangs out from the wall, so its back faces everyone walking the other way along the street. 'Leave it' is not an option: a cream disc part is needed.",
+    "severity": "medium"
+   },
+   {
+    "where": "front blue ring (albedo_fbig)",
+    "what": "The ring is a deep royal blue (about 57,136,243). The 2D ring is a lighter sky blue. A Color multiply cannot lighten it.",
+    "severity": "minor"
+   },
+   {
+    "where": "all gold parts (albedo)",
+    "what": "The gold is lemon yellow. The 2D gold is warmer orange-gold. Fixable with a tint.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot xy [0,0], min z 0: OK. One mesh, one material, 10.1k tris.",
+   "Front matches the 2D part by part: post with top and bottom ball finials, curved marble arm with 2 gold collars and an end ball, 2 chains with ball connectors, gold rim, cream band, blue ring, potion with cork, 4-point sparkle. No ray-burst pattern and no accidental face.",
+   "The red block between the chains in the silhouette overlay comes from hole-filling the 2D mask. It is not a 3D defect.",
+   "On the back, add a thin cream marble disc part (Roblox cylinder with the Halo cream marble MaterialVariant). Inset it so about 8% of the gold shows as a rim. The back is flat, so the part sits cleanly.",
+   "A warm SurfaceAppearance Color multiply (about 1.0/0.93/0.85) makes the gold less lemony and warms the marble toward the 2D cream.",
+   "The first reviewer said 'cream disc part on back or leave'. Because the sign is perpendicular to the wall, both faces are seen, so the part is required."
+  ]
+ },
+ "HaloSign_SignBakery": {
+  "verdict": "PASS",
+  "defects": [
+   {
+    "where": "post (albedo_top, albedo_fbig)",
+    "what": "The post is turned about 10° around the vertical axis relative to the arm. In the top view the marble cap block is visibly skewed. In the front view a sliver of the post's side blue panel shows to the right of the post (fbig x≈450-460, y≈470-760). The wall-side face will not sit flush on a wall.",
+    "severity": "minor"
+   },
+   {
+    "where": "back (albedo_b)",
+    "what": "The back has a blue ring inside the gold rim. The 2D back has only a gold rim, 4 clamps and cream marble. Harmless, and it still reads as Halo.",
+    "severity": "minor"
+   },
+   {
+    "where": "wheat sprig (front crops)",
+    "what": "The grains are flat and leaf-like instead of the plump grains in the 2D. Softer detail.",
+    "severity": "minor"
+   },
+   {
+    "where": "blue ring / gold (albedo)",
+    "what": "The blue ring is deeper (about 60,145,241) than the 2D sky blue (about 105,176,245), and the gold is lemon yellow. Same issue as the other signs.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot xy [0,0], min z 0: OK. 10.6k tris.",
+   "Front matches well: post with blue inset panel, curved brace, arm end knob with ball and collar, 2 chains, 4 rim clamps, blue ring, loaf with 4 slashes, wheat sprig. The back matches the 2D shape. No ray-burst pattern and no accidental face.",
+   "Mount the post slightly into the wall (about 0.1 stud) to hide the gap from the 10° twist.",
+   "Use the same warm Color multiply as the other signs for the gold."
+  ]
+ },
+ "HaloSign_SignFlower": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "back (albedo_b, studio_b)",
+    "what": "Same as SignPotion: the back of the disc is flat solid gold, while the 2D back is cream marble inside a gold rim. Both faces of a projecting sign are visible from the street, so the back needs a cream disc part.",
+    "severity": "medium"
+   },
+   {
+    "where": "front blue ring (albedo_fbig)",
+    "what": "The ring is royal blue (about 72,145,245); the 2D ring is sky blue (about 134,186,250). A multiply cannot lighten it.",
+    "severity": "minor"
+   },
+   {
+    "where": "gold (albedo)",
+    "what": "Lemon-yellow gold. Fixable with a tint.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot xy [0,0], min z 0: OK. 10.2k tris.",
+   "Front matches the 2D: white flower with 5 petals and a raised gold centre (seen in the lit view), 2 green leaves, small blue 5-petal flower, same bracket, chains and rim as the potion sign. No ray-burst pattern and no accidental face.",
+   "Add a cream marble disc part on the back, inset so a gold rim shows. Required, not optional.",
+   "Use the warm Color multiply for the gold."
+  ]
+ },
+ "HaloFlowerPotHQ_Daisy": {
+  "verdict": "FAIL",
+  "defects": [
+   {
+    "where": "back (albedo_b, studio_b), back-left (albedo_l upper left), back edge of top view",
+    "what": "There are orange/apricot flowers that do not exist in the 2D (red and white only): 2 large ones in the middle of the back, plus more at the top-back and back-left. This is the same fault that got the earlier 8K version (c9df2ff9) rejected, and this redo (c2e4b5db) still has it. The 2D draws all 4 sides the same, so the pot is meant to stand free and be seen from every side.",
+    "severity": "major"
+   },
+   {
+    "where": "bush (albedo_fbig, top view, silhouette overlay)",
+    "what": "The 2D bush is a dense cushion of small leaves that spills over the rim. The 3D bush is a loose bouquet of large clover-like leaves on bare stems. You can see through it between the stems in the upper front (fbig about x870-1160, y470-560), and the overlay shows red specks inside the dome. In the top view the centre is a flat dark-green disc with stems spreading from the middle and a single leaf. Flowers sit only around the edge.",
+    "severity": "major"
+   },
+   {
+    "where": "pot outline (albedo_l/r, albedo_top, lit_q34)",
+    "what": "The 3D pot has 6 sides; the 2D pot has 8. In the left and right views a corner pillar with a gold ball sits in the middle of the side, with 2 panels and 3 ball finials. The 2D left and right views show a centred framed panel with angled panels on each side and 4 finials. The top view shows 6 corner blocks.",
+    "severity": "medium"
+   },
+   {
+    "where": "front and back centre panel (albedo_fbig, studio_f, studio_b)",
+    "what": "The gold frame on the centre panel has only its two vertical bars, with small hooks at the top. The top and bottom bars are missing, and the shape view shows they are missing from the mesh too. On the main face this reads as '] [' or '11'.",
+    "severity": "medium"
+   },
+   {
+    "where": "front flower mix (albedo_f)",
+    "what": "The front has only 2 white daisies against 6 red flowers. The 2D front has 5 white daisies and 5 red. It no longer reads as a Daisy pot.",
+    "severity": "medium"
+   },
+   {
+    "where": "flowers (front crops)",
+    "what": "The flowers have 8 flat cartoon petals. The 2D daisies have many petals and bumpy textured centres. Softer detail.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Pivot xy [0,0], min z 0: OK. 9.9k tris.",
+   "The first reviewer missed: the 6-sided outline instead of 8, the centre panel frame missing from the mesh on the front and back, the see-through bush with a hollow top, and the orange flowers showing at the top-back and back-left (not only the back). They also missed that 2 of 5 white daisies remain on the front.",
+   "No ray-burst pattern and no accidental face.",
+   "Send back for another sibling white model from the same Smart Mesh project: dense dome, 8-sided pot, closed panel frames.",
+   "If 최종 검수 overrules and keeps it: put the back to a wall; add 2 thin gold Studio bars (top and bottom) to close the front centre panel frame; accept that the side views show a corner pillar where the 2D has a centred panel."
+  ]
+ },
+ "HaloChunk_WindowBoxB": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo f/b/q34, the two pink tulips",
+    "what": "The pink is hot magenta (albedo about 249,33,106). The 2D has a softer mid-pink with lighter petal tips. Colour multiply can darken it but cannot lighten it, so it stays a bit stronger than the 2D.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f/b, planter box and white tulip",
+    "what": "The planter and white tulip are cream-yellow (about 245,223,186) where the 2D is ivory white. A slight tint will fix it.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig, tulip heads",
+    "what": "The petal edges and highlights are softer than the 2D: the heads read as smooth eggs with faint petal lines. This is softer detail only.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Shape matches the 2D: 3 tulips (pink, white, pink), about 8 to 10 leaves, a rimmed box with end lips, and the back matches the back 2D. The top view shows no holes. The banding in q34 is leaf shadow cast on the box, not a stain.",
+   "Pivot is 0,0 and min z is 0. Size is 1.0 x 0.496 x 0.659 and the front faces -Y.",
+   "In Roblox, give SurfaceAppearance a slight cool multiply so the box goes ivory, e.g. about (0.98,1.0,1.0). Nothing else needed."
+  ]
+ },
+ "HaloChunk_CornerFinial": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo f/l/r/b/top, whole object",
+    "what": "The albedo is flat egg-yolk/lemon yellow (about 244,188,9). The 2D is a warm orange-gold with orange shading. This is the 'lemon-ish gold' case and can be fixed with a warm multiply plus metal in Roblox.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo fbig and silhouette overlay, base and middle tier",
+    "what": "The base disc is a slightly taller flat slab. The small collar ring under the cone is reduced to a small shoulder, and the 2D's two-step neck (thin ring plus wider step) is simplified. Red slivers in the overlay at the step and base corners. The proportions are close enough (IoU 0.94 on all sides).",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "The shape is otherwise faithful: spike, sphere, neck ring, step and base disc, the same from all 4 sides. The top view is clean. The faint swirl at the top centre is only UV seam noise at 100%.",
+   "Pivot is 0,0, min z is 0, and size is 0.674 x 0.674 x 1.0. It is round, so orientation does not matter.",
+   "In Roblox, use a warm-gold multiply, e.g. about (1.0,0.9,0.75), and keep the metalness from PBR. At night, check that it does not turn olive like the Studio-light row."
+  ]
+ },
+ "HaloChunk_Telescope": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo r / studio r / studio l, big lens end",
+    "what": "The big objective end and its lens are an oval about 1.4:1, wider than tall: about 0.38 deep by 0.27 tall, and the blue lens is about 90x65 px in the r render. The 2D _left view shows a perfectly round lens. The first reviewer missed this. Head-on, the lens reads as an egg shape. It is not fixable under the allowed edits.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo f / studio f vs 2D front",
+    "what": "From the front only 2 tripod legs show, because the third leg sits behind the left one. The tripod is yawed so one leg points toward the big-lens end. The 2D front shows 3 spread legs. The q34 view and side views do show all 3 legs. This plus the 2D's 3/4 tilt explains the low front IoU (0.515).",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f/b",
+    "what": "The tube is level. In the 2D the big-lens end tilts slightly upward.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo, whole body and lens",
+    "what": "The body is flat lemon yellow (about 233,180,9) where the 2D is warm orange-gold. The lens is saturated azure (13,129,252) with no glint, where the 2D is sky blue with a white highlight. A tint fixes the body; the lens stays slightly darker.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "The first reviewer's note says the big lens is on the side opposite the 2D side view. That comes from the side-view label convention, not a mirror. Front and back match the 2D: big lens on the viewer's right in the front view and on the left in the back view. Nothing needs fixing; just aim the big lens at the sea/sky when placing it.",
+   "When placing it, set the tube roughly parallel to the walkway or aimed out to sea, so players mostly see the tube from the side and not the oval lens head-on.",
+   "Pivot is 0,0, min z is 0, size is 0.984 x 0.571 x 1.0, and the front faces -Y. All 3 legs touch z=0.",
+   "In Roblox, use a warm-gold multiply, as for the CornerFinial."
+  ]
+ },
+ "HaloVar3_Topiary_E": {
+  "verdict": "FAIL",
+  "defects": [
+   {
+    "where": "lit_q34 at the rim (left, front-centre and right), and the top view (square cream plate whose corners poke outside the round gold rim circle)",
+    "what": "A square cream plate under the bush has 4 corners that stick out past the round gold rim at the diagonals. They show as thin paper-like white flaps. The front-quarter flap covers the gold ring with a white triangle. In the axis views they appear only as a thin light line on top of the rim, so the first reviewer's straight-on renders hid them. The 2D rim is a clean round gold ring. These are extra, broken thin geometry visible from any 3/4 eye-level angle, and no tint, orientation or small Studio part hides them cleanly.",
+    "severity": "major"
+   },
+   {
+    "where": "lit_q34 / top view, the white ledge between the rim and the bush",
+    "what": "Green colour bleeds onto the white top ledge around the bush base as a soft green halo. The 2D shows no ledge: the bush fills the rim.",
+    "severity": "medium"
+   },
+   {
+    "where": "albedo, bowl and plinth",
+    "what": "The bowl and plinth white is warm/pinkish (about 253,234,226) where the 2D is cool white marble with grey veins. The gold is lemon (about 230,200,81). Both can be tinted.",
+    "severity": "minor"
+   },
+   {
+    "where": "top view / studio l",
+    "what": "There are 4 finials at about ±35° from the X axis instead of evenly at the corners. In the side views they sit inboard of the rim ends, where the 2D shows them at the ends in every view. The plinth shows 2 window slits from the front and 4 from the sides.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "Everything else matches the 2D: the bush is a 3x2 block of rounded leafy balls, the bowl has paneled sides with 2 blue gothic windows per view, and there is a gold rim, a gold neck ring and a plinth with blue slits. There are no see-through holes.",
+   "Pivot is 0,0, min z is 0, and size is 0.962 x 0.962 x 1.0.",
+   "Recommend going back to stage 2: pick a white model whose rim top is round, with no square plate. If 최종 검수 instead accepts it as-is, place it where the camera is mostly straight-on and expect the flaps to show from the diagonals."
+  ]
+ },
+ "HaloVar3_PotFlowers_E": {
+  "verdict": "PASS_NOTES",
+  "defects": [
+   {
+    "where": "albedo f/l/r/b and top",
+    "what": "The flowers have 4 petals in a cross shape, with the centre the same yellow as the petals. The 2D has 5-petal flowers with shiny gold bead centres. There are 8 flowers in a ring around the dome and none on the crown. About 5 to 6 show per side view against 6 in the 2D front, so the count is only slightly lower, but the crown is bare green.",
+    "severity": "medium"
+   },
+   {
+    "where": "top view (5 pale-pink gaps at the crown) / lit_q34 crown",
+    "what": "There are small gaps between the crown leaves. From above they show the pale-pink inner surface. From a high 3/4 view a blue speck and an orange speck show through, which is window-blue and gold texture bleeding onto hidden inner faces. They are not see-through and only show from above.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f, foliage",
+    "what": "The leaves are rounded, scale-like shingles, so the dome looks like an artichoke. The 2D has pointed leaves with a centre vein. This is softer detail.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo f/b, upper-left and upper-right of the dome",
+    "what": "The edge flowers stand out from the silhouette as flat yellow paddles seen edge-on.",
+    "severity": "minor"
+   },
+   {
+    "where": "albedo, bowl and plinth",
+    "what": "The bowl and plinth are pinkish/salmon white (about 248,219,211) where the 2D is cool white marble. The gold rim is lemon (about 207,187,103 on the band). A multiply that lowers red, e.g. (0.9,1.0,1.0), will fix it, at the cost of slightly darkening the whole object.",
+    "severity": "minor"
+   }
+  ],
+  "step5_notes": [
+   "The pot shape matches the 2D: a round bowl with paneled sides, 3 gothic blue windows per view, a gold rim band, a gold neck ring, and a plinth with gold slits (3 per view against 4 in the 2D). The silhouette IoU is about 0.90 on all sides.",
+   "Pivot is 0,0, min z is 0, and size is 0.906 x 0.906 x 1.0.",
+   "If players will mostly see this from below or at eye level, the crown gaps do not matter. Do not place it under walkways or stairs where players look down on it."
+  ]
+ }
+}

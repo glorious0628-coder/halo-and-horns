@@ -150,7 +150,7 @@ runGroup("pause card: crown war end", function()
 	w:Advance(2)
 	check(#cards(w, p) == 1 and lastCard(w, p).Why == "War", "took part, 20 minutes in: the war card", show(lastCard(w, p)))
 	check(#cards(w, q) == 0 and #cards(w, r) == 0, "no chest points (or not in the war): no card", #cards(w, q))
-	check(w.Config.War.ChestMinPoints == 30, "a war card needs the chest points (30)", w.Config.War.ChestMinPoints)
+	check(w.Config.War.ChestMinPoints == 1, "a war card needs the chest points (1 on the A23-135 scale)", w.Config.War.ChestMinPoints)
 	check(#cards(w, s) == 0, "just joined: no war card (a long session first)", #cards(w, s))
 	w:Advance(600)
 	w.Reg.WarService.RoundEnded:Fire("Horns", "Contest", { [p] = 35 })
@@ -688,6 +688,293 @@ runGroup("candy jar", function()
 	local q, dq = hero(w2, 2, { Data = { Items = { Candy = 250 } } })
 	w2:Remote("CandyTrade", q, "CandyKeeper")
 	check(dq.Items.Candy == 50 and dq.Titles.CandyKeeper ~= nil, "after 11/09: still open", show(dq.Items))
+end)
+
+------------------------------------------------------------------ #6 A23-167 ② 내일 또 오기 (게임성 개발 2, 2026-10-14)
+-- retWorld + the REAL AttendanceService (ATTEND_SOURCE): the tomorrow card reads its NextSlots
+local function cbWorld(o)
+	local w = retWorld(o)
+	w:Service("AttendanceService", ATTEND_SOURCE)
+	w.Reg.AttendanceService.Init(w.Reg)
+	w.Reg.AttendanceService.Start()
+	w:StartLoops()
+	return w
+end
+
+local function gifts(w, p)
+	local out = {}
+	for _, f in w:FxOf("TomorrowGift", p) do table.insert(out, f.Data) end
+	return out
+end
+
+local function steps(w, n, s)
+	for _ = 1, n do w:Advance(s) end
+end
+
+runGroup("A23-167 tomorrow card", function()
+	local w = cbWorld()
+	local TM = w.Config.Return.Tomorrow
+	check(TM.Enabled == true and TM.After == 600 and TM.MaxDays == 7 and TM.RetrySeconds == 30 and TM.Retries == 20,
+		"Config.Return.Tomorrow: on, 10 minutes into the session, the first week, retry 30 s x20", show(TM))
+	local shown = {}
+	w.Reg.ReturnService.TomorrowShown:Connect(function(pl, slot) table.insert(shown, pl.UserId .. ":" .. slot) end)
+	local p, d = hero(w, 1)
+	check(p:GetAttribute("AttendReady") == true and p:GetAttribute("AttendSlot") == 1, "a new player: today's claim (slot 1) is open",
+		tostring(p:GetAttribute("AttendReady")))
+	w:Advance(599)
+	check(#gifts(w, p) == 0, "not before 10 minutes of this session", #gifts(w, p))
+	w:Advance(1)
+	local g = gifts(w, p)[1]
+	check(g and g.Today == 1 and g.Tomorrow == 2 and g.Days == 0,
+		"10 minutes in: Today = slot 1 (not claimed yet), Tomorrow = slot 2, 0 days collected", show(g))
+	check(d.Return.TomorrowDay == w.Config.DayIndex(w.Time) and shown[1] == "1:2", "the KST day is saved, TomorrowShown(player, 2)",
+		show({ d.Return.TomorrowDay, shown }))
+	-- the card counts as a card: a chapter card 2 s later keeps MinGap
+	w.Reg.StoryQuestService.QuestDone:Fire(p, "M1_4")
+	w:Advance(2)
+	check(#cards(w, p) == 0, "a chapter end 2 s after the tomorrow card: no pause card (MinGap)", #cards(w, p))
+	-- the same KST day, a new session: none
+	w:Leave(p)
+	local p2, d2 = hero(w, 1, { Data = d })
+	w:Advance(1300)
+	check(#gifts(w, p2) == 0 and #gifts(w) == 1, "the same day, a new session: no second card", #gifts(w))
+	-- the next day: claim slot 1, a new session -> Today = nil, Tomorrow = slot 2
+	w:ToDay(1)
+	w:Remote("ClaimAttendance", p2)
+	check(d2.Attendance.Days == 1 and d2.Attendance.Slot == 2, "claimed on day 2 of play: slot 1 paid, next slot 2", show(d2.Attendance))
+	w:Leave(p2)
+	local p3 = hero(w, 1, { Data = d2 })
+	w:Advance(600)
+	g = gifts(w, p3)[1]
+	check(g and g.Today == nil and g.Tomorrow == 2 and g.Days == 1, "today already claimed: no Today, Tomorrow = slot 2, 1 day",
+		show(g))
+	check(#w.Warnings == 0, "no warnings", w.Warnings[1])
+end)
+
+runGroup("A23-167 tomorrow card waits", function()
+	local w = cbWorld()
+	-- a fight at 10 minutes: RetrySeconds after it ends
+	local q = hero(w, 2)
+	w.Reg.CombatService.InCombat[q] = true
+	w:Advance(600)
+	check(#gifts(w, q) == 0, "in a fight at 10 minutes: no card", #gifts(w, q))
+	w.Reg.CombatService.InCombat[q] = nil
+	w:Advance(30)
+	check(#gifts(w, q) == 1, "the fight is over: the card 30 s later", #gifts(w, q))
+	-- a purchase prompt: Calm (60 s) first
+	local r = hero(w, 3)
+	w:Advance(590)
+	w.Reg.TelemetryService.ClientMetric:Fire(r, "PurchasePrompt")
+	w:Advance(10)
+	check(#gifts(w, r) == 0, "a purchase prompt 10 s before: no card", #gifts(w, r))
+	w:Advance(30)
+	check(#gifts(w, r) == 0, "40 s after the prompt: still none", #gifts(w, r))
+	w:Advance(30)
+	check(#gifts(w, r) == 1, "70 s after the prompt: the card", #gifts(w, r))
+	-- a chapter card a minute before: MinGap first
+	local c = hero(w, 8)
+	w:Advance(540)
+	w.Reg.StoryQuestService.QuestDone:Fire(c, "M1_4")
+	w:Advance(2)
+	check(#cards(w, c) == 1, "a chapter card at 9 minutes", #cards(w, c))
+	w:Advance(58)
+	check(#gifts(w, c) == 0, "10 minutes, 58 s after the chapter card: waits (MinGap 120)", #gifts(w, c))
+	steps(w, 3, 30)
+	check(#gifts(w, c) == 1, "after MinGap: the card", #gifts(w, c))
+	-- before the first mission: waits; the mission done -> the card
+	local s, ds = hero(w, 4, { Data = { TutorialStep = 2 } })
+	w:Advance(600)
+	check(#gifts(w, s) == 0, "the first mission not done: no card", #gifts(w, s))
+	ds.TutorialStep = 99
+	w:Advance(30)
+	check(#gifts(w, s) == 1, "the first mission done: the card at the next try", #gifts(w, s))
+	-- tries run out: never
+	local t, dt = hero(w, 5, { Data = { TutorialStep = 2 } })
+	w:Advance(600)
+	steps(w, 21, 30)
+	dt.TutorialStep = 99
+	steps(w, 4, 30)
+	check(#gifts(w, t) == 0, "20 tries used up: no card this session", #gifts(w, t))
+	-- the first week only
+	local u = hero(w, 6, { Data = { Attendance = { Days = 7, LastDay = 0, Slot = 1 } } })
+	local v = hero(w, 7, { Data = { Attendance = { Days = 6, LastDay = 0, Slot = 7 } } })
+	w:Advance(600)
+	check(#gifts(w, u) == 0, "7 days collected: no card (less hand-holding after the first week)", #gifts(w, u))
+	local gv = gifts(w, v)[1]
+	check(gv and gv.Today == 7 and gv.Tomorrow == 1 and gv.Days == 6, "6 days, slot 7 open today: Tomorrow wraps to slot 1", show(gv))
+	-- left before 10 minutes: nothing, no warning
+	local x = hero(w, 9)
+	w:Advance(300)
+	w:Leave(x)
+	w:Advance(400)
+	check(#gifts(w, x) == 0, "left at 5 minutes: no card", #gifts(w, x))
+	-- the switch
+	local w2 = cbWorld({ EditConfig = function(cfg) cfg.Return.Tomorrow.Enabled = false end })
+	local y = hero(w2, 10)
+	w2:Advance(700)
+	check(#gifts(w2, y) == 0, "Tomorrow.Enabled = false: no card", #gifts(w2, y))
+	-- no attendance board (AttendanceService missing): nothing, no error
+	local w3 = retWorld()
+	local z = hero(w3, 11)
+	w3:Advance(700)
+	check(#gifts(w3, z) == 0, "no AttendanceService: no card, no error", #gifts(w3, z))
+end)
+
+local function newsRows(w)
+	local st = w.Stores[w.Config.StoreName(w.Config.Return.News.Store)]
+	return st and st.Rows[w.Config.Return.News.Key]
+end
+
+local function newsGets(w)
+	local n = 0
+	for _, c in w.DSCalls do
+		if c.Op == "Get" and c.Store == w.Config.StoreName(w.Config.Return.News.Store) then n += 1 end
+	end
+	return n
+end
+
+local function welcomeOf(w, p)
+	local f = w:FxOf("WelcomeBack", p)
+	return f[#f] and f[#f].Data
+end
+
+runGroup("A23-167 welcome back: Returned, Days, news", function()
+	local stores = {}
+	local w = retWorld({ Stores = stores })
+	local NW = w.Config.Return.News
+	check(NW.Enabled == true and NW.KeepHours == 168 and NW.FlushSeconds == 300 and NW.ReadGap == 300
+		and NW.Store == "HaloHorns_News_v1" and NW.Key == "Hours",
+		"Config.Return.News: on, 7 days of hours, written every 5 minutes, read at most every 5 minutes", show(NW))
+	local War, Goose = w.Reg.WarService.RoundEnded, w.Reg.GooseService.GooseFinished
+	for _ = 1, 3 do War:Fire("Halo", "Contest", {}) end
+	War:Fire("Horns", "Siege", {})
+	War:Fire("None", "Contest", {}) -- a draw: no news
+	War:Fire("Halo", "Idle", {}) -- no war at all
+	Goose:Fire("Halo", {}, {})
+	Goose:Fire("Tie", {}, {})
+	check(newsRows(w) == nil, "nothing written before the flush", show(newsRows(w)))
+	local hour = tostring(math.floor(w.Time / 3600))
+	w:Tick(300)
+	local row = newsRows(w)
+	check(row and row[hour] and row[hour].Halo == 3 and row[hour].Horns == 1 and row[hour].Goose == 2,
+		"the flush: this hour's Halo 3 / Horns 1 / goose 2 (a draw and an idle round are no news)", show(row))
+	w:Tick(300)
+	check(newsRows(w)[hour].Halo == 3, "nothing new: written once (no double count)", show(newsRows(w)))
+	-- another server an hour later: a returner gets the line, Returned, Days
+	local w2 = retWorld({ Stores = stores, Time = NOON + 3600 })
+	local p = hero(w2, 1, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
+	check(p:GetAttribute("Returned") == true, "7 hours away: Returned = true (the guide's line)", tostring(p:GetAttribute("Returned")))
+	w2:Advance(4)
+	local f = welcomeOf(w2, p)
+	check(f and f.News == "While you were away, crown wars won: Halo 3, Horns 1" and f.Days == 0 and f.Next ~= nil,
+		"the welcome-back card: News (my side first), Days 0, Next as before", show(f))
+	local h = hero(w2, 2, { Data = { Faction = "Horns", LastLogoutTime = NOON - 3 * 86400 } })
+	w2:Advance(4)
+	f = welcomeOf(w2, h)
+	check(f and f.News == "While you were away, crown wars won: Horns 1, Halo 3" and f.Days == 3,
+		"a Horns player 3 days away: Horns first, Days 3", show(f))
+	check(newsGets(w2) == 1, "two returners within ReadGap: one read", newsGets(w2))
+	-- this server's counts not written yet count too
+	w2.Reg.WarService.RoundEnded:Fire("Horns", "Contest", {})
+	local k = hero(w2, 3, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
+	w2:Advance(4)
+	f = welcomeOf(w2, k)
+	check(f and f.News == "While you were away, crown wars won: Halo 3, Horns 2", "this server's unwritten win counts too", show(f))
+	-- not a return: no attribute, no card
+	local n = hero(w2, 4, { Data = { LastLogoutTime = NOON } })
+	w2:Advance(4)
+	check(n:GetAttribute("Returned") == nil and welcomeOf(w2, n) == nil, "1 hour away: no Returned, no card",
+		tostring(n:GetAttribute("Returned")))
+	-- the hours before the leave never count
+	local w3 = retWorld({ Stores = stores, Time = NOON + 9 * 3600 })
+	local late = hero(w3, 5, { Data = { LastLogoutTime = NOON + 3600 } })
+	w3:Advance(4)
+	f = welcomeOf(w3, late)
+	check(f and f.News == nil, "left after those wars: no news line (the card still comes)", show(f))
+end)
+
+runGroup("A23-167 news: goose, private servers, failures, old hours", function()
+	-- only goose rounds: the goose line
+	local storesA = {}
+	local w = retWorld({ Stores = storesA })
+	w.Reg.GooseService.GooseFinished:Fire("Horns", {}, {})
+	w.Reg.GooseService.GooseFinished:Fire("Halo", {}, { Mode = "Versus" })
+	w.Reg.GooseService.GooseFinished:Fire("Tie", {}, { Mode = "Pending" }) -- nobody played it: no news
+	w:Tick(300)
+	local w2 = retWorld({ Stores = storesA, Time = NOON + 3600 })
+	local p = hero(w2, 1, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
+	w2:Advance(4)
+	local f = welcomeOf(w2, p)
+	check(f and f.News == "Goose rounds while you were away: 2", "no crown wars: the goose line", show(f))
+	-- a private server neither counts nor reads
+	local storesB = {}
+	local ps = retWorld({ Stores = storesB, PrivateServerId = "ps-1" })
+	ps.Reg.WarService.RoundEnded:Fire("Halo", "Contest", {})
+	ps:Tick(300)
+	check(newsRows(ps) == nil, "a private server's war: never written", show(newsRows(ps)))
+	local q = hero(ps, 2, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
+	ps:Advance(4)
+	f = welcomeOf(ps, q)
+	check(f and f.News == nil and newsGets(ps) == 0, "a returner on a private server: the card, no news, no read", show(f))
+	-- a failed read: the card without news
+	local storesC = {}
+	local w4 = retWorld({ Stores = storesC, Time = NOON + 3600 })
+	w4.AllowWarn = "news read"
+	w4.Fail[w4.Config.StoreName(w4.Config.Return.News.Store) .. ":Get"] = 1
+	local r = hero(w4, 3, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
+	w4:Advance(4)
+	f = welcomeOf(w4, r)
+	check(f and f.News == nil and f.Next ~= nil, "the row cannot be read: the card without news", show(f))
+	-- a failed write keeps the counts for the next flush
+	local w5 = retWorld({ Stores = storesC })
+	w5.AllowWarn = "news write"
+	w5.Reg.WarService.RoundEnded:Fire("Halo", "Contest", {})
+	w5.Fail[w5.Config.StoreName(w5.Config.Return.News.Store) .. ":Update"] = 1
+	w5:Tick(300)
+	check(newsRows(w5) == nil, "the write failed: nothing written yet", show(newsRows(w5)))
+	w5.Reg.WarService.RoundEnded:Fire("Halo", "Contest", {})
+	w5:Tick(300)
+	local hour = tostring(math.floor(NOON / 3600))
+	check(newsRows(w5) and newsRows(w5)[hour] and newsRows(w5)[hour].Halo == 2, "the next flush writes both wins", show(newsRows(w5)))
+	-- old hours (and broken keys) are dropped on the next write
+	local storesD = {}
+	local w6 = retWorld({ Stores = storesD })
+	local name = w6.Config.StoreName(w6.Config.Return.News.Store)
+	local nowHour = math.floor(NOON / 3600)
+	storesD[name] = { Name = name, Kind = "Standard", Rows = { Hours = {
+		[tostring(nowHour - 200)] = { Halo = 9 }, [tostring(nowHour - 167)] = { Horns = 4 }, junk = { Halo = 1 } } } }
+	w6.Reg.WarService.RoundEnded:Fire("Horns", "Contest", {})
+	w6:Tick(300)
+	local rows = newsRows(w6)
+	check(rows[tostring(nowHour - 200)] == nil and rows.junk == nil and rows[tostring(nowHour - 167)].Horns == 4
+		and rows[tostring(nowHour)].Horns == 1, "the write drops hours past KeepHours and broken keys, keeps the rest", show(rows))
+	-- the close writes what is left
+	local w7 = retWorld({ Stores = storesD })
+	w7.Reg.GooseService.GooseFinished:Fire("Halo", {}, {})
+	for _, fn in w7.BoundToClose do fn() end
+	check(newsRows(w7)[tostring(nowHour)].Goose == 1, "BindToClose writes the counts left", show(newsRows(w7)))
+	-- the close comes while a periodic write is in flight: it waits for that write, then writes what came meanwhile
+	local storesE = {}
+	local w8 = retWorld({ Stores = storesE })
+	local newsName = w8.Config.StoreName(w8.Config.Return.News.Store)
+	local closeCo, waited = nil, false
+	w8.BeforeUpdate = function(store)
+		if store ~= newsName or closeCo then return end
+		w8.Reg.GooseService.GooseFinished:Fire("Halo", {}, {})
+		closeCo = coroutine.create(function() for _, fn in w8.BoundToClose do fn() end end)
+		assert(coroutine.resume(closeCo))
+		waited = coroutine.status(closeCo) == "suspended"
+	end
+	w8.Reg.WarService.RoundEnded:Fire("Horns", "Contest", {})
+	w8:Tick(300)
+	w8.BeforeUpdate = nil
+	for _ = 1, 50 do
+		if coroutine.status(closeCo) ~= "suspended" then break end
+		assert(coroutine.resume(closeCo))
+	end
+	local r8 = newsRows(w8) and newsRows(w8)[tostring(nowHour)]
+	check(waited and coroutine.status(closeCo) == "dead" and r8 and r8.Horns == 1 and r8.Goose == 1,
+		"a close during a write waits for it, then writes the goose round that came meanwhile", show(newsRows(w8)))
 end)
 
 finish()

@@ -153,8 +153,9 @@ runGroup("config", function()
 	local kinds = {}
 	for k in C.Finisher.Kinds do table.insert(kinds, k) end
 	table.sort(kinds)
-	check(#kinds == 2 and kinds[1] == "CaptainClatter" and kinds[2] == "SlimeKing",
-		"the finisher cards are the field bosses' only (never the Slime Prince)", show(kinds))
+	-- gameplay plan 2026-10-13 1-A #10: no card until the card's window (2-A #3); the field bosses' cards stay ready
+	check(#kinds == 0 and C.Finisher.Cards.SlimeKing ~= nil and C.Finisher.Cards.CaptainClatter ~= nil and C.Finisher.Cards.BigSlime == nil,
+		"no finisher card for now (Kinds = {}); the cards are the field bosses' only (never the Slime Prince)", show(kinds))
 	check(type(C.Loot.Tables.SlimeKing) == "table" and #C.Loot.Tables.SlimeKing > 0,
 		"the King Slime has a drop table")
 	local A = C.Announce
@@ -411,8 +412,8 @@ runGroup("clatter config", function()
 	local K = C.FieldBosses.Clatter
 	local def = C.MonsterTypes.CaptainClatter
 	check(table.find(C.FieldBosses.Order, "Clatter") ~= nil and K.Kind == "CaptainClatter", "Clatter is a field boss key")
-	check(K.FirstDelay == 300 and K.Interval == 1200 and K.Lifetime == 360 and K.MinLevel == 25 and K.War == 20
-		and K.Attr == "ClatterSpawn" and K.Hill ~= true, "every 20 min, stays 6 min, chip from Lv25, +20 war, own mark", show(K))
+	check(K.FirstDelay == 300 and K.Interval == 1200 and K.Lifetime == 360 and K.MinLevel == 25 and K.War == 2
+		and K.Attr == "ClatterSpawn" and K.Hill ~= true, "every 20 min, stays 6 min, chip from Lv25, +2 war (A23-137 scale), own mark", show(K))
 	check(type(K.Weekly) == "table" and K.Weekly.Item == "CaptainBadge" and K.Weekly.Max == 2
 		and K.Titles[1] == "ClatterStopper" and K.Titles[10] == "ClatterStopper10" and K.Titles[50] == "ClatterStopper50",
 		"weekly badge banked up to 2, titles 1 / 10 / 50")
@@ -441,7 +442,7 @@ runGroup("clatter config", function()
 	check(string.find(NET_SOURCE, "ClatterNextAt = 0, ClatterActive = false, ClatterEndsAt = 0", 1, true) ~= nil, "Net defaults")
 	-- the finisher cards: both bosses, the same size each
 	local F = C.Finisher
-	check(F.Kinds.SlimeKing == true and F.Kinds.CaptainClatter == true and F.Kinds.BigSlime == nil, "card kinds")
+	check(next(F.Kinds) == nil and F.Cards.SlimeKing ~= nil and F.Cards.CaptainClatter ~= nil, "card kinds: none for now (1-A #10), both cards ready")
 	for kind, card in F.Cards do
 		local item = C.Loot.Items[card.Help.Item]
 		local worth = (item and item.Sell) or card.Help.Worth or 0
@@ -455,7 +456,7 @@ runGroup("clatter config", function()
 end)
 
 runGroup("clatter war pool", function()
-	-- 검수 2026-10-09 (the CR-M18 way): +20 personal points each, but one kill adds 20 to a side's pool only once
+	-- 검수 2026-10-09 (the CR-M18 way): +2 personal points each (A23-137 scale, was 20), but one kill adds 2 to a side's pool only once
 	local w = bossWorld({})
 	local a, b, c = w:Hunter(1, "SkeletonRuins"), w:Hunter(2, "SkeletonRuins"), w:Hunter(3, "SkeletonRuins")
 	a.Attrs.Faction, b.Attrs.Faction, c.Attrs.Faction = "Halo", "Halo", "Horns"
@@ -465,8 +466,8 @@ runGroup("clatter war pool", function()
 		pool[add.P.Attrs.Faction] += add.Pool or add.N
 		personal += add.N
 	end
-	check(#w.WarAdds == 3 and personal == 60, "+20 personal points each", show({ #w.WarAdds, personal }))
-	check(pool.Halo == 20 and pool.Horns == 20, "each side's pool gets 20 once (two Halos 10 + 10, one Horns 20)", show(pool))
+	check(#w.WarAdds == 3 and personal == 6, "+2 personal points each", show({ #w.WarAdds, personal }))
+	check(pool.Halo == 2 and pool.Horns == 2, "each side's pool gets 2 once (two Halos 1 + 1, one Horns 2)", show(pool))
 end)
 
 runGroup("clatter extras", function()
@@ -478,7 +479,7 @@ runGroup("clatter extras", function()
 	for _, f in w.Fx do if f.Kind == "KingDefeat" then fx = f end end
 	check(fx and fx.Data.Key == "Clatter" and fx.Data.Share and fx.Data.Share.Halo == 62 and fx.Data.Share.Horns == 38,
 		"defeat Fx carries the side share", show(fx and fx.Data.Share))
-	check(#w.WarAdds == 2 and w.WarAdds[1].N == 20 and w.WarAdds[2].N == 20, "+20 crown-war points each (own side)", #w.WarAdds)
+	check(#w.WarAdds == 2 and w.WarAdds[1].N == 2 and w.WarAdds[2].N == 2, "+2 crown-war points each (own side)", #w.WarAdds)
 	local da, db = w.DataOf[a].FieldBoss.Clatter, w.DataOf[b].FieldBoss.Clatter
 	check(da.Kills == 1 and db.Kills == 1 and w.TitlesOf[a].ClatterStopper and w.TitlesOf[b].ClatterStopper,
 		"first kill: Kills 1, Clatter Stopper", show(da))

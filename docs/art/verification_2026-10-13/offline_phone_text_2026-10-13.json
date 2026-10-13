@@ -1,0 +1,82 @@
+{
+  "checks": 19,
+  "failed": 0,
+  "static": [
+    {
+      "check": "touch Safety: block / report, PvP zones, ask a parent, at most 4 lines, English, no Esc / Tab",
+      "ok": true
+    },
+    {
+      "check": "touch Controls: at most 4 lines, no keys",
+      "ok": true
+    },
+    {
+      "check": "BuildHelp draws every topic through H.TopicLines",
+      "ok": true
+    },
+    {
+      "check": "both goose chip lines go through SQ.chipLine",
+      "ok": true
+    }
+  ],
+  "mutations": [
+    {
+      "name": "over an hour stays M:SS",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "minutes not wrapped",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no short line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the PC width ignored",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "real digits measured",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the word alone when nothing fits",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "touch reads the keyboard lines",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "keyboards read the touch lines",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "touch Safety names Esc",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "BuildHelp skips the touch lines",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the phone chip keeps the long line",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Phone text before the private test (A23-145, 최종 검수 10/13: \"10/17 전에 할 것 2개\"), offline.\n\nRuns, in the official Luau CLI, the CURRENT pieces cut out of the sources with the CURRENT Config.luau:\n1. Util.FormatTime: under an hour \"M:SS\" (0:00, 2:05, 59:59), an hour or more \"H:MM:SS\" (1:00:00, 1:57:23 - the goose\n   chip said \"117:23\"), never negative.\n2. EventHUD SQ.chipLine (the goose chip): the longest line that fits the chip at its smallest text size - a PC chip\n   (156 px, 11 px text) keeps \"Golden Goose 1:57:23\", a phone chip (117 px, 15 px text) \"Goose 1:57:23\", a narrower one\n   the time alone; it measures every digit as a 0 (one measure per length); no UIKit / no width = the whole line.\n3. SettingsUI H.TopicLines (Help): Controls from H.ControlLines; a touch-only device (KeyboardEnabled false) reads\n   Config.Help.TouchTopics lines where a topic has them (Safety: no Esc, no Tab), a keyboard the topic's own lines.\nStatic: Config.Help.TouchTopics.Safety keeps block / report, PvP zones and \"Ask a parent before using Robux\", at most 4\nlines, English only, no \"Esc\" / \"Tab\"; TouchLines at most 4 lines; BuildHelp draws every topic through H.TopicLines;\nboth goose chip lines go through SQ.chipLine. (Skills: SkillBook already drops [F] / [Z] and [Change keys] without a\nkeyboard - tools/test_skill_book.py \"touch: no key in the name\".) Studio's phone emulator keeps KeyboardEnabled true, so\nits photos still show the keyboard lines; a real phone has none. Mutations: each must be caught.",
+  "studioCalls": 0
+}

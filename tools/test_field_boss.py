@@ -98,8 +98,7 @@ MUTATIONS = [
     ("first slot at once", K, "(now + math.max(0, num(c.FirstDelay, 180)))", "(now)"),
     ("string ids in Contributors", K, "\t\t\tif type(id) == \"number\" then table.insert(ids, id) end",
      "\t\t\ttable.insert(ids, id)"),
-    ("card back on the Prince", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
-     "\tKinds = { BigSlime = true, CaptainClatter = true },"),
+    ("card back on the Prince", C, "\tKinds = {},", "\tKinds = { BigSlime = true },"),
     ("Prince renamed back", C, "BigSlime = { Name = \"Slime Prince\"", "BigSlime = { Name = \"King Slime\""),
     ("a mom line", C, "SlimeKingLeaveEn = \"King Slime went home.\"", "SlimeKingLeaveEn = \"King Slime went home to mom.\""),
     # 게임성 검수 10/12: the appear toast says where

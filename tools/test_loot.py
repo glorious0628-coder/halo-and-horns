@@ -69,6 +69,13 @@ MUTATIONS = [
     ("C2: the first weapon always equipped", "LOOT_SOURCE", "\tlocal better = Config.WeaponUsable(tier, level) and (cur < 1\n",
      "\tlocal better = true or (cur < 1\n"),
     ("C2: the first weapon twice when owned", "LOOT_SOURCE", "if validTier(fw.Tier) and not owns(data, fw.Tier) then grantFirstDrop", "if validTier(fw.Tier) then grantFirstDrop"),
+    # gameplay plan 2026-10-13 1-A #2: the first King Slime's tier 3
+    ("1-A #2: the King's weapon every King", "LOOT_SOURCE", "\t\tdata.LootFlags.FirstKingWeapon = true\n\t\tif validTier(fk.Tier)",
+     "\t\tif validTier(fk.Tier)"),
+    ("1-A #2: the King's weapon with the Prince's line", "LOOT_SOURCE",
+     "grantFirstDrop(player, data, fk.Tier, gained, TXT.FirstKingWeapon, TXT.FirstKingEquip)", "grantFirstDrop(player, data, fk.Tier, gained)"),
+    ("1-A #2: no first King weapon", "CONFIG_SOURCE", "FirstKingDrop = { Monster = \"SlimeKing\", Tier = 3 },",
+     "FirstKingDrop_ = { Monster = \"SlimeKing\", Tier = 3 },"),
     ("C2: duplicates still gold", "LOOT_SOURCE", "\t\tif LootService.AddSpare(player, tier, 0) then\n", "\t\tif false then\n"),
     ("C2: the Prince's tier 2 at 0.2", "CONFIG_SOURCE", "{ Weapon = 2, P = 0.02 }, { Weapon = 3, P = 0.015 },", "{ Weapon = 2, P = 0.2 }, { Weapon = 3, P = 0.015 },"),
     ("C2: a BelowLevel on the slime's tier 3 (a jelly every kill)", "CONFIG_SOURCE", "\t\t\t{ Weapon = 2, P = 0.002 }, { Weapon = 3, P = 0.001 },\n",
@@ -594,7 +601,7 @@ def main() -> int:
                     "the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf "
                     "includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote "
                     "{ Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; "
-                    "full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); "
+                    "full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (no hint line, A23-130; Fx First); "
                     "LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); "
                     "first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; "
                     "materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= "

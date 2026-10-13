@@ -1,0 +1,202 @@
+{
+ "HaloReasonHQ_BenchB": [
+  "Warm the gold toward orange-gold with SurfaceAppearance Color (slight orange multiply), or accept the lemon tone. The marble already reads cream-white.",
+  "Nothing to fix for shape: the 3 backrest slats, marble top rail, scroll armrest on the right, round planter with gold band and 3 front blue panels all match the 2D.",
+  "Place it so the front faces the path and the planter side with the paler back flowers is not the main view.",
+  "No ray-burst pattern and no accidental faces seen."
+ ],
+ "HaloReasonHQ_FlowerCart": [
+  "Send it back to step 2 and pick another white model that keeps the full flower mound under the awning. Roblox material tweaks cannot add the missing flower mass, fix the faceted bunches or add the side awning stripes.",
+  "When re-picking, check the white model from the side and at q34 for separate tulip, daisy and hydrangea shapes, and for nothing floating under the awning.",
+  "Parts that are fine and should look the same on the next pick: cart body, wood panel, wheel with gold hub and spokes (a wheel, not a ray-burst), front blue panel, handle bars, front awning stripes.",
+  "No accidental faces seen."
+ ],
+ "HaloReasonHQ_BreadStand": [
+  "Shape matches the 2D well: 2 shelves, 5 baskets, baguettes top-right on the front, striped cloth hanging from the middle lower basket, 4 gold posts with balls, marble counter with gold side bars. IoU is about 0.86-0.90 on all sides.",
+  "Use a slight warm-down tint (less lemon) if the gold or bread looks too neon in Studio day light.",
+  "The back is fine to show, but the front is better. Face the front toward the path.",
+  "No floating parts. The small blue napkin tips at the basket sides in the l/r views are attached. No ray-burst, no accidental faces."
+ ],
+ "HaloReasonHQ_FruitStall": [
+  "Put the back against a wall or building as 디자인 검수 said. Do not stand it free in the plaza with the back visible.",
+  "Front matches the 2D well: 5-stripe awning with gold rod and finials, 4 fruit crates in the right colours, striped towel at the front-left, side flower pots, marble posts with gold panels.",
+  "A slight warm tint on the gold is optional.",
+  "No floating parts, no holes in the top view. No ray-burst, no accidental faces."
+ ],
+ "HaloVar4_Lantern_A": [
+  "Add LampGlass (Glass material, slight transparency) and LampCore (Neon/PointLight) parts inside the head for night, as 디자인 검수 planned. Apply the same to B-E.",
+  "Check the plinth panel in Studio day light. If it reads as a grey metal patch, try lowering the effect of the SurfaceAppearance MetalnessMap, or accept it, since it is small and low. Do not repaint it.",
+  "Optional warm tint on the gold.",
+  "Shape matches the 2D (IoU 0.91-0.93 on all 4 sides). The top view shows a hexagonal gold cap, not a ray pattern. No accidental faces."
+ ],
+ "Halo_Statue": [
+  "Shape matches the 2D part by part: helmet with crest finial and side rivets, cross ribs on the helmet, pauldrons, belt with round buckle, blue front tabard with zigzag hem, shield with 4-point star, spear in the right hand, round plinth with gold ring, square pedestal with gold diamond and corner brackets on all 4 sides. There are no holes in the top view and no floating parts.",
+  "Albedo is clean cream marble with light veins and no baked shadows. Gold is a little lemon. Try SurfaceAppearance Color around (255,245,230) to warm it towards the 2D gold.",
+  "No accidental faces (the visor is a helmet). The shield is a 4-point star, not a ray pattern.",
+  "Size 0.503 x 0.392 x 1.0, pivot centred, min z 0. Ready for step 5."
+ ],
+ "Town_Halo_Fountain3": [
+  "Shape is complete: finial with spike, small top bowl with water, column, big middle bowl with gold rim band, gold collar, basin wall in 2-3 block rows with a gold band, 4 posts with gold balls and gold plaques. There are no holes in the top view. The silhouette IoU of 0.53 comes from the 2D being drawn from above (water surfaces), not from missing parts.",
+  "Basin water and top-bowl water are clean blue in the albedo top view.",
+  "Gold is orange-lemon. A slight warm tint is optional.",
+  "No ray patterns (the top view shows concentric rings) and no faces."
+ ],
+ "HaloFlowerPotHQ_Rose": [
+  "Shape itself is fine: no holes, leaves read correctly, pot, stem ring and gold foot all present, symmetric 4-fold bouquet.",
+  "The FAIL is for colour. The wrong-colour (orange) centre rose sits where the camera looks, and side roses carry an orange smear that a SurfaceAppearance tint cannot remove. Per the gate rules this goes back to step 2 for another white model. When the new texture comes back, check the top/centre colour first.",
+  "If 최종 검수 decides to keep it anyway, turn the pot so its front faces the path and accept the peach centre rose. No extra Studio part can cover it cleanly.",
+  "No ray patterns and no accidental faces."
+ ],
+ "HaloChunk_GateLeaf": [
+  "The front matches the 2D almost exactly (IoU 0.997). It has the 8-petal rosette with round centre, the circle with 4 diamonds and a top spike, 3 lancet panels below, and a double outer moulding following the pointed arch. The relief is crisp at 2048 and the albedo has no stains or baked shadows.",
+  "Side views: a thin leaf with the rosette boss on the front. There are no holes and no floating junk. Thickness 0.049 against height 1.0.",
+  "Left/right pair: the front design is symmetric, so a Blender mirror copy will look identical.",
+  "No ray patterns: the rosette is a flower with petals, not rays. No faces."
+ ],
+ "HaloChunk_DomeOnion": [
+  "Shape matches the 2D (IoU 0.95-0.98 on all sides). It has the onion finial on a collar, an octagonal cap, a ribbed dome with about 12 even ribs, pointed arches around the base band, the round boss on the front arch only (as in the 2D), and a 2-3 tier base ring. There are no holes, lumps or junk. The side 'knob' at the base edge in the l/r views is the front boss seen from the side.",
+  "Albedo is clean, with no baked shadows or stains. The lit render looks good.",
+  "No accidental faces."
+ ],
+ "HaloVar3_RoundTree_F": [
+  "Can't fix the blue specks in step 5 (no repaint). Face the side with fewer visible gaps toward the path if possible, or accept them; they disappear at normal distance.",
+  "Tint the gold slightly warmer and darker (SurfaceAppearance Color multiply, e.g. about 0.95,0.92,0.85) to move it off lemon yellow.",
+  "Shape, drape count (5 hanging clusters), the twin-strand trunk, and 3 arched blue windows per view all match the 2D. Top view is clean with no holes. No ray-burst and no accidental faces."
+ ],
+ "HaloVar3_RoundTree_G": [
+  "Warm and darken the gold slightly with a Color multiply. Optionally cool the marble a touch.",
+  "Windows: 3 per view front and back, 2 on the left and right (about 6 around), arched with gold frames, matching the 2D. Panel seams are painted.",
+  "No holes and no floating bits. The top view is a radial leaf rosette of round lobes, not a ray-burst. No accidental faces."
+ ],
+ "HaloVar3_Topiary_C": [
+  "Only a light gold warm-down tint is needed (gold about 241,193,47 vs 2D 221,195,67).",
+  "3 tiers, stem segments between tiers, a fluted white pot and 2 arched blue windows per front view all match. The top view is closed with no holes. No ray-burst and no faces."
+ ],
+ "HaloVar3_Topiary_D": [
+  "In Studio, rotate the model 22.5° about Y so a flat window face fronts the path, matching the 2D front. Then the 2 missing corner balls sit at the sides (45° from front) rather than dead left and right; check they are not on the most-seen side. Small extra gold ball parts at those 2 corners are allowed if wanted.",
+  "Light warm tint on the gold. Optionally cool the cream marble slightly.",
+  "Spiral reads clearly in studio light. Leaf accents present. Top view closed, no holes or floating bits. No ray-burst or faces (the faint X mark on the finial top disc is not a face)."
+ ],
+ "HaloVar3_Planter_E": [
+  "Place it with the back against a wall or building (the earlier 디자인 검수 note is confirmed). Put the wide lower tier toward the path.",
+  "Flower count matches the 2D exactly: upper bed 3 white + 2 blue, lower bed 3 white + 3 blue. 4 gold domes, windows on all 4 front posts plus 2 on the lower front panel, as in the 2D. Front silhouette IoU 0.94.",
+  "Slight warm-down tint on the gold. No holes in the top view. No ray-burst, no faces."
+ ],
+ "HaloChunk_DomePavilion": [
+  "Shape matches the 2D part by part: ball finial with neck ring, ribbed dome, octagonal gold cornice slab, 3 arches per face with gold inner trims and impost bands, white plinths. Top view is a clean octagon with no holes. Silhouette IoU is 0.86-0.88, and the misses come only from the 2D's higher view angle.",
+  "Optional: an SA Color around (0.97,0.99,1.0) takes a bit of the peach off the marble. Do not darken the gold, which is already orange-gold (241,173,17) with metal from PBR.",
+  "Kid-safety: no ray-burst (dome ribs are 3D ribs, not painted stripes), no accidental faces in the arches."
+ ],
+ "HaloChunk_DomeTowerSmall": [
+  "Matches the 2D closely: cone spike with collar step, smooth onion bulb (the 2D bulb is also smooth, no ribs), neck with top collar band, thick rounded base disc. IoU is 0.97-0.985 on all 4 sides. Albedo is clean solid gold-orange with no stains. Top view is round with no holes.",
+  "No tint needed beyond the normal gold metal look. Check day and night that it does not go brown-olive in shade, as the grey studio row suggests.",
+  "Kid-safety: nothing to flag."
+ ],
+ "HaloChunk_ConeTree": [
+  "Deepen and de-yellow with SA Color around (0.95,0.85,0.9): it brings G 168 to about 145 like the 2D mean, and keeps some lime. Judge it in day and night photos next to the 2D. If it still reads as a flat lime blob, a roughness/normal-driven look cannot add the light tips, so accept it or send back.",
+  "Turn it so the most rounded side (front or back, IoU 0.93) faces the path. Avoid showing the square top from a high angle next to round trees.",
+  "Kid-safety: the top view shows a rosette of nubs radiating from the tip, but these are same-colour 3D bumps, not stripes, so there is no ray-burst. No accidental faces."
+ ],
+ "HaloChunk_JuiceParasol": [
+  "Shape is good: 4 gold posts with ball tops, finial with collar, 5-panel scalloped canopy on the long faces (blue-white-blue-white-blue as in the 2D), 3 crates in the right order (orange/lemon/apple front, mirrored on back), white balusters, gold rails, leafy greens. The low IoU (0.62-0.65) is a silhouette artefact (the open space under the canopy) and not a defect.",
+  "Put the long front face toward the path and, if possible, one short end against a wall or neighbour stall to hide the all-blue end panel.",
+  "Gold albedo is clean yellow-gold. Only normal metal tuning is needed, no colour multiply.",
+  "Kid-safety: no faces. The top-view stripe X with a gold centre is flagged above for the lead's rule decision."
+ ],
+ "HaloChunk_Greenhouse": [
+  "Structure matches: A-frame with gold rafters, centre post plus 2 posts each side on the gable, 5 bays on the long sides, 4 corner balls plus 2 ridge-end balls, gold plinth rim. The gable faces have crisp painted plants and flowers like the 2D. Top view has no holes.",
+  "Gable end toward the path as 디자인 검수 said. If possible, put a long side against a hedge or wall too. Take the q34 day/night photo from the default camera height, because the roof smear is what players will see most.",
+  "Allowed fix: thin transparent glass wedge parts in Studio to close the two lower gable-corner gaps.",
+  "Kid-safety: no faces, no ray-burst."
+ ],
+ "HaloVar4_Lantern_B": [
+  "One SurfaceAppearance.Color multiply changes the gold and the marble together. A warm tint to push the gold toward orange would make the marble, already peachy, peachier. Keep the tint near neutral, around (255,250,245) at most.",
+  "Night: add a PointLight or a small Neon part inside the globe. The studio view shows olive glass and the PBR view pale lemon glass, so the glow has to come from a light.",
+  "The silhouette's red base corners come from the 2D being drawn from above. They are not a shape defect.",
+  "The sheet stats show a 4096 normal map, 4096 metallic-roughness and an 8192 colour map. Roblox uses 1024, so downscale on import."
+ ],
+ "HaloVar4_Lantern_C": [
+  "Every part is present against the 2D, on front, back and both sides. The lantern is attached by its chain and nothing floats. The top view shows the arm, the lantern cap disc and the post block, with no holes.",
+  "The red lens in the front silhouette between the arch and the strut comes from the 2D being drawn from above and the 0.973 aspect fit. It is not missing geometry.",
+  "The arm hangs over one side. Set its yaw so the lantern reaches over the path. A left/right pair would need a Blender mirror.",
+  "Keep the tint near neutral, because the marble is already warm at (241,224,205). Add a PointLight inside the lantern for night."
+ ],
+ "HaloVar4_Lantern_D": [
+  "Every part is present: centre finial, 2 arm-end finials, 2 curved marble braces with gold lines, both lanterns attached to the arm ends, gold rings at the top and bottom of the column, the gold-framed pedestal panel on all 4 faces and the base gold line. The top view is symmetric with no holes.",
+  "The model is symmetric, so front and back are interchangeable. Its thin side (depth 0.251) faces along the path.",
+  "Do not add a warm tint, because the marble is already peachy. Put a PointLight in each lantern for night."
+ ],
+ "HaloVar3_Lantern_E": [
+  "Face the albedo_f side toward the path. It is the only side whose cage matches the 2D.",
+  "base_dark_frac 0.0062 is not visible: no albedo view f/l/r/b/top/fbig has dark pixels, so it is the underside sitting on the ground.",
+  "The top view is a clean gold disc. A tiny gold smear on the slab top at one corner is negligible.",
+  "Add a PointLight or Neon inside the cage for night. Keep the tint near neutral because the marble is (236,217,204)."
+ ],
+ "HaloVar3_RoundTree_E": [
+  "Face the albedo_r or albedo_l side toward the path. Each shows about 6 fruits; the front and back show only 4.",
+  "This is borderline. If 최종 검수 wants the dense-fruit look of the 2D, step ⑤ cannot fix it, because fruit count is set by the white model. That would mean going back to ② and picking a white model with more fruit. The canopy shape itself is intact: no holes in the top view, no floating parts, no broken leaf panels.",
+  "Kid-safety: the top view shows a radial rosette of leaves at the crown, not a ray-burst. No accidental faces in the fruit arrangement on any side.",
+  "Keep the tint neutral. A warm tint would push the white planter toward peach, and the fruit colour cannot be tinted separately."
+ ],
+ "HaloChunk_ShopSign": [
+  "Silhouette front IoU 0.962 and back IoU 0.956. 2 end balls, 2 scroll curls and the 4-petal fleur with its centre bead all match the 2D. The back carries the same ornament as the 2D back. The top view shows no holes and the mesh is a single closed island in every view.",
+  "Shop text goes on a SurfaceGui/TextLabel on the plate front, with no letters in the mesh. Because both faces are ornamented, the sign can also hang as a blade sign.",
+  "In the q34 render the metal reads a little mustard/olive at grazing angles. In Roblox, check the day and night photos and, if it looks dull, use a small warm Color multiply (about 1, 0.95, 0.88) or adjust metalness. Do not repaint.",
+  "Kid-safety: the fleur is a 4-petal flower, not a ray fan. No accidental faces."
+ ],
+ "HaloChunk_IvyWall": [
+  "Set DoubleSided on: the leaves are thin open panels (162 open edges). The GLB already flags doubleSided, but the MeshPart property must be set too.",
+  "Put the flat back on the wall. Prefer flat wall faces over outside corners, so the edge-on side profile is not shown to people walking past.",
+  "The leaves are darker than the 2D and a Color multiply cannot brighten them. Judge in the day and night photos next to the 2D and only tint if the hue looks off.",
+  "No floating pieces in any view (one silhouette island). No ray patterns or accidental faces."
+ ],
+ "HaloChunk_IvyBalcony": [
+  "Set DoubleSided on (open leaf panels, 377 open edges).",
+  "Hang the top crown so the bare horizontal vine sits along or behind the rail/beam part.",
+  "If the stemless leaf columns look wrong in the day and night photos, a thin green cylinder part can serve as the stem on the centre-right and far-right strands. Alternatively, 최종 검수 can compare white model #1 (0a16e020) in the wm_1013 sheet: its strands look denser and closer to the 2D's bushy masses. I did not re-render it, so this needs a look, not an automatic redo.",
+  "Under pergolas (houses 06/08/10/12) the flowerless back will be visible from below. It is green, so acceptable.",
+  "No ray patterns or accidental faces."
+ ],
+ "HaloChunk_FlowerBushPot": [
+  "Put a green sphere / half-sphere Studio part (leaf green, matte) inside the hollow back so the dome reads as full from behind. Place the back toward the house wall as well (houses 01/02 by the door).",
+  "The pot is a skeleton part. The bush is only 0.46 of its width deep, so keep the pot diameter at or below that, or let the green ball cover the pot top. Otherwise the pot rim will stick out behind the shell.",
+  "Set DoubleSided on (inner shell faces, 182 open edges).",
+  "The top view is closed (no hole from above) and the front silhouette IoU is 0.889. No ray patterns or accidental faces."
+ ],
+ "HaloChunk_BreadDisplay": [
+  "Add a thin blue Glass/SmoothPlastic Studio part (arched or semicircle) over the inner arch panes, or over the whole arch glass, to hide the green smear. This is the allowed glass-part fix. Check it next to the 2D in the day and night photos.",
+  "Mount it in the bakery shop window with the back against the shop. If the bakery interior becomes enterable later (A23-120), the flat orange back slab must be covered by an interior wall or shelf part.",
+  "Set DoubleSided on: about 2081 open edges, mostly at the bottom-front flower box and the back panel. No visible holes in the renders.",
+  "Silhouette front IoU 0.986. The shelf layout matches the 2D: potted plant, round loaves, 3 baguettes with striped cloth, rows of buns, two flower boxes each with 1 white + blue flowers.",
+  "Kid-safety: the round loaves have pumpkin-like segment scoring, a 3D form and not a flat ray fan, so OK. The window mullions are vertical bars plus an inner arc, not a sunburst. No accidental faces."
+ ],
+ "HaloChunk_DomeOnionSlim": [
+  "SA Color warm tint toward orange-gold, same as the other gold domes (e.g. about 1.0/0.93/0.80).",
+  "Seat it on a solid roof/tower top that covers the whole base circle. If the rim overhangs open air, add a thin gold Studio disc under the base.",
+  "Shape matches the 2D well: spike + 2-ball finial, 8 double ribs, 4 base finials, base plate (IoU 0.95-0.97). No stains (dark fraction 0), no accidental faces.",
+  "From straight above the 8 ribs radiate from the finial. That comes from the approved 2D and is not visible from normal angles, so it is not a ray-burst issue."
+ ],
+ "HaloChunk_DomeBall": [
+  "SA Color warm orange-gold tint (all domes).",
+  "Otherwise matches the 2D well: ball finial, 3-step collar, about 8 thin ribs, base ring (IoU 0.95-0.96). Bottom reads closed/dark from low angles, so it is not see-through. No faces, no ray patterns from normal views.",
+  "The tiny pale specks in 디자인 검수's PBR crops are not in the albedo. Leave them."
+ ],
+ "HaloChunk_DomeOctagon": [
+  "Place it so the 'b' side (the panel with the rectangle outline) faces the wall or the back of the building, never the plaza/path. If the dome is seen from all sides, put a thin gold Studio strip behind that panel's slit. If neither is possible, send it back to ② for another white model.",
+  "SA Color orange-gold tint.",
+  "Bottom is a closed flat cap (not see-through).",
+  "Avoid places where players look straight down on it (star + ribs from above)."
+ ],
+ "HaloChunk_DomeBrick": [
+  "No tint for the bricks (multiply would only make them darker). Keep the cream as is. At most a very light warm tint, or none.",
+  "Turn the front (thick arch side) toward the street/plaza. The back has only a thin cream rim.",
+  "Seat it on a solid roof top that covers the base ring, or add a Studio disc under it.",
+  "No ray-burst pattern from above, no faces. The front arch and brick read very close to the 2D (front IoU 0.947)."
+ ],
+ "HaloChunk_DomePorchHalf": [
+  "Mount the cut side exactly flush to the wall (no gap) over the door. DoubleSided is not needed because the inner surface exists.",
+  "SA Color orange-gold tint like the other domes.",
+  "Do not put it under a walkable terrace or balcony where players look straight down on the fanned ribs.",
+  "Finial (spike + ball + ring + collar), ribs and base lip match the 2D front well (IoU 0.957). No faces."
+ ]
+}

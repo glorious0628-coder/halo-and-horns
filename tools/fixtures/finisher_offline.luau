@@ -8,6 +8,9 @@
 
 local C0F = execute("Config", CONFIG_SOURCE, nativeEnv())
 local FIN = C0F.Finisher
+-- gameplay plan 2026-10-13 1-A #10: shipped with no card (Kinds = {}) until the card's window (2-A #3), whose Kinds are these;
+-- the card worlds below turn them on (o.Shipped = the shipped Config: no card)
+local WINDOW_KINDS = { SlimeKing = true, CaptainClatter = true }
 -- the King Slime's card (Config.Finisher.Cards[kind], 2026-10-09: per boss kind; Captain Clatter has the other)
 local CARD = FIN.Cards.SlimeKing
 
@@ -23,6 +26,7 @@ local function finWorld(o)
 	local K = cfg.Skills
 	K.ZEnabled = o.Z == true
 	K.Unlock = { Q = 1, Z = 5, X = 8 }
+	if not o.Shipped then cfg.Finisher.Kinds = table.clone(WINDOW_KINDS) end
 	if o.Edit then o.Edit(cfg) end
 	local reg = w.Registry
 	local Signal = w.Util.Signal
@@ -152,13 +156,14 @@ end
 
 ------------------------------------------------------------------ config
 runGroup("config", function()
-	check(FIN.Kinds.SlimeKing == true and FIN.Kinds.BigSlime == nil, "the King Slime boss gives the card, the Slime Prince not")
+	check(next(FIN.Kinds) == nil, "shipped with no card until its window (gameplay plan 1-A #10: Kinds = {})", show(FIN.Kinds))
 	local kinds = 0
-	for k in FIN.Kinds do
+	for k in WINDOW_KINDS do
 		kinds += 1
-		check(type(FIN.Cards[k]) == "table", "every card kind has its Cards entry", k)
+		check(type(FIN.Cards[k]) == "table", "every card kind of the window has its Cards entry", k)
 	end
-	check(kinds == 2 and FIN.Kinds.CaptainClatter == true, "only the field bosses (King Slime, Captain Clatter)", kinds)
+	check(kinds == 2 and FIN.Cards.BigSlime == nil, "the window's cards: the field bosses only (King Slime, Captain Clatter), never the Slime Prince",
+		kinds)
 	check(FIN.Seconds == 10 and FIN.Grace == 1 and FIN.Points == 1, "10 s to pick (+1 s network grace), 1 point", show({ FIN.Seconds, FIN.Grace, FIN.Points }))
 	local jelly = C0F.Loot.Items[CARD.Help.Item]
 	check(CARD.Help.Item == "Jelly" and jelly ~= nil and jelly.Kind == "Material", "Help gives Jelly (a material)")
@@ -250,6 +255,16 @@ runGroup("free riders", function()
 end)
 
 ------------------------------------------------------------------ who gets a card (kills through the real presses)
+runGroup("shipped: no card", function()
+	-- 1-A #10: the shipped Config sends no card (nobody can see one yet); the kill is paid as before
+	local w = finWorld({ Shipped = true })
+	local p = w:Hero(151)
+	local king = w:King()
+	w:Swing(p)
+	check(king.Alive == false and #w:Cards(p) == 0 and #w.Kills == 1 and w.Kills[1].Info.Kind == "SlimeKing",
+		"a manual swing kill of the King with the shipped Config: no card, the kill paid", show({ king.Alive, #w:Cards(p), #w.Kills }))
+end)
+
 runGroup("who gets a card", function()
 	-- a manual swing kills it: a card, and the kill itself is paid as before (Manual on the info)
 	local w = finWorld()

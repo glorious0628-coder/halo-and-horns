@@ -1383,7 +1383,9 @@ end)
 
 ------------------------------------------------------------------ 11. the practice kill: no boss credit anywhere
 runGroup("no boss credit", function()
-	local w = fkWorld()
+	-- gameplay plan 2026-10-13 1-A #10: the finisher card ships off (Kinds = {}); this group turns the card's window on, so the
+	-- practice kill's "no card" is still told apart from the control's card
+	local w = fkWorld({ Edit = function(c) c.Finisher.Kinds = { SlimeKing = true, CaptainClatter = true } end })
 	local items = function(p) return deepCopy(w.Data[p].Items or {}) end
 	local p = w:Hunter(101, "Halo", { Step = RETRY })
 	w:FKTick()

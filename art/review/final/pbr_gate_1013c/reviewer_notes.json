@@ -1,0 +1,69 @@
+{
+ "NEW_Hedge": [
+  "Flower layout matches the 2D almost 1:1: front has 13 white + 12 blue flowers, the same as the 2D. Flower area is 17.5% of the 3D front vs 18% of the 2D front. Back and top are also flowered, and the top view has no holes.",
+  "Optional: in Blender, scale depth (Y) to about 0.75 so the end view matches the slimmer 2D. Otherwise accept it as a thicker hedge.",
+  "Roblox material: multiply SurfaceAppearance Color by a light warm yellow-green to lift the leaves toward the 2D. Check the notched white flower at close range in day and night photos."
+ ],
+ "HaloVar4_Planter_D": [
+  "Orientation (allowed fix): rotate 90 degrees around the up axis in Blender, or place it in Studio so the current LEFT/RIGHT side faces the path. That side matches the 2D front: a flat centre panel with a gold frame and angled side panels.",
+  "Roblox material: tint the gold toward orange-gold. Tinting the whole SurfaceAppearance also warms the marble a little, so check the white stays white (day and night photos).",
+  "No holes from the top: the rim is closed and the topiary fills the pot. No dark baked blotches."
+ ],
+ "NEW_FlowerBush": [
+  "Not FAIL because a reselect has little upside. Quick clay renders of all 4 white models (wm2_1013/NEW_FlowerBush) show the current pick 7cafd99b is the only one with no see-through gaps. 24520619 and 6e6bd726 have open holes (6e6bd726 already failed for that). 93829d23 has one front-centre flower but has gaps near the base. All four have equally sparse flower geometry.",
+  "Placement: show the BACK (more flower area: 1 white + 5 blue) or the top-heavy side toward the path, not the current front. The top view also has a centre blue flower, which helps from an elevated camera.",
+  "Roblox material: multiply the leaves toward a brighter yellow-green. Lavender-blue and white flowers already match the 2D colours. Confirm in day/night photos that the white flowers do not read grey."
+ ],
+ "HaloSign_SignJuice": [
+  "Front matches the 2D part for part: post with blue panel and top/bottom finials, curved marble arm with blue band and end ball, two chains with balls, gold-rim marble disc, glass with blue-white striped straw and orange slice. No dark blotches (dark fraction 0.0003).",
+  "Mount with the gold slab face against the wall (post on the wall side, as in the 2D front). Keep the disc perpendicular to the wall so both cup faces read as intended.",
+  "Roblox material: tint the gold toward orange-gold. The orange-slice segments are a fruit pattern from the approved 2D, not a ray-burst; no faces."
+ ],
+ "HaloReasonHQ_FlowerCart_Bouquet": [
+  "Front is very good: 4 buckets in the 2D order (daisies, blue, tulips, mixed), flower counts about the same, gold band and two ring handles on each bucket, hanging vine on each bucket front. Top view has no holes.",
+  "SurfaceAppearance/MeshPart: set DoubleSided ON.",
+  "Place the back against the cart backboard or a wall, and keep side views short (e.g. between the cart side boards), because the sides read as a flat tilted layer.",
+  "Check bucket metal colour in Roblox day and night; use a light grey Color multiply if it looks chalk-white.",
+  "Kid-safety OK: no faces, no ray patterns."
+ ],
+ "HaloVar3_Balustrade_E": [
+  "Front matches the 2D: 4 open arches with gold trim, 3 full columns plus 2 half columns, 2 posts with blue banners in gold frames and rod-end balls, onion domes with spires, gold plinth line. Sides are plain as in the 2D. Top view has no holes. The red arches in the silhouette overlay are only a 2D-mask fill artefact; the arches really are see-through in both.",
+  "Face the front (banner side) to the path or plaza. If the back will be seen, add thin blue panel parts with gold-trim parts on the back of each post (small extra Studio parts).",
+  "Warm the gold slightly with SurfaceAppearance Color (less green); leave the arch-soffit stains as they are.",
+  "Kid-safety OK: dome tops from above show only the spire, no face-like marks; no ray patterns."
+ ],
+ "HaloVar3_Balustrade_F": [
+  "Shape is complete: 6 balusters, gold rail band, hedge with 8 front daisies, 2 posts with blue lancet windows on front and back, onion domes with spires. Top view shows no holes; the hedge overhangs the post sides a little, as in the 2D side views.",
+  "Put the right end where it butts against the next section or a wall, or add a small blue lancet panel part with a gold frame on that face.",
+  "The baluster streaks cannot be fixed by tint. Look at them in Roblox at normal player camera distance, day and night. If they read as dirt, 최종 검수 should decide whether to re-pick a white model.",
+  "Kid-safety OK: no faces, no ray patterns."
+ ],
+ "HaloVar4_Balustrade_A": [
+  "Shape matches the 2D well: 5 balusters with gold rings top and bottom, top rail with gold line, posts with gold-framed panels on front, back and both sides, gold balls on gold collars, plinth with gold line. Back matches the front. Top view has no holes.",
+  "Use SurfaceAppearance Color around (0.97, 1.0, 1.0) to cut the pink a little, and warm the gold if needed. Check day and night against the 2D.",
+  "Leave the inner-post grey patch; it is only seen through the baluster gaps.",
+  "Kid-safety OK: no faces, no ray patterns."
+ ],
+ "HaloVar4_Balustrade_B": [
+  "Part count matches the 2D: 2 square posts with gold-framed panels, gold caps and balls; 3 balusters with gold top and bottom rings on square plinths; split top rail with the middle seam, gold band under it; 3-block base with gold band. The back mirrors the front, as in the 2D.",
+  "Top view is closed. No holes or floating bits. Studio and q34 shapes are clean.",
+  "The front silhouette IoU of 0.734 is a mask artefact: the 2D mask fills the closed gaps between the balusters (the red baluster shapes). It is not a 3D defect.",
+  "The q34 light shows the gold band under the top rail as pale and glassy. This is metallic sky reflection; the albedo there is gold. Optional: lower metalness a little and add a warm gold tint in SurfaceAppearance.Color."
+ ],
+ "HaloVar4_Balustrade_C": [
+  "Send back to step 2 for another white model: an open L (no third side), 90 deg corner, big ball on the corner post, 3 balusters per arm.",
+  "What is right in this model: 6 balusters in total (3 per arm), a bigger corner ball than the end-post balls, gold-framed post panels, and clean albedo with no dark blotches."
+ ],
+ "HaloVar4_Balustrade_D": [
+  "Matches the 2D: tall post on the left and short post on the right, both with gold-framed recessed panels and ball finials; 5 balusters at stepped heights with gold rings on stepped plinths; sloped top rail with gold band; sloped base with gold band and the kink near the short post. The back mirrors the front.",
+  "The tall end's bottom is about 20% of the height above the short end's bottom, by design. Place it only along a stair or slope; on flat ground the tall end floats and the stepped underside shows.",
+  "Optional: warm the gold with SurfaceAppearance.Color."
+ ],
+ "NEW_WallLamp": [
+  "Matches the 2D: pointed hexagonal marble plate with gold rim and blue inner panel with two gold beads; marble bracket block with gold ball finial; ring link; marble dome with gold ribs; hex gold rims; 3 visible arched glass panels (blue edge, warm centre); tiered gold bottom and ball finial. Front IoU 0.961. No see-through holes from front or back.",
+  "Mount with the gold plate back flat against the wall. The lantern hangs below the plate bottom (zf 0.02-0.50), so leave clearance.",
+  "The six dome ribs seen straight from above form a radial lantern structure, not a flat ray-burst; it is not visible at normal eye level.",
+  "Night: the glow is only painted in the albedo. Add a small Neon part or a PointLight inside the lantern (allowed small Studio part) and check the day and night photos.",
+  "Optional: warm the gold with SurfaceAppearance.Color."
+ ]
+}

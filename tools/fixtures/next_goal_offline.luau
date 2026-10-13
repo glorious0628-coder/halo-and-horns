@@ -172,9 +172,22 @@ runGroup("the early goals and the story keep their place", function()
 	local w = ladderWorld({ Features = { Clatter = true } })
 	local Q = w.Reg.QuestService
 	w.Reg.ClatterService = { NextGoal = function() return "Next goal · Captain Clatter: a Badge is waiting" end }
-	-- no iron weapon yet: the iron rows first
+	-- no iron weapon yet: the iron rows first. Gameplay plan 2026-10-13 1-A #2: the Forge sells no weapon (Buy = false), so
+	-- the iron goal is the drop line (Tutorial.Text.NextIronDrop, 게임성 개발 1's text: set here when this branch has none);
+	-- with no such line there is no iron row (never the gold one); Buy = true = the old gold row
+	local TT = w.Config.Tutorial.Text
+	local dropText = TT.NextIronDrop
+	TT.NextIronDrop = dropText or "Next goal · Beat a King Slime for an Iron weapon"
 	local a, ad = veteran(w, 9, "Halo", 20, { WeaponTier = 1, WeaponOwnedMask = 1, CarriedGold = 10 })
-	check(Q.PinnedRow(a).GoalKind == "IronGold", "no iron weapon: the iron goal first", show(Q.PinnedRow(a).GoalKind))
+	check(w.Config.WeaponShop.Buy == false and Q.PinnedRow(a).GoalKind == "IronDrop" and Q.PinnedRow(a).Text == TT.NextIronDrop,
+		"no iron weapon: the iron goal first (the drop line)", show(Q.PinnedRow(a).GoalKind))
+	TT.NextIronDrop = nil
+	check(Q.PinnedRow(a).GoalKind ~= "IronGold" and Q.PinnedRow(a).GoalKind ~= "IronDrop", "no drop line: no iron row, never the gold one",
+		show(Q.PinnedRow(a).GoalKind))
+	w.Config.WeaponShop.Buy = true
+	check(Q.PinnedRow(a).GoalKind == "IronGold", "Buy switched back on: the gold row", show(Q.PinnedRow(a).GoalKind))
+	w.Config.WeaponShop.Buy = false
+	TT.NextIronDrop = dropText or "Next goal · Beat a King Slime for an Iron weapon"
 	-- a pending skill
 	local b, bd = veteran(w, 10, "Halo", 3, { SkillSlots = 0 })
 	check(Q.PinnedRow(b).GoalKind == "Skill", "a pending skill is before the ladder", show(Q.PinnedRow(b).GoalKind))

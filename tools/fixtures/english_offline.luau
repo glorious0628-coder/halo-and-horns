@@ -115,8 +115,8 @@ runGroup("glossary names", function()
 	check(hero and hero.Label == "Hero", "the character window is 'Hero'", show(hero))
 	check(C.Power.Text.Label == "Power" and C.Tamer.Text.PetName == "Baby Slime" and C.Leaderstats.Names.Power == "Power",
 		"Power / Baby Slime", show({ C.Power.Text.Label, C.Tamer.Text.PetName }))
-	check(C.Ranking.Text.BoardNames.Honor == "Honor" and C.Ranking.Text.BoardNames.Infamy == "Infamy"
-		and C.Ranking.Text.BoardNames.Artisan == "Artisan Fame", "Honor / Infamy / Artisan Fame", show(C.Ranking.Text.BoardNames))
+	check(C.Ranking.Text.BoardNames.Honor == "Honor" and C.Ranking.Text.BoardNames.Infamy == "Mischief"
+		and C.Ranking.Text.BoardNames.Artisan == "Artisan Fame", "Honor / Mischief (A23-166: the shown name of Infamy) / Artisan Fame", show(C.Ranking.Text.BoardNames))
 	check(C.Game.Name == "Halo & Horns", "the game is 'Halo & Horns'", tostring(C.Game.Name))
 	check(C.Announce.Text.Honorific == "", "no honorific after names in English lines", tostring(C.Announce.Text.Honorific))
 	check(string.format(C.Announce.Text.HiddenName, F.Horns.Name) == "A member of the Horn Legion",
@@ -153,7 +153,7 @@ runGroup("the five names", function()
 		show({ SQ.Defs.N1.Start, SQ.Defs.N2.Start }))
 	local T = SQ.Text
 	-- A23-130 (server text verdicts 2026-10-11): the off-side line is the loss only, no guide voice
-	check(string.format(T.OffSideHalo, 2) == "Honor -2" and string.format(T.OffSideHorns, 2) == "Infamy -2",
+	check(string.format(T.OffSideHalo, 2) == "Honor -2" and string.format(T.OffSideHorns, 2) == "Mischief -2",
 		"the off-side line is the loss only (one toast, ASCII minus)", show({ T.OffSideHalo, T.OffSideHorns }))
 	check(C.Vitals.PotionMerchantLabel == "Fizzby" and C.Vitals.PotionMerchantName == "PotionMerchant",
 		"the potion seller's prompt says Fizzby (the model name stays)", show({ C.Vitals.PotionMerchantLabel, C.Vitals.PotionMerchantName }))

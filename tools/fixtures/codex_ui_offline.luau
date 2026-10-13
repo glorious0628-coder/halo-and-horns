@@ -352,7 +352,7 @@ local v = CodexUI.View("Slime", nil, "Halo")
 check(v.Known == false and v.Stage == 0 and v.Look == "None" and v.Name == "???" and v.KillsText == "Not met yet"
 	and v.Lore == "" and v.NextText == "" and v.DropsText == "", "a card not met: ???, no story, no drops", v.Name)
 v = CodexUI.View("Slime", { Kills = 1, Golden = 0, Stage = 1, First = t0 }, "Halo")
-check(v.Known and v.StageName == "Card" and v.Look == "Card" and v.Name == "Shard Slime" and v.KillsText == "Kills: 1"
+check(v.Known and v.StageName == "Card" and v.Look == "Card" and v.Name == "Shard Slime" and v.KillsText == "Defeated: 1"
 	and v.NextText == "Silver at 100", "Slime, 1 kill: Card, its name, 'Silver at 100'", v.NextText)
 check(v.Lore == Config.Codex.Lore.Slime.Halo, "the back speaks with my side's voice (Halo)", v.Lore)
 check(v.Where == "Found in: Squishy Meadow", "where it lives = its zone's name", v.Where)
@@ -463,7 +463,7 @@ check(slots == 4, "page 1 shows its 4 cards", slots)
 check(REG.Codex.Title() == "Monster Codex · 1/11 cards", "the title counts my cards", REG.Codex.Title())
 check(#VIEW.Tabs == 3 and VIEW.Tabs[1].Text == "Squishy Meadow" and VIEW.Tabs[1].Painted == "gold", "3 zone tabs, the open one gold")
 local big = VIEW.Big
-check(T.S.Kind == "Slime" and big.NameText.Text == "Shard Slime" and big.KillsText.Text == "Kills: 12", "the big card = Slime",
+check(T.S.Kind == "Slime" and big.NameText.Text == "Shard Slime" and big.KillsText.Text == "Defeated: 12", "the big card = Slime",
 	big.NameText.Text)
 check(big.ViewFrame.ImageColor3.X == 1 and big.Icon.Visible == true and big.Icon.Image == "rbxassetid://1",
 	"a met card in colour; no model -> the approved IconMonSlime picture")
@@ -534,7 +534,7 @@ check(same(before, slotsNow()) and T.S.Kind == "BigSlime" and VIEW.Slots.BigSlim
 	and VIEW.Slots.Slime.Rim.Thickness == 2, "choosing a card keeps the slots, moves the gold rim")
 VIEW.Grid:FindFirstChild("SlotSlime").Activated:Fire()
 remotes.Codex.OnClientEvent:Fire({ V = 1, Cards = { Slime = { Kills = 13, Golden = 0, Stage = 1, First = t0 } }, Glow = false })
-check(same(before, slotsNow()) and VIEW.Big.KillsText.Text == "Kills: 13", "a fresh snapshot redraws in place", VIEW.Big.KillsText.Text)
+check(same(before, slotsNow()) and VIEW.Big.KillsText.Text == "Defeated: 13", "a fresh snapshot redraws in place", VIEW.Big.KillsText.Text)
 remotes.Codex.OnClientEvent:Fire({ V = 1, Cards = { Slime = { Kills = 13, Golden = 0, Stage = 1, First = t0 },
 	FlowerSlime = { Kills = 1, Golden = 0, Stage = 1, First = t0 } }, Glow = false })
 local after = slotsNow()

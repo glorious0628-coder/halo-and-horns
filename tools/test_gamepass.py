@@ -150,7 +150,9 @@ def static() -> tuple[int, list[str]]:
     for text in ("cg, cx = payReward(player, cg, cx)", "local gotGold = payReward(player,", "paidGold += (payReward(player, g, x))",
                  "string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), \"reward\", nil, \"QuestDone\"", "Config.Text.QuestDone, Util.FormatNumber(gotGold)"):
         check(text in quest, f"QuestService shows what payReward / the first mission added: {text}")
-    check(quest.count("g, x = payReward(player, g, x)") == 2, "QuestService: the daily claim and the vacation show what was added")
+    # 최종 검수 10/13 (EarlyMult 0.35, A23-14 kept): the vacation claim passes its Lv9 cap (the cap is applied after the 2x XP pass)
+    check(quest.count("g, x = payReward(player, g, x)") == 1 and quest.count("g, x = payReward(player, g, x, room)") == 1,
+          "QuestService: the daily claim and the vacation show what was added")
     pay = function_block(quest, "local function payReward(")
     check("return math.max(0, gold), math.max(0, xp)" in pay, "payReward returns the gold and XP added")
     kaiju = strip_comments(read(SSS / "KaijuService.luau"))
@@ -167,13 +169,21 @@ def static() -> tuple[int, list[str]]:
     for fn in ("function M.GetGoldMult(", "function M.GetXPMult("):
         body = function_block(prog, fn)
         check("PassMult" not in body and "HasPass" not in body, f"{fn} leaves the pass out (it is applied once, in the grant)")
-    check(prog.count("* M.PassMult(player,") == 2, "the pass is applied in two places only: AddXP and boostGold")
+    # A23-167: AddXP takes XPBoost (the 2x XP pass or the first minutes, the larger), boostGold the gold pass
+    add_xp = function_block(prog, "function M.AddXP(")
+    boost = function_block(prog, "function M.XPBoost(")
+    check(prog.count("* M.PassMult(player,") == 1 and prog.count("* M.XPBoost(player)") == 1
+          and "amount = math.floor(amount * M.XPBoost(player))" in add_xp
+          and "return math.max(M.PassMult(player, \"XP2\"), early)" in boost,
+          "the pass is applied in two places only: AddXP (XPBoost) and boostGold")
     # 검수 2026-10-08: quest rewards double their gold (and XP) only; items (scrolls, jelly, potions, materials) never.
     # Item grants (LootService.GrantItem / drops, the quest / board / story item rewards) never read the pass: outside
     # ProgressionService / MonetizationService only KaijuService's survive cap and CraftService's craft XP line (A23-139,
     # user 10/12: 2x level AND crafting XP; the fixture's "craft XP pass" group checks it is that line only) read PassMult
+    # TestMetricsService (A23-160 the test's numbers board) only asks HasPass on a later join to count a pass that still works
+    # (read-only observer, grants nothing; tools/test_test_metrics.py checks it never pays or changes anything)
     readers = sorted(p.name for p in SSS.glob("*.luau")
-                     if p.name not in ("ProgressionService.luau", "MonetizationService.luau")
+                     if p.name not in ("ProgressionService.luau", "MonetizationService.luau", "TestMetricsService.luau")
                      and re.search(r"PassMult|HasPass|PassBoost|PassGold2|PassXP2", strip_comments(read(p))))
     check(readers == ["CraftService.luau", "KaijuService.luau"],
           f"items are never 2x: no grant path but the kaiju cap and the craft XP line read the pass ({readers})")
@@ -208,6 +218,21 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # A23-167 the first minutes x2 XP (게임성 개발 2, 2026-10-14)
+    ("early: the pass and the first minutes multiply (x4)", P, "\treturn math.max(M.PassMult(player, \"XP2\"), early)\n",
+     "\treturn M.PassMult(player, \"XP2\") * early\n"),
+    ("early: the pass alone (no first minutes)", P, "\tamount = math.floor(amount * M.XPBoost(player))\n",
+     "\tamount = math.floor(amount * M.PassMult(player, \"XP2\"))\n"),
+    ("early: for every save", P, "\treturn math.max(0, num(E.Seconds) - num(data.PlaytimeSeconds))\n", "\treturn num(E.Seconds)\n"),
+    ("early: one second longer", P, "\treturn math.max(0, num(E.Seconds) - num(data.PlaytimeSeconds))\n",
+     "\treturn math.max(0, num(E.Seconds) + 1 - num(data.PlaytimeSeconds))\n"),
+    ("early: the switch ignored", P, "\tif type(E) ~= \"table\" or E.Enabled == false then return 0 end\n",
+     "\tif type(E) ~= \"table\" then return 0 end\n"),
+    ("early: the cap before the boost", P,
+     "\tamount = math.floor(amount * M.XPBoost(player))\n\tif cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end\n",
+     "\tif cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end\n\tamount = math.floor(amount * M.XPBoost(player))\n"),
+    ("early: Config 30 minutes", C, "\tSeconds = 600,\n\tMult = 2,\n", "\tSeconds = 1800,\n\tMult = 2,\n"),
+    ("early: Config x3", C, "\tSeconds = 600,\n\tMult = 2,\n", "\tSeconds = 600,\n\tMult = 3,\n"),
     # A23-144 chat bubble skins
     ("bubbles: the pack is free", M, "\treturn MonetizationService.HasPass(player, Config.Bubbles.Pass)\nend\n", "\treturn true\nend\n"),
     ("bubbles: any side's free bubble", M, "\tif side then return side == player:GetAttribute(\"Faction\") end\n", "\tif side then return true end\n"),
@@ -250,7 +275,8 @@ MUTATIONS = [
     ("sanitize keeps non-boolean answers", C, "if type(id) == \"string\" and type(v) == \"boolean\" and",
      "if type(id) == \"string\" and"),
     # the boost
-    ("no 2x XP", P, "\tamount = math.floor(amount * M.PassMult(player, \"XP2\"))\n", ""),
+    ("no 2x XP", P, "\tamount = math.floor(amount * M.XPBoost(player))\n", ""),
+    ("no 2x XP pass (the first minutes only)", P, "\treturn math.max(M.PassMult(player, \"XP2\"), early)\n", "\treturn early\n"),
     ("no 2x Gold", P, "\t\treturn math.floor(amount * M.PassMult(player, \"Gold2\"))\n", "\t\treturn amount\n"),
     ("every source doubled", P, "\tif type(sources) == \"table\" and sources[source] == true then\n",
      "\tif type(sources) == \"table\" then\n"),
@@ -277,7 +303,8 @@ MUTATIONS = [
     ("left player written", M, "\t\tif player.Parent == nil or S.PlayerService.GetData(player) ~= data then return end\n", ""),
     ("closed prompt counts", M, "\tif purchased ~= true or typeof(player)", "\tif typeof(player)"),
     ("purchase not saved", M, "\t\tif answer == true and data then seenTable(data)[p.Key] = true end\n", ""),
-    ("debug override ignored", M, "\tif d and d[key] ~= nil then return d[key] == true end\n", ""),
+    ("debug override ignored", M, "function MonetizationService.HasPass(player, key)\n\tlocal d = PASS.Debug[player]\n\tif d and d[key] ~= nil then return d[key] == true end\n",
+     "function MonetizationService.HasPass(player, key)\n\tlocal d = PASS.Debug[player]\n"),
     # looks
     ("SetLook: any faction", M, "\t\tif not look or look.Faction ~= player:GetAttribute(\"Faction\") or not MonetizationService.OwnsLook(player, id) then\n\t\t\treturn\n",
      "\t\tif not look or not MonetizationService.OwnsLook(player, id) then\n\t\t\treturn\n"),

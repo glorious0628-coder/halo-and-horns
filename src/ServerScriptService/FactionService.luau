@@ -15,7 +15,7 @@ local RECOUNT_INTERVAL = 10 -- seconds between periodic faction recounts (spec Â
 local LEAVE_FORGET_SECONDS = 60 -- how long a leaving player stays in the "leaving" set (they are gone by then)
 local ALTAR_PROMPT_RATE = 0.5 -- private rate limit for the altar ProximityPrompt
 local WARN_THROTTLE = 10
-local SCORE_NAME = { Halo = "Honor", Horns = "Infamy" } -- score lost by a FREE switch away from that faction
+local SCORE_NAME = { Halo = "Honor", Horns = "Mischief" } -- the SHOWN score lost by a FREE switch away (A23-166)
 local SCORE_KEY = { Halo = "Honor", Horns = "Infamy" } -- CR-L11: the stat behind SCORE_NAME
 local UNDERDOG_IDLE_SECONDS = 120 -- CR-L7: no input / combat for this long = not counted for the underdog bonus
 

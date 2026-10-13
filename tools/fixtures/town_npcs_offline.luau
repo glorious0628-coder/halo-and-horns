@@ -77,6 +77,10 @@ function methods:PivotTo(cf)
 	if self.PrimaryPart then self.PrimaryPart.Position = self.Pivot.Position end
 end
 
+-- gameplay plan 2026-10-13 1-A #9: Tiny (the Crossroads) and Rose (Horns Den) have temporary bodies too; the groups below count
+-- the Halo town's people, so a world leaves them out unless o.Others (their own group checks them)
+local OTHERS = { Tiny = true, Rose = true }
+
 -- one world per scenario
 local function townWorld(o)
 	o = o or {}
@@ -86,6 +90,11 @@ local function townWorld(o)
 	-- most groups count the bodies of the seven people; the potion seller (on in the real Config) is on only for o.SellerOn / the groups that switch it themselves
 	if o.SellerOn ~= true then
 		for _, e in cfg.TownNpcs.List do if e.Merchant then e.Enabled = false end end
+	end
+	if o.Others ~= true then
+		local keep = {}
+		for _, e in cfg.TownNpcs.List do if not OTHERS[e.Id] then table.insert(keep, e) end end
+		cfg.TownNpcs.List = keep
 	end
 	local npcs = object("Folder", "NPCs")
 	t.NPCs = npcs
@@ -204,6 +213,7 @@ runGroup("config", function()
 	for _, e in T.List do
 		check(not ids[e.Id] and not names[e.Name], e.Id .. ": a unique id and model name", e.Name)
 		ids[e.Id], names[e.Name] = true, true
+		if OTHERS[e.Id] then continue end -- 1-A #9: checked in their own group
 		if e.Story then kinds.Story += 1 end
 		if e.Folk then kinds.Folk += 1 end
 		if e.Merchant then kinds.Merchant += 1 end
@@ -249,6 +259,40 @@ runGroup("config", function()
 	check(C0.StoryQuests.Defs.H3.Steps[1].Npc == "Gleam", "H3's first card is talked through Sir Gleam", tostring(C0.StoryQuests.Defs.H3.Steps[1].Npc))
 	for _, e in T.List do
 		if e.Merchant then check(e.Enabled ~= false, "the Halo potion seller is switched on (ShopService sells at every tagged seller, #34)", tostring(e.Enabled)) end
+	end
+end)
+
+------------------------------------------------------------------ gameplay plan 2026-10-13 1-A #9: Tiny and Rose
+runGroup("Tiny and Rose (temporary bodies)", function()
+	local spot = {}
+	for _, e in C0.TownNpcs.List do spot[e.Id] = e end
+	local tiny, rose = spot.Tiny, spot.Rose
+	local function inside(z, at)
+		return at ~= nil and math.abs(at.X - z.Center.X) <= z.Size.X / 2 and math.abs(at.Z - z.Center.Z) <= z.Size.Z / 2
+	end
+	check(tiny and tiny.Story == "Tiny" and tiny.Label == "Tiny" and tiny.Name == "Npc_Tiny" and inside(C0.Zones.Crossroads, tiny.At)
+		and type(tiny.Colors) == "table" and tiny.Look ~= nil, "Tiny: a temporary body at the Crossroads (by the kids' bench), story id Tiny",
+		show(tiny and tiny.At))
+	check(rose and rose.Story == "Smokey" and rose.Label == "Rose" and rose.Name == "Npc_Rose" and inside(C0.Zones.HornsTown, rose.At)
+		and type(rose.Colors) == "table" and rose.Look ~= nil, "Rose: a temporary body in Horns Den, story id Smokey (A23-138 shows Rose)",
+		show(rose and rose.At))
+	local named = {}
+	for _, def in C0.StoryQuests.Defs do
+		for _, step in def.Steps or {} do if step.Npc then named[step.Npc] = true end end
+	end
+	check(named.Tiny and named.Smokey, "both are named by quest steps", show(named))
+	local t = townWorld({ Others = true })
+	local n = t.Ensure()
+	check(n == 10 and #t.Created == 9, "with Tiny and Rose: 10 entries queued, 9 bodies (the seller off)", show({ n, #t.Created }))
+	for _, case in { { "Npc_Tiny", "Tiny", "Tiny", 24, 12 }, { "Npc_Rose", "Smokey", "Rose", -18, 424 } } do
+		local m = t.Npc(case[1])
+		local prompt = m and t.PromptOf(m, "TalkPrompt")
+		check(m ~= nil and m:GetAttribute("NpcId") == case[2] and t.Tagged(m, "StoryNpc") and prompt ~= nil and prompt.ObjectText == case[3]
+			and prompt:GetAttribute("StoryNpcId") == case[2], case[1] .. ": a talker for story id " .. case[2] .. ", shown as " .. case[3],
+			show(m and { m:GetAttribute("NpcId"), prompt and prompt.ObjectText }))
+		local pv = m and m:GetPivot()
+		check(pv ~= nil and near(pv.Position.X, case[4]) and near(pv.Position.Z, case[5]), case[1] .. " stands at its spot",
+			show(pv and pv.Position))
 	end
 end)
 

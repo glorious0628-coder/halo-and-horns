@@ -1,12 +1,43 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## ⛔ 10/13 저녁 — Tripo 점수 버튼 전부 멈춤 (사용자)
+- 사용자가 점수 쓰는 데 화남 → **사용자가 다시 OK할 때까지 스마트 메시·텍스처·PBR 아무것도 누르지 않음.** 계정 1 잔액 1,355. 도는 Tripo 일 없음.
+
+
+## 10/13 저녁 — 흰 모델 고르기 = 합의 (사용자)
+- 디자인 검수가 Tripo 화면에서 4개를 직접 돌려 보고 하나 고름 → **나와 메시지로 의논해 합의** → 그 뒤에만 텍스처(멀티뷰 4면·4K·조명 제거) → PBR. 합의 전엔 텍스처 누르지 않음. 내 의견은 build/tripo_wm1 FBX를 white_model_sheet로 사방·위·아래 보고 보냄.
+- 멀티뷰 텍스처 도우미: hhMvUp(멀티뷰 탭+4칸 넣기) / hhMvGo(누르기, 20점 확인). 그림 묶음은 window.__hhB<N>(Tripo가 Cache를 지움).
+
+## 10/13 오후 — 텍스처 방식 바뀜 (사용자, 정정판)
+- **새 텍스처 = 가운데 '멀티뷰' 탭에 2D 4면**(앞·왼쪽·오른쪽·뒷면 칸, 스마트 메시와 같은 순서: 왼쪽 칸 ← _right, 오른쪽 칸 ← _left) + 조명 제거 + 4K → 텍스처 생성 → 바로 PBR. 첫 탭(앞면 사진 한 장)은 안 씀. hhTexFn/hhTexUp은 첫 탭용이라 새 텍스처에 쓰지 말 것 — 멀티뷰 탭용 함수 새로 만들어야 함. 이미 만든 것은 그대로.
+- 지금 내 큐 없음, 계정 1 잔액 1,455(1,505→1,455 = GuardPost·PotionCrate 계정 1 텍스처 20×2 + PBR 5×2, 둘 다 예비). GateLeafR 거울판 만듦(노멀맵 빛 차이 주의, 이미지 생성 3이 사진에서 봄).
+
+## 10/13 밤 늦게 — 큐 끝 (잔액 1,730)
+- 끝·디자인 검수에 보냄: 8K PBR 36종 + 4K PBR 37종(집 덩어리 18·묶음10 7·NEW_ 9·간판 Potion/Bakery/Flower) → art/models/tripo/touchup/<이름>/<이름>_TU.glb, 원본 web/<이름>_SM_tex{8k,4k}_pbr_src.fbx(디스크만), records.json push.
+- 끝: Daisy 다시(c2e4b5db, 4K) → touchup/HaloFlowerPotHQ_Daisy_TU.glb 덮어씀. (옛 줄) Daisy 다시(디자인 검수가 형제 7b4845eb·245a153c·c2e4b5db 중 고르면 텍스처 4K → PBR; FBX build/tripo_wm1/HaloFlowerPotHQ_Daisy_wm_*). SignJuice = 계정 2(cb0ab903) 것 씀, 계정 1 Juice는 안 씀. 지금 Daisy_TU 쓰지 않음.
+- 새 텍스처 = 4K(20점). 텍스처+PBR = 25점/개, 흰 모델 100점.
+- 페이지 함수 = tools/tripo_web_helpers.js(+ hhTexOne = 올리기+누르기 한 번에, 잠금 있음). 브라우저 캐시는 가끔 비워짐 → Adobe presigned URL로 다시 /hh-bundleN에 넣음.
+
+## 10/13 밤 — 숨긴 창에서도 돎 (잔액 3,955)
+- **숨긴 창 해결:** 페이지를 새로 열지 말고 `$router.push`로만 이동(새로 열면 숨긴 창에서 안 뜸). 도우미: hhTexUp/hhTexGo(텍스처), hhPbrStep(PBR), hhSmStep('nav'|'prep'|'go')(스마트 메시, 지난 그림 키와 같으면 안 누름). 그림 올릴 땐 input.value='' + 새 파일 이름(같은 이름이면 안 올라감).
+- **주소 받기:** 페이지 → 내 PC 직접은 막힘. 주소 목록 텍스트를 Adobe 업로드(PUT)로 보낸 뒤 presigned URL을 curl.
+- **끝:** PBR 36개 내려받음 → art/models/tripo/web/<id>_SM_tex8k_pbr_src.fbx(디스크만, 크기 커서 git 안 올림) → touchup/<id>/<id>_TU.glb. records.json 적음. 디자인 검수에 이름+경로 보냄.
+- **10/13 밤 추가:** NEW_ 9종(GatherBush·ArmoryBarrels·CandleCrate·Easel·NoticeBoard·WaterBuckets·Beehive·WateringCan·SteppingStone) + 간판 4종(HaloSign_SignBakery·Flower·Juice·Potion) 흰 모델 생성 끝(id 디자인 검수에 보냄). 흰 모델 FBX 152개 = build/tripo_wm1/<이름>_wm_<id8>.fbx (디자인 검수가 봄). **새 텍스처는 4K**(사용자 10/13, 이미 8K는 그대로). 잔액 2,655. 다음 = 디자인 검수가 38종 고르면 hhTexQ 새로 만들어 hhTexUp/hhTexGo → hhPbrQ/hhPbrStep → URL 목록을 Adobe PUT으로 받아 curl → build_glb → 디자인 검수에 이름+경로.
+- **흰 모델 고르기 대기(디자인 검수):** 집 덩어리 18종(id 보냄) + 묶음10 7종(Topiary_E·PotFlowers_E·F·A·C·D·Planter_A, id 보냄). 고르면 → 텍스처 → 바로 PBR.
+- Blender 손보기 2 몫: Planter_D·FlowerCart_Bouquet·난간 6·NEW_* 5.
+
 ## 10/13 오후 — A23-154 방식 (다섯 단계만)
 - 스마트 메시 → 디자인 검수가 4개 중 고름 → 텍스처(앞면 한 장·조명 없이·8K) → **바로 PBR** → 내려받아 크기·피벗·방향만 → **디자인 검수에 이름+경로**(그다음 최종 검수 → 이미지 생성 3). 매직 브러시·붓·Blender 색 고침·사이 관문 없음.
 - 데스크톱에 뜨는 일(창·다운로드 창·마우스·키보드) 하지 않음 — Blender --background·curl·앱 브라우저 JS만. 사용자 부탁은 최종 검수에게만.
 - 앱 브라우저 창이 숨겨지면 Tripo 페이지가 안 뜸(fetch도 멈춤) → 최종 검수에 창 보이게 부탁하고 기다림.
 - PBR 남음: JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick(텍스처 끝) + ConeTree(PBR 결과 안 옴, 다시) + 동상 B·분수 C·Daisy·Rose. PBR 끝·내려받기 남음: GateLeaf·DomeOnion·DomeBall·BenchB·DomeOctagon·FlowerCart.
 - 디자인 검수 고른 흰 모델 20종(텍스처 30 → 바로 PBR): Greenhouse d148d3bd, ShopSign e96efdb6, Lantern_A 3b8c167c, Lantern_B 4b6f9db9, Lantern_C 096e84f2, Lantern_D 1eed23ce, Lantern_E c102246e, IvyWall 18598e34, IvyBalcony 0352e909, FlowerBushPot 5a5af84d(뒤 구멍 → ⑤에서 초록 공 파트), DomePorchHalf e549329c, DomePavilion bc5097f2, DomeTowerSmall 6d925d8a, BreadDisplay e5467c5f, RoundTree_E 077f2fae, RoundTree_F cc3f527f, RoundTree_G a9395b47, Topiary_C 3e2847ad, Topiary_D 7c673fb4, Planter_E 1021df70. 텍스처 앞면 = bundle8/9 `<이름>_front`.
-- 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap(새, 아직 묶음 안 함).
+- **10/13 저녁 진행:** PBR 10 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick·ConeTree 다시·동상B·분수C·Daisy·Rose). 고른 20종 텍스처: 0~9번 끝(Greenhouse~FlowerBushPot), 10번 DomePorchHalf부터 남음 — 페이지 localStorage hhTexQ/hhTexI + hhTexDo(현재 칸 텍스처 후 다음 칸으로 이동). 사용자 말: 텍스처 지금 방식 그대로(앞면 한 장 → 바로 PBR). 내 세션이 화면(분할 보기)에 떠 있어야 Tripo가 돌아감.
+- **이어받기(10/13 밤):** 텍스처 큐 0~10번 끝(Greenhouse d148d3bd·ShopSign e96efdb6·Lantern_A~E·IvyWall 18598e34·IvyBalcony 0352e909·FlowerBushPot 5a5af84d·DomePorchHalf e549329c) → 이 11개 텍스처 끝나면 **바로 PBR**. 남은 텍스처 11~19번: DomePavilion bc5097f2·DomeTowerSmall 6d925d8a·BreadDisplay e5467c5f·RoundTree_E 077f2fae·RoundTree_F cc3f527f·RoundTree_G a9395b47·Topiary_C 3e2847ad·Topiary_D 7c673fb4·Planter_E 1021df70 (페이지 hhTexQ/hhTexI=11, `eval(hhSleepDef); hhTexDo()` 반복).
+- PBR 눌렀고 내려받기 남음(16): GateLeaf·DomeOnion·DomeBall·BenchB·DomeOctagon·FlowerCart·JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick·ConeTree·동상B 1a0812be·분수C cd70436c·Daisy c9df2ff9·Rose 9e0487cc → model_url(tripo_texture_*.fbx) curl → art/models/tripo/web/<id>_SM_tex8k_pbr_src.fbx → scratchpad build_glb.py(크기·피벗·방향만) → touchup/<id>/<id>_TU.glb → 디자인 검수에 이름+경로, records.json.
+- 페이지 함수가 사라지면 tools/tripo_web_helpers.js 전체를 javascript_exec로 실행. 이 세션 오른쪽 브라우저 칸이 보일 때만 Tripo가 돎(대화만 떠 있고 브라우저 칸이 닫히면 멈춤).
+- **나눔(A23-155):** Blender 손보기 2(local_d85ba88a…, 다른 Tripo 계정)에 넘김 = Planter_D·FlowerCart_Bouquet·Balustrade 6종(Var3 E·F, Var4 A·B·C·D)·NEW_* 5종 (10/13 13:40 최종 검수: 간판 4종·NEW_Beehive·NEW_WateringCan·NEW_SteppingStones는 계정 1에 흰 모델이 이미 있어 **1의 몫으로 되돌림**. 계정 1 잔액이 낮아 앞으로 새 스마트 메시는 계정 2 = Blender 손보기 2; 1은 이미 있는 흰 모델의 텍스처 4K·PBR까지.) 내 몫 남은 흰 모델 = HaloChunk_* 18종: bundle11 PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond, bundle12 StarFinial·CastleHedge·WeatherVane·ChimneyCap·ChimneyLantern·RoundTree, bundle13(21.8 MB) MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope.
+- (옛 줄) 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap·ChimneyLantern·RoundTree(bundle12 끝에 넣음, 42.1 MB; 아직 Adobe 안 올림).
 
 ## 10/13 낮 — 로그인 뒤 진행 (잔액 6,505)
 - 매직 브러시 = 버림(A23-154). PBR 7 누름(ConeTree 결과 늦게 옴, 확인 필요). 텍스처 5 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick).

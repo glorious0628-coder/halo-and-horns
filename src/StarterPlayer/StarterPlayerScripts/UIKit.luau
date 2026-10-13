@@ -829,13 +829,122 @@ end
 -- no Click (the button plays its own sound, e.g. the quest window's tabs QuestTab; game dev 1, sound_gaps 2026-10-10)
 local function wirePress(btn, onClick)
 	UIKit.ButtonFeel(btn)
-	btn.Activated:Connect(function()
+	local function fire()
 		if not btn.Active or btn:GetAttribute("Disabled") == true then return end
 		if btn:GetAttribute("NoClick") ~= true then playClick() end
 		if type(onClick) == "function" then
 			safeCall(onClick, btn)
 		end
-	end)
+	end
+	btn.Activated:Connect(fire)
+	UIKit.TapPad(btn, fire)
+end
+
+-- A23-160 ③ (phone first 10 minutes, 최종 검수 10/13: "40px 미만 버튼"): on a touch device a button drawn under
+-- UIKit.Tap.Px real px (a finger ~44; the 10/13 phone audit: Equip / tabs / [Buy] 30 px, Sort 28 x 28) gets invisible tap
+-- strips around it (children "TapPad*": top / bottom, and left / right when it is narrow too) - the look stays, only the
+-- pressable area grows, and never past half the gap to a sibling button (no stolen taps). The strips are outside the
+-- button, so a press on the button itself still shows its own press feel. Skipped: PCs, a button that clips its children
+-- or lays them out (a UIListLayout / UIGridLayout would place the strips as items), attribute NoTapPad = true.
+UIKit.Tap = { Px = 44 }
+
+-- pure (tools/test_phone_first10.py): rect = { X, Y, W, H } of the button, others = sibling button rects (real px);
+-- returns { T, B, L, R } = real px to add on each side
+function UIKit.TapExtents(rect, others, px)
+	local ext = { T = 0, B = 0, L = 0, R = 0 }
+	local needY, needX = math.max(0, px - rect.H) / 2, math.max(0, px - rect.W) / 2
+	if needY <= 0 and needX <= 0 then return ext end
+	local up, down, left, right = needY, needY, needX, needX
+	for _, o in others or {} do
+		local overX = o.X < rect.X + rect.W and o.X + o.W > rect.X
+		local overY = o.Y < rect.Y + rect.H and o.Y + o.H > rect.Y
+		if overX and o.Y + o.H <= rect.Y then up = math.min(up, (rect.Y - (o.Y + o.H)) / 2) end
+		if overX and o.Y >= rect.Y + rect.H then down = math.min(down, (o.Y - (rect.Y + rect.H)) / 2) end
+		if overY and o.X + o.W <= rect.X then left = math.min(left, (rect.X - (o.X + o.W)) / 2) end
+		if overY and o.X >= rect.X + rect.W then right = math.min(right, (o.X - (rect.X + rect.W)) / 2) end
+	end
+	ext.T, ext.B, ext.L, ext.R = math.max(0, up), math.max(0, down), math.max(0, left), math.max(0, right)
+	return ext
+end
+
+-- real px per du inside a button whose parent is o: every UIScale from o up to and INCLUDING its ScreenGui (MainGui's
+-- 0.75 on phones sits right under the ScreenGui - API review 10/13: stopping before it made the strips 25 % short);
+-- the button's own press tween is not counted. Pure over FindFirstChildWhichIsA / IsA / Parent (test_phone_first10)
+function UIKit.TapScale(o)
+	local k = 1
+	while o do
+		local sc = o:FindFirstChildWhichIsA("UIScale")
+		if sc and sc.Scale > 0 then k *= sc.Scale end
+		if o:IsA("LayerCollector") then break end
+		o = o.Parent
+	end
+	return k
+end
+
+function UIKit.TapPad(btn, fire)
+	if not UserInputService.TouchEnabled or typeof(btn) ~= "Instance" or not btn:IsA("GuiButton") then return end
+	local pads, pending = {}, false
+	local function pad(name)
+		local p = pads[name]
+		if p then return p end
+		p = Instance.new("TextButton")
+		p.Name = name
+		p.Text = ""
+		p.BackgroundTransparency = 1
+		p.AutoButtonColor = false
+		p.Selectable = false
+		p.Visible = false
+		p.Parent = btn
+		p.Activated:Connect(fire)
+		pads[name] = p
+		return p
+	end
+	local function refit()
+		pending = false
+		if btn.Parent == nil or btn:GetAttribute("NoTapPad") == true or btn.ClipsDescendants
+			or btn:FindFirstChildWhichIsA("UIGridStyleLayout") then
+			for _, p in pads do p.Visible = false end
+			return
+		end
+		local size, pos = btn.AbsoluteSize, btn.AbsolutePosition
+		-- shrunk away (a folded parent, a size tween) or already finger-sized: no strips
+		if size.X < 2 or size.Y < 2 or (size.X >= UIKit.Tap.Px and size.Y >= UIKit.Tap.Px) then
+			for _, p in pads do p.Visible = false end
+			return
+		end
+		local k = UIKit.TapScale(btn.Parent)
+		local others = {}
+		for _, sib in btn.Parent:GetChildren() do
+			if sib ~= btn and sib:IsA("GuiButton") and sib.Visible then
+				local sp, ss = sib.AbsolutePosition, sib.AbsoluteSize
+				table.insert(others, { X = sp.X, Y = sp.Y, W = ss.X, H = ss.Y })
+			end
+		end
+		local e = UIKit.TapExtents({ X = pos.X, Y = pos.Y, W = size.X, H = size.Y }, others, UIKit.Tap.Px)
+		local z = btn.ZIndex
+		local function place(name, show, x, y, w, h)
+			if not show and not pads[name] then return end
+			local p = pad(name)
+			p.Visible = show
+			p.ZIndex = z
+			p.Position = UDim2.new(0, x / k, 0, y / k)
+			p.Size = UDim2.new(0, w / k, 0, h / k)
+		end
+		local w = size.X + e.L + e.R
+		place("TapPadTop", e.T >= 1, -e.L, -e.T, w, e.T)
+		place("TapPadBottom", e.B >= 1, -e.L, size.Y, w, e.B)
+		place("TapPadLeft", e.L >= 1, -e.L, 0, e.L, size.Y)
+		place("TapPadRight", e.R >= 1, size.X, 0, e.R, size.Y)
+	end
+	local function request()
+		if pending then return end
+		pending = true
+		task.defer(refit)
+	end
+	btn:GetPropertyChangedSignal("AbsoluteSize"):Connect(request)
+	btn:GetPropertyChangedSignal("AbsolutePosition"):Connect(request)
+	btn.AncestryChanged:Connect(request)
+	request()
 end
 
 -- props: Name, Text, Size, Position, AnchorPoint, Color, TextColor, TextSize, Parent (+ any TextButton property).
@@ -1515,11 +1624,12 @@ end
 
 -- TextSize is a canvas size. The rendered picker never goes below the observed physical 11px floor.
 -- Measure the complete text in those physical pixels before comparing it with AbsoluteSize / TextBounds.
-function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width)
+-- floorPx: a label's own physical floor (UIKit.FitText, attribute FitMinPx) instead of the 11px one
+function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width, floorPx)
 	size, scale = tonumber(size) or 18, tonumber(scale) or 1
 	if scale ~= scale or scale <= 0 or scale == math.huge then scale = 1 end
 	if size ~= size or size <= 0 or size == math.huge then size = 18 end
-	local pixelSize = math.max(MIN_TEXT_SIZE, size * scale)
+	local pixelSize = math.max(tonumber(floorPx) or MIN_TEXT_SIZE, size * scale)
 	local height, measuredWidth, exact = UIKit.MeasureText(text, pixelSize, fontOrFontFace, width)
 	return height, measuredWidth, exact, pixelSize
 end
@@ -1585,7 +1695,7 @@ function UIKit.FitText(label, minSize, maxSize)
 					if label:GetAttribute("PickerMeasureWhole") == true then
 						local text, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
 						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(text, size, face,
-							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000)
+							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000, fit.FloorPx)
 						-- Loading a font yields. Never apply an earlier text/layout/font measurement after a reset.
 						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= text
 							or label.FontFace.Family ~= face.Family or label.FontFace.Weight ~= face.Weight
@@ -1625,7 +1735,11 @@ function UIKit.FitText(label, minSize, maxSize)
 		end))
 	end
 	-- Picker layout minima include inverse UIScale for card geometry; do not reuse that as a raw font minimum.
-	fit.BaseMin = math.max(1, math.min(math.floor(minSize), MIN_TEXT_SIZE))
+	-- 10/14 (user via 최종 검수, PC tile names 'Monsters' / 'Settings' cut at the 11px floor in 44 px squares): a label
+	-- may set its own physical floor with the attribute FitMinPx (read here; its constraint and measure use it)
+	local floorPx = tonumber(label:GetAttribute("FitMinPx"))
+	fit.FloorPx = (floorPx and floorPx >= 1) and floorPx or nil
+	fit.BaseMin = math.max(1, math.min(math.floor(minSize), fit.FloorPx or MIN_TEXT_SIZE))
 	fit.BaseMax = math.max(fit.BaseMin, math.floor(maxSize))
 	-- A23-35: a UIKit.StyleText floor wins over the picker minimum (unstyled labels: no floor, same as before)
 	local styleFloor = Art.StyleFloor[label]

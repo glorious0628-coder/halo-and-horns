@@ -1,5 +1,44 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/13 오후 끝 — 묶음 b·c 넣기 준비 (이 절이 최신)
+- PhotoDisc 4곳 전부 통과(디자인 검수). P058 '떠 보임' = 화면 지형 ≠ 데이터(추측), 화면 보고 내리지 말 것 → 6단계.
+- **10/13 저녁:** 사용자가 직접 3D 가져오기 중 = build/import3d_b 56개(b 34 + c 13 + e 9; GuardPost·PotionCrate 보류 → build/import3d_hold, 맵 build/sa_e_hold). 묶음 d 34 = build/import3d_c(다음 가져오기). 그동안 WorldKit MCP 금지 → SA 올리기 멈춤(b 22종 올라감). '넣음' 알림 뒤: 남은 SA 올리기(b 나머지 → c → d → e, `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_X --tags CNMR`) → `py tools/worldkit/tripo_kits_gen.py <tag> <이름들>` → build/wk/tripo_kits_build_<tag>.luau 실행 → 놓기.
+- 다음 가져오기 build/import3d_c = 38개(d 34 + g 4: Beehive·Topiary_E·Balustrade_C·JuiceParasol v2). SA 맵 build/sa_d·sa_g. **JuiceParasol은 옛 줄무늬 SA 키가 이미 올라가 있음 → sa_g 올릴 때 `--replace`** (옛 맵 build/sa_old). 
+- 묶음 b(34종, JuiceParasol 뺌 — 줄무늬 없는 판 다시) + c(13종) = build/import3d_b 47개(메시만). GateLeaf R = 쓰지 않음(문짝 대칭 → 오른쪽도 L 모델, 디자인 검수), R 파일은 build/import3d_hold. SA: build/sa_b(140)·build/sa_c(52) 다 봄, b 올리는 중(_upload.log), c는 b 끝나면 `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_c --tags CNMR`. 3D 가져오기(마우스·키보드) = 최종 검수가 사용자에게 (가)직접/(나)나 묻는 중. 묶음 e 11종 = Blender 손보기 2 경로 오면 같은 폴더에.
+- 자리 지도: 소품 = Props(Real/StandIn/Placeholder)의 Kit 이름(분수 P063, 장미 P021·P112, BenchB P035·057·081·120·127, FlowerCart P018, BreadStand P012, FruitStall P016, 등불 L01~L56, 나무 E·F·G 16곳, 토피어리 C·D 4, Planter_E 2). 집 장식 = art/prompts/house_chunks_queue_2026-10-13.json 'houses'. ⑤ 메모 = docs/review/pbr_final_2026-10-13.md 묶음 b·c·e.
+
+## ★ 10/13 14시대 — PhotoDisc 파트 키트 
+- tools/prop_kit.py HaloReasonHQ_PhotoDisc 새 레시피(front_ns 재서 61파트, 타일 윗면 +0.08, 판만 충돌) → HaloPropKits 다시 만들고 4곳 교체. P103 = 대성당 마당 판(30.10) 위로, P128 = 돔 꼭대기 장식(77.6)→발코니 60.2, 배율 0.68 + 19.5° 돌려 기둥 8개 사이. 남은 것: P036 모서리가 경사 끝에 떠 있음(12.75~14), P058 위에 벤치 P057 겹침 → 디자인 검수 판정 대기. 금색이 2D보다 주황·무광(프로젝트 금 HH_HaloGoldTrim 255,168,36) — 바꿀지 판정 대기. 사진 art/review/img3/photodisc/ (시트 photodisc_vs_2D_v1.jpg).
+- v2(디자인 검수 판정 반영): 금 255,196,60 한 색, 테 단차 키움 + 진한 금 홈 고리(73파트). P036 6.0칸·P103 6.5칸 평평하고 빈 자리로 옮김(계획 좌표와 다름 — halo_props_place.py 다시 돌리면 되돌아감 주의), P057 벤치 자리 상자 P058 원판 밖으로. 벤치 땅 구멍 = 창 연 채 다시 써도 그대로 → 최종 검수 지시로 6단계 체크(메인에서 걷기)로 넘김. 시트 photodisc_vs_2D_v2.jpg. 남은 사진: P058·P128 낮 + 4곳 밤(shots_v9.py, 화면 차례 필요).
+- 벤치 자리 땅 구멍: 창 펼치고 30초 뒤에도 그대로(fix_v6) → 단순 그리기 지연 아님. 데이터(레이 2.0)는 맞음. WorldKit 다시 열기나 메인 place에서 확인 필요.
+
+## ★ 10/13 오후 늦게 — 벤치 고침 끝 
+- 원인 = 벤치 둘레만 데이터 6으로 솟음(계획 training y 2). 반경 12 / 45칸을 계획 표(build/wk/halo_blockout_apply.lua, 채움 = y − 2)로 다시 씀 → 레이 2.0, P048 계획 자리(-202,-481), 두 벤치 바닥 2.00. 백업 20261013_130805. fix_v5: 벤치 판·줄무늬 막대 다 보임, **단 다시 쓴 땅이 화면에 구멍(최소화 중 고친 지형 안 다시 그려짐 추측)** → 다음 사진 차례에 창 펼치고 30초 뒤 같은 자리 1장(최종 검수 지시).
+- 마을 전체 데이터 vs 계획: art/review/img3/terrain_check/halo_data_vs_plan_2026-10-13.json — 계단 턱·벽·물가 2칸 빼면 0곳. x −152..−136 z −496 '혹'은 계획된 계단 경사(t칸, 계획 4~10)라 정상.
+- 고친 뒤 백업 = build/wk_backup 최신(10/13 13시대, HaloV2+지형). rbxlx 파일은 여전히 10/12 판.
+
+## ★ 10/13 오후 — 벤치 P048·P049 묻힘
+- 데이터: 레이 땅 = 벤치 바닥(6.00/5.50, 모래), 덮개 파트 0, 원본 TU 모델엔 앉는 판 있음, MeshSize 비율 맞음. 화면(fix_v3·fix_v4): P048 안 보임, P049 위 1.4칸만 → 그려진 땅 ≈ Y 8.3(잔디). 같은 값 WriteVoxels로는 안 고쳐짐. 제안 = 반경 12 비우고 다시 채우기(P026 방법) + 줄무늬 막대 재촬영 → **최종 검수 OK·재료(잔디/모래) 결정 대기, 그 전엔 손 안 댐.** 사진 스크립트 scratchpad bench_shots.py(2번 찍기+4초).
+
+## ★ 10/13 13시 — 지금 상태 (클리어 전)
+- **⑤ 묶음 1 끝(최종 검수 OK):** 장미창 = RoseGlass 지름 6.65, 사진은 SA PreloadAsync + 20초 뒤에 찍기(fix_v2/castle_rose_close_v3.png). 해바라기 = 키트·놓인 2곳 180° 더 돌림(얼굴 길 쪽), SA 4장 새 자산. P026 = 둘레 반경 12 지형 다시 칠함(잔디 10.0) + 벤치·P024·P025 새 표면에. P048 = P049 옆 8칸(-198.6, 5.5, -483.9)으로 옮김. **남은 의문(훈련장 둘레 화면 땅 ≠ 지형 데이터, 덮는 파트 0개)은 최종 검수 6단계 체크리스트(캐릭터로 걸어 보기)** — 지금 손대지 않음.
+- WorldKit = 열려 있고 최소화. 최신 백업 build/wk_backup/20261013_125304(HaloV2) + 20261013_124843(HaloV2+지형) + 20261013_123010(전체). rbxlx 파일은 10/12 17:12 판(저장 안 함).
+- **다음:** 새 PBR 통과분(HaloChunk_Cauldron·Telescope 등) 오면 넣기 — 메모: 옛 자리 P011(28.3,-483.9)·P116(192.4,-643.8). 사진 도구는 대역 자동 숨김, 판정 사진은 덮어쓰지 말고 새 이름(_v2, _v3…).
+
+## ★ 10/13 낮 늦게 — 지금 상태 / 다음 할 일 (클리어 전)
+- **WorldKit = 열려 있음(최소화 아님일 수 있음), rbxlx 파일은 10/12 17:12 판** → 최신 = 백업 build/wk_backup/20261013_122156(HaloV2·HaloTripoKits) + 20261013_113942(Parked_*)·20261013_020933(전체+지형). 다시 열면 `wk_backup.py load 20261013_020933 --replace --terrain` → `load 20261013_113942 --replace` → `load 20261013_122156 --replace`.
+- **넣은 것(관문 1, 최종 검수 통과):** 화분 7·벤치 10·문 23·등불 47·갈빗대 돔 4·창 화분 92·성 날개 2·장미창 1. 장미창 = 메시 z -26.17, 파란 원판 RoseGlass 0.08 두께 z -25.56(정면 벽 앞면 -25.5). Sunflower SA = 새 자산 4장(asset_ids SA_HaloFlowerPotHQ_Sunflower_*; 옛 ID는 Roblox가 안 붙였음 — 같은 일 생기면 1픽셀 바꿔 다시 올림). DomeRibbed SA.Color 255,222,180, DoorDouble 255,236,214.
+- **판정 대기:** 디자인 검수에 고칠 것 3 사진 보냄(장미창·해바라기·벤치 전체 fix_v1/). 최종 검수에 WorldKit 다시 열기 화면 차례 신청함 — P026·P048·P049는 물리 땅(데이터)은 맞는데 화면 땅만 몇 칸 높게 그려짐(185개 자동 검사: 다른 건 벽등 P045·P046뿐). 다시 열어 보고도 묻히면 그 자리 지형을 계획 높이로 맞추기(빛 마을 지형 = 내 몫).
+- **다음 넣기:** HaloChunk_Cauldron(물약 가게 문 앞 + 옛 P011 자리 28.3,-483.9), HaloChunk_Telescope(Cliff8 발코니 + 옛 P116 자리 192.4,-643.8) — Blender 손보기 → 관문 통과 후. 넣는 법: build/import3d에 glb_strip_mesh → 최종 검수에 가져오기 차례 → tools/worldkit/tripo_kits_build.luau(키트) → 놓기(소품: build의 swap 방식, 장식: tools/worldkit/tripo_deco_place.luau) → 사진 tools/prop_ab_shots.py / building_ab_shots.py(대역 자동 숨김).
+- **넘긴 일:** NEW_ 12종 4면 = 이미지 생성 2(참고 그림 build/ff_refs/, 계획 build/ns_batch_new.py).
+- **규칙(10/13):** 사용자 부탁·알림은 최종 검수에게만. Studio 창 띄우기·닫기·최소화도 매번 화면 차례 신청. 판정 사진은 2D | 낮 | 밤(+뒤), 대역 표시 숨김.
+
+## ★ 10/13 낮 — Tripo PBR 13종 WorldKit에 넣음 (최종 검수 관문 1 통과분)
+- 가져오기: 사용자 '3D 가져오기'(build/import3d 13개) → Workspace.<이름>_TU(원본, 지우지 말 것) → 키트 ServerStorage.HaloTripoKits.<이름>(MeshPart + SurfaceAppearance SA_<이름>_C/N/M/R, 앞 -Z, 피벗 = 바닥 가운데; 만드는 코드 tools/worldkit/tripo_kits_build.luau). **주의: 가져온 메시는 이미 -Z를 봄 — 180° 더 돌리면 뒷면이 나옴(10/13 한 번 틀려서 Flipped180로 되돌림), PrimaryPart 넣지 말 것(피벗이 가운데로 감).**
+- 놓기: 화분 Lavender·Tulip·Sunflower 7곳 + 벤치 A 6·C 4곳(옛 키트/대역 → ServerStorage.Parked_PreTripoProps, 높이 = 옛 높이). 집: tools/worldkit/tripo_deco_place.luau(문 23 = Door_Back 크기, 등불 47 = LampGlass/Core만 남김, 갈빗대 돔 4 = 옛 Deco 돔 자리, 창 화분 92 = WBox 자리, 성 날개 2 + 장미창 1 = 장식 슬롯, RoseGlass → 파랑 34,90,180), 옛 것 → ServerStorage.Parked_PreTripoDeco.<건물>. 재질 ⑤: DomeRibbed SA.Color 255,222,180(주황 금), DoorDouble 255,236,214. 백업 20261013_113942.
+- 사진: art/review/img3/tripo_place/{deco_v2, deco_v3, pots_benches_v3}/, 성 장미창 가까이 deco_v1/castle_rose_close.png. 도구 tools/building_ab_shots.py, tools/prop_ab_shots.py.
+- **남은 문제:** HaloFlowerPotHQ_Sunflower는 어느 방향에서도 회색(색 그림 승인·로드 OK, UV 있음, 새 MeshPart로도 회색 → 가져온 메시 쪽 문제로 보임, 다시 가져오기 필요할 수 있음). Lavender 꽃 자홍빛·LampArm 검은 점은 아직 안 봄.
+
 ## ★ 10/13 아침 (PC 다시 켬)
 - WorldKit 되살림: build/WorldKit.rbxlx 열기 → wk_backup load 20261013_020933 --replace --terrain → 성·바닥판·소품 확인 + 사진(build/restore_check) → 백업 20261013_084828. **rbxlx 파일은 여전히 10/12 17:12 판(Ctrl+S 못 함)** — 끌 때마다 wk_backup save.
 - **3D 가져오기 묶음(사용자 일, 미룸):** build/import3d/ 13개 메시만 GLB = 화분 Lavender·Tulip·Sunflower + HaloChunk_DoorSingle·LampArm·CastleWingL·CastleWingR·DomeRibbed·DoorDouble·WindowBoxA·CastleRose + HaloReasonHQ_BenchA·BenchC. SA 52장 올림 끝(asset_ids SA_<이름>_C/N/M/R, 금 외 금속 0·거칠기 ≥0.6, tools/glb_sa_maps.py). 순서: WorldKit 창 → 홈 '3D 가져오기' → build/import3d 전부(Ctrl+A) → 가져오기. 그 뒤 내 일: MeshId 읽기 → 키트 + SA + DoubleSided(WindowBoxA·화분) → 자리 놓기 → 사진(넣을 때 메모 4개). Rose·BenchB는 Blender 손보기 쪽 json만(아직).

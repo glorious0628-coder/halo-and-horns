@@ -46,6 +46,10 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-12/offline_bag_ui_2026-10-12.json"
 
 MUTATIONS = [
+    # A23-127 (최종 검수 10/13 review ①): the source line is Config.WeaponSource's pick, not the raw drop line
+    ("BAG", "the source line ignores the Forge switch",
+     "if type(source) == \"string\" and source ~= \"\" then line(source, \"Sub\") end",
+     "if type(source) == \"string\" and source ~= \"\" then line(Config.WeaponInfo[cell.Tier].Source, \"Sub\") end"),
     ("BAG", "a tonic on the Use tab while tonics are off", "\t\t\tif kind == \"Tonic\" and ctx.TonicsOn ~= true then kind = \"Material\" end\n", ""),
     ("BAG", "the bag never sees the switch on", "TonicsOn = type(Config.Alchemy) == \"table\" and Config.FeatureOn(\"Tonics\") == true }",
      "TonicsOn = false }"),

@@ -183,15 +183,14 @@ MUTATIONS = [
     ("a join-time gift is never noted", L, "\tif not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end\n", ""),
     ("the gift is noted twice in a session", L, "if not STATE.Watching[player] then Config.NoteGained",
      "if true then Config.NoteGained"),
-    ("bare first scroll tells about enhancing", L,
-     "local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll",
-     "local line = TXT.FirstScroll"),
     ("a level reset drops a weapon owner to bare hands", L,
      "\tif best == 0 then\n\t\t-- A23-34: a weapon owner never goes back", "\tif false then\n\t\t-- A23-34: a weapon owner never goes back"),
     ("join safety net off", L, "and story.Done.M1_1 == true then", "and false then"),
     ("debug reset keeps the starter", L, "\tmask = math.floor(num(mask, 0))\n", "\tmask = bit32.bor(math.floor(num(mask, 0)), 1)\n"),
     # --- StoryQuestService
-    ("M1_1 completion never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
+    ("M1_1 never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
+    ("1-A #2: the weapon only at the finish (a bare-handed save cannot use Otto's scroll)", ST,
+     "\t\tif track.St == 1 then giveWeapon(player, def) end", "\t\tlocal _ = giveWeapon"),
     ("the quest's reward line dropped (the weapon line alone)", ST, "\tnotify(player, msg, \"reward\", \"QuestDone\")\n",
      "\tlocal _ = msg\n"),
     # --- JusticeService / PvPService / CharacterVisuals

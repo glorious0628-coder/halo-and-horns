@@ -508,7 +508,7 @@ end)
 ------------------------------------------------------------------ 5c. story_depth §2-1 clue lines (beta)
 runGroup("clues", function()
 	local C, SQ = C0, SQ0
-	check(SQ.Speakers.Kids == "Bright & Smokey" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
+	check(SQ.Speakers.Kids == "Bright & Rose" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
 		and SQ.Landmarks.KidsBench.Z == 18, "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)", show(SQ.Landmarks.KidsBench))
 	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[1], "They say", 1, true) == 1
 		and #C.Story.Premise == 3 and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 rumor lines, 3 premise lines, the ask",
@@ -2278,8 +2278,9 @@ runGroup("a23-64 town react lines", function()
 		end
 		check(words >= 1 and words <= 12 and not string.find(line, "%", 1, true) and bad == nil,
 			"every line: 1-12 words, no format token, nothing scary", line)
-		if string.find(line, "Bright", 1, true) or string.find(line, "Smokey", 1, true) then
-			check(he == nil, "a line naming Bright or Smokey never says he / him / his (both are she)", line)
+		-- A23-138: Smokey's shown name is Rose (the inner key stays Smokey)
+		if string.find(line, "Bright", 1, true) or string.find(line, "Smokey", 1, true) or string.find(line, "Rose", 1, true) then
+			check(he == nil, "a line naming Bright or Rose never says he / him / his (both are she)", line)
 		end
 	end
 	-- Config.TownReactLines (Town = the town person's Config.Zones id)

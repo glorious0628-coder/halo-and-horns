@@ -36,7 +36,7 @@ MUTATIONS = [
     ("Live has no suffix", C, "if env == \"Beta\" or env == \"Live\" then return base .. \"_\" .. env end", "if env == \"Beta\" then return base .. \"_\" .. env end"),
     ("any name is an environment", C, "\tif name == \"Beta\" or name == \"Live\" then return name end\n\treturn Config.Env.Default", "\tif name ~= nil then return name end\n\treturn Config.Env.Default"),
     ("the place id is ignored", C, "local name = ok and type(id) == \"number\" and Config.Env.Names[id] or nil", "local name = Config.Env.Names[81671223175574]"),
-    ("the build label is old", C, "Config.BuildLabel = \"beta-prep 2026.10.09\"", "Config.BuildLabel = \"beta-prep 2026.10.06\""),
+    ("the build label is old", C, "Config.BuildLabel = \"private-test 2026.10.16\"", "Config.BuildLabel = \"beta-prep 2026.10.09\""),
     ("5 errors become 50 a minute", C, "ServerErrors = { MaxPerMinute = 5,", "ServerErrors = { MaxPerMinute = 50,"),
     ("a switch is added", C, "\t\tGoose = { Type = \"Bool\", Default = true }, -- no new goose\n", "\t\tGoose = { Type = \"Bool\", Default = true }, -- no new goose\n\t\tAdmin = { Type = \"Bool\", Default = false },\n"),
     # --- the error text

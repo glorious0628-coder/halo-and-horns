@@ -2,8 +2,11 @@
 -- private server, prices "추천 가격대로") as the Panels window "Shop", added through Panels.Register (BB13). It takes
 -- the old change-ticket shop's id; the ticket rows stay at the bottom while a ticket is on sale (검수 2026-10-07).
 -- Layout (이미지 개발 2026-10-08; one list for PC and phones, the window scrolls when the screen is short):
---   Passes - the four cards in one row (the phone window is 780 du wide too: 177 du = 133 px cards, all four seen
---     at once). A card is one tap target (the navy PanelCard plate): the icon in a rim slot (VIP = SlotLegendary's
+--   Passes - six cards, three a row (plan 10/13 §1-A #6: + the Sticker Pack and the Bubble Pack, A23-143 / A23-144; a
+--     locked sticker / bubble opens the Shop with { Focus = kind }: that card wears a gold rim).
+--     The words are Config.PassInfo (the card lines, Screen = this window's words; the VIP emote is not promised -
+--     it is not built). The live switch PassSales (GameState SwitchPassSales = false) dims every [Buy] to "Not on sale"
+--     (owned passes and looks keep working). A card is one tap target (the navy PanelCard plate): the icon in a rim slot (VIP = SlotLegendary's
 --     crown rim, Private Server = SlotRare, the boosts = RewardSlot), the name, up to three short lines and a capsule
 --     at the bottom - gold "199 R$" = buy, green "Owned", dimmed "Coming soon" while the pass id is 0 (A23-75).
 --     Roblox's own dialog confirms every purchase. The private server is sold on the game page only (Roblox has no
@@ -40,44 +43,27 @@ local PASSES = {
 	{ Kind = "XP2", Badge = "IconPassXP2", Icon = "IconExp", Slot = "RewardSlot", Price = 199, Attr = "PassXP2" },
 	{ Kind = "Gold2", Badge = "IconPassGold2", Icon = "IconGoldPile", Slot = "RewardSlot", Price = 149, Attr = "PassGold2" },
 	{ Kind = "VIP", Badge = "IconPassVIP", Icon = "Crown", Slot = "SlotLegendary", Price = 249, Attr = "PassVIP" },
+	-- plan 10/13 §1-A #6 (A23-143 / A23-144): approved art stands in until a pass badge is drawn (a sticker, a speech bubble)
+	{ Kind = "Stickers", Badge = "IconPassStickers", Icon = "EmoHeart", Slot = "RewardSlot", Price = 99, Attr = "PassStickers" },
+	{ Kind = "Bubbles", Badge = "IconPassBubbles", Icon = "BarkBubble", Slot = "RewardSlot", Price = 99, Attr = "PassBubbles" },
 	{ Kind = "PrivateServer", Badge = "IconPrivateServer", Icon = "IconTravel", Slot = "SlotRare", Price = 100, Info = true },
 }
 
--- English only (A23-48), short words for kids (glossary 2026-10-06)
-local T = {
-	Title = "Shop",
-	Names = { XP2 = "2x XP", Gold2 = "2x Gold", VIP = "VIP", PrivateServer = "Private Server" },
-	Lines = {
-		XP2 = "Level up twice as fast!",
-		Gold2 = "Get twice the gold!",
-		VIP = "Crown name tag, VIP chat and emote.",
-		PrivateServer = "Play with just your friends.",
-	},
-	PriceF = "%s R$",
-	MonthF = "%s R$ / mo",
-	Owned = "Owned",
-	Soon = "Coming soon",
-	Wear = "Wear",
-	Wearing = "Wearing",
-	LooksSideF = "Looks for %s",
-	Looks = "Looks",
-	Tickets = "Change Tickets",
-	TicketF = "%s · you have %d",
-	SoonToast = "Not on sale yet. Check back soon!",
-	OwnedToast = "You already have this!",
-	ServerToast = "Get a private server on the game page: open Servers, then Create.",
-	Note = "Always ask a grown-up before you buy.",
-}
+-- English only (A23-48), short words for kids (glossary 2026-10-06): Config.PassInfo (plan 10/13 §1-A #6)
+local INFO = type(Config.PassInfo) == "table" and Config.PassInfo or {}
+local T = type(INFO.Screen) == "table" and INFO.Screen or {}
 
 -- layout in canvas du (Panels' phone UIScale 0.75: 100 du = 75 px). Card = Pad · Slot · name · three lines · capsule ·
 -- Pad. Text floors are real px (Roblox applies UITextSizeConstraint after UIScale, UiSandbox 2026-10-08): the lines'
 -- StyleMinPx 11 renders 15 px on phones (rubric >= 14) and 14 px on a 720p PC - the Body floor (19 px on phones) wrapped
--- 'Crown name tag, VIP chat and emote.' into four lines
+-- 'Crown name tag, VIP chat and emote.' into four lines. Plan 10/13: six cards three a row (Slot 92 -> 70, CardH 266 ->
+-- 251: both rows fit a 720p PC window without scrolling; phones scroll to the second row - tools/test_shop_layout.py)
 local L = {
-	Cols = 4, Gap = 10, CardH = 266, Pad = 10, Slot = 92, Icon = 0.62, NameH = 28, NameSize = 22, NameMinPx = 12,
+	Cols = 3, Gap = 10, CardH = 251, Pad = 10, Slot = 70, Icon = 0.62, NameH = 28, NameSize = 22, NameMinPx = 12,
 	LinesMinPx = 11,
 	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 4, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20, TicketH = 64,
 	Guard = 0.35, -- s: a fast second tap on the [메뉴] square must not land on a card (CR-L26)
+	Focus = { Color = Color3.fromRGB(255, 210, 60), Thickness = 3 }, -- the asked card's rim ({ Focus = kind })
 }
 -- Studio-only sample looks for the layout photos: the four the user picked (A23-75, 2026-10-08: halo Ice · Gold,
 -- horns Lava · Shadow; ids 0 = "Coming soon", the pictures are stand-ins until their badges are drawn)
@@ -109,6 +95,30 @@ local function passDef(p)
 		Price = tonumber(cfg.Price) or tonumber(cfg.PriceHint) or p.Price,
 		Attr = type(cfg.Attr) == "string" and cfg.Attr or p.Attr,
 	}
+end
+
+-- a pass card's name (Config.GamePasses[kind].Name; the private server = Screen.PrivateName) and its line
+-- (Config.PassInfo[kind].Line; the private server card adds Config.PrivateServer.Text, A23-90: rewards are halved there)
+local function passName(p)
+	if p.Info then return T.PrivateName or p.Kind end
+	local cfg = type(Config.GamePasses) == "table" and Config.GamePasses[p.Kind] or nil
+	return type(cfg) == "table" and type(cfg.Name) == "string" and cfg.Name or p.Kind
+end
+
+local function passLine(p)
+	local row = INFO[p.Kind]
+	local line = type(row) == "table" and type(row.Line) == "string" and row.Line or nil
+	local ps = Config.PrivateServer
+	if p.Info and type(ps) == "table" and type(ps.Text) == "string" and ps.Text ~= "" then
+		line = line and (line .. "\n" .. ps.Text) or ps.Text
+	end
+	return line
+end
+
+-- the live switch PassSales (SwitchService -> GameState SwitchPassSales): false = no [Buy] (nil = not sent yet = on)
+local function salesOn()
+	local gs = game:GetService("ReplicatedStorage"):FindFirstChild("GameState")
+	return not (gs and gs:GetAttribute("SwitchPassSales") == false)
 end
 
 local function myFaction()
@@ -311,6 +321,7 @@ local function tapPass(kit, p)
 	if p.Info then kit.Toast(T.ServerToast, "info"); return end
 	if d.Attr and attrOf(d.Attr, false) == true then kit.Toast(T.OwnedToast, "info"); return end
 	if d.Id <= 0 then kit.Toast(T.SoonToast, "info"); return end
+	if not salesOn() then kit.Toast(T.OffToast, "info"); return end
 	prompt(d.Id, p.Kind)
 end
 
@@ -323,6 +334,7 @@ local function tapLook(kit, look)
 	end
 	local passId = math.floor(tonumber(def.PassId or def.Id) or 0)
 	if passId <= 0 then kit.Toast(T.SoonToast, "info"); return end
+	if not salesOn() then kit.Toast(T.OffToast, "info"); return end
 	prompt(passId, "Look")
 end
 
@@ -334,6 +346,8 @@ local function refreshPass(kit, cell)
 		setCapsule(kit, cell, T.Owned, kit.Palette.Free, true)
 	elseif d.Id <= 0 then
 		setCapsule(kit, cell, T.Soon, kit.Palette.Button, false)
+	elseif not salesOn() then
+		setCapsule(kit, cell, T.Off, kit.Palette.Button, false)
 	else
 		setCapsule(kit, cell, string.format(T.PriceF, Util.FormatInt(d.Price)), kit.Palette.Buy, true)
 	end
@@ -346,6 +360,8 @@ local function refreshLook(kit, cell)
 		setCapsule(kit, cell, on and T.Wearing or T.Wear, on and kit.Palette.Free or kit.Palette.Button, true)
 	elseif math.floor(tonumber(def.PassId or def.Id) or 0) <= 0 then
 		setCapsule(kit, cell, T.Soon, kit.Palette.Button, false)
+	elseif not salesOn() then
+		setCapsule(kit, cell, T.Off, kit.Palette.Button, false)
 	else
 		setCapsule(kit, cell, string.format(T.PriceF, Util.FormatInt(tonumber(def.Price) or 99)), kit.Palette.Buy, true)
 	end
@@ -392,8 +408,9 @@ local function buildTickets(u, kit, parent, rows)
 	end
 end
 
-local function buildShop(parent, kit)
+local function buildShop(parent, kit, arg)
 	local u = uikit()
+	local focus = type(arg) == "table" and arg.Focus or nil -- a locked sticker / bubble: its pass card (StickerUI)
 	if not u then return nil end
 	local openedAt = os.clock()
 	local passCells, lookCells, ticketRows = {}, {}, {}
@@ -409,7 +426,14 @@ local function buildShop(parent, kit)
 			Name = "Slot", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, L.Pad),
 			Size = UDim2.fromOffset(L.Slot, L.Slot), ScaleType = Enum.ScaleType.Fit, Parent = card,
 		})
-		cardWords(u, card, T.Names[p.Kind] or p.Kind, T.Lines[p.Kind], linesTop, linesH)
+		cardWords(u, card, passName(p), passLine(p), linesTop, linesH)
+		if focus == p.Kind then
+			local rim = Instance.new("UIStroke")
+			rim.Name = "Focus"
+			rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			rim.Color, rim.Thickness = L.Focus.Color, L.Focus.Thickness
+			rim.Parent = card
+		end
 		cell.Button = capsule(kit, card, function()
 			if os.clock() >= openedAt + L.Guard then tapPass(kit, p) end
 		end)

@@ -662,6 +662,7 @@ runGroup("ProgressionService.AddXP fires XPEarned", function()
 	local w = healthWorld()
 	local p, d = hero(w, 1, 5)
 	d.XP = 0
+	d.PlaytimeSeconds = 3600 -- past A23-167's first-minutes 2x XP
 	w.PS.RefreshCharacter = function() end
 	local prog = w:Load("ProgressionService", PROGRESSION_SOURCE)
 	prog.Init(w.Reg)
@@ -682,6 +683,7 @@ runGroup("ProgressionService.AddXP fires XPEarned", function()
 	local w2 = healthWorld()
 	local p2, d2 = hero(w2, 1, 5)
 	d2.XP = 0
+	d2.PlaytimeSeconds = 3600
 	w2.PS.RefreshCharacter = function() end
 	local prog2 = w2:Load("ProgressionService", PROGRESSION_SOURCE)
 	prog2.Init(w2.Reg)

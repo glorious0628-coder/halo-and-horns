@@ -58,7 +58,7 @@ MUTATIONS = [
      "	if math.abs(pos.X - a.Center.X) <= a.Size.X / 2 then return a end\n"),
     ("ZoneHasPvP ignores the pit", C, "	return type(zone) == \"table\" and (zone.PvP == true or type(zone.PvPArea) == \"table\")\n",
      "	return type(zone) == \"table\" and zone.PvP == true\n"),
-    ("Clatter outside the pit", C, "Spawn = Vector3.new(1670, 0, 0), MinLevel = 25, War = 20,", "Spawn = Vector3.new(1300, 0, 0), MinLevel = 25, War = 20,"),
+    ("Clatter outside the pit", C, "Spawn = Vector3.new(1670, 0, 0), MinLevel = 25, War = 2,", "Spawn = Vector3.new(1300, 0, 0), MinLevel = 25, War = 2,"),
     ("zone PvP by zone only", Z, "	local pvp = Config.PvPAt(pos, zone)\n", "	local pvp = zone.PvP == true\n"),
     ("no change inside a zone", Z, "	if zone.Id == old and pvp == wasPvP then return end\n", "	if zone.Id == old then return end\n"),
     ("no PvP line", Z, "			notify(player, fmt(\"EnteredPvP\"), \"bad\", \"None\") -- happens to me: no Deny\n", ""),

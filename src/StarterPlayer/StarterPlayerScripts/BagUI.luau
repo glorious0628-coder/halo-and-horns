@@ -523,11 +523,10 @@ function BagUI.Detail(cell, ctx)
 			elseif tone == "Bad" then line(string.format(t.Down, Util.FormatInt(d)), "Bad")
 			else line(t.Same, "Sub") end
 		end
+		-- where it comes from: Config.WeaponSource picks the line (A23-127: the drop line once the Forge sells no weapon,
+		-- the shop line while it still does - final review 10/13: never the drop promise on a server that still sells)
 		local source = Config.WeaponSource(cell.Tier)
-		if type(source) == "string" and source ~= "" then
-			local info = Config.WeaponInfo[cell.Tier]
-			line(info and tx(info, "Source") or source, "Sub")
-		end
+		if type(source) == "string" and source ~= "" then line(source, "Sub") end
 		if cell.Equipped then
 			act("Equip", tx(TXT, "Equipped"), false, "Button")
 		elseif not Config.WeaponUsable(cell.Tier, level) then

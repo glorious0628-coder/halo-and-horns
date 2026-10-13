@@ -176,6 +176,14 @@ local function questWorld(saved, seed, opts)
 	function net.Notify(_, text, kind) table.insert(f.Notices, { Text = text, Kind = kind }) end
 	function net.NotifyAll() end
 	function net.Fx() end
+	-- gameplay plan 1-A #3: QuestService reads the next egg hunt (GooseNextAt / GooseActive); by default it starts in 30 minutes
+	function net.GameState()
+		return { GetAttribute = function(_, key)
+			if key == "GooseActive" then return opts ~= nil and opts.GooseActive == true end
+			if key == "GooseNextAt" then return f.Now + ((opts and opts.GooseIn) or 1800) end
+			return nil
+		end }
+	end
 	local random = seededRandom(seed or questSerial)
 	local util = { DeepCopy = deepCopy, FormatNumber = tostring, Random = random,
 		Warn = function(tag, msg) if tag ~= "DataService" then table.insert(groupWarnings, tag .. ": " .. tostring(msg)) end end,
@@ -225,9 +233,11 @@ local function questWorld(saved, seed, opts)
 		table.insert(f.Pays, { Gold = amount, Source = source })
 		ps.AddStat(p, "BankGold", amount)
 	end
-	function prog.AddXP(p, amount)
-		table.insert(f.Pays, { XP = amount })
+	function prog.AddXP(p, amount, cap)
+		if cap ~= nil then amount = math.min(amount, math.max(0, math.floor(cap))) end -- the real AddXP's cap (after the pass)
+		table.insert(f.Pays, { XP = amount, Cap = cap })
 		ps.AddStat(p, "XP", amount)
+		return amount
 	end
 	local registry = { PlayerService = ps, DataService = ds, ProgressionService = prog,
 		MonsterService = { MonsterKilled = signal() }, CombatService = { Released = signal() },
@@ -253,6 +263,7 @@ local function questWorld(saved, seed, opts)
 	function f:Skill(info) registry.CombatService.Released:Fire(self.Player, info) end
 	function f:Gold(amount, source) prog.GoldEarned:Fire(self.Player, amount, source) end
 	function f:Claim(slot) remotes.ClaimQuest.OnServerEvent:Fire(self.Player, slot) end
+	function f:ClaimVacation() remotes.ClaimVacation.OnServerEvent:Fire(self.Player) end
 	function f:Reroll(slot) remotes.RerollQuest.OnServerEvent:Fire(self.Player, slot) end
 	function f:Paid()
 		local g, x = 0, 0
@@ -331,8 +342,8 @@ runGroup("dailies-config", function()
 	local _, dx = CONFIG.HuntValue(1, NB.RewardMinutes)
 	local _, chx = CONFIG.HuntValue(1, NB.ChestMinutes)
 	local dayXP = CONFIG.Quests.Slots * dx + chx
-	check(need == 1381, "Lv1 -> Lv10 needs 1381 XP (Config.XPToNext, EarlyMult below Lv10)", need)
-	check(dayXP == 600 and dayXP < need, "one day's newbie set pays 600 XP < 1381 (no Lv10 from one day of dailies)", dayXP)
+	check(need == 962, "Lv1 -> Lv10 needs 962 XP (Config.XPToNext, EarlyMult 0.35 below Lv10; gameplay plan 1-A #4)", need)
+	check(dayXP == 600 and dayXP < need, "one day's newbie set pays 600 XP < 962 (no Lv10 from one day of dailies)", dayXP)
 	local level, xp = 1, dayXP
 	while level < 100 and xp >= CONFIG.XPToNext(level) do xp -= CONFIG.XPToNext(level); level += 1 end
 	check(level < 10, "a fresh Lv1 player who only claims one day's dailies ends below Lv10", level)
@@ -345,13 +356,14 @@ runGroup("dailies-config", function()
 		"DailyDayMinutes: Lv1-9 = 2 x 3 + 4 = 10, Lv10-24 (E12 woods) = 3 x 3 + 6 = 15, Lv25+ = 25",
 		show({ CONFIG.DailyDayMinutes(1), CONFIG.DailyDayMinutes(10), CONFIG.DailyDayMinutes(24), CONFIG.DailyDayMinutes(25) }))
 	local vg, vx = CONFIG.VacationReward(1, 1)
-	check(vg < 360 and vx < 600 and vg >= 251 and vx == 420, "a missed Lv1-9 day (70% of 10 minutes) pays less than a played day (360 + 600)",
+	-- 최종 검수 10/13: the XP of a missed early day x EarlyMult / 0.5 (0.35 / 0.5 = 0.7): 600 x 0.7 x 0.7 = 294
+	check(vg < 360 and vx < 600 and vg >= 251 and vx == 294, "a missed Lv1-9 day (70% of 10 minutes, XP x 0.7 for EarlyMult 0.35) pays less than a played day (360 + 600)",
 		show({ vg, vx }))
 	-- documented value (Config comments / fix report): 70% of 360 gold = 252. math.floor(360 * 0.7) gives 251 in floating point.
 	check(vg == 252, "a missed Lv1-9 day pays exactly the documented 252 gold (70% of 360; float floor must not lose 1 gold)",
 		show({ vg, vx }))
 	local _, v3 = CONFIG.VacationReward(1, 3)
-	check(v3 == 1260 and v3 < need, "3 missed days (max) = 1260 XP < 1381 (no Lv10 from vacation alone)", v3)
+	check(v3 == 882 and v3 < need, "3 missed days (max) = 882 XP < 962 (no Lv10 from vacation alone; the claim cap keeps it)", v3)
 	local tg, tx = CONFIG.HuntValue(25, 25)
 	local wg, wx = CONFIG.VacationReward(25, 1)
 	check(wg == math.floor(tg * 0.7) and wx == math.floor(tx * 0.7), "Lv25+ vacation unchanged (70% of 25 minutes)", show({ wg, wx }))
@@ -629,12 +641,55 @@ runGroup("dailies-reroll-band", function()
 	check(og == 180 and ox == 300, "the old daily pays its stored 180 / 300 (Lv1 cap = 5-minute value)", show({ og, ox }))
 end)
 
+runGroup("vacation never reaches Lv10 (A23-14)", function()
+	-- 최종 검수 10/13: EarlyMult 0.35 stays; below Lv10 a vacation claim's XP stops one XP short of Lv10 (after the 2x pass:
+	-- the cap goes to ProgressionService.AddXP)
+	local function room(level, xp)
+		local r = -xp - 1
+		for l = level, 9 do r += CONFIG.XPToNext(l) end
+		return math.max(0, r)
+	end
+	for _, case in { { 1, 0 }, { 5, 10 }, { 8, 150 }, { 9, 0 }, { 9, CONFIG.XPToNext(9) - 5 } } do
+		local level, xp = case[1], case[2]
+		local f = questWorld(rookieRow(level, "Halo"), 900 + level * 7 + xp)
+		f.Data.XP = xp
+		local g3, x3 = CONFIG.VacationReward(level, 3)
+		f.Data.VacationDays, f.Data.VacationGold, f.Data.VacationXP = 3, g3, x3
+		f.Pays = {}
+		f:ClaimVacation()
+		local paidX, cap = 0, false
+		for _, e in f.Pays do
+			if e.XP then paidX += e.XP; cap = e.Cap end
+		end
+		local want = math.min(x3, room(level, xp))
+		check(paidX == want and cap == room(level, xp) and f.Data.VacationDays == 0,
+			"Lv" .. level .. " with " .. xp .. " XP: the claim pays min(" .. x3 .. ", room " .. room(level, xp) .. ") and caps AddXP there",
+			show({ paidX, want, cap }))
+		check(xp + paidX < room(level, 0) + 1, "... so the vacation alone ends below Lv10", show({ xp, paidX }))
+	end
+	-- Lv10+: no cap (the woods day pays in full)
+	local w = questWorld(rookieRow(12, "Halo"), 977)
+	local g12, x12 = CONFIG.VacationReward(12, 3)
+	w.Data.VacationDays, w.Data.VacationGold, w.Data.VacationXP = 3, g12, x12
+	w.Pays = {}
+	w:ClaimVacation()
+	local paid, capped = 0, false
+	for _, e in w.Pays do
+		if e.XP then paid += e.XP; capped = e.Cap ~= nil end
+	end
+	check(paid == x12 and not capped, "Lv12: the vacation pays its whole XP, no cap", show({ paid, x12 }))
+	-- the shown amount stops there too (a Lv9 rookie away 3 days)
+	local s = questWorld(rookieRow(9, "Halo", { XP = 200, DailyDay = today() - 4, DailyClaims = 0, DailyLevel = 9, Quests = {} }), 978)
+	check(s.Data.VacationDays == 3 and s.Data.VacationXP == math.min(select(2, CONFIG.VacationReward(9, 3)), room(9, 200)),
+		"the vacation panel shows the capped XP below Lv10", show({ s.Data.VacationDays, s.Data.VacationXP, room(9, 200) }))
+end)
+
 runGroup("dailies-day-change", function()
 	-- a whole missed rookie day: vacation in the newbie band
 	local f = questWorld(rookieRow(1, "Halo", { DailyDay = today() - 2, DailyClaims = 0, DailyLevel = 1, Quests = {} }), 11)
 	local wantG, wantX = CONFIG.VacationReward(1, 2)
-	check(f.Data.VacationDays == 2 and f.Data.VacationGold == wantG and f.Data.VacationXP == wantX and wantX == 840,
-		"2 missed rookie days = VacationReward(1, 2) in the newbie band (840 XP)", show({ f.Data.VacationDays, f.Data.VacationGold, f.Data.VacationXP }))
+	check(f.Data.VacationDays == 2 and f.Data.VacationGold == wantG and f.Data.VacationXP == wantX and wantX == 588,
+		"2 missed rookie days = VacationReward(1, 2) in the newbie band (588 XP: 840 x 0.7 for EarlyMult 0.35)", show({ f.Data.VacationDays, f.Data.VacationGold, f.Data.VacationXP }))
 	-- a fully played old day gives no vacation; a partly played one gives the missing share (f in the old day's band)
 	local full = questWorld(rookieRow(1, "Halo", { DailyDay = today() - 1, DailyClaims = 3, DailyLevel = 1, Quests = {} }), 12)
 	check((full.Data.VacationDays or 0) == 0, "a fully claimed rookie day adds no vacation", full.Data.VacationDays)
@@ -893,6 +948,28 @@ runGroup("dailies-nonhunt (A23-113 #8)", function()
 		local f = questWorld(rookieRow(17, "Neutral"), seed * 53)
 		check(nonHuntCount(f) == 0 and #f.Data.Quests == 3, "Neutral with no choice source: all hunting, unchanged", show({ f.Data.Quests[1].Id, f.Data.Quests[2].Id, f.Data.Quests[3].Id }))
 	end
+	-- gameplay plan 2026-10-13 1-A #3: a goose daily only while the next egg hunt starts within GooseWindow (or one is on), and
+	-- the PvP kinds (Hunt / Plunder) are never the forced non-hunting slot (A23-113)
+	check(W.GooseWindow == 3600, "Config.Quests.GooseWindow = 3600 s (the hunt comes every 4 hours)", tostring(W.GooseWindow))
+	local farHunt, farAll, onGoose, nearGoose = 0, 0, 0, 0
+	for _, level in { 12, 17, 40 } do
+		for seed = 1, 40 do
+			local far = questWorld(rookieRow(level, "Halo"), seed * 13 + level, { Graduated = true, GooseIn = 3 * 3600 })
+			check(far:Slot("Goose") == nil and #far.Data.Quests == 3 and far.Data.GooseDay == 0,
+				"Lv" .. level .. ": the next hunt 3 hours away: no goose daily (and no GooseDay mark)",
+				show({ far.Data.Quests[1].Id, far.Data.Quests[2].Id, far.Data.Quests[3].Id }))
+			if far:Slot("Hunt") then farHunt += 1 end
+			if nonHuntCount(far) == 0 then farAll += 1 end
+			local on = questWorld(rookieRow(level, "Halo"), seed * 13 + level, { Graduated = true, GooseIn = 3 * 3600, GooseActive = true })
+			if on:Slot("Goose") then onGoose += 1 end
+			local near = questWorld(rookieRow(level, "Halo"), seed * 13 + level, { Graduated = true, GooseIn = 3000 })
+			if near:Slot("Goose") then nearGoose += 1 end
+		end
+	end
+	check(farHunt <= 120 * 0.36 and farAll >= 60, "goose far: the PvP daily is never forced into the last slot (" .. farHunt
+		.. " Hunt of 120; " .. farAll .. " sets all hunting)", show({ farHunt, farAll }))
+	check(onGoose >= 60 and nearGoose >= 60, "a hunt on now, or one within the window: the goose daily is the usual last-slot pick (" .. onGoose
+		.. ", " .. nearGoose .. " of 120)", show({ onGoose, nearGoose }))
 	-- Lv1-9 is not touched: no non-hunting row, ever
 	for _, level in { 1, 5, 9 } do
 		for seed = 1, 20 do

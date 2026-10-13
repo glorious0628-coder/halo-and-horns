@@ -1,5 +1,94 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 아침 (최신)
+- comeback-client main dd121979 병합됨. 칩 글 '2x XP' 그대로·Returned 마을 사람 BackLines = 최종 검수 OK.
+- 내일: 메인 반영 1 사진(comeback/, phone_first10) 판정 → 고칠 것은 최종 검수가 보냄. 그다음 02_dev1.md(dev1-halo-stage6 마무리).
+
+## 10/15 아침 이어갈 자리 (10/14 밤 컴퓨터 끄기 전, 지난 판)
+- fix/comeback-client **a4a683e6 = 다 됨·push됨**(시험 모두 통과, 최종 검수 보고함, 진행 중 아님). phone-first10-3은 main 6367529c 병합됨.
+- 내일: 최종 검수가 comeback-client 병합하면 메인 반영 1이 `play_comeback_photos.py`·`play_phone_round_photos.py first10` 사진 → 고장급만 고침.
+- 답 기다림: 칩 단어 '2x XP · N min' 그대로인지, Returned 말풍선을 마을 사람 첫 말로 한 것 괜찮은지. 그다음 02_dev1.md(dev1-halo-stage6 마무리).
+
+## 10/14 밤 2 — fix/comeback-client a4a683e6
+- A23-167 클라(개발 2 서버 main 9264ae44): 칩 '2x XP · N min'(HUD L.EarlyXPLeft/L.BoostText), PauseCard 'Tomorrow' 카드(Fx TomorrowGift, AttendanceUI.SlotIcon, [Open]=AttendanceUI.Open), Returned → 마을 사람 첫 말 BackLines 한 번(TownReact.BackLine; 안내자는 몸 없음), WelcomeBack News 줄. 새 시험 test_comeback_client, 사진 tools/play_comeback_photos.py [phone]. phone-first10-3과 병합 깨끗(시험 확인).
+- 기다림: 최종 검수 병합(phone-first10-3, comeback-client) → 메인 반영 1 사진(phone first10, comeback). 칩 단어 'XP x2' vs '2x XP'는 최종 검수 답 대기.
+
+## 10/14 밤 — fix/phone-first10-3 3e0a3477
+- town-react-zone 병합됨. 새 가지 **fix/phone-first10-3 3e0a3477**(origin/main fbab6855 위 2커밋, ../wt_dev1merge): 43719501 폰 말풍선 160x70 + TownReact.Blockers(보이는 단추만 피함, 6px) / 3e0a3477 폰 HP·MP 막대 15px(HudLayout TOUCH_BAR)·숫자 굵게 13px(VitalsUI). 최종 검수 병합 → 메인 반영 1 `play_phone_round_photos.py first10`(04_welcome 말풍선, 06_hud 숫자).
+- 사진 오면 고장급만. 그다음 02_dev1.md: dev1-halo-stage6 마무리(10/21 주).
+
+## 10/14 낮 2 — fix/town-react-zone 696cd288 (병합됨)
+- menu-one-line-2는 main 4baa63e6 병합됨. 새 가지 **fix/town-react-zone 696cd288**: TownReact.Clear Touch L 0.34, 바닥이 0.44H 아래면 R 0.6(749 폰은 위 가운데만 말함 — 너무 드물면 폰 말풍선 크기 줄이기), HUD TXT.Siege %g(화면엔 안 나옴). 최종 검수 병합 대기.
+- 다음: 02_dev1.md 폰 첫 10분 읽힘.
+
+## 10/14 낮 — fix/menu-one-line-2 959f3eed (병합됨)
+- menu-one-line은 main 75890afd 병합·사진 통과. 남은 2개 고침 = **fix/menu-one-line-2 959f3eed**(origin/main 6fca85e0 위, ../wt_dev1merge): ① 칸 이름이 11px에서 못 줄던 원인 = UIKit.FitText가 바닥을 MIN_TEXT_SIZE 11로 막고 UITextSizeConstraint는 그걸 실제 px로 읽음 → 라벨 속성 FitMinPx(자기 바닥) 새로, PC 칸 이름 8px·여백 PickerFitPaddingX 6px(Studio TextService 실측: Monsters 33.5/38/45.5 @8/9/11, Settings 30.5/34.5/41) ② 사진 로그 펼침 줄 = MenuFold 칸만 셈 + 이름 px·남는 폭 기록. 내일 아침 병합 예정.
+- 다음: 02_dev1.md 폰 첫 10분 읽힘.
+
+## 10/14 아침 — fix/menu-one-line (병합됨)
+- first-look-1·2는 main에 병합됨(4fe62394). 새 가지 **fix/menu-one-line 11af5107**(../wt_dev1merge, origin/main 4f88cc5a에서): PC 메뉴 펼침 한 줄.
+  - HudLayout: PC 아래 줄 7칸(Monsters가 펼침에서 아래 줄로; 시트 tiles 438du, 1280x720은 유령 버튼 때문에 묶음이 가운데에서 26px 왼쪽), PC는 전쟁 미터(가운데 열)가 폭 그대로 왼쪽으로 움직여 펼침 8칸(FOLD_WANT_PC = #L.Fold)이 [Menu] 옆 한 줄. 991x451 Studio 창: 첫 줄 7 → 8칸.
+  - HUD: L.TileNamePxPC 10 → 9('Monsters' 잘림). FitFold는 미터가 못 움직일 때(Roblox 메뉴 넓게 열림) 대비로 남김.
+  - 기대값: hud_layout 시트 JSON·7칸 검사·넓은 PC 한 줄 검사(예외: unibar_wide 7칸 → FitFold, 655x340 5칸 → 두 줄), test_first_look 정적 3개+돌연변이 4개.
+  - 사진: `HH_MAIN_STUDIO=1 py tools/play_first_look_photos.py` → docs/art/verification_2026-10-14/menu_one_line/(log에 'fold lines N'·row·cut names). 병합 뒤 메인 반영 1.
+- 다음: 02_dev1.md 폰 첫 10분 읽힘(0원 코드).
+
+## 10/14 새벽 2 — 다시 시작하면 여기부터 (A23-168: 보고 뒤 state 적고 clear)
+- 기다리는 것: 최종 검수가 fix/first-look-1 b23679e3 병합·게시(오늘 밤), **fix/first-look-2 b9dd5764**(= phone-first10-2 9759e832 + 창 제목 글 띠 가운데·I'm In 카드 폭 45%) 병합. 그 뒤 메인 반영 1 사진(play_first_look_photos.py, play_phone_round_photos.py first10) → 고장급만.
+- fix/choice-card-ui e9077f02 = main에 병합됨(꺼진 채). **2주 차 켤 때 고칠 MINOR(최종 검수 API 검토)**: ChoiceCardUI offer — 시간 카드(피니셔 10초·ShardBloom 120초)가 떠 있을 때 다른 출처 카드가 오면 지금은 시간 카드를 덮어 서버가 None 처리(선물 잃음) → 기존이 시간 안·출처 다르면 새 카드를 S.Held에 넣고 화면 유지 + 시험 1개. 켜기는 개발 2(Finisher.Kinds, Afterglow 호출)와 같이.
+- fix/mischief-client 96aeef24 = 병합 안 함(개발 2 61d7c162가 같은 줄을 바꿈). 잊어도 됨.
+- 2주 차(six_week_plan): 6단계 클라 병합(dev1-halo-stage6 4fb64a0b) → 선택 카드 켜기.
+
+## 10/14 새벽
+- fix/test-prep-client 6ee394eb = main 627a9b51 병합됨.
+- **fix/choice-card-ui e9077f02** (../wt_codexui): 공용 선택 카드 창 + 여운. 켜기는 개발 2(Finisher.Kinds 되돌리기, 카드 고른 뒤 Afterglow 보내기).
+- **fix/mischief-client 96aeef24**: 화면 글 Infamy → Mischief 5줄(A23-166).
+- **fix/first-look-1 b23679e3**: 메뉴 펼침 한 줄(L.FitFold, PC만, 85%까지; PC 아래 줄 6칸은 A23-109 승인이라 안 바꿈), Menu 빛은 펼침 닫혔을 때만, Codex 칸 글 "Monsters", 행사 알약은 칩 줄이 비면 그 자리로(V2.eventY + HUD.ChipsShown). 사진 tools/play_first_look_photos.py [phone].
+- **fix/phone-first10-2 9759e832**: TownReact.Clear(말풍선이 HUD 밑에 안 깔리게), 전사 글 "Smash up close!", 환영 카드 I'm In 320du, 사진 점검 tiny 배율 고침.
+- **dev1-halo-stage6 4fb64a0b**: 큰 지도 V3 b Id 114107691990380(+ asset_ids.json). 교체 병합 10/20 주.
+- worktree: ../wt_dev1merge = 작은 고침 가지 돌려 쓰기(지금 fix/phone-first10-2), ../wt_codexui = choice-card, ../wt_dev1halo6 = stage6(art/ui/asset_ids.json sparse 추가함).
+- 알아둘 것: test_a23_14 돌연변이 포함판은 40분 넘음 → --no-mutations로. test_halloween은 성긴 worktree에서 art glb 없어 실행 불가(병합 조건 아님). test_place_english는 --place ../Game/place/GoodEvil.rbxlx.
+
+## 10/13 밤 2 (PC 재시작 20:18 뒤)
+- **fix/test-prep-client 6ee394eb**(worktree ../wt_dev1merge로 옮김; ../wt_codexui는 choice-card): API 검토 FIX FIRST 반영 — UIKit.TapScale(ScreenGui UIScale 포함), 크기<2 띠 숨김, powerHit 처음 UDim2.new(), 사진 점검 small 44. test_phone_first10 23·17/17 + 관련 15개 + audio 통과. 최종 검수 병합 대기(서버 가지와 같이).
+- **fix/choice-card-ui e9077f02**(../wt_codexui, main fc6717d0에서): ChoiceCardUI.luau = 공용 선택 카드 창(Card + FinisherCard, Panels 'ChoiceCard', 승인 BtnKind/BtnSneaky + 날개·뿔, 시간 카드 카운트다운, 저장 카드는 조용한 화면에서만·닫으면 30초 뒤 다시, 시간 카드가 저장 카드를 잠깐 보류) + 여운(Fx Afterglow: 금빛 반짝이·보라 연기, 발밑). Config.ChoiceCard.Screen(+ Stat Infamy→"Mischief", A23-166). 시험 test_choice_card_ui 57·25/25 + 48개(halloween·place_english는 성긴 worktree라 실행 불가 → place_english는 --place로 통과) + a23_14 --no-mutations 291/0 + audio 통과. 사진 `HH_MAIN_STUDIO=1 py tools/play_choice_card_photos.py [phone]`.
+- 서버 쪽 남은 것(개발 2): Config.Finisher.Kinds 다시 켜기(main은 {}), ChoiceCard·Finisher 고른 뒤 StoryQuestService.Afterglow 부르기(Config.Afterglow.From Card/Finisher는 있는데 안 부름). 화면 'Infamy' 글 목록은 최종 검수에 보냄(CharacterUI:69, Panels:133·135·145·147).
+
+## 10/13 밤 (A23-160, Opus 5.5 high)
+- 1-A 화면 몫(#5 출석·#6 상점·#2 첫 무기 화면·#8 Bat Zigzag/Final Boss)은 아래 ae655ccf로 이미 main. Smokey→Rose = 개발 2(wt_prep, 아직 커밋 전). 남은 내 몫 = **폰 첫 10분 읽힘**.
+- 가지 `fix/test-prep-client`(../wt_codexui, main 569565aa로 빨리 감기) **99da2abd** push, 최종 검수에 보고:
+  - f0a0b7bf: HUD Power 줄 고장 — OpenCharacter 누름 칸이 PowerLine의 UIListLayout 안 첫 칸이 되어 글자가 줄 밖으로 밀림(PC 막대 오른쪽 밖, 폰 물약 고리 위). 누름 칸을 형제로, 폰은 XP 막대까지·44px(L.PowerTap).
+  - 99da2abd: UIKit.TapPad(wirePress, 폰만) — 44px 미만 버튼 바깥에 보이지 않는 누름 띠(옆 버튼 틈의 절반까지), 순수 UIKit.TapExtents.
+  - 새 시험 tools/test_phone_first10.py(18·12/12). 관련 시험 15개 + test_audio(혼자) 통과.
+  - 사진: `HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py first10` → docs/art/verification_2026-10-14/phone_first10/(오프닝·진영·직업·환영·첫 미션·HUD·대장간·물약 가게·Gifts·가방·Lv5, 두 폰). 병합 뒤 메인 반영 1. 'small'은 누름 띠 포함 크기로 셈.
+- 다음: 사진 오면 cut/small/overlap/tiny 고장급만 고침. 그다음 10/21 목록(Hero 칭호 단추 잘림 등, docs/review/phone_round_prep_2026-10-13.md).
+- 51127c10: 사진 점검에 tiny(실제 17px 미만 한 줄 글자). 최종 검수 덧붙임: PC 모양 1px도 그대로(누름 띠는 폰만; Power 줄 고침만 PC 글자 위치가 설계 자리로 돌아감 — 알림함), 글자 바닥 규칙 안 건드림, #8 Rose·#2 Buy 값은 개발 2.
+- **A23-161/162:** 동결 없음, 진짜 첫 10분 시험 11/7~10, 베타 12/15. 날짜 값은 고치지 말고 목록만(화면 코드엔 없음; Config BuildLabel·PioneerUntil 12/19).
+- **dev1-halo-stage6 cbf3c3f0 마무리 확인:** 합친 판(main 50eefbe4 + cbf3c3f0 + dev2 bd903c79, ../wt_dev1merge 임시 커밋 2f6bcfe9)에서 halo_maps 18·9/9, map_v2 102·37/37, zone_look, fountain_fx 18·12/12, quest_target 84, return 190, spawn_look 49, intro_halo_shot 7·8/8, town_npcs 133, town_quests 1036, water_rescue 149, audio(혼자) 통과, 바뀐 화면 파일 7개 컴파일 OK. 폰 가지와도 충돌 없음. 남은 것 = 큰 지도 그림 Id(최종 검수 올림) → Config Id만. 교체(10/20 주)는 최종 검수 병합.
+- 2주 차: 공용 선택 카드 창(gameplay_plan 2-A #3), 주별 몫 docs/design/six_week_plan_2026-10-13.md.
+
+## 10/13 저녁
+- **`fix/test-prep-client` ae655ccf = main 10fa20b9 병합됨**(최종 검수 10/13, 검수 고침 ①가방 얻는 곳 ②출석 목표 진짜 보상만 ③Rose 되돌림 — Rose·TownReact는 개발 2 가지로). 메인 sync·사진(play_test_prep_photos.py)은 개발 2 fix/test-prep-server 병합 뒤 한 번에. worktree `../wt_codexui` 다시 써도 됨. 넣은 것: 출석 창(AttendanceUI.luau, 메뉴 칸 Gifts), 상점 정리(6칸·Config.PassInfo.Screen·SwitchPassSales·Focus·개인 서버 HUD 칩), 첫 무기 화면(Panels WSHOP.Sells·WeaponInfo Source/ShopSource·Tutorial.Text.NextIronDrop·QuestTarget.IronGold·IronDrop→초원·Guide "Bag"), 이름(Bat Zigzag·TownReact Rose), ClientMain `Config.ApplyTestServer()`, 도감 "Defeated: %s". 새 시험 test_attendance_ui·test_shop_ui·test_first_weapon_client(+test_shop_layout·quest_target·slime_prince·skill_kit·town_quests 대명사 고침). 사진 `tools/play_test_prep_photos.py`(병합 뒤 메인 반영 1).
+- **개발 2 약속(fix/test-prep-server)**: WeaponShop.Buy=false + 사기 거절(Text.WeaponDropOnly), 첫 King T3(Loot.FirstKingDrop, Loot.Text.FirstKingWeapon/Equip), QuestService GoalKind "IronDrop", Return.GoalZones.IronDrop, Net GameState PrivateServer, Config.TestServer + ApplyTestServer, M1_1 둘째 단계 Guide "Bag"(Otto가 Enh70 줌). **test_skill_kit·test_slime_prince·town_quests 2281줄 = 내 가지 몫**(개발 2와 합의).
+- **기다림**: 패스 id 9개(사용자 10/15) → Config.GamePasses Id·Looks PassId. 최종 검수 시험·병합.
+- **열린 가지: `dev1-halo-stage6` cbf3c3f0** (6단계 10/21 주 병합, 최종 검수). cbf3c3f0 = 큰 지도 V3 b 틀을 WorldMapV2에 넣음(Size 1041×760, Map X0 47.815·K 0.47407·OffX 230·OffZ 883, **Id ""** — 최종 검수가 `art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_b.png` 올리면 Id만), test_halo_maps 새 틀. 합친 판(main a29dd3f2 + cbf3c3f0 + dev2 814bb3ca, worktree `../wt_dev1merge`): 14개 통과, map_v2 102/102 — 남은 건 개발 2 값의 변이 패턴 3개(개발 2 몫, 알림).
+- worktree: `wt_dev1base`(main 비교용), `wt_dev1merge`(6단계 합친 판) 새로 만듦 — 지울 땐 최종 검수에 먼저. 시험 묶음 돌리기: scratchpad sweep.py(세션 끝나면 사라짐) — 병렬 4, test_audio는 혼자.
+
+## 10/13 오후 (셀프 클리어 전)
+- **열린 가지:** `dev1-halo-stage6` **bfce02b0** (worktree `../wt_dev1halo6`, sparse, build/luau 복사됨) = 6단계 때 개발 2 가지와 합쳐 병합(최종 검수가 함). 최종 검수는 73be5aea까지 받음, bfce02b0 보고는 보냄(대기열).
+- **다음 할 일 1:** 개발 2가 `dev2-halo-stage6`를 push하면(`git ls-remote --heads origin dev2-halo-stage6`) 임시 worktree에서 두 가지를 합쳐(origin/main + dev1-halo-stage6 + dev2-halo-stage6) 시험: test_halo_maps·map_v2·zone_look·fountain_fx·quest_target·return·spawn_look·intro_halo_shot·town_npcs·town_quests·audio·water_rescue. map_v2 그림 검사 2개('picture covers Bounds'·'every land maps inside the picture')는 새 큰 지도 그림+변환값 전엔 실패가 예상 — 최종 검수 결정 대기. 결과 해시+표로 최종 검수에.
+- 큰 지도 새 그림(art/out/s2/worldmap/UIP_WorldMapV2_HaloNew_composite.png, 1024×683 옛 틀) = 새 Bounds 못 덮음, 섬도 실제 비율 아님(대륙 맞춘 변환이면 분수 광장 자리가 그림 속 집 위, 대성당 y -25 밖) → 최종 검수에 "그림 다시" 알림. 다시 그릴 틀: 1041×760, 옛 그림을 (17,77)에, Map = { X0 = 47.815, K = 0.47407, OffX = 230, OffZ = 883 } (Bounds px 0.4..1029.1 × 0..759.9). 안내 그림 `docs/review/halo_worldmap_guide_2026-10-13.png`(분홍 = plan.land 실제 크기, 흰 = 큰 길·고리길, 빨강 = 성문(157,262)·스폰(157,220)·분수(167,139)·성(73,147)·대성당(197,53)·전망대(267,50)). 새 그림 오면 이 변환값을 dev1-halo-stage6 Config에 넣고 Id 비움.
+- **다음 할 일 2:** 최종 검수의 게임성 계획 `docs/design/gameplay_plan_2026-10-13.md`(작성 중)대로.
+- 끝난 것: fix/phone-round b6e4fe45 = main 4c945b11 병합. 멈춘 것: Hero 창 844 "Paladin" 글자·힘 칩 여백(최종 검수 '폰 멈춤'). '키보드 없음' Studio 스위치 = 나중(최종 검수).
+- worktree `wt_codexui`(fix/phone-round, 병합됨)는 지워도 됨(지울 땐 최종 검수에 먼저).
+
+## 10/13 오후 2 — 빛 마을 6단계 클라 준비 (사용자 "빛 마을에 집중", 최종 검수 전달)
+- **폰 일 멈춤**(병합 안 함): `fix/phone-round` b6e4fe45까지 push(Help 터치 안전 줄·거위 칩 시간). 못 한 것 = Hero 창 844에서 "Lv 25 · Paladin" 끝 글자 잘림·힘 칩 "340" 오른쪽에 붙음 → 안쪽 여백(최종 검수 10/13 사진 phone_round_hero2). 다시 하라면 이 가지 위에.
+- 새 가지 **dev1-halo-stage6** (worktree `../wt_dev1halo6`, sparse src/tools/docs, build/luau 복사함; 6단계 때 병합, 지금은 병합 안 함). 개발 2 = `dev2-halo-stage6`(wt_halo6): Zones·Bounds·Lands·Outskirts·Landmarks·TownNpcs·폭포 소리. 나 = Map.Roads RoadNorthIsland·RoadLook·preview_map 그 줄·map_v2 길 검사 + 클라 파일(개발 2에 알림).
+- ① 오프닝 = dev1-opening-v2 06691db2 cherry-pick(687e3519): HALO_SHOT (0,12,-270)→(0,14,-352), 성문 통로 16×30 가운데 높이 12~14 — plan Gate door_size [16,30]로 확인. SPOT.Halo (0,16,-410) 그대로. ② 큰 지도 라벨: WorldMap은 Config.Zones.HaloTown.Center를 씀(77줄 (0,0,-400)은 옛 v3 대비용) → 개발 2의 새 중심 (-2.5,-596.5) = 분수 광장 (22,-590) 옆, 코드 고칠 것 없음. ③ RoadNorthIsland 지움(Config.Map.Roads·RoadLook·preview_map; 새 큰 길은 굽음, 미니맵 새 타일이 보여 줌; 메인 반영 1은 새 place에서 Decor.Roads.RoadNorthIsland 파트 지워야 함). ④ FountainFx Town_Halo_Fountain3 = 새 Tripo 메시 Blender로 잼(풀 물 0.053·안쪽 테 0.39~0.40, 가운데 그릇 물 0.525·테 0.208, 위 그릇 물 0.738·테 0.121). ⑤ ZoneLook HaloTown OutAmb {1.979,1.779,1.551} 낮만(밤 수준 따라 Amb로). ⑥ 시험: zone_look 84·15/15, fountain_fx 18·12/12, map_v2 길 검사 고침.
+- 고정점 표: `py -X utf8 tools/halo_fixed_points.py` 다시 뽑음 = 지금 표와 같음(다른 곳 없음).
+- 1차 73be5aea, 2차 **bfce02b0**: Config.Map.RoadPaths RoadHaloMain(plan roads main 꼭짓점, w 20, 2D 지도 전용) + Util.PathSegments(순수) → MiniMap·WorldMap이 기울인 둥근 조각으로 굽은 길을 그림(빛 마을 미니맵 타일은 아직 하나도 없음). WorldMap.PaintCover(순수): 옛 큰 지도 그림이 못 덮는 땅(새 IslandHalo -310..305/-863..-330, 그림은 x -295..1865·z -720..721)만 그림 위에 땅·구역·길 도형. 새 시험 test_halo_maps 16·9/9. 남은 것: 개발 2 합친 판의 map_v2 그림 검사 2개 = 새 큰 지도 그림+Map 변환값(표 D) 와야 풀림.
+
 ## 10/13 오후 — 폰 사진 결과 + 고장급 고침
 - 메인 반영 1 폰 사진(`docs/art/verification_2026-10-13/phone_round/`) 읽고 `docs/review/phone_round_prep_2026-10-13.md` 3절 표 채움. 고장급 = **Hero 창 왼쪽 칸 잘림**(힘·칩·랭크 막대 못 읽음) 하나 → `fix/phone-round` **5e4780d1**(왼쪽 칸 ScrollingFrame, test_character_ui 175·94/94). 같은 가지 f995916d = 도감 슬롯 이름 두 줄째. main과 충돌 없음(merge-tree). worktree `wt_codexui`.
 - 나머지(칭호 단추 잘림·거위 칩 시간·Help/Skills PC 키 글·40px 미만 버튼)는 표에 10/21로. 병합 뒤 메인 반영 1이 Hero 창만 폰 사진 다시.

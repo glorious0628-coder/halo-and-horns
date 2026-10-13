@@ -20,6 +20,10 @@
 -- { Title, Body, Buttons = { { Id, Text } }, OnButton = fn(id) }), PauseCard.Shown (Util.Signal: kind, button, why;
 -- button = "Keep" | "OK" | "Go" | "Backdrop") for the beta metrics, PauseCard.OpenKind() -> the open card's kind or nil
 -- (Audio: "Back" WelcomeBack, "Tip" TipDing, else WindowOpen).
+-- A23-167 ② (game dev 2's server, docs/design/comeback_server_2026-10-14.md): Fx "TomorrowGift" { Tomorrow, Today?, Days }
+-- -> the "Tomorrow" card: Config.Return.Text.TomorrowTitle / TomorrowLine (the slot a claim tomorrow pays) with that
+-- attendance slot's own art (AttendanceUI.SlotIcon); with Today (a claim still open) one more line and [Open] = the
+-- attendance window. WelcomeBack's News (the "while you were away" line) is one more line of the welcome-back card.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -27,6 +31,7 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Net = require(Shared:WaitForChild("Net"))
 local Util = require(Shared:WaitForChild("Util"))
+local Config = require(Shared:WaitForChild("Config"))
 
 local LocalPlayer = Players.LocalPlayer
 
@@ -35,7 +40,7 @@ local C = nil
 local TAG = "PauseCard"
 
 local T = {
-	Fx = { Pause = "PauseCard", Back = "WelcomeBack" }, -- the server's Fx kinds (plan doc ab338a20; 게임성 개발 2 decides)
+	Fx = { Pause = "PauseCard", Back = "WelcomeBack", Tomorrow = "TomorrowGift" }, -- the server's Fx kinds (게임성 개발 2)
 	Remote = "Travel", -- [Go]
 	WaitMax = 90, -- s a card may wait for a free screen
 	HurtCalm = 5, -- s after losing health: no card in the middle of a fight
@@ -46,6 +51,8 @@ local T = {
 	PauseWhy = { Chapter = true }, -- the server's whys that get the "Saved!" card (검수 10/11: a chapter's end only)
 	TomorrowMax = 40, -- characters of the daily card's tomorrow line
 	ZoneMax = 40,
+	NewsMax = 80, -- characters of the welcome-back card's "while you were away" line (A23-167)
+	SlotMax = 99, -- the highest attendance slot a TomorrowGift may name
 	Busy = { "Intro", "FactionPicker", "ClassPicker", "WorldMap", "PlayerListUI" }, -- client modules with IsOpen()
 	BusyGui = { "RewardPopup", "ConfirmDialog" }, -- UIKit.Gui children: something else is talking
 	Gui = "PauseCard",
@@ -62,6 +69,7 @@ local T = {
 		BackNext = "Next: %s",
 		BackPlain = "Good to see you again!",
 		Go = "Go",
+		Open = "Open", -- the tomorrow card's [Open] (today's gift: the attendance window)
 		TipTitle = "Tip",
 	},
 }
@@ -92,6 +100,17 @@ local function cleanLines(text, max, lines)
 		if #out >= lines then break end
 	end
 	return #out > 0 and table.concat(out, "\n") or nil
+end
+
+-- a whole attendance slot 1..SlotMax, else nil
+local function slotOf(v)
+	return type(v) == "number" and v == math.floor(v) and v >= 1 and v <= T.SlotMax and v or nil
+end
+
+-- A23-167's card words (Config.Return.Text, 게임성 개발 2 / 최종 검수 own them)
+local function returnText()
+	local r = type(Config) == "table" and type(Config.Return) == "table" and Config.Return.Text or nil
+	return type(r) == "table" and r or {}
 end
 
 local function isOpen(m)
@@ -252,6 +271,22 @@ local function openWindow(id, arg)
 	return (pcall(panels.Open, id, arg))
 end
 
+-- the tomorrow card's [Open]: the attendance window (AttendanceUI.Open)
+local function openAttendance()
+	local att = C and C.AttendanceUI
+	if type(att) ~= "table" or type(att.Open) ~= "function" then return false end
+	local ok, opened = pcall(att.Open)
+	return ok and opened == true
+end
+
+-- that attendance slot's art (AttendanceUI.SlotIcon), or nil (the card shows no mark)
+local function slotIcon(slot)
+	local att = C and C.AttendanceUI
+	if type(att) ~= "table" or type(att.SlotIcon) ~= "function" then return nil end
+	local ok, key = pcall(att.SlotIcon, slot)
+	return ok and type(key) == "string" and key or nil
+end
+
 -- [Go]: the server's own travel (it says why when it refuses)
 local function travel(zone)
 	local folder = ReplicatedStorage:FindFirstChild("Remotes")
@@ -267,7 +302,7 @@ local function open(card)
 	local info = {
 		Title = card.Title,
 		Body = card.Body,
-		Icon = card.Kind == "Pause" and "IconSaved" or nil,
+		Icon = card.Kind == "Pause" and "IconSaved" or card.Icon,
 		Buttons = card.Buttons,
 	}
 	info.OnButton = function(id)
@@ -279,6 +314,7 @@ local function open(card)
 		end
 		if id == "Go" and card.Zone then travel(card.Zone) end
 		if id == "Go" and card.Window then openWindow(card.Window, card.WindowArg) end
+		if id == "Go" and card.Attend then openAttendance() end
 		if id == "Go" and card.Kind == "Back" then comeBack("Metric", "WelcomeBackGo") end
 		PauseCard.Shown:Fire(card.Kind, id, card.Why)
 		if card.OptIn then task.defer(comeBack, "OptIn", "Daily") end -- after the card, never over it
@@ -326,6 +362,8 @@ function PauseCard.Show(kind, data)
 	elseif kind == "Back" then
 		card.Title = T.Text.BackTitle
 		card.Body = nextGoal and string.format(T.Text.BackNext, nextGoal) or T.Text.BackPlain
+		local news = clean(data.News, T.NewsMax) -- A23-167: the "while you were away" line, only when the server has one
+		if news then card.Body ..= "\n" .. news end
 		local zone = type(data.Zone) == "string" and #data.Zone > 0 and #data.Zone <= T.ZoneMax and data.Zone or nil
 		card.Zone = zone
 		card.Buttons = zone and { { Id = "Go", Text = T.Text.Go }, { Id = "OK", Text = T.Text.OK } }
@@ -342,6 +380,20 @@ function PauseCard.Show(kind, data)
 		card.WindowArg = go and go.Arg or nil
 		card.Buttons = go and { { Id = "Go", Text = clean(go.Text, T.NextMax) or T.Text.Go }, { Id = "OK", Text = T.Text.OK } }
 			or { { Id = "OK", Text = T.Text.OK } }
+	elseif kind == "Tomorrow" then
+		-- A23-167 ②: the gift a claim tomorrow pays (its slot's art); today's still open -> one more line + [Open]
+		local words, slot = returnText(), slotOf(data.Tomorrow)
+		if not slot or type(words.TomorrowLine) ~= "string" or type(words.TomorrowTitle) ~= "string" then return false end
+		card.Title = words.TomorrowTitle
+		card.Body = string.format(words.TomorrowLine, slot)
+		card.Icon = slotIcon(slot)
+		if slotOf(data.Today) and type(words.TodayLine) == "string" then
+			card.Body ..= "\n" .. words.TodayLine
+			card.Attend = true
+			card.Buttons = { { Id = "Go", Text = T.Text.Open }, { Id = "OK", Text = T.Text.OK } }
+		else
+			card.Buttons = { { Id = "OK", Text = T.Text.OK } }
+		end
 	else
 		return false
 	end
@@ -356,6 +408,8 @@ function PauseCard.OnFx(kind, data)
 		PauseCard.Show("Pause", data)
 	elseif kind == T.Fx.Back then
 		PauseCard.Show("Back", data)
+	elseif kind == T.Fx.Tomorrow then
+		PauseCard.Show("Tomorrow", data)
 	end
 end
 
