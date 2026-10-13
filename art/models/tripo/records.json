@@ -15360,5 +15360,31 @@
    "pbr": "0dc878ef (5)",
    "file": "art/models/tripo/web/HaloChunk_JuiceParasol_SM_texMV4k_pbr_src.fbx"
   }
+ ],
+ "NEW_Beehive_web_sm_tex4k_mv_pbr": [
+  {
+   "event": "redo (최종 검수 다시): other white model picked by 디자인 검수, texture MULTIVIEW tab 2D 4 views, 4K, 조명 제거 -> PBR (A23-158)",
+   "at": "2026-10-13",
+   "account": "계정 1",
+   "by": "Blender 손보기",
+   "points": 25,
+   "project": "b27e41bd",
+   "file": "art/models/tripo/web/NEW_Beehive_SM_tex4k_mv_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_Beehive/NEW_Beehive_TU.glb (old front-1 판 → _TU_front1_old.glb)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloVar3_Topiary_E_web_sm_tex4k_mv_pbr": [
+  {
+   "event": "redo (최종 검수 다시): other white model picked by 디자인 검수, texture MULTIVIEW tab 2D 4 views, 4K, 조명 제거 -> PBR (A23-158)",
+   "at": "2026-10-13",
+   "account": "계정 1",
+   "by": "Blender 손보기",
+   "points": 25,
+   "project": "ade62dd1",
+   "file": "art/models/tripo/web/HaloVar3_Topiary_E_SM_tex4k_mv_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (old front-1 판 → _TU_front1_old.glb)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
  ]
 }
