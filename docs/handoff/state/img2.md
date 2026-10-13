@@ -1,11 +1,8 @@
 # 이미지 생성 2 — 인계 (10/13 새벽 정리: 컴퓨터 끄기 전)
-## 10/13 새벽 (맨 위 = 이것부터)
-- **집 덩어리 큐** `art/prompts/house_chunks_queue_2026-10-13.json` (43종, 순서대로). 구동기 `py tools/_chunk_redo.py <HaloChunk_Id>`(앞면 → 뒤·왼·오른, 결과 `art/out/s2/noshadow/chunks/<Id>_<view>_ns.png`, 한 번에 하나·run_in_background, 끝 코드 3 = Codex 사용량 끝 → Firefly 고급), 옆면 PIL 고침 `py tools/_chunk_sidefix.py <Id>`(right=left 뒤집기+높이 맞춤, 캔버스 밖이면 STOP), 색 보정 `tools/_tint_obj.py`. 규칙: 둥근 것은 4면 폭 같게, 한쪽을 보는 것은 4면 방향 맞게, 잎·덩굴은 큼직·굵게(도구가 Ivy/FlowerBush/WindowBox 등에 자동으로 문구 추가). 보고처 = **디자인 검수**(통과 판정은 거기서), 막힌 것만 최종 검수.
-- **통과(디자인 검수, Blender 손보기로 넘김)**: 1 LampArm · 2 DoorSingle · 3 CastleWingL · 4 CastleWingR(=WingL 3D를 Blender에서 뒤집어 씀, 2D는 더 안 그림) · 5 DomeRibbed · 6 DoorDouble · 7 WindowBoxA · 8 ConeTree(큰 잎 뭉치 12개 판, 색 보정, 통과) · 9 CastleRose · 10 CastleGateLeaf · 11 DomeOnion · 12 DomeOctagon · 13 DomeBall · 14 DomeOnionSlim · 15 DomeBrick(옆 둥근 반구로 다시, 통과) · 16 JuiceParasol · 17 Greenhouse · 18 ShopSign.
-- **다시 그릴 것(디자인 검수 10/13 확정)**: 19 IvyWall — 지금 판은 줄기 가늘고 잎 성겨 Tripo로 안 넘김. '큼직 잎·굵은 줄기·큰 덩어리' 판으로 4면 다시(도구가 Ivy에 자동 문구 추가, 앞면 파일을 지우고 `py tools/_chunk_redo.py HaloChunk_IvyWall`). 20 IvyBalcony는 앞면(큼직 판) 다음 세션에서 디자인 검수가 봄.
-- **중간에 멈춘 것**: 20 IvyBalcony — 앞면만 그림(`HaloChunk_IvyBalcony_front_ns.png`, 큼직한 잎 문구 판, 앞면 판정 전). 뒤·왼·오른 안 그림(이어서 `py tools/_chunk_redo.py HaloChunk_IvyBalcony`는 있는 파일은 건너뜀).
-- **그다음 큐**: 21 FlowerBushPot · 22 DomePorchHalf · 23 DomePavilion · 24 DomeTowerSmall · 25 BreadDisplay · 26 JuiceStand · 27 PotionDisplay · 28 RoseTrellis · 29 RoseArch · 30 SunflowerBed · 31 Pond · 32 CastleHedge · 33 StarFinial · 34 WeatherVane · 35 ChimneyCap · 36 ChimneyLantern · 37 RoundTree · 38 MedalBell · 39 Telescope · 40 Cauldron · 41 FlowerBuckets · 42 WindowBoxB · 43 CornerFinial. 빛 마을 소품(벤치·가판대·등불·나무…)은 이미지 생성 3이 그림.
-- 꽃 화분 5종(Daisy·Lavender·Rose·Sunflower·Tulip)·분수(물줄기 없음)·Halo_Statue는 통과·옛 2D 지움(최종 검수).
+## 10/13 새벽 (맨 위 = 이것부터; 10/13 04시 갱신)
+- **집 덩어리 큐** `art/prompts/house_chunks_queue_2026-10-13.json` (43종, 순서대로). 구동기 `py tools/_chunk_redo.py <HaloChunk_Id>`(앞면 → 뒤·왼·오른, 결과 `art/out/s2/noshadow/chunks/<Id>_<view>_ns.png`, 한 번에 하나·run_in_background; 끝 코드 3 = ChatGPT 사용량 끝 → Firefly 고급), 옆면 PIL 고침 `py tools/_chunk_sidefix.py <Id> [--fill]`(right=left 뒤집기+높이 맞춤; 흰·크림 물체는 --fill; 캔버스 밖이면 STOP), 색 보정 `tools/_tint_obj.py`. 규칙: 둥근 것은 4면 폭 같게, 한쪽을 보는 것(꽃·덩굴·가판대)은 4면 방향 맞게(왼 면 = 앞이 화면 오른쪽, 오른 면 = 화면 왼쪽; 어긋나면 한쪽을 뒤집어 맞춤), 잎·덩굴·울타리는 큼직·굵게(도구가 자동 문구), 원본 백업 `build/img2_next/pil_orig/`. 보고처 = **디자인 검수**(통과 판정·흰 모델 큐는 거기서), 막힌 것만 최종 검수.
+- **1~32 끝, 푸시됨**(마지막 b08f5e7). 디자인 검수 통과: 1~31 전부(7 WindowBoxA·…·31 Pond), 4 WingR = WingL 3D 뒤집어 씀. **판정 대기: 32 CastleHedge**(큼직한 덩어리 9개 판 다시 그림, 오른쪽은 왼쪽 뒤집기).
+- **막힘(10/13 04시)**: ChatGPT(Codex) 사용량 끝(코드 3) → 33 WeatherVane 앞면부터 못 그림. 남은 **33~43 = WeatherVane · ChimneyCap · ChimneyLantern · RoundTree · MedalBell · Telescope · Cauldron · FlowerBuckets · WindowBoxB · CornerFinial**(+ 34 StarFinial은 끝). 길: ① ChatGPT 풀리면 `py tools/_chunk_redo.py <Id>` 이어서(있는 파일 건너뜀) ② Firefly 고급(앱 브라우저 창 보이게 + Adobe 로그인 필요 → 최종 검수에 요청함). 빛 마을 소품(벤치·가판대·등불·나무…)은 이미지 생성 3.
 - 이 줄 아래는 10/12 저녁 정리 내용(이전).
 
 ## 10/12 저녁 정리 (맨 위 = 이것부터)
