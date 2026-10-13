@@ -69,7 +69,7 @@ local ROADS = { -- = Config.Map.Roads (the Ground roads get the painted GE_DirtP
 	{ Name = "RoadPass", MinX = 1190, MaxX = 1260, MinZ = -9, MaxZ = 9, Color = PASS_ROCK, Material = Enum.Material.Slate },
 	{ Name = "RoadRuins", MinX = 1260, MaxX = 1684, MinZ = -9, MaxZ = 9, Color = RUIN_STONE, Material = Enum.Material.Slate },
 	{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },
-	{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },
+	-- (no RoadNorthIsland: the Halo v2 island's roads curve and are WalkGround parts - A23-121 stage 6, = Config)
 	{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150, Color = RGB(150, 115, 105), Material = Enum.Material.Slate },
 	{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600, Color = RGB(150, 115, 105), Material = Enum.Material.Slate },
 	{ Name = "RoadMeadowLoop", MinX = 260, MaxX = 600, MinZ = -125, MaxZ = -115, Color = DIRT, Material = Enum.Material.Ground },

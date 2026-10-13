@@ -111,6 +111,11 @@ MUTATIONS = [
      "RoadSouth = { Color = Color3.fromRGB(70, 45, 45)"),
     ("preview RoadNorth keeps the old flat color", "preview", "MaxZ = -10, Color = RGB(170, 150, 130), Material = Enum.Material.Slate },",
      "MaxZ = -10, Color = RGB(215, 205, 185), Material = SP },"),
+    # A23-121 stage 6: the Halo v2 island's roads curve (WalkGround parts), no straight strip
+    ("a straight Halo island strip back in the map data", "config",
+     '\t\t{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150 },',
+     '\t\t{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330 },\n'
+     '\t\t{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150 },'),
     ("FitRoads no longer cuts at the plaza", "mapbuilder", "\t\tif math.abs(c.X) < r and near < r and (c.Z - half) * (c.Z + half) >= 0 then\n",
      "\t\tif false then\n"),
     ("FitRoads cuts the far end", "mapbuilder", "\t\t\t\tp.CFrame = CFrame.new(c.X, c.Y, s * (r + far) / 2)\n",

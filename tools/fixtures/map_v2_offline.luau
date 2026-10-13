@@ -306,8 +306,10 @@ do
 		and near(rm.MinX, meadow.MinX) and near(rm.MaxX, meadow.MaxX) and near(rw.MinX, woods.MinX) and near(rw.MaxX, woods.MaxX)
 		and near(rp.MinX, pass.MinX) and near(rp.MaxX, pass.MaxX) and near(rr.MinX, ruins.MinX) and rr.MaxX < ruins.MaxX, "crown road")
 	local rn, rs = roadNamed("RoadNorthIsland"), roadNamed("RoadSouthIsland")
-	check(g, "the town roads start at the island shores (bridge ends) and end at the castles", rn and rs and near(rn.MaxZ, landNamed("IslandHalo").MaxZ)
-		and near(rs.MinZ, landNamed("IslandHorns").MinZ) and near(rn.MinZ, -600) and near(rs.MaxZ, 600))
+	check(g, "the Horns town road starts at its island shore (bridge end) and ends at the castle", rs
+		and near(rs.MinZ, landNamed("IslandHorns").MinZ) and near(rs.MaxZ, 600))
+	-- A23-121 stage 6: the Halo v2 island's main road curves (WalkGround parts); no straight strip in the map data
+	check(g, "no straight Halo island strip (the v2 island's roads curve; the minimap's tile shows them)", rn == nil)
 	-- the pads stay in the Crossroads, off every road
 	for _, pad in M.Pads do
 		local pr = { MinX = pad.Position.X - M.PadSize.X / 2, MaxX = pad.Position.X + M.PadSize.X / 2, MinZ = pad.Position.Z - M.PadSize.Z / 2,
@@ -458,8 +460,9 @@ end
 do
 	local g = "roads"
 	local look = C.Map.RoadLook
-	check(g, "Config.Map.RoadLook: a plaza radius and the four town road parts", type(look) == "table" and near(look.PlazaRadius, 60)
-		and look.Parts.RoadSouth and look.Parts.RoadSouthIsland and look.Parts.RoadNorth and look.Parts.RoadNorthIsland)
+	check(g, "Config.Map.RoadLook: a plaza radius and the three town road parts (no Halo island strip)", type(look) == "table"
+		and near(look.PlazaRadius, 60) and look.Parts.RoadSouth and look.Parts.RoadSouthIsland and look.Parts.RoadNorth
+		and look.Parts.RoadNorthIsland == nil)
 	local function dark(c) return c.R * 255 < 120 and c.G * 255 < 100 end
 	for name, want in look.Parts do
 		check(g, "a look part is a Config road", (function() for _, r in C.Map.Roads do if r.Name == name then return true end end return false end)(), name)
@@ -500,7 +503,7 @@ do
 	end
 	local n = MB.FitRoads(decor)
 	apply()
-	check(g, "FitRoads touches the four look parts", n == 4, n)
+	check(g, "FitRoads touches the three look parts", n == 3, n)
 	local s, nn = parts.RoadSouth, parts.RoadNorth
 	check(g, "RoadSouth now runs from the plaza edge (z 60) to the bridge (z 150)", near(s.Position.Z - s.Size.Z / 2, 60)
 		and near(s.Position.Z + s.Size.Z / 2, 150) and near(s.Position.X, 0) and near(s.Size.X, 16) and s.Transparency == 0,
@@ -512,6 +515,8 @@ do
 	check(g, "the parts get the look's colors", near(s.Color.R, look.Parts.RoadSouth.Color.R) and near(nn.Color.G, look.Parts.RoadNorth.Color.G)
 		and s.Material == look.Parts.RoadSouth.Material)
 	check(g, "a road not in the look is left alone", near(parts.RoadWest.Size.Z, 18) and near(parts.RoadWest.Color.R * 255, 70))
+	check(g, "an old Halo island strip part is left alone (stage 6 deletes it from the place)",
+		near(parts.RoadNorthIsland.Size.Z, 270) and near(parts.RoadNorthIsland.Color.R * 255, 70))
 	MB.FitRoads(decor)
 	apply()
 	check(g, "running it again changes nothing (idempotent)", near(s.Position.Z - s.Size.Z / 2, 60) and near(s.Size.Z, 90)

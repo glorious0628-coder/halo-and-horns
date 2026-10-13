@@ -2025,7 +2025,9 @@ Config.Map = {
 		-- ends at the crown altar ruin (kit_ruins R_CrownAltar (1700, 0), 30 wide): the crown road leads up to it
 		{ Name = "RoadRuins", MinX = 1260, MaxX = 1684, MinZ = -9, MaxZ = 9 },
 		{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10 },
-		{ Name = "RoadNorthIsland", MinX = -8, MaxX = 8, MinZ = -600, MaxZ = -330 },
+		-- A23-121 stage 6: no straight strip on the Halo v2 island - its main road curves (gate -> spawn -> market ->
+		-- fountain plaza -> cathedral stairs, docs/design/halo_plan_v2_2026-10-11.json roads main) and is built as
+		-- WalkGround parts; the minimap's new tile shot shows it
 		{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150 },
 		{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600 },
 		-- the layout's z -170 would cross the King Slime Hill (kit_meadow M_KingHill (430, -170), 60 wide): south of it
@@ -2045,7 +2047,6 @@ Config.Map = {
 			RoadSouth = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
 			RoadSouthIsland = { Color = Color3.fromRGB(150, 115, 105), Material = Enum.Material.Slate },
 			RoadNorth = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
-			RoadNorthIsland = { Color = Color3.fromRGB(170, 150, 130), Material = Enum.Material.Slate },
 		},
 	},
 	-- A23-30 / A23-45 on map v2 (MapBuilder PATCH / HOLLOW, QuestTarget): the pumpkin path along x = PathX from the meadow

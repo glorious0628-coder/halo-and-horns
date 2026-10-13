@@ -104,35 +104,40 @@ end
 local function near(a, b, eps) return math.abs(a - b) <= (eps or 1e-6) end
 
 local SIZE3 = vec(16, 12.85, 16)
+-- A23-121 stage 6: the new Tripo fountain (1.0 x 1.0 x 0.733 model units; placed 16 wide -> 11.73 high)
+local SIZE6 = vec(16, 11.73, 16)
 local base = vec(10, 0, 20)
 
--- 1. the 3-tier fountain, told by its mesh name
-local m3 = model("Town_Halo_Fountain3", SIZE3, { Mesh = "Town_Halo_Fountain3" })
+-- 1. the Halo town's fountain (the new Tripo model, A23-121 stage 6), told by its mesh name
+local m3 = model("Town_Halo_Fountain3", SIZE6, { Mesh = "Town_Halo_Fountain3" })
 local spec, key = Fx.SpecFor(m3)
 check(key == "Town_Halo_Fountain3", "the kit Model Town_Halo_Fountain3 = the 3-tier spec (its own name, 검수 10/10)", key)
 check(Fx.BuildOn(m3), "builds")
 check(#inFx(m3, "Part", "HaloGlow") == 0 and #inFx(m3, "PointLight") == 0, "no halo ring glow, no light (the new one has no ring)")
 local jet = inFx(m3, "Attachment", "Jet")[1]
-check(jet and near(jet.WorldPosition.Y, 1.0 * 12.85 + 0.2), "the jet off the spike tip (Y 1.0: inside the ball it never shows)",
+check(jet and near(jet.WorldPosition.Y, 1.0 * 11.73 + 0.2), "the jet off the finial tip (Y 1.0: inside the ball it never shows)",
 	jet and jet.WorldPosition.Y)
 check(#inFx(m3, "Attachment", "Rim1_") == 8 and #inFx(m3, "Attachment", "Rim2_") == 12,
 	"8 streams from the top bowl, 12 from the middle rim", #inFx(m3, "Attachment", "Rim1_") .. "/" .. #inFx(m3, "Attachment", "Rim2_"))
 local rim1 = inFx(m3, "Attachment", "Rim1_")[1]
 local d1 = (rim1.WorldPosition - vec(base.X, rim1.WorldPosition.Y, base.Z)).Magnitude
-check(near(rim1.WorldPosition.Y, 0.76 * 12.85) and near(d1, 0.145 * 16), "top bowl streams leave its rim (Y 0.76, R 0.145)", d1)
+check(near(rim1.WorldPosition.Y, 0.748 * 11.73) and near(d1, 0.118 * 16) and d1 < 0.121 * 16,
+	"top bowl streams leave its rim (Y 0.748 over its water 0.738, R 0.118 inside the rim 0.121)", d1)
 local land1 = inFx(m3, "Attachment", "Land1_")[1]
-check(near(land1.WorldPosition.Y, 0.54 * 12.85 + 0.1), "... and land in the middle bowl (Y 0.54)", land1.WorldPosition.Y)
+local dd1 = (land1.WorldPosition - vec(base.X, land1.WorldPosition.Y, base.Z)).Magnitude
+check(near(land1.WorldPosition.Y, 0.535 * 11.73 + 0.1) and dd1 < 0.208 * 16, "... and land in the middle bowl (its water 0.525, inside its rim 0.208)",
+	land1.WorldPosition.Y)
 local rim2 = inFx(m3, "Attachment", "Rim2_")[1]
 local d2 = (rim2.WorldPosition - vec(base.X, rim2.WorldPosition.Y, base.Z)).Magnitude
-check(near(rim2.WorldPosition.Y, 0.55 * 12.85) and near(d2, 0.25 * 16), "middle rim streams (Y 0.55, R 0.25)", d2)
+check(near(rim2.WorldPosition.Y, 0.545 * 11.73) and near(d2, 0.205 * 16), "middle rim streams (Y 0.545, R 0.205)", d2)
 local land2 = inFx(m3, "Attachment", "Land2_")[1]
 local dl2 = (land2.WorldPosition - vec(base.X, land2.WorldPosition.Y, base.Z)).Magnitude
-check(near(land2.WorldPosition.Y, 0.17 * 12.85 + 0.1) and dl2 < 0.455 * 16, "... land inside the pool", dl2)
+check(near(land2.WorldPosition.Y, 0.058 * 11.73 + 0.1) and dl2 < 0.39 * 16, "... land on the deep pool's water (0.053) inside its rim (0.39)", dl2)
 check(#inFx(m3, "ParticleEmitter", "Ripple") == 12, "ripples where the pool streams land", #inFx(m3, "ParticleEmitter", "Ripple"))
 local pad = inFx(m3, "Part", "PoolSparkle")[1]
-check(pad and near(pad.CFrame.Position.Y, 0.165 * 12.85 + 0.15), "pool twinkles on the water (Y 0.165)", pad and pad.CFrame.Position.Y)
+check(pad and near(pad.CFrame.Position.Y, 0.053 * 11.73 + 0.15), "pool twinkles on the deep pool's water (Y 0.053)", pad and pad.CFrame.Position.Y)
 local half = pad.Size.X / 2
-check(math.sqrt(2) * half < 0.455 * 16, "the twinkle square stays inside the round pool (corners too)", math.sqrt(2) * half)
+check(math.sqrt(2) * half < 0.397 * 16, "the twinkle square stays inside the round pool's inner wall (corners too)", math.sqrt(2) * half)
 local sp = inFx(m3, "ParticleEmitter", "Sparkle")[1]
 check(sp.Rate == 8 and sp.Color.A.B > sp.Color.A.R + 100, "more twinkles, in a deeper blue", tostring(sp.Rate))
 

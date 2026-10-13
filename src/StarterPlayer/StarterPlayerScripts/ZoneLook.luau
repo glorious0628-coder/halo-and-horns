@@ -38,7 +38,8 @@ local T = { Tween = 1.5, NightBright = 0.95 }
 
 local function rgb(r, g, b) return Color3.fromRGB(r, g, b) end
 
--- per zone: Ambient / OutdoorAmbient channel factors, sun Brightness factor, exposure added, ZoneTint colour /
+-- per zone: Ambient / OutdoorAmbient channel factors (OutAmb: a day-only OutdoorAmbient factor that fades to Amb with the
+-- night level), sun Brightness factor, exposure added, ZoneTint colour /
 -- saturation / contrast / brightness, optional specular (wet moonlit stone), optional NightExp (exposure added on top
 -- under the Eclipse night sky only; 0 elsewhere). Unknown zones use Default.
 local ZONE = {
@@ -57,9 +58,11 @@ local ZONE = {
 	HauntedHollow = { Amb = { 0.95, 1, 1.45 }, Bright = 0.45, Exp = 0.2, Tint = rgb(214, 206, 255), Sat = 0.05,
 		Con = 0.08, CC = 0.02,
 		Dusk = { Clock = 18.9, Fog = rgb(66, 58, 108), FogStart = 60, FogEnd = 340, Clouds = rgb(118, 100, 168) } },
-	-- C2c (검수 10/11, docs/design/halo_zonelook_values_2026-10-11.md): the new cream-marble town in a soft warm light
-	HaloTown = { Amb = { 1.45, 1.36, 1.32 }, Bright = 1.0, Exp = 0.15, Tint = rgb(255, 248, 236), Sat = 0.08, Con = 0.04,
-		CC = 0.02, Specular = 0.8 },
+	-- C2c (검수 10/11, docs/design/halo_zonelook_values_2026-10-11.md): the new cream-marble town in a soft warm light.
+	-- 최종 검수 10/12 night (docs/design/halo_light_day_oa_2026-10-13.md, A23-121 stage 6): the shaded walls cream, not
+	-- blue-grey: by day OutdoorAmbient x OutAmb (Neutral 95,104,118 -> 188,185,183); Ambient and the night stay as they were
+	HaloTown = { Amb = { 1.45, 1.36, 1.32 }, OutAmb = { 1.979, 1.779, 1.551 }, Bright = 1.0, Exp = 0.15,
+		Tint = rgb(255, 248, 236), Sat = 0.08, Con = 0.04, CC = 0.02, Specular = 0.8 },
 	-- quality 7 (이미지 생성 1 cdaaeaa, 2026-10-07): the dark basalt den read near black on phones (day mean 0.17, night
 	-- ~0.03): warmer, brighter light by day and a night lift (NightExp 1.6, 검수 2026-10-07 from real captures: 1.9 made
 	-- the night as bright and red as the day; 1.6 keeps it near the meadow night)
@@ -132,8 +135,10 @@ end
 local function factorsFor(zoneId, night)
 	local z = ZONE[zoneId] or ZONE.Default
 	local n = math.clamp(tonumber(night) or 0, 0, 1)
+	local oa = z.OutAmb or z.Amb
 	return {
 		Amb = { z.Amb[1], z.Amb[2], z.Amb[3] },
+		OutAmb = { lerp(oa[1], z.Amb[1], n), lerp(oa[2], z.Amb[2], n), lerp(oa[3], z.Amb[3], n) },
 		Bright = z.Bright + (math.max(z.Bright, T.NightBright) - z.Bright) * n,
 		Exp = z.Exp + (z.NightExp or 0) * n,
 		Spec = z.Specular,
@@ -173,7 +178,7 @@ local function compose(f, base)
 	return {
 		Brightness = base.Brightness * f.Bright,
 		Ambient = scale(base.Ambient, f.Amb),
-		OutdoorAmbient = scale(base.OutdoorAmbient, f.Amb),
+		OutdoorAmbient = scale(base.OutdoorAmbient, f.OutAmb or f.Amb),
 		ExposureCompensation = base.ExposureCompensation + f.Exp,
 		EnvironmentSpecularScale = f.Spec or base.EnvironmentSpecularScale,
 		ClockTime = dusk.ClockTime, FogColor = dusk.FogColor, FogStart = dusk.FogStart, FogEnd = dusk.FogEnd,
@@ -189,8 +194,10 @@ end
 local function mix(a, b, t)
 	local specA = a.Spec or S.Base.EnvironmentSpecularScale or 0.6
 	local specB = b.Spec or S.Base.EnvironmentSpecularScale or 0.6
+	local oa, ob = a.OutAmb or a.Amb, b.OutAmb or b.Amb
 	return {
 		Amb = { lerp(a.Amb[1], b.Amb[1], t), lerp(a.Amb[2], b.Amb[2], t), lerp(a.Amb[3], b.Amb[3], t) },
+		OutAmb = { lerp(oa[1], ob[1], t), lerp(oa[2], ob[2], t), lerp(oa[3], ob[3], t) },
 		Bright = lerp(a.Bright, b.Bright, t),
 		Exp = lerp(a.Exp, b.Exp, t),
 		Spec = (a.Spec == nil and b.Spec == nil) and nil or lerp(specA, specB, t),

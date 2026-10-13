@@ -10,6 +10,8 @@ stand-ins, a Config with the three war skies) and checks ZoneLook.TargetFor, the
   / out of the hollow (the eased dusk weight)
 - quality 7 (2026-10-07): the horns den's lighter numbers and its NightExp (+1.6 exposure under the Eclipse sky only;
   no other zone gets a night lift)
+- A23-121 stage 6 (docs/design/halo_light_day_oa_2026-10-13.md): the Halo town's day OutdoorAmbient x OutAmb
+  {1.979, 1.779, 1.551} (95,104,118 -> 188,185,183), its Ambient and the night (NightLevel 1) keep Amb, half way at 0.5
 No Studio, network or Roblox API calls. Mutations break in-memory copies of ZoneLook; each must be caught.
 
 Usage: py tools/test_zone_look.py [--no-mutations]
@@ -160,6 +162,32 @@ do
 	check("out of the hollow: back to the base clock", near(o.ClockTime, 14.2), o.ClockTime)
 	check("out of the hollow: back to the base fog", near(o.FogEnd, 1100), o.FogEnd)
 end
+-- A23-121 stage 6 (최종 검수 10/12 night, docs/design/halo_light_day_oa_2026-10-13.md): the Halo town's day
+-- OutdoorAmbient x {1.979, 1.779, 1.551} (95,104,118 -> 188,185,183); its Ambient and the night keep the old factor
+do
+	local b = base("Neutral")
+	b.OutdoorAmbient = Color3.fromRGB(95, 104, 118)
+	local d = ZoneLook.TargetFor("HaloTown", b, 0)
+	check("Halo town by day: the shaded walls cream (OutdoorAmbient 188,185,183)", near(d.OutdoorAmbient.R * 255, 188, 0.6)
+		and near(d.OutdoorAmbient.G * 255, 185, 0.6) and near(d.OutdoorAmbient.B * 255, 183, 0.6),
+		string.format("%.1f,%.1f,%.1f", d.OutdoorAmbient.R * 255, d.OutdoorAmbient.G * 255, d.OutdoorAmbient.B * 255))
+	check("Halo town by day: Ambient keeps its factor", near(d.Ambient.R, b.Ambient.R * 1.45, 1e-6)
+		and near(d.Ambient.G, b.Ambient.G * 1.36, 1e-6) and near(d.Ambient.B, b.Ambient.B * 1.32, 1e-6), "ambient")
+	local n = ZoneLook.TargetFor("HaloTown", b, 1)
+	check("Halo town at night: OutdoorAmbient x the old factor (night unchanged)", near(n.OutdoorAmbient.R, b.OutdoorAmbient.R * 1.45, 1e-6)
+		and near(n.OutdoorAmbient.G, b.OutdoorAmbient.G * 1.36, 1e-6) and near(n.OutdoorAmbient.B, b.OutdoorAmbient.B * 1.32, 1e-6),
+		n.OutdoorAmbient.R * 255)
+	local h = ZoneLook.TargetFor("HaloTown", b, 0.5)
+	check("Halo town at night level 0.5: half way", near(h.OutdoorAmbient.R, b.OutdoorAmbient.R * (1.979 + 1.45) / 2, 1e-6),
+		h.OutdoorAmbient.R * 255)
+	local m = ZoneLook.TargetFor("SlimeMeadow", b, 0)
+	local cr = ZoneLook.TargetFor("Crossroads", b, 0)
+	check("other zones: OutdoorAmbient x Amb as before", sameColor(m.OutdoorAmbient, b.OutdoorAmbient)
+		and near(cr.OutdoorAmbient.R, b.OutdoorAmbient.R * 1.03, 1e-6), "meadow / crossroads")
+	local bl = ZoneLook.Blend("Crossroads", "HaloTown", 0.5, b, 0)
+	check("half way into the Halo town: OutdoorAmbient half way", near(bl.OutdoorAmbient.R, b.OutdoorAmbient.R * (1.03 + 1.979) / 2, 1e-6),
+		bl.OutdoorAmbient.R * 255)
+end
 local list = {}
 for _, k in order do table.insert(list, { Name = k, Fail = named[k].Fail, First = named[k].First }) end
 local parts = {}
@@ -182,6 +210,15 @@ MUTATIONS = [
     ("the night floor whole at any night level", "Bright = z.Bright + (math.max(z.Bright, T.NightBright) - z.Bright) * n,",
      "Bright = math.max(z.Bright, T.NightBright),"),
     ("horns den back to the dark numbers", "Bright = 1.0, Exp = 0.25, Tint = rgb(255, 236, 230)", "Bright = 0.88, Exp = 0.08, Tint = rgb(255, 236, 230)"),
+    # A23-121 stage 6: the Halo town's day OutdoorAmbient
+    ("the Halo town's day OutdoorAmbient lost", "OutdoorAmbient = scale(base.OutdoorAmbient, f.OutAmb or f.Amb),",
+     "OutdoorAmbient = scale(base.OutdoorAmbient, f.Amb),"),
+    ("the warm OutdoorAmbient at night too", "OutAmb = { lerp(oa[1], z.Amb[1], n), lerp(oa[2], z.Amb[2], n), lerp(oa[3], z.Amb[3], n) },",
+     "OutAmb = { oa[1], oa[2], oa[3] },"),
+    ("the Ambient warmed too", "Ambient = scale(base.Ambient, f.Amb),", "Ambient = scale(base.Ambient, f.OutAmb or f.Amb),"),
+    ("the ease drops the warm OutdoorAmbient", "OutAmb = { lerp(oa[1], ob[1], t), lerp(oa[2], ob[2], t), lerp(oa[3], ob[3], t) },",
+     "OutAmb = nil,"),
+    ("the Halo town's old OutdoorAmbient numbers", "OutAmb = { 1.979, 1.779, 1.551 }", "OutAmb = { 1.45, 1.36, 1.32 }"),
 ]
 
 

@@ -48,20 +48,20 @@ local SPECS = {
 		Pool = { Y = 0.17, R = 0.4 },
 		Halo = { Y = 1.02, R = 0.18 },
 	},
-	-- the Halo town's own 3-tier fountain (이미지 생성 1 + 검수 2026-10-10: its kit Model and mesh are named
-	-- Town_Halo_Fountain3; Halo_Fountain_HD_plain measured 16 x 16 x 12.85, pivot at the bottom centre, three bowls, no
-	-- halo ring; docs/design/halo_town_plan_2026-10-09.md last section): pool water y 0.165 (inner rim 0.455), middle bowl
-	-- water 0.53 (rim 0.25), top bowl water 0.75 (rim 0.15), the gold ball 0.80-0.90, the spike tip 1.0. A small jet off
-	-- the tip (inside the ball it would never show; 검수 10/10) falls into the top bowl; 4 x 2 streams from the top bowl
-	-- into the middle one, 12 from the middle rim into the pool (first guess: tuned from photos once it is in the place).
-	-- Pool.Rate / Deep: more twinkles in the concept's deeper blue
+	-- the Halo town's own fountain (its kit Model and mesh are named Town_Halo_Fountain3; no halo ring). A23-121 stage 6:
+	-- the new Tripo model (art/models/tripo/records.json Town_Halo_Fountain3_web_sm_tex8k_pbr, 1.0 x 1.0 x 0.733, pivot at
+	-- the bottom centre, placed at yaw +45; 최종 검수 10/13), measured on its mesh (게임성 개발 1, Blender radial profile):
+	-- a deep pool, water y 0.053 inside a wall up to ~0.36 (inner rim r 0.39-0.40), the middle bowl water 0.525 (rim r
+	-- 0.208), the top bowl water 0.738 (rim r 0.121), the gold finial 0.82-1.0. A small jet off the tip (검수 10/10) falls
+	-- into the top bowl; 8 streams from the top bowl into the middle one, 12 from the middle rim into the pool (first
+	-- guess: tuned from photos once it is in the place). Pool.Rate / Deep: more twinkles in the concept's deeper blue
 	Town_Halo_Fountain3 = {
 		Jet = { Y = 1.0, Up = 5 },
 		Curtains = {
-			{ FromY = 0.76, FromR = 0.145, ToY = 0.54, ToR = 0.19, Count = 8, Width = 1.6 },
-			{ FromY = 0.55, FromR = 0.25, ToY = 0.17, ToR = 0.31, Count = 12, Width = 2.2, Ripples = true },
+			{ FromY = 0.748, FromR = 0.118, ToY = 0.535, ToR = 0.16, Count = 8, Width = 1.6 },
+			{ FromY = 0.545, FromR = 0.205, ToY = 0.058, ToR = 0.26, Count = 12, Width = 2.2, Ripples = true },
 		},
-		Pool = { Y = 0.165, R = 0.45, Rate = 8, Deep = true },
+		Pool = { Y = 0.053, R = 0.39, Rate = 8, Deep = true },
 	},
 }
 local S = { Started = false, Built = setmetatable({}, { __mode = "k" }), Emitters = {} } -- Emitters: { Emitter, Rate, Kind }

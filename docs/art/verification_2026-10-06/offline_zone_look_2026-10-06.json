@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "checks": 78,
+  "checks": 84,
   "failed": 0,
   "mutations": [
     {
@@ -95,9 +95,54 @@
         "horns den sun not dimmed (Bright 1.0)",
         "night level 0.5: half the horns den's night lift"
       ]
+    },
+    {
+      "mutation": "the Halo town's day OutdoorAmbient lost",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "Halo town at night level 0.5: half way",
+        "Halo town by day: the shaded walls cream (OutdoorAmbient 188,185,183)",
+        "half way into the Halo town: OutdoorAmbient half way"
+      ]
+    },
+    {
+      "mutation": "the warm OutdoorAmbient at night too",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "Halo town at night level 0.5: half way",
+        "Halo town at night: OutdoorAmbient x the old factor (night unchanged)"
+      ]
+    },
+    {
+      "mutation": "the Ambient warmed too",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "Halo town by day: Ambient keeps its factor"
+      ]
+    },
+    {
+      "mutation": "the ease drops the warm OutdoorAmbient",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "half way into the Halo town: OutdoorAmbient half way"
+      ]
+    },
+    {
+      "mutation": "the Halo town's old OutdoorAmbient numbers",
+      "applied": true,
+      "caught": true,
+      "newFailing": [
+        "Halo town at night level 0.5: half way",
+        "Halo town by day: the shaded walls cream (OutdoorAmbient 188,185,183)",
+        "half way into the Halo town: OutdoorAmbient half way"
+      ]
     }
   ],
-  "sourceSHA256": "964c09d8308a2b4c6482822a96ee7b56445727f23781a37fec085fce781f9481",
+  "sourceSHA256": "5dfb680301c46c30738bf2cff3523f184afaa20071b2710cb4869ac6f178c7c6",
   "runtimeError": null,
   "studioCalls": 0,
   "apiCalls": 0

@@ -1,7 +1,7 @@
 {
   "status": "passed",
-  "checks": 508,
-  "namedChecks": 100,
+  "checks": 493,
+  "namedChecks": 102,
   "failing": [],
   "static": [
     {
@@ -62,9 +62,9 @@
     }
   ],
   "mutations": {
-    "total": 36,
-    "applied": 36,
-    "caught": 36,
+    "total": 37,
+    "applied": 37,
+    "caught": 37,
     "results": [
       {
         "mutation": "HaloTown centre back to v1",
@@ -398,6 +398,18 @@
         ]
       },
       {
+        "mutation": "a straight Halo island strip back in the map data",
+        "file": "config",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "links :: no straight Halo island strip (the v2 island's roads curve; the minimap's tile shows them)",
+          "preview :: every Config road is a preview road with the same strip and season",
+          "preview :: preview ROADS = Config.Map.Roads (same count)"
+        ]
+      },
+      {
         "mutation": "FitRoads no longer cuts at the plaza",
         "file": "mapbuilder",
         "applied": true,
@@ -469,17 +481,17 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "402a818d826d19a513e4f15d6dbd9affab25fc2bb3b882d8e67508cb49692c60",
-    "src/ServerScriptService/MapBuilder.luau": "1501c830e09a8396a88747f93027f56bed4588444a2200312275347da47599fb",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "929a50e40a7b6c8d6132d4e9dc4ba7c449f0879b515845454ae2c71f02e21094",
-    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "a6ad30db00a0fdbee41fe82e7baa19be41ec39450c627919fcf43626f5dd6559",
-    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "9b0b07c7474ca4cdfbfa2213644e1d143d11b4cb8cd39bfeec169f351f6ace49",
-    "tools/preview_map.lua": "58693ddf316774971766a81acd5474d2828ac3bc4a49046bc9bba75882c280b6",
+    "src/ReplicatedStorage/Shared/Config.luau": "06c6a3688afc6c54478eb079567b23426de0ebd03cc4e604f5843d52d5b6bcf5",
+    "src/ServerScriptService/MapBuilder.luau": "4a85c1b32eadc9475d7297d7de71a4efea83baef8523b1da5a8db84c861de3ea",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "5b873ea8b7540b7d1e997df085177a2d46f2491590e45267bd1bbcfcb79ca9f9",
+    "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "0db29b5e673d2d70871af49bf7f758c627d650a067e7945e99ce907dbac0674f",
+    "src/StarterPlayer/StarterPlayerScripts/Intro.luau": "826f1311b69c8edf21371cff54b7a9b0c4d39b06568b58e3113d1b3a0798c744",
+    "tools/preview_map.lua": "1d200c6971fa9ddd18463767bd027344bf56f59a1743deca2518cc4490909199",
     "tools/map_v2_move.lua": "12d1ead5ada6e5a75380efef7fb31d5585cd40c6b17b55abcf88adfde39e1183",
     "tools/map_v2_apply.py": "2b5e5ac141356e0ab8d9725465070638378ed5af852ed53648cc4fcd3c648362",
-    "src/ServerScriptService/WarService.luau": "94cb2a6aee9b5a450b9a2694d2f9f6d109d2d1c1503f8e1e342827312a317cca",
+    "src/ServerScriptService/WarService.luau": "ae6f59ca58bd591a8264b437e1e65ccd8b289ad0ee47aefec88addae95abe65b",
     "docs/design/world_map_v2_2026-10-06.json": "d5e196575a82adcac70a771866899a9bfa146a66868b8ec6b2996664381cbe2f",
-    "tools/fixtures/map_v2_offline.luau": "615fa7e73779656e2a9c075b5ed3251de82741cfc876e387d1297d70c4039f01"
+    "tools/fixtures/map_v2_offline.luau": "59a50cde63b66acdf30c090ce96b820b03da64dc5501ec10d2863bafcba57dd5"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

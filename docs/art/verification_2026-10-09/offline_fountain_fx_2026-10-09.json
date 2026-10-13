@@ -18,7 +18,22 @@
       "caught": true
     },
     {
-      "name": "the pool at the old height",
+      "name": "the pool at the old model's height",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the twinkles as wide as the old pool",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the pool streams land on the old water",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the middle bowl streams leave the old rim",
       "applied": true,
       "caught": true
     },
@@ -49,6 +64,6 @@
     }
   ],
   "status": "passed",
-  "contract": "FountainFx: the 3-tier Halo fountain (검수 2026-10-09 night; 이미지 생성 1's measurements of Halo_Fountain_HD_plain,\ndocs/design/halo_town_plan_2026-10-09.md last section), offline.\n\nRuns, in the official Luau CLI, the CURRENT FountainFx.luau in tools/fixtures/fountain_fx_offline.luau. Checks (검수\n2026-10-10: each fountain by its own kit Model name, no mark guessing): Town_Halo_Fountain3 gets the 3-tier spec: a\nsmall jet off the spike tip (Y 1.0; inside the gold ball it never shows), 8 streams from the top bowl rim\n(Y 0.76, R 0.145) into the middle bowl (Y 0.54), 12 from the middle rim (Y 0.55, R 0.25) into the pool with ripples,\npool twinkles on the water (Y 0.165) inside the round pool, more of them in a deeper blue, and no halo ring glow / light;\nTown_Halo_Fountain (the cloud fountain, now in the Crossroads plaza) keeps the cloud spec with its ring glow whatever is\ninside it; the\nCrossroads K_Fountain is unchanged. Mutations: each must be caught.",
+  "contract": "FountainFx: the 3-tier Halo fountain (검수 2026-10-09 night; 이미지 생성 1's measurements of Halo_Fountain_HD_plain,\ndocs/design/halo_town_plan_2026-10-09.md last section), offline.\n\nRuns, in the official Luau CLI, the CURRENT FountainFx.luau in tools/fixtures/fountain_fx_offline.luau. Checks (검수\n2026-10-10: each fountain by its own kit Model name, no mark guessing): Town_Halo_Fountain3 gets its spec (A23-121 stage 6:\nthe new Tripo model 1.0 x 1.0 x 0.733, measured on its mesh): a small jet off the finial tip (Y 1.0), 8 streams from the\ntop bowl rim (Y 0.748, R 0.118; its water 0.738, rim 0.121) into the middle bowl (water 0.525, rim 0.208), 12 from the\nmiddle rim (Y 0.545, R 0.205) onto the deep pool's water (0.053) with ripples, pool twinkles on that water inside the\ninner wall (r 0.39-0.40), more of them in a deeper blue, and no halo ring glow / light;\nTown_Halo_Fountain (the cloud fountain, now in the Crossroads plaza) keeps the cloud spec with its ring glow whatever is\ninside it; the\nCrossroads K_Fountain is unchanged. Mutations: each must be caught.",
   "studioCalls": 0
 }
