@@ -13594,12 +13594,14 @@
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_C_back_ns.png"
    },
-   "next": "디자인 검수 2 + 최종 검수 PBR gate (also decides whether to redo front-only textures)",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_C/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 5ecde7f6",
    "pbr": "d68d7d68 (5)",
    "file": "art/models/tripo/web/HaloVar4_Balustrade_C_SM_texMV4k_pbr_src.fbx (cd1fd3e2, multiview texture); old 531c8172 = _SM_tex4k_pbr_src.fbx (failed)",
-   "redo": "531c8172 failed 최종 검수 (closed triangle from top) -> cd1fd3e2 (open L, 디자인 검수 2): texture = MIDDLE multiview tab (smart-mesh 4 views), 조명 제거, 4K, pressed by the user 10/13 (task a8876527, 20) + PBR 67208798 (5)"
+   "redo": "531c8172 failed 최종 검수 (closed triangle from top) -> cd1fd3e2 (open L, 디자인 검수 2): texture = MIDDLE multiview tab (smart-mesh 4 views), 조명 제거, 4K, pressed by the user 10/13 (task a8876527, 20) + PBR 67208798 (5)",
+   "approval": "디자인 검수 2 + 최종 검수 PBR final pass 10/13 (multiview texture; ⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 g)",
+   "final": "art/models/tripo/touchup/HaloVar4_Balustrade_C/HaloVar4_Balustrade_C_TU.glb (disk only; Blender = front -Y + extra yaw -45 so the L corner faces the camera like the 2D front (Tripo put one wall at +X) + bottom-centre pivot; mesh/maps untouched; 1.403x0.840x0.649, 5033 faces)"
   }
  ],
  "HaloVar4_Balustrade_B_web2_sm_tex8k_pbr": [
@@ -15367,10 +15369,12 @@
     "right_slot": "art/out/s2/noshadow/chunks/HaloChunk_JuiceParasol_left_ns.png",
     "back": "art/out/s2/noshadow/chunks/HaloChunk_JuiceParasol_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender TU -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "MIDDLE multiview tab (smart-mesh 4 views), 조명 제거, 4K task b1e233ad (20)",
    "pbr": "0dc878ef (5)",
-   "file": "art/models/tripo/web/HaloChunk_JuiceParasol_SM_texMV4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloChunk_JuiceParasol_SM_texMV4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 + 최종 검수 PBR final pass 10/13 (묶음 g)",
+   "final": "art/models/tripo/touchup/HaloChunk_JuiceParasol/HaloChunk_JuiceParasol_TU.glb (disk only; front -Y + bottom-centre pivot only; 0.9995x0.5356x0.8179, 5369 faces); old striped TU -> HaloChunk_JuiceParasol_TU_old_stripes.glb"
   }
  ],
  "NEW_Beehive_web_sm_tex4k_mv_pbr": [
