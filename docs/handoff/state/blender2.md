@@ -17,7 +17,9 @@ Tripo 계정 2 · 사용자 Chrome(Claude Chrome 확장) · 역할 파일 `role_
 - 최종 검수 지시: GLB만(FBX 없음 OK) · 멀티뷰엔 'AI 완성' 없음 = 그대로 · **텍스처 4K = 55점**(8K 아님) · 폴리곤: 사람 20000, **둥근 것 있는 부품 12000**, 납작·네모 부품 8000. Blender 크기·피벗 안 함(최종 검수가 assemble_parts.py로 합침).
 - 원본 HD GLB 앞 = **+X** (pbr_gate.py에 `<glb>:+x`). 결과 `art/models/tripo/web/<이름>_HD_pbr_src.glb`, 시트 `art/review/design/pbr_gate_hd_1014/`, 작업 목록 scratchpad hd_jobs.txt, records 키 `<이름>_web2_hd`.
 - 끝: 난간 4(CornerPost 최종 통과) + 사람 9(BakerGranny·BellElder·Bright·FlowerFarmer·FlowerGirl·Folk4·HerbHusband·HerbWife 판정 보냄). Tripo에서 도는 중: JuiceMan a94e810f · MailBoy 2065ea15 · OldSailor 4958667f. 남은 사람: PondAngler·PotionMerchant·SirGleam·StarScholar → 묶음 3(14).
-- 14:xx Chrome 탭 그룹 사라짐(내가 안 닫음) → 최종 검수 답 기다림. 잔액 20,190.
+- 14:xx Chrome 탭 그룹 사라짐 → 그 뒤 Claude in Chrome 확장 '연결 안 됨'(사용자가 Chrome 다시 열어야). 잔액 20,190(마지막 확인).
+- **사람 = 사용자 최종(10/14):** 통짜 사람 생성 멈춤. 사람은 부품(머리·몸·소품) 2D를 이미지 생성 2가 따로 → 각각 HD 55(머리·몸 폴리곤 12000, 소품 8000) → Blender 합침. 스마트 메시 안 씀. 이미지 생성 2가 Bright로 시범 → 사용자 OK 뒤 최종 검수가 큐에 넣음. 만든 사람 HD는 파일만, records에 '통짜 HD, 사용자 방식 아님'. Rail·Base 두께 = 최종 검수가 Blender 축별 맞춤(다시 생성 안 함).
+- **다음 큐(연결되면):** JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 받기 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) (2D parts/<이름>_*_ns.png) → 단순 14(HD 55; 이름: HaloSign_SignBakery/SignFlower/SignPotion, HaloFlagpole_1, HaloReasonHQ_GuardPost, HaloChunk_* = noshadow/chunks/).
 
 ## 지금 방식 (SPEC A23-174, 사용자 10/14 낮, 최종 검수 전달) — 다음 물건부터
 - **지금은 대기.** 다음 물건은 최종 검수가 목록·점수를 사용자에게 보인 뒤 보냄.
