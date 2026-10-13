@@ -16,6 +16,8 @@
 - 흰 모델 고름 → 텍스처·PBR 중: BellFrame 3adb21ff · Flagpole_1 99be186b · Flagpole_2 80eb3e39 · Flagpole_3 67b42ee8 · Clothesline c69458ae · RackShieldSword f31333d8 · Scarecrow 24fde989 · VegGarden a4222fbc(⑤ 흙 Studio 파트) · Woodpile 8274ab45.
 - GuardPost = 계정 2 계속(흰 모델 7c300016 고름 → 텍스처·PBR). PotionCrate = 계정 1(Blender 손보기 1·디자인 검수 1, 최종 검수 결정). 최종 검수가 앞으로 records.json 확인 후 물건 배분. PhotoDisc = Studio 파트(이미지 생성 3, 최종 검수 결정).
 
+- 최종 검수 PBR 최종 판정(10/13): 계정 2 14종 중 13 통과, **Bal_C 다시 → cd1fd3e2(열린 ㄱ, 45° 돌아 있음)로 텍스처·PBR 시험** — 어긋나면 스마트 메시 다시(125). ⑤ 메모 `docs/review/pbr_final_2026-10-13.md` '묶음 c'. GuardPost PBR 통과 보냄, PotionCrate fab0907c 텍스처·PBR 중.
+
 ## 계정 2 몫(최종 검수 10/13)
 Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 다 4면 통과, 2×125 OK) · BellFrame(옆면 다시 그린 뒤) · 이미지 생성 2 소품 11종. **앞으로 새 스마트 메시는 계정 2.** Blender 손보기 2는 Chrome 창이 보여야 Tripo가 돎(창 차례 = 최종 검수).
 
@@ -25,6 +27,7 @@ Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 
 - 통과 → Blender 손보기 2: NEW_Hedge, NEW_WallLamp(_left/_right 이름 맞바꿈 6bfc4ff 뒤).
 
 ## 교훈
+- **난간·울타리처럼 바닥 모양이 중요한 것은 흰 모델을 바로 위(top)에서 꼭 봄** — Bal_C 531c8172가 옆에선 ㄱ인데 위에선 닫힌 세모(최종 검수가 잡음). 스크래치 `top.py`(위 + 뒤 3/4). 같은 2D라도 흰 모델이 45° 돌아 나오면 앞 한 장 텍스처가 어긋날 수 있음.
 - 판정이 두 검수에서 겹치면 먼저 내려간 판정을 따르고, 정정은 관련 세션 모두에 한 번에(메시지가 엇갈림).
 - 벽에 붙는 물건(벽 등불·간판): `_left` = 앞이 화면 오른쪽 → 벽판/기둥은 화면 왼쪽. 파일 이름 거꾸로 흔함.
 - 옆면에서 앞면 볼록(그림 부조)은 판의 앞쪽 한쪽에만, 판은 팔·기둥 축 가운데. 측정: 판 아래 끝 가운데 x vs 기둥 꼭대기 가운데 x.
