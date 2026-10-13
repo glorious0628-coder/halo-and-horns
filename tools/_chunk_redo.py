@@ -32,6 +32,8 @@ def main():
         draw = it["draw"].split(" 3D note:")[0]
         if any(k in name for k in CHUNKY_IDS):
             draw += ". " + CHUNKY
+        if "Trellis" in name:
+            draw += "Lattice bars must be THICK and chunky (not thin sticks), big squares. "
         front = os.path.join(OUT, "%s_front_ns.png" % name)
         if not os.path.exists(front):
             rc = R.run(FRONT % draw, [refs[0]], front)
