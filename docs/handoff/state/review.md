@@ -252,3 +252,4 @@
 - **API 사후 반박 검토**(build/api_agent/night_merges_1013/result.md, Sonnet, $1.09): 데이터 틀어지는 버그 0. 고칠 것 = 폰 말풍선 구역 TownReact Clear.Touch R 0.85(전투 단추 못 피함)·L 0.3(퀘스트 카드 끝) → 개발 1 fix/town-react-zone(급하지 않음) + HUD "Siege: %d each"에 SiegeTarget 1.5 → "1"로 보임(%g). 낮음(개발 2 뒤에): PvP KO 상한 칸이 AddPoints 실패 때도 소모, PersonalAdded 주석. 3번 글자 잘림은 menu-one-line-2로 해결.
 - 체크리스트 갱신 push: 저장 = Save to File As(rbxlx), 게시 = Alt+P. 메모리 main-save-user-does-save-as. 주간 사용량 00:xx: 전체 17%, Fable 27%. API 오늘 합계 ≈$13.8.
 - **다음:** 메인 반영 1 menu_one_line2 사진 → 개발 1 town-react-zone·폰 읽힘 가지 → 개발 2 2배 XP 가지 → 10/15 패스 ID 9개(사용자, 오늘 해도 됨) → 10/16 저장(사용자 Save As)·게시.
+- (00:xx) 메뉴 한 줄 2 메인 사진(menu_one_line2/pc_02) 내가 봄: 'Monsters'·'Settings' 둘 다 칸 안(작게 줄어듦, 읽힘), fold lines 1·cut none·room 전부 > 0 = **통과**. 메인 Studio = 4baa63e6 sync, Edit, 미저장(게시판은 75890afd; 다음 저장·게시 10/16).
