@@ -12,7 +12,12 @@ For every shot <dev>_<name>.json lists, over what is on screen (every ancestor s
   off  = a button / text partly off the screen;
   overlap = two buttons that cover each other (not one inside the other).
 Usage: HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py [phone] [844]   (default both)
-Out: docs/art/verification_2026-10-13/phone_round/<dev>_<name>.png / .json, summary.txt, log.txt"""
+Out: docs/art/verification_2026-10-13/phone_round/<dev>_<name>.png / .json, summary.txt, log.txt
+
+A23-160 ③ (10/13 evening, the private test's first 10 minutes on a phone): `... play_phone_round_photos.py first10
+[phone] [844]` walks the first minutes instead - the opening (Skip), the faction picker, the class picker, the guide's
+welcome, the HUD after the first mission, the Forge, the Potion Shop, the attendance board (Gifts), the Bag, the Lv 5
+moment (the first skill) - same audit per shot. Out: docs/art/verification_2026-10-14/phone_first10/."""
 import base64
 import io
 import json
@@ -26,7 +31,7 @@ from studio_mcp import Client  # noqa: E402
 from PIL import Image  # noqa: E402
 
 OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-13", "phone_round")
-os.makedirs(OUT, exist_ok=True)
+OUT_FIRST10 = os.path.join(ROOT, "docs", "art", "verification_2026-10-14", "phone_first10")
 LOG = []
 DEVICES = {"phone": ("samsung_galaxy_s22_ultra", 749, 361), "844": ("iphone_13", 844, 390)}
 WINDOWS = ["Bag", "Character", "Skills", "Pet", "Journal", "Codex", "Settings", "Help", "News", "Shop", "Travel", "Ranking"]
@@ -247,8 +252,59 @@ def run_device(c, dev):
         time.sleep(0.6)
 
 
+def open_shot(c, win, name):
+    note(lua(c, OPEN % (win, win), "Server"))
+    time.sleep(1.5)
+    if lua(c, OPENED, "Client") != "true":
+        note(f"{win}: did not open")
+        return
+    shot(c, name)
+    note(lua(c, CLOSE, "Client"))
+    time.sleep(0.6)
+
+
+def run_first10(c, dev):
+    """A23-160 ③: the first minutes in the order a new player sees them (fresh save, no mouse / keyboard)."""
+    device, w, h = DEVICES[dev]
+    note(f"== first10 {dev}: " + lua(c, SET_DEVICE % (device, w, h), "Edit"))
+    note(lua(c, 'game:GetService("ServerStorage"):SetAttribute("StudioFreshSave", true) return "fresh on"', "Edit"))
+    c.call("start_stop_play", {"is_start": True})
+    note("loaded: " + wait_state(c, lambda x: "DataLoaded=true" in x, 90, 2.0))
+    time.sleep(6)
+    shot(c, f"{dev}_f10_01_intro")
+    note(lua(c, FIRE % ("IntroSeen", "", "IntroSeen"), "Client"))
+    time.sleep(4)
+    shot(c, f"{dev}_f10_02_faction")
+    note(lua(c, FIRE % ("ChooseFaction", '"Halo"', "ChooseFaction"), "Client"))
+    wait_state(c, lambda x: "Faction=Halo" in x, 20)
+    time.sleep(2.5)
+    shot(c, f"{dev}_f10_03_class")
+    note(lua(c, FIRE % ("ChooseClass", '"Warrior", "M"', "ChooseClass"), "Client"))
+    note("chosen: " + wait_state(c, lambda x: "ClassChosen=true" in x, 20))
+    time.sleep(2.5)
+    shot(c, f"{dev}_f10_04_welcome")
+    note(lua(c, FIRE % ("AcceptTutorial", "", "AcceptTutorial"), "Client"))
+    time.sleep(3)
+    shot(c, f"{dev}_f10_05_first_mission")
+    note(lua(c, CLAIMED, "Server"))
+    time.sleep(2)
+    shot(c, f"{dev}_f10_06_hud")
+    open_shot(c, "WeaponShop", f"{dev}_f10_07_forge")
+    open_shot(c, "PotionShop", f"{dev}_f10_08_potions")
+    open_shot(c, "Attendance", f"{dev}_f10_09_gifts")
+    open_shot(c, "Bag", f"{dev}_f10_10_bag")
+    note("lv5: " + lua(c, DEBUG % '{ "Level", 5 }', "Server"))
+    time.sleep(2.5)
+    shot(c, f"{dev}_f10_11_lv5")
+
+
 def main():
+    global OUT
     sys.stdout.reconfigure(encoding="utf-8")
+    first10 = "first10" in sys.argv[1:]
+    if first10:
+        OUT = OUT_FIRST10
+    os.makedirs(OUT, exist_ok=True)
     want = [a for a in sys.argv[1:] if a in DEVICES] or list(DEVICES)
     c = Client()
     c.start()
@@ -258,7 +314,7 @@ def main():
             sys.exit("not in Edit: " + st)
         for dev in want:
             try:
-                run_device(c, dev)
+                (run_first10 if first10 else run_device)(c, dev)
             finally:
                 try:
                     c.call("start_stop_play", {"is_start": False})
