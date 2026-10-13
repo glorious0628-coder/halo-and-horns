@@ -13485,5 +13485,221 @@
    "approval": "디자인 검수 10/13 mirror pass (art/review/blender/castle_wing_L_R_mirror_1013.jpg)",
    "next": "이미지 생성 3 with WingL"
   }
+ ],
+ "NEW_FlowerBush_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "6e6bd726-bf17-49a9-bf22-9d3c71b32145",
+    "93829d23-bc3c-4f18-870e-a7af062e23f5",
+    "7cafd99b-625a-466f-9f4a-5fbee34bbca6",
+    "24520619-5629-4de3-b42d-968efb66a2ea"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/NEW_FlowerBush_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/NEW_FlowerBush_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/NEW_FlowerBush_left_ns.png",
+    "back": "art/out/s2/noshadow/NEW_FlowerBush_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar4_Balustrade_D_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "150c1b26-b89f-4d6c-91eb-67d33e059db8",
+    "6f37f799-91ed-45ac-b60c-95c0f84fa746",
+    "860e4b9f-fb7d-4940-baf9-4d3ac3546457",
+    "71359ce0-ebcf-4b4e-9fc6-50dfe2de8ea5"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar4_Balustrade_D_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_D_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_D_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar4_Balustrade_D_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar4_Balustrade_C_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "cd1fd3e2-cad4-4ba8-a4fc-806d0110b8bc",
+    "531c8172-d449-438b-a4a7-bcd442a39f27",
+    "9f789f40-d9a3-49d1-abd8-c2af82d5f530",
+    "506fd6cc-f059-43db-87a4-f096f322b77b"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar4_Balustrade_C_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar4_Balustrade_C_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar4_Balustrade_B_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "726ab69e-fe50-44cd-91b3-e38adfa3db12",
+    "f9c105f0-f919-430c-988a-517e181db648",
+    "6436f662-ec6f-4fc6-883c-3d04f5ff89fd",
+    "add2a937-3906-4eb5-8747-cd7d71b19491"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar4_Balustrade_B_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_B_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_B_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar4_Balustrade_B_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar4_Balustrade_A_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "20d95b80-06fd-42c3-99ca-b770e9afe6b8",
+    "378c02f6-b4b7-4137-9f2c-150ff559d5a6",
+    "c7c8c296-3673-4006-9984-7ff3d56a5d14",
+    "bcaca51e-26d3-44bc-a7f0-c110d7fa64c7"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar4_Balustrade_A_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_A_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_A_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar4_Balustrade_A_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar3_Balustrade_F_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "72d5c08f-419a-4ba7-b2ce-94fba0f43185",
+    "934efdb9-d5d9-46af-bfc2-e855a68dd8da",
+    "f41b0d90-8f4e-4f24-babd-6121ca87c71f",
+    "332b1274-76c3-4a49-950a-6d86e2d7ae69"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar3_Balustrade_F_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_F_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_F_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar3_Balustrade_F_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar3_Balustrade_E_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "86d21ea6-2081-45e6-b548-ec828592c9b6",
+    "48465117-8a9a-4d66-bae5-76c720fea1f0",
+    "781e6f4e-ff08-413f-9b3d-61294e6b181b",
+    "67aaeedf-d580-4665-ba71-59156d31098b"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar3_Balustrade_E_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_E_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_E_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar3_Balustrade_E_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloReasonHQ_FlowerCart_Bouquet_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "6e6aae44-0d1e-4ce4-b10b-d95a29ea8358",
+    "82912694-42a4-4507-b254-1e3d8c6b4647",
+    "93fbed8d-d91d-497c-8cb6-1d8171412d34",
+    "339423a7-cbf8-412a-8238-346bb4914033"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
+ ],
+ "HaloVar4_Planter_D_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
+   "site": "studio.tripo3d.ai (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "105124b0-e593-41b9-bdec-7a56f649a3be",
+    "49024868-1c59-457c-ad7c-12da5276d9d0",
+    "f350c381-1f44-4ff9-9b4f-3ed3910430ff",
+    "456ce078-2e73-4c56-a978-33e7f6839dc2"
+   ],
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloVar4_Planter_D_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloVar4_Planter_D_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloVar4_Planter_D_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloVar4_Planter_D_back_ns.png"
+   },
+   "next": "디자인 검수 picks 1 of 4 -> texture (front, 조명 없이, 8K, 30) -> PBR (5)"
+  }
  ]
 }
