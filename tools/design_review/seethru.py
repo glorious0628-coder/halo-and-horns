@@ -31,6 +31,7 @@ def load(path):
     for o in obs:
         bm = bmesh.new()
         bm.from_mesh(o.data)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)  # glTF splits verts at UV/normal seams
         openE += sum(1 for e in bm.edges if e.is_boundary)
         tris += sum(len(f.verts) - 2 for f in bm.faces)
         seen = set()

@@ -15,7 +15,7 @@ for lab in sys.argv[2:]:
     dr = ImageDraw.Draw(o)
     for r, (name, p) in enumerate(ROWS):
         y = r * (C + HDR)
-        dr.text((4, y + 4), f"{lab}  {name}: front | right | back | left" + ("  | top / bottom" if r < 2 else ""), fill=(255, 220, 0))
+        dr.text((4, y + 4), f"{lab}  {name}: front | right | back | left" + ("  | " + ("top", "bottom")[r] if r < 2 else ""), fill=(255, 220, 0))
         keys = [f"{p}{az}" for az in (0, 90, 180, 270)] + ([("top", "bot")[r]] if r < 2 else [])
         for k, key in enumerate(keys):
             f = os.path.join(rd, f"{lab}__hole_{key}.png")
