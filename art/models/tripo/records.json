@@ -15386,5 +15386,29 @@
    "final": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (old front-1 판 → _TU_front1_old.glb)",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
   }
+ ],
+ "NEW_ArmoryBarrels_web2_sm_texMV4k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1), 4-views 918e35d (filled crate X panels)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "d5419bf0-b060-4f61-893b-b5d641abbd3a",
+    "aa3febf4-90bd-42cc-bf97-5396faa3f7ca",
+    "b139174a-c5f8-47ea-aaea-554e1d123c7d",
+    "e1d1ab53-7da2-4e75-983d-02507707ceaf"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/NEW_ArmoryBarrels/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/NEW_ArmoryBarrels_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/NEW_ArmoryBarrels_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/NEW_ArmoryBarrels_left_ns.png",
+    "back": "art/out/s2/noshadow/NEW_ArmoryBarrels_back_ns.png"
+   },
+   "next": "디자인 검수 2 picks -> texture MIDDLE multiview tab, 조명 제거, 4K -> PBR"
+  }
  ]
 }
