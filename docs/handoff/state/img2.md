@@ -1,3 +1,11 @@
+# 이미지 생성 2 — 인계 (10/13 낮 정리)
+## 10/13 낮 (맨 위 = 이것부터)
+- **끝·푸시됨(10/13)**: 집 덩어리 43종 · 빛 마을 소품 NEW_ 11종(GatherBush·Hedge·WallLamp·WateringCan·ArmoryBarrels·Beehive·CandleCrate·Easel·NoticeBoard·SteppingStone(돌 하나)·WaterBuckets; Telescope·Cauldron은 뺌) · 가게 간판 4종(HaloSign_Sign<Bakery|Flower|Juice|Potion>) — 전부 디자인 검수(2)가 통과, Blender 손보기로 넘어감. 마지막 푸시 6327220.
+- **판정 대기**: 큰 지도 V3 시안 2종 `art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_{a,b}.png`(추천 b; 1041×760, 옛 지도 (17,77), 새 빛 섬 실제 크기, 합성 `tools/worldmap_compose.py`, 섬 원본 `WorldMapV3_HaloIsland_{a,b}_src.png`). 판정·수정 요청은 **디자인 검수 2**(local_b0cabbea…), 통과하면 그쪽이 최종 검수에게. 수정 시: 섬을 다시 그릴 때 Firefly 두 ref(안내 그림 crop + 지금 합성본 crop, 업로드 후 `__multiUrls`), 합성은 같은 스크립트.
+- **Firefly 길(승인됨)**: Codex(ChatGPT) 사용량이 끝나 있으면 Firefly 고급(GPT Image 2.5 high, 5크레딧/장). 방법 `docs/handoff/firefly_autodownload_2026-10-13.md`: 앱 브라우저 Firefly 탭(로그인돼 있음, 보이는 창이 아니어도 몇십 초 뒤 그려짐)에 `tools/firefly_autodl_helpers.js`를 **생성 전에** 붙임 → `__tasks([{k,view,ref,prompt}])`(앞 = ref URL, 나머지 = 새 앞면 blob) → `__urlMap()`으로 사전서명 S3 주소를 읽어 `tools/ff_lines_to_map.py` + `tools/ff_fetch.py`로 curl. **브라우저 다운로드·Downloads·127.0.0.1·데스크톱 창 금지, 사용자에게 할 부탁은 최종 검수에 먼저**. 한 번에 한 세션만 Firefly 탭 사용(이미지 생성 3과 번갈아). 잔액 약 2,500/10,000(10/13 낮).
+- 4면 맞춤 도구: `tools/ns_fix.py <id> --faces ...`(높이·발선·배경을 앞에 맞춤, 이미지 생성 3 도구), `tools/_chunk_sidefix.py`(--fill). 한쪽을 보는 물건은 4면 방향 규칙(왼 면 = 앞이 화면 오른쪽).
+- 이 줄 아래는 10/13 새벽 정리(이전).
+
 # 이미지 생성 2 — 인계 (10/13 새벽 정리: 컴퓨터 끄기 전)
 ## 10/13 새벽 (맨 위 = 이것부터; 10/13 04시 갱신)
 - **집 덩어리 큐** `art/prompts/house_chunks_queue_2026-10-13.json` (43종, 순서대로). 구동기 `py tools/_chunk_redo.py <HaloChunk_Id>`(앞면 → 뒤·왼·오른, 결과 `art/out/s2/noshadow/chunks/<Id>_<view>_ns.png`, 한 번에 하나·run_in_background; 끝 코드 3 = ChatGPT 사용량 끝 → Firefly 고급), 옆면 PIL 고침 `py tools/_chunk_sidefix.py <Id> [--fill]`(right=left 뒤집기+높이 맞춤; 흰·크림 물체는 --fill; 캔버스 밖이면 STOP), 색 보정 `tools/_tint_obj.py`. 규칙: 둥근 것은 4면 폭 같게, 한쪽을 보는 것(꽃·덩굴·가판대)은 4면 방향 맞게(왼 면 = 앞이 화면 오른쪽, 오른 면 = 화면 왼쪽; 어긋나면 한쪽을 뒤집어 맞춤), 잎·덩굴·울타리는 큼직·굵게(도구가 자동 문구), 원본 백업 `build/img2_next/pil_orig/`. 보고처 = **디자인 검수**(통과 판정·흰 모델 큐는 거기서), 막힌 것만 최종 검수.
