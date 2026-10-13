@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/13 밤 (A23-160, Opus 5.5 high) — 다시 시작하면 여기부터
+## 10/13 밤 2 (PC 재시작 20:18 뒤) — 다시 시작하면 여기부터
+- **fix/test-prep-client 6ee394eb**(worktree ../wt_dev1merge로 옮김; ../wt_codexui는 choice-card): API 검토 FIX FIRST 반영 — UIKit.TapScale(ScreenGui UIScale 포함), 크기<2 띠 숨김, powerHit 처음 UDim2.new(), 사진 점검 small 44. test_phone_first10 23·17/17 + 관련 15개 + audio 통과. 최종 검수 병합 대기(서버 가지와 같이).
+- **fix/choice-card-ui e9077f02**(../wt_codexui, main fc6717d0에서): ChoiceCardUI.luau = 공용 선택 카드 창(Card + FinisherCard, Panels 'ChoiceCard', 승인 BtnKind/BtnSneaky + 날개·뿔, 시간 카드 카운트다운, 저장 카드는 조용한 화면에서만·닫으면 30초 뒤 다시, 시간 카드가 저장 카드를 잠깐 보류) + 여운(Fx Afterglow: 금빛 반짝이·보라 연기, 발밑). Config.ChoiceCard.Screen(+ Stat Infamy→"Mischief", A23-166). 시험 test_choice_card_ui 57·25/25 + 48개(halloween·place_english는 성긴 worktree라 실행 불가 → place_english는 --place로 통과) + a23_14 --no-mutations 291/0 + audio 통과. 사진 `HH_MAIN_STUDIO=1 py tools/play_choice_card_photos.py [phone]`.
+- 서버 쪽 남은 것(개발 2): Config.Finisher.Kinds 다시 켜기(main은 {}), ChoiceCard·Finisher 고른 뒤 StoryQuestService.Afterglow 부르기(Config.Afterglow.From Card/Finisher는 있는데 안 부름). 화면 'Infamy' 글 목록은 최종 검수에 보냄(CharacterUI:69, Panels:133·135·145·147).
+
+## 10/13 밤 (A23-160, Opus 5.5 high)
 - 1-A 화면 몫(#5 출석·#6 상점·#2 첫 무기 화면·#8 Bat Zigzag/Final Boss)은 아래 ae655ccf로 이미 main. Smokey→Rose = 개발 2(wt_prep, 아직 커밋 전). 남은 내 몫 = **폰 첫 10분 읽힘**.
 - 가지 `fix/test-prep-client`(../wt_codexui, main 569565aa로 빨리 감기) **99da2abd** push, 최종 검수에 보고:
   - f0a0b7bf: HUD Power 줄 고장 — OpenCharacter 누름 칸이 PowerLine의 UIListLayout 안 첫 칸이 되어 글자가 줄 밖으로 밀림(PC 막대 오른쪽 밖, 폰 물약 고리 위). 누름 칸을 형제로, 폰은 XP 막대까지·44px(L.PowerTap).
