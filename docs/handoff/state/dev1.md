@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 낮 2 — fix/town-react-zone 696cd288 (다시 시작하면 여기부터)
+## 10/14 밤 — fix/phone-first10-3 3e0a3477 (다시 시작하면 여기부터)
+- town-react-zone 병합됨. 새 가지 **fix/phone-first10-3 3e0a3477**(origin/main fbab6855 위 2커밋, ../wt_dev1merge): 43719501 폰 말풍선 160x70 + TownReact.Blockers(보이는 단추만 피함, 6px) / 3e0a3477 폰 HP·MP 막대 15px(HudLayout TOUCH_BAR)·숫자 굵게 13px(VitalsUI). 최종 검수 병합 → 메인 반영 1 `play_phone_round_photos.py first10`(04_welcome 말풍선, 06_hud 숫자).
+- 사진 오면 고장급만. 그다음 02_dev1.md: dev1-halo-stage6 마무리(10/21 주).
+
+## 10/14 낮 2 — fix/town-react-zone 696cd288 (병합됨)
 - menu-one-line-2는 main 4baa63e6 병합됨. 새 가지 **fix/town-react-zone 696cd288**: TownReact.Clear Touch L 0.34, 바닥이 0.44H 아래면 R 0.6(749 폰은 위 가운데만 말함 — 너무 드물면 폰 말풍선 크기 줄이기), HUD TXT.Siege %g(화면엔 안 나옴). 최종 검수 병합 대기.
 - 다음: 02_dev1.md 폰 첫 10분 읽힘.
 
