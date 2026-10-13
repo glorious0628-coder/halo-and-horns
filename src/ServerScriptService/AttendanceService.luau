@@ -310,7 +310,8 @@ function AttendanceService.Start()
 end
 
 -- A23-167 ② (ReturnService's tomorrow card): (the slot a claim today pays, nil when today's claim is not open; the slot a
--- claim tomorrow pays; days collected), or nil when there is no board / no save. Today's open claim counts as taken
+-- claim tomorrow pays; days collected), or nil when there is no board / no save. Today's open claim counts as taken.
+-- Read only; ReturnService asks once a KST day (it keeps that day in data.Return.TomorrowDay)
 function AttendanceService.NextSlots(player)
 	local data = S.PlayerService.GetData(player)
 	if type(data) ~= "table" or A.Enabled == false or SLOTS == 0 then return nil end

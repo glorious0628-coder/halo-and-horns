@@ -724,7 +724,10 @@ function ReturnService.Start()
 		checkBadges(player)
 	end)
 	connect("WarService", "RoundEnded", onWarEnded)
-	connect("GooseService", "GooseFinished", function() newsAdd("Goose") end) -- A23-167 ② news
+	connect("GooseService", "GooseFinished", function(_result, _rewarded, info)
+		if type(info) == "table" and info.Mode == "Pending" then return end -- nobody played that round (like the war's Idle)
+		newsAdd("Goose") -- A23-167 ② news
+	end)
 	-- A23-167 ② this server's news counts go into the shared row every FlushSeconds and at the close
 	task.spawn(function()
 		while true do
@@ -734,6 +737,11 @@ function ReturnService.Start()
 		end
 	end)
 	game:BindToClose(function()
+		-- a periodic write may be in flight: wait for it (a failed one puts its batch back), then write what is left
+		for _ = 1, 40 do -- at most 10 s of the close's 30
+			if not T.News.Flushing then break end
+			task.wait(0.25)
+		end
 		local ok, err = pcall(newsFlush)
 		if not ok then Util.Warn(TAG, "news close: " .. tostring(err)) end
 	end)

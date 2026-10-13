@@ -7958,7 +7958,8 @@ Config.RateLimits.ClientMetric = 0.5 -- per metric id
 ----------------------------------------------------------------- A23-79 coming back (게임성 개발 3, 2026-10-08)
 -- ReturnService / InviteService / DiaryService; contract docs/design/return_server_2026-10-08.md. Additive save fields
 -- (Version stays 3), each repaired by its service at PlayerReady:
---   Return = { Badges = { [Config.Badges key] = { Id = the badge id awarded, At } }, OptIn = "" | "shown" | "cannot", OptInAt }
+--   Return = { Badges = { [Config.Badges key] = { Id = the badge id awarded, At } }, OptIn = "" | "shown" | "cannot", OptInAt,
+--     TomorrowDay = the KST day of the last tomorrow card (A23-167 ②; 0 / missing = never, repaired by ReturnService) }
 --   Diary = { Pages = King Diary pages open (0..9), Done = the full book's title was given }
 --   Invite = { By = the UserId whose invite brought this player first, At = os.time() } (empty when never invited)
 Config.Data.Defaults.Return = { Badges = {}, OptIn = "", OptInAt = 0 }

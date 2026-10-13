@@ -898,7 +898,8 @@ runGroup("A23-167 news: goose, private servers, failures, old hours", function()
 	local storesA = {}
 	local w = retWorld({ Stores = storesA })
 	w.Reg.GooseService.GooseFinished:Fire("Horns", {}, {})
-	w.Reg.GooseService.GooseFinished:Fire("Halo", {}, {})
+	w.Reg.GooseService.GooseFinished:Fire("Halo", {}, { Mode = "Versus" })
+	w.Reg.GooseService.GooseFinished:Fire("Tie", {}, { Mode = "Pending" }) -- nobody played it: no news
 	w:Tick(300)
 	local w2 = retWorld({ Stores = storesA, Time = NOON + 3600 })
 	local p = hero(w2, 1, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
@@ -952,6 +953,28 @@ runGroup("A23-167 news: goose, private servers, failures, old hours", function()
 	w7.Reg.GooseService.GooseFinished:Fire("Halo", {}, {})
 	for _, fn in w7.BoundToClose do fn() end
 	check(newsRows(w7)[tostring(nowHour)].Goose == 1, "BindToClose writes the counts left", show(newsRows(w7)))
+	-- the close comes while a periodic write is in flight: it waits for that write, then writes what came meanwhile
+	local storesE = {}
+	local w8 = retWorld({ Stores = storesE })
+	local newsName = w8.Config.StoreName(w8.Config.Return.News.Store)
+	local closeCo, waited = nil, false
+	w8.BeforeUpdate = function(store)
+		if store ~= newsName or closeCo then return end
+		w8.Reg.GooseService.GooseFinished:Fire("Halo", {}, {})
+		closeCo = coroutine.create(function() for _, fn in w8.BoundToClose do fn() end end)
+		assert(coroutine.resume(closeCo))
+		waited = coroutine.status(closeCo) == "suspended"
+	end
+	w8.Reg.WarService.RoundEnded:Fire("Horns", "Contest", {})
+	w8:Tick(300)
+	w8.BeforeUpdate = nil
+	for _ = 1, 50 do
+		if coroutine.status(closeCo) ~= "suspended" then break end
+		assert(coroutine.resume(closeCo))
+	end
+	local r8 = newsRows(w8) and newsRows(w8)[tostring(nowHour)]
+	check(waited and coroutine.status(closeCo) == "dead" and r8 and r8.Horns == 1 and r8.Goose == 1,
+		"a close during a write waits for it, then writes the goose round that came meanwhile", show(newsRows(w8)))
 end)
 
 finish()
