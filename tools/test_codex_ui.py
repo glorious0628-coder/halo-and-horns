@@ -172,6 +172,13 @@ MUTATIONS = [
     ("CODEX", "a hidden window takes the moments as toasts", "\t\tif not p.Visible then return false end\n", ""),
     ("CODEX", "the back's lines in fixed boxes (cut)", "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true,",
      "AutomaticSize = Enum.AutomaticSize.None, TextScaled = true, TextWrapped = true,"),
+    # 최종 검수 10/13 main2 polish: the moment's stage by its event, its place / size, the slot name's two lines
+    ("CODEX", "the moment's card at its saved stage, not its event's",
+     "local stage = math.max(int(payload.Stage), ({ Card = 1, Golden = 1, Silver = 2, Holo = 3 })[payload.Event] or 0)", "local stage = 0"),
+    ("CODEX", "the moment never shrinks on a short screen",
+     "return math.clamp(sh * L.Moment.Room / (L.Moment.H + L.Moment.Line), 0.5, 1)", "return 1"),
+    ("CODEX", "the moment back up on the event line", "Line = 70, Y = 0.5, Room = 0.5,", "Line = 70, Y = 0.42, Room = 0.5,"),
+    ("CODEX", "the slot name on one line (Shard...)", "TextSize = 14, TextWrapped = true,", "TextSize = 14, TextWrapped = false,"),
     ("CODEX", "the body's changes not followed", "\ttable.insert(VIEW.Conns, parent:GetPropertyChangedSignal(\"AbsoluteSize\"):Connect(relayout))\n", ""),
     ("CODEX", "the UIScale ignored", "\t\tif u and u.Scale > 0 then s *= u.Scale end\n", ""),
     ("CODEX", "slots built again on every draw", "\tif VIEW.SlotsPage ~= page.Index then", "\tif true then"),
