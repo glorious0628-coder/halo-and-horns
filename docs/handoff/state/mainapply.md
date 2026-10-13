@@ -1,5 +1,12 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/13 낮 (자가 클리어 직전)
+- **Studio**: build/GoodEvil.rbxlx(10/12 18:41 판) 셸로 열림(Get-Process RobloxStudioBeta MainWindowTitle -like '*GoodEvil*'; id는 list_roblox_studios로, 지금 205d8933…), Edit, Play 없음, 창 최소화(ShowWindowAsync 6), 기기 흉내 default, StudioFreshSave=true. 코드 = main 56c19428 sync(C2 드롭표·도감 화면·폰 Hero·무기 들기 Tool 포함) — **저장 안 된 sync**. 다른 세션의 WorldKit.rbxlx Studio도 따로 떠 있음(안 건드림).
+- **화면 조작 규칙(최종 검수 10/13 재공지)**: 창 복원·Play 앞으로·마우스·키보드는 **매번** 최종 검수에게 "메인 반영 1 / 무엇 / 몇 초" 신청 → "전달함, 시작" 받은 뒤에만. 미리 준 OK는 취소됨. 끝나면 창 최소화 + "끝".
+- **Save As 대기**: 컴퓨터 제어 권한(robloxstudiobeta.exe)을 사용자가 앱 창에서 누르는 순서. 최종 검수가 "전달함, 시작" 주면: 창 앞으로 → File → "새 이름으로 활성 로컬 파일 저장"(위 10/12 점심 절차) → build/GoodEvil.rbxlx(rbxlx 형식) → 시간·SHA·`</roblox>` 끝 확인 → place/ 복사 → push_paths. 저장 전 build/ 18:41(SHA 4b81750e…)와 place/ 14:53(e68e7e5a…)는 새 스크립트 5개만 다른 것으로 확인됨.
+- **오늘 통과한 촬영·시험(10/12~13)**: 무기 9종 들기·활 연사·거위 Leave·도감 서버·도감 화면(main/main2/main3)·폰 사진(phone_round·_hero2·_codex2)·C2 Prince 드롭. 시험 스크립트: build/mainapply_2026-10-09b/play_codex.py·play_prince.py·play_phone_codex2.py·play_phone_hero2.py(git 무시), tools/play_codex_photos.py·play_phone_round_photos.py·play_bow_rapid.py·play_tool_grip_ours.py(모두 끝에 StudioFreshSave true 유지).
+- **다음 일**: 최종 검수가 병합 알림 주면 `py tools/push_paths.py --sync` → `HH_MAIN_STUDIO=1 STUDIO_ID=<id> py tools/sync_to_studio.py` → 요청한 시험.
+
 ## 10/13 새벽 정리 (사용자 "정리하고 컴퓨터 꺼줘" — 최종 검수 전달)
 - **Studio**: Edit, Play 없음, 창 최소화, **저장하지 않음**. 코드는 main 310abb37·0aa6a0b7(도감 서버·저장 v5)까지 sync했지만 **저장 안 된 sync**: Studio가 꺼지면 사라짐 → 다음엔 build/GoodEvil.rbxlx를 열고 `py tools/push_paths.py --sync` → `py tools/sync_to_studio.py` 다시.
 - **build/GoodEvil.rbxlx**(18:41, 44,422,837 B, SHA256 4b81750e09fd…) = place/(14:53, e68e7e5a01a7…, f1928aad)와 구조 비교로 새 스크립트 5개(GooseEggs·GooseSquare·BubbleUI·HeroPreview·StickerUI)만 다름 → 안전. **place/ 는 그대로**(둘 다 덮어쓰지 않음).
