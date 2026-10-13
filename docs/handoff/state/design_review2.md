@@ -4,7 +4,7 @@
 
 ## 다시 시작하면 기다리는 것
 1. **8K vs 4K 텍스처 비교**(사용자 결정: 텍스처 4K, 두 계정): Blender 손보기 2가 첫 1개를 8K·4K 둘 다 만들어 보냄 → 같은 자리 100% 크롭 나란히, 게임 크기 1024에서도 차이 보이는지 → 최종 검수에.
-2. **Blender 손보기 2 PBR 결과 11종** → PBR 첫 검수(`tools/design_review/pbr_gate.py` 700 2048 → `pbr_gate_sheet.py`) → 통과만 최종 검수(이름 + 파일 경로 + ⑤ 메모).
+2. **(10/13 13시 판정: 9종 PBR 통과 → 최종 검수, 시트 `art/review/design2/pbr_gate_1013/`. FlowerBush 떨어짐 → 7cafd99b로 다시, Planter_D 4K PBR 대기)** Blender 손보기 2 PBR 결과 11종 → PBR 첫 검수(`tools/design_review/pbr_gate.py` 700 2048 → `pbr_gate_sheet.py`) → 통과만 최종 검수(이름 + 파일 경로 + ⑤ 메모).
    - 고른 흰 모델: Planter_D 105124b0 · FlowerCart_Bouquet 82912694 · Bal_E 781e6f4e · Bal_F 934efdb9 · Bal_A bcaca51e · Bal_B add2a937 · Bal_C 531c8172 · Bal_D 71359ce0 · NEW_FlowerBush 6e6bd726 · NEW_WallLamp 8ec1b5e1 · NEW_Hedge 67f8ae44
    - ⑤ 메모: Bouquet 4개 다 꽃 뒤 빈 껍데기 → 꽃 DoubleSided, 뒤를 수레 안/벽 쪽. Bal_C ㄱ 안쪽에 받침 높이 세모 바닥판 → 땅에 살짝 묻기. FlowerBush는 꽃 원판 자리 = 앞면 2D 꽃 자리라 고름.
    - 흰 모델 FBX `art/models/tripo/wm2_1013/<이름>/<id8>.fbx`, 시트 `art/review/blender2/wm_1013/<이름>.jpg`.
@@ -21,4 +21,5 @@
 - 옆면에서 앞면 볼록(그림 부조)은 판의 앞쪽 한쪽에만, 판은 팔·기둥 축 가운데. 측정: 판 아래 끝 가운데 x vs 기둥 꼭대기 가운데 x.
 - 지붕 박공이 앞에 있으면 옆면은 경사 지붕면(박공·구멍 없음). 옆면을 앞면 복사로 그리는 고장 흔함.
 - 여러 개 같은 돌·조각 줄은 하나만 4면으로(같은 카메라), Studio에서 여러 번 놓기.
+- 덤불·잎 흰 모델은 **뒷면 안 지운 흰 실루엣(검은 바탕)으로 앞·옆 비침 검사** 먼저(점토 렌더는 뒷면을 지워 구멍이 안 보임) — FlowerBush 6e6bd726 실수. 스크립트: 스크래치 `holes.py`와 같은 방법(Workbench FLAT 흰색, backface culling 끔).
 - 흰 모델은 `clay_views.py`로 직접 크게(창 없이) — 아래(low)에서 받침 갈라짐이 잘 보임. 앞면 2D 무늬 자리와 모양 자리가 맞는 흰 모델을 고르면 텍스처가 제자리에 앉음.
