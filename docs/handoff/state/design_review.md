@@ -9,7 +9,7 @@
    - 하늘색 표시 상자(P022 옆) = 건물 표시 파트, 게임 전 숨김
 2. **NEW_ 6종 → Blender 손보기 1 큐 맨 뒤(최종 3aa188d7, 810점 내 OK)**: GatherBush·ArmoryBarrels(오른면 천 봄)·CandleCrate(초 뭉침)·Easel·NoticeBoard·WaterBuckets(뒤 갈퀴 이빨) → **흰 모델은 내가 고름.** 나머지 2D 4면(WallLamp·WateringCan·Beehive·SteppingStones·간판)과 Blender 손보기 2 것은 디자인 검수 2.
 3. **PBR 관문 끝(10/13 오후)**: 묶음 2 = 35 통과(41358b5d, pbr_gate_1013b/), 묶음 3 = 39 통과(a0a3d315, pbr_gate_1013c/ + Daisy 다시 c2e4b5db + SignJuice 계정 2) — ⑤ 메모는 그 메시지에. **Blender 손보기 1 큐 비었음(잔액 1,705).** 앞으로 새 스마트 메시는 계정 2(Blender 손보기 2 → 디자인 검수 2 판정). 다음 PBR 결과도 같은 방법: `blender --background --factory-startup --python tools/design_review/pbr_gate.py -- <out> 700 2048 <glb…>`(3개로 나눠 동시에) → `pbr_gate_sheet.py <out>/r <sheet_dir> <이름>_TU=<2D 앞에서 _front_ns.png 뺀 것>`. 흰 모델: Blender 손보기가 FBX를 build/tripo_wm1/<이름>_wm_<id8>.fbx → clay_views.py → scratchpad wm_sheet.py(1줄 2D 4면 + 후보 줄마다 7면).
-4. 흰 모델 고르기 끝: 25종(wm_1013b/), 11종 + 간판 3(wm_1013c/), Daisy c2e4b5db. + PotionCrate 134dc742(계정 1, 계정 2 후보 4개와 비교). GuardPost = 계정 2 판(디자인 검수 2, 이미 PBR) → 계정 1 GuardPost 안 씀.
+4. 흰 모델 고르기 끝: 25종(wm_1013b/), 11종 + 간판 3(wm_1013c/), Daisy c2e4b5db. + PotionCrate·GuardPost: 엇갈려 두 계정 모두 PBR까지 감 → 나란히 보고(pbr_gate_1013d/) **GuardPost = 계정 2 판, PotionCrate = 계정 1 판**(cee655c6). 같은 이름 파일 충돌 → 안 쓰는 판 `_acc1_spare`/`_acc2_spare`로 Blender 두 세션이 정리 중. 이미지 생성 3에 넘기기 전 TU가 맞는 판인지 확인. 교훈: 두 계정이 같은 물건을 가질 땐 고른 뒤 "누가 누른다"를 한 메시지로 둘 다에게 보내기.
 
 5. **이미지 생성 3 벤치 P048·P049**: 모래·높이 6.0 다시 채우기 OK(최종 검수) → fix_v5 줄무늬 막대 + 낮·밤 앞·뒤 판정 → 통과면 ⑤ 묶음 1(화분 7·벤치 10·장식) 최종 검수에.
 - 나눔: 간판 4·Beehive·WateringCan·SteppingStones = Blender 손보기 2(디자인 검수 2 판정).
