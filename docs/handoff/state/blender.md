@@ -4,6 +4,7 @@
 - **숨긴 창 해결:** 페이지를 새로 열지 말고 `$router.push`로만 이동(새로 열면 숨긴 창에서 안 뜸). 도우미: hhTexUp/hhTexGo(텍스처), hhPbrStep(PBR), hhSmStep('nav'|'prep'|'go')(스마트 메시, 지난 그림 키와 같으면 안 누름). 그림 올릴 땐 input.value='' + 새 파일 이름(같은 이름이면 안 올라감).
 - **주소 받기:** 페이지 → 내 PC 직접은 막힘. 주소 목록 텍스트를 Adobe 업로드(PUT)로 보낸 뒤 presigned URL을 curl.
 - **끝:** PBR 36개 내려받음 → art/models/tripo/web/<id>_SM_tex8k_pbr_src.fbx(디스크만, 크기 커서 git 안 올림) → touchup/<id>/<id>_TU.glb. records.json 적음. 디자인 검수에 이름+경로 보냄.
+- **10/13 밤 추가:** NEW_ 9종(GatherBush·ArmoryBarrels·CandleCrate·Easel·NoticeBoard·WaterBuckets·Beehive·WateringCan·SteppingStone) + 간판 4종(HaloSign_SignBakery·Flower·Juice·Potion) 흰 모델 생성 끝(id 디자인 검수에 보냄). 흰 모델 FBX 152개 = build/tripo_wm1/<이름>_wm_<id8>.fbx (디자인 검수가 봄). **새 텍스처는 4K**(사용자 10/13, 이미 8K는 그대로). 잔액 2,655. 다음 = 디자인 검수가 38종 고르면 hhTexQ 새로 만들어 hhTexUp/hhTexGo → hhPbrQ/hhPbrStep → URL 목록을 Adobe PUT으로 받아 curl → build_glb → 디자인 검수에 이름+경로.
 - **흰 모델 고르기 대기(디자인 검수):** 집 덩어리 18종(id 보냄) + 묶음10 7종(Topiary_E·PotFlowers_E·F·A·C·D·Planter_A, id 보냄). 고르면 → 텍스처 → 바로 PBR.
 - Blender 손보기 2 몫: Planter_D·FlowerCart_Bouquet·난간 6·NEW_* 5.
 
