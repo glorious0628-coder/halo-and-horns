@@ -3525,6 +3525,8 @@ function REG.Kit()
 		Button = makeButton, Text = addText, Row = addRow, Column = addColumn, Toast = toast, Fire = fire, Confirm = confirm,
 		Palette = PALETTE, Theme = theme, Font = BODY_FONT, NextOrder = nextOrder, SetEnabled = setEnabled, Paint = paintButton,
 		Attr = attr, Num = num, GameAttr = gameAttr, IsDead = isDead,
+		-- 2-A #3 (ChoiceCardUI): the story pick's kind / sneaky art button with the wing / horns glyph (side "Good" | "Evil")
+		ChoiceButton = STORY.ChoiceButton, InCombat = inCombat,
 		Rebuild = function(keep) queueRebuild(keep) end,
 		Close = function() Panels.Close(true) end,
 		Open = function(id, arg) openSub(id, arg) end,
