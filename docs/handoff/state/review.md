@@ -237,3 +237,8 @@
 - **내일 아침 병합 순서(고침):** ① fix/first-look-2 b9dd5764 ② dev2-honor-crown 555e1a56 (API 반박 검토는 FIX FIRST 항목만 재확인: CrownUnits 저장·Count) → 메인 반영 1 sync → Save As(🟠) → place push → 사용자 Alt+P.
 - dev2 질문(같이 잡은 몹 = 기여자마다 사냥 명예 1마리): **10/17 기술 시험은 그대로 둠**(1~3명). 11/7 시험 전 WarShare식 나누기 여부를 사용자에게 1줄로 물어 결정(backlog). 사용자에게 1줄 알림함.
 - 게임성 개발 2 클리어 OK 전달.
+
+## 10/13 밤 23:1x (사용자 "이어서") — 다음 나는 여기부터
+- **병합 끝 main 4fe62394**: db9da23d 첫 체험 2(= fix/first-look-2 b9dd5764: 창 제목 가운데·I'm In 45%·폰 말풍선 자리) → 4fe62394 사냥 명예·왕관전 새 점수(= dev2-honor-crown 555e1a56). merge_chain build/push, 컴파일 173, 시험 round3_client·town_react 36·crown_points 75·a2390 45·hud_layout 12900·first_look 16·first_steps 57·a23_14 6426(변이 없이) 전부 통과. FIX FIRST 항목(CrownUnits 저장 = Config.Data.Defaults + fillDefaults, M2_1 15 = eventAmount가 info.WarPoints 단위, GrantFame ctx Hunt = 보드 안 감)은 내가 직접 읽어 확인(API 안 씀).
+- 보냄: 메인 반영 1 = sync → PC 사진(first_look2: 환영 카드·창 제목·Bright 말풍선 자리·왕관 점수 두 자리) → Save As(🟠 신청 뒤) → place push → 사용자 Alt+P. 개발 1 = fix/menu-one-line(PC 메뉴 펼침 한 줄 + 'Monsters' 잘림) → 폰 첫 10분 읽힘. 개발 2 = 2주 차 첫 10분 2배 XP + '내일 또 오기' 서버(A23-167).
+- 기다림: 이미지 생성 2 사람 2·3묶음 시트(오면 판정 → approved.json), 메인 반영 1 사진·Save As 신청, 자동 번역 켜기(사용자, 내일), 10/15 패스 ID 9개, 수요일 사용량.
