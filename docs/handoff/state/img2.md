@@ -1,6 +1,6 @@
 # 이미지 생성 2 — 인계 (10/13 낮 정리)
 ## 10/13 낮 (맨 위 = 이것부터)
-- **10/13 밤**: 디자인 검수 2 판정(11종 중 9 통과)의 다시 2건 끝·푸시(036677af): GuardPost right(left 뒤집기+안내판 얹음), PotionCrate left(Firefly 새로 그림, 간판 얇은 선). **PhotoDisc는 보류**(최종 검수 결정 대기, 손대지 말 것). 결과 판정 대기 = 디자인 검수 2. Firefly 탭 닫음.
+- **10/13 밤**: 디자인 검수 2 판정(11종 중 9 통과)의 다시 2건 끝·푸시(036677af): GuardPost right(left 뒤집기+안내판 얹음), PotionCrate left(Firefly 새로 그림, 간판 얇은 선). **PhotoDisc = 최종 검수 결정으로 Studio 파트(이미지 생성 3)라 다시 그리지 않음**. 결과 판정 대기 = 디자인 검수 2. Firefly 탭 닫음.
 - **10/13 저녁 갱신**: 빛 마을 11종(HaloFlagpole_1·2·3, HaloReasonHQ_GuardPost·PhotoDisc·Clothesline·PotionCrate·RackShieldSword·Scarecrow·VegGarden·Woodpile) 4면 + NEW_BellFrame 옆면 다시 그려 푸시(3b9c207d), **디자인 검수 2 판정 대기**(오면 '다시' 먼저). 큰 지도 V3(a·b)는 디자인 검수 2 통과·최종 검수가 고르는 중. **사람(상인·주민) 2D는 사용자 답이 오기 전엔 손대지 말 것.** Firefly 탭 닫음(Codex 아직 사용량 끝).
 - **끝·푸시됨(10/13)**: 집 덩어리 43종 · 빛 마을 소품 NEW_ 11종(GatherBush·Hedge·WallLamp·WateringCan·ArmoryBarrels·Beehive·CandleCrate·Easel·NoticeBoard·SteppingStone(돌 하나)·WaterBuckets; Telescope·Cauldron은 뺌) · 가게 간판 4종(HaloSign_Sign<Bakery|Flower|Juice|Potion>) — 전부 디자인 검수(2)가 통과, Blender 손보기로 넘어감. 마지막 푸시 6327220.
 - **판정 대기**: 큰 지도 V3 시안 2종 `art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_{a,b}.png`(추천 b; 1041×760, 옛 지도 (17,77), 새 빛 섬 실제 크기, 합성 `tools/worldmap_compose.py`, 섬 원본 `WorldMapV3_HaloIsland_{a,b}_src.png`). 판정·수정 요청은 **디자인 검수 2**(local_b0cabbea…), 통과하면 그쪽이 최종 검수에게. 수정 시: 섬을 다시 그릴 때 Firefly 두 ref(안내 그림 crop + 지금 합성본 crop, 업로드 후 `__multiUrls`), 합성은 같은 스크립트.
