@@ -15256,5 +15256,18 @@
    "final": "art/models/tripo/touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU.glb (disk only; front -Y, bottom-centre pivot)",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
   }
+ ],
+ "HaloChunk_GateLeafR_mirror": [
+  {
+   "event": "Blender X mirror of GateLeaf final (A23-154 left/right pair; normals flipped back outward, maps untouched)",
+   "at": "2026-10-13",
+   "by": "Blender 손보기",
+   "points": 0,
+   "source": "art/models/tripo/web/HaloChunk_GateLeaf_SM_tex8k_pbr_src.fbx",
+   "final": "art/models/tripo/touchup/HaloChunk_GateLeafR/HaloChunk_GateLeafR_TU.glb (disk only)",
+   "sheet": "art/review/blender/gate_leaf_L_R_mirror_1013.jpg",
+   "note": "lit render: R a bit shinier on the front, faint diagonal streaks on the flat back (mirrored normal map) — check in Roblox day/night",
+   "next": "이미지 생성 3 (request from 최종 검수 묶음 b)"
+  }
  ]
 }
