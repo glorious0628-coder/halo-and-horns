@@ -15476,5 +15476,96 @@
    "asset": "093f98de-48c0-482a-a741-4366c2a9cc23 'marble hourglass prop 3d model' (tripo_texture_*_meshopt.glb)",
    "note": "balance 21265 -> 21210; a second 55 drop 21210 -> 21155 (~07:12) also not by Blender 손보기 2, asset id not checked"
   }
+ ],
+ "HaloVar4_CornerPost_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 8K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 65,
+   "balance": "21065->21000",
+   "project": "03d13086-859a-4f94-8259-68fa71bc720b",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_CornerPost_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_CornerPost_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_CornerPost_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_CornerPost_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_CornerPost_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 12245104,
+   "note": "PBR first review PASS (디자인 검수 10/14, b848eb4)"
+  }
+ ],
+ "HaloVar4_EndPost_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 8K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 65,
+   "balance": "21000->20935",
+   "project": "cd8d14b9-8e0c-421a-a934-0c9e0557fbdc",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_EndPost_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_EndPost_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_EndPost_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_EndPost_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_EndPost_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 12436260
+  }
+ ],
+ "HaloVar4_RailSegment_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 8K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 65,
+   "balance": "20935->20870",
+   "project": "0208d453-4528-4db4-9500-837db94b0931",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_RailSegment_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_RailSegment_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_RailSegment_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_RailSegment_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_RailSegment_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 10893024,
+   "note": "long axis along Y (orientation fix in Blender step)"
+  }
+ ],
+ "HaloVar4_BaseSegment_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 8K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 65,
+   "balance": "20870->20805",
+   "project": "766224ad-2d12-4438-9c70-cb690167e7e3",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_BaseSegment_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_BaseSegment_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_BaseSegment_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_BaseSegment_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_BaseSegment_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 14366768,
+   "note": "long axis along Y (orientation fix in Blender step)"
+  }
  ]
 }
