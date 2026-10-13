@@ -13519,14 +13519,14 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 125,
+   "points": 150,
    "white_models": [
     "6e6bd726-bf17-49a9-bf22-9d3c71b32145",
     "93829d23-bc3c-4f18-870e-a7af062e23f5",
     "7cafd99b-625a-466f-9f4a-5fbee34bbca6",
     "24520619-5629-4de3-b42d-968efb66a2ea"
    ],
-   "picked": "6e6bd726 (디자인 검수 2, 10/13)",
+   "picked": "7cafd99b (디자인 검수 2 redo, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/NEW_FlowerBush_front_ns.png",
     "left_slot": "art/out/s2/noshadow/NEW_FlowerBush_right_ns.png",
@@ -13537,7 +13537,8 @@
    "white_model_fbx": "art/models/tripo/wm2_1013/NEW_FlowerBush/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 7d6991d2",
    "pbr": "79224b20 (5)",
-   "file": "art/models/tripo/web/NEW_FlowerBush_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_FlowerBush_SM_tex4k_pbr_src.fbx (7cafd99b)",
+   "redo": "6e6bd726 PBR failed 디자인 검수 2 (see-through leaf layers, blue flowers missing) -> 7cafd99b texture 4K 3f0f139d + PBR f469cc49 (+25)"
   }
  ],
  "HaloVar4_Balustrade_D_web2_sm_tex8k_pbr": [
@@ -13743,7 +13744,7 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 120,
+   "points": 125,
    "white_models": [
     "105124b0-e593-41b9-bdec-7a56f649a3be",
     "49024868-1c59-457c-ad7c-12da5276d9d0",
@@ -13760,8 +13761,8 @@
    "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Planter_D/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task e67a08e0 (4K, 20); 8K trial 3527cc1e (0 pts)",
-   "pbr": "pending (8K vs 4K compare first)",
-   "file": "art/models/tripo/web/HaloVar4_Planter_D_SM_tex4k_src.fbx (+ _SM_tex8k_src.fbx)",
+   "pbr": "7e2303aa (5); 8K trial version dropped (최종 검수 10/13 4K 확정)",
+   "file": "art/models/tripo/web/HaloVar4_Planter_D_SM_tex4k_pbr_src.fbx",
    "compare": "art/review/blender2/tex8k_vs_4k_1013/HaloVar4_Planter_D_8k_vs_4k.jpg"
   }
  ],
@@ -14303,6 +14304,129 @@
   {
    "note": "Tripo account 2 wallet 25,500 -> 24,330 on 10/13: 11 smart mesh pressed but only 900 deducted (first two, Planter_D and FlowerCart_Bouquet, did not change the wallet); 11x4K texture 220; 8K trial 0; 10 PBR 50. Recorded only (최종 검수 10/13).",
    "by": "Blender 손보기 2"
+  }
+ ],
+ "NEW_BreadBasket_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "a154d1da-8575-4be2-a8fb-e0b5d3ac9225",
+    "6d176405-8025-4634-8552-5ccbabd6fcfe",
+    "d0dc0f83-6921-4247-99e6-1548ff8592f8",
+    "2240b5b9-b684-400d-b88c-2f5dc81150cf"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/NEW_BreadBasket/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/NEW_BreadBasket_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/NEW_BreadBasket_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/NEW_BreadBasket_left_ns.png",
+    "back": "art/out/s2/noshadow/NEW_BreadBasket_back_ns.png"
+   },
+   "next": "디자인 검수 2 picks -> texture 4K -> PBR"
+  }
+ ],
+ "NEW_CafeTable_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "f3923cd4-b3d8-4b94-a87a-6ce482b51e66",
+    "862b5898-4373-4e9f-93e5-53d6cdf3d25e",
+    "6f9f2ecd-4a34-4328-962b-b9add39be142",
+    "063d2bb3-6eb0-46c3-8b0d-e5d0854bd839"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/NEW_CafeTable/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/NEW_CafeTable_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/NEW_CafeTable_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/NEW_CafeTable_left_ns.png",
+    "back": "art/out/s2/noshadow/NEW_CafeTable_back_ns.png"
+   },
+   "next": "디자인 검수 2 picks -> texture 4K -> PBR"
+  }
+ ],
+ "HaloSign_SignBakery_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "f894a49d",
+    "daf6dfbb",
+    "4bf0ae84",
+    "8fcfb10f"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloSign_SignBakery/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloSign_SignBakery_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloSign_SignBakery_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloSign_SignBakery_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloSign_SignBakery_back_ns.png"
+   },
+   "next": "디자인 검수 picks from account 1 + account 2 white models",
+   "note": "overlap: account 1 (Blender 손보기) already had white models; account 2 copy kept as spare, 디자인 검수 picks from 8 (최종 검수 10/13). Juice was pressed while the tab was frozen."
+  }
+ ],
+ "HaloSign_SignFlower_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "1344c266",
+    "68f172b0",
+    "2898ad85",
+    "655b6970"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloSign_SignFlower/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloSign_SignFlower_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloSign_SignFlower_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloSign_SignFlower_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloSign_SignFlower_back_ns.png"
+   },
+   "next": "디자인 검수 picks from account 1 + account 2 white models",
+   "note": "overlap: account 1 (Blender 손보기) already had white models; account 2 copy kept as spare, 디자인 검수 picks from 8 (최종 검수 10/13). Juice was pressed while the tab was frozen."
+  }
+ ],
+ "HaloSign_SignJuice_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "379d6f2c",
+    "cb0ab903",
+    "07b16f76",
+    "e4bc6f96"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloSign_SignJuice/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloSign_SignJuice_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloSign_SignJuice_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloSign_SignJuice_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloSign_SignJuice_back_ns.png"
+   },
+   "next": "디자인 검수 picks from account 1 + account 2 white models",
+   "note": "overlap: account 1 (Blender 손보기) already had white models; account 2 copy kept as spare, 디자인 검수 picks from 8 (최종 검수 10/13). Juice was pressed while the tab was frozen."
   }
  ]
 }
