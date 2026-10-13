@@ -2759,7 +2759,18 @@ local function tileButton(def, onClick)
 	})
 	label:SetAttribute("StyleMinPx", L.TileNamePx)
 	-- A23-109: PC names keep >= L.TileNamePxPC real px on small windows too (991x451 showed 7 px names)
-	if IS_TOUCH then L.FitText(label, 12, true, L.TileNamePx) else L.FitText(label, 13, true, L.TileNamePxPC, true) end
+	-- 10/14 (최종 검수 photo: 'Monsters' touched the rim, 'Settings' filled the square - UIKit's 11px floor held them):
+	-- PC names fit L.TileNamePadPC real px narrower than their box (a margin inside the rim) and may go under that floor
+	-- down to L.TileNamePxPC (UIKit.FitText attribute FitMinPx)
+	if IS_TOUCH then
+		L.FitText(label, 12, true, L.TileNamePx)
+	else
+		label:SetAttribute("FitMinPx", L.TileNamePxPC)
+		label:SetAttribute("PickerFitPaddingX", L.TileNamePadPC)
+		local fit = ui.textFits and ui.textFits[label]
+		if fit then fit.Min = nil end -- artLabel's first fit ran without that floor: L.FitText re-applies it
+		L.FitText(label, 13, true, L.TileNamePxPC, true)
+	end
 	if type(UIKit.StyleText) == "function" then UIKit.StyleText(label, "NameTag") end -- A23-38: white name, navy rim
 	if def.Key then keyHint(btn, def.Key, UDim2.new(1, -2, 0, 2), Vector2.new(1, 0)) end
 	return btn, label, img
@@ -6089,8 +6100,11 @@ L.GuideHide = 15
 -- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
 -- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
 L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
-L.TileNamePxPC = 9 -- A23-109: PC tile names in real px (tiles >= 40-46 px fit 'Ranking' at 10 px); 10/14 (user via
--- 최종 검수: 'Monsters' read "Monster:" in the 44 px squares) 9 px, so the longest name fits; shorter ones stay bigger
+-- A23-109: PC tile names in real px (tiles >= 40-46 px fit 'Ranking' at 10 px). 10/14 (최종 검수 photos; Montserrat Bold
+-- measured in Studio: 'Monsters' 33.5 / 38 / 45.5 px wide at 8 / 9 / 11 px, 'Settings' 30.5 / 34.5 / 41): floor 8 px
+-- (UIKit.FitText FitMinPx, under its 11px one) and PadPC real px of margin, so in the 44 px top bar squares 'Settings'
+-- sits at 9 px and 'Monsters' in the 46 px row tile at 8 px, clear of the rim; shorter names stay bigger
+L.TileNamePxPC, L.TileNamePadPC = 8, 6
 L.QuickKeyPx = 12 -- A23-109: the quick slot numbers 1 · 2 · 3 in real px
 -- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
 -- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du
