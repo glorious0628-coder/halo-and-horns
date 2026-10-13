@@ -626,6 +626,15 @@ local function weaponNotices(x, key)
 end
 
 ------------------------------------------------------------------ group runner
+-- A23-130 (user 10/13 night): the first-scroll hint line is gone; any "You got a scroll!" notice counts here
+local function hints(f)
+	local n = 0
+	for _, e in f.Notices do
+		if type(e.Text) == "string" and string.find(e.Text, "You got a scroll", 1, true) then n += 1 end
+	end
+	return n
+end
+
 local function runGroup(name, fn)
 	currentGroup = name
 	groupFixtures = {}
@@ -733,7 +742,8 @@ runGroup("config", function()
 		perKill * 300, perKill * 720))
 	check(perKill * 300 > 0 and perKill * 300 <= 14, "B13 meadow potions per manual hour (5 kills/min) at most 14", perKill * 300)
 	check(L.FullNoticeSeconds == 300, "B7 FullNoticeSeconds is 300 (5 min per item id)", L.FullNoticeSeconds)
-	check(L.FirstScroll.NoticeSeconds == 6, "first-scroll guide shows 6 s", L.FirstScroll.NoticeSeconds)
+	check(L.FirstScroll.NoticeSeconds == nil and L.Text.FirstScroll == nil and L.Text.FirstScrollBare == nil,
+		"A23-130: no first-scroll hint text any more", show(L.FirstScroll))
 	for _, key in { "UseCombat", "EquipDead", "EquipCombat", "ItemFull", "ItemFullUse" } do
 		check(type(L.Text[key]) == "string" and L.Text[key] ~= "", "Config.Loot.Text." .. key .. " is a Korean string", key)
 	end
@@ -1249,11 +1259,7 @@ runGroup("rollkill", function()
 	fs.FxLog = {}
 	fs:Kill("BigSlime")
 	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true, "first BigSlime kill guarantees exactly one Enh70", fs:Count("Enh70"))
-	check(fs:Noticed(L.Text.FirstScroll) == 1, "first-scroll hint shown once")
-	local firstNote = nil
-	for _, e in fs.Notices do if e.Text == L.Text.FirstScroll then firstNote = e end end
-	check(firstNote and firstNote.Duration == L.FirstScroll.NoticeSeconds and firstNote.Duration == 6,
-		"first-scroll hint stays 6 s (Config.Loot.FirstScroll.NoticeSeconds)", firstNote and firstNote.Duration)
+	check(hints(fs) == 0, "A23-130: no first-scroll hint line (the drop's own pop only)", hints(fs))
 	local lootFx = fs.FxLog[#fs.FxLog]
 	check(lootFx and lootFx.Kind == "Loot" and lootFx.Data.First == true, "that kill's Loot Fx carries First = true (client skips its own toast)",
 		show(lootFx and lootFx.Data and lootFx.Data.First))
@@ -1265,14 +1271,14 @@ runGroup("rollkill", function()
 	check(laterFx and laterFx.Kind == "Loot" and laterFx.Data.First == nil, "later Loot Fx never carries First", show(laterFx and laterFx.Data.First))
 	fs.Data.Items.Enh70 = 1
 	for _ = 1, 50 do fs:Kill("BigSlime") end
-	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "the guarantee is never paid twice in a session", fs:Count("Enh70"))
+	check(fs:Count("Enh70") == 1 and hints(fs) == 0, "the guarantee is never paid twice in a session", fs:Count("Enh70"))
 	fs:Release()
 	check(fs.Rows["P_" .. fs.UserId].LootFlags.FirstScroll == true, "LootFlags.FirstScroll is in the saved record")
 	local re = fixture({ Rows = fs.Rows, UserId = fs.UserId })
 	re.ScriptConst = 0.999999
 	check(re.Data.LootFlags.FirstScroll == true and re:Count("Enh70") == 1, "LootFlags and the scroll survive reload")
 	for _ = 1, 10 do re:Kill("BigSlime") end
-	check(re:Count("Enh70") == 1 and re:Noticed(L.Text.FirstScroll) == 0, "no second guarantee after reload", re:Count("Enh70"))
+	check(re:Count("Enh70") == 1 and hints(re) == 0, "no second guarantee after reload", re:Count("Enh70"))
 	local had = fixture()
 	had.ScriptConst = 0.999999
 	had:Give("Enh70", 4)
@@ -1283,14 +1289,14 @@ runGroup("rollkill", function()
 	full.ScriptConst = 0.999999
 	full:Give("Enh70", full.L.ItemCap)
 	full:Kill("BigSlime")
-	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll ~= true and full:Noticed(L.Text.FirstScroll) == 0,
-		"B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide", show(full.Data.LootFlags))
+	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll ~= true and hints(full) == 0,
+		"B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no hint", show(full.Data.LootFlags))
 	full.Data.Items.Enh70 = full.L.ItemCap - 1
 	full:Kill("BigSlime")
-	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll == true and full:Noticed(L.Text.FirstScroll) == 1,
-		"B8 the kept guarantee pays on the next king slime once there is room", full:Count("Enh70"))
+	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll == true and hints(full) == 0,
+		"B8 the kept guarantee pays on the next king slime once there is room (no hint line)", full:Count("Enh70"))
 	full:Kill("BigSlime")
-	check(full:Noticed(L.Text.FirstScroll) == 1, "B8 the guarantee is still paid only once", full:Noticed(L.Text.FirstScroll))
+	check(full:Count("Enh70") == full.L.ItemCap and hints(full) == 0, "B8 the guarantee is still paid only once", full:Count("Enh70"))
 
 	-- jackpot exists only for Slime kinds (the level-1 slime and its seasonal stand-in, the pumpkin slime)
 	for kind in L.Tables do
@@ -1465,13 +1471,13 @@ runGroup("bully", function()
 	fs.Player:SetAttribute("BullyStacks", 1)
 	fs.ScriptConst, fs.Draws = 0.999999, 0
 	fs:Kill("BigSlime")
-	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true and fs:Noticed(L.Text.FirstScroll) == 1,
-		"BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
-		show({ fs:Count("Enh70"), fs.Data.LootFlags.FirstScroll, fs:Noticed(L.Text.FirstScroll) }))
+	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true and hints(fs) == 0,
+		"BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag, no hint line)",
+		show({ fs:Count("Enh70"), fs.Data.LootFlags.FirstScroll, hints(fs) }))
 	check(fs.Draws == #L.Tables.BigSlime - belowLevelRows(fs, "BigSlime", fs.Data.Level),
 		"BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)", fs.Draws)
 	fs:Kill("BigSlime")
-	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "BullyStacks 1: the guarantee is still paid only once",
+	check(fs:Count("Enh70") == 1 and hints(fs) == 0, "BullyStacks 1: the guarantee is still paid only once",
 		fs:Count("Enh70"))
 
 	-- A23-27 below Lv12: the king's T4 row is not drawn and pays its 3 BelowLevel candies (no draw, so no x0.5 either);
