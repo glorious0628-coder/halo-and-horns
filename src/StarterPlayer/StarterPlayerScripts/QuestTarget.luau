@@ -585,6 +585,21 @@ local function storyEntry(st, myZone, faction, pos)
 	return r
 end
 
+-- the next-goal row that sends me to the anvil to BUY the iron weapon (HUD L.PinnedTap too). A23-127 (plan 10/13 §1-A #2):
+-- never while the Forge sells no weapon (Config.WeaponShop.Buy = false: the "IronDrop" row leads to the meadow's King
+-- Slime like a level goal); the server's GoalKind (A23-48) decides, the text search only for a row without one
+function QuestTarget.IronGold(entry, level)
+	if type(entry) ~= "table" or entry.NextGoal ~= true then return false end
+	if type(Config.WeaponShop) == "table" and Config.WeaponShop.Buy == false then return false end
+	if type(entry.GoalKind) == "string" then return entry.GoalKind == "IronGold" end
+	local weapons = type(Config.Weapons) == "table" and Config.Weapons or {}
+	local iron = weapons[K.IronTier]
+	local text = type(entry.Text) == "string" and entry.Text or ""
+	-- the Korean word or, since A23-48, "gold"
+	return type(iron) == "table" and num(level, 1) >= num(iron.MinLevel, math.huge)
+		and (string.find(text, "골드", 1, true) ~= nil or string.find(string.lower(text), "gold", 1, true) ~= nil)
+end
+
 -- the row is done and waits for [Claim] (HUD refreshQuests canClaim)
 local function claimable(entry)
 	return entry.CanClaim == true and num(entry.Progress, 0) >= num(entry.Target, 1)
@@ -593,6 +608,7 @@ end
 
 -- the pinned / next-goal / story row's place (L.PinnedTap + refreshGuides), nil where nothing points anywhere:
 -- step 0 (the guide talk), a talk / choice step, daily rows, or when I already stand where it happens
+-- (the gold goal row = QuestTarget.IronGold, below)
 local function placeFor(entry, myZone, faction, pos)
 	if type(entry.Story) == "table" then return storyEntry(entry.Story, myZone, faction, pos) end
 	if entry.Pinned ~= true then return nil end
@@ -609,13 +625,7 @@ local function placeFor(entry, myZone, faction, pos)
 	if step ~= K.DoneStep then return nil end
 	-- step 99: the blacksmith visit and the iron-weapon gold goal go to the anvil (L.PinnedTap -> doUpgrade)
 	local level = math.floor(num(attr("Level", 1), 1))
-	local weapons = type(Config.Weapons) == "table" and Config.Weapons or {}
-	local iron = weapons[K.IronTier]
-	local text = type(entry.Text) == "string" and entry.Text or ""
-	-- the gold goal row (HUD L.PinnedTap: the Korean word or, since A23-48, "gold")
-	local ironGold = type(iron) == "table" and level >= num(iron.MinLevel, math.huge)
-		and (string.find(text, "골드", 1, true) ~= nil or string.find(string.lower(text), "gold", 1, true) ~= nil)
-	if entry.NextGoal ~= true or ironGold then
+	if entry.NextGoal ~= true or QuestTarget.IronGold(entry, level) then
 		if entry.NextGoal ~= true and attr("BlacksmithVisited", false) == true then return nil end
 		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))
 	end

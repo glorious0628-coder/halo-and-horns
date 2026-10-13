@@ -324,11 +324,14 @@ Config.WeaponGrades = {
 	-- A23-127 tier 9 (crafted). Color = placeholder: the image team may change it
 	Mythic = { Name = "Mythic", NameEn = "Mythic", Stars = 6, Color = Color3.fromRGB(255, 70, 130), Rank = 6 },
 }
--- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
+-- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith). A23-127 (plan 10/13 §1-A #2):
+-- weapons come from monsters (the Forge sells none: WeaponShop.Buy = false) - the first Slime Prince always drops tier 2
+-- (Config.Loot.FirstWeaponDrop), the first King Slime tier 3 (게임성 개발 2). ShopSource = the line while the Forge still
+-- sells that tier (WeaponShop.Buy ~= false: the old flow, Config.WeaponSource picks it)
 Config.WeaponInfo = {
 	{ Grade = "Common", Source = "Your first weapon, a gift from the Blacksmith", SourceEn = "Your first weapon, a gift from the Blacksmith" }, -- A23-34
-	{ Grade = "Common", Source = "Sold at the Forge" },
-	{ Grade = "Fine", Source = "Sold at the Forge (from Lv5)" },
+	{ Grade = "Common", Source = "Slime Prince drop (your first one always drops it)", ShopSource = "Sold at the Forge" },
+	{ Grade = "Fine", Source = "King Slime drop (your first one always drops it)", ShopSource = "Sold at the Forge (from Lv5)" },
 	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes, or a Forge commission" },
 	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights, or a Forge commission" },
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
@@ -344,6 +347,9 @@ end
 
 function Config.WeaponSource(tier)
 	local info = Config.WeaponInfo[tier]
+	if info and info.ShopSource and not (type(Config.WeaponShop) == "table" and Config.WeaponShop.Buy == false) then
+		return info.ShopSource
+	end
 	return info and info.Source or ""
 end
 
@@ -2784,6 +2790,7 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
+		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
 		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
@@ -2865,6 +2872,9 @@ Config.Tutorial = {
 		-- A23-71 D6 / S16: the first skill comes at the iron weapon's level (Skills.Unlock.Q = Weapons[3].MinLevel), one line
 		NextSkillIron = "Next goal · Lv%d: first skill + Iron weapon (now Lv%d)",
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
+		-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WeaponShop.Buy = false) the iron goal is a drop
+		-- (QuestService GoalKind "IronDrop", 게임성 개발 2): the first King Slime always drops it. No number to format
+		NextIronDrop = "Next goal · Beat a King Slime for an Iron weapon",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
 		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)

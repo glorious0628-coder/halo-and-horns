@@ -4101,6 +4101,7 @@ local function parseQuests()
 				ShowProgress = e.ShowProgress ~= false,
 				TutorialStep = finite(e.TutorialStep, -1),
 				NextGoal = e.NextGoal == true,
+				GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil, -- A23-48: which next goal (QuestTarget.IronGold)
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
@@ -5532,8 +5533,11 @@ function L.PinnedTap(e, r)
 		end
 	elseif step == 99 then
 		local level = math.floor(num("Level", 1))
-		local iron = Config.Weapons[3]
-		if not e.NextGoal or (iron and level >= iron.MinLevel and (string.find(e.Text, "골드", 1, true) or string.find(string.lower(e.Text), "gold", 1, true))) then
+		-- the iron-weapon gold goal goes to the anvil (QuestTarget.IronGold: never while the Forge sells no weapon,
+		-- A23-127 - the drop goal travels to the meadow like a level goal)
+		local qt = C and C.QuestTarget
+		local ironGold = type(qt) == "table" and type(qt.IronGold) == "function" and qt.IronGold(e, level) == true
+		if not e.NextGoal or ironGold then
 			doUpgrade()
 		elseif zone ~= TUT_GUIDE_ZONE then
 			showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "zone:" .. TUT_GUIDE_ZONE, 30)

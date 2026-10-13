@@ -178,6 +178,11 @@ local T = {
 	WeaponWayLabel = "Forge",
 	WeaponLoading = "Check again once your character is ready.",
 	WeaponNote = "Pick a basic weapon to buy. Weapons you own can be equipped again for free.",
+	-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WSHOP.Sells) - monsters drop them
+	WeaponNoteDrop = "Monsters drop weapons. Equip yours here for free, or sell them.",
+	WeaponFarDrop = "Come close to the Forge anvil to equip or sell.",
+	WeaponFromF = "Get it: %s", -- (Config.WeaponSource)
+	WeaponLevelF = "Needs Lv %d · Now Lv %d",
 	WeaponCurrentF = "Current weapon: %s",
 	WeaponPriceF = "Price %s gold · Needs Lv %d · Now Lv %d",
 	WeaponEffectF = "Slime in %d basic hits → %d hits",
@@ -2122,6 +2127,14 @@ function WSHOP.CatalogLimit()
 	return cap
 end
 
+-- A23-127 (plan 10/13 §1-A #2): the Forge sells weapons only while Config.WeaponShop.Buy ~= false (게임성 개발 2's switch;
+-- MaxSoldTier still lists the tiers, so enhancing / selling / equipping stay). Off: a weapon I do not own shows where it
+-- comes from (Config.WeaponSource) and no buttons; an owned one keeps [Equip] / [Sell]
+function WSHOP.Sells()
+	local shop = Config.WeaponShop
+	return not (type(shop) == "table" and shop.Buy == false)
+end
+
 function WSHOP.Owns(mask, tier)
 	return bit32.band(mask, bit32.lshift(1, tier - 1)) ~= 0
 end
@@ -2864,7 +2877,7 @@ BUILDERS.WeaponShop = function(parent)
 	wayButton.Name = "ForgeShowWay"
 	local details = addColumn(parent, 1, 0, 10)
 	details.Name = "WeaponCatalog"
-	addText(details, T.WeaponNote, { Size = 16, Color = theme.SubText })
+	addText(details, WSHOP.Sells() and T.WeaponNote or T.WeaponNoteDrop, { Name = "WeaponNote", Size = 16, Color = theme.SubText })
 	local current = addText(details, "", { Name = "CurrentWeapon", Size = 18 })
 	local gold = addText(details, "", { Name = "WeaponGold", Size = 18 })
 	local status = addText(details, "", { Name = "WeaponTransaction", Color = theme.SubText, Size = 16 })
@@ -2877,6 +2890,7 @@ BUILDERS.WeaponShop = function(parent)
 	local function send(tier, action, expectedEquipped)
 		if not live() or session.Pending or os.clock() < (session.CooldownUntil or 0) then return end
 		if action ~= "Buy" and action ~= "Equip" and action ~= "Sell" then return end
+		if action == "Buy" and tier > 1 and not WSHOP.Sells() then return end -- A23-127: the Forge sells no weapon
 		local access = WSHOP.Access()
 		local info, buyReason, sellReason = WSHOP.Offer(tier)
 		local reason = buyReason
@@ -2908,6 +2922,7 @@ BUILDERS.WeaponShop = function(parent)
 			Reason = addText(row, "", { Size = 16, Color = theme.Bad }),
 		}
 		local buttons = addRow(row, 60, 10)
+		ui.Buttons = buttons -- A23-127: hidden for a weapon the Forge does not sell and I do not own
 		ui.Buy = makeButton(buttons, "", PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
 			local action = ui.DisplayedAction
 			if action == "Buy" and not session.Pending then
@@ -2959,6 +2974,7 @@ BUILDERS.WeaponShop = function(parent)
 		local access = WSHOP.Access()
 		accessLabel.Text, accessLabel.Visible = access or "", access ~= nil
 		local far = access == T.WeaponFar -- loaded, alive, class picked, just not at the anvil: look but do not buy
+		if far and not WSHOP.Sells() then accessLabel.Text = T.WeaponFarDrop end -- A23-127: nothing to buy here
 		details.Visible = access == nil or far
 		wayRow.Visible = far
 		local first = WSHOP.Offer(1)
@@ -2973,6 +2989,7 @@ BUILDERS.WeaponShop = function(parent)
 			or (os.clock() < (session.SlowUntil or 0) and T.WeaponSlow) or ""
 		status.Visible = status.Text ~= ""
 		local blocked = access ~= nil or pending ~= nil or os.clock() < (session.CooldownUntil or 0)
+		local sells = WSHOP.Sells()
 		for _, ui in rows do
 			local info, buyReason, sellReason = WSHOP.Offer(ui.Tier)
 			if info and buyReason == nil then buyReason = WSHOP.EquipBlock() end -- buy or re-equip (both equip)
@@ -2980,13 +2997,19 @@ BUILDERS.WeaponShop = function(parent)
 				.. " · " .. (info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponOwned or T.WeaponUnowned))) or T.WeaponInvalid
 			ui.Name.TextColor3 = Config.WeaponGrade(ui.Tier).Color -- design §1 B2: grade color everywhere a weapon is listed
 			ui.Price.Visible, ui.Sale.Visible = info ~= nil, info ~= nil
+			-- A23-127: a weapon I do not own and the Forge does not sell = where it comes from, no buttons
+			local dropOnly = info ~= nil and not sells and not info.Owned and ui.Tier > 1
+			ui.Buttons.Visible = not dropOnly
+			if dropOnly then buyReason = nil end -- (its "buy from Lv N" line is not for this Forge)
 			if info then
-				ui.DisplayedAction = info.Owned and "Equip" or "Buy"
+				ui.DisplayedAction = info.Owned and "Equip" or (not dropOnly and "Buy" or nil)
 				ui.Price.Text = ui.Tier == 1 and T.WeaponStarter
-					or string.format(T.WeaponPriceF, exactNumber(info.Price), info.MinLevel, info.Level)
+					or (sells and string.format(T.WeaponPriceF, exactNumber(info.Price), info.MinLevel, info.Level))
+					or (dropOnly and string.format(T.WeaponFromF, Config.WeaponSource(ui.Tier)))
+					or string.format(T.WeaponLevelF, info.MinLevel, info.Level)
 				ui.Sale.Text = ui.Tier == 1 and "" or (string.format(T.WeaponSaleNoteF, exactNumber(info.SellPrice))
 					.. (info.Equipped and ("\n" .. T.WeaponSaleEquipped) or ""))
-				ui.Sale.Visible = ui.Tier > 1
+				ui.Sale.Visible = ui.Tier > 1 and not dropOnly
 				local cls = currentClass()
 				local now = Config.SwingHitsToKill(info.EquippedTier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, info.EquippedTier))
 				local with = Config.SwingHitsToKill(ui.Tier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, ui.Tier))
