@@ -1,5 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 아침 — fix/menu-one-line (다시 시작하면 여기부터)
+- first-look-1·2는 main에 병합됨(4fe62394). 새 가지 **fix/menu-one-line 11af5107**(../wt_dev1merge, origin/main 4f88cc5a에서): PC 메뉴 펼침 한 줄.
+  - HudLayout: PC 아래 줄 7칸(Monsters가 펼침에서 아래 줄로; 시트 tiles 438du, 1280x720은 유령 버튼 때문에 묶음이 가운데에서 26px 왼쪽), PC는 전쟁 미터(가운데 열)가 폭 그대로 왼쪽으로 움직여 펼침 8칸(FOLD_WANT_PC = #L.Fold)이 [Menu] 옆 한 줄. 991x451 Studio 창: 첫 줄 7 → 8칸.
+  - HUD: L.TileNamePxPC 10 → 9('Monsters' 잘림). FitFold는 미터가 못 움직일 때(Roblox 메뉴 넓게 열림) 대비로 남김.
+  - 기대값: hud_layout 시트 JSON·7칸 검사·넓은 PC 한 줄 검사(예외: unibar_wide 7칸 → FitFold, 655x340 5칸 → 두 줄), test_first_look 정적 3개+돌연변이 4개.
+  - 사진: `HH_MAIN_STUDIO=1 py tools/play_first_look_photos.py` → docs/art/verification_2026-10-14/menu_one_line/(log에 'fold lines N'·row·cut names). 병합 뒤 메인 반영 1.
+- 다음: 02_dev1.md 폰 첫 10분 읽힘(0원 코드).
+
 ## 10/14 새벽 2 — 다시 시작하면 여기부터 (A23-168: 보고 뒤 state 적고 clear)
 - 기다리는 것: 최종 검수가 fix/first-look-1 b23679e3 병합·게시(오늘 밤), **fix/first-look-2 b9dd5764**(= phone-first10-2 9759e832 + 창 제목 글 띠 가운데·I'm In 카드 폭 45%) 병합. 그 뒤 메인 반영 1 사진(play_first_look_photos.py, play_phone_round_photos.py first10) → 고장급만.
 - fix/choice-card-ui e9077f02 = main에 병합됨(꺼진 채). **2주 차 켤 때 고칠 MINOR(최종 검수 API 검토)**: ChoiceCardUI offer — 시간 카드(피니셔 10초·ShardBloom 120초)가 떠 있을 때 다른 출처 카드가 오면 지금은 시간 카드를 덮어 서버가 None 처리(선물 잃음) → 기존이 시간 안·출처 다르면 새 카드를 S.Held에 넣고 화면 유지 + 시험 1개. 켜기는 개발 2(Finisher.Kinds, Afterglow 호출)와 같이.
