@@ -10,7 +10,8 @@ For every shot <dev>_<name>.json lists, over what is on screen (every ancestor s
   cut  = a text whose words do not fit (TextFits false) - name, text, box px;
   small = a button under 40 px on a side (a finger needs ~44);
   off  = a button / text partly off the screen;
-  overlap = two buttons that cover each other (not one inside the other).
+  overlap = two buttons that cover each other (not one inside the other);
+  tiny = a one-line text drawn under 17 real px (phone floor 19 px; finder only - judge by the photo).
 Usage: HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py [phone] [844]   (default both)
 Out: docs/art/verification_2026-10-13/phone_round/<dev>_<name>.png / .json, summary.txt, log.txt
 
@@ -151,7 +152,8 @@ local function box(o)
 	local p, s = o.AbsolutePosition, o.AbsoluteSize
 	return { math.floor(p.X), math.floor(p.Y + y0), math.floor(s.X), math.floor(s.Y) }
 end
-local out = { view = { vw, vh }, cut = {}, small = {}, off = {}, overlap = {} }
+local TINY = 17
+local out = { view = { vw, vh }, cut = {}, small = {}, off = {}, overlap = {}, tiny = {} }
 local buttons = {}
 for _, d in pg:GetDescendants() do
 	if d:IsA("GuiObject") and shown(d) and (d.BackgroundTransparency < 1 or d:IsA("TextLabel") or d:IsA("TextButton")
@@ -160,6 +162,22 @@ for _, d in pg:GetDescendants() do
 		if b[3] > 2 and b[4] > 2 then
 			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextFits == false then
 				table.insert(out.cut, { d:GetFullName():gsub("^.-PlayerGui%.", ""), d.Text, b })
+			end
+			-- tiny = one line of words drawn under TINY real px (the phone floor is 19; a line box ~ the text size). The
+			-- real size: TextBounds times the UIScales above (TextBounds is in the label's own units)
+			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextBounds.Y > 0 then
+				local k, o = 1, d.Parent
+				while o and not o:IsA("LayerCollector") do
+					local sc = o:FindFirstChildWhichIsA("UIScale")
+					if sc and sc.Scale > 0 then k *= sc.Scale end
+					o = o.Parent
+				end
+				local own = d:FindFirstChildWhichIsA("UIScale")
+				if own and own.Scale > 0 then k *= own.Scale end
+				local h = d.TextBounds.Y * k
+				if h < TINY and h < 1.6 * math.max(1, d.TextSize * k) then
+					table.insert(out.tiny, { d:GetFullName():gsub("^.-PlayerGui%.", ""), d.Text, b, math.floor(h * 10) / 10 })
+				end
 			end
 			if d:IsA("GuiButton") and d.Active ~= false and string.sub(d.Name, 1, 6) ~= "TapPad" then
 				table.insert(buttons, { d, b })
@@ -221,11 +239,13 @@ def audit(c, name):
         return
     with open(os.path.join(OUT, name + ".json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
-    line = f"{name}: cut {len(data['cut'])}, small {len(data['small'])}, off {len(data['off'])}, overlap {len(data['overlap'])}"
+    line = f"{name}: cut {len(data['cut'])}, small {len(data['small'])}, off {len(data['off'])}, overlap {len(data['overlap'])}, tiny {len(data.get('tiny', []))}"
     note(line)
     SUMMARY.append(line)
     for item in data["cut"][:8]:
         SUMMARY.append(f"    cut: {item[0]} = {item[1]!r} {item[2]}")
+    for item in data.get("tiny", [])[:8]:
+        SUMMARY.append(f"    tiny: {item[0]} = {item[1]!r} {item[3]} px")
 
 
 def shot(c, name):
