@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/13 낮 — 도감 마무리 + 폰 정리 준비
+- 도감 카드 화면 = main e1eca798까지 병합(사진 main2 통과), 마무리 3개 fix/codex-ui **7be7895c**(이벤트 단계·순간 카드 가운데·슬롯 이름 두 줄) 보고함 — 병합 대기.
+- 다음 고른 것 = **A23-145 폰 정리 준비**: 도구 `tools/play_phone_round_photos.py`(main a2f8df0, 메인 반영 1이 돌림: 749×361·844×390 HUD·창 12개 사진 + 잘린 글·작은 버튼·화면 밖·겹침 json) + 목록 `docs/review/phone_round_prep_2026-10-13.md`(main 952db8e). 사진 오면 표 채우고 고장급만 10/21 전에 고침.
+- 큐에서 끝난 것 확인: 큰 지도 거위 = 개발 2가 함, A23-146 = L10n 꺼진 채 유지(SPEC대로), Z·X 패킷 시간 = Fx·SkillFx가 이미 읽음. 막힌 것: 스킬 소리 id, Hero #4/#6/#8, CodexGlow 꾸미기 그림.
+
 ## 10/13 아침 도감 카드 화면(A23-153) = fix/codex-ui e47ed5b2 (worktree `wt_codexui`, 최종 검수에 보고)
 - 최종 검수 10/13 아침: Tripo 로그아웃 → 밀린 일로 도감 카드 화면. CodexUI.luau(Panels "Codex", HUD 단추 Codex, 순간 카드 큐), Config.Codex.Screen + ServerToast=false, test_codex_ui 80·25/25, 개발 2 test_codex 픽스처 토스트 기대 고침(137·60/60), 사진 tools/play_codex_photos.py.
 - 기다림: UiSandbox 열고 sync·Play 사진 허락(최종 검수) — 안 되면 병합 뒤 메인 반영 1. 개발 2 fix/codex-models(ReplicatedStorage.CodexModels) 오면 그 모델로 사진 다시.
