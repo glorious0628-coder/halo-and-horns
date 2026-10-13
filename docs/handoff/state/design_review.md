@@ -8,12 +8,8 @@
    - 남음: P049(위에서 앉는 판 안 보임 = 아직 묻힘 의심, f97ace01) · P048(P049 옆 8칸으로 옮김) → 낮·밤 가까이
    - 하늘색 표시 상자(P022 옆) = 건물 표시 파트, 게임 전 숨김
 2. **NEW_ 6종 → Blender 손보기 1 큐 맨 뒤(최종 3aa188d7, 810점 내 OK)**: GatherBush·ArmoryBarrels(오른면 천 봄)·CandleCrate(초 뭉침)·Easel·NoticeBoard·WaterBuckets(뒤 갈퀴 이빨) → **흰 모델은 내가 고름.** 나머지 2D 4면(WallLamp·WateringCan·Beehive·SteppingStones·간판)과 Blender 손보기 2 것은 디자인 검수 2.
-3. **Blender 손보기 1 PBR 결과** → PBR 관문(아래 방법). 통과만 최종 검수에 보냄(이름 + 파일 경로 + ⑤ 메모).
-   - 대기 중: 동상 B 1a0812be, 분수 C cd70436c, Daisy, Rose
-   - GateLeaf, DomeOnion, ConeTree, DomeOctagon, DomeBall, BenchB, FlowerCart(수레 몸)
-   - JuiceParasol, DomeOnionSlim, BreadStand, FruitStall, DomeBrick
-   - 흰 모델 20종(아래)의 PBR
-4. **Blender 손보기 1 흰 모델 새 묶음** → 내가 고름. 큐(Blender state 기준): HaloChunk_* 18종 — PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond, StarFinial·CastleHedge·WeatherVane·ChimneyCap·ChimneyLantern·RoundTree, MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope → 그 뒤 NEW_ 6종. (Topiary_E·PotFlowers·Planter_A 흰 모델은 생성 끝 — id 오면 고름.)
+3. **PBR 관문 묶음 2 끝(10/13 오후)**: 36종 중 35 통과 → 최종 검수에 보고(41358b5d, 시트 art/review/design/pbr_gate_1013b/, ⑤ 메모 포함). **Daisy 다시**(꽃 색 다름 + 잎 큰 덩어리) → 형제 흰 모델 FBX 받으면 내가 고름(7dc08895). 다음 PBR 결과도 같은 방법: `blender --background --factory-startup --python tools/design_review/pbr_gate.py -- <out> 700 2048 <glb…>` (3개로 나눠 동시에) → `pbr_gate_sheet.py <out>/r … <이름>_TU=<2D 앞 경로에서 _front_ns.png 뺀 것>` → 하나씩 봄. GateLeaf 2D = chunks/HaloChunk_CastleGateLeaf.
+4. **Blender 손보기 1 흰 모델 25종 고르기**(18 집 덩어리 + 묶음10 7종, 각 4개, id = Blender 손보기 메시지): Blender 손보기가 FBX를 build/tripo_wm1/<이름>_wm_<id8>.fbx로 받는 중(내 브라우저 칸 닫힘 → 화면 차례 없이). 받으면 `blender … clay_views.py -- <out> <fbx…>` → scratchpad wm_sheet.py(1줄 2D 4면 + 후보 4줄 7면) → 이름별 id 보냄 → 텍스처(4K)→PBR. 2D: chunks/HaloChunk_<이름>, HaloVar3/4_<이름>은 noshadow/ 바로 밑.
 
 ## 판정 규칙
 - **3D = SPEC A23-154 다섯 단계뿐:** ① 그림자 없는 2D 4면 → 스마트 메시 ② **내가 흰 모델 4개 중 고름** ③ 텍스처(앞 1장·조명 없이·**4K** — 사용자 10/13 오후, 두 계정, Roblox가 1024로 줄임) ④ PBR(텍스처 끝나면 바로) ⑤ Roblox 재질(2D 옆 낮·밤) **내가 사진 판정**. 매직 브러시·붓 칠·Blender 색 고치기·다시 올리기 없음. 얼룩은 ⑤에서 좋게 하거나 그대로, 모양이 망가졌으면 ②에서 다른 흰 모델. Blender = 크기·피벗·방향(대칭 짝 뒤집기)만.
