@@ -230,3 +230,4 @@
 - **4면 규칙 추가(사용자 지적)**: 앞뒤 같은 물건은 뒤 = 앞 뒤집기(이미지 생성 2에 전달, research_3d_accuracy 끝에 기록).
 - **열린 것**: 이미지 생성 2 사람 2묶음 시트(오면 판정 → approved.json), 개발 2 honor-crown 고침 보고, 자동 번역 켜기(사용자, 내일), 10/15 패스 ID 9개, 수요일 사용량 확인(지금 전체 3%·Fable 6%).
 - WorldKit Studio(eba950da…)가 열려 있음(저장 안 함, RobloxGen_FlowerBush 모델 + HttpEnabled=true 변경됨 → 저장하지 말 것). 메인 Studio는 Edit·미저장(sync만).
+- (23:0x) 이미지 생성 2: 빛 마을 대칭 소품 30개 뒤 = 앞 뒤집기로 교체(목록 art/review/s2/backflip_list_2026-10-13.md, f036b71), 사람 3묶음 그리는 중 → 2·3묶음 시트 보고 뒤 clear 예정. 오면 판정 → approved.json.
