@@ -6653,9 +6653,9 @@ Config.UIArt = {
 		-- image px; 이미지 생성 1's 1536 transform x 2/3)
 		-- A23-121 stage 6 (final review 10/13: V3 b passed, art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_b.png): 1041x760 = the
 		-- old picture at (17, 77) + the new Halo island south of it, so it covers the stage-6 Bounds (game dev 1's frame,
-		-- docs/review/halo_worldmap_guide_2026-10-13.png). Id "" until it is uploaded (final review): the code shapes draw the
-		-- whole map until then; the upload only fills Id (Size / Map are already the new picture's)
-		WorldMapV2 = { Id = "rbxassetid://114107691990380", Size = Vector2.new(1041, 760), -- V3 b uploaded (final review 10/13)
+		-- docs/review/halo_worldmap_guide_2026-10-13.png). Uploaded by final review 10/13 (art/ui/asset_ids.json); with Id = ""
+		-- the code shapes (WorldMap.PaintCover) would draw the whole map instead
+		WorldMapV2 = { Id = "rbxassetid://114107691990380", Size = Vector2.new(1041, 760),
 			Map = { X0 = 47.815, K = 0.47407, OffX = 230, OffZ = 883 } },
 		-- A23-40 정정 fold-out / window icons (7fb375a): 이동 is a [메뉴] square; 직업 바꾸기 · 환생 · 오프닝 · 알림(이름 공개) · 휴가
 		-- go on 설정 rows and 닉네임 on 내 캐릭터 (BB13). BB11 ranking medals (3c9166a): in front of rows 1-3 (~85% of the row
