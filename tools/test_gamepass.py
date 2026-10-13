@@ -150,7 +150,9 @@ def static() -> tuple[int, list[str]]:
     for text in ("cg, cx = payReward(player, cg, cx)", "local gotGold = payReward(player,", "paidGold += (payReward(player, g, x))",
                  "string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), \"reward\", nil, \"QuestDone\"", "Config.Text.QuestDone, Util.FormatNumber(gotGold)"):
         check(text in quest, f"QuestService shows what payReward / the first mission added: {text}")
-    check(quest.count("g, x = payReward(player, g, x)") == 2, "QuestService: the daily claim and the vacation show what was added")
+    # 최종 검수 10/13 (EarlyMult 0.35, A23-14 kept): the vacation claim passes its Lv9 cap (the cap is applied after the 2x XP pass)
+    check(quest.count("g, x = payReward(player, g, x)") == 1 and quest.count("g, x = payReward(player, g, x, room)") == 1,
+          "QuestService: the daily claim and the vacation show what was added")
     pay = function_block(quest, "local function payReward(")
     check("return math.max(0, gold), math.max(0, xp)" in pay, "payReward returns the gold and XP added")
     kaiju = strip_comments(read(SSS / "KaijuService.luau"))
@@ -172,8 +174,10 @@ def static() -> tuple[int, list[str]]:
     # Item grants (LootService.GrantItem / drops, the quest / board / story item rewards) never read the pass: outside
     # ProgressionService / MonetizationService only KaijuService's survive cap and CraftService's craft XP line (A23-139,
     # user 10/12: 2x level AND crafting XP; the fixture's "craft XP pass" group checks it is that line only) read PassMult
+    # TestMetricsService (A23-160 the test's numbers board) only asks HasPass on a later join to count a pass that still works
+    # (read-only observer, grants nothing; tools/test_test_metrics.py checks it never pays or changes anything)
     readers = sorted(p.name for p in SSS.glob("*.luau")
-                     if p.name not in ("ProgressionService.luau", "MonetizationService.luau")
+                     if p.name not in ("ProgressionService.luau", "MonetizationService.luau", "TestMetricsService.luau")
                      and re.search(r"PassMult|HasPass|PassBoost|PassGold2|PassXP2", strip_comments(read(p))))
     check(readers == ["CraftService.luau", "KaijuService.luau"],
           f"items are never 2x: no grant path but the kaiju cap and the craft XP line read the pass ({readers})")

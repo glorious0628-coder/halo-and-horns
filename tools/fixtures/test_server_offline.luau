@@ -81,6 +81,15 @@ off.TestServer.Enabled = false
 check(off.ApplyTestServer() == false and off.Skills.ZEnabled == false and off.Goose.Schedule.Every == 14400
 	and off.Switches.Defs.PassSales.Default == true, "Enabled = false: nothing changes", { off.Skills.ZEnabled, off.Goose.Schedule.Every })
 
+-- never on the Live game (최종 검수 10/13 review): the real EnvName says Live
+local live = load()
+live.Env.Default = "Live"
+check(live.EnvName() == "Live" and live.ApplyTestServer() == false and live.Skills.ZEnabled == false and live.Goose.Schedule.Every == 14400,
+	"the Live game: nothing changes even with Enabled = true", { live.Skills.ZEnabled, live.Goose.Schedule.Every })
+local beta = load()
+beta.Env.Default = "Beta"
+check(beta.ApplyTestServer() == true and beta.Skills.ZEnabled == true, "a Beta / Dev server still applies it", beta.Skills.ZEnabled)
+
 -- the sales value is the table's
 local noSale = load()
 noSale.TestServer.PassSales = false

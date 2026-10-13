@@ -280,12 +280,32 @@ runGroup("weapon first", function()
 	local scrollName = LT.Items.Enh70.Name
 	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
 	local had = scrolls()
+	-- 최종 검수 10/13 review: the gift can give nothing (here: the scroll stack at Loot.ItemCap) - then it is not marked given
+	d.Items = type(d.Items) == "table" and d.Items or {}
+	d.Items.Enh70 = LT.ItemCap
 	local n3, f3 = #w.Notices, #w.Fired
+	local lootSvc = w.Registry.LootService
+	local grantItem, asked = lootSvc.GrantItem, {}
+	lootSvc.GrantItem = function(pl, id, n)
+		table.insert(asked, id)
+		return grantItem(pl, id, n)
+	end
 	w:Press(p)
+	lootSvc.GrantItem = grantItem
+	check(#asked == 1 and asked[1] == "Enh70", "the step opening asks for Otto's scroll once (it gives nothing: the stack is full)", show(asked))
 	check(not st.Done.M1_1 and st.Main.Id == "M1_1" and st.Main.St == 2 and w:Panels(p, "WeaponShop", f3) == 1,
 		"the visit passes step 1: step 2 'Use the Enhance Scroll' opens, the Forge window opens", show({ st.Main, st.Done.M1_1 }))
-	check(scrolls() == had + 1 and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 1,
-		"Otto hands over one Enhance Scroll with one '+item' line", show({ had, scrolls(), w:NoticesFor(p, n3) }))
+	check(st.First.GiveM1_12 == nil and d.Items.Enh70 == LT.ItemCap and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 0,
+		"a gift that gave nothing (the stack full) is not marked given and shows no '+item' line", show({ st.First.GiveM1_12, w:NoticesFor(p, n3) }))
+	d.Items.Enh70 = had > 0 and had or nil
+	local n3b = #w.Notices
+	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
+	w:Flush()
+	check(scrolls() == had + 1 and st.First.GiveM1_12 == true and count(w:NoticesFor(p, n3b), string.format(LT.Text.Got, scrollName)) == 1,
+		"the next join (RetryGifts) gives Otto's one Enhance Scroll with one '+item' line", show({ had, scrolls(), w:NoticesFor(p, n3b) }))
+	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
+	w:Flush()
+	check(scrolls() == had + 1, "another join gives no second scroll", show({ had, scrolls() }))
 	local n4 = #w.Notices
 	w:Buy(p, 2)
 	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BankGold >= 150
