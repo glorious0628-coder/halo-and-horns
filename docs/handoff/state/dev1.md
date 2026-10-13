@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/13 아침 도감 카드 화면(A23-153) = fix/codex-ui e47ed5b2 (worktree `wt_codexui`, 최종 검수에 보고)
+- 최종 검수 10/13 아침: Tripo 로그아웃 → 밀린 일로 도감 카드 화면. CodexUI.luau(Panels "Codex", HUD 단추 Codex, 순간 카드 큐), Config.Codex.Screen + ServerToast=false, test_codex_ui 80·25/25, 개발 2 test_codex 픽스처 토스트 기대 고침(137·60/60), 사진 tools/play_codex_photos.py.
+- 기다림: UiSandbox 열고 sync·Play 사진 허락(최종 검수) — 안 되면 병합 뒤 메인 반영 1. 개발 2 fix/codex-models(ReplicatedStorage.CodexModels) 오면 그 모델로 사진 다시.
+- 주의(10/13 사고, 피해 없음): ../wt_codex는 개발 2 것. worktree 만들 때 경로 먼저 확인, && 줄에 파이프 금지.
+
 ## 10/13 정리 (사용자 "이제 정리하고 컴퓨터 꺼줘", 최종 검수 전달) — 지금 기준
 - **끝·병합·사진 통과:** 무기 들기 (가) = fix/tool-grip 41da3211 + 46e666ea(활: BowGrip 한 번만·켜고 끔, HUD 초상화가 무기 안 변화 무시, 활 클립 뒤 MOTION.BOW_HOLD 0.25초 왼손 유지), 거위 광장 Leave 폭 = fix/leave-width 2cd31bb4 → **main 310abb37**. 메인 사진 통과(main_apply/tool_grip_ours·bow_rapid·goose_square5: 9종 쥐기 정상, 활 연사 왼손 유지·초상화 다시 만들기 0번, Leave 글자 다 보임).
 - 무기 = 진짜 Roblox Tool `WeaponModel` 오른손(활도), Handle(칼·망치 자루, 지팡이·봉 막대, 활 가운데) + 엔진 RightGrip, Tool.Grip = `Config.WeaponGrip(kind, len)`, 표 `Config.WeaponGrips`(칼 0.75 = ClassicSword 사진, 지팡이 0.45, 망치·봉 0.3, 활 0.5, 짧은 활 Turn 15°). WeaponPose = Studio GripProbe만, ClassGrips엔 Weapon만. 자세한 건 `docs/design/weapon_grip_plan_2026-10-12.md` ③. 시험 test_tool_grip(358·37/37), test_square_button_width(135·7/7); 은퇴 test_one_hand_grips / test_two_hand_grip / test_weapon_pose. 사진 스크립트 `tools/play_tool_grip_ours.py`.
