@@ -31,6 +31,7 @@ local INIT_ORDER = {
 	"HealthService", -- 게임성 개발 3: the hourly health report (2026-10-09)
 	"DayCycleService", -- 게임성 개발 2: A23-105 the day and the weather (a crown-war sky covers its look, the clock turns on)
 	"CodexService", -- 게임성 개발 2: A23-153 the monster codex (listens to MonsterKilled; pays through ProgressionService)
+	"MarketService", -- 게임성 개발 2: C-5 / C-7 the player market (after DataService, LootService, ProgressionService)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -58,6 +59,7 @@ local START_ORDER = {
 	"HealthService", -- 게임성 개발 3: the hourly health report (before PlayerService: it listens to PlayerReady)
 	"DayCycleService", -- 게임성 개발 2: A23-105 (after WarService, whose Start bootstraps the light and hands Neutral to it)
 	"CodexService", -- 게임성 개발 2: A23-153 (before PlayerService too: it listens to PlayerReady)
+	"MarketService", -- 게임성 개발 2: C-5 / C-7 (before PlayerService too: the join check at PlayerReady)
 	"PlayerService",
 }
 

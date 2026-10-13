@@ -85,6 +85,18 @@ Net.Names = {
 	-- s->c owner only, one per moment: { Event = "Card" | "Silver" | "Holo" | "Golden" | "Page" | "Glow", Kind?, Stage?,
 	-- Card? = { Kills, Golden, Stage, First }, Gold, XP (added), Title?, Page?, Key, Args, Text, Debug? }
 	"CodexUp",
+	-- 게임성 개발 2 (2026-10-13) C-5 / C-7 the player market (MarketService; docs/design/market_server_2026-10-13.md,
+	-- MarketWindow contract docs/design/market_window_2026-10-12.md §6). MarketIndex / MarketMine go both ways (c->s ask, s->c
+	-- answer); MarketPage answers MarketBrowse
+	"MarketIndex", -- c->s () | s->c { Rows = { { Key, Low, Count } }, At, Gate = { Buy, List, ListIn } }
+	"MarketBrowse", -- c->s (key "I:<id>" | "W:T:P", page 1..)
+	"MarketPage", -- s->c { Key, Page, Pages, Rows = { { Id, Price (one unit), N, Plus, Left } }, Ref, Min, Max }
+	"MarketMine", -- c->s () | s->c { Rows = { { Id, Key, N, Plus, Price, State, Left, Paid } }, Waiting, Today, Gate }
+	"MarketList", -- c->s (kind "I" | "W", id = item id | spare "T:P", n, price of one unit)
+	"MarketBuy", -- c->s (listing id, price of one unit as shown): buys the whole row (N x price)
+	"MarketCancel", -- c->s (listing id)
+	"PackWeapon", -- c->s (tier): an owned weapon (not in hand, not tier 1) -> a spare "T:P"
+	"UnpackSpare", -- c->s (spare key "T:P"): a spare of a tier I do not own -> owned
 }
 
 Net.GameStateDefaults = {

@@ -556,6 +556,8 @@ local function requirementsMet(player, data, def)
 	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
+	-- C-5 (게임성 개발 2): Feature = the quest waits for its Config.Features switch (the market quests)
+	if req.Feature and not Config.FeatureOn(req.Feature) then return false end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
 	-- A23-70: TutorialDone = the first mission is claimed (TutorialStep 99); NotDone = none of these quests is done yet
 	if req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end
