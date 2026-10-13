@@ -15230,5 +15230,31 @@
    "pbr": "843f4dd2 (5)",
    "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx"
   }
+ ],
+ "HaloReasonHQ_GuardPost_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000) = 계정 1",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "3c1ff311 (picked by 디자인 검수 over both accounts' candidates)",
+   "file": "art/models/tripo/web/HaloReasonHQ_GuardPost_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_TU.glb (disk only; front -Y, bottom-centre pivot)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloReasonHQ_PotionCrate_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000) = 계정 1",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "134dc742 (picked by 디자인 검수 over both accounts' candidates)",
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU.glb (disk only; front -Y, bottom-centre pivot)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
  ]
 }
