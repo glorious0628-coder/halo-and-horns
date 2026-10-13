@@ -457,6 +457,8 @@ local function giveStepItem(player, data, id, track)
 	first[key] = true -- saved before the item, so it can never be given twice
 	local given = grantItem(player, gift.Item, gift.N)
 	if given then notify(player, given, "reward", "None") end -- the scroll's own sound comes with the Bag (none here)
+	-- 최종 검수 10/13 review: nothing given (the stack full, a failure) = not marked; RetryGifts tries again at the next join
+	if not given then first[key] = nil end
 end
 
 -- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself
@@ -787,6 +789,22 @@ function StoryQuestService.Event(player, name, info)
 		end
 	end
 	return moved
+end
+
+-- 최종 검수 10/13 review: a step gift (GiveItem) that gave nothing when its step opened (the stack full, a failure) is tried
+-- again here, at every join (PlayerReady); giveStepItem's saved flag still stops a second gift
+function StoryQuestService.RetryGifts(player)
+	local data = getData(player)
+	if not data then return end
+	local st = story(data)
+	local tracks = { [st.Main.Id] = st.Main }
+	for id, track in st.Subs or {} do tracks[id] = track end
+	for id, track in tracks do
+		if DEFS[id] and type(track) == "table" then
+			local ok, err = pcall(giveStepItem, player, data, id, track)
+			if not ok then Util.Warn(TAG, "giveStepItem " .. tostring(id) .. ": " .. tostring(err)) end
+		end
+	end
 end
 
 -- Studio test aids (Main's DebugCommand "StorySub" / "StoryDone", built inside its IsStudio block only): start a Sub quest at a
@@ -1278,6 +1296,8 @@ function StoryQuestService.Start()
 		if data then
 			sanitize(data)
 			publishTownPick(player, story(data)) -- A23-64 ①: TownPick from the save (sanitize backfilled it)
+			local okGift, errGift = pcall(StoryQuestService.RetryGifts, player) -- a step gift that gave nothing, again
+			if not okGift then Util.Warn(TAG, "RetryGifts: " .. tostring(errGift)) end
 		end
 		pcall(refresh, player)
 	end)

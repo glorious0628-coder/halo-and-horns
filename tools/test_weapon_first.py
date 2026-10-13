@@ -97,8 +97,12 @@ MUTATIONS = [
     ("1-A #2: the Forge sells new weapons again", SH, "if not alreadyOwned and shop.Buy == false then", "if false then"),
     ("1-A #2: Config sells weapons again", C, "MaxSoldTier = 3, Buy = false,", "MaxSoldTier = 3, Buy = true,"),
     ("1-A #2: Otto gives no scroll", C, "GiveItem = { Item = \"Enh70\", N = 1 }, ", ""),
-    # (no mutation for the once-per-step guard of the step gift: a step opens once in a normal run, so removing the guard
-    # changes nothing a test can see; it stays as a cheap safety like topUpGold's)
+    # 최종 검수 10/13 review: a gift that gave nothing is tried again at the join, and given once only
+    ("1-A #2: the step gift every time", "STORY_SOURCE", "\tif first[key] == true then return end\n\tfirst[key] = true -- saved before the item",
+     "\tfirst[key] = true -- saved before the item"),
+    ("1-A #2: a gift that gave nothing stays marked", "STORY_SOURCE", "\tif not given then first[key] = nil end\n", ""),
+    ("1-A #2: RetryGifts tries nothing", "STORY_SOURCE", "local ok, err = pcall(giveStepItem, player, data, id, track)",
+     "local ok, err = true, nil"),
     ("1-A #2: the step gift never sent", "STORY_SOURCE", "\t\tgiveStepItem(player, data, id, track)\n\t\tdirty(player)", "\t\tdirty(player)"),
     ("1-A #2: a used scroll is not heard", "LOOT_SOURCE", "pcall(story.Event, player, \"ScrollUsed\", { Tier = tier, Success = success })",
      "pcall(story.Event, player, \"ScrollUse\", { Tier = tier, Success = success })"),
@@ -145,6 +149,10 @@ def static() -> tuple[int, list[str]]:
         if not ok:
             failures.append(message)
 
+    story_src = read(SSS / "StoryQuestService.luau")
+    ready = story_src.find('connect("PlayerService", "PlayerReady", function(player)')
+    check(ready >= 0 and "pcall(StoryQuestService.RetryGifts, player)" in story_src[ready:ready + 600],
+          "the join (PlayerReady) tries a step gift that gave nothing again (StoryQuestService.RetryGifts; 최종 검수 10/13 review)")
     shop = read(SSS / "ShopService.luau")
     check("function M.Anvil()\n\tlocal anvil = blacksmith()\n\treturn anvil\nend" in shop,
           "ShopService.Anvil = the anvil part while the weapon shop is open (blacksmith(): nil when closed)")

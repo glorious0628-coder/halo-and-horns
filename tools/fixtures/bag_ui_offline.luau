@@ -399,6 +399,8 @@ check(lineWith(v, "Power 100") and not lineWith(v, "→"), "the equipped weapon:
 check(lineWith(v, "Attack ") ~= nil, "weapons: the attack at my level with the +N")
 -- A23-127 (최종 검수 10/13 review ①): where a weapon comes from follows Config.WeaponShop.Buy (Config.WeaponSource): the
 -- shop line while the Forge sells, the drop line only once it sells none - never the drop promise on a selling server
+Config.WeaponShop.Buy = true -- 1-A #2 makes false the Config default: the selling world is set here, not assumed
+v = detail(byKey["W:2"])
 check(lineWith(v, "Sold at the Forge") ~= nil and lineWith(v, "Slime Prince drop") == nil,
 	"the Forge still sells (no Buy switch): tier 2 says 'Sold at the Forge'", lineWith(v, "Slime") and lineWith(v, "Slime").Text)
 Config.WeaponShop.Buy = false
