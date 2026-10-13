@@ -4,7 +4,7 @@
 - 9종+WingR 이미지 생성 3에 넘김(메시지). **Tripo 로그아웃됨**(재부팅 뒤 401, localStorage·Cache 비어짐) → 사용자 로그인 기다림(비밀번호 입력 금지).
 - 페이지 함수는 `tools/tripo_web_helpers.js`에 저장 → 로그인 뒤 그 파일 내용을 javascript_exec로 한 번 실행하면 hhTexFn/hhSetFn/hhGoFn/hhPbrFn 다시 생김.
 - 디자인 검수 10/13 아침 판정: **PBR OK** ConeTree 2bbbd641·DomeBall 66894770·BenchB b8de1d3c·DomeOctagon f9e91fe2·FlowerCart af2e2b5f(수레 몸만; 꽃은 이미지 생성 3이 'FlowerCart_Bouquet' 4면 따로 → Tripo 135 → Studio에서 얹음). **JuiceParasol = 6ec4d75d-24b6-4474-9400-36e4fc7a9848 텍스처 OK.** Greenhouse·ShopSign·Lantern 흰 모델 나오면 id 디자인 검수에.
-- 다음 묶음 bundle8(scratchpad, 51.0 MB — 50 MB 블록 한도 근처, 다음 추가는 bundle9, 키 `<이름>_<면>`): Greenhouse·ShopSign·Lantern_A·B·C·D·E·IvyWall·IvyBalcony·FlowerBushPot 4면 + 텍스처용 앞면 DomeOnionSlim·BreadStand·FruitStall·DomeBrick·JuiceParasol. 로그인 뒤 Adobe 올림 → /hh-bundle8, hhIdx8. bundle9(7.9 MB): DomePorchHalf 4면(반쪽 돔 — 온 돔이면 탈락), DomePavilion 4면(아치 뚫림 — 막힌 벽이면 탈락).
+- 다음 묶음 bundle8(scratchpad, 51.0 MB — 50 MB 블록 한도 근처, 다음 추가는 bundle9, 키 `<이름>_<면>`): Greenhouse·ShopSign·Lantern_A·B·C·D·E·IvyWall·IvyBalcony·FlowerBushPot 4면 + 텍스처용 앞면 DomeOnionSlim·BreadStand·FruitStall·DomeBrick·JuiceParasol. 로그인 뒤 Adobe 올림 → /hh-bundle8, hhIdx8. bundle9(14.1 MB): DomePorchHalf 4면(반쪽 돔 — 온 돔이면 탈락), DomePavilion 4면(아치 뚫림 — 막힌 벽이면 탈락), DomeTowerSmall 4면(둥글기·바닥 막힘). 추가는 scratchpad addb.py <S> bundle9 <rel>.
 
 ## 10/13 정리 (사용자 "정리하고 컴퓨터 꺼줘") — 다음 세션은 여기부터
 - **잔액 9,385.** 도는 Tripo 일 없음(전부 끝남). 브라우저 탭 seed = Tripo 로그인 그대로, localStorage 함수 hhTexFn/hhSetFn/hhGoFn/hhPbrFn + Cache 'hh' /hh-bundle3~7(hhIdx3~7; 다시 열면 캐시가 없을 수 있음 → 4면 묶음 다시 올림).
