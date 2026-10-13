@@ -1,6 +1,11 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
-## ★ 10/13 14시대 — PhotoDisc 파트 키트 (이 절이 최신)
+## ★ 10/13 오후 끝 — 묶음 b·c 넣기 준비 (이 절이 최신)
+- PhotoDisc 4곳 전부 통과(디자인 검수). P058 '떠 보임' = 화면 지형 ≠ 데이터(추측), 화면 보고 내리지 말 것 → 6단계.
+- 묶음 b(34종, JuiceParasol 뺌 — 줄무늬 없는 판 다시) + c(13종) = build/import3d_b 47개(메시만). GateLeaf R = 쓰지 않음(문짝 대칭 → 오른쪽도 L 모델, 디자인 검수), R 파일은 build/import3d_hold. SA: build/sa_b(140)·build/sa_c(52) 다 봄, b 올리는 중(_upload.log), c는 b 끝나면 `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_c --tags CNMR`. 3D 가져오기(마우스·키보드) = 최종 검수가 사용자에게 (가)직접/(나)나 묻는 중. 묶음 e 11종 = Blender 손보기 2 경로 오면 같은 폴더에.
+- 자리 지도: 소품 = Props(Real/StandIn/Placeholder)의 Kit 이름(분수 P063, 장미 P021·P112, BenchB P035·057·081·120·127, FlowerCart P018, BreadStand P012, FruitStall P016, 등불 L01~L56, 나무 E·F·G 16곳, 토피어리 C·D 4, Planter_E 2). 집 장식 = art/prompts/house_chunks_queue_2026-10-13.json 'houses'. ⑤ 메모 = docs/review/pbr_final_2026-10-13.md 묶음 b·c·e.
+
+## ★ 10/13 14시대 — PhotoDisc 파트 키트 
 - tools/prop_kit.py HaloReasonHQ_PhotoDisc 새 레시피(front_ns 재서 61파트, 타일 윗면 +0.08, 판만 충돌) → HaloPropKits 다시 만들고 4곳 교체. P103 = 대성당 마당 판(30.10) 위로, P128 = 돔 꼭대기 장식(77.6)→발코니 60.2, 배율 0.68 + 19.5° 돌려 기둥 8개 사이. 남은 것: P036 모서리가 경사 끝에 떠 있음(12.75~14), P058 위에 벤치 P057 겹침 → 디자인 검수 판정 대기. 금색이 2D보다 주황·무광(프로젝트 금 HH_HaloGoldTrim 255,168,36) — 바꿀지 판정 대기. 사진 art/review/img3/photodisc/ (시트 photodisc_vs_2D_v1.jpg).
 - v2(디자인 검수 판정 반영): 금 255,196,60 한 색, 테 단차 키움 + 진한 금 홈 고리(73파트). P036 6.0칸·P103 6.5칸 평평하고 빈 자리로 옮김(계획 좌표와 다름 — halo_props_place.py 다시 돌리면 되돌아감 주의), P057 벤치 자리 상자 P058 원판 밖으로. 벤치 땅 구멍 = 창 연 채 다시 써도 그대로 → 최종 검수 지시로 6단계 체크(메인에서 걷기)로 넘김. 시트 photodisc_vs_2D_v2.jpg. 남은 사진: P058·P128 낮 + 4곳 밤(shots_v9.py, 화면 차례 필요).
 - 벤치 자리 땅 구멍: 창 펼치고 30초 뒤에도 그대로(fix_v6) → 단순 그리기 지연 아님. 데이터(레이 2.0)는 맞음. WorldKit 다시 열기나 메인 place에서 확인 필요.
