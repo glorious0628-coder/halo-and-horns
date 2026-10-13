@@ -867,6 +867,20 @@ function UIKit.TapExtents(rect, others, px)
 	return ext
 end
 
+-- real px per du inside a button whose parent is o: every UIScale from o up to and INCLUDING its ScreenGui (MainGui's
+-- 0.75 on phones sits right under the ScreenGui - API review 10/13: stopping before it made the strips 25 % short);
+-- the button's own press tween is not counted. Pure over FindFirstChildWhichIsA / IsA / Parent (test_phone_first10)
+function UIKit.TapScale(o)
+	local k = 1
+	while o do
+		local sc = o:FindFirstChildWhichIsA("UIScale")
+		if sc and sc.Scale > 0 then k *= sc.Scale end
+		if o:IsA("LayerCollector") then break end
+		o = o.Parent
+	end
+	return k
+end
+
 function UIKit.TapPad(btn, fire)
 	if not UserInputService.TouchEnabled or typeof(btn) ~= "Instance" or not btn:IsA("GuiButton") then return end
 	local pads, pending = {}, false
@@ -893,18 +907,12 @@ function UIKit.TapPad(btn, fire)
 			return
 		end
 		local size, pos = btn.AbsoluteSize, btn.AbsolutePosition
-		if size.X < 2 or size.Y < 2 then return end
-		if size.X >= UIKit.Tap.Px and size.Y >= UIKit.Tap.Px then
+		-- shrunk away (a folded parent, a size tween) or already finger-sized: no strips
+		if size.X < 2 or size.Y < 2 or (size.X >= UIKit.Tap.Px and size.Y >= UIKit.Tap.Px) then
 			for _, p in pads do p.Visible = false end
 			return
 		end
-		-- real px per du inside the button: the UIScales above it (its own press tween excluded)
-		local k, o = 1, btn.Parent
-		while o and not o:IsA("LayerCollector") do
-			local sc = o:FindFirstChildWhichIsA("UIScale")
-			if sc and sc.Scale > 0 then k *= sc.Scale end
-			o = o.Parent
-		end
+		local k = UIKit.TapScale(btn.Parent)
 		local others = {}
 		for _, sib in btn.Parent:GetChildren() do
 			if sib ~= btn and sib:IsA("GuiButton") and sib.Visible then

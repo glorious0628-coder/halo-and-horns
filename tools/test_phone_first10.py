@@ -22,13 +22,14 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SPS = "src/StarterPlayer/StarterPlayerScripts/"
-FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "UIKIT": ROOT / (SPS + "UIKit.luau")}
+FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "UIKIT": ROOT / (SPS + "UIKit.luau"), "SCALE": ROOT / (SPS + "UIKit.luau")}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-14/offline_phone_first10_2026-10-14.json"
 CUTS = {"HUD": ("function L.LayoutPlate(R)", "\nend\n"),
-        "UIKIT": ("function UIKit.TapExtents(rect, others, px)", "\nend\n")}
+        "UIKIT": ("function UIKit.TapExtents(rect, others, px)", "\nend\n"),
+        "SCALE": ("function UIKit.TapScale(o)", "\nend\n")}
 
 FIXTURE = r'''
 local checks, failed = 0, 0
@@ -123,6 +124,35 @@ do
 	check(e.T == 7, "a button off to the side does not limit the strip above", e.T)
 end
 
+-- 3. UIKit.TapScale: real px per du = every UIScale from the button's parent up to AND including its ScreenGui (API
+-- review 10/13: MainGui's 0.75 sits right under the ScreenGui; stopping before it left the strips 25 % short)
+do
+	local UIKit = {}
+	local f = assert(loadstring(SCALE_SOURCE, "=TapScale"))
+	setfenv(f, setmetatable({ UIKit = UIKit }, { __index = getfenv() }))
+	f()
+	local function node(class, scale, parent)
+		local n = { Class = class, Parent = parent }
+		function n:FindFirstChildWhichIsA(c) return c == "UIScale" and scale and { Scale = scale } or nil end
+		function n:IsA(c) return c == "LayerCollector" and self.Class == "ScreenGui" end
+		return n
+	end
+	local playerGui = node("PlayerGui", 3) -- never counted: above the ScreenGui
+	local gui = node("ScreenGui", 0.75, playerGui) -- MainGui's UIScale (UIKit: uiScale.Parent = gui)
+	local window = node("Frame", nil, gui)
+	local body = node("Frame", 0.9, window) -- a window's own fit scale
+	local row = node("Frame", nil, body)
+	local ts = UIKit.TapScale
+	check(type(ts) == "function" and math.abs(ts(row) - 0.675) < 1e-9, "phone: 0.9 (window) x 0.75 (MainGui) = 0.675",
+		ts and ts(row))
+	check(math.abs(ts(window) - 0.75) < 1e-9, "a button right in the window: MainGui's 0.75 counted", ts(window))
+	check(math.abs(ts(gui) - 0.75) < 1e-9, "the ScreenGui itself: its own UIScale, nothing above", ts(gui))
+	check(ts(nil) == 1, "no parent: 1", ts(nil))
+	-- the strip a 30 px Equip gets at 0.75: 7 real px = 9.33 du, drawn 9.33 x 0.75 = 7 px -> 44 px in all
+	local k = ts(window)
+	check(math.abs((7 / k) * 0.75 * 2 + 30 - 44) < 1e-9, "a 30 px button + its strips = 44 real px", (7 / k) * 0.75 * 2 + 30)
+end
+
 print(string.format("PHONE10_SUMMARY checks=%d failed=%d", checks, failed))
 '''
 
@@ -139,6 +169,10 @@ MUTATIONS = [
     ("UIKIT", "no side strips for a narrow button", "needX = math.max(0, px - rect.H) / 2, math.max(0, px - rect.W) / 2",
      "needX = math.max(0, px - rect.H) / 2, 0"),
     ("UIKIT", "a smaller tap target", "UIKit.Tap = { Px = 44 }", "UIKit.Tap = { Px = 36 }"),
+    ("SCALE", "the ScreenGui's UIScale left out (the 10/13 MAJOR)",
+     "\t\tif sc and sc.Scale > 0 then k *= sc.Scale end\n\t\tif o:IsA(\"LayerCollector\") then break end\n",
+     "\t\tif o:IsA(\"LayerCollector\") then break end\n\t\tif sc and sc.Scale > 0 then k *= sc.Scale end\n"),
+    ("SCALE", "the scales above the ScreenGui counted too", "\t\tif o:IsA(\"LayerCollector\") then break end\n", ""),
 ]
 
 
@@ -167,7 +201,8 @@ def run(src: dict) -> tuple[int, int, str]:
     m = re.search(r"^UIKit\.Tap = \{ Px = (\d+(?:\.\d+)?) \}", src["UIKIT"], re.M)
     text = ("local PLATE_SOURCE = " + lua_str(cut("HUD", src["HUD"])) + "\nlocal HUD_POWER_TAP = "
             + lua_str(power_tap(src["HUD"])) + "\nlocal TAP_SOURCE = " + lua_str(cut("UIKIT", src["UIKIT"]))
-            + "\nlocal UIKIT_TAP_PX = " + lua_str(m[1] if m else "nil") + "\n" + FIXTURE)
+            + "\nlocal UIKIT_TAP_PX = " + lua_str(m[1] if m else "nil")
+            + "\nlocal SCALE_SOURCE = " + lua_str(cut("SCALE", src["SCALE"])) + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "phone_first10.luau"
         p.write_text(text, encoding="utf-8")
@@ -193,6 +228,13 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          and "btn:FindFirstChildWhichIsA(\"UIGridStyleLayout\")" in u),
         ("the strips sit outside the button (a press on the button keeps its own feel)",
          'place("TapPadTop", e.T >= 1, -e.L, -e.T, w, e.T)' in u and 'place("TapPadBottom", e.B >= 1, -e.L, size.Y, w, e.B)' in u),
+        ("the strips size with UIKit.TapScale(btn.Parent) (MainGui's UIScale included)",
+         "\t\tlocal k = UIKit.TapScale(btn.Parent)\n" in u),
+        ("a shrunk-away button hides its strips (size < 2)",
+         "\t\tif size.X < 2 or size.Y < 2 or (size.X >= UIKit.Tap.Px and size.Y >= UIKit.Tap.Px) then\n"
+         "\t\t\tfor _, p in pads do p.Visible = false end\n" in u),
+        ("the power tap area starts empty (never the whole screen before the first layout)",
+         "\tui.powerHit.Size = UDim2.new()" in h),
     ]
 
 
@@ -205,6 +247,10 @@ STATIC_MUTATIONS = [
     ("HUD", "the tap area back inside the row", "ui.powerHit = L.PowerHit(parent)", "ui.powerHit = L.PowerHit(ui.powerRow)"),
     ("HUD", "RefreshWindows forgets the power tap", "for _, hit in { ui.portraitHit, ui.powerHit } do",
      "for _, hit in { ui.portraitHit } do"),
+    ("UIKIT", "the old scale loop back", "\t\tlocal k = UIKit.TapScale(btn.Parent)\n", "\t\tlocal k = 1\n"),
+    ("UIKIT", "a shrunk button keeps its strips", "\t\tif size.X < 2 or size.Y < 2 or (size.X >= UIKit.Tap.Px",
+     "\t\tif (size.X >= UIKit.Tap.Px"),
+    ("HUD", "the power tap area starts full screen", "\tui.powerHit.Size = UDim2.new()", "\tlocal _ = UDim2.new()"),
 ]
 
 

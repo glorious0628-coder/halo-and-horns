@@ -8,7 +8,7 @@ Per device (749x361 Galaxy S22 Ultra, 844x390 iPhone 13), Halo Warrior, the tuto
   Journal, Codex, Settings, Help, News, Shop, Travel, Ranking (a window that does not open is logged, no photo).
 For every shot <dev>_<name>.json lists, over what is on screen (every ancestor shown):
   cut  = a text whose words do not fit (TextFits false) - name, text, box px;
-  small = a button under 40 px on a side (a finger needs ~44);
+  small = a button whose pressable area (with its UIKit.TapPad strips) is under 44 px on a side (a finger);
   off  = a button / text partly off the screen;
   overlap = two buttons that cover each other (not one inside the other);
   tiny = a one-line text drawn under 17 real px (phone floor 19 px; finder only - judge by the photo).
@@ -167,9 +167,10 @@ for _, d in pg:GetDescendants() do
 			-- real size: TextBounds times the UIScales above (TextBounds is in the label's own units)
 			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextBounds.Y > 0 then
 				local k, o = 1, d.Parent
-				while o and not o:IsA("LayerCollector") do
+				while o do -- up to and including the ScreenGui (MainGui's UIScale sits right under it)
 					local sc = o:FindFirstChildWhichIsA("UIScale")
 					if sc and sc.Scale > 0 then k *= sc.Scale end
+					if o:IsA("LayerCollector") then break end
 					o = o.Parent
 				end
 				local own = d:FindFirstChildWhichIsA("UIScale")
@@ -190,7 +191,7 @@ for _, d in pg:GetDescendants() do
 						x1, y1 = math.max(x1, cb[1] + cb[3]), math.max(y1, cb[2] + cb[4])
 					end
 				end
-				if math.min(x1 - x0, y1 - y0) < 40 then
+				if math.min(x1 - x0, y1 - y0) < 44 - 0.5 then
 					table.insert(out.small, { d:GetFullName():gsub("^.-PlayerGui%.", ""), b, { x0, y0, x1 - x0, y1 - y0 } })
 				end
 			end

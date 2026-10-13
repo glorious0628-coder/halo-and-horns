@@ -713,6 +713,7 @@ function L.PowerBuild(parent)
 	-- bar and >= L.PowerTap real px tall)
 	ui.powerHit = L.PowerHit(parent)
 	ui.powerHit.ZIndex = ui.powerRow.ZIndex + 2
+	ui.powerHit.Size = UDim2.new() -- (API review 10/13) never the whole screen before the first L.LayoutPlate
 	ui.power:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
 	ui.pouch:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
 end
