@@ -482,6 +482,22 @@ do
 	goalKind("kept Q", "IronLevel")
 	f.Services.PlayerService.SetStat(f.Player, "SkillSlots", 0); f:Publish()
 	goalKind("Q not kept", "SkillIron")
+	-- gameplay plan 2026-10-13 1-A #2: the Forge ships with Buy = false: at Lv5 the iron goal says it drops (Tutorial.Text.
+	-- NextIronDrop / ShortNames.IronDrop are 게임성 개발 1's lines: set here when this branch has none); without that line no
+	-- iron row at all (never the gold one). The gold rows below are the old flow (Buy switched back on)
+	local dropText, dropShort = T.NextIronDrop, SN.IronDrop
+	T.NextIronDrop = dropText or "Next goal · Beat a King Slime for an Iron weapon"
+	SN.IronDrop = dropShort or "King Slime"
+	f.Services.PlayerService.SetStat(f.Player, "Level", 5); f.Services.ProgressionService.LeveledUp:Fire(f.Player); f:Publish()
+	nextGoal("level5 no weapon sold", T.NextIronDrop, SN.IronDrop)
+	goalKind("level5 no weapon sold", "IronDrop")
+	T.NextIronDrop, SN.IronDrop = nil, nil
+	f:Publish()
+	local noDrop = f.LastList[1]
+	check(noDrop == nil or (noDrop.GoalKind ~= "IronGold" and noDrop.GoalKind ~= "IronDrop"),
+		"no NextIronDrop line: no iron row, never the gold one: " .. tostring(noDrop and noDrop.GoalKind))
+	T.NextIronDrop, SN.IronDrop = dropText, dropShort
+	f.Config.WeaponShop.Buy = true
 	f.Services.PlayerService.SetStat(f.Player, "Level", 5); f.Services.ProgressionService.LeveledUp:Fire(f.Player); f:Publish()
 	nextGoal("level5", string.format(T.NextIronGold, tostring(iron.Price), gold()), SN.IronGold)
 	f.Services.PlayerService.SetStat(f.Player, "CarriedGold", 120); f.Services.PlayerService.SetStat(f.Player, "BankGold", 600); f:Publish()

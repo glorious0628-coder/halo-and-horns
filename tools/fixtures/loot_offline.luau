@@ -1106,6 +1106,7 @@ runGroup("rollkill", function()
 	local t = fixture()
 	t.Data.LootFlags.FirstScroll = true
 	t.Data.LootFlags.FirstWeapon = true -- C2: the first Prince's weapon is not a row
+	t.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
 	t:Set("Level", 50) -- every row draws (the C2 tier-3 rows have a BelowLevel)
 	for _, kind in { "Slime", "BigSlime", "Goblin" } do
 		local rows = L.Tables[kind]
@@ -1147,6 +1148,7 @@ runGroup("rollkill", function()
 		local s = fixture()
 		s.Data.LootFlags.FirstScroll = true
 		s.Data.LootFlags.FirstWeapon = true -- C2
+		s.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
 		s:Set("Level", 50) -- every row draws (C2 BelowLevel rows)
 		math.randomseed(seed)
 		local counts, events = {}, {}
@@ -1648,6 +1650,61 @@ runGroup("first weapon drop", function()
 	check(m.Data.LootFlags.FirstWeapon == nil and not bit32.btest(m.Data.WeaponOwnedMask, 2), "a free rider's share: no guarantee used", "")
 end)
 
+------------------------------------------------------------------ gameplay plan 2026-10-13 1-A #2: the first King Slime's weapon
+runGroup("first King weapon drop", function()
+	local f = fixture()
+	local L = f.L
+	f.Data.LootFlags.FirstScroll = true
+	f.Data.LootFlags.FirstWeapon = true
+	local fk = L.FirstKingDrop
+	check(fk and fk.Monster == "SlimeKing" and fk.Tier == 3, "Config.Loot.FirstKingDrop = the King Slime's tier 3", show(fk))
+	local min = f.Config.Weapons[3].MinLevel
+	f:Set("Level", min)
+	f.ScriptConst = 0.999999 -- no row drops: the weapon is the guarantee alone
+	local g = f:Roll("SlimeKing")
+	local name = f.Config.WeaponName(3, "Warrior", "Halo")
+	check(bit32.btest(f.Data.WeaponOwnedMask, 4) and f:Gained(g, "Weapon", 3) == 1 and f.Data.LootFlags.FirstKingWeapon == true,
+		"the first King kill: tier 3 owned, in the Loot list, the flag set", show({ f.Data.WeaponOwnedMask, f.Data.LootFlags }))
+	check(f.Data.WeaponTier == 3 and f:Noticed(string.format(L.Text.FirstKingEquip, name)) == 1
+		and f:Noticed(string.format(L.Text.FirstDropEquip, name)) == 0,
+		"at its level it beats the tier-1 weapon: equipped at once, the King's own line", show({ f.Data.WeaponTier }))
+	f.Data.WeaponOwnedMask, f.Data.WeaponTier = 1, 1
+	g = f:Roll("SlimeKing")
+	check(f:Gained(g, "Weapon", 3) == 0 and f.Data.WeaponOwnedMask == 1, "only the first King: never a second guarantee", "")
+	-- below the iron weapon's level: owned, not equipped, the plain line
+	local lo = fixture()
+	lo.Data.LootFlags.FirstScroll = true
+	lo.Data.LootFlags.FirstWeapon = true
+	lo:Set("Level", min - 1)
+	lo.ScriptConst = 0.999999
+	lo:Roll("SlimeKing")
+	check(bit32.btest(lo.Data.WeaponOwnedMask, 4) and lo.Data.WeaponTier == 1
+		and lo:Noticed(string.format(L.Text.FirstKingWeapon, name)) == 1, "below Lv" .. min .. ": owned, kept in the Bag, 'dropped' line",
+		show({ lo.Data.WeaponOwnedMask, lo.Data.WeaponTier }))
+	-- owned already: the chance is used up, nothing given
+	local o = fixture()
+	o.Data.LootFlags.FirstScroll = true
+	o.Data.LootFlags.FirstWeapon = true
+	o:Set("WeaponOwnedMask", 5)
+	o.ScriptConst = 0.999999
+	g = o:Roll("SlimeKing")
+	check(o.Data.LootFlags.FirstKingWeapon == true and o:Gained(g, "Weapon", 3) == 0, "tier 3 owned already: the flag is used, nothing given", "")
+	-- the practice King and a free rider's share roll nothing: the flag stays unused
+	for _, extra in { { Practice = true }, { Minor = true } } do
+		local m = fixture()
+		m.Data.LootFlags.FirstScroll = true
+		m:Roll("SlimeKing", false, extra)
+		check(m.Data.LootFlags.FirstKingWeapon == nil and not bit32.btest(m.Data.WeaponOwnedMask, 4),
+			"a practice King / a free rider's share: no guarantee used", show(extra))
+	end
+	-- the Prince never pays the King's weapon
+	local pr = fixture()
+	pr.Data.LootFlags.FirstScroll = true
+	pr.ScriptConst = 0.999999
+	pr:Roll("BigSlime")
+	check(pr.Data.LootFlags.FirstKingWeapon == nil and not bit32.btest(pr.Data.WeaponOwnedMask, 4), "a Prince kill leaves the King's guarantee", "")
+end)
+
 runGroup("weapons", function()
 	local f = fixture()
 	local L = f.L
@@ -1660,12 +1717,14 @@ runGroup("weapons", function()
 				local w = fixture()
 				w.Data.LootFlags.FirstScroll = true
 				w.Data.LootFlags.FirstWeapon = true -- C2: the first Prince's weapon is checked on its own
+				w.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
 				local bitMask = bit32.lshift(1, row.Weapon - 1)
 				if type(row.BelowLevel) == "table" then
 					-- A23-27: below the weapon's MinLevel this row pays BelowLevel with no draw (one script value unused)
 					local b = fixture()
 					b.Data.LootFlags.FirstScroll = true
 					b.Data.LootFlags.FirstWeapon = true
+					b.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
 					local min = C.Weapons[row.Weapon].MinLevel
 					b:Set("Level", min - 1)
 					local bg, unused = b:Force(kind, { [i] = true })
@@ -2307,6 +2366,9 @@ runGroup("shop", function()
 	local f = fixture()
 	local C = f.Config
 	f:Set("CarriedGold", 5000)
+	-- gameplay plan 2026-10-13 1-A #2: the Forge ships with Buy = false (group "shop: no weapon sold" below); these checks are
+	-- the buy path for when it is switched back on
+	C.WeaponShop.Buy = true
 	local function attempt(tier)
 		f.Notices = {}
 		local gold = f.Data.CarriedGold + f.Data.BankGold
@@ -2344,6 +2406,31 @@ runGroup("shop", function()
 	spent = attempt(2)
 	check(f.Data.WeaponTier == 2 and spent == C.Weapons[2].Price and bit32.btest(f.Data.WeaponOwnedMask, 2),
 		"shop: an unowned tier 2 (MinLevel 1) is bought and equipped", show({ f.Data.WeaponTier, spent }))
+end)
+
+runGroup("shop: no weapon sold", function()
+	-- gameplay plan 2026-10-13 1-A #2 (A23-127): Config.WeaponShop.Buy = false: buying a weapon not owned is refused with one
+	-- line and no gold; an owned one still equips (the Forge keeps equip / enhance / sell)
+	local f = fixture()
+	local C = f.Config
+	check(C.WeaponShop.Buy == false and C.WeaponShop.MaxSoldTier == 3, "shipped: Buy = false, MaxSoldTier stays 3", show(C.WeaponShop))
+	f:Set("CarriedGold", 5000)
+	f:Set("Level", 5)
+	f:Set("WeaponOwnedMask", tierMask(1, 3))
+	for _, tier in { 2, 3 } do
+		f.Notices = {}
+		local gold = f.Data.CarriedGold + f.Data.BankGold
+		f:ShopBuy(tier)
+		local spent = gold - (f.Data.CarriedGold + f.Data.BankGold)
+		if tier == 2 then
+			check(spent == 0 and not bit32.btest(f.Data.WeaponOwnedMask, 2) and f.Data.WeaponTier == 1
+				and f:Noticed(C.Text.WeaponDropOnly) == 1, "an unowned tier 2: refused with 'New weapons drop from monsters!', no gold",
+				show({ spent, f.Data.WeaponOwnedMask, f.Notices }))
+		else
+			check(spent == 0 and f.Data.WeaponTier == 3 and f:Noticed(C.Text.WeaponDropOnly) == 0, "an owned tier 3 still equips for free",
+				show({ spent, f.Data.WeaponTier }))
+		end
+	end
 end)
 
 ------------------------------------------------------------------ 6b. A23-28 weapon level rule (auto-fit on a level drop, one notice per level-up crossing)

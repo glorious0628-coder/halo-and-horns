@@ -124,6 +124,17 @@ local function getLevel(data)
 	return math.max(1, math.floor(num(data and data.Level, 1)))
 end
 
+-- 최종 검수 10/13 (A23-14 kept with EarlyMult 0.35): vacation XP alone never reaches Lv(Levels.EarlyUntil): below it a claim
+-- stops one XP short of that level. nil = no cap (Lv EarlyUntil and up)
+local function vacationXPRoom(data)
+	local untilLv = math.floor(num(Config.Levels.EarlyUntil, 10))
+	local level = getLevel(data)
+	if level >= untilLv then return nil end
+	local room = -math.max(0, num(data.XP)) - 1
+	for l = level, untilLv - 1 do room += Config.XPToNext(l) end
+	return math.max(0, math.floor(room))
+end
+
 -- CR-M6: unclaimed rewards never pay more than the CURRENT level's value (free class change / rebirth to Lv1).
 -- After a level-up the stored value is the smaller one, so it is paid unchanged.
 local function capTo(g, x, capG, capX)
@@ -316,6 +327,16 @@ local function newQuest(player, kind, others)
 	local today = Config.DayIndex(os.time())
 	local gooseResting = kind == "Daily" and num(data.GooseDay) > 0
 		and today - num(data.GooseDay) <= num(Config.Quests.GooseRestDays, 1) and num(data.GooseDay) ~= today
+	-- gameplay plan 2026-10-13 1-A #3: a goose daily only while the next egg hunt is near (Config.Quests.GooseWindow) or on
+	if kind == "Daily" and not gooseResting then
+		local window = num(Config.Quests.GooseWindow, 0)
+		if window > 0 then
+			local okG, gs = pcall(Net.GameState)
+			local active = okG and gs and gs:GetAttribute("GooseActive") == true
+			local nextAt = okG and gs and num(gs:GetAttribute("GooseNextAt")) or 0
+			if not active and not (nextAt > 0 and nextAt - Util.Now() <= window) then gooseResting = true end
+		end
+	end
 
 	local pvpAllowed = level >= Config.Quests.PvPMinLevel
 		and otherPvP < (Config.Quests.MaxPvPQuests or 1)
@@ -346,7 +367,8 @@ local function newQuest(player, kind, others)
 			local out = {}
 			for _, r in list do
 				local rt = TEMPLATE_BY_ID[r.Id]
-				if rt and rt.NonHunt == true then table.insert(out, r) end
+				-- gameplay plan 1-A #3 (A23-113): PvP is never the forced non-hunting slot
+				if rt and rt.NonHunt == true and not rt.PvP then table.insert(out, r) end
 			end
 			return out
 		end
@@ -714,8 +736,14 @@ local function nextGoalText(data, player)
 			end
 			return string.format(TUT_MESSAGES.NextIronLevel, iron.MinLevel, level), "IronLevel", iron.MinLevel
 		end
-		local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
-		return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
+		-- gameplay plan 2026-10-13 1-A #2: no weapon sold (Config.WeaponShop.Buy == false): it drops (Princes, the King);
+		-- the line is Tutorial.Text.NextIronDrop (게임성 개발 1's text; none = no iron line, never the gold one)
+		if type(Config.WeaponShop) == "table" and Config.WeaponShop.Buy == false then
+			if type(TUT_MESSAGES.NextIronDrop) == "string" then return TUT_MESSAGES.NextIronDrop, "IronDrop" end
+		else
+			local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
+			return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
+		end
 	end
 	-- SKL-3 (skill_kit §2): the next skill this save learns (Q; Z / X while their switch is on), before the next zone
 	-- when it comes first
@@ -811,7 +839,8 @@ local function tutorialEntry(player, data)
 			end
 			entry.ShortName = goalShort(kind, need)
 			entry.NextGoal = true
-			-- A23-48: which next goal this is ("SkillIron" (A23-71 S16) | "IronLevel" | "IronGold" | "Skill" (SKL-3) |
+			-- A23-48: which next goal this is ("SkillIron" (A23-71 S16) | "IronLevel" | "IronGold" | 1-A #2: "IronDrop" |
+			-- "Skill" (SKL-3) |
 			-- "Zone" | A23-86 F: "Commission" | "Clatter" | "Crystal" | "Rebirth" | "RebirthReady"), so clients never
 			-- search the (now English) text for a word
 			entry.GoalKind = kind
@@ -933,12 +962,12 @@ end
 
 ------------------------------------------------------------------ progress & completion
 -- A23-75: returns the gold and XP really added (the 2x passes), for the lines the callers show
-local function payReward(player, gold, xp)
+local function payReward(player, gold, xp, xpCap)
 	if gold > 0 then
 		gold = S.ProgressionService.AddBankGold(player, gold, "Quest") or gold
 	end
 	if xp > 0 then
-		xp = S.ProgressionService.AddXP(player, xp) or xp
+		xp = S.ProgressionService.AddXP(player, xp, xpCap) or xp -- xpCap: after the 2x pass (ProgressionService.AddXP)
 	end
 	return math.max(0, gold), math.max(0, xp)
 end
@@ -1086,6 +1115,8 @@ local function runDayCheck(player)
 			local days = math.min(D.VacationMaxDays, math.max(0, num(data.VacationDays)) + add)
 			days = math.floor(days * 1000 + 0.5) / 1000 -- keep the mirrored attribute tidy
 			local g, x = Config.VacationReward(getLevel(data), days)
+			local room = vacationXPRoom(data) -- the shown amount stops below Lv10 too (the claim checks again)
+			if room ~= nil then x = math.min(x, room) end
 			S.PlayerService.SetStat(player, "VacationDays", days)
 			S.PlayerService.SetStat(player, "VacationGold", g)
 			S.PlayerService.SetStat(player, "VacationXP", x)
@@ -1188,7 +1219,10 @@ local function onClaimVacation(player)
 	S.PlayerService.SetStat(player, "VacationDays", 0)
 	S.PlayerService.SetStat(player, "VacationGold", 0)
 	S.PlayerService.SetStat(player, "VacationXP", 0)
-	g, x = payReward(player, g, x)
+	-- 최종 검수 10/13: below Lv10 the XP stops at the end of Lv9 (vacation alone never reaches Lv10), the 2x pass included
+	local room = vacationXPRoom(data)
+	if room ~= nil then x = math.min(x, room) end
+	g, x = payReward(player, g, x, room)
 	Net.Notify(player, string.format(Config.Text.VacationClaimed, Util.FormatNumber(g), Util.FormatNumber(x)), "reward", nil,
 		"GoldPickup")
 end

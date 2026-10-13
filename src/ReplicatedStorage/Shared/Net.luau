@@ -122,6 +122,9 @@ Net.GameStateDefaults = {
 	DayPhase = "Day", NightLevel = 0, Weather = "Clear",
 	-- SettingsService (BB3 footer): false while this server runs without a DataStore (DataService memory mode)
 	SaveOK = true,
+	-- Net.CreateAll (게임성 개발 1 10/13): true in a private server (game.PrivateServerId ~= "", which the client cannot read);
+	-- the shop card and the HUD line read it
+	PrivateServer = false,
 }
 
 -- server only; call once, first thing in Main.server.luau
@@ -143,6 +146,8 @@ function Net.CreateAll()
 	for k, v in Net.GameStateDefaults do
 		if gs:GetAttribute(k) == nil then gs:SetAttribute(k, v) end
 	end
+	local okP, privateId = pcall(function() return game.PrivateServerId end)
+	gs:SetAttribute("PrivateServer", okP and type(privateId) == "string" and privateId ~= "")
 	gs.Parent = ReplicatedStorage
 end
 

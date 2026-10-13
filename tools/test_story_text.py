@@ -561,10 +561,10 @@ DOC_COUNTS = {("Halloween", "Banter", "Format"): 2, ("Halloween", "Banter", "Day
               ("Tutorial", "QuestText"): 1}
 RAW_KEYS = {"Title", "Start", "Finish", "Clue", "Say", "Label", "Lines", "LinesBy", "Name", "Reply"}  # Reply: A23-70
 
-GENDER = {"Bright": "f", "Smokey": "f", "Hallie": "f", "Kit": "f", "Tiny": "m", "Magpie": "m", "Otto": "m",
+GENDER = {"Bright": "f", "Rose": "f", "Smokey": "f", "Hallie": "f", "Kit": "f", "Tiny": "m", "Magpie": "m", "Otto": "m",
           "Fizzby": "m"}
 PRONOUNS = {"f": re.compile(r"\b(she|her|hers|herself)\b", re.I), "m": re.compile(r"\b(he|him|his|himself)\b", re.I)}
-SINGLE_TERMS = {"Forge", "Crossroads", "Hallie", "Magpie", "Otto", "Fizzby", "Smokey", "Kaiju", "Archangel",
+SINGLE_TERMS = {"Forge", "Crossroads", "Hallie", "Magpie", "Otto", "Fizzby", "Rose", "Smokey", "Kaiju", "Archangel",
                 "Berserker", "Warlord"}
 CONNECTORS = {"of", "the", "&", "a", "an", "and"}
 

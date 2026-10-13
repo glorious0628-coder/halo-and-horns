@@ -191,7 +191,9 @@ MUTATIONS = [
     ("join safety net off", L, "and story.Done.M1_1 == true then", "and false then"),
     ("debug reset keeps the starter", L, "\tmask = math.floor(num(mask, 0))\n", "\tmask = bit32.bor(math.floor(num(mask, 0)), 1)\n"),
     # --- StoryQuestService
-    ("M1_1 completion never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
+    ("M1_1 never pays the weapon", ST, "if def.GiveWeapon and S.LootService", "if false and S.LootService"),
+    ("1-A #2: the weapon only at the finish (a bare-handed save cannot use Otto's scroll)", ST,
+     "\t\tif track.St == 1 then giveWeapon(player, def) end", "\t\tlocal _ = giveWeapon"),
     ("the quest's reward line dropped (the weapon line alone)", ST, "\tnotify(player, msg, \"reward\", \"QuestDone\")\n",
      "\tlocal _ = msg\n"),
     # --- JusticeService / PvPService / CharacterVisuals

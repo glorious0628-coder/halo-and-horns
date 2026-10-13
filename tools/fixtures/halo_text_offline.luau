@@ -36,7 +36,8 @@ end)
 
 runGroup("#55 the Sprout Promise", function()
 	local D = SQ.Defs
-	for _, case in { { "OathH", "Bright", "Halo" }, { "OathR", "Smokey", "Horns" } } do
+	-- A23-138: the Horns kid is shown as Rose; her speaker id stays "Smokey" (Speakers.Smokey = "Rose")
+	for _, case in { { "OathH", "Bright", "Halo", "Bright" }, { "OathR", "Rose", "Horns", "Smokey" } } do
 		local id, who, side = case[1], case[2], case[3]
 		local d = D[id]
 		check(d.Title == "The Sprout Promise" and d.ShortName == "Sprout promise" and #d.ShortName <= 14, id .. ": title + phone name say 'promise'",
@@ -47,7 +48,8 @@ runGroup("#55 the Sprout Promise", function()
 		check(string.find(line, "Make your promise.", 1, true) ~= nil and string.sub(line, 1, #who + 2) == who .. ": ", id .. ": " .. who .. "'s line asks for the promise", line)
 		local found = hasWord(strings(d, { Finish = true }), "oath")
 		check(found == nil, id .. ": no 'oath' in the title, steps, lines or start (except the closing line)", tostring(found))
-		check(d.Factions[side] == true and d.Speaker == who, id .. ": still " .. side .. "'s, spoken by " .. who, show({ d.Factions, d.Speaker }))
+		check(d.Factions[side] == true and d.Speaker == case[4] and (SQ.Speakers[d.Speaker] or d.Speaker) == who,
+			id .. ": still " .. side .. "'s, spoken by " .. who, show({ d.Factions, d.Speaker }))
 		check(d.Reward.TitleBy.Good == "GuardianCadet" and d.Reward.TitleBy.Evil == "RascalCadet" and C.TitleDefs.GuardianCadet and C.TitleDefs.RascalCadet,
 			id .. ": the two cadet titles are unchanged", show(d.Reward))
 	end

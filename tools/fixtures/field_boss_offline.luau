@@ -153,8 +153,9 @@ runGroup("config", function()
 	local kinds = {}
 	for k in C.Finisher.Kinds do table.insert(kinds, k) end
 	table.sort(kinds)
-	check(#kinds == 2 and kinds[1] == "CaptainClatter" and kinds[2] == "SlimeKing",
-		"the finisher cards are the field bosses' only (never the Slime Prince)", show(kinds))
+	-- gameplay plan 2026-10-13 1-A #10: no card until the card's window (2-A #3); the field bosses' cards stay ready
+	check(#kinds == 0 and C.Finisher.Cards.SlimeKing ~= nil and C.Finisher.Cards.CaptainClatter ~= nil and C.Finisher.Cards.BigSlime == nil,
+		"no finisher card for now (Kinds = {}); the cards are the field bosses' only (never the Slime Prince)", show(kinds))
 	check(type(C.Loot.Tables.SlimeKing) == "table" and #C.Loot.Tables.SlimeKing > 0,
 		"the King Slime has a drop table")
 	local A = C.Announce
@@ -441,7 +442,7 @@ runGroup("clatter config", function()
 	check(string.find(NET_SOURCE, "ClatterNextAt = 0, ClatterActive = false, ClatterEndsAt = 0", 1, true) ~= nil, "Net defaults")
 	-- the finisher cards: both bosses, the same size each
 	local F = C.Finisher
-	check(F.Kinds.SlimeKing == true and F.Kinds.CaptainClatter == true and F.Kinds.BigSlime == nil, "card kinds")
+	check(next(F.Kinds) == nil and F.Cards.SlimeKing ~= nil and F.Cards.CaptainClatter ~= nil, "card kinds: none for now (1-A #10), both cards ready")
 	for kind, card in F.Cards do
 		local item = C.Loot.Items[card.Help.Item]
 		local worth = (item and item.Sell) or card.Help.Worth or 0

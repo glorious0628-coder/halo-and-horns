@@ -35,6 +35,7 @@ ROUTES = [
     ("StoryQuestService.luau", "notify(player, msg, \"reward\", \"QuestDone\")", "QuestDone"),
     ("StoryQuestService.luau", "notify(player, TXT.Unlocked", "None"),
     ("StoryQuestService.luau", "if line then notify(player, line", "None"),
+    ("StoryQuestService.luau", "if given then notify(player, given", "None"),  # gameplay plan 1-A #2: a step's GiveItem
     ("StoryQuestService.luau", "TXT.NewTitle, Config.TitleDefs[titleId].Name", "RankUp"),
     ("StoryQuestService.luau", "notify(player, table.concat(parts, \" · \")", "None"),
     ("BoardService.luau", "T.Done or \"Job done!", "QuestDone"),
