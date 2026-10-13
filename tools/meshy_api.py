@@ -152,7 +152,8 @@ def main():
     m.add_argument("--wait", action="store_true")
     r = sub.add_parser("retex")
     r.add_argument("name")
-    r.add_argument("--task", required=True, help="SUCCEEDED multi-image-to-3d task id")
+    r.add_argument("--task", help="SUCCEEDED multi-image-to-3d task id (or use --model-file)")
+    r.add_argument("--model-file", help="local .glb/.fbx/.obj (<= 100 MB) sent as a data URI instead of --task")
     r.add_argument("--front", required=True)
     r.add_argument("--left")
     r.add_argument("--right")
@@ -218,8 +219,9 @@ def main():
         if a.geo == "2k":
             est += 5
     else:
+        if not a.task and not a.model_file:
+            sys.exit("retex needs --task or --model-file")
         body = {
-            "input_task_id": a.task,
             "enable_pbr": bool(a.pbr),
             "texture_resolution": a.res,
             "multiview_image_urls": ["<%s>" % p for p in views],  # docs: 1-4 images, first = front, needs meshy-7
@@ -227,6 +229,12 @@ def main():
             "enable_original_uv": True,
             "target_formats": ["glb", "fbx"],
         }
+        if a.task:
+            body["input_task_id"] = a.task
+        else:
+            if not os.path.exists(a.model_file) or os.path.getsize(a.model_file) > 100 * 1024 * 1024:
+                sys.exit("model file missing or over 100 MB")
+            body["model_url"] = "<%s>" % a.model_file
         kind = "retexture"
         est = 10 if a.res in ("2k", "4k") else 15
     print("POST /%s  est. credits %d" % (kind, est))
@@ -241,6 +249,8 @@ def main():
         real["texture_image_urls"] = [data_uri(p) for p in views]
     if "multiview_image_urls" in real:
         real["multiview_image_urls"] = [data_uri(p) for p in views]
+    if "model_url" in real:
+        real["model_url"] = "data:application/octet-stream;base64," + base64.b64encode(open(a.model_file, "rb").read()).decode("ascii")
     j, _ = call("POST", "/" + kind, real)
     task = j.get("result")
     print("task", task)
