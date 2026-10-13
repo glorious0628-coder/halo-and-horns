@@ -13580,25 +13580,26 @@
    "account": "Tripo account 2 (25,500 start; user Chrome, Claude Chrome extension)",
    "site": "studio.tripo3d.ai (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 125,
+   "points": 150,
    "white_models": [
     "cd1fd3e2-cad4-4ba8-a4fc-806d0110b8bc",
     "531c8172-d449-438b-a4a7-bcd442a39f27",
     "9f789f40-d9a3-49d1-abd8-c2af82d5f530",
     "506fd6cc-f059-43db-87a4-f096f322b77b"
    ],
-   "picked": "531c8172 (디자인 검수 2, 10/13)",
+   "picked": "cd1fd3e2 (디자인 검수 2 redo, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloVar4_Balustrade_C_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_C_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_C_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "디자인 검수 2 + 최종 검수 PBR gate (also decides whether to redo front-only textures)",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_C/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 5ecde7f6",
    "pbr": "d68d7d68 (5)",
-   "file": "art/models/tripo/web/HaloVar4_Balustrade_C_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_C_SM_texMV4k_pbr_src.fbx (cd1fd3e2, multiview texture); old 531c8172 = _SM_tex4k_pbr_src.fbx (failed)",
+   "redo": "531c8172 failed 최종 검수 (closed triangle from top) -> cd1fd3e2 (open L, 디자인 검수 2): texture = MIDDLE multiview tab (smart-mesh 4 views), 조명 제거, 4K, pressed by the user 10/13 (task a8876527, 20) + PBR 67208798 (5)"
   }
  ],
  "HaloVar4_Balustrade_B_web2_sm_tex8k_pbr": [
