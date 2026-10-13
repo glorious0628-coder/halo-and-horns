@@ -29,8 +29,8 @@ window.__setRefBlob = async (blob, name) => { const file = new File([blob], name
 
 const LIGHT = ' Real volume, rounded edges, soft form shading. Soft even light-box light from all sides: NO cast shadow, NO ground shadow, NO contact shadow, NO dark side, NO dark crevices, no strong glare. Bright true colours. Plain light grey background. No text.';
 window.__sidePrompt = (desc, view) => 'ref1 is the FRONT view of a small piece (' + desc + ') for a kid-friendly game. Draw the SAME piece exactly (same shapes, parts, colours, proportions, size) as a 3D-rendered toy-like object seen straight-on from the ' + view + ', at mid-height, centered, the same camera height and distance as ref1, only this one piece, no wall, no background objects. Anything that faces one way turns with the piece.' + LIGHT;
-const VIEWS = { back: 'BACK (the opposite side from ref1)', left: 'LEFT SIDE (camera turned 90 degrees to the left of the front)', right: 'RIGHT SIDE (camera turned 90 degrees to the right of the front)' };
-async function gen(label, refUrl, refBlob, prompt) {
+window.__VIEWS = { back: 'BACK (the opposite side from ref1)', left: 'LEFT SIDE (camera turned 90 degrees to the left of the front)', right: 'RIGHT SIDE (camera turned 90 degrees to the right of the front)' };
+window.__gen = async function (label, refUrl, refBlob, prompt) {
   const S = __sleep; let t0 = Date.now();
   while (__busy() > 0 && Date.now() - t0 < 240000) await S(1000);
   __clearRefs(); await S(1500);
@@ -53,12 +53,15 @@ async function gen(label, refUrl, refBlob, prompt) {
   const blob = await (await fetch(fresh)).blob(); window.__all[label] = blob; await S(800);
   __qLog.push(label + '|ok|' + blob.size + '|' + new Date().toISOString().slice(11, 19));
   return blob;
-}
+};
 window.__runItems = async (items) => {
   for (const it of items) {
     if (window.__stopList) { __qLog.push('STOPPED'); return; }
-    if (!__fronts[it.k]) { const b = await gen(it.k + '_front', it.ref, null, it.front); if (!b) return; __fronts[it.k] = b; }
-    for (const v of ['back', 'left', 'right']) { if (window.__stopList) { __qLog.push('STOPPED'); return; } const b = await gen(it.k + '_' + v, null, __fronts[it.k], __sidePrompt(it.desc, VIEWS[v])); if (!b) return; }
+    if (!__fronts[it.k]) { const b = await __gen(it.k + '_front', it.ref, null, it.front); if (!b) return; __fronts[it.k] = b; }
+    for (const v of ['back', 'left', 'right']) { if (window.__stopList) { __qLog.push('STOPPED'); return; } const b = await __gen(it.k + '_' + v, null, __fronts[it.k], __sidePrompt(it.desc, __VIEWS[v])); if (!b) return; }
   }
   __clearRefs(); __qLog.push('ALLDONE');
 };
+
+// Free-form task list: [{k, view, ref: 'https://at.adobe.com/...' (front only) , prompt}] ; non-front tasks use the NEW front of k (__fronts[k]) as reference.
+window.__tasks = async (tasks) => { for (const t of tasks) { if (window.__stopList) { __qLog.push('STOPPED'); return; } const front = t.view === 'front'; const b = await __gen(t.k + '_' + t.view, front ? t.ref : null, front ? null : __fronts[t.k], t.prompt); if (!b) return; if (front) __fronts[t.k] = b; } __clearRefs(); __qLog.push('ALLDONE'); };
