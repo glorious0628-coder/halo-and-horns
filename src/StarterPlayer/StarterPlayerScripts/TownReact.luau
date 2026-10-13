@@ -24,7 +24,10 @@ local T = { Tick = 1, Size = { 196, 86 }, Lift = 0.6,
 	-- final review 10/14 (phone first-10 photos: Bright's "Welcome, Squire!" bubble sat under the minimap and the quest
 	-- card): a person speaks only while the whole bubble (its tail at the head, Size px up and right) lands in the open
 	-- middle of the screen - fractions of the view; touch keeps clear of the thumbstick / thumb ring sides too
-	Clear = { Touch = { L = 0.3, R = 0.85, T = 0.15, B = 0.72 }, PC = { L = 0.26, R = 0.86, T = 0.12, B = 0.78 } } }
+	-- final review 10/14 (2, API review on the 749x361 sheet): the quest card ends at x 248 (L 0.34) and the thumb ring's
+	-- ghost / Q / Z start at x 475 from y 161 down - a bubble whose bottom is lower than RowY keeps left of RLow
+	Clear = { Touch = { L = 0.34, R = 0.85, RLow = 0.6, RowY = 0.44, T = 0.15, B = 0.72 },
+		PC = { L = 0.26, R = 0.86, T = 0.12, B = 0.78 } } }
 -- NextAt[model] = os.clock() when it may speak again; Last[model] = its last line; Pick = { Value, At } the TownPick seen
 local S = { NextAt = setmetatable({}, { __mode = "k" }), Last = setmetatable({}, { __mode = "k" }),
 	Pick = { Init = false }, BusyUntil = 0, Started = false }
@@ -112,7 +115,8 @@ end
 function TownReact.Clear(x, y, front, W, H, w, h, touch)
 	if not front or type(x) ~= "number" or type(y) ~= "number" or not (W and W > 0 and H and H > 0) then return false end
 	local z = touch and T.Clear.Touch or T.Clear.PC
-	return x >= W * z.L and x + w <= W * z.R and y - h >= H * z.T and y <= H * z.B
+	local right = (z.RLow and z.RowY and y > H * z.RowY) and z.RLow or z.R
+	return x >= W * z.L and x + w <= W * right and y - h >= H * z.T and y <= H * z.B
 end
 
 -- the person's head on screen now leaves room for the bubble (TownReact.Clear)

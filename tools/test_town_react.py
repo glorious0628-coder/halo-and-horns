@@ -179,11 +179,19 @@ Config.TownReactLines = realLines
 
 -- final review 10/14 (phone photos: Bright's bubble under the minimap / quest card): the whole bubble must land in the
 -- open middle of the view (TownReact.Clear), else that person waits
-check(TR.Clear(300, 200, true, 749, 361, 196, 86, true), "phone: a head in the middle may speak")
+check(TR.Clear(300, 150, true, 749, 361, 196, 86, true), "phone: a head in the middle may speak")
 check(not TR.Clear(120, 200, true, 749, 361, 196, 86, true), "phone: under the minimap / quest card: no")
 check(not TR.Clear(500, 200, true, 749, 361, 196, 86, true), "phone: the bubble would run into the thumb ring: no")
 check(not TR.Clear(300, 60, true, 749, 361, 196, 86, true), "phone: under the war meter: no")
-check(not TR.Clear(300, 200, false, 749, 361, 196, 86, true), "behind the camera: no")
+check(not TR.Clear(300, 150, false, 749, 361, 196, 86, true), "behind the camera: no")
+-- final review 10/14 (2): on the 749x361 sheet the quest card ends at x 248 and the ghost / Q / Z start at x 475 from
+-- y 161 down: a bubble that reaches below that row stays left of 0.6 W
+check(not TR.Clear(240, 150, true, 749, 361, 196, 86, true) and TR.Clear(256, 150, true, 749, 361, 196, 86, true),
+	"phone: the bubble starts right of the quest card (x 248)")
+check(not TR.Clear(300, 200, true, 749, 361, 196, 86, true), "phone: low in the view the bubble would reach the ghost / Q / Z: no")
+check(TR.Clear(330, 250, true, 926, 428, 196, 86, true) and not TR.Clear(380, 250, true, 926, 428, 196, 86, true),
+	"wide phone, low in the view: only left of 0.6 W")
+check(TR.Clear(300, 158, true, 749, 361, 196, 86, true), "phone: a bubble ending above the ghost's top may reach 0.85 W")
 check(not TR.Clear(210, 200, true, 749, 361, 196, 86, true) and TR.Clear(210, 200, true, 749, 361, 196, 86, false),
 	"the phone zone is narrower on the left (the thumbstick / quest card) than the PC one")
 check(TR.Clear(500, 400, true, 1280, 720, 196, 86, false), "PC: the middle may speak")
@@ -221,8 +229,11 @@ MUTATIONS = [
     ("no p.Npc", "Npc = best:GetAttribute(\"HHC_TownNpc\") })", "Npc = nil })"),
     ("bark-sized bubble", "pcall(B.Make, head, T.Lift, line, nil, T.Size)", "pcall(B.Make, head, T.Lift, line, nil, nil)"),
     ("speaks anywhere on screen", "if d <= bestD and inView(npc) then", "if d <= bestD then"),
-    ("the bubble's width ignored", "x >= W * z.L and x + w <= W * z.R", "x >= W * z.L and x <= W * z.R"),
+    ("the bubble's width ignored", "x >= W * z.L and x + w <= W * right", "x >= W * z.L and x <= W * right"),
     ("phones use the PC zone", "local z = touch and T.Clear.Touch or T.Clear.PC", "local z = T.Clear.PC"),
+    ("the low band reaches the thumb ring", "local right = (z.RLow and z.RowY and y > H * z.RowY) and z.RLow or z.R",
+     "local right = z.R"),
+    ("the quest card edge back to 0.3", "Touch = { L = 0.34,", "Touch = { L = 0.3,"),
 ]
 STATIC = [
     ("ClientMain loads TownReact after MonsterLabels", lambda m, s, lb: '"StoryNpcs", "TownReact", ' in m

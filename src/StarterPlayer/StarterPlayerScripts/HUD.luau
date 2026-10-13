@@ -166,7 +166,7 @@ local TXT = {
 	WarTime = "Crown in %s", -- short: the phone meter is 240 px (UiSandbox 2026-10-06: 'My points' was cut)
 	LuckTap = "Rare drops come a bit more often today!", -- 검수 10/09: a press on the Lucky chip
 	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
-	Siege = "Siege: %d each",
+	Siege = "Siege: %g each", -- %g: SiegeTarget is 1.5 (only a flag for L.WarLine now)
 	WarSiege = "Crown War", -- 검수 10/09 (user: 'Siege: 150 each' was hard for kids): the war line while WarMode = Siege
 	MyWar = "My pts %s",
 	WarSep = " · ",
