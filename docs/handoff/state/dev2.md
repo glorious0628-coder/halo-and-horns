@@ -12,6 +12,7 @@
 | fix/scroll-toast-off | 696088cf | 첫 Slime Prince 주문서 안내 토스트 삭제(A23-130, Loot.Text.FirstScroll* 키 삭제) | 보고함 |
 | dev2-honor-crown | 555e1a56 | 2-A #4 HuntFameService + #5 왕관 새 점수(WarService.AddKill/PersonalAdded) — mischief 위. 검토 FIX FIRST 고침: 처치 수 저장(data.CrownUnits), M2_1 15·GW4 100마리, KO 상한 UserId, PvP 정수, 점수 두 자리(HUD 한 줄), ZoneLevel, Minor 제외 | 고침 보고함. 설명 `docs/design/honor_crown_server_2026-10-14.md` |
 | dev2-early-xp | 36396af8 | A23-167 첫 10분 2배 XP(Config.EarlyXP, ProgressionService.XPBoost = 패스와 큰 쪽) + 내일 또 오기 서버(Fx TomorrowGift, 속성 Returned, WelcomeBack Days·News, AttendanceService.NextSlots, 소식 DataStore HaloHorns_News_v1) — origin/main 4f88cc5a 위 | 보고함. 설명 `docs/design/comeback_server_2026-10-14.md`. 화면은 개발 1 몫(문서 끝 4줄) |
+| dev2-crown-small | 53e28b6a | API 사후 검토 낮음 2개: PvP KO 상한 칸은 AddPoints가 실제로 더했을 때만(AddPoints true/false), PersonalAdded 주석 — origin/main 893d8d37 위 | 보고함 |
 | dev2-halo-stage6 | bd903c79 | 빛 마을 6단계 서버 | 2주 차 교체 날 병합(map_v2 2개 = 새 큰 지도 그림 기다림) |
 
 - 날짜 박힌 값 목록(3주 차 '아주 먼 날짜 + 출시 날 스위치', 2-A #12): BuildLabel, Beta.PioneerUntil 12/19, 하늘 주석 '12/19 launch',
@@ -23,7 +24,7 @@
 - A23-168: 덩어리 보고 뒤 기다릴 일만 남으면 이 파일 적고 push → clear_session("self").
 
 ## worktree·도구
-- ../wt_prep(test-prep-server-2), ../wt_prep_t(전체 시험 고정판), ../wt_mischief, ../wt_scroll, ../wt_honor, ../wt_halo6, ../wt_earlyxp, ../wt_base1014(4f88cc5a 비교용). 병합 끝난 것은 그냥 둠.
+- ../wt_prep(test-prep-server-2), ../wt_prep_t(전체 시험 고정판), ../wt_mischief, ../wt_scroll, ../wt_honor, ../wt_halo6, ../wt_earlyxp, ../wt_crownsmall, ../wt_base1014(4f88cc5a 비교용). 병합 끝난 것은 그냥 둠.
 - 가벼운 worktree: Game에서 `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
   --no-cone /src/ /tools/ /docs/ /AGENTS.md` → `git read-tree -mu HEAD` → `cp -r ../Game/build/luau_cli_0_741 build/`.
 - 시험 실행기: 스크래치 run_tests.py(`<worktree> <outdir> [이름…]`, 하나씩; rc·CHECK_FAIL·failing·MISSED 요약). 스크래치는 세션마다 다시 만듦.
