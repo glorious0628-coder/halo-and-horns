@@ -58,3 +58,8 @@ skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bri
 
 ## 막힌 것 / 결정 대기
 - 없음. 새 검수(local_78581314) 큐 대기.
+
+## 큐 추가 (10/13, 최종 검수 → 게임성 계획 §5 '메인 반영 1')
+- 10/15: Save As 화면 제어가 필요하면 최종 검수에게 미리 신청(최종 검수가 사용자에게 알림).
+- 10/16 오후: 코드 == origin/main(`0 0`) → sync → PC·폰 첫 10분 재기(ForgeWalk 초, 막힌 곳 사진) → TextChatService(말풍선·VIP 채팅) 확인 → Save As `build/GoodEvil.rbxlx` → `place/` 복사·커밋. Publish는 사용자.
+- 그 전까지: 병합이 올 때 sync·사진만. 10/17~20 급한 고침만 sync. 10/21 주: 6단계 교체 → 10줄 점검 + 걷기 시간.
