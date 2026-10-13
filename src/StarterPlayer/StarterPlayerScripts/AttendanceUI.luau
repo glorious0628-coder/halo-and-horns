@@ -178,20 +178,13 @@ function AttendanceUI.Board(ctx)
 	return { Rows = rows, Pays = n > 0 and slot or nil, Ready = ready and n > 0, WeekDone = weekDone }
 end
 
--- the next milestone after `days` (Config.Attendance.Milestones + the attendance looks of my side): { Days, Text } or nil
-function AttendanceUI.Goal(days, faction)
-	days = int(days)
-	local best = nil
-	for _, m in type(att().Milestones) == "table" and att().Milestones or {} do
-		local at = int(m.Days)
-		if at > days and (not best or at < int(best.Days)) then best = m end
-	end
-	if not best then return nil end
-	local at = int(best.Days)
+-- what a milestone really gives me: its title (TitleService) and my side's attendance looks (MonetizationService.GrantLook,
+-- worn from the Shop's Looks). Not its Border (the 28-day name frame): no screen draws it yet
+local function goalRewards(m, faction)
+	local at = int(m.Days)
 	local what = {}
-	local def = best.Title and Config.TitleDefs and Config.TitleDefs[best.Title]
+	local def = m.Title and Config.TitleDefs and Config.TitleDefs[m.Title]
 	if def then table.insert(what, tx("GoalTitle", tostring(def.NameEn or def.Name))) end
-	if best.Border then table.insert(what, tx("GoalBorder")) end
 	local looks = {}
 	for id, look in type(Config.Looks) == "table" and Config.Looks or {} do
 		local need = type(look) == "table" and type(look.Unlock) == "table" and int(look.Unlock.Attendance) or 0
@@ -199,7 +192,24 @@ function AttendanceUI.Goal(days, faction)
 	end
 	table.sort(looks, function(a, b) return a.Order < b.Order end)
 	for _, look in looks do table.insert(what, tostring(look.Name or look.Id)) end
-	return { Days = at, Text = #what > 0 and tx("Goal", at, table.concat(what, " + ")) or "" }
+	return what
+end
+
+-- the next milestone after `days` that really gives me something: { Days, Text } or nil. Final review 10/13: a milestone
+-- with nothing real for me (the 28-day name frame nobody draws yet, the 14-day looks for an artisan) is skipped - the
+-- board never promises a reward that does not exist
+function AttendanceUI.Goal(days, faction)
+	days = int(days)
+	local list = {}
+	for _, m in type(att().Milestones) == "table" and att().Milestones or {} do
+		if type(m) == "table" and int(m.Days) > days then table.insert(list, m) end
+	end
+	table.sort(list, function(a, b) return int(a.Days) < int(b.Days) end)
+	for _, m in list do
+		local what = goalRewards(m, faction)
+		if #what > 0 then return { Days = int(m.Days), Text = tx("Goal", int(m.Days), table.concat(what, " + ")) } end
+	end
+	return nil
 end
 
 -- open by itself? ctx = { Ready, Step, Done, Days, Played (s), Day, OpenedDay, Busy }: once a day, a claim open, the

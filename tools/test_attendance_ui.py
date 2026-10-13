@@ -38,8 +38,14 @@ MUTATIONS = [
     ("the next slot shown as today while taken", "\t\t\tstate = ready and \"Today\" or \"Next\"\n", "\t\t\tstate = \"Today\"\n"),
     ("the stamps one slot too far", "\t\tif weekDone or i < slot then\n", "\t\tif weekDone or i <= slot then\n"),
     ("a broken slot kept", "\tif slot < 1 or slot > n then slot = 1 end\n", ""),
-    ("the farthest milestone", "\t\tif at > days and (not best or at < int(best.Days)) then best = m end\n",
-     "\t\tif at > days and (not best or at > int(best.Days)) then best = m end\n"),
+    ("the farthest milestone first", "\ttable.sort(list, function(a, b) return int(a.Days) < int(b.Days) end)\n",
+     "\ttable.sort(list, function(a, b) return int(a.Days) > int(b.Days) end)\n"),
+    # final review 10/13 ②: never a reward that does not exist
+    ("a milestone with nothing for me still shown", "\t\tif #what > 0 then return { Days = int(m.Days)",
+     "\t\tif true then return { Days = int(m.Days)"),
+    ("the name frame promised again", "\tif def then table.insert(what, tx(\"GoalTitle\", tostring(def.NameEn or def.Name))) end\n",
+     "\tif def then table.insert(what, tx(\"GoalTitle\", tostring(def.NameEn or def.Name))) end\n"
+     "\tif m.Border then table.insert(what, \"name frame\") end\n"),
     ("the other side's look promised", "\t\tif need == at and look.Faction == faction then", "\t\tif need == at then"),
     ("opens many times a day", "\tif ctx.Day == nil or ctx.Day == ctx.OpenedDay then return false end\n", ""),
     ("opens during the first mission", "\tif type(ctx.Step) ~= \"number\" or ctx.Step ~= (tonumber(ctx.Done) or 99) then return false end\n", ""),

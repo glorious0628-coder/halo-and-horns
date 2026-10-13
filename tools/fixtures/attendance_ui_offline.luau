@@ -256,8 +256,17 @@ goal = UI.Goal(7, "Halo")
 check("7 days: 14 days = my side's sprout look", goal and goal.Days == 14 and goal.Text == "14 days: Sprout Halo", goal and goal.Text)
 goal = UI.Goal(13, "Horns")
 check("... the Horns' look for a Horn", goal and goal.Text == "14 days: Sprout Horns", goal and goal.Text)
+-- final review 10/13 ②: never a reward that does not exist - the 28-day name frame is drawn by no screen yet, the 14-day
+-- looks are not the artisans': those milestones are skipped
 goal = UI.Goal(20, "Neutral")
-check("the name frame at 28 (no look for the artisans)", goal and goal.Text == "28 days: name frame", goal and goal.Text)
+check("past 14: the 28-day name frame (not drawn yet) is skipped -> 50 days' title", goal and goal.Days == 50
+	and goal.Text == "50 days: Super Regular title", goal and goal.Text)
+goal = UI.Goal(14, "Halo")
+check("at 14 (Halo): the next real reward is 50 (title + Star Halo)", goal and goal.Text == "50 days: Super Regular title + Star Halo",
+	goal and goal.Text)
+goal = UI.Goal(7, "Neutral")
+check("an artisan at 7: no look of its own at 14, no frame at 28 -> 50", goal and goal.Days == 50, goal and goal.Text)
+check("no goal line ever names the frame", not (UI.Goal(20, "Halo").Text):find("frame", 1, true))
 goal = UI.Goal(28, "Halo")
 check("50 days: the title + my look", goal and goal.Text == "50 days: Super Regular title + Star Halo", goal and goal.Text)
 check("after 100: nothing left", UI.Goal(100, "Halo") == nil and UI.Goal(250, "Horns") == nil)
