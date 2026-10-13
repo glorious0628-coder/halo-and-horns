@@ -6,8 +6,11 @@ Halo Warrior, the tutorial's first claim done, then:
   02_fold_open   the fold open (PC: one line; the squares a little smaller when the row's overflow tile joins them; only
                  the Gifts square rings)
   03_out_of_town moved to the Slime Meadow (no status chips): the goose / king pill right under the war meter
+10/14 (fix/menu-one-line, user: the PC fold was two lines and 'Monsters' read "Monster:"): the log also lists the
+open fold's lines (y of each line: squares) and the row tiles, and every shown tile / square whose name does not fit
+(TextFits false) - PC wants one fold line, Monsters in the bottom row, no cut names.
 Usage: HH_MAIN_STUDIO=1 py tools/play_first_look_photos.py [phone]
-Out: docs/art/verification_2026-10-14/first_look/<dev>_<name>.png, log_<dev>.txt"""
+Out: docs/art/verification_2026-10-14/menu_one_line/<dev>_<name>.png, log_<dev>.txt (the 10/14 first_look photos stay)"""
 import base64
 import io
 import os
@@ -19,7 +22,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 from studio_mcp import Client  # noqa: E402
 from PIL import Image  # noqa: E402
 
-OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-14", "first_look")
+OUT = os.path.join(ROOT, "docs", "art", "verification_2026-10-14", "menu_one_line")
 LOG = []
 
 
@@ -109,6 +112,36 @@ for _, d in pg:GetDescendants() do
 end
 return table.concat(out, " | ")
 '''
+FOLDINFO = r'''
+local pg = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
+local lines, row, cut = {}, {}, {}
+for _, d in pg:GetDescendants() do
+	if d:IsA("GuiButton") and d.Visible and (string.match(d.Name, "^Fold") or string.match(d.Name, "^Tile")) then
+		local shown, a = true, d
+		while a and a:IsA("GuiObject") do
+			if not a.Visible then shown = false break end
+			a = a.Parent
+		end
+		if shown then
+			local id = string.gsub(string.gsub(d.Name, "^Fold", ""), "^Tile", "")
+			if string.match(d.Name, "^Fold") then
+				local y = tostring(math.floor(d.AbsolutePosition.Y + 0.5))
+				lines[y] = (lines[y] or "") .. id .. " "
+			elseif id ~= "Menu" then
+				table.insert(row, id)
+			end
+			local lbl = d:FindFirstChild("Label")
+			if lbl and lbl:IsA("TextLabel") and lbl.Visible and lbl.TextFits == false then
+				table.insert(cut, id .. "(" .. lbl.Text .. ")")
+			end
+		end
+	end
+end
+local out, n = {}, 0
+for y, ids in lines do n += 1 table.insert(out, "y" .. y .. ": " .. ids) end
+return "fold lines " .. n .. " | " .. table.concat(out, " | ") .. " || row: " .. table.concat(row, ",")
+	.. " || cut names: " .. (#cut > 0 and table.concat(cut, ", ") or "none")
+'''
 
 
 def wait_state(c, cond, timeout, every=1.0):
@@ -141,6 +174,7 @@ def run(c, dev):
     save(c, f"{dev}_01_town")
     note("B: " + lua(c, DISPATCH % "B", "Client"))
     time.sleep(1.0)
+    note("fold: " + lua(c, FOLDINFO, "Client"))
     save(c, f"{dev}_02_fold_open")
     note("B: " + lua(c, DISPATCH % "B", "Client"))
     note(lua(c, MEADOW, "Server"))

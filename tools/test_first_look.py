@@ -6,7 +6,8 @@ Runs, in the official Luau CLI, the CURRENT pieces cut out of the sources:
    the same line, the line's right end kept; too many for that = nil (the lines as before).
 2. EventHUD V2.eventY: the next-event line (goose / king pill) rises into the status chip row when that row is empty
    (out of town the pill floated a whole empty row under the war meter); chips shown or unknown = its own row.
-Static: [Menu] glows only while its fold is shut (Gifts and [Menu] were both ringed), SetFold redraws it; the fold
+Static (user 10/14, PC fold one line): the PC row (HudLayout sheet) holds every L.Tiles tile, HudLayout.FOLD_WANT_PC =
+#L.Fold, PC tile names go down to 9 px ('Monsters' was cut to "Monster:"). Static: [Menu] glows only while its fold is shut (Gifts and [Menu] were both ringed), SetFold redraws it; the fold
 shrink is PC only; the Codex tile reads "Monsters" (user: "코덱스 뭐야"); EventHUD places the line with V2.eventY and
 HUD.ChipsShown exists. Mutations: each must be caught.
 
@@ -24,7 +25,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SPS = "src/StarterPlayer/StarterPlayerScripts/"
-FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "EVENT": ROOT / (SPS + "EventHUD.luau")}
+FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "EVENT": ROOT / (SPS + "EventHUD.luau"),
+         "LAYOUT": ROOT / (SPS + "HudLayout.luau")}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -122,8 +124,22 @@ def run(src: dict) -> tuple[int, int, str]:
     return (int(m[1]) if m else 0), (int(m[2]) if m else 1), out
 
 
+def block_ids(h: str, name: str) -> list[str]:
+    """the Id = "..." entries of the HUD table field `name = { ... }` (L.Tiles / L.Fold)"""
+    m = re.search(r"^\t" + name + r" = \{\n(.*?)^\t\},", h, re.M | re.S)
+    return re.findall(r'^\t\t\{ Id = "(\w+)"', m[1], re.M) if m else []
+
+
+def pc_row(lay: str) -> int:
+    """how many tiles the PC sheet row holds (TILE_GAP 3 px on the 1280x720 sheet)"""
+    m = re.search(r'^\ttiles = \{ "BC", \{ [\d.]+, [\d.]+, ([\d.]+), ([\d.]+) \}', lay, re.M)
+    return int((float(m[1]) + 3) // (float(m[2]) + 3)) if m else 0
+
+
 def statics(src: dict) -> list[tuple[str, bool]]:
-    h, e = src["HUD"], src["EVENT"]
+    h, e, lay = src["HUD"], src["EVENT"], src["LAYOUT"]
+    want = re.search(r"^local FOLD_WANT_PC = (\d+)$", lay, re.M)
+    tiles, fold = block_ids(h, "Tiles"), block_ids(h, "Fold")
     return [
         ("[Menu] glows only while its fold is shut",
          'L.SetGlow("menu", ui.menuGlow, (settings or travel or attend) and ui.foldOpen ~= true)' in h),
@@ -135,6 +151,11 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("the Codex tile reads 'Monsters'", re.search(r'^\tTileCodex = "Monsters",', h, re.M) is not None),
         ("EventHUD places the next-event line with V2.eventY", "local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y" in e),
         ("HUD.ChipsShown exists", "function HUD.ChipsShown()" in h),
+        # user 10/14: the PC fold in one line - every row tile (Monsters included) in the PC row, the war meter steps
+        # left for exactly the L.Fold squares, the longest tile name fits at 9 px
+        ("the PC row holds every row tile", len(tiles) > 0 and pc_row(lay) == len(tiles)),
+        ("the meter steps left for all L.Fold squares", want is not None and len(fold) > 0 and int(want[1]) == len(fold)),
+        ("PC tile names may go down to 9 px", re.search(r"^L\.TileNamePxPC = 9 ", h, re.M) is not None),
     ]
 
 
@@ -143,6 +164,11 @@ STATIC_MUTATIONS = [
      'L.SetGlow("menu", ui.menuGlow, settings or travel or attend)'),
     ("HUD", "phones shrink too", "\t\tif not IS_TOUCH then\n\t\t\tlocal s, lines = L.FitFold(", "\t\tif true then\n\t\t\tlocal s, lines = L.FitFold("),
     ("HUD", "the old word", '\tTileCodex = "Monsters",', '\tTileCodex = "Codex",'),
+    ("LAYOUT", "the PC row back to six", 'tiles = { "BC", { 424, 634, 438, 60 }', 'tiles = { "BC", { 424, 634, 375, 60 }'),
+    ("LAYOUT", "the meter steps for one square fewer", "local FOLD_WANT_PC = 8", "local FOLD_WANT_PC = 7"),
+    ("HUD", "a ninth fold square nobody counted", '\t\t{ Id = "Settings", Icon = "IconSettings"',
+     '\t\t{ Id = "Extra", Icon = "IconHelp", Window = "Extra" },\n\t\t{ Id = "Settings", Icon = "IconSettings"'),
+    ("HUD", "names back to 10 px", "L.TileNamePxPC = 9 ", "L.TileNamePxPC = 10 "),
     ("EVENT", "the line keeps its own row", "local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y", "local evY = ev.Y"),
 ]
 

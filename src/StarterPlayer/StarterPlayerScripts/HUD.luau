@@ -2865,6 +2865,8 @@ end
 
 -- the shown squares on their slots: animate = slide out of [메뉴] one after another (A23-38 좌르륵), else jump there
 -- (a re-layout while open)
+-- user 10/14: on PCs the row holds Monsters too (HudLayout, 7 tiles) and the war meter steps left so the 8 L.Fold
+-- squares sit beside [메뉴] in one line; this shrink is the fallback where the meter cannot step (Roblox's menu open wide)
 -- user 10/13 first look (PC: the 9th square, the row's overflow tile, fell to a second line alone): when the squares
 -- need more than the first line, they shrink to fit that one line down to L.FoldMinFrac of [메뉴]'s size, centred on the
 -- same line; still too many = the lines as before. Pure: lines = Rects.fold.Lines, size / gap / right (du), n squares;
@@ -6087,7 +6089,8 @@ L.GuideHide = 15
 -- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
 -- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
 L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
-L.TileNamePxPC = 10 -- A23-109: PC tile names in real px (tiles >= 40-46 px fit 'Ranking' at 10 px)
+L.TileNamePxPC = 9 -- A23-109: PC tile names in real px (tiles >= 40-46 px fit 'Ranking' at 10 px); 10/14 (user via
+-- 최종 검수: 'Monsters' read "Monster:" in the 44 px squares) 9 px, so the longest name fits; shorter ones stay bigger
 L.QuickKeyPx = 12 -- A23-109: the quick slot numbers 1 · 2 · 3 in real px
 -- 검수 2026-10-08 (user: "위쪽이 너무 심심해"): the war meter as a game top bar (buildWar), du inside Rects.war_meter:
 -- the PanelCard plate PlateUp / PlateDown past the meter's top / bottom (inside Roblox's 58 px bar), the badges Badge du

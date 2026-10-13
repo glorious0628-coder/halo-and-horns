@@ -106,14 +106,21 @@ EXCEPTIONS = [
      "4-inch phone (568x320 px): the 58 px top bar holds Roblox's buttons (164 px), the war meter (240du = 180 px) and "
      "[메뉴] (45 px), which leaves room for 3 thumb-size fold squares beside [메뉴]; the 4th wraps to the line right "
      "under the bar."),
-    # A23-109 (user 10/10): the PC bars are as wide as the six tiles and the quick slots sit right of the bars' end, so
-    # the narrowest windows give a tile to [메뉴] (the tiles shrink to 40 px first)
-    ("pc_700x720_narrow", "at least 6 tiles on every PC",
+    # A23-109 (user 10/10): the PC bars are as wide as the tiles and the quick slots sit right of the bars' end, so
+    # the narrowest windows give a tile to [메뉴] (the tiles shrink to 40 px first); user 10/14: the PC row is 7 tiles
+    ("pc_700x720_narrow", "at least 7 tiles on every PC",
      "A narrow desktop window (700x720 px, UIScale 0.8): face, bars / tiles and the quick slots right of them do not fit "
-     "between the left margin and the corner cluster even with 40 px tiles, so the row keeps 5 tiles; the sixth folds out "
-     "of [메뉴]."),
-    ("pc_573x354_small", "at least 6 tiles on every PC",
+     "between the left margin and the corner cluster even with 40 px tiles, so the row keeps 5 tiles; the sixth and "
+     "seventh fold out of [메뉴]."),
+    ("pc_573x354_small", "at least 7 tiles on every PC",
      "A 573x354 desktop window (UIScale 0.5): the same as 700x720 - 5 tiles of 40 px fit before the quick slots."),
+    # user 10/14: wide PC screens step the war meter left so the fold's 8 squares sit in one line beside [메뉴]
+    ("pc_1280x720_unibar_wide", "PC fold holds all its squares in one line",
+     "Roblox's own menu opened wide in the top bar (its right end at 560 px): the war meter cannot step further left, so "
+     "the first line holds 7 [메뉴]-size squares; HUD L.FitFold shrinks the 8 squares (0.875 of [메뉴]) into that line."),
+    ("pc_655x340_small", "PC fold holds all its squares in one line",
+     "A 655x340 desktop window (UIScale 0.5): the 44 px top bar squares against Roblox's buttons and the 240du war meter "
+     "leave 5 squares beside [메뉴]; the rest wrap to the line right under the bar."),
     # 2026-10-07 phone layout: the bottom row is as wide as the room right of 0.4 W (centred between the thumbstick's
     # rest at 0.2 W and the thumb ring, which never shrinks its smallest button below a thumb)
     ("phone_568x320", "tiles at least 2 on phones",
@@ -201,9 +208,18 @@ MUTATIONS = [
      'if id ~= "combo" then w, h = r[3] * kc, r[4] * kc end', ""),
     ("combo line grows with the thumb cluster", 'if id ~= "combo" then w, h', 'if true then w, h'),
     ("desktop attack rect drifted", 'attack = { "BR", { 1186, 620, 80, 80 }', 'attack = { "BR", { 1186, 626, 80, 80 }'),
-    ("desktop tiles rect drifted", 'tiles = { "BC", { 482, 634, 375, 60 }', 'tiles = { "BC", { 482, 640, 375, 60 }'),
-    ("PC row wider than its six tiles (the potions drift off)", 'tiles = { "BC", { 482, 634, 375, 60 }',
-     'tiles = { "BC", { 482, 634, 470, 60 }'),
+    ("desktop tiles rect drifted", 'tiles = { "BC", { 424, 634, 438, 60 }', 'tiles = { "BC", { 424, 640, 438, 60 }'),
+    ("PC row wider than its seven tiles (the potions drift off)", 'tiles = { "BC", { 424, 634, 438, 60 }',
+     'tiles = { "BC", { 424, 634, 520, 60 }'),
+    ("PC row back to six tiles (Monsters in the fold again)", 'tiles = { "BC", { 424, 634, 438, 60 }',
+     'tiles = { "BC", { 424, 634, 375, 60 }'),
+    # user 10/14: the war meter steps left on wide PCs so the 8 fold squares fit one line
+    ("PC war meter never steps left for the fold",
+     "if not sheet then rightWant = math.min(rightWant, o.X - FOLD_WANT_PC * (o.W + fGapRow) - GAP) end", ""),
+    ("PC fold wants one square fewer", "local FOLD_WANT_PC = 8", "local FOLD_WANT_PC = 7"),
+    ("the meter narrows for the fold instead of moving",
+     "rightEdge = math.min(rightEdge, o.X - FOLD_MIN * (o.W + fGapRow) - GAP)",
+     "rightEdge = math.min(rightEdge, o.X - (sheet and FOLD_MIN or FOLD_WANT_PC) * (o.W + fGapRow) - GAP)"),
     ("phone skill Q rect drifted", "{ 523, 204, 54, 54 }", "{ 523, 214, 54, 54 }"),
     # A23-49: the X skill button
     ("phone X skill rect drifted", "{ 633, 215, 54, 54 }", "{ 633, 201, 54, 54 }"),
