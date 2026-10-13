@@ -14762,5 +14762,161 @@
    "final": "art/models/tripo/touchup/HaloVar3_Topiary_E/HaloVar3_Topiary_E_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
   }
+ ],
+ "NEW_SteppingStone_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "1a6510c2 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_SteppingStone_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_SteppingStone/NEW_SteppingStone_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_WateringCan_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "265b3a7f (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_WateringCan_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_WateringCan/NEW_WateringCan_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_Beehive_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "5c9f25d3 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_Beehive_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_Beehive/NEW_Beehive_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloSign_SignPotion_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "6314bccd (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloSign_SignPotion_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloSign_SignPotion/HaloSign_SignPotion_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloSign_SignFlower_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "93db909c (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloSign_SignFlower_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloSign_SignFlower/HaloSign_SignFlower_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "HaloSign_SignBakery_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "b947efb6 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/HaloSign_SignBakery_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloSign_SignBakery/HaloSign_SignBakery_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_WaterBuckets_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "7ed2ca21 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_WaterBuckets_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_WaterBuckets/NEW_WaterBuckets_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_NoticeBoard_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "ac2d369d (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_NoticeBoard_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_NoticeBoard/NEW_NoticeBoard_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_Easel_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "49fbb8d5 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_Easel_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_Easel/NEW_Easel_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_CandleCrate_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "ae7b2961 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_CandleCrate_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_CandleCrate/NEW_CandleCrate_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_ArmoryBarrels_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "92eecb25 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_ArmoryBarrels_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_ArmoryBarrels/NEW_ArmoryBarrels_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
+ ],
+ "NEW_GatherBush_web_sm_tex4k_pbr": [
+  {
+   "event": "web_smart_mesh4 -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 125,
+   "project": "e08ec885 (white model picked by 디자인 검수; texture FIRST tab front 2D, 조명 제거, 4K=20; PBR 5)",
+   "file": "art/models/tripo/web/NEW_GatherBush_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/NEW_GatherBush/NEW_GatherBush_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
  ]
 }
