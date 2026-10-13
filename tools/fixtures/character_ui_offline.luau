@@ -532,6 +532,10 @@ check(allEmpty and find(frame, "Empty_Armor") and find(frame, "Empty_Ring") and 
 check(find(frame, "Cap_Weapon").Text == "Weapon" and find(frame, "EmptyCap_PetArmor").Text == "Pet Armor", "fallback: the one short word under a cell")
 check(find(body, "PowerNumber").Text == "1,234" and string.find(find(body, "Who").Text, "Lv 10", 1, true) ~= nil, "the left column: the Power number and Lv / class")
 check(find(body, "Headshot").Image == "headshot:4242", "the headshot of my account")
+local leftCol = find(body, "Left")
+check(leftCol ~= nil and leftCol.ClassName == "ScrollingFrame" and leftCol.AutomaticCanvasSize == "AutomaticSize.Y"
+	and inside(leftCol, find(body, "PowerNumber")) and leftCol.Size.X.Offset == M._T.L.LeftW,
+	"A23-145 phone: the left column scrolls (a short phone window cut the power and the rank bar)", leftCol and leftCol.ClassName)
 -- 게임성 검수 10/12 (API review): Settings hides its Nickname row once this window exists -> the nickname lives here
 check(find(body, "Nickname") and find(body, "Nickname").Text == "Glory", "10/12: my nickname under the portrait",
 	find(body, "Nickname") and find(body, "Nickname").Text)

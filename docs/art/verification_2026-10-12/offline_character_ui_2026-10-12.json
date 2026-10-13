@@ -1,5 +1,5 @@
 {
-  "checks": 129,
+  "checks": 175,
   "failed": 0,
   "mutations": [
     {
@@ -14,6 +14,11 @@
     },
     {
       "name": "Open ignores the tab",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "left column back to a plain frame (phone cut)",
       "applied": true,
       "caught": true
     },
@@ -243,7 +248,227 @@
       "caught": true
     },
     {
+      "name": "#1: no power parts",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#1: the chips never open their sources",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#1: the weapon left out of Attack's sources",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#2: the old 'A -> B' line",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#2: a drop shown grey",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#1: Attack without the +N",
+      "applied": true,
+      "caught": true
+    },
+    {
       "name": "the window has no title icon",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the other side's blessing shown as mine",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the blessing without its XP",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#5: the Horns' gold bonus left out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#5: the perk sentences back",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#5: cards without icons",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: no ribbon",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: the bar never fills",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: points to go off by the rank's floor",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: locked titles left out",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: weekly titles locked too",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: past / season titles locked too",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: the other side's title locked too",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: no cap",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#7: a dot while dead / without a class",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#7: a side weapon without a side",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#9: a locked title pressable",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#7: a weaker weapon lights the dot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#7: a locked weapon lights the dot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#7: the worn weapon lights the dot",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#7: the dot on a locked tile",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: no body",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: the body stays put when the frame resizes",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: a weapon swap not copied",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: copied again on every open",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: never unmounted",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: a throwing Mount breaks the window",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#3: HeroPreview not loaded",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "#5: cards drawn as text rows",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the hit row claims the final damage",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no nickname row",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "[Change] opens another window",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "equip while dead",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "equip before a class",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "a side weapon without a side",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the power from the old formula (not CombatPowerOf)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "Lv 1 cannot change the name (the row gone once the window exists)",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the row never comes back / leaves on a level up",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the face opens the window below Lv 2 (the tile's lock skipped)",
       "applied": true,
       "caught": true
     }
