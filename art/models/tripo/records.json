@@ -14918,5 +14918,18 @@
    "final": "art/models/tripo/touchup/NEW_GatherBush/NEW_GatherBush_TU.glb (disk only; front -Y, bottom-centre pivot, mesh/maps untouched)",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
   }
+ ],
+ "HaloFlowerPotHQ_Daisy_web_sm_tex4k_pbr": [
+  {
+   "event": "redo: other white model -> texture front-1 4K -> PBR (A23-154)",
+   "at": "2026-10-13",
+   "account": "web 2 (25,000)",
+   "by": "Blender 손보기",
+   "points": 25,
+   "project": "c2e4b5db (sibling of c9df2ff9, picked by 디자인 검수; old 8K Daisy had orange/apricot flowers)",
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_SM_tex4k_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloFlowerPotHQ_Daisy/HaloFlowerPotHQ_Daisy_TU.glb (replaces the 8K one; front -Y, bottom-centre pivot)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+  }
  ]
 }

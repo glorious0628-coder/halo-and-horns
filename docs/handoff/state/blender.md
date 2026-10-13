@@ -2,7 +2,7 @@
 
 ## 10/13 밤 늦게 — 큐 끝 (잔액 1,730)
 - 끝·디자인 검수에 보냄: 8K PBR 36종 + 4K PBR 37종(집 덩어리 18·묶음10 7·NEW_ 9·간판 Potion/Bakery/Flower) → art/models/tripo/touchup/<이름>/<이름>_TU.glb, 원본 web/<이름>_SM_tex{8k,4k}_pbr_src.fbx(디스크만), records.json push.
-- 남음: **Daisy 다시**(디자인 검수가 형제 7b4845eb·245a153c·c2e4b5db 중 고르면 텍스처 4K → PBR; FBX build/tripo_wm1/HaloFlowerPotHQ_Daisy_wm_*). SignJuice = 계정 2(cb0ab903) 것 씀, 계정 1 Juice는 안 씀. 지금 Daisy_TU 쓰지 않음.
+- 끝: Daisy 다시(c2e4b5db, 4K) → touchup/HaloFlowerPotHQ_Daisy_TU.glb 덮어씀. (옛 줄) Daisy 다시(디자인 검수가 형제 7b4845eb·245a153c·c2e4b5db 중 고르면 텍스처 4K → PBR; FBX build/tripo_wm1/HaloFlowerPotHQ_Daisy_wm_*). SignJuice = 계정 2(cb0ab903) 것 씀, 계정 1 Juice는 안 씀. 지금 Daisy_TU 쓰지 않음.
 - 새 텍스처 = 4K(20점). 텍스처+PBR = 25점/개, 흰 모델 100점.
 - 페이지 함수 = tools/tripo_web_helpers.js(+ hhTexOne = 올리기+누르기 한 번에, 잠금 있음). 브라우저 캐시는 가끔 비워짐 → Adobe presigned URL로 다시 /hh-bundleN에 넣음.
 
