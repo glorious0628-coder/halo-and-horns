@@ -9279,6 +9279,9 @@ Config.Codex = {
 	-- card moment, the reward popup (Page / Glow) or, with the codex window open, a toast
 	ServerToast = false,
 	Attr = { Cards = "CodexCards", Glow = "CodexGlow" }, -- player attributes (cards owned; every card Gold Holo)
+	-- 최종 검수 10/13: the 3D card models the codex window draws (게임성 개발 1): ReplicatedStorage[ModelFolder][kind], copied at
+	-- the server's start from ServerStorage.CustomModels by MonsterService's rule (the kind's own model, else its ModelFrom)
+	ModelFolder = "CodexModels",
 	Text = {
 		Name = "Monster Codex",
 		Card = "New card: %s!", -- (the monster's Short name)

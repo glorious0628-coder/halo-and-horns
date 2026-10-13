@@ -1,5 +1,9 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/13 아침 (PC 다시 켬)
+- WorldKit 되살림: build/WorldKit.rbxlx 열기 → wk_backup load 20261013_020933 --replace --terrain → 성·바닥판·소품 확인 + 사진(build/restore_check) → 백업 20261013_084828. **rbxlx 파일은 여전히 10/12 17:12 판(Ctrl+S 못 함)** — 끌 때마다 wk_backup save.
+- **3D 가져오기 묶음(사용자 일, 미룸):** build/import3d/ 13개 메시만 GLB = 화분 Lavender·Tulip·Sunflower + HaloChunk_DoorSingle·LampArm·CastleWingL·CastleWingR·DomeRibbed·DoorDouble·WindowBoxA·CastleRose + HaloReasonHQ_BenchA·BenchC. SA 52장 올림 끝(asset_ids SA_<이름>_C/N/M/R, 금 외 금속 0·거칠기 ≥0.6, tools/glb_sa_maps.py). 순서: WorldKit 창 → 홈 '3D 가져오기' → build/import3d 전부(Ctrl+A) → 가져오기. 그 뒤 내 일: MeshId 읽기 → 키트 + SA + DoubleSided(WindowBoxA·화분) → 자리 놓기 → 사진(넣을 때 메모 4개). Rose·BenchB는 Blender 손보기 쪽 json만(아직).
+
 ## ★ 10/13 새벽 정리 (사용자 "정리하고 컴퓨터 꺼줘")
 - **WorldKit 저장:** Studio 창 제어 허용이 2번 거부돼(robloxstudiobeta.exe) Ctrl+S 못 함 → `build/WorldKit.rbxlx`는 10/12 17:12 판 그대로. 대신 **전체 백업 build/wk_backup/20261013_020933**(59 루트 + 지형, 12 MB, 오류 0) = 성 C2 골격·바닥판 3·성 앞 소품 5 옮김 등 오늘 것 전부. **다시 켠 뒤:** WorldKit 열기(`build/WorldKit.rbxlx`) → `py tools/worldkit/wk_backup.py load 20261013_020933 --replace --terrain` (마우스·키보드 없음).
 - **꽃 화분 3종(Lavender·Tulip·Sunflower) 넣기 = 3D 가져오기 안 됨(허용 거부) → 사용자 일로 미룸.** 준비 끝: 메시만 GLB `build/import3d/HaloFlowerPotHQ_<이름>_TU.glb`(build는 git 밖 — 없으면 `py tools/glb_strip_mesh.py build/import3d art/models/tripo/touchup/HaloFlowerPotHQ_<이름>/HaloFlowerPotHQ_<이름>_TU.glb`), SA 12장 올림(asset_ids SA_HaloFlowerPotHQ_<이름>_C/N/M/R, 금 외 금속 0·거칠기 ≥0.6). 남은 것: 가져오기 → MeshId 읽기 → 키트(높이 1 → 대역 높이) + SA + DoubleSided → 대역 7곳(P020 Tulip 3.29·P022 Lavender 3.85·P032 Sunflower 3.60·P033 Tulip 3.89·P077 Sunflower 4.02·P083 Lavender 3.68·P085 Tulip 3.22; StandIn은 ServerStorage로) → 앞 방향 사진 확인 → 2D | 낮·밤 + 뒤에서 본 사진(잎 양면). Daisy·Rose·동상·분수는 Blender 손보기에서 아직.

@@ -19,7 +19,8 @@
 **흰 모델 고름 → 텍스처 중:** DomeOnionSlim 40dad418, BreadStand 00dac363, FruitStall 568b5b8e, DomeBrick 46f0bb09.
 **4면 통과 → 흰 모델 대기:** Greenhouse, ShopSign, Lantern_A·B(10/13 다시 그림 통과)·C·D·E. (JuiceParasol 흰 모델은 10/13 아침 6ec4d75d로 고름.)
 **매직 브러시 보류(창 보일 때 Blender 손보기가, 한 번 30점 이하):** 동상 B(뒤 앞치마 파랑 → 흰, 발 사이 얼룩), 분수 C(2단 물 위 크림·주황 번짐), Daisy(주황·살구 꽃 → 빨강/흰), Rose(윗면 탁한 갈색). 크롭 `art/review/design/*_tex_*_1012.jpg`. 끝나면 내가 보고 PBR.
-**다시 그리는 중:** IvyWall(큼직 잎 새 판 앞·뒤 좋음, 옆 대기), IvyBalcony(앞면 좋음, 4면 대기), FlowerCart_Bouquet(이미지 생성 3). (끝난 것: Lantern_B)(받침 금테 판 = 면마다 1개, 지금 2개). 이미지 생성 2 큐 19 IvyWall부터(잎 큼직하게 미리 말함). 이미지 생성 3 소품 큐: 벤치 3·가판대 3·등불 5 끝 → 다음은 `docs/review/halo_redo_split_2026-10-12.md` '그릴 것' 순서.
+**IvyWall 큼직 잎 판 4면 통과 → 흰 모델 큐(로그인 뒤).** **Tripo 로그아웃(10/13 재부팅) = 사용자 로그인 대기, 최종 검수가 미룸 목록에.** 옆면 방향 규칙: `_left` = 앞이 화면 오른쪽, `_right` = 앞이 화면 왼쪽(BenchB·IvyWall 기준).
+**다시 그리는 중:** IvyBalcony(앞면 좋음, 4면 대기), FlowerCart_Bouquet(이미지 생성 3). (끝난 것: Lantern_B)(받침 금테 판 = 면마다 1개, 지금 2개). 이미지 생성 2 큐 19 IvyWall부터(잎 큼직하게 미리 말함). 이미지 생성 3 소품 큐: 벤치 3·가판대 3·등불 5 끝 → 다음은 `docs/review/halo_redo_split_2026-10-12.md` '그릴 것' 순서.
 
 ## 넣을 때 메모 (이미지 생성 3에 보냄)
 - CastleRose: 바깥 유리 칸이 3D에서 빔 → 금 틀 바로 뒤 진한 파랑 얇은 원판 파트(≈34,90,180).
