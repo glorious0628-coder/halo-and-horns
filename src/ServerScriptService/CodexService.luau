@@ -7,7 +7,9 @@
 -- A page whose every kind has a card gives its title (TitleService.Grant); every card at Stage 3 = the attribute CodexGlow
 -- (a cosmetic shown by the client, never a stat). The owner gets the whole codex (s->c "Codex") at join and on c->s
 -- "CodexOpen" (no arguments, rate-limited). Cards a save made before the codex come from DataService's v5 step (no reward).
+-- The window's 3D cards (최종 검수 10/13): ReplicatedStorage.CodexModels.<kind>, copied once at Start (PublishModels).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -240,7 +242,81 @@ function CodexService.Init(registry)
 	S = registry
 end
 
+------------------------------------------------------------------ the card models (최종 검수 10/13, the codex window's 3D cards)
+-- ServerStorage.CustomModels.<kind> -> ReplicatedStorage.CodexModels.<kind> for the series-1 kinds, once at Start, by
+-- MonsterService's getCustomTemplate rule: the kind's own Model / BasePart, else its def.ModelFrom's (a borrowed one says so:
+-- attributes CodexFrom = the model's kind, CodexColor = the kind's tint). Scripts, sounds, lights, effects, prompts and
+-- GUIs are removed; every part is Anchored with CanCollide / CanQuery / CanTouch off; CodexScale = def.Scale. A kind with
+-- no model is skipped, a copy that errors is skipped (the server never stops for it), a kind already published is kept.
+local STRIP = { Script = true, LocalScript = true, ModuleScript = true, Sound = true, ParticleEmitter = true, Trail = true,
+	Beam = true, Fire = true, Smoke = true, Sparkles = true, PointLight = true, SpotLight = true, SurfaceLight = true,
+	ProximityPrompt = true, ClickDetector = true, BillboardGui = true, SurfaceGui = true }
+
+local function templateOf(folder, kind)
+	local t = folder:FindFirstChild(kind)
+	if t and (t:IsA("Model") or t:IsA("BasePart")) then return t, nil end
+	local def = Config.MonsterTypes[kind]
+	local from = type(def) == "table" and def.ModelFrom or nil
+	t = type(from) == "string" and from ~= kind and folder:FindFirstChild(from) or nil
+	if t and (t:IsA("Model") or t:IsA("BasePart")) then return t, from end
+	return nil, nil
+end
+
+local function still(part)
+	part.Anchored = true
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+end
+
+local function copyOf(src, kind, from)
+	local copy = src:Clone()
+	for _, d in copy:GetDescendants() do
+		if STRIP[d.ClassName] then
+			d:Destroy()
+		elseif d:IsA("BasePart") then
+			still(d)
+		end
+	end
+	if copy:IsA("BasePart") then still(copy) end
+	copy.Name = kind
+	local def = Config.MonsterTypes[kind]
+	copy:SetAttribute("CodexScale", tonumber(def.Scale) or 1)
+	if from then
+		copy:SetAttribute("CodexFrom", from)
+		if def.Color ~= nil then copy:SetAttribute("CodexColor", def.Color) end
+	end
+	return copy
+end
+
+-- returns how many models were published now
+function CodexService.PublishModels()
+	local folder = ReplicatedStorage:FindFirstChild(X.ModelFolder)
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = X.ModelFolder
+		folder.Parent = ReplicatedStorage
+	end
+	local custom = ServerStorage:FindFirstChild((Config.CustomModels or {}).FolderName or "CustomModels")
+	if not custom then return 0 end
+	local made = 0
+	for _, kind in X.Order do
+		if not folder:FindFirstChild(kind) then
+			local ok, err = pcall(function()
+				local src, from = templateOf(custom, kind)
+				if not src then return end
+				copyOf(src, kind, from).Parent = folder
+				made += 1
+			end)
+			if not ok then Util.Warn(TAG, "model " .. kind .. ": " .. tostring(err)) end
+		end
+	end
+	return made
+end
+
 function CodexService.Start()
+	local okModels, errModels = pcall(CodexService.PublishModels)
+	if not okModels then Util.Warn(TAG, "PublishModels: " .. tostring(errModels)) end
 	S.MonsterService.MonsterKilled:Connect(function(player, info)
 		local ok, err = pcall(onKilled, player, info)
 		if not ok then Util.Warn(TAG, "kill: " .. tostring(err)) end
