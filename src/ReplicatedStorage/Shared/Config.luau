@@ -933,6 +933,14 @@ function Config.MaxHealth(level, factionId, classId)
 	return math.floor(Config.BaseHealth(level) * f.MaxHPMult * c.HealthMult)
 end
 
+-- A23-166 (user 10/13 night): the Horns' score is SHOWN as "Mischief" (a kid's prank score, not a "bad" one). The save key,
+-- the attributes, the remotes, the board ids and the rank names stay "Infamy"; every line that shows a stat key goes through
+-- Config.FameLabel (the server's "%s +%d" lines, the lost-score line)
+Config.FameName = { Honor = "Honor", Infamy = "Mischief" }
+function Config.FameLabel(stat)
+	return type(stat) == "string" and Config.FameName[stat] or stat
+end
+
 Config.Titles = {
 	Thresholds = { 0, 10, 50, 200, 1000 },
 	Halo = { "Squire", "Knight", "Paladin", "Saint", "Archangel" },
@@ -2962,7 +2970,7 @@ Config.StoryQuests = {
 		RewardOnlyXP = "%s done! +%s XP",
 		Unlocked = "Auto Battle unlocked!", -- A23-130: the Auto button shows itself, the S4 row gives the key
 		Good = "Honor +%d",
-		Evil = "Infamy +%d",
+		Evil = "Mischief +%d", -- A23-166: the shown name of Infamy
 		Recorded = "Your choice is saved.",
 		-- shown under the two choice buttons on the last page (what a pick does, before picking)
 		-- A23-58: picking against your own side lowers your own score (ChoiceHint keeps its two-number call; the
@@ -2970,16 +2978,16 @@ Config.StoryQuests = {
 		-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): the card's line keeps only the score change
 		ChoiceHint = "Left: angel side · Right: devil side",
 		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d", -- (Good.Points, Evil.Points)
-		ChoiceHintHorns = "Left: Infamy -%d · Right: Infamy +%d", -- (Good.Points, Evil.Points)
+		ChoiceHintHorns = "Left: Mischief -%d · Right: Mischief +%d", -- (Good.Points, Evil.Points)
 		ChoiceHintNeutral = "No good or evil points.",
 		OffSideHalo = "Honor -%d", -- A23-58 (points actually taken); A23-130: the loss only, no guide voice
-		OffSideHorns = "Infamy -%d",
+		OffSideHorns = "Mischief -%d",
 		-- 3rd idea round #5: the same pick at 0 points (nothing to take) + the lean line after it
 		OffSideHaloZero = "Hallie: Hmm… not very angel-like!", OffSideHornsZero = "Magpie: Too nice for a devil!",
 		RankDownHalo = "Rank down!",
 		RankDownHorns = "Rank down!",
 		GooseFirstHalo = "Honor +%d",
-		GooseFirstHorns = "Infamy +%d",
+		GooseFirstHorns = "Mischief +%d",
 		Next = "Next",
 		Ok = "Got it",
 		Later = "Later",
@@ -5269,8 +5277,8 @@ Config.Help = {
 			"Finish the Crown Shard side quest to unlock Auto Battle. It only hits monsters.",
 			"No input for 20 minutes? Roblox will disconnect you.",
 		} },
-		{ Id = "Honor", Title = "Honor & Infamy", Lines = {
-			"Knights earn Honor and the Horn Legion earns Infamy, from fair fights and story choices.",
+		{ Id = "Honor", Title = "Honor & Mischief", Lines = {
+			"Knights earn Honor and the Horn Legion earns Mischief, from fair fights and story choices.",
 			"Artisan Guild: each success with a scroll you hunted yourself earns Artisan Fame.",
 			"A free side switch at the Altar resets your old side's points to 0.",
 			"Each week's top 3 get a title and +10% XP and drops the next week.",
@@ -7388,11 +7396,11 @@ Config.Ranking = {
 	SettleStorePrefix = "HH_RankSettle_", -- DataStore HH_RankSettle_<season>, key W<week> (D4: the season is in the name)
 	FactionCode = { None = 0, Halo = 1, Horns = 2, Neutral = 3 },
 	Text = {
-		BoardNames = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan Fame", PvP = "Unfair PvP" },
-		BoardNamesEn = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan Fame", PvP = "Unfair PvP" },
+		BoardNames = { Honor = "Honor", Infamy = "Mischief", Artisan = "Artisan Fame", PvP = "Unfair PvP" },
+		BoardNamesEn = { Honor = "Honor", Infamy = "Mischief", Artisan = "Artisan Fame", PvP = "Unfair PvP" },
 		-- the timed titles: "This week's Honor #1" / "This week's Infamy #1" / "This week's Artisan #1" (A23-22 / A23-24)
-		TitleNames = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan" },
-		TitleNamesEn = { Honor = "Honor", Infamy = "Infamy", Artisan = "Artisan" },
+		TitleNames = { Honor = "Honor", Infamy = "Mischief", Artisan = "Artisan" },
+		TitleNamesEn = { Honor = "Honor", Infamy = "Mischief", Artisan = "Artisan" },
 		Empty = "No records yet", EmptyEn = "No records yet",
 		Unknown = "Player", UnknownEn = "Player",
 		Test = "Test", TestEn = "Test",
@@ -7428,13 +7436,13 @@ Config.Ranking = {
 		-- RichText: the red outlaw tag is fixed text, names are escaped. Row = (rank, name, value).
 		Board = {
 			Header = "This server · this week",
-			Titles = { Honor = "Knights' Honor", Infamy = "Horns' Infamy", Artisan = "Artisan Fame", PvP = "This week's PvP" },
+			Titles = { Honor = "Knights' Honor", Infamy = "Horns' Mischief", Artisan = "Artisan Fame", PvP = "This week's PvP" },
 			Wanted = "Wanted",
 			Row = "%d. %s %s", Sep = " · ", Empty = "(nobody yet)", Bully = "Bully", Gold = "G",
 		},
 		BoardEn = {
 			Header = "This server · this week",
-			Titles = { Honor = "Knights' Honor", Infamy = "Horns' Infamy", Artisan = "Artisan Fame", PvP = "This week's PvP" },
+			Titles = { Honor = "Knights' Honor", Infamy = "Horns' Mischief", Artisan = "Artisan Fame", PvP = "This week's PvP" },
 			Wanted = "Wanted",
 			Row = "%d. %s %s", Sep = " · ", Empty = "(nobody yet)", Bully = "Bully", Gold = "G",
 		},
@@ -7554,7 +7562,7 @@ Config.Death = {
 	Tips = {
 		Monster = "Low HP? Drink a potion with %s!", MonsterEn = "Low HP? Drink a potion with %s!",
 		Plundered = "If a knight catches the thief within 45 s, you get 120% back", PlunderedEn = "If a knight catches the thief within 45 s, you get 120% back",
-		Player = "Fair fights build Honor and Infamy", PlayerEn = "Fair fights build Honor and Infamy",
+		Player = "Fair fights build Honor and Mischief", PlayerEn = "Fair fights build Honor and Mischief",
 		Fall = "A fall sends you back to town", FallEn = "A fall sends you back to town",
 		Other = "Stuck? Menu → Travel", OtherEn = "Stuck? Menu → Travel",
 		PotionTouch = "the potion button", PotionTouchEn = "the potion button",

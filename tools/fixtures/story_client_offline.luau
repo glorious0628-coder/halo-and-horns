@@ -299,8 +299,8 @@ do
 	local halo, horns = STORY.Hint(obj, "Halo"), STORY.Hint(obj, "Horns")
 	check(g, "Halo: Honor +Good on the left, Honor -Evil on the right (A23-58)",
 		type(halo) == "string" and string.find(halo, "Honor +3", 1, true) ~= nil and string.find(halo, "Honor -5", 1, true) ~= nil, halo)
-	check(g, "Horns: Infamy -Good on the left, Infamy +Evil on the right (A23-58)",
-		type(horns) == "string" and string.find(horns, "Infamy -3", 1, true) ~= nil and string.find(horns, "Infamy +5", 1, true) ~= nil, horns)
+	check(g, "Horns: Mischief -Good on the left, Mischief +Evil on the right (A23-58; A23-166 name)",
+		type(horns) == "string" and string.find(horns, "Mischief -3", 1, true) ~= nil and string.find(horns, "Mischief +5", 1, true) ~= nil, horns)
 	check(g, "the artisan guild: the no-points line", STORY.Hint(obj, "Neutral") == TXT.ChoiceHintNeutral)
 	local okNil, hNil = pcall(STORY.Hint, obj, nil)
 	local okOdd, hOdd = pcall(STORY.Hint, obj, "Guild")
@@ -324,8 +324,8 @@ do
 	check(g, "Halo with 10 Honor: the full -5", string.find(h10, "Honor -5", 1, true) ~= nil
 		and string.find(h10, string.format(HINT_HAVE, 10), 1, true) ~= nil, h10)
 	local r1 = STORY.Hint(obj, "Horns", 1)
-	check(g, "Horns with 1 Infamy: 'Infamy -1' (the good pick costs what I have)",
-		string.find(r1, "Infamy -1", 1, true) ~= nil and string.find(r1, "Infamy +5", 1, true) ~= nil
+	check(g, "Horns with 1 Mischief: 'Mischief -1' (the good pick costs what I have)",
+		string.find(r1, "Mischief -1", 1, true) ~= nil and string.find(r1, "Mischief +5", 1, true) ~= nil
 		and string.find(r1, string.format(HINT_HAVE, 1), 1, true) ~= nil, r1)
 	check(g, "points unknown (nil): the plain hint, no '(you have'", STORY.Hint(obj, "Halo", nil) == halo, STORY.Hint(obj, "Halo", nil))
 	check(g, "0-point picks with points known: still the lean line", STORY.Hint(zero, "Halo", 4) == HINT_LEAN, STORY.Hint(zero, "Halo", 4))

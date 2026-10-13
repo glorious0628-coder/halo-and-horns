@@ -1,7 +1,7 @@
 -- test_metrics_offline.luau : A23-160 ④ the private test's numbers board (TestMetricsService, 게임성 개발 2, 2026-10-13; contract
 -- docs/design/test_metrics_2026-10-13.md). tools/test_test_metrics.py binds CONFIG_SOURCE, UTIL_SOURCE and METRICS_SOURCE in front
 -- of dev2_kit.luau + dev3_world.luau; this file follows. TestMetricsService runs from source on the dev3_world doubles
--- (MonetizationService.PassBought / HasPass and TelemetryService.ClientMetric are doubles here). Its flush loop is stepped by hand.
+-- (MonetizationService.PassBought / PassAnswer and TelemetryService.ClientMetric are doubles here). Its flush loop is stepped by hand.
 
 local STORE = "HaloHorns_TestMetrics_v1_STUDIO"
 local ROUND = "PT1"
@@ -12,10 +12,13 @@ local function metricsWorld(o)
 	local Signal = w.Util.Signal
 	w.Reg.TelemetryService = { ClientMetric = Signal.new() }
 	w.Reg.MonetizationService.PassBought = Signal.new()
-	w.Owns = {} -- [Player] = { [pass key] = true }
-	function w.Reg.MonetizationService.HasPass(p, key)
-		return w.Owns[p] ~= nil and w.Owns[p][key] == true
+	w.Owns = {} -- [Player] = { [pass key] = true }: Roblox's answers this session (no table = Roblox has not answered)
+	function w.Reg.MonetizationService.PassAnswer(p, key)
+		if w.Owns[p] == nil then return nil end
+		return w.Owns[p][key] == true
 	end
+	-- the saved last answer: HasPass says yes, but it proves nothing about this join (never read for Kept)
+	function w.Reg.MonetizationService.HasPass() return true end
 	w:Service("TestMetricsService", METRICS_SOURCE)
 	w:InitStart({ "TestMetricsService" })
 	w.TM = w.Reg.TestMetricsService
@@ -198,6 +201,14 @@ runGroup("passes", function()
 	w:Leave(q)
 	w:Advance(30)
 	check(pend(w).Pass.Gold2.Back == nil, "left before the rejoin check = not counted", show(pend(w).Pass.Gold2))
+	-- 최종 검수 10/13 review: Roblox has not answered by the check (only the saved answer exists): Unknown, never Kept
+	local z, zd = rookie(w, 5)
+	Bought:Fire(z, "Bubbles")
+	z, zd = rejoin(w, z, zd)
+	w:Advance(30)
+	check(pend(w).Pass.Bubbles.Back == 1 and pend(w).Pass.Bubbles.Kept == nil and pend(w).Pass.Bubbles.Unknown == 1,
+		"no answer from Roblox yet: Back 1, Unknown 1, not Kept", show(pend(w).Pass.Bubbles))
+	check(pend(w).Pass.XP2.Unknown == nil, "Roblox's 'no' is not Unknown", show(pend(w).Pass.XP2))
 end)
 
 ------------------------------------------------------------------ devices
@@ -279,6 +290,11 @@ runGroup("off", function()
 	local p = rookie(w, 1)
 	p:SetAttribute("IntroSeen", true)
 	check(pend(w).Players == nil and pend(w).Intro == nil and #w.BoundToClose == 0 and #w.Loops == 0, "Enabled = false: nothing counted, no loop, no close hook", show(pend(w)))
+	-- 최종 검수 10/13 review: never on the Live game, even with Enabled = true
+	local live = metricsWorld({ EditConfig = function(C) C.Env.Default = "Live" end })
+	local q = rookie(live, 1)
+	q:SetAttribute("IntroSeen", true)
+	check(pend(live).Players == nil and #live.BoundToClose == 0 and #live.Loops == 0 and q ~= nil, "the Live game: nothing counted, no loop", show(pend(live)))
 end)
 
 finish()

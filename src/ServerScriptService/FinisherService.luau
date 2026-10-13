@@ -140,7 +140,7 @@ local function finish(player, card, option)
 				or string.format(Config.Loot.Text.Got, item and item.Name or c.Help.Item))
 		end
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
-		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
+		if change > 0 then table.insert(parts, string.format(TXT.Score, Config.FameLabel(stat), change)) end
 		if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end -- the pick's own sound is the client's (FinisherEnd)
 		-- A23-130: a loss keeps its line (OffSide "Honor -N", RankDown); no 0-point lean line, no "full today" line
 		if stat ~= "None" and not mine then

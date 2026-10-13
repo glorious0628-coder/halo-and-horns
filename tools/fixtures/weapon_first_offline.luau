@@ -280,24 +280,23 @@ runGroup("weapon first", function()
 	local scrollName = LT.Items.Enh70.Name
 	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
 	local had = scrolls()
-	-- 최종 검수 10/13 review: the gift can give nothing (here: the scroll stack at Loot.ItemCap) - then it is not marked given
-	d.Items = type(d.Items) == "table" and d.Items or {}
-	d.Items.Enh70 = LT.ItemCap
+	-- 최종 검수 10/13 review: the gift can give nothing because of a failure (here: GrantItem throws) - then it is not marked
+	-- given and the next join tries again; a FULL stack stays marked (no "full" line every join)
 	local n3, f3 = #w.Notices, #w.Fired
 	local lootSvc = w.Registry.LootService
 	local grantItem, asked = lootSvc.GrantItem, {}
 	lootSvc.GrantItem = function(pl, id, n)
 		table.insert(asked, id)
-		return grantItem(pl, id, n)
+		error("offline GrantItem failure")
 	end
 	w:Press(p)
 	lootSvc.GrantItem = grantItem
-	check(#asked == 1 and asked[1] == "Enh70", "the step opening asks for Otto's scroll once (it gives nothing: the stack is full)", show(asked))
+	w.Warnings = {} -- the expected GrantItem warning
+	check(#asked == 1 and asked[1] == "Enh70", "the step opening asks for Otto's scroll once (it fails here)", show(asked))
 	check(not st.Done.M1_1 and st.Main.Id == "M1_1" and st.Main.St == 2 and w:Panels(p, "WeaponShop", f3) == 1,
 		"the visit passes step 1: step 2 'Use the Enhance Scroll' opens, the Forge window opens", show({ st.Main, st.Done.M1_1 }))
-	check(st.First.GiveM1_12 == nil and d.Items.Enh70 == LT.ItemCap and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 0,
-		"a gift that gave nothing (the stack full) is not marked given and shows no '+item' line", show({ st.First.GiveM1_12, w:NoticesFor(p, n3) }))
-	d.Items.Enh70 = had > 0 and had or nil
+	check(st.First.GiveM1_12 == nil and scrolls() == had and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 0,
+		"a gift that failed is not marked given and shows no '+item' line", show({ st.First.GiveM1_12, w:NoticesFor(p, n3) }))
 	local n3b = #w.Notices
 	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
 	w:Flush()
@@ -306,6 +305,22 @@ runGroup("weapon first", function()
 	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
 	w:Flush()
 	check(scrolls() == had + 1, "another join gives no second scroll", show({ had, scrolls() }))
+	-- a full stack: nothing given, but it stays marked (the player holds scrolls), so later joins ask nothing
+	local keep = scrolls()
+	st.First.GiveM1_12 = nil
+	d.Items.Enh70 = LT.ItemCap
+	asked = {}
+	lootSvc.GrantItem = function(pl, id, n)
+		table.insert(asked, id)
+		return grantItem(pl, id, n)
+	end
+	w.Story.RetryGifts(p)
+	w.Story.RetryGifts(p)
+	w:Flush()
+	lootSvc.GrantItem = grantItem
+	check(#asked == 1 and st.First.GiveM1_12 == true and d.Items.Enh70 == LT.ItemCap,
+		"a full stack: asked once, then marked given (no retry, no repeated 'full' line)", show({ asked, st.First.GiveM1_12 }))
+	d.Items.Enh70 = keep
 	local n4 = #w.Notices
 	w:Buy(p, 2)
 	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BankGold >= 150

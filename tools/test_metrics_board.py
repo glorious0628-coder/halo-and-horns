@@ -146,9 +146,10 @@ def board(meta: dict) -> list[str]:
         rows = []
         for k in sorted(passes):
             p = passes[k] or {}
-            back, kept = int(p.get("Back") or 0), int(p.get("Kept") or 0)
-            rows.append([k, int(p.get("Bought") or 0), back, kept, pct(kept, back) if back else "-"])
-        lines += table(["패스", "삼", "다시 접속", "혜택 남음", "유지율"], rows)
+            back, kept, unknown = int(p.get("Back") or 0), int(p.get("Kept") or 0), int(p.get("Unknown") or 0)
+            answered = back - unknown  # Roblox answered on that join (Unknown = no answer yet: not a loss)
+            rows.append([k, int(p.get("Bought") or 0), back, kept, unknown, pct(kept, answered) if answered > 0 else "-"])
+        lines += table(["패스", "삼", "다시 접속", "혜택 남음", "확인 못 함", "유지율"], rows)
     else:
         lines += ["아직 산 패스 없음.", ""]
     return lines

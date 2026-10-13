@@ -1,6 +1,7 @@
 -- TestMetricsService.luau : A23-160 ④ the private test's numbers board (게임성 개발 2, 2026-10-13; contract
--- docs/design/test_metrics_2026-10-13.md, read with tools/test_metrics_board.py). A read-only observer like HealthService: it
--- never changes game state, every handler is pcall'd, no name or UserId is ever stored.
+-- docs/design/test_metrics_2026-10-13.md, read with tools/test_metrics_board.py). An observer like HealthService: it changes
+-- no game state and adds only data.Telemetry.Test to the save; every handler is pcall'd, no name or UserId is ever stored.
+-- Never on the Live game (Config.EnvName() == "Live", 최종 검수 10/13 review), like Config.ApplyTestServer.
 -- While Config.TestMetrics.Enabled it sums, per test round (Config.TestMetrics.Round), into ONE DataStore document
 -- (Config.StoreName(Config.TestMetrics.Store); Studio: its own "_STUDIO" copy; key = the round):
 --   Players (accounts seen this round), New (of them, fresh saves), Joins,
@@ -8,7 +9,8 @@
 --   Min[milestone][minute] (new accounts reaching Lv5 / Lv10 / Weapon (first dropped weapon, tier 2+) / Claim (the first
 --   mission claimed) at that whole minute of play, capped at MaxMinute), Ten (new accounts with Lv5 + Weapon + Claim all
 --   before TenMinutes), Side[faction] / Device[device] (a new account's first side / first Perf sample's device),
---   Pass[key] = { Bought, Back (bought, then joined again), Kept (on that later join the pass still worked) }.
+--   Pass[key] = { Bought, Back (bought, then joined again), Kept (on that later join Roblox said it is owned), Unknown (Roblox
+--   had not answered by then: MonetizationService.PassAnswer nil - the saved last answer is never counted as Kept) }.
 -- Per account (the save, additive): data.Telemetry.Test = { R = round, N = new, J = joins this round, I / S / D = intro / side /
 -- device counted, M = { [milestone] = minute }, T = Ten counted, P = { [pass] = J of the purchase }, K = { [pass] = rejoin counted } }.
 -- Every FlushSeconds (x0.5..1.5) and at the close the unsaved sums are MERGED (UpdateAsync, numbers added); a failed write keeps
@@ -197,12 +199,18 @@ local function checkKept(player, key)
 	local rec = recordOf(data)
 	if rec.K[key] then return end
 	rec.K[key] = true
+	-- 최종 검수 10/13 review: Roblox's own answer of this session only (PassAnswer: true / false, nil = not answered yet);
+	-- HasPass would also return the saved last answer (PASS.Seen), which proves nothing about this join
 	local mon = S.MonetizationService
-	local ok, has = false, false
-	if type(mon) == "table" and type(mon.HasPass) == "function" then ok, has = pcall(mon.HasPass, player, key) end
+	local ok, answer = false, nil
+	if type(mon) == "table" and type(mon.PassAnswer) == "function" then ok, answer = pcall(mon.PassAnswer, player, key) end
 	local p = sub(sub(X.Delta, "Pass"), key)
 	bump(p, "Back")
-	if ok and has == true then bump(p, "Kept") end
+	if ok and answer == true then
+		bump(p, "Kept")
+	elseif not ok or answer == nil then
+		bump(p, "Unknown")
+	end
 end
 
 function TestMetricsService.OnJoin(player, data)
@@ -282,6 +290,7 @@ end
 
 function TestMetricsService.Start()
 	if M.Enabled ~= true then return end
+	if type(Config.EnvName) == "function" and Config.EnvName() == "Live" then return end -- never on the Live game
 	connect("PlayerService", "PlayerReady", TestMetricsService.OnJoin)
 	connect("PlayerService", "PlayerLeaving", TestMetricsService.OnLeave)
 	connect("MonetizationService", "PassBought", TestMetricsService.OnPassBought)
