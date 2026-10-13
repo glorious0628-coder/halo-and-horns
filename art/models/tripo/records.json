@@ -15224,8 +15224,8 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_back_ns.png"
    },
-   "next": "none (account 1 continues)",
-   "note": "overlap: 최종 검수 gave PotionCrate to Blender 손보기 1 (account 1); account 2 white models kept as spare, no texture (10/13)"
+   "next": "디자인 검수 2 picks -> texture 4K -> PBR",
+   "note": "최종 검수 10/13 정정: PotionCrate = Blender 손보기 2 (account 2 white models)"
   }
  ]
 }
