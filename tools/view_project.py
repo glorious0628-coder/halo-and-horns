@@ -20,7 +20,8 @@ a = sys.argv[sys.argv.index("--") + 1:]
 src, dst = a[0], a[1]
 views = {"front": a[2], "left": a[3], "right": a[4], "back": a[5]}
 SIZE = int(a[6]) if len(a) > 6 else 2048
-HEIGHT_RATIO = float(a[7]) if len(a) > 7 else 0.0  # optional: force mesh height = ratio * width (match the 2D silhouette)
+HEIGHT_RATIO = float(a[7]) if len(a) > 7 else 0.0
+EXTEND = int(a[8]) if len(a) > 8 else 120  # edge-extend passes (pixels) for the background  # optional: force mesh height = ratio * width (match the 2D silhouette)
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=src)
@@ -68,8 +69,42 @@ def load_view(path):
     # background = the colour at the corners; object = pixels that differ from it
     bg = np.median(np.concatenate([rgb[:8, :8].reshape(-1, 3), rgb[-8:, :8].reshape(-1, 3), rgb[:8, -8:].reshape(-1, 3), rgb[-8:, -8:].reshape(-1, 3)]), 0)
     diff = np.abs(rgb - bg).sum(2) > 0.12
-    if img.channels == 4:
-        diff |= arr[:, :, 3] > 0.5
+    if img.channels == 4 and arr[:, :, 3].min() < 0.5:  # a real alpha cutout: use it (an opaque PNG has alpha 1 everywhere)
+        diff = arr[:, :, 3] > 0.5
+    print("VIEWPROJ", os.path.basename(path), "object px %.1f%%" % (100.0 * diff.mean()))
+    # edge-extend: fill the background with the nearest object colour so faces that project outside the drawn
+    # silhouette (the mesh is never exactly the 2D shape) get leaf/flower colour, not grey
+    fill = rgb.copy()
+    m = diff.copy()
+    for _ in range(int(EXTEND)):
+        if m.all():
+            break
+        pad = np.pad(fill, ((1, 1), (1, 1), (0, 0)), mode="edge")
+        pm = np.pad(m, ((1, 1), (1, 1)), mode="edge")
+        acc = np.zeros_like(fill)
+        cntn = np.zeros(m.shape, np.float32)
+        for dy in (-1, 0, 1):
+            for dx in (-1, 0, 1):
+                if dy == 0 and dx == 0:
+                    continue
+                sl = pad[1 + dy:1 + dy + m.shape[0], 1 + dx:1 + dx + m.shape[1]]
+                sm = pm[1 + dy:1 + dy + m.shape[0], 1 + dx:1 + dx + m.shape[1]]
+                acc += sl * sm[:, :, None]
+                cntn += sm
+        new = cntn > 0
+        grow = new & ~m
+        fill[grow] = (acc[grow] / cntn[grow][:, None])
+        m = m | grow
+    arr2 = arr.copy()
+    arr2[:, :, :3] = fill
+    img.pixels.foreach_set(arr2.reshape(-1))
+    tmp = os.path.join(os.path.dirname(os.path.abspath(dst)), "_fill_" + os.path.basename(path))
+    img.filepath_raw = tmp
+    img.file_format = "PNG"
+    img.save()
+    bpy.data.images.remove(img)
+    img = bpy.data.images.load(tmp)  # Cycles bakes from the file, so reload the filled copy
+    img.colorspace_settings.name = "sRGB"
     ys, xs = np.where(diff)
     if len(xs) == 0:
         x0, x1, y0, y1 = 0, W - 1, 0, H - 1
