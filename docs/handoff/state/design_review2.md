@@ -11,9 +11,12 @@
 3. 큰 지도 V3 a·b = 통과, b 추천으로 최종 검수에 보냄(10/13).
 4. **이미지 생성 2 빛 마을 소품 남은 11종 4면**(HaloFlagpole_1·2·3, HaloReasonHQ_GuardPost·PhotoDisc·Clothesline·PotionCrate·RackShieldSword·Scarecrow·VegGarden·Woodpile) → 내 판정 → 통과분 Blender 손보기 2 큐(점수 승인 나, 4K 125/개).
 
+## 계정 2 몫(최종 검수 10/13)
+Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 다 4면 통과, 2×125 OK) · BellFrame(옆면 다시 그린 뒤) · 이미지 생성 2 소품 11종. **앞으로 새 스마트 메시는 계정 2.** Blender 손보기 2는 Chrome 창이 보여야 Tripo가 돎(창 차례 = 최종 검수).
+
 ## 2D 4면 판정 끝(10/13)
 - 통과 → Blender 손보기 1: GatherBush·CandleCrate·Easel·NoticeBoard·ArmoryBarrels·WaterBuckets(디자인 검수 1 먼저 판정 따름).
-- 통과 → **Blender 손보기 2로 옮김(최종 검수 10/13)**: 간판 Bakery·Flower·Juice·Potion, NEW_Beehive, NEW_WateringCan, NEW_SteppingStone(돌 하나; 옛 5개 줄 NEW_SteppingStones는 안 씀). 텍스처 4K → 1개 125점, 점수 승인·흰 모델·PBR 판정 = 나.
+- 통과 → (한때 Blender 손보기 2로 옮겼다가 **최종 검수 결정: 계정 1·디자인 검수 1 판정으로 되돌림** — 계정 2에서 간판 Bakery f894a49d·Flower 1344c266 흰 모델만 200점 겹침) 간판 Bakery·Flower·Juice·Potion, NEW_Beehive, NEW_WateringCan, NEW_SteppingStone(돌 하나; 옛 5개 줄 NEW_SteppingStones는 안 씀). 텍스처 4K → 1개 125점, 점수 승인·흰 모델·PBR 판정 = 나.
 - 통과 → Blender 손보기 2: NEW_Hedge, NEW_WallLamp(_left/_right 이름 맞바꿈 6bfc4ff 뒤).
 
 ## 교훈
