@@ -451,6 +451,15 @@ function H.ControlLines()
 	return lines
 end
 
+-- a topic's lines: Controls from my live keys; a touch-only device (no keyboard: no Esc, no Tab) reads the topic's
+-- Config.Help.TouchTopics lines where it has them (A23-145, 최종 검수 10/13)
+function H.TopicLines(t)
+	if t.Id == "Controls" then return H.ControlLines() end
+	local touch = Config.Help.TouchTopics
+	if not UserInputService.KeyboardEnabled and type(touch) == "table" and type(touch[t.Id]) == "table" then return touch[t.Id] end
+	return t.Lines
+end
+
 function H.Topic(kit, parent, title, lines)
 	header(kit, parent, title)
 	for _, line in lines do
@@ -496,7 +505,7 @@ function H.BuildHelp(parent, kit)
 		return nil
 	end
 	for _, t in help.Topics do
-		H.Topic(kit, parent, t.Title, t.Id == "Controls" and H.ControlLines() or t.Lines)
+		H.Topic(kit, parent, t.Title, H.TopicLines(t))
 	end
 	local row1 = Instance.new("Frame")
 	row1.BackgroundTransparency = 1

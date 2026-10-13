@@ -86,8 +86,12 @@ function Util.FormatInt(n)
 	return sign .. out
 end
 
+-- 125 -> "2:05"; an hour or more -> "1:57:23" (최종 검수 10/13: the goose chip said "117:23")
 function Util.FormatTime(seconds)
 	seconds = math.max(0, math.floor(seconds or 0))
+	if seconds >= 3600 then
+		return string.format("%d:%02d:%02d", seconds // 3600, seconds // 60 % 60, seconds % 60)
+	end
 	return string.format("%d:%02d", seconds // 60, seconds % 60)
 end
 
