@@ -13533,12 +13533,14 @@
     "right_slot": "art/out/s2/noshadow/NEW_FlowerBush_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_FlowerBush_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/NEW_FlowerBush/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 7d6991d2",
    "pbr": "79224b20 (5)",
    "file": "art/models/tripo/web/NEW_FlowerBush_SM_tex4k_pbr_src.fbx (7cafd99b)",
-   "redo": "6e6bd726 PBR failed 디자인 검수 2 (see-through leaf layers, blue flowers missing) -> 7cafd99b texture 4K 3f0f139d + PBR f469cc49 (+25)"
+   "redo": "6e6bd726 PBR failed 디자인 검수 2 (see-through leaf layers, blue flowers missing) -> 7cafd99b texture 4K 3f0f139d + PBR f469cc49 (+25)",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/NEW_FlowerBush/NEW_FlowerBush_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.9956x0.6274, 6351 faces)"
   }
  ],
  "HaloVar4_Balustrade_D_web2_sm_tex8k_pbr": [
@@ -13562,11 +13564,13 @@
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_D_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_D_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_D/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task b7d13a54",
    "pbr": "0660e7b8 (5)",
-   "file": "art/models/tripo/web/HaloVar4_Balustrade_D_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_D_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloVar4_Balustrade_D/HaloVar4_Balustrade_D_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.1479x0.6929, 5478 faces)"
   }
  ],
  "HaloVar4_Balustrade_C_web2_sm_tex8k_pbr": [
@@ -13618,11 +13622,13 @@
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_B_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_B_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_B/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task f49e623c",
    "pbr": "77bd57c0 (5)",
-   "file": "art/models/tripo/web/HaloVar4_Balustrade_B_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_B_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloVar4_Balustrade_B/HaloVar4_Balustrade_B_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.2017x0.5444, 5899 faces)"
   }
  ],
  "HaloVar4_Balustrade_A_web2_sm_tex8k_pbr": [
@@ -13646,11 +13652,13 @@
     "right_slot": "art/out/s2/noshadow/HaloVar4_Balustrade_A_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Balustrade_A_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Balustrade_A/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task d47393f0",
    "pbr": "d5c9b5bf (5)",
-   "file": "art/models/tripo/web/HaloVar4_Balustrade_A_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloVar4_Balustrade_A_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloVar4_Balustrade_A/HaloVar4_Balustrade_A_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.1704x0.5503, 5044 faces)"
   }
  ],
  "HaloVar3_Balustrade_F_web2_sm_tex8k_pbr": [
@@ -13674,11 +13682,13 @@
     "right_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_F_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar3_Balustrade_F_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar3_Balustrade_F/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task e55d3f95",
    "pbr": "78439720 (5)",
-   "file": "art/models/tripo/web/HaloVar3_Balustrade_F_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloVar3_Balustrade_F_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloVar3_Balustrade_F/HaloVar3_Balustrade_F_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.2026x0.4976, 5808 faces)"
   }
  ],
  "HaloVar3_Balustrade_E_web2_sm_tex8k_pbr": [
@@ -13702,11 +13712,13 @@
     "right_slot": "art/out/s2/noshadow/HaloVar3_Balustrade_E_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar3_Balustrade_E_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar3_Balustrade_E/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 05aa9f45",
    "pbr": "39a83a80 (5)",
-   "file": "art/models/tripo/web/HaloVar3_Balustrade_E_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloVar3_Balustrade_E_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloVar3_Balustrade_E/HaloVar3_Balustrade_E_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.188x0.5972, 5650 faces)"
   }
  ],
  "HaloReasonHQ_FlowerCart_Bouquet_web2_sm_tex8k_pbr": [
@@ -13730,11 +13742,13 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_FlowerCart_Bouquet_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloReasonHQ_FlowerCart_Bouquet/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 22ae7b8e",
    "pbr": "1afda87e (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_Bouquet_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_FlowerCart_Bouquet_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_FlowerCart_Bouquet/HaloReasonHQ_FlowerCart_Bouquet_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.23x0.4575, 4844 faces)"
   }
  ],
  "HaloVar4_Planter_D_web2_sm_tex8k_pbr": [
@@ -13758,12 +13772,14 @@
     "right_slot": "art/out/s2/noshadow/HaloVar4_Planter_D_left_ns.png",
     "back": "art/out/s2/noshadow/HaloVar4_Planter_D_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloVar4_Planter_D/",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task e67a08e0 (4K, 20); 8K trial 3527cc1e (0 pts)",
    "pbr": "7e2303aa (5); 8K trial version dropped (최종 검수 10/13 4K 확정)",
    "file": "art/models/tripo/web/HaloVar4_Planter_D_SM_tex4k_pbr_src.fbx",
-   "compare": "art/review/blender2/tex8k_vs_4k_1013/HaloVar4_Planter_D_8k_vs_4k.jpg"
+   "compare": "art/review/blender2/tex8k_vs_4k_1013/HaloVar4_Planter_D_8k_vs_4k.jpg",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/HaloVar4_Planter_D/HaloVar4_Planter_D_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.564x0.6187x0.9995, 5658 faces)"
   }
  ],
  "NEW_WallLamp_web2_sm_tex8k_pbr": [
@@ -13788,10 +13804,12 @@
     "right_slot": "art/out/s2/noshadow/NEW_WallLamp_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_WallLamp_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 2b74f65e",
    "pbr": "3038c95b (5)",
-   "file": "art/models/tripo/web/NEW_WallLamp_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_WallLamp_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/NEW_WallLamp/NEW_WallLamp_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.3257x0.4224x0.9995, 5583 faces)"
   }
  ],
  "NEW_Hedge_web2_sm_tex8k_pbr": [
@@ -13816,10 +13834,12 @@
     "right_slot": "art/out/s2/noshadow/NEW_Hedge_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_Hedge_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K (account 2 has 8K only as 1 trial; user 10/13: 4K) task 00165ec7",
    "pbr": "669f258a (5)",
-   "file": "art/models/tripo/web/NEW_Hedge_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_Hedge_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/NEW_Hedge/NEW_Hedge_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.313x0.3394, 8407 faces)"
   }
  ],
  "HaloVar3_Topiary_D_web_sm_tex8k_pbr": [
@@ -14327,10 +14347,12 @@
     "right_slot": "art/out/s2/noshadow/NEW_BreadBasket_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_BreadBasket_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task abc62ab0",
    "pbr": "523245de (5)",
-   "file": "art/models/tripo/web/NEW_BreadBasket_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_BreadBasket_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/NEW_BreadBasket/NEW_BreadBasket_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.9731x0.9722, 6225 faces)"
   }
  ],
  "NEW_CafeTable_web2_sm_tex8k_pbr": [
@@ -14354,10 +14376,12 @@
     "right_slot": "art/out/s2/noshadow/NEW_CafeTable_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_CafeTable_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 1ac455d6",
    "pbr": "637ef248 (5)",
-   "file": "art/models/tripo/web/NEW_CafeTable_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_CafeTable_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13",
+   "final": "art/models/tripo/touchup/NEW_CafeTable/NEW_CafeTable_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9644x0.9644x0.9995, 5593 faces)"
   }
  ],
  "HaloSign_SignBakery_web2_sm_tex8k_pbr": [
@@ -14431,11 +14455,12 @@
     "right_slot": "art/out/s2/noshadow/HaloSign_SignJuice_left_ns.png",
     "back": "art/out/s2/noshadow/HaloSign_SignJuice_back_ns.png"
    },
-   "next": "디자인 검수 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "note": "overlap: account 1 (Blender 손보기) already had white models; account 2 copy kept as spare, 디자인 검수 picks from 8 (최종 검수 10/13). Juice was pressed while the tab was frozen.",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 1b87fb3f",
    "pbr": "32f9a9dc (5)",
-   "file": "art/models/tripo/web/HaloSign_SignJuice_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloSign_SignJuice_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 PBR gate pass -> 최종 검수 final pass 10/13"
   }
  ],
  "HaloChunk_Telescope_web_sm_tex4k_pbr": [
