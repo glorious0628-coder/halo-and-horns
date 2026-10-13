@@ -6,6 +6,7 @@
 - 앱 브라우저 창이 숨겨지면 Tripo 페이지가 안 뜸(fetch도 멈춤) → 최종 검수에 창 보이게 부탁하고 기다림.
 - PBR 남음: JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick(텍스처 끝) + ConeTree(PBR 결과 안 옴, 다시) + 동상 B·분수 C·Daisy·Rose. PBR 끝·내려받기 남음: GateLeaf·DomeOnion·DomeBall·BenchB·DomeOctagon·FlowerCart.
 - 디자인 검수 고른 흰 모델 20종(텍스처 30 → 바로 PBR): Greenhouse d148d3bd, ShopSign e96efdb6, Lantern_A 3b8c167c, Lantern_B 4b6f9db9, Lantern_C 096e84f2, Lantern_D 1eed23ce, Lantern_E c102246e, IvyWall 18598e34, IvyBalcony 0352e909, FlowerBushPot 5a5af84d(뒤 구멍 → ⑤에서 초록 공 파트), DomePorchHalf e549329c, DomePavilion bc5097f2, DomeTowerSmall 6d925d8a, BreadDisplay e5467c5f, RoundTree_E 077f2fae, RoundTree_F cc3f527f, RoundTree_G a9395b47, Topiary_C 3e2847ad, Topiary_D 7c673fb4, Planter_E 1021df70. 텍스처 앞면 = bundle8/9 `<이름>_front`.
+- **10/13 저녁 진행:** PBR 10 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick·ConeTree 다시·동상B·분수C·Daisy·Rose). 고른 20종 텍스처: 0~9번 끝(Greenhouse~FlowerBushPot), 10번 DomePorchHalf부터 남음 — 페이지 localStorage hhTexQ/hhTexI + hhTexDo(현재 칸 텍스처 후 다음 칸으로 이동). 사용자 말: 텍스처 지금 방식 그대로(앞면 한 장 → 바로 PBR). 내 세션이 화면(분할 보기)에 떠 있어야 Tripo가 돌아감.
 - 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap·ChimneyLantern·RoundTree(bundle12 끝에 넣음, 42.1 MB; 아직 Adobe 안 올림).
 
 ## 10/13 낮 — 로그인 뒤 진행 (잔액 6,505)
