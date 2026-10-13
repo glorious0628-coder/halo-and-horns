@@ -91,6 +91,7 @@ local env = {
 	game = { GetService = function(_, n) return service(n) end },
 	require = function() return Config end,
 	workspace = {},
+	Vector3 = Vector3, -- inView's lift over the head
 	math = setmetatable({ random = function(a, b) return a end }, { __index = math }), -- the first of the pool
 	task = { spawn = function() end, wait = function() end, delay = function(t, fn) table.insert(delays, { T = t, Fn = fn }) end },
 }
@@ -175,6 +176,31 @@ check(who == bright, "a story NPC body (tag NPC + HHC_TownNpc) speaks; Otto and 
 check(seenNpc == "Bright", "its id goes to TownReactLines as p.Npc", seenNpc)
 check(TR.Step(20000 + R.Show + 1) == nil, "Otto (decorative) never speaks", "")
 Config.TownReactLines = realLines
+
+-- final review 10/14 (phone photos: Bright's bubble under the minimap / quest card): the whole bubble must land in the
+-- open middle of the view (TownReact.Clear), else that person waits
+check(TR.Clear(300, 200, true, 749, 361, 196, 86, true), "phone: a head in the middle may speak")
+check(not TR.Clear(120, 200, true, 749, 361, 196, 86, true), "phone: under the minimap / quest card: no")
+check(not TR.Clear(500, 200, true, 749, 361, 196, 86, true), "phone: the bubble would run into the thumb ring: no")
+check(not TR.Clear(300, 60, true, 749, 361, 196, 86, true), "phone: under the war meter: no")
+check(not TR.Clear(300, 200, false, 749, 361, 196, 86, true), "behind the camera: no")
+check(not TR.Clear(210, 200, true, 749, 361, 196, 86, true) and TR.Clear(210, 200, true, 749, 361, 196, 86, false),
+	"the phone zone is narrower on the left (the thumbstick / quest card) than the PC one")
+check(TR.Clear(500, 400, true, 1280, 720, 196, 86, false), "PC: the middle may speak")
+check(not TR.Clear(200, 400, true, 1280, 720, 196, 86, false), "PC: the left column (quest tracker): no")
+check(not TR.Clear(nil, 400, true, 1280, 720, 196, 86, false), "no point: no")
+local camAt = { X = 100, Y = 400, Z = 5 }
+env.workspace.CurrentCamera = { ViewportSize = { X = 1280, Y = 720 },
+	WorldToViewportPoint = function() return camAt, true end }
+NPCS = { bright }
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+check(TR.Step(30000) == nil, "Step: the nearest person far left on screen does not speak")
+camAt = { X = 500, Y = 400, Z = 5 }
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+check(TR.Step(30100) == bright, "Step: in the middle it speaks")
+env.workspace.CurrentCamera = nil
 print(("TOWN_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -194,6 +220,9 @@ MUTATIONS = [
     ("only TownFolk speak", "for _, m in CollectionService:GetTagged(\"NPC\") do", "for _, m in {} do"),
     ("no p.Npc", "Npc = best:GetAttribute(\"HHC_TownNpc\") })", "Npc = nil })"),
     ("bark-sized bubble", "pcall(B.Make, head, T.Lift, line, nil, T.Size)", "pcall(B.Make, head, T.Lift, line, nil, nil)"),
+    ("speaks anywhere on screen", "if d <= bestD and inView(npc) then", "if d <= bestD then"),
+    ("the bubble's width ignored", "x >= W * z.L and x + w <= W * z.R", "x >= W * z.L and x <= W * z.R"),
+    ("phones use the PC zone", "local z = touch and T.Clear.Touch or T.Clear.PC", "local z = T.Clear.PC"),
 ]
 STATIC = [
     ("ClientMain loads TownReact after MonsterLabels", lambda m, s, lb: '"StoryNpcs", "TownReact", ' in m

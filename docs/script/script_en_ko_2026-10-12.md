@@ -137,7 +137,7 @@
 | Ranger · Shadow Hunter · Pet Tamer | 레인저(Ranger) · 그림자 사냥꾼(Shadow Hunter) · 펫 조련사(Pet Tamer) | Archer(궁수) 카드 이름: Halo = Ranger, Horns = Shadow Hunter, 길드 = Pet Tamer · `Classes.Archer.Names` |
 | Hits every enemy in front of you at once. Very tough! | 앞에 있는 적을 한꺼번에 때린다. 아주 튼튼하다! | 전사 카드 설명 · `Classes.Warrior.Desc` |
 | Get close and smash everything in front | 가까이 가서 앞의 모두를 부수기 | 전사 짧은 줄(설명이 안 들어갈 때) · `Classes.Warrior.PickLine` |
-| Smash all around! | 주변을 다 부숴요! | 전사 카드 한 줄(폰 카드) · T.Tag.Warrior |
+| Smash up close! | 가까이서 부숴요! | 전사 카드 한 줄(폰 카드) · T.Tag.Warrior |
 | Hits all in front | 앞에 있는 적을 모두 때림 | 전사 능력 줄 (HP ×1.3 / ATK ×1.0 / 이 줄) · `Classes.Warrior.Stats.3` |
 | Magic orbs for far enemies! Boom, it hits the area too! | 먼 적에게 마법 구슬! 쾅, 주변까지 맞아요! | 마법사 카드 설명 · `Classes.Mage.Desc` |
 | Stay back and blast a wide area | 뒤에서 넓은 범위를 쏘기 | 마법사 짧은 줄 · `Classes.Mage.PickLine` |

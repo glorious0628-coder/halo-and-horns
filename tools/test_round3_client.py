@@ -61,8 +61,9 @@ def main():
          re.search(r"ProgressUnit = \(type\(e\.ProgressUnit\) == \"string\" and #e\.ProgressUnit > 0 and #e\.ProgressUnit <= 3\)", hud)
          is not None),
         ("ProgressUnit follows the target: '5/10 s'", 'if e.ProgressUnit then t = t .. " " .. e.ProgressUnit end' in nums),
-        ("#2 / 검수 10/09: [I'm In!] is the one big button (the row minus the small next button), first in the row",
-         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1, -74, 0, 60)" in welcome
+        ("#2 / 검수 10/09: [I'm In!] is the one big button, first in the row (user 10/13: no longer the whole card wide -"
+         " WELCOME.AcceptW du)",
+         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0, WELCOME.AcceptW, 0, 60)" in welcome
          and "nextButton.LayoutOrder = 1" in welcome),
         ("검수 10/09: a small ▶ (64 du) for the next page, no 'Later' (the window's X closes)",
          "readMore = makeButton(actions, T.WelcomeMore, PALETTE.Button, UDim2.new(0, 64, 0, 60)" in welcome

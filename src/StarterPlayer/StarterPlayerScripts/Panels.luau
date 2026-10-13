@@ -280,7 +280,8 @@ local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
 	-- ConfirmSeconds (the first press turns the button into "Tap again to buy"); cheaper ones and equips stay one press
 	ConfirmAt = 100, ConfirmSeconds = 3,
 	AgainTouch = "Tap again to buy", AgainMouse = "Click again to buy" }
-local WELCOME = { PendingOpen = false }
+-- AcceptW (user 10/13 first look: "I'm In!" ran the whole card wide): the accept button's width (du), the small ▶ beside it
+local WELCOME = { PendingOpen = false, AcceptW = 320 }
 
 -- quality 2 (UIKit.Typewriter, image dev adc7311; 검수 2026-10-07): a dialogue line types in at Speed letters / s with the
 -- speaker's blips (C.Audio.Talk; silent until the sound ids exist); a tap on the line, or [Next] / an answer button
@@ -1547,7 +1548,7 @@ BUILDERS.Welcome = function(parent)
 	end)
 	readMore.Name = "WelcomeReadMore"
 	readMore.LayoutOrder = 2
-	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1, -74, 0, 60), function()
+	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0, WELCOME.AcceptW, 0, 60), function()
 		if pending or currentId ~= "Welcome" or faction ~= myFaction() then return end
 		if WELCOME.Ready() then
 			pending, sentAt = true, os.clock()
