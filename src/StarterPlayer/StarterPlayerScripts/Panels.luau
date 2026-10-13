@@ -130,9 +130,9 @@ local T = {
 	RebirthCurrent = "(your side)",
 	-- A23-14 (user 2026-10-05): rebirth resets the level (and XP) only; gold, weapons, enhancement and items stay
 	RebirthResets = "Resets: only your level (XP too)",
-	RebirthKeeps = "Keeps: gold, weapons, enhancements, items, class, Honor/Infamy, rebirth bonus, marks, tickets",
+	RebirthKeeps = "Keeps: gold, weapons, enhancements, items, class, Honor/Mischief, rebirth bonus, marks, tickets",
 	RebirthConfirmTitle = "Rebirth",
-	RebirthConfirmBodyF = "Be reborn as %s?\nOnly your level starts over. Gold, weapons and items stay.\nKept: class, Honor/Infamy, rebirth bonus, marks, tickets",
+	RebirthConfirmBodyF = "Be reborn as %s?\nOnly your level starts over. Gold, weapons and items stay.\nKept: class, Honor/Mischief, rebirth bonus, marks, tickets",
 	RebirthConfirmOk = "Rebirth!",
 	-- altar
 	AltarCurrentF = "Your side: %s → Which side will you join?",
@@ -142,9 +142,9 @@ local T = {
 	AltarFar = "You can only change sides near the Altar of Fate.",
 	AltarConfirmTitle = "Change Side",
 	AltarConfirmFreeF = "Switch to %s?\nFree: %s",
-	AltarConfirmTicketF = "Use 1 Change Ticket to switch to %s?\nYour Honor and Infamy both stay.",
+	AltarConfirmTicketF = "Use 1 Change Ticket to switch to %s?\nYour Honor and Mischief both stay.",
 	Honor = "Honor",
-	Infamy = "Infamy",
+	Infamy = "Mischief", -- A23-166
 	LossScoreF = "%s %s resets",
 	BetrayalSuffix = " (price of betrayal)",
 	-- shared change options (A7-4)

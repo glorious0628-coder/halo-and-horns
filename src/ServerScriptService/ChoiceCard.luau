@@ -190,7 +190,7 @@ local function finish(player, card, side)
 		end
 		if gold > 0 then table.insert(parts, string.format(STORY.ChoiceGold, Util.FormatNumber(gold))) end
 		if xp > 0 then table.insert(parts, string.format(TXT.XP or "+%s XP", Util.FormatNumber(xp))) end
-		if change > 0 then table.insert(parts, string.format(TXT.Score, stat, change)) end
+		if change > 0 then table.insert(parts, string.format(TXT.Score, Config.FameLabel(stat), change)) end
 		if #parts > 0 then notify(player, table.concat(parts, " · "), "reward", "None") end
 		S.Deeds.Say(player, side, stat, change, mine, down, full) -- the other side's line, a lost rank, a full day
 	end

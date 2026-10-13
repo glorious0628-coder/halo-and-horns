@@ -37,7 +37,7 @@
 | Horn Legion / Horns | 뿔 군단 | Horns 진영 |
 | Artisan Guild | 장인 길드 | 세 번째 진영(Neutral). 지금은 선택이 꺼져 있음 |
 | Crown of Balance / Crown Shard | 균형의 왕관 / 왕관 조각 | 부서진 왕관이 이야기의 중심, 조각을 주우면 후광이나 뿔이 자람 |
-| Honor / Infamy | 명예 / 악명 | Halo 점수 / Horns 점수 |
+| Honor / Mischief | 명예 / 장난 점수 | Halo 점수 / Horns 점수 |
 | Hallie / Magpie / Kit | 할리 / 맥파이 / 킷 | 안내자(Guide): Halo / Horns / 길드 |
 | Otto / Fizzby | 오토 / 피즈비 | 대장장이(Forge) / 물약 상인(Potion Seller) |
 | Bright / Rose / Tiny | 브라이트 / 로즈 / 타이니 | 마을 아이들: 빛의 성채 경비 / 뿔 소굴 / 교차로 길드 꼬마 |
@@ -303,18 +303,18 @@
 | %s done! +%s XP | %s 완료! +%s XP | 경험치만 받을 때 알림 · `StoryQuests.Text.RewardOnlyXP` · %s = 이름이나 숫자가 들어감 |
 | +%s gold | +%s 골드 | 선택으로 받은 골드 한 줄 · `StoryQuests.Text.ChoiceGold` · %s = 이름이나 숫자가 들어감 |
 | Left: Honor +%d · Right: Honor -%d | 왼쪽: Honor(명예) +%d · 오른쪽: Honor -%d | Halo가 선택 버튼 아래에서 보는 글 — 왼쪽은 +, 오른쪽은 − · `StoryQuests.Text.ChoiceHintHalo` · 두 %d = 점수 |
-| Left: Infamy -%d · Right: Infamy +%d | 왼쪽: Infamy(악명) -%d · 오른쪽: Infamy +%d | Horns가 보는 글 — 왼쪽은 −, 오른쪽은 + · `StoryQuests.Text.ChoiceHintHorns` · 두 %d = 점수 |
+| Left: Mischief -%d · Right: Mischief +%d | 왼쪽: Mischief(장난 점수) -%d · 오른쪽: Mischief +%d | Horns가 보는 글 — 왼쪽은 −, 오른쪽은 + · `StoryQuests.Text.ChoiceHintHorns` · 두 %d = 점수 |
 | No good or evil points. | 착한 점수도 나쁜 점수도 없어요. | 길드가 보는 글 · `StoryQuests.Text.ChoiceHintNeutral` |
 | Left: angel side · Right: devil side | 왼쪽: 천사 쪽 · 오른쪽: 악마 쪽 | (진영을 모를 때 쓰는 기본 글) · `StoryQuests.Text.ChoiceHint` |
 | Honor +%d | Honor +%d | 선택 뒤 점수 알림 — Halo가 착한 쪽 고름 · `StoryQuests.Text.Good` · %d = 점수 |
-| Infamy +%d | Infamy +%d | 선택 뒤 점수 알림 — Horns가 장난 쪽 고름 · `StoryQuests.Text.Evil` · %d = 점수 |
+| Mischief +%d | Mischief +%d | 선택 뒤 점수 알림 — Horns가 장난 쪽 고름 · `StoryQuests.Text.Evil` · %d = 점수 |
 | Honor -%d | Honor -%d | Halo가 반대쪽을 골라 명예가 깎일 때 · `StoryQuests.Text.OffSideHalo` · %d = 깎인 점수 |
-| Infamy -%d | Infamy -%d | Horns가 반대쪽을 골라 악명이 깎일 때 · `StoryQuests.Text.OffSideHorns` · %d = 숫자 |
+| Mischief -%d | Mischief -%d | Horns가 반대쪽을 골라 장난 점수가 깎일 때 · `StoryQuests.Text.OffSideHorns` · %d = 숫자 |
 | Hallie: Hmm… not very angel-like! | Hallie: 흠… 별로 천사답지 않은데! | Halo가 반대쪽을 골랐는데 깎을 점수가 0일 때 안내자 대사 · `StoryQuests.Text.OffSideHaloZero` (Hallie) |
 | Magpie: Too nice for a devil! | Magpie: 악마치고는 너무 착해! | Horns가 반대쪽을 골랐는데 깎을 점수가 0일 때 안내자 대사 · `StoryQuests.Text.OffSideHornsZero` (Magpie) |
 | Rank down! | 계급이 내려갔어요! | 점수가 깎여 계급이 내려갈 때 (Halo) · `StoryQuests.Text.RankDownHalo` |
 | Honor +%d | Honor +%d | 처음 거위를 칠 때 점수 알림(Halo) · `StoryQuests.Text.GooseFirstHalo` · %d = 점수 |
-| Infamy +%d | Infamy +%d | 처음 거위를 칠 때 점수 알림(Horns) · `StoryQuests.Text.GooseFirstHorns` · %d = 숫자 |
+| Mischief +%d | Mischief +%d | 처음 거위를 칠 때 점수 알림(Horns) · `StoryQuests.Text.GooseFirstHorns` · %d = 숫자 |
 | Your shard leaned to the light. | 조각이 빛 쪽으로 기울었다. | 점수 0점짜리 선택 뒤: 착한 쪽 · `StoryQuests.Text.LeanGood` |
 | Your shard leaned to the dark. | 조각이 어둠 쪽으로 기울었다. | 점수 0점짜리 선택 뒤: 장난 쪽 · `StoryQuests.Text.LeanEvil` |
 | Your choice is saved. | 선택이 저장됐어요. | 선택을 저장했다는 알림 · `StoryQuests.Text.Recorded` |
@@ -1735,7 +1735,7 @@ Lv1~9에는 "슬라임 왕자 3마리 / 슬라임 12~15마리 / 스킬로 몬스
 - 종류: 이벤트 탭 사이드
 - 주는 사람: (없음)
 - 열리는 때: 황금 거위가 곧 나올 때 보임 (Halo/Horns만)
-- 보상: 처음 한 번 Honor/Infamy +1 (거위 보상은 거위 이벤트가 따로 줌)
+- 보상: 처음 한 번 Honor/Mischief +1 (거위 보상은 거위 이벤트가 따로 줌)
 
 | 영어 | 한국어 뜻 | 메모 |
 |---|---|---|
