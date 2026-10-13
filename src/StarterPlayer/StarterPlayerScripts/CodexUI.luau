@@ -699,19 +699,35 @@ local function newSlot(parent, kind, order)
 	rim.Name = "Rim"
 	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	rim.Parent = btn
-	local mini = CARD.New(btn, UDim2.new(1, -10, 1, -48), btn.ZIndex + 1)
-	mini.Holder.Position = UDim2.fromOffset(5, 5)
+	-- the card on top, its name under it: a column whose name is as tall as its wrapped words and whose card takes what
+	-- is left (최종 검수 10/13 main2 "Shard..." -> two lines; main3: a fixed 38 du name box hid "Goblin", the second line
+	-- - the words draw at the screen's text floor, ~15 du on a PC and ~25 du on a phone)
+	local stack = Instance.new("Frame")
+	stack.Name = "Stack"
+	stack.BackgroundTransparency = 1
+	stack.Position = UDim2.fromOffset(5, 5)
+	stack.Size = UDim2.new(1, -10, 1, -9)
+	stack.ZIndex = btn.ZIndex + 1
+	stack.Parent = btn
+	local list = Instance.new("UIListLayout")
+	list.SortOrder = Enum.SortOrder.LayoutOrder
+	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	list.Padding = UDim.new(0, 2)
+	list.Parent = stack
+	local mini = CARD.New(stack, UDim2.fromScale(1, 0), btn.ZIndex + 1)
+	mini.Holder.LayoutOrder = 1
 	mini.Holder.Active = false
+	local flex = Instance.new("UIFlexItem")
+	flex.FlexMode = Enum.UIFlexMode.Fill -- the card fills the height the name leaves
+	flex.Parent = mini.Holder
 	for _, n in { "StageChip", "Stage", "MonsterName", "Kills", "Next" } do
 		local p = mini.FrontPlate:FindFirstChild(n)
 		if p then p.Visible = false end
 	end
 	mini.ViewFrame.Position, mini.ViewFrame.Size = UDim2.fromScale(0.5, 0.05), UDim2.fromScale(0.9, 0.9)
-	-- 최종 검수 10/13 (main2 "Shard..."): the card's own name on up to two lines (a third would end in ...)
-	local name = text({ Name = "SlotName", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -4),
-		Size = UDim2.new(1, -8, 0, 38), TextScaled = false, TextSize = 14, TextWrapped = true,
-		TextTruncate = Enum.TextTruncate.AtEnd, TextYAlignment = Enum.TextYAlignment.Center, ZIndex = btn.ZIndex + 2,
-		Parent = btn }, true)
+	local name = text({ Name = "SlotName", Text = "", LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextSize = 14, TextWrapped = true, ZIndex = btn.ZIndex + 2,
+		Parent = stack }, true)
 	local s = { Button = btn, Rim = rim, Mini = mini, Name = name, Known = v.Known }
 	setSlot(s, v)
 	return s

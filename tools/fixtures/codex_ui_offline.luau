@@ -563,6 +563,10 @@ check(VIEW.Slots.Slime.Name.Text == "Shard Slime" and VIEW.Big.NameText.Text == 
 	"the slot and the big card say the same name", VIEW.Slots.Slime.Name.Text)
 check(VIEW.Slots.Slime.Name.TextWrapped == true and VIEW.Slots.Slime.Name.TextScaled == false,
 	"the slot's name wraps onto a second line (no 'Shard...')")
+local flexItem = VIEW.Slots.Slime.Mini.Holder:FindFirstChildOfClass("UIFlexItem")
+check(VIEW.Slots.Slime.Name.AutomaticSize == "AutomaticSize.Y" and flexItem ~= nil and flexItem.FlexMode == "UIFlexMode.Fill"
+	and VIEW.Slots.Slime.Name.Parent == VIEW.Slots.Slime.Mini.Holder.Parent,
+	"the slot's name box grows with its lines and the card takes the rest (main3: 'Goblin' hidden)")
 -- ⓐ a hidden window (its frame not shown) is closed for the moments: the card moment comes, not a toast
 root.Visible = false
 local toastsBefore = #toasts
