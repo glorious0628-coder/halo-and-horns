@@ -37,7 +37,7 @@ MUTATIONS = [
     # A23-116: the fourth item is a text the failing checks must name (the new checks, not only the names list)
     ("two skills with one name", 'NameEn = "Star Fall"', 'NameEn = "Halo Slam"', "the 18 names are all different"),
     ("a word shared by a Z and an X name", 'NameEn = "Fire Rake"', 'NameEn = "Fire Roar"', "no word is shared between the 18 names"),
-    ("a monster's word in a skill name", 'NameEn = "Purple Pop"', 'NameEn = "Bat Pop"', "monster, a game pass or a look"),
+    ("a monster's word in a skill name", 'NameEn = "Purple Pop"', 'NameEn = "Goblin Pop"', "monster, a game pass or a look"),
     ("a look's word in a skill name", 'NameEn = "Comet Arrow"', 'NameEn = "Lava Arrow"', "monster, a game pass or a look"),
     ("an artisan word in a skill name", 'NameEn = "Moon Shot"', 'NameEn = "Hook Shot"', "artisan guild's names"),
     ("a side table changes a number", 'Horns = { NameEn = "Crater Smash"', 'Horns = { Mult = 7, NameEn = "Crater Smash"',
@@ -48,7 +48,7 @@ MUTATIONS = [
     ("a Halo line that does not heal", 'Throw a glowing rope and pull monsters in. Heals you and friends.',
      'Throw a glowing rope and pull monsters in.', "fits the side"),
     ("no Halo words without a side", "elseif out.NameEn == nil then", "elseif false then", "no side yet (None / nil)"),
-    ("a skill name over 13 letters", 'NameEn = "Flappy Zigzag"', 'NameEn = "Flappy Zigzag Bat"', "18 names <= 13 letters"),
+    ("a skill name over 13 letters", 'NameEn = "Bat Zigzag"', 'NameEn = "Bat Zigzag Flapper"', "18 names <= 13 letters"),
     ("an old name comes back", 'NameEn = "Halo Slam"', 'NameEn = "Shockwave"', "the old names"),
     ("the Horns side line says MP", 'QZHorns = "Horns: your hits steal HP"', 'QZHorns = "Horns: your hits steal MP"',
      "section 5 short words"),

@@ -396,6 +396,40 @@ do
 		CanClaim = true }, "Crossroads", "Halo", vec(0, 3, 0))
 	check(g, "level goal from town -> the meadow pad", type(e) == "table" and isNamed(e.Part, "Pad_SlimeMeadow"),
 		e and encode({ Tag = e.Tag }) or "nil")
+	-- A23-48: the server's GoalKind decides before any text search
+	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = true, GoalKind = "IronGold", Text = "Next goal · Iron weapon",
+		Progress = 0, Target = 1, CanClaim = true }, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "GoalKind IronGold (no 'gold' in the words) -> the forge trip", type(e) == "table" and e.Tag == "blacksmith",
+		e and encode({ Tag = e.Tag }) or "nil")
+	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = true, GoalKind = "Zone", Text = "Gold rush at Lv 10",
+		Progress = 0, Target = 1, CanClaim = true }, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "another GoalKind with 'gold' in its words -> not the forge", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	-- A23-127 (plan 10/13 §1-A #2): the Forge sells no weapon (WeaponShop.Buy = false) -> the iron goal is the King Slime's
+	-- drop: the meadow like a level goal, never the anvil (an old server's IronGold row or gold words too)
+	Config.WeaponShop.Buy = false
+	for _, row in { { GoalKind = "IronDrop", Text = Config.Tutorial.Text.NextIronDrop },
+		{ GoalKind = "IronGold", Text = "Next goal · Iron weapon for 800 gold (you have 20)" },
+		{ Text = "Save 800 Gold for an iron weapon" } } do
+		e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = true, GoalKind = row.GoalKind, Text = row.Text,
+			Progress = 0, Target = 1, CanClaim = true }, "Crossroads", "Halo", vec(0, 3, 0))
+		check(g, "no weapon sold: " .. tostring(row.GoalKind) .. " row -> the meadow pad, not the anvil", type(e) == "table"
+			and e.Tag ~= "blacksmith" and isNamed(e.Part, "Pad_SlimeMeadow"), e and encode({ Tag = e.Tag }) or "nil")
+		check(g, "no weapon sold: " .. tostring(row.GoalKind) .. " row is no gold goal", QT.IronGold({ NextGoal = true,
+			GoalKind = row.GoalKind, Text = row.Text }, iron.MinLevel) == false)
+	end
+	-- the drop goal leads to the King Slime's meadow whatever my level (Lv12 hunts in the woods)
+	ATTR.Level = 12
+	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = true, GoalKind = "IronDrop",
+		Text = Config.Tutorial.Text.NextIronDrop, Progress = 0, Target = 1, CanClaim = true }, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "the drop goal at Lv12 -> the meadow pad (the King Slime), not the woods", type(e) == "table"
+		and isNamed(e.Part, "Pad_SlimeMeadow") and e.Zone == "SlimeMeadow", e and encode({ Tag = e.Tag, Zone = e.Zone }) or "nil")
+	ATTR.Level = iron.MinLevel
+	Config.WeaponShop.Buy = nil
+	check(g, "selling again: the IronGold row is the gold goal", QT.IronGold({ NextGoal = true, GoalKind = "IronGold",
+		Text = "x" }, iron.MinLevel) == true)
+	-- M1_1's scroll step (게임성 개발 2): Guide "Bag" has no place in the world (the row opens the bag)
+	check(g, "Guide Bag -> no world target", QT.Story("Bag", "Crossroads", vec(0, 3, 0), "Halo") == nil
+		and QT.ForEntry({ Story = { Id = "M1_1", St = 2, Guide = "Bag" } }, "SlimeMeadow", "Halo", vec(330, 3, 0)) == nil)
 	ATTR.BlacksmithVisited, ATTR.Level = nil, nil
 	-- daily rows have no place; a story pond step labels in English
 	check(g, "daily row -> nil", QT.ForEntry({ Kind = "Daily", Progress = 0, Target = 3, CanClaim = true }, "Crossroads", "Halo",

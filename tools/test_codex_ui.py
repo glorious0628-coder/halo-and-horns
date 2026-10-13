@@ -205,7 +205,7 @@ MUTATIONS = [
     ("CODEX", "the window never registered", "\tS.Ready = panels.Register(L.Window, {", "\tS.Ready = false and panels.Register(L.Window, {"),
     ("CONFIG", "the server's toast back on", "\tServerToast = false,", "\tServerToast = true,"),
     ("HUD", "no Codex tile", '\t\t{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },\n', ""),
-    ("MAIN", "CodexUI never loaded", '"KingDiary", "CodexUI", ', '"KingDiary", '),
+    ("MAIN", "CodexUI never loaded", '"AttendanceUI", "CodexUI", ', '"AttendanceUI", '),
     ("CODEX", "the server's model folder ignored", 'ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))',
      'ReplicatedStorage:FindFirstChild("Models")'),
 ]

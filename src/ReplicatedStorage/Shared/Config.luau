@@ -324,11 +324,14 @@ Config.WeaponGrades = {
 	-- A23-127 tier 9 (crafted). Color = placeholder: the image team may change it
 	Mythic = { Name = "Mythic", NameEn = "Mythic", Stars = 6, Color = Color3.fromRGB(255, 70, 130), Rank = 6 },
 }
--- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith)
+-- per tier: grade id + where it comes from (one line, shown in the item list / blacksmith). A23-127 (plan 10/13 §1-A #2):
+-- weapons come from monsters (the Forge sells none: WeaponShop.Buy = false) - the first Slime Prince always drops tier 2
+-- (Config.Loot.FirstWeaponDrop), the first King Slime tier 3 (게임성 개발 2). ShopSource = the line while the Forge still
+-- sells that tier (WeaponShop.Buy ~= false: the old flow, Config.WeaponSource picks it)
 Config.WeaponInfo = {
 	{ Grade = "Common", Source = "Your first weapon, a gift from the Blacksmith", SourceEn = "Your first weapon, a gift from the Blacksmith" }, -- A23-34
-	{ Grade = "Common", Source = "Sold at the Forge" },
-	{ Grade = "Fine", Source = "Sold at the Forge (from Lv5)" },
+	{ Grade = "Common", Source = "Slime Prince drop (your first one always drops it)", ShopSource = "Sold at the Forge" },
+	{ Grade = "Fine", Source = "King Slime drop (your first one always drops it)", ShopSource = "Sold at the Forge (from Lv5)" },
 	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes, or a Forge commission" },
 	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights, or a Forge commission" },
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
@@ -344,6 +347,9 @@ end
 
 function Config.WeaponSource(tier)
 	local info = Config.WeaponInfo[tier]
+	if info and info.ShopSource and not (type(Config.WeaponShop) == "table" and Config.WeaponShop.Buy == false) then
+		return info.ShopSource
+	end
 	return info and info.Source or ""
 end
 
@@ -633,7 +639,7 @@ Config.Skills = {
 			Z = { Shape = "Chain", Range = 35, Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true,
 				Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 },
 				Halo = { NameEn = "Birdie Bounce", DescEn = "A gold bird hops from monster to monster. Heals you and friends." },
-				Horns = { NameEn = "Flappy Zigzag", DescEn = "A little bat zigzags from monster to monster. Steal HP." } },
+				Horns = { NameEn = "Bat Zigzag", DescEn = "A little bat zigzags from monster to monster. Steal HP." } },
 			X = { Shape = "Field", Range = 35, Ahead = 10, Radius = 12, Duration = 5, Tick = 1, TickMult = 1.5, Slow = 0.5,
 				MP = 30, CD = 14, Auto = { Min = 2, Radius = 12 },
 				Halo = { NameEn = "Sun Circle", DescEn = "A sunny circle. Monsters slow down. Friends inside are guarded.",
@@ -2784,6 +2790,7 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
+		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
 		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
@@ -2865,6 +2872,9 @@ Config.Tutorial = {
 		-- A23-71 D6 / S16: the first skill comes at the iron weapon's level (Skills.Unlock.Q = Weapons[3].MinLevel), one line
 		NextSkillIron = "Next goal · Lv%d: first skill + Iron weapon (now Lv%d)",
 		NextIronGold = "Next goal · Iron weapon for %s gold (you have %s)",
+		-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WeaponShop.Buy = false) the iron goal is a drop
+		-- (QuestService GoalKind "IronDrop", 게임성 개발 2): the first King Slime always drops it. No number to format
+		NextIronDrop = "Next goal · Beat a King Slime for an Iron weapon",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
 		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
@@ -4380,6 +4390,30 @@ Config.PassInfo = {
 		Desc = "Show off when you chat: every fancy chat bubble skin. Your side's own bubble is free for everyone. No stats are for sale." },
 	Stickers = { Line = "13 more chat stickers",
 		Desc = "13 more stickers to pop over your head: hearts, a crown, Nice!, GG and more. 5 basic stickers are free for everyone. No stats are for sale." },
+	-- the Shop window's own words (ShopUI, game dev 1; plan 10/13 §1-A #6 moved them here from ShopUI). A pass card's name =
+	-- Config.GamePasses[kind].Name (PrivateName for the private server card), its line = Line above; the private server
+	-- card adds Config.PrivateServer.Text. Off = the [Buy] capsules while the live switch PassSales is off (GameState
+	-- SwitchPassSales = false; a bought pass keeps working)
+	Screen = {
+		Title = "Shop",
+		PrivateName = "Private Server",
+		PriceF = "%s R$",
+		MonthF = "%s R$ / mo",
+		Owned = "Owned",
+		Soon = "Coming soon",
+		Off = "Not on sale",
+		Wear = "Wear",
+		Wearing = "Wearing",
+		LooksSideF = "Looks for %s",
+		Looks = "Looks",
+		Tickets = "Change Tickets",
+		TicketF = "%s · you have %d",
+		SoonToast = "Not on sale yet. Check back soon!",
+		OffToast = "Not on sale right now. Check back later!",
+		OwnedToast = "You already have this!",
+		ServerToast = "Get a private server on the game page: open Servers, then Create.",
+		Note = "Always ask a grown-up before you buy.",
+	},
 }
 
 -- A23-143 (user 10/12): chat stickers - a picture over my head that everyone sees, no text typed. Keys = Config.UIArt.Parts
@@ -7732,9 +7766,24 @@ Config.Attendance = {
 		NewTitle = "New title: %s!",
 		NewLook = "New look: %s!",
 		NewBorder = "New name frame!",
+		-- the attendance window (AttendanceUI, game dev 1, plan 10/13 §1-A #5): the 7 slots, [Claim], the next slot. No
+		-- clock or countdown on it (contract: "판에 시계 숫자 없음"); a missed day never resets anything (A23-77)
+		Title = "Daily Gifts",
+		Tile = "Gifts", -- the HUD [Menu] square
+		Day = "Day %d",
+		Claim = "Claim!",
+		Wait = "Come back tomorrow!", -- the button once today's gift is taken
+		Today = "Today · Day %d: %s", -- (slot, the parts with Gold / XP / Item / ItemN joined " · ")
+		Next = "Tomorrow · Day %d: %s",
+		WeekDone = "Week done! A new week starts tomorrow.",
+		Collected = "Days collected: %d",
+		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
+		GoalTitle = "%s title",
+		Note = "Missed a day? No problem. Nothing resets.",
+		Box = "Weekly Box",
 	},
 }
-Config.TitleDefs.Regular = { Name = "Regular", NameEn = "Regular", Color = Color3.fromRGB(130, 205, 255) }
+Config.TitleDefs.Regular ={ Name = "Regular", NameEn = "Regular", Color = Color3.fromRGB(130, 205, 255) }
 Config.TitleDefs.SuperRegular = { Name = "Super Regular", NameEn = "Super Regular", Color = Color3.fromRGB(150, 230, 170) }
 Config.TitleDefs.MegaRegular = { Name = "Mega Regular", NameEn = "Mega Regular", Color = Color3.fromRGB(255, 200, 90) }
 for _, id in { "Regular", "SuperRegular", "MegaRegular" } do
@@ -9367,7 +9416,7 @@ Config.Codex = {
 Config.Codex.Screen = {
 	Text = {
 		Count = "%d/%d cards",
-		Kills = "Kills: %s",
+		Kills = "Defeated: %s", -- (the key kept; final review 10/13: "Kills" is a banned word for kids, test_story_text)
 		NextAt = "%s at %s", -- the next stage's name at that many kills ("Silver at 100")
 		Top = "Top stage!",
 		Unknown = "???",

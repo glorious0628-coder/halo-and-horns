@@ -2278,8 +2278,9 @@ runGroup("a23-64 town react lines", function()
 		end
 		check(words >= 1 and words <= 12 and not string.find(line, "%", 1, true) and bad == nil,
 			"every line: 1-12 words, no format token, nothing scary", line)
-		if string.find(line, "Bright", 1, true) or string.find(line, "Smokey", 1, true) then
-			check(he == nil, "a line naming Bright or Smokey never says he / him / his (both are she)", line)
+		-- A23-138: Smokey's shown name is Rose (the inner key stays Smokey)
+		if string.find(line, "Bright", 1, true) or string.find(line, "Smokey", 1, true) or string.find(line, "Rose", 1, true) then
+			check(he == nil, "a line naming Bright or Rose never says he / him / his (both are she)", line)
 		end
 	end
 	-- Config.TownReactLines (Town = the town person's Config.Zones id)

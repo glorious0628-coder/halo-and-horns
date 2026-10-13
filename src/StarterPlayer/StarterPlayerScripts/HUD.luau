@@ -98,6 +98,8 @@ local L = {
 		{ Id = "Shop", Icon = "IconCoin", Window = "Shop" },
 		-- A23-79 #3: [Invite a friend] while Invite.CanShow() (no KO, no failed scroll just now, not in the Shop)
 		{ Id = "Invite", Icon = "IconInviteFriend", Invite = true },
+		-- plan 10/13 §1-A #5: the attendance board (AttendanceUI.luau window "Attendance"; the approved weekly-box art)
+		{ Id = "Attendance", Icon = "IconWeeklyBox", Window = "Attendance" },
 		{ Id = "News", Icon = "IconNews", Window = "News" },
 		-- A23-79: the King Diary (KingDiary.luau window "Diary"; the square shows once it is registered)
 		{ Id = "Diary", Icon = "IconDiary", Window = "Diary" },
@@ -224,6 +226,9 @@ local TXT = {
 	BoostXP = "2x XP",
 	BoostGold = "2x Gold",
 	BoostBoth = "2x XP · Gold",
+	-- plan 10/13 §1-A #6 (A23-90): in a private server (GameState PrivateServer, 게임성 개발 2) one chip; a press says the
+	-- whole rule (Config.PrivateServer.Text)
+	PrivateHalf = "Private server · half rewards",
 	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
@@ -1463,12 +1468,13 @@ local function buildChips(root)
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
 	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
-		Boost = "IconExp" }
+		Boost = "IconExp", Private = "IconPrivateServer" }
 	L.ChipIcons = icons
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
 	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Rookie", "Protected", "Blessing", "Size", "Kaiju" }
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Private", "Rookie", "Protected", "Blessing", "Size",
+		"Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
@@ -1485,6 +1491,16 @@ local function buildChips(root)
 		end)
 	end
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
+	local privateChip = ui.chip.Private and ui.chip.Private.Frame -- a press: the whole private-server rule (A23-90)
+	if privateChip then
+		privateChip.Active = true
+		privateChip.InputBegan:Connect(function(input)
+			local t = input.UserInputType
+			local ps = Config.PrivateServer
+			if (t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch) and type(ps) == "table"
+				and type(ps.Text) == "string" then pcall(UIKit.Toast, ps.Text, "info") end
+		end)
+	end
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
 end
 
@@ -2769,6 +2785,7 @@ function L.BuildMenu(names)
 		end
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
 		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
+		if def.Id == "Attendance" then ui.attendGlow = makeGlow(b, UDim.new(0, 10)) end -- a claim is open (L.AttendGlow)
 		table.insert(ui.foldTiles, entry)
 	end
 	for _, def in L.Tiles do add(def, true) end
@@ -3009,7 +3026,8 @@ local function buildButtons(root)
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
 		Ranking = TXT.TileRanking, Codex = TXT.TileCodex, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
-		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite }
+		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite,
+		Attendance = type(Config.Attendance) == "table" and type(Config.Attendance.Text) == "table" and Config.Attendance.Text.Tile or nil }
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
@@ -3459,6 +3477,7 @@ refreshChips = function()
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
 	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
+	setChip(ui.chip.Private, UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf, Theme.SubText, false, nil, true)
 	L.RefreshBoost()
 
 	-- A23-40: at most L.MaxChips chips in their order (fewer when they do not fit the row, L.CheckChipFit); the rest fold
@@ -3622,12 +3641,32 @@ function L.RefreshBetterDots()
 	end
 end
 
+-- plan 10/13 §1-A #5: [Menu] and its Gifts square glow while today's attendance gift waits (AttendanceUI.Ready: its
+-- window is registered and AttendReady), after the first mission (the first steps keep the screen quiet)
+function L.AttendGlow()
+	local au = C and C.AttendanceUI
+	if type(au) ~= "table" or type(au.Ready) ~= "function" then return false end
+	if num("TutorialStep", 99) ~= ((type(TUT.Steps) == "table" and TUT.Steps.Done) or 99) then return false end
+	local ok, on = pcall(au.Ready)
+	return ok and on == true
+end
+
 -- B14: Panels.ItemsHint = I hold a scroll and have not opened 메뉴 → 아이템 this session
 function L.ItemsHint()
 	local panels = C and C.Panels
 	if type(panels) ~= "table" or type(panels.ItemsHint) ~= "function" then return false end
 	local ok, hint = pcall(panels.ItemsHint)
 	return ok and hint == true
+end
+
+-- A23-127 (게임성 개발 2, M1_1's scroll step): a quest row whose story step says Guide = "Bag" -> the Bag tile glows
+-- until the step is done; its row tap opens the bag on L.BagGuideScroll (the scroll Otto gives at that step)
+L.BagGuideScroll = "Enh70"
+function L.BagGuide()
+	for _, e in type(questState.Data) == "table" and questState.Data or {} do
+		if type(e) == "table" and type(e.Story) == "table" and e.Story.Guide == "Bag" then return true end
+	end
+	return false
 end
 
 -- a pulsing gold rim (makeGlow stroke) on / off; key = which one (L.Glows keeps its state and tween)
@@ -3971,10 +4010,12 @@ end
 local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
 	local travel = HUD.TravelPulse(num("TutorialStep", 99), L.TravelSeen, (Config.Nudges or {}).TravelPulse)
-	L.SetGlow("menu", ui.menuGlow, settings or travel)
+	local attend = L.AttendGlow()
+	L.SetGlow("menu", ui.menuGlow, settings or travel or attend)
 	L.SetGlow("travel", ui.travelGlow, travel)
+	L.SetGlow("attend", ui.attendGlow, attend)
 	L.SetGlow("settings", ui.settingsGlow, settings)
-	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
+	L.SetGlow("bag", ui.bagGlow, L.ItemsHint() or L.BagGuide())
 	L.RefreshBetterDots()
 end
 
@@ -4070,6 +4111,7 @@ local function parseQuests()
 				ShowProgress = e.ShowProgress ~= false,
 				TutorialStep = finite(e.TutorialStep, -1),
 				NextGoal = e.NextGoal == true,
+				GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil, -- A23-48: which next goal (QuestTarget.IronGold)
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
@@ -5361,9 +5403,15 @@ function L.StoryTap(st, zone, panels)
 		return
 	end
 	-- A23-110 (dev3 KO1): "Buy a potion" -> the way to the potion seller; the quick slot steps -> the bag (its Quick slots)
-	if g == "PotionShop" or g == "QuickSlot" then
+	-- A23-127 (게임성 개발 2, M1_1 "Use the Enhance Scroll on your weapon"): Guide "Bag" -> the bag straight on the scroll's
+	-- step for the weapon in my hand (BagUI drops back to the list when I hold no such scroll)
+	if g == "PotionShop" or g == "QuickSlot" or g == "Bag" then
 		local vitals = C and C.VitalsUI
-		if g == "QuickSlot" then
+		if g == "Bag" then
+			if panels and panels.Open then
+				panels.Open("Bag", { Use = L.BagGuideScroll, Tier = math.floor(num("WeaponTier", 1)) })
+			end
+		elseif g == "QuickSlot" then
 			-- H-1: the bag on its Use tab (the potion picked, its quick slot buttons right there); the old list until then
 			local bag = panels and type(panels.Has) == "function" and panels.Has("Bag")
 			if panels and panels.Open then panels.Open(bag and "Bag" or "Items", bag and { Tab = "Use" } or nil) end
@@ -5501,8 +5549,11 @@ function L.PinnedTap(e, r)
 		end
 	elseif step == 99 then
 		local level = math.floor(num("Level", 1))
-		local iron = Config.Weapons[3]
-		if not e.NextGoal or (iron and level >= iron.MinLevel and (string.find(e.Text, "골드", 1, true) or string.find(string.lower(e.Text), "gold", 1, true))) then
+		-- the iron-weapon gold goal goes to the anvil (QuestTarget.IronGold: never while the Forge sells no weapon,
+		-- A23-127 - the drop goal travels to the meadow like a level goal)
+		local qt = C and C.QuestTarget
+		local ironGold = type(qt) == "table" and type(qt.IronGold) == "function" and qt.IronGold(e, level) == true
+		if not e.NextGoal or ironGold then
 			doUpgrade()
 		elseif zone ~= TUT_GUIDE_ZONE then
 			showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "zone:" .. TUT_GUIDE_ZONE, 30)
@@ -6404,7 +6455,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Mana", "SkillReadyAt" }, refreshSkill)
 	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
 	UIKit.OnAttr({ "Class", "ClassChosen", "Faction" }, L.RefreshSkillIcon)
-	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
+	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays", "AttendReady" }, refreshMenuGlow)
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",
