@@ -53,7 +53,7 @@ for spec in sys.argv[3:]:
         cand.sort(reverse=True)
         picks = []
         for s, gx, gy in cand:
-            if all(abs(gx - px_) >= n * 0.8 or abs(gy - py_) >= n * 0.8 for px_, py_ in picks):
+            if all(abs(gx - px_) >= n or abs(gy - py_) >= n for px_, py_ in picks):  # no overlap
                 picks.append((gx, gy))
             if len(picks) == 3:
                 break
@@ -61,5 +61,7 @@ for spec in sys.argv[3:]:
         for k, (gx, gy) in enumerate(picks):
             x0, y0 = gx * G, gy * G
             o.paste(big.crop((x0, y0, x0 + CR, y0 + CR)), (k * CR, y3))
+        for k in (1, 2):  # dark gap so neighbouring crops never read as one picture with a seam
+            dr.rectangle((k * CR - 4, y3, k * CR + 3, y3 + CR), fill=(28, 28, 30))
     o.save(os.path.join(od, f"{lab}.jpg"), quality=90)
     print("SHEET", lab)
