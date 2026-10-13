@@ -112,9 +112,9 @@ def static(src: dict) -> list[tuple[str, bool]]:
          'ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))' in cx
          and 'ModelFolder = "CodexModels"' in cfg
          and cx.index("codex().ModelFolder") < cx.index("if not src then src = MODEL.Live(kind) end")),
-        ("the back's lines are whole (each as tall as its wrapped words, never a fixed box) and a long slot name ends in ...",
+        ("the back's lines and a slot's name are whole (each box as tall as its wrapped words, never a fixed box)",
          "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true," in cx
-         and "TextTruncate = Enum.TextTruncate.AtEnd" in cx),
+         and "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextSize = 14, TextWrapped = true," in cx),
     ]
 
 
@@ -179,6 +179,10 @@ MUTATIONS = [
      "return math.clamp(sh * L.Moment.Room / (L.Moment.H + L.Moment.Line), 0.5, 1)", "return 1"),
     ("CODEX", "the moment back up on the event line", "Line = 70, Y = 0.5, Room = 0.5,", "Line = 70, Y = 0.42, Room = 0.5,"),
     ("CODEX", "the slot name on one line (Shard...)", "TextSize = 14, TextWrapped = true,", "TextSize = 14, TextWrapped = false,"),
+    ("CODEX", "the slot name in a fixed box (the second line hidden)",
+     "Size = UDim2.new(1, 0, 0, 0),\n\t\tAutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextSize = 14,",
+     "Size = UDim2.new(1, 0, 0, 38),\n\t\tAutomaticSize = Enum.AutomaticSize.None, TextScaled = false, TextSize = 14,"),
+    ("CODEX", "the slot card never fills the space the name leaves", "\tflex.FlexMode = Enum.UIFlexMode.Fill", "\tflex.FlexMode = Enum.UIFlexMode.None"),
     ("CODEX", "the body's changes not followed", "\ttable.insert(VIEW.Conns, parent:GetPropertyChangedSignal(\"AbsoluteSize\"):Connect(relayout))\n", ""),
     ("CODEX", "the UIScale ignored", "\t\tif u and u.Scale > 0 then s *= u.Scale end\n", ""),
     ("CODEX", "slots built again on every draw", "\tif VIEW.SlotsPage ~= page.Index then", "\tif true then"),

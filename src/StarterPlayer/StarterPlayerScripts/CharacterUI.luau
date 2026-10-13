@@ -89,6 +89,7 @@ local L = {
 	Tabs = { "Gear", "Stats" },
 	TabH = 40, Gap = 8,
 	LeftW = 150, Split = 14, -- the left column (headshot + power) and the space right of it
+	LeftBar = 4, -- A23-145 phone photos 10/13: the left column scrolls on a short window; a thin bar (the chips fill its width)
 	Portrait = 100,
 	ChangeW = 96, ChangeH = 30, -- the nickname's [Change] (게임성 검수 10/12: moved here from Settings)
 	ChipW = 70, ChipH = 30, ChipIcon = 20, -- the power's two parts (ref_rpg_ui #1)
@@ -1285,11 +1286,11 @@ local function build(parent, kit, arg)
 	gear.BackgroundTransparency = 1
 	gear.Size = UDim2.fromScale(1, 1)
 	gear.Parent = pages
-	local left = Instance.new("Frame")
-	left.Name = "Left"
-	left.BackgroundTransparency = 1
+	-- A23-145 (phone photos 10/13): a phone's window ends under the title ribbon -> the power, its parts and the rank bar
+	-- were cut off; the column scrolls like the right one (a PC window shows it whole, no bar)
+	local left = scroller(gear, "Left")
 	left.Size = UDim2.new(0, L.LeftW, 1, 0)
-	left.Parent = gear
+	left.ScrollBarThickness = L.LeftBar
 	local right = Instance.new("Frame")
 	right.Name = "Right"
 	right.BackgroundTransparency = 1

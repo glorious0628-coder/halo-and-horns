@@ -49,6 +49,8 @@ MUTATIONS = [
     ("UI", "registers under another id", "Window = \"Character\", Width = 600,", "Window = \"Hero\", Width = 600,"),
     ("UI", "no text table", "L10n.Register(\"CharacterUI.TXT\", TXT)\n", ""),
     ("UI", "Open ignores the tab", "type(tab) == \"string\" and { Tab = tab } or nil", "nil"),
+    ("UI", "left column back to a plain frame (phone cut)", "local left = scroller(gear, \"Left\")",
+     "local left = Instance.new(\"Frame\"); left.Name = \"Left\"; left.Parent = gear"),
     ("UI", "unowned weapons show", "\t\tif owns(ctx.Mask, tier) or tier == equipped then\n", "\t\tif true then\n"),
     ("UI", "the worn weapon only when owned", "\t\tif owns(ctx.Mask, tier) or tier == equipped then\n", "\t\tif owns(ctx.Mask, tier) then\n"),
     ("UI", "weapons sorted by tier number", "\t\tif da ~= db then return da > db end\n", "\t\tif false then return da > db end\n"),
