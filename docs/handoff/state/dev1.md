@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/13 오후 2 — 빛 마을 6단계 클라 준비 (사용자 "빛 마을에 집중", 최종 검수 전달)
+- **폰 일 멈춤**(병합 안 함): `fix/phone-round` b6e4fe45까지 push(Help 터치 안전 줄·거위 칩 시간). 못 한 것 = Hero 창 844에서 "Lv 25 · Paladin" 끝 글자 잘림·힘 칩 "340" 오른쪽에 붙음 → 안쪽 여백(최종 검수 10/13 사진 phone_round_hero2). 다시 하라면 이 가지 위에.
+- 새 가지 **dev1-halo-stage6** (worktree `../wt_dev1halo6`, sparse src/tools/docs, build/luau 복사함; 6단계 때 병합, 지금은 병합 안 함). 개발 2 = `dev2-halo-stage6`(wt_halo6): Zones·Bounds·Lands·Outskirts·Landmarks·TownNpcs·폭포 소리. 나 = Map.Roads RoadNorthIsland·RoadLook·preview_map 그 줄·map_v2 길 검사 + 클라 파일(개발 2에 알림).
+- ① 오프닝 = dev1-opening-v2 06691db2 cherry-pick(687e3519): HALO_SHOT (0,12,-270)→(0,14,-352), 성문 통로 16×30 가운데 높이 12~14 — plan Gate door_size [16,30]로 확인. SPOT.Halo (0,16,-410) 그대로. ② 큰 지도 라벨: WorldMap은 Config.Zones.HaloTown.Center를 씀(77줄 (0,0,-400)은 옛 v3 대비용) → 개발 2의 새 중심 (-2.5,-596.5) = 분수 광장 (22,-590) 옆, 코드 고칠 것 없음. ③ RoadNorthIsland 지움(Config.Map.Roads·RoadLook·preview_map; 새 큰 길은 굽음, 미니맵 새 타일이 보여 줌; 메인 반영 1은 새 place에서 Decor.Roads.RoadNorthIsland 파트 지워야 함). ④ FountainFx Town_Halo_Fountain3 = 새 Tripo 메시 Blender로 잼(풀 물 0.053·안쪽 테 0.39~0.40, 가운데 그릇 물 0.525·테 0.208, 위 그릇 물 0.738·테 0.121). ⑤ ZoneLook HaloTown OutAmb {1.979,1.779,1.551} 낮만(밤 수준 따라 Amb로). ⑥ 시험: zone_look 84·15/15, fountain_fx 18·12/12, map_v2 길 검사 고침.
+- 고정점 표: `py -X utf8 tools/halo_fixed_points.py` 다시 뽑음 = 지금 표와 같음(다른 곳 없음).
+
 ## 10/13 오후 — 폰 사진 결과 + 고장급 고침
 - 메인 반영 1 폰 사진(`docs/art/verification_2026-10-13/phone_round/`) 읽고 `docs/review/phone_round_prep_2026-10-13.md` 3절 표 채움. 고장급 = **Hero 창 왼쪽 칸 잘림**(힘·칩·랭크 막대 못 읽음) 하나 → `fix/phone-round` **5e4780d1**(왼쪽 칸 ScrollingFrame, test_character_ui 175·94/94). 같은 가지 f995916d = 도감 슬롯 이름 두 줄째. main과 충돌 없음(merge-tree). worktree `wt_codexui`.
 - 나머지(칭호 단추 잘림·거위 칩 시간·Help/Skills PC 키 글·40px 미만 버튼)는 표에 10/21로. 병합 뒤 메인 반영 1이 Hero 창만 폰 사진 다시.
