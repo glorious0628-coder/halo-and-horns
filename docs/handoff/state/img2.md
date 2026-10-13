@@ -1,3 +1,10 @@
+# 이미지 생성 2 — 인계 (10/14 오후, 부품 2D 큰 묶음)
+## 10/14 오후 (맨 위 = 이것부터)
+- **최종 검수 지시(사용자 "가")**: 빛 마을 2D 부품 ①~⑤ 전부 Codex(0원). 규칙 = 난간 부품과 같음. 파일 `art/out/s2/noshadow/parts/<이름>_{front,left,right,back}_ns.png`, 프롬프트 `art/prompts/<이름>_<면>_ns.txt`. 묶음마다 시트 push + 최종 검수 보고, clear 말고 계속.
+- **도구(build/, git 무시)**: 구동 `py build/img2_next/parts_batch.py Name:view:ref1[,ref2] ...`(ref 'NEW' = 그 이름의 새 앞 raw; raw = `build/img2_next/parts_raw/`; 있으면 건너뜀; 끝 코드 3 = 사용량 끝). **Codex 두 줄 동시 OK**(10/14 확인). 맞춤 `py build/img2_next/parts_fit.py <Name> [--sym]`(80% 여백, 옆면은 앞 높이에 맞춤, 마스크 구멍 채움). 시트 `parts_sheet.py`. 프롬프트 생성 `parts_prompts_b4.py`·`parts_prompts_b5.py`(작업 목록 `jobs_b4.txt`·`jobs_b5*.txt`).
+- **끝·push**: ① 흰 바위 a·b·c 4면 + NEW_ArmoryBarrel(751dfeb) · ② 분수 Basin·MidTier·Top · ③ TreePlanter(공유)·TreeFruit(E)·RoundTree_E·F·G Trunk/Canopy(acd2174). 판정 대기 = 최종 검수.
+- **진행**: ④ 34장(그릇 7·잎 8·공유 꽃 HaloPart_Flower_*), ⑤ 103장(계획은 최종 검수에 보냄; VegGarden 4부품은 답 대기, 목록 `jobs_b5_all.txt`). 꽃 공유 = 최종 검수 OK, 시트에 '물건마다 어느 꽃 몇 개' 메모 필수.
+
 # 이미지 생성 2 — 인계 (10/14 아침, Opus 5.5 세션)
 ## 10/14 아침 (맨 위 = 이것부터)
 - **새 방식(사용자 10/14, 최종 검수 전달): 3D 물건은 부품마다 2D 따로 → 부품마다 Meshy → Blender로 합침.** 소품 4면은 앞으로 '부품 단위'로 그림: 부품 하나만 화면 가운데 크게(여백 10%), 다른 부품·바닥 없음, 그림자 없음, 밝은 회색 민무늬. 돌려도 같은 부품(둥근 기둥) = 앞 1장 → 3면 복사. 앞뒤 같은 네모 부품 = back 좌우 뒤집기, left/right 앞 복사. 가로대·바닥 받침 같은 단순 덩어리는 Studio 파트라 안 그림(A23-120).
