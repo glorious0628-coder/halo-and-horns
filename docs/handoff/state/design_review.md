@@ -10,10 +10,11 @@
    - Lavender P022: 카메라가 다른 보라 꽃 속 → 무엇인지 + 다시 찍기
    - BenchA P015: 줄무늬 물체가 가림 → 다시
    - P026·048·049 땅: 보이는 땅이 물리 땅보다 높음 → 3~5초 기다려 다시 찍기 → CanQuery 꺼진 땅 메시 검사 → 그래도면 Studio 다시 열기(최종 검수 먼저)
-2. **이미지 생성 2 4면** — 빛 마을 소품 NEW_ 11종이 한 종씩 옴:
-   - 소품: GatherBush·Hedge·WallLamp·WateringCan·ArmoryBarrels·Beehive·CandleCrate·Easel·NoticeBoard·SteppingStones·WaterBuckets
+2. **이미지 생성 2 4면** — NEW_ 11종 판정 끝(56f6fe4, 메시지 f0f5f56c):
+   - 통과 → Blender 손보기 1 큐 맨 뒤(810점): GatherBush·ArmoryBarrels·CandleCrate(초 뭉침 주의)·Easel·NoticeBoard·WaterBuckets
+   - 통과 → Blender 손보기 2: Hedge
+   - 다시 기다림: WallLamp(왼·오른 맞바꾸기 → 끝나면 Blender 손보기 2에 알림), WateringCan _right(꼭지가 공보다 위), Beehive 옆 2면(박공·구멍 → 지붕 경사면), SteppingStones(돌 하나만 4면, 같은 시점)
    - 그다음 가게 간판 4종
-   - 통과하면 Blender 손보기 1 흰 모델 큐에 넣음(135점/개, 내 OK)
 3. **Blender 손보기 1 PBR 결과** → PBR 관문(아래 방법). 통과만 최종 검수에 보냄(이름 + 파일 경로 + ⑤ 메모).
    - 대기 중: 동상 B 1a0812be, 분수 C cd70436c, Daisy, Rose
    - GateLeaf, DomeOnion, ConeTree, DomeOctagon, DomeBall, BenchB, FlowerCart(수레 몸)
