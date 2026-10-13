@@ -1,6 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 새벽 — 다시 시작하면 여기부터 (모두 push, 최종 검수에 보고, 병합 대기)
+## 10/14 새벽 2 — 다시 시작하면 여기부터 (A23-168: 보고 뒤 state 적고 clear)
+- 기다리는 것: 최종 검수가 fix/first-look-1 b23679e3 병합·게시(오늘 밤), **fix/first-look-2 b9dd5764**(= phone-first10-2 9759e832 + 창 제목 글 띠 가운데·I'm In 카드 폭 45%) 병합. 그 뒤 메인 반영 1 사진(play_first_look_photos.py, play_phone_round_photos.py first10) → 고장급만.
+- fix/choice-card-ui e9077f02 = main에 병합됨(꺼진 채). **2주 차 켤 때 고칠 MINOR(최종 검수 API 검토)**: ChoiceCardUI offer — 시간 카드(피니셔 10초·ShardBloom 120초)가 떠 있을 때 다른 출처 카드가 오면 지금은 시간 카드를 덮어 서버가 None 처리(선물 잃음) → 기존이 시간 안·출처 다르면 새 카드를 S.Held에 넣고 화면 유지 + 시험 1개. 켜기는 개발 2(Finisher.Kinds, Afterglow 호출)와 같이.
+- fix/mischief-client 96aeef24 = 병합 안 함(개발 2 61d7c162가 같은 줄을 바꿈). 잊어도 됨.
+- 2주 차(six_week_plan): 6단계 클라 병합(dev1-halo-stage6 4fb64a0b) → 선택 카드 켜기.
+
+## 10/14 새벽
 - fix/test-prep-client 6ee394eb = main 627a9b51 병합됨.
 - **fix/choice-card-ui e9077f02** (../wt_codexui): 공용 선택 카드 창 + 여운. 켜기는 개발 2(Finisher.Kinds 되돌리기, 카드 고른 뒤 Afterglow 보내기).
 - **fix/mischief-client 96aeef24**: 화면 글 Infamy → Mischief 5줄(A23-166).
