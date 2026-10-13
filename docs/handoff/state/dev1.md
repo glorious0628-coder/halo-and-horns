@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 낮 2 (최신)
+- 메인 사진 3종(comeback·phone_first10·first_look_1014) = 최종 검수 판정 고장급 없음.
+- **fix/comeback-photo-wait 65433aa1**(origin/main b91b53ff 위, 사진 스크립트만): 05_back_line 대기 45초 + 없으면 가까운 화자 로그(NEAR). 최종 검수 병합 → 다음 사진 때 05 확인.
+- fix/quest-target-buy-test 82f2b585 = main b91b53ff가 같은 고침으로 대신함(버려도 됨).
+- 남은 일: 6단계 병합(10/21 주, 최종 검수) → 2주 차 선택 카드 켜기(+MINOR 1, 아래 10/14 새벽 2).
+
 ## 10/14 낮 (최신, Opus 5.5 high 다시 켬)
 - **dev1-halo-stage6 c65738e8** push(리베이스 없음): d88711cb = main 89255e8b 병합(충돌 0) + c65738e8 큰 지도 주석만 고침(Id 들어감). 6단계 5항목(오프닝 HALO_SHOT·큰 지도 V3 b·굽은 길 띠·FountainFx 새 분수·ZoneLook 낮 OutAmb) main 위에서 그대로. 카메라 주석 Follow는 이미 맞음.
 - 합친 판(c65738e8 + dev2-halo-stage6 bd903c79, 임시 3c13c2b6 push 안 함) 시험: halo_maps 18·9/9, map_v2 102·37/37(그림 검사 통과), zone_look, fountain_fx 18·12/12, intro_halo_shot 7·8/8, return 244, spawn_look 49, town_npcs 147, water_rescue 149, town_quests 1036, first_look, phone_first10, comeback_client, audio 362 = 모두 0 failing·MISSED 0. quest_target만 82/2 = main도 같음 →
