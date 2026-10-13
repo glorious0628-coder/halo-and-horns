@@ -98,6 +98,8 @@ local L = {
 		{ Id = "Shop", Icon = "IconCoin", Window = "Shop" },
 		-- A23-79 #3: [Invite a friend] while Invite.CanShow() (no KO, no failed scroll just now, not in the Shop)
 		{ Id = "Invite", Icon = "IconInviteFriend", Invite = true },
+		-- plan 10/13 §1-A #5: the attendance board (AttendanceUI.luau window "Attendance"; the approved weekly-box art)
+		{ Id = "Attendance", Icon = "IconWeeklyBox", Window = "Attendance" },
 		{ Id = "News", Icon = "IconNews", Window = "News" },
 		-- A23-79: the King Diary (KingDiary.luau window "Diary"; the square shows once it is registered)
 		{ Id = "Diary", Icon = "IconDiary", Window = "Diary" },
@@ -2769,6 +2771,7 @@ function L.BuildMenu(names)
 		end
 		if def.Id == "Settings" then ui.settingsGlow = makeGlow(b, UDim.new(0, 10)) end
 		if def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88
+		if def.Id == "Attendance" then ui.attendGlow = makeGlow(b, UDim.new(0, 10)) end -- a claim is open (L.AttendGlow)
 		table.insert(ui.foldTiles, entry)
 	end
 	for _, def in L.Tiles do add(def, true) end
@@ -3009,7 +3012,8 @@ local function buildButtons(root)
 	-- shows once Panels has its window (no silent no-op: L.RefreshWindows); the pet tile waits for the pet window
 	local names = { Character = TXT.TileCharacter, Bag = TXT.Bag, Skills = TXT.TileSkills, Map = TXT.Map,
 		Ranking = TXT.TileRanking, Codex = TXT.TileCodex, Pet = TXT.Pet, Settings = TXT.TileSettings, Menu = TXT.Menu, News = TXT.TileNews, Diary = TXT.TileDiary,
-		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite }
+		Travel = TXT.TileTravel, Help = TXT.TileHelp, Shop = TXT.TileShop, Invite = TXT.TileInvite,
+		Attendance = type(Config.Attendance) == "table" and type(Config.Attendance.Text) == "table" and Config.Attendance.Text.Tile or nil }
 	ui.tiles = {}
 	for i, def in L.Tiles do
 		def.Text = names[def.Id]
@@ -3622,6 +3626,16 @@ function L.RefreshBetterDots()
 	end
 end
 
+-- plan 10/13 §1-A #5: [Menu] and its Gifts square glow while today's attendance gift waits (AttendanceUI.Ready: its
+-- window is registered and AttendReady), after the first mission (the first steps keep the screen quiet)
+function L.AttendGlow()
+	local au = C and C.AttendanceUI
+	if type(au) ~= "table" or type(au.Ready) ~= "function" then return false end
+	if num("TutorialStep", 99) ~= ((type(TUT.Steps) == "table" and TUT.Steps.Done) or 99) then return false end
+	local ok, on = pcall(au.Ready)
+	return ok and on == true
+end
+
 -- B14: Panels.ItemsHint = I hold a scroll and have not opened 메뉴 → 아이템 this session
 function L.ItemsHint()
 	local panels = C and C.Panels
@@ -3971,8 +3985,10 @@ end
 local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
 	local travel = HUD.TravelPulse(num("TutorialStep", 99), L.TravelSeen, (Config.Nudges or {}).TravelPulse)
-	L.SetGlow("menu", ui.menuGlow, settings or travel)
+	local attend = L.AttendGlow()
+	L.SetGlow("menu", ui.menuGlow, settings or travel or attend)
 	L.SetGlow("travel", ui.travelGlow, travel)
+	L.SetGlow("attend", ui.attendGlow, attend)
 	L.SetGlow("settings", ui.settingsGlow, settings)
 	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
 	L.RefreshBetterDots()
@@ -6404,7 +6420,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Mana", "SkillReadyAt" }, refreshSkill)
 	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
 	UIKit.OnAttr({ "Class", "ClassChosen", "Faction" }, L.RefreshSkillIcon)
-	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays" }, refreshMenuGlow)
+	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays", "AttendReady" }, refreshMenuGlow)
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",

@@ -7732,9 +7732,25 @@ Config.Attendance = {
 		NewTitle = "New title: %s!",
 		NewLook = "New look: %s!",
 		NewBorder = "New name frame!",
+		-- the attendance window (AttendanceUI, game dev 1, plan 10/13 §1-A #5): the 7 slots, [Claim], the next slot. No
+		-- clock or countdown on it (contract: "판에 시계 숫자 없음"); a missed day never resets anything (A23-77)
+		Title = "Daily Gifts",
+		Tile = "Gifts", -- the HUD [Menu] square
+		Day = "Day %d",
+		Claim = "Claim!",
+		Wait = "Come back tomorrow!", -- the button once today's gift is taken
+		Today = "Today · Day %d: %s", -- (slot, the parts with Gold / XP / Item / ItemN joined " · ")
+		Next = "Tomorrow · Day %d: %s",
+		WeekDone = "Week done! A new week starts tomorrow.",
+		Collected = "Days collected: %d",
+		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
+		GoalTitle = "%s title",
+		GoalBorder = "name frame",
+		Note = "Missed a day? No problem. Nothing resets.",
+		Box = "Weekly Box",
 	},
 }
-Config.TitleDefs.Regular = { Name = "Regular", NameEn = "Regular", Color = Color3.fromRGB(130, 205, 255) }
+Config.TitleDefs.Regular ={ Name = "Regular", NameEn = "Regular", Color = Color3.fromRGB(130, 205, 255) }
 Config.TitleDefs.SuperRegular = { Name = "Super Regular", NameEn = "Super Regular", Color = Color3.fromRGB(150, 230, 170) }
 Config.TitleDefs.MegaRegular = { Name = "Mega Regular", NameEn = "Mega Regular", Color = Color3.fromRGB(255, 200, 90) }
 for _, id in { "Regular", "SuperRegular", "MegaRegular" } do
