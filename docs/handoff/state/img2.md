@@ -1,5 +1,6 @@
 # 이미지 생성 2 — 인계 (10/13 낮 정리)
 ## 10/13 낮 (맨 위 = 이것부터)
+- **10/13 밤 2**: GuardPost 통과. PotionCrate 3번째 다시(디자인 검수 2 지적: 끝면에 천 + 깊이 다름) → left Codex로 천 없이 다시, right = left 뒤집기 + 옛 right 기둥·받침 오려 얹음(a49a750), 판정 대기. 백업 `build/img2_next/pil_orig/HaloReasonHQ_PotionCrate_*_{before,v2}.png`. 할 일 없음(사람 보류, PhotoDisc 안 그림). Codex 사용량 다시 열림(10/13 밤).
 - **10/13 밤**: 디자인 검수 2 판정(11종 중 9 통과)의 다시 2건 끝·푸시(036677af): GuardPost right(left 뒤집기+안내판 얹음), PotionCrate left(Firefly 새로 그림, 간판 얇은 선). **PhotoDisc = 최종 검수 결정으로 Studio 파트(이미지 생성 3)라 다시 그리지 않음**. 결과 판정 대기 = 디자인 검수 2. Firefly 탭 닫음.
 - **10/13 저녁 갱신**: 빛 마을 11종(HaloFlagpole_1·2·3, HaloReasonHQ_GuardPost·PhotoDisc·Clothesline·PotionCrate·RackShieldSword·Scarecrow·VegGarden·Woodpile) 4면 + NEW_BellFrame 옆면 다시 그려 푸시(3b9c207d), **디자인 검수 2 판정 대기**(오면 '다시' 먼저). 큰 지도 V3(a·b)는 디자인 검수 2 통과·최종 검수가 고르는 중. **사람(상인·주민) 2D는 사용자 답이 오기 전엔 손대지 말 것.** Firefly 탭 닫음(Codex 아직 사용량 끝).
 - **끝·푸시됨(10/13)**: 집 덩어리 43종 · 빛 마을 소품 NEW_ 11종(GatherBush·Hedge·WallLamp·WateringCan·ArmoryBarrels·Beehive·CandleCrate·Easel·NoticeBoard·SteppingStone(돌 하나)·WaterBuckets; Telescope·Cauldron은 뺌) · 가게 간판 4종(HaloSign_Sign<Bakery|Flower|Juice|Potion>) — 전부 디자인 검수(2)가 통과, Blender 손보기로 넘어감. 마지막 푸시 6327220.
