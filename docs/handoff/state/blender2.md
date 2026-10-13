@@ -13,6 +13,12 @@ Tripo 계정 2 · 사용자 Chrome(Claude Chrome 확장) · 역할 파일 `role_
 1. Baluster PBR 판정: 디자인 검수 → 최종 검수(최종 검수가 Meshy 판 옆 시트로 사용자에게). 둘 다 통과 → Blender **크기·피벗·방향만**: `blender --background --factory-startup --python art/models/tripo/touchup/Halo_Statue/build_glb.py -- <fbx> art/models/tripo/touchup/HaloVar4_Baluster_p/HaloVar4_Baluster_p_TU.glb`(`--basecolor` 없음) → 앞 렌더로 확인 → records에 final 줄. 떨어지면 ②: 다른 흰 모델(db407464가 다음 후보) → 텍스처 → PBR(25, 최종 검수 OK 뒤).
 2. 다음 물건은 최종 검수가 개수·점수를 사용자에게 보인 뒤 줌.
 
+## 진행 (10/14 낮, 빛 마을 HD 묶음 1~3 — 목록 docs/review/halo_tripo_hd_list_2026-10-14.md)
+- 최종 검수 지시: GLB만(FBX 없음 OK) · 멀티뷰엔 'AI 완성' 없음 = 그대로 · **텍스처 4K = 55점**(8K 아님) · 폴리곤: 사람 20000, **둥근 것 있는 부품 12000**, 납작·네모 부품 8000. Blender 크기·피벗 안 함(최종 검수가 assemble_parts.py로 합침).
+- 원본 HD GLB 앞 = **+X** (pbr_gate.py에 `<glb>:+x`). 결과 `art/models/tripo/web/<이름>_HD_pbr_src.glb`, 시트 `art/review/design/pbr_gate_hd_1014/`, 작업 목록 scratchpad hd_jobs.txt, records 키 `<이름>_web2_hd`.
+- 끝: 난간 4(CornerPost 최종 통과) + 사람 9(BakerGranny·BellElder·Bright·FlowerFarmer·FlowerGirl·Folk4·HerbHusband·HerbWife 판정 보냄). Tripo에서 도는 중: JuiceMan a94e810f · MailBoy 2065ea15 · OldSailor 4958667f. 남은 사람: PondAngler·PotionMerchant·SirGleam·StarScholar → 묶음 3(14).
+- 14:xx Chrome 탭 그룹 사라짐(내가 안 닫음) → 최종 검수 답 기다림. 잔액 20,190.
+
 ## 지금 방식 (SPEC A23-174, 사용자 10/14 낮, 최종 검수 전달) — 다음 물건부터
 - **지금은 대기.** 다음 물건은 최종 검수가 목록·점수를 사용자에게 보인 뒤 보냄.
 - **A23-175 (사용자 "Tripo HD!"):** 부품도 큰 것도 전부 Tripo HD(65점). Meshy는 대체용으로만. 최종 검수가 빛 마을 목록·점수 뽑는 중 → 사용자 '가' 뒤 목록 옴.
