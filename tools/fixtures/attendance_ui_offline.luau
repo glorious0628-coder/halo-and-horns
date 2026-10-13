@@ -216,6 +216,11 @@ p = UI.Parts(A.Board[7], 12)
 check("slot 7 (Lv12): the scroll, 10 minutes of gold and XP", #p == 3 and p[1].Id == "Enh30" and p[2].Kind == "Gold"
 	and p[2].N == g10 and p[3].Kind == "XP" and p[3].N == x10, #p)
 check("a broken level counts as Lv1", UI.Parts(A.Board[2], -5)[1].N == g3 and UI.Parts(A.Board[2], 0 / 0)[1].N == g3)
+-- A23-167 ②: a slot's art for PauseCard's "tomorrow's gift" card (my level from the attributes)
+check("slot art: slot 1 = its potion, slot 2 = the coin", UI.SlotIcon(1) == "IconPotionHP" and UI.SlotIcon(2) == "IconCoin",
+	tostring(UI.SlotIcon(1)) .. " " .. tostring(UI.SlotIcon(2)))
+check("slot art: the weekly box slot = the box", A.Board[7].Box == true and UI.SlotIcon(7) == "IconWeeklyBox", UI.SlotIcon(7))
+check("slot art: no such slot = nil", UI.SlotIcon(0) == nil and UI.SlotIcon(99) == nil and UI.SlotIcon("x") == nil)
 
 -- 2) the line under the board: the server's words and order (gold, XP, items)
 local line = UI.Line(UI.Parts(A.Board[7], 12))

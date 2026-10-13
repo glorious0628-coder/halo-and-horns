@@ -96,6 +96,13 @@ function TownReact.Choose(lines, pickLine, last, pickFresh, roll)
 	return pool[roll(#pool)]
 end
 
+-- pure: A23-167 ② a real return (attribute Returned, ReturnService) - the first town person who speaks this session
+-- says one of Config.Return.Text.BackLines instead (the faction guides have no body in the world); nil = the usual line
+function TownReact.BackLine(returned, said, lines, roll)
+	if returned ~= true or said or type(lines) ~= "table" or #lines == 0 then return nil end
+	return lines[roll(#lines)]
+end
+
 local function myRoot()
 	local ch = LocalPlayer.Character
 	return ch and ch:FindFirstChild("HumanoidRootPart") or nil
@@ -157,7 +164,10 @@ function TownReact.Step(now)
 	local lines, pickLine = Config.TownReactLines({ Faction = attr("Faction"), Honor = attr("Honor"), Infamy = attr("Infamy"),
 		MyWay = attr("MyWay"), TownPick = pick, Town = TownReact.TownOf(best), Npc = best:GetAttribute("HHC_TownNpc") })
 	local fresh = not S.Pick.Said and now - S.Pick.At <= num(R.PickFirst, 600)
-	local line = TownReact.Choose(lines, pickLine, S.Last[best], fresh, function(n) return math.random(1, n) end)
+	local roll = function(n) return math.random(1, n) end
+	local backText = type(Config.Return) == "table" and type(Config.Return.Text) == "table" and Config.Return.Text or {}
+	local line = TownReact.BackLine(attr("Returned"), S.BackSaid, backText.BackLines, roll)
+	if line then S.BackSaid = true else line = TownReact.Choose(lines, pickLine, S.Last[best], fresh, roll) end
 	S.NextAt[best] = now + num(R.Every, 30)
 	if not line then return nil end
 	if line == pickLine then S.Pick.Said = true end

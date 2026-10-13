@@ -100,6 +100,12 @@ function Kit.ShouldHoldBanners() return HOLD end
 
 local OPEN = { Panels = false, Intro = false, FactionPicker = false, ClassPicker = false, WorldMap = false, PlayerListUI = false }
 local Cdouble = { UIKit = Kit }
+-- A23-167: the attendance window's [Open] and its slot art (AttendanceUI.Open / SlotIcon)
+local ATT_OPENED = 0
+Cdouble.AttendanceUI = { Open = function() ATT_OPENED += 1 return true end,
+	SlotIcon = function(slot) return slot == 7 and "IconWeeklyBox" or (slot <= 7 and "IconCoin" or nil) end }
+local CONFIG = { Return = { Text = { TomorrowTitle = "Tomorrow's gift", TomorrowLine = "Come back tomorrow for your Day %d gift!",
+	TodayLine = "Today's gift is waiting too!" } } }
 for name in OPEN do
 	Cdouble[name] = { IsOpen = function() return OPEN[name] end }
 end
@@ -144,6 +150,7 @@ local env = setmetatable({
 		table.insert(DEFERRED, function() fn(table.unpack(a, 1, a.n)) end)
 	end },
 	require = function(m)
+		if m.__module == "Config" then return CONFIG end
 		if m.__module == "Net" then return { Get = function(name) if name == "Fx" then return { OnClientEvent = FX } end return {} end } end
 		return { Signal = { new = signal }, Warn = function() end }
 	end,
@@ -382,6 +389,61 @@ check("a card waits behind a window: Waiting and Busy say so", Card.Waiting() ==
 OPEN.Panels = false
 Card.Tick()
 check("the window closed: the card opens, nothing waits", Card.IsOpen() and Card.Waiting() == false and Card.Busy() == false)
+click("OK")
+
+-- A23-167 ② the tomorrow card (Fx TomorrowGift) and the welcome-back News line
+reset()
+ART.IconCoin = true
+ART.IconWeeklyBox = true
+FX:Fire("TomorrowGift", { Tomorrow = 3, Days = 2 })
+check("tomorrow card: title and the slot's line", text("Title") == "Tomorrow's gift"
+	and text("Body") == "Come back tomorrow for your Day 3 gift!", tostring(text("Title")) .. " | " .. tostring(text("Body")))
+check("tomorrow card: that slot's art", card():FindFirstChild("Icon", true) ~= nil)
+check("tomorrow card without Today: [OK] only", BUTTONS.OK ~= nil and BUTTONS.Go == nil)
+click("OK")
+check("tomorrow card closes and tells the metrics", not Card.IsOpen() and SHOWN[1] and SHOWN[1][1] == "Tomorrow"
+	and SHOWN[1][2] == "OK")
+reset()
+FX:Fire("TomorrowGift", { Tomorrow = 4, Today = 3, Days = 2 })
+check("today still open: one more line", text("Body") == "Come back tomorrow for your Day 4 gift!\nToday's gift is waiting too!",
+	text("Body"))
+check("today still open: [Open] and [OK], the same look", BUTTONS.Go and BUTTONS.OK and BUTTONS.Go.Button.Text == "Open"
+	and BUTTONS.Go.Part == BUTTONS.OK.Part)
+local before = ATT_OPENED
+click("Go")
+check("[Open] opens the attendance window, no travel", ATT_OPENED == before + 1 and #TRAVEL == 0 and not Card.IsOpen(),
+	ATT_OPENED - before)
+reset()
+FX:Fire("TomorrowGift", { Tomorrow = 7 })
+check("day 7: the weekly box art", card() ~= nil and card():FindFirstChild("Icon", true) ~= nil)
+click("OK")
+ART.IconCoin, ART.IconWeeklyBox = nil, nil
+reset()
+check("a broken slot shows nothing", Card.Show("Tomorrow", { Tomorrow = 2.5 }) == false and Card.Show("Tomorrow", {}) == false
+	and Card.Show("Tomorrow", { Tomorrow = 0 }) == false and not Card.IsOpen())
+FX:Fire("TomorrowGift", { Tomorrow = 2, Today = "x" })
+check("a broken Today: no [Open]", Card.IsOpen() and BUTTONS.Go == nil)
+click("OK")
+reset()
+FX:Fire("TomorrowGift", { Tomorrow = 2, UserId = 999 })
+check("another player's tomorrow card does not show", not Card.IsOpen())
+reset()
+OPEN.Panels = true
+FX:Fire("TomorrowGift", { Tomorrow = 2 })
+check("the tomorrow card waits behind a window like every card", not Card.IsOpen() and Card.Waiting())
+OPEN.Panels = false
+Card.Tick()
+click("OK")
+reset()
+FX:Fire("WelcomeBack", { Next = "Goal", News = "While you were away, crown wars won: Halo 3, Horns 1" })
+check("welcome back: the News line under the goal",
+	text("Body") == "Next: Goal\nWhile you were away, crown wars won: Halo 3, Horns 1", text("Body"))
+click("OK")
+FX:Fire("WelcomeBack", { Next = "Goal" })
+check("welcome back without News: the goal only", text("Body") == "Next: Goal", text("Body"))
+click("OK")
+FX:Fire("WelcomeBack", { Next = "Goal", News = "<b>" .. string.rep("n", 90) })
+check("the News line cleaned and cut at 80", text("Body") == "Next: Goal\nb" .. string.rep("n", 79) .. "…", text("Body"))
 click("OK")
 
 print(("PAUSE_CARD_SUMMARY checks=%d failed=%d"):format(checks, failed))

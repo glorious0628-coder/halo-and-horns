@@ -492,6 +492,18 @@ function AttendanceUI.Ready()
 	return S.Ready and attr("AttendReady") == true
 end
 
+-- A23-167 ②: one board slot's art for PauseCard's "tomorrow's gift" card - the weekly box, else its first reward's icon
+-- at my level (the same icon its cell shows first); nil = no such slot
+function AttendanceUI.SlotIcon(slot)
+	local board = type(att().Board) == "table" and att().Board or {}
+	local def = board[int(slot, 0)]
+	if type(def) ~= "table" then return nil end
+	if def.Box == true then return L.Icons.Box end
+	local ctx = context()
+	local parts = AttendanceUI.Parts(def, ctx.Level, ctx.Pass)
+	return parts[1] and parts[1].Icon or nil
+end
+
 function AttendanceUI.Open()
 	local panels = C and C.Panels
 	if not S.Ready or type(panels) ~= "table" or type(panels.Open) ~= "function" then return false end

@@ -158,6 +158,23 @@ folk = { npc("Far", Vector3.new(R.Range + 5, 0, 0), "HaloTown") }
 check(TR.Step(9000) == nil, "beyond Range: nothing", "")
 folk = back
 
+-- A23-167 ②: a real return (attribute Returned) - the first town person who speaks says a back line, once
+local backLines = Config.Return.Text.BackLines
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+TR.State.Pick = { Init = true, Value = ATTR.TownPick, At = -1e9, Said = true }
+ATTR.Returned = true
+local _, b1 = TR.Step(30000)
+check(b1 ~= nil and table.find(backLines, b1) ~= nil, "back: the first line after a return is a back line", b1)
+local _, b2 = TR.Step(30000 + R.Show + 1)
+check(b2 ~= nil and table.find(backLines, b2) == nil, "back: once (the next person says the usual line)", b2)
+ATTR.Returned = nil
+local one = function() return 1 end
+check(TR.BackLine(nil, false, backLines, one) == nil and TR.BackLine(true, true, backLines, one) == nil
+	and TR.BackLine(true, false, {}, one) == nil and TR.BackLine(true, false, nil, one) == nil,
+	"BackLine: no return / already said / no lines = none", "")
+check(TR.BackLine(true, false, { "a", "b" }, function(n) return n end) == "b", "BackLine: the rolled line", "")
+
 -- 개발 3: every TownNpcs body speaks (tag NPC + HHC_TownNpc), with its id as p.Npc; the decorative Otto never
 local bright = npc("BrightBody", Vector3.new(3, 0, 0), "HaloTown")
 bright.Attr.HHC_TownNpc = "Bright"
@@ -230,6 +247,11 @@ MUTATIONS = [
     ("bark-sized bubble", "pcall(B.Make, head, T.Lift, line, nil, T.Size)", "pcall(B.Make, head, T.Lift, line, nil, nil)"),
     ("speaks anywhere on screen", "if d <= bestD and inView(npc) then", "if d <= bestD then"),
     ("the bubble's width ignored", "x >= W * z.L and x + w <= W * right", "x >= W * z.L and x <= W * right"),
+    # A23-167 ②
+    ("the back line never said", "\tif line then S.BackSaid = true else line = TownReact.Choose",
+     "\tif false then S.BackSaid = true else line = TownReact.Choose"),
+    ("the back line every time", "\tif line then S.BackSaid = true else", "\tif line then else"),
+    ("a back line without a return", "if returned ~= true or said or", "if said or"),
     ("phones use the PC zone", "local z = touch and T.Clear.Touch or T.Clear.PC", "local z = T.Clear.PC"),
     ("the low band reaches the thumb ring", "local right = (z.RLow and z.RowY and y > H * z.RowY) and z.RLow or z.R",
      "local right = z.R"),
