@@ -55,9 +55,9 @@ local SKY_EXTRAS = {
 local S = nil
 local points = { Halo = 0, Horns = 0 } -- faction pools of the current round
 local personal = {} -- [Player] = personal points of the current round
--- A23-135 / A23-137: [Player] = kill units toward the next whole personal point (carried over rounds), and the rewarded PvP
--- KOs of this round
-local hunt = { Units = {}, KOs = {} }
+-- A23-137: [UserId] = the rewarded PvP KOs of this round (by UserId, so leaving and rejoining does not reset the cap;
+-- cleared only at a round end). The kill units toward the next whole personal point are saved: data.CrownUnits
+local hunt = { KOs = {} }
 local blessing = "None" -- faction holding the crown (decided at each round end, lasts one round)
 local roundEndsAt = 0
 local warTint = nil
@@ -96,8 +96,10 @@ local function isValidAmount(n)
 	return type(n) == "number" and n == n and n > 0 and n < math.huge
 end
 
-local function round1(x)
-	return math.floor(x * 10 + 0.5) / 10
+-- the per-capita scores are small since A23-135 (100 kills = 1): shown with two decimals, and the winner is decided on the
+-- shown values (final review 10/13: never "0.4 : 0.4" and a winner)
+local function round2(x)
+	return math.floor(x * 100 + 0.5) / 100
 end
 
 local function setPersonal(player, value)
@@ -192,6 +194,12 @@ end
 
 local function num(v)
 	return (type(v) == "number" and v == v) and v or nil
+end
+
+-- the saved kill units (data.CrownUnits); a bad value reads as 0
+local function savedUnits(data)
+	local v = data.CrownUnits
+	return (isValidAmount(v)) and v or 0
 end
 
 -- CR-L20: a tween of ClockTime toward `target` that runs FORWARD (to < from -> to + 24, written back as v % 24); a plain
@@ -334,12 +342,12 @@ end
 -- writes the per-capita scores, mode and round end to GameState; returns (haloScore, hornsScore, mode).
 -- halo / horns = head counts (the round averages during a round, CR-M19; may be fractional)
 local function publish(halo, horns)
-	local haloScore = points.Halo / math.max(1, halo)
-	local hornsScore = points.Horns / math.max(1, horns)
+	local haloScore = round2(points.Halo / math.max(1, halo))
+	local hornsScore = round2(points.Horns / math.max(1, horns))
 	local mode = modeFor(halo, horns)
 	local gs = Net.GameState()
-	gs:SetAttribute("WarHaloScore", round1(haloScore))
-	gs:SetAttribute("WarHornsScore", round1(hornsScore))
+	gs:SetAttribute("WarHaloScore", haloScore)
+	gs:SetAttribute("WarHornsScore", hornsScore)
 	gs:SetAttribute("WarRoundEndsAt", roundEndsAt)
 	gs:SetAttribute("WarMode", mode)
 	return haloScore, hornsScore, mode
@@ -459,11 +467,15 @@ function WarService.AddKill(player, u, poolU)
 	if not (S and S.PlayerService.IsReady(player)) then return end
 	local f = getFaction(player)
 	if not WAR_FACTIONS[f] then return end
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" then return end
 	local per = math.max(1, tonumber(Config.War.KillsPerPoint) or 100)
 	points[f] += (isValidAmount(poolU) and math.min(poolU, u) or u) / per
-	local have = (hunt.Units[player] or 0) + u
+	-- saved (data.CrownUnits, additive): the units carry over rounds, sessions and servers (final review 10/13: a child who
+	-- hunts 60 a session must still reach a whole point); only a side switch drops them
+	local have = savedUnits(data) + u
 	local whole = math.floor(have / per)
-	hunt.Units[player] = have - whole * per
+	data.CrownUnits = have - whole * per
 	if whole > 0 then
 		setPersonal(player, (personal[player] or 0) + whole)
 		WarService.PersonalAdded:Fire(player, whole, "Hunt")
@@ -472,7 +484,8 @@ end
 
 -- the kill units a player carries toward the next whole point
 function WarService.GetKillUnits(player)
-	return hunt.Units[player] or 0
+	local data = S and S.PlayerService.GetData(player)
+	return type(data) == "table" and savedUnits(data) or 0
 end
 
 -- faction pool only (events: goose, kaiju)
@@ -523,14 +536,18 @@ function WarService.Init(registry)
 		S.PvPService.PlayerKO:Connect(function(killer, _victim, info)
 			if type(info) == "table" and info.Rewarded == true and isPlayer(killer) then
 				-- A23-137: a killer scores at most PvPKOMaxPerRound rewarded KOs a round
-				local kos = hunt.KOs[killer] or 0
+				local kos = hunt.KOs[killer.UserId] or 0
 				if kos >= (tonumber(Config.War.PvPKOMaxPerRound) or 3) then return end
-				hunt.KOs[killer] = kos + 1
+				hunt.KOs[killer.UserId] = kos + 1
 				local stars = tonumber(info.VictimStars) or 0
 				local points = Config.War.PvPKOPoints + Config.War.PvPKOPerStar * stars
 				local bold = tonumber(info.BoldMult) -- A23-18 boldness (x2 strong victim / x0.5 weak victim)
-				if bold and bold > 0 and bold ~= 1 and S.PvPService.ScalePoints then
+				if not (bold and bold > 0) then bold = 1 end
+				-- personal points stay WHOLE: 2.5 -> 2 or 3 with fair rounding (ScalePoints), also at x1
+				if S.PvPService.ScalePoints then
 					points = S.PvPService.ScalePoints(points, bold)
+				else
+					points = math.floor(points * bold + 0.5)
 				end
 				if points > 0 then WarService.AddPoints(killer, points, nil, "PvP") end
 			end
@@ -543,7 +560,9 @@ function WarService.Init(registry)
 		S.FactionService.FactionChanged:Connect(function(player)
 			if isPlayer(player) then
 				setPersonal(player, 0)
-				hunt.Units[player] = nil -- the units belong to the side they were hunted for
+				-- the units belong to the side they were hunted for
+				local data = S.PlayerService.GetData(player)
+				if type(data) == "table" then data.CrownUnits = 0 end
 			end
 		end)
 	end
@@ -553,8 +572,6 @@ function WarService.Init(registry)
 	end)
 	S.PlayerService.PlayerLeaving:Connect(function(player)
 		personal[player] = nil
-		hunt.Units[player] = nil
-		hunt.KOs[player] = nil
 	end)
 end
 

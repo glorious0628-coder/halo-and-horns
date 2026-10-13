@@ -3578,7 +3578,8 @@ end
 ----------------------------------------------------------------- refresh: war meter
 local function fmtScore(v)
 	if v >= 1000 then return fmtNum(v) end
-	return string.format("%g", math.floor(v * 10 + 0.5) / 10)
+	-- A23-135: 100 kills = 1 point, so the per-capita scores are small: two decimals, as WarService decides the winner
+	return string.format("%g", math.floor(v * 100 + 0.5) / 100)
 end
 
 L.WarParts = { Time = "", Clock = "", Siege = nil, Points = nil }

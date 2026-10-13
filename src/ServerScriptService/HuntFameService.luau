@@ -26,9 +26,12 @@ local function num(v, default)
 	return default or 0
 end
 
+-- the level a zone is meant for: Config.HuntFame.ZoneLevel (the fields without a level gate), else its MinLevel
 local function zoneMin(zoneId)
 	local z = type(zoneId) == "string" and Config.Zones[zoneId] or nil
-	return type(z) == "table" and num(z.MinLevel, 1) or nil
+	if type(z) ~= "table" then return nil end
+	local lv = type(H.ZoneLevel) == "table" and H.ZoneLevel[zoneId] or nil
+	return num(lv, num(z.MinLevel, 1))
 end
 
 -- a kill in the player's own level zone or a harder one (A23-135: a monster far below counts nothing)
@@ -41,7 +44,8 @@ end
 
 function HuntFameService.OnKilled(player, info)
 	if H.Enabled ~= true or type(info) ~= "table" then return end
-	if info.Personal == true or info.Practice == true then return end
+	-- a free rider under the field boss's damage share (info.Minor) counts nothing either
+	if info.Personal == true or info.Practice == true or info.Minor == true then return end
 	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
 	local stat = STAT[player:GetAttribute("Faction")]
 	if not stat then return end

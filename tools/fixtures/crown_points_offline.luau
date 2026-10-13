@@ -1,10 +1,12 @@
 -- crown_points_offline.luau : gameplay_plan 2-A #4 / #5 (A23-135 / A23-137; 게임성 개발 2, 2026-10-13). tools/test_crown_points.py
 -- binds CONFIG_SOURCE, UTIL_SOURCE, WAR_SOURCE, HUNT_SOURCE and STORY_SOURCE in front of dev2_kit.luau + dev3_world.luau; this
--- file follows. The REAL WarService (crown points: kill units -> whole personal points, the pool's fraction, the PvP KO cap,
--- the chest and one-side targets, PersonalAdded), the REAL HuntFameService (Honor / Infamy from own-level hunting) and the
--- REAL StoryQuestService.EventAmount (crown-point steps count PersonalAdded). Doubles: Lighting / TweenService / NumberValue
--- (the sky code runs but is not checked here), FactionService (GetFaction / GetCounts), PvPService (PlayerKO, ScalePoints),
--- PlayerService.GrantFame. The war loop is stepped by hand (w:Tick).
+-- file follows. The REAL WarService (crown points: saved kill units -> whole personal points, the pool's fraction, the PvP
+-- KO cap by UserId, whole PvP points, the chest and one-side targets, the winner on the shown two-decimal scores,
+-- PersonalAdded), the REAL HuntFameService (Honor / Infamy from own-level hunting, ZoneLevel) and the REAL
+-- StoryQuestService.EventAmount (crown steps count the kill units). Doubles: Lighting / TweenService / NumberValue (the sky
+-- code runs but is not checked here), FactionService (GetFaction / GetCounts), PvPService (PlayerKO, ScalePoints = plain
+-- rounding), PlayerService.GrantFame. The war loop is stepped by hand (w:Tick). Final review 10/13 fixes: see the groups
+-- "hunting points" (saved units), "pvp" (rejoin, 2.5), "round end" (shown scores) and "quests" (M2_1 15 kills).
 
 local function crownWorld(o)
 	o = o or {}
@@ -22,7 +24,7 @@ local function crownWorld(o)
 	w.Counts = o.Counts or { 1, 1 }
 	w.Reg.FactionService.GetFaction = function(p) return p:GetAttribute("Faction") or "None" end
 	w.Reg.FactionService.GetCounts = function() return w.Counts[1], w.Counts[2] end
-	w.Reg.PvPService = { PlayerKO = Signal.new(), ScalePoints = function(points, mult) return points * mult end }
+	w.Reg.PvPService = { PlayerKO = Signal.new(), ScalePoints = function(points, mult) return math.floor(points * mult + 0.5) end }
 	w.Reg.MonsterService.MonsterKilled = w.Reg.MonsterService.MonsterKilled or Signal.new()
 	w.Fame = {}
 	function w.Reg.PlayerService.GrantFame(p, stat, n, ctx)
@@ -60,7 +62,7 @@ local function crownWorld(o)
 		local units = opts.Golden and C.War.GoldenPoints or C.War.MonsterPoints
 		self.Reg.MonsterService.MonsterKilled:Fire(p, { Kind = opts.Kind or "Slime", ZoneId = opts.Zone or "SlimeMeadow",
 			Golden = opts.Golden == true, WarPoints = opts.Personal and 0 or units, WarShare = opts.Share or units,
-			Personal = opts.Personal == true, Practice = opts.Practice })
+			Personal = opts.Personal == true, Practice = opts.Practice, Minor = opts.Minor })
 	end
 	function w:Kills(p, n, opts) for _ = 1, n do self:Kill(p, opts) end end
 	function w:Round() -- past the round end, one tick
@@ -69,8 +71,10 @@ local function crownWorld(o)
 	return w
 end
 
-local function hero(w, id, faction, level)
-	return w:Arrive(id, { Data = { Faction = faction or "Halo", Class = "Warrior", ClassChosen = true, Level = level or 5 } })
+local function hero(w, id, faction, level, extra)
+	local d = { Faction = faction or "Halo", Class = "Warrior", ClassChosen = true, Level = level or 5 }
+	for k, v in extra or {} do d[k] = v end
+	return w:Arrive(id, { Data = d })
 end
 
 local function gs(w, k) return w.GameState:GetAttribute(k) end
@@ -98,9 +102,14 @@ runGroup("config", function()
 	local H = C.HuntFame
 	check(H.Enabled == true and H.KillsPerPoint == 100 and H.Units == 1 and H.GoldenUnits == 5 and H.Points == 1
 		and C.Data.Defaults.HuntFame == 0, "hunt fame: 100 own-level monsters = 1 point, golden 5, saved from 0", show(H))
+	check(C.Data.Defaults.CrownUnits == 0, "the crown kill units are saved, from 0", C.Data.Defaults.CrownUnits)
 	local m21 = C.StoryQuests.Defs.M2_1.Steps[1].Obj
 	local gw4 = C.StoryQuests.Defs.GW4.Steps[1].Obj
-	check(m21.Type == "WarPoints" and m21.Count == 1 and gw4.Type == "WarPoints" and gw4.Count == 3, "M2_1 1 point, GW4 3 points", show({ m21, gw4 }))
+	-- final review 10/13: the crown steps count monsters (kill units), so they always finish and show their progress
+	check(m21.Type == "WarPoints" and m21.Count == 15 and gw4.Type == "WarPoints" and gw4.Count == 100, "M2_1 15 monsters, GW4 100", show({ m21, gw4 }))
+	check(string.find(C.StoryQuests.Defs.M2_1.Steps[1].Text, "Monsters", 1, true) ~= nil
+		and string.find(C.StoryQuests.Defs.GW4.Steps[1].Text, "Monsters", 1, true) ~= nil, "the step lines say monsters",
+		show({ C.StoryQuests.Defs.M2_1.Steps[1].Text, C.StoryQuests.Defs.GW4.Steps[1].Text }))
 	check(not string.find(C.StoryQuests.Defs.M2_1.Start, "Each monster you beat = 1 point", 1, true)
 		and string.find(C.StoryQuests.Defs.M2_1.Start, "100 monsters", 1, true) ~= nil, "M2_1's start line says 100 monsters", C.StoryQuests.Defs.M2_1.Start)
 	check(not string.find(C.StoryQuests.Defs.S2.Steps[1].Text, "30", 1, true), "S2 names no old point number", C.StoryQuests.Defs.S2.Steps[1].Text)
@@ -142,12 +151,23 @@ runGroup("hunting points", function()
 	local n = hero(w, 2, "Neutral")
 	w:Kills(n, 100)
 	check((n:GetAttribute("WarPoints") or 0) == 0 and w.War.GetKillUnits(n) == 0, "Neutral: no crown points", n:GetAttribute("WarPoints"))
-	-- a side switch drops the carried units
-	w:Kills(p, 40)
-	w.Reg.FactionService.FactionChanged:Fire(p, "Horns")
-	check(w.War.GetKillUnits(p) == 0, "a side switch drops the carried units", w.War.GetKillUnits(p))
+	-- final review 10/13: the units are saved, so a short session's kills are kept for the next one
+	w:Kills(p, 60)
+	local saved = w.Data[p].CrownUnits
 	w:Leave(p)
-	check(w.War.GetKillUnits(p) == 0, "a leave forgets them", w.War.GetKillUnits(p))
+	check(saved == 60, "60 kills in a session: 60 units saved (data.CrownUnits)", saved)
+	local p2, d2 = hero(w, 1, "Halo", 5, { CrownUnits = saved })
+	check(w.War.GetKillUnits(p2) == 60, "back next time: the 60 are still there", w.War.GetKillUnits(p2))
+	w:Kills(p2, 40)
+	check(p2:GetAttribute("WarPoints") == 1 and d2.CrownUnits == 0, "40 more in the next session = the whole point", show({ p2:GetAttribute("WarPoints"), d2.CrownUnits }))
+	-- a bad saved value reads as 0
+	local bad, bd = hero(w, 5, "Halo", 5, { CrownUnits = 0 / 0 })
+	w:Kill(bad)
+	check(bd.CrownUnits == 1, "a NaN save starts again from 0", bd.CrownUnits)
+	-- a side switch drops the carried units
+	w:Kills(p2, 40)
+	w.Reg.FactionService.FactionChanged:Fire(p2, "Horns")
+	check(w.War.GetKillUnits(p2) == 0 and d2.CrownUnits == 0, "a side switch drops the carried units", w.War.GetKillUnits(p2))
 end)
 
 ------------------------------------------------------------------ PvP
@@ -165,9 +185,19 @@ runGroup("pvp", function()
 	check(k:GetAttribute("WarPoints") == 9, "two more: 2, then 2 x 2 (bold) = 9", k:GetAttribute("WarPoints"))
 	KO:Fire(k, v, { Rewarded = true, VictimStars = 4 })
 	check(k:GetAttribute("WarPoints") == 9, "a 4th rewarded KO in the round scores nothing (3 a round)", k:GetAttribute("WarPoints"))
+	-- final review 10/13: the cap is by UserId, so leaving and coming back does not reset it
+	w:Leave(k)
+	local k2 = hero(w, 1, "Halo", 20)
+	KO:Fire(k2, v, { Rewarded = true, VictimStars = 0 })
+	check((k2:GetAttribute("WarPoints") or 0) == 0, "rejoined in the same round: still capped", k2:GetAttribute("WarPoints"))
 	w:Round()
-	KO:Fire(k, v, { Rewarded = true, VictimStars = 0 })
-	check(k:GetAttribute("WarPoints") == 2, "a new round counts KOs again", k:GetAttribute("WarPoints"))
+	KO:Fire(k2, v, { Rewarded = true, VictimStars = 0 })
+	check(k2:GetAttribute("WarPoints") == 2, "a new round counts KOs again", k2:GetAttribute("WarPoints"))
+	-- personal points stay whole: a 1-star KO is 2.5 -> a whole number (fair rounding)
+	KO:Fire(k2, v, { Rewarded = true, VictimStars = 1 })
+	local got = k2:GetAttribute("WarPoints") - 2
+	check(got == math.floor(got) and (got == 2 or got == 3) and w.Added[#w.Added].N == got, "a 1-star KO: 2 or 3, never 2.5",
+		show(plain({ w.Added[#w.Added] })))
 end)
 
 ------------------------------------------------------------------ the round: chests, one side, events
@@ -201,19 +231,39 @@ runGroup("round end", function()
 	s:Kills(y, 110)
 	s:Round()
 	check(s.GameState:GetAttribute("WarBlessing") == "Halo", "3.1 / 2 = 1.55 a head: the crown", s.GameState:GetAttribute("WarBlessing"))
+	-- final review 10/13: the scores are shown with two decimals and the winner is decided on what is shown
+	local t = crownWorld({ Counts = { 1, 1 } })
+	local th = hero(t, 1, "Halo", 10)
+	local tr = hero(t, 2, "Horns", 10)
+	t:Kills(th, 40) -- 0.40
+	t:Kills(tr, 40, { Share = 0.99 }) -- 0.396 -> shown 0.40
+	t:Tick(1)
+	check(gs(t, "WarHaloScore") == 0.4 and gs(t, "WarHornsScore") == 0.4, "0.40 and 0.396 are both shown as 0.4",
+		show({ gs(t, "WarHaloScore"), gs(t, "WarHornsScore") }))
+	t:Round()
+	check(gs(t, "WarBlessing") == "None", "shown 0.4 : 0.4 = a tie, no winner", gs(t, "WarBlessing"))
+	t:Kills(th, 43) -- 0.43
+	t:Kills(tr, 42) -- 0.42
+	t:Tick(1)
+	check(gs(t, "WarHaloScore") == 0.43 and gs(t, "WarHornsScore") == 0.42, "two decimals: 0.43 : 0.42", show({ gs(t, "WarHaloScore"), gs(t, "WarHornsScore") }))
+	t:Round()
+	check(gs(t, "WarBlessing") == "Halo", "0.43 beats 0.42", gs(t, "WarBlessing"))
 end)
 
 ------------------------------------------------------------------ crown-point quest steps
 runGroup("quests", function()
 	local w = crownWorld()
 	local p = hero(w, 1, "Halo")
-	local obj = { Type = "WarPoints", Count = 1 }
-	check(w.Story.EventAmount(p, obj, { Kind = "Kill", Info = { Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 1 } }) == 0,
-		"a kill's units never move a crown-point step", "")
-	check(w.Story.EventAmount(p, obj, { Kind = "War", N = 1 }) == 1 and w.Story.EventAmount(p, obj, { Kind = "War", N = 2.5 }) == 2.5,
-		"PersonalAdded's points do", "")
-	check(w.Story.EventAmount(p, { Type = "Kill", Kind = "Slime", Count = 5 }, { Kind = "War", N = 1 }) == 0, "a kill step ignores crown points", "")
-	check(w.Story.EventAmount(p, obj, { Kind = "War", N = -3 }) == 0, "never negative", "")
+	local obj = w.Config.StoryQuests.Defs.M2_1.Steps[1].Obj
+	local function kill(info) return w.Story.EventAmount(p, obj, { Kind = "Kill", Info = info }) end
+	-- final review 10/13: a crown step counts the kill units (1, golden 5), so 15 monsters finish M2_1 in any session
+	check(kill({ Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 1 }) == 1, "a monster = 1 for the crown step", "")
+	check(kill({ Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 5, Golden = true }) == 5, "a golden one = 5", "")
+	check(kill({ Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 0, Personal = true }) == 0, "a personal monster: 0", "")
+	check(kill({ Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = -3 }) == 0, "never negative", "")
+	check(w.Story.EventAmount(p, obj, { Kind = "War", N = 2 }) == 0, "whole crown points (a PvP KO) do not count", "")
+	-- the quest row shows its progress (target > 1)
+	check(obj.Count > 1, "M2_1's target > 1: the row shows 0/15", obj.Count)
 end)
 
 ------------------------------------------------------------------ Honor / Infamy from hunting (2-A #4)
@@ -248,11 +298,17 @@ runGroup("hunt fame", function()
 	w:Kills(lo, 5, { Personal = true })
 	w:Kills(lo, 5, { Practice = true })
 	check(lod.HuntFame == 7, "personal and practice monsters: nothing", lod.HuntFame)
+	w:Kills(lo, 5, { Minor = true })
+	check(lod.HuntFame == 7, "a field-boss free rider (info.Minor): nothing", lod.HuntFame)
 	-- the level rule itself
 	local H = w.Hunt
 	check(H.Counts(1, "SlimeMeadow") and H.Counts(9, "SlimeMeadow") and not H.Counts(10, "SlimeMeadow") and H.Counts(10, "GoblinWoods")
 		and not H.Counts(25, "GoblinWoods") and H.Counts(25, "SkeletonRuins") and H.Counts(5, "SkeletonRuins"),
 		"own zone or harder: Lv1-9 meadow, Lv10-24 woods, Lv25+ ruins", "")
+	-- the fields without a level gate use Config.HuntFame.ZoneLevel (final review 10/13)
+	check(H.Counts(12, "CrystalWoods") and not H.Counts(25, "CrystalWoods") and H.Counts(5, "CoralCoast") and not H.Counts(12, "CoralCoast")
+		and H.Counts(5, "HauntedHollow") and H.Counts(5, "PumpkinPatch") and not H.Counts(12, "PumpkinPatch"),
+		"Crystal Cave Woods counts for Lv12; Coral Coast / Haunted Hollow for the meadow levels", "")
 end)
 
 runGroup("hunt fame off", function()

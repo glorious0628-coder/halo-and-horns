@@ -1343,9 +1343,10 @@ Config.Kaiju = {
 ----------------------------------------------------------------- war meter ("왕관 쟁탈전")
 -- A23-135 / A23-137 (user 10/11, gameplay_plan 2-A #5; docs/design/crown_war_content_2026-10-11.md): crown points on the new
 -- scale. A kill gives kill units (MonsterKilled info.WarPoints: MonsterPoints, a golden one GoldenPoints = "counts as 5");
--- KillsPerPoint units = 1 point. The side's pool takes the fraction at once; a player's personal points are WHOLE (a kill
--- counter carried over to the next round), so "My pts" and the crown-point quests never show decimals and no kill pops a
--- "+1". PvP KO = PvPKOPoints + PvPKOPerStar per star, rewarded for at most PvPKOMaxPerRound KOs a killer a round. Events
+-- KillsPerPoint units = 1 point. The side's pool takes the fraction at once; a player's personal points are WHOLE (a saved
+-- kill counter, data.CrownUnits, carried over rounds and sessions; a side switch clears it), so "My pts" never shows
+-- decimals and no kill pops a "+1"; the story's crown steps (M2_1, GW4) count the kill units. PvP KO = PvPKOPoints +
+-- PvPKOPerStar per star, fair-rounded to a whole number, rewarded for at most PvPKOMaxPerRound KOs a killer a round. Events
 -- (the goose's WinWarPoints, the kaiju's 30) go to the pool only. ChestMinPoints / SiegeTarget sit at the old difficulty
 -- in the new scale (30 -> 1 personal point = 100 kills or one PvP KO; 150 kills a head -> 1.5 a head) until the boss race
 -- and the golden hour land (then 3 / 10-12, the design's budget table); the 10/17 and 11/7 test logs retune them.
@@ -1379,8 +1380,18 @@ Config.HuntFame = {
 	GoldenUnits = 5,
 	Points = 1,
 	Text = { Honor = "Honor +%d from hunting!", Infamy = "Mischief +%d from hunting!" }, -- A23-166: Infamy is shown as Mischief
+	-- the level a zone is meant for (its recommended start): a kill counts when the zone's value >= that of the player's
+	-- own zone (Config.QuestZoneForLevel). Zones without a level gate (seasonal / new fields: MinLevel 1) need it here;
+	-- a zone missing here falls back to its MinLevel
+	ZoneLevel = {
+		SlimeMeadow = 1, GoblinWoods = 10, SkeletonRuins = 25,
+		PumpkinPatch = 1, HauntedHollow = 8, CoralCoast = 8, CrystalWoods = 14,
+	},
 }
 Config.Data.Defaults.HuntFame = 0
+-- A23-135: kill units toward the next whole personal crown point (WarService.AddKill), additive, kept over rounds and
+-- sessions; a side switch clears it
+Config.Data.Defaults.CrownUnits = 0
 
 -- Sky presets applied by WarService (Lighting + WarTint). Never add an Atmosphere (A9-3; the per-zone mood is the
 -- client ZoneLook, A23-30). A23-29/30 user pick 'E' (docs/design/world_blend_2026-10-06.md): Neutral = the bright toy
@@ -3160,10 +3171,11 @@ Config.StoryQuests = {
 			Reward = { Gold = 2, XP = 2 },
 		},
 		M2_1 = {
-			Kind = "Main", Chapter = 2, Title = "The Crown in the Sky", ShortName = "Crown points",
+			Kind = "Main", Chapter = 2, Title = "The Crown in the Sky", ShortName = "Crown hunt",
 			Start = "The sky crown glows for the side with more shards.\nEvery 100 monsters you beat = 1 point for your side!",
-			-- A23-135: personal crown points are whole points (100 monsters = 1): 15 -> 1
-			Steps = { { Text = "Crown points %d/%d", Obj = { Type = "WarPoints", Count = 1 },
+			-- A23-135: a WarPoints step counts the kill units (monsters for the crown, golden = 5), not the whole points (final
+			-- review 10/13: 1 whole point = 100 kills blocked the main line for short sessions); 15 as before
+			Steps = { { Text = "Monsters for the crown %d/%d", Obj = { Type = "WarPoints", Count = 15 },
 				Neutral = { Text = "Supply gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
 			Reward = { Gold = 1 },
 		},
@@ -3763,7 +3775,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 16 },
 			Start = "The Crown War is close! Win points for your side.",
 			Steps = {
-				{ Text = "Crown points %d/%d", Obj = { Type = "WarPoints", Count = 3 } }, -- A23-135 scale: was 40
+				{ Text = "Monsters for the crown %d/%d", Obj = { Type = "WarPoints", Count = 100 } }, -- A23-135: kill units (was 40)
 				{ Text = "The round is over", Panel = true,
 					Lines = { All = { "What a round!", "How will you end it?" } },
 					Obj = { Type = "Choice", Good = { Label = "Cheer for both sides", Points = 1, Reward = { Item = "Enh70", N = 1 } },
