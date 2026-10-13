@@ -14312,7 +14312,7 @@
    "at": "2026-10-13",
    "account": "Tripo account 2 (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "a154d1da-8575-4be2-a8fb-e0b5d3ac9225",
     "6d176405-8025-4634-8552-5ccbabd6fcfe",
@@ -14320,14 +14320,17 @@
     "2240b5b9-b684-400d-b88c-2f5dc81150cf"
    ],
    "white_model_fbx": "art/models/tripo/wm2_1013/NEW_BreadBasket/",
-   "picked": null,
+   "picked": "a154d1da (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/NEW_BreadBasket_front_ns.png",
     "left_slot": "art/out/s2/noshadow/NEW_BreadBasket_right_ns.png",
     "right_slot": "art/out/s2/noshadow/NEW_BreadBasket_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_BreadBasket_back_ns.png"
    },
-   "next": "디자인 검수 2 picks -> texture 4K -> PBR"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K task abc62ab0",
+   "pbr": "523245de (5)",
+   "file": "art/models/tripo/web/NEW_BreadBasket_SM_tex4k_pbr_src.fbx"
   }
  ],
  "NEW_CafeTable_web2_sm_tex8k_pbr": [
@@ -14336,7 +14339,7 @@
    "at": "2026-10-13",
    "account": "Tripo account 2 (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "f3923cd4-b3d8-4b94-a87a-6ce482b51e66",
     "862b5898-4373-4e9f-93e5-53d6cdf3d25e",
@@ -14344,14 +14347,17 @@
     "063d2bb3-6eb0-46c3-8b0d-e5d0854bd839"
    ],
    "white_model_fbx": "art/models/tripo/wm2_1013/NEW_CafeTable/",
-   "picked": null,
+   "picked": "6f9f2ecd (디자인 검수 2, 10/13)",
    "inputs": {
     "front": "art/out/s2/noshadow/NEW_CafeTable_front_ns.png",
     "left_slot": "art/out/s2/noshadow/NEW_CafeTable_right_ns.png",
     "right_slot": "art/out/s2/noshadow/NEW_CafeTable_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_CafeTable_back_ns.png"
    },
-   "next": "디자인 검수 2 picks -> texture 4K -> PBR"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K task 1ac455d6",
+   "pbr": "637ef248 (5)",
+   "file": "art/models/tripo/web/NEW_CafeTable_SM_tex4k_pbr_src.fbx"
   }
  ],
  "HaloSign_SignBakery_web2_sm_tex8k_pbr": [
