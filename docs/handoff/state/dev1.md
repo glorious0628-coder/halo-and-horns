@@ -1,6 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
-## 지금 (10/13 오후, 셀프 클리어 전) — 다시 시작하면 여기부터
+## 지금 (10/13 저녁) — 다시 시작하면 여기부터
+- **열린 가지 1: `fix/test-prep-client` 289295f7** (worktree `../wt_codexui` 재사용, sparse) = 게임성 계획 §5 개발 1 몫(10/17 전 하나). 최종 검수에 보고함(10/15 18:00 기한, 10/16 12:00 동결). 넣은 것: 출석 창(AttendanceUI.luau, 메뉴 칸 Gifts), 상점 정리(6칸·Config.PassInfo.Screen·SwitchPassSales·Focus·개인 서버 HUD 칩), 첫 무기 화면(Panels WSHOP.Sells·WeaponInfo Source/ShopSource·Tutorial.Text.NextIronDrop·QuestTarget.IronGold·IronDrop→초원·Guide "Bag"), 이름(Bat Zigzag·TownReact Rose), ClientMain `Config.ApplyTestServer()`, 도감 "Defeated: %s". 새 시험 test_attendance_ui·test_shop_ui·test_first_weapon_client(+test_shop_layout·quest_target·slime_prince·skill_kit·town_quests 대명사 고침). 사진 `tools/play_test_prep_photos.py`(병합 뒤 메인 반영 1).
+- **개발 2 약속(fix/test-prep-server)**: WeaponShop.Buy=false + 사기 거절(Text.WeaponDropOnly), 첫 King T3(Loot.FirstKingDrop, Loot.Text.FirstKingWeapon/Equip), QuestService GoalKind "IronDrop", Return.GoalZones.IronDrop, Net GameState PrivateServer, Config.TestServer + ApplyTestServer, M1_1 둘째 단계 Guide "Bag"(Otto가 Enh70 줌). **test_skill_kit·test_slime_prince·town_quests 2281줄 = 내 가지 몫**(개발 2와 합의).
+- **기다림**: 패스 id 9개(사용자 10/15) → Config.GamePasses Id·Looks PassId. 최종 검수 시험·병합.
+- **열린 가지 2: `dev1-halo-stage6` bfce02b0** = 그대로(6단계 10/21 주 병합). 합친 판 시험(main+bfce02b0+dev2 814bb3ca, worktree `../wt_dev1merge`): 11개 중 10 통과, map_v2 그림 검사 2개(예상)+변이 3개 NOT APPLIED(개발 2 값). 큰 지도 V3 b(`art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_b.png`, 1041×760 = 아래 틀) 최종 통과 → id 오면 아래 Map 변환값 넣고 map_v2 그림 크기 검사도 1041×760으로.
+- worktree: `wt_dev1base`(main 비교용), `wt_dev1merge`(6단계 합친 판) 새로 만듦 — 지울 땐 최종 검수에 먼저. 시험 묶음 돌리기: scratchpad sweep.py(세션 끝나면 사라짐) — 병렬 4, test_audio는 혼자.
+
+## 10/13 오후 (셀프 클리어 전)
 - **열린 가지:** `dev1-halo-stage6` **bfce02b0** (worktree `../wt_dev1halo6`, sparse, build/luau 복사됨) = 6단계 때 개발 2 가지와 합쳐 병합(최종 검수가 함). 최종 검수는 73be5aea까지 받음, bfce02b0 보고는 보냄(대기열).
 - **다음 할 일 1:** 개발 2가 `dev2-halo-stage6`를 push하면(`git ls-remote --heads origin dev2-halo-stage6`) 임시 worktree에서 두 가지를 합쳐(origin/main + dev1-halo-stage6 + dev2-halo-stage6) 시험: test_halo_maps·map_v2·zone_look·fountain_fx·quest_target·return·spawn_look·intro_halo_shot·town_npcs·town_quests·audio·water_rescue. map_v2 그림 검사 2개('picture covers Bounds'·'every land maps inside the picture')는 새 큰 지도 그림+변환값 전엔 실패가 예상 — 최종 검수 결정 대기. 결과 해시+표로 최종 검수에.
 - 큰 지도 새 그림(art/out/s2/worldmap/UIP_WorldMapV2_HaloNew_composite.png, 1024×683 옛 틀) = 새 Bounds 못 덮음, 섬도 실제 비율 아님(대륙 맞춘 변환이면 분수 광장 자리가 그림 속 집 위, 대성당 y -25 밖) → 최종 검수에 "그림 다시" 알림. 다시 그릴 틀: 1041×760, 옛 그림을 (17,77)에, Map = { X0 = 47.815, K = 0.47407, OffX = 230, OffZ = 883 } (Bounds px 0.4..1029.1 × 0..759.9). 안내 그림 `docs/review/halo_worldmap_guide_2026-10-13.png`(분홍 = plan.land 실제 크기, 흰 = 큰 길·고리길, 빨강 = 성문(157,262)·스폰(157,220)·분수(167,139)·성(73,147)·대성당(197,53)·전망대(267,50)). 새 그림 오면 이 변환값을 dev1-halo-stage6 Config에 넣고 Id 비움.
