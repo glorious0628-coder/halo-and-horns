@@ -15209,7 +15209,7 @@
    "at": "2026-10-13",
    "account": "Tripo account 2 (user Chrome)",
    "by": "Blender 손보기 2",
-   "points": 100,
+   "points": 125,
    "white_models": [
     "fab0907c-ea22-4c0d-ac91-c95eee0b6c91",
     "c3117ad2-9c0a-4f62-a371-75a9c4b3a6e7",
@@ -15217,15 +15217,18 @@
     "fb261d4a-0014-4e78-a641-01daa814c30f"
    ],
    "white_model_fbx": "art/models/tripo/wm2_1013/HaloReasonHQ_PotionCrate/",
-   "picked": null,
+   "picked": "fab0907c (디자인 검수 2, 10/13; all 4 had front V-cloth stamped on back)",
    "inputs": {
     "front": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_front_ns.png",
     "left_slot": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_right_ns.png",
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_back_ns.png"
    },
-   "next": "디자인 검수 2 picks -> texture 4K -> PBR",
-   "note": "최종 검수 10/13 정정: PotionCrate = Blender 손보기 2 (account 2 white models)"
+   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender -> 이미지 생성 3",
+   "note": "최종 검수 10/13 정정: PotionCrate = Blender 손보기 2 (account 2 white models)",
+   "texture": "FIRST tab front 2D, 조명 제거, 4K task 6e3a57c1",
+   "pbr": "843f4dd2 (5)",
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx"
   }
  ]
 }
