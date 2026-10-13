@@ -15431,5 +15431,38 @@
    "approval": "디자인 검수 2 + 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 g: wood inside crate = Studio part)",
    "final": "art/models/tripo/touchup/NEW_ArmoryBarrels/NEW_ArmoryBarrels_TU.glb (disk only; front -Y + bottom-centre pivot only; 0.9995x0.8228x0.6372, 4873 faces); old account 1 TU -> NEW_ArmoryBarrels_TU_acc1_old.glb"
   }
+ ],
+ "HaloVar4_Baluster_p_web2_sm_texMV4k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1) - A23-172 Tripo vs Meshy comparison (1 part)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "points": 125,
+   "points_detail": "smart mesh 100 (21365->21265) + texture 4K 20 (21155->21135) + PBR 5 (21135->21130)",
+   "white_models": [
+    "d2cb7d72-ab0a-4d06-9e29-bba3f1844671",
+    "db407464-d80b-488f-b6aa-22e48b4d297f",
+    "a7a73124-264d-4b87-b40e-cbaa8899542a",
+    "6a4879ed-fd2e-4551-94c1-d1bcba2d0918"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1014/HaloVar4_Baluster/<id8>.fbx",
+   "picked": "a7a73124 (디자인 검수 looked in Tripo directly, top/bottom/axes; agreed with Blender 손보기 2 10/14 07:1x)",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_Baluster_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_Baluster_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_Baluster_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_Baluster_back_ns.png",
+    "note": "4 identical images (md5 9c527ed5)"
+   },
+   "texture": "MIDDLE multiview tab (smart-mesh 4 views prefilled), 조명 제거 on, 4K, task 29c5640c-9d16-4c30-8152-f9ef91d04de3 (20)",
+   "pbr": "8fc77956-4805-4923-8612-194b5edc1010 (5)",
+   "file": "art/models/tripo/web/HaloVar4_Baluster_p_SM_texMV4k_pbr_src.fbx (5,856,332 B, disk only; size 0.366x0.366x1.0)",
+   "sheet": "art/review/design/pbr_gate_20261014/HaloVar4_Baluster_p_SM_texMV4k_pbr_src.jpg",
+   "status": "PBR done; waiting 디자인 검수 -> 최종 검수 PBR review; Blender size/pivot/orientation only after both pass",
+   "other_spend_seen": "account 2 also dropped 21265->21210->21155 (55+55) around 07:09-07:12 from new HD generations (e.g. 093f98de 'marble hourglass prop') not made by this session - probably the user testing HD",
+   "hd_price_check": "general generate HD (H3.1), multiview 4 images in: texture ON (8K, delight, PBR, ultra mesh) = 65; texture OFF + ultra mesh ON = 30; texture OFF + ultra OFF = 15; HD gives 1 model per press (smart mesh gives 4 for 100). Not pressed; settings restored."
+  }
  ]
 }
