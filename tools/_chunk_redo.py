@@ -32,6 +32,8 @@ def main():
         draw = it["draw"].split(" 3D note:")[0]
         if any(k in name for k in CHUNKY_IDS):
             draw += ". " + CHUNKY
+        if "Hedge" in name:
+            draw += "The hedge block is chunky: the green block is about 3 times as long as it is tall, built from only about 8 to 10 BIG round leaf clumps in a row (each clump as tall as the block), clear soft boundaries between clumps, leaf shapes drawn big and simple. "
         if "Trellis" in name:
             draw += "Lattice bars must be THICK and chunky (not thin sticks), big squares. "
         front = os.path.join(OUT, "%s_front_ns.png" % name)
