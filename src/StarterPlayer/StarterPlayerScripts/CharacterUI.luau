@@ -66,7 +66,7 @@ local TXT = {
 		Class = "Class", Side = "Side",
 		Size = "Size", Bully = "Bully", Wanted = "Wanted", Revenge = "Revenge", Blessing = "Blessing",
 		Rebirths = "Rebirths", RebirthBonus = "Rebirth bonus", Fall = "Fall marks", Redeem = "Redeem marks",
-		Honor = "Honor", Infamy = "Infamy", Rank = "Rank", Next = "Next rank",
+		Honor = "Honor", Infamy = "Mischief", Rank = "Rank", Next = "Next rank", -- A23-166: the key stays Infamy
 	},
 	CritValue = "%d%% · ×%s",
 	-- 최종 검수 10/13 (ref_rpg_ui #5, A23-130): the Stats tab's traits and effects as short number chips, no sentences
