@@ -15424,10 +15424,12 @@
     "right_slot": "art/out/s2/noshadow/NEW_ArmoryBarrels_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_ArmoryBarrels_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender TU -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "MIDDLE multiview tab (smart-mesh 4 views), 조명 제거, 4K task faf65ed0 (20)",
    "pbr": "18c4e0cb (5)",
-   "file": "art/models/tripo/web/NEW_ArmoryBarrels_SM_texMV4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_ArmoryBarrels_SM_texMV4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 + 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 g: wood inside crate = Studio part)",
+   "final": "art/models/tripo/touchup/NEW_ArmoryBarrels/NEW_ArmoryBarrels_TU.glb (disk only; front -Y + bottom-centre pivot only; 0.9995x0.8228x0.6372, 4873 faces); old account 1 TU -> NEW_ArmoryBarrels_TU_acc1_old.glb"
   }
  ]
 }
