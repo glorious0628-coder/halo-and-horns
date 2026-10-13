@@ -15147,5 +15147,29 @@
    },
    "next": "디자인 검수 2 picks -> texture 4K -> PBR"
   }
+ ],
+ "HaloReasonHQ_GuardPost_web2_sm_tex8k_pbr": [
+  {
+   "event": "web_smart_mesh4 (A23-154 step 1)",
+   "at": "2026-10-13",
+   "account": "Tripo account 2 (user Chrome)",
+   "by": "Blender 손보기 2",
+   "points": 100,
+   "white_models": [
+    "4fea1e4c-bd4f-4a09-8edc-0b6faa3e0aec",
+    "7c300016-7c1f-4f87-acaa-06a77a7df47c",
+    "6d57eac5-cbeb-4b13-af1e-7646c8b88010",
+    "1c5c17fb-be9b-4b56-9038-b37c41531031"
+   ],
+   "white_model_fbx": "art/models/tripo/wm2_1013/HaloReasonHQ_GuardPost/",
+   "picked": null,
+   "inputs": {
+    "front": "art/out/s2/noshadow/HaloReasonHQ_GuardPost_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/HaloReasonHQ_GuardPost_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/HaloReasonHQ_GuardPost_left_ns.png",
+    "back": "art/out/s2/noshadow/HaloReasonHQ_GuardPost_back_ns.png"
+   },
+   "next": "디자인 검수 2 picks -> texture 4K -> PBR"
+  }
  ]
 }
