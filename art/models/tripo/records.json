@@ -15241,7 +15241,8 @@
    "project": "3c1ff311 (picked by 디자인 검수 over both accounts' candidates)",
    "file": "art/models/tripo/web/HaloReasonHQ_GuardPost_SM_tex4k_pbr_src.fbx (disk only)",
    "final": "art/models/tripo/touchup/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_TU.glb (disk only; front -Y, bottom-centre pivot)",
-   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3",
+   "status": "SPARE ONLY - 최종 검수 chose account 2 7c300016 (10/13); do not place"
   }
  ],
  "HaloReasonHQ_PotionCrate_web_sm_tex4k_pbr": [
@@ -15254,7 +15255,8 @@
    "project": "134dc742 (picked by 디자인 검수 over both accounts' candidates)",
    "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx (disk only)",
    "final": "art/models/tripo/touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU.glb (disk only; front -Y, bottom-centre pivot)",
-   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3",
+   "status": "SPARE ONLY - 최종 검수 chose account 2 fab0907c (10/13); do not place"
   }
  ],
  "HaloChunk_GateLeafR_mirror": [
