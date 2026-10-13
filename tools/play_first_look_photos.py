@@ -8,7 +8,8 @@ Halo Warrior, the tutorial's first claim done, then:
   03_out_of_town moved to the Slime Meadow (no status chips): the goose / king pill right under the war meter
 10/14 (fix/menu-one-line, user: the PC fold was two lines and 'Monsters' read "Monster:"): the log also lists the
 open fold's lines (y of each line: squares) and the row tiles, and every shown tile / square whose name does not fit
-(TextFits false) - PC wants one fold line, Monsters in the bottom row, no cut names.
+(TextFits false) - PC wants one fold line, Monsters in the bottom row, no cut names. 10/14 (2): only the MenuFold
+squares count as fold lines (the empty "y2" line was another button); each name's px and room left are logged.
 Usage: HH_MAIN_STUDIO=1 py tools/play_first_look_photos.py [phone]
 Out: docs/art/verification_2026-10-14/menu_one_line/<dev>_<name>.png, log_<dev>.txt (the 10/14 first_look photos stay)"""
 import base64
@@ -114,25 +115,30 @@ return table.concat(out, " | ")
 '''
 FOLDINFO = r'''
 local pg = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
-local lines, row, cut = {}, {}, {}
+local lines, row, cut, px = {}, {}, {}, {}
 for _, d in pg:GetDescendants() do
-	if d:IsA("GuiButton") and d.Visible and (string.match(d.Name, "^Fold") or string.match(d.Name, "^Tile")) then
+	local inFold = d.Parent and d.Parent.Name == "MenuFold" and string.match(d.Name, "^Fold") ~= nil
+	local inRow = d.Parent and d.Parent.Name == "Buttons" and string.match(d.Name, "^Tile") ~= nil
+	if d:IsA("GuiButton") and d.Visible and (inFold or inRow) then
 		local shown, a = true, d
 		while a and a:IsA("GuiObject") do
 			if not a.Visible then shown = false break end
 			a = a.Parent
 		end
-		if shown then
-			local id = string.gsub(string.gsub(d.Name, "^Fold", ""), "^Tile", "")
-			if string.match(d.Name, "^Fold") then
+		local id = string.gsub(string.gsub(d.Name, "^Fold", ""), "^Tile", "")
+		if shown and id ~= "" then
+			if inFold then
 				local y = tostring(math.floor(d.AbsolutePosition.Y + 0.5))
 				lines[y] = (lines[y] or "") .. id .. " "
 			elseif id ~= "Menu" then
 				table.insert(row, id)
 			end
 			local lbl = d:FindFirstChild("Label")
-			if lbl and lbl:IsA("TextLabel") and lbl.Visible and lbl.TextFits == false then
-				table.insert(cut, id .. "(" .. lbl.Text .. ")")
+			if lbl and lbl:IsA("TextLabel") and lbl.Visible then
+				if lbl.TextFits == false then table.insert(cut, id .. "(" .. lbl.Text .. ")") end
+				-- the name's rendered height (px) and its room left inside the label (px, both sides)
+				table.insert(px, string.format("%s %.1fpx room %.1f", lbl.Text, lbl.TextBounds.Y / 1.25,
+					lbl.AbsoluteSize.X - lbl.TextBounds.X))
 			end
 		end
 	end
@@ -140,7 +146,7 @@ end
 local out, n = {}, 0
 for y, ids in lines do n += 1 table.insert(out, "y" .. y .. ": " .. ids) end
 return "fold lines " .. n .. " | " .. table.concat(out, " | ") .. " || row: " .. table.concat(row, ",")
-	.. " || cut names: " .. (#cut > 0 and table.concat(cut, ", ") or "none")
+	.. " || cut names: " .. (#cut > 0 and table.concat(cut, ", ") or "none") .. " || names: " .. table.concat(px, "; ")
 '''
 
 

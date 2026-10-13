@@ -1624,11 +1624,12 @@ end
 
 -- TextSize is a canvas size. The rendered picker never goes below the observed physical 11px floor.
 -- Measure the complete text in those physical pixels before comparing it with AbsoluteSize / TextBounds.
-function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width)
+-- floorPx: a label's own physical floor (UIKit.FitText, attribute FitMinPx) instead of the 11px one
+function UIKit.MeasureRenderedText(text, size, fontOrFontFace, scale, width, floorPx)
 	size, scale = tonumber(size) or 18, tonumber(scale) or 1
 	if scale ~= scale or scale <= 0 or scale == math.huge then scale = 1 end
 	if size ~= size or size <= 0 or size == math.huge then size = 18 end
-	local pixelSize = math.max(MIN_TEXT_SIZE, size * scale)
+	local pixelSize = math.max(tonumber(floorPx) or MIN_TEXT_SIZE, size * scale)
 	local height, measuredWidth, exact = UIKit.MeasureText(text, pixelSize, fontOrFontFace, width)
 	return height, measuredWidth, exact, pixelSize
 end
@@ -1694,7 +1695,7 @@ function UIKit.FitText(label, minSize, maxSize)
 					if label:GetAttribute("PickerMeasureWhole") == true then
 						local text, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
 						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(text, size, face,
-							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000)
+							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000, fit.FloorPx)
 						-- Loading a font yields. Never apply an earlier text/layout/font measurement after a reset.
 						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= text
 							or label.FontFace.Family ~= face.Family or label.FontFace.Weight ~= face.Weight
@@ -1734,7 +1735,11 @@ function UIKit.FitText(label, minSize, maxSize)
 		end))
 	end
 	-- Picker layout minima include inverse UIScale for card geometry; do not reuse that as a raw font minimum.
-	fit.BaseMin = math.max(1, math.min(math.floor(minSize), MIN_TEXT_SIZE))
+	-- 10/14 (user via 최종 검수, PC tile names 'Monsters' / 'Settings' cut at the 11px floor in 44 px squares): a label
+	-- may set its own physical floor with the attribute FitMinPx (read here; its constraint and measure use it)
+	local floorPx = tonumber(label:GetAttribute("FitMinPx"))
+	fit.FloorPx = (floorPx and floorPx >= 1) and floorPx or nil
+	fit.BaseMin = math.max(1, math.min(math.floor(minSize), fit.FloorPx or MIN_TEXT_SIZE))
 	fit.BaseMax = math.max(fit.BaseMin, math.floor(maxSize))
 	-- A23-35: a UIKit.StyleText floor wins over the picker minimum (unstyled labels: no floor, same as before)
 	local styleFloor = Art.StyleFloor[label]
