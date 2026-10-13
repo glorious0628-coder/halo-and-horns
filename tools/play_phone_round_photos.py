@@ -163,20 +163,11 @@ for _, d in pg:GetDescendants() do
 			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextFits == false then
 				table.insert(out.cut, { d:GetFullName():gsub("^.-PlayerGui%.", ""), d.Text, b })
 			end
-			-- tiny = one line of words drawn under TINY real px (the phone floor is 19; a line box ~ the text size). The
-			-- real size: TextBounds times the UIScales above (TextBounds is in the label's own units)
+			-- tiny = words drawn under TINY real px (the phone floor is 19; a line box ~ the text size). TextBounds is
+			-- already screen px (10/14 photos: multiplying by the UIScales again listed "Bag" as 9 px - it reads ~12)
 			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextBounds.Y > 0 then
-				local k, o = 1, d.Parent
-				while o do -- up to and including the ScreenGui (MainGui's UIScale sits right under it)
-					local sc = o:FindFirstChildWhichIsA("UIScale")
-					if sc and sc.Scale > 0 then k *= sc.Scale end
-					if o:IsA("LayerCollector") then break end
-					o = o.Parent
-				end
-				local own = d:FindFirstChildWhichIsA("UIScale")
-				if own and own.Scale > 0 then k *= own.Scale end
-				local h = d.TextBounds.Y * k
-				if h < TINY and h < 1.6 * math.max(1, d.TextSize * k) then
+				local h = d.TextBounds.Y
+				if h < TINY then
 					table.insert(out.tiny, { d:GetFullName():gsub("^.-PlayerGui%.", ""), d.Text, b, math.floor(h * 10) / 10 })
 				end
 			end
