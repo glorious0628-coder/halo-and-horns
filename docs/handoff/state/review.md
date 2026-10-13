@@ -247,3 +247,4 @@
 - 메인 반영 1 Save As = 컴퓨터 제어 권한 **사용자 거부**(두 번째) → 사용자가 직접 Ctrl+S('저장했어' 00:0x) → 메인 반영 1이 build 시간·해시 확인·place push 중. 이 Studio는 build/GoodEvil.rbxlx 로컬 파일로 열려 있음(메인 반영 1 관찰). 메뉴 한 줄 sync 뒤 사용자 Ctrl+S 한 번 더 → Alt+P.
 - Meshy Blender 플러그인(사용자 링크 10/13 밤): Meshy 웹 → Blender 보내기(Pro 이상) + 프린트용 구멍 메우기·내보내기뿐, 모양 정확도·리텍스처 기능 없음 → 안 씀(사용자에게 답함).
 - (00:3x) 메뉴 한 줄 메인 사진(menu_one_line/pc_02) 내가 봄: 펼침 한 줄 8칸 + Menu, 아래 줄 7칸 = 통과. 남은 작은 것: 'Monsters' 마지막 s가 칸 테에 닿음·'Settings' 꽉 참, 사진 스크립트 'fold lines 2' 오계산 → 개발 1 fix/menu-one-line-2(내일 아침 병합). 사용자에게 Save to File As(build/GoodEvil.rbxlx, rbxlx) 부탁함 → 메인 반영 1 확인·place push → Alt+P.
+- (23:4x) **place push 956e521** = build/GoodEvil.rbxlx 23:28:22(사용자 Save to File As, 44,601,218 B, SHA 63f4aa56…daf5), 소스 173개 = main 75890afd 전부 일치(메인 반영 1 대조). 사용자 Alt+P 게시 부탁함. Studio Edit·대기. 내일 아침: 개발 1 fix/menu-one-line-2(글자 여백·로그), 개발 2 2배 XP 서버 가지, 10/15 패스 ID 9개.
