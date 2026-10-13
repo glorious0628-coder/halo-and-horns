@@ -341,7 +341,7 @@ local MOTION = {
 			{ 0.48, "Out", { Waist = { 0, -10, 0 }, RightShoulder = { 150, 0, 20 }, RightElbow = { 90, 0, 0 }, LeftShoulder = { 34, 0, -24 }, LeftElbow = { 50, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
-		-- the Dark Mage's Bat Zigzag (A23-138; was Flappy Zigzag): the crooked staff pulled back right, a quick side swing to the left (the bat
+		-- the Dark Mage's Flappy Zigzag: the crooked staff pulled back right, a quick side swing to the left (the bat
 		-- leaves), the left fingers wiggling 'go'
 		DarkMageZ = { Len = 0.68, Keys = {
 			{ 0, "Out", {} },
