@@ -206,3 +206,10 @@
 - **코드:** fix/test-prep-client ae655ccf 병합 → main 10fa20b9(시험 12개·compile 통과). 개발 2 fix/test-prep-server 오늘 18~19시 push 예정(출석 28일 이름 테 알림 끔·Smokey→Rose 한 번에) → 합친 나무 시험 + 반박 검토 → 병합 → 메인 반영 1 sync + `HH_MAIN_STUDIO=1 py tools/play_test_prep_photos.py main`(Play 멈춤·시작은 🟠 알림). 개발 1 dev1-halo-stage6 cbf3c3f0(큰 지도 V3 b 틀, Id 비움 — 그림 올리면 Id 한 줄), dev2-halo-stage6 814bb3ca = 6단계 때 병합. 패스 id 9개 = 사용자 10/15.
 - **사용자 일:** 없음(점수 OK·질문 답만). 11월부터 세션 줄이기(메모리 fewer-sessions-from-november).
 - 도구: tools/final_review/final_gate.py(--fbx는 +X 앞을 -Y로 돌림, 텍스처 1024로 줄여 찍음) + final_gate_sheet.py. 워크플로 스크립트(pbr-final-gate-batch.js 등)는 앞 세션 폴더에만 있음 — 필요하면 새로 씀.
+
+## 10/13 저녁 (새 최종 검수, A23-160) — 다음 나는 여기부터
+- 사용자 결정 A23-160(SPEC 맨 위): 디자인 멈춤(돈 드는 그림·3D 전부, 사용자 "가" 전까지), 시험 먼저, 세션 4개(최종 검수 Fable 5.1 high·Ultracode 끔 / 메인 반영 1 Sonnet 5.5 medium / 개발 1·2 Opus 5.5 high) + 선택 이미지 생성 3(Sonnet 5.5 high, 0원 일만). 디자인 검수 1·2·Blender 손보기 1·2·이미지 생성 2 쉼. API ≈$200(.env) → `tools/api_agent.py`로 반박 검토·긴 읽기.
+- **세션 상태:** 10/13 저녁 list_sessions = 이 저장소 세션 0개(앞 세션들은 이미 없음). 사용자가 Ctrl+N으로 '메인 반영 1'·'게임성 개발 1'·'게임성 개발 2'를 만들면 → set_session_model/effort → role_prompts 01·02·03 시작 글 보냄. 쉬는 역할에는 보낼 곳이 없어 state 파일 요청은 못 함(각 state/<역할>.md는 10/13 낮 판이 push돼 있음).
+- 쓴 문서: SPEC A23-160, role_prompts/README '지금 세션(10/13 저녁)' 표, 00·01·02·03·10 머리말, 13·15·16·17·07 쉼 배너, AGENTS(최신 결정·역할·API 줄), `docs/design/private_test_user_checklist_2026-10-15.md`(사용자 10/15·16 체크리스트), `docs/review/halo_spend_2026-10-13.md`(A), `docs/review/art_scope_min_2026-10-13.md`(B).
+- **다음:** ① 세션 생기면 설정·시작 글 ② 개발 1·2 가지(fix/test-prep-client / -server) 오면 API 반박 검토 → merge_chain 병합 → 메인 반영 1 sync ③ 10/15 사용자 패스 ID 9개 → 개발 2 ④ 10/16 12:00 동결 → 메인 반영 1 Save As·place push → 사용자 게시 ⑤ 수요일 주간 사용량 확인(10/13 저녁 3%).
+- 주간 사용량 10/13 19:xx: 전체 3%, Fable 6%(10/20 07:00 초기화).

@@ -1,4 +1,6 @@
-# 메인 반영 1 — Sonnet, high
+# 메인 반영 1 — Sonnet 5.5, medium (A23-160, 10/13 저녁)
+
+> **A23-160 이번 주:** 10/16 12:00 동결판을 메인에 sync → PC·폰 첫 10분 Play 사진(ForgeWalk 초, 막히는 곳) → Save to Roblox + Save As build/GoodEvil.rbxlx → place/ push(10/16 오후, Save 창은 최종 검수 🟠 절차). 시험 중(10/17~20) 매일 Studio 콘솔·Health 확인. 빛 마을 새 모델 넣기·사진은 이번 주 아님.
 
 ```
 너는 Halo & Horns의 '메인 반영 1' 세션이야. 메인 Studio(클라우드 장소 "Halo & Horns" 81671223175574)의 주인: 열기·sync(py tools/sync_to_studio.py, origin/main과 같을 때만)·월드 도구 apply·Play 사진(PC 먼저)·저장 두 곳(Save to Roblox + Save to File As build/GoodEvil.rbxlx, 형식은 꼭 'Roblox XML 플레이스 파일(*.rbxlx)') → place/ 복사 → py tools/push_paths.py.
