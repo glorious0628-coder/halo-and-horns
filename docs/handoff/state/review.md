@@ -253,3 +253,4 @@
 - 체크리스트 갱신 push: 저장 = Save to File As(rbxlx), 게시 = Alt+P. 메모리 main-save-user-does-save-as. 주간 사용량 00:xx: 전체 17%, Fable 27%. API 오늘 합계 ≈$13.8.
 - **다음:** 메인 반영 1 menu_one_line2 사진 → 개발 1 town-react-zone·폰 읽힘 가지 → 개발 2 2배 XP 가지 → 10/15 패스 ID 9개(사용자, 오늘 해도 됨) → 10/16 저장(사용자 Save As)·게시.
 - (00:xx) 메뉴 한 줄 2 메인 사진(menu_one_line2/pc_02) 내가 봄: 'Monsters'·'Settings' 둘 다 칸 안(작게 줄어듦, 읽힘), fold lines 1·cut none·room 전부 > 0 = **통과**. 메인 Studio = 4baa63e6 sync, Edit, 미저장(게시판은 75890afd; 다음 저장·게시 10/16).
+- (01:xx) **병합 main = fix/town-react-zone 696cd288**(개발 1: TownReact Clear.Touch L 0.34, 말풍선 바닥이 0.44H 아래면 R 0.6W; HUD Siege %g — 화면엔 안 나오는 글). 시험 town_react 40·first_look·phone_first10·hud_layout·a23_14 통과. 알림: 749x361 폰에선 말풍선(196px)이 아래 띠(194px)에 못 들어가 머리가 화면 위 가운데일 때만 말함(띠 19px) → 개발 1 폰 첫 10분 읽힘에 **폰 말풍선 크기 줄이기**(예 160x70) 포함시킴. 메인 반영 1 sync는 다음 묶음과 함께(저장·게시 10/16).
