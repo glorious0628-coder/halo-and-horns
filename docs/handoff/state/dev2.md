@@ -15,7 +15,10 @@
 
 - 날짜 박힌 값 목록(3주 차 '아주 먼 날짜 + 출시 날 스위치', 2-A #12): BuildLabel, Beta.PioneerUntil 12/19, 하늘 주석 '12/19 launch',
   Halloween EndsAt 11/09·Banter DayOneStart 10/31, Badges Order Halloween2026, 할로윈 주석 'beta 2026-12-01', 글 "launch date is set in December".
-- 다음 후보(최종 검수가 정함): 6단계 서버 병합, 무기 운 보정(2-A #6), 골드 쓸 곳(#7), 스탯 서버(#9), 날짜 값(#12), 보스 경쟁·황금 시간(crown_war_content).
+- **다음 일(10/14 아침 시작, 최종 검수 10/13 밤):** 2주 차 = 첫 10분 2배 XP + '내일 또 오기' 서버(SPEC A23-167 먼저 읽기).
+  dev2-honor-crown은 API 검토 중 → 고칠 것이 있으면 최종 검수가 메시지로 깨움(그때는 그 가지 위에 커밋, 리베이스 금지).
+- 그 뒤 후보(최종 검수가 정함): 6단계 서버 병합, 무기 운 보정(2-A #6), 골드 쓸 곳(#7), 스탯 서버(#9), 날짜 값(#12), 보스 경쟁·황금 시간(crown_war_content).
+- A23-168: 덩어리 보고 뒤 기다릴 일만 남으면 이 파일 적고 push → clear_session("self").
 
 ## worktree·도구
 - ../wt_prep(test-prep-server-2), ../wt_prep_t(전체 시험 고정판), ../wt_mischief, ../wt_scroll, ../wt_honor, ../wt_halo6. 병합 끝난 것은 그냥 둠.
