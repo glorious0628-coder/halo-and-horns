@@ -8314,6 +8314,20 @@ Config.ChoiceCard = {
 	},
 }
 Config.RateLimits.CardAction = 0.3
+-- gameplay_plan 2-A #3 (게임성 개발 1, 2026-10-13): the shared choice card window (ChoiceCardUI.luau, Panels window
+-- "ChoiceCard") draws both the ChoiceCard cards (Fx "Card") and the field boss finisher card (Fx "FinisherCard": its
+-- words stay Config.Finisher.Cards[kind].Text). Screen = this window's own words; the hint lines are the finisher's
+-- (Config.Finisher.Text HintNeutral / HintFull / HintZero), the score lines Config.Finisher.Text Score / ScoreDown.
+-- Later = s a closed saved card waits before it opens again on a calm screen.
+Config.ChoiceCard.Screen = {
+	Title = "Make a choice", -- a card without its own title
+	Item = "+%d %s", -- (count, item name)
+	Gold = "+%s gold",
+	Seconds = "%ds", -- the timed card's countdown
+	Later = 30,
+	-- the score names on the card (the cards send the stat key; A23-166: Infamy shows as "Mischief", the key stays)
+	Stat = { Honor = "Honor", Infamy = "Mischief" },
+}
 -- A23-86 D (content_beyond_10min D): the monster kill record from the first beta day (KillLog.luau). Additive save field
 -- (Version stays 3): KillLog = { Total, M (by hand), A (auto combat), Golden, ByKind = { [monster kind] = n },
 -- ByTier = { ["tier"] = { M, A } } }. The sticker book screen comes 11/04; nothing is paid for it here.
