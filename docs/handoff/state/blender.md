@@ -1,5 +1,10 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 낮 — 로그인 뒤 진행 (잔액 6,505)
+- 매직 브러시 = 막힘(붓 끌기 칠 안 됨, 양동이는 전체 채움) → 사용자 일. PBR 7 누름(ConeTree 결과 늦게 옴, 확인 필요). 텍스처 5 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick).
+- 흰 모델 생성 끝 26종: 묶음8 10종 + 묶음9 10종(id 목록 디자인 검수에 보냄) + 묶음10 Topiary_E 48713e59·PotFlowers_E de342b72·PotFlowers_F a35f95c9·PotFlowers_A 20715701·PotFlowers_C 79825b6e·PotFlowers_D de8064f2·Planter_A e72c4f22 (URL id; 형제 3개는 에셋 목록에서 이웃 4개 묶음, project_name으로 확인).
+- 남음: 묶음10 Planter_D·FlowerCart_Bouquet, 묶음11 12종, 묶음12 7종(올리기 전). 창이 숨겨지면 페이지가 멈춤(타이머) → 창 보이게 하고 이어서. 함수: hhPrepFn(넣기+빈 칸 다시) → hhGoFn(누르기) 두 번에 나눠 호출(45초 제한), 매 호출 앞에 eval(localStorage.hhSleepDef).
+
 ## 10/13 아침 — PC 다시 켬
 - 9종+WingR 이미지 생성 3에 넘김(메시지). **Tripo 로그아웃됨**(재부팅 뒤 401, localStorage·Cache 비어짐) → 사용자 로그인 기다림(비밀번호 입력 금지).
 - 페이지 함수는 `tools/tripo_web_helpers.js`에 저장 → 로그인 뒤 그 파일 내용을 javascript_exec로 한 번 실행하면 hhTexFn/hhSetFn/hhGoFn/hhPbrFn 다시 생김.
