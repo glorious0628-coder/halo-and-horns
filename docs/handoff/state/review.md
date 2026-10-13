@@ -246,3 +246,4 @@
 - (10/14 00:xx) **병합 main 75890afd** = fix/menu-one-line 11af5107(개발 1: PC 아래 줄 6 → 7칸(Monsters 포함), 전쟁 미터 열 왼쪽으로 옮겨 펼침 8칸 한 줄, PC 칸 이름 9px; A23-109 6칸 줄 바뀜, hud_layout_B JSON PC 값 고침). 시험 hud_layout 11960·first_look 16·first_steps 57·phone_first10 23·hud_reveal 18·a23_14 6426 통과. 메인 반영 1 = sync + 사진(menu_one_line/) 지시.
 - 메인 반영 1 Save As = 컴퓨터 제어 권한 **사용자 거부**(두 번째) → 사용자가 직접 Ctrl+S('저장했어' 00:0x) → 메인 반영 1이 build 시간·해시 확인·place push 중. 이 Studio는 build/GoodEvil.rbxlx 로컬 파일로 열려 있음(메인 반영 1 관찰). 메뉴 한 줄 sync 뒤 사용자 Ctrl+S 한 번 더 → Alt+P.
 - Meshy Blender 플러그인(사용자 링크 10/13 밤): Meshy 웹 → Blender 보내기(Pro 이상) + 프린트용 구멍 메우기·내보내기뿐, 모양 정확도·리텍스처 기능 없음 → 안 씀(사용자에게 답함).
+- (00:3x) 메뉴 한 줄 메인 사진(menu_one_line/pc_02) 내가 봄: 펼침 한 줄 8칸 + Menu, 아래 줄 7칸 = 통과. 남은 작은 것: 'Monsters' 마지막 s가 칸 테에 닿음·'Settings' 꽉 참, 사진 스크립트 'fold lines 2' 오계산 → 개발 1 fix/menu-one-line-2(내일 아침 병합). 사용자에게 Save to File As(build/GoodEvil.rbxlx, rbxlx) 부탁함 → 메인 반영 1 확인·place push → Alt+P.
