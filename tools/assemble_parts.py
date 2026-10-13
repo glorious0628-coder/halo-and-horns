@@ -60,6 +60,7 @@ for p in layout["place"]:
     o.hide_render = False
     k = p["height"] / max(h0, 1e-6)
     o.scale = (k, k, k)
+    o.rotation_mode = "XYZ"  # glTF import leaves QUATERNION mode, where rotation_euler is ignored (10/14 bug: rails did not turn)
     o.rotation_euler = (0, 0, math.radians(p.get("rot", 0)))
     o.location = Vector(p["at"])
     placed.append(o)
