@@ -15295,7 +15295,8 @@
    "final": "art/models/tripo/touchup/HaloChunk_GateLeafR/HaloChunk_GateLeafR_TU.glb (disk only)",
    "sheet": "art/review/blender/gate_leaf_L_R_mirror_1013.jpg",
    "note": "lit render: R a bit shinier on the front, faint diagonal streaks on the flat back (mirrored normal map) — check in Roblox day/night",
-   "next": "이미지 생성 3 (request from 최종 검수 묶음 b)"
+   "next": "이미지 생성 3 (request from 최종 검수 묶음 b)",
+   "status": "SPARE — 디자인 검수 10/13: L front is symmetric, R slot uses the L model; mirror shows normal-map shine/streaks"
   }
  ]
 }
