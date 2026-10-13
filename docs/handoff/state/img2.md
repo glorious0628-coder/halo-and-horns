@@ -1,8 +1,8 @@
 # 이미지 생성 2 — 인계 (10/13 새벽 정리: 컴퓨터 끄기 전)
 ## 10/13 새벽 (맨 위 = 이것부터; 10/13 04시 갱신)
 - **집 덩어리 큐** `art/prompts/house_chunks_queue_2026-10-13.json` (43종, 순서대로). 구동기 `py tools/_chunk_redo.py <HaloChunk_Id>`(앞면 → 뒤·왼·오른, 결과 `art/out/s2/noshadow/chunks/<Id>_<view>_ns.png`, 한 번에 하나·run_in_background; 끝 코드 3 = ChatGPT 사용량 끝 → Firefly 고급), 옆면 PIL 고침 `py tools/_chunk_sidefix.py <Id> [--fill]`(right=left 뒤집기+높이 맞춤; 흰·크림 물체는 --fill; 캔버스 밖이면 STOP), 색 보정 `tools/_tint_obj.py`. 규칙: 둥근 것은 4면 폭 같게, 한쪽을 보는 것(꽃·덩굴·가판대)은 4면 방향 맞게(왼 면 = 앞이 화면 오른쪽, 오른 면 = 화면 왼쪽; 어긋나면 한쪽을 뒤집어 맞춤), 잎·덩굴·울타리는 큼직·굵게(도구가 자동 문구), 원본 백업 `build/img2_next/pil_orig/`. 보고처 = **디자인 검수**(통과 판정·흰 모델 큐는 거기서), 막힌 것만 최종 검수.
-- **1~32 끝, 푸시됨**(마지막 b08f5e7). 디자인 검수 통과: 1~31 전부(7 WindowBoxA·…·31 Pond), 4 WingR = WingL 3D 뒤집어 씀. **판정 대기: 32 CastleHedge**(큼직한 덩어리 9개 판 다시 그림, 오른쪽은 왼쪽 뒤집기).
-- **막힘(10/13 04시)**: ChatGPT(Codex) 사용량 끝(코드 3) → 33 WeatherVane 앞면부터 못 그림. 남은 **33~43 = WeatherVane · ChimneyCap · ChimneyLantern · RoundTree · MedalBell · Telescope · Cauldron · FlowerBuckets · WindowBoxB · CornerFinial**(+ 34 StarFinial은 끝). 길: ① ChatGPT 풀리면 `py tools/_chunk_redo.py <Id>` 이어서(있는 파일 건너뜀) ② Firefly 고급(앱 브라우저 창 보이게 + Adobe 로그인 필요 → 최종 검수에 요청함). 빛 마을 소품(벤치·가판대·등불·나무…)은 이미지 생성 3.
+- **1~43 그림 전부 끝, 푸시됨(마지막 7ebb4494)**. 34~43은 Firefly high(1024², Codex 사용량 끝). 판정은 디자인 검수 대화 기준(보고 메시지). 판정 대기: 36 ChimneyLantern 아치 안 밝게·37 RoundTree 옆 폭(10/13 반영해 재보고함), 38~43 6종(방금 보고), 42 WindowBoxB 뒤가 앞과 같음(잎 쪽으로 바꿀지 물어봄). 새 묶음이 오면 Codex(`_chunk_redo.py`)가 풀렸으면 그걸로, 아니면 Firefly 길.
+- **Firefly 결과 받는 법(최종 검수 승인)**: `docs/handoff/firefly_autodownload_2026-10-13.md` — 페이지 도구 `tools/firefly_autodl_helpers.js`(생성 전에 붙임) + 사전서명 S3 주소를 `tools/ff_fetch.py`로 curl. **브라우저 다운로드·Downloads 폴더·127.0.0.1·데스크톱 창은 금지**(사용자 화남). 사용자에게 할 부탁·화면에 뭔가 뜨는 일은 항상 최종 검수에 먼저. Firefly 계정 잔액 약 2850/10000(10/13 낮).
 - 이 줄 아래는 10/12 저녁 정리 내용(이전).
 
 ## 10/12 저녁 정리 (맨 위 = 이것부터)
