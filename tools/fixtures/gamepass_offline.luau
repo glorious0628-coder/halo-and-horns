@@ -10,6 +10,7 @@
 
 local C0 = execute("Config", CONFIG_SOURCE, nativeEnv())
 local EPS = 1e-9
+local function okPassId(id) return type(id) == "number" and id >= 0 and id == math.floor(id) end
 
 -- the world. opts: Ids = { [kind or look id] = pass id } (EditConfig), Owns = { [userId] = { [passId] = true } },
 -- FailAll = { [passId] = true } (every ask errors), FailTimes = { [passId] = n } (the first n asks error), Studio = true
@@ -17,6 +18,9 @@ local EPS = 1e-9
 local function passWorld(opts)
 	opts = opts or {}
 	local w = newWorld({ Studio = opts.Studio == true, EditConfig = function(cfg)
+		-- 10/14 (set_pass_ids): every world starts "not sold yet" whatever ids Config holds; a group sets the ids it needs
+		for _, pass in cfg.GamePasses do pass.Id = 0 end
+		for _, look in cfg.Looks do if look.PassId ~= nil then look.PassId = 0 end end
 		for key, id in opts.Ids or {} do
 			if cfg.GamePasses[key] then cfg.GamePasses[key].Id = id else cfg.Looks[key].PassId = id end
 		end
@@ -165,11 +169,22 @@ runGroup("config", function()
 		show({ GP.XP2.Price, GP.Gold2.Price, GP.VIP.Price }))
 	check(GP.XP2.Attr == "PassXP2" and GP.Gold2.Attr == "PassGold2" and GP.VIP.Attr == "PassVIP",
 		"attributes PassXP2 / PassGold2 / PassVIP (the screen's names)")
-	check(GP.XP2.Id == 0 and GP.Gold2.Id == 0 and GP.VIP.Id == 0, "ids 0 until the user makes the passes (Coming soon)")
+	-- 10/14: 0 = not made yet (Coming soon), else the user's pass id (tools/set_pass_ids.py): a whole number > 0, never twice
+	local ids, seenIds, idsOk = {}, {}, true
+	local function addId(key, id)
+		ids[key] = id
+		if not okPassId(id) then idsOk = false elseif id > 0 then
+			if seenIds[id] then idsOk = false end
+			seenIds[id] = true
+		end
+	end
+	for key, pass in GP do addId(key, pass.Id) end
+	for key, look in C0.Looks do if look.PassId ~= nil then addId(key, look.PassId) end end
+	check(idsOk, "pass ids: 0 until the user makes the pass (Coming soon), else a whole number > 0, no id twice", show(ids))
 	local n = 0
 	for _ in GP do n += 1 end
-	check(n == 5 and GP.Stickers.Price == 99 and GP.Stickers.Attr == "PassStickers" and GP.Stickers.Id == 0
-		and GP.Bubbles.Price == 99 and GP.Bubbles.Attr == "PassBubbles" and GP.Bubbles.Id == 0,
+	check(n == 5 and GP.Stickers.Price == 99 and GP.Stickers.Attr == "PassStickers"
+		and GP.Bubbles.Price == 99 and GP.Bubbles.Attr == "PassBubbles",
 		"five passes: XP2, Gold2, VIP, the Sticker Pack and the Bubble Pack (99 R$ each; A23-143 / A23-144)", n)
 	local B = C0.PassBoost
 	check(B.Mult == 2, "the passes double (2x)", B.Mult)
@@ -195,7 +210,7 @@ runGroup("config", function()
 		if type(look.Icon) ~= "string" or type(look.Order) ~= "number" then table.insert(bad, id .. " icon/order") end
 		if look.PassId ~= nil then
 			sold += 1
-			if look.Price ~= 99 or look.PassId ~= 0 or look.Unlock ~= nil then table.insert(bad, id .. " sale") end
+			if look.Price ~= 99 or not okPassId(look.PassId) or look.Unlock ~= nil then table.insert(bad, id .. " sale") end
 		else
 			local days = type(look.Unlock) == "table" and look.Unlock.Attendance
 			if not days then table.insert(bad, id .. " unlock") else att[days] = (att[days] or 0) + 1 end
@@ -203,7 +218,7 @@ runGroup("config", function()
 		end
 	end
 	check(sold == 4 and att[14] == 2 and att[50] == 2 and att[100] == 2 and #bad == 0,
-		"looks: 4 sold (99 each, pass id 0), attendance-only 14 / 50 / 100 days (a halo and horns each)", show({ sold, att, bad }))
+		"looks: 4 sold (99 each, one pass id), attendance-only 14 / 50 / 100 days (a halo and horns each)", show({ sold, att, bad }))
 	check(C0.Looks.HaloIce.Name == "Ice Halo" and C0.Looks.HaloGold.Name == "Gold Halo" and C0.Looks.HornsLava.Name == "Lava Horns"
 		and C0.Looks.HornsShadow.Name == "Shadow Horns", "the user's four picks keep their names")
 	local order = C0.LookOrder()

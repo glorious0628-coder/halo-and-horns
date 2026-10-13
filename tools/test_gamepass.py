@@ -256,7 +256,7 @@ MUTATIONS = [
     ("stickers: sent to the sender only", M, "pcall(Net.Fx, nil, \"Sticker\", { UserId = player.UserId, Key = key })",
      "pcall(Net.Fx, player, \"Sticker\", { UserId = player.UserId, Key = key })"),
     ("stickers: every one free", C, "\treturn Config.IsSticker(key) and type(part) == \"table\" and part.Free == true\n", "\treturn Config.IsSticker(key)\n"),
-    ("stickers: pass 199", C, "Stickers = { Id = 0, Price = 99, Name = \"Sticker Pack\"", "Stickers = { Id = 0, Price = 199, Name = \"Sticker Pack\""),
+    ("stickers: pass 199", C, "Price = 99, Name = \"Sticker Pack\"", "Price = 199, Name = \"Sticker Pack\""),  # 10/14: any pass id
     # A23-139: the pass doubles craft XP only, never what a craft makes
     ("craft: the result count x the pass", CR, "\tlocal n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus))) -- items: N + the hammer's +N\n", "\tlocal n = (math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))) * math.max(1, num(S.ProgressionService.PassMult(player, \"XP2\"), 1))\n"),
     ("craft: the +N x the pass", CR, "\t\tlocal okPass, pass = pcall(function() return ps and type(ps.PassMult) == \"function\" and ps.PassMult(player, \"XP2\") or 1 end)\n\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n\tend\n", "\t\tlocal okPass, pass = pcall(function() return ps and type(ps.PassMult) == \"function\" and ps.PassMult(player, \"XP2\") or 1 end)\n\t\txp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))\n\t\tplus = math.min(2, plus * num(pass, 1))\n\tend\n"),
@@ -267,9 +267,8 @@ MUTATIONS = [
     ("kills not doubled", C, "GoldSources = { Monster = true, Quest = true,", "GoldSources = { Quest = true,"),
     ("x1", C, "\tMult = 2,\n\tGoldSources", "\tMult = 1,\n\tGoldSources"),
     ("one try", C, "\tCheckTries = 3,\n", "\tCheckTries = 1,\n"),
-    ("VIP price", C, "VIP = { Id = 0, Price = 249,", "VIP = { Id = 0, Price = 199,"),
-    ("a sold look free", C, "HaloIce = { Faction = \"Halo\", PassId = 0, Price = 99,", "HaloIce = { Faction = \"Halo\", PassId = 0, Price = 0,"),
-    ("look order off", C, "\t\tif oa ~= ob then return oa < ob end\n", "\t\tif oa ~= ob then return oa > ob end\n"),
+    ("VIP price", C, "Price = 249, Name = \"VIP\"", "Price = 199, Name = \"VIP\""),  # 10/14: any pass id
+    ("a sold look free", C, "Price = 99, Name = \"Ice Halo\"", "Price = 0, Name = \"Ice Halo\""),    ("look order off", C, "\t\tif oa ~= ob then return oa < ob end\n", "\t\tif oa ~= ob then return oa > ob end\n"),
     ("sanitize keeps unknown looks", C, "if type(id) == \"string\" and Config.Looks[id] and type(t) == \"number\"",
      "if type(id) == \"string\" and type(t) == \"number\""),
     ("sanitize keeps non-boolean answers", C, "if type(id) == \"string\" and type(v) == \"boolean\" and",
