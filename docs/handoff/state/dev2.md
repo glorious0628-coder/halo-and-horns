@@ -1,4 +1,4 @@
-# 게임성 개발 2 — 상태 (2026-10-14, dev2-early-xp-2 보고 뒤)
+# 게임성 개발 2 — 상태 (2026-10-14 낮, 숫자판 점검·패스 ID 준비 보고 뒤)
 
 서버 전용·Studio 금지·main에 코드 push 금지(최종 검수가 병합). 보고처 = '최종 검수'(list_sessions, send_message). 덩어리마다 한 번.
 읽는 순서: `docs/handoff/README.md`(새 입구) → `role_prompts/03_dev2.md` → 이 파일 → `docs/design/six_week_plan_2026-10-13.md`(주별 몫).
@@ -14,12 +14,16 @@
 | dev2-early-xp | 36396af8 (main 9264ae44) | A23-167 첫 10분 2배 XP(Config.EarlyXP, ProgressionService.XPBoost = 패스와 큰 쪽) + 내일 또 오기 서버(Fx TomorrowGift, 속성 Returned, WelcomeBack Days·News, AttendanceService.NextSlots, 소식 DataStore HaloHorns_News_v1) — origin/main 4f88cc5a 위 | 보고함. 설명 `docs/design/comeback_server_2026-10-14.md`. 화면은 개발 1 몫(문서 끝 4줄) |
 | dev2-early-xp-2 | 20569434 | early-xp 후속: 빈 거위 판(Mode Pending) 소식 안 셈, BindToClose가 도는 쓰기 기다린 뒤 씀, crown-small 체리픽, NextSlots·Config TomorrowDay 주석 — origin/main 5e157bf7 위, ../wt_earlyxp2 | 보고함(return 244·121/121) |
 | dev2-crown-small | 53e28b6a | API 사후 검토 낮음 2개: PvP KO 상한 칸은 AddPoints가 실제로 더했을 때만(AddPoints true/false), PersonalAdded 주석 — origin/main 893d8d37 위 | main 병합됨(10/14). early-xp-2의 체리픽 890994fe = 같은 내용 |
+| dev2-metrics-howto | 078a0a3a | 시험 숫자판 점검: 매일 한 줄 안내 `docs/design/test_metrics_howto_2026-10-14.md` + board stderr UTF-8 — origin/main 89255e8b 위, ../wt_metrics | 보고함(10/14) |
+| dev2-pass-ids | 9b90130c (**로컬만, push 안 함**) | test_gamepass가 진짜 패스 ID에서도 통과(세계마다 ID 0으로 시작, 설정 확인 '0 또는 정수>0·겹침 없음', 가격 변이 3개 ID 무관) — ../wt_passids | 내일 ID 9개 넣고 함께 push |
 | dev2-halo-stage6 | bd903c79 | 빛 마을 6단계 서버 | 2주 차 교체 날 병합(map_v2 2개 = 새 큰 지도 그림 기다림) |
 
 - 날짜 박힌 값 목록(3주 차 '아주 먼 날짜 + 출시 날 스위치', 2-A #12): BuildLabel, Beta.PioneerUntil 12/19, 하늘 주석 '12/19 launch',
   Halloween EndsAt 11/09·Banter DayOneStart 10/31, Badges Order Halloween2026, 할로윈 주석 'beta 2026-12-01', 글 "launch date is set in December".
-- **내일 이어갈 자리(10/14 밤, 사용자 컴퓨터 끔):** dev2-early-xp-2 20569434 = push·시험 끝(return 244·121/121, crown_points·attendance·health 통과), 최종 검수 병합 기다림 — 병합 때 crown-small이 main에 이미 있으니 890994fe는 같은 줄(충돌 나면 main 쪽 그대로).
-  그다음 순서: ① early-xp-2 마무리(검토 고칠 것 오면 그 가지 위 커밋) ② 10/15 사용자 패스 ID 9개 넣기(set_pass_ids) ③ 시험 숫자판(TestMetricsService, tools/test_metrics_board.py) 점검.
+- **내일 이어갈 자리(10/14 낮):** 네 가지 다 main(early-xp-2 포함). 오늘 1·2 끝: dev2-metrics-howto push·보고, dev2-pass-ids 로컬 커밋.
+  10/15 패스 ID 오면: ../wt_passids에서 `py tools/set_pass_ids.py XP2=… Gold2=… VIP=… Stickers=… Bubbles=… HaloIce=… HaloGold=… HornsLava=… HornsShadow=…`
+  → test_gamepass(변이 포함)·passes·pass_text·shop_layout·health 다시 → `git checkout -- docs/art/` → 커밋(-- Config.luau) → push → 최종 검수 보고.
+  (10/14 확인: 가짜 ID 9개로 관련 시험 15개 통과. 최종 검수가 시험 고침을 먼저 원하면 9b90130c만 push.) 주간 사용량 73% → 새 일 시작 안 함.
 - **다음 일:** 최종 검수가 정함. dev2-early-xp 병합됨, 후속 dev2-early-xp-2(20569434) 보고함 → 병합 기다림(고칠 것이 오면 그 가지 위에 커밋, 리베이스 금지).
   dev2-honor-crown 555e1a56 = main 병합됨(4fe62394). 같이 잡은 몹 사냥 명예 나누기 = 11/7 전 사용자 결정(backlog, 지금 그대로).
   2배 XP 속도: 계산상 Lv10이 슬라임만 약 16분 → 약 8분(퀘스트 보상도 2배) — 10/17 숫자판 'Lv5까지 분'으로 확인, 빠르면 최종 검수가 EarlyMult/Seconds 결정.
