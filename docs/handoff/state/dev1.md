@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 지금 (10/13 오후, 셀프 클리어 전) — 다시 시작하면 여기부터
+- **열린 가지:** `dev1-halo-stage6` **bfce02b0** (worktree `../wt_dev1halo6`, sparse, build/luau 복사됨) = 6단계 때 개발 2 가지와 합쳐 병합(최종 검수가 함). 최종 검수는 73be5aea까지 받음, bfce02b0 보고는 보냄(대기열).
+- **다음 할 일 1:** 개발 2가 `dev2-halo-stage6`를 push하면(`git ls-remote --heads origin dev2-halo-stage6`) 임시 worktree에서 두 가지를 합쳐(origin/main + dev1-halo-stage6 + dev2-halo-stage6) 시험: test_halo_maps·map_v2·zone_look·fountain_fx·quest_target·return·spawn_look·intro_halo_shot·town_npcs·town_quests·audio·water_rescue. map_v2 그림 검사 2개('picture covers Bounds'·'every land maps inside the picture')는 새 큰 지도 그림+변환값 전엔 실패가 예상 — 최종 검수 결정 대기. 결과 해시+표로 최종 검수에.
+- **다음 할 일 2:** 최종 검수의 게임성 계획 `docs/design/gameplay_plan_2026-10-13.md`(작성 중)대로.
+- 끝난 것: fix/phone-round b6e4fe45 = main 4c945b11 병합. 멈춘 것: Hero 창 844 "Paladin" 글자·힘 칩 여백(최종 검수 '폰 멈춤'). '키보드 없음' Studio 스위치 = 나중(최종 검수).
+- worktree `wt_codexui`(fix/phone-round, 병합됨)는 지워도 됨(지울 땐 최종 검수에 먼저).
+
 ## 10/13 오후 2 — 빛 마을 6단계 클라 준비 (사용자 "빛 마을에 집중", 최종 검수 전달)
 - **폰 일 멈춤**(병합 안 함): `fix/phone-round` b6e4fe45까지 push(Help 터치 안전 줄·거위 칩 시간). 못 한 것 = Hero 창 844에서 "Lv 25 · Paladin" 끝 글자 잘림·힘 칩 "340" 오른쪽에 붙음 → 안쪽 여백(최종 검수 10/13 사진 phone_round_hero2). 다시 하라면 이 가지 위에.
 - 새 가지 **dev1-halo-stage6** (worktree `../wt_dev1halo6`, sparse src/tools/docs, build/luau 복사함; 6단계 때 병합, 지금은 병합 안 함). 개발 2 = `dev2-halo-stage6`(wt_halo6): Zones·Bounds·Lands·Outskirts·Landmarks·TownNpcs·폭포 소리. 나 = Map.Roads RoadNorthIsland·RoadLook·preview_map 그 줄·map_v2 길 검사 + 클라 파일(개발 2에 알림).
