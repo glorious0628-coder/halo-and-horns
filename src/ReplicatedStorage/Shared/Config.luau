@@ -4448,6 +4448,16 @@ Config.PassBoost = {
 	-- is queued by then
 	WriteRetries = 3,
 }
+-- A23-167 (user 2026-10-13 "추천대로 하자"): a new save's first Seconds of play (data.PlaytimeSeconds, counted every
+-- Config.Player.PlaytimeTick s while the player is in the game) earn x Mult XP on every XP grant (ProgressionService.XPBoost).
+-- With the 2x XP pass it is x2 once (the larger of the two), so the pass loses nothing it promised. 10 minutes, not 30
+-- (the pass keeps its worth). A grant whose cap is its own amount (choice cards, the lost-and-found bench) stays as it is.
+-- The client counts down from the PlaytimeSeconds attribute: the boost is on while PlaytimeSeconds < Seconds.
+Config.EarlyXP = {
+	Enabled = true,
+	Seconds = 600,
+	Mult = 2,
+}
 -- 검수 2026-10-10 (A23-113 follow-up): what each pass really does, in plain easy English. Line = the one short line of a Shop
 -- card (<= 38 letters: the card wraps longer ones); Desc = the description of the pass page on create.roblox.com (the user pastes
 -- it with the pass id; <= 300 letters). Prices and the 2x are not changed here: the text only says what the code does, and its
@@ -7974,9 +7984,31 @@ Config.Return = {
 	-- A23-86 F: the zone a next-goal ladder row (QuestService GoalKind) leads to; other kinds use the level's hunting zone
 	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Commission4 = "Crossroads",
 		Commission5 = "Crossroads", Commission6 = "Crossroads", Crystal = "Crossroads", IronDrop = "SlimeMeadow" },
+	-- A23-167 ② "내일 또 오기" (docs/design/comeback_server_2026-10-14.md; research_rpg_lessons #2: players drop at the
+	-- second session, so the first one ends with a reason to come back). Server = 게임성 개발 2, cards / lines = 게임성 개발 1.
+	-- Tomorrow: Fx "TomorrowGift" { Tomorrow = the attendance slot a claim tomorrow pays, Today = the slot open today
+	-- (unclaimed) or nil, Days = days collected } once a KST day (data.Return.TomorrowDay) After s into the session, after
+	-- the first mission, only while fewer than MaxDays days are collected (the first week: less hand-holding after that,
+	-- 10/09); a fight / a fresh card / a purchase prompt moves it RetrySeconds later (at most Retries times)
+	Tomorrow = { Enabled = true, After = 600, MaxDays = 7, RetrySeconds = 30, Retries = 20 },
+	-- Back: a real return (the welcome-back rule above) sets the attribute Returned = true for the session; the guide
+	-- NPC says one of Text.BackLines once (client). The WelcomeBack Fx also carries Days (whole days away) and News.
+	-- News: the one "while you were away" line of the WelcomeBack card - crown wars won by each side and goose rounds of
+	-- every public server (private servers never count), kept per hour in one shared DataStore row (Store / Key, the last
+	-- KeepHours hours). Each server adds its own counts every FlushSeconds (and at close); the row is read at most once
+	-- every ReadGap s. No line when nothing happened or the row cannot be read.
+	News = { Enabled = true, Store = "HaloHorns_News_v1", Key = "Hours", KeepHours = 168, FlushSeconds = 300, ReadGap = 300 },
 	Text = {
 		NextHunt = "Hunt and get stronger!", -- nothing pinned
 		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)
+		-- A23-167 ② (game dev 1 draws them; easy kid English, 12 words at most)
+		TomorrowTitle = "Tomorrow's gift",
+		TomorrowLine = "Come back tomorrow for your Day %d gift!", -- (Tomorrow slot)
+		TodayLine = "Today's gift is waiting too!", -- Today ~= nil: [Open] opens the attendance window
+		BackLines = { "You're back! We missed you.", "There you are! Ready for more?", "Welcome back, hero!" },
+		NewsWar = "While you were away, crown wars won: %s %d, %s %d", -- (my side first)
+		NewsGoose = "Goose rounds while you were away: %d",
+		NewsSides = { Halo = "Halo", Horns = "Horns" },
 	},
 }
 -- #2 "My Way" (A23-79, psychology 2a): a name from the player's own good / evil story picks, no stats, no judging.

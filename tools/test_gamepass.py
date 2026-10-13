@@ -169,7 +169,13 @@ def static() -> tuple[int, list[str]]:
     for fn in ("function M.GetGoldMult(", "function M.GetXPMult("):
         body = function_block(prog, fn)
         check("PassMult" not in body and "HasPass" not in body, f"{fn} leaves the pass out (it is applied once, in the grant)")
-    check(prog.count("* M.PassMult(player,") == 2, "the pass is applied in two places only: AddXP and boostGold")
+    # A23-167: AddXP takes XPBoost (the 2x XP pass or the first minutes, the larger), boostGold the gold pass
+    add_xp = function_block(prog, "function M.AddXP(")
+    boost = function_block(prog, "function M.XPBoost(")
+    check(prog.count("* M.PassMult(player,") == 1 and prog.count("* M.XPBoost(player)") == 1
+          and "amount = math.floor(amount * M.XPBoost(player))" in add_xp
+          and "return math.max(M.PassMult(player, \"XP2\"), early)" in boost,
+          "the pass is applied in two places only: AddXP (XPBoost) and boostGold")
     # 검수 2026-10-08: quest rewards double their gold (and XP) only; items (scrolls, jelly, potions, materials) never.
     # Item grants (LootService.GrantItem / drops, the quest / board / story item rewards) never read the pass: outside
     # ProgressionService / MonetizationService only KaijuService's survive cap and CraftService's craft XP line (A23-139,
@@ -212,6 +218,21 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # A23-167 the first minutes x2 XP (게임성 개발 2, 2026-10-14)
+    ("early: the pass and the first minutes multiply (x4)", P, "\treturn math.max(M.PassMult(player, \"XP2\"), early)\n",
+     "\treturn M.PassMult(player, \"XP2\") * early\n"),
+    ("early: the pass alone (no first minutes)", P, "\tamount = math.floor(amount * M.XPBoost(player))\n",
+     "\tamount = math.floor(amount * M.PassMult(player, \"XP2\"))\n"),
+    ("early: for every save", P, "\treturn math.max(0, num(E.Seconds) - num(data.PlaytimeSeconds))\n", "\treturn num(E.Seconds)\n"),
+    ("early: one second longer", P, "\treturn math.max(0, num(E.Seconds) - num(data.PlaytimeSeconds))\n",
+     "\treturn math.max(0, num(E.Seconds) + 1 - num(data.PlaytimeSeconds))\n"),
+    ("early: the switch ignored", P, "\tif type(E) ~= \"table\" or E.Enabled == false then return 0 end\n",
+     "\tif type(E) ~= \"table\" then return 0 end\n"),
+    ("early: the cap before the boost", P,
+     "\tamount = math.floor(amount * M.XPBoost(player))\n\tif cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end\n",
+     "\tif cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end\n\tamount = math.floor(amount * M.XPBoost(player))\n"),
+    ("early: Config 30 minutes", C, "\tSeconds = 600,\n\tMult = 2,\n", "\tSeconds = 1800,\n\tMult = 2,\n"),
+    ("early: Config x3", C, "\tSeconds = 600,\n\tMult = 2,\n", "\tSeconds = 600,\n\tMult = 3,\n"),
     # A23-144 chat bubble skins
     ("bubbles: the pack is free", M, "\treturn MonetizationService.HasPass(player, Config.Bubbles.Pass)\nend\n", "\treturn true\nend\n"),
     ("bubbles: any side's free bubble", M, "\tif side then return side == player:GetAttribute(\"Faction\") end\n", "\tif side then return true end\n"),
@@ -254,7 +275,8 @@ MUTATIONS = [
     ("sanitize keeps non-boolean answers", C, "if type(id) == \"string\" and type(v) == \"boolean\" and",
      "if type(id) == \"string\" and"),
     # the boost
-    ("no 2x XP", P, "\tamount = math.floor(amount * M.PassMult(player, \"XP2\"))\n", ""),
+    ("no 2x XP", P, "\tamount = math.floor(amount * M.XPBoost(player))\n", ""),
+    ("no 2x XP pass (the first minutes only)", P, "\treturn math.max(M.PassMult(player, \"XP2\"), early)\n", "\treturn early\n"),
     ("no 2x Gold", P, "\t\treturn math.floor(amount * M.PassMult(player, \"Gold2\"))\n", "\t\treturn amount\n"),
     ("every source doubled", P, "\tif type(sources) == \"table\" and sources[source] == true then\n",
      "\tif type(sources) == \"table\" then\n"),

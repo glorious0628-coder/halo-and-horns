@@ -13,9 +13,15 @@
 --      a failed scroll / a purchase prompt. 13+ and the prompt itself are the client's (ExperienceNotificationService);
 --      it reports back with ClientMetric "OptIn" ("shown" | "cannot"); a shown prompt adds the UserId to the asked list
 --      (DataStore Config.Notify.Store) for the launch-day send.
+--   #6 A23-167 ② "내일 또 오기" (게임성 개발 2, 2026-10-14; docs/design/comeback_server_2026-10-14.md): the tomorrow
+--      card (Fx "TomorrowGift" { Tomorrow, Today?, Days }, Config.Return.Tomorrow: once a KST day After s into the
+--      session, the first attendance week only), the attribute Returned = true on a real return (the guide's line is the
+--      client's, Config.Return.Text.BackLines) and the WelcomeBack card's Days + News ("while you were away": crown wars
+--      won by each side and goose rounds of every public server, Config.Return.News: one shared DataStore row per hour).
 -- Save (additive, Version stays 3): data.Return = { Badges = { [badge key] = { Id, At } }, OptIn = "" | "shown"
--- | "cannot", OptInAt = os.time() } (repaired here at PlayerReady).
--- Signals: ReturnService.CardShown(player, why), ReturnService.Welcomed(player) (TelemetryService).
+-- | "cannot", OptInAt = os.time(), TomorrowDay = the KST day of the last tomorrow card } (repaired here at PlayerReady).
+-- Signals: ReturnService.CardShown(player, why), ReturnService.Welcomed(player) (TelemetryService),
+-- ReturnService.TomorrowShown(player, tomorrowSlot).
 local DataStoreService = game:GetService("DataStoreService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -27,6 +33,7 @@ local Util = require(Shared:WaitForChild("Util"))
 local ReturnService = {}
 ReturnService.CardShown = Util.Signal.new() -- (player, why: "Chapter" | "Daily" | "War")
 ReturnService.Welcomed = Util.Signal.new() -- (player)
+ReturnService.TomorrowShown = Util.Signal.new() -- (player, the slot a claim tomorrow pays) A23-167 ②
 
 local TAG = "ReturnService"
 local S = nil
@@ -35,6 +42,8 @@ local MW = Config.MyWay or {}
 local B = Config.Badges or {}
 local N = Config.Notify or {}
 local TXT = R.Text or {}
+local TM = R.Tomorrow or {} -- A23-167 ②
+local NW = R.News or {}
 
 local T = {
 	JoinedAt = {}, -- [Player] = os.clock() the session started
@@ -48,6 +57,9 @@ local T = {
 	Conns = {}, -- [Player] = { RBXScriptConnection }
 	ChapterEnd = {}, -- [main quest id] = chapter number: the last main quest of each chapter
 	AskedStore = nil, -- the opted-in list DataStore (false = unavailable)
+	-- A23-167 ② news: this server's counts not yet in the shared row ([hour string] = { Halo, Horns, Goose }), the last
+	-- row read (Cache, at os.clock() CacheAt), the store (false = unavailable), a read / write running
+	News = { Pending = {}, Cache = nil, CacheAt = nil, Store = nil, Reading = false, Flushing = false },
 }
 
 local function num(v, default)
@@ -81,6 +93,7 @@ local function record(data)
 	r.Badges = badges
 	if r.OptIn ~= "shown" and r.OptIn ~= "cannot" then r.OptIn = "" end
 	r.OptInAt = math.max(0, math.floor(num(r.OptInAt)))
+	r.TomorrowDay = math.max(0, math.floor(num(r.TomorrowDay))) -- A23-167 ②
 	return r
 end
 
@@ -164,6 +177,7 @@ end
 
 ------------------------------------------------------------------ #1 pause card / welcome back
 local optInMoment -- forward
+local newsAdd -- forward (A23-167 ②: the news section below)
 
 -- one pause card (why "Chapter" | "Daily" | "War"); waits out a fight (Config.Return.CombatWait tries) and keeps the
 -- MinGap between two cards. Returns nothing; the card fires CardShown.
@@ -230,8 +244,9 @@ local function onDailyClaims(player)
 	if math.floor(num(player:GetAttribute("DailyClaims"))) == slots then queueCard(player, "Daily") end
 end
 
-local function onWarEnded(_winner, mode, snapshot)
+local function onWarEnded(winner, mode, snapshot)
 	if mode == "Idle" or type(snapshot) ~= "table" then return end
+	if winner == "Halo" or winner == "Horns" then newsAdd(winner) end -- A23-167 ② (a draw is no news)
 	local W = R.War or {}
 	local minPoints = num(Config.War and Config.War.ChestMinPoints, 1)
 	for player, points in snapshot do
@@ -246,11 +261,172 @@ local function onWarEnded(_winner, mode, snapshot)
 	end
 end
 
-local function welcomeBack(player)
+------------------------------------------------------------------ #6 A23-167 ② news while away
+-- the shared row: { [hour index string] = { Halo = n, Horns = n, Goose = n } }, hour index = floor(os.time() / 3600)
+local function newsOn()
+	return NW.Enabled ~= false and game.PrivateServerId == "" -- private servers never count (nor read: same line for all)
+end
+
+local function newsStore()
+	local nws = T.News
+	if nws.Store == nil then
+		local ok, store = pcall(DataStoreService.GetDataStore, DataStoreService, Config.StoreName(NW.Store or "HaloHorns_News_v1"))
+		nws.Store = ok and store or false
+	end
+	return nws.Store or nil
+end
+
+-- one more event of this server (kind "Halo" | "Horns" = a crown war won, "Goose" = a goose round)
+function newsAdd(kind)
+	if not newsOn() then return end
+	local hour = tostring(math.floor(os.time() / 3600))
+	local row = T.News.Pending[hour]
+	if not row then
+		row = {}
+		T.News.Pending[hour] = row
+	end
+	row[kind] = num(row[kind]) + 1
+end
+
+-- `into` += `from` (hour rows); hours older than KeepHours (or broken) are dropped from both. Returns `into`
+local function newsMerge(into, from, nowHour)
+	local keep = math.max(1, math.floor(num(NW.KeepHours, 168)))
+	for hour, row in type(from) == "table" and from or {} do
+		local h = tonumber(hour)
+		if h and type(row) == "table" and h > nowHour - keep and h <= nowHour + 1 then
+			local key = tostring(math.floor(h))
+			local out = type(into[key]) == "table" and into[key] or {}
+			for _, kind in { "Halo", "Horns", "Goose" } do
+				local n = math.max(0, math.floor(num(row[kind])))
+				if n > 0 then out[kind] = num(out[kind]) + n end
+			end
+			if next(out) ~= nil then into[key] = out end
+		end
+	end
+	for hour in into do
+		local h = tonumber(hour)
+		if not h or h <= nowHour - keep then into[hour] = nil end
+	end
+	return into
+end
+
+-- this server's pending counts into the shared row (a failed write keeps them for the next try)
+local function newsFlush()
+	local nws = T.News
+	if nws.Flushing or next(nws.Pending) == nil then return end
+	local store = newsStore()
+	if not store then return end
+	local batch = nws.Pending
+	nws.Pending = {}
+	nws.Flushing = true
+	local nowHour = math.floor(os.time() / 3600)
+	local ok, res = pcall(store.UpdateAsync, store, NW.Key or "Hours", function(old)
+		return newsMerge(type(old) == "table" and old or {}, batch, nowHour)
+	end)
+	nws.Flushing = false
+	if ok then
+		if type(res) == "table" then nws.Cache, nws.CacheAt = res, os.clock() end
+	else
+		newsMerge(nws.Pending, batch, math.floor(os.time() / 3600)) -- back in line, with what came meanwhile
+		Util.Warn(TAG, "news write: " .. tostring(res))
+	end
+end
+
+-- the shared row (read at most once every ReadGap s; nil = never read / unavailable). May yield
+local function newsRow()
+	local nws = T.News
+	if nws.Reading then return nws.Cache end
+	if nws.CacheAt == nil or os.clock() - nws.CacheAt >= num(NW.ReadGap, 300) then
+		local store = newsStore()
+		if store then
+			nws.Reading = true
+			local ok, row = pcall(store.GetAsync, store, NW.Key or "Hours")
+			nws.Reading = false
+			if ok then
+				nws.Cache = type(row) == "table" and row or {}
+				nws.CacheAt = os.clock()
+			else
+				Util.Warn(TAG, "news read: " .. tostring(row))
+			end
+		end
+	end
+	return nws.Cache
+end
+
+-- the one news line for a player away since `since` (os.time of the last leave), or nil
+local function newsLine(player, since)
+	if not newsOn() then return nil end
+	local row = newsRow()
+	if type(row) ~= "table" then return nil end
+	local nowHour = math.floor(os.time() / 3600)
+	-- the shared row + this server's counts not written yet
+	local all = newsMerge(newsMerge({}, row, nowHour), T.News.Pending, nowHour)
+	local from = math.floor(num(since) / 3600) + 1 -- the hours after the leave hour
+	local sum = { Halo = 0, Horns = 0, Goose = 0 }
+	for hour, counts in all do
+		local h = tonumber(hour)
+		if h and h >= from and h <= nowHour then
+			for kind in sum do sum[kind] += num(counts[kind]) end
+		end
+	end
+	local sides = TXT.NewsSides or {}
+	if sum.Halo + sum.Horns > 0 then
+		local mine = player:GetAttribute("Faction") == "Horns" and "Horns" or "Halo"
+		local other = mine == "Horns" and "Halo" or "Horns"
+		return string.format(TXT.NewsWar or "While you were away, crown wars won: %s %d, %s %d",
+			sides[mine] or mine, sum[mine], sides[other] or other, sum[other])
+	end
+	if sum.Goose > 0 then return string.format(TXT.NewsGoose or "Goose rounds while you were away: %d", sum.Goose) end
+	return nil
+end
+
+local function welcomeBack(player, since)
 	local data = getData(player)
 	if not data or player.Parent == nil then return end
 	local nextText, zone = nextGoal(player, data)
-	if fx(player, "WelcomeBack", { Next = nextText, Zone = zone }) then ReturnService.Welcomed:Fire(player) end
+	local okNews, news = pcall(newsLine, player, since)
+	if not okNews then
+		Util.Warn(TAG, "news: " .. tostring(news))
+		news = nil
+	end
+	if player.Parent == nil then return end -- left while the row was read
+	local days = math.max(0, math.floor((os.time() - num(since)) / 86400))
+	if fx(player, "WelcomeBack", { Next = nextText, Zone = zone, Days = days, News = news }) then
+		ReturnService.Welcomed:Fire(player)
+	end
+end
+
+------------------------------------------------------------------ #6 A23-167 ② the tomorrow card
+-- once a KST day, After s into the session (onReady's delay), only in the first attendance week; before the first
+-- mission / in a fight / less than MinGap after a card / within Calm s of a purchase prompt it waits RetrySeconds (at
+-- most Retries times)
+local function tomorrowCard(player, joinedAt, tries)
+	if player.Parent == nil or T.JoinedAt[player] ~= joinedAt then return end -- left (or a new session)
+	local data = getData(player)
+	if not data or TM.Enabled == false then return end
+	local r = record(data)
+	local day = Config.DayIndex(os.time())
+	if r.TomorrowDay >= day then return end
+	local att = S.AttendanceService
+	if type(att) ~= "table" or type(att.NextSlots) ~= "function" then return end
+	local now = os.clock()
+	local busy = data.ClassChosen ~= true or num(data.TutorialStep) ~= 99 or inCombat(player)
+		or (T.CardAt[player] ~= nil and now - T.CardAt[player] < num(R.MinGap, 120))
+		or (T.BuyAt[player] ~= nil and now - T.BuyAt[player] < num(N.Calm, 60))
+	if busy then
+		if tries < num(TM.Retries, 20) then
+			task.delay(num(TM.RetrySeconds, 30), tomorrowCard, player, joinedAt, tries + 1)
+		end
+		return
+	end
+	local okSlots, todaySlot, tomorrowSlot, days = pcall(att.NextSlots, player)
+	if not okSlots or type(tomorrowSlot) ~= "number" then return end
+	if num(days) >= num(TM.MaxDays, 7) then return end
+	r.TomorrowDay = day
+	T.CardAt[player] = now
+	if fx(player, "TomorrowGift", { Tomorrow = tomorrowSlot, Today = todaySlot, Days = math.floor(num(days)) }) then
+		ReturnService.TomorrowShown:Fire(player, tomorrowSlot)
+	end
 end
 
 ------------------------------------------------------------------ #2 My Way
@@ -495,8 +671,11 @@ local function onReady(player, data)
 	local last = num(data.LastLogoutTime)
 	if last > 0 and os.time() - last >= num(R.WelcomeAfter, 6 * 3600) and data.ClassChosen == true
 		and num(data.TutorialStep) == 99 then
-		task.delay(num(R.WelcomeDelay, 4), welcomeBack, player)
+		player:SetAttribute("Returned", true) -- A23-167 ②: the guide's "You're back!" line (client)
+		task.delay(num(R.WelcomeDelay, 4), welcomeBack, player, last)
 	end
+	-- A23-167 ② the tomorrow card, After s into this session
+	task.delay(num(TM.After, 600), tomorrowCard, player, T.JoinedAt[player], 0)
 end
 
 local function onLeaving(player)
@@ -545,6 +724,19 @@ function ReturnService.Start()
 		checkBadges(player)
 	end)
 	connect("WarService", "RoundEnded", onWarEnded)
+	connect("GooseService", "GooseFinished", function() newsAdd("Goose") end) -- A23-167 ② news
+	-- A23-167 ② this server's news counts go into the shared row every FlushSeconds and at the close
+	task.spawn(function()
+		while true do
+			task.wait(num(NW.FlushSeconds, 300))
+			local ok, err = pcall(newsFlush)
+			if not ok then Util.Warn(TAG, "news flush: " .. tostring(err)) end
+		end
+	end)
+	game:BindToClose(function()
+		local ok, err = pcall(newsFlush)
+		if not ok then Util.Warn(TAG, "news close: " .. tostring(err)) end
+	end)
 	connect("CombatService", "KnockedOut", function(player) T.KOAt[player] = os.clock() end)
 	connect("LootService", "Enhanced", function(player, _tier, _before, _after, success)
 		if success == false then T.FailAt[player] = os.clock() end
