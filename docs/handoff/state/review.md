@@ -197,3 +197,12 @@
 - 메모리 final-review-checks-process: 보고마다 사용자 방식대로 했는지 먼저 확인, 구멍 = 떨어짐.
 - 코드: test-prep-client 병합 main 10fa20b9. 개발 1 dev1-halo-stage6 cbf3c3f0(큰 지도 V3 b 틀, Id 비움). 개발 2 test-prep-server 18~19시 예정 → 그 뒤 메인 sync·사진 한 번에.
 - WorldKit: 사용자가 import3d_b 56 + import3d_c 40 가져옴 → 이미지 생성 3 키트·놓기 중(ArmoryBarrels v2 빼기).
+
+## 10/13 저녁 인계 (사용자가 최종 검수를 새 세션으로 바꿈) — 새 나는 여기부터
+- **왜 바뀌었나:** 앞 최종 검수가 사용자 방식(흰 모델 = 디자인 검수가 Tripo에서 4개를 직접 보고 고르고 손보기와 합의)을 지키게 하지 못함 — 디자인 검수 2가 점토 렌더로 약 28개 고른 걸 보고받고도 통과, 무기고 통 상자 구멍을 'Studio 파트로 막기'로 통과, 나눔 겹침으로 Tripo 약 500점 낭비. 사용자 "니가 최종 검수야?", "믿었는데". → SPEC A23-159, AGENTS 3D ②·'Tripo points PAUSED' 줄, role_prompts/00_review.md 맨 앞 규칙.
+- **지금 멈춘 것:** Tripo 점수 쓰는 일 전부(Blender 손보기 1·2, 디자인 검수 1·2 모두 '멈춤' 확인). 계정 1 잔액 1,355, 계정 2 22,075. 사용자 OK 전엔 아무것도 누르지 않음.
+- **사용자 답 기다림:** ① 멀티뷰로 다시 입히기 할지·무엇을(판정표 docs/review/multiview_redo_triage_2026-10-13.md: 계정 1 다시 38·그대로 30, 계정 2 다시 18·그대로 6 — 하게 되면 '꼭'만 개수·점수로 먼저; 계정 2 것은 디자인 검수 2가 Tripo에서 다시 고른 뒤) ② 빛 마을 사람 그림(상인 6·주민 9) 시작할지(이미지 생성 2 쉬는 중) ③ 무기고 통 = 흰 모델 12번 모두 상자 옆 구멍 → 상자는 Studio 나무 판 골격(점수 0) + 통만 Tripo 쓰는 안 제안 예정.
+- **3D 판정 결과:** docs/review/pbr_final_2026-10-13.md(묶음 b·c·d·e·g). 통과분 96개를 사용자가 WorldKit에 직접 가져옴(build/import3d_b 56 + import3d_c 40). 이미지 생성 3이 키트·놓기 중(1차·2차 넣음, 백업 20261013_153710) — **ArmoryBarrels v2는 통과 취소(놓지 않음)**, 성문 GateLeaf '폭 1.2배 늘림' 멈춤(같은 비율만). 이미지 생성 3 사진 차례(집 9채·성문·소품 4곳, 약 125초) '전달함' 줬음 → 사진 오면 한 장씩 보고 사용자에게 그대로(사용자 "3D 만든 꼬라지를 봐봐"). GuardPost·PotionCrate(계정 2 판) 2개는 아직 안 가져옴(다음 작은 묶음).
+- **코드:** fix/test-prep-client ae655ccf 병합 → main 10fa20b9(시험 12개·compile 통과). 개발 2 fix/test-prep-server 오늘 18~19시 push 예정(출석 28일 이름 테 알림 끔·Smokey→Rose 한 번에) → 합친 나무 시험 + 반박 검토 → 병합 → 메인 반영 1 sync + `HH_MAIN_STUDIO=1 py tools/play_test_prep_photos.py main`(Play 멈춤·시작은 🟠 알림). 개발 1 dev1-halo-stage6 cbf3c3f0(큰 지도 V3 b 틀, Id 비움 — 그림 올리면 Id 한 줄), dev2-halo-stage6 814bb3ca = 6단계 때 병합. 패스 id 9개 = 사용자 10/15.
+- **사용자 일:** 없음(점수 OK·질문 답만). 11월부터 세션 줄이기(메모리 fewer-sessions-from-november).
+- 도구: tools/final_review/final_gate.py(--fbx는 +X 앞을 -Y로 돌림, 텍스처 1024로 줄여 찍음) + final_gate_sheet.py. 워크플로 스크립트(pbr-final-gate-batch.js 등)는 앞 세션 폴더에만 있음 — 필요하면 새로 씀.
