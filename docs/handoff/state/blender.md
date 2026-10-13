@@ -6,7 +6,7 @@
 - 앱 브라우저 창이 숨겨지면 Tripo 페이지가 안 뜸(fetch도 멈춤) → 최종 검수에 창 보이게 부탁하고 기다림.
 - PBR 남음: JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick(텍스처 끝) + ConeTree(PBR 결과 안 옴, 다시) + 동상 B·분수 C·Daisy·Rose. PBR 끝·내려받기 남음: GateLeaf·DomeOnion·DomeBall·BenchB·DomeOctagon·FlowerCart.
 - 디자인 검수 고른 흰 모델 20종(텍스처 30 → 바로 PBR): Greenhouse d148d3bd, ShopSign e96efdb6, Lantern_A 3b8c167c, Lantern_B 4b6f9db9, Lantern_C 096e84f2, Lantern_D 1eed23ce, Lantern_E c102246e, IvyWall 18598e34, IvyBalcony 0352e909, FlowerBushPot 5a5af84d(뒤 구멍 → ⑤에서 초록 공 파트), DomePorchHalf e549329c, DomePavilion bc5097f2, DomeTowerSmall 6d925d8a, BreadDisplay e5467c5f, RoundTree_E 077f2fae, RoundTree_F cc3f527f, RoundTree_G a9395b47, Topiary_C 3e2847ad, Topiary_D 7c673fb4, Planter_E 1021df70. 텍스처 앞면 = bundle8/9 `<이름>_front`.
-- 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap(새, 아직 묶음 안 함).
+- 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap·ChimneyLantern·RoundTree(bundle12 끝에 넣음, 42.1 MB; 아직 Adobe 안 올림).
 
 ## 10/13 낮 — 로그인 뒤 진행 (잔액 6,505)
 - 매직 브러시 = 버림(A23-154). PBR 7 누름(ConeTree 결과 늦게 옴, 확인 필요). 텍스처 5 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick).
